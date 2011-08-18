@@ -1,4 +1,8 @@
 Drupal.behaviors.scholarlayout = function() {
+  Drupal.CTools.AJAX.commands.updateLayoutForm = function(data) {
+	  scholarlayout_update_moved_elements(data.warning);
+  }
+	
   var layoutRegions = [ "#scholarlayout-header-left", "#scholarlayout-header-main", "#scholarlayout-header-right", "#scholarlayout-navbar", "#scholarlayout-left", "#scholarlayout-right", "#scholarlayout-footer" ];
 
   scholarlayout_add_sortable(layoutRegions);
@@ -7,7 +11,7 @@ Drupal.behaviors.scholarlayout = function() {
     scholarlayout_change_bound = true;
 
     $('#cp-settings-form').submit(function() {
-      scholarlayout_afterdrag(null, null);
+      scholarlayout_update_moved_elements(false);
       return true;
     });
 
@@ -91,7 +95,7 @@ function scholarlayout_add_removal_hooks() {
     animatePoof(); // run the sprite animation
 
     parent.appendTo("#scholarlayout-top-widgets");
-    scholarlayout_afterdrag(e, null);
+    scholarlayout_update_moved_elements(true);
 
     parent.fadeIn('fast');
   });
@@ -104,36 +108,50 @@ function scholarlayout_afterdrag(event, ui) {
   var item = $(this);
   var target = $(event.originalTarget);
   if(item.attr("id") == "scholarlayout-top-widgets" && target && target.children('a.configure').length){
-	  $(event.originalTarget).clone().prependTo("#scholarlayout-top-widgets");
-	  target.children('a.configure').click();
+	  $(event.originalTarget).clone(true).prependTo("#scholarlayout-top-widgets");
+	  target.children('a.configure').click(); //auto-click the configure button
+	  $(document).bind('CToolsDetachBehaviors',function(element) {
+		  //Remove the box if it hasn't been replaced with an instance
+		  $(event.originalTarget).remove();
+	  });
+	  
 	  return;
   }//This started from the top
   
-  var regions = $("#scholarlayout-container > .scholarlayout-widgets-list");
-  $.each(regions, function(i, region) {
-    var items = $("#" + region.id + " > .scholarlayout-item");
-    var ids = "";
-    $.each(items, function(i, value) {
-      if (ids.length) {
-        ids += "|";
-      }
-      ids += value.id;
-    });
-    $('#edit-' + region.id).val(ids);
-  });
-
-  // Reset top box after widgets have been moved
-  vsite_layout_setScrollArrows();
-
-  // Reset widget widths
-  vsite_layout_setWidgetAutoWidth();
-
-  if (!$("#scholarforms_save_warning").length && event) {
-    $("#cp-settings-layout").before(
-        $('<div id="scholarforms_save_warning" class="warning"><span class="warning tabledrag-changed">*</span> Your changes have not yet been saved. Click "Save Settings" for your changes to take effect</div>')
-    );
-  }
+  scholarlayout_update_moved_elements(true);
 };
+
+/**
+ * Update the form with the correct values after elemens have been moved.
+ * @param warning
+ * @return
+ */
+function scholarlayout_update_moved_elements(warning){
+	  var regions = $("#scholarlayout-container > .scholarlayout-widgets-list");
+	  $.each(regions, function(i, region) {
+	    var items = $("#" + region.id + " > .scholarlayout-item");
+	    var ids = "";
+	    $.each(items, function(i, value) {
+	      if (ids.length) {
+	        ids += "|";
+	      }
+	      ids += value.id;
+	    });
+	    $('#edit-' + region.id).val(ids);
+	  });
+
+	  // Reset top box after widgets have been moved
+	  vsite_layout_setScrollArrows();
+
+	  // Reset widget widths
+	  vsite_layout_setWidgetAutoWidth();
+
+	  if (!$("#scholarforms_save_warning").length && warning) {
+	    $("#cp-settings-layout").before(
+	        $('<div id="scholarforms_save_warning" class="warning"><span class="warning tabledrag-changed">*</span> Your changes have not yet been saved. Click "Save Settings" for your changes to take effect</div>')
+	    );
+	  }
+}
 
 function scholarlayout_catchchanges() {
   if (!$("#scholarforms_save_warning").length 
