@@ -51,13 +51,12 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
   );
   
   // os/vsite integration
-  vsite_include('vsiteapi');
-  $node_options = vsite_content_types();
-  drupal_alter('vsite_content_types', $node_options);
+  if (module_exists('vsite')) {
+    vsite_include('vsiteapi');
+    $node_options = vsite_content_types();
+    drupal_alter('vsite_content_types', $node_options);
+  }
   
-  //$form['filter']['#options'] = array();
-  
-
   foreach ( $node_options as $type => $name ) {
     $form['filter']['#options']['node:' . $type] = t('!type posts', array(
       '!type' => $name 
@@ -95,7 +94,7 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
     '#default_value' => $simpleview['style'] 
   );
   
-  drupal_alter('simpleview_reusable_form', $form, $simpleview);
+  drupal_alter('spaces_simpleview_reusable_form', $form, $simpleview);
   
   return $form;
 }
