@@ -36,7 +36,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_feedreader'] = array(
-    'title' => 'Feed Reader',  // i.e. view
+    'title' => 'Feed Reader',
     'description' => 'List of feed items',
     'tags' => array('Content'),
     'handler' => array(
@@ -48,7 +48,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_gallery'] = array(
-    'title' => 'Image Gallery',  // i.e. view
+    'title' => 'Image Gallery',
     'description' => 'List of images',
     'tags' => array('Content'),
     'handler' => array(
@@ -59,8 +59,20 @@ function os_boxes_boxes_plugins() {
     ),
   );
   
+  $info['os_boxes_slideshow'] = array(
+    'title' => 'Slideshow Gallery',
+    'description' => 'Display gallery as a slideshow',
+    'tags' => array('Media'),
+    'handler' => array(
+      'class' => 'os_boxes_slideshow',
+      'file' => 'os_boxes_slideshow.inc',
+      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+  
   $info['os_boxes_rss'] = array(
-    'title' => 'RSS feed',  // i.e. view
+    'title' => 'RSS feed',
     'description' => 'RSS feed ??',
     'tags' => array('Social'),
     'handler' => array(
@@ -72,7 +84,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_twitterfeed'] = array(
-    'title' => 'Twitter feed CUSTOM BOX',  // i.e. view
+    'title' => 'Twitter feed CUSTOM BOX',
     'description' => 'List of latest tweets',
     'tags' => array('Social'),
     'handler' => array(
@@ -84,7 +96,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_cclicense'] = array(
-    'title' => 'CC License',  // i.e. view
+    'title' => 'CC License',
     'description' => 'Displays CC license widget',
     'tags' => array('Other'),
     'handler' => array(
@@ -102,6 +114,18 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_bio',
       'file' => 'os_boxes_bio.inc',
+      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+  
+  $info['os_boxes_node'] = array(
+    'title' => 'Post in a box',  // i.e. view
+    'description' => 'Displays the content of a post in the widget',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_boxes_node',
+      'file' => 'os_boxes_node.inc',
       'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
       'parent' => 'os_boxes_default',
     ),
@@ -169,6 +193,9 @@ function os_boxes_vsite_widgets(){
         'label' => $info['title'],
         'block_config_path' => "cp/osboxes/nojs/boxes_add__{$key}/configure",
       );
+      if (is_array($plugins[$key]['tags']) && count($plugins[$key]['tags'])) {
+        $items["boxes-boxes_add__$key"]['tags'] = $plugins[$key]['tags'];
+      }
     }
   }
 
@@ -188,6 +215,9 @@ function os_boxes_vsite_widgets(){
  * Return a widget array when passed a box instance
  */
 function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
+	ctools_include('plugins');
+  $plugins = ctools_get_plugins('boxes', 'plugins');
+  
 	$a_wgt = array(
     'module' => 'boxes',
     'delta' => $box->delta,
@@ -199,6 +229,10 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
   
   if ($box->options_form()) {
   	$a_wgt['block_config_path'] = "cp/osboxes/nojs/{$box->delta}/configure";
+  }
+  
+  if (is_array($plugins[$box->plugin_key]['tags'])) {
+    $a_wgt['tags'] = $plugins[$box->plugin_key]['tags'];
   }
   
   return $a_wgt;

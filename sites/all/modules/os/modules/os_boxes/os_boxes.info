@@ -1,3 +1,4 @@
 name = os boxes
 description = os boxes
 core = 6.x
+dependencies[] = boxes

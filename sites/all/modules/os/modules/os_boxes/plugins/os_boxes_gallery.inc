@@ -66,7 +66,7 @@ class os_boxes_gallery extends os_boxes_default {
       
     $block = parent::render();
     $output = $view->execute_display();
-    $block['content'] = $output['content']; 
+    $block['content'] = $output; 
     return $block;
   }
 

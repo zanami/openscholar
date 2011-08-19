@@ -147,10 +147,9 @@ function _spaces_simpleviews_add_filter(&$handler, $simpleview) {
   // 'all' is actually just a passthrough option that doesn't apply
   // filtering beyond the standard 'published' check.
   $filter = $simpleview['filter'];
-  if (strstr($filter, 'node') !== FALSE && $type = end(explode(':', $filter))) {
-    $filters['type'] = array(
+  $type_filter = array(
       'operator' => 'in',
-      'value' => array($type => $type),
+      'value' => array(), 
       'group' => '0',
       'exposed' => FALSE,
       'expose' => array('operator' => FALSE, 'label' => ''),
@@ -159,6 +158,21 @@ function _spaces_simpleviews_add_filter(&$handler, $simpleview) {
       'field' => 'type',
       'relationship' => 'none',
     );
+    
+  if (strstr($filter, 'node') !== FALSE && $type = end(explode(':', $filter))) {
+    $filters['type'] = $type_filter;
+    $filters['type']['value'] = array($type => $type); 
+  } elseif ($filter == 'all') {
+    if (module_exists('vsite')) {
+      // openscholar vsite integration - lists correct content types
+      vsite_include('vsiteapi');
+      $node_options = vsite_content_types();
+      drupal_alter('vsite_content_types', $node_options);
+      
+      $filters['type'] = $type_filter; 
+      $types = array_combine(array_keys($node_options), array_keys($node_options));
+      $filters['type']['value'] = $types;
+    }
   }
   
   $handler->override_option('filters', $filters);

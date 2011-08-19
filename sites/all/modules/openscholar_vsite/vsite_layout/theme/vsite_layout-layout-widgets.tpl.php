@@ -9,6 +9,7 @@
  */
 ?>
 <div class="widget-prev"></div><div class="widget-next"></div>
+
 <dl id="<?php print $wgts_id; ?>" class = "<?php print $wgts_class; ?>">
   <dt><?php print $region_name;?></dt>
 	<?php
@@ -18,3 +19,8 @@
 	?>
 </dl>
 
+
+<select id="widget-tag-select">
+  <option value='all'>All Widgets</option>
+  <?php foreach ($wgts_tags as $title => $class) {echo '<option value="'.$class.'">'.$title.'</option>';}?>
+</select>
