@@ -22,9 +22,10 @@ function vsite_generic_settings_form($form_state) {
     if (!isset($setting['form'])) continue;
 
     if (isset($setting['group'])) {
-      $elem = array('#type' => 'fieldset') + $setting['group'];
+      $id = $setting['group']['#id'];
+      $elem = isset($form[$id])?$form[$id]:array('#type' => 'fieldset') + $setting['group'];
       $elem[$s_key] = $setting['form'];
-      $form[$elem['#id']] = $elem;
+      $form[$id] = $elem;
     }
     else {
       $form[$s_key] = $setting['form'];

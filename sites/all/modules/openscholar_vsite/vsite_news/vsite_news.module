@@ -285,7 +285,12 @@ function theme_views_view_field__vsite_activity__title($view, $field, $row) {
 
 function vsite_news_vsite_generic_settings() {
   $settings = array();
-  $settings['vsite_activity_insert'] = array(
+$settings['vsite_activity_insert'] = array(
+    'group' => array(
+      '#id' => 'privacy',
+      '#title' => t('Privacy'),
+      '#weight' => 0,
+    ),
     'form' => array(
       '#type' => 'radios',
       '#title' => "Should an activity be recorded when you create a post?",
@@ -294,6 +299,11 @@ function vsite_news_vsite_generic_settings() {
     ),
   );
   $settings['vsite_activity_update'] = array(
+    'group' => array(
+      '#id' => 'privacy',
+      '#title' => t('Privacy'),
+      '#weight' => 0,
+    ),
     'form' => array(
       '#type' => 'radios',
       '#title' => "Should an activity be recorded when you update a post?",
@@ -304,6 +314,11 @@ function vsite_news_vsite_generic_settings() {
 
   if (variable_get('vsite_private', 0)){
        $settings['info'] = array(
+          'group' => array(
+            '#id' => 'privacy',
+            '#title' => t('Privacy'),
+            '#weight' => 0,
+          ),
          'form' => array(
            '#type' => 'item',
            '#description' => "Note: Your site is private and activity messages will not be recorded untill your site becomes public.",

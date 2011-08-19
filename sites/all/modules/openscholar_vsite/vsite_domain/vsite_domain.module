@@ -88,6 +88,11 @@ function vsite_domain_vsite_generic_settings() {
 
 	  $space = spaces_get_space();
 	  $a_settings['vsite_domain_name'] = array(
+      'group' => array(
+        '#id' => 'domain',
+        '#title' => t('Domain'),
+        '#weight' => 0,
+      ),
 	    'form' => purl_form('vsite_domain', $space->group->nid, $s_vsite_domain),
 	    'submit' => array('vsite_domain_vsite_generic_settings_domain_submit'),
 	  );

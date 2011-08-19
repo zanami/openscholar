@@ -140,11 +140,9 @@ function _scholar_basicinfo_wdgt(){
     return $block;
   }
 
-  $a_site_settings = variable_get('vsite_setting_site', array());
   $contact_anon = variable_get('vsite_users_contact_form_anonymous', TRUE);
 
-  $s_email = ($a_site_settings['scholar_link_to_contact'] !== 0 &&
-             ($contact_anon !== 0 || user_is_logged_in()))?l("(email)","contact_owner"):"";
+  $s_email = ($contact_anon !== 0 || user_is_logged_in())?l("(email)","contact_owner"):"";
   $s_address = count($scholar->group->field_vsite_address)?$scholar->group->field_vsite_address[0]['value']:"";
 
   $output =   "<h1>" . l($scholar->group->title, $scholar -> get_absolute_url()) ."</h1>" .
