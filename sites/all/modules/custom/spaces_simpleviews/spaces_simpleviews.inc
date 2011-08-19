@@ -159,6 +159,25 @@ function _spaces_simpleviews_add_filter(&$handler, $simpleview) {
       'field' => 'type',
       'relationship' => 'none',
     );
+  } elseif ($filter == 'all') {
+    // os/vsite integration - lists correct content types
+    if (module_exists('vsite')) {
+      vsite_include('vsiteapi');
+      $node_options = vsite_content_types();
+      drupal_alter('vsite_content_types', $node_options);
+      
+      $filters['type'] = array(
+        'operator' => 'in',
+        'value' => array_combine(array_keys($node_options), array_keys($node_options)),
+        'group' => '0',
+        'exposed' => FALSE,
+        'expose' => array('operator' => FALSE, 'label' => ''),
+        'id' => 'type',
+        'table' => 'node',
+        'field' => 'type',
+        'relationship' => 'none',
+      );
+    }
   }
   
   $handler->override_option('filters', $filters);
