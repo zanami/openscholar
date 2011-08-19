@@ -29,9 +29,16 @@ function os_books_build_tree($node, $flatten = false) {
   $root = os_books_get_root($node);
 
   if (isset($root->book)) {
+    $cache = _os_books_get_cache($root->nid);
+    if ($cache) return $cache;
+
     $tree = book_menu_subtree_data($root->book);
     if ($flatten) $tree = _os_books_flatten_book($tree);
-    return book_export_traverse($tree, false);
+    $output = book_export_traverse($tree, false);
+
+    $cache_key = _os_books_get_cache_key($root->nid);
+    cache_set($cache_key, $output, 'cache_page', CACHE_PERMANENT);
+    return $output;
   }
 }
 
@@ -89,4 +96,59 @@ function _os_books_flatten_book($tree) {
     $result = array_merge($result, _os_books_flatten_book($value['below']));
   }
   return $result;
+}
+
+function _os_books_get_cache($root) {
+  if (is_object($root) && isset($root->nid)) {
+    $root = $root->nid;
+  }
+  elseif (!(int)$root || !module_exists('views_content_cache')) {
+    return FALSE;
+  }
+
+  $cutoff = 0;
+  $cache_params = array(
+    'os_og' => array('current' => 'current'),
+  );
+
+  // Retrieve the latest update time matching the settings on this View.
+  $cid = array();
+  foreach ($cache_params as $key_id => $key_values) {
+    if ($plugin = views_content_cache_get_plugin($key_id)) {
+      $cid[$key_id] = $plugin->view_key($key_values);
+    }
+  }
+  if (!empty($cid) && ($timestamp = views_content_cache_update_get($cid))) {
+    $cutoff = $timestamp;
+  }
+
+  $cache_key = _os_books_get_cache_key($root);
+  if (($cache = cache_get($cache_key, 'cache_page')) && (!$cutoff || $cache->created > $cutoff)) {
+    return $cache->data;
+  }
+}
+
+function _os_books_get_cache_key($root) {
+  global $theme, $user;
+
+  static $key = null;
+  if (!is_null($key)) return $key;
+
+  $cid_parts = array();
+
+  $vsite = vsite_get_vsite();
+  $cid_parts[] = (isset($vsite->group->purl))? $vsite->group->purl:"";
+  $cid_parts[] = "os_book";
+  $cid_parts[] = "results";
+  $cid_parts[] = $theme;
+  $cid_parts[] = ($user->uid == 1)?1:0; // special caching for super user.
+
+  $cid_parts[] = $root;
+
+  if (module_exists('locale')) {
+    global $language;
+    $cid_parts[] = $language->language;
+  }
+
+  return $key = implode(':', $cid_parts);
 }
