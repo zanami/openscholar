@@ -13,10 +13,8 @@ class spaces_simpleviews_boxes_listing extends boxes_box {
    */
   public function options_defaults() {
     $options = spaces_simpleviews_default_data();
-    //$options += parent::options_defaults();
-
-
-    //$options['number_of_items'] = 8; //@todo whats a good default ?
+    $options['number_of_items'] = 6; //@todo whats a good default ?
+    
     return $options;
   }
 
@@ -43,11 +41,14 @@ class spaces_simpleviews_boxes_listing extends boxes_box {
       // get from cache
     //}
     
-    $simpleview = $this -> options;
+    $simpleview = $this->options;
     $view = spaces_simpleviews_build_view($simpleview);
-
     $view->init();
-    $view->set_display('default');
+    $view->set_display('default');    
+    
+    if (isset($simpleview['number_of_items']) && (int)$simpleview['number_of_items'] > 0) {
+      $view->display_handler->set_option('items_per_page', (int)$simpleview['number_of_items']);
+    }
 
     $title = isset($this->title) ? check_plain($this->title) : NULL;
     $block = array(
