@@ -108,6 +108,7 @@ function _os_books_get_cache($root) {
 
   $cutoff = 0;
   $cache_params = array(
+    'node' => array('book' => 'book'),
     'os_og' => array('current' => 'current'),
   );
 
