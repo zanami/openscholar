@@ -503,6 +503,8 @@ function scholar_events_views_default_views() {
   ));
   $handler->override_option('items_per_page', 5);
   $handler->override_option('use_pager', '0');
+  $handler->override_option('use_more', 1);
+  $handler->override_option('use_more_always', 0);
   $handler->override_option('style_plugin', 'list');
   $handler->override_option('style_options', array(
     'grouping' => '',
