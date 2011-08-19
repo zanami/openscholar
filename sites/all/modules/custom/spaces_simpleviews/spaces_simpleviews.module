@@ -50,7 +50,7 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
     '#default_value' => $simpleview['filter'] 
   );
   
-  // os/vsite integration
+  // os/vsite integration - lists correct content types
   if (module_exists('vsite')) {
     vsite_include('vsiteapi');
     $node_options = vsite_content_types();
@@ -92,6 +92,12 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
     , 
     '#required' => TRUE, 
     '#default_value' => $simpleview['style'] 
+  );
+  
+  $form['number_of_items'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Number of displayed items',
+    '#default_value' => $simpleview['number_of_items'],
   );
   
   drupal_alter('spaces_simpleview_reusable_form', $form, $simpleview);
