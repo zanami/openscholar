@@ -41,11 +41,13 @@ class spaces_simpleviews_boxes_listing extends boxes_box {
       // get from cache
     //}
     
+    //prepare the view
     $simpleview = $this->options;
     $view = spaces_simpleviews_build_view($simpleview);
     $view->init();
     $view->set_display('default');    
-    
+
+    //number of items
     if (isset($simpleview['number_of_items']) && (int)$simpleview['number_of_items'] > 0) {
       $view->display_handler->set_option('items_per_page', (int)$simpleview['number_of_items']);
     }
