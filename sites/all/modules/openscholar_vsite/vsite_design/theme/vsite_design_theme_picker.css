@@ -13,10 +13,9 @@
   }
 
 ul.theme-picker {
-  width: 80%;
-  clear: both;
-  padding:4px 0;
-	margin: 0 0 0 70px;
+  width: 95%;
+padding:4px 0;
+	margin: 0 0 30px 70px;
   }
 
 li.item-theme-picker  {
@@ -53,7 +52,7 @@ padding-top:20px;
 
 ul.theme-picker li .theme-info {
   position: absolute;
-  background: rgba(42,101,152,0.9);
+  background: #3f74a2;
   border-top: 1px solid #2a6598;
   bottom: 0;
   left: 0;
@@ -167,3 +166,17 @@ form#vsite-design-theme-picker-form div.form-radios {
 .page-cp-appearance-theme input#edit-submit {
   margin-left: 30px;
   }
+  
+
+#themeButtons #edit-submit,  #themeButtons #edit-preset, #themeButtons #edit-reset {
+	margin: 5px 0px 5px 10px;
+	
+}
+
+#themeButtons {
+bottom:42px;
+width: 100%;
+background: url('images/themePickerSubButtsBg.png') repeat-x;
+position:fixed;
+ z-index: 10;
+}
