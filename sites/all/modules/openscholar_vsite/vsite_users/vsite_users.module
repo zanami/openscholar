@@ -37,7 +37,7 @@ function vsite_users_menu() {
     'file' => 'vsite_users.pages.inc',
     'weight' => 50,
   );
-  
+
   $items['cp/users/members'] = array(
     'title' => 'Manage Members',
     'page callback' => 'vsite_users_members',
@@ -546,6 +546,11 @@ function vsite_users_vsite_generic_settings() {
 
   //Should Vsite Contact forms allow anon. contact?
   $a_settings['vsite_users_contact_form_anonymous'] = array(
+    'group' => array(
+      '#id' => 'privacy',
+      '#title' => t('Privacy'),
+      '#weight' => 0,
+    ),
     'form' => array(
       '#type' => 'checkbox',
       '#title' => t('Anonymous Contact'),

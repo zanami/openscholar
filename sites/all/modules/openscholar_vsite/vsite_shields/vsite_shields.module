@@ -200,7 +200,7 @@ function theme_vsite_shields_form_table($container) {
 /**
  * Implement Hook vsite_generic_settings
  * @return array
- */
+ *
 function vsite_shields_vsite_generic_settings(){
   $a_settings = array();
 
@@ -274,7 +274,7 @@ function vsite_shields_vsite_generic_settings(){
 
   return $a_settings;
 }
-
+*/
 function vsite_shields_imagecache_default_presets() {
   $presets = array();
 

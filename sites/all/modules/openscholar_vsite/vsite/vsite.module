@@ -806,6 +806,11 @@ function vsite_vsite_generic_settings(){
   $a_settings = array();
 
   $a_settings['vsite_private'] = array(
+    'group' => array(
+      '#id' => 'privacy',
+      '#title' => t('Privacy'),
+      '#weight' => 0,
+    ),
     'form' => array(
       '#prefix' => "<br />",
       '#type' => 'checkbox',
