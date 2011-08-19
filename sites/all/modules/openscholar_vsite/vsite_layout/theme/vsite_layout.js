@@ -265,7 +265,8 @@ function vsite_layout_add_category_select() {
       $widgets.children(cat + ':not(.disabled)').show();
     }
     
-    vsite_layout_setScrollArrows()
+    vsite_layout_setScrollArrows();
+    $('#widget-wrapper').scrollLeft(0); //reset scroller after removing categories.  otherwise widgets will be off screen
   });
 
 }
