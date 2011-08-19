@@ -167,7 +167,7 @@ function os_boxes_vsite_widgets(){
         'weight' => -10,
         'region' => false,
         'label' => $info['title'],
-        'block_config_path' => "cp/osboxes/nojs/{$key}",
+        'block_config_path' => "cp/osboxes/nojs/boxes_add__{$key}/configure",
       );
     }
   }
@@ -178,39 +178,44 @@ function os_boxes_vsite_widgets(){
   $boxes = boxes_load();
   foreach ($boxes as $box) {
   	if(!$box->delta) continue;
-    $items["boxes-{$box->delta}"] = array(
-      'module' => 'boxes',
-      'delta' => $box->delta,
-      'weight' => 20,
-      'region' => false,
-      'label' => $box->title,
-      'cache' => BLOCK_CACHE_CONTENT_CACHE,
-    );
+    $items["boxes-{$box->delta}"] = os_boxes_get_vsite_widget($box);
   }
 
   return $items;
 }
 
+/**
+ * Return a widget array when passed a box instance
+ */
+function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
+	$a_wgt = array(
+    'module' => 'boxes',
+    'delta' => $box->delta,
+    'weight' => $weight,
+    'region' => $region,
+    'label' => $box->title,
+    'cache' => BLOCK_CACHE_CONTENT_CACHE,
+  );
+  
+  if ($box->options_form()) {
+  	$a_wgt['block_config_path'] = "cp/osboxes/nojs/{$box->delta}/configure";
+  }
+  
+  return $a_wgt;
+}
 
 /**
  * Implementation of hook_menu().
  */
 function os_boxes_menu() {
-  $items = array();
-  ctools_include('plugins');
-  $plugins = ctools_get_plugins('boxes', 'plugins');
-    $path = drupal_get_path('module', 'boxes');
-  foreach ($plugins as $key => $info) {
-    if (isset($info['title'])) {
-      $items['cp/osboxes/%ctools_js/'. $key] = array(
-        'title' => 'Add '. strtolower($info['title']),
-        'page callback' => 'os_boxes_box_modal',
-        'page arguments' => array( 2,3),
-        'access callback' => TRUE,
-        'type' => MENU_CALLBACK,
-      );
-    }
-  }
+  
+  $items['cp/osboxes/%ctools_js/%/configure'] = array(
+    'title' => 'Configure this Widget',
+    'page callback' => 'os_boxes_box_modal',
+    'page arguments' => array( 2,3),
+    'access callback' => 'cp_access_cp',
+    'type' => MENU_CALLBACK,
+  );
 
   $items['osboxestest'] = array(
     'title' => 'somettite',
@@ -240,24 +245,32 @@ function os_boxes_box_modal($js = NULL, $delta){
   module_load_include('inc', 'boxes', 'boxes.admin');
   module_load_include('inc', 'boxes', 'plugins/boxes_box');
 
+  $b_newbox = (strpos($delta,"boxes_add__") === 0);
+  
   // Fall back if $js is not set.
-  if (! $js) {
-    return drupal_get_form('boxes_add_form', $delta);
+  if (!$js) {
+    return drupal_get_form(($b_newbox?'boxes_add_form':'boxes_box_form'), $delta);
   }
 
   ctools_include('modal');
   ctools_include('ajax');
   ctools_include('form');
-  $plugin_key = str_replace('boxes_add__', '', $delta);
-  $identifier = (module_exists('spaces') && $space = spaces_get_space()) ? "{$space->type}-{$space->id}" : 'box';
-  $hash = boxes_create_hash($identifier);
-  $delta = $identifier . "-" . $hash;
-  $box = boxes_factory($plugin_key, array(
-    'delta' => $delta
-  ));
+  
+  if($b_newbox){
+    $plugin_key = str_replace('boxes_add__', '', $delta);
+    $identifier = (module_exists('spaces') && $space = spaces_get_space()) ? "{$space->type}-{$space->id}" : 'box';
+    $hash = boxes_create_hash($identifier);
+    $delta = $identifier . "-" . $hash;
+	  $box = boxes_factory($plugin_key, array(
+	    'delta' => $delta
+	  ));
+  }else{
+  	$box = boxes_load($delta);
+  }
+  
   $form_state = array(
     'box' => $box,
-    'plugin_key' => $plugin_key,
+    'plugin_key' => $box->plugin_key,
     'custom_action' => TRUE,
     'ajax' => 'TRUE',
     'no_redirect' => TRUE

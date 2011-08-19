@@ -51,6 +51,5 @@ function vsite_layout_spaces_presets_alter(&$presets) {
 			  $preset->value['context'][$s_key.":reaction:block"]['blocks'] = $blocks;
 			}
 		}
-
 	}
 }

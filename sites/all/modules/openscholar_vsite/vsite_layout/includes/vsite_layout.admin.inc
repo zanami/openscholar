@@ -343,6 +343,10 @@ function vsite_layout_settings_form_submit($form, &$form_state) {
 
   //Apply the region settings
   $a_avalible_blocks = $space->controllers->context->get('openscholar-feature-'.$s_page_type.":reaction:block","preset");
+  
+  //Sort them for easy display
+  uasort($a_avalible_blocks['blocks'], 'vsite_layout_sort_block_by_weight');
+  
   foreach ($a_avalible_blocks['blocks'] as $s_key => $block) {
     $a_avalible_blocks['blocks'][$s_key]['region'] = isset($setting[$s_key])? $setting[$s_key]:false;
     $a_avalible_blocks['blocks'][$s_key]['weight'] = array_search($s_key,array_keys($setting));

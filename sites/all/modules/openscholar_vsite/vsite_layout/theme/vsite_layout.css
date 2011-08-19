@@ -92,7 +92,8 @@ dd.scholarlayout-item {
   font-size: 11px;
   }
 
-#scholarlayout-top-widgets dd.scholarlayout-item a.configure{
+#scholarlayout-top-widgets dd.scholarlayout-item a.add,
+#scholarlayout-top-widgets dd.scholarlayout-item a.setting{
   display: none;
 }
 

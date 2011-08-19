@@ -238,15 +238,16 @@ function boxes_factory($plugin_key, $values = array()) {
  */
 function boxes_load($delta = NULL) {
   module_load_include('inc', 'boxes', 'plugins/boxes_box');
-  if (isset($delta)) {
-    $box = boxes_box::load($delta);
-    drupal_alter('boxes_load', $box, $delta);
-    return $box;
-  }
   ctools_include('export');
   $boxes = array();
   
   if(module_exists('spaces') && $space = spaces_get_space()) {
+	  if (isset($delta)) {
+	    $box = $space->controllers->boxes->get($delta);
+	    drupal_alter('boxes_load', $box, $delta);
+	    return $box;
+	  }
+  	
     foreach ($space->controllers->boxes->get() as $space_box) {
       // Some older overrides may be stored as an array, check for these and convert them to objects.
       if (is_array($space_box)) {
@@ -260,6 +261,12 @@ function boxes_load($delta = NULL) {
     }
     
     return $boxes;
+  }
+  
+  if (isset($delta)) {
+    $box = boxes_box::load($delta);
+    drupal_alter('boxes_load', $box, $delta);
+    return $box;
   }
   
   foreach (ctools_export_load_object('box') as $box) {

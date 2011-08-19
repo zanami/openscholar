@@ -107,9 +107,9 @@ function scholarlayout_afterdrag(event, ui) {
   
   var item = $(this);
   var target = $(event.originalTarget);
-  if(item.attr("id") == "scholarlayout-top-widgets" && target && target.children('a.configure').length){
+  if(item.attr("id") == "scholarlayout-top-widgets" && target && target.children('a.add').length){
 	  $(event.originalTarget).clone(true).prependTo("#scholarlayout-top-widgets");
-	  target.children('a.configure').click(); //auto-click the configure button
+	  target.children('a.add').click(); //auto-click the configure button
 	  $(document).bind('CToolsDetachBehaviors',function(element) {
 		  //Remove the box if it hasn't been replaced with an instance
 		  $(event.originalTarget).remove();
