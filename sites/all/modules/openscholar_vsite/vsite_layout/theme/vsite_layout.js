@@ -262,8 +262,9 @@ function vsite_layout_add_category_select() {
       $widgets.children(':not(.disabled)').show();
     } else {
       $widgets.children(':not(' + cat + ')').hide();
-      $widgets.children(':not(.disabled) '+cat).show();
+      $widgets.children(cat + ':not(.disabled)').show();
     }
+    //$widgets.children('.disabled').hide();
   });
 
 }
