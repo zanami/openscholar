@@ -118,6 +118,18 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
+  
+  $info['os_boxes_node'] = array(
+    'title' => 'Post in a box',  // i.e. view
+    'description' => 'Displays the content of a post in the widget',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_boxes_node',
+      'file' => 'os_boxes_node.inc',
+      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'parent' => 'os_boxes_default',
+    ),
+  );
 
   $info['os_boxes_oembed'] = array(
     'title' => 'Media Embed',  // i.e. view
