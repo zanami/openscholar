@@ -204,8 +204,7 @@ function animatePoof() {
 function vsite_layout_setScrollArrows(){ 
     var nContainerWidth = $('#scholarlayout-top-widgets').parent().width();
     var nWidgetWidth = 31 + $('#scholarlayout-top-widgets dd:first').width();
-    var nAllWidgetsWidth = ($('#scholarlayout-top-widgets dd:not(.disabled)').length) * nWidgetWidth;
-    var scholarlayout_widgets_scroling = false;
+    var nAllWidgetsWidth = ($('#scholarlayout-top-widgets dd:not(.disabled):visible').length) * nWidgetWidth;
 
     if(nContainerWidth > nAllWidgetsWidth){ 
         $('div.widget-prev, div.widget-next').addClass('disabled');
@@ -257,14 +256,16 @@ function vsite_layout_add_category_select() {
   $select = $('#widget-tag-select');
   $widgets = $('#scholarlayout-top-widgets');
   $select.change(function() {
-    cat = '.' + $select.attr('value');
+   
+    cat = '.' + $select.attr('value'); 
     if (cat == '.all') {
       $widgets.children(':not(.disabled)').show();
     } else {
       $widgets.children(':not(' + cat + ')').hide();
       $widgets.children(cat + ':not(.disabled)').show();
     }
-    //$widgets.children('.disabled').hide();
+    
+    vsite_layout_setScrollArrows()
   });
 
 }
