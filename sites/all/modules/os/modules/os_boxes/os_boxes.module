@@ -274,7 +274,7 @@ function os_boxes_box_modal($js = NULL, $delta){
   }
 
   if(isset($form_state['js commands']) && is_array($form_state['js commands'])){
-  	$output = array_merge($output,$form_state['js commands']);
+  	$output = array_merge($form_state['js commands'],$output);
   }
 
   ctools_ajax_render($output);

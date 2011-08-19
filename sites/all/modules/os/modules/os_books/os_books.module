@@ -46,7 +46,6 @@ function os_books_nodeapi(&$node, $op, $teaser, $page) {
       '#value' => $content,
       '#weight' => 10,
     );
-//    drupal_add_js(drupal_get_path('module', 'os_books').'/os_books.js', 'module');
   }
 }
 

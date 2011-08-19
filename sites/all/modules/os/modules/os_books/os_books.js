@@ -34,9 +34,11 @@
 	
 	function toc_click(e) {
 		var nid = e.target.getAttribute('nid');
-		display.html(content[nid].content);
-		title.html(content[nid].title);
-		perma.attr('href', e.target.getAttribute('href'));
-		e.preventDefault();
+		if (content[nid]) {
+			display.hide().html(content[nid].content).fadeIn();
+			title.html(content[nid].title);
+			perma.attr('href', e.target.getAttribute('href'));
+			e.preventDefault();
+		}
 	}
 })(jQuery);

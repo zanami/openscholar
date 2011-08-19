@@ -153,21 +153,23 @@ function os_wysiwyg_fields_oembed_provider_callback($provider, $url, $matches, $
   // DOMDocument will take a string as HTML. More forgiving than XML
   // $html = str_replace(array('&'), array('%26'), $embed->html);
   // do things to it
-  $html = new DOMDocument(null, null);
-  @$html->loadHTML($embed->html);
-  if ($object = $html->getElementsByTagName('object')) {
-    $object = $object->item(0);
-    $param = $html->createElement('param', 'transparent');
-    $param->setAttribute('name', 'wmode');
-    $param->setAttribute('value', 'transparent');
-    $object->appendChild($param);
+  if ($embed->html) {
+    $html = new DOMDocument(null, null);
+    @$html->loadHTML($embed->html);
+    if ($object = $html->getElementsByTagName('object')) {
+      $object = $object->item(0);
+      $param = $html->createElement('param', 'transparent');
+      $param->setAttribute('name', 'wmode');
+      $param->setAttribute('value', 'transparent');
+      $object->appendChild($param);
 
-    if ($embed_tag = $html->getElementsByTagName('embed')) {
-      $embed_tag = $embed_tag->item(0);
-      $embed_tag->setAttribute('wmode', 'transparent');
+      if ($embed_tag = $html->getElementsByTagName('embed')) {
+        $embed_tag = $embed_tag->item(0);
+        $embed_tag->setAttribute('wmode', 'transparent');
+      }
+
+      $embed->html = $html->saveHTML();
     }
-
-    $embed->html = $html->saveHTML();
   }
 
   return $embed;

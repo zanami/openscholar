@@ -1,4 +1,5 @@
 name = spaces simpleviews
 description = spaces simpleviews
-package = OpenScholar
+dependencies[] = "spaces"
+dependencies[] = "boxes"
 core = 6.x

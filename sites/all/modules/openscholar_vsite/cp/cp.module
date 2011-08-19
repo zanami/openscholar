@@ -194,7 +194,7 @@ function cp_menu(){
   $spaces_path = drupal_get_path('module', 'spaces');
 
   $items = array();
-  
+
   $items["cp/build"] = array(
     'title' => 'Site building',
     'page callback' => 'drupal_get_form',
@@ -318,7 +318,7 @@ function cp_form_alter(&$form, &$form_state, $form_id){
     ctools_include('ajax');
     ctools_include('modal');
     ctools_modal_add_js();
-    
+
     if(isset($_GET['open_feature_settings'])){
     	drupal_add_js("$(document).ready(function() { $('.spaces-features a.modal_click_onload').click(); });",'inline');
     }
@@ -337,7 +337,7 @@ function cp_form_alter(&$form, &$form_state, $form_id){
       // and so no settings exists for this feature
       if ($item && $item['href'] != 'features' && $item['access'] && $is_enabled) {
       	$s_class = ($_GET['open_feature_settings'] && $_GET['open_feature_settings'] == $f_name)?"modal_click_onload":"";
-      	
+
         $link = ctools_modal_text_button('customize', 'features/nojs/' . $f_name, 'customize ' . $f_name, $s_class); //, 'ctools-modal-openscholar-style-default');
         $form['settings'][$f_name] = array(
           '#type' => 'markup',
@@ -639,6 +639,11 @@ function cp_vsite_generic_settings() {
 
   //Show Admin Menu Setting
   $a_settings['cp_admin_menu'] = array(
+    'group' => array(
+      '#id' => 'cp',
+      '#title' => t('Admin Menu'),
+      '#weight' => 0,
+    ),
     'form' => array(
       '#type' => 'checkbox',
       '#title' => t('Display Admin Menu Bar.'),
