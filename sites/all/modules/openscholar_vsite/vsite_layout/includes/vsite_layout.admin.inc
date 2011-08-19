@@ -35,11 +35,52 @@ function vsite_layout_layout() {
   $vsite_layout_widgets = vsite_layout_region_widgets($s_page_type);
   $wgts = array_key_exists('unused', $vsite_layout_widgets)?$vsite_layout_widgets['unused']:array();
 
+  //acquire options for widget tag selector.
+  $a_widget_tags = array();     //all widget tags as display name => class name
+  $a_plugins = os_boxes_boxes_plugins();
+  
+  //get tags from widgets.  format them for class names (some tags may have spaces, which would make for two classes)
+  foreach($wgts as $delta => $wgt) {
+    if ($tags = $wgt['tags']) {
+    //tags are conveniently provided for us.
+      $class_names = array();
+      foreach($tags as $tag) {
+        $class_name = strtolower( str_replace(' ', '_', $tag) );
+        $a_widget_tags[$tag] = $class_name;
+        $class_names[] = $class_name; 
+      }
+      $wgts[$delta]['tags_class'] = ' '.implode(' ', $class_names) .' ';//stash class strings so we can quickly include them in theme
+      
+    } else {
+      
+      //no tags option.  first, check the plugin for tags.  maybe the tags weren't in cache
+      $plugin = str_replace('boxes-boxes_add__', '', $delta);
+      if (is_array($a_plugins[$plugin]['tags'])) {
+        $class_names = array();
+        $wgts[$delta]['tags'] = $a_plugins[$plugin]['tags'];
+        foreach ($a_plugins[$plugin]['tags'] as $tag) {
+          $class_name = strtolower( str_replace(' ', '_', $tag) );
+          $a_widget_tags[$tag] = $class_name;
+          $class_names[] = $class_name;
+        }
+        $wgts[$delta]['tags_class'] = ' ' . implode(' ', $class_names) . ' ';
+
+        
+      } else {
+      //probably an old widget with no category.  group those together
+      $wgts[$delta]['tags_class'] = ' uncategorized';        
+      }
+    }
+  }
+
+  $a_widget_tags['Uncategorized'] = 'uncategorized';
+  
+  
   //Disable widgets that are part of inactive features
   vsite_layout_check_for_disabled_widgets($wgts);
 
   //Markup for Top Widgets Section
-  $top = theme('vsite_layout_layout_widgets', $wgts, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list');
+  $top = theme('vsite_layout_layout_widgets', $wgts, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list', NULL, $a_widget_tags);
 
   //Print the Form
   $form = drupal_get_form('vsite_layout_settings_form');
@@ -491,7 +532,9 @@ function vsite_layout_region_widgets( $page_type = 'none') {
   $context = context_load('openscholar-feature-'.$page_type);
 
   $default_blocks = module_invoke_all('vsite_widgets');
-  foreach ($default_blocks as $s_key => $a_block) $default_blocks[$s_key]['region'] = false; //Get any new blocks that have been introduced, and include them in the top bar
+  foreach ($default_blocks as $s_key => $a_block) {
+    $default_blocks[$s_key]['region'] = false; //Get any new blocks that have been introduced, and include them in the top bar
+  }
   
   $a_region_widgets = array();
   if($context && ($a_widgets = $context->reactions['block']['blocks'])){

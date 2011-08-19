@@ -24,7 +24,7 @@ function vsite_layout_theme() {
 
     'vsite_layout_layout_widgets' => array(
       'template' => 'vsite_layout-layout-widgets',
-      'arguments' => array('wgts' => NULL, 'wgts_id' => NULL, 'wgts_class' => NULL, 'region_name' => NULL),
+      'arguments' => array('wgts' => NULL, 'wgts_id' => NULL, 'wgts_class' => NULL, 'region_name' => NULL, 'wgts_tags' => NULL),
       'path' => drupal_get_path('module', 'vsite_layout') . '/theme'
     ),
   );

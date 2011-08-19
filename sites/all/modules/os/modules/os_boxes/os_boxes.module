@@ -181,6 +181,9 @@ function os_boxes_vsite_widgets(){
         'label' => $info['title'],
         'block_config_path' => "cp/osboxes/nojs/{$key}",
       );
+      if (is_array($plugins[$key]['tags']) && count($plugins[$key]['tags'])) {
+        $items["boxes-boxes_add__$key"]['tags'] = $plugins[$key]['tags'];
+      }
     }
   }
 
@@ -198,6 +201,9 @@ function os_boxes_vsite_widgets(){
       'label' => $box->title,
       'cache' => BLOCK_CACHE_CONTENT_CACHE,
     );
+    if (is_array($plugins[$box->plugin_key]['tags']) && count($plugins[$box->plugin_key]['tags'])) {
+      $items["boxes-{$box->delta}"]['tags'] = $plugins[$box->plugin_key]['tags'];
+    }
   }
 
   return $items;

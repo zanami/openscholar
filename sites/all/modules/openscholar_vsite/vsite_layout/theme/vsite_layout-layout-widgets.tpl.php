@@ -9,11 +9,12 @@
  */
 ?>
 <div class="widget-prev"></div><div class="widget-next"></div>
+
 <dl id="<?php print $wgts_id; ?>" class = "<?php print $wgts_class; ?>">
   <dt><?php print $region_name;?></dt>
 	<?php foreach($wgts as $s_widget_key => $w):?>
 	  <?php $s_class = (isset($w['hidden']) && $w['hidden'])? 'scholarlayout-item disabled':'scholarlayout-item'; ?>
-		<dd class="<?php echo $s_class ?><?php if($w['overides']) {?> with-overrides<?php } ?>" id="<?php print $s_widget_key; ?>"> <?php print $w['label']; ?>
+		<dd class="<?php echo $s_class . $w['tags_class'] ?><?php if($w['overides']) {?> with-overrides<?php } ?><?php if ($w['tags']) {foreach ($w['tags'] as $tag){echo ' '.$tag;}} ?>" id="<?php print $s_widget_key; ?>"> <?php print $w['label']; ?>
 		  <div class="close-this">Remove</div>
 		 <?php
 		 if($w['block_config_path']){
@@ -41,3 +42,8 @@
 	<?php endforeach?>
 </dl>
 
+
+<select id="widget-tag-select">
+  <option value='all'>All Widgets</option>
+  <?php foreach ($wgts_tags as $title => $class) {echo '<option value="'.$class.'">'.$title.'</option>';}?>
+</select>

@@ -34,6 +34,8 @@ Drupal.behaviors.scholarlayout = function() {
   vsite_layout_setScrollArrows();
   vsite_layout_setExceptionScroller();
   vsite_layout_setWidgetAutoWidth();
+  
+  vsite_layout_add_category_select();
 
   /**
    * jons developmental section. work in progress.
@@ -247,4 +249,21 @@ function vsite_layout_setWidgetAutoWidth() {
 
   $('dl#scholarlayout-top-widgets').width(new_width);
   $('#widget-wrapper').scrollLeft(_scrolled); //otherwise scroller goes back to 0.
+}
+
+// attaches event listeners to category select widget
+// when its changed, show only widgets that match the category
+function vsite_layout_add_category_select() {
+  $select = $('#widget-tag-select');
+  $widgets = $('#scholarlayout-top-widgets');
+  $select.change(function() {
+    cat = '.' + $select.attr('value');
+    if (cat == '.all') {
+      $widgets.children(':not(.disabled)').show();
+    } else {
+      $widgets.children(':not(' + cat + ')').hide();
+      $widgets.children(':not(.disabled) '+cat).show();
+    }
+  });
+
 }
