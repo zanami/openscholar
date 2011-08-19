@@ -13,7 +13,7 @@ $s_class = (isset($w['hidden']) && $w['hidden'])? 'scholarlayout-item disabled':
       <div class="close-this">Remove</div>
      <?php
      if($w['block_config_path']){
-     	 $class = (strpos($delta,"boxes_add__") === 0)?"add":"setting";
+     	 $class = (strpos($w['delta'],"boxes_add__") === 0)?"add":"setting";
        print ctools_modal_text_button("Configure",$w['block_config_path']."/cp_layout","open the form to configure this block",$class);
      }
      if($w['overides']){
