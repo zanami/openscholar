@@ -36,7 +36,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_feedreader'] = array(
-    'title' => 'Feed Reader',  // i.e. view
+    'title' => 'Feed Reader',  
     'description' => 'List of feed items',
     'tags' => array('Content'),
     'handler' => array(
@@ -48,7 +48,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_gallery'] = array(
-    'title' => 'Image Gallery',  // i.e. view
+    'title' => 'Image Gallery',  
     'description' => 'List of images',
     'tags' => array('Content'),
     'handler' => array(
@@ -59,8 +59,20 @@ function os_boxes_boxes_plugins() {
     ),
   );
   
+  $info['os_boxes_slideshow'] = array(
+    'title' => 'Slideshow Gallery',  
+    'description' => 'Display gallery as a slideshow',
+    'tags' => array('Media'),
+    'handler' => array(
+      'class' => 'os_boxes_slideshow',
+      'file' => 'os_boxes_slideshow.inc',
+      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+  
   $info['os_boxes_rss'] = array(
-    'title' => 'RSS feed',  // i.e. view
+    'title' => 'RSS feed',  
     'description' => 'RSS feed ??',
     'tags' => array('Social'),
     'handler' => array(
@@ -72,7 +84,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_twitterfeed'] = array(
-    'title' => 'Twitter feed CUSTOM BOX',  // i.e. view
+    'title' => 'Twitter feed CUSTOM BOX',  
     'description' => 'List of latest tweets',
     'tags' => array('Social'),
     'handler' => array(
@@ -84,7 +96,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_cclicense'] = array(
-    'title' => 'CC License',  // i.e. view
+    'title' => 'CC License',  
     'description' => 'Displays CC license widget',
     'tags' => array('Other'),
     'handler' => array(
