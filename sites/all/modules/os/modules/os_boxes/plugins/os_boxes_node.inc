@@ -41,7 +41,7 @@ class os_boxes_node extends os_boxes_default {
     $nid = $this->options['nid'];
     //nid is saved as "title [nid:$NID]".  extract the number. 
     if (is_string($nid) && (int)$nid == 0) {
-      $nid = (int)end(split(':', $nid));
+      $nid = _vsite_node_autocomplete_title_to_nid($nid);
     }
     $node = node_load($nid);
     
