@@ -54,10 +54,10 @@ function scholar_biocv_update_6002(&$sandbox){
 
 /* copies bio blurb into a box, removes bio blurb fro mbio content */
 function scholar_biocv_update_6003(&$sandbox){
-  if (module_exists('os_boxes')) {
-    $ret = array();
+  $ret = array();
+  if (module_exists('os_boxes')) { //&& module_exists('vsite_controllers')) {
     $ret += _scholar_biocv_make_blurbs_from_bios();                       //make a box from each bio blurb
-    $ret['query'] .= '  ' . _scholar_biocv_remove_blurbs();               //delete bio blurb content type
+    $ret += '  ' . _scholar_biocv_remove_blurbs();               //delete bio blurb content type
     return $ret;
   }
 }
@@ -71,7 +71,8 @@ function _scholar_biocv_make_blurbs_from_bios(){
   //copy blurbs from bios into simple boxes
   $query  = 'SELECT DISTINCT c.nid,c.field_hook_text_value,n.uid ';
   $query .= 'FROM {content_type_bio} c INNER JOIN {node} n ON c.nid=n.nid ';
-  $query .= 'WHERE field_hook_text_value IS NOT NULL';
+  $query .= 'WHERE field_hook_text_value IS NOT NULL ';
+  $query .= 'GROUP BY c.nid HAVING max(c.vid) ';
   $result = db_query($query);
   // for final update, doing a list of nids might be safer.  I figure this code can be used to provide that list at a 
   //later date.  for now it's adequate for testing.
@@ -91,16 +92,15 @@ function _scholar_biocv_make_blurbs_from_bios(){
       
       $boxopts = array(
         'title' => 'My Bio',
-        'description' => 'This box was automatically generated from the text of your previous bio blurb.',
+        'description' => 'This box was generated from the text of your previous bio blurb.',
         'body' => $blurb,
         'delta' => $delta, 
       );
       
-	  if ($box = boxes_factory('os_boxes_simple', $boxopts)) { 
-        $vsite->controllers->boxes->set($box->delta, $box);
+	  if (($box = boxes_factory('os_boxes_simple', $boxopts)) && isset($vsite->controllers->boxes)) { 
+        $vsite->controllers->boxes->set($box->delta, $box);      
+        $a_blurb_updates[] = $r->uid;
 	  }
-      
-      $a_blurb_updates[] = $r->uid;
     }
   }
   
@@ -124,5 +124,5 @@ function _scholar_biocv_remove_blurbs() {
   $type_name = 'bio';
   content_field_instance_delete($field_name, $type_name);
   
-  return 'Removed blurb from biocv content';
+  return array('success'=>TRUE, 'query'=>'Removed blurb from biocv content');
 }
