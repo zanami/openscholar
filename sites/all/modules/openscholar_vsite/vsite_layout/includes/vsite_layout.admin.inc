@@ -142,7 +142,6 @@ function vsite_layout_top_widgets_callback() {
   $top = theme('vsite_layout_layout_widgets', $wgts, $wgts_id, $wgts_class);
 
   drupal_json(array('status' => TRUE, 'data' => $top));
-
 }
 
 

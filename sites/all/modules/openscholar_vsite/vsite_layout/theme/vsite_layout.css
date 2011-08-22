@@ -12,7 +12,11 @@
   padding: 0;
   margin: 0;
   border: 1px solid #5e819e;
-  background:transparent;
+  background: #efefef;
+  }
+  
+#scholarlayout-container .ui-sortable {
+  background: transparent;
   }
 
 #scholarlayout-container .scholarlayout-widgets-list:hover {
@@ -50,10 +54,6 @@
   z-index: 10;
   }
 
-#scholarlayout-container #scholarlayout-content-main {
-  background: #efefef;
-  }
-  
 #scholarlayout-top-widgets {
   height:106px;
   background:#eaebe9;

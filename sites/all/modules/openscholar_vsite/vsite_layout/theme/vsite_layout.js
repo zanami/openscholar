@@ -3,7 +3,11 @@ Drupal.behaviors.scholarlayout = function() {
 	  scholarlayout_update_moved_elements(data.warning);
   }
 	
-  var layoutRegions = [ "#scholarlayout-header-left", "#scholarlayout-header-main", "#scholarlayout-header-right", "#scholarlayout-navbar", "#scholarlayout-left", "#scholarlayout-content-top", "#scholarlayout-right", "#scholarlayout-footer" ];
+  var layoutRegions = [ "#scholarlayout-header-left", "#scholarlayout-header-main", "#scholarlayout-header-right", "#scholarlayout-navbar", "#scholarlayout-left", "#scholarlayout-right", "#scholarlayout-footer" ];
+  
+  if($("#edit-page-type").val() == "none" || $("#edit-page-type").val() == "front"){
+    layoutRegions.push("#scholarlayout-content-top");
+  }
 
   scholarlayout_add_sortable(layoutRegions);
 
@@ -80,7 +84,7 @@ Drupal.behaviors.scholarlayout = function() {
 };
 
 function scholarlayout_add_removal_hooks() {
-  $(".close-this:not(.close-this-processed)").addClass('close-this-processed')
+  $(".ui-sortable .close-this:not(.close-this-processed)").addClass('close-this-processed')
   .click(function(e) {
     var parent = $(this).parent("dd");
     $("body").append("<div class='poof'></div>");
