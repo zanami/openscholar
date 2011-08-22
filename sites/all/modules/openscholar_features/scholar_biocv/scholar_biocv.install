@@ -54,7 +54,7 @@ function scholar_biocv_update_6002(&$sandbox){
 
 /* copies bio blurb into a box, removes bio blurb fro mbio content */
 function scholar_biocv_update_6003(&$sandbox){
-  if (module_enabled('os_boxes')) {
+  if (module_exists('os_boxes')) {
     $ret = array();
     $ret += _scholar_biocv_make_blurbs_from_bios();                       //make a box from each bio blurb
     $ret['query'] .= '  ' . _scholar_biocv_remove_blurbs();               //delete bio blurb content type
