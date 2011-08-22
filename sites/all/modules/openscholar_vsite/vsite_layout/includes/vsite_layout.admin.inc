@@ -47,7 +47,7 @@ function vsite_layout_layout() {
       foreach($tags as $tag) {
         $class_name = strtolower( str_replace(' ', '_', $tag) );
         $a_widget_tags[$tag] = $class_name;
-        $class_names[] = $class_name; 
+        $class_names[] = $class_name;
       }
       $wgts[$delta]['tags_class'] = ' '.implode(' ', $class_names) .' ';//stash class strings so we can quickly include them in theme
       
@@ -68,7 +68,7 @@ function vsite_layout_layout() {
         
       } else {
       //probably an old widget with no category.  group those together
-      $wgts[$delta]['tags_class'] = ' uncategorized';        
+      $wgts[$delta]['tags_class'] = ' uncategorized';
       }
     }
   }
@@ -116,15 +116,7 @@ function vsite_layout_region_widgets_callback() {
   }
   $a_themed_regions['content'] = theme('vsite_layout_layout_widgets', array(), 'scholarlayout-content-main', 'scholarlayout-widgets-list', 'Main Content');
 
-  $output= '<div id="scholarlayout-container">' .
-           $a_themed_regions['header_main'] .
-           $a_themed_regions['header_left'] .
-           $a_themed_regions['header_right'] .
-           $a_themed_regions['navbar'] .
-           $a_themed_regions['left'] .
-           $a_themed_regions['content'] .
-           $a_themed_regions['right'] .
-           $a_themed_regions['footer'] . "</div>";
+  $output= theme('vsite_layout_layout',$a_themed_regions);
 
   drupal_json(array('status' => TRUE, 'data' => $output));
 }
@@ -235,10 +227,6 @@ function vsite_layout_cp_region_contents() {
   $vsite_layout_widgets = array();
 
   $regions = system_region_list('scholar_base');
-
-  foreach ($regions as $region => $s_label) {
-    $vsite_layout_widgets[$region] = array();
-  }
 
   $s_page_type = (isset($_GET['page_type']))? $_GET['page_type']:'none';
 

@@ -7,6 +7,10 @@
  *  $w -> the widget
  */
 $s_class = (isset($w['hidden']) && $w['hidden'])? 'scholarlayout-item disabled':'scholarlayout-item';
+
+//Support for ctools popups
+ctools_include('ajax');
+ctools_include('modal');
 ?>
 
 <dd class="<?php echo $s_class. $w['tags_class'] ?><?php if($w['overides']) {?> with-overrides<?php } ?><?php if ($w['tags']) {foreach ($w['tags'] as $tag){echo ' '.$tag;}} ?>" id="<?php print $s_widget_key; ?>"> <?php print $w['label']; ?>

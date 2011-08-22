@@ -3,7 +3,7 @@ Drupal.behaviors.scholarlayout = function() {
 	  scholarlayout_update_moved_elements(data.warning);
   }
 	
-  var layoutRegions = [ "#scholarlayout-header-left", "#scholarlayout-header-main", "#scholarlayout-header-right", "#scholarlayout-navbar", "#scholarlayout-left", "#scholarlayout-right", "#scholarlayout-footer" ];
+  var layoutRegions = [ "#scholarlayout-header-left", "#scholarlayout-header-main", "#scholarlayout-header-right", "#scholarlayout-navbar", "#scholarlayout-left", "#scholarlayout-content-top", "#scholarlayout-right", "#scholarlayout-footer" ];
 
   scholarlayout_add_sortable(layoutRegions);
 

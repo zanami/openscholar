@@ -4,6 +4,7 @@
   <?php print $regions['header_right']; ?>
   <?php print $regions['navbar']; ?>
   <?php print $regions['left']; ?>
+  <?php print $regions['content_top']; ?>
   <?php print $regions['content']; ?>
   <?php print $regions['right']; ?>
   <?php print $regions['footer']; ?>
