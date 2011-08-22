@@ -7,6 +7,7 @@
 
 #scholarlayout-container #scholarlayout-header-main,
 #scholarlayout-container #scholarlayout-content-top,
+#scholarlayout-container #scholarlayout-content-bottom,
 #scholarlayout-container #scholarlayout-content-main {
   width: 428px;
   left: 209px;
@@ -26,12 +27,17 @@
   
 #scholarlayout-container #scholarlayout-content-main{
 	top: 253px;
-  height: 261px;
+  height: 216px;
   }
 
 #scholarlayout-container #scholarlayout-content-top{
 	top: 170px;
   height: 76px;
+  }
+  
+#scholarlayout-container #scholarlayout-content-bottom{
+  top: 477px;
+  height: 37px;
   }
 
 #scholarlayout-container #scholarlayout-navbar,

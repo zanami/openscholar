@@ -7,6 +7,7 @@ Drupal.behaviors.scholarlayout = function() {
   
   if($("#edit-page-type").val() == "none" || $("#edit-page-type").val() == "front"){
     layoutRegions.push("#scholarlayout-content-top");
+    layoutRegions.push("#scholarlayout-content-bottom");
   }
 
   scholarlayout_add_sortable(layoutRegions);
