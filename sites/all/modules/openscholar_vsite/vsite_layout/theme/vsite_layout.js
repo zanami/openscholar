@@ -108,13 +108,12 @@ var scholarlayout_change_bound = false;
 function scholarlayout_afterdrag(event, ui) {
   
   var item = $(this);
-  var target = $(event.originalTarget);
-  if(item.attr("id") == "scholarlayout-top-widgets" && target && target.children('a.add').length){
-	  $(event.originalTarget).clone(true).prependTo("#scholarlayout-top-widgets");
-	  target.children('a.add').click(); //auto-click the configure button
+  if(item.attr("id") == "scholarlayout-top-widgets" && ui.item && ui.item.children('a.add').length){
+	  ui.item.clone(true).prependTo("#scholarlayout-top-widgets");
+	  ui.item.children('a.add').click(); //auto-click the configure button
 	  $(document).bind('CToolsDetachBehaviors',function(element) {
 		  //Remove the box if it hasn't been replaced with an instance
-		  $(event.originalTarget).remove();
+		  ui.item.remove();
 	  });
 	  
 	  return;
