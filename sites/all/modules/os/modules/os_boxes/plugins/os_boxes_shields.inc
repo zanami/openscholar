@@ -12,7 +12,6 @@ class os_boxes_shields extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
 
-    $options['disabled'] = FALSE;
     $options['shield'] = "";
     return $options;
   }
@@ -22,14 +21,6 @@ class os_boxes_shields extends os_boxes_default {
    */
   public function options_form(){
 
-    $form['disabled'] = array(
-      '#prefix' => "<br />",
-      '#type' => 'checkbox',
-      '#title' => t('Disable Shields'),
-      '#default_value' => $this->options['disabled'],
-      '#attributes' => array('onChange' => "vsite_shields_grey_out(this);"),
-      '#description' => "Select the shield that you wish to appear in the 'shield widget' on your site.  Click disable to display none.",
-    );
     //The shield List
     $a_shields = variable_get('vsite_shields_shield_info', array());
 
