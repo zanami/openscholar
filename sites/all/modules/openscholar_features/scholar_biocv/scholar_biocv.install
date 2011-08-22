@@ -51,3 +51,78 @@ function scholar_biocv_update_6002(&$sandbox){
   return $res;
 
 }
+
+/* copies bio blurb into a box, removes bio blurb fro mbio content */
+function scholar_biocv_update_6003(&$sandbox){
+  if (module_exists('os_boxes')) {
+    $ret = array();
+    $ret += _scholar_biocv_make_blurbs_from_bios();                       //make a box from each bio blurb
+    $ret['query'] .= '  ' . _scholar_biocv_remove_blurbs();               //delete bio blurb content type
+    return $ret;
+  }
+}
+
+/*
+ * copies bio hook into a new simple box
+ */
+function _scholar_biocv_make_blurbs_from_bios(){
+  $ret = array();
+  
+  //copy blurbs from bios into simple boxes
+  $query  = 'SELECT DISTINCT c.nid,c.field_hook_text_value,n.uid ';
+  $query .= 'FROM {content_type_bio} c INNER JOIN {node} n ON c.nid=n.nid ';
+  $query .= 'WHERE field_hook_text_value IS NOT NULL';
+  $result = db_query($query);
+  // for final update, doing a list of nids might be safer.  I figure this code can be used to provide that list at a 
+  //later date.  for now it's adequate for testing.
+  
+  $a_blurb_updates = array();
+  while ($r = db_fetch_object($result)) {
+    $blurb = trim($r->field_hook_text_value);
+    
+    //users who own multiple vsites should still have their bios listed on each vsite
+    //no vsite has multiple owners.
+    $vsites = vsite_get_vsite_by_owner($r->uid);
+    while (strlen($blurb) && $vsite = array_shift($vsites)){
+      //make delta
+      $identifier = $vsite->type . '-' . $vsite->id;
+      $hash = boxes_create_hash($identifier);
+      $delta = $identifier . '-' . $hash;
+      
+      $boxopts = array(
+        'title' => 'My Bio',
+        'description' => 'This box was automatically generated from the text of your previous bio blurb.',
+        'body' => $blurb,
+        'delta' => $delta, 
+      );
+      
+	  if ($box = boxes_factory('os_boxes_simple', $boxopts)) { 
+        $vsite->controllers->boxes->set($box->delta, $box);
+	  }
+      
+      $a_blurb_updates[] = $r->uid;
+    }
+  }
+  
+  if (count($a_blurb_updates)) {
+    $ret[] = array(
+      'success' => true,
+      'query' => 'Created simplebox bio blurbs for UIDs: ' . implode(', ', $a_blurb_updates),
+    );
+  }
+  
+  return $ret;
+}
+
+/**
+ * gets rid of old cck field for storing bio blurbs
+ * http://drupal.org/node/620322
+ */
+function _scholar_biocv_remove_blurbs() {
+  module_load_include('inc', 'content', 'includes/content.crud');
+  $field_name = 'field_hook_text';
+  $type_name = 'bio';
+  content_field_instance_delete($field_name, $type_name);
+  
+  return 'Removed blurb from biocv content';
+}

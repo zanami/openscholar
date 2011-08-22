@@ -11,6 +11,7 @@ class os_boxes_node extends os_boxes_default {
    */
   public function options_defaults() {
     $options = parent::options_defaults();
+    $options['nid'] = 0;
 
     return $options;
   }
@@ -38,6 +39,10 @@ class os_boxes_node extends os_boxes_default {
     }
 
     $nid = $this->options['nid'];
+    //nid is saved as "title [nid:$NID]".  extract the number. 
+    if (is_string($nid) && (int)$nid == 0) {
+      $nid = _vsite_node_autocomplete_title_to_nid($nid);
+    }
     $node = node_load($nid);
     
     $output = node_view($node, 'teaser', FALSE, FALSE);  //@todo : make this configurable
