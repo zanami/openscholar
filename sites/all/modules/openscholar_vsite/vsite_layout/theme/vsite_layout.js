@@ -57,9 +57,9 @@ function scholarlayout_add_removal_hooks() {
 
     parent.appendTo("#scholarlayout-top-widgets");
     scholarlayout_update_moved_elements(true);
-    vsite_layout_init_categories();
 
     parent.fadeIn('fast');
+    vsite_layout_init_categories();
   });
 }
 
