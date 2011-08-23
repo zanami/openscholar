@@ -342,7 +342,7 @@ function scholar_front_welcome(){
 	$spaces_features = variable_get('spaces_features',array());
 
 	$bio_link = $spaces_features["scholar_biocv"]?l("Setup your bio now","node/add/bio")." or":"The bio feature is disabled";
-	$front_settings = l("change the display settings","cp/features",array("query" => array("open_feature_settings" => "scholar_front")));
+	$front_settings = l("change the display settings","cp/build",array("query" => array("open_feature_settings" => "scholar_front")));
 	$result = <<<MESSAGE
         <div id="welcome_front_wrapper">
           <h3>Welcome to your new site.</h3>
