@@ -8,7 +8,6 @@
  *  $wgts_class -> the class of the ul
  */
 ?>
-<div class="widget-prev"></div><div class="widget-next"></div>
 
 <dl id="<?php print $wgts_id; ?>" class = "<?php print $wgts_class; ?>">
   <dt><?php print $region_name;?></dt>
