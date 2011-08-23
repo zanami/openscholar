@@ -57,10 +57,10 @@
 #scholarlayout-top-widgets {
   height:106px;
   background:#eaebe9;
-  width: 100%;
+  width: 90%;
   padding-left: 22px;
   margin-bottom: 0;
-  overflow:hidden;
+  overflow:scroll;
   }
 
 #vsite-layout-settings-form {

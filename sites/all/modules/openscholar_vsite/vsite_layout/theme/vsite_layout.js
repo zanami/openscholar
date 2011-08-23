@@ -32,55 +32,10 @@ Drupal.behaviors.scholarlayout = function() {
         $('#edit-page-type').val($("#edit-secret-hidden-ahah").val());
       }
     });
-
-    $(window).resize(function() {vsite_layout_setScrollArrows();});
   }
   scholarlayout_add_removal_hooks();
-  vsite_layout_setScrollArrows();
   vsite_layout_setExceptionScroller();
-  vsite_layout_setWidgetAutoWidth();
-  
-
-  /**
-   * jons developmental section. work in progress.
-   * 
-   * instead of shaun's approach, I'm stretching the width of the widget
-   * container, but putting that in a 100% width container. now I can use the
-   * browser's own scrolling features instead of something hacked together.
-   * 
-   */
-  $('dl#scholarlayout-top-widgets').parent().width('100%');
-  $('dl#scholarlayout-top-widgets').wrap('<div id="widget-wrapper"></div>');
-  $('#widget-wrapper').css('overflow-x', 'hidden');
-  
-  // 31px of css padding? shoudl generate from code
-  var widget_width = 31 + $('dl#scholarlayout-top-widgets>dd:first').width();
-  
-  // 1 extra widget's worth of padding, so you can scroll past the last widget
-  // and see that it's the end
-  var widget_count = 1 + $('dl#scholarlayout-top-widgets>dd:not(.disabled)').length;
-  
-  // shaun was correct to recalibrate width periodically. each time a dd pops,
-  // bar gets a new width.
-  $('dl#scholarlayout-top-widgets').width(widget_width * widget_count);
-  
-  
-  
-  var speed = '300'; // ms. jq.fast is 200 and jq.slow is 600
-  // 31px of css padding? shoudl generate from code
-  var widget_width = 31 + $('dl#scholarlayout-top-widgets>dd:first').width();
-
-  $('div.widget-prev').click(function() {
-    var s = $('#widget-wrapper').scrollLeft() - widget_width;
-    s -= s % widget_width; // snap to edge of widget
-    $('#widget-wrapper').animate({scrollLeft:s}, speed)
-  });
-
-  $('div.widget-next').click(function() {
-    var s = $('#widget-wrapper').scrollLeft() + widget_width;
-    s -= s % widget_width; // snap to edge of widget
-    $('#widget-wrapper').animate({ scrollLeft:s}, speed)
-  });
+  vsite_layout_add_category_select();
 };
 
 function scholarlayout_add_removal_hooks() {
@@ -145,12 +100,6 @@ function scholarlayout_update_moved_elements(warning){
 	    $('#edit-' + region.id).val(ids);
 	  });
 
-	  // Reset top box after widgets have been moved
-	  vsite_layout_setScrollArrows();
-
-	  // Reset widget widths
-	  vsite_layout_setWidgetAutoWidth();
-
 	  if (!$("#scholarforms_save_warning").length && warning) {
 	    $("#cp-settings-layout").before(
 	        $('<div id="scholarforms_save_warning" class="warning"><span class="warning tabledrag-changed">*</span> Your changes have not yet been saved. Click "Save Settings" for your changes to take effect</div>')
@@ -203,22 +152,6 @@ function animatePoof() {
   setTimeout("$('.poof').remove()", frames * frameRate);
 }
 
-
-function vsite_layout_setScrollArrows(){ 
-    var nContainerWidth = $('#scholarlayout-top-widgets').parent().width();
-    var nWidgetWidth = 31 + $('#scholarlayout-top-widgets dd:first').width();
-    var nAllWidgetsWidth = ($('#scholarlayout-top-widgets dd:not(.disabled):visible').length) * nWidgetWidth;
-
-    if(nContainerWidth > nAllWidgetsWidth){ 
-        $('div.widget-prev, div.widget-next').addClass('disabled');
-
-    } else { 
-        $('div.widget-prev, div.widget-next').removeClass('disabled');
-        
-    } 
-}
-
-
  // Horizontal Sliding Exceptions
 function vsite_layout_setExceptionScroller() {
 
@@ -242,15 +175,18 @@ function vsite_layout_setExceptionScroller() {
 
 }
 
+//attaches event listeners to category select widget
+//when its changed, show only widgets that match the category
+function vsite_layout_add_category_select() {
+ $('#widget-categories li').click(function() {
+   var cat = $(this).children('a').attr('href').substring(1); 
+   $('#scholarlayout-top-widgets').children('dd:not(.' + cat + ')').hide();
+   $('#scholarlayout-top-widgets').children("."+cat + ':not(.disabled)').show();
+   return false;
+ });
+ 
+ var default_cat = $('#widget-categories li:first a').attr('href').substring(1);
+ $('#scholarlayout-top-widgets').children('dd:not(.' + default_cat + ')').hide();
+ $('#scholarlayout-top-widgets').children("."+default_cat + ':not(.disabled)').show();
 
-// sets widget container width.  this changes each time a widget comes out of the available widgets list.
-function vsite_layout_setWidgetAutoWidth() {
-  // 31px of css padding? shoudl generate from code
-  var widget_width = 31 + $('dl#scholarlayout-top-widgets>dd:first').width();
-  var widget_count = 1 + $('dl#scholarlayout-top-widgets>dd:not(.disabled)').length; //1 extra for padding.  shows user they're at end of list.  
-  var new_width = widget_width*widget_count;
-  var _scrolled = $('#widget-wrapper').scrollLeft(); //this will be restored later, after width change
-
-  $('dl#scholarlayout-top-widgets').width(new_width);
-  $('#widget-wrapper').scrollLeft(_scrolled); //otherwise scroller goes back to 0.
 }

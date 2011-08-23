@@ -8,12 +8,24 @@
  */
 $s_class = (isset($w['hidden']) && $w['hidden'])? 'scholarlayout-item disabled':'scholarlayout-item';
 
+if($w['overides']) {
+	$s_class .= " with-overrides";
+}
+
+if(is_array($w['tags']) && count($w['tags'])) {
+  foreach ($w['tags'] as $s_tag_name) {
+  	$s_class .= " ".strtolower( str_replace(' ', '_', $s_tag_name));
+  }
+}else{
+	$s_class .= " misc";
+}
+
 //Support for ctools popups
 ctools_include('ajax');
 ctools_include('modal');
 ?>
 
-<dd class="<?php echo $s_class. $w['tags_class'] ?><?php if($w['overides']) {?> with-overrides<?php } ?><?php if ($w['tags']) {foreach ($w['tags'] as $tag){echo ' '.$tag;}} ?>" id="<?php print $s_widget_key; ?>"> <?php print $w['label']; ?>
+<dd class="<?php echo $s_class ?>" id="<?php print $s_widget_key; ?>"> <?php print $w['label']; ?>
       <div class="close-this">Remove</div>
      <?php
      if($w['block_config_path']){
