@@ -34,7 +34,19 @@ function os_boxes_boxes_plugins() {
       'path' => drupal_get_path('module', 'boxes') .'/plugins',
     ),
   );
-
+  
+  $info['os_boxes_featuredposts'] = array(
+    'title' => 'Featured Posts',
+    'description' => 'List of content featured for front page',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_boxes_featuredposts',
+      'file' => 'os_boxes_featuredposts.inc',
+      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+  
   $info['os_boxes_feedreader'] = array(
     'title' => 'Feed Reader',
     'description' => 'List of feed items',
@@ -46,7 +58,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
-
+  
   $info['os_boxes_gallery'] = array(
     'title' => 'Image Gallery',
     'description' => 'List of images',
@@ -225,11 +237,8 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
     'region' => $region,
     'label' => $box->title,
     'cache' => BLOCK_CACHE_CONTENT_CACHE,
+	  'block_config_path' => "cp/osboxes/nojs/{$box->delta}/configure",
   );
-  
-  if ($box->options_form()) {
-  	$a_wgt['block_config_path'] = "cp/osboxes/nojs/{$box->delta}/configure";
-  }
   
   if (is_array($plugins[$box->plugin_key]['tags'])) {
     $a_wgt['tags'] = $plugins[$box->plugin_key]['tags'];
@@ -247,7 +256,8 @@ function os_boxes_menu() {
     'title' => 'Configure this Widget',
     'page callback' => 'os_boxes_box_modal',
     'page arguments' => array( 2,3),
-    'access callback' => 'cp_access_cp',
+    'access callback' => 'cp_layout_box_configurable',
+    'access arguments' => array(3),
     'type' => MENU_CALLBACK,
   );
 
@@ -273,7 +283,27 @@ function os_boxes_test(){
 }
 
 /**
- * A modal login callback.
+ * Determine if this box has a form, return true if it does, false otherwise
+ */
+function cp_layout_box_configurable($delta){
+	
+  if ($delta && strpos($delta, 'boxes_add__') !== 0) {
+  	//Box instance
+    if ($box = boxes_load($delta)) {
+      return ($box->options_form())?true:false;
+    }
+  }else{
+  	//New Box
+  	$plugin_key = str_replace('boxes_add__', '', $delta);
+    if ($box = boxes_factory($plugin_key)) {
+      return ($box->options_form())?true:false;
+    }
+  }
+  return false;
+}
+
+/**
+ * A modal callback for configuring a box.
  */
 function os_boxes_box_modal($js = NULL, $delta){
   module_load_include('inc', 'boxes', 'boxes.admin');

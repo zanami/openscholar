@@ -56,10 +56,13 @@ function scholar_biocv_update_6002(&$sandbox){
 function scholar_biocv_update_6003(&$sandbox){
   $ret = array();
   if (module_exists('os_boxes')) { //&& module_exists('vsite_controllers')) {
-    $ret += _scholar_biocv_make_blurbs_from_bios();                       //make a box from each bio blurb
-    $ret += '  ' . _scholar_biocv_remove_blurbs();               //delete bio blurb content type
-    return $ret;
+    $ret['#success'] = _scholar_biocv_make_blurbs_from_bios();                       //make a box from each bio blurb
+    $ret['#success']['query'] .= '  ' . _scholar_biocv_remove_blurbs();               //delete bio blurb content type
+  } else {
+    $ret['#abort'] = array('success' => FALSE, 'query' => 'os_boxes not installed.  Don\'t migrate bio blurbs to boxes until os_boxes is available.');
   }
+  
+  return $ret;  
 }
 
 /*
@@ -124,5 +127,5 @@ function _scholar_biocv_remove_blurbs() {
   $type_name = 'bio';
   content_field_instance_delete($field_name, $type_name);
   
-  return array('success'=>TRUE, 'query'=>'Removed blurb from biocv content');
+  return 'Removed blurb from biocv content';
 }
