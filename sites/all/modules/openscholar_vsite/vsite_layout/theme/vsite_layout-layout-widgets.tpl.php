@@ -20,7 +20,9 @@
 </dl>
 
 
+<?php if (is_array($wgts_tags) && count($wgts_tags)) {?>
 <select id="widget-tag-select">
   <option value='all'>All Widgets</option>
   <?php foreach ($wgts_tags as $title => $class) {echo '<option value="'.$class.'">'.$title.'</option>';}?>
 </select>
+<?php }?>
