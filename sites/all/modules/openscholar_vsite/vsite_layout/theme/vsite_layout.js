@@ -57,6 +57,7 @@ function scholarlayout_add_removal_hooks() {
 
     parent.appendTo("#scholarlayout-top-widgets");
     scholarlayout_update_moved_elements(true);
+    vsite_layout_init_categories();
 
     parent.fadeIn('fast');
   });
@@ -75,6 +76,7 @@ function scholarlayout_afterdrag(event, ui) {
 		  ui.item.remove();
 	  });
 	  
+	  vsite_layout_init_categories();
 	  return;
   }//This started from the top
   
@@ -179,14 +181,18 @@ function vsite_layout_setExceptionScroller() {
 //when its changed, show only widgets that match the category
 function vsite_layout_add_category_select() {
  $('#widget-categories li').click(function() {
-   var cat = $(this).children('a').attr('href').substring(1); 
-   $('#scholarlayout-top-widgets').children('dd:not(.' + cat + ')').hide();
-   $('#scholarlayout-top-widgets').children("."+cat + ':not(.disabled)').show();
+   $('#widget-categories li').removeClass('active');
+   $(this).addClass('active');
+   vsite_layout_init_categories();
    return false;
  });
  
- var default_cat = $('#widget-categories li:first a').attr('href').substring(1);
- $('#scholarlayout-top-widgets').children('dd:not(.' + default_cat + ')').hide();
- $('#scholarlayout-top-widgets').children("."+default_cat + ':not(.disabled)').show();
+ $('#widget-categories li:first').addClass('active');
+ vsite_layout_init_categories();
+}
 
+function vsite_layout_init_categories(){
+	var cat = $('#widget-categories li.active a').attr('href').substring(1);
+	$('#scholarlayout-top-widgets').children('dd:not(.' + cat + ')').hide();
+	$('#scholarlayout-top-widgets').children("."+cat + ':not(.disabled)').show();
 }
