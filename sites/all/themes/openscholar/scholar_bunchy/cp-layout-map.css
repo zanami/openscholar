@@ -4,6 +4,7 @@
 
 #scholarlayout-container #scholarlayout-content-main {
   left: 0;
+   height: 175px;
 }
 
 #scholarlayout-container #scholarlayout-left {
@@ -25,3 +26,15 @@
   top: 81px;
   height: 80px;
   }
+  
+  #scholarlayout-container #scholarlayout-content-top {
+    height: 76px;
+    left: 0;
+    top: 170px;
+}
+
+#scholarlayout-container #scholarlayout-content-bottom {
+ height: 74px;
+    left: 0;
+    top: 437px;
+}

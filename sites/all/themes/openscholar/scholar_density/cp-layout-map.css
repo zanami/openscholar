@@ -36,6 +36,22 @@
   }
 
 #scholarlayout-container #scholarlayout-content-main {
-  left: 423px;
-  width: 210px;
+height: 250px;
+    left: 423px;
+    top: 130px;
+    width: 210px;
   }
+  
+#scholarlayout-container #scholarlayout-content-top {
+ height: 124px;
+    left: 424px;
+    top: 0;
+    width: 208px;
+}
+
+#scholarlayout-container #scholarlayout-content-bottom {
+ height: 120px;
+    left: 424px;
+    top: 386px;
+    width: 208px;
+}
