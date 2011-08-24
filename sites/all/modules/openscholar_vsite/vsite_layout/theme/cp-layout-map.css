@@ -27,7 +27,7 @@
   
 #scholarlayout-container #scholarlayout-content-main{
 	top: 253px;
-  height: 216px;
+  height: 180px;
   }
 
 #scholarlayout-container #scholarlayout-content-top{
@@ -36,9 +36,9 @@
   }
   
 #scholarlayout-container #scholarlayout-content-bottom{
-  top: 477px;
-  height: 37px;
-  }
+ height: 74px;
+    top: 440px;
+   }
 
 #scholarlayout-container #scholarlayout-navbar,
 #scholarlayout-container #scholarlayout-footer {

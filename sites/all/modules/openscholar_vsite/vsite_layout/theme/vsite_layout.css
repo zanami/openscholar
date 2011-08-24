@@ -57,10 +57,10 @@
 #scholarlayout-top-widgets {
   height:106px;
   background:#eaebe9;
-  width: 100%;
+  width: 90%;
   padding-left: 22px;
   margin-bottom: 0;
-  overflow:hidden;
+  overflow:scroll;
   }
 
 #vsite-layout-settings-form {
@@ -108,6 +108,12 @@ dd.scholarlayout-item {
   border-bottom: 1px solid #666;
   overflow:hidden;
   }
+  
+  
+#scholarlayout-container dd.scholarlayout-item a.ctools-use-modal  {
+color:transparent;
+background: url('images/configGear.png') no-repeat;
+}
 
 #scholarlayout-container #scholarlayout-footer dd.scholarlayout-item, #scholarlayout-container #scholarlayout-navbar dd.scholarlayout-item {
   width: 75%;
@@ -124,7 +130,7 @@ dd.scholarlayout-item {
 .scholarlayout-item-settings {
   color:#90a0a0;
   font-weight: normal;
-  font-size: 12px;
+  font-size: 11px;
   display:block;
   text-transform: none;
   }
