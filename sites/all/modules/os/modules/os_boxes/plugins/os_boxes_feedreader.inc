@@ -27,7 +27,6 @@ class os_boxes_feedreader extends os_boxes_default {
       '#type' => 'select', 
       '#title' => t('Feed'), 
       '#options' => array(
-        'all' => t('All') 
       ), 
       '#required' => TRUE,
     );
@@ -36,11 +35,21 @@ class os_boxes_feedreader extends os_boxes_default {
     $view = views_get_view("scholar_reader");
     $view->set_display('block_1');
     $view->execute(); 
-    foreach($view->result as $r) {
-      $form['feed']['#options'] += array($r->nid => $r->node_title);
-    }
-    $form['feed']['#default_value'] = $this->options['feed'];
     
+    if (count($view->result)) {
+      //feeds exist, add options
+      $form['feed']['#options'] += array('all' => t('All')); 
+      
+      foreach($view->result as $r) {
+        $form['feed']['#options'] += array($r->nid => $r->node_title);
+      }
+      $form['feed']['#default_value'] = $this->options['feed'];
+    } else {
+      //no feedsto display
+      $form['feed']['#description'] = t('No feeds found.');
+      $form['feed']['#disabled'] = TRUE;
+    }
+      
     
     $form['number_of_items'] = array(
       '#type' => 'textfield',
