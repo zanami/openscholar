@@ -258,6 +258,15 @@ function vsite_menu(){
     'access callback' => 'cp_access_cp',
   );
 
+  $items['cp/modal/%node/%'] = array(
+    'title' => 'Block Edit Forms',
+    'page callback' => 'vsite_info_block_form',
+    'page arguments' => array(2, 3),
+    'type' => MENU_CALLBACK,
+    'menu_name' => 'cp',
+    'access callback' => 'cp_access_cp',
+  );
+
   return $items;
 }
 
@@ -433,6 +442,14 @@ function vsite_preprocess_page(&$vars){
   	$vars['context_links'] = '<div class="context-links">'.$vars['context_links'].'</div>';
   }
 
+  if (module_exists('modalframe')) {
+    if (!isset($_GET['modal'])) {
+      modalframe_parent_js();
+    }
+    else {
+      modalframe_child_js();
+    }
+  }
 }
 
 /**
@@ -464,24 +481,6 @@ function vsite_theme_registry_alter(&$theme_registry){
     	array_unshift($theme_registry['page']['preprocess functions'], 'context_page_alter');
     }
   }
-
-  // contextual
-  $theme_registry['contextual'] = array(
-    'arguments' => array('links' => array()),
-    'function' => 'vsite_contextual_links',
-  );
-}
-
-/**
- * Implementation of hook contextual links
- * @param $links
- * @todo Unfinished
- */
-function vsite_contextual_links($links) {
-  // don't display any admin links if we're in the cp
-  if (context_isset('context', 'vsite-section-cp'))
-    return '';
-  return ''; //theme('ctools_dropdown', " ", $links, false, 'vsite-admin contextual').'<div class="vsite-contextual-border"></div>';
 }
 
 /**
@@ -501,14 +500,35 @@ function vsite_form_alter(&$form, $form_state, $form_id){
     if(isset($form['buttons']['preview'])){
     	$form['buttons']['preview']['#access'] = user_access('vsite_node_form_preview');
     }
+
+    if (isset($_GET['modal']) && $button = &$form['buttons']['submit']) {
+      modalframe_child_js();
+      $button['#submit'][] = 'vsite_modal_submit';
+    }
   }
 
   $scholar_content_type = variable_get('scholar_content_type', 'vsite');
   switch ($form_id) {
     case $scholar_content_type . '_node_form' :
-      //Customize the "Site Information" form
+      // modal forms
       if (arg(0) != 'cp') break;
 
+      $whitelist = array('buttons');
+      switch ($form['#node']->field_show) {
+        case 'logo':
+          $whitelist[] = 'field_vsite_logo';
+          break;
+        case null:
+          $whitelist[] = 'taxonomy';
+          $whitelist[] = 'themes';
+        case 'info':
+          $whitelist[] = 'title';
+          $whitelist[] = 'og_description';
+          $whitelist[] = 'field_vsite_address';
+          break;
+      }
+
+      //Customize the "Site Information" form
       $form['buttons']['submit']['#value'] = t('Save settings');
       $form['#prefix'] = '<div id = "cp-settings-site">';
       $form['#suffix'] = '</div>';
@@ -528,19 +548,24 @@ function vsite_form_alter(&$form, $form_state, $form_id){
       $form['#redirect'] = false;
 
       module_load_include('inc', 'spaces_og', 'spaces_og.pages');
+      foreach (element_children($form) as $field) {
+        if (!in_array($field, $whitelist) && $form[$field]['#type'] != 'hidden')
+          _spaces_og_make_hidden($form[$field]);
+      }
+      _spaces_og_make_hidden($form['buttons']['preview']);
+      _spaces_og_make_hidden($form['buttons']['delete']);
+      _spaces_og_make_hidden($form['buttons']['preview_changes']);
+      /*
       _spaces_og_make_hidden($form['purl']);
       _spaces_og_make_hidden($form['book']);
       _spaces_og_make_hidden($form['attachments']);
       _spaces_og_make_hidden($form['menu']);
       _spaces_og_make_hidden($form['comment_settings']);
-      _spaces_og_make_hidden($form['buttons']['preview']);
-      _spaces_og_make_hidden($form['buttons']['delete']);
-      _spaces_og_make_hidden($form['buttons']['preview_changes']);
       _spaces_og_make_hidden($form['spaces_preset']);
       _spaces_og_make_hidden($form['path']);
       _spaces_og_make_hidden($form['revision_information']);
       _spaces_og_make_hidden($form['author']);
-      _spaces_og_make_hidden($form['options']);
+      _spaces_og_make_hidden($form['options']);*/
       unset($form['spaces_preset']['#theme']); //Remove theme
 
       //Since we stay on the form this will force a rebuild
@@ -645,6 +670,11 @@ function vsite_form_alter(&$form, $form_state, $form_id){
       }
       break;
   }
+}
+
+function vsite_modal_submit($form, &$form_state) {
+  modalframe_close_dialog();
+  modalframe_form_submit($form, $form_state);
 }
 
 /**
@@ -1099,4 +1129,36 @@ function _vsite_feed_content_types_filter(&$view){
   $view->display_handler->set_option('title', $vsite->group->title);
   $view->display_handler->set_option('style_options', array('description' => $vsite->group->og_description));
   $view->set_item('feed', 'filter', 'type', $v);
+}
+
+function vsite_vsite_admin_link($type, $object) {
+  $links = array();
+  if ($type == 'block' && $object->module == 'scholar') {
+    $vsite = vsite_get_vsite();
+    if ($object->delta == 0) {
+      $links[] = array(
+        'title' => t('Configure'),
+        'href' => 'cp/modal/'.$vsite->group->nid.'/logo',
+        'attributes' => array(
+          'class' => 'vsite-modal-link',
+        ),
+      );
+    }
+    elseif ($object->delta == 1) {
+      $links[] = array(
+        'title' => t('Configure'),
+        'href' => 'cp/modal/'.$vsite->group->nid.'/info',
+        'attributes' => array(
+          'class' => 'vsite-modal-link',
+        ),
+      );
+    }
+  }
+  return $links;
+}
+
+function vsite_info_block_form($node, $field) {
+  module_load_include('inc', 'node', 'node.pages');
+  $node->field_show = $field;
+  return drupal_get_form($node->type .'_node_form', $node);
 }
