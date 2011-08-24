@@ -18,6 +18,7 @@ function mymodule_vsite_widgets(){
         'weight' => -21,
         'region' => false,
         'label' => 'Latest Things',
+        'tags' => array('social'),
       );
   return $items;
 }
@@ -29,7 +30,9 @@ Where the key if the array is [module '-' delta] see above.
   <li><b>weight</b> - Default weight in the region</li>
   <li><b>region</b> - The default region the widget should be in or false if you want the widget to be avalible to all users but not in a region by default.</li>
   <li><b>label</b> - The Label that shows in CP Appearance</li>
+  <li><b>tags</b> - An array of tags that this widget belongs to (optional)</li>
+  <li><b>block_config_path</b> - <i>Advanced</i> A ctools popup compatible path that can be used to configure the settings for this widget. (optional)</li>
 </ul>
-Additionally <a href="&topic:vsite_widgets/cache&">cache</a> parameters can be added to this array.
+Additionally <a href="&topic:vsite/widgets-cache&">cache</a> parameters can be added to this array.
 </dd>
 </dl>
