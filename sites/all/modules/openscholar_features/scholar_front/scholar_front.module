@@ -369,7 +369,7 @@ function fb_mk_front_box($vsite, $settings) {
       
     case 'nid':
       $type = 'os_boxes_node';
-      $opts['nid'] = $settings['nid'];
+      $opts['nid'] = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
       break;
       
     case 'path':
