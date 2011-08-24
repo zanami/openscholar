@@ -31,8 +31,8 @@ class os_boxes_bio extends os_boxes_node {
     
     $form = parent::options_form();
     
-    $form['nid']['#type'] = 'hidden';
-    $form['nid']['#default_value'] = $bio_node->nid;
+    $form['nid']['#type'] = 'value';
+    $form['nid']['#value'] = $bio_node->nid;
     
     return $form;
   }
