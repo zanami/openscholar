@@ -763,7 +763,7 @@ function vsite_taxonomy_term_page($str_tids = '', $depth = 'all', $s_feature = f
  */
 function vsite_taxonomy_term_by_feature($term, $s_feature){
 
-	$a_view_info = vsite_feature_default_view($s_feature);
+	$a_view_info = vsite_get_default_feature_view($s_feature);
 
 	if(!$a_view_info || !strlen($a_view_info['view'])) return false;
 
@@ -883,7 +883,7 @@ function _vsite_taxonomy_get_term_path($tid, $s_term_feature= false, $b_feature_
     $s_path = is_array($a_menu_item)?$a_menu_item['link_path']:false;
 
     if(!$s_path){
-      $a_view_info = vsite_feature_default_view($s_term_feature);
+      $a_view_info = vsite_get_default_feature_view($s_term_feature);
       $o_view = views_get_view($a_view_info['view']);
 
       if($o_view){
