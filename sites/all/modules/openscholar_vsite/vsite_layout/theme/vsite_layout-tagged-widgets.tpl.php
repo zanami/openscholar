@@ -7,13 +7,16 @@
  *  $wgts_id -> the id of the ul
  *  $wgts_class -> the class of the ul
  */
-$s_tagged_output = array('Misc' => "");
+$s_tagged_output = array('Content' => "",'Media' => "",'Social' => "",'Misc' => "");
 foreach($wgts as $s_widget_key => $w){
-	if(is_array($w['tags']) && count($w['tags'])){
-		foreach ($w['tags'] as $s_tag) {
-			$s_tagged_output[$s_tag] .= theme('vsite_layout_cp_widget', $s_widget_key, $w);
-		}
+	if(!is_array($w['tags'])) $w['tags'] = array();
+	
+	//Return the first tag that matches the display categories above
+	$s_tag = array_shift(array_intersect(array_keys($s_tagged_output),$w['tags']));
+	if($s_tag){
+	  $s_tagged_output[$s_tag] .= theme('vsite_layout_cp_widget', $s_widget_key, $w);
 	}else{
+		$w['tags'][] = "Misc";
 		$s_tagged_output['Misc'] .= theme('vsite_layout_cp_widget', $s_widget_key, $w);
 	}
 }
