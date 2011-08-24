@@ -26,9 +26,7 @@ class os_boxes_gallery extends os_boxes_default {
     $form['gallery'] = array(
       '#type' => 'select', 
       '#title' => t('Gallery'), 
-      '#options' => array(
-        'all' => t('All') 
-      ), 
+      '#options' => array(), 
       '#required' => TRUE,
     );
     
@@ -36,10 +34,21 @@ class os_boxes_gallery extends os_boxes_default {
     $view = views_get_view("scholar_image_gallery");
     $view->set_display('page_1'); //block 1 showed all content
     $view->execute(); 
-    foreach($view->result as $r) {
-      $form['gallery']['#options'] += array($r->nid => $r->node_title);
+    
+    if (count($view->result)) {
+      //gallery exists, add options
+      $form['gallery']['#options'] += array('all' => t('All')); 
+      
+      foreach($view->result as $r) {
+        $form['gallery']['#options'] += array($r->nid => $r->node_title);
+      }
+      $form['gallery']['#default_value'] = $this->options['gallery'];
+    } else {
+      //no galleries to display
+      $form['gallery']['#description'] = t('No galleries found.');
+      $form['gallery']['#disabled'] = TRUE;
+      
     }
-    $form['gallery']['#default_value'] = $this->options['gallery'];
         
     $form['number_of_items'] = array(
       '#type' => 'textfield',

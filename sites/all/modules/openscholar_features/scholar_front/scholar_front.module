@@ -50,6 +50,14 @@ function scholar_front_menu(){
     'file' => 'scholar_front.pages.inc',
     'access arguments' => array('access content'),
   );
+  
+  //jsagotsky's dev code to create a box for everyone's front page setting
+  $items['scholar_front/boxmaker'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Generating boxes from vsite front page settings',
+    'page callback' => 'front_boxmaker',
+    'access arguments' => array('administer blocks'),
+  );
 
   return $items;
 }
@@ -248,3 +256,172 @@ function scholar_front_context_links_alter(&$links){
     $links = array_merge($items, $links);
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// don't let this hit prod.  it's test code for creating a box for each vsite's front page
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+// menu item.  makes boxes of each user's front page.  adds box to a region.
+function front_boxmaker() {
+  $returned_vsites = array();
+  
+  //fetch all users
+  $query = 'SELECT uid FROM {users}';
+  $result = db_query($query);
+  
+  while ($res = db_fetch_object($result)) {
+    $vsites = vsite_get_vsite_by_owner($res->uid);
+    
+    //loop over user's vsites
+    foreach($vsites as $vsite) {
+      $settings = fb_front_settings($vsite);
+      $front = fb_get_front($settings);
+      if (($box = fb_mk_front_box($vsite, $front)) != FALSE) {
+        $returned_vsites[] = fb_add_box($vsite, $box);
+      }     
+    }
+  }
+  
+  return 'Created front box for vsites: ' . implode(', ', $returned_vsites);
+}
+
+// get settings for this vsite's front page
+// settings are two parts.  there are several types of settings.  list the type.  its settings will vary.
+function fb_front_settings($vsite) {
+  $query  = 'SELECT object_id,value FROM {spaces_overrides} WHERE id = "%s" '; 
+  $query .= 'AND object_id IN ("site_frontpage", "scholar_front_frontpage_nid", "scholar_front_frontpage_path", "scholar_front_feature_nodes", "schoalr_front_create_bio", "scholar_front_site_title")';
+  $result = db_query($query, $vsite->id);
+  $settings = array();
+  while ($obj = db_fetch_object($result)) {
+    $settings[$obj->object_id] = unserialize($obj->value);
+  }
+  
+  return $settings;
+}
+
+// given db info on front page, return its settings.
+function fb_get_front($settings) {
+  $front = array();
+  if (isset($settings['scholar_front_site_title'])) {
+    $front['title'] = $settings['scholar_front_site_title'];
+  }
+  
+  switch ($settings['site_frontpage']) {
+    //features content
+    case 'scholar_front/features':
+    $front['type'] = 'features';
+    $front['options'] = $settings['scholar_front_feature_nodes'];
+    //nid and path are useless
+      break;
+      
+    //flagged content
+    case 'scholar_front/flag':
+      $front['type'] = 'flag';
+      //no options
+      break;
+      
+    //path
+    case $settings['scholar_front_front_page_path']:
+      $front['type'] = 'path';
+      $options = array('path' => $settings['scholar_front_front_page_path']);
+      break;
+  }
+  
+  if (isset($front['type'])) {
+    return $front;
+  }
+  
+  //no type yet.  frontpage is a node/nid.  maybe bio, maybe nid.
+  $nid = (int) end(split('/', $settings['site_frontpage']));
+  $query = 'SELECT type FROM {node} WHERE nid = %d';
+  $result = db_query($query, $nid);
+  $r = db_fetch_object($result);
+  $type = $r->type;
+  
+  if ($type == 'bio') {
+    $front['type'] = 'bio';
+  } else {
+    $front['type'] = 'nid';
+    $front['options'] = array('node' => $settings['site_frontpage']);
+  }
+  
+  // bio has site_frontpage of node/nid
+  // unknown type does the same thing.
+  
+  return $front;
+}
+
+//make a box for each vsite.
+function fb_mk_front_box($vsite, $settings) {
+  $opts = array();
+  
+  if (isset($settings['title'])) {
+    $opts['title'] = $settings['title'];
+    $opts['subject'] = $settings['title'];
+  }
+  
+  $opts['description'] = 'This box generated from your front page settings.';
+  
+  switch ($settings['type']) {
+    case 'bio':
+      $type = 'os_boxes_bio';
+      break;
+      
+    case 'nid':
+      $type = 'os_boxes_node';
+      $opts['nid'] = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
+      break;
+      
+    case 'path':
+      //how to show this?  could it depend on teh type of path?  we have announcements, biblio, and gallery  
+      break;
+      
+    case 'flag':
+      $type = 'os_boxes_featuredposts';
+      break;
+      
+    case 'features':
+      //not yet available
+      break;
+  }
+  return mk_box($vsite, $type, $opts);
+}
+
+//creates a box object in the vsite given type and opts.  returns $box
+function mk_box($vsite, $type, $opts) {
+  $identifier = $vsite->type . '-' . $vsite->id;
+  $hash = boxes_create_hash($identifier);
+  $delta = $identifier . '-' . $hash;
+  
+  $opts['delta'] = $delta;
+  if (($box = boxes_factory($type, $opts)) && isset($vsite->controllers->boxes)) { 
+    $vsite->controllers->boxes->set($box->delta, $box);
+    return $box;      
+  } else {
+    return false;
+  }
+}
+
+// adds box to vsite.  returns id of vsite on successful creation
+function fb_add_box($vsite, $box) {
+  //openscholar-feature-front:reaction:block:scholar_bunchy
+  //if it doesn't exist, grab from preset?
+  //select theme as subquery to get object_id?
+  
+  //let spaces select the current setting or the default
+  $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
+  $front_context['blocks']['boxes-' . $box->delta] = array(
+    'module' => 'boxes',
+    'delta' => $box->delta,
+    'weight' => 0,
+    'region' => 'content_top',   //@todo check this
+    'label' => $box->title,
+    'block_config_path' => '', //will this vary with block type?
+    'tags' => $box->tags,
+  );
+  
+  if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
+    return $vsite->id;
+  }
+}
+
