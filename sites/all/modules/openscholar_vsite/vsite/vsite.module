@@ -1161,6 +1161,11 @@ function _vsite_feature_default_view($feature){
 
 function vsite_vsite_admin_link($type, $object) {
   $links = array();
+  
+  if(!($vsite = vsite_get_vsite()) || !is_object($vsite)){
+    return $links;
+  }//Do nothing if we are not in a site
+  
   if ($type == 'block' && $object->module == 'scholar') {
     $vsite = vsite_get_vsite();
     if ($object->delta == 0) {
@@ -1182,6 +1187,24 @@ function vsite_vsite_admin_link($type, $object) {
       );
     }
   }
+  
+  //Add link for featuring posts
+  if (($vsite->access_admin()) && flag_fetch_definition($type)){
+  	// Get frontpage flags
+    $flag = flag_get_flag('featuredposts');
+	  if ($flag->applies_to_content_object($object)) {
+	  	
+	    $content_id = $flag->get_content_id($object);
+		  // The flag links are actually fully rendered theme functions.
+		  // The HTML attribute is set to TRUE to allow whatever the themer desires.
+		  $links['flag-'. $flag->name] = array(
+		  'title' => $flag->theme($flag->is_flagged($content_id) ? 'unflag' : 'flag', $content_id),
+		  'html' => TRUE,
+		  );
+		  
+	  }// Does flag apply to this content?
+  }
+  
   return $links;
 }
 
