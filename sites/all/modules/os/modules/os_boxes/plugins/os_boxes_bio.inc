@@ -5,7 +5,7 @@
  * The class for "CC license" type widgets.  
  */
 
-class os_boxes_bio extends os_boxes_default {
+class os_boxes_bio extends os_boxes_node {
   /**
    * Implementation of boxes_content::options_defaults().
    */
