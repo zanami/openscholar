@@ -32,6 +32,10 @@ a:hover {
     
     }
     
+ .node .node-inner .links li a {
+   text-decoration:underline;
+}   
+    
 .sidebar .content h1 a {color:#991122;}
 .sidebar .content h1 a:hover {color:#106599;text-decoration:none;}
 
@@ -55,6 +59,11 @@ h3.title {
   font-size:1.2em;
   }
 
+#content-main h3.title a {
+  color:#106599;
+  }
+
+
 .links li {
   font-size: .8em;
   }
@@ -69,7 +78,7 @@ h3.title {
   background:url('images/greenHdrBg.gif') no-repeat; background-position: left;padding-left: 14px;
   }
 
-#sidebar-second h3.title {
+#sidebar-second h3.title, #sidebar-second h3.title a {
   color:#219910;
   }
 
