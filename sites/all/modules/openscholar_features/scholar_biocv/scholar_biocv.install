@@ -100,10 +100,10 @@ function _scholar_biocv_make_blurbs_from_bios(){
         'delta' => $delta, 
       );
       
-	  if (($box = boxes_factory('os_boxes_simple', $boxopts)) && isset($vsite->controllers->boxes)) { 
+	    if (($box = boxes_factory('os_boxes_simple', $boxopts)) && isset($vsite->controllers->boxes)) { 
         $vsite->controllers->boxes->set($box->delta, $box);      
         $a_blurb_updates[] = $r->uid;
-	  }
+	    }
     }
   }
   
