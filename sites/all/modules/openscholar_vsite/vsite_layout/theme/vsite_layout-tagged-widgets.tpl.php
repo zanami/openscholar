@@ -20,7 +20,7 @@ foreach($wgts as $s_widget_key => $w){
 		$s_tagged_output['Misc'] .= theme('vsite_layout_cp_widget', $s_widget_key, $w);
 	}
 }
-$s_tagged_output = array_reverse($s_tagged_output);
+
 ?>
 <div class="<?php print $wgts_id; ?>-wrapper">
 <ul id="widget-categories">
