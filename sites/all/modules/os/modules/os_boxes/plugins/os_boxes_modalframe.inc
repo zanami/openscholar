@@ -11,9 +11,9 @@ class os_boxes_modalframe extends os_boxes_default {
    */
   public function options_defaults() {
     $options = parent::options_defaults();
-    $options['nid'] = 0;
-    $options['type'] = 'page';
-    $options['fields'] = '*';
+    $options['nid'] = 2;
+    $options['type'] = 'vsite';
+    $options['fields'] = array('field_vsite_logo');
 
     return $options;
   }
@@ -29,13 +29,17 @@ class os_boxes_modalframe extends os_boxes_default {
    *					(get here from box factory configure link)
    */
   public function options_form(){
-    //@todo just for vsite for now but it can be used outside os
+    // cache results. its called twice, no need to duplicate efforts
+    static $form = null;
+    if (isset($form)) return $form;
     $form['nid'] = array(
       '#type' => 'value',
       '#value' => $this->options['nid'],
     );
 
+    module_load_include('inc', 'node', 'node.pages');
     ctools_include('form');
+
     if ($this->options['nid']) {
       // we know what node we want already
       $node = node_load($this->options['nid']);
@@ -52,7 +56,7 @@ class os_boxes_modalframe extends os_boxes_default {
       $this->hide_form_elements_recursive($node_form);
       $form += $node_form;
     }
-    elseif (in_array($this->options['type'], content_types())) {
+    elseif (array_key_exists($this->options['type'], content_types())) {
       // we have a content type, get the node form for it
       $type = $this->options['type'];
 
@@ -73,6 +77,7 @@ class os_boxes_modalframe extends os_boxes_default {
       // set up a content types dropdown and AHAH to go with it
     }
     $form += parent::options_form();
+    $GLOBALS['theme'] = null;
     return $form;
   }
 
@@ -99,12 +104,13 @@ class os_boxes_modalframe extends os_boxes_default {
   private function hide_form_elements_recursive(&$form, $hide = false) {
     if ($this->options['fields'] == '*') return;
     foreach (element_children($form) as $key) {
-      if ($form[$key]['#type'] == 'hidden' || $form[$key]['#type'] == 'value') continue;
 
       if (!in_array($key, $this->options['fields']) || $hide) {
         $this->hide_form_elements_recursive($form[$key], true);
 
-        $form[$key]['#access'] = FALSE;
+        if ($form[$key]['#type'] != 'hidden') {
+          $form[$key]['#access'] = FALSE;
+        }
         if (isset($form[$key]['#type'])) {
           $form[$key]['#type'] = 'value';
           if (isset($form[$key]['#default_value'])) {
@@ -113,7 +119,7 @@ class os_boxes_modalframe extends os_boxes_default {
         }
       }
       else {
-        $this->hide_form_elements_recursive($form[$key], $hide);
+        //$this->hide_form_elements_recursive($form[$key], $hide);
       }
     }
   }
