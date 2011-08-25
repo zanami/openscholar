@@ -248,7 +248,7 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
     'delta' => $box->delta,
     'weight' => $weight,
     'region' => $region,
-    'label' => $box->title,
+    'label' => $box->description,
     'cache' => BLOCK_CACHE_CONTENT_CACHE,
 	  'block_config_path' => "cp/osboxes/nojs/{$box->delta}/configure",
   );
