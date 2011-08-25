@@ -718,6 +718,10 @@ function iqss_gking_form_alter(&$form, $form_state, $form_id) {
   if ($form_id == 'taxonomy_form_vocabulary' && is_array($form['settings']['orderable'])) {
     $form['settings']['orderable']['#type'] = 'value';
   }//Remove the unused nodeorder form items
+  
+  if ($form_id == 'nodeorder_admin_display_form') {
+    $form['submit']['#value'] = "Submit Order";
+  }//Change the form so it says submit to match the change message
 }
 
 /**
