@@ -264,6 +264,9 @@ function scholar_front_context_links_alter(&$links){
 // menu item.  makes boxes of each user's front page.  adds box to a region.
 function front_boxmaker() {
   $returned_vsites = array();
+  global $_box_plugins;
+  $_box_plugins = os_boxes_boxes_plugins() ;
+  
   
   //fetch all users
   $query = 'SELECT uid FROM {users}';
@@ -390,12 +393,16 @@ function fb_mk_front_box($vsite, $settings) {
 
 //creates a box object in the vsite given type and opts.  returns $box
 function mk_box($vsite, $type, $opts) {
+  //get tags.  boxes_factory omits them.
+  global $_box_plugins;
+  
   $identifier = $vsite->type . '-' . $vsite->id;
   $hash = boxes_create_hash($identifier);
   $delta = $identifier . '-' . $hash;
   
   $opts['delta'] = $delta;
   if (($box = boxes_factory($type, $opts)) && isset($vsite->controllers->boxes)) { 
+    $box->tags = $_box_plugins[$type]['tags'];
     $vsite->controllers->boxes->set($box->delta, $box);
     return $box;      
   } else {
@@ -405,9 +412,6 @@ function mk_box($vsite, $type, $opts) {
 
 // adds box to vsite.  returns id of vsite on successful creation
 function fb_add_box($vsite, $box) {
-  //openscholar-feature-front:reaction:block:scholar_bunchy
-  //if it doesn't exist, grab from preset?
-  //select theme as subquery to get object_id?
   
   //let spaces select the current setting or the default
   $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
