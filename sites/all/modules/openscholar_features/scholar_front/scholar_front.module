@@ -385,7 +385,7 @@ function fb_mk_front_box($vsite, $settings) {
       
     case 'features':
       $type = 'os_boxes_features';
-      $opts['node_type'] = $settings['options']['feature_nodes'];
+      $opts['node_types'] = array_filter($settings['options']['feature_nodes']);
       break;
   }
   return mk_box($vsite, $type, $opts);
@@ -419,9 +419,9 @@ function fb_add_box($vsite, $box) {
     'module' => 'boxes',
     'delta' => $box->delta,
     'weight' => 0,
-    'region' => 'content_top',   //@todo check this
+    'region' => 'content_top',   
     'label' => $box->title,
-    'block_config_path' => '', //will this vary with block type?
+    'block_config_path' => 'cp/osboxes/nojs/' . $box->delta . '/configure',
     'tags' => $box->tags,
   );
   
