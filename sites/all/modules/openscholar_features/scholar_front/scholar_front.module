@@ -321,9 +321,9 @@ function fb_get_front($settings) {
       break;
       
     //path
-    case $settings['scholar_front_front_page_path']:
+    case ''.$settings['scholar_front_frontpage_path']:
       $front['type'] = 'path';
-      $options = array('path' => $settings['scholar_front_front_page_path']);
+      $options = array('path' => $settings['scholar_front_frontpage_path']);
       break;
   }
   
@@ -373,8 +373,8 @@ function fb_mk_front_box($vsite, $settings) {
       break;
       
     case 'path':
-      //how to show this?  could it depend on teh type of path?  we have announcements, biblio, and gallery  
-      break;
+      //path as a front page box is not supported.  
+      return false;
       
     case 'flag':
       $type = 'os_boxes_featuredposts';
