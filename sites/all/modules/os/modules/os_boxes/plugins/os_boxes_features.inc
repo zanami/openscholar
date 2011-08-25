@@ -25,8 +25,8 @@ class os_boxes_features extends os_boxes_default {
     
     $form['node_types'] = array(
       '#type' => 'select',
-      //'#multiple' => TRUE,
-      '#default_values' => $this->options['node_types'],
+      '#multiple' => TRUE,
+      '#default_value' => $this->options['node_types'],
     );
     
   	vsite_include('vsiteapi');
@@ -53,8 +53,6 @@ class os_boxes_features extends os_boxes_default {
   public function render() {
     //@todo
     $view = views_get_view('vsite_view_base');
-    $view->set_display('default');
-    $view->display_handler->set_option('items_per_page', $this->options['number_of_items']);
     
     //get node types from stored options or site defaults.  
     if (is_array($this->options['node_types']) && count($this->options['node_types'])) {
@@ -70,7 +68,7 @@ class os_boxes_features extends os_boxes_default {
     //add filters for selected types
     $view->display['default']->display_options['filters']['type'] = array(
       'operator' => 'in',
-      'value' => $this->options['node_types'],
+      'value' => $node_types,
       'group' => 0,
       'exposed' => FALSE,
       'id' => 'type',
@@ -81,6 +79,9 @@ class os_boxes_features extends os_boxes_default {
  
       
     $block = parent::render();
+    $view->set_display('default');
+    $view->display_handler->set_option('items_per_page', $this->options['number_of_items']);
+    
     $output = $view->execute_display();
     $block['content'] = $output;//['content']; 
     return $block;
