@@ -269,6 +269,10 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
   if (is_array($plugins[$box->plugin_key]['tags'])) {
     $a_wgt['tags'] = $plugins[$box->plugin_key]['tags'];
   }
+  
+  if (isset($plugins[$box->plugin_key]['icon_path'])) {
+    $a_wgt['icon_path'] = $plugins[$box->plugin_key]['icon_path'];
+  }
 
   return $a_wgt;
 }
