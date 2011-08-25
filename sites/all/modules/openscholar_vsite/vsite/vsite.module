@@ -171,11 +171,11 @@ function vsite_set_default_feature_view($s_view = NULL){
  * @param string $feature
  */
 function vsite_get_default_feature_view($feature){
-	
+
 	if($feature){
 		return _vsite_feature_default_view($feature);
 	}
-	
+
   return vsite_set_default_feature_view();
 }
 
@@ -680,11 +680,6 @@ function vsite_form_alter(&$form, $form_state, $form_id){
   }
 }
 
-function vsite_modal_submit($form, &$form_state) {
-  modalframe_close_dialog();
-  modalframe_form_submit($form, $form_state);
-}
-
 /**
  * Implementation of hook nodeapi
  *
@@ -993,6 +988,58 @@ function vsite_strongarm_alter(&$vars){
 }
 
 /**
+ * Implementation of hook_vsite_admin_link
+ */
+function vsite_vsite_admin_link($type, $object) {
+  $links = array();
+
+  if(!($vsite = vsite_get_vsite()) || !is_object($vsite)){
+    return $links;
+  }//Do nothing if we are not in a site
+
+  if ($type == 'block' && $object->module == 'scholar') {
+    $vsite = vsite_get_vsite();
+    if ($object->delta == 0) {
+      $links[] = array(
+        'title' => t('Configure'),
+        'href' => 'cp/modal/'.$vsite->group->nid.'/logo',
+        'attributes' => array(
+          'class' => 'vsite-modal-link',
+        ),
+      );
+    }
+    elseif ($object->delta == 1) {
+      $links[] = array(
+        'title' => t('Configure'),
+        'href' => 'cp/modal/'.$vsite->group->nid.'/info',
+        'attributes' => array(
+          'class' => 'vsite-modal-link',
+        ),
+      );
+    }
+  }
+
+  //Add link for featuring posts
+  if (($vsite->access_admin()) && flag_fetch_definition($type)){
+  	// Get frontpage flags
+    $flag = flag_get_flag('featuredposts');
+	  if ($flag->applies_to_content_object($object)) {
+
+	    $content_id = $flag->get_content_id($object);
+		  // The flag links are actually fully rendered theme functions.
+		  // The HTML attribute is set to TRUE to allow whatever the themer desires.
+		  $links['flag-'. $flag->name] = array(
+		  'title' => $flag->theme($flag->is_flagged($content_id) ? 'unflag' : 'flag', $content_id),
+		  'html' => TRUE,
+		  );
+
+	  }// Does flag apply to this content?
+  }
+
+  return $links;
+}
+
+/**
  * Callback Functions  ===========================================================
  */
 
@@ -1025,6 +1072,25 @@ function vsite_node_menu_access(){
     return $vsite?TRUE:FALSE;
   }
   return FALSE;
+}
+
+/**
+ * Takes a node and sets a property on it so form_alter knows how much of the form to build
+ */
+function vsite_info_block_form($node, $field) {
+  module_load_include('inc', 'node', 'node.pages');
+  $node->field_show = $field;
+  return drupal_get_form($node->type .'_node_form', $node);
+}
+
+/**
+ * Calls some functions common for any modal frame form
+ * For nodes, this needs to be attached to the button's #submit
+ * For most everyone else, form[#submit] is fine
+ */
+function vsite_modal_submit($form, &$form_state) {
+  modalframe_close_dialog();
+  modalframe_form_submit($form, $form_state);
 }
 
 /**
@@ -1157,59 +1223,4 @@ function _vsite_feature_default_view($feature){
   } //there is a path associated with the context and it points to a view
 
   return false;
-}
-
-function vsite_vsite_admin_link($type, $object) {
-  $links = array();
-  
-  if(!($vsite = vsite_get_vsite()) || !is_object($vsite)){
-    return $links;
-  }//Do nothing if we are not in a site
-  
-  if ($type == 'block' && $object->module == 'scholar') {
-    $vsite = vsite_get_vsite();
-    if ($object->delta == 0) {
-      $links[] = array(
-        'title' => t('Configure'),
-        'href' => 'cp/modal/'.$vsite->group->nid.'/logo',
-        'attributes' => array(
-          'class' => 'vsite-modal-link',
-        ),
-      );
-    }
-    elseif ($object->delta == 1) {
-      $links[] = array(
-        'title' => t('Configure'),
-        'href' => 'cp/modal/'.$vsite->group->nid.'/info',
-        'attributes' => array(
-          'class' => 'vsite-modal-link',
-        ),
-      );
-    }
-  }
-  
-  //Add link for featuring posts
-  if (($vsite->access_admin()) && flag_fetch_definition($type)){
-  	// Get frontpage flags
-    $flag = flag_get_flag('featuredposts');
-	  if ($flag->applies_to_content_object($object)) {
-	  	
-	    $content_id = $flag->get_content_id($object);
-		  // The flag links are actually fully rendered theme functions.
-		  // The HTML attribute is set to TRUE to allow whatever the themer desires.
-		  $links['flag-'. $flag->name] = array(
-		  'title' => $flag->theme($flag->is_flagged($content_id) ? 'unflag' : 'flag', $content_id),
-		  'html' => TRUE,
-		  );
-		  
-	  }// Does flag apply to this content?
-  }
-  
-  return $links;
-}
-
-function vsite_info_block_form($node, $field) {
-  module_load_include('inc', 'node', 'node.pages');
-  $node->field_show = $field;
-  return drupal_get_form($node->type .'_node_form', $node);
 }
