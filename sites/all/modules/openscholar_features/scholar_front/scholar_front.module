@@ -343,6 +343,7 @@ function fb_get_front($settings) {
   
   if ($type == 'bio') {
     $front['type'] = 'bio';
+    $front['options'] = array('node' => $settings['site_frontpage']);
   } else {
     $front['type'] = 'nid';
     $front['options'] = array('node' => $settings['site_frontpage']);
@@ -368,6 +369,7 @@ function fb_mk_front_box($vsite, $settings) {
   switch ($settings['type']) {
     case 'bio':
       $type = 'os_boxes_bio';
+      $opts['nid'] = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
       break;
       
     case 'nid':
