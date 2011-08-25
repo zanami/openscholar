@@ -264,6 +264,9 @@ function scholar_front_context_links_alter(&$links){
 // menu item.  makes boxes of each user's front page.  adds box to a region.
 function front_boxmaker() {
   $returned_vsites = array();
+  global $_box_plugins;
+  $_box_plugins = os_boxes_boxes_plugins() ;
+  
   
   //fetch all users
   $query = 'SELECT uid FROM {users}';
@@ -310,7 +313,7 @@ function fb_get_front($settings) {
     //features content
     case 'scholar_front/features':
     $front['type'] = 'features';
-    $front['options'] = $settings['scholar_front_feature_nodes'];
+    $front['options']['feature_nodes'] = $settings['scholar_front_feature_nodes'];
     //nid and path are useless
       break;
       
@@ -321,9 +324,9 @@ function fb_get_front($settings) {
       break;
       
     //path
-    case $settings['scholar_front_front_page_path']:
+    case ''.$settings['scholar_front_frontpage_path']:
       $front['type'] = 'path';
-      $options = array('path' => $settings['scholar_front_front_page_path']);
+      $options = array('path' => $settings['scholar_front_frontpage_path']);
       break;
   }
   
@@ -340,6 +343,7 @@ function fb_get_front($settings) {
   
   if ($type == 'bio') {
     $front['type'] = 'bio';
+    $front['options'] = array('node' => $settings['site_frontpage']);
   } else {
     $front['type'] = 'nid';
     $front['options'] = array('node' => $settings['site_frontpage']);
@@ -365,6 +369,7 @@ function fb_mk_front_box($vsite, $settings) {
   switch ($settings['type']) {
     case 'bio':
       $type = 'os_boxes_bio';
+      $opts['nid'] = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
       break;
       
     case 'nid':
@@ -373,15 +378,16 @@ function fb_mk_front_box($vsite, $settings) {
       break;
       
     case 'path':
-      //how to show this?  could it depend on teh type of path?  we have announcements, biblio, and gallery  
-      break;
+      //path as a front page box is not supported.  
+      return false;
       
     case 'flag':
       $type = 'os_boxes_featuredposts';
       break;
       
     case 'features':
-      //not yet available
+      $type = 'os_boxes_features';
+      $opts['node_types'] = array_filter($settings['options']['feature_nodes']);
       break;
   }
   return mk_box($vsite, $type, $opts);
@@ -389,12 +395,16 @@ function fb_mk_front_box($vsite, $settings) {
 
 //creates a box object in the vsite given type and opts.  returns $box
 function mk_box($vsite, $type, $opts) {
+  //get tags.  boxes_factory omits them.
+  global $_box_plugins;
+  
   $identifier = $vsite->type . '-' . $vsite->id;
   $hash = boxes_create_hash($identifier);
   $delta = $identifier . '-' . $hash;
   
   $opts['delta'] = $delta;
   if (($box = boxes_factory($type, $opts)) && isset($vsite->controllers->boxes)) { 
+    $box->tags = $_box_plugins[$type]['tags'];
     $vsite->controllers->boxes->set($box->delta, $box);
     return $box;      
   } else {
@@ -404,9 +414,6 @@ function mk_box($vsite, $type, $opts) {
 
 // adds box to vsite.  returns id of vsite on successful creation
 function fb_add_box($vsite, $box) {
-  //openscholar-feature-front:reaction:block:scholar_bunchy
-  //if it doesn't exist, grab from preset?
-  //select theme as subquery to get object_id?
   
   //let spaces select the current setting or the default
   $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
@@ -414,9 +421,9 @@ function fb_add_box($vsite, $box) {
     'module' => 'boxes',
     'delta' => $box->delta,
     'weight' => 0,
-    'region' => 'content_top',   //@todo check this
+    'region' => 'content_top',   
     'label' => $box->title,
-    'block_config_path' => '', //will this vary with block type?
+    'block_config_path' => 'cp/osboxes/nojs/' . $box->delta . '/configure',
     'tags' => $box->tags,
   );
   
