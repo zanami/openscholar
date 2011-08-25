@@ -63,7 +63,7 @@ function vsite_layout_region_widgets_callback() {
   }
   $a_themed_regions['content'] = theme('vsite_layout_layout_widgets', array(), 'scholarlayout-content-main', 'scholarlayout-widgets-list', 'Main Content');
 
-  $output= theme('vsite_layout_layout',$a_themed_regions);
+  $output= theme('vsite_layout_layout',$a_themed_regions,$s_page_type);
 
   drupal_json(array('status' => TRUE, 'data' => $output));
 }
@@ -269,7 +269,7 @@ function vsite_layout_settings_form($form_state){
 
   //The main layout area
   $form['layout_markup'] = array(
-    '#value' => theme('vsite_layout_layout',vsite_layout_cp_region_contents()),
+    '#value' => theme('vsite_layout_layout',vsite_layout_cp_region_contents(),$s_page_type),
   );
 
   // pass the settingid too

@@ -5,7 +5,7 @@ Drupal.behaviors.scholarlayout = function() {
 	
   var layoutRegions = [ "#scholarlayout-header-left", "#scholarlayout-header-main", "#scholarlayout-header-right", "#scholarlayout-navbar", "#scholarlayout-left", "#scholarlayout-right", "#scholarlayout-footer" ];
   
-  if($("#edit-page-type").val() == "none" || $("#edit-page-type").val() == "front"){
+  if( $("#edit-page-type").val() == "front"){
     layoutRegions.push("#scholarlayout-content-top");
     layoutRegions.push("#scholarlayout-content-bottom");
   }

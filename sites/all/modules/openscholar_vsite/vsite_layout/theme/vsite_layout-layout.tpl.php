@@ -1,4 +1,4 @@
-<div id="scholarlayout-container" class="pad">
+<div id="scholarlayout-container" class="pad <?php $s_page_type?>">
   <?php print $regions['header_main']; ?>
   <?php print $regions['header_left']; ?>
   <?php print $regions['header_right']; ?>

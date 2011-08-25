@@ -30,12 +30,12 @@
   height: 180px;
   }
 
-#scholarlayout-container #scholarlayout-content-top{
+.front#scholarlayout-container #scholarlayout-content-top{
 	top: 170px;
   height: 76px;
   }
   
-#scholarlayout-container #scholarlayout-content-bottom{
+.front#scholarlayout-container.front #scholarlayout-content-bottom{
  height: 74px;
     top: 440px;
    }

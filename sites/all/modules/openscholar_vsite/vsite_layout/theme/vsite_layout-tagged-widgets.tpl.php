@@ -32,10 +32,12 @@ foreach($wgts as $s_widget_key => $w){
 ?>
 </ul>
 
-<dl id="<?php print $wgts_id; ?>" class = "<?php print $wgts_class; ?>">
-  <dt><?php print $region_name;?></dt>
-	<?php
-	echo implode(" ",$s_tagged_output);
-	?>
-</dl>
+<div class="tagged-list">
+  <dl id="<?php print $wgts_id; ?>" class = "<?php print $wgts_class; ?>">
+    <dt><?php print $region_name;?></dt>
+	  <?php
+	  echo implode(" ",$s_tagged_output);
+  	?>
+  </dl>
+</div>
 </div>

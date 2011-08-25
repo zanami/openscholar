@@ -20,7 +20,7 @@ function vsite_layout_theme() {
     'vsite_layout_layout' => array(
       'template' => 'vsite_layout-layout',
       'path' => drupal_get_path('module', 'vsite_layout') . '/theme',
-      'arguments' => array('regions' => NULL),
+      'arguments' => array('regions' => NULL, 's_page_type' => ''),
     ),
 
     'vsite_layout_layout_widgets' => array(
