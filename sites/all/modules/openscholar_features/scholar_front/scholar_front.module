@@ -263,25 +263,72 @@ function scholar_front_context_links_alter(&$links){
 
 // menu item.  makes boxes of each user's front page.  adds box to a region.
 function front_boxmaker() {
-  $returned_vsites = array();
+  $limit = 50;
+  $total_vsites = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
+  if (!$total_vsites && $total_vsites < 1) {
+  	drupal_set_message('boxmaker couldn\'t find vsites.  aborting.');
+  	return '';
+  }
+  
+  $batch = array(
+  	'title' => t('Making boxes'),
+  	'operations' => array(),
+  	'finished' => 'front_boxmaker_done',
+  );
+  
+  $offset = 0;
+  while ($offset < $total_vsites) {
+  	$batch['operations'][] = array('_front_boxmaker',array($limit, $offset, $total_vsites),);
+  	$offset += $limit;
+  }
+	
+  batch_set($batch);
+  batch_process('/');
+}
+
+//completed batch
+function front_boxmaker_done($success, $results, $operations) {
+  if ($success) {
+  	$message = 'Success making boxes.';
+  } else {
+  	$message = 'Boxmaker failed.  Have fun debugging!';
+  }
+  
+  drupal_set_message($message);
+  $_SESSION['my_batch_results'] = 'Boxed frontpages for vsites: ' . implode(', ', $results);
+}
+
+
+//call boxmaker, starting at offset
+function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
+	error_log( "batch: lim $limit\toff $offset\ttotal $total_vsites");
+  //$returned_vsites = array();
   global $_box_plugins;
   $_box_plugins = os_boxes_boxes_plugins() ;
   
+  //prep sandbox
+  if (empty($context['sandbox'])) {
+  	$context['sandbox']['progress'] = 0;
+  	$context['sandbox']['max'] = $total_vsites;
+  }
   
   //fetch all users
-  $query = 'SELECT uid FROM {users}';
-  $result = db_query($query);
+  $query = 'SELECT uid FROM {users} LIMIT %d OFFSET %d ';
+  $result = db_query($query, (int)$limit, (int)$offset);
   
   while ($res = db_fetch_object($result)) {
     $vsites = vsite_get_vsite_by_owner($res->uid);
     
     //loop over user's vsites
     foreach($vsites as $vsite) {
-      $settings = fb_front_settings($vsite);
+      $settings = fb_front_settings($vsite->id);
       $front = fb_get_front($settings);
       if (($box = fb_mk_front_box($vsite, $front)) != FALSE) {
-        $returned_vsites[] = fb_add_box($vsite, $box);
-      }     
+        //$returned_vsites[] = fb_add_box($vsite, $box);
+        $context['results'][] = fb_add_box($vsite, $box);
+        $context['message'] = 'processing: ' . $offset;
+        $context['sandbox']['progress']++;
+      } 
     }
   }
   
@@ -290,10 +337,10 @@ function front_boxmaker() {
 
 // get settings for this vsite's front page
 // settings are two parts.  there are several types of settings.  list the type.  its settings will vary.
-function fb_front_settings($vsite) {
+function fb_front_settings($vsite_id) {
   $query  = 'SELECT object_id,value FROM {spaces_overrides} WHERE id = "%s" '; 
   $query .= 'AND object_id IN ("site_frontpage", "scholar_front_frontpage_nid", "scholar_front_frontpage_path", "scholar_front_feature_nodes", "schoalr_front_create_bio", "scholar_front_site_title")';
-  $result = db_query($query, $vsite->id);
+  $result = db_query($query, $vsite_id);
   $settings = array();
   while ($obj = db_fetch_object($result)) {
     $settings[$obj->object_id] = unserialize($obj->value);
@@ -356,7 +403,7 @@ function fb_get_front($settings) {
 }
 
 //make a box for each vsite.
-function fb_mk_front_box($vsite, $settings) {
+function fb_mk_front_box(&$vsite, $settings) {
   $opts = array();
   
   if (isset($settings['title'])) {
@@ -394,7 +441,7 @@ function fb_mk_front_box($vsite, $settings) {
 }
 
 //creates a box object in the vsite given type and opts.  returns $box
-function mk_box($vsite, $type, $opts) {
+function mk_box(&$vsite, $type, $opts) {
   //get tags.  boxes_factory omits them.
   global $_box_plugins;
   
@@ -413,7 +460,7 @@ function mk_box($vsite, $type, $opts) {
 }
 
 // adds box to vsite.  returns id of vsite on successful creation
-function fb_add_box($vsite, $box) {
+function fb_add_box(&$vsite, $box) {
   
   //let spaces select the current setting or the default
   $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
