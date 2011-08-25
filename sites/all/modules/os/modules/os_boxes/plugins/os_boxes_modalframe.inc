@@ -12,7 +12,7 @@ class os_boxes_modalframe extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
     $options['nid'] = 0;
-    $options['type'] = '';
+    $options['type'] = 'page';
     $options['fields'] = '*';
 
     return $options;
@@ -39,20 +39,34 @@ class os_boxes_modalframe extends os_boxes_default {
     if ($this->options['nid']) {
       // we know what node we want already
       $node = node_load($this->options['nid']);
+
       // get the node form
       $form_state = array(
         'args' => array($node),
         'want form' => 1,
       );
       $node_form = ctools_build_form($node->type.'_node_form', $form_state);
+      unset($node_form['buttons']);
+
       // remove unwanted elements
+      $this->hide_form_elements_recursive($node_form);
+      $form += $node_form;
     }
     elseif (in_array($this->options['type'], content_types())) {
       // we have a content type, get the node form for it
+      $type = $this->options['type'];
 
       $node = array('uid' => $user->uid, 'name' => (isset($user->name) ? $user->name : ''), 'type' => $type, 'language' => '');
-      $node_form = ctools_build_form($type .'_node_form', array('args' => array($node)));
+      $form_state = array(
+        'args' => array($node),
+        'want form' => 1,
+      );
+      $node_form = ctools_build_form($type .'_node_form', $form_state);
+      unset($node_form['buttons']);
+
       // remove unwanted elements
+      $this->hide_form_elements_recursive($node_form);
+      $form['node'] = $node_form;
     }
     else {
       // we have neither
@@ -69,14 +83,43 @@ class os_boxes_modalframe extends os_boxes_default {
 
     $block = parent::render();
 
-    $node = node_load($nid);
+    $node = node_load($this->options['nid']);
+    $node = node_build_content($node, true, false);
 
     // hide fields we don't want to show
+    $this->hide_view_elements_recursive($node);
 
-    $output = node_view($node, 'teaser', FALSE, FALSE);  //@todo : make this configurable
-    $block['content'] = $output;
+    $node->teaser = drupal_render($node->content);
+    unset($node->body);
+    $block['content'] = theme('node', $node, true, false);
 
     return $block;
   }
 
+  private function hide_form_elements_recursive(&$form, $hide = false) {
+    if ($this->options['fields'] == '*') return;
+    foreach (element_children($form) as $key) {
+      if ($form[$key]['#type'] == 'hidden' || $form[$key]['#type'] == 'value') continue;
+
+      if (!in_array($key, $this->options['fields']) || $hide) {
+        $this->hide_form_elements_recursive($form[$key], true);
+
+        $form[$key]['#access'] = FALSE;
+        if (isset($form[$key]['#type'])) {
+          $form[$key]['#type'] = 'value';
+          if (isset($form[$key]['#default_value'])) {
+            $form[$key]['#value'] = $form[$key]['#default_value'];
+          }
+        }
+      }
+      else {
+        $this->hide_form_elements_recursive($form[$key], $hide);
+      }
+    }
+  }
+
+  private function hide_view_elements_recursive(&$node) {
+    if ($this->options['fields'] == '*') return;
+
+  }
 }
