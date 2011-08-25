@@ -23,9 +23,13 @@ if(is_array($w['tags']) && count($w['tags'])) {
 //Support for ctools popups
 ctools_include('ajax');
 ctools_include('modal');
+
+if($w['icon_path']){
+	$dd_il_style = "style=\"background-image:url('{$w['icon_path']}');\"";
+}
 ?>
 
-<dd class="<?php echo $s_class ?>" id="<?php print $s_widget_key; ?>"> <?php print $w['label']; ?>
+<dd class="<?php echo $s_class ?>" id="<?php print $s_widget_key; ?>" <?php $dd_il_style ?>> <?php print $w['label']; ?>
       <div class="close-this">Remove</div>
      <?php
      if($w['block_config_path']){

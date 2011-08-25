@@ -36,6 +36,38 @@ Drupal.behaviors.scholarlayout = function() {
   scholarlayout_add_removal_hooks();
   vsite_layout_setExceptionScroller();
   vsite_layout_add_category_select();
+  
+  // remove or prevent ctools modal handling from modalframe links
+  $('a.ctools-use-modal').each(function(i, elem) {
+	  if (elem.href && elem.href.indexOf('modalframe') != -1) {
+		  var $this = $(this);
+		  $this.removeClass('ctools-use-modal');
+		  if ($this.hasClass('ctools-use-modal-processed')) {
+			  $this.unbind('click', Drupal.CTools.Modal.clickAjaxLink);
+		  }
+		  
+		  $this.click(function (e) {
+			  var url = $(this).attr('href').split('?');
+				if (url.length >= 2) {
+					var params = url[1].split('&');
+					params.push('modal');
+					url[1] = params.join('&');
+					url = url.join('?');
+				}
+				else {
+					url = url[0]+'?modal';
+				}
+				var modalOptions = {
+					url: url,
+					autoFit: true
+				};
+				
+				Drupal.modalFrame.open(modalOptions);
+				
+				e.preventDefault();
+	  	  });
+	  }
+  });
 };
 
 function scholarlayout_add_removal_hooks() {
