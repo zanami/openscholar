@@ -310,7 +310,7 @@ function fb_get_front($settings) {
     //features content
     case 'scholar_front/features':
     $front['type'] = 'features';
-    $front['options'] = $settings['scholar_front_feature_nodes'];
+    $front['options']['feature_nodes'] = $settings['scholar_front_feature_nodes'];
     //nid and path are useless
       break;
       
@@ -381,7 +381,8 @@ function fb_mk_front_box($vsite, $settings) {
       break;
       
     case 'features':
-      //not yet available
+      $type = 'os_boxes_features';
+      $opts['node_type'] = $settings['options']['feature_nodes'];
       break;
   }
   return mk_box($vsite, $type, $opts);
