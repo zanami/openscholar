@@ -416,23 +416,6 @@ function scholar_publications_overview(){
 }
 
 /**
- * hook db_rewrite_sql
- *
- */
-function scholar_publications_db_rewrite_sql($sql, $primary_table, $primary_field,  $args) {
-
-  $vsite = vsite_get_vsite();
-  $base_url = 'publications'; //og_settings_variable_get($gid, 'og_biblio_base', 'biblio');
-  if ($vsite  && arg(0) == $base_url && strstr($sql,"biblio") !== false){
-    if ($primary_table == 'n' && strstr($sql, 'biblio')){
-      $query['join'] = 'INNER JOIN {og_ancestry} oga ON n.nid = oga.nid';
-      $query['where'] =  'oga.group_nid = '. $vsite -> group-> nid;
-      return $query;
-	  }
-  }
-}
-
-/**
  * hoook nodeapi
  */
 function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
@@ -535,21 +518,6 @@ function scholar_publications_vsite_widgets(){
       'os_og' => array('current' => 'current'),
     ),
   );
-
-  // Publication Types
-  /* No longer used
-  $items['views-publication_types-block_1'] = array(
-    'module' => 'views',
-    'delta' => 'publication_types-block_1',
-    'weight' => 10,
-    'region' => false,
-    'label' => 'Publications By Type',
-    'cache' => BLOCK_CACHE_CONTENT_CACHE,
-    'cache_keys' => array(
-      'node' => array('biblio' => 'biblio'),
-      'os_og' => array('current' => 'current'),
-    ),
-  );*/
 
   // Publication Years
   $items['views-publication_years-block_1'] = array(
@@ -843,9 +811,20 @@ function _scholar_publications_add_owner_checkbox(&$form_element){
  * @return string
  */
 function _scholar_publications_pub_by_type_wgt(){
+	
+	$args = array();
+	$join = "";
+	$where = "";
+	$vsite = vsite_get_vsite();
+	if($vsite){
+		$args[] = $vsite -> group-> nid;
+		$join .= "INNER JOIN {og_ancestry} oga ON n.nid = oga.nid";
+		$where .= "AND oga.group_nid = %n";
+	}
 
-  $s = "SELECT COUNT(DISTINCT n.nid) AS num, tid, name FROM {biblio} n JOIN {biblio_types} ON (biblio_type = tid) GROUP BY biblio_type";
-  $res = db_query(db_rewrite_sql($s));
+  $s = "SELECT COUNT(DISTINCT n.nid) AS num, tid, name FROM {biblio} n INNER JOIN {biblio_types} bt ON (n.biblio_type = bt.tid) {$join} WHERE 1 {$where} GROUP BY biblio_type";
+      
+  $res = db_query($s,$args);
 
   $i = 0;
   $plurals = array(
@@ -873,7 +852,7 @@ function _scholar_publications_pub_by_type_wgt(){
 
 	$output = "<div id='pub_type_tabs'>".$output."</div>";
 
-  return array('subject' => context_isset('context','openscholar-feature-publications')?"By Type":"Recent Writings",'content' => $output);
+  return array('subject' => "Publicaions By Type",'content' => $output);
 }
 
 /**
