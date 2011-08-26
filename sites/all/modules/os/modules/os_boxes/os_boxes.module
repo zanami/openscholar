@@ -74,7 +74,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_gallery'] = array(
     'title' => 'Image Gallery',
     'description' => 'List of images',
-    'tags' => array('Content'),
+    'tags' => array('Content', 'Media', 'Image'),
     'handler' => array(
       'class' => 'os_boxes_gallery',
       'file' => 'os_boxes_gallery.inc',
@@ -86,7 +86,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_slideshow'] = array(
     'title' => 'Slideshow Gallery',
     'description' => 'Display gallery as a slideshow',
-    'tags' => array('Media'),
+    'tags' => array('Media','Slideshow'),
     'handler' => array(
       'class' => 'os_boxes_slideshow',
       'file' => 'os_boxes_slideshow.inc',
@@ -98,7 +98,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_rss'] = array(
     'title' => 'RSS feed',
     'description' => 'RSS feed ??',
-    'tags' => array('Social'),
+    'tags' => array('Social','Feed'),
     'handler' => array(
       'class' => 'os_boxes_feedreader',
       'file' => 'os_boxes_feedreader.inc',
@@ -110,7 +110,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_twitterfeed'] = array(
     'title' => 'Twitter feed CUSTOM BOX',
     'description' => 'List of latest tweets',
-    'tags' => array('Social'),
+    'tags' => array('Social',"Feed","Twitter"),
     'handler' => array(
       'class' => 'os_boxes_twitterfeed',
       'file' => 'os_boxes_twitterfeed.inc',
@@ -147,7 +147,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_bio'] = array(
     'title' => 'Bio Box',  // i.e. view
     'description' => 'Displays biography blurb',
-    'tags' => array('Other'),
+    'tags' => array('Other',"Bio"),
     'handler' => array(
       'class' => 'os_boxes_bio',
       'file' => 'os_boxes_bio.inc',
