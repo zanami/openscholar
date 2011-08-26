@@ -829,11 +829,19 @@ function _scholar_publications_add_owner_checkbox(&$form_element){
  */
 function _scholar_publications_pub_by_type_wgt(){
 	
+	$args = array();
+	$join = "";
+	$where = "";
 	$vsite = vsite_get_vsite();
+	if($vsite){
+		$args[] = $vsite -> group-> nid;
+		$join .= "INNER JOIN {og_ancestry} oga ON n.nid = oga.nid";
+		$where .= "AND oga.group_nid = %n";
+	}
 
-  $s = "SELECT COUNT(DISTINCT n.nid) AS num, tid, name FROM {biblio} n INNER JOIN {biblio_types} bt ON (n.biblio_type = bt.tid) INNER JOIN {og_ancestry} oga ON n.nid = oga.nid WHERE oga.group_nid = %n GROUP BY biblio_type";
+  $s = "SELECT COUNT(DISTINCT n.nid) AS num, tid, name FROM {biblio} n INNER JOIN {biblio_types} bt ON (n.biblio_type = bt.tid) {$join} WHERE 1 {$where} GROUP BY biblio_type";
       
-  $res = db_query($s,$vsite -> group-> nid);
+  $res = db_query($s,$args);
 
   $i = 0;
   $plurals = array(
