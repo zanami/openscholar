@@ -39,7 +39,7 @@ Drupal.behaviors.scholarlayout = function() {
   
   // remove or prevent ctools modal handling from modalframe links
   $('a.ctools-use-modal').each(function(i, elem) {
-	  if (elem.href && elem.href.indexOf('modalframe') != -1) {
+	  if (elem.href && elem.href.indexOf('/modalframe/') != -1) {
 		  var $this = $(this);
 		  $this.removeClass('ctools-use-modal');
 		  if ($this.hasClass('ctools-use-modal-processed')) {
@@ -59,7 +59,8 @@ Drupal.behaviors.scholarlayout = function() {
 				}
 				var modalOptions = {
 					url: url,
-					autoFit: true
+					autoFit: true,
+					onSubmit: modalFrameSubmitHandler
 				};
 				
 				Drupal.modalFrame.open(modalOptions);
@@ -68,6 +69,11 @@ Drupal.behaviors.scholarlayout = function() {
 	  	  });
 	  }
   });
+  
+  function modalFrameSubmitHandler(args, messages) {
+	  Drupal.CTools.AJAX.respond(args);
+	  var i = 5;
+  }
 };
 
 function scholarlayout_add_removal_hooks() {
