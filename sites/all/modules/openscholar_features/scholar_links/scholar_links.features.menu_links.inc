@@ -14,7 +14,7 @@ function scholar_links_menu_default_menu_links() {
     'link_title' => 'Links',
     'options' => array(
       'attributes' => array(
-        'title' => 'List of links in my site',
+        'title' => 'List of links',
       ),
     ),
     'module' => 'system',
