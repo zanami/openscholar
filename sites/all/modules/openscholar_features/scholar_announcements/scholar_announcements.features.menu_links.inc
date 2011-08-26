@@ -14,7 +14,7 @@ function scholar_announcements_menu_default_menu_links() {
     'link_title' => 'Announcements',
     'options' => array(
       'attributes' => array(
-        'title' => 'List of announcements in my site',
+        'title' => 'Announcements',
       ),
     ),
     'module' => 'system',
