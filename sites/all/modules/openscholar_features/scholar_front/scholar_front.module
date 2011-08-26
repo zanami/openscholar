@@ -365,6 +365,11 @@ function fb_get_front($settings) {
     $front['title'] = $settings['scholar_front_site_title'];
   }
   
+  if (!count($settings)) {
+  	return false; //no settings, no box
+  	// or set them up with default bio box?  no, that should come in from presets
+  }
+  
   switch ($settings['site_frontpage']) {
     //features content
     case 'scholar_front/features':
@@ -382,7 +387,7 @@ function fb_get_front($settings) {
     //path
     case ''.$settings['scholar_front_frontpage_path']:
       $front['type'] = 'path';
-      $options = array('path' => $settings['scholar_front_frontpage_path']);
+      $front['options'] = array('path' => $settings['scholar_front_frontpage_path']);
       break;
   }
   
@@ -403,7 +408,7 @@ function fb_get_front($settings) {
   } else {
     $front['type'] = 'nid';
     $front['options'] = array('node' => $settings['site_frontpage']);
-  }
+  }  //case for isset $type and !isset $type ???
   
   // bio has site_frontpage of node/nid
   // unknown type does the same thing.
