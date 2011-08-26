@@ -536,21 +536,6 @@ function scholar_publications_vsite_widgets(){
     ),
   );
 
-  // Publication Types
-  /* No longer used
-  $items['views-publication_types-block_1'] = array(
-    'module' => 'views',
-    'delta' => 'publication_types-block_1',
-    'weight' => 10,
-    'region' => false,
-    'label' => 'Publications By Type',
-    'cache' => BLOCK_CACHE_CONTENT_CACHE,
-    'cache_keys' => array(
-      'node' => array('biblio' => 'biblio'),
-      'os_og' => array('current' => 'current'),
-    ),
-  );*/
-
   // Publication Years
   $items['views-publication_years-block_1'] = array(
     'module' => 'views',
@@ -841,9 +826,12 @@ function _scholar_publications_add_owner_checkbox(&$form_element){
  * @return string
  */
 function _scholar_publications_pub_by_type_wgt(){
+	
+	$vsite = vsite_get_vsite();
 
-  $s = "SELECT COUNT(DISTINCT n.nid) AS num, tid, name FROM {biblio} n JOIN {biblio_types} ON (biblio_type = tid) GROUP BY biblio_type";
-  $res = db_query(db_rewrite_sql($s));
+  $s = "SELECT COUNT(DISTINCT n.nid) AS num, tid, name FROM {biblio} n INNER JOIN {biblio_types} bt ON (n.biblio_type = bt.tid) INNER JOIN {og_ancestry} oga ON n.nid = oga.nid WHERE oga.group_nid = %n GROUP BY biblio_type";
+      
+  $res = db_query($s,$vsite -> group-> nid);
 
   $i = 0;
   $plurals = array(
