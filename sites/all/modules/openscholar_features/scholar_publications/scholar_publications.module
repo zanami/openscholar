@@ -882,7 +882,7 @@ function _scholar_publications_pub_by_type_wgt(){
 
   $output = "<div id='pub_type_tabs'>".$output."</div>";
 
-  return array('subject' => context_isset('context','openscholar-feature-publications')?"By Type":"Recent Writings",'content' => $output);
+  return array('subject' => "Publications By Type",'content' => $output);
 }
 
 /**
