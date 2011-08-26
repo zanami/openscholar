@@ -24,9 +24,11 @@ class os_boxes_features extends os_boxes_default {
   public function options_form(){
     
     $form['node_types'] = array(
+      '#title' => 'Select Features',
       '#type' => 'select',
       '#multiple' => TRUE,
       '#default_value' => $this->options['node_types'],
+      '#description' => 'Content from selected feature(s) will be displayed in this block.',
     );
     
   	vsite_include('vsiteapi');

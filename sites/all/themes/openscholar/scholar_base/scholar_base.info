@@ -51,6 +51,8 @@ regions[left]           = first sidebar
 regions[right]          = second sidebar
 regions[content_top]    = content top
 regions[content_bottom] = content bottom
+regions[content_left]   = content left
+regions[content_right]  = content right
 regions[footer]         = footer
 regions[closure_region] = closure
 

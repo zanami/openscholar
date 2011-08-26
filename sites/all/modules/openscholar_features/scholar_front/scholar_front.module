@@ -265,15 +265,30 @@ function scholar_front_context_links_alter(&$links){
 function front_boxmaker() {
   $limit = 50;
   $total_vsites = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
+  
+  //make sure boxes prereqs are all met before installing
   if (!$total_vsites && $total_vsites < 1) {
-  	drupal_set_message('boxmaker couldn\'t find vsites.  aborting.');
+  	drupal_set_message('boxmaker couldn\'t find vsites.  aborting.', 'error');
+  	return '';
+  }
+  
+  if (!module_exists('os_boxes')) {
+  	drupal_set_message('please enable os_boxes before running boxmaker', 'error');
+  	return '';
+  }
+  
+  $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "vsite" LIMIT 1') );
+  $vsite = vsite_get_vsite($v);
+  if (! isset($vsite->controllers->boxes)) {
+  	drupal_set_message('vsite object has no box controller.  clear cache before running boxmaker.', 'error');
   	return '';
   }
   
   $batch = array(
-  	'title' => t('Making boxes'),
+  	'title' => t('Making boxes for each vsite\'s front page'),
   	'operations' => array(),
   	'finished' => 'front_boxmaker_done',
+  	//@todo 'file => path to file
   );
   
   $offset = 0;
@@ -283,7 +298,7 @@ function front_boxmaker() {
   }
 	
   batch_set($batch);
-  batch_process('/');
+  batch_process(''); //where do we send them if this happens in update.php?
 }
 
 //completed batch
@@ -301,8 +316,6 @@ function front_boxmaker_done($success, $results, $operations) {
 
 //call boxmaker, starting at offset
 function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
-	error_log( "batch: lim $limit\toff $offset\ttotal $total_vsites");
-  //$returned_vsites = array();
   global $_box_plugins;
   $_box_plugins = os_boxes_boxes_plugins() ;
   
@@ -312,27 +325,23 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
   	$context['sandbox']['max'] = $total_vsites;
   }
   
-  //fetch all users
+  //loop over all users
   $query = 'SELECT uid FROM {users} LIMIT %d OFFSET %d ';
   $result = db_query($query, (int)$limit, (int)$offset);
-  
   while ($res = db_fetch_object($result)) {
     $vsites = vsite_get_vsite_by_owner($res->uid);
     
-    //loop over user's vsites
+    //loop over this user's vsites
     foreach($vsites as $vsite) {
       $settings = fb_front_settings($vsite->id);
       $front = fb_get_front($settings);
       if (($box = fb_mk_front_box($vsite, $front)) != FALSE) {
-        //$returned_vsites[] = fb_add_box($vsite, $box);
         $context['results'][] = fb_add_box($vsite, $box);
-        $context['message'] = 'processing: ' . $offset;
+        $context['message'] = 'Processing vsites ' . $offset . '-' . min($offset+$limit, $total_vsites) . ' of ' . $total_vsites;
         $context['sandbox']['progress']++;
       } 
     }
   }
-  
-  return 'Created front box for vsites: ' . implode(', ', $returned_vsites);
 }
 
 // get settings for this vsite's front page
@@ -356,12 +365,17 @@ function fb_get_front($settings) {
     $front['title'] = $settings['scholar_front_site_title'];
   }
   
+  if (!count($settings)) {
+  	return false; //no settings, no box
+  	// or set them up with default bio box?  no, that should come in from presets
+  }
+  
   switch ($settings['site_frontpage']) {
     //features content
     case 'scholar_front/features':
-    $front['type'] = 'features';
-    $front['options']['feature_nodes'] = $settings['scholar_front_feature_nodes'];
-    //nid and path are useless
+      $front['type'] = 'features';
+      $front['options']['feature_nodes'] =  $settings['scholar_front_feature_nodes'];
+      //nid and path are useless
       break;
       
     //flagged content
@@ -373,7 +387,7 @@ function fb_get_front($settings) {
     //path
     case ''.$settings['scholar_front_frontpage_path']:
       $front['type'] = 'path';
-      $options = array('path' => $settings['scholar_front_frontpage_path']);
+      $front['options'] = array('path' => $settings['scholar_front_frontpage_path']);
       break;
   }
   
@@ -394,7 +408,7 @@ function fb_get_front($settings) {
   } else {
     $front['type'] = 'nid';
     $front['options'] = array('node' => $settings['site_frontpage']);
-  }
+  }  //case for isset $type and !isset $type ???
   
   // bio has site_frontpage of node/nid
   // unknown type does the same thing.
@@ -406,17 +420,12 @@ function fb_get_front($settings) {
 function fb_mk_front_box(&$vsite, $settings) {
   $opts = array();
   
-  if (isset($settings['title'])) {
-    $opts['title'] = $settings['title'];
-    $opts['subject'] = $settings['title'];
-  }
-  
-  $opts['description'] = 'This box generated from your front page settings.';
-  
   switch ($settings['type']) {
     case 'bio':
       $type = 'os_boxes_bio';
       $opts['nid'] = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
+      
+      //or... check if bio has a blurb.  if it does, create a simple text box.  otherwise bio box
       break;
       
     case 'nid':
@@ -434,9 +443,30 @@ function fb_mk_front_box(&$vsite, $settings) {
       
     case 'features':
       $type = 'os_boxes_features';
-      $opts['node_types'] = array_filter($settings['options']['feature_nodes']);
+      if (isset($settings['options']['feature_nodes'])) {
+        $opts['node_types'] = array_filter($settings['options']['feature_nodes']);
+      } else {
+      	//show all the features
+      	vsite_include('vsiteapi');
+		$node_types = vsite_content_types(array(2,1), $vsite);
+        drupal_alter('vsite_content_types', $node_types);
+        $node_types = array_combine( array_keys($node_types), array_keys($node_types) );
+        asort($node_types);
+        $opts['node_types'] = $node_types;
+      }
       break;
   }
+  
+  //set some labels/defaults
+  if (isset($settings['title'])) {
+    $opts['title'] = $settings['title'];
+    $opts['subject'] = $settings['title'];
+  } else {
+  	$opts['title'] = $settings['type'] . ' box';
+  	$opts['subject'] = '';
+  }
+  $opts['description'] = 'This box generated from your front page settings.';
+  
   return mk_box($vsite, $type, $opts);
 }
 

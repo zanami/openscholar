@@ -74,7 +74,16 @@
               <?php print $messages; ?>
               <?php print $content; ?>
             </div> <!-- /content -->
-
+            <?php if (!empty($content_left)): ?>
+            <div id="content-left">
+              <?php print $content_left; ?>
+            </div><!-- /content-left -->
+            <?php endif; ?>
+            <?php if (!empty($content_right)): ?>
+            <div id="content-right">
+              <?php print $content_right; ?>
+            </div><!-- /content-right -->
+            <?php endif; ?>
             <?php if (!empty($content_bottom)): ?>
               <div id="content-bottom">
                 <?php print $content_bottom; ?>
