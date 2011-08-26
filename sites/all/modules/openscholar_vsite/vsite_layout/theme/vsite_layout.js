@@ -8,6 +8,8 @@ Drupal.behaviors.scholarlayout = function() {
   if( $("#edit-page-type").val() == "front"){
     layoutRegions.push("#scholarlayout-content-top");
     layoutRegions.push("#scholarlayout-content-bottom");
+    layoutRegions.push("#scholarlayout-content-left");
+    layoutRegions.push("#scholarlayout-content-right");
   }
 
   scholarlayout_add_sortable(layoutRegions);
