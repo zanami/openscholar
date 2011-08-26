@@ -193,14 +193,24 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_modalframe'] = array(
-    'title' => 'Content Creation',
-    'description' => 'Content Creation',
-    'tags' => array('Content'),
     'handler' => array(
       'class' => 'os_boxes_modalframe',
       'file' => 'os_boxes_modalframe.inc',
       'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
       'parent' => 'os_boxes_default',
+    ),
+    'popup' => 'modalframe',
+  );
+
+  $info['os_boxes_modal_image'] = array(
+    'title' => 'Single Image',
+    'description' => 'Single Image',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_boxes_modalframe_image',
+      'file' => 'os_boxes_modalframe_image.inc',
+      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'parent' => 'os_boxes_modalframe',
     ),
     'popup' => 'modalframe',
   );
@@ -269,7 +279,7 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
   if (is_array($plugins[$box->plugin_key]['tags'])) {
     $a_wgt['tags'] = $plugins[$box->plugin_key]['tags'];
   }
-  
+
   if (isset($plugins[$box->plugin_key]['icon_path'])) {
     $a_wgt['icon_path'] = $plugins[$box->plugin_key]['icon_path'];
   }
@@ -390,16 +400,56 @@ function os_boxes_box_modal($js = NULL, $delta){
   ctools_ajax_render($output);
 }
 
-function os_boxes_form_box_box_form_alter(&$form, &$form_state) {
-  $box = $form_state['box'];
-  if ($box instanceof os_boxes_modalframe) {
-    $form['#submit'][] = 'os_boxes_modalframe_form_submit';
+function os_boxes_form_alter(&$form, &$form_state) {
+  if (isset($_GET['modal']) && isset($_GET['box'])) {
+    $box = boxes_load($_GET['box']);
+    if (is_null($box)) {
+      // GET[box] wasn't a delta. must be a plugin key
+      $box = boxes_factory($_GET['box']);
+    }
+
+    $box_form = array(
+      '#tree' => true,
+      'plugin_key' => array(
+        '#value' => $box->plugin_key,
+        '#type' => 'value',
+      ),
+      'delta' => array(
+        '#value' => $box->delta,
+        '#type' => 'value',
+      ),
+      'description' => array(
+        '#value' => $box->description,
+        '#type' => 'value',
+      ),
+      'title' => array(
+        '#value' => $box->title,
+        '#type' => 'value',
+      ),
+    );
+
+    $form['box'] = $box_form;
+    $form['buttons']['submit']['#submit'][] = 'os_boxes_modalframe_form_submit';
   }
 }
 
-function os_boxes_modalframe_form_submit($form, &$form_state) {
-  module_load_include('inc', 'node', 'node.pages');
-  $node = node_form_submit_build_node($form, $form_state);
-  node_save($node);
-  boxes_box_form_submit($form, $form_state);
+function os_boxes_modalframe_form_submit(&$form, &$form_state) {
+  $form_state_box = $form_state;
+  $form_state_box['values'] = $form_state_box['values']['box'];
+  $form_state_box['values']['nid'] = $form['#node']->nid;
+  $form_state_box['values']['path_edit'] = 'node/'.$form['#node']->nid.'/edit';
+  $form_state_box['values']['path_display'] = 'node/'.$form['#node']->nid;
+  boxes_box_form_submit($form, $form_state_box);
+
+  // replace the old element with the new one
+  $box = boxes_factory($form_state['values']['plugin_key'], $form_state['values']);
+  ctools_include('ajax');
+  $args = array(
+    ctools_ajax_command_replace("div#cp-settings-layout dd#boxes-boxes_add__{$box->plugin_key}", theme('vsite_layout_cp_widget', "boxes-{$box->delta}", os_boxes_get_vsite_widget($box))),
+		array('command' => 'updateLayoutForm', 'warning' => true),
+  );
+  modalframe_child_js();
+  modalframe_close_dialog($args);
+  modalframe_form_submit($form, $form_state);
+  $form['#redirect'] = false;
 }

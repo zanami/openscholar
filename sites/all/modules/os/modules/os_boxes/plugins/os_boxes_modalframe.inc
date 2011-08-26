@@ -25,11 +25,12 @@ abstract class os_boxes_modalframe extends os_boxes_default {
     // this is a modalframe.
     // Redirect the iframe contents straight to the edit path
     if (isset($_GET['modal'])) {
-      drupal_goto($this->options['path_edit'], 'modal');
+      $send = $this->new?$this->plugin_key:$this->delta;
+      drupal_goto($this->options['path_edit'], 'modal&box='.$send);
     }
     // we aren't a modalframe?
     // Then what are you doing in the modalframe box?
-    $form += parent::options_form();
+    $form = parent::options_form();
     return $form;
   }
 

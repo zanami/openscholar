@@ -511,7 +511,7 @@ function vsite_form_alter(&$form, $form_state, $form_id){
 
     if (isset($_GET['modal']) && $button = &$form['buttons']['submit']) {
       modalframe_child_js();
-      $button['#submit'][] = 'vsite_modal_submit';
+//      $button['#submit'][] = 'vsite_modal_submit';
     }
   }
 
@@ -519,7 +519,7 @@ function vsite_form_alter(&$form, $form_state, $form_id){
   switch ($form_id) {
     case $scholar_content_type . '_node_form' :
       // modal forms
-      if (arg(0) != 'cp') break;
+      if (arg(0) != 'cp' || arg(3) == 'modalframe') break;
 
       $whitelist = array('buttons');
       switch ($form['#node']->field_show) {
