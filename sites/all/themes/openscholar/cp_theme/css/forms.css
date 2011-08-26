@@ -77,6 +77,8 @@ div.vertical-tabs-panes .description,
   
 .form-item label.option {font-weight: normal;}
 
+#cp-settings-layout div.form-item label {font-size: 1.2em; color:#000;}
+
 .container-inline-date {
   margin-right: 0;
   }
