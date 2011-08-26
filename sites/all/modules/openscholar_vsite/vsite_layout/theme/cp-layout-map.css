@@ -24,21 +24,11 @@
   top: 170px;
   height: 344px;
   }
-  
-#scholarlayout-container #scholarlayout-content-main{
-	top: 253px;
-  height: 180px;
-  }
 
-.front#scholarlayout-container #scholarlayout-content-top{
-	top: 170px;
-  height: 76px;
-  }
-  
-.front#scholarlayout-container.front #scholarlayout-content-bottom{
- height: 74px;
-    top: 440px;
-   }
+#scholarlayout-container #scholarlayout-content-main{
+  top: 170px;
+  height: 344px;
+}
 
 #scholarlayout-container #scholarlayout-navbar,
 #scholarlayout-container #scholarlayout-footer {
@@ -53,3 +43,21 @@
   top: auto;
   left: 0;
   }
+  
+/*
+ * Front page only in layout
+ */
+.front#scholarlayout-container #scholarlayout-content-main{
+  top: 253px;
+  height: 180px;
+  }
+
+.front#scholarlayout-container #scholarlayout-content-top{
+  top: 170px;
+  height: 76px;
+  }
+  
+.front#scholarlayout-container.front #scholarlayout-content-bottom{
+ height: 74px;
+    top: 440px;
+   }  
