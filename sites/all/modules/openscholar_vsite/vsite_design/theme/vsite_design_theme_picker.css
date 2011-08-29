@@ -38,7 +38,7 @@ ul.theme-picker img.screenshot {
   }
 
 
-ul.theme-picker li.current  {
+ul.theme-picker li.current   {
 background:url('images/themeChecked.gif') no-repeat;
 padding-top:20px;
 }
