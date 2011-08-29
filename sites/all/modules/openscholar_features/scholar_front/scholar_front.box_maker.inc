@@ -71,7 +71,6 @@ function fb_get_front($settings, &$vsite) {
   
   if (!count($settings)) {
   	return false; //no settings, no box
-  	// or set them up with default bio box?  no, that should come in from presets
   }
   
   switch ($settings['site_frontpage']) {
@@ -88,10 +87,21 @@ function fb_get_front($settings, &$vsite) {
       //no options
       break;
       
-    //path
-    case ''.$settings['scholar_front_frontpage_path']:
-      $front['type'] = 'path';
-      $front['options'] = array('path' => $settings['scholar_front_frontpage_path']);
+    //path or alias to node
+    case $settings['scholar_front_frontpage_path']:
+      $aliased_url =  $vsite->group->purl . '/' . $settings['scholar_front_frontpage_path'];
+      
+   	  if ($node_path = drupal_get_normal_path($aliased_url)) {
+   	  	//we have a nid.  this is not a path frontpage at all, but a nid path pointing to an alias
+   	  	$front['type'] = 'nid';
+   		$front['options'] = array('node' => $node_path);
+   	  
+   	  } else {
+   	  	//no, still a path front
+  	    $front['type'] = 'path';
+        $front['options'] = array('path' => $settings['scholar_front_frontpage_path']);
+   	  
+   	  }
       break;
       
     //create_bio -> bio node
