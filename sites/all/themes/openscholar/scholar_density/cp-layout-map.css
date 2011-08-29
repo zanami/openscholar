@@ -36,22 +36,62 @@
   }
 
 #scholarlayout-container #scholarlayout-content-main {
-height: 250px;
+height: 506px;
     left: 423px;
-    top: 130px;
+    top: 0;
     width: 210px;
   }
   
-#scholarlayout-container #scholarlayout-content-top {
- height: 124px;
-    left: 424px;
-    top: 0;
-    width: 208px;
-}
+/*
+ * do not display these blocks when not on the front
+ */  
+#scholarlayout-container #scholarlayout-content-top,
+#scholarlayout-container #scholarlayout-content-bottom,
+#scholarlayout-container #scholarlayout-content-left,
+#scholarlayout-container #scholarlayout-content-right{
+  display: none;
+  }
+  
+/*
+ * Front page only in layout
+ */
+.front#scholarlayout-container #scholarlayout-content-main{
+  display: none;
+  }
 
-#scholarlayout-container #scholarlayout-content-bottom {
- height: 120px;
-    left: 424px;
-    top: 386px;
-    width: 208px;
-}
+.front#scholarlayout-container #scholarlayout-content-left,
+.front#scholarlayout-container #scholarlayout-content-right{
+display: block;
+    height: 240px;
+    top: 134px;
+    width: 98px;
+  }
+  
+.front#scholarlayout-container #scholarlayout-content-left{
+  left: 425px;
+  }
+  
+.front#scholarlayout-container #scholarlayout-content-right{
+  left: 530px;
+  }
+
+.front#scholarlayout-container #scholarlayout-content-top,
+.front#scholarlayout-container #scholarlayout-content-bottom {
+	display: block;
+  width: 428px;
+  left: 0;
+  }
+
+.front#scholarlayout-container #scholarlayout-content-top{
+  top: 0;
+  height: 125px;
+  width: 202px;
+  left: 425px;
+  }
+  
+.front#scholarlayout-container.front #scholarlayout-content-bottom{
+  height: 125px;
+  top: 381px;
+  width: 202px;
+  left: 425px;
+  }  
