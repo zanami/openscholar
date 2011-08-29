@@ -2,11 +2,22 @@ if (Drupal.jsEnabled) {
   $(document).ready(function() {
 
     $('li.item-theme-picker').click(function(){
-    	// remove the active class from every li first
-    	$(".item-theme-picker").removeClass('checked');
-    	// add the class to this one
+  	  // remove the active class from every li first
+      $(this).siblings(".item-theme-picker").removeClass('checked');
+      if(!$(this).hasClass('current')){    	  
+        // add the class to this one
     	$(this).addClass('checked');
-    	$("#edit-vsite-design-" + $(this).attr('id')).attr("checked", "checked").change();
+      }
+      $("#edit-vsite-design-" + $(this).attr('id')).attr("checked", "checked").change();
+    });
+    
+    $('li.item-theme-picker').find('select').change(function(){
+    	// remove the active class from every li first
+      	$(".item-theme-picker").removeClass('checked');
+      	// add the class to this one
+      	$(this).closest('li.item-theme-picker').addClass('checked');
+      	
+      	$("#edit-vsite-design-" + $(this).closest('li.item-theme-picker').attr('id')).attr("checked", "checked").change();
     });
     
     $('#vsite-design-theme-picker-form').submit(function(event) {

@@ -49,14 +49,6 @@ function vsite_design_theme_picker_form($form_state) {
         '#title' => 'Flavor',
         '#options' => $a_options,
         '#default_value' => variable_get('vsite_design_'.$info['theme_name'].'_flavor', $default),
-        '#process' => array(
-          'ctools_dependent_process'
-        ),
-        '#dependency' => array(
-          'radio:settings[theme][maintheme]' => array(
-            $info['theme_name']
-          )
-        )
       );
 
       //Screenshot callback
@@ -72,11 +64,18 @@ function vsite_design_theme_picker_form($form_state) {
   if ($vsite = vsite_get_vsite()) {
     $theme = $vsite->group->og_theme;
   }
+  
+  if(isset($enabled[$theme])){
+  	$default_theme = $enabled[$theme];
+  	unset($enabled[$theme]);
+  	$enabled = array_merge(array($theme => $default_theme),$enabled);
+  }//Move default theme to the front of the array
+  
   $form['vsite_design_maintheme'] = array(
     '#enabled_themes' => $enabled,
     '#type' => 'radios',
     '#options' => $options,
-    '#default_value' => $vsite->group->og_theme,
+    '#default_value' => $theme,
     '#tree' => TRUE
   );
 
