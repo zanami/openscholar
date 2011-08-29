@@ -41,3 +41,8 @@ foreach($wgts as $s_widget_key => $w){
   </dl>
 </div>
 </div>
+
+<div id="widgetLabelTab"><img src="/<?php echo drupal_get_path('module', 'vsite_layout') . '/theme/images/widgetBarLabel.png'; ?>"></div>
+<div id="websiteLabelTab"><img src="/<?php echo drupal_get_path('module', 'vsite_layout') . '/theme/images/websiteLayoutBarLabel.png'; ?>"></div>
+
+
