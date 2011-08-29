@@ -6,6 +6,13 @@
  */
 
 abstract class os_boxes_modalframe extends os_boxes_default {
+
+  static $latest = null;
+
+  public function __construct() {
+    parent::__construct();
+    self::$latest = $this;
+  }
   /**
    * Implementation of boxes_content::options_defaults().
    */
@@ -40,9 +47,11 @@ abstract class os_boxes_modalframe extends os_boxes_default {
   public function render() {
 
     $block = parent::render();
+    $old_title = drupal_get_title();
 
     // just render the path
     $block['content'] = menu_execute_active_handler($this->options['path_display']);
+    drupal_set_title($old_title);
 
     return $block;
   }
