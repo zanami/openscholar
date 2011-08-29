@@ -419,6 +419,8 @@ function fb_get_front($settings) {
 //make a box for each vsite.
 function fb_mk_front_box(&$vsite, $settings) {
   $opts = array();
+  global $_box_plugins;
+  
   
   switch ($settings['type']) {
     case 'bio':
@@ -465,7 +467,7 @@ function fb_mk_front_box(&$vsite, $settings) {
   	$opts['title'] = $settings['type'] . ' box';
   	$opts['subject'] = '';
   }
-  $opts['description'] = 'This box generated from your front page settings.';
+  $opts['description'] = $_box_plugins[$type]['title'] . ' box';
   
   return mk_box($vsite, $type, $opts);
 }
