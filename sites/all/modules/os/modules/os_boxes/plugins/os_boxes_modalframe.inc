@@ -56,35 +56,21 @@ abstract class os_boxes_modalframe extends os_boxes_default {
     return $block;
   }
 
-/*
- * Probably not needed anymore
+  /**
+   *
+   * Children should add values to $form_state['values']['box']
+   * Then call the parent submit to create and save a box
+   * @param unknown_type $form_state
+   */
+  static public function submit($form, $form_state) {
+    $box = &$form_state['values']['box'];
 
-  private function hide_form_elements_recursive(&$form, $hide = false) {
-    if ($this->options['fields'] == '*') return;
-    foreach (element_children($form) as $key) {
-
-      if (!in_array($key, $this->options['fields']) || $hide) {
-        $this->hide_form_elements_recursive($form[$key], true);
-
-        if ($form[$key]['#type'] != 'hidden') {
-          $form[$key]['#access'] = FALSE;
-        }
-        if (isset($form[$key]['#type'])) {
-          $form[$key]['#type'] = 'value';
-          if (isset($form[$key]['#default_value'])) {
-            $form[$key]['#value'] = $form[$key]['#default_value'];
-          }
-        }
-      }
-      else {
-        //$this->hide_form_elements_recursive($form[$key], $hide);
-      }
+    if (!isset($box['delta'])) {
+      $box['delta'] = os_boxes_create_delta();
     }
-  }
+    $form_state['values'] = $box;
+    boxes_box_form_submit($form, $form_state);
 
-  private function hide_view_elements_recursive(&$node) {
-    if ($this->options['fields'] == '*') return;
-
+    return self::$latest;
   }
-  */
 }
