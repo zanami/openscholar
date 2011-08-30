@@ -2,17 +2,26 @@
 
 class os_boxes_modalframe_image extends os_boxes_modalframe {
 
-  public function options_defaults() {
-    $options = parent::options_defaults();
-    if ($this->options['nid'] == 0) {
-     $options['path_edit'] = 'node/add/image';
+  protected function config_path() {
+    if ($this->options['nid']) {
+      return 'node/'.$this->options['nid'].'/edit';
     }
     else {
-     $options['path_edit'] = 'node/'.$this->options['nid'].'/edit';
-     $options['path_display'] = 'node/'.$this->options['nid'];
+      return 'node/add/image';
     }
+  }
 
+  public function options_defaults() {
+    $options = parent::options_defaults();
     $options['nid'] = 0;
     return $options;
+  }
+
+  public function render() {
+    $node = node_load($this->options['nid']);
+
+    $block = parent::render();
+    $block['content'] = content_format('field_gallery_image', $node->field_gallery_image[0], 'gallery_thumb_linked', $node);
+    return $block;
   }
 }

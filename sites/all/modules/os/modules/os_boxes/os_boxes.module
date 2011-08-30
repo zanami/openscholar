@@ -46,7 +46,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
-  
+
   $info['os_boxes_featuredposts'] = array(
     'title' => 'Featured Posts',
     'description' => 'List of content featured for front page',
@@ -54,18 +54,6 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_featuredposts',
       'file' => 'os_boxes_featuredposts.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
-      'parent' => 'os_boxes_default',
-    ),
-  );
-
-  $info['os_boxes_features'] = array(
-    'title' => 'Features',
-    'description' => 'List of content from your site\'s Features',
-    'tags' => array('Content'),
-    'handler' => array(
-      'class' => 'os_boxes_features',
-      'file' => 'os_boxes_features.inc',
       'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
       'parent' => 'os_boxes_default',
     ),
@@ -211,7 +199,7 @@ function os_boxes_boxes_plugins() {
       'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
       'parent' => 'os_boxes_default',
     ),
-    'popup' => 'modalframe',
+    'factory_path' => '',
   );
 
   $info['os_boxes_modal_image'] = array(
@@ -224,7 +212,7 @@ function os_boxes_boxes_plugins() {
       'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
       'parent' => 'os_boxes_modalframe',
     ),
-    'popup' => 'modalframe',
+    'factory_path' => 'node/add/image',
   );
 
   return $info;
@@ -251,10 +239,14 @@ function os_boxes_vsite_widgets(){
         'weight' => -10,
         'region' => false,
         'label' => $info['title'],
-        'block_config_path' => "cp/osboxes/".($info['popup']?$info['popup']:'nojs')."/boxes_add__{$key}/configure",
+        'block_config_path' => "cp/osboxes/nojs/boxes_add__{$key}/configure",
       );
       if (is_array($plugins[$key]['tags']) && count($plugins[$key]['tags'])) {
         $items["boxes-boxes_add__$key"]['tags'] = $plugins[$key]['tags'];
+      }
+
+      if ($info['factory_path']) {
+        $items["boxes-boxes_add__$key"]['block_config_path'] = $info['factory_path']."?box=$key";
       }
     }
   }
@@ -294,6 +286,10 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
 
   if (isset($plugins[$box->plugin_key]['icon_path'])) {
     $a_wgt['icon_path'] = $plugins[$box->plugin_key]['icon_path'];
+  }
+
+  if (is_a($box, 'os_boxes_modalframe')) {
+    $a_wgt['block_config_path'] = $box->get_config_path();
   }
 
   return $a_wgt;
