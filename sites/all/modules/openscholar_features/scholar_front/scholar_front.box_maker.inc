@@ -39,8 +39,10 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
     foreach($vsites as $vsite) {
       $settings = fb_front_settings($vsite->id);
       $front = fb_get_front($settings, $vsite);
-      if (($box = fb_mk_front_box($vsite, $front)) != FALSE) {
-        $context['results'][] = fb_add_box($vsite, $box);
+      if (($wgt = fb_mk_front_box($vsite, $front)) != FALSE) {
+      	$add_func = 'fb_add_' . $wgt['wgt']; //box or block
+      	
+        $context['results'][] = $add_func($vsite, $wgt['data']);
         $context['message'] = 'Processing vsites ' . $offset . '-' . min($offset+$limit, $total_vsites) . ' of ' . $total_vsites;
         $context['sandbox']['progress']++;
       } 
@@ -145,8 +147,7 @@ function fb_get_front($settings, &$vsite) {
 //make a box for each vsite.
 function fb_mk_front_box(&$vsite, $settings) {
   $opts = array();
-  global $_box_plugins;
-  
+  global $_box_plugins;  
   
   switch ($settings['type']) {
     case 'bio':
@@ -166,11 +167,15 @@ function fb_mk_front_box(&$vsite, $settings) {
       return false;
       
     case 'flag':
-      $type = 'os_boxes_featuredposts';
+      //$type = 'os_boxes_featuredposts';
+      $type = 'views-vsite_featuredposts-block_1';
+      $block = true;
       break;
       
     case 'features':
       $type = 'os_boxes_features';
+      $block = 'true';
+      /*
       if (isset($settings['options']['feature_nodes'])) {
         $opts['node_types'] = array_filter($settings['options']['feature_nodes']);
       } else {
@@ -181,7 +186,7 @@ function fb_mk_front_box(&$vsite, $settings) {
         $node_types = array_combine( array_keys($node_types), array_keys($node_types) );
         asort($node_types);
         $opts['node_types'] = $node_types;
-      }
+      }*/
       break;
   }
   
@@ -195,7 +200,18 @@ function fb_mk_front_box(&$vsite, $settings) {
   }
   $opts['description'] = $_box_plugins[$type]['title'] . ' box';
   
-  return mk_box($vsite, $type, $opts);
+  if (!$block) {
+  	
+  	//return a box
+  	if ($box = mk_box($vsite, $type, $opts)) {
+  	  return array('wgt' => 'box', 'data' => $box);
+  	} else {
+  		return false;
+  	}
+  } else {
+  	//no box for this type.  return a deprecated block
+  	return array('wgt' => 'block', 'data' => $type);
+  }
 }
 
 //creates a box object in the vsite given type and opts.  returns $box
@@ -232,6 +248,16 @@ function fb_add_box(&$vsite, $box) {
     'tags' => $box->tags,
   );
   
+  if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
+    return $vsite->id;
+  }
+}
+
+//adds block to content_top region
+function fb_add_block(&$vsite, $block) {
+  $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
+  $front_context['blocks'][$block]['region'] = 'content_top';
+	
   if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
     return $vsite->id;
   }
