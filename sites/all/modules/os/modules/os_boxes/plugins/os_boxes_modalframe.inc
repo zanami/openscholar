@@ -15,7 +15,7 @@ abstract class os_boxes_modalframe extends os_boxes_default {
   }
 
   final public function get_config_path() {
-      return $this->config_path().'?modal&box='.($this->delta?$this->delta:$this->plugin_key);
+      return $this->config_path().'/modal/box/'.($this->delta?$this->delta:$this->plugin_key);
   }
 
   protected function config_path($box) {
