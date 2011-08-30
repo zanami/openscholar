@@ -13,6 +13,14 @@ abstract class os_boxes_modalframe extends os_boxes_default {
     parent::__construct();
     self::$latest = $this;
   }
+
+  final public function get_config_path() {
+      return $this->config_path().'?modal&box='.($this->delta?$this->delta:$this->plugin_key);
+  }
+
+  protected static function config_path($box) {
+    return '';
+  }
   /**
    * Implementation of boxes_content::options_defaults().
    */
@@ -29,16 +37,7 @@ abstract class os_boxes_modalframe extends os_boxes_default {
    *
    */
   public function options_form() {
-    // this is a modalframe.
-    // Redirect the iframe contents straight to the edit path
-    if (isset($_GET['modal'])) {
-      $send = $this->new?$this->plugin_key:$this->delta;
-      drupal_goto($this->options['path_edit'], 'modal&box='.$send);
-    }
-    // we aren't a modalframe?
-    // Then what are you doing in the modalframe box?
-    $form = parent::options_form();
-    return $form;
+    return array();
   }
 
   /**
@@ -47,11 +46,6 @@ abstract class os_boxes_modalframe extends os_boxes_default {
   public function render() {
 
     $block = parent::render();
-    $old_title = drupal_get_title();
-
-    // just render the path
-    $block['content'] = menu_execute_active_handler($this->options['path_display']);
-    drupal_set_title($old_title);
 
     return $block;
   }
