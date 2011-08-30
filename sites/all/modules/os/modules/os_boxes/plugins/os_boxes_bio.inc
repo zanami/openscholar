@@ -23,19 +23,16 @@ class os_boxes_bio extends os_boxes_node {
     if (($vsite = vsite_get_vsite()) == FALSE) {
       return array(); 
     }
+
+    if (($bio_node = content_profile_load('bio', $vsite->group->uid, $lang = '')) == false) {
+      return array();
+    }
+    
     
     $form = parent::options_form();
     
     $form['nid']['#type'] = 'value';
-    if (($nid = $this->options['nid']) == FALSE) {
-      //bio node created after this post.  cache the nid.
-      $vsite = vsite_get_vsite();
-      if (($bio_node = content_profile_load('bio', $vsite->group->uid, $lang = '')) == FALSE) {
-		$nid = 0;
-      }
-      $nid = $bio_node->nid;
-    }
-    $form['nid']['#value'] = $nid;
+    $form['nid']['#value'] = $bio_node->nid;
     
     return $form;
   }
@@ -44,25 +41,31 @@ class os_boxes_bio extends os_boxes_node {
    * Implementation of boxes_content::render().
    */
   public function render() {
-  	$block = parent::render();    
-  	
-  	//no nid option.  
-    if (!$this->options['nid']) {
-      //check if a bio has been set
+    if (!isset($this->options['nid'])) {
+      //get a nid if newly created bio box hasn't been configured yet.  this shouldn't happen, and yet...
       if (($vsite = vsite_get_vsite()) == FALSE) {
-        return array();
+        return array(); 
       }
   
-	  if (($bio_node = content_profile_load('bio', $vsite->group->uid, $lang = '')) == TRUE) {
-        //we have a bio.  set it here and try again.
-        $this->options['nid'] = $bio_node->nid;
-        $block = parent::render();    
-      } else {
-        //new user - no bio yet.
-	    $block['content'] = scholar_front_welcome();
-      } 
+      $bio_node = content_profile_load('bio', $vsite->group->uid, $lang = '');
+      if(!$bio_node) {
+        return array();
+      }
+      
+      $this->options['nid'] = $bio_node->nid;
+        
     }
+    
+    $block = parent::render();    
+    /*
 
+    //won't be blurb for long.  blurb text is to be copied to a simple box instance for each user with a blurb.
+    $blurb = $bio_node->field_hook_text[0]['value'];
+    $output = strlen($blurb) ? $blurb : node_teaser($bio_node->body, null,400) ;
+    // trim the output's length
+    $output .= l(" more", $bio_node->path,array(attributes=>array('class'=>'more')));
+    $block['content'] = $output;
+    */
     return $block;
   }
 

@@ -11,9 +11,10 @@ class os_boxes_addthis extends os_boxes_default {
    */
   public function options_defaults() {
     $options = parent::options_defaults();
-    $options['widget_type'] = 'buttons';
-    $options['toolbox_services'] = 'facebook,twitter,email,linkedin,google_plusone'; //@todo array
+    $options['widget_type'] = 'addthis_button';
+    $options['toolbox_services'] = 'facebook,twitter,email,linkedin,google_plusone';
     /* @todo other options
+     * icon sizes
      * profile id
      */
     return $options;
@@ -25,17 +26,15 @@ class os_boxes_addthis extends os_boxes_default {
   public function options_form(){    
     $form = parent::options_form();
     
-    $tb_sm = "small:<div class='addthis_toolbox addthis_default_style ' ><a class='addthis_toolbox_item addthis_button_facebook'></a><a class='addthis_toolbox_item addthis_button_twitter'></a><a class='addthis_toolbox_item addthis_button_email'></a><a class='addthis_toolbox_item addthis_button_linkedin'></a><a class='addthis_toolbox_item addthis_button_google_plusone'></a></div>";
-    
     $form['widget_type'] = array(
       '#type' => 'radios',
       '#title' => t('Display style'),
       '#default_value' => $this->options['widget_type'],
         '#options' => array(
 		  'buttons' => t('Button'), //default
-    	  'toolbox_small' => $tb_sm,//sm
+    	  'toolbox_small' => t('Toolbox sm'),//sm
     	  'toolbox_large' => t('Toolbox lg'),//big
-    	  'numeric' => "<img src='http://cache.addthiscdn.com/www/20110825162931/images/gtc-like-tweet-share-plusone.gif' />\n",
+    	  'addthis_numeric' => t('Numberic'),
     		
       ),
     );
@@ -57,6 +56,10 @@ class os_boxes_addthis extends os_boxes_default {
     if (! module_exists('addthis')) {
       return;
     }
+    //  $toolbox_classes = check_plain(variable_get('addthis_toolbox_classes', ''));
+
+    $vsite = vsite_get_vsite();
+    $size = $vsite->controllers->variable->get('addthis_toolbox_classes', 'space');
     
 	switch ($this->options['widget_type']) {
 		
@@ -64,25 +67,30 @@ class os_boxes_addthis extends os_boxes_default {
   	  	$services = NULL;
   	  	$config = array();
   	  	$display = 'addthis_button';
+  	  	if ($size) {
+	  	  $vsite->controllers->variable->del('addthis_toolbox_classes');
+  	  	}
   	  	break;
   	  	
   	  case 'toolbox_small':
   	    $services = $this->options['toolbox_services'];
   	    $config = array();
   	    $display = 'addthis_toolbox';
+  	    if ($size) {
+	  	  $vsite->controllers->variable->del('addthis_toolbox_classes');
+  	  	}
   	    break;
   	    
   	  case 'toolbox_large':
   	    $services = $this->options['toolbox_services'];
-  	    $config = array('addthis_toolbox_classes' => 'addthis_32x32_style'); 
-  	    $display = 'addthis_toolbox';
-  	    break;
-  	    
-  	  case 'numeric':
-  	  	$services = 'facebook_like_counter, tweet, google_plusone, counter_pill';
   	    $config = array();
   	    $display = 'addthis_toolbox';
-  	  	break;
+		if (!$size) {
+		  //size is controlled by a var, not by config.  set that var when large icons are used.  reset elsewhere
+	  	  $vsite->controllers->variable->set('addthis_toolbox_classes', 'addthis_32x32_style');
+  	  	}
+  	    break;
+  	    
   	}
   	
     $block = parent::render();

@@ -7,7 +7,7 @@
  * It's simply an interface to an existing view (as in views module)
  */
 
-class spaces_simpleviews_boxes_ls extends boxes_box {
+class spaces_simpleviews_boxes_listing extends boxes_box {
   /**
    * Implementation of boxes_content::options_defaults().
    */
