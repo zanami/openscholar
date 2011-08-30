@@ -59,18 +59,6 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
-  $info['os_boxes_latest'] = array(
-    'title' => 'Latest Posts',
-    'description' => 'List of recent content posts',
-    'tags' => array('Content'),
-    'handler' => array(
-      'class' => 'os_boxes_latest',
-      'file' => 'os_boxes_latest.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
-      'parent' => 'os_boxes_default',
-    ),
-  );
-
   $info['os_boxes_feedreader'] = array(
     'title' => 'Feed Reader',
     'description' => 'List of feed items',
