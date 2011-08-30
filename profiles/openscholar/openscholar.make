@@ -15,6 +15,7 @@ projects[drupal][type] = "core"
 
 projects[addthis][subdir] = "contrib"
 projects[addthis][version] = "3.0-beta1"
+projects[addthis][patch][] = "http://drupal.org/files/issues/addthis_config_class-1264382-1.patch"
 
 projects[admin][subdir] = "contrib"
 projects[admin][version] = "2.0"
