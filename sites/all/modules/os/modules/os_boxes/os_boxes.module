@@ -246,7 +246,7 @@ function os_boxes_vsite_widgets(){
       }
 
       if ($info['factory_path']) {
-        $items["boxes-boxes_add__$key"]['block_config_path'] = $info['factory_path']."?box=$key";
+        $items["boxes-boxes_add__$key"]['block_config_path'] = $info['factory_path']."/modal/box/$key";
       }
     }
   }

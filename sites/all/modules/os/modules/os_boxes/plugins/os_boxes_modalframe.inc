@@ -13,6 +13,15 @@ abstract class os_boxes_modalframe extends os_boxes_default {
     parent::__construct();
     self::$latest = $this;
   }
+
+  final public function get_config_path() {
+      return $this->config_path().'/modal/box/'.($this->delta?$this->delta:$this->plugin_key);
+  }
+
+  protected function config_path($box) {
+    return '';
+  }
+
   /**
    * Implementation of boxes_content::options_defaults().
    */
