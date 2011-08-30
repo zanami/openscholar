@@ -643,7 +643,6 @@ function vsite_form_alter(&$form, $form_state, $form_id){
 
         $nid = ! empty($form['nid']['#value']) ? $form['nid']['#value'] : NULL;
         if (module_exists('override_node_options') && array_key_exists('options', $form)) {
-          drupal_add_js(drupal_get_path('module', 'vsite') . '/theme/vsite_verticaltabs_options.js', 'module', 'footer', false, true, false);
           $vsite = vsite_get_vsite();
           if (array_key_exists('promote', $form['options'])) {
             _spaces_og_make_hidden($form['options']['promote']);
@@ -813,8 +812,7 @@ function vsite_system_info_alter(&$info, $file){
 
   //If this is a scholar theme then add the correct regions
   if (array_key_exists('scholar', $info) && array_key_exists('theme_type', $info['scholar']) && $info['scholar']['theme_type'] == 'scholar') {
-    if (! is_array($info['regions']))
-      $info['regions'] = array();
+    if (! is_array($info['regions'])) $info['regions'] = array();
 
     $info['regions']['header_top'] = "header top";
     $info['regions']['header_left'] = "header left";
@@ -825,6 +823,8 @@ function vsite_system_info_alter(&$info, $file){
     $info['regions']['right'] = "right sidebar";
     $info['regions']['content_top'] = "content top";
     $info['regions']['content_bottom'] = "content bottom";
+    $info['regions']['content_left'] = "content left";
+    $info['regions']['content_right'] = "content right";
     $info['regions']['footer'] = "footer";
     $info['regions']['closure_region'] = "closure";
 
