@@ -21,8 +21,8 @@ function front_boxmaker_done($success, $results, $operations) {
 //call boxmaker, starting at offset
 function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
   global $_box_plugins;
-  $_box_plugins = os_boxes_boxes_plugins() ;
-  
+  $_box_plugins  = os_boxes_boxes_plugins();
+  $_box_plugins += spaces_simpleviews_boxes_plugins();
   //prep sandbox
   if (empty($context['sandbox'])) {
   	$context['sandbox']['progress'] = 0;
@@ -79,7 +79,7 @@ function fb_get_front($settings, &$vsite) {
     //features content
     case 'scholar_front/features':
       $front['type'] = 'features';
-      $front['options']['feature_nodes'] =  $settings['scholar_front_feature_nodes'];
+      //$front['options']['feature_nodes'] =  $settings['scholar_front_feature_nodes'];
       //nid and path are useless
       break;
       
@@ -173,8 +173,9 @@ function fb_mk_front_box(&$vsite, $settings) {
       break;
       
     case 'features':
-      $type = 'os_boxes_features';
-      $block = 'true';
+      //$type = 'os_boxes_features';
+      $type = 'spaces_simpleviews_boxes_ls';
+      //$block = 'true';
       /*
       if (isset($settings['options']['feature_nodes'])) {
         $opts['node_types'] = array_filter($settings['options']['feature_nodes']);
