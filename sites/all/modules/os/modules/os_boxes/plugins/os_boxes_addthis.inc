@@ -12,7 +12,7 @@ class os_boxes_addthis extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
     $options['widget_type'] = 'buttons';
-    $options['toolbox_services'] = 'facebook,twitter,email,linkedin,google_plusone';
+    $options['toolbox_services'] = 'facebook,twitter,email,linkedin,google_plusone'; //@todo array
     /* @todo other options
      * profile id
      */
@@ -35,7 +35,7 @@ class os_boxes_addthis extends os_boxes_default {
 		  'buttons' => t('Button'), //default
     	  'toolbox_small' => $tb_sm,//sm
     	  'toolbox_large' => t('Toolbox lg'),//big
-    	  'addthis_numeric' => t('Numberic'),
+    	  'numeric' => "<img src='http://cache.addthiscdn.com/www/20110825162931/images/gtc-like-tweet-share-plusone.gif' />\n",
     		
       ),
     );
@@ -78,6 +78,11 @@ class os_boxes_addthis extends os_boxes_default {
   	    $display = 'addthis_toolbox';
   	    break;
   	    
+  	  case 'numeric':
+  	  	$services = 'facebook_like_counter, tweet, google_plusone, counter_pill';
+  	    $config = array();
+  	    $display = 'addthis_toolbox';
+  	  	break;
   	}
   	
     $block = parent::render();
