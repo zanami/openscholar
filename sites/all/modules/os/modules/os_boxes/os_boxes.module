@@ -26,7 +26,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_simple'] = array(
     'title' => 'Text',
     'description' => 'Simple custom text',
-    'tags' => array('Basic'),
+    'tags' => array('Content','Text'),
     'handler' => array(
       'parent' => 'box',
       'class' => 'boxes_simple',
@@ -38,7 +38,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_addthis'] = array(
     'title' => 'Addthis',
     'description' => 'Social media links',
-    'tags' => array('Social'),
+    'tags' => array('Social','Addthis'),
     'handler' => array(
       'class' => 'os_boxes_addthis',
       'file' =>  'os_boxes_addthis.inc',
@@ -50,7 +50,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_featuredposts'] = array(
     'title' => 'Featured Posts',
     'description' => 'List of content featured for front page',
-    'tags' => array('Content'),
+    'tags' => array('Content','Featured'),
     'handler' => array(
       'class' => 'os_boxes_featuredposts',
       'file' => 'os_boxes_featuredposts.inc',
@@ -62,7 +62,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_features'] = array(
     'title' => 'Features',
     'description' => 'List of content from your site\'s Features',
-    'tags' => array('Content'),
+    'tags' => array('Content','Features'),
     'handler' => array(
       'class' => 'os_boxes_features',
       'file' => 'os_boxes_features.inc',
@@ -74,7 +74,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_feedreader'] = array(
     'title' => 'Feed Reader',
     'description' => 'List of feed items',
-    'tags' => array('Content'),
+    'tags' => array('Content','Social','Feed'),
     'handler' => array(
       'class' => 'os_boxes_feedreader',
       'file' => 'os_boxes_feedreader.inc',
@@ -86,7 +86,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_gallery'] = array(
     'title' => 'Image Gallery',
     'description' => 'List of images',
-    'tags' => array('Content', 'Media', 'Image'),
+    'tags' => array('Media', 'Image'),
     'handler' => array(
       'class' => 'os_boxes_gallery',
       'file' => 'os_boxes_gallery.inc',
@@ -122,7 +122,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_twitterfeed'] = array(
     'title' => 'Twitter feed CUSTOM BOX',
     'description' => 'List of latest tweets',
-    'tags' => array('Social',"Feed","Twitter"),
+    'tags' => array('Social','Feed','Twitter'),
     'handler' => array(
       'class' => 'os_boxes_twitterfeed',
       'file' => 'os_boxes_twitterfeed.inc',
@@ -134,7 +134,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_cclicense'] = array(
     'title' => 'CC License',
     'description' => 'Displays CC license widget',
-    'tags' => array('Other'),
+    'tags' => array('Misc','License'),
     'handler' => array(
       'class' => 'os_boxes_cclicense',
       'file' => 'os_boxes_cclicense.inc',
@@ -147,7 +147,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_node'] = array(
     'title' => 'Post in a box',  // i.e. view
     'description' => 'Displays the content of a post in the widget',
-    'tags' => array('Content'),
+    'tags' => array('Content','Post'),
     'handler' => array(
       'class' => 'os_boxes_node',
       'file' => 'os_boxes_node.inc',
@@ -159,7 +159,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_bio'] = array(
     'title' => 'Bio Box',  // i.e. view
     'description' => 'Displays biography blurb',
-    'tags' => array('Other',"Bio"),
+    'tags' => array('Misc','Bio'),
     'handler' => array(
       'class' => 'os_boxes_bio',
       'file' => 'os_boxes_bio.inc',
@@ -171,7 +171,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_oembed'] = array(
     'title' => 'Media Embed',  // i.e. view
     'description' => 'Embed Media',
-    'tags' => array('Media', 'Social'),
+    'tags' => array('Media'),
     'handler' => array(
       'class' => 'os_boxes_oembed',
       'file' => 'os_boxes_oembed.inc',
@@ -183,7 +183,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_shields'] = array(
     'title' => 'Shield',
     'description' => 'Department Shield',
-    'tags' => array('Other'),
+    'tags' => array('Misc','Shield'),
     'handler' => array(
       'class' => 'os_boxes_shields',
       'file' => 'os_boxes_shields.inc',
@@ -195,7 +195,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_booktoc'] = array(
     'title' => 'Book Table of Contents',
     'description' => 'Table of Contents',
-    'tags' => array('Content'),
+    'tags' => array('Content','Book'),
     'handler' => array(
       'class' => 'os_boxes_booktoc',
       'file' => 'os_boxes_booktoc.inc',
@@ -217,7 +217,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_modal_image'] = array(
     'title' => 'Single Image',
     'description' => 'Single Image',
-    'tags' => array('Content'),
+    'tags' => array('Media','Image'),
     'handler' => array(
       'class' => 'os_boxes_modalframe_image',
       'file' => 'os_boxes_modalframe_image.inc',

@@ -238,7 +238,7 @@ function vsite_layout_settings_form($form_state){
     '#title' => t('Site section'),
     '#default_value' => $s_page_type,
     '#options' => $a_page_types,
-    '#description' => t('Choose a section from this pulldown to change the layout of that section. “All Sections” indicates the layout will remain the same across all areas of your site.<br /><br />'),
+    '#description' => t('<div style="width:870px;">Choose a section from this pulldown to change the layout of that section. “All Sections” indicates the layout will remain the same across all areas of your site.<br /><em>Note: If you select "Site front page" from the dropdown menu, we recommend populating the rest of your site with content first. You\'re site\'s front page is typically a snapshot of certain sections of your site. Creating it last will provide more content options for you. </em></div>'),
     '#ahah' => array(
           'event' => 'go_ahah',
           'path' => 'cp/build/layout/region_widgets_js',
