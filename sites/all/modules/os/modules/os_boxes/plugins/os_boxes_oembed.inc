@@ -25,6 +25,7 @@ class os_boxes_oembed extends os_boxes_default {
    */
   public function options_form(){
 
+    ctools_include('dependent');
     $form['selection'] = array(
       '#title' => t('Use: '),
       '#type' => 'radios',
@@ -40,13 +41,17 @@ class os_boxes_oembed extends os_boxes_default {
       '#type' => 'textfield',
       '#title' => t('Embed.ly Provider URL'),
       '#default_value' => $this->options['oembed_url'],
+      '#process' => array('ctools_dependent_process'),
+      '#dependency' => array('radio:selection' => array('oembed_url'))
     );
 
     $form['pasted'] = array(
       '#type' => 'textarea',
       '#title' => t('Original Embed Code'),
       '#default_value' => $this->options['pasted'],
-      '#description' => embedfilter_filter_tips(0, 1),
+//      '#description' => embedfilter_filter_tips(0, 1),
+      '#process' => array('ctools_dependent_process'),
+      '#dependency' => array('radio:selection' => array('pasted'))
     );
 
     $form['width'] = array(
