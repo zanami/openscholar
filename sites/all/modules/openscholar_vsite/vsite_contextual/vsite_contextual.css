@@ -106,7 +106,7 @@ div.ctools-dropdown div.ctools-dropdown-container {
 	position: relative;
 }
 
-*:hover > .os-links-outline {
+*:hover > .os-links:hover ~ .os-links-outline {
 	display: block;
 }
 
