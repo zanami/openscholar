@@ -48,7 +48,9 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
 
         $context['message'] = 'Processing vsites ' . $offset . '-' . min($offset+$limit, $total_vsites) . ' of ' . $total_vsites;
         $context['sandbox']['progress']++;
-      } 
+      } else {
+        error_log('Could not determine front page for vsite ' . $vsite->id, 'warning');
+      }
     }
   }
 }
@@ -82,7 +84,7 @@ function fb_get_front($settings, &$vsite) {
   }
   
   switch ($settings['site_frontpage']) {
-    
+
   	//features content
     case 'scholar_front/features':
       $front['type'] = 'features';
@@ -100,17 +102,18 @@ function fb_get_front($settings, &$vsite) {
    	  if ($node_path = drupal_get_normal_path($aliased_url)) {
    	  	//we have a nid.  this is not a path frontpage at all, but a nid path pointing to an alias
    	  	$front['type'] = 'nid';
-   		$front['options'] = array('node' => $node_path);
-   	  
+   		  $front['options'] = array('node' => $node_path);
    	  } else {
    	  	//no, still a path front
   	    $front['type'] = 'path';
         $front['options'] = array('path' => $settings['scholar_front_frontpage_path']);
-   	  
    	  }
       break;
-      
-    //create_bio -> bio node
+    
+    //bio.  
+    case 'create_bio':
+      $front['type'] = 'bio';
+      break;
   }
   
   //no need to continue if we have a type
@@ -142,6 +145,10 @@ function fb_get_front($settings, &$vsite) {
 
 //make a box for each vsite.
 function fb_mk_front_box(&$vsite, $settings) {
+  
+  if (!$settings) { 
+    return false;
+  }
 
   $opts = array();
   global $_box_plugins;
@@ -199,6 +206,10 @@ EOD;
     case 'features':
       $type = 'spaces_simpleviews_boxes_ls';
       break;
+  }
+  
+  if (!isset($type)) {
+    $type = 'unknown';
   }
   
   //set some labels/defaults
