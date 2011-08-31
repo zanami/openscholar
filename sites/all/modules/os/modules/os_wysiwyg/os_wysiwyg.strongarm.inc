@@ -66,7 +66,7 @@ mtvnservices.com';
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'format';
-  $strongarm->value = '5';
+  $strongarm->value = '1';
 
   $export['format'] = $strongarm;
   $strongarm = new stdClass;
@@ -690,7 +690,7 @@ mtvnservices.com';
     'param' => array(
       '*' => array(),
     ),
-    'prestrong' => array(
+    'pre' => array(
       'id' => array(),
       'class' => array(),
       'title' => array(),
@@ -732,6 +732,19 @@ mtvnservices.com';
       'lang' => array(),
     ),
     'strike' => array(
+      'id' => array(),
+      'class' => array(),
+      'title' => array(),
+      'dir' => array(
+        'values' => array(
+          0 => 'ltr',
+          1 => 'rtl',
+        ),
+      ),
+      'lang' => array(),
+      'style' => array(),
+    ),
+    'strong' => array(
       'id' => array(),
       'class' => array(),
       'title' => array(),
@@ -1533,7 +1546,7 @@ table[style|border|align<center?left?right|cellpadding|cellspacing],
 tr[align<center?justify?left?right|valign],
 td[colspan|rowspan|align<center?justify?left?right|valign],
 caption,
-address,h2,h3,h4,h5,h6,pre
+address,h2,h3,h4,h5,h6,pre,
 strong/b,em/i,strike,u';
 
   $export['wysiwyg_filter_valid_elements_raw_1'] = $strongarm;
