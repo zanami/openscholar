@@ -118,6 +118,12 @@
 	height: 16px;
 	background-image: url(images/ui-icons_222222_256x240.png)/*{iconsContent}*/;
 	}
+	
+.ui-icon.ui-icon-closethick {
+	width: 30px;
+	height: 30px;
+	}
+		
 
 .ui-widget-content .ui-icon {background-image: url(images/ui-icons_222222_256x240.png)/*{iconsContent}*/;
 	}
@@ -584,7 +590,7 @@
 	}
 
 .ui-icon-closethick {
-	background-position: -96px -128px;
+	background-position: -168px -154px;
 	}
 
 .ui-icon-key {
