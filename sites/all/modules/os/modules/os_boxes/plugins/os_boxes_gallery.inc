@@ -2,7 +2,7 @@
 
 /**
  * @file
- * The class for "CC license" type widgets.  
+ * The class for "Gallery" type widgets.
  */
 
 class os_boxes_gallery extends os_boxes_default {
@@ -24,20 +24,20 @@ class os_boxes_gallery extends os_boxes_default {
   public function options_form(){
     
     $form['gallery'] = array(
-      '#type' => 'select', 
-      '#title' => t('Gallery'), 
-      '#options' => array(), 
+      '#type' => 'select',
+      '#title' => t('Gallery'),
+      '#options' => array(),
       '#required' => TRUE,
     );
     
     // for each gallery node, add nid/node_title to the select options
     $view = views_get_view("scholar_image_gallery");
     $view->set_display('page_1'); //block 1 showed all content
-    $view->execute(); 
+    $view->execute();
     
     if (count($view->result)) {
       //gallery exists, add options
-      $form['gallery']['#options'] += array('all' => t('All')); 
+      $form['gallery']['#options'] += array('all' => t('All'));
       
       foreach($view->result as $r) {
         $form['gallery']['#options'] += array($r->nid => $r->node_title);
@@ -75,7 +75,7 @@ class os_boxes_gallery extends os_boxes_default {
       
     $block = parent::render();
     $output = $view->execute_display();
-    $block['content'] = $output; 
+    $block['content'] = $output;
     return $block;
   }
 
