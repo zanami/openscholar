@@ -246,6 +246,9 @@ function os_boxes_boxes_plugins() {
 
 /**
  * hook vsite_sidgets
+ *
+ * This function translates the box intances and the box defintions into vsite widgets for use in the
+ * openscholar layout structure
  */
 function os_boxes_vsite_widgets(){
   $items = array();
@@ -441,6 +444,11 @@ function os_boxes_create_delta() {
     return $delta;
 }
 
+/**
+ * Implementation of form alter
+ * @param $form
+ * @param $form_state
+ */
 function os_boxes_form_alter(&$form, &$form_state) {
   if (isset($_GET['modal']) && isset($_GET['box'])) {
     $box = boxes_load($_GET['box']);
