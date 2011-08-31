@@ -60,6 +60,7 @@ Drupal.behaviors.scholarlayout = function() {
 			var modalOptions = {
 				url: url,
 				autoFit: true,
+				width: 980, 
 				onSubmit: modalFrameSubmitHandler
 			};
 			
