@@ -16,7 +16,7 @@ function vsite_layout_layout() {
   drupal_add_js(drupal_get_path('module', 'vsite_layout') . '/theme/vsite_layout.js');
   drupal_add_css(drupal_get_path('module', 'vsite_layout') . '/theme/vsite_layout.css');
   drupal_add_css(drupal_get_path('module', 'vsite_layout') . '/theme/cp-layout-map.css');
-  
+
   //Support for ctools popups
   ctools_include('ajax');
   ctools_include('modal');
@@ -239,6 +239,7 @@ function vsite_layout_settings_form($form_state){
     '#default_value' => $s_page_type,
     '#options' => $a_page_types,
     '#description' => t('Choose a section from this pulldown to change the layout of that section. “All Sections” indicates the layout will remain the same across all areas of your site.<br />'),
+
     '#ahah' => array(
           'event' => 'go_ahah',
           'path' => 'cp/build/layout/region_widgets_js',
@@ -261,7 +262,7 @@ function vsite_layout_settings_form($form_state){
           'method' => 'replaceWith',
     ),
   );
-  
+
   //Markup for "Top" Available Widgets Section
   $form['available_widgets_markup'] = array(
     '#value' => theme('vsite_layout_tagged_widgets', $unused_wgts, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list'),
@@ -328,10 +329,10 @@ function vsite_layout_settings_form_submit($form, &$form_state) {
 
   //Apply the region settings
   $a_avalible_blocks = $space->controllers->context->get('openscholar-feature-'.$s_page_type.":reaction:block","preset");
-  
+
   //Sort them for easy display
   uasort($a_avalible_blocks['blocks'], 'vsite_layout_sort_block_by_weight');
-  
+
   foreach ($a_avalible_blocks['blocks'] as $s_key => $block) {
     $a_avalible_blocks['blocks'][$s_key]['region'] = isset($setting[$s_key])? $setting[$s_key]:false;
     $a_avalible_blocks['blocks'][$s_key]['weight'] = array_search($s_key,array_keys($setting));
@@ -483,14 +484,18 @@ function vsite_layout_region_widgets( $page_type = 'none') {
   foreach ($default_blocks as $s_key => $a_block) {
     $default_blocks[$s_key]['region'] = false; //Get any new blocks that have been introduced, and include them in the top bar
   }
-  
+
   $a_region_widgets = array();
   if($context && ($a_widgets = $context->reactions['block']['blocks'])){
     $a_widgets = array_merge($default_blocks,$a_widgets);
   	uasort($a_widgets, 'vsite_layout_sort_block_by_weight'); //Put them in the right order to simplify showing them in the cp
-    
+
     foreach ($a_widgets as $s_widget_key => $widget) {
       $widget = (array)$widget;
+      // blocks stored in context override have old path
+      // and overwrite the defaults
+      if (isset($default_blocks[$s_widget_key]))
+        $widget['block_config_path'] = $default_blocks[$s_widget_key]['block_config_path'];
       if ($widget['region']) {
         $a_region_widgets[$widget['region']][$s_widget_key] = $widget;
       }

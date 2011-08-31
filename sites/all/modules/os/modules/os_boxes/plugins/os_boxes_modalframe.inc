@@ -66,6 +66,41 @@ abstract class os_boxes_modalframe extends os_boxes_default {
   }
 
   /**
+   * Form Alter method
+   * Children should treat this like a regular form alter.
+   * Just run the parent at the end.
+   */
+  public function form_alter(&$form, &$form_state) {
+    $box_form = array(
+      '#tree' => true,
+      'plugin_key' => array(
+        '#value' => $this->plugin_key,
+        '#type' => 'value',
+      ),
+      'delta' => array(
+        '#value' => $this->delta,
+        '#type' => 'value',
+      ),
+      'description' => array(
+        '#value' => $this->description,
+        '#type' => 'value',
+      ),
+      'title' => array(
+        '#value' => $this->title,
+        '#type' => 'value',
+      ),
+    );
+
+    $form['box'] = $box_form;
+    if (isset($form['buttons'])) {
+      $form['buttons']['submit']['#submit'][] = 'os_boxes_modalframe_form_submit';
+    }
+    else {
+      $form['#submit'][] = 'os_boxes_modalframe_form_submit';
+    }
+  }
+
+  /**
    *
    * Children should add values to $form_state['values']['box']
    * Then call the parent submit to create and save a box

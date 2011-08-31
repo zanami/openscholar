@@ -423,33 +423,7 @@ function os_boxes_form_alter(&$form, &$form_state) {
       $box = boxes_factory($_GET['box']);
     }
 
-    $box_form = array(
-      '#tree' => true,
-      'plugin_key' => array(
-        '#value' => $box->plugin_key,
-        '#type' => 'value',
-      ),
-      'delta' => array(
-        '#value' => $box->delta,
-        '#type' => 'value',
-      ),
-      'description' => array(
-        '#value' => $box->description,
-        '#type' => 'value',
-      ),
-      'title' => array(
-        '#value' => $box->title,
-        '#type' => 'value',
-      ),
-    );
-
-    $form['box'] = $box_form;
-    if (isset($form['buttons'])) {
-      $form['buttons']['submit']['#submit'][] = 'os_boxes_modalframe_form_submit';
-    }
-    else {
-      $form['#submut'] = 'os_boxes_modalframe_form_submit';
-    }
+    $box->form_alter($form, $form_state);
   }
 }
 
