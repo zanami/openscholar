@@ -272,8 +272,8 @@ function front_boxmaker() {
   	return '';
   }
   
-  if (!module_exists('os_boxes')) {
-  	drupal_set_message('please enable os_boxes before running boxmaker', 'error');
+  if (! (module_exists('os_boxes') && module_exists('spaces_simpleviews') )) {
+  	drupal_set_message('please enable os_boxes and spaces_simpleviews before running boxmaker', 'error');
   	return '';
   }
   

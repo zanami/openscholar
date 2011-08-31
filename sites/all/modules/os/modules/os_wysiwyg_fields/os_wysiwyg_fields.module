@@ -156,8 +156,9 @@ function os_wysiwyg_fields_oembed_provider_callback($provider, $url, $matches, $
   if ($embed->html) {
     $html = new DOMDocument(null, null);
     @$html->loadHTML($embed->html);
-    if ($object = $html->getElementsByTagName('object')) {
-      $object = $object->item(0);
+    $object = $html->getElementsByTagName('object');
+    if ($object && $object = $object->item(0)) {
+      //$object = $object->item(0);
       $param = $html->createElement('param', 'transparent');
       $param->setAttribute('name', 'wmode');
       $param->setAttribute('value', 'transparent');

@@ -68,11 +68,6 @@ function block_vsite_admin_link($type, $object) {
   if ($type != 'block') return;
   if (!context_isset('context', 'vsite-section-public')) return;
 
-  $links['block-test'] = array(
-    'title' => t('Block Test'),
-    'href' => 'test',
-  );
-
   // if this block comes from Views, the admin links will overlap
   // merge them into one set of links
   if ($object->module == 'views') {
