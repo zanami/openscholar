@@ -43,7 +43,7 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
       $settings = fb_front_settings($vsite->id);
       $front = fb_get_front($settings, $vsite);
       
-      if (($wgt = fb_mk_front_box($vsite, $front)) != FALSE) {
+      if ($front && ($wgt = fb_mk_front_box($vsite, $front)) != FALSE) {
       	$add_func = 'fb_add_' . $wgt['wgt']; //box or block
         $context['results'][] = $add_func($vsite, $wgt['data']);
 
@@ -133,7 +133,7 @@ function fb_get_front($settings, &$vsite) {
   if ($type == 'bio') {
     $front['type'] = 'bio';
     $front['options'] = array('node' => $settings['site_frontpage']);
-  } elseif ($type == 'node') {
+  } elseif (isset($type)) {
     $front['type'] = 'nid';
     $front['options'] = array('node' => $settings['site_frontpage']);
   }  else {
