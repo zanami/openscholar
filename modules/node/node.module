@@ -1270,9 +1270,9 @@ function node_search($op = 'search', $keys = NULL) {
         $total += $weight;
       }
       
-      // When all search factors are disabled (ie they have a weight of zero), 
-      // the default score is based only on keyword relevance and there is no need to 
-      // adjust the score of each item. 
+      // When all search factors are disabled (ie they have a weight of zero),
+      // the default score is based only on keyword relevance and there is no need to
+      // adjust the score of each item.
       if ($total == 0) {
         $select2 = 'i.relevance AS score';
         $total = 1;
@@ -2050,7 +2050,7 @@ function node_access($op, $node, $account = NULL) {
 
   // If the module did not override the access rights, use those set in the
   // node_access table.
-  if ($op != 'create' && $node->nid && $node->status) {
+  if ($op != 'create' && $node->nid && ($node->status || $op == 'update')) {
     $grants = array();
     foreach (node_access_grants($op, $account) as $realm => $gids) {
       foreach ($gids as $gid) {
