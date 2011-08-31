@@ -38,6 +38,9 @@
 	var hasRun = false;
 	Drupal.behaviors.adjustWysiwygSettings = function () {
 		
+		Drupal.settings.wysiwyg.enable = 'Rich-text Editor View';
+		Drupal.settings.wysiwyg.disable = 'HTML View';
+		
 		// set extended valid settings to include id for spans
 		// prevents error with inserted items ending up in helper elements that are removed later
 		// run this every time incase an ahah call replaces it
