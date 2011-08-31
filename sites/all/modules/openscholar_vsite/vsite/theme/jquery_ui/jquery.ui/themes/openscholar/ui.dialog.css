@@ -32,7 +32,7 @@
 
 .ui-dialog .ui-dialog-titlebar-close span {
 	display: block;
-	margin: 1px;
+	margin: -1px 10px 0 -15px;
 	}
 
 /*.ui-dialog .ui-dialog-titlebar-close:hover, .ui-dialog .ui-dialog-titlebar-close:focus {

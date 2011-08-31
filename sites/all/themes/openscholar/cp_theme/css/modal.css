@@ -8,14 +8,12 @@
 
 div.ctools-modal-content {
   color: #000;
-
   margin: 0;
-  border: none;
   text-align: left;
   background: #fff;
-  -moz-box-shadow: 0 .5em 3em rgba(0,0,0,0.6);
-  -webkit-box-shadow: 0 .5em 3em rgba(0,0,0,0.6);
-  box-shadow: 0 .5em 3em rgba(0,0,0,0.6);
+  -moz-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
   }
 
 div.ctools-modal-content .modal-title {
@@ -24,9 +22,7 @@ div.ctools-modal-content .modal-title {
   }
 
 #modal-content {
-  border: none;
-  background: #fff;
-  padding: 20px 0 20px 25px;
+ padding: 20px 0 20px 25px;
   }
 
 div.ctools-modal-content {
