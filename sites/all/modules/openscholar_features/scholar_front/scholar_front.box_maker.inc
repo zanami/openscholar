@@ -30,6 +30,7 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
   if (empty($context['sandbox'])) {
   	$context['sandbox']['progress'] = 0;
   	$context['sandbox']['max'] = $total_vsites;
+  	$context['message'] = 'Processing vsites 0 of ' . $total_vsites;
   }
   
   //loop over all users
@@ -132,13 +133,13 @@ function fb_get_front($settings, &$vsite) {
   if ($type == 'bio') {
     $front['type'] = 'bio';
     $front['options'] = array('node' => $settings['site_frontpage']);
-  } else {
+  } elseif ($type == 'node') {
     $front['type'] = 'nid';
     $front['options'] = array('node' => $settings['site_frontpage']);
-  }  //case for isset $type and !isset $type ???
-  
-  // bio has site_frontpage of node/nid
-  // unknown type does the same thing.
+  }  else {
+    //no node by this nid.  maybe an old setting for a node that was deleted?  no box!
+    return false;    
+  }
   
   return $front;
 }
@@ -152,8 +153,7 @@ function fb_mk_front_box(&$vsite, $settings) {
 
   $opts = array();
   global $_box_plugins;
-  
-  
+ 
   switch ($settings['type']) {
   	
   	//bio box
