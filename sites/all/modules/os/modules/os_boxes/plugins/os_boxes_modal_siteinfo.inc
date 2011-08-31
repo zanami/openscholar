@@ -1,32 +1,26 @@
 <?php
 
-class os_boxes_modalframe_image extends os_boxes_modalframe {
+class os_boxes_modal_siteinfo extends os_boxes_modalframe {
 
   protected function config_path() {
-    if ($this->options['nid']) {
-      return 'node/'.$this->options['nid'].'/edit';
-    }
-    else {
-      return 'node/add/image';
-    }
+    $vsite = vsite_get_vsite();
+    return 'node/'.$vsite->group->nid.'/edit';
   }
 
   public function options_defaults() {
-    $options = parent::options_defaults();
-    $options['nid'] = 0;
-    return $options;
+    return array();
   }
 
   public function render() {
     $node = node_load($this->options['nid']);
 
     $block = parent::render();
-    $block['content'] = content_format('field_gallery_image', $node->field_gallery_image[0], 'gallery_thumb_linked', $node);
+    $block['content'] = content_format('field_vsite_logo', $node->field_gallery_image[0], 'gallery_thumb_linked', $node);
     return $block;
   }
 
   public function form_alter(&$form, &$form_state) {
-    if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'image_node_form') {
+    if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'vsite_node_form') {
       parent::form_alter($form, $form_state);
 
       // hide unnecessary fields
