@@ -53,8 +53,12 @@
   border-bottom: none;
   z-index: 10;
   }
+  
+  
+  dl#scholarlayout-top-widgets {width:2000px;height:98px;}
+   dd#scholarlayout-top-widgets {display:inline;}
 
-dl#scholarlayout-top-widgets {
+.tagged-list  {
   height:98px;
   background:url('images/widgetBoxBg.png') repeat-x;
   width: 850px;
@@ -84,6 +88,8 @@ dd.scholarlayout-item {
 
 
 /** WIDGET ICONS **/
+
+	
 #scholarlayout-top-widgets dd.scholarlayout-item {
  background: url('images/widget-bg.png') no-repeat scroll 50% 10px transparent;
     color: #444545;
@@ -382,7 +388,7 @@ background: #c6cccc;
 
 /** LABEL TABS **/
 #widgetLabelTab {  
-	left: 753px;
+	left: 730px;
     position: relative;
     top: 46px;
     }
