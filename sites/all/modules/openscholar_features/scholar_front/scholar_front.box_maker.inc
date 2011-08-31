@@ -198,7 +198,8 @@ EOD;
       
     //featuredposts block.  no new box supoport.  note flag to make this a block
     case 'flag':
-      $type = 'os_boxes_featuredposts';
+      $type = 'views-vsite_featuredposts-block_1';
+      $block = true;
       break;
       
       
@@ -274,3 +275,12 @@ function fb_add_box(&$vsite, $box) {
   }
 }
 
+//adds block to content_top region
+function fb_add_block(&$vsite, $block) {
+  $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
+  $front_context['blocks'][$block]['region'] = 'content_top';
+
+  if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
+    return $vsite->id;
+  }
+}
