@@ -897,10 +897,10 @@
 	-webkit-border-bottom-left-radius: 4px/*{cornerRadius}*/;
 	}
 
-.ui-corner-all {
-	-moz-border-radius: 4px/*{cornerRadius}*/;
-	-webkit-border-radius: 4px/*{cornerRadius}*/;
-	}
+/*.ui-corner-all {
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}*/
 
 button.ui-corner-all {
   -moz-border-radius:20px;
