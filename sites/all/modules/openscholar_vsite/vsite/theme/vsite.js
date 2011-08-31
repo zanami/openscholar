@@ -50,3 +50,26 @@ Drupal.behaviors.vsiteAutocloseStatus = function(context) {
    });
   
 };
+
+Drupal.behaviors.vsiteBoxModals = function (ctx) {
+	$('.vsite-modal-link').click(function (e) {
+		var url = $(this).attr('href'),
+		    modal_start = url.indexOf('/modal/'),
+		    params = url.slice(modal_start);
+		url = url.replace(params, '');
+		params = params.split('/');
+		
+		url = url+'?modal&box='+params[params.length-1];
+		
+		var modalOptions = {
+			url: url,
+			autoFit: true,
+			width: 980,
+			onSubmit: Drupal.CTools.AJAX.respond,
+		};
+		
+		Drupal.modalFrame.open(modalOptions);
+		
+		e.preventDefault();
+	});
+};

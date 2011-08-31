@@ -72,4 +72,18 @@ abstract class os_boxes_default extends boxes_box {
       'os_og' => array('current' => 'current'),
     );
   }
+  
+  /**
+   * Custom submit hander to perform post_submit actions
+   */
+  public static function options_submit(&$form,&$form_state){
+  	
+  }
+  
+  /**
+   * Custom submit hander to perform post_submit actions
+   */
+  public static function options_validate(&$form,&$form_state){
+    
+  }
 }

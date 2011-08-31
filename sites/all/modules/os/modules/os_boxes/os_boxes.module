@@ -33,7 +33,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'box',
       'class' => 'boxes_simple',
       'file' => 'boxes_simple.inc',
-      'path' => $path,
+      'path' => drupal_get_path('module','boxes').'/plugins',
     ),
   );
 
@@ -246,6 +246,9 @@ function os_boxes_boxes_plugins() {
 
 /**
  * hook vsite_sidgets
+ *
+ * This function translates the box intances and the box defintions into vsite widgets for use in the
+ * openscholar layout structure
  */
 function os_boxes_vsite_widgets(){
   $items = array();
@@ -330,36 +333,18 @@ function os_boxes_menu() {
     'title' => 'Configure this Widget',
     'page callback' => 'os_boxes_box_modal',
     'page arguments' => array( 2,3),
-    'access callback' => 'cp_layout_box_configurable',
+    'access callback' => 'os_boxes_cp_layout_configurable',
     'access arguments' => array(3),
     'type' => MENU_CALLBACK,
   );
-
-  $items['osboxestest'] = array(
-    'title' => 'somettite',
-    'page callback' => 'os_boxes_test',
-    'access callback' => TRUE
-
-  );
+  
   return $items;
-}
-
-function os_boxes_test(){
-  //dpm(vsite_get_vsite());
-  ctools_include('ajax');
-  ctools_include('modal');
-
-  ctools_modal_add_js();
-
-  $output = ctools_modal_text_button('simplebox', 'cp/osboxes/nojs/simple', 'simplebox', 'context-button');
-
-  return $output;
 }
 
 /**
  * Determine if this box has a form, return true if it does, false otherwise
  */
-function cp_layout_box_configurable($delta){
+function os_boxes_cp_layout_configurable($delta){
 
   if ($delta && strpos($delta, 'boxes_add__') !== 0) {
   	//Box instance
@@ -377,7 +362,7 @@ function cp_layout_box_configurable($delta){
 }
 
 /**
- * A modal callback for configuring a box.
+ * A modal callback for configuring a box
  */
 function os_boxes_box_modal($js = NULL, $delta){
   module_load_include('inc', 'boxes', 'boxes.admin');
@@ -441,7 +426,12 @@ function os_boxes_create_delta() {
     return $delta;
 }
 
-function os_boxes_form_alter(&$form, &$form_state) {
+/**
+ * Implementation of form alter
+ * @param $form
+ * @param $form_state
+ */
+function os_boxes_form_alter(&$form, &$form_state, $form_id) {
   if (isset($_GET['modal']) && isset($_GET['box'])) {
     $box = boxes_load($_GET['box']);
     if (empty($box)) {
@@ -450,6 +440,44 @@ function os_boxes_form_alter(&$form, &$form_state) {
     }
 
     $box->form_alter($form, $form_state);
+  }
+  
+  switch ($form_id){
+  	case "boxes_box_form":
+  		//Allow each box to handle it's own validation && submission
+  		$form['#validate'][] = 'os_boxes_box_validate';
+  		$form['#submit'][] = 'os_boxes_box_submit';
+  	break;
+  }
+}
+
+/**
+ * Allow each box to validate it's form
+ *
+ * @param unknown_type $form
+ * @param unknown_type $form_state
+ */
+function os_boxes_box_validate($form, &$form_state){
+	
+	ctools_include('plugins');
+	$box_class = ctools_plugin_load_class('boxes', 'plugins', $form_state['values']['plugin_key'], 'handler');
+	if ($box_class && is_callable("{$box_class}::options_validate")) {
+		call_user_func(array($box_class,'options_validate'),$form, $form_state);
+	}
+}
+
+/**
+ * Allow each box to implement a submit handler
+ *
+ * @param unknown_type $form
+ * @param unknown_type $form_state
+ */
+function os_boxes_box_submit(&$form, &$form_state){
+	
+	ctools_include('plugins');
+	$box_class = ctools_plugin_load_class('boxes', 'plugins', $form_state['values']['plugin_key'], 'handler');
+  if ($box_class && is_callable("{$box_class}::options_submit")) {
+    call_user_func(array($box_class,'options_submit'),$form, $form_state);
   }
 }
 

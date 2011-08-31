@@ -908,3 +908,25 @@ function vsite_taxonomy_preprocess_node(&$vars){
     unset($vars['terms']); //Do not show "in xxx,yyy" in the teaser view
   }
 }
+
+/**
+ * Implementation of hook_boxes_plugins().
+ */
+function vsite_taxonomy_boxes_plugins() {
+  $info = array();
+  $path = drupal_get_path('module', 'vsite_taxonomy_') .'/plugins';
+
+  $info['vsite_taxonomy_filter_by_term'] = array(
+    'title' => 'Filter by Category',
+    'description' => 'Filter content by category',
+    'tags' => array('Content','Taxonomy'),
+    'handler' => array(
+      'class' => 'vsite_taxonomy_filter_by_term',
+      'file' =>  'vsite_taxonomy_filter_by_term.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
+  return $info;
+}
