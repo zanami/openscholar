@@ -116,7 +116,7 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
 function spaces_simpleviews_boxes_plugins(){
   $info = array();
   
-  $info['ls'] = array(
+  $info['spaces_simpleviews_boxes_ls'] = array(
     'title' => 'List of posts',
     'description' => 'List of posts', 
     'tags' => array(
