@@ -458,7 +458,7 @@ function os_boxes_form_alter(&$form, &$form_state, $form_id) {
  * @param unknown_type $form_state
  */
 function os_boxes_box_validate($form, &$form_state){
-	$box = boxes_factory($form_state['values']['plugin_key'], $form_state['values']);
+	$box = boxes_factory($form_state['values']['plugin_key']);
 	//Call the boxes validate function
 	if(is_object($box) && method_exists($box,'validate')){
 		$box->options_validate($form, $form_state);
@@ -472,7 +472,7 @@ function os_boxes_box_validate($form, &$form_state){
  * @param unknown_type $form_state
  */
 function os_boxes_box_submit(&$form, &$form_state){
-  $box = boxes_factory($form_state['values']['plugin_key'], $form_state['values']);
+  $box = boxes_factory($form_state['values']['plugin_key']);
   //Call the boxes validate function
   if(is_object($box) && method_exists($box,'submit')){
     $box->options_submit($form, $form_state);

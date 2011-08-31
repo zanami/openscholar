@@ -76,14 +76,14 @@ abstract class os_boxes_default extends boxes_box {
   /**
    * Custom submit hander to perform post_submit actions
    */
-  public function options_submit(&$form,&$form_state){
+  public static function options_submit(&$form,&$form_state){
   	
   }
   
   /**
    * Custom submit hander to perform post_submit actions
    */
-  public function options_validate(&$form,&$form_state){
+  public static function options_validate(&$form,&$form_state){
     
   }
 }
