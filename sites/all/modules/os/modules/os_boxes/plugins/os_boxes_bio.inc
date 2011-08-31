@@ -36,6 +36,7 @@ class os_boxes_bio extends os_boxes_node {
       $nid = $bio_node->nid;
     }
     $form['nid']['#value'] = $nid;
+    unset($form['nid']['#element_validate']);
     
     return $form;
   }
