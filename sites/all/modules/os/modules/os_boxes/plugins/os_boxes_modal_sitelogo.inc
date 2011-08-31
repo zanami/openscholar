@@ -24,14 +24,19 @@ class os_boxes_modal_sitelogo extends os_boxes_modalframe {
       parent::form_alter($form, $form_state);
 
       // hide unnecessary fields
-      dpm($form);
-      $form['field_gallery']['#type'] = 'value';
-      $form['options']['#type'] = 'value';
-      $form['author']['#type'] = 'value';
-      $form['book']['#type'] = 'value';
-      $form['menu']['#type'] = 'value';
-      $form['comment_settings']['#type'] = 'value';
-      $form['path']['#type'] = 'value';
+      $whitelist = array('field_vsite_logo');
+      foreach (element_children($form) as $child) {
+        if ($form[$child]['#type'] != 'value' && $form[$child]['#type'] != 'hidden') {
+          if (!in_array($child, $whitelist)) {
+            $form[$child]['#type'] = 'value';
+          }
+        }
+      }
+
+      $form['buttons']['#type'] = 'markup';
+      $form['buttons']['preview']['#access'] = false;
+      $form['buttons']['delete']['#access'] = false;
+      $form['buttons']['preview_changes']['#access'] = false;
     }
   }
 }

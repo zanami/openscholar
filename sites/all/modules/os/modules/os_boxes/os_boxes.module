@@ -21,7 +21,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_default',
       'file' => 'os_boxes_default.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'box',
     ),
   );
@@ -33,7 +33,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'box',
       'class' => 'boxes_simple',
       'file' => 'boxes_simple.inc',
-      'path' => drupal_get_path('module', 'boxes') .'/plugins',
+      'path' => $path,
     ),
   );
 
@@ -44,7 +44,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_addthis',
       'file' =>  'os_boxes_addthis.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     ),
   );
@@ -56,7 +56,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_featuredposts',
       'file' => 'os_boxes_featuredposts.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     ),
   );
@@ -68,7 +68,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_feedreader',
       'file' => 'os_boxes_feedreader.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     ),
   );
@@ -80,7 +80,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_gallery',
       'file' => 'os_boxes_gallery.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     ),
   );
@@ -92,7 +92,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_slideshow',
       'file' => 'os_boxes_slideshow.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     ),
   );
@@ -104,7 +104,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_feedreader',
       'file' => 'os_boxes_feedreader.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     ),
   );
@@ -116,7 +116,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_twitterfeed',
       'file' => 'os_boxes_twitterfeed.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     ),
   );
@@ -128,7 +128,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_cclicense',
       'file' => 'os_boxes_cclicense.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     ),
   );
@@ -141,7 +141,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_node',
       'file' => 'os_boxes_node.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     ),
   );
@@ -153,7 +153,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_bio',
       'file' => 'os_boxes_bio.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_node',
     ),
   );
@@ -165,7 +165,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_oembed',
       'file' => 'os_boxes_oembed.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     ),
   );
@@ -177,7 +177,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_shields',
       'file' => 'os_boxes_shields.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     )
   );
@@ -189,7 +189,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_booktoc',
       'file' => 'os_boxes_booktoc.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     )
   );
@@ -198,7 +198,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_modalframe',
       'file' => 'os_boxes_modalframe.inc',
-      'path' => drupal_get_path('module', 'os_boxes') .'/plugins',
+      'path' => $path,
       'parent' => 'os_boxes_default',
     ),
     'factory_path' => '',
@@ -246,6 +246,9 @@ function os_boxes_boxes_plugins() {
 
 /**
  * hook vsite_sidgets
+ *
+ * This function translates the box intances and the box defintions into vsite widgets for use in the
+ * openscholar layout structure
  */
 function os_boxes_vsite_widgets(){
   $items = array();
@@ -441,6 +444,11 @@ function os_boxes_create_delta() {
     return $delta;
 }
 
+/**
+ * Implementation of form alter
+ * @param $form
+ * @param $form_state
+ */
 function os_boxes_form_alter(&$form, &$form_state) {
   if (isset($_GET['modal']) && isset($_GET['box'])) {
     $box = boxes_load($_GET['box']);
