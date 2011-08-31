@@ -32,24 +32,7 @@ class os_boxes_modal_sitelogo extends os_boxes_modalframe {
           }
         }
       }
-      /*
-      $form['field_vsite_address']['#type'] = 'value';
-      $form['options']['#type'] = 'value';
-      $form['revision_information']['#type'] = 'value';
-      $form['author']['#type'] = 'value';
-      $form['book']['#type'] = 'value';
-      $form['menu']['#type'] = 'value';
-      $form['comment_settings']['#type'] = 'value';
-      $form['path']['#type'] = 'value';
-      $form['themes']['#type'] = 'value';
-      $form['taxonomy']['#type'] = 'value';
-      $form['og_description']['#type'] = 'value';
-      $form['og_selective']['#type'] = 'value';
-      $form['og_registry']['#type'] = 'value';
-      $form['og_directory']['#type'] = 'value';
-      $form['attachments']['#type'] = 'value';
-      $form['title']['#type'] = 'value';
-*/
+
       $form['buttons']['#type'] = 'markup';
       $form['buttons']['preview']['#access'] = false;
       $form['buttons']['delete']['#access'] = false;
