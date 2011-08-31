@@ -69,10 +69,10 @@ abstract class os_boxes_modalframe extends os_boxes_default {
 
     $form['box'] = $box_form;
     if (isset($form['buttons'])) {
-      $form['buttons']['submit']['#submit'][] = 'os_boxes_modalframe_form_submit';
+      $form['buttons']['submit']['#submit'][] = 'os_boxes_box_submit';
     }
     else {
-      $form['#submit'][] = 'os_boxes_modalframe_form_submit';
+      $form['#submit'][] = 'os_boxes_box_submit';
     }
   }
 
