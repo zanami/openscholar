@@ -841,20 +841,31 @@ function _scholar_publications_add_owner_checkbox(&$form_element){
  * @return string
  */
 function _scholar_publications_pub_by_type_wgt(){
+  
+  $args = array();
+  $join = "";
+  $where = "";
+  $vsite = vsite_get_vsite();
+  if($vsite){
+    $args[] = $vsite -> group-> nid;
+    $join .= "INNER JOIN {og_ancestry} oga ON n.nid = oga.nid";
+    $where .= "AND oga.group_nid = %n";
+  }
 
-  $s = "SELECT COUNT(n.nid) AS num, tid, name FROM {biblio} n JOIN {biblio_types} ON (biblio_type = tid) GROUP BY biblio_type";
-  $res = db_query(db_rewrite_sql($s));
+  $s = "SELECT COUNT(DISTINCT n.nid) AS num, tid, name FROM {biblio} n INNER JOIN {biblio_types} bt ON (n.biblio_type = bt.tid) {$join} WHERE 1 {$where} GROUP BY biblio_type";
+      
+  $res = db_query($s,$args);
 
   $i = 0;
   $plurals = array(
-  	'Software',
-  	'Data',
-  	'Conference Proceedings',
-  	'Thesis',
-  	'Unpublished',
-  	'Miscellaneous',
-  	'Audiovisual',
-  	'Artwork'
+    'Software',
+    'Data',
+    'Conference Proceedings',
+    'Thesis',
+    'Unpublished',
+    'Miscellaneous',
+    'Audiovisual',
+    'Artwork'
   );
   $content = array();
   while ($row = db_fetch_array($res)) {
@@ -866,38 +877,12 @@ function _scholar_publications_pub_by_type_wgt(){
   if (count($content)) {
     $output = '<ul>'.implode('', $content).'</ul>';
   }
-  /*
-	$view = views_get_view('publication_types');
-  $view->execute('block_1');
-  usort($view->result,"_scholar_publications_sort_type_by_numpubs");
-  $types = array_slice($view->result,0,4);
 
-	$output = ""; $i = 0; $tabs = "<h3 class=\"title\">Recent Publications</h3><ul>";
-	foreach ($types as $type) {
-	  if($type->num_records < 1) continue;
+  if(!$output) return array();
 
-	  $tabs .= "<li><a href=\"#pub_type_tabs-{$i}\">{$type->biblio_types_name}";
-		if(!in_array($type->biblio_types_name,array('Software','Data','Conference Proceedings', 'Thesis', 'Unpublished','Miscellaneous','Audiovisual','Artwork'))) $tabs .= "s"; //FIX THE PLURAL
-		$tabs .= "</a></li>";
+  $output = "<div id='pub_type_tabs'>".$output."</div>";
 
-		$view = views_get_view('publication_types');
-		$view->set_arguments(array(str_replace(" ","-",$type->biblio_types_name)));
-		$view->execute('page_1');
-
-	  $output .= "<div id='pub_type_tabs-{$i}'>";
-	  foreach ($view->result as $row) {
-	  	$node = node_load($row->nid);
-	  	$output .= "\n<div class=\"biblio-entry\">". theme('biblio_entry', $node, variable_get('biblio_base', 'biblio') , biblio_get_style()) ."</div>";
-	  }
-	  $output .= "</div>";
-	  $i++;
-	}
-	$tabs .= "</ul>";*/
-	if(!$output) return array();
-
-	$output = "<div id='pub_type_tabs'>".$output."</div>";
-
-  return array('subject' => context_isset('context','openscholar-feature-publications')?"By Type":"Recent Writings",'content' => $output);
+  return array('subject' => "Publications By Type",'content' => $output);
 }
 
 /**

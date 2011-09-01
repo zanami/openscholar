@@ -26,7 +26,7 @@ function os_strongarm() {
   $strongarm->value = 'openscholar_default';
 
   $export['theme_default'] = $strongarm;
-  /*
+  
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
@@ -45,6 +45,6 @@ function os_strongarm() {
 
 
   $export['spaces_features'] = $strongarm;
-  */
+  
   return $export;
 }
