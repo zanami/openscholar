@@ -87,7 +87,10 @@ function cp_init(){
 
   //initialize cp theme
   if (context_isset('context', 'vsite-section-cp')) {
-    global $custom_theme;
+    global $custom_theme, $theme;
+    if (isset($theme)) {
+      $theme = null;
+    }
     $custom_theme = CPTHEME;
   }
 
@@ -154,6 +157,19 @@ function cp_context_links_alter(&$links){
  * Return the type of toolbar to use
  */
 function cp_get_toolbar_setting(){
+  // no vsite OR not logged in: off
+  // not owner OR admin menu off: mini
+  // owner AND admin menu on : full
+  $vsite = vsite_get_vsite();
+  global $user;
+  if (!user_is_logged_in() || !$vsite) return 'off';
+
+  $admin_menu = variable_get('cp_admin_menu', 0);
+  if ($vsite->access_admin() && ($admin_menu || context_isset('context', 'vsite-section-cp'))) {
+    return 'full';
+  }
+  return 'mini';
+  /*
   if (! ($vsite = vsite_get_vsite()) || ! $vsite->access_admin()) return 'off';
 
   $user_tb_setting = variable_get('cp_admin_menu', 0);
@@ -170,7 +186,7 @@ function cp_get_toolbar_setting(){
     return "mini";
   }
 
-  return 'off';
+  return 'off';*/
 }
 
 /**
