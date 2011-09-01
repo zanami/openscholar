@@ -55,8 +55,8 @@
   }
   
   
-  dl#scholarlayout-top-widgets {width:2000px;height:98px;}
-   dd#scholarlayout-top-widgets {display:inline;}
+  dl#scholarlayout-top-widgets {float:left;width:auto;height:98px;}
+   dd#scholarlayout-top-widgets {display:inline;white-space:nowrap;}
 
 .tagged-list  {
   height:98px;
