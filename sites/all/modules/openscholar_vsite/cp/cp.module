@@ -427,18 +427,21 @@ function cp_preprocess_page(&$vars){
   switch (cp_get_toolbar_setting()) {
     case 'mini' :
       global $user;
+      $vsite = vsite_get_vsite();
       $user_links = array();
-      $user_links[] = array(
-        'title' => 'Control Panel',
-        'href' => 'cp/build/features'
-      );
       $user_links[] = array(
         'title' => t('Hello <strong>!username</strong>', array(
           '!username' => $user->name
         )),
         'href' => 'user',
-        'html' => TRUE
+        'html' => TRUE,
       );
+      if ($vsite->access_admin()) {
+        $user_links[] = array(
+          'title' => t('Control Panel'),
+          'href' => 'cp/build/features',
+        );
+      }
       $user_links[] = array(
         'title' => t('Logout'),
         'href' => "logout"
