@@ -916,13 +916,13 @@ function vsite_taxonomy_boxes_plugins() {
   $info = array();
   $path = drupal_get_path('module', 'vsite_taxonomy_') .'/plugins';
 
-  $info['vsite_taxonomy_filter_by_term'] = array(
+  $info['vsite_taxonomy_fbt'] = array(
     'title' => 'Filter by Category',
     'description' => 'Filter content by category',
     'tags' => array('Content','Taxonomy'),
     'handler' => array(
-      'class' => 'vsite_taxonomy_filter_by_term',
-      'file' =>  'vsite_taxonomy_filter_by_term.inc',
+      'class' => 'vsite_taxonomy_fbt',
+      'file' =>  'vsite_taxonomy_fbt.inc',
       'path' => $path,
       'parent' => 'os_boxes_default',
     ),
