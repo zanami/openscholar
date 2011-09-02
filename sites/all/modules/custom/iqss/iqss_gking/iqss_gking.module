@@ -217,7 +217,7 @@ function _iqss_gking_areas_of_research_wgt(){
       )) || $o_vocab->depth != 0)
         continue;
       $n_index ++;
-      $items = vsite_taxonomy_build_list_items($n_index, $tree, 'iqss_gking_dl');
+      $items = theme('vsite_taxonomy_term_list',$n_index, $tree, 'iqss_gking_dl');
       $output = "\n\n" . '<div id="' . strtolower($o_vocab->name) . '" class="col">' . '<h4>' . $o_vocab->name . '</h4>' . "<dl>" . implode("\n", $items) . "</dl>" . "</div><!--/ $o_vocab->name -->" . $output;
     }
     break;
