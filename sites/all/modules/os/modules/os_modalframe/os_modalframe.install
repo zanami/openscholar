@@ -1,0 +1,5 @@
+<?php
+
+function os_modalframe_install() {
+  db_query("UPDATE {system} SET weight = 100 WHERE name = 'os_modalframe'");
+}
