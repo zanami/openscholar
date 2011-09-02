@@ -16,6 +16,6 @@ $(document).ready(function () {
 	}
 	
 	//Replaces Recent Presentations with Video Archive inside block-views-scholar_publications-block_1 - requested 9/2/11
-	$('#block-views-scholar_publications-block_1 h3.title').html('Video Archive');
+	$('#block-views-scholar_presentations-block_1 h3.title').html('Video Archive');
 	
 });
