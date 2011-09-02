@@ -36,7 +36,7 @@ abstract class os_boxes_default extends boxes_box {
   public function options_form() {
     if (filter_access($this->options['format'])) {
       $form['display_type'] = array(
-        '#type' => 'radios',
+        '#type' => 'value',
         '#title' => t('Visibility settings'),
         '#default_value' => $this->options['visibility'],
         '#options' => array(

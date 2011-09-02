@@ -299,7 +299,7 @@ function vsite_taxonomy_block($op = 'list', $delta = 0, $edit = array()) {
       	break;
         case 0:
         default:
-          $block = vsite_taxonomy_feature_categories_block();
+          $block = array('subject' => 'vsite taxonomy cat','content' => 'depricated');// vsite_taxonomy_feature_categories_block();
           break;
       }
 
@@ -322,54 +322,6 @@ function vsite_taxonomy_vsite_widgets(){
     'type' => 'context_ui',
   );
   return $items;
-}
-
-/**
- * callback function for "Site categories" block displayed inside a feature
- */
-function vsite_taxonomy_feature_categories_block(){
-  $vsite = vsite_get_vsite();
-  $block = array();
-  $terms_html = "";
-
-  vsite_include('vsiteapi');
-  $active_feature = vsite_active_feature();
-
-  $active_nodes = array();
-  $context = context_load('openscholar-feature-'.$active_feature);
-
-  $active_nodes = array();
-  if(isset($context->conditions['node']['values'])){
-    $active_nodes = $context->conditions['node']['values'];
-  }
-
-  if ($vsite) {
-
-  	// get the vocabulary for these types
-  	$vcs = array();
-  	if($active_feature){
-  	  foreach ($active_nodes as $s_type) $vcs += $vsite->get_vocabs($s_type);
-  	}else{
-  		$vcs = $vsite->get_vocabs($s_type);
-  	}
-
-    foreach ($vcs as $n_vid => $taxonomy){
-
-      $terms = taxonomy_get_tree($taxonomy->vid);
-
-      $n_index = 0;
-      $items = vsite_taxonomy_build_list_items($n_index, $terms,'vsite_taxonomy_term', $b_description = false, $b_show_empty = false, $b_show_admin_links = false, $s_term_filter = ($active_feature?"scholar_".$active_feature:false), true);
-
-      if (count($items)) {
-      	$terms_html .= strlen($terms_html)?'</div></div><div class="block block-views"><div class="content">':"";
-        $terms_html .= "<h3 class=\"title\">".ucfirst($taxonomy->name)."</h3>".theme('item_list', $items, NULL, 'ul');
-      }
-
-    }
-    $block['content'] = $terms_html;
-  }
-
-  return $block;
 }
 
 /**
@@ -914,7 +866,7 @@ function vsite_taxonomy_preprocess_node(&$vars){
  */
 function vsite_taxonomy_boxes_plugins() {
   $info = array();
-  $path = drupal_get_path('module', 'vsite_taxonomy_') .'/plugins';
+  $path = drupal_get_path('module', 'vsite_taxonomy') .'/plugins';
 
   $info['vsite_taxonomy_fbt'] = array(
     'title' => 'Filter by Category',
