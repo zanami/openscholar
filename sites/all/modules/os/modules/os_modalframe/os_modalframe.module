@@ -1,0 +1,114 @@
+<?php
+
+/**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function os_modalframe_ctools_plugin_api($module, $api) {
+  if ($module == 'boxes' && $api == 'plugins') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implementation of hook_boxes_plugins().
+ */
+function os_modalframe_boxes_plugins() {
+  $info = array();
+  $path = drupal_get_path('module', 'os_modalframe') .'/plugins';
+
+  $info['os_boxes_modalframe'] = array(
+    'handler' => array(
+      'class' => 'os_boxes_modalframe',
+      'file' => 'os_boxes_modalframe.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+    'factory_path' => '',
+  );
+
+  $info['os_boxes_modal_image'] = array(
+    'title' => 'Single Image',
+    'description' => 'Single Image',
+    'tags' => array('Media','Image'),
+    'handler' => array(
+      'class' => 'os_boxes_modalframe_image',
+      'file' => 'os_boxes_modalframe_image.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_modalframe',
+    ),
+    'factory_path' => 'node/add/image',
+  );
+
+  $info['os_boxes_modal_sitelogo'] = array(
+    'title' => 'Site Logo',
+    'description' => 'Site Logo',
+    'tags' => array('Misc'),
+    'handler' => array(
+      'class' => 'os_boxes_modal_sitelogo',
+      'file' => 'os_boxes_modal_sitelogo.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_modalframe',
+    ),
+  );
+
+  $info['os_boxes_modal_siteinfo'] = array(
+    'title' => 'Site Info',
+    'description' => 'Site Info',
+    'tags' => array('Misc'),
+    'handler' => array(
+      'class' => 'os_boxes_modal_siteinfo',
+      'file' => 'os_boxes_modal_siteinfo.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_modalframe',
+    ),
+  );
+
+  return $info;
+}
+
+function os_modalframe_form_alter(&$form, &$form_state) {
+  if (isset($_GET['modal']) && isset($_GET['box'])) {
+    $box = boxes_load($_GET['box']);
+    if (empty($box)) {
+      // GET[box] wasn't a delta. must be a plugin key
+      $box = boxes_factory($_GET['box']);
+    }
+
+    $box->form_alter($form, $form_state);
+  }
+}
+
+function os_modalframe_form_submit(&$form, &$form_state) {
+  ctools_include('plugins');
+	$box_class = ctools_plugin_load_class('boxes', 'plugins', $form_state['values']['plugin_key'], 'handler');
+	if ($box_class && is_callable("{$box_class}::submit")) {
+		$box = call_user_func(array($box_class,'submit'), $form, $form_state);
+	}
+
+  ctools_include('ajax');
+  $args = array(
+    ctools_ajax_command_replace("div#cp-settings-layout dd#boxes-boxes_add__{$box->plugin_key}", theme('vsite_layout_cp_widget', "boxes-{$box->delta}", os_boxes_get_vsite_widget($box))),
+		array('command' => 'updateLayoutForm', 'warning' => true),
+  );
+  modalframe_child_js();
+  modalframe_close_dialog($args);
+  modalframe_form_submit($form, $form_state);
+  $form['#redirect'] = false;
+}
+
+function os_modalframe_vsite_admin_link($type, $object) {
+  $items = array();
+  if ($type == 'block' && $object->module == 'boxes' && ($box = boxes_load($object->delta)) && $vsite = vsite_get_vsite()) {
+    if ($box->plugin_key == 'os_boxes_modal_siteinfo' || $box->plugin_key == 'os_boxes_modal_sitelogo') {
+      $items[] = array(
+        'title' => t('Configure'),
+        'href' => 'node/'.$vsite->group->nid.'/edit/modal/box/'.$object->delta,
+        'attributes' => array(
+          'class' => 'vsite-modal-link',
+        ),
+      );
+    }
+  }
+
+  return $items;
+}
