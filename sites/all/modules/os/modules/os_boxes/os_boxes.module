@@ -182,53 +182,6 @@ function os_boxes_boxes_plugins() {
     )
   );
 
-  $info['os_boxes_modalframe'] = array(
-    'handler' => array(
-      'class' => 'os_boxes_modalframe',
-      'file' => 'os_boxes_modalframe.inc',
-      'path' => $path,
-      'parent' => 'os_boxes_default',
-    ),
-    'factory_path' => '',
-  );
-
-  $info['os_boxes_modal_image'] = array(
-    'title' => 'Single Image',
-    'description' => 'Single Image',
-    'tags' => array('Media','Image'),
-    'handler' => array(
-      'class' => 'os_boxes_modalframe_image',
-      'file' => 'os_boxes_modalframe_image.inc',
-      'path' => $path,
-      'parent' => 'os_boxes_modalframe',
-    ),
-    'factory_path' => 'node/add/image',
-  );
-
-  $info['os_boxes_modal_sitelogo'] = array(
-    'title' => 'Site Logo',
-    'description' => 'Site Logo',
-    'tags' => array('Misc'),
-    'handler' => array(
-      'class' => 'os_boxes_modal_sitelogo',
-      'file' => 'os_boxes_modal_sitelogo.inc',
-      'path' => $path,
-      'parent' => 'os_boxes_modalframe',
-    ),
-  );
-
-  $info['os_boxes_modal_siteinfo'] = array(
-    'title' => 'Site Info',
-    'description' => 'Site Info',
-    'tags' => array('Misc'),
-    'handler' => array(
-      'class' => 'os_boxes_modal_siteinfo',
-      'file' => 'os_boxes_modal_siteinfo.inc',
-      'path' => $path,
-      'parent' => 'os_boxes_modalframe',
-    ),
-  );
-
   return $info;
 }
 

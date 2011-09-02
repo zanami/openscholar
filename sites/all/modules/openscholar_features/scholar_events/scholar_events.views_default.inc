@@ -148,6 +148,16 @@ function scholar_events_views_default_views() {
       'validate_argument_php' => '',
     ),
   ));
+  $handler->override_option('sorts', array(
+    'field_date_value' => array(
+      'order' => 'ASC',
+      'delta' => -1,
+      'id' => 'field_date_value',
+      'table' => 'node_data_field_date',
+      'field' => 'field_date_value',
+      'relationship' => 'none',
+    ),
+  ));
   $handler->override_option('filters', array(
     'type' => array(
       'operator' => 'in',
@@ -499,6 +509,53 @@ function scholar_events_views_default_views() {
       'override' => array(
         'button' => 'Use default',
       ),
+    ),
+    'field_date_value' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 0,
+      'label_type' => 'none',
+      'format' => 'short',
+      'multiple' => array(
+        'multiple_number' => '',
+        'multiple_from' => '',
+        'multiple_to' => '',
+        'group' => '',
+      ),
+      'repeat' => array(
+        'show_repeat_rule' => '',
+      ),
+      'fromto' => array(
+        'fromto' => 'value',
+      ),
+      'exclude' => 0,
+      'id' => 'field_date_value',
+      'table' => 'node_data_field_date',
+      'field' => 'field_date_value',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
     ),
   ));
   $handler->override_option('items_per_page', 5);

@@ -234,9 +234,9 @@ function _iqss_gking_areas_of_research_wgt(){
  */
 function iqss_gking_context_load_alter(&$context) {
   if (! iqss_gking_on_gking_site()) return;
-  
+
   if($context->name == 'openscholar-feature-taxonomy'){
-     
+
   	$context->reactions['block']['blocks']['iqss_gking_areas_of_research'] = array(
       'module' => 'iqss_gking',
       'delta' => 'areas_of_research',
@@ -245,8 +245,8 @@ function iqss_gking_context_load_alter(&$context) {
       'status' => '0',
       'label' => 'Areas of Research',
     );
-		
-		
+
+
     //Add this block category pages on (Lets you filter the category by publictaion type)
 	 $context->reactions['block']['blocks']['iqss_gking-filter_by_type'] = array(
       'module' => 'iqss_gking',
@@ -258,7 +258,7 @@ function iqss_gking_context_load_alter(&$context) {
       'type' => 'context_ui'
     );
   }
-  
+
 }
 
 /**
@@ -342,7 +342,7 @@ function iqss_gking_term_page($str_tids = '', $depth = 'all'){
 
   //drupal_set_title(check_plain($term->name)."<span class='term-admin-links'>".ctools_modal_text_button("Sort Section","taxonomy/nojs/nodeorder/$term->tid","","term-admin-link term-admin-sort-link")."</span>");
   drupal_set_title(check_plain($term->name));
-  
+
   $output .= _iqss_gking_term_page_tree($term, $vocab->vid, $terms['operator'], $tree);
 
   return $output;
@@ -694,6 +694,10 @@ function iqss_gking_form_alter(&$form, $form_state, $form_id) {
     	$form['title']['#required'] = false;
     }//Do not require Titles for Pages in this taxonomy (don't ask) ok it is because he uses this for blurbs on the taxonomy page
 
+    if ($form['#node']->type == 'person') {
+      $form['buttons']['submit']['#submit'][] = 'iqss_gking_node_form_redirect';
+    }
+
   }
 
   if($form_id == "taxonomy_form_term"){
@@ -718,7 +722,7 @@ function iqss_gking_form_alter(&$form, $form_state, $form_id) {
   if ($form_id == 'taxonomy_form_vocabulary' && is_array($form['settings']['orderable'])) {
     $form['settings']['orderable']['#type'] = 'value';
   }//Remove the unused nodeorder form items
-  
+
   if ($form_id == 'nodeorder_admin_display_form') {
     $form['submit']['#value'] = "Submit Order";
   }//Change the form so it says submit to match the change message
@@ -1034,4 +1038,12 @@ function iqss_gking_itweak_upload_upload_attachments($files, $options = NULL) {
       .'</div>'
     ;
   }
+}
+
+function iqss_gking_node_form_redirect(&$form, &$form_state) {
+  $path = array('people');
+  if ($form_state['values']['taxonomy'][175]) {
+    $path[] = '#iqss_gking_term_'.current($form_state['values']['taxonomy'][175]);
+  }
+  $form['#redirect'] = $path;
 }
