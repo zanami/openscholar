@@ -7,7 +7,7 @@
  * The class for filtering content by taxonomy
  */
 
-class vsite_taxonomy_filter_by_term extends os_boxes_default {
+class vsite_taxonomy_fbt extends os_boxes_default {
   
 //  /**
 //   * Implementation of boxes_content::options_defaults().

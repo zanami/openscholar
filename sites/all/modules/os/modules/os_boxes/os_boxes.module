@@ -49,18 +49,6 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
-  $info['os_boxes_featuredposts'] = array(
-    'title' => 'Featured Posts',
-    'description' => 'List of content featured for front page',
-    'tags' => array('Content','Featured'),
-    'handler' => array(
-      'class' => 'os_boxes_featuredposts',
-      'file' => 'os_boxes_featuredposts.inc',
-      'path' => $path,
-      'parent' => 'os_boxes_default',
-    ),
-  );
-
   $info['os_boxes_feedreader'] = array(
     'title' => 'Feed Reader',
     'description' => 'List of feed items',
