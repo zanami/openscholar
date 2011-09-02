@@ -148,6 +148,16 @@ function scholar_events_views_default_views() {
       'validate_argument_php' => '',
     ),
   ));
+  $handler->override_option('sorts', array(
+    'field_date_value' => array(
+      'order' => 'ASC',
+      'delta' => -1,
+      'id' => 'field_date_value',
+      'table' => 'node_data_field_date',
+      'field' => 'field_date_value',
+      'relationship' => 'none',
+    ),
+  ));
   $handler->override_option('filters', array(
     'type' => array(
       'operator' => 'in',
