@@ -14,4 +14,7 @@ $(document).ready(function () {
 		$('param[name="flashvars"]').val(str);
 		$('embed[src*="www.smugmug.com"]').attr('flashvars', str);
 	}
+	
+	//Replaces Recent Presentations with Video Archive inside block-views-scholar_publications-block_1 - requested 9/2/11
+	$('#block-views-scholar_publications-block_1 h3.title').html('Video Archive');
 });
