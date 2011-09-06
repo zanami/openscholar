@@ -24,7 +24,6 @@
  * 
  */
 function mk_box(&$vsite, $type, $opts) {
-  
   global $box_plugins;
   if (empty($box_plugins)) {
     $box_plugins  = os_boxes_boxes_plugins();
@@ -77,6 +76,8 @@ function vsite_put_box(&$vsite, $box, $region) {
   
   if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
     return $vsite->id;
+  } else {
+    return FALSE;
   }
 }
 
@@ -87,3 +88,5 @@ function vsite_put_box(&$vsite, $box, $region) {
 function vsite_remove_box(&$vsite, $box) {
   vsite_put_box($vsite, $box, 'empty');
 }
+
+//add block function?  do we ever need that for migration or is that only for front page boxes?
