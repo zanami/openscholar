@@ -2,7 +2,7 @@
 
 /**
  * @file
- * The class for "CC license" type widgets.  
+ * The class for "CC license" type widgets.
  */
 
 class os_boxes_bio extends os_boxes_node {
@@ -17,25 +17,17 @@ class os_boxes_bio extends os_boxes_node {
   /**
    * Implementation of boxes_content::options_form().
    */
-  public function options_form(){    
+  public function options_form(){
 
     //get nid of this vsite's bio
     if (($vsite = vsite_get_vsite()) == FALSE) {
-      return array(); 
-    }
+      return array();
+    }//We must be in a vsite
     
     $form = parent::options_form();
     
     $form['nid']['#type'] = 'value';
-    if (($nid = $this->options['nid']) == FALSE) {
-      //bio node created after this post.  cache the nid.
-      $vsite = vsite_get_vsite();
-      if (($bio_node = content_profile_load('bio', $vsite->group->uid, $lang = '')) == FALSE) {
-		$nid = 0;
-      }
-      $nid = $bio_node->nid;
-    }
-    $form['nid']['#value'] = $nid;
+    $form['nid']['#value'] = 0;
     unset($form['nid']['#element_validate']);
     
     return $form;
@@ -45,26 +37,43 @@ class os_boxes_bio extends os_boxes_node {
    * Implementation of boxes_content::render().
    */
   public function render() {
-  	$block = parent::render();    
   	
-  	//no nid option.  
-    if (!$this->options['nid']) {
-      //check if a bio has been set
-      if (($vsite = vsite_get_vsite()) == FALSE) {
-        return array();
-      }
+  	
+    if (($vsite = vsite_get_vsite()) == FALSE) {
+      return array();
+    }//We must be in a vsite
   
+    //check if a bio has been set
 	  if (($bio_node = content_profile_load('bio', $vsite->group->uid, $lang = '')) == TRUE) {
-        //we have a bio.  set it here and try again.
-        $this->options['nid'] = $bio_node->nid;
-        $block = parent::render();    
-      } else {
-        //new user - no bio yet.
-	    $block['content'] = scholar_front_welcome();
-      } 
+      //we have a bio.  set it here
+      $this->options['nid'] = $bio_node->nid;
+      $block = parent::render();
+    } else {
+      //no bio yet.
+	    $block['content'] = $this->render_no_bio();
     }
-
+    
     return $block;
   }
+  
+  /**
+   * Render help text for a user that does not have a bio yet
+   */
+  protected function render_no_bio(){
+  	$vsite = vsite_get_vsite();
+    if(!$vsite || !$vsite->access_admin()) return "";
+    $spaces_features = variable_get('spaces_features',array());
 
+    $bio_link = $spaces_features["scholar_biocv"]?l("Setup your bio now","node/add/bio")." or":"The bio feature is disabled";
+    $front_settings = l("change what displays","cp/build/layout",array("query" => array("page_type" => "front")));
+    $result = <<<MESSAGE
+        <div id="welcome_front_wrapper">
+          <h3>Welcome to your new site.</h3>
+          <p>Your sites front page is set to display your bio by default.  {$bio_link} {$front_settings} for the front of your site.</p>
+        </div>
+MESSAGE;
+
+    return $result;
+  }
+  	
 }
