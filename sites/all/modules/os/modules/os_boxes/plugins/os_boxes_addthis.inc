@@ -12,7 +12,7 @@ class os_boxes_addthis extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
     $options['widget_type'] = 'buttons';
-    $options['toolbox_services'] = 'facebook,twitter,email,linkedin,google_plusone'; //@todo array
+    $options['toolbox_services'] = 'facebook,twitter,email,linkedin,google_plusone';
     /* @todo other options
      * profile id
      */
@@ -25,18 +25,18 @@ class os_boxes_addthis extends os_boxes_default {
   public function options_form(){    
     $form = parent::options_form();
     
-    $tb_sm = "small:<div class='addthis_toolbox addthis_default_style ' ><a class='addthis_toolbox_item addthis_button_facebook'></a><a class='addthis_toolbox_item addthis_button_twitter'></a><a class='addthis_toolbox_item addthis_button_email'></a><a class='addthis_toolbox_item addthis_button_linkedin'></a><a class='addthis_toolbox_item addthis_button_google_plusone'></a></div>";
-    
+    global $base_url;
+    $dir = $base_url . '/' . $mod = drupal_get_path('module', 'os_boxes') . '/plugins/images/';
+        
     $form['widget_type'] = array(
       '#type' => 'radios',
       '#title' => t('Display style'),
       '#default_value' => $this->options['widget_type'],
-        '#options' => array(
-		  'buttons' => t('Button'), //default
-    	  'toolbox_small' => $tb_sm,//sm
-    	  'toolbox_large' => t('Toolbox lg'),//big
-    	  'numeric' => "<img src='http://cache.addthiscdn.com/www/20110825162931/images/gtc-like-tweet-share-plusone.gif' />\n",
-    		
+      '#options' => array(
+		    'buttons' => "<img src='$dir/addthis_button.png' />\n",
+        'toolbox_small' => "<img src='$dir/addthis_sm.png' />\n",
+        'toolbox_large' => "<img src='$dir/addthis_lg.png' />\n",
+        'numeric' => "<img src='http://cache.addthiscdn.com/www/20110825162931/images/gtc-like-tweet-share-plusone.gif' />\n",	
       ),
     );
     
@@ -58,7 +58,7 @@ class os_boxes_addthis extends os_boxes_default {
       return;
     }
     
-	switch ($this->options['widget_type']) {
+  	switch ($this->options['widget_type']) {
 		
   	  case 'buttons':
   	  	$services = NULL;
