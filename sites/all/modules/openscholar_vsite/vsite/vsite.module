@@ -825,6 +825,8 @@ function vsite_system_info_alter(&$info, $file){
     $info['regions']['right'] = "right sidebar";
     $info['regions']['content_top'] = "content top";
     $info['regions']['content_bottom'] = "content bottom";
+    $info['regions']['content_left'] = "content left";
+    $info['regions']['content_right'] = "content right";
     $info['regions']['footer'] = "footer";
     $info['regions']['closure_region'] = "closure";
 
