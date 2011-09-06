@@ -5,6 +5,7 @@
  * @file batch functions for creating boxes from existing front pages
  **/
 
+require_once drupal_get_path('module', 'os_boxes') . '/os_boxes.newbox_api.inc';
 
 //completed batch
 function front_boxmaker_done($success, $results, $operations) {
@@ -237,6 +238,7 @@ EOD;
   }
 }
 
+/*
 //creates a box object in the vsite given type and opts.  returns $box
 function mk_box(&$vsite, $type, $opts) {
   
@@ -254,7 +256,13 @@ function mk_box(&$vsite, $type, $opts) {
     return false;
   }
 }
+*/
 
+//add our new box to content_top
+function fb_add_box(&$vsite, $box) {
+  return vsite_put_box($vsite, $box,'content_top');
+}
+/*
 // adds box to vsite.  returns id of vsite on successful creation
 function fb_add_box(&$vsite, $box) {
   
@@ -273,7 +281,7 @@ function fb_add_box(&$vsite, $box) {
   if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
     return $vsite->id;
   }
-}
+}*/
 
 //adds block to content_top region
 function fb_add_block(&$vsite, $block) {

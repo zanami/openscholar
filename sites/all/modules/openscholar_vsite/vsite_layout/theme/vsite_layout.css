@@ -59,7 +59,7 @@
    dd#scholarlayout-top-widgets {display:inline;white-space:nowrap;}
 
 .tagged-list  {
-  height:98px;
+  height:101px;
   background:url('images/widgetBoxBg.png') repeat-x;
   width: 850px;
 border: 1px solid #c0c7c7;
@@ -395,5 +395,5 @@ background: #c6cccc;
 #websiteLabelTab { 
 	left: 749px;
     position: relative;
-    top: 165px;
+    top: 168px;
     }

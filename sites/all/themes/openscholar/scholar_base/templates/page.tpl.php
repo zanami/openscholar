@@ -54,7 +54,7 @@
       <div id="content-area">
         <div class="wrap clearfix">
           <div class="hg-container">
-          <div id="content-main" class="column">
+          <div id="content-main" class="column<?php if (!empty($content_left)){ echo " content-left"; } if (!empty($content_right)){ echo " content-right"; } ?>">
             <?php if (!empty($content_top)): ?>
             <div id="content-top">
               <?php print $content_top; ?>

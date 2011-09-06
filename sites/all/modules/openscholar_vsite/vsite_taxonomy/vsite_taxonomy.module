@@ -12,7 +12,6 @@ include_once('vsite_taxonomy.features.inc');
  * @todo provide update hook to rename current vocab names
  * @todo justintime javascript
  */
-
 function vsite_taxonomy_init(){
   drupal_add_css(drupal_get_path('module', 'vsite_taxonomy') . '/theme/vsite_taxonomy.css');
 }
@@ -51,6 +50,13 @@ function vsite_taxonomy_theme() {
   return array(
     'vsite_taxonomy_term' => array(
       'arguments' => array('term' => NULL, 'b_description' => null, 'admin_links' => true, 'content_types' => array()),
+      'path' => drupal_get_path('module', 'vsite_taxonomy')."/theme",
+      'file' => 'vsite_taxonomy_term.inc',
+    ),
+    'vsite_taxonomy_term_list' => array(
+      'arguments' => array('index' => NULL, 'tree' => array(), $s_term_theme = 'vsite_taxonomy_term', $b_description = true, $b_show_empty = true, $b_show_admin_links = true, $s_term_feature = false, $b_feature_context = false),
+      'path' => drupal_get_path('module', 'vsite_taxonomy')."/theme",
+      'file' => 'vsite_taxonomy_term_list.inc',
     ),
     'vsite_taxonomy_form' => array(
       'arguments' => array('form' => array()),
@@ -202,43 +208,6 @@ function vsite_taxonomy_access_term($term,$string){
 	}
 	
 	return user_access($string) && (!$vsite || ($o_term && array_key_exists($o_term->vid,$vsite->group->og_vocabularies)));
-}
-
-/**
- * recursive function to build the tree of terms
- * @see vsite_taxonomy_vocabs
- */
-function vsite_taxonomy_build_list_items(&$index, $tree, $s_term_theme = 'vsite_taxonomy_term', $b_description = true, $b_show_empty = true, $b_show_admin_links = true, $s_term_feature = false, $b_feature_context = false){
-  $items = array();
-
-  $a_filter_nodes = array();
-  if($s_term_feature){
-  	$node_map = features_get_component_map('node');
-    foreach ($node_map as $s_node => $a_features) {
-      if(in_array($s_term_feature,$a_features)) $a_filter_nodes[] = $s_node;
-    }
-  }//Retrieve nodes for a feature if needed
-
-  $current_depth = $tree[$index]->depth;
-  while ( $index < count($tree) && $tree[$index]->depth >= $current_depth ) {
-    $term = $tree[$index];
-    $count = vsite_taxonomy_term_count_nodes($term->tid,false,$a_filter_nodes);
-
-    if ($tree[$index + 1]->depth > $current_depth) {
-      $index ++;
-      if($b_show_empty || $count || vsite_taxonomy_term_count_nodes($term->tid,true,$a_filter_nodes)) {
-	      $items[] = array(
-	        'data' => theme($s_term_theme, $term, $b_description, $b_show_admin_links, $s_term_feature, $b_feature_context),
-	        'children' => vsite_taxonomy_build_list_items($index, $tree, $s_term_theme, $b_description, $b_show_empty, $b_show_admin_links, $s_term_feature, $b_feature_context)
-	      );
-      }
-    }
-    else {
-    	if($b_show_empty || $count) $items[] = theme($s_term_theme, $term, $b_description, $b_show_admin_links, $s_term_feature, $b_feature_context);
-      $index ++;
-    }
-  }
-  return $items;
 }
 
 
@@ -468,49 +437,7 @@ function vsite_taxonomy_form_alter(&$form, $form_state, $form_id){
 
 }
 
-/**
- * theme a term
- * @param unknown_type $term
- */
-function theme_vsite_taxonomy_term($term, $b_description = true, $b_admin_links = true, $s_term_feature = false, $b_feature_context = false){
 
-	$a_filter_nodes = array();
-  if($s_term_feature){
-    $node_map = features_get_component_map('node');
-    foreach ($node_map as $s_node => $a_features) {
-      if(in_array($s_term_feature,$a_features)) $a_filter_nodes[] = $s_node;
-    }
-  }//Retrieve nodes for a feature if needed
-
-  $count = vsite_taxonomy_term_count_nodes($term->tid,false,$a_filter_nodes);
-  $active_term = vsite_taxonomy_active_term();
-
-  if($count <= 0 || $active_term->tid == $term->tid){
-    $term_link = $term->name;
-
-  }else{
-    $term_link = l($term->name, _vsite_taxonomy_get_term_path($term->tid,$s_term_feature, $b_feature_context), array('title' => t($term->description)));
-  }
-
-  $item = '<div class="term-head">' . $term_link;
-
-  $item .= ($count > 0)?'<span class = "count" > (' . $count . ')</span>':"";
-
-  if($b_admin_links && cp_access_cp()){
-	  // add term's admin links
-	  $item .= theme('links', vsite_get_admin_links('term', $term), $attributes = array(
-	    'class' => 'admin'
-	  ));
-  }
-
-  if ($b_description && $term -> description) {
-    $item .= '<div class="description">' . substr($term -> description,0,58) . ((strlen($term->description) >53)?"&hellip;":"") . '</div>';
-    }
-
-  $item .= '</div><!--/term-head-->';
-
-  return $item;
-}
 
 /**
  * proivdes some default terms
