@@ -86,7 +86,7 @@ function vsite_put_box(&$vsite, $box, $region) {
  *    Wrapper for vsite_put_box instead removes display of the box
  */
 function vsite_remove_box(&$vsite, $box) {
-  vsite_put_box($vsite, $box, 'empty');
+  vsite_put_box($vsite, $box, false);
 }
 
 //add block function?  do we ever need that for migration or is that only for front page boxes?
