@@ -325,12 +325,10 @@ function scholar_front_home_flag(){
 }
 
 /**
- * Redirect to the home page
+ * The default home page, not used for most users
  */
-function scholar_front_redirect_home(){
-	if(!drupal_is_front_page()){
-	  drupal_goto("<front>");
-	}
+function scholar_front_home(){
+	return "";
 }
 
 /**
