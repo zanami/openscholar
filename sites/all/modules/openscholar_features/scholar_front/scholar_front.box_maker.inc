@@ -47,6 +47,7 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
       if ($front && ($wgt = fb_mk_front_box($vsite, $front)) != FALSE) {
       	$add_func = 'fb_add_' . $wgt['wgt']; //box or block
         $context['results'][] = $add_func($vsite, $wgt['data']);
+        $vsite->controllers->variable->del('site_frontpage'); //remove previous front page
 
         $context['message'] = 'Processing vsites ' . $offset . '-' . min($offset+$limit, $total_vsites) . ' of ' . $total_vsites;
         $context['sandbox']['progress']++;
