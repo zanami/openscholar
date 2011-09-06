@@ -270,10 +270,10 @@ input.form-text,
 textarea.form-textarea {
   margin-top: -2px;
   padding: 4px 3px 2px;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
   width: 90%;
+  background: url('../images/form-input-bg.gif') repeat-x scroll left top #FFFFFF;
+    border: 1px solid #CDCDCD;
+    color: #333333;
   }
 
 .resizable-textarea {

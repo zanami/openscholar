@@ -128,6 +128,7 @@ img {
   width: 100%;
   }
 
+
 #content-main {
   min-height: 330px;
   }
@@ -191,6 +192,12 @@ body.header-left-right #header-right {
 body.header-left-right #header-right {
   float:right;
   }
+  
+.content-left.content-right #content-left, 
+.content-left.content-right #content-right {
+	float:left;clear:none;display:inline;width:49%;
+	}
+	
 
 #sidebar-first .block,
 #sidebar-second .block {

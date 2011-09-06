@@ -1,7 +1,7 @@
 /* SPACES FEATURES */
 
 table.spaces-features {
-  width: 900px;
+  width: 850px;
   }
 
 form#spaces-preset-default-form h3,
@@ -80,7 +80,7 @@ div.spaces-block-customizer strong.region {
   }
 
 
-form#spaces-features-form td.actions a {padding:2px;background:#268ce3;color:#FFF;}
+form#spaces-features-form td.actions a {padding:2px;background:#268ce3;color:#FFF; -moz-border-radius: 4px;-webkit-border-radius:4px;}
 
 
 .spaces-features a.tabledrag-handle {
