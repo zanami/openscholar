@@ -36,7 +36,7 @@ class os_boxes_addthis extends os_boxes_default {
 		    'buttons' => "<img src='$dir/addthis_button.png' />\n",
         'toolbox_small' => "<img src='$dir/addthis_sm.png' />\n",
         'toolbox_large' => "<img src='$dir/addthis_lg.png' />\n",
-        'numeric' => "<img src='http://cache.addthiscdn.com/www/20110825162931/images/gtc-like-tweet-share-plusone.gif' />\n",	
+        'numeric' => "<img src='$dir/addthis_numbers.gif' />\n",	
       ),
     );
     
