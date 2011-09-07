@@ -388,12 +388,16 @@ background: #c6cccc;
 
 /** LABEL TABS **/
 #widgetLabelTab {  
-	left: 730px;
+	 height: 16px;
+    left: 753px;
     position: relative;
-    top: 46px;
+    top: 34px;
+    width: 99px;
     }
 #websiteLabelTab { 
 	left: 749px;
     position: relative;
-    top: 168px;
+    top: 164px;
+    width:99px;
+    height:16px;
     }

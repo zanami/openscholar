@@ -22,10 +22,10 @@ foreach($wgts as $s_widget_key => $w){
 }
 
 ?>
+
+<div class="<?php print $wgts_id; ?>-wrapper">
 <div id="widgetLabelTab"><img src="/<?php echo drupal_get_path('module', 'vsite_layout') . '/theme/images/widgetBarLabel.png'; ?>"></div>
 <div id="websiteLabelTab"><img src="/<?php echo drupal_get_path('module', 'vsite_layout') . '/theme/images/websiteLayoutBarLabel.png'; ?>"></div>
-<div class="<?php print $wgts_id; ?>-wrapper">
-
 <ul id="widget-categories">
 <?php
   foreach($s_tagged_output as $s_tag_name => $output){
