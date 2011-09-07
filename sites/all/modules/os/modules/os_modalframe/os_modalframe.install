@@ -2,4 +2,11 @@
 
 function os_modalframe_install() {
   db_query("UPDATE {system} SET weight = 100 WHERE name = 'os_modalframe'");
+
+  // migrate existing blocks to new boxes
+  $siteinfo = boxes_factory('os_boxes_modal_siteinfo');
+  $sitelogo = boxes_factory('os_boxes_modal_sitelogo');
+  module_load_include('inc', 'os_boxes', 'os_boxes.newbox_api');
+  replace_boxes('vsite_widgets-0',$sitelogo);
+  replace_boxes('vsite_widgets-1',$siteinfo);
 }
