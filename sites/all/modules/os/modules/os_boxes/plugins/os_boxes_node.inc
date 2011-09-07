@@ -61,7 +61,7 @@ class os_boxes_node extends os_boxes_default {
     
     if($node){
       $teaser = ($this->options['teaser'] == 'teaser') ? TRUE : FALSE;
-      $output = node_view($node, 'teaser', FALSE, FALSE);  //@todo : make this configurable
+      $output = node_view($node, $teaser, FALSE, FALSE);  //@todo : make this configurable
       $block['content'] = $output;
     }
     
