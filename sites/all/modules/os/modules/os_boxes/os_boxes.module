@@ -207,7 +207,7 @@ function os_boxes_vsite_widgets(){
         'module' => 'boxes',
         'delta' => "boxes_add__$key",
         'weight' => -10,
-        'region' => false,
+        'region' => $info['region']?$info['region']:false,
         'label' => $info['title'],
         'block_config_path' => "cp/osboxes/nojs/boxes_add__{$key}/configure",
       );
