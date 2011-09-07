@@ -301,6 +301,13 @@ p.copy a.poweredby {
 	height: 0;
 	}
 
+body.front .node-teaser {
+  background: #FFF;
+  margin: 0;
+  padding: 0;
+  }
+
+
 .node-teaser {
   background: rgba(210, 218, 184, 0.2);
   margin: 0 -30px 15px -194px;

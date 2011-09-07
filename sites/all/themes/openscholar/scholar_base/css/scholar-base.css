@@ -233,6 +233,9 @@ body.header-left-right #header-right {
 
 /* NODE */
 
+
+
+
 .node, .biblio-entry {
   padding-top: .5em;
   padding-bottom: 0.938em;
@@ -242,6 +245,10 @@ body.header-left-right #header-right {
   clear:both;
   position: relative;
   }
+  
+ body.front .node {
+ 	padding: 0;
+ }
 
 .node-unpublished {
   background-color:#feffcd;
