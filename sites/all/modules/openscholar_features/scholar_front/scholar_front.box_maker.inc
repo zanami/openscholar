@@ -181,6 +181,7 @@ EOD;
       	//nope, just a regular bio box
       	$type = 'os_boxes_bio';
       	$opts['nid'] = $nid;
+      	$opts['teaser'] = 'full';
       }
       
       break;
@@ -189,6 +190,7 @@ EOD;
     case 'nid':
       $type = 'os_boxes_node';
       $opts['nid'] = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
+      $opts['teaser'] = 'full';      
       break;
       
       
@@ -220,7 +222,7 @@ EOD;
     $opts['title'] = $settings['title'];
     $opts['subject'] = $settings['title'];
   } else {
-  	$opts['title'] = $settings['type'] . ' box';
+  	$opts['title'] = '';
   	$opts['subject'] = '';
   }
   $opts['description'] = $_box_plugins[$type]['title'] . ' box';
@@ -239,50 +241,11 @@ EOD;
   }
 }
 
-/*
-//creates a box object in the vsite given type and opts.  returns $box
-function mk_box(&$vsite, $type, $opts) {
-  
-  global $_box_plugins;
-  $identifier = $vsite->type . '-' . $vsite->id;
-  $hash = boxes_create_hash($identifier);
-  $delta = $identifier . '-' . $hash;
-  $opts['delta'] = $delta;
-  
-  if (($box = boxes_factory($type, $opts)) && isset($vsite->controllers->boxes)) { 
-    $box->tags = $_box_plugins[$type]['tags'];
-    $vsite->controllers->boxes->set($box->delta, $box);
-    return $box;      
-  } else {
-    return false;
-  }
-}
-*/
 
 //add our new box to content_top
 function fb_add_box(&$vsite, $box) {
   return vsite_put_box($vsite, $box,'content_top');
 }
-/*
-// adds box to vsite.  returns id of vsite on successful creation
-function fb_add_box(&$vsite, $box) {
-  
-  //let spaces select the current setting or the default
-  $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
-  $front_context['blocks']['boxes-' . $box->delta] = array(
-    'module' => 'boxes',
-    'delta' => $box->delta,
-    'weight' => 0,
-    'region' => 'content_top',   
-    'label' => $box->title,
-    'block_config_path' => 'cp/osboxes/nojs/' . $box->delta . '/configure',
-    'tags' => $box->tags,
-  );
-  
-  if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
-    return $vsite->id;
-  }
-}*/
 
 //adds block to content_top region
 function fb_add_block(&$vsite, $block) {
