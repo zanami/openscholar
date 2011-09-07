@@ -128,9 +128,8 @@ background: #fff;
   line-height: 1.41em;
   }
 
-#sidebar-first,
-#header-left,
-#logo {
+
+#header-left {
   width: 160px;
   height:125px;
   }
@@ -138,6 +137,7 @@ background: #fff;
 #sidebar-first,
 #header-left {
   left: -214px;
+  width: 160px;
   }
 
 #sidebar-second,
@@ -235,7 +235,7 @@ body.one-sidebar #sidebar-first {
 #header h1,
 #header h2,
 #header p {
-    font-size: 65px;
+    font-size: 4em;
     line-height: 38px;
     font-weight:normal;
     color:#FFF;
@@ -244,7 +244,7 @@ body.one-sidebar #sidebar-first {
     }
 
 #header h2 {
-  font-size: 35px;
+  font-size: 2.5em;
  height: 58px;
  background:url('images/siteInfoh2Bg.png') no-repeat;
  margin-top:7px;
