@@ -190,6 +190,7 @@ EOD;
     case 'nid':
       $type = 'os_boxes_node';
       $opts['nid'] = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
+      $opts['teaser'] = 'full';      
       break;
       
       
