@@ -210,6 +210,8 @@ EOD;
     //features uses simpleviews_boxes_ls
     case 'features':
       $type = 'spaces_simpleviews_boxes_ls';
+      $opts['style'] = 'teasers';
+      $opts['filter'] = 'all';
       break;
   }
   
@@ -226,6 +228,16 @@ EOD;
   	$opts['subject'] = '';
   }
   $opts['description'] = $_box_plugins[$type]['title'] . ' box';
+  
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //debug log.  also writes vsite link, so we can find a type of box and compare local site vs what's in prod
+  //@todo remove this debug log
+  global $base_url;
+  $msg = $type . "\t\t" . $base_url . '/' . $vsite->group->purl;
+  $msg .= "\t\t" . 'http://scholar.harvard.edu/' . $vsite->group->purl . "\n";
+  error_log($msg, 3, '/tmp/boxmaker.txt');
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
   
   //make and return array.  array specifies if widget is box or block and then includes it as data
   if (!$block) {  	
