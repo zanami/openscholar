@@ -91,6 +91,7 @@ function vsite_remove_box(&$vsite, $box) {
 
 /**
  * @function replace_boxes
+ * 		Given a block id, replace it with the given block
  * @param $block_id - String id of the block to replace
  * @param $box - Object
  */
@@ -105,7 +106,7 @@ function replace_boxes($block_id, $box) {
     $value = unserialize($r['value']);
     $region = $value['blocks'][$block_id]['region'];
     unset($value['blocks'][$block_id]);
-    $value['blocks'][$box->delta] = array('region' => $region) + $available_widgets['boxes-'.$box->delta];
+    $value['blocks']['boxes-'.$box->delta] = array('region' => $region) + $available_widgets['boxes-'.$box->delta];
     db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = 'og' AND object_type = 'context' AND id = %d AND object_id = '%s'", serialize($value), $r['id'], $r['object_id']);
     $vsite = vsite_get_vsite($r['id']);
     $vsite->controllers->boxes->set($box->delta, $box);

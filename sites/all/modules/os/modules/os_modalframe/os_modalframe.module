@@ -42,6 +42,7 @@ function os_modalframe_boxes_plugins() {
   $info['os_boxes_modal_sitelogo'] = array(
     'description' => 'Site Logo',
     'tags' => array('Misc'),
+  	'region' => 'header_left',
     'handler' => array(
       'class' => 'os_boxes_modal_sitelogo',
       'file' => 'os_boxes_modal_sitelogo.inc',
@@ -53,6 +54,7 @@ function os_modalframe_boxes_plugins() {
   $info['os_boxes_modal_siteinfo'] = array(
     'description' => 'Site Info',
     'tags' => array('Misc'),
+    'region' => 'header_main',
     'handler' => array(
       'class' => 'os_boxes_modal_siteinfo',
       'file' => 'os_boxes_modal_siteinfo.inc',

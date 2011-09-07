@@ -325,12 +325,30 @@ function scholar_front_home_flag(){
 }
 
 /**
- * The default home page, not used for most users
+ * Redirect to the home page
  */
-function scholar_front_home(){
-	
+function scholar_front_redirect_home(){
+	if(!drupal_is_front_page()){
+	  drupal_goto("<front>");
+	}
+}
+
+/**
+ * Default front page when a site is created
+ */
+function scholar_front_welcome(){
 	$vsite = vsite_get_vsite();
-  if(!$vsite || !$vsite->access_admin()) return "";
-  
-  return _scholar_front_admin_frontpage();
+	if(!$vsite || !$vsite->access_admin()) return "";
+	$spaces_features = variable_get('spaces_features',array());
+
+	$bio_link = $spaces_features["scholar_biocv"]?l("Setup your bio now","node/add/bio")." or":"The bio feature is disabled";
+	$front_settings = l("change the display settings","cp/build",array("query" => array("open_feature_settings" => "scholar_front")));
+	$result = <<<MESSAGE
+        <div id="welcome_front_wrapper">
+          <h3>Welcome to your new site.</h3>
+          <p>Your sites front page is set to display your bio by default.  {$bio_link} {$front_settings} for the front of your site.</p>
+        </div>
+MESSAGE;
+
+    return _scholar_front_admin_frontpage().$result;
 }

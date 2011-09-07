@@ -50,7 +50,7 @@ function scholar_front_menu(){
     'file' => 'scholar_front.pages.inc',
     'access arguments' => array('access content'),
   );
-  
+
   //jsagotsky's dev code to create a box for everyone's front page setting
   $items['scholar_front/boxmaker'] = array(
     'type' => MENU_CALLBACK,
@@ -141,7 +141,7 @@ function scholar_front_nodeapi(&$node, $op, $a3, $a4){
     case 'presave':
     	$vsite = vsite_get_vsite();
       if(!$vsite) return;
-        
+
       // set new property in node object indicating to set as front page
       if ((isset($_GET['action']) && ($_GET['action'] === 'setfront')) ||
           ($node->uid == $vsite->group->uid && $node->type == "bio" && variable_get('site_frontpage',false) == "scholar_front_welcome")){
@@ -265,38 +265,38 @@ function scholar_front_context_links_alter(&$links){
 function front_boxmaker() {
   $limit = 50;
   $total_vsites = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
-  
+
   //make sure boxes prereqs are all met before installing
   if (!$total_vsites && $total_vsites < 1) {
   	drupal_set_message('boxmaker couldn\'t find vsites.  aborting.', 'error');
   	return '';
   }
-  
+
   if (! (module_exists('os_boxes') && module_exists('spaces_simpleviews') )) {
   	drupal_set_message('please enable os_boxes and spaces_simpleviews before running boxmaker', 'error');
   	return '';
   }
-  
+
   $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "vsite" LIMIT 1') );
   $vsite = vsite_get_vsite($v);
   if (! isset($vsite->controllers->boxes)) {
   	drupal_set_message('vsite object has no box controller.  clear cache before running boxmaker.', 'error');
   	return '';
   }
-  
+
   $batch = array(
   	'title' => t('Making boxes for each vsite\'s front page'),
   	'operations' => array(),
   	'finished' => 'front_boxmaker_done',
   	'file' => drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc',
   );
-  
+
   $offset = 0;
   while ($offset < $total_vsites) {
   	$batch['operations'][] = array('_front_boxmaker',array($limit, $offset, $total_vsites),);
   	$offset += $limit;
   }
-	
+
   batch_set($batch);
   batch_process(''); //where do we send them if this happens in update.php?
 }
