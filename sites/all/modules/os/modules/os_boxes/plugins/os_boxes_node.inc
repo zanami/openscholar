@@ -2,7 +2,7 @@
 
 /**
  * @file
- * The class for "Node" type widgets.  
+ * The class for "Node" type widgets.
  */
 
 class os_boxes_node extends os_boxes_default {
@@ -21,7 +21,7 @@ class os_boxes_node extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(){
-    //@todo just for vsite for now but it can be used outside os    
+    //@todo just for vsite for now but it can be used outside os
     vsite_include('nodeautocomplete');
     $form['nid'] = vsite_node_autocomplete_element($title = NULL);
     $form['nid']['#default_value'] = $this->options['nid'];
@@ -42,23 +42,28 @@ class os_boxes_node extends os_boxes_default {
    */
   public function render() {
 
-    $block = parent::render();    
+    $block = parent::render();
     
     if (($vsite = vsite_get_vsite()) == FALSE) {
-      return array(); 
+      return $block;
     }
 
     $nid = $this->options['nid'];
-    //nid is saved as "title [nid:$NID]".  extract the number. 
+    //nid is saved as "title [nid:$NID]".  extract the number.
     vsite_include('nodeautocomplete');
     if (is_string($nid) && (int)$nid == 0) {
       $nid = _vsite_node_autocomplete_title_to_nid($nid);
     }
-    $node = node_load($nid);
-    $teaser = ($this->options['teaser'] == 'teaser') ? TRUE : FALSE;
     
-    $output = node_view($node, $teaser, FALSE, FALSE);  
-    $block['content'] = $output;
+    if((int)$nid != 0){
+      $node = node_load($nid);
+    }//valid nid?
+    
+    if($node){
+      $teaser = ($this->options['teaser'] == 'teaser') ? TRUE : FALSE;
+      $output = node_view($node, 'teaser', FALSE, FALSE);  //@todo : make this configurable
+      $block['content'] = $output;
+    }
     
     return $block;
   }
