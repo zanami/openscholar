@@ -12,6 +12,7 @@ class os_boxes_node extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
     $options['nid'] = 0;
+    $options['teaser'] = 'teaser';
 
     return $options;
   }
@@ -25,6 +26,14 @@ class os_boxes_node extends os_boxes_default {
     $form['nid'] = vsite_node_autocomplete_element($title = NULL);
     $form['nid']['#default_value'] = $this->options['nid'];
     $form += parent::options_form();
+    
+    $form['teaser'] = array(
+      '#type' =>  'radios',
+      '#title' => 'Display Mode',
+      '#default_value' => $this->options['teaser'],
+      '#options' => array('teaser'=>'Teaser Only', 'full'=>'Full Node'),
+      '#description' => 'Display entire node in this box or just the teaser.',
+    );
     return $form;
   }
 
@@ -46,8 +55,9 @@ class os_boxes_node extends os_boxes_default {
       $nid = _vsite_node_autocomplete_title_to_nid($nid);
     }
     $node = node_load($nid);
+    $teaser = ($this->options['teaser'] == 'teaser') ? TRUE : FALSE;
     
-    $output = node_view($node, 'teaser', FALSE, FALSE);  //@todo : make this configurable
+    $output = node_view($node, $teaser, FALSE, FALSE);  
     $block['content'] = $output;
     
     return $block;
