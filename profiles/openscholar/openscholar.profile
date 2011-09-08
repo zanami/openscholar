@@ -707,7 +707,8 @@ function _openscholar_wysiwyg_presets(){
 
 
 function _openscholar_goto($fullpath){
-	header('Location: '. $fullpath);
+	$unique = (strpos($fullpath,"?")?"":"?")."&"."inst=".time();
+	header('Location: '. $fullpath.$unique);
   header('Cache-Control: no-cache'); // Not a permanent redirect.
   exit();
 }
