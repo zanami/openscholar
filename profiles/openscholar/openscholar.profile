@@ -275,6 +275,9 @@ function openscholar_profile_tasks(&$task, $url) {
 
     // create a global taxonomy (not really used right now)
     // _vsite_global_taxonomy();
+    
+    // biblio configuraitons
+    _openscholar_configure_biblio();
 
     $task = 'openscholar-cleanup';
     variable_set('install_task', $task);
@@ -285,8 +288,9 @@ function openscholar_profile_tasks(&$task, $url) {
   
   if ($task == "openscholar-cleanup") {
     
-    // biblio configuraitons
-    _openscholar_configure_biblio();
+    //Include Modules that have been enabled
+    //We don't need to use install_include since the system table has been enabled
+    module_load_all();
 
     if (function_exists('strongarm_init')) {
       strongarm_init();
@@ -717,8 +721,8 @@ function _openscholar_wysiwyg_presets(){
 
 
 function _openscholar_goto($fullpath){
-	$unique = (strpos($fullpath,"?")?"":"?")."&"."inst=".time();
-	header('Location: '. $fullpath.$unique);
+	
+	header('Location: '. $fullpath);
   header('Cache-Control: no-cache'); // Not a permanent redirect.
   exit();
 }
