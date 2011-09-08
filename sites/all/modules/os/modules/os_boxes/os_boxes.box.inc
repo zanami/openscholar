@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * Implementation of hook_default_box().
+ */
+function shield_box_default_box() {
+  $export = array();
+  $box = new stdClass;
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
+  $box->delta = 'shield_default';
+  $box->plugin_key = 'os_boxes_shields';
+  $box->title = '';
+  $box->description = 'Shield';
+  $box->options = array(
+    'visibility' => 'feature',
+    'shield' => 'sites/localhost.scholar/files/vsite_shields/harvard_shield-white.png',
+  );
+
+  $export['shield_default'] = $box;
+  return $export;
+}

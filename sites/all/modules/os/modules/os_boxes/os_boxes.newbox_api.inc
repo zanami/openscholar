@@ -95,18 +95,24 @@ function vsite_remove_box(&$vsite, $box) {
  * @param $block_id - String id of the block to replace
  * @param $box - Object
  */
-function replace_boxes($block_id, $box) {
+function replace_boxes($block_id, $box, $default_region = false) {
   static $available_widgets = null;
   if (!isset($available_widgets)) {
     $available_widgets = module_invoke_all('vsite_widgets');
   }
 
-  $q = db_query("SELECT * FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%'");
+  if (!$box->delta) {
+    $box->delta = os_boxes_create_delta();
+  }
+  $widget_def = os_boxes_get_vsite_widget($box);
+
+  $q = db_query("SELECT * FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%'", $block_id);
   while ($r = db_fetch_array($q)) {
     $value = unserialize($r['value']);
-    $region = $value['blocks'][$block_id]['region'];
+    $region = $value['blocks'][$block_id]['region']?$value['blocks'][$block_id]['region']:$default_region;
+    $weight = $value['blocks'][$block_id]['weight']?$value['blocks'][$block_id]['weight']:0;
     unset($value['blocks'][$block_id]);
-    $value['blocks']['boxes-'.$box->delta] = array('region' => $region) + $available_widgets['boxes-'.$box->delta];
+    $value['blocks']['boxes-'.$box->delta] = array('region' => $region, 'weight' => $weight) + $widget_def;
     db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = 'og' AND object_type = 'context' AND id = %d AND object_id = '%s'", serialize($value), $r['id'], $r['object_id']);
     $vsite = vsite_get_vsite($r['id']);
     $vsite->controllers->boxes->set($box->delta, $box);
