@@ -1,7 +1,7 @@
 body {
   color:#37352B;
   min-width: 980px;
-background: url("images/bodyBg.png") repeat-x scroll 0px -12px #EFEFEF;
+background: url('images/bodyBg.png') repeat-x scroll 0px -12px #EFEFEF;
  }    
 
 /* TYPOGRAPHY*/
@@ -151,9 +151,7 @@ background: #fff;
   padding-right: 250px;
   }
 
-body.header-main-right #header,
-body.header-left-right #header,
-body.header-left-main-right #header {
+#header {
   background:url('images/headerBg.png') repeat-x;
   height:160px;
  }
