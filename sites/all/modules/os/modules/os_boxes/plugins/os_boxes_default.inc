@@ -20,6 +20,11 @@ abstract class os_boxes_default extends boxes_box {
    * Define the default cache type for os_boxes
    */
   public $cache_type = BLOCK_CACHE_CONTENT_CACHE;
+  
+  /*
+   * Define the default region for this box.
+   */
+  public $region;
 
   /**
    * Implementation of boxes_content::options_defaults().

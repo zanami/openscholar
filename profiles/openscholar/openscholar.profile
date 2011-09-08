@@ -271,7 +271,14 @@ function openscholar_profile_tasks(&$task, $url) {
 
     // create a global taxonomy (not really used right now)
     // _vsite_global_taxonomy();
-
+    $task = 'openscholar-cleanup';
+  }
+  
+  if ($task == 'openscholar-cleanup') {
+  	//Include Modules that have been enabled
+    //We don't need to use install_include since the system table has been enabled
+    module_load_all();
+    
     // biblio configuraitons
     _openscholar_configure_biblio();
 
