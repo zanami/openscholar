@@ -193,6 +193,7 @@ function openscholar_profile_task_list() {
   $tasks = array(
     'openscholar-flavor' => st('OpenScholar  flavor'),
     'openscholar-configure' => st('Openscholar  configuration'),
+    'openscholar-cleanup' => st('Openscholar  cleanup'),
   );
   return $tasks;
 }
@@ -275,6 +276,15 @@ function openscholar_profile_tasks(&$task, $url) {
     // create a global taxonomy (not really used right now)
     // _vsite_global_taxonomy();
 
+    $task = 'openscholar-cleanup';
+    variable_set('install_task', $task);
+    _openscholar_goto($url);
+    //Goto next task
+  }
+  
+  
+  if ($task == "openscholar-cleanup") {
+    
     // biblio configuraitons
     _openscholar_configure_biblio();
 
