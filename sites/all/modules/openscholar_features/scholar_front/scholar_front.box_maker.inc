@@ -166,13 +166,13 @@ function fb_mk_front_box(&$vsite, $settings) {
 	  $query = <<<EOD
 SELECT DISTINCT nid,field_hook_text_value
 FROM {content_type_bio} 
-WHERE field_hook_text_value IS NOT NULL 
-AND nid = %d
+WHERE field_hook_text_value IS NOT NULL  
+AND   nid = %d
 GROUP BY nid HAVING max(vid) 
 EOD;
-      $result = db_query($query, $opts['nid']);
+      $result = db_query($query, $nid);
 
-      if ($r = db_fetch_object($result)) {	
+      if ($r = db_fetch_object($result)) {
       	//we have a blurb.  let's make a simple box for it. 
       	$type = 'os_boxes_simple';
       	$opts['body'] = $r->field_hook_text_value;
