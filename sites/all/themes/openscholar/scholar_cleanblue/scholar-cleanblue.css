@@ -100,13 +100,13 @@ h3.title {
   color: #106599;
 }
   
-  #sidebar-first #block-vsite_menus-0 .content ul.menu {margin-left:12px;}
-  #sidebar-first #block-vsite_menus-0 .content ul.menu li {list-style-image:url('images/mainNavLftIcon.gif');color:#106599;font-weight:bold;}
-  #sidebar-first #block-vsite_menus-0 .content ul.menu li  a {font-weight:bold;padding-left:5px;}
+  #sidebar-first #block-vsite_menus-0 .content ul.menu, #sidebar-first #block-vsite_menus-1 .content ul.menu {margin-left:5px;}
+  #sidebar-first #block-vsite_menus-0 .content ul.menu li, #sidebar-first #block-vsite_menus-1 .content ul.menu li {list-style-image:url('images/mainNavLftIcon.gif');padding-bottom:12px;}
+  #sidebar-first #block-vsite_menus-0 .content ul.menu li  a, #sidebar-first #block-vsite_menus-1 .content ul.menu li  a {font-weight:bold;padding-left:1px;text-transform:uppercase;line-height:10px;text-indent:20px;}
   
-  #sidebar-second #block-vsite_menus-0 .content ul.menu {margin-left:20px;}
-  #sidebar-second #block-vsite_menus-0 .content ul.menu li {list-style-image:url('images/mainNavLftIcon.gif');color:#106599;font-weight:bold;padding-bottom:10px;}
-  #sidebar-second #block-vsite_menus-0 .content ul.menu li  a {font-weight:bold;font-size:12px;text-transform:uppercase;}
+  #sidebar-second #block-vsite_menus-0 .content ul.menu, #sidebar-second #block-vsite_menus-1 .content ul.menu {margin-left:20px;}
+  #sidebar-second #block-vsite_menus-0 .content ul.menu li, #sidebar-second #block-vsite_menus-1 .content ul.menu li  {list-style-image:url('images/mainNavLftIcon.gif');padding-bottom:10px;}
+  #sidebar-second #block-vsite_menus-0 .content ul.menu li  a,  #sidebar-second #block-vsite_menus-1 .content ul.menu li  a {font-weight:bold;font-size:12px;text-transform:uppercase;}
 
 p.copy {
   margin-top: 0;
