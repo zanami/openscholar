@@ -191,9 +191,8 @@ function openscholar_profile_task_list() {
 
 
   $tasks = array(
-    'openscholar-flavor' => st('OpenScholar  flavor'),
-    'openscholar-configure' => st('Openscholar  configuration'),
-    'openscholar-cleanup' => st('Openscholar  cleanup'),
+    'openscholar-flavor' => st('OpenScholar Flavor'),
+    'openscholar-configure' => st('Openscholar Configuration'),
   );
   return $tasks;
 }
@@ -238,14 +237,18 @@ function openscholar_profile_tasks(&$task, $url) {
       $output = drupal_get_form('_openscholar_flavors_form', $url);
     }
 
-    if (! variable_get('openscholar_flavor_form_executed', FALSE)) {
+    if (!variable_get('openscholar_flavor_installed', false)) {
       drupal_set_title('How will this OpenScholar installation be used?');
       return $output;
     }
-    else {
+    elseif(!variable_get('openscholar_flavor_form_executed', FALSE)) {
+    	variable_set('install_task', 'profile-install-batch');
+    	variable_set('openscholar_flavor_form_executed', TRUE);
+      batch_process($url, $url);
+      //Will only get here if batch is not set
       $task = 'openscholar-configure';
-      variable_set('install_task', $task);
-      drupal_goto($url);//Run next task
+    }else{
+    	$task = 'openscholar-configure';
     }
   }
 
@@ -274,15 +277,6 @@ function openscholar_profile_tasks(&$task, $url) {
 
     // create a global taxonomy (not really used right now)
     // _vsite_global_taxonomy();
-    $task = 'openscholar-cleanup';
-    variable_set('install_task', $task);
-    drupal_goto($url);//Run next task
-  }
-  
-  if ($task == 'openscholar-cleanup') {
-  	//Include Modules that have been enabled
-    //We don't need to use install_include since the system table has been enabled
-    module_load_all();
     
     // biblio configuraitons
     _openscholar_configure_biblio();
@@ -319,7 +313,6 @@ function openscholar_profile_tasks(&$task, $url) {
  * Advance installer task to language import.
  */
 function _openscholar_profile_batch_finished($success, $results) {
-  //variable_set('install_task', 'openscholar-configure');
   variable_set('install_task', 'openscholar-flavor');
 }
 
@@ -519,12 +512,22 @@ function _openscholar_configure_flavor($flavor){
 
   }
 
-  // install extra modules for each flavor
-  include_once './includes/install.inc';
-  drupal_install_modules($modules);
+  $files = module_rebuild_cache();
+  $operations = array();
+  foreach ($modules as $module) {
+    $operations[] = array('_install_module_batch', array($module, $files[$module]->info['name']));
+  }
+  $batch = array(
+    'operations' => $operations,
+    'finished' => '_openscholar_profile_batch_finished',
+    'title' => st('Installing @drupal', array('@drupal' => drupal_install_profile_name())),
+    'error_message' => st('The installation has encountered an error.'),
+  );
+  
+  batch_set($batch);
 
   variable_set('openscholar_flavor_installed', $flavor);
-  variable_set('openscholar_flavor_form_executed', TRUE);
+  
 }
 
 /**
