@@ -244,7 +244,7 @@ function openscholar_profile_tasks(&$task, $url) {
     else {
       $task = 'openscholar-configure';
       variable_set('install_task', $task);
-      drupal_goto($url);
+      install_goto($url);
       //Goto next task
     }
   }
@@ -298,7 +298,9 @@ function openscholar_profile_tasks(&$task, $url) {
 
     // we are done let the installer know
     $task = 'profile-finished';
-
+    variable_set('install_task', $task);
+    install_goto($url);
+    //Goto next task
     return;
   }
   return $output;
