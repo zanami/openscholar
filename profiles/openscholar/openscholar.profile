@@ -244,7 +244,7 @@ function openscholar_profile_tasks(&$task, $url) {
     else {
       $task = 'openscholar-configure';
       variable_set('install_task', $task);
-      install_goto($url);
+      _openscholar_goto($url);
       //Goto next task
     }
   }
@@ -299,7 +299,7 @@ function openscholar_profile_tasks(&$task, $url) {
     // we are done let the installer know
     $task = 'profile-finished';
     variable_set('install_task', $task);
-    install_goto($url);
+    _openscholar_goto($url);
     //Goto next task
     return;
   }
@@ -703,4 +703,11 @@ function _openscholar_wysiwyg_presets(){
   );
 
   return $settings;
+}
+
+
+function _openscholar_goto($fullpath){
+	header('Location: '. $fullpath);
+  header('Cache-Control: no-cache'); // Not a permanent redirect.
+  exit();
 }
