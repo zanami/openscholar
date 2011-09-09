@@ -8,6 +8,9 @@ function os_boxes_ctools_plugin_api($module, $api) {
   if ($module == 'boxes' && $api == 'plugins') {
     return array('version' => 1);
   }
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => 1);
+  }
 }
 
 /**
@@ -253,7 +256,7 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
   if(!$region && isset($box->region)){
     $a_wgt['region'] =$box->region;
   }
-  
+
   if (is_array($plugins[$box->plugin_key]['tags'])) {
     $a_wgt['tags'] = $plugins[$box->plugin_key]['tags'];
   }
@@ -265,7 +268,7 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
   if (is_a($box, 'os_boxes_modalframe')) {
     $a_wgt['block_config_path'] = $box->get_config_path();
   }
- 
+
   return $a_wgt;
 }
 
