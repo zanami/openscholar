@@ -169,24 +169,6 @@ function cp_get_toolbar_setting(){
     return 'full';
   }
   return 'mini';
-  /*
-  if (! ($vsite = vsite_get_vsite()) || ! $vsite->access_admin()) return 'off';
-
-  $user_tb_setting = variable_get('cp_admin_menu', 0);
-
-  // if in cp always toolbar=on (full)
-  if (context_isset('context', 'vsite-section-cp') || $user_tb_setting) {
-    return "full";
-  }
-
-  if (context_isset('context', 'vsite-section-public') && $vsite->access_admin()) {
-
-    if ($user_tb_setting) return "full";
-
-    return "mini";
-  }
-
-  return 'off';*/
 }
 
 /**
