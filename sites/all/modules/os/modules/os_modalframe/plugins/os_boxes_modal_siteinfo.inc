@@ -2,6 +2,8 @@
 
 class os_boxes_modal_siteinfo extends os_boxes_modalframe {
 
+  public $region = 'header_main';
+
   protected function config_path() {
     $vsite = vsite_get_vsite();
     return 'node/'.$vsite->group->nid.'/edit';
