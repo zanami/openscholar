@@ -7,7 +7,7 @@ include_once('vsite_widgets.features.inc');
  */
 function vsite_widgets_block($op = 'list', $delta = 0, $edit = array()) {
   if ($op == 'list') {
-    $blocks[0]['info'] = t('Scholar site shield');
+//    $blocks[0]['info'] = t('Scholar site shield');
     $blocks[1]['info'] = t('Scholar site search');
     $blocks[2]['info'] = t('ShareThis Button - Allows you to share posts using popular online services');
     $blocks[3]['info'] = t('Google Translate');
@@ -16,8 +16,8 @@ function vsite_widgets_block($op = 'list', $delta = 0, $edit = array()) {
   }
   elseif ($op == 'view') {
     switch ($delta) {
-      case 0:
-       return vsite_widgets_shield();
+//      case 0:
+//       return vsite_widgets_shield();
       case 1:
        return vsite_widgets_search_widget();
       case 2:
@@ -89,7 +89,7 @@ function vsite_widget_googletranslate(){
   return $block;
 
 }
-
+/*
 function vsite_widgets_shield(){
 
 	$output = '';
@@ -120,7 +120,7 @@ function vsite_widgets_shield_access($widget = false){
 function vsite_widgets_vsite_widgets(){
 
 	return array(
-
+/*
     'vsite_widgets-2' => array(
       'module' => 'vsite_widgets',
       'delta' => '0',
@@ -133,7 +133,7 @@ function vsite_widgets_vsite_widgets(){
         'vsite_config' => array('vsite_generic_settings_form' => 'vsite_generic_settings_form'),
         'os_og' => array('current' => 'current'),
       ),
-    ),
+    ),*/
 
    'vsite_widgets-3' => array(
       'module' => 'vsite_widgets',

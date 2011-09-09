@@ -64,7 +64,7 @@ function scholar_form_alter(&$form, $form_state, $form_id) {
 /**
  * Define the avalible vsite widgets
  * @return array
- */
+
 function scholar_vsite_widgets(){
   //Note the names "vsite_widgets_0" were left to preserve peoples saved settings
   return array(
@@ -98,7 +98,7 @@ function scholar_vsite_widgets(){
 
 /**
  * Define the scholar blocks with hook block
- */
+
 function scholar_block($op = 'list', $delta = 0, $edit = array()) {
   if ($op == 'list') {
     $blocks[0]['info'] = t('Scholar site logo');
@@ -118,7 +118,7 @@ function scholar_block($op = 'list', $delta = 0, $edit = array()) {
 /**
  * Scholar Basic Info Widget Content
  * @return array
- */
+ *
 function _scholar_basicinfo_wdgt(){
   $scholar = vsite_get_vsite();
 
@@ -156,7 +156,7 @@ function _scholar_basicinfo_wdgt(){
 /**
  * Scholar Logo Widget Content
  * @return array
- */
+ *
 function _scholar_logo_wdgt(){
 
   $block['subject'] = t(''); // intentionally blank
@@ -164,3 +164,4 @@ function _scholar_logo_wdgt(){
 
   return $block;
 }
+*/
