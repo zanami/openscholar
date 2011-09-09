@@ -17,6 +17,10 @@ function vsite_layout_layout() {
   drupal_add_css(drupal_get_path('module', 'vsite_layout') . '/theme/vsite_layout.css');
   drupal_add_css(drupal_get_path('module', 'vsite_layout') . '/theme/cp-layout-map.css');
 
+  //tiny scrollbar code
+  drupal_add_js(drupal_get_path('module', 'vsite_layout') . '/theme/jquery.tinyscrollbar.min.js');
+  drupal_add_css(drupal_get_path('module', 'vsite_layout') . '/theme/tinyscrollbar.css');
+  
   //Support for ctools popups
   ctools_include('ajax');
   ctools_include('modal');

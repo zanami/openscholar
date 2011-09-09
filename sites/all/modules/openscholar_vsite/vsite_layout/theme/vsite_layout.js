@@ -36,40 +36,18 @@ Drupal.behaviors.scholarlayout = function() {
     });
   }
   scholarlayout_add_removal_hooks();
+  
+  //Add scroller that shows what exceptions exist
   vsite_layout_setExceptionScroller();
+  
+  //Add tabbed event for catigorized widgets
   vsite_layout_add_category_select();
   
-  // remove or prevent ctools modal handling from modalframe links
-  $('a.ctools-use-modal').each(function(i, elem) {
-	  if (elem.href && elem.href.indexOf('/modal/') != -1) {
-		  var $this = $(this);
-		  $this.removeClass('ctools-use-modal');
-		  if ($this.hasClass('ctools-use-modal-processed')) {
-			  $this.unbind('click', Drupal.CTools.Modal.clickAjaxLink);
-		  }
-		  
-		  $this.click(function (e) {
-			var url = $(this).attr('href'),
-			    modal_start = url.indexOf('/modal/'),
-			    params = url.slice(modal_start);
-			url = url.replace(params, '');
-			params = params.split('/');
-			
-			url = url+'?modal&box='+params[params.length-2];
-			
-			var modalOptions = {
-				url: url,
-				autoFit: true,
-				width: 980, 
-				onSubmit: modalFrameSubmitHandler
-			};
-			
-			Drupal.modalFrame.open(modalOptions);
-			
-			e.preventDefault();
-	  	  });
-	  }
-  });
+  //remove or prevent ctools modal handling from modalframe links
+  vsite_layout_modalfram_links();
+  
+  //init scroller on topbox
+  vsite_layout_init_horz_scroller();
   
   function modalFrameSubmitHandler(args, messages) {
 	  Drupal.CTools.AJAX.respond(args);
@@ -102,7 +80,9 @@ function scholarlayout_add_removal_hooks() {
 }
 
 var scholarlayout_change_bound = false;
+var scholarlayout_oScrollbar = false; 
 
+//Executed after a block is dragged
 function scholarlayout_afterdrag(event, ui) {
   
   var item = $(this);
@@ -222,6 +202,7 @@ function vsite_layout_add_category_select() {
    $('#widget-categories li').removeClass('active');
    $(this).addClass('active');
    vsite_layout_init_categories();
+   vsite_layout_update_scroller_width();
    return false;
  });
  
@@ -233,4 +214,65 @@ function vsite_layout_init_categories(){
 	var cat = $('#widget-categories li.active a').attr('href').substring(1);
 	$('#scholarlayout-top-widgets').children('dd:not(.' + cat + ')').hide();
 	$('#scholarlayout-top-widgets').children("."+cat + ':not(.disabled)').show();
+}
+
+//remove or prevent ctools modal handling from modalframe links
+function vsite_layout_modalfram_links(){
+	$('a.ctools-use-modal').each(function(i, elem) {
+		  if (elem.href && elem.href.indexOf('/modal/') != -1) {
+			  var $this = $(this);
+			  $this.removeClass('ctools-use-modal');
+			  if ($this.hasClass('ctools-use-modal-processed')) {
+				  $this.unbind('click', Drupal.CTools.Modal.clickAjaxLink);
+			  }
+			  
+			  $this.click(function (e) {
+				var url = $(this).attr('href'),
+				    modal_start = url.indexOf('/modal/'),
+				    params = url.slice(modal_start);
+				url = url.replace(params, '');
+				params = params.split('/');
+				
+				url = url+'?modal&box='+params[params.length-2];
+				
+				var modalOptions = {
+					url: url,
+					autoFit: true,
+					width: 980, 
+					onSubmit: modalFrameSubmitHandler
+				};
+				
+				Drupal.modalFrame.open(modalOptions);
+				
+				e.preventDefault();
+		  	  });
+		  }
+	  });
+}
+
+//init scroller on topbox
+function vsite_layout_init_horz_scroller(){
+	
+	//Top Scroller
+	$('div.scholarlayout-top-widgets-wrapper').addClass('scroll-wrapper').append('<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>');
+	$('.scroll-wrapper .tagged-list').addClass('scroll-viewport');
+	$('.scroll-wrapper .tagged-list #scholarlayout-top-widgets').addClass('scroll-content');
+	vsite_layout_update_scroller_width();
+	scholarlayout_oScrollbar = $('.scroll-wrapper').tinyscrollbar({ axis: 'x'});
+}
+
+/*
+ * Update the width of divs and re-init to scrollbar object
+ */
+function vsite_layout_update_scroller_width(){
+	var vp_width = $('.scroll-wrapper .scroll-viewport').width();
+	//arb large
+	$('.scroll-wrapper .scroll-viewport').width(5000);
+	$('.scroll-wrapper .scroll-content').css('width','auto');
+	
+	var ct_width = Math.max($('.scroll-wrapper .scroll-content').width(),vp_width);
+	$('.scroll-wrapper .scroll-content').width(ct_width);
+	
+	$('.scroll-wrapper .scroll-viewport').width(vp_width);
+	if(scholarlayout_oScrollbar) scholarlayout_oScrollbar.tinyscrollbar_update();
 }

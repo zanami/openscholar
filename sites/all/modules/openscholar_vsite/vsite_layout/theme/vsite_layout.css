@@ -55,18 +55,33 @@
   }
   
   
-  dl#scholarlayout-top-widgets {float:left;width:auto;height:98px;}
-   dd#scholarlayout-top-widgets {display:inline;white-space:nowrap;}
+dl#scholarlayout-top-widgets {
+	float:left;
+	width: auto;
+	height:98px;
+	position: absolute; left: 0; top: 0;
+}
 
-.tagged-list  {
-  height:101px;
+/*
+ * if the scroller is active make it really wide to start
+ *
+dl#scholarlayout-top-widgets.scroll-content{
+	width: 5000px;
+}
+*/
+div.scholarlayout-top-widgets-wrapper .tagged-list  {
+  height:121px;
   background:url('images/widgetBoxBg.png') repeat-x;
   width: 850px;
-border: 1px solid #c0c7c7;
-  overflow:auto;
+  border: 1px solid #c0c7c7;
+  overflow: hidden;
   margin-bottom:30px;
+}
 
-  }
+
+div.scholarlayout-top-widgets-wrapper .scroll-viewport  {
+  position: relative;
+}
 
 #vsite-layout-settings-form {
   padding-top: 10px;
