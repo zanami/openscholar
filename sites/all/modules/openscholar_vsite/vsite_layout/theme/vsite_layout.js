@@ -86,7 +86,7 @@ var scholarlayout_oScrollbar = false;
 function scholarlayout_afterdrag(event, ui) {
   
   var item = $(this);
-  if(item.attr("id") == "scholarlayout-top-widgets" && ui.item && ui.item.children('a.add').length){
+  if(item.attr("id") == "scholarlayout-top-widgets" && ui.item && ui.item.parent().attr("id") != "scholarlayout-top-widgets" && ui.item.children('a.add').length){
 	  ui.item.clone(true).prependTo("#scholarlayout-top-widgets");
 	  ui.item.children('a.add').click(); //auto-click the configure button
 	  $(document).bind('CToolsDetachBehaviors',function(element) {
@@ -125,6 +125,7 @@ function scholarlayout_update_moved_elements(warning){
 	        $('<div id="scholarforms_save_warning" class="warning"><span class="warning tabledrag-changed">*</span> Your changes have not yet been saved. Click "Save Settings" for your changes to take effect</div>')
 	    );
 	  }
+	  
 }
 
 function scholarlayout_catchchanges() {
@@ -254,11 +255,13 @@ function vsite_layout_modalfram_links(){
 function vsite_layout_init_horz_scroller(){
 	
 	//Top Scroller
-	$('div.scholarlayout-top-widgets-wrapper').addClass('scroll-wrapper').append('<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>');
-	$('.scroll-wrapper .tagged-list').addClass('scroll-viewport');
-	$('.scroll-wrapper .tagged-list #scholarlayout-top-widgets').addClass('scroll-content');
-	vsite_layout_update_scroller_width();
-	scholarlayout_oScrollbar = $('.scroll-wrapper').tinyscrollbar({ axis: 'x'});
+	if(!$('div.scholarlayout-top-widgets-wrapper').hasClass('scroll-wrapper')){
+	  $('div.scholarlayout-top-widgets-wrapper').addClass('scroll-wrapper').append('<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>');
+	  $('.scroll-wrapper .tagged-list').addClass('scroll-viewport');
+	  $('.scroll-wrapper .tagged-list #scholarlayout-top-widgets').addClass('scroll-content');
+	  vsite_layout_update_scroller_width();
+  	  scholarlayout_oScrollbar = $('.scroll-wrapper').tinyscrollbar({ axis: 'x'});
+	}
 }
 
 /*
