@@ -6,6 +6,9 @@
  */
 
 class os_boxes_shields extends os_boxes_default {
+
+  public $region = 'header_right';
+
   /**
    * Implementation of boxes_content::options_defaults().
    */

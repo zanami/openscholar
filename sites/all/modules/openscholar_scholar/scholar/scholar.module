@@ -72,7 +72,7 @@ function scholar_vsite_widgets(){
       'module' => 'scholar',
       'delta' => '0',
       'weight' => 20,
-      'region' => 'header_left',
+      'region' => false,
       'label' => 'Scholar site logo',
       'cache' => BLOCK_CACHE_CONTENT_CACHE,
       'cache_keys' => array(
