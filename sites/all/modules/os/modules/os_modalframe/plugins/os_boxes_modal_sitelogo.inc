@@ -2,8 +2,6 @@
 
 class os_boxes_modal_sitelogo extends os_boxes_modalframe {
 
-  public $region = 'header_left';
-
   protected function config_path() {
     $vsite = vsite_get_vsite();
     return 'node/'.$vsite->group->nid.'/edit';

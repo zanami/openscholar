@@ -7,6 +7,9 @@ function os_modalframe_ctools_plugin_api($module, $api) {
   if ($module == 'boxes' && $api == 'plugins') {
     return array('version' => 1);
   }
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => 1);
+  }
 }
 
 /**
