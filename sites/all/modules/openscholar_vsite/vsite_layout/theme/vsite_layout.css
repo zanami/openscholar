@@ -7,6 +7,8 @@
   background:#FFF;
   }
 
+form#vsite-layout-settings-form > div:first-child {width:864px;}
+
 #scholarlayout-container .scholarlayout-widgets-list {
   position: absolute;
   padding: 0;
@@ -412,7 +414,7 @@ background: #c6cccc;
 #websiteLabelTab { 
 	left: 749px;
     position: relative;
-    top: 164px;
+    top: 184px;
     width:99px;
     height:16px;
     }
