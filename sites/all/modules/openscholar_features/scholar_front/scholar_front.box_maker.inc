@@ -38,7 +38,11 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
   $query = 'SELECT uid FROM {users} LIMIT %d OFFSET %d ';
   $result = db_query($query, (int)$limit, (int)$offset);
   while ($res = db_fetch_object($result)) {
-    $vsites = vsite_get_vsite_by_owner($res->uid);
+    
+    if (($vsites = vsite_get_vsite_by_owner($res->uid)) == FALSE) {
+      return; //user has no vsites.  ignore.
+    }
+    
     //loop over this user's vsites
     foreach($vsites as $vsite) {
       //update old box IDs
@@ -276,9 +280,9 @@ function fb_add_block(&$vsite, $block) {
 // update the ids of all blocks on this vsite 
 function update_block_ids(&$vsite) {
   $id_map = array(
-    'vsite_widgets-2'				=> 'boxes-shield_default',
-    'vsite_widgets-0'				=> 'boxes-site_logo',
-    'vsite_widgets-1'				=> 'boxes-site_info',
+    'vsite_widgets-2'				=> 'shield_default',
+    'vsite_widgets-0'				=> 'site_logo',
+    'vsite_widgets-1'				=> 'site_info',
   );
   $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
   $blocks = array();
