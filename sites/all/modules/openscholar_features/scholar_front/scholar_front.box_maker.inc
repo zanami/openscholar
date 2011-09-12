@@ -41,6 +41,10 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
     $vsites = vsite_get_vsite_by_owner($res->uid);
     //loop over this user's vsites
     foreach($vsites as $vsite) {
+      //update old box IDs
+      update_block_ids($vsite);
+      
+      // create new frontpage box from old frontpage settings
       $settings = fb_front_settings($vsite->id);
       $front = fb_get_front($settings, $vsite);
       
@@ -264,6 +268,39 @@ function fb_add_block(&$vsite, $block) {
   $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
   $front_context['blocks'][$block]['region'] = 'content_top';
 
+  if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
+    return $vsite->id;
+  }
+}
+
+// update the ids of all blocks on this vsite 
+function update_block_ids(&$vsite) {
+  $id_map = array(
+    'vsite_widgets-2'				=> 'boxes-shield_default',
+    'vsite_widgets-0'				=> 'boxes-site_logo',
+    'vsite_widgets-1'				=> 'boxes-site_info',
+  );
+  $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
+  $blocks = array();
+  
+  foreach ($front_context['blocks'] as $id => $a_block) {
+    if (isset($id_map[$id])) { 
+      $id = $id_map[$id];
+      //      $box = boxes_load($id);
+      //boxes_load uses space_get_space, which doesn't work here.  
+      $box = $vsite->controllers->boxes->get($id);
+      if (empty($box)) {
+        module_load_include('inc', 'boxes', 'plugins/boxes_box');
+        $box = boxes_box::load($id); 
+      }
+      drupal_alter('boxes_load', $box, $id);
+    }
+    
+    $new_front[$id] = os_boxes_get_vsite_widget($a_block, $a_block['weight'], $a_block['region']);
+  }
+
+  $front_context['blocks'] = $new_front;
+  
   if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
     return $vsite->id;
   }
