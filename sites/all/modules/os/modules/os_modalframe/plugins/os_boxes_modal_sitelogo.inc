@@ -12,7 +12,7 @@ class os_boxes_modal_sitelogo extends os_boxes_modalframe {
   }
 
   public function render() {
-    $node = node_load($this->options['nid']);
+    $vsite = vsite_get_vsite();
 
     $block = parent::render();
 
