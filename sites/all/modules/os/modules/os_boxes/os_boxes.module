@@ -226,7 +226,7 @@ function os_boxes_vsite_widgets(){
   $items = array();
   foreach ( $plugins as $key => $info ) {
   	//Call access function
-  	if(!$info['access'] || !call_user_func($info['access'])) continue;
+  	if(!user_access('administer blocks') && (!$info['access'] || !call_user_func($info['access']))) continue;
   	
     if (isset($info['title'])) {
       $items["boxes-boxes_add__$key"] = array(
