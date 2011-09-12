@@ -805,6 +805,7 @@ function vsite_taxonomy_boxes_plugins() {
       'path' => $path,
       'parent' => 'os_boxes_default',
     ),
+    'access' => "cp_access_cp",
   );
 
   return $info;
