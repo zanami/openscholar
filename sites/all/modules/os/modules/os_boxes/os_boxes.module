@@ -147,6 +147,7 @@ function os_boxes_boxes_plugins() {
       'path' => $path,
       'parent' => 'os_boxes_node',
     ),
+    'access' => false, //This box has no options yet, just use the default instance
   );
 
   $info['os_boxes_oembed'] = array(
