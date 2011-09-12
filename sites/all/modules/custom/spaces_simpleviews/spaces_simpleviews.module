@@ -51,7 +51,7 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
   );
     
   // os/vsite integration - lists correct content types
-  if (module_exists('vsite')) {
+  if (module_exists('vsite') && vsite_get_vsite()) {
     vsite_include('vsiteapi');
     $node_options = vsite_content_types();
     drupal_alter('vsite_content_types', $node_options);
@@ -70,7 +70,7 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
   
   $form['sort'] = array(
     '#type' => 'select',
-    '#title' => t('Sorted'),
+    '#title' => t('Sort'),
     '#options' => array(
       'newest' => t('Newest first'),
       'oldest' => t('Oldest first'),
@@ -88,7 +88,7 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
   
   $form['style'] = array(
     '#type' => 'select',
-    '#title' => t('As a'),
+    '#title' => t('Display Style'),
     '#options' => array(
       //'full' => t('List of full posts'),
       'teasers' => t('List of teasers'),
@@ -101,7 +101,7 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
   
   $form['number_of_items'] = array(
     '#type' => 'textfield',
-    '#title' => 'Number of displayed items',
+    '#title' => 'Number of displayed posts',
     '#default_value' => $simpleview['number_of_items'],
   );
   
