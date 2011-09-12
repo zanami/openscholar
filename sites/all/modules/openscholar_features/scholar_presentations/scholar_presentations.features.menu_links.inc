@@ -14,7 +14,7 @@ function scholar_presentations_menu_default_menu_links() {
     'link_title' => 'Presentations',
     'options' => array(
       'attributes' => array(
-        'title' => 'List of presentations',
+        'title' => 'List of presentations on my site',
       ),
     ),
     'module' => 'system',

@@ -10,14 +10,14 @@
 
 
 /**
- * Default values for the view object 
+ * Default values for the view object
  */
 function spaces_simpleviews_default_data(){
   return array(
     'filter' => 'all nodes',  // @todo get the current context and the node type(s) associated with it, make that the default
-    'style' => 'titles', 
-    'sort' => 'newest', 
-    'argument' => '' 
+    'style' => 'titles',
+    'sort' => 'newest',
+    'argument' => ''
   );
 }
 
@@ -41,13 +41,13 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
   
 
   $form['filter'] = array(
-    '#type' => 'select', 
-    '#title' => t('Display'), 
+    '#type' => 'select',
+    '#title' => t('Display'),
     '#options' => array(
-      'all' => t('All posts') 
-    ), 
-    '#required' => TRUE, 
-    '#default_value' => $simpleview['filter'] 
+      'all' => t('All posts')
+    ),
+    '#required' => TRUE,
+    '#default_value' => $simpleview['filter']
   );
     
   // os/vsite integration - lists correct content types
@@ -64,20 +64,20 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
   sort($node_options);
   foreach ( $node_options as $type => $name ) {
     $form['filter']['#options']['node:' . $type] = t('!type posts', array(
-      '!type' => $name 
+      '!type' => $name
     ));
   }
   
   $form['sort'] = array(
-    '#type' => 'select', 
-    '#title' => t('Sorted'), 
+    '#type' => 'select',
+    '#title' => t('Sorted'),
     '#options' => array(
-      'newest' => t('Newest first'), 
-      'oldest' => t('Oldest first'), 
-      'a-z' => t('By title') 
-    ), 
-    '#required' => TRUE, 
-    '#default_value' => $simpleview['sort'] 
+      'newest' => t('Newest first'),
+      'oldest' => t('Oldest first'),
+      'a-z' => t('By title')
+    ),
+    '#required' => TRUE,
+    '#default_value' => $simpleview['sort']
   );
   if (module_exists('statistics')) {
     $form['sort']['#options']['popular'] = t('By number of hits');
@@ -87,16 +87,16 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
   }
   
   $form['style'] = array(
-    '#type' => 'select', 
-    '#title' => t('As a'), 
+    '#type' => 'select',
+    '#title' => t('As a'),
     '#options' => array(
       //'full' => t('List of full posts'),
-      'teasers' => t('List of teasers'), 
-      'titles' => t('List of titles') 
+      'teasers' => t('List of teasers'),
+      'titles' => t('List of titles')
     )//'grid' => t('Grid of thumbnails'),
-    , 
-    '#required' => TRUE, 
-    '#default_value' => $simpleview['style'] 
+    ,
+    '#required' => TRUE,
+    '#default_value' => $simpleview['style']
   );
   
   $form['number_of_items'] = array(
@@ -116,18 +116,18 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
 function spaces_simpleviews_boxes_plugins(){
   $info = array();
   
-  $info['spaces_simpleviews_boxes_ls'] = array(
+  $info['spaces_simpleviews_post_list'] = array(
     'title' => 'List of posts',
-    'description' => 'List of posts', 
+    'description' => 'List of posts',
     'tags' => array(
-      'Content' 
-    ), 
+      'Content'
+    ),
     'handler' => array(
-      'class' => 'spaces_simpleviews_boxes_ls', 
-      'file' => 'spaces_simpleviews_boxes_ls.inc', 
-      'path' => drupal_get_path('module', 'spaces_simpleviews') . '/plugins', 
-      //'parent' => 'box' 
-    ) 
+      'class' => 'spaces_simpleviews_post_list',
+      'file' => 'spaces_simpleviews_post_list.inc',
+      'path' => drupal_get_path('module', 'spaces_simpleviews') . '/plugins',
+      //'parent' => 'box'
+    )
   );
   
   return $info;

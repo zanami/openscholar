@@ -444,8 +444,8 @@ function scholar_presentations_content_default_fields() {
       'label' => 'Presentation Files',
       'weight' => 0,
       'description' => 'Upload the file(s) for this presentation.',
-      'type' => 'filefield_widget',
-      'module' => 'filefield',
+      'type' => 'slidesharefield_widget',
+      'module' => 'slidesharefield',
     ),
   );
 

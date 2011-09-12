@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -66,7 +66,7 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
 // get settings for this vsite's front page
 // settings are two parts.  there are several types of settings.  list the type.  its settings will vary.
 function fb_front_settings($vsite_id) {
-  $query  = 'SELECT object_id,value FROM {spaces_overrides} WHERE id = "%s" '; 
+  $query  = 'SELECT object_id,value FROM {spaces_overrides} WHERE id = "%s" ';
   $query .= 'AND object_id IN ("site_frontpage", "scholar_front_frontpage_nid", "scholar_front_frontpage_path", "scholar_front_feature_nodes", "schoalr_front_create_bio", "scholar_front_site_title")';
   $result = db_query($query, $vsite_id);
   $settings = array();
@@ -117,7 +117,7 @@ function fb_get_front($settings, &$vsite) {
    	  }
       break;
     
-    //bio.  
+    //bio.
     case 'create_bio':
       $front['type'] = 'bio';
       break;
@@ -126,7 +126,7 @@ function fb_get_front($settings, &$vsite) {
   //no need to continue if we have a type
   if (isset($front['type'])) {
     return $front;
-  } 
+  }
   
   //no type yet.  frontpage is a node/nid.  maybe bio, maybe nid.
   $nid = (int) end(split('/', $settings['site_frontpage']));
@@ -144,7 +144,7 @@ function fb_get_front($settings, &$vsite) {
     $front['options'] = array('node' => $settings['site_frontpage']);
   }  else {
     //no node by this nid.  maybe an old setting for a node that was deleted?  no box!
-    return false;    
+    return false;
   }
   
   return $front;
@@ -153,7 +153,7 @@ function fb_get_front($settings, &$vsite) {
 //make a box for each vsite.
 function fb_mk_front_box(&$vsite, $settings) {
   
-  if (!$settings) { 
+  if (!$settings) {
     return false;
   }
 
@@ -169,15 +169,15 @@ function fb_mk_front_box(&$vsite, $settings) {
       //check for blurb
 	  $query = <<<EOD
 SELECT DISTINCT nid,field_hook_text_value
-FROM {content_type_bio} 
-WHERE field_hook_text_value IS NOT NULL  
+FROM {content_type_bio}
+WHERE field_hook_text_value IS NOT NULL
 AND   nid = %d
-GROUP BY nid HAVING max(vid) 
+GROUP BY nid HAVING max(vid)
 EOD;
       $result = db_query($query, $nid);
 
       if ($r = db_fetch_object($result)) {
-      	//we have a blurb.  let's make a simple box for it. 
+      	//we have a blurb.  let's make a simple box for it.
       	$type = 'os_boxes_simple';
       	$opts['body'] = $r->field_hook_text_value;
       	
@@ -194,13 +194,13 @@ EOD;
     case 'nid':
       $type = 'os_boxes_node';
       $opts['nid'] = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
-      $opts['teaser'] = 'full';      
+      $opts['teaser'] = 'full';
       break;
       
       
     //no support for path boxes
     case 'path':
-      //path as a front page box is not supported.  
+      //path as a front page box is not supported.
       return false;
       
       
@@ -213,7 +213,7 @@ EOD;
       
     //features uses simpleviews_boxes_ls
     case 'features':
-      $type = 'spaces_simpleviews_boxes_ls';
+      $type = 'spaces_simpleviews_post_list';
       $opts['style'] = 'teasers';
       $opts['filter'] = 'all';
       break;
@@ -244,7 +244,7 @@ EOD;
   
   
   //make and return array.  array specifies if widget is box or block and then includes it as data
-  if (!$block) {  	
+  if (!$block) {
   	//return a box
   	if ($box = mk_box($vsite, $type, $opts)) {
   	  return array('wgt' => 'box', 'data' => $box);
