@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 /**
@@ -38,9 +38,17 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
   $query = 'SELECT uid FROM {users} LIMIT %d OFFSET %d ';
   $result = db_query($query, (int)$limit, (int)$offset);
   while ($res = db_fetch_object($result)) {
-    $vsites = vsite_get_vsite_by_owner($res->uid);
+    
+    if (($vsites = vsite_get_vsite_by_owner($res->uid)) == FALSE) {
+      return; //user has no vsites.  ignore.
+    }
+    
     //loop over this user's vsites
     foreach($vsites as $vsite) {
+      //update old box IDs
+      update_block_ids($vsite);
+      
+      // create new frontpage box from old frontpage settings
       $settings = fb_front_settings($vsite->id);
       $front = fb_get_front($settings, $vsite);
       
@@ -62,7 +70,7 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
 // get settings for this vsite's front page
 // settings are two parts.  there are several types of settings.  list the type.  its settings will vary.
 function fb_front_settings($vsite_id) {
-  $query  = 'SELECT object_id,value FROM {spaces_overrides} WHERE id = "%s" '; 
+  $query  = 'SELECT object_id,value FROM {spaces_overrides} WHERE id = "%s" ';
   $query .= 'AND object_id IN ("site_frontpage", "scholar_front_frontpage_nid", "scholar_front_frontpage_path", "scholar_front_feature_nodes", "schoalr_front_create_bio", "scholar_front_site_title")';
   $result = db_query($query, $vsite_id);
   $settings = array();
@@ -113,7 +121,7 @@ function fb_get_front($settings, &$vsite) {
    	  }
       break;
     
-    //bio.  
+    //bio.
     case 'create_bio':
       $front['type'] = 'bio';
       break;
@@ -122,7 +130,7 @@ function fb_get_front($settings, &$vsite) {
   //no need to continue if we have a type
   if (isset($front['type'])) {
     return $front;
-  } 
+  }
   
   //no type yet.  frontpage is a node/nid.  maybe bio, maybe nid.
   $nid = (int) end(split('/', $settings['site_frontpage']));
@@ -140,7 +148,7 @@ function fb_get_front($settings, &$vsite) {
     $front['options'] = array('node' => $settings['site_frontpage']);
   }  else {
     //no node by this nid.  maybe an old setting for a node that was deleted?  no box!
-    return false;    
+    return false;
   }
   
   return $front;
@@ -149,7 +157,7 @@ function fb_get_front($settings, &$vsite) {
 //make a box for each vsite.
 function fb_mk_front_box(&$vsite, $settings) {
   
-  if (!$settings) { 
+  if (!$settings) {
     return false;
   }
 
@@ -165,15 +173,15 @@ function fb_mk_front_box(&$vsite, $settings) {
       //check for blurb
 	  $query = <<<EOD
 SELECT DISTINCT nid,field_hook_text_value
-FROM {content_type_bio} 
-WHERE field_hook_text_value IS NOT NULL  
+FROM {content_type_bio}
+WHERE field_hook_text_value IS NOT NULL
 AND   nid = %d
-GROUP BY nid HAVING max(vid) 
+GROUP BY nid HAVING max(vid)
 EOD;
       $result = db_query($query, $nid);
 
       if ($r = db_fetch_object($result)) {
-      	//we have a blurb.  let's make a simple box for it. 
+      	//we have a blurb.  let's make a simple box for it.
       	$type = 'os_boxes_simple';
       	$opts['body'] = $r->field_hook_text_value;
       	
@@ -190,13 +198,13 @@ EOD;
     case 'nid':
       $type = 'os_boxes_node';
       $opts['nid'] = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
-      $opts['teaser'] = 'full';      
+      $opts['teaser'] = 'full';
       break;
       
       
     //no support for path boxes
     case 'path':
-      //path as a front page box is not supported.  
+      //path as a front page box is not supported.
       return false;
       
       
@@ -209,7 +217,7 @@ EOD;
       
     //features uses simpleviews_boxes_ls
     case 'features':
-      $type = 'spaces_simpleviews_boxes_ls';
+      $type = 'spaces_simpleviews_post_list';
       $opts['style'] = 'teasers';
       $opts['filter'] = 'all';
       break;
@@ -240,7 +248,7 @@ EOD;
   
   
   //make and return array.  array specifies if widget is box or block and then includes it as data
-  if (!$block) {  	
+  if (!$block) {
   	//return a box
   	if ($box = mk_box($vsite, $type, $opts)) {
   	  return array('wgt' => 'box', 'data' => $box);
@@ -264,6 +272,39 @@ function fb_add_block(&$vsite, $block) {
   $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
   $front_context['blocks'][$block]['region'] = 'content_top';
 
+  if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
+    return $vsite->id;
+  }
+}
+
+// update the ids of all blocks on this vsite 
+function update_block_ids(&$vsite) {
+  $id_map = array(
+    'vsite_widgets-2'				=> 'shield_default',
+    'vsite_widgets-0'				=> 'site_logo',
+    'vsite_widgets-1'				=> 'site_info',
+  );
+  $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
+  $blocks = array();
+  
+  foreach ($front_context['blocks'] as $id => $a_block) {
+    if (isset($id_map[$id])) { 
+      $id = $id_map[$id];
+      //      $box = boxes_load($id);
+      //boxes_load uses space_get_space, which doesn't work here.  
+      $box = $vsite->controllers->boxes->get($id);
+      if (empty($box)) {
+        module_load_include('inc', 'boxes', 'plugins/boxes_box');
+        $box = boxes_box::load($id); 
+      }
+      drupal_alter('boxes_load', $box, $id);
+    }
+    
+    $new_front[$id] = os_boxes_get_vsite_widget($a_block, $a_block['weight'], $a_block['region']);
+  }
+
+  $front_context['blocks'] = $new_front;
+  
   if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
     return $vsite->id;
   }

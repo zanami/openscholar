@@ -268,61 +268,6 @@ function scholar_biocv_cv_node_submit($form, &$form_state) {
 }
 
 /**
- * Define the scholar biocv blocks with hook block
- */
-function scholar_biocv_block($op = 'list', $delta = false, $edit = array()) {
-  if ($op == 'list') {
-    $blocks['bio_blurb']['info'] = t('Bio Blurb');
-    return $blocks;
-  }
-  elseif ($op == 'view') {
-    switch ($delta) {
-      case 'bio_blurb':
-        return scholar_biocv_bio_blurb_content();
-    }
-  }
-}
-
-/**
- * hook vsite_widgets
- */
-function scholar_biocv_vsite_widgets(){
-  $items = array();
-
-  $items['scholar_biocv-bio_blurb'] = array(
-        'module' => 'scholar_biocv',
-        'delta' => 'bio_blurb',
-        'weight' => 20,
-        'region' => false,
-        'label' => 'Bio Blurb',
-        'cache' => BLOCK_CACHE_CONTENT_CACHE,
-		    'cache_keys' => array(
-		      'node' => array('bio' => 'bio'),
-		      'os_og' => array('current' => 'current'),
-		    ),
-      );
-
-  return $items;
-}
-
-/**
- * Return the block contents for the bio blurb block
- * @return unknown_type
- */
-function scholar_biocv_bio_blurb_content(){
-  $vsite = vsite_get_vsite();
-  if(!$vsite) return array();
-
-  $bio_node = content_profile_load('bio', $vsite -> group -> uid, $lang = '');
-  if(!$bio_node) return array();
-
-  $output = strlen($bio_node->field_hook_text[0]['value'])?$bio_node->field_hook_text[0]['value'] : node_teaser($bio_node->body, null,400) ;
-  $output .= l("more", $bio_node->path,array(attributes=>array('class'=>'more')));
-
-  return array('subject' => "Bio",'content' => $output);
-}
-
-/**
  * CV/Bio Title Callback
  */
 function scholar_biocv_menu_title(){

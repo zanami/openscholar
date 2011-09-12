@@ -147,6 +147,7 @@ function os_boxes_boxes_plugins() {
       'path' => $path,
       'parent' => 'os_boxes_node',
     ),
+    'access' => false, //This box has no options yet, just use the default instance
   );
 
   $info['os_boxes_oembed'] = array(
@@ -184,6 +185,26 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     )
   );
+  
+  $info['os_boxes_simpleview_list'] = array(
+    'title' => 'List of posts',
+    'description' => '',
+    'tags' => array(
+      'Content'
+    ),
+    'handler' => array(
+      'class' => 'os_boxes_simpleview_list',
+      'file' => 'os_boxes_simpleview_list.inc',
+      'path' => $path,
+      'parent' => 'spaces_simpleviews_post_list'
+    ),
+  );
+  
+  foreach ($info as $key => $block) {
+  	if(!isset($info[$key]['access'])){
+  		$info[$key]['access'] = "cp_access_cp";
+  	}
+  }
 
   return $info;
 }
@@ -205,6 +226,9 @@ function os_boxes_vsite_widgets(){
 
   $items = array();
   foreach ( $plugins as $key => $info ) {
+  	//Call access function
+  	if(!user_access('administer blocks') && (!$info['access'] || !call_user_func($info['access']))) continue;
+  	
     if (isset($info['title'])) {
       $items["boxes-boxes_add__$key"] = array(
         'module' => 'boxes',

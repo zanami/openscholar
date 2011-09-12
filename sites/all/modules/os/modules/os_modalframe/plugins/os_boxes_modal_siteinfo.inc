@@ -15,6 +15,13 @@ class os_boxes_modal_siteinfo extends os_boxes_modalframe {
     $vsite = vsite_get_vsite();
     $block = parent::render();
 
+    if ($vsite->group->type == 'vsite') {
+      $block = array_merge($block, _scholar_basicinfo_wdgt());
+    }
+    elseif ($vsite->group->type == 'project') {
+      $block = array_merge($block, _scholar_project_basicinfo_wdgt());
+    }
+/*
     if (!$vsite->group->title) {
       $cprofile = content_profile_load('vsite_users_profile', $vsite->group->uid);
 
@@ -39,7 +46,7 @@ class os_boxes_modal_siteinfo extends os_boxes_modalframe {
 
       $block['content'] = $output;
     }
-
+*/
     return $block;
   }
 

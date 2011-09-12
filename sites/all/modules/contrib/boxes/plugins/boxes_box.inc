@@ -7,7 +7,7 @@
  * @see boxes_simple.
  */
 abstract class boxes_box {
-  static $boxes; // Static cache of box objects.
+  static $boxes; //Static cache of box objects.
   public $delta;
   public $title;
   public $description;
@@ -78,7 +78,7 @@ abstract class boxes_box {
  
   /**
    * Reset the boxes cache.
-   * 
+   *
    * Both ctools and boxes current maintain caches, ctools of the config and
    * boxes of the loaded box objects. We clear them both.
    */

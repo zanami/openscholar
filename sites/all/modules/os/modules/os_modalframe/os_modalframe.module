@@ -27,6 +27,7 @@ function os_modalframe_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
     'factory_path' => '',
+    'access' => "cp_access_cp",
   );
 
   $info['os_boxes_modal_image'] = array(
@@ -40,6 +41,7 @@ function os_modalframe_boxes_plugins() {
       'parent' => 'os_boxes_modalframe',
     ),
     'factory_path' => 'node/add/image',
+    'access' => "cp_access_cp",
   );
 
   $info['os_boxes_modal_sitelogo'] = array(
@@ -52,6 +54,7 @@ function os_modalframe_boxes_plugins() {
       'path' => $path,
       'parent' => 'os_boxes_modalframe',
     ),
+    'access' => "cp_access_cp",
   );
 
   $info['os_boxes_modal_siteinfo'] = array(
@@ -64,6 +67,7 @@ function os_modalframe_boxes_plugins() {
       'path' => $path,
       'parent' => 'os_boxes_modalframe',
     ),
+    'access' => "cp_access_cp",
   );
 
   return $info;
