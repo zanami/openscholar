@@ -53,3 +53,32 @@ function os_update_6001(&$sandbox){
 
 }
 
+/*
+ * hook_update_N
+ * 
+ * update hook for beta12 => beta13
+ * 
+ * installs new $modules
+ */
+function os_update_6002(&$sandbox) {
+  $res = array();
+  $modules = array('vsite_controllers', 'os_boxes', 'spaces_simpleviews', 'vsite_contextual');
+  include_once('includes/install.inc');
+  drupal_install_modules($modules);
+  
+  $failed = array();
+  foreach($modules as $mod) {
+    if (!module_exists($mod)) {
+      $failed[] = $mod;
+    }
+  }
+  
+  if (count($failed)) {
+    $res = array('#abort' => array('success' => FALSE, 'query' => 'Failed to install modules: ' . implode(', ', $failed)));
+  } else {
+    $res[] = array('success' => TRUE, 'query' => 'Installed modules: ' . implode(', ', $modules));
+  }
+  
+  return $res;
+}
+
