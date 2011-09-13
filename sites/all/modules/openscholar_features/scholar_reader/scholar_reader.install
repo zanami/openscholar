@@ -94,3 +94,31 @@ function scholar_reader_update_6002(&$sandbox){
     
     return $res;
 }
+
+function scholar_reader_update_6003(&$sandbox){
+
+	module_load_include('inc', 'os_boxes', 'os_boxes.newbox_api');
+	module_load_include('inc', 'spaces', 'spaces.overrides');
+  ctools_include('plugins');
+  $plugins = ctools_get_plugins('spaces', 'plugins');
+  $controllers = spaces_controllers();
+  $box_controller = $controllers['box'];
+  
+  if(!$box_controller){
+  	return array("#abort" => array('success' => FALSE, 'query' => 'Unable to load box controller can not add box for twitter feed.'));
+  }
+  $class = ctools_plugin_get_class($plugins[$box_controller['plugin']], 'handler');
+
+  //Get all the sites with twitter blocks setup
+  $q = db_query("SELECT * FROM `spaces_overrides` WHERE `object_type` LIKE 'variable' AND `object_id` LIKE 'scholar_reader_twitter_username' ");
+  while ($res = db_fetch_array($q)) {
+  	$twitter_username = unserialize($res->value);
+  	if(strlen($twitter_username)){
+      $twitter_box = boxes_factory('os_boxes_twitterfeed', array('twitter_username' => $twitter_username));
+      $o_controller = new $class('box', $res->type, $res->id);
+      $o_controller->set($twitter_box->delta, $twitter_box);
+      
+      replace_boxes('scholar_reader-my_twitter_feed', $twitter_box, false, $res->id);
+  	}
+  }
+}

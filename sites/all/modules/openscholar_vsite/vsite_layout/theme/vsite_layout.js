@@ -99,6 +99,7 @@ function scholarlayout_afterdrag(event, ui) {
   }//This started from the top
   
   scholarlayout_update_moved_elements(true);
+  vsite_layout_update_scroller_width();
 };
 
 /**

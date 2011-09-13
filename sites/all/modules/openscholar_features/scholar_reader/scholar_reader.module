@@ -33,7 +33,6 @@ function scholar_reader_context_links_alter(&$links) {
 
 /**
  * hook vsite_sidgets
-
  */
 function scholar_reader_vsite_widgets(){
   $items = array();
@@ -72,7 +71,7 @@ function scholar_reader_vsite_widgets(){
           'os_og' => array('current' => 'current'),
         ),
         'cache_max_lifespan' => 900, //cache 15 minutes
-      );
+  );
 
   return $items;
 }

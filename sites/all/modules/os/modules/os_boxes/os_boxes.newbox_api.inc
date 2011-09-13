@@ -93,20 +93,21 @@ function vsite_remove_box(&$vsite, $box) {
  * @function replace_boxes
  * 		Given a block id, replace it with the given block
  * @param $block_id - String id of the block to replace
- * @param $box - Object
+ * @param $box - Object (instance)
+ * @param $default_region
+ * @param $sid (the site to replace or all sites by default)
  */
-function replace_boxes($block_id, $box, $default_region = false) {
-  static $available_widgets = null;
-  if (!isset($available_widgets)) {
-    $available_widgets = module_invoke_all('vsite_widgets');
-  }
+function replace_boxes($block_id, $box, $default_region = false, $sid = false) {
 
   if (!$box->delta) {
     $box->delta = os_boxes_create_delta();
   }
   $widget_def = os_boxes_get_vsite_widget($box);
 
-  $q = db_query("SELECT * FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%'", $block_id);
+  $params = array($block_id);
+  if($sid) $params[] = $sid;
+  
+  $q = db_query("SELECT * FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%' ".($sid?" AND id = %d ":""), $params);
   while ($r = db_fetch_array($q)) {
     $value = unserialize($r['value']);
     $region = $value['blocks'][$block_id]['region']?$value['blocks'][$block_id]['region']:$default_region;
@@ -114,9 +115,5 @@ function replace_boxes($block_id, $box, $default_region = false) {
     unset($value['blocks'][$block_id]);
     $value['blocks']['boxes-'.$box->delta] = array('region' => $region, 'weight' => $weight) + $widget_def;
     db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = 'og' AND object_type = 'context' AND id = %d AND object_id = '%s'", serialize($value), $r['id'], $r['object_id']);
-    $vsite = vsite_get_vsite($r['id']);
-    $vsite->controllers->boxes->set($box->delta, $box);
   }
 }
-
-//add block function?  do we ever need that for migration or is that only for front page boxes?
