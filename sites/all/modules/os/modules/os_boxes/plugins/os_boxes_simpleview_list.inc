@@ -37,5 +37,4 @@ class os_boxes_simpleview_list extends spaces_simpleviews_post_list {
 	  return $cache_key;
   }
   
-  
 }
