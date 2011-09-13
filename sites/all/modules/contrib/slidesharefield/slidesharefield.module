@@ -71,7 +71,7 @@ function theme_slidesharefield_formatter_slideshare_thumb_popup($element) {
 
     $status = $res[0]['STATUS'];
     if ($status == '2')
-      return '<a href="'.$embed.'" rel="lightframe"><img src="' . $res[0]['THUMBNAILURL'] . '" width="215"/></a>';
+      return '<a href="'.$embed.'" rel="shadowbox"><img src="' . $res[0]['THUMBNAILURL'] . '" width="215"/></a>';
     else if ($status == '0')
       return "The file " . $res[0]['TITLE'] . " is queued for conversion.";
     else if ($status == '1')
@@ -122,7 +122,7 @@ function theme_slidesharefield_formatter_slideshare($element){
     else if ($status == '3')
       return "The file is under conversion failed.";
     else
-      "The file conversion process faileddd";
+      "The file conversion process failed";
   }
 }
 

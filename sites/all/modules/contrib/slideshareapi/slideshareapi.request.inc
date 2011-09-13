@@ -18,7 +18,7 @@ class Slideshareapi {
     $this -> apiurl= variable_get('slideshareapi_apiurl', 'http://www.slideshare.net/api/2/');
 
   }
-  
+
   /**
    * performs the request to slideshare.net
    * @param $call the name of the api function to call
@@ -33,20 +33,19 @@ class Slideshareapi {
     $params['hash'] = $hash;
     $params['username'] = $this -> user;
     $params['password'] = $this -> password;
-    
+
     $query = http_build_query($params);
 
     $response = drupal_http_request($this->apiurl . $call . "?" . $query);
-
-     if ($response->code == '200') {
-       return $this -> XMLtoArray(utf8_encode($response -> data));
-     }
-     else {
-       watchdog('error', 'HTTP error !code received', array('!code' => $response->code));
-     }
-     return FALSE;    
+    if ($response->code == '200') {
+      return $this -> XMLtoArray(utf8_encode($response -> data));
+    }
+    else {
+      watchdog('error', 'HTTP error !code received', array('!code' => $response->code));
+    }
+    return FALSE;
   }
-  
+
   /**
    * xml to php aray conversion
    */
@@ -61,14 +60,14 @@ class Slideshareapi {
         $finarr[0]["Message"] = $values[$tags["MESSAGE"][0]]["value"];
         return $finarr;
       }
-      if ((strtolower($key) != "slideshow") 
-           && (strtolower($key) != "slideshows") 
-           && (strtolower($key) != "slideshowdeleted") 
-           && (strtolower($key) != "slideshowuploaded") 
-           && (strtolower($key) != "tags") 
-           && (strtolower($key) != "group") 
-           && (strtolower($key) != "name") 
-           && (strtolower($key) != "count") 
+      if ((strtolower($key) != "slideshow")
+           && (strtolower($key) != "slideshows")
+           && (strtolower($key) != "slideshowdeleted")
+           && (strtolower($key) != "slideshowuploaded")
+           && (strtolower($key) != "tags")
+           && (strtolower($key) != "group")
+           && (strtolower($key) != "name")
+           && (strtolower($key) != "count")
            && (strtolower($key) != "user")) {
         for($i = 0; $i < count($val); $i ++) {
           $finarr[$i][$key] = $values[$val[$i]]["value"];
