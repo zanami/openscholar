@@ -405,8 +405,12 @@ function os_boxes_box_modal($js = NULL, $delta){
   ctools_ajax_render($output);
 }
 
-function os_boxes_create_delta() {
-    $identifier = (module_exists('spaces') && $space = spaces_get_space()) ? "{$space->type}-{$space->id}" : 'box';
+/**
+ * @param $space_key string for manually passing type-id
+ */
+function os_boxes_create_delta($identifier = false) {
+    
+	  if(!$identifier) $identifier = (module_exists('spaces') && $space = spaces_get_space()) ? "{$space->type}-{$space->id}" : 'box';
     $hash = boxes_create_hash($identifier);
     $delta = $identifier . "-" . $hash;
     return $delta;
