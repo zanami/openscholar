@@ -75,8 +75,22 @@ class os_boxes_gallery extends os_boxes_default {
       
     $block = parent::render();
     $output = $view->execute_display();
-    $block['content'] = $output;
+    if(is_array($output) && isset($output['content'])){
+      $block['content'] = $output['content'];
+    }
     return $block;
+  }
+  
+  /**
+   * Return the cache key for image view
+   */
+  public function cache_keys(){
+  	$cache_key = parent::cache_keys();
+  	
+  	//Clear the cache whenever a image or gallery is saved
+  	$cache_key['node'] = array('image' => 'image', 'gallery' => 'gallery');
+  	
+  	return $cache_key;
   }
 
 }
