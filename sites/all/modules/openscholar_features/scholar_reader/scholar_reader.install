@@ -123,4 +123,11 @@ function scholar_reader_update_6003(&$sandbox){
       replace_boxes('scholar_reader-my_twitter_feed', $twitter_box, false, $res->id);
   	}
   }
+  
+  $res[] = array(
+    'success' => true,
+    'query' => 'Updated twitter boxes for scholar reader',
+  );
+    
+  return $res;
 }
