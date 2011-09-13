@@ -353,27 +353,6 @@ function _scholar_book_options_filter(&$form){
   }
 }
 
-
-/**
- *  Implementation of hook_vsite_sidgets().
- */
-function scholar_book_vsite_widgets(){
-  $items = array();
-  $items['views-scholar_book-block_1'] = array(
-      'module' => 'views',
-      'delta' => 'scholar_books-block_1',
-      'weight' => 21,
-      'region' => false,
-      'label' => 'Recent Documents',
-		  'cache' => BLOCK_CACHE_CONTENT_CACHE,
-		  'cache_keys' => array(
-		    'node' => array('book' => 'book'),
-		    'os_og' => array('current' => 'current'),
-		  ),
-    );
-  return $items;
-}
-
 /**
  * Implementation of hook_context_links_alter().
  */
