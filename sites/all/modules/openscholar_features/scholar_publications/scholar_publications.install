@@ -242,3 +242,45 @@ function scholar_publications_update_6009(&$sandbox) {
 
   return $res;
 }
+
+function scholar_publications_update_6010(&$sandbox) {
+  $res = array();
+
+  module_load_include('inc', 'os_boxes', 'os_boxes.newbox_api');
+  module_load_include('module', 'boxes');
+
+  $replacements = array(
+  	'views-publication_years-block_1' => 'year',
+  	'views-publication_contributors-block_1' => 'contributors',
+    'scholar_publications-pub_by_type' => 'type'
+  );
+
+  foreach ($replacements as $block => $type) {
+    $box = (object)(array)boxes_factory('os_boxes_pub_grps', array('type' => $type));
+    $s = "SELECT DISTINCT(id) AS sid, type FROM {spaces_overrides} WHERE type='context' AND value LIKE %%%s%%";
+    $q = db_query($s, $block);
+    // for each vsite that uses this block, we need to create a new box instance
+    // and by new instance, we mean delta
+    while ($r = db_fetch_array($q)) {
+      $box->delta = os_boxes_create_delta($r['sid']);
+      replace_boxes($block, $box, false, $r['sid']);
+      $override = array(
+	      'type' => $res['type'],
+	      'id' => $res['sid'],
+	      'object_type' => 'boxes',
+	      'object_id' => $box->delta,
+	  	  'value' => $box,
+	    );
+
+	   drupal_write_record('spaces_overrides', $override);
+    }
+  }
+
+  $res[] = array(
+    'success' => true,
+    'query' => 'Publication blocks have been replaced with boxes.',
+  );
+
+
+  return $res;
+}
