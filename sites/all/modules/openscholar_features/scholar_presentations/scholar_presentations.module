@@ -24,24 +24,3 @@ function scholar_presentations_menu() {
   }
   return $menu;
 }
-
-/**
- * Implementation of hook_vsite_widgets()
- */
-function scholar_presentations_vsite_widgets(){
-  $items = array();
-  $items['views-scholar_presentations-block_1'] = array(
-    'module' => 'views',
-    'delta' => 'scholar_presentations-block_1',
-    'weight' => 10,
-    'region' => false,
-    'label' => 'Recent Presentations',
-    'cache' => BLOCK_CACHE_CONTENT_CACHE,
-    'cache_keys' => array(
-      'node' => array('presentation' => 'presentation'),
-      'os_og' => array('current' => 'current'),
-    ),
-  );
-
-  return $items;
-}

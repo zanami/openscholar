@@ -31,28 +31,6 @@ function scholar_image_gallery_context_links_alter(&$links){
   }
 }
 
-
-/**
- * hook vsite_sidgets
- * @return unknown_type
- */
-function scholar_image_gallery_vsite_widgets(){
-  $items = array();
-  $items['views-scholar_image_gallery-block_1'] = array(
-    'module' => 'views',
-    'delta' => 'scholar_image_gallery-block_1',
-    'weight' => 20,
-    'region' => false,
-    'label' => 'Recent images',
-    'cache' => BLOCK_CACHE_CONTENT_CACHE,
-    'cache_keys' => array(
-      'node' => array('gallery' => 'gallery', 'image' => 'image'),
-      'os_og' => array('current' => 'current'),
-    ),
-  );
-  return $items;
-}
-
 /**
  * hook vsite_taxonomy_content_types_alter
  * @return unknown_type

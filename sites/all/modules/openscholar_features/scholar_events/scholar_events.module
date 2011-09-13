@@ -63,8 +63,6 @@ function scholar_events_vsite_widgets(){
       //This is not cached because the content changes based on the node you are viewing
     );
       
-
-      
   $items['views-scholar_events_upcoming-block_1'] = array(
       'module' => 'views',
       'delta' => 'scholar_events_upcoming-block_1',
