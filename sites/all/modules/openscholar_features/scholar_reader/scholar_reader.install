@@ -96,10 +96,11 @@ function scholar_reader_update_6002(&$sandbox){
 }
 
 function scholar_reader_update_6003(&$sandbox){
-
+  module_load_include('inc', 'os_boxes', 'os_boxes.newbox_api');
+  
   //Get all the sites with twitter blocks setup
   $q = db_query("SELECT * FROM `spaces_overrides` WHERE `object_type` LIKE 'variable' AND `object_id` LIKE 'scholar_reader_twitter_username' ");
-  while ($res = db_fetch_array($q)) {
+  while ($res = db_fetch_object($q)) {
   	$twitter_username = unserialize($res->value);
   	if(strlen($twitter_username)){
       $twitter_box = boxes_factory('os_boxes_twitterfeed', array('twitter_username' => $twitter_username));
