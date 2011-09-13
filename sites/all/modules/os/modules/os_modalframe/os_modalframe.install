@@ -5,8 +5,8 @@ function os_modalframe_install() {
 
   // migrate existing blocks to new boxes
   module_load_include('module', 'boxes');
-  $siteinfo = boxes_factory('os_boxes_modal_siteinfo');
-  $sitelogo = boxes_factory('os_boxes_modal_sitelogo');
+  $siteinfo = boxes_load('site_info');
+  $sitelogo = boxes_load('site_logo');
   module_load_include('inc', 'os_boxes', 'os_boxes.newbox_api');
   replace_boxes('scholar-0', $sitelogo, 'header_left');
   replace_boxes('scholar-1', $siteinfo, 'header_main');

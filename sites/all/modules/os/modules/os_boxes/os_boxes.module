@@ -185,7 +185,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     )
   );
-  
+
   $info['os_boxes_simpleview_list'] = array(
     'title' => 'List of posts',
     'description' => '',
@@ -199,7 +199,21 @@ function os_boxes_boxes_plugins() {
       'parent' => 'spaces_simpleviews_post_list'
     ),
   );
-  
+
+  $info['os_boxes_pub_grps'] = array(
+    'title' => 'Publication Groupings',
+    'description' => 'Group Publications By...',
+    'tags' => array (
+      'Content'
+    ),
+    'handler' => array(
+      'class' => 'os_boxes_pub_grps',
+      'file' => 'os_boxes_pub_grps.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
   foreach ($info as $key => $block) {
   	if(!isset($info[$key]['access'])){
   		$info[$key]['access'] = "cp_access_cp";
@@ -228,7 +242,7 @@ function os_boxes_vsite_widgets(){
   foreach ( $plugins as $key => $info ) {
   	//Call access function
   	if(!user_access('administer blocks') && (!$info['access'] || !call_user_func($info['access']))) continue;
-  	
+
     if (isset($info['title'])) {
       $items["boxes-boxes_add__$key"] = array(
         'module' => 'boxes',
