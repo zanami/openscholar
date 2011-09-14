@@ -29,7 +29,7 @@ function vsite_content_types($privacy = array(1), $vsite = NULL){
     $site_features = variable_get('spaces_features', array());
     foreach ( $features_types as $type => $features ) {
       if(!count($features)) continue;
-	    
+
       foreach ($features as $feature){
 	      if (isset($site_features[$feature]) && in_array(( int ) $site_features[$feature], $privacy)) {
 	        $result[$type] = $all_types[$type];
@@ -364,7 +364,7 @@ function theme_views_view_field_link_to_vsite($view, $field, $row) {
  */
 function vsite_active_feature(){
 	static $s_feature;
-	
+
 	if(!isset($s_feature)){
 		$contexts = context_get('context');
     if(!empty($contexts) && is_array($contexts)){
@@ -376,6 +376,6 @@ function vsite_active_feature(){
     	}
     }
 	}
-	
+
 	return $s_feature;
 }
