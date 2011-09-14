@@ -257,7 +257,18 @@ function scholar_publications_update_6010(&$sandbox) {
 
   foreach ($replacements as $block => $type) {
     $box = (object)(array)boxes_factory('os_boxes_pub_grps', array('type' => $type));
-    $s = "SELECT DISTINCT(id) AS sid, type FROM {spaces_overrides} WHERE type='context' AND value LIKE %%%s%%";
+    switch ($type) {
+      case 'year':
+        $box->title = $box->description = "Publications By Year";
+      break;
+      case 'contributors':
+        $box->title = $box->description = "Publications By Co-Author";
+      break;
+      case 'type':
+        $box->title = $box->description = "Publications By Type";
+      break;
+    }
+    $s = "SELECT DISTINCT(id) AS sid, type FROM {spaces_overrides} WHERE object_type='context' AND value LIKE '%%%s%%'";
     $q = db_query($s, $block);
     // for each vsite that uses this block, we need to create a new box instance
     // and by new instance, we mean delta
@@ -265,8 +276,8 @@ function scholar_publications_update_6010(&$sandbox) {
       $box->delta = os_boxes_create_delta($r['sid']);
       replace_boxes($block, $box, false, $r['sid']);
       $override = array(
-	      'type' => $res['type'],
-	      'id' => $res['sid'],
+	      'type' => $r['type'],
+	      'id' => $r['sid'],
 	      'object_type' => 'boxes',
 	      'object_id' => $box->delta,
 	  	  'value' => $box,
