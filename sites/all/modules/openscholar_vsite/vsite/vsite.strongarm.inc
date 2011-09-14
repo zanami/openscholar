@@ -229,7 +229,7 @@ function vsite_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'upload_extensions_default';
-  $strongarm->value = 'jpg jpeg gif png txt doc docx xls pdf ppt pps odt ods odp xml';
+  $strongarm->value = 'jpg jpeg gif png txt doc docx gz xls pdf ppt pps odt ods odp tex tgz xml zip';
 
   $export['upload_extensions_default'] = $strongarm;
   $strongarm = new stdClass;

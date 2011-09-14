@@ -52,7 +52,7 @@ function scholar_classes_context_default_contexts() {
           'weight' => 38,
           'region' => 'right',
           'label' => 'Table of Contents',
-          'type' => 'context_ui',
+          'tags' => array('Content','Book'),
         ),
         'boxes-vsite_taxonomy_fltr_cat' => array(
           'module' => 'boxes',
