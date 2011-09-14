@@ -45,6 +45,7 @@ function scholar_book_context_default_contexts() {
           'region' => 'right',
           'status' => '0',
           'label' => 'Table of Contents',
+          'tags' => array('Content','Book'),
         ),
         'boxes-scholar_book_recent_docs' => array(
           'module' => 'boxes',
