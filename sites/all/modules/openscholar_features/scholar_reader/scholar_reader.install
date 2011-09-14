@@ -103,7 +103,7 @@ function scholar_reader_update_6003(&$sandbox){
   while ($res = db_fetch_object($q)) {
   	$twitter_username = unserialize($res->value);
   	if(strlen($twitter_username)){
-      $twitter_box = boxes_factory('os_boxes_twitterfeed', array('twitter_username' => $twitter_username));
+      $twitter_box = boxes_factory('os_boxes_twitterfeed', array('twitter_username' => $twitter_username, 'title' => "Twitter Feed", 'description' => "Twitter Updates"));
       $twitter_box->delta = os_boxes_create_delta("{$res->type}-{$res->id}");
       
 	  	unset($twitter_box->new);
