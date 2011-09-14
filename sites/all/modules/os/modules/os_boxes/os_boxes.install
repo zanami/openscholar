@@ -20,6 +20,7 @@ function os_boxes_install() {
     'image_gallery_recent_images' => 'views-scholar_image_gallery-block_1',
     'scholar_publications_recent' => 'views-scholar_publications-block_1',
     'vsite_taxonomy_fltr_cat' => "vsite_taxonmy-0",
+    'vsite_widgets-4' => 'os_addthis',
   );
   
   foreach ($a_migrate_info as $box_delta => $block_id) {

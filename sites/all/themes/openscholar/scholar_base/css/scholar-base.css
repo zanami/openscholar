@@ -197,9 +197,10 @@ body.header-left-right #header-right {
 .content-left.content-right #content-right {
 	float:left;clear:none;display:inline;
     width: 49%;
+    margin:15px 0;
 	}
 	
-.content-left.content-right #content-left {margin-right:2%;}	
+.content-left.content-right #content-left {margin-right:2%;border-right:1px solid #CCC;width: 48%;}	
 
 #sidebar-first .block,
 #sidebar-second .block {
