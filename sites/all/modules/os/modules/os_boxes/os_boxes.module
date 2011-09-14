@@ -298,6 +298,10 @@ function os_boxes_vsite_widgets(){
   	if(isset($box->sitewide) && !$box->sitewide) continue;
   	
     $items["boxes-{$box->delta}"] = os_boxes_get_vsite_widget($box);
+    
+    if(isset($plugins[$box->plugin_key]) && is_array($plugins[$box->plugin_key]['tags']) && count($plugins[$box->plugin_key]['tags'])) {
+        $items["boxes-{$box->delta}"]['tags'] = $plugins[$box->plugin_key]['tags'];
+    }//retrieve tags from plugin
   }
 
   return $items;
