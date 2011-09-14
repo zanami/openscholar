@@ -44,6 +44,13 @@ function scholar_front_context_default_contexts() {
           'label' => 'Latest Announcements',
           'type' => 'context_ui',
         ),
+        'views-vsite_featuredposts-block_1' => array(
+		      'module' => 'views',
+		      'delta' => 'vsite_featuredposts-block_1',
+		      'weight' => 18,
+		      'region' => 'right',
+		      'label' => 'Featured posts',
+		    ),
       ),
     ),
   );

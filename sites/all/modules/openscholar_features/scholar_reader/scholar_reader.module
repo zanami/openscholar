@@ -6,22 +6,6 @@ function scholar_reader_init(){
   drupal_add_css(drupal_get_path('module', 'scholar_reader') .'/theme/scholar-reader.css');
 }
 
-function scholar_reader_menu() {
-  $menu = array();
-
-  $menu['features/scholar_reader'] = array(
-    'title' => 'Settings',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('scholar_reader_settings'),
-    'access callback' => module_exists('spaces') ? 'spaces_access_admin' : 'user_access',
-    'access arguments' => module_exists('spaces') ? array() : array('administer site configuration'),
-    'type' => MENU_CALLBACK,
-    'file' => 'scholar_reader.pages.inc',
-  );
-
-  return $menu;
-}
-
 /**
  * Implementation of hook_context_links_alter().
  */

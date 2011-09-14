@@ -82,3 +82,22 @@ function os_update_6002(&$sandbox) {
   return $res;
 }
 
+/*
+ * hook_update_N
+ *
+ * update hook for beta12 => beta13
+ *
+ * Updates block ids that are not going to use boxes
+ */
+function os_update_6003(&$sandbox) {
+  $res = array();
+
+  $a_block_id_changes = array(
+    'vsite_widgets-3' => 'vsite-site_search',
+    'vsite_widgets-5' => 'vsite-google_translate',
+  );
+  
+  $res[] = array('success' => TRUE, 'query' => 'Moved blocks to new Id\'s ');
+
+  return $res;
+}
