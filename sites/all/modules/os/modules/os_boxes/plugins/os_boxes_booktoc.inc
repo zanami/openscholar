@@ -46,7 +46,7 @@ class os_boxes_booktoc extends os_boxes_default {
 
     $node = node_load($this->options['book_nid']);
     $block['content'] = menu_tree_output(menu_tree_all_data($node->book['menu_name']));
-    //$block['content'] = theme('book_all_books_block', $book_menu);
+    
     return $block;
   }
 }
