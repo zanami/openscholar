@@ -39,14 +39,12 @@ function scholar_image_gallery_context_default_contexts() {
     'menu' => 'photos',
     'block' => array(
       'blocks' => array(
-        'views-scholar_image_gallery-block_1' => array(
-          'module' => 'views',
-          'delta' => 'scholar_image_gallery-block_1',
+        'boxes-image_gallery_recent_images' => array(
+          'module' => 'boxes',
+          'delta' => 'image_gallery_recent_images',
+          'label' => 'Recent Images',
           'weight' => 20,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'Recent images',
-          'type' => 'context_ui',
         ),
         'boxes-vsite_taxonomy_fltr_cat' => array(
           'module' => 'boxes',

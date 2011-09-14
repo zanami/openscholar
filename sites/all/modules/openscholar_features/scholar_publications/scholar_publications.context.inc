@@ -44,14 +44,12 @@ function scholar_publications_context_default_contexts() {
           'weight' => 20,
           'region' => 'right',
         ),
-        'views-scholar_publications-block_1' => array(
-          'module' => 'views',
-          'delta' => 'scholar_publications-block_1',
+        'boxes-scholar_publications_recent' => array(
+          'module' => 'boxes',
+          'delta' => 'scholar_publications_recent',
           'weight' => 21,
           'region' => 'right',
-          'status' => '0',
           'label' => 'Recent publications',
-          'type' => 'context_ui',
         ),
         'boxes-os_addthis' => array(
           'module' => 'boxes',
