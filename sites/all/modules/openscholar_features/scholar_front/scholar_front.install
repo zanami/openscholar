@@ -106,39 +106,9 @@ function scholar_front_update_6002(&$sandbox){
   } else {
     $ret['#finished'] = TRUE;
   }
-  
-  
-//  front_boxmaker();  
-  
+
   return $ret;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-// don't let this hit prod.  it's test code for creating a box for each vsite's front page
-/////////////////////////////////////////////////////////////////////////////////////////////
 
-// menu item.  makes boxes of each user's front page.  adds box to a region.
-function front_boxmaker() {
-  $limit = 50;
-  $total_vsites = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
-  $ret = array();
-
-
-/*	//no need to specify batch if we're already in update.php
-  $batch = array(
-  	'title' => t('Making boxes for each vsite\'s front page'),
-  	'operations' => array(),
-  	'finished' => 'front_boxmaker_done',
-  	'file' => drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc',
-  );
-*/
-  $offset = 0;
-  while ($offset < $total_vsites) {
-  	$batch['operations'][] = array('_front_boxmaker',array($limit, $offset, $total_vsites),);
-  	$offset += $limit;
-  }
-
-  batch_set($batch);
-  batch_process(''); //where do we send them if this happens in update.php?
-}
 

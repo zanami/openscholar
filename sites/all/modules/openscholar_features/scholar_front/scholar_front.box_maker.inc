@@ -13,16 +13,6 @@ function _front_boxmaker($limit, $offset, $total_vsites) {
   $_box_plugins  = os_boxes_boxes_plugins();
   $_box_plugins += spaces_simpleviews_boxes_plugins();
   $ret = array();
-
-  
-  //prep sandbox
-  /*
-  if (empty($context['sandbox'])) {
-  	$context['sandbox']['progress'] = 0;
-  	$context['sandbox']['max'] = $total_vsites;
-  	$context['message'] = 'Processing vsites 0 of ' . $total_vsites;
-  }
-  */
   
   //loop over all users
   $query = 'SELECT uid FROM {users} LIMIT %d OFFSET %d ';
@@ -44,10 +34,8 @@ function _front_boxmaker($limit, $offset, $total_vsites) {
       	$add_func = 'fb_add_' . $wgt['wgt']; //box or block
         $ret[] = $add_func($vsite, $wgt['data']);
         $vsite->controllers->variable->del('site_frontpage'); //remove previous front page
-
-        //$context['message'] = 'Processing vsites ' . $offset . '-' . min($offset+$limit, $total_vsites) . ' of ' . $total_vsites;
       } else {
-        error_log('Could not determine front page for vsite ' . $vsite->id, 'warning');
+        //error_log('Could not determine front page for vsite ' . $vsite->id, 'warning');
       }
     }
   }
@@ -228,10 +216,12 @@ EOD;
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
   //debug log.  also writes vsite link, so we can find a type of box and compare local site vs what's in prod
   //@todo remove this debug log
+  /*
   global $base_url;
   $msg = $type . "\t\t" . $base_url . '/' . $vsite->group->purl;
   $msg .= "\t\t" . 'http://scholar.harvard.edu/' . $vsite->group->purl . "\n";
   error_log($msg, 3, '/tmp/boxmaker.txt');
+  */
   //////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   
