@@ -22,7 +22,7 @@ function vsite_default_box() {
   $box = new stdClass;
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
-  $box->delta = 'vsite-rss';
+  $box->delta = 'vsite_rss';
   $box->plugin_key = 'os_boxes_rss';
   $box->title = '';
   $box->description = 'RSS Feed';
@@ -31,6 +31,6 @@ function vsite_default_box() {
     'content' => 'all',
   );
 
-  $export['vsite-rss'] = $box;
+  $export['vsite_rss'] = $box;
   return $export;
 }

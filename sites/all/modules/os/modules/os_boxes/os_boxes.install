@@ -23,8 +23,8 @@ function os_boxes_install() {
     'os_addthis' => 'vsite_widgets-4',
     'scholar_book_current_toc' => 'scholar_book-booktoc',
     'scholar_blog-blog_rss' => 'scholar_blog-rss',
-    'vsite-rss' => 'vsite_widgets-6',
-    'vsite-rss' => 'vsite_widgets_6',
+    'vsite_rss' => 'vsite_widgets-6',
+    'vsite_rss' => 'vsite_widgets_6',
   );
 
   foreach ($a_migrate_info as $box_delta => $block_id) {
