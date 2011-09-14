@@ -47,6 +47,13 @@ function scholar_book_context_default_contexts() {
           'label' => 'Scholar: Book TOC',
           'type' => 'context_ui',
         ),
+        'boxes-scholar_book_recent_docs' => array(
+          'module' => 'boxes',
+          'delta' => 'scholar_book_recent_docs',
+          'weight' => 21,
+          'region' => 'right',
+          'label' => 'Recent Documents',
+        ),
         'boxes-os_addthis' => array(
           'module' => 'boxes',
           'delta' => 'os_addthis',
