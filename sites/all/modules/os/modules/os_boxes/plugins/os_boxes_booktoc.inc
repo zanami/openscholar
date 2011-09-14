@@ -55,7 +55,13 @@ class os_boxes_booktoc extends os_boxes_default {
  * @file
  * A subclass for "Book Table of Contents" that shows the TOC for the current book
  */
-class os_boxes_current_booktoc extends os_boxes_default {
+class os_boxes_current_booktoc extends os_boxes_booktoc {
+	
+	/**
+	 * Box instances of this type should not be avalible sitewide
+	 */
+	public $sitewide = false;
+	
 	  /**
    * Implementation of boxes_content::options_form().
    */
