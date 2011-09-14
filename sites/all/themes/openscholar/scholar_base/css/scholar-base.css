@@ -195,9 +195,11 @@ body.header-left-right #header-right {
   
 .content-left.content-right #content-left, 
 .content-left.content-right #content-right {
-	float:left;clear:none;display:inline;width:49%;
+	float:left;clear:none;display:inline;
+    width: 49%;
 	}
 	
+.content-left.content-right #content-left {margin-right:2%;}	
 
 #sidebar-first .block,
 #sidebar-second .block {

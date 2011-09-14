@@ -1,6 +1,8 @@
 ; $Id: scholar_departments.info,v 1.12 2008/09/21 22:43:32 dcabral Exp $
 name        = Department Custom Theme
 description = Clean theme for individual department use.
+flavor_name = "Crimson"
+plugins[vsite_design][flavor] = flavors
 
 screenshot = screenshot.png
 core       = 6.x
