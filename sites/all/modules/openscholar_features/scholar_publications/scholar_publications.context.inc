@@ -37,32 +37,26 @@ function scholar_publications_context_default_contexts() {
     'menu' => 'publications',
     'block' => array(
       'blocks' => array(
-        'vsite_taxonomy-0' => array(
-          'module' => 'vsite_taxonomy',
-          'delta' => '0',
+        'boxes-vsite_taxonomy_fltr_cat' => array(
+          'module' => 'boxes',
+          'delta' => 'vsite_taxonomy_fltr_cat',
+          'label' => 'Filter By Category',
           'weight' => 20,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'Categories - A widget used to quickly filter categorized content',
-          'type' => 'context_ui',
         ),
-        'views-scholar_publications-block_1' => array(
-          'module' => 'views',
-          'delta' => 'scholar_publications-block_1',
+        'boxes-scholar_publications_recent' => array(
+          'module' => 'boxes',
+          'delta' => 'scholar_publications_recent',
           'weight' => 21,
           'region' => 'right',
-          'status' => '0',
           'label' => 'Recent publications',
-          'type' => 'context_ui',
         ),
-        'vsite_widgets-4' => array(
-          'module' => 'vsite_widgets',
-          'delta' => '2',
+        'boxes-os_addthis' => array(
+          'module' => 'boxes',
+          'delta' => 'os_addthis',
+          'label' => 'AddThis Button',
           'weight' => 22,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'AddThis Button - Share posts using popular services',
-          'type' => 'context_ui',
         ),
       ),
     ),

@@ -39,23 +39,19 @@ function scholar_software_context_default_contexts() {
     'menu' => 'software',
     'block' => array(
       'blocks' => array(
-        'vsite_taxonomy-0' => array(
-          'module' => 'vsite_taxonomy',
-          'delta' => '0',
+        'boxes-vsite_taxonomy_fltr_cat' => array(
+          'module' => 'boxes',
+          'delta' => 'vsite_taxonomy_fltr_cat',
+          'label' => 'Filter By Category',
           'weight' => -20,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'Scholar site categories',
-          'type' => 'context_ui',
         ),
-        'vsite_widgets-4' => array(
-          'module' => 'vsite_widgets',
-          'delta' => '2',
+        'boxes-os_addthis' => array(
+          'module' => 'boxes',
+          'delta' => 'os_addthis',
+          'label' => 'AddThis Button',
           'weight' => 50,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'AddThis Button - Share posts using popular services',
-          'type' => 'context_ui',
         ),
         'views-scholar_software_releases-block_3' => array(
           'module' => 'views',

@@ -258,7 +258,7 @@ function vsite_taxonomy_vsite_admin_link($type, $object){
 function vsite_taxonomy_block($op = 'list', $delta = 0, $edit = array()) {
   switch ($op) {
     case 'list':
-      $blocks['filter_feature']['info'] = t('Categories - Filter categorized content by type');
+      $blocks['filter_feature']['info'] = t('Filter Taxonomy by Features');
       return $blocks;
     case 'view':
     	switch ($delta) {
@@ -269,23 +269,6 @@ function vsite_taxonomy_block($op = 'list', $delta = 0, $edit = array()) {
 
       return $block;
   }
-}
-
-/**
- * hook vsite_sidgets
- */
-function vsite_taxonomy_vsite_widgets(){
-  $items = array();
-  $items['vsite_taxonomy-0'] = array(
-    'module' => 'vsite_taxonomy',
-    'delta' => '0',
-    'weight' => 20,
-    'region' => false,
-    'status' => '0',
-    'label' => 'Categories - Show content in a Category',
-    'type' => 'context_ui',
-  );
-  return $items;
 }
 
 /**

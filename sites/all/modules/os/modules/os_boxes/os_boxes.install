@@ -19,7 +19,8 @@ function os_boxes_install() {
     'scholar_book_recent_docs' => 'views-scholar_book-block_1',
     'image_gallery_recent_images' => 'views-scholar_image_gallery-block_1',
     'scholar_publications_recent' => 'views-scholar_publications-block_1',
-    'vsite_taxonomy_fltr_cat' => "vsite_taxonmy-0",
+    'vsite_taxonomy_fltr_cat' => "vsite_taxonomy-0",
+    'os_addthis' => 'vsite_widgets-4',
   );
   
   foreach ($a_migrate_info as $box_delta => $block_id) {

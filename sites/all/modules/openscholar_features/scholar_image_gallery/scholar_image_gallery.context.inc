@@ -39,32 +39,26 @@ function scholar_image_gallery_context_default_contexts() {
     'menu' => 'photos',
     'block' => array(
       'blocks' => array(
-        'views-scholar_image_gallery-block_1' => array(
-          'module' => 'views',
-          'delta' => 'scholar_image_gallery-block_1',
+        'boxes-image_gallery_recent_images' => array(
+          'module' => 'boxes',
+          'delta' => 'image_gallery_recent_images',
+          'label' => 'Recent Images',
           'weight' => 20,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'Recent images',
-          'type' => 'context_ui',
         ),
-        'vsite_taxonomy-0' => array(
-          'module' => 'vsite_taxonomy',
-          'delta' => '0',
+        'boxes-vsite_taxonomy_fltr_cat' => array(
+          'module' => 'boxes',
+          'delta' => 'vsite_taxonomy_fltr_cat',
+          'label' => 'Filter By Category',
           'weight' => -20,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'Scholar site categories',
-          'type' => 'context_ui',
         ),
-        'vsite_widgets-4' => array(
-          'module' => 'vsite_widgets',
-          'delta' => '2',
+        'boxes-os_addthis' => array(
+          'module' => 'boxes',
+          'delta' => 'os_addthis',
+          'label' => 'AddThis Button',
           'weight' => 50,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'AddThis Button - Share posts using popular services',
-          'type' => 'context_ui',
         ),
       ),
     ),

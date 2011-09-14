@@ -38,23 +38,19 @@ function scholar_blog_context_default_contexts() {
     'menu' => 'blog',
     'block' => array(
       'blocks' => array(
-        'vsite_taxonomy-0' => array(
-          'module' => 'vsite_taxonomy',
-          'delta' => '0',
+        'boxes-vsite_taxonomy_fltr_cat' => array(
+          'module' => 'boxes',
+          'delta' => 'vsite_taxonomy_fltr_cat',
+          'label' => 'Filter By Category',
           'weight' => 37,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'Categories - Filter categorized content',
-          'type' => 'context_ui',
         ),
-        'vsite_widgets-4' => array(
-          'module' => 'vsite_widgets',
-          'delta' => '2',
+        'boxes-os_addthis' => array(
+          'module' => 'boxes',
+          'delta' => 'os_addthis',
+          'label' => 'AddThis Button',
           'weight' => 38,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'AddThis Button - Share posts using popular services',
-          'type' => 'context_ui',
         ),
         'views-scholar_blog-block_1' => array(
           'module' => 'views',

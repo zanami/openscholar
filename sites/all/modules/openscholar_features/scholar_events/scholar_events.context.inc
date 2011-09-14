@@ -40,23 +40,19 @@ function scholar_events_context_default_contexts() {
     'menu' => 'calendar',
     'block' => array(
       'blocks' => array(
-        'vsite_taxonomy-0' => array(
-          'module' => 'vsite_taxonomy',
-          'delta' => '0',
+        'boxes-vsite_taxonomy_fltr_cat' => array(
+          'module' => 'boxes',
+          'delta' => 'vsite_taxonomy_fltr_cat',
+          'label' => 'Filter By Category',
           'weight' => 20,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'Categories - A widget used to quickly filter categorized content',
-          'type' => 'context_ui',
         ),
-        'vsite_widgets-4' => array(
-          'module' => 'vsite_widgets',
-          'delta' => '2',
+        'boxes-os_addthis' => array(
+          'module' => 'boxes',
+          'delta' => 'os_addthis',
+          'label' => 'AddThis Button',
           'weight' => 21,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'AddThis Button - Share posts using popular services',
-          'type' => 'context_ui',
         ),
         'scholar_events-mini' => array(
           'module' => 'scholar_events',

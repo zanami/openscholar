@@ -25,7 +25,7 @@ function theme_vsite_taxonomy_term_list(&$index, $tree, $s_term_theme = 'vsite_t
       if($b_show_empty || $count || theme_vsite_taxonomy_term_list($term->tid,true,$a_filter_nodes)) {
         $items[] = array(
           'data' => theme($s_term_theme, $term, $b_description, $b_show_admin_links, $s_term_feature, $b_feature_context),
-          'children' => vsite_taxonomy_build_list_items($index, $tree, $s_term_theme, $b_description, $b_show_empty, $b_show_admin_links, $s_term_feature, $b_feature_context)
+          'children' => theme('vsite_taxonomy_term_list',$index, $tree,$s_term_theme, $b_description, $b_show_empty, $$b_show_admin_links, $s_term_feature, $b_feature_context),
         );
       }
     }
