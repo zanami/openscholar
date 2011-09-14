@@ -39,32 +39,27 @@ function scholar_classes_context_default_contexts() {
     'menu' => 'classes',
     'block' => array(
       'blocks' => array(
-        'vsite_widgets-4' => array(
-          'module' => 'vsite_widgets',
-          'delta' => '2',
+        'boxes-os_addthis' => array(
+          'module' => 'boxes',
+          'delta' => 'os_addthis',
+          'label' => 'AddThis Button',
           'weight' => 37,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'AddThis Button - Share posts using popular services',
-          'type' => 'context_ui',
         ),
-        'scholar_book-booktoc' => array(
-          'module' => 'scholar_book',
-          'delta' => 'booktoc',
+        'boxes-scholar_book_current_toc' => array(
+          'module' => 'boxes',
+          'delta' => 'scholar_book_current_toc',
           'weight' => 38,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'Scholar: Book',
-          'type' => 'context_ui',
+          'label' => 'Table of Contents',
+          'tags' => array('Content','Book'),
         ),
-        'vsite_taxonomy-0' => array(
-          'module' => 'vsite_taxonomy',
-          'delta' => '0',
+        'boxes-vsite_taxonomy_fltr_cat' => array(
+          'module' => 'boxes',
+          'delta' => 'vsite_taxonomy_fltr_cat',
+          'label' => 'Filter By Category',
           'weight' => 39,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'Categories - Filter categorized content',
-          'type' => 'context_ui',
         ),
       ),
     ),

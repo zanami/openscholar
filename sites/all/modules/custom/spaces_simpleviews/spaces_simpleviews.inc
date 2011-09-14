@@ -34,24 +34,24 @@ function _spaces_simpleviews_build_view($simpleview = array()) {
   $view->is_cacheable = FALSE;
   $view->api_version = 2;
   $view->disabled = FALSE;
- 
+
   // Bootstrap the default display for the view. Here's where the action happens.
   $handler = $view->new_display('default', 'Defaults', 'default');
   $handler->override_option('title', $simpleview['title']);  //@todo not really needed
 
   $handler->override_option('use_pager', '1'); //@todo make it configurable
-  
+
   // the row style based on the style selected by the user (e.g. teaser, fields)
   _spaces_simpleviews_set_row_style($handler, $simpleview);
-  
+
   _spaces_simpleviews_add_filter($handler, $simpleview);
   _spaces_simpleviews_add_sort($handler, $simpleview);
   _spaces_simpleviews_add_argument($handler, $simpleview);
-  
-  
-  // we dont add any display (page, block, rss etc.). The caller 
+
+
+  // we dont add any display (page, block, rss etc.). The caller
   // would have to load this view and execute it in hook_menu / hook_block etc.
-  
+
   // in case someone wants to alter
   drupal_alter('os_simpleview', $view, $simpleview);
 
@@ -62,7 +62,7 @@ function _spaces_simpleviews_build_view($simpleview = array()) {
 
 function _spaces_simpleviews_set_row_style($handler, $simpleview){
   // teaser or fields ?
-  
+
   if ($simpleview['style'] == 'teasers') {
     _spaces_simpleviews_set_display_to_teaser_list($handler, $simpleview);
   }
@@ -78,9 +78,9 @@ function _spaces_simpleviews_set_row_style($handler, $simpleview){
 function _spaces_simpleviews_set_display_to_teaser_list(&$handler, $simpleview){
   $handler->override_option('row_plugin', 'node');
   $handler->override_option('row_options', array(
-    'teaser' => 1, 
-    'links' => 1, 
-    'comments' => 0 
+    'teaser' => 1,
+    'links' => 1,
+    'comments' => 0
   ));
 }
 /**
@@ -125,9 +125,9 @@ function _spaces_simpleviews_add_filter(&$handler, $simpleview) {
     'field' => 'status',
     'relationship' => 'none',
   );
-  
+
   // .. and always show nodes in current space only
-  
+
   $filters['current'] = array(
     'operator' => 'active',
     'value' => '',
@@ -149,7 +149,7 @@ function _spaces_simpleviews_add_filter(&$handler, $simpleview) {
   $filter = $simpleview['filter'];
   $type_filter = array(
       'operator' => 'in',
-      'value' => array(), 
+      'value' => array(),
       'group' => '0',
       'exposed' => FALSE,
       'expose' => array('operator' => FALSE, 'label' => ''),
@@ -158,23 +158,23 @@ function _spaces_simpleviews_add_filter(&$handler, $simpleview) {
       'field' => 'type',
       'relationship' => 'none',
     );
-    
+
   if (strstr($filter, 'node') !== FALSE && $type = end(explode(':', $filter))) {
     $filters['type'] = $type_filter;
-    $filters['type']['value'] = array($type => $type); 
+    $filters['type']['value'] = array($type => $type);
   } elseif ($filter == 'all') {
     if (module_exists('vsite')) {
       // openscholar vsite integration - lists correct content types
       vsite_include('vsiteapi');
       $node_options = vsite_content_types();
       drupal_alter('vsite_content_types', $node_options);
-      
-      $filters['type'] = $type_filter; 
+
+      $filters['type'] = $type_filter;
       $types = array_combine(array_keys($node_options), array_keys($node_options));
       $filters['type']['value'] = $types;
     }
   }
-  
+
   $handler->override_option('filters', $filters);
 }
 
@@ -250,7 +250,7 @@ function _spaces_simpleviews_add_sort(&$handler, $simpleview) {
           ),
         ));
       }
-      
+
       $sorts['value'] = array(
         'order' => 'DESC',
         'id' => 'value',
@@ -280,7 +280,7 @@ function _spaces_simpleviews_add_sort(&$handler, $simpleview) {
 function _spaces_simpleviews_add_argument(&$handler, $simpleview) {
   $argument = $simpleview['argument'];
 
-  dpm($argument);
+  //dpm($argument);
   if ($argument == 'author') {
     $handler->override_option('arguments', array(
       'uid' => array(

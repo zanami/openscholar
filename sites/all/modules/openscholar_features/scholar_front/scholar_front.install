@@ -65,3 +65,50 @@ function scholar_front_update_6001(&$sandbox){
   return $res;
 
 }
+
+/*
+ * implementation of hook_update_N
+ * takes front page settings from each space, choose a box representative of those settings, adds it to vsite
+ */
+function scholar_front_update_6002(&$sandbox){
+  $ret = array();
+  
+  //make sure boxes prereqs are all met before installing
+  if (! (module_exists('os_boxes') && module_exists('spaces_simpleviews') )) {
+  	$ret['#abort'] = array('success' => FALSE, 'query' => 'Please enable os_boxes and spaces_simpleviews before running scholar_front_update_6002');
+    return $ret;
+  }
+
+  //make sure vsite->controllers->boxes exists
+  $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "vsite" LIMIT 1') );
+  $vsite = vsite_get_vsite($v);
+  if (! isset($vsite->controllers->boxes)) {
+  	$ret['#abort'] = array('success' => FALSE, 'query' => 'vsite object has no box controller.  clear cache before running update.');
+  	return $ret;
+  }
+
+  //init sandbox.  this persists between batches
+  if (!isset($sandbox['progress'])) {
+    $sandbox['progress'] = 0;
+    $sandbox['max'] = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
+  }
+  
+  //vsites per batch.  
+  $limit = 50;
+  
+  require_once drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc';
+  //$batch['operations'][] = array('_front_boxmaker',array($limit, $offset, $total_vsites),);
+  $updated_vsites = _front_boxmaker($limit, $sandbox['progress'], $sandbox['max']);
+  $sandbox['progress'] += $limit;
+  
+  if ($sandbox['progress'] < $sandbox['max']) {
+    $ret['#finished'] = $sandbox['progress'] / $sandbox['max']; 
+  } else {
+    $ret['#finished'] = TRUE;
+  }
+
+  return $ret;
+}
+
+
+

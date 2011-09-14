@@ -13,7 +13,6 @@
  */
 
 define("SCHOLAR_BOOK_MAXLEN", 50);   // how long are the node title in toc
-define("SCHOLAR_BOOK_TOC_WIDGET", 0); // book toc as a block/widget
 define("SCHOLAR_BOOK_TOC_CONTENT", 1); // book toc in the content area
 
 
@@ -92,39 +91,8 @@ function scholar_book_link_alter(&$links, $node){
   $links['book_add_child']['attributes']['class'] = 'context-button';
 }
 
-
 /**
- * Implementation of hook_block().
- */
-function scholar_book_block($op = 'list', $delta = 0) {
-  switch ($op) {
-    case 'list':
-      $blocks = array();
-      $blocks['booktoc'] = array('info' => t('Scholar: Book Navigation'));
-      return $blocks;
-    case 'view':
-      $function = "_scholar_book_block_{$delta}";
-      if (function_exists($function)) {
-        return call_user_func($function);
-      }
-      break;
-  }
-}
-
-/**
- * callback function for the booktoc block
- * @see _scholar_book_booktoc
- */
-function _scholar_book_block_booktoc() {
-  $vsite = vsite_get_vsite();
-  if ($vsite && scholar_book_toc_location() == SCHOLAR_BOOK_TOC_WIDGET){
-    return _scholar_book_booktoc();
-  }
-}
-
-
-/**
- * toc main function.
+ * toc main function, used for content area
  */
 function _scholar_book_booktoc() {
 
@@ -371,9 +339,8 @@ function scholar_book_context_links_alter(&$links) {
  */
 function scholar_book_toc_location() {
   if (variable_get('scholar_book_toc_location', 0) == 1) {
-      return SCHOLAR_BOOK_TOC_CONTENT;
-    }
-    else {
-      return SCHOLAR_BOOK_TOC_WIDGET;
-    }
+    return SCHOLAR_BOOK_TOC_CONTENT;
+  }
+    
+  return false;
 }

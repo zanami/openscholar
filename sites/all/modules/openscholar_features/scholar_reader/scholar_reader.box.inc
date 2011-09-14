@@ -3,35 +3,38 @@
 /**
  * Implementation of hook_default_box().
  */
-function scholar_book_default_box() {
+function scholar_reader_default_box() {
   $export = array();
   $box = new stdClass;
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
-  $box->delta = 'scholar_book_current_toc';
-  $box->plugin_key = 'os_boxes_current_booktoc';
-  $box->title = 'Table of Contents';
-  $box->description = 'Active Book\'s TOC';
+  $box->delta = 'scholar_reader-latest_feed_items';
+  $box->plugin_key = 'os_boxes_feedreader';
+  $box->title = 'Latest Feed Items';
+  $box->description = 'Latest Feed Items';
   $box->options = array(
     'visibility' => 'feature',
+    'feed' => 'all',
+    'number_of_items' => 10,
   );
 
-  $export['scholar_book_current_toc'] = $box;
+  $export['scholar_reader-latest_feed_items'] = $box;
   $box = new stdClass;
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
-  $box->delta = 'scholar_book_recent_docs';
+  $box->delta = 'scholar_reader-feeds_list';
   $box->plugin_key = 'os_boxes_simpleview_list';
-  $box->title = 'Recent Documents';
-  $box->description = 'Recent Documents';
+  $box->title = 'List of Feeds';
+  $box->description = 'List of Feeds';
   $box->options = array(
-    'filter' => 'node:2',
+    'visibility' => 'feature',
+    'filter' => 'node:feed',
     'style' => 'titles',
     'sort' => 'newest',
     'argument' => '',
     'number_of_items' => '6',
   );
 
-  $export['scholar_book_recent_docs'] = $box;
+  $export['scholar_reader-feeds_list'] = $box;
   return $export;
 }

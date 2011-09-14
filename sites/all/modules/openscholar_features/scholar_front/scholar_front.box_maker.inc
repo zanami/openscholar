@@ -7,32 +7,12 @@
 
 require_once drupal_get_path('module', 'os_boxes') . '/os_boxes.newbox_api.inc';
 
-//completed batch
-function front_boxmaker_done($success, $results, $operations) {
-  if ($success) {
-  	$message = 'Success making boxes.';
-  } else {
-  	$message = 'Boxmaker failed.  Have fun debugging!';
-  }
-  
-  drupal_set_message($message);
-  $_SESSION['my_batch_results'] = 'Boxed frontpages for vsites: ' . implode(', ', $results);
-}
-
-
 //call boxmaker, starting at offset
-function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
+function _front_boxmaker($limit, $offset, $total_vsites) {
   global $_box_plugins;
   $_box_plugins  = os_boxes_boxes_plugins();
   $_box_plugins += spaces_simpleviews_boxes_plugins();
-
-  
-  //prep sandbox
-  if (empty($context['sandbox'])) {
-  	$context['sandbox']['progress'] = 0;
-  	$context['sandbox']['max'] = $total_vsites;
-  	$context['message'] = 'Processing vsites 0 of ' . $total_vsites;
-  }
+  $ret = array();
   
   //loop over all users
   $query = 'SELECT uid FROM {users} LIMIT %d OFFSET %d ';
@@ -40,7 +20,7 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
   while ($res = db_fetch_object($result)) {
     
     if (($vsites = vsite_get_vsite_by_owner($res->uid)) == FALSE) {
-      return; //user has no vsites.  ignore.
+      continue; //user has no vsites.  ignore.
     }
     
     //loop over this user's vsites
@@ -52,16 +32,14 @@ function _front_boxmaker($limit, $offset, $total_vsites, &$context) {
       
       if ($front && ($wgt = fb_mk_front_box($vsite, $front)) != FALSE) {
       	$add_func = 'fb_add_' . $wgt['wgt']; //box or block
-        $context['results'][] = $add_func($vsite, $wgt['data']);
+        $ret[] = $add_func($vsite, $wgt['data']);
         $vsite->controllers->variable->del('site_frontpage'); //remove previous front page
-
-        $context['message'] = 'Processing vsites ' . $offset . '-' . min($offset+$limit, $total_vsites) . ' of ' . $total_vsites;
-        $context['sandbox']['progress']++;
       } else {
-        error_log('Could not determine front page for vsite ' . $vsite->id, 'warning');
+        //error_log('Could not determine front page for vsite ' . $vsite->id, 'warning');
       }
     }
   }
+  return $ret;
 }
 
 
@@ -234,14 +212,17 @@ EOD;
   	$opts['subject'] = '';
   }
   $opts['description'] = $_box_plugins[$type]['title'] . ' box';
+  $opts['region'] = 'content_top';
   
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
   //debug log.  also writes vsite link, so we can find a type of box and compare local site vs what's in prod
   //@todo remove this debug log
+  /*
   global $base_url;
   $msg = $type . "\t\t" . $base_url . '/' . $vsite->group->purl;
   $msg .= "\t\t" . 'http://scholar.harvard.edu/' . $vsite->group->purl . "\n";
   error_log($msg, 3, '/tmp/boxmaker.txt');
+  */
   //////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   

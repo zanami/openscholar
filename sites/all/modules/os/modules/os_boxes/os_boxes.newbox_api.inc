@@ -24,6 +24,7 @@
  *
  */
 function mk_box(&$vsite, $type, $opts) {
+  require_once drupal_get_path('module', 'boxes') . '/boxes.module';
   global $box_plugins;
   if (empty($box_plugins)) {
     $box_plugins  = os_boxes_boxes_plugins();

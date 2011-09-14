@@ -38,23 +38,28 @@ function scholar_book_context_default_contexts() {
     'menu' => 'documents',
     'block' => array(
       'blocks' => array(
-        'scholar_book-booktoc' => array(
-          'module' => 'scholar_book',
-          'delta' => 'booktoc',
+        'boces-scholar_book_current_toc' => array(
+          'module' => 'boxes',
+          'delta' => 'scholar_book_current_toc',
           'weight' => 20,
           'region' => 'right',
           'status' => '0',
-          'label' => 'Scholar: Book TOC',
-          'type' => 'context_ui',
+          'label' => 'Table of Contents',
+          'tags' => array('Content','Book'),
         ),
-        'vsite_widgets-4' => array(
-          'module' => 'vsite_widgets',
-          'delta' => '2',
+        'boxes-scholar_book_recent_docs' => array(
+          'module' => 'boxes',
+          'delta' => 'scholar_book_recent_docs',
           'weight' => 21,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'AddThis Button - Share posts using popular services',
-          'type' => 'context_ui',
+          'label' => 'Recent Documents',
+        ),
+        'boxes-os_addthis' => array(
+          'module' => 'boxes',
+          'delta' => 'os_addthis',
+          'label' => 'AddThis Button',
+          'weight' => 21,
+          'region' => 'right',
         ),
       ),
     ),
