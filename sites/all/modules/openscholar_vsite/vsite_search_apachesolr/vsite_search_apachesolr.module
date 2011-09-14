@@ -344,12 +344,16 @@ function vsite_search_apachesolr_preprocess_search_result(&$vars){
   $vsite = vsite_get_vsite();
   if (!$vsite) {
     $gid = $vars['result']['fields']['im_og_gid']['value'];
-    $query = "SELECT title FROM {node} WHERE nid = %d";
-    $title = db_result(db_query($query, $gid));
-    $vars['web_site'] = l($title, "node/$gid");
+    if(is_array($gid)) $gid = array_shift($gid);
+   
+    if(intval($gid)){
+	    $query = "SELECT title FROM {node} WHERE nid = %d";
+	    $title = db_result(db_query($query, $gid));
+	    if($title) $vars['web_site'] = l($title, "node/$gid");
+    }
     
     // machine name of the content type
-    $vars['node_type'] = $gid = $vars['result']['fields']['type']['value'];
+    $vars['node_type'] = $vars['result']['fields']['type']['value'];
   }
 }
 
