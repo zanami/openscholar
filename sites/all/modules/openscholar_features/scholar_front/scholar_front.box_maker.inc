@@ -280,9 +280,13 @@ function fb_add_block(&$vsite, $block) {
 // update the ids of all blocks on this vsite 
 function update_block_ids(&$vsite) {
   $id_map = array(
-    'vsite_widgets-2'				=> 'shield_default',
-    'vsite_widgets-0'				=> 'site_logo',
-    'vsite_widgets-1'				=> 'site_info',
+    'vsite_widgets-2'				                  => 'shield_default',
+    'vsite_widgets-0'				                  => 'site_logo',
+    'vsite_widgets-1'				                  => 'site_info',
+  	'views-scholar_announcements-block_1'  		=> 'scholar_announcements_latest',
+  	'scholar_biocv-bio_blurb'									=> 'scholar_biocv_bio_blurb',
+    'views-scholar_book-block_1'							=> 'scholar_book_recent_docs',
+    'views-scholar_image_gallery-block_1'			=> 'image_gallery_recent_images',
   );
   $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
   $blocks = array();
@@ -300,6 +304,7 @@ function update_block_ids(&$vsite) {
       drupal_alter('boxes_load', $box, $id);
     }
     
+    //pass along the new block
     $new_front[$id] = os_boxes_get_vsite_widget($a_block, $a_block['weight'], $a_block['region']);
   }
 
