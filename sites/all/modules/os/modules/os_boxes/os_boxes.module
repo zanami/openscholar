@@ -101,8 +101,8 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_twitterfeed'] = array(
-    'title' => 'Twitter feed CUSTOM BOX',
-    'description' => 'List of latest tweets',
+    'title' => 'Twitter Feed',
+    'description' => 'Latest tweets',
     'tags' => array('Social','Feed','Twitter'),
     'handler' => array(
       'class' => 'os_boxes_twitterfeed',
@@ -209,6 +209,18 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_pub_grps',
       'file' => 'os_boxes_pub_grps.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+  );
+  
+  $info['vsite_taxonomy_fbt'] = array(
+    'title' => 'Filter by Category',
+    'description' => 'Filter content by category',
+    'tags' => array('Content','Taxonomy'),
+    'handler' => array(
+      'class' => 'vsite_taxonomy_fbt',
+      'file' =>  'vsite_taxonomy_fbt.inc',
       'path' => $path,
       'parent' => 'os_boxes_default',
     ),

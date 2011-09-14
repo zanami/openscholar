@@ -258,7 +258,6 @@ function vsite_taxonomy_vsite_admin_link($type, $object){
 function vsite_taxonomy_block($op = 'list', $delta = 0, $edit = array()) {
   switch ($op) {
     case 'list':
-      $blocks[0]['info'] = t('Categories - Show content in a Category');
       $blocks['filter_feature']['info'] = t('Categories - Filter categorized content by type');
       return $blocks;
     case 'view':
@@ -266,10 +265,6 @@ function vsite_taxonomy_block($op = 'list', $delta = 0, $edit = array()) {
       	case 'filter_feature':
       	  $block = vsite_taxonomy_category_by_feature_block();
       	break;
-        case 0:
-        default:
-          $block = array('subject' => 'vsite taxonomy cat','content' => 'depricated');// vsite_taxonomy_feature_categories_block();
-          break;
       }
 
       return $block;
@@ -788,25 +783,3 @@ function vsite_taxonomy_preprocess_node(&$vars){
   }
 }
 
-/**
- * Implementation of hook_boxes_plugins().
- */
-function vsite_taxonomy_boxes_plugins() {
-  $info = array();
-  $path = drupal_get_path('module', 'vsite_taxonomy') .'/plugins';
-
-  $info['vsite_taxonomy_fbt'] = array(
-    'title' => 'Filter by Category',
-    'description' => 'Filter content by category',
-    'tags' => array('Content','Taxonomy'),
-    'handler' => array(
-      'class' => 'vsite_taxonomy_fbt',
-      'file' =>  'vsite_taxonomy_fbt.inc',
-      'path' => $path,
-      'parent' => 'os_boxes_default',
-    ),
-    'access' => "cp_access_cp",
-  );
-
-  return $info;
-}
