@@ -7,23 +7,14 @@ include_once('vsite_widgets.features.inc');
  */
 function vsite_widgets_block($op = 'list', $delta = 0, $edit = array()) {
   if ($op == 'list') {
-//    $blocks[0]['info'] = t('Scholar site shield');
-    $blocks[1]['info'] = t('Scholar site search');
+
     $blocks[2]['info'] = t('ShareThis Button - Allows you to share posts using popular online services');
-    $blocks[3]['info'] = t('Google Translate');
-    $blocks[6]['info'] = t("Your site's RSS feed");
     return $blocks;
   }
   elseif ($op == 'view') {
     switch ($delta) {
-//      case 0:
-//       return vsite_widgets_shield();
-      case 1:
-       return vsite_widgets_search_widget();
       case 2:
       	return vsite_widgets_addthis();
-      case 3:
-      	return vsite_widget_googletranslate();
       case 6:
       	return vsite_widget_rss();
     }
@@ -46,13 +37,7 @@ function vsite_widget_rss(){
 
 }
 
-function vsite_widgets_search_widget(){
-  if (! module_exists('search') || ! user_access('search content')) {
-    return;
-  }
-  $block['content'] = drupal_get_form('search_form');
-  return $block;
-}
+
 
 /**
  * Adds the addthis social networking link
@@ -70,78 +55,9 @@ function vsite_widgets_addthis(){
 
 }
 
-/**
- * A widget to allow translation of a page
- * @return array
- */
-function vsite_widget_googletranslate(){
-  global $language;
-	$lang = ($language->language)?$language->language:'en';
-
-	$block['subject'] = t(''); //Blank
-  $block['content'] = '<div id="google_translate_element"></div><script>
-												function googleTranslateElementInit() {
-												  new google.translate.TranslateElement({
-												    pageLanguage: \''.$lang.'\'
-												  }, \'google_translate_element\');
-												}
-												</script><script src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>';
-  return $block;
-
-}
-/*
-function vsite_widgets_shield(){
-
-	$output = '';
-	$shields = variable_get('vsite_shields_shield_info', array());
-	if(!vsite_widgets_shield_access() || empty($shields)) {
-		return $output;
-	}//Disabled?
-
-	$s_filename = variable_get('vsite_shields_shield', '');
-	if ($s_filename) {
-	  $block['subject'] = t('');
-	  $block['content'] = '<div id="scholar-shield"><img src="'.url($s_filename, array('alias' => TRUE)).'" /> </div>';
-
-	  return $block;
-	}
-	return $output;
-}
-
-/**
- * Access Callback for the shield widget
- * @param $widget //Access callbacks are passed the widget array
- */
-function vsite_widgets_shield_access($widget = false){
-
-  return !variable_get('vsite_design_disable_shield', FALSE);
-}
-
 function vsite_widgets_vsite_widgets(){
 
 	return array(
-/*
-    'vsite_widgets-2' => array(
-      'module' => 'vsite_widgets',
-      'delta' => '0',
-      'weight' => 20,
-      'region' => 'header_right',
-      'label' => 'Scholar site shield',
-	    'access callback' => 'vsite_widgets_shield_access',
-	    'cache' => BLOCK_CACHE_CONTENT_CACHE,
-      'cache_keys' => array(
-        'vsite_config' => array('vsite_generic_settings_form' => 'vsite_generic_settings_form'),
-        'os_og' => array('current' => 'current'),
-      ),
-    ),*/
-
-   'vsite_widgets-3' => array(
-      'module' => 'vsite_widgets',
-      'delta' => '1',
-      'weight' => -5,
-      'region' => 'right',
-      'label' => 'Scholar search widget',
-    ),
 
     'vsite_widgets-4' => array(
       'module' => 'vsite_widgets',
@@ -149,14 +65,6 @@ function vsite_widgets_vsite_widgets(){
       'weight' => 300,
       'region' => false,
       'label' => 'AddThis Button - Share posts using popular services',
-    ),
-
-    'vsite_widgets-5' => array(
-      'module' => 'vsite_widgets',
-      'delta' => '3',
-      'weight' => 40,
-      'region' => false,
-      'label' => 'Google Translate',
     ),
 
    'vsite_widgets-6' => array(
@@ -171,18 +79,6 @@ function vsite_widgets_vsite_widgets(){
       ),
     ),
 
-    // Featured posts
-    'views-vsite_featuredposts-block_1' => array(
-      'module' => 'views',
-      'delta' => 'vsite_featuredposts-block_1',
-      'weight' => 0,
-      'region' => false,
-      'label' => 'Featured posts',
-      'cache' => BLOCK_CACHE_CONTENT_CACHE,
-      'cache_keys' => array(
-        'os_og' => array('current' => 'current'),
-      ),
-    ),
   );
 
 }

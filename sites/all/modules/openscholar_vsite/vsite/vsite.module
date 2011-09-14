@@ -279,6 +279,66 @@ function vsite_menu(){
 }
 
 /**
+ * Implementation of hook block
+ */
+function vsite_block($op = 'list', $delta = 0, $edit = array()) {
+  if ($op == 'list') {
+    $blocks['site_search']['info'] = t('Scholar site search');
+    $blocks['google_translate']['info'] = t('Google Translate');
+    $blocks['site_rss']['info'] = t("Your site's RSS feed");
+    return $blocks;
+  }
+  elseif ($op == 'view') {
+  	require_once ( drupal_get_path('module', 'vsite') .'/includes/vsite.blocks.inc');
+    switch ($delta) {
+      case 1:
+       return vsite_search_block();
+      case 3:
+        return vsite_googletranslate_block();
+    }
+  }
+}
+
+/**
+ * Implementation of hook vsite_widgets
+ */
+function vsite_vsite_widgets(){
+
+  return array(
+
+   'vsite-site_search' => array(
+      'module' => 'vsite',
+      'delta' => 'site_search',
+      'weight' => -5,
+      'region' => 'right',
+      'label' => 'Site Search',
+    ),
+
+    'vsite-google_translate' => array(
+      'module' => 'vsite',
+      'delta' => 'google_translate',
+      'weight' => 40,
+      'region' => false,
+      'label' => 'Google Translate',
+    ),
+
+    // Featured posts
+    'views-vsite_featuredposts-block_1' => array(
+      'module' => 'views',
+      'delta' => 'vsite_featuredposts-block_1',
+      'weight' => 0,
+      'region' => false,
+      'label' => 'Featured posts',
+      'cache' => BLOCK_CACHE_CONTENT_CACHE,
+      'cache_keys' => array(
+        'os_og' => array('current' => 'current'),
+      ),
+    ),
+  );
+
+}
+
+/**
  * Implementation of hook_menu_alter().
  */
 function vsite_menu_alter(&$items) {

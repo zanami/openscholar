@@ -82,3 +82,59 @@ function os_update_6002(&$sandbox) {
   return $res;
 }
 
+/*
+ * hook_update_N
+ *
+ * update hook for beta12 => beta13
+ *
+ * Updates block ids that are not going to use boxes
+ */
+function os_update_6003(&$sandbox) {
+  $res = array();
+
+  $a_changes = array(
+    'vsite_widgets-3' => 'vsite-site_search',
+    'vsite_widgets-5' => 'vsite-google_translate',
+  );
+  
+  // Multi-part update.
+  if (!isset($_SESSION['os_update_6003'])) {
+    // initialize our variables
+    $_SESSION['os_update_6003'] = 0;
+    $_SESSION['os_update_6003_max'] = db_result(db_query("SELECT COUNT(*) FROM {spaces_overrides} WHERE object_type = 'context' "));
+  }
+  
+  $result = db_query("SELECT * FROM {spaces_overrides} WHERE object_type = 'context' ORDER BY id ASC LIMIT %d,100 ",$_SESSION['os_update_6003']);
+  $_SESSION['os_update_6003'] += 100;
+  
+  while ($row = db_fetch_object($result)) {
+      $value = unserialize($row->value);
+      
+      foreach ($a_changes as $old => $new) {
+        if (array_key_exists($old,$value['blocks'])) {
+          $block = $value['blocks'][$old];
+          unset($value['blocks'][$old]);
+          
+          list($new_module,$new_delta) = explode("-",$new,2);
+          $block['module'] = $new_module;
+          $block['delta'] = $new_delta;
+          
+          $value['blocks'][$new] = $block;
+        }
+      }
+
+      db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type LIKE '%s' AND id = %d AND object_type LIKE 'context' AND object_id LIKE '%s' ",serialize($value), $row->type, $row->id, $row->object_id);
+  }
+  
+  if($_SESSION['os_update_6003'] >= $_SESSION['os_update_6003_max']){
+    $res[] = array(
+      'success' => true,
+      'query' => 'Block settings migrated.'
+    );
+  }else{
+    // Report how much is left to complete.
+    $res['#finished'] = $_SESSION['os_update_6003'] / $_SESSION['os_update_6003_max'];
+  }
+  
+  return $res;
+}
