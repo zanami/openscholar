@@ -16,12 +16,8 @@ class os_boxes_modal_sitelogo extends os_boxes_modalframe {
 
     $block = parent::render();
 
-    if ($vsite->group->type == 'vsite') {
-      $block = array_merge($block, _scholar_logo_wdgt());
-    }
-    elseif ($vsite->group->type == 'project') {
-      $block = array_merge($block, _scholar_project_logo_wdgt());
-    }
+    $type = $vsite->group->type;
+    $block['content'] = theme($type.'_site_logo');
     return $block;
   }
 

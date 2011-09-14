@@ -94,3 +94,40 @@ function scholar_reader_update_6002(&$sandbox){
     
     return $res;
 }
+
+function scholar_reader_update_6003(&$sandbox){
+  module_load_include('inc', 'os_boxes', 'os_boxes.newbox_api');
+  
+  //Get all the sites with twitter blocks setup
+  $q = db_query("SELECT * FROM `spaces_overrides` WHERE `object_type` LIKE 'variable' AND `object_id` LIKE 'scholar_reader_twitter_username' ");
+  while ($res = db_fetch_object($q)) {
+  	$twitter_username = unserialize($res->value);
+  	if(strlen($twitter_username)){
+      $twitter_box = boxes_factory('os_boxes_twitterfeed', array('twitter_username' => $twitter_username, 'title' => "Twitter Feed", 'description' => "Twitter Updates"));
+      $twitter_box->delta = os_boxes_create_delta("{$res->type}-{$res->id}");
+      
+	  	unset($twitter_box->new);
+	    unset($twitter_box->export_type);
+	    $box = new stdClass();
+	    foreach ($twitter_box as $k => $v) $box->$k = $v; //convert to std class
+	    
+	  	$override = array(
+	      'type' => $res->type,
+	      'id' => $res->id,
+	      'object_type' => 'boxes',
+	      'object_id' => $box->delta,
+	  	  'value' => $box,
+	    );
+	    drupal_write_record('spaces_overrides', $override);
+	    
+      replace_boxes('scholar_reader-my_twitter_feed', $twitter_box, false, $res->id);
+  	}
+  }
+  
+  $res[] = array(
+    'success' => true,
+    'query' => 'Updated twitter boxes for scholar reader',
+  );
+    
+  return $res;
+}

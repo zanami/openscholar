@@ -36,6 +36,18 @@ function scholar_init(){
   }//Copy thier image to the site logo if they have not defined one
 }
 
+function scholar_theme() {
+  $theme = array();
+  $theme['vsite_site_logo'] = array(
+    'function' => '_scholar_logo_wdgt',
+    'arguments' => array(),
+  );
+  $theme['vsite_site_info'] = array(
+    'function' => '_scholar_basicinfo_wdgt',
+    'arguments' => array(),
+  );
+  return $theme;
+}
 
 /**
  * Implementation of hook_form_alter()
@@ -122,11 +134,7 @@ function scholar_block($op = 'list', $delta = 0, $edit = array()) {
 function _scholar_basicinfo_wdgt(){
   $scholar = vsite_get_vsite();
 
-  $block = array();
-  $block['subject'] = t('');
-  $block['content'] = l('Scholar Web Site ('.$scholar->group->purl. ')', $scholar -> get_absolute_url()) ; //will get overridden
-
-  if(!strlen($scholar->group->title)){
+  if (!strlen($scholar->group->title)){
     $content_profile = content_profile_load('vsite_users_profile',$scholar->group->uid);
 
     $s_headline = (is_array($content_profile->vsite_users_last_name))? "{$content_profile->vsite_users_first_name[0]['value']} {$content_profile->vsite_users_last_name[0]['value']}":"";
@@ -136,21 +144,20 @@ function _scholar_basicinfo_wdgt(){
     $s_subheadline_markup =  strlen($s_subheadline) ?  "<h2>" . $s_subheadline . "</h2>" : "";
     $p_tags = (strlen($s_headline_markup) || strlen($s_subheadline_markup)) ? "<p></p>" : "";
 
-    $block['content'] = $s_headline_markup . $s_subheadline_markup . $p_tags;
-    return $block;
+    $output = $s_headline_markup . $s_subheadline_markup . $p_tags;
+  }
+  else {
+    $contact_anon = variable_get('vsite_users_contact_form_anonymous', TRUE);
+
+    $s_email = ($contact_anon !== 0 || user_is_logged_in())?l("(email)","contact_owner"):"";
+    $s_address = count($scholar->group->field_vsite_address)?$scholar->group->field_vsite_address[0]['value']:"";
+
+    $output =   "<h1>" . l($scholar->group->title, $scholar -> get_absolute_url()) ."</h1>" .
+                        (strlen($scholar->group->og_description) ? "<h2>" . $scholar->group->og_description. "</h2>" : "") .
+                        " <p>{$s_address}&nbsp;{$s_email}</p>";
   }
 
-  $contact_anon = variable_get('vsite_users_contact_form_anonymous', TRUE);
-
-  $s_email = ($contact_anon !== 0 || user_is_logged_in())?l("(email)","contact_owner"):"";
-  $s_address = count($scholar->group->field_vsite_address)?$scholar->group->field_vsite_address[0]['value']:"";
-
-  $output =   "<h1>" . l($scholar->group->title, $scholar -> get_absolute_url()) ."</h1>" .
-                      (strlen($scholar->group->og_description) ? "<h2>" . $scholar->group->og_description. "</h2>" : "") .
-                      " <p>{$s_address}&nbsp;{$s_email}</p>";
-
-  $block['content'] = $output;
-  return $block;
+  return $output;
 }
 
 /**
@@ -159,8 +166,6 @@ function _scholar_basicinfo_wdgt(){
  */
 function _scholar_logo_wdgt(){
 
-  $block['subject'] = t(''); // intentionally blank
-  $block['content'] = '<div id="logo"><a href="'.url("<front>").'">'.theme('vsite_logo',vsite_get_vsite(),'field_vsite_logo' ,'vsite_design_landscape_logo').'</a></div>';
+  return '<div id="logo"><a href="'.url("<front>").'">'.theme('vsite_logo',vsite_get_vsite(),'field_vsite_logo' ,'vsite_design_landscape_logo').'</a></div>';
 
-  return $block;
 }
