@@ -55,14 +55,12 @@ function scholar_classes_context_default_contexts() {
           'label' => 'Scholar: Book',
           'type' => 'context_ui',
         ),
-        'vsite_taxonomy-0' => array(
-          'module' => 'vsite_taxonomy',
-          'delta' => '0',
+        'boxes-vsite_taxonomy_fltr_cat' => array(
+          'module' => 'boxes',
+          'delta' => 'vsite_taxonomy_fltr_cat',
+          'label' => 'Filter By Category',
           'weight' => 39,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'Categories - Filter categorized content',
-          'type' => 'context_ui',
         ),
       ),
     ),
