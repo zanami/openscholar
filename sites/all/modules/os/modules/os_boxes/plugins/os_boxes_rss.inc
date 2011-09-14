@@ -47,7 +47,7 @@ class os_boxes_rss extends os_boxes_default {
       $arg = '/'.$this->options['content'];
     }
     if ($image = theme('image', 'misc/feed.png', t('Syndicate content'), 'RSS')) {
-      $block['content'] = l($image, 'feed'.$arg, array('html' => TRUE, 'attributes' => array('class' => 'feed-icon')));
+      $block['content'] = l($image.' Subscribe', 'feed'.$arg, array('html' => TRUE, 'attributes' => array('class' => 'feed-icon')));
     }
 
     return $block;

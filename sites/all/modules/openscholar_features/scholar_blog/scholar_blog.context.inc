@@ -70,15 +70,13 @@ function scholar_blog_context_default_contexts() {
           'label' => 'scholar_blog_comments: Recent comments',
           'type' => 'context_ui',
         ),
-        'scholar_blog-rss' => array(
-          'module' => 'scholar_blog',
-          'delta' => 'rss',
+        'scholar_blog-blog_rss' => array(
+          'module' => 'boxes',
+          'delta' => 'scholar_blog-blog_rss',
           'weight' => 20,
           'region' => 'footer',
-          'status' => '0',
-          'label' => 'RSS Feed - Link to subscribe to your newest blog entries',
-          'type' => 'context_ui',
-        ),
+          'label' => 'RSS Feed',
+        )
       ),
     ),
   );
