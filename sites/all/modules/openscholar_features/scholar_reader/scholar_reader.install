@@ -120,7 +120,6 @@ function scholar_reader_update_6003(&$sandbox){
 	    );
 	    drupal_write_record('spaces_overrides', $override);
 	    
-      
       replace_boxes('scholar_reader-my_twitter_feed', $twitter_box, false, $res->id);
   	}
   }
