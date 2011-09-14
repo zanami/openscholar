@@ -50,9 +50,9 @@ function scholar_blog_context_default_contexts() {
         'boxes-os_addthis' => array(
           'module' => 'boxes',
           'delta' => 'os_addthis',
+          'label' => 'AddThis Button',
           'weight' => 38,
           'region' => 'right',
-          'label' => 'AddThis Button',
         ),
         'views-scholar_blog-block_1' => array(
           'module' => 'views',
