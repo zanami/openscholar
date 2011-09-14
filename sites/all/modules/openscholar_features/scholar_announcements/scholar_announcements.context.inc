@@ -38,14 +38,12 @@ function scholar_announcements_context_default_contexts() {
     'menu' => 'announcements',
     'block' => array(
       'blocks' => array(
-        'views-scholar_announcements-block_1' => array(
-          'module' => 'views',
-          'delta' => 'scholar_announcements-block_1',
+        'boxes-scholar_announcements_latest' => array(
+          'module' => 'boxes',
+          'delta' => 'scholar_announcements_latest',
           'weight' => -21,
           'region' => 'right',
           'status' => '0',
-          'label' => 'Latest Announcements',
-          'type' => 'context_ui',
         ),
         'vsite_taxonomy-0' => array(
           'module' => 'vsite_taxonomy',
