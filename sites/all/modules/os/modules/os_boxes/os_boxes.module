@@ -293,6 +293,10 @@ function os_boxes_vsite_widgets(){
   $boxes = boxes_load();
   foreach ($boxes as $box) {
   	if(!$box->delta) continue;
+  	
+  	//Is this box not applicable everywhere
+  	if(isset($box->sitewide) && !$box->sitewide) continue;
+  	
     $items["boxes-{$box->delta}"] = os_boxes_get_vsite_widget($box);
   }
 

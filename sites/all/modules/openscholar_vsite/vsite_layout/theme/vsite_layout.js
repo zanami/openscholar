@@ -76,6 +76,7 @@ function scholarlayout_add_removal_hooks() {
 
     parent.fadeIn('fast');
     vsite_layout_init_categories();
+    vsite_layout_update_scroller_width();
   });
 }
 
