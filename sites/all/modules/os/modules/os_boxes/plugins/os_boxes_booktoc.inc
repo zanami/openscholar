@@ -2,10 +2,8 @@
 
 /**
  * @file
- * The class for "Book Table of Contents" type widgets.
+ * The class for "Book Table of Contents" widgets.
  */
-
-
 class os_boxes_booktoc extends os_boxes_default {
   /**
    * Implementation of boxes_content::options_defaults().
@@ -48,7 +46,43 @@ class os_boxes_booktoc extends os_boxes_default {
 
     $node = node_load($this->options['book_nid']);
     $block['content'] = menu_tree_output(menu_tree_all_data($node->book['menu_name']));
-    //$block['content'] = theme('book_all_books_block', $book_menu);
+    
+    return $block;
+  }
+}
+
+/**
+ * @file
+ * A subclass for "Book Table of Contents" that shows the TOC for the current book
+ */
+class os_boxes_current_booktoc extends os_boxes_default {
+	  /**
+   * Implementation of boxes_content::options_form().
+   */
+  public function options_form() {
+  	$form = parent::options_form();
+  	//Not needed for 'current book'
+  	unset($form['book_nid']);
+  	return $form;
+  }
+  
+  /**
+   * Implementation of boxes_content::render().
+   */
+  public function render() {
+  	$block = array();
+  	
+  	//Get the current book
+  	$node = menu_get_object();
+  	if(isset($node->book['bid']) && book_type_is_allowed($node->type)){
+      $node = node_load($node->book['bid']);
+
+      if ($node) $this->options['book_nid'] = $node->nid;
+  	}
+  	
+  	if($this->options['book_nid']){
+      $block = parent::render();
+  	}
     return $block;
   }
 }

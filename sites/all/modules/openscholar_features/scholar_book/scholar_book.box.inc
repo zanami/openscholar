@@ -8,6 +8,18 @@ function scholar_book_default_box() {
   $box = new stdClass;
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
+  $box->delta = 'scholar_book_current_toc';
+  $box->plugin_key = 'os_boxes_current_booktoc';
+  $box->title = 'Table of Contents';
+  $box->description = 'Active Book\'s TOC';
+  $box->options = array(
+    'visibility' => 'feature',
+  );
+
+  $export['scholar_book_current_toc'] = $box;
+  $box = new stdClass;
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
   $box->delta = 'scholar_book_recent_docs';
   $box->plugin_key = 'os_boxes_simpleview_list';
   $box->title = 'Recent Documents';

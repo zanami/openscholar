@@ -185,6 +185,19 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     )
   );
+  
+  $info['os_boxes_current_booktoc'] = array(
+    'title' => 'Active Book\'s TOC',
+    'description' => 'Table of Contents',
+    'tags' => array('Content','Book'),
+    'handler' => array(
+      'class' => 'os_boxes_current_booktoc',
+      'file' => 'os_boxes_booktoc.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+    'access' => false, //Do not allow instances of this to be created
+  );
 
   $info['os_boxes_simpleview_list'] = array(
     'title' => 'List of posts',

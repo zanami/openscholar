@@ -46,13 +46,12 @@ function scholar_classes_context_default_contexts() {
           'weight' => 37,
           'region' => 'right',
         ),
-        'scholar_book-booktoc' => array(
-          'module' => 'scholar_book',
-          'delta' => 'booktoc',
+        'boxes-scholar_book_current_toc' => array(
+          'module' => 'boxes',
+          'delta' => 'scholar_book_current_toc',
           'weight' => 38,
           'region' => 'right',
-          'status' => '0',
-          'label' => 'Scholar: Book',
+          'label' => 'Table of Contents',
           'type' => 'context_ui',
         ),
         'boxes-vsite_taxonomy_fltr_cat' => array(
