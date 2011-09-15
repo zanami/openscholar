@@ -2,7 +2,7 @@
 
 /**
  * @file
- * The class for "Slideshow" type widgets.  
+ * The class for "Slideshow" type widgets.
  */
 
 class os_boxes_slideshow extends os_boxes_default {
@@ -24,18 +24,18 @@ class os_boxes_slideshow extends os_boxes_default {
   public function options_form(){
     
     $form['gallery'] = array(
-      '#type' => 'select', 
-      '#title' => t('Gallery'), 
+      '#type' => 'select',
+      '#title' => t('Gallery'),
       '#options' => array(
-        'all' => t('All') 
-      ), 
+        'all' => t('All')
+      ),
       '#required' => TRUE,
     );
     
     // for each gallery node, add nid/node_title to the select options
     $view = views_get_view("scholar_image_gallery");
     $view->set_display('page_1'); //block 1 showed all content
-    $view->execute(); 
+    $view->execute();
     foreach($view->result as $r) {
       $form['gallery']['#options'] += array($r->nid => $r->node_title);
     }
@@ -66,8 +66,20 @@ class os_boxes_slideshow extends os_boxes_default {
       
     $block = parent::render();
     $output = $view->execute_display();
-    $block['content'] = $output; 
+    $block['content'] = $output;
     return $block;
+  }
+  
+  /**
+   * Return the cache key for gallery view
+   */
+  public function cache_keys(){
+    $cache_key = parent::cache_keys();
+    
+    //Clear the cache whenever a image or gallery is saved
+    $cache_key['node'] = array('image' => 'image', 'gallery' => 'gallery');
+    
+    return $cache_key;
   }
 
 }

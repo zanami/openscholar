@@ -104,5 +104,16 @@ class os_boxes_pub_grps extends os_boxes_default {
 
     return $block;
   }
+  
+  /**
+   * Return the cache key for this box
+   */
+  public function cache_keys(){
+    //Clear when book related nodes are saved
+    $cache_key = parent::cache_keys();
+    $cache_key['node'] = array('biblio' => 'biblio');
+    
+    return $cache_key;
+  }
 
 }
