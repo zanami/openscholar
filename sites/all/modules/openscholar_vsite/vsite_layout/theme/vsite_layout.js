@@ -44,14 +44,10 @@ Drupal.behaviors.scholarlayout = function() {
   vsite_layout_add_category_select();
   
   //remove or prevent ctools modal handling from modalframe links
-  vsite_layout_modalfram_links();
+  vsite_layout_modalframe_links();
   
   //init scroller on topbox
   vsite_layout_init_horz_scroller();
-  
-  function modalFrameSubmitHandler(args, messages) {
-	  Drupal.CTools.AJAX.respond(args);
-  }
 };
 
 function scholarlayout_add_removal_hooks() {
@@ -220,7 +216,11 @@ function vsite_layout_init_categories(){
 }
 
 //remove or prevent ctools modal handling from modalframe links
-function vsite_layout_modalfram_links(){
+function vsite_layout_modalframe_links(){
+	  
+  function modalFrameSubmitHandler(args, messages) {
+	  Drupal.CTools.AJAX.respond(args);
+  }
 	$('a.ctools-use-modal').each(function(i, elem) {
 		  if (elem.href && elem.href.indexOf('/modal/') != -1) {
 			  var $this = $(this);
