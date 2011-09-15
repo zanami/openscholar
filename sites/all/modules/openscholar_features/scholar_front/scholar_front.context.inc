@@ -54,7 +54,7 @@ function scholar_front_context_default_contexts() {
 		      'module' => 'boxes',
 		      'delta' => 'scholar_biocv_bio_blurb',
 		      'weight' => 0,
-		      'region' => 'content_top',
+		      'region' => 'content_bottom',
 		      'label' => 'Bio Blurb',
 		    ),
       ),
