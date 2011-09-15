@@ -43,14 +43,6 @@ function scholar_front_menu(){
     'file' => 'scholar_front.pages.inc',
   );
 
-  $items['scholar_front_welcome'] = array(
-    'type' => MENU_CALLBACK,
-    'title' => '',
-    'page callback' => 'scholar_front_welcome',
-    'file' => 'scholar_front.pages.inc',
-    'access arguments' => array('access content'),
-  );
-
   return $items;
 }
 
