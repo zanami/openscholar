@@ -62,7 +62,7 @@ function os_update_6001(&$sandbox){
  */
 function os_update_6002(&$sandbox) {
   $res = array();
-  $modules = array('vsite_controllers', 'os_boxes', 'spaces_simpleviews', 'vsite_contextual', 'os_modalframe', 'os_books');
+  $modules = array('boxes', 'vsite_controllers', 'os_boxes', 'spaces_simpleviews', 'vsite_contextual', 'os_modalframe', 'os_books');
   include_once('includes/install.inc');
   drupal_install_modules($modules);
 
