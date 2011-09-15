@@ -253,13 +253,17 @@ function scholar_publications_update_6010(&$sandbox) {
   module_load_include('inc', 'os_boxes', 'os_boxes.newbox_api');
   module_load_include('module', 'boxes');
 
-  $replacements = array(
-  	'views-publication_years-block_1' => 'year',
-  	'views-publication_contributors-block_1' => 'contributors',
-    'scholar_publications-pub_by_type' => 'type'
-  );
+  // Multi-part update.
+  if (!isset($_SESSION['scholar_publications_update_6010'])) {
+    // initialize our variables
+    $_SESSION['scholar_publications_update_6010'] = array(
+	    'views-publication_years-block_1' => 'year',
+	    'views-publication_contributors-block_1' => 'contributors',
+	    'scholar_publications-pub_by_type' => 'type'
+	  );
+  }
 
-  foreach ($replacements as $block => $type) {
+  foreach ($_SESSION['scholar_publications_update_6010'] as $block => $type) {
     $box = (object)(array)boxes_factory('os_boxes_pub_grps', array('type' => $type));
     switch ($type) {
       case 'year':
@@ -289,13 +293,22 @@ function scholar_publications_update_6010(&$sandbox) {
 
 	   drupal_write_record('spaces_overrides', $override);
     }
+    
+    break;
   }
 
-  $res[] = array(
-    'success' => true,
-    'query' => 'Publication blocks have been replaced with boxes.',
-  );
-
+  array_shift($_SESSION['scholar_publications_update_6010']);
+  
+  if(!count($_SESSION['scholar_publications_update_6010'])){
+    $res[] = array(
+      'success' => true,
+      'query' => 'Publication blocks have been replaced with boxes.'
+    );
+  }else{
+    // Report how much is left to complete.
+    $res['#finished'] = $_SESSION['scholar_publications_update_6010'] / 3;
+  }
+  
 
   return $res;
 }
