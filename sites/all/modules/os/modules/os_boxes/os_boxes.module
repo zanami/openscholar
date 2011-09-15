@@ -185,16 +185,16 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     )
   );
-  
-  $info['os_boxes_current_booktoc'] = array(
+
+  $info['os_boxes_curr_toc'] = array(
     'title' => 'Active Book\'s TOC',
     'description' => 'Table of Contents',
     'tags' => array('Content','Book'),
     'handler' => array(
-      'class' => 'os_boxes_current_booktoc',
+      'class' => 'os_boxes_curr_toc',
       'file' => 'os_boxes_booktoc.inc',
       'path' => $path,
-      'parent' => 'os_boxes_default',
+      'parent' => 'os_boxes_booktoc',
     ),
     'access' => false, //Do not allow instances of this to be created
   );
@@ -293,12 +293,12 @@ function os_boxes_vsite_widgets(){
   $boxes = boxes_load();
   foreach ($boxes as $box) {
   	if(!$box->delta) continue;
-  	
+
   	//Is this box not applicable everywhere
   	if(isset($box->sitewide) && !$box->sitewide) continue;
-  	
+
     $items["boxes-{$box->delta}"] = os_boxes_get_vsite_widget($box);
-    
+
     if(isset($plugins[$box->plugin_key]) && is_array($plugins[$box->plugin_key]['tags']) && count($plugins[$box->plugin_key]['tags'])) {
         $items["boxes-{$box->delta}"]['tags'] = $plugins[$box->plugin_key]['tags'];
     }//retrieve tags from plugin
