@@ -1,5 +1,5 @@
 core = "6.x"
-dependencies[] = "box"
+dependencies[] = "boxes"
 dependencies[] = "comment"
 dependencies[] = "date_api"
 dependencies[] = "filefield_paths"
