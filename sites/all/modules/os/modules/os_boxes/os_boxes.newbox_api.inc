@@ -101,13 +101,14 @@ function vsite_remove_box(&$vsite, $box) {
 function replace_boxes($block_id, $box, $default_region = false, $sid = false) {
 
   if (!$box->delta) {
+    module_load_include('module', 'os_boxes');
     $box->delta = os_boxes_create_delta();
   }
   $widget_def = os_boxes_get_vsite_widget($box);
 
   $params = array($block_id);
   if($sid) $params[] = $sid;
-  
+
   $q = db_query("SELECT * FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%' ".($sid?" AND id = %d ":""), $params);
   while ($r = db_fetch_array($q)) {
     $value = unserialize($r['value']);
