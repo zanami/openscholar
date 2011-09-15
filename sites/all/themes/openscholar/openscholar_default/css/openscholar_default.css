@@ -148,6 +148,9 @@ td, td.description {
 .section-websites .view-openscholar-sites td {
   width: 25%;
   }
+  
+  
+  .admin-disabled, .admin-missing {color:red;}
 
 /* FRONT PAGE LAYOUT */
 

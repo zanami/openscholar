@@ -46,7 +46,7 @@ class os_boxes_booktoc extends os_boxes_default {
 
     $node = node_load($this->options['book_nid']);
     $block['content'] = menu_tree_output(menu_tree_all_data($node->book['menu_name']));
-    
+
     return $block;
   }
 }
@@ -55,13 +55,13 @@ class os_boxes_booktoc extends os_boxes_default {
  * @file
  * A subclass for "Book Table of Contents" that shows the TOC for the current book
  */
-class os_boxes_current_booktoc extends os_boxes_booktoc {
-	
+class os_boxes_curr_toc extends os_boxes_booktoc {
+
 	/**
 	 * Box instances of this type should not be avalible sitewide
 	 */
 	public $sitewide = false;
-	
+
 	  /**
    * Implementation of boxes_content::options_form().
    */
@@ -71,13 +71,13 @@ class os_boxes_current_booktoc extends os_boxes_booktoc {
   	unset($form['book_nid']);
   	return $form;
   }
-  
+
   /**
    * Implementation of boxes_content::render().
    */
   public function render() {
   	$block = array();
-  	
+
   	//Get the current book
   	$node = menu_get_object();
   	if(isset($node->book['bid']) && book_type_is_allowed($node->type)){
@@ -85,7 +85,7 @@ class os_boxes_current_booktoc extends os_boxes_booktoc {
 
       if ($node) $this->options['book_nid'] = $node->nid;
   	}
-  	
+
   	if($this->options['book_nid']){
       $block = parent::render();
   	}
