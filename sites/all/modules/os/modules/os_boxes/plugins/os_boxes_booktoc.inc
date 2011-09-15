@@ -44,8 +44,9 @@ class os_boxes_booktoc extends os_boxes_default {
   public function render() {
     $block = parent::render();
 
-    $node = node_load($this->options['book_nid']);
-    $block['content'] = menu_tree_output(menu_tree_all_data($node->book['menu_name']));
+    if ($this->options['book_nid'] && $node = node_load($this->options['book_nid'])) {
+      $block['content'] = menu_tree_output(menu_tree_all_data($node->book['menu_name']));
+    }
 
     return $block;
   }
@@ -76,7 +77,6 @@ class os_boxes_curr_toc extends os_boxes_booktoc {
    * Implementation of boxes_content::render().
    */
   public function render() {
-  	$block = array();
 
   	//Get the current book
   	$node = menu_get_object();
@@ -86,9 +86,7 @@ class os_boxes_curr_toc extends os_boxes_booktoc {
       if ($node) $this->options['book_nid'] = $node->nid;
   	}
 
-  	if($this->options['book_nid']){
-      $block = parent::render();
-  	}
-    return $block;
+    $block = parent::render();
+  	return $block;
   }
 }
