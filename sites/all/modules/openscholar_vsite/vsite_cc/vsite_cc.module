@@ -8,21 +8,6 @@ function vsite_cc_user($op, &$edit, &$account, $category = NULL) {
   }
 }
 
-function vsite_cc_vsite_widgets() {
-
-  return array(
-    'vsite_cc-node_license' => array (
-      'module' => 'creativecommons',
-      'delta' => 'node_license',
-      'weight' => 0,
-      'region' => false,
-      'status' => 0,
-      'label' => t('Creative Commons License'),
-      'type' => 'context_ui',
-    )
-  );
-}
-
 function vsite_cc_form_alter(&$form, &$form_state, $form_id) {
   if (strpos($form_id, '_node_form') !== FALSE) {
     unset($form['creativecommons']);
@@ -32,9 +17,9 @@ function vsite_cc_form_alter(&$form, &$form_state, $form_id) {
   }
 }
 
-function vsite_cc_block_enabled($name) {
-  $vsite = vsite_get_vsite();
-  if(!$vsite)  return false;
+function vsite_cc_block_enabled($name, $vsite = null) {
+  if (!$vsite) $vsite = vsite_get_vsite();
+  if (!$vsite) return false;
 
   $contexts = $vsite->controllers->context->get();
 
