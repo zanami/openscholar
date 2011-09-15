@@ -45,7 +45,7 @@ function openscholar_profile_modules() {
     // purl
     'purl',
     // spaces
-    'spaces', 'spaces_og',
+    'spaces', 'spaces_og', 'spaces_simpleviews',
     // ucreate
     'ucreate', 'ucreate_og',
 
@@ -103,7 +103,6 @@ function _openscholar_core_modules() {
     'nodeformcols',
     'formcolumns',
     'formcolumns_ui',
-    'vsite_shields',
     'shorten',
     'creativecommons',
     'oembedcore',
@@ -112,7 +111,6 @@ function _openscholar_core_modules() {
     'oembedembedly',
     'formcolumns',
     'vsite_cc',
-    'vsite_shields',
     'crayon',
     'conditional_styles',
     'prepopulate',
@@ -128,8 +126,16 @@ function _openscholar_core_modules() {
 function _openscholar_scholar_modules() {
   return array(
     'os',
+
+    //Boxes
+    'os_boxes',
+    'os_modalframe',
+
+    // vsite
     'vsite',
-    'vsite_widgets',
+    'vsite_cc',
+    'vsite_controllers',
+    'vsite_contextual',
     'vsite_content',
     'vsite_domain',
     'scholar_events',
@@ -273,12 +279,12 @@ function openscholar_profile_tasks(&$task, $url) {
     // _vsite_global_taxonomy();
     $task = 'openscholar-cleanup';
   }
-  
+
   if ($task == 'openscholar-cleanup') {
   	//Include Modules that have been enabled
     //We don't need to use install_include since the system table has been enabled
     module_load_all();
-    
+
     // biblio configuraitons
     _openscholar_configure_biblio();
 
