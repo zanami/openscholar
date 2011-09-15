@@ -91,4 +91,15 @@ class os_boxes_current_booktoc extends os_boxes_booktoc {
   	}
     return $block;
   }
+  
+  /**
+   * Return the cache key for this box
+   */
+  public function cache_keys(){
+    //Clear when book related nodes are saved
+    $cache_key = parent::cache_keys();
+    $cache_key['node'] = array('book' => 'book', 'class' => 'class', 'class_material' => 'class_material');
+    
+    return $cache_key;
+  }
 }

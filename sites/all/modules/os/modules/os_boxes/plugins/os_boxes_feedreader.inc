@@ -2,7 +2,7 @@
 
 /**
  * @file
- * The class for "CC license" type widgets.  
+ * The class for "CC license" type widgets.
  */
 
 class os_boxes_feedreader extends os_boxes_default {
@@ -24,21 +24,21 @@ class os_boxes_feedreader extends os_boxes_default {
   public function options_form(){
     
     $form['feed'] = array(
-      '#type' => 'select', 
-      '#title' => t('Feed'), 
+      '#type' => 'select',
+      '#title' => t('Feed'),
       '#options' => array(
-      ), 
+      ),
       '#required' => TRUE,
     );
     
     // for each feed node, add nid/node_title to the select options
     $view = views_get_view("scholar_reader");
     $view->set_display('block_1');
-    $view->execute(); 
+    $view->execute();
     
     if (count($view->result)) {
       //feeds exist, add options
-      $form['feed']['#options'] += array('all' => t('All')); 
+      $form['feed']['#options'] += array('all' => t('All'));
       
       foreach($view->result as $r) {
         $form['feed']['#options'] += array($r->nid => $r->node_title);
@@ -76,8 +76,18 @@ class os_boxes_feedreader extends os_boxes_default {
     
     $block = parent::render();
     $output = $view->execute_display();
-    $block['content'] = $output['content']; 
+    $block['content'] = $output['content'];
     return $block;
   }
-
+  
+  /**
+   * Return the cache key for this box
+   */
+  public function cache_keys(){
+    //Clear when book related nodes are saved
+    $cache_key = parent::cache_keys();
+    $cache_key['node'] = array('feed' => 'feed', 'feed_item' => 'feed_item');
+    
+    return $cache_key;
+  }
 }
