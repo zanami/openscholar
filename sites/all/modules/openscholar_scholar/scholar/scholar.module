@@ -74,60 +74,6 @@ function scholar_form_alter(&$form, $form_state, $form_id) {
 }
 
 /**
- * Define the avalible vsite widgets
- * @return array
-
-function scholar_vsite_widgets(){
-  //Note the names "vsite_widgets_0" were left to preserve peoples saved settings
-  return array(
-    'vsite_widgets-0' => array(
-      'module' => 'scholar',
-      'delta' => '0',
-      'weight' => 20,
-      'region' => false,
-      'label' => 'Scholar site logo',
-      'cache' => BLOCK_CACHE_CONTENT_CACHE,
-      'cache_keys' => array(
-        'node' => array(variable_get('scholar_content_type', 'vsite') => variable_get('scholar_content_type', 'vsite')),
-        'os_og' => array('current' => 'current'),
-      ),
-    ),
-    'vsite_widgets-1' => array(
-      'module' => 'scholar',
-      'delta' => '1',
-      'weight' => 20,
-      'region' => 'header_main',
-      'label' => 'Scholar site info',
-      'cache' => BLOCK_CACHE_CONTENT_CACHE,
-      'cache_keys' => array(
-        'node' => array(variable_get('scholar_content_type', 'vsite') => variable_get('scholar_content_type', 'vsite')),
-        'os_og' => array('current' => 'current'),
-      ),
-    ),
-  );
-
-}
-
-/**
- * Define the scholar blocks with hook block
-
-function scholar_block($op = 'list', $delta = 0, $edit = array()) {
-  if ($op == 'list') {
-    $blocks[0]['info'] = t('Scholar site logo');
-    $blocks[1]['info'] = t('Scholar site info');
-    return $blocks;
-  }
-  elseif ($op == 'view') {
-    switch ($delta) {
-      case 0:
-        return _scholar_logo_wdgt();
-      case 1:
-       return _scholar_basicinfo_wdgt();
-    }
-  }
-}
-
-/**
  * Scholar Basic Info Widget Content
  * @return array
  */
