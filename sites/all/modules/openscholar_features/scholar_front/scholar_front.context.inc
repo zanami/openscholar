@@ -26,7 +26,7 @@ function scholar_front_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'views-scholar_events_upcoming-block_1' => array(
+        'views-scholar_events_upcoming-block_1' => array(  // not changing
           'module' => 'views',
           'delta' => 'scholar_events_upcoming-block_1',
           'weight' => 20,
@@ -35,14 +35,13 @@ function scholar_front_context_default_contexts() {
           'label' => 'Upcoming events',
           'type' => 'context_ui',
         ),
-        'views-scholar_announcements-block_1' => array(
-          'module' => 'views',
-          'delta' => 'scholar_announcements-block_1',
+        'boxes-scholar_announcements_latest' => array(
+          'module' => 'boxes',
+          'delta' => 'scholar_announcements_latest',
           'weight' => 21,
           'region' => 'right',
           'status' => '0',
           'label' => 'Latest Announcements',
-          'type' => 'context_ui',
         ),
         'views-vsite_featuredposts-block_1' => array(
 		      'module' => 'views',
@@ -50,6 +49,13 @@ function scholar_front_context_default_contexts() {
 		      'weight' => 18,
 		      'region' => 'right',
 		      'label' => 'Featured posts',
+		    ),
+		    'boxes-scholar_biocv_bio_blurb' => array(
+		      'module' => 'boxes',
+		      'delta' => 'scholar_biocv_bio_blurb',
+		      'weight' => 0,
+		      'region' => 'content_top',
+		      'label' => 'Bio Blurb',
 		    ),
       ),
     ),
