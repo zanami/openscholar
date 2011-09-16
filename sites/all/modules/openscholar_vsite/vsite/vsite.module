@@ -292,8 +292,10 @@ function vsite_block($op = 'list', $delta = 0, $edit = array()) {
   	require_once ( drupal_get_path('module', 'vsite') .'/includes/vsite.blocks.inc');
     switch ($delta) {
       case 1:
+      case 'site_search':
        return vsite_search_block();
       case 3:
+      case 'google_translate':
         return vsite_googletranslate_block();
     }
   }

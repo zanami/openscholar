@@ -19,6 +19,7 @@ function vsite_taxonomy_default_box() {
     'show_empty_terms' => 0,
     'show_term_descriptions' => 0,
     'show_vocabulary_name' => 1,
+    'vocabulary' => array(),
   );
 
   $export['vsite_taxonomy_fltr_cat'] = $box;
