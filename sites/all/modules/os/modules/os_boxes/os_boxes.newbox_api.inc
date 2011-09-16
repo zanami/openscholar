@@ -98,7 +98,7 @@ function vsite_remove_box(&$vsite, $box) {
  * @param $default_region
  * @param $sid (the site to replace or all sites by default)
  */
-function replace_boxes($block_id, $box, $default_region = false, $sid = false) {
+function replace_boxes($block_id, $box, $default_region = false, $sid = false, $limit = false, $offset = false) {
 
   if (!$box->delta) {
     module_load_include('module', 'os_boxes');
@@ -108,8 +108,10 @@ function replace_boxes($block_id, $box, $default_region = false, $sid = false) {
 
   $params = array($block_id);
   if($sid) $params[] = $sid;
+  
+  $sql_limit = ($limit)?"LIMIT {$offset},{$limit} ":"";
 
-  $q = db_query("SELECT * FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%' ".($sid?" AND id = %d ":""), $params);
+  $q = db_query("SELECT * FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%' ".($sid?" AND id = %d ":"").$sql_limit, $params);
   while ($r = db_fetch_array($q)) {
     $value = unserialize($r['value']);
     $region = $value['blocks'][$block_id]['region']?$value['blocks'][$block_id]['region']:$default_region;

@@ -146,8 +146,10 @@ function os_update_6004(&$sandbox){
 	
   // Multi-part update.
   if (!isset($_SESSION['os_update_6004'])) {
-    // initialize our variables
+    //Keep track of which block we are migrating
     $_SESSION['os_update_6004'] = 0;
+    //Keep track of change offset within that block
+    $_SESSION['os_update_6004_offset'] = 0;
   }
 	
   // migrate existing blocks to new boxes
@@ -179,14 +181,20 @@ function os_update_6004(&$sandbox){
   foreach ($a_migrate_info as $box_delta => $block_id) {
   	$index++;
   	if($index < $_SESSION['os_update_6004']) continue;
-  	
+  	$max = db_query("SELECT COUNT(*) FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%' ", $block_id);
     $o_box = boxes_load($box_delta);
-    replace_boxes($block_id, $o_box);
+    replace_boxes($block_id, $o_box, false, false, 100, $_SESSION['os_update_6004_offset']);
+    $_SESSION['os_update_6004_offset'] = $_SESSION['os_update_6004_offset'] + 100;
     
+    if($_SESSION['os_update_6004_offset'] >= $max){
+    	//Run updates on the next block
+    	$_SESSION['os_update_6004']++;
+    	$_SESSION['os_update_6004_offset'] = 0;
+    }
     break;
   }
   
-  $_SESSION['os_update_6004']++;
+  
   if($_SESSION['os_update_6004'] >= count($a_migrate_info)){
     $res[] = array(
       'success' => true,
@@ -196,4 +204,120 @@ function os_update_6004(&$sandbox){
     // Report how much is left to complete.
     $res['#finished'] = $_SESSION['os_update_6004'] / count($a_migrate_info);
   }
+}
+
+function os_update_6005(&$sandbox) {
+  $res = array();
+
+  if(!module_exists('boxes')){
+    return array("#abort" => array('success' => FALSE, 'query' => 'Boxes module was not installed when this update ran, please run update.php again.'));
+  }
+
+  module_load_include('inc', 'os_boxes', 'os_boxes.newbox_api');
+  module_load_include('module', 'boxes');
+
+  // Multi-part update.
+  if (!isset($_SESSION['os_update_6005'])) {
+    // initialize our variables
+    $_SESSION['os_update_6005'] = array(
+      'views-publication_years-block_1' => 'year',
+      'views-publication_contributors-block_1' => 'contributors',
+      'scholar_publications-pub_by_type' => 'type'
+    );
+  }
+
+  foreach ($_SESSION['os_update_6005'] as $block => $type) {
+    $box = (object)(array)boxes_factory('os_boxes_pub_grps', array('type' => $type));
+    switch ($type) {
+      case 'year':
+        $box->title = $box->description = "Publications By Year";
+      break;
+      case 'contributors':
+        $box->title = $box->description = "Publications By Co-Author";
+      break;
+      case 'type':
+        $box->title = $box->description = "Publications By Type";
+      break;
+    }
+    $s = "SELECT DISTINCT(id) AS sid, type FROM {spaces_overrides} WHERE object_type='context' AND value LIKE '%%%s%%'";
+    $q = db_query($s, $block);
+    // for each vsite that uses this block, we need to create a new box instance
+    // and by new instance, we mean delta
+    while ($r = db_fetch_array($q)) {
+      $box->delta = os_boxes_create_delta($r['sid']);
+      replace_boxes($block, $box, false, $r['sid']);
+      $override = array(
+        'type' => $r['type'],
+        'id' => $r['sid'],
+        'object_type' => 'boxes',
+        'object_id' => $box->delta,
+        'value' => $box,
+      );
+
+     drupal_write_record('spaces_overrides', $override);
+    }
+    
+    break;
+  }
+
+  array_shift($_SESSION['os_update_6005']);
+  
+  if(!count($_SESSION['os_update_6005'])){
+    $res[] = array(
+      'success' => true,
+      'query' => 'Publication blocks have been replaced with boxes.'
+    );
+  }else{
+    // Report how much is left to complete.
+    $res['#finished'] = count($_SESSION['os_update_6005']) / 3;
+  }
+  
+
+  return $res;
+}
+
+/**
+ * Update the twitter block to a box
+ * @param array $sandbox
+ */
+function os_update_6006(&$sandbox){
+  
+  if(!module_exists('boxes')){
+    return array("#abort" => array('success' => FALSE, 'query' => 'Boxes module was not installed when this update ran, please run update.php again.'));
+  }
+  
+  module_load_include('inc', 'os_boxes', 'os_boxes.newbox_api');
+
+  //Get all the sites with twitter blocks setup
+  $q = db_query("SELECT * FROM {spaces_overrides} WHERE `object_type` LIKE 'variable' AND `object_id` LIKE 'scholar_reader_twitter_username' ");
+  while ($res = db_fetch_object($q)) {
+    $twitter_username = unserialize($res->value);
+    if(strlen($twitter_username)){
+      $twitter_box = boxes_factory('os_boxes_twitterfeed', array('twitter_username' => $twitter_username, 'title' => "Twitter Feed", 'description' => "Twitter Updates"));
+      $twitter_box->delta = os_boxes_create_delta("{$res->type}-{$res->id}");
+
+      unset($twitter_box->new);
+      unset($twitter_box->export_type);
+      $box = new stdClass();
+      foreach ($twitter_box as $k => $v) $box->$k = $v; //convert to std class
+
+      $override = array(
+        'type' => $res->type,
+        'id' => $res->id,
+        'object_type' => 'boxes',
+        'object_id' => $box->delta,
+        'value' => $box,
+      );
+      drupal_write_record('spaces_overrides', $override);
+
+      replace_boxes('scholar_reader-my_twitter_feed', $twitter_box, false, $res->id);
+    }
+  }
+
+  $res[] = array(
+    'success' => true,
+    'query' => 'Updated twitter boxes for scholar reader',
+  );
+
+  return $res;
 }
