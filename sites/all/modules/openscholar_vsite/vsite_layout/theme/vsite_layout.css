@@ -190,7 +190,7 @@ dd.scholarlayout-item {
   }
   
   
-#scholarlayout-container dd.scholarlayout-item a.ctools-use-modal  {
+#scholarlayout-container dd.scholarlayout-item a.ctools-use-modal,  #scholarlayout-container dd.scholarlayout-item a.setting {
 color:transparent;
 background: url('images/configGear.png') no-repeat;
 }
