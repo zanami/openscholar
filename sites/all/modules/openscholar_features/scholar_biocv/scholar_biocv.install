@@ -56,7 +56,11 @@ function scholar_biocv_update_6002(&$sandbox){
 function scholar_biocv_update_6003(&$sandbox){
   $ret = array();
   if (module_exists('os_boxes')) { //&& module_exists('vsite_controllers')) {
-    $ret['#success'] = _scholar_biocv_make_blurbs_from_bios();                       //make a box from each bio blurb
+    _scholar_biocv_make_blurbs_from_bios();                       //make a box from each bio blurb
+    $ret[] = array(
+      'success' => true,
+      'query' => 'Bio blub boxes created.'
+    );
   } else {
     $ret['#abort'] = array('success' => FALSE, 'query' => 'os_boxes not installed.  Don\'t migrate bio blurbs to boxes until os_boxes is available.');
   }
@@ -73,8 +77,8 @@ function scholar_biocv_update_6004(&$sandbox){
 	
   $ret = array();
   if (module_exists('os_boxes')) { //&& module_exists('vsite_controllers')) {
-    $ret['success'] = true;
-    $ret['query'] = _scholar_biocv_remove_blurbs();               //delete bio blurb content type
+    $ret['#success']['success'] = true;
+    $ret['#success']['query'] = _scholar_biocv_remove_blurbs();               //delete bio blurb content type
   } else {
     $ret['#abort'] = array('success' => FALSE, 'query' => 'os_boxes not installed.  Don\'t migrate bio blurbs to boxes until os_boxes is available.');
   }
