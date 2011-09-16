@@ -148,8 +148,6 @@ function os_update_6004(&$sandbox){
   if (!isset($_SESSION['os_update_6004'])) {
     //Keep track of which block we are migrating
     $_SESSION['os_update_6004'] = 0;
-    //Keep track of change offset within that block
-    $_SESSION['os_update_6004_offset'] = 0;
   }
 	
   // migrate existing blocks to new boxes
@@ -157,39 +155,37 @@ function os_update_6004(&$sandbox){
   module_load_include('inc', 'os_boxes', 'os_boxes.newbox_api');
 
   $a_migrate_info = array(
-    "site_info" => "scholar-0",
-    "site_logo" => "scholar-1",
-    'site_info' => 'vsite_widgets-1',
-    'site_logo' => 'vsite_widgets-0',
-    'site_info' => 'vsite_widgets_1', //Few iterations of these block id's thats why there are multiple logo/info here, this unifies them
-    'site_logo' => 'vsite_widgets_0',
-    'shield_default' => 'vsite_widgets-2',
-    "scholar_announcements_latest" => "views-scholar_announcements-block_1",
-    "scholar_biocv_bio_blurb" => "scholar_biocv-bio_blurb",
-    'scholar_book_recent_docs' => 'views-scholar_book-block_1',
-    'image_gallery_recent_images' => 'views-scholar_image_gallery-block_1',
-    'scholar_publications_recent' => 'views-scholar_publications-block_1',
-    'vsite_taxonomy_fltr_cat' => "vsite_taxonomy-0",
-    'os_addthis' => 'vsite_widgets-4',
-    'scholar_book_current_toc' => 'scholar_book-booktoc',
-    'scholar_blog-blog_rss' => 'scholar_blog-rss',
-    'vsite_rss' => 'vsite_widgets-6',
-    'vsite_rss' => 'vsite_widgets_6',
+    "scholar-0" => "site_info",
+    "scholar-1" => "site_logo",
+    'vsite_widgets-1' => 'site_info',
+    'vsite_widgets-0' => 'site_logo',
+    'vsite_widgets_1' => 'site_info', //Few iterations of these block id's thats why there are multiple logo/info here, this unifies them
+    'vsite_widgets_0' => 'site_logo',
+    'vsite_widgets-2' => 'shield_default',
+    "views-scholar_announcements-block_1" => "scholar_announcements_latest",
+    "scholar_biocv-bio_blurb" => "scholar_biocv_bio_blurb",
+    'views-scholar_book-block_1' => 'scholar_book_recent_docs',
+    'views-scholar_image_gallery-block_1' => 'image_gallery_recent_images',
+    'views-scholar_publications-block_1' => 'scholar_publications_recent',
+    "vsite_taxonomy-0" => 'vsite_taxonomy_fltr_cat',
+    'vsite_widgets-4' => 'os_addthis',
+    'scholar_book-booktoc' => 'scholar_book_current_toc',
+    'scholar_blog-rss' =>  'scholar_blog-blog_rss' ,
+    'vsite_widgets-6' => 'vsite_rss',
+    'vsite_widgets_6' => 'vsite_rss',
   );
 
   $index = -1;
-  foreach ($a_migrate_info as $box_delta => $block_id) {
+  foreach ($a_migrate_info as $block_id => $box_delta) {
   	$index++;
   	if($index < $_SESSION['os_update_6004']) continue;
-  	$max = db_query("SELECT COUNT(*) FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%' ", $block_id);
+  	$max = db_result(db_query("SELECT COUNT(*) FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%' ", $block_id));
     $o_box = boxes_load($box_delta);
-    replace_boxes($block_id, $o_box, false, false, 100, $_SESSION['os_update_6004_offset']);
-    $_SESSION['os_update_6004_offset'] = $_SESSION['os_update_6004_offset'] + 100;
+    replace_boxes($block_id, $o_box, false, false, 500);
     
-    if($_SESSION['os_update_6004_offset'] >= $max){
+    if($max < 500){
     	//Run updates on the next block
     	$_SESSION['os_update_6004']++;
-    	$_SESSION['os_update_6004_offset'] = 0;
     }
     break;
   }
@@ -204,6 +200,8 @@ function os_update_6004(&$sandbox){
     // Report how much is left to complete.
     $res['#finished'] = $_SESSION['os_update_6004'] / count($a_migrate_info);
   }
+  
+  return $res;
 }
 
 function os_update_6005(&$sandbox) {
