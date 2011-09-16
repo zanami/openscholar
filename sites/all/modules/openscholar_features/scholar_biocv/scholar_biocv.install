@@ -52,17 +52,29 @@ function scholar_biocv_update_6002(&$sandbox){
 
 }
 
-/* copies bio blurb into a box, removes bio blurb fro mbio content */
+/* copies bio blurb into a box */
 function scholar_biocv_update_6003(&$sandbox){
   $ret = array();
   if (module_exists('os_boxes')) { //&& module_exists('vsite_controllers')) {
     $ret['#success'] = _scholar_biocv_make_blurbs_from_bios();                       //make a box from each bio blurb
-    $ret['#success']['query'] .= '  ' . _scholar_biocv_remove_blurbs();               //delete bio blurb content type
   } else {
     $ret['#abort'] = array('success' => FALSE, 'query' => 'os_boxes not installed.  Don\'t migrate bio blurbs to boxes until os_boxes is available.');
   }
   
-  return $ret;  
+  return $ret;
+}
+
+/* removes bio blurb fro mbio content */
+function scholar_biocv_update_6004(&$sandbox){
+  $ret = array();
+  if (module_exists('os_boxes')) { //&& module_exists('vsite_controllers')) {
+    $ret['success'] = true;
+    $ret['query'] = _scholar_biocv_remove_blurbs();               //delete bio blurb content type
+  } else {
+    $ret['#abort'] = array('success' => FALSE, 'query' => 'os_boxes not installed.  Don\'t migrate bio blurbs to boxes until os_boxes is available.');
+  }
+  
+  return $ret;
 }
 
 /*
@@ -77,7 +89,7 @@ function _scholar_biocv_make_blurbs_from_bios(){
   $query .= 'WHERE field_hook_text_value IS NOT NULL ';
   $query .= 'GROUP BY c.nid HAVING max(c.vid) ';
   $result = db_query($query);
-  // for final update, doing a list of nids might be safer.  I figure this code can be used to provide that list at a 
+  // for final update, doing a list of nids might be safer.  I figure this code can be used to provide that list at a
   //later date.  for now it's adequate for testing.
   
   $a_blurb_updates = array();
@@ -95,13 +107,13 @@ function _scholar_biocv_make_blurbs_from_bios(){
       
       $boxopts = array(
         'title' => 'My Bio',
-        'description' => 'This box was generated from the text of your previous bio blurb.',
+        'description' => 'Your bio blurb.',
         'body' => $blurb,
-        'delta' => $delta, 
+        'delta' => $delta,
       );
       
-	    if (($box = boxes_factory('os_boxes_simple', $boxopts)) && isset($vsite->controllers->boxes)) { 
-        $vsite->controllers->boxes->set($box->delta, $box);      
+	    if (($box = boxes_factory('os_boxes_simple', $boxopts)) && isset($vsite->controllers->boxes)) {
+        $vsite->controllers->boxes->set($box->delta, $box);
         $a_blurb_updates[] = $r->uid;
 	    }
     }
