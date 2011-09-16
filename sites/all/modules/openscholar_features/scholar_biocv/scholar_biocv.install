@@ -66,6 +66,11 @@ function scholar_biocv_update_6003(&$sandbox){
 
 /* removes bio blurb fro mbio content */
 function scholar_biocv_update_6004(&$sandbox){
+	
+  if (module_exists('scholar_front') && drupal_get_installed_schema_version("scholar_front") < 6002) {
+    return array("#abort" => array('success' => FALSE, 'query' => 'Waiting on the scholar_front module to complete its, please run update.php again.'));
+  }
+	
   $ret = array();
   if (module_exists('os_boxes')) { //&& module_exists('vsite_controllers')) {
     $ret['success'] = true;
@@ -107,7 +112,7 @@ function _scholar_biocv_make_blurbs_from_bios(){
       
       $boxopts = array(
         'title' => 'My Bio',
-        'description' => 'Your bio blurb.',
+        'description' => 'Your Bio blurb.',
         'body' => $blurb,
         'delta' => $delta,
       );
