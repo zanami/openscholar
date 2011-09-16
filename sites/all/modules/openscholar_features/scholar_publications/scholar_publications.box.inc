@@ -13,7 +13,7 @@ function scholar_publications_default_box() {
   $box->title = 'Recent Publications';
   $box->description = 'Recent Publications';
   $box->options = array(
-    'filter' => 'node:16',
+    'filter' => 'node:biblio',
     'style' => 'titles',
     'sort' => 'newest',
     'argument' => '',

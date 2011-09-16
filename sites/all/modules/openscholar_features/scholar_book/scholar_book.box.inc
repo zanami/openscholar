@@ -25,7 +25,7 @@ function scholar_book_default_box() {
   $box->title = 'Recent Documents';
   $box->description = 'Recent Documents';
   $box->options = array(
-    'filter' => 'node:2',
+    'filter' => 'node:book',
     'style' => 'titles',
     'sort' => 'newest',
     'argument' => '',

@@ -13,7 +13,7 @@ function scholar_presentations_default_box() {
   $box->title = 'Recent Presentations';
   $box->description = 'Recent Presentations';
   $box->options = array(
-    'filter' => 'node:14',
+    'filter' => 'node:presentation',
     'style' => 'titles',
     'sort' => 'newest',
     'argument' => '',

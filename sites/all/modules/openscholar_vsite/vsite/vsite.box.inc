@@ -25,7 +25,7 @@ function vsite_default_box() {
   $box->delta = 'vsite_rss';
   $box->plugin_key = 'os_boxes_rss';
   $box->title = '';
-  $box->description = 'RSS Feed';
+  $box->description = 'Site RSS Feed';
   $box->options = array(
     'visibility' => 'feature',
     'content' => 'all',
