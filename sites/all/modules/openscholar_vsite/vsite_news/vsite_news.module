@@ -48,16 +48,6 @@ function vsite_news_menu() {
     'weight' => 0,
   );
 
-  $items['cp/news/activity/privacy'] = array(
-    'title' => "Activity Privacy Settings",
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('vsite_news_activity_settings_form'),
-    'file' => 'vsite_news.admin.inc',
-    'access callback' => 'cp_access_cp',
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 5,
-  );
-
   return $items;
 }
 
