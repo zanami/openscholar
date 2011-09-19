@@ -205,7 +205,11 @@ function vsite_layout_add_category_select() {
    return false;
  });
  
- $('#widget-categories li:first').addClass('active');
+ // behaviors gets run after an ajax call
+ // prevent this from selecting multiple tabs
+ if (!$('#widget-categories li.active').length) {
+	 $('#widget-categories li:first').addClass('active');
+ }
  vsite_layout_init_categories();
 }
 
