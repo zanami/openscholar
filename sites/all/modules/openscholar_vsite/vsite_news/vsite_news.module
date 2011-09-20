@@ -56,6 +56,11 @@ function vsite_news_menu() {
  */
 function vsite_news_activity() {
   $vsite = vsite_get_vsite();
+  if ($vsite) {
+    global $user;
+    user_save($user, array('news_last_access' => time()));
+  }
+
   require_once(drupal_get_path('module', 'activity') . '/views/activity.views.inc');
   activity_views_access_user(user_load($vsite->group->uid));//Set the default user to group owner
   return views_page('vsite_activity', 'default');
@@ -317,4 +322,13 @@ $settings['vsite_activity_insert'] = array(
   }
 
   return $settings;
+}
+
+function vsite_news_get_new_activity_count() {
+  global $user;
+  $data = unserialize($user->data);
+  $last_hit = $data['news_last_access'];
+
+  $r = db_result(db_query("SELECT COUNT(*) AS c FROM {activity} a INNER JOIN {node} n USING(nid) WHERE a.uid != %d AND a.created > %d AND n.status = 1", $user->uid, $last_hit));
+  return $r;
 }

@@ -423,8 +423,8 @@ function cp_preprocess_page(&$vars){
 
       $user_links[] = array(
         'link' => array(
-          'title' => '0',
-          'href' => '/news',
+          'title' => vsite_news_get_new_activity_count(),
+          'href' => 'cp/news',
         ),
       );
 
