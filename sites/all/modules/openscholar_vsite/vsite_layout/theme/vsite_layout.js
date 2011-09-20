@@ -246,6 +246,7 @@ function vsite_layout_modalframe_links(){
 					url: url,
 					autoFit: true,
 					width: 980, 
+					height: 150,
 					onSubmit: modalFrameSubmitHandler
 				};
 				
