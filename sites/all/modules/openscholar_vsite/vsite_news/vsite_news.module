@@ -327,6 +327,8 @@ $settings['vsite_activity_insert'] = array(
 function vsite_news_get_new_activity_count() {
   global $user;
   $data = unserialize($user->data);
+  // this is set in vsite_news_activity()
+  // or in the footer of the exported views
   $last_hit = $data['news_last_access'];
 
   $r = db_result(db_query("SELECT COUNT(*) AS c FROM {activity} a INNER JOIN {node} n USING(nid) WHERE a.uid != %d AND a.created > %d AND n.status = 1", $user->uid, $last_hit));
