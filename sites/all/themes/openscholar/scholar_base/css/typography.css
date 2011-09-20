@@ -509,6 +509,7 @@ body.cp-toolbar-mini #top > ul.menu ul {
   display:none;
 	position: absolute;
 	top: 100%;
+	right: 0;
 }
 
 body.cp-toolbar-mini #top ul.menu li:hover ul {
@@ -528,6 +529,10 @@ body.cp-toolbar-mini #top > ul.menu > li.first a {
   background: url('../images/wrench-mini.png') no-repeat 0 0 transparent;
   margin-left: 5px;
   }
+
+body.cp-toolbar-mini #top ul.menu > li.last {
+	margin-right: 0;
+}
 
 body.cp-toolbar-mini #top ul.menu > li.last a {
   padding-right: 6px;
