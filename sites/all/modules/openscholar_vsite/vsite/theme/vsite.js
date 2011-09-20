@@ -65,6 +65,7 @@ Drupal.behaviors.vsiteBoxModals = function (ctx) {
 			url: url,
 			autoFit: true,
 			width: 980,
+			height: 150,
 			onSubmit: Drupal.CTools.AJAX.respond,
 		};
 		
