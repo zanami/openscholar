@@ -411,30 +411,38 @@ function cp_preprocess_page(&$vars){
       global $user;
       $vsite = vsite_get_vsite();
       $user_links = array();
+
       if ($vsite->access_admin()) {
         $user_links[] = array(
           'title' => t('Control Panel'),
           'href' => 'cp/build/features',
         );
       }
-      else {
-        $user_links[] = array(
-          'title' => t('Hello <strong>!username</strong>', array(
-            '!username' => $user->name
-          )),
-          'href' => 'user',
-          'html' => TRUE,
-        );
-      }
+
       $user_links[] = array(
+        'title' => '0',
+        'href' => '/news',
+      );
+
+      $user_links[] = array(
+        'title' => t('Hello <strong>!username</strong>', array(
+          '!username' => $user->name
+        )),
+        'href' => 'user',
+        'html' => TRUE,
+      );
+
+      $child_links[] = array(
         'title' => t('My Account'),
         'href' => 'user',
       );
-      $user_links[] = array(
+      $child_links[] = array(
         'title' => t('Logout'),
         'href' => "logout"
       );
+
       $vars['cp_toolbar'] = theme('links', $user_links);
+      $vars['cp_toolbar'] .= theme('links', $child_links, array('class' => 'cp_children'));
       $vars['body_classes'] .= ' cp-toolbar-mini';
       break;
 
