@@ -421,10 +421,12 @@ function cp_preprocess_page(&$vars){
         );
       }
 
+      $new_count = vsite_news_get_new_activity_count();
       $user_links[] = array(
         'link' => array(
-          'title' => vsite_news_get_new_activity_count(),
+          'title' => $new_count,
           'href' => 'cp/news',
+          'localized_options' => $new_count?array('attributes' => array('class' => 'unread')):array(),
         ),
       );
 
