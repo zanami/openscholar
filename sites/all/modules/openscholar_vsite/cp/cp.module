@@ -425,7 +425,7 @@ function cp_preprocess_page(&$vars){
       $user_links[] = array(
         'link' => array(
           'title' => $new_count,
-          'href' => 'cp/news',
+          'href' => 'cp/news', //@TODO: replace this with new path
           'localized_options' => $new_count?array('attributes' => array('class' => 'unread')):array(),
         ),
       );
@@ -813,6 +813,14 @@ function cp_toolbar_menu_links(){
     'href' => 'user',
     'html' => TRUE
   );
+
+  $new_count = vsite_news_get_new_activity_count();
+  $user_links[] = array(
+    'title' => $new_count,
+    'href' => 'cp/news', //@TODO: replace this with new path
+    'attributes' => $new_count?array('class' => 'unread'):array(),
+  );
+
   $user_links[] = array(
     'title' => t('Logout'),
     'href' => "logout",
