@@ -490,13 +490,13 @@ body.cp-toolbar-mini #top ul.menu li {
   line-height: 19px;
   padding:0;
   float:none;
-  display:none;
   border: 1px solid #ccc;
   border-top: none;
   border-right: 0;
   }
 
 body.cp-toolbar-mini #top > ul.menu > li {
+ position: relative;
  display:inline-block !important;
  margin:0;
  background: url('../images/toolbar-mini-tab.png') no-repeat 0 0 transparent;
@@ -504,12 +504,16 @@ body.cp-toolbar-mini #top > ul.menu > li {
  border: none;
  margin-right: -11px;
   }
+  
+body.cp-toolbar-mini #top > ul.menu ul {
+  display:none;
+	position: absolute;
+	top: 100%;
+}
 
 body.cp-toolbar-mini #top ul.menu li:hover ul {
-  display:block;
-	float: right;
+  display: block;
 	clear: both;
-	color: red;
   }
 
 body.cp-toolbar-mini #top ul.menu li a,

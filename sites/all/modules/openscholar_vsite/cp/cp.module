@@ -441,12 +441,16 @@ function cp_preprocess_page(&$vars){
         ),
         'below' => array(
           array(
-            'title' => t('My Account'),
-            'href' => 'user',
+            'link' => array(
+              'title' => t('My Account'),
+              'href' => 'user',
+            ),
           ),
           array(
-            'title' => t('Logout'),
-            'href' => "logout"
+            'link' => array(
+              'title' => t('Logout'),
+              'href' => "logout"
+            ),
           )
         ),
       );
