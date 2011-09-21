@@ -251,6 +251,18 @@ function os_boxes_boxes_plugins() {
 }
 
 /**
+ * Implementation of hook_boxes_plugins_alter
+ */
+function os_boxes_boxes_plugins_alter(&$boxes){
+  // Add 'social' tag to all boxes from fb_social module
+  foreach($boxes as $name => $box){
+    if ($box['handler']['parent'] == 'fb_social_default'){
+      $boxes[$name]['tags'] = array('social');
+    }
+  }
+}
+
+/**
  * hook vsite_sidgets
  *
  * This function translates the box intances and the box defintions into vsite widgets for use in the
@@ -264,7 +276,7 @@ function os_boxes_vsite_widgets(){
    */
   ctools_include('plugins');
   $plugins = ctools_get_plugins('boxes', 'plugins');
-
+  drupal_alter('boxes_plugins', $plugins);
   $items = array();
   foreach ( $plugins as $key => $info ) {
   	//Call access function
@@ -388,6 +400,7 @@ function os_boxes_cp_layout_configurable($delta){
 function os_boxes_vsite_admin_link($type, $object) {
   $links = array();
   if ($type != 'block') return $links;
+
 
   if ($object->module == 'boxes' && ($box = boxes_load($object->delta)) && !is_subclass_of($box->plugin_key, 'os_boxes_modalframe')) {
     $links[] = array(
