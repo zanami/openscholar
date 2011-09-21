@@ -239,11 +239,13 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  /*
   foreach ($info as $key => $block) {
   	if(!isset($info[$key]['access'])){
   		$info[$key]['access'] = "cp_access_cp";
   	}
   }
+  */
 
   return $info;
 }
@@ -266,8 +268,8 @@ function os_boxes_vsite_widgets(){
   $items = array();
   foreach ( $plugins as $key => $info ) {
   	//Call access function
-  	if(!$info['access'] || (!user_access('administer blocks') && !call_user_func($info['access']))) continue;
-
+  	//if(!$info['access'] || (!user_access('administer blocks') && !call_user_func($info['access']))) continue;
+  	
     if (isset($info['title'])) {
       $items["boxes-boxes_add__$key"] = array(
         'module' => 'boxes',
