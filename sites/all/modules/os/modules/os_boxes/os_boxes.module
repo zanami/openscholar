@@ -420,7 +420,8 @@ function os_boxes_box_modal($js = NULL, $delta){
     'plugin_key' => $box->plugin_key,
     'custom_action' => TRUE,
     'ajax' => 'TRUE',
-    'no_redirect' => TRUE
+    'no_redirect' => TRUE,
+    'title' => 'some kind of title',
   );
 
   $output = ctools_modal_form_wrapper("boxes_box_form", $form_state);
