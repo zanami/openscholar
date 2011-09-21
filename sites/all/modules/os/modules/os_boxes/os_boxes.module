@@ -459,6 +459,12 @@ function os_boxes_create_delta($identifier = false) {
 function os_boxes_form_alter(&$form, &$form_state, $form_id) {
   switch ($form_id){
   	case "boxes_box_form":
+  	  $form['description']['#title'] = t('Widget Name');
+  	  $form['description']['#description'] = t('This name will only appear in your Control Panel.');
+
+  	  $form['title']['#title'] = t('Widget Title');
+  	  $form['title']['#description'] = t('The title of the widget as shown to the user.');
+
   		//Allow each box to handle it's own validation && submission
   		$form['#validate'][] = 'os_boxes_box_validate';
   		$form['#submit'][] = 'os_boxes_box_submit';
