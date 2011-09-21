@@ -381,6 +381,22 @@ function os_boxes_cp_layout_configurable($delta){
 }
 
 /**
+ *
+ */
+function os_boxes_vsite_admin_link($type, $object) {
+  $links = array();
+  if ($type != 'block') return $links;
+
+  if ($object->module == 'boxes')
+  unset($object->controls);
+  $links[] = array(
+    'title' => 'Configure',
+
+  );
+  dpm($object);
+}
+
+/**
  * A modal callback for configuring a box
  */
 function os_boxes_box_modal($js = NULL, $delta){
@@ -388,15 +404,18 @@ function os_boxes_box_modal($js = NULL, $delta){
   module_load_include('inc', 'boxes', 'plugins/boxes_box');
 
   $b_newbox = (strpos($delta,"boxes_add__") === 0);
-
+  $title = '';
   if($b_newbox){
     $plugin_key = str_replace('boxes_add__', '', $delta);
     $delta = os_boxes_create_delta();
 	  $box = boxes_factory($plugin_key, array(
 	    'delta' => $delta
 	  ));
+	  $plugin = ctools_get_plugins('boxes', 'plugins', $plugin_key);
+	  $title = $plugin['title'];
   }else{
   	$box = boxes_load($delta);
+  	$title = $box->description;
   }
 
   // Fall back if $js is not set.
@@ -418,7 +437,8 @@ function os_boxes_box_modal($js = NULL, $delta){
     'plugin_key' => $box->plugin_key,
     'custom_action' => TRUE,
     'ajax' => 'TRUE',
-    'no_redirect' => TRUE
+    'no_redirect' => TRUE,
+    'title' => t('Custom Widget: @title', array('@title' => $title)),
   );
 
   $output = ctools_modal_form_wrapper("boxes_box_form", $form_state);

@@ -3,18 +3,6 @@ Drupal.behaviors.scholarlayout = function() {
 	  scholarlayout_update_moved_elements(data.warning);
   }
   
-  $('#modal-title').each(function () {
-	var widgetName = $('#edit-description').val();
-	if (!widgetName) {
-		var url = $('#boxes-box-form').attr('action'),
-			pg_key_pos = url.indexOf('plugin_key=')+('plugin_key=').length,
-			plugin_key = url.substr(pg_key_pos),
-			factory = $('#boxes-boxes_add__'+plugin_key);
-		widgetName = factory.clone().find("*").remove().end().text();
-	}
-	this.innerHTML = "Configure Widget: "+widgetName;
-  });
-  
   var layoutRegions = [ "#scholarlayout-header-left", "#scholarlayout-header-main", "#scholarlayout-header-right", "#scholarlayout-navbar", "#scholarlayout-left", "#scholarlayout-right", "#scholarlayout-footer" ];
   
   if( $("#edit-page-type").val() == "front"){
