@@ -389,13 +389,13 @@ function os_boxes_vsite_admin_link($type, $object) {
   $links = array();
   if ($type != 'block') return $links;
 
-  if ($object->module == 'boxes')
-  unset($object->controls);
-  $links[] = array(
-    'title' => 'Configure',
-
-  );
-  dpm($object);
+  if ($object->module == 'boxes' && ($box = boxes_load($object->delta)) && !is_subclass_of($box->plugin_key, 'os_boxes_modalframe')) {
+    $links[] = array(
+      'title' => 'Configure',
+      'href' => $object->block_config_path,
+    );
+  }
+  return $links;
 }
 
 /**
@@ -520,4 +520,10 @@ function os_boxes_box_submit(&$form, &$form_state){
   if ($box_class && is_callable("{$box_class}::options_submit")) {
     call_user_func(array($box_class,'options_submit'),$form, $form_state);
   }
+}
+
+function os_boxes_preprocess_block(&$vars) {
+  $block = &$vars['block'];
+  // why do they make me do it this way... ugh...
+  $block->content = str_replace($block->controls, '', $block->content);
 }
