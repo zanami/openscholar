@@ -406,6 +406,9 @@ function os_boxes_vsite_admin_link($type, $object) {
     $links[] = array(
       'title' => 'Configure',
       'href' => $object->block_config_path,
+      'attributes' => array(
+        'class' => 'vsite-ctools-link',
+      ),
     );
   }
   return $links;
@@ -448,7 +451,7 @@ function os_boxes_box_modal($js = NULL, $delta){
 
 
   $form_state = array(
-    'box' => $box,
+    'box' => &$box,
     'plugin_key' => $box->plugin_key,
     'custom_action' => TRUE,
     'ajax' => 'TRUE',
