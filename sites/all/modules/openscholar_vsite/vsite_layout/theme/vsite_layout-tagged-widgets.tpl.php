@@ -7,7 +7,7 @@
  *  $wgts_id -> the id of the ul
  *  $wgts_class -> the class of the ul
  */
-$s_tagged_output = array('Content' => "",'Media' => "",'Social' => "",'Misc' => "");
+$s_tagged_output = array('All' => "", 'Content' => "",'Media' => "",'Social' => "",'Misc' => "");
 foreach($wgts as $s_widget_key => $w){
 	if(!is_array($w['tags'])) $w['tags'] = array();
 

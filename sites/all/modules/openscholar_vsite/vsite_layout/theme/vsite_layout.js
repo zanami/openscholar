@@ -215,8 +215,13 @@ function vsite_layout_add_category_select() {
 
 function vsite_layout_init_categories(){
 	var cat = $('#widget-categories li.active a').attr('href').substring(1);
-	$('#scholarlayout-top-widgets').children('dd:not(.' + cat + ')').hide();
-	$('#scholarlayout-top-widgets').children("."+cat + ':not(.disabled)').show();
+	if (cat == 'all') {
+		$('#scholarlayout-top-widgets dd').show();
+	}
+	else {
+		$('#scholarlayout-top-widgets').children('dd:not(.' + cat + ')').hide();
+		$('#scholarlayout-top-widgets').children("."+cat + ':not(.disabled)').show();
+	}
 }
 
 //remove or prevent ctools modal handling from modalframe links
