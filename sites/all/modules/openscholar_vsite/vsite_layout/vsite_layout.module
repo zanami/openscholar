@@ -28,13 +28,13 @@ function vsite_layout_theme() {
       'arguments' => array('wgts' => array(), 'wgts_id' => NULL, 'wgts_class' => NULL, 'region_name' => NULL),
       'path' => drupal_get_path('module', 'vsite_layout') . '/theme'
     ),
-    
+
     'vsite_layout_tagged_widgets' => array(
       'template' => 'vsite_layout-tagged-widgets',
-      'arguments' => array('wgts' => array(), 'wgts_id' => NULL, 'wgts_class' => NULL, 'region_name' => NULL, 'wgts_tags' => array()),
+      'arguments' => array('wgts' => array(), 'add_new_wgts' => NULL, 'wgts_id' => NULL, 'wgts_class' => NULL, 'region_name' => NULL, 'wgts_tags' => array()),
       'path' => drupal_get_path('module', 'vsite_layout') . '/theme'
     ),
-    
+
     'vsite_layout_cp_widget' => array(
       'template' => 'vsite_layout-cp-widget',
       'arguments' => array('s_widget_key' => NULL, 'w' => NULL),
@@ -106,7 +106,7 @@ function vsite_layout_vsite_default_blocks_alter(&$a_widgets) {
     $s_region = (strlen($s_region) && $s_region != 'false')?$s_region:false;
     if (array_key_exists($s_widget, $a_widgets)) $a_widgets[$s_widget]['region'] = $s_region;
   }//alter based on theme settings
-  
+
   //Add user blocks and module defined blocks to the preset blocks
   vsite_layout_merge_default_blocks($a_widgets);
 }
@@ -121,9 +121,9 @@ function vsite_layout_vsite_default_blocks_alter(&$a_widgets) {
  */
 function vsite_layout_merge_default_blocks(&$blocks) {
   if(!is_array($blocks)) return;
-  
+
   static $default_blocks;
-  
+
   if(!isset($default_blocks)){
 	  $default_blocks = module_invoke_all('vsite_widgets');
   }
@@ -152,7 +152,7 @@ function vsite_layout_box_form_submit($form, &$form_state) {
 	if(isset($origin) && $origin == "cp_layout" && $vsite = spaces_get_space()){
     //Load the full box
 		$box = boxes_load($form_state['box']->delta);
-		
+
 		$form_state['js commands'] = array(
 		  ctools_ajax_command_replace("div#cp-settings-layout dd#boxes-boxes_add__{$form_state['plugin_key']}", theme('vsite_layout_cp_widget', "boxes-{$box->delta}", os_boxes_get_vsite_widget($box))),
 		  array('command' => 'updateLayoutForm', 'warning' => true),
@@ -166,9 +166,9 @@ function vsite_layout_box_form_submit($form, &$form_state) {
 function vsite_layout_sort_block_by_weight($a, $b) {
   $a = (array)$a;
   $b = (array)$b;
-  
+
   if ($a['weight'] == $b['weight']) return 0;
-  
+
   return ($a['weight'] < $b['weight']) ? -1 : 1;
 }
 
@@ -176,7 +176,7 @@ function vsite_layout_sort_block_by_weight($a, $b) {
  *
  */
 function vsite_layout_context_registry_alter(&$registry){
-	
+
 	//Use our own block context reaction
   if(isset($registry['reactions']['block'])){
     $registry['reactions']['block']['plugin'] = "vsite_context_reaction_block";
@@ -188,7 +188,7 @@ function vsite_layout_context_registry_alter(&$registry){
  */
 function vsite_layout_context_plugins() {
   $plugins = array();
- 
+
   //define the vsite controller for contexts
   $plugins['vsite_context_reaction_block'] = array(
     'handler' => array(

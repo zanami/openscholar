@@ -20,7 +20,7 @@ function vsite_layout_layout() {
   //tiny scrollbar code
   drupal_add_js(drupal_get_path('module', 'vsite_layout') . '/theme/jquery.tinyscrollbar.min.js');
   drupal_add_css(drupal_get_path('module', 'vsite_layout') . '/theme/tinyscrollbar.css');
-  
+
   //Support for ctools popups
   ctools_include('ajax');
   ctools_include('modal');
@@ -242,7 +242,7 @@ function vsite_layout_settings_form($form_state){
     '#title' => t('Site section'),
     '#default_value' => $s_page_type,
     '#options' => $a_page_types,
-    '#description' => t('Choose a section from this pulldown to change the layout of that section. “All Sections” indicates the layout will remain the same across all areas of your site.<br />'),
+    '#description' => t('Choose a section from this pulldown to change the layout of that section. â€œAll Sectionsâ€� indicates the layout will remain the same across all areas of your site.<br />'),
 
     '#ahah' => array(
           'event' => 'go_ahah',
@@ -267,9 +267,31 @@ function vsite_layout_settings_form($form_state){
     ),
   );
 
+  // split up the widgets into factories and instances
+  $factories = array();
+  $instances = array();
+  foreach ($unused_wgts as $w_id => $wgt) {
+    if (strpos($wgt['delta'], 'boxes_add__') !== FALSE) {
+      $factories[$w_id] = $wgt;
+    }
+    else {
+      $instances[$w_id] = $wgt;
+    }
+  }
+
+  // get a link for each factory
+  $fact_links = array();
+  foreach ($factories as $wgt) {
+    $item = menu_get_item($wgt['block_config_path']);
+    $item['title'] = $wgt['label'];
+    $fact_links[] = $item;
+  }
+  // theme it!
+  $add_new = theme('ctools_dropdown', t('Add New Widget'), $fact_links, FALSE, 'context-links');
+
   //Markup for "Top" Available Widgets Section
   $form['available_widgets_markup'] = array(
-    '#value' => theme('vsite_layout_tagged_widgets', $unused_wgts, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list'),
+    '#value' => theme('vsite_layout_tagged_widgets', $instances, $add_new, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list'),
   );
 
   //The main layout area
