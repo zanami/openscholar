@@ -2,7 +2,7 @@ Drupal.behaviors.scholarlayout = function() {
   Drupal.CTools.AJAX.commands.updateLayoutForm = function(data) {
 	  scholarlayout_update_moved_elements(data.warning);
   }
-	
+  
   var layoutRegions = [ "#scholarlayout-header-left", "#scholarlayout-header-main", "#scholarlayout-header-right", "#scholarlayout-navbar", "#scholarlayout-left", "#scholarlayout-right", "#scholarlayout-footer" ];
   
   if( $("#edit-page-type").val() == "front"){
@@ -246,6 +246,7 @@ function vsite_layout_modalframe_links(){
 					url: url,
 					autoFit: true,
 					width: 980, 
+					height: 150,
 					onSubmit: modalFrameSubmitHandler
 				};
 				

@@ -411,30 +411,53 @@ function cp_preprocess_page(&$vars){
       global $user;
       $vsite = vsite_get_vsite();
       $user_links = array();
+
       if ($vsite->access_admin()) {
         $user_links[] = array(
-          'title' => t('Control Panel'),
-          'href' => 'cp/build/features',
+          'link' => array(
+            'title' => t('Control Panel'),
+            'href' => 'cp/build/features',
+          ),
         );
       }
-      else {
-        $user_links[] = array(
+
+      $new_count = vsite_news_get_new_activity_count();
+      $user_links[] = array(
+        'link' => array(
+          'title' => $new_count,
+          'href' => 'cp/news', //@TODO: replace this with new path
+          'localized_options' => $new_count?array('attributes' => array('class' => 'unread')):array(),
+        ),
+      );
+
+      $user_links[] = array(
+        'link' => array(
           'title' => t('Hello <strong>!username</strong>', array(
             '!username' => $user->name
           )),
           'href' => 'user',
-          'html' => TRUE,
-        );
-      }
-      $user_links[] = array(
-        'title' => t('My Account'),
-        'href' => 'user',
+          'localized_options' => array(
+          	'html' => TRUE,
+          ),
+        	'has_children' => TRUE,
+        ),
+        'below' => array(
+          array(
+            'link' => array(
+              'title' => t('My Account'),
+              'href' => 'user',
+            ),
+          ),
+          array(
+            'link' => array(
+              'title' => t('Logout'),
+              'href' => "logout"
+            ),
+          )
+        ),
       );
-      $user_links[] = array(
-        'title' => t('Logout'),
-        'href' => "logout"
-      );
-      $vars['cp_toolbar'] = theme('links', $user_links);
+
+      $vars['cp_toolbar'] = menu_tree_output($user_links);
       $vars['body_classes'] .= ' cp-toolbar-mini';
       break;
 
@@ -790,6 +813,14 @@ function cp_toolbar_menu_links(){
     'href' => 'user',
     'html' => TRUE
   );
+
+  $new_count = vsite_news_get_new_activity_count();
+  $user_links[] = array(
+    'title' => $new_count,
+    'href' => 'cp/news', //@TODO: replace this with new path
+    'attributes' => $new_count?array('class' => 'unread'):array(),
+  );
+
   $user_links[] = array(
     'title' => t('Logout'),
     'href' => "logout",

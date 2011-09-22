@@ -473,16 +473,16 @@ legend {
 
 #top a,
 #top a:visited,
-#top ul.links li a,
-#top ul.links li a:visited {
+#top ul.menu li a,
+#top ul.menu li a:visited {
   font-family: 'helvetica neue', helvetica, arial, sans-serif !important;
   }
 
-body.cp-toolbar-mini #top ul.links {
+body.cp-toolbar-mini #top > ul.menu {
   z-index:100;
   }
 
-body.cp-toolbar-mini #top ul.links li {
+body.cp-toolbar-mini #top ul.menu li {
   margin:0;
   margin-left: 20px;
   background: #F4F4F4;
@@ -490,49 +490,69 @@ body.cp-toolbar-mini #top ul.links li {
   line-height: 19px;
   padding:0;
   float:none;
-  display:none;
   border: 1px solid #ccc;
   border-top: none;
   border-right: 0;
   }
 
-body.cp-toolbar-mini #top ul.links li.first {
- display:block;
+body.cp-toolbar-mini #top > ul.menu > li {
+ position: relative;
+ display:inline-block !important;
  margin:0;
  background: url('../images/toolbar-mini-tab.png') no-repeat 0 0 transparent;
- padding: 0 6px;
+ padding: 0 11px 0 8px;
  border: none;
+ margin-right: -11px;
+  }
+  
+body.cp-toolbar-mini #top > ul.menu ul {
+  display:none;
+	position: absolute;
+	top: 100%;
+	right: 0;
+}
+
+body.cp-toolbar-mini #top ul.menu li:hover ul {
+  display: block;
+	clear: both;
   }
 
-body.cp-toolbar-mini #top ul.links:hover li {
-  display:block;
-  }
-
-body.cp-toolbar-mini #top ul.links li a,
-body.cp-toolbar-mini #top ul.links li a:visited {
+body.cp-toolbar-mini #top ul.menu li a,
+body.cp-toolbar-mini #top ul.menu li a:visited {
   color:#6e6e6e;
   font-size: 11px;
-  padding-left: 12px;
-  padding-top: 2px;
+	padding: 2px 6px 2px 6px;
   }
 
-body.cp-toolbar-mini #top ul.links li.first a {
+body.cp-toolbar-mini #top > ul.menu > li.first a {
   padding-left: 22px;
   background: url('../images/wrench-mini.png') no-repeat 0 0 transparent;
   margin-left: 5px;
   }
 
-body.cp-toolbar-mini #top ul.links li.last a {
+body.cp-toolbar-mini #top ul.menu > li.last {
+	margin-right: 0;
+}
+
+body.cp-toolbar-mini #top ul.menu > li.last a {
   padding-right: 6px;
   border-left: none;
   }
 
-body.cp-toolbar-mini #top ul.links li a:hover {
+body.cp-toolbar-mini #top ul.menu li a:hover {
   text-decoration: none;
   text-shadow:none;
   color: #000;
   }
 
+#top ul.menu a.unread {
+	background-color: #990000;
+  color: #FFFFFF !important;
+  border: 1px solid #CC0000;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}
 
 /* DELETE, EDIT BUTTONS */
 

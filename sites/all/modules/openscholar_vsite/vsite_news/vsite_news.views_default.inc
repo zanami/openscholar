@@ -173,6 +173,12 @@ function vsite_news_views_default_views() {
   $handler->override_option('cache', array(
     'type' => 'none',
   ));
+  $handler->override_option('footer', '<?php
+    global $user;
+    user_save($user, array(\'news_last_access\' => time()));
+?>');
+  $handler->override_option('footer_format', '3');
+  $handler->override_option('footer_empty', 1);
   $handler->override_option('empty', '<?php
 	$followers = views_get_view(\'vsite_news_follow\');
 	$followers->execute();
