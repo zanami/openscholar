@@ -284,6 +284,7 @@ function vsite_layout_settings_form($form_state){
   foreach ($factories as $wgt) {
     $item = menu_get_item($wgt['block_config_path']);
     $item['title'] = $wgt['label'];
+    $item['attributes']['class'] = implode(' ', array_merge(array('ctools-use-modal'), $wgt['tags']));
     $fact_links[] = $item;
   }
   // theme it!
