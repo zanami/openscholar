@@ -263,6 +263,23 @@ function os_boxes_boxes_plugins_alter(&$boxes){
 }
 
 /**
+ * Get all the boxes plugins or a plugin by name
+ * @param $name
+ * 		Name of the box
+ */
+function os_boxes_get_boxes_plugins($name = NULL){
+  ctools_include('plugins');
+  $boxes = ctools_get_plugins('boxes', 'plugins');
+  drupal_alter('boxes_plugins', $boxes);
+  
+  if (isset($name)) {
+    return isset($boxes[$name]) ? $boxes[$name] : FALSE;
+  }
+  
+  return $boxes;
+}
+
+/**
  * hook vsite_sidgets
  *
  * This function translates the box intances and the box defintions into vsite widgets for use in the
@@ -274,9 +291,8 @@ function os_boxes_vsite_widgets(){
   /**
    * Avalible block defintions
    */
-  ctools_include('plugins');
-  $plugins = ctools_get_plugins('boxes', 'plugins');
-  drupal_alter('boxes_plugins', $plugins);
+  $plugins = os_boxes_get_boxes_plugins();
+  
   $items = array();
   foreach ( $plugins as $key => $info ) {
   	//Call access function
@@ -325,8 +341,7 @@ function os_boxes_vsite_widgets(){
  * Return a widget array when passed a box instance
  */
 function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
-	ctools_include('plugins');
-  $plugins = ctools_get_plugins('boxes', 'plugins');
+  $plugins = os_boxes_get_boxes_plugins();
 
 	$a_wgt = array(
     'module' => 'boxes',
