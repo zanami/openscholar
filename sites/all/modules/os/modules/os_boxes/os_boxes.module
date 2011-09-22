@@ -271,11 +271,11 @@ function os_boxes_get_boxes_plugins($name = NULL){
   ctools_include('plugins');
   $boxes = ctools_get_plugins('boxes', 'plugins');
   drupal_alter('boxes_plugins', $boxes);
-  
+
   if (isset($name)) {
     return isset($boxes[$name]) ? $boxes[$name] : FALSE;
   }
-  
+
   return $boxes;
 }
 
@@ -292,7 +292,7 @@ function os_boxes_vsite_widgets(){
    * Avalible block defintions
    */
   $plugins = os_boxes_get_boxes_plugins();
-  
+
   $items = array();
   foreach ( $plugins as $key => $info ) {
   	//Call access function
@@ -420,9 +420,9 @@ function os_boxes_vsite_admin_link($type, $object) {
   if ($object->module == 'boxes' && ($box = boxes_load($object->delta)) && !is_subclass_of($box->plugin_key, 'os_boxes_modalframe')) {
     $links[] = array(
       'title' => 'Configure',
-      'href' => $object->block_config_path,
+      'href' => $object->block_config_path.'/front',
       'attributes' => array(
-        'class' => 'vsite-ctools-link',
+        'class' => 'ctools-use-modal',
       ),
     );
   }

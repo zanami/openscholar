@@ -51,8 +51,8 @@ Drupal.behaviors.vsiteAutocloseStatus = function(context) {
   
 };
 
-Drupal.behaviors.vsiteBoxModals = function (ctx) {
-	$('.vsite-modal-link').click(function (e) {
+Drupal.behaviors.vsiteBoxModals = function (ctx) {	
+	$('.vsite-modal-link', ctx).click(function (e) {
 		var url = $(this).attr('href'),
 		    modal_start = url.indexOf('/modal/'),
 		    params = url.slice(modal_start);

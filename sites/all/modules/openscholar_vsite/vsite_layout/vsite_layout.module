@@ -149,7 +149,8 @@ switch ($form_id) {
  */
 function vsite_layout_box_form_submit($form, &$form_state) {
 	$origin = arg(5);
-	if(isset($origin) && $origin == "cp_layout" && $vsite = spaces_get_space()){
+	if (!isset($origin)) return;
+	if($origin == "cp_layout" && $vsite = spaces_get_space()){
     //Load the full box
 		$box = boxes_load($form_state['box']->delta);
 
@@ -158,7 +159,8 @@ function vsite_layout_box_form_submit($form, &$form_state) {
 		  array('command' => 'updateLayoutForm', 'warning' => true),
 		);
 	}
-	elseif (isset($origin) && $origin == "dropdown") {
+	elseif ($origin == "dropdown") {
+	  // called from the 'Add New' dropdown on the layout page
 	  $box = boxes_load($form_state['box']->delta);
 
 	  $form_state['js commands'] = array(
@@ -166,6 +168,13 @@ function vsite_layout_box_form_submit($form, &$form_state) {
 	    ctools_ajax_command_changed('#boxes-'.$box->delta),
 	  );
 	}
+	elseif ($origin == "front") {
+	  // called from the Configure links on the public side of a site
+	  $form_state['js commands'] = array(
+	    ctools_ajax_command_reload(),
+	  );
+	}
+
 }
 
 /**
