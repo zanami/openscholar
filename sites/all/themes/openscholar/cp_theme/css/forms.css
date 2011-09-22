@@ -270,7 +270,7 @@ input.form-text,
 textarea.form-textarea {
   margin-top: -2px;
   padding: 4px 3px 2px;
-  width: 90%;
+  width: 60%;
   background: url('../images/form-input-bg.gif') repeat-x scroll left top #FFFFFF;
     border: 1px solid #CDCDCD;
     color: #333333;
