@@ -32,7 +32,7 @@ function vsite_users_menu() {
   $items = array();
 
   $items['cp/users'] = array(
-    'title' => 'User Management',
+    'title' => 'Users',
     'page callback' => 'vsite_users_members',
     'file' => 'vsite_users.pages.inc',
     'weight' => 50,
