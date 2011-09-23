@@ -387,6 +387,15 @@ function os_boxes_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items['cp/osboxes/%ctools_js/%/delete'] = array(
+    'title' => 'Delete this Widget',
+    'page callback' => 'os_boxes_delete_modal',
+    'page arguments' => array(2, 3),
+    'access callback' => 'os_boxes_cp_layout_configurable',
+    'access arguments' => array(3),
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
 
@@ -411,7 +420,7 @@ function os_boxes_cp_layout_configurable($delta){
 }
 
 /**
- *
+ * Addes a boxes 'Configure' link as a contextual link
  */
 function os_boxes_vsite_admin_link($type, $object) {
   $links = array();
@@ -490,6 +499,101 @@ function os_boxes_box_modal($js = NULL, $delta){
   }
 
   ctools_ajax_render($output);
+}
+
+function os_boxes_delete_modal($js, $delta) {
+  ctools_include('form');
+  $box = boxes_load($delta);
+  $form_state = array('box' => $box);
+
+  if (!js) {
+    return ctools_build_form('os_boxes_delete_box_confirm_form', $form_state);
+  }
+
+  ctools_include('modal');
+  ctools_include('ajax');
+
+  $form_state += array(
+    'ajax' => TRUE,
+    'no_redirect' => TRUE,
+    'title' => t('Delete Widget: @title', array('@title' => $box->description)),
+  );
+
+  $output = ctools_modal_form_wrapper('os_boxes_delete_box_confirm_form', $form_state);
+
+  if (empty($output)) {
+    $output = array();
+    $output[] = ctools_modal_command_dismiss();
+  }
+  else {
+    $output[] = ctools_ajax_command_after('#modal-content #edit-submit','<input class="form-submit close" onClick="$(\'div.modal-header a.close\').click(); return false;" value="Cancel" />');
+  }
+
+  if (is_array($form_state['js commands'])) {
+    $output = array_merge($output, $form_state['js commands']);
+  }
+
+  ctools_ajax_render($output);
+}
+
+function os_boxes_delete_box_confirm_form($form_state) {
+  $vsite = vsite_get_vsite();
+  $ctx = $vsite->controllers->context->get();
+  $form = array();
+
+  $form['text'] = array(
+    '#type' => 'markup',
+    '#value' => t('Are you sure you want to delete this widget?<br>Doing so will delete this widget from all sections that use it.'),
+  );
+
+  $block = $form_state['box']->render();
+  $form['box'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div class="box-preview">',
+    '#suffix' => '</div>',
+    '#value' => $block['content'],
+  );
+
+  $form['buttons'] = array(
+    'yes' => array(
+      '#type' => 'submit',
+      '#value' => t('Yes'),
+    ),
+    'no' => array(
+      '#type' => 'button',
+      '#value' => t('Nevermind'),
+      '#attributes' => array(
+        'onclick' => '$(\'div.modal-header a.close\').click(); return false;',
+      )
+    ),
+  );
+
+  $form['#submit'][] = 'os_boxes_delete_box_confirm_submit';
+
+  return $form;
+}
+
+function os_boxes_delete_box_confirm_submit(&$form, &$form_state) {
+  $vsite = vsite_get_vsite();
+  if (!$vsite) return;
+  $box = $form_state['box'];
+  $ctx = $vsite->controllers->context->get();
+  $delta = 'boxes-'.$box->delta;
+
+  foreach ($ctx as $id => &$ct) {
+    if (strpos($id, 'reaction:block') === FALSE) continue;
+    unset($ct['blocks'][$delta]);
+    $vsite->controllers->context->set($id, $ct);
+  }
+
+  if (strpos($delta, 'og-'.$vsite->group->nid) !== FALSE) {
+    // this is a space specific instance. delete it forever
+    $vsite->controllers->boxes->del($box->delta);
+  }
+
+  $form_state['js commands'] = array(
+    ctools_ajax_command_remove('#'.$delta),
+  );
 }
 
 /**

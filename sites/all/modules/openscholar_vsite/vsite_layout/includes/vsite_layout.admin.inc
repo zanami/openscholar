@@ -221,11 +221,6 @@ function vsite_layout_settings_form($form_state){
   //Disable widgets that are part of inactive features
   vsite_layout_check_for_disabled_widgets($unused_wgts);
 
-  foreach ($unused_wgts as &$widget) {
-    if (!isset($widget['plugin']) && ($widget['module'] == 'boxes')) {
-    }
-  }
-
   $regions = array_keys(system_region_list('scholar_base'));
 
   $a_setting = $space->controllers->context->get('openscholar-feature-'.$s_page_type.":reaction:block");
@@ -295,11 +290,21 @@ function vsite_layout_settings_form($form_state){
   $fact_links = array();
   foreach ($factories as $wgt) {
     vsite_layout_find_widget_plugin($wgt);
+    $info = os_boxes_get_boxes_plugins($wgt['plugin']);
+    $group = $info['tags'][0];
+
+    if (!isset($fact_links[$group])) {
+      $fact_links[$group] = array(
+        'data' => $group,
+        'children' => array(),
+      );
+    }
+
     $item = menu_get_item($wgt['block_config_path']);
     $item['href'] .= '/dropdown';
     $item['title'] = $wgt['label'];
     $item['attributes']['class'] = strtolower(implode(' ', array('ctools-use-modal', $wgt['plugin'])));
-    $fact_links[] = l($item['title'], $item['href'], $item).' '.l('Help', '/help/path/here', array('attributes' => array('class' => 'help')));
+    $fact_links[$group]['children'][] = l($item['title'], $item['href'], $item).' '.l('Help', 'help/path/here', array('attributes' => array('class' => 'help')));
   }
   // theme it!
   $add_new = theme('ctools_dropdown_content', t('Add New Widget'), theme('item_list', $fact_links), FALSE, 'context-links');
@@ -547,15 +552,4 @@ function vsite_layout_region_widgets( $page_type = 'none') {
   }
 
   return $a_region_widgets;
-}
-
-function vsite_layout_find_widget_plugin(&$widget) {
-  if (!isset($widget['plugin']) && $widget['module'] == 'boxes') {
-      if ($box = boxes_load($widget['delta'])) {
-        $widget['plugin'] = $box->plugin_key;
-      }
-      else {
-        $widget['plugin'] = str_replace('boxes_add__', '', $widget['delta']);
-      }
-  }
 }
