@@ -195,10 +195,15 @@ dd.scholarlayout-item {
   display: block;
 color:transparent;
 background: url('images/configGearSmall.png') no-repeat;
-position: absolute;
-    left: 87px;
-    top: 50px;
+margin-top:15px;
  }
+
+.scholarlayout-top-widgets-wrapper .controls {width:15px;height:40px;position: absolute;
+    left: 87px;
+    top: 15px;}
+.scholarlayout-top-widgets-wrapper div:hover.controls{display:inline;position: absolute;
+    left: 87px;
+    top: 15px;}
 
 #scholarlayout-container dd.scholarlayout-item {
   margin: 0;
@@ -286,12 +291,10 @@ dd.scholarlayout-item .close-this {
   }
 
 #scholarlayout-top-widgets .close-this {
-  display:block;
+  display:none;
   }
   
-  a.delete {position: absolute;
-    right: 7px;
-    top: 30px;}
+
 
 #scholarlayout-top-widgets dd.disabled,
 #scholarlayout-container dd.disabled {
