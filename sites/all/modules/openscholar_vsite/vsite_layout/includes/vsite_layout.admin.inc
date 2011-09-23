@@ -298,8 +298,8 @@ function vsite_layout_settings_form($form_state){
     $item = menu_get_item($wgt['block_config_path']);
     $item['href'] .= '/dropdown';
     $item['title'] = $wgt['label'];
-    $item['attributes']['class'] = strtolower(implode(' ', array_merge(array('ctools-use-modal', $wgt['plugin']), (array)$wgt['tags'])));
-    $fact_links[] = l($item['title'], $l['href'], $item).' '.l('Help', '/help/path/here', array('attributes' => array('class' => 'help')));
+    $item['attributes']['class'] = strtolower(implode(' ', array('ctools-use-modal', $wgt['plugin'])));
+    $fact_links[] = l($item['title'], $item['href'], $item).' '.l('Help', '/help/path/here', array('attributes' => array('class' => 'help')));
   }
   // theme it!
   $add_new = theme('ctools_dropdown_content', t('Add New Widget'), theme('item_list', $fact_links), FALSE, 'context-links');
@@ -551,7 +551,11 @@ function vsite_layout_region_widgets( $page_type = 'none') {
 
 function vsite_layout_find_widget_plugin(&$widget) {
   if (!isset($widget['plugin']) && $widget['module'] == 'boxes') {
-      $box = boxes_load($widget['delta']);
-      $widget['plugin'] = $box->plugin_key;
+      if ($box = boxes_load($widget['delta'])) {
+        $widget['plugin'] = $box->plugin_key;
+      }
+      else {
+        $widget['plugin'] = str_replace('boxes_add__', '', $widget['delta']);
+      }
   }
 }
