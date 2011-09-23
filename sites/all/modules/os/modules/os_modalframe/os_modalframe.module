@@ -33,7 +33,7 @@ function os_modalframe_boxes_plugins() {
   $info['os_boxes_modal_image'] = array(
     'title' => 'Single Image',
     'description' => 'Single Image',
-    'tags' => array('Media','Image'),
+    'tags' => array('Media'),
     'handler' => array(
       'class' => 'os_boxes_modalframe_image',
       'file' => 'os_boxes_modalframe_image.inc',
