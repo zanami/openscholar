@@ -37,7 +37,7 @@ if($w['icon_path']){
       <div class="close-this" title="Remove">Remove</div>
      <?php
      if($info['block_config_path']){
-       print ctools_modal_text_button("Delete", $info['block_config_path']."/delete", "Delete widget");
+       print ctools_modal_text_button("Delete", $info['block_config_path']."/delete", "Delete widget", "delete");
      	 $class = (strpos($w['delta'],"boxes_add__") === 0)?"add":"setting";
        print ctools_modal_text_button("Configure",$info['block_config_path']."/configure/cp_layout","Configure widget",$class);
      }
