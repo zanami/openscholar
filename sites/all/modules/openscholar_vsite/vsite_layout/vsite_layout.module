@@ -217,3 +217,15 @@ function vsite_layout_context_plugins() {
   );
   return $plugins;
 }
+
+// given a widget created by boxes, get the plugin used to define the box
+function vsite_layout_find_widget_plugin(&$widget) {
+  if (!isset($widget['plugin']) && $widget['module'] == 'boxes') {
+      if ($box = boxes_load($widget['delta'])) {
+        $widget['plugin'] = $box->plugin_key;
+      }
+      else {
+        $widget['plugin'] = str_replace('boxes_add__', '', $widget['delta']);
+      }
+  }
+}

@@ -553,14 +553,3 @@ function vsite_layout_region_widgets( $page_type = 'none') {
 
   return $a_region_widgets;
 }
-
-function vsite_layout_find_widget_plugin(&$widget) {
-  if (!isset($widget['plugin']) && $widget['module'] == 'boxes') {
-      if ($box = boxes_load($widget['delta'])) {
-        $widget['plugin'] = $box->plugin_key;
-      }
-      else {
-        $widget['plugin'] = str_replace('boxes_add__', '', $widget['delta']);
-      }
-  }
-}
