@@ -77,12 +77,15 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
   border-radius: 5px 5px 5px 5px;
   margin: 0 10px 0 0;
   float:right;
-  background: url('../images/scholarbase-sprite.png') no-repeat 3px -380px #228822 !important;
-  padding: 2px 10px 2px 25px !important;
+  background: url('../images/scholarbase-sprite.png') no-repeat 3px -380px #a1d4a1 !important;
+  padding: 1px 8px 1px 25px !important;
 }
 
 #cp-settings-layout .ctools-dropdown {
-	  margin: 12px 12px 0 0;	
+	  margin: 16px 12px 0 0;	
+	  -moz-border-radius:5px 5px 0px 0px;
+  -webkit-border-radius:5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
 }
 
 .section-cp .context-links {
@@ -93,7 +96,7 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
 
 .context-links:hover,
 .section-cp div.ctools-dropdown:hover{
- background: url('../images/scholarbase-sprite.png') no-repeat 3px -380px #228822 !important;
+ background: url('../images/scholarbase-sprite.png') no-repeat 3px -380px #a1d4a1 !important;
 
   }
 
