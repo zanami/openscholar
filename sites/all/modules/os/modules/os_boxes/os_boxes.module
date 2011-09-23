@@ -349,6 +349,7 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
     'weight' => $weight,
     'region' => $region,
     'label' => $box->description,
+	  'plugin' => $box->plugin_key,
     'cache' => BLOCK_CACHE_CONTENT_CACHE,
 	  'block_config_path' => "cp/osboxes/".($plugins[$box->plugin_key]['popup']?$plugins[$box->plugin_key]['popup']:'nojs')."/{$box->delta}/configure",
   );
