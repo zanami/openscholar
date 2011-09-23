@@ -19,6 +19,22 @@ function os_include($inc_files){
   }
 }
 
+function os_theme() {
+  $items = array();
+  $items['ctools_dropdown_content'] = array(
+    'arguments' => array(
+      'title' => NULL,
+      'content' => NULL,
+      'image' => NULL,
+      'class' => NULL,
+    ),
+    'path' => drupal_get_path('module', 'os').'/includes/',
+    'file' => 'os.theme.inc',
+  );
+
+  return $items;
+}
+
 /**
  * Implementation of hook_user().
  */
@@ -56,14 +72,14 @@ function os_menu_alter(&$items){
  */
 function os_user_page(){
 	global $user;
-	
+
 	if ($user->uid) {
 		//Set Destination or redirect
 		os_set_login_destination($user);
-		
+
 		if($_REQUEST['destination'] && $_REQUEST['destination'] != 'user') drupal_goto();
 	}//Are they logged in?
-	
+
 	return user_page();
 }
 
@@ -72,7 +88,7 @@ function os_user_page(){
  * @param $user
  */
 function os_set_login_destination($account){
-	
+
   //If the destination has not been set then try and send them to thier site or a list of thier sites
   //Or if the destination was set to the global site frontpage, do the same
   if (strlen($_REQUEST['destination']) && $_REQUEST['destination'] != variable_get('site_frontpage','welcome'))

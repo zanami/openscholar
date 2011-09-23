@@ -1,17 +1,4 @@
 <?php
-function ctools_dropdown_content_theme() {
-  $items = array();
-  $items['ctools_dropdown_content'] = array(
-    'arguments' => array(
-      'title' => NULL,
-      'content' => NULL,
-      'image' => NULL,
-      'class' => NULL,
-    ),
-  );
-
-  return $items;
-}
 
 // copied directly from ctools_dropdown
 // just replacing an array of links with an already themed string
