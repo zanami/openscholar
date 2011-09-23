@@ -13,8 +13,8 @@ function os_slideshow_imagecache_default_presets() {
           'module' => 'imagecache',
           'action' => 'imagecache_scale_and_crop',
           'data' => array(
-            'width' => '550',
-            'height' => '350',
+            'width' => '480',
+            'height' => '270',
           ),
         ),
       ),
