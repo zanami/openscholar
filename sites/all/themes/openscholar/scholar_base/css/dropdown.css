@@ -56,8 +56,10 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
   -webkit-box-shadow:  rgba(0,0,0,0.3) 0 2px 5px;
   box-shadow: 0 2px 5px #777;
   opacity: .93;
+  width:300px;
   }
 
+/*
 .context-links,
 .section-cp div.ctools-dropdown {
   margin: 0 30px 0 0;
@@ -65,8 +67,23 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
   background: url('../images/scholarbase-sprite.png') no-repeat 6px -388px #eaf7e7 !important;
   padding: 0 10px 0 23px !important;
   border: 1px solid #ccdbc9;
-  }
+}*/
 
+
+.context-links,
+.section-cp div.ctools-dropdown {
+	-moz-border-radius:5px 5px 5px 5px;
+  -webkit-border-radius:5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+  margin: 0 10px 0 0;
+  float:right;
+  background: url('../images/scholarbase-sprite.png') no-repeat 3px -380px #228822 !important;
+  padding: 2px 10px 2px 25px !important;
+}
+
+#cp-settings-layout .ctools-dropdown {
+	  margin: 12px 12px 0 0;	
+}
 
 .section-cp .context-links {
   margin-right: 40px;
@@ -75,9 +92,12 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
   }
 
 .context-links:hover,
-.section-cp div.ctools-dropdown:hover {
-  background-color: #daf3d5 !important;
+.section-cp div.ctools-dropdown:hover{
+ background: url('../images/scholarbase-sprite.png') no-repeat 3px -380px #228822 !important;
+
   }
+
+
 
 .context-links li {
   list-style:none;
@@ -89,11 +109,11 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
 
 .context-links a,
 .context-links a:visited {
-  color: #7CAA71 !important;
+  color: #FFF !important;
   }
 
 .context-links a:hover {
-  color: #7CAA71 !important;
+  color: #FFF !important;
   }
 
 .context-links .ctools-dropdown a,
