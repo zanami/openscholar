@@ -221,10 +221,22 @@ function vsite_layout_settings_form($form_state){
   //Disable widgets that are part of inactive features
   vsite_layout_check_for_disabled_widgets($unused_wgts);
 
+  foreach ($unused_wgts as &$widget) {
+    if (!isset($widget['plugin']) && ($widget['module'] == 'boxes')) {
+    }
+  }
+
   $regions = array_keys(system_region_list('scholar_base'));
 
   $a_setting = $space->controllers->context->get('openscholar-feature-'.$s_page_type.":reaction:block");
   $a_blocks = (isset($a_setting['blocks']))? $a_setting['blocks']:array();
+
+  foreach ($a_blocks as &$widget) {
+    if (!isset($widget['plugin']) && ($widget['module'] == 'boxes')) {
+      $box = boxes_load($widget['delta']);
+      $widget['plugin'] = $box->plugin_key;
+    }
+  }
 
   foreach ($regions as $region) {
     $wgts_id = 'scholarlayout-' . str_replace('_', '-', $region);
@@ -283,12 +295,13 @@ function vsite_layout_settings_form($form_state){
   $fact_links = array();
   foreach ($factories as $wgt) {
     $item = menu_get_item($wgt['block_config_path']);
+    $item['href'] .= '/dropdown';
     $item['title'] = $wgt['label'];
-    $item['attributes']['class'] = implode(' ', array_merge(array('ctools-use-modal'), $wgt['tags']));
+    $item['attributes']['class'] = implode(' ', array_merge(array('ctools-use-modal'), (array)$wgt['tags']));
     $fact_links[] = $item;
   }
   // theme it!
-  $add_new = theme('ctools_dropdown', t('Add New Widget'), $fact_links, FALSE, 'context-links');
+  $add_new = theme('ctools_dropdown_content', t('Add New Widget'), theme('links', $fact_links), FALSE, 'context-links');
 
   //Markup for "Top" Available Widgets Section
   $form['available_widgets_markup'] = array(
@@ -533,4 +546,11 @@ function vsite_layout_region_widgets( $page_type = 'none') {
   }
 
   return $a_region_widgets;
+}
+
+function vsite_layout_find_widget_plugin(&$widget) {
+  if (!isset($widget['plugin']) && $widget['module'] == 'boxes') {
+      $box = boxes_load($widget['delta']);
+      $widget['plugin'] = $box->plugin_key;
+  }
 }
