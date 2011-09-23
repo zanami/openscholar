@@ -25,7 +25,7 @@ foreach($wgts as $s_widget_key => $w){
 
 <div class="<?php print $wgts_id; ?>-wrapper">
 <?php echo $add_new_wgts; ?>
-<div id="widgetLabelTab"><img src="/<?php echo drupal_get_path('module', 'vsite_layout') . '/theme/images/widgetBarLabel.png'; ?>"></div>
+
 <div id="websiteLabelTab"><img src="/<?php echo drupal_get_path('module', 'vsite_layout') . '/theme/images/websiteLayoutBarLabel.png'; ?>"></div>
 <ul id="widget-categories">
 <?php

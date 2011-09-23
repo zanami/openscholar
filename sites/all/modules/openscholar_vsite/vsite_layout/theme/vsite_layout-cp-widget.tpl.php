@@ -8,16 +8,20 @@
  */
 $s_class = (isset($w['hidden']) && $w['hidden'])? 'scholarlayout-item disabled':'scholarlayout-item';
 
+vsite_layout_find_widget_plugin($w);
+
+if ($w['plugin']) {
+  $s_class .= ' '.$w['plugin'];
+}
+
 if($w['overides']) {
 	$s_class .= " with-overrides";
 }
 
-if(is_array($w['tags']) && count($w['tags'])) {
-  foreach ($w['tags'] as $s_tag_name) {
-  	$s_class .= " ".strtolower( str_replace(' ', '_', $s_tag_name));
-  }
-}else{
-	$s_class .= " misc";
+if (isset($w['plugin'])) {
+  $info = os_boxes_get_boxes_plugins($w['plugin']);
+  $s_class .= ' '.implode(' ',$info['tags']);
+  $info['block_config_path'] = "cp/osboxes/nojs/".$w['delta'];
 }
 
 //Support for ctools popups
@@ -29,12 +33,13 @@ if($w['icon_path']){
 }
 ?>
 
-<dd class="<?php echo $s_class ?>" id="<?php print $s_widget_key; ?>" <?php $dd_il_style ?>> <?php print $w['label']; ?>
-      <div class="close-this">Remove</div>
+<dd class="<?php echo strtolower($s_class); ?>" id="<?php print $s_widget_key; ?>" <?php $dd_il_style ?>> <?php print $w['label']; ?>
+      <div class="close-this" title="Remove">Remove</div>
      <?php
-     if($w['block_config_path']){
+     if($info['block_config_path']){
+       print ctools_modal_text_button("Delete", $info['block_config_path']."/delete", "Delete widget", "delete");
      	 $class = (strpos($w['delta'],"boxes_add__") === 0)?"add":"setting";
-       print ctools_modal_text_button("Configure",$w['block_config_path']."/cp_layout","open the form to configure this block",$class);
+       print ctools_modal_text_button("Configure",$info['block_config_path']."/configure/cp_layout","Configure widget",$class);
      }
      if($w['overides']){
        ?>

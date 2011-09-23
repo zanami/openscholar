@@ -31,7 +31,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_simple'] = array(
     'title' => 'Text',
     'description' => 'Simple custom text',
-    'tags' => array('Content','Text'),
+    'tags' => array('Content'),
     'handler' => array(
       'parent' => 'box',
       'class' => 'boxes_simple',
@@ -43,7 +43,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_addthis'] = array(
     'title' => 'Addthis',
     'description' => 'Social media links',
-    'tags' => array('Social','Addthis'),
+    'tags' => array('Social'),
     'handler' => array(
       'class' => 'os_boxes_addthis',
       'file' =>  'os_boxes_addthis.inc',
@@ -55,7 +55,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_feedreader'] = array(
     'title' => 'Feed Reader',
     'description' => 'List of feed items',
-    'tags' => array('Content','Social','Feed'),
+    'tags' => array('Content','Social'),
     'handler' => array(
       'class' => 'os_boxes_feedreader',
       'file' => 'os_boxes_feedreader.inc',
@@ -67,7 +67,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_gallery'] = array(
     'title' => 'Image Gallery',
     'description' => 'List of images',
-    'tags' => array('Media', 'Image'),
+    'tags' => array('Media'),
     'handler' => array(
       'class' => 'os_boxes_gallery',
       'file' => 'os_boxes_gallery.inc',
@@ -79,7 +79,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_slideshow'] = array(
     'title' => 'Slideshow Gallery',
     'description' => 'Display gallery as a slideshow',
-    'tags' => array('Media','Slideshow'),
+    'tags' => array('Media'),
     'handler' => array(
       'class' => 'os_boxes_slideshow',
       'file' => 'os_boxes_slideshow.inc',
@@ -91,7 +91,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_rss'] = array(
     'title' => 'RSS feed',
     'description' => 'RSS feed ??',
-    'tags' => array('Social','Feed'),
+    'tags' => array('Social'),
     'handler' => array(
       'class' => 'os_boxes_rss',
       'file' => 'os_boxes_rss.inc',
@@ -103,7 +103,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_twitterfeed'] = array(
     'title' => 'Twitter Feed',
     'description' => 'Latest tweets',
-    'tags' => array('Social','Feed','Twitter'),
+    'tags' => array('Social'),
     'handler' => array(
       'class' => 'os_boxes_twitterfeed',
       'file' => 'os_boxes_twitterfeed.inc',
@@ -115,7 +115,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_cclicense'] = array(
     'title' => 'CC License',
     'description' => 'Displays CC license widget',
-    'tags' => array('Misc','License'),
+    'tags' => array('Misc'),
     'handler' => array(
       'class' => 'os_boxes_cclicense',
       'file' => 'os_boxes_cclicense.inc',
@@ -128,7 +128,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_node'] = array(
     'title' => 'Post in a box',  // i.e. view
     'description' => 'Displays the content of a post in the widget',
-    'tags' => array('Content','Post'),
+    'tags' => array('Content'),
     'handler' => array(
       'class' => 'os_boxes_node',
       'file' => 'os_boxes_node.inc',
@@ -140,7 +140,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_bio'] = array(
     'title' => 'Bio Box',  // i.e. view
     'description' => 'Displays biography blurb',
-    'tags' => array('Misc','Bio'),
+    'tags' => array('Misc'),
     'handler' => array(
       'class' => 'os_boxes_bio',
       'file' => 'os_boxes_bio.inc',
@@ -165,7 +165,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_shields'] = array(
     'title' => 'Shield',
     'description' => 'Department Shield',
-    'tags' => array('Misc','Shield'),
+    'tags' => array('Misc'),
     'handler' => array(
       'class' => 'os_boxes_shields',
       'file' => 'os_boxes_shields.inc',
@@ -177,7 +177,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_booktoc'] = array(
     'title' => 'Book Table of Contents',
     'description' => 'Table of Contents',
-    'tags' => array('Content','Book'),
+    'tags' => array('Content'),
     'handler' => array(
       'class' => 'os_boxes_booktoc',
       'file' => 'os_boxes_booktoc.inc',
@@ -189,7 +189,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_curr_toc'] = array(
     'title' => 'Active Book\'s TOC',
     'description' => 'Table of Contents',
-    'tags' => array('Content','Book'),
+    'tags' => array('Content'),
     'handler' => array(
       'class' => 'os_boxes_curr_toc',
       'file' => 'os_boxes_booktoc.inc',
@@ -230,7 +230,7 @@ function os_boxes_boxes_plugins() {
   $info['vsite_taxonomy_fbt'] = array(
     'title' => 'Filter by Category',
     'description' => 'Filter content by category',
-    'tags' => array('Content','Taxonomy'),
+    'tags' => array('Content'),
     'handler' => array(
       'class' => 'vsite_taxonomy_fbt',
       'file' =>  'vsite_taxonomy_fbt.inc',
@@ -349,6 +349,7 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
     'weight' => $weight,
     'region' => $region,
     'label' => $box->description,
+	  'plugin' => $box->plugin_key,
     'cache' => BLOCK_CACHE_CONTENT_CACHE,
 	  'block_config_path' => "cp/osboxes/".($plugins[$box->plugin_key]['popup']?$plugins[$box->plugin_key]['popup']:'nojs')."/{$box->delta}/configure",
   );
