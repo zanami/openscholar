@@ -56,8 +56,19 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
   -webkit-box-shadow:  rgba(0,0,0,0.3) 0 2px 5px;
   box-shadow: 0 2px 5px #777;
   opacity: .93;
-  width:300px;
+ 
   }
+  
+  
+  /*CTOOLS DROPDOWN ON LAYOUT PAGE*/
+  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container { 
+ width:250px;
+   }
+   
+.scholarlayout-top-widgets-wrapper ul li {
+ height:20px;	
+	width:100%;
+}
 
 /*
 .context-links,
@@ -112,7 +123,7 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
 
 .context-links a,
 .context-links a:visited {
-  color: #FFF !important;
+  color: #333 !important;
   }
 
 .context-links a:hover {
