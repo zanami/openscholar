@@ -1,0 +1,5 @@
+core = "6.x"
+dependencies[] = "ctools"
+name = "Ctools Dropdown Content"
+description = "Allows arbitrary content inside a ctools dropdown."
+package = "Chaos tools suite"
