@@ -294,14 +294,15 @@ function vsite_layout_settings_form($form_state){
   // get a link for each factory
   $fact_links = array();
   foreach ($factories as $wgt) {
+    vsite_layout_find_widget_plugin($wgt);
     $item = menu_get_item($wgt['block_config_path']);
     $item['href'] .= '/dropdown';
     $item['title'] = $wgt['label'];
-    $item['attributes']['class'] = implode(' ', array_merge(array('ctools-use-modal'), (array)$wgt['tags']));
-    $fact_links[] = $item;
+    $item['attributes']['class'] = strtolower(implode(' ', array_merge(array('ctools-use-modal', $wgt['plugin']), (array)$wgt['tags'])));
+    $fact_links[] = l($item['title'], $l['href'], $item).' '.l('Help', '/help/path/here', array('attributes' => array('class' => 'help')));
   }
   // theme it!
-  $add_new = theme('ctools_dropdown_content', t('Add New Widget'), theme('links', $fact_links), FALSE, 'context-links');
+  $add_new = theme('ctools_dropdown_content', t('Add New Widget'), theme('item_list', $fact_links), FALSE, 'context-links');
 
   //Markup for "Top" Available Widgets Section
   $form['available_widgets_markup'] = array(
