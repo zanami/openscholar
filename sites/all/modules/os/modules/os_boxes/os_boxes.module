@@ -257,7 +257,7 @@ function os_boxes_boxes_plugins_alter(&$boxes){
   // Add 'social' tag to all boxes from fb_social module
   foreach($boxes as $name => $box){
     if ($box['handler']['parent'] == 'fb_social_default'){
-      $boxes[$name]['tags'] = array('social');
+      $boxes[$name]['tags'] = array('Social');
     }
   }
 }
