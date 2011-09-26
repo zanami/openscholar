@@ -7,7 +7,7 @@
  */
 
 /**
- * @function mk_box
+ * @function os_boxes_mk_box
  *   Creates a box object and adds it to a vsite
  *
  * @param &$vsite
@@ -23,7 +23,7 @@
  *   Retruns box object or false if box couldn't be created
  *
  */
-function mk_box(&$vsite, $type, $opts) {
+function os_boxes_mk_box(&$vsite, $type, $opts) {
   require_once drupal_get_path('module', 'boxes') . '/boxes.module';
   global $box_plugins;
   if (empty($box_plugins)) {
@@ -61,11 +61,11 @@ function mk_box(&$vsite, $type, $opts) {
  *
  */
 // adds box to vsite.  returns id of vsite on successful creation
-function vsite_put_box(&$vsite, $box, $region) {
+function vsite_put_box($context, &$vsite, $box, $region) {
 
   //let spaces select the current setting or the default
-  $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
-  $front_context['blocks']['boxes-' . $box->delta] = array(
+  $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block');
+  $context_block_reaction['blocks']['boxes-' . $box->delta] = array(
     'module' => 'boxes',
     'delta' => $box->delta,
     'weight' => 0,
@@ -74,8 +74,15 @@ function vsite_put_box(&$vsite, $box, $region) {
     'block_config_path' => 'cp/osboxes/nojs/' . $box->delta . '/configure', //is this always correct?
     'tags' => $box->tags,
   );
+  
+  $og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
+  if($og_theme){
+  	$og_theme = ":{$og_theme}";
+  }else{
+    $og_theme = "";
+  }
 
-  if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
+  if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block'.$og_theme, $context_block_reaction)) {
     return $vsite->id;
   } else {
     return FALSE;

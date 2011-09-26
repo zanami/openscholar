@@ -8,7 +8,7 @@
 require_once drupal_get_path('module', 'os_boxes') . '/os_boxes.newbox_api.inc';
 
 //call boxmaker, starting at offset
-function _front_boxmaker($limit, $offset, $total_vsites) {
+function scholar_front_frontpage_boxmaker($limit, $offset, $total_vsites) {
   global $_box_plugins;
   $_box_plugins  = os_boxes_boxes_plugins();
   $_box_plugins += spaces_simpleviews_boxes_plugins();
@@ -27,11 +27,11 @@ function _front_boxmaker($limit, $offset, $total_vsites) {
     foreach($vsites as $vsite) {
       
       // create new frontpage box from old frontpage settings
-      $settings = fb_front_settings($vsite->id);
-      $front = fb_get_front($settings, $vsite);
+      $settings = scholar_front_fb_front_settings($vsite->id);
+      $front = scholar_front_fb_get_front($settings, $vsite);
       
-      if ($front && ($wgt = fb_mk_front_box($vsite, $front)) != FALSE) {
-      	$add_func = 'fb_add_' . $wgt['wgt']; //box or block
+      if ($front && ($wgt = scholar_front_fb_mk_front_box($vsite, $front)) != FALSE) {
+      	$add_func = 'scholar_front_fb_add_' . $wgt['wgt']; //box or block
         $ret[] = $add_func($vsite, $wgt['data']);
         $vsite->controllers->variable->del('site_frontpage'); //remove previous front page
       } else {
@@ -45,7 +45,7 @@ function _front_boxmaker($limit, $offset, $total_vsites) {
 
 // get settings for this vsite's front page
 // settings are two parts.  there are several types of settings.  list the type.  its settings will vary.
-function fb_front_settings($vsite_id) {
+function scholar_front_fb_front_settings($vsite_id) {
   $query  = 'SELECT object_id,value FROM {spaces_overrides} WHERE id = "%s" ';
   $query .= 'AND object_id IN ("site_frontpage", "scholar_front_frontpage_nid", "scholar_front_frontpage_path", "scholar_front_feature_nodes", "schoalr_front_create_bio", "scholar_front_site_title")';
   $result = db_query($query, $vsite_id);
@@ -59,7 +59,7 @@ function fb_front_settings($vsite_id) {
 
 
 // given db info on front page, return settings for new box to make.
-function fb_get_front($settings, &$vsite) {
+function scholar_front_fb_get_front($settings, &$vsite) {
 
   if (!count($settings)) {
   	return false; //no settings, no box.  default box should come from presets, not here.
@@ -70,37 +70,43 @@ function fb_get_front($settings, &$vsite) {
     $front['title'] = $settings['scholar_front_site_title'];
   }
   
-  switch ($settings['site_frontpage']) {
-
-  	//features content
-    case 'scholar_front/features':
-      $front['type'] = 'features';
-      break;
-      
-    //flagged content
-    case 'scholar_front/flag':
-      $front['type'] = 'flag';
-      break;
-      
-    //path or alias to node
-    case $settings['scholar_front_frontpage_path']:
-      $aliased_url =  $vsite->group->purl . '/' . $settings['scholar_front_frontpage_path'];
-      
-   	  if ($node_path = drupal_get_normal_path($aliased_url)) {
-   	  	//we have a nid.  this is not a path frontpage at all, but a nid path pointing to an alias
-   	  	$front['type'] = 'nid';
-   		  $front['options'] = array('node' => $node_path);
-   	  } else {
-   	  	//no, still a path front
-  	    $front['type'] = 'path';
-        $front['options'] = array('path' => $settings['scholar_front_frontpage_path']);
-   	  }
-      break;
-    
-    //bio.
-    case 'create_bio':
-      $front['type'] = 'bio';
-      break;
+  //Set Front type based on site_frontpage setting
+  if(!isset($settings['site_frontpage'])){
+    $front['type'] = 'features';
+  }else{
+  
+	  switch ($settings['site_frontpage']) {
+	
+	  	//features content
+	    case 'scholar_front/features':
+	      $front['type'] = 'features';
+	      break;
+	      
+	    //flagged content
+	    case 'scholar_front/flag':
+	      $front['type'] = 'flag';
+	      break;
+	      
+	    //path or alias to node
+	    case $settings['scholar_front_frontpage_path']:
+	      $aliased_url =  $vsite->group->purl . '/' . $settings['scholar_front_frontpage_path'];
+	      
+	   	  if ($node_path = drupal_get_normal_path($aliased_url)) {
+	   	  	//we have a nid.  this is not a path frontpage at all, but a nid path pointing to an alias
+	   	  	$front['type'] = 'nid';
+	   		  $front['options'] = array('node' => $node_path);
+	   	  } else {
+	   	  	//no, still a path front
+	  	    $front['type'] = 'path';
+	        $front['options'] = array('path' => $settings['scholar_front_frontpage_path']);
+	   	  }
+	      break;
+	    
+	    //bio.
+	    case 'create_bio':
+	      $front['type'] = 'bio';
+	      break;
+	  }
   }
   
   //no need to continue if we have a type
@@ -131,7 +137,7 @@ function fb_get_front($settings, &$vsite) {
 }
 
 //make a box for each vsite.
-function fb_mk_front_box(&$vsite, $settings) {
+function scholar_front_fb_mk_front_box(&$vsite, $settings) {
   
   if (!$settings) {
     return false;
@@ -229,7 +235,7 @@ EOD;
   //make and return array.  array specifies if widget is box or block and then includes it as data
   if (!$block) {
   	//return a box
-  	if ($box = mk_box($vsite, $type, $opts)) {
+  	if ($box = os_boxes_mk_box($vsite, $type, $opts)) {
   	  return array('wgt' => 'box', 'data' => $box);
   	} else {
   	  return false;
@@ -242,16 +248,23 @@ EOD;
 
 
 //add our new box to content_top
-function fb_add_box(&$vsite, $box) {
-  return vsite_put_box($vsite, $box,'content_top');
+function scholar_front_fb_add_box(&$vsite, $box) {
+  return vsite_put_box("openscholar-feature-front",$vsite, $box,'content_top');
 }
 
 //adds block to content_top region
-function fb_add_block(&$vsite, $block) {
+function scholar_front_fb_add_block(&$vsite, $block) {
   $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
   $front_context['blocks'][$block]['region'] = 'content_top';
 
-  if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block:'.$vsite->group->og_theme, $front_context)) {
+  $og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
+  if($og_theme){
+    $og_theme = ":{$og_theme}";
+  }else{
+  	$og_theme = "";
+  }
+  
+  if ($vsite->controllers->context->set('openscholar-feature-front:reaction:block'.$og_theme, $front_context)) {
     return $vsite->id;
   }
 }

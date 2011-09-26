@@ -55,6 +55,10 @@ function scholar_biocv_update_6002(&$sandbox){
 /* copies bio blurb into a box */
 function scholar_biocv_update_6003(&$sandbox){
   $ret = array();
+  
+  $ret['#abort'] = array('success' => FALSE, 'query' => 'Richard Says Stop.');
+  return $ret;
+  
   if (module_exists('os_boxes')) { //&& module_exists('vsite_controllers')) {
     _scholar_biocv_make_blurbs_from_bios();                       //make a box from each bio blurb
     $ret[] = array(
