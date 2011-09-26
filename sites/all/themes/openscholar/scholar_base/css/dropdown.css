@@ -49,9 +49,6 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
   margin: 0 1px 0 0;
   padding: 5px 0;
   color: #494949 !important;
-  -moz-border-radius:5px 0 5px 5px;
-  -webkit-border-radius:5px 0 5px 5px;
-  border-radius: 5px 0 5px 5px;
   -moz-box-shadow:  rgba(0,0,0,0.3) 0 2px 5px;
   -webkit-box-shadow:  rgba(0,0,0,0.3) 0 2px 5px;
   box-shadow: 0 2px 5px #777;
@@ -62,20 +59,33 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
   
   /*CTOOLS DROPDOWN ON LAYOUT PAGE*/
   #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container { 
- width:250px;
+ width:300px;
    }
    
    #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li { 
-  
+  font-size:1.2em;
    margin-left:15px;
  font-weight:bold;
-
+padding-bottom:10px;
    }
    
      #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a { 
  font-weight:normal;
  background:url('../images/widget-bgSmall.png') no-repeat;
  padding-left:25px;
+ margin-left:-30px;
+ font-size:.9em;
+
+   }
+
+  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a:hover { 
+text-decoration:underline;
+background:#FFF;
+   }
+   
+     #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.help { 
+position:relative;
+float:right;
    }
 
 /*
