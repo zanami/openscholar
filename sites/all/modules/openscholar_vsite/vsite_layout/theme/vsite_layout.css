@@ -119,6 +119,12 @@ dd.scholarlayout-item {
   }
   
   
+  
+     #scholarlayout-top-widgets #vsite_cc-node_license {
+ background: url('images/widgetIcons/license.png') no-repeat scroll 50% 10px transparent;
+}
+  
+
     #scholarlayout-top-widgets #boxes-scholar_announcements_latest {
  background: url('images/widgetIcons/announcement.png') no-repeat scroll 50% 10px transparent;
 }
@@ -128,7 +134,8 @@ dd.scholarlayout-item {
  background: url('images/widgetIcons/presentation.png') no-repeat scroll 50% 10px transparent;
 }
   
-        #scholarlayout-top-widgets #scholar_software_releases-block_3 {
+        #scholarlayout-top-widgets #scholar_software_releases-block_3,
+        #scholarlayout-top-widgets #views-scholar_software_releases-block_3 {
  background: url('images/widgetIcons/software.png') no-repeat scroll 50% 10px transparent;
 }
   
@@ -149,7 +156,8 @@ dd.scholarlayout-item {
    
  #scholarlayout-top-widgets #boxes-scholar_publications_recent,  
  #scholarlayout-top-widgets #boxes-scholar_book_recent_docs,
-  #scholarlayout-top-widgets #scholar_publications-co_authors {
+  #scholarlayout-top-widgets #scholar_publications-co_author,
+  #scholarlayout-top-widgets #views-publication_types-block_1 {
  background: url('images/widgetIcons/publications.png') no-repeat scroll 50% 10px transparent;
 }
     
@@ -168,7 +176,8 @@ dd.scholarlayout-item {
 }
     
   
- #scholarlayout-top-widgets #boxes-image_gallery_recent_images {
+ #scholarlayout-top-widgets #boxes-image_gallery_recent_images,
+ #scholarlayout-top-widgets #views-scholar_image_gallery-block_1 {
  background: url('images/widgetIcons/camera.png') no-repeat scroll 50% 10px transparent;
 }
   
@@ -193,18 +202,17 @@ dd.scholarlayout-item {
  background: url('images/widgetIcons/addThis.png') no-repeat scroll 50% 10px transparent;
 }  
   
-  #scholarlayout-top-widgets dd.misc.shield {
+  #scholarlayout-top-widgets .os_boxes_shields {
  background: url('images/widgetIcons/shield.png') no-repeat scroll 50% 10px transparent;
 } 
 
-  #scholarlayout-top-widgets #boxes-scholar_biocv_bio_blurb {
+  #scholarlayout-top-widgets #boxes-scholar_biocv_bio_blurb,
+  #scholarlayout-top-widgets #scholar_biocv-bio_blurb,
+    #scholarlayout-top-widgets .os_boxes_bio {
  background: url('images/widgetIcons/bio.png') no-repeat scroll 50% 10px transparent;
 } 
 
-  #scholarlayout-top-widgets dd.misc.license {
- background: url('images/widgetIcons/license.png') no-repeat scroll 50% 10px transparent;
-} 
-  
+
   
 #scholarlayout-top-widgets dd.scholarlayout-item a.add,
 #scholarlayout-top-widgets dd.scholarlayout-item a.setting {
