@@ -406,6 +406,15 @@ function os_boxes_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items['cp/osboxes/%ctools_js/%/remove'] = array(
+    'title' => 'Remove this Widget',
+    'page callback' => 'os_boxes_remove_widget',
+    'page arguments' => array(2, 3),
+    'access callback' => 'os_boxes_cp_layout_configurable',
+    'access arguments' => array(3),
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
 
@@ -444,6 +453,13 @@ function os_boxes_vsite_admin_link($type, $object) {
       'attributes' => array(
         'class' => 'ctools-use-modal',
       ),
+    );
+    $links[] = array(
+      'title' => 'Remove',
+      'href' => $object->block_config_path.'/remove',
+      'attributes' => array(
+        'class' => 'ctools-use-ajax',
+      )
     );
   }
   return $links;
@@ -544,6 +560,14 @@ function os_boxes_delete_modal($js, $delta) {
   }
 
   ctools_ajax_render($output);
+}
+
+function os_boxes_remove_widget($nojs, $delta) {
+  // get the context
+  // remove box from context
+  // save context
+
+  $output = ctools_ajax_command_remove('#'.$delta);
 }
 
 function os_boxes_delete_box_confirm_form($form_state) {
