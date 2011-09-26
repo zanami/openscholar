@@ -19,7 +19,7 @@ abstract class os_boxes_default extends boxes_box {
 	/*
    * Define the default cache type for os_boxes
    */
-  public $cache_type = BLOCK_CACHE_CONTENT_CACHE;
+  public $cache_type = BLOCK_NO_CACHE;
   
   /*
    * Define the default region for this box.
@@ -70,19 +70,7 @@ abstract class os_boxes_default extends boxes_box {
     $block['delta'] = $this->delta;
     return $block;
   }
-  
-  /**
-   * Return the cache key for this box
-   *
-   * This should be extended to provide a more specific cache key if applicable
-   */
-  public function cache_keys(){
-    //The default for all os_boxes is to clear the cache of this box each time the any node on the site is saved
-    return array(
-      'os_og' => array('current' => 'current'),
-    );
-  }
-  
+    
   /**
    * Custom submit hander to perform post_submit actions
    */
