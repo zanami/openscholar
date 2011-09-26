@@ -123,6 +123,9 @@ class os_boxes_slideshow extends os_boxes_default {
       
     $block = parent::render();
     $output = $view->execute_display();
+    
+    $id = str_replace('_', '-', $this->options['size']);
+    $block['content'] = '<div id="' . $id. '">' .$output . "</div>";
     $block['content'] = $output;
     return $block;
   }
