@@ -304,7 +304,14 @@ function vsite_layout_settings_form($form_state){
     $item['href'] .= '/dropdown';
     $item['title'] = $wgt['label'];
     $item['attributes']['class'] = strtolower(implode(' ', array('ctools-use-modal', $wgt['plugin'])));
-    $fact_links[$group]['children'][] = l($item['title'], $item['href'], $item).' '.l('Help', 'help/path/here', array('attributes' => array('class' => 'help')));
+    $options = array(
+    	'attributes' => array(
+    		'class' => 'help',
+    		'onclick' => "var w=window.open(this.href, 'advanced_help_window', 'width=500,height=500,scrollbars,resizable'); w.focus(); return false;"
+      ),
+      'query' => 'popup=1'
+    );
+    $fact_links[$group]['children'][] = l($item['title'], $item['href'], $item).' '.l('Help', 'help/os_boxes/'.str_replace('_','-',$wgt['plugin']), $options);
   }
   // theme it!
   $add_new = theme('ctools_dropdown_content', t('Add New Widget'), theme('item_list', $fact_links), FALSE, 'context-links');
