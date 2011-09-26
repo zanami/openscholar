@@ -223,6 +223,9 @@ function vsite_layout_find_widget_plugin(&$widget) {
   if (!isset($widget['plugin']) && $widget['module'] == 'boxes') {
       if ($box = boxes_load($widget['delta'])) {
         $widget['plugin'] = $box->plugin_key;
+        if (is_a($box, 'os_boxes_modalframe')) {
+          $widget['block_config_path'] = $box->get_config_path();
+        }
       }
       else {
         $widget['plugin'] = str_replace('boxes_add__', '', $widget['delta']);
