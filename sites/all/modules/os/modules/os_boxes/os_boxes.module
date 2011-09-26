@@ -28,6 +28,16 @@ function os_boxes_boxes_plugins() {
       'parent' => 'box',
     ),
   );
+  
+  $info['os_boxes_content'] = array(
+    'handler' => array(
+      'class' => 'os_boxes_content',
+      'file' => 'os_boxes_content.inc',
+      'path' => $path,
+      'parent' => 'box',
+    ),
+  );
+  
   $info['os_boxes_simple'] = array(
     'title' => 'Text',
     'description' => 'Simple custom text',
