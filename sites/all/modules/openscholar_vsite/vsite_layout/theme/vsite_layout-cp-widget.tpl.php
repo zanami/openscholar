@@ -21,7 +21,7 @@ if($w['overides']) {
 if (isset($w['plugin'])) {
   $info = os_boxes_get_boxes_plugins($w['plugin']);
   if (is_array($info['tags'])) $s_class .= ' '.implode(' ',$info['tags']);
-  $info['block_config_path'] = "cp/osboxes/nojs/".$w['delta'];
+  $info['block_config_path'] = $w['block_config_path']?$w['block_config_path']:"cp/osboxes/nojs/".$w['delta'];
   // plugins that dont have a title dont have a factory either
   // we don't want to let them delete widgets they can't create later
   $w['can_delete'] = strpos($w['delta'], 'og-') !== FALSE || isset($info['title']);
