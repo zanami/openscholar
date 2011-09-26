@@ -27,14 +27,14 @@ label {
   }
 
 input.form-text {
-	padding: 2px 3px;
-	margin: -1px;
-	border-width: 2px;
-	-moz-border-top-colors: #f9f9f9 #707070;
-	-moz-border-left-colors: #f9f9f9 #ABABAB;
-	-moz-border-right-colors: #f9f9f9 #ABABAB;
-	-moz-border-bottom-colors: #f9f9f9 #CECECE;
-	}
+ margin-top: -2px;
+  padding: 4px 3px 2px;
+  width: 60%;
+  background: url('../../cp_theme/images/form-input-bg.gif') repeat-x scroll left top #FFFFFF;
+    border: 1px solid #CDCDCD;
+    color: #333333;
+  }
+
 
 div.form-item {
   margin-bottom:1.5em;

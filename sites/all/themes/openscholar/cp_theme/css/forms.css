@@ -145,7 +145,7 @@ html.js fieldset.collapsed {
   }
 
 html.js fieldset.collapsible legend a {
-  background: url(../images/open-close.png) no-repeat 0 -20px transparent;
+  background: url('../images/open-close.png')no-repeat 0 -20px transparent;
   padding-left: 26px;
   color: #000;
   }
