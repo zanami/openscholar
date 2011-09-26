@@ -65,10 +65,18 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
  width:250px;
    }
    
-.scholarlayout-top-widgets-wrapper ul li {
- height:20px;	
-	width:100%;
-}
+   #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li { 
+  
+   margin-left:15px;
+ font-weight:bold;
+
+   }
+   
+     #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a { 
+ font-weight:normal;
+ background:url('../images/widget-bgSmall.png') no-repeat;
+ padding-left:25px;
+   }
 
 /*
 .context-links,
@@ -97,6 +105,7 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
 	  -moz-border-radius:5px 5px 0px 0px;
   -webkit-border-radius:5px 5px 5px 5px;
   border-radius: 5px 5px 5px 5px;
+  background: url('../images/scholarbase-sprite.png') no-repeat 3px -380px #a1d4a1 !important;
 }
 
 .section-cp .context-links {
@@ -108,8 +117,7 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
 .context-links:hover,
 .section-cp div.ctools-dropdown:hover{
  background: url('../images/scholarbase-sprite.png') no-repeat 3px -380px #a1d4a1 !important;
-
-  }
+}
 
 
 

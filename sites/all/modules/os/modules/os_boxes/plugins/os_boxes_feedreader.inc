@@ -23,40 +23,35 @@ class os_boxes_feedreader extends os_boxes_default {
    */
   public function options_form(){
     
-    $form['feed'] = array(
-      '#type' => 'select',
-      '#title' => t('Feed'),
-      '#options' => array(
-      ),
-      '#required' => TRUE,
+    $options = array(
+      'all' => t('All') 
     );
-    
     // for each feed node, add nid/node_title to the select options
     $view = views_get_view("scholar_reader");
     $view->set_display('block_1');
     $view->execute();
     
     if (count($view->result)) {
-      //feeds exist, add options
-      $form['feed']['#options'] += array('all' => t('All'));
-      
-      foreach($view->result as $r) {
-        $form['feed']['#options'] += array($r->nid => $r->node_title);
+      foreach ( $view->result as $r ) {
+        $options[$r->nid] = $r -> node_title;
       }
-      $form['feed']['#default_value'] = $this->options['feed'];
-    } else {
-      //no feedsto display
-      $form['feed']['#description'] = t('No feeds found.');
-      $form['feed']['#disabled'] = TRUE;
     }
-      
+ 
+    $form['feed'] = array(
+      '#type' => 'select', 
+      '#title' => t('Feed'), 
+      '#options' => $options, 
+      '#required' => TRUE,
+      '#default_value' => $this->options['feed'],
+      '#description' => t('Select the feed to draw items from')
+    );
     
     $form['number_of_items'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Number of items to display'),
-      '#default_value' => $this->options['number_of_items']
+      '#type' => 'textfield', 
+      '#title' => t('Number of items to display'), 
+      '#default_value' => $this->options['number_of_items'] 
     );
-
+    
     $form += parent::options_form();
     return $form;
   }
