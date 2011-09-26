@@ -249,7 +249,7 @@ function vsite_layout_settings_form($form_state){
     '#title' => t('Site section'),
     '#default_value' => $s_page_type,
     '#options' => $a_page_types,
-    '#description' => t('Choose a section from this pulldown to change the layout of that section. "All Sections" indicates the layout will remain the same across all areas of your site.<br />'),
+    '#description' => t('Choose a section from this pulldown to change the layout of that section. "All Sections" indicates that the widget will be displayed everywhere in your site.<br />'),
 
     '#ahah' => array(
           'event' => 'go_ahah',
