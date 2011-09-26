@@ -5,12 +5,16 @@
  * The class for "Slideshow" type widgets.
  */
 
-class os_boxes_slideshow extends boxes_box {
+class os_boxes_slideshow extends os_boxes_default {
+  
+  // js is cached somehow; disable caching for now
+  public $cache_type =  BLOCK_NO_CACHE;
+  
   /**
    * Implementation of boxes_content::options_defaults().
    */
   public function options_defaults() {
-    //$options = parent::options_defaults();
+    $options = parent::options_defaults();
 
     $options['gallery'] = 'all';
     $options['size'] = '480x270';
@@ -88,7 +92,7 @@ class os_boxes_slideshow extends boxes_box {
       '#default_value' => $this->options['number_of_items'] 
     );
     
-   // $form += parent::options_form();
+    $form += parent::options_form();
     return $form;
   }
 
@@ -96,23 +100,28 @@ class os_boxes_slideshow extends boxes_box {
    * Implementation of boxes_content::render().
    */
   public function render() {
-    //@todo
     $view = views_get_view('os_slideshow');
     $view->set_display('default');
     $view->display_handler->set_option('items_per_page', (int)$this->options['number_of_items']);
     
+
     $handler = $view -> display_handler;
-    $opts = $handler -> options['style_options'];
-
-    $opts['views_slideshow_singleframe']['effect'] = $this->options['effect'];
-
-    $handler -> override_option('style_options', $opts);
+    
+    // override effect
+    $style_opts = $handler -> options['style_options'];
+    $style_opts['views_slideshow_singleframe']['effect'] = $this->options['effect'];
+    $handler -> override_option('style_options', $style_opts);
+    
+    // override size (imagecache preset)
+    $fields_opts = $handler -> options['fields'];
+    $fields_opts['field_gallery_image_fid']['format'] = $this->options['size'] . '_default'; 
+    $handler -> override_option('fields', $fields_opts);
 
     if ($this->options['gallery'] != 'all') {
       $view->set_arguments(array($this->options['gallery']));
     }
       
-    //$block = parent::render();
+    $block = parent::render();
     $output = $view->execute_display();
     $block['content'] = $output;
     return $block;
