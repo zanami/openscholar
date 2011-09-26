@@ -230,6 +230,9 @@ function vsite_layout_settings_form($form_state){
     if (!isset($widget['plugin']) && ($widget['module'] == 'boxes')) {
       $box = boxes_load($widget['delta']);
       $widget['plugin'] = $box->plugin_key;
+      if (is_a($box, 'os_boxes_modalframe')) {
+        $widget['block_config_path'] = $box->get_config_path();
+      }
     }
   }
 
