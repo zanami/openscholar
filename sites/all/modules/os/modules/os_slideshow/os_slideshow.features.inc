@@ -5,8 +5,8 @@
  */
 function os_slideshow_imagecache_default_presets() {
   $items = array(
-    'os_slideshow_550' => array(
-      'presetname' => 'os_slideshow_550',
+    'os_slideshow_480x270' => array(
+      'presetname' => 'os_slideshow_480x270',
       'actions' => array(
         '0' => array(
           'weight' => '0',
@@ -15,6 +15,20 @@ function os_slideshow_imagecache_default_presets() {
           'data' => array(
             'width' => '480',
             'height' => '270',
+          ),
+        ),
+      ),
+    ),
+    'os_slideshow_640x360' => array(
+      'presetname' => 'os_slideshow_640x360',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '640',
+            'height' => '360',
           ),
         ),
       ),
