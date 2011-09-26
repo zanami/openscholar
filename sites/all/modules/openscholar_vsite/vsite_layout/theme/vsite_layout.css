@@ -119,6 +119,22 @@ dd.scholarlayout-item {
   }
   
   
+    #scholarlayout-top-widgets #boxes-scholar_announcements_latest {
+ background: url('images/widgetIcons/announcement.png') no-repeat scroll 50% 10px transparent;
+}
+  
+  
+      #scholarlayout-top-widgets #boxes-scholar_presentations_recent {
+ background: url('images/widgetIcons/presentation.png') no-repeat scroll 50% 10px transparent;
+}
+  
+        #scholarlayout-top-widgets #scholar_software_releases-block_3 {
+ background: url('images/widgetIcons/software.png') no-repeat scroll 50% 10px transparent;
+}
+  
+  
+ 
+  
     #scholarlayout-top-widgets dd.content.featured,
     #scholarlayout-top-widgets dd.content.post {
  background: url('images/widgetIcons/post.png') no-repeat scroll 50% 10px transparent;
