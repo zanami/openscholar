@@ -93,16 +93,16 @@ function scholar_front_update_6002(&$sandbox){
     $sandbox['max'] = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
   }
   
-  //vsites per batch.  
+  //vsites per batch.
   $limit = 50;
   
   require_once drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc';
-  //$batch['operations'][] = array('_front_boxmaker',array($limit, $offset, $total_vsites),);
-  $updated_vsites = _front_boxmaker($limit, $sandbox['progress'], $sandbox['max']);
+  //$batch['operations'][] = array('scholar_front_frontpage_boxmaker',array($limit, $offset, $total_vsites),);
+  $updated_vsites = scholar_front_frontpage_boxmaker($limit, $sandbox['progress'], $sandbox['max']);
   $sandbox['progress'] += $limit;
   
   if ($sandbox['progress'] < $sandbox['max']) {
-    $ret['#finished'] = $sandbox['progress'] / $sandbox['max']; 
+    $ret['#finished'] = $sandbox['progress'] / $sandbox['max'];
   } else {
     $ret['#finished'] = TRUE;
   }
