@@ -21,10 +21,17 @@ class os_boxes_node extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(){
+  	
+  	$default_nid = $this->options['nid'];
+    if (!is_string($default_nid) || (int)$default_nid != 0) {
+    	vsite_include('nodeautocomplete');
+      $default_nid = _vsite_node_autocomplete_nid_to_title($this->options['nid']);
+    }
+  	
     //@todo just for vsite for now but it can be used outside os
     vsite_include('nodeautocomplete');
     $form['nid'] = vsite_node_autocomplete_element($title = NULL);
-    $form['nid']['#default_value'] = $this->options['nid'];
+    $form['nid']['#default_value'] = $default_nid;
     $form += parent::options_form();
     
     $form['teaser'] = array(

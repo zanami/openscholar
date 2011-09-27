@@ -30,7 +30,7 @@ class os_boxes_slideshow extends os_boxes_default {
   public function options_form(){
     // gallery
     $options = array(
-      'all' => t('All') 
+      'all' => t('All')
     );
     // for each gallery node, add nid/node_title to the select options
     $view = views_get_view("scholar_image_gallery");
@@ -41,30 +41,33 @@ class os_boxes_slideshow extends os_boxes_default {
     }
     
     $form['gallery'] = array(
-      '#type' => 'select', 
-      '#title' => t('Gallery'), 
-      '#options' => $options, 
-      '#default_value' => $this->options['gallery'], 
-      '#required' => TRUE 
+      '#type' => 'select',
+      '#title' => t('Gallery'),
+      '#options' => $options,
+      '#default_value' => $this->options['gallery'],
+      '#required' => TRUE
     );
     
     // effect
     module_load_all_includes('views_slideshow.inc');
     $view = views_get_view('os_slideshow');
-    $view->set_display('default');
-    $view->init_style();
     
-    $function = 'views_slideshow_singleframe_views_slideshow_options_form';
-    $form_element = array();
-    $form_element_state = array();
-    $views_style_plugin = $view->style_plugin;
-    
-    call_user_func_array($function, array(&$form_element, &$form_element_state, &$views_style_plugin));
-    //dpm($form_element);
-    
-
-    $form['effect'] = $form_element['views_slideshow_singleframe']['effect'];
-    $form['effect']['#default_value'] = $this->options['effect'];
+    if($view){
+	    $view->set_display('default');
+	    $view->init_style();
+	    
+	    $function = 'views_slideshow_singleframe_views_slideshow_options_form';
+	    $form_element = array();
+	    $form_element_state = array();
+	    $views_style_plugin = $view->style_plugin;
+	    
+	    call_user_func_array($function, array(&$form_element, &$form_element_state, &$views_style_plugin));
+	    //dpm($form_element);
+	    
+	
+	    $form['effect'] = $form_element['views_slideshow_singleframe']['effect'];
+	    $form['effect']['#default_value'] = $this->options['effect'];
+    }
       
     // size
     $options = array();
@@ -78,18 +81,18 @@ class os_boxes_slideshow extends os_boxes_default {
     }
     
     $form['size'] = array(
-      '#type' => 'select', 
-      '#title' => t('Size'), 
-      '#options' => $options, 
-      '#default_value' => $this->options['size'] 
+      '#type' => 'select',
+      '#title' => t('Size'),
+      '#options' => $options,
+      '#default_value' => $this->options['size']
     );
     
     //dpm($imagecache_presets);
     // nr of items
     $form['number_of_items'] = array(
-      '#type' => 'textfield', 
-      '#title' => t('Number of items to display'), 
-      '#default_value' => $this->options['number_of_items'] 
+      '#type' => 'textfield',
+      '#title' => t('Number of items to display'),
+      '#default_value' => $this->options['number_of_items']
     );
     
     $form += parent::options_form();
@@ -114,7 +117,7 @@ class os_boxes_slideshow extends os_boxes_default {
     
     // override size (imagecache preset)
     $fields_opts = $handler -> options['fields'];
-    $fields_opts['field_gallery_image_fid']['format'] = $this->options['size'] . '_default'; 
+    $fields_opts['field_gallery_image_fid']['format'] = $this->options['size'] . '_default';
     $handler -> override_option('fields', $fields_opts);
 
     if ($this->options['gallery'] != 'all') {

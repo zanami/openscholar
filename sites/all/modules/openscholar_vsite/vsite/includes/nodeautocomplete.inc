@@ -58,8 +58,10 @@ function _vsite_node_autocomplete_title_to_nid($title){
   preg_match('/^(?:\s*|(.*) )?\[\s*nid\s*:\s*(\d+)\s*\]$/', $title, $matches);
   if (!empty($matches)) {
     return $matches[2];
-  }
-  else {
+  }elseif (intval($title)){
+  	//Have we been passed a nid and not a title?
+  	return intval($title);
+  }else {
     return NULL;
   }
 
