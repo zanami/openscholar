@@ -1,29 +1,3 @@
 <?php
 
 include_once('os_slideshow.features.inc');
-
-function os_slideshow_init(){
-  /*
-   $v = views_get_view('os_slideshow');
-   $v->set_display();
-   dpm($v);
-   views_include('admin');
-   $p = views_fetch_plugin_names('style', $key = NULL);
-   dpm($p);
-   ctools_include('plugins');
-  // views_
-   $v -> init_style();
-   //dpm($v -> )
-   dpm($v);
-   dpm(views_get_view(''))
-
-  
-    $view = views_get_view('os_slideshow');
-    $view->set_display('default');
-    
-    $handler = $view -> display_handler;
-    dpm($handler -> options['style_options']);
-    //$view->display_handler->set_option('items_per_page', (int)$this->options['number_of_items']);
-    */
-
-}
