@@ -61,9 +61,16 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
   #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container { 
  width:300px;
  font-size:1.2em;
+ padding:8px;
  /*height:200px;
  overflow:auto;*/
    }
+   
+     #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container a:hover { 
+ background:none;
+   }
+   
+   
    
    #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li { 
    margin-left:12px;
@@ -72,20 +79,14 @@ padding-bottom:8px;
 
    }
    
-     #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a { 
- font-weight:normal;
- background:url('../images/widget-bgSmall.png') no-repeat;
- padding:0 0 4px 25px;
- margin-left:-30px;
- font-size:.9em;
-height:25px;
-   }
 
-  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li:hover { 
-background:#0000FF;
+
+  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a:hover { 
+text-decoration:underline;
+
    }
    
-     #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.help { 
+     #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help { 
 position:relative;
 float:right;
  background: url('../images/scholarbase-sprite.png') 0 -147px no-repeat transparent;
@@ -94,6 +95,68 @@ float:right;
  margin: -25px 4px 0 0;
 text-indent: -999em;
    }
+   
+    #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help:hover { 
+    	background:none;
+    }
+    
+    
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a { 
+ font-weight:normal;
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/widget-bgSmall.png') no-repeat;
+ padding:0 0 4px 25px;
+ margin-left:-30px;
+ font-size:.9em;
+height:25px;
+   }
+   
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_pub_grps { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/publications.png') no-repeat;
+}
+   
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_feedreader,
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_rss { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/rss.png') no-repeat;
+}
+  
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_curr_toc,
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_booktoc { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/book.png') no-repeat;
+}  
+
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_modal_image,
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_gallery { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/camera.png') no-repeat;
+}  
+
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_slideshow { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/slideshow.png') no-repeat;
+} 
+
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_addthis { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/addThis.png') no-repeat;
+} 
+
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_twitterfeed { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/twitter.png') no-repeat;
+} 
+
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_shields { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/shield.png') no-repeat;
+} 
+
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_bio { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/bio.png') no-repeat;
+} 
+
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_cclicense { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/license.png') no-repeat;
+} 
+
+
+
+
+
 
   /*CTOOLS DROPDOWN ON LAYOUT PAGE - END*/
 
