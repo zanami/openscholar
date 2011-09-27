@@ -21,10 +21,14 @@ if($w['overides']) {
 if (isset($w['plugin']) && $w['module'] == "boxes") {
   $info = os_boxes_get_boxes_plugins($w['plugin']);
   if (is_array($info['tags'])) $s_class .= ' '.implode(' ',$info['tags']);
-  $info['block_config_path'] = $w['block_config_path']?$w['block_config_path']:"cp/osboxes/nojs/".$w['delta'];
+  $info['block_config_path'] = $w['block_config_path']?str_replace('/configure', '', $w['block_config_path']):"cp/osboxes/nojs/".$w['delta'];
+
   // plugins that dont have a title dont have a factory either
   // we don't want to let them delete widgets they can't create later
   $w['can_delete'] = strpos($w['delta'], 'og-') !== FALSE || isset($info['title']);
+  if ($w['can_delete']) {
+    $info['block_delete_path'] = "cp/osboxes/nojs/".$w['delta'];
+  }
 }
 
 //Support for ctools popups
@@ -41,7 +45,7 @@ if($w['icon_path']){
      <?php
      if ($info['block_config_path']){
        ?> <div class="controls"> <?php
-       if ($w['can_delete']) print ctools_modal_text_button("Delete", $info['block_config_path']."/delete", "Delete widget", "delete");
+       if ($w['can_delete']) print ctools_modal_text_button("Delete", $info['block_delete_path']."/delete", "Delete widget", "delete");
      	 $class = (strpos($w['delta'],"boxes_add__") === 0)?"add":"setting";
        print ctools_modal_text_button("Configure",$info['block_config_path']."/configure/cp_layout","Configure widget",$class);
        ?> </div> <?php
