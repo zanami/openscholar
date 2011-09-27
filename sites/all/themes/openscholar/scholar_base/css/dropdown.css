@@ -62,24 +62,31 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
  width:300px;
  font-size:1.2em;
  padding:8px;
- /*height:200px;
- overflow:auto;*/
+height:400px;
+ overflow:auto;
    }
    
-     #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container a:hover { 
- background:none;
-   }
-   
-   
-   
+ 
    #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li { 
-   margin-left:12px;
+   margin-left:2px;
  font-weight:bold;
 padding-bottom:8px;
-
+font-size:1em;
    }
    
-
+  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li.first { 
+background:#EEE;
+padding-left:8px;
+border-bottom:1px dotted #555;
+   }
+   
+    #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.first, 
+    #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.first.last,
+    #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.last{ 
+background:#EEE;
+padding-left:0px;
+border-bottom:none;
+   } 
 
   #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a:hover { 
 text-decoration:underline;
@@ -96,9 +103,6 @@ float:right;
 text-indent: -999em;
    }
    
-    #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help:hover { 
-    	background:none;
-    }
     
     
 #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a { 
@@ -152,8 +156,6 @@ height:25px;
  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_cclicense { 
  background:url('/sites/all/modules/openscholar_vsite/vsite_layout/theme/images/smallWidgetIcons/license.png') no-repeat;
 } 
-
-
 
 
 
@@ -264,11 +266,22 @@ h2.title a.ctools-dropdown-link,
 .context-links .ctools-dropdown-container-wrapper a:hover,
 .ctools-dropdown ul.links li a:hover,
 .ctools-dropdown-container-wrapper ul.links li a:hover {
-  color: #ffffff !important;
+  color: #333 !important;
   text-transform: none !important;
   text-decoration: none !important;
-  background: #356df6 !important;
+  background: blue !important;
   font-weight: bold !important;
+}
+
+#cp-settings-layout .context-links .ctools-dropdown-container-wrapper a:hover,
+#cp-settings-layout .ctools-dropdown ul.links li a:hover,
+#cp-settings-layout .ctools-dropdown-container-wrapper ul.links li a:hover {
+  color: #333 !important;
+  text-transform: none !important;
+  text-decoration: underline !important;
+  background: transparent !important;
+  font-weight: normal !important;
+}
 }
 
 .context-links .ctools-dropdown-container-wrapper .flag-wrapper a {
