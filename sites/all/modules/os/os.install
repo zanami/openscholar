@@ -92,9 +92,6 @@ function os_update_6002(&$sandbox) {
 function os_update_6003(&$sandbox) {
   $res = array();
   
-  $ret['#abort'] = array('success' => FALSE, 'query' => 'Richard Says Stop.');
-  return $ret;
-  
   $a_changes = array(
     'vsite_widgets-3' => 'vsite-site_search',
     'vsite_widgets-5' => 'vsite-google_translate',

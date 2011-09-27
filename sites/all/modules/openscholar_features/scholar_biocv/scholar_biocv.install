@@ -56,9 +56,6 @@ function scholar_biocv_update_6002(&$sandbox){
 function scholar_biocv_update_6003(&$sandbox){
   $ret = array();
   
-  $ret['#abort'] = array('success' => FALSE, 'query' => 'Richard Says Stop.');
-  return $ret;
-  
   if (module_exists('os_boxes')) { //&& module_exists('vsite_controllers')) {
     _scholar_biocv_make_blurbs_from_bios();                       //make a box from each bio blurb
     $ret[] = array(
@@ -116,14 +113,12 @@ function scholar_biocv_update_6005(&$sandbox){
     $value = serialize($value);
   	
   	db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = '%s' AND id = '%s' AND object_type = '%s' AND object_id = '%s' ",array($value,$r->type,$r->id,$r->object_type,$r->object_id));
-
-      replace_boxes('scholar_reader-my_twitter_feed', $twitter_box, false, $res->id);
     
   }
 
   $res[] = array(
     'success' => true,
-    'query' => 'Updated twitter boxes for scholar reader',
+    'query' => 'Updated bio box on existing front contexts',
   );
 
   return $res;
