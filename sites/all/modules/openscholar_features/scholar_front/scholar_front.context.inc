@@ -50,12 +50,12 @@ function scholar_front_context_default_contexts() {
 		      'region' => 'right',
 		      'label' => 'Featured posts',
 		    ),
-		    'boxes-scholar_biocv_bio_blurb' => array(
+		    'boxes-scholar_biocv_bio' => array(
 		      'module' => 'boxes',
-		      'delta' => 'scholar_biocv_bio_blurb',
+		      'delta' => 'scholar_biocv_bio',
 		      'weight' => 0,
-		      'region' => 'content_bottom',
-		      'label' => 'Bio Blurb',
+		      'region' => 'content_top',
+		      'label' => 'Bio Teaser',
 		    ),
       ),
     ),

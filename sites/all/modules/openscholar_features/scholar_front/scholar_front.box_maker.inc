@@ -168,10 +168,9 @@ EOD;
       	$opts['body'] = $r->field_hook_text_value;
       	
       } else {
-      	//nope, just a regular bio box
-      	$type = 'os_boxes_bio';
-      	$opts['nid'] = $nid;
-      	$opts['teaser'] = 'full';
+      	//nope, just a regular bio box, use the default
+      	$type = 'boxes-scholar_biocv_bio';
+        $block = true;
       }
       
       break;
@@ -218,7 +217,7 @@ EOD;
   	$opts['subject'] = '';
   }
   $opts['description'] = $_box_plugins[$type]['title'] . ' box';
-  $opts['region'] = 'content_bottom';
+  $opts['region'] = 'content_top';
   
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
   //debug log.  also writes vsite link, so we can find a type of box and compare local site vs what's in prod
@@ -247,15 +246,15 @@ EOD;
 }
 
 
-//add our new box to content_bottom
+//add our new box to content_top
 function scholar_front_fb_add_box(&$vsite, $box) {
-  return vsite_put_box("openscholar-feature-front",$vsite, $box,'content_bottom');
+  return vsite_put_box("openscholar-feature-front",$vsite, $box,'content_top');
 }
 
-//adds block to content_bottom region
+//adds block to content_top region
 function scholar_front_fb_add_block(&$vsite, $block) {
   $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
-  $front_context['blocks'][$block]['region'] = 'content_bottom';
+  $front_context['blocks'][$block]['region'] = 'content_top';
 
   $og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
   if($og_theme){

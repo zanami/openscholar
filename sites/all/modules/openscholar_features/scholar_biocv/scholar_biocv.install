@@ -56,9 +56,6 @@ function scholar_biocv_update_6002(&$sandbox){
 function scholar_biocv_update_6003(&$sandbox){
   $ret = array();
   
-  $ret['#abort'] = array('success' => FALSE, 'query' => 'Richard Says Stop.');
-  return $ret;
-  
   if (module_exists('os_boxes')) { //&& module_exists('vsite_controllers')) {
     _scholar_biocv_make_blurbs_from_bios();                       //make a box from each bio blurb
     $ret[] = array(
@@ -88,6 +85,43 @@ function scholar_biocv_update_6004(&$sandbox){
   }
   
   return $ret;
+}
+
+/**
+ * Add new default box to all custom front pages
+ * @param array $sandbox
+ */
+function scholar_biocv_update_6005(&$sandbox){
+  
+  if(!module_exists('boxes')){
+    return array("#abort" => array('success' => FALSE, 'query' => 'Boxes module was not installed when this update ran, please run update.php again.'));
+  }
+  
+  //Get all existing front contexts and remove the new default bio blurb
+  $q = db_query("SELECT * FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%' AND value NOT LIKE '%boxes-scholar_biocv_bio%' ");
+  while ($r = db_fetch_object($q)) {
+
+  	$value = unserialize($r->value);
+  	
+  	$value['blocks']['boxes-scholar_biocv_bio'] = array(
+          'module' => 'boxes',
+          'delta' => 'scholar_biocv_bio',
+          'weight' => 0,
+          'region' => false,
+          'label' => 'Bio Teaser',
+    );
+    $value = serialize($value);
+  	
+  	db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = '%s' AND id = '%s' AND object_type = '%s' AND object_id = '%s' ",array($value,$r->type,$r->id,$r->object_type,$r->object_id));
+    
+  }
+
+  $res[] = array(
+    'success' => true,
+    'query' => 'Updated bio box on existing front contexts',
+  );
+
+  return $res;
 }
 
 /*

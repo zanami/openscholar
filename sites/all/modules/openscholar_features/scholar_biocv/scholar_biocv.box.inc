@@ -8,16 +8,16 @@ function scholar_biocv_default_box() {
   $box = new stdClass;
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
-  $box->delta = 'scholar_biocv_bio_blurb';
+  $box->delta = 'scholar_biocv_bio';
   $box->plugin_key = 'os_boxes_bio';
-  $box->title = 'Bio Blurb';
-  $box->description = 'Bio Blurb';
+  $box->title = 'Bio';
+  $box->description = 'Bio Teaser';
   $box->options = array(
     'visibility' => 'feature',
     'nid' => 0,
     'teaser' => 'teaser',
   );
 
-  $export['scholar_biocv_bio_blurb'] = $box;
+  $export['scholar_biocv_bio'] = $box;
   return $export;
 }

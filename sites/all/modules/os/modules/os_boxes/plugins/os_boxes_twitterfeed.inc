@@ -7,9 +7,6 @@
 
 class os_boxes_twitterfeed extends os_boxes_default {
 	
-	//Only cache twitter feeds for 15 minutes
-	public $cache_max_lifespan = 900;
-	
   /**
    * Implementation of boxes_content::options_defaults().
    */
@@ -67,6 +64,19 @@ class os_boxes_twitterfeed extends os_boxes_default {
 
     $block['content'] = $output;
     return $block;
+  }
+  
+  /**
+   * Return the cache parameters for this box
+   */
+  public function cache_info(){
+    
+    $cache_key = array(
+      'os_og' => array('current' => 'current'),
+    );
+    
+    //Only cache twitter feeds for 15 minutes (max_lifespan)
+    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key, 'max_lifespan' => 900);
   }
 
 }

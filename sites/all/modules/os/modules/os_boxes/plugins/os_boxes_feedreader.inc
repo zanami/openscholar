@@ -24,7 +24,7 @@ class os_boxes_feedreader extends os_boxes_default {
   public function options_form(){
     
     $options = array(
-      'all' => t('All') 
+      'all' => t('All')
     );
     // for each feed node, add nid/node_title to the select options
     $view = views_get_view("scholar_reader");
@@ -38,18 +38,18 @@ class os_boxes_feedreader extends os_boxes_default {
     }
  
     $form['feed'] = array(
-      '#type' => 'select', 
-      '#title' => t('Feed'), 
-      '#options' => $options, 
+      '#type' => 'select',
+      '#title' => t('Feed'),
+      '#options' => $options,
       '#required' => TRUE,
       '#default_value' => $this->options['feed'],
       '#description' => t('Select the feed to draw items from')
     );
     
     $form['number_of_items'] = array(
-      '#type' => 'textfield', 
-      '#title' => t('Number of items to display'), 
-      '#default_value' => $this->options['number_of_items'] 
+      '#type' => 'textfield',
+      '#title' => t('Number of items to display'),
+      '#default_value' => $this->options['number_of_items']
     );
     
     $form += parent::options_form();
@@ -76,13 +76,17 @@ class os_boxes_feedreader extends os_boxes_default {
   }
   
   /**
-   * Return the cache key for this box
+   * Return the cache parameters for this box
    */
-  public function cache_keys(){
-    //Clear when book related nodes are saved
-    $cache_key = parent::cache_keys();
-    $cache_key['node'] = array('feed' => 'feed', 'feed_item' => 'feed_item');
+  public function cache_info(){
     
-    return $cache_key;
+    //Clear when bio nodes are saved
+    $cache_key = array(
+      'os_og' => array('current' => 'current'),
+      'node' => array('feed' => 'feed', 'feed_item' => 'feed_item'),
+    );
+    
+    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
   }
+
 }
