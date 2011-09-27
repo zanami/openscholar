@@ -214,11 +214,11 @@ EOD;
     $opts['title'] = $settings['title'];
     $opts['subject'] = $settings['title'];
   } else {
-  	$opts['title'] = '';
+  	$opts['title'] = $_box_plugins[$type]['title'] . ' box';
   	$opts['subject'] = '';
   }
   $opts['description'] = $_box_plugins[$type]['title'] . ' box';
-  $opts['region'] = 'content_top';
+  $opts['region'] = 'content_bottom';
   
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
   //debug log.  also writes vsite link, so we can find a type of box and compare local site vs what's in prod
@@ -247,15 +247,15 @@ EOD;
 }
 
 
-//add our new box to content_top
+//add our new box to content_bottom
 function scholar_front_fb_add_box(&$vsite, $box) {
-  return vsite_put_box("openscholar-feature-front",$vsite, $box,'content_top');
+  return vsite_put_box("openscholar-feature-front",$vsite, $box,'content_bottom');
 }
 
-//adds block to content_top region
+//adds block to content_bottom region
 function scholar_front_fb_add_block(&$vsite, $block) {
   $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
-  $front_context['blocks'][$block]['region'] = 'content_top';
+  $front_context['blocks'][$block]['region'] = 'content_bottom';
 
   $og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
   if($og_theme){

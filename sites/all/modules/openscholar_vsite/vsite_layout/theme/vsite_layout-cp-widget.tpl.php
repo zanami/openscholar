@@ -18,7 +18,7 @@ if($w['overides']) {
 	$s_class .= " with-overrides";
 }
 
-if (isset($w['plugin'])) {
+if (isset($w['plugin']) && $w['module'] == "boxes") {
   $info = os_boxes_get_boxes_plugins($w['plugin']);
   if (is_array($info['tags'])) $s_class .= ' '.implode(' ',$info['tags']);
   $info['block_config_path'] = $w['block_config_path']?$w['block_config_path']:"cp/osboxes/nojs/".$w['delta'];

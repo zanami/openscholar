@@ -15,24 +15,6 @@ function scholar_front_menu(){
     'weight' => 0,
   );
 
-  $items['scholar_front/features'] = array(
-    'type' => MENU_CALLBACK,
-    'title' => '',
-    'page callback' => 'scholar_front_features',
-    'file' => 'scholar_front.pages.inc',
-    'access arguments' => array('access content'),
-    'weight' => 0,
-  );
-
-  $items['scholar_front/flag'] = array(
-    'type' => MENU_CALLBACK,
-    'title' => '',
-    'page callback' => 'scholar_front_home_flag',
-    'file' => 'scholar_front.pages.inc',
-    'access arguments' => array('access content'),
-    'weight' => 0,
-  );
-
   $items['features/scholar_front'] = array(
     'title' => 'Front Page Settings',
     'page callback' => 'drupal_get_form',
