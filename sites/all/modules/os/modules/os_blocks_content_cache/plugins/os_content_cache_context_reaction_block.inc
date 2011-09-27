@@ -126,12 +126,18 @@ class os_content_cache_context_reaction_block extends vsite_context_reaction_blo
   		case "boxes":
   			//Handle Boxes Cache
   	    $box = boxes_load($block->delta);
-        if($box && $box->cache_type == BLOCK_CACHE_CONTENT_CACHE && $box->cache_keys()){
-          $a_config = array('keys' => $box->cache_keys());
-          $a_config['min_lifespan'] = isset($box->cache_min_lifespan)?intval($box->cache_min_lifespan):$this->cache_default_min_lifespan;
-          $a_config['max_lifespan'] = isset($box->cache_max_lifespan)?intval($box->cache_max_lifespan):$this->cache_default_max_lifespan;
-          $a_config['granularity'] = isset($box->cache_granularity)?$box->cache_granularity:array();
-          return $a_config;
+        if($box && method_exists($box,'cache_info')){
+        	$a_config = $box->cache_info();
+        	if(is_array($a_config) && $a_config['type'] != BLOCK_CACHE_CONTENT_CACHE){
+        	  //Set Defaults
+        	  $a_cache += array(
+        	    'min_lifespan' => $this->cache_default_min_lifespan,
+        	    'max_lifespan' => $this->cache_default_max_lifespan,
+        	    'granularity' => array(),
+        	  );
+        	  
+	          return $a_config;
+        	}
         }
   	  break;
   		default:

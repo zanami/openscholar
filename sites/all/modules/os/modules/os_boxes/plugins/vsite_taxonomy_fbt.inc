@@ -170,12 +170,4 @@ class vsite_taxonomy_fbt extends os_boxes_default {
     return $block;
   }
 
-  /**
-   * Return the cache key for this taxonomy box
-   */
-  public function cache_keys(){
-    $cache_key = parent::cache_keys();
-
-    return false; //Do not cache for now
-  }
 }

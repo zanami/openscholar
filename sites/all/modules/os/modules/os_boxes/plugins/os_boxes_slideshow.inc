@@ -7,9 +7,6 @@
 
 class os_boxes_slideshow extends os_boxes_default {
   
-  // js is cached somehow; disable caching for now
-  public $cache_type =  BLOCK_NO_CACHE;
-  
   /**
    * Implementation of boxes_content::options_defaults().
    */
@@ -130,19 +127,5 @@ class os_boxes_slideshow extends os_boxes_default {
     $block['content'] = '<div id="' . $id. '">' .$output . "</div>";
     return $block;
   }
-  
-  /**
-   * Return the cache key for gallery view
-   */
-  /*
-  public function cache_keys(){
-    $cache_key = parent::cache_keys();
-    
-    //Clear the cache whenever a image or gallery is saved
-    //$cache_key['node'] = array('image' => 'image', 'gallery' => 'gallery');
-    
-    return $cache_key;
-  }
-  */
 
 }
