@@ -1,5 +1,5 @@
 if (Drupal.jsEnabled) {
-  $(document).ready(function() {
+  Drupal.behaviors.shields = function() {
     $('.shield_wrapper .form-radios ').hide();
 
     var theList = '<ul class="shield-picker">';
@@ -51,5 +51,5 @@ if (Drupal.jsEnabled) {
     	//$("#edit-settings-generic-" + id.replace('.','\.')).attr("checked", "checked");
     });
 
-  });
+  };
 }
