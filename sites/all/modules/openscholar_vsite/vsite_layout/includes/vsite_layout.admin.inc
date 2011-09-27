@@ -301,8 +301,18 @@ function vsite_layout_settings_form($form_state){
       );
     }
 
+    $uses_modalframe = false;
+    $plugin = $info;
+    while ($plugin['handler']['parent'] && !$uses_modalframe) {
+      if ($plugin['handler']['parent'] == 'os_boxes_modalframe') {
+        $uses_modalframe = true;
+      }
+      else {
+        $plugin = os_boxes_get_boxes_plugins($plugin['handler']['parent']);
+      }
+    }
     $item = menu_get_item($wgt['block_config_path']);
-    $item['href'] .= '/dropdown';
+    $item['href'] .= $uses_modalframe?'/modal/box/'.$wgt['plugin']:'/dropdown';
     $item['title'] = $wgt['label'];
     $item['attributes']['class'] = strtolower(implode(' ', array('ctools-use-modal', $wgt['plugin'])));
     $options = array(
