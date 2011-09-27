@@ -28,7 +28,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'box',
     ),
   );
-  
+
   $info['os_boxes_content'] = array(
     'handler' => array(
       'class' => 'os_boxes_content',
@@ -37,7 +37,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'box',
     ),
   );
-  
+
   $info['os_boxes_simple'] = array(
     'title' => 'Text',
     'description' => 'Simple custom text',
@@ -406,10 +406,10 @@ function os_boxes_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $items['cp/osboxes/%ctools_js/%/remove'] = array(
+  $items['cp/osboxes/%ctools_js/%/%/remove'] = array(
     'title' => 'Remove this Widget',
     'page callback' => 'os_boxes_remove_widget',
-    'page arguments' => array(2, 3),
+    'page arguments' => array(2, 3, 4),
     'access callback' => 'os_boxes_cp_layout_configurable',
     'access arguments' => array(3),
     'type' => MENU_CALLBACK,
@@ -446,17 +446,29 @@ function os_boxes_vsite_admin_link($type, $object) {
   if ($type != 'block') return $links;
 
 
-  if ($object->module == 'boxes' && ($box = boxes_load($object->delta)) && !is_subclass_of($box->plugin_key, 'os_boxes_modalframe')) {
-    $links[] = array(
-      'title' => 'Configure',
-      'href' => $object->block_config_path.'/front',
-      'attributes' => array(
-        'class' => 'ctools-use-modal',
-      ),
-    );
+  if ($object->module == 'boxes' && ($box = boxes_load($object->delta))) {
+    if (!is_subclass_of($box->plugin_key, 'os_boxes_modalframe')) {
+      $links[] = array(
+        'title' => 'Configure',
+        'href' => $object->block_config_path.'/front',
+        'attributes' => array(
+          'class' => 'ctools-use-modal',
+        ),
+      );
+    }
+
+    static $context = null;
+    if (!$context) {
+      $contexts = context_active_contexts();
+      foreach ($contexts as $ctx) {
+        if (strpos($ctx->name, 'openscholar-feature-') !== FALSE) {
+          $context = $ctx->name;
+        }
+      }
+    }
     $links[] = array(
       'title' => 'Remove',
-      'href' => $object->block_config_path.'/remove',
+      'href' => 'cp/osboxes/nojs/'.$object->delta.'/'.$context.'/remove',
       'attributes' => array(
         'class' => 'ctools-use-ajax',
       )
@@ -532,7 +544,7 @@ function os_boxes_delete_modal($js, $delta) {
   $box = boxes_load($delta);
   $form_state = array('box' => $box);
 
-  if (!js) {
+  if (!$js) {
     return ctools_build_form('os_boxes_delete_box_confirm_form', $form_state);
   }
 
@@ -562,12 +574,23 @@ function os_boxes_delete_modal($js, $delta) {
   ctools_ajax_render($output);
 }
 
-function os_boxes_remove_widget($nojs, $delta) {
+function os_boxes_remove_widget($js, $delta, $ctx) {
   // get the context
   // remove box from context
   // save context
+  $vsite = vsite_get_vsite();
+  $ctx_key = $ctx.':reaction:block';
+  $ctx = $vsite->controllers->context->get($ctx_key);
+  $ctx['blocks']['boxes-'.$delta]['region'] = false;
+  $vsite->controllers->context->set($ctx_key, $ctx);
 
-  $output = ctools_ajax_command_remove('#'.$delta);
+  if (!$js) {
+    drupal_goto('<front>');
+  }
+
+  ctools_include('ajax');
+  $output[] = ctools_ajax_command_remove('#block-boxes-'.$delta);
+  ctools_ajax_render($output);
 }
 
 function os_boxes_delete_box_confirm_form($form_state) {
