@@ -223,6 +223,7 @@ function vsite_layout_settings_form($form_state){
 
   $regions = array_keys(system_region_list('scholar_base'));
 
+  os_boxes_get_boxes_plugins();
   $a_setting = $space->controllers->context->get('openscholar-feature-'.$s_page_type.":reaction:block");
   $a_blocks = (isset($a_setting['blocks']))? $a_setting['blocks']:array();
 
@@ -230,9 +231,6 @@ function vsite_layout_settings_form($form_state){
     if (!isset($widget['plugin']) && ($widget['module'] == 'boxes')) {
       $box = boxes_load($widget['delta']);
       $widget['plugin'] = $box->plugin_key;
-      if (is_a($box, 'os_boxes_modalframe')) {
-        $widget['block_config_path'] = $box->get_config_path();
-      }
     }
   }
 
