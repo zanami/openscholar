@@ -151,6 +151,9 @@ function vsite_layout_check_for_disabled_widgets(&$widgets, $space = NULL) {
       }
       if (is_object($view)) $view->destroy();
     }
+    elseif ($wgt['module'] == 'boxes') {
+      // now what
+    }
 
     if(!$widgets[$s_wgt_name]['hidden'] && strlen($wgt['access callback']) && function_exists($wgt['access callback'])){
       //If there is an access function call it with the widget as a parameter
@@ -167,29 +170,81 @@ function vsite_layout_check_for_disabled_widgets(&$widgets, $space = NULL) {
  * e.g. $vsite_layout_header_left will contain a themed list of
  * block names in the header_left
  */
-function vsite_layout_cp_region_contents() {
+function vsite_layout_cp_region_contents($widgets, $page_type) {
 
 	$vars = array();
-  $vsite_layout_widgets = array();
-
   $regions = system_region_list('scholar_base');
 
-  $s_page_type = (isset($_GET['page_type']))? $_GET['page_type']:'none';
-
-  $vsite_layout_widgets = vsite_layout_region_widgets($s_page_type);
-
-  foreach ($regions as $region => $s_label) {
+	foreach ($regions as $region => $s_label) {
     $wgts_id = 'scholarlayout-' . str_replace('_', '-', $region);
-    $wgts = array_key_exists($region, $vsite_layout_widgets)?$vsite_layout_widgets[$region]:array();
-    if ($s_page_type == 'none') vsite_layout_check_for_overrides($wgts, $region);
+    $wgts = array_key_exists($region, $widgets)?$widgets[$region]:array();
+    if ($page_type == 'none') vsite_layout_check_for_overrides($wgts, $region);
 
     vsite_layout_check_for_disabled_widgets($wgts);
-    $vars[ $region] = theme('vsite_layout_layout_widgets', $wgts, $wgts_id, 'scholarlayout-widgets-list', ucwords($s_label));
+    $vars[$region] = theme('vsite_layout_layout_widgets', $wgts, $wgts_id, 'scholarlayout-widgets-list', ucwords($s_label));
   }
 
   $vars['content'] = theme('vsite_layout_layout_widgets', array(), 'scholarlayout-content-main', 'scholarlayout-widgets-list', 'Main Content');
 
   return $vars;
+}
+
+/**
+ * _vsite_layout_build_dropdown
+ * Given a list of widgets, builts a dropdown out of them
+ * This is used to build the dropdown of factories on the cp layout form
+ * @param array $factories - An Array of factory widgets
+ * @return string - A themed ctools dropdown list
+ */
+function _vsite_layout_build_dropdown($factories = array()) {
+  // get a link for each factory
+  $fact_links = array();
+  foreach ($factories as $wgt) {
+    // make sure there's a plugin
+    vsite_layout_find_widget_plugin($wgt);
+
+    // get info for the plugin
+    $info = os_boxes_get_boxes_plugins($wgt['plugin']);
+
+    // this is the primary group for the factory
+    $group = $info['tags'][0];
+
+    if (!isset($fact_links[$group])) {
+      $fact_links[$group] = array(
+        'data' => $group,
+        'children' => array(),
+      );
+    }
+
+    // check to see if this is a modalframe box. if it is, the path is different
+    $uses_modalframe = false;
+    $plugin = $info;
+    while ($plugin['handler']['parent'] && !$uses_modalframe) {
+      if ($plugin['handler']['parent'] == 'os_boxes_modalframe') {
+        $uses_modalframe = true;
+      }
+      else {
+        $plugin = os_boxes_get_boxes_plugins($plugin['handler']['parent']);
+      }
+    }
+
+    // construct the link arrays
+    $item = menu_get_item($wgt['block_config_path']);
+    $item['href'] .= $uses_modalframe?'/modal/box/'.$wgt['plugin']:'/dropdown';
+    $item['title'] = $wgt['label'];
+    $item['attributes']['class'] = strtolower(implode(' ', array('ctools-use-modal', $wgt['plugin'])));
+    $options = array(
+    	'attributes' => array(
+    		'class' => 'help',
+    		'onclick' => "var w=window.open(this.href, 'advanced_help_window', 'width=500,height=500,scrollbars,resizable'); w.focus(); return false;"
+      ),
+      'query' => 'popup=1'
+    );
+    // build the links
+    $fact_links[$group]['children'][] = l($item['title'], $item['href'], $item).' '.l('Help', 'help/os_boxes/'.str_replace('_','-',$wgt['plugin']), $options);
+  }
+  // theme it!
+  return theme('ctools_dropdown_content', t('Add New Widget'), theme('item_list', $fact_links), FALSE, 'context-links');
 }
 
 
@@ -205,43 +260,15 @@ function vsite_layout_settings_form($form_state){
   $space = vsite_get_vsite();
   if(!$space) return array();
 
+  //Support for ctools popups
+  ctools_include('ajax');
+  ctools_include('modal');
+
   // just do have distinct id for each setting form
   $form['#prefix'] = '<div id = "cp-settings-layout">';
   $form['#suffix'] = '</div>';
 
-  if (!is_array($value)) $value = array(); //DEFAULT CONTEXT SETTINGS
-
   $s_page_type = isset($_GET['page_type'])?$_GET['page_type']:'none';
-
-  //Get the widgets avalible for this page type
-  $vsite_layout_widgets = vsite_layout_region_widgets($s_page_type);
-  //Filter out just the unused widgets for the top area
-  $unused_wgts = array_key_exists('unused', $vsite_layout_widgets)?$vsite_layout_widgets['unused']:array();
-
-  //Disable widgets that are part of inactive features
-  vsite_layout_check_for_disabled_widgets($unused_wgts);
-
-  $regions = array_keys(system_region_list('scholar_base'));
-
-  os_boxes_get_boxes_plugins();
-  $a_setting = $space->controllers->context->get('openscholar-feature-'.$s_page_type.":reaction:block");
-  $a_blocks = (isset($a_setting['blocks']))? $a_setting['blocks']:array();
-
-  foreach ($a_blocks as &$widget) {
-    if (!isset($widget['plugin']) && ($widget['module'] == 'boxes')) {
-      $box = boxes_load($widget['delta']);
-      $widget['plugin'] = $box->plugin_key;
-    }
-  }
-
-  foreach ($regions as $region) {
-    $wgts_id = 'scholarlayout-' . str_replace('_', '-', $region);
-    $form[$wgts_id] = array('#type' => 'hidden' );
-
-    $s_def = "";
-    foreach ($a_blocks as $s_wgt => $block) if ($block['region'] == $region) $s_def .= $s_wgt . "|";
-    $form[$wgts_id]['#default_value'] = rtrim($s_def, "\|");
-  }
 
   $a_page_types = vsite_layout_get_pagetypes($space);
 
@@ -275,7 +302,37 @@ function vsite_layout_settings_form($form_state){
     ),
   );
 
+  //Get the widgets available for this page type
+  $layout_widgets = vsite_layout_region_widgets($s_page_type);
+
+  //Filter out just the unused widgets for the top area
+  $unused_wgts = $layout_widgets['unused'];
+
+  //Disable widgets that are part of inactive features
+  vsite_layout_check_for_disabled_widgets($unused_wgts);
+
+  $regions = array_keys(system_region_list('scholar_base'));
+
+  // create form elements for each region
+  // changes made to the layout are saved in these
+  foreach ($regions as $region) {
+    $reg_id = 'scholarlayout-'.str_replace('_','-', $region);
+
+    $default = '';
+    if (is_array($layout_widgets[$region])) {
+      $default = implode('|', array_keys($layout_widgets[$region]));
+    }
+
+    $form[$reg_id] = array(
+      '#type' => 'hidden',
+      '#default_value' => $default,
+    );
+  }
+
+
   // split up the widgets into factories and instances
+  // factories go in the dropdown
+  // instances go in the available widgets section
   $factories = array();
   $instances = array();
   foreach ($unused_wgts as $w_id => $wgt) {
@@ -287,54 +344,19 @@ function vsite_layout_settings_form($form_state){
     }
   }
 
-  // get a link for each factory
-  $fact_links = array();
-  foreach ($factories as $wgt) {
-    vsite_layout_find_widget_plugin($wgt);
-    $info = os_boxes_get_boxes_plugins($wgt['plugin']);
-    $group = $info['tags'][0];
+  $add_new = _vsite_layout_build_dropdown($factories);
 
-    if (!isset($fact_links[$group])) {
-      $fact_links[$group] = array(
-        'data' => $group,
-        'children' => array(),
-      );
-    }
-
-    $uses_modalframe = false;
-    $plugin = $info;
-    while ($plugin['handler']['parent'] && !$uses_modalframe) {
-      if ($plugin['handler']['parent'] == 'os_boxes_modalframe') {
-        $uses_modalframe = true;
-      }
-      else {
-        $plugin = os_boxes_get_boxes_plugins($plugin['handler']['parent']);
-      }
-    }
-    $item = menu_get_item($wgt['block_config_path']);
-    $item['href'] .= $uses_modalframe?'/modal/box/'.$wgt['plugin']:'/dropdown';
-    $item['title'] = $wgt['label'];
-    $item['attributes']['class'] = strtolower(implode(' ', array('ctools-use-modal', $wgt['plugin'])));
-    $options = array(
-    	'attributes' => array(
-    		'class' => 'help',
-    		'onclick' => "var w=window.open(this.href, 'advanced_help_window', 'width=500,height=500,scrollbars,resizable'); w.focus(); return false;"
-      ),
-      'query' => 'popup=1'
-    );
-    $fact_links[$group]['children'][] = l($item['title'], $item['href'], $item).' '.l('Help', 'help/os_boxes/'.str_replace('_','-',$wgt['plugin']), $options);
-  }
-  // theme it!
-  $add_new = theme('ctools_dropdown_content', t('Add New Widget'), theme('item_list', $fact_links), FALSE, 'context-links');
 
   //Markup for "Top" Available Widgets Section
   $form['available_widgets_markup'] = array(
     '#value' => theme('vsite_layout_tagged_widgets', $instances, $add_new, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list'),
   );
 
+  $layout_regions = vsite_layout_cp_region_contents($layout_widgets, $s_page_type);
+
   //The main layout area
   $form['layout_markup'] = array(
-    '#value' => theme('vsite_layout_layout',vsite_layout_cp_region_contents(),$s_page_type),
+    '#value' => theme('vsite_layout_layout', $layout_regions, $s_page_type),
   );
 
   // pass the settingid too
@@ -536,6 +558,8 @@ function vsite_layout_apply_changes_to_default($a_new_setting){
  * Returns an associative array by region of widgets
  *
  * This is used mostly to display what blocks are avalible in the layout page
+ * This function also modifies the widgets to ensure they have all the necessary
+ * properties.
  *
  * @param string $page_type
  * @return array
@@ -549,7 +573,7 @@ function vsite_layout_region_widgets( $page_type = 'none') {
     $default_blocks[$s_key]['region'] = false; //Get any new blocks that have been introduced, and include them in the top bar
   }
 
-  $a_region_widgets = array();
+  $a_region_widgets = array('unused' => array());
   if($context && ($a_widgets = $context->reactions['block']['blocks'])){
     $a_widgets = array_merge($default_blocks,$a_widgets);
   	uasort($a_widgets, 'vsite_layout_sort_block_by_weight'); //Put them in the right order to simplify showing them in the cp
@@ -558,8 +582,20 @@ function vsite_layout_region_widgets( $page_type = 'none') {
       $widget = (array)$widget;
       // blocks stored in context override have old path
       // and overwrite the defaults
-      if (isset($default_blocks[$s_widget_key]))
+      if (is_array($widget['tags'])) {
+        $widget['class'] = strtolower(implode(' ', $widget['tags']));
+      }
+
+      if (isset($default_blocks[$s_widget_key])) {
         $widget['block_config_path'] = $default_blocks[$s_widget_key]['block_config_path'];
+        // if this is a local instance or if there is a factory for this box type, we can delete it
+        $widget['can_delete'] = strpos($widget['delta'], 'og-') !== FALSE || isset($a_widgets['boxes-boxes_add__'.$widget['plugin']]);
+        if ($widget['can_delete']) {
+          // the delete path is always the same
+          $widget['block_delete_path'] = "cp/osboxes/nojs/".$widget['delta']."/delete";
+        }
+      }
+
       if ($widget['region']) {
         $a_region_widgets[$widget['region']][$s_widget_key] = $widget;
       }

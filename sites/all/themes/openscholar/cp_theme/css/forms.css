@@ -149,6 +149,12 @@ html.js fieldset.collapsed {
 	clear:none;
 }
 
+#modal-content #edit-body-wrapper {
+	width:61%;
+	clear:none;
+}
+
+
 html.js fieldset.collapsible legend a {
   background: url('../images/open-close.png')no-repeat 0 -20px transparent;
   padding-left: 26px;
