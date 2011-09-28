@@ -46,9 +46,11 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  $css = drupal_get_path('module', 'os_boxes') . '/theme/css/addthis.css';
   $info['os_boxes_addthis'] = array(
     'title' => 'Addthis',
     'description' => 'Social media links',
+    'css' => $css,
     'tags' => array('Social'),
     'handler' => array(
       'class' => 'os_boxes_addthis',
