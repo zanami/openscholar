@@ -1,6 +1,8 @@
 <?php
 /**
- *  template for theming a widget
+ *  Template for a single widget in the CP layout form
+ *
+ *  Renders the box and any controls it has
  *  Variables:
  *  ----------
  *  $s_widget_key -> the widgets key
@@ -8,32 +10,18 @@
  */
 $s_class = (isset($w['hidden']) && $w['hidden'])? 'scholarlayout-item disabled':'scholarlayout-item';
 
-vsite_layout_find_widget_plugin($w);
-
 if ($w['plugin']) {
   $s_class .= ' '.$w['plugin'];
+}
+
+// extra classes used for tag selectin
+if ($w['class']) {
+  $s_class .= ' '.$w['class'];
 }
 
 if($w['overides']) {
 	$s_class .= " with-overrides";
 }
-
-if (isset($w['plugin']) && $w['module'] == "boxes") {
-  $info = os_boxes_get_boxes_plugins($w['plugin']);
-  if (is_array($info['tags'])) $s_class .= ' '.implode(' ',$info['tags']);
-  $info['block_config_path'] = $w['block_config_path']?str_replace('/configure', '', $w['block_config_path']):"cp/osboxes/nojs/".$w['delta'];
-
-  // plugins that dont have a title dont have a factory either
-  // we don't want to let them delete widgets they can't create later
-  $w['can_delete'] = strpos($w['delta'], 'og-') !== FALSE || isset($info['title']);
-  if ($w['can_delete']) {
-    $info['block_delete_path'] = "cp/osboxes/nojs/".$w['delta'];
-  }
-}
-
-//Support for ctools popups
-ctools_include('ajax');
-ctools_include('modal');
 
 if($w['icon_path']){
 	$dd_il_style = "style=\"background-image:url('{$w['icon_path']}');\"";
@@ -43,12 +31,10 @@ if($w['icon_path']){
 <dd class="<?php echo strtolower($s_class); ?>" id="<?php print $s_widget_key; ?>" <?php $dd_il_style ?>> <?php print $w['label']; ?>
       <div class="close-this" title="Remove">Remove</div>
      <?php
-     if ($info['block_config_path']){
-       ?>  <?php
-       if ($w['can_delete']) print ctools_modal_text_button("Delete", $info['block_delete_path']."/delete", "Delete widget", "delete");
+     if ($w['block_config_path']){
+       if ($w['can_delete']) print ctools_modal_text_button("Delete", $w['block_delete_path'], "Delete widget", "delete");
      	 $class = (strpos($w['delta'],"boxes_add__") === 0)?"add":"setting";
-       print ctools_modal_text_button("Configure",$info['block_config_path']."/configure/cp_layout","Configure widget",$class);
-       ?>  <?php
+       print ctools_modal_text_button("Configure",$w['block_config_path']."/configure/cp_layout","Configure widget",$class);
      }
      if($w['overides']){
        ?>

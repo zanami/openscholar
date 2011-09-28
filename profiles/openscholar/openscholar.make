@@ -94,7 +94,7 @@ projects[imagefield_crop][version] = "1.0-rc2"
 projects[imagefield_crop][patch][] = "http://drupal.org/files/issues/imagefield_crop.patch"
 
 projects[insert][subdir] = "contrib"
-projects[insert][version] = "1.0"
+projects[insert][version] = "1.1"
 
 projects[install_profile_api][subdir] = "contrib"
 projects[install_profile_api][version] = "2.1"
@@ -103,7 +103,7 @@ projects[job_scheduler][subdir] = "contrib"
 projects[job_scheduler][version] = "1.0-beta3"
 
 projects[jquery_ui][subdir] = "contrib"
-projects[jquery_ui][version] = "1.4"
+projects[jquery_ui][version] = "1.5"
 
 projects[ldap_integration][subdir] = "contrib"
 projects[ldap_integration][version] = "1.0-beta2"
@@ -177,7 +177,7 @@ projects[ucreate][subdir] = "contrib"
 projects[ucreate][version] = "1.0-beta4"
 
 projects[vertical_tabs][subdir] = "contrib"
-projects[vertical_tabs][version] = "1.0-rc1"
+projects[vertical_tabs][version] = "1.0-rc2"
 
 projects[views][subdir] = "contrib"
 projects[views][version] = "2.12"
