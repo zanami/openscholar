@@ -200,6 +200,7 @@ function openscholar_profile_task_list() {
   $tasks = array(
     'openscholar-flavor' => st('OpenScholar  flavor'),
     'openscholar-configure' => st('Openscholar  configuration'),
+    'openscholar-cleanup' => st('Openscholar  cleanup'),
   );
   return $tasks;
 }
@@ -239,7 +240,7 @@ function openscholar_profile_tasks(&$task, $url) {
 
     //If this is installed via drush skip the form
     if (defined('DRUSH_BASE_PATH')) {
-      _openscholar_configure_flavor('personal');
+      _openscholar_configure_flavor(0);
     }else{
       $output = drupal_get_form('_openscholar_flavors_form', $url);
     }
@@ -250,6 +251,9 @@ function openscholar_profile_tasks(&$task, $url) {
     }
     else {
       $task = 'openscholar-configure';
+      variable_set('install_task', $task);
+      _openscholar_goto($url);
+      //Goto next task
     }
   }
 
@@ -278,6 +282,7 @@ function openscholar_profile_tasks(&$task, $url) {
 
     // create a global taxonomy (not really used right now)
     // _vsite_global_taxonomy();
+
     $task = 'openscholar-cleanup';
   }
 
@@ -288,6 +293,19 @@ function openscholar_profile_tasks(&$task, $url) {
 
     // biblio configuraitons
     _openscholar_configure_biblio();
+
+    $task = 'openscholar-cleanup';
+    variable_set('install_task', $task);
+    _openscholar_goto($url);
+    //Goto next task
+  }
+  
+  
+  if ($task == "openscholar-cleanup") {
+    
+    //Include Modules that have been enabled
+    //We don't need to use install_include since the system table has been enabled
+    module_load_all();
 
     if (function_exists('strongarm_init')) {
       strongarm_init();
@@ -309,7 +327,9 @@ function openscholar_profile_tasks(&$task, $url) {
 
     // we are done let the installer know
     $task = 'profile-finished';
-
+    variable_set('install_task', $task);
+    _openscholar_goto($url);
+    //Goto next task
     return;
   }
   return $output;
@@ -712,4 +732,12 @@ function _openscholar_wysiwyg_presets(){
   );
 
   return $settings;
+}
+
+
+function _openscholar_goto($fullpath){
+	
+	header('Location: '. $fullpath);
+  header('Cache-Control: no-cache'); // Not a permanent redirect.
+  exit();
 }
