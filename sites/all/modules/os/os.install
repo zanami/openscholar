@@ -61,7 +61,7 @@ function os_update_6001(&$sandbox){
  * installs new $modules
  */
 function os_update_6002(&$sandbox) {
-
+    
   $res = array();
   $modules = array('boxes', 'vsite_controllers', 'os_boxes', 'spaces_simpleviews', 'vsite_contextual', 'os_modalframe', 'os_books', 'os_files');
   include_once('includes/install.inc');
