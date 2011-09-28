@@ -1,5 +1,8 @@
 <?php
 
+function os_boxes_context_load_alter(&$context) {
+  dpm($context);
+}
 
 /**
  * Implementation of hook_ctools_plugin_api().
@@ -148,7 +151,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_bio'] = array(
-    'title' => 'Bio Box',  // i.e. view
+    //'title' => 'Bio Box',  // i.e. view
     'description' => 'Displays biography blurb',
     'tags' => array('Misc'),
     'handler' => array(
