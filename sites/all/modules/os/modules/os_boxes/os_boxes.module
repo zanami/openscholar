@@ -1,9 +1,5 @@
 <?php
 
-function os_boxes_context_load_alter(&$context) {
-  dpm($context);
-}
-
 /**
  * Implementation of hook_ctools_plugin_api().
  */
@@ -89,9 +85,11 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  $css = drupal_get_path('module', 'os_slideshow') .'/theme/os-slideshow.css';
   $info['os_boxes_slideshow'] = array(
     'title' => 'Slideshow Gallery',
     'description' => 'Display gallery as a slideshow',
+    'css' => $css,
     'tags' => array('Media'),
     'handler' => array(
       'class' => 'os_boxes_slideshow',
@@ -720,6 +718,15 @@ function os_boxes_box_submit(&$form, &$form_state){
 
 function os_boxes_preprocess_block(&$vars) {
   $block = &$vars['block'];
+  // remove the inline edit links added by boxes module
   // why do they make me do it this way... ugh...
   $block->content = str_replace($block->controls, '', $block->content);
+  
+  // boxes plugins can optionally add their own css file 
+  $plugins = os_boxes_get_boxes_plugins();
+  if ($block -> module == 'boxes' && isset($block -> plugin)){
+    if (isset($plugins[$block -> plugin]['css'])){
+      drupal_add_css($plugins[$block -> plugin]['css']);
+    }
+  }
 }
