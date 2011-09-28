@@ -218,16 +218,15 @@ dd.scholarlayout-item {
 #scholarlayout-top-widgets dd.scholarlayout-item a.setting {
   display: block;
 color:transparent;
-background: url('images/configGearSmall.png') no-repeat;
-margin-top:15px;
+background: url('images/configGearSmallOff.png') no-repeat;
+position:absolute;left:81px;top:42px;
  }
 
-.scholarlayout-top-widgets-wrapper .controls {width:15px;height:40px;position: absolute;
-    left: 87px;
-    top: 15px;}
-.scholarlayout-top-widgets-wrapper div:hover.controls{display:inline;position: absolute;
-    left: 87px;
-    top: 15px;}
+#scholarlayout-top-widgets dd.scholarlayout-item a.add,
+#scholarlayout-top-widgets dd.scholarlayout-item a.setting:hover {
+background: url('images/configGearSmall.png') no-repeat;
+ }
+
 
 #scholarlayout-container dd.scholarlayout-item {
   margin: 0;
@@ -280,6 +279,23 @@ dd.scholarlayout-item .close-this {
   }
   
   #scholarlayout-container .ctools-use-modal.delete {display:none;}
+ 
+  
+  #scholarlayout-top-widgets a.delete {position:absolute;left:82px;top:20px;
+    background: url('/sites/all/themes/openscholar/scholar_base/images/scholarbase-sprite.png') no-repeat 0 -226px transparent;
+  height: 11px;
+  width: 10px;
+  display: block;
+  text-indent: -999em;
+  }
+  
+   #scholarlayout-top-widgets a.delete:hover {
+  background: url('/sites/all/themes/openscholar/scholar_base/images/scholarbase-sprite.png') no-repeat -14px -241px transparent;
+  height: 11px;
+  width: 10px;
+  display: block;
+  text-indent: -999em;
+  }
 
 .layout-exceptions {
   position:absolute;
