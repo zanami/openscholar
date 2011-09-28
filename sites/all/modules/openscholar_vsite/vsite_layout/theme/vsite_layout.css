@@ -157,7 +157,8 @@ dd.scholarlayout-item {
  #scholarlayout-top-widgets #boxes-scholar_publications_recent,  
  #scholarlayout-top-widgets #boxes-scholar_book_recent_docs,
   #scholarlayout-top-widgets #scholar_publications-co_author,
-  #scholarlayout-top-widgets #views-publication_types-block_1 {
+  #scholarlayout-top-widgets #views-publication_types-block_1,
+  #scholarlayout-top-widgets #scholar_publications-co_authors {
  background: url('images/widgetIcons/publications.png') no-repeat scroll 50% 10px transparent;
 }
     
@@ -208,7 +209,8 @@ dd.scholarlayout-item {
 
   #scholarlayout-top-widgets #boxes-scholar_biocv_bio_blurb,
   #scholarlayout-top-widgets #scholar_biocv-bio_blurb,
-    #scholarlayout-top-widgets .os_boxes_bio {
+    #scholarlayout-top-widgets .os_boxes_bio,
+    #scholarlayout-top-widgets #boxes-scholar_biocv_bio {
  background: url('images/widgetIcons/bio.png') no-repeat scroll 50% 10px transparent;
 } 
 
