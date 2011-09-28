@@ -47,7 +47,7 @@ function os_boxes_mk_box(&$vsite, $type, $opts) {
 
 
 /**
- * @function vsite_put_box
+ * @function os_boxes_put_box
  *   Puts a box object in the specified region of a vsite
  *
  * @param &$vsite
@@ -61,7 +61,7 @@ function os_boxes_mk_box(&$vsite, $type, $opts) {
  *
  */
 // adds box to vsite.  returns id of vsite on successful creation
-function vsite_put_box($context, &$vsite, $box, $region) {
+function os_boxes_put_box($context, &$vsite, $box, $region) {
 
   //let spaces select the current setting or the default
   $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block');
@@ -77,7 +77,7 @@ function vsite_put_box($context, &$vsite, $box, $region) {
   
   $og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
   if($og_theme){
-  	$og_theme = ":{$og_theme}";
+    $og_theme = ":{$og_theme}";
   }else{
     $og_theme = "";
   }
@@ -90,22 +90,22 @@ function vsite_put_box($context, &$vsite, $box, $region) {
 }
 
 /**
- * @function vsite_remove_box
- *    Wrapper for vsite_put_box instead removes display of the box
+ * @function os_boxes_remove_box
+ *    Wrapper for os_boxes_put_box instead removes display of the box
  */
-function vsite_remove_box(&$vsite, $box) {
-  vsite_put_box($vsite, $box, false);
+function os_boxes_remove_box(&$vsite, $box) {
+  os_boxes_put_box($vsite, $box, false);
 }
 
 /**
- * @function replace_boxes
- * 		Given a block id, replace it with the given block
+ * @function os_boxes_replace_boxes
+ *    Given a block id, replace it with the given block
  * @param $block_id - String id of the block to replace
  * @param $box - Object (instance)
  * @param $default_region
  * @param $sid (the site to replace or all sites by default)
  */
-function replace_boxes($block_id, $box, $default_region = false, $sid = false, $limit = false) {
+function os_boxes_replace_boxes($block_id, $box, $default_region = false, $sid = false, $limit = false) {
 
   if (!$box->delta) {
     module_load_include('module', 'os_boxes');

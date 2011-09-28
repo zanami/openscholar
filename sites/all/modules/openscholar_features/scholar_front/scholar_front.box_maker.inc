@@ -5,7 +5,7 @@
  * @file batch functions for creating boxes from existing front pages
  **/
 
-require_once drupal_get_path('module', 'os_boxes') . '/os_boxes.newbox_api.inc';
+require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
 
 //call boxmaker, starting at offset
 function scholar_front_frontpage_boxmaker($limit, $offset, $total_vsites) {
@@ -248,7 +248,7 @@ EOD;
 
 //add our new box to content_top
 function scholar_front_fb_add_box(&$vsite, $box) {
-  return vsite_put_box("openscholar-feature-front",$vsite, $box,'content_top');
+  return os_boxes_put_box("openscholar-feature-front",$vsite, $box,'content_top');
 }
 
 //adds block to content_top region
