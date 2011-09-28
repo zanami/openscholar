@@ -51,3 +51,24 @@ function scholar_biocv_update_6002(&$sandbox){
   return $res;
 
 }
+
+/**
+ * Remove content field that was inadvertantly added
+ * @param array $sandbox
+ */
+function scholar_biocv_update_6003(&$sandbox){
+	$res = array();
+  
+  // Migrate cv attachments to correct field
+  db_query("UPDATE `content_type_cv` SET field_cv_attach_fid = field_cv_attached_fid, field_cv_attach_list = 1, field_cv_attach_data = 'a:0:{}' WHERE `field_cv_attach_fid` IS NULL AND `field_cv_attached_fid` IS NOT NULL");
+  
+  module_load_include('inc', 'content', 'includes/content.crud');
+  content_field_instance_delete('field_cv_attached', 'cv');
+
+  $res[] = array(
+    'success' => true,
+    'query' => 'Remove field cv-field_cv_attached'
+  );
+  
+  return $res;
+}
