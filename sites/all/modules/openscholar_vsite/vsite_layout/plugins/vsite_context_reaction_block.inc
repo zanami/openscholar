@@ -10,12 +10,18 @@ class vsite_context_reaction_block extends context_reaction_block {
    * user may edit.
    */
   protected function is_editable($reset = FALSE) {
-  	//Hardcoded to flase for now
+  	/**
+  	 * Hardcoded to flase for now, since we do not wish to have inline editing yet and don't need
+  	 *
+  	 * 1. All emty blocks displayed
+  	 * 2. Extra divs attached to the blocks
+  	 * 3. Extra div's and region names attached to the region
+  	 */
     return (parent::is_editable($reset) && user_access('vsite_edit_contex_blocks') && false);
   }
 
   /**
-   * Override to alter block subject
+   * Override to alter block subject for legacy support of block customizers
    */
   protected function build_block($block, $reset = FALSE) {
   	$block = parent::build_block($block,$reset);

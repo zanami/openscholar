@@ -82,15 +82,17 @@ class os_boxes_gallery extends os_boxes_default {
   }
   
   /**
-   * Return the cache key for image view
+   * Return the cache parameters for this box
    */
-  public function cache_keys(){
-  	$cache_key = parent::cache_keys();
-  	
-  	//Clear the cache whenever a image or gallery is saved
-  	$cache_key['node'] = array('image' => 'image', 'gallery' => 'gallery');
-  	
-  	return $cache_key;
+  public function cache_info(){
+    
+    //Clear when bio nodes are saved
+    $cache_key = array(
+      'os_og' => array('current' => 'current'),
+      'node' => array('image' => 'image', 'gallery' => 'gallery'),
+    );
+    
+    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
   }
 
 }

@@ -78,14 +78,17 @@ MESSAGE;
 
   
   /**
-   * Return the cache key for this box
+   * Return the cache parameters for this box
    */
-  public function cache_keys(){
-    //Clear when bio nodes are saved
-    $cache_key = parent::cache_keys();
-    $cache_key['node'] = array('bio' => 'bio');
+  public function cache_info(){
     
-    return $cache_key;
+  	//Clear when bio nodes are saved
+    $cache_key = array(
+      'os_og' => array('current' => 'current'),
+      'node' => array('bio' => 'bio'),
+    );
+    
+    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
   }
 
 }

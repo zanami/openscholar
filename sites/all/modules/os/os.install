@@ -61,8 +61,9 @@ function os_update_6001(&$sandbox){
  * installs new $modules
  */
 function os_update_6002(&$sandbox) {
+	error_log("UPDATEs ");
   $res = array();
-  $modules = array('boxes', 'vsite_controllers', 'os_boxes', 'spaces_simpleviews', 'vsite_contextual', 'os_modalframe', 'os_books');
+  $modules = array('boxes', 'vsite_controllers', 'os_boxes', 'spaces_simpleviews', 'vsite_contextual', 'os_modalframe', 'os_books', 'os_files');
   include_once('includes/install.inc');
   drupal_install_modules($modules);
 
@@ -85,16 +86,13 @@ function os_update_6002(&$sandbox) {
 /*
  * hook_update_N
  *
- * update hook for beta12 => beta13
+ * Update hook for beta12 => beta13
  *
  * Updates block ids that are not going to use boxes
  */
 function os_update_6003(&$sandbox) {
   $res = array();
-  
-  $ret['#abort'] = array('success' => FALSE, 'query' => 'Richard Says Stop.');
-  return $ret;
-  
+  error_log("HEY".$_SESSION['os_update_6003']);
   $a_changes = array(
     'vsite_widgets-3' => 'vsite-site_search',
     'vsite_widgets-5' => 'vsite-google_translate',
@@ -143,10 +141,13 @@ function os_update_6003(&$sandbox) {
 }
 
 /*
- * Update blocks to boxes
+ *
+ * Update hook for beta12 => beta13
+ *
+ * Update blocks to boxes for blocks that will have default box instances
  */
 function os_update_6004(&$sandbox){
-	
+	error_log("os 04 ".$_SESSION['os_update_6004']);
   // Multi-part update.
   if (!isset($_SESSION['os_update_6004'])) {
     //Keep track of which block we are migrating
@@ -207,9 +208,15 @@ function os_update_6004(&$sandbox){
   return $res;
 }
 
+/**
+ * This update creates box instances for users that have blocks in thier layout that will no longer have defaults
+ *
+ * Update hook for beta12 => beta13
+ * @param $sandbox
+ */
 function os_update_6005(&$sandbox) {
   $res = array();
-
+error_log("os 05 ".$_SESSION['os_update_6005']);
   if(!module_exists('boxes')){
     return array("#abort" => array('success' => FALSE, 'query' => 'Boxes module was not installed when this update ran, please run update.php again.'));
   }
@@ -240,8 +247,10 @@ function os_update_6005(&$sandbox) {
         $box->title = $box->description = "Publications By Type";
       break;
     }
-    $s = "SELECT DISTINCT(id) AS sid, type FROM {spaces_overrides} WHERE object_type='context' AND value LIKE '%%%s%%'";
+    $s = "SELECT DISTINCT(id) AS sid, type FROM {spaces_overrides} WHERE object_type='context' AND value LIKE '%%%s%%' LIMIT 100";
     $q = db_query($s, $block);
+    $num_results = 0;
+    
     // for each vsite that uses this block, we need to create a new box instance
     // and by new instance, we mean delta
     while ($r = db_fetch_array($q)) {
@@ -256,12 +265,13 @@ function os_update_6005(&$sandbox) {
       );
 
      drupal_write_record('spaces_overrides', $override);
+     $num_results++;
     }
     
     break;
   }
 
-  array_shift($_SESSION['os_update_6005']);
+  if($num_results < 100) array_shift($_SESSION['os_update_6005']);
   
   if(!count($_SESSION['os_update_6005'])){
     $res[] = array(
@@ -278,11 +288,13 @@ function os_update_6005(&$sandbox) {
 }
 
 /**
- * Update the twitter block to a box
+ * Create twitter boxes for users that have twitter settings and have the twitter box in thier layout
+ *
+ * Update hook for beta12 => beta13
  * @param array $sandbox
  */
 function os_update_6006(&$sandbox){
-  
+  error_log("os 06 twit");
   if(!module_exists('boxes')){
     return array("#abort" => array('success' => FALSE, 'query' => 'Boxes module was not installed when this update ran, please run update.php again.'));
   }
@@ -318,6 +330,188 @@ function os_update_6006(&$sandbox){
   $res[] = array(
     'success' => true,
     'query' => 'Updated twitter boxes for scholar reader',
+  );
+
+  return $res;
+}
+
+/*
+ * Implementation of hook_update_N
+ * Update hook for beta12 => beta13
+ *
+ * Takes front page settings from each space, choose a box representative of those settings, adds it to vsite in the new content_top region
+ */
+function os_update_6007(&$sandbox){
+  $ret = array();
+  
+  //Do nothing if the front module is not enabled
+  if(!module_exists('scholar_front')) return $ret;
+  
+  error_log("os_update_6007 ".$sandbox['os_update_6007_progress']);
+  //make sure boxes prereqs are all met before installing
+  if (! (module_exists('os_boxes') && module_exists('spaces_simpleviews') )) {
+    $ret['#abort'] = array('success' => FALSE, 'query' => 'Please enable os_boxes and spaces_simpleviews before running scholar_front_update_6002');
+    return $ret;
+  }
+
+  //make sure vsite->controllers->boxes exists
+  $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "vsite" LIMIT 1') );
+  $vsite = vsite_get_vsite($v);
+  if (! isset($vsite->controllers->boxes)) {
+    $ret['#abort'] = array('success' => FALSE, 'query' => 'vsite object has no box controller.  clear cache before running update.');
+    return $ret;
+  }
+
+  //init sandbox.  this persists between batches
+  if (!isset($sandbox['os_update_6007_progress'])) {
+    $sandbox['os_update_6007_progress'] = 0;
+    $sandbox['max'] = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
+  }
+  
+  //vsites per batch.
+  $limit = 50;
+  
+  require_once drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc';
+  //$batch['operations'][] = array('scholar_front_frontpage_boxmaker',array($limit, $offset, $total_vsites),);
+  $updated_vsites = scholar_front_frontpage_boxmaker($limit, $sandbox['os_update_6007_progress'], $sandbox['max']);
+  $sandbox['os_update_6007_progress'] += $limit;
+  
+  if ($sandbox['os_update_6007_progress'] < $sandbox['max']) {
+    $ret['#finished'] = $sandbox['os_update_6007_progress'] / $sandbox['max'];
+  } else {
+    $ret['#finished'] = TRUE;
+  }
+
+  return $ret;
+}
+
+/**
+ *  Copies bio blurb into a custom box instance
+ *
+ *  Update hook for beta12 => beta13
+ */
+function os_update_6008(&$sandbox){
+  $ret = array();
+  error_log("os_update_6008 ");
+  //Do nothing if the biocv module is not enabled
+  if(!module_exists('scholar_biocv')) return $res;
+  
+  if (module_exists('os_boxes')) {
+
+    //copy blurbs from bios into simple boxes
+    $query  = 'SELECT DISTINCT c.nid,c.field_hook_text_value,n.uid ';
+    $query .= 'FROM {content_type_bio} c INNER JOIN {node} n ON c.nid=n.nid ';
+    $query .= 'WHERE field_hook_text_value IS NOT NULL ';
+    $query .= 'GROUP BY c.nid HAVING max(c.vid) ';
+    $result = db_query($query);
+    // for final update, doing a list of nids might be safer.  I figure this code can be used to provide that list at a
+    //later date.  for now it's adequate for testing.
+    
+    $a_blurb_updates = array();
+    while ($r = db_fetch_object($result)) {
+      $blurb = trim($r->field_hook_text_value);
+      
+      //users who own multiple vsites should still have their bios listed on each vsite
+      //no vsite has multiple owners.
+      $vsites = vsite_get_vsite_by_owner($r->uid);
+      while (strlen($blurb) && $vsite = array_shift($vsites)){
+        //make delta
+        $identifier = $vsite->type . '-' . $vsite->id;
+        $hash = boxes_create_hash($identifier);
+        $delta = $identifier . '-' . $hash;
+        
+        $boxopts = array(
+          'title' => 'My Bio',
+          'description' => 'Your Bio blurb.',
+          'body' => $blurb,
+          'delta' => $delta,
+        );
+        
+        if (($box = boxes_factory('os_boxes_simple', $boxopts)) && isset($vsite->controllers->boxes)) {
+          $vsite->controllers->boxes->set($box->delta, $box);
+          $a_blurb_updates[] = $r->uid;
+        }
+      }
+    }
+    
+    if (count($a_blurb_updates)) {
+      $ret[] = array(
+        'success' => true,
+        'query' => 'Created simplebox bio blurbs for UIDs: ' . implode(', ', $a_blurb_updates),
+      );
+    }
+  
+  } else {
+    $ret['#abort'] = array('success' => FALSE, 'query' => 'os_boxes not installed.  Don\'t migrate bio blurbs to boxes until os_boxes is available.');
+  }
+  
+  return $ret;
+}
+
+/**
+ *
+ *  Update hook for beta12 => beta13
+ *  removes bio blurb fro bio content type
+ */
+function os_update_6009(&$sandbox){
+  error_log("os_update_6009 ");
+  //Do nothing if the biocv module is not enabled
+  if(!module_exists('scholar_biocv')) return $res;
+  
+  $ret = array();
+  if (module_exists('os_boxes')) {
+  	module_load_include('inc', 'content', 'includes/content.crud');
+	  $field_name = 'field_hook_text';
+	  $type_name = 'bio';
+	  content_field_instance_delete($field_name, $type_name);
+  
+    $ret['#success']['success'] = true;
+    $ret['#success']['query'] = "Removed bio_blurb field from content type";
+  } else {
+    $ret['#abort'] = array('success' => FALSE, 'query' => 'os_boxes not installed.  Don\'t migrate bio blurbs to boxes until os_boxes is available.');
+  }
+  
+  return $ret;
+}
+
+/**
+ * Add new default box to all custom front pages, so that existing sites do not automatically recieve the bio on thier homepage
+ *
+ * Update hook for beta12 => beta13
+ * @param array $sandbox
+ */
+function os_update_6010(&$sandbox){
+	$res = array();
+	error_log("os_update_6010 ");
+	//Do nothing if the biocv module is not enabled
+  if(!module_exists('scholar_biocv')) return $res;
+  
+  if(!module_exists('boxes')){
+    return array("#abort" => array('success' => FALSE, 'query' => 'Boxes module was not installed when this update ran, please run update.php again.'));
+  }
+  
+  //Get all existing front contexts and remove the new default bio blurb
+  $q = db_query("SELECT * FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%' AND value NOT LIKE '%boxes-scholar_biocv_bio%' ");
+  while ($r = db_fetch_object($q)) {
+
+    $value = unserialize($r->value);
+    
+    $value['blocks']['boxes-scholar_biocv_bio'] = array(
+          'module' => 'boxes',
+          'delta' => 'scholar_biocv_bio',
+          'weight' => 0,
+          'region' => false,
+          'label' => 'Bio Teaser',
+    );
+    $value = serialize($value);
+    
+    db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = '%s' AND id = '%s' AND object_type = '%s' AND object_id = '%s' ",array($value,$r->type,$r->id,$r->object_type,$r->object_id));
+    
+  }
+
+  $res[] = array(
+    'success' => true,
+    'query' => 'Updated bio box on existing front contexts',
   );
 
   return $res;
