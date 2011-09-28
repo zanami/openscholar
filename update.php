@@ -155,11 +155,9 @@ function update_do_one($module, $number, &$context) {
   }
 
   $function = $module .'_update_'. $number;
-  error_log("START ".$function);
   if (function_exists($function)) {
     $ret = $function($context['sandbox']);
   }
-  error_log("END ".$function);
 
   if (isset($ret['#finished'])) {
     $context['finished'] = $ret['#finished'];
@@ -285,7 +283,6 @@ function update_batch() {
 }
 
 function update_finished($success, $results, $operations) {
-	error_log('Finished with updates');
   // clear the caches in case the data has been updated.
   drupal_flush_all_caches();
 
@@ -295,7 +292,6 @@ function update_finished($success, $results, $operations) {
 }
 
 function update_results_page() {
-	error_log('Result page');
   drupal_set_title('Drupal database update');
   // NOTE: we can't use l() here because the URL would point to 'update.php?q=admin'.
   $links[] = '<a href="'. base_path() .'">Main page</a>';

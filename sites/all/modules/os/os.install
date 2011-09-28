@@ -62,8 +62,6 @@ function os_update_6001(&$sandbox){
  */
 function os_update_6002(&$sandbox) {
 
-    //Clear the cache so we run the updates with current data
-    drupal_flush_all_caches();
   $res = array();
   $modules = array('boxes', 'vsite_controllers', 'os_boxes', 'spaces_simpleviews', 'vsite_contextual', 'os_modalframe', 'os_books', 'os_files');
   include_once('includes/install.inc');
@@ -87,8 +85,6 @@ function os_update_6002(&$sandbox) {
   } else {
   	//Make sure the boxes controller is added right away
   	spaces_controllers(true);
-  	//Clear the cache so we run the updates with current data
-  	drupal_flush_all_caches();
   	
     $res[] = array('success' => TRUE, 'query' => 'Installed modules: ' . implode(', ', $modules));
     $res[] = array('success' => TRUE, 'query' => 'Uninstalled modules: ' . implode(', ', $uninstall_modules));
