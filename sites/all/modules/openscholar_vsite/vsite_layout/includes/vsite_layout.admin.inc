@@ -45,6 +45,9 @@ function vsite_layout_layout() {
  * @return string
  */
 function vsite_layout_region_widgets_callback() {
+  ctools_include('ajax');
+  ctools_include('modal');
+
   $scholar = vsite_get_vsite();
   $s_page_type = ($_POST['page_type'])?$_POST['page_type']:"none";
 
@@ -78,6 +81,9 @@ function vsite_layout_region_widgets_callback() {
  * @return string
  */
 function vsite_layout_top_widgets_callback() {
+  ctools_include('ajax');
+  ctools_include('modal');
+
   $scholar = vsite_get_vsite();
 
   $s_page_type = ($_POST['page_type'])?$_POST['page_type']:"none";
