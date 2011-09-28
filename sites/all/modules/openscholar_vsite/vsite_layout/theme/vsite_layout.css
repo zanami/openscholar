@@ -118,7 +118,10 @@ dd.scholarlayout-item {
     width: 75px;
   }
   
-  
+ #scholarlayout-top-widgets dd.scholarlayout-item.disabled {
+ background: url('images/widget-bgDisabled.png') no-repeat scroll 50% 10px transparent;
+
+  } 
   
      #scholarlayout-top-widgets #vsite_cc-node_license {
  background: url('images/widgetIcons/license.png') no-repeat scroll 50% 10px transparent;
@@ -139,8 +142,6 @@ dd.scholarlayout-item {
  background: url('images/widgetIcons/software.png') no-repeat scroll 50% 10px transparent;
 }
   
-  
- 
   
     #scholarlayout-top-widgets dd.content.featured,
     #scholarlayout-top-widgets dd.content.post {
@@ -203,19 +204,21 @@ dd.scholarlayout-item {
  background: url('images/widgetIcons/addThis.png') no-repeat scroll 50% 10px transparent;
 }  
   
-  #scholarlayout-top-widgets .os_boxes_shields {
+  #scholarlayout-top-widgets .os_boxes_shields,
+  #scholarlayout-top-widgets #boxes-shield_default {
  background: url('images/widgetIcons/shield.png') no-repeat scroll 50% 10px transparent;
 } 
 
   #scholarlayout-top-widgets #boxes-scholar_biocv_bio_blurb,
   #scholarlayout-top-widgets #scholar_biocv-bio_blurb,
-    #scholarlayout-top-widgets .os_boxes_bio,
+     #scholarlayout-top-widgets .scholarlayout-item.os_boxes_bio,
     #scholarlayout-top-widgets #boxes-scholar_biocv_bio {
  background: url('images/widgetIcons/bio.png') no-repeat scroll 50% 10px transparent;
 } 
 
+ 
 
-  
+ 
 #scholarlayout-top-widgets dd.scholarlayout-item a.add,
 #scholarlayout-top-widgets dd.scholarlayout-item a.setting {
   display: block;
@@ -344,7 +347,7 @@ dd.scholarlayout-item .close-this {
 }
 
 .poof {
-	background: transparent url(images/poof.png) no-repeat 0 0;
+	background: transparent url('images/poof.png') no-repeat 0 0;
 	cursor: pointer;
 	display: none;
 	height: 32px;
@@ -397,7 +400,7 @@ dd.scholarlayout-item .close-this {
 .widget-prev,
 .widget-next {
   width: 30px;
-  background: url(images/widget-prev.png) 0 50% no-repeat #d5d6d4;
+  background: url('images/widget-prev.png') 0 50% no-repeat #d5d6d4;
   position: absolute;
   left:0;
   height: 106px;
@@ -411,11 +414,7 @@ dd.scholarlayout-item .close-this {
 .widget-next {
   left: auto;
   right: 0;
-  background-image: url(images/widget-next.png);
-  }
-
-.disabled {
-  background: transparent !important;
+  background-image: url('images/widget-next.png');
   }
 
 #scholarlayout-container .widget-prev,

@@ -67,33 +67,37 @@ height:600px;
    }
    
  
-   #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li { 
-   margin-left:2px;
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li { 
+ margin-left:2px;
  font-weight:bold;
 padding-bottom:8px;
 font-size:1em;
+text-align: center;
    }
    
-  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li.first { 
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li.first { 
 background:#EEE;
 padding-left:8px;
 border-bottom:1px dotted #555;
    }
    
-    #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.first, 
-    #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.first.last,
-    #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.last{ 
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.first, 
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.first.last,
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.last,
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li
+{ 
 background:#EEE;
 padding-left:0px;
 border-bottom:none;
+text-align: left;
    } 
 
-  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a:hover { 
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a:hover { 
 text-decoration:underline;
-
-   }
+}
    
-     #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help { 
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help,
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help a:hover { 
 position:relative;
 float:right;
  background: url('../images/scholarbase-sprite.png') 0 -147px no-repeat transparent;
@@ -267,19 +271,17 @@ h2.title a.ctools-dropdown-link,
 .ctools-dropdown ul.links li a:hover,
 .ctools-dropdown-container-wrapper ul.links li a:hover {
   color: #333 !important;
-  text-transform: none !important;
+  text-transform: capitalize !important;
   text-decoration: none !important;
-  background: blue !important;
+  
   font-weight: bold !important;
 }
 
-#cp-settings-layout .context-links .ctools-dropdown-container-wrapper a:hover,
-#cp-settings-layout .ctools-dropdown ul.links li a:hover,
-#cp-settings-layout .ctools-dropdown-container-wrapper ul.links li a:hover {
+#cp-settings-layout .context-links .ctools-dropdown-container-wrapper a:hover {
   color: #333 !important;
-  text-transform: none !important;
+  text-transform: capitalize;
   text-decoration: underline !important;
-  background: transparent !important;
+
   font-weight: normal !important;
 }
 }
