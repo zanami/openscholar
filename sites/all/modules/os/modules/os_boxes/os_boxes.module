@@ -195,7 +195,7 @@ function os_boxes_boxes_plugins() {
     'access' => false, //Do not allow instances of this to be created
   );
 
-  $info['os_boxes_simpleview_list'] = array(
+  $info['os_boxes_sv_list'] = array(
     'title' => 'List of posts',
     'description' => '',
     'tags' => array(
