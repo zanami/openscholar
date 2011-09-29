@@ -198,7 +198,7 @@ function os_boxes_boxes_plugins() {
     'access' => false, //Do not allow instances of this to be created
   );
 
-  $info['os_boxes_simpleview_list'] = array(
+  $info['os_boxes_sv_list'] = array(
     'title' => 'List of posts',
     'description' => '',
     'tags' => array(
@@ -294,8 +294,6 @@ function os_boxes_vsite_widgets(){
 
   $items = array();
   foreach ( $plugins as $key => $info ) {
-  	//Call access function
-  	//if(!$info['access'] || (!user_access('administer blocks') && !call_user_func($info['access']))) continue;
 
     if (isset($info['title'])) {
       $items["boxes-boxes_add__$key"] = array(
@@ -305,6 +303,7 @@ function os_boxes_vsite_widgets(){
         'region' => $info['region']?$info['region']:false,
         'label' => $info['title'],
         'block_config_path' => "cp/osboxes/nojs/boxes_add__{$key}/configure",
+        'factory' => true,
       );
       if (is_array($plugins[$key]['tags']) && count($plugins[$key]['tags'])) {
         $items["boxes-boxes_add__$key"]['tags'] = $plugins[$key]['tags'];

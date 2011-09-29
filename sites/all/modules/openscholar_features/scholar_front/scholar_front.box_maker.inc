@@ -213,7 +213,7 @@ EOD;
     $opts['title'] = $settings['title'];
     $opts['subject'] = $settings['title'];
   } else {
-  	$opts['title'] = $_box_plugins[$type]['title'] . ' box';
+  	$opts['title'] = '';
   	$opts['subject'] = '';
   }
   $opts['description'] = $_box_plugins[$type]['title'] . ' box';

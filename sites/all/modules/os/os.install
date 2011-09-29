@@ -194,8 +194,11 @@ function os_update_6004(&$sandbox){
   	$index++;
   	if($index < $sandbox['os_update_6004']) continue;
   	$max = db_result(db_query("SELECT COUNT(*) FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%' ", $block_id));
-    $o_box = boxes_load($box_delta);
-    os_boxes_replace_boxes($block_id, $o_box, false, false, 1000);
+    
+  	if($max > 0){
+	  	$o_box = boxes_load($box_delta);
+	    os_boxes_replace_boxes($block_id, $o_box, false, false, 1000);
+  	}
     
     if($max < 1000){
     	//Run updates on the next block
@@ -378,7 +381,7 @@ function os_update_6007(&$sandbox){
   }
   
   //vsites per batch.
-  $limit = 50;
+  $limit = 40;
   
   require_once drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc';
   //$batch['operations'][] = array('scholar_front_frontpage_boxmaker',array($limit, $offset, $total_vsites),);
