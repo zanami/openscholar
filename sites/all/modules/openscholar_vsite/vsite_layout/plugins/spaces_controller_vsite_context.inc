@@ -64,7 +64,7 @@ class spaces_controller_vsite_context extends spaces_controller_context {
   	
     list($context, $action, $type, $theme) = explode(':', $id);
     if($action = 'reaction' && $type == 'block' && array_key_exists('blocks',$this->values['preset'][$id])){
-      drupal_alter('vsite_default_blocks',$$this->values['preset'][$id]['blocks']);
+      drupal_alter('vsite_default_blocks',$this->values['preset'][$id]['blocks']);
     }//Allow the theme and others to alter the default block regions
   }
   
