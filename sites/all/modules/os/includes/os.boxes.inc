@@ -27,8 +27,7 @@ function os_boxes_mk_box(&$vsite, $type, $opts) {
   require_once drupal_get_path('module', 'boxes') . '/boxes.module';
   global $box_plugins;
   if (empty($box_plugins)) {
-    $box_plugins  = os_boxes_boxes_plugins();
-    $box_plugins += spaces_simpleviews_boxes_plugins();
+    $box_plugins  = os_boxes_get_boxes_plugins();
   }
 
   $identifier = $vsite->type . '-' . $vsite->id;
@@ -97,6 +96,19 @@ function os_boxes_remove_box(&$vsite, $box) {
   os_boxes_put_box($vsite, $box, false);
 }
 
+/**
+ * Remove a instance of a box that has been overridden or exists only in a vsite
+ * @param vsite $vsite
+ * @param box $box
+ */
+function os_boxes_remove_spaces_box_instance($vsite,$box){
+	
+	if(!isset($vsite->controllers->boxes) || !is_object($box)){
+		return false;
+	}
+	
+	return $vsite->controllers->boxes->del($box->delta);
+}
 /**
  * @function os_boxes_replace_boxes
  *    Given a block id, replace it with the given block
