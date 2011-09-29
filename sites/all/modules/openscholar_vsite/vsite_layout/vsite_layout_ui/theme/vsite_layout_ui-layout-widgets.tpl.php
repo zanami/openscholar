@@ -13,7 +13,7 @@
   <dt><?php print $region_name;?></dt>
 	<?php
 	foreach($wgts as $s_widget_key => $w){
-	  echo theme('vsite_layout_cp_widget', $s_widget_key, $w);
+	  echo theme('vsite_layout_ui_cp_widget', $s_widget_key, $w);
 	}
 	?>
 </dl>

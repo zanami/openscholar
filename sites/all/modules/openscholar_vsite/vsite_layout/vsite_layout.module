@@ -12,82 +12,13 @@ function vsite_layout_ctools_plugin_api() {
 }
 
 /**
- * Define the themes used for the layout portion of the CP
- */
-function vsite_layout_theme() {
-  return array(
-    //The layout page
-    'vsite_layout_layout' => array(
-      'template' => 'vsite_layout-layout',
-      'path' => drupal_get_path('module', 'vsite_layout') . '/theme',
-      'arguments' => array('regions' => NULL, 's_page_type' => ''),
-    ),
-
-    'vsite_layout_layout_widgets' => array(
-      'template' => 'vsite_layout-layout-widgets',
-      'arguments' => array('wgts' => array(), 'wgts_id' => NULL, 'wgts_class' => NULL, 'region_name' => NULL),
-      'path' => drupal_get_path('module', 'vsite_layout') . '/theme'
-    ),
-
-    'vsite_layout_tagged_widgets' => array(
-      'template' => 'vsite_layout-tagged-widgets',
-      'arguments' => array('wgts' => array(), 'add_new_wgts' => NULL, 'wgts_id' => NULL, 'wgts_class' => NULL, 'region_name' => NULL, 'wgts_tags' => array()),
-      'path' => drupal_get_path('module', 'vsite_layout') . '/theme'
-    ),
-
-    'vsite_layout_cp_widget' => array(
-      'template' => 'vsite_layout-cp-widget',
-      'arguments' => array('s_widget_key' => NULL, 'w' => NULL),
-      'path' => drupal_get_path('module', 'vsite_layout') . '/theme'
-    ),
-  );
-}
-
-/**
- * Define the Menu Entries for the Cp Layout Management
- */
-function vsite_layout_menu() {
-  $items = array();
-
-  $items['cp/build/layout'] = array(
-    'title' => "Layout",
-    'page callback' => 'vsite_layout_layout',
-    'type' => MENU_LOCAL_TASK,
-    'menu_name' => 'cp',
-    'access callback' => 'cp_access_cp',
-    'file path' => drupal_get_path('module', 'vsite_layout') . '/includes',
-    'file' => 'vsite_layout.admin.inc',
-    'weight' => 10,
-  );
-
-  $items["cp/build/layout/region_widgets_js"] =
-  $items["cp/build/region_widgets_js"] = array(
-    'page callback' => 'vsite_layout_region_widgets_callback',
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-    'file path' => drupal_get_path('module', 'vsite_layout') . '/includes',
-    'file' => 'vsite_layout.admin.inc',
-  );
-  $items["cp/build/layout/top_widgets_js"] =
-  $items["cp/build/top_widgets_js"] = array(
-    'page callback' => 'vsite_layout_top_widgets_callback',
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-    'file path' => drupal_get_path('module', 'vsite_layout') . '/includes',
-    'file' => 'vsite_layout.admin.inc',
-  );
-
-  return $items;
-}
-
-/**
  * Alter the default location for the theme widgets
  *
  * @param $a_widgets
  */
 function vsite_layout_vsite_default_blocks_alter(&$a_widgets) {
 
-  static  $a_settings;
+  static $a_settings = null;
 
   if (!is_array($a_settings)) {
   	$a_settings = array();
@@ -131,7 +62,7 @@ function vsite_layout_merge_default_blocks(&$blocks) {
 }
 
 /**
- * Change the boxes modal form so that it integrates with the cp/layout
+ * Change the boxes modal form so that it integrates with its various appearances in modals
  */
 function vsite_layout_form_alter(&$form, $form_state, $form_id){
 switch ($form_id) {
@@ -145,7 +76,7 @@ switch ($form_id) {
 }
 
 /**
- * Handle submittion of box form in "cp/build/layout"
+ * Handle submission of box form from modals
  */
 function vsite_layout_box_form_submit($form, &$form_state) {
 	$origin = arg(5);
@@ -216,16 +147,4 @@ function vsite_layout_context_plugins() {
     ),
   );
   return $plugins;
-}
-
-// given a widget created by boxes, get the plugin used to define the box
-function vsite_layout_find_widget_plugin(&$widget) {
-  if (!isset($widget['plugin']) && $widget['module'] == 'boxes') {
-    if ($box = boxes_load($widget['delta'])) {
-      $widget['plugin'] = $box->plugin_key;
-    }
-    else {
-      $widget['plugin'] = str_replace('boxes_add__', '', $widget['delta']);
-    }
-  }
 }

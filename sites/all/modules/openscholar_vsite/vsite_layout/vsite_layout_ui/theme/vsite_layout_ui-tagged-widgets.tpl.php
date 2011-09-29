@@ -14,10 +14,10 @@ foreach($wgts as $s_widget_key => $w){
 	//Return the first tag that matches the display categories above
 	$s_tag = array_shift(array_intersect(array_keys($s_tagged_output),$w['tags']));
 	if($s_tag){
-	  $s_tagged_output[$s_tag] .= theme('vsite_layout_cp_widget', $s_widget_key, $w);
+	  $s_tagged_output[$s_tag] .= theme('vsite_layout_ui_cp_widget', $s_widget_key, $w);
 	}else{
 		$w['tags'][] = "Misc";
-		$s_tagged_output['Misc'] .= theme('vsite_layout_cp_widget', $s_widget_key, $w);
+		$s_tagged_output['Misc'] .= theme('vsite_layout_ui_cp_widget', $s_widget_key, $w);
 	}
 }
 
@@ -26,7 +26,7 @@ foreach($wgts as $s_widget_key => $w){
 <div class="<?php print $wgts_id; ?>-wrapper">
 <?php echo $add_new_wgts; ?>
 
-<div id="websiteLabelTab"><img src="/<?php echo drupal_get_path('module', 'vsite_layout') . '/theme/images/websiteLayoutBarLabel.png'; ?>"></div>
+<div id="websiteLabelTab"><img src="<?php echo $GLOBALS['base_path'].drupal_get_path('module', 'vsite_layout_ui') . '/theme/images/websiteLayoutBarLabel.png'; ?>"></div>
 <ul id="widget-categories">
 <?php
   foreach($s_tagged_output as $s_tag_name => $output){
