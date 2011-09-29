@@ -106,6 +106,5 @@ function scholar_front_redirect_home(){
 function scholar_front_home(){
 	$vsite = vsite_get_vsite();
 	if(!$vsite || !$vsite->access_admin()) return "";
-	features_get_conflicts();
   return _scholar_front_admin_frontpage();
 }

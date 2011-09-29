@@ -62,13 +62,9 @@ class spaces_controller_vsite_context extends spaces_controller_context {
   protected function load_preset_values($id = NULL) {
   	parent::load_preset_values($id);
   	
-    if (is_array($this->values['preset'])) {
-    	foreach ($this->values['preset'] as $object_id => $value) {
-    		list($context, $action, $type, $theme) = explode(':', $object_id);
-    		if($action = 'reaction' && $type == 'block' && array_key_exists('blocks',$value)){
-    			drupal_alter('vsite_default_blocks',$this->values['preset'][$object_id]['blocks']);
-    		}
-    	}
+    list($context, $action, $type, $theme) = explode(':', $id);
+    if($action = 'reaction' && $type == 'block' && array_key_exists('blocks',$this->values['preset'][$id])){
+      drupal_alter('vsite_default_blocks',$$this->values['preset'][$id]['blocks']);
     }//Allow the theme and others to alter the default block regions
   }
   
