@@ -85,6 +85,10 @@ div.scholarlayout-top-widgets-wrapper .scroll-viewport  {
   position: relative;
 }
 
+#scholarlayout-top-widgets .scholarlayout-item-settings {
+	display: none;
+}
+
 #vsite-layout-ui-settings-form {
   padding-top: 10px;
   margin-top: 25px !important;
