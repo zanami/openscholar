@@ -317,23 +317,23 @@ function spaces_update_6301() {
         // the feature setting into the value array of a
         // spaces_features override.
         
-      	//Patch to maintain feature privacy values for OpenScholar
-      	switch ($feature->value){
-      		// 1 was private now it is public
-      		case 1:
-      		  $newval = 2;
-      		break;
-      		// 2 was public now it is private
-          case 2:
-            $newval = 1;
-          break;
-          //Disabled remains the same
-          default:
-          	$newval = 0;
-      	}
-      	
+      //Patch to maintain feature privacy values for OpenScholar
+      switch ($feature->value){
+        // 1 was private now it is public
+        case 1:
+          $newval = 2;
+        break;
+        // 2 was public now it is private
+        case 2:
+          $newval = 1;
+        break;
+        //Disabled remains the same
+        default:
+          $newval = 0;
+       }
+
         $value = array(
-          $id => $newval
+          $id => $newval,
         );
         if ($override = db_fetch_array(db_query("SELECT * FROM {spaces_overrides} WHERE type = '%s' AND id = '%s' AND object_type = 'variable' AND object_id = 'spaces_features'", $type, $sid))) {
           $value += unserialize($override['value']);

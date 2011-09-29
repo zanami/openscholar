@@ -501,12 +501,13 @@ function spaces_og_db_rewrite_sql($query, $primary_table, $primary_field, $args)
           $groups = implode(', ', $groups);
           $return['where'] .= " OR (spaces_og_oga.group_nid IN ({$groups}) AND spaces_og_n.status = 1)";
         }
-        
+
         if(module_exists('og_vocab') && ($space = spaces_get_space())){
-        	$sid = intval($space->id);
-        	$return['join'] .= " LEFT JOIN {og_vocab} og_vocab_v ON {$primary_table}.vid = og_vocab_v.vid AND og_vocab_v.nid = {$sid} ";
-        	$return['where'] .= " OR (og_vocab_v.nid IS NOT NULL)";
+          $sid = intval($space->id);
+          $return['join'] .= " LEFT JOIN {og_vocab} og_vocab_v ON {$primary_table}.vid = og_vocab_v.vid AND og_vocab_v.nid = {$sid} ";
+          $return['where'] .= " OR (og_vocab_v.nid IS NOT NULL)";
         }
+        
         return $return;
       }
       break;
@@ -547,4 +548,19 @@ function spaces_og_views_api() {
     'api' => 2,
     'path' => drupal_get_path('module', 'spaces_og') .'/views',
   );
+}
+
+/**
+ * Implementation of hook_spaces_get_space_from_object().
+ */
+function spaces_og_spaces_get_space_from_object($type, $object) {
+  if ($type == 'node') {
+    if (og_is_group_type($object->type)) {
+      return spaces_load('og', $object->nid);
+    }
+    elseif (!empty($object->og_groups)) {
+      reset($object->og_groups);
+      return spaces_load('og', current($object->og_groups));
+    }
+  }
 }
