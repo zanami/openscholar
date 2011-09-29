@@ -418,6 +418,7 @@ function vsite_layout_ui_settings_form_submit($form, &$form_state) {
 
   //Apply the region settings
   $a_avalible_blocks = $space->controllers->context->get('openscholar-feature-'.$s_page_type.":reaction:block");
+  _vsite_layout_ui_add_new_widgets($a_avalible_blocks['blocks']);
 
   //Sort them for easy display
   uasort($a_avalible_blocks['blocks'], 'vsite_layout_sort_block_by_weight');
@@ -629,4 +630,13 @@ function vsite_layout_ui_find_widget_plugin(&$widget) {
       $widget['plugin'] = str_replace('boxes_add__', '', $widget['delta']);
     }
   }
+}
+
+function _vsite_layout_ui_add_new_widgets(&$widgets) {
+  $all_widgets = vsite_layout_get_widgets();
+  foreach ($all_widgets as &$w) {
+    $w['region'] = false;
+  }
+
+  $widgets += $all_widgets;
 }

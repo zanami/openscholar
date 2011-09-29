@@ -96,7 +96,7 @@ function vsite_layout_box_form_submit($form, &$form_state) {
 		$box = boxes_load($form_state['box']->delta);
 
 		$form_state['js commands'] = array(
-		  ctools_ajax_command_replace("div#cp-settings-layout dd#boxes-boxes_add__{$form_state['plugin_key']}", theme('vsite_layout_cp_widget', "boxes-{$box->delta}", os_boxes_get_vsite_widget($box))),
+		  ctools_ajax_command_replace("div#cp-settings-layout dd#boxes-boxes_add__{$form_state['plugin_key']}", theme('vsite_layout_ui_cp_widget', "boxes-{$box->delta}", os_boxes_get_vsite_widget($box))),
 		  array('command' => 'updateLayoutForm', 'warning' => true),
 		);
 	}
@@ -105,7 +105,7 @@ function vsite_layout_box_form_submit($form, &$form_state) {
 	  $box = boxes_load($form_state['box']->delta);
 
 	  $form_state['js commands'] = array(
-	    ctools_ajax_command_before('#scholarlayout-top-widgets .scholarlayout-item:nth-child(2)', theme('vsite_layout_cp_widget', 'boxes-'.$box->delta, os_boxes_get_vsite_widget($box))),
+	    ctools_ajax_command_before('#scholarlayout-top-widgets .scholarlayout-item:nth-child(2)', theme('vsite_layout_ui_cp_widget', 'boxes-'.$box->delta, os_boxes_get_vsite_widget($box))),
 	    ctools_ajax_command_changed('#boxes-'.$box->delta),
 	  );
 	}
