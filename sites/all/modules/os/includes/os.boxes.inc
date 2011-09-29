@@ -120,7 +120,6 @@ function os_boxes_remove_spaces_box_instance($vsite,$box){
 function os_boxes_replace_boxes($block_id, $box, $default_region = false, $sid = false, $limit = false) {
 
   if (!$box->delta) {
-    module_load_include('module', 'os_boxes');
     $box->delta = os_boxes_create_delta();
   }
   $widget_def = os_boxes_get_vsite_widget($box);
