@@ -120,7 +120,9 @@ function os_boxes_remove_spaces_box_instance($vsite,$box){
 function os_boxes_replace_boxes($block_id, $box, $default_region = false, $sid = false, $limit = false) {
 
   if (!$box->delta) {
-    $box->delta = os_boxes_create_delta();
+  	//There is no reason to create a delta here, the box should be made before you try and put it in the db
+   // error_log("Invalid Box Passed to replace function.");
+    return false;
   }
   $widget_def = os_boxes_get_vsite_widget($box);
 

@@ -164,6 +164,9 @@ function os_update_6004(&$sandbox){
     $sandbox['os_update_6004'] = 0;
   }
 	
+  //Update the plugin cache so that default boxes are avalible
+  cache_clear_all("plugins:boxes:plugins",'cache');
+  
   // migrate existing blocks to new boxes
   module_load_include('module', 'boxes');
   require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
@@ -197,14 +200,17 @@ function os_update_6004(&$sandbox){
     
   	if($max > 0){
 	  	$o_box = boxes_load($box_delta);
-	    os_boxes_replace_boxes($block_id, $o_box, false, false, 1000);
+	  	if($o_box){
+	      os_boxes_replace_boxes($block_id, $o_box, false, false, 1000);
+	  	}
   	}
     
     if($max < 1000){
     	//Run updates on the next block
     	$sandbox['os_update_6004']++;
     }
-    break;
+    
+    if($max > 0) break;
   }
   
   
