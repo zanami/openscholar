@@ -26,7 +26,7 @@ class os_boxes_addthis extends os_boxes_default {
     $form = parent::options_form();
     
     global $base_url;
-    $dir = $base_url . '/' . $mod = drupal_get_path('module', 'os_boxes') . '/plugins/images/';
+    $dir = $base_url . '/' . $mod = drupal_get_path('module', 'os_boxes') . '/theme/images/';
         
     $form['widget_type'] = array(
       '#type' => 'radios',
