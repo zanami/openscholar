@@ -7,6 +7,9 @@ function os_boxes_ctools_plugin_api($module, $api) {
   if ($module == 'boxes' && $api == 'plugins') {
     return array('version' => 1);
   }
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => 1);
+  }
 }
 
 /**
@@ -570,7 +573,7 @@ function os_boxes_remove_widget($js, $delta, $ctx) {
   // remove box from context
   // save context
   $vsite = vsite_get_vsite();
-  $ctx_key = $ctx.':reaction:block';
+  $ctx_key = $ctx.':reaction:block:'.$vsite->group->og_theme;
   $ctx = $vsite->controllers->context->get($ctx_key);
   $ctx['blocks']['boxes-'.$delta]['region'] = false;
   $vsite->controllers->context->set($ctx_key, $ctx);
@@ -629,7 +632,7 @@ function os_boxes_delete_box_confirm_submit(&$form, &$form_state) {
   $delta = 'boxes-'.$box->delta;
 
   foreach ($ctx as $id => &$ct) {
-    if (strpos($id, 'reaction:block') === FALSE) continue;
+    if (strpos($id, 'reaction:block:') === FALSE) continue;
     unset($ct['blocks'][$delta]);
     $vsite->controllers->context->set($id, $ct);
   }
