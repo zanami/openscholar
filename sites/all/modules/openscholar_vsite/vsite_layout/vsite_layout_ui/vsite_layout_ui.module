@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * Define the themes used for the layout portion of the CP
+ */
+function vsite_layout_ui_theme() {
+  return array(
+    //The layout page
+    'vsite_layout_ui_layout' => array(
+      'template' => 'vsite_layout_ui-layout',
+      'path' => drupal_get_path('module', 'vsite_layout_ui') . '/theme',
+      'arguments' => array('regions' => NULL, 's_page_type' => ''),
+    ),
+
+    'vsite_layout_ui_layout_widgets' => array(
+      'template' => 'vsite_layout_ui-layout-widgets',
+      'arguments' => array('wgts' => array(), 'wgts_id' => NULL, 'wgts_class' => NULL, 'region_name' => NULL),
+      'path' => drupal_get_path('module', 'vsite_layout_ui') . '/theme'
+    ),
+
+    'vsite_layout_ui_tagged_widgets' => array(
+      'template' => 'vsite_layout_ui-tagged-widgets',
+      'arguments' => array('wgts' => array(), 'add_new_wgts' => NULL, 'wgts_id' => NULL, 'wgts_class' => NULL, 'region_name' => NULL, 'wgts_tags' => array()),
+      'path' => drupal_get_path('module', 'vsite_layout_ui') . '/theme'
+    ),
+
+    'vsite_layout_ui_cp_widget' => array(
+      'template' => 'vsite_layout_ui-cp-widget',
+      'arguments' => array('s_widget_key' => NULL, 'w' => NULL),
+      'path' => drupal_get_path('module', 'vsite_layout_ui') . '/theme'
+    ),
+  );
+}
+
+/**
+ * Define the Menu Entries for the Cp Layout Management
+ */
+function vsite_layout_ui_menu() {
+  $items = array();
+
+  $items['cp/build/layout'] = array(
+    'title' => "Layout",
+    'page callback' => 'vsite_layout_ui_layout',
+    'type' => MENU_LOCAL_TASK,
+    'menu_name' => 'cp',
+    'access callback' => 'cp_access_cp',
+    'file path' => drupal_get_path('module', 'vsite_layout_ui') . '/includes',
+    'file' => 'vsite_layout_ui.inc',
+    'weight' => 10,
+  );
+
+  $items["cp/build/layout/region_widgets_js"] =
+  $items["cp/build/region_widgets_js"] = array(
+    'page callback' => 'vsite_layout_ui_region_widgets_callback',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file path' => drupal_get_path('module', 'vsite_layout_ui') . '/includes',
+    'file' => 'vsite_layout_ui.inc',
+  );
+  $items["cp/build/layout/top_widgets_js"] =
+  $items["cp/build/top_widgets_js"] = array(
+    'page callback' => 'vsite_layout_ui_top_widgets_callback',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file path' => drupal_get_path('module', 'vsite_layout_ui') . '/includes',
+    'file' => 'vsite_layout_ui.inc',
+  );
+
+  return $items;
+}
+
