@@ -425,11 +425,6 @@ function vsite_layout_ui_settings_form_submit($form, &$form_state) {
   foreach ($a_avalible_blocks['blocks'] as $s_key => $block) {
     $a_avalible_blocks['blocks'][$s_key]['region'] = isset($setting[$s_key])? $setting[$s_key]:false;
     $a_avalible_blocks['blocks'][$s_key]['weight'] = array_search($s_key,array_keys($setting));
-    unset($setting[$s_key]);
-  }
-
-  if (!empty($settings)) {
-
   }
 
   uasort($a_avalible_blocks['blocks'], 'vsite_layout_sort_block_by_weight'); //Put them in the right order to simplify showing them in the cp
