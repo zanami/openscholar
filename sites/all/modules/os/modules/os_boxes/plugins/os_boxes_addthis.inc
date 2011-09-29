@@ -2,7 +2,7 @@
 
 /**
  * @file
- * The class for "CC license" type widgets.  
+ * The class for "CC license" type widgets.
  */
 
 class os_boxes_addthis extends os_boxes_default {
@@ -22,7 +22,7 @@ class os_boxes_addthis extends os_boxes_default {
   /**
    * Implementation of boxes_content::options_form().
    */
-  public function options_form(){    
+  public function options_form(){
     $form = parent::options_form();
     
     global $base_url;
@@ -36,7 +36,7 @@ class os_boxes_addthis extends os_boxes_default {
 		    'buttons' => "<img src='$dir/addthis_button.png' />\n",
         'toolbox_small' => "<img src='$dir/addthis_sm.png' />\n",
         'toolbox_large' => "<img src='$dir/addthis_lg.png' />\n",
-        'numeric' => "<img src='$dir/addthis_numbers.gif' />\n",	
+        'numeric' => "<img src='$dir/addthis_numbers.gif' />\n",
       ),
     );
     
@@ -67,14 +67,16 @@ class os_boxes_addthis extends os_boxes_default {
   	  	break;
   	  	
   	  case 'toolbox_small':
-  	    $services = $this->options['toolbox_services'];
+  	    //$services = $this->options['toolbox_services'];
+  	    $services = 'facebook,twitter,email,linkedin';
   	    $config = array();
   	    $display = 'addthis_toolbox';
   	    break;
   	    
   	  case 'toolbox_large':
-  	    $services = $this->options['toolbox_services'];
-  	    $config = array('addthis_toolbox_classes' => 'addthis_32x32_style'); 
+  	    //$services = $this->options['toolbox_services'];
+  	    $services = 'facebook,twitter,email,linkedin';
+  	    $config = array('addthis_toolbox_classes' => 'addthis_32x32_style');
   	    $display = 'addthis_toolbox';
   	    break;
   	    
@@ -86,7 +88,7 @@ class os_boxes_addthis extends os_boxes_default {
   	}
   	
     $block = parent::render();
-    $block['content'] = theme($display, $services, $config);    
+    $block['content'] = theme($display, $services, $config);
     return $block;
   }
   
