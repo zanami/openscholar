@@ -1,0 +1,5 @@
+core = "6.x"
+dependencies[] = "vsite_layout"
+name = "VSite Layout UI"
+description = "Provides a drag-and-drop UI for modifying a VSite's layout."
+package = "vsite"
