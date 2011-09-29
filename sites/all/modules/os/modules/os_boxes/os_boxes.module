@@ -291,8 +291,6 @@ function os_boxes_vsite_widgets(){
 
   $items = array();
   foreach ( $plugins as $key => $info ) {
-  	//Call access function
-  	//if(!$info['access'] || (!user_access('administer blocks') && !call_user_func($info['access']))) continue;
 
     if (isset($info['title'])) {
       $items["boxes-boxes_add__$key"] = array(
@@ -302,6 +300,7 @@ function os_boxes_vsite_widgets(){
         'region' => $info['region']?$info['region']:false,
         'label' => $info['title'],
         'block_config_path' => "cp/osboxes/nojs/boxes_add__{$key}/configure",
+        'factory' => true,
       );
       if (is_array($plugins[$key]['tags']) && count($plugins[$key]['tags'])) {
         $items["boxes-boxes_add__$key"]['tags'] = $plugins[$key]['tags'];
@@ -707,7 +706,7 @@ function os_boxes_preprocess_block(&$vars) {
   // why do they make me do it this way... ugh...
   $block->content = str_replace($block->controls, '', $block->content);
   
-  // boxes plugins can optionally add their own css file 
+  // boxes plugins can optionally add their own css file
   $plugins = os_boxes_get_boxes_plugins();
   if ($block -> module == 'boxes' && isset($block -> plugin)){
     if (isset($plugins[$block -> plugin]['css'])){
