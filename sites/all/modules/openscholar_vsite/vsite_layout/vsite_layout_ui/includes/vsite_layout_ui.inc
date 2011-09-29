@@ -417,7 +417,7 @@ function vsite_layout_ui_settings_form_submit($form, &$form_state) {
   }
 
   //Apply the region settings
-  $a_avalible_blocks = $space->controllers->context->get('openscholar-feature-'.$s_page_type.":reaction:block","preset");
+  $a_avalible_blocks = $space->controllers->context->get('openscholar-feature-'.$s_page_type.":reaction:block");
 
   //Sort them for easy display
   uasort($a_avalible_blocks['blocks'], 'vsite_layout_sort_block_by_weight');
@@ -425,6 +425,11 @@ function vsite_layout_ui_settings_form_submit($form, &$form_state) {
   foreach ($a_avalible_blocks['blocks'] as $s_key => $block) {
     $a_avalible_blocks['blocks'][$s_key]['region'] = isset($setting[$s_key])? $setting[$s_key]:false;
     $a_avalible_blocks['blocks'][$s_key]['weight'] = array_search($s_key,array_keys($setting));
+    unset($setting[$s_key]);
+  }
+
+  if (!empty($settings)) {
+
   }
 
   uasort($a_avalible_blocks['blocks'], 'vsite_layout_sort_block_by_weight'); //Put them in the right order to simplify showing them in the cp
@@ -569,42 +574,50 @@ function vsite_layout_ui_apply_changes_to_default($a_new_setting){
  */
 function vsite_layout_ui_region_widgets( $page_type = 'none') {
 
-  $context = context_load('openscholar-feature-'.$page_type);
+  // get default context
+  $space = vsite_get_vsite();
+  $blocks = $space->controllers->context->get('openscholar-feature-'.$page_type.":reaction:block");
+  $blocks = $blocks['blocks'];
 
-  $default_blocks = module_invoke_all('vsite_widgets');
+  // get default widgets
+  $default_blocks = vsite_layout_get_widgets();
   foreach ($default_blocks as $s_key => $a_block) {
     $default_blocks[$s_key]['region'] = false; //Get any new blocks that have been introduced, and include them in the top bar
   }
 
   $a_region_widgets = array('unused' => array());
-  if($context && ($a_widgets = $context->reactions['block']['blocks'])){
-    $a_widgets = array_merge($default_blocks,$a_widgets);
-  	uasort($a_widgets, 'vsite_layout_sort_block_by_weight'); //Put them in the right order to simplify showing them in the cp
+  if ($blocks) {
+    $a_widgets = array_merge($default_blocks, $blocks);
+  }
+  else {
+    $a_widgets = $default_blocks;
+  }
+	uasort($a_widgets, 'vsite_layout_sort_block_by_weight'); //Put them in the right order to simplify showing them in the cp
 
-    foreach ($a_widgets as $s_widget_key => $widget) {
-      $widget = (array)$widget;
-      // blocks stored in context override have old path
-      // and overwrite the defaults
-      if (is_array($widget['tags'])) {
-        $widget['class'] = strtolower(implode(' ', $widget['tags']));
-      }
+  foreach ($a_widgets as $s_widget_key => $widget) {
+    $widget = (array)$widget;
+    // blocks stored in context override have old path
+    // and overwrite the defaults
+    if (!is_array($widget['tags'])) {
+      $widget['tags'][] = 'Misc';
+    }
+    $widget['class'] = strtolower(implode(' ', $widget['tags']));
 
-      if (isset($default_blocks[$s_widget_key])) {
-        $widget['block_config_path'] = $default_blocks[$s_widget_key]['block_config_path'];
-        // if this is a local instance or if there is a factory for this box type, we can delete it
-        $widget['can_delete'] = strpos($widget['delta'], 'og-') !== FALSE || isset($a_widgets['boxes-boxes_add__'.$widget['plugin']]);
-        if ($widget['can_delete']) {
-          // the delete path is always the same
-          $widget['block_delete_path'] = "cp/osboxes/nojs/".$widget['delta']."/delete";
-        }
+    if (isset($default_blocks[$s_widget_key])) {
+      $widget['block_config_path'] = $default_blocks[$s_widget_key]['block_config_path'];
+      // if this is a local instance or if there is a factory for this box type, we can delete it
+      $widget['can_delete'] = strpos($widget['delta'], 'og-') !== FALSE || isset($a_widgets['boxes-boxes_add__'.$widget['plugin']]);
+      if ($widget['can_delete']) {
+        // the delete path is always the same
+        $widget['block_delete_path'] = "cp/osboxes/nojs/".$widget['delta']."/delete";
       }
+    }
 
-      if ($widget['region']) {
-        $a_region_widgets[$widget['region']][$s_widget_key] = $widget;
-      }
-      else {
-        $a_region_widgets['unused'][$s_widget_key] = $widget;
-      }
+    if ($widget['region']) {
+      $a_region_widgets[$widget['region']][$s_widget_key] = $widget;
+    }
+    else {
+      $a_region_widgets['unused'][$s_widget_key] = $widget;
     }
   }
 
