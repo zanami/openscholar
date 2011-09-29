@@ -350,7 +350,7 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
   );
 
   if(!$region && isset($box->region)){
-    $a_wgt['region'] =$box->region;
+    $a_wgt['region'] = $box->region;
   }
 
   if (is_array($plugins[$box->plugin_key]['tags'])) {
@@ -363,6 +363,11 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
 
   if (is_a($box, 'os_boxes_modalframe')) {
     $a_wgt['block_config_path'] = $box->get_config_path();
+  }
+
+  if (isset($plugins[$box->plugin_key]['title'])) {
+    $a_wgt['can_delete'] = true;
+    $a_wgt['block_delete_path'] = "cp/osboxes/nojs/".$a_wgt['delta']."/delete";
   }
 
   return $a_wgt;
@@ -705,7 +710,7 @@ function os_boxes_preprocess_block(&$vars) {
   // remove the inline edit links added by boxes module
   // why do they make me do it this way... ugh...
   $block->content = str_replace($block->controls, '', $block->content);
-  
+
   // boxes plugins can optionally add their own css file
   $plugins = os_boxes_get_boxes_plugins();
   if ($block -> module == 'boxes' && isset($block -> plugin)){
