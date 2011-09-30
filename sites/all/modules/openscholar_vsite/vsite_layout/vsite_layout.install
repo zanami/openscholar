@@ -74,4 +74,20 @@ function vsite_layout_update_6002(&$sandbox) {
 
 function vsite_layout_update_6003(&$sandbox) {
   drupal_install_modules('vsite_layout_ui');
+
+  $ret = array();
+  if (module_exists('vsite_layout_ui')) {
+    $ret[] = array(
+      'success' => true,
+      'query' => 'VSite Layout UI has been installed.',
+    );
+  }
+  else {
+    $ret[] = array(
+      'success' => false,
+      'query' => 'VSite Layout UI has failed to install',
+    );
+  }
+
+  return $ret;
 }
