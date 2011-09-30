@@ -69,7 +69,7 @@ function os_boxes_put_box($context, &$vsite, $box, $region) {
     'delta' => $box->delta,
     'weight' => 0,
     'region' => $region,
-    'label' => $box->title,
+    'label' => $box->description,
     'block_config_path' => 'cp/osboxes/nojs/' . $box->delta . '/configure', //is this always correct?
     'tags' => $box->tags,
   );

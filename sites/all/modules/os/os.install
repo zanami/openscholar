@@ -481,7 +481,7 @@ function os_update_6008(&$sandbox){
 /**
  *
  *  Update hook for beta12 => beta13
- *  removes bio blurb fro bio content type
+ *  removes bio blurb from bio content type
  */
 function os_update_6009(&$sandbox){
   //Do nothing if the biocv module is not enabled
