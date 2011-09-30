@@ -84,6 +84,7 @@ function os_update_6002(&$sandbox) {
     $res = array('#abort' => array('success' => FALSE, 'query' => 'Failed to install modules: ' . implode(', ', $failed)));
   } else {
   	//Make sure the boxes controller is added right away
+  	cache_clear_all('spaces_registry', 'cache');
   	spaces_controllers(true);
   	
     $res[] = array('success' => TRUE, 'query' => 'Installed modules: ' . implode(', ', $modules));
@@ -371,29 +372,27 @@ function os_update_6006(&$sandbox){
  */
 function os_update_6007(&$sandbox){
   $ret = array();
-  
-  //Make sure the boxes controller is added
-  spaces_controllers(true);
     
-  //Do nothing if the front module is not enabled
-  if(!module_exists('scholar_front')) return $ret;
-  
-  //make sure boxes prereqs are all met before installing
-  if (! (module_exists('os_boxes') && module_exists('spaces_simpleviews') )) {
-    $ret['#abort'] = array('success' => FALSE, 'query' => 'Please enable os_boxes and spaces_simpleviews before running scholar_front_update_6002');
-    return $ret;
-  }
-
-  //make sure vsite->controllers->boxes exists
-  $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "vsite" LIMIT 1') );
-  $vsite = vsite_get_vsite($v);
-  if (! isset($vsite->controllers->boxes)) {
-    $ret['#abort'] = array('success' => FALSE, 'query' => 'vsite object has no box controller.  clear cache before running update.');
-    return $ret;
-  }
-
   //init sandbox.  this persists between batches
   if (!isset($sandbox['os_update_6007_progress'])) {
+  	
+	  //Do nothing if the front module is not enabled
+	  if(!module_exists('scholar_front')) return $ret;
+  
+	  //make sure boxes prereqs are all met before installing
+	  if (! (module_exists('os_boxes') && module_exists('spaces_simpleviews') )) {
+	    $ret['#abort'] = array('success' => FALSE, 'query' => 'Please enable os_boxes and spaces_simpleviews before running scholar_front_update_6002');
+	    return $ret;
+	  }
+
+	  //make sure vsite->controllers->boxes exists
+	  $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "vsite" LIMIT 1') );
+	  $vsite = vsite_get_vsite($v);
+	  if (! isset($vsite->controllers->boxes)) {
+	    $ret['#abort'] = array('success' => FALSE, 'query' => 'vsite object has no box controller.  clear cache before running update.');
+	    return $ret;
+	  }
+  
     $sandbox['os_update_6007_progress'] = 0;
     $sandbox['max'] = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
   }
