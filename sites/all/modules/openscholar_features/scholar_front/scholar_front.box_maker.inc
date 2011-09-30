@@ -17,7 +17,7 @@ function scholar_front_frontpage_boxmaker($limit, $offset, $total_vsites) {
   //loop over all users
   $query = 'SELECT nid FROM {node} WHERE type = "vsite" LIMIT %d OFFSET %d ';
   $result = db_query($query, (int)$limit, (int)$offset);
-  while ($nid = db_fetch_object($result)) {
+  while ($nid = db_result($result)) {
     
     if (($vsite = vsite_get_vsite($nid)) == FALSE) {
       continue; //bad vsite
