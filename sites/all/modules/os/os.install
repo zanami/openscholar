@@ -372,6 +372,9 @@ function os_update_6006(&$sandbox){
 function os_update_6007(&$sandbox){
   $ret = array();
   
+  //Make sure the boxes controller is added
+  spaces_controllers(true);
+    
   //Do nothing if the front module is not enabled
   if(!module_exists('scholar_front')) return $ret;
   

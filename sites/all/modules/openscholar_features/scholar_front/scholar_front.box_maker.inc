@@ -198,7 +198,7 @@ EOD;
       
     //features uses simpleviews_boxes_ls
     case 'features':
-      $type = 'spaces_simpleviews_post_list';
+      $type = 'spaces_sv_post_list';
       $opts['style'] = 'teasers';
       $opts['filter'] = 'all';
       break;
