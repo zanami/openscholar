@@ -440,7 +440,7 @@ function os_boxes_vsite_admin_link($type, $object) {
 
 
   if ($object->module == 'boxes' && ($box = boxes_load($object->delta))) {
-    if (!is_subclass_of($box->plugin_key, 'os_boxes_modalframe')) {
+    if (class_exists('os_boxes_modalframe') && !is_subclass_of($box->plugin_key, 'os_boxes_modalframe')) {
       $links[] = array(
         'title' => 'Configure',
         'href' => $object->block_config_path.'/front',
