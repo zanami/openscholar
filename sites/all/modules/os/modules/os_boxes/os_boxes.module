@@ -390,24 +390,6 @@ function os_boxes_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $items['cp/osboxes/%ctools_js/%/delete'] = array(
-    'title' => 'Delete this Widget',
-    'page callback' => 'os_boxes_delete_modal',
-    'page arguments' => array(2, 3),
-    'access callback' => 'os_boxes_cp_layout_configurable',
-    'access arguments' => array(3),
-    'type' => MENU_CALLBACK,
-  );
-
-  $items['cp/osboxes/%ctools_js/%/%/remove'] = array(
-    'title' => 'Remove this Widget',
-    'page callback' => 'os_boxes_remove_widget',
-    'page arguments' => array(2, 3, 4),
-    'access callback' => 'os_boxes_cp_layout_configurable',
-    'access arguments' => array(3),
-    'type' => MENU_CALLBACK,
-  );
-
   return $items;
 }
 
@@ -440,15 +422,13 @@ function os_boxes_vsite_admin_link($type, $object) {
 
 
   if ($object->module == 'boxes' && ($box = boxes_load($object->delta))) {
-    if (class_exists('os_boxes_modalframe') && !is_subclass_of($box->plugin_key, 'os_boxes_modalframe')) {
-      $links[] = array(
-        'title' => 'Configure',
-        'href' => $object->block_config_path.'/front',
-        'attributes' => array(
-          'class' => 'ctools-use-modal',
-        ),
-      );
-    }
+    $links[] = array(
+      'title' => 'Configure',
+      'href' => $object->block_config_path.'/front',
+      'attributes' => array(
+        'class' => 'ctools-use-modal',
+      ),
+    );
 
     static $context = null;
     if (!$context) {
