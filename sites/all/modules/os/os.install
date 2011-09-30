@@ -84,6 +84,7 @@ function os_update_6002(&$sandbox) {
     $res = array('#abort' => array('success' => FALSE, 'query' => 'Failed to install modules: ' . implode(', ', $failed)));
   } else {
   	//Make sure the boxes controller is added right away
+  	cache_clear_all("plugins",'cache',true);
   	cache_clear_all('spaces_registry', 'cache');
   	spaces_controllers(true);
   	
@@ -371,7 +372,7 @@ function os_update_6006(&$sandbox){
  * @param array $sandbox
  */
 function os_update_6007(&$sandbox){
-  $res = array();
+	$res = array();
   
   //Do nothing if the biocv module is not enabled
   if(!module_exists('scholar_biocv')) return $res;
@@ -407,7 +408,7 @@ function os_update_6007(&$sandbox){
     
   }
   
-  if ($sandbox['os_update_6007_progress'] < $sandbox['max']) {
+  if ($sandbox['os_update_6007_progress'] > $sandbox['max']) {
     $res['#finished'] = $sandbox['os_update_6007_progress'] / $sandbox['max'];
   } else {
     $res['#finished'] = TRUE;
@@ -466,6 +467,10 @@ function os_update_6008(&$sandbox){
     $ret['#finished'] = $sandbox['os_update_6008_progress'] / $sandbox['max'];
   } else {
     $ret['#finished'] = TRUE;
+    $res[] = array(
+      'success' => true,
+      'query' => 'Created front page boxes.',
+    );
   }
 
   return $ret;
@@ -499,7 +504,7 @@ function os_update_6009(&$sandbox){
       
       //users who own multiple vsites should still have their bios listed on each vsite
       //no vsite has multiple owners.
-      $vsites = vsite_get_vsite_by_owner($r->uid);
+      if(strlen($blurb)) $vsites = vsite_get_vsite_by_owner($r->uid);
       while (strlen($blurb) && $vsite = array_shift($vsites)){
         //make delta
         $identifier = $vsite->type . '-' . $vsite->id;
@@ -515,6 +520,7 @@ function os_update_6009(&$sandbox){
         
         if (($box = boxes_factory('os_boxes_simple', $boxopts)) && isset($vsite->controllers->boxes)) {
           $vsite->controllers->boxes->set($box->delta, $box);
+          os_boxes_replace_boxes('scholar_biocv-bio_blurb', $box, false, $vsite->id);
           $a_blurb_updates[] = $r->uid;
         }
       }
