@@ -605,7 +605,7 @@ function vsite_layout_ui_region_widgets( $page_type = 'none') {
       $widget['can_delete'] = strpos($widget['delta'], 'og-') !== FALSE || isset($a_widgets['boxes-boxes_add__'.$widget['plugin']]);
       if ($widget['can_delete']) {
         // the delete path is always the same
-        $widget['block_delete_path'] = "cp/osboxes/nojs/".$widget['delta']."/delete";
+        $widget['block_delete_path'] = "cp/build/layout/nojs/".$widget['delta']."/delete";
       }
     }
 
