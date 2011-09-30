@@ -66,6 +66,15 @@ function vsite_layout_ui_menu() {
     'file' => 'vsite_layout_ui.inc',
   );
 
+  $items['cp/build/layout/%ctools_js/%/delete'] = array(
+    'title' => 'Delete this Widget',
+    'page callback' => 'os_boxes_delete_modal',
+    'page arguments' => array(2, 3),
+    'access callback' => 'os_boxes_cp_layout_configurable',
+    'access arguments' => array(3),
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
 

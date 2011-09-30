@@ -11,6 +11,20 @@ function vsite_layout_ctools_plugin_api() {
   }
 }
 
+function vsite_layout_menu() {
+  $items = array();
+
+  $items['cp/osboxes/%ctools_js/%/%/remove'] = array(
+    'title' => 'Remove this Widget',
+    'page callback' => 'vsite_layout_remove_widget',
+    'page arguments' => array(2, 3, 4),
+    'access callback' => 'spaces_access_admin',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
 /**
  * Gets ALL the widgets!
  * Then runs an alter on them.
@@ -23,6 +37,32 @@ function vsite_layout_get_widgets() {
   }
 
   return $widgets;
+}
+
+/**
+ *
+ * Removes a widget from a single context
+ * @param boolean $js			Called by AJAX or not
+ * @param string $delta		The delta of the widget to remove
+ * @param string $ctx			The context its being removed from
+ */
+function vsite_layout_remove_widget($js, $delta, $ctx) {
+  // get the context
+  // remove box from context
+  // save context
+  $vsite = vsite_get_vsite();
+  $ctx_key = $ctx.':reaction:block';
+  $ctx = $vsite->controllers->context->get($ctx_key);
+  $ctx['blocks']['boxes-'.$delta]['region'] = false;
+  $vsite->controllers->context->set($ctx_key.':'.$vsite->group->og_theme, $ctx);
+
+  if (!$js) {
+    drupal_goto('<front>');
+  }
+
+  ctools_include('ajax');
+  $output[] = ctools_ajax_command_remove('#block-boxes-'.$delta);
+  ctools_ajax_render($output);
 }
 
 /**
@@ -72,14 +112,14 @@ function vsite_layout_merge_default_blocks(&$blocks) {
 
   if(!isset($default_blocks)){
 	  $default_blocks = vsite_layout_get_widgets();
-	  
+
 	  foreach ($default_blocks as $bid => $block) {
 	  	//Do not include admin/factory boxes
 	  	if($block['factory']) unset($default_blocks[$bid]);
 	  }
-	  
+
   }
-  
+
   $blocks = array_merge($default_blocks,$blocks);  //Everywhere plus the feature
 }
 
