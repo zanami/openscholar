@@ -473,16 +473,16 @@ legend {
 
 #top a,
 #top a:visited,
-#top ul.menu li a,
-#top ul.menu li a:visited {
+#top ul li,
+#top ul li {
   font-family: 'helvetica neue', helvetica, arial, sans-serif !important;
   }
 
-body.cp-toolbar-mini #top > ul.menu {
+body.cp-toolbar-mini #top .item-list > ul {
   z-index:100;
   }
 
-body.cp-toolbar-mini #top ul.menu li {
+body.cp-toolbar-mini #top ul li {
   margin:0;
   margin-left: 20px;
   background: #F4F4F4;
@@ -495,7 +495,7 @@ body.cp-toolbar-mini #top ul.menu li {
   border-right: 0;
   }
 
-body.cp-toolbar-mini #top > ul.menu > li {
+body.cp-toolbar-mini #top > .item-list > ul > li {
  position: relative;
  display:inline-block !important;
  margin:0;
@@ -505,47 +505,48 @@ body.cp-toolbar-mini #top > ul.menu > li {
  margin-right: -11px;
   }
   
-body.cp-toolbar-mini #top > ul.menu ul {
+body.cp-toolbar-mini #top .item-list > ul ul {
   display:none;
 	position: absolute;
 	top: 100%;
 	right: 0;
 }
 
-body.cp-toolbar-mini #top ul.menu li:hover ul {
+body.cp-toolbar-mini #top ul li:hover ul {
   display: block;
 	clear: both;
   }
 
-body.cp-toolbar-mini #top ul.menu li a,
-body.cp-toolbar-mini #top ul.menu li a:visited {
+body.cp-toolbar-mini #top ul li,
+body.cp-toolbar-mini #top ul li a {
   color:#6e6e6e;
   font-size: 11px;
 	padding: 2px 6px 2px 6px;
+	white-space: nowrap;
   }
 
-body.cp-toolbar-mini #top > ul.menu > li.first a {
+body.cp-toolbar-mini #top .wrench {
   padding-left: 22px;
   background: url('../images/wrench-mini.png') no-repeat 0 0 transparent;
   margin-left: 5px;
   }
 
-body.cp-toolbar-mini #top ul.menu > li.last {
+body.cp-toolbar-mini #top > .item-list ul > li.last {
 	margin-right: 0;
 }
 
-body.cp-toolbar-mini #top ul.menu > li.last a {
+body.cp-toolbar-mini #top > .item-list ul > li.last a {
   padding-right: 6px;
   border-left: none;
   }
 
-body.cp-toolbar-mini #top ul.menu li a:hover {
+body.cp-toolbar-mini #top ul li a:hover {
   text-decoration: none;
   text-shadow:none;
   color: #000;
   }
 
-#top ul.menu a.unread {
+#top ul a.unread {
 	background-color: #990000;
   color: #FFFFFF !important;
   border: 1px solid #CC0000;
