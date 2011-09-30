@@ -208,7 +208,7 @@ function os_boxes_boxes_plugins() {
       'class' => 'os_boxes_simpleview_list',
       'file' => 'os_boxes_simpleview_list.inc',
       'path' => $path,
-      'parent' => 'spaces_simpleviews_post_list'
+      'parent' => 'spaces_sv_post_list'
     ),
   );
 

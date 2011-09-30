@@ -183,7 +183,7 @@ function os_update_6004(&$sandbox){
     'vsite_widgets_0' => 'site_logo',
     'vsite_widgets-2' => 'shield_default',
     "views-scholar_announcements-block_1" => "scholar_announcements_latest",
-    "scholar_biocv-bio_blurb" => "scholar_biocv_bio_blurb",
+    //"scholar_biocv-bio_blurb" => "scholar_biocv_bio", //handled by creating instances
     'views-scholar_book-block_1' => 'scholar_book_recent_docs',
     'views-scholar_image_gallery-block_1' => 'image_gallery_recent_images',
     'views-scholar_publications-block_1' => 'scholar_publications_recent',
@@ -372,6 +372,9 @@ function os_update_6006(&$sandbox){
 function os_update_6007(&$sandbox){
   $ret = array();
   
+  //Make sure the boxes controller is added
+  spaces_controllers(true);
+    
   //Do nothing if the front module is not enabled
   if(!module_exists('scholar_front')) return $ret;
   
@@ -519,11 +522,11 @@ function os_update_6010(&$sandbox){
   //init sandbox
   if (!isset($sandbox['os_update_6010_progress'])) {
     $sandbox['os_update_6010_progress'] = 0;
-    $sandbox['max'] = (int)db_result(  db_query("SELECT COUNT(*) FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%' AND value NOT LIKE '%boxes-scholar_biocv_bio%' ")  );
+    $sandbox['max'] = (int)db_result(  db_query("SELECT COUNT(*) FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%%' AND value NOT LIKE '%%boxes-scholar_biocv_bio%%' ")  );
   }
   
   //Get all existing front contexts and remove the new default bio blurb
-  $q = db_query("SELECT * FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%' AND value NOT LIKE '%boxes-scholar_biocv_bio%' LIMIT %d,250 ",$sandbox['os_update_6010_progress']);
+  $q = db_query("SELECT * FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%%' AND value NOT LIKE '%%boxes-scholar_biocv_bio%%' LIMIT %d,250 ",$sandbox['os_update_6010_progress']);
   $sandbox['os_update_6010_progress'] += 250;
   
   while ($r = db_fetch_object($q)) {

@@ -9,7 +9,7 @@ function scholar_publications_default_box() {
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
   $box->delta = 'scholar_publications_recent';
-  $box->plugin_key = 'spaces_simpleviews_post_list';
+  $box->plugin_key = 'spaces_sv_post_list';
   $box->title = 'Recent Publications';
   $box->description = 'Recent Publications';
   $box->options = array(
