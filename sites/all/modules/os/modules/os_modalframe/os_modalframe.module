@@ -103,19 +103,18 @@ function os_modalframe_form_submit(&$form, &$form_state) {
   $form['#redirect'] = false;
 }
 
-function os_modalframe_vsite_admin_link($type, $object) {
+function os_modalframe_vsite_admin_link_alter(&$links, $type, $object) {
   $items = array();
   if ($type == 'block' && $object->module == 'boxes' && ($box = boxes_load($object->delta)) && ($vsite = vsite_get_vsite()) && $object->block_config_path) {
-    if ($box->plugin_key == 'os_boxes_modal_siteinfo' || $box->plugin_key == 'os_boxes_modal_sitelogo') {
-      $items[] = array(
-        'title' => t('Configure'),
-        'href' => 'node/'.$vsite->group->nid.'/edit/modal/box/'.$object->delta,
-        'attributes' => array(
-          'class' => 'vsite-modal-link',
-        ),
-      );
+    $modalframe = 'os_boxes_modalframe';
+    // if the class doesn't exist, this is obviously not a modalframe box
+    if (class_exists($modalframe) && ($box instanceof $modalframe)) {
+      foreach ($links as &$l) {
+        if ($l['title'] == 'Configure') {
+          $l['href'] = $box->get_config_path();
+          $l['attributes']['class'] = 'vsite-modal-link';
+        }
+      }
     }
   }
-
-  return $items;
 }
