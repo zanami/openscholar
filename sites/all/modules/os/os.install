@@ -418,8 +418,6 @@ function os_update_6007(&$sandbox){
   return $res;
 }
 
-
-
 /**
  *  Copies bio blurb into a custom box instance
  *
@@ -530,7 +528,7 @@ function os_update_6009(&$sandbox){
     $ret['#finished'] = $sandbox['os_update_6009_progress'] / $sandbox['max'];
   } else {
     $ret['#finished'] = TRUE;
-    $res[] = array(
+    $ret[] = array(
       'success' => true,
       'query' => 'Created front page boxes.',
     );

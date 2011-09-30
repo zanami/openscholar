@@ -61,9 +61,16 @@ function os_boxes_mk_box(&$vsite, $type, $opts) {
  */
 // adds box to vsite.  returns id of vsite on successful creation
 function os_boxes_put_box($context, &$vsite, $box, $region) {
+	
+	//og_theme is not avalible in the context controller during updates, lets do it manually if space override exists
+	$og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
+  if($og_theme){
+    $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block:'.$og_theme);
+  }
 
   //let spaces select the current setting or the default
-  $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block');
+  if(!$context_block_reaction) $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block');
+  
   $context_block_reaction['blocks']['boxes-' . $box->delta] = array(
     'module' => 'boxes',
     'delta' => $box->delta,
@@ -74,7 +81,6 @@ function os_boxes_put_box($context, &$vsite, $box, $region) {
     'tags' => $box->tags,
   );
   
-  $og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
   if($og_theme){
     $og_theme = ":{$og_theme}";
   }else{
