@@ -483,6 +483,7 @@ function os_update_6008(&$sandbox){
  */
 function os_update_6009(&$sandbox){
   $ret = array();
+  require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
   
   //Do nothing if the biocv module is not enabled
   if(!module_exists('scholar_biocv')) return $res;
