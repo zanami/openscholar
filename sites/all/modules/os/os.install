@@ -381,18 +381,14 @@ function os_update_6007(&$sandbox){
     return array("#abort" => array('success' => FALSE, 'query' => 'Boxes module was not installed when this update ran, please run update.php again.'));
   }
   
-  //init sandbox
-  if (!isset($sandbox['os_update_6007_progress'])) {
-    $sandbox['os_update_6007_progress'] = 0;
-    $sandbox['max'] = (int)db_result(  db_query("SELECT COUNT(*) FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%%' AND value NOT LIKE '%%boxes-scholar_biocv_bio%%' ")  );
-  }
-  
+  //Retrieved 250 records max lets count so we know if there are more
+  $max = 250;
   //Get all existing front contexts and remove the new default bio blurb
-  $q = db_query("SELECT * FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%%' AND value NOT LIKE '%%boxes-scholar_biocv_bio%%' LIMIT %d,250 ",$sandbox['os_update_6007_progress']);
-  $sandbox['os_update_6007_progress'] += 250;
+  $q = db_query("SELECT * FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%%' AND value NOT LIKE '%%boxes-scholar_biocv_bio%%' LIMIT {$max} ");
+  
   
   while ($r = db_fetch_object($q)) {
-
+    $max--;
     $value = unserialize($r->value);
     
     $value['blocks']['boxes-scholar_biocv_bio'] = array(
@@ -408,8 +404,8 @@ function os_update_6007(&$sandbox){
     
   }
   
-  if ($sandbox['os_update_6007_progress'] > $sandbox['max']) {
-    $res['#finished'] = $sandbox['os_update_6007_progress'] / $sandbox['max'];
+  if ($max <= 1) {
+    $res['#finished'] = .5;
   } else {
     $res['#finished'] = TRUE;
     
@@ -422,66 +418,14 @@ function os_update_6007(&$sandbox){
   return $res;
 }
 
-/*
- * Implementation of hook_update_N
- * Update hook for beta12 => beta13
- *
- * Takes front page settings from each space, choose a box representative of those settings, adds it to vsite in the new content_top region
- */
-function os_update_6008(&$sandbox){
-  $ret = array();
-    
-  //init sandbox.  this persists between batches
-  if (!isset($sandbox['os_update_6008_progress'])) {
-  	
-	  //Do nothing if the front module is not enabled
-	  if(!module_exists('scholar_front')) return $ret;
-  
-	  //make sure boxes prereqs are all met before installing
-	  if (! (module_exists('os_boxes') && module_exists('spaces_simpleviews') )) {
-	    $ret['#abort'] = array('success' => FALSE, 'query' => 'Please enable os_boxes and spaces_simpleviews before running scholar_front_update_6002');
-	    return $ret;
-	  }
 
-	  //make sure vsite->controllers->boxes exists
-	  $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "vsite" LIMIT 1') );
-	  $vsite = vsite_get_vsite($v);
-	  if (! isset($vsite->controllers->boxes)) {
-	    $ret['#abort'] = array('success' => FALSE, 'query' => 'vsite object has no box controller.  clear cache before running update.');
-	    return $ret;
-	  }
-  
-    $sandbox['os_update_6008_progress'] = 0;
-    $sandbox['max'] = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
-  }
-  
-  //vsites per batch.
-  $limit = 40;
-  
-  require_once drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc';
-  //$batch['operations'][] = array('scholar_front_frontpage_boxmaker',array($limit, $offset, $total_vsites),);
-  $updated_vsites = scholar_front_frontpage_boxmaker($limit, $sandbox['os_update_6008_progress'], $sandbox['max']);
-  $sandbox['os_update_6008_progress'] += $limit;
-  
-  if ($sandbox['os_update_6008_progress'] < $sandbox['max']) {
-    $ret['#finished'] = $sandbox['os_update_6008_progress'] / $sandbox['max'];
-  } else {
-    $ret['#finished'] = TRUE;
-    $res[] = array(
-      'success' => true,
-      'query' => 'Created front page boxes.',
-    );
-  }
-
-  return $ret;
-}
 
 /**
  *  Copies bio blurb into a custom box instance
  *
  *  Update hook for beta12 => beta13
  */
-function os_update_6009(&$sandbox){
+function os_update_6008(&$sandbox){
   $ret = array();
   require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
   
@@ -546,7 +490,7 @@ function os_update_6009(&$sandbox){
  *  Update hook for beta12 => beta13
  *  removes bio blurb from bio content type
  */
-function os_update_6010(&$sandbox){
+function os_update_6009(&$sandbox){
   //Do nothing if the biocv module is not enabled
   if(!module_exists('scholar_biocv')) return $res;
   
@@ -563,5 +507,59 @@ function os_update_6010(&$sandbox){
     $ret['#abort'] = array('success' => FALSE, 'query' => 'os_boxes not installed.  Don\'t migrate bio blurbs to boxes until os_boxes is available.');
   }
   
+  return $ret;
+}
+
+/*
+ * Implementation of hook_update_N
+ * Update hook for beta12 => beta13
+ *
+ * Takes front page settings from each space, choose a box representative of those settings, adds it to vsite in the new content_top region
+ */
+function os_update_6010(&$sandbox){
+  $ret = array();
+    
+  //init sandbox.  this persists between batches
+  if (!isset($sandbox['os_update_6010_progress'])) {
+    
+    //Do nothing if the front module is not enabled
+    if(!module_exists('scholar_front')) return $ret;
+  
+    //make sure boxes prereqs are all met before installing
+    if (! (module_exists('os_boxes') && module_exists('spaces_simpleviews') )) {
+      $ret['#abort'] = array('success' => FALSE, 'query' => 'Please enable os_boxes and spaces_simpleviews before running scholar_front_update_6002');
+      return $ret;
+    }
+
+    //make sure vsite->controllers->boxes exists
+    $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "vsite" LIMIT 1') );
+    $vsite = vsite_get_vsite($v);
+    if (! isset($vsite->controllers->boxes)) {
+      $ret['#abort'] = array('success' => FALSE, 'query' => 'vsite object has no box controller.  clear cache before running update.');
+      return $ret;
+    }
+  
+    $sandbox['os_update_6010_progress'] = 0;
+    $sandbox['max'] = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
+  }
+  
+  //vsites per batch.
+  $limit = 40;
+  
+  require_once drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc';
+  //$batch['operations'][] = array('scholar_front_frontpage_boxmaker',array($limit, $offset, $total_vsites),);
+  $updated_vsites = scholar_front_frontpage_boxmaker($limit, $sandbox['os_update_6010_progress'], $sandbox['max']);
+  $sandbox['os_update_6010_progress'] += $limit;
+  
+  if ($sandbox['os_update_6010_progress'] < $sandbox['max']) {
+    $ret['#finished'] = $sandbox['os_update_6010_progress'] / $sandbox['max'];
+  } else {
+    $ret['#finished'] = TRUE;
+    $res[] = array(
+      'success' => true,
+      'query' => 'Created front page boxes.',
+    );
+  }
+
   return $ret;
 }
