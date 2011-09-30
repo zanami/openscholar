@@ -211,6 +211,12 @@ function os_update_6004(&$sandbox){
     if($max < 1000 ){ //|| !$o_box
     	//Run updates on the next block
     	$sandbox['os_update_6004']++;
+    }elseif (!$o_box){
+    	$sandbox['os_update_6004']++;
+    	$res[] = array(
+	      'success' => false,
+	      'query' => "Unable to load default box [{$box_delta}]."
+	    );
     }
     
     if($max > 0) break;
