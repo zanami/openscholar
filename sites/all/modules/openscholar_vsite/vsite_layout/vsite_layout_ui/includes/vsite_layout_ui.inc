@@ -244,10 +244,19 @@ function _vsite_layout_ui_build_dropdown($factories = array()) {
       'query' => 'popup=1'
     );
     // build the links
-    $fact_links[$group]['children'][] = l($item['title'], $item['href'], $item).' '.l('Help', 'help/os_boxes/'.str_replace('_','-',$wgt['plugin']), $options);
+    $fact_links[$group]['children'][$item['title']] = l($item['title'], $item['href'], $item).' '.l('Help', 'help/os_boxes/'.str_replace('_','-',$wgt['plugin']), $options);
   }
+  $ordered = array();
+  foreach ($fact_links as $grp => $data) {
+    ksort($data['children']);
+    if ($grp != 'Misc') {
+      $ordered[$grp] = $data;
+    }
+  }
+  ksort($ordered);
+  $ordered['Misc'] = $fact_links['Misc'];
   // theme it!
-  return theme('ctools_dropdown_content', t('Add New Widget'), theme('item_list', $fact_links), FALSE, 'context-links');
+  return theme('ctools_dropdown_content', t('Add New Widget'), theme('item_list', $ordered), FALSE, 'context-links');
 }
 
 
