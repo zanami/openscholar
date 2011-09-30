@@ -485,42 +485,17 @@ function os_update_6008(&$sandbox){
   return $ret;
 }
 
-/**
- *
- *  Update hook for beta12 => beta13
- *  removes bio blurb from bio content type
- */
-function os_update_6009(&$sandbox){
-  //Do nothing if the biocv module is not enabled
-  if(!module_exists('scholar_biocv')) return $res;
-  
-  $ret = array();
-  if (module_exists('os_boxes')) {
-  	module_load_include('inc', 'content', 'includes/content.crud');
-	  $field_name = 'field_hook_text';
-	  $type_name = 'bio';
-	  content_field_instance_delete($field_name, $type_name);
-  
-    $ret['#success']['success'] = true;
-    $ret['#success']['query'] = "Removed bio_blurb field from content type";
-  } else {
-    $ret['#abort'] = array('success' => FALSE, 'query' => 'os_boxes not installed.  Don\'t migrate bio blurbs to boxes until os_boxes is available.');
-  }
-  
-  return $ret;
-}
-
 /*
  * Implementation of hook_update_N
  * Update hook for beta12 => beta13
  *
  * Takes front page settings from each space, choose a box representative of those settings, adds it to vsite in the new content_top region
  */
-function os_update_6010(&$sandbox){
+function os_update_6009(&$sandbox){
   $ret = array();
     
   //init sandbox.  this persists between batches
-  if (!isset($sandbox['os_update_6010_progress'])) {
+  if (!isset($sandbox['os_update_6009_progress'])) {
     
     //Do nothing if the front module is not enabled
     if(!module_exists('scholar_front')) return $ret;
@@ -539,7 +514,7 @@ function os_update_6010(&$sandbox){
       return $ret;
     }
   
-    $sandbox['os_update_6010_progress'] = 0;
+    $sandbox['os_update_6009_progress'] = 0;
     $sandbox['max'] = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
   }
   
@@ -548,11 +523,11 @@ function os_update_6010(&$sandbox){
   
   require_once drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc';
   //$batch['operations'][] = array('scholar_front_frontpage_boxmaker',array($limit, $offset, $total_vsites),);
-  $updated_vsites = scholar_front_frontpage_boxmaker($limit, $sandbox['os_update_6010_progress'], $sandbox['max']);
-  $sandbox['os_update_6010_progress'] += $limit;
+  $updated_vsites = scholar_front_frontpage_boxmaker($limit, $sandbox['os_update_6009_progress'], $sandbox['max']);
+  $sandbox['os_update_6009_progress'] += $limit;
   
-  if ($sandbox['os_update_6010_progress'] < $sandbox['max']) {
-    $ret['#finished'] = $sandbox['os_update_6010_progress'] / $sandbox['max'];
+  if ($sandbox['os_update_6009_progress'] < $sandbox['max']) {
+    $ret['#finished'] = $sandbox['os_update_6009_progress'] / $sandbox['max'];
   } else {
     $ret['#finished'] = TRUE;
     $res[] = array(
@@ -561,5 +536,30 @@ function os_update_6010(&$sandbox){
     );
   }
 
+  return $ret;
+}
+
+/**
+ *
+ *  Update hook for beta12 => beta13
+ *  removes bio blurb from bio content type
+ */
+function os_update_6010(&$sandbox){
+  //Do nothing if the biocv module is not enabled
+  if(!module_exists('scholar_biocv')) return $res;
+  
+  $ret = array();
+  if (module_exists('os_boxes')) {
+    module_load_include('inc', 'content', 'includes/content.crud');
+    $field_name = 'field_hook_text';
+    $type_name = 'bio';
+    content_field_instance_delete($field_name, $type_name);
+  
+    $ret['#success']['success'] = true;
+    $ret['#success']['query'] = "Removed bio_blurb field from content type";
+  } else {
+    $ret['#abort'] = array('success' => FALSE, 'query' => 'os_boxes not installed.  Don\'t migrate bio blurbs to boxes until os_boxes is available.');
+  }
+  
   return $ret;
 }
