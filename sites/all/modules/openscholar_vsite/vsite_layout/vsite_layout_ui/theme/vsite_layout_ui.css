@@ -240,7 +240,7 @@ dd.content.post.ui-sortable-helper {
  
 #scholarlayout-top-widgets dd.scholarlayout-item a.add,
 #scholarlayout-top-widgets dd.scholarlayout-item a.setting {
-  display: block;
+display: block;
 color:transparent;
 background: url('images/configGearSmallOff.png') no-repeat;
 position:absolute;left:81px;top:42px;
@@ -250,6 +250,14 @@ position:absolute;left:81px;top:42px;
 #scholarlayout-top-widgets dd.scholarlayout-item a.setting:hover {
 background: url('images/configGearSmall.png') no-repeat;
  }
+
+* .ui-sortable-helper a.ctools-use-modal.delete.ctools-use-modal-processed,
+* .ui-sortable-helper div,
+* .ui-sortable-helper a.ctools-use-modal.setting.ctools-use-modal-processed
+ {
+	display:none;
+}
+
 
 
 #scholarlayout-container dd.scholarlayout-item {
@@ -320,6 +328,11 @@ dd.scholarlayout-item .close-this {
   display: block;
   text-indent: -999em;
   }
+
+#scholarlayout-top-widgets dd.ui-sortable-helper a.delete {
+	display:none;
+}
+
 
 .layout-exceptions {
   position:absolute;
