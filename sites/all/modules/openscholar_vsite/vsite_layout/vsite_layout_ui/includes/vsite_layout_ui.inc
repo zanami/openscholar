@@ -290,7 +290,7 @@ function vsite_layout_ui_settings_form($form_state){
     '#default_value' => $s_page_type,
     '#options' => $a_page_types,
     '#description' => t('Choose a section from this pulldown to change the layout of that section. "All Sections" indicates the layout will remain the same across all areas of your site.<br />'),
-    '#weight' => 1,
+    '#weight' => 0,
     '#ahah' => array(
           'event' => 'go_ahah',
           'path' => 'cp/build/layout/region_widgets_js',
@@ -362,7 +362,7 @@ function vsite_layout_ui_settings_form($form_state){
   //Markup for "Top" Available Widgets Section
   $form['available_widgets_markup'] = array(
     '#value' => theme('vsite_layout_ui_tagged_widgets', $instances, $add_new, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list'),
-    '#weight' => 0,
+    '#weight' => 1,
   );
 
   $layout_regions = vsite_layout_ui_cp_region_contents($layout_widgets, $s_page_type);
