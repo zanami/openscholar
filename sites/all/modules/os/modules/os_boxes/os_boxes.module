@@ -186,7 +186,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_curr_toc'] = array(
-    'title' => 'Active Book\'s TOC',
+    //'title' => 'Active Book\'s TOC',
     'description' => 'Table of Contents',
     'tags' => array('Content'),
     'handler' => array(
