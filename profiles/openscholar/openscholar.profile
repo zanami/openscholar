@@ -90,6 +90,12 @@ function _openscholar_core_modules() {
     // data / feeds
     'data', 'data_node', 'data_ui', 'feeds', 'job_scheduler',
 
+    // oembed
+    'oembedcore', 'oembed', 'oembedfield', 'oembedembedly',
+ 
+    // slideshow
+    'views_slideshow', 'views_slideshow_singleframe',
+ 
 
     // other
 
@@ -105,10 +111,6 @@ function _openscholar_core_modules() {
     'formcolumns_ui',
     'shorten',
     'creativecommons',
-    'oembedcore',
-    'oembed',
-    'oembedfield',
-    'oembedembedly',
     'formcolumns',
     'vsite_cc',
     'crayon',
@@ -185,6 +187,7 @@ function _openscholar_scholar_modules() {
     'os_wysiwyg',
     'os_wysiwyg_fields',
     'os_books',
+    'os_slideshow',
   );
 }
 

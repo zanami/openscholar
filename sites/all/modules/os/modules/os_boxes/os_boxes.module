@@ -38,7 +38,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_simple'] = array(
-    'title' => 'Text',
+    'title' => 'Custom text / html',
     'description' => 'Simple custom text',
     'tags' => array('Content'),
     'handler' => array(
@@ -186,7 +186,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_curr_toc'] = array(
-    'title' => 'Active Book\'s TOC',
+    //'title' => 'Active Book\'s TOC',
     'description' => 'Table of Contents',
     'tags' => array('Content'),
     'handler' => array(
@@ -259,6 +259,9 @@ function os_boxes_boxes_plugins_alter(&$boxes){
       $boxes[$name]['tags'] = array('Social');
     }
   }
+
+  // unset the default "box" box
+  unset($boxes['simple']);
 }
 
 /**
