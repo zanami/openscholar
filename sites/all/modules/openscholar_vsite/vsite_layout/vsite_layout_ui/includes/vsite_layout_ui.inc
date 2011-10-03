@@ -290,7 +290,7 @@ function vsite_layout_ui_settings_form($form_state){
     '#default_value' => $s_page_type,
     '#options' => $a_page_types,
     '#description' => t('Choose a section from this pulldown to change the layout of that section. "All Sections" indicates the layout will remain the same across all areas of your site.<br />'),
-
+    '#weight' => 1,
     '#ahah' => array(
           'event' => 'go_ahah',
           'path' => 'cp/build/layout/region_widgets_js',
@@ -362,6 +362,7 @@ function vsite_layout_ui_settings_form($form_state){
   //Markup for "Top" Available Widgets Section
   $form['available_widgets_markup'] = array(
     '#value' => theme('vsite_layout_ui_tagged_widgets', $instances, $add_new, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list'),
+    '#weight' => 0,
   );
 
   $layout_regions = vsite_layout_ui_cp_region_contents($layout_widgets, $s_page_type);
@@ -369,6 +370,7 @@ function vsite_layout_ui_settings_form($form_state){
   //The main layout area
   $form['layout_markup'] = array(
     '#value' => theme('vsite_layout_ui_layout', $layout_regions, $s_page_type),
+    '#weight' => 2,
   );
 
   // pass the settingid too
@@ -381,12 +383,14 @@ function vsite_layout_ui_settings_form($form_state){
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save settings'),
+    '#weight' => 100,
   );
 
   $form['reset'] = array(
     '#type' => 'submit',
     '#value' => t('Reset to defaults'),
     '#submit' => array('vsite_layout_ui_settings_form_reset'),
+    '#weight' => 101,
   );
 
   return $form;
