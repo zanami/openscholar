@@ -25,7 +25,7 @@ class os_boxes_modal_siteinfo extends os_boxes_modalframe {
       parent::form_alter($form, $form_state);
 
       // hide unnecessary fields
-      $whitelist = array('title', 'og_description', 'field_vsite_address');
+      $whitelist = array('title', 'og_description', 'field_vsite_address', 'taxonomy');
       foreach (element_children($form) as $child) {
         if ($form[$child]['#type'] != 'value' && $form[$child]['#type'] != 'hidden') {
           if (!in_array($child, $whitelist)) {
