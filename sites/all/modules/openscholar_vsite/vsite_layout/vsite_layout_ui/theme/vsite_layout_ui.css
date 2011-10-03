@@ -329,10 +329,6 @@ dd.scholarlayout-item .close-this {
   text-indent: -999em;
   }
 
-#scholarlayout-top-widgets dd.ui-sortable-helper a.delete {
-	display:none;
-}
-
 
 .layout-exceptions {
   position:absolute;
