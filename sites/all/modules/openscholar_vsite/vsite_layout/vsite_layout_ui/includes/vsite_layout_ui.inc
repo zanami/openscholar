@@ -647,8 +647,9 @@ function vsite_layout_ui_find_widget_plugin(&$widget) {
 
 function _vsite_layout_ui_add_new_widgets(&$widgets) {
   $all_widgets = vsite_layout_get_widgets();
-  foreach ($all_widgets as &$w) {
+  foreach ($all_widgets as $key => &$w) {
     $w['region'] = false;
+    if($w['factory']) unset($all_widgets[$key]);
   }
 
   $widgets += $all_widgets;
