@@ -139,6 +139,8 @@ function scholarlayout_add_sortable(layoutRegions) {
   allRegions[allRegions.length] = "#scholarlayout-top-widgets";
   $.each(allRegions, function(i, value) {
     $(value).sortable({
+      appendTo: '#vsite-layout-ui-settings-form',
+      helper: 'clone',
       connectWith : allRegions,
       stop : scholarlayout_afterdrag,
       tolerance : 'pointer',

@@ -111,61 +111,75 @@ dd.scholarlayout-item {
 /** WIDGET ICONS **/
 
 	
-#scholarlayout-top-widgets dd.scholarlayout-item {
- background: url('images/widget-bg.png') no-repeat scroll 50% 10px transparent;
-    color: #444545;
-    float: left;
-    font-size: 11px;
-    height: 31px;
-    padding: 62px 15px 0;
-    text-align: center;
-    width: 75px;
-    position: relative;
-  }
+#scholarlayout-top-widgets dd.scholarlayout-item, .ui-sortable-helper {
+  background: url('images/widget-bg.png') no-repeat scroll 50% 10px transparent;
+	color: #444545;
+	float: left;
+	font-size: 11px;
+	height: 31px;
+	padding: 62px 15px 0;
+	text-align: center;
+	width: 75px;
+	position: relative;
+}
   
- #scholarlayout-top-widgets dd.scholarlayout-item.disabled {
- background: url('images/widget-bgDisabled.png') no-repeat scroll 50% 10px transparent;
-
-  } 
+#scholarlayout-top-widgets dd.scholarlayout-item.disabled,
+dd.scholar-layout-item.disabled.ui-sortable-helper {
+  background: url('images/widget-bgDisabled.png') no-repeat scroll 50% 10px transparent;
+} 
   
-     #scholarlayout-top-widgets #vsite_cc-node_license {
- background: url('images/widgetIcons/license.png') no-repeat scroll 50% 10px transparent;
+#scholarlayout-top-widgets #vsite_cc-node_license,
+#vsite_cc-node_license.ui-sortable-helper {
+  background: url('images/widgetIcons/license.png') no-repeat scroll 50% 10px transparent;
 }
   
 
-    #scholarlayout-top-widgets #boxes-scholar_announcements_latest {
- background: url('images/widgetIcons/announcement.png') no-repeat scroll 50% 10px transparent;
+#scholarlayout-top-widgets #boxes-scholar_announcements_latest,
+#boxes-scholar_announcements_latest.ui-sortable-helper {
+  background: url('images/widgetIcons/announcement.png') no-repeat scroll 50% 10px transparent;
 }
   
   
-      #scholarlayout-top-widgets #boxes-scholar_presentations_recent {
- background: url('images/widgetIcons/presentation.png') no-repeat scroll 50% 10px transparent;
+#scholarlayout-top-widgets #boxes-scholar_presentations_recent,
+#boxes-scholar_presentations_recent.ui-sortable-helper {
+  background: url('images/widgetIcons/presentation.png') no-repeat scroll 50% 10px transparent;
 }
   
-        #scholarlayout-top-widgets #scholar_software_releases-block_3,
-        #scholarlayout-top-widgets #views-scholar_software_releases-block_3 {
- background: url('images/widgetIcons/software.png') no-repeat scroll 50% 10px transparent;
+#scholarlayout-top-widgets #scholar_software_releases-block_3,
+#scholarlayout-top-widgets #views-scholar_software_releases-block_3,
+#scholar_software_releases-block_3.ui-sortable-helper,
+#views-scholar_software_releases-block_3.ui-sortable-helper {
+  background: url('images/widgetIcons/software.png') no-repeat scroll 50% 10px transparent;
 }
   
   
-    #scholarlayout-top-widgets dd.content.featured,
-    #scholarlayout-top-widgets dd.content.post {
- background: url('images/widgetIcons/post.png') no-repeat scroll 50% 10px transparent;
+#scholarlayout-top-widgets dd.content.featured,
+#scholarlayout-top-widgets dd.content.post,
+dd.content.feature.ui-sortable-helper,
+dd.content.post.ui-sortable-helper {
+  background: url('images/widgetIcons/post.png') no-repeat scroll 50% 10px transparent;
 }
    
    
-       #scholarlayout-top-widgets #scholar_events-mini,
-       #scholarlayout-top-widgets #views-scholar_events_upcoming-block_1 {
- background: url('images/widgetIcons/calendar.png') no-repeat scroll 50% 10px transparent;
+#scholarlayout-top-widgets #scholar_events-mini,
+#scholarlayout-top-widgets #views-scholar_events_upcoming-block_1,
+#scholar_events-mini.ui-sortable-helper,
+#views-scholar_events_upcoming-block_1.ui-sortable-helper {
+  background: url('images/widgetIcons/calendar.png') no-repeat scroll 50% 10px transparent;
 }
-   
-   
- #scholarlayout-top-widgets #boxes-scholar_publications_recent,  
- #scholarlayout-top-widgets #boxes-scholar_book_recent_docs,
-  #scholarlayout-top-widgets #scholar_publications-co_author,
-  #scholarlayout-top-widgets #views-publication_types-block_1,
-  #scholarlayout-top-widgets #scholar_publications-co_authors {
- background: url('images/widgetIcons/publications.png') no-repeat scroll 50% 10px transparent;
+
+
+#scholarlayout-top-widgets #boxes-scholar_publications_recent,  
+#scholarlayout-top-widgets #boxes-scholar_book_recent_docs,
+#scholarlayout-top-widgets #scholar_publications-co_author,
+#scholarlayout-top-widgets #views-publication_types-block_1,
+#scholarlayout-top-widgets #scholar_publications-co_authors,
+#boxes-scholar_publications_recent.ui-sortable-helper,
+#boxes-scholar_book_recent_docs.ui-sortable-helper,
+#scholar_publications-co_author.ui-sortable-helper,
+#views-publication_types-block_1.ui-sortable-helper,
+#scholar_publications-co_authors.ui-sortable-helper {
+  background: url('images/widgetIcons/publications.png') no-repeat scroll 50% 10px transparent;
 }
     
   
