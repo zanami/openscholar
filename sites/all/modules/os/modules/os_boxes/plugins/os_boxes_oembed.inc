@@ -12,7 +12,7 @@ class os_boxes_oembed extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
 
-    $options['selection'] = FALSE;
+    $options['selection'] = 'oembed_url';
     $options['oembed_url'] = '';
     $options['pasted'] = '';
     $options['width'] = 200;
@@ -26,6 +26,7 @@ class os_boxes_oembed extends os_boxes_default {
   public function options_form(){
 
     ctools_include('dependent');
+    ctools_add_js('dependent');
     $form['selection'] = array(
       '#title' => t('Use: '),
       '#type' => 'radios',
@@ -35,6 +36,7 @@ class os_boxes_oembed extends os_boxes_default {
       ),
       '#default_value' => $this->options['selection'],
       '#description' => t('Which source do you want to use?'),
+      '#tree' => TRUE,
     );
 
     $form['oembed_url'] = array(

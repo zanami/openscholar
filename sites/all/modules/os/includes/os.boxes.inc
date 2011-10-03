@@ -61,20 +61,26 @@ function os_boxes_mk_box(&$vsite, $type, $opts) {
  */
 // adds box to vsite.  returns id of vsite on successful creation
 function os_boxes_put_box($context, &$vsite, $box, $region) {
+	
+	//og_theme is not avalible in the context controller during updates, lets do it manually if space override exists
+	$og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
+  if($og_theme){
+    $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block:'.$og_theme);
+  }
 
   //let spaces select the current setting or the default
-  $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block');
+  if(!$context_block_reaction) $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block');
+  
   $context_block_reaction['blocks']['boxes-' . $box->delta] = array(
     'module' => 'boxes',
     'delta' => $box->delta,
     'weight' => 0,
     'region' => $region,
-    'label' => $box->title,
+    'label' => $box->description,
     'block_config_path' => 'cp/osboxes/nojs/' . $box->delta . '/configure', //is this always correct?
     'tags' => $box->tags,
   );
   
-  $og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
   if($og_theme){
     $og_theme = ":{$og_theme}";
   }else{
@@ -120,7 +126,9 @@ function os_boxes_remove_spaces_box_instance($vsite,$box){
 function os_boxes_replace_boxes($block_id, $box, $default_region = false, $sid = false, $limit = false) {
 
   if (!$box->delta) {
-    $box->delta = os_boxes_create_delta();
+  	//There is no reason to create a delta here, the box should be made before you try and put it in the db
+    error_log("Invalid Box Passed to replace function.");
+    return false;
   }
   $widget_def = os_boxes_get_vsite_widget($box);
 

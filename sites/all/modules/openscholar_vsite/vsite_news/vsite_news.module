@@ -280,7 +280,7 @@ function theme_views_view_field__vsite_activity__title($view, $field, $row) {
 
 function vsite_news_vsite_generic_settings() {
   $settings = array();
-$settings['vsite_activity_insert'] = array(
+  $settings['vsite_activity_insert'] = array(
     'group' => array(
       '#id' => 'privacy',
       '#title' => t('Privacy'),

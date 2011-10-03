@@ -84,6 +84,8 @@ function os_update_6002(&$sandbox) {
     $res = array('#abort' => array('success' => FALSE, 'query' => 'Failed to install modules: ' . implode(', ', $failed)));
   } else {
   	//Make sure the boxes controller is added right away
+  	cache_clear_all("plugins",'cache',true);
+  	cache_clear_all('spaces_registry', 'cache');
   	spaces_controllers(true);
   	
     $res[] = array('success' => TRUE, 'query' => 'Installed modules: ' . implode(', ', $modules));
@@ -164,6 +166,12 @@ function os_update_6004(&$sandbox){
     $sandbox['os_update_6004'] = 0;
   }
 	
+  //Update the plugin cache so that default boxes are avalible
+  cache_clear_all("plugins:boxes:plugins",'cache');
+  //Load the box schema
+  cache_clear_all('schema','cache');
+  drupal_get_schema('box',true);
+  
   // migrate existing blocks to new boxes
   module_load_include('module', 'boxes');
   require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
@@ -177,7 +185,7 @@ function os_update_6004(&$sandbox){
     'vsite_widgets_0' => 'site_logo',
     'vsite_widgets-2' => 'shield_default',
     "views-scholar_announcements-block_1" => "scholar_announcements_latest",
-    "scholar_biocv-bio_blurb" => "scholar_biocv_bio_blurb",
+    //"scholar_biocv-bio_blurb" => "scholar_biocv_bio", //handled by creating instances
     'views-scholar_book-block_1' => 'scholar_book_recent_docs',
     'views-scholar_image_gallery-block_1' => 'image_gallery_recent_images',
     'views-scholar_publications-block_1' => 'scholar_publications_recent',
@@ -197,14 +205,23 @@ function os_update_6004(&$sandbox){
     
   	if($max > 0){
 	  	$o_box = boxes_load($box_delta);
-	    os_boxes_replace_boxes($block_id, $o_box, false, false, 1000);
+	  	if($o_box){
+	      os_boxes_replace_boxes($block_id, $o_box, false, false, 1000);
+	  	}
   	}
     
-    if($max < 1000){
+    if($max < 1000 ){ //|| !$o_box
     	//Run updates on the next block
     	$sandbox['os_update_6004']++;
+    }elseif (!$o_box){
+    	$sandbox['os_update_6004']++;
+    	$res[] = array(
+	      'success' => false,
+	      'query' => "Unable to load default box [{$box_delta}]."
+	    );
     }
-    break;
+    
+    if($max > 0) break;
   }
   
   
@@ -348,53 +365,57 @@ function os_update_6006(&$sandbox){
   return $res;
 }
 
-/*
- * Implementation of hook_update_N
- * Update hook for beta12 => beta13
+/**
+ * Add new default box to all custom front pages, so that existing sites do not automatically recieve the bio on thier homepage
  *
- * Takes front page settings from each space, choose a box representative of those settings, adds it to vsite in the new content_top region
+ * Update hook for beta12 => beta13
+ * @param array $sandbox
  */
 function os_update_6007(&$sandbox){
-  $ret = array();
+	$res = array();
   
-  //Do nothing if the front module is not enabled
-  if(!module_exists('scholar_front')) return $ret;
+  //Do nothing if the biocv module is not enabled
+  if(!module_exists('scholar_biocv')) return $res;
   
-  //make sure boxes prereqs are all met before installing
-  if (! (module_exists('os_boxes') && module_exists('spaces_simpleviews') )) {
-    $ret['#abort'] = array('success' => FALSE, 'query' => 'Please enable os_boxes and spaces_simpleviews before running scholar_front_update_6002');
-    return $ret;
-  }
-
-  //make sure vsite->controllers->boxes exists
-  $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "vsite" LIMIT 1') );
-  $vsite = vsite_get_vsite($v);
-  if (! isset($vsite->controllers->boxes)) {
-    $ret['#abort'] = array('success' => FALSE, 'query' => 'vsite object has no box controller.  clear cache before running update.');
-    return $ret;
-  }
-
-  //init sandbox.  this persists between batches
-  if (!isset($sandbox['os_update_6007_progress'])) {
-    $sandbox['os_update_6007_progress'] = 0;
-    $sandbox['max'] = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
+  if(!module_exists('boxes')){
+    return array("#abort" => array('success' => FALSE, 'query' => 'Boxes module was not installed when this update ran, please run update.php again.'));
   }
   
-  //vsites per batch.
-  $limit = 40;
+  //Retrieved 250 records max lets count so we know if there are more
+  $max = 250;
+  //Get all existing front contexts and remove the new default bio blurb
+  $q = db_query("SELECT * FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%%' AND value NOT LIKE '%%boxes-scholar_biocv_bio%%' LIMIT {$max} ");
   
-  require_once drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc';
-  //$batch['operations'][] = array('scholar_front_frontpage_boxmaker',array($limit, $offset, $total_vsites),);
-  $updated_vsites = scholar_front_frontpage_boxmaker($limit, $sandbox['os_update_6007_progress'], $sandbox['max']);
-  $sandbox['os_update_6007_progress'] += $limit;
   
-  if ($sandbox['os_update_6007_progress'] < $sandbox['max']) {
-    $ret['#finished'] = $sandbox['os_update_6007_progress'] / $sandbox['max'];
+  while ($r = db_fetch_object($q)) {
+    $max--;
+    $value = unserialize($r->value);
+    
+    $value['blocks']['boxes-scholar_biocv_bio'] = array(
+          'module' => 'boxes',
+          'delta' => 'scholar_biocv_bio',
+          'weight' => 0,
+          'region' => false,
+          'label' => 'Bio Teaser',
+    );
+    $value = serialize($value);
+    
+    db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = '%s' AND id = '%s' AND object_type = '%s' AND object_id = '%s' ",array($value,$r->type,$r->id,$r->object_type,$r->object_id));
+    
+  }
+  
+  if ($max <= 1) {
+    $res['#finished'] = .5;
   } else {
-    $ret['#finished'] = TRUE;
+    $res['#finished'] = TRUE;
+    
+    $res[] = array(
+      'success' => true,
+      'query' => 'Updated bio box on existing front contexts',
+    );
   }
-
-  return $ret;
+  
+  return $res;
 }
 
 /**
@@ -404,6 +425,7 @@ function os_update_6007(&$sandbox){
  */
 function os_update_6008(&$sandbox){
   $ret = array();
+  require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
   
   //Do nothing if the biocv module is not enabled
   if(!module_exists('scholar_biocv')) return $res;
@@ -425,7 +447,7 @@ function os_update_6008(&$sandbox){
       
       //users who own multiple vsites should still have their bios listed on each vsite
       //no vsite has multiple owners.
-      $vsites = vsite_get_vsite_by_owner($r->uid);
+      if(strlen($blurb)) $vsites = vsite_get_vsite_by_owner($r->uid);
       while (strlen($blurb) && $vsite = array_shift($vsites)){
         //make delta
         $identifier = $vsite->type . '-' . $vsite->id;
@@ -441,6 +463,7 @@ function os_update_6008(&$sandbox){
         
         if (($box = boxes_factory('os_boxes_simple', $boxopts)) && isset($vsite->controllers->boxes)) {
           $vsite->controllers->boxes->set($box->delta, $box);
+          os_boxes_replace_boxes('scholar_biocv-bio_blurb', $box, false, $vsite->id);
           $a_blurb_updates[] = $r->uid;
         }
       }
@@ -460,21 +483,75 @@ function os_update_6008(&$sandbox){
   return $ret;
 }
 
+/*
+ * Implementation of hook_update_N
+ * Update hook for beta12 => beta13
+ *
+ * Takes front page settings from each space, choose a box representative of those settings, adds it to vsite in the new content_top region
+ */
+function os_update_6009(&$sandbox){
+  $ret = array();
+    
+  //init sandbox.  this persists between batches
+  if (!isset($sandbox['os_update_6009_progress'])) {
+    
+    //Do nothing if the front module is not enabled
+    if(!module_exists('scholar_front')) return $ret;
+  
+    //make sure boxes prereqs are all met before installing
+    if (! (module_exists('os_boxes') && module_exists('spaces_simpleviews') )) {
+      $ret['#abort'] = array('success' => FALSE, 'query' => 'Please enable os_boxes and spaces_simpleviews before running scholar_front_update_6002');
+      return $ret;
+    }
+
+    //make sure vsite->controllers->boxes exists
+    $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "vsite" LIMIT 1') );
+    $vsite = vsite_get_vsite($v);
+    if (! isset($vsite->controllers->boxes)) {
+      $ret['#abort'] = array('success' => FALSE, 'query' => 'vsite object has no box controller.  clear cache before running update.');
+      return $ret;
+    }
+  
+    $sandbox['os_update_6009_progress'] = 0;
+    $sandbox['max'] = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
+  }
+  
+  //vsites per batch.
+  $limit = 40;
+  
+  require_once drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc';
+  //$batch['operations'][] = array('scholar_front_frontpage_boxmaker',array($limit, $offset, $total_vsites),);
+  $updated_vsites = scholar_front_frontpage_boxmaker($limit, $sandbox['os_update_6009_progress'], $sandbox['max']);
+  $sandbox['os_update_6009_progress'] += $limit;
+  
+  if ($sandbox['os_update_6009_progress'] < $sandbox['max']) {
+    $ret['#finished'] = $sandbox['os_update_6009_progress'] / $sandbox['max'];
+  } else {
+    $ret['#finished'] = TRUE;
+    $ret[] = array(
+      'success' => true,
+      'query' => 'Created front page boxes.',
+    );
+  }
+
+  return $ret;
+}
+
 /**
  *
  *  Update hook for beta12 => beta13
- *  removes bio blurb fro bio content type
+ *  removes bio blurb from bio content type
  */
-function os_update_6009(&$sandbox){
+function os_update_6010(&$sandbox){
   //Do nothing if the biocv module is not enabled
   if(!module_exists('scholar_biocv')) return $res;
   
   $ret = array();
   if (module_exists('os_boxes')) {
-  	module_load_include('inc', 'content', 'includes/content.crud');
-	  $field_name = 'field_hook_text';
-	  $type_name = 'bio';
-	  content_field_instance_delete($field_name, $type_name);
+    module_load_include('inc', 'content', 'includes/content.crud');
+    $field_name = 'field_hook_text';
+    $type_name = 'bio';
+    content_field_instance_delete($field_name, $type_name);
   
     $ret['#success']['success'] = true;
     $ret['#success']['query'] = "Removed bio_blurb field from content type";
@@ -483,61 +560,4 @@ function os_update_6009(&$sandbox){
   }
   
   return $ret;
-}
-
-/**
- * Add new default box to all custom front pages, so that existing sites do not automatically recieve the bio on thier homepage
- *
- * Update hook for beta12 => beta13
- * @param array $sandbox
- */
-function os_update_6010(&$sandbox){
-	$res = array();
-	
-	//Do nothing if the biocv module is not enabled
-  if(!module_exists('scholar_biocv')) return $res;
-  
-  if(!module_exists('boxes')){
-    return array("#abort" => array('success' => FALSE, 'query' => 'Boxes module was not installed when this update ran, please run update.php again.'));
-  }
-  
-  //init sandbox
-  if (!isset($sandbox['os_update_6010_progress'])) {
-    $sandbox['os_update_6010_progress'] = 0;
-    $sandbox['max'] = (int)db_result(  db_query("SELECT COUNT(*) FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%' AND value NOT LIKE '%boxes-scholar_biocv_bio%' ")  );
-  }
-  
-  //Get all existing front contexts and remove the new default bio blurb
-  $q = db_query("SELECT * FROM {spaces_overrides} WHERE `object_type` LIKE 'context' AND `object_id` LIKE 'openscholar-feature-front:reaction:block:%' AND value NOT LIKE '%boxes-scholar_biocv_bio%' LIMIT %d,250 ",$sandbox['os_update_6010_progress']);
-  $sandbox['os_update_6010_progress'] += 250;
-  
-  while ($r = db_fetch_object($q)) {
-
-    $value = unserialize($r->value);
-    
-    $value['blocks']['boxes-scholar_biocv_bio'] = array(
-          'module' => 'boxes',
-          'delta' => 'scholar_biocv_bio',
-          'weight' => 0,
-          'region' => false,
-          'label' => 'Bio Teaser',
-    );
-    $value = serialize($value);
-    
-    db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = '%s' AND id = '%s' AND object_type = '%s' AND object_id = '%s' ",array($value,$r->type,$r->id,$r->object_type,$r->object_id));
-    
-  }
-  
-  if ($sandbox['os_update_6010_progress'] < $sandbox['max']) {
-    $res['#finished'] = $sandbox['os_update_6010_progress'] / $sandbox['max'];
-  } else {
-    $res['#finished'] = TRUE;
-    
-    $res[] = array(
-	    'success' => true,
-	    'query' => 'Updated bio box on existing front contexts',
-	  );
-  }
-  
-  return $res;
 }

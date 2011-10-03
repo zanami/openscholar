@@ -15,29 +15,27 @@ function scholar_front_frontpage_boxmaker($limit, $offset, $total_vsites) {
   $ret = array();
   
   //loop over all users
-  $query = 'SELECT uid FROM {users} LIMIT %d OFFSET %d ';
+  $query = 'SELECT nid FROM {node} WHERE type = "vsite" LIMIT %d OFFSET %d ';
   $result = db_query($query, (int)$limit, (int)$offset);
-  while ($res = db_fetch_object($result)) {
+  while ($nid = db_result($result)) {
     
-    if (($vsites = vsite_get_vsite_by_owner($res->uid)) == FALSE) {
-      continue; //user has no vsites.  ignore.
+    if (($vsite = vsite_get_vsite($nid)) == FALSE) {
+      continue; //bad vsite
     }
     
-    //loop over this user's vsites
-    foreach($vsites as $vsite) {
+   
+    // create new frontpage box from old frontpage settings
+    $settings = scholar_front_fb_front_settings($vsite->id);
+    $front = scholar_front_fb_get_front($settings, $vsite);
       
-      // create new frontpage box from old frontpage settings
-      $settings = scholar_front_fb_front_settings($vsite->id);
-      $front = scholar_front_fb_get_front($settings, $vsite);
-      
-      if ($front && ($wgt = scholar_front_fb_mk_front_box($vsite, $front)) != FALSE) {
-      	$add_func = 'scholar_front_fb_add_' . $wgt['wgt']; //box or block
-        $ret[] = $add_func($vsite, $wgt['data']);
-        $vsite->controllers->variable->del('site_frontpage'); //remove previous front page
-      } else {
-        //error_log('Could not determine front page for vsite ' . $vsite->id, 'warning');
-      }
+    if ($front && ($wgt = scholar_front_fb_mk_front_box($vsite, $front)) != FALSE) {
+    	$add_func = 'scholar_front_fb_add_' . $wgt['wgt']; //box or block
+      $ret[] = $add_func($vsite, $wgt['data']);
+      $vsite->controllers->variable->del('site_frontpage'); //remove previous front page
+    } else {
+      //error_log('Could not determine front page for vsite ' . $vsite->id, 'warning');
     }
+    
   }
   return $ret;
 }
@@ -198,7 +196,7 @@ EOD;
       
     //features uses simpleviews_boxes_ls
     case 'features':
-      $type = 'spaces_simpleviews_post_list';
+      $type = 'spaces_sv_post_list';
       $opts['style'] = 'teasers';
       $opts['filter'] = 'all';
       break;
@@ -253,10 +251,24 @@ function scholar_front_fb_add_box(&$vsite, $box) {
 
 //adds block to content_top region
 function scholar_front_fb_add_block(&$vsite, $block) {
-  $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
-  $front_context['blocks'][$block]['region'] = 'content_top';
+	$og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
+	if($og_theme){
+	  $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block:'.$og_theme);
+	}//og_theme is not avalible in the context controller during update, lets do it manually if space override exists
+	
+  if(!$front_context) $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
+  
+  //Get the default block from the preset
+  if(!isset($front_context['blocks'][$block])){
+  	$preset = $vsite->controllers->context->get('openscholar-feature-front:reaction:block','preset');
+  	if(isset($preset['blocks'][$block])){
+  		$front_context['blocks'][$block] = $preset['blocks'][$block];
+  	}
+  }
+  
+  //Make sure the box is avalible
+  if(isset($front_context['blocks'][$block])) $front_context['blocks'][$block]['region'] = 'content_top';
 
-  $og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
   if($og_theme){
     $og_theme = ":{$og_theme}";
   }else{

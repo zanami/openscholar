@@ -413,51 +413,23 @@ function cp_preprocess_page(&$vars){
       $user_links = array();
 
       if ($vsite->access_admin()) {
-        $user_links[] = array(
-          'link' => array(
-            'title' => t('Control Panel'),
-            'href' => 'cp/build/features',
-          ),
-        );
+        $user_links[] = l('Control Panel', 'cp/build/features', array('attributes' => array('class' => 'wrench')));
       }
 
       $new_count = vsite_news_get_new_activity_count();
-      $user_links[] = array(
-        'link' => array(
-          'title' => $new_count,
-          'href' => 'cp/news', //@TODO: replace this with new path
-          'localized_options' => $new_count?array('attributes' => array('class' => 'unread')):array(),
-        ),
-      );
+      $user_links[] = l($new_count, 'cp/news', $new_count?array('attributes' => array('class' => 'unread')):array());
 
       $user_links[] = array(
-        'link' => array(
-          'title' => t('Hello <strong>!username</strong>', array(
+        'data' => t('Hello <strong>!username</strong>', array(
             '!username' => $user->name
-          )),
-          'href' => 'user',
-          'localized_options' => array(
-          	'html' => TRUE,
-          ),
-        	'has_children' => TRUE,
-        ),
-        'below' => array(
-          array(
-            'link' => array(
-              'title' => t('My Account'),
-              'href' => 'user',
-            ),
-          ),
-          array(
-            'link' => array(
-              'title' => t('Logout'),
-              'href' => "logout"
-            ),
-          )
-        ),
+         )),
+        'children' => array(
+          l('My Account', 'user'),
+          l('Logout', 'logout'),
+        )
       );
 
-      $vars['cp_toolbar'] = menu_tree_output($user_links);
+      $vars['cp_toolbar'] = theme('item_list', $user_links);
       $vars['body_classes'] .= ' cp-toolbar-mini';
       break;
 
