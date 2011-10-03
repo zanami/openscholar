@@ -38,7 +38,7 @@ function scholar_book_context_default_contexts() {
     'menu' => 'documents',
     'block' => array(
       'blocks' => array(
-        'boces-scholar_book_current_toc' => array(
+        'boxes-scholar_book_current_toc' => array(
           'module' => 'boxes',
           'delta' => 'scholar_book_current_toc',
           'weight' => 20,
