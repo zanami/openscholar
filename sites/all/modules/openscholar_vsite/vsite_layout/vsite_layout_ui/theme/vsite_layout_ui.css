@@ -183,30 +183,38 @@ dd.content.post.ui-sortable-helper {
 }
     
   
-   #scholarlayout-top-widgets dd.content.book {
+   #scholarlayout-top-widgets dd.content.book,
+   .content.book.ui-sortable-helper
+    {
  background: url('images/widgetIcons/book.png') no-repeat scroll 50% 10px transparent;
 }
   
   
-#scholarlayout-top-widgets dd.content.text {
+#scholarlayout-top-widgets dd.content.text,
+.content.text.ui-sortable-helper {
  background: url('images/widgetIcons/text.png') no-repeat scroll 50% 10px transparent;
 }
   
-#scholarlayout-top-widgets dd.content.features {
+#scholarlayout-top-widgets dd.content.features,
+.content.features.ui-sortable-helper  {
  background: url('images/widgetIcons/features.png') no-repeat scroll 50% 10px transparent;
 }
     
   
  #scholarlayout-top-widgets #boxes-image_gallery_recent_images,
- #scholarlayout-top-widgets #views-scholar_image_gallery-block_1 {
+ #scholarlayout-top-widgets #views-scholar_image_gallery-block_1,
+ #boxes-image_gallery_recent_images.ui-sortable-helper,
+ #views-scholar_image_gallery-block_1.ui-sortable-helper, {
  background: url('images/widgetIcons/camera.png') no-repeat scroll 50% 10px transparent;
 }
   
-  #scholarlayout-top-widgets dd.os_boxes_slideshow {
+  #scholarlayout-top-widgets dd.os_boxes_slideshow,
+  .os_boxes_slideshow.ui-sortable-helper  {
  background: url('images/widgetIcons/slideshow.png') no-repeat scroll 50% 10px transparent;
 } 
 
-  #scholarlayout-top-widgets dd.social.feed.twitter {
+  #scholarlayout-top-widgets dd.social.feed.twitter,
+  .social.feed.twitter.ui-sortable-helper  {
  background: url('images/widgetIcons/twitter.png') no-repeat scroll 50% 10px transparent;
 } 
 
@@ -214,28 +222,37 @@ dd.content.post.ui-sortable-helper {
   #scholarlayout-top-widgets #boxes-vsite_rss,
   #scholarlayout-top-widgets #boxes-scholar_reader-feeds_list,
   #scholarlayout-top-widgets #boxes-scholar_reader-latest_feed_items,
-  #scholarlayout-top-widgets #boxes-scholar_blog-blog_rss{
+  #scholarlayout-top-widgets #boxes-scholar_blog-blog_rss,
+  #boxes-vsite_rss.ui-sortable-helper,
+#boxes-scholar_reader-feeds_list.ui-sortable-helper,
+#boxes-scholar_reader-latest_feed_items.ui-sortable-helper,
+#boxes-scholar_blog-blog_rss.ui-sortable-helper {
  background: url('images/widgetIcons/rss.png') no-repeat scroll 50% 10px transparent;
 } 
   
  
-  #scholarlayout-top-widgets #boxes-os_addthis{
+  #scholarlayout-top-widgets #boxes-os_addthis,
+  #boxes-os_addthis.ui-sortable-helper {
  background: url('images/widgetIcons/addThis.png') no-repeat scroll 50% 10px transparent;
 }  
   
   #scholarlayout-top-widgets .os_boxes_shields,
-  #scholarlayout-top-widgets #boxes-shield_default {
+  #scholarlayout-top-widgets #boxes-shield_default,
+  .os_boxes_shields.ui-sortable-helper,
+#boxes-shield_default.ui-sortable-helper  {
  background: url('images/widgetIcons/shield.png') no-repeat scroll 50% 10px transparent;
 } 
 
   #scholarlayout-top-widgets #boxes-scholar_biocv_bio_blurb,
   #scholarlayout-top-widgets #scholar_biocv-bio_blurb,
      #scholarlayout-top-widgets .scholarlayout-item.os_boxes_bio,
-    #scholarlayout-top-widgets #boxes-scholar_biocv_bio {
+    #scholarlayout-top-widgets #boxes-scholar_biocv_bio,
+    #boxes-scholar_biocv_bio_blurb.ui-sortable-helper,
+  #scholar_biocv-bio_blurb.ui-sortable-helper,
+     .scholarlayout-item.os_boxes_bio.ui-sortable-helper,
+    #boxes-scholar_biocv_bio.ui-sortable-helper {
  background: url('images/widgetIcons/bio.png') no-repeat scroll 50% 10px transparent;
 } 
-
- 
 
  
 #scholarlayout-top-widgets dd.scholarlayout-item a.add,
@@ -277,12 +294,6 @@ color:transparent;
 background: url('images/configGear.png') no-repeat;
 }
 
-/*
-.scholarlayout-top-widgets-wrapper dd.scholarlayout-item a.ctools-use-modal,  .scholarlayout-top-widgets-wrapper dd.scholarlayout-item a.setting {
-color:transparent;
-background: url('images/configGear.png') no-repeat;
-}
-*/
 
 #scholarlayout-container #scholarlayout-footer dd.scholarlayout-item, #scholarlayout-container #scholarlayout-navbar dd.scholarlayout-item {
   width: 75%;
