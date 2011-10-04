@@ -24,7 +24,7 @@ function scholar_biocv_context_default_contexts() {
     'path' => array(
       'values' => array(
         'biocv' => 'biocv',
-        'biocv/*' => 'biocv/*',
+        'biocv /*' => 'biocv/*',
       ),
       'options' => array(),
     ),
