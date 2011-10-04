@@ -139,13 +139,13 @@ function vsite_layout_ui_check_for_disabled_widgets(&$widgets, $space = NULL) {
   	
   	global $user;
   	if($wgt['access callback'] && function_exists($wgt['access callback'])){
-  		$access = call_user_func($wgt['access callback'],array($wgt,$user));
+  		$access = call_user_func($wgt['access callback'],$wgt,$user);
   	}
   	
   	//Also check default access function
   	//If the parent is a feature and it is disabled then lets not show this block
   	//or if views does not give access (usually using the feature access)
-  	if($access) $access = vsite_vsite_widgets_access($wgt,$user);
+  	if($access) $access = vsite_layout_vsite_widgets_access($wgt,$user);
   	
 
   	$widgets[$s_wgt_name]['hidden'] = !$access;

@@ -82,7 +82,8 @@ class os_boxes_simpleview_list extends spaces_simpleviews_post_list {
    * @param mixed $a_types
    */
   protected function filter_disabled_types($a_types){
-  	$avalible_types = vsite_content_types(array(2, 1));
+  	vsite_include('vsiteapi');
+  	$avalible_types = array_keys(vsite_content_types(array(2, 1)));
   	
   	if(!is_array($a_types) && is_string($a_types)){
   		//Check and see if the passed type is valid
