@@ -115,6 +115,27 @@ body.front #content-top h3.title, body.front #content-bottom h3.title, body.fron
 	padding:3px 0;
 }
 
+body.front #content-left #block-boxes-scholar_publications_recent h3.title,
+body.front #content-right #block-boxes-scholar_publications_recent h3.title,
+body.front #content-top #block-boxes-scholar_publications_recent h3.title,
+body.front #content-bottom #block-boxes-scholar_publications_recent h3.title
+{background:url('images/publicIcon.png') no-repeat;padding-left:28px;}
+ 
+ 
+body.front #content-left #block-views-scholar_events_upcoming-block_1 h3.title,
+body.front #content-right #block-views-scholar_events_upcoming-block_1 h3.title,
+body.front #content-top #bblock-views-scholar_events_upcoming-block_1 h3.title,
+body.front #content-bottom #block-views-scholar_events_upcoming-block_1 h3.title
+{background:url('images/calendarIcon.png') no-repeat;padding-left:28px;}
+
+
+body.front #content-left ul li,
+body.front #content-right ul li,
+body.front #content-top ul li,
+body.front #content-bottom ul li
+ {background:url('images/frontPgBullets.png') no-repeat;padding-left:12px;}
+
+.item-list ul.pager li {background:#FFF;}
 
 
 /* LAYOUT ELEMENTS */
@@ -138,13 +159,7 @@ background: #fff;
 
 #sidebar-first,
 #header-left {
-  left: -214px;
-  width: 160px;
-  }
-
-#sidebar-second,
-#header-right {
-  width: 195px;
+  left: -210px;
   }
 
 #content-area .hg-container,
@@ -183,8 +198,23 @@ body.sidebar-first #content-area .hg-container {
     border-right: none;
 }
 
-/*SIDEBAR ELEMENTS */
+/** IF ONLY (1) SIDEBAR IS PRESENT MAKE SIDEBAR 250PX WIDE **/
 
+body.one-sidebar.sidebar-first #sidebar-first, 
+body.one-sidebar.sidebar-second #sidebar-second {
+    width: 250px;
+}
+
+body.one-sidebar.sidebar-second #content-area .hg-container {
+  padding-right: 300px;
+}
+
+body.one-sidebar.sidebar-first #content-area .hg-container {
+padding-left: 280px;
+}
+
+
+/*SIDEBAR ELEMENTS */
 
 #sidebar-second .block, #sidebar-first .block {
 -moz-border-radius:5px;
@@ -192,10 +222,8 @@ body.sidebar-first #content-area .hg-container {
 border-radius: 5px;
 border: 1px solid #CCCCCC;
 padding: 0 8px 8px 4px;
-width: 195px;
+width: 100%;
 }
-
-
 
 #sidebar-second #block-vsite_widgets-1.block, #sidebar-first #block-vsite_widgets-1.block,
 #sidebar-second #block-vsite_widgets-2.block, #sidebar-first #block-vsite_widgets-2.block,
@@ -207,9 +235,9 @@ width: 195px;
 	border:none;
 }
 
-#sidebar-first .block {
+/*#sidebar-first .block {
 width: 160px;
-}
+}*/
 
 body.navbar-off #sidebar-first {
 padding-top: 0;
@@ -221,7 +249,7 @@ padding: 0 0 30px 0;
   }
   
 body.one-sidebar #sidebar-first {
-	left: -230px;	
+	left: -297px;	
 }
 
 /* HEADER ELEMENTS */
