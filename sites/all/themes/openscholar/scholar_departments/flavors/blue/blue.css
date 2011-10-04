@@ -1,5 +1,5 @@
 body {
-  color:#37352B;
+color:#37352B;
 background: url('images/bodyBg.png') repeat-x scroll 0px -12px #EFEFEF;
  }    
 
@@ -37,6 +37,12 @@ border-bottom: 2px solid #8D3129;
 body.front #content-top h3.title, body.front #content-bottom h3.title, body.front #content-right h3.title, body.front #content-left h3.title {
 border-top: 2px solid #8D3129;
 	}
+	
+body.front #content-left ul li,
+body.front #content-right ul li,
+body.front #content-top ul li,
+body.front #content-bottom ul li
+ {background:url('images/frontPgBulletsBlue.png') no-repeat;padding-left:12px;}	
 
 /* LAYOUT ELEMENTS */
 

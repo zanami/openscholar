@@ -49,24 +49,27 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
-  $css = drupal_get_path('module', 'os_boxes') . '/theme/css/addthis.css';
-  $info['os_boxes_addthis'] = array(
-    'title' => 'Addthis',
-    'description' => 'Social media links',
-    'css' => $css,
-    'tags' => array('Social'),
-    'handler' => array(
-      'class' => 'os_boxes_addthis',
-      'file' =>  'os_boxes_addthis.inc',
-      'path' => $path,
-      'parent' => 'os_boxes_default',
-    ),
-  );
+	$addthis_css = drupal_get_path('module', 'os_boxes') . '/theme/css/addthis.css';
+	  $info['os_boxes_addthis'] = array(
+	  'title' => 'Addthis',
+	  'description' => 'Social media links',
+	  'css' => $addthis_css,
+	  'tags' => array('Social'),
+	  'module dependencies' => array("addthis"),
+	  'handler' => array(
+	    'class' => 'os_boxes_addthis',
+	    'file' =>  'os_boxes_addthis.inc',
+	    'path' => $path,
+	    'parent' => 'os_boxes_default',
+	  ),
+	);
+  
 
   $info['os_boxes_feedreader'] = array(
     'title' => 'Feed Reader',
     'description' => 'List of feed items',
     'tags' => array('Content','Social'),
+    'module dependencies' => array("scholar_reader"),
     'handler' => array(
       'class' => 'os_boxes_feedreader',
       'file' => 'os_boxes_feedreader.inc',
@@ -79,6 +82,7 @@ function os_boxes_boxes_plugins() {
     'title' => 'Image Gallery',
     'description' => 'List of images',
     'tags' => array('Media'),
+    'module dependencies' => array("scholar_image_gallery"),
     'handler' => array(
       'class' => 'os_boxes_gallery',
       'file' => 'os_boxes_gallery.inc',
@@ -115,6 +119,7 @@ function os_boxes_boxes_plugins() {
     'title' => 'CC License',
     'description' => 'Displays CC license widget',
     'tags' => array('Misc'),
+    'module dependencies' => array("vsite_cc"),
     'handler' => array(
       'class' => 'os_boxes_cclicense',
       'file' => 'os_boxes_cclicense.inc',
@@ -140,6 +145,7 @@ function os_boxes_boxes_plugins() {
     //'title' => 'Bio Box',  // i.e. view
     'description' => 'Displays biography blurb',
     'tags' => array('Misc'),
+    'module dependencies' => array("scholar_biocv"),
     'handler' => array(
       'class' => 'os_boxes_bio',
       'file' => 'os_boxes_bio.inc',
@@ -153,6 +159,7 @@ function os_boxes_boxes_plugins() {
     'title' => 'Media Embed',  // i.e. view
     'description' => 'Embed Media',
     'tags' => array('Media'),
+    'module dependencies' => array("os_wysiwyg"),
     'handler' => array(
       'class' => 'os_boxes_oembed',
       'file' => 'os_boxes_oembed.inc',
@@ -177,6 +184,7 @@ function os_boxes_boxes_plugins() {
     'title' => 'Book Table of Contents',
     'description' => 'Table of Contents',
     'tags' => array('Content'),
+    'module dependencies' => array("scholar_book"),
     'handler' => array(
       'class' => 'os_boxes_booktoc',
       'file' => 'os_boxes_booktoc.inc',
@@ -189,6 +197,7 @@ function os_boxes_boxes_plugins() {
     //'title' => 'Active Book\'s TOC',
     'description' => 'Table of Contents',
     'tags' => array('Content'),
+    'module dependencies' => array("scholar_book"),
     'handler' => array(
       'class' => 'os_boxes_curr_toc',
       'file' => 'os_boxes_booktoc.inc',
@@ -250,13 +259,18 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
-  /*
+  
   foreach ($info as $key => $block) {
-  	if(!isset($info[$key]['access'])){
-  		$info[$key]['access'] = "cp_access_cp";
+  	if(isset($info[$key]['module dependencies'])){
+  		foreach ($info[$key]['module dependencies'] as $module) {
+  			if(!module_exists($module)){
+  				unset($info[$key]);
+  				continue(2);
+  			}
+  		}
   	}
   }
-  */
+  
 
   return $info;
 }
@@ -345,6 +359,12 @@ function os_boxes_vsite_widgets(){
     if(isset($plugins[$box->plugin_key]) && is_array($plugins[$box->plugin_key]['tags']) && count($plugins[$box->plugin_key]['tags'])) {
         $items["boxes-{$box->delta}"]['tags'] = $plugins[$box->plugin_key]['tags'];
     }//retrieve tags from plugin
+    
+    if(isset($plugins[$box->plugin_key]) && isset($plugins[$box->plugin_key]['block_config_path'])) {
+        $items["boxes-{$box->delta}"]['block_config_path'] = $plugins[$box->plugin_key]['block_config_path'];
+    }//assign configure path from plugin
+    
+    $items["boxes-{$box->delta}"]['access callback'] = 'os_boxes_box_access';
   }
 
   return $items;
@@ -602,4 +622,33 @@ function os_boxes_preprocess_block(&$vars) {
       drupal_add_css($plugins[$block -> plugin]['css']);
     }
   }
+}
+
+
+/**
+ * Provide an access function for os_boxes to enable/disable boxes based on feature information
+ * @param array $block
+ * @param uid $user
+ */
+function os_boxes_box_access($block,$user = false){
+	
+  if ($block['module'] == 'boxes') {
+  	if(isset($block['plugin'])){
+  		$plugin = os_boxes_get_boxes_plugins($block['plugin']);
+	  	if(isset($plugin['module dependencies'])){
+	      foreach ($plugin['module dependencies'] as $module) {
+	        if(!module_exists($module)){
+	          return false;
+	        }
+	      }
+	    }
+  	}// Check module dependencies for plugin
+  	
+  	$box = boxes_load($block['delta']);
+  	if(is_object($box) && method_exists($box,'access')){
+  		return $box->access();
+  	}//If the box has an access function call it
+  }
+  
+	return true;
 }

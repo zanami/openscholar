@@ -218,7 +218,7 @@ function vsite_layout_add_category_select() {
 function vsite_layout_init_categories(){
 	var cat = $('#widget-categories li.active a').attr('href').substring(1);
 	if (cat == 'all') {
-		$('#scholarlayout-top-widgets dd').show();
+		$('#scholarlayout-top-widgets dd').not('.disabled').show();
 	}
 	else {
 		$('#scholarlayout-top-widgets').children('dd:not(.' + cat + ')').hide();

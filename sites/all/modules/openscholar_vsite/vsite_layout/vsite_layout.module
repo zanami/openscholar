@@ -210,3 +210,35 @@ function vsite_layout_context_plugins() {
   );
   return $plugins;
 }
+
+/**
+ * The default access function for vsite widgets
+ *
+ * If the parent is a feature module and it is disabled then lets not show this block
+ * or if views does not give access (usually using the feature access)
+ *
+ * @param array $widget
+ * @param user $user
+ */
+function vsite_layout_vsite_widgets_access($widget ,$account = false){
+  $space_features = variable_get('spaces_features', array());
+  
+  if (array_key_exists($widget['module'], $space_features) && !$space_features[$widget['module']]) {
+    //if this block is provided by a feature and that feature is disabled do not show the block
+    return false;
+  }
+  elseif ($wgt['module'] == 'views') {
+    if(!$account) $account = $GLOBALS['user'];
+    //Insetad of checking as admin use the site owner so they see the same blocks
+    if ($account->uid == 1) $account = user_load(array('uid' => $space->group->uid));
+
+    //if this block is provided by views then check it's access
+    list($name, $display_id) = explode('-', $widget['delta']);
+    if (($view = views_get_view($name)) && !$view->access($display_id, $account)) {
+      return false;
+    }
+    if (is_object($view)) $view->destroy();
+  }
+    
+  return true;
+}
