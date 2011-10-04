@@ -142,7 +142,7 @@ projects[og_vocab][subdir] = "contrib"
 projects[og_vocab][version] = "1.1"
 
 projects[override_node_options][subdir] = "contrib"
-projects[override_node_options][version] = "1.11"
+projects[override_node_options][version] = "1.12"
 
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = "1.5"
@@ -302,7 +302,7 @@ projects[creativecommons][patch][] = "http://drupal.org/files/issues/creativecom
 
 ;TODO Move Patch
 projects[itweak_upload][subdir] = "contrib"
-projects[itweak_upload][version] = "2.4"
+projects[itweak_upload][version] = "2.5"
 projects[itweak_upload][patch][] = "http://drupal.org/files/issues/include_thumbs_in_node_object.patch"
 projects[itweak_upload][patch][] = "http://drupal.org/files/issues/optional_jcarousel_0.patch"
 
