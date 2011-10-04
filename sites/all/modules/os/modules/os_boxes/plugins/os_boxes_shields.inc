@@ -13,7 +13,7 @@ class os_boxes_shields extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
 
-    $options['shield'] = "";
+    $options['shield'] = variable_get('vsite_shields_shield');
     return $options;
   }
 
