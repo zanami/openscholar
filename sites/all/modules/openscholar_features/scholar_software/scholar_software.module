@@ -21,10 +21,10 @@ function scholar_software_menu_alter(&$items) {
 
 function scholar_software_access_create_release(){
 	$view = views_get_view('scholar_software_releaseprojects');
-	$view->execute();
+	if($view) $view->execute();
 
 	//Check for projects
-	return ($view->result && count($view->result) && node_access('create',"scholar_software_release"));
+	return ($view && $view->result && count($view->result) && node_access('create',"scholar_software_release"));
 }
 
 /**

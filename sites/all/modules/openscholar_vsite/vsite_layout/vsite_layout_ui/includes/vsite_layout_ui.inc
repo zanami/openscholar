@@ -135,35 +135,22 @@ function vsite_layout_ui_check_for_disabled_widgets(&$widgets, $space = NULL) {
   if (!count($widgets)) return; //Nothing to do because there are no widgets to act on
   if (!$space) $space = vsite_get_vsite(); //Get current Viste
 
-  $space_features = variable_get('spaces_features', array());
   foreach ($widgets as $s_wgt_name => $wgt) {
-    if (array_key_exists($wgt['module'], $space_features) && !$space_features[$wgt['module']]) {
-      //if this block is provided by a feature and that feature is disabled do not show the block
-      $widgets[$s_wgt_name]['hidden'] = TRUE;
+  	
+  	global $user;
+  	if($wgt['access callback'] && function_exists($wgt['access callback'])){
+  		$access = call_user_func($wgt['access callback'],array($wgt,$user));
+  	}
+  	
+  	//Also check default access function
+  	//If the parent is a feature and it is disabled then lets not show this block
+  	//or if views does not give access (usually using the feature access)
+  	if($access) $access = vsite_vsite_widgets_access($wgt,$user);
+  	
 
-    }
-    elseif ($wgt['module'] == 'views') {
-      $account = $GLOBALS['user'];
-      //Insetad of checking as admin use the site owner so they see the same blocks
-      if ($account->uid == 1) $account = user_load(array('uid' => $space->group->uid));
+  	$widgets[$s_wgt_name]['hidden'] = !$access;
 
-      //if this block is provided by views then check it's access
-      list($name, $display_id) = explode('-', $wgt['delta']);
-      if (($view = views_get_view($name)) && !$view->access($display_id, $account)) {
-        $widgets[$s_wgt_name]['hidden'] = TRUE;
-      }
-      if (is_object($view)) $view->destroy();
-    }
-    elseif ($wgt['module'] == 'boxes') {
-      // now what
-    }
-
-    if(!$widgets[$s_wgt_name]['hidden'] && strlen($wgt['access callback']) && function_exists($wgt['access callback'])){
-      //If there is an access function call it with the widget as a parameter
-      $widgets[$s_wgt_name]['hidden'] = ! $wgt['access callback']($widgets[$s_wgt_name]);
-    }
-
-  }//If the parent is a feature and it is disabled then lets not show this block or if views does not give access (usually using the feature access)
+  }
 
 }
 
