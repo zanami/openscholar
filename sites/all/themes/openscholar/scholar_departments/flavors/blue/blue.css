@@ -38,10 +38,10 @@ body.front #content-top h3.title, body.front #content-bottom h3.title, body.fron
 border-top: 2px solid #8D3129;
 	}
 	
-body.front #content-left ul li,
-body.front #content-right ul li,
-body.front #content-top ul li,
-body.front #content-bottom ul li
+body.front #content-left ul li.views-row,
+body.front #content-right ul li.views-row,
+body.front #content-top ul li.views-row,
+body.front #content-bottom ul li.views-row
  {background:url('images/frontPgBulletsBlue.png') no-repeat;padding-left:12px;}	
 
 /* LAYOUT ELEMENTS */
