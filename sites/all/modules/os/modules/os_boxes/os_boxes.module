@@ -63,7 +63,7 @@ function os_boxes_boxes_plugins() {
 	    'parent' => 'os_boxes_default',
 	  ),
 	);
-  
+
 
   $info['os_boxes_feedreader'] = array(
     'title' => 'Feed Reader',
@@ -247,6 +247,18 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_pub_year'] = array(
+    'title' => 'Publications By Year',
+    'description' => 'Group Publications By Year',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_boxes_pub_year',
+      'file' => 'os_boxes_pub_year.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
   $info['vsite_taxonomy_fbt'] = array(
     'title' => 'Filter by Category',
     'description' => 'Filter content by category',
@@ -259,7 +271,7 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
-  
+
   foreach ($info as $key => $block) {
   	if(isset($info[$key]['module dependencies'])){
   		foreach ($info[$key]['module dependencies'] as $module) {
@@ -270,7 +282,7 @@ function os_boxes_boxes_plugins() {
   		}
   	}
   }
-  
+
 
   return $info;
 }
@@ -359,11 +371,11 @@ function os_boxes_vsite_widgets(){
     if(isset($plugins[$box->plugin_key]) && is_array($plugins[$box->plugin_key]['tags']) && count($plugins[$box->plugin_key]['tags'])) {
         $items["boxes-{$box->delta}"]['tags'] = $plugins[$box->plugin_key]['tags'];
     }//retrieve tags from plugin
-    
+
     if(isset($plugins[$box->plugin_key]) && isset($plugins[$box->plugin_key]['block_config_path'])) {
         $items["boxes-{$box->delta}"]['block_config_path'] = $plugins[$box->plugin_key]['block_config_path'];
     }//assign configure path from plugin
-    
+
     $items["boxes-{$box->delta}"]['access callback'] = 'os_boxes_box_access';
   }
 
@@ -631,7 +643,7 @@ function os_boxes_preprocess_block(&$vars) {
  * @param uid $user
  */
 function os_boxes_box_access($block,$user = false){
-	
+
   if ($block['module'] == 'boxes') {
   	if(isset($block['plugin'])){
   		$plugin = os_boxes_get_boxes_plugins($block['plugin']);
@@ -643,12 +655,12 @@ function os_boxes_box_access($block,$user = false){
 	      }
 	    }
   	}// Check module dependencies for plugin
-  	
+
   	$box = boxes_load($block['delta']);
   	if(is_object($box) && method_exists($box,'access')){
   		return $box->access();
   	}//If the box has an access function call it
   }
-  
+
 	return true;
 }

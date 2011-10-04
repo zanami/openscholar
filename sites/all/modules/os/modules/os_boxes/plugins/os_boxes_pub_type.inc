@@ -2,7 +2,7 @@
 
 /**
  * @file
- * The class for "Embed" type widgets.
+ * The class for "Publication by Type" type widgets.
  */
 
 class os_boxes_pub_type extends os_boxes_default {

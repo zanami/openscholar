@@ -2,7 +2,7 @@
 
 /**
  * @file
- * The class for "Embed" type widgets.
+ * The class for "Publication Grouping" type widgets.
  */
 
 class os_boxes_pub_grps extends os_boxes_default {
@@ -104,18 +104,18 @@ class os_boxes_pub_grps extends os_boxes_default {
 
     return $block;
   }
-  
+
   /**
    * Return the cache parameters for this box
    */
   public function cache_info(){
-    
+
     //Clear when bio nodes are saved
     $cache_key = array(
       'os_og' => array('current' => 'current'),
       'node' => array('biblio' => 'biblio'),
     );
-    
+
     return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
   }
 
