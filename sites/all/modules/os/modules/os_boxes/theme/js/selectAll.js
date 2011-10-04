@@ -8,10 +8,10 @@ Drupal.behaviors.selectAllStart = function (ctx) {
 			name = this.name.slice(0,stop),
 			chk = this.checked,
 			$cbxs = $('input[name|='+name+']');
-		cbxs.each(function() {
+		$cbxs.each(function() {
 			this.checked = chk;
 		});
 	}
 	
-	$('input[name$="[all]"').change(selectAll);
+	$('input[name$="[all]"]').change(selectAll);
 };
