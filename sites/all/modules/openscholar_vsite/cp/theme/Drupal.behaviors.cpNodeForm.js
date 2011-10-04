@@ -8,7 +8,9 @@ Drupal.behaviors.cpNodeForm = function() {
 	if (Drupal.modalFrameChild && typeof Drupal.modalFrameChild.newPage == 'undefined') {
 		Drupal.behaviors.modalFrameChildResize = function () {
 			// run this behavior after all other behaviors
-			setTimeout(function () { Drupal.modalFrameChild.triggerParentEvent('childResize'); }, 1);
+			$('img.jcrop-preview').load(function (e) { 
+				Drupal.modalFrameChild.triggerParentEvent('childResize');
+			});
 		};
 	}
 };
