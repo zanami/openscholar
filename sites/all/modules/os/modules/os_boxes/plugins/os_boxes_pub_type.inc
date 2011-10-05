@@ -94,7 +94,7 @@ class os_boxes_pub_type extends os_boxes_default {
     while ($row = db_fetch_array($q)) {
       if ($this->options['type'] == 'type' && !in_array($row['label'], $plurals)) $row['label'] .= "s"; //FIX THE PLURAL
 
-      $content[] = '<li>'.l($row['label'],"publication/".$this->options['type']."/".$row['path']).($this->options['display_num']?' ('.$row['num'].')</li>':'');
+      $content[] = '<li>'.l($row['label'],"publications/type/".$row['path']).($this->options['display_num']?' ('.$row['num'].')</li>':'');
     }
 
     if (count($content)) {
