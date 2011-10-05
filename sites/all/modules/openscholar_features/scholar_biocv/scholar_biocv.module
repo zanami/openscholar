@@ -36,7 +36,6 @@ function scholar_biocv_menu(){
     'file' => 'scholar_biocv.pages.inc',
   );
   
-
   return $items;
 }
 
