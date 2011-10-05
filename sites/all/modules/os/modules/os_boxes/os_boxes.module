@@ -259,6 +259,18 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_pub_ca'] = array(
+    'title' => 'Publications By Co-Authors',
+    'description' => 'Group Publications By Co-Authors',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_boxes_pub_ca',
+      'file' => 'os_boxes_pub_ca.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
   $info['vsite_taxonomy_fbt'] = array(
     'title' => 'Filter by Category',
     'description' => 'Filter content by category',
