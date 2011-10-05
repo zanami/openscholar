@@ -93,14 +93,14 @@ function os_modalframe_form_submit(&$form, &$form_state) {
 	}
 
   ctools_include('ajax');
-  if (strpos($_GET['q'], '/dropdown') !== FALSE) {
+  if ($_GET['source'] == 'dropdown') {
     // coming from layout dropdown
     $args = array(
       ctools_ajax_command_replace("div#cp-settings-layout dd#boxes-boxes_add__{$box->plugin_key}", theme('vsite_layout_ui_cp_widget', "boxes-{$box->delta}", os_boxes_get_vsite_widget($box))),
   		array('command' => 'updateLayoutForm', 'warning' => true),
     );
   }
-  elseif (strpos($_GET['q'], '/cp_layout') === FALSE) {
+  elseif ($_GET['source'] != 'cp_layout') {
     // coming from anywhere but cp layout form
     $args = array(
       ctools_ajax_command_reload(),

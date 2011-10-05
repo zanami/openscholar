@@ -247,7 +247,7 @@ function vsite_layout_modalframe_links(){
 				url = url.replace(params, '');
 				params = params.split('/');
 				
-				url = url+'?modal&box='+params[3];
+				url = url+'?modal&box='+params[3]+'&source='+params[5];
 				
 				var modalOptions = {
 					url: url,
