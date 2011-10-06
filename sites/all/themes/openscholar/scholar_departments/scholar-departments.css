@@ -408,7 +408,7 @@ padding:0px;
  font-size:11px;
 }
  
- div.litecal .litecal-header, div.litecal .litecal-row {
+ div.litecal .litecal-header {
     height: 20px;
     line-height: 19px;
     position: relative;
