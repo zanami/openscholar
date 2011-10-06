@@ -80,8 +80,7 @@ p.copy {
 
 .node, .biblio-entry {
     clear: both;
-    margin-bottom: 0.1em;
-    padding: 0.5em 0.188em;
+ padding: 0.5em 0.188em;
     position: relative;
 }
 
