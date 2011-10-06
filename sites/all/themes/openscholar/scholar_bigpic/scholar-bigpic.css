@@ -89,7 +89,7 @@ a:hover {
 
 #content-area,
 #footer .wrap {
-  background: url(images/header-footer.png) no-repeat 100% 0 transparent;
+  background: url('images/header-footer.png') no-repeat 100% 0 transparent;
   }
 
 #footer .wrap {
@@ -107,7 +107,7 @@ a:hover {
   }
 
 #content-area .hg-container {
-  background: url(images/main-wrapper.png) 0 0 repeat-y #fff;
+  background: url('images/main-wrapper.png') 0 0 repeat-y #fff;
   overflow:auto;
   padding: 30px 0;
   }
