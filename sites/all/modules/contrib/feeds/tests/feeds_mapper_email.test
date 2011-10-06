@@ -3,24 +3,24 @@ module_load_include('test', 'feeds', 'test/feeds_mapper');
 
 /**
  * @file
- * Test case for simple CCK field mapper mappers/emfield.inc.
+ * Test case for simple CCK field mapper mappers/email.inc.
  */
 
 /**
- * Class for testing Feeds <em>emfield</em> mapper.
+ * Class for testing Feeds <em>email</em> mapper.
  */
-class FeedsMapperEmfieldTestCase extends FeedsMapperTestCase {
+class FeedsMapperEmailTestCase extends FeedsMapperTestCase {
   public static function getInfo() {
     return array(
-      'name' => 'Mapper: Emfield',
-      'description' => 'Test Feeds Mapper support for Emfield CCK fields.',
+      'name' => 'Mapper: Email',
+      'description' => 'Test Feeds Mapper support for Email CCK fields.',
       'group' => 'Feeds',
-      'dependencies' => array('content', 'emfield'),
+      'dependencies' => array('content', 'email'),
     );
   }
 
   function setUp() {
-    parent::setUp(array('content', 'emfield', 'emvideo'));
+    parent::setUp(array('content', 'email'));
   }
 
   /**
@@ -30,14 +30,11 @@ class FeedsMapperEmfieldTestCase extends FeedsMapperTestCase {
 
     // Create content type.
     $typename = $this->createContentType(array(), array(
-      'video' => array(
-        'type' => 'emvideo',
-        'widget' => 'emvideo_textfields',
-      ),
+      'email' => 'email',
     ));
 
     // Create and configure importer.
-    $this->createImporterConfiguration('Emfield CSV', 'csv');
+    $this->createImporterConfiguration('Email CSV', 'csv');
     $this->setSettings('csv', NULL, array('content_type' => '', 'import_period' => FEEDS_SCHEDULE_NEVER));
     $this->setPlugin('csv', 'FeedsFileFetcher');
     $this->setPlugin('csv', 'FeedsCSVParser');
@@ -56,20 +53,27 @@ class FeedsMapperEmfieldTestCase extends FeedsMapperTestCase {
         'target' => 'body',
       ),
       array(
-        'source' => 'video',
-        'target' => 'field_video',
+        'source' => 'email',
+        'target' => 'field_email',
       ),
     ));
 
     // Import CSV file.
-    $this->importFile('csv', $this->absolutePath() .'/tests/feeds/emfield.csv');
+    $this->importFile('csv', $this->absolutePath() .'/tests/feeds/email.csv');
     $this->assertText('Created 2 '. $typename .' nodes.');
 
     // Check the two imported files.
     $this->drupalGet('node/1/edit');
-    $this->assertFieldByName('field_video[0][embed]', 'http://www.youtube.com/watch?v=gpkhANg919Y');
+    $this->assertCCKFieldValue('email', 'user1@example.org');
 
     $this->drupalGet('node/2/edit');
-    $this->assertFieldByName('field_video[0][embed]', 'http://www.youtube.com/watch?v=ewAGXAeCXJY');
+    $this->assertCCKFieldValue('email', 'user2@example.org');
+  }
+
+  /**
+   * Override parent::getFormFieldsNames().
+   */
+  protected function getFormFieldsNames($field_name, $index) {
+    return array("field_{$field_name}[{$index}][email]");
   }
 }
