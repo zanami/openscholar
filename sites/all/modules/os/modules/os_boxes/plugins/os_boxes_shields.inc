@@ -70,7 +70,7 @@ class os_boxes_shields extends os_boxes_default {
     //@todo
     $block = parent::render();
 
-  	$filename = $this->options['shield'];
+  	$filename = $this->options['shield']?$this->options['shield']:variable_get('vsite_shields_shield', '');
   	if ($filename && !$this->options['disabled']) {
   	  $block['subject'] = $block['title'] = '';
   	  $block['content'] = '<div id="scholar-shield"><img src="'.url($filename, array('alias' => TRUE)).'" /> </div>';
