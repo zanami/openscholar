@@ -37,6 +37,7 @@ function vsite_news_menu() {
     'page callback' => 'vsite_news_activity',
     'menu_name' => 'cp',
     'access callback' => 'cp_access_cp',
+    'type' => MENU_CALLBACK,
     'weight' => 60,
   );
 
