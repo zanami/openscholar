@@ -90,7 +90,7 @@ projects[imagefield][subdir] = "contrib"
 projects[imagefield][version] = "3.10"
 
 projects[imagefield_crop][subdir] = "contrib"
-projects[imagefield_crop][version] = "1.0-rc2"
+projects[imagefield_crop][version] = "1.0"
 projects[imagefield_crop][patch][] = "http://drupal.org/files/issues/imagefield_crop.patch"
 
 projects[insert][subdir] = "contrib"
@@ -279,7 +279,7 @@ projects[biblio][patch][] = "http://drupal.org/files/issues/biblio.etal-override
 projects[biblio][patch][] = "http://drupal.org/files/issues/biblio_default_sorting.1168676.patch"
 
 projects[feeds][subdir] = "contrib"
-projects[feeds][version] = "1.0-beta10"
+projects[feeds][version] = "1.0-beta12"
 projects[file_aliases][patch][] = "http://drupal.org/files/issues/null_nodetype-625196-67.patch"
 
 projects[file_aliases][subdir] = "contrib"

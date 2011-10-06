@@ -2,7 +2,7 @@
 
 /**
  * @file
- * On behalf implementation of Feeds mapping API for content.module (CCK).
+ * On behalf implementation of Feeds mapping API for email.module (CCK).
  */
 
 /**
@@ -10,12 +10,12 @@
  *
  * @see FeedsNodeProcessor::getMappingTargets().
  */
-function content_feeds_node_processor_targets_alter(&$targets, $content_type) {
+function email_feeds_node_processor_targets_alter(&$targets, $content_type) {
   $info = content_types($content_type);
   $fields = array();
   if (isset($info['fields']) && count($info['fields'])) {
     foreach ($info['fields'] as $field_name => $field) {
-      if (in_array($field['type'], array('text', 'number_integer', 'number_decimal', 'number_float'))) {
+      if (in_array($field['type'], array('email'))) {
         $fields[$field_name] = isset($field['widget']['label']) ? $field['widget']['label'] : $field_name;
       }
     }
@@ -23,8 +23,8 @@ function content_feeds_node_processor_targets_alter(&$targets, $content_type) {
   foreach ($fields as $k => $name) {
     $targets[$k] = array(
       'name' => check_plain($name),
-      'callback' => 'content_feeds_set_target',
-      'description' => t('The CCK @name field of the node.', array('@name' => $name)),
+      'callback' => 'email_feeds_set_target',
+      'description' => t('The CCK Email @name field of the node.', array('@name' => $name)),
     );
   }
 }
@@ -36,7 +36,7 @@ function content_feeds_node_processor_targets_alter(&$targets, $content_type) {
  * user has decided to map to and $value contains the value of the feed item
  * element the user has picked as a source.
  */
-function content_feeds_set_target($node, $target, $value) {
+function email_feeds_set_target($node, $target, $value) {
 
   $field = isset($node->$target) ? $node->$target : array();
 
@@ -45,13 +45,13 @@ function content_feeds_set_target($node, $target, $value) {
     $i = 0;
     foreach ($value as $v) {
       if (!is_array($v) && !is_object($v)) {
-        $field[$i]['value'] = $v;
+        $field[$i]['email'] = $v;
       }
       $i++;
     }
   }
   else {
-    $field[0]['value'] = $value;
+    $field[0]['email'] = $value;
   }
 
   $node->$target = $field;

@@ -136,6 +136,8 @@ function vsite_layout_ui_check_for_disabled_widgets(&$widgets, $space = NULL) {
   if (!$space) $space = vsite_get_vsite(); //Get current Viste
 
   foreach ($widgets as $s_wgt_name => $wgt) {
+  	//Let them in by default
+  	$access = true;
   	
   	global $user;
   	if($wgt['access callback'] && function_exists($wgt['access callback'])){
@@ -149,7 +151,6 @@ function vsite_layout_ui_check_for_disabled_widgets(&$widgets, $space = NULL) {
   	
 
   	$widgets[$s_wgt_name]['hidden'] = !$access;
-
   }
 
 }
