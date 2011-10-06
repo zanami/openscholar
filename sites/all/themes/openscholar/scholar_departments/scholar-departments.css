@@ -30,7 +30,7 @@ h2.title {
 color: #555555;
     font-size: 1.3em;
     margin-bottom: 1em;
-    text-transform:uppercase;S
+    text-transform:uppercase;
   }
 
 
@@ -118,21 +118,29 @@ body.front #content-left #block-boxes-scholar_publications_recent h3.title,
 body.front #content-right #block-boxes-scholar_publications_recent h3.title,
 body.front #content-top #block-boxes-scholar_publications_recent h3.title,
 body.front #content-bottom #block-boxes-scholar_publications_recent h3.title
-{background:url('images/publicIcon.png') no-repeat;padding-left:28px;}
+{background:url('images/publicIcon.png') no-repeat; padding-left:28px; margin-bottom:8px;}
  
  
 body.front #content-left #block-views-scholar_events_upcoming-block_1 h3.title,
 body.front #content-right #block-views-scholar_events_upcoming-block_1 h3.title,
-body.front #content-top #bblock-views-scholar_events_upcoming-block_1 h3.title,
+body.front #content-top #block-views-scholar_events_upcoming-block_1 h3.title,
 body.front #content-bottom #block-views-scholar_events_upcoming-block_1 h3.title
-{background:url('images/calendarIcon.png') no-repeat;padding-left:28px;}
+{background:url('images/calendarIcon.png') no-repeat;padding-left:28px;margin-bottom:8px;}
 
 
 body.front #content-left #block-boxes-scholar_presentations_recent h3.title,
 body.front #content-right #block-boxes-scholar_presentations_recent h3.title,
 body.front #content-top #block-boxes-scholar_presentations_recent h3.title,
 body.front #content-bottom #block-boxes-scholar_presentations_recent h3.title
-{background:url('images/presentationsIcon.png') no-repeat;padding-left:28px;}
+{background:url('images/presentationsIcon.png') no-repeat;padding-left:28px;margin-bottom:8px;}
+
+body.front #content-left #block-boxes-scholar_announcements_latest h3.title,
+body.front #content-right #block-boxes-scholar_announcements_latest h3.title,
+body.front #content-top #block-boxes-scholar_announcements_latest h3.title,
+body.front #content-bottom #block-boxes-scholar_announcements_latest h3.title
+{background:url('images/announcementIcon.png') no-repeat;padding-left:28px;margin-bottom:8px;}
+
+
 
 
 body.front #content-left ul li.views-row,
@@ -157,19 +165,8 @@ background: #fff;
   }
 
 #header-left {
-  width: 160px;
+
   height:125px;
-  }
-
-#sidebar-first,
-#header-left {
-  left: -210px;
-  }
-
-#content-area .hg-container,
-#header .hg-container {
-  padding-left: 194px;
-  padding-right: 250px;
   }
 
 #content-area {margin-top:18px;}
@@ -225,7 +222,7 @@ padding-left: 280px;
 -webkit-border-radius:5px;
 border-radius: 5px;
 border: 1px solid #CCCCCC;
-padding: 0 8px 8px 4px;
+padding: 0 4px 8px 4px;
 width: 100%;
 }
 
@@ -239,16 +236,13 @@ width: 100%;
 	border:none;
 }
 
-/*#sidebar-first .block {
-width: 160px;
-}*/
 
 body.navbar-off #sidebar-first {
 padding-top: 0;
   }
 
 #sidebar-first #block-vsite_menus-0 {
-margin: 8px -15px 0 18px;
+margin: 8px -15px 0 0;
 padding: 0 0 30px 0;
   }
   
@@ -350,29 +344,47 @@ padding:0px;
   text-shadow: #222 0px 1px 0px;
 }
 
-  #sidebar-first #block-vsite_menus-0 .content ul.menu {padding-left: 5px;}
-  #sidebar-first #block-vsite_menus-0 .content ul.menu li {list-style-image:url('images/mainNavSidebarIcon.gif');}
-  #sidebar-first #block-vsite_menus-0 .content ul.menu li  a {font-weight:bold;padding-left:5px;font-size: 14px;
- line-height: 40px;
-text-shadow: 0 2px 0 #eee;
-    text-transform: uppercase;
-    color: #2a547e; }
-  
+ #sidebar-first #block-vsite_menus-0 .content  ul.menu,
+  #sidebar-second #block-vsite_menus-0 .content  ul.menu {
+	width: 100%;
+}
 
-#sidebar-second #block-vsite_menus-0 .content ul.menu {margin: 0 0 0 17px; }
-  #sidebar-second #block-vsite_menus-0 .content ul.menu li {list-style-image:url('images/mainNavSidebarIcon.gif');}
-  #sidebar-second #block-vsite_menus-0 .content ul.menu li  a {font-weight:bold;padding-left:5px;font-size: 14px;
- line-height: 40px;
-text-shadow: 0 2px 0 #eee;
-    text-transform: uppercase;
-   color: #2a547e; }
-  
-  
-  #sidebar-first #block-vsite_menus-0 .content ul.menu li a:hover,  #sidebar-second #block-vsite_menus-0 .content ul.menu li a:hover  {
-    	text-decoration: underline;
-    	text-shadow: none;
-    }
+#sidebar-second #block-vsite_menus-0 .content  ul.menu li {
+  list-style: none;
+  background-color: #efefef;
+  border-left: dotted 1px #bababa;
+  text-align: left;
+  margin: 0;
+}
 
+#sidebar-first #block-vsite_menus-0 .content  ul.menu li {
+  list-style: none;
+  background-color: #efefef;
+  border-right: dotted 1px #bababa;
+  text-align: left;
+  margin: 0;
+	}
+
+#sidebar-first #block-vsite_menus-0 .content  ul.menu li a,
+#sidebar-second #block-vsite_menus-0 .content  ul.menu li a {
+	font-size:14px;
+  display: block;
+  text-decoration: none;
+  padding: 8px;
+  border-bottom: 1px solid #bababa;
+  color: #2a548d;
+  }
+  
+#sidebar-first #block-vsite_menus-0 .content  ul.menu li.last a,
+#sidebar-second #block-vsite_menus-0 .content  ul.menu li.last a {
+  border-bottom: none;
+  }  
+
+#sidebar-first #block-vsite_menus-0 .content a:link, #sidebar-second #block-vsite_menus-0 .content a:link { color: #2a548d; }
+#sidebar-first #block-vsite_menus-0 .content a:hover, #sidebar-second #block-vsite_menus-0 .content a:hover { color: #2a548d; } 
+#sidebar-first #block-vsite_menus-0 .content a:hover, #sidebar-second #block-vsite_menus-0 .content a:hover { background-color: #fff; }
+
+  
 /**** FOOTER ****/
 
 #footer .wrap {
@@ -396,7 +408,7 @@ text-shadow: 0 2px 0 #eee;
  font-size:11px;
 }
  
- div.litecal .litecal-header, div.litecal .litecal-row {
+ div.litecal .litecal-header {
     height: 20px;
     line-height: 19px;
     position: relative;

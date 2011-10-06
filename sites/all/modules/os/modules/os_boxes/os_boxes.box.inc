@@ -15,7 +15,6 @@ function os_boxes_default_box() {
   $box->description = 'Shield';
   $box->options = array(
     'visibility' => 'feature',
-    'shield' => 'sites/localhost.scholar/files/vsite_shields/harvard_shield-white.png',
   );
 
   $export['shield_default'] = $box;

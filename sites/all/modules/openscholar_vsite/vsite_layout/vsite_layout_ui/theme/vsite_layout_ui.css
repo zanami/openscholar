@@ -110,7 +110,6 @@ dd.scholarlayout-item {
 
 /** WIDGET ICONS **/
 
-	
 #scholarlayout-top-widgets dd.scholarlayout-item, .ui-sortable-helper {
   background: url('images/widget-bg.png') no-repeat scroll 50% 10px transparent;
 	color: #444545;
@@ -184,8 +183,7 @@ dd.content.post.ui-sortable-helper {
     
   
    #scholarlayout-top-widgets dd.content.book,
-   .content.book.ui-sortable-helper
-    {
+   .content.book.ui-sortable-helper {
  background: url('images/widgetIcons/book.png') no-repeat scroll 50% 10px transparent;
 }
   
@@ -199,12 +197,11 @@ dd.content.post.ui-sortable-helper {
 .content.features.ui-sortable-helper  {
  background: url('images/widgetIcons/features.png') no-repeat scroll 50% 10px transparent;
 }
-    
-  
+   
  #scholarlayout-top-widgets #boxes-image_gallery_recent_images,
  #scholarlayout-top-widgets #views-scholar_image_gallery-block_1,
  #boxes-image_gallery_recent_images.ui-sortable-helper,
- #views-scholar_image_gallery-block_1.ui-sortable-helper, {
+ #views-scholar_image_gallery-block_1.ui-sortable-helper {
  background: url('images/widgetIcons/camera.png') no-repeat scroll 50% 10px transparent;
 }
   
@@ -526,7 +523,7 @@ background: #c6cccc;
 #websiteLabelTab { 
 	left: 749px;
     position: relative;
-    top: 181px;
+    top: 184px;
     width:99px;
     height:16px;
     }

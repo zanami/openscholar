@@ -22,26 +22,30 @@ class os_boxes_modal_siteinfo extends os_boxes_modalframe {
 
   public function form_alter(&$form, &$form_state) {
     if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'vsite_node_form') {
-      parent::form_alter($form, $form_state);
 
       // hide unnecessary fields
-      $whitelist = array('title', 'og_description', 'field_vsite_address', 'taxonomy');
+      $whitelist = array('title', 'og_description', 'field_vsite_address', 'taxonomy', 'buttons');
+      module_load_include('inc', 'spaces_og', 'spaces_og.pages');
       foreach (element_children($form) as $child) {
         if ($form[$child]['#type'] != 'value' && $form[$child]['#type'] != 'hidden') {
           if (!in_array($child, $whitelist)) {
-            $form[$child]['#type'] = 'value';
+            _spaces_og_make_hidden($form[$child]);
           }
         }
       }
+      $form['spaces_preset']['#type'] = 'value';
 
-      $form['buttons']['#type'] = 'markup';
-      $form['buttons']['preview']['#access'] = false;
-      $form['buttons']['delete']['#access'] = false;
-      $form['buttons']['preview_changes']['#access'] = false;
+      if (isset($form['buttons'])) {
+        $form['buttons']['#type'] = 'markup';
+        $form['buttons']['preview']['#access'] = false;
+        $form['buttons']['delete']['#access'] = false;
+        $form['buttons']['preview_changes']['#access'] = false;
+      }
+      parent::form_alter($form, $form_state);
     }
   }
 
   static public function submit($form, $form_state) {
-
+    // empty on purpose
   }
 }

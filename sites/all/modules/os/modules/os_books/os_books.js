@@ -6,26 +6,32 @@
 	
 	Drupal.behaviors.os_book_linkage = function() {
 		if (!$('body.node-type-book').length) return;
-		var pages = $('.book-page p');
-		display = $('#content p').not(pages);
+		var pages = $('.book-page');
+		display = $('#content p').not('.book-page p').parent();
 		var blocks = $().not('*');
 		perma = $('#book-permalink');
-		title = $('#content-main .title');
+		header = $('#content-main .title');
 		
 		pages.each(function(index, elem){
 			// get the nid of the content
-			var nid = parseInt(elem.parentNode.id.replace('book-node-',''));
+			var nid = parseInt(elem.id.replace('book-node-',''));
 			
 			// save it to the content object
-			var title = $(elem).prev().html();
-			content[nid] = {title: title, content: elem.innerHTML};
-			
-			// add nid as attribute of links with same title
-			$('.block a:contains("'+title+'")').each(function (index, elem) {
-				elem.setAttribute('nid', nid);
-				var parents = $(elem).parents('div.block');
-				blocks.add(parents);
-			});
+			if (typeof content[nid] == 'undefined') {
+				var $elem = $(elem),
+					title = $elem.find('h1:first').hide().html();
+				content[nid] = {title: title, content: $elem.html()};
+				
+				// add nid as attribute of links with same title
+				$('.block a:contains("'+title+'")').each(function (index, elem) {
+					elem.setAttribute('nid', nid);
+					var parents = $(elem).parents('div.block');
+					blocks.add(parents);
+				});
+			}
+			else {
+				content[nid].content += $(elem).html();
+			}
 		});
 		
 		// attach click handler to blocks
@@ -36,7 +42,7 @@
 		var nid = e.target.getAttribute('nid');
 		if (content[nid]) {
 			display.hide().html(content[nid].content).fadeIn();
-			title.html(content[nid].title);
+			header.html(content[nid].title);
 			perma.attr('href', e.target.getAttribute('href'));
 			e.preventDefault();
 		}
