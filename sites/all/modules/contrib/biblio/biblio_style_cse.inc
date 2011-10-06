@@ -58,7 +58,7 @@ function biblio_style_cse($node, $base = 'biblio', $inline = false) {
       $authors .= (empty($authors)) ? '' : ', ';
       $authors .= (variable_get('biblio_author_links', 1)) ?  theme('biblio_author_link', $author) : $author['name'];
     }
-    $authors .= ' (Eds.)';
+    $authors .= count($node->biblio_contributors[2])>1?' (Eds.)':' (Ed.)';
     $editors_as_authors = true;
   }
   //if (empty($authors)) $authors = '[' . t('Anonymous') . ']';  // use anonymous if we still have nothing.
@@ -80,7 +80,7 @@ function biblio_style_cse($node, $base = 'biblio', $inline = false) {
       $output .= (!empty ($node->biblio_secondary_title)) ? check_plain($node->biblio_secondary_title) . '. ' : '';
       $output .= (!empty ($node->biblio_volume))          ? check_plain($node->biblio_volume) : '';
       $output .= (!empty ($node->biblio_issue))           ? '(' . check_plain($node->biblio_issue) . ')' : '';
-      $output .= (!empty ($node->biblio_contributors[2]) && !$editors_as_authors) ? '(' . theme('biblio_authors', $node->biblio_contributors[2], 'cse', 2, $inline) . ', Ed.).' : "";
+      $output .= (!empty ($node->biblio_contributors[2]) && !$editors_as_authors) ? '(' . theme('biblio_authors', $node->biblio_contributors[2], 'cse', 2, $inline) . ', '.(count($node->biblio_contributors[2])>1?' Eds.':' Ed.').').' : "";
       $output .= (!empty ($node->biblio_pages))           ? ':' . str_replace(" ", "", check_plain($node->biblio_pages)) . '.' : '';
       break; // generic
   }
