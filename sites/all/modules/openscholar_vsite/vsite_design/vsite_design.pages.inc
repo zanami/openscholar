@@ -108,7 +108,18 @@ function vsite_design_theme_picker_form_validate(&$form, &$form_state) {
 function vsite_design_theme_picker_form_submit(&$form, &$form_state) {
   // save the theme selection into og_theme
 
-  $space = spaces_get_space();
-  $space->group->og_theme = $form_state['values']['vsite_design_maintheme'];
-  og_update_group($space->group);
+	$op = isset($form_state['values']['op']) ? $form_state['values']['op'] : '';
+	
+	$space = spaces_get_space();
+	if(!$space) return;
+	
+	if($op!= t('Reset to defaults')){
+	  $space->group->og_theme = $form_state['values']['vsite_design_maintheme'];
+	  og_update_group($space->group);
+	}else{
+		//Reset to defaults
+		$preset_val = $space->controllers->variable->get('vsite_design_maintheme','preset');
+	  $space->group->og_theme = $preset_val;
+    og_update_group($space->group);
+	}
 }
