@@ -128,9 +128,9 @@ class os_content_cache_context_reaction_block extends vsite_context_reaction_blo
   	    $box = boxes_load($block->delta);
         if($box && method_exists($box,'cache_info')){
         	$a_config = $box->cache_info();
-        	if(is_array($a_config) && $a_config['type'] != BLOCK_CACHE_CONTENT_CACHE){
+        	if(is_array($a_config) && $a_config['type'] == BLOCK_CACHE_CONTENT_CACHE){
         	  //Set Defaults
-        	  $a_cache += array(
+        	  $a_config += array(
         	    'min_lifespan' => $this->cache_default_min_lifespan,
         	    'max_lifespan' => $this->cache_default_max_lifespan,
         	    'granularity' => array(),

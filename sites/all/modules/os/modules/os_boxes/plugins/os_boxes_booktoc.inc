@@ -50,6 +50,20 @@ class os_boxes_booktoc extends os_boxes_default {
 
     return $block;
   }
+  
+  /**
+   * Return the cache parameters for this box
+   */
+  public function cache_info(){
+
+    //Clear when book,class,class_material nodes are saved
+    $cache_key = array(
+      'os_og' => array('current' => 'current'),
+      'node' => array('book' => 'book', 'class' => 'class', 'class_material' => 'class_material'),
+    );
+
+    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
+  }
 }
 
 /**
@@ -98,13 +112,8 @@ class os_boxes_curr_toc extends os_boxes_booktoc {
    */
   public function cache_info(){
 
-    //Clear when book,class,class_material nodes are saved
-    $cache_key = array(
-      'os_og' => array('current' => 'current'),
-      'node' => array('book' => 'book', 'class' => 'class', 'class_material' => 'class_material'),
-    );
-
-    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
+    //Current TOC changes from page to page so don't cache
+    return array();
   }
 
 }
