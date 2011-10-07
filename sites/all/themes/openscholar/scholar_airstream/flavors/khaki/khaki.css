@@ -24,8 +24,8 @@ a:hover {
 #navbar a:visited,
 #sidebar-first a,
 #sidebar-first a:visited,
-#sidebar-first #block-vsite_menus-0 li a,
-#sidebar-first #block-vsite_menus-0 li a:visited {
+#sidebar-first #block-vsite_menus-features li a,
+#sidebar-first #block-vsite_menus-features li a:visited {
   color: #282828;
   }
 
@@ -45,7 +45,7 @@ a:hover {
   color: #222;
   }
 
-#sidebar-first #block-vsite_menus-0 li a {
+#sidebar-first #block-vsite_menus-features li a {
   border-color: #A08723;
   }
 

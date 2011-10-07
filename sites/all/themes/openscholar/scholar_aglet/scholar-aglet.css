@@ -256,12 +256,12 @@ body.two-sidebars #sidebar-first {
   padding-left: 12px;
   }
 
-#header #block-vsite_menus-1 {
+#header #block-vsite_menus-scholar_secondary_menu {
   width: 251px;
   float:right;
   }
 
-#header #block-vsite_menus-1 ul li {
+#header #block-vsite_menus-scholar_secondary_menu ul li {
   list-style: none;
   border-left: 1px solid #000;
   padding-left: 11px;
@@ -271,13 +271,13 @@ body.two-sidebars #sidebar-first {
   line-height: 1.3em;
   }
 
-#header #block-vsite_menus-1 li a,
-#header #block-vsite_menus-1 li a:visited{
+#header #block-vsite_menus-scholar_secondary_menu li a,
+#header #block-vsite_menus-scholar_secondary_menu li a:visited{
   color: #000;
   font-size: 12px;
   }
 
-#header #block-vsite_menus-1 li a:hover {
+#header #block-vsite_menus-scholar_secondary_menu li a:hover {
   text-decoration:underline;
   }
 

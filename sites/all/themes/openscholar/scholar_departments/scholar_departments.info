@@ -12,7 +12,7 @@ stylesheets[all][]   = scholar-departments.css
 conditional-stylesheets[if lte IE 7][all][]   = scholar-departments-ie7.css
 conditional-stylesheets[if IE][all][]          = scholar-departments-ie.css
 
-scholar[widgets][vsite_widgets-3] = header_right
-scholar[widgets][vsite_widgets-0] = false
+scholar[widgets][vsite-site_search] = header_right
+scholar[widgets][boxes-site_logo] = false
 scholar[theme_type]   = "scholar"
 scholar[theme_access] = "private"

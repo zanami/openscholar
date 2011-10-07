@@ -156,7 +156,7 @@ body.navbar-off #sidebar-first {
   padding-top: 0;
   }
 
-#sidebar-first #block-vsite_menus-0 {
+#sidebar-first #block-vsite_menus-features {
   background: #edecdd;
   margin: 0 -15px 0 -27px;
   padding: 0 0 30px 0;
@@ -228,7 +228,7 @@ body.one-sidebar #sidebar-first {
   }
 
 #navbar li a,
-#sidebar-first #block-vsite_menus-0 li a {
+#sidebar-first #block-vsite_menus-features li a {
   line-height: 25px;
   text-transform:uppercase;
   color: #544f4f;
@@ -237,7 +237,7 @@ body.one-sidebar #sidebar-first {
   padding: 6px 15px 5px 15px;
   }
 
-#sidebar-first #block-vsite_menus-0 li a {
+#sidebar-first #block-vsite_menus-features li a {
   padding-left: 30px;
   }
 

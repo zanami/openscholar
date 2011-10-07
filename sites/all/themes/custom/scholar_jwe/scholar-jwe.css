@@ -64,14 +64,14 @@ strong {
 
 #sidebar-second h3.title,
 #sidebar-first h3.title,
-#sidebar-first #block-vsite_menus-0 li a,
+#sidebar-first #block-vsite_menus-features li a,
 #header-right li {
 	font-family:'Arvo', arial, serif;
 	}
 
 #sidebar-second h3.title,
 #sidebar-first h3.title,
-#sidebar-first #block-vsite_menus-0 li a {
+#sidebar-first #block-vsite_menus-features li a {
 	font-weight:bold;
 	padding-bottom:8px;
 	font-size:1.3em;
@@ -261,8 +261,8 @@ p.copy {
   color: #fff;
   }
 
-#sidebar-first #block-vsite_menus-0 li a,
-#sidebar-first #block-vsite_menus-0 li a:visited {
+#sidebar-first #block-vsite_menus-features li a,
+#sidebar-first #block-vsite_menus-features li a:visited {
 	color: #7e9f06;
 	border: none;
 	display:block;
@@ -270,7 +270,7 @@ p.copy {
 	padding-top: 2px;
 	}
 
-#sidebar-first #block-vsite_menus-0 li a:hover {
+#sidebar-first #block-vsite_menus-features li a:hover {
 	text-decoration:none;
 	background: #485616;
 	color:#fff;

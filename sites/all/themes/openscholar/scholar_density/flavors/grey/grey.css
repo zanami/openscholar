@@ -22,11 +22,11 @@ body {
   background: rgba(226, 226, 226, 0.76);
   }
 
-#block-vsite_menus-0 ul.menu li a:hover {
+#block-vsite_menus-features ul.menu li a:hover {
   background: #f8fad1;
   }
 
-#block-vsite_menus-0 ul.menu li.active-trail {
+#block-vsite_menus-features ul.menu li.active-trail {
   background: rgba(65, 65, 65, 0.86);
   }
 

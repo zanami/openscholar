@@ -10,7 +10,7 @@ base theme = scholar_base
 stylesheets[all][]   = scholar-airstream.css
 conditional-stylesheets[if lte IE 7][all][] = scholar-airstream-ie.css
 
-scholar[widgets][vsite_widgets-3] = left
-scholar[widgets][vsite_menus-0] = left
+scholar[widgets][vsite-site_search] = left
+scholar[widgets][vsite_menus-features] = left
 scholar[theme_type]   = "scholar"
 scholar[theme_access] = "public"

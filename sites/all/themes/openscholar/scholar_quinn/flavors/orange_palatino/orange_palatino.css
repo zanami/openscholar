@@ -46,8 +46,8 @@ a:visited {
 }
 
 
- #sidebar-first #block-vsite_menus-0 .content ul.menu li  a {font-size:1.2em;}
-  #sidebar-second #block-vsite_menus-0 .content ul.menu li  a {font-size:1.2em;}
+ #sidebar-first #block-vsite_menus-features .content ul.menu li  a {font-size:1.2em;}
+  #sidebar-second #block-vsite_menus-features .content ul.menu li  a {font-size:1.2em;}
 
 #sidebar-first a, #sidebar-first a:visited, #sidebar-second a, #sidebar-second a:visited {
 	font-size:1.1em;

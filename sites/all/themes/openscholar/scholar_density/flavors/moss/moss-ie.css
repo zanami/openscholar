@@ -19,7 +19,7 @@ background: transparent;
       zoom: 1;
 }
 
-#block-vsite_menus-0 ul.menu li.active-trail {
+#block-vsite_menus-features ul.menu li.active-trail {
 background: transparent;
 -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#DB3F3C0E,endColorstr=#DB3F3C0E)"; /* IE8 */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#DB3F3C0E,endColorstr=#DB3F3C0E);   /* IE6 & 7 */

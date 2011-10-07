@@ -245,7 +245,8 @@ ul.grid {
   background:#3b484d;
   }
 
-#navbar #block-vsite_menus-0 {
+#navbar #block-vsite_menus-0,
+#navbar #block-vsite_menus-features {
   padding-right: 30px;
   float: right;
   }

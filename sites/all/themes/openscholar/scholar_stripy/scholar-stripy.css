@@ -47,12 +47,12 @@ h3,
 .title a,
 #top a,
 .views-field-title a,
-#block-vsite_menus-0 a {
+#block-vsite_menus-features a {
   font-style: normal;
   text-decoration: none;
   }
 
-#block-vsite_menus-0, h3.title {
+#block-vsite_menus-features, h3.title {
   font-size: 1.2em;
   }
 

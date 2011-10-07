@@ -13,7 +13,7 @@ background: transparent;
 }
 
 
-#block-vsite_menus-0 ul.menu li.active-trail {
+#block-vsite_menus-features ul.menu li.active-trail {
 background: transparent;
 -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#DB414141,endColorstr=#DB414141)"; /* IE8 */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#DB414141,endColorstr=#DB414141);   /* IE6 & 7 */

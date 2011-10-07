@@ -108,6 +108,8 @@ function os_update_6003(&$sandbox) {
   $a_changes = array(
     'vsite_widgets-3' => 'vsite-site_search',
     'vsite_widgets-5' => 'vsite-google_translate',
+    'vsite_menus-0' => 'vsite_menus-features',
+    'vsite_menus-1' => 'vsite_menus-scholar_secondary_menu',
   );
 
   // Multi-part update.

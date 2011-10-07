@@ -349,10 +349,14 @@ function vsite_menus_block($op = 'list', $delta = 0, $edit = array()) {
     return $blocks;
   }
   elseif ($op == 'view') {
-  	$menu_keys = array_keys($site_menus);
-    if($menu_keys[$delta]) {
+  	if(is_numeric($delta)){
+  	  $menu_keys = array_keys($site_menus);
+  	  if(isset($menu_keys[$delta])) $delta = $menu_keys[$delta];
+  	}//Accept both the old indexes and the menu names
+  	
+    if(isset($site_menus[$delta])) {
       $block['subject'] = t(''); // intentionally left empty for now.
-      $block['content'] = vsite_menus_get_menu_tree( $menu_keys[$delta] );
+      $block['content'] = vsite_menus_get_menu_tree( $delta );
       return $block ;
     }
   }
@@ -365,16 +369,16 @@ function vsite_menus_block($op = 'list', $delta = 0, $edit = array()) {
 function vsite_menus_vsite_widgets() {
 
   return array(
-    'vsite_menus-0' => array(
+    'vsite_menus-features' => array(
       'module' => 'vsite_menus',
-      'delta' => '0',
+      'delta' => 'features',
       'weight' => 20,
       'region' => 'navbar',
       'label' => 'Main menu',
     ),
-    'vsite_menus-1' => array(
+    'vsite_menus-scholar_secondary_menu' => array(
       'module' => 'vsite_menus',
-      'delta' => '1',
+      'delta' => 'scholar_secondary_menu',
       'weight' => 20,
       'region' => 'left',
       'label' => 'Secondary menu',

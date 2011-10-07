@@ -167,22 +167,22 @@ body.navbar #sidebar-first {
   padding: 10px;
   }
 
-#sidebar-first #block-vsite_menus-0 {
+#sidebar-first #block-vsite_menus-features {
   padding: 0 0 10px 0;
   }
 
-#sidebar-first #block-vsite_menus-0 li {
+#sidebar-first #block-vsite_menus-features li {
   list-style: none;
   margin: 0 1px;
   }
 
-#sidebar-first #block-vsite_menus-0 a,
-#sidebar-first #block-vsite_menus-0 a:visited {
+#sidebar-first #block-vsite_menus-features a,
+#sidebar-first #block-vsite_menus-features a:visited {
     line-height:17px;
     padding:14px 9px;
     }
 
-#sidebar-first #block-vsite_menus-0 li a {
+#sidebar-first #block-vsite_menus-features li a {
     border-bottom:1px solid #D8D6D6;
     }
 
