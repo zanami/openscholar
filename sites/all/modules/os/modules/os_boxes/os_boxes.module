@@ -676,3 +676,16 @@ function os_boxes_box_access($block,$user = false){
 
 	return true;
 }
+
+/**
+ * Alter the default public blocks, do not add factory blocks to the default layouts
+ *
+ * @param $a_widgets
+ */
+function os_boxes_vsite_default_blocks_alter(&$default_blocks) {
+
+  foreach ($default_blocks as $bid => $block) {
+    //Do not include admin/factory boxes
+    if($block['factory']) unset($default_blocks[$bid]);
+  }
+}

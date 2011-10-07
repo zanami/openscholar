@@ -142,7 +142,7 @@ class os_content_cache_context_reaction_block extends vsite_context_reaction_blo
   	  break;
   		default:
   			static $vsite_widgets;
-  			if(!isset($vsite_widgets)) $vsite_widgets = module_invoke_all('vsite_widgets');
+  			if(!isset($vsite_widgets)) $vsite_widgets = vsite_layout_get_widgets();
   			
   			$bid = isset($block->bid)? $block->bid:$block->module."-".$block->delta;
   			$block_info = (object) ((array_key_exists($bid ,$vsite_widgets))? $vsite_widgets[$bid]:array());
