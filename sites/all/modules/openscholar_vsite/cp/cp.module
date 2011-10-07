@@ -414,10 +414,10 @@ function cp_preprocess_page(&$vars){
 
       if ($vsite->access_admin()) {
         $user_links[] = l('Control Panel', 'cp/build/features', array('attributes' => array('class' => 'wrench')));
-      }
 
-      $new_count = vsite_news_get_new_activity_count();
-      $user_links[] = l($new_count, 'cp/news', $new_count?array('attributes' => array('class' => 'unread')):array());
+        $new_count = vsite_news_get_new_activity_count();
+        $user_links[] = l($new_count, 'cp/news', $new_count?array('attributes' => array('class' => 'unread')):array());
+      }
 
       $user_links[] = array(
         'data' => t('Hello <strong>!username</strong>', array(
