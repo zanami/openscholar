@@ -480,7 +480,7 @@ function os_boxes_vsite_admin_link($type, $object) {
   if ($type != 'block') return $links;
 
 
-  if ($object->module == 'boxes' && ($box = boxes_load($object->delta))) {
+  if ($object->module == 'boxes' && ($box = boxes_load($object->delta)) && spaces_access_admin()) {
     $links[] = array(
       'title' => 'Configure',
       'href' => $object->block_config_path.'/front',
