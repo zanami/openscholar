@@ -457,6 +457,8 @@ function os_boxes_menu() {
  */
 function os_boxes_cp_layout_configurable($delta){
 
+	if(!user_access('cp_access_cp')) return false;
+	
   if ($delta && strpos($delta, 'boxes_add__') !== 0) {
   	//Box instance
     if ($box = boxes_load($delta)) {
