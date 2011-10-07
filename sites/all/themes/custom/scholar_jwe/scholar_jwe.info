@@ -10,5 +10,5 @@ conditional-stylesheets[if lte IE 7][all][] = scholar-jwe-ie.css
 scripts[] = scholar_jwe.js
 
 os[widgets][boxes-site_logo] = false
-os[theme_type]   = "scholar"
+os[theme_type]   = "vsite"
 os[theme_access] = "private"

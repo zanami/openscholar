@@ -151,7 +151,7 @@ function theme_vsite_login_link($link_text = "Login", $a_attributes = array()){
  * @see _cp_is_scholar_theme
  * @todo private themes ?!
  */
-function vsite_vsite_themes($theme_type = "scholar"){
+function vsite_vsite_themes($theme_type = "vsite"){
   $allthemes = list_themes();
   _vsite_get_theme_type($theme_type);
 
@@ -194,7 +194,7 @@ function _vsite_is_vsite_theme($atheme){
  * Checks to make sure selected theme is in the list of public themes
  * @return the machine name of the theme
  */
-function _vsite_get_random_theme($theme_type = "scholar"){
+function _vsite_get_random_theme($theme_type = "vsite"){
   global $conf;
   $themes = array_intersect(array_keys(vsite_vsite_themes($theme_type)), $conf['openscholar_selected_themes']);
   if(count($themes)) {

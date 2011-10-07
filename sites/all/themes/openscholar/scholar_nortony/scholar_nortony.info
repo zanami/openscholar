@@ -9,5 +9,5 @@ stylesheets[all][]   = scholar-nortony.css
 conditional-stylesheets[if lte IE 7][all][] = scholar-nortony-ie.css
 
 os[widgets][boxes-site_logo] = false
-os[theme_type]   = "scholar"
+os[theme_type]   = "vsite"
 os[theme_access] = "public"

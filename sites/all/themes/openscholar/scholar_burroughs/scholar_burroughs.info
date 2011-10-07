@@ -12,5 +12,5 @@ os[widgets][boxes-site_logo] = false
 os[widgets][boxes-site_info] = header_main
 os[widgets][boxes-shield_default] = header_right
 os[widgets][vsite-site_search] = false
-os[theme_type]   = "scholar"
+os[theme_type]   = "vsite"
 os[theme_access] = "public"

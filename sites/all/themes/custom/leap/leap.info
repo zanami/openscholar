@@ -10,5 +10,5 @@ stylesheets[all][]   = leap.css
 
 ;os[widgets][vsite-site_search] = left
 os[widgets][vsite_menus-features] = left
-os[theme_type]   = "scholar"
+os[theme_type]   = "vsite"
 os[theme_access] = "public"

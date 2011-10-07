@@ -875,10 +875,11 @@ function vsite_system_info_alter(&$info, $file){
   //Maintain backwards compatibility
   if (!array_key_exists('os', $info) && array_key_exists('scholar', $info)){
   	$info['os'] = $info['scholar'];
-  }
+  	if($info['os']['theme_type'] == "scholar") $info['os']['theme_type'] = "vsite";
+  }//Keep theme type and namespace for legacy themes
 
   //If this is a scholar theme then add the correct regions
-  if (array_key_exists('os', $info) && array_key_exists('theme_type', $info['os']) && $info['os']['theme_type'] == 'scholar') {
+  if (array_key_exists('os', $info) && array_key_exists('theme_type', $info['os']) && $info['os']['theme_type'] == 'vsite') {
     if (! is_array($info['regions']))
       $info['regions'] = array();
 

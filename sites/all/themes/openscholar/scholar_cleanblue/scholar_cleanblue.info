@@ -12,5 +12,5 @@ stylesheets[all][]   = scholar-cleanblue.css
 conditional-stylesheets[if lte IE 7][all][]   = scholar-cleanblue-ie7.css
 conditional-stylesheets[if IE][all][]         = scholar-cleanblue-ie.css
 
-os[theme_type]   = "scholar"
+os[theme_type]   = "vsite"
 os[theme_access] = "public"
