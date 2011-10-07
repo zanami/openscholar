@@ -241,7 +241,7 @@ function vsite_news_views_default_views() {
   ));
   $handler->override_option('path', 'cp/news/activity/followers');
   $handler->override_option('menu', array(
-    'type' => 'default tab',
+    'type' => 'none',
     'title' => 'Colleagues Activity',
     'description' => '',
     'weight' => '0',
@@ -278,7 +278,7 @@ function vsite_news_views_default_views() {
   $handler->override_option('empty_format', '1');
   $handler->override_option('path', 'cp/news/activity/me');
   $handler->override_option('menu', array(
-    'type' => 'tab',
+    'type' => 'none',
     'title' => 'My Activity',
     'description' => '',
     'weight' => '1',
@@ -315,7 +315,7 @@ function vsite_news_views_default_views() {
   $handler->override_option('empty_format', '1');
   $handler->override_option('path', 'cp/news/activity/all');
   $handler->override_option('menu', array(
-    'type' => 'tab',
+    'type' => 'none',
     'title' => 'All Activity',
     'description' => '',
     'weight' => '2',
@@ -785,7 +785,7 @@ function vsite_news_views_default_views() {
   ));
   $handler->override_option('path', 'cp/news/colleagues');
   $handler->override_option('menu', array(
-    'type' => 'tab',
+    'type' => 'none',
     'title' => 'Colleagues',
     'description' => 'Colleagues',
     'weight' => '0',
@@ -841,7 +841,7 @@ function vsite_news_views_default_views() {
   ));
   $handler->override_option('path', 'cp/news/colleagues/friends');
   $handler->override_option('menu', array(
-    'type' => 'default tab',
+    'type' => 'none',
     'title' => 'My friends',
     'description' => 'Colleagues I follow',
     'weight' => '0',
@@ -857,7 +857,7 @@ function vsite_news_views_default_views() {
   $handler = $view->new_display('page', 'All', 'page_3');
   $handler->override_option('path', 'cp/news/colleagues/all');
   $handler->override_option('menu', array(
-    'type' => 'tab',
+    'type' => 'none',
     'title' => 'All',
     'description' => 'All colleagues',
     'weight' => '1',
