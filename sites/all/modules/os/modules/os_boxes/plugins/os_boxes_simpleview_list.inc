@@ -6,11 +6,6 @@
  */
 
 class os_boxes_simpleview_list extends spaces_simpleviews_post_list {
-
-	/*
-   * Define the default cache type for os_boxes
-   */
-  public $cache_type = BLOCK_CACHE_CONTENT_CACHE;
   
   /*
    * Define the default region for this box.
@@ -51,13 +46,12 @@ class os_boxes_simpleview_list extends spaces_simpleviews_post_list {
    */
   public function cache_info(){
     
-    //Clear when bio nodes are saved
+    //Clear when og is saved
     $cache_key = array(
       'os_og' => array('current' => 'current'),
-      'node' => array('biblio' => 'biblio'),
     );
     
-    //Add based on simpleview filters
+    //Restrict based on simpleview filters for node clears
     $filter = $this->options['filter'];
     if (strstr($filter, 'node') !== FALSE && $type = end(explode(':', $filter))) {
       $cache_key['node'] = array($type => $type);

@@ -71,6 +71,7 @@ class os_boxes_twitterfeed extends os_boxes_default {
    */
   public function cache_info(){
     
+  	//Clear any time the site is saved
     $cache_key = array(
       'os_og' => array('current' => 'current'),
     );

@@ -98,7 +98,7 @@ class os_boxes_curr_toc extends os_boxes_booktoc {
    */
   public function cache_info(){
 
-    //Clear when bio nodes are saved
+    //Clear when book,class,class_material nodes are saved
     $cache_key = array(
       'os_og' => array('current' => 'current'),
       'node' => array('book' => 'book', 'class' => 'class', 'class_material' => 'class_material'),

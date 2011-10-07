@@ -69,7 +69,7 @@ class os_boxes_pub_ca extends os_boxes_default {
    */
   public function cache_info(){
 
-    //Clear when bio nodes are saved
+    //Clear when biblio nodes are saved
     $cache_key = array(
       'os_og' => array('current' => 'current'),
       'node' => array('biblio' => 'biblio'),

@@ -86,7 +86,7 @@ class os_boxes_gallery extends os_boxes_default {
    */
   public function cache_info(){
     
-    //Clear when bio nodes are saved
+    //Clear when image,gallery nodes are saved
     $cache_key = array(
       'os_og' => array('current' => 'current'),
       'node' => array('image' => 'image', 'gallery' => 'gallery'),
