@@ -11,8 +11,8 @@ stylesheets[all][]   = scholar-quinn.css
 conditional-stylesheets[if lte IE 8][all][] = scholar-quinn-ie.css
 conditional-stylesheets[if lte IE 7][all][] = scholar-quinn-ie7.css
 
-scholar[widgets][boxes-shield_default] = left
-scholar[widgets][vsite_menus-features] = left
-scholar[widgets][boxes-site_logo] = false
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "public"
+os[widgets][boxes-shield_default] = left
+os[widgets][vsite_menus-features] = left
+os[widgets][boxes-site_logo] = false
+os[theme_type]   = "scholar"
+os[theme_access] = "public"

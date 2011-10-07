@@ -3,8 +3,8 @@ name        = Stripy
 description = A clean fixed layout design - white background with a single orange stripe for the menu area.
 flavor_name = "Orange"
 plugins[vsite_design][flavor] = flavors
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "public"
+os[theme_type]   = "scholar"
+os[theme_access] = "public"
 
 screenshot = screenshot.png
 core       = 6.x

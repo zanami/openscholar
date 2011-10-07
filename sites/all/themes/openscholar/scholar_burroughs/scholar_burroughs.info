@@ -8,9 +8,9 @@ base theme = scholar_base
 stylesheets[all][]   = scholar-burroughs.css
 scripts[]            = scholar_burroughs.js
 
-scholar[widgets][boxes-site_logo] = false
-scholar[widgets][boxes-site_info] = header_main
-scholar[widgets][boxes-shield_default] = header_right
-scholar[widgets][vsite-site_search] = false
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "public"
+os[widgets][boxes-site_logo] = false
+os[widgets][boxes-site_info] = header_main
+os[widgets][boxes-shield_default] = header_right
+os[widgets][vsite-site_search] = false
+os[theme_type]   = "scholar"
+os[theme_access] = "public"

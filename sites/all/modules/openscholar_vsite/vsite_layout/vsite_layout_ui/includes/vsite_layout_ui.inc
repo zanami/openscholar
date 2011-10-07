@@ -27,9 +27,9 @@ function vsite_layout_ui_layout() {
 
   $space = vsite_get_vsite();
   $a_info = drupal_parse_info_file(drupal_get_path('theme', $space->group->og_theme) . "/" . $space->group->og_theme . ".info");
-  if (is_array($a_info) && array_key_exists('scholar', $a_info) && array_key_exists('cp_layout_css', $a_info['scholar'])) {
+  if (is_array($a_info) && array_key_exists('os', $a_info) && array_key_exists('cp_layout_css', $a_info['os'])) {
     //cp_layout_css
-    drupal_add_css(drupal_get_path('theme', $space->group->og_theme) . "/" . $a_info['scholar']['cp_layout_css']);
+    drupal_add_css(drupal_get_path('theme', $space->group->og_theme) . "/" . $a_info['os']['cp_layout_css']);
   }//Apply CSS for custom theme Layouts
 
   //Print the Form

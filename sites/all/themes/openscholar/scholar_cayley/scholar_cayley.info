@@ -9,6 +9,6 @@ stylesheets[all][]   = scholar-cayley.css
 conditional-stylesheets[if lt IE 9][all][] = scholar-cayley-ie.css
 conditional-stylesheets[if lte IE 7][all][] = scholar-cayley-ie.csss
 
-scholar[widgets][boxes-site_logo] = false
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "public"
+os[widgets][boxes-site_logo] = false
+os[theme_type]   = "scholar"
+os[theme_access] = "public"

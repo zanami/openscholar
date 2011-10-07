@@ -12,7 +12,7 @@ conditional-stylesheets[if IE][all][]         = gking-ie.css
 
 scripts[] = gking.js
 
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "private"
+os[theme_type]   = "scholar"
+os[theme_access] = "private"
 
-scholar[cp_layout_css] = cp-layout-map.css
+os[cp_layout_css] = cp-layout-map.css

@@ -8,9 +8,9 @@ base theme = scholar_base
 stylesheets[all][]   = scholar-collector.css
 conditional-stylesheets[if lte IE 7][all][]   = scholar-collector-ie.css
 
-scholar[widgets][vsite_menus-features] = left
-scholar[widgets][boxes-shield_default] = header_right
-scholar[widgets][boxes-site_logo] = false
+os[widgets][vsite_menus-features] = left
+os[widgets][boxes-shield_default] = header_right
+os[widgets][boxes-site_logo] = false
 
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "public"
+os[theme_type]   = "scholar"
+os[theme_access] = "public"

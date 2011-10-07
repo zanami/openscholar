@@ -2,8 +2,8 @@ name        = Glover
 description = A clean fixed layout design - white background with a single black stripe for the menu area, and large serif font.
 flavor_name = "Black"
 plugins[vsite_design][flavor] = flavors
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "public"
+os[theme_type]   = "scholar"
+os[theme_access] = "public"
 
 screenshot = screenshot.png
 core       = 6.x

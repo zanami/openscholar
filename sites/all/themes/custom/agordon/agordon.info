@@ -6,5 +6,5 @@ core       = 6.x
 base theme = scholar_eloquent
 stylesheets[all][]   = agordon.css
 
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "private"
+os[theme_type]   = "scholar"
+os[theme_access] = "private"

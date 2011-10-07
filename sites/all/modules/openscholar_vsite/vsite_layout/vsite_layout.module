@@ -82,7 +82,7 @@ function vsite_layout_vsite_default_blocks_alter(&$a_widgets) {
 	    $s_path = drupal_get_path('theme', $space->group->og_theme);
 	    if ($s_path){
 		    $a_info = drupal_parse_info_file($s_path . "/" . $space->group->og_theme . ".info");
-		    $a_settings = (is_array($a_info) && array_key_exists('scholar', $a_info) && array_key_exists('widgets', $a_info['scholar']))?$a_info['scholar']['widgets']:array();
+		    $a_settings = (is_array($a_info) && array_key_exists('os', $a_info) && array_key_exists('widgets', $a_info['os']))?$a_info['os']['widgets']:array();
 	    }
     }//In a space
   }//Get theme settings?

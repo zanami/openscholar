@@ -7,6 +7,6 @@ base theme = scholar_aglet
 stylesheets[all][]   = psr.css
 conditional-stylesheets[if lte IE 7][all][]  = psr-ie.css
 
-scholar[widgets][boxes-site_logo] = false
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "private"
+os[widgets][boxes-site_logo] = false
+os[theme_type]   = "scholar"
+os[theme_access] = "private"

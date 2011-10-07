@@ -11,5 +11,5 @@ conditional-stylesheets[if lte IE 7][all][] = scholar-eloquent-ie.css
 ;------ openscholar settings------
 plugins[vsite_design][flavor] = flavors
 flavor_name = "Moss"
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "public"
+os[theme_type]   = "scholar"
+os[theme_access] = "public"

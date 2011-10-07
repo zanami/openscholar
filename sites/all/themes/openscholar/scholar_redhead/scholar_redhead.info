@@ -6,8 +6,8 @@ base theme = scholar_base
 flavor_name = "Crimson"
 plugins[vsite_design][flavor] = flavors
 
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "public"
+os[theme_type]   = "scholar"
+os[theme_access] = "public"
 
 
 

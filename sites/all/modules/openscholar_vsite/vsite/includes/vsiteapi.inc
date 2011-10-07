@@ -182,10 +182,10 @@ function _vsite_is_vsite_theme($atheme){
   $vsite = vsite_get_vsite();
   $site_key = $vsite?$vsite->group->purl:false;
 
-  return (array_key_exists('scholar',$atheme->info)
-       && array_key_exists('theme_type',$atheme->info['scholar'])
-       && _vsite_get_theme_type() == $atheme->info['scholar']['theme_type']
-       && ($atheme->info['scholar']['theme_access'] != "private" || user_access('access private scholar themes') || $site_key == strtolower($atheme->name))
+  return (array_key_exists('os',$atheme->info)
+       && array_key_exists('theme_type',$atheme->info['os'])
+       && _vsite_get_theme_type() == $atheme->info['os']['theme_type']
+       && ($atheme->info['os']['theme_access'] != "private" || user_access('access private scholar themes') || $site_key == strtolower($atheme->name))
        && !empty($atheme->status));
 }
 

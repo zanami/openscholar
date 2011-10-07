@@ -7,6 +7,6 @@ base theme = scholar_base
 stylesheets[all][]   = rcss.css
 conditional-stylesheets[if IE][all][] = rcss-ie.css
 
-scholar[widgets][boxes-site_logo] = false
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "private"
+os[widgets][boxes-site_logo] = false
+os[theme_type]   = "scholar"
+os[theme_access] = "private"

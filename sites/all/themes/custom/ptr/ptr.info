@@ -8,10 +8,10 @@ stylesheets[all][]   = ptr.css
 conditional-stylesheets[if lt IE 9][all][] = ptr-ie8.css
 conditional-stylesheets[if lt IE 8][all][] = ptr-ie7.css
 
-scholar[widgets][vsite_menus-features] = left
-scholar[widgets][boxes-site_logo] = header_main
-scholar[widgets][boxes-site_info] = header_left
-scholar[widgets][boxes-shield_default] = header_right
-scholar[widgets][vsite-site_search] = right
-scholar[theme_type]   = "scholar"
-scholar[theme_access] = "private"
+os[widgets][vsite_menus-features] = left
+os[widgets][boxes-site_logo] = header_main
+os[widgets][boxes-site_info] = header_left
+os[widgets][boxes-shield_default] = header_right
+os[widgets][vsite-site_search] = right
+os[theme_type]   = "scholar"
+os[theme_access] = "private"
