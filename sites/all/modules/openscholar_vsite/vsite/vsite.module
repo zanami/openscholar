@@ -871,6 +871,11 @@ function vsite_perm(){
 function vsite_system_info_alter(&$info, $file){
   if ($file->type == 'module')
     return;
+    
+  //Maintain backwards compatibility
+  if (!array_key_exists('os', $info) && array_key_exists('scholar', $info)){
+  	$info['os'] = $info['scholar'];
+  }
 
   //If this is a scholar theme then add the correct regions
   if (array_key_exists('os', $info) && array_key_exists('theme_type', $info['os']) && $info['os']['theme_type'] == 'scholar') {
