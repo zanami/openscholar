@@ -14,15 +14,39 @@ function vsite_layout_ctools_plugin_api() {
 function vsite_layout_menu() {
   $items = array();
 
-  $items['cp/osboxes/%ctools_js/%/%/remove'] = array(
+  $items['cp/viste_layout/%ctools_js/%/%/remove'] = array(
     'title' => 'Remove this Widget',
     'page callback' => 'vsite_layout_remove_widget',
     'page arguments' => array(2, 3, 4),
-    'access callback' => 'spaces_access_admin',
+    'access callback' => 'cp_access_cp',
     'type' => MENU_CALLBACK,
   );
 
   return $items;
+}
+
+/**
+ * Addes a boxes 'Remove' link as a contextual link
+ */
+function vsite_layout_vsite_admin_link($type, $object) {
+  $links = array();
+  if ($type != 'block') return $links;
+
+
+  if ($object->module == 'boxes' && ($box = boxes_load($object->delta)) && spaces_access_admin()) {
+    
+  	$active_feature = vsite_active_feature();
+    if (!$active_feature) return $links;
+      
+    $links[] = array(
+      'title' => 'Remove',
+      'href' => 'cp/viste_layout/nojs/'.$object->delta.'/'.'openscholar-feature-'.$active_feature.'/remove',
+      'attributes' => array(
+        'class' => 'ctools-use-ajax',
+      )
+    );
+  }
+  return $links;
 }
 
 /**

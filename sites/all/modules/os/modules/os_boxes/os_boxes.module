@@ -490,23 +490,6 @@ function os_boxes_vsite_admin_link($type, $object) {
         'class' => 'ctools-use-modal',
       ),
     );
-
-    static $context = null;
-    if (!$context) {
-      $contexts = context_active_contexts();
-      foreach ($contexts as $ctx) {
-        if (strpos($ctx->name, 'openscholar-feature-') !== FALSE) {
-          $context = $ctx->name;
-        }
-      }
-    }
-    $links[] = array(
-      'title' => 'Remove',
-      'href' => 'cp/osboxes/nojs/'.$object->delta.'/'.$context.'/remove',
-      'attributes' => array(
-        'class' => 'ctools-use-ajax',
-      )
-    );
   }
   return $links;
 }
