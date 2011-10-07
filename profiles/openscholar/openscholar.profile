@@ -117,6 +117,7 @@ function _openscholar_core_modules() {
     'conditional_styles',
     'prepopulate',
     'views_content_cache',
+    'fb_social',
   );
 
   return $contrib_modules;
