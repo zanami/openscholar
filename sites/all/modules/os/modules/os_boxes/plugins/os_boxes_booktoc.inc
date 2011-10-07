@@ -79,29 +79,32 @@ class os_boxes_curr_toc extends os_boxes_booktoc {
   public function render() {
 
   	//Get the current book
+  	$block = array();
   	$node = menu_get_object();
   	if(isset($node->book['bid']) && book_type_is_allowed($node->type)){
       $node = node_load($node->book['bid']);
 
-      if ($node) $this->options['book_nid'] = $node->nid;
+      if ($node) {
+        $this->options['book_nid'] = $node->nid;
+        $block = parent::render();
+      }
   	}
 
-    $block = parent::render();
   	return $block;
   }
-  
+
   /**
    * Return the cache parameters for this box
    */
   public function cache_info(){
-    
+
     //Clear when bio nodes are saved
     $cache_key = array(
       'os_og' => array('current' => 'current'),
       'node' => array('book' => 'book', 'class' => 'class', 'class_material' => 'class_material'),
     );
-    
+
     return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
   }
-  
+
 }
