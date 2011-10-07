@@ -521,7 +521,7 @@ function os_update_6009(&$sandbox){
   //vsites per batch.
   $limit = 40;
   
-  require_once drupal_get_path('module', 'scholar_front') . '/scholar_front.box_maker.inc';
+  require_once drupal_get_path('module', 'scholar_front') . '/includes/scholar_front.box_maker.inc';
   //$batch['operations'][] = array('scholar_front_frontpage_boxmaker',array($limit, $offset, $total_vsites),);
   $updated_vsites = scholar_front_frontpage_boxmaker($limit, $sandbox['os_update_6009_progress'], $sandbox['max']);
   $sandbox['os_update_6009_progress'] += $limit;
