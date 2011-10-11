@@ -609,5 +609,6 @@ function _os_boxes_migrate_info() {
     'vsite_widgets_6' => 'vsite_rss',
     'views-scholar_reader-block_1' => 'scholar_reader-feeds_list',
     'views-scholar_reader-block_2' => 'scholar_reader-latest_feed_items',
+    'views-scholar_presentations-block_1' => 'scholar_presentations_recent'
   );
 }
