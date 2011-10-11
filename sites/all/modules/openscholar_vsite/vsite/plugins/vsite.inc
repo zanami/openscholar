@@ -61,7 +61,7 @@ class vsite extends space_og {
         if (og_is_group_type($object->type)) {
           //We are loading a group node, instead redirect to this groups home page
           if (isset($object->nid) && (!$object->active || ($this->active && $this->id != $object->nid)) && $space = spaces_load('og', $object->nid)) {
-          	$space->activate();
+          	$space->verify_purl(); //Setup the correct purl provider
 
           	$current_url = url($_GET['q'], array('absolute' => TRUE, 'query' => drupal_query_string_encode($_GET, array('q'))));
           	if($current_url != rtrim($this->get_absolute_url(),"/")){
