@@ -10,12 +10,12 @@ function scholar_biocv_default_box() {
   $box->api_version = 1;
   $box->delta = 'scholar_biocv_bio';
   $box->plugin_key = 'os_boxes_bio';
-  $box->title = 'Bio';
+  $box->title = ''; //Blank title
   $box->description = 'Bio Teaser';
   $box->options = array(
     'visibility' => 'feature',
     'nid' => 0,
-    'teaser' => 'teaser',
+    'teaser' => 'full',
   );
 
   $export['scholar_biocv_bio'] = $box;
