@@ -140,7 +140,7 @@ function os_boxes_replace_boxes($block_id, $box, $default_region = false, $sid =
   $q = db_query("SELECT * FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%' ".($sid?" AND id = %d ":"").$sql_limit, $params);
   while ($r = db_fetch_array($q)) {
     $value = unserialize($r['value']);
-    $region = $value['blocks'][$block_id]['region']?$value['blocks'][$block_id]['region']:$default_region;
+    $region = isset($value['blocks'][$block_id]['region'])?$value['blocks'][$block_id]['region']:$default_region; //False regions accepted
     $weight = $value['blocks'][$block_id]['weight']?$value['blocks'][$block_id]['weight']:0;
     unset($value['blocks'][$block_id]);
     $value['blocks']['boxes-'.$box->delta] = array('region' => $region, 'weight' => $weight) + $widget_def;
