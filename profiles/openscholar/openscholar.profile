@@ -145,6 +145,7 @@ function _openscholar_scholar_modules() {
     'scholar_events_signup',
     'vsite_ga',
     'vsite_layout',
+    'vsite_layout_ui',
     'vsite_menus',
     'vsite_shields',
     'vsite_design',

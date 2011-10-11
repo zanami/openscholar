@@ -398,3 +398,30 @@ function vsite_update_6016(&$sandbox){
   return $res;
 
 }
+
+/**
+ * Remove path aliases to vsite nodes, the node should be called and redirected correctly
+ * @param array $sandbox
+ */
+function vsite_update_6017(&$sandbox){
+
+  $res = array();
+
+  $scholar_content_type = variable_get('scholar_content_type', 'vsite');
+  $result = db_query("SELECT n.nid as nid  FROM {node} n INNER JOIN {url_alias} ua ON ua.src = CONCAT('node/',n.nid) WHERE n.type = '%s' ",$scholar_content_type);
+
+  while ($nid = db_result($result)){
+    db_query("DELETE FROM {url_alias} WHERE src = 'node/%s' ",$nid);
+  }
+  
+  //Delete the default node pattern
+  variable_del('pathauto_node_pattern');
+
+  $res[] = array(
+   'success' => true,
+   'query' => 'Removed aliases directly to og nodes',
+  );
+
+  return $res;
+
+}

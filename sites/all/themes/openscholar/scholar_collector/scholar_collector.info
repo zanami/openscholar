@@ -1,6 +1,8 @@
 ; $Id: scholar_collector.info,v 1.12 2008/09/21 22:43:32 swortis Exp $
 name        = Collector
 description = Whimsical Theme with old paper backgrounds and old research materials, etc.
+flavor_name = "Without Cards"
+plugins[vsite_design][flavor] = flavors
 
 screenshot = screenshot.png
 core       = 6.x

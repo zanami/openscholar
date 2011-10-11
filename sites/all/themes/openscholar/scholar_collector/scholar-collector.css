@@ -39,15 +39,6 @@ body.two-sidebars #page {
     background-image:url(images/header-both-sidebar.jpg);
     }
 
-#extradiv {
-    text-indent: -999em;
-    position: fixed;
-    background:url(images/bottom.png) center bottom no-repeat;
-    bottom: 0;
-    height:215px;
-    width: 100%;
-    z-index:50;
-    }
 
 #page {
     width: 982px;
