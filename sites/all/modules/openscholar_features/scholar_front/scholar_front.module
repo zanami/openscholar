@@ -230,10 +230,10 @@ function scholar_front_block($op = 'list', $delta = false, $edit = array()) {
   switch ($op) {
     case 'list':
       return array('get_started' => array('info' => t('Get Started - A block to help site admins setup thier site.')));
-    default:
+    case 'view':
       $function = "scholar_front_block_{$delta}";
       if (function_exists($function)) {
-        return $function($op, $edit);
+        return $function();
       }
   }
 }
@@ -247,5 +247,5 @@ function scholar_front_block_get_started(){
   if(!$vsite || !$vsite->access_admin()) return "";
   
   module_load_include('inc', 'scholar_front', 'scholar_front.pages');
-  return _scholar_front_admin_frontpage();
+  return array('content' => _scholar_front_admin_frontpage());
 }

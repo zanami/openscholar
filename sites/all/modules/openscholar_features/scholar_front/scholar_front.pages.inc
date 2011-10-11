@@ -32,11 +32,10 @@ function _scholar_front_admin_frontpage(){
 	  $vsite = vsite_get_vsite();
 	  $result = '';
 
-    $a_messages_confirmed_settings = variable_get('vsite_setting_messages_confirmed',array());
+	  $a_messages_confirmed_settings = variable_get('vsite_setting_messages_confirmed',array());
     if($vsite && $vsite->access_admin()  && (!is_array($a_messages_confirmed_settings)  || !$a_messages_confirmed_settings['welcome_message'])){
 
-      $s_hide_link = l("Forever","cp/confirm_message/welcome_message",array('attributes'=>array('class'=>'hide'),'query' => array('source'=>$_GET['q']) ));
-      $s_close_link = l("For now","",array('attributes'=>array('class'=>'close','onClick'=>'$("div#message_welcome_message").remove(); return false;')));
+      $s_close_link = l("Hide this message for now","",array('attributes'=>array('class'=>'close','onClick'=>'$("div#message_welcome_message").remove(); return false;')));
 
       $s_info = l("Add/edit your site information",'cp/settings/site_info/'.$vsite->id);
       $s_features = l("Enable or disable features for your site",'cp/build/features');
@@ -73,13 +72,9 @@ function _scholar_front_admin_frontpage(){
             <li>{$s_docs}</li>
           </ul>
           <div class="vsite-admin">
-            <div class="toggle"><span>Hide this message</span></div>
-            <div class="slider">
               <ul class="links">
-                <li class="first">{$s_hide_link}</li>
-                <li>{$s_close_link}</li>
+                <li class="first">{$s_close_link}</li>
               </ul>
-            </div>
           </div>
         </div> <!-- SLIDER -->
       </div>
