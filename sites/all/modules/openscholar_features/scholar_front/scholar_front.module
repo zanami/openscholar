@@ -224,9 +224,24 @@ function scholar_front_context_links_alter(&$links){
 }
 
 /**
+ * Implementation of hook_block().
+ */
+function scholar_front_block($op = 'list', $delta = false, $edit = array()) {
+  switch ($op) {
+    case 'list':
+      return array('get_started' => array('info' => t('Get Started - A block to help site admins setup thier site.')));
+    default:
+      $function = "scholar_front_block_{$delta}";
+      if (function_exists($function)) {
+        return $function($op, $edit);
+      }
+  }
+}
+
+/**
  * Admin block to help users get started creating thier site
  */
-function scholar_front_get_started(){
+function scholar_front_block_get_started(){
  
   $vsite = vsite_get_vsite();
   if(!$vsite || !$vsite->access_admin()) return "";
