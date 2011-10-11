@@ -442,7 +442,7 @@ function os_update_6008(&$sandbox){
       //users who own multiple vsites should still have their bios listed on each vsite
       //no vsite has multiple owners.
       if(strlen($blurb)) $vsites = vsite_get_vsite_by_owner($r->uid);
-      while (strlen($blurb) && $vsite = array_shift($vsites)){
+      while (strlen($blurb) && count($vsites) && $vsite = array_shift($vsites)){
         //make delta
         $identifier = $vsite->type . '-' . $vsite->id;
         $hash = boxes_create_hash($identifier);

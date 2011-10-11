@@ -101,10 +101,9 @@ function scholar_front_redirect_home(){
 }
 
 /**
- * Default front page when a site is created
+ * Default front page
  */
 function scholar_front_home(){
-	$vsite = vsite_get_vsite();
-	if(!$vsite || !$vsite->access_admin()) return "";
-  return _scholar_front_admin_frontpage();
+	
+	return "";
 }

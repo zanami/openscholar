@@ -223,3 +223,14 @@ function scholar_front_context_links_alter(&$links){
   }
 }
 
+/**
+ * Admin block to help users get started creating thier site
+ */
+function scholar_front_get_started(){
+ 
+  $vsite = vsite_get_vsite();
+  if(!$vsite || !$vsite->access_admin()) return "";
+  
+  module_load_include('inc', 'scholar_front', 'scholar_front.pages');
+  return _scholar_front_admin_frontpage();
+}

@@ -26,6 +26,14 @@ function scholar_front_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
+        'scholar_front-get_started' => array(  //admin only block
+          'module' => 'scholar_front',
+          'delta' => 'get_started',
+          'weight' => -1,
+          'region' => 'content_top',
+          'status' => '0',
+          'label' => 'Get Started (admin)',
+        ),
         'views-scholar_events_upcoming-block_1' => array(  // not changing
           'module' => 'views',
           'delta' => 'scholar_events_upcoming-block_1',
