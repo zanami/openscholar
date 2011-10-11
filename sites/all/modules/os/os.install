@@ -585,6 +585,13 @@ function os_update_6011(&$sandbox) {
       db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE id = %d AND object_type = 'variable' AND object_id = 'block_subject_customizer'", serialize($value), $r['id']);
     }
   }
+
+  return array (
+    array(
+      'success' => true,
+      'query' => 'Block Subject Customizations moved into Boxes.',
+    ),
+  );
 }
 
 function _os_boxes_migrate_info() {
