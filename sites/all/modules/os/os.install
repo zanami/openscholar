@@ -288,7 +288,18 @@ function os_update_6005(&$sandbox) {
     // for each vsite that uses this block, we need to create a new box instance
     // and by new instance, we mean delta
     while ($r = db_fetch_array($q)) {
-      $box->delta = os_boxes_create_delta($r['sid']);
+      $box->delta = os_boxes_create_delta($r['type'].'-'.$r['sid']);
+      // check for custom block titles from legacy Spaces code
+      $q_subj = db_query("SELECT * FROM {spaces_overrides} WHERE object_type='variable' AND object_id='block_subject_customizer' AND id = %d", $r['sid']);
+      if ($r_subj = db_fetch_array($q_subj)) {
+        $value = unserialize($r_subj['value']);
+        if ($value[$block]) {
+          $box->title = $value[$block];
+          unset($value[$block]);
+          $r_subj['value'] = $value;
+          drupal_write_record('spaces_overrides', $r_subj, array('object_type', 'object_id', 'id'));
+        }
+      }
       os_boxes_replace_boxes($block, $box, false, $r['sid']);
       $override = array(
         'type' => $r['type'],
@@ -564,4 +575,56 @@ function os_update_6010(&$sandbox){
   }
 
   return $ret;
+}
+
+function os_update_6011(&$sandbox) {
+
+  $a_migrate_info = array(
+    "scholar-0" => "site_info",
+    "scholar-1" => "site_logo",
+    'vsite_widgets-1' => 'site_info',
+    'vsite_widgets-0' => 'site_logo',
+    'vsite_widgets_1' => 'site_info', //Few iterations of these block id's thats why there are multiple logo/info here, this unifies them
+    'vsite_widgets_0' => 'site_logo',
+    'vsite_widgets-2' => 'shield_default',
+    "views-scholar_announcements-block_1" => "scholar_announcements_latest",
+    //"scholar_biocv-bio_blurb" => "scholar_biocv_bio", //handled by creating instances
+    'views-scholar_book-block_1' => 'scholar_book_recent_docs',
+    'views-scholar_image_gallery-block_1' => 'image_gallery_recent_images',
+    'views-scholar_publications-block_1' => 'scholar_publications_recent',
+    "vsite_taxonomy-0" => 'vsite_taxonomy_fltr_cat',
+    'vsite_widgets-4' => 'os_addthis',
+    'scholar_book-booktoc' => 'scholar_book_current_toc',
+    'scholar_blog-rss' =>  'scholar_blog-blog_rss' ,
+    'vsite_widgets-6' => 'vsite_rss',
+    'vsite_widgets_6' => 'vsite_rss',
+    'views-scholar_reader-block_1' => 'scholar_reader-feeds_list',
+    'views-scholar_reader-block_2' => 'scholar_reader-latest_feed_items',
+  );
+
+  $q = db_query("SELECT * FROM {spaces_overrides} WHERE object_type = 'variable' AND object_id = 'block_subject_customizer'");
+  while ($r = db_fetch_array($q)) {
+    $value = unserialize($r['value']);
+    foreach ($value as $old_id => $title) {
+      if (isset($a_migrate_info[$old_id])) {
+        $box = boxes_load($a_migrate_info[$old_id]);
+        $box->title = $title;
+        unset($value[$old_id]);
+        $data = array(
+          'type' => 'og',
+          'id' => $r['id'],
+          'object_type' => 'boxes',
+          'object_id' => $box->delta,
+          'value' => (object)(array)$box,  // double cast to stdClass
+        );
+        drupal_write_record('spaces_overrides', $data);
+      }
+    }
+    if (empty($value)) {
+      db_query("DELETE FROM {spaces_overrides} WHERE id = %d AND object_type = 'variable' AND object_id = 'block_subject_customizer'", $r['id']);
+    }
+    else {
+      db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE id = %d AND object_type = 'variable' AND object_id = 'block_subject_customizer'", serialize($value), $r['id']);
+    }
+  }
 }
