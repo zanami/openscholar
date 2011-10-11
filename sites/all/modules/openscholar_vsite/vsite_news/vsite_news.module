@@ -330,13 +330,14 @@ function vsite_news_get_new_activity_count() {
   $data = unserialize($user->data);
   // this is set in vsite_news_activity()
   // or in the footer of the exported views
-  $last_hit = $data['news_last_access'];
+  $args[] = $user->uid;
+  $args[] = $data['news_last_access'];
   if ($vsite = vsite_get_vsite()) {
     $join = ' INNER JOIN {og_ancestry} USING (nid)';
     $where = ' AND group_nid = %d';
-    $grp_id = $vsite->group->nid;
+    $args[] = $vsite->group->nid;
   }
 
-  $r = db_result(db_query("SELECT COUNT(*) AS c FROM {activity} a INNER JOIN {node} n USING(nid)$join WHERE a.uid != %d AND a.created > %d AND n.status = 1$where", $user->uid, $last_hit, $grp_id));
+  $r = db_result(db_query("SELECT COUNT(*) AS c FROM {activity} a INNER JOIN {node} n USING(nid)$join WHERE a.uid != %d AND a.created > %d AND n.status = 1$where", $args));
   return $r;
 }
