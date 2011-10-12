@@ -150,26 +150,27 @@ function scholar_front_fb_mk_front_box(&$vsite, $settings) {
     case 'bio':
       $nid = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
       
-      //check for blurb
-	  $query = <<<EOD
-SELECT DISTINCT nid,field_hook_text_value
-FROM {content_type_bio}
-WHERE field_hook_text_value IS NOT NULL
-AND   nid = %d
-GROUP BY nid HAVING max(vid)
-EOD;
-      $result = db_query($query, $nid);
-
-      if ($r = db_fetch_object($result)) {
-      	//we have a blurb.  let's make a simple box for it.
-      	$type = 'os_boxes_simple';
-      	$opts['body'] = $r->field_hook_text_value;
-      	
-      } else {
+      //WHY Check for the blurb? -RB
+//      //check for blurb
+//	  $query = <<<EOD
+//SELECT DISTINCT nid,field_hook_text_value
+//FROM {content_type_bio}
+//WHERE field_hook_text_value IS NOT NULL
+//AND   nid = %d
+//GROUP BY nid HAVING max(vid)
+//EOD;
+//      $result = db_query($query, $nid);
+//
+//      if ($r = db_fetch_object($result)) {
+//      	//we have a blurb.  let's make a simple box for it.
+//      	$type = 'os_boxes_simple';
+//      	$opts['body'] = $r->field_hook_text_value;
+//
+//      } else {
       	//nope, just a regular bio box, use the default
       	$type = 'boxes-scholar_biocv_bio';
         $block = true;
-      }
+//      }
       
       break;
       
