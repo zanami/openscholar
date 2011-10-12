@@ -380,7 +380,7 @@ function os_boxes_vsite_widgets(){
   	if(!$box->delta) continue;
 
   	//Is this box not applicable everywhere, does not have a plugin
-  	if(isset($plugins[$box->plugin_key]) && $plugins[$box->plugin_key]['title']) continue;
+  	if(isset($plugins[$box->plugin_key]) && !isset($plugins[$box->plugin_key]['title'])) continue;
 
     $items["boxes-{$box->delta}"] = os_boxes_get_vsite_widget($box);
 
