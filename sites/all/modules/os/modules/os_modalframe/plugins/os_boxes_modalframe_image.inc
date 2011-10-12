@@ -57,10 +57,7 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
       return $vsite->access_feature('edit', 'scholar_image_gallery');
     }
     else {
-      $feature = 'scholar_image_gallery';
-      $usable = spaces_features($this->type);
-      $features = $this->controllers->variable->get('spaces_features');
-      return user_access('access content') && isset($usable[$feature]) && !empty($features[$feature]);
+      return vsite_node_menu_access();
 
     }
   }
