@@ -26,11 +26,6 @@ abstract class os_boxes_default extends boxes_box {
    */
   public $changed;
   
-  /*
-   * Should box intances of this type be avalible sitewide
-   */
-  public $sitewide = true;
-
   /**
    * Implementation of boxes_content::options_defaults().
    */
