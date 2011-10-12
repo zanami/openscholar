@@ -227,6 +227,7 @@ function os_boxes_boxes_plugins() {
     'tags' => array (
       'Content'
     ),
+    'module dependencies' => array('scholar_publications'),
     'handler' => array(
       'class' => 'os_boxes_pub_grps',
       'file' => 'os_boxes_pub_grps.inc',
@@ -239,6 +240,7 @@ function os_boxes_boxes_plugins() {
     'title' => 'Publications By Type',
     'description' => 'Group Publications By Type',
     'tags' => array('Content'),
+    'module dependencies' => array('scholar_publications'),
     'handler' => array(
       'class' => 'os_boxes_pub_type',
       'file' => 'os_boxes_pub_type.inc',
@@ -251,6 +253,7 @@ function os_boxes_boxes_plugins() {
     'title' => 'Publications By Year',
     'description' => 'Group Publications By Year',
     'tags' => array('Content'),
+    'module dependencies' => array('scholar_publications'),
     'handler' => array(
       'class' => 'os_boxes_pub_year',
       'file' => 'os_boxes_pub_year.inc',
@@ -263,6 +266,7 @@ function os_boxes_boxes_plugins() {
     'title' => 'Publications By Co-Authors',
     'description' => 'Group Publications By Co-Authors',
     'tags' => array('Content'),
+    'module dependencies' => array('scholar_publications'),
     'handler' => array(
       'class' => 'os_boxes_pub_ca',
       'file' => 'os_boxes_pub_ca.inc',
@@ -458,7 +462,7 @@ function os_boxes_menu() {
 function os_boxes_cp_layout_configurable($delta){
 
 	if(!user_access('cp_access_cp')) return false;
-	
+
   if ($delta && strpos($delta, 'boxes_add__') !== 0) {
   	//Box instance
     if ($box = boxes_load($delta)) {
@@ -647,6 +651,9 @@ function os_boxes_box_access($block,$user = false){
 	  	if(isset($plugin['module dependencies'])){
 	      foreach ($plugin['module dependencies'] as $module) {
 	        if(!module_exists($module)){
+	          return false;
+	        }
+	        if (!spaces_access_feature('view', $module)) {
 	          return false;
 	        }
 	      }

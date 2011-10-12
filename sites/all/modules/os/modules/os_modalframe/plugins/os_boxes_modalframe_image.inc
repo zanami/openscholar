@@ -51,4 +51,17 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
     $form_state['values']['box']['nid'] = $form_state['nid'];
     return parent::submit($form, $form_state);
   }
+
+  public function access() {
+    if ($vsite = vsite_get_vsite()) {
+      return $vsite->access_feature('edit', 'scholar_image_gallery');
+    }
+    else {
+      $feature = 'scholar_image_gallery';
+      $usable = spaces_features($this->type);
+      $features = $this->controllers->variable->get('spaces_features');
+      return user_access('access content') && isset($usable[$feature]) && !empty($features[$feature]);
+
+    }
+  }
 }
