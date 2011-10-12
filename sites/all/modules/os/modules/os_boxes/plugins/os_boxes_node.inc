@@ -13,6 +13,7 @@ class os_boxes_node extends os_boxes_default {
     $options = parent::options_defaults();
     $options['nid'] = 0;
     $options['teaser'] = 'teaser';
+    $options['show_title'] = 1;
 
     return $options;
   }
@@ -41,6 +42,14 @@ class os_boxes_node extends os_boxes_default {
       '#options' => array('teaser'=>'Teaser Only', 'full'=>'Full Node'),
       '#description' => 'Display entire node in this box or just the teaser.',
     );
+    
+    $form['show_title'] = array(
+      '#type' =>  'radios',
+      '#title' => 'Show Post Title',
+      '#default_value' => $this->options['show_title'],
+      '#options' => array(0 =>'Hide the posts title', 1 => 'Show the posts title'),
+    );
+    
     return $form;
   }
 
@@ -68,6 +77,11 @@ class os_boxes_node extends os_boxes_default {
     
     if($node){
       $teaser = ($this->options['teaser'] == 'teaser') ? TRUE : FALSE;
+      
+      if(isset($this->options['show_title']) && !$this->options['show_title']){
+      	$node->title = '';//Hide the nide title
+      }
+      
       $output = node_view($node, $teaser, FALSE, FALSE);  //@todo : make this configurable
       $block['content'] = $output;
     }

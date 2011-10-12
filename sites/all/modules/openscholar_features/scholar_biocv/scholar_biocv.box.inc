@@ -16,6 +16,7 @@ function scholar_biocv_default_box() {
     'visibility' => 'feature',
     'nid' => 0,
     'teaser' => 'full',
+    'show_title' => 0,
   );
 
   $export['scholar_biocv_bio'] = $box;
