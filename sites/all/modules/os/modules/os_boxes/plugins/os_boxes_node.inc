@@ -45,7 +45,7 @@ class os_boxes_node extends os_boxes_default {
     
     $form['show_title'] = array(
       '#type' =>  'radios',
-      '#title' => 'Show Post Title',
+      '#title' => 'Title Display',
       '#default_value' => $this->options['show_title'],
       '#options' => array(0 =>'Hide the posts title', 1 => 'Show the posts title'),
     );
