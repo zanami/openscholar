@@ -584,6 +584,9 @@ function os_boxes_form_alter(&$form, &$form_state, $form_id) {
 
   	  $form['title']['#title'] = t('Widget Title');
   	  $form['title']['#description'] = t('The title of the widget as shown to the user.');
+  	  
+  	  //Keep track of boxes last update time, can be used to expire cache
+  	  $form['changed'] = array('#type' => 'value', '#value' => time());
 
   		//Allow each box to handle it's own validation && submission
   		$form['#validate'][] = 'os_boxes_box_validate';
