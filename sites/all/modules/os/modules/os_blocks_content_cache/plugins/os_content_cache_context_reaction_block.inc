@@ -137,7 +137,7 @@ class os_content_cache_context_reaction_block extends vsite_context_reaction_blo
         	  );
         	  
         	  //If the box has been saved don't hold a cache older than that
-        	  if(isset($box->changed) && (time() - $box->changed) > $a_config['max_lifespan']){
+        	  if(isset($box->changed) && (time() - $box->changed) < $a_config['max_lifespan']){
         	  	$a_config['max_lifespan'] = time() - $box->changed;
         	  }
         	  

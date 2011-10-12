@@ -11,7 +11,7 @@ function scholar_biocv_default_box() {
   $box->delta = 'scholar_biocv_bio';
   $box->plugin_key = 'os_boxes_bio';
   $box->title = ''; //Blank title
-  $box->description = 'Bio Teaser';
+  $box->description = 'Bio Post';
   $box->options = array(
     'visibility' => 'feature',
     'nid' => 0,
