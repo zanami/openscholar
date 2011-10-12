@@ -22,6 +22,11 @@ abstract class os_boxes_default extends boxes_box {
   public $region;
   
   /*
+   * If this box has been overridden the changed timestamp will be held here
+   */
+  public $changed;
+  
+  /*
    * Should box intances of this type be avalible sitewide
    */
   public $sitewide = true;
