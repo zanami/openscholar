@@ -638,6 +638,13 @@ function os_boxes_preprocess_block(&$vars) {
       drupal_add_css($plugins[$block -> plugin]['css']);
     }
   }
+  
+  /**
+   * Adds useful plugin classes to blocks for theming
+   */
+  if(is_object($block) && $block->plugin){
+    $vars['block_classes'] .= " box-{$block->plugin}";
+  }
 }
 
 
@@ -684,3 +691,4 @@ function os_boxes_vsite_default_blocks_alter(&$default_blocks) {
     if($block['factory']) unset($default_blocks[$bid]);
   }
 }
+
