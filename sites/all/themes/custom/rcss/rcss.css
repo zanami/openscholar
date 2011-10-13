@@ -124,6 +124,6 @@ div.links {
 
 /* REMOVE ONCE RICHARD FIXES STUFF */
 
-#block-scholar-1 h2, #block-scholar-1 p {
+.box-os_boxes_modal_sitelogo h2, .box-os_boxes_modal_sitelogo p {
   display:none;
   }

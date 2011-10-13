@@ -413,7 +413,7 @@ a.more {
   padding-top:0;
   }
 
-#block-scholar-1 h1,
+.box-os_boxes_modal_sitelogo h1,
 #navbar ul li {
   float: left;
   margin: 0;
@@ -447,7 +447,7 @@ a.more {
   margin-right: 0;
   }
 
-#block-scholar-1 h1 {
+.box-os_boxes_modal_sitelogo h1 {
   width: 168px;
   text-align: center;
   font-weight: normal;
@@ -455,8 +455,8 @@ a.more {
   font-size: 19px;
   }
 
-#block-scholar-1 h1 a,
-#block-scholar-1 h1 a:visited {
+.box-os_boxes_modal_sitelogo h1 a,
+.box-os_boxes_modal_sitelogo h1 a:visited {
   color:#fff;
   background:#636363;
   display:block;
@@ -464,12 +464,12 @@ a.more {
   height: 29px;
   }
 
-#block-scholar-1 h1 a:hover {
+.box-os_boxes_modal_sitelogo h1 a:hover {
   background-color: #000;
   color: #fff;
   }
 
-#navbar ul li a, #block-scholar-1 h1 a {
+#navbar ul li a, .box-os_boxes_modal_sitelogo h1 a {
   display:block;
   }
 
@@ -485,7 +485,7 @@ a.more {
   background-color:#db7002;
   }
 
-#block-scholar-1 h2, #block-scholar-1 p {
+.box-os_boxes_modal_sitelogo h2, .box-os_boxes_modal_sitelogo p {
   display:none;
   }
 
@@ -837,7 +837,7 @@ body.page-iqss-gking-research-group h3 {
 
 /* Search form*/
 
-.column #block-vsite_widgets-1 {
+.column .box-os_boxes_modal_siteinfo {
   padding-top: 13px;
   }
 
@@ -1008,8 +1008,8 @@ body.gking-alt #navbar {
   height: 30px;
   }
 
-body.gking-alt #block-scholar-1 h1,
-body.gking-alt #block-scholar-1 h1 a {
+body.gking-alt .box-os_boxes_modal_sitelogo h1,
+body.gking-alt .box-os_boxes_modal_sitelogo h1 a {
   height:30px;
   line-height: 30px;
   }
