@@ -39,6 +39,11 @@ class vsite_taxonomy_fbt extends os_boxes_default {
   	$a_options = array();
   	foreach ($vocabs as $vid => $v) $a_options[$vid] = $v->name;
 
+  	if(!$this->options['vocabulary'] || !count($this->options['vocabulary'])){
+  		$defaults = $this->options_defaults();
+  		$this->options['vocabulary'] = $defaults['vocabulary'];
+  	}
+  	
     $form['vocabulary'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Vocabularies'),
@@ -136,6 +141,11 @@ class vsite_taxonomy_fbt extends os_boxes_default {
       }else{
         $vcs = $vsite->get_vocabs($s_type);
       }
+      
+		  if(!$this->options['vocabulary'] || !count($this->options['vocabulary'])){
+	      $defaults = $this->options_defaults();
+	      $this->options['vocabulary'] = $defaults['vocabulary'];
+	    }//If they have not selected a vocab use all vocabs
 
       //Filter by box settings
       $vcs = array_intersect_key($vcs,array_flip($this->options['vocabulary']));

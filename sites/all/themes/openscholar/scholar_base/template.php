@@ -188,11 +188,11 @@ function scholar_base_preprocess_node(&$vars, $hook) {
 function scholar_base_preprocess_block(&$vars, $hook) {
   $block_classes = array($vars['block_classes']);
   $block_classes[] = 'block';
-  $block_classes[] = ' region-' . $vars['block_zebra'];
-  $block_classes[] = ' ' . $vars['zebra'];
-  $block_classes[] = ' region-count-' . $vars['block_id'];
-  $block_classes[] = ' count-' . $vars['id'];
-  $vars['block_classes'] = implode($block_classes);
+  $block_classes[] = 'region-' . $vars['block_zebra'];
+  $block_classes[] = $vars['zebra'];
+  $block_classes[] = 'region-count-' . $vars['block_id'];
+  $block_classes[] = 'count-' . $vars['id'];
+  $vars['block_classes'] = trim(implode(" ",$block_classes));
 }
 
 
