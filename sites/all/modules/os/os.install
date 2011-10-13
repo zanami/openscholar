@@ -63,7 +63,7 @@ function os_update_6001(&$sandbox){
 function os_update_6002(&$sandbox) {
 
   $res = array();
-  $modules = array('boxes', 'vsite_controllers', 'os_boxes', 'spaces_simpleviews', 'vsite_contextual', 'os_modalframe', 'os_books', 'os_files');
+  $modules = array('boxes', 'vsite_controllers', 'os_boxes', 'spaces_simpleviews', 'vsite_contextual', 'os_modalframe', 'os_books', 'os_files', 'vsite_layout_ui', 'fb_social');
   include_once('includes/install.inc');
   drupal_install_modules($modules);
 
