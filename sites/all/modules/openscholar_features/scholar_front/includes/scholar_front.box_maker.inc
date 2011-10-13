@@ -216,7 +216,9 @@ function scholar_front_fb_mk_front_box(&$vsite, $settings) {
   	$opts['subject'] = '';
   }
   $opts['description'] = $_box_plugins[$type]['title'] . ' box';
-  $opts['region'] = 'content_top';
+  
+  //Don't force this to be in the content top region everywhere?
+  //$opts['region'] = 'content_top';
   
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
   //debug log.  also writes vsite link, so we can find a type of box and compare local site vs what's in prod
