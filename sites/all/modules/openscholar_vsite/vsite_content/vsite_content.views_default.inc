@@ -931,6 +931,28 @@ function vsite_content_views_default_views() {
       'field' => 'current',
       'relationship' => 'vid',
     ),
+    'filename' => array(
+      'operator' => 'contains',
+      'value' => '',
+      'group' => '0',
+      'exposed' => TRUE,
+      'expose' => array(
+        'use_operator' => 0,
+        'operator' => 'filename_op',
+        'identifier' => 'filename',
+        'label' => 'File Name',
+        'optional' => 1,
+        'remember' => 0,
+      ),
+      'case' => 0,
+      'id' => 'filename',
+      'table' => 'files',
+      'field' => 'filename',
+      'relationship' => 'none',
+      'override' => array(
+        'button' => 'Override',
+      ),
+    ),
   ));
   $handler->override_option('access', array(
     'type' => 'none',
@@ -943,6 +965,64 @@ function vsite_content_views_default_views() {
   $handler->override_option('items_per_page', 15);
   $handler->override_option('use_pager', '1');
   $handler->override_option('style_plugin', 'table');
+  $handler->override_option('style_options', array(
+    'grouping' => '',
+    'override' => 0,
+    'sticky' => 1,
+    'order' => 'desc',
+    'columns' => array(
+      'filename' => 'filename',
+      'filealias' => 'filealias',
+      'title' => 'title',
+      'filemime' => 'filemime',
+      'filesize' => 'filesize',
+      'timestamp' => 'timestamp',
+    ),
+    'info' => array(
+      'filename' => array(
+        'sortable' => 1,
+        'separator' => '',
+      ),
+      'filealias' => array(
+        'sortable' => 0,
+        'separator' => '',
+      ),
+      'title' => array(
+        'sortable' => 1,
+        'separator' => '',
+      ),
+      'filemime' => array(
+        'sortable' => 1,
+        'separator' => '',
+      ),
+      'filesize' => array(
+        'sortable' => 1,
+        'separator' => '',
+      ),
+      'timestamp' => array(
+        'sortable' => 1,
+        'separator' => '',
+      ),
+    ),
+    'default' => 'timestamp',
+  ));
+  $handler = $view->new_display('page', 'Files', 'page_1');
+  $handler->override_option('title', 'Files');
+  $handler->override_option('path', 'cp/content/files');
+  $handler->override_option('menu', array(
+    'type' => 'tab',
+    'title' => 'Files',
+    'description' => '',
+    'weight' => '0',
+    'name' => 'navigation',
+  ));
+  $handler->override_option('tab_options', array(
+    'type' => 'none',
+    'title' => '',
+    'description' => '',
+    'weight' => 0,
+    'name' => 'navigation',
+  ));
 
   $views[$view->name] = $view;
 

@@ -65,7 +65,14 @@ function os_boxes_put_box($context, &$vsite, $box, $region) {
 	//og_theme is not avalible in the context controller during updates, lets do it manually if space override exists
 	$og_theme = db_result(db_query('SELECT og_theme FROM {og} WHERE nid = %d', $vsite->group->nid));
   if($og_theme){
-    $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block:'.$og_theme);
+    $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block:'.$og_theme,'space');
+    
+    if(!$context_block_reaction){
+      $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block');
+      
+      //Since og_theme is not avalible in updates
+      if(is_array($context_block_reaction['blocks'])) _os_boxes_apply_theme_settings($context_block_reaction['blocks'],$og_theme);
+    }//No space get from preset
   }
 
   //let spaces select the current setting or the default
@@ -146,4 +153,27 @@ function os_boxes_replace_boxes($block_id, $box, $default_region = false, $sid =
     $value['blocks']['boxes-'.$box->delta] = array('region' => $region, 'weight' => $weight) + $widget_def;
     db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = 'og' AND object_type = 'context' AND id = %d AND object_id = '%s'", serialize($value), $r['id'], $r['object_id']);
   }
+}
+
+/**
+ * Manually apply theme settings since og_theme is not avalible in updates
+ *
+ * @param array $blocks
+ * @param string $og_theme
+ */
+function _os_boxes_apply_theme_settings(&$blocks ,$og_theme){
+
+    $a_settings = array();
+
+  $s_path = drupal_get_path('theme', $og_theme);
+  if ($s_path){
+    $a_info = drupal_parse_info_file($s_path . "/" . $og_theme . ".info");
+    $a_settings = (is_array($a_info) && array_key_exists('os', $a_info) && array_key_exists('widgets', $a_info['os']))?$a_info['os']['widgets']:array();
+  }
+
+  foreach ($a_settings as $s_widget => $s_region) {
+    $s_region = (strlen($s_region) && $s_region != 'false')?$s_region:false;
+    if (array_key_exists($s_widget, $blocks)) $blocks[$s_widget]['region'] = $s_region;
+  }//alter based on theme settings
+  
 }
