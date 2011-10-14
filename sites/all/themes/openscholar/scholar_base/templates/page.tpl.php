@@ -55,15 +55,20 @@
         <div class="wrap clearfix">
           <div class="hg-container">
           <div id="content-main" class="column<?php if (!empty($content_left)){ echo " content-left"; } if (!empty($content_right)){ echo " content-right"; } ?>">
-            <?php if($context_links):?>
-              <?php print $context_links;?>
-            <?php endif; ?>
             <?php if (!empty($content_top)): ?>
             <div id="content-top">
+              <?php if($context_links):?>
+                <?php print $context_links;?>
+              <?php endif; ?>
               <?php print $content_top; ?>
             </div><!-- /content-top -->
             <?php endif; ?>
             <div id="content">
+            <?php if (empty($content_top)): ?>
+	            <?php if($context_links):?>
+	              <?php print $context_links;?>
+	            <?php endif; ?>
+            <?php endif; ?>
             <?php if (!empty($title)): ?>
               <h2 class="title<?php if ($tabs) : print ' with-tabs'; endif;?>"><?php print $title; ?></h2>
              <?php endif; ?>
