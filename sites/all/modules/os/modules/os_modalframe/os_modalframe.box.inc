@@ -13,6 +13,7 @@ function os_modalframe_default_box() {
   $box->plugin_key = 'os_boxes_modal_siteinfo';
   $box->title = '';
   $box->description = 'Site Info';
+  $box->region = 'header_left';
   $box->options = array(
     'visibility' => 'feature',
   );
@@ -25,6 +26,7 @@ function os_modalframe_default_box() {
   $box->plugin_key = 'os_boxes_modal_sitelogo';
   $box->title = '';
   $box->description = 'Site Logo';
+  $box->region = 'header_main';
   $box->options = array(
     'visibility' => 'feature',
   );
