@@ -135,7 +135,8 @@ function os_modalframe_content_default_fields() {
     'suffix' => '',
     'min' => '',
     'max' => '',
-    'allowed_values' => '200 pixels|200
+    'allowed_values' => '150 pixels|150
+200 pixels|200
 300 pixels|300
 500 pixels|500',
     'allowed_values_php' => '',
@@ -215,7 +216,7 @@ function os_modalframe_content_default_fields() {
     ),
     'url' => 'optional',
     'title' => 'value',
-    'title_value' => '<img src="[field_free_image-filefield-filename]">',
+    'title_value' => '[os_modalframe_image_src]',
     'enable_tokens' => 0,
     'validate_url' => 1,
     'widget' => array(

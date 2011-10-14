@@ -21,7 +21,15 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
     $node = node_load($this->options['nid']);
 
     $block = parent::render();
-    $block['content'] = content_format('field_gallery_image', $node->field_gallery_image[0], 'gallery_thumb_linked', $node);
+    $img = content_format('field_free_image', $node->field_free_image[0], 'os_modal_image_'.$node->field_free_image_size[0]['value'].'_default', $node);
+    if (empty($node->field_link_from_image[0]['url'])) {
+      $block['content'] = $img;
+    }
+    else {
+      $out = content_format('field_link_from_image', $node->field_link_from_image[0], 'default', $node);
+      $block['content'] = str_replace('[os_modalframe_image_src]', $img, $out);
+    }
+
     return $block;
   }
 
