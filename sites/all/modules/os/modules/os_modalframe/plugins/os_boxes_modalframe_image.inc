@@ -30,6 +30,8 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
       $block['content'] = str_replace('[os_modalframe_image_src]', $img, $out);
     }
 
+    $block['content'] .= check_markup($node->body, $node->format, FALSE);
+
     return $block;
   }
 
@@ -37,7 +39,7 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
     if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'free_image_node_form') {
 
       // hide unnecessary fields
-      $whitelist = array('title', 'field_free_image', 'field_free_image_size', 'field_link_from_image', 'buttons');
+      $whitelist = array('title', 'body_field', 'field_free_image', 'field_free_image_size', 'field_link_from_image', 'buttons');
       module_load_include('inc', 'spaces_og', 'spaces_og.pages');
       foreach (element_children($form) as $child) {
         if ($form[$child]['#type'] != 'value' && $form[$child]['#type'] != 'hidden') {
@@ -49,6 +51,8 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
 
       $form['title']['#title'] = t('Widget Name');
       $form['title']['#description'] = t('This name will only appear in your Control Panel.');
+
+      $form['body_field']['body']['#rows'] = 5;
 
       $form['widget_title'] = array(
         '#type' => 'textfield',
@@ -74,15 +78,5 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
     $form_state['values']['box']['title'] = $form_state['values']['widget_title'];
     $form_state['values']['box']['description'] = $form_state['values']['title'];
     return parent::submit($form, $form_state);
-  }
-
-  public function access() {
-    if ($vsite = vsite_get_vsite()) {
-      return $vsite->access_feature('edit', 'scholar_image_gallery');
-    }
-    else {
-      return vsite_node_menu_access();
-
-    }
   }
 }

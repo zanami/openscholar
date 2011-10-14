@@ -38,7 +38,6 @@ function os_modalframe_boxes_plugins() {
     'title' => 'Single Image',
     'description' => 'Single Image',
     'tags' => array('Media'),
-    'module dependencies' => array('scholar_image_gallery'),
     'handler' => array(
       'class' => 'os_boxes_modalframe_image',
       'file' => 'os_boxes_modalframe_image.inc',
