@@ -55,9 +55,11 @@
         <div class="wrap clearfix">
           <div class="hg-container">
           <div id="content-main" class="column<?php if (!empty($content_left)){ echo " content-left"; } if (!empty($content_right)){ echo " content-right"; } ?>">
+            <div id="content-admin-top" class="clearfix">
             <?php if($context_links):?>
               <?php print $context_links;?>
             <?php endif; ?>
+            </div>
             <?php if (!empty($content_top)): ?>
             <div id="content-top">
               <?php print $content_top; ?>
