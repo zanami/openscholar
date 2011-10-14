@@ -1,16 +1,72 @@
 <?php
 
 /**
- * Implementation of hook_ctools_plugin_api().
+ * Implementation of hook_imagecache_default_presets().
  */
-function os_modalframe_ctools_plugin_api() {
-  list($module, $api) = func_get_args();
-  if ($module == "boxes" && $api == "box") {
-    return array("version" => 1);
-  }
-  elseif ($module == "strongarm" && $api == "strongarm") {
-    return array("version" => 1);
-  }
+function os_modalframe_imagecache_default_presets() {
+  $items = array(
+    'os_modal_image_150' => array(
+      'presetname' => 'os_modal_image_150',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '150',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
+    'os_modal_image_200' => array(
+      'presetname' => 'os_modal_image_200',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '200',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
+    'os_modal_image_300' => array(
+      'presetname' => 'os_modal_image_300',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '300',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
+    'os_modal_image_500' => array(
+      'presetname' => 'os_modal_image_500',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '500',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
+  );
+  return $items;
 }
 
 /**
