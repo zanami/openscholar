@@ -260,6 +260,7 @@ function os_update_6005(&$sandbox) {
         $box->title = $box->description = "Publications By Type";
       break;
     }
+
     $s = "SELECT DISTINCT(id) AS sid, type FROM {spaces_overrides} WHERE object_type='context' AND value LIKE '%%%s%%' LIMIT 100";
     $q = db_query($s, $block);
     $num_results = 0;
@@ -304,7 +305,7 @@ function os_update_6005(&$sandbox) {
     );
   }else{
     // Report how much is left to complete.
-    $res['#finished'] = count($sandbox['os_update_6005']) / 3;
+    $res['#finished'] = 1 - count($sandbox['os_update_6005']) / 3;
   }
 
 

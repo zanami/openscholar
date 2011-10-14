@@ -7,7 +7,7 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
       return 'node/'.$this->options['nid'].'/edit';
     }
     else {
-      return 'node/add/image';
+      return 'node/add/free-image';
     }
   }
 
@@ -26,29 +26,45 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
   }
 
   public function form_alter(&$form, &$form_state) {
-    if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'image_node_form') {
-      parent::form_alter($form, $form_state);
+    if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'free_image_node_form') {
 
-      // hide unnecessary fields
-      $whitelist = array('title', 'field_gallery_image');
+      // hide unnecessary fieldsx
+      $whitelist = array('title', 'field_free_image', 'field_free_image_size', 'field_link_from_image', 'buttons');
+      module_load_include('inc', 'spaces_og', 'spaces_og.pages');
       foreach (element_children($form) as $child) {
         if ($form[$child]['#type'] != 'value' && $form[$child]['#type'] != 'hidden') {
           if (!in_array($child, $whitelist)) {
-            $form[$child]['#type'] = 'value';
+            _spaces_og_make_hidden($form[$child]);
           }
         }
       }
 
-      $form['buttons']['#type'] = 'markup';
-      $form['buttons']['preview']['#access'] = false;
-      $form['buttons']['delete']['#access'] = false;
-      $form['buttons']['preview_changes']['#access'] = false;
+      $form['title']['#title'] = t('Widget Name');
+      $form['title']['#description'] = t('This name will only appear in your Control Panel.');
+
+      $form['widget_title'] = array(
+        '#type' => 'textfield',
+        '#default_value' => $this->title,
+        '#title' => t('Widget Title'),
+        '#description' => t('The title of the widget as shown to the user.'),
+        '#weight' => -4,
+      );
+
+      if (isset($form['buttons'])) {
+        $form['buttons']['#type'] = 'markup';
+        $form['buttons']['preview']['#access'] = false;
+        $form['buttons']['delete']['#access'] = false;
+        $form['buttons']['preview_changes']['#access'] = false;
+      }
+      parent::form_alter($form, $form_state);
     }
   }
 
   static public function submit($form, $form_state) {
 
     $form_state['values']['box']['nid'] = $form_state['nid'];
+    $form_state['values']['box']['title'] = $form_state['values']['title'];
+    $form_state['values']['box']['description'] = $form_state['values']['widget_title'];
     return parent::submit($form, $form_state);
   }
 

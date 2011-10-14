@@ -41,7 +41,7 @@ function os_modalframe_boxes_plugins() {
       'path' => $path,
       'parent' => 'os_boxes_modalframe',
     ),
-    'factory_path' => 'node/add/image',
+    'factory_path' => 'node/add/free-image',
     'access' => "cp_access_cp",
   );
 
@@ -88,16 +88,17 @@ function os_modalframe_form_alter(&$form, &$form_state) {
 
 function os_modalframe_form_submit(&$form, &$form_state) {
   ctools_include('plugins');
-	$box_class = ctools_plugin_load_class('boxes', 'plugins', $form_state['values']['plugin_key'], 'handler');
+	$box_class = ctools_plugin_load_class('boxes', 'plugins', $form_state['values']['box']['plugin_key'], 'handler');
 	if ($box_class && is_callable("{$box_class}::submit")) {
 		$box = call_user_func(array($box_class,'submit'), $form, $form_state);
 	}
 
   ctools_include('ajax');
+  ctools_include('modal');
   if ($_GET['source'] == 'dropdown') {
     // coming from layout dropdown
     $args = array(
-      ctools_ajax_command_replace("div#cp-settings-layout dd#boxes-boxes_add__{$box->plugin_key}", theme('vsite_layout_ui_cp_widget', "boxes-{$box->delta}", os_boxes_get_vsite_widget($box))),
+      ctools_ajax_command_before('#scholarlayout-top-widgets .scholarlayout-item:nth-child(2)', theme('vsite_layout_ui_cp_widget', 'boxes-'.$box->delta, os_boxes_get_vsite_widget($box))),
   		array('command' => 'updateLayoutForm', 'warning' => true),
     );
   }
