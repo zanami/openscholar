@@ -222,7 +222,7 @@ function _vsite_layout_ui_build_dropdown($factories = array()) {
 
     // construct the link arrays
     $item = menu_get_item($wgt['block_config_path']);
-    $item['href'] .= $uses_modalframe?'/modal/box/'.$wgt['plugin']:'/dropdown';
+    $item['href'] .= $uses_modalframe?'/modal/box/'.$wgt['plugin'].'/configure/dropdown':'/dropdown';
     $item['title'] = $wgt['label'];
     $item['attributes']['class'] = strtolower(implode(' ', array('ctools-use-modal', $wgt['plugin'])));
     $options = array(
