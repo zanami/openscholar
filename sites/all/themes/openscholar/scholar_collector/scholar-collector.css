@@ -209,8 +209,8 @@ body.navbar #content-main {
   margin-left: 186px;
   }
 
-.header-main #block-scholar-1,
-.header-main-right #block-scholar-1 {
+.header-main .box-os_boxes_modal_sitelogo,
+.header-main-right .box-os_boxes_modal_sitelogo {
   padding-left: 149px;
   background: url(images/crest.png) no-repeat 21px 0 transparent;
   min-height: 112px;
