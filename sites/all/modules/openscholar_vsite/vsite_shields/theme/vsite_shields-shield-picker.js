@@ -1,5 +1,6 @@
 if (Drupal.jsEnabled) {
-  Drupal.behaviors.shields = function() {
+  Drupal.behaviors.shields = function(ctx) {
+	if ($('.shield_wrapper',ctx).length == 1) return;
     $('.shield_wrapper .form-radios ').hide();
 
     var theList = '<ul class="shield-picker">';
