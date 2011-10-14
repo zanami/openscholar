@@ -232,7 +232,7 @@ function os_modalframe_content_default_fields() {
       ),
       'default_value_php' => NULL,
       'label' => 'Link From Image',
-      'weight' => '-2',
+      'weight' => '-1',
       'description' => '',
       'type' => 'link',
       'module' => 'link',

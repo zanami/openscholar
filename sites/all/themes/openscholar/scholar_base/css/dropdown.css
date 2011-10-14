@@ -99,10 +99,10 @@ text-decoration:underline;
  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help a:hover { 
 position:relative;
 float:right;
- background: url('../images/scholarbase-sprite.png') 0 -147px no-repeat transparent;
+ background: url('../images/scholarbase-sprite.png') 0 -297px no-repeat transparent;
  width: 19px;
  height: 19px;
- margin: -25px -12px 0 0;
+ margin: -18px -12px 0 0;
 text-indent: -999em;
    }
    
