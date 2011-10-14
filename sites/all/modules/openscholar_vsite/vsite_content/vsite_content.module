@@ -7,16 +7,6 @@ include_once('vsite_content.features.inc');
  */
 function vsite_content_menu() {
   $items = array();
-
-  //files
-  $items['cp/content/files'] = array(
-    'title' => 'Files',
-    'page callback' => 'vsite_content_files',
-    'type' => MENU_LOCAL_TASK,
-    'menu_name' => 'cp',
-    'access callback' => 'cp_access_cp',
-    'weight' => 30,
-  );
   
   //Add local task for cp content
   $items['cp/content/all'] = array(
@@ -26,7 +16,7 @@ function vsite_content_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'menu_name' => 'cp',
     'access callback' => 'cp_access_cp',
-    'weight' => 10,
+    'weight' => -10,
   );
   
   return $items;
@@ -38,19 +28,6 @@ function vsite_content_menu() {
 function vsite_content_menu_alter(&$items){
   //Remove the edit local task, this will be handled by the context links.
   $items['node/%node/edit']['type'] = MENU_CALLBACK;
-}
-
-
-/**
- * callback function for cp/content/files
- */
-function vsite_content_files() {
-
-  $vsite = vsite_get_vsite();
-  $view_name = 'vsite_files';
-  $display = 'default';
-
-  return views_page($view_name, $display);
 }
 
 function vsite_content_form_views_bulk_operations_form__1_alter(&$form, $form_state, $form_id = 'views_bulk_operations_form__1') {

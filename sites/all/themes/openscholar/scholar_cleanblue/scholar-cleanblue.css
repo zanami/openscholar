@@ -126,9 +126,9 @@ p.copy {
 
 .field-content a {color:#106599;}
 
-#header-left #block-scholar-1 .content, 
-#header-right #block-scholar-1 .content, 
-#header-main #block-scholar-1 .content {
+#header-left .box-os_boxes_modal_sitelogo .content, 
+#header-right .box-os_boxes_modal_sitelogo .content, 
+#header-main .box-os_boxes_modal_sitelogo .content {
 	height:84px;background:url('images/siteInfoBg.gif') no-repeat;background-position:left;padding-left:20px;margin-top: 20px;
 	}
 
