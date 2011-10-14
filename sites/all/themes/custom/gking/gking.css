@@ -413,7 +413,7 @@ a.more {
   padding-top:0;
   }
 
-.box-os_boxes_modal_sitelogo h1,
+.box-os_boxes_modal_siteinfo h1,
 #navbar ul li {
   float: left;
   margin: 0;
@@ -447,7 +447,7 @@ a.more {
   margin-right: 0;
   }
 
-.box-os_boxes_modal_sitelogo h1 {
+.box-os_boxes_modal_siteinfo h1 {
   width: 168px;
   text-align: center;
   font-weight: normal;
@@ -455,8 +455,8 @@ a.more {
   font-size: 19px;
   }
 
-.box-os_boxes_modal_sitelogo h1 a,
-.box-os_boxes_modal_sitelogo h1 a:visited {
+.box-os_boxes_modal_siteinfo h1 a,
+.box-os_boxes_modal_siteinfo h1 a:visited {
   color:#fff;
   background:#636363;
   display:block;
@@ -464,12 +464,12 @@ a.more {
   height: 29px;
   }
 
-.box-os_boxes_modal_sitelogo h1 a:hover {
+.box-os_boxes_modal_siteinfo h1 a:hover {
   background-color: #000;
   color: #fff;
   }
 
-#navbar ul li a, .box-os_boxes_modal_sitelogo h1 a {
+#navbar ul li a, .box-os_boxes_modal_siteinfo h1 a {
   display:block;
   }
 
@@ -485,7 +485,7 @@ a.more {
   background-color:#db7002;
   }
 
-.box-os_boxes_modal_sitelogo h2, .box-os_boxes_modal_sitelogo p {
+.box-os_boxes_modal_siteinfo h2, .box-os_boxes_modal_siteinfo p {
   display:none;
   }
 
@@ -554,7 +554,7 @@ body.header-right-main #header .hg-container {
 
 /* FRONT PAGE ELEMENTS */
 
-#header #block-scholar_biocv-bio_blurb {
+.front #header-main .box-os_boxes_simple {
   background: url('images/front-photo.jpg') 0 0 no-repeat transparent;
   position:relative;
   padding-top:66px;
@@ -571,11 +571,11 @@ body.header-right-main #header .hg-container {
   font-size:1.1em;
   }
 
-#header #block-scholar_biocv-bio_blurb h3 {
+.front #header-main .box-os_boxes_simple h3 {
   display:none;
   }
 
-#header #block-scholar_biocv-bio_blurb .content {
+.front #header-main .box-os_boxes_simple .content {
   margin-top: 0;
   }
 
@@ -1008,8 +1008,8 @@ body.gking-alt #navbar {
   height: 30px;
   }
 
-body.gking-alt .box-os_boxes_modal_sitelogo h1,
-body.gking-alt .box-os_boxes_modal_sitelogo h1 a {
+body.gking-alt .box-os_boxes_modal_siteinfo h1,
+body.gking-alt .box-os_boxes_modal_siteinfo h1 a {
   height:30px;
   line-height: 30px;
   }
