@@ -166,3 +166,12 @@ div.ctools-modal-content .resizable-textarea {
   top: auto;
   background: url('../images/dropdown-window-bot.png') repeat-x 0 100% transparent;
   }
+
+#modalframe-container {
+	padding: 0;
+  overflow: hidden;  
+}
+
+#modalframe-element {
+	border: 0;
+}
