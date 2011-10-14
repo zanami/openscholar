@@ -36,7 +36,7 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
   public function form_alter(&$form, &$form_state) {
     if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'free_image_node_form') {
 
-      // hide unnecessary fieldsx
+      // hide unnecessary fields
       $whitelist = array('title', 'field_free_image', 'field_free_image_size', 'field_link_from_image', 'buttons');
       module_load_include('inc', 'spaces_og', 'spaces_og.pages');
       foreach (element_children($form) as $child) {
@@ -71,8 +71,8 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
   static public function submit($form, $form_state) {
 
     $form_state['values']['box']['nid'] = $form_state['nid'];
-    $form_state['values']['box']['title'] = $form_state['values']['title'];
-    $form_state['values']['box']['description'] = $form_state['values']['widget_title'];
+    $form_state['values']['box']['title'] = $form_state['values']['widget_title'];
+    $form_state['values']['box']['description'] = $form_state['values']['title'];
     return parent::submit($form, $form_state);
   }
 
