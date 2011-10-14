@@ -68,9 +68,10 @@ function os_boxes_put_box($context, &$vsite, $box, $region) {
     $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block:'.$og_theme,'space');
     
     if(!$context_block_reaction){
-      $context_block_reaction = $vsite->controllers->context->get('openscholar-feature-front:reaction:block:'.$og_theme);
+      $context_block_reaction = $vsite->controllers->context->get($context.':reaction:block');
+      
       //Since og_theme is not avalible in updates
-      _os_boxes_apply_theme_settings($context_block_reaction['blocks'],$og_theme);
+      if(is_array($context_block_reaction['blocks'])) _os_boxes_apply_theme_settings($context_block_reaction['blocks'],$og_theme);
     }//No space get from preset
   }
 

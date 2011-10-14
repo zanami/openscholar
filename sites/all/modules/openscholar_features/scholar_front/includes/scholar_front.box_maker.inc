@@ -259,8 +259,8 @@ function scholar_front_fb_add_block(&$vsite, $block) {
 	  $front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block:'.$og_theme,'space');
 	  
 	  if(!$front_context){
-	  	$front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block:'.$og_theme);
-	  	_os_boxes_apply_theme_settings($front_context['blocks'],$og_theme);
+	  	$front_context = $vsite->controllers->context->get('openscholar-feature-front:reaction:block');
+	  	if(is_array($front_context['blocks'])) _os_boxes_apply_theme_settings($front_context['blocks'],$og_theme);
 	  }//No space get from preset
 	  
 	}//og_theme is not avalible in the context controller during update, lets do it manually if space override exists
