@@ -169,6 +169,7 @@ div.ctools-modal-content .resizable-textarea {
 
 #modalframe-container {
 	padding: 0;
+  overflow: hidden;  
 }
 
 #modalframe-element {
