@@ -44,14 +44,15 @@ class os_boxes_oembed extends os_boxes_default {
       '#title' => t('Embed.ly Provider URL'),
       '#default_value' => $this->options['oembed_url'],
       '#process' => array('ctools_dependent_process'),
-      '#dependency' => array('radio:selection' => array('oembed_url'))
+      '#dependency' => array('radio:selection' => array('oembed_url')),
+      '#description' => t('Link to embed.ly supported provider (ie YouTube, Flickr, imgur).'),
     );
 
     $form['pasted'] = array(
       '#type' => 'textarea',
       '#title' => t('HTML embed tag'),
       '#default_value' => $this->options['pasted'],
-//      '#description' => embedfilter_filter_tips(0, 1),
+      '#description' => t('Use html embed tag to provide swf or other embeddable media.'),
       '#process' => array('ctools_dependent_process'),
       '#dependency' => array('radio:selection' => array('pasted'))
     );
