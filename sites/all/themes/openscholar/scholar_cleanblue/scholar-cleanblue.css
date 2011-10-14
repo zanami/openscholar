@@ -126,9 +126,9 @@ p.copy {
 
 .field-content a {color:#106599;}
 
-#header-left .box-os_boxes_modal_sitelogo .content, 
-#header-right .box-os_boxes_modal_sitelogo .content, 
-#header-main .box-os_boxes_modal_sitelogo .content {
+#header-left .box-os_boxes_modal_siteinfo .boxes-box, 
+#header-right .box-os_boxes_modal_siteinfo .boxes-box, 
+#header-main .box-os_boxes_modal_siteinfo .boxes-box {
 	height:84px;background:url('images/siteInfoBg.gif') no-repeat;background-position:left;padding-left:20px;margin-top: 20px;
 	}
 
