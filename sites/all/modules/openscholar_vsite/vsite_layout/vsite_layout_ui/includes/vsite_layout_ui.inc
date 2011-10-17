@@ -379,6 +379,7 @@ function vsite_layout_ui_settings_form($form_state){
     '#type' => 'submit',
     '#value' => t('Reset to defaults'),
     '#submit' => array('vsite_layout_ui_settings_form_reset'),
+    '#access' => user_access('reset layout to defaults'),
     '#weight' => 101,
   );
 
