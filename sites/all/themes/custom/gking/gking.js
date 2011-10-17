@@ -20,7 +20,7 @@ $(document).ready(function() {
           $(this).stop().animate({backgroundColor:'#ffffff'}, 100);
       });
 
-    $('#block-scholar_biocv-bio_blurb a.more').attr("href","#");
+    $('.front #header-main .box-os_boxes_simple a.more').attr("href","#");
 
     var container = $("body.front #node-3793");
     container.prepend('<a class="more" href="#">CLOSE X</a>');
