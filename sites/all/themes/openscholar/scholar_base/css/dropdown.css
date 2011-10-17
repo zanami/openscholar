@@ -61,7 +61,7 @@ html.js div.ctools-dropdown div.ctools-dropdown-container {
  width:300px;
  font-size:1.2em;
  padding:8px;
-height:600px;
+height:auto;
  overflow:auto;
    }
    
@@ -83,8 +83,7 @@ border-bottom:1px dotted #555;
 #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.first, 
 #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.first.last,
 #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li.last,
-#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li
-{ 
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li { 
 background:#EEE;
 padding-left:0px;
 border-bottom:none;
@@ -93,22 +92,12 @@ text-align: left;
 
  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a:hover { 
 text-decoration:underline;
+text-transform: none;
 }
    
-#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help,
- #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help a:hover { 
-position:relative;
-float:right;
- background: url('../images/scholarbase-sprite.png') 0 -297px no-repeat transparent;
- width: 19px;
- height: 19px;
- margin: -18px -12px 0 0;
-text-indent: -999em;
-   }
-   
-    
-    
-#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a { 
+
+
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a { 
  font-weight:normal;
  background:url('/sites/all/modules/openscholar_vsite/vsite_layout/vsite_layout_ui/theme/images/smallWidgetIcons/widget-bgSmall.png') no-repeat;
  padding:0 0 4px 25px;
@@ -117,7 +106,30 @@ text-indent: -999em;
 height:25px;
    }
    
-#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_pub_grps { 
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help,
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help a:hover { 
+position:relative;
+float:right;
+ background: url('../images/scholarbase-sprite.png') 0 -297px no-repeat transparent;
+ width: 19px;
+ height: 19px;
+margin-top: -18px;
+margin-right:-12px;
+text-indent: -999em;
+   }
+    
+
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li .help {
+margin-top:0px; /* This works only in Safari and Google Chrome */
+}
+}
+   
+   
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_pub_grps,
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_pub_ca,
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_pub_type,
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_pub_year { 
  background:url('/sites/all/modules/openscholar_vsite/vsite_layout/vsite_layout_ui/theme/images/smallWidgetIcons/publications.png') no-repeat;
 }
    
@@ -164,17 +176,6 @@ height:25px;
 
 
   /*CTOOLS DROPDOWN ON LAYOUT PAGE - END*/
-
-/*
-.context-links,
-.section-cp div.ctools-dropdown {
-  margin: 0 30px 0 0;
-  float:right;
-  background: url('../images/scholarbase-sprite.png') no-repeat 6px -388px #eaf7e7 !important;
-  padding: 0 10px 0 23px !important;
-  border: 1px solid #ccdbc9;
-}*/
-
 
 .context-links,
 .section-cp div.ctools-dropdown {
@@ -270,10 +271,8 @@ h2.title a.ctools-dropdown-link,
 .ctools-dropdown ul.links li a:hover,
 .ctools-dropdown-container-wrapper ul.links li a:hover {
   color: #333 !important;
-  text-transform: capitalize !important;
   text-decoration: none !important;
-  
-  font-weight: bold !important;
+font-weight: bold !important;
 }
 
 #cp-settings-layout .context-links .ctools-dropdown-container-wrapper a:hover {
@@ -283,7 +282,7 @@ h2.title a.ctools-dropdown-link,
 
   font-weight: normal !important;
 }
-}
+
 
 .context-links .ctools-dropdown-container-wrapper .flag-wrapper a {
   display:inline;

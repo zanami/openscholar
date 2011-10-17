@@ -5,20 +5,21 @@
  */
 function os_wysiwyg_strongarm() {
   $export = array();
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'better_formats_per_node_type';
   $strongarm->value = 1;
-
   $export['better_formats_per_node_type'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'embedfilter_filtertip';
   $strongarm->value = 'You can use &lt;object>, &lt;embed> and &lt;script> tags from the following sites to add media to your posts. You must disable the rich text editor for this to work.';
-
   $export['embedfilter_filtertip'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -32,85 +33,85 @@ google.com
 yahoo.com
 thedailyshow.com
 mtvnservices.com';
-
   $export['embedfilter_host_whitelist'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'filter_default_format';
   $strongarm->value = '1';
-
   $export['filter_default_format'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'filter_html_1';
   $strongarm->value = '1';
-
   $export['filter_html_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'filter_html_help_1';
   $strongarm->value = 1;
-
   $export['filter_html_help_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'filter_html_nofollow_1';
   $strongarm->value = 0;
-
   $export['filter_html_nofollow_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'format';
   $strongarm->value = '1';
-
   $export['format'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'oembed_maxheight_1';
   $strongarm->value = '';
-
   $export['oembed_maxheight_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'oembed_maxheight_2';
   $strongarm->value = '';
-
   $export['oembed_maxheight_2'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'oembed_maxheight_6';
   $strongarm->value = '';
-
   $export['oembed_maxheight_6'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'oembed_maxwidth_1';
   $strongarm->value = '440';
-
   $export['oembed_maxwidth_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'oembed_maxwidth_2';
   $strongarm->value = '440';
-
   $export['oembed_maxwidth_2'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'oembed_maxwidth_6';
   $strongarm->value = '440';
-
   $export['oembed_maxwidth_6'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -127,8 +128,8 @@ mtvnservices.com';
     'padding-right' => 0,
     'padding-bottom' => 0,
   );
-
   $export['wysiwyg_filter_styles_box_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -145,8 +146,8 @@ mtvnservices.com';
     'padding-right' => 0,
     'padding-bottom' => 0,
   );
-
   $export['wysiwyg_filter_styles_box_5'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -163,8 +164,8 @@ mtvnservices.com';
     'padding-right' => 0,
     'padding-bottom' => 0,
   );
-
   $export['wysiwyg_filter_styles_box_6'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -178,8 +179,8 @@ mtvnservices.com';
     'min-height' => 0,
     'min-width' => 0,
   );
-
   $export['wysiwyg_filter_styles_dimension_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -193,8 +194,8 @@ mtvnservices.com';
     'min-height' => 0,
     'min-width' => 0,
   );
-
   $export['wysiwyg_filter_styles_dimension_5'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -208,8 +209,8 @@ mtvnservices.com';
     'min-height' => 0,
     'min-width' => 0,
   );
-
   $export['wysiwyg_filter_styles_dimension_6'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -224,8 +225,8 @@ mtvnservices.com';
     'font-variant' => 0,
     'font-weight' => 0,
   );
-
   $export['wysiwyg_filter_styles_font_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -240,8 +241,8 @@ mtvnservices.com';
     'font-style' => 0,
     'font-variant' => 0,
   );
-
   $export['wysiwyg_filter_styles_font_5'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -256,8 +257,8 @@ mtvnservices.com';
     'font-variant' => 0,
     'font-weight' => 0,
   );
-
   $export['wysiwyg_filter_styles_font_6'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -269,8 +270,8 @@ mtvnservices.com';
     'position' => 0,
     'visibility' => 0,
   );
-
   $export['wysiwyg_filter_styles_layout_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -282,8 +283,8 @@ mtvnservices.com';
     'position' => 0,
     'visibility' => 0,
   );
-
   $export['wysiwyg_filter_styles_layout_5'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -295,8 +296,8 @@ mtvnservices.com';
     'position' => 0,
     'visibility' => 0,
   );
-
   $export['wysiwyg_filter_styles_layout_6'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -312,8 +313,8 @@ mtvnservices.com';
     'direction' => 0,
     'unicode-bidi' => 0,
   );
-
   $export['wysiwyg_filter_styles_text_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -329,8 +330,8 @@ mtvnservices.com';
     'direction' => 0,
     'unicode-bidi' => 0,
   );
-
   $export['wysiwyg_filter_styles_text_5'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -346,8 +347,8 @@ mtvnservices.com';
     'direction' => 0,
     'unicode-bidi' => 0,
   );
-
   $export['wysiwyg_filter_styles_text_6'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -879,8 +880,8 @@ mtvnservices.com';
       'style' => array(),
     ),
   );
-
   $export['wysiwyg_filter_valid_elements_parsed_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -1049,8 +1050,8 @@ mtvnservices.com';
       'title' => array(),
     ),
   );
-
   $export['wysiwyg_filter_valid_elements_parsed_5'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -1530,8 +1531,8 @@ mtvnservices.com';
       'style' => array(),
     ),
   );
-
   $export['wysiwyg_filter_valid_elements_parsed_6'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -1548,8 +1549,8 @@ td[colspan|rowspan|align<center?justify?left?right|valign],
 caption,
 address,h2,h3,h4,h5,h6,pre,
 strong/b,em/i,strike,u';
-
   $export['wysiwyg_filter_valid_elements_raw_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -1560,8 +1561,8 @@ div[align<center?justify?left?right|style],
 p[align<center?justify?left?right|style],
 br,span[id|style],em/i,strong/b,cite,code,blockquote,ul,ol,li,dl,dt,dd,
 object[width|height],param[name|value],embed[*], img[!src|width|height]';
-
   $export['wysiwyg_filter_valid_elements_raw_5'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -1577,8 +1578,8 @@ tr[align<center?justify?left?right|valign],
 td[colspan|rowspan|align<center?justify?left?right|valign],
 caption,
 address,h2,h3,h4,h5,h6,pre';
-
   $export['wysiwyg_filter_valid_elements_raw_6'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -1586,8 +1587,8 @@ address,h2,h3,h4,h5,h6,pre';
   $strongarm->value = array(
     0 => 'mce*',
   );
-
   $export['wysiwyg_filter_valid_ids_1'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -1595,8 +1596,8 @@ address,h2,h3,h4,h5,h6,pre';
   $strongarm->value = array(
     0 => 'os-*',
   );
-
   $export['wysiwyg_filter_valid_ids_5'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -1604,7 +1605,7 @@ address,h2,h3,h4,h5,h6,pre';
   $strongarm->value = array(
     0 => 'mce*',
   );
-
   $export['wysiwyg_filter_valid_ids_6'] = $strongarm;
+
   return $export;
 }
