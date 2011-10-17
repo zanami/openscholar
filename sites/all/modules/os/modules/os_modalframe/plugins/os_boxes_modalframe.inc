@@ -65,6 +65,10 @@ abstract class os_boxes_modalframe extends os_boxes_default {
         '#value' => $this->title,
         '#type' => 'value',
       ),
+      'region' => array(
+        '#value' => $this->region,
+        '#type' => 'value',
+      ),
     );
 
     $form['box'] = $box_form;

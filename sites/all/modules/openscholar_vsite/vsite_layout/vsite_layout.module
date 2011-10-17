@@ -75,11 +75,16 @@ function vsite_layout_remove_widget($js, $delta, $ctx) {
   // remove box from context
   // save context
   $vsite = vsite_get_vsite();
-  $ctx_key = $ctx.':reaction:block';
-  $ctx = $vsite->controllers->context->get($ctx_key);
-  $ctx['blocks']['boxes-'.$delta]['region'] = false;
-  $vsite->controllers->context->set($ctx_key.':'.$vsite->group->og_theme, $ctx);
-
+  if($vsite){
+	  $ctx_key = $ctx.':reaction:block';
+	  $ctx = $vsite->controllers->context->get($ctx_key);
+	  
+	  if($ctx && isset($ctx['blocks']['boxes-'.$delta])){
+		  $ctx['blocks']['boxes-'.$delta]['region'] = false;
+		  $vsite->controllers->context->set($ctx_key.':'.$vsite->group->og_theme, $ctx);
+	  }
+  }
+  
   if (!$js) {
     drupal_goto('<front>');
   }
@@ -260,4 +265,13 @@ function vsite_layout_vsite_widgets_access($widget ,$account = false){
   }
     
   return true;
+}
+
+/**
+ * Add new permissions for layout admin functions
+ */
+function vsite_layout_perm(){
+	return array(
+    "reset layout to defaults",
+  );
 }

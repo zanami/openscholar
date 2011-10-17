@@ -53,6 +53,7 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
       $form['title']['#description'] = t('This name will only appear in your Control Panel.');
 
       $form['body_field']['body']['#rows'] = 5;
+      $form['body_field']['body']['#description'] = t('Enter a caption to appear underneath your image.');
 
       $form['widget_title'] = array(
         '#type' => 'textfield',
