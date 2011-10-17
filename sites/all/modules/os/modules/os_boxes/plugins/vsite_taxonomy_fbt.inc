@@ -160,8 +160,7 @@ class vsite_taxonomy_fbt extends os_boxes_default {
 	      	$terms = array_slice($terms,0,$this->options['number_of_items'],true);
 	      }//Just show n terms
 
-	      $n_index = 0;
-	      $items = theme('vsite_taxonomy_term_list',$n_index, $terms,'vsite_taxonomy_term', $this->options['show_term_descriptions'], $this->options['show_empty_terms'], $b_show_admin_links = false, $s_term_filter = ($active_feature?"scholar_".$active_feature:false), true);
+	      $items = theme('vsite_taxonomy_term_list',0, $terms,'vsite_taxonomy_term', $this->options['show_term_descriptions'], $this->options['show_empty_terms'], $b_show_admin_links = false, $s_term_filter = ($active_feature?"scholar_".$active_feature:false), true);
 
 	      if (count($items)) {
 	        $terms_html .= strlen($terms_html)?'</div></div><div class="block block-views"><div class="content">':""; //sudo blocks
