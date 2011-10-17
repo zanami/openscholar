@@ -5,7 +5,6 @@
  */
 function scholar_image_gallery_default_box() {
   $export = array();
-
   $box = new stdClass;
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
@@ -18,7 +17,7 @@ function scholar_image_gallery_default_box() {
     'gallery' => 'all',
     'number_of_items' => '6',
   );
-  $export['image_gallery_recent_images'] = $box;
 
+  $export['image_gallery_recent_images'] = $box;
   return $export;
 }

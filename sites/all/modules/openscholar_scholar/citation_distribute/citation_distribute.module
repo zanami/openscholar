@@ -517,7 +517,7 @@ function citation_distribute_views_pre_render(&$view) {
 				
 				//add flags that use a CD plugin as a callback and that CD plugin has a title
 				if ( isset($plugins[$flag_function]['title'])) {
-					$plugin['operations'][$op]['selected'] = 1;
+					$plugin['selected_operations'][$op] = $op;
 				}
 			}
 		  $view->style_plugin->options = $plugin;
