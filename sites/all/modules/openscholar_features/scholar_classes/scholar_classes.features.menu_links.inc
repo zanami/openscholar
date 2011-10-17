@@ -14,7 +14,7 @@ function scholar_classes_menu_default_menu_links() {
     'link_title' => 'Classes',
     'options' => array(
       'attributes' => array(
-        'title' => 'list of classes',
+        'title' => 'my images',
       ),
     ),
     'module' => 'system',
