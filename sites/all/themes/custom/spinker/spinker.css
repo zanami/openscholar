@@ -83,6 +83,14 @@ p.copy {
   margin-top: 0;
   }
 
+
+.views-field-title {
+	background: url('images/blueBullet.gif') no-repeat;
+	padding-left:12px;
+	background-position:left top; 
+}
+
+
 /* LAYOUT ELEMENTS */
 
 #page {
@@ -298,7 +306,7 @@ td {
 }
 
 .views-row {
-	margin-bottom: 1em;
+	margin-bottom: .7em;
 }
 
 p, 
