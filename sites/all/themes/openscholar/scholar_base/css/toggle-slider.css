@@ -30,6 +30,8 @@
 
 /* WELCOME MESSAGE SPECIFIC */
 
+#block-scholar_front-get_started {width:85%;}
+
 #message_welcome_message {
   margin-bottom: 1em;
   position: static;
