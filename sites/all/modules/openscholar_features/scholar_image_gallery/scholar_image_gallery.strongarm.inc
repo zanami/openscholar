@@ -5,6 +5,7 @@
  */
 function scholar_image_gallery_strongarm() {
   $export = array();
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -14,85 +15,85 @@ function scholar_image_gallery_strongarm() {
     1 => 3,
     2 => 5,
   );
-
   $export['better_formats_allowed_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_anonymous_gallery';
   $strongarm->value = '0';
-
   $export['comment_anonymous_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_controls_gallery';
   $strongarm->value = '3';
-
   $export['comment_controls_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_gallery';
   $strongarm->value = '4';
-
   $export['comment_default_mode_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_order_gallery';
   $strongarm->value = '1';
-
   $export['comment_default_order_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_per_page_gallery';
   $strongarm->value = '50';
-
   $export['comment_default_per_page_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_form_location_gallery';
   $strongarm->value = '0';
-
   $export['comment_form_location_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_gallery';
   $strongarm->value = '0';
-
   $export['comment_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_image';
   $strongarm->value = 0;
-
   $export['comment_image'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_preview_gallery';
   $strongarm->value = '1';
-
   $export['comment_preview_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_subject_field_gallery';
   $strongarm->value = '1';
-
   $export['comment_subject_field_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'ffp_image_field_gallery_image';
   $strongarm->value = 0;
-
   $export['ffp_image_field_gallery_image'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -100,8 +101,8 @@ function scholar_image_gallery_strongarm() {
   $strongarm->value = array(
     0 => 'status',
   );
-
   $export['node_options_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -109,8 +110,8 @@ function scholar_image_gallery_strongarm() {
   $strongarm->value = array(
     0 => 'status',
   );
-
   $export['node_options_image'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -212,8 +213,8 @@ function scholar_image_gallery_strongarm() {
       'hidden' => 0,
     ),
   );
-
   $export['nodeformscols_field_placements_gallery_default'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -320,77 +321,77 @@ function scholar_image_gallery_strongarm() {
       'hidden' => 0,
     ),
   );
-
   $export['nodeformscols_field_placements_image_default'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'og_content_type_usage_gallery';
   $strongarm->value = 'group_post_standard';
-
   $export['og_content_type_usage_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'og_content_type_usage_image';
   $strongarm->value = 'group_post_standard';
-
   $export['og_content_type_usage_image'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'pathauto_node_gallery_pattern';
   $strongarm->value = '[space-og-path]/galleries/[title-raw]';
-
   $export['pathauto_node_gallery_pattern'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'pathauto_node_image_pattern';
   $strongarm->value = '[space-og-path]/galleries/[field_gallery-path]/[title-raw]';
-
   $export['pathauto_node_image_pattern'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'show_diff_inline_gallery';
   $strongarm->value = 0;
-
   $export['show_diff_inline_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'show_diff_inline_image';
   $strongarm->value = FALSE;
-
   $export['show_diff_inline_image'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'show_preview_changes_gallery';
   $strongarm->value = 0;
-
   $export['show_preview_changes_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'show_preview_changes_image';
   $strongarm->value = FALSE;
-
   $export['show_preview_changes_image'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'upload_gallery';
   $strongarm->value = '0';
-
   $export['upload_gallery'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'upload_image';
   $strongarm->value = 0;
-
   $export['upload_image'] = $strongarm;
+
   return $export;
 }
