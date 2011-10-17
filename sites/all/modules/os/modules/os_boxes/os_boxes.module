@@ -461,7 +461,7 @@ function os_boxes_menu() {
  */
 function os_boxes_cp_layout_configurable($delta){
 
-	if(!user_access('cp_access_cp')) return false;
+	if(!cp_access_cp()) return false;
 
   if ($delta && strpos($delta, 'boxes_add__') !== 0) {
   	//Box instance
@@ -485,8 +485,11 @@ function os_boxes_vsite_admin_link($type, $object) {
   $links = array();
   if ($type != 'block') return $links;
 
-
-  if ($object->module == 'boxes' && ($box = boxes_load($object->delta)) && spaces_access_admin()) {
+  if ($object->module == 'boxes' && ($box = boxes_load($object->delta)) && os_boxes_cp_layout_configurable($object->delta)) {
+    if (!$object->block_config_path) {
+      $wdgt = os_boxes_get_vsite_widget($box);
+      $object->block_config_path = $wdgt['block_config_path'];
+    }
     $links[] = array(
       'title' => 'Configure',
       'href' => $object->block_config_path.'/front',
@@ -584,7 +587,7 @@ function os_boxes_form_alter(&$form, &$form_state, $form_id) {
 
   	  $form['title']['#title'] = t('Widget Title');
   	  $form['title']['#description'] = t('The title of the widget as shown to the user.');
-  	  
+
   	  //Keep track of boxes last update time, can be used to expire cache
   	  $form['changed'] = array('#type' => 'value', '#value' => time());
 
@@ -638,7 +641,7 @@ function os_boxes_preprocess_block(&$vars) {
       drupal_add_css($plugins[$block -> plugin]['css']);
     }
   }
-  
+
   /**
    * Adds useful plugin classes to blocks for theming
    */
