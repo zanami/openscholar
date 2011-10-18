@@ -99,13 +99,13 @@ function scholar_image_gallery_node_info() {
     'gallery' => array(
       'name' => t('Gallery'),
       'module' => 'features',
-      'description' => t('A gallery for a collection of images.'),
+      'description' => '',
       'has_title' => '1',
       'title_label' => t('Title'),
       'has_body' => '1',
       'body_label' => t('Description'),
       'min_word_count' => '0',
-      'help' => '',
+      'help' => t('this is a container for your images'),
     ),
     'image' => array(
       'name' => t('Image'),

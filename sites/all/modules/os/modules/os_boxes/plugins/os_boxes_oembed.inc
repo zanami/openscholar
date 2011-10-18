@@ -45,7 +45,7 @@ class os_boxes_oembed extends os_boxes_default {
       '#default_value' => $this->options['oembed_url'],
       '#process' => array('ctools_dependent_process'),
       '#dependency' => array('radio:selection' => array('oembed_url')),
-      '#description' => t('Link to embed.ly supported provider (ie YouTube, Flickr, imgur).'),
+      '#description' => t('Link to embed.ly supported provider (See: <a href="http://embed.ly/providers" target="_blank">Embed.ly\'s Provider List</a>).'),
     );
 
     $form['pasted'] = array(

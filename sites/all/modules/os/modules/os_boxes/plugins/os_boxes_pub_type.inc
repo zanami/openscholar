@@ -58,47 +58,36 @@ class os_boxes_pub_type extends os_boxes_default {
     //@todo
     $block = parent::render();
 
-  	$args = array();
-  	$join = "";
-  	$where = array();
-  	$vsite = vsite_get_vsite();
-  	if ($vsite){
-  		$args[] = $vsite -> group-> nid;
-  		$join .= "INNER JOIN {og_ancestry} oga ON n.nid = oga.nid";
-  		$where[] = "oga.group_nid = %n";
-  	}
-
-  	if (!in_array('all', $this->options['whitelist']) && count($this->options['whitelist'])) {
-  	  foreach ($this->options['whitelist'] as &$wl) {
-  	    $wl = "'".$wl."'";
-  	  }
-  	  $args[] = implode(", ", $this->options['whitelist']);
-  	  $where[] = "tid IN (%s)";
-  	}
-
-    $s = "SELECT COUNT(DISTINCT(n.nid)) AS num, tid AS path, name AS label FROM {biblio} n INNER JOIN {biblio_types} bt ON (n.biblio_type = bt.tid) ".$join.' WHERE '.implode(' AND ', $where).' GROUP BY label ORDER BY label ASC';
-    $q = db_query($s, $args);
-
-    $i = 0;
-    $plurals = array(
-    	'Software',
-    	'Data',
-    	'Conference Proceedings',
-    	'Thesis',
-    	'Unpublished',
-    	'Miscellaneous',
-    	'Audiovisual',
-    	'Artwork'
-    );
-    $content = array();
-    while ($row = db_fetch_array($q)) {
-      if ($this->options['type'] == 'type' && !in_array($row['label'], $plurals)) $row['label'] .= "s"; //FIX THE PLURAL
-
-      $content[] = '<li>'.l($row['label'],"publications/type/".$row['path']).($this->options['display_num']?' ('.$row['num'].')</li>':'');
-    }
-
-    if (count($content)) {
-      $block['content'] = '<ul>'.implode('', $content).'</ul>';
+    $delta = 'publication_types-block_1';
+    list($name, $display_id) = explode('-', $delta);
+    if ($view = views_get_view($name)) {
+      if ($view->access($display_id)) {
+        $view->set_display('block_1');
+        if (!in_array('all', $this->options['whitelist']) || !$this->options['whitelist']['all']) {
+          $filter = array(
+            'operator' => 'in',
+            'value' => $this->options['whitelist'],
+            'group' => '0',
+            'exposed' => FALSE,
+            'expose' => array(
+              'operator' => FALSE,
+              'label' => '',
+            ),
+            'id' => 'tid',
+            'table' => 'biblio_types',
+            'field' => 'tid',
+            'override' => array(
+              'button' => 'Use default',
+            ),
+            'relationship' => 'none',
+          );
+          $view->set_item('block_1', 'filter', 'tid', $filter);
+        }
+        $output = $view->execute_display();
+        $view->destroy();
+        $block['content'] = $output['content'];
+      }
+      $view->destroy();
     }
 
     return $block;
