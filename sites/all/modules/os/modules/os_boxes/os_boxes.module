@@ -169,7 +169,6 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_shields'] = array(
-    'title' => 'Shield',
     'description' => 'Department Shield',
     'tags' => array('Misc'),
     'handler' => array(
@@ -220,7 +219,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'spaces_sv_post_list'
     ),
   );
-
+/*
   $info['os_boxes_pub_grps'] = array(
     'title' => 'Publication Groupings',
     'description' => 'Group Publications By...',
@@ -235,7 +234,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
-
+*/
   $info['os_boxes_pub_type'] = array(
     'title' => 'Publications By Type',
     'description' => 'Group Publications By Type',
