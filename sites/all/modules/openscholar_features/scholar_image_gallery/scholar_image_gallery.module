@@ -41,54 +41,63 @@ function scholar_image_gallery_vsite_taxonomy_content_types_alter(&$types){
   unset($types['image']);
 }
 
-/**
- * content_extra_fields callback for this plugin
- */
-function scholar_image_gallery_content_extra_fields($type_name){
-  $extras = array();
-  $extras['image_gallery_add_image_link'] = array(
-    'label' => t('Add image link'), 
-    'description' => t('Add image to this gallery link'), 
-    'weight' => 100 
-  );
-  return $extras;
-}
 
 /**
  * Hook nodeapi
  * Used to trickle deltes to an image galleries dependent image childern
  */
 function scholar_image_gallery_nodeapi(&$node, $op, $teaser, $a4){
-  if ($node->type != 'gallery')
-    return;
-  switch ($op) {
-    case 'view' :
-      if ($teaser && arg(0) == 'images' && ! arg(1)) {
-        $node->content['body']['#value'] = t('Created on @datetime', array(
-          '@datetime' => format_date($node->created) 
-        )) . $node->content['body']['#value'];
-      
+	if($node->type != 'gallery') return;
+  switch($op){
+    case 'view':
+      if($teaser && arg(0) == 'images' && !arg(1)){
+        $node->content['body']['#value'] = t('Created on @datetime',array('@datetime' => format_date($node->created)))
+                                          .$node->content['body']['#value'];
       }
-      
-      // "Add images to this gallery" link
-      $link = nodereference_url_build_all_links($node, FALSE);
-      $weight = (module_exists('content')) ? content_extra_field_weight($node->type, 'image_gallery_add_image_link') : 100;
-      $node->content['image_gallery_add_image_link'] = array(
-        '#weight' => $weight, 
-        '#value' => theme('links', $link, $attributes = array(
-          'class' => 'add-reference-node' 
-        )) 
-      );
-      break;
-    case 'delete' :
-      vsite_include('vsite');
-      $a_referers = vsite_get_referrers($node->nid, array(), array(
-        'image' 
-      ));
-      foreach ( $a_referers as $nid => $info )
-        node_delete($nid);
-      break;
+    break;
+    case 'delete':
+    	vsite_include('vsite');
+    	$a_referers = vsite_get_referrers($node->nid,array(),array('image'));
+    	foreach ($a_referers as $nid => $info) node_delete($nid);
+    break;
   }
 }
 
-
+/**
+ * implementation of hook_views_pre_render
+ * @param unknown_type $view
+ */
+function scholar_image_gallery_views_pre_render(&$view){
+  $vsite = vsite_get_vsite();
+  if ($view->name == 'scholar_image_gallery' && $vsite && $vsite->access_admin()) {
+    if ($view->current_display == 'node_content_1' || $view->current_display == 'node_content_2') {
+      
+      // ask nodreference_url module for the correct link
+      $link = nodereference_url_build_all_links($view->current_node, FALSE);
+      $link = theme('links', $link, $attributes = array('class' => 'image-upload'));
+      
+      // display a series of links depending on the number of images in the gallery
+      $links = array();
+      $count = count($view->result);
+      
+      switch ($count) {
+        case 0 :
+          $links = $link . $link . $link;
+          break;
+        case 1 :
+          $links = $link . $link;
+          break;
+        default :
+          $links = $link;
+      }
+      
+      // looks like attachment_after happens only if there is result already
+      if ($count) {
+        $view->attachment_after = $links;
+      }
+      else {
+        $view->display['default']->handler->options['empty'] = $links;
+      }
+    }
+  }
+}

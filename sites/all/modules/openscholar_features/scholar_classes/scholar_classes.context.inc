@@ -5,7 +5,6 @@
  */
 function scholar_classes_context_default_contexts() {
   $export = array();
-
   $context = new stdClass;
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
@@ -53,7 +52,7 @@ function scholar_classes_context_default_contexts() {
           'weight' => 38,
           'region' => 'right',
           'label' => 'Table of Contents',
-          'tags' => array('Content', 'Book'),
+          'tags' => array('Content','Book'),
         ),
         'boxes-vsite_taxonomy_fltr_cat' => array(
           'module' => 'boxes',
@@ -71,7 +70,7 @@ function scholar_classes_context_default_contexts() {
   // Included for use with string extractors like potx.
   t('Classes and Class Materials');
   t('Feature');
-  $export['openscholar-feature-classes'] = $context;
 
+  $export['openscholar-feature-classes'] = $context;
   return $export;
 }

@@ -5,7 +5,6 @@
  */
 function scholar_classes_strongarm() {
   $export = array();
-
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -15,8 +14,8 @@ function scholar_classes_strongarm() {
     1 => 2,
     2 => 3,
   );
-  $export['better_formats_allowed_class'] = $strongarm;
 
+  $export['better_formats_allowed_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -26,134 +25,134 @@ function scholar_classes_strongarm() {
     1 => 3,
     2 => 5,
   );
-  $export['better_formats_allowed_class_material'] = $strongarm;
 
+  $export['better_formats_allowed_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_anonymous_class';
   $strongarm->value = '0';
-  $export['comment_anonymous_class'] = $strongarm;
 
+  $export['comment_anonymous_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_anonymous_class_material';
   $strongarm->value = '0';
-  $export['comment_anonymous_class_material'] = $strongarm;
 
+  $export['comment_anonymous_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_class';
   $strongarm->value = '0';
-  $export['comment_class'] = $strongarm;
 
+  $export['comment_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_class_material';
   $strongarm->value = '0';
-  $export['comment_class_material'] = $strongarm;
 
+  $export['comment_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_controls_class';
   $strongarm->value = '3';
-  $export['comment_controls_class'] = $strongarm;
 
+  $export['comment_controls_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_controls_class_material';
   $strongarm->value = '3';
-  $export['comment_controls_class_material'] = $strongarm;
 
+  $export['comment_controls_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_class';
   $strongarm->value = '4';
-  $export['comment_default_mode_class'] = $strongarm;
 
+  $export['comment_default_mode_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_class_material';
   $strongarm->value = '4';
-  $export['comment_default_mode_class_material'] = $strongarm;
 
+  $export['comment_default_mode_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_order_class';
   $strongarm->value = '1';
-  $export['comment_default_order_class'] = $strongarm;
 
+  $export['comment_default_order_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_order_class_material';
   $strongarm->value = '1';
-  $export['comment_default_order_class_material'] = $strongarm;
 
+  $export['comment_default_order_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_per_page_class';
   $strongarm->value = '50';
-  $export['comment_default_per_page_class'] = $strongarm;
 
+  $export['comment_default_per_page_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_per_page_class_material';
   $strongarm->value = '50';
-  $export['comment_default_per_page_class_material'] = $strongarm;
 
+  $export['comment_default_per_page_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_form_location_class';
   $strongarm->value = '0';
-  $export['comment_form_location_class'] = $strongarm;
 
+  $export['comment_form_location_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_form_location_class_material';
   $strongarm->value = '0';
-  $export['comment_form_location_class_material'] = $strongarm;
 
+  $export['comment_form_location_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_preview_class';
   $strongarm->value = '1';
-  $export['comment_preview_class'] = $strongarm;
 
+  $export['comment_preview_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_preview_class_material';
   $strongarm->value = '1';
-  $export['comment_preview_class_material'] = $strongarm;
 
+  $export['comment_preview_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_subject_field_class';
   $strongarm->value = '1';
-  $export['comment_subject_field_class'] = $strongarm;
 
+  $export['comment_subject_field_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_subject_field_class_material';
   $strongarm->value = '1';
-  $export['comment_subject_field_class_material'] = $strongarm;
 
+  $export['comment_subject_field_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -174,8 +173,8 @@ function scholar_classes_strongarm() {
     'og_nodeapi' => '0',
     'scholar_classes_node_content_1' => '10',
   );
-  $export['content_extra_weights_class'] = $strongarm;
 
+  $export['content_extra_weights_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -195,29 +194,29 @@ function scholar_classes_strongarm() {
     'creativecommons' => '100',
     'og_nodeapi' => '0',
   );
-  $export['content_extra_weights_class_material'] = $strongarm;
 
+  $export['content_extra_weights_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'ffp_class_field_os_inline_image';
   $strongarm->value = 0;
-  $export['ffp_class_field_os_inline_image'] = $strongarm;
 
+  $export['ffp_class_field_os_inline_image'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'ffp_class_material_field_os_inline_image';
   $strongarm->value = 0;
-  $export['ffp_class_material_field_os_inline_image'] = $strongarm;
 
+  $export['ffp_class_material_field_os_inline_image'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'ffp_class_material_upload';
   $strongarm->value = 0;
-  $export['ffp_class_material_upload'] = $strongarm;
 
+  $export['ffp_class_material_upload'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -226,8 +225,8 @@ function scholar_classes_strongarm() {
     0 => 'status',
     1 => 'revision',
   );
-  $export['node_options_class'] = $strongarm;
 
+  $export['node_options_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -236,8 +235,8 @@ function scholar_classes_strongarm() {
     0 => 'status',
     1 => 'revision',
   );
-  $export['node_options_class_material'] = $strongarm;
 
+  $export['node_options_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -361,8 +360,8 @@ function scholar_classes_strongarm() {
       'hidden' => 0,
     ),
   );
-  $export['nodeformscols_field_placements_class_default'] = $strongarm;
 
+  $export['nodeformscols_field_placements_class_default'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -471,77 +470,77 @@ function scholar_classes_strongarm() {
       'hidden' => 0,
     ),
   );
-  $export['nodeformscols_field_placements_class_material_default'] = $strongarm;
 
+  $export['nodeformscols_field_placements_class_material_default'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'og_content_type_usage_class';
   $strongarm->value = 'group_post_standard';
-  $export['og_content_type_usage_class'] = $strongarm;
 
+  $export['og_content_type_usage_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'og_content_type_usage_class_material';
   $strongarm->value = 'group_post_standard';
-  $export['og_content_type_usage_class_material'] = $strongarm;
 
+  $export['og_content_type_usage_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'pathauto_node_class_material_pattern';
   $strongarm->value = '[space-og-path]/classes/[field_class-title-raw]/materials/[title-raw]';
-  $export['pathauto_node_class_material_pattern'] = $strongarm;
 
+  $export['pathauto_node_class_material_pattern'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'pathauto_node_class_pattern';
   $strongarm->value = '[space-og-path]/classes/[title-raw]';
-  $export['pathauto_node_class_pattern'] = $strongarm;
 
+  $export['pathauto_node_class_pattern'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'show_diff_inline_class';
   $strongarm->value = 1;
-  $export['show_diff_inline_class'] = $strongarm;
 
+  $export['show_diff_inline_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'show_diff_inline_class_material';
   $strongarm->value = 1;
-  $export['show_diff_inline_class_material'] = $strongarm;
 
+  $export['show_diff_inline_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'show_preview_changes_class';
   $strongarm->value = 0;
-  $export['show_preview_changes_class'] = $strongarm;
 
+  $export['show_preview_changes_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'show_preview_changes_class_material';
   $strongarm->value = 0;
-  $export['show_preview_changes_class_material'] = $strongarm;
 
+  $export['show_preview_changes_class_material'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'upload_class';
   $strongarm->value = '1';
-  $export['upload_class'] = $strongarm;
 
+  $export['upload_class'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'upload_class_material';
   $strongarm->value = '1';
-  $export['upload_class_material'] = $strongarm;
 
+  $export['upload_class_material'] = $strongarm;
   return $export;
 }
