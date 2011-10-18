@@ -24,7 +24,7 @@ class os_boxes_pub_year extends os_boxes_default {
 
     $form['display_num'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Display number of items in category:'),
+      '#title' => t('Display number of items in category: new box'),
       '#default_value' => $this->options['display_num'],
     );
 
@@ -39,26 +39,16 @@ class os_boxes_pub_year extends os_boxes_default {
     //@todo
     $block = parent::render();
 
-  	$args = array();
-  	$join = "";
-  	$where = array();
-  	$vsite = vsite_get_vsite();
-  	if ($vsite){
-  		$args[] = $vsite -> group-> nid;
-  		$join .= "INNER JOIN {og_ancestry} oga ON n.nid = oga.nid";
-  		$where[] = "oga.group_nid = %n";
-  	}
-
-    $s = "SELECT COUNT(DISTINCT(n.nid)) AS num, biblio_year AS path, biblio_year AS label FROM {biblio} n ".$join.' WHERE '.implode(' AND ', $where).' GROUP BY label ORDER BY label DESC';
-    $q = db_query($s, $args);
-
-    $content = array();
-    while ($row = db_fetch_array($q)) {
-      $content[] = '<li>'.l($row['label'],"publications/year/".$row['path']).($this->options['display_num']?' ('.$row['num'].')</li>':'');
-    }
-
-    if (count($content)) {
-      $block['content'] = '<ul>'.implode('', $content).'</ul>';
+    $delta = 'publication_years-block_1';
+    list($name, $display_id) = explode('-', $delta);
+    if ($view = views_get_view($name)) {
+      if ($view->access($display_id)) {
+        $view->set_display('block_1');
+        $output = $view->execute_display();
+        $view->destroy();
+        $block['content'] = $output['content'];
+      }
+      $view->destroy();
     }
 
     return $block;

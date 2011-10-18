@@ -248,18 +248,21 @@ function os_update_6005(&$sandbox) {
   }
 
   foreach ($sandbox['os_update_6005'] as $block => $type) {
-    $box = (object)(array)boxes_factory('os_boxes_pub_grps', array('type' => $type));
     switch ($type) {
       case 'year':
+        $box = boxes_factory('os_boxes_pub_year');
         $box->title = $box->description = "Publications By Year";
       break;
       case 'contributors':
+        $box = boxes_factory('os_boxes_pub_ca');
         $box->title = $box->description = "Publications By Co-Author";
       break;
       case 'type':
+        $box = boxes_factory('os_boxes_pub_type', array('whitelist' => array('all' => 'all')));
         $box->title = $box->description = "Publications By Type";
       break;
     }
+    $box = (object)(array)$box;  // type cast to stdClass;
 
     $s = "SELECT DISTINCT(id) AS sid, type FROM {spaces_overrides} WHERE object_type='context' AND value LIKE '%%%s%%' LIMIT 100";
     $q = db_query($s, $block);
