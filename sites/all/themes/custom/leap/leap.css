@@ -58,7 +58,6 @@ a, a:visited {
   padding-top: 0;
   }
 
-#block-vsite_menus-0 li,
 #block-vsite_menus-features li {
   height: 31px;
   line-height:31px;
@@ -69,7 +68,6 @@ a, a:visited {
   margin: 0 -10px;
   }
 
-#block-vsite_menus-0 li a,
 #block-vsite_menus-features li a {
   font-weight: bold;
   }

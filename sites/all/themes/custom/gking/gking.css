@@ -89,7 +89,6 @@ h2.title,
 .block h3.title,
 #pub_type_tabs h3.title,
 .taxonomy-term-child h3.taxonomy-heading,
-#block-vsite_menus-1 li,
 #block-vsite_menus-scholar_secondary_menu li {
   margin: 0 -16px .5em -16px;
   padding: 13px 16px 16px 16px;
@@ -271,26 +270,24 @@ a.more {
 
 /* Secondary Menu */
 
-#block-vsite_menus-1,
-#block-vsite_menus-1 li,
+
 #block-vsite_menus-scholar_secondary_menu,
 #block-vsite_menus-scholar_secondary_menu li {
   padding: 0;
   }
 
-#block-vsite_menus-1 li,
+
 #block-vsite_menus-scholar_secondary_menu li {
   margin: 0;
   font: bold 1.1em/normal verdana, arial, sans-serif;
   }
 
-#block-vsite_menus-1 li.last,
+
 #block-vsite_menus-scholar_secondary_menu li.last {
   border: none;
   }
 
-#block-vsite_menus-1 li a, 
-#block-vsite_menus-1 li a:visited,
+
 #block-vsite_menus-scholar_secondary_menu a,
 #block-vsite_menus-scholar_secondary_menu a:visited {
   color: #444;
@@ -298,14 +295,14 @@ a.more {
   padding: 10px 16px 16px;
   }
 
-#block-vsite_menus-1 li a:hover,
+
 #block-vsite_menus-scholar_secondary_menu li a:hover {
   background: #F58714;
   text-decoration: none;
   color: #fff;
   }
 
-#block-vsite_menus-1 li a.active,
+
 #block-vsite_menus-scholar_secondary_menu li a.active {
   background: #EFD2B3;
   }
@@ -993,7 +990,6 @@ body.gking-alt #header {
   min-height: 10px;
   }
 
-body.gking-alt #block-vsite_menus-0,
 body.gking-alt #block-vsite_menus-features {
   display:none;
   }

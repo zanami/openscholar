@@ -619,12 +619,12 @@ a.delete {
   	 background: url('../images/addNewInNodeIcon.gif') no-repeat;
   	 padding-left:14px;
   	 clear:left;
-  	 margin-left:-25px;
+  	 margin-left:60px;
   	}
   
 .node-inner ul.add-reference-node li a {
   	color:#228822;
-  	font-size:12px;
+  	font-size:16px;
   } 
 
 /* BUTTONS */

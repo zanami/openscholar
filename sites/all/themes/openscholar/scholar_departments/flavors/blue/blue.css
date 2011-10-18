@@ -61,12 +61,10 @@ body.front #content-bottom ul li.views-row
   background: #78A0D7;
 }
 
-  #sidebar-first #block-vsite_menus-0 .content ul.menu li  a,
   #sidebar-first #block-vsite_menus-features  .content ul.menu li  a
    {
     color: #8D3129; }
   
-#sidebar-second #block-vsite_menus-0 .content ul.menu li  a,
 #sidebar-second #block-vsite_menus-features  .content ul.menu li  a
  {
    color: #8D3129; }

@@ -157,7 +157,6 @@ p.copy a, p.copy a:visited {
   }
 
 
-#block-vsite_menus-0 ul.menu li a,
 #block-vsite_menus-features ul.menu li a   {
   display:block;
   height: 36px;
@@ -168,25 +167,22 @@ p.copy a, p.copy a:visited {
   font-weight:bold;
   }
 
-#sidebar-first #block-vsite_menus-0,
 #sidebar-first #block-vsite_menus-features {
   padding-left:0;
   padding-right: 0;
   }
 
 
-#block-vsite_menus-0 ul.menu li a:hover,
 #block-vsite_menus-features ul.menu li a:hover   {
   background: #93b9c7;
   text-decoration: none;
   }
 
-#block-vsite_menus-0 ul.menu li.active-trail,
+
 #block-vsite_menus-features ul.menu li.active-trail   {
   background:#cedbe0;
   }
 
-#block-vsite_menus-0 ul.menu li a.active, #block-vsite_menus-0 ul.menu li.active-trail a, #block-vsite_menus-0 ul.menu li a.active:hover, #block-vsite_menus-0 ul.menu li.active-trail a:hover,
 #block-vsite_menus-features ul.menu li a.active, #block-vsite_menus-features ul.menu li.active-trail a, #block-vsite_menus-features ul.menu li a.active:hover, #block-vsite_menus-features ul.menu li.active-trail a:hover   {
   background: url(images/menu-selected.png);
   background-repeat: no-repeat;

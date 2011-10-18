@@ -315,6 +315,9 @@ function iqss_gking_term_page($str_tids = '', $depth = 'all'){
 
   // Add CTools' javascript to the page.
   ctools_modal_add_js();
+  
+  //Add TableDrag JS for NodeOrder
+  drupal_add_js('misc/tabledrag.js', 'core');
 
 
   require_once (drupal_get_path('module', 'taxonomy') . '/taxonomy.pages.inc');
@@ -856,7 +859,6 @@ function iqss_gking_nodeorder_form($js = NULL, $tid = NULL) {
   if (empty($output)) {
     // empty $output signifies success, so we'll use it as our $commands
     $output = array();
-    $output[] = dialog_command_display(t('Order settings changed!'), t('(Reloading page)'));
     $output[] = ctools_ajax_command_reload();
   }
   ctools_ajax_render($output);
