@@ -613,6 +613,19 @@ a.delete {
   text-transform: lowercase;
   font-weight: bold;
   }
+  
+.node-inner ul.add-reference-node li {
+  	list-style-type:none;
+  	 background: url('../images/addNewInNodeIcon.gif') no-repeat;
+  	 padding-left:14px;
+  	 clear:left;
+  	 margin-left:-25px;
+  	}
+  
+.node-inner ul.add-reference-node li a {
+  	color:#228822;
+  	font-size:12px;
+  } 
 
 /* BUTTONS */
 
