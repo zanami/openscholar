@@ -278,13 +278,18 @@ background: url('images/configGearSmall.png') no-repeat;
   margin: 0;
   padding: 4px 20px 8px 31px;
   background: url('images/widget-placed-bg.png') no-repeat 0 50% #f0f3f3;
-  min-height: 23px;
+  min-height: 18px;
   position:relative;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #666;
   overflow:hidden;
   }
   
+  
+#scholarlayout-container #scholarlayout-content-top dd.scholarlayout-item,
+#scholarlayout-container #scholarlayout-content-bottom dd.scholarlayout-item {
+ min-height: 1px;
+  }
   
 #scholarlayout-container dd.scholarlayout-item a.ctools-use-modal,  #scholarlayout-container dd.scholarlayout-item a.setting {
 color:transparent;

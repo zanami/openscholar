@@ -196,11 +196,13 @@ function vsite_taxonomy_menu_alter(&$items) {
  * @param string $term
  * @param access_string $string
  */
-function vsite_taxonomy_access_term($term,$string){
+function vsite_taxonomy_access_term($term, $string = false){
 	
 	$vsite = vsite_get_vsite();
-	
-	if($vsite){
+	if($string === false){
+		//Called without term
+		$string = $term;
+	}elseif($vsite){
 		$terms = taxonomy_terms_parse_string($term);
 	  $tid = is_array($terms['tids'])?current($terms['tids']):false;
 	  

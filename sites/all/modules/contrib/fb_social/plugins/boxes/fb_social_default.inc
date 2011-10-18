@@ -16,7 +16,7 @@ abstract class fb_social_default extends boxes_box {
     $fieldset =  array(
         '#type' => 'fieldset', 
         '#title' => t('Facebook plugin attributes'), 
-        '#collapsible' => TRUE, 
+        '#collapsible' => TRUE,
     );
 
     return $fieldset + $form = fb_social_fb_plugin_fb_settings_form($this->fb_plugin_name, $this -> options);
