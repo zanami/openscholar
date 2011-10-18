@@ -13,7 +13,7 @@ $(document).ready(function() {
           $(this).stop().animate({backgroundColor:'#636363'}, 100);
       });
 
-    $('#block-vsite_menus-1 ul.menu li a, #block-vsite_menus-features ul.menu li a').hover(
+    $('#block-vsite_menus-features ul.menu li a').hover(
       function () {
           $(this).stop().animate({backgroundColor:'#F58714'}, 300);
           }, function () {

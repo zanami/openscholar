@@ -116,15 +116,13 @@ h2.title, h3.title {
 
 #header h1 a, 
 #header h1 a:visited, 
-#header #block-vsite_menus-1 li a, 
-#header #block-vsite_menus-1 li a:visited,
 #header #block-vsite_menus-scholar_secondary_menu li a, 
 #header #block-vsite_menus-scholar_secondary_menu li a:visited {
   color:#fff;
   }
 
-#header #block-vsite_menus-scholar_secondary_menu li,
-#header #block-vsite_menus-1 li   {
+#header #block-vsite_menus-scholar_secondary_menu li
+ {
   border-color: #ebf1ff;
   }
 

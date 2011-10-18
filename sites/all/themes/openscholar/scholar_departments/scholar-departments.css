@@ -227,7 +227,6 @@ width: 100%;
 
 #sidebar-second .box-os_boxes_modal_siteinfo.block, #sidebar-first .box-os_boxes_modal_siteinfo.block,
 #sidebar-second #block-vsite_widgets-2.block, #sidebar-first #block-vsite_widgets-2.block,
-#sidebar-second #blovsite_menus-0.block, #sidebar-first #block-vsite_menus-0.block,
 #sidebar-second #block-vsite_menus-features.block, #sidebar-first #block-vsite_menus-features.block,
 #sidebar-second #block-boxes-os_addthis, #sidebar-first #block-boxes-os_addthis,
 #sidebar-second #block-vsite-site_search, #sidebar-first #block-vsite-site_search,
@@ -241,7 +240,6 @@ body.navbar-off #sidebar-first {
 padding-top: 0;
   }
 
-#sidebar-first #block-vsite_menus-0,
 #sidebar-first #block-vsite_menus-features {
 margin: 8px -15px 0 0;
 padding: 0 0 30px 0;
@@ -345,14 +343,13 @@ padding:0px;
   text-shadow: #222 0px 1px 0px;
 }
 
- #sidebar-first #block-vsite_menus-0 .content  ul.menu,
-  #sidebar-second #block-vsite_menus-0 .content  ul.menu,
-   #sidebar-first #block-vsite_menus-features .content  ul.menu,
+
+   #sidebar-first #block-vsite_menus-features .content  ul.menu
   #sidebar-second #block-vsite_menus-features .content  ul.menu {
 	width: 100%;
 }
 
-#sidebar-second #block-vsite_menus-0 .content  ul.menu li,
+
 #sidebar-second #block-vsite_menus-features .content  ul.menu li  {
   list-style: none;
   background-color: #efefef;
@@ -361,7 +358,7 @@ padding:0px;
   margin: 0;
 }
 
-#sidebar-first #block-vsite_menus-0 .content  ul.menu li,
+
 #sidebar-first #block-vsite_menus-features .content  ul.menu li {
   list-style: none;
   background-color: #efefef;
@@ -370,8 +367,6 @@ padding:0px;
   margin: 0;
 	}
 
-#sidebar-first #block-vsite_menus-0 .content  ul.menu li a,
-#sidebar-second #block-vsite_menus-0 .content  ul.menu li a,
 #sidebar-first #block-vsite_menus-features .content  ul.menu li a,
 #sidebar-second #block-vsite_menus-features .content  ul.menu li a  {
 	font-size:14px;
@@ -382,20 +377,19 @@ padding:0px;
   color: #2a548d;
   }
   
-#sidebar-first #block-vsite_menus-0 .content  ul.menu li.last a,
-#sidebar-second #block-vsite_menus-0 .content  ul.menu li.last a,
+
 #sidebar-first #block-vsite_menus-features .content  ul.menu li.last a,
 #sidebar-second #block-vsite_menus-features .content  ul.menu li.last a {
   border-bottom: none;
   }  
 
-#sidebar-first #block-vsite_menus-0 .content a:link, #sidebar-second #block-vsite_menus-0 .content a:link,
+
 #sidebar-first #block-vsite_menus-features .content a:link, #sidebar-second #block-vsite_menus-features .content a:link
  { color: #2a548d; }
-#sidebar-first #block-vsite_menus-0 .content a:hover, #sidebar-second #block-vsite_menus-0 .content a:hover,
+
 #sidebar-first #block-vsite_menus-features .content a:hover, #sidebar-second #block-vsite_menus-features .content a:hover
  { color: #2a548d; } 
-#sidebar-first #block-vsite_menus-0 .content a:hover, #sidebar-second #block-vsite_menus-0 .content a:hover,
+
 #sidebar-first #block-vsite_menus-features .content a:hover, #sidebar-second #block-vsite_menus-features .content a:hover
  { background-color: #fff; }
 
