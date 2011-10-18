@@ -48,6 +48,9 @@ Drupal.behaviors.scholarlayout = function() {
   
   //init scroller on topbox
   vsite_layout_init_horz_scroller();
+  
+  //compress widgets widths to fit in the space provided
+  vsite_layout_setWidgetAutoWidth();
 };
 
 function scholarlayout_add_removal_hooks() {
@@ -97,6 +100,9 @@ function scholarlayout_afterdrag(event, ui) {
   
   scholarlayout_update_moved_elements(true);
   vsite_layout_update_scroller_width();
+  
+  //compress widgets widths to fit in the space provided
+  vsite_layout_setWidgetAutoWidth();
 };
 
 /**
@@ -292,4 +298,20 @@ function vsite_layout_update_scroller_width(){
 	
 	$('.scroll-wrapper .scroll-viewport').width(vp_width);
 	if(scholarlayout_oScrollbar) scholarlayout_oScrollbar.tinyscrollbar_update();
+}
+
+
+function vsite_layout_setWidgetAutoWidth(){
+    var nHeight = 36; //Height of one widget
+
+    var regions = $("#scholarlayout-container > .scholarlayout-widgets-list");
+	$.each(regions, function(i, region){
+		var rgn = $("#"+region.id);
+		if(rgn.height() < nHeight *2){
+			var items = $("#"+region.id+" > .scholarlayout-item");
+			var nWidth = (rgn.width()) / items.length;
+			items.width(nWidth - 51);
+		}//If this is a skinny container
+	});
+
 }
