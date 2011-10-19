@@ -17,7 +17,7 @@ Drupal.behaviors.scholarlayout = function() {
   if (!scholarlayout_change_bound) {
     scholarlayout_change_bound = true;
 
-    $('#cp-settings-form').submit(function() {
+    $('#vsite-layout-ui-settings-form').submit(function() {
       scholarlayout_update_moved_elements(false);
       return true;
     });

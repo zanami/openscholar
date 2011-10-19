@@ -38,8 +38,8 @@ class os_boxes_addthis extends os_boxes_default {
         'toolbox_small' => "<img src='$dir/addthis_sm.png' />\n", 
         'toolbox_large' => "<img src='$dir/addthis_lg.png' />\n", 
         'numeric' => "<img src='$dir/addthis_numbers.gif' />\n", 
-        'counter' => 'counter' 
-      ) 
+        'counter' =>  "<img src='$dir/addthis_counter.png' />\n",
+      ),
     );
     
     $form['toolbox_services'] = array(
@@ -93,7 +93,7 @@ class os_boxes_addthis extends os_boxes_default {
         break;
       
       case 'counter' :
-        $services = 'counter, addthis_bubble_style';
+        $services = 'counter';
         $config = array(
           'addthis_toolbox_classes' => 'addthis_bubble_style' 
         );
