@@ -336,7 +336,7 @@ function vsite_get_version_information(){
  * This should be used when linking to a vsite
  */
 function theme_views_view_field_link_to_vsite($view, $field, $row) {
-
+  $s_content = l('x', 'node/1');
   $nid_alias = $field->aliases['nid'];
   $nid = $row->$nid_alias;
 
