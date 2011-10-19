@@ -55,6 +55,7 @@ regions[content_left]   = content left
 regions[content_right]  = content right
 regions[footer]         = footer
 regions[closure_region] = closure
+regions[admin_area]     = Administrative
 
 ;------ features ------
 features[] = logo

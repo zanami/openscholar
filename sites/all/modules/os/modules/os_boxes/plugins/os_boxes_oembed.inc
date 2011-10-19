@@ -80,6 +80,12 @@ class os_boxes_oembed extends os_boxes_default {
       break;
       case 'pasted':
         $block['content'] = embedfilter_filter('process', 0, -1, $this->options['pasted']);
+
+        // check_plain converts the & in any already converted characters.
+        // we need to undo this or the urls wont load right.
+        // this can be fixed easily in check_plain, with htmlspecialchars's 4th parameter
+        // that parameter doesnt exist before php 5.2.3 though...
+        $block['content'] = htmlspecialchars_decode($block['content']);
       break;
     }
     $block['content'] = embedfilter_media_resize($block['content'], $this->options['width']);
