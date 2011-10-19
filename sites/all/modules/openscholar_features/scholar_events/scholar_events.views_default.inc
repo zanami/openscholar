@@ -83,6 +83,16 @@ function scholar_events_views_default_views() {
       'relationship' => 'none',
     ),
   ));
+  $handler->override_option('sorts', array(
+    'field_date_value' => array(
+      'order' => 'ASC',
+      'delta' => -1,
+      'id' => 'field_date_value',
+      'table' => 'node_data_field_date',
+      'field' => 'field_date_value',
+      'relationship' => 'none',
+    ),
+  ));
   $handler->override_option('arguments', array(
     'date_argument' => array(
       'default_action' => 'default',
@@ -146,16 +156,6 @@ function scholar_events_views_default_views() {
       'validate_user_restrict_roles' => 0,
       'validate_argument_is_member' => 0,
       'validate_argument_php' => '',
-    ),
-  ));
-  $handler->override_option('sorts', array(
-    'field_date_value' => array(
-      'order' => 'ASC',
-      'delta' => -1,
-      'id' => 'field_date_value',
-      'table' => 'node_data_field_date',
-      'field' => 'field_date_value',
-      'relationship' => 'none',
     ),
   ));
   $handler->override_option('filters', array(
@@ -662,6 +662,7 @@ function scholar_events_views_default_views() {
       'relationship' => 'none',
     ),
   ));
+  $handler->override_option('title', 'Past events');
   $handler->override_option('path', 'calendar/past');
   $handler->override_option('menu', array(
     'type' => 'tab',

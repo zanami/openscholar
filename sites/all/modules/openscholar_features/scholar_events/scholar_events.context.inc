@@ -5,6 +5,7 @@
  */
 function scholar_events_context_default_contexts() {
   $export = array();
+
   $context = new stdClass;
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
@@ -81,7 +82,7 @@ function scholar_events_context_default_contexts() {
   // Included for use with string extractors like potx.
   t('Calendar and Events');
   t('Feature');
-
   $export['openscholar-feature-events'] = $context;
+
   return $export;
 }
