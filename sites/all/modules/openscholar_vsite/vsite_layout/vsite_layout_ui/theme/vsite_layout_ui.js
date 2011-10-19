@@ -56,8 +56,7 @@ Drupal.behaviors.scholarlayout = function() {
   vsite_layout_init_wobble();
   
   //Shake the new widget
-  alert('alert');
-  $('.changed').vibrate('y', 5, 20, 85);
+  $('dd.changed').vibrate('y', 5, 20, 85);
 };
 
 function scholarlayout_add_removal_hooks() {
