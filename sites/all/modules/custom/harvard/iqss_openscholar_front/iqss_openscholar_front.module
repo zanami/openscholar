@@ -29,6 +29,7 @@ function iqss_openscholar_front_menu_alter(&$items){
  * Callback for 'welcome' menu entry
  */
 function iqss_openscholar_front_homepage(){
+	job_scheduler_cron();
   $s_content = theme('iqss_openscholar_front_content');
   return $s_content;
 }

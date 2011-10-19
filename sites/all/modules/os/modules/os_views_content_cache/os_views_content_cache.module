@@ -52,6 +52,15 @@ function os_views_content_cache_flag($action, $flag, $content_id, $account){
 	}//If a node is (un)flagged clear the cache like the node was saved
 }
 
+function os_views_content_cache_feeds_after_import($feed_importer,FeedsSource $feed_source){
+	if($feed_source->feed_nid){
+		$node = node_load($feed_source->feed_nid);
+	  if($node){
+	    views_content_cache_update_set($node, 'node');
+	  }//If a node feed is updated mark it as so
+	}
+}
+
 /**
  * Implementation of hook_form_alter()
  **/
