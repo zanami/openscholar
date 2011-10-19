@@ -63,47 +63,44 @@ class os_boxes_addthis extends os_boxes_default {
     switch ($this->options['widget_type']) {
       
       case 'buttons' :
-        $services = NULL;
-        $config = array();
-        $display = 'addthis_button';
+        $html = '<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pubid=xa-4e9eeefa6983da55"><img src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a>';
         break;
       
       case 'toolbox_small' :
-        //$services = $this->options['toolbox_services'];
-        $services = 'facebook,twitter,email,linkedin, more';
-        $config = array();
-        $display = 'addthis_toolbox';
+        $html  = '<div class="addthis_toolbox addthis_default_style "><a class="addthis_button_preferred_1"></a>';
+        $html .= '<a class="addthis_button_preferred_2"></a>';
+        $html .= '<a class="addthis_button_preferred_3"></a>';
+        $html .= '<a class="addthis_button_preferred_4"></a>';
+        $html .= '<a class="addthis_button_compact"></a>';
+        $html .= '<a class="addthis_counter addthis_bubble_style"></a></div>';
         break;
       
       case 'toolbox_large' :
-        //$services = $this->options['toolbox_services'];
-        $services = 'facebook,twitter,email,linkedin, more';
-        $config = array(
-          'addthis_toolbox_classes' => 'addthis_32x32_style' 
-        );
-        $display = 'addthis_toolbox';
+        $html  = '<div class="addthis_toolbox addthis_default_style addthis_32x32_style">';
+        $html .= '<a class="addthis_button_preferred_1"></a>';
+        $html .= '<a class="addthis_button_preferred_2"></a>';
+        $html .= '<a class="addthis_button_preferred_3"></a>';
+        $html .= '<a class="addthis_button_preferred_4"></a>';
+        $html .= '<a class="addthis_button_compact"></a>';
+        $html .= '<a class="addthis_counter addthis_bubble_style"></a></div>';
         break;
       
       case 'numeric' :
-        $services = 'facebook_like_counter, tweet, google_plusone, counter';
-        $config = array(
-          'addthis_toolbox_classes' => 'addthis_pill_combo' 
-        );
-        $display = 'addthis_toolbox';
+        $html  = '<div class="addthis_toolbox addthis_default_style ">';
+        $html .= '<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>';
+        $html .= '<a class="addthis_button_tweet"></a>';
+        $html .= '<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>';
+        $html .= '<a class="addthis_counter addthis_pill_style"></a></div>';      
         break;
       
       case 'counter' :
-        $services = 'counter';
-        $config = array(
-          'addthis_toolbox_classes' => 'addthis_bubble_style' 
-        );
-        $display = 'addthis_toolbox';
-        break;
-    
+        $html = '<div class="addthis_toolbox addthis_default_style "><a class="addthis_counter"></a></div>';
+        break;    
     }
     
     $block = parent::render();
-    $block['content'] = theme($display, $services, $config);
+    $block['content'] = $html;
+    addthis_add_default_js();
     return $block;
   }
 
