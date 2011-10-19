@@ -103,9 +103,9 @@ function scholar_image_gallery_node_info() {
       'has_title' => '1',
       'title_label' => t('Title'),
       'has_body' => '1',
-      'body_label' => t('Description'),
+      'body_label' => t('Description of this gallery'),
       'min_word_count' => '0',
-      'help' => t('this is a container for your images'),
+      'help' => t('A gallery serves as a container for your images. Once you create a gallery, you will be able to add images to it.'),
     ),
     'image' => array(
       'name' => t('Image'),

@@ -17,7 +17,7 @@ Drupal.behaviors.scholarlayout = function() {
   if (!scholarlayout_change_bound) {
     scholarlayout_change_bound = true;
 
-    $('#cp-settings-form').submit(function() {
+    $('#vsite-layout-ui-settings-form').submit(function() {
       scholarlayout_update_moved_elements(false);
       return true;
     });
@@ -223,6 +223,10 @@ function vsite_layout_add_category_select() {
 
 function vsite_layout_init_categories(){
 	var cat = $('#widget-categories li.active a').attr('href').substring(1);
+	vsite_layout_swap_categories(cat);
+}
+
+function vsite_layout_swap_categories(cat) {
 	if (cat == 'all') {
 		$('#scholarlayout-top-widgets dd').not('.disabled').show();
 	}
@@ -230,6 +234,7 @@ function vsite_layout_init_categories(){
 		$('#scholarlayout-top-widgets').children('dd:not(.' + cat + ')').hide();
 		$('#scholarlayout-top-widgets').children("."+cat + ':not(.disabled)').show();
 	}
+	vsite_layout_update_scroller_width();
 }
 
 //remove or prevent ctools modal handling from modalframe links
@@ -300,6 +305,22 @@ function vsite_layout_update_scroller_width(){
 	if(scholarlayout_oScrollbar) scholarlayout_oScrollbar.tinyscrollbar_update();
 }
 
+/**
+ * Only does something when a widget has been added dynamically.
+ */
+Drupal.behaviors.widgetBeenAdded = function (ctx) {
+	// ctx is a jQuery object with our element inside
+	// do nothing if our ctx doesnt have the widget class!
+	if (!('hasClass' in ctx) || !ctx.hasClass('scholarlayout-item')) return;
+	
+	$('#widget-categories li a').each(function () {
+		var cat = $(this).attr('href').substring(1);
+		if (ctx.hasClass(cat)) {
+			$(this).click();
+			return false;
+		}
+	});
+}
 
 function vsite_layout_setWidgetAutoWidth(){
     var nHeight = 36; //Height of one widget
@@ -313,5 +334,4 @@ function vsite_layout_setWidgetAutoWidth(){
 			items.width(nWidth - 51);
 		}//If this is a skinny container
 	});
-
 }

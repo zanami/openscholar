@@ -169,7 +169,6 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_shields'] = array(
-    'title' => 'Shield',
     'description' => 'Department Shield',
     'tags' => array('Misc'),
     'handler' => array(
@@ -220,7 +219,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'spaces_sv_post_list'
     ),
   );
-
+/*
   $info['os_boxes_pub_grps'] = array(
     'title' => 'Publication Groupings',
     'description' => 'Group Publications By...',
@@ -235,7 +234,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
-
+*/
   $info['os_boxes_pub_type'] = array(
     'title' => 'Publications By Type',
     'description' => 'Group Publications By Type',
@@ -421,6 +420,7 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
 
   if (is_array($plugins[$box->plugin_key]['tags'])) {
     $a_wgt['tags'] = $plugins[$box->plugin_key]['tags'];
+    $a_wgt['class'] = implode(' ', $a_wgt['tags']);
   }
 
   if (isset($plugins[$box->plugin_key]['icon_path'])) {
@@ -433,7 +433,7 @@ function os_boxes_get_vsite_widget($box, $weight = 0, $region = false){
 
   if (isset($plugins[$box->plugin_key]['title'])) {
     $a_wgt['can_delete'] = true;
-    $a_wgt['block_delete_path'] = "cp/osboxes/nojs/".$a_wgt['delta']."/delete";
+    $a_wgt['block_delete_path'] = "cp/build/layout/nojs/".$a_wgt['delta']."/delete";
   }
 
   return $a_wgt;

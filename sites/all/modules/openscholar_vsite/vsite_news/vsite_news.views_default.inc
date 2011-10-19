@@ -135,23 +135,6 @@ function vsite_news_views_default_views() {
     ),
   ));
   $handler->override_option('filters', array(
-    'value_vsite_news' => array(
-      'operator' => '=',
-      'value' => '',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'realms' => array(
-        'vsite' => 'vsite',
-      ),
-      'id' => 'value_vsite_news',
-      'table' => 'activity_access',
-      'field' => 'value_vsite_news',
-      'relationship' => 'none',
-    ),
     'status' => array(
       'operator' => '=',
       'value' => '1',
@@ -166,6 +149,20 @@ function vsite_news_views_default_views() {
       'field' => 'status',
       'relationship' => 'none',
     ),
+    'picg' => array(
+      'operator' => '=',
+      'value' => '',
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'picg',
+      'table' => 'og_ancestry',
+      'field' => 'picg',
+      'relationship' => 'nid',
+    ),
   ));
   $handler->override_option('access', array(
     'type' => 'none',
@@ -179,13 +176,7 @@ function vsite_news_views_default_views() {
 ?>');
   $handler->override_option('footer_format', '3');
   $handler->override_option('footer_empty', 1);
-  $handler->override_option('empty', '<?php
-	$followers = views_get_view(\'vsite_news_follow\');
-	$followers->execute();
-	$n_count = count($followers->result);
-	$s_link = l("here","cp/news/colleagues/all");
-	?>
-	There is no activity available to display.  You are currently following <?php echo $n_count ?> colleagues sites.  You can add more sites to your list <?php echo $s_link ?>.');
+  $handler->override_option('empty', 'Your site has no activity to display.');
   $handler->override_option('empty_format', '3');
   $handler->override_option('use_ajax', TRUE);
   $handler->override_option('items_per_page', 25);

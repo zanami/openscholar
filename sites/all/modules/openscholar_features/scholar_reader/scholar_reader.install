@@ -94,3 +94,32 @@ function scholar_reader_update_6002(&$sandbox){
 
     return $res;
 }
+
+function scholar_reader_update_6003(&$sandbox){
+
+  if (drupal_get_installed_schema_version("feeds") < 6013) {
+    return array("#abort" => array('success' => FALSE, 'query' => 'Waiting on the feeds module to run updates, please run update again.'));
+  }
+
+  if (module_exists('feeds_news')){
+  	module_disable(array('feeds_news'), TRUE);
+  	drupal_uninstall_module("feeds_news");
+  }
+
+  if (module_exists('feeds_import')){
+  	module_disable(array('feeds_import'), TRUE);
+  	drupal_uninstall_module("feeds_import");
+  }
+  
+  if (module_exists('feeds_fast_news')){
+  	module_disable(array('feeds_fast_news'), TRUE);
+  	drupal_uninstall_module("feeds_fast_news");
+  }
+
+  $res[] = array(
+    'success' => true,
+    'query' => 'Disabled feeds_import and feeds_fast_news which conflict with scholar_reader',
+  );
+
+    return $res;
+}
