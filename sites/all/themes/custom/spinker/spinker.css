@@ -84,7 +84,7 @@ p.copy {
   }
 
 
-.views-field-title {
+#sidebar-second .views-field-title, #sidebar-first .views-field-title {
 	background: url('images/blueBullet.gif') no-repeat;
 	padding-left:12px;
 	background-position:left top; 
