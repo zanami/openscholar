@@ -35,6 +35,9 @@ function scholar_reader_form_alter(&$form, $form_state, $form_id) {
 
     if(!$form['#vertical_tabs']) $form['#vertical_tabs'] = array();
     $form['#vertical_tabs']['feeds'] = 0; //Disable vert. tabs
+    
+    // add a description to feed url
+    $form['feeds']['FeedsHTTPFetcher']['source']['#description'] = t('Enter a feed URL (e.g. "http://feeds.nytimes.com/nyt/rss/Science") ');
   }
 }
 
