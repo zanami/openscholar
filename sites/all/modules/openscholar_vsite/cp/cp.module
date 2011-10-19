@@ -413,7 +413,7 @@ function cp_preprocess_page(&$vars){
       $user_links = array();
 
       if ($vsite->access_admin()) {
-        $user_links[] = l('Control Panel', 'cp/build/features', array('attributes' => array('class' => 'wrench', 'title' => t('To Your Control Panel'))));
+        $user_links[] = l('Control Panel', 'cp/build/features', array('attributes' => array('class' => 'wrench', 'title' => t('Manage this Site'))));
 
         $new_count = vsite_news_get_new_activity_count();
         $user_links[] = l($new_count, 'cp/news', $new_count?array('attributes' => array('class' => 'unread', 'title' => t('New Activity on this Site'))):array('attributes' => array('title' => t('All Activity on this Site'))));
