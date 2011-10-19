@@ -207,9 +207,9 @@ function vsite_support_mail($key, &$message, $params){
       $vsite = $params['vsite'];
       $message['subject'] .= '[' . variable_get('site_name', 'Drupal') . '] ' . $params['subject'];
       $message['body'][] = $params['message'];
-      $message['body'][] = $params["\n\n---------------"];
+      $message['body'][] = "\n\n---------------";
 
-      $message['body'][] = t("This message was sent to you from \"!site \" on behalf of !name through  your website contact form (!form-url).", array(
+      $message['body'][] = t("This message was sent to you from \"!site\" on behalf of !name through your website contact form (!form-url).", array(
         '!name' => ($user->name) ? $user->name : $user -> mail, 
         '!form-url' => url($_GET['q'], array(
           'absolute' => TRUE, 
