@@ -48,6 +48,23 @@ function vsite_generic_settings_form($form_state) {
       }
     }
   }
+
+  // aggregates the access values for every element
+  // if even one element is accessible, the group is accessed
+  foreach (element_children($form) as $elem) {
+    $children = element_children($form[$elem]);
+    if (!count($children)) {
+      $form[$elem]['#access'] = false;
+    }
+    else {
+      foreach ($children as $elem2) {
+        $elem2 = $form[$elem][$elem2];
+        $elem2['#access'] = !isset($elem2['#access']) || $elem2['#access'];
+        $form[$elem]['#access'] = $form[$elem]['#access'] || $elem2['#access'];
+      }
+    }
+  }
+
   return system_settings_form($form);
 }
 

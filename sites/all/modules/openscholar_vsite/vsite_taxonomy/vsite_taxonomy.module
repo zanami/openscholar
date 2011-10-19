@@ -366,25 +366,22 @@ function vsite_taxonomy_form_alter(&$form, $form_state, $form_id){
   
   if (isset($form['type']) && isset($form['#node']) && $form['type']['#value'] . '_node_form' == $form_id) {
     $vsite = vsite_get_vsite();
-    if ($vsite) {
+    if ($vsite && og_is_group_post_type($form['#node']->type)) {
       $v = $vsite->get_vocabs($form['#node']->type);
-      if (! empty($v)) {
-        if (! is_array($v))
-          $v = array();
+      if(!is_array($v)) $v = array();
         
-        foreach ( element_children($form['taxonomy']) as $s_child ) {
-          if ($s_child == 'tags' && count($form['taxonomy']['tags'])) {
-            $form['taxonomy']['tags'] = array_intersect_key($form['taxonomy']['tags'], $v);
-          }
-          elseif (! array_key_exists($s_child, $v)) {
-            unset($form['taxonomy'][$s_child]);
-          }
+      $v = array();
+      foreach ( element_children($form['taxonomy']) as $s_child ) {
+        if ($s_child == 'tags' && count($form['taxonomy']['tags'])) {
+          $form['taxonomy']['tags'] = array_intersect_key($form['taxonomy']['tags'], $v);
+        }
+        elseif (! array_key_exists($s_child, $v)) {
+          unset($form['taxonomy'][$s_child]);
         }
       }
-    }
+    }//We are in a vsite and this is a group post type so restrict the avalible vocabs
     
-    if (! $form['#vertical_tabs'])
-      $form['#vertical_tabs'] = array();
+    if (! $form['#vertical_tabs']) $form['#vertical_tabs'] = array();
     $form['#vertical_tabs']['taxonomy'] = 0; //Disable vert. tabs
   }
   

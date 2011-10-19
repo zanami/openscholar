@@ -36,6 +36,14 @@ class os_boxes_modal_sitelogo extends os_boxes_modalframe {
       }
       $form['spaces_preset']['#type'] = 'value';
 
+      // makes sure the node has a theme
+      if (!isset($form['themes'])) {
+        $form['theme'] = array(
+          '#type' => 'value',
+          '#value' => $form['#node']->og_theme,
+        );
+      }
+
       if (isset($form['buttons'])) {
         $form['buttons']['#type'] = 'markup';
         $form['buttons']['preview']['#access'] = false;
