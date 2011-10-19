@@ -14,7 +14,7 @@ function scholar_image_gallery_menu_default_menu_links() {
     'link_title' => 'Images',
     'options' => array(
       'attributes' => array(
-        'title' => 'image gallery',
+        'title' => 'Image galleries',
       ),
     ),
     'module' => 'system',

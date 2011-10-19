@@ -145,6 +145,7 @@ function vsite_support_contact_mail_owner_submit($form, &$form_state) {
   global $user, $language;
 
   $account = $form_state['values']['recipient'];
+  $vsite = vsite_get_vsite();
 
   // Send from the current user to the requested user.
   $to = $account->mail;
@@ -161,6 +162,7 @@ function vsite_support_contact_mail_owner_submit($form, &$form_state) {
   $values = $form_state['values'];
   $values['account'] = $account;
   $values['user'] = $user;
+  $values['vsite'] = $vsite;
 
   // Send the e-mail in the requested user language.
   drupal_mail('vsite_support', 'user_mail', $to, user_preferred_language($account), $values, $from);
@@ -192,23 +194,32 @@ function vsite_support_site_contact_access() {
   return ($contact_anon !== 0 || user_is_logged_in());
 }
 
-
 /**
  * Implementation of hook_mail().
  */
-function vsite_support_mail($key, &$message, $params) {
+function vsite_support_mail($key, &$message, $params){
   $language = $message['language'];
   switch ($key) {
-    case 'user_mail':
-    case 'user_copy':
+    case 'user_mail' :
+    case 'user_copy' :
       $user = $params['user'];
       $account = $params['account'];
-      $message['subject'] .= '['. variable_get('site_name', 'Drupal') .'] '. $params['subject'];
-      $message['body'][] = "$account->name,";
-      $message['body'][] = t("!name has sent you a message via your contact form (!form-url) at !site.", array('!name' => ($user->name)?$user->name:"Anonymous", '!form-url' => url($_GET['q'], array('absolute' => TRUE, 'language' => $language)), '!site' => variable_get('site_name', 'Drupal')), $language->language);
-      $message['body'][] = t("If you don't want to receive such e-mails, you can change your settings at !url.", array('!url' => url("cp/settings/site", array('absolute' => TRUE, 'language' => $language))), $language->language);
-      $message['body'][] = t('Message:', NULL, $language->language);
+      $vsite = $params['vsite'];
+      $message['subject'] .= '[' . variable_get('site_name', 'Drupal') . '] ' . $params['subject'];
       $message['body'][] = $params['message'];
+      $message['body'][] = $params["\n\n---------------"];
+
+      $message['body'][] = t("This message was sent to you from \"!site \" on behalf of !name through  your website contact form (!form-url).", array(
+        '!name' => ($user->name) ? $user->name : $user -> mail, 
+        '!form-url' => url($_GET['q'], array(
+          'absolute' => TRUE, 
+          'language' => $language 
+        )), 
+        '!site' => variable_get('site_name', 'Drupal') 
+      ), $language->language);
+      $message['body'][] = t("If you don't want to receive such e-mails, you can change your settings at !url.", array(
+        '!url' => $vsite -> get_absolute_url("cp/settings/site") 
+      ), $language->language);
       break;
   }
 }

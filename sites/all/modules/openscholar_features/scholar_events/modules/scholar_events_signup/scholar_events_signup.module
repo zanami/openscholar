@@ -3,6 +3,30 @@
 include_once('scholar_events_signup.features.inc');
 
 /**
+ * Implementation of hook_menu_alter().
+ */
+function scholar_events_signup_menu_alter(&$items) {
+  // Remove the signups tabs from the user account page which 
+  // come from the views below. Disable them.
+  $views_defaults = variable_get('views_defaults', array());
+  $disabled = array(
+    'signup_available_signups',
+    'signup_current_signups',
+  );
+  $set = FALSE;
+  foreach ($disabled as $view_name) {
+    if (empty($views_defaults[$view_name])) {
+      $set = TRUE;
+      $views_defaults[$view_name] = TRUE;
+    }
+  }
+  if ($set) {
+    variable_set('views_defaults', $views_defaults);
+  }
+
+}
+
+/**
  * implementation of hook_strongarm
  */
 
