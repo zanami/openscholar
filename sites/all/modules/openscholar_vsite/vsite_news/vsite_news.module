@@ -64,7 +64,7 @@ function vsite_news_activity() {
 
   require_once(drupal_get_path('module', 'activity') . '/views/activity.views.inc');
   activity_views_access_user(user_load($vsite->group->uid));//Set the default user to group owner
-  return views_page('vsite_activity', 'page_3');
+  return views_page('vsite_activity', 'default');
 }
 
 /**
