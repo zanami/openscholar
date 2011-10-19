@@ -174,9 +174,16 @@ body.sidebar-second #cp-content {
   }
 
 .help {
-  left: 30px;
-    position: absolute;
-    top: 30px;
+position: absolute;
+right: 4px;
+ top: 4px;
+  }
+  
+  
+h2.title + .help {
+left: 30px;
+ position: absolute;
+top: 30px;
   }
 
 /* For use with admin_menu module only */
