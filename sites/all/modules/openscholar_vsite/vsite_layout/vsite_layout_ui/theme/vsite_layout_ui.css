@@ -122,9 +122,9 @@ dd.scholarlayout-item {
 	position: relative;
 }
   
-#scholarlayout-top-widgets dd.scholarlayout-item.disabled,
-dd.scholar-layout-item.disabled.ui-sortable-helper {
-  background: url('images/widget-bgDisabled.png') no-repeat scroll 50% 10px transparent;
+#scholarlayout-top-widgets dd.scholarlayout-item.changed,
+dd.scholar-layout-item.changed.ui-sortable-helper {
+  background: url('images/widgetIcons/new.png') no-repeat scroll 50% 10px transparent;
 } 
   
 /* LICENSE ICON
