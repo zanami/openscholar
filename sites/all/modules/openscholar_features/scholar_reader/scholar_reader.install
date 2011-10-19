@@ -101,10 +101,20 @@ function scholar_reader_update_6003(&$sandbox){
     return array("#abort" => array('success' => FALSE, 'query' => 'Waiting on the feeds module to run updates, please run update again.'));
   }
 
-  if (module_exists('feeds_news')) drupal_uninstall_module("feeds_news");
+  if (module_exists('feeds_news')){
+  	module_disable(array('feeds_news'), TRUE);
+  	drupal_uninstall_module("feeds_news");
+  }
 
-  if (module_exists('feeds_import')) drupal_uninstall_module("feeds_import");
-  if (module_exists('feeds_fast_news')) drupal_uninstall_module("feeds_fast_news");
+  if (module_exists('feeds_import')){
+  	module_disable(array('feeds_import'), TRUE);
+  	drupal_uninstall_module("feeds_import");
+  }
+  
+  if (module_exists('feeds_fast_news')){
+  	module_disable(array('feeds_fast_news'), TRUE);
+  	drupal_uninstall_module("feeds_fast_news");
+  }
 
   $res[] = array(
     'success' => true,
