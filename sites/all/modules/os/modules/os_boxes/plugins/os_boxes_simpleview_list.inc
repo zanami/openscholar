@@ -12,6 +12,11 @@ class os_boxes_simpleview_list extends spaces_simpleviews_post_list {
    */
   public $region;
   
+  /*
+   * If this box has been overridden the changed timestamp will be held here
+   */
+  public $changed;
+  
   /**
    * Implementation of boxes_content::options_form().
    */
