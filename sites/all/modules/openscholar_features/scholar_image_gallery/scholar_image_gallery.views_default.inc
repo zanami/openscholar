@@ -573,7 +573,7 @@ function scholar_image_gallery_views_default_views() {
   $handler->override_option('menu', array(
     'type' => 'normal',
     'title' => 'Images',
-    'description' => 'my images',
+    'description' => 'Image galleries',
     'weight' => '0',
     'name' => 'features',
   ));
