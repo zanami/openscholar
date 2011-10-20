@@ -153,9 +153,11 @@ function scholarlayout_add_sortable(layoutRegions) {
     $(value).sortable({
       appendTo: '#vsite-layout-ui-settings-form',
       helper: 'clone',
+      cursorAt: {top: 25, left: 38},
       connectWith : allRegions,
       stop : scholarlayout_afterdrag,
       tolerance : 'pointer',
+      start: function (event, ui) {ui.helper.width('75px'); },
       over : function(event, ui) {$(event.target).addClass('active');},
       out : function(event, ui) {$(event.target).removeClass('active');}
     });

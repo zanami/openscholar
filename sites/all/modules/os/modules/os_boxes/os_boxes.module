@@ -695,3 +695,12 @@ function os_boxes_vsite_default_blocks_alter(&$default_blocks) {
   }
 }
 
+/**
+ * Alter the output for a specific help file
+ * Adds the list of acceptable domains we give to embedfilter
+ */
+function os_boxes_advanced_help_topic_alter(&$output, $popup) {
+  if (strpos($output, '[embed_filter_tips]') !== FALSE) {
+    $output = str_replace('[embed_filter_tips]', embedfilter_filter_tips(0,0), $output);
+  }
+}

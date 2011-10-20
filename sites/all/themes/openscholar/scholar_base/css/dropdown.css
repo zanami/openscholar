@@ -178,6 +178,7 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
   /*CTOOLS DROPDOWN ON LAYOUT PAGE - END*/
  
  #admin-area {height:20px;clear:right;}
+ 
 
 .context-links,
 .section-cp div.ctools-dropdown {
@@ -222,6 +223,8 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
 .context-links a,
 .context-links a:visited {
   color: #333 !important;
+  font-size:11px;
+  text-transform:lowercase;
   }
 
 .context-links a:hover {
