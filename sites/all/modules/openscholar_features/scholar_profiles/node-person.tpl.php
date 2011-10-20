@@ -57,7 +57,7 @@
           print '<li>' . l('email', 'mailto:' . $node->field_person_email[0]['value']) . '</li>' ;
           }
         if ($node->field_person_website[0]['url']) {
-          print '<li>' . l('(Website)',$node->field_person_website[0]['url']) . '</li>';
+          print '<li>' . l('(Website)',url($node->field_person_website[0]['url'],array('query' => isset($node->field_person_website[0]['query']) ? $node->field_person_website[0]['query'] : NULL, 'fragment' => isset($node->field_person_website[0]['fragment']) ? $node->field_person_website[0]['fragment'] : NULL, 'absolute' => TRUE))) . '</li>';
           }
         print '</ul>';
         }

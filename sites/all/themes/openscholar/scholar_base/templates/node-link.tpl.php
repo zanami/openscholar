@@ -5,7 +5,7 @@
     </div>
     <?php if (!$page): ?>
       <h3 class="title">
-        <a href="<?php print $node -> field_link_href[0]['display_url']; ?>" title="<?php print $title ?>"><?php print $title; ?></a>
+        <a href="<?php print url($node->field_link_href[0]['url'],array('query' => isset($node->field_link_href[0]['query']) ? $node->field_link_href[0]['query'] : NULL, 'fragment' => isset($node->field_person_website[0]['fragment']) ? $node->field_link_href[0]['fragment'] : NULL, 'absolute' => TRUE)); ?>" title="<?php print $title ?>"><?php print $title; ?></a>
       </h3>
     <?php endif; ?>
     <?php if ($unpublished): ?>
