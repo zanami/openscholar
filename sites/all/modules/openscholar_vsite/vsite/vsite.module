@@ -1132,14 +1132,19 @@ function vsite_node_menu_access(){
       $node_type = $access_param->type;
     }
 
-    //If this is a group type
-    if($node_type && og_is_group_type($node_type)) return true;
-
-    //Spaces permits access, now lets make sure we are in a site
-    $vsite = vsite_get_vsite();
-
-    return $vsite?TRUE:FALSE;
-  }
+    //If this is a group post type only allow editing within a site
+    if($node_type && og_is_group_post_type($node_type)){
+    	//Spaces permits access, now lets make sure we are in a site
+      $vsite = vsite_get_vsite();
+    	
+      return $vsite?TRUE:FALSE;
+    }
+    
+    //We are not in a vsite all is good
+    return true;
+    
+  }//Passed standard access functions?
+  
   return FALSE;
 }
 
