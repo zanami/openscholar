@@ -179,4 +179,5 @@ width: 100%;
 background: url('images/themePickerSubButtsBg.png') repeat-x;
 position:fixed;
  z-index: 10;
+padding-left: 55px;
 }

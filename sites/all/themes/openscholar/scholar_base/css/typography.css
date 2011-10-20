@@ -138,7 +138,8 @@ div.links a.ctools-dropdown-link:hover {
   color: #000 !important;
   }
 
-.context-links a.ctools-dropdown-link:hover {
+.context-links a.ctools-dropdown-link:hover, 
+.context-links ul.links li a:hover {
   color: #2e4928 !important;
   }
 
