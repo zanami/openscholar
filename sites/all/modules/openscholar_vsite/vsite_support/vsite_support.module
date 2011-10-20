@@ -210,7 +210,7 @@ function vsite_support_mail($key, &$message, $params){
       $message['body'][] = "\n\n---------------";
 
       $message['body'][] = t("This message was sent to you from \"!site\" on behalf of !name through your website contact form (!form-url).", array(
-        '!name' => ($user->name) ? $user->name : $user -> mail, 
+        '!name' => ($user->name) ? $user->name : $message['from'], 
         '!form-url' => url($_GET['q'], array(
           'absolute' => TRUE, 
           'language' => $language 

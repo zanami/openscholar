@@ -227,7 +227,7 @@ body.header-left-right #header-right {
 
 #footer .block,
 #footer-message {
-  display:inline;
+  display:inline-block;
   }
   
 #content-bottom {

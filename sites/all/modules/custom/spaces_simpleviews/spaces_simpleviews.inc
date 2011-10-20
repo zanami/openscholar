@@ -39,7 +39,8 @@ function _spaces_simpleviews_build_view($simpleview = array()) {
   $handler = $view->new_display('default', 'Defaults', 'default');
   $handler->override_option('title', $simpleview['title']);  //@todo not really needed
 
-  $handler->override_option('use_pager', '1'); //@todo make it configurable
+  $handler->override_option('use_pager', $simpleview['use_pager']); 
+  $handler->override_option('items_per_page', $simpleview['number_of_items']); 
 
   // the row style based on the style selected by the user (e.g. teaser, fields)
   _spaces_simpleviews_set_row_style($handler, $simpleview);

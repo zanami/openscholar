@@ -17,7 +17,9 @@ function spaces_simpleviews_default_data(){
     'filter' => 'all nodes',  // @todo get the current context and the node type(s) associated with it, make that the default
     'style' => 'titles',
     'sort' => 'newest',
-    'argument' => ''
+    'argument' => '',
+    'number_of_items' => 6,
+    'use_pager' => 'mini'
   );
 }
 
@@ -36,48 +38,48 @@ function spaces_simpleviews_build_view($simpleview = array()){
  */
 function spaces_simpleviews_get_edit_form($simpleview = array()){
   $simpleview += spaces_simpleviews_default_data();
-
+  
   //$form['#theme'] = 'spaces_simpleviews_edit_form';  //@todo provide a theme hook or remove this
-
+  
 
   $form['filter'] = array(
-    '#type' => 'select',
-    '#title' => t('Display'),
+    '#type' => 'select', 
+    '#title' => t('Display'), 
     '#options' => array(
-      'all' => t('All posts')
-    ),
-    '#required' => TRUE,
-    '#default_value' => $simpleview['filter']
+      'all' => t('All posts') 
+    ), 
+    '#required' => TRUE, 
+    '#default_value' => $simpleview['filter'] 
   );
-
+  
   // os/vsite integration - lists correct content types
   if (module_exists('vsite') && vsite_get_vsite()) {
     vsite_include('vsiteapi');
     $node_options = vsite_content_types();
     drupal_alter('vsite_content_types', $node_options);
   }
-
-  if (!isset($node_options)) {
+  
+  if (! isset($node_options)) {
     $node_options = node_get_types('names');
   }
-
+  
   asort($node_options);
   foreach ( $node_options as $type => $name ) {
     $form['filter']['#options']['node:' . $type] = t('!type posts', array(
-      '!type' => $name
+      '!type' => $name 
     ));
   }
-
+  
   $form['sort'] = array(
-    '#type' => 'select',
-    '#title' => t('Sort'),
+    '#type' => 'select', 
+    '#title' => t('Sort'), 
     '#options' => array(
-      'newest' => t('Newest first'),
-      'oldest' => t('Oldest first'),
-      'a-z' => t('By title')
-    ),
-    '#required' => TRUE,
-    '#default_value' => $simpleview['sort']
+      'newest' => t('Newest first'), 
+      'oldest' => t('Oldest first'), 
+      'a-z' => t('By title') 
+    ), 
+    '#required' => TRUE, 
+    '#default_value' => $simpleview['sort'] 
   );
   if (module_exists('statistics')) {
     $form['sort']['#options']['popular'] = t('By number of hits');
@@ -85,28 +87,38 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
   if (module_exists('votingapi')) {
     $form['sort']['#options']['top-rated'] = t('By rating');
   }
-
+  
   $form['style'] = array(
-    '#type' => 'select',
-    '#title' => t('Display Style'),
+    '#type' => 'select', 
+    '#title' => t('Display Style'), 
     '#options' => array(
       //'full' => t('List of full posts'),
-      'teasers' => t('List of teasers'),
-      'titles' => t('List of titles')
-    )//'grid' => t('Grid of thumbnails'),
-    ,
-    '#required' => TRUE,
-    '#default_value' => $simpleview['style']
+      'teasers' => t('List of teasers'), 
+      'titles' => t('List of titles') 
+    ),  //'grid' => t('Grid of thumbnails'),
+    '#required' => TRUE, 
+    '#default_value' => $simpleview['style'] 
   );
-
+  
   $form['number_of_items'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Number of displayed posts',
-    '#default_value' => $simpleview['number_of_items'],
+    '#type' => 'textfield', 
+    '#title' => 'Number of displayed posts', 
+    '#default_value' => $simpleview['number_of_items'], 
+    '#size' => 10 
   );
-
+  
+  $form['use_pager'] = array(
+    '#title' => t('Use pager'),
+    '#type' => 'radios', 
+    '#options' => array(
+      'mini' => t('Yes'), 
+      0 => t('No') 
+    ), 
+    '#default_value' => $simpleview['use_pager'] 
+  );
+  
   drupal_alter('spaces_simpleview_reusable_form', $form, $simpleview);
-
+  
   return $form;
 }
 

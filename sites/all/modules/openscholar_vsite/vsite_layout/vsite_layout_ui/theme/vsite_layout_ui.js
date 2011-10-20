@@ -150,6 +150,7 @@ function scholarlayout_add_sortable(layoutRegions) {
   var allRegions = layoutRegions.slice();
   allRegions[allRegions.length] = "#scholarlayout-top-widgets";
   $.each(allRegions, function(i, value) {
+	$(value).sortable('destroy');
     $(value).sortable({
       appendTo: '#vsite-layout-ui-settings-form',
       helper: 'clone',
