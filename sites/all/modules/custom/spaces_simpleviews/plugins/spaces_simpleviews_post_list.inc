@@ -24,9 +24,9 @@ class spaces_simpleviews_post_list extends boxes_box {
     
     $form = spaces_simpleviews_get_edit_form($this->options);
     $form['more_link'] = array(
-      '#type' => 'checkbox', 
+      '#type' => 'checkbox',
       '#title' => t('Create "more" link'),
-      '#description' => t('This will add a more link to the bottom of this widget, which will link to the page listing all the posts of type selected above'),    
+      '#description' => t('This will add a more link to the bottom of this widget, which will link to the page listing all the posts of type selected above'),
     
     );
     //$form += parent::options_form();
@@ -69,15 +69,15 @@ class spaces_simpleviews_post_list extends boxes_box {
         $path = $view->get_path();
       }
       
-      $content .= theme('views_more', $path, 'more');
+      if(strlen($path)) $content .= theme('views_more', $path, 'more');
     }
     
     $title = isset($this->title) ? check_plain($this->title) : NULL;
     $block = array(
-      'title' => $title, 
-      'subject' => $title, 
-      'delta' => $this->delta, 
-      'content' => $content 
+      'title' => $title,
+      'subject' => $title,
+      'delta' => $this->delta,
+      'content' => $content
     );
     
     return $block;
