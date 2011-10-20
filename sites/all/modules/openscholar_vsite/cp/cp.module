@@ -290,9 +290,6 @@ function cp_feature_customize($js, $feature_name){
 }
 
 /**
- * hook form_alter
- */
-/**
  * Implementation of hook_form_alter()
  *
  * @param $form

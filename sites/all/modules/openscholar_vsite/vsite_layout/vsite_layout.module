@@ -158,7 +158,40 @@ switch ($form_id) {
         $form['#submit'][] = "vsite_layout_box_form_submit";
     	}
     break;
+    case 'spaces_features_form':
+    	if(!is_array($form['#submit'])) $form['#submit'] = array();
+    	array_unshift($form['#submit'],'scholar_layout_spaces_feature_form_submit');
+    break;
   }
+}
+
+/**
+ * Submit handler for the feature form
+ *
+ * @param $form
+ *   FAPI object representing a form
+ * @param $form_state
+ *   Mixed array representing the submitted form
+ */
+function scholar_layout_spaces_feature_form_submit($form, &$form_state){
+
+	$vsite = vsite_get_vsite();
+	if(!$vsite && $form_state['values']['op'] != t('Reset to defaults')) return;
+	
+	//Filter out just the pub/private features
+	$old_features = array_intersect(variable_get('spaces_features', array()),array(1,2));
+	$new_features = array_intersect($form_state['values']['spaces_features'],array(1,2));
+	
+	$newly_enabled = array_diff( array_keys($new_features), array_keys($old_features));
+	
+	if(count($newly_enabled)){
+		foreach ($newly_enabled as $k => $s_feature) $newly_enabled[$k] = str_replace("scholar_","",$s_feature);
+	  $orig_context = $vsite->controllers->context->get("openscholar-feature-none:reaction:block","preset");
+	  $user_modified_context = $vsite->controllers->context->get("openscholar-feature-none:reaction:block");
+	  
+	  //Apply all the "Defaults" changes that the user has made prior to enabling this feature/context
+		vsite_layout_apply_layout_changes($user_modified_context,$orig_context,$newly_enabled);
+	}
 }
 
 /**
@@ -274,4 +307,76 @@ function vsite_layout_perm(){
 	return array(
     "reset layout to defaults",
   );
+}
+
+/**
+ * Helper function for the CP Layout
+ *
+ * Takes a new default setting and finds the diff from the old, and applies those to other page types that are not overridden
+ *
+ * @param $a_new_setting the new context
+ * @param $a_prev_setting The context to diff against
+ * @param $a_features features to apply the changes to
+ */
+function vsite_layout_apply_layout_changes($a_new_setting, $a_prev_setting = false, $a_features = false){
+  $space = vsite_get_vsite();
+  if(!$a_prev_setting) $a_prev_setting = $space->controllers->context->get("openscholar-feature-none:reaction:block");
+
+  $a_new_wgts = array();
+  $a_rem_wgts = array();
+  $a_moved_wgts = array();
+  $a_weight_wgts = array();
+  foreach ($a_new_setting['blocks'] as $key => $block) {
+    if($block['region'] != $a_prev_setting['blocks'][$key]['region']){
+      if(!$block['region']){
+        $a_rem_wgts[] = $key;
+      }elseif(!$a_prev_setting['blocks'][$key]['region']){
+        $a_new_wgts[] = $key;
+      }else{
+        $a_moved_wgts[] = $key;
+      }
+    }//region change
+
+    if($block['weight'] != $a_prev_setting['blocks'][$key]['weight']){
+      $a_weight_wgts[$key] =  $block['weight'] - $a_prev_setting['blocks'][$key]['weight'];
+    }//Weight Change
+  }//gather changes
+
+  if(!is_array($a_features)) $a_features = array_keys(vsite_layout_ui_get_pagetypes($space));
+  foreach ($a_features as $s_page_nm) {
+    if ($s_page_nm == 'none') continue;
+
+    $a_new_page = $space->controllers->context->get("openscholar-feature-".$s_page_nm.":reaction:block");
+
+    //Handle widgets added
+    foreach ($a_new_wgts as $s_widget_name) {
+      if (!$a_new_page['blocks'][$s_widget_name]['region']) {
+        $a_new_page['blocks'][$s_widget_name] = $a_new_setting['blocks'][$s_widget_name];
+      }//Already on this page?
+    }//Add new widgets
+
+    //Handle widgets removed
+    foreach ($a_rem_wgts as $s_widget_name) {
+      if (array_key_exists($s_widget_name, $a_new_page['blocks']) && $a_new_page['blocks'][$s_widget_name]['region'] == $a_prev_setting['blocks'][$s_widget_name]['region']) {
+        $a_new_page['blocks'][$s_widget_name]['region'] = false;
+      }//Already on this page?
+    }//Remove widgets
+
+    //Handle widgets moved
+    foreach ($a_moved_wgts as $s_widget_name) {
+      if ($a_new_page['blocks'][$s_widget_name]['region'] == $a_prev_setting['blocks'][$s_widget_name]['region']) {
+        $a_new_page['blocks'][$s_widget_name]['region'] = $a_new_setting['blocks'][$s_widget_name]['region'];
+      }//Already on this page?
+    }//Move widgets
+
+    //Handle weight changed
+    foreach ($a_weight_wgts as $s_widget_name => $change) {
+      if ($a_new_page['blocks'][$s_widget_name]['region'] == $a_prev_setting['blocks'][$s_widget_name]['region']) {
+        $a_new_page['blocks'][$s_widget_name]['weight'] += $change;
+      }//Already on this page?
+    }//Crude Change weight
+
+    uasort($a_new_page['blocks'], 'vsite_layout_sort_block_by_weight'); //Put them in the right order to simplify showing them in the cp
+    $space->controllers->context->set('openscholar-feature-'.$s_page_nm.":reaction:block:".$space->group->og_theme, $a_new_page);
+  }
 }
