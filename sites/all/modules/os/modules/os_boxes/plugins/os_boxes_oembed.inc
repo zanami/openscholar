@@ -52,7 +52,7 @@ class os_boxes_oembed extends os_boxes_default {
       '#type' => 'textarea',
       '#title' => t('HTML embed tag'),
       '#default_value' => $this->options['pasted'],
-      '#description' => t('Use html embed tag to provide swf or other embeddable media.'),
+      '#description' => t('Use html embed tag to provide swf or other embeddable media. <a href="@embed-help-file" onclick = "var w=window.open(this.href, \'advanced_help_window\', \'width=500,height=500,scrollbars,resizable\'); w.focus(); return false;">Allowed Websites</a>', array('@embed-help-file' => url('help/os_boxes/embedfilter-allowed-hosts', array('query' => 'popup=1')))),
       '#process' => array('ctools_dependent_process'),
       '#dependency' => array('radio:selection' => array('pasted'))
     );
