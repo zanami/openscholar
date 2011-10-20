@@ -224,7 +224,6 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
 .context-links a:visited {
   color: #333 !important;
   font-size:11px;
-  text-transform:lowercase;
   }
 
 .context-links a:hover {
