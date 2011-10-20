@@ -13,8 +13,7 @@ class spaces_simpleviews_post_list extends boxes_box {
    */
   public function options_defaults() {
     $options = spaces_simpleviews_default_data();
-    $options['number_of_items'] = 6; //@todo whats a good default ?
-    
+    $options['more_link'] = 0;  // because use_pager defaults to 1
     return $options;
   }
 
@@ -24,7 +23,12 @@ class spaces_simpleviews_post_list extends boxes_box {
   public function options_form(){
     
     $form = spaces_simpleviews_get_edit_form($this->options);
+    $form['more_link'] = array(
+      '#type' => 'checkbox', 
+      '#title' => t('Create "more" link'),
+      '#description' => t('This will add a more link to the bottom of this widget, which will link to the page listing all the posts of type selected above'),    
     
+    );
     //$form += parent::options_form();
     return $form;
   }
@@ -40,11 +44,8 @@ class spaces_simpleviews_post_list extends boxes_box {
     $view->init();
     $view->set_display('default');
 
-    //number of items
-    if (isset($simpleview['number_of_items']) && (int)$simpleview['number_of_items'] > 0) {
-      $view->display_handler->set_option('items_per_page', (int)$simpleview['number_of_items']);
-    }
-
+    // @todo handle "more" link
+    
     $title = isset($this->title) ? check_plain($this->title) : NULL;
     $block = array(
       'title' => $title,
