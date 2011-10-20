@@ -71,13 +71,17 @@ class os_boxes_twitterfeed extends os_boxes_default {
    */
   public function cache_info(){
     
-  	//Clear any time the site is saved
-    $cache_key = array(
-      'os_og' => array('current' => 'current'),
-    );
-    
-    //Only cache twitter feeds for 15 minutes (max_lifespan)
-    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key, 'max_lifespan' => 900);
+  	// Do not cache twitter_pull has is't own caching so the impact is low and running through the theme function will change the last updated times
+  	// Caching should be added back if we use other services here
+  	return array();
+  	
+//  	//Clear any time the site is saved
+//    $cache_key = array(
+//      'os_og' => array('current' => 'current'),
+//    );
+//
+//    //Only cache twitter feeds for 15 minutes (max_lifespan)
+//    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key, 'max_lifespan' => 900);
   }
 
 }
