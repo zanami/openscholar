@@ -36,22 +36,48 @@ class spaces_simpleviews_post_list extends boxes_box {
   /**
    * Implementation of boxes_content::render().
    */
-  public function render() {
+  public function render(){
     
     //prepare the view
     $simpleview = $this->options;
     $view = spaces_simpleviews_build_view($simpleview);
     $view->init();
     $view->set_display('default');
-
-    // @todo handle "more" link
+    
+    $content = $view->execute_display();
+    
+    //add the "more" link
+    if ($simpleview['more_link']) {
+      $node_type = end(explode(':', $simpleview['filter']));
+      
+      // biblio is a special case
+      if ('biblio' == $node_type) {
+        $path = 'publications';
+      }
+      else {
+        //which feature owns this node type?
+        $nodes_map = features_get_component_map('node');
+        $feature = $nodes_map[$node_type];
+        
+        // get the 'default view' and 'default display' for that feature
+        $view_info = vsite_get_default_feature_view($feature);
+        
+        // enough info to get the path for "more" link
+        $view = views_get_view($view_info['view']);
+        $view->init();
+        $view->set_display($view_info['display'] ? $view_info['display'] : 'default');
+        $path = $view->get_path();
+      }
+      
+      $content .= theme('views_more', $path, 'more');
+    }
     
     $title = isset($this->title) ? check_plain($this->title) : NULL;
     $block = array(
-      'title' => $title,
-      'subject' => $title,
-      'delta' => $this->delta,
-      'content' => $view->execute_display(),
+      'title' => $title, 
+      'subject' => $title, 
+      'delta' => $this->delta, 
+      'content' => $content 
     );
     
     return $block;
