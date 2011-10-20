@@ -751,17 +751,8 @@ function vsite_form_alter(&$form, $form_state, $form_id){
 function vsite_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
   switch ($op) {
     case 'validate' :
-      $form = $teaser;
-      //Notify a user that they changed thier title but that the path did not change
-      if ($node->nid && $node->pathauto_perform_alias && module_exists('path') && module_exists('pathauto') && ($vsite = vsite_get_vsite()) && $vsite->id != $node->nid && variable_get('pathauto_update_action', '2') == 0 ) {
-        if (isset($form['title']['#default_value']) && trim($form['title']['#default_value']) != trim($form['title']['#value'])) {
-          $alias = url("node/" . $node->nid, array(
-            'absolute' => true
-          ));
-          drupal_set_message("The title of your post has been changed. The path ({$alias}) to this post has NOT been changed. If this no longer represents the post you may change it by editing the post and modifying 'URL path settings'.", 'warning');
-        } //The title has changed
-      }
-      break;
+    	
+    break;
     case 'presave' :
       // -- Take Care of the Issues present when pathauto and purl coexist --
       // To elaborate, since purl adds a prefix to the path to distinguish between vsite's we must manually
