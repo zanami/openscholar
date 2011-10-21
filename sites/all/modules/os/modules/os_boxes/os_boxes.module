@@ -485,18 +485,33 @@ function os_boxes_vsite_admin_link($type, $object) {
   $links = array();
   if ($type != 'block') return $links;
 
-  if ($object->module == 'boxes' && ($box = boxes_load($object->delta)) && os_boxes_cp_layout_configurable($object->delta)) {
-    if (!$object->block_config_path) {
-      $wdgt = os_boxes_get_vsite_widget($box);
-      $object->block_config_path = $wdgt['block_config_path'];
+  if ($object->module == 'boxes' && ($box = boxes_load($object->delta))) {
+    if (os_boxes_cp_layout_configurable($object->delta)) {
+      if (!$object->block_config_path) {
+        $wdgt = os_boxes_get_vsite_widget($box);
+        $object->block_config_path = $wdgt['block_config_path'];
+      }
+      $links[] = array(
+        'title' => 'Configure Widget',
+        'href' => $object->block_config_path.'/front',
+        'attributes' => array(
+          'class' => 'ctools-use-modal',
+        ),
+      );
     }
-    $links[] = array(
-      'title' => 'Configure',
-      'href' => $object->block_config_path.'/front',
-      'attributes' => array(
-        'class' => 'ctools-use-modal',
-      ),
-    );
+
+    if (isset($box->options['nid'])) {
+      $box->render();
+    }
+    if ($box->options['nid'] && ($node = node_load($box->options['nid']))) {
+      $node_links = vsite_contextual_get_admin_links('node', $node);
+      foreach ($node_links as &$l) {
+        if (stripos($l['title'], 'post') === FALSE) {
+          $l['title'] .= ' Post';
+        }
+      }
+      $links = array_merge($links, $node_links);
+    }
   }
   return $links;
 }
