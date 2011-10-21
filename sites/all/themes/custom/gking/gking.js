@@ -27,7 +27,7 @@ $(document).ready(function() {
     container.find('div.node .content').prepend('<h3 class="cv-direct-download">Full CV: <a href="http://gking.harvard.edu/vitae/vitae.pdf">PDF</a></h3><div class="clear"></div>');
 
 
-    $(".front #header-main .box-os_boxes_simple a.more").click(function(event){
+    $(".front #header-main a.more").click(function(event){
       container.find('a.more').toggle();
       if (container.is(".bio-open")) {
         container.removeClass("bio-open").animate({height:'0'},"1500");
