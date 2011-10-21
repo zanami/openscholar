@@ -370,7 +370,6 @@ function vsite_taxonomy_form_alter(&$form, $form_state, $form_id){
       $v = $vsite->get_vocabs($form['#node']->type);
       if(!is_array($v)) $v = array();
         
-      $v = array();
       foreach ( element_children($form['taxonomy']) as $s_child ) {
         if ($s_child == 'tags' && count($form['taxonomy']['tags'])) {
           $form['taxonomy']['tags'] = array_intersect_key($form['taxonomy']['tags'], $v);
