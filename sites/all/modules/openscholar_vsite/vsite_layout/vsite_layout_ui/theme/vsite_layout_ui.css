@@ -128,6 +128,12 @@ dd.scholarlayout-item {
 }*/
   
 
+#scholarlayout-top-widgets .fb_social_facepile,
+.fb_social_facepile.ui-sortable-helper {
+  background: url('images/widgetIcons/facebook.png') no-repeat scroll 50% 10px transparent;
+}
+  
+
 #scholarlayout-top-widgets #boxes-scholar_announcements_latest,
 #boxes-scholar_announcements_latest.ui-sortable-helper {
   background: url('images/widgetIcons/announcement.png') no-repeat scroll 50% 10px transparent;
@@ -171,8 +177,10 @@ dd.content.post.ui-sortable-helper {
 }
     
   
-   #scholarlayout-top-widgets dd.content.book,
-   .content.book.ui-sortable-helper {
+#scholarlayout-top-widgets dd.content.book,
+#scholarlayout-top-widgets .os_boxes_booktoc,
+.content.book.ui-sortable-helper,
+.os_boxes_booktoc.ui-sortable-helper  {
  background: url('images/widgetIcons/book.png') no-repeat scroll 50% 10px transparent;
 }
   
@@ -202,6 +210,8 @@ dd.content.post.ui-sortable-helper {
  background: url('images/widgetIcons/twitter.png') no-repeat scroll 50% 10px transparent;
 } 
 
+
+
   
   #scholarlayout-top-widgets #boxes-vsite_rss,
   #scholarlayout-top-widgets #boxes-scholar_reader-feeds_list,
@@ -216,7 +226,9 @@ dd.content.post.ui-sortable-helper {
   
  
   #scholarlayout-top-widgets #boxes-os_addthis,
-  #boxes-os_addthis.ui-sortable-helper {
+  #scholarlayout-top-widgets .os_boxes_addthis,
+  #boxes-os_addthis.ui-sortable-helper,
+  .os_boxes_addthis.ui-sortable-helper  {
  background: url('images/widgetIcons/addThis.png') no-repeat scroll 50% 10px transparent;
 }  
   
