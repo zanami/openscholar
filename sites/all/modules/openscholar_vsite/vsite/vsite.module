@@ -729,7 +729,7 @@ function vsite_form_alter(&$form, $form_state, $form_id){
             '#type' => 'checkbox',
             '#title' => "Make this Featured",
             "#default_value" => false,
-            "#description" => "Make this a featured item. Featured items can be configured to show on the front page within the front page settings."
+            "#description" => "Make this a featured post. Featured posts will show up in the \"Featured posts\" widget",
           );
           if ($nid) {
             $flag = flag_get_flag('featuredposts');
