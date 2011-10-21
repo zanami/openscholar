@@ -620,6 +620,14 @@ function scholar_publications_preprocess_block(&$vars) {
       $vars['block']->content);
     }
   }
+  elseif ($vars['block']->plugin == 'os_boxes_pub_year') {
+    $vars['block']->content = preg_replace_callback('#(<a.*?(publications\/year\/(9999|9998)).*?>).*?(</a>)#',
+        create_function(
+          '$matches',
+          'return $matches[1]._biblio_text_year($matches[3]).\'</a>\';'
+        ),
+      $vars['block']->content);
+  }
 }
 
 /**
