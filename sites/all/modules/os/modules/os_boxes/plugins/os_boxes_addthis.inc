@@ -67,22 +67,20 @@ class os_boxes_addthis extends os_boxes_default {
         break;
       
       case 'toolbox_small' :
-        $html  = '<div class="addthis_toolbox addthis_default_style "><a class="addthis_button_preferred_1"></a>';
-        $html .= '<a class="addthis_button_preferred_2"></a>';
-        $html .= '<a class="addthis_button_preferred_3"></a>';
-        $html .= '<a class="addthis_button_preferred_4"></a>';
-        $html .= '<a class="addthis_button_compact"></a>';
-        $html .= '<a class="addthis_counter addthis_bubble_style"></a></div>';
+        $html  = '<div class="addthis_toolbox addthis_default_style "><a class="addthis_button_facebook"></a>';
+        $html .= '<a class="addthis_button_twitter"></a>';
+        $html .= '<a class="addthis_button_email"></a>';
+        $html .= '<a class="addthis_button_linkedin"></a>';
+        $html .= '<a class="addthis_button_google_plusone"></a>';
         break;
       
       case 'toolbox_large' :
         $html  = '<div class="addthis_toolbox addthis_default_style addthis_32x32_style">';
-        $html .= '<a class="addthis_button_preferred_1"></a>';
-        $html .= '<a class="addthis_button_preferred_2"></a>';
-        $html .= '<a class="addthis_button_preferred_3"></a>';
-        $html .= '<a class="addthis_button_preferred_4"></a>';
-        $html .= '<a class="addthis_button_compact"></a>';
-        $html .= '<a class="addthis_counter addthis_bubble_style"></a></div>';
+        $html .= '<a class="addthis_button_facebook"></a>';
+        $html .= '<a class="addthis_button_twitter"></a>';
+        $html .= '<a class="addthis_button_email"></a>';
+        $html .= '<a class="addthis_button_linkedin"></a>';
+        $html .= '<a class="addthis_button_google_plusone"></a>';
         break;
       
       case 'numeric' :
