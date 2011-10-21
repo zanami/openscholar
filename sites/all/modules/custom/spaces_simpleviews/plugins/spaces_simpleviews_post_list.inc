@@ -27,7 +27,7 @@ class spaces_simpleviews_post_list extends boxes_box {
       '#type' => 'checkbox',
       '#title' => t('Create "more" link'),
       '#description' => t('This will add a more link to the bottom of this widget, which will link to the page listing all the posts of type selected above'),
-    
+      '#default_value' => $this -> options['more_link'],
     );
     //$form += parent::options_form();
     return $form;
@@ -50,8 +50,11 @@ class spaces_simpleviews_post_list extends boxes_box {
     if ($simpleview['more_link']) {
       $node_type = end(explode(':', $simpleview['filter']));
       
-      // biblio is a special case
-      if ('biblio' == $node_type) {
+      //"all" and "biblio" are special cases
+      if ('all' == $simpleview['filter']){
+        $path = "";
+      }
+      elseif ('biblio' == $node_type) {
         $path = 'publications';
       }
       else {
