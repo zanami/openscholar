@@ -20,14 +20,14 @@ $(document).ready(function() {
           $(this).stop().animate({backgroundColor:'#ffffff'}, 100);
       });
 
-    $('.front #header-main .box-os_boxes_simple a.more').attr("href","#");
+    $('.front #header-main .box-os_boxes_simple div.boxes-box-content').append('<a class="more" href="#">More</a>');
 
-    var container = $("body.front #node-3793");
-    container.prepend('<a class="more" href="#">CLOSE X</a>');
-    container.find('.content').prepend('<h3 class="cv-direct-download">Full CV: <a href="http://gking.harvard.edu/vitae/vitae.pdf">PDF</a></h3><div class="clear"></div>');
+    var container = $("body.front #header-main #block-boxes-scholar_biocv_bio");
+    container.find('div.node').prepend('<a class="more" href="#">CLOSE X</a>');
+    container.find('div.node .content').prepend('<h3 class="cv-direct-download">Full CV: <a href="http://gking.harvard.edu/vitae/vitae.pdf">PDF</a></h3><div class="clear"></div>');
 
 
-    $("body.front a.more").click(function(event){
+    $(".front #header-main a.more").click(function(event){
       container.find('a.more').toggle();
       if (container.is(".bio-open")) {
         container.removeClass("bio-open").animate({height:'0'},"1500");

@@ -953,7 +953,7 @@ body.section-category .no-indent .node-teaser {
 
 /*FRONT PAGE BIO*/
 
-.front #node-3793 {
+.front #header-main #block-boxes-scholar_biocv_bio {
   position: fixed;
   background: #fff;
   margin:0;
@@ -968,9 +968,9 @@ body.section-category .no-indent .node-teaser {
   -webkit-box-shadow: 0 -1em 3em rgba(0,0,0,0.6);
   box-shadow: 0 -1em 3em rgba(0,0,0,0.6);
   display:none;
-  }
+}
 
-.front #node-3793 .node-inner {
+.front #header-main #boxes-box-scholar_biocv_bio .node-inner {
    position:absolute;
    overflow:auto;
    bottom: 0;
