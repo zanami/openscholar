@@ -57,7 +57,7 @@ class spaces_simpleviews_post_list extends boxes_box {
       else {
         //which feature owns this node type?
         $nodes_map = features_get_component_map('node');
-        $feature = $nodes_map[$node_type];
+        $feature = $nodes_map[$node_type][0];
         
         // get the 'default view' and 'default display' for that feature
         $view_info = vsite_get_default_feature_view($feature);
