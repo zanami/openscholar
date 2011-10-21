@@ -340,6 +340,15 @@ a.more {
   border:1px solid #ddd;
   background: #fff;
   }
+  
+
+.front .column #block-boxes-scholar_biocv_bio.block  {
+ padding: 0 16px 0 16px;
+  }  
+
+.node-type-bio h3.title {
+display: none;
+}  
 
 .front #content {
   background:transparent;
@@ -978,6 +987,14 @@ body.section-category .no-indent .node-teaser {
    top:52px;
    right:10px;
    padding-right:25px;
+   }
+   
+body.front #header .node.node-type-bio {
+    position:static;
+}
+
+#header .node-type-bio p {
+    margin-bottom: 1em;
    }
 
 /* Alt Branding */
