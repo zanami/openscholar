@@ -124,6 +124,13 @@ function scholar_front_views_default_views() {
     'links' => 1,
     'comments' => 0,
   ));
+  $handler = $view->new_display('block', 'Block', 'block_1');
+  $handler->override_option('style_plugin', 'list');
+  $handler->override_option('style_options', array(
+    'type' => 'ul',
+  ));
+  $handler->override_option('block_description', '');
+  $handler->override_option('block_caching', -1);
 
   $views[$view->name] = $view;
 
