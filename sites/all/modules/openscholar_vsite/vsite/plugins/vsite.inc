@@ -229,4 +229,20 @@ class vsite extends space_og {
 
     return drupal_match_path($q, $paths)?true:false;
   }
+  
+  /**
+   * Override access_admin().
+   */
+  function access_admin($account = NULL) {
+    global $user;
+    $account = isset($account) ? $account : $user;
+    
+    // Adventurous modules can cause us to arrive here before og_init() has fired.
+    // See http://drupal.org/node/285696
+    if ($account->uid && !isset($account->og_groups)) {
+      $account = user_load(array('uid' => $account->uid));
+    }
+
+    return parent::access_admin($account);
+  }
 }
