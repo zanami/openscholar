@@ -110,7 +110,8 @@ function scholarlayout_afterdrag(event, ui) {
   vsite_layout_update_scroller_width();
   
   //compress widgets widths to fit in the space provided
-  vsite_layout_setWidgetAutoWidth();
+  vsite_layout_adjust_widget_width(ui.item);
+  //vsite_layout_setWidgetAutoWidth();
 };
 
 /**
@@ -331,7 +332,7 @@ Drupal.behaviors.widgetBeenAdded = function (ctx) {
 			return false;
 		}
 	});
-}
+};
 
 function vsite_layout_setWidgetAutoWidth(){
     var nHeight = 36; //Height of one widget
@@ -345,6 +346,19 @@ function vsite_layout_setWidgetAutoWidth(){
 			items.width(nWidth - 51);
 		}//If this is a skinny container
 	});
+}
+
+/*
+ * adjusts the width of a single widget to fit the container
+ * takes either an element or a jQuery object
+ */ 
+function vsite_layout_adjust_widget_width(widget) {
+	// normalize
+	var $widget = $(widget);
+	widget = $widget[0];
+	
+	var width = $(widget.parentNode).width();
+	$widget.width(width-51);
 }
 
 ////////wobble///////////

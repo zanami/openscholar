@@ -15,11 +15,13 @@ function scholar_classes_init(){
  */
 function scholar_classes_content_extra_fields($type_name){
   $extras = array();
-  $extras['classes_add_class_material_link'] = array(
-    'label' => t('Add "class material" link'), 
-    'description' => t('Add "Class Material" to this class'), 
-    'weight' => 100 
-  );
+  if ('class' == $type_name) {
+    $extras['classes_add_class_material_link'] = array(
+      'label' => t('Add "class material" link'), 
+      'description' => t('Add "Class Material" to this class'), 
+      'weight' => 100 
+    );
+  }
   return $extras;
 }
 

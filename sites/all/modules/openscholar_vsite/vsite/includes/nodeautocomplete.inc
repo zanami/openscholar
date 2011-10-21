@@ -8,10 +8,11 @@
 function vsite_node_autocomplete_element($title = NULL){
   $item = array(
     '#type' => 'textfield',
-    '#title' => $title ? $title : t('Select a node'),
+    '#title' => $title ? $title : t('Select a post'),
     '#maxlength' => 180,
     '#autocomplete_path' => 'vsite/node/autocomplete',
     '#element_validate' => array('vsite_node_autocomplete_validate'),
+    '#description' => t('Start typing the title of an existing post')
   );
   
   return $item;
@@ -49,7 +50,7 @@ function vsite_node_autocomplete_validate($element, &$form_state){
       $form_state['scholar_referenced_nid'] = $nid;
     }
     else {
-      form_error($element, t('This post is not valid'));
+      form_error($element, t('This post title is not valid'));
     }
   }
 }
