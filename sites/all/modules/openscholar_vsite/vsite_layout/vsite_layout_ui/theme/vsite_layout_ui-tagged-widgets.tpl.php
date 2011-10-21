@@ -23,7 +23,7 @@ foreach($wgts as $s_widget_key => $w){
 
 ?>
 
-<div class="<?php print $wgts_id; ?>-wrapper">
+<div id="<?php print $wgts_id; ?>-wrapper" class="<?php print $wgts_id; ?>-wrapper">
 <?php echo $add_new_wgts; ?>
 
 <div id="websiteLabelTab"><img src="<?php echo $GLOBALS['base_path'].drupal_get_path('module', 'vsite_layout_ui') . '/theme/images/websiteLayoutBarLabel.png'; ?>"></div>

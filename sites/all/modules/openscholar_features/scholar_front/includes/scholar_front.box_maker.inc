@@ -272,6 +272,15 @@ function scholar_front_fb_add_block(&$vsite, $block) {
   	$preset = $vsite->controllers->context->get('openscholar-feature-front:reaction:block','preset');
   	if(isset($preset['blocks'][$block])){
   		$front_context['blocks'][$block] = $preset['blocks'][$block];
+  	}elseif ($block == "views-scholar_front-block_1"){
+  		//This is not a normally avalibe block
+  		$front_context['blocks'][$block] = array (
+	      'module' => 'views',
+	      'delta' => 'scholar_front-block_1',
+	      'weight' => 17,
+	      'region' => false,
+	      'label' => 'Legacy Flaged Content',
+	    );
   	}
   }
   
