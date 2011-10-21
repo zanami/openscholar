@@ -352,9 +352,9 @@ function vsite_layout_wobble_new(){
 	
 	$('dd.changed').each(function(){
 	  var i = 0;	
-	  while(i < 10) {
-		$(this).animate({marginTop:'-'+5+'px'}, 85);
-		$(this).animate({marginTop:5}, 85);
+	  while(i < 8) {
+		$(this).animate({marginTop:'-'+3+'px'}, 90);
+		$(this).animate({marginTop:3}, 90);
 		i++;
 	  }
 	  $(this).removeClass('changed');
