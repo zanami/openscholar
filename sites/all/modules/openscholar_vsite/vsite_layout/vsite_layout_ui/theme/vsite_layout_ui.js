@@ -39,15 +39,15 @@ Drupal.behaviors.scholarlayout = function() {
   
   //Add scroller that shows what exceptions exist
   vsite_layout_setExceptionScroller();
+
+  //init scroller on topbox
+  vsite_layout_init_horz_scroller();
   
   //Add tabbed event for catigorized widgets
   vsite_layout_add_category_select();
   
   //remove or prevent ctools modal handling from modalframe links
   vsite_layout_modalframe_links();
-  
-  //init scroller on topbox
-  vsite_layout_init_horz_scroller();
   
   //compress widgets widths to fit in the space provided
   vsite_layout_setWidgetAutoWidth();
@@ -292,12 +292,15 @@ function vsite_layout_modalframe_links(){
 function vsite_layout_init_horz_scroller(){
 	
 	//Top Scroller
-	if(!$('div.scholarlayout-top-widgets-wrapper').hasClass('scroll-wrapper')){
-	  $('div.scholarlayout-top-widgets-wrapper').addClass('scroll-wrapper').append('<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>');
+	//if(!$('#scholarlayout-top-widgets-wrapper').hasClass('scroll-wrapper')){
+	  $('#scholarlayout-top-widgets-wrapper').addClass('scroll-wrapper').append('<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>');
 	  $('.scroll-wrapper .tagged-list').addClass('scroll-viewport');
 	  $('.scroll-wrapper .tagged-list #scholarlayout-top-widgets').addClass('scroll-content');
-	  vsite_layout_update_scroller_width();
+	  //$('.scrollbar').remove();
   	  scholarlayout_oScrollbar = $('.scroll-wrapper').tinyscrollbar({ axis: 'x'});
+	//}
+	if ($('#scholarlayout-top-widgets-wrapper').hasClass('scroll-wrapper')) {
+		vsite_layout_update_scroller_width();
 	}
 }
 
@@ -312,6 +315,7 @@ function vsite_layout_update_scroller_width(){
 	
 	var ct_width = Math.max($('.scroll-wrapper .scroll-content').width(),vp_width);
 	$('.scroll-wrapper .scroll-content').width(ct_width);
+	//$('.scroll-wrapper .scroll-content #scholarlayout-top-widgets').width(ct_width);
 	
 	$('.scroll-wrapper .scroll-viewport').width(vp_width);
 	if(scholarlayout_oScrollbar) scholarlayout_oScrollbar.tinyscrollbar_update();
@@ -359,6 +363,24 @@ function vsite_layout_adjust_widget_width(widget) {
 	
 	var width = $(widget.parentNode).width();
 	$widget.width(width-51);
+}
+
+/**
+ * AHAH leaves an unmarked div inbetween our wrapper and content elements
+ * This fixes it
+ */
+function vsite_layout_fix_top_ahah() {
+	var $top = $('#scholarlayout-top-widgets'),
+		top = $top[0];
+	
+	if (typeof top.parentNode.id == 'undefined' && top.parentNode.className == '') {
+		// we have an unmarked div
+		var rem = $(top.parentNode),
+			targ = $(top.parentNode.parentNode);
+		$top.detach();
+		rem.remove();
+		targ.after($top);
+	}
 }
 
 ////////wobble///////////

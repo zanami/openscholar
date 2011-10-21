@@ -90,7 +90,21 @@ function vsite_layout_ui_top_widgets_callback() {
 
   //Disable widgets from disabled features
   vsite_layout_ui_check_for_disabled_widgets($wgts);
-  $top = theme('vsite_layout_ui_tagged_widgets', $wgts, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list');
+
+  $factories = array();
+  $instances = array();
+  foreach ($wgts as $w_id => $wgt) {
+    if (strpos($wgt['delta'], 'boxes_add__') !== FALSE) {
+      $factories[$w_id] = $wgt;
+    }
+    else {
+      $instances[$w_id] = $wgt;
+    }
+  }
+
+  $top = theme('vsite_layout_ui_layout_widgets', $instances, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list');
+
+  // $top = theme('vsite_layout_ui_tagged_widgets', $instances, $add_new, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list');
 
   drupal_json(array('status' => TRUE, 'data' => $top));
 }
@@ -286,7 +300,7 @@ function vsite_layout_ui_settings_form($form_state){
           'wrapper' => 'scholarlayout-container',
           'progress' => array('type' => 'throbber', 'message' => t('Loading Page...')),
           'effect' => 'fade',
-          'method' => 'replaceWith',
+          'method' => 'replace',
     ),
   );
 
@@ -296,10 +310,10 @@ function vsite_layout_ui_settings_form($form_state){
     '#ahah' => array(
           'event' => 'go_ahah',
           'path' => 'cp/build/layout/top_widgets_js',
-          'wrapper' => 'scholarlayout-top-widgets-wrapper',
-          'effect' => 'fade',
+          'wrapper' => 'scholarlayout-top-widgets-wrapper .tagged-list',
+          'effect' => 'none',
           'progress' => array('type' => 'none'),
-          'method' => 'replaceWith',
+          'method' => 'replace',
     ),
   );
 
