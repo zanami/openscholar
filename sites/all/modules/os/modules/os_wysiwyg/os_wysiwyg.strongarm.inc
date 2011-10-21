@@ -31,8 +31,7 @@ twitter.com
 facebook.com
 google.com
 yahoo.com
-thedailyshow.com
-mtvnservices.com';
+gmodules.com';
   $export['embedfilter_host_whitelist'] = $strongarm;
 
   $strongarm = new stdClass;
@@ -67,7 +66,7 @@ mtvnservices.com';
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'format';
-  $strongarm->value = '1';
+  $strongarm->value = '6';
   $export['format'] = $strongarm;
 
   $strongarm = new stdClass;
@@ -119,14 +118,14 @@ mtvnservices.com';
   $strongarm->value = array(
     'margin-right' => 'margin-right',
     'margin-left' => 'margin-left',
+    'padding' => 'padding',
+    'padding-top' => 'padding-top',
+    'padding-right' => 'padding-right',
+    'padding-bottom' => 'padding-bottom',
     'padding-left' => 'padding-left',
     'margin' => 0,
     'margin-top' => 0,
     'margin-bottom' => 0,
-    'padding' => 0,
-    'padding-top' => 0,
-    'padding-right' => 0,
-    'padding-bottom' => 0,
   );
   $export['wysiwyg_filter_styles_box_1'] = $strongarm;
 
@@ -137,14 +136,14 @@ mtvnservices.com';
   $strongarm->value = array(
     'margin-right' => 'margin-right',
     'margin-left' => 'margin-left',
+    'padding' => 'padding',
+    'padding-top' => 'padding-top',
+    'padding-right' => 'padding-right',
+    'padding-bottom' => 'padding-bottom',
     'padding-left' => 'padding-left',
     'margin' => 0,
     'margin-top' => 0,
     'margin-bottom' => 0,
-    'padding' => 0,
-    'padding-top' => 0,
-    'padding-right' => 0,
-    'padding-bottom' => 0,
   );
   $export['wysiwyg_filter_styles_box_5'] = $strongarm;
 
@@ -155,14 +154,14 @@ mtvnservices.com';
   $strongarm->value = array(
     'margin-right' => 'margin-right',
     'margin-left' => 'margin-left',
+    'padding' => 'padding',
+    'padding-top' => 'padding-top',
+    'padding-right' => 'padding-right',
+    'padding-bottom' => 'padding-bottom',
     'padding-left' => 'padding-left',
     'margin' => 0,
     'margin-top' => 0,
     'margin-bottom' => 0,
-    'padding' => 0,
-    'padding-top' => 0,
-    'padding-right' => 0,
-    'padding-bottom' => 0,
   );
   $export['wysiwyg_filter_styles_box_6'] = $strongarm;
 
