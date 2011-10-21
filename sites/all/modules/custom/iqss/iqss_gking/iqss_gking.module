@@ -697,10 +697,6 @@ function iqss_gking_form_alter(&$form, $form_state, $form_id) {
     	$form['title']['#required'] = false;
     }//Do not require Titles for Pages in this taxonomy (don't ask) ok it is because he uses this for blurbs on the taxonomy page
 
-    if ($form['#node']->type == 'person') {
-      $form['buttons']['submit']['#submit'][] = 'iqss_gking_node_form_redirect';
-    }
-
   }
 
   if($form_id == "taxonomy_form_term"){
@@ -1040,12 +1036,4 @@ function iqss_gking_itweak_upload_upload_attachments($files, $options = NULL) {
       .'</div>'
     ;
   }
-}
-
-function iqss_gking_node_form_redirect(&$form, &$form_state) {
-  $path = array('people');
-  if ($form_state['values']['taxonomy'][175]) {
-    $path[] = '#iqss_gking_term_'.current($form_state['values']['taxonomy'][175]);
-  }
-  $form['#redirect'] = $path;
 }

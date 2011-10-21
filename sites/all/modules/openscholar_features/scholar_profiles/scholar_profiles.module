@@ -7,3 +7,11 @@ function scholar_profiles_init() {
 }
 
 
+/**
+ * Implementation of hook_context_links_alter().
+ */
+function scholar_profiles_context_links_alter(&$links) {
+  if (!empty($links['person'])) {
+    $links['person']['query'] = drupal_get_destination();
+  }
+}
