@@ -5,6 +5,7 @@
  */
 function scholar_front_context_default_contexts() {
   $export = array();
+
   $context = new stdClass;
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
@@ -13,11 +14,11 @@ function scholar_front_context_default_contexts() {
   $context->tag = 'Feature';
   $context->conditions = array(
     'path' => array(
-	    'values' => array(
-	      '<front>' => '<front>',
-	    ),
-	  ),
-	  'context' => array(
+      'values' => array(
+        '<front>' => '<front>',
+      ),
+    ),
+    'context' => array(
       'values' => array(
         '~openscholar-section-sitewide_front' => '~openscholar-section-sitewide_front',
       ),
@@ -26,7 +27,7 @@ function scholar_front_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'scholar_front-get_started' => array(  //admin only block
+        'scholar_front-get_started' => array(
           'module' => 'scholar_front',
           'delta' => 'get_started',
           'weight' => -1,
@@ -34,7 +35,7 @@ function scholar_front_context_default_contexts() {
           'status' => '0',
           'label' => 'Get Started (admin)',
         ),
-        'views-scholar_events_upcoming-block_1' => array(  // not changing
+        'views-scholar_events_upcoming-block_1' => array(
           'module' => 'views',
           'delta' => 'scholar_events_upcoming-block_1',
           'weight' => 20,
@@ -52,19 +53,19 @@ function scholar_front_context_default_contexts() {
           'label' => 'Latest Announcements',
         ),
         'views-vsite_featuredposts-block_1' => array(
-		      'module' => 'views',
-		      'delta' => 'vsite_featuredposts-block_1',
-		      'weight' => 18,
-		      'region' => 'right',
-		      'label' => 'Featured posts',
-		    ),
-		    'boxes-scholar_biocv_bio' => array(
-		      'module' => 'boxes',
-		      'delta' => 'scholar_biocv_bio',
-		      'weight' => 0,
-		      'region' => 'content_top',
-		      'label' => 'Bio Teaser',
-		    ),
+          'module' => 'views',
+          'delta' => 'vsite_featuredposts-block_1',
+          'weight' => 18,
+          'region' => 'right',
+          'label' => 'Featured posts',
+        ),
+        'boxes-scholar_biocv_bio' => array(
+          'module' => 'boxes',
+          'delta' => 'scholar_biocv_bio',
+          'weight' => 0,
+          'region' => 'content_top',
+          'label' => 'Bio Teaser',
+        ),
       ),
     ),
   );
@@ -72,8 +73,9 @@ function scholar_front_context_default_contexts() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('The front page context');
-
+  t('Feature');
+  t('Site front page');
   $export['openscholar-feature-front'] = $context;
+
   return $export;
 }

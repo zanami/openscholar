@@ -46,11 +46,13 @@ function scholar_image_gallery_vsite_taxonomy_content_types_alter(&$types){
  */
 function scholar_image_gallery_content_extra_fields($type_name){
   $extras = array();
-  $extras['image_gallery_add_image_link'] = array(
-    'label' => t('Add image link'), 
-    'description' => t('Add image to this gallery link'), 
-    'weight' => 100 
-  );
+  if ('gallery' == $type_name) {
+    $extras['image_gallery_add_image_link'] = array(
+      'label' => t('Add image link'), 
+      'description' => t('Add image to this gallery link'), 
+      'weight' => 100 
+    );
+  }
   return $extras;
 }
 
