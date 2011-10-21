@@ -100,7 +100,7 @@ function vsite_layout_move_widget($js, $delta, $ctx, $moveTo) {
   }
   else {
     $url = 'cp/vsite_layout/nojs/move/'.$delta.'/'.$ctx.'/'.$old_region;
-    $replace = '<div id="#block-boxes-'.$delta.'">'.t('You have removed that widget from your layout! Click !ctools-button to put it back!', array('!ctools-button' => ctools_ajax_text_button('Here', $url, "Remove this Widget"))).'</div>';
+    $replace = '<div id="#block-boxes-'.$delta.'" class="block warning">'.t('You have removed that widget from your layout! Click !ctools-button to put it back!', array('!ctools-button' => ctools_ajax_text_button('Here', $url, "Remove this Widget"))).'</div>';
   }
 
   $output[] = ctools_ajax_command_replace('#block-boxes-'.$delta, $replace);
