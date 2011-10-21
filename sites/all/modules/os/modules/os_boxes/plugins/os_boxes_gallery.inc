@@ -23,32 +23,29 @@ class os_boxes_gallery extends os_boxes_default {
    */
   public function options_form(){
     
-    $form['gallery'] = array(
-      '#type' => 'select',
-      '#title' => t('Gallery'),
-      '#options' => array(),
-      '#required' => TRUE,
+    $options = array(
+      'all' => t('All')
     );
-    
+   
     // for each gallery node, add nid/node_title to the select options
     $view = views_get_view("scholar_image_gallery");
     $view->set_display('page_1'); //block 1 showed all content
     $view->execute();
     
     if (count($view->result)) {
-      //gallery exists, add options
-      $form['gallery']['#options'] += array('all' => t('All'));
-      
       foreach($view->result as $r) {
-        $form['gallery']['#options'] += array($r->nid => $r->node_title);
+        $options[$r->nid] = $r->node_title;
       }
-      $form['gallery']['#default_value'] = $this->options['gallery'];
-    } else {
-      //no galleries to display
-      $form['gallery']['#description'] = t('No galleries found.');
-      $form['gallery']['#disabled'] = TRUE;
-      
-    }
+    } 
+    
+    $form['gallery'] = array(
+      '#type' => 'select',
+      '#title' => t('Gallery'),
+      '#options' => $options,
+      '#required' => TRUE,
+      '#default_value' => $this->options['gallery'],
+      '#description' => t('Select a gallery to draw the images from')
+    );
         
     $form['number_of_items'] = array(
       '#type' => 'textfield',
