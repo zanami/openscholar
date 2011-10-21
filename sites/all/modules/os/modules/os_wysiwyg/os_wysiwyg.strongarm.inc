@@ -168,6 +168,51 @@ gmodules.com';
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'wysiwyg_filter_styles_color_1';
+  $strongarm->value = array(
+    'color' => 'color',
+    'background' => 0,
+    'background-color' => 0,
+    'background-image' => 0,
+    'background-repeat' => 0,
+    'background-attachment' => 0,
+    'background-position' => 0,
+  );
+  $export['wysiwyg_filter_styles_color_1'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'wysiwyg_filter_styles_color_5';
+  $strongarm->value = array(
+    'color' => 'color',
+    'background' => 0,
+    'background-color' => 0,
+    'background-image' => 0,
+    'background-repeat' => 0,
+    'background-attachment' => 0,
+    'background-position' => 0,
+  );
+  $export['wysiwyg_filter_styles_color_5'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'wysiwyg_filter_styles_color_6';
+  $strongarm->value = array(
+    'color' => 'color',
+    'background' => 0,
+    'background-color' => 0,
+    'background-image' => 0,
+    'background-repeat' => 0,
+    'background-attachment' => 0,
+    'background-position' => 0,
+  );
+  $export['wysiwyg_filter_styles_color_6'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'wysiwyg_filter_styles_dimension_1';
   $strongarm->value = array(
     'height' => 'height',
