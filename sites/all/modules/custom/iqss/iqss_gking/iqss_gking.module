@@ -553,10 +553,10 @@ function iqss_gking_pub_by_type_block(){
       'key' => 'book',
       'name' => 'Books'
   );
-  $types[] = array(
-      'key' => 'software',
-      'name' => 'Software'
-  );
+//  $types[] = array(
+//      'key' => 'software',
+//      'name' => 'Software'
+//  );
 
   $vsite = vsite_get_vsite();
 
@@ -586,6 +586,21 @@ function iqss_gking_pub_by_type_block(){
     $output .= "</div>";
     $i ++;
   }
+  
+  //Software
+  $tabs .= "<li><a href=\"#pub_type_tabs-{$i}\">Software</a></li>";
+
+  $view = views_get_view('scholar_software_projects');
+  $view->execute('page_1');
+
+  $output .= "<div id='pub_type_tabs-{$i}'>";
+  foreach ( $view->result as $row ) {
+    $node = node_load($row->nid);
+    $output .= node_view($node, true);
+  }
+  $output .= '<div class="more-link">'.l("More Software","software").'</div> ';
+  $output .= "</div>";
+  $i ++;
 
   //Presentations
   $tabs .= "<li><a href=\"#pub_type_tabs-{$i}\">Presentations</a></li>";
