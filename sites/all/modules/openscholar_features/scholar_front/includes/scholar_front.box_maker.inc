@@ -190,7 +190,7 @@ function scholar_front_fb_mk_front_box(&$vsite, $settings) {
       
     //featuredposts block.  no new box supoport.  note flag to make this a block
     case 'flag':
-      $type = 'views-vsite_featuredposts-block_1';
+      $type = 'views-scholar_front-block_1';
       $block = true;
       break;
       
