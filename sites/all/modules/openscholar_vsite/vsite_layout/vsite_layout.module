@@ -14,10 +14,10 @@ function vsite_layout_ctools_plugin_api() {
 function vsite_layout_menu() {
   $items = array();
 
-  $items['cp/viste_layout/%ctools_js/%/%/remove'] = array(
-    'title' => 'Remove this Widget',
-    'page callback' => 'vsite_layout_remove_widget',
-    'page arguments' => array(2, 3, 4),
+  $items['cp/vsite_layout/%ctools_js/move/%/%/%'] = array(
+    'title' => 'Move this Widget',
+    'page callback' => 'vsite_layout_move_widget',
+    'page arguments' => array(2, 4, 5, 6),
     'access callback' => 'cp_access_cp',
     'type' => MENU_CALLBACK,
   );
@@ -34,13 +34,13 @@ function vsite_layout_vsite_admin_link($type, $object) {
 
 
   if ($object->module == 'boxes' && ($box = boxes_load($object->delta)) && spaces_access_admin()) {
-    
+
   	$active_feature = vsite_active_feature();
     if (!$active_feature) return $links;
-      
+
     $links[] = array(
-      'title' => 'Remove',
-      'href' => 'cp/viste_layout/nojs/'.$object->delta.'/'.'openscholar-feature-'.$active_feature.'/remove',
+      'title' => 'Remove Widget',
+      'href' => 'cp/vsite_layout/nojs/move/'.$object->delta.'/'.'openscholar-feature-'.$active_feature.'/false',
       'attributes' => array(
         'class' => 'ctools-use-ajax',
       )
@@ -70,27 +70,40 @@ function vsite_layout_get_widgets() {
  * @param string $delta		The delta of the widget to remove
  * @param string $ctx			The context its being removed from
  */
-function vsite_layout_remove_widget($js, $delta, $ctx) {
+function vsite_layout_move_widget($js, $delta, $ctx, $moveTo) {
+  if ($moveTo == 'false') $moveTo = false;
   // get the context
   // remove box from context
   // save context
   $vsite = vsite_get_vsite();
+  $old_region = '';
   if($vsite){
 	  $ctx_key = $ctx.':reaction:block';
-	  $ctx = $vsite->controllers->context->get($ctx_key);
-	  
-	  if($ctx && isset($ctx['blocks']['boxes-'.$delta])){
-		  $ctx['blocks']['boxes-'.$delta]['region'] = false;
-		  $vsite->controllers->context->set($ctx_key.':'.$vsite->group->og_theme, $ctx);
+	  $context = $vsite->controllers->context->get($ctx_key);
+
+	  if($context && isset($context['blocks']['boxes-'.$delta])){
+	    $old_region = $context['blocks']['boxes-'.$delta]['region'];
+		  $context['blocks']['boxes-'.$delta]['region'] = $moveTo;
+		  $vsite->controllers->context->set($ctx_key.':'.$vsite->group->og_theme, $context);
 	  }
   }
-  
+
   if (!$js) {
     drupal_goto('<front>');
   }
 
   ctools_include('ajax');
-  $output[] = ctools_ajax_command_remove('#block-boxes-'.$delta);
+
+  $replace = '';
+  if ($moveTo) {
+    $replace = theme('block', $context['blocks']['boxes-'.$delta]);
+  }
+  else {
+    $url = 'cp/vsite_layout/nojs/move/'.$delta.'/'.$ctx.'/'.$old_region;
+    $replace = '<div id="#block-boxes-'.$delta.'">'.t('You have removed that widget from your layout! Click !ctools-button to put it back!', array('!ctools-button' => ctools_ajax_text_button('Here', $url, "Remove this Widget"))).'</div>';
+  }
+
+  $output[] = ctools_ajax_command_replace('#block-boxes-'.$delta, $replace);
   ctools_ajax_render($output);
 }
 
@@ -177,18 +190,18 @@ function scholar_layout_spaces_feature_form_submit($form, &$form_state){
 
 	$vsite = vsite_get_vsite();
 	if(!$vsite && $form_state['values']['op'] != t('Reset to defaults')) return;
-	
+
 	//Filter out just the pub/private features
 	$old_features = array_intersect(variable_get('spaces_features', array()),array(1,2));
 	$new_features = array_intersect($form_state['values']['spaces_features'],array(1,2));
-	
+
 	$newly_enabled = array_diff( array_keys($new_features), array_keys($old_features));
-	
+
 	if(count($newly_enabled)){
 		foreach ($newly_enabled as $k => $s_feature) $newly_enabled[$k] = str_replace("scholar_","",$s_feature);
 	  $orig_context = $vsite->controllers->context->get("openscholar-feature-none:reaction:block","preset");
 	  $user_modified_context = $vsite->controllers->context->get("openscholar-feature-none:reaction:block");
-	  
+
 	  //Apply all the "Defaults" changes that the user has made prior to enabling this feature/context
 		vsite_layout_apply_layout_changes($user_modified_context,$orig_context,$newly_enabled);
 	}
@@ -279,7 +292,7 @@ function vsite_layout_context_plugins() {
  */
 function vsite_layout_vsite_widgets_access($widget ,$account = false){
   $space_features = variable_get('spaces_features', array());
-  
+
   if (array_key_exists($widget['module'], $space_features) && !$space_features[$widget['module']]) {
     //if this block is provided by a feature and that feature is disabled do not show the block
     return false;
@@ -296,7 +309,7 @@ function vsite_layout_vsite_widgets_access($widget ,$account = false){
     }
     if (is_object($view)) $view->destroy();
   }
-    
+
   return true;
 }
 
