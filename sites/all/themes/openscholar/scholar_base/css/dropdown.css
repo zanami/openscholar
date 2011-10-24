@@ -133,6 +133,12 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
  background:url('/sites/all/modules/openscholar_vsite/vsite_layout/vsite_layout_ui/theme/images/smallWidgetIcons/publications.png') no-repeat;
 }
    
+ 
+#cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_simple { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/vsite_layout_ui/theme/images/smallWidgetIcons/text.png') no-repeat;
+}  
+   
+   
 #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_feedreader,
 #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_rss { 
  background:url('/sites/all/modules/openscholar_vsite/vsite_layout/vsite_layout_ui/theme/images/smallWidgetIcons/rss.png') no-repeat;
@@ -159,6 +165,18 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_twitterfeed { 
  background:url('/sites/all/modules/openscholar_vsite/vsite_layout/vsite_layout_ui/theme/images/smallWidgetIcons/twitter.png') no-repeat;
 } 
+
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.fb_social_activityf,
+ #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.fb_social_comments,
+  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.fb_social_facepile,
+  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.fb_social_like,
+  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.fb_social_likebox,
+  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.fb_social_livestream,
+  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.fb_social_recommend,
+  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.fb_social_send { 
+ background:url('/sites/all/modules/openscholar_vsite/vsite_layout/vsite_layout_ui/theme/images/smallWidgetIcons/facebook.png') no-repeat;
+} 
+
 
  #cp-settings-layout div.ctools-dropdown div.ctools-dropdown-container ul li ul li a.os_boxes_shields { 
  background:url('/sites/all/modules/openscholar_vsite/vsite_layout/vsite_layout_ui/theme/images/smallWidgetIcons/shield.png') no-repeat;
