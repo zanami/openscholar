@@ -127,7 +127,7 @@ function os_modalframe_vsite_admin_link_alter(&$links, $type, $object) {
     // if the class doesn't exist, this is obviously not a modalframe box
     if (class_exists($modalframe) && ($box instanceof $modalframe)) {
       foreach ($links as &$l) {
-        if ($l['title'] == 'Configure Widget') {
+        if ($l['admin_type'] == 'config') {
           $l['href'] = $box->get_config_path();
           $l['attributes']['class'] = 'vsite-modal-link';
         }
