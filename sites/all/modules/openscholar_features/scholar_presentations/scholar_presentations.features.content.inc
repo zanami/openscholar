@@ -173,6 +173,13 @@ function scholar_presentations_content_default_fields() {
       'title_type' => 'textfield',
       'default_image' => NULL,
       'use_default_image' => 0,
+      'wysiwyg_fields_status' => 1,
+      'wysiwyg_fields_icon' => 'd50522754f0bc7cc44d2f5231a467fe8',
+      'wysiwyg_fields_formatters' => array(
+        'default' => 'default',
+      ),
+      'wysiwyg_fields_hide' => 1,
+      'wysiwyg_fields_delete' => 0,
       'insert' => 1,
       'insert_styles' => array(
         'image' => 'image',
@@ -201,13 +208,6 @@ function scholar_presentations_content_default_fields() {
       'insert_default' => 'imagecache_inline_default',
       'insert_class' => '',
       'insert_width' => '',
-      'wysiwyg_fields_status' => 1,
-      'wysiwyg_fields_icon' => 'd50522754f0bc7cc44d2f5231a467fe8',
-      'wysiwyg_fields_formatters' => array(
-        'default' => 'default',
-      ),
-      'wysiwyg_fields_hide' => 1,
-      'wysiwyg_fields_delete' => 0,
       'filefield_sources' => array(
         'remote' => 'remote',
         'reference' => 'reference',
@@ -444,8 +444,8 @@ function scholar_presentations_content_default_fields() {
       'label' => 'Presentation Files',
       'weight' => 0,
       'description' => 'Upload the file(s) for this presentation.',
-      'type' => 'slidesharefield_widget',
-      'module' => 'slidesharefield',
+      'type' => 'filefield_widget',
+      'module' => 'filefield',
     ),
   );
 

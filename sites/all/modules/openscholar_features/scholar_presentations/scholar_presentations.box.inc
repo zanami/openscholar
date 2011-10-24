@@ -5,6 +5,7 @@
  */
 function scholar_presentations_default_box() {
   $export = array();
+
   $box = new stdClass;
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
@@ -19,7 +20,7 @@ function scholar_presentations_default_box() {
     'argument' => '',
     'number_of_items' => '6',
   );
-
   $export['scholar_presentations_recent'] = $box;
+
   return $export;
 }

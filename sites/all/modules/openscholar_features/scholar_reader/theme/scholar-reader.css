@@ -16,21 +16,25 @@
   margin-top: .5em;
   }
 
-#block-scholar_reader-my_twitter_feed li {
+#block-scholar_reader-my_twitter_feed li,
+.box-os_boxes_twitterfeed li {
   clear:both;
   margin-bottom: 1.5em;
   }
 
-#block-scholar_reader-my_twitter_feed img {
+#block-scholar_reader-my_twitter_feed img,
+.box-os_boxes_twitterfeed img {
   float:left;
   margin: 0 .7em .1em 0;
   }
 
-.sidebar #block-scholar_reader-my_twitter_feed a {
+.sidebar #block-scholar_reader-my_twitter_feed a,
+.sidebar .box-os_boxes_twitterfeed a {
   display:inline !important;
   }
 
-.sidebar #block-scholar_reader-my_twitter_feed li {
+.sidebar #block-scholar_reader-my_twitter_feed li,
+.sidebar .box-os_boxes_twitterfeed li {
   padding-top: 10px;
   border-top: 1px dashed #ccc;
   }
