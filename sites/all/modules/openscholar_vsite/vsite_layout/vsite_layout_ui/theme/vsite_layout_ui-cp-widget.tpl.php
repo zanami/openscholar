@@ -32,7 +32,7 @@ if($w['icon_path']){
       <div class="close-this" title="Remove">Remove</div>
      <?php
      if ($w['block_config_path']){
-       if ($w['can_delete']) print ctools_modal_text_button("Delete", $w['block_delete_path'], "Delete widget", "delete");
+       if ($w['can_delete']) print ctools_modal_text_button("Delete", $w['block_delete_path'], "Delete widget", "delete ctools-modal-openscholar-style-default");
      	 $class = (strpos($w['delta'],"boxes_add__") === 0)?"add":"setting";
        print ctools_modal_text_button("Configure",$w['block_config_path']."/configure/cp_layout","Configure widget",$class);
      }

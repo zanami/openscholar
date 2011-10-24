@@ -130,7 +130,7 @@ function iqss_remote_source_get_source_url($node_id){
 function iqss_remote_source_retrieve($node, $b_allow_source_path = true){
 
 	list($s_current_path) = explode("?",$_SERVER['REQUEST_URI']);
-  if(substr($s_current_path,-1) != "/"){
+  if($b_allow_source_path && substr($s_current_path,-1) != "/"){
     $s_goto_path = $_GET['q'];
 	  if ($alias = drupal_lookup_path('alias', $s_goto_path, $path_language)) $s_goto_path = $alias;
 	  drupal_goto($s_goto_path."/");
