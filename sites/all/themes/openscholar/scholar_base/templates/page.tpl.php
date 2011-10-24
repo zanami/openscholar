@@ -57,9 +57,12 @@
           <div id="content-main" class="column<?php if (!empty($content_left)){ echo " content-left"; } if (!empty($content_right)){ echo " content-right"; } ?>">
             <?php if (!empty($admin_area) || !empty($context_links)): ?>
             <div id="admin-area">
+              <?php if($vsite_section_admin_links):?><!-- TODO make it a block -->
+                <?php print $vsite_section_admin_links;?>
+              <?php endif; ?>
               <?php if($context_links):?><!-- TODO make ctx links a block -->
                 <?php print $context_links;?>
-              <?php endif; ?>
+              <?php endif; ?>              
               <?php print $admin_area; ?>
             </div><!-- /admin-area -->
             <?php endif; ?>

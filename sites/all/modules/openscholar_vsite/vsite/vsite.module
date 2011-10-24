@@ -511,6 +511,8 @@ function vsite_preprocess_page(&$vars){
   }elseif(strlen($vars['context_links'])){
   	$vars['context_links'] = '<div class="context-links">'.$vars['context_links'].'</div>';
   }
+  
+  $vars['vsite_section_admin_links'] = theme('ctools_dropdown', t('Admin'), _vsite_section_admin_links(), FALSE, 'context-links vsite-section-admin-links');
 
   if (module_exists('modalframe')) {
     if (!isset($_GET['modal'])) {
@@ -520,6 +522,44 @@ function vsite_preprocess_page(&$vars){
       modalframe_child_js();
     }
   }
+}
+
+/**
+ * Return the admin links for each feature (customize / layout)
+ * @todo this should probably go in vsite_contextual
+ */
+function _vsite_section_admin_links(){
+  vsite_include('vsiteapi');
+  $active_feature = vsite_active_feature();
+  
+  $links = array();
+  $links[] = array(
+      'title' => t('Layout'), 
+      'href' => 'cp/build/layout', 
+      'query' => array(
+          'page_type' => $active_feature, 
+          'destination' => $_GET['q'] 
+      ), 
+      'attributes' => array(
+          'title' => t("Customize the layout of @section section", array('@section' => $active_feature)) 
+      ) 
+  );
+  
+  // is this feature customizable ?
+  // by convenction feature settings form is at features/feature_name
+  $item = menu_get_item('features/scholar_' . $active_feature);
+  if ($item && $item['href'] != 'features' && $item['access']) {
+    $links[] = array(
+        'title' => t('Customize'), 
+        'href' => 'features/nojs/scholar_' . $active_feature, 
+        'attributes' => array(
+            'class' => "ctools-use-modal", 
+            'title' => t('"@active_feature" feature settings', array('@active_feature' => $active_feature)),
+        ) 
+    );
+  }
+  
+  return $links;
 }
 
 /**
