@@ -214,6 +214,7 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
   width:23px;
   height:23px;
   text-indent: -9999px;
+  margin-left:-20px;
 }
 
 html.js .ctools-dropdown.context-links.vsite-section-admin-links div.ctools-dropdown-container-wrapper div.ctools-dropdown-container {
