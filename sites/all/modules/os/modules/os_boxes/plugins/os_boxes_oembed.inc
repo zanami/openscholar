@@ -61,8 +61,6 @@ class os_boxes_oembed extends os_boxes_default {
       '#type' => 'textfield',
       '#title' => t('Maximum Width of Embed'),
       '#default_value' => $this->options['width'],
-      '#process' => array('ctools_dependent_process'),
-      '#dependency' => array('radio:selection' => array('oembed_url')),
       '#description' => t('The maximum width of the embedded resource, in pixels.'),
     );
 
