@@ -5,6 +5,7 @@
  */
 function scholar_presentations_context_default_contexts() {
   $export = array();
+
   $context = new stdClass;
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
@@ -70,7 +71,7 @@ function scholar_presentations_context_default_contexts() {
   // Included for use with string extractors like potx.
   t('Feature');
   t('Presentations');
-
   $export['openscholar-feature-presentations'] = $context;
+
   return $export;
 }

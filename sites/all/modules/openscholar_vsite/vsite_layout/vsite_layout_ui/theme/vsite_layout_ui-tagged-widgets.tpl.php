@@ -8,12 +8,15 @@
  *  $wgts_class -> the class of the ul
  */
 $s_tagged_output = array('All' => "", 'Content' => "",'Media' => "",'Social' => "",'Misc' => "");
+$factories = array();
 foreach($wgts as $s_widget_key => $w){
 	if(!is_array($w['tags'])) $w['tags'] = array();
 
 	//Return the first tag that matches the display categories above
 	$s_tag = array_shift(array_intersect(array_keys($s_tagged_output),$w['tags']));
-	if($s_tag){
+	if($w['factory']){
+	 $factories[$s_widget_key] = $w;
+	}elseif($s_tag){
 	  $s_tagged_output[$s_tag] .= theme('vsite_layout_ui_cp_widget', $s_widget_key, $w);
 	}else{
 		$w['tags'][] = "Misc";
@@ -24,7 +27,7 @@ foreach($wgts as $s_widget_key => $w){
 ?>
 
 <div id="<?php print $wgts_id; ?>-wrapper" class="<?php print $wgts_id; ?>-wrapper">
-<?php echo $add_new_wgts; ?>
+<?php if(count($factories)) echo _vsite_layout_ui_build_dropdown($factories); ?>
 
 <div id="websiteLabelTab"><img src="<?php echo $GLOBALS['base_path'].drupal_get_path('module', 'vsite_layout_ui') . '/theme/images/websiteLayoutBarLabel.png'; ?>"></div>
 <ul id="widget-categories">

@@ -565,7 +565,6 @@ function _cp_get_modal_styles(){
         'background-color' => '#000'
       ),
       'animation' => 'fadeIn',
-      'throbber' => theme('image', ctools_image_path('ajax-loader.gif', 'ctools_ajax_sample'), t('Loading...'), t('Loading'))
     )
   );
 }

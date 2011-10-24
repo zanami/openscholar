@@ -20,7 +20,7 @@ function vsite_layout_ui_theme() {
 
     'vsite_layout_ui_tagged_widgets' => array(
       'template' => 'vsite_layout_ui-tagged-widgets',
-      'arguments' => array('wgts' => array(), 'add_new_wgts' => NULL, 'wgts_id' => NULL, 'wgts_class' => NULL, 'region_name' => NULL, 'wgts_tags' => array()),
+      'arguments' => array('wgts' => array(), 'wgts_id' => NULL, 'wgts_class' => NULL, 'region_name' => NULL, 'wgts_tags' => array()),
       'path' => drupal_get_path('module', 'vsite_layout_ui') . '/theme'
     ),
 
