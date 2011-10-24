@@ -16,10 +16,8 @@ $(document).ready(function() {
     $('#block-vsite_menus-features ul.menu li a').hover(
       function () {
           $(this).stop().animate({backgroundColor:'#F58714'}, 300);
-          }, function () {
-          $(this).stop().animate({backgroundColor:'#ffffff'}, 100);
-      });
-
+          }
+  
     $('.front #header-main .box-os_boxes_simple div.boxes-box-content').append('<a class="more" href="#">More</a>');
 
     var container = $("body.front #header-main #block-boxes-scholar_biocv_bio");
