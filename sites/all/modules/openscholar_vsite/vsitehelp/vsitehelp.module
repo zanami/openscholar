@@ -8,7 +8,7 @@ function vsitehelp_help($path) {
 
     //appearance
     case 'cp/build/layout':
-      return theme('advanced_help_topic', 'vsitehelp', 'Site-Layout');
+      return theme('advanced_help_topic', 'vsitehelp', 'Customizing-Your-Site-Layout');
 
     case 'cp/appearance':
     case 'cp/appearance/theme':
