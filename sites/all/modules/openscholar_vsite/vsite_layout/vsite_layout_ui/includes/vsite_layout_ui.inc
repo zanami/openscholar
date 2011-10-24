@@ -91,20 +91,7 @@ function vsite_layout_ui_top_widgets_callback() {
   //Disable widgets from disabled features
   vsite_layout_ui_check_for_disabled_widgets($wgts);
 
-  $factories = array();
-  $instances = array();
-  foreach ($wgts as $w_id => $wgt) {
-    if (strpos($wgt['delta'], 'boxes_add__') !== FALSE) {
-      $factories[$w_id] = $wgt;
-    }
-    else {
-      $instances[$w_id] = $wgt;
-    }
-  }
-
-  $top = theme('vsite_layout_ui_layout_widgets', $instances, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list');
-
-  // $top = theme('vsite_layout_ui_tagged_widgets', $instances, $add_new, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list');
+  $top = theme('vsite_layout_ui_tagged_widgets', $wgts, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list');
 
   drupal_json(array('status' => TRUE, 'data' => $top));
 }
@@ -310,10 +297,10 @@ function vsite_layout_ui_settings_form($form_state){
     '#ahah' => array(
           'event' => 'go_ahah',
           'path' => 'cp/build/layout/top_widgets_js',
-          'wrapper' => 'scholarlayout-top-widgets-wrapper .tagged-list',
-          'effect' => 'none',
+          'wrapper' => 'scholarlayout-top-widgets-wrapper',
+          'effect' => 'fade',
           'progress' => array('type' => 'none'),
-          'method' => 'replace',
+          'method' => 'replaceWith',
     ),
   );
 
@@ -344,27 +331,9 @@ function vsite_layout_ui_settings_form($form_state){
     );
   }
 
-
-  // split up the widgets into factories and instances
-  // factories go in the dropdown
-  // instances go in the available widgets section
-  $factories = array();
-  $instances = array();
-  foreach ($unused_wgts as $w_id => $wgt) {
-    if (strpos($wgt['delta'], 'boxes_add__') !== FALSE) {
-      $factories[$w_id] = $wgt;
-    }
-    else {
-      $instances[$w_id] = $wgt;
-    }
-  }
-
-  $add_new = _vsite_layout_ui_build_dropdown($factories);
-
-
   //Markup for "Top" Available Widgets Section
   $form['available_widgets_markup'] = array(
-    '#value' => theme('vsite_layout_ui_tagged_widgets', $instances, $add_new, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list'),
+    '#value' => theme('vsite_layout_ui_tagged_widgets', $unused_wgts, 'scholarlayout-top-widgets', 'scholarlayout-widgets-list'),
     '#weight' => 1,
   );
 
