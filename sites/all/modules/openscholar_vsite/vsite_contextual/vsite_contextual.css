@@ -8,12 +8,7 @@ div.ctools-dropdown div.ctools-dropdown-container {
   right: auto;
   left: 0;
  }
- 
-/* .content {
- 	position: relative;
-  z-index: 1;
-}
-*/
+
 /* the "Admin/Actions" link */
 .os-links .vsite-admin a.ctools-dropdown-link {
   position: absolute;
@@ -36,12 +31,6 @@ div.ctools-dropdown div.ctools-dropdown-container {
 .node .os-links .vsite-admin a.ctools-dropdown-link:hover {
   text-decoration: underline;
   }
-  
-.node,
-.block,
-.view {
-	position: relative;
-}
 
 .node:hover .vsite-admin a.ctools-dropdown-link,
 .block:hover .vsite-admin a.ctools-dropdown-link,
