@@ -513,12 +513,9 @@ function vsite_layout_ui_region_widgets( $page_type = 'none') {
     $widget = (array)$widget;
     // blocks stored in context override have old path
     // and overwrite the defaults
-    if (!is_array($widget['tags'])) {
-      $widget['tags'][] = 'Misc';
-    }
-    $widget['class'] = strtolower(implode(' ', $widget['tags']));
 
     if (isset($default_blocks[$s_widget_key])) {
+      $widget['tags'] = $default_blocks[$s_widget_key]['tags'];
       $widget['block_config_path'] = $default_blocks[$s_widget_key]['block_config_path'];
       // if this is a local instance or if there is a factory for this box type, we can delete it
       $widget['can_delete'] = strpos($widget['delta'], 'og-') !== FALSE || isset($a_widgets['boxes-boxes_add__'.$widget['plugin']]);
@@ -527,6 +524,11 @@ function vsite_layout_ui_region_widgets( $page_type = 'none') {
         $widget['block_delete_path'] = "cp/build/layout/nojs/".$widget['delta']."/delete";
       }
     }
+
+    if (!is_array($widget['tags'])) {
+      $widget['tags'][] = 'Misc';
+    }
+    $widget['class'] = strtolower(implode(' ', $widget['tags']));
 
     if ($widget['region']) {
       $a_region_widgets[$widget['region']][$s_widget_key] = $widget;

@@ -453,7 +453,7 @@ display: none;
   margin-right: 0;
   }
 
-.box-os_boxes_modal_siteinfo h1 {
+#boxes-box-site_info h1 {
   width: 168px;
   text-align: center;
   font-weight: normal;
@@ -461,8 +461,8 @@ display: none;
   font-size: 19px;
   }
 
-.box-os_boxes_modal_siteinfo h1 a,
-.box-os_boxes_modal_siteinfo h1 a:visited {
+#boxes-box-site_info h1 a,
+#boxes-box-site_info h1 a:visited {
   color:#fff;
   background:#636363;
   display:block;
@@ -470,12 +470,12 @@ display: none;
   height: 29px;
   }
 
-.box-os_boxes_modal_siteinfo h1 a:hover {
+#boxes-box-site_info h1 a:hover {
   background-color: #000;
   color: #fff;
   }
 
-#navbar ul li a, .box-os_boxes_modal_siteinfo h1 a {
+#navbar ul li a, #boxes-box-site_info h1 a {
   display:block;
   }
 

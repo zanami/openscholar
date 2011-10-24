@@ -9,11 +9,11 @@ div.ctools-dropdown div.ctools-dropdown-container {
   left: 0;
  }
  
- .content {
+/* .content {
  	position: relative;
   z-index: 1;
 }
-
+*/
 /* the "Admin/Actions" link */
 .os-links .vsite-admin a.ctools-dropdown-link {
   position: absolute;
@@ -102,11 +102,11 @@ div.ctools-dropdown div.ctools-dropdown-container {
   z-index: 0;
 }
 
-.os-links-outline ~ * {
+.os-links-outline > div {
 	position: relative;
 }
 
-*:hover > .os-links:hover ~ .os-links-outline {
+*:hover > .os-links:hover > .os-links-outline {
 	display: block;
 }
 
