@@ -492,11 +492,12 @@ function os_boxes_vsite_admin_link($type, $object) {
         $object->block_config_path = $wdgt['block_config_path'];
       }
       $links[] = array(
-        'title' => 'Configure Widget',
+        'title' => 'Configure',
         'href' => $object->block_config_path.'/front',
         'attributes' => array(
           'class' => 'ctools-use-modal',
         ),
+        'admin_type' => 'config',
       );
     }
 
