@@ -191,6 +191,7 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
   padding: 1px 8px 1px 25px !important;
 }
 
+
 #cp-settings-layout .ctools-dropdown {
 	  margin: 16px 12px 0 0;	
 	  -moz-border-radius:5px 5px 0px 0px;
@@ -198,6 +199,26 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
   border-radius: 5px 5px 0px 0px;
   background: url('../images/scholarbase-sprite.png') no-repeat 3px -380px #a1d4a1 !important;
 }
+
+
+#admin-area .ctools-dropdown.context-links.vsite-section-admin-links  {
+ float:right;
+  background: url('../images/scholarbase-sprite.png') no-repeat 0px -355px !important;
+
+}
+
+
+#admin-area .ctools-dropdown.context-links.vsite-section-admin-links a.ctools-dropdown-link {
+ float:right;
+  background: url('../images/scholarbase-sprite.png') no-repeat 0px -331px !important;
+  width:23px;
+  height:23px;
+  text-indent: -9999px;
+}
+
+html.js .ctools-dropdown.context-links.vsite-section-admin-links div.ctools-dropdown-container-wrapper div.ctools-dropdown-container {
+margin-top: 20px;	
+	}
 
 .section-cp .context-links {
   margin-right: 40px;
