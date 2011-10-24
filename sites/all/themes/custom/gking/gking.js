@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-    $('.front #header-main .box-os_boxes_simple div.boxes-box-content').append('<a class="more" href="#">More</a>');
+    $('.front #header-main .box-os_boxes_simple div.boxes-box-content p:last').append('<a class="more" href="#">More</a>');
 
     var container = $("body.front #header-main #block-boxes-scholar_biocv_bio");
     container.find('div.node').prepend('<a class="more" href="#">CLOSE X</a>');
