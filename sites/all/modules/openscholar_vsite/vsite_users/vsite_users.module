@@ -272,7 +272,7 @@ function vsite_users_form_vsite_users_profile_node_submit($form, &$form_state) {
   if (is_array($form_state['values'])  //The form has been submitted
   && !$o_profile
   && $form_state['values']['uid'] == $scholar->group->uid ) {                   //There was not already a profile
-    $form_state['redirect'] = 'home';
+    $form_state['redirect'] = '<front>';
   }
   elseif (isset($form_state['redirect'])) {
     unset($form_state['redirect']); //No Redirect for you
