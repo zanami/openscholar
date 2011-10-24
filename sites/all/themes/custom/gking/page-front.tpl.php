@@ -34,8 +34,10 @@
             <div id="header-main" class="column">
               <?php print $header_main; ?>
               <?php
-                $items = vsite_create_links();
-                print '<div class="context-links">' . theme('ctools_dropdown', t('Add new ...'), $items, FALSE, 'links') . '</div>';
+                if(cp_access_cp()){
+	                $items = vsite_create_links();
+	                print '<div class="context-links">' . theme('ctools_dropdown', t('Add new ...'), $items, FALSE, 'links') . '</div>';
+                }
               ?>
             </div><!-- /header-main -->
             <?php endif; ?>
