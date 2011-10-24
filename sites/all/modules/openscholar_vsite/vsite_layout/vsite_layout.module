@@ -39,11 +39,12 @@ function vsite_layout_vsite_admin_link($type, $object) {
     if (!$active_feature) return $links;
 
     $links[] = array(
-      'title' => 'Remove Widget',
+      'title' => 'Remove',
       'href' => 'cp/vsite_layout/nojs/move/'.$object->delta.'/'.'openscholar-feature-'.$active_feature.'/false',
       'attributes' => array(
         'class' => 'ctools-use-ajax',
-      )
+      ),
+      'admin_type' => 'remove',
     );
   }
   return $links;
