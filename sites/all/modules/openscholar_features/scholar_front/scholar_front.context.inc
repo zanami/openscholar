@@ -31,7 +31,7 @@ function scholar_front_context_default_contexts() {
           'module' => 'scholar_front',
           'delta' => 'get_started',
           'weight' => -1,
-          'region' => 'content_top',
+          'region' => 'admin_area',
           'status' => '0',
           'label' => 'Get Started (admin)',
         ),

@@ -18,6 +18,7 @@ regions[content_top]    = content top
 regions[content_bottom] = content bottom
 regions[footer]         = footer
 regions[closure_region] = closure
+regions[admin_area]     = Administrative
 
 features[] = logo
 features[] = name
