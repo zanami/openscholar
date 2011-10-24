@@ -530,11 +530,11 @@ function vsite_preprocess_page(&$vars){
  */
 function _vsite_section_admin_links(){
   vsite_include('vsiteapi');
-  $active_feature = vsite_active_feature();
+  $active_feature = ucfirst(vsite_active_feature());
   
   $links = array();
   $links[] = array(
-      'title' => t('Layout'), 
+      'title' => t('@section Layout', array('@section' => $active_feature)), 
       'href' => 'cp/build/layout', 
       'query' => array(
           'page_type' => $active_feature, 
@@ -550,7 +550,7 @@ function _vsite_section_admin_links(){
   $item = menu_get_item('features/scholar_' . $active_feature);
   if ($item && $item['href'] != 'features' && $item['access']) {
     $links[] = array(
-        'title' => t('Customize'), 
+        'title' => t('Customize @active_feature', array('@active_feature' => $active_feature)), 
         'href' => 'features/nojs/scholar_' . $active_feature, 
         'attributes' => array(
             'class' => "ctools-use-modal", 
