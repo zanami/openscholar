@@ -531,17 +531,18 @@ function vsite_preprocess_page(&$vars){
 function _vsite_section_admin_links(){
   vsite_include('vsiteapi');
   $active_feature = vsite_active_feature();
+  $active_feature_title = ucfirst($active_feature);
   
   $links = array();
   $links[] = array(
-      'title' => t('Layout'), 
+      'title' => t('@section Layout', array('@section' => $active_feature_title)), 
       'href' => 'cp/build/layout', 
       'query' => array(
           'page_type' => $active_feature, 
           'destination' => $_GET['q'] 
       ), 
       'attributes' => array(
-          'title' => t("Customize the layout of @section section", array('@section' => $active_feature)) 
+          'title' => t("Customize the layout of @section section", array('@section' => $active_feature_title)) 
       ) 
   );
   
@@ -550,11 +551,11 @@ function _vsite_section_admin_links(){
   $item = menu_get_item('features/scholar_' . $active_feature);
   if ($item && $item['href'] != 'features' && $item['access']) {
     $links[] = array(
-        'title' => t('Customize'), 
+        'title' => t('Customize @active_feature', array('@active_feature' => $active_feature_title)), 
         'href' => 'features/nojs/scholar_' . $active_feature, 
         'attributes' => array(
             'class' => "ctools-use-modal", 
-            'title' => t('"@active_feature" feature settings', array('@active_feature' => $active_feature)),
+            'title' => t('"@active_feature" feature settings', array('@active_feature' => $active_feature_title)),
         ) 
     );
   }
