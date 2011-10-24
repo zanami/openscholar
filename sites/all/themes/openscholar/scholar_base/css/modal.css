@@ -4,6 +4,7 @@
 
 #modalContent {
   top: 0 !important;
+  position: fixed !important;
   }
 
 #modalBackdrop {
