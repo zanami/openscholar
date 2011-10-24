@@ -1,23 +1,5 @@
 $(document).ready(function() {
-  $('#navbar li a').hover(
-      function () {
-          $(this).stop().animate({backgroundColor:'#fa8b18'}, 300);
-          }, function () {
-          $(this).stop().animate({backgroundColor:'#db7002'}, 100);
-      });
 
-   $('#navbar h1 a').hover(
-      function () {
-          $(this).stop().animate({backgroundColor:'#000000'}, 300);
-          }, function () {
-          $(this).stop().animate({backgroundColor:'#636363'}, 100);
-      });
-
-    $('#block-vsite_menus-features ul.menu li a').hover(
-      function () {
-          $(this).stop().animate({backgroundColor:'#F58714'}, 300);
-        });
-  
     $('.front #header-main .box-os_boxes_simple div.boxes-box-content').append('<a class="more" href="#">More</a>');
 
     var container = $("body.front #header-main #block-boxes-scholar_biocv_bio");
@@ -34,4 +16,4 @@ $(document).ready(function() {
       }
     });
 
-  });
+});
