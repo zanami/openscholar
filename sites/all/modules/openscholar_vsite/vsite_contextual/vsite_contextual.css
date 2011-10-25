@@ -38,6 +38,12 @@ div.ctools-dropdown div.ctools-dropdown-container {
   background-position: 0 -123px;
   }
 
+.node,
+.block,
+.view {
+  position: relative;
+}  
+
 .os-links {
   height: 18px;
   position: absolute;
@@ -46,6 +52,14 @@ div.ctools-dropdown div.ctools-dropdown-container {
   width: 14px;
   padding: 0 0 5px 5px;
   z-index: 2;
+}
+
+.block .node .os-links {
+	right: 15px;
+}
+
+.block .title ~.content .node .os-links {
+	right: 0;
 }
   
 .node-teaser .os-links {
@@ -99,45 +113,11 @@ div.ctools-dropdown div.ctools-dropdown-container {
 	display: block;
 }
 
-  
-  /* Styling for Contextual */
-/*
-.vsite-admin {
-  position: absolute;
-  right: 2px;
-  top: -16px;
-  display: none;
-  width: 100%;
-  text-align: right;
+/* fixes for nodes in blocks */
+.os-links ~.content .node {
+	padding-top: 0;
 }
 
-.node,
-.block,
-.view,
-.comment {
-  z-index: 2;
+.os-links ~.content .node-inner {
+	padding-top: 0;
 }
-
-.node:hover .vsite-admin,
-.node:hover .vsite-contextual-border,
-.block:hover .vsite-admin,
-.block:hover .vsite-contextual-border,
-.view:hover > .vsite-admin,
-.view:hover > .vsite-contextual-border,
-.comment:hover .vsite-admin,
-.comment:hover .vsite-contextual-border {
-  display: block;
-}
-
-.node .vsite-admin a.ctools-dropdown-link,
-.view > .vsite-admin a.ctools-dropdown-link,
-.block .vsite-admin a.ctools-dropdown-link,
-.comment .vsite-admin a.ctools-dropdown-link {
-  background: url('../images/scholarbase-sprite.png') 0 -124px no-repeat transparent;
-  padding: 0 !important;
-  height: 16px; 
-  display: inline-block;
-  width: 16px;
-  text-indent: -999em;
-}
-*/
