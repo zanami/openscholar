@@ -315,8 +315,8 @@ function os_boxes_boxes_plugins_alter(&$boxes){
 
   // unset the default "box" box
   unset($boxes['simple']);
-  
-  // os have its own plugin that extends the one 
+
+  // os have its own plugin that extends the one
   // provided by spaces_simpleviews module
   unset($boxes['spaces_sv_post_list']['title']);
 }
@@ -610,6 +610,9 @@ function os_boxes_form_alter(&$form, &$form_state, $form_id) {
 
   	  //Keep track of boxes last update time, can be used to expire cache
   	  $form['changed'] = array('#type' => 'value', '#value' => time());
+
+  	  // remove wysiwyg until we can fix it
+  	  unset($form['options']['format']);
 
   		//Allow each box to handle it's own validation && submission
   		$form['#validate'][] = 'os_boxes_box_validate';
