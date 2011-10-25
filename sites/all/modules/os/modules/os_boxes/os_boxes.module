@@ -315,6 +315,10 @@ function os_boxes_boxes_plugins_alter(&$boxes){
 
   // unset the default "box" box
   unset($boxes['simple']);
+  
+  // os have its own plugin that extends the one 
+  // provided by spaces_simpleviews module
+  unset($boxes['spaces_sv_post_list']['title']);
 }
 
 /**

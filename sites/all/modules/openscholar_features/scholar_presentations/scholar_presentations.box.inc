@@ -19,6 +19,10 @@ function scholar_presentations_default_box() {
     'sort' => 'newest',
     'argument' => '',
     'number_of_items' => '6',
+    'use_pager' => 0,
+    'more' => 1,
+    'more_text' => 'more',
+    'more_link' => 'presentations',
   );
   $export['scholar_presentations_recent'] = $box;
 

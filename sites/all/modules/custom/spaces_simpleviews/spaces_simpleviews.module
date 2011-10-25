@@ -2,124 +2,67 @@
 
 /**
  * @file
- * Spaces SimpleViews utility library.
- *
- * Provides some wrapper functions to programatically manipulate a given view
+ * Spaces SimpleViews
+ * 
  * - Based on the simpleviews module
  */
 
-
 /**
- * Default values for the view object
+ * Implemenation of hook_menu()
  */
-function spaces_simpleviews_default_data(){
-  return array(
-    'filter' => 'all nodes',  // @todo get the current context and the node type(s) associated with it, make that the default
-    'style' => 'titles',
-    'sort' => 'newest',
-    'argument' => '',
-    'number_of_items' => 6,
-    'use_pager' => 'mini'
+function spaces_simpleviews_menu(){
+  $items = array();
+
+  $items['spaces_simpleviews/nodetype_js'] = array(
+    'title' => 'Create your web site',
+    'page callback' => 'spaces_simpleviews_nodetype_js',
+    'access arguments' => array('spaces_access_admin'),
+    'type' => MENU_CALLBACK,
   );
+
+  return $items;
 }
+
+function spaces_simpleviews_nodetype_js(){
+  $type = $_POST['ctools_changed'];
+  $node_type = end(explode(':', $type));
+  
+  $path = "";
+  //"all" and "biblio" are special cases
+  if ('biblio' == $node_type) {
+    $path = 'publications';
+  }
+  else {
+    //which feature owns this node type?
+    $nodes_map = features_get_component_map('node');
+    $feature = $nodes_map[$node_type][0];
+    
+    // get the 'default view' and 'default display' for that feature
+    if ($view_info = vsite_get_default_feature_view($feature)) {
+      // enough info to get the path for "more" link
+      $view = views_get_view($view_info['view']);
+      $view->init();
+      $view->set_display($view_info['display'] ? $view_info['display'] : 'default');
+      $path = $view->get_path();
+    }
+  }
+  
+  ctools_include('ajax');
+  ctools_add_js('ajax-responder');
+  $commands = array();
+  $commands[] = ctools_ajax_command_attr("input[type=text][name=more_link]", 'value', $path);
+  ctools_ajax_render($commands);
+}
+
+
 
 /**
  * Builds the view
  * @param $simpleview
  */
 function spaces_simpleviews_build_view($simpleview = array()){
-  $simpleview += spaces_simpleviews_default_data();
   module_load_include('inc', 'spaces_simpleviews', 'spaces_simpleviews');
   return _spaces_simpleviews_build_view($simpleview);
-}
-
-/**
- * Build the record editing chunk, in a reusable fashion.
- */
-function spaces_simpleviews_get_edit_form($simpleview = array()){
-  $simpleview += spaces_simpleviews_default_data();
-  
-  //$form['#theme'] = 'spaces_simpleviews_edit_form';  //@todo provide a theme hook or remove this
-  
-
-  $form['filter'] = array(
-    '#type' => 'select', 
-    '#title' => t('Display'), 
-    '#options' => array(
-      'all' => t('All posts') 
-    ), 
-    '#required' => TRUE, 
-    '#default_value' => $simpleview['filter'] 
-  );
-  
-  // os/vsite integration - lists correct content types
-  if (module_exists('vsite') && vsite_get_vsite()) {
-    vsite_include('vsiteapi');
-    $node_options = vsite_content_types();
-    drupal_alter('vsite_content_types', $node_options);
-  }
-  
-  if (! isset($node_options)) {
-    $node_options = node_get_types('names');
-  }
-  
-  asort($node_options);
-  foreach ( $node_options as $type => $name ) {
-    $form['filter']['#options']['node:' . $type] = t('!type posts', array(
-      '!type' => $name 
-    ));
-  }
-  
-  $form['sort'] = array(
-    '#type' => 'select', 
-    '#title' => t('Sort'), 
-    '#options' => array(
-      'newest' => t('Newest first'), 
-      'oldest' => t('Oldest first'), 
-      'a-z' => t('By title') 
-    ), 
-    '#required' => TRUE, 
-    '#default_value' => $simpleview['sort'] 
-  );
-  if (module_exists('statistics')) {
-    $form['sort']['#options']['popular'] = t('By number of hits');
-  }
-  if (module_exists('votingapi')) {
-    $form['sort']['#options']['top-rated'] = t('By rating');
-  }
-  
-  $form['style'] = array(
-    '#type' => 'select', 
-    '#title' => t('Display Style'), 
-    '#options' => array(
-      //'full' => t('List of full posts'),
-      'teasers' => t('List of teasers'), 
-      'titles' => t('List of titles') 
-    ),  //'grid' => t('Grid of thumbnails'),
-    '#required' => TRUE, 
-    '#default_value' => $simpleview['style'] 
-  );
-  
-  $form['number_of_items'] = array(
-    '#type' => 'textfield', 
-    '#title' => 'Number of displayed posts', 
-    '#default_value' => $simpleview['number_of_items'], 
-    '#size' => 10 
-  );
-  
-  $form['use_pager'] = array(
-    '#title' => t('Use pager'),
-    '#type' => 'radios', 
-    '#options' => array(
-      'mini' => t('Yes'), 
-      0 => t('No') 
-    ), 
-    '#default_value' => $simpleview['use_pager'] 
-  );
-  
-  drupal_alter('spaces_simpleview_reusable_form', $form, $simpleview);
-  
-  return $form;
 }
 
 /**
@@ -127,20 +70,16 @@ function spaces_simpleviews_get_edit_form($simpleview = array()){
  */
 function spaces_simpleviews_boxes_plugins(){
   $info = array();
-
+  
   $info['spaces_sv_post_list'] = array(
-    'title' => 'List of posts',
-    'description' => 'List of posts',
-    'tags' => array(
-      'Content'
-    ),
+    'title' => 'List of posts', 
+    'description' => 'List of posts', 
     'handler' => array(
-      'class' => 'spaces_simpleviews_post_list',
-      'file' => 'spaces_simpleviews_post_list.inc',
-      'path' => drupal_get_path('module', 'spaces_simpleviews') . '/plugins',
-      //'parent' => 'box'
-    )
+      'class' => 'spaces_simpleviews_post_list', 
+      'file' => 'spaces_simpleviews_post_list.inc', 
+      'path' => drupal_get_path('module', 'spaces_simpleviews') . '/plugins' 
+    ) 
   );
-
+  
   return $info;
 }
