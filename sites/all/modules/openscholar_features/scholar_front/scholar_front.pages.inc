@@ -46,7 +46,7 @@ function _scholar_front_admin_frontpage(){
 
       //Created in the last 26 hours?
       $s_welcome_message = (time() - $vsite->group->created < 93600)?"Welcome to your new website!":"";
-      $s_short_message = (time() - $vsite->group->created < 93600)?"Not sure what to do now? Need help <span>getting started?</span>":"Need quick access to <span>common settings?</span>";
+      $s_short_message = (time() - $vsite->group->created < 93600)?"Need help <span>getting started?</span>":"Need quick access to <span>common settings?</span>";
       drupal_add_js(drupal_get_path('module', 'vsite').'/theme/vsite.js', 'module');
 
       //Add Content
