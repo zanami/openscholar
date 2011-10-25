@@ -23,7 +23,7 @@
  *   the $view->name property must be set.
  */
 function _spaces_simpleviews_build_view($simpleview = array()) {
-  $simpleview += spaces_simpleviews_default_data();
+  //$simpleview += spaces_simpleviews_default_data();
 
   views_include('view');
   // Now we'll set up the basic starting structure.
@@ -39,12 +39,18 @@ function _spaces_simpleviews_build_view($simpleview = array()) {
   $handler = $view->new_display('default', 'Defaults', 'default');
   $handler->override_option('title', $simpleview['title']);  //@todo not really needed
 
-  $handler->override_option('use_pager', $simpleview['use_pager']); 
-  $handler->override_option('items_per_page', $simpleview['number_of_items']); 
 
+  
+  //$handler->override_option('use_ajax', TRUE); // @todo not working
+  $handler->override_option('items_per_page', $simpleview['number_of_items']); 
+  /*
+  if ($simpleview['use_pager']){
+    $handler->override_option('use_pager', 'mini'); 
+  }
+  */
+  
   // the row style based on the style selected by the user (e.g. teaser, fields)
   _spaces_simpleviews_set_row_style($handler, $simpleview);
-
   _spaces_simpleviews_add_filter($handler, $simpleview);
   _spaces_simpleviews_add_sort($handler, $simpleview);
   _spaces_simpleviews_add_argument($handler, $simpleview);
