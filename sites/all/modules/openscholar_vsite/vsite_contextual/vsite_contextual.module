@@ -12,7 +12,7 @@ function vsite_contextual_init() {
  * Retrieve the admin links for a given object.
  */
 function vsite_contextual_get_admin_links($type, $object){
-
+  
   $links = module_invoke_all('vsite_admin_link', $type, $object);
   drupal_alter('vsite_admin_link', $links, $type, $object);
 

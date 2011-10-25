@@ -73,6 +73,14 @@ class os_views_content_cache_plugin extends views_content_cache_plugin_cache {
         'theme' => $GLOBALS['theme'],
         'language' => $GLOBALS['language'],
       );
+      
+	    if(module_exists('vsite_contextual')){
+	      //Get the avalible admin links for this block
+	      $admin_links = vsite_contextual_get_admin_links('view',$this->view);
+	      
+	      //Create a key based on the admin links returned
+	      $key_data['admin_links'] = serialize($admin_links);
+	    }
 
       //Include the Current Site in the Key if there is one:
       $vsite = vsite_get_vsite();

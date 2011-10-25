@@ -71,7 +71,15 @@ class os_content_cache_context_reaction_block extends vsite_context_reaction_blo
     $cid_parts[] = $block->module;
     $cid_parts[] = $block->delta;
     $cid_parts[] = $theme;
-    $cid_parts[] = ($user->uid == 1)?1:0; // special caching for super user.
+    $cid_parts[] = ($user->uid == 1)?1:0; // special caching for admin user.
+    
+    if(module_exists('vsite_contextual')){
+    	//Get the avalible admin links for this block
+    	$admin_links = vsite_contextual_get_admin_links('block',$block);
+    	
+    	//Create a key based on the admin links returned
+    	$cid_parts[] = count($admin_links)?md5(serialize($admin_links)):0;
+    }
     
     if (module_exists('locale')) {
       global $language;
