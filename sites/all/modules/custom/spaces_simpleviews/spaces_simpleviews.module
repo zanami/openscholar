@@ -16,7 +16,7 @@ function spaces_simpleviews_menu(){
   $items['spaces_simpleviews/nodetype_js'] = array(
     'title' => 'Create your web site',
     'page callback' => 'spaces_simpleviews_nodetype_js',
-    'access arguments' => array('spaces_access_admin'),
+    'access callback' => 'cp_access_cp',
     'type' => MENU_CALLBACK,
   );
 
