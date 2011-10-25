@@ -5,7 +5,7 @@
 function openscholar_front_enable(){
 	
 	$weight = db_result(db_query("SELECT weight FROM {system} WHERE type = 'module' AND name = 'spaces'"));
-  db_query("UPDATE {system} SET weight = %d WHERE name = 'openscholar_front'", ($weight + 1));
+  db_query("UPDATE {system} SET weight = %d WHERE name = 'openscholar_front'", ($weight + 20));
 	
 }
 
@@ -15,7 +15,7 @@ function openscholar_front_enable(){
  */
 function openscholar_front_update_6001(&$sandbox){
   $weight = db_result(db_query("SELECT weight FROM {system} WHERE type = 'module' AND name = 'spaces'"));
-  db_query("UPDATE {system} SET weight = %d WHERE name = 'openscholar_front'", ($weight + 1));
+  db_query("UPDATE {system} SET weight = %d WHERE name = 'openscholar_front'", ($weight + 20));
   
   $res[] = array(
       'success' => true,
