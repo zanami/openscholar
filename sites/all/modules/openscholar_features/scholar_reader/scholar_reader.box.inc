@@ -33,6 +33,10 @@ function scholar_reader_default_box() {
     'sort' => 'newest',
     'argument' => '',
     'number_of_items' => '6',
+    'use_pager' => 0,
+    'more' => 1,
+    'more_text' => 'more',
+    'more_link' => 'feeds',
   );
 
   $export['scholar_reader-feeds_list'] = $box;

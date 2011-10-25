@@ -18,6 +18,10 @@ function scholar_announcements_default_box() {
     'sort' => 'newest',
     'argument' => '',
     'number_of_items' => '6',
+    'use_pager' => 0,
+    'more' => 1,
+    'more_text' => 'more',
+    'more_link' => 'announcements',
   );
 
   $export['scholar_announcements_latest'] = $box;

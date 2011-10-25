@@ -30,6 +30,10 @@ function scholar_book_default_box() {
     'sort' => 'newest',
     'argument' => '',
     'number_of_items' => '6',
+    'use_pager' => 0,
+    'more' => 0,
+    'more_text' => '',
+    'more_link' => '',
   );
 
   $export['scholar_book_recent_docs'] = $box;
