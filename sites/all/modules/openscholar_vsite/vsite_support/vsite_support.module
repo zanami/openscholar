@@ -221,7 +221,7 @@ function vsite_support_mail($key, &$message, $params){
       $user = $params['user'];
       $account = $params['account'];
       $vsite = $params['vsite'];
-      $message['subject'] = $params['subject'] .' [' . variable_get('site_name', 'Drupal') . ']';
+      $message['subject'] = $params['subject'] .' [via ' . variable_get('site_name', 'Drupal') . ']';
       $message['body'][] = $params['message'];
       $message['body'][] = "\n\n---------------";
 
