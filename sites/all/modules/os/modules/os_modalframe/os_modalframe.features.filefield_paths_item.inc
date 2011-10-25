@@ -6,7 +6,7 @@
 function os_modalframe_filefield_paths_item_default_items() {
   $settings = array();
 
-  // Exported modal_image-field_free_image
+  // Exported modal_image-field_modal_image
   $settings['modal_image-field_modal_image'] = array(
     'type' => 'modal_image',
     'field' => 'field_modal_image',
