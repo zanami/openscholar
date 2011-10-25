@@ -68,7 +68,6 @@ class os_boxes_bio extends os_boxes_node {
     $front_settings = l("change what displays","cp/build/layout",array("query" => array("page_type" => "front")));
     $result = <<<MESSAGE
         <div id="welcome_front_wrapper">
-          <h3>Welcome to your new site.</h3>
           <p>Your sites front page is set to display your bio by default.  {$bio_link} {$front_settings} for the front of your site.</p>
         </div>
 MESSAGE;

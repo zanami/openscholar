@@ -21,9 +21,9 @@
   -moz-box-shadow: 0 .5em 3em rgba(0,0,0,0.6);
   -webkit-box-shadow: 0 .5em 3em rgba(0,0,0,0.6);
   box-shadow: 0 .5em 3em rgba(0,0,0,0.6);
-  }
+}
   
-  div.ctools-modal-content {
+div.ctools-modal-content {
   color: #000;
   margin: 0;
   text-align: left;
@@ -31,7 +31,8 @@
   -moz-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
   -webkit-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
   box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
-  }
+  height: 100% !important;
+}
 
 
 #modal-content {

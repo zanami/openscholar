@@ -149,6 +149,10 @@ body.sidebar-second #cp-content {
 #cp-content .view-vsite-support {
   margin: 30px 30px;
   }
+  
+body.page-cp-settings #cp-content .innerframe form  {
+  margin-left: 75px;
+  }
 
 #cp-content .views-processed,
 #cp-content .view-vsite-support {
