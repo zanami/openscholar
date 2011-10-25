@@ -6,9 +6,9 @@
 function os_modalframe_content_default_fields() {
   $fields = array();
 
-  // Exported field: field_free_image
-  $fields['modal_image-field_free_image'] = array(
-    'field_name' => 'field_free_image',
+  // Exported field: field_modal_image
+  $fields['modal_image-field_modal_image'] = array(
+    'field_name' => 'field_modal_image',
     'type_name' => 'modal_image',
     'display_settings' => array(
       'weight' => '-4',
@@ -86,9 +86,9 @@ function os_modalframe_content_default_fields() {
     ),
   );
 
-  // Exported field: field_free_image_size
-  $fields['modal_image-field_free_image_size'] = array(
-    'field_name' => 'field_free_image_size',
+  // Exported field: field_modal_image_size
+  $fields['modal_image-field_modal_image_size'] = array(
+    'field_name' => 'field_modal_image_size',
     'type_name' => 'modal_image',
     'display_settings' => array(
       'weight' => '-3',

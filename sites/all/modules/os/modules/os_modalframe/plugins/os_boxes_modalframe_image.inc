@@ -21,7 +21,7 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
     $node = node_load($this->options['nid']);
 
     $block = parent::render();
-    $img = content_format('field_free_image', $node->field_free_image[0], 'os_modal_image_'.$node->field_free_image_size[0]['value'].'_default', $node);
+    $img = content_format('field_modal_image', $node->field_modal_image[0], 'os_modal_image_'.$node->field_modal_image_size[0]['value'].'_default', $node);
     if (empty($node->field_link_from_image[0]['url'])) {
       $block['content'] = $img;
     }
@@ -39,7 +39,7 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
     if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'modal_image_node_form') {
 
       // hide unnecessary fields
-      $whitelist = array('title', 'body_field', 'field_free_image', 'field_free_image_size', 'field_link_from_image', 'buttons');
+      $whitelist = array('title', 'body_field', 'field_modal_image', 'field_modal_image_size', 'field_link_from_image', 'buttons');
       module_load_include('inc', 'spaces_og', 'spaces_og.pages');
       foreach (element_children($form) as $child) {
         if ($form[$child]['#type'] != 'value' && $form[$child]['#type'] != 'hidden') {
