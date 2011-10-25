@@ -279,7 +279,12 @@ function cp_feature_customize($js, $feature_name){
 
   if (empty($output)) {
     $output = array();
-    $output[] = ctools_ajax_command_reload();
+    if (isset($_REQUEST['refresh']) && $_REQUEST['refresh'] == 'yes'){
+      $output[] = ctools_ajax_command_reload();
+    }
+    else {
+      $output[] = ctools_modal_command_dismiss();
+    }
   }
   else {
     $output[] = ctools_ajax_command_append('#modal-content div.buttons','<input class="form-submit close" onClick="$(\'div.modal-header a.close\').click(); return false;" value="Cancel" />');

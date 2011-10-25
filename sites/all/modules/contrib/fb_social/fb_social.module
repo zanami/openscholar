@@ -283,15 +283,11 @@ function fb_social_fb_plugin_fb_settings_form($type, $options){
   $plugin = fb_social_fb_plugin_load($type);
   
   $url = FB_REF_BASE_URL . $plugin['html tag name'];
-  
-  $desc = t('For more information about this plugin and its attributes please check out the facebook documentation page at ') . l($url, $url, array(
-    'attributes' => array(
-      'target' => '_blank' 
-    ) 
-  ));
-  
+  $l = l("facebook documentation page", $url, array('attributes' => array('target' => '_blank' )));
+  $desc = t("For more information about this plugin and its attributes please check out the !facebookdoc" , array('!facebookdoc' => $l));
+
   $form['help'] = array(
-    '#value' => "<div>" . $desc . "</div>" 
+    '#value' => "<div>" . $desc . "</div>",
   );
   
   $function = ctools_plugin_get_function($plugin, 'fb plugin form');

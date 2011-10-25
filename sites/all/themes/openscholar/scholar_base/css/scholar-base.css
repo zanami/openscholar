@@ -279,12 +279,6 @@ div.terms {
   position: relative;
   }
 
-.node,
-.block,
-.view {
-	position: relative;
-}
-
 /* VIEWS */
 
 .views-row {

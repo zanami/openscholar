@@ -553,6 +553,9 @@ function _vsite_section_admin_links(){
     $links[] = array(
         'title' => t('Customize @active_feature', array('@active_feature' => $active_feature_title)),
         'href' => 'features/nojs/scholar_' . $active_feature,
+        'query' => array(
+          'refresh' => 'yes',
+        ),
         'attributes' => array(
             'class' => "ctools-use-modal",
             'title' => t('"@active_feature" feature settings', array('@active_feature' => $active_feature_title)),
