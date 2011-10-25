@@ -197,7 +197,7 @@ function scholar_front_fb_mk_front_box(&$vsite, $settings) {
       
     //features uses simpleviews_boxes_ls
     case 'features':
-      $type = 'spaces_sv_post_list';
+      $type = 'os_boxes_sv_list';
       $opts['style'] = 'teasers';
       $opts['filter'] = 'all';
       break;
