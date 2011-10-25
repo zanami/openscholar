@@ -41,6 +41,8 @@
 #message_welcome_message .slider {
   background-color: #eaf7e7;
   border:1px solid #c5d4c2;
+  position: relative;
+    z-index: 2;
   }
 
 #message_welcome_message .toggle {
