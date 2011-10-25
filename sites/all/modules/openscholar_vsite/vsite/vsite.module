@@ -254,18 +254,6 @@ function vsite_menu(){
     )
   );
 
-  $items['cp/settings/site_info/%vsite_group'] = array(
-    'title' => 'Site Information',
-    'page callback' => 'node_page_edit',
-    'file' => 'node.pages.inc',
-    'file path' => drupal_get_path('module', 'node'),
-    'page arguments' => array(3),
-    'weight' => 30,
-    'type' => MENU_LOCAL_TASK,
-    'menu_name' => 'cp',
-    'access callback' => 'cp_access_cp',
-  );
-
   $items['cp/modal/%node/%'] = array(
     'title' => 'Block Edit Forms',
     'page callback' => 'vsite_info_block_form',
@@ -606,182 +594,111 @@ function vsite_form_alter(&$form, $form_state, $form_id){
     // Hiding the  body splitting checkbox in the node forms
     if (! empty($form['body_field'])) {
       $form['body_field']['teaser_include'] = array(
-        '#type' => 'value',
-        '#value' => 1
+        '#type' => 'value', 
+        '#value' => 1 
       );
     }
-
-    if(isset($form['buttons']['preview'])){
-    	$form['buttons']['preview']['#access'] = user_access('vsite_node_form_preview');
+    
+    if (isset($form['buttons']['preview'])) {
+      $form['buttons']['preview']['#access'] = user_access('vsite_node_form_preview');
     }
-
+    
     if (isset($_GET['modal']) && $button = &$form['buttons']['submit']) {
       modalframe_child_js();
-//      $button['#submit'][] = 'vsite_modal_submit';
+      //      $button['#submit'][] = 'vsite_modal_submit';
     }
   }
+  
+  if ($form['#id'] == 'node-form' && (arg(0) . '/' . arg(1) != 'admin/content')) {
+    // GROUP ENABLED CONTENT TYPES
+    if (array_key_exists('spaces_og', $form)) {
+      // Recurse into spaces_og hiding the site select form
+      _spaces_og_make_hidden($form['spaces_og']);
+    }
+    
+    if (array_key_exists('spaces', $form)) {
+      //Get rid of the incorect description
+      _spaces_og_make_hidden($form['spaces']);
+    }
+  }
+  
+  if (isset($form['type']) && isset($form['#node']) && ($form_id == $form['type']['#value'] . '_node_form') && ! is_content_profile($form['type']['#value'])) {
+    //Node Form (Not Content Profile Nodes)
+    
 
-  $scholar_content_type = variable_get('scholar_content_type', 'vsite');
-  switch ($form_id) {
-    case $scholar_content_type . '_node_form' :
-      // modal forms
-      if (arg(0) != 'cp' || arg(3) == 'modalframe') break;
+    if (module_exists('override_node_options') && array_key_exists('revision_information', $form) && array_key_exists('options', $form)) {
+      $form['options']['#access'] = true;
+      
+      ctools_include('dependent');
+      if (array_key_exists('log', $form['revision_information'])) {
+        $form['options']['log'] = $form['revision_information']['log'];
+        $form['options']['log']['#weight'] = 5;
+        $form['options']['log']['#process'] = array(
+          'ctools_dependent_process' 
+        );
+        $form['options']['log']['#dependency'] = array(
+          'edit-revision-1' => array(
+            1 
+          ) 
+        );
+        if (! is_array($form['#validate']))
+          $form['#validate'] = array();
+        if (! in_array('cp_validate_node_flags', $form['#validate']))
+          $form['#validate'][] = 'vsite_validate_node_flags';
+      } //Add the description box for new revision
+      
 
-      $whitelist = array('buttons');
-      switch ($form['#node']->field_show) {
-        case 'logo':
-          $whitelist[] = 'field_vsite_logo';
-          break;
-        case null:
-          $whitelist[] = 'taxonomy';
-          $whitelist[] = 'themes';
-        case 'info':
-          $whitelist[] = 'title';
-          $whitelist[] = 'og_description';
-          $whitelist[] = 'field_vsite_address';
-          break;
-      }
+      if (array_key_exists('revision', $form['revision_information'])) {
+        $form['options']['revision'] = $form['revision_information']['revision'];
+        $form['options']['revision']['#weight'] = 4;
+        $form['options']['revision']['#default_value'] = false;
+        $form['options']['revision']['#description'] = "Create a new revision and your existing version will be saved in case you need it for reference or you need to revert to it.";
+        $form['options']['revision']['#access'] = user_access('view revisions');
+        if (! is_array($form['#validate']))
+          $form['#validate'] = array();
+      } //Add the "new revision" checkbox
+      
 
-      //Customize the "Site Information" form
-      $form['buttons']['submit']['#value'] = t('Save settings');
-      $form['#prefix'] = '<div id = "cp-settings-site">';
-      $form['#suffix'] = '</div>';
-      $form['pre_fieldset'] = array(
-        '#value' => "<fieldset>",
-        '#weight' => - 1000
-      );
-      $form['post_fieldset'] = array(
-        '#value' => "</fieldset>",
-        '#weight' => 1000
-      );
-      $form['field_vsite_logo']['#weight'] = 33;
-
-      //No vertical tabs fieldsets
-      vertical_tabs_save_config($form_id, array());
-
-      $form['#redirect'] = false;
-
+      $form['options']['sticky']['#description'] = "Sticky posts stay at the top of lists with non-sticky items ordered below them";
+      
       module_load_include('inc', 'spaces_og', 'spaces_og.pages');
-      foreach (element_children($form) as $field) {
-        if (!in_array($field, $whitelist) && $form[$field]['#type'] != 'hidden')
-          _spaces_og_make_hidden($form[$field]);
-      }
-      _spaces_og_make_hidden($form['buttons']['preview']);
-      _spaces_og_make_hidden($form['buttons']['delete']);
-      _spaces_og_make_hidden($form['buttons']['preview_changes']);
-      /*
-      _spaces_og_make_hidden($form['purl']);
-      _spaces_og_make_hidden($form['book']);
-      _spaces_og_make_hidden($form['attachments']);
-      _spaces_og_make_hidden($form['menu']);
-      _spaces_og_make_hidden($form['comment_settings']);
-      _spaces_og_make_hidden($form['spaces_preset']);
-      _spaces_og_make_hidden($form['path']);
       _spaces_og_make_hidden($form['revision_information']);
-      _spaces_og_make_hidden($form['author']);
-      _spaces_og_make_hidden($form['options']);*/
-      unset($form['spaces_preset']['#theme']); //Remove theme
+    } //Move the revision information under the options tab
+    
 
-      //Since we stay on the form this will force a rebuild
-      $form['#redirect'] = $_GET['q'];
-
-      if (array_search('spaces_og_form_group_submit', $form['buttons']['submit']['#submit'])) {
-        unset($form['buttons']['submit']['#submit'][array_search('spaces_og_form_group_submit', $form['buttons']['submit']['#submit'])]);
-      } //Don't need this submit, it just handles redirection
-      break;
-    default :
-      if ($form['#id'] == 'node-form' && (arg(0) . '/' . arg(1) != 'admin/content')) {
-        // GROUP ENABLED CONTENT TYPES
-        if (array_key_exists('spaces_og', $form)) {
-          // Recurse into spaces_og hiding the site select form
-          _spaces_og_make_hidden($form['spaces_og']);
-        }
-
-        if (array_key_exists('spaces', $form)) {
-          //Get rid of the incorect description
-          _spaces_og_make_hidden($form['spaces']);
-        }
+    $nid = ! empty($form['nid']['#value']) ? $form['nid']['#value'] : NULL;
+    if (module_exists('override_node_options') && array_key_exists('options', $form)) {
+      $vsite = vsite_get_vsite();
+      if (array_key_exists('promote', $form['options'])) {
+        _spaces_og_make_hidden($form['options']['promote']);
       }
-
-      if (isset($form['type']) && isset($form['#node']) && ($form_id == $form['type']['#value'] . '_node_form') && ! is_content_profile($form['type']['#value'])) {
-        //Node Form (Not Content Profile Nodes)
-
-
-        if (module_exists('override_node_options') && array_key_exists('revision_information', $form) && array_key_exists('options', $form)) {
-          $form['options']['#access'] = true;
-
-          ctools_include('dependent');
-          if (array_key_exists('log', $form['revision_information'])) {
-            $form['options']['log'] = $form['revision_information']['log'];
-            $form['options']['log']['#weight'] = 5;
-            $form['options']['log']['#process'] = array(
-              'ctools_dependent_process'
-            );
-            $form['options']['log']['#dependency'] = array(
-              'edit-revision-1' => array(
-                1
-              )
-            );
-            if (! is_array($form['#validate']))
-              $form['#validate'] = array();
-            if (! in_array('cp_validate_node_flags', $form['#validate']))
-              $form['#validate'][] = 'vsite_validate_node_flags';
-          } //Add the description box for new revision
-
-
-          if (array_key_exists('revision', $form['revision_information'])) {
-            $form['options']['revision'] = $form['revision_information']['revision'];
-            $form['options']['revision']['#weight'] = 4;
-            $form['options']['revision']['#default_value'] = false;
-            $form['options']['revision']['#description'] = "Create a new revision and your existing version will be saved in case you need it for reference or you need to revert to it.";
-            $form['options']['revision']['#access'] = user_access('view revisions');
-            if (! is_array($form['#validate']))
-              $form['#validate'] = array();
-          } //Add the "new revision" checkbox
-
-
-          $form['options']['sticky']['#description'] = "Sticky posts stay at the top of lists with non-sticky items ordered below them";
-
-          module_load_include('inc', 'spaces_og', 'spaces_og.pages');
-          _spaces_og_make_hidden($form['revision_information']);
-        } //Move the revision information under the options tab
-
-
-        $nid = ! empty($form['nid']['#value']) ? $form['nid']['#value'] : NULL;
-        if (module_exists('override_node_options') && array_key_exists('options', $form)) {
-          $vsite = vsite_get_vsite();
-          if (array_key_exists('promote', $form['options'])) {
-            _spaces_og_make_hidden($form['options']['promote']);
-          }
-          if ($vsite) {
-            $a_front_settings = $vsite->controllers->variable->get('vsite_setting_front');
-            if ($a_front_settings['frontpage'] == 'flag') {
-              $form['options']['vsite_promote_to_front'] = array(
-                '#type' => 'checkbox',
-                '#title' => "Promote to front page",
-                "#default_value" => false,
-                "#description" => t("If checked this post will be shown in your front page")
-              );
-              if ($nid) {
-                $flag = flag_get_flag('scholar_frontpage');
-                $form['options']['vsite_promote_to_front']['#default_value'] = $flag->is_flagged($nid);
-              }
-            }
-          }
-
-          $form['options']['vsite_make_featured'] = array(
-            '#type' => 'checkbox',
-            '#title' => "Make this Featured",
-            "#default_value" => false,
-            "#description" => "Make this a featured post. Featured posts will show up in the \"Featured posts\" widget",
+      if ($vsite) {
+        $a_front_settings = $vsite->controllers->variable->get('vsite_setting_front');
+        if ($a_front_settings['frontpage'] == 'flag') {
+          $form['options']['vsite_promote_to_front'] = array(
+            '#type' => 'checkbox', 
+            '#title' => "Promote to front page", 
+            "#default_value" => false, 
+            "#description" => t("If checked this post will be shown in your front page") 
           );
           if ($nid) {
-            $flag = flag_get_flag('featuredposts');
-            $form['options']['vsite_make_featured']['#default_value'] = $flag->is_flagged($nid);
+            $flag = flag_get_flag('scholar_frontpage');
+            $form['options']['vsite_promote_to_front']['#default_value'] = $flag->is_flagged($nid);
           }
-        } //Overide the default promote functionality in favor of ours
+        }
       }
-      break;
+      
+      $form['options']['vsite_make_featured'] = array(
+        '#type' => 'checkbox', 
+        '#title' => "Make this Featured", 
+        "#default_value" => false, 
+        "#description" => "Make this a featured post. Featured posts will show up in the \"Featured posts\" widget" 
+      );
+      if ($nid) {
+        $flag = flag_get_flag('featuredposts');
+        $form['options']['vsite_make_featured']['#default_value'] = $flag->is_flagged($nid);
+      }
+    } //Overide the default promote functionality in favor of ours
   }
 }
 
