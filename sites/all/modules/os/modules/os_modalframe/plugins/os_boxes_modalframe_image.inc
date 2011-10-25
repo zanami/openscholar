@@ -7,7 +7,7 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
       return 'node/'.$this->options['nid'].'/edit';
     }
     else {
-      return 'node/add/free-image';
+      return 'node/add/modal-image';
     }
   }
 
@@ -36,7 +36,7 @@ class os_boxes_modalframe_image extends os_boxes_modalframe {
   }
 
   public function form_alter(&$form, &$form_state) {
-    if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'free_image_node_form') {
+    if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'modal_image_node_form') {
 
       // hide unnecessary fields
       $whitelist = array('title', 'body_field', 'field_free_image', 'field_free_image_size', 'field_link_from_image', 'buttons');

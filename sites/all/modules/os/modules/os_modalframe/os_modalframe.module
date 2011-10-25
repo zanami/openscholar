@@ -46,7 +46,7 @@ function os_modalframe_boxes_plugins() {
       'path' => $path,
       'parent' => 'os_boxes_modalframe',
     ),
-    'factory_path' => 'node/add/free-image',
+    'factory_path' => 'node/add/modal-image',
     'access' => "cp_access_cp",
   );
 

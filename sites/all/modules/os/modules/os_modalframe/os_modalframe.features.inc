@@ -74,8 +74,8 @@ function os_modalframe_imagecache_default_presets() {
  */
 function os_modalframe_node_info() {
   $items = array(
-    'free_image' => array(
-      'name' => t('Free Image'),
+    'modal_image' => array(
+      'name' => t('Modal Image'),
       'module' => 'features',
       'description' => t('An Image not attached to a gallery.'),
       'has_title' => '1',
