@@ -126,7 +126,7 @@ class spaces_simpleviews_post_list extends boxes_box {
       '#type' => 'textfield', 
       '#title' => t('Label'), 
       '#default_value' => $simpleview['more_text'], 
-      '#description' => t("The title / lable of the link."),
+      '#description' => t("The title / label of the link."),
       '#process' => array(
         'ctools_dependent_process' 
       ), 

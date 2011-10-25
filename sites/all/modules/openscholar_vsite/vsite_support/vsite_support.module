@@ -221,12 +221,12 @@ function vsite_support_mail($key, &$message, $params){
       $user = $params['user'];
       $account = $params['account'];
       $vsite = $params['vsite'];
-      $message['subject'] = $params['subject'] .' [' . variable_get('site_name', 'Drupal') . ']';
+      $message['subject'] = $params['subject'] .' [via ' . variable_get('site_name', 'Drupal') . ']';
       $message['body'][] = $params['message'];
       $message['body'][] = "\n\n---------------";
 
       $message['body'][] = t("This message was sent to you from \"!site\" on behalf of !name through your website contact form (!form-url).", array(
-        '!name' => ($user->name) ? $user->name : $message['sender_firstname'] . ' ' . $message['sender_lastname'] . '(' .$message['from'] . ')', 
+        '!name' => ($user->name) ? $user->name : $params['sender_firstname'] . ' ' . $params['sender_lastname'] . ' (' .$message['from'] . ')', 
         '!form-url' => url($_GET['q'], array(
           'absolute' => TRUE, 
           'language' => $language 

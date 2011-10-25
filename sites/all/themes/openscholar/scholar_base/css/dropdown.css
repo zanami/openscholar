@@ -221,7 +221,7 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
 
 #admin-area .ctools-dropdown.context-links.vsite-section-admin-links  {
  float:right;
-  background: url('../images/scholarbase-sprite.png') no-repeat 0px -355px !important;
+  background: url('../images/scholarbase-sprite.png') no-repeat 0px -403px !important;
 
 }
 
@@ -229,6 +229,15 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
 #admin-area .ctools-dropdown.context-links.vsite-section-admin-links a.ctools-dropdown-link {
  float:right;
   background: url('../images/scholarbase-sprite.png') no-repeat 0px -331px !important;
+  width:23px;
+  height:23px;
+  text-indent: -9999px;
+  margin-left:-20px;
+}
+
+#admin-area .ctools-dropdown.context-links.vsite-section-admin-links a.ctools-dropdown-link:hover {
+ float:right;
+  background: url('../images/scholarbase-sprite.png') no-repeat 0px -355px !important;
   width:23px;
   height:23px;
   text-indent: -9999px;
