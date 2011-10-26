@@ -172,7 +172,7 @@ class spaces_simpleviews_post_list extends boxes_box {
     if ($simpleview['more']) {
       
       $more_text = $simpleview['more_text'];
-      $more_path = $simpleview['more_link'];
+      $more_path = url($simpleview['more_link']);
       
       if (strlen($more_path)) {
         $content .= theme('views_more', $more_path, $more_text);
