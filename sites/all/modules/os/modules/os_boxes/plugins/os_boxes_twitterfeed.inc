@@ -35,7 +35,8 @@ class os_boxes_twitterfeed extends os_boxes_default {
     $form['followme_link'] = array(
       '#type' => 'checkbox',
       '#title' => t('Inlcude a "follow me link"'),
-      '#default_value' => $this->options['followme_link']
+      '#default_value' => $this->options['followme_link'],
+      '#description' => "Note: This will not display if you use a #hashtag"
     );
 
     $form += parent::options_form();
@@ -58,8 +59,15 @@ class os_boxes_twitterfeed extends os_boxes_default {
 		$output = twitter_pull_render ($twitter_username);
 		
 		// include a followme link
-		if ($this->options['twitter_followme'] !== 0) {
-	      $output .= '<div class="twitter-followme">' . l('Follow me on Twitter','http://twitter.com/' . $twitter_username) .'</div>';
+		if ($this->options['twitter_followme'] !== 0 && strpos($twitter_username, '#') !== 0) {
+			
+			if(strpos($twitter_username, 'from:') === 0){
+				$link = 'http://twitter.com/' . str_replace("from:",'',$twitter_username);
+			}else{
+				$link = 'http://twitter.com/' . $twitter_username;
+			}
+			
+	    $output .= '<div class="twitter-followme">' . l('Follow me on Twitter',$link) .'</div>';
 		}
 
     $block['content'] = $output;
