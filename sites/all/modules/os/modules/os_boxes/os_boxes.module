@@ -50,7 +50,7 @@ function os_boxes_boxes_plugins() {
   );
 
 	$addthis_css = drupal_get_path('module', 'os_boxes') . '/theme/css/addthis.css';
-	  $info['os_boxes_addthis'] = array(
+	$info['os_boxes_addthis'] = array(
 	  'title' => 'Addthis',
 	  'description' => 'Social media links',
 	  'css' => $addthis_css,

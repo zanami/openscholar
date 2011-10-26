@@ -110,13 +110,15 @@ class os_boxes_pub_grps extends os_boxes_default {
    */
   public function cache_info(){
 
-    //Clear when biblio nodes are saved
-    $cache_key = array(
-      'os_og' => array('current' => 'current'),
-      'node' => array('biblio' => 'biblio'),
-    );
+//    //Clear when biblio nodes are saved
+//    $cache_key = array(
+//      'os_og' => array('current' => 'current'),
+//      'node' => array('biblio' => 'biblio'),
+//    );
+//
+//    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
 
-    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
+  	return array(); //caching disabled so ajax pager gets init'ed
   }
 
 }
