@@ -1,28 +1,28 @@
 //Javascript to manipulate the Areas of Interest block on Garys Home Page
 Drupal.behaviors.iqss_gking = function() {
 
-  iqss_gking_research_group_tabify();
+  if (! $.data( $('.front #block-iqss_gking-areas_of_research .col dt span').get(0), 'events' )) {
+    iqss_gking_research_group_tabify();
   
-  iqss_gking_taxonomy_alter_sort_links();
+    iqss_gking_taxonomy_alter_sort_links();
+  
+    $('.front #block-iqss_gking-areas_of_research .col dt span').hover(function() {
+      //Rem 1 for Sticky
+    	window.clearTimeout(timer_block_iqss_gking_areas_of_research);
+    
+      $('.front #block-iqss_gking-areas_of_research dt.active').removeClass('active');
+    	$('.front #block-iqss_gking-areas_of_research dd').fadeOut('fast');
+    	$('.front #block-iqss_gking-areas_of_research .more').hide();
+    
+      $(this).parent('dt').addClass('active');
+      $(this).parent('dt').next('dd').fadeIn('fast');
 
-  $('.front #block-iqss_gking-areas_of_research .col dt span').hover(function() {
-    //Rem 1 for Sticky
-	window.clearTimeout(timer_block_iqss_gking_areas_of_research);
+    });
 
-  $('.front #block-iqss_gking-areas_of_research dt.active').removeClass('active');
-	$('.front #block-iqss_gking-areas_of_research dd').fadeOut('fast');
-	$('.front #block-iqss_gking-areas_of_research .more').hide();
+    iqss_gking_areas_of_research_load_next();
 
-    $(this).parent('dt').addClass('active');
-
-    $(this).parent('dt').next('dd').fadeIn('fast');
-
-  });
-
-  iqss_gking_areas_of_research_load_next();
-
-  var timer_block_iqss_gking_areas_of_research = null;
-
+    var timer_block_iqss_gking_areas_of_research = null;
+  }
 
 };
 
