@@ -26,7 +26,7 @@ function vsitehelp_help($path) {
     //settings
     case 'cp/settings':
     case 'cp/settings/generic':
-    return theme('advanced_help_topic', 'vsitehelp', 'Other-Settings');
+    return theme('advanced_help_topic', 'vsitehelp', 'Site-Settings');
 
     //content
     case 'cp/content':
