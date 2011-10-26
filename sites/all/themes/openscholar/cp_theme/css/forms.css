@@ -118,7 +118,10 @@ body.page-cp-settings fieldset legend, body.page-cp-build-taxonomy fieldset lege
 	 border-top: none;
 }
 
-body.page-cp-settings fieldset, body.page-cp-build-taxonomy fieldset  {
+body.page-cp-settings fieldset, 
+body.page-cp-build-taxonomy fieldset,
+body.page-cp-build-menus fieldset
+  {
 	background:url('../images/fieldsetBg.png') repeat-x;
 	background-position: center bottom;
 	width:100%;
@@ -227,7 +230,7 @@ select option {
 #modal-content select,
 #modal-content select option {
  width: 185px;
- margin-bottom: 15px;
+ margin-bottom: 12px;
   }
   
 .form-region-right select option {
