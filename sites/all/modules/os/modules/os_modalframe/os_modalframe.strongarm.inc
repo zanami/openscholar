@@ -91,9 +91,9 @@ function os_modalframe_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'ffp_modal_image_field_free_image';
+  $strongarm->name = 'ffp_modal_image_field_modal_image';
   $strongarm->value = 0;
-  $export['ffp_modal_image_field_free_image'] = $strongarm;
+  $export['ffp_modal_image_field_modal_image'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */

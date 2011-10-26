@@ -56,6 +56,10 @@ function iqss_openscholar_front_views_default_views() {
       'link_to_node' => 0,
       'label_type' => 'none',
       'format' => 'vsite_design_landscape_logo_default',
+      'spaces' => array(
+        'frontpage' => 1,
+        'type' => 'spaces_og',
+      ),
       'multiple' => array(
         'group' => TRUE,
         'multiple_number' => '',
@@ -129,7 +133,7 @@ function iqss_openscholar_front_views_default_views() {
       'empty_zero' => 0,
       'link_to_node' => 1,
       'spaces' => array(
-        'frontpage' => 0,
+        'frontpage' => 1,
         'type' => 'spaces_og',
       ),
       'exclude' => 0,

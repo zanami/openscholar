@@ -315,8 +315,8 @@ function os_boxes_boxes_plugins_alter(&$boxes){
 
   // unset the default "box" box
   unset($boxes['simple']);
-  
-  // os have its own plugin that extends the one 
+
+  // os have its own plugin that extends the one
   // provided by spaces_simpleviews module
   unset($boxes['spaces_sv_post_list']['title']);
 }
@@ -503,19 +503,6 @@ function os_boxes_vsite_admin_link($type, $object) {
         ),
         'admin_type' => 'config',
       );
-    }
-
-    if (isset($box->options['nid'])) {
-      $box->render();
-    }
-    if ($box->options['nid'] && ($node = node_load($box->options['nid']))) {
-      $node_links = vsite_contextual_get_admin_links('node', $node);
-      foreach ($node_links as &$l) {
-        if (stripos($l['title'], 'post') === FALSE) {
-          $l['title'] .= ' Post';
-        }
-      }
-      $links = array_merge($links, $node_links);
     }
   }
   return $links;
