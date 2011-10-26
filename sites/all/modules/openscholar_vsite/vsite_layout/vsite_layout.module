@@ -78,6 +78,7 @@ function vsite_layout_move_widget($js, $delta, $ctx, $moveTo) {
   // save context
   $vsite = vsite_get_vsite();
   $old_region = '';
+  $block = array();
   if($vsite){
 	  $ctx_key = $ctx.':reaction:block';
 	  $context = $vsite->controllers->context->get($ctx_key);
@@ -85,6 +86,7 @@ function vsite_layout_move_widget($js, $delta, $ctx, $moveTo) {
 	  if($context && isset($context['blocks']['boxes-'.$delta])){
 	    $old_region = $context['blocks']['boxes-'.$delta]['region'];
 		  $context['blocks']['boxes-'.$delta]['region'] = $moveTo;
+		  $block = $context['blocks']['boxes-'.$delta];
 		  $vsite->controllers->context->set($ctx_key.':'.$vsite->group->og_theme, $context);
 	  }
   }
@@ -97,11 +99,12 @@ function vsite_layout_move_widget($js, $delta, $ctx, $moveTo) {
 
   $replace = '';
   if ($moveTo) {
-    $replace = theme('block', $context['blocks']['boxes-'.$delta]);
+    $block += module_invoke($block['module'], 'block', 'view', $block['delta']);
+    $replace = theme('block', (object)$block);
   }
   else {
     $url = 'cp/vsite_layout/nojs/move/'.$delta.'/'.$ctx.'/'.$old_region;
-    $replace = '<div id="#block-boxes-'.$delta.'" class="block warning">'.t('You have removed that widget from your layout! !ctools-button', array('!ctools-button' => ctools_ajax_text_button('Undo it!', $url, "Remove this Widget"))).'</div>';
+    $replace = '<div id="block-boxes-'.$delta.'" class="block warning">'.t('You have removed that widget from your layout! !ctools-button', array('!ctools-button' => ctools_ajax_text_button('Undo it!', $url, "Remove this Widget"))).'</div>';
   }
 
   $output[] = ctools_ajax_command_replace('#block-boxes-'.$delta, $replace);

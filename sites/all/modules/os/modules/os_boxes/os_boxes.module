@@ -130,7 +130,7 @@ function os_boxes_boxes_plugins() {
 
 
   $info['os_boxes_node'] = array(
-    'title' => 'Post in a box',  // i.e. view
+    'title' => 'Post in a widget',  // i.e. view
     'description' => 'Displays the content of a post in the widget',
     'tags' => array('Content'),
     'handler' => array(
@@ -275,7 +275,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['vsite_taxonomy_fbt'] = array(
-    'title' => 'Filter by Category',
+    'title' => 'Taxonomy widget',
     'description' => 'Filter content by category',
     'tags' => array('Content'),
     'handler' => array(
@@ -504,19 +504,6 @@ function os_boxes_vsite_admin_link($type, $object) {
         'admin_type' => 'config',
       );
     }
-
-    if (isset($box->options['nid'])) {
-      $box->render();
-    }
-    if ($box->options['nid'] && ($node = node_load($box->options['nid']))) {
-      $node_links = vsite_contextual_get_admin_links('node', $node);
-      foreach ($node_links as &$l) {
-        if (stripos($l['title'], 'post') === FALSE) {
-          $l['title'] .= ' Post';
-        }
-      }
-      $links = array_merge($links, $node_links);
-    }
   }
   return $links;
 }
@@ -610,9 +597,6 @@ function os_boxes_form_alter(&$form, &$form_state, $form_id) {
 
   	  //Keep track of boxes last update time, can be used to expire cache
   	  $form['changed'] = array('#type' => 'value', '#value' => time());
-
-  	  // remove wysiwyg until we can fix it
-  	  unset($form['options']['format']);
 
   		//Allow each box to handle it's own validation && submission
   		$form['#validate'][] = 'os_boxes_box_validate';

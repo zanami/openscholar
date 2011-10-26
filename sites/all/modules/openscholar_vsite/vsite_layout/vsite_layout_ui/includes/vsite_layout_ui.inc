@@ -270,7 +270,7 @@ function vsite_layout_ui_settings_form($form_state){
   $form['#prefix'] = '<div id = "cp-settings-layout">';
   $form['#suffix'] = '</div>';
 
-  $s_page_type = isset($_GET['page_type'])?$_GET['page_type']:'none';
+  $s_page_type = isset($_GET['page_type'])?$_GET['page_type']:'front';
 
   $a_page_types = vsite_layout_ui_get_pagetypes($space);
 
