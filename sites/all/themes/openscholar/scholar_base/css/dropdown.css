@@ -248,11 +248,7 @@ html.js .ctools-dropdown.context-links.vsite-section-admin-links div.ctools-drop
 margin-top: 20px;	
 	}
 
-.section-cp .context-links {
-  margin-right: 40px;
-  padding: 6px 10px 6px 23px !important;
-  background-position: 6px -380px !important;
-  }
+
 
 .context-links:hover,
 .section-cp div.ctools-dropdown:hover{
