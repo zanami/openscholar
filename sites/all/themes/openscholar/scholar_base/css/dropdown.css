@@ -195,7 +195,7 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
 
   /*CTOOLS DROPDOWN ON LAYOUT PAGE - END*/
  
- #admin-area {height:20px;clear:right;}
+ #admin-area {height:20px;clear:right;margin-bottom: 20px;}
  
 
 .context-links,
