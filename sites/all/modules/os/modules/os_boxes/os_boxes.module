@@ -130,7 +130,7 @@ function os_boxes_boxes_plugins() {
 
 
   $info['os_boxes_node'] = array(
-    'title' => 'Post in a box',  // i.e. view
+    'title' => 'Post in a widget',  // i.e. view
     'description' => 'Displays the content of a post in the widget',
     'tags' => array('Content'),
     'handler' => array(
@@ -275,7 +275,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['vsite_taxonomy_fbt'] = array(
-    'title' => 'Filter by Category',
+    'title' => 'Taxonomy widget',
     'description' => 'Filter content by category',
     'tags' => array('Content'),
     'handler' => array(
