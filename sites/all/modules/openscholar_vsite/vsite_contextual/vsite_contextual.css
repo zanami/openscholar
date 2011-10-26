@@ -71,15 +71,15 @@ div.ctools-dropdown div.ctools-dropdown-container {
   width: auto;
 }
 
-.node-teaser .os-links .vsite-admin,
-.block .os-links .vsite-admin,
-.view > .os-links .vsite-admin {
+.node-teaser .os-links .vsite-admin .ctools-dropdown-link-wrapper,
+.block .os-links .vsite-admin .ctools-dropdown-link-wrapper,
+.view > .os-links .vsite-admin .ctools-dropdown-link-wrapper {
   display:none;
 }
 
-.node:hover .os-links .vsite-admin,
-.block:hover .os-links .vsite-admin,
-.view:hover > .os-links .vsite-admin {
+.node:hover .os-links .vsite-admin .ctools-dropdown-link-wrapper,
+.block:hover .os-links .vsite-admin .ctools-dropdown-link-wrapper,
+.view:hover > .os-links .vsite-admin .ctools-dropdown-link-wrapper {
   display:block;
 }
 
