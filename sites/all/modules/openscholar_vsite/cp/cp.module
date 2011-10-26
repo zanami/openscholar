@@ -231,6 +231,14 @@ function cp_menu(){
     if (! array_key_exists('access callback', $item))
       $items[$path]['access callback'] = 'cp_access_cp';
   }
+  
+  //Mark messages as seen
+  $items['cp/confirm_message/%'] = array(
+		'page callback' => 'cp_confirm_message_view',
+		'type' => MENU_CALLBACK,
+		'access callback' => 'cp_access_cp',
+		'page arguments' => array(2),
+	);
 
   return $items;
 }
