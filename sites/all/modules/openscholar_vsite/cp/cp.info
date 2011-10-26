@@ -1,6 +1,6 @@
-name = scholar control panel
+name = vsite control panel
 description = main module for scholar Control Panel
-package = "Scholar"
+package = "OpenScholar Vsite"
 core = 6.x
 dependencies[] = "ctools"
 features[ctools][] = "context:context:3"
