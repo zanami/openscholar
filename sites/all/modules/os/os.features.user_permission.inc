@@ -41,14 +41,6 @@ function os_user_default_permissions() {
     ),
   );
 
-  // Exported permission: access devel information
-  $permissions['access devel information'] = array(
-    'name' => 'access devel information',
-    'roles' => array(
-      '0' => 'administrator',
-    ),
-  );
-
   // Exported permission: access site reports
   $permissions['access site reports'] = array(
     'name' => 'access site reports',
@@ -94,12 +86,10 @@ function os_user_default_permissions() {
     ),
   );
 
-  // Exported permission: administer cite distribute
-  $permissions['administer cite distribute'] = array(
-    'name' => 'administer cite distribute',
-    'roles' => array(
-      '0' => 'administrator',
-    ),
+  // Exported permission: administer citation distribute
+  $permissions['administer citation distribute'] = array(
+    'name' => 'administer citation distribute',
+    'roles' => array(),
   );
 
   // Exported permission: administer content types
@@ -323,14 +313,6 @@ function os_user_default_permissions() {
     ),
   );
 
-  // Exported permission: execute php code
-  $permissions['execute php code'] = array(
-    'name' => 'execute php code',
-    'roles' => array(
-      '0' => 'administrator',
-    ),
-  );
-
   // Exported permission: flush imagecache
   $permissions['flush imagecache'] = array(
     'name' => 'flush imagecache',
@@ -390,14 +372,6 @@ function os_user_default_permissions() {
   // Exported permission: show more format tips link
   $permissions['show more format tips link'] = array(
     'name' => 'show more format tips link',
-    'roles' => array(
-      '0' => 'administrator',
-    ),
-  );
-
-  // Exported permission: switch users
-  $permissions['switch users'] = array(
-    'name' => 'switch users',
     'roles' => array(
       '0' => 'administrator',
     ),

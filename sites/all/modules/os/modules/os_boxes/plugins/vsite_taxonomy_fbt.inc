@@ -173,7 +173,7 @@ class vsite_taxonomy_fbt extends os_boxes_default {
 	      }
 
 	    }
-	    $block['content'] = $terms_html;
+	    if(strlen($terms_html)) $block['content'] = $terms_html;
 	  }
 
     return $block;
