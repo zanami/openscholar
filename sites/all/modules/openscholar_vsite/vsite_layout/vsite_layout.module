@@ -35,6 +35,7 @@ function vsite_layout_vsite_admin_link($type, $object) {
 
   if ($object->module == 'boxes' && ($box = boxes_load($object->delta)) && spaces_access_admin()) {
 
+    vsite_include('vsiteapi');
   	$active_feature = vsite_active_feature();
     if (!$active_feature) return $links;
 
