@@ -26,7 +26,7 @@ div.ctools-modal-content .modal-title {
   }
 
 div.ctools-modal-content {
-  height: 100%;
+  height: 100% !important;
   }
 
 div.ctools-modal-content .modal-header {
