@@ -5,21 +5,6 @@
  */
 function os_taxonomy_default_vocabularies() {
   return array(
-    'affiliations' => array(
-      'name' => 'Affiliation / Department',
-      'description' => 'A comma-separated list of affiliation that your site may have, for ex.(Math department)',
-      'help' => 'Affiliation',
-      'relations' => '1',
-      'hierarchy' => '0',
-      'multiple' => '1',
-      'required' => '0',
-      'tags' => '0',
-      'module' => 'features_affiliations',
-      'weight' => '0',
-      'nodes' => array(
-        'vsite' => 'vsite',
-      ),
-    ),
     'interests' => array(
       'name' => 'Related Interests',
       'description' => 'A comma-separated list of topics that may relate to the content of your site. ex.(zoology, evolutionary biology, casual inference)',
