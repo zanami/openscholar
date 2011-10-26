@@ -99,9 +99,8 @@ function vsite_layout_move_widget($js, $delta, $ctx, $moveTo) {
 
   $replace = '';
   if ($moveTo) {
-    $block = (object)$block;
-    $block = (object)module_invoke($block->module, 'block', 'view', $block->delta);
-    $replace = theme('block', $block);
+    $block += module_invoke($block['module'], 'block', 'view', $block['delta']);
+    $replace = theme('block', (object)$block);
   }
   else {
     $url = 'cp/vsite_layout/nojs/move/'.$delta.'/'.$ctx.'/'.$old_region;
