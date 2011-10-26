@@ -154,7 +154,6 @@ function os_slideshow_views_default_views() {
         'vsite' => 0,
         'vsite_users_profile' => 0,
         'biblio' => 0,
-        'free_image' => 0,
         'profile' => 0,
       ),
       'validate_argument_node_access' => 1,
