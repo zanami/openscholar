@@ -336,7 +336,6 @@ function vsite_layout_set_widget_width(widget){
 	}
     
 	$.each(regions, function(i, region){
-		if(region.id == 'scholarlayout-top-widgets') return;//Don't act on top widgets
 		
 		var rgn = $("#"+region.id);
 		if(region.id == 'scholarlayout-top-widgets' && widget){
