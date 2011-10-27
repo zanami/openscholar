@@ -1,7 +1,8 @@
 //Javascript to manipulate the Areas of Interest block on Garys Home Page
 Drupal.behaviors.iqss_gking = function() {
 
-  if (! $.data( $('.front #block-iqss_gking-areas_of_research .col dt span').get(0), 'events' )) {
+  var areas = $('.front #block-iqss_gking-areas_of_research .col dt span');
+  if (areas.length && !($.data( areas.get(0), 'events' ))) {
     iqss_gking_research_group_tabify();
   
     iqss_gking_taxonomy_alter_sort_links();
