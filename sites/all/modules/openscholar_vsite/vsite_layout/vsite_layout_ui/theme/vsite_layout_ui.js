@@ -339,12 +339,15 @@ function vsite_layout_set_widget_width(widget){
 		if(region.id == 'scholarlayout-top-widgets') return;//Don't act on top widgets
 		
 		var rgn = $("#"+region.id);
-		if(rgn.height() < nHeight *2){
+		if(region.id == 'scholarlayout-top-widgets' && widget){
+			//top widgets should go back to default size
+			$(widget)removeAttr( "style" );
+		}else if(rgn.height() < nHeight *2){
 			//If this is a skinny container
 			var items = $("#"+region.id+" > .scholarlayout-item");
 			var nWidth = (rgn.width()) / items.length;
 			items.width(nWidth - 51);
-		}else if(rgn.hasClass('scholarlayout-widgets-list') && widget){
+	    }else if(rgn.hasClass('scholarlayout-widgets-list') && widget){
 		  var nWidth = rgn.width();
 		  $(widget).width(nWidth-51);
 		}
