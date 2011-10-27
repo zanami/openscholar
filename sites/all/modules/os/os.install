@@ -503,7 +503,7 @@ function os_update_6009(&$sandbox){
     }
 
     //make sure vsite->controllers->boxes exists
-    $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "vsite" LIMIT 1') );
+    $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "%s" LIMIT 1',variable_get('scholar_content_type', 'vsite')) );
     $vsite = vsite_get_vsite($v);
     if (! isset($vsite->controllers->boxes)) {
       $ret['#abort'] = array('success' => FALSE, 'query' => 'vsite object has no box controller.  clear cache before running update.');
@@ -511,7 +511,7 @@ function os_update_6009(&$sandbox){
     }
 
     $sandbox['os_update_6009_progress'] = 0;
-    $sandbox['max'] = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "vsite" ')  );
+    $sandbox['max'] = (int)db_result(  db_query('SELECT COUNT(nid) FROM {node} WHERE type = "%s" ',variable_get('scholar_content_type', 'vsite'))  );
   }
 
   //vsites per batch.
