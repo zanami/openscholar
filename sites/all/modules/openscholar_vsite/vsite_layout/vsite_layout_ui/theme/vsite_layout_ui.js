@@ -341,7 +341,7 @@ function vsite_layout_set_widget_width(widget){
 		var rgn = $("#"+region.id);
 		if(region.id == 'scholarlayout-top-widgets' && widget){
 			//top widgets should go back to default size
-			$(widget)removeAttr( "style" );
+			$(widget).removeAttr( "style" );
 		}else if(rgn.height() < nHeight *2){
 			//If this is a skinny container
 			var items = $("#"+region.id+" > .scholarlayout-item");
