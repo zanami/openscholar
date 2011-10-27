@@ -32,7 +32,7 @@ class os_boxes_node extends os_boxes_default {
     }//Convert to nid
 
     $form['nid'] = vsite_node_autocomplete_element($title = NULL);
-    $form['nid']['#default_value'] = ((int)$nid != 0)?_vsite_node_autocomplete_nid_to_title($default_nid):"";
+    $form['nid']['#default_value'] = ((int)$default_nid != 0)?_vsite_node_autocomplete_nid_to_title($default_nid):"";
     $form += parent::options_form();
     
     $form['teaser'] = array(
