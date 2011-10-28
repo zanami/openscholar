@@ -18,6 +18,31 @@ function os_modalframe_ctools_plugin_api($module, $api) {
   }
 }
 
+function os_modalframe_menu() {
+  $items = array();
+  $items['cp/os-modalframe/%'] = array(
+    'title' => 'Configure this Widget',
+    'page callback' => 'os_modalframe_box_form',
+    'page arguments' => array(2),
+    'access callback' => 'os_boxes_cp_layout_configurable',
+    'access arguments' => array(2),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+function os_modalframe_box_form($delta) {
+  $box = boxes_load($delta);
+  if (!$box) {
+    $delta = str_replace('boxes_add__', '', $delta);
+    $box = boxes_factory($delta);
+    $box->delta = os_boxes_create_delta();
+  }
+
+  $form_state['box'] = $box;
+  return drupal_build_form('boxes_box_form', $form_state);
+}
+
 /**
  * Implementation of hook_boxes_plugins().
  */
@@ -76,7 +101,25 @@ function os_modalframe_boxes_plugins() {
     'access' => "cp_access_cp",
   );
 
+  $info['os_modal_wysiwyg'] = array(
+    'title' => 'Custom text/html',
+    'description' => 'Custom text/html',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_modal_wysiwyg',
+      'file' => 'os_modal_wysiwyg.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_modalframe',
+    ),
+    'factory_path' => 'cp/os-modalframe/boxes_add__os_modal_wysiwyg',
+    'access' => "cp_access_cp",
+  );
+
   return $info;
+}
+
+function os_modalframe_boxes_plugins_alter(&$plugins) {
+  unset($plugins['os_boxes_simple']);
 }
 
 function os_modalframe_form_alter(&$form, &$form_state) {

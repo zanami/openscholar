@@ -534,7 +534,7 @@ function os_boxes_box_modal($js = NULL, $delta){
   ctools_include('form');
   if (!$js) {
     $form_state = array('box' => $box);
-    if (module_exists('modalframe')) {
+    if (module_exists('modalframe') && isset($_GET['modal'])) {
       modalframe_child_js();
     }
     return ctools_build_form('boxes_box_form', $form_state);
