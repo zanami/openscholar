@@ -101,7 +101,7 @@ function os_modalframe_boxes_plugins() {
     'access' => "cp_access_cp",
   );
 
-  $info['os_modal_wysiwyg'] = array(
+  $info['os_boxes_simple'] = array(
     'title' => 'Custom text/html',
     'description' => 'Custom text/html',
     'tags' => array('Content'),
@@ -111,22 +111,20 @@ function os_modalframe_boxes_plugins() {
       'path' => $path,
       'parent' => 'os_boxes_modalframe',
     ),
-    'factory_path' => 'cp/os-modalframe/boxes_add__os_modal_wysiwyg',
+    'factory_path' => 'cp/os-modalframe/boxes_add__os_boxes_simple',
     'access' => "cp_access_cp",
   );
 
   return $info;
 }
 
-function os_modalframe_boxes_plugins_alter(&$plugins) {
-  unset($plugins['os_boxes_simple']);
-}
 
 function os_modalframe_form_alter(&$form, &$form_state) {
   if (isset($_GET['modal']) && isset($_GET['box'])) {
     $box = boxes_load($_GET['box']);
     if (empty($box)) {
       // GET[box] wasn't a delta. must be a plugin key
+      // $box_class = ctools_plugin_load_class('boxes', 'plugins', $_GET['box'], 'handler');
       $box = boxes_factory($_GET['box']);
     }
 
