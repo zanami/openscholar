@@ -309,6 +309,19 @@ function iqss_pinserver_register_user($op, &$edit, &$account, $category = NULL){
 }
 
 /**
+ * Implement dynamic landing path
+ */
+function iqss_pinserver_register_pinserver_landing_path(){
+  global $user;
+  $vsites = vsite_get_vsite_by_owner($user->uid);
+  if (!scholarregister_vsite_exists_access($vsites)) {
+    return (!$vsites || (count($vsites) > 1) ? 'user' : $vsites[0]->get_absolute_url());
+  }
+    
+  return 'site/register';
+}
+
+/**
  * API Function - returns Harvard id when passed Drupal user id
  */
 function iqss_pinserver_register_get_huid($uid){
