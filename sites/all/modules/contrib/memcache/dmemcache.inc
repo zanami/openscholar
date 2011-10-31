@@ -342,7 +342,7 @@ function dmemcache_object($bin = NULL, $flush = FALSE) {
 
           // Using the Memcache PECL extension.
           if ($memcache instanceof Memcache) {
-            // When using the PECL memcache extension, we must use ->(p)connect 
+            // When using the PECL memcache extension, we must use ->(p)connect
             // for the first connection.
             if (!$init) {
               if ($memcache_persistent && $memcache->pconnect($host, $port)) {
@@ -378,6 +378,8 @@ function dmemcache_object($bin = NULL, $flush = FALSE) {
       }
     }
   }
+  
+  if(empty($memcacheCache[$bin])) memcache_mark_cluster_status($cluster,false);
 
   return empty($memcacheCache[$bin]) ? FALSE : $memcacheCache[$bin];
 }
