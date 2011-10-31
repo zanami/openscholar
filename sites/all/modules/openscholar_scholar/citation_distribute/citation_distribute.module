@@ -515,21 +515,19 @@ function citation_distribute_flag_default_flags($flags = array(), $i = 0) {
  * marks node operations (above) for inclusion in bulk update operations
  */
 function citation_distribute_views_pre_render(&$view) {
-	if (in_array('biblio', $view->args)) {
-		$plugins = _plugins ();
-		
-		if ($view->name == 'vsite_content') {
-			$plugin = $view->style_plugin->options;
-			foreach($view->style_plugin->all_operations as $op => $def) {
-				$flag_function = $def['callback arguments'][1];
-				
-				//add flags that use a CD plugin as a callback and that CD plugin has a title
-				if ( isset($plugins[$flag_function]['title'])) {
-          $plugin['operations'][$op]['selected'] = 1;
-				}
+	if ($view->name == 'vsite_content') {
+	  $plugins = _plugins();
+	  
+		$plugin = $view->style_plugin->options;
+		foreach($view->style_plugin->all_operations as $op => $def) {
+			$flag_function = $def['callback arguments'][1];
+			
+			//add flags that use a CD plugin as a callback and that CD plugin has a title
+			if ( isset($plugins[$flag_function]['title'])) {
+        $plugin['operations'][$op]['selected'] = 1;
 			}
-		  $view->style_plugin->options = $plugin;
 		}
+	  $view->style_plugin->options = $plugin;
 	}
 }
 
@@ -608,7 +606,7 @@ function citation_distribute_cron() {
 /**
  * checks if node is published or not.  unpublished nodes shouldn't be distributed despite what CD options user selects.
  * Enter description here ...
- * @param unknown_type $nid
+ * @param $nid
  */
 function _published($nid) {  
   $query = 'SELECT status FROM {node} WHERE nid = %d';
