@@ -115,7 +115,7 @@ dl.bibliomultiselect .form-item {
   }
   
   .biblio-note p {
-display:none;
+display: inline;
   }
 
 .biblio-authors a {
