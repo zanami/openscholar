@@ -150,15 +150,6 @@ h2.title {
   padding-right: 206px;
   }
 
-.header-main #sidebar-second,
-.header-main #sidebar-first,
-.header-left-main #sidebar-second,
-.header-left-main #sidebar-first,
-.header-main #sidebar-first,
-.header-main-right #sidebar-second {
-  top: -125px;
-  }
-
 /*CONTENT AREA */
 
 #sidebar-first,
