@@ -18,6 +18,19 @@
     <?php
     $home_link =  l('Powered by OpenScholar','http://openscholar.harvard.edu', array('attributes' => array('class' => 'poweredby'),'html'=>TRUE));
     $login_link = theme('vsite_login_link',"Login",array('class' => 'footer-login'));
+    
+    //Setup the register link, since this is in the tpl now
+    global $user;
+    $s_register_link = "";
+    $vsites = ($user->uid)?vsite_get_vsite_by_owner($user->uid):array();
+    if (!scholarregister_vsite_exists_access($vsites)) {
+      if($vsites){
+        $s_register_link = l(((count($vsites) > 1) ? 'Go to your sites' : "Go to your site"),((count($vsites) > 1) ? 'user' : $vsites[0]->get_absolute_url()),array('attributes'=>array('class' =>'big-button')));
+      } //No sites or a ablility to create one
+    }else{
+      //Create a site
+      $s_register_link = l(((count($vsites) > 1)?"Create a Site Now":'Get Your Site Now'),'site/register',array('attributes'=>array('class' =>'big-button')));
+    }
    ?>
     <li><a href="http://openscholar.harvard.edu">Not a Harvard Scholar? Find out how to create a similar site at your institution.</a></li>
   </ul>
@@ -39,7 +52,7 @@
       ?>
   </div><!--/first-col-->
   <div id="col-2" class="col clearfix">
-    <?php print l('Get Your Site Now','site/register',array('attributes'=>array('class' =>'big-button'))); ?>
+    <?php print $s_register_link; ?>
     <p class="leadin">Scholars at Harvard is a free web site building tool available to faculty, graduate students and visiting scholars at Harvard.</p>
     <ul>
       <li><span>Create a beautiful academic web site in seconds.</span></li>
@@ -74,7 +87,7 @@
   <div id="reasons_header" class="header">
     <div class="wrap">
       <h1><a href="#">Scholars at Harvard</a></h1>
-      <?php print l('Get Your Site Now','site/register',array('attributes'=>array('class' =>'big-button'))); ?>
+      <?php print $s_register_link; ?>
     </div>
     </div>
     <a id="reasons-home" href="#">Home</a>

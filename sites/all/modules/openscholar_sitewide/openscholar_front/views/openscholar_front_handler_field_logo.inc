@@ -1,4 +1,7 @@
 <?php
+if(!class_exists('file_aliases_content_handler_field_multiple')){
+	return false;
+}//views should take care of this for us
 
 class openscholar_front_handler_field_logo extends file_aliases_content_handler_field_multiple {
 

@@ -228,9 +228,6 @@ function citation_distribute_nodeapi(&$node, $op, $a3) {
 							
 						}
 					}
-				}
-				if ($output = theme('citation_distribute_form_msg', $distributed)) {
-					drupal_set_message(t($output)); //not necessarily!  Can we get output from flags?  hook_flag COULD return something from each calss...
 				}			
 			break;
 
@@ -275,12 +272,23 @@ function citation_distribute_flag($event, $flag, $nid, $account) {
 			switch($event) {
 				
 				case 'flag':
-					if ($dist_mode == 'per_submission') { 
+					if (!_published($nid)) {
+					  // don't send unpublished nodes to repos.  break before db is updated.
+				    drupal_set_message('This node is not listed for publication and has not been sent to ' . $plugin['title'] . '.' ,'warning');
+				    break;
+				  }
+				  
+				  if ($dist_mode == 'per_submission') { 
 						$dist = _citation_distribute_distribute($nid, $plugin['name']);
 					} else {
 					  $batch_cmd = 'distribute'; 					  //assume batch mode
 					}
 					_citation_distribute_update_db($plugin['name'], $nid, $batch_cmd); 
+					
+			  	if ($output = theme('citation_distribute_form_msg', array($plugin['name']))) {
+				  	drupal_set_message(t($output)); 
+		    	}
+		    	
 					break;
 					
 				case 'unflag':
@@ -507,21 +515,19 @@ function citation_distribute_flag_default_flags($flags = array(), $i = 0) {
  * marks node operations (above) for inclusion in bulk update operations
  */
 function citation_distribute_views_pre_render(&$view) {
-	if (in_array('biblio', $view->args)) {
-		$plugins = _plugins ();
-		
-		if ($view->name == 'vsite_content') {
-			$plugin = $view->style_plugin->options;
-			foreach($view->style_plugin->all_operations as $op => $def) {
-				$flag_function = $def['callback arguments'][1];
-				
-				//add flags that use a CD plugin as a callback and that CD plugin has a title
-				if ( isset($plugins[$flag_function]['title'])) {
-          $plugin['operations'][$op]['selected'] = 1;
-				}
+	if ($view->name == 'vsite_content') {
+	  $plugins = _plugins();
+	  
+		$plugin = $view->style_plugin->options;
+		foreach($view->style_plugin->all_operations as $op => $def) {
+			$flag_function = $def['callback arguments'][1];
+			
+			//add flags that use a CD plugin as a callback and that CD plugin has a title
+			if ( isset($plugins[$flag_function]['title'])) {
+        $plugin['operations'][$op]['selected'] = 1;
 			}
-		  $view->style_plugin->options = $plugin;
 		}
+	  $view->style_plugin->options = $plugin;
 	}
 }
 
@@ -563,7 +569,12 @@ function citation_distribute_cron() {
 	$result = db_query($query, variable_get('citation_distribute_cron_limit', _CRON_LIMIT));  
 
 	while($res = db_fetch_object($result)) {
-		if (in_array($res->plugin, array_keys($plugins))) {  //only attempt plugins we have.  old plugins could leave entries in db, but be unprocessableable.
+	  
+  	if (!_published($res->nid)) {
+      break;  	  // don't send unpublished nodes to repos. 
+    }
+		
+    if (in_array($res->plugin, array_keys($plugins))) {  //only attempt plugins we have.  old plugins could leave entries in db, but be unprocessableable.
 		  switch ($res->batch_command) {
 		    
 		    case 'distribute':
@@ -591,4 +602,17 @@ function citation_distribute_cron() {
 		}
 	}
 }
+
+/**
+ * checks if node is published or not.  unpublished nodes shouldn't be distributed despite what CD options user selects.
+ * Enter description here ...
+ * @param $nid
+ */
+function _published($nid) {  
+  $query = 'SELECT status FROM {node} WHERE nid = %d';
+  $result = db_query($query, $nid);
+  $r = db_fetch_object($result);
+  return $r->status;
+}
+
 

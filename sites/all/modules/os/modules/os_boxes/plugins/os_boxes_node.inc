@@ -26,9 +26,13 @@ class os_boxes_node extends os_boxes_default {
     //@todo just for vsite for now but it can be used outside os
   	vsite_include('nodeautocomplete');
   	$default_nid = $this->options['nid'];
+  	
+    if (is_string($default_nid)) {
+      $default_nid = _vsite_node_autocomplete_title_to_nid($default_nid);
+    }//Convert to nid
 
     $form['nid'] = vsite_node_autocomplete_element($title = NULL);
-    $form['nid']['#default_value'] = $default_nid;
+    $form['nid']['#default_value'] = ((int)$default_nid != 0)?_vsite_node_autocomplete_nid_to_title($default_nid):"";
     $form += parent::options_form();
     
     $form['teaser'] = array(
