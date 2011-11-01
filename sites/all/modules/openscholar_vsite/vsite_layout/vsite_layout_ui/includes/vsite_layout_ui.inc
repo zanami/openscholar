@@ -287,7 +287,7 @@ function vsite_layout_ui_settings_form($form_state){
           'wrapper' => 'scholarlayout-container',
           'progress' => array('type' => 'throbber', 'message' => t('Loading Page...')),
           'effect' => 'fade',
-          'method' => 'replace',
+          'method' => 'replaceWith',
     ),
   );
 
