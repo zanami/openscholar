@@ -27,8 +27,9 @@ if (!class_exists('purl_vsite_path')) {
 
       foreach ($a_parsed as $s_site => $a_settings) {
         if ($a_settings->provider == 'spaces_og' && variable_get('purl_base_domain', FALSE)) {
-          $vsite = spaces_load('og', $a_settings->id);
-          $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
+          $vsite_domain = db_result(db_query("SELECT value FROM {spaces_overrides} WHERE type = 'og' AND id = %d AND object_id = 'vsite_domain_name' AND object_type = 'variable' ",$a_settings->id));
+          if($vsite_domain) $vsite_domain = unserialize($vsite_domain);
+          
           if(!is_string($vsite_domain)) $vsite_domain = false;
           
           if (in_array($a_settings->value, self::$a_disabled) ||
