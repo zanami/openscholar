@@ -45,7 +45,7 @@ class os_boxes_booktoc extends os_boxes_default {
     $block = parent::render();
 
     if ($this->options['book_nid']) {
-      $block = os_books_build_toc($this->options['book_nid']);
+      $block = os_books_build_toc($this->options['book_nid']) + $block;
     }
 
     return $block;
