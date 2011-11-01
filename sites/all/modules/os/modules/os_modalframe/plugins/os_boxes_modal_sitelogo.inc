@@ -16,13 +16,13 @@ class os_boxes_modal_sitelogo extends os_boxes_modalframe {
 
     $block = parent::render();
 
-    $type = $vsite->group->type;
-    $block['content'] = theme($type.'_site_logo');
+    // the theme is vsite_site_info regardless of content type
+    $block['content'] = theme('vsite_site_logo');
     return $block;
   }
 
   public function form_alter(&$form, &$form_state) {
-    if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'vsite_node_form') {
+    if ($form['#id'] = 'node-form' && ($form['form_id']['#value'] == 'vsite_node_form' || $form['form_id']['#value'] == 'project_node_form')) {
 
       // hide unnecessary fields
       $whitelist = array('field_vsite_logo', 'field_project_logo', 'buttons');

@@ -3,20 +3,6 @@
 include_once( 'includes/pinserver.api.inc');
 
 /**
- * These are module constants - Please do not modify these
- */
-define(PIN_URL, variable_get('pinserver_pin_url',''));  // url to pin server
-define(PIN_LANDING_PATH, variable_get('pinserver_landing_path','')); //relative path where module will redirect user after all processing complete
-define(PIN_SUPPORT_CONTACT, variable_get('pinserver_support_contact',''));  //who to contact if visitor has authentication issues
-define(PIN_AUTH_STR, variable_get('pinserver_auth_str', '')); //String to check whether using just PIN or PIN with AuthzProxy
-define(PIN_HASH_HUID, variable_get('pinserver_hash_huid', 0)); //Determine whether to encrypt Harvard id before passing to $_SESSION. Defaults is no.
-define(PIN_APP_NAME, variable_get('pinserver_app_name','')); //application name given by directory services
-define(PIN_IP_VAL, variable_get('pinserver_ip_validation', 1)); //Validate IP address or not.
-define(GPG_DIR, variable_get('pinserver_gpg_dir', dirname(__FILE__) . '/.gnupg')); //absolute path to directory to verify detached signature
-define(GPG_BIN, variable_get('pinserver_gpg_bin','/usr/bin/gpg')); //absolute path to gpg binary
-define(GPG_ERROR_LOG, variable_get('pinserver_error_log','/tmp/gpgerror'));  //absolute path (file included) to gpp stderr output for testing
-
-/**
  * Implementation of hook_menu().
  */
 function pinserver_menu() {
@@ -75,7 +61,7 @@ function pinserver_theme() {
  * Redirect user to PIN login url
  */
 function pinserver_redirect() {
-  $pin_redirect = PIN_URL.'?__authen_application='.PIN_APP_NAME;
+  $pin_redirect = variable_get('pinserver_pin_url','').'?__authen_application='.variable_get('pinserver_app_name','');
   drupal_goto($pin_redirect);
 }
 
@@ -104,7 +90,7 @@ function pinserver_check_user(){
   
   //hook for dynamic landing path, if no hooks fired, then use static landing path
   $path = module_invoke_all('pinserver_landing_path');
-  $landing_path = !empty($path) ? end($path) : PIN_LANDING_PATH;
+  $landing_path = !empty($path) ? end($path) : variable_get('pinserver_landing_path','');
   
   //invoke hook_pinserver after sucessful pin login and token authentication
   module_invoke_all('pinserver');
@@ -136,7 +122,7 @@ function pinserver_prepare_pin_v1_token() {
   $values['pgp_signature'] = $pgp_signature;
   
   // User ID is returned as a hash for safer storage.
-  $values['user_id'] = (PIN_HASH_HUID === 1) ? md5($user_id) : $user_id;
+  $values['user_id'] = (variable_get('pinserver_hash_huid', 0) === 1) ? md5($user_id) : $user_id;
 
   // Time must be converted into unix timestamp.
   $exploded_time = explode(" ", $time);
@@ -152,7 +138,7 @@ function pinserver_prepare_pin_v1_token() {
   $values['login_type'] = 'PIN';
   
   //set appropriate good signature string for this type of token
-  $values['good_sig'] = PIN_AUTH_STR;
+  $values['good_sig'] = variable_get('pinserver_auth_str', '');
 
   return $values;
 }
@@ -177,7 +163,7 @@ function pinserver_prepare_pin_v2_token($pin_parameters, $pin_signature) {
   $values['app'] = $token_array[0];
 
   // User ID is returned as a hash for safer storage.
-  $values['user_id'] =  (PIN_HASH_HUID === 1) ? md5($token_array[1]) : $token_array[1];
+  $values['user_id'] =  (variable_get('pinserver_hash_huid', 0) === 1) ? md5($token_array[1]) : $token_array[1];
 
   // Unused parameter proxy_id
   // $values['proxy_id'] = $token_array[2];
@@ -196,7 +182,7 @@ function pinserver_prepare_pin_v2_token($pin_parameters, $pin_signature) {
   $values['login_type'] = $token_array[6];
   
   //set appropriate good signature string for this type of token
-  $values['good_sig'] = PIN_AUTH_STR;
+  $values['good_sig'] = variable_get('pinserver_auth_str', '');
 
   return $values;
 }
@@ -254,7 +240,7 @@ function pinserver_check_token(){
     2 => array('pipe', 'w') // stderr
   );
 
-   $process = proc_open("gpg --homedir '".GPG_DIR."' --verify", $descriptorspec, $pipes);
+   $process = proc_open("gpg --homedir '".variable_get('pinserver_gpg_dir', dirname(__FILE__) . '/.gnupg')."' --verify", $descriptorspec, $pipes);
    
   if (!is_resource($process)) {
     $values['errors'][] = 'signature';
@@ -278,8 +264,8 @@ function pinserver_check_token(){
    * Save errors to file if set in configuration options and file exists.
    * File should be placed below root, recommended only for development/testing.
    */
-  if(GPG_ERROR_LOG !== ''){
-    $fp = fopen(GPG_ERROR_LOG, 'w');
+  if(variable_get('pinserver_error_log','/tmp/gpgerror') !== ''){
+    $fp = fopen(variable_get('pinserver_error_log','/tmp/gpgerror'), 'w');
     fwrite($fp, $stderr);
     fclose($fp);
   }
@@ -302,11 +288,11 @@ function pinserver_check_token(){
   */
 
   // Verify application name.
-  if ($values['app'] != PIN_APP_NAME) {
+  if ($values['app'] != variable_get('pinserver_app_name','')) {
     $values['errors'][] = 'name';
   }
   
-  if (PIN_IP_VAL == 1) {
+  if (variable_get('pinserver_ip_validation', 1) == 1) {
     // Verify current user's IP address.
     if ( $values['ip'] !== $_SERVER['REMOTE_ADDR'] ) {
       $values['errors'][] = 'ip-mismatch';
@@ -330,11 +316,11 @@ function pinserver_check_token(){
 function pinserver_check_system_settings(){
   
   $settings = array(
-  'PIN_URL' => PIN_URL,
-  'PIN_LANDING_PATH' =>  PIN_LANDING_PATH,
-  'PIN_AUTH_STR' => PIN_AUTH_STR,
-  'GPG_DIR' => GPG_DIR,
-  'GPG_BIN' => GPG_BIN,
+  'PIN_URL' => variable_get('pinserver_pin_url',''),
+  'PIN_LANDING_PATH' =>  variable_get('pinserver_landing_path',''),
+  'PIN_AUTH_STR' => variable_get('pinserver_auth_str', ''),
+  'GPG_DIR' => variable_get('pinserver_gpg_dir', dirname(__FILE__) . '/.gnupg'),
+  'GPG_BIN' => variable_get('pinserver_gpg_bin','/usr/bin/gpg'),
   );
 
   $info = array(
@@ -357,7 +343,7 @@ function pinserver_check_system_settings(){
     $info['message'] = $message . '. ';
   }
 
-  if (!is_dir(GPG_DIR)){
+  if (!is_dir(variable_get('pinserver_gpg_dir', dirname(__FILE__) . '/.gnupg'))){
     $message = 'The system path for gpg_dir directory is invalid or does not exist.';
     $info['value'] = false;
     $info['message'] .= $message;
@@ -393,8 +379,8 @@ function theme_pinserver_token_error($values = NULL) {
     error_log("The pinserver module found an ip-mismatch comparing url IP {$_GET['__authen_ip']} to remote address {$_SERVER['REMOTE_ADDR']} ");
     $message .= ' Note: Use of a VPN or tunnel connection may cause problems with PIN authentication.';
   }
-  $message .= ' Please '. l('try again', PIN_URL .'?__authen_application='. PIN_APP_NAME);
-  if (valid_email_address(PIN_SUPPORT_CONTACT)) {
+  $message .= ' Please '. l('try again', variable_get('pinserver_pin_url','') .'?__authen_application='. variable_get('pinserver_app_name',''));
+  if (valid_email_address(variable_get('pinserver_support_contact',''))) {
     $message .= ' or ' . l('contact us.', 'contact');
   }
   $message .= '.</p>';

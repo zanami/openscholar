@@ -78,7 +78,7 @@ div.ctools-dropdown div.ctools-dropdown-container {
 }
 
 .node:hover .os-links .vsite-admin .ctools-dropdown-link-wrapper,
-.block:hover .os-links .vsite-admin .ctools-dropdown-link-wrapper,
+.block:hover > .os-links .vsite-admin .ctools-dropdown-link-wrapper,
 .view:hover > .os-links .vsite-admin .ctools-dropdown-link-wrapper {
   display:block;
 }
@@ -109,7 +109,7 @@ div.ctools-dropdown div.ctools-dropdown-container {
 	position: relative;
 }
 
-*:hover > .os-links:hover > .os-links-outline {
+*:hover > .os-links:hover + .os-links-outline {
 	display: block;
 }
 

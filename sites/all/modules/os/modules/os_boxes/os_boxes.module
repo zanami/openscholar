@@ -37,18 +37,6 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
-  $info['os_boxes_simple'] = array(
-    'title' => 'Custom text / html',
-    'description' => 'Simple custom text',
-    'tags' => array('Content'),
-    'handler' => array(
-      'parent' => 'box',
-      'class' => 'boxes_simple',
-      'file' => 'boxes_simple.inc',
-      'path' => drupal_get_path('module','boxes').'/plugins',
-    ),
-  );
-
 	$addthis_css = drupal_get_path('module', 'os_boxes') . '/theme/css/addthis.css';
 	$info['os_boxes_addthis'] = array(
 	  'title' => 'Addthis',
@@ -534,7 +522,7 @@ function os_boxes_box_modal($js = NULL, $delta){
   ctools_include('form');
   if (!$js) {
     $form_state = array('box' => $box);
-    if (module_exists('modalframe')) {
+    if (module_exists('modalframe') && isset($_GET['modal'])) {
       modalframe_child_js();
     }
     return ctools_build_form('boxes_box_form', $form_state);

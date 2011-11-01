@@ -65,6 +65,21 @@ function os_modalframe_imagecache_default_presets() {
         ),
       ),
     ),
+    'os_modal_image_900' => array(
+      'presetname' => 'os_modal_image_900',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '900',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
   );
   return $items;
 }

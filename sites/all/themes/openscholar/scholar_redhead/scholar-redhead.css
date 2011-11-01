@@ -40,6 +40,10 @@ h2, h3, h4 {
 h2.title {
   margin-bottom: 1em;
   }
+  
+.node-teaser.os-links-trail h3 {
+  margin-top: 0;
+}  
 
 h1 a, h2 a, h3 a, #sidebar-second a {
     font-style: normal;

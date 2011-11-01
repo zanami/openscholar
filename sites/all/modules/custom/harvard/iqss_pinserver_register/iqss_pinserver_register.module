@@ -224,7 +224,7 @@ function iqss_pinserver_register_form_access(){
   $settings_info = pinserver_check_system_settings();
   if($settings_info['value'] == false){
     error_log($settings_info['message']);
-    $support_mail = strlen(PIN_SUPPORT_CONTACT) ?  PIN_SUPPORT_CONTACT :  'scholar_dev@help.hmdc.harvard.edu';
+    $support_mail = strlen(variable_get('pinserver_support_contact','')) ?  variable_get('pinserver_support_contact','') :  'scholar_dev@help.hmdc.harvard.edu';
     drupal_set_message(t("New web sites are not available at this time but should be available shortly.  Please check back within the hour or email us at:  !support_mail", array('!support_mail' => $support_mail)));
     drupal_goto();
   }
@@ -306,6 +306,19 @@ function iqss_pinserver_register_user($op, &$edit, &$account, $category = NULL){
     case 'logout':
       pinserver_remove_session();
   }
+}
+
+/**
+ * Implement dynamic landing path
+ */
+function iqss_pinserver_register_pinserver_landing_path(){
+  global $user;
+  $vsites = vsite_get_vsite_by_owner($user->uid);
+  if (!scholarregister_vsite_exists_access($vsites)) {
+    return (!$vsites || (count($vsites) > 1) ? 'user' : $vsites[0]->get_absolute_url());
+  }
+    
+  return 'site/register';
 }
 
 /**

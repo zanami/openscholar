@@ -177,7 +177,9 @@ function scholar_front_fb_mk_front_box(&$vsite, $settings) {
     //node box
     case 'nid':
       $type = 'os_boxes_node';
-      $opts['nid'] = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
+      $nid = (int) end(explode('/', $settings['options']['node'])); //get nid from node/978897
+      vsite_include('nodeautocomplete');
+      $opts['nid'] = _vsite_node_autocomplete_nid_to_title($nid);
       $opts['teaser'] = 'full';
       break;
       

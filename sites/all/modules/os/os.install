@@ -602,6 +602,8 @@ function _os_boxes_migrate_info() {
   return array(
     "scholar-0" => "site_info",
     "scholar-1" => "site_logo",
+  	"scholar_project-0" => "site_logo",
+    "scholar_project-1" => "site_info",
     'vsite_widgets-1' => 'site_info',
     'vsite_widgets-0' => 'site_logo',
     'vsite_widgets_1' => 'site_info', //Few iterations of these block id's thats why there are multiple logo/info here, this unifies them
