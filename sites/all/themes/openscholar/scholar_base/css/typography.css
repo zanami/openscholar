@@ -349,43 +349,43 @@ ul.menu li.collapsed {
   margin: 0;
   }
 
-ul.hierarchic {
+.box-os_boxes_curr_toc ul.menu {
   padding: 0;
   margin: 0;
   }
 
-ul.hierarchic li {
+.box-os_boxes_curr_toc ul.menu li {
   list-style: none;
   padding: 0;
   margin-bottom: 1em;
   font-weight: bold;
   }
 
-ul.hierarchic li li {
+.box-os_boxes_curr_toc ul.menu li li {
   margin-bottom: 0;
   font-weight: normal;
   }
 
-ul.hierarchic li a {
+.box-os_boxes_curr_toc ul.menu li a {
   display:block;
   border-bottom: 1px dotted #ccc;
   padding-top: .3em;
   padding-bottom: .1em;
   }
 
-ul.hierarchic ul a {
+.box-os_boxes_curr_toc ul.menu ul a {
   padding:0 0 0 .5em;
   }
 
-ul.hierarchic ul ul a {
+.box-os_boxes_curr_toc ul.menu ul ul a {
   padding:0 0 0 1.5em;
   }
 
-ul.hierarchic ul ul ul a {
+.box-os_boxes_curr_toc ul.menu ul ul ul a {
   padding:0 0 0 2em;
   }
 
-ul.hierarchic ul ul ul ul a {
+.box-os_boxes_curr_toc ul.menu ul ul ul ul a {
   padding:0 0 0 2.5em;
   }
   
