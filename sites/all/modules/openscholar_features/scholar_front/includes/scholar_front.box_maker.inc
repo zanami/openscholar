@@ -15,8 +15,8 @@ function scholar_front_frontpage_boxmaker($limit, $offset, $total_vsites) {
   $ret = array();
   
   //loop over all users
-  $query = 'SELECT nid FROM {node} WHERE type = "vsite" LIMIT %d OFFSET %d ';
-  $result = db_query($query, (int)$limit, (int)$offset);
+  $query = 'SELECT nid FROM {node} WHERE type = "%s" LIMIT %d OFFSET %d ';
+  $result = db_query($query, variable_get('scholar_content_type', 'vsite'), (int)$limit, (int)$offset);
   while ($nid = db_result($result)) {
     
     if (($vsite = vsite_get_vsite($nid)) == FALSE) {
@@ -33,7 +33,7 @@ function scholar_front_frontpage_boxmaker($limit, $offset, $total_vsites) {
       $ret[] = $add_func($vsite, $wgt['data']);
       $vsite->controllers->variable->del('site_frontpage'); //remove previous front page
     } else {
-      //error_log('Could not determine front page for vsite ' . $vsite->id, 'warning');
+      error_log('Could not determine front page for vsite ' . $vsite->id, 'warning');
     }
     
   }
