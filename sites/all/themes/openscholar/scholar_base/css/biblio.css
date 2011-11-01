@@ -111,9 +111,13 @@ dl.bibliomultiselect .form-item {
   }
 
 .biblio-note {
-  margin: 0 0 0 0.6em;
+  font-style:italic;
   }
-
+  
+  .biblio-note p {
+display: inline;
+  }
+  
 .biblio-authors a {
   font-weight: normal;
   text-decoration: none;
