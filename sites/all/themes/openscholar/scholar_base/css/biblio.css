@@ -111,7 +111,11 @@ dl.bibliomultiselect .form-item {
   }
 
 .biblio-note {
-  margin: 0 0 0 0.6em;
+  font-style:italic;
+  }
+  
+  .biblio-note p {
+display:none;
   }
 
 .biblio-authors a {
