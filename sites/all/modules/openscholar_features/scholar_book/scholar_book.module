@@ -93,7 +93,7 @@ function scholar_book_link_alter(&$links, $node){
 
 /**
  * toc main function, used for content area
- */
+ *
 function _scholar_book_booktoc() {
 
   	$node = menu_get_object();
@@ -114,7 +114,7 @@ function _scholar_book_booktoc() {
 
 /**
  * toc helper function
- */
+ *
 function _scholar_book_recursive( $mlid, $nid, $tit, $step, $max_recursions, $trimval, $mlid_start) {
   if ($step < $max_recursions) {
     $sql= "SELECT DISTINCT n.nid as nid, m.plid as plid, m.mlid as mlid,  n.title as title ,m.weight
@@ -171,7 +171,7 @@ function scholar_book_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
     case 'view' :
       if (book_type_is_allowed($node->type)) {
         if (scholar_book_toc_location() == SCHOLAR_BOOK_TOC_CONTENT){
-          $block_toc =_scholar_book_booktoc();
+          $block_toc = os_books_build_toc($node, true);
           //$output = theme_box($block_toc['subject'], $block_toc['content'], $region = 'main');
           $output = '<div class="book-menu"><h3 class="title">' . $block_toc['subject'] . '</h3>' . $block_toc['content'] . '</div>';
           $weight = content_extra_field_weight($node->type, 'booktoc');
@@ -341,6 +341,6 @@ function scholar_book_toc_location() {
   if (variable_get('scholar_book_toc_location', 0) == 1) {
     return SCHOLAR_BOOK_TOC_CONTENT;
   }
-    
+
   return false;
 }

@@ -43,6 +43,31 @@ function os_books_build_tree($node, $flatten = false) {
 }
 
 /**
+ *
+ * Given a node in a book, builds a full table of contents for that book
+ * @param $nid	Either a nid or a full node object
+ * @param $separate	true if the function should split the top level and second level into separate
+ */
+function os_books_build_toc($node, $separate = false) {
+  $block = array();
+  if (is_numeric($node)) $node = node_load($node);
+
+  if (is_object($node) && isset($node->book)) {
+    $menu_tree = menu_tree_all_data($node->book['menu_name']);
+    if ($separate) {
+      $top = current($menu_tree);
+      $block['subject'] = theme('menu_item_link', $top['link']);
+      $block['content'] = menu_tree_output($top['below']);
+    }
+    else {
+      $block['content'] = menu_tree_output($menu_tree);
+    }
+  }
+
+  return $block;
+}
+
+/**
  * Replace the body of the node with the full book
  */
 function os_books_nodeapi(&$node, $op, $teaser, $page) {

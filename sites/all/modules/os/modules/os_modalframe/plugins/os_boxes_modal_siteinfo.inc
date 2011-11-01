@@ -17,7 +17,6 @@ class os_boxes_modal_siteinfo extends os_boxes_modalframe {
 
     // the theme is vsite_site_info regardless of content type
     $block['content'] = theme('vsite_site_info');
-    $block['content'] .= 'test test';
     return $block;
   }
 

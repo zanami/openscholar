@@ -23,7 +23,7 @@
 					title = $elem.find('h1:first').hide().html();
 				
 				// add nid as attribute of links with same title
-				$('.content a:contains("'+title+'")').each(function (index, elem) {
+				$('.block a:contains("'+title+'"), .book-menu a:contains("'+title+'")').each(function (index, elem) {
 					elem.setAttribute('nid', nid);
 					var parents = $(elem).parents('.content');
 					blocks.add(parents);
@@ -49,7 +49,7 @@
 			
 			// when the book links are in the content area, 
 			// the nids can't be added to the link
-			$('a', display).each(function () {
+			$('.book-menu a', display).each(function () {
 				if (!this.getAttribute('nid')) {
 					for (var i in content) {
 						if (content[i].title == (this.innerText || this.textContent)) {
