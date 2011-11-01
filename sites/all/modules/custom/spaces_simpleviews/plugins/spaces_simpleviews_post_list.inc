@@ -161,15 +161,18 @@ class spaces_simpleviews_post_list extends boxes_box {
     
     //prepare the view
     $simpleview = $this->options;
-    //dpm($simpleview);
+
     $view = spaces_simpleviews_build_view($simpleview);
     $view->init();
     $view->set_display('default');
-    
+   
+    // trick the view to calculate the total nr of items
+    $view->get_total_rows = TRUE;
     $content = $view->execute_display();
-    
-    //add the "more" link
-    if ($simpleview['more']) {
+
+    //add the "more" link. We show "more" only if "more" checkbox is selected
+    // *AND* number of items returned by the view is > nr of itemes in the box settings
+    if ($simpleview['more'] && ($view -> total_rows > $simpleview['number_of_items']) ) {
       
       $more_text = $simpleview['more_text'];
       $more_path = url($simpleview['more_link']);
