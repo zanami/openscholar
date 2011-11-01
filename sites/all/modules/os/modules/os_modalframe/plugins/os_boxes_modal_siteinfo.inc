@@ -15,13 +15,14 @@ class os_boxes_modal_siteinfo extends os_boxes_modalframe {
     $vsite = vsite_get_vsite();
     $block = parent::render();
 
-    $type = $vsite->group->type;
-    $block['content'] = theme($type.'_site_info');
+    // the theme is vsite_site_info regardless of content type
+    $block['content'] = theme('vsite_site_info');
+    $block['content'] .= 'test test';
     return $block;
   }
 
   public function form_alter(&$form, &$form_state) {
-    if ($form['#id'] = 'node-form' && $form['form_id']['#value'] = 'vsite_node_form') {
+    if ($form['#id'] = 'node-form' && ($form['form_id']['#value'] == 'vsite_node_form' || $form['form_id']['#value'] == 'project_node_form')) {
 
       // hide unnecessary fields
       $whitelist = array('title', 'og_description', 'field_vsite_address', 'taxonomy', 'buttons');
