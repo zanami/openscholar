@@ -42,6 +42,20 @@ function os_books_build_tree($node, $flatten = false) {
   }
 }
 
+function os_books_build_toc($node) {
+  $block = array();
+  if (is_numeric($node)) $node = node_load($node);
+
+  if (is_object($node)) {
+    $menu_tree = menu_tree_all_data($node->book['menu_name']);
+    $top = current($menu_tree);
+    $block['subject'] = theme('menu_item_link', $top['link']);
+    $block['content'] = menu_tree_output($top['below']);
+  }
+
+  return $block;
+}
+
 /**
  * Replace the body of the node with the full book
  */

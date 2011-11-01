@@ -44,13 +44,13 @@ class os_boxes_booktoc extends os_boxes_default {
   public function render() {
     $block = parent::render();
 
-    if ($this->options['book_nid'] && $node = node_load($this->options['book_nid'])) {
-      $block['content'] = menu_tree_output(menu_tree_all_data($node->book['menu_name']));
+    if ($this->options['book_nid']) {
+      $block = os_books_build_toc($this->options['book_nid']);
     }
 
     return $block;
   }
-  
+
   /**
    * Return the cache parameters for this box
    */
@@ -76,7 +76,7 @@ class os_boxes_curr_toc extends os_boxes_booktoc {
    * Box instances of this type should not be avalible sitewide
    */
   public $sitewide = false;
-	
+
 	/**
    * Implementation of boxes_content::options_form().
    */
@@ -93,7 +93,7 @@ class os_boxes_curr_toc extends os_boxes_booktoc {
   public function render() {
   	//Book TOC should not be displayed when it is in content
     if(scholar_book_toc_location() == SCHOLAR_BOOK_TOC_CONTENT) return array();
-  	
+
   	//Get the current book
   	$block = array();
   	$node = menu_get_object();
@@ -117,7 +117,7 @@ class os_boxes_curr_toc extends os_boxes_booktoc {
     //Current TOC changes from page to page so don't cache
     return array();
   }
-  
+
   /**
    * Do not show the box if they have TOC configured to show in the body of nodes
    */
