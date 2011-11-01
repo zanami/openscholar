@@ -91,7 +91,9 @@ class os_boxes_curr_toc extends os_boxes_booktoc {
    * Implementation of boxes_content::render().
    */
   public function render() {
-
+  	//Book TOC should not be displayed when it is in content
+    if(scholar_book_toc_location() == SCHOLAR_BOOK_TOC_CONTENT) return array();
+  	
   	//Get the current book
   	$block = array();
   	$node = menu_get_object();
