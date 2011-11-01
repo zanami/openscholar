@@ -9,11 +9,11 @@ function scholar_project_preprocess_page($vars){
 function scholar_project_theme() {
   $theme = array();
   $theme['vsite_site_logo'] = array(
-    'function' => '_scholar_logo_wdgt',
+    'function' => '_scholar_project_logo_wdgt',
     'arguments' => array(),
   );
   $theme['vsite_site_info'] = array(
-    'function' => '_scholar_basicinfo_wdgt',
+    'function' => '_scholar_project_basicinfo_wdgt',
     'arguments' => array(),
   );
   return $theme;
