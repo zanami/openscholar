@@ -699,3 +699,25 @@ function os_boxes_advanced_help_topic_alter(&$output, $popup) {
     $output = str_replace('[embed_filter_tips]', embedfilter_filter_tips(0,0), $output);
   }
 }
+
+/**
+ * hook theme_registry_alter
+ */
+function os_boxes_theme_registry_alter(&$theme_registry){
+  /*
+   * Override the box theme function
+   */
+  $theme_registry['boxes_box']['function'] = 'theme_os_boxes_box';
+}
+
+/**
+ * Theme function for the box.
+ */
+function theme_os_boxes_box($block) {
+	
+	//Do not print anything if the box is empty, it is as if it does not exist
+	if(!strlen($block['content'])) return "";
+	
+	//Use the default theme function
+	return theme_boxes_box($block);
+}

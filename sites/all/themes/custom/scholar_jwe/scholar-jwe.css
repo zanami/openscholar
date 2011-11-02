@@ -506,11 +506,14 @@ body.sidebar-second #content-area .hg-container {
   margin-top: 0;
   }
 
-.front #sidebar-first,
-.front #content {
+.front #sidebar-first{
   margin-top: 274px;
   padding-top: 0;
-  }
+}
+  
+.front #content-main {
+  padding-top: 277px;
+}
   
 .front #content-main .title {
 	display: none;
