@@ -55,6 +55,7 @@
 			display.parents('.node').find('.ctools-dropdown-container a').each (function () {
 				this.href = this.href.replace(reg, nid);
 			});
+			active = nid;
 		}
 	}
 })(jQuery);
