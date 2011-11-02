@@ -510,7 +510,10 @@ body.sidebar-second #content-area .hg-container {
   margin-top: 274px;
   padding-top: 0;
 }
-  
+
+/*
+ * Pushes whatever is in the content area below the image that displays on the front page
+ */
 .front #content-main {
   padding-top: 277px;
 }
