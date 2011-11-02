@@ -418,7 +418,7 @@ function vsite_layout_ui_settings_form_submit($form, &$form_state) {
   if($s_page_type == 'none') vsite_layout_apply_layout_changes($a_avalible_blocks);
   $space->controllers->context->set('openscholar-feature-'.$s_page_type.":reaction:block:".$space->group->og_theme, $a_avalible_blocks);
 
-  if ($s_page_type && $s_page_type != 'none') {
+  if ($s_page_type && $s_page_type != 'front') {
     $form_state['redirect'] = array($_GET['q'], "page_type=" . $s_page_type);
   }
 }
