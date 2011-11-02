@@ -79,6 +79,9 @@ function os_books_nodeapi(&$node, $op, $teaser, $page) {
       '#weight' => 10,
     );
   }
+  if ($op == 'view' && $node->type == 'book' && !$teaser && !$page) {
+    unset($node->content['booktoc']);
+  }
 }
 
 function os_books_preprocess_node(&$vars) {

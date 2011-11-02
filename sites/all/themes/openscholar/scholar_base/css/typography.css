@@ -349,43 +349,63 @@ ul.menu li.collapsed {
   margin: 0;
   }
 
-ul.hierarchic {
+
+.box-os_boxes_curr_toc ul.menu,
+.os_boxes_booktoc ul.menu {
   padding: 0;
   margin: 0;
   }
 
-ul.hierarchic li {
+.book-menu ul.menu li, 
+.box-os_boxes_curr_toc ul.menu li,
+.os_boxes_booktoc ul.menu li {
   list-style: none;
   padding: 0;
   margin-bottom: 1em;
   font-weight: bold;
   }
 
-ul.hierarchic li li {
+.book-menu ul.menu li {
+  list-style: disc;
+}
+
+.book-menu ul.menu li li, 
+.box-os_boxes_curr_toc ul.menu li li,
+.os_boxes_booktoc ul.menu li li {
   margin-bottom: 0;
   font-weight: normal;
   }
 
-ul.hierarchic li a {
+.book-menu ul.menu li a, 
+.box-os_boxes_curr_toc ul.menu li a,
+.os_boxes_booktoc ul.menu li a {
   display:block;
   border-bottom: 1px dotted #ccc;
   padding-top: .3em;
   padding-bottom: .1em;
   }
 
-ul.hierarchic ul a {
+.book-menu ul.menu ul a, 
+.box-os_boxes_curr_toc ul.menu ul a,
+.os_boxes_booktoc ul.menu ul a {
   padding:0 0 0 .5em;
   }
 
-ul.hierarchic ul ul a {
+.book-menu ul.menu ul ul a,
+.box-os_boxes_curr_toc ul.menu ul ul a,
+.os_boxes_booktoc ul.menu ul ul a {
   padding:0 0 0 1.5em;
   }
 
-ul.hierarchic ul ul ul a {
+.book-menu ul.menu ul ul ul a,
+.box-os_boxes_curr_toc ul.menu ul ul ul a,
+.os_boxes_booktoc ul.menu ul ul ul a {
   padding:0 0 0 2em;
   }
 
-ul.hierarchic ul ul ul ul a {
+.book-menu ul.menu ul ul ul ul a,
+.box-os_boxes_curr_toc ul.menu ul ul ul ul a,
+.os_boxes_booktoc ul.menu ul ul ul ul a {
   padding:0 0 0 2.5em;
   }
   

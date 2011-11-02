@@ -502,6 +502,10 @@ function os_update_6009(&$sandbox){
       return $ret;
     }
 
+    // Set the correct values for 'scholar_content_type' from strongarm
+    // It is possible that strongarm has not been inited
+    strongarm_set_conf();
+    
     //make sure vsite->controllers->boxes exists
     $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "%s" LIMIT 1',variable_get('scholar_content_type', 'vsite')) );
     $vsite = vsite_get_vsite($v);

@@ -22,6 +22,8 @@ function scholar_events_block($op = 'list', $delta = 0, $edit = array()) {
  */
 function _scholar_events_block_mini($op, $edit) {
   if ($op == 'view') {
+  	//Always make sure this is included
+  	drupal_add_css(drupal_get_path('module', 'litecal') .'/litecal.css');
     $block = array();
     
     // if in a node view, get date from the cck field
