@@ -660,10 +660,10 @@ function os_boxes_box_access($block,$user = false){
 	      foreach ($plugin['module dependencies'] as $module) {
 	        if(!module_exists($module)){
 	          return false;
-	        }
+	        }//If the module is not enabled then do not show the box
 	        if (!spaces_access_feature('view', $module)) {
 	          return false;
-	        }
+	        }//If they do not have access to view the feature then do not show the box
 	      }
 	    }
   	}// Check module dependencies for plugin
