@@ -41,11 +41,6 @@ function os_mailchimp_user($op, &$edit, &$account, $category) {
   if ($op == 'insert' && $category == 'account') {  
     $api = variable_get('os_mailchimp_api', FALSE);
     $list = variable_get('os_mailchimp_list', FALSE);
-        
-    /**************************************************** dev vars **********************/
-    $api = '408fb75484e4d0bd45d1fb2cc1490320-us2';         //jon's private api key just for dev
-    $list = "jon's test list";
-    /****************************************************************************************/
     
     if (! ($api && $list) ) return FALSE;
         
