@@ -379,7 +379,7 @@ function dmemcache_object($bin = NULL, $flush = FALSE) {
     }
   }
   
-  if(empty($memcacheCache[$bin])) memcache_mark_cluster_status($cluster,false);
+  if(empty($memcacheCache[$bin]) && function_exists('memcache_mark_cluster_status')) memcache_mark_cluster_status($cluster,false);
 
   return empty($memcacheCache[$bin]) ? FALSE : $memcacheCache[$bin];
 }
