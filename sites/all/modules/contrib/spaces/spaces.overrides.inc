@@ -19,9 +19,12 @@ function spaces_context_load_alter(&$context) {
  * Implementation of hook_form_alter() for system_site_information_settings.
  */
 function spaces_form_system_site_information_settings_alter(&$form, &$form_state) {
-  $form['site_frontpage']['#disabled'] = TRUE;
-  $form['site_frontpage']['#value'] = $form['site_frontpage']['#default_value'];
-  $form['site_frontpage']['#description'] = t('The front page is controlled by the spaces module and can be set !link.', array('!link' => l(t('here'), 'features')));
+	$space = spaces_get_space();
+  if ($space) {
+	  $form['site_frontpage']['#disabled'] = TRUE;
+	  $form['site_frontpage']['#value'] = $form['site_frontpage']['#default_value'];
+	  $form['site_frontpage']['#description'] = t('The front page is controlled by the spaces module and can be set !link.', array('!link' => l(t('here'), 'features')));
+  }
 }
 
 /**

@@ -74,6 +74,30 @@ function vsite_users_menu() {
 }
 
 /**
+ * Implements hook_menu_alter()
+ */
+function vsite_users_menu_alter(&$a_menu) {
+  global $user;
+  
+  //Check to see if there are avalible sites to join, if not do not show the link
+  $a_menu['user/%user/edit/groups']['access callback']  = 'vsite_users_groups_avalible_to_join';
+}
+
+/**
+ * Tests if there are groups avalible for a user to join
+ * @param user $account
+ */
+function vsite_users_groups_avalible_to_join($account){
+	
+	if(!user_edit_access($account)) return false;
+	
+	//Returns the register form, og_register has a list of the avalible sites
+	$form = og_user('register', array(), $account, $category = NULL);
+	return isset($form['og_register']);
+	
+}
+
+/**
  * Show the sites that a user belongs to in segmented list
  *
  * @param $account user
@@ -512,12 +536,7 @@ function vsite_users_redirect_reset_submit($form, &$form_state) {
   if (is_array($form_state['values'])
   && array_key_exists('redirect_from_reset', $form_state['values'])
   && $form_state['values']['redirect_from_reset']) {
-    if (arg(0) != 'cp') {
-      drupal_goto('user/' . $form['#uid'] . '/edit/vsite_users_profile');
-    }
-    else {
-      drupal_goto('cp/users/myaccount/personal');
-    }
+    drupal_goto('user/' . $form['#uid'] . '/edit/vsite_users_profile');
   }
 }
 
