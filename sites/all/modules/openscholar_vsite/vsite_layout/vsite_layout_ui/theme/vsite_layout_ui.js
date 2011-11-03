@@ -104,8 +104,8 @@ function scholarlayout_afterdrag(event, ui) {
  * @return
  */
 function scholarlayout_update_moved_elements(warning){
-	  var regions = $("#scholarlayout-container > .scholarlayout-widgets-list:visible");
-	  $.each(regions, function(i, region) {
+	  var regions = $("#scholarlayout-container > .scholarlayout-widgets-list");
+	  $.each(regions.filter(":visible"), function(i, region) {
 	    var items = $("#" + region.id + " > .scholarlayout-item");
 	    var ids = "";
 	    $.each(items, function(i, value) {
@@ -115,6 +115,10 @@ function scholarlayout_update_moved_elements(warning){
 	      ids += value.id;
 	    });
 	    $('#edit-' + region.id).val(ids);
+	  });
+	  
+	  $.each(regions.filter(":hidden"), function(i, region) {
+		$('#edit-' + region.id).val("");
 	  });
 
 	  if (!$("#scholarforms_save_warning").length && warning) {
