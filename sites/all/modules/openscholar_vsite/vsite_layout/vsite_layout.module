@@ -37,7 +37,15 @@ function vsite_layout_vsite_admin_link($type, $object) {
 
     vsite_include('vsiteapi');
   	$active_feature = vsite_active_feature();
-    if (!$active_feature) return $links;
+    if (!$active_feature) {
+      // if we call this through ajax from move_widget, we can't rely on vsite_active_feature
+      if (arg(5)) {
+        $active_feature = str_replace('openscholar-feature-', '', arg(5));
+      }
+      else {
+        return $links;
+      }
+    }
 
     $links[] = array(
       'title' => 'Remove',
