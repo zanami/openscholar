@@ -1,0 +1,140 @@
+<?php 
+
+/**
+ * @file os_mailchimp.module
+ * 
+ * OS MailChimp module
+ * Jon Sagotsky
+ * 
+ * Subscribes new OS registrations to mailchimp
+ * Provides boxes for vsites to add their own mailing lists 
+ */
+
+/**
+ * implementation of hook_menu
+ *
+ * admin menu for setting site api key and mailing list.
+ * ajax url for processing sub requests.  (using ajax so I can have one unified sub function)
+ */
+function os_mailchimp_menu() {
+  $items['os_mailchimp/subscribe'] = array(
+    'page callback' => 'os_mailchimp_subscribe_js',
+    'type' => 'MENU_CALLBACK', 
+    'access arguments' => array('access content'), 
+  );
+  $items ['admin/settings/os_mailchimp'] = array(
+		'title' => t( 'MailChimp' ), 
+		'page callback' => 'drupal_get_form', 
+		'page arguments' => array('os_mailchimp_admin' ), 
+		'file' => 'os_mailchimp.admin.inc', 
+		'access arguments' => array('administer citation distribute' )
+  );
+  return $items;
+  
+}
+
+/**
+ * implementation of hook_user
+ * subscribes new users to OS mailchimp list
+ */
+function os_mailchimp_user($op, &$edit, &$account, $category) {
+  if ($op == 'insert' && $category == 'account') {  
+    $api = variable_get('os_mailchimp_api', FALSE);
+    $list = variable_get('os_mailchimp_list', FALSE);
+        
+    /**************************************************** dev vars **********************/
+    $api = '408fb75484e4d0bd45d1fb2cc1490320-us2';         //jon's private api key just for dev
+    $list = "jon's test list";
+    /****************************************************************************************/
+    
+    if (! ($api && $list) ) return FALSE;
+        
+    $dc = end(explode('-', $api));
+    $url = 'http://' . $dc . '.api.mailchimp.com/1.3/'; 
+    
+    $sub = os_mailchimp_subscribe($api, $list, $edit['mail'], $edit['name']);
+    //error log?
+  }
+}
+
+
+
+/**
+ * Implementation of hook_boxes_plugins().
+ */
+function os_mailchimp_boxes_plugins(){
+  $info = array();
+  $path = drupal_get_path('module', 'os_mailchimp') . '/plugins';
+  $css = drupal_get_path('module', 'os_mailchimp') . '/theme/os-mailchimp.css';
+  
+  $info['os_boxes_mailchimp'] = array(
+    'title' => 'Mailing List', 
+    'description' => 'Lets users subscribe to your MailChimp mailing list', 
+    'css' => $css, 
+    'tags' => array(
+      'Social' 
+    ), 
+    'handler' => array(
+      'class' => 'os_boxes_mailchimp', 
+      'file' => 'os_mailchimp_box.inc', 
+      'path' => $path, 
+      'parent' => 'os_boxes_default' 
+    ) 
+  );
+  
+  return $info;
+
+}
+
+/**
+ * @function os_mailchimp_subscribe()
+ * subscribe a user to a mailing list.
+ *
+ * @param $api	mailchimp api key
+ * @param $list	list to subscribe to
+ * @param $email email address to subscribe
+ * @param $fn  user's firstname (optional)
+ * @param $ln  user's lastname (optional)
+ */
+function os_mailchimp_subscribe($api, $list, $email, $fn=NULL, $ln=NULL) {
+  include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');
+  $MC = new MCAPI($api);
+  
+  //get list id from string
+  $lists = $MC->lists(array($list)); 
+  if (!isset($lists) || $lists['total'] < 1) {
+    return 'Invalid list';
+  } else {
+    foreach($lists['data'] as $delta => $def) {
+      if ($def['name'] == $list) {
+        $id = $def['id'];
+      }
+    }
+  }
+  
+  if ($MC->listSubscribe($id, $email)) {
+    return true;
+  } else {
+    return $MC->errorMessage; //Invalid MailChimp List ID: jon's test list
+  }
+}
+
+/**
+ * wrapper for ajax calls to os_mailchimp_subscribe
+ */
+function os_mailchimp_subscribe_js() {
+  $sub = os_mailchimp_subscribe($_GET['api'], $_GET['list'], $_GET['email'], $_GET['fn'], $_GET['ln']);
+  
+  $json = array('status' => TRUE, 'data' => 'what to return?');
+  drupal_json($json);
+}
+
+/**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function os_mailchimp_ctools_plugin_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => 1);
+  }
+}
