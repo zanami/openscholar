@@ -135,11 +135,11 @@ function os_modalframe_content_default_fields() {
     'suffix' => '',
     'min' => '',
     'max' => '',
-    'allowed_values' => '150 pixels|150
-200 pixels|200
-300 pixels|300
-500 pixels|500
-900 pixels|900',
+    'allowed_values' => '150|150 pixels
+200|200 pixels
+300|300 pixels
+500|500 pixels
+900|900 pixels',
     'allowed_values_php' => '',
     'widget' => array(
       'wysiwyg_fields_status' => 0,
