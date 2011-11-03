@@ -30,7 +30,7 @@ class os_boxes_mailchimp extends os_boxes_default {
       '#type' => 'textfield',
       '#title' => t('Your MailChimp API key'),
       '#default_value' => $this->options['api'],
-      '#description' => '<i>Link to MC account</i>  Example: 1234567890abcefghijklmnopqrstuvwx-us2',
+      '#description' => 'Your <a href="https://us1.admin.mailchimp.com/account/api-key-popup" target="_new">MailChimp API key</a>.  Example: 1234567890abcefghijklmnopqrstuvwx-us2',
     );
     
     $form['subscribe']['list'] = array(
