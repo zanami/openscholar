@@ -57,51 +57,14 @@ class os_boxes_mailchimp extends os_boxes_default {
     
   public function render() {
     $block = parent::render();
-    $form = array();
-    global $user;
-    //if (isset $user->name) try for fn/ln.  no idea where they're being held.
-    
-    /* prepopulate form if possible.  logged in users will submit immediately, others will have to fill out form */
-    $form['subscribe']['email'] = array(
-      '#type' =>  'textfield',
-      '#title' => 'Email Address',
-      '#value' => ($user->uid != 0) ? $user->mail : '',
-      '#weight' => -10,
-    );
-    
-    $form['subscribe']['fn'] = array(
-      '#type' =>  'textfield',
-      '#title' => 'First Name',
-    	'#weight' => -8,
-    );
-    
-    $form['subscribe']['ln'] = array(
-      '#type' =>  'textfield',
-      '#title' => 'Last Name',
-    	'#weight' => -6,
-    );
-    
-    $form['subscribe']['api'] = array('#type' => 'value', '#value' => $this->options['api']);
-    
-    $form['subscribe']['list'] = array('#type' => 'value', '#value' => $this->options['list']);
-    
-    $form['subscribe']['submit'] = array(
-      '#type' => 'submit',
-      '#value' => 'Subscribe',
-      '#ahah' => array(                    //ahah why you no work?
-        'path' => 'os_mailchimp/subscribe',
-      	'method' => 'replace',      
-      ),
-      '#weight' => -4,
-    );
     
     
     // move this to a theme function at some point.
     $block['content']  = '<div id="mailchimp_sub">' . $this->options['text'] . '</div>';
-    $block['content'] .= '<div id="mailchimp_form">' . drupal_render($form) . '</div>';    //or should this form be a modal?
+    $block['content'] .= '<div id="mailchimp_form">' . drupal_get_form('os_mailchimp_form', 'api', 'list') . '</div>';    //or should this form be a modal?
     $block['content'] .= '<i>List: ' . $this->options['list'] . '<br />API:' . $this->options['api'] . '</i>'; //just for dev.  rm later
     drupal_add_css($this->css, 'theme');
-    drupal_add_js('os_mailchimp.js', 'file');
+    //drupal_add_js('os_mailchimp.js', 'file');
     
     return $block;
   }
