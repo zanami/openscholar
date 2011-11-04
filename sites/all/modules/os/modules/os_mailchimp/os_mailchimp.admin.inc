@@ -10,6 +10,7 @@ function os_mailchimp_admin() {
 	  '#title' => t('Configure MailChimp'),
 	  '#collapsible' => FALSE,
 	  '#collapsed' => FALSE,
+    '#description' => t('Settings for sitewide MailChimp box.  Does not override individual boxes.'),
 	);
 
 	//module mode 

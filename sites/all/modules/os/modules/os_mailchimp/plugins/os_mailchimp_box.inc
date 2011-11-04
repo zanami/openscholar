@@ -99,6 +99,7 @@ class os_boxes_mailchimp extends os_boxes_default {
     // move this to a theme function at some point.
     $block['content']  = '<div id="mailchimp_sub">' . $this->options['text'] . '</div>';
     $block['content'] .= '<div id="mailchimp_form">' . drupal_render($form) . '</div>';    //or should this form be a modal?
+    $block['content'] .= '<i>List: ' . $this->options['list'] . '<br />API:' . $this->options['api'] . '</i>'; //just for dev.  rm later
     drupal_add_css($this->css, 'theme');
     drupal_add_js('os_mailchimp.js', 'file');
     
