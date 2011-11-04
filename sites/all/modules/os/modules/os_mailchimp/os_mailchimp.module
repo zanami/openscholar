@@ -107,7 +107,7 @@ function os_mailchimp_subscribe($api, $list, $email, $fn=NULL, $ln=NULL) {
   //should id be stored in a var too?  we could delete it when a new list str is created and only look it up once this way.
   $lists = $MC->lists(array($list)); 
   if (!isset($lists) || $lists['total'] < 1) {
-    return 'Invalid list';
+    return array('success'=>FALSE,'msg'=>'Invalid list');
   } else {
     foreach($lists['data'] as $delta => $def) {
       if ($def['name'] == $list) {
@@ -116,10 +116,10 @@ function os_mailchimp_subscribe($api, $list, $email, $fn=NULL, $ln=NULL) {
     }
   }
   
-  if ($MC->listSubscribe($id, $email)) {
-    return true;
+  if ($MC->listSubscribe($id, $email) || in_array($MC->errorCode, array(214) )) {
+    return array('success'=>TRUE);
   } else {
-    return $MC->errorMessage; //Invalid MailChimp List ID: jon's test list
+    return array('success'=>FALSE,'msg'=>$MC->errorMessage); 
   }
 }
 
@@ -127,8 +127,7 @@ function os_mailchimp_subscribe($api, $list, $email, $fn=NULL, $ln=NULL) {
  * wrapper for ajax calls to os_mailchimp_subscribe
  */
 function os_mailchimp_subscribe_js() {
-  $sub = os_mailchimp_subscribe($_GET['api'], $_GET['list'], $_GET['email'], $_GET['fn'], $_GET['ln']);
-  $form = $_GET['form'];
+  $sub = os_mailchimp_subscribe($_POST['api'], $_POST['list'], $_POST['email'], $_POST['fn'], $_POST['ln']);
   $json = array('status' => TRUE, 'data' => 'what to return?');
   drupal_json($json);
 }
@@ -215,9 +214,15 @@ function os_mailchimp_form(&$state) {
   	'#weight' => -6,
   );
   
-  $form['subscribe']['api'] = array('#type' => 'value', '#value' => $data['api']); 
-  
-  $form['subscribe']['list'] = array('#type' => 'value', '#value' => $data['list']);
+  $form['subscribe']['api'] = array(
+  	'#type' => 'value', 
+  	'#value' => $data['api'],
+  ); 
+    
+  $form['subscribe']['list'] = array(
+  	'#type' => 'value', 
+  	'#value' => $data['list'],
+  );
   
   $form['subscribe']['submit'] = array(
     '#type' => 'submit',
@@ -228,3 +233,20 @@ function os_mailchimp_form(&$state) {
 
   return $form;
 }
+
+/**
+ * submit function for os_mailchimp_form
+ */
+function os_mailchimp_form_submit($form, &$form_state) {
+  $v = $form_state['values'];
+  $sub = os_mailchimp_subscribe($v['api'], $v['list'], $v['email'], $v['fn'], $v['ln']);
+  
+  // Process the form as usual.
+  if ($sub['success']) {  
+    modalframe_close_dialog(array('message' => ('Subscribed'),));
+  } else {
+    //display the error.  make sure that next form send will work - it has a tendency to drop $list and $api...
+    drupal_set_message(t('Error subscribing: ' . $sub['msg']), 'error');
+  } 
+}
+
