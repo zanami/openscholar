@@ -99,6 +99,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
           '#title' => t('Title of the Tab'),
           '#type' => 'textfield',
           '#default_value' => $t['title'],
+          '#attributes' => array('class' => 'tab-title'), // for js
         ),
         'delta' => array(
           '#type' => 'select',
@@ -135,7 +136,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
     );
 
     $form['default'] = array(
-      '#default_value' => $qt->default_tab,
+      '#default_value' => (int)$qt->default_tab,
       '#type' => 'hidden',
     );
 
