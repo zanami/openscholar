@@ -1,0 +1,227 @@
+<?php 
+
+/**
+ * @file os_mailchimp.module
+ * 
+ * OS MailChimp module
+ * Jon Sagotsky
+ * 
+ * Subscribes new OS registrations to mailchimp
+ * Provides boxes for vsites to add their own mailing lists 
+ */
+
+/**
+ * implementation of hook_menu
+ *
+ * admin menu for setting site api key and mailing list.
+ * ajax url for processing sub requests.  (using ajax so I can have one unified sub function)
+ */
+function os_mailchimp_menu() {
+  $items['os_mailchimp/subscribe'] = array(
+    'page callback' => 'os_mailchimp_subscribe_js',
+    'type' => 'MENU_CALLBACK', 
+    'access arguments' => array('access content'), 
+  );
+  $items ['admin/settings/os_mailchimp'] = array(
+		'title' => t( 'MailChimp' ), 
+		'page callback' => 'drupal_get_form', 
+		'page arguments' => array('os_mailchimp_admin' ), 
+		'file' => 'os_mailchimp.admin.inc', 
+		'access arguments' => array('administer citation distribute' )
+  );
+  
+  return $items;
+  
+}
+
+/**
+ * implementation of hook_user
+ * subscribes new users to OS mailchimp list
+ */
+function os_mailchimp_user($op, &$edit, &$account, $category) {
+  if ($op == 'insert' && $category == 'account') {  
+    $api = variable_get('os_mailchimp_api', FALSE);
+    $list = variable_get('os_mailchimp_list', FALSE);
+    
+    if (! ($api && $list) ) return FALSE;
+        
+    $dc = end(explode('-', $api));
+    $url = 'http://' . $dc . '.api.mailchimp.com/1.3/'; 
+    
+    $sub = os_mailchimp_subscribe($api, $list, $edit['mail'], $edit['name']);
+    //error log?
+  }
+}
+
+
+
+/**
+ * Implementation of hook_boxes_plugins().
+ */
+function os_mailchimp_boxes_plugins(){
+  $info = array();
+  $path = drupal_get_path('module', 'os_mailchimp') . '/plugins';
+  $css = drupal_get_path('module', 'os_mailchimp') . '/theme/os-mailchimp.css';
+  
+  $info['os_boxes_mailchimp'] = array(
+    'title' => 'Mailing List', 
+    'description' => 'Lets users subscribe to your MailChimp mailing list', 
+    'css' => $css, 
+    'tags' => array(
+      'Social' 
+    ), 
+    'handler' => array(
+      'class' => 'os_boxes_mailchimp', 
+      'file' => 'os_mailchimp_box.inc', 
+      'path' => $path, 
+      'parent' => 'os_boxes_default' 
+    ) 
+  );
+  
+  return $info;
+
+}
+
+/**
+ * @function os_mailchimp_subscribe()
+ * subscribe a user to a mailing list.
+ *
+ * @param $api	mailchimp api key
+ * @param $list	list to subscribe to
+ * @param $email email address to subscribe
+ * @param $fn  user's firstname (optional)
+ * @param $ln  user's lastname (optional)
+ */
+function os_mailchimp_subscribe($api, $list, $email, $fn=NULL, $ln=NULL) {
+  include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');
+  $MC = new MCAPI($api);
+  
+  //get list id from string
+  //should id be stored in a var too?  we could delete it when a new list str is created and only look it up once this way.
+  $lists = $MC->lists(array($list)); 
+  if (!isset($lists) || $lists['total'] < 1) {
+    return 'Invalid list';
+  } else {
+    foreach($lists['data'] as $delta => $def) {
+      if ($def['name'] == $list) {
+        $id = $def['id'];
+      }
+    }
+  }
+  
+  if ($MC->listSubscribe($id, $email)) {
+    return true;
+  } else {
+    return $MC->errorMessage; //Invalid MailChimp List ID: jon's test list
+  }
+}
+
+/**
+ * wrapper for ajax calls to os_mailchimp_subscribe
+ */
+function os_mailchimp_subscribe_js() {
+  $sub = os_mailchimp_subscribe($_GET['api'], $_GET['list'], $_GET['email'], $_GET['fn'], $_GET['ln']);
+  $form = $_GET['form'];
+  $json = array('status' => TRUE, 'data' => 'what to return?');
+  drupal_json($json);
+}
+
+/**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function os_mailchimp_ctools_plugin_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => 1);
+  }
+}
+
+/**
+ * Implementation of hook_default_box().
+ */
+function os_mailchimp_default_box() {
+  $export = array();
+
+  $box = new stdClass;
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
+  $box->delta = 'os_box_mailchimp';
+  $box->plugin_key = 'os_boxes_mailchimp';
+  $box->title = ''; 
+  $box->description = 'Subscribe to MailChimp mailing list';
+  $box->options = array(
+    'visibility' => 'feature',
+    'api' => variable_get('os_mailchimp_api', FALSE),
+    'list' => variable_get('os_mailchimp_list', FALSE),
+    'text' => 'Subscribe to our mailing list',
+  );
+  $export['os_box_mailchimp'] = $box;
+  
+  return $export;
+}
+
+/**
+ * @function os_mailchimp_form
+ *
+ * builds the form mailchimp_box uses to collect email addresses
+ */
+function os_mailchimp_form($state, $api='', $list='') {
+  $form = array();
+  global $user;
+  //if (isset $user->name) try for fn/ln.  no idea where they're being held.
+  
+  if ($user->uid != 0) {
+    $mail = $user->mail;
+    //retrieve fn/ln
+    $fn = $user->name;
+    $ln = 'lastname';
+  } else {
+    $mail = $fn = $ln = '';
+  }
+  
+  drupal_get_messages();
+  ctools_include('ajax');
+  ctools_add_js('ajax-responder');
+  
+  $form['subscribe'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'subscribe',
+  );
+  
+  /* prepopulate form if possible.  logged in users will submit immediately, others will have to fill out form */
+  $form['subscribe']['email'] = array(
+    '#type' =>  'textfield',
+    '#title' => 'Email Address',
+    '#value' => $mail,
+    '#weight' => -10,
+    '#required' => TRUE,
+  
+  );
+  
+  $form['subscribe']['fn'] = array(
+    '#type' =>  'textfield',
+    '#title' => 'First Name',
+  	'#weight' => -8,
+  	'#value' => $fn,
+  );
+  
+  $form['subscribe']['ln'] = array(
+    '#type' =>  'textfield',
+    '#title' => 'Last Name',
+  	'#weight' => -6,
+  	'#value' => $ln,
+  );
+  
+  $form['subscribe']['api'] = array('#type' => 'value', '#value' => $api); 
+  
+  $form['subscribe']['list'] = array('#type' => 'value', '#value' => $list);
+  
+  $form['subscribe']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Subscribe',
+    '#weight' => -4,
+  );
+  ctools_ajax_associate_url_to_element($form, $form['subscribe']['submit'], '/os_mailchimp/subscribe');
+
+  return $form;
+}

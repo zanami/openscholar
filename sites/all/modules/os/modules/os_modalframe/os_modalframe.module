@@ -115,6 +115,20 @@ function os_modalframe_boxes_plugins() {
     'access' => "cp_access_cp",
   );
 
+  $info['os_modal_tabbed'] = array(
+    'title' => 'Tabs',
+    'description' => 'Widgets as Tabs',
+    'tags' => array('Misc'),
+    'handler' => array(
+      'class' => 'os_modal_tabbed',
+      'file' => 'os_modal_tabbed.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_modalframe',
+    ),
+    'factory_path' => 'cp/os-modalframe/boxes_add__os_modal_tabbed',
+    'access' => 'cp_access_cp',
+  );
+
   return $info;
 }
 
