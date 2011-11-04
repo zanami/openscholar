@@ -5,17 +5,22 @@
  * this will probably be replaced by drupal behaviors later
  */
 
-$().ready( function() {
-  init_mailchimp();
-  alert('we have mailchimp js');
-})
+(function ($) {
 
-function init_mailchimp() {
-  $('#mailchimp_sub').click( function() {
-    
-    $(this).hide();
-    $('#mailchimp_form').show();
+Drupal.behaviors.os_mailchimp_modal = function() {
+  $('.mailchimp-modal').click(function(e) {
+    var url = $(this).attr('href');
+    url += '?delta=' + Drupal.settings.os_mailchimp.delta;
+    var modalOptions = {
+      url: url,
+      autoFit: true,
+      onSubmit: Drupal.CTools.AJAX.respond,
+      delta: Drupal.settings.os_mailchimp.delta,
+    };  
+    Drupal.modalFrame.open(modalOptions);
+  
+    e.preventDefault();
   });
-  
-  
+ 
 }
+})(jQuery);

@@ -29,6 +29,13 @@ function os_mailchimp_menu() {
 		'file' => 'os_mailchimp.admin.inc', 
 		'access arguments' => array('administer citation distribute' )
   );
+  $items['os_mailchimp/form'] = array(
+    'title' => 'Subscribe to mailing list',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_mailchimp_form'),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
   
   return $items;
   
@@ -160,29 +167,28 @@ function os_mailchimp_default_box() {
   return $export;
 }
 
+function _get_api_and_list($delta) {
+  $box = boxes_load($delta);
+  return array( 'api'=>$box->options['api'],
+  							'list'=>$box->options['list'],
+  );
+}
+
 /**
  * @function os_mailchimp_form
  *
  * builds the form mailchimp_box uses to collect email addresses
  */
-function os_mailchimp_form($state, $api='', $list='') {
-  $form = array();
-  global $user;
-  //if (isset $user->name) try for fn/ln.  no idea where they're being held.
-  
-  if ($user->uid != 0) {
-    $mail = $user->mail;
-    //retrieve fn/ln
-    $fn = $user->name;
-    $ln = 'lastname';
-  } else {
-    $mail = $fn = $ln = '';
-  }
-  
+function os_mailchimp_form(&$state) {
+
+  modalframe_child_js();
   drupal_get_messages();
   ctools_include('ajax');
   ctools_add_js('ajax-responder');
+
+  $data = _get_api_and_list($_GET['delta']);
   
+  $form = array();
   $form['subscribe'] = array(
     '#type' => 'fieldset',
     '#title' => 'subscribe',
@@ -192,7 +198,6 @@ function os_mailchimp_form($state, $api='', $list='') {
   $form['subscribe']['email'] = array(
     '#type' =>  'textfield',
     '#title' => 'Email Address',
-    '#value' => $mail,
     '#weight' => -10,
     '#required' => TRUE,
   
@@ -202,26 +207,24 @@ function os_mailchimp_form($state, $api='', $list='') {
     '#type' =>  'textfield',
     '#title' => 'First Name',
   	'#weight' => -8,
-  	'#value' => $fn,
   );
   
   $form['subscribe']['ln'] = array(
     '#type' =>  'textfield',
     '#title' => 'Last Name',
   	'#weight' => -6,
-  	'#value' => $ln,
   );
   
-  $form['subscribe']['api'] = array('#type' => 'value', '#value' => $api); 
+  $form['subscribe']['api'] = array('#type' => 'value', '#value' => $data['api']); 
   
-  $form['subscribe']['list'] = array('#type' => 'value', '#value' => $list);
+  $form['subscribe']['list'] = array('#type' => 'value', '#value' => $data['list']);
   
   $form['subscribe']['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Subscribe',
     '#weight' => -4,
   );
-  ctools_ajax_associate_url_to_element($form, $form['subscribe']['submit'], '/os_mailchimp/subscribe');
+  //ctools_ajax_associate_url_to_element($form, $form['subscribe']['submit'], '/os_mailchimp/subscribe');
 
   return $form;
 }
