@@ -33,14 +33,11 @@ class os_modal_tabbed extends os_boxes_modalframe {
   public function options_form() {
     $form = parent::options_form();
 
-    ctools_include('modal');
-    ctools_include('ajax');
-
     $widgets = vsite_layout_get_widgets();
     //vsite_layout_ui_check_for_disabled_widgets($widgets);
 
     // filter out factories
-    $options = array('' => 'Select Widget');
+    $options = array('os_modal_tabbed-remove' => t('No Widget'));
     foreach ($widgets as $wgt => $info) {
       if ($info['factory']) {
         unset($widgets[$wgt]);
@@ -51,17 +48,35 @@ class os_modal_tabbed extends os_boxes_modalframe {
     }
 
     $qt = $this->options['tabs'];
+    $existing = $qt->tabs;
+    if (!count($existing)) {
+      $existing[] = array(
+        'type' => 'block',
+        'title' => t('First Tab'),
+        'weight' => 0,
+        'delta' => 'os_modal_tabbed-remove',
+        'hide_title' => 0,
+      );
+    }
     $new_tab = array(
       'type' => 'block',
       'title' => 'New Tab',
-      'weight' => 2000000,  // so its always last
-      'delta' => '',
+      'weight' => 'new',  // special case
+      'delta' => 'os_modal_tabbed-remove',
       'hide_title' => 0,
     );
-    $tabs_data = $qt->tabs + array($new_tab);
+    $tabs_data = array_merge($existing, array('new' => $new_tab));
 
     $links = array();
-    $fieldset = array();
+
+    // stores the number of real tabs
+    // as soon as user picks a widget, this is incremented with js
+    $form['tab_count'] = array(
+      '#type' => 'hidden',
+      '#default_value' => count($existing),
+      '#process' => array('os_modal_tabbed_add_new_tabs'),
+    );
+
     $form['tabs'] = array(
       '#prefix' => '<div id="tabs">',
       '#suffix' => '</div>',
@@ -81,6 +96,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
         '#tree' => TRUE,
         '#weight' => 1,
         'title' => array(
+          '#title' => t('Title of the Tab'),
           '#type' => 'textfield',
           '#default_value' => $t['title'],
         ),
@@ -89,15 +105,17 @@ class os_modal_tabbed extends os_boxes_modalframe {
           '#title' => t('Widget to Display in this Tab'),
           '#options' => $options,
           '#default_value' => $t['delta'],
+          '#description' => t('Choose which widget to display in this tab. Select \'No Widget\' to remove this tab.')
         ),
         'hide_title' => array(
           '#type' => 'checkbox',
           '#default_value' => $t['hide_title'],
-          '#title' => t('Hide Widget Title'),
+          '#title' => t('Hide Selected Widget\'s Title'),
         ),
         'weight' => array(
           '#type' => 'hidden',
-          '#default_value' => $t['weight'],
+          '#default_value' => is_numeric($t['weight'])?$t['weight']:2000000,
+          '#attributes' => array('class' => 'tab-weight'),  // for js
         ),
         'type' => array(
           '#type' => 'value',
@@ -105,7 +123,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
         ),
         'make_default' => array(
           '#type' => 'markup', // drupal doesnt let us make a button that does nothing...
-          '#value' => '<input class="make-default" type="button" value="Make Default">',
+          '#value' => '<input class="make-default" panel="'.$id.'" type="button" value="Make Default">',
         ),
       );
     }
@@ -121,6 +139,8 @@ class os_modal_tabbed extends os_boxes_modalframe {
       '#type' => 'hidden',
     );
 
+    $form['#after_build'][] = 'os_modal_tabbed_add_form_externals';
+
     return $form;
   }
 
@@ -131,7 +151,36 @@ class os_modal_tabbed extends os_boxes_modalframe {
   }
 }
 
+/**
+ * Includes the necessary js and css
+ */
+function os_modal_tabbed_add_form_externals($form, &$form_state) {
+  drupal_add_css(drupal_get_path('module', 'os_modalframe').'/theme/os_modal_tabbed.css');
+  drupal_add_js(drupal_get_path('module', 'os_modalframe').'/theme/os_modal_tabbed.js');
+
+  return $form;
+}
+
+/**
+ * Runs the links through theme().
+ * We do it here because $box->options_form gets called in an access function
+ */
 function os_modal_tabbed_links_prerender($elements) {
   $elements['#value'] = theme('links', $elements['#value']);
   return $elements;
+}
+
+/**
+ * After submission, the form has no idea how many tabs were added through js
+ * I find out here and add new form elements for each new one.
+ * This form element is placed before tabs so that the new elements go
+ * through the builder properly. Removing a tab is handled in the submit.
+ * Removing a tab and adding a new one should handle the same as editting an existing
+ */
+function os_modal_tabbed_add_new_tabs(&$element, $post, &$form_state, &$form) {
+  for ($i=$element['#default_value']; $i < $post['tab_count']; $i++) {
+    $form['tabs'][$i] = $form['tabs'][0];
+    $form['tabs'][$i]['#attributes']['id'] = $i;
+  }
+  return $element;
 }
