@@ -61,7 +61,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
         unset($widgets[$wgt]);
       }
       else {
-        $options['boxes-'.$wgt] = $info['label'];
+        $options[$wgt] = $info['label'];
       }
     }
 
