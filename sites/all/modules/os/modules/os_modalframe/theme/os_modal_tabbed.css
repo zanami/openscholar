@@ -21,3 +21,7 @@
 #tabs .panel select {
 	width: auto;
 }
+
+#tabs .links .new a:before {
+	content: '+';
+}
