@@ -1,5 +1,5 @@
 <?php
-// $Id: handlers.inc,v 1.119.2.4 2009/12/24 01:08:31 merlinofchaos Exp $
+// $Id$
 /**
  * @file handlers.inc
  * Defines the various handler objects to help build and display views.
