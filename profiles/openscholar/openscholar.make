@@ -180,7 +180,8 @@ projects[vertical_tabs][subdir] = "contrib"
 projects[vertical_tabs][version] = "1.0-rc2"
 
 projects[views][subdir] = "contrib"
-projects[views][version] = "2.12"
+projects[views][version] = "2.13"
+projects[views][patch][] = "http://drupal.org/files/issues/views_cached_pager.patch"
 
 projects[views_attach][subdir] = "contrib"
 projects[views_attach][version] = "2.2"
