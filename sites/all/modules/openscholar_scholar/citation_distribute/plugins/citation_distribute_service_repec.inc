@@ -56,6 +56,7 @@ class citation_distribute_service_repec extends citation_distribute_service {
 		$node = node_load($nid);
 		$type = $this->_nid_to_type($nid);
 	  $out = array();
+	  $out['Template-Type'] = $this->_map_biblio_type($node->biblio_type_name);
 		$out['Handle'] = 'RePEc:' . $this->archive_code . ':' . $type . ':' .  $nid; 
 	   
 		//get node's URL
@@ -362,7 +363,7 @@ class citation_distribute_service_repec extends citation_distribute_service {
 		foreach ($all_series as $series) {
 			$sn = $series_name[$series];
 			
-			$seri .= 'Template-type: ReDIF-Series 1.0' . "\n";
+			$seri .= 'Template-Type: ReDIF-Series 1.0' . "\n";
 			$seri .= 'Name: ' . $sn . "\n";
 			$seri .= 'Provider-Name: '. $this->inst_name . "\n";
 			$seri .= 'Provider-Homepage: ' . $this->provider_homepage . "\n";
@@ -380,7 +381,7 @@ class citation_distribute_service_repec extends citation_distribute_service {
 		$series_out = file_put_contents($filename, $seri);
 		
 		//now for the arch file
-		$arch  = 'Template-type: ReDIF-Archive 1.0' . "\n";
+		$arch  = 'Template-Type: ReDIF-Archive 1.0' . "\n";
 		$arch .= 'Handle: RePEc:' . $this->archive_code . "\n";
 		$arch .= 'Name: ' . $this->inst_name . "\n";
 		$arch .= 'Maintainer-Email: ' . $this->maintainer_email . "\n";
