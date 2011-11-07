@@ -12,7 +12,25 @@ class os_modal_tabbed extends os_boxes_modalframe {
   }
 
   public static function submit(&$form, &$form_state) {
-    return self::$latest;
+    $vals = &$form_state['values'];
+
+    $qt = array(
+      'machine_name' => strtolower(str_replace(' ', '_', $vals['description'])),
+      'ajax' => 0,
+      'hide_empty_tabs' => 0,
+      'default_tab' => $vals['default'],
+      'title' => $vals['description'],
+      'tabs' => array(),
+    );
+
+    foreach ($vals['tabs'] as $k => $t) {
+      if ($k == 'tab-new') continue;
+      $qt['tabs'][] = $t;
+    }
+
+    $vals['box']['qt_obj'] = (object)$qt;
+
+    return parent::submit($form, $form_state);
   }
 
   /**
@@ -20,7 +38,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
    */
   public function options_defaults() {
     $options = parent::options_form();
-    $options['tabs'] = (object)array(
+    $options['qt_obj'] = (object)array(
       'default_tab' => FALSE,
       'tabs' => array(),
     );
@@ -47,7 +65,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
       }
     }
 
-    $qt = $this->options['tabs'];
+    $qt = $this->options['qt_obj'];
     $existing = $qt->tabs;
     if (!count($existing)) {
       $existing[] = array(
@@ -69,17 +87,10 @@ class os_modal_tabbed extends os_boxes_modalframe {
 
     $links = array();
 
-    // stores the number of real tabs
-    // as soon as user picks a widget, this is incremented with js
-    $form['tab_count'] = array(
-      '#type' => 'hidden',
-      '#default_value' => count($existing),
-      '#process' => array('os_modal_tabbed_add_new_tabs'),
-    );
-
     $form['tabs'] = array(
       '#prefix' => '<div id="tabs">',
       '#suffix' => '</div>',
+      '#tree' => TRUE,
     );
     foreach ($tabs_data as $k => $t) {
       $id = 'tab-'.$k;
@@ -93,7 +104,6 @@ class os_modal_tabbed extends os_boxes_modalframe {
       $form['tabs'][$id] = array(
         '#type' => 'fieldset',
         '#attributes' => array('id' => $id, 'class' => 'panel'),
-        '#tree' => TRUE,
         '#weight' => 1,
         'title' => array(
           '#title' => t('Title of the Tab'),
@@ -101,11 +111,11 @@ class os_modal_tabbed extends os_boxes_modalframe {
           '#default_value' => $t['title'],
           '#attributes' => array('class' => 'tab-title'), // for js
         ),
-        'delta' => array(
+        'bid' => array(
           '#type' => 'select',
           '#title' => t('Widget to Display in this Tab'),
           '#options' => $options,
-          '#default_value' => $t['delta'],
+          '#default_value' => $t['bid'],
           '#description' => t('Choose which widget to display in this tab. Select \'No Widget\' to remove this tab.')
         ),
         'hide_title' => array(
@@ -135,6 +145,14 @@ class os_modal_tabbed extends os_boxes_modalframe {
       '#weight' => 0,
     );
 
+    // stores the number of real tabs
+    // as soon as user picks a widget, this is incremented with js
+    $form['tab_count'] = array(
+      '#type' => 'hidden',
+      '#default_value' => count($existing),
+      '#process' => array('os_modal_tabbed_add_new_tabs'),
+    );
+
     $form['default'] = array(
       '#default_value' => (int)$qt->default_tab,
       '#type' => 'hidden',
@@ -149,6 +167,9 @@ class os_modal_tabbed extends os_boxes_modalframe {
    * Implementation of boxes_content::options_form().
    */
   public function render() {
+      $block = parent::render();
+      $block['content'] = print_r($this->options['qt_obj'],1);
+      return $block;
   }
 }
 
@@ -180,8 +201,16 @@ function os_modal_tabbed_links_prerender($elements) {
  */
 function os_modal_tabbed_add_new_tabs(&$element, $post, &$form_state, &$form) {
   for ($i=$element['#default_value']; $i < $post['tab_count']; $i++) {
-    $form['tabs'][$i] = $form['tabs'][0];
-    $form['tabs'][$i]['#attributes']['id'] = $i;
+    $new_tab = 'tab-'.$i;
+    $form['options']['tabs'][$new_tab] = $form['options']['tabs']['tab-new'];
+    $form['options']['tabs'][$new_tab] += array(
+      '#attributes' => array('id' => $i),
+      '#parents' => array('tabs', $new_tab),
+      '#array_parents' => array('options', 'tabs', $new_tab),
+      '#tree' => TRUE,
+      '#post' => $element['#post'],
+    );
+    form_builder($form['form_id']['#value'], $form['options']['tabs'][$new_tab], $form_state);
   }
   return $element;
 }

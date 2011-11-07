@@ -18,11 +18,6 @@ $(document).ready(function () {
 				update: updateWeight,
 			  });
 	
-	// prevent window from expanding to huge heights due to space panels take up
-	if (Drupal.modalFrameChild) {
-		Drupal.modalFrameChild.triggerParentEvent('childResize');
-	}
-	
 	// update the weights of the tabs
 	// should end up being unique
 	function updateWeight() {
@@ -34,6 +29,7 @@ $(document).ready(function () {
 	// set which tab displays by default
 	$('.panel .make-default').live('click', function () {
 		$('#edit-default').val($(this).attr('panel'));
+		$(this).parents('.panel').addClass('default');
 	});
 	
 	// update the title of the tab
@@ -51,6 +47,15 @@ $(document).ready(function () {
 		// get the full html, including tags of the panel 
 		// and replace the automatically generated panel with it
 		$('#'+id).html($('#tab-new').html().replace(/tab-new/g, id));
-		$('tabs').tabs("select", id);
+		$('#tabs').tabs("select", id);
+		var count = $('#edit-tab-count');
+		count.val(parseInt(count.val())+1);
+		
+		updateWeight();
 	});
+	
+	// prevent window from expanding to huge heights due to space panels take up
+	if (Drupal.modalFrameChild) {
+		Drupal.modalFrameChild.triggerParentEvent('childResize');
+	}
 });
