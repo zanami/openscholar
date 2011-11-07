@@ -818,6 +818,19 @@ function iqss_gking_vsite_widgets(){
           'os_og' => array('current' => 'current'),
         ),
       );
+      
+  $items[] = array(
+    'module' => 'iqss_gking',
+    'delta' => 'gking_pub_by_type',
+    'weight' => 5,
+    'region' => false,
+    'status' => '0',
+    'label' => 'Recent Writings (tabbed box - homepage)',
+    'cache' => BLOCK_CACHE_CONTENT_CACHE,
+    'cache_keys' => array(
+      'os_og' => array('current' => 'current'),
+    ),
+  );
 
   return $items;
 }

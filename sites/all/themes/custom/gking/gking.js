@@ -15,5 +15,9 @@ $(document).ready(function() {
         container.addClass("bio-open").animate({height:'70%'},"1500");
       }
     });
-
+    
+    $(".front #pub_type_tabs").tabs({ fx: { opacity: 'toggle' } });
+    
+    $(".front #header-top .wrap").addClass('clearfix');
+    
 });
