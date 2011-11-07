@@ -225,6 +225,13 @@ body.front h2.title {
   margin-right: 27px;
   }
 
+body.page-search #content-area .wrap.clearfix  {background: #fff;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  -moz-box-shadow: 0 5px 2em rgba(0,0,0,0.35);
+  -webkit-box-shadow: 0 5px 2em rgba(0,0,0,0.35);
+  box-shadow: 0 5px 2em rgba(0,0,0,0.35);}
 
 /* FRONT PAGE */
 
