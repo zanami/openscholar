@@ -250,3 +250,30 @@ function os_mailchimp_form_submit($form, &$form_state) {
   } 
 }
 
+/**
+ * Implement Hook vsite_generic_settings
+ * @return array
+ */
+function os_mailchimp_vsite_generic_settings(){
+  $a_settings = array();
+  $vsite =vsite_get_vsite();
+
+  $a_settings['os_mailchimp_api'] = array(
+    'group' => array(
+      '#id' => 'social',
+      '#title' => t('Social'),
+      '#weight' => 0,
+    ),
+    'form' => array(
+      '#type' => 'textfield',
+      '#title' => t('MailChimp API Key'),
+      '#default_value' => $vsite->controllers->variable->get('os_mailchimp_api', 'space'),
+      '#description' => 'Your <a href="https://us1.admin.mailchimp.com/account/api-key-popup" target="_new">MailChimp API key</a>.  Example: 1234567890abcefghijklmnopqrstuvwx-us2',
+    
+    )
+  );
+
+  return $a_settings;
+}
+
+// don't forget to validate api key.  this is the only chance for a site admin to get feedback from it.  otherwise users will get failed list join attempts

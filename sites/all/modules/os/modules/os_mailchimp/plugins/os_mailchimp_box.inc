@@ -13,7 +13,6 @@ class os_boxes_mailchimp extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
     
-    $options['api'] = '';
     $options['list'] = '';
     $options['text'] = t('Subscribe to our mailing list');
 
@@ -26,12 +25,13 @@ class os_boxes_mailchimp extends os_boxes_default {
   public function options_form(){
     $form = array();
     
-    $form['subscribe']['api'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Your MailChimp API key'),
-      '#default_value' => $this->options['api'],
-      '#description' => 'Your <a href="https://us1.admin.mailchimp.com/account/api-key-popup" target="_new">MailChimp API key</a>.  Example: 1234567890abcefghijklmnopqrstuvwx-us2',
-    );
+    $vsite=vsite_get_vsite();
+    $api = $vsite->controllers->variable->get('os_mailchimp_api', 'space');
+    if (!$api) {
+      $form['subscribe']['api_warning'] = array(
+        '#value' => '<div class="error">You have not set a <strong>MailChimp API key</strong>.  Until you do so, mailing lists will not work.  You can set up an API key in <a href="/'.$vsite->group->purl.'/cp/settings" target="_new">site settings<a>.</div>',
+      );
+    }
     
     $form['subscribe']['list'] = array(
       '#type' => 'textfield',
@@ -57,21 +57,26 @@ class os_boxes_mailchimp extends os_boxes_default {
     
   public function render() {
     $block = parent::render();
+    global $user;
+    if ($user->uid == 0) {
+      //modal form takes email, name
+      modalframe_parent_js();
+      drupal_add_js(drupal_get_path('module', 'os_mailchimp') .'/os_mailchimp.js');
+
+      //store box delta, so recieving script can get api key.
+      drupal_add_js(array('os_mailchimp'=>array('delta'=>$this->delta)), 'setting'); //what happens if multiple forms are present?
+      
+      $block['content'] =   l($this->options['text'], 'os_mailchimp/form', array('attributes'=>array('class'=>'mailchimp-modal')));   
     
+    } else {
+      //user is logged in.  use name and email.
+      $mail = $user->mail;
+      $name = $user->name;  
+      
+    }
     
-    // move this to a theme function at some point.
-    $block['content']  = '<div id="mailchimp_sub">' . $this->options['text'] . '</div>';
-    //$block['content'] .= '<div id="mailchimp_form">' . drupal_get_form('os_mailchimp_form', 'api', 'list') . '</div>';    //or should this form be a modal?
-    
-    //lets try a modal instead.
-    modalframe_parent_js();
-    drupal_add_js(drupal_get_path('module', 'os_mailchimp') .'/os_mailchimp.js');
-    //store box delta, so recieving script can get api key.
-    drupal_add_js(array('os_mailchimp'=>array('delta'=>$this->delta)), 'setting'); //what happens if multiple forms are present?
-    $block['content'] =   l($this->options['text'], 'os_mailchimp/form', array('attributes'=>array('class'=>'mailchimp-modal')));   
-    
-    $block['content'] .= '<i>List: ' . $this->options['list'] . '<br />API:' . $this->options['api'] . '</i>'; //just for dev.  rm later
-    drupal_add_css($this->css, 'theme');
+    //$block['content'] .= '<i>List: ' . $this->options['list'] . '<br />API:' . $this->options['api'] . '</i>'; //just for dev.  rm later
+    //drupal_add_css($this->css, 'theme');
     //drupal_add_js('os_mailchimp.js', 'file');
     
     return $block;
