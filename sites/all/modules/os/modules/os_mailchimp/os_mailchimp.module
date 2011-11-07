@@ -37,6 +37,12 @@ function os_mailchimp_menu() {
     'type' => MENU_CALLBACK,
   );
   
+  $items['os_mailchimp/form_js'] = array(
+    'page callback' => 'os_mailchimp_form_js',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+  );
+  
   return $items;
   
 }
@@ -168,32 +174,28 @@ function os_mailchimp_default_box() {
 
 function _get_api_and_list($delta) {
   $box = boxes_load($delta);
+  //not anymore!  get api from $view->controllers->variable->get()
   return array( 'api'=>$box->options['api'],
   							'list'=>$box->options['list'],
   );
 }
 
 /**
- * @function os_mailchimp_form
+ * @function _os_mailchimp_form
  *
  * builds the form mailchimp_box uses to collect email addresses
+ * the other hook_form functions use this as their base form
  */
 function os_mailchimp_form(&$state) {
 
-  modalframe_child_js();
-  drupal_get_messages();
-  ctools_include('ajax');
-  ctools_add_js('ajax-responder');
-
-  $data = _get_api_and_list($_GET['delta']);
-  
   $form = array();
   $form['subscribe'] = array(
     '#type' => 'fieldset',
     '#title' => 'subscribe',
+    '#prefix' => '<div class="clear-block" id="mailchimp-subscribe">',
+    '#suffix' => '</div>',
   );
-  
-  /* prepopulate form if possible.  logged in users will submit immediately, others will have to fill out form */
+
   $form['subscribe']['email'] = array(
     '#type' =>  'textfield',
     '#title' => 'Email Address',
@@ -214,7 +216,82 @@ function os_mailchimp_form(&$state) {
   	'#weight' => -6,
   );
   
-  $form['subscribe']['api'] = array(
+  $form['subscribe']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Subscribe',
+    '#weight' => -4,
+  );
+
+  return $form;
+}
+
+/**
+ * implementation of hook_form
+ * 
+ * returns ahah version of subscription form
+ * @param unknown_type $state
+ */
+function os_mailchimp_ahah_form(&$state) {
+  $form = array();
+  $list = func_get_arg(1);
+  
+  // AHAH-enabled buttons with the id 'more'.
+  $form['mailchimp'] = array(
+    '#tree' => FALSE,
+    '#prefix' => '<div class="clear-block" id="mailchimp-form-wrapper">',
+    '#suffix' => '</div>',
+  );
+  $form['mailchimp']['thelist'] = array(
+    '#type' => 'value',
+    '#value' =>  $list,
+  );
+  $form['mailchimp']['hidden'] = array(
+    '#type' => 'hidden',
+    '#value' =>  $list,
+  );
+  $form['mailchimp']['open'] = array(
+    '#type' => 'submit',
+    '#value' => t('Subscribe'),
+    '#name' => 'open-form',
+    //'#id' => 'mailchimp-form',
+//    '#submit' => array('poll_more_choices_submit'), // If no javascript action.
+    '#ahah' => array(
+      'event' => 'click',
+      'path' => 'os_mailchimp/form_js',
+      'wrapper' => 'mailchimp-form-wrapper',
+      'progress' => array('type'=>'throbber', 'message'=>t('Loading')),
+      'method' => 'replace',
+      //'method' => 'replace',
+     //'effect' => 'fade',
+    ),
+  );
+  
+ // $form += _os_mailchimp_form($state);
+  return $form;
+}
+
+function os_mailchimp_form_js() {
+  $output = drupal_get_form('os_mailchimp_form');
+  drupal_json( array('status'=>TRUE, 'data'=>$output));
+}
+
+/**
+ * implementation of hook_form
+ * 
+ * returns modal version of subscription form
+ * @param unknown_type $state
+ */
+function os_mailchimp_modal_form(&$state) {
+  $form = os_mailchimp_form($state);
+  
+  modalframe_child_js();
+  drupal_get_messages();
+  ctools_include('ajax');
+  ctools_add_js('ajax-responder');
+
+  $data = _get_api_and_list($_GET['delta']);
+  
+    $form['subscribe']['api'] = array(
   	'#type' => 'value', 
   	'#value' => $data['api'],
   ); 
@@ -224,13 +301,6 @@ function os_mailchimp_form(&$state) {
   	'#value' => $data['list'],
   );
   
-  $form['subscribe']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => 'Subscribe',
-    '#weight' => -4,
-  );
-  //ctools_ajax_associate_url_to_element($form, $form['subscribe']['submit'], '/os_mailchimp/subscribe');
-
   return $form;
 }
 
@@ -239,7 +309,9 @@ function os_mailchimp_form(&$state) {
  */
 function os_mailchimp_form_submit($form, &$form_state) {
   $v = $form_state['values'];
-  $sub = os_mailchimp_subscribe($v['api'], $v['list'], $v['email'], $v['fn'], $v['ln']);
+  $vsite = vsite_get_vsite();
+  $api = $vsite->controllers->variable->get('os_mailchimp_api', 'space');
+  $sub = os_mailchimp_subscribe($api, $v['list'], $v['email'], $v['fn'], $v['ln']);
   
   // Process the form as usual.
   if ($sub['success']) {  
