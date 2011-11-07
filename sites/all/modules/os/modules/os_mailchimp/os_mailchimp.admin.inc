@@ -21,13 +21,22 @@ function os_mailchimp_admin() {
 	  '#default_value' => variable_get('os_mailchimp_api', ''), 
 	  '#description' => t('Your MailChimp API Key.  Leaving this blank will disable automatic subscription'),
    );
-  $form['os_mailchimp']['os_mailchimp_list'] = array(
-	  '#type' => 'textfield',
-	  '#title' => t('Mailing List'),
-	  '#required' => TRUE,
-	  '#default_value' => variable_get('os_mailchimp_list', ''), 
-	  '#description' => t('MailChimp list to subscribe new users to.'),
-   );
-   
+   $options = _os_mailchimp_get_lists(variable_get('os_mailchimp_api', ''));
+   if ($options) {
+    $form['os_mailchimp']['os_mailchimp_list'] = array(
+  	  '#type' => 'select',
+  	  '#title' => t('Mailing List'),
+  	  '#required' => TRUE,
+  	  '#default_value' => variable_get('os_mailchimp_list', ''), 
+  	  '#description' => t('MailChimp list to subscribe new users to.'),
+      '#options' => $options,
+     );
+   } else {
+     $form['os_mailchimp']['api_key_error'] = array(
+       '#type' => 'markup',
+       '#value' => 'No mailing lists available.  Please check your API key and try again.',
+     );
+   }
+      
    return system_settings_form($form);
 }
