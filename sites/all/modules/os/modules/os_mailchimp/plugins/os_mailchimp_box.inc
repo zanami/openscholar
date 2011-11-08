@@ -65,40 +65,14 @@ class os_boxes_mailchimp extends os_boxes_default {
   public function render() {
     $block = parent::render();
     global $user;
-    if (TRUE || $user->uid == 0) {
-      $block['content'] = drupal_get_form('os_mailchimp_form', $this->options['list']);
-      
-      
-      /*
-      if (FALSE) { //TODO make this a box setting
-        //modal form takes email, name
-        modalframe_parent_js();
-        drupal_add_js(drupal_get_path('module', 'os_mailchimp') .'/os_mailchimp.js');
-  
-        //store box delta, so recieving script can get api key.
-        drupal_add_js(array('os_mailchimp'=>array('delta'=>$this->delta)), 'setting'); //what happens if multiple forms are present?
-        
-        $block['content'] =   l($this->options['text'], 'os_mailchimp/form', array('attributes'=>array('class'=>'mailchimp-modal')));   
-      } else {
-        
-        
-        //AHAH form
-        $block['content'] = drupal_get_form('os_mailchimp_ahah_form', $this->options['list']);
-      }
-        
-    } else {
-      //user is logged in.  use name and email.
+    $mail = $fn = $ln = '';
+    if ($user->uid != 0) {
       $mail = $user->mail;
-      $name = $user->name;  
-      
-    }*/
-    
-    //$block['content'] .= '<i>List: ' . $this->options['list'] . '<br />API:' . $this->options['api'] . '</i>'; //just for dev.  rm later
-    //drupal_add_css($this->css, 'theme');
-    //drupal_add_js('os_mailchimp.js', 'file');
-    
-    return $block;
     }
+    $block['content'] = drupal_get_form('os_mailchimp_form', $this->options['list'], $mail, $fn, $ln);  
+    
+  return $block;
+    
   }
 
   
