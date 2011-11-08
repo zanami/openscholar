@@ -23,7 +23,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
     );
 
     foreach ($vals['tabs'] as $k => $t) {
-      if ($k == 'tab-new') continue;
+      if ($k == 'tab-new' || $t['bid'] == 'os_modal_tabbed-remove') continue;
       $qt['tabs'][$t['weight']] = $t;
     }
 
@@ -82,7 +82,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
     $new_tab = array(
       'type' => 'block',
       'title' => 'New Tab',
-      'weight' => 200000,  // special case
+      'weight' => '200000 new',  // special case
       'delta' => 'os_modal_tabbed-remove',
     );
     $tabs_data = array_merge($existing, array('new' => $new_tab));
