@@ -15,21 +15,33 @@ $(document).ready(function () {
 				axis: 'x',
 				// don't let them sort the new_tab
 				items: 'li:not(.new_tab)',
-				update: updateWeight,
+				update: updateWeightAndDefault,
 			  });
 	
 	// update the weights of the tabs
 	// should end up being unique
-	function updateWeight() {
+	function updateWeightAndDefault() {
+		var first = true;
 		$('#tabs .links:not(.new_tab) a').each(function (i) {
-			$(this.href).find('.tab-weight').val(i);
+			if (first) {
+				$('#edit-default').val($(this).attr('href').replace('#tab-',''));
+				first = false;
+			}
+			$(this.hash).find('.tab-weight').val(i);
 		});
 	}
 	
-	// set which tab displays by default
-	$('.panel .make-default').live('click', function () {
-		$('#edit-default').val($(this).attr('panel'));
-		$(this).parents('.panel').addClass('default');
+	// hide the tab title selection when there's no widget selected
+	// ctools dependency would've had a good deal of overhead
+	// since I can't tell it to display something when not this value
+	$('.panel .tab-delta').live('change', function () {
+		var $this = $(this);
+		if ($this.val() != 'os_modal_tabbed-remove') {
+			$('.tab-title', $this.parents('.panel')).parent().show();
+		}
+		else {
+			$('.tab-title', $this.parents('.panel')).parent().hide();
+		}
 	});
 	
 	// update the title of the tab
@@ -51,7 +63,9 @@ $(document).ready(function () {
 		var count = $('#edit-tab-count');
 		count.val(parseInt(count.val())+1);
 		
-		updateWeight();
+		$('#'+id+' .tab-title').parent().hide();
+		
+		updateWeightAndDefault();
 	});
 	
 	// prevent window from expanding to huge heights due to space panels take up

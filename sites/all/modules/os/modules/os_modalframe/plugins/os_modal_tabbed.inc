@@ -18,17 +18,19 @@ class os_modal_tabbed extends os_boxes_modalframe {
       'machine_name' => strtolower(str_replace(' ', '_', $vals['description'])),
       'ajax' => 0,
       'hide_empty_tabs' => 0,
-      'default_tab' => $vals['default'],
       'title' => $vals['description'],
       'tabs' => array(),
     );
 
     foreach ($vals['tabs'] as $k => $t) {
       if ($k == 'tab-new') continue;
-      $qt['tabs'][] = $t;
+      $qt['tabs'][$t['weight']] = $t;
     }
 
-    $vals['box']['qt_obj'] = (object)$qt;
+    ksort($qt['tabs']);
+    reset($qt['tabs']);
+    $qt['default_tab'] = key($qt['tabs']);
+    $vals['box']['qt_obj'] = $qt;
 
     return parent::submit($form, $form_state);
   }
@@ -38,7 +40,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
    */
   public function options_defaults() {
     $options = parent::options_form();
-    $options['qt_obj'] = (object)array(
+    $options['qt_obj'] = array(
       'default_tab' => FALSE,
       'tabs' => array(),
     );
@@ -50,6 +52,8 @@ class os_modal_tabbed extends os_boxes_modalframe {
    */
   public function options_form() {
     $form = parent::options_form();
+
+    ctools_include('dependent');
 
     $widgets = vsite_layout_get_widgets();
     //vsite_layout_ui_check_for_disabled_widgets($widgets);
@@ -65,23 +69,21 @@ class os_modal_tabbed extends os_boxes_modalframe {
       }
     }
 
-    $qt = $this->options['qt_obj'];
-    $existing = $qt->tabs;
+    $qt = (array)$this->options['qt_obj'];
+    $existing = $qt['tabs'];
     if (!count($existing)) {
       $existing[] = array(
         'type' => 'block',
         'title' => t('First Tab'),
         'weight' => 0,
         'delta' => 'os_modal_tabbed-remove',
-        'hide_title' => 0,
       );
     }
     $new_tab = array(
       'type' => 'block',
       'title' => 'New Tab',
-      'weight' => 'new',  // special case
+      'weight' => 200000,  // special case
       'delta' => 'os_modal_tabbed-remove',
-      'hide_title' => 0,
     );
     $tabs_data = array_merge($existing, array('new' => $new_tab));
 
@@ -91,6 +93,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
       '#prefix' => '<div id="tabs">',
       '#suffix' => '</div>',
       '#tree' => TRUE,
+      '#description' => t('Drag the tabs to reorder them. Whichever tab is on the left will be the open tab when a user visits the page.'),
     );
     foreach ($tabs_data as $k => $t) {
       $id = 'tab-'.$k;
@@ -105,40 +108,33 @@ class os_modal_tabbed extends os_boxes_modalframe {
         '#type' => 'fieldset',
         '#attributes' => array('id' => $id, 'class' => 'panel'),
         '#weight' => 1,
+        'bid' => array(
+          '#type' => 'select',
+          '#title' => t('Widget to Display in this Tab'),
+          '#options' => $options,
+          '#default_value' => $t['bid'],
+          '#description' => t('Choose which widget to display in this tab. Select \'No Widget\' to remove this tab.'),
+          '#attributes' => array('class' => 'tab-delta'),
+        ),
         'title' => array(
           '#title' => t('Title of the Tab'),
           '#type' => 'textfield',
           '#default_value' => $t['title'],
           '#attributes' => array('class' => 'tab-title'), // for js
         ),
-        'bid' => array(
-          '#type' => 'select',
-          '#title' => t('Widget to Display in this Tab'),
-          '#options' => $options,
-          '#default_value' => $t['bid'],
-          '#description' => t('Choose which widget to display in this tab. Select \'No Widget\' to remove this tab.')
-        ),
-        'hide_title' => array(
-          '#type' => 'checkbox',
-          '#default_value' => $t['hide_title'],
-          '#title' => t('Hide Selected Widget\'s Title'),
-        ),
         'weight' => array(
           '#type' => 'hidden',
-          '#default_value' => is_numeric($t['weight'])?$t['weight']:2000000,
+          '#default_value' => $t['weight'],
           '#attributes' => array('class' => 'tab-weight'),  // for js
         ),
         'type' => array(
           '#type' => 'value',
           '#value' => 'block',
         ),
-        'make_default' => array(
-          '#type' => 'markup', // drupal doesnt let us make a button that does nothing...
-          '#value' => '<input class="make-default" panel="'.$id.'" type="button" value="Make Default">',
-        ),
       );
     }
 
+    ksort($links);
     $form['tabs']['links'] = array(
       '#pre_render' => array('os_modal_tabbed_links_prerender'),
       '#value' => $links,
@@ -171,8 +167,9 @@ class os_modal_tabbed extends os_boxes_modalframe {
 
       $plugin = context_get_plugin('reaction', 'block');
       $qt = $this->options['qt_obj'];
-      foreach ($qt->tabs as &$t) {
+      foreach ($qt['tabs'] as &$t) {
         if ($b = $plugin->get_block($t['bid'])) {
+          $b->subject = '';
           $t['rendered'] = theme('block', $b);
         }
       }
