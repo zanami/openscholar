@@ -17,12 +17,6 @@
  * ajax url for processing sub requests.  (using ajax so I can have one unified sub function)
  */
 function os_mailchimp_menu() {
-  // used by authed users
-  $items['os_mailchimp/subscribe'] = array(
-    'page callback' => 'os_mailchimp_subscribe_js',
-    'type' => 'MENU_CALLBACK', 
-    'access arguments' => array('access content'), 
-  );
   $items ['admin/settings/os_mailchimp'] = array(
 		'title' => t( 'MailChimp' ), 
 		'page callback' => 'drupal_get_form', 
@@ -30,6 +24,7 @@ function os_mailchimp_menu() {
 		'file' => 'os_mailchimp.admin.inc', 
 		'access arguments' => array('administer citation distribute' )
   );
+
   return $items;
   
 }
@@ -104,15 +99,6 @@ function os_mailchimp_subscribe($api, $listid, $email, $fn=NULL, $ln=NULL) {
 }
 
 /**
- * wrapper for ajax calls to os_mailchimp_subscribe
- */
-function os_mailchimp_subscribe_js() {
-  $sub = os_mailchimp_subscribe($_POST['api'], $_POST['list'], $_POST['email'], $_POST['fn'], $_POST['ln']);
-  $json = array('status' => TRUE, 'data' => 'what to return?');
-  drupal_json($json);
-}
-
-/**
  * Implementation of hook_ctools_plugin_api().
  */
 function os_mailchimp_ctools_plugin_api() {
@@ -152,12 +138,14 @@ function os_mailchimp_default_box() {
  * builds the form mailchimp_box uses to collect email addresses
  * the other hook_form functions use this as their base form
  */
-function os_mailchimp_form(&$state, $list, $mail, $fn, $ln) {
+function os_mailchimp_form(&$state, $list, $mail, $fn, $ln, $title='Subscribe to mailing list') {
 
   $form = array();
   $form['subscribe'] = array(
     '#type' => 'fieldset',
-    '#title' => 'subscribe',
+    '#title' => check_plain($title),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
   );
 
   $form['subscribe']['email'] = array(
@@ -211,7 +199,7 @@ function os_mailchimp_form_submit($form, &$form_state) {
   
   // Process the form as usual.
   if ($sub['success']) {  
-    modalframe_close_dialog(array('message' => ('Subscribed'),));
+    drupal_set_message(t("You have successfully been subscribed to the mailing list."));
   } else {
     //display the error.  make sure that next form send will work - it has a tendency to drop $list and $api...
     drupal_set_message(t('Error subscribing: ' . $sub['msg']), 'error');

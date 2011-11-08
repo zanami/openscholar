@@ -78,7 +78,7 @@ class os_boxes_mailchimp extends os_boxes_default {
       }
       
     }
-    $block['content'] = drupal_get_form('os_mailchimp_form', $this->options['list'], $mail, $fn, $ln);  
+    $block['content'] = drupal_get_form('os_mailchimp_form', $this->options['list'], $mail, $fn, $ln, $this->options['text']);  
     
   return $block;
     
