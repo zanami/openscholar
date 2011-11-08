@@ -61,7 +61,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
         unset($widgets[$wgt]);
       }
       else {
-        $options['boxes-'.$wgt] = $info['label'];
+        $options[$wgt] = $info['label'];
       }
     }
 
@@ -168,7 +168,16 @@ class os_modal_tabbed extends os_boxes_modalframe {
    */
   public function render() {
       $block = parent::render();
-      $block['content'] = print_r($this->options['qt_obj'],1);
+
+      $plugin = context_get_plugin('reaction', 'block');
+      $qt = $this->options['qt_obj'];
+      foreach ($qt->tabs as &$t) {
+        if ($b = $plugin->get_block($t['bid'])) {
+          $t['rendered'] = theme('block', $b);
+        }
+      }
+      $block['content'] = theme('quicktabs', (array)$qt);
+
       return $block;
   }
 }

@@ -26,11 +26,23 @@ class vsite_context_reaction_block extends context_reaction_block {
   protected function build_block($block, $reset = FALSE) {
   	$block = parent::build_block($block,$reset);
   	$subject_overrides = variable_get('block_subject_customizer',array());
-  	
+
   	if(array_key_exists($block->bid,$subject_overrides)){
   		$block->subject = check_plain($subject_overrides[$block->bid]);
   	}
-  	
+
   	return $block;
+  }
+
+  // public wrapper for build_block
+  public function get_block($block, $reset = FALSE) {
+    if (!is_array($block) && !is_object($block)) {
+      $parts = explode('-',$block);
+      $block = array();
+      $block['module'] = array_shift($parts);
+      $block['delta'] = implode('-',$parts);
+    }
+
+    return $this->build_block((object)$block, $reset);
   }
 }
