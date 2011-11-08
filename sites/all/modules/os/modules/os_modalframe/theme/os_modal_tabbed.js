@@ -8,7 +8,9 @@ $(document).ready(function () {
 				disabled: [$('#tabs .links li').length-1],
 				// use fieldset instead of div
 				panelTemplate: '<fieldset class="panel"></fieldset>',
-				selected: $('#edit-default').val(),
+				select: function (e, ui) {
+					$('.panel .tab-title').change();
+				}
 			  })
 			  .find('.ui-tabs-nav')
 			  .sortable({

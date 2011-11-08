@@ -7,6 +7,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
   }
 
   public function form_alter(&$form, &$form_state) {
+    $this->delta = $form_state['box']->delta;
     parent::form_alter($form, $form_state);
     unset($form['submit']['#attributes']);
   }
@@ -31,6 +32,8 @@ class os_modal_tabbed extends os_boxes_modalframe {
     reset($qt['tabs']);
     $qt['default_tab'] = key($qt['tabs']);
     $vals['box']['qt_obj'] = $qt;
+    $vals['box']['title'] = $vals['title'];
+    $vals['box']['description'] = $vals['description'];
 
     return parent::submit($form, $form_state);
   }
@@ -149,11 +152,6 @@ class os_modal_tabbed extends os_boxes_modalframe {
       '#process' => array('os_modal_tabbed_add_new_tabs'),
     );
 
-    $form['default'] = array(
-      '#default_value' => (int)$qt->default_tab,
-      '#type' => 'hidden',
-    );
-
     $form['#after_build'][] = 'os_modal_tabbed_add_form_externals';
 
     return $form;
@@ -167,10 +165,18 @@ class os_modal_tabbed extends os_boxes_modalframe {
 
       $plugin = context_get_plugin('reaction', 'block');
       $qt = $this->options['qt_obj'];
-      foreach ($qt['tabs'] as &$t) {
+      foreach ($qt['tabs'] as $k => &$t) {
         if ($b = $plugin->get_block($t['bid'])) {
           $b->subject = '';
-          $t['rendered'] = theme('block', $b);
+          if (empty($b->content)) {
+            unset($qt['tabs'][$k]);
+          }
+          else {
+            $t['rendered'] = theme('block', $b);
+          }
+        }
+        else {
+          unset($qt['tabs'][$k]);
         }
       }
       $block['content'] = theme('quicktabs', (array)$qt);
