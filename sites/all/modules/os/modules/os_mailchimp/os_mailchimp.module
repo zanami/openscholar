@@ -26,7 +26,6 @@ function os_mailchimp_menu() {
   );
 
   return $items;
-  
 }
 
 /**
@@ -138,14 +137,14 @@ function os_mailchimp_default_box() {
  * builds the form mailchimp_box uses to collect email addresses
  * the other hook_form functions use this as their base form
  */
-function os_mailchimp_form(&$state, $list, $mail, $fn, $ln, $title='Subscribe to mailing list') {
+function os_mailchimp_form(&$state, $form_opts) {
 
   $form = array();
   $form['subscribe'] = array(
     '#type' => 'fieldset',
-    '#title' => check_plain($title),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#title' => check_plain($form_opts->text),
+    '#collapsible' => (isset($form_opts->display) && $form_opts->display == 'link'),
+    '#collapsed' => (isset($form_opts->display) && $form_opts->display == 'link'),
   );
 
   $form['subscribe']['email'] = array(
@@ -153,21 +152,21 @@ function os_mailchimp_form(&$state, $list, $mail, $fn, $ln, $title='Subscribe to
     '#title' => 'Email Address',
     '#weight' => -10,
     '#required' => TRUE,
-    '#default_value' => $mail,
+    '#default_value' => $form_opts->mail,
   );
   
   $form['subscribe']['fn'] = array(
     '#type' =>  'textfield',
     '#title' => 'First Name',
   	'#weight' => -8,
-  	'#default_value' => $fn,
+  	'#default_value' => $form_opts->fn,
   );
   
   $form['subscribe']['ln'] = array(
     '#type' =>  'textfield',
     '#title' => 'Last Name',
   	'#weight' => -6,
-  	'#default_value' => $ln,
+  	'#default_value' => $form_opts->ln,
   );
   
   $form['subscribe']['submit'] = array(
@@ -178,7 +177,7 @@ function os_mailchimp_form(&$state, $list, $mail, $fn, $ln, $title='Subscribe to
   
   $form['subscribe']['list'] = array(
     '#type' => 'value',
-    '#value' => $list,
+    '#value' => $form_opts->list,
   );
 
   return $form;
@@ -231,8 +230,6 @@ function os_mailchimp_vsite_generic_settings(){
 
   return $a_settings;
 }
-
-// don't forget to validate api key.  this is the only chance for a site admin to get feedback from it.  otherwise users will get failed list join attempts
 
 
 /**

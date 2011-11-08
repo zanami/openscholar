@@ -15,6 +15,7 @@ class os_boxes_mailchimp extends os_boxes_default {
     
     $options['list'] = '';
     $options['text'] = t('Subscribe to our mailing list');
+    $options['display'] = 'link';
 
     return $options;
   }
@@ -53,6 +54,14 @@ class os_boxes_mailchimp extends os_boxes_default {
         '#default_value' => $this->options['text'],
         '#description' => t('Text for subscribe link.  Default: ' . $defaults['text'] . '.'), 
       );
+      
+      $form['subscribe']['display'] = array(
+        '#type' => 'radios',
+        '#title' => 'Display',
+        '#options' => array('link'=>'Link', 'form'=>'Form'),
+        '#default_value' => $this->options['display'],
+        '#description' => t('Show a link to subscription form or entire form by default.'),
+      );
     }
         
     return $form;
@@ -65,24 +74,25 @@ class os_boxes_mailchimp extends os_boxes_default {
   public function render() {
     $block = parent::render();
     global $user;
-    $mail = $fn = $ln = '';
+    $form_opts = new stdClass();
+    $form_opts->list = $this->options['list'];
+    $form_opts->text = $this->options['text'];
+    $form_opts->display = $this->options['display'];
+    
+    //fill out the form for logged in users
     if ($user->uid != 0) {
-      $mail = $user->mail;
+      $form_opts->mail = $user->mail;
       
-      //get names from profile, or username
+      //get names from profile, or username if those aren't available
       $profile = content_profile_load('vsite_users_profile',$user->uid);
-      if ($fn = $profile->vsite_users_first_name[0]['value']){ 
-        $ln = $profile->vsite_users_last_name[0]['value'];
+      if ($form_opts->fn = $profile->vsite_users_first_name[0]['value']){ 
+        $form_opts->ln = $profile->vsite_users_last_name[0]['value'];
       } else {
-        $fn = $user->name;
+        $form_opts->fn = $user->name;
       }
-      
     }
-    $block['content'] = drupal_get_form('os_mailchimp_form', $this->options['list'], $mail, $fn, $ln, $this->options['text']);  
     
+    $block['content'] = drupal_get_form('os_mailchimp_form', $form_opts);  
   return $block;
-    
   }
-
-  
 }
