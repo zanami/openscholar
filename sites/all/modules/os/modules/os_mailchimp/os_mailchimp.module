@@ -30,21 +30,6 @@ function os_mailchimp_menu() {
 		'file' => 'os_mailchimp.admin.inc', 
 		'access arguments' => array('administer citation distribute' )
   );
-  /*
-  $items['os_mailchimp/form'] = array(
-    'title' => 'Subscribe to mailing list',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('os_mailchimp_form'),
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-  );
-  
-  $items['os_mailchimp/form_js'] = array(
-    'page callback' => 'os_mailchimp_form_js',
-    'type' => MENU_CALLBACK,
-    'access arguments' => array('access content'),
-  );
-  */
   return $items;
   
 }

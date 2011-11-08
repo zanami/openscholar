@@ -68,6 +68,15 @@ class os_boxes_mailchimp extends os_boxes_default {
     $mail = $fn = $ln = '';
     if ($user->uid != 0) {
       $mail = $user->mail;
+      
+      //get names from profile, or username
+      $profile = content_profile_load('vsite_users_profile',$user->uid);
+      if ($fn = $profile->vsite_users_first_name[0]['value']){ 
+        $ln = $profile->vsite_users_last_name[0]['value'];
+      } else {
+        $fn = $user->name;
+      }
+      
     }
     $block['content'] = drupal_get_form('os_mailchimp_form', $this->options['list'], $mail, $fn, $ln);  
     
