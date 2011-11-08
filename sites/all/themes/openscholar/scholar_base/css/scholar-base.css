@@ -68,7 +68,7 @@ img {
 /* TOP OPENSCHOLAR ADMIN BAR */
 
 .cp-toolbar-full #top {
-  height: 42px;
+  height: 36px;
   background:url('../images/top-bottom-bg.png') repeat-x #000 0 -9px;
   position:relative;
   z-index: 996;
