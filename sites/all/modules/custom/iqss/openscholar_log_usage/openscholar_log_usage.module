@@ -22,6 +22,11 @@ function openscholar_log_usage_menu(){
       'type' => MENU_CALLBACK,
   );
   
+  $items['usage/graph'] = array(
+    'page callback' => 'openscholar_log_usage_graph',
+    'type' => 'MENU_CALLBACK', 
+    'access arguments' => array('access content'), 
+  );  
   return $items;
 }
 
@@ -77,4 +82,100 @@ function openscholar_log_usage_log(){
   
   db_query("REPLACE INTO {openscholar_usage_log} (host,host_name,vsite,age,views,version,last_visit) VALUES ('%s','%s','%s',FROM_UNIXTIME(%d),%d,'%s',NOW())",array($_REQUEST['host'],$_SERVER['REMOTE_HOST'],$_REQUEST['vsite'],$_REQUEST['age'],$views,$_REQUEST['version']));
   
+}
+
+// class for collecting data over each installation
+class installation {
+  private $host;
+  private $vsites = array();
+  private $age;
+  private $views;
+  private $version;        //useless.  this stores the first version recorded.  doesn't show who is up to date.
+  private $last_visit;
+  private $last_ping;
+  
+  function __construct(&$r) {
+    $this->host = $r->host;
+    $this->version = $r->version;
+    $this->last_ping = (isset($r->last_ping)) ? $r->last_ping : 'Never'; 
+    $this->views = (int)$r->views;    
+    $this->age = strtotime($r->age);
+    //no vsite, assuming $r is sorted by vsite so empties show up first
+    $this->last_visit = strtotime($r->last_visit);
+  }
+  
+  function addData(&$r) {
+    $this->vsites[] = $r->vsite;
+    if ((int)$r->views > $this->views) { $this->views = (int)$r->views; }
+    if (strtotime($r->age) < $this->age) { $this->age = strtotime($r->age); }
+    if (strtotime($r->last_visit) > $this->last_visit) { $this->last_visit= strtotime($r->last_visit); }
+    //ignoring version for now.
+    //last ping should be once per host
+    //no host change
+  }
+  
+  //returns obj as an array.
+  function render() {
+    if (sizeof($this->vsites)) {
+      return array(
+        $this->host,
+        sizeof($this->vsites),
+        (time() - $this->age) / (60 * 60 * 24), //currently days.  fix it later.
+        $this->views,
+        $this->last_visit,
+        $this->last_ping,
+      );
+    }
+  }
+}
+
+/**
+ * page shows data from openscholar_usage_log db as a chart
+ * copies data into some local objects first, as its spread over host/vsite rows.
+ */
+function openscholar_log_usage_graph() {
+  $out = '';
+  
+  $query = 'SELECT * FROM {openscholar_usage_log} ORDER  BY vsite  LIMIT 1000' ;
+	$result = db_query($query);
+  	
+	$installations = array();
+  	
+	while ($r = db_fetch_object($result)) {
+    //filter hostname
+    
+	  if (!isset($installations[$r->host])) {
+	    $installations[$r->host] = new installation($r);
+	  } else {
+	    $installations[$r->host]->addData($r);
+	  } 
+	}
+	
+	/* prepare data from installations[] for javascript */
+	$data_header = array('Host', 'Sites', 'Age', 'Views', 'Last Visit', 'Last Ping');
+	$data = array($data_header);
+	foreach($installations as $delta => $i) {
+	  $d = $i->render();
+	  if ($d) { $data[] = $d; }
+	}
+  
+  $out .= _openscholar_log_usage_gchart(json_encode($data));
+
+  return $out;
+}
+
+
+function _openscholar_log_usage_gchart($data) {
+  drupal_set_html_head('<script type="text/javascript" src="https://www.google.com/jsapi"></script>');
+  
+  drupal_add_js(drupal_get_path('module', 'openscholar_log_usage') . '/openscholar_log_usage.js', 'module');
+  //drupal_add_js('google.load("visualization", "1.1", {"packages":["controls"]});', 'inline');
+  drupal_add_js('Drupal.settings.openscholar_log_usage_data = ' . $data . ';', 'inline');
+  return <<<EOF
+    <div id="dashboard">
+    	<div id="control-vsites"></div>
+    	<div id="control-age"></div>
+    </div>
+    <div id="chart_div"></div>
+EOF;
 }
