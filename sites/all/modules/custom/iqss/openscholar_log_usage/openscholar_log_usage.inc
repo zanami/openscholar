@@ -87,7 +87,7 @@ function _is_openscholar($content) {
  * @param $verbose
  * 			If true, show debug messages
  */
-function _openscholar_log_usage_ping_hosts($hosts, $connections, $verbose) {
+function _openscholar_log_usage_ping_hosts($hosts, $connections, $verbose=FALSE) {
 
 	$curling = array();		 //active curl handles
 	$done = array();			//store finished host => content

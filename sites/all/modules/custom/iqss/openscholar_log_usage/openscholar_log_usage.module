@@ -27,6 +27,13 @@ function openscholar_log_usage_menu(){
     'type' => 'MENU_CALLBACK', 
     'access arguments' => array('access content'), 
   );  
+  
+  /* just to test teh cron function without wiating for all the crons */
+  $items['usage/cron'] = array(
+    'page callback' => 'openscholar_log_usage_cron',
+    'type' => 'MENU_CALLBACK', 
+    'access arguments' => array('access content'), 
+  );  
   return $items;
 }
 
@@ -136,15 +143,18 @@ class installation {
 function openscholar_log_usage_graph() {
   $out = '';
   
-  $query = 'SELECT * FROM {openscholar_usage_log} ORDER  BY vsite  LIMIT 1000' ;
+  $query = 'SELECT * FROM {openscholar_usage_log} ORDER  BY vsite  LIMIT 1000' ; //join for validity
 	$result = db_query($query);
   	
 	$installations = array();
   	
 	while ($r = db_fetch_object($result)) {
     //filter hostname
+    if (($host = _openscholar_log_usage_get_host($r->host)) == FALSE) {
+      continue;
+    }
     
-	  if (!isset($installations[$r->host])) {
+	  if (!isset($installations[$host])) {
 	    $installations[$r->host] = new installation($r);
 	  } else {
 	    $installations[$r->host]->addData($r);
@@ -178,4 +188,123 @@ function _openscholar_log_usage_gchart($data) {
     </div>
     <div id="chart_div"></div>
 EOF;
+}
+
+/*
+ * given a hostname, return normalized hostname or null if we're ignoring it
+ * by normalized hostname, I mean www.scholar.com -> scholar.com so that the entries can be counted together.
+ */
+function _openscholar_log_usage_get_host($host) {
+  
+  // drop hosts with demo, dev, local, sandbox, and test in the title
+  if (preg_match( '/.*demo|dev|local|sandbox|test|\d$.*/', $host)) {
+    return FALSE;
+  } 
+  
+  //drop hosts without a dot
+  if (!preg_match( '/\./', $host)) {
+    return FALSE;
+  }
+  
+  return $host;
+}
+
+/* implmentation of hook_cron
+ * gets list of hostnames.  pings a number of them (not all at once of course) based on which was pinged least recently
+ * stores whether or not they ping.
+ */
+function openscholar_log_usage_cron() {
+  //first, try hosts that aren't in the pinged hosts list
+  $query  = 'SELECT DISTINCT log.host FROM {openscholar_usage_log} as log ';
+  $query .= 'LEFT OUTER JOIN (SELECT host FROM {openscholar_usage_log_host_check}) as pinged ';
+  $query .= 'ON log.host = pinged.host WHERE pinged.host IS NULL ';
+    
+  $result = db_query($query);
+  $hosts = array();
+  while ($r = db_fetch_object($result)) {
+    $h = _openscholar_log_usage_get_host($r->host);
+    if ($h) { $hosts[] = $h; }
+  }
+  
+  /* if we don't have any unchecked hosts, instead try the least recently checked hosts */
+  if (empty($hosts)) {
+    $query = 'SELECT DISTINCT host FROM {openscholar_usage_log_host_check} ORDER BY last_check ASC' ;
+    $result = db_query($query);
+    while ($r = db_fetch_object($result)) {
+      $h = _openscholar_log_usage_get_host($r->host);
+      if ($h) { $hosts[] = $h; }
+    }
+  }
+  
+  //ping
+  $checked = _openscholar_log_usage_check_hosts( array_slice($hosts, 0, 10) ); //just check 10 at a time 
+  foreach ($checked as $host => $status) {
+    $query = 'INSERT into {openscholar_usage_log_host_check} (host, last_check, valid) VALUES ( "%s" , "%d", "%d" )';
+    $date = time();
+    
+    $r = db_query($query, $host, $date, (int)$status);
+  }
+  
+}
+
+/**
+ * checks validity of array of hosts
+ * first make sure host pings.  second make sure it's got OS content.
+ * returns array of hosts.  TRUE -> pinged.  FALSE -> failed.
+ */
+function _openscholar_log_usage_check_hosts($hosts) {
+  $curling = array();		 //active curl handles
+	$done = array();			//store finished host => content
+	$mh = curl_multi_init();
+	$is_running = null;
+	$connections = 8;      //parallel connections.
+
+	do {
+		//fill up the curl queue at start of reqs and if any urls have finished
+		while (sizeof($curling) <= $connections && sizeof($hosts) > 0) {
+			$host = array_pop($hosts) ;
+			$curling[$host] = curl_init( $host );
+			curl_setopt( $curling[$host], CURLOPT_CONNECTTIMEOUT, 10 );
+			curl_setopt( $curling[$host], CURLOPT_RETURNTRANSFER, true );
+			curl_multi_add_handle( $mh, $curling[$host] );
+
+		}
+
+		// run curl
+		curl_multi_exec($mh, $is_running);
+
+		//pop finished hosts.
+		//curl_multi_remove_handle also removes the downloaded data, so we stash it for later.
+		$ready = curl_multi_select($mh);
+		$info = curl_multi_info_read($mh);
+		if ( $info && $info['msg']==CURLMSG_DONE ) {
+			//copy response
+			$host = curl_getinfo( $info['handle'], CURLINFO_EFFECTIVE_URL );
+			$host = str_replace("HTTP://", "", $host);
+			$http_code = curl_getinfo( $info['handle'], CURLINFO_HTTP_CODE );
+			$content = curl_multi_getcontent( $info['handle'] );
+
+			/* only keep valid urls */ 
+			$done[$host] = ($http_code && _is_openscholar($content) );
+			 
+			//remove from queue and close handles.
+			curl_multi_remove_handle( $mh, $curling[$host] );
+			curl_close( $curling[$host] );
+			unset( $curling[$host] ); 
+
+		}
+
+	} while ($is_running>0);
+
+	return $done;
+}
+
+
+/** 
+ * Check if site content looks like openscholar
+ */
+
+function _is_openscholar($content) {
+	$needle = '/http:\/\/openscholar\.harvard\.edu\/openscholar_lu\/spacer\.gif/';
+	return preg_match( $needle, $content );
 }
