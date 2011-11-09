@@ -8,13 +8,14 @@ function theme_vsite_taxonomy_term($term, $b_description = true, $b_admin_links 
 
   $a_filter_nodes = array();
   if($s_term_feature){
-    $node_map = features_get_component_map('node');
-    foreach ($node_map as $s_node => $a_features) {
-      if(in_array($s_term_feature,$a_features)) $a_filter_nodes[] = $s_node;
-    }
-  }//Retrieve nodes for a feature if needed
+    $a_filter_nodes = vsite_taxonomy_get_nodes_in_feature($s_term_feature);
+  }//Retrieve nodes that the list should be filtered by if a feature is passed
 
-  $count = vsite_taxonomy_term_count_nodes($term->tid,false,$a_filter_nodes);
+  $vocab = taxonomy_vocabulary_load($term->vid);
+  //Is this vocab a tree, if so include the childeren in the count
+  $b_count_childeren = (bool) $vocab->hierarchy;
+  
+  $count = vsite_taxonomy_term_count_nodes($term->tid, $b_count_childeren, $a_filter_nodes);
   $active_term = vsite_taxonomy_active_term();
 
   if($count <= 0 || $active_term->tid == $term->tid){
