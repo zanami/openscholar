@@ -56,8 +56,6 @@ class os_modal_tabbed extends os_boxes_modalframe {
   public function options_form() {
     $form = parent::options_form();
 
-    ctools_include('dependent');
-
     $widgets = vsite_layout_get_widgets();
     //vsite_layout_ui_check_for_disabled_widgets($widgets);
 
