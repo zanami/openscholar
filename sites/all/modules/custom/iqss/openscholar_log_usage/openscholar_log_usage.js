@@ -12,9 +12,10 @@ function drawChart() {
     'options': {
       'width': 800,
       'height': Drupal.settings.openscholar_log_usage_data.length * 30,
-      'chartArea': {top: 0, right: 0, bottom: 0}
+      'chartArea': {top: 0, right: 0, bottom: 0},
      },
     'view': {'columns': [0,1]}, //host, vsite //views = 3, but on different scale
+    
   });
   
   var agePicker = new google.visualization.ControlWrapper({

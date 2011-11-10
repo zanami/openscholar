@@ -100,8 +100,9 @@ class installation {
   private $version;        //useless.  this stores the first version recorded.  doesn't show who is up to date.
   private $last_visit;
   private $last_ping;
+  private $status;
   
-  function __construct(&$r) {
+  function __construct(&$r, &$pings) {
     $this->host = $r->host;
     $this->version = $r->version;
     $this->last_ping = (isset($r->last_ping)) ? $r->last_ping : 'Never'; 
@@ -109,6 +110,7 @@ class installation {
     $this->age = strtotime($r->age);
     //no vsite, assuming $r is sorted by vsite so empties show up first
     $this->last_visit = strtotime($r->last_visit);
+    $this->status = $pings[$r->host];
   }
   
   function addData(&$r) {
@@ -123,7 +125,7 @@ class installation {
   
   //returns obj as an array.
   function render() {
-    if (sizeof($this->vsites)) {
+    if (sizeof($this->vsites) && $this->status) {
       return array(
         $this->host,
         sizeof($this->vsites),
@@ -143,7 +145,9 @@ class installation {
 function openscholar_log_usage_graph() {
   $out = '';
   
-  $query = 'SELECT * FROM {openscholar_usage_log} ORDER  BY vsite  LIMIT 1000' ; //join for validity
+  $ping_response = _openscholar_log_usage_graph_ping_response();
+  
+  $query = 'SELECT * FROM {openscholar_usage_log} as log  ORDER  BY vsite' ; 
 	$result = db_query($query);
   	
 	$installations = array();
@@ -155,7 +159,7 @@ function openscholar_log_usage_graph() {
     }
     
 	  if (!isset($installations[$host])) {
-	    $installations[$r->host] = new installation($r);
+	    $installations[$r->host] = new installation($r, $ping_response);
 	  } else {
 	    $installations[$r->host]->addData($r);
 	  } 
@@ -237,9 +241,9 @@ function openscholar_log_usage_cron() {
   }
   
   //ping
-  $checked = _openscholar_log_usage_check_hosts( array_slice($hosts, 0, 10) ); //just check 10 at a time 
+  $checked = _openscholar_log_usage_check_hosts( array_slice($hosts, 0, 8) ); //just check 10 at a time 
   foreach ($checked as $host => $status) {
-    $query = 'INSERT into {openscholar_usage_log_host_check} (host, last_check, valid) VALUES ( "%s" , "%d", "%d" )';
+    $query = 'REPLACE into {openscholar_usage_log_host_check} (host, last_check, valid) VALUES ( "%s" , %d, %d )';
     $date = time();
     
     $r = db_query($query, $host, $date, (int)$status);
@@ -257,7 +261,7 @@ function _openscholar_log_usage_check_hosts($hosts) {
 	$done = array();			//store finished host => content
 	$mh = curl_multi_init();
 	$is_running = null;
-	$connections = 8;      //parallel connections.
+	$connections = 6;      //parallel connections.
 
 	do {
 		//fill up the curl queue at start of reqs and if any urls have finished
@@ -276,25 +280,31 @@ function _openscholar_log_usage_check_hosts($hosts) {
 		//pop finished hosts.
 		//curl_multi_remove_handle also removes the downloaded data, so we stash it for later.
 		$ready = curl_multi_select($mh);
-		$info = curl_multi_info_read($mh);
-		if ( $info && $info['msg']==CURLMSG_DONE ) {
-			//copy response
-			$host = curl_getinfo( $info['handle'], CURLINFO_EFFECTIVE_URL );
-			$host = str_replace("HTTP://", "", $host);
-			$http_code = curl_getinfo( $info['handle'], CURLINFO_HTTP_CODE );
-			$content = curl_multi_getcontent( $info['handle'] );
-
-			/* only keep valid urls */ 
-			$done[$host] = ($http_code && _is_openscholar($content) );
-			 
-			//remove from queue and close handles.
-			curl_multi_remove_handle( $mh, $curling[$host] );
-			curl_close( $curling[$host] );
-			unset( $curling[$host] ); 
-
-		}
+		while ($ready > 0) {
+  		$info = curl_multi_info_read($mh);
+  		if ( $info && $info['msg']==CURLMSG_DONE ) {
+  			//copy response
+  			$host = curl_getinfo( $info['handle'], CURLINFO_EFFECTIVE_URL );
+  			$host = str_replace("HTTP://", "", $host);
+  			$http_code = curl_getinfo( $info['handle'], CURLINFO_HTTP_CODE );
+  			$content = curl_multi_getcontent( $info['handle'] );
+  
+  			/* only keep valid urls */ 
+  			$done[$host] = ($http_code && _is_openscholar($content) );
+  			 
+  			//remove from queue and close handles.
+  			curl_multi_remove_handle( $mh, $curling[$host] );
+  			curl_close( $curling[$host] );
+  			unset( $curling[$host] ); 
+  
+  		}
+  		$ready--;
+		} 
 
 	} while ($is_running>0);
+	
+	/* anything left in $curling didn't curl correctly.  assume failure */
+	foreach ($curling as $host => $ch) { $done[$host] = FALSE; }
 
 	return $done;
 }
@@ -307,4 +317,18 @@ function _openscholar_log_usage_check_hosts($hosts) {
 function _is_openscholar($content) {
 	$needle = '/http:\/\/openscholar\.harvard\.edu\/openscholar_lu\/spacer\.gif/';
 	return preg_match( $needle, $content );
+}
+
+/** 
+ * returns last check table as an array
+ * Enter description here ...
+ */
+function _openscholar_log_usage_graph_ping_response() {
+  $query = 'SELECT host,valid FROM {openscholar_usage_log_host_check}';
+  $result = db_query($query);
+  $out = array();
+  while ($r = db_fetch_object($result)) {
+    $out[$r->host] = $r->valid;
+  }
+  return $out;
 }
