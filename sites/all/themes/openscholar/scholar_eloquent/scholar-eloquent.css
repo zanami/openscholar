@@ -158,6 +158,14 @@ img {
 	margin: 0;
 }
   
+ #content-right .views-row, 
+ #content-left .views-row,
+ #content-top .views-row,
+ #content-bottom .views-row {
+	  margin-bottom: 1em;
+}
+   
+  
 .sidebar {
   padding-top: 30px;
   }
