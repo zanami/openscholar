@@ -190,6 +190,7 @@ function _openscholar_scholar_modules() {
     'os_wysiwyg_fields',
     'os_books',
     'os_slideshow',
+    'os_files',
   );
 }
 
