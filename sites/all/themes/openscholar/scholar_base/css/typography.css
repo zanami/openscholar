@@ -332,6 +332,10 @@ ul.links li {
   font-style: normal !important;
   }
 
+.node .node-inner .links li a#book-permalink {
+color:#989095;
+  }
+
 .block ul {
   padding-left: 0;
   }
