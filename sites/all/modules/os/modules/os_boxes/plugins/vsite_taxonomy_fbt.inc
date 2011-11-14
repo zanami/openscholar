@@ -16,7 +16,8 @@ class vsite_taxonomy_fbt extends os_boxes_default {
     $options = parent::options_defaults();
 
     $vsite = vsite_get_vsite();
-    $vocabs = $vsite ? $vsite->get_vocabs() : taxonomy_get_vocabularies();
+    //Default - All vocabs if in vsite, None if outside
+    $vocabs = $vsite ? $vsite->get_vocabs() : array();
 
     $options['vocabulary'] = is_array($vocabs)?array_keys($vocabs):array();
     $options['number_of_items'] = false;
