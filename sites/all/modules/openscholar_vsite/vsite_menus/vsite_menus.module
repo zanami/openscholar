@@ -494,6 +494,7 @@ function vsite_menu_get_cache_key($s_menu){
   $cid_parts[] = "results";
   $cid_parts[] = $theme;
   $cid_parts[] = ($user->uid == 1)?1:0; // special caching for super user.
+  $cid_parts[] = ($vsite->access_admin())?1:0; //Admins can see private menu items cache thier menu seperatly
 
   $cid_parts[] = $s_menu;
 
