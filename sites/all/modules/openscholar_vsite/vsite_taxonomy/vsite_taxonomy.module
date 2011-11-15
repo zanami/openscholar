@@ -524,6 +524,7 @@ function vsite_taxonomy_term_page($str_tids = '', $depth = 'all', $s_feature = f
 	$term = taxonomy_get_term($tid);
 	if(!$term) return MENU_NOT_FOUND;
 
+	//Set the active taxonomy term
 	vsite_taxonomy_active_term($term);
 
   if($s_feature && $b_feature_context){
@@ -532,19 +533,12 @@ function vsite_taxonomy_term_page($str_tids = '', $depth = 'all', $s_feature = f
     context_set('context',$s_feature_context,context_load($s_feature_context));
   }
 
+  //Load the vocab for this term
 	$vocab = taxonomy_vocabulary_load($term->vid);
-	$node_map = features_get_component_map('node');
-	$s_one_feature = false;//If there is only one feature represented for this vocab
-	foreach ($vocab->nodes as $s_node) {
-		if(array_key_exists($s_node,$node_map) && !$s_one_feature){
-		  $s_one_feature =  current($node_map[$s_node]);
-	  }elseif (array_key_exists($s_node,$node_map) && $s_one_feature != current($node_map[$s_node])){
-	   //Found a second feature represented
-	   $s_one_feature = false;
-	   break;
-	  }
-  }//If there is only one type for this vocab show the feature's view
-
+	
+	//If there is only one feature for this vocab show the feature's view
+	$s_one_feature = vsite_taxonomy_get_feature_for_vocab($vocab);
+	
   if ($b_feature_context && !$s_one_feature){
     $a_menu_item = vsite_menus_get_feature_menu_item($s_feature);
     if(count($a_menu_item)){
@@ -571,21 +565,14 @@ function vsite_taxonomy_term_page($str_tids = '', $depth = 'all', $s_feature = f
 	  }
 
 	  if($s_feature){
-		  $node_map = features_get_component_map('node');
-
-		  $a_node_types = array();
-		  foreach ($node_map as $s_node => $a_features){
-		    if(!in_array($s_feature,$a_features)) continue;
-
-		    $a_node_types[] = $s_node;
-		  }
+		  $a_node_types = vsite_taxonomy_get_nodes_in_feature($s_feature);
 
 	    if(count($a_node_types)){
 	      $filter = $view->get_item('default','filter','type');
 	      $filter['value'] = $a_node_types;
 	      $view->set_item('default','filter','type',$filter);
 	    }
-	  }//If we should restrict by feature
+	  }//Retrieve nodes that the list should be filtered by if a feature is passed
 
 	  // pager
 	  $view->pager['use_pager'] = 1;
@@ -764,3 +751,40 @@ function vsite_taxonomy_preprocess_node(&$vars){
   }
 }
 
+/**
+ * Return the nodes that apply to a feature
+ * @param string $s_term_feature
+ */
+function vsite_taxonomy_get_nodes_in_feature($s_term_feature){
+    $a_nodes = array();
+    $node_map = features_get_component_map('node');
+    foreach ($node_map as $s_node => $a_features) {
+      if(in_array($s_term_feature,$a_features)) $a_nodes[] = $s_node;
+    }
+    
+    return $a_nodes;
+}
+
+/**
+ * This returns the feature that is associated with a vocab if it only contanins
+ * node types for one feature, false otherwise
+ *
+ * @param vocabulary $vocab
+ */
+function vsite_taxonomy_get_feature_for_vocab($vocab){
+	
+  $node_map = features_get_component_map('node');
+  $s_one_feature = false;//If there is only one feature represented for this vocab
+  
+  foreach ($vocab->nodes as $s_node) {
+    if(array_key_exists($s_node,$node_map) && !$s_one_feature){
+      $s_one_feature =  current($node_map[$s_node]);
+    }elseif (array_key_exists($s_node,$node_map) && $s_one_feature != current($node_map[$s_node])){
+     //Found a second feature represented
+     $s_one_feature = false;
+     break;
+    }
+  }//If there is only one type for this vocab return that feature
+  
+  return $s_one_feature;
+}

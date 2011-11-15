@@ -1,0 +1,15 @@
+#mailchimp_form {
+/*	display: none;*/
+}
+
+#mailchimp_sub {
+  display: inline;
+  padding: .5em;
+  border: 1px transparent solid;
+}
+
+#mailchimp_sub:hover {
+	border: 1px #ddd solid;
+	background-color: #def;
+	border-radius: .5em;
+}

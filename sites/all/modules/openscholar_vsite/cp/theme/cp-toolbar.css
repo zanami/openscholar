@@ -43,9 +43,9 @@
   font-size: 10px !important;
   line-height: 27px !important;
   font-weight: normal !important;
-  color:#ddd !important;
+  color:#fff !important;
   display:block !important;
-  height: 27px;
+  height: 25px;
   margin-top: 6px !important;
   font-style: normal !important;
   font-family: arial, sans-serif !important;
@@ -57,26 +57,26 @@
   }
 
 #cp-toolbar-toolbar li a#admin-link-cp-appearance {
-  background-position: 0 -28px;
+  background-position: 0 -24px;
   }
 
 #cp-toolbar-toolbar li a#admin-link-cp-settings {
-  background-position: 0 -56px;
+  background-position: 0 -50px;
   }
 
 #cp-toolbar-toolbar li a#admin-link-cp-content {
-  background-position: 0 -84px;
+  background-position: 0 -75px;
   }
 
 #cp-toolbar-toolbar li a#admin-link-cp-users {
-  background-position: 0 -112px;
+  background-position: 0 -101px;
   }
 #cp-toolbar-toolbar li a#admin-link-cp-news {
   background-position: 0 -140px;
   }
 
 #cp-toolbar-toolbar li a#admin-link-cp-support {
-  background-position: 0 -168px;
+  background-position: 0 -126px;
   }
 
 #cp-toolbar-user li a, #cp-toolbar-user li a:visited {

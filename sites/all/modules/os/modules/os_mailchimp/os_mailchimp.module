@@ -1,0 +1,256 @@
+<?php 
+
+/**
+ * @file os_mailchimp.module
+ * 
+ * OS MailChimp module
+ * Jon Sagotsky
+ * 
+ * Subscribes new OS registrations to mailchimp
+ * Provides boxes for vsites to add their own mailing lists 
+ */
+
+/**
+ * implementation of hook_menu
+ *
+ * admin menu for setting site api key and mailing list.
+ * ajax url for processing sub requests.  (using ajax so I can have one unified sub function)
+ */
+function os_mailchimp_menu() {
+  $items ['admin/settings/os_mailchimp'] = array(
+		'title' => t( 'MailChimp' ), 
+		'page callback' => 'drupal_get_form', 
+		'page arguments' => array('os_mailchimp_admin' ), 
+		'file' => 'os_mailchimp.admin.inc', 
+		'access arguments' => array('administer citation distribute' )
+  );
+
+  return $items;
+}
+
+/**
+ * implementation of hook_user
+ * subscribes new users to OS mailchimp list
+ */
+function os_mailchimp_user($op, &$edit, &$account, $category) {
+  if ($op == 'insert' && $category == 'account') {  
+    $api = variable_get('os_mailchimp_api', FALSE);
+    $list = variable_get('os_mailchimp_list', FALSE);
+    
+    if (! ($api && $list) ) return FALSE;
+        
+    $dc = end(explode('-', $api));
+    $url = 'http://' . $dc . '.api.mailchimp.com/1.3/'; 
+    
+    $sub = os_mailchimp_subscribe($api, $list, $edit['mail'], $edit['name']);
+    //error log?
+  }
+}
+
+
+
+/**
+ * Implementation of hook_boxes_plugins().
+ */
+function os_mailchimp_boxes_plugins(){
+  $info = array();
+  $path = drupal_get_path('module', 'os_mailchimp') . '/plugins';
+  $css = drupal_get_path('module', 'os_mailchimp') . '/theme/os-mailchimp.css';
+  
+  $info['os_boxes_mailchimp'] = array(
+    'title' => 'Mailing List', 
+    'description' => 'Lets users subscribe to your MailChimp mailing list', 
+    'css' => $css, 
+    'tags' => array(
+      'Social' 
+    ), 
+    'handler' => array(
+      'class' => 'os_boxes_mailchimp', 
+      'file' => 'os_mailchimp_box.inc', 
+      'path' => $path, 
+      'parent' => 'os_boxes_default' 
+    ) 
+  );
+  
+  return $info;
+
+}
+
+/**
+ * @function os_mailchimp_subscribe()
+ * subscribe a user to a mailing list.
+ *
+ * @param $api	mailchimp api key
+ * @param $list	list to subscribe to
+ * @param $email email address to subscribe
+ * @param $fn  user's firstname (optional)
+ * @param $ln  user's lastname (optional)
+ */
+function os_mailchimp_subscribe($api, $listid, $email, $fn=NULL, $ln=NULL) {
+  include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');
+  $MC = new MCAPI($api);
+  
+  if ($MC->listSubscribe($listid, $email) || in_array($MC->errorCode, array(214) )) {
+    return array('success'=>TRUE);
+  } else {
+    return array('success'=>FALSE,'msg'=>$MC->errorMessage); 
+  }
+}
+
+/**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function os_mailchimp_ctools_plugin_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => 1);
+  }
+}
+
+/**
+ * Implementation of hook_default_box().
+ */
+function os_mailchimp_default_box() {
+  $export = array();
+
+  $box = new stdClass;
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
+  $box->delta = 'os_box_mailchimp';
+  $box->plugin_key = 'os_boxes_mailchimp';
+  $box->title = ''; 
+  $box->description = 'Subscribe to MailChimp mailing list';
+  $box->options = array(
+    'visibility' => 'feature',
+    'api' => variable_get('os_mailchimp_api', FALSE),
+    'list' => variable_get('os_mailchimp_list', FALSE),
+    'text' => 'Subscribe to our mailing list',
+  );
+  $export['os_box_mailchimp'] = $box;
+  
+  return $export;
+}
+
+/**
+ * @function os_mailchimp_form
+ *
+ * builds the form mailchimp_box uses to collect email addresses
+ * the other hook_form functions use this as their base form
+ */
+function os_mailchimp_form(&$state, $form_opts) {
+
+  $form = array();
+  $form['subscribe'] = array(
+    '#type' => 'fieldset',
+    '#title' => check_plain($form_opts->text),
+    '#collapsible' => (isset($form_opts->display) && $form_opts->display == 'link'),
+    '#collapsed' => (isset($form_opts->display) && $form_opts->display == 'link'),
+  );
+
+  $form['subscribe']['email'] = array(
+    '#type' =>  'textfield',
+    '#title' => 'Email Address',
+    '#weight' => -10,
+    '#required' => TRUE,
+    '#default_value' => $form_opts->mail,
+  );
+  
+  $form['subscribe']['fn'] = array(
+    '#type' =>  'textfield',
+    '#title' => 'First Name',
+  	'#weight' => -8,
+  	'#default_value' => $form_opts->fn,
+  );
+  
+  $form['subscribe']['ln'] = array(
+    '#type' =>  'textfield',
+    '#title' => 'Last Name',
+  	'#weight' => -6,
+  	'#default_value' => $form_opts->ln,
+  );
+  
+  $form['subscribe']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Subscribe',
+    '#weight' => -4,
+  );
+  
+  $form['subscribe']['list'] = array(
+    '#type' => 'value',
+    '#value' => $form_opts->list,
+  );
+
+  return $form;
+}
+
+/**
+ * submit function for os_mailchimp_form
+ */
+function os_mailchimp_form_submit($form, &$form_state) {
+  $v = $form_state['values'];
+  
+  if (($vsite = vsite_get_vsite()) != FALSE) {
+    $api = $vsite->controllers->variable->get('os_mailchimp_api', 'space');
+  } else {
+    $api = variable_get('os_mailchimp_api', '');
+  }
+  $sub = os_mailchimp_subscribe($api, $v['list'], $v['email'], $v['fn'], $v['ln']);
+  
+  // Process the form as usual.
+  if ($sub['success']) {  
+    drupal_set_message(t("You have successfully been subscribed to the mailing list."));
+  } else {
+    //display the error.  make sure that next form send will work - it has a tendency to drop $list and $api...
+    drupal_set_message(t('Error subscribing: ' . $sub['msg']), 'error');
+  } 
+}
+
+/**
+ * Implement Hook vsite_generic_settings
+ * @return array
+ */
+function os_mailchimp_vsite_generic_settings(){
+  $a_settings = array();
+  $vsite =vsite_get_vsite();
+
+  $a_settings['os_mailchimp_api'] = array(
+    'group' => array(
+      '#id' => 'social',
+      '#title' => t('Social'),
+      '#weight' => 0,
+    ),
+    'form' => array(
+      '#type' => 'textfield',
+      '#title' => t('MailChimp API Key'),
+      '#default_value' => $vsite->controllers->variable->get('os_mailchimp_api', 'space'),
+      '#description' => 'Your <a href="https://us1.admin.mailchimp.com/account/api-key-popup" target="_new">MailChimp API key</a>.  Example: 1234567890abcefghijklmnopqrstuvwx-us2',
+    
+    )
+  );
+
+  return $a_settings;
+}
+
+
+/**
+ * @function _os_mailchimp_get_lists
+ * 
+ * given an api key, returns a list of id => list name for all lists owned by that key
+ * @param unknown_type $api
+ */
+function _os_mailchimp_get_lists($api) {
+  include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');
+  $MC = new MCAPI($api);
+  
+  $ret = array();
+  if (($lists = $MC->lists()) != FALSE) {
+  
+    foreach ($lists['data'] as $delta => $list) {
+      $ret[$list['id']] = $list['name'];
+    } 
+    
+    return $ret;
+  } else {
+    return FALSE;
+  }
+}

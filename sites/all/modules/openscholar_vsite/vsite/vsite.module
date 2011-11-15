@@ -494,7 +494,7 @@ function vsite_preprocess_page(&$vars){
   //Add a div around the messages block
   if (strlen($vars['messages'])) $vars['messages'] = "<div id= \"messages\">" . $vars['messages'] . "</div>";
 
-  if (($context_links = context_links()) && count($context_links) > 1 && context_get('context', 'vsite-section-public')) {
+  if (($context_links = context_links()) && count($context_links) > 1 && context_isset('context', 'vsite-section-public')) {
     $vars['context_links'] = theme('ctools_dropdown', t('add new'), $context_links, FALSE, 'context-links');
   }elseif(strlen($vars['context_links'])){
   	$vars['context_links'] = '<div class="context-links">'.$vars['context_links'].'</div>';
@@ -594,8 +594,8 @@ function vsite_form_alter(&$form, $form_state, $form_id){
     // Hiding the  body splitting checkbox in the node forms
     if (! empty($form['body_field'])) {
       $form['body_field']['teaser_include'] = array(
-        '#type' => 'value', 
-        '#value' => 1 
+        '#type' => 'value',
+        '#value' => 1
       );
     }
     
@@ -634,12 +634,12 @@ function vsite_form_alter(&$form, $form_state, $form_id){
         $form['options']['log'] = $form['revision_information']['log'];
         $form['options']['log']['#weight'] = 5;
         $form['options']['log']['#process'] = array(
-          'ctools_dependent_process' 
+          'ctools_dependent_process'
         );
         $form['options']['log']['#dependency'] = array(
           'edit-revision-1' => array(
-            1 
-          ) 
+            1
+          )
         );
         if (! is_array($form['#validate']))
           $form['#validate'] = array();
@@ -676,10 +676,10 @@ function vsite_form_alter(&$form, $form_state, $form_id){
         $a_front_settings = $vsite->controllers->variable->get('vsite_setting_front');
         if ($a_front_settings['frontpage'] == 'flag') {
           $form['options']['vsite_promote_to_front'] = array(
-            '#type' => 'checkbox', 
-            '#title' => "Promote to front page", 
-            "#default_value" => false, 
-            "#description" => t("If checked this post will be shown in your front page") 
+            '#type' => 'checkbox',
+            '#title' => "Promote to front page",
+            "#default_value" => false,
+            "#description" => t("If checked this post will be shown in your front page")
           );
           if ($nid) {
             $flag = flag_get_flag('scholar_frontpage');
@@ -689,10 +689,10 @@ function vsite_form_alter(&$form, $form_state, $form_id){
       }
       
       $form['options']['vsite_make_featured'] = array(
-        '#type' => 'checkbox', 
-        '#title' => "Make this Featured", 
-        "#default_value" => false, 
-        "#description" => "Make this a featured post. Featured posts will show up in the \"Featured posts\" widget" 
+        '#type' => 'checkbox',
+        '#title' => "Make this Featured",
+        "#default_value" => false,
+        "#description" => "Make this a featured post. Featured posts will show up in the \"Featured posts\" widget"
       );
       if ($nid) {
         $flag = flag_get_flag('featuredposts');
