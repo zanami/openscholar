@@ -91,13 +91,16 @@ function openscholar_log_usage_log(){
   
 }
 
-// class for collecting data over each installation
+/** 
+ * @class installation
+ * each instance is an installation of openscholar that has been reported to our usage log
+ */
 class installation {
   private $host;
   private $vsites = array();
   private $age;
   private $views;
-  private $version;        //useless.  this stores the first version recorded.  doesn't show who is up to date.
+  private $version;        
   private $last_visit;
   private $last_ping;
   private $status;
@@ -123,7 +126,10 @@ class installation {
     //no host change
   }
   
-  //returns obj as an array.
+  /* 
+   * @function render()
+   * formats this object as an array for gcharts.  
+   */
   function render() {
     if (sizeof($this->vsites) && $this->status) {
       return array(
@@ -178,7 +184,10 @@ function openscholar_log_usage_graph() {
   return $out;
 }
 
-
+/** 
+ * @function _openscholar_log_usage_gchart($data)
+ * Attaches google api javacsript to page.  Includes $data array as json for chart.
+ */
 function _openscholar_log_usage_gchart($data) {
   drupal_set_html_head('<script type="text/javascript" src="https://www.google.com/jsapi"></script>');
   
@@ -213,11 +222,15 @@ function _openscholar_log_usage_get_host($host) {
   return $host;
 }
 
-/* implmentation of hook_cron
+/**
+ * implmentation of hook_cron
  * gets list of hostnames.  pings a number of them (not all at once of course) based on which was pinged least recently
  * stores whether or not they ping.
  */
 function openscholar_log_usage_cron() {
+  define('HOSTS_TO_PING', 10);    //how many hosts to check during each cron job
+  define('CONCURRENT_PINGS', 4);  //how many simultaneous connections to make.  more will result in faster cron jobs, especially for slow hosts 
+  
   //first, try hosts that aren't in the pinged hosts list
   $query  = 'SELECT DISTINCT log.host FROM {openscholar_usage_log} as log ';
   $query .= 'LEFT OUTER JOIN (SELECT host FROM {openscholar_usage_log_host_check}) as pinged ';
@@ -230,7 +243,7 @@ function openscholar_log_usage_cron() {
     if ($h) { $hosts[] = $h; }
   }
   
-  /* if we don't have any unchecked hosts, instead try the least recently checked hosts */
+  // if we don't have any unchecked hosts, instead try the least recently checked hosts 
   if (empty($hosts)) {
     $query = 'SELECT DISTINCT host FROM {openscholar_usage_log_host_check} ORDER BY last_check ASC' ;
     $result = db_query($query);
@@ -240,8 +253,8 @@ function openscholar_log_usage_cron() {
     }
   }
   
-  //ping
-  $checked = _openscholar_log_usage_check_hosts( array_slice($hosts, 0, 8) ); //just check 10 at a time 
+  //ping some hosts
+  $checked = _openscholar_log_usage_check_hosts( array_slice($hosts, 0, HOSTS_TO_PING) );  
   foreach ($checked as $host => $status) {
     $query = 'REPLACE into {openscholar_usage_log_host_check} (host, last_check, valid) VALUES ( "%s" , %d, %d )';
     $date = time();
@@ -252,6 +265,7 @@ function openscholar_log_usage_cron() {
 }
 
 /**
+ * @function _openscholar_log_usage_check_hosts
  * checks validity of array of hosts
  * first make sure host pings.  second make sure it's got OS content.
  * returns array of hosts.  TRUE -> pinged.  FALSE -> failed.
@@ -261,11 +275,10 @@ function _openscholar_log_usage_check_hosts($hosts) {
 	$done = array();			//store finished host => content
 	$mh = curl_multi_init();
 	$is_running = null;
-	$connections = 6;      //parallel connections.
 
 	do {
 		//fill up the curl queue at start of reqs and if any urls have finished
-		while (sizeof($curling) <= $connections && sizeof($hosts) > 0) {
+		while (sizeof($curling) <= CONCURRENT_PINGS && sizeof($hosts) > 0) {
 			$host = array_pop($hosts) ;
 			$curling[$host] = curl_init( $host );
 			curl_setopt( $curling[$host], CURLOPT_CONNECTTIMEOUT, 10 );
@@ -320,8 +333,7 @@ function _is_openscholar($content) {
 }
 
 /** 
- * returns last check table as an array
- * Enter description here ...
+ * get the host status table as an array
  */
 function _openscholar_log_usage_graph_ping_response() {
   $query = 'SELECT host,valid FROM {openscholar_usage_log_host_check}';
