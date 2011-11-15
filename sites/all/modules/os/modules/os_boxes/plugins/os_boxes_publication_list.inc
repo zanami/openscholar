@@ -96,7 +96,7 @@ class os_boxes_publication_list extends os_boxes_default {
         }
         $output = $view->execute_display();
         $view->destroy();
-        $block['content'] = $output['content'];
+        $block['content'] = $output;
       }
       $view->destroy();
     }
