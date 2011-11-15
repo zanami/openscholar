@@ -210,7 +210,7 @@ EOF;
 function _openscholar_log_usage_get_host($host) {
   
   // drop hosts with demo, dev, local, sandbox, and test in the title
-  if (preg_match( '/.*demo|dev|local|sandbox|test|\d$.*/', $host)) {
+  if (preg_match( '/.*demo|dev|local|sandbox|test.*/', $host)) {
     return FALSE;
   } 
   
@@ -228,8 +228,9 @@ function _openscholar_log_usage_get_host($host) {
  * stores whether or not they ping.
  */
 function openscholar_log_usage_cron() {
-  define('HOSTS_TO_PING', 10);    //how many hosts to check during each cron job
-  define('CONCURRENT_PINGS', 4);  //how many simultaneous connections to make.  more will result in faster cron jobs, especially for slow hosts 
+  define('HOSTS_TO_PING', 10);      //how many hosts to check during each cron job
+  define('CONCURRENT_PINGS', 4);    //how many simultaneous connections to make.  more will result in faster cron jobs, especially for slow hosts
+//  define('TIMEOUT_SECONDS', 15.0);  //seconds before giving up on a host
   
   //first, try hosts that aren't in the pinged hosts list
   $query  = 'SELECT DISTINCT log.host FROM {openscholar_usage_log} as log ';
@@ -281,7 +282,8 @@ function _openscholar_log_usage_check_hosts($hosts) {
 		while (sizeof($curling) <= CONCURRENT_PINGS && sizeof($hosts) > 0) {
 			$host = array_pop($hosts) ;
 			$curling[$host] = curl_init( $host );
-			curl_setopt( $curling[$host], CURLOPT_CONNECTTIMEOUT, 10 );
+			curl_setopt( $curling[$host], CURLOPT_CONNECTTIMEOUT, 10 );        //time to establish connection
+			curl_setopt( $curling[$host], CURLOPT_TIMEOUT, 30 );               //time to finish curl
 			curl_setopt( $curling[$host], CURLOPT_RETURNTRANSFER, true );
 			curl_multi_add_handle( $mh, $curling[$host] );
 
