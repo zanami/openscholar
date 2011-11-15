@@ -198,7 +198,7 @@ function os_mailchimp_form_submit($form, &$form_state) {
   
   // Process the form as usual.
   if ($sub['success']) {  
-    drupal_set_message(t("You have successfully been subscribed to the mailing list."));
+    drupal_set_message(t("Thank you for subscribing to our mailing list.  You will recieve an email to confirm your subscription shortly."));
   } else {
     //display the error.  make sure that next form send will work - it has a tendency to drop $list and $api...
     drupal_set_message(t('Error subscribing: ' . $sub['msg']), 'error');
