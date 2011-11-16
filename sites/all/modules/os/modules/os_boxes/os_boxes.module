@@ -274,6 +274,7 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+
   $info['os_boxes_manual_list'] = array(
     'title' => 'Create a List',
     'description' => 'Create your own list of posts',
@@ -281,6 +282,19 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_manual_list',
       'file' => 'os_boxes_manual_list.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
+  $info['os_boxes_pub_typ_list'] = array(
+    'title' => 'List of Publications',
+    'description' => 'List of Publications',
+    'tags' => array('Content'),
+    'module dependencies' => array('scholar_publications'),
+    'handler' => array(
+      'class' => 'os_boxes_publication_list',
+      'file' => 'os_boxes_publication_list.inc',
       'path' => $path,
       'parent' => 'os_boxes_default',
     ),

@@ -35,7 +35,7 @@ class os_boxes_mailchimp extends os_boxes_default {
     
     if (!$api) {
       $form['subscribe']['api_warning'] = array(
-        '#value' => '<div class="error">You have not set a <strong>MailChimp API key</strong>.  Until you do so, mailing lists will not work.  You can set up an API key in <a href="/'.$vsite->group->purl.'/cp/settings" target="_new">site settings<a>.</div>',
+        '#value' => '<div class="error">You have not set a <strong>MailChimp API key</strong>.  Until you do so, mailing lists will not work.  You can set up an API key in <a href="/'.$vsite->group->purl.'/cp/settings" target="_new">site settings</a>.</div>',
       );
     } else {
       
@@ -60,7 +60,7 @@ class os_boxes_mailchimp extends os_boxes_default {
         '#title' => 'Display',
         '#options' => array('link'=>'Link', 'form'=>'Form'),
         '#default_value' => $this->options['display'],
-        '#description' => t('Show a link to subscription form or entire form by default.'),
+        '#description' => t('Show a link to subscription popup or entire form by default.'),
       );
     }
         
@@ -74,25 +74,39 @@ class os_boxes_mailchimp extends os_boxes_default {
   public function render() {
     $block = parent::render();
     global $user;
-    $form_opts = new stdClass();
-    $form_opts->list = $this->options['list'];
-    $form_opts->text = $this->options['text'];
-    $form_opts->display = $this->options['display'];
     
-    //fill out the form for logged in users
-    if ($user->uid != 0) {
-      $form_opts->mail = $user->mail;
+    if ($this->options['display'] == 'link') {
+      //link to a popup containing the form
+      ctools_include('modal');
+      ctools_modal_add_js();
+      //$delta - $this->
       
-      //get names from profile, or username if those aren't available
-      $profile = content_profile_load('vsite_users_profile',$user->uid);
-      if ($form_opts->fn = $profile->vsite_users_first_name[0]['value']){ 
-        $form_opts->ln = $profile->vsite_users_last_name[0]['value'];
-      } else {
-        $form_opts->fn = $user->name;
-      }
-    }
+      $block['content'] =  ctools_ajax_text_button($this->options['text'], 'os_mailchimp/js/subscribe', 'Subscribe to this mailing list', 'ctools-use-modal'); 
+  
+    } else {
+      //display the full form
     
-    $block['content'] = drupal_get_form('os_mailchimp_form', $form_opts);  
-  return $block;
+      $form_opts = new stdClass();
+      $form_opts->list = $this->options['list'];
+      $form_opts->text = $this->options['text'];
+      
+      
+      //fill out the form for logged in users
+      if ($user->uid != 0) {
+        $form_opts->mail = $user->mail;
+        
+        //get names from profile, or username if those aren't available
+        $profile = content_profile_load('vsite_users_profile',$user->uid);
+        if ($form_opts->fn = $profile->vsite_users_first_name[0]['value']){ 
+          $form_opts->ln = $profile->vsite_users_last_name[0]['value'];
+        } else {
+          $form_opts->fn = $user->name;
+        }
+      }
+      
+      $block['content'] = drupal_get_form('os_mailchimp_form', $form_opts);
+    }
+      
+    return $block;
   }
 }
