@@ -22,7 +22,14 @@ function os_mailchimp_menu() {
 		'page callback' => 'drupal_get_form', 
 		'page arguments' => array('os_mailchimp_admin' ), 
 		'file' => 'os_mailchimp.admin.inc', 
-		'access arguments' => array('administer citation distribute' )
+		'access callback' => array('access administration pages' ),
+  );
+  $items['os_mailchimp/%ctools_js/subscribe/%box_delta'] = array(
+    'title' => t('Subscribe to mailing list'), 
+    'page callback' => 'os_mailchimp_subscribe_page',
+    'page arguments' => array(1,2),
+    //'type' => MENU_CALLBACK,
+    'access callback' => TRUE,
   );
 
   return $items;
@@ -74,6 +81,20 @@ function os_mailchimp_boxes_plugins(){
   
   return $info;
 
+}
+
+/**
+ * page displays subscribe form for ctools modal
+ */
+function os_mailchimp_subscribe_page($js=TRUE) {  
+  ctools_include('modal');
+  ctools_include('ajax');
+  $form_state = array(
+    'title' => t('Title of my form'),
+    'ajax' => $js,
+  );
+  $output = ctools_modal_form_wrapper('os_mailchimp_form', $form_state);
+  ctools_modal_render('title', $output);
 }
 
 /**
@@ -137,8 +158,8 @@ function os_mailchimp_default_box() {
  * builds the form mailchimp_box uses to collect email addresses
  * the other hook_form functions use this as their base form
  */
-function os_mailchimp_form(&$state, $form_opts) {
-
+function os_mailchimp_form(&$state, $form_opts=NULL) {
+//is can we just pass the delta and then collect everything else?
   $form = array();
   $form['subscribe'] = array(
     '#type' => 'fieldset',
