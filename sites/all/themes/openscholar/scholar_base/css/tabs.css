@@ -207,3 +207,7 @@ background: #888;
 border:1px solid #888;
 border-bottom:none;
 }
+
+.box-os_modal_tabbed h3.title {
+	margin-bottom: 0.5em;
+}
