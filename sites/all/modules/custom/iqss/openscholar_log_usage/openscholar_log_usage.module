@@ -160,11 +160,11 @@ function openscholar_log_usage_graph() {
   	
 	while ($r = db_fetch_object($result)) {
     //filter hostname
-    if (($host = _openscholar_log_usage_get_host($r->host)) == FALSE) {
+    if (($r->host = _openscholar_log_usage_get_host($r->host)) == FALSE) {
       continue;
     }
     
-	  if (!isset($installations[$host])) {
+	  if (!isset($installations[$r->host])) {
 	    $installations[$r->host] = new installation($r, $ping_response);
 	  } else {
 	    $installations[$r->host]->addData($r);
@@ -208,6 +208,11 @@ EOF;
  * by normalized hostname, I mean www.scholar.com -> scholar.com so that the entries can be counted together.
  */
 function _openscholar_log_usage_get_host($host) {
+
+  //remove http://, www., and trailing slash
+  $host = preg_replace('/http:\/\//', '', $host);
+  $host = preg_replace('/^www\./', '', $host);
+  $host = preg_replace('/\/$/', '', $host);
   
   // drop hosts with demo, dev, local, sandbox, and test in the title
   if (preg_match( '/.*demo|dev|local|sandbox|test.*/', $host)) {
@@ -216,6 +221,12 @@ function _openscholar_log_usage_get_host($host) {
   
   //drop hosts without a dot
   if (!preg_match( '/\./', $host)) {
+    return FALSE;
+  }
+  
+  //drop urls with no letters - aka ip addresses.
+  //not sure if this is smart.  certainly drop 10 and 192 though. 
+  if (!preg_match( '/[[:alpha:]]/', $host)) {
     return FALSE;
   }
   
@@ -229,7 +240,7 @@ function _openscholar_log_usage_get_host($host) {
  */
 function openscholar_log_usage_cron() {
   define('HOSTS_TO_PING', 10);      //how many hosts to check during each cron job
-  define('CONCURRENT_PINGS', 4);    //how many simultaneous connections to make.  more will result in faster cron jobs, especially for slow hosts
+  define('CONCURRENT_PINGS', 6);    //how many simultaneous connections to make.  more will result in faster cron jobs, especially for slow hosts
 //  define('TIMEOUT_SECONDS', 15.0);  //seconds before giving up on a host
   
   //first, try hosts that aren't in the pinged hosts list
@@ -244,6 +255,15 @@ function openscholar_log_usage_cron() {
     if ($h) { $hosts[] = $h; }
   }
   
+  //get_host may have changed the name so that we're repinging a freshly checked host.  filter them out.
+  $query = 'SELECT host FROM {openscholar_usage_log_host_check}';
+  $result = db_query($query);
+  $already_checked = array();
+  while ($r = db_fetch_object($result)) {
+    $already_checked[] = $r->host;
+  }
+  $hosts = array_diff($hosts, $already_checked);
+  
   // if we don't have any unchecked hosts, instead try the least recently checked hosts 
   if (empty($hosts)) {
     $query = 'SELECT DISTINCT host FROM {openscholar_usage_log_host_check} ORDER BY last_check ASC' ;
@@ -255,12 +275,10 @@ function openscholar_log_usage_cron() {
   }
   
   //ping some hosts
-  $checked = _openscholar_log_usage_check_hosts( array_slice($hosts, 0, HOSTS_TO_PING) );  
+  $checked = _openscholar_log_usage_check_hosts( array_slice( array_unique($hosts), 0, HOSTS_TO_PING) );  
   foreach ($checked as $host => $status) {
-    $query = 'REPLACE into {openscholar_usage_log_host_check} (host, last_check, valid) VALUES ( "%s" , %d, %d )';
-    $date = time();
-    
-    $r = db_query($query, $host, $date, (int)$status);
+    $query = 'REPLACE into {openscholar_usage_log_host_check} (host, last_check, valid) VALUES ( "%s" , %d, %d )'; 
+    $r = db_query($query, $host, time(), (int)$status);
   }
   
 }
@@ -279,14 +297,13 @@ function _openscholar_log_usage_check_hosts($hosts) {
 
 	do {
 		//fill up the curl queue at start of reqs and if any urls have finished
-		while (sizeof($curling) <= CONCURRENT_PINGS && sizeof($hosts) > 0) {
+		while (sizeof($curling) < CONCURRENT_PINGS && sizeof($hosts) > 0) {
 			$host = array_pop($hosts) ;
 			$curling[$host] = curl_init( $host );
+			curl_setopt( $curling[$host], CURLOPT_RETURNTRANSFER, TRUE );
 			curl_setopt( $curling[$host], CURLOPT_CONNECTTIMEOUT, 10 );        //time to establish connection
-			curl_setopt( $curling[$host], CURLOPT_TIMEOUT, 30 );               //time to finish curl
-			curl_setopt( $curling[$host], CURLOPT_RETURNTRANSFER, true );
+			curl_setopt( $curling[$host], CURLOPT_TIMEOUT, 60 );               //time to finish curl
 			curl_multi_add_handle( $mh, $curling[$host] );
-
 		}
 
 		// run curl
@@ -312,14 +329,25 @@ function _openscholar_log_usage_check_hosts($hosts) {
   			curl_close( $curling[$host] );
   			unset( $curling[$host] ); 
   
-  		}
+  		} 
+  		
   		$ready--;
-		} 
+		}
+		
+		//hosts aren't ready for reading, but curl says they're done.  fail them. 
+	  if (!$is_running) {
+  		foreach ($curling as $host => $ch) { 
+  		  $done[$host] = FALSE;
+  		  curl_multi_remove_handle( $mh, $curling[$host] );
+  			curl_close( $curling[$host] );
+  			unset( $curling[$host] );  
+		  }
+	  }
+		
 
-	} while ($is_running>0);
+	} while ($is_running>0 || count($hosts)>0 );
 	
 	/* anything left in $curling didn't curl correctly.  assume failure */
-	foreach ($curling as $host => $ch) { $done[$host] = FALSE; }
 
 	return $done;
 }
