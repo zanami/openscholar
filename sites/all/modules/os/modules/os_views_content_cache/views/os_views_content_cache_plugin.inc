@@ -42,6 +42,11 @@ class os_views_content_cache_plugin extends views_content_cache_plugin_cache {
         'super-user' => $user->uid == 1, // special caching for super user.
         'language' => $GLOBALS['language'],
       );
+      
+      if(isset($this->view->pager)){
+      	$key_data['pager_info'] = $this->view->pager; //items per page etc in case this is changed progrmatically/on the fly
+      }
+      
       foreach (array('exposed_info', 'page', 'sort', 'order') as $key) {
         if (isset($_GET[$key])) {
           $key_data[$key] = $_GET[$key];

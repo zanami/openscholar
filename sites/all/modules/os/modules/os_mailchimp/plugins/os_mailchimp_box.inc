@@ -44,7 +44,7 @@ class os_boxes_mailchimp extends os_boxes_default {
         '#title' => t('Mailing List'),
         '#default_value' => $this->options['list'],
         '#options' => _os_mailchimp_get_lists($api),
-        '#description' => 'Choose a mailing list to subscribe users to.  If none are available, check your MailChimp API key in <a href="/'.$vsite->group->purl.'/cp/settings" target="_new">site settings<a>.',
+        '#description' => 'Choose a mailing list to subscribe users to.  If none are available, check your MailChimp API key in <a href="/'.$vsite->group->purl.'/cp/settings" target="_new">site settings</a>.',
       );
       
       $defaults = $this->options_defaults();
@@ -79,32 +79,11 @@ class os_boxes_mailchimp extends os_boxes_default {
       //link to a popup containing the form
       ctools_include('modal');
       ctools_modal_add_js();
-      //$delta - $this->
-      
-      $block['content'] =  ctools_ajax_text_button($this->options['text'], 'os_mailchimp/js/subscribe', 'Subscribe to this mailing list', 'ctools-use-modal'); 
+      $block['content'] =  ctools_ajax_text_button($this->options['text'], 'os_mailchimp/js/subscribe/'.$this->delta, 'Subscribe to this mailing list', 'ctools-use-modal'); 
   
     } else {
-      //display the full form
-    
-      $form_opts = new stdClass();
-      $form_opts->list = $this->options['list'];
-      $form_opts->text = $this->options['text'];
-      
-      
-      //fill out the form for logged in users
-      if ($user->uid != 0) {
-        $form_opts->mail = $user->mail;
-        
-        //get names from profile, or username if those aren't available
-        $profile = content_profile_load('vsite_users_profile',$user->uid);
-        if ($form_opts->fn = $profile->vsite_users_first_name[0]['value']){ 
-          $form_opts->ln = $profile->vsite_users_last_name[0]['value'];
-        } else {
-          $form_opts->fn = $user->name;
-        }
-      }
-      
-      $block['content'] = drupal_get_form('os_mailchimp_form', $form_opts);
+      //display the full form     
+      $block['content'] = drupal_get_form('os_mailchimp_form', array('delta' => $this->delta));
     }
       
     return $block;
