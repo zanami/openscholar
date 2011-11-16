@@ -44,7 +44,7 @@ class os_boxes_mailchimp extends os_boxes_default {
         '#title' => t('Mailing List'),
         '#default_value' => $this->options['list'],
         '#options' => _os_mailchimp_get_lists($api),
-        '#description' => 'Choose a mailing list to subscribe users to.  If none are available, check your MailChimp API key in <a href="/'.$vsite->group->purl.'/cp/settings" target="_new">site settings<a>.',
+        '#description' => 'Choose a mailing list to subscribe users to.  If none are available, check your MailChimp API key in <a href="/'.$vsite->group->purl.'/cp/settings" target="_new">site settings</a>.',
       );
       
       $defaults = $this->options_defaults();

@@ -92,7 +92,8 @@ function os_mailchimp_subscribe_page($js=TRUE, $delta) {
   $form_state = array(
     'title' => t('Title of my form'),
     'ajax' => $js,
-    'delta' => $delta,
+    'delta' => $delta, 
+    'use_ctools' => TRUE,
   );
   $output = ctools_modal_form_wrapper('os_mailchimp_form', $form_state);
   ctools_modal_render('title', $output);
@@ -226,20 +227,35 @@ function os_mailchimp_form(&$state, $args=array()) {
 function os_mailchimp_form_submit($form, &$form_state) {
   $v = $form_state['values'];
   
+  //get the api key
   if (($vsite = vsite_get_vsite()) != FALSE) {
     $api = $vsite->controllers->variable->get('os_mailchimp_api', 'space');
   } else {
     $api = variable_get('os_mailchimp_api', '');
   }
+  
+  //try to subscribe
   $sub = os_mailchimp_subscribe($api, $v['list'], $v['email'], $v['fn'], $v['ln']);
   
-  // Process the form as usual.
+  //get the return message/status
   if ($sub['success']) {  
-    drupal_set_message(t("Thank you for subscribing to our mailing list.  You will recieve an email to confirm your subscription shortly."));
+    $msg = t("Thank you for subscribing to our mailing list.  You will recieve an email to confirm your subscription shortly.");
+    $status = 'status';
   } else {
     //display the error.  make sure that next form send will work - it has a tendency to drop $list and $api...
-    drupal_set_message(t('Error subscribing: ' . $sub['msg']), 'error');
+    $msg = t('Error subscribing: ' . $sub['msg']);
+    $status = 'error';
   } 
+  
+  //pass message and status back to user interactively or on next page depending on how they got here
+  if (isset($form_state['use_ctools']) && $form_state['use_ctools']) {
+    $commands = array();
+    $commands[] = ctools_modal_command_dismiss();
+    $commands[] = ctools_ajax_command_before('#content-main', '<div class="'.$status.'">'.$msg.'</div>');    
+    ctools_ajax_render($commands);
+  } else {
+    drupal_set_message($msg, $status);
+  }
 }
 
 /**
