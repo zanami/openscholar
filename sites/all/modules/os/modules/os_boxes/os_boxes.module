@@ -274,6 +274,17 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_manual_list'] = array(
+    'title' => 'Create a List',
+    'description' => 'Create your own list of posts',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_boxes_manual_list',
+      'file' => 'os_boxes_manual_list.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+  );
 
   foreach ($info as $key => $block) {
   	if(isset($info[$key]['module dependencies'])){
@@ -714,10 +725,10 @@ function os_boxes_theme_registry_alter(&$theme_registry){
  * Theme function for the box.
  */
 function theme_os_boxes_box($block) {
-	
+
 	//Do not print anything if the box is empty, it is as if it does not exist
 	if(!strlen($block['content'])) return "";
-	
+
 	//Use the default theme function
 	return theme_boxes_box($block);
 }
