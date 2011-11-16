@@ -192,18 +192,18 @@ function openscholar_log_usage_graph() {
  */
 function _openscholar_log_usage_gchart($data) {
   drupal_set_html_head('<script type="text/javascript" src="https://www.google.com/jsapi"></script>');
-  
+  drupal_add_css(drupal_get_path('module', 'openscholar_log_usage') . '/openscholar_log_usage.css');
   drupal_add_js(drupal_get_path('module', 'openscholar_log_usage') . '/openscholar_log_usage.js', 'module');
   //drupal_add_js('google.load("visualization", "1.1", {"packages":["controls"]});', 'inline');
   drupal_add_js('Drupal.settings.openscholar_log_usage_data = ' . $data . ';', 'inline');
   return <<<EOF
     <div id="dashboard">
-    	<div id="control-host"></div>
-    	<div id="control-vsites"></div>
-    	<div id="control-age"></div>
-    	<div id="control-views"></div>
-    	<div id="last_visit-views"></div>
-    	<div id="version"></div>
+    	<div id="control-host"></div><br />
+    	<div id="control-vsites"></div><br />
+    	<div id="control-age"></div><br />
+    	<div id="control-views"></div><br />
+    	<! div id="control-last_visit"><! /div><! br />
+    	<div id="control-version"></div><br />
     </div>
     <div id="chart_div"></div>
     <div id="table_div"></div>

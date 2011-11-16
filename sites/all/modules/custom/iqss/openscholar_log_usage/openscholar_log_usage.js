@@ -29,9 +29,6 @@ function drawChart() {
     'view': {'columns': [0,1]}, //host, vsite //views = 3, but on different scale
     
   });
-        <div id="control-host"></div>
-      <div id="last_visit-views"></div>
-      <div id="version"></div>
       
   */
   
@@ -46,19 +43,38 @@ function drawChart() {
           'allowMultiple': false,
         }
       } 
-    }
+    };
   }
   
-  function stringFilter() {
+  function StringFilter() {
     return {
       'controlType': 'StringFilter',
       'options': {
         'matchType': 'any',
       },
-    }
+    };
   }
   
-  var host = stringFilter();
+  function CategoryFilter() {
+    return {
+      'controlType': 'CategoryFilter',
+      'options': {
+        'filterColumnLabel': 'Metric',
+        'ui': {
+          'allowTyping': false,
+          'allowMultiple': true,
+          'selectedValuesLayout': 'belowStacked'
+        }
+      },
+      // Define an initial state, i.e. a set of metrics to be initially selected.
+      'state': {}
+    };
+  }
+  
+  //and add the filters to controllers
+  
+  //host doesn't quite filter correctly because the link is being matched.  will probalby have to set up an event to load the url instead
+  var host = StringFilter();
   host.containerId = 'control-host';
   host.options.filterColumnLabel = 'Host';
   var hostPicker = new google.visualization.ControlWrapper(host);
@@ -79,10 +95,17 @@ function drawChart() {
   views.options.filterColumnLabel = 'Views';
   var viewsPicker = new google.visualization.ControlWrapper(views);
   
+  var version = CategoryFilter();
+  version.containerId = 'control-version';
+  version.options.filterColumnLabel = 'OS Version';
+  var versionPicker = new google.visualization.ControlWrapper(version);
+
+  //control-last_visit (would this be better served as a count than a date?
+  
   // Create the dashboard.
   //new google.visualization.Dashboard(document.getElementById('dashboard')).bind(agePicker, barChart)).draw(data);   
   new google.visualization.Dashboard(document.getElementById('dashboard')).
-  bind([hostPicker, agePicker, vsitesPicker, viewsPicker], [ tableChart]).
+  bind([hostPicker, agePicker, vsitesPicker, viewsPicker, versionPicker], [ tableChart]).
   //bind(agePicker, barChart).
   //bind(vsitesPicker, barChart).
   draw(data); 
