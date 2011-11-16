@@ -23,12 +23,6 @@ class os_boxes_manual_list extends os_boxes_default {
       ),
     );
 
-    $form['count'] = array(
-      '#type' => 'hidden',
-      '#default_value' => count($this->options['nodes']),
-      '#process' => array('os_boxes_manual_list_add_new_fields'),
-    );
-
     // build a normal form
     $form['nodes'] = array(
       '#type' => 'markup',
@@ -43,7 +37,7 @@ class os_boxes_manual_list extends os_boxes_default {
         '#weight' => $v['weight'],
         'nid' => array(
           '#type' => 'hidden',
-          '#value' => $v['nid'],
+          '#default_value' => $v['nid'],
         ),
         'text' => array(
           '#type' => 'markup',
@@ -58,14 +52,26 @@ class os_boxes_manual_list extends os_boxes_default {
           '#default_value' => $v['weight'],
           '#size' => 3,
           '#attributes' => array(
-            'class' => 'field-weight',
+            'class' => $k!='blank'?'field-weight':'',
           )
         ),
       );
       $nodes[$k] = $n;
     }
 
+    $form['count'] = array(
+      '#type' => 'hidden',
+      '#default_value' => count($this->options['nodes'])-1,
+      '#process' => array('os_boxes_manual_list_add_new_fields'),
+    );
+
     return $form;
+  }
+
+  public function render() {
+    $block = parent::render();
+    $block['content'] = '<pre>'.print_r($this->options['nodes'],1).'</pre>';
+    return $block;
   }
 }
 
@@ -80,8 +86,11 @@ function os_boxes_manual_list_table($element) {
   uasort($element, 'element_children');
   foreach (element_children($element) as $c) {
     $rows[] = array(
-      drupal_render($element[$c]['nid']).drupal_render($element[$c]['text']).drupal_render($element[$c]['title']),
-      drupal_render($element[$c]['weight']),
+      'data' => array(
+        drupal_render($element[$c]['nid']).drupal_render($element[$c]['text']).drupal_render($element[$c]['title']),
+        drupal_render($element[$c]['weight']),
+      ),
+      'class' => 'draggable',
     );
   }
   $element['#value'] = theme('table', array(), $rows, array('id' => 'manual-nodes-list'));
@@ -91,7 +100,7 @@ function os_boxes_manual_list_table($element) {
 
 function os_boxes_manual_list_add_new_fields(&$element, $post, &$form_state, &$form) {
   for ($i=$element['#default_value']; $i < $post['count']; $i++) {
-    $form['options']['nodes'][$i] = $form['options']['nodes'][0];
+    $form['options']['nodes'][$i] = $form['options']['nodes']['blank'];
     $form['options']['nodes'][$i] += array(
       '#attributes' => array('id' => $i),
       '#parents' => array('nodes', $i),
