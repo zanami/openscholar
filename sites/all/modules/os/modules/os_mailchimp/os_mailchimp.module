@@ -22,7 +22,14 @@ function os_mailchimp_menu() {
 		'page callback' => 'drupal_get_form', 
 		'page arguments' => array('os_mailchimp_admin' ), 
 		'file' => 'os_mailchimp.admin.inc', 
-		'access arguments' => array('administer citation distribute' )
+		'access callback' => array('access administration pages' ),
+  );
+  $items['os_mailchimp/%ctools_js/subscribe/%'] = array(
+    'title' => t('Subscribe to mailing list'), 
+    'page callback' => 'os_mailchimp_subscribe_page',
+    'page arguments' => array(1,3),
+    //'type' => MENU_CALLBACK,
+    'access callback' => TRUE,
   );
 
   return $items;
@@ -74,6 +81,22 @@ function os_mailchimp_boxes_plugins(){
   
   return $info;
 
+}
+
+/**
+ * page displays subscribe form for ctools modal
+ */
+function os_mailchimp_subscribe_page($js=TRUE, $delta) {  
+  ctools_include('modal');
+  ctools_include('ajax');
+  $form_state = array(
+    'title' => t('Title of my form'),
+    'ajax' => $js,
+    'delta' => $delta, 
+    'use_ctools' => TRUE,
+  );
+  $output = ctools_modal_form_wrapper('os_mailchimp_form', $form_state);
+  ctools_modal_render('title', $output);
 }
 
 /**
@@ -137,14 +160,29 @@ function os_mailchimp_default_box() {
  * builds the form mailchimp_box uses to collect email addresses
  * the other hook_form functions use this as their base form
  */
-function os_mailchimp_form(&$state, $form_opts) {
-
+function os_mailchimp_form(&$state, $args=array()) {
+  $state += $args; //drupal_get_form can't pass a state, but needs to send the box delta
+  $vsite = vsite_get_vsite();
+  $box = $vsite->controllers->boxes->get($state['delta']);
+  
+  global $user;
+  if ($user->uid != 0) {
+    $mail = $user->mail;
+    
+    //get names from profile, or username if those aren't available
+    $profile = content_profile_load('vsite_users_profile',$user->uid);
+    if ($fn = $profile->vsite_users_first_name[0]['value']){ 
+      $ln = $profile->vsite_users_last_name[0]['value'];
+    } else {
+      $fn = $user->name;
+    }
+  }
+  
+  
   $form = array();
   $form['subscribe'] = array(
     '#type' => 'fieldset',
-    '#title' => check_plain($form_opts->text),
-    '#collapsible' => (isset($form_opts->display) && $form_opts->display == 'link'),
-    '#collapsed' => (isset($form_opts->display) && $form_opts->display == 'link'),
+    '#title' => check_plain($box->options['text']),
   );
 
   $form['subscribe']['email'] = array(
@@ -152,21 +190,21 @@ function os_mailchimp_form(&$state, $form_opts) {
     '#title' => 'Email Address',
     '#weight' => -10,
     '#required' => TRUE,
-    '#default_value' => $form_opts->mail,
+    '#default_value' => $mail,
   );
   
   $form['subscribe']['fn'] = array(
     '#type' =>  'textfield',
     '#title' => 'First Name',
   	'#weight' => -8,
-  	'#default_value' => $form_opts->fn,
+  	'#default_value' => $fn,
   );
   
   $form['subscribe']['ln'] = array(
     '#type' =>  'textfield',
     '#title' => 'Last Name',
   	'#weight' => -6,
-  	'#default_value' => $form_opts->ln,
+  	'#default_value' => $ln,
   );
   
   $form['subscribe']['submit'] = array(
@@ -177,7 +215,7 @@ function os_mailchimp_form(&$state, $form_opts) {
   
   $form['subscribe']['list'] = array(
     '#type' => 'value',
-    '#value' => $form_opts->list,
+    '#value' => $box->options['list'],
   );
 
   return $form;
@@ -189,20 +227,35 @@ function os_mailchimp_form(&$state, $form_opts) {
 function os_mailchimp_form_submit($form, &$form_state) {
   $v = $form_state['values'];
   
+  //get the api key
   if (($vsite = vsite_get_vsite()) != FALSE) {
     $api = $vsite->controllers->variable->get('os_mailchimp_api', 'space');
   } else {
     $api = variable_get('os_mailchimp_api', '');
   }
+  
+  //try to subscribe
   $sub = os_mailchimp_subscribe($api, $v['list'], $v['email'], $v['fn'], $v['ln']);
   
-  // Process the form as usual.
+  //get the return message/status
   if ($sub['success']) {  
-    drupal_set_message(t("Thank you for subscribing to our mailing list.  You will recieve an email to confirm your subscription shortly."));
+    $msg = t("Thank you for subscribing to our mailing list.  You will recieve an email to confirm your subscription shortly.");
+    $status = 'status';
   } else {
     //display the error.  make sure that next form send will work - it has a tendency to drop $list and $api...
-    drupal_set_message(t('Error subscribing: ' . $sub['msg']), 'error');
+    $msg = t('Error subscribing: ' . $sub['msg']);
+    $status = 'error';
   } 
+  
+  //pass message and status back to user interactively or on next page depending on how they got here
+  if (isset($form_state['use_ctools']) && $form_state['use_ctools']) {
+    $commands = array();
+    $commands[] = ctools_modal_command_dismiss();
+    $commands[] = ctools_ajax_command_before('#content-main', '<div class="'.$status.'">'.$msg.'</div>');    
+    ctools_ajax_render($commands);
+  } else {
+    drupal_set_message($msg, $status);
+  }
 }
 
 /**
