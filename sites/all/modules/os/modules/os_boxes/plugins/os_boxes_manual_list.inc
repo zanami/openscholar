@@ -52,12 +52,13 @@ class os_boxes_manual_list extends os_boxes_default {
           '#default_value' => $v['weight'],
           '#size' => 3,
           '#attributes' => array(
-            'class' => $k!='blank'?'field-weight':'',
+            'class' => (string)$k!='blank'?'field-weight':'',
           )
         ),
       );
       $nodes[$k] = $n;
     }
+    uasort($this->options['nodes'], 'element_sort');
 
     $form['count'] = array(
       '#type' => 'hidden',
@@ -70,7 +71,16 @@ class os_boxes_manual_list extends os_boxes_default {
 
   public function render() {
     $block = parent::render();
-    $block['content'] = '<pre>'.print_r($this->options['nodes'],1).'</pre>';
+    $links = array();
+    foreach ($this->options['nodes'] as $n) {
+      $l = array(
+        'href' => 'node/'.$n['nid'],
+        'title' => $n['title'],
+      );
+      $links[$n['weight']] = $l;
+    }
+    ksort($links);
+    $block['content'] = theme('links', $links);
     return $block;
   }
 }
@@ -83,14 +93,14 @@ function os_boxes_manual_list_add_externals($form) {
 function os_boxes_manual_list_table($element) {
   // render the form as a table
   $rows = array();
-  uasort($element, 'element_children');
+  uasort($element, 'element_sort');
   foreach (element_children($element) as $c) {
     $rows[] = array(
       'data' => array(
         drupal_render($element[$c]['nid']).drupal_render($element[$c]['text']).drupal_render($element[$c]['title']),
         drupal_render($element[$c]['weight']),
       ),
-      'class' => 'draggable',
+      'class' => (string)$c!='blank'?'draggable':'',
     );
   }
   $element['#value'] = theme('table', array(), $rows, array('id' => 'manual-nodes-list'));
@@ -110,6 +120,7 @@ function os_boxes_manual_list_add_new_fields(&$element, $post, &$form_state, &$f
     );
     form_builder($form['form_id']['#value'], $form['options']['nodes'][$i], $form_state);
   }
+  unset($form_state['values']['nodes']['blank']);
 
   return $element;
 }
