@@ -94,6 +94,12 @@ class os_boxes_publication_list extends os_boxes_default {
           );
           $view->set_item($display_id, 'filter', 'tid', $filter);
         }
+        
+        //Set pager up
+        $view->set_use_pager(TRUE);
+        $view->display_handler->set_option('use_ajax', TRUE);
+        if(intval($this->options['number_of_items'])) $view->set_items_per_page(intval($this->options['number_of_items']));
+          
         $output = $view->execute_display();
         $view->destroy();
         $block['content'] = $output;
