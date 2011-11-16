@@ -736,6 +736,20 @@ function os_boxes_theme_registry_alter(&$theme_registry){
 }
 
 /**
+ * Hook views_pre_view (called pre execute
+ */
+function os_boxes_views_pre_view(&$view, &$display_id, &$args) {
+	//If this view has been configured to work with boxes then run alter for that box
+	if(isset($view->dom_id)){
+		list($module,$delta) = explode("-",$view->dom_id,2);
+		if($module == "boxes" && ($box = boxes_load($delta)) && method_exists($box,'views_alter')){
+			$box->views_alter($view,$display_id,$args);
+		}
+	}
+}
+
+
+/**
  * Theme function for the box.
  */
 function theme_os_boxes_box($block) {

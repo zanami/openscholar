@@ -74,34 +74,10 @@ class os_boxes_publication_list extends os_boxes_default {
     if ($view = views_get_view($view_name)) {
       if ($view->access($display_id)) {
         $view->set_display($display_id);
-        if (count($this->options['pub_types'])) {
-          $filter = array(
-            'operator' => 'in',
-            'value' => $this->options['pub_types'],
-            'group' => '0',
-            'exposed' => FALSE,
-            'expose' => array(
-              'operator' => FALSE,
-              'label' => '',
-            ),
-            'id' => 'tid',
-            'table' => 'biblio_types',
-            'field' => 'tid',
-            'override' => array(
-              'button' => 'Use default',
-            ),
-            'relationship' => 'none',
-          );
-          $view->set_item($display_id, 'filter', 'tid', $filter);
-        }
-                
-        //Set pager up
-        $view->display_handler->set_option('use_pager', 'mini');
-        $view->display_handler->set_option('use_ajax', TRUE);
-        if(intval($this->options['number_of_items'])) $view->display_handler->set_option('items_per_page',intval($this->options['number_of_items']));
-          
+        //Tie this view to this box (this tells the view to call this box's view alter
+        $view->dom_id = "boxes-".$this->delta;
+        
         $output = $view->execute_display();
-        $view->destroy();
         $block['content'] = $output;
       }
       $view->destroy();
@@ -110,6 +86,41 @@ class os_boxes_publication_list extends os_boxes_default {
     return $block;
   }
 
+  /**
+   * Called from views_pre_view
+   *
+   * @param view $view
+   */
+  public function views_alter(&$view, &$display_id, &$args){
+  	
+  	if (count($this->options['pub_types'])) {
+      $filter = array(
+        'operator' => 'in',
+        'value' => $this->options['pub_types'],
+        'group' => '0',
+        'exposed' => FALSE,
+        'expose' => array(
+          'operator' => FALSE,
+          'label' => '',
+        ),
+        'id' => 'tid',
+        'table' => 'biblio_types',
+        'field' => 'tid',
+        'override' => array(
+          'button' => 'Use default',
+        ),
+        'relationship' => 'none',
+      );
+      $view->set_item($display_id, 'filter', 'tid', $filter);
+    }
+                
+    //Set pager up
+    $view->display_handler->set_option('use_pager', 'mini');
+    $view->display_handler->set_option('use_ajax', TRUE);
+    if(intval($this->options['number_of_items'])) $view->display_handler->set_option('items_per_page',intval($this->options['number_of_items']));
+        
+  }
+  
   /**
    * Return the cache parameters for this box
    */
