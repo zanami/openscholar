@@ -1,11 +1,23 @@
 
 //Load the Visualization API and the piechart package.
-google.load('visualization', '1.1', {'packages':['controls']});
+google.load('visualization', '1.1', {'packages':['controls','table']});
 
 
 function drawChart() {
   var data = google.visualization.arrayToDataTable( Drupal.settings.openscholar_log_usage_data );
   
+  var tableChart = new google.visualization.ChartWrapper({
+    'chartType': 'Table',
+    'containerId': 'table_div',
+    'options': {
+      'showRowNumber': true,
+      'allowHtml': true,
+      'sortAscending': false,
+      'sortColumn': 3,
+      
+    },
+  });
+  /*
   var barChart = new google.visualization.ChartWrapper({
     'chartType': 'BarChart',
     'containerId': 'chart_div',
@@ -17,37 +29,62 @@ function drawChart() {
     'view': {'columns': [0,1]}, //host, vsite //views = 3, but on different scale
     
   });
+        <div id="control-host"></div>
+      <div id="last_visit-views"></div>
+      <div id="version"></div>
+      
+  */
   
-  var agePicker = new google.visualization.ControlWrapper({
-    'controlType': 'NumberRangeFilter',
-    'containerId': 'control-age',
-    'options': {
-      'filterColumnLabel': 'Age',
-      'ui': {
-        'labelStacking': 'vertical',
-        'allowTyping': false,
-        'allowMultiple': false,
-      }
+  //set up some filters so we can add controls with slightly less copy/paste
+  function RangeFilter() {
+    return {
+      'controlType': 'NumberRangeFilter',
+      'options': {
+        'ui': {
+          'labelStacking': 'vertical',
+          'allowTyping': false,
+          'allowMultiple': false,
+        }
+      } 
     }
-  });
+  }
+  
+  function stringFilter() {
+    return {
+      'controlType': 'StringFilter',
+      'options': {
+        'matchType': 'any',
+      },
+    }
+  }
+  
+  var host = stringFilter();
+  host.containerId = 'control-host';
+  host.options.filterColumnLabel = 'Host';
+  var hostPicker = new google.visualization.ControlWrapper(host);
+  
+  var age = RangeFilter();
+  age.containerId = 'control-age';
+  age.options.filterColumnLabel = 'Age';
+  age.options.ui = {'label': 'Age (In Weeks)'};
+  var agePicker = new google.visualization.ControlWrapper(age);
 
-  var vsitesPicker = new google.visualization.ControlWrapper({
-    'controlType': 'NumberRangeFilter',
-    'containerId': 'control-vsites',
-    'options': {
-      'filterColumnLabel': 'Sites',
-      'ui': {
-        'labelStacking': 'vertical',
-        'allowTyping': false,
-        'allowMultiple': false,
-      }
-    }
-  });
+  var vsites = RangeFilter();
+  vsites.containerId = 'control-vsites';
+  vsites.options.filterColumnLabel = 'Sites';
+  var vsitesPicker = new google.visualization.ControlWrapper(vsites);
+  
+  var views = RangeFilter();
+  views.containerId = 'control-views';
+  views.options.filterColumnLabel = 'Views';
+  var viewsPicker = new google.visualization.ControlWrapper(views);
+  
   // Create the dashboard.
   //new google.visualization.Dashboard(document.getElementById('dashboard')).bind(agePicker, barChart)).draw(data);   
   new google.visualization.Dashboard(document.getElementById('dashboard')).
-  bind(agePicker, barChart).
-  bind(vsitesPicker, barChart).
+  bind([hostPicker, agePicker, vsitesPicker, viewsPicker], [ tableChart]).
+  //bind(agePicker, barChart).
+  //bind(vsitesPicker, barChart).
   draw(data); 
 }
 

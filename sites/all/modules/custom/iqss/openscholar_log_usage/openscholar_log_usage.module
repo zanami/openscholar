@@ -102,18 +102,19 @@ class installation {
   private $views;
   private $version;        
   private $last_visit;
-  private $last_ping;
+  //private $last_ping;
   private $status;
   
   function __construct(&$r, &$pings) {
     $this->host = $r->host;
     $this->version = $r->version;
-    $this->last_ping = (isset($r->last_ping)) ? $r->last_ping : 'Never'; 
+    //$this->last_ping = (isset($r->last_ping)) ? $r->last_ping : 'Never'; 
     $this->views = (int)$r->views;    
     $this->age = strtotime($r->age);
     //no vsite, assuming $r is sorted by vsite so empties show up first
     $this->last_visit = strtotime($r->last_visit);
     $this->status = $pings[$r->host];
+    $this->version = $r->version;
   }
   
   function addData(&$r) {
@@ -133,12 +134,13 @@ class installation {
   function render() {
     if (sizeof($this->vsites) && $this->status) {
       return array(
-        $this->host,
+        '<a href="http://'.$this->host.'" target="_blank">'.$this->host.'</a>',
         sizeof($this->vsites),
-        (time() - $this->age) / (60 * 60 * 24), //currently days.  fix it later.
+        round( (time() - $this->age) / (60 * 60 * 24 * 7) ), //currently days.  fix it later.
         $this->views,
-        $this->last_visit,
-        $this->last_ping,
+        date('m/d/y', $this->last_visit),
+        //$this->last_ping,
+        $this->version,
       );
     }
   }
@@ -172,7 +174,7 @@ function openscholar_log_usage_graph() {
 	}
 	
 	/* prepare data from installations[] for javascript */
-	$data_header = array('Host', 'Sites', 'Age', 'Views', 'Last Visit', 'Last Ping');
+	$data_header = array('Host', 'Sites', 'Age', 'Views', 'Last Visit', 'OS Version');
 	$data = array($data_header);
 	foreach($installations as $delta => $i) {
 	  $d = $i->render();
@@ -196,10 +198,16 @@ function _openscholar_log_usage_gchart($data) {
   drupal_add_js('Drupal.settings.openscholar_log_usage_data = ' . $data . ';', 'inline');
   return <<<EOF
     <div id="dashboard">
+    	<div id="control-host"></div>
     	<div id="control-vsites"></div>
     	<div id="control-age"></div>
+    	<div id="control-views"></div>
+    	<div id="last_visit-views"></div>
+    	<div id="version"></div>
     </div>
     <div id="chart_div"></div>
+    <div id="table_div"></div>
+    
 EOF;
 }
 
