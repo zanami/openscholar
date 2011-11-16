@@ -37,7 +37,8 @@ class os_boxes_manual_list extends os_boxes_default {
     );
 
     $nodes = &$form['nodes'];
-    foreach ($this->options['nodes'] as $v) {
+    $this->options['nodes']['blank'] = array('nid' => 0, 'title' => '__blank__', 'weight' => 2000000); // blank element for copying purposes
+    foreach ($this->options['nodes'] as $k => $v) {
       $n = array(
         '#weight' => $v['weight'],
         'nid' => array(
@@ -46,7 +47,7 @@ class os_boxes_manual_list extends os_boxes_default {
         ),
         'text' => array(
           '#type' => 'markup',
-          '#value' => $v['title'],
+          '#value' => '<span>'.$v['title'].'</span>',
         ),
         'title' => array(
           '#type' => 'hidden',
@@ -61,7 +62,7 @@ class os_boxes_manual_list extends os_boxes_default {
           )
         ),
       );
-      $nodes[] = $n;
+      $nodes[$k] = $n;
     }
 
     return $form;
