@@ -19,6 +19,7 @@ class os_boxes_publication_list extends os_boxes_default {
     $options['more_text'] = t('more');
     $options['more_link'] = "";
     $options['use_pager'] = 1;
+    $options['show_all_types'] = 1;
 
     return $options;
   }
@@ -55,7 +56,7 @@ class os_boxes_publication_list extends os_boxes_default {
     $form['more'] = array(
       '#type' => 'checkbox',
       '#title' => t('Add "more" link'),
-      '#description' => t('This will add a more link to the bottom of this widget, which will link to the page listing all the posts of type selected above'),
+      '#description' => t('This will add a more link to the bottom of this widget, which will link to the page listing of posts'),
       '#default_value' => $this->options['more'],
       '#tree' => TRUE
     );
@@ -90,13 +91,30 @@ class os_boxes_publication_list extends os_boxes_default {
       )
     );
     
+    $form['show_all_types'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show all publication types'),
+      '#default_value' => $this->options['show_all_types'],
+      '#tree' => TRUE
+    );
+    
     $form['pub_types'] = array(
       '#type' => 'checkboxes',
       '#options' => $options,
       '#default_value' => $this->options['pub_types'],
       '#title' => t('Show the following types'),
       '#attributes' => array('class' => 'pub_type'),
-      '#description' => t('Select the publication types you want to appear in the widget.')
+      '#description' => t('Select the publication types you want to appear in the widget.'),
+      '#prefix' => '<div id="edit-pub-types-wrapper">',
+      '#suffix' => '</div>',
+      '#process' => array(
+        'ctools_dependent_process','expand_checkboxes'
+      ),
+      '#dependency' => array(
+        'edit-show-all-types' => array(
+          0
+        )
+      ),
     );
     
     $form += parent::options_form();
@@ -108,7 +126,7 @@ class os_boxes_publication_list extends os_boxes_default {
    */
   public static function options_validate(&$form,&$form_state){
   	
-    if(array_keys($form_state['values']['pub_types']) == array_keys($form['options']['pub_types']['#options'])){
+    if($form_state['values']['show_all_types'] || array_keys($form_state['values']['pub_types']) == array_keys($form['options']['pub_types']['#options'])){
     	$form_state['values']['pub_types'] = array();
     }//All selected is the same as no filter, set to none selected
   }
@@ -135,6 +153,11 @@ class os_boxes_publication_list extends os_boxes_default {
       }
       $view->destroy();
     }
+    
+    if($this->options['more'] && strlen($this->options['more_link'])){
+      //ADD THE MORE TEXT
+      $block['content'] .= theme('views_more', url($this->options['more_link']), $this->options['more_text']);
+    }
 
     return $block;
   }
@@ -146,7 +169,7 @@ class os_boxes_publication_list extends os_boxes_default {
    */
   public function views_alter(&$view, &$display_id, &$args){
   	
-  	if (count($this->options['pub_types'])) {
+  	if (!$this->options['show_all_types'] ||count($this->options['pub_types'])) {
       $filter = array(
         'operator' => 'in',
         'value' => $this->options['pub_types'],
@@ -174,13 +197,6 @@ class os_boxes_publication_list extends os_boxes_default {
     }else{
     	$view->display_handler->set_option('use_pager', false);
       $view->display_handler->set_option('use_ajax', false);
-    }
-    
-    if($this->options['more']){
-    	//ADD THE MORE TEXT
-    	$view->display_handler->set_option('use_more', true);
-    	$view->display_handler->set_option('use_more_text', $this->options['more_text']);
-    	$view->display_handler->set_option('path', $this->options['more_link']);
     }
     
     //Set the number of items
