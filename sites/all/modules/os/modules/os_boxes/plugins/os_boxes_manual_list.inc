@@ -41,7 +41,7 @@ class os_boxes_manual_list extends os_boxes_default {
         ),
         'text' => array(
           '#type' => 'markup',
-          '#value' => '<span>'.$v['title'].'</span>',
+          '#value' => '<span>'.$v['title'].'</span> <a href="#" class="remove" title="Remove Post">Remove</a>',
         ),
         'title' => array(
           '#type' => 'hidden',
