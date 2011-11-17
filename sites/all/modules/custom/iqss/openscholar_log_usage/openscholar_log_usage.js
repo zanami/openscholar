@@ -4,6 +4,7 @@ google.load('visualization', '1.1', {'packages':['controls','table']});
 
 
 function drawChart() {
+  /*
   var d = Drupal.settings.openscholar_log_usage_data;
   for (var i in d) {
     if (typeof(d[i][4]) == 'number') {
@@ -11,8 +12,9 @@ function drawChart() {
     }
   }
   alert(d.toSource());
-  //var data = google.visualization.arrayToDataTable( Drupal.settings.openscholar_log_usage_data );
-  var data = google.visualization.arrayToDataTable( d );
+  */
+  var data = google.visualization.arrayToDataTable( Drupal.settings.openscholar_log_usage_data );
+  
   
   var tableChart = new google.visualization.ChartWrapper({
     'chartType': 'Table',
