@@ -122,5 +122,12 @@ function os_boxes_manual_list_add_new_fields(&$element, $post, &$form_state, &$f
   }
   unset($form_state['values']['nodes']['blank']);
 
+  // remove nids that aren't in the post
+  foreach ($form_state['values']['nodes'] as $k => $v) {
+    if (!isset($form_state['input']['nodes'][$k])) {
+      unset($form_state['values']['nodes'][$k]);
+    }
+  }
+
   return $element;
 }
