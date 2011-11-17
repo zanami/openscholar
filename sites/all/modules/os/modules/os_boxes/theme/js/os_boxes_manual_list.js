@@ -27,6 +27,7 @@ Drupal.behaviors.os_manual_list = function (ctx) {
 			$('span', new_row).text(matches[1]);
 			$('#edit-nodes-'+id+'-title', new_row).val(matches[1]);
 			$('#edit-nodes-'+id+'-weight', new_row).addClass('field-weight').val(id);
+			$('#edit-nodes-'+id+'-weight', new_row).parents('td').css('display', 'none');
 			$('.tabledrag-handle', new_row).remove();
 			$('table tbody', $form).append(new_row);
 			new_row = $('#edit-nodes-'+id+'-nid', $form).parents('tr');
@@ -35,7 +36,6 @@ Drupal.behaviors.os_manual_list = function (ctx) {
 			setup_remove(new_row);
 
 			tableDrag.makeDraggable(new_row[0]);
-			tableDrag.hideColumns();
 		}
 	});
 	
