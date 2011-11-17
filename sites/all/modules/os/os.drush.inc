@@ -23,9 +23,15 @@ function os_drush_command() {
   $cmds = array(
     'help_indexer' => array(
       'description' => 'Generate advanced help .ini files for boxes.',
-      'options' => array(),
+      'options' => array(
+        'force' => 'Force creation of index over an existing index file (default=false).',
+        'module' => 'Comma separated list of modules to index.',
+        'listonly' => 'List the modules that would receive an index, but don\'t make any changes.',
+       ),
       'examples' => array(
-        'drush @site help_indexer',
+        'drush @site help_indexer' => 'Create a help index for all boxes with help files but no index.',
+        'drush @site hi --force --module=os_mailchimp,vsite' => 'Overwrite exisiting help index, but only for os_mailchimp and vsite modules.',
+        'drush @site hi --listonly' => 'Show a list of the modules whose indices would be updated if run without --listonly.',
       ),
       'aliases' => array('hi'),
       'bootstraph' => 'DRUSH_BOOTSTRAPH_DRUPAL_DATABASE',
@@ -40,16 +46,24 @@ function os_drush_command() {
  * finds modules that define boxes.  creates .ini file advertising their help files.
  */
 function drush_os_help_indexer() {
+  $opt = new stdClass();
+  $opt->force = drush_get_option( array('force','f'), false );
+  $opt->module = drush_get_option( array('module','mod') );
+  $opt->listonly = drush_get_option( array('listonly', 'list'), false);
+  
+  $modules = (isset($opt->module)) ? explode(',',$opt->module) : module_list(); 
+ 
   $done = array();
-  foreach (module_list() as $module) {
+  foreach ($modules as $module) {
     if (_is_box($module)) {
-      $done[] = _mk_index($module);
+      $done[] = _mk_index($module, $opt);  
     }
   }
   
   $done = array_filter($done);
+  $msg = ($opt->listonly) ? 'The following modules have orphaned help files: ' : 'Created help index for: ';
   if (count($done)>0) {
-    echo "Created help index for " . implode(', ', $done) . "\n";
+    echo $msg . implode(', ', $done) . "\n";
   } else {
     echo "Couldn't find orphaned help files.\n";
   }
@@ -61,10 +75,10 @@ function drush_os_help_indexer() {
  * given a module, creates advanced help for its boxes
  * @return name of module or false
  */
-function _mk_index($module) {
+function _mk_index($module, &$opt) {
   $mod_path = drupal_get_path('module', $module);
   $inifile  = $mod_path . '/help/' . $module . '.help.ini';
-  if (file_exists($inifile)) {
+  if (file_exists($inifile) && !$opt->force) {
     return FALSE; //don't overwrite a good ini file
   }
   
@@ -86,8 +100,8 @@ function _mk_index($module) {
     }
   }
   
-  if ($write && file_put_contents($inifile, $txt)) {
-    return $module;
+  if ($write) {
+    if ($opt->listonly || file_put_contents($inifile, $txt)) { return $module; }
   } else {
     return FALSE;
   }
