@@ -7,14 +7,15 @@ Drupal.behaviors.os_manual_list = function (ctx) {
 	
 	var $form = $('#boxes-box-form'),
 		template = '<tr class="draggable">'+$('#edit-nodes-blank-nid').parents('tr').hide().html()+'</tr>',
-		tableDrag = Drupal.tableDrag['manual-nodes-list'];
+		tableDrag = Drupal.tableDrag['manual-nodes-list'],
+		new_id = parseInt($('#edit-count').val());
 	
 	// add a new row to the table, set all its form elements to the right values and make it draggable
 	$('.add_new', $form).click(function (e) {
 		var val = $('#edit-node-to-add', $form).val(),
 			patt = /(.+) \[nid:([\d]+)\]/,
 			matches = patt.exec(val),
-			id = $('table tr', $form).length-1,
+			id = new_id++,
 			new_row = $(template.replace(/blank/g, id));
 		
 		// there should actually be something in the field
@@ -27,6 +28,7 @@ Drupal.behaviors.os_manual_list = function (ctx) {
 			$('span', new_row).text(matches[1]);
 			$('#edit-nodes-'+id+'-title', new_row).val(matches[1]);
 			$('#edit-nodes-'+id+'-weight', new_row).addClass('field-weight').val(id);
+			$('#edit-nodes-'+id+'-weight', new_row).parents('td').css('display', 'none');
 			$('.tabledrag-handle', new_row).remove();
 			$('table tbody', $form).append(new_row);
 			new_row = $('#edit-nodes-'+id+'-nid', $form).parents('tr');
@@ -35,7 +37,6 @@ Drupal.behaviors.os_manual_list = function (ctx) {
 			setup_remove(new_row);
 
 			tableDrag.makeDraggable(new_row[0]);
-			tableDrag.hideColumns();
 		}
 	});
 	
