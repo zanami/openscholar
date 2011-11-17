@@ -113,7 +113,7 @@ function os_mailchimp_subscribe($api, $listid, $email, $fn=NULL, $ln=NULL) {
   include_once( drupal_get_path('module', 'os_mailchimp') . '/MCAPI.class.php');
   $MC = new MCAPI($api);
   
-  if ($MC->listSubscribe($listid, $email) || in_array($MC->errorCode, array(214) )) {
+  if ($MC->listSubscribe($listid, $email)) {
     return array('success'=>TRUE);
   } else {
     return array('success'=>FALSE,'msg'=>$MC->errorMessage); 
