@@ -77,6 +77,7 @@ class os_boxes_mailchimp extends os_boxes_default {
     
     if ($this->options['display'] == 'link') {
       //link to a popup containing the form
+      ctools_include('ajax');
       ctools_include('modal');
       ctools_modal_add_js();
       $block['content'] =  ctools_ajax_text_button($this->options['text'], 'os_mailchimp/js/subscribe/'.$this->delta, 'Subscribe to this mailing list', 'ctools-use-modal'); 
