@@ -7,14 +7,15 @@ Drupal.behaviors.os_manual_list = function (ctx) {
 	
 	var $form = $('#boxes-box-form'),
 		template = '<tr class="draggable">'+$('#edit-nodes-blank-nid').parents('tr').hide().html()+'</tr>',
-		tableDrag = Drupal.tableDrag['manual-nodes-list'];
+		tableDrag = Drupal.tableDrag['manual-nodes-list'],
+		new_id = parseInt($('#edit-count').val());
 	
 	// add a new row to the table, set all its form elements to the right values and make it draggable
 	$('.add_new', $form).click(function (e) {
 		var val = $('#edit-node-to-add', $form).val(),
 			patt = /(.+) \[nid:([\d]+)\]/,
 			matches = patt.exec(val),
-			id = $('table tr', $form).length-1,
+			id = new_id++,
 			new_row = $(template.replace(/blank/g, id));
 		
 		// there should actually be something in the field
