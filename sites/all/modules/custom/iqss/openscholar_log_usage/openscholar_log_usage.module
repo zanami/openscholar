@@ -138,7 +138,7 @@ class installation {
         sizeof($this->vsites),
         round( (time() - $this->age) / (60 * 60 * 24 * 7) ), //currently days.  fix it later.
         $this->views,
-        date('m/d/y', $this->last_visit),
+        $this->last_visit, //date('m/d/y', $this->last_visit),
         //$this->last_ping,
         $this->version,
       );

@@ -4,7 +4,15 @@ google.load('visualization', '1.1', {'packages':['controls','table']});
 
 
 function drawChart() {
-  var data = google.visualization.arrayToDataTable( Drupal.settings.openscholar_log_usage_data );
+  var d = Drupal.settings.openscholar_log_usage_data;
+  for (var i in d) {
+    if (typeof(d[i][4]) == 'number') {
+      d[i][4] = new Date(d[i][4]);
+    }
+  }
+  alert(d.toSource());
+  //var data = google.visualization.arrayToDataTable( Drupal.settings.openscholar_log_usage_data );
+  var data = google.visualization.arrayToDataTable( d );
   
   var tableChart = new google.visualization.ChartWrapper({
     'chartType': 'Table',
@@ -101,6 +109,19 @@ function drawChart() {
   var versionPicker = new google.visualization.ControlWrapper(version);
 
   //control-last_visit (would this be better served as a count than a date?
+  
+  //show dates as dates and not timestamps
+  /*var mydata = Drupal.settings.openscholar_usage_data;
+  for (var row in mydata) {
+    mydata[row][2] = new Date(mydata[row][2]);
+  }*/   //date and datetime columns are not supported
+  /*
+  var dateformatter = new google.visualization.DateFormat({ formatType:'Medium'});
+  dateformatter.format(data, 2);
+ */
+  
+  //try a pattern formatter for date
+  //also for host, so we can keep original url for filter, but add an href
   
   // Create the dashboard.
   //new google.visualization.Dashboard(document.getElementById('dashboard')).bind(agePicker, barChart)).draw(data);   
