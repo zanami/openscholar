@@ -22,6 +22,18 @@ function openscholar_log_usage_menu(){
       'type' => MENU_CALLBACK,
   );
   
+  $items['usage/graph'] = array(
+    'page callback' => 'openscholar_log_usage_graph',
+    'type' => 'MENU_CALLBACK', 
+    'access arguments' => array('access content'), 
+  );  
+  
+  /* just to test teh cron function without wiating for all the crons */
+  $items['usage/cron'] = array(
+    'page callback' => 'openscholar_log_usage_cron',
+    'type' => 'MENU_CALLBACK', 
+    'access arguments' => array('access content'), 
+  );  
   return $items;
 }
 
@@ -77,4 +89,296 @@ function openscholar_log_usage_log(){
   
   db_query("REPLACE INTO {openscholar_usage_log} (host,host_name,vsite,age,views,version,last_visit) VALUES ('%s','%s','%s',FROM_UNIXTIME(%d),%d,'%s',NOW())",array($_REQUEST['host'],$_SERVER['REMOTE_HOST'],$_REQUEST['vsite'],$_REQUEST['age'],$views,$_REQUEST['version']));
   
+}
+
+/** 
+ * @class installation
+ * each instance is an installation of openscholar that has been reported to our usage log
+ */
+class installation {
+  private $host;
+  private $vsites = array();
+  private $age;
+  private $views;
+  private $version;        
+  private $last_visit;
+  //private $last_ping;
+  private $status;
+  
+  function __construct(&$r, &$pings) {
+    $this->host = $r->host;
+    $this->version = $r->version;
+    //$this->last_ping = (isset($r->last_ping)) ? $r->last_ping : 'Never'; 
+    $this->views = (int)$r->views;    
+    $this->age = strtotime($r->age);
+    //no vsite, assuming $r is sorted by vsite so empties show up first
+    $this->last_visit = strtotime($r->last_visit);
+    $this->status = $pings[$r->host];
+    $this->version = $r->version;
+  }
+  
+  function addData(&$r) {
+    $this->vsites[] = $r->vsite;
+    if ((int)$r->views > $this->views) { $this->views = (int)$r->views; }
+    if (strtotime($r->age) < $this->age) { $this->age = strtotime($r->age); }
+    if (strtotime($r->last_visit) > $this->last_visit) { $this->last_visit= strtotime($r->last_visit); }
+    //ignoring version for now.
+    //last ping should be once per host
+    //no host change
+  }
+  
+  /* 
+   * @function render()
+   * formats this object as an array for gcharts.  
+   */
+  function render() {
+    if (sizeof($this->vsites) && $this->status) {
+      return array(
+        '<a href="http://'.$this->host.'" target="_blank">'.$this->host.'</a>',
+        sizeof($this->vsites),
+        round( (time() - $this->age) / (60 * 60 * 24 * 7) ), //currently days.  fix it later.
+        $this->views,
+        $this->last_visit, //date('m/d/y', $this->last_visit),
+        //$this->last_ping,
+        $this->version,
+      );
+    }
+  }
+}
+
+/**
+ * page shows data from openscholar_usage_log db as a chart
+ * copies data into some local objects first, as its spread over host/vsite rows.
+ */
+function openscholar_log_usage_graph() {
+  $out = '';
+  
+  $ping_response = _openscholar_log_usage_graph_ping_response();
+  
+  $query = 'SELECT * FROM {openscholar_usage_log} as log  ORDER  BY vsite' ; 
+	$result = db_query($query);
+  	
+	$installations = array();
+  	
+	while ($r = db_fetch_object($result)) {
+    //filter hostname
+    if (($r->host = _openscholar_log_usage_get_host($r->host)) == FALSE) {
+      continue;
+    }
+    
+	  if (!isset($installations[$r->host])) {
+	    $installations[$r->host] = new installation($r, $ping_response);
+	  } else {
+	    $installations[$r->host]->addData($r);
+	  } 
+	}
+	
+	/* prepare data from installations[] for javascript */
+	$data_header = array('Host', 'Sites', 'Age', 'Views', 'Last Visit', 'OS Version');
+	$data = array($data_header);
+	foreach($installations as $delta => $i) {
+	  $d = $i->render();
+	  if ($d) { $data[] = $d; }
+	}
+  
+  $out .= _openscholar_log_usage_gchart(json_encode($data));
+
+  return $out;
+}
+
+/** 
+ * @function _openscholar_log_usage_gchart($data)
+ * Attaches google api javacsript to page.  Includes $data array as json for chart.
+ */
+function _openscholar_log_usage_gchart($data) {
+  drupal_set_html_head('<script type="text/javascript" src="https://www.google.com/jsapi"></script>');
+  drupal_add_css(drupal_get_path('module', 'openscholar_log_usage') . '/openscholar_log_usage.css');
+  drupal_add_js(drupal_get_path('module', 'openscholar_log_usage') . '/openscholar_log_usage.js', 'module');
+  //drupal_add_js('google.load("visualization", "1.1", {"packages":["controls"]});', 'inline');
+  drupal_add_js('Drupal.settings.openscholar_log_usage_data = ' . $data . ';', 'inline');
+  return <<<EOF
+    <div id="dashboard">
+    	<div id="control-host"></div><br />
+    	<div id="control-vsites"></div><br />
+    	<div id="control-age"></div><br />
+    	<div id="control-views"></div><br />
+    	<! div id="control-last_visit"><! /div><! br />
+    	<div id="control-version"></div><br />
+    </div>
+    <div id="chart_div"></div>
+    <div id="table_div"></div>
+    
+EOF;
+}
+
+/*
+ * given a hostname, return normalized hostname or null if we're ignoring it
+ * by normalized hostname, I mean www.scholar.com -> scholar.com so that the entries can be counted together.
+ */
+function _openscholar_log_usage_get_host($host) {
+
+  //remove http://, www., and trailing slash
+  $host = preg_replace('/http:\/\//', '', $host);
+  $host = preg_replace('/^www\./', '', $host);
+  $host = preg_replace('/\/$/', '', $host);
+  
+  // drop hosts with demo, dev, local, sandbox, and test in the title
+  if (preg_match( '/.*demo|dev|local|sandbox|test.*/', $host)) {
+    return FALSE;
+  } 
+  
+  //drop hosts without a dot
+  if (!preg_match( '/\./', $host)) {
+    return FALSE;
+  }
+  
+  //drop urls with no letters - aka ip addresses.
+  //not sure if this is smart.  certainly drop 10 and 192 though. 
+  if (!preg_match( '/[[:alpha:]]/', $host)) {
+    return FALSE;
+  }
+  
+  return $host;
+}
+
+/**
+ * implmentation of hook_cron
+ * gets list of hostnames.  pings a number of them (not all at once of course) based on which was pinged least recently
+ * stores whether or not they ping.
+ */
+function openscholar_log_usage_cron() {
+  define('HOSTS_TO_PING', 10);      //how many hosts to check during each cron job
+  define('CONCURRENT_PINGS', 6);    //how many simultaneous connections to make.  more will result in faster cron jobs, especially for slow hosts
+//  define('TIMEOUT_SECONDS', 15.0);  //seconds before giving up on a host
+  
+  //first, try hosts that aren't in the pinged hosts list
+  $query  = 'SELECT DISTINCT log.host FROM {openscholar_usage_log} as log ';
+  $query .= 'LEFT OUTER JOIN (SELECT host FROM {openscholar_usage_log_host_check}) as pinged ';
+  $query .= 'ON log.host = pinged.host WHERE pinged.host IS NULL ';
+    
+  $result = db_query($query);
+  $hosts = array();
+  while ($r = db_fetch_object($result)) {
+    $h = _openscholar_log_usage_get_host($r->host);
+    if ($h) { $hosts[] = $h; }
+  }
+  
+  //get_host may have changed the name so that we're repinging a freshly checked host.  filter them out.
+  $query = 'SELECT host FROM {openscholar_usage_log_host_check}';
+  $result = db_query($query);
+  $already_checked = array();
+  while ($r = db_fetch_object($result)) {
+    $already_checked[] = $r->host;
+  }
+  $hosts = array_diff($hosts, $already_checked);
+  
+  // if we don't have any unchecked hosts, instead try the least recently checked hosts 
+  if (empty($hosts)) {
+    $query = 'SELECT DISTINCT host FROM {openscholar_usage_log_host_check} ORDER BY last_check ASC' ;
+    $result = db_query($query);
+    while ($r = db_fetch_object($result)) {
+      $h = _openscholar_log_usage_get_host($r->host);
+      if ($h) { $hosts[] = $h; }
+    }
+  }
+  
+  //ping some hosts
+  $checked = _openscholar_log_usage_check_hosts( array_slice( array_unique($hosts), 0, HOSTS_TO_PING) );  
+  foreach ($checked as $host => $status) {
+    $query = 'REPLACE into {openscholar_usage_log_host_check} (host, last_check, valid) VALUES ( "%s" , %d, %d )'; 
+    $r = db_query($query, $host, time(), (int)$status);
+  }
+  
+}
+
+/**
+ * @function _openscholar_log_usage_check_hosts
+ * checks validity of array of hosts
+ * first make sure host pings.  second make sure it's got OS content.
+ * returns array of hosts.  TRUE -> pinged.  FALSE -> failed.
+ */
+function _openscholar_log_usage_check_hosts($hosts) {
+  $curling = array();		 //active curl handles
+	$done = array();			//store finished host => content
+	$mh = curl_multi_init();
+	$is_running = null;
+
+	do {
+		//fill up the curl queue at start of reqs and if any urls have finished
+		while (sizeof($curling) < CONCURRENT_PINGS && sizeof($hosts) > 0) {
+			$host = array_pop($hosts) ;
+			$curling[$host] = curl_init( $host );
+			curl_setopt( $curling[$host], CURLOPT_RETURNTRANSFER, TRUE );
+			curl_setopt( $curling[$host], CURLOPT_CONNECTTIMEOUT, 10 );        //time to establish connection
+			curl_setopt( $curling[$host], CURLOPT_TIMEOUT, 60 );               //time to finish curl
+			curl_multi_add_handle( $mh, $curling[$host] );
+		}
+
+		// run curl
+		curl_multi_exec($mh, $is_running);
+
+		//pop finished hosts.
+		//curl_multi_remove_handle also removes the downloaded data, so we stash it for later.
+		$ready = curl_multi_select($mh);
+		while ($ready > 0) {
+  		$info = curl_multi_info_read($mh);
+  		if ( $info && $info['msg']==CURLMSG_DONE ) {
+  			//copy response
+  			$host = curl_getinfo( $info['handle'], CURLINFO_EFFECTIVE_URL );
+  			$host = str_replace("HTTP://", "", $host);
+  			$http_code = curl_getinfo( $info['handle'], CURLINFO_HTTP_CODE );
+  			$content = curl_multi_getcontent( $info['handle'] );
+  
+  			/* only keep valid urls */ 
+  			$done[$host] = ($http_code && _is_openscholar($content) );
+  			 
+  			//remove from queue and close handles.
+  			curl_multi_remove_handle( $mh, $curling[$host] );
+  			curl_close( $curling[$host] );
+  			unset( $curling[$host] ); 
+  
+  		} 
+  		
+  		$ready--;
+		}
+		
+		//hosts aren't ready for reading, but curl says they're done.  fail them. 
+	  if (!$is_running) {
+  		foreach ($curling as $host => $ch) { 
+  		  $done[$host] = FALSE;
+  		  curl_multi_remove_handle( $mh, $curling[$host] );
+  			curl_close( $curling[$host] );
+  			unset( $curling[$host] );  
+		  }
+	  }
+		
+
+	} while ($is_running>0 || count($hosts)>0 );
+	
+	/* anything left in $curling didn't curl correctly.  assume failure */
+
+	return $done;
+}
+
+
+/** 
+ * Check if site content looks like openscholar
+ */
+
+function _is_openscholar($content) {
+	$needle = '/http:\/\/openscholar\.harvard\.edu\/openscholar_lu\/spacer\.gif/';
+	return preg_match( $needle, $content );
+}
+
+/** 
+ * get the host status table as an array
+ */
+function _openscholar_log_usage_graph_ping_response() {
+  $query = 'SELECT host,valid FROM {openscholar_usage_log_host_check}';
+  $result = db_query($query);
+  $out = array();
+  while ($r = db_fetch_object($result)) {
+    $out[$r->host] = $r->valid;
+  }
+  return $out;
 }
