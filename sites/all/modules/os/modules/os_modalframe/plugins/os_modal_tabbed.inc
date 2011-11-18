@@ -178,6 +178,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
         }
       }
       $block['content'] = theme('quicktabs', (array)$qt);
+      drupal_add_js(drupal_get_path('module', 'os_modalframe').'/theme/os_modal_tabbed_front.js');
 
       return $block;
   }
