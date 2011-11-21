@@ -1,7 +1,7 @@
 <?php 
 
 /**
- * @file vsitehelp.drush.inc - collection of drush commands for openscholar
+ * @file vsitehelp.drush.inc 
  */
 
 /**
@@ -10,15 +10,13 @@
 function vsitehelp_drush_help($section) {
   switch ($section){
     case 'drush:build_docs':
-      return dt('Generate advanced help .ini files for boxes.');
+      return dt('Build advanced help documentation from os_help files.');
   }
 }
 
 /**
  * implementation of hook_drush_command
  */
-// more options: find missing, regenerate all, dry run
-//arg for specifying one module
 function vsitehelp_drush_command() {
   $cmds = array(
     'build_docs' => array(
@@ -42,45 +40,33 @@ function vsitehelp_drush_command() {
 }
 
 /**
- * drush command help_indexer
- * finds modules that define boxes.  creates .ini file advertising their help files.
+ * implementation of drush_hook_command
+ * finds os_help files, includes them in vsitehelp
  */
 function drush_vsitehelp_build_docs() {
-  define( 'DIR', '/tmp/vsitehelp/' );  //destination for ini and html files
-  define( 'BR', "\n");  //newline shortcut
-  
+  define( 'DIR', drupal_get_path('module', 'vsitehelp') . '/help/'  );  //destination for ini and html files
+  define( 'BR', "\n");                                                  //newline shortcut
   
   // get all os_help files
   $files = drupal_system_listing('.*\.os_help\.ini$', 'modules');
-  
-  
-  //and all includes as well
-  //format is module => parent override
-  /*$includes = array(
-    'features' => 'developer',
-  );
-  foreach (drupal_system_listing('.*\.help\.ini$', 'module') as $filename => $obj) {
     
-  }*/
-  //maybe just listing additional ini files and their parent will work better
-  
   // start with the default template
   $ini = file_get_contents(drupal_get_path('module', 'vsitehelp') . '/vsitehelp.template.ini') . BR . BR;
+  $done = array();
   
   foreach($files as $name => $o_file) {
     $helpfile = str_replace('os_help', 'html', $name);
     $path = str_replace($o_file->basename, '', $o_file->filename);
     
-    $ini .= file_get_contents($o_file->filename) . BR;
-    copy($path.$helpfile, DIR.$helpfile);
+    $file = trim(file_get_contents($o_file->filename)) . BR;
+    $file .= BR.BR;    
+    $ini .= $file;
+
+    copy($path.$helpfile, DIR . $helpfile);
+    $done[] = str_replace('.os_help', '', $o_file->name);
   }
-  echo '<pre>' . $ini . '</pre>';
   
-  file_put_contents(DIR . '/vsitehelp.ini', $ini);
-/*  $opt = new stdClass();
-  $opt->force = drush_get_option( array('force','f'), false );
-  $opt->module = drush_get_option( array('module','mod') );
-  $opt->listonly = drush_get_option( array('listonly', 'list'), false);
-  */
+  echo 'Included documentation for ' . implode(', ', $done);
+  file_put_contents(DIR . '/vsitehelp.help.ini', $ini);
 }
 
