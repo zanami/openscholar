@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * dev menu entry so drush commands can be debugged
+ */
+
+function vsitehelp_menu() {
+  $items = array();
+  $items['build_docs'] = array(
+    'title' => t('drush build_docs'), 
+    'page callback' => 'vsitehelp_drush_page',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+function vsitehelp_drush_page() {
+  require_once(drupal_get_path('module', 'vsitehelp') . '/vsitehelp.drush.inc');
+  drush_vsitehelp_build_docs();
+  return 'dev page for debugging drush ocmmand';
+}
+
 function vsitehelp_help($path) {
   switch ($path) {
     //features
