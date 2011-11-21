@@ -65,7 +65,7 @@ function drush_vsitehelp_build_docs() {
   //maybe just listing additional ini files and their parent will work better
   
   // start with the default template
-  $ini = file_get_contents(drupal_get_path('module', 'vsitehelp') . '/vsitehelp.template.ini') . BR;
+  $ini = file_get_contents(drupal_get_path('module', 'vsitehelp') . '/vsitehelp.template.ini') . BR . BR;
   
   foreach($files as $name => $o_file) {
     $helpfile = str_replace('os_help', 'html', $name);

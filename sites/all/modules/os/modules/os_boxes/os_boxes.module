@@ -17,13 +17,13 @@ function os_boxes_ctools_plugin_api($module, $api) {
  */
 function os_boxes_boxes_plugins() {
   $info = array();
-  $path = drupal_get_path('module', 'os_boxes') .'/plugins';
+  $path = drupal_get_path('module', 'os_boxes') .'/plugins/';
 
   $info['os_boxes_default'] = array(
     'handler' => array(
       'class' => 'os_boxes_default',
       'file' => 'os_boxes_default.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_default',
       'parent' => 'box',
     ),
   );
@@ -32,7 +32,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_content',
       'file' => 'os_boxes_content.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_content',
       'parent' => 'box',
     ),
   );
@@ -47,7 +47,7 @@ function os_boxes_boxes_plugins() {
 	  'handler' => array(
 	    'class' => 'os_boxes_addthis',
 	    'file' =>  'os_boxes_addthis.inc',
-	    'path' => $path,
+	    'path' => $path . '/os_boxes_addthis',
 	    'parent' => 'os_boxes_default',
 	  ),
 	);
@@ -61,7 +61,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_feedreader',
       'file' => 'os_boxes_feedreader.inc',
-      'path' => $path,
+      'path' => $path  . '/os_boxes_feedreader',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -74,7 +74,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_gallery',
       'file' => 'os_boxes_gallery.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_gallery',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -86,7 +86,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_rss',
       'file' => 'os_boxes_rss.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_rss',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -98,7 +98,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_twitterfeed',
       'file' => 'os_boxes_twitterfeed.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_twitterfeed',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -111,7 +111,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_cclicense',
       'file' => 'os_boxes_cclicense.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_cclicense',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -124,7 +124,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_node',
       'file' => 'os_boxes_node.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_node',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -137,7 +137,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_bio',
       'file' => 'os_boxes_bio.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_bio',
       'parent' => 'os_boxes_node',
     ),
     'access' => false, //This box has no options yet, just use the default instance
@@ -151,7 +151,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_oembed',
       'file' => 'os_boxes_oembed.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_oembed',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -162,7 +162,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_shields',
       'file' => 'os_boxes_shields.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_shields',
       'parent' => 'os_boxes_default',
     )
   );
@@ -175,7 +175,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_booktoc',
       'file' => 'os_boxes_booktoc.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_booktoc',
       'parent' => 'os_boxes_default',
     )
   );
@@ -188,7 +188,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_curr_toc',
       'file' => 'os_boxes_booktoc.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_booktoc',
       'parent' => 'os_boxes_booktoc',
     ),
     'access' => false, //Do not allow instances of this to be created
@@ -203,7 +203,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_simpleview_list',
       'file' => 'os_boxes_simpleview_list.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_simpleview_list',
       'parent' => 'spaces_sv_post_list'
     ),
   );
@@ -218,7 +218,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_pub_grps',
       'file' => 'os_boxes_pub_grps.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_pub_grps',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -231,7 +231,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_pub_type',
       'file' => 'os_boxes_pub_type.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_pub_type',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -244,7 +244,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_pub_year',
       'file' => 'os_boxes_pub_year.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_pub_year',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -257,7 +257,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_pub_ca',
       'file' => 'os_boxes_pub_ca.inc',
-      'path' => $path,
+      'path' => $path . '/os_boxes_pub_ca',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -269,7 +269,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'vsite_taxonomy_fbt',
       'file' =>  'vsite_taxonomy_fbt.inc',
-      'path' => $path,
+      'path' => $path . '/vsite_taxonomy_fbt',
       'parent' => 'os_boxes_default',
     ),
   );
