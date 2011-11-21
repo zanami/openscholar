@@ -1,4 +1,6 @@
-.front #block-iqss_gking-areas_of_research {
+.front .box-vsite_taxonomy_fbt span.count {display:none;}
+
+.front .box-vsite_taxonomy_fbt {
   width:100%;
   position: relative;
   padding:0;
@@ -12,7 +14,7 @@
   border: none;
   }
 
-.front #block-iqss_gking-areas_of_research h3.title {
+.front .box-vsite_taxonomy_fbt h3.title {
   margin: 0;
   font-size: 1.56em;
   line-height: 33px;
@@ -21,12 +23,14 @@
   padding-top: 0;
   padding-bottom: 0;
   font-weight: normal;
+    font-size:1.5em;
   border: none;
   height: 50px;
   letter-spacing:0;
   }
 
-.front #block-iqss_gking-areas_of_research h4 {
+.front .box-vsite_taxonomy_fbt .item-list ul li.last .term-head a,
+.front .box-vsite_taxonomy_fbt .item-list ul li.first .term-head a {
   color: #68efde;
   margin-bottom:34px;
   margin-top: 0;
@@ -38,22 +42,23 @@
   font-weight:normal;
   }
 
-.front #block-iqss_gking-areas_of_research .col {
+.front .box-vsite_taxonomy_fbt .item-list ul li.last,
+.front .box-vsite_taxonomy_fbt .item-list ul li.first  {
   margin-top: 0;
   }
 
-.front #block-iqss_gking-areas_of_research #methods {
+.front .box-vsite_taxonomy_fbt .item-list ul li.last {
     text-align: right;
     float: left;
     width:262px;
     }
 
-.front #block-iqss_gking-areas_of_research #applications {
+.front .box-vsite_taxonomy_fbt ul li.first {
     float: right;
     width: 298px;
     }
 
-.front #block-iqss_gking-areas_of_research dd {
+.front .box-vsite_taxonomy_fbt .description {
     position:absolute;
     display:none;
     width:224px;
@@ -106,7 +111,7 @@
   background: url('images/line.png') no-repeat 0 50% #3b4e4e;
   }
 
-.front #block-iqss_gking-areas_of_research #methods dt.active {
+.front .box-vsite_taxonomy_fbt ul li ul li {
   background-position: 236px 50%;
   }
 

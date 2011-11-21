@@ -15,6 +15,7 @@ class os_boxes_twitterfeed extends os_boxes_default {
 
     // the default value for the form
     $options['twitter_username'] = '';
+    $options['num_items'] = 5;
     $options['followme_link'] = 0;
     return $options;
   }
@@ -30,6 +31,12 @@ class os_boxes_twitterfeed extends os_boxes_default {
       '#required' => TRUE,
       '#default_value' => $this->options['twitter_username'],
       '#description' => "To pull your Twitter posts into your site add your username to the above field (examples: '@username' says show all the tweets I have posted, 'from:username' says pull all the tweets and retweets I have sent, '#harvard_scholar' says pull anything tagged harvard_scholar)."
+    );
+    
+    $form['num_items'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Number of tweets to display'),
+      '#default_value' => $this->options['num_items']
     );
 
     $form['followme_link'] = array(
@@ -52,11 +59,12 @@ class os_boxes_twitterfeed extends os_boxes_default {
 		//if(!($vsite = vsite_get_vsite()) || !$vsite->access_feature($op = 'view', 'scholar_reader')) return array();
 
 		// settings values
-    $twitter_username = $this->options['twitter_username'];
+    $twitkey = $this->options['twitter_username'];
+    $num_items = $this->options['num_items'];
     $followme_link = $this->options['followme_link'];
 
 
-		$output = twitter_pull_render ($twitter_username);
+		$output = twitter_pull_render($twitkey, $title = NULL, $num_items);
 
 		// include a followme link
 		if ($this->options['twitter_followme'] !== 0 && strpos($twitter_username, '#') !== 0) {

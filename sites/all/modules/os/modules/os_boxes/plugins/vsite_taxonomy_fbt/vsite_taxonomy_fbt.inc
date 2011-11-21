@@ -27,7 +27,7 @@ class vsite_taxonomy_fbt extends os_boxes_default {
     $options['show_vocabulary_name'] = 1;
     
     //Tree
-    $options['show_tree'] = 0;
+    $options['show_tree'] = 1;
     $options['tree_max_depth'] = 0;
 
     return $options;
@@ -127,7 +127,11 @@ class vsite_taxonomy_fbt extends os_boxes_default {
                     ),
       '#default_value' => $this->options['tree_max_depth'],
       '#process' => array('ctools_dependent_process'),
-      '#dependency' => array('show_tree' => array('1')),
+      '#dependency' => array(
+        'edit-show-tree' => array(
+          1
+        )
+      )
     );
 
     $form += parent::options_form();

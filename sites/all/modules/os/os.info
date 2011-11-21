@@ -1,5 +1,4 @@
 core = "6.x"
-dependencies[] = "admin_menu"
 dependencies[] = "advanced_help"
 dependencies[] = "better_formats"
 dependencies[] = "biblio"

@@ -8,7 +8,7 @@
 	Drupal.behaviors.os_book_linkage = function() {
 		if (!$('body.node-type-book').length) return;
 		var pages = $('.book-page');
-		display = $('#content p').not('.book-page p').parent();
+		display = $('#content .book-page').parent();
 		var blocks = $().not('*');
 		perma = $('#book-permalink');
 		header = $('#content-main .title').not('.book-menu .title');
