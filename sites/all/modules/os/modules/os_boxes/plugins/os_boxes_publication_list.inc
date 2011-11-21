@@ -20,6 +20,7 @@ class os_boxes_publication_list extends os_boxes_default {
     $options['more_link'] = "";
     $options['use_pager'] = 1;
     $options['show_all_types'] = 1;
+    $options['style'] = 'titles';
 
     return $options;
   }
@@ -39,6 +40,17 @@ class os_boxes_publication_list extends os_boxes_default {
     //Set to all types if none have been selected
   	if(!count($this->options['pub_types'])) $this->options['pub_types'] = array_keys($options);
 
+  	$form['style'] = array(
+      '#type' => 'select',
+      '#title' => t('Display Style'),
+      '#options' => array(
+        'teasers' => t('List of teasers'),
+        'titles' => t('List of titles')
+      ),
+      '#required' => TRUE,
+      '#default_value' => $simpleview['style']
+    );
+    
   	$form['number_of_items'] = array(
       '#type' => 'textfield',
       '#title' => 'Number of displayed posts',
@@ -204,6 +216,33 @@ class os_boxes_publication_list extends os_boxes_default {
     	$view->display_handler->set_option('items_per_page',intval($this->options['number_of_items']));
     	$view->set_items_per_page(intval($this->options['number_of_items']));
     }
+    
+	  switch ($this->options['style']){
+	  	case 'titles':
+	  		//Change fron teaser view to using fields
+	  		$view->display_handler->override_option('fields', array(
+			    'title' => array(
+			      'label' => '',
+			      'link_to_node' => 1,
+			      'exclude' => 0,
+			      'id' => 'title',
+			      'table' => 'node',
+			      'field' => 'title',
+			      'relationship' => 'none',
+			      'override' => array('button' => 'Use default'),
+			    ),
+			  ));
+			  $view->display_handler->override_option('row_plugin', 'fields');
+			  $view->display_handler->override_option('style_plugin', 'list');
+			  $view->display_handler->override_option('style_options', array(
+			    'grouping' => '',
+			    'type' => 'ul',
+			  ));
+	  	break;
+	  	case 'teasers':
+	  	default:
+	  		//Do nothing, default
+	  }
   }
   
   /**
