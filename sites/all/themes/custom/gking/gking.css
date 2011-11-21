@@ -229,7 +229,7 @@ a.more {
   background:#3b4e4e;
   }
 
-#sidebar-second #block-iqss_gking-areas_of_research h3.title {
+.front .box-vsite_taxonomy_fbt h3.title {
   background: url(images/aor-h3.png) 0 100% repeat-x #504F4B;
   color: #fff;
   margin-left: -16px;
@@ -359,6 +359,7 @@ display: none;
 
 #content-top {
   margin-bottom: 0.5em;
+padding:0 32px 0 0;
   }
 
 #header-left {
@@ -628,12 +629,12 @@ html.js .front #header-main div.ctools-dropdown div.ctools-dropdown-container {
 
 /* Publications Tabs & Research Group Tabs */
 
-.front #content-main #pub_type_tabs {
+.front #content-main .box-os_modal_tabbed {
   background:url(images/pubs-bg.png) repeat-x 0 0 #fff;
   padding: 0 26px;
   }
 
-#pub_type_tabs h3.title,
+.box-os_modal_tabbed h3.title,
 body.page-iqss-gking-research-group h2.title {
   float: left;
   border:none;
@@ -649,64 +650,34 @@ body.page-iqss-gking-research-group h2.title {
   color: #000;
   }
 
-#pub_type_tabs .node h3.title {
+.box-os_modal_tabbed .node h3.title {
   font: bold .9em/normal verdana, helvetica, sans-serif;
   float: none;
   }
 
-#pub_type_tabs .node h3.title span.date, #pub_type_tabs .node h3.title span.files a  {
+.box-os_modal_tabbed .node h3.title span.date, .box-os_modal_tabbed .node h3.title span.files a  {
   font-weight: normal;
   }
 
-#pub_type_tabs ul.ui-tabs-nav,
-body.page-iqss-gking-research-group ul.ui-tabs-nav{
+
+body.page-iqss-gking-research-group ul.quicktabs_tabs {
   float: right;
   margin-top: 15px;
   }
 
-.ui-tabs .ui-tabs-nav {
-  -moz-border-radius: 0;
-  -webkit-border-bottom-right-radius: 0 0;
-  -webkit-border-bottom-left-radius: 0 0;
-  -webkit-border-top-left-radius: 0 0;
-  -webkit-border-top-right-radius: 0 0;
-  }
 
 .ui-widget-header {
   background: transparent;
   }
 
-.ui-tabs-nav li {
-  float: left;
-  margin: 0;
-  background: none;
-  }
 
-.ui-tabs-nav li:last-child {
-  margin-right: 0;
-  }
-
-.ui-tabs-nav li a, .ui-tabs-nav li a:visited, .ui-tabs-nav li a,.ui-tabs-nav li.ui-state-default a, .ui-tabs-nav li.ui-state-default a:visited  {
-  padding: 0;
-  color: #000;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 28px;
-  padding: 10px 13px 20px 13px;
-  }
-
-.ui-tabs-nav li.ui-tabs-selected a,
-.ui-tabs-nav li.ui-tabs-selected a:visited {
-  color: #000;
-  background: #fff;
-   }
 
 body.page-iqss-gking-research-group .ui-tabs-nav li.ui-tabs-selected a,
 body.page-iqss-gking-research-group .ui-tabs-nav li.ui-tabs-selected a:visited {
   color: #CC6733;
   }
 
-.ui-tabs .ui-tabs-panel {
+.box-os_modal_tabbed .ui-tabs-panel {
   clear: both;
   padding-top: 1em;
   }
@@ -735,6 +706,69 @@ body.page-iqss-gking-research-group h3 {
 .node-type-presentation.node-teaser div.filefield-file img {
   vertical-align:middle;
   }
+
+/**	 QUICK TABS**/
+	
+div.quicktabs_main {
+padding:10px;
+-moz-margin-top: 0px;
+margin-top: 1px;
+background-image: none;
+	}
+	
+.quicktabs_tabs {
+    float: right;
+}
+
+ul.quicktabs_tabs {
+    margin-top: 20px;
+}
+
+.quicktabs_tabs ul {
+width:100%;
+
+}
+
+ul.quicktabs_tabs li {
+list-style: none;
+display: inline;
+margin: 0;
+}
+
+.quicktabs_tabs li a {
+text-decoration: none;
+padding: 10px 12px 18px 12px;
+background: transparent;
+ -moz-border-radius-topleft: 0px;
+ -moz-border-radius-topright: 0px;
+-webkit-border-top-left-radius:0px;
+ -webkit-border-top-right-radius:0px;
+border-top-left-radius: 0px;
+border-top-right-radius: 0px;
+font-style:bold;
+border:none;
+}
+
+.quicktabs_tabs li a:link, .quicktabs_tabs li a:visited, #tablist li a:visited {
+color: #000;
+font-size: 14px;
+font-weight:bold;
+}
+
+.quicktabs_tabs li a:hover {
+color: #000;
+background: transparent;
+}
+
+.quicktabs_tabs li.active a {
+color: #000;
+background: #FFF;
+border:none;
+}
+
+.quicktabs_wrapper .quicktabs_tabpage {margin-top:55px;}
+
+.box-os_modal_tabbed h3.title {font-size: 21px;}
 
 /* FOOTER */
 
