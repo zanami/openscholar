@@ -63,6 +63,7 @@ function drush_vsitehelp_build_docs() {
     $ini .= $file;
 
     copy($path.$helpfile, DIR . $helpfile);
+    //what about images?
     $done[] = str_replace('.os_help', '', $o_file->name);
   }
   
