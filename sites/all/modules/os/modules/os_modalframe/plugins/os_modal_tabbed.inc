@@ -178,6 +178,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
         }
       }
       $block['content'] = theme('quicktabs', (array)$qt);
+      drupal_add_js(drupal_get_path('module', 'os_modalframe').'/theme/os_modal_tabbed_display.js');
 
       return $block;
   }
@@ -188,7 +189,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
  */
 function os_modal_tabbed_add_form_externals($form, &$form_state) {
   drupal_add_css(drupal_get_path('module', 'os_modalframe').'/theme/os_modal_tabbed.css');
-  drupal_add_js(drupal_get_path('module', 'os_modalframe').'/theme/os_modal_tabbed.js');
+  drupal_add_js(drupal_get_path('module', 'os_modalframe').'/theme/os_modal_tabbed_form.js');
 
   return $form;
 }

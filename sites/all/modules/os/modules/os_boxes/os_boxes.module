@@ -275,6 +275,31 @@ function os_boxes_boxes_plugins() {
   );
 
 
+  $info['os_boxes_manual_list'] = array(
+    'title' => 'Create a List',
+    'description' => 'Create your own list of posts',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_boxes_manual_list',
+      'file' => 'os_boxes_manual_list.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
+  $info['os_boxes_pub_typ_list'] = array(
+    'title' => 'List of Publications',
+    'description' => 'List of Publications',
+    'tags' => array('Content'),
+    'module dependencies' => array('scholar_publications'),
+    'handler' => array(
+      'class' => 'os_boxes_publication_list',
+      'file' => 'os_boxes_publication_list.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
   foreach ($info as $key => $block) {
   	if(isset($info[$key]['module dependencies'])){
   		foreach ($info[$key]['module dependencies'] as $module) {
@@ -604,7 +629,8 @@ function os_boxes_box_validate(&$form, &$form_state){
 	ctools_include('plugins');
 	$box_class = ctools_plugin_load_class('boxes', 'plugins', $form_state['values']['plugin_key'], 'handler');
 	if ($box_class && is_callable("{$box_class}::options_validate")) {
-		call_user_func(array($box_class,'options_validate'),$form, $form_state);
+		$params = array($form, $form_state);
+		call_user_func_array(array($box_class,'options_validate'),$params); //user_func_array is used to allow pass by ref
 	}
 }
 
@@ -619,7 +645,8 @@ function os_boxes_box_submit(&$form, &$form_state){
 	ctools_include('plugins');
 	$box_class = ctools_plugin_load_class('boxes', 'plugins', $form_state['values']['plugin_key'], 'handler');
   if ($box_class && is_callable("{$box_class}::options_submit")) {
-    call_user_func(array($box_class,'options_submit'),$form, $form_state);
+  	$params = array($form, $form_state);
+    call_user_func_array(array($box_class,'options_submit'),$params);
   }
 }
 
@@ -711,13 +738,27 @@ function os_boxes_theme_registry_alter(&$theme_registry){
 }
 
 /**
+ * Hook views_pre_view (called pre execute
+ */
+function os_boxes_views_pre_view(&$view, &$display_id, &$args) {
+	//If this view has been configured to work with boxes then run alter for that box
+	if(isset($view->dom_id)){
+		list($module,$delta) = explode("-",$view->dom_id,2);
+		if($module == "boxes" && ($box = boxes_load($delta)) && method_exists($box,'views_alter')){
+			$box->views_alter($view,$display_id,$args);
+		}
+	}
+}
+
+
+/**
  * Theme function for the box.
  */
 function theme_os_boxes_box($block) {
-	
+
 	//Do not print anything if the box is empty, it is as if it does not exist
 	if(!strlen($block['content'])) return "";
-	
+
 	//Use the default theme function
 	return theme_boxes_box($block);
 }
