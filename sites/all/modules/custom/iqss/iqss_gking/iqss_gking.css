@@ -31,8 +31,8 @@ body.front .box-vsite_taxonomy_fbt h3.title {
   letter-spacing:0;
   }
 
-body.front .box-vsite_taxonomy_fbt div.item-list ul li.term-Methods.last, 
-body.front .box-vsite_taxonomy_fbt div.item-list ul li.term-Applications.first {
+body.front .box-vsite_taxonomy_fbt div.item-list ul li.term-methods.last, 
+body.front .box-vsite_taxonomy_fbt div.item-list ul li.term-applications.first {
      background: none repeat scroll 0% 0% transparent;
      font-size: 17px;
      font-weight: normal;
@@ -40,30 +40,30 @@ body.front .box-vsite_taxonomy_fbt div.item-list ul li.term-Applications.first {
      margin-bottom: 25px;
 }
 
-body.front .box-vsite_taxonomy_fbt .item-list ul li.term-Methods.last .term-head a,
-body.front .box-vsite_taxonomy_fbt .item-list ul li.term-Applications.first .term-head a
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-methods.last .term-head a,
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-applications.first .term-head a
  {
      color: #68EFDE;
      padding-bottom: 25px;
 }
 
-body.front .box-vsite_taxonomy_fbt .item-list ul.term-Methods li .term-head a:only-of-type,
-body.front .box-vsite_taxonomy_fbt .item-list ul.term-Applications li .term-head a:only-of-type {
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-methods li .term-head a:only-of-type,
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li .term-head a:only-of-type {
     color: #ffffff;
 }
 
-body.front .box-vsite_taxonomy_fbt .item-list ul li.term-Methods,
-body.front .box-vsite_taxonomy_fbt .item-list ul li.term-Applications  {
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-methods,
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-applications  {
   margin-top: 0;
   }
 
-body.front .box-vsite_taxonomy_fbt .item-list ul li.term-Methods {
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-methods {
     text-align: right;
     float: left;
     width:262px;
     }
 
-body.front .box-vsite_taxonomy_fbt ul li.term-Applications {
+body.front .box-vsite_taxonomy_fbt ul li.term-applications {
     float: right;
     width: 298px;
     }
@@ -83,7 +83,7 @@ body.front .box-vsite_taxonomy_fbt .description {
     font-size:13px;
     }
 
-body.front .box-vsite_taxonomy_fbt li.term-Applications .description {
+body.front .box-vsite_taxonomy_fbt li.term-applications .description {
   border-left:none;
   border-right: 2px solid #db7002;
   }
@@ -100,24 +100,24 @@ body.front .box-vsite_taxonomy_fbt li {
     font-weight: normal;
     }
 
-body.front .box-vsite_taxonomy_fbt li.term-Methods .term-head a,
-body.front .box-vsite_taxonomy_fbt li.term-Methods.last {
+body.front .box-vsite_taxonomy_fbt li.term-methods .term-head a,
+body.front .box-vsite_taxonomy_fbt li.term-methods.last {
   margin-right: 31px;
   }
 
 
-body.front .box-vsite_taxonomy_fbt .item-list li.term-Applications.first a {
+body.front .box-vsite_taxonomy_fbt .item-list li.term-applications.first a {
      left: 0pt; 
      padding-left: 59px;
 }
 
-body.front ul.term-Methods,
-body.front ul.term-Applications
+body.front ul.term-methods,
+body.front ul.term-applications
  {
     margin-top: 15px;
 }
 
-body.front .box-vsite_taxonomy_fbt li.term-Applications .term-head {
+body.front .box-vsite_taxonomy_fbt li.term-applications .term-head {
   display:block;
   padding-left:0.5em;
   text-indent:-0.5em;
@@ -127,7 +127,7 @@ body.front .box-vsite_taxonomy_fbt dt.active  {
   background: url('images/line.png') no-repeat 0 50% #3b4e4e;
   }
 
-body.front .box-vsite_taxonomy_fbt ul li.term-Methods ul li {
+body.front .box-vsite_taxonomy_fbt ul li.term-methods ul li {
   background-position: 236px 50%;
   }
 
