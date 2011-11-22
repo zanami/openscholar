@@ -125,6 +125,10 @@ function drawChart() {
   //try a pattern formatter for date
   //also for host, so we can keep original url for filter, but add an href
   
+  //url formatter - makes hyperlink to each installation
+  var url_formatter = new google.visualization.PatternFormat('<a target="_blank" href="http://{0}">{0}</a>');
+  url_formatter.format(data, [0]);
+  
   // Create the dashboard.
   //new google.visualization.Dashboard(document.getElementById('dashboard')).bind(agePicker, barChart)).draw(data);   
   new google.visualization.Dashboard(document.getElementById('dashboard')).

@@ -134,7 +134,7 @@ class installation {
   function render() {
     if (sizeof($this->vsites) && $this->status) {
       return array(
-        '<a href="http://'.$this->host.'" target="_blank">'.$this->host.'</a>',
+        $this->host, //'<a href="http://'.$this->host.'" target="_blank">'.$this->host.'</a>',
         sizeof($this->vsites),
         round( (time() - $this->age) / (60 * 60 * 24 * 7) ), //currently days.  fix it later.
         $this->views,
