@@ -4,17 +4,19 @@ google.load('visualization', '1.1', {'packages':['controls','table']});
 
 
 function drawChart() {
-  /*
-  var d = Drupal.settings.openscholar_log_usage_data;
-  for (var i in d) {
-    if (typeof(d[i][4]) == 'number') {
-      d[i][4] = new Date(d[i][4]);
-    }
-  }
-  alert(d.toSource());
-  */
+
   var data = google.visualization.arrayToDataTable( Drupal.settings.openscholar_log_usage_data );
-  
+
+  //add date columns
+  var col_age  = data.insertColumn(5, 'date', 'Created');
+  var col_last = data.insertColumn(5, 'date', 'Visited', 'last');
+  for (var row = 0 ; row < data.getNumberOfRows() ; row++) {
+    data.setCell(  row, 5, new Date(1000*data.getValue(row, 4))  ); //1000 because php stores seconds but js does ms
+    data.setCell(  row, 6,  new Date(1000*data.getValue(row, 2))  );
+  }
+  //hide old columns
+  data.removeColumn(2);
+  data.removeColumn(3);
   
   var tableChart = new google.visualization.ChartWrapper({
     'chartType': 'Table',
@@ -23,24 +25,10 @@ function drawChart() {
       'showRowNumber': true,
       'allowHtml': true,
       'sortAscending': false,
-      'sortColumn': 3,
+      'sortColumn': 2,
       
     },
   });
-  /*
-  var barChart = new google.visualization.ChartWrapper({
-    'chartType': 'BarChart',
-    'containerId': 'chart_div',
-    'options': {
-      'width': 800,
-      'height': Drupal.settings.openscholar_log_usage_data.length * 30,
-      'chartArea': {top: 0, right: 0, bottom: 0},
-     },
-    'view': {'columns': [0,1]}, //host, vsite //views = 3, but on different scale
-    
-  });
-      
-  */
   
   //set up some filters so we can add controls with slightly less copy/paste
   function RangeFilter() {
@@ -88,13 +76,13 @@ function drawChart() {
   host.containerId = 'control-host';
   host.options.filterColumnLabel = 'Host';
   var hostPicker = new google.visualization.ControlWrapper(host);
-  
+  /*
   var age = RangeFilter();
   age.containerId = 'control-age';
   age.options.filterColumnLabel = 'Age';
   age.options.ui = {'label': 'Age (In Weeks)'};
   var agePicker = new google.visualization.ControlWrapper(age);
-
+*/
   var vsites = RangeFilter();
   vsites.containerId = 'control-vsites';
   vsites.options.filterColumnLabel = 'Sites';
@@ -132,9 +120,10 @@ function drawChart() {
   // Create the dashboard.
   //new google.visualization.Dashboard(document.getElementById('dashboard')).bind(agePicker, barChart)).draw(data);   
   new google.visualization.Dashboard(document.getElementById('dashboard')).
-  bind([hostPicker, agePicker, vsitesPicker, viewsPicker, versionPicker], [ tableChart]).
+  bind([hostPicker, vsitesPicker, viewsPicker, versionPicker], [ tableChart]).
   //bind(agePicker, barChart).
   //bind(vsitesPicker, barChart).
+
   draw(data); 
 }
 
