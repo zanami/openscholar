@@ -58,12 +58,19 @@ function drush_vsitehelp_build_docs() {
     $helpfile = str_replace('os_help', 'html', $name);
     $path = str_replace($o_file->basename, '', $o_file->filename);
     
+    // append fragment of ini file
     $file = trim(file_get_contents($o_file->filename)) . BR;
     $file .= BR.BR;    
     $ini .= $file;
-
+   
+    //copy html help file
     copy($path.$helpfile, DIR . $helpfile);
-    //what about images?
+       
+    //copy images folder
+    foreach( file_scan_directory($path . '/images/', '.') as $i => $img ) {
+      copy($path.'images/'.$img->basename, DIR.'/images/'.$img->basename);
+    }
+    
     $done[] = str_replace('.os_help', '', $o_file->name);
   }
   
@@ -71,3 +78,13 @@ function drush_vsitehelp_build_docs() {
   file_put_contents(DIR . '/vsitehelp.help.ini', $ini);
 }
 
+/**
+ * @function _get_images
+ * returns a list of image files mentioned in html
+ */
+function _get_images($html) {
+  $images = array();
+  preg_match_all('<img src=.*?>', $html, $images);
+  //or just copy all images?
+  return $images;
+}
