@@ -1,7 +1,7 @@
-.front .box-vsite_taxonomy_fbt span.count {display:none;}
+body.front .box-vsite_taxonomy_fbt span.count {display:none;}
 
-.front .box-vsite_taxonomy_fbt {
-  width:100%;
+body.front .box-vsite_taxonomy_fbt {
+  width:774px;
   position: relative;
   padding:0;
   color: #fff;
@@ -9,17 +9,19 @@
   clear:both;
   z-index:1;
   line-height: normal;
-  background: url(images/leadsto-arrow.png) 50% 54px no-repeat #3b4e4e;
+  background: url('images/leadsto-arrow.png') 50% 54px no-repeat #3b4e4e;
   margin-bottom: 9px;
   border: none;
   }
 
-.front .box-vsite_taxonomy_fbt h3.title {
+
+
+body.front .box-vsite_taxonomy_fbt h3.title {
   margin: 0;
   font-size: 1.56em;
   line-height: 33px;
   color:#fff;
-  background: url(images/aor-h3.png) 0 0 repeat-x #3b4e4e;
+  background: url('images/aor-h3.png') 0 0 repeat-x #3b4e4e;
   padding-top: 0;
   padding-bottom: 0;
   font-weight: normal;
@@ -29,60 +31,68 @@
   letter-spacing:0;
   }
 
-.front .box-vsite_taxonomy_fbt .item-list ul li.last .term-head a,
-.front .box-vsite_taxonomy_fbt .item-list ul li.first .term-head a {
-  color: #68efde;
-  margin-bottom:34px;
+body.front .box-vsite_taxonomy_fbt div.item-list ul li.term-Methods.last, 
+body.front .box-vsite_taxonomy_fbt div.item-list ul li.term-Applications.first {
+     background: none repeat scroll 0% 0% transparent;
+     font-size: 17px;
+     font-weight: normal;
+     line-height: 25px;
+     margin-bottom: 25px;
+}
+
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-Methods.last .term-head a,
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-Applications.first .term-head a
+ {
+     color: #68EFDE;
+     padding-bottom: 25px;
+}
+
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-Methods li .term-head a:only-of-type,
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-Applications li .term-head a:only-of-type {
+    color: #ffffff;
+}
+
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-Methods,
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-Applications  {
   margin-top: 0;
-  font-weight: bold;
-  margin: 0 0 17px;
-  background: transparent;
-  font-size:17px;
-  line-height:25px;
-  font-weight:normal;
   }
 
-.front .box-vsite_taxonomy_fbt .item-list ul li.last,
-.front .box-vsite_taxonomy_fbt .item-list ul li.first  {
-  margin-top: 0;
-  }
-
-.front .box-vsite_taxonomy_fbt .item-list ul li.last {
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-Methods {
     text-align: right;
     float: left;
     width:262px;
     }
 
-.front .box-vsite_taxonomy_fbt ul li.first {
+body.front .box-vsite_taxonomy_fbt ul li.term-Applications {
     float: right;
     width: 298px;
     }
 
-.front .box-vsite_taxonomy_fbt .description {
+body.front .box-vsite_taxonomy_fbt .description {
     position:absolute;
     display:none;
     width:224px;
     min-height: 184px;
     padding: 5px 14px;
     border-left: 2px solid #db7002;
-    left:262px;
-    top: 91px;
+    left:230px;
+    top: -10px;
     background: #3b4e4e;
     text-align: left;
     line-height:1.35em;
     font-size:13px;
     }
 
-.front #block-iqss_gking-areas_of_research #applications dd {
+body.front .box-vsite_taxonomy_fbt li.term-Applications .description {
   border-left:none;
   border-right: 2px solid #db7002;
   }
 
-.front #block-iqss_gking-areas_of_research dd:nth-child(2) {
+body.front .box-vsite_taxonomy_fbt ul li ul li .description {
   display:block;
   }
 
-.front #block-iqss_gking-areas_of_research dt {
+body.front .box-vsite_taxonomy_fbt li {
     position:relative;
     line-height: normal;
     margin-bottom:10px;
@@ -90,45 +100,51 @@
     font-weight: normal;
     }
 
-.front #block-iqss_gking-areas_of_research #methods dt span,
-.front #block-iqss_gking-areas_of_research #methods h4 {
+body.front .box-vsite_taxonomy_fbt li.term-Methods .term-head a,
+body.front .box-vsite_taxonomy_fbt li.term-Methods.last {
   margin-right: 31px;
   }
 
-.front #block-iqss_gking-areas_of_research #applications dt,
-.front #block-iqss_gking-areas_of_research #applications h4 {
-  padding-left:59px;
-  left: 0;
-  }
 
-.front #block-iqss_gking-areas_of_research #applications dt span {
+body.front .box-vsite_taxonomy_fbt .item-list li.term-Applications.first a {
+     left: 0pt; 
+     padding-left: 59px;
+}
+
+body.front ul.term-Methods,
+body.front ul.term-Applications
+ {
+    margin-top: 15px;
+}
+
+body.front .box-vsite_taxonomy_fbt li.term-Applications .term-head {
   display:block;
   padding-left:0.5em;
   text-indent:-0.5em;
   }
 
-.front #block-iqss_gking-areas_of_research dt.active {
+body.front .box-vsite_taxonomy_fbt dt.active  {
   background: url('images/line.png') no-repeat 0 50% #3b4e4e;
   }
 
-.front .box-vsite_taxonomy_fbt ul li ul li {
+body.front .box-vsite_taxonomy_fbt ul li.term-Methods ul li {
   background-position: 236px 50%;
   }
 
-.front #block-iqss_gking-areas_of_research dt.active span {
+body.front #block-iqss_gking-areas_of_research dt.active span {
   background: #3b4e4e;
   }
 
-.front #block-iqss_gking-areas_of_research dt span a,
-.front #block-iqss_gking-areas_of_research dt span a:visited {
+body.front .box-vsite_taxonomy_fbt ul li ul li .term-head  a,
+body.front .box-vsite_taxonomy_fbt ul li ul li .term-head a:visited {
   color: #fff;
   }
 
-.front #block-iqss_gking-areas_of_research dt span a:hover {
+body.front .box-vsite_taxonomy_fbt li .term-head a:hover {
   text-decoration: none;
   }
 
-.front #block-iqss_gking-areas_of_research dt.active span a {
+body.front #block-iqss_gking-areas_of_research dt.active span a  {
   color:#e87702;
   }
 

@@ -230,7 +230,7 @@ a.more {
   }
 
 .front .box-vsite_taxonomy_fbt h3.title {
-  background: url(images/aor-h3.png) 0 100% repeat-x #504F4B;
+  background: url('images/aor-h3.png') 0 100% repeat-x #504F4B;
   color: #fff;
   margin-left: -16px;
   margin-right: -16px;
@@ -243,6 +243,16 @@ a.more {
   font-weight:normal;
   line-height: 38px;
   }
+  
+  body.front .block ul.term-Applications {
+    margin-left: -20px;
+}
+
+
+body.front .box-vsite_taxonomy_fbt div.description  {
+    color: #FFFFFF;
+
+}
 
 #sidebar-second #block-iqss_gking-areas_of_research a,
 #sidebar-second #block-iqss_gking-areas_of_research a:visited {
