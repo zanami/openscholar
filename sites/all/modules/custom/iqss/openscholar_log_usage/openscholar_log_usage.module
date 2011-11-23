@@ -25,7 +25,7 @@ function openscholar_log_usage_menu(){
   $items['usage/graph'] = array(
     'page callback' => 'openscholar_log_usage_graph',
     'type' => 'MENU_CALLBACK', 
-    'access arguments' => array('access content'), 
+    'access arguments' => array('admin content'), 
   );  
   
   /* just to test teh cron function without wiating for all the crons */
