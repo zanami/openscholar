@@ -14,7 +14,7 @@ function os_boxes_update_6001(&$sandbox){
       $twitter_key = $box->options['twitter_username'];
       
       // include a followme link
-      if ($box->options['followme_link'] !== 0 && strpos($twitter_key, '#') !== 0) {
+      if (strpos($twitter_key, '#') !== 0) {
         
         if (strpos($twitter_key, 'from:') === 0) {
           $link = 'http://twitter.com/' . str_replace("from:", '', $twitter_key);
