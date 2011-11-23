@@ -68,7 +68,7 @@ body.front .box-vsite_taxonomy_fbt ul li.term-applications {
     width: 298px;
     }
 
-body.front .box-vsite_taxonomy_fbt .description {
+body.front .box-vsite_taxonomy_fbt ul li ul li a+span+div {
     position:absolute;
     display:none;
     width:224px;
@@ -82,15 +82,17 @@ body.front .box-vsite_taxonomy_fbt .description {
     line-height:1.35em;
     font-size:13px;
     }
+    
+    body.front .box-vsite_taxonomy_fbt ul.term-applications div.description {
+    left:-220px;
+}
 
 body.front .box-vsite_taxonomy_fbt li.term-applications .description {
   border-left:none;
   border-right: 2px solid #db7002;
   }
 
-body.front .box-vsite_taxonomy_fbt ul li ul li .description {
-  display:block;
-  }
+
 
 body.front .box-vsite_taxonomy_fbt li {
     position:relative;

@@ -352,6 +352,17 @@ body.front .box-vsite_taxonomy_fbt div.description  {
   }
   
 
+.front #content-bottom .block {
+  /*
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  */
+  padding: 0;
+  border:none;
+
+  }
+  
+
 .front .column #block-boxes-scholar_biocv_bio.block  {
  padding: 0 16px 0 16px;
   }  
@@ -747,7 +758,7 @@ margin: 0;
 
 .quicktabs_tabs li a {
 text-decoration: none;
-padding: 10px 12px 18px 12px;
+padding: 10px 12px 19px 12px;
 background: transparent;
  -moz-border-radius-topleft: 0px;
  -moz-border-radius-topright: 0px;
