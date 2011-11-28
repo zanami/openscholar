@@ -349,6 +349,11 @@ function vsite_menus_block($op = 'list', $delta = 0, $edit = array()) {
     return $blocks;
   }
   elseif ($op == 'view') {
+  	if(is_numeric($delta)){
+  	  $menu_keys = array_keys($site_menus);
+  	  if(isset($menu_keys[$delta])) $delta = $menu_keys[$delta];
+  	}//Accept both the old indexes and the menu names
+  	
     if(isset($site_menus[$delta])) {
       $block['subject'] = t(''); // intentionally left empty for now.
       $block['content'] = vsite_menus_get_menu_tree( $delta );

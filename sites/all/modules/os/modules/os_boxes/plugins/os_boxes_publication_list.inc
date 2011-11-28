@@ -151,7 +151,7 @@ class os_boxes_publication_list extends os_boxes_default {
     $block = parent::render();
 
     $view_name = 'publication_types';
-    $display_id = "page_1";
+    $display_id = "block_3";
     
     if ($view = views_get_view($view_name)) {
       if ($view->access($display_id)) {
