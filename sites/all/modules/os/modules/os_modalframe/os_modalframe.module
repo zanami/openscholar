@@ -18,6 +18,16 @@ function os_modalframe_ctools_plugin_api($module, $api) {
   }
 }
 
+/**
+ * Run the necessary function for modalframe handling.
+ * This needs to be done before preprocess functions are run.
+ */
+function os_modalframe_init() {
+  if (isset($_GET['modal'])) {
+    modalframe_child_js();
+  }
+}
+
 function os_modalframe_menu() {
   $items = array();
   $items['cp/os-modalframe/%'] = array(
