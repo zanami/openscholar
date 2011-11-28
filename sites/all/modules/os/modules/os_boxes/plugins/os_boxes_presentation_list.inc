@@ -116,7 +116,7 @@ class os_boxes_presentation_list extends os_boxes_default {
         $view->dom_id = "boxes-".$this->delta;
         
         $output = $view->execute_display();
-        $block['content'] = $output;
+        $block['content'] = $output['content'];
       }
       $view->destroy();
     }
