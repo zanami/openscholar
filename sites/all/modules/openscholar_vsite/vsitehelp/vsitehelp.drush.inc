@@ -54,6 +54,7 @@ function drush_vsitehelp_build_docs() {
   $ini = file_get_contents(drupal_get_path('module', 'vsitehelp') . '/vsitehelp.template.ini') . BR . BR;
   $done = array();
   
+  //loop over all os_help.ini files
   foreach($files as $name => $o_file) {
     $helpfile = str_replace('os_help', 'html', $name);
     $path = str_replace($o_file->basename, '', $o_file->filename);
@@ -78,13 +79,3 @@ function drush_vsitehelp_build_docs() {
   file_put_contents(DIR . '/vsitehelp.help.ini', $ini);
 }
 
-/**
- * @function _get_images
- * returns a list of image files mentioned in html
- */
-function _get_images($html) {
-  $images = array();
-  preg_match_all('<img src=.*?>', $html, $images);
-  //or just copy all images?
-  return $images;
-}
