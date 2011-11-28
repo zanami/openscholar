@@ -39,7 +39,7 @@ class os_boxes_presentation_list extends os_boxes_default {
         'titles' => t('List of titles')
       ),
       '#required' => TRUE,
-      '#default_value' => $simpleview['style']
+      '#default_value' => $this->options['style']
     );
     
   	$form['number_of_items'] = array(

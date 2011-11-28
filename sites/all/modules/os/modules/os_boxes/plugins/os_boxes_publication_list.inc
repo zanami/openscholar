@@ -48,7 +48,7 @@ class os_boxes_publication_list extends os_boxes_default {
         'titles' => t('List of titles')
       ),
       '#required' => TRUE,
-      '#default_value' => $simpleview['style']
+      '#default_value' => $this->options['style']
     );
     
   	$form['number_of_items'] = array(
@@ -161,7 +161,7 @@ class os_boxes_publication_list extends os_boxes_default {
         $view->dom_id = "boxes-".$this->delta;
         
         $output = $view->execute_display();
-        $block['content'] = $output;
+        $block['content'] = $output['content'];
       }
       $view->destroy();
     }
