@@ -145,6 +145,9 @@ class os_boxes_presentation_list extends os_boxes_default {
       $view->display_handler->set_option('use_ajax', false);
     }
     
+    //More handled in render
+    $view->display_handler->set_option('use_more', 0);
+    
     //Set the number of items
     if(intval($this->options['number_of_items'])){
     	$view->display_handler->set_option('items_per_page',intval($this->options['number_of_items']));
