@@ -5,6 +5,7 @@
  */
 function scholar_publications_default_box() {
   $export = array();
+
   $box = new stdClass;
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
@@ -22,7 +23,7 @@ function scholar_publications_default_box() {
     'more_link' => 'publications',
     'show_all_types' => 1,
   );
-
   $export['scholar_publications_recent'] = $box;
+
   return $export;
 }
