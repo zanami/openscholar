@@ -18,6 +18,7 @@
  * @see ctools_ajax_text_button
  */
 function os_popup_link($type, $text, $dest, $alt, $class) {
+  static $added_js = false;
   if ($type == 'modalframe' && (!module_exists('modalframe') && !module_exists('os_modalframe'))) {
     $type = 'ctools';
   }
@@ -28,6 +29,11 @@ function os_popup_link($type, $text, $dest, $alt, $class) {
   switch ($type) {
     case 'dialog':
       ctools_include('ajax');
+      dialog_add_js();
+      if (!$added_js) {
+        drupal_add_js(drupal_get_path('module', 'os').'/js/popup.js');
+        $added_js = true;
+      }
 
       $output = ctools_ajax_text_button($text, $dest, $alt, $class, 'ctools-use-dialog');
     break;
@@ -45,6 +51,10 @@ function os_popup_link($type, $text, $dest, $alt, $class) {
     default:
       ctools_include('ajax');
       ctools_include('modal');
+      if (!$added_js) {
+        drupal_add_js(drupal_get_path('module', 'os').'/js/popup.js');
+        $added_js = true;
+      }
 
       $output = ctools_modal_text_button($text, $dest, $alt, $class);
     break;
