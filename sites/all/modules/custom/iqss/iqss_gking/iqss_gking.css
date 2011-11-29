@@ -10,11 +10,12 @@ body.front .box-vsite_taxonomy_fbt {
   z-index:1;
   line-height: normal;
   background: url('images/leadsto-arrow.png') 50% 54px no-repeat #3b4e4e;
-  margin-bottom: 9px;
   border: none;
   }
 
-
+body.front .box-vsite_taxonomy_fbt.block {
+	margin-bottom:0;
+	}
 
 body.front .box-vsite_taxonomy_fbt h3.title {
   margin: 0;
@@ -45,12 +46,19 @@ body.front .box-vsite_taxonomy_fbt .item-list ul li.term-applications.first .ter
  {
      color: #68EFDE;
      padding-bottom: 25px;
+     text-decoration:none;
 }
 
 body.front .box-vsite_taxonomy_fbt .item-list ul.term-methods li .term-head a:only-of-type,
 body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li .term-head a:only-of-type {
     color: #ffffff;
 }
+
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-methods li.active .term-head a:only-of-type,
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li.active .term-head a:only-of-type {
+    color: #db7002;
+}
+
 
 body.front .box-vsite_taxonomy_fbt .item-list ul li.term-methods,
 body.front .box-vsite_taxonomy_fbt .item-list ul li.term-applications  {
@@ -68,7 +76,7 @@ body.front .box-vsite_taxonomy_fbt ul li.term-applications {
     width: 298px;
     }
 
-body.front .box-vsite_taxonomy_fbt ul li ul li a+span+div {
+body.front .box-vsite_taxonomy_fbt .description {
     position:absolute;
     display:none;
     width:224px;
@@ -76,23 +84,128 @@ body.front .box-vsite_taxonomy_fbt ul li ul li a+span+div {
     padding: 5px 14px;
     border-left: 2px solid #db7002;
     left:230px;
-    top: -10px;
     background: #3b4e4e;
     text-align: left;
     line-height:1.35em;
     font-size:13px;
     }
     
-    body.front .box-vsite_taxonomy_fbt ul.term-applications div.description {
-    left:-220px;
-}
+   /** TOP POSITIONS FOR METHODS DECRIPTION **/
+body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(1) div.description {
+top: -10px; 
+}  
 
+body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(2) div.description {
+      top: -35px;
+}  
+@-moz-document url-prefix() { body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(2) div.description {
+      top: -36px;
+} }
+
+body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(3) div.description {
+	  top: -60px;
+} 
+@-moz-document url-prefix() { body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(3) div.description {
+      top: -63px;
+} } 
+
+body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(4) div.description {
+      top: -85px;
+} 
+ @-moz-document url-prefix() { body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(4) div.description {
+      top: -89px;
+} } 
+
+body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(5) div.description {
+      top: -110px;
+} 
+@-moz-document url-prefix() {  body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(5) div.description {
+      top: -115px;
+} } 
+
+body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(6) div.description {
+      top: -136px;
+} 
+@-moz-document url-prefix() { body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(6) div.description {
+      top: -141px;
+} } 
+
+body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(7) div.description {
+      top: -160px;
+} 
+@-moz-document url-prefix() {  body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(7) div.description {
+      top: -167px;
+} }
+
+body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(8) div.description {
+      top: -186px;
+} 
+@-moz-document url-prefix() {  body.front .box-vsite_taxonomy_fbt ul.term-methods li:nth-of-type(8) div.description {
+      top: -193px;
+} }
+  
+  
+  
 body.front .box-vsite_taxonomy_fbt li.term-applications .description {
   border-left:none;
   border-right: 2px solid #db7002;
+   left:-220px;
+   text-align:left;
   }
 
+/** TOP POSITIONS FOR APPLICATIONS DECRIPTION **/
+body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(1) div.description {
+top: -10px; 
+}  
 
+body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(2) div.description {
+      top: -35px;
+}  
+@-moz-document url-prefix() { body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(2) div.description {
+      top: -36px;
+} }
+
+body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(3) div.description {
+	  top: -60px;
+} 
+@-moz-document url-prefix() { body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(3) div.description {
+      top: -63px;
+} } 
+
+body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(4) div.description {
+      top: -85px;
+} 
+ @-moz-document url-prefix() { body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(4) div.description {
+      top: -89px;
+} } 
+
+body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(5) div.description {
+      top: -110px;
+} 
+@-moz-document url-prefix() {  body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(5) div.description {
+      top: -115px;
+} } 
+
+body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(6) div.description {
+      top: -136px;
+} 
+@-moz-document url-prefix() { body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(6) div.description {
+      top: -141px;
+} } 
+
+body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(7) div.description {
+      top: -160px;
+} 
+@-moz-document url-prefix() {  body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(7) div.description {
+      top: -167px;
+} }
+
+body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(8) div.description {
+      top: -186px;
+} 
+@-moz-document url-prefix() {  body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(8) div.description {
+      top: -193px;
+} }
 
 body.front .box-vsite_taxonomy_fbt li {
     position:relative;
@@ -104,25 +217,29 @@ body.front .box-vsite_taxonomy_fbt li {
 
 body.front .box-vsite_taxonomy_fbt li.term-methods .term-head a,
 body.front .box-vsite_taxonomy_fbt li.term-methods.last {
-  margin-right: 31px;
+  padding-right: 31px;
   }
 
 
 body.front .box-vsite_taxonomy_fbt .item-list li.term-applications.first a {
-     left: 0pt; 
+     left: 0; 
      padding-left: 59px;
+  
 }
+
+
 
 body.front ul.term-methods,
 body.front ul.term-applications
  {
     margin-top: 15px;
+     position:relative;
 }
 
 body.front .box-vsite_taxonomy_fbt li.term-applications .term-head {
   display:block;
   padding-left:0.5em;
-  text-indent:-0.5em;
+
   }
 
 body.front .box-vsite_taxonomy_fbt dt.active  {
@@ -142,8 +259,9 @@ body.front .box-vsite_taxonomy_fbt ul li ul li .term-head a:visited {
   color: #fff;
   }
 
-body.front .box-vsite_taxonomy_fbt li .term-head a:hover {
+body.front .box-vsite_taxonomy_fbt ul li ul li .term-head a:hover {
   text-decoration: none;
+  color:#db7002;
   }
 
 body.front #block-iqss_gking-areas_of_research dt.active span a  {

@@ -531,6 +531,10 @@ padding:0 32px 0 0;
   margin-bottom: 8px;
   }
 
+.front #content-area #content-top .block {
+  margin-bottom: -23px;
+  }
+
 #sidebar-second,
 #header-right,
 #sidebar-first,
