@@ -72,16 +72,6 @@ abstract class os_boxes_modalframe extends os_boxes_default {
     );
 
     $form['box'] = $box_form;
-    if (isset($form['buttons']['submit'])) {
-      // the spaces_og submit handler breaks the modalframe closing
-      if (is_array($form['buttons']['submit']['#submit'])) {
-        $form['buttons']['submit']['#submit'] = array_diff($form['buttons']['submit']['#submit'], array('spaces_og_form_group_submit'));
-      }
-      $form['buttons']['submit']['#submit'][] = 'os_modalframe_form_submit';
-    }
-    else {
-      $form['#submit'][] = 'os_modalframe_form_submit';
-    }
   }
 
   /**

@@ -25,6 +25,14 @@ function os_modalframe_ctools_plugin_api($module, $api) {
 function os_modalframe_init() {
   if (isset($_GET['modal'])) {
     modalframe_child_js();
+    if (isset($_POST['op'])) {
+      // form submission
+
+      if (strpos($_GET['q'], 'nojs')) {
+        // change GET[q] so we go through the ajax process
+        $_GET['q'] = str_replace('nojs', 'ajax', $_GET['q']);
+      }
+    }
   }
 }
 
@@ -144,15 +152,29 @@ function os_modalframe_boxes_plugins() {
 
 
 function os_modalframe_form_alter(&$form, &$form_state) {
-  if (isset($_GET['modal']) && isset($_GET['box'])) {
-    $box = boxes_load($_GET['box']);
-    if (empty($box)) {
-      // GET[box] wasn't a delta. must be a plugin key
-      // $box_class = ctools_plugin_load_class('boxes', 'plugins', $_GET['box'], 'handler');
-      $box = boxes_factory($_GET['box']);
+  if (isset($_GET['modal'])) {
+    if (isset($_GET['box'])) {
+      $box = boxes_load($_GET['box']);
+      if (empty($box)) {
+        // GET[box] wasn't a delta. must be a plugin key
+        $box = boxes_factory($_GET['box']);
+      }
+
+      $box->form_alter($form, $form_state);
     }
 
-    $box->form_alter($form, $form_state);
+    // common to every modal form
+    if (isset($form['buttons']['submit'])) {
+      // the spaces_og submit handler breaks the modalframe closing
+      if (is_array($form['buttons']['submit']['#submit'])) {
+        $form['buttons']['submit']['#submit'] = array_diff($form['buttons']['submit']['#submit'], array('spaces_og_form_group_submit'));
+      }
+      $form['buttons']['submit']['#submit'][] = 'os_modalframe_form_submit';
+    }
+    else {
+      $form['#submit'][] = 'os_modalframe_form_submit';
+    }
+
     modalframe_child_js();
   }
 }
@@ -162,23 +184,24 @@ function os_modalframe_form_submit(&$form, &$form_state) {
 	$box_class = ctools_plugin_load_class('boxes', 'plugins', $form_state['values']['box']['plugin_key'], 'handler');
 	if ($box_class && is_callable("{$box_class}::submit")) {
 		$box = call_user_func(array($box_class,'submit'), $form, $form_state);
+
+    ctools_include('ajax');
+    ctools_include('modal');
+    if ($_GET['source'] == 'dropdown') {
+      // coming from layout dropdown
+      $args = array(
+        ctools_ajax_command_before('#scholarlayout-top-widgets .scholarlayout-item:nth-child(2)', theme('vsite_layout_ui_cp_widget', 'boxes-'.$box->delta, os_boxes_get_vsite_widget($box))),
+    		array('command' => 'updateLayoutForm', 'warning' => true),
+      );
+    }
+    elseif ($_GET['source'] != 'cp_layout') {
+      // coming from anywhere but cp layout form
+      $args = array(
+        ctools_ajax_command_reload(),
+      );
+    }
 	}
 
-  ctools_include('ajax');
-  ctools_include('modal');
-  if ($_GET['source'] == 'dropdown') {
-    // coming from layout dropdown
-    $args = array(
-      ctools_ajax_command_before('#scholarlayout-top-widgets .scholarlayout-item:nth-child(2)', theme('vsite_layout_ui_cp_widget', 'boxes-'.$box->delta, os_boxes_get_vsite_widget($box))),
-  		array('command' => 'updateLayoutForm', 'warning' => true),
-    );
-  }
-  elseif ($_GET['source'] != 'cp_layout') {
-    // coming from anywhere but cp layout form
-    $args = array(
-      ctools_ajax_command_reload(),
-    );
-  }
   modalframe_child_js();
   modalframe_close_dialog($args);
   modalframe_form_submit($form, $form_state);
