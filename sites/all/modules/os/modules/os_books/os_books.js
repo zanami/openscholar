@@ -6,7 +6,6 @@
 	var display, header, content = {}, active, perma;
 	
 	Drupal.behaviors.os_book_linkage = function() {
-		console.log('books');
 		if (!$('body.node-type-book').length) return;
 		var pages = $('.book-page');
 		display = $('#content .book-page').parent();
