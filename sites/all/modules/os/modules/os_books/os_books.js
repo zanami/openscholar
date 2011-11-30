@@ -6,6 +6,7 @@
 	var display, header, content = {}, active, perma;
 	
 	Drupal.behaviors.os_book_linkage = function() {
+		console.log('books');
 		if (!$('body.node-type-book').length) return;
 		var pages = $('.book-page');
 		display = $('#content .book-page').parent();
@@ -38,7 +39,7 @@
 		
 		// attach click handler to blocks
 		blocks.click(toc_click);
-	}
+	};
 	
 	function toc_click(e) {
 		var nid = e.target.getAttribute('nid');
@@ -56,6 +57,24 @@
 				this.href = this.href.replace(reg, nid);
 			});
 			active = nid;
+			
+			// start up jcarousels
+			jQuery.each(Drupal.settings.jcarousel, function (selector, options) {
+				$(selector+':visible').not('.has-jcarousel').addClass('has-jcarousel').removeClass('jcarousel-processed');
+				Drupal.behaviors.jcarousel();
+			});
 		}
 	}
+	
+	// stick our behavior at the front so it runs before jcarousel
+	var new_behaviors = {
+		os_books_jcarousel: function () {
+			jQuery.each(Drupal.settings.jcarousel, function(selector, options) {
+				// prevents jcarousel from running on hidden elements
+				$(selector).not(':visible').addClass('jcarousel-processed');
+			});
+		}
+	};
+	Drupal.behaviors = $.extend(new_behaviors, Drupal.behaviors);
+
 })(jQuery);
