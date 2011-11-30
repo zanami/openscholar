@@ -227,7 +227,6 @@ width: 100%;
 #sidebar-second #block-vsite_menus-features.block, #sidebar-first #block-vsite_menus-features.block,
 #sidebar-second #block-boxes-os_addthis, #sidebar-first #block-boxes-os_addthis,
 #sidebar-second #block-vsite-site_search, #sidebar-first #block-vsite-site_search,
-#sidebar-second #block-boxes-vsite_taxonomy_fltr_cat, #sidebar-first #block-boxes-vsite_taxonomy_fltr_cat
  {
 	border:none;
 }
@@ -259,8 +258,7 @@ body.one-sidebar #sidebar-first {
 
 #header h1,
 #header h2 {
-    font-size: 3.5em;
-    line-height: 38px;
+    font-size: 3.4em;
     font-weight:normal;
     color:#FFF;
     font-family:Palatino, serif;
@@ -269,9 +267,9 @@ body.one-sidebar #sidebar-first {
     }
 
 #header h2 {
-  font-size: 2.25em;
- height: 58px;
- background:url('images/siteInfoh2Bg.png') no-repeat;
+  font-size: 2.1em;
+ /*height: 58px;
+ background:url('images/siteInfoh2Bg.png') no-repeat;*/
 
   }
 

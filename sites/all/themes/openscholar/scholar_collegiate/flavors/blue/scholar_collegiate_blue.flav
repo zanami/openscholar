@@ -1,5 +1,5 @@
 name = Blue
-description = Blue version of the department theme
+description = Blue version of the collegiate theme
 screenshot = screenshot.png
 
 css[] = blue.css
