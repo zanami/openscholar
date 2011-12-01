@@ -181,7 +181,7 @@ class os_boxes_publication_list extends os_boxes_default {
    */
   public function views_alter(&$view, &$display_id, &$args){
   	
-  	if (!$this->options['show_all_types'] ||count($this->options['pub_types'])) {
+  	if (!$this->options['show_all_types'] && count($this->options['pub_types'])) {
       $filter = array(
         'operator' => 'in',
         'value' => $this->options['pub_types'],
@@ -200,6 +200,13 @@ class os_boxes_publication_list extends os_boxes_default {
         'relationship' => 'none',
       );
       $view->set_item($display_id, 'filter', 'tid', $filter);
+      
+      //Note: Some actions like "$view->validate()" (which the ajax callback uses) will cache the
+      //      avalible filters for the disaplay handler.  What I am doing here is removing that cache
+      //      so that our changes from above will take hold see. [Views 6.x-2.13 views_plugin_display->get_handlers]
+      if(isset($view->display[$display_id]->handler->handlers['filter'])){
+      	unset($view->display[$display_id]->handler->handlers['filter']);
+      }
     }
                 
     //Set pager up
