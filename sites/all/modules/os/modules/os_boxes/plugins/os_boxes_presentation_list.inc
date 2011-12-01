@@ -178,7 +178,13 @@ class os_boxes_presentation_list extends os_boxes_default {
 	  	break;
 	  	case 'teasers':
 	  	default:
-	  		//Do nothing, default
+	  		$view->display_handler->override_option('row_plugin', 'node');
+        $view->display_handler->override_option('row_options', array(
+          'relationship' => 'none',
+          'build_mode' => 'teaser',
+          'links' => 1,
+          'comments' => 0,
+        ));
 	  }
   }
   
