@@ -3,7 +3,7 @@
 /**
  * hook_update
  * Twitterfeed box not includes a customizable 'followme' text/link.
- * This will update existing twitterfeed boxes. 
+ * This will update existing twitterfeed boxes.
  */
 function os_boxes_update_6001(&$sandbox){
   $result = db_query("SELECT * FROM {spaces_overrides} WHERE object_type = 'boxes'");
@@ -22,12 +22,13 @@ function os_boxes_update_6001(&$sandbox){
         else {
           $link = 'http://twitter.com/' . $twitter_key;
         }
-      
+        
+        $box->options['followme_link'] = 1;
       }
       $box->options['followme_url'] = $link;
       
       //update db
-      db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = 'og' AND object_type = 'boxes' 
+      db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = 'og' AND object_type = 'boxes'
                AND id = %d AND object_id = '%s'", serialize($box), $row->id, $row->object_id);
     
     }
@@ -35,8 +36,8 @@ function os_boxes_update_6001(&$sandbox){
   
   return array(
     array(
-      'success' => true, 
-      'query' => 'Twitterfeed boxes updated' 
-    ) 
+      'success' => true,
+      'query' => 'Twitterfeed boxes updated'
+    )
   );
 }
