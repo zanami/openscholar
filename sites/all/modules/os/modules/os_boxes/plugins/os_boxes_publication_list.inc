@@ -201,7 +201,7 @@ class os_boxes_publication_list extends os_boxes_default {
       );
       $view->set_item($display_id, 'filter', 'tid', $filter);
       
-      //Note: Some actions like "$view->validate()" (which the ajax callback uses) will cache the
+      //Note: Some actions like "$view->validate()" (which the ajax callback uses) will cache (in code) the
       //      avalible filters for the disaplay handler.  What I am doing here is removing that cache
       //      so that our changes from above will take hold see. [Views 6.x-2.13 views_plugin_display->get_handlers]
       if(isset($view->display[$display_id]->handler->handlers['filter'])){
