@@ -125,6 +125,7 @@ function os_modalframe_boxes_plugins() {
       'path' => $path,
       'parent' => 'os_boxes_modalframe',
     ),
+    'module dependencies' => array("quicktabs"),
     'factory_path' => 'cp/os-modalframe/boxes_add__os_modal_tabbed',
     'access' => 'cp_access_cp',
   );

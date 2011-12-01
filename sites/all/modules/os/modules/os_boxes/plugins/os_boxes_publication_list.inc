@@ -33,7 +33,7 @@ class os_boxes_publication_list extends os_boxes_default {
   	ctools_include('dependent');
     ctools_add_js('dependent');
     
-    $q = db_query("SELECT tid, name FROM {biblio_types} WHERE tid > 0 AND visible = 1");
+    $q = db_query("SELECT tid, name FROM {biblio_types} WHERE tid > 0 AND visible = 1 ORDER BY name ASC");
     $options = array();
     while ($a = db_fetch_array($q)) $options[$a['tid']] = $a['name'];
 
