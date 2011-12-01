@@ -199,3 +199,30 @@ function os_strongarm_alter(&$vars){
 
   $vars = array_merge($a_new_settings,$vars); //Existing values take precedence
 }
+
+/**
+ * implementation of hook_l10n_update
+ */
+/*function os_l10n_update() {
+  module_load_include('inc', 'os', 'os.l10n');
+  return _os_l10n_default_projects(); 
+}
+*/ 
+
+/**
+ * implementation of hook_update_projects_alter()
+ * lets l10n_update know that os has its own translation server
+ */
+function os_update_projects_alter(&$projects) {
+  module_load_include('inc', 'os', 'os.l10n');
+  _os_update_projects_alter($projects);
+}
+
+/**
+ * implementation of hook_l10n_servers()
+ * defines additional servers for localization updates
+ */
+function os_l10n_servers() {
+  module_load_include('inc', 'os', 'os.l10n');
+  return _os_l10n_servers();  
+}
