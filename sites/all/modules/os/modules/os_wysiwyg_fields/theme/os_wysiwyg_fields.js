@@ -7,17 +7,23 @@
 	
 	function cleanUp(id) {
 		// remove the 'Expand' button. There's nothing hidden to Expand.
-		$('.ui-dialog-titlebar .wysiwyg_fields-icon-expand').remove();
+		// well, there is, but there's no reason it should be hidden to start.
+		$('#wysiwyg_fields-' + id + '-dialog .ui-dialog-titlebar .wysiwyg_fields-icon-expand').click().hide();
 		
 		// remove the Insert button added by wysiwyg_fields.
 		// The button provided by Insert is more useful.
-		$('.ui-dialog-buttonpane').not('#wysiwyg_fields-field_os_inline_oembed-dialog .ui-dialog-buttonpane').remove();
+		$('#wysiwyg_fields-' + id + '-dialog .ui-dialog-buttonpane').not('#wysiwyg_fields-field_os_inline_oembed-dialog .ui-dialog-buttonpane').remove();
 		
 		// Show the table
-		$('#' + id.replace('_', '-', 'g') + '-items, #wysiwyg_fields-' + id + '-wrapper table').show();
+		// $('#' + id.replace('_', '-', 'g') + '-items, #wysiwyg_fields-' + id + '-wrapper table').show();
 		
 		var moved = $('.wysiwyg_fields-field:not(table .wysiwyg_fields-field)');
 		$('#'+moved.attr('id')+'-placeholder').before(moved);
+		
+		// sets the wrapperElement to something other than span
+		// if its span, oembed objects would get popped out and
+		// wouldnt be replaced properly on detach.
+		Drupal.wysiwygFields.wrapperElement = wrapperElement = 'wysiwyg_field';
 	}
 	
 	// store the current functions
@@ -63,8 +69,31 @@
 				eve[i] = 'span['+t.join('|')+']';
 			}
 		});
+		eve.push('iframe[src|href]');
+		eve.push('wysiwyg_field[id|class]');
 		settings.extended_valid_elements = eve.join(',');
 		
+		
+		// change some vars and functions so oembed stuff doesn't pop out of the span
+		Drupal.wysiwygFields.wysiwyg.tinymce.wrapperElement = 'wysiwyg_field';
+		Drupal.wysiwygFields.wysiwyg.tinymce.divToWysiwygField = function() {
+	        delete Drupal.settings.wysiwygFields.timer;
+	        if (typeof tinyMCE.activeEditor.contentDocument !== "undefined") {
+	          $('.wysiwyg_fields-placeholder', tinyMCE.activeEditor.contentDocument.body).each(function() {
+	            $(this).removeClass('wysiwyg_fields-placeholder');
+	            replacement = "<"+Drupal.wysiwygFields.wrapperElement+" id='" + $(this).attr('id') + "' class='" + $(this).attr('class') + "'>" + Drupal.settings.wysiwygFields.replacements['[' + $(this).attr('id') + ']'] + "</"+Drupal.wysiwygFields.wrapperElement+">";
+	            Drupal.wysiwygFields.wysiwyg.tinymce.wysiwygIsNode(this);
+	            Drupal.wysiwyg.instances[Drupal.settings.wysiwygFields.activeId].insert(replacement);
+	          });
+	        }
+	        else {
+	          // Document not ready, reset timer.
+	          Drupal.wysiwygFields._wysiwygAttach();
+	        }
+	    };
+	    
+	    
+		/*
 		if (!hasRun) {
 			// prevent wysiwyg_fields from stripping out the oembed code and replacing it with empty token
 			if (typeof Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed == 'object') {
@@ -75,6 +104,7 @@
 		}
 		
 		// pull the Insert button out of a div and next to remove
+		
 		if (hasRun) {
 			$('.widget-edit:visible').each(function (item) {
 				var btn = this.getElementsByClassName('insert-button')[0];
@@ -84,6 +114,6 @@
 				$('input[value="Remove"]', this).before(btn);
 			});
 		}
-		hasRun = true;
+		hasRun = true;*/
 	};
 })(jQuery);
