@@ -11,8 +11,11 @@ Drupal.behaviors.quickTabsRemember = function (ctx) {
 			$tab = $this.find('.qtab-'+active);
 		
 		// we set the class AND click because the order behaviors run in is uncertain
-		$this.find('li.active').removeClass('active');
-		$tab.addClass('active').find('a').click();
+		if($tab.length){
+		  $this.find('li.active').removeClass('active');
+		  $tab.addClass('active').find('a').click();
+		}
+		
 		$this.find('ul.quicktabs_tabs:first li a').unbind('click', clickHandle).click(clickHandle);
 	});
 	

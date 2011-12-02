@@ -37,8 +37,8 @@ function theme_vsite_taxonomy_term($term, $b_description = true, $b_admin_links 
   }
 
   if ($b_description && $term -> description) {
-    $item .= '<div class="description">' . substr($term -> description,0,58) . ((strlen($term->description) >53)?"&hellip;":"") . '</div>';
-    }
+    $item .= '<div class="description">' . $term -> description . '</div>';
+  }
 
   $item .= '</div><!--/term-head-->';
 

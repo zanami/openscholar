@@ -299,6 +299,19 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
+  
+  $info['os_boxes_present_list'] = array(
+    'title' => 'List of Presentations',
+    'description' => 'List of Presentations',
+    'tags' => array('Content'),
+    'module dependencies' => array('scholar_presentations'),
+    'handler' => array(
+      'class' => 'os_boxes_presentation_list',
+      'file' => 'os_boxes_presentation_list.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+  );
 
   foreach ($info as $key => $block) {
   	if(isset($info[$key]['module dependencies'])){

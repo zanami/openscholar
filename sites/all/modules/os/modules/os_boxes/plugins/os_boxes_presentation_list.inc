@@ -5,7 +5,7 @@
  * The class for "Listing Publications by Type" widget.
  */
 
-class os_boxes_publication_list extends os_boxes_default {
+class os_boxes_presentation_list extends os_boxes_default {
   
   /**
    * Implementation of boxes_content::options_defaults().
@@ -13,13 +13,11 @@ class os_boxes_publication_list extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
 
-    $options['pub_types'] = array();
     $options['number_of_items'] = 6;
     $options['more'] = 0;
     $options['more_text'] = t('more');
     $options['more_link'] = "";
     $options['use_pager'] = 1;
-    $options['show_all_types'] = 1;
     $options['style'] = 'titles';
 
     return $options;
@@ -33,13 +31,6 @@ class os_boxes_publication_list extends os_boxes_default {
   	ctools_include('dependent');
     ctools_add_js('dependent');
     
-    $q = db_query("SELECT tid, name FROM {biblio_types} WHERE tid > 0 AND visible = 1 ORDER BY name ASC");
-    $options = array();
-    while ($a = db_fetch_array($q)) $options[$a['tid']] = $a['name'];
-
-    //Set to all types if none have been selected
-  	if(!count($this->options['pub_types'])) $this->options['pub_types'] = array_keys($options);
-
   	$form['style'] = array(
       '#type' => 'select',
       '#title' => t('Display Style'),
@@ -103,44 +94,8 @@ class os_boxes_publication_list extends os_boxes_default {
       )
     );
     
-    $form['show_all_types'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Show all publication types'),
-      '#default_value' => $this->options['show_all_types'],
-      '#tree' => TRUE
-    );
-    
-    $form['pub_types'] = array(
-      '#type' => 'checkboxes',
-      '#options' => $options,
-      '#default_value' => $this->options['pub_types'],
-      '#title' => t('Show the following types'),
-      '#attributes' => array('class' => 'pub_type'),
-      '#description' => t('Select the publication types you want to appear in the widget.'),
-      '#prefix' => '<div id="edit-pub-types-wrapper">',
-      '#suffix' => '</div>',
-      '#process' => array(
-        'ctools_dependent_process','expand_checkboxes'
-      ),
-      '#dependency' => array(
-        'edit-show-all-types' => array(
-          0
-        )
-      ),
-    );
-    
     $form += parent::options_form();
     return $form;
-  }
-  
-  /**
-   * Custom submit hander to perform post_submit actions
-   */
-  public static function options_validate(&$form,&$form_state){
-  	
-    if($form_state['values']['show_all_types'] || array_keys($form_state['values']['pub_types']) == array_keys($form['options']['pub_types']['#options'])){
-    	$form_state['values']['pub_types'] = array();
-    }//All selected is the same as no filter, set to none selected
   }
 
   /**
@@ -150,8 +105,8 @@ class os_boxes_publication_list extends os_boxes_default {
     //@todo
     $block = parent::render();
 
-    $view_name = 'publication_types';
-    $display_id = "block_3";
+    $view_name = 'scholar_presentations';
+    $display_id = "block_1";
     
     if ($view = views_get_view($view_name)) {
       if ($view->access($display_id)) {
@@ -181,34 +136,6 @@ class os_boxes_publication_list extends os_boxes_default {
    */
   public function views_alter(&$view, &$display_id, &$args){
   	
-  	if (!$this->options['show_all_types'] && count($this->options['pub_types'])) {
-      $filter = array(
-        'operator' => 'in',
-        'value' => $this->options['pub_types'],
-        'group' => '0',
-        'exposed' => FALSE,
-        'expose' => array(
-          'operator' => FALSE,
-          'label' => '',
-        ),
-        'id' => 'tid',
-        'table' => 'biblio_types',
-        'field' => 'tid',
-        'override' => array(
-          'button' => 'Use default',
-        ),
-        'relationship' => 'none',
-      );
-      $view->set_item($display_id, 'filter', 'tid', $filter);
-      
-      //Note: Some actions like "$view->validate()" (which the ajax callback uses) will cache (in code) the
-      //      avalible filters for the disaplay handler.  What I am doing here is removing that cache
-      //      so that our changes from above will take hold see. [Views 6.x-2.13 views_plugin_display->get_handlers]
-      if(isset($view->display[$display_id]->handler->handlers['filter'])){
-      	unset($view->display[$display_id]->handler->handlers['filter']);
-      }
-    }
-                
     //Set pager up
     if($this->options['use_pager']){
 	    $view->display_handler->set_option('use_pager', 'mini');
@@ -217,6 +144,9 @@ class os_boxes_publication_list extends os_boxes_default {
     	$view->display_handler->set_option('use_pager', false);
       $view->display_handler->set_option('use_ajax', false);
     }
+    
+    //More handled in render
+    $view->display_handler->set_option('use_more', 0);
     
     //Set the number of items
     if(intval($this->options['number_of_items'])){
@@ -248,7 +178,13 @@ class os_boxes_publication_list extends os_boxes_default {
 	  	break;
 	  	case 'teasers':
 	  	default:
-	  		//Do nothing, default
+	  		$view->display_handler->override_option('row_plugin', 'node');
+        $view->display_handler->override_option('row_options', array(
+          'relationship' => 'none',
+          'build_mode' => 'teaser',
+          'links' => 1,
+          'comments' => 0,
+        ));
 	  }
   }
   
@@ -256,15 +192,6 @@ class os_boxes_publication_list extends os_boxes_default {
    * Return the cache parameters for this box
    */
   public function cache_info(){
-
-//    //Clear when biblio nodes are saved
-//    $cache_key = array(
-//      'os_og' => array('current' => 'current'),
-//      'node' => array('biblio' => 'biblio'),
-//    );
-//
-//    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
-
     return array(); //caching disabled so ajax pager gets init'ed
   }
 

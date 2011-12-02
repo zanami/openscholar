@@ -343,8 +343,8 @@ function vsite_menus_block($op = 'list', $delta = 0, $edit = array()) {
   $site_menus = variable_get('scholar_site_menus',array());
   $blocks = array();
   if ($op == 'list') {
-  	foreach (array_values($site_menus) as $n_key => $menu_name) {
-  		$blocks[$n_key] = array('info' => t($menu_name), 'cache' => BLOCK_CACHE_PER_PAGE);
+  	foreach ($site_menus as $n_key => $menu_name) {
+  		$blocks[$n_key] = array('info' => t($menu_name));
   	}
     return $blocks;
   }

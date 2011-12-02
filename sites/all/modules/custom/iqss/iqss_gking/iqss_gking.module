@@ -766,44 +766,6 @@ function iqss_gking_views_pre_build(&$view){
 }
 
 /**
- * hook vsite_widgets
- */
-function iqss_gking_vsite_widgets(){
-  if (! iqss_gking_on_gking_site() ) return array();
-
-  $items = array();
-
-  $items['iqss_gking_areas_of_research'] = array(
-        'module' => 'iqss_gking',
-        'delta' => 'areas_of_research',
-        'weight' => 5,
-        'region' => false,
-        'status' => '0',
-        'label' => 'Areas of Research',
-        'cache' => BLOCK_CACHE_CONTENT_CACHE,
-        'cache_keys' => array(
-          'vsite_config' => array('taxonomy_form_term' => 'taxonomy_form_term', 'vsite_taxonomy_form' => 'vsite_taxonomy_form'),
-          'os_og' => array('current' => 'current'),
-        ),
-      );
-      
-  $items[] = array(
-    'module' => 'iqss_gking',
-    'delta' => 'gking_pub_by_type',
-    'weight' => 5,
-    'region' => false,
-    'status' => '0',
-    'label' => 'Recent Writings (tabbed box - homepage)',
-    'cache' => BLOCK_CACHE_CONTENT_CACHE,
-    'cache_keys' => array(
-      'os_og' => array('current' => 'current'),
-    ),
-  );
-
-  return $items;
-}
-
-/**
  * Implementation of hook_scholar_admin_link() on behalf of the node module.
  */
 function iqss_gking_vsite_admin_link($type, $object) {

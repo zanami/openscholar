@@ -156,7 +156,7 @@ class os_modal_tabbed extends os_boxes_modalframe {
   }
 
   /**
-   * Implementation of boxes_content::options_form().
+   * Implementation of render().
    */
   public function render() {
       $block = parent::render();
