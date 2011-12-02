@@ -91,8 +91,6 @@ function os_views_content_cache_vsite_config_forms(){
     'vsite_generic_settings_form' => "Generic Settings",
     'vsite_design_theme_picker_form' => "Theme Setting",
     'spaces_features_form' => 'Spaces Features',
-    'boxes_box_form' => "Box Add/Customize",
-    'os_modalframe_box_form'  => "ModalFrame Box Add/Customize",
   );
     
   $features = spaces_features( 'og' );
