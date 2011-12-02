@@ -242,12 +242,12 @@ body.front .box-vsite_taxonomy_fbt li.term-applications .term-head {
 
   }
 
-body.front .box-vsite_taxonomy_fbt dt.active  {
-  background: url('images/line.png') no-repeat 0 50% #3b4e4e;
+body.front .box-vsite_taxonomy_fbt li.active  {
+  background: url('images/line.png') no-repeat 33px 50% #3b4e4e;
   }
 
 body.front .box-vsite_taxonomy_fbt ul li.term-methods ul li {
-  background-position: 236px 50%;
+  background-position: center right;
   }
 
 body.front #block-iqss_gking-areas_of_research dt.active span {
