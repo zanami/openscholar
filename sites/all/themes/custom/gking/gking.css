@@ -808,7 +808,7 @@ background: #FFF;
 border:none;
 }
 
-.quicktabs_wrapper .quicktabs_tabpage {margin-top:55px;}
+.quicktabs_wrapper .quicktabs_tabpage {margin-top:55px; margin-bottom: 16px;}
 
 .box-os_modal_tabbed h3.title {font-size: 21px;}
 
