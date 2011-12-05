@@ -610,7 +610,7 @@ function os_update_6012(&$sandbox) {
   require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
   $flag = flag_get_flag('featuredposts');
   $boxes = array();
-  $q = db_query("SELECT nid, group_nid FROM {flag_content} f INNER JOIN {node} n ON f.content_id = n.nid INNER JOIN {og_ancestry} oga USING (nid) WHERE f.fid = %d ORDER BY n.changed DESC", $flag->fid);
+  $q = db_query("SELECT nid, n.title, group_nid FROM {flag_content} f INNER JOIN {node} n ON f.content_id = n.nid INNER JOIN {og_ancestry} oga USING (nid) WHERE f.fid = %d ORDER BY n.changed DESC", $flag->fid);
   while ($r = db_fetch_array($q)) {
     $grp = $r['group_nid'];
     if (!isset($boxes[$grp])) {
@@ -623,7 +623,7 @@ function os_update_6012(&$sandbox) {
     }
 
     if (count($boxes[$grp]->options['nodes']) < 5) {
-      $boxes[$grp]->options['nodes'][] = $r['nid'];
+      $boxes[$grp]->options['nodes'][] = array('nid' => $r['nid'], 'title' => $r['title'], 'weight' => count($boxes[$grp]->options['nodes']));
     }
   }
 
@@ -637,6 +637,8 @@ function os_update_6012(&$sandbox) {
     $args[] = $box->delta;
     $args[] = serialize((object)(array)$box);
     $val_strs[] = $tpl;
+
+    os_boxes_replace_boxes('views-vsite_featuredposts-block_1', $box, false, $grp);
   }
   $s .= implode(', ', $val_strs);
   if (count($boxes) && db_query($s, $args)) {
