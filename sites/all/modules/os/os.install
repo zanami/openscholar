@@ -505,7 +505,7 @@ function os_update_6009(&$sandbox){
     // Set the correct values for 'scholar_content_type' from strongarm
     // It is possible that strongarm has not been inited
     strongarm_set_conf();
-    
+
     //make sure vsite->controllers->boxes exists
     $v = db_result( db_query('SELECT nid FROM {node} WHERE type = "%s" LIMIT 1',variable_get('scholar_content_type', 'vsite')) );
     $vsite = vsite_get_vsite($v);
@@ -600,6 +600,61 @@ function os_update_6011(&$sandbox) {
       'query' => 'Block Subject Customizations moved into Boxes.',
     ),
   );
+}
+
+/**
+ * Migrates all the featured posts flag into a Custom List box
+ * And replaces the Featured Post block with the box
+ */
+function os_update_6012(&$sandbox) {
+  require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
+  $flag = flag_get_flag('featuredposts');
+  $boxes = array();
+  $q = db_query("SELECT nid, group_nid FROM {flag_content} f INNER JOIN {node} n ON f.content_id = n.nid INNER JOIN {og_ancestry} oga USING (nid) WHERE f.fid = %d ORDER BY n.changed DESC", $flag->fid);
+  while ($r = db_fetch_array($q)) {
+    $grp = $r['group_nid'];
+    if (!isset($boxes[$grp])) {
+      $boxes[$grp] = boxes_factory('os_boxes_manual_list', array(
+      				'delta' => os_boxes_create_delta('og-'.$grp),
+      				'new' => false,
+      				'title' => 'Featured Posts',
+      				'description' => 'Featured Posts')
+            );
+    }
+
+    if (count($boxes[$grp]->options['nodes']) < 5) {
+      $boxes[$grp]->options['nodes'][] = $r['nid'];
+    }
+  }
+
+  $tpl = '("og", %d, "boxes", "%s", "%s")';
+  $args = array();
+  $s = "INSERT INTO {spaces_overrides} VALUES ";
+  $val_strs = array();
+  foreach ($boxes as $grp => $box) {
+    $val = $tpl;
+    $args[] = $grp;
+    $args[] = $box->delta;
+    $args[] = serialize((object)(array)$box);
+    $val_strs[] = $tpl;
+  }
+  $s .= implode(', ', $val_strs);
+  if (count($boxes) && db_query($s, $args)) {
+    return array(
+      array(
+        'success' => true,
+        'query' => 'Query ran successfully!',
+      ),
+    );
+  }
+  else {
+    return array(
+      array(
+        'success' => false,
+        'query' => 'Query failed to complete.',
+      )
+    );
+  }
 }
 
 function _os_boxes_migrate_info() {
