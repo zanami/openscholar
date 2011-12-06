@@ -295,7 +295,6 @@ function vsite_block($op = 'list', $delta = 0, $edit = array()) {
 function vsite_vsite_widgets(){
 
   return array(
-
    'vsite-site_search' => array(
       'module' => 'vsite',
       'delta' => 'site_search',
@@ -311,21 +310,7 @@ function vsite_vsite_widgets(){
       'region' => false,
       'label' => 'Google Translate',
     ),
-
-    // Featured posts
-    'views-vsite_featuredposts-block_1' => array(
-      'module' => 'views',
-      'delta' => 'vsite_featuredposts-block_1',
-      'weight' => 0,
-      'region' => false,
-      'label' => 'Featured posts',
-      'cache' => BLOCK_CACHE_CONTENT_CACHE,
-      'cache_keys' => array(
-        'os_og' => array('current' => 'current'),
-      ),
-    ),
   );
-
 }
 
 /**
@@ -1041,25 +1026,6 @@ function vsite_vsite_admin_link($type, $object) {
       );
     }
   }
-
-  //Add link for featuring posts
-  /*
-  if (($vsite->access_admin()) && flag_fetch_definition($type)){
-  	// Get frontpage flags
-    $flag = flag_get_flag('featuredposts');
-	  if ($flag->applies_to_content_object($object)) {
-
-	    $content_id = $flag->get_content_id($object);
-		  // The flag links are actually fully rendered theme functions.
-		  // The HTML attribute is set to TRUE to allow whatever the themer desires.
-		  $links['flag-'. $flag->name] = array(
-		  'title' => $flag->theme($flag->is_flagged($content_id) ? 'unflag' : 'flag', $content_id),
-		  'html' => TRUE,
-		  );
-
-	  }// Does flag apply to this content?
-  }
-  */
 
   return $links;
 }
