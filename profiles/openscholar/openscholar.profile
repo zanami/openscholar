@@ -52,9 +52,12 @@ function openscholar_profile_modules() {
 
   );
 
+  // include translation modules if another language has been selected
   if (_os_language_selected()) {
     $modules[] = 'locale';
     $modules[] = 'l10n_update';
+    $modules[] = 'l10n_client';
+    $modules[] = 'os_l10n';
   }
 
   return $modules;

@@ -1,0 +1,6 @@
+; $Id$
+name = OpenScholar Translation
+description = Provides connection to OpenScholar translation server
+dependencies[] = l10n_update
+core = 6.x
+package = Multilanguage

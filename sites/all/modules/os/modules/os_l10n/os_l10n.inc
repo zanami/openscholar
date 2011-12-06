@@ -12,7 +12,7 @@ define('OS_L10N_VERSION', '6.x-1.0');
 define('OS_L10N_SERVER', 'l10n.local');      //only exists on sagotsky's desktop
 
 // This is the default folder to place translation files
-define('OS_L10N_DIRECTORY', 'translations');
+define('OS_L10N_DIRECTORY', 'sites/default/files/l10n_packager');
 
 // Location of the l10n_update module we need to know to check requirements
 // define('os_L10N_UPDATE', './profiles/os_translation/modules/l10n_update');
@@ -31,6 +31,9 @@ function _os_update_projects_alter(&$projects) {
   foreach($os_modules as $mod) {
     $projects[$mod]['info']['l10n server'] = OS_L10N_SERVER;
   }
+  
+  //lets ignore everything but OS for now.
+  $projects = array_intersect_key($projects, array_flip($os_modules));
 }
 
 /**
@@ -41,8 +44,10 @@ function _os_l10n_servers() {
   return array(
   	OS_L10N_SERVER => array(
   	  'name' => OS_L10N_SERVER,
-  	  'server_url' => 'http://'.OS_L10N_SERVER.'/files/'.OS_L10N_DIRECTORY.'/server.xml',
-  	  'update_url' => 'http://'.OS_L10N_SERVER.'/files/'.OS_L10N_DIRECTORY.'/%core/%project/%project-%release.%language.po',
+  	  //'server_url' => 'http://'.OS_L10N_SERVER.'/files/'.OS_L10N_DIRECTORY.'/server.xml',
+  	  //'update_url' => 'http://'.OS_L10N_SERVER.'/files/'.OS_L10N_DIRECTORY.'/%core/%project/%project-%release.%language.po',
+  	'server_url' => 'http://'.OS_L10N_SERVER.'/'.OS_L10N_DIRECTORY.'/server.xml',
+  	  'update_url' => 'http://'.OS_L10N_SERVER.'/'.OS_L10N_DIRECTORY.'/%core/%project/%project-%release.%language.po',
   	), 
   );  
 }
