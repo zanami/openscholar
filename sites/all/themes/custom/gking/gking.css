@@ -661,8 +661,9 @@ body.header-right-main #header .hg-container {
 
 .front #header-main .box-os_boxes_simple .content {
 font-size: 1.1em;
-margin: 0 0 0 140px;
+margin: -5px 0 0 140px;
 width: 501px;
+ line-height: 18px;
   }
 
 .view-scholar-software-releases {
