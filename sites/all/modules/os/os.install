@@ -610,6 +610,7 @@ function os_update_6012(&$sandbox) {
   require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
   $flag = flag_get_flag('featuredposts');
   $boxes = array();
+  // get the flagged content
   $q = db_query("SELECT nid, n.title, group_nid FROM {flag_content} f INNER JOIN {node} n ON f.content_id = n.nid INNER JOIN {og_ancestry} oga USING (nid) WHERE f.fid = %d ORDER BY n.changed DESC", $flag->fid);
   while ($r = db_fetch_array($q)) {
     $grp = $r['group_nid'];
@@ -627,6 +628,21 @@ function os_update_6012(&$sandbox) {
     }
   }
 
+  // make sure we replace the block in every vsite, not just ones with featured posts
+  $q = db_query("SELECT nid FROM {node} WHERE type = 'vsite'");
+  while ($r = db_fetch_array($q)) {
+    $grp = $r['nid'];
+    if (!isset($boxes[$grp])) {
+      $boxes[$grp] = boxes_factory('os_boxes_manual_list', array(
+      				'delta' => os_boxes_create_delta('og-'.$grp),
+      				'new' => false,
+      				'title' => 'Featured Posts',
+      				'description' => 'Featured Posts')
+            );
+    }
+  }
+
+  // add all the new boxes in one query
   $tpl = '("og", %d, "boxes", "%s", "%s")';
   $args = array();
   $s = "INSERT INTO {spaces_overrides} VALUES ";
@@ -638,6 +654,7 @@ function os_update_6012(&$sandbox) {
     $args[] = serialize((object)(array)$box);
     $val_strs[] = $tpl;
 
+    // but replace them in contexts
     os_boxes_replace_boxes('views-vsite_featuredposts-block_1', $box, false, $grp);
   }
   $s .= implode(', ', $val_strs);
