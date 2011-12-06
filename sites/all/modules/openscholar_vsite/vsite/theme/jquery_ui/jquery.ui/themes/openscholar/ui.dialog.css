@@ -75,4 +75,9 @@
 .ui-draggable .ui-dialog-titlebar {
 	cursor: move;
 	}
+	
+/** Override of contrib css modalframe.child.css **/
+.modalframe-page-content {
+background:#FFF;
+}
 
