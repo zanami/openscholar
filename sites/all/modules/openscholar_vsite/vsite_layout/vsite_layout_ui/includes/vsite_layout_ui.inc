@@ -523,9 +523,6 @@ function vsite_layout_ui_region_widgets( $page_type = 'none') {
         // the delete path is always the same
         $widget['block_delete_path'] = "cp/build/layout/nojs/".$widget['delta']."/delete";
       }
-    }else{
-    	//Old box that is no longer provieded by vsite_widgets, should not be used, so don't show it
-    	unset($a_widgets[$s_widget_key]);
     }
 
     if (!is_array($widget['tags'])) {
