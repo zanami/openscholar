@@ -23,7 +23,7 @@
 		// sets the wrapperElement to something other than span
 		// if its span, oembed objects would get popped out and
 		// wouldnt be replaced properly on detach.
-		Drupal.wysiwygFields.wrapperElement = wrapperElement = 'wysiwyg_field';
+		Drupal.wysiwygFields.wrapperElement = wrapperElement = 'form';
 	}
 	
 	// store the current functions
@@ -70,12 +70,12 @@
 			}
 		});
 		eve.push('iframe[src|href]');
-		eve.push('wysiwyg_field[id|class]');
+		eve.push('form[id|class]');
 		settings.extended_valid_elements = eve.join(',');
 		
 		
 		// change some vars and functions so oembed stuff doesn't pop out of the span
-		Drupal.wysiwygFields.wysiwyg.tinymce.wrapperElement = 'wysiwyg_field';
+		Drupal.wysiwygFields.wysiwyg.tinymce.wrapperElement = 'form';
 		Drupal.wysiwygFields.wysiwyg.tinymce.divToWysiwygField = function() {
 	        delete Drupal.settings.wysiwygFields.timer;
 	        if (typeof tinyMCE.activeEditor.contentDocument !== "undefined") {
