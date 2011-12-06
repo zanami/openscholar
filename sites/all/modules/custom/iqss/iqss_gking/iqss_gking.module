@@ -99,7 +99,6 @@ function iqss_gking_theme(){
  */
 function iqss_gking_block($op = 'list', $delta = false, $edit = array()){
   if ($op == 'list') {
-    $blocks['areas_of_research']['info'] = t('Areas of Research');
     $blocks['filter_by_type']['info'] = t("Filter a Category by Content Type");
     $blocks['gking_pub_by_type']['info'] = t('Gkings "Recent Works" to replace default Publications by type');
     $blocks['class_materials']['info'] = t('Student Materials');
@@ -107,8 +106,6 @@ function iqss_gking_block($op = 'list', $delta = false, $edit = array()){
   }
   elseif ($op == 'view') {
     switch ($delta) {
-      case 'areas_of_research' :
-        return _iqss_gking_areas_of_research_wgt();
       case 'filter_by_type' :
         return iqss_gking_filter_by_type_block();
       case 'gking_pub_by_type' :
@@ -192,41 +189,6 @@ function theme_iqss_gking_dl($term){
   //));
   $item = '<dt><span>' . $term_link . '</span><dd>' . $desc_trimmed . '</dd>';
   return $item;
-}
-
-/**
- * Return the block contents for the area of research-applications block
- */
-function _iqss_gking_areas_of_research_wgt(){
-
-  $vsite = vsite_get_vsite();
-  if (! iqss_gking_on_gking_site())
-    return array();
-
-  $output = "";
-  foreach ( $vsite->get_vocabs($type) as $n_vid => $o_vocab ) {
-    if ($o_vocab->name != "Research Interests")
-      continue;
-
-    $tree = taxonomy_get_tree($n_vid, 0, - 1, 2);
-
-    foreach ( $tree as $n_index => $o_vocab ) {
-      if (! in_array($o_vocab->name, array(
-          "Applications",
-          "Methods"
-      )) || $o_vocab->depth != 0)
-        continue;
-      $n_index ++;
-      $items = theme('vsite_taxonomy_term_list',$n_index, $tree, 'iqss_gking_dl');
-      $output = "\n\n" . '<div id="' . strtolower($o_vocab->name) . '" class="col">' . '<h4>' . $o_vocab->name . '</h4>' . "<dl>" . implode("\n", $items) . "</dl>" . "</div><!--/ $o_vocab->name -->" . $output;
-    }
-    break;
-  }
-
-  return array(
-      'subject' => "Areas of Research:",
-      'content' => $output
-  );
 }
 
 /**
