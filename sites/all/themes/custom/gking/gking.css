@@ -167,6 +167,18 @@ a.more {
  background: url(images/arrow-white.png) 100% 50% no-repeat transparent;
   }
 
+
+.front #header-main .box-os_boxes_simple a.more {
+ font-weight: bold;
+ text-decoration: none;
+ font-size: 11px;
+ letter-spacing: 0;
+ color: #FFF;
+ padding: 0 8px 0 2px;
+ margin-left: 7px;
+ background: url(images/arrow-white.png) 100% 50% no-repeat #db7002;
+  }
+
 #content .context-links {
   margin-top: 5px;
   }
@@ -648,7 +660,9 @@ body.header-right-main #header .hg-container {
   }
 
 .front #header-main .box-os_boxes_simple .content {
-  margin-top: 0;
+font-size: 1.1em;
+margin: 0 0 0 140px;
+width: 500px;
   }
 
 .view-scholar-software-releases {
