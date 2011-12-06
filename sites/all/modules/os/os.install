@@ -628,20 +628,6 @@ function os_update_6012(&$sandbox) {
     }
   }
 
-  // make sure we replace the block in every vsite, not just ones with featured posts
-  $q = db_query("SELECT nid FROM {node} WHERE type = 'vsite'");
-  while ($r = db_fetch_array($q)) {
-    $grp = $r['nid'];
-    if (!isset($boxes[$grp])) {
-      $boxes[$grp] = boxes_factory('os_boxes_manual_list', array(
-      				'delta' => os_boxes_create_delta('og-'.$grp),
-      				'new' => false,
-      				'title' => 'Featured Posts',
-      				'description' => 'Featured Posts')
-            );
-    }
-  }
-
   // add all the new boxes in one query
   $tpl = '("og", %d, "boxes", "%s", "%s")';
   $args = array();
