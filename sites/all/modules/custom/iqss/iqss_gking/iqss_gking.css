@@ -42,7 +42,9 @@ body.front .box-vsite_taxonomy_fbt div.item-list ul li.term-applications.first {
 }
 
 body.front .box-vsite_taxonomy_fbt .item-list ul li.term-methods.last .term-head a,
-body.front .box-vsite_taxonomy_fbt .item-list ul li.term-applications.first .term-head a
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-applications.first .term-head a,
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-methods.last .term-head,
+body.front .box-vsite_taxonomy_fbt .item-list ul li.term-applications.first .term-head
  {
      color: #68EFDE;
      padding-bottom: 25px;
@@ -50,12 +52,17 @@ body.front .box-vsite_taxonomy_fbt .item-list ul li.term-applications.first .ter
 }
 
 body.front .box-vsite_taxonomy_fbt .item-list ul.term-methods li .term-head a:only-of-type,
-body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li .term-head a:only-of-type {
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li .term-head a:only-of-type,
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-methods li:only-of-type,
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li:only-of-type {
     color: #ffffff;
 }
 
 body.front .box-vsite_taxonomy_fbt .item-list ul.term-methods li.active .term-head a:only-of-type,
-body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li.active .term-head a:only-of-type {
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li.active .term-head a:only-of-type,
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-methods li.active div:only-of-type,
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li.active div:only-of-type
+ {
     color: #db7002;
 }
 
@@ -216,12 +223,14 @@ body.front .box-vsite_taxonomy_fbt li {
     }
 
 body.front .box-vsite_taxonomy_fbt li.term-methods .term-head a,
-body.front .box-vsite_taxonomy_fbt li.term-methods.last {
+body.front .box-vsite_taxonomy_fbt li.term-methods.last,
+body.front .box-vsite_taxonomy_fbt li.term-methods .term-head {
   padding-right: 31px;
   }
 
 
-body.front .box-vsite_taxonomy_fbt .item-list li.term-applications.first a {
+body.front .box-vsite_taxonomy_fbt .item-list li.term-applications.first a,
+body.front .box-vsite_taxonomy_fbt .item-list li.term-applications.first {
      left: 0; 
      padding-left: 59px;
   
@@ -255,11 +264,15 @@ body.front #block-iqss_gking-areas_of_research dt.active span {
   }
 
 body.front .box-vsite_taxonomy_fbt ul li ul li .term-head  a,
-body.front .box-vsite_taxonomy_fbt ul li ul li .term-head a:visited {
+body.front .box-vsite_taxonomy_fbt ul li ul li .term-head a:visited,
+body.front .box-vsite_taxonomy_fbt ul li ul li .term-head,
+body.front .box-vsite_taxonomy_fbt ul li ul li .term-head {
   color: #fff;
   }
 
-body.front .box-vsite_taxonomy_fbt ul li ul li .term-head a:hover {
+body.front .box-vsite_taxonomy_fbt ul li ul li .term-head a:hover,
+body.front .box-vsite_taxonomy_fbt ul li ul li .term-head
+ {
   text-decoration: none;
   color:#db7002;
   }
