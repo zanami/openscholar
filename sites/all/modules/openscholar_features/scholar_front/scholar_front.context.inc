@@ -52,13 +52,6 @@ function scholar_front_context_default_contexts() {
           'status' => '0',
           'label' => 'Latest Announcements',
         ),
-        'views-vsite_featuredposts-block_1' => array(
-          'module' => 'views',
-          'delta' => 'vsite_featuredposts-block_1',
-          'weight' => 18,
-          'region' => 'right',
-          'label' => 'Featured posts',
-        ),
         'boxes-scholar_biocv_bio' => array(
           'module' => 'boxes',
           'delta' => 'scholar_biocv_bio',
