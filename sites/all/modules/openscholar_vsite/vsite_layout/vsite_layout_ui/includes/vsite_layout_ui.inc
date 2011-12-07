@@ -511,9 +511,9 @@ function vsite_layout_ui_region_widgets( $page_type = 'none') {
 
   foreach ($a_widgets as $s_widget_key => $widget) {
     $widget = (array)$widget;
+    
     // blocks stored in context override have old path
-    // and overwrite the defaults
-
+    // and could overwrite the defaults
     if (isset($default_blocks[$s_widget_key])) {
       $widget['tags'] = $default_blocks[$s_widget_key]['tags'];
       $widget['block_config_path'] = $default_blocks[$s_widget_key]['block_config_path'];
@@ -523,6 +523,15 @@ function vsite_layout_ui_region_widgets( $page_type = 'none') {
         // the delete path is always the same
         $widget['block_delete_path'] = "cp/build/layout/nojs/".$widget['delta']."/delete";
       }
+    }else{
+    	static $existing_blocks = array();
+    	//Get avalible blocks for this module
+    	if(!isset($existing_blocks[$widget['module']])) $existing_blocks[$widget['module']] = module_invoke($widget['module'], 'block', 'list');
+    	
+    	//Check to make sure this block still exists
+    	if(!array_key_exists($widget['delta'],$existing_blocks[$widget['module']])){
+    		unset($a_widgets[$s_widget_key]);
+    	}
     }
 
     if (!is_array($widget['tags'])) {
