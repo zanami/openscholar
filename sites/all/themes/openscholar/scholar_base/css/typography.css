@@ -441,6 +441,11 @@ ul.menu li.collapsed {
     padding-right: 25px !important;
 }
 
+.block .item-list ul.pager li.pager-previous a.active.views-throbbing {
+  background: url('../images/throbber.gif') left center no-repeat;
+    padding-right: 0 !important;
+    padding-left: 25px !important;
+}
 
 .item-list ul.pager li.pager-current {
   background: #5ba4d9;
