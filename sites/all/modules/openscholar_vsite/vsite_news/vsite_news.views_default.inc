@@ -171,8 +171,7 @@ function vsite_news_views_default_views() {
     'type' => 'none',
   ));
   $handler->override_option('footer', '<?php
-    global $user;
-    user_save($user, array(\'news_last_access\' => time()));
+   vsite_news_set_last_access();
 ?>');
   $handler->override_option('footer_format', '3');
   $handler->override_option('footer_empty', 1);
@@ -189,61 +188,6 @@ function vsite_news_views_default_views() {
       'title' => 'title',
     ),
     'separator' => '',
-  ));
-  $handler = $view->new_display('page', 'Tab Colleagues', 'page_2');
-  $handler->override_option('filters', array(
-    'value_vsite_news' => array(
-      'operator' => '=',
-      'value' => '',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'realms' => array(
-        'vsite' => 'vsite',
-      ),
-      'id' => 'value_vsite_news',
-      'table' => 'activity_access',
-      'field' => 'value_vsite_news',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-    'status' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'status',
-      'table' => 'activity',
-      'field' => 'status',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('path', 'cp/news/activity/followers');
-  $handler->override_option('menu', array(
-    'type' => 'none',
-    'title' => 'Colleagues Activity',
-    'description' => '',
-    'weight' => '0',
-    'name' => 'navigation',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => '0',
-    'name' => 'navigation',
   ));
   $handler = $view->new_display('page', 'Tab My Activity', 'page_3');
   $handler->override_option('filters', array(
@@ -345,6 +289,7 @@ function vsite_news_views_default_views() {
     'output_lifespan' => '1700',
   ));
   $handler->override_option('title', 'Recent Activity');
+  $handler->override_option('footer', '');
   $handler->override_option('empty', 'Your package does not have any activity to show.');
   $handler->override_option('empty_format', '1');
   $handler->override_option('items_per_page', 5);
@@ -374,6 +319,7 @@ function vsite_news_views_default_views() {
     ),
   ));
   $handler->override_option('title', 'Current Activity');
+  $handler->override_option('footer', '');
   $handler->override_option('style_plugin', 'list');
   $handler->override_option('style_options', array(
     'grouping' => '',
