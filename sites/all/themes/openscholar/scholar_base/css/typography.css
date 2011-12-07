@@ -435,6 +435,13 @@ ul.menu li.collapsed {
   text-decoration: none;
   }
 
+
+.block .item-list ul.pager li a.active.views-throbbing {
+  background: url('../images/throbber.gif') right center no-repeat;
+    padding-right: 25px !important;
+}
+
+
 .item-list ul.pager li.pager-current {
   background: #5ba4d9;
   color: #fff;
