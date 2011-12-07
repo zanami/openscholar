@@ -56,15 +56,26 @@ function vsite_news_menu() {
  * show the vsite_news_view
  */
 function vsite_news_activity() {
-  $vsite = vsite_get_vsite();
-  if ($vsite) {
-    global $user;
-    user_save($user, array('news_last_access' => time()));
-  }
+  vsite_news_set_last_access();
 
   require_once(drupal_get_path('module', 'activity') . '/views/activity.views.inc');
   activity_views_access_user(user_load($vsite->group->uid));//Set the default user to group owner
   return views_page('vsite_activity', 'default');
+}
+
+/**
+ * Updates the last accessed time for the current user on the current vsite
+ */
+function vsite_news_set_last_access() {
+  $last_access = variable_get('vsite_news_last_access', array());
+  global $user;
+  $last_access[$user->uid] = time();
+  if ($vsite = vsite_get_vsite()) {
+    $vsite->controllers->variable->set('vsite_news_last_access', $last_access);
+  }
+  else {
+    variable_set('vsite_news_last_access', $last_access);
+  }
 }
 
 /**
@@ -327,11 +338,11 @@ function vsite_news_vsite_generic_settings() {
 
 function vsite_news_get_new_activity_count() {
   global $user;
-  $data = unserialize($user->data);
   // this is set in vsite_news_activity()
   // or in the footer of the exported views
   $args[] = $user->uid;
-  $args[] = $data['news_last_access'];
+  $last_access = variable_get('vsite_news_last_access', array());
+  $args[] = $last_access[$user->uid];
   if ($vsite = vsite_get_vsite()) {
     $join = ' INNER JOIN {og_ancestry} USING (nid)';
     $where = ' AND group_nid = %d';
