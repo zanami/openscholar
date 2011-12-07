@@ -98,6 +98,10 @@ h2.title,
   letter-spacing:-0.05em;
   text-indent:-1px;
   }
+  
+.not-front #content-top h2.title {
+  margin-left: 0;
+  }
 
 .node-type-person h2.title {
   padding: 0;
@@ -660,10 +664,10 @@ body.header-right-main #header .hg-container {
   }
 
 .front #header-main .box-os_boxes_simple .content {
-font-size: 1.1em;
-margin: -5px 0 0 140px;
-width: 501px;
- line-height: 18px;
+font-size: 1.04em;
+margin: -9px 0 0 140px;
+width: 505px;
+ line-height: 19px;
   }
 
 .view-scholar-software-releases {
