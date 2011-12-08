@@ -2,5 +2,6 @@
 name = OpenScholar Translation
 description = Provides connection to OpenScholar translation server
 dependencies[] = l10n_update
+dependencies[] = os
 core = 6.x
 package = Multilanguage

@@ -49,17 +49,14 @@ function openscholar_profile_modules() {
     // ucreate
     'ucreate', 'ucreate_og',
 
-
   );
-
-  // include translation modules if another language has been selected
+  
   if (_os_language_selected()) {
-    $modules[] = 'locale';
-    $modules[] = 'l10n_update';
-    $modules[] = 'l10n_client';
     $modules[] = 'os_l10n';
+    $modules[] = 'l10n_update';
+    $modules[] = 'locale';
   }
-
+  
   return $modules;
 }
 
@@ -212,13 +209,16 @@ function openscholar_profile_task_list() {
   $conf['site_name'] = 'OpenScholar';
   $conf['site_footer'] = '<a href="http://openscholar.harvard.edu">OpenScholar</a> by <a href="http://iq.harvard.edu">IQSS</a> at Harvard University';
 
+
   $tasks = array();
   if (_os_language_selected()) {
-    $tasks['batch-l10n-update'] = st('Download and import translation');
+    $tasks['os-l10n-batch'] = st('Download updated translations');
   }
-  $tasks['openscholar-flavor'] = st('OpenScholar  flavor');
-  $tasks['openscholar-configure'] = st('Openscholar  configuration');
-
+  
+  $tasks += array (
+    'openscholar-flavor' => st('OpenScholar  flavor'),
+    'openscholar-configure' => st('Openscholar  configuration'),
+  );
   return $tasks;
 }
 
@@ -226,7 +226,7 @@ function openscholar_profile_task_list() {
  * Implementation of hook_profile_tasks().
  */
 function openscholar_profile_tasks(&$task, $url) {
-  global $profile, $install_locale;
+  global $install_locale;
 
   $output = '';
 
@@ -253,6 +253,36 @@ function openscholar_profile_tasks(&$task, $url) {
     return;
   }
 
+  // start batch processing of l10n updates
+  if ($task == 'os-l10n-batch-start') {
+    if (_os_language_selected()) {
+      //module_load_all();
+      $history = l10n_update_get_history();
+      module_load_include('check.inc', 'l10n_update');
+      $available = l10n_update_available_releases(true);
+      $updates = l10n_update_build_updates($history, $available);
+
+      module_load_include('batch.inc', 'l10n_update');
+      $updates = _l10n_update_prepare_updates($updates, NULL, array());
+      $batch = l10n_update_batch_multiple($updates, LOCALE_IMPORT_KEEP);
+
+      // Overwrite batch finish callback, so we can modify install task too.
+      $batch['finished'] = '_os_l10n_batch_finished';
+
+      // Start a batch, switch to 'l10n-install-batch' task. We need to
+      // set the variable here, because batch_process() redirects.
+      variable_set('install_task', 'os-l10n-batch');
+      batch_set($batch);
+      batch_process($url, $url);
+    }
+  }
+  
+  //process l10n updates
+  if ($task == 'os-l10n-batch') {
+    include_once 'includes/batch.inc';
+    return _batch_page();
+  }
+  
   // chose an openscholar flavor to install
   if ($task == 'openscholar-flavor') {
 
@@ -323,35 +353,6 @@ function openscholar_profile_tasks(&$task, $url) {
     $task = 'profile-finished';
     return;
   }
-
-  if ( $task == 'l10n-update') {
-    if (_os_language_selected()) {
-      $history = l10n_update_get_history();
-      module_load_include('check.inc', 'l10n_update');
-      $available = l10n_update_available_releases();
-      $updates = l10n_update_build_updates($history, $available);
-
-      module_load_include('batch.inc', 'l10n_update');
-      $updates = _l10n_update_prepare_updates($updates, NULL, array());
-      $batch = l10n_update_batch_multiple($updates, LOCALE_IMPORT_KEEP);
-
-      // Overwrite batch finish callback, so we can modify install task too.
-      $batch['finished'] = '_l10n_install_batch_finished';
-
-      // Start a batch, switch to 'l10n-install-batch' task. We need to
-      // set the variable here, because batch_process() redirects.
-      variable_set('install_task', 'l10n-install-batch');
-      batch_set($batch);
-      batch_process($url, $url);
-    }
-  }
-
-  // download updated translation files
-  if ( $task == 'batch-l10n-update' ) {
-    include_once 'includes/batch.inc';
-    return _batch_page();
-  }
-
   return $output;
 }
 
@@ -362,7 +363,12 @@ function openscholar_profile_tasks(&$task, $url) {
  */
 function _openscholar_profile_batch_finished($success, $results) {
   //variable_set('install_task', 'openscholar-configure');
-  variable_set('install_task', 'openscholar-flavor');
+  //variable_set('install_task', 'openscholar-flavor');
+  if (_os_language_selected()) {
+    variable_set('install_task', 'os-l10n-batch-start');
+  } else {
+    variable_set('install_task', 'openscholar-flavor');
+  }
 }
 
 /**
@@ -755,11 +761,18 @@ function _openscholar_wysiwyg_presets(){
 }
 
 /**
- * Check whether we are installing in a language other than English
+ * @function _os_language_selected
+ * helper function for figuring out if we're configuring a multilingual site that needs l10n
  */
 function _os_language_selected() {
-  global $install_locale;
-  #return !empty($install_locale) && ($install_locale != 'en');
-  return !empty($install_locale); // ignoring english makes this impossible to test.
+  return true;
 }
 
+function _os_l10n_batch_finished($success, $results) {
+  if ($success) {
+    variable_set('install_task', 'openscholar_flavor');
+  }
+  
+  module_load_include('batch.inc', 'l10n_update');
+  _l10n_update_batch_finished($success, $results);
+}

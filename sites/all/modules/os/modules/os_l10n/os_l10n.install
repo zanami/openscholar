@@ -19,7 +19,7 @@ function os_l10n_install() {
  * Enter description here ...
  * @param string $phase
  */
-function os_l10n_requirements($phase) {
+function __os_l10n_requirements($phase) {
   _os_l10n_include($phase);
   $t = get_t();
   // Get current locale. We only support one at a time
@@ -99,11 +99,8 @@ function _os_l10n_include($phase = 'runtime') {
   
   if (!empty($filename) && is_readable($filename)) {
     $req = require_once $filename;
-    //$done = TRUE;
+    $done = TRUE;
   }
-  
-    $f = function_exists('l10n_update_project_get_release');
-  
 }
 
 /**
@@ -134,15 +131,15 @@ function _os_l10n_download_url($locale) {
  * Get default release for downloading and check download link
  */
 function _os_l10n_default_release($locale) {
-  _os_l10n_include('install');
-
-  $f = function_exists('l10n_update_project_get_release');
-  /* not sure about this line.  
+    /* not sure about this line.  
    * atrium had a project for the entirety of atrium.  how would we do that?
    * or is this just for the profile project
    */
-  $release = l10n_update_project_get_release('openscholar', $locale, OS_L10N_VERSION, OS_L10N_SERVER);
+
+  $release = l10n_update_project_get_release('os', $locale, OS_L10N_VERSION, 'http://'.OS_L10N_SERVER);
   if ($release && !empty($release['download_link'])) {
     return $release;
   }
 }
+
+
