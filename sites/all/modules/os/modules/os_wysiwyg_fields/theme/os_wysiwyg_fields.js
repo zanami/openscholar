@@ -8,7 +8,10 @@
 	function cleanUp(id) {
 		// remove the 'Expand' button. There's nothing hidden to Expand.
 		// well, there is, but there's no reason it should be hidden to start.
-		$('#wysiwyg_fields-' + id + '-dialog .ui-dialog-titlebar .wysiwyg_fields-icon-expand').click().hide();
+		var btn = $('#wysiwyg_fields-' + id + '-dialog .ui-dialog-titlebar .wysiwyg_fields-icon-expand').hide();
+		if (id == 'field_os_inline_oembed') {
+			btn.click();
+		}
 		
 		// remove the Insert button added by wysiwyg_fields.
 		// The button provided by Insert is more useful.
@@ -81,7 +84,7 @@
 	        if (typeof tinyMCE.activeEditor.contentDocument !== "undefined") {
 	          $('.wysiwyg_fields-placeholder', tinyMCE.activeEditor.contentDocument.body).each(function() {
 	            $(this).removeClass('wysiwyg_fields-placeholder');
-	            replacement = "<"+Drupal.wysiwygFields.wrapperElement+" id='" + $(this).attr('id') + "' class='" + $(this).attr('class') + "'>" + Drupal.settings.wysiwygFields.replacements['[' + $(this).attr('id') + ']'] + "</"+Drupal.wysiwygFields.wrapperElement+">";
+	            replacement = "<"+Drupal.wysiwygFields.wrapperElement+" id='" + $(this).attr('id') + "' class='" + $(this).attr('class') + "'>" + Drupal.settings.wysiwygFields.replacements['[' + $(this).attr('id') + ']'] + "</"+Drupal.wysiwygFields.wrapperElement+"> ";
 	            Drupal.wysiwygFields.wysiwyg.tinymce.wysiwygIsNode(this);
 	            Drupal.wysiwyg.instances[Drupal.settings.wysiwygFields.activeId].insert(replacement);
 	          });
@@ -101,7 +104,7 @@
 					return Drupal.wysiwygFields.wysiwygDetach('zzzzz_do_not_find_me', content, settings, instanceId);
 				};
 			}
-		}
+		}*/
 		
 		// pull the Insert button out of a div and next to remove
 		
@@ -114,6 +117,6 @@
 				$('input[value="Remove"]', this).before(btn);
 			});
 		}
-		hasRun = true;*/
+		hasRun = true;
 	};
 })(jQuery);
