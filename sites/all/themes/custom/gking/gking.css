@@ -98,6 +98,10 @@ h2.title,
   letter-spacing:-0.05em;
   text-indent:-1px;
   }
+  
+.not-front #content-top h2.title {
+  margin-left: 0;
+  }
 
 .node-type-person h2.title {
   padding: 0;
@@ -167,6 +171,18 @@ a.more {
  background: url(images/arrow-white.png) 100% 50% no-repeat transparent;
   }
 
+
+.front #header-main .box-os_boxes_simple a.more {
+ font-weight: bold;
+ text-decoration: none;
+ font-size: 11px;
+ letter-spacing: 0;
+ color: #FFF;
+ padding: 0 8px 0 2px;
+ margin-left: 7px;
+ background: url(images/arrow-white.png) 100% 50% no-repeat #db7002;
+  }
+
 #content .context-links {
   margin-top: 5px;
   }
@@ -225,6 +241,15 @@ a.more {
   margin-bottom: 0;
   }
 
+.item-list ul.pager li.pager-current {
+    background-color: #DB7002;
+   }
+
+.item-list ul.pager li a, .item-list ul.pager li a.active {
+    font-size:1.5em;
+    
+}
+
 .page-iqss-gking-research-group #content div.node-type-person ul li {
   padding: 0;
   }
@@ -233,11 +258,12 @@ a.more {
   padding-bottom: 5px;
   }
 
-#sidebar-second #block-iqss_gking-areas_of_research {
+#sidebar-second .box-vsite_taxonomy_fbt {
   background:#3b4e4e;
   }
 
-.front .box-vsite_taxonomy_fbt h3.title {
+.front .box-vsite_taxonomy_fbt h3.title,
+#sidebar-second .box-vsite_taxonomy_fbt h3.title {
   background: url('images/aor-h3.png') 0 100% repeat-x #504F4B;
   color: #fff;
   margin-left: -16px;
@@ -262,27 +288,49 @@ body.front .box-vsite_taxonomy_fbt div.description  {
 
 }
 
-#sidebar-second #block-iqss_gking-areas_of_research a,
-#sidebar-second #block-iqss_gking-areas_of_research a:visited {
+#sidebar-second .box-vsite_taxonomy_fbt li,
+#sidebar-second .box-vsite_taxonomy_fbt a,
+#sidebar-second .box-vsite_taxonomy_fbt a:visited {
   color: #fff;
+  font-weight:bold;
   }
 
-#sidebar-second #block-iqss_gking-areas_of_research a:hover {
+#sidebar-second .box-vsite_taxonomy_fbt a:hover {
   color:#e87702;
   text-decoration: none;
   }
 
-#sidebar-second #block-iqss_gking-areas_of_research h4 {
+#sidebar-second .box-vsite_taxonomy_fbt ul .term-methods>div:first-of-type a,
+#sidebar-second .box-vsite_taxonomy_fbt ul .term-applications>div:first-of-type a
+{
   margin-bottom: 0;
   color:#68efde;
+  font-weight: bold;
   }
+  
 
-#sidebar-second #block-iqss_gking-areas_of_research dd {
+#sidebar-second .box-vsite_taxonomy_fbt dd {
   display:none;
   }
 
-#sidebar-second #block-iqss_gking-areas_of_research #methods {
+#sidebar-second .box-vsite_taxonomy_fbt {
   margin-bottom: .5em;
+  }
+
+#sidebar-second .box-vsite_taxonomy_fbt li.term-methods .count,
+#sidebar-second .box-vsite_taxonomy_fbt li.term-applications .count {
+  display: none;
+  }
+  
+  #sidebar-second .box-vsite_taxonomy_fbt ul.term-methods,
+  #sidebar-second .box-vsite_taxonomy_fbt ul.term-applications
+   {
+  margin-left: -20px;
+  }
+
+  #sidebar-second .box-vsite_taxonomy_fbt ul li a
+   {
+  font-weight: bold;
   }
 
 
@@ -616,7 +664,10 @@ body.header-right-main #header .hg-container {
   }
 
 .front #header-main .box-os_boxes_simple .content {
-  margin-top: 0;
+font-size: 1.04em;
+margin: -9px 0 0 140px;
+width: 505px;
+ line-height: 19px;
   }
 
 .view-scholar-software-releases {
@@ -799,7 +850,20 @@ background: #FFF;
 border:none;
 }
 
-.quicktabs_wrapper .quicktabs_tabpage {margin-top:55px;}
+.quicktabs_wrapper .quicktabs_tabpage {margin-top:55px; margin-bottom: 16px;}
+
+.quicktabs_tabpage .os-links:nth-of-type(1) {
+    height: 18px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 0;
+    padding-top: 0;
+    position: absolute;
+    right: -25px;
+    top: 0;
+    width: 14px;
+    z-index: 2;
+}
 
 .box-os_modal_tabbed h3.title {font-size: 21px;}
 

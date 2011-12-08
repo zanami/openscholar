@@ -60,7 +60,7 @@ function scholar_front_flag_alter(&$flag){
 
 /**
  * Implementation of hook_link().
- */
+ *
 function scholar_front_vsite_admin_link($type, $object){
   $links = array();
   global $user;
@@ -242,10 +242,10 @@ function scholar_front_block($op = 'list', $delta = false, $edit = array()) {
  * Admin block to help users get started creating thier site
  */
 function scholar_front_block_get_started(){
- 
+
   $vsite = vsite_get_vsite();
   if(!$vsite || !$vsite->access_admin()) return "";
-  
+
   module_load_include('inc', 'scholar_front', 'scholar_front.pages');
   return array('content' => _scholar_front_admin_frontpage());
 }

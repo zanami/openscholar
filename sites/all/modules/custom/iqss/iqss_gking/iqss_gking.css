@@ -55,7 +55,8 @@ body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li .term-head
 }
 
 body.front .box-vsite_taxonomy_fbt .item-list ul.term-methods li.active .term-head a:only-of-type,
-body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li.active .term-head a:only-of-type {
+body.front .box-vsite_taxonomy_fbt .item-list ul.term-applications li.active .term-head a:only-of-type 
+ {
     color: #db7002;
 }
 
@@ -242,12 +243,12 @@ body.front .box-vsite_taxonomy_fbt li.term-applications .term-head {
 
   }
 
-body.front .box-vsite_taxonomy_fbt dt.active  {
-  background: url('images/line.png') no-repeat 0 50% #3b4e4e;
+body.front .box-vsite_taxonomy_fbt li.active  {
+  background: url('images/line.png') no-repeat 33px 50% #3b4e4e;
   }
 
 body.front .box-vsite_taxonomy_fbt ul li.term-methods ul li {
-  background-position: 236px 50%;
+  background-position: center right;
   }
 
 body.front #block-iqss_gking-areas_of_research dt.active span {
@@ -259,7 +260,8 @@ body.front .box-vsite_taxonomy_fbt ul li ul li .term-head a:visited {
   color: #fff;
   }
 
-body.front .box-vsite_taxonomy_fbt ul li ul li .term-head a:hover {
+body.front .box-vsite_taxonomy_fbt ul li ul li .term-head a:hover
+ {
   text-decoration: none;
   color:#db7002;
   }

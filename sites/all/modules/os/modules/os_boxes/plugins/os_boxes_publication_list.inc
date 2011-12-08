@@ -245,6 +245,13 @@ class os_boxes_publication_list extends os_boxes_default {
 			    'grouping' => '',
 			    'type' => 'ul',
 			  ));
+			  
+	    //Note: Some actions like "$view->validate()" (which the ajax callback uses) will cache (in code) the
+      //      avalible fields this clears that since we change it here
+      if(isset($view->display[$display_id]->handler->handlers['field'])){
+        unset($view->display[$display_id]->handler->handlers['field']);
+      }
+      
 	  	break;
 	  	case 'teasers':
 	  	default:
