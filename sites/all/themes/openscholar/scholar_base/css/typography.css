@@ -321,6 +321,8 @@ ul.inline li {
 ul.links li {
   padding:0;
   }
+  
+.boxes-box ul.links li {margin-bottom:15px;}
 
 .node .links li {
   font-size: 11px !important;
@@ -343,6 +345,7 @@ color:#989095;
 .block ul ul {
 	margin-left: 10px;
 }
+
 
 ul.menu li,
 li.leaf, li.collapsed,
@@ -425,9 +428,10 @@ ul.menu li.collapsed {
 
 .item-list ul.pager li {
   margin: 0;
-  padding: .3em;
+  padding: .3em 0 .3em 0;
   display:inline;
   }
+  
 
 .item-list ul.pager li a,
 .item-list ul.pager li a.active {
@@ -436,20 +440,30 @@ ul.menu li.collapsed {
   }
 
 
-.block .item-list ul.pager li a.active.views-throbbing {
-  background: url('../images/throbber.gif') right center no-repeat;
-    padding-right: 25px !important;
+.block .item-list ul.pager li.pager-next a.active.views-throbbing {
+  background: url('../images/throbber.gif') 0 18px no-repeat;
+   margin-right: -25px !important;
 }
 
 .block .item-list ul.pager li.pager-previous a.active.views-throbbing {
-  background: url('../images/throbber.gif') left center no-repeat;
-    padding-right: 0 !important;
-    padding-left: 25px !important;
+  background: url('../images/throbber.gif') 0 18px no-repeat;
+   margin-left: -18px !important;
+   padding: 0 0 0 18px !important;
 }
 
 .item-list ul.pager li.pager-current {
   background: #5ba4d9;
   color: #fff;
+  }
+  
+    .item-list ul.pager li.pager-previous {
+padding-left:100px;
+text-align: right;
+  }
+  
+   .item-list ul.pager li.pager-next {
+padding-right:100px;
+text-align: left;
   }
 
 dt {
