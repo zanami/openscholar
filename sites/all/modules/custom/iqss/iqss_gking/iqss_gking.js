@@ -37,19 +37,17 @@ function iqss_gking_taxonomy_alter_sort_links(){
  * For Garys People page
  */
 function iqss_gking_research_group_tabify(){
-	if(!$('body.page-iqss-gking-research-group').length) return;
+  if(!$('body.page-iqss-gking-research-group').length) return;
 
-	$("<ul id='research-group-tablist' class=\"ui-tabs-nav\"></ul>").insertBefore("div#content-main div.taxonomy-term-child:first");
+  $("<ul id='research-group-tablist' class=\"ui-tabs-nav\"></ul>").insertBefore("div#content-main div.taxonomy-term-child:first");
 
-	var terms = Drupal.settings.iqss_gking.research_group_terms;
-	for (var i=0;i<terms.length;i++)
-	{
-	var url = "#iqss_gking_term_"+terms[i].tid;
+  var terms = Drupal.settings.iqss_gking.research_group_terms;
+  for (var i=0;i<terms.length;i++)
+  {
+    var url = "#iqss_gking_term_"+terms[i].tid;
 
-	$('ul#research-group-tablist').append("<li class='research_group_tab'><a href='"+url+"'>"+terms[i].name+"</a></li>");
-	}
+    $('ul#research-group-tablist').append("<li class='research_group_tab'><a href='"+url+"'>"+terms[i].name+"</a></li>");
+  }
 
-
-	$("#content").tabs({ fx: { opacity: 'toggle' }, cache: true, load: function(event, ui) { Drupal.behaviors.CToolsDropdown(); } });
-
-	}
+  $("#content").tabs({ fx: { opacity: 'toggle' }, cache: true, load: function(event, ui) { Drupal.behaviors.CToolsDropdown(); } });
+}
