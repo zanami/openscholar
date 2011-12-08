@@ -1259,9 +1259,30 @@ function scholar_publications_views_default_views() {
   $handler->override_option('block_description', '');
   $handler->override_option('block_caching', -1);
   $handler = $view->new_display('block', 'List of Publications', 'block_3');
-  
   $handler->override_option('cache', array(
-    'type' => 'none',
+    'type' => 'os_views_content_cache',
+    'keys' => array(
+      'comment' => array(
+        'changed' => 0,
+      ),
+      'node' => array(
+        'biblio' => 'biblio',
+      ),
+      'og' => array(
+        'current' => 0,
+        'user' => 0,
+      ),
+      'os_og' => array(
+        'current' => 'current',
+        'user' => 0,
+      ),
+      'vsite_config' => array(
+      ),
+    ),
+    'results_min_lifespan' => '-1',
+    'results_max_lifespan' => '-1',
+    'output_min_lifespan' => '-1',
+    'output_max_lifespan' => '3600',
   ));
   $handler->override_option('row_plugin', 'node');
   $handler->override_option('row_options', array(

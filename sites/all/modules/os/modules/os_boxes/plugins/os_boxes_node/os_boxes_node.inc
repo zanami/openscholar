@@ -87,5 +87,18 @@ class os_boxes_node extends os_boxes_default {
     
     return $block;
   }
+  
+  /**
+   * Return the cache parameters for this box
+   */
+  public function cache_info(){
+
+  	//Clear any time the site is saved
+    $cache_key = array(
+      'os_og' => array('current' => 'current'),
+    );
+  
+    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
+  }
 
 }

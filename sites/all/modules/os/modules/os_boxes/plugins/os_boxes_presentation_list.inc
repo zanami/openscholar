@@ -169,6 +169,12 @@ class os_boxes_presentation_list extends os_boxes_default {
 			      'override' => array('button' => 'Use default'),
 			    ),
 			  ));
+		    //Note: Some actions like "$view->validate()" (which the ajax callback uses) will cache (in code) the
+	      //      avalible fields this clears that since we change it here
+	      if(isset($view->display[$display_id]->handler->handlers['field'])){
+	        unset($view->display[$display_id]->handler->handlers['field']);
+	      }
+	      
 			  $view->display_handler->override_option('row_plugin', 'fields');
 			  $view->display_handler->override_option('style_plugin', 'list');
 			  $view->display_handler->override_option('style_options', array(

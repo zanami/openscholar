@@ -295,7 +295,6 @@ function vsite_block($op = 'list', $delta = 0, $edit = array()) {
 function vsite_vsite_widgets(){
 
   return array(
-
    'vsite-site_search' => array(
       'module' => 'vsite',
       'delta' => 'site_search',
@@ -311,21 +310,7 @@ function vsite_vsite_widgets(){
       'region' => false,
       'label' => 'Google Translate',
     ),
-
-    // Featured posts
-    'views-vsite_featuredposts-block_1' => array(
-      'module' => 'views',
-      'delta' => 'vsite_featuredposts-block_1',
-      'weight' => 0,
-      'region' => false,
-      'label' => 'Featured posts',
-      'cache' => BLOCK_CACHE_CONTENT_CACHE,
-      'cache_keys' => array(
-        'os_og' => array('current' => 'current'),
-      ),
-    ),
   );
-
 }
 
 /**
@@ -499,7 +484,7 @@ function vsite_preprocess_page(&$vars){
   }elseif(strlen($vars['context_links'])){
   	$vars['context_links'] = '<div class="context-links">'.$vars['context_links'].'</div>';
   }
-  
+
   $vars['vsite_section_admin_links'] = theme('ctools_dropdown', t('Admin'), _vsite_section_admin_links(), FALSE, 'context-links vsite-section-admin-links');
 
   if (module_exists('modalframe')) {
@@ -520,7 +505,7 @@ function _vsite_section_admin_links(){
   vsite_include('vsiteapi');
   $active_feature = vsite_active_feature();
   $active_feature_title = ucfirst($active_feature);
-  
+
   $links = array();
   $links[] = array(
       'title' => t('@section Layout', array('@section' => $active_feature_title)),
@@ -533,7 +518,7 @@ function _vsite_section_admin_links(){
           'title' => t("Customize the layout of @section section", array('@section' => $active_feature_title))
       )
   );
-  
+
   // is this feature customizable ?
   // by convenction feature settings form is at features/feature_name
   $item = menu_get_item('features/scholar_' . $active_feature);
@@ -550,7 +535,7 @@ function _vsite_section_admin_links(){
         )
     );
   }
-  
+
   return $links;
 }
 
@@ -598,37 +583,37 @@ function vsite_form_alter(&$form, $form_state, $form_id){
         '#value' => 1
       );
     }
-    
+
     if (isset($form['buttons']['preview'])) {
       $form['buttons']['preview']['#access'] = user_access('vsite_node_form_preview');
     }
-    
+
     if (isset($_GET['modal']) && $button = &$form['buttons']['submit']) {
       modalframe_child_js();
       //      $button['#submit'][] = 'vsite_modal_submit';
     }
   }
-  
+
   if ($form['#id'] == 'node-form' && (arg(0) . '/' . arg(1) != 'admin/content')) {
     // GROUP ENABLED CONTENT TYPES
     if (array_key_exists('spaces_og', $form)) {
       // Recurse into spaces_og hiding the site select form
       _spaces_og_make_hidden($form['spaces_og']);
     }
-    
+
     if (array_key_exists('spaces', $form)) {
       //Get rid of the incorect description
       _spaces_og_make_hidden($form['spaces']);
     }
   }
-  
+
   if (isset($form['type']) && isset($form['#node']) && ($form_id == $form['type']['#value'] . '_node_form') && ! is_content_profile($form['type']['#value'])) {
     //Node Form (Not Content Profile Nodes)
-    
+
 
     if (module_exists('override_node_options') && array_key_exists('revision_information', $form) && array_key_exists('options', $form)) {
       $form['options']['#access'] = true;
-      
+
       ctools_include('dependent');
       if (array_key_exists('log', $form['revision_information'])) {
         $form['options']['log'] = $form['revision_information']['log'];
@@ -646,7 +631,7 @@ function vsite_form_alter(&$form, $form_state, $form_id){
         if (! in_array('cp_validate_node_flags', $form['#validate']))
           $form['#validate'][] = 'vsite_validate_node_flags';
       } //Add the description box for new revision
-      
+
 
       if (array_key_exists('revision', $form['revision_information'])) {
         $form['options']['revision'] = $form['revision_information']['revision'];
@@ -657,14 +642,14 @@ function vsite_form_alter(&$form, $form_state, $form_id){
         if (! is_array($form['#validate']))
           $form['#validate'] = array();
       } //Add the "new revision" checkbox
-      
+
 
       $form['options']['sticky']['#description'] = "Sticky posts stay at the top of lists with non-sticky items ordered below them";
-      
+
       module_load_include('inc', 'spaces_og', 'spaces_og.pages');
       _spaces_og_make_hidden($form['revision_information']);
     } //Move the revision information under the options tab
-    
+
 
     $nid = ! empty($form['nid']['#value']) ? $form['nid']['#value'] : NULL;
     if (module_exists('override_node_options') && array_key_exists('options', $form)) {
@@ -687,7 +672,7 @@ function vsite_form_alter(&$form, $form_state, $form_id){
           }
         }
       }
-      
+
       $form['options']['vsite_make_featured'] = array(
         '#type' => 'checkbox',
         '#title' => "Make this Featured",
@@ -712,7 +697,7 @@ function vsite_form_alter(&$form, $form_state, $form_id){
 function vsite_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
   switch ($op) {
     case 'validate' :
-    	
+
     break;
     case 'presave' :
       // -- Take Care of the Issues present when pathauto and purl coexist --
@@ -823,7 +808,7 @@ function vsite_perm(){
 function vsite_system_info_alter(&$info, $file){
   if ($file->type == 'module')
     return;
-    
+
   //Maintain backwards compatibility
   if (!array_key_exists('os', $info) && array_key_exists('scholar', $info)){
   	$info['os'] = $info['scholar'];
@@ -1042,23 +1027,6 @@ function vsite_vsite_admin_link($type, $object) {
     }
   }
 
-  //Add link for featuring posts
-  if (($vsite->access_admin()) && flag_fetch_definition($type)){
-  	// Get frontpage flags
-    $flag = flag_get_flag('featuredposts');
-	  if ($flag->applies_to_content_object($object)) {
-
-	    $content_id = $flag->get_content_id($object);
-		  // The flag links are actually fully rendered theme functions.
-		  // The HTML attribute is set to TRUE to allow whatever the themer desires.
-		  $links['flag-'. $flag->name] = array(
-		  'title' => $flag->theme($flag->is_flagged($content_id) ? 'unflag' : 'flag', $content_id),
-		  'html' => TRUE,
-		  );
-
-	  }// Does flag apply to this content?
-  }
-
   return $links;
 }
 
@@ -1090,15 +1058,15 @@ function vsite_node_menu_access(){
     if($node_type && og_is_group_post_type($node_type)){
     	//Spaces permits access, now lets make sure we are in a site
       $vsite = vsite_get_vsite();
-    	
+
       return $vsite?TRUE:FALSE;
     }
-    
+
     //We are not in a vsite all is good
     return true;
-    
+
   }//Passed standard access functions?
-  
+
   return FALSE;
 }
 
