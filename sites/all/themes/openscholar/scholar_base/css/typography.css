@@ -322,7 +322,7 @@ ul.links li {
   padding:0;
   }
   
-.boxes-box ul.links li {margin-bottom:15px;}
+.boxes-box ul.links li {margin-bottom:15px; font-size:1em;}
 
 .node .links li {
   font-size: 11px !important;
