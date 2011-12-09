@@ -45,7 +45,7 @@ function scholar_front_init() {
  * Implementation of hook flag_alter
  */
 function scholar_front_flag_alter(&$flag){
-  if (!($viste = vsite_get_vsite()) || $flag -> name !== 'scholar_frontpage'){
+  if (!($viste = vsite_get_vsite())){
     return;
   }
   vsite_include('vsiteapi');
@@ -54,48 +54,6 @@ function scholar_front_flag_alter(&$flag){
 
   if (count($types)){
     $flag -> types = array_keys($types);
-  }
-}
-
-
-/**
- * Implementation of hook_link().
- *
-function scholar_front_vsite_admin_link($type, $object){
-  $links = array();
-  global $user;
-  //check font page settings here, only execute if front page setting equals flag
-  $vsite = vsite_get_vsite();
-  if(!$vsite) return array();
-
-  $a_front_settings = $vsite->controllers->variable->get('vsite_setting_front');
-  if ($a_front_settings['frontpage'] !== 'flag' ||
-      !($vsite -> access_admin()) ||
-      !flag_fetch_definition($type)){
-    return $links;
-  }
-
-
-
-  // Get frontpage flags
-  $flag = flag_get_flag('scholar_frontpage');
-
-
-  if (!$flag->applies_to_content_object($object)) {
-    // Flag does not apply to this content.
-    return false;
-  }
-
-  $content_id = $flag->get_content_id($object);
-  // The flag links are actually fully rendered theme functions.
-  // The HTML attribute is set to TRUE to allow whatever the themer desires.
-  $links['flag-'. $flag->name] = array(
-  'title' => $flag->theme($flag->is_flagged($content_id) ? 'unflag' : 'flag', $content_id),
-  'html' => TRUE,
-  );
-
-  if (isset($links)) {
-    return $links;
   }
 }
 

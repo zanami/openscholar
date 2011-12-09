@@ -657,21 +657,6 @@ function vsite_form_alter(&$form, $form_state, $form_id){
       if (array_key_exists('promote', $form['options'])) {
         _spaces_og_make_hidden($form['options']['promote']);
       }
-      if ($vsite) {
-        $a_front_settings = $vsite->controllers->variable->get('vsite_setting_front');
-        if ($a_front_settings['frontpage'] == 'flag') {
-          $form['options']['vsite_promote_to_front'] = array(
-            '#type' => 'checkbox',
-            '#title' => "Promote to front page",
-            "#default_value" => false,
-            "#description" => t("If checked this post will be shown in your front page")
-          );
-          if ($nid) {
-            $flag = flag_get_flag('scholar_frontpage');
-            $form['options']['vsite_promote_to_front']['#default_value'] = $flag->is_flagged($nid);
-          }
-        }
-      }
     } //Overide the default promote functionality in favor of ours
   }
 }
