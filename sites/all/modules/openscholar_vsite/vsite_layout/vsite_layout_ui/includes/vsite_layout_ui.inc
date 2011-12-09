@@ -517,6 +517,7 @@ function vsite_layout_ui_region_widgets( $page_type = 'none') {
     if (isset($default_blocks[$s_widget_key])) {
       $widget['tags'] = $default_blocks[$s_widget_key]['tags'];
       $widget['plugin'] = $default_blocks[$s_widget_key]['plugin'];
+      $widget['access callback'] = $default_blocks[$s_widget_key]['access callback'];
       $widget['block_config_path'] = $default_blocks[$s_widget_key]['block_config_path'];
       // if this is a local instance or if there is a factory for this box type, we can delete it
       $widget['can_delete'] = strpos($widget['delta'], 'og-') !== FALSE || isset($a_widgets['boxes-boxes_add__'.$widget['plugin']]);
