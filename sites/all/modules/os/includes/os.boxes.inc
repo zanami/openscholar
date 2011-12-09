@@ -143,6 +143,7 @@ function os_boxes_replace_boxes($block_id, $box, $default_region = false, $sid =
   if($sid) $params[] = $sid;
 
   $sql_limit = ($limit)?"LIMIT {$limit} ":"";
+  $return = false;
 
   $q = db_query("SELECT * FROM {spaces_overrides} WHERE type = 'og' AND object_type = 'context' AND object_id LIKE '%%reaction:block%%' AND value LIKE '%%%s%%' ".($sid?" AND id = %d ":"").$sql_limit, $params);
   while ($r = db_fetch_array($q)) {
@@ -155,7 +156,9 @@ function os_boxes_replace_boxes($block_id, $box, $default_region = false, $sid =
     }
     unset($value['blocks'][$block_id]);
     db_query("UPDATE {spaces_overrides} SET value = '%s' WHERE type = 'og' AND object_type = 'context' AND id = %d AND object_id = '%s'", serialize($value), $r['id'], $r['object_id']);
+    $return = true;
   }
+  return $return;
 }
 
 /**
