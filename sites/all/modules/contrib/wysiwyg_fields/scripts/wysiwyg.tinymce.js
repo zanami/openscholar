@@ -38,10 +38,11 @@
      */
     divToWysiwygField: function() {
       delete Drupal.settings.wysiwygFields.timer;
+      var elem = this.wrapperElement;
       if (typeof tinyMCE.activeEditor.contentDocument !== "undefined") {
-        $('span.wysiwyg_fields-placeholder', tinyMCE.activeEditor.contentDocument.body).each(function() {
+        $(elem+'.wysiwyg_fields-placeholder', tinyMCE.activeEditor.contentDocument.body).each(function() {
           $(this).removeClass('wysiwyg_fields-placeholder');
-          replacement = "<span id='" + $(this).attr('id') + "' class='" + $(this).attr('class') + "'>" + Drupal.settings.wysiwygFields.replacements['[' + $(this).attr('id') + ']'] + "</span>";
+          replacement = "<"+elem+" id='" + $(this).attr('id') + "' class='" + $(this).attr('class') + "'>" + Drupal.settings.wysiwygFields.replacements['[' + $(this).attr('id') + ']'] + "</"+elem+">";
           Drupal.wysiwygFields.wysiwyg.tinymce.wysiwygIsNode(this);
           Drupal.wysiwyg.instances[Drupal.settings.wysiwygFields.activeId].insert(replacement);
         });

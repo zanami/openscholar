@@ -101,7 +101,8 @@
      * Convert tokens to the appropriate rendered preview.
      */
     wysiwygAttach: function(id, content, settings, instanceId) {
-      var regex = new RegExp('(\\[wysiwyg_fields-' + id + '-([\\d_])+-(.*?)\\])', 'g');
+      var regex = new RegExp('(\\[wysiwyg_fields-' + id + '-([\\d_])+-(.*?)\\])', 'g'), 
+      		matches;
       if ((matches = content.match(regex))) {
         $.each($(matches), function(i, elem) {
           elemId = elem.substr(1, elem.length - 2);
@@ -136,8 +137,8 @@
      */
     wysiwygDetach: function(id, content, settings, instanceId) {
       if (content.indexOf('wysiwyg_fields-placeholder') == -1) {
-        wrapperElement = this.wrapperElement;
-        var regex = new RegExp('<' + wrapperElement + '.*?wysiwyg_fields-' + id + '.*?>[\\n\\s\\S]*?</' + wrapperElement + '>', 'g');
+        var wrapperElement = this.wrapperElement, matches,
+        	regex = new RegExp('<' + wrapperElement + '.*?wysiwyg_fields-' + id + '.*?>[\\n\\s\\S]*?</' + wrapperElement + '>', 'g');
         if ((matches = content.match(regex))) {
           $.each($(matches), function(i, elem) {
             var regex = new RegExp('<' + wrapperElement + '.*?>([\\n\\s\\S]*?)</' + wrapperElement + '>');
@@ -187,16 +188,17 @@
       this.dialogClose(id);
 
       // Get field delta.
-      delta = 0;
+      var delta = 0;
       if (Drupal.settings.wysiwygFields.fields[id].delta !== null) {
         delta = Drupal.settings.wysiwygFields.fields[id].delta;
       }
 
       if (Drupal.settings.wysiwygFields.fields[id].multiple > 0) {
+    	var field = id.replace(/_/g, '-');
 //        $('#' + id.replace('_', '-', 'g') + '-items, #wysiwyg_fields-' + id + '-wrapper table').hide();
-        if ($('#edit-' + id.replace('_', '-', 'g') + '-' + delta + '-wysiwyg-fields-ahah-wrapper').parents('table#' + id + '_values').length == 1) {
-          $('#edit-' + id.replace('_', '-', 'g') + '-' + delta + '-wysiwyg-fields-ahah-wrapper')
-            .before('<div id="edit-' + id.replace('_', '-', 'g') + '-' + delta + '-wysiwyg-fields-ahah-wrapper-placeholder" class="placeholder" />')
+        if ($('#edit-' + field + '-' + delta + '-wysiwyg-fields-ahah-wrapper').parents('table#' + id + '_values').length == 1) {
+          $('#edit-' + field + '-' + delta + '-wysiwyg-fields-ahah-wrapper')
+            .before('<div id="edit-' + field + '-' + delta + '-wysiwyg-fields-ahah-wrapper-placeholder" class="placeholder" />')
             .prependTo('#wysiwyg_fields-' + id + '-wrapper');
         }
       }
@@ -211,6 +213,9 @@
      */
     dialogShowUpdate: function(id) {
       this.dialogClose(id);
+      
+      var field = id.replace(/_/g, '-'),
+      	tokens, deltas;
 
       if (Drupal.settings.wysiwygFields.fields[id].multiple > 0) {
         token = Drupal.settings.wysiwygFields.fields[id].active.split('-');
@@ -218,9 +223,9 @@
 
         if (deltas.length == 1) {
 //          $('#' + id.replace('_', '-', 'g') + '-items, #wysiwyg_fields-' + id + '-wrapper table').hide();
-          if ($('#edit-' + id.replace('_', '-', 'g') + '-' + token[2] + '-wysiwyg-fields-ahah-wrapper').parents('table#' + id + '_values').length == 1) {
-            $('#edit-' + id.replace('_', '-', 'g') + '-' + token[2] + '-wysiwyg-fields-ahah-wrapper')
-              .before('<div id="edit-' + id.replace('_', '-', 'g') + '-' + token[2] + '-wysiwyg-fields-ahah-wrapper-placeholder" class="placeholder" />')
+          if ($('#edit-' + field + '-' + token[2] + '-wysiwyg-fields-ahah-wrapper').parents('table#' + id + '_values').length == 1) {
+            $('#edit-' + field + '-' + token[2] + '-wysiwyg-fields-ahah-wrapper')
+              .before('<div id="edit-' + field + '-' + token[2] + '-wysiwyg-fields-ahah-wrapper-placeholder" class="placeholder" />')
               .prependTo('#wysiwyg_fields-' + id + '-wrapper');
           }
         }
@@ -228,7 +233,7 @@
         else {
           this.dialogShowAll(id);
           $.each(deltas, function(delta) {
-            $('#edit-' + id.replace('_', '-', 'g') + '-' + delta + '-wysiwyg-fields-select').attr('checked', 'checked');
+            $('#edit-' + field + '-' + delta + '-wysiwyg-fields-select').attr('checked', 'checked');
           });
         }
       }
@@ -276,7 +281,7 @@
      */
     dialogClose: function(id) {
       if (Drupal.settings.wysiwygFields.fields[id].multiple > 0) {
-        $('#wysiwyg_fields-' + id + '-wrapper table, #' + id.replace('_', '-', 'g') + '-items').show();
+        $('#wysiwyg_fields-' + id + '-wrapper table, #' + id.replace(/_/g, '-') + '-items').show();
       }
 
       // Undo DOM modificatons.
@@ -318,7 +323,7 @@
      */
     buttonsAttach: function(id, label) {
       if ($('.wysiwyg_fields-' + id + '-field:first .wysiwyg_fields-widget select').length == 1 && $('#wysiwyg_fields-' + id + '-dialog .ui-dialog-buttonpane select').length == 0) {
-        button = $('#wysiwyg_fields-' + id + '-dialog .ui-dialog-buttonpane button');
+        var button = $('#wysiwyg_fields-' + id + '-dialog .ui-dialog-buttonpane button');
         $('.wysiwyg_fields-' + id + '-field:first .wysiwyg_fields-widget select')
           .css({
             fontSize: button.css('font-size'),
@@ -333,7 +338,7 @@
           .appendTo('#wysiwyg_fields-' + id + '-dialog .ui-dialog-buttonpane'); // @TODO - Append or Prepend based on jQuery 1.6/1.7
       }
       if (label !== undefined) {
-        token = Drupal.settings.wysiwygFields.fields[id].active.split('-');
+        var token = Drupal.settings.wysiwygFields.fields[id].active.split('-');
         $('#wysiwyg_fields-' + id + '-dialog select.wysiwyg_fields_formatters').val(token[3]);
         $('#wysiwyg_fields-' + id + '-dialog .ui-dialog-buttonpane button').html(label);
       }
