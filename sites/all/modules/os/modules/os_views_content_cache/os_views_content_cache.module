@@ -66,13 +66,43 @@ function os_views_content_cache_feeds_after_import($feed_importer,FeedsSource $f
  **/
 function os_views_content_cache_form_alter(&$form, $form_state, $form_id){
 	if(array_key_exists($form_id, os_views_content_cache_vsite_config_forms())){
-		$form['#submit'][] = 'os_views_content_cache_form_submission';
+		if(!is_array($form['#submit'])) $form['#submit'] = array();
+    array_unshift($form['#submit'],'os_views_content_cache_form_submission');
   }
 }
 
+/**
+ * Pass along form submissions to the cache system
+ * @param array $form
+ * @param array $form_state
+ */
 function os_views_content_cache_form_submission($form, &$form_state){
 	$form_id = isset($form_state['values']['form_id'])?$form_state['values']['form_id']:$form['form_id']['#value'];
 	views_content_cache_update_set($form_id, 'form_id');
+	
+	if($form_id == 'spaces_features_form'){
+		os_views_content_cache_feature_update($form, $form_state);
+	}
+}
+
+/**
+ * When a feature is changed assume that it's nodes privacy settings have changed
+ */
+function os_views_content_cache_feature_update($form, &$form_state){
+	$old_settings = variable_get('spaces_features', array());
+	
+  foreach ($old_settings as $s_feature => $privacy) {
+  	if($privacy != $form_state['values']['spaces_features'][$s_feature]){
+  		$feature = features_get_features($s_feature);
+  		if(isset($feature->info['features']['node'])){
+  			foreach ($feature->info['features']['node'] as $node_type) {
+  				//Clear the cache for this node type
+  				$node = array('type' => $node_type);
+  				views_content_cache_update_set((object)$node, 'node');
+  			}
+  		}
+  	}//Detect changes
+  }
 }
 
 /**

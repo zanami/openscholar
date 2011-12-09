@@ -322,7 +322,7 @@ ul.links li {
   padding:0;
   }
   
-.boxes-box ul.links li {margin-bottom:15px;}
+.boxes-box ul.links li {margin-bottom:15px; font-size:1em;}
 
 .node .links li {
   font-size: 11px !important;
@@ -441,12 +441,12 @@ ul.menu li.collapsed {
 
 
 .block .item-list ul.pager li.pager-next a.active.views-throbbing {
-  background: url('../images/throbber.gif') 0 18px no-repeat;
+  background: url('../images/throbber.gif') 0 16px no-repeat;
    margin-right: -25px !important;
 }
 
 .block .item-list ul.pager li.pager-previous a.active.views-throbbing {
-  background: url('../images/throbber.gif') 0 18px no-repeat;
+  background: url('../images/throbber.gif') 0 16px no-repeat;
    margin-left: -18px !important;
    padding: 0 0 0 18px !important;
 }
@@ -457,12 +457,12 @@ ul.menu li.collapsed {
   }
   
     .item-list ul.pager li.pager-previous {
-padding-left:100px;
+padding-left:50px;
 text-align: right;
   }
   
    .item-list ul.pager li.pager-next {
-padding-right:100px;
+padding-right:50px;
 text-align: left;
   }
 
