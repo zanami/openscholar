@@ -718,8 +718,7 @@ html.js .front #header-main div.ctools-dropdown div.ctools-dropdown-container {
   padding: 0 26px;
   }
 
-.box-os_modal_tabbed h3.title,
-body.page-iqss-gking-research-group h2.title {
+.box-os_modal_tabbed h3.title {
   float: left;
   border:none;
   background: transparent;
@@ -746,7 +745,7 @@ body.page-iqss-gking-research-group h2.title {
 
 body.page-iqss-gking-research-group ul.ui-tabs-nav {
   float: right;
-  margin-top: 15px;
+  margin-top: -35px;
   }
 
 
