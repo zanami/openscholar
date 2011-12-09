@@ -723,17 +723,6 @@ function vsite_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
         $node->og_public = OG_VISIBLE_BOTH;
       } //Does this person have the ability to create public nodes on this vsite?
       break;
-      break;
-    case 'update' :
-    case 'insert' :
-      // Response to the flag checkboxes added to the form in vsite_form_alter().
-      if (isset($node->vsite_promote_to_front)) {
-        $s_action = ($node->vsite_promote_to_front == 1) ? 'flag' : 'unflag';
-        $flag = flag_get_flag('scholar_frontpage');
-        $flag->flag($s_action, $node->nid);
-      }
-
-      break;
   }
 }
 
