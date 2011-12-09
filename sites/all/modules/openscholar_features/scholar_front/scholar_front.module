@@ -45,7 +45,7 @@ function scholar_front_init() {
  * Implementation of hook flag_alter
  */
 function scholar_front_flag_alter(&$flag){
-  if (!($viste = vsite_get_vsite())){
+  if (!($viste = vsite_get_vsite()) || $flag -> name !== 'scholar_frontpage'){
     return;
   }
   vsite_include('vsiteapi');
