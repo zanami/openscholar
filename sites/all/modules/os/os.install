@@ -666,6 +666,14 @@ function os_update_6012(&$sandbox) {
 
     // but replace them in contexts
   }
+  if (count($val_strs) == 0) {
+    return array(
+      array(
+        'success' => true,
+        'query' => 'Query completed. No changes necessary.',
+      )
+    );
+  }
   $s .= implode(', ', $val_strs);
   if (count($boxes) && db_query($s, $args)) {
     return array(
