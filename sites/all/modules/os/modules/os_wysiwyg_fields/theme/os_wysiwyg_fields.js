@@ -117,6 +117,13 @@
 				$('input[value="Remove"]', this).before(btn);
 			});
 		}
+		else {
+			var insert = Drupal.wysiwyg.editor.instance.tinymce.insert;
+			Drupal.wysiwyg.editor.instance.tinymce.insert = function(content) {
+				content += '<p></p>';
+				insert.call(this, content);
+			};
+		}
 		hasRun = true;
 	};
 })(jQuery);
