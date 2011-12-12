@@ -91,6 +91,10 @@ class os_content_cache_context_reaction_block extends vsite_context_reaction_blo
     		case 'page':
     		  $cid_parts[] = $key."|".$_GET['q'];
     		break;
+    		case 'context':
+    			$active_feature = vsite_active_feature();
+          $cid_parts[] = $key."|".$active_feature;
+        break;
     	}
     }
     
