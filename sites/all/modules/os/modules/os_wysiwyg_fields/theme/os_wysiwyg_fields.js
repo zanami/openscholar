@@ -120,7 +120,7 @@
 		else {
 			var insert = Drupal.wysiwyg.editor.instance.tinymce.insert;
 			Drupal.wysiwyg.editor.instance.tinymce.insert = function(content) {
-				content += '<p></p>';
+				content += '<br>';
 				insert.call(this, content);
 			};
 		}
