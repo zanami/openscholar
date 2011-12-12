@@ -531,7 +531,7 @@ function vsite_layout_ui_region_widgets( $page_type = 'none') {
     	if(!isset($existing_blocks[$widget['module']])) $existing_blocks[$widget['module']] = module_invoke($widget['module'], 'block', 'list');
     	
     	//Check to make sure this block still exists
-    	if(!array_key_exists($widget['delta'],$existing_blocks[$widget['module']])){
+    	if(is_array($existing_blocks[$widget['module']]) && !array_key_exists($widget['delta'],$existing_blocks[$widget['module']])){
     		unset($a_widgets[$s_widget_key]);
     		continue;
     	}

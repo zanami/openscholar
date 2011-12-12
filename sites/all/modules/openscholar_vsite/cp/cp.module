@@ -253,7 +253,7 @@ function cp_access_cp(){
 }
 
 /**
- * callback function for our popup forms
+ * callback function for our popup feature customize forms
  */
 function cp_feature_customize($js, $feature_name){
 
