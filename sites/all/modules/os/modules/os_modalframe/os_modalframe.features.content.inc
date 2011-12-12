@@ -6,6 +6,85 @@
 function os_modalframe_content_default_fields() {
   $fields = array();
 
+  // Exported field: field_link_from_image
+  $fields['modal_image-field_link_from_image'] = array(
+    'field_name' => 'field_link_from_image',
+    'type_name' => 'modal_image',
+    'display_settings' => array(
+      'weight' => '-2',
+      'parent' => '',
+      'label' => array(
+        'format' => 'above',
+      ),
+      'teaser' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'full' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '5' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '4' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '2' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'token' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+    ),
+    'widget_active' => '1',
+    'type' => 'link',
+    'required' => '0',
+    'multiple' => '0',
+    'module' => 'link',
+    'active' => '1',
+    'attributes' => array(
+      'target' => 'default',
+      'rel' => '',
+      'class' => '',
+      'title' => '',
+    ),
+    'display' => array(
+      'url_cutoff' => '80',
+    ),
+    'url' => 'optional',
+    'title' => 'value',
+    'title_value' => '[os_modalframe_image_src]',
+    'enable_tokens' => 0,
+    'validate_url' => 1,
+    'widget' => array(
+      'wysiwyg_fields_status' => 0,
+      'wysiwyg_fields_icon' => '6f7621a02161e347e66d99d8ace540a3',
+      'wysiwyg_fields_formatters' => array(),
+      'wysiwyg_fields_hide' => 1,
+      'wysiwyg_fields_delete' => 1,
+      'default_value' => array(
+        '0' => array(
+          'url' => '',
+        ),
+      ),
+      'default_value_php' => NULL,
+      'label' => 'Link From Image',
+      'weight' => '-1',
+      'description' => 'Enter a URL to link the image to. ',
+      'type' => 'link',
+      'module' => 'link',
+    ),
+  );
+
   // Exported field: field_modal_image
   $fields['modal_image-field_modal_image'] = array(
     'field_name' => 'field_modal_image',
@@ -158,85 +237,6 @@ function os_modalframe_content_default_fields() {
       'description' => 'Select a width to set the above image to when it\'s displayed.',
       'type' => 'optionwidgets_select',
       'module' => 'optionwidgets',
-    ),
-  );
-
-  // Exported field: field_link_from_image
-  $fields['modal_image-field_link_from_image'] = array(
-    'field_name' => 'field_link_from_image',
-    'type_name' => 'modal_image',
-    'display_settings' => array(
-      'weight' => '-2',
-      'parent' => '',
-      'label' => array(
-        'format' => 'above',
-      ),
-      'teaser' => array(
-        'format' => 'default',
-        'exclude' => 0,
-      ),
-      'full' => array(
-        'format' => 'default',
-        'exclude' => 0,
-      ),
-      '5' => array(
-        'format' => 'default',
-        'exclude' => 0,
-      ),
-      '4' => array(
-        'format' => 'default',
-        'exclude' => 0,
-      ),
-      '2' => array(
-        'format' => 'default',
-        'exclude' => 0,
-      ),
-      '3' => array(
-        'format' => 'default',
-        'exclude' => 0,
-      ),
-      'token' => array(
-        'format' => 'default',
-        'exclude' => 0,
-      ),
-    ),
-    'widget_active' => '1',
-    'type' => 'link',
-    'required' => '0',
-    'multiple' => '0',
-    'module' => 'link',
-    'active' => '1',
-    'attributes' => array(
-      'target' => 'default',
-      'rel' => '',
-      'class' => '',
-      'title' => '',
-    ),
-    'display' => array(
-      'url_cutoff' => '80',
-    ),
-    'url' => 'optional',
-    'title' => 'value',
-    'title_value' => '[os_modalframe_image_src]',
-    'enable_tokens' => 0,
-    'validate_url' => 1,
-    'widget' => array(
-      'wysiwyg_fields_status' => 0,
-      'wysiwyg_fields_icon' => '6f7621a02161e347e66d99d8ace540a3',
-      'wysiwyg_fields_formatters' => array(),
-      'wysiwyg_fields_hide' => 1,
-      'wysiwyg_fields_delete' => 1,
-      'default_value' => array(
-        '0' => array(
-          'url' => '',
-        ),
-      ),
-      'default_value_php' => NULL,
-      'label' => 'Link From Image',
-      'weight' => '-1',
-      'description' => 'Enter a URL to link the image to. ',
-      'type' => 'link',
-      'module' => 'link',
     ),
   );
 
