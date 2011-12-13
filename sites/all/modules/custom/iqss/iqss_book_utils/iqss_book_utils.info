@@ -2,3 +2,4 @@ name = IQSS Book Utilites
 description = Utilities for Books
 package = "OpenScholar IQSS"
 core = 6.x
+version = "6.x-beta13"

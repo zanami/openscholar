@@ -3,3 +3,4 @@ description = iqss rbuild integration
 core = 6.x
 dependencies[] = "scholar_software"
 package = "OpenScholar IQSS"
+version = "6.x-beta13"
