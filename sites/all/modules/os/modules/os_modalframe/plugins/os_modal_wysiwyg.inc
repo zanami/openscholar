@@ -31,6 +31,7 @@ class os_modal_wysiwyg extends os_boxes_modalframe {
    */
   public function options_form() {
     $form = parent::options_form();
+    $form['#pre_render'] = array('os_boxes_wysiwyg_add_externals');
     if (filter_access($this->options['format'])) {
       $form['body'] = array(
         '#type' => 'textarea',
@@ -39,7 +40,13 @@ class os_modal_wysiwyg extends os_boxes_modalframe {
         '#rows' => 6,
         '#description' => t('The content of the block as shown to the user.'),
       );
-      $form['format'] = filter_form($this->options['format']);
+      $format = filter_formats(filter_resolve_format(FILTER_FORMAT_DEFAULT));
+      $form['format'][$format->format] = array('#type' => 'value', '#value' => $format->format);
+      $tips = _filter_tips(variable_get('filter_default_format', 1), FALSE);
+      $form['format']['format']['guidelines'] = array(
+        '#title' => t('Formatting guidelines'),
+        '#value' => theme('filter_tips', $tips),
+      );
     }
     return $form;
   }
@@ -60,4 +67,9 @@ class os_modal_wysiwyg extends os_boxes_modalframe {
       'content' => $content,
     );
   }
+}
+
+function os_boxes_wysiwyg_add_externals($element) {
+  drupal_add_js(drupal_get_path('module', 'os_modalframe').'/theme/os_boxes_wysiwyg_form.js');
+  return $element;
 }
