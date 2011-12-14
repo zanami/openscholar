@@ -49,9 +49,7 @@ function os_l10n_strongarm() {
   $strongarm->value = 1;
 
   $export['l10n_client_use_server'] = $strongarm;
-  
-  /*$export['l10n_client_use_server'] = 1;
-  $export['l10n_client_server'] = 'http://'.OS_L10N_SERVER;*/
+
   return $export;
 }
 
