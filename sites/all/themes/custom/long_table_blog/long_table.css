@@ -39,6 +39,14 @@ padding: 0 0 0 14px;
 background: url('images/readMore.png') left center no-repeat;
 }
 
+.submitted {
+    color:#888;
+   margin-top:-20px;
+}
+.submitted-by {
+	font-size: 0.9em;
+	color: #888888;
+}
 /* LAYOUT ELEMENTS */
 
 #content-area {padding-top:10px;}
@@ -110,7 +118,7 @@ body.one-sidebar.sidebar-second #header .hg-container {
   padding-right: 445px;
 }
 
-.view-scholar-blog .views-row {border-bottom:1px solid #ccdcef;margin-right:20px;}
+.view-scholar-blog .views-row {border-bottom:1px solid #ccdcef;width:645px;}
 .view-scholar-blog .views-row-last {border-bottom:none;}
 
 
@@ -127,7 +135,7 @@ body.one-sidebar.sidebar-second #header .hg-container {
 /* MAIN NAVBAR */
 
 #header-right #block-vsite_menus-features {
- padding: 5px;
+ padding: 0 0 5px 5px;
  float:left;
    clear:none;
  margin-right: 200px;
