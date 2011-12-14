@@ -3,3 +3,4 @@ description = "This module will act as a secure authentication conduit between D
 package = "OpenScholar Harvard"
 core = 6.x
 features[user_permission][] = "administer pinserver"
+version = "6.x-beta13"
