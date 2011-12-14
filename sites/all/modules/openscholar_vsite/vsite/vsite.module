@@ -179,6 +179,29 @@ function vsite_get_default_feature_view($feature){
   return vsite_set_default_feature_view();
 }
 
+/**
+ * Given a form id determine if it is for a vsite features settings form
+ * @param string $form_id
+ *
+ * @return $feature_name
+ */
+function vsite_is_feature_settings_form($form_id){
+	//Does the formid end in _settings
+  if(!substr_compare($form_id,"_settings",-9) == 0){
+    return false;
+  }
+  
+  $site_features = array_keys(variable_get('spaces_features', array()));
+  $feature_name = substr($form_id,0,-9);
+    
+  if(!in_array($feature_name,$site_features)){
+    return false;
+  }
+  
+  //This is a feature settings form, return the feature name
+  return $feature_name;
+}
+
 ///////// REVIEW THESE API FUNCTIONS /////// -RB 8/12
 
 /**
@@ -659,6 +682,17 @@ function vsite_form_alter(&$form, $form_state, $form_id){
       }
     } //Overide the default promote functionality in favor of ours
   }
+  
+  $scholar_content_type = variable_get('scholar_content_type', 'vsite');
+  if($form_id == $scholar_content_type . '_node_form'){
+  	//Do not allow regular users to change the space type
+  	$form['spaces_preset']['#access'] = user_access('administer spaces');
+  	//Do not allow regular users to change purl information
+  	$form['purl']['#access'] = user_access('administer spaces');
+  	//Path information should not be set for group types
+    $form['path']['#access'] = user_access('administer spaces');
+  }//Set access permissions for group type form elements
+  
 }
 
 /**
