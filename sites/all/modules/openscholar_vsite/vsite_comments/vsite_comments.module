@@ -15,11 +15,29 @@ function vsite_comments_menu_alter(&$items){
 /**
  * Access function for comment/delete menu entry
  */
-function vsite_comments_admin_access(){
+function vsite_comments_admin_access($node_type = false, $comment_type = false){
   // if we are in a vsite, vsite admin can delete comments
   $vsite = vsite_get_vsite();
   if ($vsite && $vsite -> access_admin()){
-    return TRUE;
+  	if($node_type){
+  		$default_setting = variable_get("comment_{$node_type}",0)?'drupal':0;
+  		if($comment_type){
+        //Are comments enabled for this node type, and set to this comment type
+        if(variable_get("vsite_comments_comment_type_{$node_type}", $default_setting) == $comment_type){
+        	return true;
+        }
+        return false;
+        
+  		}else{
+  			//Are comments enabled for this node type
+  			if(variable_get("vsite_comments_comment_type_{$node_type}", $default_setting)){
+  				return true;
+  			}
+  			return false;
+  		}
+  	}
+  	//No type passed, just make sure they are an admin
+  	return true;
   }
   
   return user_access('administer comments');
@@ -66,45 +84,38 @@ function vsite_comments_form_alter(&$form, &$form_state, $form_id){
 	//Check if this is a feature form and add comment settings if the feature provides a node
 	vsite_comments_add_comment_settings($form, $form_state, $form_id);
 	
-//
-//	//Alter the avalible 'format types' for wysiwyg fields
-//  if (isset($form['#node']) && $form_id == $form['#node']->type .'_node_form') {
-//    if(is_array($form['body_field']) && is_array($form['body_field']['format'])){
-//      $body_field = $form['body_field'];
-//    }elseif (is_array($form['extra_fields_group']['body_field']) && is_array($form['extra_fields_group']['body_field']['format'])){
-//      $body_field = $form['extra_fields_group']['body_field'];
-//    }
-//
-//    if($body_field){
-//      $a_formats = array();
-//      foreach (element_children($body_field['format']) as $index) {
-//        if($body_field['format'][$index]['#type'] == 'radio'){
-//          //Remove comments HTML as option for nodes
-//          if($body_field['format'][$index]['#title'] == "Comments HTML"){
-//            unset($body_field['format'][$index]);
-//          }else{
-//            $a_formats[$index] = $index;
-//          }
-//        }
-//      }
-//
-//      if(count($a_formats) == 1){
-//        $body_field['format'] = array();
-//        $body_field['format'][current($a_formats)] = array('#type' => 'value', '#value' => current($a_formats), '#parents' => array('format'));
-//
-//        $body_field['format']['format']['guidelines'] = array(
-//          '#title' => t('Formatting guidelines'),
-//          '#value' => '',
-//        );
-//      }
-//
-//      if(is_array($form['body_field']) && is_array($form['body_field']['format'])){
-//        $form['body_field'] = $body_field;
-//      }else{
-//        $form['extra_fields_group']['body_field'] = $body_field;
-//      }
-//    }//Filters radios exist
-//  }
+	if (isset($form['#node']) && $form_id == $form['#node']->type .'_node_form') {
+		//Alter the permissions on the comment form fieldset
+		if(isset($form['comment_settings'])){
+			$form['comment_settings']['#access'] = vsite_comments_admin_access($form['#node']->type);
+			foreach (element_children($form['comment_settings']) as $comment_type) {
+				if($comment_type == 'comment') $comment_type = 'drupal';
+				//Set the access for each comment type
+				$form['comment_settings'][$comment_type]['#access'] = vsite_comments_admin_access($form['#node']->type,$comment_type);
+			}
+		}
+	}
+}
+
+/**
+ * Alter the comment settings on a node so no more than one commenting type shows at a time
+ */
+function vsite_comments_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
+  switch ($op) {
+	  case 'load':
+	  	//Commenting is enabled for this node but disabled in variables
+      if (!empty($node->comment) && !variable_get("comment_{$node_type}",0)){
+      	$node->comment_original = $node->comment;
+        $node->comment = COMMENT_NODE_DISABLED;
+      }
+    break;
+	  case 'presave':
+	  	//Reset the comment value before we save
+      if (isset($node->comment_original)){
+        $node->comment = $node->comment_original;
+      }
+	  break;
+  }
 }
 
 /**
@@ -139,11 +150,13 @@ function vsite_comments_add_comment_settings(&$form, &$form_state, $form_id){
     	//Set the node type
     	$form["{$node}_settings"]['#node_type'] = $node;
     	
+    	//Default setting from features/node-form
+    	$default_setting = variable_get("comment_{$node_type}",0)?'drupal':0;
     	$form["{$node}_settings"]["vsite_comments_comment_type_{$node}"] = array(
-	      '#type' => 'select',
+	      '#type' => 'radios',
     	  '#node_type' => $node,
 	      '#title' => t(' Comment Settings'),
-	      '#default_value' => variable_get("vsite_comments_comment_type_{$node}",0),
+	      '#default_value' => variable_get("vsite_comments_comment_type_{$node}", $default_setting),
     	  '#options' => array(
     	    0 => "No Comments",
     	    'drupal' => "Standard System Comments",
@@ -291,8 +304,7 @@ function vsite_comments_disqus_settings_submit($form, &$form_state){
 	
 	//Set the disqus domain to be the same as this site
 	if($vsite && ($domain = $vsite->get_absolute_url())){
-		$parsed = parse_url($domain); //$parsed['host'].$parsed['path']
-		
-		$vsite->controllers->variable->set('disqus_domain','scholar.harvard.edu');
-	}
+		$parsed = parse_url($domain);
+		$vsite->controllers->variable->set('disqus_domain',$parsed['host']);
+	}//Just the host is set here since there is no support for full paths
 }
