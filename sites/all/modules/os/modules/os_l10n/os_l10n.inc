@@ -9,7 +9,8 @@
 define('OS_L10N_VERSION', '6.x-1.0');
 
 // This module is specific for os package so we already know some data
-define('OS_L10N_SERVER', 'l10n.local');      //only exists on sagotsky's desktop
+//define('OS_L10N_SERVER', 'l10n.local');      //only exists on sagotsky's desktop
+define('OS_L10N_SERVER', 'scholar-dev1.iq.harvard.edu');      //only exists on sagotsky's desktop
 
 // This is the default folder to place translation files
 define('OS_L10N_DIRECTORY', 'sites/default/files/l10n_packager');
@@ -23,17 +24,19 @@ define('OS_L10N_DIRECTORY', 'sites/default/files/l10n_packager');
 /**
  * wrapper for hook_update_projects_alter
  * sets openscholar modules to use OS's own translation server
+ * 
+ * we could forgo this if each module included a l10n server in their .info
  */
 function _os_update_projects_alter(&$projects) {
   //list of modules that should refer to OS's translation server for translation updates
-  $os_modules = array('os');
+  $os_modules = array('os', 'scholar_announcements');
 
   foreach($os_modules as $mod) {
     $projects[$mod]['info']['l10n server'] = OS_L10N_SERVER;
   }
   
   //lets ignore everything but OS for now.
-  $projects = array_intersect_key($projects, array_flip($os_modules));
+ $projects = array_intersect_key($projects, array_flip($os_modules));
 }
 
 /**

@@ -5,3 +5,5 @@ dependencies[] = l10n_update
 dependencies[] = os
 core = 6.x
 package = Multilanguage
+project = OpenScholar Localization
+l10n server = http://scholar-dev1.iq.harvard.edu/
