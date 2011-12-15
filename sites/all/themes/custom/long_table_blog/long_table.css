@@ -29,10 +29,15 @@ letter-spacing: .5px;
 border-bottom:1px solid #ccdcef;
   }
  
+body.node-type-blog h2.title {color: #760012;}
 .view-scholar-blog h3.title {margin-bottom:0;}
 .view-scholar-blog h3.title a {color: #760012;font-size:1.1em;}
 
 #boxes-box-vsite_taxonomy_fltr_cat h3.title {display:none;}
+
+.node .node-inner ul.links li {
+margin-right:10px;
+}
 
 .node .node-inner .links li.node_read_more a {
 padding: 0 0 0 14px;
@@ -46,6 +51,8 @@ background: url('images/readMore.png') left center no-repeat;
 .submitted-by {
 	font-size: 0.9em;
 	color: #888888;
+	float:left;
+	margin-right:10px;
 }
 /* LAYOUT ELEMENTS */
 
