@@ -21,7 +21,9 @@ function vsitehelp_drush_command() {
   $cmds = array(
     'build_docs' => array(
       'description' => 'Generate advanced help .ini files for boxes.',
-      'options' => array(),
+      'options' => array(
+        '--help-readme' => 'Displays the build_docs readme, which includes information on setting up help files for build_docs.'
+      ),
       'examples' => array(
         'drush @site build_docs' => 'Scan OpenScholar source for os_help files and attach them to vsitehelp.',
       ),
@@ -40,6 +42,12 @@ function vsitehelp_drush_command() {
 function drush_vsitehelp_build_docs() {
   define( 'DIR', drupal_get_path('module', 'vsitehelp') . '/help/'  );  //destination for ini and html files
   define( 'BR', "\n");                                                  //newline shortcut
+  
+  //addtional help from readme file
+  if ($readme = drush_get_option('help-readme')) {
+    echo BR . file_get_contents(drupal_get_path('module','vsitehelp') . '/README.BUILD_DOCS.txt') . BR.BR;
+    return;
+  }
   
   // create images dir if necessary.
   if (!is_dir(DIR.'/images/')) {
