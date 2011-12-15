@@ -517,6 +517,216 @@ function vsite_comments_views_default_views() {
   ));
 
   $views[$view->name] = $view;
+  
+  // Exported view: scholar_comments
+  $view = new view;
+  $view->name = 'vsite_comments_display';
+  $view->description = 'scholar comments';
+  $view->tag = 'schoalarfeature';
+  $view->view_php = '';
+  $view->base_table = 'comments';
+  $view->is_cacheable = FALSE;
+  $view->api_version = 2;
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+  $handler = $view->new_display('default', 'Defaults', 'default');
+  $handler->override_option('relationships', array(
+    'nid' => array(
+      'label' => 'Node',
+      'required' => 1,
+      'id' => 'nid',
+      'table' => 'comments',
+      'field' => 'nid',
+      'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('fields', array(
+    'name' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'strip_tags' => 0,
+        'html' => 0,
+      ),
+      'link_to_user' => 1,
+      'exclude' => 0,
+      'id' => 'name',
+      'table' => 'comments',
+      'field' => 'name',
+      'relationship' => 'none',
+    ),
+    'timestamp' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'strip_tags' => 0,
+        'html' => 0,
+      ),
+      'date_format' => 'reldate',
+      'custom_date_format' => '',
+      'exclude' => 0,
+      'id' => 'timestamp',
+      'table' => 'comments',
+      'field' => 'timestamp',
+      'relationship' => 'none',
+    ),
+    'subject' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_comment' => 1,
+      'exclude' => 0,
+      'id' => 'subject',
+      'table' => 'comments',
+      'field' => 'subject',
+      'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('sorts', array(
+    'timestamp' => array(
+      'order' => 'DESC',
+      'granularity' => 'second',
+      'id' => 'timestamp',
+      'table' => 'comments',
+      'field' => 'timestamp',
+      'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('filters', array(
+    'nid' => array(
+      'operator' => '=',
+      'value' => '',
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'nid',
+      'table' => 'node_access',
+      'field' => 'nid',
+      'relationship' => 'nid',
+    ),
+    'current' => array(
+      'operator' => 'active',
+      'value' => '',
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'current',
+      'table' => 'spaces',
+      'field' => 'current',
+      'relationship' => 'nid',
+    ),
+    'timestamp' => array(
+      'operator' => '>=',
+      'value' => array(
+        'type' => 'offset',
+        'value' => '-30 days',
+        'min' => '',
+        'max' => '',
+      ),
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'timestamp',
+      'table' => 'comments',
+      'field' => 'timestamp',
+      'relationship' => 'none',
+    ),
+    'status' => array(
+      'operator' => '=',
+      'value' => '0',
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'status',
+      'table' => 'comments',
+      'field' => 'status',
+      'relationship' => 'none',
+    ),
+    'status_1' => array(
+      'operator' => '=',
+      'value' => '1',
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'status_1',
+      'table' => 'node',
+      'field' => 'status',
+      'relationship' => 'nid',
+    ),
+  ));
+  $handler->override_option('cache', array(
+    'type' => 'none',
+  ));
+  $handler->override_option('title', 'Recent comments');
+  $handler->override_option('items_per_page', 5);
+  $handler->override_option('distinct', 1);
+  $handler->override_option('style_plugin', 'list');
+  $handler->override_option('style_options', array(
+    'grouping' => '',
+    'type' => 'ul',
+  ));
+  $handler = $view->new_display('block', 'Recent comments', 'block_1');
+  $handler->override_option('block_description', '');
+  $handler->override_option('block_caching', '-1');
+
+  $views[$view->name] = $view;
 
   return $views;
 }
