@@ -35,6 +35,11 @@ class os_boxes_modal_siteinfo extends os_boxes_modalframe {
       }
       $form['spaces_preset']['#type'] = 'value';
 
+      // hides the wysiwyg
+      /// i do it this way because its a temporary hack
+      global $conf;
+      $conf['better_formats_allowed_vsite'] = array(2);
+
       // makes sure the node has a theme
       if (!isset($form['themes'])) {
         $form['theme'] = array(
@@ -55,5 +60,6 @@ class os_boxes_modal_siteinfo extends os_boxes_modalframe {
 
   static public function submit($form, $form_state) {
     // empty on purpose
+    // prevents the parent from running
   }
 }
