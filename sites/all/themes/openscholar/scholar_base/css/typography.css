@@ -322,6 +322,8 @@ ul.links li {
   padding:0;
   }
   
+p.terms-inline {float:left;margin:1px 1px 0 0;}
+  
 .boxes-box ul.links li {margin-bottom:15px; font-size:1em;}
 
 .node .links li {
