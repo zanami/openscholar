@@ -15,7 +15,11 @@ class vsite_comments_recent_comments extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
 
+    $options['node_type'] = false;
     $options['number_of_items'] = 6;
+    
+    $options['disqus_avatars'] = false;
+    $options['disqus_avatar_size'] = 32;
     
     return $options;
   }
@@ -84,12 +88,41 @@ class vsite_comments_recent_comments extends os_boxes_default {
   public function render() {
     $block = parent::render();
     
+    $comments_html = "";
     switch ($this->node_comment_setting($this->options['node_type'])){
-    	
-    	
+    	case 'drupal':
+    		$view_name = 'vsite_comments_display';
+        $display_id = "block_1";
+        
+		    if ($view = views_get_view($view_name)) {
+		      if ($view->access($display_id)) {
+		        $view->set_display($display_id);
+		        
+		        //Tie this view to this box (this tells the view to call this box's view alter)
+		        $view->dom_id = "boxes-".$this->delta;
+		        
+		        $output = $view->execute_display();
+		        $comments_html = $output['content'];
+		      }
+		      $view->destroy();
+		    }
+    	break;
+    	case 'disqus':
+    		if(!module_exists('disqus') || !($shortname = variable_get('disqus_domain', ''))){
+    			break;
+    		}
+    		$avatar_settings = $this->options['disqus_avatars'] ? '&amp;avatar_size='. $this->options['disqus_avatar_size'] : '&amp;hide_avatars=1';
+    		//Disqus embed code
+    		$comments_html = <<<EOT
+<div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/{$shortname}/recent_comments_widget.js?num_items={$this->options['number_of_items']}{$avatar_settings}"></script></div>
+EOT;
+    	break;
+    	case 'facebook':
+    		//Facebook embed code here
+    	break;
     }
     
-    if(strlen($comments_html)) $block['content'] = $terms_html;
+    if(strlen($comments_html)) $block['content'] = $comments_html;
 
     return $block;
   }
@@ -147,4 +180,33 @@ class vsite_comments_recent_comments extends os_boxes_default {
     return variable_get("vsite_comments_comment_type_{$node_type}", $default_setting);
   }
 
+/**
+   * Called from views_pre_view
+   *
+   * @param view $view
+   */
+  public function views_alter(&$view, &$display_id, &$args){
+    
+    if($this->options['node_type']){
+	    $filter = array(
+	      'operator' => 'in',
+	      'group' => '0',
+	      'exposed' => FALSE,
+	      'expose' => array('operator' => FALSE, 'label' => ''),
+	      'id' => 'type',
+	      'table' => 'node',
+	      'field' => 'type',
+	      'relationship' => 'nid',
+	      'value' => array($this->options['node_type'] => $this->options['node_type']),
+	    );
+	    $view->set_item($display_id, 'filter', 'type', $filter);
+    }
+    
+    //Set the number of items
+    if(intval($this->options['number_of_items'])){
+      $view->display_handler->set_option('items_per_page',intval($this->options['number_of_items']));
+      $view->set_items_per_page(intval($this->options['number_of_items']));
+    }
+    
+  }
 }

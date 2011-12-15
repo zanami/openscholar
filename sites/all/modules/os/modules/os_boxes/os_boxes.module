@@ -312,6 +312,20 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
+  
+  //vsite_comments_recent_comments
+  $info['vsite_comments_recent'] = array(
+    'title' => 'Recent Comments',
+    'description' => 'Recent Comments',
+    'tags' => array('Social'),
+    'module dependencies' => array('vsite_comments'),
+    'handler' => array(
+      'class' => 'vsite_comments_recent_comments',
+      'file' => 'vsite_comments_recent_comments.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default',
+    ),
+  );
 
   foreach ($info as $key => $block) {
   	if(isset($info[$key]['module dependencies'])){
