@@ -33,41 +33,7 @@ class vsite_comments_recent_comments extends os_boxes_default {
   	ctools_include('dependent');
     ctools_add_js('dependent');
     
-    $comment_types = array(
-      'drupal' => t('Standard Drupal Comments'),
-    );
-    
-    if(module_exists('disqus')){
-    	$comment_types['disqus'] = "Disqus Comments";
-    }
-    
-    $form['comment_type'] = array(
-      '#type' => 'select',
-      '#title' => t('Type of comments to display'),
-      '#options' => $comment_types,
-      '#required' => TRUE,
-      '#default_value' => $this->options['comment_type'],
-    );
-  	
-    $form['node_type'] = array(
-      '#type' => 'select',
-      '#title' => t('Comments From'),
-      '#options' => array(
-        0 => "All Post Types",
-      ),
-      '#required' => false,
-      '#default_value' => $this->options['node_type'],
-      '#description' =>  "Choose the content type that you would like to display comments from.",
-      '#process' => array(
-        'ctools_dependent_process'
-      ),
-      '#dependency' => array(
-        'edit-comment-type' => array(
-          'drupal'
-        )
-      )
-    );
-    
+    //Get the avalible nodes
     // os/vsite integration - lists correct content types
     if (module_exists('vsite') && vsite_get_vsite()) {
       vsite_include('vsiteapi');
@@ -76,17 +42,86 @@ class vsite_comments_recent_comments extends os_boxes_default {
       drupal_alter('vsite_content_types', $node_options);
     }
     
-    if (! isset($node_options)) {
+    if (!isset($node_options)) {
       $node_options = node_get_types('names');
     }
     
     //Sort by node name
     asort($node_options);
+    $a_used_ctypes = array();
     foreach ( $node_options as $type => $name ) {
-      $form['node_type']['#options'][$type] = t('!type posts', array(
-        '!type' => ucfirst($name),
-      ));
+    	$ctype = $this->node_comment_setting($type);
+    	if ($ctype == 'drupal'){
+	      //Make name pretty
+    		$node_options[$type] = t('!type posts', array(
+	        '!type' => ucfirst($name),
+	      ));
+    	}else{
+    		//This type does not use drupal comments so it isn't selectable
+    		unset($node_options[$type]);
+    	}
+    	
+    	if($ctype){
+    		$a_used_ctypes[$ctype] = $ctype;
+    	}
     }
+    
+    
+    $comment_types = array();
+    if(in_array('drupal',$a_used_ctypes)){
+      $comment_types['drupal'] = t('Standard Drupal Comments');
+    }
+    
+    if(in_array('disqus',$a_used_ctypes) && module_exists('disqus')){
+    	$comment_types['disqus'] = "Disqus Comments";
+    }
+    
+    if(!count($comment_types)){
+    	$form['error'] = array(
+    	  '#type' => 'markup',
+        '#value' => "<p>".t('Sorry, No post types have been configured to use comments.')."</p>",
+    	);
+    	
+    	return $form;
+    }
+    
+    if(count($comment_types) > 1){
+	    $form['comment_type'] = array(
+	      '#type' => 'select',
+	      '#title' => t('Type of comments to display'),
+	      '#options' => $comment_types,
+	      '#required' => TRUE,
+	      '#default_value' => $this->options['comment_type'],
+	    );
+    }else{
+    	//Only one type avalible set accordingly
+    	$form['comment_type'] = array(
+        '#type' => 'value',
+        '#value' => current(array_keys($comment_types)),
+      );
+    }
+  	
+    if(in_array('drupal',$a_used_ctypes)){
+	    $form['node_type'] = array(
+	      '#type' => 'select',
+	      '#title' => t('Comments From'),
+	      '#options' => array_merge(array(
+	        0 => "All Post Types",
+	      ),$node_options),
+	      '#required' => false,
+	      '#default_value' => $this->options['node_type'],
+	      '#description' =>  "Choose the content type that you would like to display comments from.",
+	      '#process' => array(
+	        'ctools_dependent_process'
+	      ),
+	      '#dependency' => array(
+	        'edit-comment-type' => array(
+	          'drupal'
+	        )
+	      )
+	    );
+    }
+    
     
     $form['number_of_items'] = array(
       '#type' => 'select',
@@ -107,40 +142,42 @@ class vsite_comments_recent_comments extends os_boxes_default {
       '#default_value' => $this->options['number_of_items']
     );
     
-    $form['disqus_avatars'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Display Disqus Avatars'),
-      '#description' => t('This will add an avatar image if avalible next to each comment.'),
-      '#default_value' => $this->options['disqus_avatars'],
-      '#tree' => TRUE,
-      '#process' => array(
-        'ctools_dependent_process'
-      ),
-      '#dependency' => array(
-        'edit-comment-type' => array(
-          'disqus'
-        )
-      )
-    );
-    
-    $form['disqus_avatar_size'] = array(
-      '#type' => 'select',
-      '#title' => t('Avatar Size'),
-      '#options' => array(
-                      24 => "Small (24 px)",
-                      32 => "Medium (32 px)",
-                      48 => "Large (48 px)",
-                    ),
-      '#default_value' => $this->options['disqus_avatar_size'],
-      '#process' => array(
-        'ctools_dependent_process'
-      ),
-      '#dependency' => array(
-        'edit-disqus-avatars' => array(
-          1
-        )
-      )
-    );
+    if(in_array('disqus',$a_used_ctypes)){
+	    $form['disqus_avatars'] = array(
+	      '#type' => 'checkbox',
+	      '#title' => t('Display Disqus Avatars'),
+	      '#description' => t('This will add an avatar image if avalible next to each comment.'),
+	      '#default_value' => $this->options['disqus_avatars'],
+	      '#tree' => TRUE,
+	      '#process' => array(
+	        'ctools_dependent_process'
+	      ),
+	      '#dependency' => array(
+	        'edit-comment-type' => array(
+	          'disqus'
+	        )
+	      )
+	    );
+	    
+	    $form['disqus_avatar_size'] = array(
+	      '#type' => 'select',
+	      '#title' => t('Avatar Size'),
+	      '#options' => array(
+	                      24 => "Small (24 px)",
+	                      32 => "Medium (32 px)",
+	                      48 => "Large (48 px)",
+	                    ),
+	      '#default_value' => $this->options['disqus_avatar_size'],
+	      '#process' => array(
+	        'ctools_dependent_process'
+	      ),
+	      '#dependency' => array(
+	        'edit-disqus-avatars' => array(
+	          1
+	        )
+	      )
+	    );
+    }
 
     $form += parent::options_form();
     return $form;
@@ -152,14 +189,33 @@ class vsite_comments_recent_comments extends os_boxes_default {
   public function render() {
     $block = parent::render();
     
+    //Is this comment type still enabled?
+    $enabled = false;
+    if (module_exists('vsite') && vsite_get_vsite()) {
+      vsite_include('vsiteapi');
+      //Get public and private types
+      $node_options = vsite_content_types(array(1,2));
+      drupal_alter('vsite_content_types', $node_options);
+      foreach ($node_options as $type => $value) {
+      	if($this->options['comment_type'] === $this->node_comment_setting($type)){
+      		$enabled = true;
+      		break;
+      	}
+      }
+    }
+    
+    if(!$enabled){
+    	return $block;
+    }
+    
     $comments_html = "";
-    switch ($this->node_comment_setting($this->options['node_type'])){
+    switch ($this->options['comment_type']){
     	case 'drupal':
     		$view_name = 'vsite_comments_display';
         $display_id = "block_1";
         
 		    if ($view = views_get_view($view_name)) {
-		      if ($view->access($display_id)) {
+		      if ($view->access($display_id) && (!$this->options['node_type'] || $this->node_comment_setting($this->options['node_type']) == 'drupal')) {
 		        $view->set_display($display_id);
 		        
 		        //Tie this view to this box (this tells the view to call this box's view alter)
@@ -167,7 +223,7 @@ class vsite_comments_recent_comments extends os_boxes_default {
 		        
 		        $output = $view->execute_display();
 		        $comments_html = $output['content'];
-		      }
+		      }//Make sure they have access to see this view
 		      $view->destroy();
 		    }
     	break;
@@ -214,7 +270,7 @@ EOT;
   public function cache_info(){
     
   	$cache_key = false;
-  	switch($this->node_comment_setting($this->options['node_type'])){
+  	switch($this->options['comment_type']){
   		case 'drupal':
   			//Adding comments triggers a node clear
 		    $cache_key = array(
