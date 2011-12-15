@@ -57,7 +57,7 @@ function os_l10n_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'language_negotiation';
-  $strongarm->value = 2; //path prefix with lanuguage fallback = 2
+  $strongarm->value = 2; //path prefix with lanuguage fall back = 2
   $export['language_negotiation'] = $strongarm;
   
   return $export;

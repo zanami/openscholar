@@ -47,9 +47,7 @@ function _os_l10n_servers() {
   return array(
   	OS_L10N_SERVER => array(
   	  'name' => OS_L10N_SERVER,
-  	  //'server_url' => 'http://'.OS_L10N_SERVER.'/files/'.OS_L10N_DIRECTORY.'/server.xml',
-  	  //'update_url' => 'http://'.OS_L10N_SERVER.'/files/'.OS_L10N_DIRECTORY.'/%core/%project/%project-%release.%language.po',
-    	'server_url' => 'http://'.OS_L10N_SERVER.'/'.OS_L10N_DIRECTORY.'/server.xml',
+    	'server_url' => 'http://'.OS_L10N_SERVER.'/'.OS_L10N_DIRECTORY.'/l10n_server.xml',
   	  'update_url' => 'http://'.OS_L10N_SERVER.'/'.OS_L10N_DIRECTORY.'/%core/%project/%project-%release.%language.po',
   	), 
   );  
