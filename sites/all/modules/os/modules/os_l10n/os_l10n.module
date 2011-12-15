@@ -35,6 +35,7 @@ function os_l10n_strongarm() {
   module_load_include('inc', 'os_l10n');
   $export = array();
   
+  // sets the default translation server to openscholar, rather than localize.drupal.org
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
@@ -42,14 +43,23 @@ function os_l10n_strongarm() {
   $strongarm->value = 'http://'.OS_L10N_SERVER;
   $export['l10n_client_server'] = $strongarm; 
 
+  // new translations should be submitted to OS translation server
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'l10n_client_use_server';
   $strongarm->value = 1;
-
   $export['l10n_client_use_server'] = $strongarm;
 
+  // language negotiation determined by 1) path language codes 2) account langauge pref, or 3) browser settings
+  // this is the easiest way to let users change their own langauge in a multilingual site
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE;
+  $strongarm->api_version = 1;
+  $strongarm->name = 'language_negotiation';
+  $strongarm->value = 2; //path prefix with lanuguage fallback = 2
+  $export['language_negotiation'] = $strongarm;
+  
   return $export;
 }
 
