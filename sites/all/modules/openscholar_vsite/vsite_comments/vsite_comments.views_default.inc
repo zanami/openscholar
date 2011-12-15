@@ -517,12 +517,12 @@ function vsite_comments_views_default_views() {
   ));
 
   $views[$view->name] = $view;
-  
-  // Exported view: scholar_comments
+
+  // Exported view: vsite_comments_display
   $view = new view;
   $view->name = 'vsite_comments_display';
   $view->description = 'scholar comments';
-  $view->tag = 'schoalarfeature';
+  $view->tag = 'vsite';
   $view->view_php = '';
   $view->base_table = 'comments';
   $view->is_cacheable = FALSE;
@@ -711,8 +711,74 @@ function vsite_comments_views_default_views() {
       'relationship' => 'nid',
     ),
   ));
-  $handler->override_option('cache', array(
+  $handler->override_option('access', array(
     'type' => 'none',
+  ));
+  $handler->override_option('cache', array(
+    'type' => 'os_views_content_cache',
+    'keys' => array(
+      'comment' => array(
+        'changed' => 'changed',
+      ),
+      'node' => array(
+        'announcement' => 0,
+        'blog' => 0,
+        'book' => 0,
+        'class' => 0,
+        'class_material' => 0,
+        'event' => 0,
+        'feed_fast' => 0,
+        'feed' => 0,
+        'feed_item' => 0,
+        'gallery' => 0,
+        'image' => 0,
+        'link' => 0,
+        'modal_image' => 0,
+        'page' => 0,
+        'person' => 0,
+        'presentation' => 0,
+        'profile' => 0,
+        'biblio' => 0,
+        'vsite' => 0,
+        'sitewide_page' => 0,
+        'scholar_software_project' => 0,
+        'scholar_software_release' => 0,
+        'vsite_users_profile' => 0,
+        'bio' => 0,
+        'cv' => 0,
+      ),
+      'og' => array(
+        'current' => 0,
+        'user' => 0,
+      ),
+      'os_og' => array(
+        'current' => 'current',
+        'user' => 0,
+      ),
+      'vsite_config' => array(
+        'vsite_layout_settings_form' => 0,
+        'vsite_menus_settings_form' => 0,
+        'vsite_taxonomy_form' => 0,
+        'taxonomy_form_vocabulary' => 0,
+        'taxonomy_vocabulary_confirm_delete' => 0,
+        'taxonomy_form_term' => 0,
+        'vsite_generic_settings_form' => 0,
+        'vsite_design_theme_picker_form' => 0,
+        'spaces_features_form' => 0,
+        'scholar_announcements_settings' => 0,
+        'scholar_biocv_settings' => 0,
+        'scholar_blog_settings' => 0,
+        'scholar_book_settings' => 0,
+        'scholar_dvn_settings' => 0,
+        'scholar_front_settings' => 0,
+        'scholar_presentations_settings' => 0,
+        'scholar_publications_settings' => 0,
+      ),
+    ),
+    'results_min_lifespan' => '-1',
+    'results_max_lifespan' => '-1',
+    'output_min_lifespan' => '-1',
+    'output_max_lifespan' => '3600',
   ));
   $handler->override_option('title', 'Recent comments');
   $handler->override_option('items_per_page', 5);

@@ -277,7 +277,7 @@ function vsite_comments_vsite_generic_settings(){
   $a_settings = array();
 
   if(module_exists('disqus')){
-	  $a_settings['disqus_userapikey'] = array(
+	  $a_settings['disqus_domain'] = array(
 	    'group' => array(
 	      '#id' => 'social',
 	      '#title' => t('Social'),
@@ -285,26 +285,12 @@ function vsite_comments_vsite_generic_settings(){
 	    ),
 	    'form' => array(
 	      '#type' => 'textfield',
-	      '#title' => t('Disqus User API Key'),
-	      '#default_value' => variable_get('disqus_userapikey', ''),
-	      '#description' => t('The API key of your administrator account on Disqus. You can get yours <a href="@key">here</a>.', array('@key' => 'http://disqus.com/api/get_my_key/')),
+        '#title' => t('Shortname'),
+        '#description' => t('The domain that you registered Disqus with. If you registered http://example.disqus.com, you would enter "example" here. It is called "shortname" on the disqus site. You can '.l("signup here","http://disqus.com/")." for a disqus account if you do not have one. "),
+        '#default_value' => variable_get('disqus_domain', ''),
 	    ),
-	    'submit' => array('vsite_comments_disqus_settings_submit'),
 	  );
   }
 
   return $a_settings;
-}
-
-/**
- * Automatically setup the disqus domain for this site
- */
-function vsite_comments_disqus_settings_submit($form, &$form_state){
-	$vsite = vsite_get_vsite();
-	
-	//Set the disqus domain to be the same as this site
-	if($vsite && ($domain = $vsite->get_absolute_url())){
-		$parsed = parse_url($domain);
-		$vsite->controllers->variable->set('disqus_domain',$parsed['host']);
-	}//Just the host is set here since there is no support for full paths
 }
