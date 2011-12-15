@@ -15,7 +15,8 @@ class vsite_comments_recent_comments extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
 
-    $options['node_type'] = false;
+    $options['comment_type'] = 'drupal';
+    $options['node_type'] = 0;
     $options['number_of_items'] = 6;
     
     $options['disqus_avatars'] = false;
@@ -29,14 +30,42 @@ class vsite_comments_recent_comments extends os_boxes_default {
    */
   public function options_form(){
 
+  	ctools_include('dependent');
+    ctools_add_js('dependent');
+    
+    $comment_types = array(
+      'drupal' => t('Standard Drupal Comments'),
+    );
+    
+    if(module_exists('disqus')){
+    	$comment_types['disqus'] = "Disqus Comments";
+    }
+    
+    $form['comment_type'] = array(
+      '#type' => 'select',
+      '#title' => t('Type of comments to display'),
+      '#options' => $comment_types,
+      '#required' => TRUE,
+      '#default_value' => $this->options['comment_type'],
+    );
+  	
     $form['node_type'] = array(
       '#type' => 'select',
       '#title' => t('Comments From'),
       '#options' => array(
+        0 => "All Post Types",
       ),
-      '#required' => TRUE,
+      '#required' => false,
       '#default_value' => $this->options['node_type'],
-      '#description' =>  "Choose the content type that you would like to display comments from."
+      '#description' =>  "Choose the content type that you would like to display comments from.",
+      '#process' => array(
+        'ctools_dependent_process'
+      ),
+      '#dependency' => array(
+        'edit-comment-type' => array(
+          'drupal'
+        )
+      )
     );
     
     // os/vsite integration - lists correct content types
@@ -76,6 +105,41 @@ class vsite_comments_recent_comments extends os_boxes_default {
                       25 => "25",
                     ),
       '#default_value' => $this->options['number_of_items']
+    );
+    
+    $form['disqus_avatars'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Display Disqus Avatars'),
+      '#description' => t('This will add an avatar image if avalible next to each comment.'),
+      '#default_value' => $this->options['disqus_avatars'],
+      '#tree' => TRUE,
+      '#process' => array(
+        'ctools_dependent_process'
+      ),
+      '#dependency' => array(
+        'edit-comment-type' => array(
+          'disqus'
+        )
+      )
+    );
+    
+    $form['disqus_avatar_size'] = array(
+      '#type' => 'select',
+      '#title' => t('Avatar Size'),
+      '#options' => array(
+                      24 => "Small (24 px)",
+                      32 => "Medium (32 px)",
+                      48 => "Large (48 px)",
+                    ),
+      '#default_value' => $this->options['disqus_avatar_size'],
+      '#process' => array(
+        'ctools_dependent_process'
+      ),
+      '#dependency' => array(
+        'edit-disqus-avatars' => array(
+          1
+        )
+      )
     );
 
     $form += parent::options_form();
