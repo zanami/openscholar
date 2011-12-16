@@ -25,12 +25,7 @@
       </div>
      <?php endif; ?>
     </div>
-    <?php if (!$page): ?>
-      <?php if ($terms): ?>
-      <div class="terms terms-inline"><?php print t(' in ') . $terms; ?></div>
-      <?php endif; ?>
-    <?php endif; ?>
-    <div class="submitted-by">submitted by <span class="blue"><?php print $node->name ?></span> in [tag var]</div>
+    <div class="submitted-by">submitted by <span class="blue"><?php print $node->name ?></span><?php if ($terms): ?> <?php print t(' in ') . $terms; ?><?php endif; ?></div>
     <?php if ($links): ?>
       <div class="links links-inline">
         <?php print $links;?>

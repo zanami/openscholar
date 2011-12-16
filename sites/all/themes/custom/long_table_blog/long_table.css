@@ -44,6 +44,8 @@ body.node-type-blog h2.title {color: #760012; text-transform: none;}
 
 #boxes-box-vsite_taxonomy_fltr_cat h3.title {display:none;}
 
+ul.inline {display:inline;}
+
 .node .node-inner ul.links li {
 margin-right:10px;
 }
