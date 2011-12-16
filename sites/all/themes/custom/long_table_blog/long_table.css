@@ -8,6 +8,11 @@ font-size:13px;
   
 /* TYPOGRAPHY*/
 
+.blue {
+    color:#00497A;
+    }
+
+
 a, a:visited {
     color:#00497a;
     text-decoration: none;
@@ -29,7 +34,11 @@ letter-spacing: .5px;
 border-bottom:1px solid #ccdcef;
   }
  
-body.node-type-blog h2.title {color: #760012;}
+ h2.title {
+    text-transform: uppercase; margin-left:5px; color: #666;
+}
+
+body.node-type-blog h2.title {color: #760012; text-transform: none;}
 .view-scholar-blog h3.title {margin-bottom:0;}
 .view-scholar-blog h3.title a {color: #760012;font-size:1.1em;}
 
