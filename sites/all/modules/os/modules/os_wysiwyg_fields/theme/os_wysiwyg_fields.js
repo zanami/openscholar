@@ -73,26 +73,27 @@
 			}
 		});
 		eve.push('iframe[src|href]');
-		eve.push('form[id|class]');
+		eve.push('form[id|class|contenteditable]');
 		settings.extended_valid_elements = eve.join(',');
 		
 		
 		// change some vars and functions so oembed stuff doesn't pop out of the span
 		Drupal.wysiwygFields.wysiwyg.tinymce.wrapperElement = 'form';
 		Drupal.wysiwygFields.wysiwyg.tinymce.divToWysiwygField = function() {
-	        delete Drupal.settings.wysiwygFields.timer;
-	        if (typeof tinyMCE.activeEditor.contentDocument !== "undefined") {
-	          $('.wysiwyg_fields-placeholder', tinyMCE.activeEditor.contentDocument.body).each(function() {
-	            $(this).removeClass('wysiwyg_fields-placeholder');
-	            replacement = "<"+Drupal.wysiwygFields.wrapperElement+" id='" + $(this).attr('id') + "' class='" + $(this).attr('class') + "'>" + Drupal.settings.wysiwygFields.replacements['[' + $(this).attr('id') + ']'] + "</"+Drupal.wysiwygFields.wrapperElement+"> ";
-	            Drupal.wysiwygFields.wysiwyg.tinymce.wysiwygIsNode(this);
-	            Drupal.wysiwyg.instances[Drupal.settings.wysiwygFields.activeId].insert(replacement);
-	          });
-	        }
-	        else {
-	          // Document not ready, reset timer.
-	          Drupal.wysiwygFields._wysiwygAttach();
-	        }
+			delete Drupal.settings.wysiwygFields.timer;
+			if (typeof tinyMCE.activeEditor.contentDocument !== "undefined") {
+			  $('.wysiwyg_fields-placeholder', tinyMCE.activeEditor.contentDocument.body).each(function() {
+				var $self = $('#'+this.id, tinyMCE.activeEditor.contentDocument.body), replacement;
+				$self.removeClass('wysiwyg_fields-placeholder');
+			    replacement = "<"+Drupal.wysiwygFields.wrapperElement+" id='" + $self.attr('id') + "' class='" + $self.attr('class') + "' contenteditable=\"false\">" + Drupal.settings.wysiwygFields.replacements['[' + $self.attr('id') + ']'] + "</"+Drupal.wysiwygFields.wrapperElement+"> ";
+			    Drupal.wysiwygFields.wysiwyg.tinymce.selectNode($self[0]);
+			    Drupal.wysiwyg.instances[Drupal.settings.wysiwygFields.activeId].insert(replacement);
+			  });
+			}
+			else {
+			  // Document not ready, reset timer.
+			  Drupal.wysiwygFields._wysiwygAttach();
+			}
 	    };
 	    
 	    
@@ -120,7 +121,11 @@
 		else {
 			var insert = Drupal.wysiwyg.editor.instance.tinymce.insert;
 			Drupal.wysiwyg.editor.instance.tinymce.insert = function(content) {
-				content += '<br>';
+				content += ' ';
+				if (typeof tinyMCE.activeEditor.contentDocument !== 'undefined' 
+					&& !$('p', tinyMCE.activeEditor.contentDocument.body).length) {
+					content += ' <p></p>';
+				}
 				insert.call(this, content);
 			};
 		}
