@@ -741,17 +741,6 @@ function _vsite_taxonomy_get_term_path($tid, $s_term_feature= false, $b_feature_
 }
 
 /**
- * Implementation of hook_preprocess_node()
- */
-function vsite_taxonomy_preprocess_node(&$vars){
-  $node = $vars['node'];
-
-  if ($vars['teaser']){
-    unset($vars['terms']); //Do not show "in xxx,yyy" in the teaser view
-  }
-}
-
-/**
  * Return the nodes that apply to a feature
  * @param string $s_term_feature
  */
