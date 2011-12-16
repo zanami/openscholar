@@ -39,7 +39,7 @@
 
   <?php endif; ?>
 
-    <?php if ($terms): ?>
+    <?php if (!$teaser && $terms): ?>
     <p class="terms terms-inline"><?php print t(' in ') . $terms; ?></p>
     <?php endif; ?>
 
@@ -63,7 +63,9 @@
         }
        ?>
      <?php endif; ?>
-    <?php print $content; ?>
+     <div class="content-body">
+      <?php print $content; ?>
+     </div>
    </div>
   <?php print $links; ?>
   </div> <!-- /node-inner -->
