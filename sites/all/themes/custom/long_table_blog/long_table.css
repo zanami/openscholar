@@ -23,6 +23,8 @@ a:hover {
     color:#00497a;
 }
     
+.sidebar .node-type-person h3.title {font-size:1em;}
+
 
 .sidebar h3.title {
  color: #666;
@@ -63,11 +65,17 @@ background: url('images/readMore.png') left center no-repeat;
 	font-size: 0.9em;
 	color: #888888;
 	float:left;
-	margin-right:10px;
+	margin-right:3px;
 }
+
+
+#sidebar-second .content-body {display:none;}
+
+#sidebar-second .node_read_more {display:none;}
+
 /* LAYOUT ELEMENTS */
 
-#content-area {padding-top:10px;}
+#content-area {padding-top:20px;}
 
 #page {
   width: 980px;
@@ -142,7 +150,7 @@ body.one-sidebar.sidebar-second #header .hg-container {
 
 /* HEADER ELEMENTS */
 
-.box-os_boxes_modal_image {margin-top:30px;}
+.box-os_boxes_modal_image {margin:20px;}
 
 .search-form {
     width: 185px;
