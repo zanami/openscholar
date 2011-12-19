@@ -96,17 +96,6 @@
 			}
 	    };
 	    
-	    
-		/*
-		if (!hasRun) {
-			// prevent wysiwyg_fields from stripping out the oembed code and replacing it with empty token
-			if (typeof Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed == 'object') {
-				Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed.detach = function (content, settings, instanceId) {
-					return Drupal.wysiwygFields.wysiwygDetach('zzzzz_do_not_find_me', content, settings, instanceId);
-				};
-			}
-		}*/
-		
 		// pull the Insert button out of a div and next to remove
 		
 		if (hasRun) {
@@ -128,6 +117,41 @@
 				}
 				insert.call(this, content);
 			};
+			
+			// prevent links in oembed code from going anywhere
+			tinyMCE.onAddEditor.add(function () {
+				tinyMCE.activeEditor.onClick.add(function (ed, e) {
+					var targ = e.target || e.srcElement;
+					while (targ.contentEditable == 'inherit') {
+						targ = targ.parentNode;
+					}
+					if (targ.contentEditable == 'false') {
+						this.selection.select(targ);
+						e.preventDefault();
+						return false;
+					}
+				});
+			});
+			/*
+			if (typeof Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed == 'object') {
+				var init = Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed.init;
+				Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed.init = function (content, settings, instanceId) {
+					init.call(this);
+					var body = tinyMCE.activeEditor.contentDocument.body;
+					if ('addEventListener' in body) {
+						body.addEventListener('click', , false);
+					}
+					else {
+						body.attachEvent('onClick', function (e) {
+							var targ = e.target;
+							while (targ.contentEditable == 'inherit') {
+								targ = targ.parentNode;
+							}
+							if (targ.contentEditable == 'false') return false;
+						});
+					}
+				};
+			}*/
 		}
 		hasRun = true;
 	};
