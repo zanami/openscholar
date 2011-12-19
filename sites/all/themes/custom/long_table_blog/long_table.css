@@ -23,6 +23,15 @@ a:hover {
     color:#00497a;
 }
     
+.sidebar .node-type-person h3.title {
+font-size:1em;
+font-family: Helvetica,Arial,sans-serif;
+ font-weight: bold;
+letter-spacing: 0;
+ margin-bottom:0;
+border-bottom:none;
+}
+
 
 .sidebar h3.title {
  color: #666;
@@ -38,11 +47,17 @@ border-bottom:1px solid #ccdcef;
     text-transform: uppercase; margin-left:5px; color: #666;
 }
 
+.node-type-person h2.title {color:#00497A;
+margin-left:0;
+text-transform:none;}
+
 body.node-type-blog h2.title {color: #760012; text-transform: none;}
-.view-scholar-blog h3.title {margin-bottom:0;}
-.view-scholar-blog h3.title a {color: #760012;font-size:1.1em;}
+.node-type-blog h3.title {margin-bottom:0;}
+.node-type-blog h3.title a {color: #760012;font-size:1.1em;}
 
 #boxes-box-vsite_taxonomy_fltr_cat h3.title {display:none;}
+
+ul.inline {display:inline;}
 
 .node .node-inner ul.links li {
 margin-right:10px;
@@ -61,11 +76,17 @@ background: url('images/readMore.png') left center no-repeat;
 	font-size: 0.9em;
 	color: #888888;
 	float:left;
-	margin-right:10px;
+	margin-right:3px;
 }
+
+
+#sidebar-second .content-body {display:none;}
+
+#sidebar-second .node_read_more {display:none;}
+
 /* LAYOUT ELEMENTS */
 
-#content-area {padding-top:10px;}
+#content-area {padding-top:20px;}
 
 #page {
   width: 980px;
@@ -113,7 +134,9 @@ height:100px;
   }
 
 
-.sidebar-second #content-main { border-right:1px dotted #cacaca; }
+#sidebar-second {
+border-left:1px dotted #CACACA;
+}
 
 .two-sidebars #content-main {
    border-right:1px dotted #ededed;
@@ -137,15 +160,20 @@ body.one-sidebar.sidebar-second #header .hg-container {
 .view-scholar-blog .views-row {border-bottom:1px solid #ccdcef;width:645px;}
 .view-scholar-blog .views-row-last {border-bottom:none;}
 
+.taxonomy-term-description {
+margin:0;
+}
 
 /* HEADER ELEMENTS */
+
+.box-os_boxes_modal_image {margin:20px;}
 
 .search-form {
     width: 185px;
     display:inline;
     clear:none;
     float:right;
-    margin-top:-30px;
+    margin-top:0px;
 }
 
 /* MAIN NAVBAR */
@@ -155,6 +183,7 @@ body.one-sidebar.sidebar-second #header .hg-container {
  float:left;
    clear:none;
  margin-right: 200px;
+  margin-top: -40px;
   width: 220px;
   }
 
