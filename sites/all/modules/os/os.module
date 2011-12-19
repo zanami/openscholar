@@ -199,3 +199,4 @@ function os_strongarm_alter(&$vars){
 
   $vars = array_merge($a_new_settings,$vars); //Existing values take precedence
 }
+
