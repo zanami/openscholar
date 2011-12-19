@@ -166,7 +166,7 @@ function vsite_comments_add_comment_settings(&$form, &$form_state, $form_id){
 	    
 	    if(module_exists('disqus')){
 	    	$form["{$node}_settings"]["vsite_comments_comment_type_{$node}"]['#options']['disqus'] = "Disqus Comments";
-	    	$form["{$node}_settings"]["vsite_comments_comment_type_{$node}"]['#description'] .= " Disqus must be configured with an 'API' key to work, you may do that ".l('here','cp/settings').".";
+	    	$form["{$node}_settings"]["vsite_comments_comment_type_{$node}"]['#description'] .= " Disqus must be configured with an 'domain' shortname to work, you may setup the shortname ".l('here','cp/settings').".";
 	    }
     }
     
@@ -285,7 +285,7 @@ function vsite_comments_vsite_generic_settings(){
 	    ),
 	    'form' => array(
 	      '#type' => 'textfield',
-        '#title' => t('Shortname'),
+        '#title' => t('Disqus Shortname'),
         '#description' => t('The domain that you registered Disqus with. If you registered http://example.disqus.com, you would enter "example" here. It is called "shortname" on the disqus site. You can '.l("signup here","http://disqus.com/")." for a disqus account if you do not have one. "),
         '#default_value' => variable_get('disqus_domain', ''),
 	    ),
