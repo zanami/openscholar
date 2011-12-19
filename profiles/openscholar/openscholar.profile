@@ -52,11 +52,6 @@ function openscholar_profile_modules() {
 
   );
 
-  if (_os_language_selected()) {
-    $modules[] = 'locale';
-    $modules[] = 'l10n_update';
-  }
-
   return $modules;
 }
 
@@ -210,9 +205,6 @@ function openscholar_profile_task_list() {
   $conf['site_footer'] = '<a href="http://openscholar.harvard.edu">OpenScholar</a> by <a href="http://iq.harvard.edu">IQSS</a> at Harvard University';
 
   $tasks = array();
-  if (_os_language_selected()) {
-    $tasks['batch-l10n-update'] = st('Download and import translation');
-  }
   $tasks['openscholar-flavor'] = st('OpenScholar  flavor');
   $tasks['openscholar-configure'] = st('Openscholar  configuration');
 
@@ -319,34 +311,6 @@ function openscholar_profile_tasks(&$task, $url) {
     // we are done let the installer know
     $task = 'profile-finished';
     return;
-  }
-
-  if ( $task == 'l10n-update') {
-    if (_os_language_selected()) {
-      $history = l10n_update_get_history();
-      module_load_include('check.inc', 'l10n_update');
-      $available = l10n_update_available_releases();
-      $updates = l10n_update_build_updates($history, $available);
-
-      module_load_include('batch.inc', 'l10n_update');
-      $updates = _l10n_update_prepare_updates($updates, NULL, array());
-      $batch = l10n_update_batch_multiple($updates, LOCALE_IMPORT_KEEP);
-
-      // Overwrite batch finish callback, so we can modify install task too.
-      $batch['finished'] = '_l10n_install_batch_finished';
-
-      // Start a batch, switch to 'l10n-install-batch' task. We need to
-      // set the variable here, because batch_process() redirects.
-      variable_set('install_task', 'l10n-install-batch');
-      batch_set($batch);
-      batch_process($url, $url);
-    }
-  }
-
-  // download updated translation files
-  if ( $task == 'batch-l10n-update' ) {
-    include_once 'includes/batch.inc';
-    return _batch_page();
   }
 
   return $output;
@@ -749,14 +713,5 @@ function _openscholar_wysiwyg_presets(){
   );
 
   return $settings;
-}
-
-/**
- * Check whether we are installing in a language other than English
- */
-function _os_language_selected() {
-  global $install_locale;
-  #return !empty($install_locale) && ($install_locale != 'en');
-  return !empty($install_locale); // ignoring english makes this impossible to test.
 }
 
