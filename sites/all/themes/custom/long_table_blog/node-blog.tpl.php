@@ -13,12 +13,8 @@
       <div class="unpublished"><?php print t('Unpublished'); ?></div>
     <?php endif; ?>
      <?php if ($page): ?>
-     	 <?php if ($submitted): ?>
-     <div class="submitted">
-        <?php print $submitted; ?>
-      </div>
- <?php endif; ?>
-     	<div class="submitted-by">submitted by <span class="blue"><?php print $node->name ?></span>
+     	 
+     	<div class="submitted-by">submitted by <span class="blue"><?php print $node->name ?></span> <?php if ($submitted): ?>on <span class="blue"><?php print $submitted; ?></span><?php endif; ?>
      <?php if ($terms): ?>
         <?php print t(' in ') . $terms; ?>
      <?php endif; ?>
@@ -26,16 +22,9 @@
      <?php endif; ?>
     <div class="content">
       <?php print $content; ?> 
-      <?php if ($submitted): ?>
-      	<?php if (!$page): ?>
-      <div class="submitted">
-        <?php print $submitted; ?>
-      </div>
-      <?php endif; ?>
-     <?php endif; ?>
-    </div>
+	     </div>
     <?php if (!$page): ?>
-    <div class="submitted-by">submitted by <span class="blue"><?php print $node->name ?></span><?php if ($terms): ?> <?php print t(' in ') . $terms; ?><?php endif; ?></div>
+    <div class="submitted-by">submitted by <span class="blue"><?php print $node->name ?></span>  <?php if ($submitted): ?>on <span class="blue"><?php print $submitted; ?></span><?php endif; ?> <?php if ($terms): ?> <?php print t(' in ') . $terms; ?><?php endif; ?></div>
     <?php endif; ?>	
     <?php if ($links): ?>
       <div class="links links-inline">
