@@ -15,6 +15,20 @@ function os_wysiwyg_fields_menu() {
   return $menu;
 }
 
+// i have to do both registry alter and preprocess because
+// oembed does their templates in a dumb way
+function os_wysiwyg_fields_theme_registry_alter(&$reg) {
+  $reg['oembed']['theme paths'][] = drupal_get_path('module', 'os_wysiwyg_fields').'/theme';
+}
+
+function os_wysiwyg_fields_preprocess_oembed(&$vars) {
+  foreach ($vars['template_files'] as &$t) {
+    if ($t == 'oembed-photo') {
+      $t = 'os_wysiwyg_fields-oembed-photo';
+    }
+  }
+}
+
 function os_wysiwyg_fields_api_key_form() {
   $form = array();
   $form['help_text'] = array(
