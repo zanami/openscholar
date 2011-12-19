@@ -249,7 +249,6 @@ function disqus_link($type, $node = NULL, $teaser = FALSE) {
     if (!empty($types[$node->type]) && user_access('view disqus comments') && !empty($domain)) {
       // Construct the path and inject it into the links area.
       $path = url("node/$node->nid", array(
-        'alias' => TRUE,
         'absolute' => TRUE,
       ));
       $links['disqus_comments'] = array(
