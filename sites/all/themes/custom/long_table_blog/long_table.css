@@ -23,7 +23,14 @@ a:hover {
     color:#00497a;
 }
     
-.sidebar .node-type-person h3.title {font-size:1em;}
+.sidebar .node-type-person h3.title {
+font-size:1em;
+font-family: Helvetica,Arial,sans-serif;
+ font-weight: bold;
+letter-spacing: 0;
+ margin-bottom:0;
+border-bottom:none;
+}
 
 
 .sidebar h3.title {
@@ -39,6 +46,10 @@ border-bottom:1px solid #ccdcef;
  h2.title {
     text-transform: uppercase; margin-left:5px; color: #666;
 }
+
+.node-type-person h2.title {color:#00497A;
+margin-left:0;
+text-transform:none;}
 
 body.node-type-blog h2.title {color: #760012; text-transform: none;}
 .node-type-blog h3.title {margin-bottom:0;}
@@ -123,7 +134,9 @@ height:100px;
   }
 
 
-.sidebar-second #content-main { border-right:1px dotted #cacaca; }
+#sidebar-second {
+border-left:1px dotted #CACACA;
+}
 
 .two-sidebars #content-main {
    border-right:1px dotted #ededed;
@@ -147,6 +160,9 @@ body.one-sidebar.sidebar-second #header .hg-container {
 .view-scholar-blog .views-row {border-bottom:1px solid #ccdcef;width:645px;}
 .view-scholar-blog .views-row-last {border-bottom:none;}
 
+.taxonomy-term-description {
+margin:0;
+}
 
 /* HEADER ELEMENTS */
 
