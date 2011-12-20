@@ -303,6 +303,11 @@ function _iqss_openscholar_stats() {
 			'callback' => '_iqss_openscholar_file_units',
 			//should the callback be in a specific file so it doesn't have to load all the time?
 		),
+		'Users' => array(
+		  'title' => t('Users'),
+		  'description' => t('User accounts'),
+		  'query' => 'SELECT COUNT(uid) FROM {users}',
+		),
 	);
 }
 
