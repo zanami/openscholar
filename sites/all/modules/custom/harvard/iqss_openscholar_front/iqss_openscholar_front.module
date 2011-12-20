@@ -282,12 +282,12 @@ function _iqss_openscholar_stats() {
 			'query' => 	'SELECT COUNT(nid) FROM {node} WHERE type="biblio"',
 		),
 		'Vsites' => array(
-			'title' => t('Vsites'),
+			'title' => t('Websites'),
 			'description' => t('Virtual sites in this OS installation'),
 			'query' => 'SELECT COUNT(nid) FROM {og}',
 		),
 		'Nodes' => array(
-			'title' => t('Nodes'),
+			'title' => t('Posts'),
 			'description' => t('Drupal nodes'),
 			'query' => 'SELECT COUNT(nid) FROM {node}',
 		),
