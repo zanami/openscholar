@@ -137,12 +137,6 @@ function olark_add_js() {
       $setting['olark']['roles'] = t('roles !roles', array('!roles' => implode(', ', $user->roles)));
       $setting['olark']['userpage'] = url('user/' . $user->uid, array('absolute' => TRUE));
       $setting['olark']['loggedinas'] = t('logged in as !link', array('!link' => l($user->name, 'user/' . $user->uid, array('absolute' => TRUE))));
-      
-      //spaces support
-      if ($space = spaces_get_space()) {
-        $setting['olark']['space'] = $space->group->purl;
-      }
-      
     }
     
     $setting['olark']['disable_ios'] = variable_get('olark_ios', '');

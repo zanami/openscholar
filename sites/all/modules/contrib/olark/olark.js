@@ -10,9 +10,6 @@ Drupal.behaviors.olark = function() {
       api.chat.updateVisitorStatus({
         snippet: Drupal.settings.olark.mail + ' | ' + Drupal.settings.olark.userpage
       });
-      api.chat.updateVisitorStatus({
-        snippet: 'Drupal space: ' + Drupal.settings.olark.space 
-      });
       api.chat.onReady(function(){
         //$('#habla_pre_chat_name_input').val(Drupal.settings.olark.name);
         //$('#habla_pre_chat_email_input').val(Drupal.settings.olark.mail);
