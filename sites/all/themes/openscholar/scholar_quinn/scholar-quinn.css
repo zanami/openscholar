@@ -113,7 +113,7 @@ h2.title {
   padding-top: 15px;
   }
 
-#content {
+#content-main {
   background: #fff;
   -moz-box-shadow: 0 3px 1em #ccc;
   -webkit-box-shadow: 0 3px 1em #ccc;
@@ -132,6 +132,9 @@ h2.title {
     clear: both;
     visibility: hidden;
 }
+
+#content-left, #content-bottom {padding:0 20px;}
+ 
 
 /* HEADER ELEMENTS */
 

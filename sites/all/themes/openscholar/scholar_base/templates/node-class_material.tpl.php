@@ -26,7 +26,7 @@
     </div>
 
     <?php if (!$page): ?>
-      <?php if ($terms): ?>
+      <?php if (!$teaser && $terms): ?>
       <div class="terms terms-inline"><?php print t(' in ') . $terms; ?></div>
       <?php endif; ?>
     <?php endif; ?>
