@@ -4,3 +4,4 @@ description = "Implement Node Form Columns for all forms. Separates forms into t
 core = 6.x
 package = Node form columns
 dependencies[] = nodeformcols
+version = "6.x-beta13"

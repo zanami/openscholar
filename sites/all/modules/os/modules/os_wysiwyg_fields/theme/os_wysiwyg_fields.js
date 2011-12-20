@@ -8,7 +8,10 @@
 	function cleanUp(id) {
 		// remove the 'Expand' button. There's nothing hidden to Expand.
 		// well, there is, but there's no reason it should be hidden to start.
-		$('#wysiwyg_fields-' + id + '-dialog .ui-dialog-titlebar .wysiwyg_fields-icon-expand').click().hide();
+		var btn = $('#wysiwyg_fields-' + id + '-dialog .ui-dialog-titlebar .wysiwyg_fields-icon-expand').hide();
+		if (id == 'field_os_inline_oembed') {
+			btn.click();
+		}
 		
 		// remove the Insert button added by wysiwyg_fields.
 		// The button provided by Insert is more useful.
@@ -70,39 +73,29 @@
 			}
 		});
 		eve.push('iframe[src|href]');
-		eve.push('form[id|class]');
+		eve.push('form[id|class|contenteditable]');
 		settings.extended_valid_elements = eve.join(',');
 		
 		
 		// change some vars and functions so oembed stuff doesn't pop out of the span
 		Drupal.wysiwygFields.wysiwyg.tinymce.wrapperElement = 'form';
 		Drupal.wysiwygFields.wysiwyg.tinymce.divToWysiwygField = function() {
-	        delete Drupal.settings.wysiwygFields.timer;
-	        if (typeof tinyMCE.activeEditor.contentDocument !== "undefined") {
-	          $('.wysiwyg_fields-placeholder', tinyMCE.activeEditor.contentDocument.body).each(function() {
-	            $(this).removeClass('wysiwyg_fields-placeholder');
-	            replacement = "<"+Drupal.wysiwygFields.wrapperElement+" id='" + $(this).attr('id') + "' class='" + $(this).attr('class') + "'>" + Drupal.settings.wysiwygFields.replacements['[' + $(this).attr('id') + ']'] + "</"+Drupal.wysiwygFields.wrapperElement+">";
-	            Drupal.wysiwygFields.wysiwyg.tinymce.wysiwygIsNode(this);
-	            Drupal.wysiwyg.instances[Drupal.settings.wysiwygFields.activeId].insert(replacement);
-	          });
-	        }
-	        else {
-	          // Document not ready, reset timer.
-	          Drupal.wysiwygFields._wysiwygAttach();
-	        }
+			delete Drupal.settings.wysiwygFields.timer;
+			if (typeof tinyMCE.activeEditor.contentDocument !== "undefined") {
+			  $('.wysiwyg_fields-placeholder', tinyMCE.activeEditor.contentDocument.body).each(function() {
+				var $self = $('#'+this.id, tinyMCE.activeEditor.contentDocument.body), replacement;
+				$self.removeClass('wysiwyg_fields-placeholder');
+			    replacement = "<"+Drupal.wysiwygFields.wrapperElement+" id='" + $self.attr('id') + "' class='" + $self.attr('class') + "' contenteditable=\"false\">" + Drupal.settings.wysiwygFields.replacements['[' + $self.attr('id') + ']'] + "</"+Drupal.wysiwygFields.wrapperElement+"> ";
+			    Drupal.wysiwygFields.wysiwyg.tinymce.selectNode($self[0]);
+			    Drupal.wysiwyg.instances[Drupal.settings.wysiwygFields.activeId].insert(replacement);
+			  });
+			}
+			else {
+			  // Document not ready, reset timer.
+			  Drupal.wysiwygFields._wysiwygAttach();
+			}
 	    };
 	    
-	    
-		/*
-		if (!hasRun) {
-			// prevent wysiwyg_fields from stripping out the oembed code and replacing it with empty token
-			if (typeof Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed == 'object') {
-				Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed.detach = function (content, settings, instanceId) {
-					return Drupal.wysiwygFields.wysiwygDetach('zzzzz_do_not_find_me', content, settings, instanceId);
-				};
-			}
-		}
-		
 		// pull the Insert button out of a div and next to remove
 		
 		if (hasRun) {
@@ -114,6 +107,52 @@
 				$('input[value="Remove"]', this).before(btn);
 			});
 		}
-		hasRun = true;*/
+		else {
+			var insert = Drupal.wysiwyg.editor.instance.tinymce.insert;
+			Drupal.wysiwyg.editor.instance.tinymce.insert = function(content) {
+				content += ' ';
+				if (typeof tinyMCE.activeEditor.contentDocument !== 'undefined' 
+					&& !$('p', tinyMCE.activeEditor.contentDocument.body).length) {
+					content += ' <p></p>';
+				}
+				insert.call(this, content);
+			};
+			
+			// prevent links in oembed code from going anywhere
+			tinyMCE.onAddEditor.add(function () {
+				tinyMCE.activeEditor.onClick.add(function (ed, e) {
+					var targ = e.target || e.srcElement;
+					while (targ.contentEditable == 'inherit') {
+						targ = targ.parentNode;
+					}
+					if (targ.contentEditable == 'false') {
+						this.selection.select(targ);
+						e.preventDefault();
+						return false;
+					}
+				});
+			});
+			/*
+			if (typeof Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed == 'object') {
+				var init = Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed.init;
+				Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed.init = function (content, settings, instanceId) {
+					init.call(this);
+					var body = tinyMCE.activeEditor.contentDocument.body;
+					if ('addEventListener' in body) {
+						body.addEventListener('click', , false);
+					}
+					else {
+						body.attachEvent('onClick', function (e) {
+							var targ = e.target;
+							while (targ.contentEditable == 'inherit') {
+								targ = targ.parentNode;
+							}
+							if (targ.contentEditable == 'false') return false;
+						});
+					}
+				};
+			}*/
+		}
+		hasRun = true;
 	};
 })(jQuery);

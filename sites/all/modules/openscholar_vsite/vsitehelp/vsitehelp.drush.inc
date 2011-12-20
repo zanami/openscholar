@@ -22,14 +22,10 @@ function vsitehelp_drush_command() {
     'build_docs' => array(
       'description' => 'Generate advanced help .ini files for boxes.',
       'options' => array(
-        'force' => 'Force creation of index over an existing index file (default=false).',
-        'module' => 'Comma separated list of modules to index.',
-        'listonly' => 'List the modules that would receive an index, but don\'t make any changes.',
-       ),
+        '--help-readme' => 'Displays the build_docs readme, which includes information on setting up help files for build_docs.'
+      ),
       'examples' => array(
-        'drush @site help_indexer' => 'Create a help index for all boxes with help files but no index.',
-        'drush @site hi --force --module=vsitehelp_mailchimp,vsite' => 'Overwrite exisiting help index, but only for vsitehelp_mailchimp and vsite modules.',
-        'drush @site hi --listonly' => 'Show a list of the modules whose indices would be updated if run without --listonly.',
+        'drush @site build_docs' => 'Scan OpenScholar source for os_help files and attach them to vsitehelp.',
       ),
       'aliases' => array('bd'),
       'bootstraph' => 'DRUSH_BOOTSTRAPH_DRUPAL_DATABASE',
@@ -46,6 +42,17 @@ function vsitehelp_drush_command() {
 function drush_vsitehelp_build_docs() {
   define( 'DIR', drupal_get_path('module', 'vsitehelp') . '/help/'  );  //destination for ini and html files
   define( 'BR', "\n");                                                  //newline shortcut
+  
+  //addtional help from readme file
+  if ($readme = drush_get_option('help-readme')) {
+    echo BR . file_get_contents(drupal_get_path('module','vsitehelp') . '/README.BUILD_DOCS.txt') . BR.BR;
+    return;
+  }
+  
+  // create images dir if necessary.
+  if (!is_dir(DIR.'/images/')) {
+    mkdir(DIR.'/images', 0775);
+  }
   
   // get all os_help files
   $files = drupal_system_listing('.*\.os_help\.ini$', 'modules');
@@ -69,7 +76,7 @@ function drush_vsitehelp_build_docs() {
        
     //copy images folder
     foreach( file_scan_directory($path . '/images/', '.') as $i => $img ) {
-      copy($path.'images/'.$img->basename, DIR.'/images/'.$img->basename);
+      copy( $path . 'images/' . $img->basename, DIR.'/images/'.$img->basename);
     }
     
     $done[] = str_replace('.os_help', '', $o_file->name);
@@ -78,4 +85,5 @@ function drush_vsitehelp_build_docs() {
   echo 'Included documentation for ' . implode(', ', $done);
   file_put_contents(DIR . '/vsitehelp.help.ini', $ini);
 }
+
 

@@ -436,7 +436,7 @@ function scholar_presentations_content_default_fields() {
     'list_default' => 1,
     'description_field' => '1',
     'widget' => array(
-      'file_extensions' => 'pdf doc docx odt xls ppt key txt',
+      'file_extensions' => 'pdf doc docx odt xls ppt pptx key txt',
       'file_path' => '',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
