@@ -608,23 +608,34 @@ function os_update_6011(&$sandbox) {
  */
 function os_update_6012(&$sandbox) {
   require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
-  $flag = flag_get_flag('featuredposts');
+  $featured = flag_get_flag('featuredposts');
+  $front = flag_get_flag('scholar_frontpage');
   $boxes = array();
   // get the flagged content
-  $q = db_query("SELECT nid, n.title, group_nid FROM {flag_content} f INNER JOIN {node} n ON f.content_id = n.nid INNER JOIN {og_ancestry} oga USING (nid) WHERE f.fid = %d ORDER BY n.changed DESC", $flag->fid);
+  $q = db_query("SELECT nid, n.title, group_nid, f.fid FROM {flag_content} f INNER JOIN {node} n ON f.content_id = n.nid INNER JOIN {og_ancestry} oga USING (nid) WHERE f.fid = %d OR f.fid = %d ORDER BY n.changed DESC", $featured->fid, $front->fid);
   while ($r = db_fetch_array($q)) {
     $grp = $r['group_nid'];
     if (!isset($boxes[$grp])) {
-      $boxes[$grp] = boxes_factory('os_boxes_manual_list', array(
+      $title = '';
+      $descrip = '';
+      if ($r['fid'] == $featured->fid) {
+        $title = 'Featured Posts';
+        $descrip = 'Featured Posts';
+      }
+      elseif ($r['fid'] == $front->fid) {
+        $descrip = 'Front Page';
+        $title = '';
+      }
+      $boxes[$grp.'-'.$r['fid']] = boxes_factory('os_boxes_manual_list', array(
       				'delta' => os_boxes_create_delta('og-'.$grp),
       				'new' => false,
-      				'title' => 'Featured Posts',
-      				'description' => 'Featured Posts')
+      				'title' => $title,
+      				'description' => $descrip)
             );
     }
 
-    if (count($boxes[$grp]->options['nodes']) < 5) {
-      $boxes[$grp]->options['nodes'][] = array('nid' => $r['nid'], 'title' => $r['title'], 'weight' => count($boxes[$grp]->options['nodes']));
+    if (count($boxes[$grp.'-'.$r['fid']]->options['nodes']) < 5) {
+      $boxes[$grp.'-'.$r['fid']]->options['nodes'][] = array('nid' => $r['nid'], 'title' => $r['title'], 'weight' => count($boxes[$grp.'-'.$r['fid']]->options['nodes']));
     }
   }
 
@@ -634,6 +645,19 @@ function os_update_6012(&$sandbox) {
   $s = "INSERT INTO {spaces_overrides} VALUES ";
   $val_strs = array();
   foreach ($boxes as $grp => $box) {
+    $grp = explode('-',$grp);
+    $fid = $grp[1];
+    $grp = $grp[0];
+
+    $old = '';
+    if ($fid == $featured->fid) {
+      $old = 'views-vsite_featuredposts-block_1';
+    }
+    elseif ($fid == $front->fid) {
+      $old = 'views-scholar_front-block_1';
+    }
+    if (!os_boxes_replace_boxes($old, $box, false, $grp)) continue;
+
     $val = $tpl;
     $args[] = $grp;
     $args[] = $box->delta;
@@ -641,7 +665,14 @@ function os_update_6012(&$sandbox) {
     $val_strs[] = $tpl;
 
     // but replace them in contexts
-    os_boxes_replace_boxes('views-vsite_featuredposts-block_1', $box, false, $grp);
+  }
+  if (count($val_strs) == 0) {
+    return array(
+      array(
+        'success' => true,
+        'query' => 'Query completed. No changes necessary.',
+      )
+    );
   }
   $s .= implode(', ', $val_strs);
   if (count($boxes) && db_query($s, $args)) {

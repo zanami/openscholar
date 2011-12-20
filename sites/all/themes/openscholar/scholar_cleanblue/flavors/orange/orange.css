@@ -7,8 +7,8 @@
 	}
 
 #navbar li a {
-	background:  
-none; color:#FFFFFF;
+	background: none; color:#FFFFFF;
+	border-bottom:none;
 }
 
 #navbar li a.active, #navbar li.active-trail a {

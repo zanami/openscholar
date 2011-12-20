@@ -107,6 +107,13 @@ function os_modalframe_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'og_content_type_usage_modal_image';
+  $strongarm->value = 'group_post_standard';
+  $export['og_content_type_usage_modal_image'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'upload_modal_image';
   $strongarm->value = '0';
   $export['upload_modal_image'] = $strongarm;

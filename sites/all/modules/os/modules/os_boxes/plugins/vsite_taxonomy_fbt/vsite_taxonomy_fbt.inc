@@ -224,13 +224,20 @@ class vsite_taxonomy_fbt extends os_boxes_default {
    * Return the cache parameters for this box
    */
   public function cache_info(){
-
+  	
     //Clear any time the site is saved since taxonomy counts and terms can change in many ways
     $cache_key = array(
       'os_og' => array('current' => 'current'),
     );
   
-    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
+    $cache_params = array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key);
+    
+    //If the vocab changes based on context, cache per context
+    if($this->options['behavior'] == 'contextual'){
+    	$cache_params['granularity'] = array('context');
+    }
+    
+    return $cache_params;
   }
 
 }

@@ -9,7 +9,7 @@ body.header-main, body.header-main-right, body.header-main-left, body.header-lef
  	}
   
     body.cp-toolbar-full.admin-menu {
- 	background: url("images/bodyBg.png") repeat-x scroll 0 221px #F7F7F9;
+ 	background: url("images/bodyBg.png") repeat-x scroll 0 220px #F7F7F9;
  	}
   
  body.header-none {
@@ -255,9 +255,9 @@ body.one-sidebar #sidebar-first {
 /* MAIN NAVBAR */
 
 #navbar {
-  background: #fff;
+  background: #FFF;
   border-bottom: 5px solid #d5d3d4;
-  padding: 5px;
+  padding:1px 5px 1px 5px;
   }
 
 #navbar .wrap {
@@ -276,17 +276,27 @@ body.one-sidebar #sidebar-first {
   color: #544f4f;
   font-weight:normal;
   font-size: 12px;
-  padding: 10px 15px;
-   background: url('images/mainNavOff.png') repeat-x;
-   margin-right:3px;
+  padding: 6px 15px 5px 15px;
+  border-bottom:2px solid #106599;
+ margin-right:3px;
  }
+ 
 
 
 #navbar li a:hover,
 #navbar li.active-trail a {
   background: url('images/mainNavHover.png') repeat-x;
+   border-bottom:none;
   color: #FFF;
   text-decoration: none;
+    padding: 6px 15px 7px 15px;
+}
+
+@-moz-document url-prefix() {
+#navbar li a:hover,
+#navbar li.active-trail a {
+        padding: 6px 15px 6px 15px;
+    }
 }
 
 #navbar li a.active,
@@ -294,6 +304,8 @@ body.one-sidebar #sidebar-first {
   background: #D4D4D5;
   color: #000;
   text-decoration: none;
+   border-bottom:none;
+   padding: 6px 15px 7px 15px;
 }
 
 /* FOOTER  */
