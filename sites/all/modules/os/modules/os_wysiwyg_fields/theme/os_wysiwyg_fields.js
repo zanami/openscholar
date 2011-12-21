@@ -78,7 +78,7 @@
 		
 		
 		// change some vars and functions so oembed stuff doesn't pop out of the span
-		Drupal.wysiwygFields.wysiwyg.tinymce.wrapperElement = 'form';
+//		Drupal.wysiwygFields.wysiwyg.tinymce.wrapperElement = 'form';
 //		Drupal.wysiwygFields.wysiwyg.tinymce.divToWysiwygField = function() {
 //			delete Drupal.settings.wysiwygFields.timer;
 //			if (typeof tinyMCE.activeEditor.contentDocument !== "undefined") {
