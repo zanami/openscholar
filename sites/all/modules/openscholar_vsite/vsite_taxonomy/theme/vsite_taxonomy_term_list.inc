@@ -22,7 +22,7 @@ function theme_vsite_taxonomy_term_list($current_index, $tree, $s_term_theme = '
   $current_depth = $tree[$index]->depth;
   while ( $index < count($tree) && $tree[$index]->depth >= $current_depth ) {
     $term = $tree[$index];
-    $count = vsite_taxonomy_term_count_nodes($term->tid, $b_count_childeren, $a_filter_nodes);
+    $b_show_term = ($b_show_empty || vsite_taxonomy_term_count_nodes($term->tid, $b_count_childeren, $a_filter_nodes));
 
     if ($tree[$index + 1]->depth > $current_depth) {
       $index ++;
@@ -33,12 +33,12 @@ function theme_vsite_taxonomy_term_list($current_index, $tree, $s_term_theme = '
         'class' => "term-".strtolower(str_replace(" ","-",$term->name)),
       );
       
-      if($b_show_empty || $count || $item['children']) {
+      if($b_show_term || $item['children']) {
         $items[] = $item;
       }//Show term with values, or if the terms childeren have values
     }
     else {
-      if($b_show_empty || $count) $items[] = theme($s_term_theme, $term, $b_description, $b_show_admin_links, $s_term_feature, $b_feature_context);
+      if($b_show_term) $items[] = theme($s_term_theme, $term, $b_description, $b_show_admin_links, $s_term_feature, $b_feature_context);
       $index ++;
     }
   }
