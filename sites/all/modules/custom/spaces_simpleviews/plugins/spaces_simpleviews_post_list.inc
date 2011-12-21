@@ -15,14 +15,14 @@ class spaces_simpleviews_post_list extends boxes_box {
   public function options_defaults(){
     $options = array(
       'filter' => 'all nodes',  // @todo get the current context and the node type(s) associated with it, make that the default
-      'style' => 'titles', 
-      'sort' => 'newest', 
-      'argument' => '', 
-      'number_of_items' => 6, 
-      //'use_pager' => 1, 
-      'more' => 0, 
-      'more_text' => t('more'), 
-      'more_link' => "" 
+      'style' => 'titles',
+      'sort' => 'newest',
+      'argument' => '',
+      'number_of_items' => 6,
+      //'use_pager' => 1,
+      'more' => 0,
+      'more_text' => t('more'),
+      'more_link' => ""
     );
     
     return $options;
@@ -35,13 +35,13 @@ class spaces_simpleviews_post_list extends boxes_box {
     $simpleview  = $this -> options;
     
     $form['filter'] = array(
-      '#type' => 'select', 
-      '#title' => t('Display'), 
+      '#type' => 'select',
+      '#title' => t('Display'),
       '#options' => array(
-        'all' => t('All posts') 
-      ), 
-      '#required' => TRUE, 
-      '#default_value' => $simpleview['filter'] 
+        'all' => t('All posts')
+      ),
+      '#required' => TRUE,
+      '#default_value' => $simpleview['filter']
     );
     ctools_include('ajax');
     ctools_add_js('ajax-responder');
@@ -50,7 +50,8 @@ class spaces_simpleviews_post_list extends boxes_box {
     // os/vsite integration - lists correct content types
     if (module_exists('vsite') && vsite_get_vsite()) {
       vsite_include('vsiteapi');
-      $node_options = vsite_content_types();
+      //Get public and private types
+      $node_options = vsite_content_types(array(1,2));
       drupal_alter('vsite_content_types', $node_options);
     }
     
@@ -61,20 +62,20 @@ class spaces_simpleviews_post_list extends boxes_box {
     asort($node_options);
     foreach ( $node_options as $type => $name ) {
       $form['filter']['#options']['node:' . $type] = t('!type posts', array(
-        '!type' => $name 
+        '!type' => $name
       ));
     }
     
     $form['sort'] = array(
-      '#type' => 'select', 
-      '#title' => t('Sort'), 
+      '#type' => 'select',
+      '#title' => t('Sort'),
       '#options' => array(
-        'newest' => t('Newest first'), 
-        'oldest' => t('Oldest first'), 
-        'a-z' => t('By title') 
-      ), 
-      '#required' => TRUE, 
-      '#default_value' => $simpleview['sort'] 
+        'newest' => t('Newest first'),
+        'oldest' => t('Oldest first'),
+        'a-z' => t('By title')
+      ),
+      '#required' => TRUE,
+      '#default_value' => $simpleview['sort']
     );
     if (module_exists('statistics')) {
       $form['sort']['#options']['popular'] = t('By number of hits');
@@ -84,30 +85,30 @@ class spaces_simpleviews_post_list extends boxes_box {
     }
     
     $form['style'] = array(
-      '#type' => 'select', 
-      '#title' => t('Display Style'), 
+      '#type' => 'select',
+      '#title' => t('Display Style'),
       '#options' => array(
         //'full' => t('List of full posts'),
-        'teasers' => t('List of teasers'), 
-        'titles' => t('List of titles') 
+        'teasers' => t('List of teasers'),
+        'titles' => t('List of titles')
       ),  //'grid' => t('Grid of thumbnails'),
-      '#required' => TRUE, 
-      '#default_value' => $simpleview['style'] 
+      '#required' => TRUE,
+      '#default_value' => $simpleview['style']
     );
     
     $form['number_of_items'] = array(
-      '#type' => 'textfield', 
-      '#title' => 'Number of displayed posts', 
-      '#default_value' => $simpleview['number_of_items'], 
-      '#size' => 10 
+      '#type' => 'textfield',
+      '#title' => 'Number of displayed posts',
+      '#default_value' => $simpleview['number_of_items'],
+      '#size' => 10
     );
     
     /*
     $form['use_pager'] = array(
-      '#title' => t('Add pager'), 
-      '#type' => 'checkbox', 
-      '#default_value' => $simpleview['use_pager'], 
-      '#description' => t('Will add a pager at the end of the list') 
+      '#title' => t('Add pager'),
+      '#type' => 'checkbox',
+      '#default_value' => $simpleview['use_pager'],
+      '#description' => t('Will add a pager at the end of the list')
     );
     */
     
@@ -115,41 +116,41 @@ class spaces_simpleviews_post_list extends boxes_box {
     ctools_add_js('dependent');
     
     $form['more'] = array(
-      '#type' => 'checkbox', 
-      '#title' => t('Add "more" link'), 
-      '#description' => t('This will add a more link to the bottom of this widget, which will link to the page listing all the posts of type selected above'), 
-      '#default_value' => $simpleview['more'], 
-      '#tree' => TRUE 
+      '#type' => 'checkbox',
+      '#title' => t('Add "more" link'),
+      '#description' => t('This will add a more link to the bottom of this widget, which will link to the page listing all the posts of type selected above'),
+      '#default_value' => $simpleview['more'],
+      '#tree' => TRUE
     );
     
     $form['more_text'] = array(
-      '#type' => 'textfield', 
-      '#title' => t('Label'), 
-      '#default_value' => $simpleview['more_text'], 
+      '#type' => 'textfield',
+      '#title' => t('Label'),
+      '#default_value' => $simpleview['more_text'],
       '#description' => t("The title / label of the link."),
       '#process' => array(
-        'ctools_dependent_process' 
-      ), 
+        'ctools_dependent_process'
+      ),
       '#dependency' => array(
         'edit-more' => array(
-          1 
-        ) 
-      ) 
+          1
+        )
+      )
     );
     
     $form['more_link'] = array(
-      '#type' => 'textfield', 
-      '#title' => t('Link'), 
-      '#default_value' => $simpleview['more_link'], 
+      '#type' => 'textfield',
+      '#title' => t('Link'),
+      '#default_value' => $simpleview['more_link'],
       '#description' => t("The url/path for this link."),
       '#process' => array(
-        'ctools_dependent_process' 
-      ), 
+        'ctools_dependent_process'
+      ),
       '#dependency' => array(
         'edit-more' => array(
-          1 
-        ) 
-      ) 
+          1
+        )
+      )
     );
     return $form;
   }
@@ -184,10 +185,10 @@ class spaces_simpleviews_post_list extends boxes_box {
     
     $title = isset($this->title) ? check_plain($this->title) : NULL;
     $block = array(
-      'title' => $title, 
-      'subject' => $title, 
-      'delta' => $this->delta, 
-      'content' => $content 
+      'title' => $title,
+      'subject' => $title,
+      'delta' => $this->delta,
+      'content' => $content
     );
     
     return $block;

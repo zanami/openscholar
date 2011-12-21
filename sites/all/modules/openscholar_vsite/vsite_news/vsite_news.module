@@ -106,6 +106,7 @@ function vsite_news_activity_action($object, $context) {
 
   $vsite = vsite_get_vsite();
 
+  vsite_include('vsiteapi');
   if (!in_array($object->type, array_keys(vsite_content_types()))) return FALSE; //Is this type public?
 
   $is_private = $vsite->controllers->variable->get('vsite_private');

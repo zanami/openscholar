@@ -63,7 +63,32 @@ img {
 #logo img {
   /* themers can change the size of the shields and logo without uploading new images */
   max-width: 100%;
-  }
+}
+
+/* JCAROUSEL OVERRIDE STYLES */
+.itu-attachment-images {border:none;}
+
+.jcarousel-skin-tango .jcarousel-container-horizontal {
+    width: auto;
+}
+.jcarousel-skin-tango .jcarousel-container {
+background:#efefef;
+border:1px solid #CCC;
+}
+
+.jcarousel-skin-tango .jcarousel-clip-horizontal {
+  width: auto;
+}
+
+.jcarousel-skin-tango .jcarousel-container {
+  -moz-border-radius:0;
+  -webkit-border-radius:0;
+  border-radius: 0;
+}
+
+.jcarousel-skin-tango .jcarousel-next-horizontal {background-image: url('../images/jcarou-next-horizontal.png');}
+.jcarousel-skin-tango .jcarousel-prev-horizontal {background-image: url('../images/jcarou-prev-horizontal.png');}
+
 
 /* TOP OPENSCHOLAR ADMIN BAR */
 

@@ -179,6 +179,29 @@ function vsite_get_default_feature_view($feature){
   return vsite_set_default_feature_view();
 }
 
+/**
+ * Given a form id determine if it is for a vsite features settings form
+ * @param string $form_id
+ *
+ * @return $feature_name
+ */
+function vsite_is_feature_settings_form($form_id){
+	//Does the formid end in _settings
+  if(!substr_compare($form_id,"_settings",-9) == 0){
+    return false;
+  }
+  
+  $site_features = array_keys(variable_get('spaces_features', array()));
+  $feature_name = substr($form_id,0,-9);
+    
+  if(!in_array($feature_name,$site_features)){
+    return false;
+  }
+  
+  //This is a feature settings form, return the feature name
+  return $feature_name;
+}
+
 ///////// REVIEW THESE API FUNCTIONS /////// -RB 8/12
 
 /**
@@ -657,23 +680,19 @@ function vsite_form_alter(&$form, $form_state, $form_id){
       if (array_key_exists('promote', $form['options'])) {
         _spaces_og_make_hidden($form['options']['promote']);
       }
-      if ($vsite) {
-        $a_front_settings = $vsite->controllers->variable->get('vsite_setting_front');
-        if ($a_front_settings['frontpage'] == 'flag') {
-          $form['options']['vsite_promote_to_front'] = array(
-            '#type' => 'checkbox',
-            '#title' => "Promote to front page",
-            "#default_value" => false,
-            "#description" => t("If checked this post will be shown in your front page")
-          );
-          if ($nid) {
-            $flag = flag_get_flag('scholar_frontpage');
-            $form['options']['vsite_promote_to_front']['#default_value'] = $flag->is_flagged($nid);
-          }
-        }
-      }
     } //Overide the default promote functionality in favor of ours
   }
+  
+  $scholar_content_type = variable_get('scholar_content_type', 'vsite');
+  if($form_id == $scholar_content_type . '_node_form'){
+  	//Do not allow regular users to change the space type
+  	$form['spaces_preset']['#access'] = user_access('administer spaces');
+  	//Do not allow regular users to change purl information
+  	$form['purl']['#access'] = user_access('administer spaces');
+  	//Path information should not be set for group types
+    $form['path']['#access'] = user_access('administer spaces');
+  }//Set access permissions for group type form elements
+  
 }
 
 /**
@@ -737,17 +756,6 @@ function vsite_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
       if ($vsite && $vsite->access_feature($op = 'view', $feature_name)) {
         $node->og_public = OG_VISIBLE_BOTH;
       } //Does this person have the ability to create public nodes on this vsite?
-      break;
-      break;
-    case 'update' :
-    case 'insert' :
-      // Response to the flag checkboxes added to the form in vsite_form_alter().
-      if (isset($node->vsite_promote_to_front)) {
-        $s_action = ($node->vsite_promote_to_front == 1) ? 'flag' : 'unflag';
-        $flag = flag_get_flag('scholar_frontpage');
-        $flag->flag($s_action, $node->nid);
-      }
-
       break;
   }
 }

@@ -96,11 +96,12 @@ function iqss_openscholar_front_context_load_alter(&$context){
 /**
  * Implementation of hook_block().
  */
-function iqss_openscholar_front_block($op = 'list', $delta = 0) {
+function iqss_openscholar_front_block($op = 'list', $delta = 0, $edit = array()) {
   switch ($op) {
     case 'list':
       $info = array(
         'top_links' => array('info' => t('OpenScholar: Top links')),
+        'stats'     => array('info' => t('OpenScholar Statistics'), 'cache'=>BLOCK_CACHE_GLOBAL),
       );
 
       return $info;
@@ -111,6 +112,48 @@ function iqss_openscholar_front_block($op = 'list', $delta = 0) {
         return call_user_func($function);
       }
       break;
+      
+    case 'configure':
+      if ($delta == 'stats') {
+   			$form['iqss_openscholar_front_stats_cache_expiration'] = array(
+   				'#type' => 'textfield',
+  				'#title' => 'OpenScholar Statistics cache expiration (in seconds)',
+  				'#default_value' => variable_get('iqss_openscholar_front_stats_cache_expiration', 3600*24),
+  			);
+  			$form['iqss_openscholar_front_stats_select'] = array(
+  				'#type' => 'fieldset',
+  				'#title' => 'Choose statistics to display',
+  				'#collapsible' => TRUE,
+  				'#collapsed' => FALSE,
+  			);
+  			$stats = _iqss_openscholar_stats();
+  			$enabled = unserialize(variable_get('iqss_openscholar_front_stats_enabled', FALSE));
+  			
+  			foreach($stats as $stat => $def) {
+  				$form['iqss_openscholar_front_stats_select']['iqss_openscholar_front_stat_'.$stat] = array(
+  					'#type' => 'checkbox',
+  					'#title' => $def['description'],
+  					'#default_value' => (isset($enabled[$stat])) ? $enabled[$stat] : TRUE,      
+  				);	
+  			}
+   			return $form;
+      }
+      break;
+      
+ 		case 'save':
+ 		  if ($delta == 'stats') {
+  			variable_set('iqss_openscholar_front_stats_cache_expiration', (int)$edit['iqss_openscholar_front_stats_cache_expiration']);
+  			
+  			$enabled_stats = array();
+  			foreach(_iqss_openscholar_stats() as $stat => $def) {
+  				//variable_set('os_stats_stat_'.$stat, (bool)$edit['os_stats_stat_'.$stat]);
+  				$enabled[$stat] = (bool)$edit['iqss_openscholar_front_stat_' . $stat]; 
+  			}
+  			
+  			variable_set('iqss_openscholar_front_stats_enabled', serialize($enabled));
+  		  cache_clear_all('iqss_openscholar_front_block_stats_data', 'cache');
+ 		  }
+ 		  break;
   }
 }
 
@@ -131,6 +174,16 @@ function _iqss_openscholar_front_block_top_links(){
   $block = array();
   $block['subject'] = t('');
   $block['content'] = theme_iqss_openscholar_front_block_top_links();
+  return $block;
+}
+
+/**
+ * callback for os stats block
+ */
+function _iqss_openscholar_front_block_stats(){
+  $block = array();
+  $block['content'] = theme_iqss_openscholar_front_block_stats();
+  $block['subject'] = t('OpenScholar Statistics');
   return $block;
 }
 
@@ -180,3 +233,93 @@ function theme_iqss_openscholar_front_block_top_links(){ // @todo make it a real
   return theme('links', $items, $attributes);
 }
 
+/**
+ * stats block content
+ */
+function theme_iqss_openscholar_front_block_stats() {
+  $data = array();
+	
+	//check cache
+	if ($cache = cache_get('iqss_openscholar_front_block_stats_data')) {
+	  if ($cache->expire < time()) {
+	    cache_clear_all('iqss_openscholar_front_block_stats_data', 'cache'); //clear the expired data.  still using it for this run though.
+	  }
+		$data = unserialize($cache->data);
+		
+	} else {
+  	
+  	$stats = _iqss_openscholar_stats();
+  	$enabled = unserialize(variable_get('iqss_openscholar_front_stats_enabled', FALSE));
+  	
+  	foreach($stats as $stat => $def) {
+  	  if (($result = db_result(db_query($def['query']))) && 
+  	       (!isset($enabled[$stat]) || $enabled[$stat])) {
+  	    
+  	    // apply optional callback.  necessary for file size labels.
+  	  	if (isset($def['callback']) && function_exists($def['callback'])) {
+    			$result = $def['callback']($result);
+    		}
+    		
+    		$data[] = $def['title'] . ': ' . $result;
+    		
+  	  }
+  	}
+  	cache_set('iqss_openscholar_front_block_stats_data', serialize($data), 'cache', time() + variable_get('iqss_openscholar_front_stats_cache_expiration', 24*3600));	
+	}
+		
+	return theme_item_list($data, NULL, 'ul');
+}
+
+
+/**
+ * listing of stat, title, description, query, [callback] for stats to display
+ */
+function _iqss_openscholar_stats() {
+	return array(
+		'Publications' => array(
+			'title' => t('Publications'),
+			'description' => t('Biblio publications'),
+			'query' => 	'SELECT COUNT(nid) FROM {node} WHERE type="biblio"',
+		),
+		'Vsites' => array(
+			'title' => t('Websites'),
+			'description' => t('Virtual sites in this OS installation'),
+			'query' => 'SELECT COUNT(nid) FROM {og}',
+		),
+		'Nodes' => array(
+			'title' => t('Posts'),
+			'description' => t('Drupal nodes'),
+			'query' => 'SELECT COUNT(nid) FROM {node}',
+		),
+		'Files' => array(
+			'title' => t('Files'),
+			'description' => t('Files uploaded by users'),
+			'query' => 'SELECT COUNT(fid) FROM {files}',
+		),
+		'Filesize' => array(
+			'title' => t('Total uploaded'),
+			'description' => t('Size of all files uploaded by users'),
+			'query' => 'SELECT SUM(filesize) FROM {files}',
+			'callback' => '_iqss_openscholar_file_units',
+			//should the callback be in a specific file so it doesn't have to load all the time?
+		),
+		'Users' => array(
+		  'title' => t('Users'),
+		  'description' => t('User accounts'),
+		  'query' => 'SELECT COUNT(uid) FROM {users}',
+		),
+	);
+}
+
+/**
+ *  converts bytes to biggest unit of file types, appends abbreviation 
+ **/
+function _iqss_openscholar_file_units($fs) {
+	$units = array('b', 'kb', 'mb' ,'gb', 'tb', 'pb');
+	$c = 0;
+	while ($fs >= 1024 && $c < sizeof($units)-1)  {
+		$c++;
+		$fs = $fs/1024.0;
+	}
+	return round($fs, 1) . $units[$c];
+}
