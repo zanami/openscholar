@@ -447,6 +447,38 @@ a.iqss-link {
   float:left;
   width: 100%;
   }
+  
+ /* FOOTER STYLES SPECIFIC TO STATS BLOCK ON FP ONLY */ 
+.front .footer {
+height: 75px;
+}
+  
+#block-iqss_openscholar_front-stats {
+height: 50px;
+width: 944px;
+background-color: #485E70;
+margin-top:-12px;
+  }
+
+#block-iqss_openscholar_front-stats h3.title {
+color:#FFF;
+font-size: 1em;
+padding-left:18px;
+}
+
+#block-iqss_openscholar_front-stats dl {
+	float:left; width:100%; margin: -13px 0 12px 18px;
+}
+
+#block-iqss_openscholar_front-stats dt, #block-iqss_openscholar_front-stats dd {
+float:left; width: auto; margin:0; padding:0 .5em 0 0; 
+color:#FFF;
+ font-weight:normal;
+ }
+
+ #block-iqss_openscholar_front-stats dd {
+ 	color:#FF8207;
+ }
 
 p.copy {
   color: #ddd;
@@ -455,7 +487,7 @@ p.copy {
 p.copy a, p.copy a:visited {
   color: #f9fde5;
   }
-
+  
 p.copy a:hover {
   color: #fff;
   border-color: #fff;
@@ -464,14 +496,14 @@ p.copy a:hover {
 .front .footer #powered-link {
   float:right;
   position:relative;
-  top: -81px;
+  top: -119px;
   }
 
 .front p.copy a.poweredby {
-  background: url('../images/powered_by.png') 19px 21px no-repeat #234f6e;
+  background: url('../images/powered_by.png') 19px 37px no-repeat #234f6e;
   display:block;
   width: 119px;
-  height:77px;
+  height:115px;
   }
 
 
