@@ -33,8 +33,10 @@
       range.selectNode(element);
 
       // Select the range.
-      sel.removeAllRanges();
-      sel.addRange(range);
+      if (sel.containsNode(element)) {
+	      sel.removeAllRanges();
+	      sel.addRange(range);
+      }
     },
     
     selectNode: function(element) {
