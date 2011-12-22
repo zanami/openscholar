@@ -260,16 +260,30 @@ function theme_iqss_openscholar_front_block_stats() {
     			$result = $def['callback']($result);
     		}
     		
-    		$data[] = $def['title'] . ': ' . $result;
+    		$data[$def['title']] = $result;
     		
   	  }
   	}
   	cache_set('iqss_openscholar_front_block_stats_data', serialize($data), 'cache', time() + variable_get('iqss_openscholar_front_stats_cache_expiration', 24*3600));	
 	}
 		
-	return theme_item_list($data, NULL, 'ul');
+	return _theme_item_dt($data);
 }
 
+/**
+ * @function _theme_item_dt
+ * returns definition list from an associative array
+ */
+function _theme_item_dt($data) {
+  $out = '<dl>';
+  foreach ($data as $dt => $dd) {
+    $out .= '  <dt>' . $dt . '</dt>';
+    $out .= '    <dd>' . $dd . '</dd>';
+  }
+  $out .= '</dl>';
+  
+  return $out;
+}
 
 /**
  * listing of stat, title, description, query, [callback] for stats to display
