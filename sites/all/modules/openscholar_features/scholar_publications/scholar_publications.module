@@ -527,27 +527,38 @@ function scholar_publications_views_query_alter(&$view, &$query) {
  *
  * @param $vars
  */
+
 function scholar_publications_preprocess_block(&$vars) {
   if (isset($vars['block']->module) && ($vars['block']->module == 'views')) {
     list($name, $display_id) = explode('-', $vars['block']->delta);
     if($name == 'publication_years') {
       // Ugly workaround for inability to change the link text via normal views preprocess functions without affecting the link path
-      $vars['block']->content = preg_replace_callback('#(<a.*?(publications\/year\/(9999|9998)).*?>).*?(</a>)#',
-        create_function(
-          '$matches',
-          'return $matches[1]._biblio_text_year($matches[3]).\'</a>\';'
-        ),
-      $vars['block']->content);
+      $vars['block']->content = _map_biblio_years($vars['block']->content);
     }
   }
   elseif ($vars['block']->plugin == 'os_boxes_pub_year') {
-    $vars['block']->content = preg_replace_callback('#(<a.*?(publications\/year\/(9999|9998)).*?>).*?(</a>)#',
-        create_function(
-          '$matches',
-          'return $matches[1]._biblio_text_year($matches[3]).\'</a>\';'
-        ),
-      $vars['block']->content);
+    $vars['block']->content = _map_biblio_years($vars['block']->content);
   }
+}
+
+/**
+ * Implementation of hook_ajax_data_alter()
+ * Replace 9999 and 9998 as above, but during ajax calls 
+ */
+function scholar_publications_ajax_data_alter(&$object, &$data, &$view) {
+  if ($view->name == 'publication_years') {
+     $object->display = _map_biblio_years($object->display);
+  }
+}
+
+/**
+ * helper function to map biblio years 9999 and 9998 to Submitted and In Press.
+ */
+function _map_biblio_years($html) {
+  $html = preg_replace_callback('#(<a.*?(publications\/year\/(9999|9998)).*?>).*?(</a>)#',
+            create_function('$matches', 'return $matches[1]._biblio_text_year($matches[3]).\'</a>\';'),
+            $html);
+  return $html;
 }
 
 /**
