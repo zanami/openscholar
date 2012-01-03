@@ -249,6 +249,10 @@ function theme_iqss_openscholar_front_block_stats() {
 	} else {
   	
   	$stats = _iqss_openscholar_stats();
+  	function _stats_weight($a, $b) {
+  	  return ($a['weight'] > $b['weight']);
+  	}
+  	uasort($stats, '_stats_weight');
   	$enabled = unserialize(variable_get('iqss_openscholar_front_stats_enabled', FALSE));
   	
   	foreach($stats as $stat => $def) {
@@ -277,7 +281,7 @@ function theme_iqss_openscholar_front_block_stats() {
 function _theme_item_dt($data) {
   $out = '<dl>';
   foreach ($data as $dt => $dd) {
-    $out .= '  <dt>' . $dt . '</dt>';
+    $out .= '  <dt>' . $dt . ':</dt>';
     $out .= '    <dd>' . $dd . '</dd>';
   }
   $out .= '</dl>';
@@ -294,33 +298,39 @@ function _iqss_openscholar_stats() {
 			'title' => t('Publications'),
 			'description' => t('Biblio publications'),
 			'query' => 	'SELECT COUNT(nid) FROM {node} WHERE type="biblio"',
+			'weight' => 20,
 		),
 		'Vsites' => array(
 			'title' => t('Websites'),
 			'description' => t('Virtual sites in this OS installation'),
 			'query' => 'SELECT COUNT(nid) FROM {og}',
+		  'weight' => 0,
 		),
 		'Nodes' => array(
 			'title' => t('Posts'),
 			'description' => t('Drupal nodes'),
 			'query' => 'SELECT COUNT(nid) FROM {node}',
+			'weight' => 10,
 		),
 		'Files' => array(
-			'title' => t('Files'),
+			'title' => t('Uploaded Files'),
 			'description' => t('Files uploaded by users'),
 			'query' => 'SELECT COUNT(fid) FROM {files}',
+			'weight' => 30,
 		),
 		'Filesize' => array(
 			'title' => t('Total uploaded'),
 			'description' => t('Size of all files uploaded by users'),
 			'query' => 'SELECT SUM(filesize) FROM {files}',
 			'callback' => '_iqss_openscholar_file_units',
+		  'weight' => -10,
 			//should the callback be in a specific file so it doesn't have to load all the time?
 		),
 		'Users' => array(
 		  'title' => t('Users'),
 		  'description' => t('User accounts'),
 		  'query' => 'SELECT COUNT(uid) FROM {users}',
+			'weight' => -10,
 		),
 	);
 }
