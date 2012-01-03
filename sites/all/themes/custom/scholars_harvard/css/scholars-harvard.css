@@ -275,21 +275,11 @@ a.iqss-link {
   text-shadow: none;
   }
 
-#see-who {
-  float: right;
-  width: 154px;
-  height: 78px;
-  text-indent: -999em;
-  background:url('../images/see-who.png') no-repeat 0 0 transparent;
-  margin:15px 17px 0 0;
-  padding: 0;
-  }
+#featuredSites {
+font-size:.9em;
+  margin-left:25px;
+}
 
-#see-who a, #see-who a:visited {
-  display:block;
-  width: 154px;
-  height: 78px;
-  }
 
 #col-2 {
   color: #7c7c7c;
