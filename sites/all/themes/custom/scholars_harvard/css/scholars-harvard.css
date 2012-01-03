@@ -456,18 +456,14 @@ height: 75px;
 #block-iqss_openscholar_front-stats {
 height: 50px;
 width: 944px;
-background-color: #485E70;
+background-color: #7691A7;
 margin-top:-12px;
+font-size: 1.2em;
   }
 
-#block-iqss_openscholar_front-stats h3.title {
-color:#FFF;
-font-size: 1em;
-padding-left:18px;
-}
 
 #block-iqss_openscholar_front-stats dl {
-	float:left; width:100%; margin: -13px 0 12px 18px;
+	float:left; width:100%; margin: 15px 0 12px 18px;
 }
 
 #block-iqss_openscholar_front-stats dt, #block-iqss_openscholar_front-stats dd {
@@ -478,7 +474,14 @@ color:#FFF;
 
  #block-iqss_openscholar_front-stats dd {
  	color:#FF8207;
- }
+ 	font-weight:bold;
+ 	margin-right:12px;
+ 	}
+ 	
+ #block-iqss_openscholar_front-stats dt {
+  background: url('../images/stats_ddBullet.gif') left center no-repeat;	
+  padding-left:17px;
+ 	} 	
 
 p.copy {
   color: #ddd;
