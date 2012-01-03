@@ -87,3 +87,22 @@ function iqss_gking_update_6004(&$sandbox){
   }
   return $res;
 }
+
+/**
+ * implementation of hook_update_N
+ * Update gking's attachments to read "Article" instead of "Article PDF"
+ **/
+function iqss_gking_update_6005(&$sandbox){
+  $res = array();
+
+  $query =<<<EOF
+UPDATE {upload} f 
+INNER JOIN {node}  n ON n.nid = f.nid 
+INNER JOIN {users} u ON n.uid = u.uid 
+SET f.description = "Article" 
+WHERE f.description = "Article PDF" AND u.name = "gking" 
+EOF;
+
+  $res[] = update_sql($query);
+  return $res;
+}
