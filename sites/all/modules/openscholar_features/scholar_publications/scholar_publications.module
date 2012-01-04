@@ -196,7 +196,34 @@ function scholar_publications_form_alter(&$form, $form_state, $form_id){
     if(array_key_exists('field_biblio_extra',$form) && is_array($form['field_biblio_extra'])){
       $form['field_biblio_extra']['field_biblio_extra_add_more']['#value'] = 'Add Another Field';
     }
+    
+    // url/url_title fieldset
+    $form['url_fieldset'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Related External Link'),
+      '#weight' => 14,
+      '#collapsible' => FALSE,
+    );
+    
+    $form['url_fieldset']['biblio_url_title'] = array(
+      '#default_value' 			=> null,
+      '#type'               => 'textfield',
+      '#title'              => t('Title'),
+      '#weight'             => $form['biblio_url']['#weight'],
+      '#size'								=> $form['biblio_url']['#size'],
+      '#description'				=> t('Text to show when linking to external URL.  Defaults to "') . variable_get('scholar_publications_external_link_name', 'Website') . '".',
+    );
+    
+    //when editing this node, split the serialized url/title into two separate fields
+    if ($o_url = unserialize($form['biblio_url']['#default_value'])) {
+      $form['biblio_url']['#default_value'] = $o_url->url;
+      $form['url_fieldset']['biblio_url_title']['#default_value'] = $o_url->title;
+    }
+    $form['biblio_url']['#title'] = t('URL');
 
+    $form['url_fieldset']['biblio_url'] = $form['biblio_url'];
+    unset($form['biblio_url']);
+    
     if(!$form['#vertical_tabs']) $form['#vertical_tabs'] = array();
     $form['#vertical_tabs']['biblio_abst_e_field'] = 0; //Disable vert. tabs
     $form['#vertical_tabs']['body_field'] = 0; //Disable vert. tabs
@@ -246,10 +273,10 @@ function scholar_publications_move_extras($form, &$form_state){
     return $form;
   }
 
-  $a_publication_extras = array('body_field','biblio_notes','biblio_abst_e_field','biblio_abst_e','biblio_url', 'field_biblio_image','field_biblio_extra');
+  $a_publication_extras = array('body_field','biblio_notes','biblio_abst_e_field','biblio_abst_e', 'url_fieldset', 'field_biblio_image','field_biblio_extra');
 
   //Pub url in the main section for some biblio types
-  if($form['#id'] == 'biblio_node_form' && in_array($form['biblio_type']['#default_value'], array(125, 113, 107))) unset($a_publication_extras[array_search('biblio_url',$a_publication_extras)]);
+  if($form['#id'] == 'biblio_node_form' && in_array($form['biblio_type']['#default_value'], array(125, 113, 107))) unset($a_publication_extras[array_search('url_fieldset',$a_publication_extras)]);
 
   //Move these form elements into thier own group
   foreach ($a_publication_extras as $n_count => $extra_field){
@@ -436,6 +463,14 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
 
       $node->biblio_notes = check_markup($node->biblio_notes);
       $node->biblio_abst_e = check_markup($node->biblio_abst_e);
+      
+      //store external url and url title together
+      if (isset($node->biblio_url_title) && strlen($node->biblio_url_title)) {
+        $obj = new stdClass();
+        $obj->url = $node->biblio_url;
+        $obj->title = $node->biblio_url_title;
+        $node->biblio_url = serialize($obj);
+      }
     break;
     case 'update':
       drupal_set_message('publication node updated');
@@ -630,8 +665,13 @@ function theme_scholar_publications_biblio_entry($node, $base = 'biblio', $style
   if (biblio_access('download', $node)) $s_output .= theme('biblio_download_links',$node);
 
   if( in_array($node->biblio_type, array(113,100,102,106,1001)) && strlen($node->biblio_url)){
-    $s_output .= '<span class="teaser-extra">'. l(variable_get('scholar_publications_external_link_name', "Website"), $node->biblio_url).'</span>';
-  }//This is a software,data, article, book biblio entry, and it has a External URL
+    //unserialize biblio_url
+    if ($o_url = unserialize($node->biblio_url)) {
+      $s_output .= '<span class="teaser-extra">'. l($o_url->title, $o_url->url).'</span>';
+    } else {
+      $s_output .= '<span class="teaser-extra">'. l(variable_get('scholar_publications_external_link_name', "Website"), $node->biblio_url).'</span>';
+    }
+    }//This is a software,data, article, book biblio entry, and it has a External URL
 
   if(variable_get('scholar_publications_note_in_teaser',false) && $node->biblio_notes)  $s_output .= '<span class="biblio-note">'. check_markup($node->biblio_notes, $node->format, FALSE) ."\n</span>";
   
