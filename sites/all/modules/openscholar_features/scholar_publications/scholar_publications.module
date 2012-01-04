@@ -523,42 +523,17 @@ function scholar_publications_views_query_alter(&$view, &$query) {
 }
 
 /**
- * Implementation of hook_preprocess_block()
- *
- * @param $vars
+ * implementation of hook_views_pre_render
+ * maps biblio years to their text values, submitted and in press. 
  */
-
-function scholar_publications_preprocess_block(&$vars) {
-  if (isset($vars['block']->module) && ($vars['block']->module == 'views')) {
-    list($name, $display_id) = explode('-', $vars['block']->delta);
-    if($name == 'publication_years') {
-      // Ugly workaround for inability to change the link text via normal views preprocess functions without affecting the link path
-      $vars['block']->content = _map_biblio_years($vars['block']->content);
+function scholar_publications_views_pre_render(&$view) {
+  if ($view->name == 'publication_years') {
+    foreach($view->result as $delta => $obj) {
+      if ((int)$obj->biblio_biblio_year > 9997) {
+        $view->result[$delta]->biblio_biblio_year = _biblio_text_year($obj->biblio_biblio_year);
+      }
     }
   }
-  elseif ($vars['block']->plugin == 'os_boxes_pub_year') {
-    $vars['block']->content = _map_biblio_years($vars['block']->content);
-  }
-}
-
-/**
- * Implementation of hook_ajax_data_alter()
- * Replace 9999 and 9998 as above, but during ajax calls 
- */
-function scholar_publications_ajax_data_alter(&$object, &$data, &$view) {
-  if ($view->name == 'publication_years') {
-     $object->display = _map_biblio_years($object->display);
-  }
-}
-
-/**
- * helper function to map biblio years 9999 and 9998 to Submitted and In Press.
- */
-function _map_biblio_years($html) {
-  $html = preg_replace_callback('#(<a.*?(publications\/year\/(9999|9998)).*?>).*?(</a>)#',
-            create_function('$matches', 'return $matches[1]._biblio_text_year($matches[3]).\'</a>\';'),
-            $html);
-  return $html;
 }
 
 /**
@@ -987,7 +962,7 @@ function scholar_publications_biblio_download_links($node = NULL) {
 
         // add icon for this file extension.  remove extra itweak_upload stylings
         $extension = strtolower(substr(strrchr($file->filename, '.'), 1));
-        $class = 'mime mime-' . $extension;
+        $class = 'mime itu-insert-file mime-' . $extension;
         
         $alias = db_result(db_query("SELECT dst FROM {url_alias} WHERE src = '%s'",'filefield_paths/alias/' . $file -> fid));
         $href = ($alias) ?  $alias : file_create_url($file->filepath);
