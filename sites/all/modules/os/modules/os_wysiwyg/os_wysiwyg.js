@@ -24,7 +24,7 @@ Drupal.behaviors.osWysiwygFormSave = function(context) {
 	var params = Drupal.wysiwyg.getParams(this);
     var $this = $(this).addClass('os-wysiwyg-processed');
     
-    $('#' + params.field).parents('form').submit(function (event) {
+    $('#' + params.field).filter(":visible").parents('form').submit(function (event) {
       
       // Do not call if the event was cancelled.
       if (event.originalEvent.returnValue === false) {
