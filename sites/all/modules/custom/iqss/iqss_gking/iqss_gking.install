@@ -94,13 +94,11 @@ function iqss_gking_update_6004(&$sandbox){
  **/
 function iqss_gking_update_6005(&$sandbox){
   $res = array();
-
   $query =<<<EOF
-UPDATE {upload} f 
-INNER JOIN {node}  n ON n.nid = f.nid 
-INNER JOIN {users} u ON n.uid = u.uid 
-SET f.description = "Article" 
-WHERE f.description = "Article PDF" AND u.name = "gking" 
+UPDATE upload u
+INNER JOIN {og_ancestry} og ON u.nid = og.nid 
+SET u.description = "Article" 
+WHERE u.description = "Article PDF" AND og.group_nid = 3633 
 EOF;
 
   $res[] = update_sql($query);
