@@ -141,9 +141,7 @@ function scholar_publications_form_alter(&$form, $form_state, $form_id){
 	    if(isset($form['field_biblio_image'][0])) $form['field_biblio_image'][0]['#access'] = false;
 	  }
 
-  	if($form_state['storage']['biblio_type'] || $form['#node']->biblio_type){
-  		_scholar_publications_modify_contributor($form);
-  	}else{
+  	if(!$form_state['storage']['biblio_type'] && !$form['#node']->biblio_type){
   	  scholar_publications_hide_form_value($form['biblio_doi_lookup']);
       scholar_publications_hide_form_value($form['biblio_cut_paste']);
     }
@@ -524,7 +522,7 @@ function scholar_publications_views_query_alter(&$view, &$query) {
 
 /**
  * implementation of hook_views_pre_render
- * maps biblio years to their text values, submitted and in press. 
+ * maps biblio years to their text values, submitted and in press.
  */
 function scholar_publications_views_pre_render(&$view) {
   if ($view->name == 'publication_years') {
@@ -675,110 +673,6 @@ function scholar_publications_biblio_author_link($author) {
 
   return $html;
 }
-
-/**
- * Modify a contributor array to unclude a checkbox to identify a author as yourself or add yourself
- * @param $form_element
- */
-function _scholar_publications_modify_contributor(&$form){
-	$vsite = vsite_get_vsite();
-	if(!$vsite) return;
-
-  $db_result = db_query("SELECT cid,name FROM {biblio_contributor_data} WHERE drupal_uid = %d", $vsite->group->uid);
-  $author = db_fetch_array($db_result);
-
-	if(!$author){
-		//removed temporarially untill this can be tested without BKN
-		//_scholar_publications_add_owner_checkbox($form['contributors1_wrapper']['biblio_contributors']);
-	}elseif(!$form['nid']['#value']){
-		$form['contributors1_wrapper']['biblio_contributors'][1][0]['name']['#default_value'] = $author['name'];
-		$form['contributors1_wrapper']['biblio_contributors'][1][0]['cid']['#default_value'] = $author['cid'];
-	}
-}
-
-/**
- * Add the checkbox to select this as the site owner
- * @param $form_element
- * @return unknown_type
- */
-function _scholar_publications_add_owner_checkbox(&$form_element){
-
-	//Add the checkboxes
-	foreach ($form_element as $key => $element){
-		$form_element[$key]['#col1Title'] = 'Site Owner';
-    $form_element[$key]['#col1Data'] = 'vsite_owner';
-    $form_element[$key]['#col1Class'] = 'contributor_vsite_owner';
-		foreach(element_children($form_element[$key]) as $n_sub_element){
-			$a_parents = $form_element[$key][$n_sub_element]['name']['#parents'];
-      array_pop($a_parents); //Get rid of the name
-		  $form_element[$key][$n_sub_element]['vsite_owner'] = array(
-	  	  '#type' => 'checkbox',
-			  '#title' => t(''),
-		    '#parents' => array_merge($a_parents,array('vsite_owner')),
-		    '#attributes' => array('onClick' => " if(this.checked){ $('input.contributor_vsite_owner').attr('checked', false); this.checked = true; }", 'class' => 'contributor_vsite_owner'),
-			);
-	  }
-	}
-}
-
-/**
- * Block information for the publictaion by type widget
- * @return string
- *
-function _scholar_publications_pub_by_type_wgt(){
-
-  $args = array();
-  $join = "";
-  $where = "";
-  $vsite = vsite_get_vsite();
-  if($vsite){
-    $args[] = $vsite -> group-> nid;
-    $join .= "INNER JOIN {og_ancestry} oga ON n.nid = oga.nid";
-    $where .= "AND oga.group_nid = %n";
-  }
-
-	$args = array();
-	$join = "";
-	$where = "";
-	$vsite = vsite_get_vsite();
-	if($vsite){
-		$args[] = $vsite -> group-> nid;
-		$join .= "INNER JOIN {og_ancestry} oga ON n.nid = oga.nid";
-		$where .= "AND oga.group_nid = %n";
-	}
-
-  $s = "SELECT COUNT(DISTINCT n.nid) AS num, tid, name FROM {biblio} n INNER JOIN {biblio_types} bt ON (n.biblio_type = bt.tid) {$join} WHERE 1 {$where} GROUP BY biblio_type";
-
-  $res = db_query($s,$args);
-
-  $i = 0;
-  $plurals = array(
-    'Software',
-    'Data',
-    'Conference Proceedings',
-    'Thesis',
-    'Unpublished',
-    'Miscellaneous',
-    'Audiovisual',
-    'Artwork'
-  );
-  $content = array();
-  while ($row = db_fetch_array($res)) {
-    if (!in_array($row['name'], $plurals)) $row['name'] .= "s"; //FIX THE PLURAL
-
-    $content[] = '<li>'.l($row['name'],"publications/type/".$row['tid']).' ('.$row['num'].')</li>';
-  }
-
-  if (count($content)) {
-    $output = '<ul>'.implode('', $content).'</ul>';
-  }
-
-	if(!$output) return array();
-
-  $output = "<div id='pub_type_tabs'>".$output."</div>";
-
-  return array('subject' => "Publicaions By Type",'content' => $output);
-} */
 
 /**
  * Block information for the co-author widget
