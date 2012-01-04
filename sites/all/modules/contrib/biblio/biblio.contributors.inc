@@ -181,6 +181,7 @@ function _save_contributors(&$contributors, $nid, $vid, $update = FALSE) {
   foreach ($contributors as $cat => $authors) {
   	//Sort the contributors
   	uasort($authors, '_biblio_sort_contributors');
+  	
     foreach ($authors as $key => $author) {
       if(empty($author['lastname'])) {
         $contributors[$cat][$key] = $author = biblio_parse_author($author, $cat);
@@ -216,14 +217,6 @@ function _save_contributors(&$contributors, $nid, $vid, $update = FALSE) {
  * @param $b (an author)
  */
 function _biblio_sort_contributors($a,$b){
-	if(!isset($a['rank'])){
-		$a['rank'] = 0;
-	}
-	
-  if(!isset($b['rank'])){
-    $b['rank'] = 0;
-  }
-	
 	if ($a['rank'] == $b['rank']) {
     return 0;
   }
