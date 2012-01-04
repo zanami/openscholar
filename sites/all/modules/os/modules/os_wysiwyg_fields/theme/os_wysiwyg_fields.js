@@ -6,30 +6,22 @@
 		return;
 	
 	function cleanUp(id) {
-		// remove the 'Expand' button. There's nothing hidden to Expand.
-		// well, there is, but there's no reason it should be hidden to start.
+		// click the Expand button and remove it.
+		// the only reason it would be needed is if the user had dozens of videos
+		// which is an edge case at best.
 		var btn = $('#wysiwyg_fields-' + id + '-dialog .ui-dialog-titlebar .wysiwyg_fields-icon-expand').hide();
-		if (id == 'field_os_inline_oembed') {
+		if (1 && id == 'field_os_inline_oembed') {
 			btn.click();
 		}
 		
 		// remove the Insert button added by wysiwyg_fields.
-		// The button provided by Insert is more useful.
+		// The button provided by Insert is more useful for filefields.
 		$('#wysiwyg_fields-' + id + '-dialog .ui-dialog-buttonpane').not('#wysiwyg_fields-field_os_inline_oembed-dialog .ui-dialog-buttonpane').remove();
-		
-		// Show the table
-		// $('#' + id.replace('_', '-', 'g') + '-items, #wysiwyg_fields-' + id + '-wrapper table').show();
-		
-		var moved = $('.wysiwyg_fields-field:not(table .wysiwyg_fields-field)');
-		$('#'+moved.attr('id')+'-placeholder').before(moved);
-		
-		// sets the wrapperElement to something other than span
-		// if its span, oembed objects would get popped out and
-		// wouldnt be replaced properly on detach.
-		Drupal.wysiwygFields.wrapperElement = wrapperElement = 'form';
 	}
 	
 	// store the current functions
+	// we need to run our cleanUp function after the dialogs are opened.
+	// save the old ones so we can replace them.
 	var dialogShowDefaultOld = Drupal.wysiwygFields.dialogShowDefault,
 		dialogShowUpdateOld = Drupal.wysiwygFields.dialogShowUpdate;
 	
@@ -44,6 +36,15 @@
 		cleanUp(id);
 	}
 	
+	/**
+	 * Adjusts wysiwyg settings:
+	 * Does a number of things:
+	 * 	1. Changes the text on the enable/disable link
+	 * 	2. Adds span ids and iframes to the valid elements list
+	 * 	3. Moves the button provided by Insert next to the Remove button provided by Filefield
+	 * 		It looks better this way
+	 * 	4. Adds an event handler to tinyMCE so that the links in oembed content don't go anywhere
+	 */
 	var hasRun = false;
 	Drupal.behaviors.adjustWysiwygSettings = function () {
 		
@@ -63,6 +64,9 @@
 			settings = settings.format5;
 		else return;
 		
+		// adds span ids and iframes to the valid elements list
+		// adding iframes is necessary so that oembed code isn't stripped out by the editor
+		// before wysiwyg_fields can convert it into a token
 		var eve = settings.extended_valid_elements.split(',');
 		jQuery.each(eve, function(i, item) {
 			if (item.indexOf('span') != -1 && item.indexOf('id') == -1) {
@@ -73,32 +77,10 @@
 			}
 		});
 		eve.push('iframe[src|href]');
-		eve.push('form[id|class|contenteditable]');
 		settings.extended_valid_elements = eve.join(',');
-		
-		
-		// change some vars and functions so oembed stuff doesn't pop out of the span
-//		Drupal.wysiwygFields.wysiwyg.tinymce.wrapperElement = 'form';
-//		Drupal.wysiwygFields.wysiwyg.tinymce.divToWysiwygField = function() {
-//			delete Drupal.settings.wysiwygFields.timer;
-//			if (typeof tinyMCE.activeEditor.contentDocument !== "undefined") {
-//			  $('.wysiwyg_fields-placeholder', tinyMCE.activeEditor.contentDocument.body).each(function() {
-//				var $self = $('#'+this.id, tinyMCE.activeEditor.contentDocument.body), replacement;
-//				$self.removeClass('wysiwyg_fields-placeholder');
-//			    replacement = "<"+Drupal.wysiwygFields.wrapperElement+" id='" + $self.attr('id') + "' class='" + $self.attr('class') + "' contenteditable=\"false\">" + Drupal.settings.wysiwygFields.replacements['[' + $self.attr('id') + ']'] + "</"+Drupal.wysiwygFields.wrapperElement+"> ";
-//			    Drupal.wysiwygFields.wysiwyg.tinymce.selectNode($self[0]);
-//			    Drupal.wysiwyg.instances[Drupal.settings.wysiwygFields.activeId].insert(replacement);
-//			  });
-//			}
-//			else {
-//			  // Document not ready, reset timer.
-//			  Drupal.wysiwygFields._wysiwygAttach();
-//			}
-//	    };
 	    
-		// pull the Insert button out of a div and next to remove
-		
 		if (hasRun) {
+			// pull the Insert button out of a div and next to remove
 			$('.widget-edit:visible').each(function (item) {
 				var btn = this.getElementsByClassName('insert-button')[0];
 				if (!btn) return;
@@ -108,17 +90,8 @@
 			});
 		}
 		else {
-//			var insert = Drupal.wysiwyg.editor.instance.tinymce.insert;
-//			Drupal.wysiwyg.editor.instance.tinymce.insert = function(content) {
-//				content += ' ';
-//				if (typeof tinyMCE.activeEditor.contentDocument !== 'undefined' 
-//					&& !$('p', tinyMCE.activeEditor.contentDocument.body).length) {
-//					content += ' <p></p>';
-//				}
-//				insert.call(this, content);
-//			};
-			
 			// prevent links in oembed code from going anywhere
+			// double layered event handler
 			tinyMCE.onAddEditor.add(function () {
 				tinyMCE.activeEditor.onClick.add(function (ed, e) {
 					var targ = e.target || e.srcElement;
@@ -132,26 +105,6 @@
 					}
 				});
 			});
-			/*
-			if (typeof Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed == 'object') {
-				var init = Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed.init;
-				Drupal.wysiwyg.plugins.wysiwyg_fields_field_os_inline_oembed.init = function (content, settings, instanceId) {
-					init.call(this);
-					var body = tinyMCE.activeEditor.contentDocument.body;
-					if ('addEventListener' in body) {
-						body.addEventListener('click', , false);
-					}
-					else {
-						body.attachEvent('onClick', function (e) {
-							var targ = e.target;
-							while (targ.contentEditable == 'inherit') {
-								targ = targ.parentNode;
-							}
-							if (targ.contentEditable == 'false') return false;
-						});
-					}
-				};
-			}*/
 		}
 		hasRun = true;
 	};

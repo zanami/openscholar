@@ -38,7 +38,7 @@ function os_wysiwyg_update_6003(&$sandbox) {
 
 function os_wysiwyg_update_6004(&$sandbox) {
   _os_wysiwyg_add_profiles();
-  $res = array(
+  return array(
     array(
       'success' => true,
       'message' => 'Wywiwyg profiles updated with new settings.',
