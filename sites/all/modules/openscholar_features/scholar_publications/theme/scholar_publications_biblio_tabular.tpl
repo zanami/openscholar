@@ -23,7 +23,11 @@ function theme_scholar_publications_biblio_tabular($node, $base = 'biblio', $tea
 
   if ($node->biblio_url) {
     $attrib = (variable_get('biblio_links_target_new_window', null)) ? array('target' => '_blank') : array();
-    $node->biblio_url = l($node->biblio_url, $node->biblio_url, $attrib);
+    if ($o_url = unserialize($node->biblio_url)) {
+      $node->biblio_url = l($o_url->title, $o_url->url, $attrib);
+    } else {
+      $node->biblio_url = l(variable_get('scholar_publications_external_link_name', 'Related External Link'), $node->biblio_url, $attrib);
+    }
   }
   if ($node->biblio_doi) {
     $doi_url = '';
@@ -69,12 +73,7 @@ function theme_scholar_publications_biblio_tabular($node, $base = 'biblio', $tea
          $data = _biblio_keyword_links($node->$row['name'], $base);
           break;
         case 'biblio_url' :
-          // biblio_url is already a link at this point. We need to get the URL so we can run l again.
-          $url = $node->$row['name'];
-          $url_start = strpos($url, '"') +1;
-          $url_end = strrpos($url, '"');
-          $url = substr($url, $url_start, $url_end - $url_start);
-          $data = '<p>' . l('Related External Link', $url) . '</p>';
+          $data = '<p>' . $node->biblio_url . '</p>';
           $row['title'] = '';
           break;
         case 'biblio_doi' :
