@@ -15,6 +15,16 @@ Drupal.behaviors.AAATinyMceInitFailsafe = function(ctx) {
 	}
 }
 
+Drupal.behaviors.osWysiwygHideTips = function (ctx) {
+	// don't do this for every thing
+	if (ctx != document) return;
+	function toggle (e) {
+		$('.tips', ctx).toggle();
+	}
+	$('.tips', ctx).hide();
+	$('#wysiwyg-toggle-edit-body', ctx).die('click', toggle).live('click', toggle);
+}
+
 /**
  * Apply styling to body fields that have wysiwyg's so that when they are detached the body looks ok
  */

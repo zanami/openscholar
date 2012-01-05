@@ -31,7 +31,6 @@ class os_modal_wysiwyg extends os_boxes_modalframe {
    */
   public function options_form() {
     $form = parent::options_form();
-    $form['#pre_render'] = array('os_boxes_wysiwyg_add_externals');
     if (filter_access($this->options['format'])) {
       $form['body'] = array(
         '#type' => 'textarea',
@@ -67,9 +66,4 @@ class os_modal_wysiwyg extends os_boxes_modalframe {
       'content' => $content,
     );
   }
-}
-
-function os_boxes_wysiwyg_add_externals($element) {
-  drupal_add_js(drupal_get_path('module', 'os_modalframe').'/theme/os_boxes_wysiwyg_form.js');
-  return $element;
 }
