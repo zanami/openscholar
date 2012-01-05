@@ -242,3 +242,20 @@ function scholar_publications_update_6009(&$sandbox) {
 
   return $res;
 }
+
+/**
+ * implementation of hook_update_N
+ * adds biblio_url_title column to biblio table
+ */
+function scholar_publications_update_6010($sandbox) {
+  $ret = array();
+  $field = array(
+    'type' => 'varchar',
+    'length' => '255',
+    'description' => 'Title of link to external URL',
+  );
+  db_add_field($ret, 'biblio', 'biblio_url_title', $field);
+  $ret[] = update_sql('INSERT INTO {biblio_fields} (name, type, size, maxsize) VALUES ("biblio_url_title", "textfield", 60, 255)');
+  
+  return $ret;
+}

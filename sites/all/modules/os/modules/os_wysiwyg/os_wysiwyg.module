@@ -180,7 +180,7 @@ function _os_wysiwyg_get_theme_css($theme){
 	    //Skip print stylesheets
 	    if($media != 'print'){
 	      foreach ($stylesheets as $name => $stylesheet) {
-	        if (file_exists($filepath)) {
+	        if (file_exists($stylesheet)) {
 	          $wysiwyg_styles[] = base_path() . $stylesheet;
 	        }
 	      }

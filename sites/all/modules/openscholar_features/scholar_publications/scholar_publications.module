@@ -141,9 +141,7 @@ function scholar_publications_form_alter(&$form, $form_state, $form_id){
 	    if(isset($form['field_biblio_image'][0])) $form['field_biblio_image'][0]['#access'] = false;
 	  }
 
-  	if($form_state['storage']['biblio_type'] || $form['#node']->biblio_type){
-  		_scholar_publications_modify_contributor($form);
-  	}else{
+  	if(!$form_state['storage']['biblio_type'] && !$form['#node']->biblio_type){
   	  scholar_publications_hide_form_value($form['biblio_doi_lookup']);
       scholar_publications_hide_form_value($form['biblio_cut_paste']);
     }
@@ -198,7 +196,32 @@ function scholar_publications_form_alter(&$form, $form_state, $form_id){
     if(array_key_exists('field_biblio_extra',$form) && is_array($form['field_biblio_extra'])){
       $form['field_biblio_extra']['field_biblio_extra_add_more']['#value'] = 'Add Another Field';
     }
-
+    
+    // url/url_title fieldset
+    $form['url_fieldset'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Related External Link'),
+      '#weight' => 14,
+      '#collapsible' => FALSE,
+    );
+    $nid = $form['nid']['#value'];
+    $url_title = db_result(db_query('SELECT biblio_url_title FROM {biblio} WHERE nid = %d ', (int)$nid));
+    $url_title = (isset($url_title) && $url_title) ? $url_title : 'Website';
+    
+    $form['url_fieldset']['biblio_url_title'] = array(
+      '#default_value' 			=> $url_title,
+      '#type'               => 'textfield',
+      '#title'              => t('Title'),
+      '#weight'             => $form['biblio_url']['#weight'],
+      '#size'								=> $form['biblio_url']['#size'],
+      '#description'				=> t('Text to show when linking to external URL.'),
+    );
+    
+    // move biblio_url into the fieldset
+    $form['biblio_url']['#title'] = t('URL');
+    $form['url_fieldset']['biblio_url'] = $form['biblio_url'];
+    unset($form['biblio_url']);
+    
     if(!$form['#vertical_tabs']) $form['#vertical_tabs'] = array();
     $form['#vertical_tabs']['biblio_abst_e_field'] = 0; //Disable vert. tabs
     $form['#vertical_tabs']['body_field'] = 0; //Disable vert. tabs
@@ -248,10 +271,10 @@ function scholar_publications_move_extras($form, &$form_state){
     return $form;
   }
 
-  $a_publication_extras = array('body_field','biblio_notes','biblio_abst_e_field','biblio_abst_e','biblio_url', 'field_biblio_image','field_biblio_extra');
+  $a_publication_extras = array('body_field','biblio_notes','biblio_abst_e_field','biblio_abst_e', 'url_fieldset', 'field_biblio_image','field_biblio_extra');
 
   //Pub url in the main section for some biblio types
-  if($form['#id'] == 'biblio_node_form' && in_array($form['biblio_type']['#default_value'], array(125, 113, 107))) unset($a_publication_extras[array_search('biblio_url',$a_publication_extras)]);
+  if($form['#id'] == 'biblio_node_form' && in_array($form['biblio_type']['#default_value'], array(125, 113, 107))) unset($a_publication_extras[array_search('url_fieldset',$a_publication_extras)]);
 
   //Move these form elements into thier own group
   foreach ($a_publication_extras as $n_count => $extra_field){
@@ -438,6 +461,7 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
 
       $node->biblio_notes = check_markup($node->biblio_notes);
       $node->biblio_abst_e = check_markup($node->biblio_abst_e);
+
     break;
     case 'update':
       drupal_set_message('publication node updated');
@@ -460,6 +484,12 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
           }
         }
       }
+        
+      //store external url title 
+      if (isset($node->biblio_url_title) && strlen($node->biblio_url_title)) {
+        db_query('UPDATE {biblio} SET biblio_url_title = "%s" WHERE nid = %d', check_plain($node->biblio_url_title), $node->nid);
+      }
+      
     break;
     case 'view':
       //Files weight gets changed to 4 so lets put this before files
@@ -524,7 +554,7 @@ function scholar_publications_views_query_alter(&$view, &$query) {
 
 /**
  * implementation of hook_views_pre_render
- * maps biblio years to their text values, submitted and in press. 
+ * maps biblio years to their text values, submitted and in press.
  */
 function scholar_publications_views_pre_render(&$view) {
   if ($view->name == 'publication_years') {
@@ -632,7 +662,8 @@ function theme_scholar_publications_biblio_entry($node, $base = 'biblio', $style
   if (biblio_access('download', $node)) $s_output .= theme('biblio_download_links',$node);
 
   if( in_array($node->biblio_type, array(113,100,102,106,1001)) && strlen($node->biblio_url)){
-    $s_output .= '<span class="teaser-extra">'. l(variable_get('scholar_publications_external_link_name', "Website"), $node->biblio_url).'</span>';
+    $url_title = (isset($node->biblio_url_title)) ? $node->biblio_url_title : 'Website';
+    $s_output .= '<span class="teaser-extra">'. l($url_title, $node->biblio_url).'</span>';
   }//This is a software,data, article, book biblio entry, and it has a External URL
 
   if(variable_get('scholar_publications_note_in_teaser',false) && $node->biblio_notes)  $s_output .= '<span class="biblio-note">'. check_markup($node->biblio_notes, $node->format, FALSE) ."\n</span>";
@@ -675,110 +706,6 @@ function scholar_publications_biblio_author_link($author) {
 
   return $html;
 }
-
-/**
- * Modify a contributor array to unclude a checkbox to identify a author as yourself or add yourself
- * @param $form_element
- */
-function _scholar_publications_modify_contributor(&$form){
-	$vsite = vsite_get_vsite();
-	if(!$vsite) return;
-
-  $db_result = db_query("SELECT cid,name FROM {biblio_contributor_data} WHERE drupal_uid = %d", $vsite->group->uid);
-  $author = db_fetch_array($db_result);
-
-	if(!$author){
-		//removed temporarially untill this can be tested without BKN
-		//_scholar_publications_add_owner_checkbox($form['contributors1_wrapper']['biblio_contributors']);
-	}elseif(!$form['nid']['#value']){
-		$form['contributors1_wrapper']['biblio_contributors'][1][0]['name']['#default_value'] = $author['name'];
-		$form['contributors1_wrapper']['biblio_contributors'][1][0]['cid']['#default_value'] = $author['cid'];
-	}
-}
-
-/**
- * Add the checkbox to select this as the site owner
- * @param $form_element
- * @return unknown_type
- */
-function _scholar_publications_add_owner_checkbox(&$form_element){
-
-	//Add the checkboxes
-	foreach ($form_element as $key => $element){
-		$form_element[$key]['#col1Title'] = 'Site Owner';
-    $form_element[$key]['#col1Data'] = 'vsite_owner';
-    $form_element[$key]['#col1Class'] = 'contributor_vsite_owner';
-		foreach(element_children($form_element[$key]) as $n_sub_element){
-			$a_parents = $form_element[$key][$n_sub_element]['name']['#parents'];
-      array_pop($a_parents); //Get rid of the name
-		  $form_element[$key][$n_sub_element]['vsite_owner'] = array(
-	  	  '#type' => 'checkbox',
-			  '#title' => t(''),
-		    '#parents' => array_merge($a_parents,array('vsite_owner')),
-		    '#attributes' => array('onClick' => " if(this.checked){ $('input.contributor_vsite_owner').attr('checked', false); this.checked = true; }", 'class' => 'contributor_vsite_owner'),
-			);
-	  }
-	}
-}
-
-/**
- * Block information for the publictaion by type widget
- * @return string
- *
-function _scholar_publications_pub_by_type_wgt(){
-
-  $args = array();
-  $join = "";
-  $where = "";
-  $vsite = vsite_get_vsite();
-  if($vsite){
-    $args[] = $vsite -> group-> nid;
-    $join .= "INNER JOIN {og_ancestry} oga ON n.nid = oga.nid";
-    $where .= "AND oga.group_nid = %n";
-  }
-
-	$args = array();
-	$join = "";
-	$where = "";
-	$vsite = vsite_get_vsite();
-	if($vsite){
-		$args[] = $vsite -> group-> nid;
-		$join .= "INNER JOIN {og_ancestry} oga ON n.nid = oga.nid";
-		$where .= "AND oga.group_nid = %n";
-	}
-
-  $s = "SELECT COUNT(DISTINCT n.nid) AS num, tid, name FROM {biblio} n INNER JOIN {biblio_types} bt ON (n.biblio_type = bt.tid) {$join} WHERE 1 {$where} GROUP BY biblio_type";
-
-  $res = db_query($s,$args);
-
-  $i = 0;
-  $plurals = array(
-    'Software',
-    'Data',
-    'Conference Proceedings',
-    'Thesis',
-    'Unpublished',
-    'Miscellaneous',
-    'Audiovisual',
-    'Artwork'
-  );
-  $content = array();
-  while ($row = db_fetch_array($res)) {
-    if (!in_array($row['name'], $plurals)) $row['name'] .= "s"; //FIX THE PLURAL
-
-    $content[] = '<li>'.l($row['name'],"publications/type/".$row['tid']).' ('.$row['num'].')</li>';
-  }
-
-  if (count($content)) {
-    $output = '<ul>'.implode('', $content).'</ul>';
-  }
-
-	if(!$output) return array();
-
-  $output = "<div id='pub_type_tabs'>".$output."</div>";
-
-  return array('subject' => "Publicaions By Type",'content' => $output);
-} */
 
 /**
  * Block information for the co-author widget

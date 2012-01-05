@@ -54,13 +54,6 @@ function scholar_publications_settings($space) {
     '#region' => 'right',
   );
 
-  $form['scholar_publications_external_link_name'] = array(
-    '#type' => 'textfield',
-    '#title' => t('External Link Name'),
-    '#description' => t('What to call links to resources not on this page.'),
-    '#default_value' => variable_get('scholar_publications_external_link_name', 'Website'),
-  );
-
   $form['biblio_rowsperpage'] = array(
     '#type' => 'textfield',
     '#title' => t('Publications per page'),
