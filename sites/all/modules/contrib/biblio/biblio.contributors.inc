@@ -179,6 +179,9 @@ function _save_contributors(&$contributors, $nid, $vid, $update = FALSE) {
   $rank = 0;
   db_query('DELETE FROM {biblio_contributor} WHERE nid = %d AND vid = %d', array($nid, $vid));
   foreach ($contributors as $cat => $authors) {
+  	//Sort the contributors
+  	uasort($authors, '_biblio_sort_contributors');
+  	
     foreach ($authors as $key => $author) {
       if(empty($author['lastname'])) {
         $contributors[$cat][$key] = $author = biblio_parse_author($author, $cat);
@@ -207,6 +210,20 @@ function _save_contributors(&$contributors, $nid, $vid, $update = FALSE) {
   db_query("UPDATE {biblio_contributor_data} SET aka = cid WHERE aka = 0 OR aka IS NULL");
   return true; // successfully saved all contributors
 }
+
+/**
+ * Sort the contributors by their rank
+ * @param $a (an author)
+ * @param $b (an author)
+ */
+function _biblio_sort_contributors($a,$b){
+	if ($a['rank'] == $b['rank']) {
+    return 0;
+  }
+    
+  return ($a['rank'] < $b['rank']) ? -1 : 1;
+}
+
 /*
  Released through http://bibliophile.sourceforge.net under the GPL licence.
  Do whatever you like with this -- some credit to the author(s) would be appreciated.
