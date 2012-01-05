@@ -458,12 +458,12 @@ ul.menu li.collapsed {
   color: #fff;
   }
   
-    .item-list ul.pager li.pager-previous {
+    .item-list ul.pager li.pager-previous.first {
 padding-left:50px;
 text-align: right;
   }
   
-   .item-list ul.pager li.pager-next {
+   .item-list ul.pager li.pager-next.last {
 padding-right:50px;
 text-align: left;
   }
