@@ -167,6 +167,10 @@ function os_wysiwyg_add_public_css(&$settings, $context){
   }
   
   $settings['content_css'] = implode(",",$wysiwyg_styles);
+  
+  //Add node classes to the mce editor's iframe body to help match css styles
+  $settings['body_class'] = "not-front node node-inner content";
+  
 }
 
 /**

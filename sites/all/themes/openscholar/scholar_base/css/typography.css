@@ -232,21 +232,13 @@ p.unpublished {
   padding-top: .8em;
   }
 
-ol, .mceContentBody ul {
+ol {
   padding-left:3em;
   }
 
 ol li {
   list-style: decimal outside;
   }
-
-.mceContentBody ul li {
-	list-style: disc outside;
-}
-
-.mceContentBody ol li {
-  list-style: decimal outside;
-}
 
 .node-inner .content ul {
   padding-left: 2em;
