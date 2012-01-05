@@ -348,3 +348,8 @@ font-weight: bold !important;
 .node-inner {
   padding: 3px;
 }
+
+/* override for post in a box */
+.box-os_boxes_node .node .os-links {
+	display: none;
+}
