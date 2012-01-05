@@ -23,11 +23,9 @@ function theme_scholar_publications_biblio_tabular($node, $base = 'biblio', $tea
 
   if ($node->biblio_url) {
     $attrib = (variable_get('biblio_links_target_new_window', null)) ? array('target' => '_blank') : array();
-    if ($o_url = unserialize($node->biblio_url)) {
-      $node->biblio_url = l($o_url->title, $o_url->url, $attrib);
-    } else {
-      $node->biblio_url = l(variable_get('scholar_publications_external_link_name', 'Related External Link'), $node->biblio_url, $attrib);
-    }
+    $url_title = db_result(db_query('SELECT biblio_url_title FROM {biblio} WHERE nid = %d', $node->nid));
+    $url_title = (isset($url_title) && $url_title) ? $url_title : 'Related External Link'; 
+    $node->biblio_url = l($url_title, $node->biblio_url, $attrib);
   }
   if ($node->biblio_doi) {
     $doi_url = '';

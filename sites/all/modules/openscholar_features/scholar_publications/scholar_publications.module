@@ -206,23 +206,21 @@ function scholar_publications_form_alter(&$form, $form_state, $form_id){
       '#weight' => 14,
       '#collapsible' => FALSE,
     );
+    $nid = $form['nid']['#value'];
+    $url_title = db_result(db_query('SELECT biblio_url_title FROM {biblio} WHERE nid = %d ', (int)$nid));
+    $url_title = (isset($url_title) && $url_title) ? $url_title : 'Website';
     
     $form['url_fieldset']['biblio_url_title'] = array(
-      '#default_value' 			=> null,
+      '#default_value' 			=> $url_title,
       '#type'               => 'textfield',
       '#title'              => t('Title'),
       '#weight'             => $form['biblio_url']['#weight'],
       '#size'								=> $form['biblio_url']['#size'],
-      '#description'				=> t('Text to show when linking to external URL.  Defaults to "') . variable_get('scholar_publications_external_link_name', 'Website') . '".',
+      '#description'				=> t('Text to show when linking to external URL.'),
     );
     
-    //when editing this node, split the serialized url/title into two separate fields
-    if ($o_url = unserialize($form['biblio_url']['#default_value'])) {
-      $form['biblio_url']['#default_value'] = $o_url->url;
-      $form['url_fieldset']['biblio_url_title']['#default_value'] = $o_url->title;
-    }
+    // move biblio_url into the fieldset
     $form['biblio_url']['#title'] = t('URL');
-
     $form['url_fieldset']['biblio_url'] = $form['biblio_url'];
     unset($form['biblio_url']);
     
@@ -465,14 +463,7 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
 
       $node->biblio_notes = check_markup($node->biblio_notes);
       $node->biblio_abst_e = check_markup($node->biblio_abst_e);
-      
-      //store external url and url title together
-      if (isset($node->biblio_url_title) && strlen($node->biblio_url_title)) {
-        $obj = new stdClass();
-        $obj->url = $node->biblio_url;
-        $obj->title = $node->biblio_url_title;
-        $node->biblio_url = serialize($obj);
-      }
+
     break;
     case 'update':
       drupal_set_message('publication node updated');
@@ -495,6 +486,12 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
           }
         }
       }
+        
+      //store external url title 
+      if (isset($node->biblio_url_title) && strlen($node->biblio_url_title)) {
+        db_query('UPDATE {biblio} SET biblio_url_title = "%s" WHERE nid = %d', check_plain($node->biblio_url_title), $node->nid);
+      }
+      
     break;
     case 'view':
       //Files weight gets changed to 4 so lets put this before files
@@ -667,13 +664,9 @@ function theme_scholar_publications_biblio_entry($node, $base = 'biblio', $style
   if (biblio_access('download', $node)) $s_output .= theme('biblio_download_links',$node);
 
   if( in_array($node->biblio_type, array(113,100,102,106,1001)) && strlen($node->biblio_url)){
-    //unserialize biblio_url
-    if ($o_url = unserialize($node->biblio_url)) {
-      $s_output .= '<span class="teaser-extra">'. l($o_url->title, $o_url->url).'</span>';
-    } else {
-      $s_output .= '<span class="teaser-extra">'. l(variable_get('scholar_publications_external_link_name', "Website"), $node->biblio_url).'</span>';
-    }
-    }//This is a software,data, article, book biblio entry, and it has a External URL
+    $url_title = (isset($node->biblio_url_title)) ? $node->biblio_url_title : 'Website';
+    $s_output .= '<span class="teaser-extra">'. l($url_title, $node->biblio_url).'</span>';
+  }//This is a software,data, article, book biblio entry, and it has a External URL
 
   if(variable_get('scholar_publications_note_in_teaser',false) && $node->biblio_notes)  $s_output .= '<span class="biblio-note">'. check_markup($node->biblio_notes, $node->format, FALSE) ."\n</span>";
   
