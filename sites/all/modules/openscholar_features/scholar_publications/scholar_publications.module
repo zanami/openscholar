@@ -256,6 +256,11 @@ function scholar_publications_form_alter(&$form, $form_state, $form_id){
     //Remove the sticky option.  Our view ignores it, so we shouldn't mislead users.
     unset( $form['options']['sticky'] );
 
+  }elseif ($form_id == 'biblio_contributors_js') {
+  	//Make sure default rank is set correctly in ajax call when form is built
+  	if(!isset($form['rank']['#value']) && isset($form['rank']['#default_value'])){
+  		$form['rank']['#value'] = $form['rank']['#default_value'];
+  	}
   }
 }
 
