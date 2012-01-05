@@ -21,4 +21,7 @@ Drupal.behaviors.PostInBox_autocomplete = function(ctx) {
 				clearInterval(timeout_id);
 			}
 		}, 500);
+	
+	var href = $('a.edit-node', ctx).attr('href')+'?destination='+Drupal.settings.getQ;
+	$('a.edit-node', ctx).attr('href', href);
 };
