@@ -66,7 +66,7 @@ Drupal.behaviors.os_modalframe_links = function (ctx) {
 					|| response[i].command == 'dialog_display') {
 					// display the content
 					$body.html(response[i].argument)
-					doc.head.innerHTML = header; 
+					doc.head.innerHTML = headers; 
 				}
 				else if (response[i].command == "css_files"
 					|| response[i].command == "scripts")
