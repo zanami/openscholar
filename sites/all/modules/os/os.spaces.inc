@@ -36,6 +36,7 @@ function os_spaces_presets() {
       'default_theme' => 'scholar_airstream',
       'vsite_design_maintheme' => 'scholar_airstream',
       'spaces_preset_og' => 'scholar',
+      'disqus_domain' => '',
     ),
   );
 
