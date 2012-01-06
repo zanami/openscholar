@@ -1,9 +1,10 @@
-name = Data Node
-description = Relate data tables to nodes.
+name = Data bulk operations
+descriptions = Provides VBO integration for Data tables.
 package = Data
 dependencies[] = data
-dependencies[] = data_ui
+dependencies[] = views_bulk_operations
 core = 6.x
+
 ; Information added by drupal.org packaging script on 2012-01-06
 version = "6.x-1.0"
 core = "6.x"
