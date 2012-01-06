@@ -18,23 +18,23 @@ function os_slideshow_ctools_plugin_api($module, $api) {
 function os_slideshow_boxes_plugins(){
   $info = array();
   $path = drupal_get_path('module', 'os_slideshow') . '/plugins';
-  
+
   $css = drupal_get_path('module', 'os_slideshow') . '/theme/os-slideshow.css';
   $info['os_boxes_slideshow'] = array(
-    'title' => 'Slideshow Gallery', 
-    'description' => 'Display gallery as a slideshow', 
-    'css' => $css, 
+    'title' => 'Slideshow Gallery',
+    'description' => 'Display gallery as a slideshow',
+//    'css' => $css,
     'tags' => array(
-      'Media' 
-    ), 
+      'Media'
+    ),
     'handler' => array(
-      'class' => 'os_boxes_slideshow', 
-      'file' => 'os_slideshow_box.inc', 
-      'path' => $path, 
-      'parent' => 'os_boxes_default' 
-    ) 
+      'class' => 'os_boxes_slideshow',
+      'file' => 'os_slideshow_box.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default'
+    )
   );
-  
+
   return $info;
 
 }
