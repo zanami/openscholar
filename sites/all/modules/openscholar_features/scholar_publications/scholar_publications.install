@@ -4,8 +4,9 @@
  * Implementation of hook_install()
  */
 function scholar_publications_install(){
-
-
+  //update biblio to store url title on related external links
+  db_add_field($ret, 'biblio', 'biblio_url_title', _scholar_publications_add_field_biblio_url_title());
+  update_sql('INSERT INTO {biblio_fields} (name, type, size, maxsize) VALUES ("biblio_url_title", "textfield", 60, 255)');
 }
 
 function scholar_publications_enable() {
@@ -244,18 +245,28 @@ function scholar_publications_update_6009(&$sandbox) {
 }
 
 /**
+ * helper function stores definition of biblio_url_title field so other functions can use same def.
+ */
+function _scholar_publications_add_field_biblio_url_title() {
+  return array('type' => 'varchar', 'length' => '255', 'description' => 'Title of link to external URL', );
+}
+
+/**
  * implementation of hook_update_N
  * adds biblio_url_title column to biblio table
  */
 function scholar_publications_update_6010($sandbox) {
   $ret = array();
-  $field = array(
-    'type' => 'varchar',
-    'length' => '255',
-    'description' => 'Title of link to external URL',
-  );
-  db_add_field($ret, 'biblio', 'biblio_url_title', $field);
+  db_add_field($ret, 'biblio', 'biblio_url_title', _scholar_publications_add_field_biblio_url_title());
   $ret[] = update_sql('INSERT INTO {biblio_fields} (name, type, size, maxsize) VALUES ("biblio_url_title", "textfield", 60, 255)');
   
   return $ret;
+}
+
+/**
+ * implementation of hook_schema_alter
+ * registers addition of biblio_url_title
+ */
+function scholar_publications_schema_alter(&$schema) {
+  $schema['biblio']['fields']['biblio_url_title'] = _scholar_publications_add_field_biblio_url_title(); 
 }

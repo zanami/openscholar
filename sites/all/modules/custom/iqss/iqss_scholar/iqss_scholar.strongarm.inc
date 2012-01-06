@@ -176,6 +176,13 @@ olark.identify('8415-150-10-1872');/*]]>{/literal}*/</script>
 <!-- end olark code --> 
 EOF;
   $export['olark_code'] = $strongarm;  
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'olark_context';
+  $strongarm->value = 1;
+  $export['olark_code'] = $strongarm; 
   
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
