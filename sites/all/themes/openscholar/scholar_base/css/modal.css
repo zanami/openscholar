@@ -152,8 +152,27 @@ div.ctools-modal-content .resizable-textarea {
   bottom: -6px;
   }
 
-#ctools-bottom {
-  }
+/** SLIDESHOW STYLE SELECTION RADIOS **/
+	
+.form-radios.thumbnails {margin-top:10px;}
+	
+#edit-style--wrapper img,
+#edit-style--light-wrapper img { 
+display:block;
+}
+	
+#edit-style--wrapper { 
+float:left;	
+margin-right:20px;
+}
+	
+#edit-style--light-wrapper {
+margin-bottom:0;
+}
+
+#edit-style--light-wrapper.form-item {display:inline-block;}
+
+.form-submit {float:left;}
 
   /** contrib/modalframe/css/modalframe.parent.css OVERRIDE **/
  	
