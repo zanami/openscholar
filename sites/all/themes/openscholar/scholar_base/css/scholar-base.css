@@ -12,13 +12,6 @@ body.admin-menu {
   position:static !important;
   }
 
-/* Disables body backgrounds that could get picked up from theme css */
-#tinymce {
-  background: #fff !important;
-  min-width: 0 !important;
-  margin: 5px !important;
-  }
-
 .admin-menu div#admin-toolbar.vertical {
   top:20px;
   }
