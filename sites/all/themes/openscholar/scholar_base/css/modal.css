@@ -154,25 +154,25 @@ div.ctools-modal-content .resizable-textarea {
 
 /** SLIDESHOW STYLE SELECTION RADIOS **/
 	
-#edit-style--wrapper input:focus { 
-border:2px solid #FF0000;
-}
+.form-radios.thumbnails {margin-top:10px;}
 	
-#edit-style--light-wrapper {
-
+#edit-style--wrapper img,
+#edit-style--light-wrapper img { 
+display:block;
 }
 	
 #edit-style--wrapper { 
 float:left;	
-display:inline;
 margin-right:20px;
 }
 	
 #edit-style--light-wrapper {
-float:left;	
-display:inline;	
-clear:right;
+margin-bottom:0;
 }
+
+#edit-style--light-wrapper.form-item {display:inline-block;}
+
+.form-submit {float:left;}
 
   /** contrib/modalframe/css/modalframe.parent.css OVERRIDE **/
  	
