@@ -32,7 +32,7 @@
 	}
 	
 	Drupal.wysiwygFields.dialogShowUpdate = function (id) {
-		dialogShowDefaultUpdate.call(Drupal.wysiwygFields, id);
+		dialogShowUpdateOld.call(Drupal.wysiwygFields, id);
 		cleanUp(id);
 	}
 	

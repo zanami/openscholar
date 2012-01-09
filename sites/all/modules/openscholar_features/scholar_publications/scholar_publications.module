@@ -197,31 +197,8 @@ function scholar_publications_form_alter(&$form, $form_state, $form_id){
       $form['field_biblio_extra']['field_biblio_extra_add_more']['#value'] = 'Add Another Field';
     }
     
-    // url/url_title fieldset
-    $form['url_fieldset'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Related External Link'),
-      '#weight' => 14,
-      '#collapsible' => FALSE,
-    );
-    $nid = $form['nid']['#value'];
-    $url_title = db_result(db_query('SELECT biblio_url_title FROM {biblio} WHERE nid = %d ', (int)$nid));
-    $url_title = (isset($url_title) && $url_title) ? $url_title : 'Website';
-    
-    $form['url_fieldset']['biblio_url_title'] = array(
-      '#default_value' 			=> $url_title,
-      '#type'               => 'textfield',
-      '#title'              => t('Title'),
-      '#weight'             => $form['biblio_url']['#weight'],
-      '#size'								=> $form['biblio_url']['#size'],
-      '#description'				=> t('Text to show when linking to external URL.'),
-    );
-    
-    // move biblio_url into the fieldset
-    $form['biblio_url']['#title'] = t('URL');
-    $form['url_fieldset']['biblio_url'] = $form['biblio_url'];
-    unset($form['biblio_url']);
-    
+
+      
     if(!$form['#vertical_tabs']) $form['#vertical_tabs'] = array();
     $form['#vertical_tabs']['biblio_abst_e_field'] = 0; //Disable vert. tabs
     $form['#vertical_tabs']['body_field'] = 0; //Disable vert. tabs
@@ -242,6 +219,36 @@ function scholar_publications_form_alter(&$form, $form_state, $form_id){
       if(!isset($form['#after_build'])) $form['#after_build'] = array();
       $form['#after_build'][] = 'scholar_publications_move_extras';
 
+      // url/url_title fieldset
+      $form['url_fieldset'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Related External Link'),
+        '#weight' => 14,
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+              '#tree' => false,
+      
+      );
+      $nid = $form['nid']['#value'];
+      $url_title = db_result(db_query('SELECT biblio_url_title FROM {biblio} WHERE nid = %d ', (int)$nid));
+      $url_title = (isset($url_title) && $url_title) ? $url_title : 'Website';
+      
+      $form['url_fieldset']['biblio_url_title'] = array(
+        '#default_value' 			=> $url_title,
+        '#type'               => 'textfield',
+        '#title'              => t('Title'),
+        '#weight'             => $form['biblio_url']['#weight']+1,
+        '#size'								=> $form['biblio_url']['#size'],
+        '#description'				=> t('Text to show when linking to external URL.'),
+              '#tree' => false,
+      
+      );
+      
+      // move biblio_url into the fieldset
+      $form['biblio_url']['#title'] = t('URL');
+      $form['url_fieldset']['biblio_url'] = $form['biblio_url'];
+      unset($form['biblio_url']);
+    
     }//If the publication type field has been set
 
     if (isset($form['format'])) {
