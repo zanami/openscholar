@@ -237,7 +237,7 @@ function scholar_publications_form_alter(&$form, $form_state, $form_id){
         '#default_value' 			=> $url_title,
         '#type'               => 'textfield',
         '#title'              => t('Title'),
-        '#weight'             => $form['biblio_url']['#weight'],
+        '#weight'             => $form['biblio_url']['#weight']+1,
         '#size'								=> $form['biblio_url']['#size'],
         '#description'				=> t('Text to show when linking to external URL.'),
               '#tree' => false,

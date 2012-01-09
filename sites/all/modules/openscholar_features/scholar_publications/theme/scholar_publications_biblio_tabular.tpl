@@ -24,7 +24,7 @@ function theme_scholar_publications_biblio_tabular($node, $base = 'biblio', $tea
   if ($node->biblio_url) {
     $attrib = (variable_get('biblio_links_target_new_window', null)) ? array('target' => '_blank') : array();
     $url_title = db_result(db_query('SELECT biblio_url_title FROM {biblio} WHERE nid = %d', $node->nid));
-    $url_title = (isset($url_title) && $url_title) ? $url_title : 'Related External Link'; 
+    $url_title = (isset($url_title) && $url_title) ? $url_title : 'Website'; 
     $node->biblio_url = l($url_title, $node->biblio_url, $attrib);
   }
   if ($node->biblio_doi) {
