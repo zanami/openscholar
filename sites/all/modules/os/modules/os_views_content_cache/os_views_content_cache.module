@@ -83,6 +83,10 @@ function os_views_content_cache_form_submission($form, &$form_state){
 	if($form_id == 'spaces_features_form'){
 		os_views_content_cache_feature_update($form, $form_state);
 	}
+	
+	if (($feature_name = vsite_is_feature_settings_form($form_id))){
+		_os_views_content_cache_feature_node_update($feature_name);
+	}//Cleare the node cache for this feature
 }
 
 /**
@@ -94,18 +98,29 @@ function os_views_content_cache_feature_update($form, &$form_state){
 	
   foreach ($old_settings as $s_feature => $privacy) {
   	if($privacy != $form_state['values']['spaces_features'][$s_feature]){
-  		$feature = features_get_features($s_feature);
-  		if(isset($feature->info['features']['node'])){
-  			foreach ($feature->info['features']['node'] as $node_type) {
-  				//Clear the cache for this node type
-  				$node = array('type' => $node_type);
-  				if($vsite && $vsite->group->nid){
-  					$node['og_groups'] = array($vsite->group->nid);
-  				}
-  				views_content_cache_update_set((object)$node, 'node');
-  			}
-  		}
+  		_os_views_content_cache_feature_node_update($s_feature, $vsite);
   	}//Detect changes
+  }
+}
+
+/**
+ * Private function to invalidate feature's nodes
+ *
+ * ex. when a features settings are changed
+ */
+function _os_views_content_cache_feature_node_update($s_feature, $vsite = false){
+	if(!$vsite) $vsite = vsite_get_vsite();
+	
+  $feature = features_get_features($s_feature);
+  if(isset($feature->info['features']['node'])){
+    foreach ($feature->info['features']['node'] as $node_type) {
+      //Clear the cache for this node type
+      $node = array('type' => $node_type);
+      if($vsite && $vsite->group->nid){
+        $node['og_groups'] = array($vsite->group->nid);
+      }
+      views_content_cache_update_set((object)$node, 'node');
+    }
   }
 }
 
