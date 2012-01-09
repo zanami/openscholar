@@ -181,18 +181,27 @@ function vsite_get_default_feature_view($feature){
 
 /**
  * Given a form id determine if it is for a vsite features settings form
- * @param string $form_id
+ * @param array $form
+ * @param array $form_state
  *
  * @return $feature_name
  */
-function vsite_is_feature_settings_form($form_id){
-	//Does the formid end in _settings
-  if(!substr_compare($form_id,"_settings",-9) == 0){
-    return false;
+function vsite_is_feature_settings_form($form, $form_state){
+	$form_id = isset($form_state['values']['form_id'])?$form_state['values']['form_id']:$form['form_id']['#value'];
+	
+	if($form_id == "vsite_default_feature_customize"){
+		//The generic feature settings form
+		$feature_name = $form['#feature_name'];
+	}elseif (substr_compare($form_id,"_settings",-9) == 0){
+  	//Does formid ends in _settings, parse out the feature name
+    $feature_name = substr($form_id,0,-9);
+  }else{
+  	//not a feature form
+  	return false;
   }
   
   $site_features = array_keys(variable_get('spaces_features', array()));
-  $feature_name = substr($form_id,0,-9);
+  
     
   if(!in_array($feature_name,$site_features)){
     return false;
@@ -355,6 +364,25 @@ function vsite_menu_alter(&$items) {
       $items[$path]['access arguments'] = $arguments;
     }
   }
+  
+  //Add feature settings forms for those features that do not have them
+  $site_features = spaces_features('og');
+  foreach ($site_features as $fname => $finfo){
+  	if(!isset($items['features/'. $fname])){
+  		if(isset($finfo->info['features']['node']) && count($finfo->info['features']['node'])){
+	  		//Add a default form for this feature
+	  		$items['features/'. $fname] = array(
+			    'title' => 'Settings',
+			    'page callback' => 'drupal_get_form',
+			    'page arguments' => array('vsite_default_feature_customize',$fname),
+			    'access callback' => module_exists('spaces') ? 'spaces_access_admin' : 'user_access',
+			    'access arguments' => module_exists('spaces') ? array() : array('administer site configuration'),
+			    'type' => MENU_CALLBACK,
+			  );
+  		}//Does this feature implement a node?
+  	}//Does this feature already have a menu entry
+  }
+  
 }
 
 /**
@@ -1120,6 +1148,17 @@ function vsite_validate_node_flags($form, &$form_state){
   //Reassign back to revision info for submission
   if (isset($form_state['values']['options']['log']))
     $form_state['values']['log'] = $form_state['values']['options']['log'];
+}
+
+/**
+ * Features settings (customize) form
+ */
+function vsite_default_feature_customize($form_state, $feature_name){
+  $form = array('#feature_name' => $feature_name);
+  
+  //Empty form for features that do not have thier own
+  
+  return system_settings_form($form);
 }
 
 /**
