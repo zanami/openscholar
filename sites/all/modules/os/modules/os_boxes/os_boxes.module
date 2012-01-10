@@ -282,7 +282,7 @@ function os_boxes_boxes_plugins() {
     'handler' => array(
       'class' => 'os_boxes_manual_list',
       'file' => 'os_boxes_manual_list.inc',
-      'path' => $path,
+      'path' => $path.'/os_boxes_manual_list',
       'parent' => 'os_boxes_default',
     ),
   );
@@ -299,7 +299,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
-  
+
   $info['os_boxes_present_list'] = array(
     'title' => 'List of Presentations',
     'description' => 'List of Presentations',
@@ -312,7 +312,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
-  
+
   //vsite_comments_recent_comments
   $info['vsite_comments_recent'] = array(
     'title' => 'Recent Comments',
