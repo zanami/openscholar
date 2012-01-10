@@ -269,7 +269,7 @@ function cp_feature_customize($js, $feature_name){
 
   $form_state = array(
     'title' => $feature_title,
-    'ajax' => TRUE
+    'ajax' => TRUE,
   );
 
   // We should have all feature form settings named ${feature_name}_settings
@@ -277,12 +277,17 @@ function cp_feature_customize($js, $feature_name){
   $item = menu_get_item('features/'. $feature_name);
 
   // the page callback should be drupal_get_form and the first arg is form_id
-  $form_id = $item['page_arguments'][0];
+  $form_id = array_shift($item['page_arguments']);
   // if any file needs to be included (ususall ${feature_name}.pages.inc
   if ($file = $item['file']){
     require_once($file);
   }
 
+  if(count($item['page_arguments'])){
+  	$form_state['args'] = $item['page_arguments'];
+  }
+  
+  
   $output = ctools_modal_form_wrapper($form_id, $form_state);
 
   if (empty($output)) {

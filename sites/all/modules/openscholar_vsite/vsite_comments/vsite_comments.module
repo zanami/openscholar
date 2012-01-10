@@ -124,7 +124,7 @@ function vsite_comments_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
 function vsite_comments_add_comment_settings(&$form, &$form_state, $form_id){
 	//Add node settings to the feature forms
 	
-	$feature_name = vsite_is_feature_settings_form($form_id);
+	$feature_name = vsite_is_feature_settings_form($form, $form_state);
 	
 	if(!$feature_name){
 		return false;

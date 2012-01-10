@@ -84,7 +84,7 @@ function os_views_content_cache_form_submission($form, &$form_state){
 		os_views_content_cache_feature_update($form, $form_state);
 	}
 	
-	if (($feature_name = vsite_is_feature_settings_form($form_id))){
+	if (($feature_name = vsite_is_feature_settings_form($form, $form_state))){
 		_os_views_content_cache_feature_node_update($feature_name);
 	}//Cleare the node cache for this feature
 }
