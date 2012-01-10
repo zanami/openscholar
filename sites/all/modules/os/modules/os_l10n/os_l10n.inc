@@ -29,7 +29,7 @@ define('OS_L10N_DIRECTORY', 'sites/default/files/l10n_packager');
  */
 function _os_update_projects_alter(&$projects) {
   //list of modules that should refer to OS's translation server for translation updates
-  $os_modules = array('os', 'scholar_announcements');
+  $os_modules = array();//'os', 'scholar_announcements');
 
   foreach($os_modules as $mod) {
     $projects[$mod]['info']['l10n server'] = OS_L10N_SERVER;

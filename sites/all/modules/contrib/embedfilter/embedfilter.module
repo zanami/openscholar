@@ -221,10 +221,10 @@ function embedfilter_process($input) {
   }
   else {
     // find open tag/close tag pairs.
-    $input = preg_replace_callback('@<(embed|object|script)([^>]*)>(.*?)</\1>@si', 'embedfilter_process', $input, 5);
+    $input = preg_replace_callback('@<(embed|object|script|iframe)([^>]*)>(.*?)</\1>@si', 'embedfilter_process', $input, 5);
 
     // find single, closed tags
-    $input = preg_replace_callback('@<(embed|object|script)([^>]*)/>@si', 'embedfilter_process', $input, 5);
+    $input = preg_replace_callback('@<(embed|object|script|iframe)([^>]*)/>@si', 'embedfilter_process', $input, 5);
   }
 
   return embedfilter_media_resize($input, 550);
@@ -251,10 +251,10 @@ function embedfilter_approve($input) {
         return false;
       }
     //otherwise check if domain and subdomain are both missing from the permitted list
-    } 
+    }
     elseif ((!in_array(ltrim(strstr($parts['host'],'.'),'.'), embedfilter_get_whitelist())) && (!in_array($parts['host'], embedfilter_get_whitelist()))) {
       return false;
-    } 
+    }
   }
   return true;
 }
@@ -309,13 +309,13 @@ function embedfilter_noevents($input) {
 
 /**
  * Resizes over-sized media
- * 
+ *
  *  @param $input
  *  string of HTML with width and height attributes
- * 
+ *
  *  @param $maxwidth
  *  the maximum permitted width on the website for embedded media
- * 
+ *
  *  @return
  *  replacement $input HTML string containing revised width and height
  */
@@ -324,23 +324,23 @@ function embedfilter_media_resize($input = '', $maxwidth = 550) {
   preg_match('/width="([0-9]*)"/',$input,$fetchwidth);
   if ($fetchheight && $fetchwidth) {
     $height = $fetchheight[1];
-    $width = $fetchwidth[1];  
+    $width = $fetchwidth[1];
   }
-  
+
   if ($width > $maxwidth) {
     $diff = $width-$maxwidth;
     $ratio = $diff/$width;
     $heightdiff = $ratio*$height;
     $height = round($height-$heightdiff);
     $width = $maxwidth;
-    
+
     $patterns[0] = '/height="([0-9]*)"/';
     $patterns[1] = '/width="([0-9]*)"/';
     $replacements[1] = 'height="'.$height.'"';
     $replacements[0] = 'width="'.$width.'"';
-    
+
     $input = preg_replace($patterns, $replacements, $input);
   }
   return $input;
 }
- 
+

@@ -31,7 +31,8 @@ twitter.com
 facebook.com
 google.com
 yahoo.com
-gmodules.com';
+gmodules.com
+harvard.edu';
   $export['embedfilter_host_whitelist'] = $strongarm;
 
   $strongarm = new stdClass;
@@ -66,7 +67,7 @@ gmodules.com';
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'format';
-  $strongarm->value = '6';
+  $strongarm->value = '5';
   $export['format'] = $strongarm;
 
   $strongarm = new stdClass;
@@ -664,6 +665,9 @@ gmodules.com';
       'lang' => array(),
       'style' => array(),
     ),
+    'iframe' => array(
+      '*' => array(),
+    ),
     'img' => array(
       'src' => array(
         'required' => TRUE,
@@ -1022,6 +1026,9 @@ gmodules.com';
       'id' => array(),
       'title' => array(),
     ),
+    'iframe' => array(
+      '*' => array(),
+    ),
     'img' => array(
       'src' => array(
         'required' => TRUE,
@@ -1341,6 +1348,9 @@ gmodules.com';
       'lang' => array(),
       'style' => array(),
     ),
+    'iframe' => array(
+      '*' => array(),
+    ),
     'img' => array(
       'src' => array(
         'required' => TRUE,
@@ -1585,7 +1595,7 @@ gmodules.com';
 a[!href|target<_blank|title],
 div[align<center?justify?left?right|style],
 p[align<center?justify?left?right|style],
-br,span[id|style],cite,code,blockquote,ul,ol,li,dl,dt,dd,img[!src|width|height],embed[*],object[*],param[*],script[src|type],
+br,span[id|style],cite,code,blockquote,ul,ol,li,dl,dt,dd,img[!src|width|height],embed[*],object[*],param[*],script[src|type],iframe[*],
 sup,sub,blockquote,
 table[style|border|align<center?left?right|cellpadding|cellspacing],
 tr[align<center?justify?left?right|valign],
@@ -1604,7 +1614,7 @@ a[!href|target<_blank|title],
 div[align<center?justify?left?right|style],
 p[align<center?justify?left?right|style],
 br,span[id|style],em/i,strong/b,cite,code,blockquote,ul,ol,li,dl,dt,dd,
-object[width|height],param[name|value],embed[*], img[!src|width|height]';
+object[width|height],param[name|value],embed[*],img[!src|width|height],iframe[*]';
   $export['wysiwyg_filter_valid_elements_raw_5'] = $strongarm;
 
   $strongarm = new stdClass;
@@ -1615,7 +1625,7 @@ object[width|height],param[name|value],embed[*], img[!src|width|height]';
 a[!href|target<_blank|title],
 div[align<center?justify?left?right|style],
 p[align<center?justify?left?right|style],
-br,span[id|style],em,strong,cite,code,blockquote,ul,ol,li,dl,dt,dd,img[!src|width|height],embed[*],object[*],param[*],script[src|type],
+br,span[id|style],em,strong,cite,code,blockquote,ul,ol,li,dl,dt,dd,img[!src|width|height],embed[*],object[*],param[*],script[src|type],iframe[*],
 sup,sub,blockquote,
 table[style|border|align<center?left?right|cellpadding|cellspacing],
 tr[align<center?justify?left?right|valign],

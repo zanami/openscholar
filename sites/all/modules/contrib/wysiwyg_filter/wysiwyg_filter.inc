@@ -100,7 +100,6 @@ function wysiwyg_filter_get_elements_blacklist() {
     'frameset',
     'head',
     'html',
-    'iframe',
     'input',
     'isindex',
     'label',
