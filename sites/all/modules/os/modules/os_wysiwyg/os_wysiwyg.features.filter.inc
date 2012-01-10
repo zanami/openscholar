@@ -19,31 +19,36 @@ function os_wysiwyg_filter_default_formats() {
     ),
     'filters' => array(
       '0' => array(
-        'module' => 'wysiwyg_filter',
+        'module' => 'embedfilter',
         'delta' => '0',
         'weight' => '-10',
       ),
       '1' => array(
+        'module' => 'wysiwyg_filter',
+        'delta' => '0',
+        'weight' => '-9',
+      ),
+      '2' => array(
         'module' => 'oembed',
         'delta' => '0',
         'weight' => '-8',
       ),
-      '2' => array(
+      '3' => array(
         'module' => 'filter',
         'delta' => '2',
         'weight' => '-7',
       ),
-      '3' => array(
+      '4' => array(
         'module' => 'filter',
         'delta' => '3',
         'weight' => '-6',
       ),
-      '4' => array(
+      '5' => array(
         'module' => 'filter',
         'delta' => '1',
         'weight' => '-5',
       ),
-      '5' => array(
+      '6' => array(
         'module' => 'wysiwyg_fields',
         'delta' => '0',
         'weight' => '-4',
@@ -99,29 +104,34 @@ function os_wysiwyg_filter_default_formats() {
     ),
     'filters' => array(
       '0' => array(
-        'module' => 'wysiwyg_filter',
+        'module' => 'embedfilter',
         'delta' => '0',
         'weight' => '-10',
       ),
       '1' => array(
-        'module' => 'filter',
-        'delta' => '2',
-        'weight' => '-7',
+        'module' => 'wysiwyg_filter',
+        'delta' => '0',
+        'weight' => '-9',
       ),
       '2' => array(
         'module' => 'filter',
-        'delta' => '3',
-        'weight' => '-6',
+        'delta' => '2',
+        'weight' => '-8',
       ),
       '3' => array(
         'module' => 'filter',
-        'delta' => '1',
-        'weight' => '-5',
+        'delta' => '3',
+        'weight' => '-7',
       ),
       '4' => array(
+        'module' => 'filter',
+        'delta' => '1',
+        'weight' => '-6',
+      ),
+      '5' => array(
         'module' => 'wysiwyg_fields',
         'delta' => '0',
-        'weight' => '-4',
+        'weight' => '-5',
       ),
     ),
   );
@@ -138,31 +148,36 @@ function os_wysiwyg_filter_default_formats() {
     ),
     'filters' => array(
       '0' => array(
-        'module' => 'wysiwyg_filter',
+        'module' => 'embedfilter',
         'delta' => '0',
         'weight' => '-10',
       ),
       '1' => array(
+        'module' => 'wysiwyg_filter',
+        'delta' => '0',
+        'weight' => '-9',
+      ),
+      '2' => array(
         'module' => 'oembed',
         'delta' => '0',
         'weight' => '-8',
       ),
-      '2' => array(
+      '3' => array(
         'module' => 'filter',
         'delta' => '2',
         'weight' => '-7',
       ),
-      '3' => array(
+      '4' => array(
         'module' => 'filter',
         'delta' => '3',
         'weight' => '-6',
       ),
-      '4' => array(
+      '5' => array(
         'module' => 'filter',
         'delta' => '1',
         'weight' => '-5',
       ),
-      '5' => array(
+      '6' => array(
         'module' => 'wysiwyg_fields',
         'delta' => '0',
         'weight' => '-4',
