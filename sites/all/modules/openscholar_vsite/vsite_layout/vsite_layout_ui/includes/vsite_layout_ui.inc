@@ -234,7 +234,7 @@ function _vsite_layout_ui_build_dropdown($factories = array()) {
       'query' => 'popup=1'
     );
     // build the links
-    $fact_links[$group]['children'][$item['title']] = l($item['title'], $item['href'], $item).' '.l('Help', 'help/os_boxes/'.str_replace('_','-',$wgt['plugin']), $options);
+    $fact_links[$group]['children'][$item['title']] = l($item['title'], $item['href'], $item).' '.l('Help', 'help/vsitehelp/'.$wgt['plugin'], $options);
   }
   $ordered = array();
   foreach ($fact_links as $grp => $data) {
@@ -511,7 +511,7 @@ function vsite_layout_ui_region_widgets( $page_type = 'none') {
 
   foreach ($a_widgets as $s_widget_key => $widget) {
     $widget = (array)$widget;
-    
+
     // blocks stored in context override have old path
     // and could overwrite the defaults
     if (isset($default_blocks[$s_widget_key])) {
@@ -529,7 +529,7 @@ function vsite_layout_ui_region_widgets( $page_type = 'none') {
     	static $existing_blocks = array();
     	//Get avalible blocks for this module
     	if(!isset($existing_blocks[$widget['module']])) $existing_blocks[$widget['module']] = module_invoke($widget['module'], 'block', 'list');
-    	
+
     	//Check to make sure this block still exists
     	if(is_array($existing_blocks[$widget['module']]) && !array_key_exists($widget['delta'],$existing_blocks[$widget['module']])){
     		unset($a_widgets[$s_widget_key]);
