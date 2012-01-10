@@ -392,6 +392,11 @@ div.warning {
   margin:0 0 10px;
   padding:9px;
   }
+  
+div.warning a {
+ text-decoration:underline;
+  color:#666;
+  }
 
 div.error {
   background:#EE6633;
@@ -400,4 +405,5 @@ div.error {
   margin:0 0 10px;
   padding:9px;
   }
+
 
