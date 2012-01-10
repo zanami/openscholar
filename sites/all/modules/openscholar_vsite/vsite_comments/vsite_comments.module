@@ -217,7 +217,7 @@ function vsite_comments_update_drupal_comment_setings($node_type, $enable_commen
 		"comment_anonymous_{$node_type}" => variable_get("comment_anonymous_{$node_type}","1"), //Default: anon may leave contact info
 		"comment_default_per_page_{$node_type}" => variable_get("comment_default_per_page_{$node_type}","10"), //Default: 10 per page
 		"comment_form_location_{$node_type}" => variable_get("comment_form_location_{$node_type}","1"), //Default: below post
-		"comment_preview_{$node_type}" => variable_get("comment_preview_{$node_type}","0"), //Default: optional preview
+		"comment_preview_{$node_type}" => variable_get("comment_preview_{$node_type}",COMMENT_PREVIEW_OPTIONAL), //Default: optional preview
 		"comment_subject_field_{$node_type}" => variable_get("comment_subject_field_{$node_type}","1"), //Default: Enabled
 	);
 	
