@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php print $language->language; ?>" lang="<?php print $language->language; ?>" dir="<?php print $language->dir; ?>">
 <head>
 <!-- Enable IE9 Standards mode -->
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" >
+<meta http-equiv="X-UA-Compatible" content="IE9" >
   <title><?php print $head_title; ?></title>
   <?php print $head; ?>
   <?php print $styles; ?>
