@@ -402,19 +402,26 @@ function scholar_publications_overview(){
   }
 
   $a_args = func_get_args();
-  foreach ($a_args as $k => $arg) {
-    if ($arg == 'type' && !empty($a_args[$k+1])) {
-      // why not use variable_set? cause this change isnt permanent.
-      global $conf;
-      unset($conf['biblio_sort_tabs']['type']);
-
-      $type = $a_args[$k+1];
-      $type = ucwords(str_replace('_', ' ', $type));
-      $type_data = db_fetch_array(db_query("SELECT tid, name FROM {biblio_types} WHERE name = '%s' OR tid = %d", $type, $type));
-      if ($type_data['tid']) {
-        $a_args[$k+1] = $type_data['tid'];
-      }
-    }
+  if(count($a_args)){
+	  foreach ($a_args as $k => $arg) {
+	    if ($arg == 'type' && !empty($a_args[$k+1])) {
+	      // why not use variable_set? cause this change isnt permanent.
+	      global $conf;
+	      unset($conf['biblio_sort_tabs']['type']);
+	
+	      $type = $a_args[$k+1];
+	      $type = ucwords(str_replace('_', ' ', $type));
+	      $type_data = db_fetch_array(db_query("SELECT tid, name FROM {biblio_types} WHERE name = '%s' OR tid = %d", $type, $type));
+	      if ($type_data['tid']) {
+	        $a_args[$k+1] = $type_data['tid'];
+	      }
+	    }
+	  }
+  }elseif (($a_filtered_pubtypes = variable_get('scholar_publications_filter_publication_types',array())) && count($a_filtered_pubtypes)){
+  	if($a_filtered_pubtypes != array_keys(scholar_publications_get_biblio_types())){
+	  	//Filter pulications to those requested, if they do not have all pub types selected
+	  	$a_args = array('type',$a_filtered_pubtypes);
+  	}
   }
 
   if (isset($type_data)) drupal_set_title(check_plain($type_data['name']));
@@ -497,7 +504,7 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
         }
       }
         
-      //store external url title 
+      //store external url title
       if (isset($node->biblio_url_title) && strlen($node->biblio_url_title)) {
         db_query('UPDATE {biblio} SET biblio_url_title = "%s" WHERE nid = %d', check_plain($node->biblio_url_title), $node->nid);
       }
@@ -1000,3 +1007,22 @@ function vsite_content_views_pre_view(&$view) {
     }
 }
 
+/**
+ * Return the avalible bilbio publication types
+ *
+ * @param $reset
+ */
+function scholar_publications_get_biblio_types($reset = FALSE){
+	static $types;
+	
+	if($reset || !isset($types)){
+		$types = array();
+		
+	  $result = db_query('SELECT t.* FROM {biblio_types} as t WHERE tid > -1 AND visible = 1');
+	  while ($option = db_fetch_object($result)) {
+	    $types[$option->tid] = _biblio_localize_type($option->tid, $option->name);
+	  }
+	}
+	
+	return $types;
+}
