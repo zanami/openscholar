@@ -173,7 +173,10 @@ function scholarregister_validate_name($name){
 function scholarregister_validate_mail($mail) {
   // Validate the e-mail address:
   if ($error = user_validate_mail($mail)) {
-    return $error;
+    $mail = trim($mail);
+    if ($error = user_validate_mail($mail)) {
+      return $error;
+    }
   }
   elseif (_scholarregister_mail_exists($mail)){
   	$user = user_load(array('mail' => $mail));

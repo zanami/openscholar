@@ -63,7 +63,7 @@ function os_add_user($username, $password, $email, $roles = array(), $status = 1
     array(
       'name' => $username,
       'pass' => $password,
-      'mail' => $email,
+      'mail' => trim($email),
       'roles' => $role_assignments,
       'status' => $status
     )
