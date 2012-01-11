@@ -20,13 +20,15 @@ Drupal.behaviors.os_manual_list = function (ctx) {
 		
 		// there should actually be something in the field
 		if (matches != null) {
-			var count = $('#edit-count');
+			var count = $('#edit-count'),
+				title = matches[1],
+				nid = matches[2];
 			count.val(parseInt(count.val())+1);
 			
 			// set all the form elements in the new row
-			$('#edit-nodes-'+id+'-nid', new_row).val(matches[2]);
+			$('#edit-nodes-'+id+'-nid', new_row).val(nid);
 			$('span', new_row).text(matches[1]);
-			$('#edit-nodes-'+id+'-title', new_row).val(matches[1]);
+			$('#edit-nodes-'+id+'-title', new_row).val(title);
 			$('#edit-nodes-'+id+'-weight', new_row).addClass('field-weight').val(id);
 			$('#edit-nodes-'+id+'-weight', new_row).parents('td').css('display', 'none');
 			$('.tabledrag-handle', new_row).remove();
