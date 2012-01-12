@@ -35,13 +35,19 @@ class os_boxes_follow extends os_boxes_default {
     );
 
     $links = &$form['links'];
-    $this->options['links']['blank'] = array('title' => '__blank__', 'weight' => 2000000); // blank element for copying purposes
+    usort($this->options['links'], 'element_sort');
+
+    $this->options['links']['blank'] = array('title' => '__blank__', 'domain' => '', 'weight' => 2000000); // blank element for copying purposes
     foreach ($this->options['links'] as $k => $v) {
       $n = array(
         '#weight' => $v['weight'],
         'text' => array(
           '#type' => 'markup',
           '#value' => '<span>'.$v['title'].'</span> <a href="#" class="remove" title="Remove Link">Remove</a>',
+        ),
+        'domain' => array(
+          '#type' => 'hidden',
+          '#default_value' => $v['domain'],
         ),
         'title' => array(
           '#type' => 'hidden',
@@ -58,7 +64,6 @@ class os_boxes_follow extends os_boxes_default {
       );
       $links[$k] = $n;
     }
-    uasort($this->options['links'], 'element_sort');
 
     $form['count'] = array(
       '#type' => 'hidden',
@@ -74,8 +79,11 @@ class os_boxes_follow extends os_boxes_default {
     $links = array();
     foreach ($this->options['links'] as $n) {
       $l = array(
-        'href' => 'node/'.$n['nid'],
+        'href' => $n['title'],
         'title' => $n['title'],
+        'attributes' => array(
+          'class' => $n['domain'],
+        ),
       );
       $links[$n['weight']] = $l;
     }
@@ -109,7 +117,7 @@ function os_boxes_follow_table($element) {
   foreach (element_children($element) as $c) {
     $rows[] = array(
       'data' => array(
-        drupal_render($element[$c]['text']).drupal_render($element[$c]['title']),
+        drupal_render($element[$c]['text']).drupal_render($element[$c]['title']).drupal_render($element[$c]['domain']),
         drupal_render($element[$c]['weight']),
       ),
       'class' => (string)$c!='blank'?'draggable':'',

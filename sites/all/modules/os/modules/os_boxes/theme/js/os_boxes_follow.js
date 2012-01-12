@@ -39,7 +39,8 @@ Drupal.behaviors.os_boxes_follow = function (ctx) {
 			if (domain != matches[1]) {			
 				// set all the form elements in the new row
 				$('span', new_row).addClass(domain).text(val);
-				$('#edit-links-'+id+'-title', new_row).val(matches[0]);
+				$('#edit-links-'+id+'-title', new_row).val(val);
+				$('#edit-links-'+id+'-domain', new_row).val(domain);
 				$('#edit-links-'+id+'-weight', new_row).addClass('field-weight').val(id);
 				$('#edit-links-'+id+'-weight', new_row).parents('td').css('display', 'none');
 				//$('.tabledrag-handle', new_row).remove();
