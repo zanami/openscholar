@@ -97,6 +97,13 @@ function iqss_scholar_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'iqss_openscholar_front_stats_enabled';
+  $strongarm->value = '"a:6:{s:12:"Publications";b:1;s:6:"Vsites";b:1;s:5:"Nodes";b:1;s:5:"Files";b:1;s:8:"Filesize";b:0;s:5:"Users";b:0;}"';
+  $export['iqss_openscholar_front_stats_enabled'] = $strongarm;
+  
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'pinserver_pin_url';
   $strongarm->value = 'https://www.pin1.harvard.edu/pin/authenticate';
 

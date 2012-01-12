@@ -91,6 +91,12 @@ function openscholar_front_context_default_contexts() {
           'region' => 'content_bottom',
           'weight' => 0,
         ),
+        'iqss_openscholar_front-stats' => array(
+          'module' => 'iqss_openscholar_front',
+          'delta' => 'stats',
+          'region' => 'footer',
+          'weight' => 0,
+        ),
       ),
     ),
   );
