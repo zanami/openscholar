@@ -341,6 +341,7 @@ function _openscholar_enable_themes(){
     'scholar_burroughs',
     'scholar_cayley',
     'scholar_collector',
+    'scholar_collegiate',
     'scholar_density',
     'scholar_eloquent',
     'scholar_nortony',
