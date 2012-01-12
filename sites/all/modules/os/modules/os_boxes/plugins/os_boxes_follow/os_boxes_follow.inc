@@ -82,7 +82,8 @@ class os_boxes_follow extends os_boxes_default {
         'href' => $n['title'],
         'title' => $n['title'],
         'attributes' => array(
-          'class' => $n['domain'],
+          'class' => 'follow-icon '.$n['domain'],
+          'style' => 'background-image: url(\'url_goes_here_when_I_figure_it_out\')'
         ),
       );
       $links[$n['weight']] = $l;
