@@ -279,12 +279,14 @@ a.iqss-link {
 width:162px;
 height:19px;
 float:left;
-margin:27px 327px 0 0;
+margin:31px 327px 0 0;
 }
-/*
+
 @-moz-document url-prefix() { #featuredSites{ 
+width:162px;
+height:19px;
 float:left;
-margin:21px 327px -5px 0; } } */
+margin:27px 327px 0 0; } } 
 
 
 #col-2 {
