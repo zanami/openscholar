@@ -44,7 +44,8 @@
         <li><a href="<?php print $directory;?>/Info-sheet-Scholars-at-Harvard-H-2011.03.17.pdf">Fact Sheet (PDF)</a></li>
         <li><a rel="shadowbox;height=359;width=638" href="http://player.vimeo.com/video/9887585?title=0&amp;byline=0&amp;portrait=0">Video Intro</a></li>
       </ul>
-<div id="featuredSites">Featured sites &raquo; <a href="/websites">more</a></div>
+    <div id="featuredSites"><a href="/websites"><img src="sites/all/themes/custom/scholars_harvard/images/featuredSites.png"></a></div>
+
     </div>
     <?php
       $sites = views_block('view','iqss_openscholar_front-block_1');

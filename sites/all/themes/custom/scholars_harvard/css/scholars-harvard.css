@@ -235,11 +235,11 @@ a.iqss-link {
   }
 
 .col .top {
-  height: 253px;
+  height: 247px;
   }
 
 #col-1 .top ul {
-  float:left;
+  float:right;
   margin-left: 20px;
   margin-top: 30px;
   }
@@ -276,14 +276,15 @@ a.iqss-link {
   }
 
 #featuredSites {
-float:right;
-margin:65px 15px 0 0;
-font-size:.9em;
+width:162px;
+height:19px;
+float:left;
+margin:21px 327px -5px 0;
 }
-
-#featuredSites a {
-text-decoration:underline;
-}
+/*
+@-moz-document url-prefix() { #featuredSites{ 
+float:left;
+margin:21px 327px -5px 0; } } */
 
 
 #col-2 {
