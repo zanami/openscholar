@@ -761,15 +761,6 @@ function _scholar_publications_co_author_wgt(){
 }
 
 /**
- * Sort the returned publication types by the number of publications in each
- */
-function _scholar_publications_sort_type_by_numpubs($a,$b){
-	if ($a->num_records == $b->num_records) return 0;
-
-  return ($a->num_records > $b->num_records) ? -1 : 1;
-}
-
-/**
  * Return the citation without html
  * @param $node
  */
