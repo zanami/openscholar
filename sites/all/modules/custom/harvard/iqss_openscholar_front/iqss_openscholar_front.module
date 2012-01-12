@@ -82,7 +82,7 @@ function iqss_openscholar_front_context_load_alter(&$context){
 	    'label' => '',
 	    'type' => 'context_ui'
 	  );
-
+	  
   }
 
   if ($context->name == 'openscholar-section-sitewide' && count($context->reactions)) {
@@ -183,7 +183,6 @@ function _iqss_openscholar_front_block_top_links(){
 function _iqss_openscholar_front_block_stats(){
   $block = array();
   $block['content'] = theme_iqss_openscholar_front_block_stats();
-  $block['subject'] = t('OpenScholar Statistics');
   return $block;
 }
 
@@ -256,8 +255,7 @@ function theme_iqss_openscholar_front_block_stats() {
   	$enabled = unserialize(variable_get('iqss_openscholar_front_stats_enabled', FALSE));
   	
   	foreach($stats as $stat => $def) {
-  	  if (($result = db_result(db_query($def['query']))) && 
-  	       (!isset($enabled[$stat]) || $enabled[$stat])) {
+  	  if (($enabled[$stat] || !isset($enabled[$stat])) && ($result = db_result(db_query($def['query'])))) {
   	    
   	    // apply optional callback.  necessary for file size labels.
   	  	if (isset($def['callback']) && function_exists($def['callback'])) {
