@@ -676,6 +676,7 @@ a.delete {
 
 input.form-submit,
 input.form-button,
+input[type=button],
 button,
 .views-exposed-form .views-exposed-widget .form-submit,
 p.copy a.footer-login {
@@ -724,7 +725,8 @@ p.copy a.footer-login:active {
 #edit-delete,
 #edit-reset,
 #edit-preset,
-input.close {
+input.close,
+input[type=button] {
   -moz-border-radius:14px;
   -webkit-border-radius:14px;
   border-radius:14px;
