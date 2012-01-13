@@ -25,7 +25,7 @@ class os_boxes_follow extends os_boxes_default {
         '#type' => 'textfield',
         '#title' => t('Profile URL'),
         '#description' => t('Enter the URL of your profile on a social media site. Accepted sites are: @domains', array('@domains' => implode(', ', $domain_list))),
-        '#field_suffix' => '<button type="button" class="add_new"> Add </button>',
+        '#field_suffix' => '<input type="button" class="add_new" value=" Add " />',
       ),
     );
 
