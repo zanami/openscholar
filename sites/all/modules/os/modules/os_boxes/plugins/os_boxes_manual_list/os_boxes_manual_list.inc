@@ -16,11 +16,7 @@ class os_boxes_manual_list extends os_boxes_default {
     $form['add'] = array(
       '#type' => 'fieldset',
       '#title' => t('Add New Post'),
-      'node_to_add' => vsite_node_autocomplete_element(),
-      'button' => array(
-        '#type' => 'markup',
-        '#value' => '<input type="button" class="add_new" value="Add" />',
-      ),
+      'node_to_add' => vsite_node_autocomplete_element() + array('#field_suffix' => '<input type="button" class="add_new" value="Add" />'),
     );
 
     // build a normal form
