@@ -11,7 +11,7 @@ class os_boxes_node extends os_boxes_default {
    */
   public function options_defaults() {
     $options = parent::options_defaults();
-    $options['nid'] = "";
+    $options['nid'] = 0;
     $options['teaser'] = 'teaser';
     $options['show_title'] = 1;
 
@@ -29,11 +29,11 @@ class os_boxes_node extends os_boxes_default {
 
     if (is_string($default_nid)) {
       $default_nid = _vsite_node_autocomplete_title_to_nid($default_nid);
-    }//Convert to nid
+    }//Convert to nid;
 
     $form['nid'] = vsite_node_autocomplete_element($title = NULL);
     $form['nid']['#default_value'] = ((int)$default_nid != 0)?_vsite_node_autocomplete_nid_to_title($default_nid):"";
-    $form['nid']['#description'] .= '<br />'.l('Edit Post', 'node/'.$default_nid.'/edit', array('attributes' => array('class' => 'edit-node')));
+    $form['nid']['#description'] .= '<br />'.l('Edit Post', 'node/'.$default_nid.'/edit', array('attributes' => array('class' => 'edit-node', 'target' => '_blank')));
     $form['nid']['#pre_render'][] = 'os_boxes_node_autocomplete_prerender';
     $form += parent::options_form();
 
