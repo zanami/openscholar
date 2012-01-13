@@ -609,3 +609,11 @@ table.mceListBox {
 ul.tips li {
 	margin-bottom: 0.5em;
 }
+
+/*
+ * Optional class for long lists of checkboxes that adds a scrollbar
+ */ 
+div.form-checkboxes-scrolling {
+  max-height: 200px;
+  overflow:auto;
+  }
