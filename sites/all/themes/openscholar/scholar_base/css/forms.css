@@ -40,6 +40,22 @@ input.form-text {
 div.form-item {
   margin-bottom:1.5em;
   }
+  
+/*
+ * Lists of Checkboxes/Radios do not need the full margin between each checkbox/radio
+ */  
+div.form-checkboxes div.form-item,
+div.form-radios div.form-item {
+  margin-bottom:.5em;
+  }  
+
+/*
+ * Optional class for long lists of checkboxes that adds a scrollbar
+ */ 
+div.form-checkboxes-scrolling {
+	max-height: 200px;
+	overflow:auto;
+  }
 
 div.form-item, div.admin-panel .body {
   display:block;
