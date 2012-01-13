@@ -14,14 +14,19 @@ Drupal.behaviors.PostInBox_autocomplete = function(ctx) {
 				match;
 			if (input.is(':visible') && input.size() && link.size()) {
 				match = input.val().match(nid_reg)
-				if (match)
+				if (match) {
+					link.show();
 					link[0].href = link[0].href.replace(link_reg, 'node/'+match[1]+'/edit');
+				}
+				else {
+					link.hide();
+				}
 			}
 			else {
 				clearInterval(timeout_id);
 			}
 		}, 500);
 	
-	var href = $('a.edit-node', ctx).attr('href')+'?destination='+Drupal.settings.getQ;
-	$('a.edit-node', ctx).attr('href', href);
+	//var href = $('a.edit-node', ctx).attr('href')+'?destination='+Drupal.settings.getQ;
+	//$('a.edit-node', ctx).attr('href', href);
 };
