@@ -424,7 +424,7 @@ function scholar_publications_overview(){
   	}
   }
 
-  if (isset($type_data)) drupal_set_title(check_plain($type_data['name']));
+  if (isset($type_data)) drupal_set_title(check_plain( scholar_publications_get_plural_biblio_type($type_data['name']) ));
 
   if(($cache_key = scholar_publications_overview_get_cache_key($a_args))
   && ($s_cached = scholar_publications_get_cache($cache_key))){
@@ -998,6 +998,18 @@ function scholar_publications_views_pre_view(&$view) {
 }
 
 /**
+ * implementation of hook_views_post_render()
+ */
+function scholar_publications_views_post_render($view, $output, $cache){
+  if($view->name == "publication_types" && $view->current_display == "page_1"){
+    //Make the page title plural
+    if(isset($view->argument['name'])){
+    	drupal_set_title( scholar_publications_get_plural_biblio_type( $view->argument['name']->get_title() ));
+    }
+  }
+}
+
+/**
  * Return the avalible bilbio publication types
  *
  * @param $reset
@@ -1015,4 +1027,33 @@ function scholar_publications_get_biblio_types($reset = FALSE){
 	}
 	
 	return $types;
+}
+
+/**
+ * Return the plural version of a  bilbio publication type
+ *
+ * @param $s_type
+ */
+function scholar_publications_get_plural_biblio_type($s_type){
+	
+	$a_add_s = array("book","book chapter","journal article","conference paper","newspaper article","magazine article","web article","report","film","broadcast","artwork","hearing","case","bill","statute","patent","manuscript","map","chart","database","government report","legal ruling","miscellaneous section","working paper");
+	$a_replace = array( "thesis" => "Theses", "unpublished" => "Unpublished Publications" );
+	
+	if(is_numeric($s_type)){
+	  	$a_all_types = scholar_publications_get_biblio_types();
+	  	
+	  	if(isset($a_all_types[$s_type])){
+	     $s_type = $a_all_types[$s_type];
+	  	}
+	}
+	
+	if(in_array(strtolower($s_type),$a_add_s)){
+		return $s_type."s";
+	}
+	
+  if(isset($a_replace[strtolower($s_type)])){
+    return $a_replace;
+  }
+	
+	return $s_type;
 }

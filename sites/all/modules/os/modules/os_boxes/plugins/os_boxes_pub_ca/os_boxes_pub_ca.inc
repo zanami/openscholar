@@ -44,6 +44,10 @@ class os_boxes_pub_ca extends os_boxes_default {
     if ($view = views_get_view($name)) {
       if ($view->access($display_id)) {
         $view->set_display('block_1');
+        
+        //Tie this view to this box (this tells the view to call this box's view alter)
+        $view->dom_id = "boxes-".$this->delta;
+        
         $output = $view->execute_display();
         $view->destroy();
         $block['content'] = $output['content'];
@@ -52,6 +56,19 @@ class os_boxes_pub_ca extends os_boxes_default {
     }
 
     return $block;
+  }
+  
+  /**
+   * Called from views_pre_view
+   *
+   * @param view $view
+   */
+  public function views_alter(&$view, &$display_id, &$args){
+    
+    //Set the display num in the view (the count)
+    $arguments = $view->display_handler->get_option('arguments');
+    $arguments['lastname']['style_options']['count'] = ($this->options['display_num'])?1:0;
+    $view->display_handler->override_option('arguments', $arguments);
   }
 
   /**
