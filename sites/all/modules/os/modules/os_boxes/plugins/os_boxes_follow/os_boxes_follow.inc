@@ -10,20 +10,22 @@ class os_boxes_follow extends os_boxes_default {
 
   public function options_form() {
     $form = array();
-  	vsite_include('nodeautocomplete');
     $form['#after_build'] = array('os_boxes_follow_add_externals');
+
+    $domains = os_follow_default_networks();
+    $domain_list = array();
+    foreach ($domains as $d) {
+      $domain_list[] = $d['title'];
+    }
 
     $form['add'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Add New Post'),
+      '#title' => t('Add New Profile'),
       'link_to_add' => array(
         '#type' => 'textfield',
-        '#title' => t('URL'),
-        '#description' => t('Enter the URL of your profile on a social media site, such as Facebook or Twitter.'),
-      ),
-      'button' => array(
-        '#type' => 'markup',
-        '#value' => '<input type="button" class="add_new" value="Add" />',
+        '#title' => t('Profile URL'),
+        '#description' => t('Enter the URL of your profile on a social media site. Accepted sites are: @domains', array('@domains' => implode(', ', $domain_list))),
+        '#field_suffix' => '<button type="button" class="add_new"> Add </button>',
       ),
     );
 
