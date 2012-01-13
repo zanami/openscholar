@@ -13,7 +13,7 @@ html, body {
 
 a, a:visited {
   text-decoration: none;
-  padding: 2px;
+  padding: 0 2px 0 2px;
   }
 
 a.toggle,
