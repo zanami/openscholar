@@ -84,19 +84,14 @@ function scholar_publications_settings($space) {
     //'#description' => t('You turn the sorting links at the top of the /biblio page here.'),
   );
   
-  $form['filter_publications'] = array(
-    '#title' => t('Publication Display Types'),
-	  '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#region' => 'right',
-  );
-  $form['filter_publications']['scholar_publications_filter_publication_types'] = array(
+  $form['scholar_publications_filter_publication_types'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Show only publications of type'),
     '#default_value' => variable_get('scholar_publications_filter_publication_types', array_keys(scholar_publications_get_biblio_types())),
     '#options' => scholar_publications_get_biblio_types(),
     '#description' => t('The main list of publications on your publications page will list the types slected here.'),
+    '#region' => 'right',
+    '#attributes' => array("class" => "form-checkboxes-scrolling"),
   );
   
   //Should urls in citations be shortened?
