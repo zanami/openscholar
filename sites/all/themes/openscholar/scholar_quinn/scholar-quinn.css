@@ -78,8 +78,11 @@ h2.title {
     }
 
 #content-area .hg-container .column {
-  padding:15px;
+  padding:0 0 0 15px;
   }
+  
+  
+#sidebar-second.sidebar.column {padding-left:0;}
 
 #sidebar-first {
   left: -195px;
@@ -92,8 +95,9 @@ h2.title {
   }
 
 #sidebar-second {
-  margin-right: -180px;
+  margin-right: -195px;
   margin-top: 10px;
+  padding-left: 0;
   }
 
 #header-right {
