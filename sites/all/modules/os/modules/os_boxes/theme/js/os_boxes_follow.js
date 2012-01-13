@@ -38,7 +38,7 @@ Drupal.behaviors.os_boxes_follow = function (ctx) {
 			// if we don't have a valid domain, don't make a new row
 			if (domain != matches[1]) {			
 				// set all the form elements in the new row
-				$('span', new_row).addClass(domain).text(val);
+				$('span', new_row).addClass('follow-icon '+domain).text(val);
 				$('#edit-links-'+id+'-title', new_row).val(val);
 				$('#edit-links-'+id+'-domain', new_row).val(domain);
 				$('#edit-links-'+id+'-weight', new_row).addClass('field-weight').val(id);

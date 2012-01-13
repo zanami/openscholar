@@ -13,7 +13,7 @@ html, body {
 
 a, a:visited {
   text-decoration: none;
-  padding: 2px;
+  padding: 0 2px 0 2px;
   }
 
 a.toggle,
@@ -78,11 +78,14 @@ h2.title {
     }
 
 #content-area .hg-container .column {
-  padding:0;
+  padding:0 0 0 15px;
   }
+  
+  
+#sidebar-second.sidebar.column {padding-left:0;}
 
 #sidebar-first {
-  left: -180px;
+  left: -195px;
   margin-top: 10px;
   }
 
@@ -92,8 +95,9 @@ h2.title {
   }
 
 #sidebar-second {
-  margin-right: -180px;
+  margin-right: -195px;
   margin-top: 10px;
+  padding-left: 0;
   }
 
 #header-right {
@@ -123,6 +127,8 @@ h2.title {
   -webkit-border-radius: 3px;
   border-radius: 3px;
   border: 1px solid #E5E5E4;
+  padding:0 10px 0 10px;
+  width:auto;
   }
   
 #content-main .node:after {
@@ -132,9 +138,6 @@ h2.title {
     clear: both;
     visibility: hidden;
 }
-
-#content-left, #content-bottom {padding:0 20px;}
- 
 
 /* HEADER ELEMENTS */
 

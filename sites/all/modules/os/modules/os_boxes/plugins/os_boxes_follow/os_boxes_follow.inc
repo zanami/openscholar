@@ -45,7 +45,7 @@ class os_boxes_follow extends os_boxes_default {
         '#weight' => $v['weight'],
         'text' => array(
           '#type' => 'markup',
-          '#value' => '<span>'.$v['title'].'</span> <a href="#" class="remove" title="Remove Link">Remove</a>',
+          '#value' => '<span class="follow-icon" style="background-position: -'.$domains[$v['domain']]['offset'].'px 0px">'.$v['title'].'</span> <a href="#" class="remove" title="Remove Link">Remove</a>',
         ),
         'domain' => array(
           '#type' => 'hidden',
@@ -78,20 +78,22 @@ class os_boxes_follow extends os_boxes_default {
 
   public function render() {
     $block = parent::render();
+    $domains = os_follow_default_networks();
+    drupal_add_css(drupal_get_path('module', 'os_boxes').'/theme/css/os_follow.css');
     $links = array();
     foreach ($this->options['links'] as $n) {
       $l = array(
         'href' => $n['title'],
         'title' => $n['title'],
         'attributes' => array(
-          'class' => 'follow-icon '.$n['domain'],
-          'style' => 'background-image: url(\'url_goes_here_when_I_figure_it_out\')'
+          'class' => 'follow-icon',
+          'style' => 'background-position: -'.$domains[$n['domain']]['offset'].'px 0px',
         ),
       );
       $links[$n['weight']] = $l;
     }
     ksort($links);
-    $block['content'] = theme('links', $links);
+    $block['content'] = theme('links', $links, array('class' => 'follow-me-links'));
     return $block;
   }
 }
@@ -102,6 +104,7 @@ class os_boxes_follow extends os_boxes_default {
  */
 function os_boxes_follow_add_externals($form) {
   drupal_add_js(drupal_get_path('module', 'os_boxes').'/theme/js/os_boxes_follow.js');
+  drupal_add_css(drupal_get_path('module', 'os_boxes').'/theme/css/os_follow.css');
   $networks = os_follow_default_networks();
   drupal_alter('os_follow_networks', $networks);
   drupal_add_js(array('follow_networks' => $networks), 'setting');
@@ -180,54 +183,67 @@ function os_follow_default_networks() {
     'facebook'  => array(
       'title' => t('Facebook'),
       'domain' => 'facebook.com',
+      'offset' => 1088,
     ),
     'virb'      => array(
       'title' => t('Virb'),
       'domain' => 'virb.com',
+      'offset' => 3232,
     ),
     'myspace'   => array(
       'title' => t('MySpace'),
       'domain' => 'myspace.com',
+      'offset' => 2208,
     ),
     'twitter'   => array(
       'title' => t('Twitter'),
       'domain' => 'twitter.com',
+      'offset' => 3104
     ),
     'picasa'    => array(
       'title' => t('Picasa'),
       'domain' => 'picasaweb.google.com',
+      'offset' => 2368,
     ),
     'flickr'    => array(
       'title' => t('Flickr'),
       'domain' => 'flickr.com',
+      'offset' => 1152,
     ),
     'youtube'   => array(
       'title' => t('YouTube'),
       'domain' => 'youtube.com',
+      'offset' => 3520,
     ),
     'vimeo'     => array(
       'title' => t('Vimeo'),
       'domain' => 'vimeo.com',
+      'offset' => 3200,
     ),
     'bliptv'    => array(
       'title' => t('blip.tv'),
       'domain' => 'blip.tv',
+      'offset' => 352,
     ),
     'lastfm'    => array(
       'title' => t('last.fm'),
       'domain' => 'last.fm',
+      'offset' => 1920
     ),
     'linkedin'  => array(
       'title' => t('LinkedIn'),
       'domain' => 'linkedin.com',
+      'offset' => 1952,
     ),
     'delicious' => array(
       'title' => t('Delicious'),
       'domain' => 'delicious.com',
+      'offset' => 704,
     ),
     'tumblr'    => array(
       'title' => t('Tumblr'),
       'domain' => 'tumblr.com',
+      'offset' => 3074,
     ),
   );
 
