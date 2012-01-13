@@ -60,11 +60,13 @@ img {
 }
 
 /* JCAROUSEL OVERRIDE STYLES */
-.itu-attachment-images {border:none;}
+.itu-attachment-images {border:none;padding-left: 12px;}
 
 .jcarousel-skin-tango .jcarousel-container-horizontal {
-    width: auto;
+    width: 90%;
+    padding: 10px 15px 0 15px;
 }
+
 .jcarousel-skin-tango .jcarousel-container {
 background:#efefef;
 border:1px solid #CCC;
@@ -80,9 +82,33 @@ border:1px solid #CCC;
   border-radius: 0;
 }
 
-.jcarousel-skin-tango .jcarousel-next-horizontal {background-image: url('../images/jcarou-next-horizontal.png');}
-.jcarousel-skin-tango .jcarousel-prev-horizontal {background-image: url('../images/jcarou-prev-horizontal.png');}
+.jcarousel-skin-tango .jcarousel-next-horizontal {background-image: url('../images/jcarou-next-horizontal.png'); right: -14px; top: 32px;width:22px;height:22px;background-position: -3px -3px;}
+.jcarousel-skin-tango .jcarousel-prev-horizontal {background-image: url('../images/jcarou-prev-horizontal.png');left: -15px; top: 32px;width:22px;height:22px;background-position: -1px -3px;}
 
+.jcarousel-skin-tango .jcarousel-next-horizontal:hover {
+    background-position: -30px -3px;
+}
+.jcarousel-skin-tango .jcarousel-next-horizontal:active {
+    background-position: -59px -3px;
+}
+
+.jcarousel-skin-tango .jcarousel-prev-horizontal:hover {
+     background-position: -28px -3px;
+}
+
+.jcarousel-skin-tango .jcarousel-prev-horizontal:active {
+     background-position: -55px -3px;
+}
+
+.jcarousel-skin-tango .jcarousel-prev-disabled-horizontal, .jcarousel-skin-tango .jcarousel-prev-disabled-horizontal:hover, .jcarousel-skin-tango .jcarousel-prev-disabled-horizontal:active {
+    background-position: -82px -3px;
+    cursor: default;
+}
+
+.jcarousel-skin-tango .jcarousel-next-disabled-horizontal, .jcarousel-skin-tango .jcarousel-next-disabled-horizontal:hover, .jcarousel-skin-tango .jcarousel-next-disabled-horizontal:active {
+    background-position: -86px -3px;
+    cursor: default;
+}
 
 /* TOP OPENSCHOLAR ADMIN BAR */
 
