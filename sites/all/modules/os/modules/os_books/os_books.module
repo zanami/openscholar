@@ -93,7 +93,7 @@ function os_books_preprocess_node(&$vars) {
 }
 
 function os_books_preprocess_book_export_html(&$vars) {
-  $vars['head'] .= '    <link type="text/css" rel="stylesheet" href="'.drupal_get_path('module', 'os_books').'/os_books_print.css"/>'."\r\n";
+  $vars['head'] .= '    <link type="text/css" rel="stylesheet" href="/'.url(drupal_get_path('module', 'os_books').'/os_books_print.css').'"/>'."\r\n";
 }
 
 /*
