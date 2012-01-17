@@ -47,6 +47,11 @@ function vsite_menus_settings_form($form_state){
 
   //user_created
 
+  // ensure these array entries exist so tabledrag doesn't crap out
+  foreach ($a_site_menus as $m => $t) {
+    $form['conf'][$m] = array();
+  }
+
   //all that were avalible orig..
   $all_initial = $space->controllers->vsite_menu->get_multiple(array_keys($a_site_menus));
 
@@ -137,14 +142,14 @@ function vsite_menus_settings_form($form_state){
     '#value' => t('Reset to defaults'),
     '#submit' => array('vsite_menus_settings_form_reset'),
   );
-  
+
   /*
   $form['help_text'] = array(
     '#type' => 'markup',
     '#value' => '<div class="help-text">Drag links to order them and move them between menus.</div>',
   );
   */
-  
+
 
   $form['#after_build'][] = 'vsite_menus_settings_form_after_build';
 
@@ -255,10 +260,10 @@ function vsite_menus_settings_form_validate(&$form, &$form_state) {
   }
   elseif ($form_state['values']['new_menu_title'] && $form_state['values']['new_menu_url']) {
   	global $base_url;
-  	
+
   	$vsite = vsite_get_vsite();
   	$site_base = $vsite->get_absolute_url();
-  	
+
   	if(strpos($form_state['values']['new_menu_url'],$site_base) === 0){
   		$a_path_info = parse_url($form_state['values']['new_menu_url']);
   		$form_state['values']['new_menu_url'] = $a_path_info['path'];
@@ -302,7 +307,7 @@ function vsite_menus_settings_form_submit($form, &$form_state) {
     // $menus['features']['features:bio']
 
     $link =& $menus[$region_old][$key];
-    
+
     if(!$link){
     	$link = vsite_menus_get_menu_item($data['link_path'],false,true);
     }
