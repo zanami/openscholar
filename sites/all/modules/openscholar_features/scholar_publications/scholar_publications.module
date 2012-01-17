@@ -465,8 +465,6 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
   switch ($op) {
   	case 'load':
   	  $s_orig_text = variable_get('biblio_no_year_text', t('Submitted'));
-  	  scholar_publications_init(); //Run the customizations since they probably have not run by this point (they only run once anyway)
-  			//rerun this since it was run before customization
  		  if($node->biblio_year){
   	  	if($node->biblio_year === $s_orig_text) $node->biblio_year = 9999;
   		  $node->biblio_year = _biblio_text_year($node->biblio_year);
