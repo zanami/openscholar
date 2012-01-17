@@ -597,7 +597,7 @@ function _biblio_sort_tabs($attrib, $options = NULL) {
     }
 
   }
-  if (!$tabs) $content = t('Sort by').': '.$content;
+  if (!$tabs && $content) $content = t('Sort by').': '.$content;
   $content .= $tabs ? '</ul>':'';
 
   return $content;
