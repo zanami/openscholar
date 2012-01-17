@@ -115,6 +115,16 @@ function os_books_link($type, $node, $teaser = FALSE) {
 }
 
 /**
+ * Implementation of hook_link_alter
+ * Changes the title of the Print View link
+ */
+function os_books_link_alter(&$links, $node) {
+  if (isset($links['book_printer'])) {
+    $links['book_printer']['title'] = t('Print');
+  }
+}
+
+/**
  * Flattens our book tree
  * @param array $tree
  */
