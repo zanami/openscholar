@@ -1052,7 +1052,7 @@ function scholar_publications_get_plural_biblio_type($s_type){
 	}
 	
   if(isset($a_replace[strtolower($s_type)])){
-    return $a_replace;
+    return $a_replace[strtolower($s_type)];
   }
 	
 	return $s_type;
