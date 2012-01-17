@@ -5,6 +5,7 @@
  */
 function scholar_book_default_box() {
   $export = array();
+
   $box = new stdClass;
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
@@ -15,8 +16,8 @@ function scholar_book_default_box() {
   $box->options = array(
     'visibility' => 'feature',
   );
-
   $export['scholar_book_current_toc'] = $box;
+
   $box = new stdClass;
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
@@ -35,7 +36,7 @@ function scholar_book_default_box() {
     'more_text' => '',
     'more_link' => '',
   );
-
   $export['scholar_book_recent_docs'] = $box;
+
   return $export;
 }

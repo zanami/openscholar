@@ -43,6 +43,7 @@ Drupal.behaviors.os_boxes_follow = function (ctx) {
 				$('#edit-links-'+id+'-domain', new_row).val(domain);
 				$('#edit-links-'+id+'-weight', new_row).addClass('field-weight').val(id);
 				$('#edit-links-'+id+'-weight', new_row).parents('td').css('display', 'none');
+				$('.follow-icon', new_row).css('background-position', '-'+fd.offset+'px 0px');
 				//$('.tabledrag-handle', new_row).remove();
 				$('table tbody', $form).append(new_row);
 				new_row = $('#edit-links-'+id+'-title', $form).parents('tr');
