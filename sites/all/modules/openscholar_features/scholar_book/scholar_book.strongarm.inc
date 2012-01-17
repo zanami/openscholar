@@ -5,6 +5,7 @@
  */
 function scholar_book_strongarm() {
   $export = array();
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -14,8 +15,8 @@ function scholar_book_strongarm() {
     1 => 3,
     2 => 6,
   );
-
   $export['better_formats_allowed_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -23,71 +24,71 @@ function scholar_book_strongarm() {
   $strongarm->value = array(
     0 => 'book',
   );
-
   $export['book_allowed_types'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_anonymous_book';
   $strongarm->value = '0';
-
   $export['comment_anonymous_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_book';
   $strongarm->value = '0';
-
   $export['comment_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_controls_book';
   $strongarm->value = '3';
-
   $export['comment_controls_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_book';
   $strongarm->value = '4';
-
   $export['comment_default_mode_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_order_book';
   $strongarm->value = '1';
-
   $export['comment_default_order_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_per_page_book';
   $strongarm->value = '50';
-
   $export['comment_default_per_page_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_form_location_book';
   $strongarm->value = '0';
-
   $export['comment_form_location_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_preview_book';
-  $strongarm->value = '0';
-
+  $strongarm->value = '1';
   $export['comment_preview_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_subject_field_book';
   $strongarm->value = '1';
-
   $export['comment_subject_field_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -108,22 +109,22 @@ function scholar_book_strongarm() {
     'og_nodeapi' => '0',
     'booktoc' => '-10',
   );
-
   $export['content_extra_weights_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'ffp_book_field_os_inline_image';
   $strongarm->value = 0;
-
   $export['ffp_book_field_os_inline_image'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'ffp_book_upload';
   $strongarm->value = 0;
-
   $export['ffp_book_upload'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -234,42 +235,42 @@ function scholar_book_strongarm() {
       'hidden' => 0,
     ),
   );
-
   $export['nodeformscols_field_placements_book_default'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'og_content_type_usage_book';
   $strongarm->value = 'group_post_standard';
-
   $export['og_content_type_usage_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'pathauto_node_book_pattern';
   $strongarm->value = '[space-og-path]/book/[title-raw]';
-
   $export['pathauto_node_book_pattern'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'show_diff_inline_book';
   $strongarm->value = 1;
-
   $export['show_diff_inline_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'show_preview_changes_book';
   $strongarm->value = 0;
-
   $export['show_preview_changes_book'] = $strongarm;
+
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'upload_book';
   $strongarm->value = '1';
-
   $export['upload_book'] = $strongarm;
+
   return $export;
 }
