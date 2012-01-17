@@ -1630,10 +1630,14 @@ function biblio_form_validate($form, & $form_state) {
 
 function _biblio_numeric_year($year) {
   if (!is_numeric($year)) {
-    if (drupal_strtoupper($year) == drupal_strtoupper(t("In Press")))  return 9998;
-    if (drupal_strtoupper($year) == drupal_strtoupper(t("Submitted"))) return 9999;
-  }
-  else {
+    $text_year = 9998;
+    while (is_string(_biblio_text_year($text_year))) {
+      if (drupal_strtoupper($year) == drupal_strtoupper(_biblio_text_year($text_year))){
+        return $text_year;
+      }
+    $text_year++;
+    }
+  } else {
     return $year;
   }
 }
@@ -1641,6 +1645,11 @@ function _biblio_numeric_year($year) {
 function _biblio_text_year($year) {
   if ($year == 9998) return check_plain(variable_get('biblio_inpress_year_text', t('In Press')));
   if ($year == 9999) return check_plain(variable_get('biblio_no_year_text', t('Submitted')));
+  
+  if (($text_year = check_plain(variable_get('biblio_year_text_'.$year, false))) && strlen($text_year)) {
+    return $text_year;
+  }
+
   return $year;
 }
 /**
