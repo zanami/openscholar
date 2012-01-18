@@ -39,7 +39,11 @@ Drupal.behaviors.osWysiwygAddHelpLink = function (ctx) {
 			}
 		}
 		if (typeof handled[id] == 'undefined') {
-			$('#'+id+'-wrapper').css('position', 'relative').prepend($('<a class="help advanced-help-link" href="">Help</a>'));
+			$('#'+id+'-wrapper').css('position', 'relative').prepend($('<a class="help advanced-help-link" href="'+Drupal.settings.basePath+'help/vsitehelp/Editing-Content">Help</a>'));
+			$('#'+id+'-wrapper').find('a.help').click(function (e) {
+				window.open(this.href, 'advanced-help-window', 'width=500,height=500,scrollbars,resizable').focus();
+				e.preventDefault();
+			});
 			handled[id] = true;
 		}
 	});
