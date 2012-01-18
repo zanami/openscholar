@@ -490,12 +490,8 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
       $node->biblio_abst_e = check_markup($node->biblio_abst_e);
       
       //Get numeric biblio year or assume submitted
-      if ((int)$node->biblio_year == 0) { 
-        if ($int_year = _biblio_numeric_year($node->biblio_year)) {
-          $node->biblio_year = $int_year;
-        } else {
-          $node->biblio_year = '9999'; //default to submitted
-        } 
+      if ((int)$node->biblio_year == 0 && $int_year = _biblio_numeric_year($node->biblio_year)) {
+        $node->biblio_year = $int_year;  
       }
 
     break;
@@ -527,6 +523,16 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
       }
       
     break;
+    
+    case 'validate':
+      if ((int)$node->biblio_year == 0 && !_biblio_numeric_year($node->biblio_year)) {
+        form_set_error('biblio_year', t('Invalid publication year'));
+      }
+        
+      
+    break;
+      
+      
     case 'view':
       //Files weight gets changed to 4 so lets put this before files
       $node->content['field_biblio_extra']['#weight'] = 3;
