@@ -85,7 +85,7 @@ h2.title {
 #sidebar-second.sidebar.column {padding-left:0;}
 
 #sidebar-first {
-  left: -195px;
+  left: -210px;
   margin-top: 10px;
   }
 
@@ -95,7 +95,7 @@ h2.title {
   }
 
 #sidebar-second {
-  margin-right: -195px;
+/*margin-right: -195px;*/
   margin-top: 10px;
   padding-left: 0;
   }
@@ -128,7 +128,7 @@ h2.title {
   border-radius: 3px;
   border: 1px solid #E5E5E4;
   padding:0 10px 0 10px;
-  width:auto;
+  width:100%;
   }
   
 #content-main .node:after {
