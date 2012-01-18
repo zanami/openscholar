@@ -23,7 +23,27 @@ Drupal.behaviors.osWysiwygHideTips = function (ctx) {
 	}
 	$('.tips', ctx).hide();
 	$('#wysiwyg-toggle-edit-body', ctx).die('click', toggle).live('click', toggle);
-}
+};
+
+Drupal.behaviors.osWysiwygAddHelpLink = function (ctx) {
+	var fields = $('input[class*="wysiwyg-field"], div[class*="wysiwyg-field"]'),
+		$cont, $this, handled = {}, $fieldset, classes, i, id;
+	
+	fields.each(function (i) {
+		$this = $(this);
+		classes = $this.attr('class').split(' ');
+		for (i in classes) {
+			if (classes[i].indexOf('wysiwyg-field-') > -1) {
+				id = classes[i].replace('wysiwyg-field-', '');
+				break;
+			}
+		}
+		if (typeof handled[id] == 'undefined') {
+			$('#'+id+'-wrapper').css('position', 'relative').prepend($('<a class="help advanced-help-link" href="">Help</a>'));
+			handled[id] = true;
+		}
+	});
+};
 
 /**
  * Apply styling to body fields that have wysiwyg's so that when they are detached the body looks ok
