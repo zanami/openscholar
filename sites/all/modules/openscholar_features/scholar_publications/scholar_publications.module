@@ -639,6 +639,24 @@ function scholar_publications_theme_registry_alter(&$theme_registry){
   $theme_registry['biblio_tabular']['file'] = 'scholar_publications_biblio_tabular.tpl';
   $theme_registry['biblio_tabular']['path'] = drupal_get_path('module', 'scholar_publications')."/theme";
   $theme_registry['biblio_download_links']['function'] = 'scholar_publications_biblio_download_links';
+  
+  //Override publications by year box so biblio years display submitted/inpress/etc
+  $theme_registry['views_view_summary__publication_years__block_1'] = $theme_registry['views_view_summary'];
+  $theme_registry['views_view_summary__publication_years__block_1']['preprocess functions'][] = 'theme_scholar_publications_biblio_year_row';
+}
+
+/**
+ * @function theme_scholar_publications_biblio_year_row
+ * 
+ * Themes biblio years during preprocessing.  Changes the link title to the biblio year text,
+ * but does not change the link to the numerical year.
+ */
+function theme_scholar_publications_biblio_year_row(&$vars) {
+  foreach ($vars['rows']as $delta => $row) {
+    if ((int)$row->link >= 9998) {
+      $vars['rows'][$delta]->link = _biblio_text_year($row->link);
+    }
+  }
 }
 
 /**
