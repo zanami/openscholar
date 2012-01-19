@@ -143,7 +143,7 @@ function vsite_comments_add_comment_settings(&$form, &$form_state, $form_id){
     		$form["{$node}_settings"] = array(
 		      '#type' => 'fieldset',
 		      '#id' => "{$node}_settings",
-		      '#title' => t(ucfirst($node_names[$node]).' Settings'),
+		      //'#title' => t(ucfirst($node_names[$node]).' Settings'),
 		      '#weight' => 0,
 		    );
     	}
@@ -155,7 +155,7 @@ function vsite_comments_add_comment_settings(&$form, &$form_state, $form_id){
     	$form["{$node}_settings"]["vsite_comments_comment_type_{$node}"] = array(
 	      '#type' => 'radios',
     	  '#node_type' => $node,
-	      '#title' => t(' Comment Settings'),
+	      '#title' => t(ucfirst($node_names[$node]).' Comment Settings'),
 	      '#default_value' => variable_get("vsite_comments_comment_type_{$node}", $default_setting),
     	  '#options' => array(
     	    0 => "No Comments",
