@@ -42,6 +42,13 @@ function scholar_publications_strongarm() {
     'year' => 'year',
   );
   $export['biblio_sort_tabs'] = $strongarm;
+  
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'biblio_year_text_10000';
+  $strongarm->value = 'Forthcoming';
+  $export['biblio_year_text_10000'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
