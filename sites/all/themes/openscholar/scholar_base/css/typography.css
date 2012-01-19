@@ -428,7 +428,9 @@ ul.menu li.collapsed {
   }
   
   
-#boxes-box-scholar_book_recent_docs a.active {background: url('../images/activeBookletBullet.png')  no-repeat left center; font-weight: bold;
+#boxes-box-scholar_book_recent_docs a.active, 
+.box-os_boxes_curr_toc a.active,
+.os_boxes_booktoc a.active {background: url('../images/activeBookletBullet.png')  no-repeat left center; font-weight: bold;
     padding-left: 10px;  } 
   
 .item-list .item-list {
