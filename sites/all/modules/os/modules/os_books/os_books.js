@@ -50,6 +50,10 @@
 			perma.attr('href', e.target.getAttribute('href'));
 			e.preventDefault();
 			
+			// deal with the 'active' class
+			$('a[nid="'+active+'"]').removeClass('active');
+			$('a[nid="'+nid+'"]').addClass('active');
+			
 			// change the admin contextual links
 			var reg = new RegExp(active, "g");
 			display.parents('.node').find('.ctools-dropdown-container a').each (function () {
