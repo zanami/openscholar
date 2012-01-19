@@ -5,6 +5,7 @@
  */
 function scholar_book_context_default_contexts() {
   $export = array();
+
   $context = new stdClass;
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
@@ -45,7 +46,10 @@ function scholar_book_context_default_contexts() {
           'region' => 'right',
           'status' => '0',
           'label' => 'Table of Contents',
-          'tags' => array('Content','Book'),
+          'tags' => array(
+            0 => 'Content',
+            1 => 'Book',
+          ),
         ),
         'boxes-scholar_book_recent_docs' => array(
           'module' => 'boxes',
@@ -70,7 +74,7 @@ function scholar_book_context_default_contexts() {
   // Included for use with string extractors like potx.
   t('Books');
   t('Feature');
-
   $export['openscholar-feature-book'] = $context;
+
   return $export;
 }

@@ -44,12 +44,3 @@ function scholar_book_views_api() {
     'api' => '2',
   );
 }
-
-/**
- * Implementation of hook_wysiwyg_fields_icons().
- */
-function scholar_book_wysiwyg_fields_icons() {
-  return array(
-    drupal_get_path('module', 'scholar_book') . '/images/wysiwyg_fields',
-  );
-}

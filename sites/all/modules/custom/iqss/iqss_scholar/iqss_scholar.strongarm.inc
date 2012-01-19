@@ -27,6 +27,13 @@ function iqss_scholar_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'biblio_year_text_10000';
+  $strongarm->value = 'Forthcoming';
+  $export['biblio_year_text_10000'] = $strongarm;
+  
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'citation_distribute_service_repec_title';
   $strongarm->value = 'RePEc';
   $export['citation_distribute_service_repec_title'] = $strongarm;

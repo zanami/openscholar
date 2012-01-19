@@ -93,7 +93,7 @@ function os_books_preprocess_node(&$vars) {
 }
 
 function os_books_preprocess_book_export_html(&$vars) {
-  $vars['head'] .= '    <link type="text/css" rel="stylesheet" href="'.drupal_get_path('module', 'os_books').'/os_books_print.css"/>'."\r\n";
+  $vars['head'] .= '    <link type="text/css" rel="stylesheet" href="'.$GLOBALS['base_url'].'/'.drupal_get_path('module', 'os_books').'/os_books_print.css'.'"/>'."\r\n";
 }
 
 /*
@@ -112,6 +112,16 @@ function os_books_link($type, $node, $teaser = FALSE) {
     );
   }
   return $links;
+}
+
+/**
+ * Implementation of hook_link_alter
+ * Changes the title of the Print View link
+ */
+function os_books_link_alter(&$links, $node) {
+  if (isset($links['book_printer'])) {
+    $links['book_printer']['title'] = t('Print');
+  }
 }
 
 /**

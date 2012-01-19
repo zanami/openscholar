@@ -183,7 +183,7 @@ function os_follow_default_networks() {
     'facebook'  => array(
       'title' => t('Facebook'),
       'domain' => 'facebook.com',
-      'offset' => 1088,
+      'offset' => 1056,
     ),
     'virb'      => array(
       'title' => t('Virb'),

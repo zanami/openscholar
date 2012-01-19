@@ -167,6 +167,14 @@ function scholar_publications_form_alter(&$form, $form_state, $form_id){
     }
     $form['submit_type'] = array('#type' => 'submit', '#disabled' => true, '#access' => false, '#value' => t('Select Publication Type'));
 
+    //update biblio_year's description
+    $result = db_query('SELECT value FROM {variable} WHERE name LIKE "biblio_year_text_%" ');
+    $year_titles = array('YYYY', 'Submitted', 'In Press');
+    while ($obj = db_fetch_object($result)) {
+      $year_titles[] = unserialize($obj->value);
+    }
+    $year_titles[count($year_titles)-1] = 'or ' . $year_titles[count($year_titles)-1];
+    $form['biblio_year']['#description'] = 'Enter ' . implode(', ', $year_titles);
 
     //authors should always be open
     if(array_key_exists('author',$form)){
@@ -478,6 +486,11 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
 
       $node->biblio_notes = check_markup($node->biblio_notes);
       $node->biblio_abst_e = check_markup($node->biblio_abst_e);
+      
+      //Get numeric biblio year or assume submitted
+      if ((int)$node->biblio_year == 0 && $int_year = _biblio_numeric_year($node->biblio_year)) {
+        $node->biblio_year = $int_year;  
+      }
 
     break;
     case 'update':
@@ -508,6 +521,16 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
       }
       
     break;
+    
+    case 'validate':
+      if ((int)$node->biblio_year == 0 && !_biblio_numeric_year($node->biblio_year)) {
+        form_set_error('biblio_year', t('Invalid publication year'));
+      }
+        
+      
+    break;
+      
+      
     case 'view':
       //Files weight gets changed to 4 so lets put this before files
       $node->content['field_biblio_extra']['#weight'] = 3;
@@ -576,7 +599,7 @@ function scholar_publications_views_query_alter(&$view, &$query) {
 function scholar_publications_views_pre_render(&$view) {
   if ($view->name == 'publication_years') {
     foreach($view->result as $delta => $obj) {
-      if ((int)$obj->biblio_biblio_year > 9997) {
+      if ((int)$obj->biblio_biblio_year >= 9997) {
         $view->result[$delta]->biblio_biblio_year = _biblio_text_year($obj->biblio_biblio_year);
       }
     }
