@@ -49,6 +49,28 @@ Drupal.behaviors.osWysiwygAddHelpLink = function (ctx) {
 	});
 };
 
+Drupal.behaviors.osWysiwygFormattingInWindow = function (ctx) {
+	var format;
+	// get the existing format
+	$('div.wysiwyg, input.wysiwyg[checked="checked"]').each(function () {
+		var classes = $(this).attr('class').split(' '),
+			i;
+		for (i in classes) {
+			if (classes[i].indexOf('wysiwyg-format-') > -1) {
+				format = classes[i].replace('wysiwyg-format-', '');
+				break;
+			}
+		}
+	});
+	
+	function open(e) {
+		window.open(this.href+'/'+format+'?modal', 'advanced-help-window', 'width=500,height=500,scrollbars,resizable').focus();
+		e.preventDefault();
+	}
+	
+	$('a[href$="filter/tips"]', ctx).unbind('click', open).click(open);
+};
+
 /**
  * Apply styling to body fields that have wysiwyg's so that when they are detached the body looks ok
  */
