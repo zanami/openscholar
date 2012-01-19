@@ -427,6 +427,10 @@ ul.menu li.collapsed {
   padding:0 0 0 2.5em;
   }
   
+  
+#boxes-box-scholar_book_recent_docs a.active {background: url('../images/activeBookletBullet.png')  no-repeat left center; font-weight: bold;
+    padding-left: 10px;  } 
+  
 .item-list .item-list {
 	margin-left: 20px;
 }
