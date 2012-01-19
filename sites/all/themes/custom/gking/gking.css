@@ -245,10 +245,9 @@ a.more {
     background-color: #DB7002;
    }
 
-.item-list ul.pager li a, .item-list ul.pager li a.active {
-    font-size:1em;
-    
-}
+.boxes-box .item-list ul.pager li a, .boxes-box .item-list ul.pager li a.active {
+    font-size:1.5em;
+    }
 
 .item-list ul.pager li a:visited {
   color:#005C9C;
