@@ -7,13 +7,6 @@ function scholar_publications_settings($space) {
 
   $form['#columns'] = TRUE;
 
-  $form['biblio_no_year_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Unpublished Label'),
-    '#default_value' => variable_get('biblio_no_year_text', t('Submitted')),
-    '#description' => t('This label will show if you do not enter a publication date.'),
-  );
-
   $form['biblio_style'] = array(
     '#type' => 'radios',
     '#title' => t('Select your preferred bibliographic format'),
