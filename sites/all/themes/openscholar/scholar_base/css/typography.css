@@ -328,8 +328,25 @@ p.terms-inline {float:left;margin:1px 1px 0 0;}
   font-style: normal !important;
   }
 
-.node .node-inner .links li a#book-permalink {
-color:#989095;
+.node .node-inner .links li.permalink a {
+color:#3a6a8c;
+background: url('../images/perma_link.png') center left no-repeat;
+padding-left:15px;
+margin-right:12px;
+  }
+  
+  .node .node-inner .links li.book_printer a {
+color:#3a6a8c;
+background: url('../images/printPage.png') center left no-repeat;
+padding-left:15px;
+margin-right:12px
+  }
+  
+  .node .node-inner .links li.book_add_child a {
+color:#3a6a8c;
+background: url('../images/addChildpage_plus.png') center left no-repeat;
+padding-left:15px;
+margin-right:12px
   }
 
 .block ul {

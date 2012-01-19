@@ -55,9 +55,9 @@ function os_files_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
        *  aliased file path since it takes over file processing early.  This code checks for a existing
        *  file alias and if it exists it changes the file path to the correct aliased path to reduce confusion.
        */
-      if (module_exists('itweak_upload') && module_exists('file_aliases') && isset($node->itweak_upload)) {
+      if (module_exists('itweak_upload') && module_exists('file_aliases') && isset($node->itu_files)) {
         $tmp_node = clone $node;
-        $tmp_node->files = $tmp_node->itweak_upload;
+        $tmp_node->files = $tmp_node->itu_files;
         if (($ffp = filefield_paths_get_fields($tmp_node, $op)) != FALSE) {
           $count = array();
           foreach ( $ffp['#files'] as &$file ) {
@@ -66,6 +66,7 @@ function os_files_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
               if (($alias = drupal_get_path_alias($filefield_paths_alias)) != $filefield_paths_alias) {
                 //If alias exists replace it in the file description
                 $node->content['itweak_upload']['#value'] = str_replace($file['field']['filepath'], $alias, $node->content['itweak_upload']['#value']);
+                $node->content['files']['#value'] = str_replace($file['field']['filepath'], $alias, $node->content['files']['#value']);
               }
             }
           }
