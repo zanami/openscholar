@@ -119,8 +119,10 @@ function os_books_link($type, $node, $teaser = FALSE) {
  * Changes the title of the Print View link
  */
 function os_books_link_alter(&$links, $node) {
+  $root = os_books_get_root($node);
   if (isset($links['book_printer'])) {
     $links['book_printer']['title'] = t('Print');
+    $links['book_printer']['href'] = 'book/export/html/'.$root->nid;
   }
 }
 
