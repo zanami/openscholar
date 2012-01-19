@@ -246,9 +246,14 @@ a.more {
    }
 
 .item-list ul.pager li a, .item-list ul.pager li a.active {
-    font-size:1.5em;
+    font-size:1em;
     
 }
+
+.item-list ul.pager li a:visited {
+  color:#005C9C;
+    }
+
 
 .page-iqss-gking-research-group #content div.node-type-person ul li {
   padding: 0;
