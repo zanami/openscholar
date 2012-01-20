@@ -15,16 +15,13 @@ Drupal.behaviors.os_boxes_follow = function (ctx) {
 		var val = $('#edit-link-to-add', $form).val(),
 			patt = /^https?:\/\/([^\/]+)/,
 			matches = patt.exec(val),
-			id = new_id++,
-			new_row = $(template.replace(/blank/g, id)),
-			i, fd;
+			new_row, id, i, fd, weight = -Infinity;
 		
 		// there should actually be something in the field
 		if (matches != null) {
 			var count = $('#edit-count'),
 				domain = matches[1],
 				domains = Drupal.settings.follow_networks;
-			count.val(parseInt(count.val())+1);
 			
 			// get domain
 			for (i in domains) {
@@ -36,12 +33,22 @@ Drupal.behaviors.os_boxes_follow = function (ctx) {
 			}
 			
 			// if we don't have a valid domain, don't make a new row
-			if (domain != matches[1]) {			
+			if (domain != matches[1]) {
+				id = new_id++;
+				new_row = $(template.replace(/blank/g, id));
+				count.val(parseInt(count.val())+1);
+				
+				// get the new weight
+				$('.field-weight', $form).each(function () {
+					if ($(this).val() > weight) {
+						weight = parseInt($(this).val())+1;
+					}
+				});
 				// set all the form elements in the new row
 				$('span', new_row).addClass('follow-icon '+domain).text(val);
 				$('#edit-links-'+id+'-title', new_row).val(val);
 				$('#edit-links-'+id+'-domain', new_row).val(domain);
-				$('#edit-links-'+id+'-weight', new_row).addClass('field-weight').val(id);
+				$('#edit-links-'+id+'-weight', new_row).addClass('field-weight').val(weight);
 				$('#edit-links-'+id+'-weight', new_row).parents('td').css('display', 'none');
 				$('.follow-icon', new_row).css('background-position', '-'+fd.offset+'px 0px');
 				//$('.tabledrag-handle', new_row).remove();
@@ -57,9 +64,11 @@ Drupal.behaviors.os_boxes_follow = function (ctx) {
 				// bein' lazy for now
 				alert(val+' is not from a valid social media domain.');
 			}
-			
-			$('#edit-link-to-add', $form).val('');
 		}
+		else {
+			alert(val+' is not from a valid social media domain.');
+		}
+		$('#edit-link-to-add', $form).val('');
 	});
 	
 	// set up remove links.

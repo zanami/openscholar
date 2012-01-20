@@ -77,61 +77,6 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 }
 
 /** modal forms CSS **/
-	
-.form-region-main .form-item, .form-region-right .form-item {
-    margin-top: 15px;
-}
-
-.form-item .form-item {
-    margin-top: 0px;
-}
-
-div.ctools-modal-content .form-item label.option {
-  width: auto;
-  float: none;
-  font-weight:normal;
-}
-
-div.ctools-modal-content .form-item .description {
-  clear: left;
- color: #888888;
-    font-style: italic;
-  margin-bottom:15px;
-}
-
-div.ctools-modal-content .form-item .description .tips {
-  margin-left: 2em;
-}
-
-div.ctools-modal-content .no-float .form-item * {
-  float: none;
-}
-
-div.ctools-modal-content .modal-form .no-float label  {
-  width: auto;
-}
-
-div.ctools-modal-content fieldset,
-div.ctools-modal-content .form-radios,
-div.ctools-modal-content .form-checkboxes {
-margin:0px;
-}
-
-div.ctools-modal-content fieldset {
-  padding-bottom: 10px;
-  clear: left;
-}
-
-div.ctools-modal-content #edit-settings-front-node-options-wrapper .form-checkboxes .form-item {
-  float: left;
-  margin-right: 7px;
-  }
-
-div.ctools-modal-content .resizable-textarea {
-  width: 60%;
-
-}
-
 
 #modalContent {
   padding: 0 23px 35px 40px;

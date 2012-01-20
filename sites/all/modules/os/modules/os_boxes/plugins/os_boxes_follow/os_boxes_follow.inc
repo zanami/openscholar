@@ -146,7 +146,7 @@ function os_boxes_follow_table($element) {
  * @param unknown_type $form
  */
 function os_boxes_follow_add_new_fields(&$element, $post, &$form_state, &$form) {
-  for ($i=$element['#default_value']; $i < $post['count']; $i++) {
+  for ($i=$element['#default_value']; $i < $element['#value']; $i++) {
     $form['options']['links'][$i] = $form['options']['links']['blank'];
     $form['options']['links'][$i] += array(
       '#attributes' => array('id' => $i),
@@ -243,7 +243,7 @@ function os_follow_default_networks() {
     'tumblr'    => array(
       'title' => t('Tumblr'),
       'domain' => 'tumblr.com',
-      'offset' => 3074,
+      'offset' => 3072,
     ),
   );
 

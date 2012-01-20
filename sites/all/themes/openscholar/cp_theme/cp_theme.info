@@ -12,7 +12,7 @@ stylesheets[all][]   = css/cp-theme.css
 stylesheets[all][]   = css/cp-typography.css
 stylesheets[all][]   = css/modal.css
 stylesheets[all][]   = css/spaces.css
-stylesheets[all][]   = css/forms.css
+;--- stylesheets[all][]   = css/forms.css
 stylesheets[all][]   = css/tabs.css
 stylesheets[all][]   = css/wysiwyg_imagefield.css
 
