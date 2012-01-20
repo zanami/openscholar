@@ -31,11 +31,25 @@ class vsite extends space_og {
    * Override of activate().
    */
   function activate(){
+  	
     if (!$this->verify_purl()) {
       $this->purge_request_destination();
 
       if($this->purl_provider){
-        purl_goto($_GET['q'], array('query' => drupal_query_string_encode($_GET, array('q')), 'purl' => array('provider' => $this->purl_provider, 'id' => $this->id)));
+      	//Set the provider to use for redirection
+      	$options = array('query' => drupal_query_string_encode($_GET, array('q')), 'purl' => array('provider' => $this->purl_provider, 'id' => $this->id));
+      	$path = $_GET['q'];
+
+      	$aliased = url($path);
+      	if($path != $aliased && isset($_REQUEST['q']) && $path == $_REQUEST['q']){
+      		// If the path we are going to has an alias, and the current page we are on does not use that
+      		// that alias value.  Then lets skip purl_goto since unaliased paths with a path prefix make it think it's
+      		// in a redirect loop.  ex( GET[q] will hold node/123 for both the aliases and non-aliased paths)
+      		$path = $this->get_absolute_url($path);
+      		drupal_goto($path);
+      	}
+
+        purl_goto($path, $options);
       }//Just like the check in spaces_purl_provider but with dynamic provider
     }
 
