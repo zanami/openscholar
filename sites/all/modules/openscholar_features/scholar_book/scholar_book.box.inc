@@ -38,5 +38,25 @@ function scholar_book_default_box() {
   );
   $export['scholar_book_recent_docs'] = $box;
 
+  $box = new stdClass;
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
+  $box->delta = 'scholar_documents_list';
+  $box->plugin_key = 'os_boxes_documents_list';
+  $box->title = '(New) Recent Documents';
+  $box->description = 'Recent Documents';
+  $box->options = array(
+    //'filter' => 'node:book',
+    'style' => 'titles',
+    //'sort' => 'newest',
+    //'argument' => '',
+    'number_of_items' => '6',
+    'use_pager' => 0,
+    'more' => 0,
+    'more_text' => '',
+    'more_link' => '',
+  );
+  $export['scholar_documents_list'] = $box;
+  
   return $export;
 }
