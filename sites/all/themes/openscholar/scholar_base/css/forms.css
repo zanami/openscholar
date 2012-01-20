@@ -634,7 +634,7 @@ div.form-checkboxes-scrolling {
   margin: 0;
   }
 
-.search-form label{
+.search-form .form-item label {
   display:none;
   }
 
