@@ -681,8 +681,8 @@ function os_boxes_box_validate(&$form, &$form_state){
 	ctools_include('plugins');
 	$box_class = ctools_plugin_load_class('boxes', 'plugins', $form_state['values']['plugin_key'], 'handler');
 	if ($box_class && is_callable("{$box_class}::options_validate")) {
-		$params = array($form, $form_state);
-		call_user_func_array(array($box_class,'options_validate'),&$params); //user_func_array is used to allow pass by ref
+		$params = array(&$form, &$form_state);
+		call_user_func_array(array($box_class,'options_validate'),$params); //user_func_array is used to allow pass by ref
 	}
 }
 
@@ -697,8 +697,8 @@ function os_boxes_box_submit(&$form, &$form_state){
 	ctools_include('plugins');
 	$box_class = ctools_plugin_load_class('boxes', 'plugins', $form_state['values']['plugin_key'], 'handler');
   if ($box_class && is_callable("{$box_class}::options_submit")) {
-  	$params = array($form, $form_state);
-    call_user_func_array(array($box_class,'options_submit'),&$params);
+  	$params = array(&$form, &$form_state);
+    call_user_func_array(array($box_class,'options_submit'),$params);
   }
 }
 
