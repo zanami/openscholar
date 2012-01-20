@@ -243,7 +243,7 @@ function os_follow_default_networks() {
     'tumblr'    => array(
       'title' => t('Tumblr'),
       'domain' => 'tumblr.com',
-      'offset' => 3074,
+      'offset' => 3072,
     ),
   );
 
