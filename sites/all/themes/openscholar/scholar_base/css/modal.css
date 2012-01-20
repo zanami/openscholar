@@ -110,15 +110,10 @@ div.ctools-modal-content .modal-form .no-float label  {
   width: auto;
 }
 
-div.ctools-modal-content fieldset,
-div.ctools-modal-content .form-radios,
-div.ctools-modal-content .form-checkboxes {
 
-}
 
 div.ctools-modal-content fieldset {
   padding-bottom: 10px;
-  border-bottom: 1px solid #ccc;
   clear: left;
 }
 
