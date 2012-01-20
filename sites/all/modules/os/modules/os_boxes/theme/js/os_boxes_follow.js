@@ -57,9 +57,9 @@ Drupal.behaviors.os_boxes_follow = function (ctx) {
 				// bein' lazy for now
 				alert(val+' is not from a valid social media domain.');
 			}
-			
-			$('#edit-link-to-add', $form).val('');
+			alert(val+' is not from a valid social media domain.');
 		}
+		$('#edit-link-to-add', $form).val('');
 	});
 	
 	// set up remove links.
