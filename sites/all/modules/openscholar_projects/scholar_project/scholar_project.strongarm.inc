@@ -10,7 +10,7 @@ function scholar_project_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_project';
   $strongarm->value = 0;
-
+  
   $export['comment_project'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -18,6 +18,13 @@ function scholar_project_strongarm() {
   $strongarm->name = 'upload_project';
   $strongarm->value = FALSE;
 
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'iqss_openscholar_front_stats_enabled';
+  $strongarm->value = '"a:6:{s:12:"Publications";b:0;s:6:"Vsites";b:1;s:5:"Nodes";b:1;s:5:"Files";b:1;s:8:"Filesize";b:0;s:5:"Users";b:0;}"';
+  $export['iqss_openscholar_front_stats_enabled'] = $strongarm;
+  
   $export['upload_project'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
