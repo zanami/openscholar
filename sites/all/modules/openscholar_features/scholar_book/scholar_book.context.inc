@@ -58,9 +58,9 @@ function scholar_book_context_default_contexts() {
           'weight' => 21,
           'region' => 'right',
         ),
-        'boxes-scholar_documents_list' => array(
+        'boxes-scholar_book_recent_docs' => array(
           'module' => 'boxes',
-          'delta' => 'scholar_documents_list',
+          'delta' => 'scholar_book_recent_docs',
           'weight' => 11,
           'region' => 'right',
           'label' => 'Recent documents',
