@@ -194,8 +194,8 @@ function os_boxes_boxes_plugins() {
     'access' => false, //Do not allow instances of this to be created
   );
 
-  $info['os_boxes_documents_list'] = array(
-    'title' => '*New! Recent Documents',
+  $info['os_boxes_recent_docs'] = array(
+    'title' => 'Recent Documents',
     'description' => 'List of Recently Created Documents',
     'tags' => array('Content'),
     'module dependencies' => array('scholar_book'),
