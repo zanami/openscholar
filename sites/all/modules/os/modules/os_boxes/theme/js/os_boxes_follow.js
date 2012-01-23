@@ -41,14 +41,18 @@ Drupal.behaviors.os_boxes_follow = function (ctx) {
 				// get the new weight
 				$('.field-weight', $form).each(function () {
 					if ($(this).val() > weight) {
-						weight = parseInt($(this).val())+1;
+						weight = parseInt($(this).val());
 					}
 				});
+				// there are no existing form elements, start at 0.
+				if (weight == -Infinity) {
+					weight = 0;
+				}
 				// set all the form elements in the new row
 				$('span', new_row).addClass('follow-icon '+domain).text(val);
 				$('#edit-links-'+id+'-title', new_row).val(val);
 				$('#edit-links-'+id+'-domain', new_row).val(domain);
-				$('#edit-links-'+id+'-weight', new_row).addClass('field-weight').val(weight);
+				$('#edit-links-'+id+'-weight', new_row).addClass('field-weight').val(weight+1);
 				$('#edit-links-'+id+'-weight', new_row).parents('td').css('display', 'none');
 				$('.follow-icon', new_row).css('background-position', '-'+fd.offset+'px 0px');
 				//$('.tabledrag-handle', new_row).remove();
@@ -58,6 +62,9 @@ Drupal.behaviors.os_boxes_follow = function (ctx) {
 				setup_remove(new_row);
 
 				tableDrag.makeDraggable(new_row[0]);
+				
+				// refreshes the variable
+				$form = $('#boxes-box-form');
 			}
 			else {
 				// alert the user that the domain was not invalid.
