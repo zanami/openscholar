@@ -37,7 +37,9 @@ function os_wysiwyg_init() {
 function os_wysiwyg_wysiwyg_editor_settings_alter(&$settings, $context) {
   if ($context['profile']->editor == 'tinymce') {
     drupal_add_js(drupal_get_path('module', 'os_wysiwyg').'/theme/os_wysiwyg.js', 'module');
-    
+
+    $settings['gecko_spellcheck'] = true;
+
     //Add the css from the public non/cp view if the editor is setup to use theme settings
     if($context['profile']->settings['css_setting'] == 'theme' && context_isset('context', 'vsite-section-cp')){
       os_wysiwyg_add_public_css($settings, $context);
@@ -135,28 +137,28 @@ function _os_wysiwyg_presets(){
  * @param array $context
  */
 function os_wysiwyg_add_public_css(&$settings, $context){
-	
+
 	$vsite = spaces_get_space();
 	//Are we in a site with a valid og_theme, if so continue
 	if(!$vsite || !$vsite->group->og_theme) return;
-	
+
 	$themes = list_themes();
 	$wysiwyg_styles = array();
-	
+
 	// Grab stylesheets from base theme
   if(isset($themes[$vsite->group->og_theme]->base_theme)) {
     $base = $themes[ $themes[$vsite->group->og_theme ]->base_theme];
     $wysiwyg_styles = _os_wysiwyg_get_theme_css($base);
   }
-	
+
   //Add css for the main theme
   if(isset($themes[$vsite->group->og_theme])) {
     $wysiwyg_styles = array_merge($wysiwyg_styles,_os_wysiwyg_get_theme_css($themes[$vsite->group->og_theme]));
-    
+
     if(function_exists('vsite_design_get_flavors')){
 	    // load the css for the theme flavor
 	    $flavor = variable_get('vsite_design_'.$vsite->group->og_theme.'_flavor', '');
-    
+
       $theme_flavors = vsite_design_get_flavors($vsite->group->og_theme);
 	    if ($flavor && isset($theme_flavors[$flavor]) && is_array($theme_flavors[$flavor]['css'])) {
 		    foreach ($theme_flavors[$flavor]['css'] as $s_css){
@@ -165,15 +167,15 @@ function os_wysiwyg_add_public_css(&$settings, $context){
 	    }
     }
   }
-  
+
   //Add custom wysiwyg css to the list to override some theme actions
   $wysiwyg_styles[] = base_path().drupal_get_path('module', 'os_wysiwyg').'/theme/os_wysiwyg.css';
-  
+
   $settings['content_css'] = implode(",",$wysiwyg_styles);
-  
+
   //Add node classes to the mce editor's iframe body to help match css styles
   $settings['body_class'] = "page-node not-front node node-inner content";
-  
+
 }
 
 /**
@@ -194,6 +196,6 @@ function _os_wysiwyg_get_theme_css($theme){
 	    }
 	  }
 	}
-  
+
   return $wysiwyg_styles;
 }
