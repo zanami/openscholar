@@ -62,20 +62,24 @@
 			active = nid;
 			
 			// start up jcarousels
-			jQuery.each(Drupal.settings.jcarousel, function (selector, options) {
-				$(selector+':visible').not('.has-jcarousel').addClass('has-jcarousel').removeClass('jcarousel-processed');
-				Drupal.behaviors.jcarousel();
-			});
+			if (typeof Drupal.settings.jcarousel != 'undefined') {
+				jQuery.each(Drupal.settings.jcarousel, function (selector, options) {
+					$(selector+':visible').not('.has-jcarousel').addClass('has-jcarousel').removeClass('jcarousel-processed');
+					Drupal.behaviors.jcarousel();
+				});
+			}
 		}
 	}
 	
 	// stick our behavior at the front so it runs before jcarousel
 	var new_behaviors = {
 		os_books_jcarousel: function () {
-			jQuery.each(Drupal.settings.jcarousel, function(selector, options) {
-				// prevents jcarousel from running on hidden elements
-				$(selector).not(':visible').addClass('jcarousel-processed');
-			});
+			if (typeof Drupal.settings.jcarousel != 'undefined') {
+				jQuery.each(Drupal.settings.jcarousel, function(selector, options) {
+					// prevents jcarousel from running on hidden elements
+					$(selector).not(':visible').addClass('jcarousel-processed');
+				});
+			}
 		}
 	};
 	Drupal.behaviors = $.extend(new_behaviors, Drupal.behaviors);
