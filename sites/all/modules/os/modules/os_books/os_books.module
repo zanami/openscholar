@@ -101,7 +101,7 @@ function os_books_preprocess_book_export_html(&$vars) {
  */
 function os_books_link($type, $node, $teaser = FALSE) {
   $links = array();
-  if ($type == 'node' && $node->type == 'book') {
+  if ($type == 'node' && $node->type == 'book' && !$teaser) {
     $links['permalink'] = array(
       'title' => t('Permalink'),
       'href' => drupal_get_path_alias('node/'. $node->nid),
