@@ -441,7 +441,7 @@ Drupal.tableDrag.prototype.dropRow = function(event, self) {
       // fields in the entire dragged group.
       for (var group in self.tableSettings) {
         var rowSettings = self.rowSettings(group, droppedRow);
-        if (typeof rowSettings != 'undefined' && rowSettings.relationship == 'group') {
+        if (rowSettings.relationship == 'group') {
           for (n in self.rowObject.children) {
             self.updateField(self.rowObject.children[n], group);
           }
@@ -610,11 +610,11 @@ Drupal.tableDrag.prototype.updateField = function(changedRow, group) {
   var rowSettings = this.rowSettings(group, changedRow);
 
   // Set the row as it's own target.
-  if (typeof rowSettings != 'undefined' && (rowSettings.relationship == 'self' || rowSettings.relationship == 'group')) {
+  if (rowSettings.relationship == 'self' || rowSettings.relationship == 'group') {
     var sourceRow = changedRow;
   }
   // Siblings are easy, check previous and next rows.
-  else if (typeof rowSettings != 'undefined' && rowSettings.relationship == 'sibling') {
+  else if (rowSettings.relationship == 'sibling') {
     var previousRow = $(changedRow).prev('tr').get(0);
     var nextRow = $(changedRow).next('tr').get(0);
     var sourceRow = changedRow;
@@ -641,7 +641,7 @@ Drupal.tableDrag.prototype.updateField = function(changedRow, group) {
   }
   // Parents, look up the tree until we find a field not in this group.
   // Go up as many parents as indentations in the changed row.
-  else if (typeof rowSettings != 'undefined' && rowSettings.relationship == 'parent') {
+  else if (rowSettings.relationship == 'parent') {
     var previousRow = $(changedRow).prev('tr');
     while (previousRow.length && $('.indentation', previousRow).length >= this.rowObject.indents) {
       previousRow = previousRow.prev('tr');
@@ -675,11 +675,9 @@ Drupal.tableDrag.prototype.updateField = function(changedRow, group) {
     rowSettings.relationship = 'sibling';
     rowSettings.source = rowSettings.target;
   }
-  
-  if (typeof rowSettings != 'undefined') {
-    var targetClass = '.' + rowSettings.target;
-    var targetElement = $(targetClass, changedRow).get(0);
-  }
+
+  var targetClass = '.' + rowSettings.target;
+  var targetElement = $(targetClass, changedRow).get(0);
 
   // Check if a target element exists in this row.
   if (targetElement) {
