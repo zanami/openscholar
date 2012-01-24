@@ -3,16 +3,16 @@
  * or the book links in the content area and the actual contents of a book page
  */
 (function($){
-	var display, header, content = {}, active, perma;
+	var display, header, content = {}, active, links;
 	
 	Drupal.behaviors.os_book_linkage = function() {
 		if (!$('body.node-type-book').length) return;
 		var pages = $('.book-page');
 		display = $('#content .book-page').parent();
 		var blocks = $().not('*');
-		perma = $('#book-permalink');
 		header = $('#content-main .title').not('.book-menu .title');
 		active = $('#content-main .node').attr('id').replace('node-','');
+		links = $('#content-main .links-inline');
 		
 		pages.each(function(index, elem){
 			// get the nid of the content
@@ -43,12 +43,12 @@
 	function toc_click(e) {
 		var nid = e.target.getAttribute('nid');
 		if (content[nid]) {
+			e.preventDefault();
 			$('*:not(.book-menu, .book-menu *)', display).remove();
 			display.append(content[nid].content);
 			$('*:not(.book-menu,.book-menu *)', display).fadeIn();
 			header.html(content[nid].title);
-			perma.attr('href', e.target.getAttribute('href'));
-			e.preventDefault();
+			links.html($('ul.links', display).addClass('inline'));
 			
 			// deal with the 'active' class
 			$('a[nid="'+active+'"]').removeClass('active');

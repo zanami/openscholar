@@ -92,6 +92,14 @@ function os_books_preprocess_node(&$vars) {
   }
 }
 
+function os_books_preprocess_book_node_export_html(&$vars) {
+  $node = $vars['node'];
+  $node->links = module_invoke_all('link', 'node', $node, false);
+  drupal_alter('link', $node->links, $node);
+
+  $vars['content'] .= theme('links', $node->links);
+}
+
 function os_books_preprocess_book_export_html(&$vars) {
   $vars['head'] .= '    <link type="text/css" rel="stylesheet" href="'.$GLOBALS['base_url'].'/'.drupal_get_path('module', 'os_books').'/os_books_print.css'.'"/>'."\r\n";
 }
