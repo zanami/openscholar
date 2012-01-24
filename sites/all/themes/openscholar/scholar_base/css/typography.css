@@ -240,11 +240,17 @@ ol li {
   list-style: decimal outside;
   }
 
-.node-inner .content ul {
+/*
+ * body.node-inner is used to apply this theme to the wysiwyg editor as well
+ * since we can't mimick layerd classes
+ */  
+.node-inner .content ul,
+body.node-inner ul{
   padding-left: 2em;
   }
 
-.node-inner .content ul li {
+.node-inner .content ul li,
+body.node-inner ul li {
   list-style: disc outside;
   padding:0 0 0 3px;
   }
@@ -269,37 +275,48 @@ ol li {
   margin:0;
   }
 
-.node-inner .content ul li li {
+.node-inner .content ul li li,
+body.node-inner ul li li {
   list-style: circle outside;
   padding:0 0 0 3px;
   }
 
-.node-inner .content li ol li {
+.node-inner .content li ol li,
+body.node-inner li ol li {
 	list-style-type: upper-roman;
 	}
 
 .node-inner .content li li ol li,
 .node-inner .content li li li ol li,
-.node-inner .content li li li li ol li {
+.node-inner .content li li li li ol li,
+body.node-inner li li ol li,
+body.node-inner li li li ol li,
+body.node-inner li li li li ol li {
 	list-style-type: lower-alpha;
 	}
 
 .node-inner .content li li ul li,
 .node-inner .content li li li ul li,
-.node-inner .content li li li li ul li {
+.node-inner .content li li li li ul li,
+body.node-inner li li ul li,
+body.node-inner li li li ul li,
+body.node-inner li li li li ul li {
 	list-style-type: circle;
 	}
 
-.node-inner .content ol li ol {
+.node-inner .content ol li ol,
+body.node-inner ol li ol {
 	margin-bottom: 2.5em;
 	}
 
-.node-inner .content li p {
+.node-inner .content li p,
+body.node-inner li p {
 	margin-top: 1.5em;
 	margin-bottom: 0
 	}
 
-.node-inner .content li p:first-child {
+.node-inner .content li p:first-child,
+body.node-inner li p:first-child {
 	margin-top: 0
 	}
 
