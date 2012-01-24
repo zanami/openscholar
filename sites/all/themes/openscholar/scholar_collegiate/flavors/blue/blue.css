@@ -31,8 +31,14 @@ border-bottom: 2px solid #8D3129;
 .more-link a {
 	color:#2a548d;
  }
-  
-.node-inner .content ul li {list-style-image:url('images/arrowBullet.gif');color:#2a548d;}
+
+/**
+ * body.node-inner added to apply this to wysiwyg as well
+ */ 
+.node-inner .content ul li,
+body.node-inner ul li {
+   list-style-image:url('images/arrowBullet.gif');color:#2a548d;
+}
 
 body.front #content-top h3.title, body.front #content-bottom h3.title, body.front #content-right h3.title, body.front #content-left h3.title {
 border-top: 2px solid #8D3129;
