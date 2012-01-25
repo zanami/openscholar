@@ -693,6 +693,20 @@ function os_update_6012(&$sandbox) {
   }
 }
 
+/**
+ * Implements hook_update_N
+ *
+ * Enables jcaruousel module
+ **/
+function os_update_6013(&$sandbox) {
+  $ret = array();
+  
+  $modules = array('jcarousel');
+  module_enable($modules);
+  
+  return $ret;
+}
+
 function _os_boxes_migrate_info() {
   return array(
     "scholar-0" => "site_info",
