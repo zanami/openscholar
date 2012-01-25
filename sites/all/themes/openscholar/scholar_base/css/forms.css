@@ -145,6 +145,7 @@ legend,
 
 html.js fieldset.collapsed {
   height: 20px;
+  background-color: #fff;	
   }
 
 #modal-content fieldset {
@@ -171,11 +172,6 @@ html.js fieldset.collapsed legend a {
 
 .collapsible {
   background-color: #F3F3F3;;
-  }
-
-
-.collapsed {
-  background-color: #fff;
   }
 
 .form-region-main .resizable-textarea {
