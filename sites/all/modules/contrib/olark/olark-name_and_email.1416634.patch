@@ -1,0 +1,8 @@
+14,17c14,15
+<         if ((typeof Drupal.settings.olark.mail != 'undefined') && typeof Drupal.settings.olark.name != 'undefined') {
+<           olark('api.visitor.updateEmailAddress', {emailAddress: Drupal.settings.olark.mail});
+<           olark('api.visitor.updateFullName', {fullName: Drupal.settings.olark.name});
+<         }
+---
+>         //$('#habla_pre_chat_name_input').val(Drupal.settings.olark.name);
+>         //$('#habla_pre_chat_email_input').val(Drupal.settings.olark.mail);
