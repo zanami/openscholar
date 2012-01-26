@@ -85,7 +85,7 @@ function citation_distribute_uninstall(){
   drupal_uninstall_schema('citation_distribute');
   
   //remove autoflag variables
-  foreach( _plugins() as $plugin ) {																	
+  foreach( _citation_distribute_plugins() as $plugin ) {																	
 		variable_del('citation_distribute_' . $plugin['name'] . '_auto_flag', false);
   }
   
