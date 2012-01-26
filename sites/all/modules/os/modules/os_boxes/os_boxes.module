@@ -166,18 +166,6 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     )
   );
-
-  $info['os_boxes_statcounter'] = array(
-    'title' => 'Stat Counter',
-    'description' => t('Track your site statistics with Stat Counter.'),
-    'tags' => array('Social'),
-    'handler' => array(
-      'class' => 'os_boxes_statcounter',
-      'file' => 'os_boxes_statcounter.inc',
-      'path' => $path . '/os_boxes_statcounter',
-      'parent' => 'os_boxes_default',
-    )
-  );
   
   $info['os_boxes_booktoc'] = array(
     'title' => 'Book Table of Contents',
