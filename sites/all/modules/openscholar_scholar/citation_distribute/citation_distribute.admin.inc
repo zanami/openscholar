@@ -45,7 +45,7 @@ function citation_distribute_admin() {
 	  '#collapsed' => FALSE,
 	 );
 	 
-   foreach (_plugins() as $plugin) {
+   foreach (_citation_distribute_plugins() as $plugin) {
      if (isset($plugin['title'])) {
 	     $name = $plugin['handler']['class'];	  
 	     $form['citation_distribute']['autoflag'][$name . '_auto_flag'] = array(
@@ -76,7 +76,7 @@ function citation_distribute_admin_validate($form, &$form_state) {
  * Fetches and returns admin form from a plugin.
  */
 function citation_distribute_plugin_admin($args, $plugin) {
-  $plugins = _plugins();
+  $plugins = _citation_distribute_plugins();
  
 	if ($class = ctools_plugin_get_class($plugins[$plugin], 'handler', TRUE)) {
 		if ($service = new $class()) {							

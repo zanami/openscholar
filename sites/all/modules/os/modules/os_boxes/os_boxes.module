@@ -166,7 +166,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     )
   );
-
+  
   $info['os_boxes_booktoc'] = array(
     'title' => 'Book Table of Contents',
     'description' => 'Table of Contents',

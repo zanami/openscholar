@@ -26,7 +26,7 @@ function citation_distribute_menu() {
 	);
 	
 	/* add a menu link for each plugin that implements admin_menu() */
-	foreach (_plugins() as $plugin) {
+	foreach (_citation_distribute_plugins() as $plugin) {
 	  if ($plugin['title'] && $class = ctools_plugin_get_class($plugin, 'handler', TRUE)) {
   		$service = new $class();
   		
@@ -170,7 +170,7 @@ function citation_distribute_form_alter(&$form, $form_state, $form_id) {
 		);
 		
 		// List all plugins with a title
-		foreach( _plugins() as $plugin ) {				
+		foreach( _citation_distribute_plugins() as $plugin ) {				
 			if (isset($plugin['title'])) {
 				$status = db_fetch_object( db_query( "SELECT nid,noauto from {citation_distribute} WHERE plugin = '%s' AND nid = %d ", 
 																  	$plugin['name'], $form['nid']['#value'] ));
@@ -213,7 +213,7 @@ function citation_distribute_nodeapi(&$node, $op, $a3) {
 			case 'update':
 				$distributed = array();
 				
-				foreach( _plugins() as $plugin ) {
+				foreach( _citation_distribute_plugins() as $plugin ) {
 					if (isset($node->{$plugin['name']})) {
 						$flag = flag_get_flag($plugin['name']);
 
@@ -233,7 +233,7 @@ function citation_distribute_nodeapi(&$node, $op, $a3) {
 
 			case 'validate':			
 				//repec and dash need to validate.  here or in validate hook?
-				foreach (_plugins() as $plugin) {
+				foreach (_citation_distribute_plugins() as $plugin) {
 					if ( isset($node->$plugin['name']) && $node->$plugin['name'] )  {
 						if ($class = ctools_plugin_get_class($plugin, 'handler', TRUE)) {
 							$service = new $class();
@@ -249,7 +249,7 @@ function citation_distribute_nodeapi(&$node, $op, $a3) {
 
 			case 'delete':
 				//clean up flags from deleted nodes
-				foreach( _plugins() as $plugin ) {
+				foreach( _citation_distribute_plugins() as $plugin ) {
 					if ( $flag = flag_get_flag($plugin['name']) ){
   					$flag->flag('unflag', (int)$node -> nid);
      			  _citation_distribute_removefrom_db($plugin['name'], (int)$node->nid); //node is gone, remove its entry
@@ -267,12 +267,12 @@ function citation_distribute_nodeapi(&$node, $op, $a3) {
 function citation_distribute_flag($event, $flag, $nid, $account) {
   $dist_mode = variable_get('citation_distribute_module_mode', '');
 		
-	foreach (_plugins() as $plugin) {
+	foreach (_citation_distribute_plugins() as $plugin) {
 		if ($flag->name == $plugin['name']) {
 			switch($event) {
 				
 				case 'flag':
-					if (!_published($nid)) {
+					if (!_citation_distribute_published($nid)) {
 					  // don't send unpublished nodes to repos.  break before db is updated.
 				    drupal_set_message('This node is not listed for publication and has not been sent to ' . $plugin['title'] . '.' ,'warning');
 				    break;
@@ -321,7 +321,7 @@ function citation_distribute_preprocess_page(&$variables) {
 	if (isset ($variables['node'])) {
 				
 		/* check that each metadata plugin has been marked for this node.  add metadata for marked ones */
-		foreach(_plugins() as $plugin) {
+		foreach(_citation_distribute_plugins() as $plugin) {
 			if (isset($plugin['type']) && isset($plugin['name']) && $plugin['type'] == 'metadata') {
 				$query = "SELECT nid FROM {citation_distribute} WHERE plugin = '%s' AND nid = %d AND noauto != 1";
 				
@@ -355,7 +355,7 @@ function citation_distribute_theme($existing, $type, $theme, $path) {
 	);
 	
 	/* metadata plugins also ahve the option to theme their output */
-	foreach(_plugins() as $plugin) {
+	foreach(_citation_distribute_plugins() as $plugin) {
 		if ($plugin['type'] == 'metadata') {
 			$theme[$plugin['name']] = array(
 				'arguments' => $args_array,
@@ -379,7 +379,7 @@ function citation_distribute_theme($existing, $type, $theme, $path) {
  *   name of plugin to distribute to
  */
 function _citation_distribute_distribute($nid, $plugin_name) {
-	$plugins = _plugins();
+	$plugins = _citation_distribute_plugins();
 	$plugin = $plugins[$plugin_name];
 	
 	if ($class = ctools_plugin_get_class($plugin, 'handler', TRUE)) {
@@ -464,7 +464,7 @@ function _citation_distribute_unlist_db($plugin, $nid, $batch_command = '') {
  */
 function citation_distribute_flag_default_flags($flags = array(), $i = 0) {
 		
-	foreach (_plugins() as $plugin) {
+	foreach (_citation_distribute_plugins() as $plugin) {
 		if ($plugin['title']) {
 			$flags[] = array (
 			  'content_type' => 'node', 
@@ -516,7 +516,7 @@ function citation_distribute_flag_default_flags($flags = array(), $i = 0) {
  */
 function citation_distribute_views_pre_render(&$view) {
 	if ($view->name == 'vsite_content') {
-	  $plugins = _plugins();
+	  $plugins = _citation_distribute_plugins();
 	  
 		$plugin = $view->style_plugin->options;
 		foreach($view->style_plugin->all_operations as $op => $def) {
@@ -538,7 +538,7 @@ function citation_distribute_views_pre_render(&$view) {
  * @return
  *   List of all citation_distribute plugins
  */
-function _plugins() {
+function _citation_distribute_plugins() {
 	ctools_include('plugins');
 	$plugins = ctools_get_plugins('citation_distribute', 'plugins');
 	return $plugins;
@@ -551,7 +551,7 @@ function _plugins() {
  * for metadata nodes, this is meaningless, but updates their db status
  */
 function citation_distribute_cron() {
-	$plugins = _plugins();
+	$plugins = _citation_distribute_plugins();
 	
 	//filter out plugins with no title.  these are abstract plugins that won't have push methods
 	function has_title($p) {return (isset($p['title']) && count($p['title']) > 0); }
@@ -570,7 +570,7 @@ function citation_distribute_cron() {
 
 	while($res = db_fetch_object($result)) {
 	  
-  	if (!_published($res->nid)) {
+  	if (!_citation_distribute_published($res->nid)) {
       break;  	  // don't send unpublished nodes to repos. 
     }
 		
@@ -608,7 +608,7 @@ function citation_distribute_cron() {
  * Enter description here ...
  * @param $nid
  */
-function _published($nid) {  
+function _citation_distribute_published($nid) {  
   $query = 'SELECT status FROM {node} WHERE nid = %d';
   $result = db_query($query, $nid);
   $r = db_fetch_object($result);

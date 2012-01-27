@@ -10,7 +10,7 @@
  *   Returns textual list of the repositories titles.
  */
 function theme_citation_distribute_form_msg($modules = NULL){
-  $plugins = _plugins();
+  $plugins = _citation_distribute_plugins();
   
   if ($modules) {
   	$out = array(); 

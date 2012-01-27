@@ -699,12 +699,9 @@ function os_update_6012(&$sandbox) {
  * Enables jcaruousel module
  **/
 function os_update_6013(&$sandbox) {
-  $ret = array();
-  
   $modules = array('jcarousel');
   module_enable($modules);
-  
-  return $ret;
+  return array(array('success' => TRUE, 'query' => "'jcarousel' module enabled."));
 }
 
 function _os_boxes_migrate_info() {

@@ -229,7 +229,6 @@ function vsite_menus_settings_form_after_build($form, &$form_state) {
   //CSS To be included with the form
   drupal_add_js(drupal_get_path('module', 'nodeformcols') . '/js/nodeformcols.js');
   drupal_add_css(drupal_get_path('module', 'vsite_menus') . '/theme/vsite_menus.css');
-
   $regions = _vsite_menus_get_menus();    // this line is why I needed to copy it
   foreach ($regions as $region => $title) {
     if (is_array($form['conf'][$region])) {
