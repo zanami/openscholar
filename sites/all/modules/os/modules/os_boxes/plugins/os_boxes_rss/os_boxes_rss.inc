@@ -12,7 +12,7 @@ class os_boxes_rss extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
 
-    $options['license_type'] = 'all';
+    $options['content'] = 'all';
     return $options;
   }
 
@@ -26,6 +26,7 @@ class os_boxes_rss extends os_boxes_default {
     $form['content'] = array(
       '#type' => 'select',
       '#title' => t('Content Types to Display'),
+      '#default_value' => $this->options['content'],
       '#options' => array(
         'all' => t('All')
       ) + array_filter($types),

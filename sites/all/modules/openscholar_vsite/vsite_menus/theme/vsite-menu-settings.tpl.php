@@ -15,11 +15,9 @@ $regions = _vsite_menus_get_menus();  // this line is why I needed to copy it
       <tr class="region region-<?php print $region?>">
         <td colspan="4" class="region"><?php print $title; ?></td>
       </tr>
-      <?php if (empty($element[$region])): ?>
       <tr class="region-message region-<?php print $region?>-message <?php print empty($element[$region]) ? 'region-empty' : 'region-populated'; ?>">
         <td colspan="4"><em><?php print ($region!='none')?t('No links in this menu'):t('Drag links here to hide or delete them.'); ?></em></td>
       </tr>
-      <?php endif; ?>
       <?php if (!empty($element[$region])): ?>
         <?php foreach ($element[$region] as $field => $data): ?>
           <?php

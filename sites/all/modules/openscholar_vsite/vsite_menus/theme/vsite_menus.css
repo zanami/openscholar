@@ -39,3 +39,7 @@
 .vsite-menus-new-menu {
 	float: right;
 }
+
+#fields tr.region-populated {
+	display: none;
+}
