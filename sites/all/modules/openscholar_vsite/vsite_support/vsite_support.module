@@ -240,12 +240,12 @@ function vsite_support_mail($key, &$message, $params){
   }
 }
 
-
+/**
+ * menu page callback for cp/support/help
+ * 
+ * returns advanced help's html for User-Documentation page
+ **/
 function vsite_support_user_doc() {
-
-  $content = ' '.
-             "<div class=\"view-vsite-support\"><p>Click " . l('here', 'help/vsitehelp/User-Documentation', array('purl' => array('disabled' => TRUE))) . " to view the User Documentation help page.<p></div>"
-             .' ';
-
+   $content = '<div style="overflow-y:hidden">' . advanced_help_view_topic('vsitehelp', 'User-Documentation', TRUE) . '</div>';
   return $content;
 }
