@@ -30,10 +30,11 @@ function os_books_build_tree($node, $flatten = false) {
 
   if (isset($root->book)) {
     $cache = _os_books_get_cache($root->nid);
-    if ($cache) return $cache;
+    //if ($cache) return $cache;
 
     $tree = book_menu_subtree_data($root->book);
     if ($flatten) $tree = _os_books_flatten_book($tree);
+    _os_books_display_links(true);
     $output = book_export_traverse($tree, false);
 
     $cache_key = _os_books_get_cache_key($root->nid);
@@ -93,11 +94,13 @@ function os_books_preprocess_node(&$vars) {
 }
 
 function os_books_preprocess_book_node_export_html(&$vars) {
-  $node = $vars['node'];
-  $node->links = module_invoke_all('link', 'node', $node, false);
-  drupal_alter('link', $node->links, $node);
+  if (_os_books_display_links()) {
+    $node = $vars['node'];
+    $node->links = module_invoke_all('link', 'node', $node, false);
+    drupal_alter('link', $node->links, $node);
 
-  $vars['content'] .= theme('links', $node->links);
+    $vars['content'] .= theme('links', $node->links);
+  }
 }
 
 function os_books_preprocess_book_export_html(&$vars) {
@@ -148,6 +151,18 @@ function _os_books_flatten_book($tree) {
     $result = array_merge($result, _os_books_flatten_book($value['below']));
   }
   return $result;
+}
+
+/**
+ * Helper function to show links in full book view, but not printed view
+ */
+function _os_books_display_links($supp = null) {
+  static $suppress = false;
+
+  if ($supp)
+    $suppress = !!$supp;
+
+  return $suppress;
 }
 
 function _os_books_get_cache($root) {
