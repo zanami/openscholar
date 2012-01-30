@@ -3,10 +3,3 @@
 name = Olark Chat
 description = Olark chat integration.
 core = 6.x
-
-; Information added by drupal.org packaging script on 2011-04-12
-version = "6.x-1.0"
-core = "6.x"
-project = "olark"
-datestamp = "1302601016"
-
