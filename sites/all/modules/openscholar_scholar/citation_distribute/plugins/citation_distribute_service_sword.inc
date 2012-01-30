@@ -161,7 +161,7 @@ abstract class citation_distribute_service_sword extends citation_distribute_ser
 		/* attempt a deposit */
 		if ($deposit_url) {
 			try {
-				$deposit = $sac->deposit($deposit_url, $this->username, $this->password, $this->obo, $file, $this->packaging, 'application/zip');
+				$deposit = $sac->deposit($deposit_url, $this->username, variable_get($this->password, FALSE), $this->obo, $file, $this->packaging, 'application/zip');
 			} catch(Exception $e) {
 				drupal_set_message('Deposit error: ' . $deposit, 'error');
 				return false;
@@ -187,7 +187,7 @@ abstract class citation_distribute_service_sword extends citation_distribute_ser
 
 		/* retrieve service document from sword server */
 		$service_url = $this->location . 'sword/servicedocument';
-		$sac_doc = $sac->servicedocument($service_url, $this->username, $this->password, $this->obo);
+		$sac_doc = $sac->servicedocument($service_url, $this->username, variable_get($this->password, FALSE), $this->obo);
 	  
 	  /* check status of service doc.  fix errors if possible, bail if not */
 		switch($sac_doc->sac_status) {

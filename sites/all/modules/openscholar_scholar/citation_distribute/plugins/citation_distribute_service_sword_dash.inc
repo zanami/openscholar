@@ -9,7 +9,7 @@ class citation_distribute_service_sword_dash extends citation_distribute_service
 	public $title = 		'DASH';
 	public $location = 	'http://dash.harvard.edu';
 	public $username = 	'swap@lists.iq.harvard.edu';
-	public $password =  'sharepass';
+	public $password =  'citation_distribute_dash_password';    //variable to fetch for this password
 	public $root_in  =  '/tmp/sword';
 	public $subdir_in = 'dash';
 	public $root_out =  '/tmp/sword';
