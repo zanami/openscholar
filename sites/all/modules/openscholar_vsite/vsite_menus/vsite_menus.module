@@ -63,18 +63,6 @@ function vsite_menus_nodeapi(&$node, $op) {
 	if(!$vsite) return;
 
   switch ($op) {
-  	case 'presave':
-  		//Manage Vsite Path settings
-      if (module_exists('path') && module_exists('pathauto')) {
-        // About to be saved (before insert/update)
-        // Only add to an alias if the checkbox was not provided or if the checkbox was provided and is unchecked
-        if (!isset($node->pathauto_perform_alias) || !$node->pathauto_perform_alias) {
-          if (strlen($node->path) && strpos($node->path, $vsite->group->purl . "/") !== 0 && $vsite && $node->nid != $vsite->group->nid && strlen($vsite->group->purl)) {
-            $node->path = $vsite->group->purl . "/" . $node->path;
-          }//Did they provide a path?  is the site purl already prepended?
-        }
-      }//Is Pathauto Enabled?
-      break;
     case 'insert':
     case 'update':
       if (isset($node->vsite_menu)) {
@@ -279,7 +267,7 @@ function vsite_menus_form_alter(&$form, $form_state, $form_id) {
           $pattern = trim(variable_get('pathauto_node_'. $form['type']['#value'] .'_'. $language .'_pattern', false));
         }
 
-        if(!$pattern) trim(variable_get('pathauto_node_'. $form['type']['#value'] .'_pattern', variable_get('pathauto_node_pattern', '')));
+        if(!$pattern) $pattern = trim(variable_get('pathauto_node_'. $form['type']['#value'] .'_pattern', variable_get('pathauto_node_pattern', '')));
 
         // If there is a pattern AND the user is allowed to create aliases AND the path textbox is present on this form
         if (!empty($pattern) &&isset($form['path']['path']) && ($vsite->access_admin() || user_access('administer menu'))) {

@@ -733,48 +733,10 @@ function vsite_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
 
     break;
     case 'presave' :
-      // -- Take Care of the Issues present when pathauto and purl coexist --
-      // To elaborate, since purl adds a prefix to the path to distinguish between vsite's we must manually
-      // check to make sure that the url without the prefix does not match an existing path.
+      // -- Take Care of the Issues present when pathauto and purl coexist --.
+      _vsite_alter_node_path_settings($node);
+      
       $vsite = vsite_get_vsite();
-      if (module_exists('path') && module_exists('pathauto') && $vsite) {
-
-        _pathauto_include();
-        // Get the specific pattern or the default
-        if (variable_get('language_content_type_' . $node->type, 0)) {
-          $pattern = trim(variable_get('pathauto_node_' . $node->type . '_' . $node->language . '_pattern', FALSE));
-        }
-        if (empty($pattern)) {
-          $pattern = trim(variable_get('pathauto_node_' . $node->type . '_pattern', FALSE));
-          if (empty($pattern)) {
-            $pattern = trim(variable_get('pathauto_node_pattern', FALSE));
-          }
-        }
-        // Only do work if there's a pattern
-        if ($pattern) {
-          // Only check an alias if the checkbox was not provided or if the checkbox was provided and is checked
-          if (! isset($node->pathauto_perform_alias) || $node->pathauto_perform_alias) {
-            $placeholders = pathauto_get_placeholders('node', $node);
-            $src = "node/$node->nid";
-            $alias = pathauto_create_alias('node', 'return', $placeholders, $src, $node->nid, $node->type, $node->language);
-
-            $s_proccessor = defined('PURL_VSITE_PATH') ? PURL_VSITE_PATH : PURL_PATH;
-            $processor = purl_get_processor($s_proccessor);
-            $parsed = purl_parse($processor, $alias);
-            foreach ( $parsed as $element ) {
-              $alias = $processor->remove($alias, $element);
-            }
-
-            if (_pathauto_path_is_callback($alias)) {
-              //Cancel the pathauto for this node
-              $node->pathauto_perform_alias = false;
-              return;
-            }
-          }
-        }
-      } //END fix pathauto / purl conflicts
-
-
       //Have this node avalible to the public and we will hide private using the vsite->menu_access function
       $map = features_get_component_map('node');
       $feature_name = $map[$node->type][0];
@@ -1246,4 +1208,61 @@ function _vsite_feature_default_view($feature){
   } //there is a path associated with the context and it points to a view
 
   return false;
+}
+
+/**
+ * Called from nodeapi presave
+ *
+ * Provide some pathauto/purl integration
+ *
+ * - Add extra validation to make sure that a path withouth the purl prefix does not already exist
+ * - Add the purl prefix to manually created paths to preserve namespace
+ */
+function _vsite_alter_node_path_settings(&$node){
+	
+	$vsite = vsite_get_vsite();
+  if (module_exists('path') && module_exists('pathauto') && $vsite) {
+    
+    _pathauto_include();
+    // Get the specific pattern or the default
+    if (variable_get('language_content_type_' . $node->type, 0)) {
+      $pattern = trim(variable_get('pathauto_node_' . $node->type . '_' . $node->language . '_pattern', FALSE));
+    }
+    if (empty($pattern)) {
+      $pattern = trim(variable_get('pathauto_node_' . $node->type . '_pattern', FALSE));
+      if (empty($pattern)) {
+        $pattern = trim(variable_get('pathauto_node_pattern', FALSE));
+      }
+    }
+    
+    // Only do work if there's a pathauto pattern
+    if ($pattern) {
+      // Only check an alias if the checkbox was not provided or if the checkbox was provided and is checked
+      if (! isset($node->pathauto_perform_alias) || $node->pathauto_perform_alias) {
+        $placeholders = pathauto_get_placeholders('node', $node);
+        $src = "node/$node->nid";
+        $alias = pathauto_create_alias('node', 'return', $placeholders, $src, $node->nid, $node->type, $node->language);
+        
+        $s_proccessor = defined('PURL_VSITE_PATH') ? PURL_VSITE_PATH : PURL_PATH;
+        $processor = purl_get_processor($s_proccessor);
+        $parsed = purl_parse($processor, $alias);
+        foreach ( $parsed as $element ) {
+          $alias = $processor->remove($alias, $element);
+        }
+        
+        if (_pathauto_path_is_callback($alias)) {
+          //Cancel the pathauto for this node
+          $node->pathauto_perform_alias = false;
+          return;
+        }
+      }
+    }
+    
+    // Prefix the alias with the purl modifier if there is no pattern for this node, if the checkbox was not provided, or if the checkbox was provided and is unchecked
+    if (!$pattern || ! isset($node->pathauto_perform_alias) || ! $node->pathauto_perform_alias) {
+      if (strlen($node->path) && strpos($node->path, $vsite->group->purl . "/") !== 0 && $vsite && $node->nid != $vsite->group->nid && strlen($vsite->group->purl)) {
+        $node->path = $vsite->group->purl . "/" . $node->path;
+      } //Did they provide a path?  is the site purl already prepended?
+    }
+  }
 }
