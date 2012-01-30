@@ -290,10 +290,6 @@ function openscholar_profile_tasks(&$task, $url) {
     // biblio configuraitons
     _openscholar_configure_biblio();
 
-    if (function_exists('strongarm_init')) {
-      strongarm_init();
-    }
-
     // Rebuild the caches
     drupal_flush_all_caches();
 
@@ -374,13 +370,18 @@ function _openscholar_revert_strongarm_overrides(){
 
   if(module_exists('strongarm')){
 
-    $vars = strongarm_vars_load(true,true);
-    foreach ($vars as $name => $variable) {
-    	$default = ctools_get_default_object('variable', $name);
-      if($default && $variable->value != $default->value){
-        variable_del($name);
+    $defaults = features_get_default('variable');
+    if (empty($defaults)) {
+      return;
+    }
+    
+    $vars = strongarm_vars_load(TRUE, TRUE);
+    foreach ($defaults as $name => $default) {
+      if ($default->value !== $vars[$name]->value) {
+        variable_set($name, $default->value);
       }
     }
+    
     strongarm_flush_caches();
   }
 
