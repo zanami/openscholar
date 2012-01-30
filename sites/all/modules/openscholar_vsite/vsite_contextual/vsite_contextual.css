@@ -94,6 +94,12 @@ div.ctools-dropdown div.ctools-dropdown-container {
   padding: 2px;
 }
 
+.os-links-trail h2,
+.os-links-trail h3,
+.os-links-trail h4 {
+	margin-top: 0;
+}
+
 .os-links-outline {
   position: absolute;
   top: 0;
@@ -114,10 +120,12 @@ div.ctools-dropdown div.ctools-dropdown-container {
 }
 
 /* fixes for nodes in blocks */
-.os-links ~.content .node {
+.os-links ~.content .node,
+.os-links ~.views-row .node {
 	padding-top: 0;
 }
 
-.os-links ~.content .node-inner {
+.os-links ~.content .node-inner,
+.os-links ~.views-row .node-inner {
 	padding-top: 0;
 }
