@@ -160,13 +160,7 @@ function iqss_scholar_strongarm_alter(&$export) {
       $export['error_level'] = $strongarm;
 
       // mollom settings
-      $strongarm = new stdClass;
-      $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-      $strongarm->api_version = 1;
-      $strongarm->name = 'mollom_private_key';
-      $strongarm->value = '32a73b2d09c7576f1a5d4ca73ca9dead';
-      $export['mollom_private_key'] = $strongarm;
-      
+     
       $strongarm = new stdClass;
       $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
       $strongarm->api_version = 1;
@@ -198,14 +192,7 @@ function iqss_scholar_strongarm_alter(&$export) {
       $strongarm->value = 0;  //Log in background only
       $export['error_level'] = $strongarm;
 
-      // mollom settings
-      $strongarm = new stdClass;
-      $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-      $strongarm->api_version = 1;
-      $strongarm->name = 'mollom_private_key';
-      $strongarm->value = '89a61a5f00b4f996c0133e16dc9cb857';
-      $export['mollom_private_key'] = $strongarm;
-      
+      // mollom settings   
       $strongarm = new stdClass;
       $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
       $strongarm->api_version = 1;

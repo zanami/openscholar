@@ -282,10 +282,8 @@ function openscholar_profile_tasks(&$task, $url) {
     node_access_rebuild();
     drupal_get_schema('system', TRUE); // Clear schema DB cache
     drupal_flush_all_caches();
+    
     db_query("UPDATE {blocks} SET status = 0, region = ''"); // disable all DB blocks
-
-    // create a global taxonomy (not really used right now)
-    // _vsite_global_taxonomy();
 
     // biblio configuraitons
     _openscholar_configure_biblio();

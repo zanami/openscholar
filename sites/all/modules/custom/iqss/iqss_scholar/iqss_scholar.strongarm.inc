@@ -157,13 +157,7 @@ function iqss_scholar_strongarm() {
   $strongarm->value = 100;
 
   $export['imageapi_jpeg_quality'] = $strongarm;
-  $strongarm = new stdClass;
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'mollom_private_key';
-  $strongarm->value = '32a73b2d09c7576f1a5d4ca73ca9dead';
 
-  $export['mollom_private_key'] = $strongarm;
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -205,20 +199,6 @@ EOF;
   $strongarm->value = error_reporting();
 
   $export['error_level'] = $strongarm;
-  
-  $strongarm = new stdClass;
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'shorten_bitly_login';
-  $strongarm->value = 'openscholar';
-  $export['shorten_bitly_login'] = $strongarm;
-  
-  $strongarm = new stdClass;
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'shorten_bitly_key';
-  $strongarm->value = 'R_48a581b6939d4e0a117b961ba0c1bb5f';
-  $export['shorten_bitly_key'] = $strongarm;
   
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
