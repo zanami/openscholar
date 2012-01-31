@@ -27,6 +27,8 @@ class os_boxes_documents_list extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(){
+    ctools_include('ajax');
+    ctools_add_js('ajax-responder');
     
   	$form['style'] = array(
       '#type' => 'select',
