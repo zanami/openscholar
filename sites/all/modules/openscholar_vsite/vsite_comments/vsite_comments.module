@@ -102,6 +102,21 @@ function vsite_comments_form_alter(&$form, &$form_state, $form_id){
  */
 function vsite_comments_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
   switch ($op) {
+  	case 'view':
+      $preset = fb_social_preset_load('vsite_comments');
+      if($preset){
+      	//Enable this preset
+      	$preset->disabled = false;
+      	//Set the node types
+      	$preset->settings['node_types']['types'] = variable_get('facebook_comments_nodetypes',array());
+      	
+      	$plugin = fb_social_fb_plugin_load($preset->plugin_type);
+	      $function = ctools_plugin_get_function($plugin, 'hook_nodeapi_view');
+	      if ($function) {
+	        $function($preset, $node, $op, $a3, $a4);
+	      }
+      }
+  	break;
 	  case 'load':
 	  	//Commenting is enabled for this node but disabled in variables
       if (!empty($node->comment) && !variable_get("comment_{$node->type}",0)){
@@ -168,6 +183,10 @@ function vsite_comments_add_comment_settings(&$form, &$form_state, $form_id){
 	    	$form["{$node}_settings"]["vsite_comments_comment_type_{$node}"]['#options']['disqus'] = "Disqus Comments";
 	    	$form["{$node}_settings"]["vsite_comments_comment_type_{$node}"]['#description'] .= " Disqus must be configured with an 'domain' shortname to work, you may setup the shortname ".l('here','cp/settings').".";
 	    }
+	    
+      if(module_exists('fb_social')){
+        $form["{$node}_settings"]["vsite_comments_comment_type_{$node}"]['#options']['facebook'] = "Facebook Comments";
+      }
     }
     
     $form['#submit'][] = 'vsite_comments_comment_settings_submit';
@@ -198,6 +217,8 @@ function vsite_comments_comment_settings_submit($form, &$form_state){
 		vsite_comments_update_drupal_comment_setings($node_type,($setting == 'drupal'));
 		//Update Disqus Settings
 		vsite_comments_update_disqus_comment_setings($node_type,($setting == 'disqus'));
+		//Update Disqus Settings
+    vsite_comments_update_facebook_comment_setings($node_type,($setting == 'facebook'));
 	}
 }
 
@@ -269,6 +290,32 @@ function vsite_comments_update_disqus_comment_setings($node_type, $enable_commen
   return true;
 }
 
+
+/**
+ * Update the fb social comment settings for a given content type
+ *
+ * @param $node_type (The node type to update)
+ * @param $enable_comments (Should the comments for this node be enabled or disabled
+ */
+function vsite_comments_update_facebook_comment_setings($node_type, $enable_comments){
+  if(!module_exists('fb_social')){
+    return false;
+  }
+  
+  $enabled_types = variable_get('facebook_comments_nodetypes',array());
+  $enabled_types[$node_type] = $enable_comments? 1:0;
+  
+  if($vsite = vsite_get_vsite()){
+    $vsite->controllers->variable->set('facebook_comments_nodetypes',$enabled_types);
+    return true;
+  }//If we are in a vsite set an override
+  
+  variable_set('facebook_comments_nodetypes',$enabled_types);
+  return true;
+  
+
+  return true;
+}
 /**
  * Implement Hook vsite_generic_settings
  * @return array

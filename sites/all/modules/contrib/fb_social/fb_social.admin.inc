@@ -118,7 +118,7 @@ function _get_facebook_locale() {
   $fb_locale = array();
   $cache = cache_get('fb_social');
   if (empty($cache->data)) {
-    $result = drupal_http_request("http://www.facebook.com/translations/FacebookLocales.xml");
+    $result = drupal_http_request("https://www.facebook.com/translations/FacebookLocales.xml");
     $xml = simplexml_load_string($result->data);
     foreach ( $xml->locale as $line ) {
       $representation = ( array ) $line->codes->code->standard->representation;

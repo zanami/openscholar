@@ -24,7 +24,8 @@ function likebox_defaults() {
     'show_faces' => 1, 
     'border_color' => '', 
     'stream' => 1, 
-    'header' => 1 
+    'header' => 1,
+    'force_wall' => 0, 
   );
 }
 
@@ -84,6 +85,12 @@ function likebox_fb_settings($options) {
     '#description' => t('Show the "find us on facebook" bar at the top. Only shown when either stream or connections are present') 
   );
   
+  $form['force_wall'] = array(
+    '#type' => 'checkbox', 
+    '#title' => t('Force wall'), 
+    '#description' => t('For Places, specifies whether the stream contains posts from the Place\'s wall or just checkins from friends') 
+  );
+  
   $defaults = likebox_defaults();
   
   foreach ( $form as $id => $f ) {
@@ -102,6 +109,7 @@ function _fb_social_likebox_preprocess_fb_social_plugin(&$variables) {
   $options['show_faces'] = $options['show_faces'] ? "true" : "false";
   $options['stream'] = $options['stream'] ? "true" : "false";
   $options['header'] = $options['header'] ? "true" : "false";
+  $options['force_wall'] = $options['force_wall'] ? "true" : "false";
 }
 
 

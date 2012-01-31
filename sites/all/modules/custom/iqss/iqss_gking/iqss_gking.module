@@ -583,22 +583,24 @@ function iqss_gking_cron() {
 function iqss_gking_update_filefield($s_file, $b_return = false){
   $s_src_path = file_directory_path() . variable_get('gking_script_tmpdir', "/gking/tmpdir/") . $s_file;
   $s_dst_path = file_directory_path() . "/gking/files/" . $s_file;
-
-  $result = db_query("SELECT files.fid AS fid, files.filepath AS path
-														 FROM {files} files
-														 LEFT JOIN {upload} upload ON files.fid = upload.fid
-														 LEFT JOIN {node} node_upload ON upload.vid = node_upload.vid
-														 LEFT JOIN {og_ancestry} node_upload__og_ancestry ON node_upload.nid = node_upload__og_ancestry.nid
-														 WHERE (node_upload__og_ancestry.group_nid  = 3633) AND (UPPER(files.filename) LIKE UPPER('%s'))", $s_file);
+  $fid = false;
   
-  $file = db_fetch_array($result);
-  if($file){
-  	if(!$file = db_fetch_array($result)){
-	  	//If there is just one file with that name attached to a node use it
-	  	$fid = $file['fid'];
-	  	$s_dst_path = $file['path'];
-  	}
-  }
+  //Comment out till this method is tested
+//  $result = db_query("SELECT files.fid AS fid, files.filepath AS path
+//														 FROM {files} files
+//														 LEFT JOIN {upload} upload ON files.fid = upload.fid
+//														 LEFT JOIN {node} node_upload ON upload.vid = node_upload.vid
+//														 LEFT JOIN {og_ancestry} node_upload__og_ancestry ON node_upload.nid = node_upload__og_ancestry.nid
+//														 WHERE (node_upload__og_ancestry.group_nid  = 3633) AND (UPPER(files.filename) LIKE UPPER('%s'))", $s_file);
+//
+//  $file = db_fetch_array($result);
+//  if($file){
+//  	if(!$file = db_fetch_array($result)){
+//	  	//If there is just one file with that name attached to a node use it
+//	  	$fid = $file['fid'];
+//	  	$s_dst_path = $file['path'];
+//  	}
+//  }
   
   //If not use the file with that exact name
   if (!$fid) {

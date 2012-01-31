@@ -122,6 +122,35 @@ function comments_drupal_settings($options) {
       '#default_value' => (isset($options['plugin_comments_count']['cache']))? $options['plugin_comments_count']['cache'] : 30,
   );
   
+  $form['plugin_comments_seo'] = array(
+      '#type' => 'fieldset', 
+      '#title' => t('SEO'), 
+      '#collapsible' => TRUE, 
+      '#collapsed' => FALSE 
+  );
+  
+  $form['plugin_comments_seo']['seo'] = array(
+    '#type'=>'checkbox',
+      '#title' => t('Print comments (hidden) behind the comment box'),
+      '#description' => t("The Facebook comments box is rendered in an iframe on the page, and most search engines will not crawl content within an iframe.
+                          If checked, it will grab the comments from the graph API and render them behind the comments box"),
+      '#default_value' => (isset($options['plugin_comments_seo']['seo']))? $options['plugin_comments_seo']['seo'] : 0,
+  );
+  
+  $form['plugin_comments_seo']['nr_comments'] = array(
+    '#type'=>'textfield',
+      '#title' => t('Nr of comments to print'),
+      '#description' => t("How many comments to grab from facebook"),
+      '#default_value' => (isset($options['plugin_comments_seo']['nr_comments']))? $options['plugin_comments_seo']['nr_comments'] : 100,
+  );
+  
+  $form['plugin_comments_seo']['cache_length'] = array(
+    '#type'=>'textfield',
+      '#title' => t('Cache the result for'),
+      '#description' => t("To speed up the page rendering time the comments are cached. Enter the ammount of time (in minutes) before the cache is cleared"),
+      '#default_value' => (isset($options['plugin_comments_seo']['cache_length']))? $options['plugin_comments_seo']['cache_length'] : 720,
+  );
+  
   return $form;
 }
 
@@ -219,8 +248,9 @@ function _fb_social_comments_link($preset, $type, $object, $teaser = FALSE) {
  * Get the nr of fb comments given an url (node url)
  */
 function _fb_social_comments_comments_count($url, $preset) {
-  $cache_key = md5('fb_social_comments_' . $url);
+  $cache_key = md5('fb_social_comments_count' . $url);
   $cache_length = $preset->settings['plugin_comments_count']['cache'];
+  $nr_comments = 0;
   if ($cache = cache_get($cache_key)) {
     $nr_comments = $cache->data;
   }
@@ -230,11 +260,65 @@ function _fb_social_comments_comments_count($url, $preset) {
     
     if ($request->code == 200) {
       $result = json_decode($request->data);
-      $nr_comments = empty($result) ? 0 : $result -> $url -> comments;
-      cache_set($cache_key, $nr_comments, 'cache', REQUEST_TIME + (60 * $cache_length)); 
+      if (isset($result->$url->comments)) {
+        $nr_comments = $result -> $url -> comments;
+      }
     }
+    cache_set($cache_key, $nr_comments, 'cache', REQUEST_TIME + (60 * $cache_length));
   }
   
   return $nr_comments;
+}
+
+/**
+ * Get comments from facebook using graph api
+ */
+function _fb_social_comments_seo($url, $nr_comments, $cache_length) {
+  $cache_key = md5('fb_social_comments_seo' . $url);
+  
+  if ($cache = cache_get($cache_key)) {
+    $comments = $cache->data;
+  }
+  else {
+    $req_url = "https://graph.facebook.com/comments/?ids=" . $url;
+    if ($nr_comments) {
+      $req_url .= "&limit=$nr_comments";
+    }
+    $request = drupal_http_request($req_url);
+    
+    if ($request->code == 200) {
+      $result = json_decode($request->data);
+      $comments = _fb_social_comments_seo_view($result->$url->data);
+    }
+    cache_set($cache_key, $comments, 'cache', REQUEST_TIME + (60 * $cache_length));
+  }
+  
+  return $comments;
+}
+
+/**
+ * the html representation of comments 
+ */
+function _fb_social_comments_seo_view($comments) {
+  $result = '<ul style="display:none">';
+  foreach ($comments as $comment) {
+    $result .= '<li>' . fb_social_comments_seo_comment_view($comment);
+    if (isset($comment -> comments)){
+      $result .= '<ul>';
+      foreach ($comment -> comments -> data as $subcomment) {
+        $result .= '<li>' . fb_social_comments_seo_comment_view($subcomment) . '</li>';
+      }
+      $result .= '</ul>';
+    }
+    $result .= '</li>';
+  }
+
+  $result .= '</ul>';
+  
+  return $result;
+}
+
+function fb_social_comments_seo_comment_view($comment) {
+  return $comment -> message . ' - by ' . $comment -> from -> name . ' on ' . format_date(strtotime($comment -> created_time));
 }
 

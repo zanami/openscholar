@@ -550,10 +550,21 @@ function fb_social_boxes_plugins() {
 function fb_social_preset_view($preset) {
   
   $plugin_type = $preset->plugin_type;
-  
   $options = $preset->fb_attrs;
   
-  return theme('fb_social_plugin', $plugin_type, $options);
+  $output = theme('fb_social_plugin', $plugin_type, $options);
+  
+  // if this is a "comment" plugin, get comments from facebook and print them
+  // behind the iframe
+  if ($plugin_type == 'comments' && isset($preset->settings['plugin_comments_seo']) && $preset->settings['plugin_comments_seo']['seo']) {
+    $cache_length = $preset->settings['plugin_comments_seo']['cache_length'];
+    $nr_comments = $preset->settings['plugin_comments_seo']['nr_comments'];
+    $url = empty($options['href']) ? fb_social_url($_GET['q']) : $options['href'];
+    module_load_include('inc', 'fb_social', 'plugins/fb_plugin/comments');
+    $output .= _fb_social_comments_seo($url, $nr_comments, $cache_length);
+  }
+  
+  return $output;
 }
 
 /**
@@ -562,10 +573,19 @@ function fb_social_preset_view($preset) {
 function fb_social_box_view($box) {
   
   $plugin_type = $box->fb_plugin_name;
-  
   $options = $box->options;
   
-  return theme('fb_social_plugin', $plugin_type, $options);
+  $output = theme('fb_social_plugin', $plugin_type, $options);
+  
+  if ($plugin_type == 'comments') {
+    $cache_length = 720;
+    $nr_comments = 100;
+    $url = empty($options['href']) ? fb_social_url($_GET['q']) : $options['href'];
+    module_load_include('inc', 'fb_social', 'plugins/fb_plugin/comments');
+    $output .= _fb_social_comments_seo($url, $nr_comments, $cache_length);
+  }
+  
+  return $output;
 }
 
 /**
@@ -604,6 +624,7 @@ function fb_social_footer($main = 0) {
          status: true, 
          cookie: true,
          xfbml: true,
+         oauth : true,
          channelUrl: " . drupal_to_js($channel_url) . "
        });
        
@@ -702,11 +723,12 @@ function fb_social_url($url = NULL) {
   )));
   
   if ($strip_lang) {
+    // i.e.  'http://www.mysite.nl/nl/node/xx' becomes 'http://www.mysite.nl/node/xx'
     global $language;
-    $lang_tag = "/" . $language->language . "\//";
+    $lang_tag = "/\/" . $language->language . "/";
     $url = preg_replace($lang_tag, '', $url, 1);
   }
-  
+
   return $url;
 }
 
@@ -725,6 +747,14 @@ function fb_social_preset_node_types($preset, $node_type) {
   return (! empty($types[$node_type]));
 }
 
+/**
+ * Implements hook_views_api().
+ */
+function fb_social_views_api() {
+  return array(
+    'api' => 2,
+  );
+}
 
 
 
