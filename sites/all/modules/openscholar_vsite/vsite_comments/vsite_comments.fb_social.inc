@@ -61,7 +61,7 @@ function vsite_comments_fb_social_default_presets() {
   );
   $fb_social_preset->fb_attrs = array(
     'numposts' => '10',
-    'width' => '550',
+    'width' => '450',
     'colorscheme' => 'light',
     'migrated' => 1,
   );
