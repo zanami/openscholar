@@ -5,7 +5,7 @@
  */
 function vsite_comments_ctools_plugin_api() {
   list($module, $api) = func_get_args();
-  if ($module == "fb_social" && $api == "fb_plugin") {
+  if ($module == "fb_social" && $api == "fb_social") {
     return array("version" => 1);
   }
   elseif ($module == "strongarm" && $api == "strongarm") {
