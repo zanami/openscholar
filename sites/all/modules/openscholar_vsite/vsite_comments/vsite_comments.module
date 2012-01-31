@@ -287,11 +287,16 @@ function vsite_comments_update_facebook_comment_setings($node_type, $enable_comm
     return false;
   }
   
-  if($enable_comments){
-    //Add code here to enable fb comments
-  }else{
-  	//Add code to disable comments for this type
-  }
+  $enabled_types = variable_get('facebook_comments_nodetypes',array());
+  $enabled_types[$node_type] = $enable_comments? 1:0;
+  
+  if($vsite = vsite_get_vsite()){
+    $vsite->controllers->variable->set('facebook_comments_nodetypes',$enabled_types);
+    return true;
+  }//If we are in a vsite set an override
+  
+  variable_set('disqus_nodetypes',$enabled_types);
+  return true;
   
 
   return true;
