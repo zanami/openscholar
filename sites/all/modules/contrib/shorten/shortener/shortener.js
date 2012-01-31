@@ -1,4 +1,3 @@
-// $Id$
 Drupal.behaviors.shortener = function (context) {
   //Make sure we can run context.find().
   var ctxt = $(context);
