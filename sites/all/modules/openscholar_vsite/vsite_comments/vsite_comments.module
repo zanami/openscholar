@@ -102,6 +102,21 @@ function vsite_comments_form_alter(&$form, &$form_state, $form_id){
  */
 function vsite_comments_nodeapi(&$node, $op, $teaser = NULL, $page = NULL){
   switch ($op) {
+  	case 'view':
+      $preset = fb_social_preset_load('vsite_comments');
+      if($preset){
+      	//Enable this preset
+      	$preset->disabled = false;
+      	//Set the node types
+      	$preset->settings['node_types']['types'] = variable_get('facebook_comments_nodetypes',array());
+      	
+      	$plugin = fb_social_fb_plugin_load($preset->plugin_type);
+	      $function = ctools_plugin_get_function($plugin, 'hook_nodeapi_view');
+	      if ($function) {
+	        $function($preset, $node, $op, $a3, $a4);
+	      }
+      }
+  	break;
 	  case 'load':
 	  	//Commenting is enabled for this node but disabled in variables
       if (!empty($node->comment) && !variable_get("comment_{$node->type}",0)){
@@ -295,7 +310,7 @@ function vsite_comments_update_facebook_comment_setings($node_type, $enable_comm
     return true;
   }//If we are in a vsite set an override
   
-  variable_set('disqus_nodetypes',$enabled_types);
+  variable_set('facebook_comments_nodetypes',$enabled_types);
   return true;
   
 

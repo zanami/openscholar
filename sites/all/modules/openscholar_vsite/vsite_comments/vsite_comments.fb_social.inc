@@ -7,7 +7,7 @@ function vsite_comments_fb_social_default_presets() {
   $export = array();
 
   $fb_social_preset = new stdClass;
-  $fb_social_preset->disabled = FALSE; /* Edit this to true to make a default fb_social_preset disabled initially */
+  $fb_social_preset->disabled = TRUE; /* Edit this to true to make a default fb_social_preset disabled initially */
   $fb_social_preset->api_version = 1;
   $fb_social_preset->name = 'vsite_comments';
   $fb_social_preset->description = 'Default Vsite Comments Preset';
