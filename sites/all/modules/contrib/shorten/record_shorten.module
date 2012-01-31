@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file
@@ -11,7 +10,7 @@
  */
 function record_shorten_menu() {
   $items = array();
-  $items['admin/settings/shorten/records'] = array(
+  $items['admin/reports/shorten'] = array(
     'title' => 'Shortened URLs',
     'description' => 'Lists shortened URLs.',
     'page callback' => 'theme',

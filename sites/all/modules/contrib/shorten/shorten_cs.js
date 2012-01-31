@@ -1,4 +1,3 @@
-// $Id$
 Drupal.behaviors.shorten_cs = function (context) {
   //Make sure we can run context.find().
   if (!(context instanceof jQuery)) {
