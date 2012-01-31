@@ -724,7 +724,7 @@ function vsite_content_views_default_views() {
     'name' => 'navigation',
   ));
   $handler->override_option('access', array(
-    'type' => 'vsite_content',
+    'type' => 'vsite_admin_content',
   ));
 
   $views[$view->name] = $view;

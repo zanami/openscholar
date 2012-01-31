@@ -11,14 +11,14 @@
  * own space type you have the ability to define your own access control.  See
  * 'space_og' class in Spaces OG module for an example implementation.
  */
-class vsite_content_plugin_access_vsite_content extends views_plugin_access {
+class vsite_plugin_access_vsite_admin_content extends views_plugin_access {
 
   function get_access_callback() {
-    return array('cp_access_cp', array());
+    return array('spaces_access_admin', array());
   }
   
   function summary_title() {
-    return 'vsite content'; 
+    return 'Manage spaces content'; 
   }
 
 }
