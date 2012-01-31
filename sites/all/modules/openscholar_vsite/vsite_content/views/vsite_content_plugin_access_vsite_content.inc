@@ -12,10 +12,6 @@
  * 'space_og' class in Spaces OG module for an example implementation.
  */
 class vsite_content_plugin_access_vsite_content extends views_plugin_access {
-  /*function access($account) {
-    dsm($this);
-    return cp_access_cp();
-  }*/
 
   function get_access_callback() {
     return array('cp_access_cp', array());
