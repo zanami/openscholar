@@ -129,3 +129,22 @@ function vsite_content_form_alter(&$form, $form_state, $form_id) {
   }
 }
 
+/**
+ * Implementation of hook_views_plugins().
+ * 
+ * sets access callback for this view
+ */
+function vsite_content_views_plugins() {
+  return array(
+    'module' => 'vsite_content',
+    'access' => array(
+      'vsite_content' => array(
+        'title' => t('Vsite content'),
+        'help' => t('Access will be granted based on vsite management permissions.'),
+        'handler' => 'vsite_content_plugin_access_vsite_content',
+        'path' => drupal_get_path('module', 'vsite_content') .'/views',
+        'uses options' => FALSE,
+      ),
+    ),
+  );
+}
