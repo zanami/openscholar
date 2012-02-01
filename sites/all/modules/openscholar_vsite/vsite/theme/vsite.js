@@ -1,5 +1,5 @@
 Drupal.behaviors.scholar = function (context){
-  $('.toggle').click(function(){
+  $('.toggle', context).click(function(){
 	   $(this).toggleClass("expanded")
 
 	   if(!$.browser.msie) {
@@ -16,7 +16,7 @@ Drupal.behaviors.scholar = function (context){
 	   return false;
   });
 
-  $('.os-links .vsite-admin').hover(function(){
+  $('.os-links .vsite-admin', context).hover(function(){
 	var parent = $(this).parents('.node');
 	parent.addClass('os-links-trail');
   },function(){
