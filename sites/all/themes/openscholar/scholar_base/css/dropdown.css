@@ -284,7 +284,7 @@ margin-top: 20px;
   font-weight: bold !important;
   font-size: 11px !important;
   font-family: 'helvetica neue', helvetica, arial, sans-serif !important;
-  width: 124px;
+  min-width: 124px;
   letter-spacing: .5px;
   display:block;
   }
