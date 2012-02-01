@@ -291,6 +291,7 @@ function _theme_item_dt($data) {
  * listing of stat, title, description, query, [callback] for stats to display
  */
 function _iqss_openscholar_stats() {
+  $content_type = variable_get('scholar_content_type', 'vsite');
 	return array(
 		'Publications' => array(
 			'title' => t('Publications'),
@@ -301,7 +302,7 @@ function _iqss_openscholar_stats() {
 		'Vsites' => array(
 			'title' => t('Websites'),
 			'description' => t('Virtual sites in this OS installation'),
-			'query' => 'SELECT COUNT(nid) FROM {og}',
+			'query' => "SELECT COUNT(nid) FROM {node} WHERE type = '$content_type'",
 		  'weight' => 0,
 		),
 		'Nodes' => array(
