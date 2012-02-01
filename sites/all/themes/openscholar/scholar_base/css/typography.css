@@ -494,6 +494,15 @@ ul.menu li.collapsed {
    padding: 0 0 0 18px !important;
 }
 
+.sidebar .block .item-list ul.pager li.pager-next a.active.views-throbbing {
+  background-position: 0 10px;
+}
+
+.sidebar .block .item-list ul.pager li.pager-previous a.active.views-throbbing {
+  background-position: 0 10px;
+}
+
+
 .item-list ul.pager li.pager-current {
   background: #5ba4d9;
   color: #fff;
