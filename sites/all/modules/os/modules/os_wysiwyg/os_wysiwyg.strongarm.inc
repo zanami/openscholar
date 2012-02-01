@@ -32,7 +32,8 @@ facebook.com
 google.com
 yahoo.com
 gmodules.com
-harvard.edu';
+harvard.edu
+statcounter.com';
   $export['embedfilter_host_whitelist'] = $strongarm;
 
   $strongarm = new stdClass;

@@ -18,7 +18,7 @@ class vsite_plugin_access_vsite_admin_content extends views_plugin_access {
   }
   
   function summary_title() {
-    return 'Manage spaces content'; 
+    return 'Space admin'; 
   }
 
 }
