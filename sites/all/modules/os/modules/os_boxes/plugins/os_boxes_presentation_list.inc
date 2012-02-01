@@ -121,7 +121,7 @@ class os_boxes_presentation_list extends os_boxes_default {
       $view->destroy();
     }
     
-    if($this->options['more'] && strlen($this->options['more_link'])){
+    if(strlen($block['content']) && $this->options['more'] && strlen($this->options['more_link'])){
       //ADD THE MORE TEXT
       $block['content'] .= theme('views_more', url($this->options['more_link']), $this->options['more_text']);
     }
