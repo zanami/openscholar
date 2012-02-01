@@ -1283,8 +1283,8 @@ function vsite_views_plugins() {
     'module' => 'vsite',
     'access' => array(
       'vsite_admin_content' => array(
-        'title' => t('Manage space content.'),
-        'help' => t('Access will be granted based on spaces access.'),
+        'title' => t('Space admin'),
+        'help' => t('Grant access only to space admin'),
         'handler' => 'vsite_plugin_access_vsite_admin_content',
         'path' => drupal_get_path('module', 'vsite') .'/views',
         'uses options' => FALSE,
