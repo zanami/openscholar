@@ -1272,3 +1272,23 @@ function _vsite_alter_node_path_settings(&$node){
     }
   }
 }
+
+/**
+ * Implementation of hook_views_plugins().
+ * 
+ * sets access callback for this view
+ */
+function vsite_views_plugins() {
+  return array(
+    'module' => 'vsite',
+    'access' => array(
+      'vsite_admin_content' => array(
+        'title' => t('Manage space content.'),
+        'help' => t('Access will be granted based on spaces access.'),
+        'handler' => 'vsite_plugin_access_vsite_admin_content',
+        'path' => drupal_get_path('module', 'vsite') .'/views',
+        'uses options' => FALSE,
+      ),
+    ),
+  );
+}

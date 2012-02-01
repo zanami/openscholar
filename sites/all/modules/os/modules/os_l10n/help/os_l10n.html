@@ -14,7 +14,8 @@ OpenScholar includes several modules for facilitating the translation process.
 <p>
 To enable localization on your OpenScholar installation, follow these steps:
 	<ol>
-	  <li>Enable l10n_client, l10n_update, and os_l10n modules.</li>
+	  <li>Enable Localization Client (l10n_client), Localization Update (l10n_update), 
+	  and OpenScholar Translation (os_l10n) modules.</li>
 	  <li>Give your users permissions to translate.  You may wish to create a translator
 	   role to assign to users.
 	    <ul>
@@ -24,8 +25,9 @@ To enable localization on your OpenScholar installation, follow these steps:
 	  <li>Enable additional languages.  English is fully translated already.  In order to
 	    access the translation GUI, your site needs to use a langauge that isn't fully
         translated.  You can change the site's default language as well, or instruct
-        your users to change their account settings.   The os_l10n module provides settings
-        that enable users to specify their own languages.
+        your users to change their account settings.   OpenScholar Translation provides settings
+        that enable users to specify their own languages.  Languages can be added in the
+        admin/settings/language section of your installation.
       </li>
 	</ol>
 </p>

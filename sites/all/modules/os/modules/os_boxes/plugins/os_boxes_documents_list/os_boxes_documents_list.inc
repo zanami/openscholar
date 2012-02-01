@@ -27,6 +27,8 @@ class os_boxes_documents_list extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(){
+    ctools_include('dependent');
+    ctools_add_js('dependent');
     
   	$form['style'] = array(
       '#type' => 'select',
@@ -118,7 +120,7 @@ class os_boxes_documents_list extends os_boxes_default {
     }
 
     //ADD THE MORE TEXT
-    if($this->options['more'] && strlen($this->options['more_link'])){
+    if(strlen($block['content']) && $this->options['more']){
       $block['content'] .= theme('views_more', url($this->options['more_link']), $this->options['more_text']);
     }
 
@@ -130,7 +132,7 @@ class os_boxes_documents_list extends os_boxes_default {
    *
    * @param view $view
    */
-  public function views_alter(&$view, &$display_id, &$args){                
+  public function views_alter(&$view, &$display_id, &$args){
     //Set pager up
     if($this->options['use_pager']){
 	    $view->display_handler->set_option('use_pager', 'mini');
@@ -150,9 +152,9 @@ class os_boxes_documents_list extends os_boxes_default {
         'field' => 'created',
         'override' => array(
           'button' => 'Override',
-        ),  
+        ),
         'relationship' => 'none',
-      ),  
+      ),
     ));
     
     //Set the number of items
@@ -205,4 +207,5 @@ class os_boxes_documents_list extends os_boxes_default {
     return array(); //caching disabled so ajax pager gets init'ed
   }
 
+  
 }

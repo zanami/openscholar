@@ -171,7 +171,7 @@ function scholar_publications_form_alter(&$form, $form_state, $form_id){
     $year = 9998;
     $year_titles = array('YYYY');
     while (($text_year = _biblio_text_year($year)) && $text_year != $year) {
-      $year_titles[] = $text_year;  
+      $year_titles[] = $text_year;
       $year++;
     }
     $year_titles[count($year_titles)-1] = 'or ' . $year_titles[count($year_titles)-1];
@@ -340,8 +340,8 @@ function scholar_publications_get_cache($cache_key){
     $cutoff = $timestamp;
   }
 
-  // enforce a maximum lifetime
-  if ($n_max = variable_get('scholar_publications_cache_max_lifespan',3600)) {
+  // enforce a maximum lifetime default(1 day)
+  if ($n_max = variable_get('scholar_publications_cache_max_lifespan',(3600 * 24))) {
     if ($n_max != -1) {
       $max_lifespan = time() - $n_max;
       $cutoff = max($max_lifespan, $cutoff);
@@ -490,7 +490,7 @@ function scholar_publications_nodeapi(&$node, $op, $teaser = NULL, $page = NULL)
       
       //Get numeric biblio year or assume submitted
       if ((int)$node->biblio_year == 0 && $int_year = _biblio_numeric_year($node->biblio_year)) {
-        $node->biblio_year = $int_year;  
+        $node->biblio_year = $int_year;
       }
 
     break;
@@ -647,7 +647,7 @@ function scholar_publications_theme_registry_alter(&$theme_registry){
 
 /**
  * @function theme_scholar_publications_biblio_year_row
- * 
+ *
  * Themes biblio years during preprocessing.  Changes the link title to the biblio year text,
  * but does not change the link to the numerical year.
  */
