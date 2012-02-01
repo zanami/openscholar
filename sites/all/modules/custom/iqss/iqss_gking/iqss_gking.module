@@ -575,6 +575,7 @@ function iqss_gking_cron() {
 	    closedir($handle);
 	}
 	variable_set('iqss_gking_last_updated_filefields',time());
+	
 }
 
 /**
