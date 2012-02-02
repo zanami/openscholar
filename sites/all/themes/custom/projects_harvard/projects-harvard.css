@@ -789,3 +789,40 @@ body.section-websites .views-field-field-vsite-logo-fid {
   font-size: 13px;
   color: #1b86a9;
   }
+  
+ /* STATS STYLING ON THE FRONT PAGE */ 
+  
+#block-iqss_openscholar_front-stats {
+     -moz-border-radius-bottomleft: 7px;
+     -moz-border-radius-bottomright: 7px;
+     background-color: #000000;
+     font-size: 1.2em;
+     height: 35px;
+     margin-top: -14px;
+     width: 981px;
+}
+
+#block-iqss_openscholar_front-stats dl {
+     float: left;
+     margin: 10px 0pt 12px 18px;
+     width: 100%;
+}
+
+#block-iqss_openscholar_front-stats dt, #block-iqss_openscholar_front-stats dd {
+     color: #FFFFFF;
+     float: left;
+     font-weight: normal;
+     margin: 0pt;
+     padding: 0pt 0.5em 0pt 0pt;
+     width: auto;
+}
+
+#block-iqss_openscholar_front-stats dd {
+     color: #FF8207;
+     font-weight: bold;
+     margin-right: 12px;
+}
+
+#block-iqss_openscholar_front-stats dt {
+     padding-left: 17px;
+}
