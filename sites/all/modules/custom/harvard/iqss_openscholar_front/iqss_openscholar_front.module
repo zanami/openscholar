@@ -303,7 +303,8 @@ function _iqss_openscholar_stats() {
 		'Vsites' => array(
 			'title' => t('Websites'),
 			'description' => t('Virtual sites in this OS installation'),
-			'query' => 'SELECT COUNT(nid) FROM {og}',
+//			'query' => 'SELECT COUNT(nid) FROM {og}',
+      'query' => 'SELECT COUNT(o.nid) FROM {og} o INNER JOIN {node} n ON o.nid=n.nid WHERE n.type = "vsite" OR n.type = "project" ',
 		  'weight' => 0,
 		),
 		'Nodes' => array(
