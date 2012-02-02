@@ -731,3 +731,17 @@ function _os_boxes_migrate_info() {
     'views-scholar_presentations-block_1' => 'scholar_presentations_recent'
   );
 }
+
+/**
+ * Implements hook_update_N
+ *
+ * clears ctools cache
+ **/
+function os_update_6014(&$sandbox) {
+  
+  //Ctools should re-create these paths
+  cache_clear_all('plugins:', 'cache', TRUE);
+  cache_clear_all('ctools_plugin_files:', 'cache', TRUE);
+  
+  return array(array('success' => TRUE, 'query' => "Plugins have changed directories so the plugin cache has been cleared manually."));
+}
