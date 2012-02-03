@@ -256,7 +256,7 @@ function theme_iqss_openscholar_front_block_stats() {
   	
   	foreach($stats as $stat => $def) {
   	  $args = (is_array($def['query_args'])) ? $def['query_args'] : array();
-  	  if (($enabled[$stat] || !isset($enabled[$stat])) && ($result = db_result(db_query($def['query'], $args)))) {
+  	  if (($enabled[$stat] || !isset($enabled[$stat])) && ($result = db_result(db_query($def['query'], $args)))!=FALSE) {
   	    
   	    // apply optional callback.  necessary for file size labels.
   	  	if (isset($def['callback']) && function_exists($def['callback'])) {
@@ -303,7 +303,10 @@ function _iqss_openscholar_stats() {
 		'Vsites' => array(
 			'title' => t('Websites'),
 			'description' => t('Virtual sites in this OS installation'),
-			'query' => 'SELECT COUNT(nid) FROM {og}',
+//			'query' => 'SELECT COUNT(nid) FROM {og}',
+    //  'query' => 'SELECT COUNT(o.nid) FROM {og} o INNER JOIN {node} n ON o.nid=n.nid WHERE n.type = "vsite" OR n.type = "project" ',
+		  'query' => 'SELECT COUNT(nid) FROM {node} WHERE type = "%s" ',
+		  'query_args' => array(variable_get('scholar_content_type', 'vsite')),
 		  'weight' => 0,
 		),
 		'Nodes' => array(
