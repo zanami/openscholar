@@ -1,5 +1,4 @@
 <?php
-// $Id: purl_extension.inc,v 1.1.2.5 2010/01/05 02:48:37 yhahn Exp $
 
 /**
  * File extension style. Like ".csv"
@@ -67,5 +66,5 @@ class purl_extension implements purl_processor {
    * Because of the expected usage of the files extensions we don't provide
    * a rewrite.
    */
-  public function rewrite(&$path, &$options, $element) {}
+  public function rewrite(&$path, &$options, $element) { }
 }

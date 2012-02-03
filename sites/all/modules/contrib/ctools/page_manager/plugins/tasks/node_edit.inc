@@ -1,5 +1,4 @@
 <?php
-// $Id: node_edit.inc,v 1.3 2009/08/04 21:43:06 merlinofchaos Exp $
 
 /**
  * Specialized implementation of hook_page_manager_task_tasks(). See api-task.html for
@@ -58,7 +57,7 @@ function page_manager_node_edit_menu_alter(&$items, $task) {
   }
 
   // Also catch node/add handling:
-  foreach (node_get_types('types', NULL, TRUE) as $type) {
+  foreach (node_type_get_types() as $type) {
     $path = 'node/add/' . str_replace('_', '-', $type->type);
     if ($items[$path]['page callback'] != 'node_add') {
       if (!empty($GLOBALS['page_manager_enabling_node_edit'])) {
@@ -97,8 +96,8 @@ function page_manager_node_edit($node) {
     // Fall back!
     // We've already built the form with the context, so we can't build it again, or
     // form_clean_id will mess up our ids. But we don't really need to, either:
-    $context = current($contexts);
-    $output = drupal_render_form($context->form_id, $context->form);
+    $context = reset($contexts);
+    $output = $context->form;
   }
 
   return $output;
@@ -116,14 +115,14 @@ function page_manager_node_edit($node) {
 function page_manager_node_add($type) {
   global $user;
 
-  $types = node_get_types();
+  $types = node_type_get_types();
 
   // Initialize settings:
   $node = (object) array(
     'uid' => $user->uid,
     'name' => (isset($user->name) ? $user->name : ''),
     'type' => $type,
-    'language' => '',
+    'language' => LANGUAGE_NONE,
   );
 
   drupal_set_title(t('Create @name', array('@name' => $types[$type]->name)));

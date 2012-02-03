@@ -1,72 +1,146 @@
-$Id: README.txt,v 1.60.4.6 2009/09/22 03:04:30 weitzman Exp $
-
 DESCRIPTION
 --------------------------
-Enable users to create and manage their own 'groups'. Each group can have members, and maintains a group home page where members can post into. Posts may be placed into multiple groups (i.e. cross-posting) and individual posts may be shared with non-members or not. Membership to groups may be open, closed, moderated, or invitation only. Add-on modules are available for group image galleries, group calendars, group vocabulary, group stores, and so on.
+The Organic Groups module (also referred to as the 'og' module), provides users
+the ability to create, manage, and delete their own 'groups' on a site.
+Each group can have members, and maintains a group home page which individual
+group members may post into. Posts can be sent to multiple groups (i.e. cross-
+posted), and individual posts (referred as 'group content') may be shared with
+members, or non-members where necessary.
+Group membership can be open, closed or moderated.
 
-Groups may choose their own theme and language. Groups have RSS feeds and email notifications and so on. Group admins may customize the layout and contents of their group home page and add additional custom pages (requires the upcoming OG Panels module).
+TERMS AND DEFINITIONS
+------------------------------------
+- GROUP: A single node which can have different content types and users
+  associated with it.
+- GROUP CONTENT: Content such as nodes or users, which are associated with a
+  group.
+- GROUP ADMIN: Is a privileged user with permission to administer particular
+  activities within a group.
+- SITE ADMIN: Compared to group admin, a site admin is granted access to all
+  groups operating within a site. The site admin can specify the permissions
+  group admins are granted in order to control their group related activities,
+  while keeping other permissions out of their reach.
+- GROUP CONTEXT: Whenever an individual piece of content such as a node or a
+  user is viewed, the module attempts to determine if the content is associated
+  with a particular group.
+  The group context is later on used to determine which access rights the user
+  is granted. For example, in a particular group context the user can edit
+  nodes, but is only allowed to view the nodes in a different group context.
+  The group context can also be used by custom modules to determine different
+  behaviors. For example, displaying different blocks on different groups,
+  switching to a different theme, etc.
+- ENTITY: Nodes, users, and taxonomy terms, are examples of Drupal entities.
+  Organic Groups allows each individual Drupal entity type to be associated with
+  a group or with a group content. This means that you can associate different
+  users (as group content) to a certain user (as a group).
 
-INSTALLATION
----------------
-- Enable the Organic groups and Organic groups Views integration modules. If you want to protect some posts so that only certain users may view them, enable the 'Organic Groups access control' module as well. Please make sure OG is working well on its own before enabling other OG related modules.
-- On the Administer > Organic groups configuration page, see the content types table at the top. Click edit beside each type to set its 'usage'. Disable comments and attachments for node types which are designated as group nodes. You usually want to create a new node type via admin/content/types page and then designate that content type as a group node. See the first item in NOTES below. 
-- Set other preferences on admin/og/og as desired. It may take some experimenting before you arrive at a configuration well suited to your needs.
-- On the Administer › Site building > Blocks page, enable the 'Group details' and drag it toward the top of your list. Optionally enable the other 'Group' blocks.
-- Grant permissions as needed on the admin/user/permission page 
-- Begin creating groups (visit the node/add page), joining those groups, and posting into those groups. The join link appears in the Group details block, for non invite-only groups.
-- Consider enabling the following modules which work well with OG: Pathauto, Locale, Notifications. After your install is working nicely, consider enabling more og add-on modules like og_mandatory_group, og_vocab, and og_panels. Those are known to work well with OG. Some of the others on drupal.org are poorly integrated and will cause problems. See http://drupal.org/project/Modules/category/90.
+GROUP ARCHITECTURE
+--------------------------
+At the lowest level the module associates content types with groups. Above this
+level is the role and permissions layer, which operates at the group level.
+The Organic Groups module leverages Drupal's core functionality, especially the
+field API. This means that a content type is associated with a group, by setting
+the correct field value.
+Users are also allowed to select the groups that will be associated with the
+content from a list of groups, which they have authorization to view.
+As is the case with Drupal itself, in Organic Groups different permissions can
+be assigned to different user roles. This allows group members to perform a
+different set of actions, in different group contexts.
 
-NOTES
-----------------
-- This module supports designating any content type to act as a group. This content type should be defined by a custom module or via the admin/content/types page. When defining your type, you usually want the title label to be 'Group name' and the body label to be 'Welcome message'. Since all nodes of this type are treated as groups, you will usually not want to designate the standard page, story, or book node types as groups. The feature where custom content types may act as groups enables you to have custom fields for your groups and even different CCK fields for different kinds of groups (i.e. content types). 
-- There are a few handy tabs at the path 'group'. You might want to add a link in your Navigation to that url. Each tab also provides a useful RSS feed.
-- 'Administer nodes' permission is required for changing the Manager of a group (do so by changing the posts' Author.)
-- 'Administer nodes' permission enables viewing of all nodes regardless of private/public status.
-- All membership management happens on the 'membership list' page which is linked from the group details Block (while viewing a group page). This includes approving membership requests (for selective groups), adding/removing users and promoting users into group admins.
-- If you decide to stop using Organic groups, just disable it as usual. If you ever decide to re-enable, all your prior group access control information will be restored. If you want to start fresh, uninstall og, og_views and og_access modules.
+INSTALLATION DRUPAL 7.x
+--------------------------------------------
+Note that the following guide is here to get you started. Names for content
+types, groups and group content given here are suggestions and are given to
+provide a quick way to get started with Organic groups.
+
+1. Enable the Group and the Group UI modules.
+2. Create a new content type via admin/structure/types/add. Call it "Group", and
+   define it to be of Group type.
+3. Create a second content type. Call it "Group content", and set it to be of
+   Group content type.
+4. Add a Group by going to node/add/group. Call it First group, and enable the
+   Group through the "Group type" field.
+5. Add a Group Content by going to node/add/group-content. In the Groups
+   audience field, select First group. In the group content view a link was
+   added to the group.
+6. Click on the Group link. In the group view, a new tab was added labeled
+   Group.
+7. Click on the Group tab. You will be redirected to the group administration
+   area. Note that this is the administration of First group only. It will not
+   affect existing or new groups which will be created on the site.
+8. You are now presented with different actions you can perform within the
+   group. Such as add group members, add roles, and set member permissions. You
+   will notice that these options have the same look and feel as Drupal core in
+   matters relating to management of roles and permissions.
+9. You can enable your privileged users to subscribe to a group by providing a
+   'Subscribe' link. (Subscribing is the act of associating a user with a group.)
+   To show this subscribe link:
+   9.1 Make sure you have the Group UI module enabled
+   9.2 Go to admin/config/group/permissions and make sure that the "Subscribe user to group"
+       permission is given to the appropriate user-roles.
+   9.3 Navigate to the "manage display" tab of your content type
+      (admin/structure/types/manage/group/display)
+       and choose the Group subscription format for the Group type field.
+   9.4 Back in the group view you will now notice a 'Subscribe' link (If you are the
+       group administrator it will say "You are the group manager").
+10. In order to associate other entities with group or group content, navigate
+    to Organic Groups field settings", in admin/config/group/fields.
+11. In order to define default permissions for groups that are newly created or
+    to edit permissions on all existing groups, navigate to the Group
+    default permissions page. Important permissions in this page are the ones
+    under the administer section. These permissions are what enable group admins
+    to have granular control over their own group. This means, that if you as
+    the site admin, don't want to allow group admins to control who can edit
+    nodes in their own group, you need to uncheck those permissions.
 
 DEVELOPERS & SITE BUILDERS
-------------------
-- You may craft your own URLs which produce useful behavior. For example, user/register?gids[]=4 will add a checked checkbox for to the user's registration page for subscribing to group nid=4. This feature overrides the usual preference for groups to always appear during registration.
-- You may alter the links in the group details block using hook_og_links_alter($links, $group_node). See og_block_details().
-- The current group context is available to javascript code at Drupal.settings.og. This is useful for enriching ad tags and analytics calls with group information.
-- Use Views Bulk Operations module to mass update user memberships and also content affiliations.
-
-THEMES
-------------------
-You may wish to stylize nodes which have properties assigned by this module.
---- public vs. private posts are denoted by $node->og_public (og_access provides private posts)
---- provided in this package are two template files which are in use by default for both groups and group posts. These can be starting points for your customization of look and feel of your group. To customize, copy one or both to your theme directory and edit as desired. Your theme directory must also impement node.tpl.php for your overrides to be recognized. Or you might use the og_panels module to achieve custom group homepages (and other group pages) that group admins can design themselves.
-
-INTEGRATION
----------------------
-- I recommend enabling the cron features of Notifications/Messaging modules. When you do, group email notifications are sent during cron runs, instead of immediately after a post is submitted. This speeds up posting a lot, for big groups. The delay also helps authors fix typos in their posts before the mail is sent.
-- This module exposes an API for retrieving and managing membership via direct PHP functions [og_save_subscription()] and via XMLRPC.
-
-UNIT TESTING
-----------------------
-This module comes with a few unit tests. Please help update and build more of them. See http://drupal.org/simpletest
-
-TODO/BUGS/FEATURE REQUESTS
-----------------
-- See http://drupal.org/project/issues/og. Please search before filing issues in order to prevent duplicates.
-
-UPGRADING FROM 5.0 TO 6.x
------------------
-- The upgrade auto-enables the new og_views module. This is needed to get the same functionality that was present in D5.
-- There is no support for migrating custom Views. Please redo those in Views2. You might need to use a Relationship.
-- Group members block (og/2) block is now served by Views: views/og_members_block-block_1
-- Group search is now in its own block which must be enabled manually. It used to be integrated into the Group details block.
-
-UPGRADING FROM 4.7 TO 5.x
------------------
-- You must update to 5.x before updating to 6.
-
+----------------------------------------------
+- Views integration: There are some default views that ship with the module. 
+  Follow those views configuration in terms of best practice (e.g. adding a 
+  relationship to the group-membership entity instead of querying directly the
+  group-audience field).
+- Token integration: Enable the entity-tokens module that ships with Entity API 
+  module.
+- Rules integration: Organic groups is shipped with a Rules configuration that
+  allows simple notification. You can disable it or clone and change its 
+  behaviour.
+- Devel generate integration: Enable devel-generate module to create dummy 
+  groups and groups content.
+- You may craft your own URLs which produce useful behavior. For example,
+  node/add/group-content?gids_node[]=4 will add a select the group with node ID
+  4, in the node form. The prefixed entity can change to indicate other entity
+  types allowing crafting the URL and you can have multiple variables, for
+  example, node/add/group-content?gids_node[]=4&gids_user[]=3&gids_group[]=5,6,7
+  The above URL will select the group with node ID 4, and the group with user ID
+  3, and the groups with the unique group ID 5, 6 and 7.
+  Note that the actual entity of group ID 5, 6 and 7 can be any entity (e.g.
+  nodes or users).
+  
+FAQ
+----
+Q: How should I update from Drupal 6?
+A: Run update.php; Enable the og-migrate module and execute all the migration 
+   plugins.
+     
+Q: How should I update from a previous Drupal 7 release (e.g. 7.x-1.0 to 
+   7.x-1.1)?
+A: Same as updating from Drupal 6 -- Run update.php; If requested enable the 
+    og-migrate module and execute all the migration. 
+     plugins.  
+  
+Q: How do I use OG tokens with pathauto module to craft the url alias.
+A: After enabling entity-tokens module you will have some tokens exposes by 
+   Organic groups. However you are not able to do something like 
+   [node:og_membership(1):group:label]. 
+   See http://drupal.org/node/1088538#comment-4376910
+   
+Q: Must I use Panels module along with Organic groups?
+A: No. However note that the maintainer of the module highliy recommends using 
+   it, and considers it as good practice.
+   
 CREDITS
 ----------------------------
-Authored and maintained by Moshe Weitzman <weitzman AT tejasa DOT com>
-Contributors: Gerhard Killesreiter, Angie Byron, Derek Wright, Thomas Ilsche, Ted Serbinski, damien_vancouver
-Sponsored by Bryght - http://www.bryght.com
-Sponsored by Broadband Mechanics - http://www.broadbandmechanics.com/
-Sponsored by Finnish Broadcasting Company - http://www.yle.fi/fbc/
-Sponsored by Post Carbon Institute - http://www.postcarbon.org/
+- Organic groups for Drupal 5 and 6 authored by Moshe Weitzman -
+  <weitzman AT tejasa DOT com>
+- Current project maintainer and Drupal 7 author is Amitai Burstein (Amitaibu) -
+  gizra.com

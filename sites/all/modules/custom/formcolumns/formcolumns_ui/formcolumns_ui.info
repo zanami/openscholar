@@ -1,7 +1,0 @@
-// $Id; 
-name = Form Columns UI
-description = "User Interface for Form Columns."
-core = 6.x
-package = Node form columns
-dependencies[] = formcolumns
-version = "6.x-beta13"

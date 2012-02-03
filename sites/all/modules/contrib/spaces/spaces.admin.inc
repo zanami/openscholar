@@ -3,10 +3,9 @@
 /**
  * Spaces features form.
  */
-function spaces_features_form($form_state) {
+function spaces_features_form($form, &$form_state) {
   $spaces_features = variable_get('spaces_features', array());
 
-  $form = array();
   $form['spaces_features'] = array('#tree' => TRUE);
   $form['labels'] = array('#tree' => FALSE);
   $form['settings'] = array('#tree' => FALSE);
@@ -15,38 +14,40 @@ function spaces_features_form($form_state) {
   $parent = menu_get_item();
   $features = spaces_features($space ? $space->type : 'site');
   ksort($features);
-
   foreach ($features as $feature => $info) {
-    $label = "<strong>". t($info->info['name']) ."</strong>";
-    $label .= "<div class='description'>". t($info->info['description']) ."</div>";
+    $label = "<strong>" . t($info->info['name']) . "</strong>";
+    $label .= "<div class='description'>" . t($info->info['description']) . "</div>";
     $form['labels'][$feature] = array(
-      '#value' => $label,
       '#type' => 'markup',
+      '#markup' => $label,
     );
     $form['spaces_features'][$feature] = array(
       '#type' => 'select',
-      '#options' => $space ? $space->feature_options() : array(0 => t('Disabled'), 1 => t('Enabled')),
+      '#options' => $space ? $space->feature_options() : array(
+        0 => t('Disabled'),
+        1 => t('Enabled'),
+      ),
       '#default_value' => isset($spaces_features[$feature]) ? $spaces_features[$feature] : 0,
     );
 
     // By convention, features can provide settings pages at features/[feature].
     // This will detect the items that have been grafted from features/* onto the
-    // portion fo the menu tree that relates to this pace.
+    // portion of the menu tree that relates to this pace.
     $item = menu_get_item("{$parent['href']}/{$feature}");
     if ($item && $item['href'] != $parent['href'] && $item['access']) {
-      $settings = l($item['title'], $item['href'], array('query' => 'destination='. $_GET['q']));
+      $settings = l($item['title'], $item['href'], array('query' => array('destination' => $_GET['q'])));
     }
     else {
       $settings = '';
     }
     $form['settings'][$feature] = array(
       '#type' => 'markup',
-      '#value' => $settings,
+      '#markup' => $settings,
     );
   }
 
   $options = $space ? array('spaces-frontpage' => '<' . t('Default page') . '>') : array();
-  $links = menu_navigation_links(variable_get('menu_primary_links_source', 'primary-links'));
+  $links = menu_navigation_links(variable_get('menu_main_links_source', 'main-menu'));
   if (!empty($links)) {
     foreach ($links as $link) {
       $options[$link['href']] = $link['title'];
@@ -71,7 +72,7 @@ function spaces_features_form($form_state) {
     '#default_value' => $front_page,
     '#process' => array('ctools_dependent_process'),
     '#dependency' => array(
-      'edit-site-frontpage' => array('spaces-other')
+      'edit-site-frontpage' => array('spaces-other'),
     ),
   );
 
@@ -122,9 +123,12 @@ function spaces_preset_form($presets, $type, $include_disabled = FALSE) {
       }
 
       // Label
-      $label = "<strong>". t(check_plain($preset->title)) ."</strong>";
-      $label .= "<div class='description'>". t(check_plain($preset->description)) ."</div>";
-      $form['labels'][$preset->name] = array('#type' => 'markup', '#value' => $label);
+      $label = "<strong>" . t(check_plain($preset->title)) . "</strong>";
+      $label .= "<div class='description'>" . t(check_plain($preset->description)) . "</div>";
+      $form['labels'][$preset->name] = array(
+        '#type' => 'markup',
+        '#markup' => $label,
+      );
     }
   }
   return $form;
@@ -156,9 +160,14 @@ function spaces_overrides_form($form_state) {
     if (element_children($form)) {
       $form['#tree'] = TRUE;
       $form['#theme'] = 'spaces_overrides_form';
-      $form['space'] = array('#type' => 'value', '#value' => $space);
-      if ($presets = spaces_preset_load(NULL, $space->type) && spaces_access_admin_perms(array('administer spaces'))) {
-        $preset_name = t($presets[variable_get('spaces_preset_'. $space->type, NULL)]->title);
+      $form['space'] = array(
+        '#type' => 'value',
+        '#value' => $space,
+      );
+      $presets = spaces_preset_load(NULL, $space->type);
+      $default_preset = variable_get('spaces_preset_' . $space->type, NULL);
+      if (isset($presets, $default_preset) && array_key_exists($default_preset, $presets) && spaces_access_admin_perms(array('administer spaces'))) {
+        $preset_name = t($presets[$default_preset]->title);
         $form['preset'] = array(
           '#tree' => FALSE,
           '#type' => 'item',
@@ -192,7 +201,7 @@ function spaces_overrides_form($form_state) {
  */
 function spaces_overrides_preset_save(&$form, &$form_state) {
   $space = $form_state['values']['space'];
-  $preset = spaces_preset_load(variable_get('spaces_preset_'. $space->type, NULL), NULL, TRUE);
+  $preset = spaces_preset_load(variable_get('spaces_preset_' . $space->type, NULL), NULL, TRUE);
   $selected = FALSE;
   $space->activate();
   foreach (array_keys(spaces_controllers()) as $controller) {
@@ -236,32 +245,27 @@ function spaces_overrides_revert(&$form, &$form_state) {
  *   set when a space is active.
  */
 function spaces_user_autocomplete($string = '') {
+  $space = spaces_get_space();
   $matches = array();
-  if ($string && module_exists('views')) {
-    views_include('view');
-    $view = new view;
-    $view->base_table = 'users';
-    $handler = $view->new_display('default', 'Defaults', 'default');
-    $handler->override_option('filters', array(
-      'current' => array(
-        'id' => 'current',
-        'table' => 'spaces',
-        'field' => 'current',
-      ),
-    ));
-    $view->set_display('default');
-    $view->build();
-    $view->query->add_field('users', 'name', 'name');
-    $view->query->add_where(0, "LOWER(users.name) LIKE LOWER('%s%%')", $string);
+  if ($string) {
+    $query = db_select('users', 'u')
+    ->fields('u', array('name'))
+    ->condition('u.name', db_like($string) . '%', 'LIKE')
+    ->range(0, 10)
+    ->addTag('user_autocomplete');
 
-    // Rebuild queries since we've altered the query object.
-    $view->build_info['query'] = $view->query->query();
-    $view->build_info['count_query'] = $view->query->query(TRUE);
-    $view->build_info['query_args'] = $view->query->get_where_args();
-    $view->execute_display();
-    foreach ($view->result as $user) {
+    // Add spaces specific tag. Every Spaces Controller should implement
+    // hook_query_spaces_user_autocomplet_[TYPE]_alter.
+    // @see spaces_og_query_spaces_user_autocomplete_og_alter()
+    if (isset($spaces->type)) {
+      $query->addTag('user_autocomplete_spaces');
+      $query->addTag('user_autocomplete_spaces_' . $spaces->type);
+    }
+
+    $result = $query->execute();
+    foreach ($result as $user) {
       $matches[$user->name] = check_plain($user->name);
-    }    
+    }
   }
-  drupal_json($matches);
+  drupal_json_output($matches);
 }

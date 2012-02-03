@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Implementation of hook_views_plugins().
+ * Implements hook_views_plugins().
  */
 function spaces_og_views_plugins() {
   return array(
@@ -16,12 +16,12 @@ function spaces_og_views_plugins() {
 }
 
 /**
- * Implementation of hook_views_handlers().
+ * Implements hook_views_handlers().
  */
 function spaces_og_views_handlers() {
   return array(
     'info' => array(
-      'path' => drupal_get_path('module', 'spaces_og') .'/views',
+      'path' => drupal_get_path('module', 'spaces_og') . '/views',
     ),
     'handlers' => array(
       'spaces_og_handler_field_og_group_nids' => array(
@@ -32,7 +32,7 @@ function spaces_og_views_handlers() {
 }
 
 /**
- * Implementation of hook_views_data_alter().
+ * Implements hook_views_data_alter().
  */
 function spaces_og_views_data_alter(&$data) {
   if (isset($data['og_ancestry']['group_nid']['field']['handler'])) {

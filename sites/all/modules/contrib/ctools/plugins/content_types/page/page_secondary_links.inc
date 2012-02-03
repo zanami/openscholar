@@ -1,5 +1,4 @@
 <?php
-// $Id: page_secondary_links.inc,v 1.1.2.1 2010/02/02 21:49:21 merlinofchaos Exp $
 
 /**
  * @file
@@ -27,7 +26,7 @@ $plugin = array(
  */
 function ctools_page_secondary_links_content_type_render($subtype, $conf, $panel_args) {
   $block = new stdClass();
-  $block->content = theme('links', menu_secondary_links(), array('class' => 'links secondary-links'));
+  $block->content = theme('links', array('links' => menu_secondary_menu(), 'attributes' => array('class' => 'links secondary-links')));
 
   return $block;
 }

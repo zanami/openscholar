@@ -22,7 +22,7 @@ class spaces_og_plugin_argument_validate_useringroups extends views_plugin_argum
         'either' => t('Allow both numeric UIDs and string usernames'),
       ),
       '#default_value' => $this->argument->options['validate_user_argument_type'],
-      '#process' => array('expand_radios', 'views_process_dependency'),
+      '#process' => array('expand_radios', 'ctools_dependent_process'),
       '#dependency' => array('edit-options-validate-type' => array($this->id)),
       '#prefix' => '<div id="edit-options-validate-user-argument-type-wrapper">',
       '#suffix' => '</div>',
@@ -33,7 +33,7 @@ class spaces_og_plugin_argument_validate_useringroups extends views_plugin_argum
     $type = $this->argument->options['validate_user_argument_type'];
     // is_numeric() can return false positives, so we ensure it's an integer.
     // However, is_integer() will always fail, since $argument is a string.
-    if (is_numeric($argument) && $argument == (int)$argument) {
+    if (is_numeric($argument) && $argument == (int) $argument) {
       if ($type == 'uid' || $type == 'either') {
         $where = 'u.uid = %d';
       }
@@ -45,7 +45,8 @@ class spaces_og_plugin_argument_validate_useringroups extends views_plugin_argum
     }
     if (!empty($where)) {
       $query = db_rewrite_sql("SELECT u.uid FROM {users} u WHERE {$where}", 'u', 'uid', array($argument));
-      $validated = db_result(db_query($query, $argument));
+      // TODO Please convert this statement to the D7 database API syntax.
+      $validated = db_query($query, $argument)->fetchField();
       return $validated;
     }
     return FALSE;

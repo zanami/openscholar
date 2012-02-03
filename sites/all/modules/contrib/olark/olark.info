@@ -1,5 +1,0 @@
-; Id:
-
-name = Olark Chat
-description = Olark chat integration.
-core = 6.x

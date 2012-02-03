@@ -1,4 +1,3 @@
-// $Id: purl.admin.js,v 1.1.2.2 2009/11/22 15:03:23 jmiccolis Exp $
 
 if (typeof(Drupal) == "undefined" || !Drupal.purl_admin) {
   Drupal.purl_admin = {};

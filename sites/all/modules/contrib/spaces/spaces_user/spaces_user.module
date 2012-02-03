@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Implementation of hook_init().
+ * Implements hook_init().
  */
 function spaces_user_init() {
   if (arg(0) === 'user' && arg(1) !== 'autocomplete') {
@@ -14,14 +14,19 @@ function spaces_user_init() {
 }
 
 /**
- * Implementation of hook_perm().
+ * Implements hook_permission().
  */
-function spaces_user_perm() {
-  return array('configure own user space');
+function spaces_user_permission() {
+  return array(
+    'configure own user space' => array(
+      'title' => t('configure own user space'),
+      'description' => t('TODO Add a description for \'configure own user space\''),
+    ),
+  );
 }
 
 /**
- * Implementation of hook_ctools_plugin_api().
+ * Implements hook_ctools_plugin_api().
  */
 function spaces_user_ctools_plugin_api($module, $api) {
   if ($module == 'spaces' && $api == 'plugins') {
@@ -30,13 +35,13 @@ function spaces_user_ctools_plugin_api($module, $api) {
 }
 
 /**
- * Implementation of hook_spaces_plugins().
+ * Implements hook_spaces_plugins().
  */
 function spaces_user_spaces_plugins() {
   $plugins = array();
   $plugins['space_user'] = array(
     'handler' => array(
-      'path' => drupal_get_path('module', 'spaces_user') .'/plugins',
+      'path' => drupal_get_path('module', 'spaces_user') . '/plugins',
       'file' => 'space_user.inc',
       'class' => 'space_user',
       'parent' => 'space_type',
@@ -46,7 +51,7 @@ function spaces_user_spaces_plugins() {
 }
 
 /**
- * Implementation of hook_spaces_registry().
+ * Implements hook_spaces_registry().
  */
 function spaces_user_spaces_registry() {
   return array(
@@ -61,39 +66,53 @@ function spaces_user_spaces_registry() {
 }
 
 /**
- * Implementation of hook_user().
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * For user_profile_form
  */
-function spaces_user_user($op, &$edit, &$account, $category = NULL) {
-  switch ($op) {
-    case 'form':
-      if ($category === 'account') {
-        module_load_include('inc', 'spaces', 'spaces.admin');
-        $presets = spaces_preset_load(NULL, 'user');
-        if (count($presets) === 1) {
-          $form['spaces_preset_user'] = array('#type' => 'value', '#value' => key($presets));
-        }
-        else if (count($presets) > 1) {
-          $form = array();
-          $form['spaces_preset'] = spaces_preset_form($presets, 'user');
-        }
-        return $form;
-      }
-      break;
-    case 'insert':
-    case 'update':
-      // Save preset values
-      if (!empty($edit['spaces_preset_user'])) {
-        $space = spaces_load('user', $account->uid);
-        if ($space->activate()) {
-          $space->controllers->variable->set('spaces_preset_user', $edit['spaces_preset_user']);
-        }
-      }
-      break;
+function spaces_user_form_user_profile_form_alter(&$form, &$form_state) {
+  module_load_include('inc', 'spaces', 'spaces.admin');
+  $presets = spaces_preset_load(NULL, 'user');
+  if (count($presets) === 1) {
+    $form['spaces_preset_user'] = array(
+      '#type' => 'value',
+      '#value' => key($presets),
+    );
+  }
+  else if (count($presets) > 1) {
+    $form = array();
+    $form['spaces_preset'] = spaces_preset_form($presets, 'user');
   }
 }
 
 /**
- * Implementation of hook_form_alter() for spaces_features_form.
+ * Implements hook_user_insert().
+ */
+function spaces_user_user_insert(&$edit, $account, $category) {
+  // Save preset values
+  if (!empty($edit['spaces_preset_user'])) {
+    $space = spaces_load('user', $account->uid);
+    if ($space->activate()) {
+      $space->controllers->variable->set('spaces_preset_user', $edit['spaces_preset_user']);
+    }
+  }
+}
+
+/**
+ * Implements hook_user_update().
+ */
+function spaces_user_user_update(&$edit, $account, $category) {
+  // Save preset values
+  if (!empty($edit['spaces_preset_user'])) {
+    $space = spaces_load('user', $account->uid);
+    if ($space->activate()) {
+      $space->controllers->variable->set('spaces_preset_user', $edit['spaces_preset_user']);
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter() for spaces_features_form().
  * Disallow site_frontpage var from being customizable within a user space.
  */
 function spaces_user_form_spaces_features_form_alter(&$form, &$form_state) {
@@ -102,7 +121,6 @@ function spaces_user_form_spaces_features_form_alter(&$form, &$form_state) {
     unset($form['site_frontpage']);
   }
 }
-
 
 /**
  * Implementation of hook_spaces_get_space_from_object().

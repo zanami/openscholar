@@ -1,5 +1,4 @@
 <?php
-// $Id: purl.api.php,v 1.1.2.2 2010/03/17 22:51:54 yhahn Exp $
 
 /**
  * @file
@@ -54,7 +53,7 @@ function hook_purl_processor() {
   $plugins = array();
   $plugins['cookie'] = array(
     'handler' => array(
-      'path' => drupal_get_path('module', 'foo') .'/plugins',
+      'path' => drupal_get_path('module', 'foo') . '/plugins',
       'file' => 'purl_cookie.inc',
       'class' => 'purl_cookie',
     ),

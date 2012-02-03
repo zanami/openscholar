@@ -1,5 +1,4 @@
 <?php
-// $Id: content.inc,v 1.12.2.13 2010/08/19 20:35:03 merlinofchaos Exp $
 
 /**
  * @file
@@ -9,18 +8,6 @@
  * See the context-content.html file in advanced help for documentation
  * of this tool.
  */
-
-/**
- * Implementation of hook_ctools_plugin_*.
- *
- * Give information to CTools about the content types plugin.
- */
-function ctools_ctools_plugin_content_types() {
-  return array(
-    'cache' => FALSE,
-    'process' => 'ctools_content_process',
-  );
-}
 
 /**
  * Provide defaults for a content type.
@@ -60,6 +47,14 @@ function ctools_content_process(&$plugin, $info) {
     $plugin['add form'] = $function_base . 'edit_form';
   }
 
+  if (!isset($plugin['description'])) {
+    $plugin['description'] = '';
+  }
+
+  if (!isset($plugin['icon'])) {
+    $plugin['icon'] = ctools_content_admin_icon($plugin);
+  }
+
   // Another ease of use check:
   if (!isset($plugin['content types'])) {
     // If a subtype plugin exists, try to use it. Otherwise assume single.
@@ -70,7 +65,7 @@ function ctools_content_process(&$plugin, $info) {
       $type = array(
         'title' => $plugin['title'],
         'description' => $plugin['description'],
-        'icon' => $plugin['icon'],
+        'icon' => ctools_content_admin_icon($plugin),
         'category' => $plugin['category'],
       );
 
@@ -282,6 +277,10 @@ function ctools_content_render($type, $subtype, $conf, $keywords = array(), $arg
 
     $content = $function($subtype, $conf, $args, $pane_context, $incoming_content);
 
+    if (empty($content)) {
+      return;
+    }
+
     // Set up some defaults and other massaging on the content before we hand
     // it back to the caller.
     if (!isset($content->type)) {
@@ -318,7 +317,7 @@ function ctools_content_render($type, $subtype, $conf, $keywords = array(), $arg
           $url = $content->title_link;
         }
         // set defaults so we don't bring up notices
-        $url += array('href' => '', 'attributes' => NULL, 'query' => NULL, 'fragment' => NULL, 'absolute' => NULL, 'html' => TRUE);
+        $url += array('href' => '', 'attributes' => array(), 'query' => array(), 'fragment' => '', 'absolute' => NULL, 'html' => TRUE);
         $content->title = l($content->title, $url['href'], $url);
       }
     }
@@ -460,7 +459,7 @@ function ctools_content_admin_info($type, $subtype, $conf, $context = NULL) {
   if (empty($output) || !is_object($output)) {
     $output = new stdClass();
     $output->title = t('No info');
-    $output->content =t ('No info available.');
+    $output->content = t('No info available.');
   }
   return $output;
 }
@@ -468,7 +467,7 @@ function ctools_content_admin_info($type, $subtype, $conf, $context = NULL) {
 /**
  * Add the default FAPI elements to the content type configuration form
  */
-function ctools_content_configure_form_defaults(&$form, &$form_state) {
+function ctools_content_configure_form_defaults($form, &$form_state) {
   $plugin = $form_state['plugin'];
   $subtype = $form_state['subtype'];
   $contexts = isset($form_state['contexts']) ? $form_state['contexts'] : NULL;
@@ -486,7 +485,7 @@ function ctools_content_configure_form_defaults(&$form, &$form_state) {
   // gadget to all panes.
   if (empty($plugin['no title override']) && empty($subtype['no title override'])) {
     $form['aligner_start'] = array(
-      '#value' => '<div class="option-text-aligner">',
+      '#markup' => '<div class="option-text-aligner clearfix">',
     );
     $form['override_title'] = array(
       '#type' => 'checkbox',
@@ -499,18 +498,17 @@ function ctools_content_configure_form_defaults(&$form, &$form_state) {
       '#default_value' => isset($conf['override_title_text']) ? $conf['override_title_text'] : '',
       '#size' => 35,
       '#id' => 'override-title-textfield',
-      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('override-title-checkbox' => array(1)),
       '#dependency_type' => 'disable',
     );
     $form['aligner_stop'] = array(
-      '#value' => '</div><div style="clear: both; padding: 0; margin: 0"></div>',
+      '#markup' => '</div>',
     );
     if (is_array($contexts)) {
       $form['override_title_markup'] = array(
         '#prefix' => '<div class="description">',
         '#suffix' => '</div>',
-        '#value' => t('You may use %keywords from contexts, as well as %title to contain the original title.'),
+        '#markup' => t('You may use %keywords from contexts, as well as %title to contain the original title.'),
       );
     }
     $add_submit = TRUE;
@@ -745,6 +743,35 @@ function ctools_content_select_context($plugin, $subtype, $conf, $contexts) {
   // do not display the pane.
   if (empty($subtype_info['required context'])) {
     return;
+  }
+
+  // Deal with dynamic required contexts not getting updated in the panes.
+  // For example, Views let you dynamically change context info. While
+  // we cannot be perfect, one thing we can do is if no context at all
+  // was asked for, and then was later added but none is selected, make
+  // a best guess as to what context should be used. THis is right more
+  // than it's wrong.
+  if (is_array($subtype_info['required context'])) {
+    if (empty($conf['context']) || count($subtype_info['required context']) != count($conf['context'])) {
+      foreach ($subtype_info['required context'] as $index => $required) {
+        if (!isset($conf['context'][$index])) {
+          $filtered = ctools_context_filter($contexts, $required);
+          if ($filtered) {
+            $keys = array_keys($filtered);
+            $conf['context'][$index] = array_shift($keys);
+          }
+        }
+      }
+    }
+  }
+  else {
+    if (empty($conf['context'])) {
+      $filtered = ctools_context_filter($contexts, $subtype_info['required context']);
+      if ($filtered) {
+        $keys = array_keys($filtered);
+        $conf['context'] = array_shift($keys);
+      }
+    }
   }
 
   if (empty($conf['context'])) {

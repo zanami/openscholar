@@ -1,7 +1,7 @@
 <?php
 
 /**
- * User integration for Spaces. 
+ * User integration for Spaces.
  */
 class space_user extends space_type {
   /**
@@ -10,7 +10,7 @@ class space_user extends space_type {
    */
   function load() {
     parent::load();
-    $account = user_load(array('uid' => $this->id));
+    $account = user_load($this->id);
     if ($account) {
       $this->user = $account;
       return TRUE;
@@ -45,7 +45,7 @@ class space_user extends space_type {
     global $user;
     $account = isset($account) ? $account : $user;
     $access = $account->uid == $this->id && user_access('configure own user space');
-    return  $access || parent::access_admin($account);
+    return $access || parent::access_admin($account);
   }
 
   /**

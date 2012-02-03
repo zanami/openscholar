@@ -1,5 +1,4 @@
 <?php
-// $Id: context_exists.inc,v 1.1.2.3 2010/02/23 21:09:32 merlinofchaos Exp $
 
 /**
  * @file
@@ -19,13 +18,14 @@ $plugin = array(
 /**
  * Settings form
  */
-function ctools_context_exists_ctools_access_settings(&$form, &$form_state, $conf) {
+function ctools_context_exists_ctools_access_settings($form, &$form_state, $conf) {
   $form['settings']['exists'] = array(
     '#type' => 'radios',
     '#description' => t("Check to see if the context exists (contains data) or does not exist (contains no data). For example, if a context is optional and the path does not contain an argument for that context, it will not exist."),
     '#options' => array(TRUE => t('Exists'), FALSE => t("Doesn't exist")),
     '#default_value' => $conf['exists'],
   );
+  return $form;
 }
 
 /**

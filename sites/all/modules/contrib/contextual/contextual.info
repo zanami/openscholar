@@ -1,6 +1,0 @@
-
-name = "Contextual"
-description = "Contextual admin links."
-package = "Administration"
-core = 6.x
-

@@ -3,7 +3,7 @@
 /**
  * Form for modifying a user's OG subscriptions quickly.
  */
-function spaces_og_user_groups_form($form_state, $account) {
+function spaces_og_user_groups_form($form, $form_state, $account) {
   $form = og_user('register', array(), $account, $category = NULL);
   $form['og_register']['og_register']['#default_value'] = array_keys($account->og_groups);
 
@@ -84,7 +84,8 @@ function _spaces_og_form_alter_group(&$form, $form_state) {
   _spaces_og_make_hidden($form['og_directory']);
 
   // Add purl form.
-  $form['purl'] = purl_form('spaces_og', isset($form['#node']->nid) ? $form['#node']->nid : NULL, isset($form_state['node_preview']) ? $form['#node']->purl['value'] : $form['#node']->purl);
+  $purl = isset($form['#node']->purl) ? $form['#node']->purl : '';
+  $form['purl'] = purl_form('spaces_og', isset($form['#node']->nid) ? $form['#node']->nid : NULL, isset($form_state['node_preview']) ? $form['#node']->purl['value'] : $purl);
 
   // Add preset form.
   // @TODO: Test with node preview.
@@ -100,7 +101,10 @@ function _spaces_og_form_alter_group(&$form, $form_state) {
 
   // Pass existing space through.
   if ($nid) {
-    $form['space'] = array('#type' => 'value', '#value' => $space);
+    $form['space'] = array(
+      '#type' => 'value',
+      '#value' => $space,
+    );
   }
 
   // Add additional submit handler that redirects to group homepage.
@@ -125,19 +129,19 @@ function _spaces_og_form_alter_node(&$form, $form_state) {
   $space = spaces_get_space();
 
   if ($group_types = og_get_types('group')) {
-    $typename = node_get_types('name', array_shift($group_types));
+    $typename = node_type_get_name(array_shift($group_types));
   }
 
   // Retrieve the content type label
   /*
-  if (!empty($form['og_nodeapi']['visible']['og_groups'])) {
-    $form['og_groups'] = $form['og_nodeapi']['visible']['og_groups'];
-    $form['og_groups']['#title'] = t('Select a !typename', array('!typename' => $typename));
-    $form['og_groups']['#type'] = 'select';
-    $form['og_groups']['#multiple'] = FALSE;
-    unset($form['og_nodeapi']['visible']['og_groups']);
-  }
-  */
+   if (!empty($form['og_nodeapi']['visible']['og_groups'])) {
+   $form['og_groups'] = $form['og_nodeapi']['visible']['og_groups'];
+   $form['og_groups']['#title'] = t('Select a !typename', array('!typename' => $typename));
+   $form['og_groups']['#type'] = 'select';
+   $form['og_groups']['#multiple'] = FALSE;
+   unset($form['og_nodeapi']['visible']['og_groups']);
+   }
+   */
 
   // Recurse into og_options hiding all of them.
   _spaces_og_make_hidden($form['og_nodeapi']);
@@ -188,7 +192,7 @@ function _spaces_og_form_alter_node(&$form, $form_state) {
 function spaces_og_nodeform_validate($element, &$form_state) {
   if ($element['#value'] == 0) {
     if ($group_types = og_get_types('group')) {
-      $typename = node_get_types('name', array_shift($group_types));
+      $typename = node_type_get_name(array_shift($group_types));
     }
     form_error($element, t('Please choose a !typename to post to.', array('!typename' => strtolower($typename))));
   }
@@ -220,10 +224,10 @@ function _spaces_og_form_spaces_preset_editor_alter(&$form, $form_state) {
   if ($preset->space_type === 'og') {
     // Retrieve OG group settings form from OG & OG access.
     $keys = array_flip(array('og_selective', 'og_register', 'og_directory', 'og_private'));
-    $group_form = og_group_form(array(), $form_state);
+    // $group_form = og_group_form(array(), $form_state);
     if (module_exists('og_access')) {
-      drupal_add_js(drupal_get_path('module', 'og_access'). '/og_access.js');
-      og_access_alter_group_form($group_form, array());
+      drupal_add_js(drupal_get_path('module', 'og_access') . '/og_access.js');
+      // og_access_alter_group_form($group_form, array());
     }
     $group_form = array_intersect_key($group_form, $keys);
 

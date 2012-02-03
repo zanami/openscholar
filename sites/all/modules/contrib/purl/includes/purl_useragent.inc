@@ -1,5 +1,4 @@
 <?php
-// $Id: purl_useragent.inc,v 1.1.2.4 2010/01/04 23:03:49 yhahn Exp $
 
 /**
  * User agent style.
@@ -38,6 +37,6 @@ class purl_useragent implements purl_processor {
   /**
    * We cannot alter the user agent, no need to try.
    */
-  public function adjust(&$value, $element, &$q) {}
-  public function rewrite(&$path, &$options, $element) {}
+  public function adjust(&$value, $element, &$q) { }
+  public function rewrite(&$path, &$options, $element) { }
 }

@@ -35,7 +35,7 @@
  */
 
 /**
- * Implementation of hook_requirements()
+ * Implements hook_requirements().
  */
 function spaces_customtext_requirements($phase) {
   $requirements = array();
@@ -55,17 +55,21 @@ function spaces_customtext_requirements($phase) {
 }
 
 /**
- * Implementation of hook_enable().
+ * Implements hook_enable().
  * Weight spaces_customtext as the lowest possible module.
  */
 function spaces_customtext_enable() {
-  $min = db_result(db_query("SELECT weight FROM {system} WHERE type = 'module' ORDER BY weight ASC LIMIT 1"));
+  $min = db_query("SELECT weight FROM {system} WHERE type = :type ORDER BY weight ASC LIMIT 1", array(':type' => 'module'))->fetchField();
   $weight = $min < -10000 ? $min - 1 : -10000;
-  db_query("UPDATE {system} SET weight = %d WHERE name = 'spaces_customtext' AND type = 'module'", $weight);
+  db_update('system')
+      ->fields(array('weight' => $weight))
+      ->condition('name', 'spaces_customtext')
+      ->condition('type', 'module')
+      ->execute();
 }
 
 /**
- * Implementation of hook_init().
+ * Implements hook_init().
  */
 function spaces_customtext_init() {
   global $language;
@@ -87,13 +91,13 @@ function spaces_customtext_cache($langcode = NULL, $reset = FALSE) {
 }
 
 /**
- * Implementation of hook_spaces_plugins().
+ * Implements hook_spaces_plugins().
  */
 function spaces_customtext_spaces_plugins() {
   return array(
     'spaces_controller_customtext' => array(
       'handler' => array(
-        'path' => drupal_get_path('module', 'spaces_customtext') .'/plugins',
+        'path' => drupal_get_path('module', 'spaces_customtext') . '/plugins',
         'file' => 'spaces_controller_customtext.inc',
         'class' => 'spaces_controller_customtext',
         'parent' => 'spaces_controller_variable',
@@ -103,7 +107,7 @@ function spaces_customtext_spaces_plugins() {
 }
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function spaces_customtext_menu() {
   return array(
@@ -127,32 +131,43 @@ function spaces_customtext_menu_access() {
 }
 
 /**
- * Implementation of hook_form_alter() for spaces_features_form.
+ * Implements hook_form_alter() for spaces_features_form().
  */
 function spaces_customtext_form_spaces_features_form_alter(&$form, &$form_state) {
   $parent = menu_get_item();
-  foreach (element_children($form['settings']) as $feature) {
-    $link = l(t('Customize text'), "{$parent['href']}/customtext/{$feature}");
-    $link = !empty($form['settings'][$feature]['#value']) ? " | {$link}" : $link;
-    $form['settings'][$feature]['#value'] .= $link;
+  if (isset($form['settings'])) {
+    foreach (element_children($form['settings']) as $feature) {
+      $link = l(t('Customize text'), "{$parent['href']}/customtext/{$feature}");
+      $link = !empty($form['settings'][$feature]['#value']) ? " | {$link}" : $link;
+      if (isset($form['settings'][$feature]['#value'])) {
+        $form['settings'][$feature]['#value'] .= $link;
+      } else {
+        $form['settings'][$feature]['#value'] = $link;
+      }
+    }
   }
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function spaces_customtext_theme() {
   return array(
     'spaces_customtext_settings_form' => array(
-      'arguments' => array(),
+      'variables' => array(),
     ),
   );
 }
 
 /**
- * Implementation of hook_perm().
+ * Implements hook_permission().
  * Note that this is the same perm provided by the stringoverrides module.
  */
-function spaces_customtext_perm() {
-  return array('administer string overrides');
+function spaces_customtext_permission() {
+  return array(
+    'administer string overrides' => array(
+      'title' => t('administer string overrides'),
+      'description' => t('TODO Add a description for \'administer string overrides\''),
+    ),
+  );
 }

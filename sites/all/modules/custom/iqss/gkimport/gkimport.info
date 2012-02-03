@@ -1,5 +1,0 @@
-name = GK Import
-description = "Import Gary's Site to an OpenScholar site"
-package = "OpenScholar IQSS"
-core = 6.x
-version = "6.x-beta13"

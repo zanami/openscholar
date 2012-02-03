@@ -1,5 +1,4 @@
 <?php
-// $Id: user_profile.inc,v 1.7.2.1 2010/01/29 20:18:26 merlinofchaos Exp $
 
 /**
  * Plugins are described by creating a $plugin array which will be used
@@ -18,18 +17,37 @@ $plugin = array(
  * Render the user profile content type.
  */
 function ctools_user_profile_content_type_render($subtype, $conf, $panel_args, $context) {
-  $account = isset($context->data) ? drupal_clone($context->data) : NULL;
+  $account = isset($context->data) ? clone($context->data) : NULL;
   if (!$account || ($account->access == 0 && !user_access('administer users'))) {
     return NULL;
   }
 
   // Retrieve all profile fields and attach to $account->content.
-  user_build_content($account);
+  if (!isset($account->content)) {
+    user_build_content($account);
+  }
+
+  $build = $account->content;
+  // We don't need duplicate rendering info in account->content.
+  unset($account->content);
+
+  $build += array(
+    '#theme' => 'user_profile',
+    '#account' => $account,
+    // @todo support view mode
+    '#view_mode' => 'full',
+    // @todo do we need to support this?
+    '#language' => NULL,
+  );
+
+  // Allow modules to modify the structured user.
+  $type = 'user';
+  drupal_alter(array('user_view', 'entity_view'), $build, $type);
 
   $block = new stdClass();
   $block->module = 'user-profile';
-  $block->title = check_plain($account->name);
-  $block->content = theme('user_profile', $account);
+  $block->title = check_plain(format_username($account));
+  $block->content = $build;
 
   return $block;
 }
@@ -41,6 +59,7 @@ function ctools_user_profile_content_type_admin_title($subtype, $conf, $context)
   return t('"@s" user profile', array('@s' => $context->identifier));
 }
 
-function ctools_user_profile_content_type_edit_form(&$form, &$form_state) {
+function ctools_user_profile_content_type_edit_form($form, &$form_state) {
   // provide a blank form so we have a place to have context setting.
+  return $form;
 }

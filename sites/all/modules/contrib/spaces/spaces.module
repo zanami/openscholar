@@ -29,7 +29,7 @@ function spaces_load($type, $id, $reset = FALSE) {
  * Remove all override values for a space.
  */
 function spaces_delete($type, $id) {
-  return db_query("DELETE FROM {spaces_overrides} WHERE type = '%s' AND id = '%s'", $type, $id);
+  return db_delete('spaces_overrides')->condition('type', $type)->condition('id', $id)->execute();
 }
 
 /**
@@ -84,7 +84,7 @@ function spaces_set_space($space = NULL) {
 }
 
 /**
- * Implementation of hook_ctools_plugin_api().
+ * Implements hook_ctools_plugin_api().
  */
 function spaces_ctools_plugin_api($module, $api) {
   if ($module == 'spaces' && $api == 'plugins') {
@@ -93,30 +93,33 @@ function spaces_ctools_plugin_api($module, $api) {
 }
 
 /**
- * Implementation of hook_ctools_plugin_plugins().
+ * Implementation of hook_ctools_plugin_type().
  */
-function spaces_ctools_plugin_plugins() {
+function spaces_ctools_plugin_type() {
   return array(
-    'cache' => TRUE,
-    'use hooks' => TRUE,
+    'plugins' => array(
+      'cache' => TRUE,
+      'use hooks' => TRUE,
+      'classes' => array('handler'),
+    ),
   );
 }
 
 /**
- * Implementation of hook_spaces_plugins().
+ * Implements hook_spaces_plugins().
  */
 function spaces_spaces_plugins() {
   $plugins = array();
   $plugins['space'] = array(
     'handler' => array(
-      'path' => drupal_get_path('module', 'spaces') .'/plugins',
+      'path' => drupal_get_path('module', 'spaces') . '/plugins',
       'file' => 'space.inc',
       'class' => 'space',
     ),
   );
   $plugins['space_type'] = array(
     'handler' => array(
-      'path' => drupal_get_path('module', 'spaces') .'/plugins',
+      'path' => drupal_get_path('module', 'spaces') . '/plugins',
       'file' => 'space_type.inc',
       'class' => 'space_type',
       'parent' => 'space',
@@ -124,7 +127,7 @@ function spaces_spaces_plugins() {
   );
   $plugins['space_type_purl'] = array(
     'handler' => array(
-      'path' => drupal_get_path('module', 'spaces') .'/plugins',
+      'path' => drupal_get_path('module', 'spaces') . '/plugins',
       'file' => 'space_type_purl.inc',
       'class' => 'space_type_purl',
       'parent' => 'space_type',
@@ -132,14 +135,14 @@ function spaces_spaces_plugins() {
   );
   $plugins['spaces_controller'] = array(
     'handler' => array(
-      'path' => drupal_get_path('module', 'spaces') .'/plugins',
+      'path' => drupal_get_path('module', 'spaces') . '/plugins',
       'file' => 'spaces_controller.inc',
       'class' => 'spaces_controller',
     ),
   );
   $plugins['spaces_controller_variable'] = array(
     'handler' => array(
-      'path' => drupal_get_path('module', 'spaces') .'/plugins',
+      'path' => drupal_get_path('module', 'spaces') . '/plugins',
       'file' => 'spaces_controller_variable.inc',
       'class' => 'spaces_controller_variable',
       'parent' => 'spaces_controller',
@@ -147,7 +150,7 @@ function spaces_spaces_plugins() {
   );
   $plugins['spaces_controller_context'] = array(
     'handler' => array(
-      'path' => drupal_get_path('module', 'spaces') .'/plugins',
+      'path' => drupal_get_path('module', 'spaces') . '/plugins',
       'file' => 'spaces_controller_context.inc',
       'class' => 'spaces_controller_context',
       'parent' => 'spaces_controller',
@@ -157,7 +160,7 @@ function spaces_spaces_plugins() {
 }
 
 /**
- * Implementation of hook_spaces_registry().
+ * Implements hook_spaces_registry().
  */
 function spaces_spaces_registry() {
   return array(
@@ -253,6 +256,7 @@ function spaces_preset_load($name = NULL, $space_type = NULL, $reset = FALSE) {
         $return[$key] = $preset;
       }
     }
+
     return $return;
   }
 }
@@ -305,7 +309,7 @@ function spaces_preset_save_from_space($preset, $space) {
  */
 function spaces_preset_delete($preset) {
   if (isset($preset->name) && ($preset->export_type & EXPORT_IN_DATABASE)) {
-    db_query("DELETE FROM {spaces_presets} WHERE name = '%s'", $preset->name);
+    db_delete('spaces_presets')->condition('name', $preset->name)->execute();
     spaces_preset_load(NULL, NULL, TRUE);
     return TRUE;
   }
@@ -346,6 +350,7 @@ function spaces_preset_export($object, $indent = '') {
  */
 function spaces_ahah_check() {
   if (!empty($_POST) && isset($_POST['form_build_id'])) {
+    $form_state = array();
     if ($form = form_get_cache($_POST['form_build_id'], $form_state)) {
       if (isset($form['#space'])) {
         list($type, $id) = explode(':', $form['#space']['#value']);
@@ -503,7 +508,7 @@ function spaces_access_feature($op = 'view', $feature, $account = NULL, $space =
   if (!isset($cache[$cid])) {
     // Allow access to features that are not spaces-compatible.
     // Allow access to features in the admin section of the site so menu items
-    // are available on pages like 'admin/build/menu' and 'admin/build/context'.
+    // are available on pages like 'admin/structure/menu' and 'admin/structure/context'.
     $features = spaces_features();
     if (!isset($features[$feature]) || arg(0) === 'admin') {
       $cache[$cid] = TRUE;
@@ -547,18 +552,18 @@ function spaces_access_user($op = 'view', $account = NULL) {
  */
 
 /**
- * Implementation of hook_help().
+ * Implements hook_help().
  */
 function spaces_help($path, $arg) {
   switch ($path) {
     case 'admin/help#spaces':
-      $output = file_get_contents(drupal_get_path('module', 'spaces') .'/README.txt');
-      return module_exists('markdown') ? filter_xss_admin(module_invoke('markdown', 'filter', 'process', 0, -1, $output)) : '<pre>'. check_plain($output) .'</pre>';
+      $output = file_get_contents(drupal_get_path('module', 'spaces') . '/README.txt');
+      return module_exists('markdown') ? filter_xss_admin(module_invoke('markdown', 'filter', 'process', 0, -1, $output)) : '<pre>' . check_plain($output) . '</pre>';
   }
 }
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function spaces_menu() {
   $items = array();
@@ -585,7 +590,7 @@ function spaces_menu() {
 }
 
 /**
- * Implementation of hook_menu_alter().
+ * Implements hook_menu_alter().
  */
 function spaces_menu_alter(&$items) {
   $router_items = array(
@@ -595,9 +600,10 @@ function spaces_menu_alter(&$items) {
     'user/%user_uid_optional',
     'user/%user_category/edit',
   );
-  foreach (node_get_types('types', NULL, TRUE) as $type) {
+  node_type_cache_reset();
+  foreach (node_type_get_types() as $type) {
     $type_url_str = str_replace('_', '-', $type->type);
-    $router_items[] = 'node/add/'. $type_url_str;
+    $router_items[] = 'node/add/' . $type_url_str;
   }
   foreach ($router_items as $path) {
     if (isset($items[$path])) {
@@ -736,37 +742,52 @@ function spaces_frontpage() {
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function spaces_theme() {
   $items = array();
-  $base = array(
-    'arguments' => array('form' => array()),
-    'file' => 'spaces.theme.inc',
-    'path' => drupal_get_path('module', 'spaces'),
+  $items['spaces_features_form'] = array(
+    'render element' => 'form',
+    'template' => 'spaces-features-form',
+    'path' => drupal_get_path('module', 'spaces') .'/theme',
+    'file' => 'theme.inc',
   );
-  $items['spaces_features_form'] =
-  $items['spaces_preset_form'] =
-  $items['spaces_overrides_form'] = $base;
+  $items['spaces_preset_form'] =  array(
+    'render element' => 'form',
+    'template' => 'spaces-preset-form',
+    'path' => drupal_get_path('module', 'spaces') .'/theme',
+    'file' => 'theme.inc',
+  );
+  $items['spaces_overrides_form'] =  array(
+    'render element' => 'form',
+    'template' => 'spaces-overrides-form',
+    'path' => drupal_get_path('module', 'spaces') .'/theme',
+    'file' => 'theme.inc',
+  );
   return $items;
 }
 
 /**
- * Implementation of hook_views_api().
+ * Implements hook_views_api().
  */
 function spaces_views_api() {
-  return array('api' => 2, 'path' => drupal_get_path('module', 'spaces') .'/includes');
+  return array('api' => 2, 'path' => drupal_get_path('module', 'spaces') . '/includes');
 }
 
 /**
- * Implementation of hook_perm().
+ * Implements hook_permission().
  */
-function spaces_perm() {
-  return array('administer spaces');
+function spaces_permission() {
+  return array(
+    'administer spaces' => array(
+      'title' => t('administer spaces'),
+      'description' => t('TODO Add a description for \'administer spaces\''),
+    ),
+  );
 }
 
 /**
- * Implementation of hook_init().
+ * Implements hook_init().
  */
 function spaces_init() {
   spaces_ahah_check();
@@ -778,6 +799,7 @@ function spaces_init() {
   if (!spaces_access_space()) {
     menu_set_active_item('spaces-access-denied');
   }
+
   spaces_router('init');
 
   /**
@@ -807,13 +829,47 @@ function spaces_init() {
   }
 
   // If the space is incorrect, reroute.
-  if ($type && !spaces_is_spaces_object($type, $object)) {
+  if (isset($type) && !spaces_is_spaces_object($type, $object)) {
     spaces_router($type, $object);
   }
 }
 
 /**
- * Implementation of hook_flush_caches().
+ * Get the space that an $object is in.
+ */
+function spaces_get_space_from_object($type, $object) {
+  static $spaces;
+  $id = $type == 'node' ? $object->nid : $object->uid;
+  if (!isset($spaces[$type][$id])) {
+    $spaces = module_invoke_all('spaces_get_space_from_object', $type, $object);
+    if ($space = reset($spaces)) {
+      $spaces[$type][$id] = array('type' => $space->type, 'id' => $space->id);
+    }
+    else {
+      $spaces[$type][$id] = FALSE;
+    }
+  }
+  return $spaces[$type][$id] ? spaces_load($spaces[$type][$id]['type'], $spaces[$type][$id]['id']) : FALSE;
+}
+
+/**
+ * Tests whether the object is part of the current space.
+ */
+function spaces_is_spaces_object($type, $object) {
+  if ($object_space = spaces_get_space_from_object($type, $object)) {
+    if (($current_space = spaces_get_space())) {
+      return $object_space->id == $current_space->id && $object_space->type == $current_space->type;
+    }
+    else {
+      return FALSE;
+    }
+  }
+  return TRUE;
+}
+
+
+/**
+ * Implements hook_flush_caches().
  */
 function spaces_flush_caches() {
   cache_clear_all('spaces_map', 'cache', TRUE);
@@ -822,39 +878,47 @@ function spaces_flush_caches() {
 }
 
 /**
- * Implementation of hook_block().
+ * Implements hook_block_info().
  */
-function spaces_block($op, $delta = 0) {
-  if (module_exists('jquery_ui')) {
-    if ($op == 'list') {
-      return array(
-        'menu_editor' => array(
-          'info' => t('Reorder menu'),
-          'admin' => TRUE,
-        ),
-      );
-    }
-    elseif ($op == 'view' && $delta == 'menu_editor') {
-      if (spaces_access_admin()) {
-        // Check for User space type which doesn't support this feature.
-        $space = spaces_get_space();
-        if ($space && $space->type == 'user') {
-          return array();
-        }
-        return array(
-          'subject' => t('Reorder menu'),
-          'content' => drupal_get_form('spaces_get_menu_editor'),
-        );
+function spaces_block_info() {
+  return array(
+    'menu_editor' => array(
+      'info' => t('Reorder menu'),
+      // 'admin' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function spaces_block_view($delta = 0) {
+  if ($delta == 'menu_editor') {
+    if (spaces_access_admin()) {
+      // Check for User space type which doesn't support this feature.
+      $space = spaces_get_space();
+      if ($space && $space->type == 'user') {
+        return array();
       }
+      return array(
+        'subject' => t('Reorder menu'),
+        'content' => drupal_get_form('spaces_get_menu_editor'),
+      );
     }
   }
 }
 
 // Retrieve a link to open the spaces menu editor.
-function spaces_get_menu_editor(&$form_state) {
-  jquery_ui_add(array('ui.draggable', 'ui.droppable', 'ui.sortable'));
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function spaces_get_menu_editor($form, &$form_state) {
+  drupal_add_library('system', 'ui.draggable');
+  drupal_add_library('system', 'ui.droppable');
+  drupal_add_library('system', 'ui.sortable');
   // @TODO: Use Libraries API to split these JS libraries out.
-  drupal_add_js(drupal_get_path('module', 'context_ui') .'/json2.js');
+  drupal_add_js(drupal_get_path('module', 'context_ui') . '/json2.js');
   drupal_add_js(drupal_get_path('module', 'context_ui') . '/jquery.pageEditor.js');
   drupal_add_js(drupal_get_path('module', 'spaces') . '/spaces.js');
   drupal_add_css(drupal_get_path('module', 'spaces') . '/spaces.css');
@@ -862,26 +926,32 @@ function spaces_get_menu_editor(&$form_state) {
   // Start from a system_settings_form.
   $form = system_settings_form(array());
   unset($form['#theme']);
-  $form['#attributes'] = array('class' => 'spaces-menu-editor');
+  $form['#attributes'] = array('class' => array('spaces-menu-editor'));
 
   $form['space_menu_items'] = array(
     '#type' => 'hidden',
     '#element_validate' => array('spaces_menu_items_validate'),
   );
-  $form['buttons']['edit'] = array(
+  $form['actions']['edit'] = array(
     '#submit' => array(),
     '#type' => 'submit',
     '#value' => t('Edit'),
-    '#attributes' => array('class' => 'spaces-menu-editor'),
+    '#attributes' => array('class' => array('spaces-menu-editor')),
   );
-  $form['buttons']['reset']['#access'] = FALSE;
-  $form['buttons']['submit']['#value'] = t('Save');
-  $form['buttons']['submit']['#attributes'] = array('class' => 'spaces-menu-save', 'style' => 'display: none;');
-  $form['buttons']['cancel'] = array(
+  //$form['actions']['reset']['#access'] = FALSE;
+  $form['actions']['submit']['#value'] = t('Save');
+  $form['actions']['submit']['#attributes'] = array(
+    'class' => array('spaces-menu-save'),
+    'style' => array('display: none;'),
+  );
+  $form['actions']['cancel'] = array(
     '#submit' => array(),
     '#value' => t('Cancel'),
     '#type' => 'button',
-    '#attributes' => array('class' => 'spaces-menu-cancel', 'style' => 'display: none;'),
+    '#attributes' => array(
+      'class' => array('spaces-menu-cancel'),
+      'style' => array('display: none;'),
+    ),
   );
   return $form;
 }
@@ -893,16 +963,14 @@ function spaces_menu_items_validate($element, &$form_state) {
   $base_path = base_path();
   $items = array();
 
-  // @TODO: Split out spaces_json_decode() into a library.
-  // Ideally, this would either be part of Drupal core or split out into a
-  // utility module/library.
   $weight = -20;
   if (!empty($form_state['values']['space_menu_items'])) {
-    foreach (spaces_json_decode($form_state['values']['space_menu_items']) as $i) {
+    foreach (json_decode($form_state['values']['space_menu_items']) as $i) {
       if (strpos($i, $base_path) === 0) {
         $path = substr($i, strlen($base_path));
         $path = array_shift(explode('#', $path));
         $path = drupal_get_normal_path($path);
+        $path = empty($path) ? '<front>' : $path;
         $items[$path] = $weight;
         $weight++;
       }
@@ -933,10 +1001,10 @@ function spaces_features_order_menu(&$links) {
     if ($first) {
       $first = FALSE;
       if (isset($links[$k]['attributes']['class'])) {
-        $links[$k]['attributes']['class'] .= ' spaces-menu-editable';
+        $links[$k]['attributes']['class'][] = 'spaces-menu-editable';
       }
       else {
-        $links[$k]['attributes']['class'] = 'spaces-menu-editable';
+        $links[$k]['attributes']['class'] = array('spaces-menu-editable');
       }
     }
     if (isset($weights[$v['href']])) {
@@ -952,92 +1020,5 @@ function spaces_features_order_menu(&$links) {
  * Reorder primary menu links.
  */
 function spaces_preprocess_page(&$vars) {
-  spaces_features_order_menu($vars['primary_links']);
-}
-
-/**
- * Compatibility wrapper around json_decode().
- */
-function spaces_json_decode($json, $assoc = FALSE) {
-  // Requires PHP 5.2.
-  if (function_exists('json_decode')) {
-    return json_decode($json, $assoc);
-  }
-  return _spaces_json_decode($json);
-}
-
-/**
- * From http://www.php.net/manual/en/function.json-decode.php#91216
- * with modifications for consistency with output of json_decode().
- *
- * Original author: walidator.info 2009.
- */
-function _spaces_json_decode($json) {
-  $comment = false;
-  $out = '$x = ';
-  for ($i=0; $i < strlen($json); $i++) {
-    if (!$comment) {
-      switch ($json[$i]) {
-        case '{':
-          $out .= ' (object) array(';
-          break;
-        case '}':
-          $out .= ')';
-          break;
-        case '[':
-          $out .= ' array(';
-          break;
-        case ']':
-          $out .= ')';
-          break;
-        case ':';
-          $out .= '=>';
-          break;
-        default:
-          $out .= $json[$i];
-          break;
-      }
-    }
-    else {
-      $out .= $json[$i];
-    }
-    if ($json[$i] == '"') {
-      $comment = !$comment;
-    }
-  }
-  eval($out . ';');
-  return $x;
-}
-
-/**
- * Get the space that an $object is in.
- */
-function spaces_get_space_from_object($type, $object) {
-  static $spaces;
-  $id = $type == 'node' ? $object->nid : $object->uid;
-  if (!isset($spaces[$type][$id])) {
-    $spaces = module_invoke_all('spaces_get_space_from_object', $type, $object);
-    if ($space = current($spaces)) {
-      $spaces[$type][$id] = array('type' => $space->type, 'id' => $space->id);
-    }
-    else {
-      $spaces[$type][$id] = FALSE;
-    }
-  }
-  return $spaces[$type][$id] ? spaces_load($spaces[$type][$id]['type'], $spaces[$type][$id]['id']) : FALSE;
-}
-
-/**
- * Tests whether the object is part of the current space.
- */
-function spaces_is_spaces_object($type, $object) {
-  if ($object_space = spaces_get_space_from_object($type, $object)) {
-    if (($current_space = spaces_get_space())) {
-      return $object_space->id == $current_space->id && $object_space->type == $current_space->type;
-    }
-    else {
-      return FALSE;
-    }
-  }
-  return TRUE;
+  spaces_features_order_menu($vars['main_menu']);
 }

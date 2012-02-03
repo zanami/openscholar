@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Contains the unformatted summary style plugin.
@@ -32,4 +31,3 @@ class views_plugin_style_summary_unformatted extends views_plugin_style_summary 
     );
   }
 }
-

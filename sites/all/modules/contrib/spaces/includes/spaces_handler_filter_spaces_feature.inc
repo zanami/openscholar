@@ -7,7 +7,9 @@ class spaces_handler_filter_spaces_feature extends views_handler_filter {
   /**
    * override can_expose()
    */
-  function can_expose() { return FALSE; }
+  function can_expose() {
+    return FALSE;
+  }
 
   function query() {
     if (module_exists('context')) {

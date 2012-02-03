@@ -49,8 +49,12 @@ function _features_populate($pipe, &$export, $module_name = '') {
       // Pass module-specific data and export array.
       // We don't use features_invoke() here since we need to pass $export by reference.
       $more = $function($data, $export, $module_name, $component);
+      // Add the context information.
+      $export['component'] = $component;
       // Allow other modules to manipulate the pipe to add in additional modules.
-      drupal_alter('features_pipe_' . $component, $more, $data, $export);
+      drupal_alter(array('features_pipe', 'features_pipe_' . $component), $more, $data, $export);
+      // Remove the component information.
+      unset($export['component']);
       // Allow for export functions to request additional exports.
       if (!empty($more)) {
         _features_populate($more, $export, $module_name);
@@ -66,8 +70,7 @@ function _features_populate($pipe, &$export, $module_name = '') {
 function _features_resolve_dependencies(&$data, &$export, $module_name, $component) {
   if ($map = features_get_default_map($component)) {
     foreach ($data as $key => $item) {
-      // If the node type is provided by a different module, add the provider as
-      // a dependency.
+      // If this node type is provided by a different module, add it as a dependency
       if (isset($map[$item]) && $map[$item] != $module_name) {
         $export['dependencies'][$map[$item]] = $map[$item];
         unset($data[$key]);
@@ -124,9 +127,11 @@ function _features_export_minimize_dependencies($dependencies, $module_name = ''
  */
 function _features_export_maximize_dependencies($dependencies, $module_name = '', $maximized = array(), $first = TRUE) {
   foreach ($dependencies as $k => $v) {
-    if (!in_array($v, $maximized)) {
-      $maximized[] = $v;
-      $module = features_get_modules($v);
+    $parsed_dependency = drupal_parse_dependency($v);
+    $name = $parsed_dependency['name'];
+    if (!in_array($name, $maximized)) {
+      $maximized[] = $name;
+      $module = features_get_modules($name);
       if ($module && !empty($module->info['dependencies'])) {
         $maximized = array_merge($maximized, _features_export_maximize_dependencies($module->info['dependencies'], $module_name, $maximized, FALSE));
       }
@@ -142,7 +147,7 @@ function features_export_prepare($export, $module_name, $reset = FALSE) {
   $existing = features_get_modules($module_name, $reset);
 
   // Prepare info string -- if module exists, merge into its existing info file
-  $defaults = $existing ? $existing->info : array('core' => '6.x', 'package' => 'Features');
+  $defaults = $existing ? $existing->info : array('core' => '7.x', 'package' => 'Features');
   $export = array_merge($defaults, $export);
 
   // Cleanup info array
@@ -237,7 +242,7 @@ function features_export_render($export, $module_name, $reset = FALSE) {
 
   // Finalize strings to be written to files
   foreach ($code as $filename => $contents) {
-    $code[$filename] = "<?php\n\n". implode("\n\n", $contents) ."\n";
+    $code[$filename] = "<?php\n/**\n * @file\n * {$module_name}.{$filename}.inc\n */\n\n". implode("\n\n", $contents) ."\n";
   }
 
   // Generate info file output
@@ -251,6 +256,7 @@ function features_export_render($export, $module_name, $reset = FALSE) {
 
     // If the current module file does not reference the features.inc include,
     // set a warning message.
+    // @TODO this way of checking does not account for the possibility of inclusion instruction being commented out.
     if (isset($code['features']) && strpos($code['module'], "{$module_name}.features.inc") === FALSE) {
       features_log(t('@module does not appear to include the @include file.', array('@module' => "{$module_name}.module", '@include' => "{$module_name}.features.inc")), 'warning');
     }
@@ -262,9 +268,9 @@ function features_export_render($export, $module_name, $reset = FALSE) {
       "{$module_name}.features.views",
       "{$module_name}.features.node"
     );
-    foreach (file_scan_directory(drupal_get_path('module', $module_name), '.*') as $file) {
+    foreach (file_scan_directory(drupal_get_path('module', $module_name), '/.*/') as $file) {
       if (in_array($file->name, $deprecated, TRUE)) {
-        features_log(t('The file @filename has been deprecated and can be removed.', array('@filename' => $file->basename)), 'status');
+        features_log(t('The file @filename has been deprecated and can be removed.', array('@filename' => $file->filename)), 'status');
       }
       elseif ($file->name === "{$module_name}.features" && empty($code['features'])) {
         $code['features'] = "<?php\n\n// This file is deprecated and can be removed.\n// Please remove include_once('{$module_name}.features.inc') in {$module_name}.module as well.\n";
@@ -273,10 +279,10 @@ function features_export_render($export, $module_name, $reset = FALSE) {
   }
   // Add a stub module to include the defaults
   else if (!empty($code['features'])) {
-    $code['module'] = "<?php\n\ninclude_once('{$module_name}.features.inc');\n";
+    $code['module'] = "<?php\n/**\n * @file\n * Code for the {$export['name']} feature.\n */\n\ninclude_once('{$module_name}.features.inc');\n";
   }
   else {
-    $code['module'] = "<?php\n\n// Drupal needs this blank file.\n";
+    $code['module'] = "<?php\n/**\n * @file\n */\n\n// Drupal needs this blank file.\n";
   }
   return $code;
 }
@@ -354,7 +360,7 @@ function features_get_default_hooks($component = NULL, $reset = FALSE) {
 function features_export_render_defaults($module, $hook, $code) {
   $output = array();
   $output[] = "/**";
-  $output[] = " * Implementation of hook_{$hook}().";
+  $output[] = " * Implements hook_{$hook}().";
   $output[] = " */";
   $output[] = "function {$module}_{$hook}() {";
   $output[] = $code;
@@ -412,7 +418,7 @@ function features_tar_create($name, $contents) {
     '   765 ', // UID,
     '   765 ', // GID,
     sprintf("%11s ", decoct(strlen($contents))), // Filesize,
-    sprintf("%11s", decoct(time())) // Creation time
+    sprintf("%11s", decoct(REQUEST_TIME)) // Creation time
   );
   $binary_data_last = pack("a1a100a6a2a32a32a8a8a155a12", '', '', '', '', '', '', '', '', '', '');
 
@@ -452,7 +458,8 @@ function features_var_export($var, $prefix = '', $init = TRUE) {
     else {
       $output = "array(\n";
       foreach ($var as $key => $value) {
-        $output .= "  '$key' => " . features_var_export($value, '  ', FALSE) . ",\n";
+        // Using normal var_export on the key to ensure correct quoting.
+        $output .= "  " . var_export($key, TRUE) . " => " . features_var_export($value, '  ', FALSE) . ",\n";
       }
       $output .= ')';
     }
@@ -556,14 +563,14 @@ function features_semaphore($op, $component) {
   // Note: we don't use variable_get() here as the inited variable
   // static cache may be stale. Retrieving directly from the DB narrows
   // the possibility of collision.
-  $semaphore = db_result(db_query("SELECT value FROM {variable} WHERE name = 'features_semaphore'"));
+  $semaphore = db_query("SELECT value FROM {variable} WHERE name = :name", array(':name' => 'features_semaphore'))->fetchField();
   $semaphore = !empty($semaphore) ? unserialize($semaphore) : array();
 
   switch ($op) {
     case 'get':
       return isset($semaphore[$component]) ? $semaphore[$component] : FALSE;
     case 'set':
-      $semaphore[$component] = time();
+      $semaphore[$component] = REQUEST_TIME;
       variable_set('features_semaphore', $semaphore);
       break;
     case 'del':
@@ -646,7 +653,7 @@ function features_get_default($component, $module_name = NULL, $alter = TRUE, $r
       }
       // All other components
       else {
-        if ($default_hook && function_exists("{$m}_{$default_hook}")) {
+        if ($default_hook && module_hook($m, $default_hook)) {
           $cache[$component][$m] = call_user_func("{$m}_{$default_hook}");
           if ($alter) {
             drupal_alter($default_hook, $cache[$component][$m]);
@@ -775,7 +782,7 @@ function features_get_component_states($features = array(), $rebuild_only = TRUE
                   $cache[$feature][$component] = FEATURES_OVERRIDDEN;
                 }
                 // DB has no modifications to prior code state (or this is initial install).
-                else if (empty($codecache) || $codecache == $normal) {
+                else if ($codecache == $normal || empty($codecache)) {
                   $cache[$feature][$component] = FEATURES_REBUILDABLE;
                 }
                 // None of the states match. Requires user intervention.
@@ -786,7 +793,7 @@ function features_get_component_states($features = array(), $rebuild_only = TRUE
             }
             else {
               // Semaphore is still within processing horizon. Do nothing.
-              if ((time() - $semaphore) < FEATURES_SEMAPHORE_TIMEOUT) {
+              if ((REQUEST_TIME - $semaphore) < FEATURES_SEMAPHORE_TIMEOUT) {
                 $cache[$feature][$component] = FEATURES_REBUILDING;
               }
               // A stale semaphore means a previous rebuild attempt did not complete.
@@ -830,8 +837,7 @@ function _features_linetrim($code) {
  */
 function _features_sanitize(&$array) {
   if (is_array($array)) {
-    $is_assoc = (array_keys($array) !== range(0, count($array) - 1));
-    if ($is_assoc) {
+    if (_features_is_assoc($array)) {
       ksort($array);
       $array = array_filter($array);
     }
@@ -844,4 +850,19 @@ function _features_sanitize(&$array) {
       }
     }
   }
+}
+
+/**
+ * Is the given array an associative array. This basically extracts the keys twice to get the
+ * numerically ordered keys. It then does a diff with the original array and if there is no
+ * key diff then the original array is not associative.
+ *
+ * NOTE: If you have non-sequential numerical keys, this will identify the array as assoc.
+ *
+ * Borrowed from: http://www.php.net/manual/en/function.is-array.php#96724
+ *
+ * @return True is the array is an associative array, false otherwise
+ */
+function _features_is_assoc($array) {
+  return (is_array($array) && (0 !== count(array_diff_key($array, array_keys(array_keys($array)))) || count($array)==0));
 }

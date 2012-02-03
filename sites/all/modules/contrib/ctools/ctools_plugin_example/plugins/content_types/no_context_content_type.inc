@@ -1,5 +1,4 @@
 <?php
-// $Id: no_context_content_type.inc,v 1.1.2.1 2010/01/29 19:54:02 merlinofchaos Exp $
 
 /**
  * @file
@@ -87,7 +86,7 @@ function no_context_content_type_render($subtype, $conf, $args, $context) {
  * ctools_plugin_example_no_context_content_type_edit_form.
  *
  */
-function no_context_content_type_edit_form(&$form, &$form_state) {
+function no_context_content_type_edit_form($form, &$form_state) {
   $conf = $form_state['conf'];
   $form['item1'] = array(
     '#type' => 'textfield',

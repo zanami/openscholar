@@ -1,5 +1,4 @@
 <?php
-// $Id: purl_path.inc,v 1.1.2.5 2010/01/05 02:48:37 yhahn Exp $
 
 /**
  * Path prefixer.
@@ -78,14 +77,12 @@ class purl_path implements purl_processor {
 
     // We attempt to remove the prefix from the path as a way to detect it's
     // presence. If the processor can remove itself than we're on a path alias
-    // that contains our prefix. Then $alt will not be the same as the $path 
+    // that contains our prefix. Then $alt will not be the same as the $path
     // and we won't do any rewriting.
     $alt = $this->remove($path, $element);
 
     if ($alt == $path && !_purl_skip($element, $options)) {
-      $items = explode('/', $path);
-      array_unshift($items, $element->value);
-      $path = implode('/', $items);
+      $options['prefix'] = $element->value . '/' . $options['prefix'];
     }
   }
 }

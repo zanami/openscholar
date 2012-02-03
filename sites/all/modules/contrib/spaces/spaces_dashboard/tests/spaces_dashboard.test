@@ -7,7 +7,7 @@ class SpacesDashboardTestCase extends DrupalWebTestCase {
   public function getInfo() {
     return array(
       'name' => t('Spaces Dashboard'),
-      'description' => t('Test dashboard settings.') ,
+      'description' => t('Test dashboard settings.'),
       'group' => t('Spaces'),
     );
   }
@@ -21,7 +21,6 @@ class SpacesDashboardTestCase extends DrupalWebTestCase {
       'context_ui',
       'ctools',
       'features',
-      'jquery_ui',
       'spaces',
       'spaces_dashboard'
     );
@@ -32,13 +31,13 @@ class SpacesDashboardTestCase extends DrupalWebTestCase {
     $context->name = 'testcontext';
     $context->conditions = array('sitewide' => array('values' => array(1)));
     $context->reactions = array('block' => array('blocks' => array(
-      'spaces_dashboard-editor' => array(
-        'module' => 'spaces_dashboard',
-        'delta' => 'editor',
-        'region' => 'right',
-        'weight' => 0,
-      ),
-    )));
+          'spaces_dashboard-editor' => array(
+            'module' => 'spaces_dashboard',
+            'delta' => 'editor',
+            'region' => 'sidebar_second',
+            'weight' => 0,
+          ),
+        )));
     $saved = context_save($context);
     $this->assertTrue($saved, "Context 'testcontext' saved.");
 
@@ -60,11 +59,11 @@ class SpacesDashboardTestCase extends DrupalWebTestCase {
 
     // Enable core blocks for use with dashboard
     $enabled = array(
-      'node-0' => t('Syndicate'),
-      'user-0' => t('User login'),
+      'node-syndicate' => t('Syndicate'),
+      'user-login' => t('User login'),
     );
     $disabled = array(
-      'user-1' => t('Navigation'),
+      'system-help' => t('System help'),
     );
     $edit = array();
     foreach (array_keys($enabled) as $bid) {

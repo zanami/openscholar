@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Provide views data and handlers for book.module
@@ -12,7 +11,7 @@
  */
 
 /**
- * Implementation of hook_views_data()
+ * Implements hook_views_data()
  */
 function book_views_data() {
   // ----------------------------------------------------------------------

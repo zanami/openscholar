@@ -1,8 +1,0 @@
-; $Id
-name = Radioactivity Rules Support
-description = "Provides rules support for Radioactivity."
-dependencies[] = radioactivity
-dependencies[] = rules
-package = Radioactivity
-core = 6.x
-

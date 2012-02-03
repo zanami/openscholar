@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Implementation of hook_ctools_plugin_api().
+ * Implements hook_ctools_plugin_api().
  */
 function spaces_test_ctools_plugin_api() {
   list($module, $api) = func_get_args();

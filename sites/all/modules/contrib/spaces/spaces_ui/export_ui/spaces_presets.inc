@@ -3,7 +3,7 @@
 $plugin = array(
   'schema' => 'spaces_presets',
   'menu' => array(
-    'menu prefix' => 'admin/build',
+    'menu prefix' => 'admin/structure',
     'menu item' => 'spaces',
     'menu title' => 'Spaces',
     'menu description' => 'Settings for Spaces.',

@@ -7,9 +7,9 @@ class spaces_handler_field_node extends views_handler_field_node {
   function option_definition() {
     $options = parent::option_definition();
     $options['spaces'] = array('default' => array(
-      'type' => NULL,
-      'frontpage' => FALSE
-    ));
+        'type' => NULL,
+        'frontpage' => FALSE,
+      ));
     return $options;
   }
 
@@ -37,9 +37,9 @@ class spaces_handler_field_node extends views_handler_field_node {
         '#description' => t('Link a group node to its frontpage instead of its node page.'),
         '#type' => 'checkbox',
         '#default_value' => !empty($this->options['spaces']['frontpage']),
-        '#process' => array('views_process_dependency'),
+        '#process' => array('ctools_dependent_process'),
         '#dependency' => array(
-          'edit-options-link-to-node' => array(1)
+          'edit-options-link-to-node' => array(1),
         ),
       );
       $form['spaces']['type'] = array(
@@ -47,9 +47,9 @@ class spaces_handler_field_node extends views_handler_field_node {
         '#type' => 'select',
         '#options' => $types,
         '#default_value' => !empty($this->options['spaces']['type']),
-        '#process' => array('views_process_dependency'),
+        '#process' => array('ctools_dependent_process'),
         '#dependency' => array(
-          'edit-options-spaces-frontpage' => array(1)
+          'edit-options-spaces-frontpage' => array(1),
         ),
       );
     }
@@ -69,7 +69,7 @@ class spaces_handler_field_node extends views_handler_field_node {
         'purl' => array(
           'provider' => $this->options['spaces']['type'],
           'id' => $values->{$this->aliases['nid']},
-        )
+        ),
       ));
     }
     return $data;

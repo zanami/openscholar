@@ -8,10 +8,10 @@ class SpacesVariableControllerTestCase extends DrupalWebTestCase {
   /**
    * Test info.
    */
-  public function getInfo() {
+  public static function getInfo() {
     return array(
       'name' => t('Controller: variable'),
-      'description' => t('Unit test for variable controller.') ,
+      'description' => t('Unit test for variable controller.'),
       'group' => t('Spaces'),
     );
   }
@@ -23,8 +23,8 @@ class SpacesVariableControllerTestCase extends DrupalWebTestCase {
     parent::setUp(
       'ctools',
       'features',
-      'spaces',
-      'spaces_user'
+      'spaces_user',
+      'spaces'
     );
   }
 
@@ -38,16 +38,16 @@ class SpacesVariableControllerTestCase extends DrupalWebTestCase {
     $preset->title = 'Test preset';
     $preset->space_type = 'user';
     $preset->value = array(
-      'variable' => array('foo' => 'bar')
+      'variable' => array('foo' => 'bar'),
     );
     spaces_preset_save($preset);
 
     variable_set('foo', 'foo');
 
     // Force a cache clear.
-    spaces_types(true);
-    $info = &ctools_static('ctools_plugin_info', array());
-    $info = array();
+    spaces_types(TRUE);
+    drupal_static_reset('ctools_plugins');
+    ctools_get_plugins_reset();
 
     $space = spaces_load('user', 0);
     if ($space == FALSE) {
@@ -102,10 +102,10 @@ class SpacesContextControllerTestCase extends DrupalWebTestCase {
   /**
    * Test info.
    */
-  public function getInfo() {
+  public static function getInfo() {
     return array(
       'name' => t('Controller: context'),
-      'description' => t('Unit test for context controller.') ,
+      'description' => t('Unit test for context controller.'),
       'group' => t('Spaces'),
     );
   }
@@ -148,9 +148,9 @@ class SpacesContextControllerTestCase extends DrupalWebTestCase {
     spaces_preset_save($preset);
 
     // Force a cache clear.
-    spaces_types(true);
-    $info = &ctools_static('ctools_plugin_info', array());
-    $info = array();
+    spaces_types(TRUE);
+    drupal_static_reset('ctools_plugins');
+    ctools_get_plugins_reset();
 
     $space = spaces_load('user', 0);
     if ($space == FALSE) {
@@ -205,10 +205,10 @@ class SpacesTestCase extends DrupalWebTestCase {
   /**
    * Test info.
    */
-  public function getInfo() {
+  public static function getInfo() {
     return array(
       'name' => t('Spaces'),
-      'description' => t('Test access control and simple feature settings using as example the "Feature test" feature that ships with Features.') ,
+      'description' => t('Test access control and simple feature settings using as example the "Feature test" feature that ships with Features.'),
       'group' => t('Spaces'),
     );
   }
@@ -235,20 +235,20 @@ class SpacesTestCase extends DrupalWebTestCase {
     // Create admin and editor user.
     $admin = $this->drupalCreateUser(
       array(
-        'access content',
-        'administer nodes',
-        'administer content types',
-        'administer site configuration',
-        'administer spaces',
-      )
+      'access content',
+      'administer nodes',
+      'administer content types',
+      'administer site configuration',
+      'administer spaces',
+    )
     );
     $editor = $this->drupalCreateUser(
       array(
-        'access content',
-        'create features_test content',
-        'edit own features_test content',
-        'delete own features_test content',
-      )
+      'access content',
+      'create features_test content',
+      'edit own features_test content',
+      'delete own features_test content',
+    )
     );
     $this->drupalLogin($editor);
 
@@ -261,7 +261,7 @@ class SpacesTestCase extends DrupalWebTestCase {
     $edit = array(
       'spaces_features[features_test]' => '1',
     );
-    $this->drupalPost('features', $edit, 'Save configuration');
+    $this->drupalPost('features', $edit, t('Save configuration'));
     $this->assertText('The configuration options have been saved.');
 
     // Log in as editor user and create story post.
@@ -271,14 +271,12 @@ class SpacesTestCase extends DrupalWebTestCase {
     $this->assertRaw('node/add/features-test', 'Create content link is available');
     $edit = array(
       'title' => $this->randomName(10),
-      'body' => $this->randomName(20),
+      'field_features_test[und][0][value]' => $this->randomName(20),
     );
     $this->drupalPost('node/add/features-test', $edit, 'Save');
     $this->assertText('has been created');
 
-    // Start adding new comment and assert that there is no Save link for the
-    // comment.
-    $this->clickLink('Add new comment');
+    // For adding new comment, assert that there is no Save link for the comment.
     $this->assertNoText('Save');
 
     // Shut off blog feature again.
@@ -313,10 +311,10 @@ class SpacesMenuTestCase extends DrupalWebTestCase {
   /**
    * Test info.
    */
-  public function getInfo() {
+  public static function getInfo() {
     return array(
       'name' => t('Spaces Menu'),
-      'description' => t('Test menu re-ordering.') ,
+      'description' => t('Test menu re-ordering.'),
       'group' => t('Spaces'),
     );
   }
@@ -329,8 +327,7 @@ class SpacesMenuTestCase extends DrupalWebTestCase {
       'ctools',
       'features',
       'features_test',
-      'spaces',
-      'jquery_ui'
+      'spaces'
     );
 
     // Create and login user
@@ -341,12 +338,12 @@ class SpacesMenuTestCase extends DrupalWebTestCase {
 
   function getMenuOrder() {
     $base_path = base_path();
-    $elems = $this->xpath('//ul[@class="links primary-links"] /li /a');
+    $elems = $this->xpath('//ul[@id="main-menu-links"] /li /a');
     $links = array();
     foreach ($elems as $e) {
       foreach ($e->attributes() as $k => $v) {
         if ($k == 'href') {
-          $links[] = $base_path . substr($v.'', 1);
+          $links[] = $base_path . substr($v . '', 1);
         }
       }
     }
@@ -354,15 +351,9 @@ class SpacesMenuTestCase extends DrupalWebTestCase {
   }
 
   function testMenuOrdering() {
-    // Select the Navigation block to be configured and moved.
-    $block = array();
-    $block['module'] = 'spaces';
-    $block['delta'] = 'menu_editor';
-
     // Set the created block to a specific region.
-    $edit = array();
-    $edit[$block['module'] .'_'. $block['delta'] .'[region]'] = 'left';
-    $this->drupalPost('admin/build/block', $edit, t('Save blocks'));
+    $edit = array("blocks[spaces_menu_editor][region]" => 'sidebar_first');
+    $this->drupalPost('admin/structure/block', $edit, t('Save blocks'));
 
     // Confirm that the block was moved to the proper region.
     $this->assertText(t('The block settings have been updated.'), t('Block successfully moved to left region.'));
@@ -370,8 +361,8 @@ class SpacesMenuTestCase extends DrupalWebTestCase {
 
     // Set the navigation menu as primary
     $edit = array();
-    $edit['menu_primary_links_source'] = 'navigation';
-    $this->drupalPost('admin/build/menu/settings', $edit, t('Save configuration'));
+    $edit['menu_main_links_source'] = 'navigation';
+    $this->drupalPost('admin/structure/menu/settings', $edit, t('Save configuration'));
 
     // Get link order
     $links = $this->getMenuOrder();
@@ -393,10 +384,10 @@ class ViewsAccessTestCase extends DrupalWebTestCase {
   /**
    * Test info.
    */
-  public function getInfo() {
+  public static function getInfo() {
     return array(
       'name' => t('Spaces Views Access'),
-      'description' => t('Test the Spaces access plugin for views.') ,
+      'description' => t('Test the Spaces access plugin for views.'),
       'group' => t('Spaces'),
     );
   }
@@ -406,6 +397,7 @@ class ViewsAccessTestCase extends DrupalWebTestCase {
    */
   public function setUp() {
     parent::setUp(
+      'php',
       'ctools',
       'features',
       'features_test',
@@ -415,9 +407,10 @@ class ViewsAccessTestCase extends DrupalWebTestCase {
       'views_ui'
     );
 
-    // Create basic user 
+    // Create basic user
     $this->basic_user = $this->drupalCreateUser(array(
-      'access content'));
+      'access content',
+    ));
 
     // Create and login admin user
     $this->admin_user = $this->drupalCreateUser(array(
@@ -425,15 +418,16 @@ class ViewsAccessTestCase extends DrupalWebTestCase {
       'administer blocks',
       'administer menu',
       'administer views',
-      'use PHP for block visibility'));
+      'use PHP for settings',
+    ));
     $this->drupalLogin($this->admin_user);
 
-    $this->drupalGet('admin/build/views/export/comments_recent');
+    $this->drupalGet('admin/structure/views/view/comments_recent/export');
     $elems = $this->xpath('//textarea[@id="edit-code"]');
 
     // Within the exported view locate the page display and change the access
     // plugin.
-    $view_code = explode("\n", (string)$elems[0]);
+    $view_code = explode("\n", (string) $elems[0]);
     foreach ($view_code as $n => $line) {
       if (strpos($line, '$handler = $view->new_display(\'page\'') === 0) {
         $mark = $n + 1;
@@ -441,30 +435,29 @@ class ViewsAccessTestCase extends DrupalWebTestCase {
       }
     }
 
-    $insert = '$handler->override_option("access", array(
-                "type" => "spaces_feature", 
-                "spaces_feature" => "spaces_test", 
-                "perm" => "administer site configuration",
-              ));';
-
+    $insert = '$handler->display->display_options["defaults"]["access"] = FALSE;
+               $handler->display->display_options["access"]["type"] = "spaces_feature";
+               $handler->display->display_options["access"]["spaces_feature"] = "spaces_test";
+               $handler->display->display_options["access"]["perm"] = "administer site configuration";';
     array_splice($view_code, $mark, 0, $insert);
 
     $edit = array(
       'name' => 'comments_recent_spaces',
       'view' => implode("\n", $view_code),
     );
-    $this->drupalPost('admin/build/views/import', $edit, t('Import'));
+    $this->drupalPost('admin/structure/views/import', $edit, t('Import'));
     $this->drupalPost(null, array(), t('Save'));
-    
+
   }
 
   public function testAccessPlugin() {
-    $this->drupalLogin($this->basic_user);
-    $this->drupalGet('comments/recent');
-    $this->assertResponse('403', t('Unauthorized user blocked'));
-
     $this->drupalLogin($this->admin_user);
     $this->drupalGet('comments/recent');
     $this->assertResponse('200', t('Authorized user allowed'));
+
+    // For some reason this test fails, but works when click testing a site
+    $this->drupalLogin($this->basic_user);
+    $this->drupalGet('comments/recent');
+    $this->assertResponse('403', t('Unauthorized user blocked'));
   }
 }

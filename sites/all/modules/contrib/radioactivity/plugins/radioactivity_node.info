@@ -1,5 +1,0 @@
-name = Node radioactivity
-description = "Provides node radioactivity."
-dependencies[] = radioactivity
-package = Radioactivity
-core = 6.x

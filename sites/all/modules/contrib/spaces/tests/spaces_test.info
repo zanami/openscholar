@@ -1,4 +1,4 @@
-core = "6.x"
+core = 7.x
 dependencies[] = "features"
 dependencies[] = "features_test"
 dependencies[] = "strongarm"
@@ -7,9 +7,14 @@ features[variable][] = "og_content_type_usage_features_test"
 name = "Spaces Tests"
 package = "Testing"
 
-; Information added by drupal.org packaging script on 2011-07-14
-version = "6.x-3.2"
-core = "6.x"
+files[] = spaces.test
+files[] = spaces_test.features.inc
+files[] = spaces_test.module
+files[] = spaces_test.strongarm.inc
+
+; Information added by drupal.org packaging script on 2011-09-28
+version = "7.x-3.x-dev"
+core = "7.x"
 project = "spaces"
-datestamp = "1310654220"
+datestamp = "1317170547"
 

@@ -1,4 +1,0 @@
-core = "6.x"
-name = "VSite Contextual Links"
-description = "API for adding contextual links to nodes, blocks and views."
-version = "6.x-beta13"

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Implementation of hook_views_plugins().
+ * Implements hook_views_plugins().
  */
 function spaces_views_plugins() {
   return array(
@@ -11,7 +11,7 @@ function spaces_views_plugins() {
         'title' => t('Spaces feature'),
         'help' => t('Access will be granted if the given feature is enabled in the current space.'),
         'handler' => 'spaces_plugin_access_spaces_feature',
-        'path' => drupal_get_path('module', 'spaces') .'/includes',
+        'path' => drupal_get_path('module', 'spaces') . '/includes',
         'uses options' => TRUE,
       ),
     ),
@@ -19,12 +19,12 @@ function spaces_views_plugins() {
 }
 
 /**
- * Implementation of hook_views_handlers().
+ * Implements hook_views_handlers().
  */
 function spaces_views_handlers() {
   return array(
     'info' => array(
-      'path' => drupal_get_path('module', 'spaces') .'/includes',
+      'path' => drupal_get_path('module', 'spaces') . '/includes',
     ),
     'handlers' => array(
       'spaces_handler_filter_spaces_current' => array('parent' => 'views_handler_filter'),
@@ -36,7 +36,7 @@ function spaces_views_handlers() {
 }
 
 /**
- * Implementation of hook_views_data().
+ * Implements hook_views_data().
  * Adds a meta-filter that provides a layer of abstraction that
  * delegates actual filtering to the implementing space type modules.
  */
@@ -83,7 +83,7 @@ function spaces_views_data() {
 }
 
 /**
- * Implementation of hook_views_data_alter().
+ * Implements hook_views_data_alter().
  */
 function spaces_views_data_alter(&$data) {
   // Add type filter by current feature.

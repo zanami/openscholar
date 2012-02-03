@@ -1,4 +1,6 @@
-Drupal.behaviors.spacesMenuEditor = function(context) {
+(function ($) {
+
+Drupal.behaviors.spacesMenuEditor = { attach: function(context, settings) {
   if (jQuery().pageEditor) {
     $('form.spaces-menu-editor:not(.spaces-processed)')
       .addClass('spaces-processed')
@@ -26,7 +28,7 @@ Drupal.behaviors.spacesMenuEditor = function(context) {
             $('a', menu).each(function(){
               data.push($(this).attr('href'));
             });
-            $('input#edit-space-menu-items').val(JSON.stringify(data));
+            $('input[name="space_menu_items"]').val(JSON.stringify(data));
           });
 
         // Cancel
@@ -53,15 +55,15 @@ Drupal.behaviors.spacesMenuEditor = function(context) {
         });
       });
   }
-};
+}};
 
-Drupal.behaviors.spacesOverrideExplorer = function(context) {
+Drupal.behaviors.spacesOverrideExplorer = { attach: function(context) {
   if ($('table.spaces')) {
     $('table.spaces tr td.key span.override-value').hide();
 
     $('table.spaces tr td.key a:not(.spaces-processed)').addClass('spaces-processed').click(function(e) {
       location = $(this).attr('href');
-      Drupal.behaviors.spacesOverrideExplorer();
+      Drupal.behaviors.spacesOverrideExplorer.attach();
       return false;
     });
 
@@ -69,4 +71,6 @@ Drupal.behaviors.spacesOverrideExplorer = function(context) {
       $('table.spaces tr td.key a[href$='+location.hash+']').next('.override-value').show();
     }
   }
-}
+}};
+
+})(jQuery);

@@ -3,7 +3,7 @@
 /**
  * Form for adding/editing custom Dashboards.
  */
-function spaces_dashboard_add() {
+function spaces_dashboard_add($form, &$form_state) {
   $custom = variable_get('spaces_dashboard_custom', array('custom-1' => t('Dashboard')));
   $form = array();
   $form['spaces_dashboard_custom'] = array(
@@ -37,10 +37,10 @@ function spaces_dashboard_add_validate($element, &$form_state) {
 }
 
 /**
- * Provide a form that allows administrators to select which blcoks are
+ * Provide a form that allows administrators to select which blocks are
  * available in which dashboards.
  */
-function spaces_dashboard_admin_form() {
+function spaces_dashboard_admin_form($form, &$form_state) {
   $blocks = context_get_plugin('reaction', 'block')->get_blocks(NULL, NULL, TRUE);
   $default = variable_get('spaces_dashboard_blocks', array());
   $form['spaces_dashboard_blocks'] = array(
@@ -50,7 +50,7 @@ function spaces_dashboard_admin_form() {
   ksort($blocks);
   foreach ($blocks as $k => $block) {
     $module = spaces_dashboard_get_module($block);
-    $info = context_get_info('module', $module);
+    $info = system_get_info('module', $module);
     $form['spaces_dashboard_blocks'][$k] = array(
       '#type' => 'checkbox',
       '#title' => $block->info,
@@ -76,14 +76,14 @@ function spaces_dashboard_admin_form_validate($form, &$form_state) {
  * Allow administrators to select which regions and layouts are available
  * in dashboards.
  */
-function spaces_dashboard_admin_region_form($form_state) {
+function spaces_dashboard_admin_region_form($form, $form_state) {
   $theme_key = variable_get('theme_default', 'garland');
   $layouts = module_exists('context_layouts') ? context_layouts_get_layouts($theme_key) : array();
   if (empty($layouts)) {
     $layouts['default'] = array(
       'title' => t('Default'),
       'description' => t('Default layout'),
-      'regions' => array_keys(system_region_list($theme_key))
+      'regions' => array_keys(system_region_list($theme_key)),
     );
   }
 
@@ -120,82 +120,3 @@ function spaces_dashboard_admin_region_form($form_state) {
   return $form;
 }
 
-/**
- * Theme function to display the dashboar block selector as a table.
- */
-function theme_spaces_dashboard_admin_form($form) {
-  $links = array();
-  $headers = array();
-  $tables = array();
-  foreach (element_children($form) as $i) {
-    $grouping = $form[$i]['#grouping'];
-    $grouping_id = $form[$i]['#grouping_id'];
-    if (!isset($links[$grouping_id])) {
-      $links[$grouping_id] = array(
-        'title' => $grouping,
-        'href' => '',
-        'attributes' => array('class' => "dashboard-blocks-{$grouping_id}"),
-      );
-      $tables[$grouping_id] = array();
-      $headers[$grouping_id] = array(theme('table_select_header_cell'), t('Block'));
-    }
-
-    $row = array();
-    $title = $form[$i]['#title'];
-    unset($form[$i]['#title']);
-    $row[] = drupal_render($form[$i]);
-    $row[] = check_plain($title);
-    $tables[$grouping_id][] = $row;
-  }
-  ksort($links);
-  ksort($tables);
-  ksort($headers);
-  foreach ($tables as $grouping_id => $rows) {
-    $output .= theme('table', $headers[$grouping_id], $tables[$grouping_id], array('id' => "dashboard-blocks-{$grouping_id}"));
-  }
-
-  $output = '<div id="dashboard-form-content"><div class="table-wrapper">'. $output .'</div></div>';
-  $output .= '<div id="dashboard-form-links">'.
-    theme('links', $links, array('id' => 'dashboard-blocks-links')).
-    '</div><div class="clear-block"></div>';
-
-  drupal_add_js(drupal_get_path('module', 'spaces_dashboard') . '/spaces_dashboard.admin.js');
-  drupal_add_css(drupal_get_path('module', 'spaces_dashboard') . '/spaces_dashboard.admin.css');
-  return $output;
-}
-
-/**
- * Theme function to display the dashboar block selector as a table.
- */
-function theme_spaces_dashboard_admin_region_form($form) {
-  $rows = array();
-  foreach (element_children($form['spaces_dashboard_layouts']) as $layout) {
-    $title = check_plain($form['spaces_dashboard_layouts'][$layout]['#title']);
-    $description = check_plain($form['spaces_dashboard_layouts'][$layout]['#description']);
-    $help = t('Enable this layout for use with the dashboard. Select the regions that can be edited below.');
-    $label = "<strong>{$title}</strong> &mdash; <em>{$description}</em><div class='description'>{$help}</div>";
-    unset($form['spaces_dashboard_layouts'][$layout]['#title']);
-    unset($form['spaces_dashboard_layouts'][$layout]['#description']);
-
-    $rows[] = array(
-      array('data' => drupal_render($form['spaces_dashboard_layouts'][$layout]), 'header' => TRUE),
-      array('data' => $label, 'header' => TRUE, 'colspan' => 2, 'class' => 'label'),
-    );
-
-    foreach (element_children($form['spaces_dashboard_regions'][$layout]) as $region) {
-      $title = $form['spaces_dashboard_regions'][$layout][$region]['#title'];
-      unset($form['spaces_dashboard_regions'][$layout][$region]['#title']);
-      $rows[] = array(
-        array('data' => ''),
-        array('data' => drupal_render($form['spaces_dashboard_regions'][$layout][$region])),
-        array('data' => check_plain($title), 'class' => 'label'),
-      );
-    }
-  }
-
-  drupal_add_js(drupal_get_path('module', 'spaces_dashboard') . '/spaces_dashboard.admin.js');
-  drupal_add_css(drupal_get_path('module', 'spaces_dashboard') . '/spaces_dashboard.admin.css');
-  $output = theme('table', array(), $rows, array('class' => 'spaces-dashboard-regions'));
-  $output .= drupal_render($form);
-  return $output;
-}

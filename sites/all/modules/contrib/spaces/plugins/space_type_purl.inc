@@ -35,7 +35,14 @@ class space_type_purl extends space_type {
     if (!$this->verify_purl()) {
       $this->purge_request_destination();
       // @TODO: This will drop other PURL providers. Probably not the desired behavior!
-      purl_goto($_GET['q'], array('query' => drupal_query_string_encode($_GET, array('q')), 'purl' => array('provider' => "spaces_{$this->type}", 'id' => $this->id)));
+      $purl_params = array(
+        'query' => drupal_http_build_query(drupal_get_query_parameters($_GET, array('q'))),
+        'purl' => array(
+          'provider' => "spaces_{$this->type}",
+          'id' => $this->id,
+        )
+      );
+      purl_goto($_GET['q'], $purl_params);
     }
 
     // Activate the space before checking for excluded paths. This prevents
@@ -56,7 +63,13 @@ class space_type_purl extends space_type {
    */
   function deactivate() {
     $this->purge_request_destination();
-    purl_goto($_GET['q'], array('query' => drupal_query_string_encode($_GET, array('q')), 'purl' => array('remove' => array("spaces_{$this->type}"))));
+    $purl_params = array(
+      'query' => drupal_http_build_query(drupal_get_query_parameters($_GET, array('q'))),
+      'purl' => array(
+        'remove' => array("spaces_{$this->type}")
+      )
+    );
+    purl_goto($_GET['q'], $purl_params);
   }
 
   /**
@@ -65,8 +78,8 @@ class space_type_purl extends space_type {
    * to purl_goto.
    */
   function purge_request_destination() {
-    if (isset($_REQUEST['destination'])) {
-      unset($_REQUEST['destination']);
+    if (isset($_GET['destination'])) {
+      unset($_GET['destination']);
     }
     if (isset($_REQUEST['edit']['destination'])) {
       unset($_REQUEST['edit']['destination']);

@@ -3,7 +3,7 @@
 /**
  * System settings form for custom text strings.
  */
-function spaces_customtext_settings_form($form_state, $feature) {
+function spaces_customtext_settings_form($form, $form_state, $feature) {
   global $language;
   $langcode = $language->language;
   $custom_strings = variable_get("locale_custom_strings_{$langcode}", array());
@@ -54,15 +54,16 @@ function spaces_customtext_settings_validate(&$element, &$form_state) {
 /**
  * Theme function for customtext fields.
  */
-function theme_spaces_customtext_settings_form($element) {
-  drupal_add_css(drupal_get_path('module', 'spaces_customtext') .'/spaces_customtext.css');
+function theme_spaces_customtext_settings_form() {
+  // TODO Number of parameters in this theme funcion does not match number of parameters found in hook_theme.
+  drupal_add_css(drupal_get_path('module', 'spaces_customtext') . '/spaces_customtext.css');
   $rows = array();
   foreach (element_children($element) as $key) {
     $label = $element[$key]['#title'];
     unset($element[$key]['#title']);
     $rows[] = array($label, drupal_render($element[$key]));
   }
-  $output = theme('table', array(t('Original'), t('Customized')), $rows, array('class' => 'spaces-customtext'));
+  $output = theme('table', array('header' => array(t('Original'), t('Customized')), 'rows' => $rows, 'attributes' => array('class' => 'spaces-customtext')));
   $output .= drupal_render($element);
   return $output;
 }
@@ -93,7 +94,8 @@ function spaces_customtext_feature_strings($feature) {
     if ($map = features_get_component_map('node')) {
       foreach ($map as $node_type => $component_features) {
         if (in_array($feature->name, $component_features)) {
-          $strings[] = node_get_types('name', $node_type, TRUE);
+          node_types_clear();
+          $strings[] = node_type_get_name($node_type);
         }
       }
     }

@@ -1,5 +1,4 @@
 <?php
-// $Id: term.inc,v 1.6.2.4 2010/07/05 19:22:35 merlinofchaos Exp $
 
 /**
  * @file
@@ -29,46 +28,51 @@ $plugin = array(
 function ctools_term_context($arg = NULL, $conf = NULL, $empty = FALSE) {
   // If unset it wants a generic, unfilled context.
   if ($empty) {
-    return ctools_context_create_empty('term');
+    return ctools_context_create_empty('entity:taxonomy_term');
   }
 
-  switch ($conf['input_form']) {
-    case 'tid':
-    default:
-      if (!is_numeric($arg)) {
-        return FALSE;
-      }
-      $term = taxonomy_get_term($arg);
-      break;
+  if (is_object($arg)) {
+    $term = $arg;
+  }
+  else {
+    switch ($conf['input_form']) {
+      case 'tid':
+      default:
+        if (!is_numeric($arg)) {
+          return FALSE;
+        }
+        $term = taxonomy_term_load($arg);
+        break;
 
-    case 'term':
-      $terms = taxonomy_get_term_by_name($arg);
+      case 'term':
+        $terms = taxonomy_get_term_by_name($arg);
 
-      $conf['vids'] = is_array($conf['vids']) ? array_filter($conf['vids']) : NULL;
-      if ((count($terms) > 1) && isset($conf['vids'])) {
-        foreach ($terms as $potential) {
-          foreach ($conf['vids'] as $vid => $active) {
-            if ($active && $potential->vid == $vid) {
-              $term = $potential;
-              // break out of the foreaches AND the case
-              break 3;
+        $conf['vids'] = is_array($conf['vids']) ? array_filter($conf['vids']) : NULL;
+        if ((count($terms) > 1) && isset($conf['vids'])) {
+          foreach ($terms as $potential) {
+            foreach ($conf['vids'] as $vid => $active) {
+              if ($active && $potential->vid == $vid) {
+                $term = $potential;
+                // break out of the foreaches AND the case
+                break 3;
+              }
             }
           }
         }
-      }
-      $term = array_shift($terms);
-      break;
-  }
+        $term = array_shift($terms);
+        break;
+    }
 
-  if (empty($term)) {
-    return NULL;
+    if (empty($term)) {
+      return NULL;
+    }
   }
 
   if (!empty($conf['vids']) && array_filter($conf['vids']) && empty($conf['vids'][$term->vid])) {
     return NULL;
   }
 
-  $context = ctools_context_create('term', $term);
+  $context = ctools_context_create('entity:taxonomy_term', $term);
   $context->original_argument = $arg;
   return $context;
 }
@@ -83,7 +87,7 @@ function ctools_term_settings_form(&$form, &$form_state, $conf) {
     '#type' => 'radios',
     '#options' => array('tid' => t('Term ID'), 'term' => t('Term name')),
     '#default_value' => $conf['input_form'],
-    '#prefix' => '<div class="clear-block">',
+    '#prefix' => '<div class="clearfix">',
     '#suffix' => '</div>',
   );
 
@@ -106,6 +110,7 @@ function ctools_term_settings_form(&$form, &$form_state, $conf) {
     '#default_value' => !empty($conf['breadcrumb']),
     '#description' => t('If checked, taxonomy term parents will appear in the breadcrumb trail.'),
   );
+//  return $form;
 }
 
 /**
@@ -136,6 +141,7 @@ function ctools_term_breadcrumb($conf, $context) {
   }
 
   $breadcrumb = array();
+  $current = new stdClass();
   $current->tid = $context->data->tid;
   while ($parents = taxonomy_get_parents($current->tid)) {
     $current = array_shift($parents);

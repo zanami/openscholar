@@ -1,0 +1,5 @@
+name = OpenScholar
+description = Install Openscholar
+version = VERSION
+core = 7.x
+files[] = openscholar.profile

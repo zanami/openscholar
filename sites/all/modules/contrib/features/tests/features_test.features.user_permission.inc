@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Implementation of hook_user_default_permissions().
+ * Implements hook_user_default_permissions().
  */
 function features_test_user_default_permissions() {
   $permissions = array();
@@ -13,6 +13,7 @@ function features_test_user_default_permissions() {
       '0' => 'anonymous user',
       '1' => 'authenticated user',
     ),
+    'module' => 'node',
   );
 
   return $permissions;

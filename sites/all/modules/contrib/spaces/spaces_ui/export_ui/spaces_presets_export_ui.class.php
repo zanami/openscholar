@@ -22,8 +22,10 @@ class spaces_presets_export_ui extends ctools_export_ui {
 /**
  * Presets form.
  */
-function spaces_preset_list($form_state, $export_ui) {
-  $form = array();
+function spaces_preset_list($form, &$form_state, $export_ui) {
+  // Some setup for the spaces_preset_name_validation
+  $form_state['plugin'] = $export_ui->plugin;
+  $form_state['object'] = &$export_ui;
 
   $types = array();
   foreach (spaces_types(TRUE) as $type => $info) {
@@ -86,8 +88,7 @@ function spaces_preset_list($form_state, $export_ui) {
       }
       $not_allowed_operations[] = empty($item->disabled) ? 'enable' : 'disable';
       foreach ($not_allowed_operations as $op) {
-        // Remove the operations that are not allowed for the specific
-        // exportable.
+        // Remove the operations that are not allowed for the specific exportable.
         unset($allowed_operations[$op]);
       }
 
@@ -101,8 +102,8 @@ function spaces_preset_list($form_state, $export_ui) {
           $operations[$op]['query'] = array('token' => drupal_get_token($op));
         }
       }
-      $form[$type]['storage'][$item->name] = array('#type' => 'markup', '#value' => check_plain($item->type));
-      $form[$type]['actions'][$item->name] = array('#type' => 'markup', '#value' => theme('links', $operations));
+      $form[$type]['storage'][$item->name] = array('#type' => 'markup', '#markup' => check_plain($item->type));
+      $form[$type]['actions'][$item->name] = array('#type' => 'markup', '#markup' => theme('links', array('links' => $operations)));
     }
   }
   $form = system_settings_form($form);
@@ -160,9 +161,7 @@ function spaces_preset_editor(&$form, &$form_state) {
     '#disabled' => ($form_state['op'] === 'edit')
   );
 
-  $space = spaces_load($preset->space_type, 0);
-  $stack = array('preset');
-  if ($space && !empty($preset->value)) {
+  if (!empty($preset->value) && isset($preset->space_type) && $space = spaces_load($preset->space_type, 0)) {
     foreach ($preset->value as $controller => $overrides) {
       if (!empty($overrides) && is_array($overrides)) {
         foreach ($overrides as $key => $value) {
@@ -213,25 +212,4 @@ function spaces_preset_editor_submit(&$form, &$form_state) {
   $form_state['item']->title = $form_state['values']['title'];
   $form_state['item']->description = $form_state['values']['description'];
   $form_state['item']->space_type = $form_state['values']['space_type'];
-}
-
-/**
- * Theme function for spaces_presets_list_new().
- */
-function theme_spaces_preset_list_new($form) {
-  drupal_add_css(drupal_get_path('module', 'spaces') .'/spaces.css');
-  $row = $header = array();
-  foreach (element_children($form) as $key) {
-    if (isset($form[$key]['#title'])) {
-      $header[] = $form[$key]['#title'];
-      unset($form[$key]['#title']);
-    }
-    else {
-      $header[] = '';
-    }
-    $row[] = drupal_render($form[$key]);
-  }
-  $output = theme('table', $header, array($row));
-  $output .= drupal_render($form);
-  return $output;
 }

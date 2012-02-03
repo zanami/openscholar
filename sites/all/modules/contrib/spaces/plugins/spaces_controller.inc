@@ -88,11 +88,15 @@ abstract class spaces_controller {
         $result = db_query("
           SELECT object_id AS id, value
           FROM {spaces_overrides}
-          WHERE type = '%s'
-            AND id = '%s'
-            AND object_type = '%s'",
-          $this->space_type, $this->space_id, $this->controller);
-        while ($row = db_fetch_object($result)) {
+          WHERE type = :type
+            AND id = :id
+            AND object_type = :otype",
+          array(
+            ':type' => $this->space_type,
+            ':id' => $this->space_id,
+            ':otype' => $this->controller
+        ));
+        foreach ($result as $row) {
           $this->values['space'][$row->id] = unserialize($row->value);
         }
         $this->loaded_all['space'] = TRUE;
@@ -101,12 +105,17 @@ abstract class spaces_controller {
         $result = db_query("
           SELECT object_id AS id, value
           FROM {spaces_overrides}
-          WHERE type = '%s'
-            AND id = '%s'
-            AND object_type = '%s'
-            AND object_id = '%s'",
-          $this->space_type, $this->space_id, $this->controller, $id);
-        while ($row = db_fetch_object($result)) {
+          WHERE type = :type
+            AND id = :id
+            AND object_type = :otype
+            AND object_id = :oid",
+          array(
+            ':type' => $this->space_type,
+            ':id' => $this->space_id,
+            ':otype' => $this->controller,
+            ':oid' => $id
+        ));
+        foreach ($result as $row) {
           $this->values['space'][$row->id] = unserialize($row->value);
         }
         $this->loaded['space'][$id] = TRUE;
@@ -183,7 +192,15 @@ abstract class spaces_controller {
       'object_type' => $this->controller,
       'object_id' => $id,
     );
-    $exists = db_result(db_query("SELECT id FROM {spaces_overrides} WHERE type = '%s' AND id = '%s' AND object_type = '%s' AND object_id = '%s'", $override));
+    $exists = db_query("SELECT id
+                        FROM {spaces_overrides}
+                        WHERE type = :type AND id = :id AND object_type = :otype AND object_id = :oid",
+                       array(
+                         ':type' => $override['type'],
+                         ':id' => $override['id'],
+                         ':otype' => $override['object_type'],
+                         ':oid' => $override['object_id'],
+                       ))->fetchField();
     $keys = array_keys($override);
     $override['value'] = $value;
     if ($exists) {
@@ -201,17 +218,18 @@ abstract class spaces_controller {
    * Delete a controller object override for this space.
    */
   function del($id = NULL) {
-    $query = "{spaces_overrides} WHERE type = '%s' AND id = '%s' AND object_type = '%s'";
+    $query = "{spaces_overrides} WHERE type = :type AND id = :id AND object_type = :object_type";
     $override = array(
-      'type' => $this->space_type,
-      'id' => $this->space_id,
-      'object_type' => $this->controller,
+      ':type' => $this->space_type,
+      ':id' => $this->space_id,
+      ':object_type' => $this->controller,
     );
     if (isset($id)) {
-      $query .= " AND object_id = '%s'";
-      $override['object_id'] = $id;
+      $query .= " AND object_id = :object_id";
+      $override[':object_id'] = $id;
     }
-    $exists = db_result(db_query("SELECT id FROM {$query}", $override));
+
+    $exists = db_query("SELECT id FROM {$query}", $override)->fetchField();
     if ($exists) {
       db_query("DELETE FROM {$query}", $override);
       if (isset($this->values['space'][$id])) {

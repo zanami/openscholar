@@ -1,5 +1,4 @@
 <?php
-// $Id: purl_pair.inc,v 1.1.2.4 2009/12/18 16:11:32 yhahn Exp $
 
 /**
  * Pair pair prefixer.
@@ -14,7 +13,7 @@ class purl_pair extends purl_path {
     // Note that while this form element's key includes the method ("pair"),
     // it will eventually save to the variable purl_method_[id]_key. See
     // element validator for how this occurs.
-    $form[$id]['extra']["purl_method_pair_{$id}_key"] = array( // todo write update from path to pair
+    $form[$id]['extra']["purl_method_pair_{$id}_key"] = array(// todo write update from path to pair
       '#title' => t('Key'),
       '#type' => 'textfield',
       '#size' => 12,

@@ -1,5 +1,4 @@
 <?php
-// $Id: vocabulary_terms.inc,v 1.3.2.1 2010/01/29 20:18:26 merlinofchaos Exp $
 
 if (module_exists('taxonomy')) {
   /**
@@ -22,7 +21,7 @@ if (module_exists('taxonomy')) {
  * list of terms for the input vocabulary.
  */
 function ctools_vocabulary_terms_content_type_render($subtype, $conf, $panel_args, $context) {
-  $vocab = isset($context->data) ? drupal_clone($context->data) : NULL;
+  $vocab = isset($context->data) ? clone($context->data) : NULL;
   $max_depth = (!empty($conf['max_depth']) ? (int)$conf['max_depth'] : NULL);
   if ($conf['tree'] == FALSE) {
     $terms = taxonomy_get_tree($vocab->vid, 0, -1, $max_depth);
@@ -51,11 +50,11 @@ function _ctools_content_vocabulary_terms($vid, $max_depth, $depth = -1, $tid = 
     return array();
   }
   $return = array();
-  $query = db_query('SELECT t.name, t.tid FROM {term_data} t INNER JOIN {term_hierarchy} h ON t.tid = h.tid WHERE t.vid = %d AND h.parent = %d ORDER BY t.weight ASC, t.name ASC', $vid, $tid);
-  while ($result = db_fetch_object($query)) {
+  $result = db_query('SELECT t.name, t.tid FROM {taxonomy_term_data} t INNER JOIN {taxonomy_term_hierarchy} h ON t.tid = h.tid WHERE t.vid = :vid AND h.parent = :parent ORDER BY t.weight ASC, t.name ASC', array(':vid' => $vid, ':parent' => $tid));
+  foreach ($result as $term) {
     $return[] = array(
-      'data' => l($result->name, 'taxonomy/term/'. $result->tid),
-      'children' => _ctools_content_vocabulary_terms($vid, $max_depth, $depth, $result->tid),
+      'data' => l($term->name, 'taxonomy/term/' . $term->tid),
+      'children' => _ctools_content_vocabulary_terms($vid, $max_depth, $depth, $term->tid),
     );
   }
   return $return;
@@ -65,7 +64,7 @@ function ctools_vocabulary_terms_content_type_admin_title($subtype, $conf, $cont
   return t('"@s" terms', array('@s' => $context->identifier));
 }
 
-function ctools_vocabulary_terms_content_type_edit_form(&$form, &$form_state) {
+function ctools_vocabulary_terms_content_type_edit_form($form, &$form_state) {
   $conf = $form_state['conf'];
   $form['max_depth'] = array(
     '#type' => 'select',
@@ -85,7 +84,7 @@ function ctools_vocabulary_terms_content_type_edit_form(&$form, &$form_state) {
   return $form;
 }
 
-function ctools_vocabulary_terms_content_type_edit_form_submit(&$form, &$form_state) {
+function ctools_vocabulary_terms_content_type_edit_form_submit($form, &$form_state) {
   // Copy everything from our defaults.
   foreach (array_keys($form_state['plugin']['defaults']) as $key) {
     $form_state['conf'][$key] = $form_state['values'][$key];

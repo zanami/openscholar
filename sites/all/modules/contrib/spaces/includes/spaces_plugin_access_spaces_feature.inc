@@ -27,7 +27,7 @@ class spaces_plugin_access_spaces_feature extends views_plugin_access {
    * Provide the access check as a callback.
    */
   function get_access_callback() {
-    $feature = $this->options['spaces_feature'] == 0 ? $this->get_my_feature() : $this->options['spaces_feature'];
+    $feature = empty($this->options['spaces_feature']) ? $this->get_my_feature() : $this->options['spaces_feature'];
     if (!empty($this->options['perm'])) {
       return array('spaces_access_feature_perms', array('view', $feature, NULL, NULL, array($this->options['perm'])));
     }
@@ -42,15 +42,17 @@ class spaces_plugin_access_spaces_feature extends views_plugin_access {
     if (isset($features[$this->options['spaces_feature']])) {
       return t('Feature: @feature', array('@feature' => $features[$this->options['spaces_feature']]->info['name']));
     }
-    return $options['spaces_feature'] == 0 ? t('Autodetect') : t('Broken');
+    return empty($this->options['spaces_feature']) ? t('Autodetect') : t('Broken');
   }
 
   /**
-   * Override of option_defaults().
+   * Override of option_definition().
    */
-  function option_defaults(&$options) {
-    $options['spaces_feature'] = 0;
-    $options['perm'] = 'access content';
+  function option_definition() {
+    $options = parent::option_definition();
+    $options['spaces_feature'] = array('default' => '');
+    $options['perm'] = array('default' => 'access content');
+    return $options;
   }
 
   /**
@@ -71,12 +73,19 @@ class spaces_plugin_access_spaces_feature extends views_plugin_access {
     );
 
     // Get list of permissions.
-    $perms = array('' => '<'. t('No permission check') .'>');
-    foreach (module_list(FALSE, FALSE, TRUE) as $module) {
-      if ($permissions = module_invoke($module, 'perm')) {
-        $perms[$module] = drupal_map_assoc($permissions);
+    $perms = array('' => '<' . t('No permission check') . '>');
+    $module_info = system_get_info('module');
+
+    // Get list of permissions
+    foreach (module_implements('permission') as $module) {
+      $permissions = module_invoke($module, 'permission');
+      foreach ($permissions as $name => $perm) {
+        $perms[$module_info[$module]['name']][$name] = strip_tags($perm['title']);
       }
     }
+
+    asort($perms);
+
     $form['perm'] = array(
       '#type' => 'select',
       '#options' => $perms,
@@ -90,7 +99,7 @@ class spaces_plugin_access_spaces_feature extends views_plugin_access {
    * Attempt to detect the feature that this view belongs to.
    */
   protected function get_my_feature() {
-    $map = features_get_component_map('views');
+    $map = features_get_component_map('views_view');
     return !empty($map[$this->view->name]) ? reset($map[$this->view->name]) : FALSE;
   }
 }

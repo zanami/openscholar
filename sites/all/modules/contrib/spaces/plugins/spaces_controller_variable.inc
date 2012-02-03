@@ -11,14 +11,13 @@ class spaces_controller_variable extends spaces_controller {
     // Load original variables. Only do this once, and it may not be reset.
     $this->load_original_values();
 
-    // Load space variables.
-    // Loaded before preset intentionally since "load_preset_values" checks for spaces overrides
-    $this->reset_values('space');
-    $this->load_space_values();
-    
     // Load the preset values.
     $this->reset_values('preset');
     $this->load_preset_values();
+
+    // Load space variables.
+    $this->reset_values('space');
+    $this->load_space_values();
 
     // Alter global variable conf as we don't have any other way of
     // influencing the result of variable_get().
@@ -27,10 +26,11 @@ class spaces_controller_variable extends spaces_controller {
 
     // If we have overridden 'site_frontpage', we need to do some extra
     // work to reinit the drupal path.
-    if ($this->get('site_frontpage') !== $this->get('site_frontpage', 'original') && function_exists('purl_language_strip')) {
-      $_GET['q'] = purl_language_strip($_REQUEST['q']);
-      drupal_init_path();
-    }
+    // TODO: Is purl_language_strip still needed?
+    //if ($this->get('site_frontpage') !== $this->get('site_frontpage', 'original') && function_exists('purl_language_strip')) {
+    //  $_GET['q'] = purl_language_strip($_REQUEST['q']);
+    //  drupal_path_initialize();
+    //}
   }
 
   /**

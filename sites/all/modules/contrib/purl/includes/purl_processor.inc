@@ -1,5 +1,4 @@
 <?php
-// $Id: purl_processor.inc,v 1.1.2.3 2010/01/04 23:03:49 yhahn Exp $
 
 /**
  * Processors can inspect and manipulate various parts of a request's URI.
