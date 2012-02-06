@@ -1,0 +1,52 @@
+<?php
+/**
+ * Basic tests for PURL.
+ */
+class OSPagesContextTest extends DrupalWebTestCase {
+  /**
+   * Test info.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => t('OS Pages'),
+      'description' => t('Tests for OS Pages feature.'),
+      'group' => t('OS Pages'),
+    );
+  }
+
+  /**
+   * Set up test.
+   */
+  public function setUp() {
+    parent::setUp(
+      'context'
+//      'purl',
+//      'spaces',
+//      'og',
+//      'spaces_og'
+    );
+    
+    //Create a user that can add pages
+//    $admin_user = $this->drupalCreateUser(array('create page content', 'create url aliases', 'administer languages', 'administer site configuration'));
+//    $this->drupalLogin($admin_user);
+
+  }
+
+  /**
+   * Run context test.
+   */
+  public function testContextActive() {
+  	
+  	//Create Page Node
+  	$node = array(
+      'title' => 'A Test Page',
+      'type' => 'page',
+    );
+    $page_node = $this->drupalCreateNode($node);
+    
+    //Act on the page node
+    context_node_condition($page_node,'view');
+    
+    $this->assertTrue(context_isset('context','openscholar-feature-front'), "Context 'openscholar-feature-front' active when viewing node type 'page'.");
+  }
+}
