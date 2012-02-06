@@ -4,4 +4,4 @@ description = "Creates formatted template files for The Collection of Computer S
 dependencies[] = cite_distribute
 package = Cite Distribute
 core = 6.x
-version = "6.x-beta13"
+version = "6.x-beta14"

@@ -3,4 +3,4 @@ description = allows vsite to customize their views
 core = 6.x
 package = "OpenScholar IQSS"
 
-version = "6.x-beta13"
+version = "6.x-beta14"

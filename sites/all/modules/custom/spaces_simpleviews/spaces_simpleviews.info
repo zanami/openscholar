@@ -3,4 +3,4 @@ description = spaces simpleviews
 dependencies[] = "spaces"
 dependencies[] = "boxes"
 core = 6.x
-version = "6.x-beta13"
+version = "6.x-beta14"

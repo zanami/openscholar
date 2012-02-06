@@ -5,4 +5,4 @@ package = "OpenScholar"
 dependencies[] = 'boxes'
 features[box][] = "os_box_mailchimp"
 features[ctools][] = "boxes:box:1"
-version = "6.x-beta13"
+version = "6.x-beta14"
