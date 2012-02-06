@@ -4,4 +4,4 @@ package = "OpenScholar IQSS"
 core = "6.x"
 dependencies[] = pathauto
 dependencies[] = ctools
-version = "6.x-beta13"
+version = "6.x-beta14"
