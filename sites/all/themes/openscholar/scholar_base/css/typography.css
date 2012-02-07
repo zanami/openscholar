@@ -813,6 +813,10 @@ input.close {
 /* ITWEAK OVERRIDES */
 
 a.itu-insert-file {
+  background: #F0F0F0 url('../images/mime-16.png') no-repeat 4px 0;
+ }
+
+a.itu-insert-file {
 background-color:#FFF;
   border: none;
   -moz-border-radius: 0;

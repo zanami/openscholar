@@ -246,7 +246,7 @@ function vsite_support_mail($key, &$message, $params){
  * returns advanced help's html for User-Documentation page
  **/
 function vsite_support_user_doc() {
-  $link_opts = array('purl' => array('disabled' => TRUE));
+  $link_opts = array('purl' => array('disabled' => TRUE), 'query' => array('popup'=>1));
   $content = "<div class=\"view-vsite-support\"><p>Click " . l('here', 'help/vsitehelp/User-Documentation', $link_opts) . " to view the User Documentation help page.<p></div>";
   return $content;
 }

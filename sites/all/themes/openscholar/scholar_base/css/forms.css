@@ -731,7 +731,6 @@ div.ctools-modal-content .form-item label.option {
 }
 
 .form-item .description {
-  clear: left;
  color: #888888;
     font-style: italic;
   margin-bottom:15px;
@@ -745,6 +744,10 @@ table.spaces-features .form-item .description {
   clear: left;
  color: #888888;
     font-style: italic;
+  margin-bottom:0;
+}
+
+td .form-item .description {
   margin-bottom:0;
 }
 
