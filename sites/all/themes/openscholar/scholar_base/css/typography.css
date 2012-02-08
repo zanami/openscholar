@@ -805,6 +805,11 @@ input.close {
  display:block;
  text-indent: -999em;
  }
+ 
+#edit-body-wrapper .advanced-help-link {
+ margin-right: 1px;
+margin-top: 18px;
+ }
 
 .advanced-help-link:hover {
   background-position: 0 -170px;
