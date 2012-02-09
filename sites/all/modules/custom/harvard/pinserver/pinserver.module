@@ -270,7 +270,7 @@ function pinserver_check_token(){
     fclose($fp);
   }
   
-  if(strlen($stderr) && variable_get('pinserver_error_email','') !== ''){
+  if(strlen($stderr) && strstr($stderr,"fatal") && variable_get('pinserver_error_email','') !== ''){
     mail(
       variable_get('pinserver_error_email',''),
       mime_header_encode("Pinserver Error"),
