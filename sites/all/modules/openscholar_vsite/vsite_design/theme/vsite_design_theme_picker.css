@@ -26,9 +26,9 @@ li.item-theme-picker  {
   width: 300px;
   height: 300px;
   position:relative;
-  -moz-box-shadow: 0 0 10px #888;
-  -webkit-box-shadow: 0 0 10px #888;
-  box-shadow: 0 0 20px #888;
+  -moz-box-shadow: 0 0 7px #888;
+  -webkit-box-shadow: 0 0 7px #888;
+  box-shadow: 0 0 7px #888;
   color:#fff;
   }
 
@@ -39,8 +39,9 @@ ul.theme-picker img.screenshot {
 
 
 ul.theme-picker li.current   {
-background:url('images/themeChecked.gif') no-repeat;
-padding-top:20px;
+  -moz-box-shadow: 0 0 30px #4a7d06;
+  -webkit-box-shadow: 0 0 30px #4a7d06;
+  box-shadow: 0 0 30px #4a7d06;
 }
 
 ul.theme-picker li.checked {
@@ -78,7 +79,7 @@ ul.theme-picker li.checked .theme-info {
   }
 
 .theme-picker h2 {
-	margin-bottom:0px;
+	margin:15px 0 0 0;
 }
 
 .theme-picker h3,

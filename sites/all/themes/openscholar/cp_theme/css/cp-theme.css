@@ -231,6 +231,28 @@ table tr.even {
   padding: 0;
   }
 
+/* CONTENT & USERS TABLE STYLES */
+
+thead.tableHeader-processed tr,
+body.page-cp-content-comments thead tr,
+body.page-cp-users thead tr {
+	height:25px;
+	background:#ececec;
+    border-bottom: 3px solid #c4c2c2;
+}
+ 
+thead.tableHeader-processed tr a,
+body.page-cp-content-comments thead tr a {
+	color: #005C9C;
+	text-decoration:underline;
+}
+  
+body.page-cp-content tbody tr.even,
+body.page-cp-content-files tbody tr.even,
+body.page-cp-content-comments tbody tr.even,
+body.page-cp-users tbody tr.even {
+background: #EFEFEF
+}
 
 /* SPECIFIC PAGE VIEWS */
 
