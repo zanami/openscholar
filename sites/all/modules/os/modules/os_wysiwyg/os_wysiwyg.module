@@ -64,6 +64,18 @@ function os_wysiwyg_wysiwyg_editor_settings_alter(&$settings, $context) {
   }
 }
 
+function os_wysiwyg_nodeapi(&$node, $op, $teaser, $page) {
+  if ($op == 'presave') {
+    if (strpos($node->body, '<!--break-->') !== FALSE) {
+      $no_tags = strip_tags(str_replace($node->teaser,'',$node->body));
+      if ($no_tags == '') {
+        $node->teaser = str_replace('<!--break-->','',$node->body);
+        $node->body = $node->teaser.'<!--break-->';
+      }
+    }
+  }
+}
+
 /**
  * Adds the pdw plugin to the wysiwyg
  *
