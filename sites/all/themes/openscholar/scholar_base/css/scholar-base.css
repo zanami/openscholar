@@ -315,6 +315,14 @@ div.unpublished {
 div.terms {
   clear: left !important;
   }
+  
+div.terms ul.links li a {
+ text-decoration:underline;
+  }  
+  
+div.terms ul.links li a:hover {
+ text-decoration:none;
+  }    
 
 .teaser-extra {
   margin-left: 1em;
