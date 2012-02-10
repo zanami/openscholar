@@ -238,6 +238,10 @@ body.header-left-right #header-right {
   float:right;
   }
   
+body.header-left-right #header-left {
+  left:0;
+  }  
+  
 .content-left.content-right #content-left, 
 .content-left.content-right #content-right {
 	float:left;clear:none;display:inline;
