@@ -372,6 +372,14 @@ padding-left:15px;
 margin-right:12px
   }
 
+.node .node-inner .links li.comment_add a {
+color:#3a6a8c;
+background: url('../images/commentIcon.png') center left no-repeat;
+padding-left:15px;
+margin-right:12px
+  }
+
+
 .block ul {
   padding-left: 0;
   }
