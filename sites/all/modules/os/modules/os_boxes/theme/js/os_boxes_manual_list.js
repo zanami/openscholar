@@ -15,8 +15,8 @@ Drupal.behaviors.os_manual_list = function (ctx) {
 		var val = $('#edit-node-to-add', $form).val(),
 			patt = /(.+) \[nid:([\d]+)\]/,
 			matches = patt.exec(val),
-			id = new_id++,
-			new_row = $(template.replace(/blank/g, id));
+			id, weight = -Infinity,
+			new_row;
 		
 		// there should actually be something in the field
 		if (matches != null) {
@@ -24,12 +24,25 @@ Drupal.behaviors.os_manual_list = function (ctx) {
 				title = matches[1],
 				nid = matches[2];
 			count.val(parseInt(count.val())+1);
+			id = new_id++;
+			new_row = $(template.replace(/blank/g, id));
+			
+			// get the new weight
+			$('.field-weight', $form).each(function () {
+				if ($(this).val() > weight) {
+					weight = parseInt($(this).val());
+				}
+			});
+			// there are no existing form elements, start at 0.
+			if (weight == -Infinity) {
+				weight = 0;
+			}
 			
 			// set all the form elements in the new row
 			$('#edit-nodes-'+id+'-nid', new_row).val(nid);
 			$('span', new_row).text(matches[1]);
 			$('#edit-nodes-'+id+'-title', new_row).val(title);
-			$('#edit-nodes-'+id+'-weight', new_row).addClass('field-weight').val(id);
+			$('#edit-nodes-'+id+'-weight', new_row).addClass('field-weight').val(weight);
 			$('#edit-nodes-'+id+'-weight', new_row).parents('td').css('display', 'none');
 			$('.tabledrag-handle', new_row).remove();
 			$('table tbody', $form).append(new_row);
