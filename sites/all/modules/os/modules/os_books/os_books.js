@@ -39,9 +39,10 @@
 		var nid = e.target.getAttribute('data-nid');
 		if (content[nid]) {
 			e.preventDefault();
+			$('#comments', container).remove();
 			$('.node', container).replaceWith(content[nid].content);
 			// the 2nd .node is a different element from the first
-			var node = $('.node', container);
+			var node = $('.node', container).hide().fadeIn();
 			header.html(content[nid].title);
 			
 			// deal with the 'active' class
@@ -52,33 +53,10 @@
 			
 			// change drupal settings
 			Drupal.settings.getQ = "node/"+active;
-			Drupal.settings.disqus.identifier = "node/"+active;	//TODO: Find a better way to do this
+			if (typeof Drupal.settings.disqus == 'object') 
+				Drupal.settings.disqus.identifier = "node/"+active;	//TODO: Find a better way to do this
 			
 			Drupal.attachBehaviors(node[0]);
-			node.hide().fadeIn();
-			
-			// start up jcarousels
-			/*if (typeof Drupal.settings.jcarousel != 'undefined') {
-				jQuery.each(Drupal.settings.jcarousel, function (selector, options) {
-					$(selector+':visible').not('.has-jcarousel').addClass('has-jcarousel').removeClass('jcarousel-processed');
-					Drupal.behaviors.jcarousel();
-				});
-			}*/
 		}
 	}
-	
-	// stick our behavior at the front so it runs before jcarousel
-	/*
-	var new_behaviors = {
-		os_books_jcarousel: function () {
-			if (typeof Drupal.settings.jcarousel != 'undefined') {
-				jQuery.each(Drupal.settings.jcarousel, function(selector, options) {
-					// prevents jcarousel from running on hidden elements
-					$(selector).not(':visible').addClass('jcarousel-processed');
-				});
-			}
-		}
-	};
-	Drupal.behaviors = $.extend(new_behaviors, Drupal.behaviors);*/
-
 })(jQuery);
