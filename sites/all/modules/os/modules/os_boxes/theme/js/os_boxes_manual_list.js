@@ -42,9 +42,9 @@ Drupal.behaviors.os_manual_list = function (ctx) {
 			$('#edit-nodes-'+id+'-nid', new_row).val(nid);
 			$('span', new_row).text(matches[1]);
 			$('#edit-nodes-'+id+'-title', new_row).val(title);
-			$('#edit-nodes-'+id+'-weight', new_row).addClass('field-weight').val(weight);
+			$('#edit-nodes-'+id+'-weight', new_row).addClass('field-weight').val(weight+1);
 			$('#edit-nodes-'+id+'-weight', new_row).parents('td').css('display', 'none');
-			$('.tabledrag-handle', new_row).remove();
+			//$('.tabledrag-handle', new_row).remove();
 			$('table tbody', $form).append(new_row);
 			new_row = $('#edit-nodes-'+id+'-nid', $form).parents('tr');
 			$('#edit-node-to-add', $form).val('');
