@@ -22,7 +22,7 @@
 		// as we do this, we check for links that have the same title and assign
 		// the nid as an attribute.
 		for (nid in content) {
-			title = content[nid].title;
+			title = content[nid].title.replace('&amp;', '&');
 			// add nid as attribute of links with same title
 			$('.block a:contains("'+title+'"), .book-menu a:contains("'+title+'")').not('[data-nid]').each(function (index, elem) {
 				elem.setAttribute('data-nid', nid);
@@ -57,6 +57,10 @@
 				Drupal.settings.disqus.identifier = "node/"+active;	//TODO: Find a better way to do this
 			
 			Drupal.attachBehaviors(node[0]);
+			
+			if ($('.fb-social-comments-plugin').length) {
+				fbAsyncInit();
+			}
 		}
 	}
 })(jQuery);
