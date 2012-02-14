@@ -8,7 +8,7 @@ include_once('vsite_comments.features.inc');
 function vsite_comments_menu_alter(&$items){
 	//Change access permissions for comments menu entries
   $items['comment/delete']['access callback'] = 'vsite_comments_admin_access';
-  $items['comment/edit']['access callback'] = 'vsite_comments_admin_access';
+  //$items['comment/edit']['access callback'] = 'vsite_comments_admin_access';
 }
 
 
