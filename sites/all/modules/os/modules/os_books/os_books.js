@@ -49,7 +49,7 @@
 			// change drupal settings
 			Drupal.settings.getQ = "node/"+nid;
 			if (typeof Drupal.settings.disqus == 'object') 
-				Drupal.settings.disqus.identifier = "node/"+active;	//TODO: Find a better way to do this
+				Drupal.settings.disqus.identifier = "node/"+nid;	//TODO: Find a better way to do this
 			
 			Drupal.attachBehaviors(node[0]);
 			
