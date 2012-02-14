@@ -3,7 +3,7 @@
  * or the book links in the content area and the actual contents of a book page
  */
 (function($){
-	var container, header, content = {}, active;
+	var container, header, content = {}, active, orig_nid;
 	
 	Drupal.behaviors.os_book_linkage = function(ctx) {
 		if (!$('body.node-type-book').length) return;
@@ -14,7 +14,7 @@
 			content = Drupal.settings.book_pages;
 			container = $('#content');
 			header = $('#content-main .title').not('.book-menu .title');
-			active = $('#content-main .node').attr('id').replace('node-','');
+			orig_nid = active = $('#content-main .node').attr('id').replace('node-','');
 		}
 		
 		// pages is a list of every page in the book
@@ -22,7 +22,7 @@
 		// as we do this, we check for links that have the same title and assign
 		// the nid as an attribute.
 		for (nid in content) {
-			title = content[nid].title;
+			title = content[nid].title.replace('&amp;', '&');
 			// add nid as attribute of links with same title
 			$('.block a:contains("'+title+'"), .book-menu a:contains("'+title+'")').not('[data-nid]').each(function (index, elem) {
 				elem.setAttribute('data-nid', nid);
@@ -45,18 +45,22 @@
 			var node = $('.node', container).hide().fadeIn();
 			header.html(content[nid].title);
 			
-			// deal with the 'active' class
-			$('a[data-nid="'+active+'"]').removeClass('active');
-			$('a[data-nid="'+nid+'"]').addClass('active');
-			
-			active = nid;
 			
 			// change drupal settings
-			Drupal.settings.getQ = "node/"+active;
+			Drupal.settings.getQ = "node/"+nid;
 			if (typeof Drupal.settings.disqus == 'object') 
-				Drupal.settings.disqus.identifier = "node/"+active;	//TODO: Find a better way to do this
+				Drupal.settings.disqus.identifier = "node/"+nid;	//TODO: Find a better way to do this
 			
 			Drupal.attachBehaviors(node[0]);
+			
+			// deal with the 'active' class
+			$('a[data-nid="'+active+'"], a[data-nid="'+orig_nid+'"]').removeClass('active');
+			$('a[data-nid="'+nid+'"]').addClass('active');
+			active = nid;
+			
+			if ($('.fb-social-comments-plugin').length) {
+				fbAsyncInit();
+			}
 		}
 	}
 })(jQuery);
