@@ -152,7 +152,13 @@ function file_aliases_load_fid($fid) {
   }
 
   $result = db_fetch_object(db_query("SELECT filemime, filepath FROM {files} WHERE fid = %d", $fid));
-
+  
+  //If an invalid fid is passed then return 404
+  if ($result === false) {
+    drupal_not_found();
+    exit;
+  }
+  
   if (variable_get('file_downloads', FILE_DOWNLOADS_PUBLIC) == FILE_DOWNLOADS_PRIVATE) {
     file_download($result->filepath);
   }

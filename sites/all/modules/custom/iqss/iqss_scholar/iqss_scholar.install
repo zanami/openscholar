@@ -23,19 +23,20 @@ function _iqss_scholar_init_mollom_forms(){
 
 	if(!module_exists('mollom')) return;
 	
-	db_query("REPLACE INTO `mollom_form` VALUES('contact_mail_page', 1, 'a:0:{}', 'contact')");
-	db_query("REPLACE INTO `mollom_form` VALUES('contact_mail_user', 1, 'a:0:{}', 'contact')");
-	db_query("REPLACE INTO `mollom_form` VALUES('user_register', 1, 'a:0:{}', 'user')");
-	db_query("REPLACE INTO `mollom_form` VALUES('user_pass', 1, 'a:0:{}', 'user')");
-	db_query("REPLACE INTO `mollom_form` VALUES('comment_form', 1, 'a:0:{}', 'comment')");
-	db_query("REPLACE INTO `mollom_form` VALUES('vsite_support_contact_mail_owner', 1, 'a:0:{}', 'contact')");
+	$fields =  '(form_id,mode,enabled_fields,module,checks)';
+	db_query("REPLACE INTO `mollom_form` $fields VALUES('contact_mail_page', 1, 'a:0:{}', 'contact', 'a:1:\{i:0;s:4:\"spam\";\}')");
+	db_query("REPLACE INTO `mollom_form` $fields VALUES('contact_mail_user', 1, 'a:0:{}', 'contact', 'a:1:\{i:0;s:4:\"spam\";\}')");
+	db_query("REPLACE INTO `mollom_form` $fields VALUES('user_register', 1, 'a:0:{}', 'user', 'a:1:\{i:0;s:4:\"spam\";\}')");
+	db_query("REPLACE INTO `mollom_form` $fields VALUES('user_pass', 1, 'a:0:{}', 'user', 'a:1:\{i:0;s:4:\"spam\";\}')");
+	db_query("REPLACE INTO `mollom_form` $fields VALUES('comment_form', 1, 'a:0:{}', 'comment', 'a:1:\{i:0;s:4:\"spam\";\}')");
+	db_query("REPLACE INTO `mollom_form` $fields VALUES('vsite_support_contact_mail_owner', 1, 'a:0:{}', 'contact', 'a:1:\{i:0;s:4:\"spam\";\}')");
 	
 	$res[] = array(
-      'success' => true,
-      'query' => 'Installed mollom forms',
-    );
+    'success' => true,
+    'query' => 'Installed mollom forms',
+  );
     
-    return $res;
+  return $res;
 }
 
 function iqss_scholar_update_6002(&$sandbox){

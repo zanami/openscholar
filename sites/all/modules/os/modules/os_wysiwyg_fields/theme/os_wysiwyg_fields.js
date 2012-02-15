@@ -76,7 +76,6 @@
 				eve[i] = 'span['+t.join('|')+']';
 			}
 		});
-		eve.push('iframe[src|href]');
 		settings.extended_valid_elements = eve.join(',');
 	    
 		if (hasRun) {

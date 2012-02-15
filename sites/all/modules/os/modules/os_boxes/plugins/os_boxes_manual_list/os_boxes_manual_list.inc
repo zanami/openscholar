@@ -27,6 +27,8 @@ class os_boxes_manual_list extends os_boxes_default {
     );
 
     $nodes = &$form['nodes'];
+    usort($this->options['nodes'], 'element_sort');
+
     $this->options['nodes']['blank'] = array('nid' => 0, 'title' => '__blank__', 'weight' => 2000000); // blank element for copying purposes
     foreach ($this->options['nodes'] as $k => $v) {
       $n = array(
@@ -105,7 +107,7 @@ function os_boxes_manual_list_table($element) {
 }
 
 function os_boxes_manual_list_add_new_fields(&$element, $post, &$form_state, &$form) {
-  for ($i=$element['#default_value']; $i < $post['count']; $i++) {
+  for ($i=$element['#default_value']; $i < $element['#value']; $i++) {
     $form['options']['nodes'][$i] = $form['options']['nodes']['blank'];
     $form['options']['nodes'][$i] += array(
       '#attributes' => array('id' => $i),

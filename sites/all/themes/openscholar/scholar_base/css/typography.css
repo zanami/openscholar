@@ -813,6 +813,11 @@ input.close {
  display:block;
  text-indent: -999em;
  }
+ 
+#edit-body-wrapper .advanced-help-link {
+ margin-right: 1px;
+margin-top: 18px;
+ }
 
 .advanced-help-link:hover {
   background-position: 0 -170px;
@@ -820,8 +825,16 @@ input.close {
   
 /* ITWEAK OVERRIDES */
 
-a.itu-insert-file {
+#attach-wrapper .mime {
+    background-image: url("../images/mime-32.png");
+}
+
+a.itu-insert-file  {
   background: #F0F0F0 url('../images/mime-16.png') no-repeat 4px 0;
+ }
+ 
+ table.itu-attachment-list .mime {
+  background: transparent url('../images/mime-16.png') no-repeat center 0;
  }
 
 a.itu-insert-file {

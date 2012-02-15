@@ -181,6 +181,8 @@ class spaces_simpleviews_post_list extends boxes_box {
       if (strlen($more_path)) {
         $content .= theme('views_more', $more_path, $more_text);
       }
+    }elseif (!$view -> total_rows){
+    	$content = '';
     }
     
     $title = isset($this->title) ? check_plain($this->title) : NULL;

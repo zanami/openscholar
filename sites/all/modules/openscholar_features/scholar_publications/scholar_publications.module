@@ -405,11 +405,6 @@ function scholar_publications_overview(){
 
   module_load_include('inc', 'biblio', 'biblio.pages');
 
-  if(isset($_REQUEST['format'])){
-  	require_once(drupal_get_path('module','biblio').'/biblio.import.export.inc');
-  	return biblio_export($_REQUEST['format']);
-  }
-
   $a_args = func_get_args();
   if(count($a_args)){
 	  foreach ($a_args as $k => $arg) {
@@ -979,6 +974,18 @@ function scholar_publications_export($format = "tagged", $nid = null, $popup = f
 		$node = node_load($nid);
 		$title = str_replace(' ', '_', $node->title);
 		$title = substr($title, 0, 8);
+	}elseif (empty($_SESSION['last_biblio_query'])){
+		//Biblio uses this session value, if this is an anon user that has no session (or a cli user) lets set this up for them
+		$a_args = array();
+		if (($a_filtered_pubtypes = variable_get('scholar_publications_filter_publication_types',array())) && count($a_filtered_pubtypes)){
+	    if($a_filtered_pubtypes != array_keys(scholar_publications_get_biblio_types())){
+	      //Filter pulications to those requested, if they do not have all pub types selected
+	      $a_args = array('type',$a_filtered_pubtypes);
+	    }
+	  }
+	  //Setup the default query
+	  module_load_include('inc', 'biblio', 'biblio.pages');
+	  biblio_build_query($a_args);
 	}
 
 	require_once(drupal_get_path('module','biblio').'/biblio.import.export.inc');

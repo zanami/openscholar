@@ -176,3 +176,12 @@ function vsite_domain_processed_purls($s_purl = FALSE) {
 
   return $processed;
 }
+
+/**
+ * Add new permissions for managing domains
+ */
+function vsite_domain_perm(){
+  return array(
+    "change vsite domain",
+  );
+}

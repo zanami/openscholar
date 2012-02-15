@@ -180,6 +180,8 @@ function vsite_taxonomy_menu() {
   return $items;
 }
 
+
+
 /**
  * Alter the menu items to use our code
  * @param array $items
@@ -776,4 +778,17 @@ function vsite_taxonomy_get_feature_for_vocab($vocab){
   }//If there is only one type for this vocab return that feature
   
   return $s_one_feature;
+}
+
+/**
+ * Alter the node template
+ * @param array $variables
+ */
+function vsite_taxonomy_preprocess_node(&$variables){
+	
+	//Put taxonomy terms in collapsed div if the list of terms grows to large
+	if(count($variables['taxonomy']) > 3){
+		$variables['terms'] = l("terms", "node/{$variables['nid']}",array('attributes'=>array('class' => 'toggle'))).
+		                      '<div class="slider">'. theme('links', $variables['taxonomy'], array('class' => 'inline')) ."\n</div>";
+	}
 }
