@@ -3,85 +3,64 @@
  * or the book links in the content area and the actual contents of a book page
  */
 (function($){
-	var display, header, content = {}, active, links;
+	var container, header, content = {}, active, orig_nid;
 	
-	Drupal.behaviors.os_book_linkage = function() {
+	Drupal.behaviors.os_book_linkage = function(ctx) {
 		if (!$('body.node-type-book').length) return;
-		var pages = $('.book-page');
-		display = $('#content .book-page').parent();
-		var blocks = $().not('*');
-		header = $('#content-main .title').not('.book-menu .title');
-		active = $('#content-main .node').attr('id').replace('node-','');
-		links = $('#content-main .links-inline');
+		var nid, title,
+			blocks = $().not('*');
 		
-		pages.each(function(index, elem){
-			// get the nid of the content
-			var nid = parseInt(elem.id.replace('book-node-',''));
-			
-			// save it to the content object
-			if (typeof content[nid] == 'undefined') {
-				var $elem = $(elem),
-					title = $elem.find('h1:first').remove().text();
-				
-				// add nid as attribute of links with same title
-				$('.block a:contains("'+title+'"), .book-menu a:contains("'+title+'")').each(function (index, elem) {
-					elem.setAttribute('nid', nid);
-					var parents = $(elem).parents('.block, .book-menu');
-					blocks.add(parents);
-				});
-				content[nid] = {title: title, content: $elem.hide().html()};
-			}
-			else {
-				content[nid].content += $(elem).hide().html();
-			}
-		});
+		if (ctx == document) {
+			content = Drupal.settings.book_pages;
+			container = $('#content');
+			header = $('#content-main .title').not('.book-menu .title');
+			orig_nid = active = $('#content-main .node').attr('id').replace('node-','');
+		}
+		
+		// pages is a list of every page in the book
+		// we parse this content and assign the contents to an nid in a js object
+		// as we do this, we check for links that have the same title and assign
+		// the nid as an attribute.
+		for (nid in content) {
+			title = content[nid].title.replace('&amp;', '&');
+			// add nid as attribute of links with same title
+			$('.block a:contains("'+title+'"), .book-menu a:contains("'+title+'")').not('[data-nid]').each(function (index, elem) {
+				elem.setAttribute('data-nid', nid);
+				var parents = $(elem).parents('.block, .book-menu');
+				blocks.add(parents);
+			});
+		}
 		
 		// attach click handler to blocks
 		blocks.click(toc_click);
 	};
 	
 	function toc_click(e) {
-		var nid = e.target.getAttribute('nid');
+		var nid = e.target.getAttribute('data-nid');
 		if (content[nid]) {
 			e.preventDefault();
-			$('*:not(.book-menu, .book-menu *)', display).remove();
-			display.append(content[nid].content);
-			$('*:not(.book-menu,.book-menu *)', display).fadeIn();
+			$('#comments', container).remove();
+			$('.node', container).replaceWith(content[nid].content);
+			// the 2nd .node is a different element from the first
+			var node = $('.node', container).hide().fadeIn();
 			header.html(content[nid].title);
-			links.html($('ul.links', display).addClass('inline'));
+			
+			
+			// change drupal settings
+			Drupal.settings.getQ = "node/"+nid;
+			if (typeof Drupal.settings.disqus == 'object') 
+				Drupal.settings.disqus.identifier = "node/"+nid;	//TODO: Find a better way to do this
+			
+			Drupal.attachBehaviors(node[0]);
 			
 			// deal with the 'active' class
-			$('a[nid="'+active+'"]').removeClass('active');
-			$('a[nid="'+nid+'"]').addClass('active');
-			
-			// change the admin contextual links
-			var reg = new RegExp(active, "g");
-			display.parents('.node').find('.ctools-dropdown-container a').each (function () {
-				this.href = this.href.replace(reg, nid);
-			});
+			$('a[data-nid="'+active+'"], a[data-nid="'+orig_nid+'"]').removeClass('active');
+			$('a[data-nid="'+nid+'"]').addClass('active');
 			active = nid;
 			
-			// start up jcarousels
-			if (typeof Drupal.settings.jcarousel != 'undefined') {
-				jQuery.each(Drupal.settings.jcarousel, function (selector, options) {
-					$(selector+':visible').not('.has-jcarousel').addClass('has-jcarousel').removeClass('jcarousel-processed');
-					Drupal.behaviors.jcarousel();
-				});
+			if ($('.fb-social-comments-plugin').length) {
+				fbAsyncInit();
 			}
 		}
 	}
-	
-	// stick our behavior at the front so it runs before jcarousel
-	var new_behaviors = {
-		os_books_jcarousel: function () {
-			if (typeof Drupal.settings.jcarousel != 'undefined') {
-				jQuery.each(Drupal.settings.jcarousel, function(selector, options) {
-					// prevents jcarousel from running on hidden elements
-					$(selector).not(':visible').addClass('jcarousel-processed');
-				});
-			}
-		}
-	};
-	Drupal.behaviors = $.extend(new_behaviors, Drupal.behaviors);
-
 })(jQuery);
