@@ -235,7 +235,7 @@ function _os_books_get_cache_key($root) {
   $cid_parts[] = "results";
   $cid_parts[] = $theme;
   $cid_parts[] = scholar_book_toc_location();
-  $cid_parts[] = ($user->uid == 1)?1:0; // special caching for super user.
+  $cid_parts[] = (spaces_access_admin())?1:0; // special caching for super user.
 
   $cid_parts[] = $root;
 
