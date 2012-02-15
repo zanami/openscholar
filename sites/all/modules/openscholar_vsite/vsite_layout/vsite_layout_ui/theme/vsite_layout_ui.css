@@ -134,10 +134,24 @@ dd.scholarlayout-item {
 }
   
 
-#scholarlayout-top-widgets .fb_social_facepile,
-#scholarlayout-top-widgets .fb_social_likebox,
-.fb_social_facepile.ui-sortable-helper,
-.fb_social_likebox.ui-sortable-helper {
+#scholarlayout-top-widgets .scholarlayout-item.fb_social_facepile,
+#scholarlayout-top-widgets .scholarlayout-item.fb_social_likebox,
+#scholarlayout-top-widgets .scholarlayout-item.fb_social_send,
+#scholarlayout-top-widgets .scholarlayout-item.fb_social_recommend,
+#scholarlayout-top-widgets .scholarlayout-item.fb_social_livestream,
+#scholarlayout-top-widgets .scholarlayout-item.fb_social_likebox,
+#scholarlayout-top-widgets .scholarlayout-item.fb_social_activityf,
+#scholarlayout-top-widgets .scholarlayout-item.fb_social_comments,
+#scholarlayout-top-widgets .scholarlayout-item.fb_social_like,
+.scholarlayout-item.fb_social_send.ui-sortable-helper,
+.scholarlayout-item.fb_social_recommend.ui-sortable-helper,
+.scholarlayout-item.fb_social_livestream.ui-sortable-helper,
+.scholarlayout-item.fb_social_likebox.ui-sortable-helper,
+.scholarlayout-item.fb_social_activityf.ui-sortable-helper,
+.scholarlayout-item.fb_social_comments.ui-sortable-helper,
+.scholarlayout-item.fb_social_like.ui-sortable-helper,
+.scholarlayout-item.fb_social_facepile.ui-sortable-helper,
+.scholarlayout-item.fb_social_likebox.ui-sortable-helper {
   background: url('images/widgetIcons/facebook.png') no-repeat scroll 50% 10px transparent;
 }
   
@@ -242,8 +256,10 @@ dd.content.post.ui-sortable-helper {
  
  #scholarlayout-top-widgets #boxes-os_addthis,
  #scholarlayout-top-widgets .os_boxes_addthis,
+ #scholarlayout-top-widgets .scholarlayout-item.os_boxes_addthis,
  #boxes-os_addthis.ui-sortable-helper,
- .os_boxes_addthis.ui-sortable-helper  {
+ .os_boxes_addthis.ui-sortable-helper,
+ .scholarlayout-item.os_boxes_addthis.ui-sortable-helper  {
  background: url('images/widgetIcons/addThis.png') no-repeat scroll 50% 10px transparent;
 }  
   
