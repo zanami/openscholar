@@ -58,6 +58,7 @@ function os_spaces_presets() {
     'variable' => array(
       'spaces_features' => array(
         'scholar_front' => 1,
+        'scholar_biocv' => 0,
         'scholar_pages' => 1,
         'scholar_announcements' => 1,
         'scholar_events' => 1,
@@ -68,7 +69,7 @@ function os_spaces_presets() {
         'scholar_reader' => 0,
         'scholar_blog' => 0,
         'scholar_dvn' => 0,
-        'scholar_links' => 0,
+        'scholar_links' => 1,
         'scholar_software' => 0,
       ),
       'spaces_og_selective' => 3,
@@ -76,8 +77,8 @@ function os_spaces_presets() {
       'spaces_og_directory' => 1,
       'spaces_og_private' => 0,
       'site_frontpage' => "home",
-      'default_theme' => 'scholar_airstream',
-      'vsite_design_maintheme' => 'scholar_airstream',
+      'default_theme' => 'scholar_collegiate',
+      'vsite_design_maintheme' => 'scholar_collegiate',
       'spaces_preset_og' => 'project',
     ),
   );
