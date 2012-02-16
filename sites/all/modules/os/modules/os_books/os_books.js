@@ -7,7 +7,7 @@
 	
 	Drupal.behaviors.os_book_linkage = function(ctx) {
 		if (!$('body.node-type-book').length) return;
-		var nid, title,
+		var nid, url,
 			blocks = $().not('*');
 		
 		if (ctx == document) {
@@ -22,14 +22,12 @@
 		// as we do this, we check for links that have the same title and assign
 		// the nid as an attribute.
 		for (nid in content) {
-			title = content[nid].title.replace('&amp;', '&');
-			// add nid as attribute of links with same title
-			$('.block a:contains("'+title+'"), .book-menu a:contains("'+title+'")').not('[data-nid]').each(function (index, elem) {
-				if ($(elem).text() == title) {
-					elem.setAttribute('data-nid', nid);
-					var parents = $(elem).parents('.block, .book-menu');
-					blocks.add(parents);
-				}
+			url = content[nid].url;
+			// add nid as attribute of links with same path
+			$('.block a[href$="'+url+'"], .book-menu a[href$="'+url+'"]').not('[data-nid]').each(function (index, elem) {
+				elem.setAttribute('data-nid', nid);
+				var parents = $(elem).parents('.block, .book-menu');
+				blocks.add(parents);
 			});
 		}
 		
@@ -38,6 +36,9 @@
 	};
 	
 	function toc_click(e) {
+		if (!e.target) {
+			e.target = e.srcElement;
+		}
 		var nid = e.target.getAttribute('data-nid');
 		if (content[nid]) {
 			e.preventDefault();
