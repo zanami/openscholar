@@ -25,9 +25,11 @@
 			title = content[nid].title.replace('&amp;', '&');
 			// add nid as attribute of links with same title
 			$('.block a:contains("'+title+'"), .book-menu a:contains("'+title+'")').not('[data-nid]').each(function (index, elem) {
-				elem.setAttribute('data-nid', nid);
-				var parents = $(elem).parents('.block, .book-menu');
-				blocks.add(parents);
+				if ($(elem).text() == title) {
+					elem.setAttribute('data-nid', nid);
+					var parents = $(elem).parents('.block, .book-menu');
+					blocks.add(parents);
+				}
 			});
 		}
 		
