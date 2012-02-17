@@ -24,16 +24,16 @@ function openscholar_log_usage_menu(){
   
   $items['usage/graph'] = array(
     'page callback' => 'openscholar_log_usage_graph',
-    'type' => 'MENU_CALLBACK', 
-    'access arguments' => array('admin content'), 
-  );  
+    'type' => 'MENU_CALLBACK',
+    'access arguments' => array('admin content'),
+  );
   
   /* just to test teh cron function without wiating for all the crons */
   $items['usage/cron'] = array(
     'page callback' => 'openscholar_log_usage_cron',
-    'type' => 'MENU_CALLBACK', 
-    'access arguments' => array('access content'), 
-  );  
+    'type' => 'MENU_CALLBACK',
+    'access arguments' => array('access content'),
+  );
   return $items;
 }
 
@@ -91,7 +91,7 @@ function openscholar_log_usage_log(){
   
 }
 
-/** 
+/**
  * @class installation
  * each instance is an installation of openscholar that has been reported to our usage log
  */
@@ -100,7 +100,7 @@ class installation {
   private $vsites = array();
   private $age;
   private $views;
-  private $version;        
+  private $version;
   private $last_visit;
   //private $last_ping;
   private $status;
@@ -108,8 +108,8 @@ class installation {
   function __construct(&$r, &$pings) {
     $this->host = $r->host;
     $this->version = $r->version;
-    //$this->last_ping = (isset($r->last_ping)) ? $r->last_ping : 'Never'; 
-    $this->views = (int)$r->views;    
+    //$this->last_ping = (isset($r->last_ping)) ? $r->last_ping : 'Never';
+    $this->views = (int)$r->views;
     $this->age = strtotime($r->age);
     //no vsite, assuming $r is sorted by vsite so empties show up first
     $this->last_visit = strtotime($r->last_visit);
@@ -127,9 +127,9 @@ class installation {
     //no host change
   }
   
-  /* 
+  /*
    * @function render()
-   * formats this object as an array for gcharts.  
+   * formats this object as an array for gcharts.
    */
   function render() {
     if (sizeof($this->vsites) && $this->status) {
@@ -155,7 +155,7 @@ function openscholar_log_usage_graph() {
   
   $ping_response = _openscholar_log_usage_graph_ping_response();
   
-  $query = 'SELECT * FROM {openscholar_usage_log} as log  ORDER  BY vsite' ; 
+  $query = 'SELECT * FROM {openscholar_usage_log} as log  ORDER  BY vsite' ;
 	$result = db_query($query);
   	
 	$installations = array();
@@ -170,7 +170,7 @@ function openscholar_log_usage_graph() {
 	    $installations[$r->host] = new installation($r, $ping_response);
 	  } else {
 	    $installations[$r->host]->addData($r);
-	  } 
+	  }
 	}
 	
 	/* prepare data from installations[] for javascript */
@@ -186,7 +186,7 @@ function openscholar_log_usage_graph() {
   return $out;
 }
 
-/** 
+/**
  * @function _openscholar_log_usage_gchart($data)
  * Attaches google api javacsript to page.  Includes $data array as json for chart.
  */
@@ -223,7 +223,7 @@ function _openscholar_log_usage_get_host($host) {
   // drop hosts with demo, dev, local, sandbox, and test in the title
   if (preg_match( '/.*demo|dev|local|sandbox|test.*/', $host)) {
     return FALSE;
-  } 
+  }
   
   //drop hosts without a dot
   if (!preg_match( '/\./', $host)) {
@@ -231,7 +231,7 @@ function _openscholar_log_usage_get_host($host) {
   }
   
   //drop urls with no letters - aka ip addresses.
-  //not sure if this is smart.  certainly drop 10 and 192 though. 
+  //not sure if this is smart.  certainly drop 10 and 192 though.
   if (!preg_match( '/[[:alpha:]]/', $host)) {
     return FALSE;
   }
@@ -245,6 +245,10 @@ function _openscholar_log_usage_get_host($host) {
  * stores whether or not they ping.
  */
 function openscholar_log_usage_cron() {
+	
+	//Disabling for now, this data is not needed real time
+	return;
+	
   define('HOSTS_TO_PING', 10);      //how many hosts to check during each cron job
   define('CONCURRENT_PINGS', 6);    //how many simultaneous connections to make.  more will result in faster cron jobs, especially for slow hosts
 //  define('TIMEOUT_SECONDS', 15.0);  //seconds before giving up on a host
@@ -270,7 +274,7 @@ function openscholar_log_usage_cron() {
   }
   $hosts = array_diff($hosts, $already_checked);
   
-  // if we don't have any unchecked hosts, instead try the least recently checked hosts 
+  // if we don't have any unchecked hosts, instead try the least recently checked hosts
   if (empty($hosts)) {
     $query = 'SELECT DISTINCT host FROM {openscholar_usage_log_host_check} ORDER BY last_check ASC' ;
     $result = db_query($query);
@@ -281,9 +285,9 @@ function openscholar_log_usage_cron() {
   }
   
   //ping some hosts
-  $checked = _openscholar_log_usage_check_hosts( array_slice( array_unique($hosts), 0, HOSTS_TO_PING) );  
+  $checked = _openscholar_log_usage_check_hosts( array_slice( array_unique($hosts), 0, HOSTS_TO_PING) );
   foreach ($checked as $host => $status) {
-    $query = 'REPLACE into {openscholar_usage_log_host_check} (host, last_check, valid) VALUES ( "%s" , %d, %d )'; 
+    $query = 'REPLACE into {openscholar_usage_log_host_check} (host, last_check, valid) VALUES ( "%s" , %d, %d )';
     $r = db_query($query, $host, time(), (int)$status);
   }
   
@@ -327,26 +331,26 @@ function _openscholar_log_usage_check_hosts($hosts) {
   			$http_code = curl_getinfo( $info['handle'], CURLINFO_HTTP_CODE );
   			$content = curl_multi_getcontent( $info['handle'] );
   
-  			/* only keep valid urls */ 
+  			/* only keep valid urls */
   			$done[$host] = ($http_code && _is_openscholar($content) );
   			 
   			//remove from queue and close handles.
   			curl_multi_remove_handle( $mh, $curling[$host] );
   			curl_close( $curling[$host] );
-  			unset( $curling[$host] ); 
+  			unset( $curling[$host] );
   
-  		} 
+  		}
   		
   		$ready--;
 		}
 		
-		//hosts aren't ready for reading, but curl says they're done.  fail them. 
+		//hosts aren't ready for reading, but curl says they're done.  fail them.
 	  if (!$is_running) {
-  		foreach ($curling as $host => $ch) { 
+  		foreach ($curling as $host => $ch) {
   		  $done[$host] = FALSE;
   		  curl_multi_remove_handle( $mh, $curling[$host] );
   			curl_close( $curling[$host] );
-  			unset( $curling[$host] );  
+  			unset( $curling[$host] );
 		  }
 	  }
 		
@@ -359,7 +363,7 @@ function _openscholar_log_usage_check_hosts($hosts) {
 }
 
 
-/** 
+/**
  * Check if site content looks like openscholar
  */
 
@@ -368,7 +372,7 @@ function _is_openscholar($content) {
 	return preg_match( $needle, $content );
 }
 
-/** 
+/**
  * get the host status table as an array
  */
 function _openscholar_log_usage_graph_ping_response() {
