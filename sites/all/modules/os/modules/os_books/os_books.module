@@ -43,6 +43,7 @@ function os_books_build_tree($node, $flatten = false) {
       $nid = $link['link']['nid'];
       $output[$nid]['content'] = menu_execute_active_handler('node/'.$nid);
       $output[$nid]['title'] = drupal_get_title();
+      $output[$nid]['url'] = drupal_get_path_alias('node/'.$nid);
     }
     //$output = book_export_traverse($tree, 'os_books_build_node');
 
