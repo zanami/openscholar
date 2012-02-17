@@ -200,3 +200,14 @@ function os_strongarm_alter(&$vars){
   $vars = array_merge($a_new_settings,$vars); //Existing values take precedence
 }
 
+/**
+ * Executes a lightweight cron run when called
+ * Used to perform maintenance tasks that need to take place regularly so full cron can run less often
+ * @return
+ * Returns TRUE if ran successfully
+ */
+function os_cron_run() {
+	
+	module_load_include('inc', 'os', 'os.cron');
+	return _os_cron_run();
+}
