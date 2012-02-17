@@ -464,7 +464,8 @@ function vsite_users_hide_form_value(&$element) {
  */
 function vsite_users_user_form_validate($form, &$form_state) {
   $account = FALSE;
-  if (strlen($form_state['values']['lookup_user']) && !($account = user_load(array('name' => $form_state['values']['lookup_user'])))) {
+  $form_state['values']['lookup_user'] = trim($form_state['values']['lookup_user']);
+  if (strlen($form_state['values']['lookup_user']) && !(($account = user_load(array('name' => $form_state['values']['lookup_user']))) || ($account = user_load(array('mail' => $form_state['values']['lookup_user']))))) {
     form_set_error('lookup_user', t('A user with the username "' . $form_state['values']['lookup_user'] . '" can not be found.'));
   }
   elseif ($account) {
@@ -490,6 +491,7 @@ function vsite_users_user_form_submit($form, &$form_state) {
   $vsite = vsite_get_vsite();
   if (strlen($form_state['values']['lookup_user'])) {
     $account = user_load(array('name' => $form_state['values']['lookup_user']));
+    if(!$account) $account = user_load(array('mail' => $form_state['values']['lookup_user']));
     $s_message = t('[!name] is now a member of [!group]', array('!name' => $account->name, '!group' =>  $vsite->group->title));
   }
 
