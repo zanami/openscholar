@@ -202,12 +202,12 @@
       }
 
       if (Drupal.settings.wysiwygFields.fields[id].multiple > 0) {
-        $('#' + _id + '-items, #wysiwyg_fields-' + id + '-wrapper table').hide();
+        /*$('#' + _id + '-items, #wysiwyg_fields-' + id + '-wrapper table').hide();
         if ($('#edit-' + _id + '-' + delta + '-wysiwyg-fields-ahah-wrapper').parents('table#' + id + '_values').length == 1) {
           $('#edit-' + _id + '-' + delta + '-wysiwyg-fields-ahah-wrapper')
             .before('<div id="edit-' + _id + '-' + delta + '-wysiwyg-fields-ahah-wrapper-placeholder" class="wysiwyg_fields-placeholder" />')
             .prependTo('#wysiwyg_fields-' + id + '-wrapper');
-        }
+        }*/
       }
 
       if ($('.wysiwyg_fields-' + id + '-field:first .wysiwyg_fields-widget').length == 1) {
@@ -227,12 +227,12 @@
         deltas = Drupal.settings.wysiwygFields.fields[id].active.wf_deltas.split(',');
 
         if (deltas.length == 1) {
-          $('#' + _id + '-items, #wysiwyg_fields-' + id + '-wrapper table').hide();
+/*          $('#' + _id + '-items, #wysiwyg_fields-' + id + '-wrapper table').hide();
           if ($('#edit-' + _id + '-' + Drupal.settings.wysiwygFields.fields[id].active.wf_deltas + '-wysiwyg-fields-ahah-wrapper').parents('table#' + id + '_values').length == 1) {
             $('#edit-' + _id + '-' + Drupal.settings.wysiwygFields.fields[id].active.wf_deltas + '-wysiwyg-fields-ahah-wrapper')
               .before('<div id="edit-' + _id + '-' + Drupal.settings.wysiwygFields.fields[id].active.wf_deltas + '-wysiwyg-fields-ahah-wrapper-placeholder" class="wysiwyg_fields-placeholder" />')
               .prependTo('#wysiwyg_fields-' + id + '-wrapper');
-          }
+          }*/
         }
 
         else {
