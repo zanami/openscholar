@@ -105,6 +105,12 @@ function vsite_menus_settings_form($form_state){
         '#size' => 30,
         '#default_value' => !empty($link['link_title']) ? $link['link_title'] : ucwords(str_replace('_', ' ', $key)),
       ),
+      'tooltip' => array(
+        '#type' => 'textfield',
+        '#description' => 'tooltip describing link',
+        '#size' => 30,
+        '#default_value' => isset($link['options']['attributes']['title']) ? $link['options']['attributes']['title'] : '',
+      ),
       'region' => array(
         '#type' => 'select',
         '#options' => $a_site_menus,
@@ -193,11 +199,18 @@ function vsite_menus_new_link_form(&$form_state) {
       '#type' => 'textfield',
       '#title' => t('Menu Title'),
       '#description' => t('What text will appear for the entry.'),
+      '#required' => true,
+    ),
+    'new_menu_tooltip' => array(
+      '#type' => 'textfield',
+      '#title' => t('Menu Help Text'),
+      '#description' => t('(Optional) Tooltip text that describes this link.'),
     ),
     'new_menu_url' => array(
       '#type' => 'textfield',
       '#title' => t('URL'),
       '#description' => t('Enter the URL for the new menu entry.'),
+      '#required' => true,
     ),
     'new_menu_region' => array(
       '#type' => 'select',
@@ -324,6 +337,14 @@ function vsite_menus_settings_form_submit($form, &$form_state) {
     $link['weight'] = $data['weight'];
     $link['key'] = $menu_key;
     $link['hidden'] = false;
+    
+    //Create the options array if it does not exist
+    if(!is_array($link['options'])) $link['options'] = array();
+    	
+    //Add the attributes option if it does not exist
+    if(!array_key_exists('attributes',$link['options'])) $link['options']['attributes'] = array();
+
+    $link['options']['attributes']['title'] = $data['tooltip'];
 
     if ($link['user_created'] && $region == 'none' || !isset($link['link_path'])) {
       // we're deleting the link
@@ -334,6 +355,11 @@ function vsite_menus_settings_form_submit($form, &$form_state) {
 
   if ($form_state['values']['new_menu_title'] && $form_state['values']['new_menu_url']) {
 
+  	$a_options = array();
+  	if(strlen($form_state['values']['new_menu_tooltip'])){
+  		$a_options['attributes'] = array('title' => $form_state['values']['new_menu_tooltip']);
+  	}
+  	
     // add a new menu
     $new_link = array(
       'menu_name' => $form_state['values']['new_menu_region'],
@@ -341,7 +367,7 @@ function vsite_menus_settings_form_submit($form, &$form_state) {
       'router_path' => $form_state['values']['new_menu_router_path'],
       'key' => $form_state['values']['new_menu_region'].':'.$form_state['values']['new_menu_url'],
       'link_title' => check_plain($form_state['values']['new_menu_title']),
-      'options' => array(),
+      'options' => $a_options,
       'module' => 'system',
       'hidden' => '0',
       'external' => menu_path_is_external($form_state['values']['new_menu_url'])?'1':'0',
