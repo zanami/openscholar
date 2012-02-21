@@ -34,7 +34,7 @@ Drupal.behaviors.os_modalframe_links = function (ctx) {
 				// which is hasn't in a straight json return
 				Drupal.modalFrame.iframe.$element.bind('load', onLoad);
 			},
-			onSubmit: Drupal.CTools.AJAX.respond,
+			onSubmit: Drupal.CTools.AJAX.respond
 		};
 		
 		Drupal.modalFrame.open(modalOptions);
