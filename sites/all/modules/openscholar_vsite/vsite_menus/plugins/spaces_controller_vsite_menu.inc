@@ -93,6 +93,9 @@ class spaces_controller_vsite_menu extends spaces_controller {
 	        }
         }
       }
+      
+      //Add original menu entries not added in the preset
+      $this->add_missing_defaults($this->values['preset']);
     }
   }
 
