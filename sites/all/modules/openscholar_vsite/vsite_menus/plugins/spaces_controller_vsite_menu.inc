@@ -69,8 +69,15 @@ class spaces_controller_vsite_menu extends spaces_controller {
       $preset_name = variable_get("spaces_preset_{$this->space_type}", NULL);
       if ($preset_name && $preset = spaces_preset_load($preset_name)) {
       	
-        if (isset($preset->value['variable']) && isset($preset->value['variable']['spaces_features'])) {
+        if (!isset($preset->value[$this->controller]) && isset($preset->value['variable']) && isset($preset->value['variable']['spaces_features'])) {
+        	
+        	//Since the preset didn't start with a default menu, lets start with what's in the original then order it by var "spaces_features"
+        	$this->values['preset'] = $this->values['original'];
+        	
+        	//Get the order for menu items
         	$order = array_flip(array_keys($preset->value['variable']['spaces_features']));
+        	
+        	//Tie menu items to thier feature (for order)
           $feature_menus = features_get_component_map('menu_links');
           
           foreach ($feature_menus as $s_key => $a_feature) {
@@ -86,8 +93,6 @@ class spaces_controller_vsite_menu extends spaces_controller {
 	        }
         }
       }
-    	
-    	$this->add_missing_defaults($this->values['preset']);
     }
   }
 
@@ -124,6 +129,9 @@ class spaces_controller_vsite_menu extends spaces_controller {
       //Ignore ID and load them all at once to prevent multiple unneeded queries
       module_load_include('inc', 'features', 'features.export');
       $a_menu_links = features_get_default('menu_links');
+      
+//      //Menu system does access checks etc here that we don't want
+//      $menu = menu_tree_page_data($id);
       
       $this->values['original'] = $this->plugin_values($a_menu_links);
       $this->loaded_all['original'] = TRUE;
