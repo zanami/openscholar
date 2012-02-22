@@ -94,12 +94,13 @@ class os_boxes_slideshow extends os_boxes_default {
     );
 
     $form['style'] = array(
-      '#title' => t('Controls Style'),
+      '#title' => t('Player Styles'),
       '#type' => 'radios',
       '#options' => array('' => 'Dark', '_light' => 'Light'),
       '#default_value' => $this->options['style'],
       '#pre_render' => array('os_slideshow_box_style_thumbs'),
       '#attributes' => array('class' => 'thumbnails'),
+      '#description' => t('Choose between a black or light grey player style.'),
     );
 
     $form += parent::options_form();
@@ -143,9 +144,3 @@ class os_boxes_slideshow extends os_boxes_default {
 
 }
 
-function os_slideshow_box_style_thumbs($element) {
-  $element['']['#title'] .= theme('image', drupal_get_path('module', 'os_slideshow').'/theme/images/darkThumbnail.png');
-  $element['_light']['#title'] .= theme('image', drupal_get_path('module', 'os_slideshow').'/theme/images/lightThumbnail.png');
-
-  return $element;
-}
