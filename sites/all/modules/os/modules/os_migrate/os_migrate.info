@@ -1,0 +1,10 @@
+name = "Migrate OpenScholar"
+description = "Migrate OpenScholar's database from d6 to d7"
+package = "Development"
+core = 7.x
+dependencies[] = os
+dependencies[] = migrate
+; dependencies[] = migrate_extras
+dependencies[] = migrate_ui
+
+files[] = os_migrate_users.inc
