@@ -107,7 +107,7 @@ function vsite_menus_settings_form($form_state){
       ),
       'tooltip' => array(
         '#type' => 'textfield',
-        '#description' => 'tooltip describing link',
+        '#description' => 'A tooltip describing the link',
         '#size' => 30,
         '#default_value' => isset($link['options']['attributes']['title']) ? $link['options']['attributes']['title'] : '',
       ),

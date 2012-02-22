@@ -206,7 +206,7 @@ function os_strongarm_alter(&$vars){
  * @return
  * Returns TRUE if ran successfully
  */
-function os_cron_run() {
+function os_cron() {
 	
 	module_load_include('inc', 'os', 'os.cron');
 	return _os_cron_run();
