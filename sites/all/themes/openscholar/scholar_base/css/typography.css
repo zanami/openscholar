@@ -289,7 +289,7 @@ body.node-inner ul li li {
 
 .node-inner .content li ol li,
 body.node-inner li ol li {
-	list-style-type: upper-roman;
+	list-style-type: lower-alpha;
 	}
 
 .node-inner .content li li ol li,
