@@ -736,6 +736,11 @@ div.ctools-modal-content .form-item label.option {
   margin-bottom:15px;
 }
 
+.modal-content select + .description {
+  margin-top:-10px;
+}
+
+
 .form-item .description .tips {
   margin-left: 2em;
 }
