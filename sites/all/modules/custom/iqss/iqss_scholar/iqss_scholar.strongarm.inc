@@ -209,13 +209,19 @@ function iqss_scholar_strongarm() {
   $strongarm->value = 'tinyurl';
   $export['shorten_service_backup'] = $strongarm;
 
-    
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'shorten_www';
   $strongarm->value = FALSE;
   $export['shorten_www'] = $strongarm;
+      
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'node_save_flush_cache';
+  $strongarm->value = FALSE;
+  $export['node_save_flush_cache'] = $strongarm;
   
   return $export;
 }

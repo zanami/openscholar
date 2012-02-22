@@ -865,7 +865,7 @@ function node_submit($node) {
 /**
  * Save a node object into the database.
  */
-function node_save(&$node) {
+function node_save(&$node, $cache_flush = NULL) {
   // Let modules modify the node before it is saved to the database.
   node_invoke_nodeapi($node, 'presave');
   global $user;
@@ -940,7 +940,9 @@ function node_save(&$node) {
   node_access_acquire_grants($node);
 
   // Clear the page and block caches.
-  cache_clear_all();
+  if ((is_null($cache_flush) && variable_get('node_save_flush_cache',true)) || $cache_flush) {
+    cache_clear_all();
+  }
 }
 
 /**
@@ -1270,9 +1272,9 @@ function node_search($op = 'search', $keys = NULL) {
         $total += $weight;
       }
       
-      // When all search factors are disabled (ie they have a weight of zero), 
-      // the default score is based only on keyword relevance and there is no need to 
-      // adjust the score of each item. 
+      // When all search factors are disabled (ie they have a weight of zero),
+      // the default score is based only on keyword relevance and there is no need to
+      // adjust the score of each item.
       if ($total == 0) {
         $select2 = 'i.relevance AS score';
         $total = 1;

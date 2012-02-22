@@ -1,0 +1,27 @@
+Index: modules/node/node.module
+===================================================================
+RCS file: /cvs/drupal/drupal/modules/node/node.module,v
+retrieving revision 1.972
+diff -u -r1.972 node.module
+--- modules/node/node.module	21 Aug 2008 19:36:37 -0000	1.972
++++ modules/node/node.module	26 Aug 2008 12:21:37 -0000
+@@ -889,7 +889,7 @@
+ /**
+  * Save a node object into the database.
+  */
+-function node_save(&$node) {
++function node_save(&$node, $cache_flush = NULL) {
+   // Let modules modify the node before it is saved to the database.
+   node_invoke_nodeapi($node, 'presave');
+   global $user;
+@@ -972,7 +972,9 @@
+   node_access_acquire_grants($node);
+ 
+   // Clear the page and block caches.
+-  cache_clear_all();
++  if(is_null($cache_flush) && variable_get('node_save_flush_cache',true)) || $cache_flush) {
++    cache_clear_all();
++  }
+ }
+ 
+ /**
