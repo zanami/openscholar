@@ -799,7 +799,7 @@ function vsite_perm(){
  * @param $file
  */
 function vsite_system_info_alter(&$info, $file){
-  if ($file->type == 'module')
+  if (isset($file->type) && $file->type == 'module')
     return;
 
   //Maintain backwards compatibility

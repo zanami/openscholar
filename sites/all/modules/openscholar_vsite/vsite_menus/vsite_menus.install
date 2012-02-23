@@ -128,5 +128,26 @@ function vsite_menus_update_6002(&$sandbox){
   }
   
   return $res;
-  
+}
+
+/**
+ * Delete leftover menu setting from pre (6001), these only clutter the menu system
+ * and will slow menu rebuilds when needed
+ * @param unknown_type $sandbox
+ */
+function vsite_menus_update_6003(&$sandbox){
+	$a_site_menus = array_keys(variable_get('scholar_site_menus',array('features', 'scholar_secondary_menu')));
+	$res = array();
+	
+	foreach ($a_site_menus as $menu){
+		//Delete user created menu items from a menu
+    db_query("DELETE FROM {menu_links} ml WHERE ml.menu_name = '%s' AND (ml.module IS NULL OR ml.module LIKE 'menu')", $menu);
+    
+    $res[] = array(
+	    'success' => true,
+	    'query' => "Cleaned Up menu entries from menu ({$menu})",
+	  );
+	}
+	
+	return $res;
 }

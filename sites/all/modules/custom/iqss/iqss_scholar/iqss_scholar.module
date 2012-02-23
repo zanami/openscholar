@@ -24,11 +24,11 @@ function iqss_scholar_mollom_form_info_alter(&$form_info, $form_id){
   $form_info['mode'] = (in_array($form_id,$a_mollom_forms))? MOLLOM_MODE_CAPTCHA:MOLLOM_MODE_DISABLED;
 }
 
-define(IQSS_DEV,0);
-define(IQSS_LOCAL_DEV,1);
-define(IQSS_STAGING,2);
-define(IQSS_PRODUCTION,3);
-define(IQSS_PROJECT_PRODUCTION,4);
+define("IQSS_DEV",0);
+define("IQSS_LOCAL_DEV",1);
+define("IQSS_STAGING",2);
+define("IQSS_PRODUCTION",3);
+define("IQSS_PROJECT_PRODUCTION",4);
 
 function isqq_scholar_current_location(){
 
@@ -192,7 +192,7 @@ function iqss_scholar_strongarm_alter(&$export) {
       $strongarm->value = 0;  //Log in background only
       $export['error_level'] = $strongarm;
 
-      // mollom settings   
+      // mollom settings
       $strongarm = new stdClass;
       $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
       $strongarm->api_version = 1;
