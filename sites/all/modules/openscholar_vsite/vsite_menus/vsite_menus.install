@@ -141,7 +141,7 @@ function vsite_menus_update_6003(&$sandbox){
 	
 	foreach ($a_site_menus as $menu){
 		//Delete user created menu items from a menu
-    db_query("DELETE FROM {menu_links} ml WHERE ml.menu_name = '%s' AND (ml.module IS NULL OR ml.module LIKE 'menu')", $menu);
+    db_query("DELETE FROM {menu_links} WHERE menu_name = '%s' AND (module IS NULL OR module LIKE 'menu')", $menu);
     
     $res[] = array(
 	    'success' => true,
