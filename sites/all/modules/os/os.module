@@ -65,6 +65,18 @@ function os_user($op, &$edit, &$account, $category = NULL){
  */
 function os_menu_alter(&$items){
 	$items['user']['page callback'] = 'os_user_page';
+	
+  // Kill undesirable menu items
+  $yank = array(
+    'rss.xml',
+    'node',
+    'node/%node/outline',
+  );
+  foreach ($yank as $path) {
+    if (!empty($items[$path])) {
+      unset($items[$path]);
+    }
+  }
 }
 
 /**
