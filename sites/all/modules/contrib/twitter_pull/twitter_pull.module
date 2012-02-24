@@ -90,8 +90,10 @@ function twitter_pull_render($twitkey, $title = NULL, $num_items = NULL, $themek
  *     (prepended with #), or a search term.
  * @param $num_items
  *     Number of tweets to retrieve from Twitter. Can't be more than 200.
+ * @param $reset
+ *     Force the cache to be updated
  */
-function twitter_pull_retrieve($twitkey, $num_items = NULL) {
+function twitter_pull_retrieve($twitkey, $num_items = NULL, $reset = false) {
   // If $num_items is not set, use the default value.
   // This value is checked more rigorously in twitter_puller->check_arguments().
   $num_items = (intval($num_items) > 0) ? intval($num_items) : twitter_pull_num_items();
@@ -104,7 +106,14 @@ function twitter_pull_retrieve($twitkey, $num_items = NULL) {
 
   $refresh_delay = twitter_pull_refresh_delay();
   $refresh = $refresh_delay && ($cache->created < (time() - ($refresh_delay * 60)));
-  if (empty($cache) || empty($cache->data) || $refresh) {
+  
+  //If the cache is stale but exists and the job_scheduler module is present, schedule an update and use the cache for now
+  if(!$reset && $refresh && module_exists('job_scheduler') && !empty($cache) && !empty($cache->data)){
+  	
+  	twitter_pull_schedule_job($twitkey,$num_items);
+  	$tweets = $cache->data;
+  	
+  }elseif(empty($cache) || empty($cache->data) || $refresh || $reset) {
 
     try {
       $puller = new twitter_puller($twitkey, $num_items);
@@ -239,7 +248,35 @@ function twitter_pull_block_data() {
   return $data;
 }
 
+/**
+ * Schedule a pull action for a twitter key
+ *
+ * @param string $twitkey
+ * @param number $num_items
+ */
+function twitter_pull_schedule_job($twitkey, $num_items){
+	//If the cache exists and the job_scheduler module is present, schedule an update and use the cache for now
+  $job = array(
+    'callback' => 'twitter_pull_run_job',
+    'type' => $twitkey,
+    'id' => $num_items,
+    'period' => 0, //Schedule as soon as possible
+    'periodic' => FALSE,
+  );
+  job_scheduler()->set($job);
+}
 
+/**
+ * Run a JobScheduler Job to pull new tweets
+ * @param array $job
+ */
+function twitter_pull_run_job($job){
+	
+	$twitkey = $job['type'];
+	$num_items = $job['id'];
+
+	twitter_pull_retrieve($twitkey, $num_items, true);
+}
 
 
 /****** FOR TESTING ONLY. KEEP DISABLED AT ALL TIMES UNLESS DEBUGGING ******/
