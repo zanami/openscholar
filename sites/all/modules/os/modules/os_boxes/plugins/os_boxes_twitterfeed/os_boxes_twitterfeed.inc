@@ -28,59 +28,59 @@ class os_boxes_twitterfeed extends os_boxes_default {
   public function options_form(){
     
     $form['twitter_username'] = array(
-      '#type' => 'textfield', 
-      '#title' => t('Twitter key'), 
-      '#required' => TRUE, 
-      '#default_value' => $this->options['twitter_username'], 
-      '#description' => "Can be a twitter username (prepended with @), a list (@username/listname), a hashtag (prepended with #) or a search keyword (no prefix)." 
+      '#type' => 'textfield',
+      '#title' => t('Twitter key'),
+      '#required' => TRUE,
+      '#default_value' => $this->options['twitter_username'],
+      '#description' => "Can be a twitter username (prepended with @), a list (@username/listname), a hashtag (prepended with #) or a search keyword (no prefix)."
     );
     
     $form['num_items'] = array(
-      '#type' => 'textfield', 
-      '#title' => t('Number of tweets'), 
-      '#default_value' => $this->options['num_items'], 
-      '#description' => t('Number of tweets to display') 
+      '#type' => 'textfield',
+      '#title' => t('Number of tweets'),
+      '#default_value' => $this->options['num_items'],
+      '#description' => t('Number of tweets to display')
     );
     
     $form['followme_link'] = array(
-      '#type' => 'checkbox', 
-      '#title' => t('Include a "follow me link"'), 
-      '#default_value' => $this->options['followme_link'], 
-      '#description' => t('This will add a more link to the bottom of this widget, which will link to your twitter page'), 
-      '#tree' => TRUE 
+      '#type' => 'checkbox',
+      '#title' => t('Include a "follow me link"'),
+      '#default_value' => $this->options['followme_link'],
+      '#description' => t('This will add a more link to the bottom of this widget, which will link to your twitter page'),
+      '#tree' => TRUE
     );
     
     ctools_include('dependent');
     ctools_add_js('dependent');
     
     $form['followme_text'] = array(
-      '#type' => 'textfield', 
-      '#title' => t('Text'), 
-      '#default_value' => $this->options['followme_text'], 
-      '#description' => t("The title / label of the link."), 
+      '#type' => 'textfield',
+      '#title' => t('Text'),
+      '#default_value' => $this->options['followme_text'],
+      '#description' => t("The title / label of the link."),
       '#process' => array(
-        'ctools_dependent_process' 
-      ), 
+        'ctools_dependent_process'
+      ),
       '#dependency' => array(
         'edit-followme-link' => array(
-          1 
-        ) 
-      ) 
+          1
+        )
+      )
     );
     
     $form['followme_url'] = array(
-      '#type' => 'textfield', 
-      '#title' => t('Link'), 
-      '#default_value' => $this->options['followme_url'], 
-      '#description' => t("The url/path for this link."), 
+      '#type' => 'textfield',
+      '#title' => t('Link'),
+      '#default_value' => $this->options['followme_url'],
+      '#description' => t("The url/path for this link."),
       '#process' => array(
-        'ctools_dependent_process' 
-      ), 
+        'ctools_dependent_process'
+      ),
       '#dependency' => array(
         'edit-followme-link' => array(
-          1 
-        ) 
-      ) 
+          1
+        )
+      )
     );
     
     $form += parent::options_form();
@@ -106,6 +106,33 @@ class os_boxes_twitterfeed extends os_boxes_default {
     
     $block['content'] = $output;
     return $block;
+  }
+  
+  public function xx(){
+  	$num_items = (intval($num_items) > 0) ? intval($num_items) : twitter_pull_num_items();
+
+	  // Cached value is specific to the Twitter key and number of tweets retrieved.
+	  $cache_key = $twitkey . '::' . $num_items;
+	  $cache = cache_get($cache_key, TWITTER_PULL_CACHE_TABLE);
+	
+	  $tweets = array();
+	
+	  $refresh_delay = twitter_pull_refresh_delay();
+	  $refresh = $refresh_delay && ($cache->created < (time() - ($refresh_delay * 60)));
+	  
+	  if($refresh && module_exists('job_scheduler') && !empty($cache) && !empty($cache->data)){
+	    
+	    //If the cache exists and the job_scheduler module is present, schedule an update and use the cache for now
+	    $job = array(
+	      'callback' => 'feeds_source_import',
+	      'type' => $this->id,
+	      'id' => $this->feed_nid,
+	      // Schedule as soon as possible if a batch is active.
+	      'period' => 0,
+	      'periodic' => FALSE,
+	    );
+	    job_scheduler()->set($job);
+    
   }
 
   /**
