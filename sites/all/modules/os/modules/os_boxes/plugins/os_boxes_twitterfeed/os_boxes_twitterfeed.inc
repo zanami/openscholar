@@ -107,33 +107,6 @@ class os_boxes_twitterfeed extends os_boxes_default {
     $block['content'] = $output;
     return $block;
   }
-  
-  public function xx(){
-  	$num_items = (intval($num_items) > 0) ? intval($num_items) : twitter_pull_num_items();
-
-	  // Cached value is specific to the Twitter key and number of tweets retrieved.
-	  $cache_key = $twitkey . '::' . $num_items;
-	  $cache = cache_get($cache_key, TWITTER_PULL_CACHE_TABLE);
-	
-	  $tweets = array();
-	
-	  $refresh_delay = twitter_pull_refresh_delay();
-	  $refresh = $refresh_delay && ($cache->created < (time() - ($refresh_delay * 60)));
-	  
-	  if($refresh && module_exists('job_scheduler') && !empty($cache) && !empty($cache->data)){
-	    
-	    //If the cache exists and the job_scheduler module is present, schedule an update and use the cache for now
-	    $job = array(
-	      'callback' => 'feeds_source_import',
-	      'type' => $this->id,
-	      'id' => $this->feed_nid,
-	      // Schedule as soon as possible if a batch is active.
-	      'period' => 0,
-	      'periodic' => FALSE,
-	    );
-	    job_scheduler()->set($job);
-    
-  }
 
   /**
    * Return the cache parameters for this box
