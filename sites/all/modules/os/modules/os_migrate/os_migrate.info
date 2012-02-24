@@ -7,4 +7,7 @@ dependencies[] = migrate
 ; dependencies[] = migrate_extras
 dependencies[] = migrate_ui
 
+files[] = os_migrate.inc
+files[] = os_migrate_node_abstract.inc
+files[] = os_migrate_node_page.inc
 files[] = os_migrate_users.inc
