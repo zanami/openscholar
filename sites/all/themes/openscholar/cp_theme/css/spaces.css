@@ -1,8 +1,37 @@
 /* SPACES FEATURES */
 
 table.spaces-features {
-  width: 968px;
+  width: 900px;
   }
+  
+table.spaces-features tr {
+  height: 50px;
+  }
+  
+ table.spaces-features tr:hover {
+  background: #f3f3f3;
+  } 
+
+table.spaces-features td.name {
+  width: 72%;
+  }
+
+
+table.spaces-features td.option {
+  width: 13%;
+  padding-top:10px;
+  text-align:center;
+  }
+
+table.spaces-features td.actions {
+  width: 15%;
+  padding-top:10px;
+  text-align:center;
+  }
+  
+table.spaces-features td.name strong {
+  font-size: 1.2em;
+  }  
 
 form#spaces-preset-default-form h3,
 form#spaces-preset-form h3,
@@ -80,7 +109,11 @@ div.spaces-block-customizer strong.region {
   }
 
 
-form#spaces-features-form td.actions a {padding:2px;background:#268ce3;color:#FFF; -moz-border-radius: 4px;-webkit-border-radius:4px;}
+/* form#spaces-features-form td.actions a {padding:2px;background:#268ce3;color:#FFF; -moz-border-radius: 4px;-webkit-border-radius:4px;} */
+
+form#spaces-features-form td.actions a {width:100px;height:25px;padding:0 0 5px 22px;background:url('../images/featureCustGear.png') no-repeat; color:#105ea9;} 
+
+
 
 
 .spaces-features a.tabledrag-handle {

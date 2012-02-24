@@ -223,11 +223,12 @@ select option {
   max-width:99%;
   }
   
-#modal-content select,
-#modal-content select option {
+#modal-content select  {
  width: 185px;
  margin-bottom: 12px;
   }
+  
+
   
 .form-region-right select option {
   max-width: 236px;
@@ -272,13 +273,18 @@ select {
   }
 
 select {
-  border-color: #E8E8E8 #F0F0F0 #F8F8F8;
+  border-color: #CDCDCD #CDCDCD #CDCDCD;
   border-style: solid;
-  border-width: 2px;
-  -moz-border-bottom: 2px solid #E8E8E8;
-  -moz-border-left:  2px solid #F0F0F0;
-  -moz-border-right:  2px solid #F8F8F8;
-  -moz-border-top:  2px solid #F0F0F0;
+  border-width: 1px;
+  -moz-border-bottom: 2px solid #CDCDCD;
+  -moz-border-left:  2px solid #CDCDCD;
+  -moz-border-right:  2px solid #CDCDCD;
+  -moz-border-top:  2px solid #CDCDCD;
+  min-width:80px;
+  height:25px;
+  padding-top:3px;
+  color: #333333;
+  font-size:12px;
   }
 
 input.form-autocomplete,
@@ -447,9 +453,9 @@ fieldset.group-account-basics {
   }
 
 .draggable select {
-  font-size: 10px;
-  height: auto;
-  padding-top: 1px;
+  font-size: 12px;
+  height: 25px;
+  padding-top: 3px;
   }
 
 .tabledrag-changed {

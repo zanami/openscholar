@@ -231,14 +231,18 @@ table tr.even {
   padding: 0;
   }
 
-/* CONTENT & USERS TABLE STYLES */
+/* CONTENT, TAXO, MENU & USERS TABLE STYLES */
 
 thead.tableHeader-processed tr,
 body.page-cp-content-comments thead tr,
-body.page-cp-users thead tr {
+body.page-cp-users thead tr,
+table#fields tr.region-features,
+table#fields tr.region-scholar_secondary_menu,
+table#fields tr.region-none {
 	height:25px;
 	background:#ececec;
     border-bottom: 3px solid #c4c2c2;
+    font-size:11px;
 }
  
 thead.tableHeader-processed tr a,
@@ -251,7 +255,27 @@ body.page-cp-content tbody tr.even,
 body.page-cp-content-files tbody tr.even,
 body.page-cp-content-comments tbody tr.even,
 body.page-cp-users tbody tr.even {
-background: #EFEFEF
+background: #f3f3f3;
+}
+
+table#taxonomy-tags th:nth-child(2) {
+	width:165px;
+}
+
+table#fields tr.region-features,
+table#fields tr.region-scholar_secondary_menu, 
+table#fields tr.region-none {
+	border-top:20px solid #FFF;
+}
+
+table#fields td {
+	padding:10px 0 5px 0;
+}
+
+table#fields tr.region-features td,
+table#fields tr.region-scholar_secondary_menu td, 
+table#fields tr.region-none td {
+	padding:3px 3px
 }
 
 /* SPECIFIC PAGE VIEWS */
