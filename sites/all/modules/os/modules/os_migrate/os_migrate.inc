@@ -30,10 +30,26 @@ abstract class OSMigration extends Migration {
    * @function d6_db_select
    * 
    * As db_select, but targets old d6 database
+   * Sends users to admin page on a misconfigured db
    */
   public function d6_db_select($target, $alias = NULL, array $options = array()) {
-    return Database::getConnection('default', 'd6_db')
-      ->select($target, $alias, $options);
-   }
+    static $os_migrate_database;  
+    if (!isset($os_migrate_database)) {
+      $os_migrate_database =  variable_get('os_migrate_database', '');
+    }
+  
+    try {
+      return Database::getConnection('default', $os_migrate_database) 
+        ->select($target, $alias, $options);
+    } catch (DatabaseConnectionNotDefinedException $e) {
+      flood_register_event('os_migrate_bad_db');
+      $msg = t('Unable to connect to db %db.  Please !link', array(
+      				  '%db' => $os_migrate_database, 
+      				  '!link'=>l('check settings','admin/config/os_migrate')));
+      drupal_set_message($msg, 'error');
+                  
+      throw $e;
+    }
+  }
   
 }
