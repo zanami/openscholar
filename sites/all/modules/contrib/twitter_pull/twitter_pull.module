@@ -111,6 +111,7 @@ function twitter_pull_retrieve($twitkey, $num_items = NULL, $reset = false) {
   if(!$reset && $refresh && module_exists('job_scheduler') && !empty($cache) && !empty($cache->data)){
   	
   	twitter_pull_schedule_job($twitkey,$num_items);
+  	$tweets = $cache->data;
   	
   }elseif(empty($cache) || empty($cache->data) || $refresh || $reset) {
 
