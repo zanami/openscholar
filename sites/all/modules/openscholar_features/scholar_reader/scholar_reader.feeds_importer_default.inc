@@ -58,8 +58,8 @@ function scholar_reader_feeds_importer_default() {
     ),
     'content_type' => 'feed',
     'update' => 0,
-    'import_period' => '1800',
-    'expire_period' => 3600,
+    'import_period' => '7200', //Get new feeds every 2 hours
+    'expire_period' => 7200, //Expire old feeds every 2 hours
     'import_on_create' => 1,
   );
 
