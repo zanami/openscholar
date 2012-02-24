@@ -1,0 +1,157 @@
+/* Temporarily (for testing) color the regions */
+.region-header {
+background:#EEEEBB;
+}
+
+.region-header-left {
+background:#44EEBB;
+}
+
+.region-header-right {
+background:#EE44BB;
+}
+
+#content-column { 
+background:#EEFF77;	
+}
+
+
+.region-sidebar-first  {
+background:#FFACAC;	
+}
+
+
+.region-sidebar-second {
+background:#CCC;	
+	}
+
+.region-footer {
+background:#777;	
+	}
+
+/* Page */
+
+
+/* Floating & positioning the header regions not covered by ABT */
+#header {clear: both;border:1px solid #333;}
+
+.region-header {
+  width: 100%;
+}
+
+.region-header,
+.region-header-left,
+.region-header-right {
+float: left;
+position:relative;
+}
+
+
+.region-header-left {
+    left: -240px;
+    margin-left: -100%;
+}
+
+.region-header-right {
+    margin-right: -100%;
+}
+
+.region-header-left, 
+.region-header-right {
+    width: 200px;
+}
+
+
+/* Header */
+#page > header {}
+#logo {
+  margin: 0 10px;
+}
+#page > header > hgroup {
+  margin: 0 10px;
+}
+#site-name {}
+#site-name a    {}
+#site-name a:visited {}
+#site-name a:hover   {}
+#site-name a:focus   {}
+#site-name a:active  {}
+#site-slogan {}
+
+/* Page title */
+h1#page-title {}
+
+/* Regions */
+.region-leaderboard {}
+.region-header {}
+.region-secondary-content {}
+.region-highlighted {}
+.region-content-aside {}
+.region-tertiary-content {}
+.region-footer {}
+
+/* Sidebars */
+.sidebar {}
+.region-sidebar-first {}
+.region-sidebar-second {}
+
+/* Footer - the main page footer only */
+#page > footer {}
+
+/* Feed icons */
+#feed-icons {}
+#feed-icons .feed-icon {}
+#feed-icons .feed-icon img {}
+#feed-icons a.feed-icon {}
+
+/* Search results list. */
+.search-results {}
+.search-results .search-result {}
+.search-results .title {}
+.search-results .search-snippet-info {}
+.search-results p {}
+.search-results .search-snippet {}
+.search-results .search-info {}
+
+span.search-info-type {}
+span.search-info-user {}
+span.search-info-date {}
+span.search-info-comment {}
+span.search-info-upload  {}
+
+/* Aggregator */
+.feed-item {}
+.feed-item header {}
+.feed-item-title {}
+.feed-item-meta {}
+.feed-item .content {}
+.feed-item footer {}
+.feed-source {}
+.feed-description {}
+
+/* Maintenance page */
+.maintenance-page #skip-link {
+  position: absolute;
+  top: -99em;
+}
+.maintenance-page footer {
+  margin: 10px 0 0;
+}
+.maintenance-page footer a {
+  text-decoration: none;
+  color: #ccc;
+}
+
+/* Prevent overflowing content */
+header[role=banner],
+.content-inner,
+.nav,
+.region-sidebar-first,
+.region-sidebar-second,
+.region-secondary-content,
+.region-tertiary-content,
+.region-footer {
+  overflow: visible;
+  word-wrap: break-word;
+}
+
