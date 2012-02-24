@@ -31,6 +31,7 @@ class UsersOSMigration extends OSMigration {
     $source_fields = array('uid' => t('User ID'), 'roles' => t('List of a user\'s roles'));  
     $this->source = new MigrateSourceSQL($query, $source_fields, null, array('map_joinable' => FALSE));
     $this->destination = new MigrateDestinationUser(array('md5_passwords'=>TRUE)); 
+    //$this->dependencies = array(''); //permissions, og
     
     
     /***************************************************************************************
