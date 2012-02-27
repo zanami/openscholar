@@ -1,0 +1,116 @@
+<?php
+
+function media_embed_menu() {
+  $items['file/add/code'] = array(
+    'title' => 'HTML',
+    'description' => 'Add raw embed code to your media library.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('media_embed_add'),
+    'access callback' => 'media_embed_access',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['admin/settings/media_embed'] = array(
+    'title' => 'Embeded Code Domain Whitelist',
+    'description' => 'Set the whitelist of allowed domains for iframes.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('media_embed_settings'),
+    'file' => 'media_embed.admin.inc',
+    'access arguments' => array('access administration pages'),
+  );
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function media_embed_ctools_plugin_api($module, $api) {
+  if ($module == 'media' && $api == 'browser') {
+    return array(
+      'version' => 1,
+    );
+  }
+}
+
+/**
+ * Implements hook_media_browser_plugin_info().
+ */
+function media_embed_media_browser_plugin_info() {
+  $plugins = array();
+  $plugins['media_embed'] = array(
+    'title' => t('HTML'),
+    'handler' => array(
+      'path' => drupal_get_path('module', 'media_embed') . '/includes',
+      'file' => 'MediaBrowserHTML.inc',
+      'class' => 'MediaBrowserHTML',
+    ),
+    'access callback' => 'media_internet_access',
+  );
+  return $plugins;
+}
+
+/**
+ * Access callback for the media_embed media browser plugin.
+ */
+function media_embed_access() {
+  return user_access('administer media') || user_access('add media as raw html');
+}
+
+/**
+ * Implement hook_permission().
+ */
+function media_embed_permission() {
+  return array(
+    'add media as raw html' => array(
+      'title' => t('Add media as raw html'),
+      'description' => t('Add media from remote sources such as other websites, YouTube, etc'),
+    ),
+  );
+}
+
+function media_embed_add($form, &$form_state = array(), $types = NULL) {
+  $form['embed_code'] = array(
+    '#type' => 'textarea',
+    '#title' => t('HTML Embed code'),
+    '#description' => t('Input the block of HTML that represents what you want to embed'),
+    '#required' => TRUE,
+  );
+
+  $white = media_embed_get_whitelist();
+  if (count($white)) {
+    $form['whitelist'] = array(
+      '#markup' => t('You can add html with iframe, object, embed and script tags from the following sources:').'<br>'.implode(', ', $white),
+    );
+  }
+  else {
+    $form['whitelist'] = array(
+      '#markup' => t('You may not add html with iframe, object, embed or script tags. Ask your site administrator to remedy this.'),
+    );
+  }
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+    '#submit' => array('media_embed_add_submit'),
+  );
+  return $form;
+}
+
+function media_embed_add_validate($form, &$form_state) {
+
+}
+
+function media_embed_add_submit($form, &$form_state) {
+
+}
+
+/**
+ * Returns an array of all allowed domains
+ * Invokes hook_media_embed_whitelist
+ */
+function media_embed_get_whitelist() {
+  $domains = module_invoke_all('media_embed_whitelist');
+
+  $domains = array_merge($domains, variable_get('media_embed_whitelist', array()));
+  return $domains;
+}
