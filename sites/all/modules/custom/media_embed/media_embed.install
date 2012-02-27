@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * Implements hook_schema
+ */
+function media_embed_schema() {
+  $schema['media_embed'] = array(
+    'description' => 'Stores HTML strings for embedded media.',
+    'fields' => array(
+      'fid' => array(
+        'description' => 'The fid linked to in file_managed.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'html' => array(
+        'description' => 'The user-generated HTML string.',
+        'type' => 'text',
+        'size' => 'medium',
+        'not null' => TRUE,
+      ),
+    ),
+  );
+
+  return $schema;
+}

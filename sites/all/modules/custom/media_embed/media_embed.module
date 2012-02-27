@@ -96,11 +96,26 @@ function media_embed_add($form, &$form_state = array(), $types = NULL) {
   return $form;
 }
 
+/**
+ * Implements hook_validate.
+ * Ensures the HTML code given doesn't have any links to dangerous URLs
+ * @param unknown_type $form
+ * @param unknown_type $form_state
+ */
 function media_embed_add_validate($form, &$form_state) {
-
+  $html = $form_state['values']['embed_code'];
+  if (!media_embed_check_src($html)) {
+    form_set_error('embed_code', 'This html contains an iframe, object, embed or script tag from an untrusted domain. If you believe this domain is safe, contact your site administrator.');
+  }
 }
 
 function media_embed_add_submit($form, &$form_state) {
+  // create the new file entity
+
+  // get its fid and add the HTML to our table
+}
+
+function media_embed_check_src($html) {
 
 }
 
