@@ -3,4 +3,9 @@
  * @file
  */
 
-// Drupal needs this blank file.
+function os_wysiwyg_wysiwyg_editor_settings_alter(&$settings, $context) {
+
+  // settings there are no UI options for
+  $settings['gecko_spellcheck'] = true;
+  $settings['forced_root_block'] = '';
+}
