@@ -4,7 +4,7 @@ package = "Development"
 core = 7.x
 dependencies[] = os
 dependencies[] = migrate
-; dependencies[] = migrate_extras
+dependencies[] = migrate_extras
 dependencies[] = migrate_ui
 
 files[] = os_migrate.admin.inc

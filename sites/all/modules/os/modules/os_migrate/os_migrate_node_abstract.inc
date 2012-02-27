@@ -34,6 +34,9 @@ abstract class NodeAbstractOSMigration extends OSMigration {
       $this->addFieldMapping('revision')->defaultValue(TRUE);
       $this->addFieldMapping('path', 'path'); //see prepareRow
       
+      $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
+      $this->addFieldMapping('field_file_upload', 'file_upload')->arguments($associated_files_args);
+      
       /* Unmapped source fields.  Mark them as Do Not Map, so the UI knows they're intentionally ignored */
       $this->addUnmigratedSources(array('moderate', 'tnid', 'translate', 'type', 'vid'), t('DNM'));
       
@@ -65,6 +68,7 @@ abstract class NodeAbstractOSMigration extends OSMigration {
     return array(
     	'nid'   => t('Node ID'),
       'path'  => t('URL Path Alias'),
+      'file_upload' => t('File attachments'),
       //'nr.body'	=> t('Node\'s Content')
     );
   }
@@ -111,6 +115,8 @@ abstract class NodeAbstractOSMigration extends OSMigration {
    * Fetches path from {url_alias}
    */
   function prepareRow($current_row) {
+    
+    //get path from {url_alias}
     $query = parent::d6_db_select('url_alias', 'ua')
       ->fields('ua', array('dst'))
       ->condition('ua.src', 'node/'.$current_row->nid, '=');
@@ -119,5 +125,10 @@ abstract class NodeAbstractOSMigration extends OSMigration {
     foreach($results as $row) {      //should be only one...
       $current_row->path = $row->dst;
     }
+    
+    
+    //get file uploads
+    //$current_row->file_upload = parent::os_migrate_get_file_uploads($current_row->vid);
+    // file upload fields aren't in current page type.  
   }
 }

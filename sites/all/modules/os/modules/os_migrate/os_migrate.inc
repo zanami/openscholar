@@ -51,5 +51,37 @@ abstract class OSMigration extends Migration {
       throw $e;
     }
   }
+    
+  /**
+   * Gets files owned by node revision
+   */
+  function os_migrate_get_file_uploads($vid) {
+    $output = array();
+    $query = self::d6_db_select('upload', 'u')
+      ->fields('u', array('fid', 'vid', 'description', 'list'))
+      ->condition('u.vid', $vid, '=');
+    $query->join('files', 'f', 'u.fid = f.fid');
+    $query->addField('f', 'filepath');
+    $query->addField('f', 'timestamp');
+    $query->orderBy('u.fid', 'ASC');
+    $result = $query->execute();
+    
+    foreach ($result as $row) {
+      $file = array(
+        'path' => variable_get('os_migrate_files', FALSE) . '/' . $row->filepath,
+        'description' => $row->description,
+        'display' => $row->list,
+        'timestamp' => $row->timestamp,
+      );
+      $output[] = drupal_json_encode($file);
+    }
+    
+    return $output;
+  }
+  
+  // general function for getting data from arbitrary content field?
+  
   
 }
+  
+
