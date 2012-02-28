@@ -33,7 +33,10 @@ background:#777;
 
 
 /* Floating & positioning the header regions not covered by ABT */
-#header {clear: both;border:1px solid #333;}
+#header-container {
+	padding-left: 200px; /* left width incl. padding */
+  padding-right: 200px; /*right width incl. padding plus center padding */ 
+  }
 
 .region-header {
   width: 100%;
@@ -48,17 +51,14 @@ position:relative;
 
 
 .region-header-left {
-    left: -240px;
-    margin-left: -100%;
+     width: 200px;          /* LC width */
+  right: 200px;          /* LC width */
+  margin-left: -100%;
 }
 
 .region-header-right {
-    margin-right: -100%;
-}
-
-.region-header-left, 
-.region-header-right {
-    width: 200px;
+    width: 200px;          /* RC width */
+  margin-right: -200px;  /* RC width */
 }
 
 
