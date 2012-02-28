@@ -1692,11 +1692,11 @@ function _user_mail_text($key, $language = NULL, $variables = array()) {
       case 'register_no_approval_required_subject':
         return t('Account details for !username at !site', $variables, $langcode);
       case 'register_no_approval_required_body':
-        return t("!username,\n\nThank you for registering at !site. You may now log in to !login_uri using the following username and password:\n\nusername: !username\npassword: !password\n\nYou may also log in by clicking on this link or copying and pasting it in your browser:\n\n!login_url\n\nThis is a one-time login, so it can be used only once.\n\nAfter logging in, you will be redirected to !edit_uri so you can change your password.\n\n\n--  !site team", $variables, $langcode);
+        return t("!username,\n\nThank you for registering at !site. You may now log in to !login_uri using the following username and password:\n\nusername: !username\npassword: !password\n\nYou may also log in by clicking on this link or copying and pasting it in your browser:\n\n!login_url\n\nThis login can be used only once.\n\nAfter logging in, you will be redirected to !edit_uri so you can change your password.\n\n\n--  !site team", $variables, $langcode);
       case 'register_admin_created_subject':
         return t('An administrator created an account for you at !site', $variables, $langcode);
       case 'register_admin_created_body':
-        return t("!username,\n\nA site administrator at !site has created an account for you. You may now log in to !login_uri using the following username and password:\n\nusername: !username\npassword: !password\n\nYou may also log in by clicking on this link or copying and pasting it in your browser:\n\n!login_url\n\nThis is a one-time login, so it can be used only once.\n\nAfter logging in, you will be redirected to !edit_uri so you can change your password.\n\n\n--  !site team", $variables, $langcode);
+        return t("!username,\n\nA site administrator at !site has created an account for you. You may now log in to !login_uri using the following username and password:\n\nusername: !username\npassword: !password\n\nYou may also log in by clicking on this link or copying and pasting it in your browser:\n\n!login_url\n\nThis login can be used only once.\n\nAfter logging in, you will be redirected to !edit_uri so you can change your password.\n\n\n--  !site team", $variables, $langcode);
       case 'register_pending_approval_subject':
       case 'register_pending_approval_admin_subject':
         return t('Account details for !username at !site (pending admin approval)', $variables, $langcode);
@@ -1707,11 +1707,11 @@ function _user_mail_text($key, $language = NULL, $variables = array()) {
       case 'password_reset_subject':
         return t('Replacement login information for !username at !site', $variables, $langcode);
       case 'password_reset_body':
-        return t("!username,\n\nA request to reset the password for your account has been made at !site.\n\nYou may now log in to !uri_brief by clicking on this link or copying and pasting it in your browser:\n\n!login_url\n\nThis is a one-time login, so it can be used only once. It expires after one day and nothing will happen if it's not used.\n\nAfter logging in, you will be redirected to !edit_uri so you can change your password.", $variables, $langcode);
+        return t("!username,\n\nA request to reset the password for your account has been made at !site.\n\nYou may now log in to !uri_brief by clicking on this link or copying and pasting it in your browser:\n\n!login_url\n\nThis login can be used only once. It expires after one day and nothing will happen if it's not used.\n\nAfter logging in, you will be redirected to !edit_uri so you can change your password.", $variables, $langcode);
       case 'status_activated_subject':
         return t('Account details for !username at !site (approved)', $variables, $langcode);
       case 'status_activated_body':
-        return t("!username,\n\nYour account at !site has been activated.\n\nYou may now log in by clicking on this link or copying and pasting it in your browser:\n\n!login_url\n\nThis is a one-time login, so it can be used only once.\n\nAfter logging in, you will be redirected to !edit_uri so you can change your password.\n\nOnce you have set your own password, you will be able to log in to !login_uri in the future using:\n\nusername: !username\n", $variables, $langcode);
+        return t("!username,\n\nYour account at !site has been activated.\n\nYou may now log in by clicking on this link or copying and pasting it in your browser:\n\n!login_url\n\nThis login can be used only once.\n\nAfter logging in, you will be redirected to !edit_uri so you can change your password.\n\nOnce you have set your own password, you will be able to log in to !login_uri in the future using:\n\nusername: !username\n", $variables, $langcode);
       case 'status_blocked_subject':
         return t('Account details for !username at !site (blocked)', $variables, $langcode);
       case 'status_blocked_body':
