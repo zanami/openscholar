@@ -1,0 +1,115 @@
+<?php 
+
+/**
+ * @file
+ * 
+ * os_simpleview_list module
+ * Let's users provide settings to vsite_view_base view per content type
+ * Accessible for creating a page or box
+ **/
+
+function os_simpleview_list_menu() {
+  $items = array();
+  $items['svlist'] = array(
+    'type' => MENU_CALLBACK, 
+    'title' => 'sv dev',
+    'description' => 'New svlist test', 
+    'page callback' => 'os_simpleview_list_dev_page', 
+    'access callback' => TRUE,
+    'access arguments' => array('access content'),
+  );
+  
+  return $items;
+}
+
+/**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function os_simpleview_list_ctools_plugin_api($module, $api) {
+  if ($module == 'os_simpleview_list' && $api == 'plugins') {
+    return array('version' => 1);
+  } elseif ($module == 'boxes' && $api == 'plugins') {
+    return array('version' => 1);
+  }
+}
+
+
+/**
+ * Implementation of hook_ctools_plugin_directory
+ */
+function os_simpleview_list_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'os_simpleview_list' && !empty($plugin)) {
+    return "plugins/$plugin";
+   }
+}
+ 
+/**
+ * Implementation of hook_os_simpleview_list_plugins
+ * Provides definition for default simpleview list's plugins.
+ */
+function os_simpleview_list_os_simpleview_list_plugin(){
+	$path = drupal_get_path('module', 'os_simpleview_list') . '/plugins/';
+
+	$info = array('os_simpleview_list_default' => array(
+		'handler' => array(
+			'class' => 'os_simpleview_list_default',
+			'file'  => 'os_simpleview_list_default.inc',
+			'path'  => $path,
+	    'title' => t('List of Posts'),
+		)
+	));
+	
+	return $info;
+}
+
+
+
+/**
+ * @function os_simpleview_list_plugin_load
+ * Load one or more plugins
+ */
+function os_simpleview_list_plugin_load($type = NULL) {
+  ctools_include('plugins');
+  $plugins = ctools_get_plugins('os_simpleview_list', 'plugin');
+  
+  if (isset($type)) {
+    return $plugins[$type];
+  } else {
+    return $plugins;
+  }
+}
+
+/**
+ * Implementation of hook_boxes_plugins().
+ * 
+ * Provides SV list plugins as a unified box widget
+ */
+function os_simpleview_list_boxes_plugins(){
+  $info = array(); 
+  //$css = drupal_get_path('module', 'os_sipmleview_list') . '/theme/os-mailchimp.css';
+
+  $info['os_boxes_simpleview_list'] = array(
+    'title' => '(New) Post List',
+    'description' => 'Make a list of content by type',
+    //'css' => $css,
+    'tags' => array(
+      'Content'
+    ),
+    'handler' => array(
+      'class' => 'os_simpleview_list',
+      'file' => 'os_simpleview_list.inc',
+      'path' => drupal_get_path('module', 'os_simpleview_list') . '/plugins/boxes',
+      'parent' => 'os_boxes_default',
+    )
+  );
+
+  return $info;
+}
+
+
+// menu callback page just so we can load plugins and get some output
+function os_simpleview_list_dev_page() {
+  dsm(os_simpleview_list_plugin_load());
+  return 'asdfadsfasdf';
+}
+

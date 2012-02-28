@@ -1,0 +1,7 @@
+name = "os boxes"
+core = "6.x"
+dependencies[] = "boxes"
+dependencies[] = "ctools"
+description = "OS Simpleview List"
+package = "OpenScholar"
+version = "6.x-beta14"
