@@ -9,3 +9,11 @@ function os_wysiwyg_wysiwyg_editor_settings_alter(&$settings, $context) {
   $settings['gecko_spellcheck'] = true;
   $settings['forced_root_block'] = '';
 }
+
+/**
+ * Implements hook_media_browser_plugins_alter.
+ * Removes the default library from the Media browser. A View has replaced it.
+ */
+function os_wysiwyg_media_browser_plugins_alter(&$plugins) {
+  unset($plugins['library']);
+}
