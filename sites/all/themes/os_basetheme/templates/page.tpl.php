@@ -4,7 +4,7 @@
 
  <?php if($page['header_left'] || $page['header_right'] || $page['header']): ?>
    <header class="clearfix" role="banner">
-   	<div id="header">
+   	<div id="header-container">
      <!--header main region beg-->
      <?php print render($page['header']); ?>
      <!--header main region end-->
