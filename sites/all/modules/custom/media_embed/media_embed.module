@@ -103,16 +103,26 @@ function media_embed_add($form, &$form_state = array(), $types = NULL) {
  * @param unknown_type $form_state
  */
 function media_embed_add_validate($form, &$form_state) {
-  $html = $form_state['values']['embed_code'];
+  $html = trim($form_state['values']['embed_code']);
   if (!media_embed_check_src($html)) {
     form_set_error('embed_code', 'This html contains an iframe, object, embed or script tag from an untrusted domain. If you believe this domain is safe, contact your site administrator.');
   }
 }
 
 function media_embed_add_submit($form, &$form_state) {
+  $html = trim($form_state['values']['embed_code']);
+
   // create the new file entity
+  $uri = 'embed://'.md5($html);
+  $file = file_uri_to_object($uri);
+
+  // add a field if it doesn't exist
+  $file = file_save($file);
 
   // get its fid and add the HTML to our table
+  if ($file->fid) {
+
+  }
 }
 
 function media_embed_check_src($html) {
@@ -128,4 +138,18 @@ function media_embed_get_whitelist() {
 
   $domains = array_merge($domains, variable_get('media_embed_whitelist', array()));
   return $domains;
+}
+
+/**
+ *  Create stream wrapper for oEmbed videos.
+ */
+function media_embed_stream_wrappers() {
+  return array(
+    'embed' => array(
+      'name' => t('Embeded HTML'),
+      'class' => 'MediaEmbedStreamWrapper',
+      'description' => t('HTML provided by user.'),
+      'type' => STREAM_WRAPPERS_READ_VISIBLE,
+    ),
+  );
 }

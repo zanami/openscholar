@@ -1,6 +1,6 @@
 <?php
 
-function media_embed_settings() {
+function media_embed_settings($form, &$form_state) {
   $domains = variable_get('media_embed_whitelist', array());
   $form = array();
 
