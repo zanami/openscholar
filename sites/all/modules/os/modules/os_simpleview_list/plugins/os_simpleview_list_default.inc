@@ -25,9 +25,13 @@ class os_simpleview_list_default {
   
   //how to split options over multi page wizard form?
   // since this is separate from box, take its options for defaults
-  public function options_form($options = NULL){
+  public function options_form($options = NULL, $step = NULL){
   
-  
+    $multi_info = $this->multiform_info();
+    $form = ctools_wizard_multistep_form($multi_info, $step, $form_state);
+//ctools_wizard_multistep_form() returns html.  not quite ready for that yet.
+//ctools_wizard_wrapper($form, $form_state) 
+  /*
   	ctools_include('dependent');
     ctools_add_js('dependent');
 
@@ -106,9 +110,36 @@ class os_simpleview_list_default {
         )
       )
     );
-    
+    */
 
     return $form;
+  }
+  
+  /**
+   * @function multiform_info()
+   * 
+   * provides form into for ctools_wizard_multistep_form
+   */
+  public function multiform_info() {
+    ctools_include('wizard');    
+    return array(
+      'id' => 'os_simpleviews_list_form', 
+      'path' => '???',
+      'show trail' => TRUE,
+      'show back' => TRUE,
+      'show return' => FALSE,
+      'next callback' => 'multiform_next', //@TODO
+      'finish callback' => 'multiform_finish', //@TODO
+      'cancel callback' => 'multiform_cancel', //@TODO
+      
+      'order' => array( //this can be ignored if we add titles to forms array
+        'step1' => t('Step One'),
+      ),
+      
+      'forms' => array(
+        'step1' => array('form_id' => 'os_simplist_step1_form'),
+      )
+    );
   }
   
   public function render() {

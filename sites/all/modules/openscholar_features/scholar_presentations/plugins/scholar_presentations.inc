@@ -23,4 +23,11 @@ class scholar_presentations extends os_simpleview_list_default {
   public function render(){
     return parent::render();
   }
+  
+  public function multiform_info(){
+    $form = parent::multiform_info();
+    $form['order']['presentations_form'] = t('Presentation Form');
+    $form['forms']['presentations_form'] = array('form_id' => 'scholar_pres_form');  //fill out the form later.  this is just the logic for altering pages
+    return $form;
+  }
 }

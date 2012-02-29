@@ -15,8 +15,8 @@ class os_simpleview_list extends os_boxes_default {
   }
   
   public function options_form() {
-    $form = parent::options_form();
-    $form += $this->_get_list_class()->options_form($this->options);
+   // $form = parent::options_form();
+    $form = $this->_get_list_class()->options_form($this->options);
 
     return $form;
   }

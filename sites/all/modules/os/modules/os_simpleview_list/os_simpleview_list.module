@@ -99,7 +99,7 @@ function os_simpleview_list_boxes_plugins(){
       'class' => 'os_simpleview_list',
       'file' => 'os_simpleview_list.inc',
       'path' => drupal_get_path('module', 'os_simpleview_list') . '/plugins/boxes',
-      'parent' => 'os_boxes_default',
+      'parent' => 'os_boxes_default'
     )
   );
 
