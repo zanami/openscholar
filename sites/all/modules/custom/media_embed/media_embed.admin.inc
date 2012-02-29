@@ -6,7 +6,8 @@ function media_embed_settings($form, &$form_state) {
 
   $form['whitelist'] = array(
     '#type' => 'textarea',
-    '#default_value' => implode("\n\r", $domains),
+    '#title' => t('Domain Whitelist'),
+    '#default_value' => implode("\n", $domains),
     '#description' => t('Enter the list of domains that users may add iframe, object, embed and script tags from. One domain per line.'),
   );
 
@@ -14,11 +15,13 @@ function media_embed_settings($form, &$form_state) {
     '#type' => 'submit',
     '#value' => t('Submit'),
   );
+
+  return $form;
 }
 
 function media_embed_settings_submit($form, $form_state) {
   $domains = $form_state['values']['whitelist'];
 
-  $domains = split("[\n|\r]", $domains);
+  $domains = array_filter(split("[\n\r|\n|\r]", $domains));
   variable_set('media_embed_whitelist', $domains);
 }

@@ -10,7 +10,7 @@ function media_embed_menu() {
     'type' => MENU_LOCAL_TASK,
   );
 
-  $items['admin/settings/media_embed'] = array(
+  $items['admin/config/media/media_embed'] = array(
     'title' => 'Embeded Code Domain Whitelist',
     'description' => 'Set the whitelist of allowed domains for iframes.',
     'page callback' => 'drupal_get_form',
@@ -18,6 +18,8 @@ function media_embed_menu() {
     'file' => 'media_embed.admin.inc',
     'access arguments' => array('access administration pages'),
   );
+
+  return $items;
 }
 
 /**
@@ -25,6 +27,13 @@ function media_embed_menu() {
  */
 function media_embed_ctools_plugin_api($module, $api) {
   if ($module == 'media' && $api == 'browser') {
+    return array(
+      'version' => 1,
+    );
+  }
+
+  // required for browser previews and rendering of final file entity
+  if ($module == 'file_entity' && $api == 'file_default_displays') {
     return array(
       'version' => 1,
     );
@@ -121,12 +130,22 @@ function media_embed_add_submit($form, &$form_state) {
 
   // get its fid and add the HTML to our table
   if ($file->fid) {
-
+    $query = db_insert('media_embed')
+      ->fields(array(
+        'fid' => $file->fid,
+        'html' => $html,
+    ));
+    try {
+      $query->execute();
+    }
+    catch (Exception $e) {
+      // this fid html code already exists
+    }
   }
 }
 
 function media_embed_check_src($html) {
-
+  return TRUE;  // testing of submission
 }
 
 /**
@@ -152,4 +171,97 @@ function media_embed_stream_wrappers() {
       'type' => STREAM_WRAPPERS_READ_VISIBLE,
     ),
   );
+}
+
+
+
+/**
+ * Implements hook_file_formatter_info().
+ */
+function media_embed_file_formatter_info() {
+  $formatters['media_embed'] = array(
+    'label' => t('Embeded HTML'),
+    'default settings' => array('width' => '560', 'height' => '340'),
+    'view callback' => 'media_embed_file_formatter_media_embed_view',
+    'settings callback' => 'media_embed_file_formatter_media_embed_settings',
+  );
+  $formatters['media_embed_thumbnail'] = array(
+    'label' => t('Embeded HTML Thumbnail'),
+    'default settings' => array('width' => '560', 'height' => '340'),
+    'view callback' => 'media_embed_file_formatter_media_embed_thumbnail_view',
+    'settings callback' => 'media_embed_file_formatter_media_embed_thumbnail_settings',
+  );
+  return $formatters;
+}
+
+/**
+ * Implements hook_file_default_displays().
+ *
+ * Provides default display configurations for media types.
+ *
+ * @see file_entity_schema()
+ */
+function media_embed_file_default_displays() {
+  $default_displays = array();
+
+  $default_styles = array();
+  foreach(media_type_get_types() as $name => $type) {
+    // For default and Large view modes, use the default width and height from
+    // hook_file_formatter_info().
+    $default_styles[$name . '__default__media_embed'] = array();
+    $default_styles[$name . '__default__media_embed_thumbnail'] = array();
+    $default_styles[$name . '__media_large__media_embed'] = array();
+    $default_styles[$name . '__media_large__media_embed_thumbnail'] = array();
+
+    // For the Preview view mode, match the width and height of the square
+    // thumbnail in media_image_default_styles().
+    $default_styles[$name . '__media_preview__media_embed_thumbnail'] = array('width' => '180', 'height' => '180');
+
+    // For the Original view mode, set width and height to empty, so that they
+    // use what's returned by the oEmbed response.
+    $default_styles[$name . '__media_original__media_embed'] = array('width' => '', 'height' => '');
+    $default_styles[$name . '__media_original__media_embed_thumbnail'] = array('width' => '', 'height' => '');
+  }
+
+  foreach ($default_styles as $display_name => $settings) {
+    $default_displays[$display_name] = (object) array(
+      'api_version' => 1,
+      'name' => $display_name,
+      'status' => 1,
+      'weight' => 0,
+      'settings' => $settings,
+    );
+  }
+
+  return $default_displays;
+}
+
+/**
+ * Implements hook_file_formatter_FORMATTER_view().
+ */
+function media_embed_file_formatter_media_embed_view($file, $display, $langcode) {
+  $scheme = file_uri_scheme($file->uri);
+  if ($scheme == 'embed') {
+
+    // Not a WYSIWYG editor instance.
+    if (empty($file->override['wysiwyg'])) {
+      // pull the html from our table
+      $result = db_select('media_embed', 'me')->fields('me', array('html'))->condition('fid', $file->fid)->execute();
+      $html = $result->fetchAssoc();
+      $html = $html['html'];
+      $element = array(
+        '#markup' => $html,
+      );
+    }
+
+    // WYSIWYG does not yet support video inside a running editor instance, send
+    // thumbnails.
+    else {
+      $element = oembedcore_render_cache('oembed_thumbnail', $url, $options);
+      if (!empty($file->override['attributes'])) {
+        $element['#options']['attributes'] = $file->override['attributes'];
+      }
+    }
+    return $element;
+  }
 }
