@@ -10,11 +10,11 @@
 
 function os_simpleview_list_menu() {
   $items = array();
-  $items['svlist'] = array(
+  $items['os_simpleview_list/%ctools_js'] = array(
     'type' => MENU_CALLBACK, 
-    'title' => 'sv dev',
-    'description' => 'New svlist test', 
-    'page callback' => 'os_simpleview_list_dev_page', 
+    'title' => 'simpleview_list', 
+    'page callback' => 'os_simpleview_list_page',
+    'page arguments' => array(1), 
     'access callback' => TRUE,
     'access arguments' => array('access content'),
   );
@@ -50,7 +50,8 @@ function os_simpleview_list_ctools_plugin_directory($module, $plugin) {
 function os_simpleview_list_os_simpleview_list_plugin(){
 	$path = drupal_get_path('module', 'os_simpleview_list') . '/plugins/';
 
-	$info = array('os_simpleview_list_default' => array(
+	//$info = array('os_simpleview_list_default' => array( //change this name
+	$info = array('default' => array( // this key indicates which content type to use to get this class
 		'handler' => array(
 			'class' => 'os_simpleview_list_default',
 			'file'  => 'os_simpleview_list_default.inc',
@@ -84,6 +85,7 @@ function os_simpleview_list_plugin_load($type = NULL) {
  * 
  * Provides SV list plugins as a unified box widget
  */
+/*
 function os_simpleview_list_boxes_plugins(){
   $info = array(); 
   //$css = drupal_get_path('module', 'os_sipmleview_list') . '/theme/os-mailchimp.css';
@@ -105,11 +107,159 @@ function os_simpleview_list_boxes_plugins(){
 
   return $info;
 }
-
+*/
 
 // menu callback page just so we can load plugins and get some output
-function os_simpleview_list_dev_page() {
-  dsm(os_simpleview_list_plugin_load());
-  return 'asdfadsfasdf';
+function os_simpleview_list_page($js = NULL, $step = NULL) {
+  ctools_include('wizard');
+  $cache_name = 'os_simpleview_list';
+  
+  // Get cache, set up default form state with values from cache
+  if (empty($step)) {
+    os_simpleview_list_cache_clear($cache_name);
+    $cached = NULL;
+  } else {
+     $cached = os_simpleview_list_cache_get($cache_name);
+  }
+  
+  $form_state = array(
+    'ajax' => $js,
+    'cache_name' => $cache_name,
+    'cached' => &$cached,  
+  );
+  
+  //Get appropriate class, multiform's info
+  $content_type = (isset($cached['content_type'])) ? $cached['content_type'] : 'default'; //should fetch class name instead of concat
+  
+  $plugins = os_simpleview_list_plugin_load(); //('os_simpleview_list_default');
+  $plugin = (isset($plugins[$content_type])) ? $plugins[$content_type] : $plugins['default'];
+  
+  $class = ctools_plugin_get_class($plugin, 'handler');
+  $instance = new $class();
+  $form_info = $instance->multiform_info();
+  
+  //inspect $form_info for new functions?  build them to call the class?  alter?
+  //if form_alter is too slow, we could change the name of the form_id in the info t ouse a generic form provided here that calls the right form
+
+  $step = ($step) ? $step : array_shift(array_keys($form_info['forms']));
+  
+  //check if the form specified in form info exists.  if it doesn't, use our sv class form isntead to fetch the form from the calss
+  if (isset($form_info['forms'][$step]) && !function_exists($form_info['forms'][$step]['form id'])) {
+    //need to knwo the step at this point so we can overwrite even the first entry
+    $form_info['forms'][$step]['form method'] = $form_info['forms'][$step]['form id']; //stash this form for later
+    $form_info['forms'][$step]['form id'] = 'os_simpleview_list_simpleview_class_form';
+  } else {
+    drupal_set_message('found func: ' . $form_info['forms'][$step]['form id'] );
+    $func = $form_info['forms'][$step]['form id'] ;
+    $func();
+  }
+  
+  $form = ctools_wizard_multistep_form($form_info, $step, $form_state);
+  return $form;
 }
 
+/**
+ * @function os_simpleview_list_simpleview_class_form
+ * 
+ * Each form is fetched from an object.  That object's methods are not available globally.  
+ * When using such a form, that form id is replaced with simpleview_class_form, which returns
+ * the form in our object
+ */
+function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
+  $step = $form_state['step'];
+  $class = $form_state['form_info']['forms'][$step]['class'];
+  $form_method = $form_state['form_info']['forms'][$step]['form method'];
+  
+  $plugin = os_simpleview_list_plugin_load($class);
+  $class_handler = ctools_plugin_get_class($plugin, 'handler');
+  $instance = new $class();
+  
+  $form += $instance->$form_method();
+  return $form;
+}
+
+/*
+function os_simpleview_list_form_simpleview_class_form_alter(&$form, &$form_id) { //does this need to be an alter
+  
+}
+*/
+
+/*
+function os_simpleview_list_form1(&$form, &$form_state) {
+ //maybe these forms should fetch from object?
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('What is your name?'),
+    '#required' => TRUE,
+  );
+ 
+  return $form;
+}
+
+function os_simpleview_list_form2(&$form, &$form_state) {
+ 
+  $form['quest'] = array(
+    '#type' => 'textfield',
+    '#title' => t('What is your quest?'),
+    '#required' => TRUE,
+  );
+ 
+  return $form;
+}
+
+function os_simpleview_list_form3(&$form, &$form_state) {
+ 
+  $form['color'] = array(
+    '#type' => 'textfield',
+    '#title' => t('What is your favorite color?'),
+    '#required' => TRUE,
+  );
+ 
+  return $form;
+}
+*/
+
+/**
+ * object_cache functions
+ * os_simpleview_list_cache_{get,set,clear}
+ */
+
+function os_simpleview_list_cache_set($cache_name, $object) {
+  ctools_include('object-cache');
+  ctools_object_cache_set('os_simpleview_list', $cache_name, $object);
+}
+
+function os_simpleview_list_cache_get($cache_name) {
+  ctools_include('object-cache');
+  return ctools_object_cache_get('os_simpleview_list', $cache_name);
+}
+
+function os_simpleview_list_cache_clear($cache_name) {
+  ctools_include('object-cache'); 
+	ctools_object_cache_clear('os_simpleview_list', $cache_name); 
+};
+
+
+/**
+ * multiform functions - next, cancel return
+ * handle cases for user clicking next, cancel, or return.
+ */
+function os_simpleview_list_multiform_next(&$form_state) { 
+  if (($cached = os_simpleview_list_cache_get($form_state['cache_name'])) == FALSE) {
+    $cached = array();
+  }
+  
+	$form_state['cached'] = $form_state['values'] + $cached; 
+	os_simpleview_list_cache_set($form_state['cache_name'], $form_state['cached']); 
+};
+ 
+function os_simpleview_list_multiform_cancel(&$form_state) { 
+	ctools_object_cache_clear('os_simpleview_list', $form_state['cache_name']); 
+	$form_state['redirect'] = 'os_simpleview_list'; 
+	drupal_set_message('Multi-step form cancelled.'); 
+};
+
+function os_simpleview_list_multiform_finish(&$form_state) { 
+	$multi_step_form = &$form_state['os_simpleview_list']; 
+	drupal_set_message('form done'); 
+};

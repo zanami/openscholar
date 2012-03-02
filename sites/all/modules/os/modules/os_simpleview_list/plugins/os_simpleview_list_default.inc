@@ -25,28 +25,46 @@ class os_simpleview_list_default {
   
   //how to split options over multi page wizard form?
   // since this is separate from box, take its options for defaults
-  public function options_form($options = NULL, $step = NULL){
+  public function os_simpleview_list_form_basics($options = NULL, $step = NULL){
   
-    $multi_info = $this->multiform_info();
-    $form = ctools_wizard_multistep_form($multi_info, $step, $form_state);
+//    $multi_info = $this->multiform_info();
+  //  $form = ctools_wizard_multistep_form($multi_info, $step, $form_state);
 //ctools_wizard_multistep_form() returns html.  not quite ready for that yet.
 //ctools_wizard_wrapper($form, $form_state) 
-  /*
+  
   	ctools_include('dependent');
     ctools_add_js('dependent');
 
     $form = array();
     
+    $form['name'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Name'),
+      '#required' => TRUE,
+      '#default_value' => $options['name']
+    );
+    
+    $form['title'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Title'),
+      '#required' => TRUE,
+      '#default_value' => $options['title']
+    );
+    
     $form['content_type'] = array(
       '#type' => 'select',
       '#title' => t('Content Type'),
-      '#options' => array(
-        'all' => t('All content'),
-      ),
+      '#options' => array('all' => t('All')) + $this->list_content_types(),
       '#required' => TRUE,
       '#default_value' => $options['content_type']
     );
     
+    return $form;
+  }
+  
+  public function os_simpleview_list_form_display_options($options = NULL, $step = NULL){
+    $form = array();
+     
   	$form['style'] = array(
       '#type' => 'select',
       '#title' => t('Display Style'),
@@ -110,7 +128,7 @@ class os_simpleview_list_default {
         )
       )
     );
-    */
+    
 
     return $form;
   }
@@ -120,24 +138,36 @@ class os_simpleview_list_default {
    * 
    * provides form into for ctools_wizard_multistep_form
    */
-  public function multiform_info() {
+  public function multiform_info($js = NULL) {
     ctools_include('wizard');    
     return array(
-      'id' => 'os_simpleviews_list_form', 
-      'path' => '???',
+      'id' => 'os_simpleviews_list', 
+      'path' => 'os_simpleview_list/' . ($js ? 'ajax' : 'nojs') . '/%step', //pass the step we're on to the form, step1, step2, ..etc
       'show trail' => TRUE,
       'show back' => TRUE,
       'show return' => FALSE,
-      'next callback' => 'multiform_next', //@TODO
-      'finish callback' => 'multiform_finish', //@TODO
-      'cancel callback' => 'multiform_cancel', //@TODO
-      
-      'order' => array( //this can be ignored if we add titles to forms array
-        'step1' => t('Step One'),
-      ),
+      'next callback' => 'os_simpleview_list_multiform_next',
+      'finish callback' => 'os_simpleview_list_multiform_finish',
+      'cancel callback' => 'os_simpleview_list_multiform_cancel', 
       
       'forms' => array(
-        'step1' => array('form_id' => 'os_simplist_step1_form'),
+        
+      	'basics' => array(
+        	'form id' => 'os_simpleview_list_form_basics', 
+        	'title' => 'The Basics',
+          'class' => get_class($this), //pass back the class so it can be loaded to get the form    
+        ),
+        
+        'display_options' => array(
+        	'form id' => 'os_simpleview_list_form_display_options', 
+        	'title' => 'Display Options',
+          'class' => get_class($this), //pass back the class so it can be loaded to get the form
+        ),
+        
+//        'obj_form' => array('form id' => 'default_list_form', 'title' => 'content_type_form'),
+//        'step2' => array('form id' => 'os_simpleview_list_form2', 'title' => 'Quest'),
+//        'step3' => array('form id' => 'os_simpleview_list_form3', 'title' => 'Color'),
+    
       )
     );
   }
@@ -149,6 +179,29 @@ class os_simpleview_list_default {
       true;
     }
   }
+  
+  public function default_list_form() {
+    return $this->options_form();
+  }
+  
+  /**
+   * returns a list of content types and their names
+   */
+  private function list_content_types() {
+    // os/vsite integration - lists correct content types
+    if (module_exists('vsite') && vsite_get_vsite()) {
+      vsite_include('vsiteapi');
+      $node_options = vsite_content_types(array(1,2));       //Get public and private types
+      drupal_alter('vsite_content_types', $node_options);
+    }
+    
+    if (! isset($node_options)) {
+      $node_options = node_get_types('names');
+    }
+    
+    return $node_options;
+  }
+  
   
     
 }

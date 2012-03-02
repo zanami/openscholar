@@ -26,8 +26,28 @@ class scholar_presentations extends os_simpleview_list_default {
   
   public function multiform_info(){
     $form = parent::multiform_info();
-    $form['order']['presentations_form'] = t('Presentation Form');
-    $form['forms']['presentations_form'] = array('form_id' => 'scholar_pres_form');  //fill out the form later.  this is just the logic for altering pages
+
+    //appends the presentations form
+    $form['forms']['presentations_form'] = array(
+    	'form id' => 'os_simpleview_list_form_presentation',  //fill out the form later.  this is just the logic for altering pages
+      'title' => t('Presentation'),
+      'class' => get_class($this),
+    );
+      
+    //also add a form that modifies existing.  instead of changing the id, change the class to this one so it can call parent
+    
+    return $form;
+  }
+
+  function os_simpleview_list_form_presentation() {
+    //this form is specific to presentations and has been appended to the regular form.  no need to modify parent's form
+    $form = array(
+      'presentation' => array(
+        '#title' => 'I am a presentation',
+        '#type' => 'textfield',
+      ),
+    );
+    
     return $form;
   }
 }
