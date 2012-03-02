@@ -17,11 +17,17 @@
   width:600px;
   top: 20px;
   }
-
-.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+  
+.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea  {
 	width: 100%;
 	}
-
+	
+.wysiwyg_fields-field_os_inline_image-field .form-submit,
+#edit-field-os-inline-image-field-os-inline-image-add-more {
+	width: auto;
+	float: left;
+	}
+	
 .ui-widget,
 .ui-widget #edit-submit,
 .ui-widget #edit-delete,
