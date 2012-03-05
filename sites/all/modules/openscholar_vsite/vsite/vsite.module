@@ -557,7 +557,7 @@ function _vsite_section_admin_links(){
   $links = array();
   
   $links[] = array(
-    'title' => t('Customize @section', array('@section' => $active_feature_title)),
+    'title' => t('@section section', array('@section' => $active_feature_title)),
   );
   
   $links[] = array(
