@@ -59,17 +59,17 @@ function media_embed_install() {
   }
 
   field_create_instance(array(
-    'field_name'  => 'field_html_code',
+    'field_name' => 'field_html_title',
     'entity_type' => 'file',
-    'label' => 'Embed Code',
+    'label' => 'Title',
     'bundle' => 'html',
     'required' => TRUE,
   ));
 
   field_create_instance(array(
-    'field_name' => 'field_html_title',
+    'field_name'  => 'field_html_code',
     'entity_type' => 'file',
-    'label' => 'Title',
+    'label' => 'Embed Code',
     'bundle' => 'html',
     'required' => TRUE,
   ));

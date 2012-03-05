@@ -130,16 +130,9 @@ function media_embed_add_submit($form, &$form_state) {
   // create the new file entity
   $uri = 'embed://'.md5($html);
   $file = file_uri_to_object($uri);
-  $titles = field_get_items('file', $form_state['file'], 'field_title');
+  $titles = field_get_items('file', $form_state['file'], 'field_html_title');
   $file->filename = trim($titles[0]['value']);
-  $file = entity_create('file', ((array)$file)+array('type' => 'html'));
- /* foreach ($form['#file'] as $key => $value) {
-    if (!isset($file->$key)) {
-      $file->$key = $value;
-    }
-  }*/
-  $form['#file'] = &$file;
-  $form_state['file'] = &$file;
+  $file->type = 'html';
 
   // save the fields and entity
   field_attach_submit('file', $file, $form, $form_state);
