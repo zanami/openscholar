@@ -1,7 +1,6 @@
 <div id="page" class="container">
-
-  <?php print render($page['leaderboard']); ?>
-
+	
+<!--header regions beg-->
  <?php if($page['header_left'] || $page['header_right'] || $page['header']): ?>
    <header class="clearfix" role="banner">
    	<div id="header-container">
@@ -17,24 +16,18 @@
     </div>
    </header>
  <?php endif; ?>  
+<!--header regions end-->
 
   <?php print render($page['menu_bar']); ?>
   <?php if ($primary_navigation): print $primary_navigation; endif; ?>
   <?php if ($secondary_navigation): print $secondary_navigation; endif; ?>
 
-  <?php if ($breadcrumb): ?>
-    <nav id="breadcrumb"><?php print $breadcrumb; ?></nav>
-  <?php endif; ?>
-
   <?php print $messages; ?>
   <?php print render($page['help']); ?>
 
-  <?php print render($page['secondary_content']); ?>
 
   <div id="columns"><div class="columns-inner clearfix">
     <div id="content-column"><div class="content-inner">
-
-      <?php print render($page['highlighted']); ?>
 
       <?php $tag = $title ? 'section' : 'div'; ?>
       <<?php print $tag; ?> id="main-content" role="main">
@@ -69,9 +62,7 @@
 
       </<?php print $tag; ?>>
 
-      <?php print render($page['content_aside']); ?>
-
-    </div></div>
+  </div></div>
 
     <?php print render($page['sidebar_first']); ?>
     <?php print render($page['sidebar_second']); ?>
