@@ -289,7 +289,7 @@ body.node-inner ul li li {
 
 .node-inner .content li ol li,
 body.node-inner li ol li {
-	list-style-type: lower-alpha;
+	list-style-type: upper-alpha;
 	}
 
 .node-inner .content li li ol li,
@@ -298,8 +298,20 @@ body.node-inner li ol li {
 body.node-inner li li ol li,
 body.node-inner li li li ol li,
 body.node-inner li li li li ol li {
-	list-style-type: lower-alpha;
+	list-style: lower-alpha;
 	}
+
+.node-inner .content ol li ol li ol li ol li,
+body.node-inner ol li ol li ol li ol li {
+list-style-type:decimal; 
+}
+
+.node-inner .content ol li ol li ol li ol li:before,
+body.node-inner ol li ol li ol li ol li:before { 
+position:relative;
+ left:-0.5em; 
+ content: ')'}
+
 
 .node-inner .content li li ul li,
 .node-inner .content li li li ul li,
@@ -312,7 +324,7 @@ body.node-inner li li li li ul li {
 
 .node-inner .content ol li ol,
 body.node-inner ol li ol {
-	margin-bottom: 2.5em;
+	margin-bottom: .5em;
 	}
 
 .node-inner .content li p,
