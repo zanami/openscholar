@@ -51,7 +51,7 @@ div.ctools-dropdown div.ctools-dropdown-container {
   top: 0px;
   width: 14px;
   padding: 0 0 5px 5px;
-  z-index: 2;
+  z-index: 20;
 }
 
 .block .node .os-links {
