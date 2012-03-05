@@ -4,5 +4,4 @@ package = "Media"
 core = 7.x
 files[] = includes/MediaEmbedStreamWrapper.inc
 files[] = includes/MediaBrowserHTML.inc
-dependencies[] = entity
 dependencies[] = media
