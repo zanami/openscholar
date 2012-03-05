@@ -754,7 +754,7 @@ function os_update_6014(&$sandbox) {
 function os_update_6015(&$sandbox) {
   
   $res = array();
-  $modules = array('elysa_cron');
+  $modules = array('elysia_cron');
 
   foreach ($modules as $mod) {
     if(!module_exists($mod)){
