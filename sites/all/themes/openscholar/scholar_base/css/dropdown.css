@@ -21,6 +21,16 @@ html.js div.ctools-dropdown div.ctools-dropdown-container ul {
   background-image: none;
   font-family: 'helvetica neue', helvetica, arial, sans-serif !important;
   }
+  
+.vsite-section-admin-links div.ctools-dropdown-container-wrapper ul li.first {
+font-size:11px;
+color:#000;
+border-bottom:1px solid #bfc6c6;
+background:#f2f3f3;
+font-weight:bold;
+padding:2px 4px 3px 4px;
+ margin-top: -4px;
+  } 
 
 .ctools-dropdown-no-js .ctools-dropdown-link,
 .ctools-dropdown-no-js .ctools-dropdown-link-wrapper,
