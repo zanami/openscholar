@@ -28,9 +28,10 @@ function media_embed_schema() {
 }
 
 function media_embed_install() {
+  // add the new media type
   $type = new stdClass();
   $type->name = 'html';
-  $type->label = "Embeded HTML";
+  $type->label = "Embedded HTML";
   $type->base = TRUE;
   $type->type_callback_args = array(
     'match_type' => 'all',
@@ -40,4 +41,74 @@ function media_embed_install() {
   );
 
   media_type_save($type);
+
+  // add the fields for it
+  try {
+    field_create_field(array(
+      'field_name' => 'field_html_code',
+      'type' => 'text_long',
+    ));
+
+    field_create_field(array(
+      'field_name' => 'field_html_title',
+      'type' => 'text',
+    ));
+  }
+  catch (FieldException $fe) {
+    // the fields already exist
+  }
+
+  field_create_instance(array(
+    'field_name'  => 'field_html_code',
+    'entity_type' => 'file',
+    'label' => 'Embed Code',
+    'bundle' => 'html',
+    'required' => TRUE,
+  ));
+
+  field_create_instance(array(
+    'field_name' => 'field_html_title',
+    'entity_type' => 'file',
+    'label' => 'Title',
+    'bundle' => 'html',
+    'required' => TRUE,
+  ));
+
+  field_bundle_settings('file', 'html', array(
+    'extra_fields' => array(
+      'display' => array(
+      	'file' => array(
+          'default' => array(
+            'visible' => FALSE,
+            'weight' => 0,
+          ),
+      	),
+      ),
+    ),
+  ));
+}
+
+function media_embed_uninstall() {
+  try {
+    field_attach_delete_bundle('file', 'html');
+  }
+  catch (Exception $e) {
+
+  }
+  /*try {
+    field_delete_instance(array(
+      'field_name' => 'field_html_code',
+      'entity_type' => 'file',
+      'bundle' => 'html',
+    ));
+
+    field_delete_instance(array(
+      'field_name' => 'field_html_title',
+      'entity_type' => 'file',
+      'bundle' => 'html',
+    ));
+  }
+  catch (Exception $e) {
+
+  }*/
 }

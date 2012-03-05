@@ -77,17 +77,16 @@ function media_embed_permission() {
 }
 
 function media_embed_add($form, &$form_state = array(), $types = NULL) {
-  $form['embed_code'] = array(
-    '#type' => 'textarea',
-    '#title' => t('HTML Embed code'),
-    '#description' => t('Input the block of HTML that represents what you want to embed'),
-    '#required' => TRUE,
-  );
+  $file = entity_create('file', array('type' => 'html'));
+  $form['#file'] = $file;
+  $form_state['file'] = $file;
+
+  field_attach_form('file', $file, $form, $form_state);
 
   $white = media_embed_get_whitelist();
   if (count($white)) {
     $form['whitelist'] = array(
-      '#markup' => t('You can add html with iframe, object, embed and script tags from the following sources:').'<br>'.implode(', ', $white),
+      '#markup' => t('You can add html with iframe, object, embed and script tags from the following sites:').'<br>'.implode(', ', $white),
     );
   }
   else {
@@ -95,6 +94,7 @@ function media_embed_add($form, &$form_state = array(), $types = NULL) {
       '#markup' => t('You may not add html with iframe, object, embed or script tags. Ask your site administrator to remedy this.'),
     );
   }
+  $form['whitelist']['#weight'] = 4;
 
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
@@ -112,36 +112,38 @@ function media_embed_add($form, &$form_state = array(), $types = NULL) {
  * @param unknown_type $form_state
  */
 function media_embed_add_validate($form, &$form_state) {
-  $html = trim($form_state['values']['embed_code']);
+  $html = field_get_items('file', $form_state['file'], 'field_html_code');
+  $html = trim($html[0]['value']);
+
+  // Fields validation
+  field_attach_form_validate('file', $form_state['file'], $form, $form_state);
+
   if (!media_embed_check_src($html)) {
     form_set_error('embed_code', 'This html contains an iframe, object, embed or script tag from an untrusted domain. If you believe this domain is safe, contact your site administrator.');
   }
 }
 
 function media_embed_add_submit($form, &$form_state) {
-  $html = trim($form_state['values']['embed_code']);
+  $html = field_get_items('file', $form_state['file'], 'field_html_code');
+  $html = trim($html[0]['value']);
 
   // create the new file entity
   $uri = 'embed://'.md5($html);
   $file = file_uri_to_object($uri);
+  $titles = field_get_items('file', $form_state['file'], 'field_title');
+  $file->filename = trim($titles[0]['value']);
+  $file = entity_create('file', ((array)$file)+array('type' => 'html'));
+ /* foreach ($form['#file'] as $key => $value) {
+    if (!isset($file->$key)) {
+      $file->$key = $value;
+    }
+  }*/
+  $form['#file'] = &$file;
+  $form_state['file'] = &$file;
 
-  // add a field if it doesn't exist
+  // save the fields and entity
+  field_attach_submit('file', $file, $form, $form_state);
   $file = file_save($file);
-
-  // get its fid and add the HTML to our table
-  if ($file->fid) {
-    $query = db_insert('media_embed')
-      ->fields(array(
-        'fid' => $file->fid,
-        'html' => $html,
-    ));
-    try {
-      $query->execute();
-    }
-    catch (Exception $e) {
-      // this fid html code already exists
-    }
-  }
 }
 
 function media_embed_check_src($html) {
@@ -165,7 +167,7 @@ function media_embed_get_whitelist() {
 function media_embed_stream_wrappers() {
   return array(
     'embed' => array(
-      'name' => t('Embeded HTML'),
+      'name' => t('Embedded HTML'),
       'class' => 'MediaEmbedStreamWrapper',
       'description' => t('HTML provided by user.'),
       'type' => STREAM_WRAPPERS_READ_VISIBLE,
@@ -180,13 +182,13 @@ function media_embed_stream_wrappers() {
  */
 function media_embed_file_formatter_info() {
   $formatters['media_embed'] = array(
-    'label' => t('Embeded HTML'),
+    'label' => t('Embedded HTML'),
     'default settings' => array('width' => '560', 'height' => '340'),
     'view callback' => 'media_embed_file_formatter_media_embed_view',
     'settings callback' => 'media_embed_file_formatter_media_embed_settings',
   );
   $formatters['media_embed_thumbnail'] = array(
-    'label' => t('Embeded HTML Thumbnail'),
+    'label' => t('Embedded HTML Thumbnail'),
     'default settings' => array('width' => '560', 'height' => '340'),
     'view callback' => 'media_embed_file_formatter_media_embed_thumbnail_view',
     'settings callback' => 'media_embed_file_formatter_media_embed_thumbnail_settings',
@@ -210,8 +212,6 @@ function media_embed_file_default_displays() {
     // hook_file_formatter_info().
     $default_styles[$name . '__default__media_embed'] = array();
     $default_styles[$name . '__default__media_embed_thumbnail'] = array();
-    $default_styles[$name . '__media_large__media_embed'] = array();
-    $default_styles[$name . '__media_large__media_embed_thumbnail'] = array();
 
     // For the Preview view mode, match the width and height of the square
     // thumbnail in media_image_default_styles().
@@ -242,26 +242,27 @@ function media_embed_file_default_displays() {
 function media_embed_file_formatter_media_embed_view($file, $display, $langcode) {
   $scheme = file_uri_scheme($file->uri);
   if ($scheme == 'embed') {
+    $display['module'] = 'media_embed'; // prevents notice
 
     // Not a WYSIWYG editor instance.
     if (empty($file->override['wysiwyg'])) {
+      field_attach_prepare_view('file', array($file->fid => $file), $display);
+      entity_prepare_view('file', array($file->fid => $file));
+
+      return field_attach_view('file', $file, $display);
+
       // pull the html from our table
-      $result = db_select('media_embed', 'me')->fields('me', array('html'))->condition('fid', $file->fid)->execute();
+      /*$result = db_select('media_embed', 'me')->fields('me', array('html'))->condition('fid', $file->fid)->execute();
       $html = $result->fetchAssoc();
       $html = $html['html'];
       $element = array(
         '#markup' => $html,
-      );
+      );*/
     }
 
-    // WYSIWYG does not yet support video inside a running editor instance, send
-    // thumbnails.
+    // WYSIWYG will not handle iframes and the like properly. Just send back a placeholder image
     else {
-      $element = oembedcore_render_cache('oembed_thumbnail', $url, $options);
-      if (!empty($file->override['attributes'])) {
-        $element['#options']['attributes'] = $file->override['attributes'];
-      }
+      return array();
     }
-    return $element;
   }
 }
