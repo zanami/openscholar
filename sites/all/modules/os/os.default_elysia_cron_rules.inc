@@ -171,7 +171,7 @@ function os_default_elysia_cron_rules() {
   $cron_rule->api_version = 1;
   $cron_rule->name = 'job_scheduler_cron';
   $cron_rule->disable = FALSE;
-  $cron_rule->rule = NULL;
+  $cron_rule->rule = '*/5 * * * *';
   $cron_rule->weight = NULL;
   $cron_rule->context = 'pull_external';
   $cron_rules['job_scheduler_cron'] = $cron_rule;
