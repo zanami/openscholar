@@ -82,25 +82,41 @@ function os_pages_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-page-group_audience'
-  $fields['node-page-group_audience'] = array(
+  // Exported field: 'node-page-og_group_ref'
+  $fields['node-page-og_group_ref'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'group_audience',
+      'field_name' => 'og_group_ref',
       'foreign keys' => array(),
       'indexes' => array(
-        'gid' => array(
-          0 => 'gid',
+        'target_entity' => array(
+          0 => 'target_type',
+          1 => 'target_id',
         ),
       ),
-      'module' => 'og',
-      'no_ui' => TRUE,
-      'settings' => array(),
+      'module' => 'entityreference',
+      'settings' => array(
+        'handler' => 'og',
+        'handler_settings' => array(
+          'behaviors' => array(
+            'og_behavior' => array(
+              'status' => TRUE,
+            ),
+          ),
+          'membership_type' => 'og_membership_type_default',
+          'primary_field' => FALSE,
+          'reference_type' => 'my_groups',
+          'target_bundles' => NULL,
+        ),
+        'handler_submit' => 'Change handler',
+        'target_type' => 'node',
+      ),
+      'target_type' => NULL,
       'translatable' => '0',
-      'type' => 'group',
+      'type' => 'entityreference',
     ),
     'field_instance' => array(
       'bundle' => 'page',
@@ -110,10 +126,10 @@ function os_pages_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'og',
+          'module' => 'og_ui',
           'settings' => array(),
           'type' => 'og_list_default',
-          'weight' => 0,
+          'weight' => 2,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -123,7 +139,7 @@ function os_pages_field_default_fields() {
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'group_audience',
+      'field_name' => 'og_group_ref',
       'label' => 'Groups audience',
       'required' => FALSE,
       'settings' => array(
@@ -142,14 +158,99 @@ function os_pages_field_default_fields() {
         ),
       ),
       'widget' => array(
-        'module' => 'og',
-        'settings' => array(
-          'opt_group' => 'auto',
-        ),
-        'type' => 'group_audience',
-        'weight' => 0,
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_select',
+        'weight' => 2,
       ),
-      'widget_type' => 'group_audience',
+    ),
+  );
+
+  // Exported field: 'node-page-og_group_ref_other_groups'
+  $fields['node-page-og_group_ref_other_groups'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'og_group_ref_other_groups',
+      'foreign keys' => array(),
+      'indexes' => array(
+        'target_entity' => array(
+          0 => 'target_type',
+          1 => 'target_id',
+        ),
+      ),
+      'module' => 'entityreference',
+      'settings' => array(
+        'handler' => 'og',
+        'handler_settings' => array(
+          'behaviors' => array(
+            'og_behavior' => array(
+              'status' => TRUE,
+            ),
+          ),
+          'membership_type' => 'og_membership_type_default',
+          'primary_field' => 'og_group_ref',
+          'reference_type' => 'other_groups',
+          'target_bundles' => NULL,
+        ),
+        'handler_submit' => 'Change handler',
+        'target_type' => 'node',
+      ),
+      'target_type' => NULL,
+      'translatable' => '0',
+      'type' => 'entityreference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'page',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'og_ui',
+          'settings' => array(),
+          'type' => 'og_list_default',
+          'weight' => 3,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'og_group_ref_other_groups',
+      'label' => 'Other groups',
+      'required' => FALSE,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'view modes' => array(
+        'full' => array(
+          'custom settings' => FALSE,
+          'label' => 'Full',
+          'type' => 'og_list_default',
+        ),
+        'teaser' => array(
+          'custom settings' => FALSE,
+          'label' => 'Teaser',
+          'type' => 'og_list_default',
+        ),
+      ),
+      'widget' => array(
+        'module' => 'entityreference',
+        'settings' => array(
+          'match_operator' => 'CONTAINS',
+          'path' => '',
+          'size' => 60,
+        ),
+        'type' => 'entityreference_autocomplete',
+        'weight' => 3,
+      ),
     ),
   );
 
@@ -157,6 +258,7 @@ function os_pages_field_default_fields() {
   // Included for use with string extractors like potx.
   t('Body');
   t('Groups audience');
+  t('Other groups');
 
   return $fields;
 }
