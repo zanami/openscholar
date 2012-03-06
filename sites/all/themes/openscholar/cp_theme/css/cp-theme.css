@@ -89,15 +89,9 @@ body.sidebar-second #cp-content {
   overflow: hidden;
   }
 
-.frame {
-  overflow:hidden;
-  }
-
 .innerframe {
   position: absolute;
   width: 100%;
-  overflow: auto;
-  overflow-x: hidden;
   top: 0;
   bottom: 0;
   min-height:200px;
