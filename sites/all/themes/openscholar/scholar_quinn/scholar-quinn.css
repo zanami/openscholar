@@ -239,6 +239,11 @@ h2.title {
   margin-left: -16px;
   padding-left: 16px;
   }
+  
+#sidebar-second .block .os-links a {
+  margin-left: 0;
+  padding-left: 0
+  }  
 
 #sidebar-first a,
 #sidebar-first a:visited,
