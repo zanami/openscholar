@@ -85,7 +85,7 @@ function vsite_menus_nodeapi(&$node, $op) {
           $item['link_path'] = "node/$node->nid";
           $item['options']['attributes']['title'] = trim($node->title);
           $item['key'] = $item['menu_name'].":".$item['link_path'];
-          
+
           $a_existing_menu = $vsite->controllers->vsite_menu->get( $item['menu_name'] );
           $a_defaults = array_key_exists($item['key'],$a_existing_menu)? $a_existing_menu[$item['key']]: array('router_path' => 'node/%', 'module' => 'vsite_menu', 'weight' => 0, 'user_created' => 1);
           $item = $item + $a_defaults;
@@ -240,7 +240,7 @@ function vsite_menus_form_alter(&$form, $form_state, $form_id) {
 
     $form['vsite_menu']['weight'] = array(
       '#type' => 'value',
-      '#value' => ($item['weight'])?$item['weight']:50,
+      '#value' => (isset($item['weight']))?$item['weight']:50,
     );
 
     $form['vsite_menu']['key'] = array(
@@ -341,7 +341,7 @@ function vsite_menus_block($op = 'list', $delta = 0, $edit = array()) {
   	  $menu_keys = array_keys($site_menus);
   	  if(isset($menu_keys[$delta])) $delta = $menu_keys[$delta];
   	}//Accept both the old indexes and the menu names
-  	
+
     if(isset($site_menus[$delta])) {
       $block['subject'] = t(''); // intentionally left empty for now.
       $block['content'] = vsite_menus_get_menu_tree( $delta );
@@ -386,37 +386,37 @@ function vsite_menus_get_menu_tree($s_menu){
   static $menu_output = array();
 
   if (!isset($menu_output[$s_menu])) {
-  	
+
   	if(!($menu_links = vsite_menus_get_menu_cache($s_menu))){
-  	
+
 	    //Get Menu for this site
 	    $menu_links = $space->controllers->vsite_menu->get($s_menu);
-	
+
 	    //Tmp MLID used for array keys when using menu's node access functions
 	    $n_tmp_mlid = 1;
-	
+
 	    //Apply tmp mlid and menu_router information to links
 	    foreach ($menu_links as $key => $ml){
 	    	$ml['options'] = (isset($ml['options']))?serialize($ml['options']):serialize(array());
-	
+
 	    	if (menu_path_is_external($ml['link_path']) || !is_array($router_info = menu_get_item($ml['link_path']))) {
 	        // Custom/External Links will not have an entry in the router table
 	    		$router_info = array();
 	      }
-	      
+
 	      //Let users configure thier own title (if they have one set run it through translate)
 	      if(isset($ml['link_title'])) $ml['title_callback'] = 't';
-	
+
 	      $menu_links[$key] = array('link' => array_merge($router_info,$ml,array('mlid' => $n_tmp_mlid++)), 'below' => false);
 	    }
-	
+
 	    //Gather Node access info
 	    $node_links = array();
 	    menu_tree_collect_node_links($menu_links,$node_links);
-	
+
 	    //Check Node and menu access
 	    menu_tree_check_access($menu_links, $node_links);
-	    
+
 	    $cache_key = vsite_menu_get_cache_key($s_menu);
       cache_set($cache_key, $menu_links, 'cache_block', time() + 86400);
   	}
@@ -457,7 +457,7 @@ function vsite_menus_get_menu_cache($s_menu){
       $cutoff = max($max_lifespan, $cutoff);
     }
   }
-  
+
   $cache_key = vsite_menu_get_cache_key($s_menu);
   if (($cache = cache_get($cache_key, 'cache_block')) && (!$cutoff || $cache->created > $cutoff)) {
     return $cache->data;
