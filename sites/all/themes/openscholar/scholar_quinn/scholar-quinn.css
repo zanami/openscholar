@@ -230,6 +230,11 @@ h2.title {
   padding-right: 16px;
   margin-right: -16px;
   }
+  
+#sidebar-first .block .os-links a {
+  padding-right: 0;
+  margin-right: 0;
+  }  
 
 #sidebar-second .block {
   padding-left:16px;
