@@ -389,7 +389,7 @@ function vsite_taxonomy_form_taxonomy_form_term_alter(&$form, &$form_state) {
   $form['advanced']['menu']['link_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Menu Title'),
-    '#default_value' => $existing?$existing['link_title']:$form['identification']['name']['#default_value'],
+    '#default_value' => $existing?$existing['link_title']:'',
     '#size' => 20,
     '#maxlength' => 40,
     '#required' => false,
