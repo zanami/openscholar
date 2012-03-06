@@ -745,3 +745,27 @@ function os_update_6014(&$sandbox) {
   
   return array(array('success' => TRUE, 'query' => "Plugins have changed directories so the plugin cache has been cleared manually."));
 }
+
+/**
+ * Implements hook_update_N
+ *
+ * enables elysa cron
+ **/
+function os_update_6015(&$sandbox) {
+  
+  $res = array();
+  $modules = array('elysia_cron');
+
+  foreach ($modules as $mod) {
+    if(!module_exists($mod)){
+      include_once('includes/install.inc');
+      drupal_install_modules(array($mod));
+    }
+  }
+  $res[] = array(
+    'success' => true,
+    'query' => 'Installed modules: ' . implode(', ', $modules),
+  );
+
+  return $res;
+}
