@@ -1,6 +1,6 @@
 <?php
 /**
- * Basic tests for PURL.
+ * Basic tests for OS Pages.
  */
 class OSPagesContextTest extends DrupalWebTestCase {
   /**
@@ -25,11 +25,6 @@ class OSPagesContextTest extends DrupalWebTestCase {
 //      'og',
 //      'spaces_og'
     );
-    
-    //Create a user that can add pages
-//    $admin_user = $this->drupalCreateUser(array('create page content', 'create url aliases', 'administer languages', 'administer site configuration'));
-//    $this->drupalLogin($admin_user);
-
   }
 
   /**
@@ -47,6 +42,13 @@ class OSPagesContextTest extends DrupalWebTestCase {
     //Act on the page node
     context_node_condition($page_node,'view');
     
-    $this->assertTrue(context_isset('context','openscholar-feature-front'), "Context 'openscholar-feature-front' active when viewing node type 'page'.");
+    //Assert that this context is in fact active
+    $result = $this->assertTrue(context_isset('context','openscholar-feature-pages'), "Context 'openscholar-feature-pages' active when viewing node type 'page'.");
+    
+    //If this failed lets log the active contexts
+    if(!$result){
+    	//Debugging
+      $this->verbose('Active Contexts: ' . var_export(context_active_contexts(), TRUE));
+    }
   }
 }

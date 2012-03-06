@@ -97,7 +97,6 @@ function os_field_default_fields() {
         ),
       ),
       'module' => 'list',
-      'no_ui' => TRUE,
       'settings' => array(
         'allowed_values' => array(
           0 => 'Not a group',
@@ -121,7 +120,9 @@ function os_field_default_fields() {
         'default' => array(
           'label' => 'above',
           'module' => 'og_ui',
-          'settings' => array(),
+          'settings' => array(
+            'field_name' => FALSE,
+          ),
           'type' => 'og_group_subscribe',
           'weight' => 0,
         ),
@@ -156,6 +157,7 @@ function os_field_default_fields() {
         'module' => 'options',
         'settings' => array(
           'display_label' => 0,
+          'og_hide' => TRUE,
         ),
         'type' => 'options_onoff',
         'weight' => 0,
@@ -168,6 +170,8 @@ function os_field_default_fields() {
   t('Body');
   t('Determine if this is an OG group.');
   t('Group');
+  t('Groups audience');
+  t('Other groups');
 
   return $fields;
 }

@@ -12,7 +12,7 @@ class space_og extends space_type_purl {
   function __construct($type, $id = NULL) {
     parent::__construct($type, $id);
     // Extend spaces object with og entity.
-    $this->og = og_get_group('node', $this->id);
+    $this->og = entity_load_single('node', $this->id);
   }
 
   /**
@@ -215,9 +215,9 @@ class space_og extends space_type_purl {
    *  User entity.
    */
   function og_is_group_admin($group, $account) {
-    $membership = og_get_group_membership($group->gid, 'user', $account->uid);
+    $membership = og_get_membership('node' ,$group->nid, 'user', $account->uid);
     if (isset($membership->state) && $membership->state == OG_STATE_ACTIVE) {
-      return og_user_access($group->gid, 'manage group space', $account);
+      return og_user_access('node',$group->internalIdentifier(), 'manage group space', $account);
     }
     return FALSE;
   }
