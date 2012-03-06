@@ -639,7 +639,7 @@ function spaces_og_og_context_handler() {
 
   $space = spaces_get_space();
   if (isset($space->type) && $space->type == 'og') {
-    $gids[] = $space->og->gid;
+    $gids[] = $space->og->nid;
   }
 
   return $gids;

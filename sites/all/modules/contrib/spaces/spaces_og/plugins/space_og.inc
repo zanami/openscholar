@@ -4,15 +4,17 @@
  * Organic groups integration for Spaces.
  */
 class space_og extends space_type_purl {
-  var $group = NULL;
+  public $group = NULL;
+  private $group_type;
 
   /**
    * Constructor.
    */
   function __construct($type, $id = NULL) {
+  	$this->group_type = 'node';
     parent::__construct($type, $id);
     // Extend spaces object with og entity.
-    $this->og = entity_load_single('node', $this->id);
+    $this->og = entity_load_single($this->group_type, $this->id);
   }
 
   /**
@@ -215,9 +217,11 @@ class space_og extends space_type_purl {
    *  User entity.
    */
   function og_is_group_admin($group, $account) {
-    $membership = og_get_membership('node' ,$group->nid, 'user', $account->uid);
+  	
+  	list($nid) = entity_extract_ids($this->group_type, $group);
+    $membership = og_get_membership('node' ,$nid, 'user', $account->uid);
     if (isset($membership->state) && $membership->state == OG_STATE_ACTIVE) {
-      return og_user_access('node',$group->internalIdentifier(), 'manage group space', $account);
+      return og_user_access('node',$nid, 'manage group space', $account);
     }
     return FALSE;
   }
