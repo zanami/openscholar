@@ -1,0 +1,6 @@
+name = "Front Page"
+description = "Adjust front page settings for your web site."
+core = "7.x"
+package = "Features"
+features[context][] = "openscholar-feature-front"
+php = "5.2.4"
