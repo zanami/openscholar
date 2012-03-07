@@ -5,7 +5,7 @@
  */
 class space_og extends space_type_purl {
   public $group = NULL;
-  private $group_type;
+  public $group_type;
 
   /**
    * Constructor.

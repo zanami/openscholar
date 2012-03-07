@@ -381,6 +381,8 @@ function purl_generate_rewrite_elements($item) {
  *
  * @param $requested_method
  *   A string identifier of a purl type/method
+ * @param $reset
+ *   TRUE to delete static and persistent modifier caches.
  * @return
  *   Array of modifiers
  */
@@ -395,9 +397,14 @@ function purl_modifiers($requested_method = NULL, $reset = FALSE) {
     }
   }
 
-  if (!isset($values) || $reset) {
-    $values = array();
+  if (isset($requested_method) && !isset($values[$requested_method]) && !$reset) {
+    $cache = cache_get("purl_modifiers:$requested_method");
+    if ($cache) {
+      $values[$requested_method] = $cache->data;
+    }
+  }
 
+  if (!isset($values[$requested_method]) || $reset) {
     // Invoke purl_modifiers() and gather all values
     // provided "in code" (or stored by their respective modules)
     $providers = module_invoke_all('purl_modifiers');
