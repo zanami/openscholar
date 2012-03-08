@@ -145,8 +145,9 @@ function media_embed_check_src($html) {
   try {
     $dom = new DOMDocument();
   }
+  // for some reason DOMDocument fails completely when debugging.
+  // it works fine when not debugging, its just something to be aware of
   catch (Exception $e) {
-    dpm($e);
     return false;
   }
   if ($dom->loadHTML($html)) {
