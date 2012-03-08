@@ -142,37 +142,19 @@ class os_simpleview_list_default {
    * 
    * provides form into for ctools_wizard_multistep_form
    */
-  public function multiform_info($js = NULL) {
-    ctools_include('wizard');    
-    return array(
-      'id' => 'os_simpleviews_list', 
-      'path' => 'os_simpleview_list/' . ($js ? 'ajax' : 'nojs') . '/%step', //pass the step we're on to the form, step1, step2, ..etc
-      'show trail' => TRUE,
-      'show back' => TRUE,
-      'show return' => FALSE,
-      'next callback' => 'os_simpleview_list_multiform_next',
-      'finish callback' => 'os_simpleview_list_multiform_finish',
-      'cancel callback' => 'os_simpleview_list_multiform_cancel', 
+  public function multiform_info() {    
+    return array(      
+    	'basics' => array(
+      	'form id' => 'os_simpleview_list_form_basics', 
+      	'title' => 'The Basics',
+        'class' => get_class($this), //pass back the class so it can be loaded to get the form    
+      ),
       
-      'forms' => array(
-        
-      	'basics' => array(
-        	'form id' => 'os_simpleview_list_form_basics', 
-        	'title' => 'The Basics',
-          'class' => get_class($this), //pass back the class so it can be loaded to get the form    
-        ),
-        
-        'display_options' => array(
-        	'form id' => 'os_simpleview_list_form_display_options', 
-        	'title' => 'Display Options',
-          'class' => get_class($this), //pass back the class so it can be loaded to get the form
-        ),
-        
-//        'obj_form' => array('form id' => 'default_list_form', 'title' => 'content_type_form'),
-//        'step2' => array('form id' => 'os_simpleview_list_form2', 'title' => 'Quest'),
-//        'step3' => array('form id' => 'os_simpleview_list_form3', 'title' => 'Color'),
-    
-      )
+      'display_options' => array(
+      	'form id' => 'os_simpleview_list_form_display_options', 
+      	'title' => 'Display Options',
+        'class' => get_class($this), //pass back the class so it can be loaded to get the form
+      ),
     );
   }
   

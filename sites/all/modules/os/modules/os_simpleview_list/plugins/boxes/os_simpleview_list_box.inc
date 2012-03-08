@@ -11,6 +11,8 @@ class os_simpleview_list_box extends os_boxes_modalframe {
   // Tells boxes how to configure/add this widget
   protected function config_path() {
     if ($this->options['nid']) {        //@TODO
+      //      return $this->config_path().'/modal/box/'.($this->delta?$this->delta:$this->plugin_key);
+      // try something like the modal box example above
       return 'node/'.$this->options['nid'].'/edit';
     }
     else {
@@ -47,14 +49,6 @@ class os_simpleview_list_box extends os_boxes_modalframe {
         
         //Tie this view to this box (this tells the view to call this box's view alter)
         $view->dom_id = "boxes-".$this->delta;
-        
-        //Adjust the view for each of the options set
-        foreach($this->options as $opt => $val) {
-          $opt;
-        }
-        
-
-        
         $output = $view->execute_display();
         $block['content'] = $output;
       }

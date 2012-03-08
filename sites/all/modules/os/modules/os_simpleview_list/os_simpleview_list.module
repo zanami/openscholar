@@ -156,7 +156,7 @@ function os_simpleview_list_page($js = NULL, $step = NULL) { //ditch these args/
   //Instantiate class, get definition for multi-page form
   $class = ctools_plugin_get_class($plugin, 'handler');
   $instance = new $class();
-  $form_info = $instance->multiform_info($js);
+  $form_info = os_simpleview_list_multiform_info();  $instance->multiform_info($js);
   
   // Check the current step's form id.  If it isn't defined assume it's inside the content class.    
   $step = ($step) ? $step : array_shift(array_keys($form_info['forms']));
@@ -167,6 +167,15 @@ function os_simpleview_list_page($js = NULL, $step = NULL) { //ditch these args/
   
   //Now we're ready to build and return a form
   $form = ctools_wizard_multistep_form($form_info, $step, $form_state);
+  
+  //$js indicates we're using a modal form.  return ajax commands instead of the form itself.
+  //may need some cominbation of execute and steps 
+  if ($js) {
+    ctools_include('ajax');
+    $commands = array();
+    $commands[] = ctools_ajax_command_html($selector, $form);
+    ctools_ajax_render($commands);
+  }
   
   return $form;
 }
@@ -271,4 +280,33 @@ function os_simpleview_list_make_box($opts){
     return os_boxes_mk_box($vsite, $type, $opts);
   } 
   return false;
+}
+
+/**
+ * @function os_simpleview_list_multiform_info
+ * 
+ * Sets up multistep form, retrieiving forms from active plugin
+ */
+function os_simpleview_list_multiform_info($js, $content_type = 'default') {
+  ctools_include('wizard');
+  
+  $form_info = array(
+    'id' => 'os_simpleviews_list', 
+    'path' => 'os_simpleview_list/' . ($js ? 'ajax' : 'nojs') . '/%step', //pass the step we're on to the form, step1, step2, ..etc
+    'show trail' => TRUE,
+    'show back' => TRUE,
+    'show return' => FALSE,
+    'next callback' => 'os_simpleview_list_multiform_next',
+    'finish callback' => 'os_simpleview_list_multiform_finish',
+    'cancel callback' => 'os_simpleview_list_multiform_cancel',
+  );
+  
+  //Get appropriate plugin/class   
+  $plugin = os_simpleview_list_plugin_load($content_type); 
+//  $plugin = (isset($plugins[$content_type])) ? $plugins[$content_type] : $plugins['default'];
+  $class = ctools_plugin_get_class($plugin, 'handler');
+  $instance = new $class();
+  $form_info['forms'] = $instance->multiform_info();
+
+  return $form_info;
 }
