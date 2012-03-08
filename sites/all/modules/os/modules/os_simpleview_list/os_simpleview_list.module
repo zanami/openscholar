@@ -8,15 +8,18 @@
  * Accessible for creating a page or box
  **/
 
+/**
+ * Implements hook_menu()
+ */
 function os_simpleview_list_menu() {
   $items = array();
   $items['os_simpleview_list/%ctools_js'] = array(
     'type' => MENU_CALLBACK, 
-    'title' => 'simpleview_list', 
+    'title' => 'New List Items', 
     'page callback' => 'os_simpleview_list_page',
     'page arguments' => array(1), 
-    'access callback' => TRUE,
-    'access arguments' => array('access content'),
+    'access callback' => 'cp_access_cp',
+    //'access arguments' => array('access content'),
   );
   
   return $items;
@@ -45,20 +48,24 @@ function os_simpleview_list_ctools_plugin_directory($module, $plugin) {
  
 /**
  * Implementation of hook_os_simpleview_list_plugins
- * Provides definition for default simpleview list's plugins.
+ *
+ * Array key (default in this case) informs simpleview about which content type to use
+ * with the class specified in handler
  */
 function os_simpleview_list_os_simpleview_list_plugin(){
 	$path = drupal_get_path('module', 'os_simpleview_list') . '/plugins/';
 
 	//$info = array('os_simpleview_list_default' => array( //change this name
-	$info = array('default' => array( // this key indicates which content type to use to get this class
-		'handler' => array(
-			'class' => 'os_simpleview_list_default',
-			'file'  => 'os_simpleview_list_default.inc',
-			'path'  => $path,
-	    'title' => t('List of Posts'),
-		)
-	));
+	$info = array(
+		'default' => array( // this key indicates which content type to use to get this class
+  		'handler' => array(
+  			'class' => 'os_simpleview_list_default',
+  			'file'  => 'os_simpleview_list_default.inc',
+  			'path'  => $path,
+  	    'title' => t('List of Posts'),
+  		)
+	  )
+	);
 	
 	return $info;
 }
@@ -67,6 +74,7 @@ function os_simpleview_list_os_simpleview_list_plugin(){
 
 /**
  * @function os_simpleview_list_plugin_load
+ *
  * Load one or more plugins
  */
 function os_simpleview_list_plugin_load($type = NULL) {
@@ -85,12 +93,11 @@ function os_simpleview_list_plugin_load($type = NULL) {
  * 
  * Provides SV list plugins as a unified box widget
  */
-/*
 function os_simpleview_list_boxes_plugins(){
   $info = array(); 
   //$css = drupal_get_path('module', 'os_sipmleview_list') . '/theme/os-mailchimp.css';
 
-  $info['os_boxes_simpleview_list'] = array(
+  $info['os_simpleview_list_box'] = array(
     'title' => '(New) Post List',
     'description' => 'Make a list of content by type',
     //'css' => $css,
@@ -98,63 +105,69 @@ function os_simpleview_list_boxes_plugins(){
       'Content'
     ),
     'handler' => array(
-      'class' => 'os_simpleview_list',
-      'file' => 'os_simpleview_list.inc',
-      'path' => drupal_get_path('module', 'os_simpleview_list') . '/plugins/boxes',
-      'parent' => 'os_boxes_default'
-    )
+      'class' => 'os_simpleview_list_box',
+      'file' => 'os_simpleview_list_box.inc',
+      'path' => drupal_get_path('module', 'os_simpleview_list') . '/plugins/boxes/',
+      'parent' => 'os_boxes_modalframe'
+    ),
+    //'access' => 'cp_access_cp',
+    'access' => TRUE,
+    'factory_path' => 'os_simpleview_list/js',
   );
 
   return $info;
 }
-*/
 
-// menu callback page just so we can load plugins and get some output
-function os_simpleview_list_page($js = NULL, $step = NULL) {
+
+/**
+ * @function os_simpleview_list_page
+ *
+ * Menu item shows wizard/form
+ */
+function os_simpleview_list_page($js = NULL, $step = NULL) { //ditch these args/defaults since they don't always get called?
+  $js = (arg(1) == 'js') ? TRUE : $js;
   ctools_include('wizard');
+  
+ // ctools_include('ajax'); //required for modal
   $cache_name = 'os_simpleview_list';
+ // $js = TRUE; //just for debug
   
   // Get cache, set up default form state with values from cache
   if (empty($step)) {
     os_simpleview_list_cache_clear($cache_name);
     $cached = NULL;
   } else {
-     $cached = os_simpleview_list_cache_get($cache_name);
+    $cached = os_simpleview_list_cache_get($cache_name);
   }
   
   $form_state = array(
     'ajax' => $js,
     'cache_name' => $cache_name,
     'cached' => &$cached,  
+ //   'modal' => TRUE,
+//  	'rerender' => TRUE, //kills the blank form error, but no new form is drawn
   );
   
-  //Get appropriate class, multiform's info
-  $content_type = (isset($cached['content_type'])) ? $cached['content_type'] : 'default'; //should fetch class name instead of concat
-  
-  $plugins = os_simpleview_list_plugin_load(); //('os_simpleview_list_default');
+  //Get appropriate plugin/class
+  $content_type = (isset($cached['content_type'])) ? $cached['content_type'] : 'default';   
+  $plugins = os_simpleview_list_plugin_load(); 
   $plugin = (isset($plugins[$content_type])) ? $plugins[$content_type] : $plugins['default'];
   
+  //Instantiate class, get definition for multi-page form
   $class = ctools_plugin_get_class($plugin, 'handler');
   $instance = new $class();
-  $form_info = $instance->multiform_info();
+  $form_info = $instance->multiform_info($js);
   
-  //inspect $form_info for new functions?  build them to call the class?  alter?
-  //if form_alter is too slow, we could change the name of the form_id in the info t ouse a generic form provided here that calls the right form
-
+  // Check the current step's form id.  If it isn't defined assume it's inside the content class.    
   $step = ($step) ? $step : array_shift(array_keys($form_info['forms']));
-  
-  //check if the form specified in form info exists.  if it doesn't, use our sv class form isntead to fetch the form from the calss
   if (isset($form_info['forms'][$step]) && !function_exists($form_info['forms'][$step]['form id'])) {
-    //need to knwo the step at this point so we can overwrite even the first entry
-    $form_info['forms'][$step]['form method'] = $form_info['forms'][$step]['form id']; //stash this form for later
+    $form_info['forms'][$step]['form method'] = $form_info['forms'][$step]['form id']; 
     $form_info['forms'][$step]['form id'] = 'os_simpleview_list_simpleview_class_form';
-  } else {
-    drupal_set_message('found func: ' . $form_info['forms'][$step]['form id'] );
-    $func = $form_info['forms'][$step]['form id'] ;
-    $func();
-  }
+  } 
   
+  //Now we're ready to build and return a form
   $form = ctools_wizard_multistep_form($form_info, $step, $form_state);
+  
   return $form;
 }
 
@@ -170,54 +183,18 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
   $class = $form_state['form_info']['forms'][$step]['class'];
   $form_method = $form_state['form_info']['forms'][$step]['form method'];
   
-  $plugin = os_simpleview_list_plugin_load($class);
+  $plugin = os_simpleview_list_plugin_load($class); //y u no load?  plugin is just default.  not name of whole class
   $class_handler = ctools_plugin_get_class($plugin, 'handler');
-  $instance = new $class();
+  $instance = new $class(); //class_handler()
   
   $form += $instance->$form_method();
-  return $form;
-}
-
-/*
-function os_simpleview_list_form_simpleview_class_form_alter(&$form, &$form_id) { //does this need to be an alter
   
-}
-*/
-
-/*
-function os_simpleview_list_form1(&$form, &$form_state) {
- //maybe these forms should fetch from object?
-  $form['name'] = array(
-    '#type' => 'textfield',
-    '#title' => t('What is your name?'),
-    '#required' => TRUE,
-  );
- 
+  
+  //do we need ctools-use-ajax in the form or is that implid by wizard_submit?
   return $form;
 }
 
-function os_simpleview_list_form2(&$form, &$form_state) {
- 
-  $form['quest'] = array(
-    '#type' => 'textfield',
-    '#title' => t('What is your quest?'),
-    '#required' => TRUE,
-  );
- 
-  return $form;
-}
 
-function os_simpleview_list_form3(&$form, &$form_state) {
- 
-  $form['color'] = array(
-    '#type' => 'textfield',
-    '#title' => t('What is your favorite color?'),
-    '#required' => TRUE,
-  );
- 
-  return $form;
-}
-*/
 
 /**
  * object_cache functions
@@ -260,6 +237,38 @@ function os_simpleview_list_multiform_cancel(&$form_state) {
 };
 
 function os_simpleview_list_multiform_finish(&$form_state) { 
-	$multi_step_form = &$form_state['os_simpleview_list']; 
+  $cached = os_simpleview_list_cache_get($form_state['cache_name']);
+  $cached = ($cached) ? $cached : array();
+  $values = $cached + $form_state['values'];
+  
+  // save values into a new box or menu entry, context depending
+  
+  //lets try a box
+  if (($box = os_simpleview_list_make_box($values)) != FALSE) {
+    //success!
+    os_simpleview_list_cache_clear($form_state['cache_name']); //do this once it's complete, not before we make box
+  }
+  
 	drupal_set_message('form done'); 
+	drupal_goto('os_simpleview_list/nojs'); //where to send them?
 };
+
+
+/**
+ * @function os_simpleviewlist_make_box
+ *
+ * Form is complete.  Build a box and add it to the vsite.
+ */
+function os_simpleview_list_make_box($opts){
+  if (($vsite = vsite_get_vsite()) != FALSE) {
+    $type = 'os_simpleview_list_box';
+    
+    $ignore = array_flip(array('return', 'previous', 'form_id', 'form_token', 'form_build_id', 'op', 'next'));
+    $opts = array_diff_key($opts, $ignore); //strip ctools form elements before sending them to box
+          //should we also pull option defaults and only set values included there?  not necessary yet, but might be needed as more form elements show up.
+          //how to handle nested values, like in a fieldset?
+    require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
+    return os_boxes_mk_box($vsite, $type, $opts);
+  } 
+  return false;
+}

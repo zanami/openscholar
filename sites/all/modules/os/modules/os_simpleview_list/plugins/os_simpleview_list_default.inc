@@ -18,6 +18,7 @@ class os_simpleview_list_default {
     $options['more_link'] = "";
     $options['use_pager'] = 1;
     $options['style'] = 'titles';
+    $options['content_type'] = 'all';
 
     return $options;
   }
@@ -37,18 +38,20 @@ class os_simpleview_list_default {
 
     $form = array();
     
-    $form['name'] = array(
+    $form['description'] = array(
       '#type' => 'textfield',
       '#title' => t('Name'),
       '#required' => TRUE,
-      '#default_value' => $options['name']
+      //'#default_value' => $options['name'],
+      '#description' => t('Name this list so it can be saved.'), 
     );
     
     $form['title'] = array(
       '#type' => 'textfield',
       '#title' => t('Title'),
       '#required' => TRUE,
-      '#default_value' => $options['title']
+    	'#description' => t('Title to show to your visitors who view this list.'),
+      //'#default_value' => $options['title']
     );
     
     $form['content_type'] = array(
@@ -56,7 +59,8 @@ class os_simpleview_list_default {
       '#title' => t('Content Type'),
       '#options' => array('all' => t('All')) + $this->list_content_types(),
       '#required' => TRUE,
-      '#default_value' => $options['content_type']
+    	'#description' => t('Content types to include in this list.'),
+      //'#default_value' => $options['content_type']
     );
     
     return $form;
@@ -201,7 +205,86 @@ class os_simpleview_list_default {
     
     return $node_options;
   }
-  
+
+  /**
+  * Called from views_pre_view
+  * Configures view according to options
+  */
+  public function views_alter(&$view, &$display_id, &$args, &$options = array()) {
+
+    //pager
+    if ($options['use_pager']) {
+      $view->display_handler->set_option('use_pager', 'mini');
+      $view->display_handler->set_option('use_ajax', TRUE);
+    } else {
+      $view->display_handler->set_option('use_pager', FALSE);
+      $view->display_handler->set_option('use_ajax', FALSE);
+    } 
+    
+    //number of items
+    if ($items = intval($options['number_of_items'])) {
+      $view->display_handler->set_option('items_per_page', $items);
+      $view->set_items_per_page($items);
+    }
+    
+    //content type
+    if ($options['content_type'] != 'all') {     
+      //do we need a whitelist?
+      $view->set_item($display_id, 'filter', 'type', array(
+        'operator' => 'in',
+        'value' => array($options['content_type'] => $options['content_type']),
+        'group' => 0,
+        'exposed' => FALSE,
+        'expose' => array('operator'=>FALSE, 'label'=>''),
+        'id' => 'type',
+        'table' => 'node',
+        'field' => 'type',
+        'relationship' => 'none',
+      ));
+    }
+    
+    //display style
+	  switch ($options['style']){
+	  	case 'titles':
+	  		//Change fron teaser view to using fields
+	  		$view->display_handler->override_option('fields', array(
+			    'title' => array(
+			      'label' => '',
+			      'link_to_node' => 1,
+			      'exclude' => 0,
+			      'id' => 'title',
+			      'table' => 'node',
+			      'field' => 'title',
+			      'relationship' => 'none',
+			      'override' => array('button' => 'Use default'),
+			    ),
+			  ));
+			  $view->display_handler->override_option('row_plugin', 'fields');
+			  $view->display_handler->override_option('style_plugin', 'list');
+			  $view->display_handler->override_option('style_options', array(
+			    'grouping' => '',
+			    'type' => 'ul',
+			  ));
+			 		  			  
+  	    //Note: Some actions like "$view->validate()" (which the ajax callback uses) will cache (in code) the
+        //      avalible fields this clears that since we change it here
+        if (isset($view->display[$display_id]->handler->handlers['field'])){
+          unset($view->display[$display_id]->handler->handlers['field']);
+        }
+      
+	  	  break;
+	  	case 'teasers':
+	  	case 'full': //support this?
+	  	default:
+	  		//Do nothing, default
+	  }
+    
+    //content type
+    //remaining options:
+    // style (teasers, full, etc), more_link, more_text, more, path_edit, path_display, visibility
+    
+    //also call alter in whatever class this uses?  
+  }
   
     
 }

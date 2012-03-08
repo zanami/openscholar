@@ -12,6 +12,7 @@ class scholar_presentations extends os_simpleview_list_default {
   // that would let us keep the data, but 'swap' classes.  probably better way out there tho.
   public function options_defaults(){
     $options = parent::options_defaults();
+    $options['content_type'] = 'presentation';
     return $options;
   }
   
@@ -20,8 +21,15 @@ class scholar_presentations extends os_simpleview_list_default {
     return $options_form;
   }
   
+  /* doesn't happen.  generic box calls render.  maybe it should send it up the chain instead?  
   public function render(){
     return parent::render();
+  }
+  */
+  
+  public function views_alter(&$view, &$display_id, &$args, &$options = array()){
+    parent::views_alter($view, $display_id, $args, $options);
+    //any presentation specific alterations go here
   }
   
   public function multiform_info(){

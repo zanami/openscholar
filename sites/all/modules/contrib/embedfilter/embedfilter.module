@@ -227,7 +227,7 @@ function embedfilter_process($input) {
     $input = preg_replace_callback('@<(embed|object|script|iframe)([^>]*)/>@si', 'embedfilter_process', $input, 5);
   }
 
-  return embedfilter_media_resize($input, 550);
+  return $input;
 }
 
 /**
