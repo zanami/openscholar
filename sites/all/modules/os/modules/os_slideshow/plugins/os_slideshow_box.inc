@@ -124,7 +124,6 @@ class os_boxes_slideshow extends os_boxes_default {
         $dim = substr($name, strlen($tmpstr));
         $width = explode('x',$dim);
         $options[$width[0]] = $dim;
-        break;
       }
     }
 
@@ -140,7 +139,6 @@ class os_boxes_slideshow extends os_boxes_default {
     // override size (imagecache preset)
     $fields_opts = $handler -> options['fields'];
     $fields_opts['field_gallery_image_fid']['format'] = $tmpstr.$dim . '_default';
-    dpm($fields_opts['field_gallery_image_fid']['format']);
     $handler -> override_option('fields', $fields_opts);
 
     if ($this->options['gallery'] != 'all') {
@@ -155,8 +153,8 @@ class os_boxes_slideshow extends os_boxes_default {
     $output = preg_replace($patt_w, '${1}'.$this->options['size'].'${3}', $output);
     $output = preg_replace($patt_h, '${1}'.($this->options['size']/16*9).'${3}', $output);
 
-    $id = str_replace('_', '-', $this->options['size']);
-    $block['content'] = '<div id="' . $name. '">' .$output . "</div>";
+    $id = str_replace('_', '-', $tmpstr.$dim);
+    $block['content'] = '<div id="' . $id. '" style="width: '.($this->options['size']+8).'px">' .$output . "</div>";
     return $block;
   }
 
