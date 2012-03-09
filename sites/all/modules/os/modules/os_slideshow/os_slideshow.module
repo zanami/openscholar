@@ -36,5 +36,4 @@ function os_slideshow_boxes_plugins(){
   );
 
   return $info;
-
 }
