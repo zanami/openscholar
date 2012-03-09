@@ -7,8 +7,11 @@
  * Note that this provides options, form, and render, but is not to be called as a box
  **/
 
-class os_simpleview_list_default {
-  public function options_defaults(){
+class os_simpleview_list_default extends os_simpleview_list {
+  private $view_name = 'os_simpleview_list_base';
+  private $display_id = 'default';
+  
+  function options_defaults(){ //public?
     //$options = parent::options_defaults();
 
     $options = array();
@@ -19,6 +22,7 @@ class os_simpleview_list_default {
     $options['use_pager'] = 1;
     $options['style'] = 'titles';
     $options['content_type'] = 'all';
+    $options['sorting'] = 'newest';
 
     return $options;
   }
@@ -27,15 +31,6 @@ class os_simpleview_list_default {
   //how to split options over multi page wizard form?
   // since this is separate from box, take its options for defaults
   public function os_simpleview_list_form_basics($options = NULL, $step = NULL){
-  
-//    $multi_info = $this->multiform_info();
-  //  $form = ctools_wizard_multistep_form($multi_info, $step, $form_state);
-//ctools_wizard_multistep_form() returns html.  not quite ready for that yet.
-//ctools_wizard_wrapper($form, $form_state) 
-  
-  	ctools_include('dependent');
-    ctools_add_js('dependent');
-
     $form = array();
     
     $form['description'] = array(
@@ -57,7 +52,7 @@ class os_simpleview_list_default {
     $form['content_type'] = array(
       '#type' => 'select',
       '#title' => t('Content Type'),
-      '#options' => array('all' => t('All')) + $this->list_content_types(),
+      '#options' => array('all' => t('All')) + _os_simpleview_list_content_types(),
       '#required' => TRUE,
     	'#description' => t('Content types to include in this list.'),
       //'#default_value' => $options['content_type']
@@ -133,7 +128,19 @@ class os_simpleview_list_default {
       )
     );
     
-
+    $form['sorting_fieldset'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Sorting',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+    
+    $form['sorting_fieldset']['sorts'] = array(
+      '#type' => 'select',
+      '#options' => array('newest' => t('Newest'), 'oldest' => t('Oldest'), 'alpha' => t('Alphabetical')),
+      '#default_value' => $options['sorts'],
+    );
+    
     return $form;
   }
   
@@ -147,51 +154,93 @@ class os_simpleview_list_default {
     	'basics' => array(
       	'form id' => 'os_simpleview_list_form_basics', 
       	'title' => 'The Basics',
-        'class' => get_class($this), //pass back the class so it can be loaded to get the form    
+       // 'class' => get_class($this), //pass back the class so it can be loaded to get the form    
       ),
       
       'display_options' => array(
       	'form id' => 'os_simpleview_list_form_display_options', 
       	'title' => 'Display Options',
-        'class' => get_class($this), //pass back the class so it can be loaded to get the form
+        //'class' => get_class($this), //pass back the class so it can be loaded to get the form
       ),
     );
   }
   
-  public function render() {
-    $view_name = 'vsite_view_base';  
-  
-    if ($view = views_get_view($view_name)) {
-      true;
+  /*
+  public function render($options = array()) {
+    if ($view = views_get_view($this->view_name)) {
+      if ($view->access($this->display_id)) {
+        $view->set_display($this->display_id);
+        
+        //Tie this view to this box (this tells the view to call this box's view alter)
+        $view->dom_id = "boxes-".$this->delta;
+        $this->prepare_view($view->display_handler, $options);
+        return $view->execute_display();
+      }
+      $view->destroy();
     }
   }
   
-  public function default_list_form() {
-    return $this->options_form();
-  }
+  private function prepare_view(views_plugin_display_default &$handler, $options) {
+    foreach($this->view_overrides($options) as $option => $value) {
+      $handler->override_option($option, $value);
+    }
+  }*/
   
   /**
-   * returns a list of content types and their names
+   * @function view_overrides
+   * 
+   * Provides array of view overrides based on box's options 
    */
-  private function list_content_types() {
-    // os/vsite integration - lists correct content types
-    if (module_exists('vsite') && vsite_get_vsite()) {
-      vsite_include('vsiteapi');
-      $node_options = vsite_content_types(array(1,2));       //Get public and private types
-      drupal_alter('vsite_content_types', $node_options);
+  protected function view_overrides($opts) {
+    //should all this be in an inc file as describe?  maybe in abstract class?
+
+    //scalar options
+    $overrides = array(
+      'items_per_page' => intval($opts['number_of_items']), 
+      'use_pager' => ($opts['use_pager']) ? 'mini' : FALSE,
+    	'use_ajax'  => ($opts['use_pager']) ? TRUE   : FALSE,
+    );
+    
+    //content type filter
+    if ($opts['content_type'] != 'all') {    
+      $overrides['filters'] = array(
+        'type' => array(
+          'operator' => 'in',
+          'value' => array($opts['content_type'] => $opts['content_type']),
+          'group' => 0,
+          'exposed' => FALSE,
+          'expose' => array('operator' => FALSE, 'label' => ''),
+          'id' => 'type',
+          'table' => 'node',
+          'field' => 'type',
+          'relationship' => 'none',
+        ),
+      );
     }
     
-    if (! isset($node_options)) {
-      $node_options = node_get_types('names');
-    }
+    //sorting
+    $overrides['sorts'] = parent::_parse_options_sorts($opts['sorts']);
+     
+    $overrides['style'] = parent::_parse_options_style($opts['style']);
     
-    return $node_options;
+        
+    return $overrides;
+  }
+  
+  /*
+  public function default_list_form() {
+    return $this->options_form();
+  }*/
+  
+  function view_settings() {
+    return (object)array('view_name' => 'os_simpleview_list_base', 'display_id' => 'default');
   }
 
   /**
   * Called from views_pre_view
   * Configures view according to options
   */
+  /*
   public function views_alter(&$view, &$display_id, &$args, &$options = array()) {
 
     //pager
@@ -267,6 +316,6 @@ class os_simpleview_list_default {
     
     //also call alter in whatever class this uses?  
   }
-  
+  */
     
 }

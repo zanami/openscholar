@@ -55,16 +55,30 @@ function os_simpleview_list_ctools_plugin_directory($module, $plugin) {
 function os_simpleview_list_os_simpleview_list_plugin(){
 	$path = drupal_get_path('module', 'os_simpleview_list') . '/plugins/';
 
-	//$info = array('os_simpleview_list_default' => array( //change this name
 	$info = array(
-		'default' => array( // this key indicates which content type to use to get this class
+	  //abstract class to implement for custom plugins
+	  'os_simpleview_list' => array(
+	    'content_type' => NULL,
+	    'handler' => array(
+	    	'class' => 'os_simpleview_list',
+  			'file'  => 'os_simpleview_list.inc',
+  			'path'  => $path,
+	    ),
+	  ), 
+	
+	  //default list until overridden
+		'default' => array(
+	    'content_type' => 'default',
   		'handler' => array(
   			'class' => 'os_simpleview_list_default',
   			'file'  => 'os_simpleview_list_default.inc',
   			'path'  => $path,
   	    'title' => t('List of Posts'),
+	      'parent' => 'os_simpleview_list',
   		)
-	  )
+	  ),
+	  
+
 	);
 	
 	return $info;
@@ -148,15 +162,14 @@ function os_simpleview_list_page($js = NULL, $step = NULL) { //ditch these args/
 //  	'rerender' => TRUE, //kills the blank form error, but no new form is drawn
   );
   
-  //Get appropriate plugin/class
-  $content_type = (isset($cached['content_type'])) ? $cached['content_type'] : 'default';   
-  $plugins = os_simpleview_list_plugin_load(); 
-  $plugin = (isset($plugins[$content_type])) ? $plugins[$content_type] : $plugins['default'];
+  $content_type = (isset($cached['content_type'])) ? $cached['content_type'] : FALSE;   
+  
+//  $plugin = (isset($plugins[$content_type])) ? $plugins[$content_type] : $plugins['default'];
   
   //Instantiate class, get definition for multi-page form
-  $class = ctools_plugin_get_class($plugin, 'handler');
-  $instance = new $class();
-  $form_info = os_simpleview_list_multiform_info();  $instance->multiform_info($js);
+  //$class = ctools_plugin_get_class($plugin, 'handler');
+  //$instance = new $class();
+  $form_info = os_simpleview_list_multiform_info($js, $content_type);//  $instance->multiform_info($js);
   
   // Check the current step's form id.  If it isn't defined assume it's inside the content class.    
   $step = ($step) ? $step : array_shift(array_keys($form_info['forms']));
@@ -188,6 +201,9 @@ function os_simpleview_list_page($js = NULL, $step = NULL) { //ditch these args/
  * the form in our object
  */
 function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
+	ctools_include('dependent');
+  ctools_add_js('dependent');
+    
   $step = $form_state['step'];
   $class = $form_state['form_info']['forms'][$step]['class'];
   $form_method = $form_state['form_info']['forms'][$step]['form method'];
@@ -196,7 +212,12 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
   $class_handler = ctools_plugin_get_class($plugin, 'handler');
   $instance = new $class(); //class_handler()
   
-  $form += $instance->$form_method();
+  $default_options = $instance->options_defaults();
+  if ($form_state['cached']) {
+    $default_options = array_merge($default_options, $form_state['cached']);
+  }
+  
+  $form += $instance->$form_method($default_options);
   
   
   //do we need ctools-use-ajax in the form or is that implid by wizard_submit?
@@ -287,7 +308,7 @@ function os_simpleview_list_make_box($opts){
  * 
  * Sets up multistep form, retrieiving forms from active plugin
  */
-function os_simpleview_list_multiform_info($js, $content_type = 'default') {
+function os_simpleview_list_multiform_info($js, $content_type) {
   ctools_include('wizard');
   
   $form_info = array(
@@ -301,12 +322,57 @@ function os_simpleview_list_multiform_info($js, $content_type = 'default') {
     'cancel callback' => 'os_simpleview_list_multiform_cancel',
   );
   
-  //Get appropriate plugin/class   
-  $plugin = os_simpleview_list_plugin_load($content_type); 
-//  $plugin = (isset($plugins[$content_type])) ? $plugins[$content_type] : $plugins['default'];
-  $class = ctools_plugin_get_class($plugin, 'handler');
-  $instance = new $class();
-  $form_info['forms'] = $instance->multiform_info();
+  //always load the default form as a starting point
+  //plugins no longer extend default, so we load this here instead of passing it up the chain
+  $default_plugin = os_simpleview_list_plugin_load('default');
+  $default_class = ctools_plugin_get_class($default_plugin, 'handler');
+  $default = new $default_class();
+  $form_info['forms'] = $default->multiform_info();
+  
+  //stash the class for later
+  foreach ($form_info['forms'] as $key => $form) {
+    $form_info['forms'][$key]['class'] = $default_class;
+  }
+  
+  
+  //Append forms from appropriate content type
+  $plugins = os_simpleview_list_plugin_load();   
+  foreach($plugins as $key => $plugin) {
+    if ($content_type && ($plugin['content_type'] == $content_type)) {
+      $class = ctools_plugin_get_class($plugin, 'handler');
+      $instance = new $class();
+      
+      $forms = $instance->multiform_info();
+      foreach ($forms as $key => $form) {
+        $forms[$key]['class'] = $class;  
+      }
+      $form_info['forms'] += $forms;
+      
+      break;
+    } 
+  }
+
 
   return $form_info;
+}
+
+
+/**
+ * @function _os_simpleview_list_content_types()
+ * 
+ * returns a list of content types and their names
+ */
+function _os_simpleview_list_content_types() {
+  // os/vsite integration - lists correct content types
+  if (module_exists('vsite') && vsite_get_vsite()) {
+    vsite_include('vsiteapi');
+    $node_options = vsite_content_types(array(1,2));       //Get public and private types
+    drupal_alter('vsite_content_types', $node_options);
+  }
+  
+  if (! isset($node_options)) {
+    $node_options = node_get_types('names');
+  }
+  
+  return $node_options;
 }

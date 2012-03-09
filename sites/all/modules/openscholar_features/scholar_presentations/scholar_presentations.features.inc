@@ -63,12 +63,13 @@ function scholar_presentations_wysiwyg_fields_icons() {
  */
 function scholar_presentations_os_simpleview_list_plugin() {
 	$info = array(
-  	'presentation' => array( //content type to associate with this form
+  	'presentation' => array( 
+	  'content_type' => 'presentation',
   		'handler' => array(
   			'class' => 'scholar_presentations',
   			'file'  => 'scholar_presentations.inc',
   			'path'  => drupal_get_path('module', 'scholar_presentations') . '/plugins/',
-	      'parent' => 'default', //parent plugin, NOT parent class
+	      'parent' => 'os_simpleview_list', //parent plugin, NOT parent class
   		)
   	)
   );

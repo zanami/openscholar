@@ -6,12 +6,13 @@
  * Extends os_simpleview_list to provide options for presentations
  */
 
-class scholar_presentations extends os_simpleview_list_default {
+class scholar_presentations extends os_simpleview_list {
   
   // could the constructor from this take the object from the first pass of the form as a parameter?  
   // that would let us keep the data, but 'swap' classes.  probably better way out there tho.
   public function options_defaults(){
-    $options = parent::options_defaults();
+    //$options = parent::options_defaults();
+    $options = array();
     $options['content_type'] = 'presentation';
     return $options;
   }
@@ -36,10 +37,10 @@ class scholar_presentations extends os_simpleview_list_default {
     $form = parent::multiform_info();
 
     //appends the presentations form
-    $form['forms']['presentations_form'] = array(
+    $form['presentations_form'] = array(
     	'form id' => 'os_simpleview_list_form_presentation',  //fill out the form later.  this is just the logic for altering pages
       'title' => t('Presentation'),
-      'class' => get_class($this),
+//      'class' => get_class($this), //obviated by class loop in module
     );
       
     //also add a form that modifies existing.  instead of changing the id, change the class to this one so it can call parent
@@ -57,5 +58,34 @@ class scholar_presentations extends os_simpleview_list_default {
     );
     
     return $form;
+  }
+  
+  protected function view_overrides($opts) {
+    //should all this be in an inc file as describe?
+     
+    //$overrides = parent::view_overrides($opts);
+    //sorting
+    $overrides = array(); //custom view, so lets not inherit any overrides
+    
+    $overrides['filters'] = array(
+      'type' => array(
+        'operator' => 'in',
+        'value' => array('presentation' => 'presentation'),
+        'group' => 0,
+        'exposed' => FALSE,
+        'expose' => array('operator' => FALSE, 'label' => ''),
+        'id' => 'type',
+        'table' => 'node',
+        'field' => 'type',
+        'relationship' => 'none',
+      ),
+    );
+  
+    
+    return $overrides;
+  }
+  
+  function view_settings() {
+    return (object)array('view_name' => 'os_simpleview_list_base', 'display_id' => 'default');
   }
 }

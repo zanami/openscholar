@@ -23,7 +23,8 @@ class os_simpleview_list_box extends os_boxes_modalframe {
   public function options_defaults() {
     $options = parent::options_defaults();
     //need to know $class in order to get defaults from svlist plugin
-    $options += $this->_get_list_class()->options_defaults();
+    $options += $this->_get_list_class()->options_defaults(); 
+    
     
     return $options;
   }
@@ -40,6 +41,9 @@ class os_simpleview_list_box extends os_boxes_modalframe {
   public function render() {
     $block = parent::render();
     
+    $block['content'] = $this->_get_list_class()->render($this->options);
+    //call list plugin.  get view, handlers.
+/*
     $view = 'vsite_view_base';
     $display_id = 'default'; //add a block ID?
     
@@ -54,6 +58,7 @@ class os_simpleview_list_box extends os_boxes_modalframe {
       }
       $view->destroy();
     }
+    */
     
     return $block;
   }
@@ -62,12 +67,13 @@ class os_simpleview_list_box extends os_boxes_modalframe {
    * Called from views_pre_view
 	 * Configures view according to options
    */
+  /*
   public function views_alter(&$view, &$display_id, &$args) {
     //Use content type's class's views_alter.
     $instance = $this->_get_list_class();
     $instance->views_alter($view, $display_id, $args, $this->options);
 
-  }
+  }*/
   
   function _get_list_class() {
     $class_name = ($this->options['content_type'] == 'all') ? 'default' : $this->options['content_type'];
