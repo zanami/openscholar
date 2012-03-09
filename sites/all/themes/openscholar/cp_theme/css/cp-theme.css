@@ -177,6 +177,11 @@ right: 4px;
  top: 4px;
   }
   
+.innerframe > .help {
+	position: absolute;
+right: 20px;
+ top: 10px;
+  }  
   
 h2.title + .help {
 left: 30px;
@@ -252,8 +257,14 @@ body.page-cp-users tbody tr.even {
 background: #f3f3f3;
 }
 
-table#taxonomy-tags th:nth-child(2) {
-	width:165px;
+
+
+body.page-cp-build-taxonomy table th:nth-child(1) {
+	width:80%;
+}
+
+body.page-cp-build-taxonomy table th:nth-child(2) {
+	width:20%;
 }
 
 table#fields tr.region-features,

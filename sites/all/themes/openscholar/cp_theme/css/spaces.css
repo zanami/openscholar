@@ -111,9 +111,13 @@ div.spaces-block-customizer strong.region {
 
 /* form#spaces-features-form td.actions a {padding:2px;background:#268ce3;color:#FFF; -moz-border-radius: 4px;-webkit-border-radius:4px;} */
 
-form#spaces-features-form td.actions a {width:100px;height:25px;padding:0 0 5px 22px;background:url('../images/featureCustGear.png') no-repeat; color:#105ea9;} 
-
-
+form#spaces-features-form td.actions a {
+	width:100px;
+	height:25px;
+	padding:2px 0 5px 22px;
+	background:url('../images/featureCustGear.png') no-repeat; 
+	color:#105ea9;
+	} 
 
 
 .spaces-features a.tabledrag-handle {
