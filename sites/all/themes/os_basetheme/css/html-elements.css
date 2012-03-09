@@ -7,25 +7,59 @@
  * The font size is set on the html element so we can dynamically
  * resize the font using body classes.
  */
-html {
-  font-size: 81.3%;
-}
 body {
-  font-family: Verdana, Geneva, "DejaVu Sans", sans-serif;
-  line-height: 1.5;
+    font: 13px/1.5em 'helvetica neue',helvetica,arial,sans-serif;
 }
-h1 {
-  font-size: 1.538em;
-}
-h2 {
-  font-size: 1.385em;
-}
+h1,
+h2,
 h3 {
-  font-size: 1.231em;
-}
+  text-rendering: optimizeLegibility;
+  }
+
+h1 {
+  font-size: 1.8em;
+  line-height:1.083em;
+  }
+
+h2 {
+  font-size: 1.3em;
+  line-height:1.083em;
+  }
+
+h2.title {
+  margin-bottom: 1.5em;
+  }
+
+h2.with-tabs {
+  margin-bottom: .3em;
+  }
+
+h2.title span.version-info {
+  display:block;
+  font-style: italic;
+  }
+
+.section-admin h2.title {
+  background: url('../images/glasses.png') no-repeat 0 50% transparent;
+  padding-left: 79px;
+  margin: 1em 0;
+  }
+
+h2,
+h3,
+h4,
+h5 {
+  margin-bottom: 1em;
+  font-weight: 700;
+  }
+
+h3 {
+  font-size: 1.154em;
+  }
+
 h4 {
-  font-size: 1.077em;
-}
+  font-size: 1em;
+  }
 h5,
 h6 {
   font-size: 1em;

@@ -15,7 +15,7 @@
 /**
  * Override or insert variables into the html templates.
  */
-function adaptivetheme_subtheme_preprocess_html(&$vars) {
+function os_basetheme_subtheme_preprocess_html(&$vars) {
   // Load the media queries styles
   // Remember to rename these files to match the names used here - they are
   // in the CSS directory of your subtheme.
@@ -23,7 +23,7 @@ function adaptivetheme_subtheme_preprocess_html(&$vars) {
     'os_basetheme.responsive.style.css',
     'os_basetheme.responsive.gpanels.css'
   );
-  load_subtheme_media_queries($media_queries_css, 'adaptivetheme_subtheme');
+  load_subtheme_media_queries($media_queries_css, 'os_basetheme_subtheme');
 
  /**
   * Load IE Stylesheets
@@ -43,7 +43,7 @@ function adaptivetheme_subtheme_preprocess_html(&$vars) {
   $ie_files = array(
     'lte IE 7' => 'ie-lte-7.css',
   );
-  load_subtheme_ie_styles($ie_files, 'adaptivetheme_subtheme');
+  load_subtheme_ie_styles($ie_files, 'os_basetheme_subtheme');
   // */
   
   // Add class for the active theme name
@@ -59,7 +59,7 @@ function adaptivetheme_subtheme_preprocess_html(&$vars) {
 }
 
 /* -- Delete this line if you want to use this function
-function adaptivetheme_subtheme_process_html(&$vars) {
+function os_basetheme_subtheme_process_html(&$vars) {
 }
 // */
 

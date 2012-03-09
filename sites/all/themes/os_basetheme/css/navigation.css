@@ -33,12 +33,7 @@ a:focus {}
   float: left;
   list-style: none;
 }
-.nav li a,
-.nav .menu li a {
-  display: block;
-  white-space: nowrap;
-  padding: 0 10px;
-}
+
 .nav ul,
 .nav ul.menu,
 .nav ul.menu li {
