@@ -5,17 +5,17 @@
  */
 
 /**
- * Implements hook_ctools_plugin_api().
+ * Implementation of hook_ctools_plugin_api().
  */
 function og_example_ctools_plugin_api() {
   list($module, $api) = func_get_args();
   if ($module == "page_manager" && $api == "pages_default") {
-    return array("version" => "1");
+    return array("version" => 1);
   }
 }
 
 /**
- * Implements hook_node_info().
+ * Implementation of hook_node_info().
  */
 function og_example_node_info() {
   $items = array(

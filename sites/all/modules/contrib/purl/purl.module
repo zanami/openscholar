@@ -133,8 +133,8 @@ function purl_init() {
     // TODO - is this still needed?? (Does language_init still modify $_GET['q'])
     // $_GET['q'] = $q = purl_language_strip($_REQUEST['q']);
     $_GET['q'] = $q = $_GET['q'];
-    drupal_path_initialize();
     purl_get_normal_path($q, TRUE);
+    drupal_path_initialize();
   }
 }
 

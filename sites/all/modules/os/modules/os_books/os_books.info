@@ -1,0 +1,5 @@
+name = OpenScholar: Books
+description = Makes browsing through pages of a book easier and quicker
+package = "OpenScholar"
+core = 7.x
+dependencies[] = "book"
