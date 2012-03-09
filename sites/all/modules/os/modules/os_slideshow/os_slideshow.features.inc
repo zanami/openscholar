@@ -47,8 +47,8 @@ function os_slideshow_imagecache_default_presets() {
         )
       ),
     ),
-    'os_slideshow_960x540' => array(
-      'presetname' => 'os_slideshow_960x540',
+    'os_slideshow_960x360' => array(
+      'presetname' => 'os_slideshow_960x360',
       'actions' => array(
         '0' => array(
           'weight' => '0',

@@ -132,8 +132,11 @@ class os_boxes_slideshow extends os_boxes_default {
     // Insantly breaking will result in $width referring to the width we want
     // if the user-given size is larger than all of them, we default to the largest available
     foreach ($options as $width => $dim) {
-      if ($this->options['size'] <= $width)
+      if ($this->options['size'] <= $width) {
+        $ratio = explode('x',$dim);
+        $ratio = $ratio[1]/$ratio[0];
         break;
+      }
     }
 
     // override size (imagecache preset)
@@ -151,7 +154,7 @@ class os_boxes_slideshow extends os_boxes_default {
     $patt_h = '/(<img [^>]* height=")(\d*)("[^>]*>)/';
 
     $output = preg_replace($patt_w, '${1}'.$this->options['size'].'${3}', $output);
-    $output = preg_replace($patt_h, '${1}'.($this->options['size']/16*9).'${3}', $output);
+    $output = preg_replace($patt_h, '${1}'.($this->options['size']*$ratio).'${3}', $output);
 
     $id = str_replace('_', '-', $tmpstr.$dim);
     $block['content'] = '<div id="' . $id. '" style="width: '.($this->options['size']+8).'px">' .$output . "</div>";
