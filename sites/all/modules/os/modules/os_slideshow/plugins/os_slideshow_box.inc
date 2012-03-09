@@ -59,7 +59,7 @@ class os_boxes_slideshow extends os_boxes_default {
 	    $form_element_state = array();
 	    $views_style_plugin = $view->style_plugin;
 
-	    call_user_func_array($function, array(&$form_element, &$form_element_state, &$views_style_plugin));
+	    $function($form_element, $form_element_state, $views_style_plugin);
 	    //dpm($form_element);
 
 
@@ -68,21 +68,12 @@ class os_boxes_slideshow extends os_boxes_default {
     }
 
     // size
-    $options = array();
-    $imagecache_presets = imagecache_presets();
-    $tmpstr = 'os_slideshow_';
-    foreach ( $imagecache_presets as $name => $presets ) {
-      if ($tmpstr == substr($name, 0, strlen($tmpstr))) {
-        $options[$name] = substr($name, strlen($tmpstr));
-      }
-
-    }
-
     $form['size'] = array(
-      '#type' => 'select',
+      '#type' => 'textfield',
       '#title' => t('Size'),
-      '#options' => $options,
-      '#default_value' => $this->options['size']
+      '#default_value' => $this->options['size'],
+      '#field_suffix' => 'px',
+      '#description' => t('Enter the width of the image in pixels.'),
     );
 
     //dpm($imagecache_presets);
@@ -126,9 +117,31 @@ class os_boxes_slideshow extends os_boxes_default {
     $style_opts['views_slideshow_singleframe']['effect'] = $this->options['effect'];
     $handler -> override_option('style_options', $style_opts);
 
+    $imagecache_presets = imagecache_presets();
+    $tmpstr = 'os_slideshow_';
+    foreach ( $imagecache_presets as $name => $presets ) {
+      if ($tmpstr == substr($name, 0, strlen($tmpstr))) {
+        $dim = substr($name, strlen($tmpstr));
+        $width = explode('x',$dim);
+        $options[$width[0]] = $dim;
+      }
+    }
+
+    // loops through all the image cache presets and finds the next largest one
+    // from the user-provided size.
+    // Insantly breaking will result in $width referring to the width we want
+    // if the user-given size is larger than all of them, we default to the largest available
+    foreach ($options as $width => $dim) {
+      if ($this->options['size'] <= $width) {
+        $ratio = explode('x',$dim);
+        $ratio = $ratio[1]/$ratio[0];
+        break;
+      }
+    }
+
     // override size (imagecache preset)
     $fields_opts = $handler -> options['fields'];
-    $fields_opts['field_gallery_image_fid']['format'] = $this->options['size'] . '_default';
+    $fields_opts['field_gallery_image_fid']['format'] = $tmpstr.$dim . '_default';
     $handler -> override_option('fields', $fields_opts);
 
     if ($this->options['gallery'] != 'all') {
@@ -137,8 +150,14 @@ class os_boxes_slideshow extends os_boxes_default {
 
     $block = parent::render();
     $output = $view->execute_display();
-    $id = str_replace('_', '-', $this->options['size']);
-    $block['content'] = '<div id="' . $id. '">' .$output . "</div>";
+    $patt_w = '/(<img [^>]* width=")(\d*)("[^>]*>)/';
+    $patt_h = '/(<img [^>]* height=")(\d*)("[^>]*>)/';
+
+    $output = preg_replace($patt_w, '${1}'.$this->options['size'].'${3}', $output);
+    $output = preg_replace($patt_h, '${1}'.($this->options['size']*$ratio).'${3}', $output);
+
+    $id = str_replace('_', '-', $tmpstr.$dim);
+    $block['content'] = '<div id="' . $id. '" style="width: '.($this->options['size']+8).'px">' .$output . "</div>";
     return $block;
   }
 
