@@ -16,10 +16,13 @@ class og_context_plugin_access_og_perm extends views_plugin_access {
   function access($account) {
     // Attempt to get the group from the current context and determine if the
     // user has the appropriate permission within the group
-    if ($group = og_context($this->options['group_type'])) {
-      return og_user_access($group['group_type'], $group['gid'], $this->options['perm'], $account);
+    $group = og_context();
+    if (!$group) {
+      // We should not allow access to the view if we were unable to find a
+      // group
+      return FALSE;
     }
-    return FALSE;
+    return og_user_access($group->gid, $this->options['perm'], $account);
   }
 
   /**
@@ -37,7 +40,6 @@ class og_context_plugin_access_og_perm extends views_plugin_access {
   function option_definition() {
     $options = parent::option_definition();
     $options['perm'] = array('default' => 'edit group');
-    $options['group_type'] = array('default' => 'node');
 
     return $options;
   }
@@ -60,13 +62,6 @@ class og_context_plugin_access_og_perm extends views_plugin_access {
       '#title' => t('OG permission'),
       '#default_value' => $this->options['perm'],
       '#description' => t('Only users with the selected permission flag in a group retrieved from context will be able to access this display.')
-    );
-    $form['group_type'] = array(
-      '#type' => 'select',
-      '#options' => og_get_all_group_entity(),
-      '#title' => t('Group type'),
-      '#default_value' => $this->options['group_type'],
-      '#description' => t('Determine what entity type that group should be of.')
     );
   }
 }

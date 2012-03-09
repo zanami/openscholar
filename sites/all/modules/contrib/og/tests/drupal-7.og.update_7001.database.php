@@ -22561,6 +22561,13 @@ db_insert('registry')->fields(array(
   'weight' => '0',
 ))
 ->values(array(
+  'name' => 'og_handler_filter_group_state',
+  'type' => 'class',
+  'filename' => 'sites/all/modules/og/includes/views/og_handler_filter_group_state.inc',
+  'module' => 'og',
+  'weight' => '0',
+))
+->values(array(
   'name' => 'og_handler_relationship',
   'type' => 'class',
   'filename' => 'sites/all/modules/og/includes/views/og_handler_relationship.inc',
