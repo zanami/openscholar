@@ -45,14 +45,13 @@ function scholar_announcements_context_default_contexts() {
           'region' => 'right',
           'label' => 'Latest Announcements',
         ),
-        'vsite_taxonomy-0' => array(
-          'module' => 'vsite_taxonomy',
-          'delta' => '0',
-          'weight' => -20,
-          'region' => 'right',
-          'label' => 'Scholar site categories',
-          'type' => 'context_ui',
-        ),
+        'boxes-vsite_taxonomy_fltr_cat' => array(
+	         'module' => 'boxes',
+	         'delta' => 'vsite_taxonomy_fltr_cat',
+	         'label' => 'Filter By Category',
+	         'weight' => 20,
+	         'region' => 'right',
+	       ),
         'boxes-os_addthis' => array(
           'module' => 'boxes',
           'delta' => 'os_addthis',
