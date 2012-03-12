@@ -435,7 +435,8 @@ function _iqss_gking_term_page_tree($term, $vid, $operator = 'or', $tree = false
   }
   $conf['feed_default_items'] = $orig_feed_items; //Reset, who knows where this is used
 
-  if(strlen($s_subterm_output) && !strlen($output)){
+  if(strlen($s_subterm_output) && !strlen($output) && strlen($term->description)){
+  	//This category has terms to print and a description so lets start the output with the description
     $output = '<div class="taxonomy-term-description">' . filter_xss_admin($term->description) . '</div>' . $s_subterm_output;
   }elseif (strlen($s_subterm_output)){
     $output .= $s_subterm_output;
