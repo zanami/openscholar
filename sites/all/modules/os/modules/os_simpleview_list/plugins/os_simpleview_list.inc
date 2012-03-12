@@ -43,7 +43,13 @@ abstract class os_simpleview_list {
         //Tie this view to this box (this tells the view to call this box's view alter)
         $view->dom_id = "boxes-".$this->delta;
         $this->prepare_view($view->display_handler, $options);
-        return $view->execute_display();
+        $output = $view->execute_display();
+        
+        if ($options['more']) {
+          $output .= l($options['more_text'], $options['more_link']);
+        }
+        
+        return $output;
       }
       $view->destroy();
     }
@@ -84,14 +90,6 @@ abstract class os_simpleview_list {
     return $this->options_form();
   }*/
 
-  /**
-   * @function os_simpleview_list_prepare_view_$OPTION
-   * 
-   * Adds options to view handler, but other plugins can override these default functions
-   */
-  protected function os_simpleview_list_prepare_view_sorts(&$handler, $settings) {
-    
-  }
   
   /**
    * @function _parse_option_OPTION
@@ -101,9 +99,10 @@ abstract class os_simpleview_list {
    *
    */
   protected  function _parse_options_sorts($sorting_method) {
+    $overrides = array('sorts' => array());
     switch ($sorting_method) {
       case 'newest':
-        $sorts =  array(
+        $overrides['sorts']['created'] =  array(
           'order' => 'DESC',
           'granularity' => 'second',
           'id' => 'created',
@@ -114,7 +113,7 @@ abstract class os_simpleview_list {
       break;
       
       case 'oldest':
-        $sorts['created'] =  array(
+        $overrides['sorts']['created'] =  array(
           'order' => 'ASC',
           'granularity' => 'second',
           'id' => 'created',
@@ -124,8 +123,8 @@ abstract class os_simpleview_list {
         );
       break;
 
-      case 'a-z':
-        $sorts['title'] = array(
+      case 'alpha':
+        $overrides['sorts']['title'] = array(
           'order' => 'ASC',
           'id' => 'title',
           'table' => 'node',
@@ -135,10 +134,58 @@ abstract class os_simpleview_list {
       break;
     }
     
-    return $sorts;
+    return $overrides;
   }
   
-  protected function _parse_options_style($display_style) {
+  protected function _parse_options_row_options($display_style) {
+    $overrides= array();
     
+    switch ($display_style) {
+      case 'titles':
+        //$row_options = array('teaser' => 0, 'links' => 1, 'comments' => 0);
+        $overrides['fields'] = array(
+			    'title' => array(
+        	  'label' => '', 	
+	          'alter' => array(),	
+    	      'empty' => '', 	
+	          'hide_empty' => 0,	
+	          'empty_zero' => 0,	
+	          'link_to_node' => TRUE,	
+	          'spaces' => array('frontpage' => 0, 'type' => 'spaces_og'),	
+	          'exclude' => 0,	
+	          'id' => 'title',	
+						'table'	=> 'node',
+	          'field'	=> 'title',
+						'relationship' => 'none'	
+          ),
+		    );
+		    $overrides['style_plugin'] = 'list';
+		    $overrides['style_options'] = array('grouping' => '', 'type' => 'ul');
+
+      break;
+      /*
+      case 'full':
+      break;
+      */
+      case 'teaser':     
+      default:
+      break;
+    }
+    
+    return $overrides;    
   }
+  /*
+  protected  function  _parse_options_more($opts) {
+    $overrides = array();
+    
+    if ($opts['more']) {
+      $overrides['use_more'] = TRUE;
+      $overrides['use_more_text'] = $opts['more_text'];
+      $overrides['link_display'] = $opts['more_link'];
+      //more_link isn't part of views.  render_more_link builds the path automatically.  our more link from other boxes
+      //doesn't act like the views one.  maybe it should be drawn after instead if we're to keep the path overriiding      
+    }
+    
+    return $overrides;
+  }*/
 }

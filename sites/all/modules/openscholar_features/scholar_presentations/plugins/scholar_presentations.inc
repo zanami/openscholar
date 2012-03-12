@@ -88,4 +88,19 @@ class scholar_presentations extends os_simpleview_list {
   function view_settings() {
     return (object)array('view_name' => 'os_simpleview_list_base', 'display_id' => 'default');
   }
+  
+  //override and extendparse_options_srts
+  protected  function _parse_options_sorts($sorting_method) {
+    $sorts = array();
+    switch ($sorting_method) {
+      case 'presented_date':
+        //code
+        break;
+       
+      default:
+        $sorts = parent::_parse_options_sorts($sorting_method);
+        break;
+        
+    }
+  }
 }

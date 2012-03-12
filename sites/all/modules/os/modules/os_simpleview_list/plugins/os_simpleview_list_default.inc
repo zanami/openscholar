@@ -22,7 +22,7 @@ class os_simpleview_list_default extends os_simpleview_list {
     $options['use_pager'] = 1;
     $options['style'] = 'titles';
     $options['content_type'] = 'all';
-    $options['sorting'] = 'newest';
+    $options['sorts'] = 'newest';
 
     return $options;
   }
@@ -128,14 +128,14 @@ class os_simpleview_list_default extends os_simpleview_list {
       )
     );
     
-    $form['sorting_fieldset'] = array(
+    $form['sorts_fieldset'] = array(
       '#type' => 'fieldset',
       '#title' => 'Sorting',
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
     
-    $form['sorting_fieldset']['sorts'] = array(
+    $form['sorts_fieldset']['sorts'] = array(
       '#type' => 'select',
       '#options' => array('newest' => t('Newest'), 'oldest' => t('Oldest'), 'alpha' => t('Alphabetical')),
       '#default_value' => $options['sorts'],
@@ -219,9 +219,13 @@ class os_simpleview_list_default extends os_simpleview_list {
     }
     
     //sorting
-    $overrides['sorts'] = parent::_parse_options_sorts($opts['sorts']);
+    $overrides += parent::_parse_options_sorts($opts['sorts']);
      
-    $overrides['style'] = parent::_parse_options_style($opts['style']);
+    //display - teaser or title
+    $overrides += parent::_parse_options_row_options($opts['style']);
+    
+    //more links - see os_simpleview_list::render
+   
     
         
     return $overrides;
