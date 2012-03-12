@@ -17,16 +17,14 @@
    </header>
  <?php endif; ?>  
 <!--header regions end-->
-
+<!--main menu region beg-->
   <?php print render($page['menu_bar']); ?>
-  <?php if ($primary_navigation): print $primary_navigation; endif; ?>
-  <?php if ($secondary_navigation): print $secondary_navigation; endif; ?>
+<!--header region beg-->
 
   <?php print $messages; ?>
-  <?php print render($page['help']); ?>
-
 
   <div id="columns"><div class="columns-inner clearfix">
+  	<!--content area beg-->
     <div id="content-column"><div class="content-inner">
 
       <?php $tag = $title ? 'section' : 'div'; ?>
@@ -63,16 +61,18 @@
       </<?php print $tag; ?>>
 
   </div></div>
+<!--content area end-->
 
+<!--sidebar first region beg-->
     <?php print render($page['sidebar_first']); ?>
+<!--sidebar first region end-->
+<!--sidebar second region beg-->
     <?php print render($page['sidebar_second']); ?>
-
+<!--sidebar second region end-->
   </div></div>
-
-  <?php print render($page['tertiary_content']); ?>
 
   <?php if ($page['footer']): ?>
     <footer role="contentinfo"><?php print render($page['footer']); ?></footer>
   <?php endif; ?>
 
-</div>
+</div><!--page region end-->

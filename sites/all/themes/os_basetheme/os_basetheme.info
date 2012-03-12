@@ -32,22 +32,24 @@
 
 ;----------// Regions
 
-  regions[sidebar_first]     = Sidebar first
-  regions[sidebar_second]    = Sidebar second
-  regions[content]           = Main Content
-  regions[highlighted]       = Highlighted
-  regions[content_aside]     = Aside
-  regions[secondary_content] = Secondary
-  regions[tertiary_content]  = Tertiary
-  regions[footer]            = Footer
-  regions[leaderboard]       = Leaderboard
-  regions[header_left]            = Header Left
-  regions[header]            = Header Main
-  regions[header_right]            = Header Right
-  regions[menu_bar]          = Menu Bar
-  regions[help]              = Help
-  regions[page_top]          = Page top
-  regions[page_bottom]       = Page bottom
+  regions[sidebar_first] = Sidebar first
+  regions[sidebar_second] = Sidebar second
+  regions[content]  = Main Content
+  regions[menu_bar]  = Menu Bar
+  regions[footer] = Footer
+  regions[header_left] = Header Left
+  regions[header] = Header Main
+  regions[header_right] = Header Right
+  
+ ;----------// Disabled Regions
+  ; regions[highlighted]       = Highlighted
+  ; regions[content_aside]     = Aside
+  ; regions[secondary_content] = Secondary
+  ; regions[tertiary_content]  = Tertiary
+ ;  regions[leaderboard]       = Leaderboard
+ ;  regions[help]              = Help
+  ; regions[page_top]          = Page top
+  ; regions[page_bottom]       = Page bottom
 
 
 ;----------// Gpanel Regions
@@ -118,16 +120,16 @@
   ; Layout settings
 
   ; Standard bigscreen
-  settings[bigscreen_layout]         = 'three-col-grail'
-  settings[bigscreen_page_unit]      = '%'
-  settings[bigscreen_sidebar_unit]   = '%'
-  settings[bigscreen_max_width_unit] = 'px'
-  settings[bigscreen_page_width]     = 100
-  settings[bigscreen_sidebar_first]  = 25
-  settings[bigscreen_sidebar_second] = 25
-  settings[bigscreen_set_max_width]  = 1
-  settings[bigscreen_max_width]      = 1260
-  settings[bigscreen_media_query]    = 'only screen and (min-width:1025px)'
+   settings[bigscreen_layout]         = 'three-col-grail'
+   settings[bigscreen_page_unit]      = '%'
+   settings[bigscreen_sidebar_unit]   = '%'
+   settings[bigscreen_max_width_unit] = 'px'
+   settings[bigscreen_page_width]     = 100
+   settings[bigscreen_sidebar_first]  = 25
+   settings[bigscreen_sidebar_second] = 25
+   settings[bigscreen_set_max_width]  = 1
+   settings[bigscreen_max_width]      = 1260
+   settings[bigscreen_media_query]    = 'only screen and (min-width:1025px)'
 
   ; Tablet landscape
   settings[tablet_landscape_layout]         = 'three-col-grail'

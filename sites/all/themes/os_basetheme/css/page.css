@@ -1,33 +1,39 @@
-/* Temporarily (for testing) color the regions */
+/* Temporarily (for testing) border the regions */ 
 .region-header {
-background:#EEEEBB;
+border:1px solid #000;
 }
 
 .region-header-left {
-background:#44EEBB;
+border:1px solid #000;
 }
 
 .region-header-right {
-background:#EE44BB;
+border:1px solid #000;
 }
 
 #content-column { 
-background:#EEFF77;	
+border:1px solid #000;	
 }
 
 
 .region-sidebar-first  {
-background:#FFACAC;	
+border:1px solid #000;	
 }
 
 
 .region-sidebar-second {
-background:#CCC;	
+border:1px solid #000;
 	}
 
 .region-footer {
-background:#777;	
+border:1px solid #000;
 	}
+	
+#menu-bar  {
+border:1px solid #000;	
+	}
+	
+	 
 
 /* Page */
 
@@ -58,7 +64,7 @@ position:relative;
 
 .region-header-right {
     width: 200px;          /* RC width */
-  margin-right: -200px;  /* RC width */
+  margin-right: -100%;  /* RC width */
 }
 
 
