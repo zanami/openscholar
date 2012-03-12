@@ -24,3 +24,5 @@ conditional-stylesheets[if lte IE 7][all][] = scholar-cayley-ie.csss
   regions[header_left] = Header Left
   regions[header] = Header Main
   regions[header_right] = Header Right
+  
+  

@@ -1,64 +1,53 @@
 /* Temporarily (for testing) border the regions */ 
-.region-header {
+.region {
 border:1px solid #000;
 }
 
-.region-header-left {
-border:1px solid #000;
-}
-
-.region-header-right {
-border:1px solid #000;
-}
 
 #content-column { 
 border:1px solid #000;	
 }
 
 
-.region-sidebar-first  {
-border:1px solid #000;	
-}
-
-
-.region-sidebar-second {
-border:1px solid #000;
-	}
-
-.region-footer {
-border:1px solid #000;
-	}
-	
 #menu-bar  {
 border:1px solid #000;	
 	}
 	
-	 
+/* Standard layout three-col-grail */
+@media only screen and (min-width:1025px) {
+.two-sidebars .content-inner {margin-left: 200px; margin-right: 200px;}
+
+.sidebar-first .content-inner {margin-left: 200px; margin-right: 0;}
+
+.sidebar-second .content-inner {margin-right: 200px; margin-left: 0;}
+
+.region-sidebar-first {width: 200px; margin-left: -100%;}
+
+.region-sidebar-second {width: 200px; margin-left: -200px; clear: none;}	 
 
 /* Page */
-
+#header-container, .columns-inner {
+  padding-left: 220px; /* left width incl. padding */
+  padding-right: 240px; /*right width incl. padding plus center padding */ 
+  }
+  
+  
+.region, #content-column  {
+float: left;
+position:relative;
+padding: 10px;
+}
 
 /* Floating & positioning the header regions not covered by ABT */
-#header-container {
-	padding-left: 200px; /* left width incl. padding */
-  padding-right: 200px; /*right width incl. padding plus center padding */ 
-  }
+
 
 .region-header {
   width: 100%;
 }
 
-.region-header,
-.region-header-left,
-.region-header-right {
-float: left;
-position:relative;
-}
-
-
 .region-header-left {
      width: 200px;          /* LC width */
-  right: 200px;          /* LC width */
+  left: 240px;          /* LC width */
   margin-left: -100%;
 }
 
