@@ -8,14 +8,6 @@
 
 class scholar_presentations extends os_simpleview_list_default {
   
-  // could the constructor from this take the object from the first pass of the form as a parameter?  
-  // that would let us keep the data, but 'swap' classes.  probably better way out there tho.
-  public function options_defaults(){
-    $options = parent::options_defaults();
-    $options['more_link'] = 'presentations';
-    return $options;
-  }
-  
   //add presented date to the form
   public function os_simpleview_list_form_display_options($options = NULL, $step = NULL){
     $form = parent::os_simpleview_list_form_display_options($options, $step);

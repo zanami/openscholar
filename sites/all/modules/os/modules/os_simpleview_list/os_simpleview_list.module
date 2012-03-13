@@ -8,6 +8,8 @@
  * Accessible for creating a page or box
  **/
 
+include_once('os_simpleview_list.features.inc');
+
 /**
  * Implements hook_menu()
  */
@@ -390,4 +392,15 @@ function _os_simpleview_list_content_types() {
   }
   
   return $node_options;
+}
+
+/**
+ * @function _os_simpleview_list_content_type_to_vsite_path
+ *
+ * Given a content type, returns path to that content type in this vsite.
+ */
+function _os_simpleview_list_content_type_to_vsite_path($content_type) {
+  $feature_types = features_get_component_map('node');
+  $menu_item = vsite_menus_get_feature_menu_item($feature_types[$content_type][0]);
+  return (isset($menu_item[0]['link_path'])) ? $menu_item[0]['link_path'] : FALSE;
 }

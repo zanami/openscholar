@@ -8,15 +8,12 @@
  **/
 
 class os_simpleview_list_default implements os_simpleview_list {
-  private $view_name = 'os_simpleview_list_base';
-  private $display_id = 'default';
-  
   function options_defaults(){ 
     $options = array(
       'number_of_items' => 6,
       'more' => 0,
       'more_text' => t('more'),
-      'more_link' => "",
+      'more_link' => "", //derived from content type
       'use_pager' => 1,
       'style' => 'titles',
       'content_type' => 'all',
@@ -111,10 +108,12 @@ class os_simpleview_list_default implements os_simpleview_list {
       )
     );
     
+    $content_path = _os_simpleview_list_content_type_to_vsite_path($options['content_type']);
+    
     $form['more_link'] = array(
       '#type' => 'textfield',
       '#title' => t('Link'),
-      '#default_value' => $options['more_link'],
+      '#default_value' => (strlen($options['more_link'])) ? $options['more_link'] : $content_path,
       '#description' => t("The url/path for this link."),
       '#process' => array(
         'ctools_dependent_process'
