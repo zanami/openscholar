@@ -171,7 +171,8 @@ function os_simpleview_list_page($js = NULL, $step = NULL) { //ditch these args/
   //$instance = new $class();
   $form_info = os_simpleview_list_multiform_info($js, $content_type);//  $instance->multiform_info($js);
   
-  // Check the current step's form id.  If it isn't defined assume it's inside the content class.    
+  // Check the current step's form id.  If it isn't defined assume it's inside the content class.  
+  $new = (!$step) ? TRUE : FALSE;  
   $step = ($step) ? $step : array_shift(array_keys($form_info['forms']));
   if (isset($form_info['forms'][$step]) && !function_exists($form_info['forms'][$step]['form id'])) {
     $form_info['forms'][$step]['form method'] = $form_info['forms'][$step]['form id']; 
@@ -183,10 +184,14 @@ function os_simpleview_list_page($js = NULL, $step = NULL) { //ditch these args/
   
   //$js indicates we're using a modal form.  return ajax commands instead of the form itself.
   //may need some cominbation of execute and steps 
-  if ($js) {
+  if ($js && !$new) {  
+    //pages that don't validate return to previous, but don't show error message.
+    //finishing the form comes here before it can actually submit.
     ctools_include('ajax');
     $commands = array();
-    $commands[] = ctools_ajax_command_html($selector, $form);
+    $commands[] = ctools_ajax_command_replace('#os-simpleview-list-simpleview-class-form', $form);
+    
+    //don't render the finished form...
     ctools_ajax_render($commands);
   }
   
@@ -320,6 +325,10 @@ function os_simpleview_list_multiform_info($js, $content_type) {
     'next callback' => 'os_simpleview_list_multiform_next',
     'finish callback' => 'os_simpleview_list_multiform_finish',
     'cancel callback' => 'os_simpleview_list_multiform_cancel',
+  
+    'modal' => TRUE, //seems useful, but unsure what exactly this changes.
+    //ajax
+    //ajax render
   );
   
   //always load the default form as a starting point
