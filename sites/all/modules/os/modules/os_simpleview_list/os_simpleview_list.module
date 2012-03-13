@@ -333,6 +333,7 @@ function os_simpleview_list_multiform_info($js, $content_type) {
   
   //always load the default form as a starting point
   //plugins no longer extend default, so we load this here instead of passing it up the chain
+  /*
   $default_plugin = os_simpleview_list_plugin_load('default');
   $default_class = ctools_plugin_get_class($default_plugin, 'handler');
   $default = new $default_class();
@@ -341,28 +342,33 @@ function os_simpleview_list_multiform_info($js, $content_type) {
   //stash the class for later
   foreach ($form_info['forms'] as $key => $form) {
     $form_info['forms'][$key]['class'] = $default_class;
-  }
+  }*/
   
   
   //Append forms from appropriate content type
   $plugins = os_simpleview_list_plugin_load();   
   foreach($plugins as $key => $plugin) {
     if ($content_type && ($plugin['content_type'] == $content_type)) {
-      $class = ctools_plugin_get_class($plugin, 'handler');
-      $instance = new $class();
-      
-      $forms = $instance->multiform_info();
-      foreach ($forms as $key => $form) {
-        $forms[$key]['class'] = $class;  
-      }
-      $form_info['forms'] += $forms;
-      
+      $plugin_key = $key;
       break;
-    } 
+    }
   }
-
-
+      
+  if (!isset($plugin_key)) {
+    $plugin_key = 'default';
+  }
+    
+  $class = ctools_plugin_get_class($plugins[$plugin_key], 'handler');
+  $instance = new $class();
+      
+  $forms = $instance->multiform_info();
+  foreach ($forms as $key => $form) {
+    $forms[$key]['class'] = $class;  
+  }
+  $form_info['forms'] = $forms;
+  
   return $form_info;
+  
 }
 
 

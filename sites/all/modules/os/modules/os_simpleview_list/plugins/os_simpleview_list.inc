@@ -17,7 +17,7 @@ interface os_simpleview_list {
    * 
    * Array of defaults for forms defined in this plugin
    */
-  public function options_defaults();  
+  function options_defaults();  
   
   
   /**
@@ -39,7 +39,7 @@ interface os_simpleview_list {
    * 
    * Applies view overrides to view
    */
-  function prepare_view(views_plugin_display_default &$handler, $options) ;
+  function views_alter(view &$view, &$display_id, &$args, $options) ;
   
   /**
    * @function view_overrides
@@ -49,10 +49,18 @@ interface os_simpleview_list {
   function view_overrides($opts);  
 
   /**
+   * @function view_append
+   * 
+   * Provides view options to merge with existing options without overwriting (ie filters) 
+   */
+  function view_append($opts);
+  
+  /**
    * @function view_settings
    * 
    * Tells simpelview_list which views to use
    * Return an object with view_name and display_id properties to specify a view
    */
+  function view_settings();
 
 }

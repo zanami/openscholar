@@ -69,7 +69,7 @@ function scholar_presentations_os_simpleview_list_plugin() {
   			'class' => 'scholar_presentations',
   			'file'  => 'scholar_presentations.inc',
   			'path'  => drupal_get_path('module', 'scholar_presentations') . '/plugins/',
-	      'parent' => 'os_simpleview_list', //parent plugin, NOT parent class
+	      'parent' => 'os_simpleview_list_default', //parent plugin, NOT parent class
   		)
   	)
   );
