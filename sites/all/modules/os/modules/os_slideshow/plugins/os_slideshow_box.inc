@@ -73,7 +73,8 @@ class os_boxes_slideshow extends os_boxes_default {
       '#title' => t('Size'),
       '#default_value' => $this->options['size'],
       '#field_suffix' => 'px',
-      '#description' => t('Enter the width of the image in pixels.'),
+      '#description' => t('Enter the width of the image in pixels. It should be between 400 and 1000 pixels.'),
+      '#process' => array('os_slideshow_box_attach_range'),
     );
 
     //dpm($imagecache_presets);
@@ -160,6 +161,14 @@ class os_boxes_slideshow extends os_boxes_default {
     $block['content'] = '<div id="' . $id. '" style="width: '.($this->options['size']+8).'px">' .$output . "</div>";
     return $block;
   }
-
 }
 
+/**
+ * Add the js that will attach a slider to form elements
+ * @param unknown_type $element
+ */
+function os_slideshow_box_attach_range($element) {
+  jquery_ui_add('ui.slider');
+  drupal_add_js(drupal_get_path('module', 'os_slideshow').'/theme/os_slideshow_form.js');
+  return $element;
+}
