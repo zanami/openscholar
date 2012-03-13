@@ -38,10 +38,10 @@ function os_wysiwyg_filter_default_formats() {
     ),
   );
 
-  // Exported format: WYSIWYG
-  $formats['wysiwyg'] = array(
-    'format' => 'wysiwyg',
-    'name' => 'WYSIWYG',
+  // Exported format: Filtered HTML
+  $formats['filtered_html'] = array(
+    'format' => 'filtered_html',
+    'name' => 'Filtered HTML',
     'cache' => '1',
     'status' => '1',
     'weight' => '0',
