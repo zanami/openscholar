@@ -1,0 +1,28 @@
+<?php
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function os_boxes_plugins_ctools_plugin_api($module, $api) {
+  if ($module == 'boxes' && $api == 'plugins') {
+    return array('version' => 1);
+  }
+}
+
+function os_boxes_plugins_boxes_plugins() {
+  $info = array();
+  $path = drupal_get_path('module', 'os_boxes_plugins').'/plugins';
+
+  $info['os_boxes_manual_list'] = array(
+    'title' => 'Featured Posts',
+    'description' => 'Create your own list of posts',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_boxes_manual_list',
+      'file' => 'os_boxes_manual_list.inc',
+      'path' => $path.'/os_boxes_manual_list',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
+  return $info;
+}

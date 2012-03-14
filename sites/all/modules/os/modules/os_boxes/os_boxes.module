@@ -1,0 +1,26 @@
+<?php
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function os_boxes_ctools_plugin_api($module, $api) {
+  if ($module == 'boxes' && $api == 'plugins') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_boxes_plugins().
+ */
+function os_boxes_boxes_plugins() {
+  $path = drupal_get_path('module', 'os_boxes').'/plugins/';
+  $info['os_boxes_default'] = array(
+    'handler' => array(
+      'class' => 'os_boxes_default',
+      'file' => 'os_boxes_default.inc',
+      'path' => $path,
+      'parent' => 'box',
+    ),
+  );
+
+  return $info;
+}
