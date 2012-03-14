@@ -215,8 +215,8 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
   $class = $form_state['form_info']['forms'][$step]['class'];
   $form_method = $form_state['form_info']['forms'][$step]['form method'];
   
-  $plugin = os_simpleview_list_plugin_load($class); //y u no load?  plugin is just default.  not name of whole class
-  $class_handler = ctools_plugin_get_class($plugin, 'handler');
+  //$plugin = os_simpleview_list_plugin_load($class); //y u no load?  plugin is just default.  not name of whole class
+  //$class_handler = ctools_plugin_get_class($plugin, 'handler'); //already loaded?
   $instance = new $class(); //class_handler()
   
   $default_options = $instance->options_defaults();

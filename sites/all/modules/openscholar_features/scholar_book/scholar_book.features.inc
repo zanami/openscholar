@@ -44,3 +44,23 @@ function scholar_book_views_api() {
     'api' => '2',
   );
 }
+
+/**
+ * Implementation of os_simpleview_list_plugin
+ * Provides book for simpleview list
+ */
+function scholar_book_os_simpleview_list_plugin() {
+	$info = array(
+  	'book' => array( 
+	  'content_type' => 'book',
+  		'handler' => array(
+  			'class' => 'scholar_book',
+  			'file'  => 'scholar_book.inc',
+  			'path'  => drupal_get_path('module', 'scholar_book') . '/plugins/',
+	      'parent' => 'os_simpleview_list_default', 
+  		)
+  	)
+  );
+	
+	return $info;
+}
