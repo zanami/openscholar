@@ -7,7 +7,7 @@ Drupal.behaviors.os_manual_list = {
 		var $ = jQuery;
 		if ($('#manual-nodes-list', ctx).length == 0) return;	// do nothing if our table doesn't exist
 		
-		var $form = $('#boxes-add-form') || $('#boxes-box-form'),
+		var $form = $('#boxes-add-form, #boxes-box-form'),
 			template = '<tr class="draggable">'+$('input[name="nodes[blank][nid]"]', $form).parents('tr').hide().html()+'</tr>',
 			tableDrag = Drupal.tableDrag['manual-nodes-list'],
 			new_id = parseInt($('#edit-count').val());

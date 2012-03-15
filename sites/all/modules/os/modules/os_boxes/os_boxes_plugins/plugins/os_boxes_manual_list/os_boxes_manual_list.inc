@@ -87,11 +87,7 @@ class os_boxes_manual_list extends os_boxes_default {
       $links[$n['weight']] = $l;
     }
     ksort($links);
-    $block['content'] = array(
-      '#type' => 'markup',
-      'links' => $links,
-      '#theme' => 'links'
-    );
+    $block['content'] = theme('links', array('links' => $links));
     return $block;
   }
 }
