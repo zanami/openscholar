@@ -41,7 +41,11 @@ class os_simpleview_list_box extends os_boxes_modalframe {
   public function render() {
     $block = parent::render();
     
-    $block['content'] = $this->_get_list_class()->render($this->options);
+    $plugin_output = $this->_get_list_class()->render($this->options + array('delta' => $this->delta));
+    
+    //results will be page string or block array.  handle both.
+    $block['content'] = (is_array($plugin_output)) ? $plugin_output['content'] : $plugin_output; 
+    
     //call list plugin.  get view, handlers.
 /*
     $view = 'vsite_view_base';
@@ -67,13 +71,11 @@ class os_simpleview_list_box extends os_boxes_modalframe {
    * Called from views_pre_view
 	 * Configures view according to options
    */
-  /*
   public function views_alter(&$view, &$display_id, &$args) {
     //Use content type's class's views_alter.
     $instance = $this->_get_list_class();
     $instance->views_alter($view, $display_id, $args, $this->options);
-
-  }*/
+  }
   
   function _get_list_class() {
     $class_name = ($this->options['content_type'] == 'all') ? 'default' : $this->options['content_type'];

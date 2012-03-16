@@ -8,6 +8,8 @@
  * Accessible for creating a page or box
  **/
 
+include_once('os_simpleview_list.features.inc');
+
 /**
  * Implements hook_menu()
  */
@@ -213,8 +215,8 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
   $class = $form_state['form_info']['forms'][$step]['class'];
   $form_method = $form_state['form_info']['forms'][$step]['form method'];
   
-  $plugin = os_simpleview_list_plugin_load($class); //y u no load?  plugin is just default.  not name of whole class
-  $class_handler = ctools_plugin_get_class($plugin, 'handler');
+  //$plugin = os_simpleview_list_plugin_load($class); //y u no load?  plugin is just default.  not name of whole class
+  //$class_handler = ctools_plugin_get_class($plugin, 'handler'); //already loaded?
   $instance = new $class(); //class_handler()
   
   $default_options = $instance->options_defaults();
@@ -333,6 +335,7 @@ function os_simpleview_list_multiform_info($js, $content_type) {
   
   //always load the default form as a starting point
   //plugins no longer extend default, so we load this here instead of passing it up the chain
+  /*
   $default_plugin = os_simpleview_list_plugin_load('default');
   $default_class = ctools_plugin_get_class($default_plugin, 'handler');
   $default = new $default_class();
@@ -341,28 +344,33 @@ function os_simpleview_list_multiform_info($js, $content_type) {
   //stash the class for later
   foreach ($form_info['forms'] as $key => $form) {
     $form_info['forms'][$key]['class'] = $default_class;
-  }
+  }*/
   
   
   //Append forms from appropriate content type
   $plugins = os_simpleview_list_plugin_load();   
   foreach($plugins as $key => $plugin) {
     if ($content_type && ($plugin['content_type'] == $content_type)) {
-      $class = ctools_plugin_get_class($plugin, 'handler');
-      $instance = new $class();
-      
-      $forms = $instance->multiform_info();
-      foreach ($forms as $key => $form) {
-        $forms[$key]['class'] = $class;  
-      }
-      $form_info['forms'] += $forms;
-      
+      $plugin_key = $key;
       break;
-    } 
+    }
   }
-
-
+      
+  if (!isset($plugin_key)) {
+    $plugin_key = 'default';
+  }
+    
+  $class = ctools_plugin_get_class($plugins[$plugin_key], 'handler');
+  $instance = new $class();
+      
+  $forms = $instance->multiform_info();
+  foreach ($forms as $key => $form) {
+    $forms[$key]['class'] = $class;  
+  }
+  $form_info['forms'] = $forms;
+  
   return $form_info;
+  
 }
 
 
@@ -384,4 +392,15 @@ function _os_simpleview_list_content_types() {
   }
   
   return $node_options;
+}
+
+/**
+ * @function _os_simpleview_list_content_type_to_vsite_path
+ *
+ * Given a content type, returns path to that content type in this vsite.
+ */
+function _os_simpleview_list_content_type_to_vsite_path($content_type) {
+  $feature_types = features_get_component_map('node');
+  $menu_item = vsite_menus_get_feature_menu_item($feature_types[$content_type][0]);
+  return (isset($menu_item[0]['link_path'])) ? $menu_item[0]['link_path'] : FALSE;
 }

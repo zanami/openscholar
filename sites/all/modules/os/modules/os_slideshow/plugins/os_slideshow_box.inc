@@ -73,7 +73,9 @@ class os_boxes_slideshow extends os_boxes_default {
       '#title' => t('Size'),
       '#default_value' => $this->options['size'],
       '#field_suffix' => 'px',
-      '#description' => t('Enter the width of the image in pixels.'),
+      '#description' => t('Enter the width of the image in pixels. It should be between 400 and 1000 pixels.'),
+      '#process' => array('os_slideshow_box_attach_range'),
+      '#element_validate' => array('os_slideshow_box_accepted_range'),
     );
 
     //dpm($imagecache_presets);
@@ -150,6 +152,8 @@ class os_boxes_slideshow extends os_boxes_default {
 
     $block = parent::render();
     $output = $view->execute_display();
+
+    // swap out the dimenions of the preset with the dimenions the user wants
     $patt_w = '/(<img [^>]* width=")(\d*)("[^>]*>)/';
     $patt_h = '/(<img [^>]* height=")(\d*)("[^>]*>)/';
 
@@ -160,6 +164,22 @@ class os_boxes_slideshow extends os_boxes_default {
     $block['content'] = '<div id="' . $id. '" style="width: '.($this->options['size']+8).'px">' .$output . "</div>";
     return $block;
   }
-
 }
 
+/**
+ * Add the js that will attach a slider to form elements
+ * @param unknown_type $element
+ */
+function os_slideshow_box_attach_range($element) {
+  drupal_add_js(drupal_get_path('module', 'os_slideshow').'/theme/os_slideshow_form.js');
+  return $element;
+}
+
+/**
+ * Ensures the value given is within acceptable ranges
+ */
+function os_slideshow_box_accepted_range($element, &$form_state) {
+  if ($element['#value'] < 400 || $element['#value'] > 1000) {
+    form_error($element, t('Slideshow width out of bounds: Width should be between 400 and 1000 pixels.'));
+  }
+}
