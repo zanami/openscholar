@@ -17,8 +17,8 @@
   right: 0;
   }
 
-#scholarlayout-container #scholarlayout-left,
-#scholarlayout-container #scholarlayout-right {
+.front#scholarlayout-container #scholarlayout-left,
+.front#scholarlayout-container #scholarlayout-right {
  display: none;
   }
 
@@ -53,7 +53,7 @@
 /*
  * Front page only in layout
  */
-.front#scholarlayout-container #scholarlayout-content-main{
+.front #scholarlayout-container #scholarlayout-content-main{
   display: none;
   }
 
