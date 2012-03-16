@@ -384,7 +384,7 @@ function os_simpleview_list_plugin_opts($opts = array()) {
   $plugin_opts = $options_defaults['plugin_opts'];
   
   foreach($plugin_opts as $option => $value) {
-    $plugin_opts[$option] = (isset($opts[$option])) ? $value : $plugin_opts[$option];
+    $plugin_opts[$option] = (isset($opts[$option])) ? $opts[$option] : $value;
   }
   
   return $plugin_opts;

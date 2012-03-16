@@ -11,8 +11,7 @@ class scholar_publication extends os_simpleview_list_default {
   //add published date to the sort form
   public function os_simpleview_list_form_display_options($options = NULL, $step = NULL){
     $form = parent::os_simpleview_list_form_display_options($options, $step);
-    //publication order
-   // $form['sorts_fieldset']['sorts']['#options'] += array('published_date' => t('Recently Published'));
+    $form['sorts_fieldset']['sorts']['#options'] += array('published_date' => t('Recently Published'));
     return $form;
   }
     
@@ -37,11 +36,13 @@ class scholar_publication extends os_simpleview_list_default {
   
   //add defaults for the new form options
   function options_defaults() {
-    $form = parent::options_defaults(); //maybe this should just be plugin opts and ignore the rest of the defaults?
-    $form['plugin_opts']['show_all_types'] = TRUE;
-    $form['plugin_opts']['pub_types'] = array();
-    $form['plugin_opts']['group_by'] = 'year';
-    return $form;
+    $options = parent::options_defaults(); //maybe this should just be plugin opts and ignore the rest of the defaults?
+    
+    $options['sorts'] = 'published_date';    
+    $options['plugin_opts']['show_all_types'] = TRUE;
+    $options['plugin_opts']['pub_types'] = array();
+    $options['plugin_opts']['group_by'] = 'none';
+    return $options;
   }
   
   // add new form
@@ -102,24 +103,47 @@ class scholar_publication extends os_simpleview_list_default {
     return $form;
   }
   
-  //override and extendparse_options_srts
+  // append a filter to only show selected biblio types
+  function view_append($opts) {
+    $append = parent::view_append($opts);
+    if (!$opts['show_all_types'] && count($opts['pub_types']) ) {
+      $append['filters'] += array(
+        'biblio_type' => array(
+        'operator' => 'in',
+        'value' => $opts['pub_types'],
+        'group' => '0',
+        'exposed' => FALSE,
+        'expose' => array('operator' => FALSE, 'label' => ''),
+        'id' => 'tid',
+        'table' => 'biblio_types',
+        'field' => 'tid',
+        'override' => array('button' => 'Use default'),
+        'relationship' => 'none',
+        ),
+      );
+    }
+    return $append;
+  }
+  
+  
+  //override and extend parse_options_sorts to add pub date
   protected  function _parse_options_sorts($sorting_method) {
     $override = array();
     switch ($sorting_method) {
-    /*  case 'presented_date':
-        $override['sorts']['field_presentation_date_value'] = array(
+      case 'published_date':
+        $override['sorts']['biblio_year'] = array(
           'order' => 'DESC',
           'delta' => -1,
-          'id' => 'field_presentation_date_value',
-          'table' => 'node_data_field_presentation_date',
-          'field' => 'field_presentation_date_value',
+          'id' => 'biblio_year',
+          'table' => 'biblio',
+          'field' => 'biblio_year',
           'relationship' => 'none',
           'override' => array(
             'button' => 'Override',
           ),
         );
       break;
-     */  
+       
       default:
         $override = parent::_parse_options_sorts($sorting_method);
       break;

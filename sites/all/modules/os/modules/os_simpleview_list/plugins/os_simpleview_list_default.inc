@@ -231,10 +231,12 @@ class os_simpleview_list_default implements os_simpleview_list {
    * @param unknown_type $opts
    */
   function view_append($opts) {
-    $overrides = array();
+    $append = array();
     
     //content type filter
-    $overrides += $this->_parse_options_content_type($opts['content_type']); 
+    $append += $this->_parse_options_content_type($opts['content_type']); 
+    
+    return $append;
   }
 /**
  * Enter description here ...

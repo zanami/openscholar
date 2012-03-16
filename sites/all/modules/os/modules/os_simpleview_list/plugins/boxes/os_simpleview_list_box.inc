@@ -66,7 +66,9 @@ class os_simpleview_list_box extends os_boxes_modalframe {
   public function views_alter(&$view, &$display_id, &$args) {
     //Use content type's class's views_alter.
     $instance = $this->_get_list_class();
-    $instance->views_alter($view, $display_id, $args, $this->options);
+    
+    //merge in plugin opts.  more convenient to pass along this way, but that may chagne when we have to save edited opts. //@todo
+    $instance->views_alter($view, $display_id, $args, array_merge($this->options, $this->options['plugin_opts']));
   }
   
   function _get_list_class() {
