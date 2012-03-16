@@ -57,7 +57,7 @@ function scholar_book_os_simpleview_list_plugin() {
   			'class' => 'scholar_book',
   			'file'  => 'scholar_book.inc',
   			'path'  => drupal_get_path('module', 'scholar_book') . '/plugins/',
-	      'parent' => 'os_simpleview_list_default', 
+	      'parent' => 'default', 
   		)
   	)
   );

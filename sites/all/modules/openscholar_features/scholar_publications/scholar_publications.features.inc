@@ -72,3 +72,23 @@ function scholar_publications_wysiwyg_fields_icons() {
     drupal_get_path('module', 'scholar_publications') . '/images/wysiwyg_fields',
   );
 }
+
+/**
+ * Implementation of os_simpleview_list_plugin
+ * Provides publication form for simpleview list
+ */
+function scholar_publications_os_simpleview_list_plugin() {
+	$info = array(
+  	'biblio' => array( 
+	  'content_type' => 'biblio',
+  		'handler' => array(
+  			'class' => 'scholar_publication',
+  			'file'  => 'scholar_publication.inc',
+  			'path'  => drupal_get_path('module', 'scholar_publications') . '/plugins/',
+	      'parent' => 'default', //parent plugin, NOT parent class
+  		)
+  	)
+  );
+	
+	return $info;
+}

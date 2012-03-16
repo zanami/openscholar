@@ -221,7 +221,7 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
   
   $default_options = $instance->options_defaults();
   if ($form_state['cached']) {
-    $default_options = array_merge($default_options, $form_state['cached']);
+    $default_options = array_merge($default_options, $default_options['plugin_opts'], $form_state['cached']);
   }
   
   $form += $instance->$form_method($default_options);
@@ -300,6 +300,10 @@ function os_simpleview_list_make_box($opts){
   if (($vsite = vsite_get_vsite()) != FALSE) {
     $type = 'os_simpleview_list_box';
     
+    
+    //populate plugin_opts
+    $opts['plugin_opts'] = os_simpleview_list_plugin_opts($opts);
+    
     $ignore = array_flip(array('return', 'previous', 'form_id', 'form_token', 'form_build_id', 'op', 'next'));
     $opts = array_diff_key($opts, $ignore); //strip ctools form elements before sending them to box
           //should we also pull option defaults and only set values included there?  not necessary yet, but might be needed as more form elements show up.
@@ -333,20 +337,6 @@ function os_simpleview_list_multiform_info($js, $content_type) {
     //ajax render
   );
   
-  //always load the default form as a starting point
-  //plugins no longer extend default, so we load this here instead of passing it up the chain
-  /*
-  $default_plugin = os_simpleview_list_plugin_load('default');
-  $default_class = ctools_plugin_get_class($default_plugin, 'handler');
-  $default = new $default_class();
-  $form_info['forms'] = $default->multiform_info();
-  
-  //stash the class for later
-  foreach ($form_info['forms'] as $key => $form) {
-    $form_info['forms'][$key]['class'] = $default_class;
-  }*/
-  
-  
   //Append forms from appropriate content type
   $plugins = os_simpleview_list_plugin_load();   
   foreach($plugins as $key => $plugin) {
@@ -373,6 +363,47 @@ function os_simpleview_list_multiform_info($js, $content_type) {
   
 }
 
+/**
+ * @function os_simpleview_list_plugin_opts
+ * 
+ * Boxes can only set a pretedetermined list of options when a box is created.
+ * That list is not able to retrieve option_defaults from individual plugins.
+ * Instead, it includes an array called plugin_opts.  This function looks at 
+ * the options we're about to pass to the box and returns an array of options
+ * from the appropriate content type plugin, to be used as plugin_opts
+ */
+function os_simpleview_list_plugin_opts($opts = array()) {
+  $plugin = os_simpleview_list_get_content_type_plugin($opts['content_type']);
+  if ($plugin == 'default') {
+    return array();
+  } 
+  
+  $class = ctools_plugin_get_class($plugin, 'handler');
+  $instance = new $class();
+  $options_defaults = $instance->options_defaults();
+  $plugin_opts = $options_defaults['plugin_opts'];
+  
+  foreach($plugin_opts as $option => $value) {
+    $plugin_opts[$option] = (isset($opts[$option])) ? $value : $plugin_opts[$option];
+  }
+  
+  return $plugin_opts;
+}
+
+/**
+ * @function os_simpleview_list_get_content_type_plugin
+ * 
+ * Returns a plugin for the specified content type.  If none match, returns default.
+ */
+function os_simpleview_list_get_content_type_plugin($content_type) {   
+  foreach(os_simpleview_list_plugin_load() as $key => $plugin) {
+    if ($plugin['content_type'] == $content_type) {
+      return $plugin;
+    }
+  }
+      
+  return 'default';
+}
 
 /**
  * @function _os_simpleview_list_content_types()
@@ -404,3 +435,4 @@ function _os_simpleview_list_content_type_to_vsite_path($content_type) {
   $menu_item = vsite_menus_get_feature_menu_item($feature_types[$content_type][0]);
   return (isset($menu_item[0]['link_path'])) ? $menu_item[0]['link_path'] : FALSE;
 }
+

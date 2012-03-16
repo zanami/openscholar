@@ -9,7 +9,10 @@
 
 class os_simpleview_list_default implements os_simpleview_list {
   function options_defaults(){ 
+    //might have to collect defaults from all the boxes so we can construct...
     $options = array(
+      'description' => '',
+      'title' => '',
       'number_of_items' => 6,
       'more' => 0,
       'more_text' => t('more'),
@@ -18,6 +21,7 @@ class os_simpleview_list_default implements os_simpleview_list {
       'style' => 'titles',
       'content_type' => 'all',
       'sorts' => 'newest',
+      'plugin_opts' => array(), //plugins can put extra options in here
     );
 
     return $options;
@@ -32,7 +36,7 @@ class os_simpleview_list_default implements os_simpleview_list {
       '#type' => 'textfield',
       '#title' => t('Name'),
       '#required' => TRUE,
-      //'#default_value' => $options['name'],
+      '#default_value' => $options['description'],
       '#description' => t('Name this list so it can be saved.'), 
     );
     
@@ -41,7 +45,7 @@ class os_simpleview_list_default implements os_simpleview_list {
       '#title' => t('Title'),
       '#required' => TRUE,
     	'#description' => t('Title to show to your visitors who view this list.'),
-      //'#default_value' => $options['title']
+      '#default_value' => $options['title']
     );
     
     $form['content_type'] = array(
@@ -50,7 +54,7 @@ class os_simpleview_list_default implements os_simpleview_list {
       '#options' => array('all' => t('All')) + _os_simpleview_list_content_types(),
       '#required' => TRUE,
     	'#description' => t('Content types to include in this list.'),
-      //'#default_value' => $options['content_type']
+      '#default_value' => $options['content_type']
     );
     
     return $form;
@@ -161,7 +165,7 @@ class os_simpleview_list_default implements os_simpleview_list {
   }
   
   public function render($options = array()) {
-    $view_settings = $this->view_settings();
+    $view_settings = $this->view_settings($options); //pass along box options?
     if ($view = views_get_view($view_settings->view_name)) {
       if ($view->access($view_settings->display_id)) {
         $view->set_display($view_settings->display_id);

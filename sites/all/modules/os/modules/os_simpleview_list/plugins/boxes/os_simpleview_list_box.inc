@@ -25,18 +25,10 @@ class os_simpleview_list_box extends os_boxes_modalframe {
     //need to know $class in order to get defaults from svlist plugin
     $options += $this->_get_list_class()->options_defaults(); 
     
-    
+    //after new->box options are set.  content type is set after defaults are called for.  since we don't know ctype how to get defaults added
+    //by a plugin?
     return $options;
   }
-  
-  /*
-  public function options_form() {
-   // $form = parent::options_form();
-    //$form = $this->_get_list_class()->options_form($this->options); //this is the plugin, not the box list
-
-    $form = array();
-    return $form;
-  }*/ //handled by config path?
   
   public function render() {
     $block = parent::render();
@@ -78,10 +70,20 @@ class os_simpleview_list_box extends os_boxes_modalframe {
   }
   
   function _get_list_class() {
-    $class_name = ($this->options['content_type'] == 'all') ? 'default' : $this->options['content_type'];
+    //$class_name = ($this->options['content_type'] == 'all') ? 'default' : $this->options['content_type'];
     
     $plugins = os_simpleview_list_plugin_load();
-    $plugin = (isset($plugins[$class_name])) ? $plugins[$class_name] : $plugins['default'];
+    
+    if ($this->options['content_type']) {
+      foreach ($plugins as $key => $def) {
+        if ($def['content_type'] == $this->options['content_type']) {
+          $plugin_key = $key;
+          break;
+        }
+      }  
+    }
+    //this->options is ignoring content_type in pubs...
+    $plugin = (isset($plugin_key)) ? $plugins[$plugin_key] : $plugins['default'];
     
     $class = ctools_plugin_get_class($plugin, 'handler');
     return ($class) ? new $class() : FALSE;
