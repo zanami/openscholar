@@ -32,7 +32,7 @@ function os_boxes_menu() {
   $item['os/boxes/%os_boxes'] = array(
     'title' => 'Add/Edit Widget',
     'page callback' => 'os_boxes_edit_widget',
-    'page arguments' => array(3),
+    'page arguments' => array(2),
     'access callback' => 'boxes_access_admin',
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
