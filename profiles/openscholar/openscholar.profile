@@ -518,6 +518,7 @@ function _openscholar_configure_flavor($flavor){
       $flavor = 'development';
       $modules = array('scholar', 'scholar_biocv', 'devel', 'cvs_deploy');
       os_add_permissions(1, array('switch users')); //  yes anon users can switch users!!
+      $vsite_node_type = 'vsite';
       break;
 
   }
@@ -526,6 +527,7 @@ function _openscholar_configure_flavor($flavor){
   include_once './includes/install.inc';
   drupal_install_modules($modules);
 
+  variable_set('scholar_content_type',$vsite_node_type);
   variable_set('openscholar_flavor_installed', $flavor);
   variable_set('openscholar_flavor_form_executed', TRUE);
 }

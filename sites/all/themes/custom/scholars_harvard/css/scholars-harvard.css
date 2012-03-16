@@ -2,11 +2,11 @@
 @import url('http://fonts.googleapis.com/css?family=Radley');
 
 html,body {
-  background: url('../images/body-bg.jpg') repeat-x fixed 0 100% #698da2;
+  background: #8996A0;
   }
 
 body {
-  font-family: 'PT Sans', arial, serif;
+  font-family: arial, serif;
   }
 
 .wrap {
@@ -176,29 +176,25 @@ ul#header-info li {
 
 ul#header-info li a,
 ul#header-info li a:visited {
-  color:#fef1ab;
+  color:#FFDB6D;
   }
 
 a.big-button {
   display:block;
   height: 80px;
-  background: url('../images/arrow1.png') no-repeat 100% 0 #f28316;
+  background: url('../images/arrow1.png') no-repeat 100% 0 #D16103;
   padding-left: 39px;
-  color: #fefdc8;
+  color: #FFF;
   line-height: 80px;
-  font-size: 37px;
+  font-size: 33px;
   width: 453px;
   font-weight: bold;
   }
 
 a.big-button:hover {
   text-decoration: none;
-  background-color: #cd6e11;
+  background-color: #C4961A;
   color:#fff;
-  text-shadow: 0px 0px 25px rgba(239,220,62,0.9);
-  -moz-transition: color .25s linear, background-color .15s linear .1s, text-shadow .15s linear .2s;
-  -webkit-transition: color .25s linear, background-color .15s linear .1s, text-shadow .15s linear .2s;
-  transition: color .25s linear, background-color .15s linear .1s, text-shadow .15s linear .2s;
   }
 
 #reasons a.big-button,
@@ -286,7 +282,7 @@ margin:33px 327px 0 0;
 width:162px;
 height:19px;
 float:left;
-margin:27px 327px 0 0; } } 
+margin:41px 327px 0 0; } } 
 
 
 #col-2 {
@@ -308,7 +304,6 @@ margin:27px 327px 0 0; } }
 #col-2 p,
 #col-2 li {
   margin-bottom: 43px;
-  font-weight:bold;
   }
 
 #col-2 p.leadin {
@@ -335,7 +330,7 @@ margin:27px 327px 0 0; } }
 #col-2 #start-learnmore a {
   background:url('../images/arrow2.png') 100% 50% no-repeat transparent;
   padding-right: 30px;
-  color:#b23325;
+  color:#A51C30;
   margin-left: 30px;
   }
 
@@ -438,7 +433,7 @@ margin:27px 327px 0 0; } }
   }
 
 #activity a, #activity a:visited {
-  color: #ff8207;
+  color: #FFDB6D;
   }
 
 .footer {

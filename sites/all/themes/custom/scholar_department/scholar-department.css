@@ -1,0 +1,327 @@
+body {
+background: url('images/bodyBg.png') no-repeat fixed center top #F8F8F8;
+  color: #292929;
+  font: 12px/normal Arial,Verdana,sans-serif;
+ }    
+ 
+
+/* LAYOUT ELEMENTS */
+
+#page {
+  width: 970px;
+margin: 25px auto 0 auto;
+background: #fff;
+padding:1px 20px 20px;
+ }
+ 
+ 
+#sidebar-second  {
+	margin-left: -30px;
+    width: 258px;
+    margin-top:25px;
+}
+ 
+ .content-left.content-right #content-left {
+    border-right: none;
+}
+
+.content-left.content-right #content-left, 
+.content-left.content-right #content-right,
+.content-left.content-right #content-bottom {
+    clear: none;
+    display: inline;
+    float: left;
+    margin: 15px 0;
+    width: 32%;
+}
+
+.content-left.content-right #content-left, 
+.content-left.content-right #content-right {
+  margin-right: 15px;
+  }
+
+
+.node-inner {
+    padding: 0;
+}
+
+
+/**** BLOCK STYLES ****/
+#content-area .block {background: url('images/blockTitleBg.png') left top repeat-x; padding-top:7px;}
+#content-area .block .content {background: url('images/blockBg.png') repeat-x center bottom;}
+#content-area #content-top .block {padding-top:0;}
+
+
+/* TYPOGRAPHY*/
+
+#content-main a, #content-main a:visited {
+    color:#293352;
+    text-decoration: none;
+    }
+
+#content-main a:hover {
+    color:#293352;
+     }
+    
+
+.more-link {background:#588bb8;
+width:40px;
+height:18px; 
+background: url('images/mainNavBg.png') repeat-x -10px -10px;
+border: 1px solid #DADADA;
+padding: 3px 3px 0 0;
+}
+
+.more-link a {
+	text-transform:capitalize;
+  color:#A61D31;
+  }
+  
+  
+#content-main h2.title {
+  	font-size:15px;
+  	font-weight:bold;
+  	text-transform: uppercase;
+    margin-bottom:0;
+    width:95%;
+    border-bottom:3px solid #8996A0;
+  }
+  
+  
+  .block h3.title {
+   	height:43px;
+  	font-size:14px;
+  	font-weight:normal;
+  	text-transform: uppercase;
+  	padding:7px 0 0 35px;
+    margin-bottom:0;
+  }
+  
+  .box-os_boxes_twitterfeed h3.title {
+  background: url('images/twitterIcon.png') no-repeat;
+  margin-left:8px;
+   } 
+   
+   
+   #block-boxes-scholar_announcements_latest h3.title {
+  background: url('images/announcementsIcon.png') no-repeat;
+  margin-left:8px;
+   } 
+
+
+/* HEADER ELEMENTS */
+
+.box-os_boxes_modal_image:nth-child(2) {
+	 margin: 0 -9px;
+	float:right;
+}
+
+.box-os_boxes_modal_image:nth-child(3) {
+	 margin: -22px 15px;
+	float:right;
+}
+
+.box-os_boxes_modal_image:nth-child(4) {
+	 margin: 20px -8px;
+	float:right;
+}
+
+
+/**** MAIN NAV BAR ****/
+
+
+#block-vsite-site_search {float:right;
+display:inline;
+clear:right;
+ margin: 5px 15px 0 0;
+    width: 180px;
+}
+
+#navbar {
+  background: url('images/mainNavBg.png') no-repeat;
+  width:968px;
+ height:43px;
+  }
+
+#navbar ul {
+ margin-left:-5px;
+ float:left;
+ display:inline;
+  }
+
+#navbar li {
+  float:left;
+ margin-top:4px;
+  }
+
+#navbar li a {
+  line-height: 25px;
+  text-transform:uppercase;
+  color: #292929;
+  font-weight:normal;
+  font-size: 14px;
+  padding: 13px 15px;
+   border-right:1px solid #d9d9d9;
+
+}
+
+#navbar li a:hover,
+#navbar li.active-trail a {
+  background: #8996A0;
+  color: #FFF;
+  text-decoration: none;
+}
+
+#navbar li a.active,
+#navbar li.active-trail a {
+  background: #8996A0;
+  color: #FFF;
+  text-decoration: none;
+}
+
+/* SECONDARY NAV LINKS */
+
+#header-right #block-vsite_menus-scholar_secondary_menu {
+ padding: 0 0 5px 5px;
+ float:left;
+   clear:none;
+ margin-left: 155px;
+  margin-top: 3px;
+  width: 250px;
+  }
+
+#header-right #block-vsite_menus-scholar_secondary_menu li {
+  float:left;
+  padding-right: 1px;
+  }
+
+#header-right #block-vsite_menus-scholar_secondary_menu li a {
+ 	 text-decoration: underline;
+  color: #293352;
+  font-weight:normal;
+  font-size: 12px;
+ padding: 1px 8px;
+border-right:1px solid #293352;
+ }
+ 
+#header-right #block-vsite_menus-scholar_secondary_menu li a:hover {
+ 	 text-decoration: none;
+ } 
+
+#header-right #block-vsite_menus-scholar_secondary_menu li.last a {
+border-right:none;
+ }
+
+
+/** BOOKLET NAVIGATION **/
+	
+.sidebar #block-boxes-scholar_book_current_toc.block {
+  background: none; 
+	padding-top:0;
+
+}	
+	
+
+
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li  {
+  list-style: none;
+  background: url('images/sideNavBg_off.png') no-repeat;
+ text-align: left;
+  margin: 0;
+border-left: solid 1px #C1C1C1;
+}
+
+
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a {
+	font-size:14px;
+  display: block;
+  text-decoration: none;
+  padding: 6px 0 6px 32px;;
+  color: #666;
+  }
+  
+
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a:hover,
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a.active { 
+	background: url('images/sideNavBg_on.png') no-repeat;
+ color: #FFF;
+ font-style: normal;
+    font-weight: normal;
+ }
+ 
+#boxes-box-scholar_book_current_toc a.active,
+#boxes-box-scholar_book_current_toc a {
+    display: none;
+}
+ 
+/**** SLIDESHOW OVERRIDE STYLES ****/
+
+ #content-main {padding:20px 0 0 0;}
+
+div.views-field-field-gallery-image-fid img {
+    background-color: #FFF;
+    border: none;
+    padding: 0;
+}
+
+#views_slideshow_singleframe_main_os_slideshow-default {
+	z-index:5;position:relative;	
+}
+
+
+.box-os_boxes_slideshow {margin-left:3px;}
+.views-slideshow-controls-bottom {background: none;height:22px;border:none;border-top:none;width: 960px;z-index:6;position:relative;margin-top: -42px}
+
+#views_slideshow_singleframe_prev_os_slideshow-default,
+#views_slideshow_singleframe_playpause_os_slideshow-default,
+#views_slideshow_singleframe_next_os_slideshow-default,
+.views-field-title {display:none;}
+
+div.pager-item {font-size:11px;width:24px;height:24px;}
+
+.views_slideshow_singleframe_pager div {
+    display: inline;
+    padding-left: 7px;
+}
+
+ .pager-item a { background: #FFF; color:#333;padding:2px 5px;text-decoration: none;
+ -moz-border-radius:0;
+  -webkit-border-radius:0;
+  border-radius: 0;
+  border:1px solid #c1c1c1;
+}
+
+.pager-item a:hover {background: #d9d9d9; color:#293352;text-decoration: none;}
+
+.pager-item.activeSlide a {background: #d9d9d9; color:#293352;}
+  
+/**** FOOTER ****/
+
+#footer .wrap {
+	height:35px;
+  padding: 7px 15px;
+  position:relative;
+  bottom: -42px;
+  line-height:18px;
+  background:#F8F8F8;
+  border-top:1px solid #c1c1c1;
+  margin-bottom:25px;
+  }
+
+#footer .wrap a {
+	text-decoration:underline;
+	color:#293352;
+}
+
+#footer .wrap a:hover {
+	text-decoration:none;
+}
+ 
+ 
+#footer .wrap  #powered-link {margin-top:-35px;}
+
+
+
+ 
+ 
+
