@@ -1,7 +1,7 @@
 body {
 background: url('images/bodyBg.png') no-repeat fixed center top #F8F8F8;
   color: #292929;
-  font: 12px/normal Arial,Verdana,sans-serif;
+  font: 13px/normal Arial,Verdana,sans-serif;
  }    
  
 
@@ -54,6 +54,15 @@ padding:1px 20px 20px;
 
 /* TYPOGRAPHY*/
 
+p {
+    line-height: 20px;
+}
+
+p span {
+   color:#D16103;
+}
+
+
 #content-main a, #content-main a:visited {
     color:#293352;
     text-decoration: none;
@@ -79,13 +88,15 @@ padding: 3px 3px 0 0;
   
   
 #content-main h2.title {
+	color:#666;
   	font-size:15px;
   	font-weight:bold;
   	text-transform: uppercase;
-    margin-bottom:0;
+    margin-bottom:8px;
     width:95%;
-    border-bottom:3px solid #8996A0;
+    border-bottom:2px solid #8996A0;
   }
+  
   
   
   .block h3.title {
@@ -108,6 +119,18 @@ padding: 3px 3px 0 0;
   margin-left:8px;
    } 
 
+h5 {
+	font-family: georgia,arial;
+	font-size: 18px;
+	color:#8C8179;
+	font-weight:normal;
+	font-style: italic;
+}
+
+h5 span {
+	color:#A51C30;
+	
+}
 
 /* HEADER ELEMENTS */
 
