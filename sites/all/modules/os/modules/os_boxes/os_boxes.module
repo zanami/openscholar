@@ -24,3 +24,56 @@ function os_boxes_boxes_plugins() {
 
   return $info;
 }
+
+/**
+ * Implements hook_menu().
+ */
+function os_boxes_menu() {
+  $item['os/boxes/%os_boxes'] = array(
+    'title' => 'Add/Edit Widget',
+    'page callback' => 'os_boxes_edit_widget',
+    'page arguments' => array(3),
+    'access callback' => 'boxes_access_admin',
+    'type' => MENU_CALLBACK,
+    'file' => 'os_boxes.admin.inc',
+  );
+  return $item;
+}
+
+/**
+ * Implements hook_load().
+ */
+function os_boxes_load($key) {
+  if ($box = boxes_box_load($key)) {
+    // this is an instance;
+    return $box;
+  }
+  if ($box = boxes_factory($key)) {
+    // this is a plugin, so create a new box
+    return $box;
+  }
+  return false;
+}
+
+function os_boxes_admin_paths() {
+  $paths = array(
+    'os/boxes/*' => TRUE,
+  );
+
+  return $paths;
+}
+
+function os_boxes_preprocess_boxes_box(&$variables) {
+  $block = &$variables['block'];
+  $block['controls'] = theme('links', array(
+    'links' => array(
+      'edit' => array(
+        'title' => t('Edit Widget'),
+        'href' => 'os/boxes/'.$block['delta'],
+        'attributes' => array(
+          'class' => 'boxes-processed',
+        ),
+      ),
+    ),
+  ));
+}
