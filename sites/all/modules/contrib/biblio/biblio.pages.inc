@@ -359,8 +359,8 @@ function biblio_build_query($arg_list) {
           $sort_attrib['sort'] = $term;
           switch ($term) {
             case 'type':
-              $sortby = "ORDER BY bt.name %s, $sort_title";
-              $selects[] = "bt.name, $sort_title";
+              $sortby = "ORDER BY bt.name %s, b.biblio_year DESC, b.biblio_date DESC, $sort_title";
+              $selects[] = "bt.name, b.biblio_year, b.biblio_date, $sort_title";
               break;
             case 'title':
               $sortby = "ORDER BY $sort_title %s";
