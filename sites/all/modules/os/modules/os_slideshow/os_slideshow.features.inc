@@ -33,6 +33,20 @@ function os_slideshow_imagecache_default_presets() {
         ),
       ),
     ),
+    'os_slideshow_960x360' => array(
+      'presetname' => 'os_slideshow_960x360',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '960',
+            'height' => '360',
+          ),
+        ),
+      ),
+    ),
   );
   return $items;
 }
