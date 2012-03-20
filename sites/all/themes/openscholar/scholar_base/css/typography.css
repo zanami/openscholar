@@ -63,6 +63,11 @@ body.node-inner ul{
   margin: 0 0 1.53em 0;
 	min-height: 19px;
   }
+  
+
+#content-main .views-row {
+  margin: 0;
+  } 
 
 #header h1, #header h2, #header p {
   margin: 0 0 .1em 0;
