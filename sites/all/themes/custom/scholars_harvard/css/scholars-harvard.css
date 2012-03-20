@@ -95,7 +95,7 @@ p.copy a.poweredby {
 #startpage {
   height: 100%;
   overflow: hidden;
-  background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
+background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
   }
 
 #reasons {
