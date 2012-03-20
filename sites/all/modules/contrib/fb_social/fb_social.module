@@ -190,12 +190,13 @@ function fb_social_link($type, $object, $teaser = FALSE) {
 /**
  * Implementation of hook init
  */
+
 function fb_social_init() {
   
   // Add simple OpenGraph metatags
   $data = "";
   if (variable_get('fb_social_opengraph', 1)) {
-    $content = drupal_get_title();
+    $content = drupal_set_title(); //Does not set title if empty.  d_get_title makes title active, which breaks 40{3,4} pages.
     $content = $content ? strip_tags($content) : variable_get('site_name', 'Drupal');
     //add fbml header meta information 
     $data = '<meta property="og:title" content="' . $content . '"/>' . "\n";
@@ -211,6 +212,7 @@ function fb_social_init() {
    * Doing this enables a moderator interface on Facebook where comments from all plugins 
    * administered by your app id can be easily moderated together.
    */
+
   $data .= '<meta property="fb:app_id" content="' . check_plain(variable_get('fb_social_appid', '')) . '"/>' . "\n";
   drupal_set_html_head($data);
 }
@@ -755,6 +757,3 @@ function fb_social_views_api() {
     'api' => 2,
   );
 }
-
-
-
