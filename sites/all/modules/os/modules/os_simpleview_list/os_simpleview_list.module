@@ -23,7 +23,8 @@ function os_simpleview_list_menu() {
     'access callback' => 'cp_access_cp',
     //'access arguments' => array('access content'),
   );
-  
+  $items['os_simpleview_list/%ctools_js/%step'] = $items['os_simpleview_list/%ctools_js'];
+  $items['os_simpleview_list/%ctools_js/%step']['page arguments'] = array(1,2); 
   return $items;
 }
 
@@ -111,12 +112,10 @@ function os_simpleview_list_plugin_load($type = NULL) {
  */
 function os_simpleview_list_boxes_plugins(){
   $info = array(); 
-  //$css = drupal_get_path('module', 'os_sipmleview_list') . '/theme/os-mailchimp.css';
 
   $info['os_simpleview_list_box'] = array(
     'title' => '(New) Post List',
     'description' => 'Make a list of content by type',
-    //'css' => $css,
     'tags' => array(
       'Content'
     ),
@@ -126,78 +125,88 @@ function os_simpleview_list_boxes_plugins(){
       'path' => drupal_get_path('module', 'os_simpleview_list') . '/plugins/boxes/',
       'parent' => 'os_boxes_modalframe'
     ),
-    //'access' => 'cp_access_cp',
-    'access' => TRUE,
+    'access' => TRUE, //'cp_access_cp'?
     'factory_path' => 'os_simpleview_list/js',
   );
 
   return $info;
 }
 
-
 /**
  * @function os_simpleview_list_page
  *
  * Menu item shows wizard/form
  */
-function os_simpleview_list_page($js = NULL, $step = NULL) { //ditch these args/defaults since they don't always get called?
+function os_simpleview_list_page($js = NULL, $step = NULL) {
+//  $a1 = arg(1); //check if js ever shows up here instead.  tutorials said that can happen.
+  //$a2 = arg(2);
   $js = (arg(1) == 'js') ? TRUE : $js;
+ // $js = TRUE;
   ctools_include('wizard');
-  
- // ctools_include('ajax'); //required for modal
+  ctools_include('ajax');
+  ctools_include('modal');
   $cache_name = 'os_simpleview_list';
- // $js = TRUE; //just for debug
-  
-  // Get cache, set up default form state with values from cache
-  if (empty($step)) {
+
+  // Starting a new form, set first page and a new cache
+  if (empty($step)) { //going back empties the step...
     os_simpleview_list_cache_clear($cache_name);
-    $cached = NULL;
-  } else {
-    $cached = os_simpleview_list_cache_get($cache_name);
+    $step = 'basics'; //fetch this
   }
-  
+
+  //get what's already cached and construct a form state
+  $cached = os_simpleview_list_cache_get($cache_name);
   $form_state = array(
     'ajax' => $js,
     'cache_name' => $cache_name,
-    'cached' => &$cached,  
- //   'modal' => TRUE,
-//  	'rerender' => TRUE, //kills the blank form error, but no new form is drawn
+    'cached' => &$cached,
+ //   'ajax render' => 'os_simpleview_list_ajax_render',
+ //   'rerender' => FALSE,
+  );
+  $content_type = ($cached['content_type']) ? $cached['content_type'] : $_POST['content_type'];
+  
+  $form_info = os_simpleview_list_multiform_info($js, $content_type);
+  $output = ctools_wizard_multistep_form($form_info, $step, $form_state);
+  
+  //have output... what do?  render/return/other?
+  return $output;  
+}
+
+/**
+ * @function os_simpleview_list_multiform_info
+ * 
+ * Sets up multistep form, retrieiving forms from active plugin
+ */
+function os_simpleview_list_multiform_info($js, $content_type) { 
+  $form_info = array(
+    'id' => 'os_simpleviews_list', 
+    'path' => 'os_simpleview_list/' . ($js ? 'js' : 'nojs') . '/%step', //pass the step we're on to the form, step1, step2, ..etc
+    'show trail' => TRUE,
+    'show back' => TRUE,
+    'show return' => FALSE,
+    'next callback' => 'os_simpleview_list_multiform_next',
+    'finish callback' => 'os_simpleview_list_multiform_finish',
+    'cancel callback' => 'os_simpleview_list_multiform_cancel',
+   // 'modal' => TRUE, //seems useful, but unsure what exactly this changes.
+   // 'ajax' => TRUE,
+      //ajax render
   );
   
-  $content_type = (isset($cached['content_type'])) ? $cached['content_type'] : FALSE;   
+  //Append forms from appropriate content type
+  $plugin = os_simpleview_list_get_content_type_plugin($content_type);
+  $class = ctools_plugin_get_class($plugin, 'handler');
+  $instance = new $class();
   
-//  $plugin = (isset($plugins[$content_type])) ? $plugins[$content_type] : $plugins['default'];
-  
-  //Instantiate class, get definition for multi-page form
-  //$class = ctools_plugin_get_class($plugin, 'handler');
-  //$instance = new $class();
-  $form_info = os_simpleview_list_multiform_info($js, $content_type);//  $instance->multiform_info($js);
-  
-  // Check the current step's form id.  If it isn't defined assume it's inside the content class.  
-  $new = (!$step) ? TRUE : FALSE;  
-  $step = ($step) ? $step : array_shift(array_keys($form_info['forms']));
-  if (isset($form_info['forms'][$step]) && !function_exists($form_info['forms'][$step]['form id'])) {
-    $form_info['forms'][$step]['form method'] = $form_info['forms'][$step]['form id']; 
-    $form_info['forms'][$step]['form id'] = 'os_simpleview_list_simpleview_class_form';
-  } 
-  
-  //Now we're ready to build and return a form
-  $form = ctools_wizard_multistep_form($form_info, $step, $form_state);
-  
-  //$js indicates we're using a modal form.  return ajax commands instead of the form itself.
-  //may need some cominbation of execute and steps 
-  if ($js && !$new) {  
-    //pages that don't validate return to previous, but don't show error message.
-    //finishing the form comes here before it can actually submit.
-    ctools_include('ajax');
-    $commands = array();
-    $commands[] = ctools_ajax_command_replace('#os-simpleview-list-simpleview-class-form', $form);
-    
-    //don't render the finished form...
-    ctools_ajax_render($commands);
+  //Get forms from plugins.  Override the method to generic form and tell generic form which class to load to get original method
+  $forms = $instance->multiform_info();
+  foreach ($forms as $key => $form) {
+    $forms[$key]['class'] = $class;
+    $forms[$key]['form method'] = $forms[$key]['form id'];
+    $forms[$key]['form id'] = 'os_simpleview_list_simpleview_class_form';  
   }
+  $form_info['forms'] = $forms;
   
-  return $form;
+  return $form_info;
+  
 }
 
 /**
@@ -210,28 +219,46 @@ function os_simpleview_list_page($js = NULL, $step = NULL) { //ditch these args/
 function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
 	ctools_include('dependent');
   ctools_add_js('dependent');
+  drupal_add_js('misc/jquery.form.js');
+  ctools_add_js('ajax-responder');
     
-  $step = $form_state['step'];
+  $step = $form_state['step']; //is this really set?  i hope ctools does it
   $class = $form_state['form_info']['forms'][$step]['class'];
-  $form_method = $form_state['form_info']['forms'][$step]['form method'];
-  
-  //$plugin = os_simpleview_list_plugin_load($class); //y u no load?  plugin is just default.  not name of whole class
-  //$class_handler = ctools_plugin_get_class($plugin, 'handler'); //already loaded?
   $instance = new $class(); //class_handler()
-  
+  $form_method = $form_state['form_info']['forms'][$step]['form method']; 
   $default_options = $instance->options_defaults();
+  
+  // use stored box's values if editing
+  /*
+  if ($form_state['delta']) { 
+    $default_options = os_simpleview_list_box_options($form_state['delta']) + $default_options;
+  }
+    
   if ($form_state['cached']) {
     $default_options = array_merge($default_options, $default_options['plugin_opts'], $form_state['cached']);
-  }
+  }*/
   
   $form += $instance->$form_method($default_options);
   
-  
-  //do we need ctools-use-ajax in the form or is that implid by wizard_submit?
   return $form;
 }
 
-
+/**
+ * @function os_simpleview_list_ajax_render
+ * 
+ * When using ajax, passes rendered form back to browser  
+ * See http://drupal.org/node/689746
+ */
+function os_simpleview_list_ajax_render(&$form_state, $output) {
+  if ($form_state['ajax']) {
+    $messages = theme_status_messages();
+    $commands = array();
+    $commands[] = ctools_ajax_command_html('#os-simpleview-list-simpleview-class-form', $messages.$output);
+    ctools_ajax_render($commands);
+  } else {
+    return $output;
+  }
+}
 
 /**
  * object_cache functions
@@ -245,7 +272,8 @@ function os_simpleview_list_cache_set($cache_name, $object) {
 
 function os_simpleview_list_cache_get($cache_name) {
   ctools_include('object-cache');
-  return ctools_object_cache_get('os_simpleview_list', $cache_name);
+  $cache = ctools_object_cache_get('os_simpleview_list', $cache_name);
+  return ($cache) ? $cache : array();
 }
 
 function os_simpleview_list_cache_clear($cache_name) {
@@ -259,18 +287,32 @@ function os_simpleview_list_cache_clear($cache_name) {
  * handle cases for user clicking next, cancel, or return.
  */
 function os_simpleview_list_multiform_next(&$form_state) { 
-  if (($cached = os_simpleview_list_cache_get($form_state['cache_name'])) == FALSE) {
+  //os_simpleview_list_cache_set($form_state['$cache_name'], $form_state['cached']);
+  //above is ctools example.  not sure how the values we add will go to cached....
+  
+  
+   os_simpleview_list_cache_set($form_state['cache_name'], $form_state['cached'] + $form_state['values']);
+  
+   //ctools has advanced the form a step, let it be rendered
+   if ($form_state['ajax']) {// && $form_state['step'] == $form_state['ajax next']) {
+     $form_state['ajax render'] = 'os_simpleview_list_ajax_render';
+     $form_state['rerender'] = TRUE;
+   }
+   
+  /*if (($cached = os_simpleview_list_cache_get($form_state['cache_name'])) == FALSE) {
     $cached = array();
   }
   
 	$form_state['cached'] = $form_state['values'] + $cached; 
-	os_simpleview_list_cache_set($form_state['cache_name'], $form_state['cached']); 
+	os_simpleview_list_cache_set($form_state['cache_name'], $form_state['cached']);
+	*/ 
 };
  
 function os_simpleview_list_multiform_cancel(&$form_state) { 
 	ctools_object_cache_clear('os_simpleview_list', $form_state['cache_name']); 
-	$form_state['redirect'] = 'os_simpleview_list'; 
 	drupal_set_message('Multi-step form cancelled.'); 
+	$form_state['redirect'] = 'os_simpleview_list';
+	 
 };
 
 function os_simpleview_list_multiform_finish(&$form_state) { 
@@ -280,6 +322,8 @@ function os_simpleview_list_multiform_finish(&$form_state) {
   
   // save values into a new box or menu entry, context depending
   
+  //or update existing box
+  
   //lets try a box
   if (($box = os_simpleview_list_make_box($values)) != FALSE) {
     //success!
@@ -288,7 +332,9 @@ function os_simpleview_list_multiform_finish(&$form_state) {
   
 	drupal_set_message('form done'); 
 	drupal_goto('os_simpleview_list/nojs'); //where to send them?
+	//send them elsewehre in js mode.  
 };
+
 
 
 /**
@@ -314,53 +360,21 @@ function os_simpleview_list_make_box($opts){
   return false;
 }
 
+
 /**
- * @function os_simpleview_list_multiform_info
+ * @function os_simpleview_list_get_content_type_plugin
  * 
- * Sets up multistep form, retrieiving forms from active plugin
+ * Returns a plugin for the specified content type.  If none match, returns default.
  */
-function os_simpleview_list_multiform_info($js, $content_type) {
-  ctools_include('wizard');
-  
-  $form_info = array(
-    'id' => 'os_simpleviews_list', 
-    'path' => 'os_simpleview_list/' . ($js ? 'ajax' : 'nojs') . '/%step', //pass the step we're on to the form, step1, step2, ..etc
-    'show trail' => TRUE,
-    'show back' => TRUE,
-    'show return' => FALSE,
-    'next callback' => 'os_simpleview_list_multiform_next',
-    'finish callback' => 'os_simpleview_list_multiform_finish',
-    'cancel callback' => 'os_simpleview_list_multiform_cancel',
-  
-    'modal' => TRUE, //seems useful, but unsure what exactly this changes.
-    //ajax
-    //ajax render
-  );
-  
-  //Append forms from appropriate content type
-  $plugins = os_simpleview_list_plugin_load();   
+function os_simpleview_list_get_content_type_plugin($content_type) {   
+  $plugins = os_simpleview_list_plugin_load();
   foreach($plugins as $key => $plugin) {
-    if ($content_type && ($plugin['content_type'] == $content_type)) {
-      $plugin_key = $key;
-      break;
+    if ($plugin['content_type'] == $content_type && $content_type != null) {
+      return $plugin;
     }
   }
       
-  if (!isset($plugin_key)) {
-    $plugin_key = 'default';
-  }
-    
-  $class = ctools_plugin_get_class($plugins[$plugin_key], 'handler');
-  $instance = new $class();
-      
-  $forms = $instance->multiform_info();
-  foreach ($forms as $key => $form) {
-    $forms[$key]['class'] = $class;  
-  }
-  $form_info['forms'] = $forms;
-  
-  return $form_info;
-  
+  return $plugins['default'];
 }
 
 /**
@@ -374,10 +388,6 @@ function os_simpleview_list_multiform_info($js, $content_type) {
  */
 function os_simpleview_list_plugin_opts($opts = array()) {
   $plugin = os_simpleview_list_get_content_type_plugin($opts['content_type']);
-  if ($plugin == 'default') {
-    return array();
-  } 
-  
   $class = ctools_plugin_get_class($plugin, 'handler');
   $instance = new $class();
   $options_defaults = $instance->options_defaults();
@@ -388,21 +398,6 @@ function os_simpleview_list_plugin_opts($opts = array()) {
   }
   
   return $plugin_opts;
-}
-
-/**
- * @function os_simpleview_list_get_content_type_plugin
- * 
- * Returns a plugin for the specified content type.  If none match, returns default.
- */
-function os_simpleview_list_get_content_type_plugin($content_type) {   
-  foreach(os_simpleview_list_plugin_load() as $key => $plugin) {
-    if ($plugin['content_type'] == $content_type) {
-      return $plugin;
-    }
-  }
-      
-  return 'default';
 }
 
 /**
@@ -435,4 +430,3 @@ function _os_simpleview_list_content_type_to_vsite_path($content_type) {
   $menu_item = vsite_menus_get_feature_menu_item($feature_types[$content_type][0]);
   return (isset($menu_item[0]['link_path'])) ? $menu_item[0]['link_path'] : FALSE;
 }
-
