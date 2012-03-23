@@ -10,14 +10,11 @@ class os_simpleview_list_box extends os_boxes_modalframe {
   
   // Tells boxes how to configure/add this widget
   protected function config_path() {
-    if ($this->options['nid']) {        //@TODO
-      //      return $this->config_path().'/modal/box/'.($this->delta?$this->delta:$this->plugin_key);
-      // try something like the modal box example above
-      return 'node/'.$this->options['nid'].'/edit';
-    }
-    else {
-      return 'os_simpleview_list/js';
-    }
+    $path = 'os_simpleview_list/js';
+   /* if (strlen($this->delta)) {
+      $path .= '/' . $this->delta;
+    }*/
+    return $path;
   }
   
   public function options_defaults() {
@@ -28,6 +25,10 @@ class os_simpleview_list_box extends os_boxes_modalframe {
     //after new->box options are set.  content type is set after defaults are called for.  since we don't know ctype how to get defaults added
     //by a plugin?
     return $options;
+  }
+  
+  public function options_form() {
+    return array();
   }
   
   public function render() {
