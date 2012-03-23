@@ -57,7 +57,7 @@ class scholar_publication extends os_simpleview_list_default {
   
   //defines new form.  adds type selection, group by select
   // need to communicate that group by and sort by are exclusive.  show groups/show pubs with dependent selects?
-  function os_simpleview_list_scholar_publication_options($options = NULL, $step = NULL) {
+  function os_simpleview_list_scholar_publication_options($options = NULL) {
     $q = db_query("SELECT tid, name FROM {biblio_types} WHERE tid > 0 AND visible = 1 ORDER BY name ASC");
     $pub_types = array();
     while ($a = db_fetch_array($q)) {

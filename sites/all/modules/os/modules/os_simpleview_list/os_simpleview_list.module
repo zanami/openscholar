@@ -147,21 +147,32 @@ function os_simpleview_list_page($js = NULL, $step = NULL) {
   ctools_include('modal');
   $cache_name = 'os_simpleview_list';
 
+  
+  
   // Starting a new form, set first page and a new cache
   if (empty($step)) { //going back empties the step...
     os_simpleview_list_cache_clear($cache_name);
     $step = 'basics'; //fetch this
   }
+  
 
   //get what's already cached and construct a form state
   $cached = os_simpleview_list_cache_get($cache_name);
   $form_state = array(
     'ajax' => $js,
+    //'modal' => $js,
     'cache_name' => $cache_name,
     'cached' => &$cached,
  //   'ajax render' => 'os_simpleview_list_ajax_render',
  //   'rerender' => FALSE,
   );
+
+  //edit values from an existing box if one is provided
+  if (isset($_GET['box']) && $_GET['box'] != 'os_simpleview_list_box')  {
+    $cached['delta'] = $_GET['box'];
+    os_simpleview_list_cache_set($cache_name, $cached);
+  }
+  
   $content_type = ($cached['content_type']) ? $cached['content_type'] : $_POST['content_type'];
   
   $form_info = os_simpleview_list_multiform_info($js, $content_type);
@@ -221,25 +232,35 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
   ctools_add_js('dependent');
   drupal_add_js('misc/jquery.form.js');
   ctools_add_js('ajax-responder');
-    
+
+  //fix for http://drupal.org/node/678158
+  // blocks ajax from returning.  wtf.
+ // if (empty($form['#post'])) { $form['#post'] = array(); }
+  
   $step = $form_state['step']; //is this really set?  i hope ctools does it
   $class = $form_state['form_info']['forms'][$step]['class'];
   $instance = new $class(); //class_handler()
   $form_method = $form_state['form_info']['forms'][$step]['form method']; 
-  $default_options = $instance->options_defaults();
   
-  // use stored box's values if editing
-  /*
-  if ($form_state['delta']) { 
-    $default_options = os_simpleview_list_box_options($form_state['delta']) + $default_options;
-  }
-    
+  
+  //build up default options to show in the form.  order matters.  array union (+) ignores fields that are already in left array
+  $default_options = array();
+
+  //options set during this session are highest priority
   if ($form_state['cached']) {
-    $default_options = array_merge($default_options, $default_options['plugin_opts'], $form_state['cached']);
-  }*/
+    //$default_options = array_merge($default_options, $default_options['plugin_opts'], $form_state['cached']);
+    $default_options += $form_state['cached'];
+  }
   
-  $form += $instance->$form_method($default_options);
+  //if we're editing an existing box, include the box's options that are already set
+  if ($form_state['cached']['delta']) { 
+    $default_options += _os_simpleview_list_box_options($form_state['cached']['delta']);
+  }
   
+  //finally, the basic defaults if nothing else is set
+  $default_options += $instance->options_defaults();
+
+  $form += $instance->$form_method($default_options + $default_options['plugin_opts']);  
   return $form;
 }
 
@@ -321,18 +342,26 @@ function os_simpleview_list_multiform_finish(&$form_state) {
   $values = $cached + $form_state['values'];
   
   // save values into a new box or menu entry, context depending
-  
-  //or update existing box
-  
-  //lets try a box
-  if (($box = os_simpleview_list_make_box($values)) != FALSE) {
-    //success!
-    os_simpleview_list_cache_clear($form_state['cache_name']); //do this once it's complete, not before we make box
+  if ($values['delta']) {
+    //edit the box
+  } else { 
+    //new box
+    if (($box = os_simpleview_list_make_box($values)) != FALSE) {
+      os_simpleview_list_cache_clear($form_state['cache_name']); //do this once it's complete, not before we make box
+    }
   }
   
-	drupal_set_message('form done'); 
-	drupal_goto('os_simpleview_list/nojs'); //where to send them?
-	//send them elsewehre in js mode.  
+  //redirect or just close the form depending on js/modal
+  if ($form_state['ajax']) {
+    $messages = theme_status_messages(); //attach these somewhere...  also make the widget bounce.
+    
+    $commands = array();
+    $commands[] = ctools_modal_command_dismiss();
+    ctools_ajax_render($commands);
+  } else {
+  	drupal_set_message('form done'); 
+	  drupal_goto('os_simpleview_list/nojs'); //where to send them?
+  }  
 };
 
 
@@ -429,4 +458,20 @@ function _os_simpleview_list_content_type_to_vsite_path($content_type) {
   $feature_types = features_get_component_map('node');
   $menu_item = vsite_menus_get_feature_menu_item($feature_types[$content_type][0]);
   return (isset($menu_item[0]['link_path'])) ? $menu_item[0]['link_path'] : FALSE;
+}
+
+
+/**
+ * @function os_simpleview_list_box_options($delta)
+ *
+ * Get options from existing box.  Pass them back to multiform so they can be presented when form is edited
+ * plugin_opts should be added as regular opts so they can be shown as well
+ */
+function _os_simpleview_list_box_options($delta) {
+  if ($box = boxes_load($delta)) {
+    $box_options = array_merge($box->options, $box->options['plugin_opts']);
+    return $box_options;
+  } else {
+    return array();
+  }
 }
