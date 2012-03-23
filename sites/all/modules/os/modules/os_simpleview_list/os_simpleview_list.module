@@ -344,6 +344,22 @@ function os_simpleview_list_multiform_finish(&$form_state) {
   // save values into a new box or menu entry, context depending
   if ($values['delta']) {
     //edit the box
+    $box = boxes_load($values['delta']);
+    foreach (array_intersect_key($box->options, $values) as $key => $value) {
+      $box->options[$key] = $values[$key];
+    }
+    
+    $plugin = os_simpleview_list_get_content_type_plugin($cached['content_type']);
+    $class = ctools_plugin_get_class($plugin, 'handler');
+    $instance = new $class();
+    $options_defaults = $instance->options_defaults();
+    $plugin_opts = $options_defaults['plugin_opts'];
+    foreach(array_intersect_key($plugin_opts, $values) as $key => $value) {
+      $box->options['plugin_opts'][$key] = $values[$key];
+    }
+
+    $box->save();
+    
   } else { 
     //new box
     if (($box = os_simpleview_list_make_box($values)) != FALSE) {
