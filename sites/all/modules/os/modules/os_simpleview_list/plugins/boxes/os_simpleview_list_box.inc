@@ -27,10 +27,6 @@ class os_simpleview_list_box extends os_boxes_modalframe {
     return $options;
   }
   
-  public function options_form() {
-    return array();
-  }
-  
   public function render() {
     $block = parent::render();
     
