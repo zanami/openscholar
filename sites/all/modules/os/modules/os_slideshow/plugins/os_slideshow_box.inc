@@ -14,7 +14,7 @@ class os_boxes_slideshow extends os_boxes_default {
     $options = parent::options_defaults();
 
     $options['gallery'] = 'all';
-    $options['size'] = '480x270';
+    $options['size'] = 480;
     $options['effect'] = 'scrollLeft';
     $options['style'] = '';
     $options['number_of_items'] = 10;
@@ -68,17 +68,21 @@ class os_boxes_slideshow extends os_boxes_default {
     }
 
     // size
+    if (strpos($this->options['size'], 'os_slideshow_') !== FALSE || strpos($this->options['size'], 'x') !== FALSE) {
+      $size = str_replace('os_slideshow_', '', $this->options['size']);
+      $size = explode('x', $size);
+      $this->options['size'] = $size[0];
+    }
     $form['size'] = array(
       '#type' => 'textfield',
       '#title' => t('Size'),
       '#default_value' => $this->options['size'],
       '#field_suffix' => 'px',
-      '#description' => t('Enter the width of the image in pixels. It should be between 400 and 1000 pixels.'),
+      '#description' => t('Enter the width of the slideshow in pixels. It should be between 400 and 960 pixels.'),
       '#process' => array('os_slideshow_box_attach_range'),
       '#element_validate' => array('os_slideshow_box_accepted_range'),
     );
 
-    //dpm($imagecache_presets);
     // nr of items
     $form['number_of_items'] = array(
       '#type' => 'textfield',
@@ -179,7 +183,8 @@ function os_slideshow_box_attach_range($element) {
  * Ensures the value given is within acceptable ranges
  */
 function os_slideshow_box_accepted_range($element, &$form_state) {
-  if ($element['#value'] < 400 || $element['#value'] > 1000) {
-    form_error($element, t('Slideshow width out of bounds: Width should be between 400 and 1000 pixels.'));
+  if ($element['#value'] < 400 || $element['#value'] > 960) {
+    form_error($element, t('Slideshow width out of bounds: Width should be between 400 and 960 pixels.'));
   }
+  $element['#value'] = (int)$element['#value'];
 }
