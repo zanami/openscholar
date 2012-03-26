@@ -14,7 +14,7 @@ function scholar_project_default_box() {
   $box->title = '';
   $box->description = 'Front Page Text';
   $box->options = array(
-    'body' => '&nbsp;',
+    'body' => '<p>&nbsp;</p>',
     'format' => 0,
   );
   $export['projects_get_started'] = $box;
