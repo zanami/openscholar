@@ -161,7 +161,7 @@ class os_boxes_slideshow extends os_boxes_default {
     $patt_w = '/(<img [^>]* width=")(\d*)("[^>]*>)/';
     $patt_h = '/(<img [^>]* height=")(\d*)("[^>]*>)/';
 
-    $output = preg_replace($patt_w, '${1}'.$this->options['size'].'${3}', $output);
+    $output = preg_replace($patt_w, '${1}'.($this->options['size']*1).'${3}', $output);
     $output = preg_replace($patt_h, '${1}'.($this->options['size']*$ratio).'${3}', $output);
 
     $id = str_replace('_', '-', $tmpstr.$dim);
