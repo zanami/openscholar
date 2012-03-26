@@ -345,6 +345,13 @@ function os_simpleview_list_multiform_finish(&$form_state) {
   if ($values['delta']) {
     //edit the box
     $box = boxes_load($values['delta']);
+    
+    //update box properties - title, desc, etc
+    foreach (array_intersect_key((array)$box, $values) as $key => $value) {
+      $box->$key = $values[$key];
+    }
+    
+    //update box options
     foreach (array_intersect_key($box->options, $values) as $key => $value) {
       $box->options[$key] = $values[$key];
     }
@@ -354,12 +361,18 @@ function os_simpleview_list_multiform_finish(&$form_state) {
     $instance = new $class();
     $options_defaults = $instance->options_defaults();
     $plugin_opts = $options_defaults['plugin_opts'];
+    
+    //update plugin options
     foreach(array_intersect_key($plugin_opts, $values) as $key => $value) {
       $box->options['plugin_opts'][$key] = $values[$key];
     }
-
-    $box->save();
     
+    if (module_exists('spaces') && $space = spaces_get_space()) {
+      $space->controllers->boxes->set($box->delta, $box);
+    } else {
+      $box->save();  
+    }
+
   } else { 
     //new box
     if (($box = os_simpleview_list_make_box($values)) != FALSE) {
@@ -388,6 +401,7 @@ function os_simpleview_list_multiform_finish(&$form_state) {
  * Form is complete.  Build a box and add it to the vsite.
  */
 function os_simpleview_list_make_box($opts){
+  //this could be a generic save box function that saves or makes depending on presence of delta...  would clean up finish a bit
   if (($vsite = vsite_get_vsite()) != FALSE) {
     $type = 'os_simpleview_list_box';
     
