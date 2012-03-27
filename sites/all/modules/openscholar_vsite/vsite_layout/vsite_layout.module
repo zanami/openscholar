@@ -310,7 +310,7 @@ function vsite_layout_vsite_widgets_access($widget ,$account = false){
     //if this block is provided by a feature and that feature is disabled do not show the block
     return false;
   }
-  elseif ($wgt['module'] == 'views') {
+  elseif ($widget['module'] == 'views') {
     if(!$account) $account = $GLOBALS['user'];
     //Insetad of checking as admin use the site owner so they see the same blocks
     if ($account->uid == 1) $account = user_load(array('uid' => $space->group->uid));

@@ -1164,13 +1164,6 @@ function scholar_software_views_default_views() {
       'relationship' => 'none',
     ),
   ));
-  $handler->override_option('access', array(
-    'type' => 'role',
-    'role' => array(
-      '1' => 1,
-      '2' => 2,
-    ),
-  ));
   $handler->override_option('title', 'Software Releases');
   $handler->override_option('use_ajax', TRUE);
   $handler->override_option('items_per_page', 3);
