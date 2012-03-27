@@ -163,8 +163,8 @@ function os_simpleview_list_page($js = NULL, $step = NULL, $delta=NULL) {
 
   if ($new) {
     //other pages set this in next(), after form has processed.  needs to be set here for first page to show
-    $form_state['ajax render'] = 'os_simpleview_list_ajax_render';
-    $form_state['rerender'] = TRUE;
+ //   $form_state['ajax render'] = 'os_simpleview_list_ajax_render';
+//    $form_state['rerender'] = TRUE;
   }
   
   //edit values from an existing box if one is provided
@@ -185,7 +185,26 @@ function os_simpleview_list_page($js = NULL, $step = NULL, $delta=NULL) {
   $output = ctools_wizard_multistep_form($form_info, $step, $form_state);
   
   //have output... what do?  render/return/other?
-  return $output;  
+  //this point can be reached by having a blankname/title
+  
+  return os_simpleview_list_ajax_render($form_state, $output);
+  /*
+  if ($js) {
+    $commands = array();
+    $messages = theme_status_messages();
+    if (strlen($messages)) {
+      //errors, don't advance.
+      $commands[] = ctools_ajax_command_remove('#modalContent .error');
+      $commands[] = ctools_ajax_command_before('#modal-content', $messages);
+    } else {
+      //no errors
+      $commands[] = ctools_ajax_command_html('#modal-content', $output);
+    }
+    ctools_ajax_render($commands);
+    
+  } else {
+    return $output;
+  } */ 
 }
 
 /**
@@ -259,7 +278,17 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
   //finally, the basic defaults if nothing else is set
   $default_options += $instance->options_defaults();
 
-  $form += $instance->$form_method($default_options + $default_options['plugin_opts']);  
+  $plugin_form = $instance->$form_method($default_options + $default_options['plugin_opts']);
+  $form += $plugin_form;
+  $form_state['input'] += $default_options;
+  
+  //make sure all the new form elements are in post, so fapi can apply their default values
+  /*foreach($plugin_form as $key => $array) {
+    if (!isset($form_state['input'][$key])) {
+      $form_state['input'][$key] = 'asdfasdfasdf';
+    }
+  }*/
+  
   return $form;
 }
 
@@ -268,16 +297,28 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
  * 
  * When using ajax, passes rendered form back to browser  
  * See http://drupal.org/node/689746
+ * 
+ * also used as generic finish up function before passing form back home
  */
+
 function os_simpleview_list_ajax_render(&$form_state, $output) {  
   if ($form_state['ajax']) {
-    $messages = theme_status_messages();
     $commands = array();
-    $commands[] = ctools_ajax_command_html('#modal-content', $messages.$output);
+    $commands[] = ctools_ajax_command_remove('#modalContent .error');
+    
+    $messages = theme_status_messages();
+    if (strlen($messages)) {
+      //errors, don't advance.
+      $commands[] = ctools_ajax_command_before('#modal-content', $messages);
+    } else {
+      //no errors
+      $commands[] = ctools_ajax_command_html('#modal-content', $output);
+    }
     ctools_ajax_render($commands);
+    
   } else {
     return $output;
-  }
+  } 
 }
 
 /**
