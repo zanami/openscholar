@@ -123,10 +123,10 @@ function os_simpleview_list_boxes_plugins(){
       'class' => 'os_simpleview_list_box',
       'file' => 'os_simpleview_list_box.inc',
       'path' => drupal_get_path('module', 'os_simpleview_list') . '/plugins/boxes/',
-      'parent' => 'os_boxes_modalframe'
+      'parent' => 'os_boxes_default'
     ),
     'access' => TRUE, //'cp_access_cp'?
-    'factory_path' => 'os_simpleview_list/js',
+    'factory_path' => 'os_simpleview_list/nojs',
   );
 
   return $info;
@@ -140,8 +140,8 @@ function os_simpleview_list_boxes_plugins(){
 function os_simpleview_list_page($js = NULL, $step = NULL) {
 //  $a1 = arg(1); //check if js ever shows up here instead.  tutorials said that can happen.
   //$a2 = arg(2);
-  $js = (arg(1) == 'js') ? TRUE : $js;
- // $js = TRUE;
+  
+  //$js = (arg(1) == 'js') ? TRUE : $js; //try w/o js to see if form can load better
   ctools_include('wizard');
   ctools_include('ajax');
   ctools_include('modal');
@@ -150,9 +150,10 @@ function os_simpleview_list_page($js = NULL, $step = NULL) {
   
   
   // Starting a new form, set first page and a new cache
-  if (empty($step)) { //going back empties the step...
+  if (empty($step) || $step == 'dropdown') { //going back empties the step...
     os_simpleview_list_cache_clear($cache_name);
     $step = 'basics'; //fetch this
+    $new = TRUE;
   }
   
 
@@ -166,7 +167,15 @@ function os_simpleview_list_page($js = NULL, $step = NULL) {
  //   'ajax render' => 'os_simpleview_list_ajax_render',
  //   'rerender' => FALSE,
   );
-
+  if ($new) {
+    $form_state['ajax render'] = 'os_simpleview_list_ajax_render';
+    $form_state['rerender'] = TRUE;
+  }
+  
+  //defining submit handlers will block os_modalframe from closing during submit.  remove these during finish to go back to def behavior
+//  $form_state['submit_handlers'] = array('ctools_wizard_submit');
+  
+  
   //edit values from an existing box if one is provided
   if (isset($_GET['box']) && $_GET['box'] != 'os_simpleview_list_box')  {
     $cached['delta'] = $_GET['box'];
@@ -190,7 +199,7 @@ function os_simpleview_list_page($js = NULL, $step = NULL) {
 function os_simpleview_list_multiform_info($js, $content_type) { 
   $form_info = array(
     'id' => 'os_simpleviews_list', 
-    'path' => 'os_simpleview_list/' . ($js ? 'js' : 'nojs') . '/%step', //pass the step we're on to the form, step1, step2, ..etc
+    'path' => 'os_simpleview_list/nojs/%step',  //. ($js ? 'js' : 'nojs') . '/%step', //pass the step we're on to the form, step1, step2, ..etc (not sure if this is usable, but trying it all the same.)
     'show trail' => TRUE,
     'show back' => TRUE,
     'show return' => FALSE,
@@ -270,11 +279,12 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
  * When using ajax, passes rendered form back to browser  
  * See http://drupal.org/node/689746
  */
-function os_simpleview_list_ajax_render(&$form_state, $output) {
+function os_simpleview_list_ajax_render(&$form_state, $output) {  
   if ($form_state['ajax']) {
     $messages = theme_status_messages();
     $commands = array();
-    $commands[] = ctools_ajax_command_html('#os-simpleview-list-simpleview-class-form', $messages.$output);
+    //$commands[] = ctools_ajax_command_html('#os-simpleview-list-simpleview-class-form', $messages.$output);
+    $commands[] = ctools_ajax_command_html('#modal-content', $messages.$output);
     ctools_ajax_render($commands);
   } else {
     return $output;
@@ -341,6 +351,9 @@ function os_simpleview_list_multiform_finish(&$form_state) {
   $cached = ($cached) ? $cached : array();
   $values = $cached + $form_state['values'];
   
+  //allow normal submit handlers to finish the form
+  unset($form_state['submit_handlers']);
+  
   // save values into a new box or menu entry, context depending
   if ($values['delta']) {
     //edit the box
@@ -381,16 +394,21 @@ function os_simpleview_list_multiform_finish(&$form_state) {
   }
   
   //redirect or just close the form depending on js/modal
+  
   if ($form_state['ajax']) {
     $messages = theme_status_messages(); //attach these somewhere...  also make the widget bounce.
     
     $commands = array();
     $commands[] = ctools_modal_command_dismiss();
+  //    modalframe_child_js();
+    
+    //modalframe_close_dialog(); //from os_modalframe.  @TODO make this work
     ctools_ajax_render($commands);
   } else {
   	drupal_set_message('form done'); 
 	  drupal_goto('os_simpleview_list/nojs'); //where to send them?
-  }  
+  } 
+   
 };
 
 

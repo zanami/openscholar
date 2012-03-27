@@ -6,17 +6,16 @@
  * Box for displaying/configuring os_simpleview_lists 
  */
 
-class os_simpleview_list_box extends os_boxes_modalframe {
+//class os_simpleview_list_box extends os_boxes_modalframe {
+class os_simpleview_list_box extends os_boxes_default {
   
   // Tells boxes how to configure/add this widget
-  protected function config_path() {
-    $path = 'os_simpleview_list/js';
-   /* if (strlen($this->delta)) {
-      $path .= '/' . $this->delta;
-    }*/
+  
+  /*protected function config_path() {
+    $path = 'os_simpleview_list/nojs';
     return $path;
   }
-  
+ */ 
   public function options_defaults() {
     $options = parent::options_defaults();
     //need to know $class in order to get defaults from svlist plugin
