@@ -37,49 +37,6 @@ function scholar_biocv_vsite_admin_link($type, $object){
   return $links;
 }
 
-
-/**
- * Implementation of hook_link().
- */
-function scholar_front_vsite_admin_link($type, $object){
-  $links = array();
-  global $user;
-  //check font page settings here, only execute if front page setting equals flag
-  $vsite = vsite_get_vsite();
-  if(!$vsite) return array();
-
-  $a_front_settings = $vsite->controllers->variable->get('vsite_setting_front');
-  if ($a_front_settings['frontpage'] !== 'flag' ||
-      !($vsite -> access_admin()) ||
-      !flag_fetch_definition($type)){
-    return $links;
-  }
-
-
-
-  // Get frontpage flags
-  $flag = flag_get_flag('scholar_frontpage');
-
-
-  if (!$flag->applies_to_content_object($object)) {
-    // Flag does not apply to this content.
-    return false;
-  }
-
-  $content_id = $flag->get_content_id($object);
-  // The flag links are actually fully rendered theme functions.
-  // The HTML attribute is set to TRUE to allow whatever the themer desires.
-  $links['flag-'. $flag->name] = array(
-  'title' => $flag->theme($flag->is_flagged($content_id) ? 'unflag' : 'flag', $content_id),
-  'html' => TRUE,
-  );
-
-  if (isset($links)) {
-    return $links;
-  }
-}
-
-
 /**
  * Implementation of hook_scholar_admin_link() on behalf of the node module.
  */
@@ -138,42 +95,4 @@ function vsite_taxonomy_vsite_admin_link($type, $object){
   }
 
   return $links;
-}
-
-/**
- * Implementation of hook_admin_link().
- */
-function vsite_widgets_vsite_admin_link($type, $object){
-  $links = array();
-  global $user;
-  //check font page settings here, only execute if front page setting equals flag
-  if(!($vsite = vsite_get_vsite()) || !is_object($vsite)){
-    return $links;
-  }
-
-  if (!($vsite->access_admin()) ||
-      !flag_fetch_definition($type)){
-    return $links;
-  }
-
-  // Get frontpage flags
-  $flag = flag_get_flag('featuredposts');
-
-
-  if (!$flag->applies_to_content_object($object)) {
-    // Flag does not apply to this content.
-    return false;
-  }
-
-  $content_id = $flag->get_content_id($object);
-  // The flag links are actually fully rendered theme functions.
-  // The HTML attribute is set to TRUE to allow whatever the themer desires.
-  $links['flag-'. $flag->name] = array(
-  'title' => $flag->theme($flag->is_flagged($content_id) ? 'unflag' : 'flag', $content_id),
-  'html' => TRUE,
-  );
-
-  if (isset($links)) {
-    return $links;
-  }
 }

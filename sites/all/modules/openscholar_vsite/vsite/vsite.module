@@ -958,23 +958,6 @@ function vsite_token_list($type = 'all') {
 }
 
 /**
- * Implementation of hook flag_default_flags
- * @return array - default flag
- */
-function vsite_flag_alter(&$flag){
-  if (!($viste = vsite_get_vsite()) || $flag -> name !== 'featuredposts'){
-    return;
-  }
-  vsite_include('vsiteapi');
-
-  $types = vsite_content_types();
-
-  if (count($types)){
-    $flag -> types = array_keys($types);
-  }
-}
-
-/**
  * Add vsite content type to default spaces_features
  */
 function vsite_strongarm_alter(&$vars){
