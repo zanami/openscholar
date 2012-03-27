@@ -127,6 +127,8 @@ function os_simpleview_list_boxes_plugins(){
     ),
     'access' => TRUE, //'cp_access_cp'?
     'factory_path' => 'os_simpleview_list/nojs',
+    //'block_config_path' => 'os_simpleview_list/nojs', //cp/osboxes/nojs/boxes_add__{$key}/configure
+   //'block_config_path' => 'os_simpleview_list/nojs/boxes_add__os_simpleview_list_box/configure',
   );
 
   return $info;
@@ -137,22 +139,16 @@ function os_simpleview_list_boxes_plugins(){
  *
  * Menu item shows wizard/form
  */
-function os_simpleview_list_page($js = NULL, $step = NULL) {
-//  $a1 = arg(1); //check if js ever shows up here instead.  tutorials said that can happen.
-  //$a2 = arg(2);
-  
-  //$js = (arg(1) == 'js') ? TRUE : $js; //try w/o js to see if form can load better
+function os_simpleview_list_page($js = NULL, $step = NULL, $delta=NULL) {
   ctools_include('wizard');
   ctools_include('ajax');
   ctools_include('modal');
   $cache_name = 'os_simpleview_list';
-
-  
   
   // Starting a new form, set first page and a new cache
   if (empty($step) || $step == 'dropdown') { //going back empties the step...
     os_simpleview_list_cache_clear($cache_name);
-    $step = 'basics'; //fetch this
+    $step = 'basics'; 
     $new = TRUE;
   }
   
@@ -161,24 +157,25 @@ function os_simpleview_list_page($js = NULL, $step = NULL) {
   $cached = os_simpleview_list_cache_get($cache_name);
   $form_state = array(
     'ajax' => $js,
-    //'modal' => $js,
     'cache_name' => $cache_name,
     'cached' => &$cached,
- //   'ajax render' => 'os_simpleview_list_ajax_render',
- //   'rerender' => FALSE,
   );
+
   if ($new) {
+    //other pages set this in next(), after form has processed.  needs to be set here for first page to show
     $form_state['ajax render'] = 'os_simpleview_list_ajax_render';
     $form_state['rerender'] = TRUE;
   }
   
-  //defining submit handlers will block os_modalframe from closing during submit.  remove these during finish to go back to def behavior
-//  $form_state['submit_handlers'] = array('ctools_wizard_submit');
-  
-  
   //edit values from an existing box if one is provided
+  /*
   if (isset($_GET['box']) && $_GET['box'] != 'os_simpleview_list_box')  {
     $cached['delta'] = $_GET['box'];
+    os_simpleview_list_cache_set($cache_name, $cached);
+  }*/
+  
+  if ($delta) {
+    $cached['delta'] = $delta;
     os_simpleview_list_cache_set($cache_name, $cached);
   }
   
@@ -199,16 +196,13 @@ function os_simpleview_list_page($js = NULL, $step = NULL) {
 function os_simpleview_list_multiform_info($js, $content_type) { 
   $form_info = array(
     'id' => 'os_simpleviews_list', 
-    'path' => 'os_simpleview_list/nojs/%step',  //. ($js ? 'js' : 'nojs') . '/%step', //pass the step we're on to the form, step1, step2, ..etc (not sure if this is usable, but trying it all the same.)
+    'path' => 'os_simpleview_list/nojs/%step',  
     'show trail' => TRUE,
     'show back' => TRUE,
     'show return' => FALSE,
     'next callback' => 'os_simpleview_list_multiform_next',
     'finish callback' => 'os_simpleview_list_multiform_finish',
     'cancel callback' => 'os_simpleview_list_multiform_cancel',
-   // 'modal' => TRUE, //seems useful, but unsure what exactly this changes.
-   // 'ajax' => TRUE,
-      //ajax render
   );
   
   //Append forms from appropriate content type
@@ -226,7 +220,6 @@ function os_simpleview_list_multiform_info($js, $content_type) {
   $form_info['forms'] = $forms;
   
   return $form_info;
-  
 }
 
 /**
@@ -243,21 +236,18 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
   ctools_add_js('ajax-responder');
 
   //fix for http://drupal.org/node/678158
-  // blocks ajax from returning.  wtf.
  // if (empty($form['#post'])) { $form['#post'] = array(); }
   
-  $step = $form_state['step']; //is this really set?  i hope ctools does it
+  $step = $form_state['step']; 
   $class = $form_state['form_info']['forms'][$step]['class'];
-  $instance = new $class(); //class_handler()
+  $instance = new $class(); 
   $form_method = $form_state['form_info']['forms'][$step]['form method']; 
-  
   
   //build up default options to show in the form.  order matters.  array union (+) ignores fields that are already in left array
   $default_options = array();
 
   //options set during this session are highest priority
   if ($form_state['cached']) {
-    //$default_options = array_merge($default_options, $default_options['plugin_opts'], $form_state['cached']);
     $default_options += $form_state['cached'];
   }
   
@@ -283,7 +273,6 @@ function os_simpleview_list_ajax_render(&$form_state, $output) {
   if ($form_state['ajax']) {
     $messages = theme_status_messages();
     $commands = array();
-    //$commands[] = ctools_ajax_command_html('#os-simpleview-list-simpleview-class-form', $messages.$output);
     $commands[] = ctools_ajax_command_html('#modal-content', $messages.$output);
     ctools_ajax_render($commands);
   } else {
@@ -318,25 +307,13 @@ function os_simpleview_list_cache_clear($cache_name) {
  * handle cases for user clicking next, cancel, or return.
  */
 function os_simpleview_list_multiform_next(&$form_state) { 
-  //os_simpleview_list_cache_set($form_state['$cache_name'], $form_state['cached']);
-  //above is ctools example.  not sure how the values we add will go to cached....
+  os_simpleview_list_cache_set($form_state['cache_name'], $form_state['cached'] + $form_state['values']);
   
-  
-   os_simpleview_list_cache_set($form_state['cache_name'], $form_state['cached'] + $form_state['values']);
-  
-   //ctools has advanced the form a step, let it be rendered
-   if ($form_state['ajax']) {// && $form_state['step'] == $form_state['ajax next']) {
-     $form_state['ajax render'] = 'os_simpleview_list_ajax_render';
-     $form_state['rerender'] = TRUE;
-   }
-   
-  /*if (($cached = os_simpleview_list_cache_get($form_state['cache_name'])) == FALSE) {
-    $cached = array();
+  //ctools has advanced the form a step, let it be rendered
+  if ($form_state['ajax']) {
+    $form_state['ajax render'] = 'os_simpleview_list_ajax_render';
+    $form_state['rerender'] = TRUE;
   }
-  
-	$form_state['cached'] = $form_state['values'] + $cached; 
-	os_simpleview_list_cache_set($form_state['cache_name'], $form_state['cached']);
-	*/ 
 };
  
 function os_simpleview_list_multiform_cancel(&$form_state) { 
@@ -400,6 +377,7 @@ function os_simpleview_list_multiform_finish(&$form_state) {
     
     $commands = array();
     $commands[] = ctools_modal_command_dismiss();
+    $commands[] = ctools_ajax_command_reload(); //or figure out how to add and bounce
   //    modalframe_child_js();
     
     //modalframe_close_dialog(); //from os_modalframe.  @TODO make this work

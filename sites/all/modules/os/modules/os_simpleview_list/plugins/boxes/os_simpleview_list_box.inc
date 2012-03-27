@@ -9,22 +9,39 @@
 //class os_simpleview_list_box extends os_boxes_modalframe {
 class os_simpleview_list_box extends os_boxes_default {
   
-  // Tells boxes how to configure/add this widget
-  
-  /*protected function config_path() {
+  final public function get_config_path() {
+     // return $this->config_path().'/modal/box/'.($this->delta?$this->delta:$this->plugin_key);
+     return 'os_simplview_list/nojs/config_path_yay!';
+  }
+/*  protected function config_path() {
     $path = 'os_simpleview_list/nojs';
     return $path;
-  }
- */ 
+  }*/
+  
   public function options_defaults() {
     $options = parent::options_defaults();
     //need to know $class in order to get defaults from svlist plugin
     $options += $this->_get_list_class()->options_defaults(); 
     
-    //after new->box options are set.  content type is set after defaults are called for.  since we don't know ctype how to get defaults added
-    //by a plugin?
     return $options;
   }
+  
+  /* in this case options_form only applies to box conf */
+  public function options_form() {
+    
+    //if we're editing the page , give them the form page.  ctools_render should take over before this can return
+    if ($_POST['js']) {
+      return os_simpleview_list_page('js', NULL, $this->delta);
+    } else {
+      //otherwise we're just checking that a form exists so give one of those.
+      return parent::options_form();
+    }
+    
+//    $content_type = ($this->options['content_type']) ? $this->options['content_type'] : 'default';
+  //  $form = $this->_get_list_class()->os_simpleview_list_form_basics();
+//    return $form;
+  }
+  
   
   public function render() {
     $block = parent::render();
@@ -34,23 +51,6 @@ class os_simpleview_list_box extends os_boxes_default {
     //results will be page string or block array.  handle both.
     $block['content'] = (is_array($plugin_output)) ? $plugin_output['content'] : $plugin_output; 
     
-    //call list plugin.  get view, handlers.
-/*
-    $view = 'vsite_view_base';
-    $display_id = 'default'; //add a block ID?
-    
-    if ($view = views_get_view($view)) {
-      if ($view->access($display_id)) {
-        $view->set_display($display_id);
-        
-        //Tie this view to this box (this tells the view to call this box's view alter)
-        $view->dom_id = "boxes-".$this->delta;
-        $output = $view->execute_display();
-        $block['content'] = $output;
-      }
-      $view->destroy();
-    }
-    */
     
     return $block;
   }
