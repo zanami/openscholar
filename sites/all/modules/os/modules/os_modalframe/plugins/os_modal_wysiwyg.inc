@@ -38,6 +38,7 @@ class os_modal_wysiwyg extends os_boxes_modalframe {
         '#default_value' => $this->options['body'],
         '#rows' => 6,
         '#description' => t('The content of the block as shown to the user.'),
+        '#required' => true,
       );
       $format = filter_formats(filter_resolve_format(FILTER_FORMAT_DEFAULT));
       $form['format'][$format->format] = array('#type' => 'value', '#value' => $format->format);
@@ -57,6 +58,10 @@ class os_modal_wysiwyg extends os_boxes_modalframe {
     $content = '';
     if (!empty($this->options['body']) && isset($this->options['format'])) {
       $content = check_markup($this->options['body'], $this->options['format'], FALSE);
+    }elseif (empty($this->options['body']) && cp_access_cp()){
+    	//Display a click to add message for admins
+    	$config_link = l("add content to this area", $this->config_path().'/front', array('attributes' => array('class' => 'ctools-use-modal'),'admin_type' => 'config'));
+    	$content = "This widget is empty, {$config_link}.";
     }
     $title = isset($this->title) ? check_plain($this->title) : NULL;
     return array(
