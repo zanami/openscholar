@@ -179,8 +179,10 @@ function _save_contributors(&$contributors, $nid, $vid, $update = FALSE) {
   $rank = 0;
   db_query('DELETE FROM {biblio_contributor} WHERE nid = %d AND vid = %d', array($nid, $vid));
   foreach ($contributors as $cat => $authors) {
-  	//Sort the contributors
-  	uasort($authors, '_biblio_sort_contributors');
+  	//Sort the contributors if rank is set
+  	if(($author = current($authors)) && isset($author['rank'])){
+  	  uasort($authors, '_biblio_sort_contributors');
+  	}
   	
     foreach ($authors as $key => $author) {
       if(empty($author['lastname'])) {
