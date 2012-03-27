@@ -197,10 +197,10 @@ function embedfilter_process($input) {
 
       // if there are opening and closing <script> tags, and there is
       // anything in between them, deny.
-      if (count($input) == 4 && strtolower($input[1]) == 'script' && strlen(trim($input[3])) > 0) {
-        $count--;
-        return '';
-      }
+      //if (count($input) == 4 && strtolower($input[1]) == 'script' && strlen(trim($input[3])) > 0) {
+      //  $count--;
+      //  return '';
+      //}
       // 4 part arrays have closing tags: <embed.... ></embed>
       if (count($input) == 4) {
         $output .= '>'. embedfilter_process($input[3]). '</'. $input[1]. '>';
