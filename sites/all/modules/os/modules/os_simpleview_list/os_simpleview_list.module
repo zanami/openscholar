@@ -80,8 +80,6 @@ function os_simpleview_list_os_simpleview_list_plugin(){
 	      'parent' => 'os_simpleview_list',
   		)
 	  ),
-	  
-
 	);
 	
 	return $info;
@@ -127,8 +125,6 @@ function os_simpleview_list_boxes_plugins(){
     ),
     'access' => TRUE, //'cp_access_cp'?
     'factory_path' => 'os_simpleview_list/nojs',
-    //'block_config_path' => 'os_simpleview_list/nojs', //cp/osboxes/nojs/boxes_add__{$key}/configure
-   //'block_config_path' => 'os_simpleview_list/nojs/boxes_add__os_simpleview_list_box/configure',
   );
 
   return $info;
@@ -149,10 +145,8 @@ function os_simpleview_list_page($js = NULL, $step = NULL, $delta=NULL) {
   if (empty($step) || $step == 'dropdown') { //going back empties the step...
     os_simpleview_list_cache_clear($cache_name);
     $step = 'basics'; 
-    $new = TRUE;
   }
   
-
   //get what's already cached and construct a form state
   $cached = os_simpleview_list_cache_get($cache_name);
   $form_state = array(
@@ -160,19 +154,6 @@ function os_simpleview_list_page($js = NULL, $step = NULL, $delta=NULL) {
     'cache_name' => $cache_name,
     'cached' => &$cached,
   );
-
-  if ($new) {
-    //other pages set this in next(), after form has processed.  needs to be set here for first page to show
- //   $form_state['ajax render'] = 'os_simpleview_list_ajax_render';
-//    $form_state['rerender'] = TRUE;
-  }
-  
-  //edit values from an existing box if one is provided
-  /*
-  if (isset($_GET['box']) && $_GET['box'] != 'os_simpleview_list_box')  {
-    $cached['delta'] = $_GET['box'];
-    os_simpleview_list_cache_set($cache_name, $cached);
-  }*/
   
   if ($delta) {
     $cached['delta'] = $delta;
@@ -184,27 +165,7 @@ function os_simpleview_list_page($js = NULL, $step = NULL, $delta=NULL) {
   $form_info = os_simpleview_list_multiform_info($js, $content_type);
   $output = ctools_wizard_multistep_form($form_info, $step, $form_state);
   
-  //have output... what do?  render/return/other?
-  //this point can be reached by having a blankname/title
-  
   return os_simpleview_list_ajax_render($form_state, $output);
-  /*
-  if ($js) {
-    $commands = array();
-    $messages = theme_status_messages();
-    if (strlen($messages)) {
-      //errors, don't advance.
-      $commands[] = ctools_ajax_command_remove('#modalContent .error');
-      $commands[] = ctools_ajax_command_before('#modal-content', $messages);
-    } else {
-      //no errors
-      $commands[] = ctools_ajax_command_html('#modal-content', $output);
-    }
-    ctools_ajax_render($commands);
-    
-  } else {
-    return $output;
-  } */ 
 }
 
 /**
@@ -254,9 +215,6 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
   drupal_add_js('misc/jquery.form.js');
   ctools_add_js('ajax-responder');
 
-  //fix for http://drupal.org/node/678158
- // if (empty($form['#post'])) { $form['#post'] = array(); }
-  
   $step = $form_state['step']; 
   $class = $form_state['form_info']['forms'][$step]['class'];
   $instance = new $class(); 
@@ -283,7 +241,6 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
   $form += $plugin_form;
   $form_state['input'] += $default_options; //makes sure elements are in post so fapi can use default values
 
-  
   return $form;
 }
 
@@ -300,19 +257,7 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
 function os_simpleview_list_ajax_render(&$form_state, $output) {  
   if ($form_state['ajax']) {
     $commands = array();
-   // $commands[] = ctools_ajax_command_remove('#modalContent .error');
-    
-   // $messages = theme_status_messages();//HACK remove it!
-   /*
-    if (strlen($messages)) {
-      //errors, don't advance.
-      $commands[] = ctools_ajax_command_before('#modal-content', $messages);
-    } else {
-      //no errors
-      $commands[] = ctools_ajax_command_html('#modal-content', $output);
-    }*/
     $commands = ctools_modal_form_render($form_state, $output);
-    
     ctools_ajax_render($commands);
     
   } else {
@@ -367,13 +312,10 @@ function os_simpleview_list_multiform_finish(&$form_state) {
   $cached = os_simpleview_list_cache_get($form_state['cache_name']);
   $cached = ($cached) ? $cached : array();
   $values = $cached + $form_state['values'];
+  $commands = array();
   
-  //allow normal submit handlers to finish the form
-  unset($form_state['submit_handlers']);
-  
-  // save values into a new box or menu entry, context depending
+  //update an existing box
   if ($values['delta']) {
-    //edit the box
     $box = boxes_load($values['delta']);
     
     //update box properties - title, desc, etc
@@ -402,28 +344,25 @@ function os_simpleview_list_multiform_finish(&$form_state) {
     } else {
       $box->save();  
     }
-
+    
+	  $commands[] = ctools_ajax_command_changed('#boxes-'.$box->delta);
+  
   } else { 
     //new box
     if (($box = os_simpleview_list_make_box($values)) != FALSE) {
       os_simpleview_list_cache_clear($form_state['cache_name']); //do this once it's complete, not before we make box
+      $commands[] = ctools_ajax_command_before('#scholarlayout-top-widgets .scholarlayout-item:nth-child(2)', theme('vsite_layout_ui_cp_widget', 'boxes-'.$box->delta, os_boxes_get_vsite_widget($box)));
+	    $commands[] = ctools_ajax_command_changed('#boxes-'.$box->delta);
     }
   }
   
   //redirect or just close the form depending on js/modal
-  
   if ($form_state['ajax']) {
-    
-    $commands = array();
     $commands[] = ctools_modal_command_dismiss();
-    $commands[] = ctools_ajax_command_reload(); //or figure out how to add and bounce
-  //    modalframe_child_js();
-    
-    //modalframe_close_dialog(); //from os_modalframe.  @TODO make this work
     ctools_ajax_render($commands);
   } else {
   	drupal_set_message('form done'); 
-	  drupal_goto('os_simpleview_list/nojs'); //where to send them?
+	  drupal_goto('os_simpleview_list/nojs'); //where to send them? @TODO
   } 
    
 };
@@ -439,15 +378,10 @@ function os_simpleview_list_make_box($opts){
   //this could be a generic save box function that saves or makes depending on presence of delta...  would clean up finish a bit
   if (($vsite = vsite_get_vsite()) != FALSE) {
     $type = 'os_simpleview_list_box';
-    
-    
-    //populate plugin_opts
-    $opts['plugin_opts'] = os_simpleview_list_plugin_opts($opts);
+    $opts['plugin_opts'] = os_simpleview_list_plugin_opts($opts); //populate plugin_opts
     
     $ignore = array_flip(array('return', 'previous', 'form_id', 'form_token', 'form_build_id', 'op', 'next'));
-    $opts = array_diff_key($opts, $ignore); //strip ctools form elements before sending them to box
-          //should we also pull option defaults and only set values included there?  not necessary yet, but might be needed as more form elements show up.
-          //how to handle nested values, like in a fieldset?
+    $opts = array_diff_key($opts, $ignore);
     require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
     return os_boxes_mk_box($vsite, $type, $opts);
   } 
