@@ -52,6 +52,13 @@ function scholar_front_context_default_contexts() {
           'status' => '0',
           'label' => 'Latest Announcements',
         ),
+        'boxes-projects_get_started' => array(
+	        'module' => 'boxes',
+	        'delta' => 'projects_get_started',
+	        'region' => 'content_top',
+	        'weight' => 0,
+          'label' => 'Front Page Text',
+	      ),
         'boxes-scholar_biocv_bio' => array(
           'module' => 'boxes',
           'delta' => 'scholar_biocv_bio',
