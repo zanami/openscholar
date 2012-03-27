@@ -60,7 +60,7 @@ class os_modal_wysiwyg extends os_boxes_modalframe {
       $content = check_markup($this->options['body'], $this->options['format'], FALSE);
     }elseif (empty($this->options['body']) && cp_access_cp()){
     	//Display a click to add message for admins
-    	$config_link = l("add content to this area", $this->config_path(), array('attributes' => array('class' => 'ctools-use-modal'),'admin_type' => 'config'));
+    	$config_link = l("add content to this area", $this->config_path(), array('attributes' => array('class' => 'vsite-modal-link'),'admin_type' => 'config'));
     	$content = "This widget is empty, {$config_link}.";
     }
     $title = isset($this->title) ? check_plain($this->title) : NULL;
