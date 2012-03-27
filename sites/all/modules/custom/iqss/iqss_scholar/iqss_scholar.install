@@ -83,7 +83,8 @@ function iqss_scholar_update_6004(&$sandbox){
 	
 	  foreach ($modules as $mod) {
 	    if(module_exists($mod)){
-	      module_disable(array($mod));
+	      module_disable(array($mod), TRUE);
+        drupal_uninstall_module($mod);
 	    }
 	  }
 	  $res[] = array(
