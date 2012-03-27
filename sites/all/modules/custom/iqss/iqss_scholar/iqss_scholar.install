@@ -68,3 +68,29 @@ function iqss_scholar_update_6003(&$sandbox){
     
   return $res;
 }
+
+/**
+ * Remove the biocv module from projects
+ * @param array $sandbox
+ */
+function iqss_scholar_update_6004(&$sandbox){
+  
+	$scholar_content_type = variable_get('scholar_content_type', 'vsite');
+	$res = array();
+	
+	if($scholar_content_type == 'project'){
+	  $modules = array('scholar_biocv');
+	
+	  foreach ($modules as $mod) {
+	    if(module_exists($mod)){
+	      module_disable(array($mod));
+	    }
+	  }
+	  $res[] = array(
+	    'success' => true,
+	    'query' => 'Un-Installed modules: ' . implode(', ', $modules),
+	  );
+	}
+	
+	return $res;
+}
