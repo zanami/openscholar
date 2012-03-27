@@ -64,11 +64,14 @@ class os_boxes_bio extends os_boxes_node {
     if(!$vsite || !$vsite->access_admin()) return "";
     $spaces_features = variable_get('spaces_features',array());
 
-    $bio_link = $spaces_features["scholar_biocv"]?l("Setup your bio now","node/add/bio")." or":"The bio feature is disabled";
+    //If the bio is disabled show nothing
+    if(!$spaces_features["scholar_biocv"]) return "";
+    
+    $bio_link = l("Setup your bio now","node/add/bio");
     $front_settings = l("change what displays","cp/build/layout",array("query" => array("page_type" => "front")));
     $result = <<<MESSAGE
         <div id="welcome_front_wrapper">
-          <p>Your sites front page is set to display your bio by default.  {$bio_link} {$front_settings} for the front of your site.</p>
+          <p>Your sites front page is set to display your bio by default.  {$bio_link} or {$front_settings} for the front of your site.</p>
         </div>
 MESSAGE;
 
