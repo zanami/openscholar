@@ -22,7 +22,7 @@ class os_boxes_rss extends os_boxes_default {
   public function options_form(){
 
     vsite_include('vsiteapi');
-    $types = vsite_content_types();
+    $types = vsite_content_types(array(2, 1));
     $form['content'] = array(
       '#type' => 'select',
       '#title' => t('Content Types to Display'),
@@ -42,6 +42,10 @@ class os_boxes_rss extends os_boxes_default {
   public function render() {
     //@todo
     $block = parent::render();
+    
+    if(!$this->access()){
+    	return $block;
+    }
 
     $arg = '';
     if ($this->options['content'] != 'all') {
@@ -52,6 +56,21 @@ class os_boxes_rss extends os_boxes_default {
     }
 
     return $block;
+  }
+  
+  /**
+   * Does this box use a node type that has been disabled?
+   */
+  public function access(){
+  	
+  	vsite_include('vsiteapi');
+    $avalible_types = array_keys(vsite_content_types(array(2, 1)));
+    
+    if($this->options['content'] != 'all'  && !in_array($this->options['content'],$avalible_types)){
+      return false;
+    }else{
+      return true;
+    }
   }
 
 }

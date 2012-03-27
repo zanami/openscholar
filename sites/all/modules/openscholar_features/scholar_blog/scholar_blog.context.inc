@@ -58,7 +58,7 @@ function scholar_blog_context_default_contexts() {
           'weight' => 39,
           'region' => 'right',
           'status' => '0',
-          'label' => 'scholar_blog: Block',
+          'label' => 'Blog: recent Posts',
           'type' => 'context_ui',
         ),
         'views-scholar_blog_comments-block_1' => array(
@@ -67,7 +67,7 @@ function scholar_blog_context_default_contexts() {
           'weight' => 40,
           'region' => 'right',
           'status' => '0',
-          'label' => 'scholar_blog_comments: Recent comments',
+          'label' => 'Blog: Recent comments',
           'type' => 'context_ui',
         ),
         'scholar_blog-blog_rss' => array(
