@@ -69,7 +69,8 @@ p span {
 
 
 
-#content-main a, #content-main a:visited {
+#content-main a, 
+#content-main a:visited {
     color:#293352;
   text-decoration: underline;
     }
@@ -77,6 +78,13 @@ p span {
 #content-main a:hover {
     text-decoration: none;
      }
+     
+
+.sidebar a, 
+.sidebar a:visited {
+    color:#293352;
+  text-decoration: none;
+    }   
     
 
 .more-link {background:#588bb8;
@@ -129,6 +137,14 @@ padding: 3px 3px 0 0;
     height: 20px;
     margin-left: 5px;
     padding-left: 15px;
+  }
+  
+ #boxes-box-vsite_taxonomy_fltr_cat ul li ul li {  
+   background: none;
+  } 
+  
+    #boxes-box-vsite_taxonomy_fltr_cat ul li span {  
+  font-size: 11px;
   }
   
   .box-os_boxes_twitterfeed h3.title {
