@@ -144,11 +144,13 @@ function os_simpleview_list_page($js = NULL, $step = NULL, $delta=NULL) {
   // Starting a new form, set first page and a new cache
   if (empty($step) || $step == 'dropdown') { //going back empties the step...
     os_simpleview_list_cache_clear($cache_name);
+    $origin = arg(5);
     $step = 'basics'; 
   }
   
   //get what's already cached and construct a form state
   $cached = os_simpleview_list_cache_get($cache_name);
+  $cached['origin'] = ($origin) ? $origin : $cached['origin']; 
   $form_state = array(
     'ajax' => $js,
     'cache_name' => $cache_name,
@@ -157,11 +159,12 @@ function os_simpleview_list_page($js = NULL, $step = NULL, $delta=NULL) {
   
   if ($delta) {
     $cached['delta'] = $delta;
-    os_simpleview_list_cache_set($cache_name, $cached);
   }
   
-  $content_type = ($cached['content_type']) ? $cached['content_type'] : $_POST['content_type'];
+  os_simpleview_list_cache_set($cache_name, $cached);
   
+  //build and display multistep form
+  $content_type = ($cached['content_type']) ? $cached['content_type'] : $_POST['content_type'];
   $form_info = os_simpleview_list_multiform_info($js, $content_type);
   $output = ctools_wizard_multistep_form($form_info, $step, $form_state);
   
@@ -315,7 +318,7 @@ function os_simpleview_list_multiform_finish(&$form_state) {
   $commands = array();
   
   //update an existing box
-  if ($values['delta']) {
+  if ($cached['delta']) {
     $box = boxes_load($values['delta']);
     
     //update box properties - title, desc, etc
@@ -345,7 +348,12 @@ function os_simpleview_list_multiform_finish(&$form_state) {
       $box->save();  
     }
     
-	  $commands[] = ctools_ajax_command_changed('#boxes-'.$box->delta);
+    //in a vsite, reload to see updated widget.
+    if ($cached['origin'] == 'front') {
+      $commands[] = ctools_ajax_command_reload();
+    }
+    //cp: do nothing
+	  //$commands[] = ctools_ajax_command_changed('#boxes-'.$box->delta);
   
   } else { 
     //new box
