@@ -2,7 +2,7 @@
 @import url('http://fonts.googleapis.com/css?family=Radley');
 
 html,body {
-  background: #8996A0;
+  background: #AAAEAF;
   }
 
 body {
@@ -161,10 +161,10 @@ ul#header-info,
   }
 
 .header h2 {
-  font: 15px/normal 'Radley', 'Times New Roman', serif;
+  font: 18px/normal 'georgia', 'Times New Roman', serif;
   font-weight: normal;
   color: #fff;
-  margin-top: 20px;
+  margin-top: 15px;
   margin-bottom: 0;
   margin-right: 100px
   }
@@ -213,8 +213,9 @@ a.big-button:hover {
   padding-left: 22px;
   }
 
-a.iqss-link {
-  margin-left:5px;
+.footer a.iqss-link {
+  margin-left:8px;
+  color:#F4EDCA;
   }
 
 /* Start Page */
@@ -416,7 +417,7 @@ margin:41px 327px 0 0; } }
 
 #activity {
   clear:both;
-  background:#485e70;
+  background:#76848F;
   color: #fff;
   height:59px;
   padding: 9px 18px;
@@ -449,9 +450,10 @@ height: 75px;
 #block-iqss_openscholar_front-stats {
 height: 50px;
 width: 944px;
-background-color: #7691A7;
+background-color: #76848F;
 margin-top:-12px;
 font-size: 1.2em;
+border-top:1px dotted #AAAEAF;
   }
 
 
@@ -488,6 +490,10 @@ p.copy a:hover {
   color: #fff;
   border-color: #fff;
   }
+  
+.footer  p.copy {
+  color: #eee;
+  }
 
 .front .footer #powered-link {
   float:right;
@@ -496,7 +502,7 @@ p.copy a:hover {
   }
 
 .front p.copy a.poweredby {
-  background: url('../images/powered_by.png') 19px 37px no-repeat #234f6e;
+  background: url('../images/powered_by.png') 19px 37px no-repeat #293352;
   display:block;
   width: 119px;
   height:115px;
@@ -507,7 +513,7 @@ p.copy a:hover {
 
 #reasons_header {
   height: 80px;
-  background: #3e5a72;
+  background: #76848F;
   position: fixed;
   top: 0;
   left: 0;
