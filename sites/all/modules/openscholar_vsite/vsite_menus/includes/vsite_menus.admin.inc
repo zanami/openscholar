@@ -24,6 +24,7 @@ function vsite_menus_settings_form($form_state){
 
   ctools_include('ajax');
   ctools_include('modal');
+  drupal_add_js(drupal_get_path('module', 'vsite_menus') . '/theme/vsite_menus.js');
 
   $form['new_menu_link_context'] = array(
     '#type' => 'markup',
@@ -110,6 +111,7 @@ function vsite_menus_settings_form($form_state){
         '#description' => 'A tooltip describing the link',
         '#size' => 30,
         '#default_value' => isset($link['options']['attributes']['title']) ? $link['options']['attributes']['title'] : '',
+        '#attributes' => array('class' => 'edit-tooltip'),
       ),
       'region' => array(
         '#type' => 'select',

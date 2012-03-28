@@ -6,24 +6,107 @@
 function scholar_announcements_content_default_fields() {
   $fields = array();
 
+  // Exported field: field_announcement_photo
+  $fields['announcement-field_announcement_photo'] = array(
+    'field_name' => 'field_announcement_photo',
+    'type_name' => 'announcement',
+    'display_settings' => array(
+      'weight' => 0,
+      'parent' => '',
+      'label' => array(
+        'format' => 'hidden',
+      ),
+      'teaser' => array(
+        'format' => 'vsite_design_landscape_logo_linked',
+        'exclude' => 1,
+      ),
+      'full' => array(
+        'format' => 'vsite_design_landscape_logo_default',
+        'exclude' => 1,
+      ),
+      '5' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '4' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '2' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'token' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+    ),
+    'widget_active' => '1',
+    'type' => 'filefield',
+    'required' => '0',
+    'multiple' => '0',
+    'module' => 'filefield',
+    'active' => '1',
+    'list_field' => '0',
+    'list_default' => 1,
+    'description_field' => '0',
+    'widget' => array(
+      'resolution' => '300x300',
+      'enforce_ratio' => 1,
+      'croparea' => '580x580',
+      'enforce_minimum' => 1,
+      'file_extensions' => 'png gif jpg jpeg',
+      'file_path' => '',
+      'progress_indicator' => 'bar',
+      'max_filesize_per_file' => '',
+      'max_filesize_per_node' => '',
+      'max_resolution' => '0',
+      'min_resolution' => '0',
+      'alt' => '',
+      'custom_alt' => 0,
+      'title' => '',
+      'custom_title' => 0,
+      'title_type' => 'textfield',
+      'default_image' => NULL,
+      'use_default_image' => 0,
+      'wysiwyg_fields_status' => 0,
+      'wysiwyg_fields_label' => 'Photo',
+      'wysiwyg_fields_icon' => '6f7621a02161e347e66d99d8ace540a3',
+      'wysiwyg_fields_formatters' => array(),
+      'wysiwyg_fields_profiles' => 1,
+      'wysiwyg_fields_hide' => 1,
+      'wysiwyg_fields_delete' => 1,
+      'label' => 'Photo',
+      'weight' => 0,
+      'description' => '',
+      'type' => 'imagefield_crop_widget',
+      'module' => 'imagefield_crop',
+    ),
+  );
+
   // Exported field: field_os_inline_files
   $fields['announcement-field_os_inline_files'] = array(
     'field_name' => 'field_os_inline_files',
     'type_name' => 'announcement',
     'display_settings' => array(
+      'weight' => '10',
+      'parent' => '',
       'label' => array(
         'format' => 'above',
-        'exclude' => 0,
-      ),
-      '5' => array(
-        'format' => 'hidden',
-        'exclude' => 0,
       ),
       'teaser' => array(
         'format' => 'hidden',
         'exclude' => 0,
       ),
       'full' => array(
+        'format' => 'hidden',
+        'exclude' => 0,
+      ),
+      '5' => array(
         'format' => 'hidden',
         'exclude' => 0,
       ),
@@ -104,7 +187,7 @@ function scholar_announcements_content_default_fields() {
       'insert_class' => '',
       'insert_width' => '',
       'label' => 'Inline Files',
-      'weight' => '12',
+      'weight' => '10',
       'description' => '',
       'type' => 'filefield_widget',
       'module' => 'filefield',
@@ -116,19 +199,20 @@ function scholar_announcements_content_default_fields() {
     'field_name' => 'field_os_inline_image',
     'type_name' => 'announcement',
     'display_settings' => array(
+      'weight' => '9',
+      'parent' => '',
       'label' => array(
         'format' => 'above',
-        'exclude' => 0,
-      ),
-      '5' => array(
-        'format' => 'hidden',
-        'exclude' => 0,
       ),
       'teaser' => array(
         'format' => 'hidden',
         'exclude' => 0,
       ),
       'full' => array(
+        'format' => 'hidden',
+        'exclude' => 0,
+      ),
+      '5' => array(
         'format' => 'hidden',
         'exclude' => 0,
       ),
@@ -218,7 +302,7 @@ function scholar_announcements_content_default_fields() {
       'filefield_source_attach_mode' => 'move',
       'filefield_source_autocomplete' => '1',
       'label' => 'Inline Image',
-      'weight' => '10',
+      'weight' => '9',
       'description' => '',
       'type' => 'imagefield_widget',
       'module' => 'imagefield',
@@ -230,19 +314,20 @@ function scholar_announcements_content_default_fields() {
     'field_name' => 'field_os_inline_oembed',
     'type_name' => 'announcement',
     'display_settings' => array(
+      'weight' => '11',
+      'parent' => '',
       'label' => array(
         'format' => 'above',
-        'exclude' => 0,
-      ),
-      '5' => array(
-        'format' => 'hidden',
-        'exclude' => 0,
       ),
       'teaser' => array(
         'format' => 'hidden',
         'exclude' => 0,
       ),
       'full' => array(
+        'format' => 'hidden',
+        'exclude' => 0,
+      ),
+      '5' => array(
         'format' => 'hidden',
         'exclude' => 0,
       ),
@@ -305,7 +390,7 @@ function scholar_announcements_content_default_fields() {
       ),
       'default_value_php' => NULL,
       'label' => 'Inline Media',
-      'weight' => '14',
+      'weight' => '11',
       'description' => 'Enter the URL of a video or other shareable resource and it will be embedded in the page. If the video doesn\'t appear after saving, refresh the page.',
       'type' => 'link',
       'module' => 'link',
@@ -317,6 +402,7 @@ function scholar_announcements_content_default_fields() {
   t('Inline Files');
   t('Inline Image');
   t('Inline Media');
+  t('Photo');
 
   return $fields;
 }
