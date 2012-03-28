@@ -5,6 +5,7 @@
  */
 function scholar_announcements_default_box() {
   $export = array();
+
   $box = new stdClass;
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
@@ -23,7 +24,7 @@ function scholar_announcements_default_box() {
     'more_text' => 'more',
     'more_link' => 'announcements',
   );
-
   $export['scholar_announcements_latest'] = $box;
+
   return $export;
 }

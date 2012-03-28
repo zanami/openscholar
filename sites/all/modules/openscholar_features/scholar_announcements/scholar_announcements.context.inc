@@ -5,6 +5,7 @@
  */
 function scholar_announcements_context_default_contexts() {
   $export = array();
+
   $context = new stdClass;
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
@@ -46,12 +47,12 @@ function scholar_announcements_context_default_contexts() {
           'label' => 'Latest Announcements',
         ),
         'boxes-vsite_taxonomy_fltr_cat' => array(
-	         'module' => 'boxes',
-	         'delta' => 'vsite_taxonomy_fltr_cat',
-	         'label' => 'Filter By Category',
-	         'weight' => 20,
-	         'region' => 'right',
-	       ),
+          'module' => 'boxes',
+          'delta' => 'vsite_taxonomy_fltr_cat',
+          'label' => 'Filter By Category',
+          'weight' => 20,
+          'region' => 'right',
+        ),
         'boxes-os_addthis' => array(
           'module' => 'boxes',
           'delta' => 'os_addthis',
@@ -68,7 +69,7 @@ function scholar_announcements_context_default_contexts() {
   // Included for use with string extractors like potx.
   t('Announcements');
   t('Feature');
-
   $export['openscholar-feature-announcements'] = $context;
+
   return $export;
 }
