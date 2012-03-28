@@ -7,7 +7,7 @@ body {
   }
 
 #navbar {
-  background-image: url('images/menu-strip-devil-eye.png');
+  background: url('images/menu-strip-devil-eye.png') #D9523C;
   }
 
 a, a:visited {

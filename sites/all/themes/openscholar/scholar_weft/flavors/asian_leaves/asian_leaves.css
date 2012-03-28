@@ -7,7 +7,7 @@ body {
   }
 
 #navbar {
-  background-image: url('images/menu-strip-asian-leaves.png');
+  background: url('images/menu-strip-asian-leaves.png') #9D7D2E;
   }
 
 a, a:visited {

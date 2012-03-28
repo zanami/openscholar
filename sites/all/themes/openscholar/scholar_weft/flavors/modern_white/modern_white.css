@@ -7,7 +7,7 @@ body {
   }
 
 #navbar {
-  background-image: url('images/menu-strip-modern-white.png');
+  background: url('images/menu-strip-modern-white.png') #FFFFFF;
   }
 
 a, a:visited {

@@ -7,7 +7,7 @@ body {
   }
 
 #navbar {
-  background-image: url('images/menu-strip-floral-pattern.png');
+  background: url('images/menu-strip-floral-pattern.png') #8B3015;
   }
 
 a, a:visited {
