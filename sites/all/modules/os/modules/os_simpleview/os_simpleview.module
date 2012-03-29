@@ -3,36 +3,36 @@
 /**
  * @file
  * 
- * os_simpleview_list module
+ * os_simpleview module
  * Let's users provide settings to vsite_view_base view per content type
  * Accessible for creating a page or box
  **/
 
-include_once('os_simpleview_list.features.inc');
+include_once('os_simpleview.features.inc');
 
 /**
  * Implements hook_menu()
  */
-function os_simpleview_list_menu() {
+function os_simpleview_menu() {
   $items = array();
-  $items['os_simpleview_list/%ctools_js'] = array(
+  $items['os_simpleview/%ctools_js'] = array(
     'type' => MENU_CALLBACK, 
     'title' => 'New List Items', 
-    'page callback' => 'os_simpleview_list_page',
+    'page callback' => 'os_simpleview_page',
     'page arguments' => array(1), 
     'access callback' => 'cp_access_cp',
     //'access arguments' => array('access content'),
   );
-  $items['os_simpleview_list/%ctools_js/%step'] = $items['os_simpleview_list/%ctools_js'];
-  $items['os_simpleview_list/%ctools_js/%step']['page arguments'] = array(1,2); 
+  $items['os_simpleview/%ctools_js/%step'] = $items['os_simpleview/%ctools_js'];
+  $items['os_simpleview/%ctools_js/%step']['page arguments'] = array(1,2); 
   return $items;
 }
 
 /**
  * Implementation of hook_ctools_plugin_api().
  */
-function os_simpleview_list_ctools_plugin_api($module, $api) {
-  if ($module == 'os_simpleview_list' && $api == 'plugins') {
+function os_simpleview_ctools_plugin_api($module, $api) {
+  if ($module == 'os_simpleview' && $api == 'plugins') {
     return array('version' => 1);
   } elseif ($module == 'boxes' && $api == 'plugins') {
     return array('version' => 1);
@@ -43,28 +43,28 @@ function os_simpleview_list_ctools_plugin_api($module, $api) {
 /**
  * Implementation of hook_ctools_plugin_directory
  */
-function os_simpleview_list_ctools_plugin_directory($module, $plugin) {
-  if ($module == 'os_simpleview_list' && !empty($plugin)) {
+function os_simpleview_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'os_simpleview' && !empty($plugin)) {
     return "plugins/$plugin";
    }
 }
  
 /**
- * Implementation of hook_os_simpleview_list_plugins
+ * Implementation of hook_os_simpleview_plugins
  *
  * Array key (default in this case) informs simpleview about which content type to use
  * with the class specified in handler
  */
-function os_simpleview_list_os_simpleview_list_plugin(){
-	$path = drupal_get_path('module', 'os_simpleview_list') . '/plugins/';
+function os_simpleview_os_simpleview_plugin(){
+	$path = drupal_get_path('module', 'os_simpleview') . '/plugins/';
 
 	$info = array(
 	  //abstract class to implement for custom plugins
-	  'os_simpleview_list' => array(
+	  'os_simpleview' => array(
 	    'content_type' => NULL,
 	    'handler' => array(
-	    	'class' => 'os_simpleview_list',
-  			'file'  => 'os_simpleview_list.inc',
+	    	'class' => 'os_simpleview',
+  			'file'  => 'os_simpleview.inc',
   			'path'  => $path,
 	    ),
 	  ), 
@@ -73,11 +73,11 @@ function os_simpleview_list_os_simpleview_list_plugin(){
 		'default' => array(
 	    'content_type' => 'default',
   		'handler' => array(
-  			'class' => 'os_simpleview_list_default',
-  			'file'  => 'os_simpleview_list_default.inc',
+  			'class' => 'os_simpleview_default',
+  			'file'  => 'os_simpleview_default.inc',
   			'path'  => $path,
   	    'title' => t('List of Posts'),
-	      'parent' => 'os_simpleview_list',
+	      'parent' => 'os_simpleview',
   		)
 	  ),
 	);
@@ -88,13 +88,13 @@ function os_simpleview_list_os_simpleview_list_plugin(){
 
 
 /**
- * @function os_simpleview_list_plugin_load
+ * @function os_simpleview_plugin_load
  *
  * Load one or more plugins
  */
-function os_simpleview_list_plugin_load($type = NULL) {
+function os_simpleview_plugin_load($type = NULL) {
   ctools_include('plugins');
-  $plugins = ctools_get_plugins('os_simpleview_list', 'plugin');
+  $plugins = ctools_get_plugins('os_simpleview', 'plugin');
   
   if (isset($type)) {
     return $plugins[$type];
@@ -108,48 +108,48 @@ function os_simpleview_list_plugin_load($type = NULL) {
  * 
  * Provides SV list plugins as a unified box widget
  */
-function os_simpleview_list_boxes_plugins(){
+function os_simpleview_boxes_plugins(){
   $info = array(); 
 
-  $info['os_simpleview_list_box'] = array(
+  $info['os_simpleview_box'] = array(
     'title' => '(New) Post List',
     'description' => 'Make a list of content by type',
     'tags' => array(
       'Content'
     ),
     'handler' => array(
-      'class' => 'os_simpleview_list_box',
-      'file' => 'os_simpleview_list_box.inc',
-      'path' => drupal_get_path('module', 'os_simpleview_list') . '/plugins/boxes/',
+      'class' => 'os_simpleview_box',
+      'file' => 'os_simpleview_box.inc',
+      'path' => drupal_get_path('module', 'os_simpleview') . '/plugins/boxes/',
       'parent' => 'os_boxes_default'
     ),
     'access' => TRUE, //'cp_access_cp'?
-    'factory_path' => 'os_simpleview_list/nojs',
+    'factory_path' => 'os_simpleview/nojs',
   );
 
   return $info;
 }
 
 /**
- * @function os_simpleview_list_page
+ * @function os_simpleview_page
  *
  * Menu item shows wizard/form
  */
-function os_simpleview_list_page($js = NULL, $step = NULL, $delta=NULL) {
+function os_simpleview_page($js = NULL, $step = NULL, $delta=NULL) {
   ctools_include('wizard');
   ctools_include('ajax');
   ctools_include('modal');
-  $cache_name = 'os_simpleview_list';
+  $cache_name = 'os_simpleview';
   
   // Starting a new form, set first page and a new cache
   if (empty($step) || $step == 'dropdown') { //going back empties the step...
-    os_simpleview_list_cache_clear($cache_name);
+    os_simpleview_cache_clear($cache_name);
     $origin = arg(5);
     $step = 'basics'; 
   }
   
   //get what's already cached and construct a form state
-  $cached = os_simpleview_list_cache_get($cache_name);
+  $cached = os_simpleview_cache_get($cache_name);
   $cached['origin'] = ($origin) ? $origin : $cached['origin']; 
   $form_state = array(
     'ajax' => $js,
@@ -161,35 +161,35 @@ function os_simpleview_list_page($js = NULL, $step = NULL, $delta=NULL) {
     $cached['delta'] = $delta;
   }
   
-  os_simpleview_list_cache_set($cache_name, $cached);
+  os_simpleview_cache_set($cache_name, $cached);
   
   //build and display multistep form
   $content_type = ($cached['content_type']) ? $cached['content_type'] : $_POST['content_type'];
-  $form_info = os_simpleview_list_multiform_info($js, $content_type);
+  $form_info = os_simpleview_multiform_info($js, $content_type);
   $output = ctools_wizard_multistep_form($form_info, $step, $form_state);
   
-  return os_simpleview_list_ajax_render($form_state, $output);
+  return os_simpleview_ajax_render($form_state, $output);
 }
 
 /**
- * @function os_simpleview_list_multiform_info
+ * @function os_simpleview_multiform_info
  * 
  * Sets up multistep form, retrieiving forms from active plugin
  */
-function os_simpleview_list_multiform_info($js, $content_type) { 
+function os_simpleview_multiform_info($js, $content_type) { 
   $form_info = array(
     'id' => 'os_simpleviews_list', 
-    'path' => 'os_simpleview_list/nojs/%step',  
+    'path' => 'os_simpleview/nojs/%step',  
     'show trail' => TRUE,
     'show back' => TRUE,
     'show return' => FALSE,
-    'next callback' => 'os_simpleview_list_multiform_next',
-    'finish callback' => 'os_simpleview_list_multiform_finish',
-    'cancel callback' => 'os_simpleview_list_multiform_cancel',
+    'next callback' => 'os_simpleview_multiform_next',
+    'finish callback' => 'os_simpleview_multiform_finish',
+    'cancel callback' => 'os_simpleview_multiform_cancel',
   );
   
   //Append forms from appropriate content type
-  $plugin = os_simpleview_list_get_content_type_plugin($content_type);
+  $plugin = os_simpleview_get_content_type_plugin($content_type);
   $class = ctools_plugin_get_class($plugin, 'handler');
   $instance = new $class();
   
@@ -198,7 +198,7 @@ function os_simpleview_list_multiform_info($js, $content_type) {
   foreach ($forms as $key => $form) {
     $forms[$key]['class'] = $class;
     $forms[$key]['form method'] = $forms[$key]['form id'];
-    $forms[$key]['form id'] = 'os_simpleview_list_simpleview_class_form';  
+    $forms[$key]['form id'] = 'os_simpleview_simpleview_class_form';  
   }
   $form_info['forms'] = $forms;
   
@@ -206,13 +206,13 @@ function os_simpleview_list_multiform_info($js, $content_type) {
 }
 
 /**
- * @function os_simpleview_list_simpleview_class_form
+ * @function os_simpleview_simpleview_class_form
  * 
  * Each form is fetched from an object.  That object's methods are not available globally.  
  * When using such a form, that form id is replaced with simpleview_class_form, which returns
  * the form in our object
  */
-function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
+function os_simpleview_simpleview_class_form(&$form, &$form_state) {
 	ctools_include('dependent');
   ctools_add_js('dependent');
   drupal_add_js('misc/jquery.form.js');
@@ -233,7 +233,7 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
   
   //if we're editing an existing box, include the box's options that are already set
   if ($form_state['cached']['delta']) { 
-    $default_options += _os_simpleview_list_box_options($form_state['cached']['delta']);
+    $default_options += _os_simpleview_box_options($form_state['cached']['delta']);
   }
   
   //finally, the basic defaults if nothing else is set
@@ -249,7 +249,7 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
 
 
 /**
- * @function os_simpleview_list_ajax_render
+ * @function os_simpleview_ajax_render
  * 
  * When using ajax, passes rendered form back to browser  
  * See http://drupal.org/node/689746
@@ -257,7 +257,7 @@ function os_simpleview_list_simpleview_class_form(&$form, &$form_state) {
  * also used as generic finish up function before passing form back home
  */
 
-function os_simpleview_list_ajax_render(&$form_state, $output) {  
+function os_simpleview_ajax_render(&$form_state, $output) {  
   if ($form_state['ajax']) {
     $commands = array();
     $commands = ctools_modal_form_render($form_state, $output);
@@ -270,23 +270,23 @@ function os_simpleview_list_ajax_render(&$form_state, $output) {
 
 /**
  * object_cache functions
- * os_simpleview_list_cache_{get,set,clear}
+ * os_simpleview_cache_{get,set,clear}
  */
 
-function os_simpleview_list_cache_set($cache_name, $object) {
+function os_simpleview_cache_set($cache_name, $object) {
   ctools_include('object-cache');
-  ctools_object_cache_set('os_simpleview_list', $cache_name, $object);
+  ctools_object_cache_set('os_simpleview', $cache_name, $object);
 }
 
-function os_simpleview_list_cache_get($cache_name) {
+function os_simpleview_cache_get($cache_name) {
   ctools_include('object-cache');
-  $cache = ctools_object_cache_get('os_simpleview_list', $cache_name);
+  $cache = ctools_object_cache_get('os_simpleview', $cache_name);
   return ($cache) ? $cache : array();
 }
 
-function os_simpleview_list_cache_clear($cache_name) {
+function os_simpleview_cache_clear($cache_name) {
   ctools_include('object-cache'); 
-	ctools_object_cache_clear('os_simpleview_list', $cache_name); 
+	ctools_object_cache_clear('os_simpleview', $cache_name); 
 };
 
 
@@ -294,25 +294,25 @@ function os_simpleview_list_cache_clear($cache_name) {
  * multiform functions - next, cancel return
  * handle cases for user clicking next, cancel, or return.
  */
-function os_simpleview_list_multiform_next(&$form_state) { 
-  os_simpleview_list_cache_set($form_state['cache_name'], $form_state['cached'] + $form_state['values']);
+function os_simpleview_multiform_next(&$form_state) { 
+  os_simpleview_cache_set($form_state['cache_name'], $form_state['cached'] + $form_state['values']);
   
   //ctools has advanced the form a step, let it be rendered
   if ($form_state['ajax']) {
-    $form_state['ajax render'] = 'os_simpleview_list_ajax_render';
+    $form_state['ajax render'] = 'os_simpleview_ajax_render';
     $form_state['rerender'] = TRUE;
   }
 };
  
-function os_simpleview_list_multiform_cancel(&$form_state) { 
-	ctools_object_cache_clear('os_simpleview_list', $form_state['cache_name']); 
+function os_simpleview_multiform_cancel(&$form_state) { 
+	ctools_object_cache_clear('os_simpleview', $form_state['cache_name']); 
 	drupal_set_message('Multi-step form cancelled.'); 
-	$form_state['redirect'] = 'os_simpleview_list';
+	$form_state['redirect'] = 'os_simpleview';
 	 
 };
 
-function os_simpleview_list_multiform_finish(&$form_state) { 
-  $cached = os_simpleview_list_cache_get($form_state['cache_name']);
+function os_simpleview_multiform_finish(&$form_state) { 
+  $cached = os_simpleview_cache_get($form_state['cache_name']);
   $cached = ($cached) ? $cached : array();
   $values = $cached + $form_state['values'];
   $commands = array();
@@ -331,7 +331,7 @@ function os_simpleview_list_multiform_finish(&$form_state) {
       $box->options[$key] = $values[$key];
     }
     
-    $plugin = os_simpleview_list_get_content_type_plugin($cached['content_type']);
+    $plugin = os_simpleview_get_content_type_plugin($cached['content_type']);
     $class = ctools_plugin_get_class($plugin, 'handler');
     $instance = new $class();
     $options_defaults = $instance->options_defaults();
@@ -357,8 +357,8 @@ function os_simpleview_list_multiform_finish(&$form_state) {
   
   } else { 
     //new box
-    if (($box = os_simpleview_list_make_box($values)) != FALSE) {
-      os_simpleview_list_cache_clear($form_state['cache_name']); //do this once it's complete, not before we make box
+    if (($box = os_simpleview_make_box($values)) != FALSE) {
+      os_simpleview_cache_clear($form_state['cache_name']); //do this once it's complete, not before we make box
       $commands[] = ctools_ajax_command_before('#scholarlayout-top-widgets .scholarlayout-item:nth-child(2)', theme('vsite_layout_ui_cp_widget', 'boxes-'.$box->delta, os_boxes_get_vsite_widget($box)));
 	    $commands[] = ctools_ajax_command_changed('#boxes-'.$box->delta);
     }
@@ -370,7 +370,7 @@ function os_simpleview_list_multiform_finish(&$form_state) {
     ctools_ajax_render($commands);
   } else {
   	drupal_set_message('form done'); 
-	  drupal_goto('os_simpleview_list/nojs'); //where to send them? @TODO
+	  drupal_goto('os_simpleview/nojs'); //where to send them? @TODO
   } 
    
 };
@@ -382,11 +382,11 @@ function os_simpleview_list_multiform_finish(&$form_state) {
  *
  * Form is complete.  Build a box and add it to the vsite.
  */
-function os_simpleview_list_make_box($opts){
+function os_simpleview_make_box($opts){
   //this could be a generic save box function that saves or makes depending on presence of delta...  would clean up finish a bit
   if (($vsite = vsite_get_vsite()) != FALSE) {
-    $type = 'os_simpleview_list_box';
-    $opts['plugin_opts'] = os_simpleview_list_plugin_opts($opts); //populate plugin_opts
+    $type = 'os_simpleview_box';
+    $opts['plugin_opts'] = os_simpleview_plugin_opts($opts); //populate plugin_opts
     
     $ignore = array_flip(array('return', 'previous', 'form_id', 'form_token', 'form_build_id', 'op', 'next'));
     $opts = array_diff_key($opts, $ignore);
@@ -398,12 +398,12 @@ function os_simpleview_list_make_box($opts){
 
 
 /**
- * @function os_simpleview_list_get_content_type_plugin
+ * @function os_simpleview_get_content_type_plugin
  * 
  * Returns a plugin for the specified content type.  If none match, returns default.
  */
-function os_simpleview_list_get_content_type_plugin($content_type) {   
-  $plugins = os_simpleview_list_plugin_load();
+function os_simpleview_get_content_type_plugin($content_type) {   
+  $plugins = os_simpleview_plugin_load();
   foreach($plugins as $key => $plugin) {
     if ($plugin['content_type'] == $content_type && $content_type != null) {
       return $plugin;
@@ -414,7 +414,7 @@ function os_simpleview_list_get_content_type_plugin($content_type) {
 }
 
 /**
- * @function os_simpleview_list_plugin_opts
+ * @function os_simpleview_plugin_opts
  * 
  * Boxes can only set a pretedetermined list of options when a box is created.
  * That list is not able to retrieve option_defaults from individual plugins.
@@ -422,8 +422,8 @@ function os_simpleview_list_get_content_type_plugin($content_type) {
  * the options we're about to pass to the box and returns an array of options
  * from the appropriate content type plugin, to be used as plugin_opts
  */
-function os_simpleview_list_plugin_opts($opts = array()) {
-  $plugin = os_simpleview_list_get_content_type_plugin($opts['content_type']);
+function os_simpleview_plugin_opts($opts = array()) {
+  $plugin = os_simpleview_get_content_type_plugin($opts['content_type']);
   $class = ctools_plugin_get_class($plugin, 'handler');
   $instance = new $class();
   $options_defaults = $instance->options_defaults();
@@ -437,11 +437,11 @@ function os_simpleview_list_plugin_opts($opts = array()) {
 }
 
 /**
- * @function _os_simpleview_list_content_types()
+ * @function _os_simpleview_content_types()
  * 
  * returns a list of content types and their names
  */
-function _os_simpleview_list_content_types() {
+function _os_simpleview_content_types() {
   // os/vsite integration - lists correct content types
   if (module_exists('vsite') && vsite_get_vsite()) {
     vsite_include('vsiteapi');
@@ -457,11 +457,11 @@ function _os_simpleview_list_content_types() {
 }
 
 /**
- * @function _os_simpleview_list_content_type_to_vsite_path
+ * @function _os_simpleview_content_type_to_vsite_path
  *
  * Given a content type, returns path to that content type in this vsite.
  */
-function _os_simpleview_list_content_type_to_vsite_path($content_type) {
+function _os_simpleview_content_type_to_vsite_path($content_type) {
   $feature_types = features_get_component_map('node');
   $menu_item = vsite_menus_get_feature_menu_item($feature_types[$content_type][0]);
   return (isset($menu_item[0]['link_path'])) ? $menu_item[0]['link_path'] : FALSE;
@@ -469,12 +469,12 @@ function _os_simpleview_list_content_type_to_vsite_path($content_type) {
 
 
 /**
- * @function os_simpleview_list_box_options($delta)
+ * @function os_simpleview_box_options($delta)
  *
  * Get options from existing box.  Pass them back to multiform so they can be presented when form is edited
  * plugin_opts should be added as regular opts so they can be shown as well
  */
-function _os_simpleview_list_box_options($delta) {
+function _os_simpleview_box_options($delta) {
   if ($box = boxes_load($delta)) {
     $box_options = array_merge($box->options, $box->options['plugin_opts']);
     return $box_options;
