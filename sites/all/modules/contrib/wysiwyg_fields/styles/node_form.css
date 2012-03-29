@@ -52,6 +52,10 @@
   overflow-y: auto;
 }
 
+.wysiwyg_fields-dialog .ui-dialog-content > div {
+	padding: 1.5em;
+}
+
 .wysiwyg_fields-dialog .content-multiple-table td.content-multiple-drag {
   min-width: 45px;
   width: 45px;
