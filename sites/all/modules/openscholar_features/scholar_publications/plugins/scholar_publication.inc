@@ -3,14 +3,14 @@
 /**
  * @class scholar_publication
  * 
- * Extends os_simpleview_list to provide options for publication
+ * Extends os_simpleview to provide options for publication
  */
 
-class scholar_publication extends os_simpleview_list_default {
+class scholar_publication extends os_simpleview_default {
   
   //add published date to the sort form
-  public function os_simpleview_list_form_display_options($options = NULL, $step = NULL){
-    $form = parent::os_simpleview_list_form_display_options($options, $step);
+  public function os_simpleview_form_display_options($options = NULL, $step = NULL){
+    $form = parent::os_simpleview_form_display_options($options, $step);
     $form['sorts_fieldset']['sorts']['#options'] += array('published_date' => t('Recently Published'));
     return $form;
   }
@@ -49,7 +49,7 @@ class scholar_publication extends os_simpleview_list_default {
   function multiform_info() {    
     $form = parent::multiform_info();
     $form['publication_options'] = array(
-      'form id'	=> 'os_simpleview_list_scholar_publication_options',
+      'form id'	=> 'os_simpleview_scholar_publication_options',
       'title' => t('Publication Options'),
     );
     return $form;
@@ -57,7 +57,7 @@ class scholar_publication extends os_simpleview_list_default {
   
   //defines new form.  adds type selection, group by select
   // need to communicate that group by and sort by are exclusive.  show groups/show pubs with dependent selects?
-  function os_simpleview_list_scholar_publication_options($options = NULL) {
+  function os_simpleview_scholar_publication_options($options = NULL) {
     $q = db_query("SELECT tid, name FROM {biblio_types} WHERE tid > 0 AND visible = 1 ORDER BY name ASC");
     $pub_types = array();
     while ($a = db_fetch_array($q)) {

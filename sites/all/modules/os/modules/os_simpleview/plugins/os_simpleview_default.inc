@@ -7,7 +7,7 @@
  * Note that this provides options, form, and render, but is not to be called as a box
  **/
 
-class os_simpleview_list_default implements os_simpleview_list {
+class os_simpleview_default implements os_simpleview {
   function options_defaults(){ 
     //might have to collect defaults from all the boxes so we can construct...
     $options = array(
@@ -29,7 +29,7 @@ class os_simpleview_list_default implements os_simpleview_list {
   
   
   // since this is separate from box, take its options for defaults
-  public function os_simpleview_list_form_basics($options = NULL, $step = NULL){
+  public function os_simpleview_form_basics($options = NULL, $step = NULL){
     $form = array();
     
     $form['description'] = array(
@@ -51,7 +51,7 @@ class os_simpleview_list_default implements os_simpleview_list {
     $form['content_type'] = array(
       '#type' => 'select',
       '#title' => t('Content Type'),
-      '#options' => array('all' => t('All')) + _os_simpleview_list_content_types(),
+      '#options' => array('all' => t('All')) + _os_simpleview_content_types(),
       '#required' => TRUE,
     	'#description' => t('Content types to include in this list.'),
       '#default_value' => $options['content_type']
@@ -60,7 +60,7 @@ class os_simpleview_list_default implements os_simpleview_list {
     return $form;
   }
   
-  public function os_simpleview_list_form_display_options($options = NULL, $step = NULL){
+  public function os_simpleview_form_display_options($options = NULL, $step = NULL){
     $form = array();
      
   	$form['style'] = array(
@@ -112,7 +112,7 @@ class os_simpleview_list_default implements os_simpleview_list {
       )
     );
     
-    $content_path = _os_simpleview_list_content_type_to_vsite_path($options['content_type']);
+    $content_path = _os_simpleview_content_type_to_vsite_path($options['content_type']);
     
     $form['more_link'] = array(
       '#type' => 'textfield',
@@ -154,11 +154,11 @@ class os_simpleview_list_default implements os_simpleview_list {
   function multiform_info() {    
     return array(      
     	'basics' => array(
-      	'form id' => 'os_simpleview_list_form_basics', 
+      	'form id' => 'os_simpleview_form_basics', 
       	'title' => 'The Basics',   
       ),
       'display_options' => array(
-      	'form id' => 'os_simpleview_list_form_display_options', 
+      	'form id' => 'os_simpleview_form_display_options', 
       	'title' => 'Display Options',
       ),
     );
@@ -349,6 +349,6 @@ class os_simpleview_list_default implements os_simpleview_list {
   }
   
   function view_settings() {
-    return (object)array('view_name' => 'os_simpleview_list_base', 'display_id' => 'default');
+    return (object)array('view_name' => 'os_simpleview_base', 'display_id' => 'default');
   } 
 }

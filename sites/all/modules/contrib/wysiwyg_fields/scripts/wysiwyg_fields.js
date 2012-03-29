@@ -22,9 +22,9 @@
               $('#wysiwyg_fields-' + id + '-dialog .wysiwyg_fields-widget input.form-submit:first').trigger('mousedown');
             }
           },
-          height: 'auto',
           modal: true,
           title: Drupal.settings.wysiwyg.plugins[Drupal.wysiwyg.instances[Drupal.settings.wysiwygFields.activeId].format].drupal['wysiwyg_fields_' + id].title,
+          resizable: false,
           width: '80%',
           zIndex: 999999
         });
@@ -172,7 +172,7 @@
         op = 'Default';
       }
 
-      $('#wysiwyg_fields-' + id + '-wrapper').parent().css({position: 'fixed'}).end().dialog('open').focus();
+      $('#wysiwyg_fields-' + id + '-wrapper').dialog('open').focus();
 
       // Invoke appropriate function based on 'op'.
       if ($.isFunction(this['dialogShow' + op])) {
