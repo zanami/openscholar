@@ -8,6 +8,19 @@
   display: none;
 }
 
+.wysiwyg_fields-dialog {
+	height: 70% !important;
+	overflow: visible !important;
+	position: fixed !important;
+}
+
+.wysiwyg_fields-dialog .ui-dialog-titlebar {
+	position: absolute;
+	left: 0;
+	right: 0;
+  top: -46px;
+}
+
 .wysiwyg_fields-dialog .wysiwyg_fields-icon-expand {
   height: 18px;
   left: 0.3em;
@@ -33,9 +46,10 @@
 }
 
 .wysiwyg_fields-dialog .ui-dialog-content {
-  padding: 1.5em 1.7em !important;
-  height: auto !important;
+  padding: 0em 1.7em !important;
+  height: 100% !important; 
   width: auto !important;
+  overflow-y: auto;
 }
 
 .wysiwyg_fields-dialog .content-multiple-table td.content-multiple-drag {
