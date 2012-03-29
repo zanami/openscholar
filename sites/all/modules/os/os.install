@@ -790,6 +790,11 @@ function os_update_6016(&$sandbox) {
       $done[] = drupal_write_record('spaces_overrides', $row, array('id', 'object_id'));
     }
   }
+  
+  $res[] = array(
+    'success' => true,
+    'query' => 'Updated ' . count($done) . ' boxes to simpleview boxes',
+  );
 
   return $res;
 }
@@ -800,15 +805,52 @@ function _box_to_simpleview_box($box) {
   switch($box->plugin_key) {
     
     //image_gallery_recent_images, scholar_announcements_latest, scholar_book_recent_docs, scholar_publications_recent, scholar_presentations_recent, scholar_reader-latest_feed_items
-    /*case 'os_boxes_pub_typ_list':
+    
+    //publications
+    case 'os_boxes_pub_typ_list':
       $box->plugin_key = $plugin_key;
-      $box->options['content_type'] = 'publications';
+      $box->options['content_type'] = 'biblio';
       $box->options['plugin_opts'] = array(
         'pub_types' => $box->options['pub_types'],
         'show_all_types' => $box->options['show_all_types'],
         'group_by' => 'none',
       );
-      break;*/
+      break;
+      
+    case 'os_boxes_pub_type':
+      $box->plugin_key = $plugin_key;
+      $box->options['content_type'] = 'biblio';
+      $box->options['number_of_items'] = 10;
+      $box->options['use_pager'] = TRUE;
+      $box->options['plugin_opts'] = array(
+        'pub_types' => $box->options['whitelist'],
+        //'show_all_types' => $box->options['show_all_types'],
+        'group_by' => 'type',
+      	'display_num' => $box->options['display_num'],  
+      );
+    break;
+    
+    case 'os_boxes_pub_ca':
+      $box->plugin_key = $plugin_key;
+      $box->options['content_type'] = 'biblio';
+      $box->options['number_of_items'] = 10;
+      $box->options['use_pager'] = TRUE;
+      $box->options['plugin_opts'] = array(
+        'group_by' => 'coauthor',
+      	'display_num' => $box->options['display_num'],
+      );
+    break;
+    
+    case 'os_boxes_pub_year':
+      $box->plugin_key = $plugin_key;
+      $box->options['content_type'] = 'biblio';
+      $box->options['number_of_items'] = 10;
+      $box->options['use_pager'] = TRUE;
+      $box->options['plugin_opts'] = array(
+        'group_by' => 'year',
+      	'display_num' => $box->options['display_num'],
+      );
+    break;
     
     case 'os_boxes_present_list':
       $box->plugin_key = $plugin_key;
@@ -816,6 +858,7 @@ function _box_to_simpleview_box($box) {
       $box->options['sorts'] = 'recently_presented';      
     break;
       
+    //generics
     case 'os_boxes_recent_docs':
       $box->plugin_key = $plugin_key;
       $box->options['content_type'] = 'book';

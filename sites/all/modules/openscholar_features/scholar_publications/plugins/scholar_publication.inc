@@ -39,9 +39,12 @@ class scholar_publication extends os_simpleview_default {
     $options = parent::options_defaults(); //maybe this should just be plugin opts and ignore the rest of the defaults?
     
     $options['sorts'] = 'published_date';    
+    $options['number_of_items'] = 10;
+    $options['use_pager'] = TRUE;
     $options['plugin_opts']['show_all_types'] = TRUE;
     $options['plugin_opts']['pub_types'] = array();
     $options['plugin_opts']['group_by'] = 'none';
+    $options['plugin_opts']['display_num'] = TRUE;
     return $options;
   }
   
@@ -97,6 +100,14 @@ class scholar_publication extends os_simpleview_default {
         '#title' => t('Group By'),
         '#options' => array('none'=>t('None'), 'year' => t('Year'), 'coauthor'=>t('Co-author'), 'type'=>t('Type')),
         '#default_value' => $options['group_by'],
+        '#description' => t('Instead of sorting your publications, show links to your publications grouped by year, co-author, or type.')
+      ),
+      
+      'display_num' => array(
+        '#type' => 'checkbox',
+        '#title' => 'Display number of items',
+        '#default_value' => $options['display_num'],
+        '#description' => t('When displaying groups of publications, show the total number of publications in each group.')
       ),
     );
     
@@ -125,6 +136,27 @@ class scholar_publication extends os_simpleview_default {
     return $append;
   }
   
+  //default views_alter can't handle views arguments, so let's alter the view
+  public function views_alter(view &$view, &$display_id, &$args, $options) {
+    
+    parent::views_alter($view, $display_id, $args, $options);
+  
+    if (isset($options['display_num'])) {
+      switch ($options['group_by']) {
+        case 'coauthor': $arg = 'lastname'; break;
+        case 'year': $arg = 'biblio_year'; break;
+        case 'type': $arg = 'name'; break;
+        default: $arg = NULL;
+      }
+      
+      $arguments = $view->display_handler->get_option('arguments');
+      
+      if (isset($arguments[$arg])) {
+        $arguments[$arg]['style_options']['count'] = $options['display_num'];
+        $view->display_handler->override_option('arguments', $arguments); 
+      } 
+    }
+  }
   
   //override and extend parse_options_sorts to add pub date
   protected  function _parse_options_sorts($sorting_method) {
@@ -148,6 +180,15 @@ class scholar_publication extends os_simpleview_default {
         $override = parent::_parse_options_sorts($sorting_method);
       break;
         
+    }
+    return $override;
+  }
+  
+  //view is not field based.  make it field based for titles
+  protected function _parse_options_row_options($display_style) {
+    $override = parent::_parse_options_row_options($display_style);
+    if ($display_style == 'titles') {
+      $override['row_plugin'] = 'fields';
     }
     return $override;
   }
