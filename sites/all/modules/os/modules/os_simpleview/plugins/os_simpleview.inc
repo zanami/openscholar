@@ -10,7 +10,7 @@
  * Note that this provides options, form, and render, but is not to be called as a box
  **/
 
-interface os_simpleview_list {
+interface os_simpleview {
   
   /**
    * @function options_defaults

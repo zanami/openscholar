@@ -3,12 +3,12 @@
 /**
  * Implementation of hook_views_default_views().
  */
-function os_simpleview_list_views_default_views() {
+function os_simpleview_views_default_views() {
   $views = array();
   
   $view = new view;
-  $view->name = 'os_simpleview_list_base';
-  $view->description = 'Base view for simpleview_list';
+  $view->name = 'os_simpleview_base';
+  $view->description = 'Base view for os_simpleview';
   $view->tag = 'openscholar';
   $view->view_php = '';
   $view->base_table = 'node';
@@ -182,5 +182,6 @@ function os_simpleview_list_views_default_views() {
     'hide_empty' => 1,
   ));
     
+  $views['os_simpleview_base'] = $view;
   return $views;
 }

@@ -14,7 +14,7 @@ function scholar_presentations_ctools_plugin_api() {
   elseif ($module == "strongarm" && $api == "strongarm") {
     return array("version" => 1);
   } 
-  elseif ($module == 'os_simpleview_list' && $api == 'plugins') {
+  elseif ($module == 'os_simpleview' && $api == 'plugins') {
     return array('version' => 1);
   }
 }
@@ -58,10 +58,10 @@ function scholar_presentations_wysiwyg_fields_icons() {
 }
 
 /**
- * Implementation of os_simpleview_list_plugin
+ * Implementation of os_simpleview_plugin
  * Provides presentation form for simpleview list
  */
-function scholar_presentations_os_simpleview_list_plugin() {
+function scholar_presentations_os_simpleview_plugin() {
 	$info = array(
   	'presentation' => array( 
 	  'content_type' => 'presentation',

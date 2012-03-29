@@ -3,14 +3,14 @@
 /**
  * @class scholar_presentations
  * 
- * Extends os_simpleview_list to provide options for presentations
+ * Extends os_simpleview to provide options for presentations
  */
 
-class scholar_presentations extends os_simpleview_list_default {
+class scholar_presentations extends os_simpleview_default {
   
   //add presented date to the form
-  public function os_simpleview_list_form_display_options($options = NULL, $step = NULL){
-    $form = parent::os_simpleview_list_form_display_options($options, $step);
+  public function os_simpleview_form_display_options($options = NULL, $step = NULL){
+    $form = parent::os_simpleview_form_display_options($options, $step);
     $form['sorts_fieldset']['sorts']['#options'] += array('presented_date' => t('Recently Presented'));
     return $form;
   }

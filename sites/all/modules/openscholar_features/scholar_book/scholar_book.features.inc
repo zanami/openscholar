@@ -46,10 +46,10 @@ function scholar_book_views_api() {
 }
 
 /**
- * Implementation of os_simpleview_list_plugin
+ * Implementation of os_simpleview_plugin
  * Provides book for simpleview list
  */
-function scholar_book_os_simpleview_list_plugin() {
+function scholar_book_os_simpleview_plugin() {
 	$info = array(
   	'book' => array( 
 	  'content_type' => 'book',

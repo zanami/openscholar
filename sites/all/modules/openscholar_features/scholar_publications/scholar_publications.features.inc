@@ -74,10 +74,10 @@ function scholar_publications_wysiwyg_fields_icons() {
 }
 
 /**
- * Implementation of os_simpleview_list_plugin
+ * Implementation of os_simpleview_plugin
  * Provides publication form for simpleview list
  */
-function scholar_publications_os_simpleview_list_plugin() {
+function scholar_publications_os_simpleview_plugin() {
 	$info = array(
   	'biblio' => array( 
 	  'content_type' => 'biblio',
