@@ -476,7 +476,10 @@ function _os_simpleview_content_type_to_vsite_path($content_type) {
  */
 function _os_simpleview_box_options($delta) {
   if ($box = boxes_load($delta)) {
-    $box_options = array_merge($box->options, $box->options['plugin_opts']);
+    $box_options = $box->options;
+    if (isset($box_options['plugin_opts'])) {
+      $box_options += $box_options['plugin_opts'];
+    }
     return $box_options;
   } else {
     return array();
