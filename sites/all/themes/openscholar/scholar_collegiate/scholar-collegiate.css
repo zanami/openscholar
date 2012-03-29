@@ -168,7 +168,9 @@ background: #fff;
 
 #header {
   background: url('images/headerBg.png') repeat-x;
-  height:153px;
+  min-height:153px;
+  background-size: cover;
+  background-color: #840000;
  }
  
 
