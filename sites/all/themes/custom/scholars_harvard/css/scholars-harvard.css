@@ -2,11 +2,11 @@
 @import url('http://fonts.googleapis.com/css?family=Radley');
 
 html,body {
-  background: #AAAEAF;
+  background: url('../images/body-bg.jpg') repeat-x fixed 0 100% #698da2;
   }
 
 body {
-  font-family: arial, serif;
+font-family: 'PT Sans', arial, serif;
   }
 
 .wrap {
@@ -161,10 +161,10 @@ ul#header-info,
   }
 
 .header h2 {
-  font: 18px/normal 'georgia', 'Times New Roman', serif;
+  font: 15px/normal 'Radley', 'Times New Roman', serif;
   font-weight: normal;
   color: #fff;
-  margin-top: 15px;
+  margin-top: 20px;
   margin-bottom: 0;
   margin-right: 100px
   }
@@ -176,26 +176,29 @@ ul#header-info li {
 
 ul#header-info li a,
 ul#header-info li a:visited {
-  color:#FFDB6D;
+  color:#fef1ab;
   }
 
 a.big-button {
   display:block;
   height: 80px;
-  background: url('../images/arrow1.png') no-repeat 100% 0 #D16103;
+  background: url('../images/arrow1.png') no-repeat 100% 0 #f28316;
   padding-left: 39px;
-  color: #FFF;
+  color: #fefdc8;
   line-height: 80px;
-  font-size: 33px;
+  font-size: 37px;
   width: 453px;
   font-weight: bold;
   }
 
 a.big-button:hover {
   text-decoration: none;
-  background-color: #C4961A;
+  background-color: #cd6e11;
   color:#fff;
-  }
+ text-shadow: 0px 0px 25px rgba(239,220,62,0.9);
+-moz-transition: color .25s linear, background-color .15s linear .1s, text-shadow .15s linear .2s;
+-webkit-transition: color .25s linear, background-color .15s linear .1s, text-shadow .15s linear .2s;
+ transition: color .25s linear, background-color .15s linear .1s, text-shadow .15s linear .2s;  }
 
 #reasons a.big-button,
 #page a.big-button {
@@ -213,9 +216,8 @@ a.big-button:hover {
   padding-left: 22px;
   }
 
-.footer a.iqss-link {
-  margin-left:8px;
-  color:#F4EDCA;
+a.iqss-link {
+margin-left:5px;
   }
 
 /* Start Page */
@@ -283,7 +285,7 @@ margin:33px 327px 0 0;
 width:162px;
 height:19px;
 float:left;
-margin:41px 327px 0 0; } } 
+margin:27px 327px 0 0; } } 
 
 
 #col-2 {
@@ -305,6 +307,7 @@ margin:41px 327px 0 0; } }
 #col-2 p,
 #col-2 li {
   margin-bottom: 43px;
+  font-weight:bold;
   }
 
 #col-2 p.leadin {
@@ -331,7 +334,7 @@ margin:41px 327px 0 0; } }
 #col-2 #start-learnmore a {
   background:url('../images/arrow2.png') 100% 50% no-repeat transparent;
   padding-right: 30px;
-  color:#A51C30;
+  color:#b23325;
   margin-left: 30px;
   }
 
@@ -417,7 +420,7 @@ margin:41px 327px 0 0; } }
 
 #activity {
   clear:both;
-  background:#76848F;
+  background:#485e70;
   color: #fff;
   height:59px;
   padding: 9px 18px;
@@ -434,7 +437,7 @@ margin:41px 327px 0 0; } }
   }
 
 #activity a, #activity a:visited {
-  color: #FFDB6D;
+  color: #ff8207;
   }
 
 .footer {
@@ -450,10 +453,9 @@ height: 75px;
 #block-iqss_openscholar_front-stats {
 height: 50px;
 width: 944px;
-background-color: #76848F;
+background-color: #7691A7;
 margin-top:-12px;
 font-size: 1.2em;
-border-top:1px dotted #AAAEAF;
   }
 
 
@@ -491,10 +493,6 @@ p.copy a:hover {
   border-color: #fff;
   }
   
-.footer  p.copy {
-  color: #eee;
-  }
-
 .front .footer #powered-link {
   float:right;
   position:relative;
@@ -502,7 +500,7 @@ p.copy a:hover {
   }
 
 .front p.copy a.poweredby {
-  background: url('../images/powered_by.png') 19px 37px no-repeat #293352;
+  background: url('../images/powered_by.png') 19px 37px no-repeat #234f6e;
   display:block;
   width: 119px;
   height:115px;
@@ -513,7 +511,7 @@ p.copy a:hover {
 
 #reasons_header {
   height: 80px;
-  background: #76848F;
+  background: #3e5a72;
   position: fixed;
   top: 0;
   left: 0;
