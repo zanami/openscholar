@@ -79,5 +79,11 @@ class os_simpleview_box extends os_boxes_default {
     return ($class) ? new $class() : FALSE;
   }
   
-  //parent::save();
+  /**
+   * Does this box only use node types that have been disabled?
+   */
+  public function access(){
+    return ($this->options['content_type'] && 
+      (array_key_exists($this->options['content_type'], _os_simpleview_content_types()) || $this->options['content_type'] == 'all') );
+  } 
 }
