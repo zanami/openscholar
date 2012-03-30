@@ -784,7 +784,7 @@ function os_update_6016(&$sandbox) {
   $done = array();
   
   while ($row = db_fetch_object($result)) {
-    $box = unserialize($row->value);
+    $box = @unserialize($row->value);
     if ($new = _box_to_simpleview_box($box)) {
       $row->value = $new;
       $done[] = drupal_write_record('spaces_overrides', $row, array('id', 'object_id'));
@@ -802,10 +802,13 @@ function os_update_6016(&$sandbox) {
 //return the simpleview version of a box if able, or nothing
 function _box_to_simpleview_box($box) {
   $plugin_key = 'os_simpleview_box';
+  
+  if (!isset($box->plugin_key)) {
+    return;
+  }
+  
   switch($box->plugin_key) {
-    
-    //image_gallery_recent_images, scholar_announcements_latest, scholar_book_recent_docs, scholar_publications_recent, scholar_presentations_recent, scholar_reader-latest_feed_items
-    
+        
     //publications
     case 'os_boxes_pub_typ_list':
       $box->plugin_key = $plugin_key;
@@ -837,11 +840,6 @@ function _box_to_simpleview_box($box) {
       unset($box->options['filter']);
     break;
     
-    /*
-    case 'os_boxes_simple';
-    here too!
-    break;
-      */
     default:
       return;
         
