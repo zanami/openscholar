@@ -54,6 +54,12 @@ padding:1px 20px 20px;
 #content-area .block .content {background: url('images/blockBg.png') repeat-x center bottom;}
 #content-area #content-top .block {padding-top:0;}
 
+#content-area #block-boxes-os_addthis .content {background: none;}
+
+.node-type-person .flL {
+    margin-top: 2.5em;
+}
+
 
 /* TYPOGRAPHY*/
 
@@ -86,7 +92,7 @@ p span {
   text-decoration: none;
     }   
     
-
+/*
 .more-link {background:#588bb8;
 width:40px;
 height:18px; 
@@ -99,7 +105,7 @@ padding: 3px 3px 0 0;
 	text-transform:capitalize;
   color:#A61D31;
   }
-  
+  */
   
 #content-main h2.title {
 	color:#666;
@@ -131,6 +137,8 @@ padding: 3px 3px 0 0;
     margin-bottom:0;
   }
   
+ #iqss-weekly h4 {margin-top: 1em;color:#666;}
+  #iqss-weekly h4:nth-child(1) {margin-top: 4.3em;}
   
  #boxes-box-vsite_taxonomy_fltr_cat ul li {  
    background: url("images/orangeBullet.png") no-repeat scroll 0 6px transparent;
@@ -162,29 +170,20 @@ padding: 3px 3px 0 0;
    } 
    
    
-   #block-boxes-scholar_announcements_latest h3.title {
+   #block-boxes-scholar_announcements_latest h3.title:nth-child(1) {
   background: url('images/announcementsIcon.png') no-repeat;
   margin-left:8px;
   padding-left: 39px;
    } 
    
 
-   
-    #boxes-box-scholar_announcements_latest .boxes-box-content h3:nth-child(1) {
-  background: url('images/genericIcon2.png') no-repeat;
-  margin-left:1px;
+
+    #boxes-box-scholar_announcements_latest .boxes-box-content h3 {
   text-transform: none;
   font-size:13px;
-padding: 0 0 0 32px;
+  padding:0;
    } 
-   
-    #boxes-box-scholar_announcements_latest .boxes-box-content h3:nth-child(2) {
-  background: url('images/genericIcon2.png') no-repeat;
-  margin-left:8px;
-  text-transform: none;
-  font-size:13px;
-padding: 0 0 0 35px;
-   } 
+
 
 h5 {
 	font-family: georgia,arial;
@@ -201,6 +200,17 @@ h5 span {
 #header h1 {font-family:georgia, arial;color:#e17c29;margin-top:15px;}
 #header h1 a {color:#e17c29;font-size:33px;}
 #header h2 {color:#666666;}
+
+#content .node-type-person ul.inline {
+    color: #293352;
+    margin: 0 0 10px 0;
+}
+
+.item-list ul.pager li.pager-current {
+    background: none repeat scroll 0 0 #293352;
+    color: #FFFFFF;
+    padding: 3px 5px;
+}
 
 /* HEADER ELEMENTS */
 
@@ -330,13 +340,21 @@ border-right:none;
   }
   
 
-.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a:hover,
+
 .sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a.active { 
 	background: url('images/sideNavBg_on.png') no-repeat;
  color: #FFF;
  font-style: normal;
     font-weight: normal;
  }
+ 
+ 
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a:hover { 
+	background: url('images/sideNavBg_over.png') no-repeat;
+ color: #FFF;
+ font-style: normal;
+    font-weight: normal;
+ } 
  
 #boxes-box-scholar_book_current_toc a.active,
 #boxes-box-scholar_book_current_toc a {
