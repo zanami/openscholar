@@ -10,7 +10,7 @@ function scholar_publications_default_box() {
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
   $box->delta = 'scholar_publications_recent';
-  $box->plugin_key = 'os_boxes_pub_typ_list';
+  $box->plugin_key = 'os_simpleview_box';
   $box->title = 'Recent Publications';
   $box->description = 'Recent Publications';
   $box->options = array(
@@ -22,6 +22,12 @@ function scholar_publications_default_box() {
     'more_text' => 'more',
     'more_link' => 'publications',
     'show_all_types' => 1,
+    'content_type' => 'biblio',
+  	'plugin_opts' => array(
+        'pub_types' => $box->options['pub_types'],
+        'show_all_types' => $box->options['show_all_types'],
+        'group_by' => 'none',
+    ),
   );
   $export['scholar_publications_recent'] = $box;
 

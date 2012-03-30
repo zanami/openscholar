@@ -717,8 +717,15 @@ div.form-checkboxes-scrolling {
   }
 
 #vsite-support-contact-mail-owner .form-item label {
-  display:inline;
+  display:block;
   }
+  
+#vsite-support-contact-mail-owner .form-item:nth-child(1) label,
+#vsite-support-contact-mail-owner .form-item:nth-child(5) label {
+  display:inline;
+  margin-bottom:10px;
+  }
+  
   
   /** modal forms CSS **/
 	

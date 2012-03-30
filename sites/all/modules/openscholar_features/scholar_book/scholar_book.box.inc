@@ -22,7 +22,7 @@ function scholar_book_default_box() {
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
   $box->delta = 'scholar_book_recent_docs';
-  $box->plugin_key = 'os_boxes_recent_docs';
+  $box->plugin_key = 'os_simpleview_box';
   $box->title = 'Recent Documents';
   $box->description = 'Recent Documents';
   $box->options = array(
@@ -32,6 +32,9 @@ function scholar_book_default_box() {
     'more' => 0,
     'more_text' => '',
     'more_link' => '',
+    'content_type' => 'book',
+    'sorts' => 'newest',    
+    
   );
   $export['scholar_book_recent_docs'] = $box;
   return $export;

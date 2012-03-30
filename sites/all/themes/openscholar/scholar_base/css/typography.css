@@ -306,21 +306,27 @@ body.node-inner li ol li,
 	list-style-type: upper-alpha;
 	}
 
+.node-inner .content ol ol ol li,
 .node-inner .content li li ol li,
 .node-inner .content li li li ol li,
 .node-inner .content li li li li ol li,
+body.node-inner ol ol ol li,
 body.node-inner li li ol li,
 body.node-inner li li li ol li,
 body.node-inner li li li li ol li {
 	list-style: lower-alpha;
 	}
 
+.node-inner .content ol ol ol ol li,
 .node-inner .content ol li ol li ol li ol li,
-body.node-inner ol li ol li ol li ol li {
+body.node-inner ol li ol li ol li ol li,
+body.node-inner ol ol ol ol li {
 list-style-type:decimal; 
 }
 
+.node-inner .content ol ol ol ol li:before,
 .node-inner .content ol li ol li ol li ol li:before,
+body.node-inner ol li ol li ol li ol li:before,
 body.node-inner ol li ol li ol li ol li:before { 
 position:relative;
  left:-0.5em; 

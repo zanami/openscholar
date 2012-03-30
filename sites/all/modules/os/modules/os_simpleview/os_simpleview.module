@@ -112,7 +112,7 @@ function os_simpleview_boxes_plugins(){
   $info = array(); 
 
   $info['os_simpleview_box'] = array(
-    'title' => '(New) Post List',
+    'title' => 'List of Posts',
     'description' => 'Make a list of content by type',
     'tags' => array(
       'Content'
@@ -231,6 +231,13 @@ function os_simpleview_simpleview_class_form(&$form, &$form_state) {
     $default_options += $form_state['cached'];
   }
   
+  //set any unincluded checkboxes to false.  otherwise they're set to default since they have no setting.
+  foreach(explode(',', $form_state['input']['checkbox_list']) as $checkbox) {
+    if (!isset($form_method['input'][$checkbox])) {
+      $default_options[$checkbox] = FALSE;
+    }
+  }
+  
   //if we're editing an existing box, include the box's options that are already set
   if ($form_state['cached']['delta']) { 
     $default_options += _os_simpleview_box_options($form_state['cached']['delta']);
@@ -244,6 +251,15 @@ function os_simpleview_simpleview_class_form(&$form, &$form_state) {
   $form += $plugin_form;
   $form_state['input'] += $default_options; //makes sure elements are in post so fapi can use default values
 
+  //track the checkbox elements being sent.  if they're absent at the next input, assume they're false.
+  $checkboxes = array();
+  foreach($form as $key => $element) {
+    if ($element['#type'] == 'checkbox') {
+      $checkboxes[] = $key;
+    }
+  }
+  $form['checkbox_list'] = array('#type'=>'hidden', '#value'=>implode(',', $checkboxes) );
+  
   return $form;
 }
 
@@ -476,7 +492,10 @@ function _os_simpleview_content_type_to_vsite_path($content_type) {
  */
 function _os_simpleview_box_options($delta) {
   if ($box = boxes_load($delta)) {
-    $box_options = array_merge($box->options, $box->options['plugin_opts']);
+    $box_options = $box->options;
+    if (isset($box_options['plugin_opts'])) {
+      $box_options += $box_options['plugin_opts'];
+    }
     return $box_options;
   } else {
     return array();

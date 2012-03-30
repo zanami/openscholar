@@ -769,3 +769,83 @@ function os_update_6015(&$sandbox) {
 
   return $res;
 }
+
+/**
+ * Implements hook_update_N
+ * 
+ * Enables new simpleviews boxes.  Replaces old boxes with new kind.
+ **/
+function os_update_6016(&$sandbox) {
+  $res = array();
+  
+  module_enable(array('os_simpleview'));
+  $query = 'SELECT * FROM spaces_overrides WHERE object_type = "boxes"';
+  $result = db_query($query);
+  $done = array();
+  
+  while ($row = db_fetch_object($result)) {
+    $box = @unserialize($row->value);
+    if ($new = _box_to_simpleview_box($box)) {
+      $row->value = $new;
+      $done[] = drupal_write_record('spaces_overrides', $row, array('id', 'object_id'));
+    }
+  }
+  
+  $res[] = array(
+    'success' => true,
+    'query' => 'Updated ' . count($done) . ' boxes to simpleview boxes',
+  );
+
+  return $res;
+}
+
+//return the simpleview version of a box if able, or nothing
+function _box_to_simpleview_box($box) {
+  $plugin_key = 'os_simpleview_box';
+  
+  if (!isset($box->plugin_key)) {
+    return;
+  }
+  
+  switch($box->plugin_key) {
+        
+    //publications
+    case 'os_boxes_pub_typ_list':
+      $box->plugin_key = $plugin_key;
+      $box->options['content_type'] = 'biblio';
+      $box->options['plugin_opts'] = array(
+        'pub_types' => $box->options['pub_types'],
+        'show_all_types' => $box->options['show_all_types'],
+        'group_by' => 'none',
+      );
+      break;
+      
+    //presentations
+    case 'os_boxes_present_list':
+      $box->plugin_key = $plugin_key;
+      $box->options['content_type'] = 'presentations';
+      $box->options['sorts'] = 'recently_presented';      
+    break;
+      
+    //generics
+    case 'os_boxes_recent_docs':
+      $box->plugin_key = $plugin_key;
+      $box->options['content_type'] = 'book';
+      $box->options['sorts'] = 'newest';    
+    break;  
+    
+    case 'os_boxes_sv_list';
+      $box->plugin_key = $plugin_key;
+      $box->options['content_type'] = (strpos($box->options['filter'], 'node:') !== FALSE) ? str_replace('node:', '', $box->options['filter']): 'all';    
+      unset($box->options['filter']);
+    break;
+    
+    default:
+      return;
+        
+  }
+  
+  $box->changed = time();
+  
+  return $box;
+}

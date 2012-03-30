@@ -174,9 +174,9 @@ class os_simpleview_default implements os_simpleview {
         $view->dom_id = "boxes-" . $options['delta'];
         $output = $view->execute_display();
         
-        //Append more link
-        if ($options['more']) {
-          $more .= l($options['more_text'], $options['more_link']);
+        //Append more link.  Not done in views because views can't control destination of link
+        if ($options['more'] && count($view->result) >= intval($options['number_of_items'])) {
+          $more = theme_more_link($options['more_link'], $options['more_text']);
           if (is_array($output)) {
             $output['content'] .= $more;
           } else {
@@ -184,7 +184,11 @@ class os_simpleview_default implements os_simpleview {
           }
         }
         
-        return $output;
+        if (count($view->result)) {
+          return $output;
+        } else {
+          return '';
+        }
       }
       $view->destroy();
     }
