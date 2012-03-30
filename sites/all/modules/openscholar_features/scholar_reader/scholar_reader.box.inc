@@ -23,12 +23,12 @@ function scholar_reader_default_box() {
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
   $box->delta = 'scholar_reader-feeds_list';
-  $box->plugin_key = 'os_boxes_sv_list';
+  $box->plugin_key = 'os_simpleview_box';
   $box->title = 'List of Feeds';
   $box->description = 'List of Feeds';
   $box->options = array(
     'visibility' => 'feature',
-    'filter' => 'node:feed',
+    'content_type' => 'feed',
     'style' => 'titles',
     'sort' => 'newest',
     'argument' => '',
