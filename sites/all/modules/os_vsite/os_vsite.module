@@ -1,0 +1,2 @@
+<?php
+include_once('os_vsite.features.inc');
