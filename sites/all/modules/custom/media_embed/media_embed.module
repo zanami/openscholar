@@ -100,7 +100,6 @@ function media_embed_add($form, &$form_state = array(), $types = NULL) {
   $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
-    '#submit' => array('media_embed_add_submit'),
   );
   return $form;
 }
@@ -137,6 +136,20 @@ function media_embed_add_submit($form, &$form_state) {
   // save the fields and entity
   field_attach_submit('file', $file, $form, $form_state);
   $file = file_save($file);
+  $form_state['file'] = $file;
+
+  // Redirect to the file edit page after submission.
+  if (media_access('edit')) {
+    $destination = array('destination' => 'admin/content/file');
+    if (isset($_GET['destination'])) {
+      $destination = drupal_get_destination();
+      unset($_GET['destination']);
+    }
+    $form_state['redirect'] = array('file/' . $file->fid . '/edit', array('query' => $destination + drupal_get_query_parameters()));
+  }
+  else {
+    $form_state['redirect'] = 'admin/content/file';
+  }
 }
 
 function media_embed_check_src($html) {
@@ -305,14 +318,6 @@ function media_embed_file_formatter_media_embed_view($file, $display, $langcode)
       entity_prepare_view('file', array($file->fid => $file));
 
       return field_attach_view('file', $file, $display);
-
-      // pull the html from our table
-      /*$result = db_select('media_embed', 'me')->fields('me', array('html'))->condition('fid', $file->fid)->execute();
-      $html = $result->fetchAssoc();
-      $html = $html['html'];
-      $element = array(
-        '#markup' => $html,
-      );*/
     }
 
     // WYSIWYG will not handle iframes and the like properly. Just send back a placeholder image
