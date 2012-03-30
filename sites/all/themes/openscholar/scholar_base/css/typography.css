@@ -299,10 +299,10 @@ body.node-inner ul li li,
   padding:0 0 0 3px;
   }
 
-.node-inner .content li ol li,
-body.node-inner li ol li,
-#block-boxes-scholar_front_simple_get_started li ol li,
-.box-os_boxes_simple li ol li {
+.node-inner .content ol ol li,
+body.node-inner ol ol li,
+#block-boxes-scholar_front_simple_get_started ol ol li,
+.box-os_boxes_simple ol ol li {
 	list-style-type: upper-alpha;
 	}
 
