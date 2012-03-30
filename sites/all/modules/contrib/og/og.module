@@ -589,7 +589,6 @@ function og_field_access($op, $field, $entity_type, $entity, $account) {
   $field = field_info_field($field_name);
   $settings = $field['settings']['handler_settings'];
 
-
   // Check if we are editing the user entity, or need to hide a secondary
   // field.
   if ($entity_type == 'user' || (!empty($settings['primary_field']) && !empty($settings['hide_secondary_field']))) {
@@ -624,18 +623,20 @@ function og_field_create_instance($instance) {
   og_roles_override($instance['entity_type'], 0, $instance['bundle']);
 
   // Check if we need to add a group audience on the user's entity.
+  // We add a different field, so each field can be set differently.
   if (!og_is_group_content_type('user', 'user')) {
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = $instance['entity_type'];
     $og_field['instance']['label'] = t('Group membership');
-    og_create_field(OG_AUDIENCE_FIELD, 'user', 'user', $og_field);
+    og_create_field('og_user_group_ref', 'user', 'user', $og_field);
 
     // Create "Other groups" field.
     $og_field['instance']['label'] = t('Other groups');
     $og_field['instance']['widget']['type'] = 'entityreference_autocomplete';
     $og_field['field']['settings']['handler_settings']['reference_type'] = 'other_groups';
-    $og_field['field']['settings']['handler_settings']['primary_field'] = OG_AUDIENCE_FIELD;
-    og_create_field(OG_AUDIENCE_OTHER_GROUPS_FIELD, 'user', 'user', $og_field);
+    $og_field['field']['settings']['handler_settings']['primary_field'] = 'og_user_group_ref';
+    $og_field['field']['settings']['handler_settings']['hide_secondary_field'] = TRUE;
+    og_create_field('og_other_user_group_ref', 'user', 'user', $og_field);
   }
 }
 
@@ -662,17 +663,93 @@ function og_field_delete_instance($instance) {
 }
 
 /**
+ * Implements hook_form_alter().
+ */
+function og_form_alter(&$form, $form_state, $form_id) {
+  if (empty($form['#entity_type']) && empty($form['#bundle'])) {
+    return;
+  }
+  $entity_type = $form['#entity_type'];
+  $bundle = $form['#bundle'];
+
+  if ($entity_type == 'user' || !og_is_group_type($entity_type, $bundle)) {
+    return;
+  }
+  $form['#validate'][] = 'og_form_group_manager_validate';
+}
+
+/**
+ * Validate handler; Make sure a group can be created.
+ *
+ * We check if the group manager has a matching group-audience field for the
+ * OG membership do be created in.
+ */
+function og_form_group_manager_validate($form, &$form_state) {
+  $entity_type = $form['#entity_type'];
+  $bundle = $form['#bundle'];
+  $entity = $form_state[$entity_type];
+  $langcode = $form_state['values']['language'];
+
+  if (!isset($form_state['values']['uid']) || !isset($entity->uid)) {
+    // There is no user ID property on the entity.
+    return;
+  }
+
+  if (isset($form_state['values'][OG_GROUP_FIELD]) && empty($form_state['values'][OG_GROUP_FIELD][$langcode][0]['value'])) {
+    // Not a group.
+    return;
+  }
+
+  if (!isset($form_state['values'][OG_GROUP_FIELD])) {
+    // Field doesn't appear in the form, so it is probably hidden by
+    // hook_field_access(). So check the default value of the field.
+    $field = field_info_field(OG_GROUP_FIELD);
+    $instance = field_info_instance($entity_type, OG_GROUP_FIELD, $bundle);
+
+    $items = field_get_default_value($entity_type, $entity, $field, $instance, $langcode);
+    if (empty($items[0]['value'])) {
+      // Default value is not a group.
+      return;
+    }
+  }
+
+  if ($entity_type == 'node') {
+    // A user might assign the node author by entering a user name in the
+    // node form, which we then need to translate to a user ID.
+    // However, this happens later on, in node_submit(), so we do a special
+    // check for the node entity.
+    if (!$account = user_load_by_name($form_state['values']['name'])) {
+      // Invalid username.
+      return;
+    }
+  }
+  else {
+    $account = user_load($form_state['values']['uid']);
+  }
+
+  list($id) = entity_extract_ids($entity_type, $entity);
+
+  if ($id && $entity->uid == $account->uid) {
+    // The entity's user ID hasn't changed.
+    return;
+  }
+
+  if ($access = og_get_best_group_audience_field('user', $account, $entity_type, $bundle)) {
+    // Matching group audience field found.
+    return;
+  }
+
+  form_error($form, t("Can't save entity as group, because user @name can't be subscribed to group and become a manager.", array('@name' => format_username($account))));
+}
+
+
+/**
  * Implements hook_field_attach_form().
  *
  * Inject values to a secondary field, based on the primary field.
  */
 function og_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
   list($id,, $bundle_name) = entity_extract_ids($entity_type, $entity);
-  if (!$id) {
-    // New entity.
-    return;
-  }
-
   if (!og_is_group_content_type($entity_type, $bundle_name)) {
     return;
   }
@@ -715,6 +792,10 @@ function og_field_attach_form($entity_type, $entity, &$form, &$form_state, $lang
       );
     }
 
+    if (empty($form_state['field'][$field_name])) {
+      continue;
+    }
+
     $key = key($form_state['field'][$field_name]);
 
     // We don't use field_form_set_state() as we just want to change the items
@@ -729,7 +810,6 @@ function og_field_attach_form($entity_type, $entity, &$form, &$form_state, $lang
   if ($has_secodary) {
     $form['#validate'][] = 'og_form_secondary_field_validate';
   }
-
 }
 
 /**
@@ -742,6 +822,11 @@ function og_form_secondary_field_validate($form, &$form_state) {
   // Get an keyed with the primary field, and an arrayof secoadry fields as the
   // value.
   $entity_type = $form['#entity_type'];
+  if (empty($form_state[$entity_type])) {
+    // Entity info isn't in the $form_state (e.g. when admin creates a new
+    // user).
+    return;
+  }
   $entity = $form_state[$entity_type];
   $fields_info = array();
   foreach ($form_state['field'] as $field_name => $value) {
@@ -845,11 +930,8 @@ function og_entity_presave($entity, $entity_type) {
         else {
           $wrapper->{$primary_field}[] = $id;
         }
-
-        $delta = $primary_field_info['cardinality'] == 1 ? 0 : $wrapper->{$primary_field}->count();
       }
     }
-
 
     // Remove the values from the secondary field.
     $wrapper->{$field_name}->set(NULL);
@@ -860,6 +942,7 @@ function og_entity_presave($entity, $entity_type) {
  * Implements hook_entity_insert().
  */
 function og_entity_insert($entity, $entity_type) {
+  _og_update_entity_fields($entity_type, $entity);
   if (!og_is_group($entity_type, $entity)) {
     return;
   }
@@ -885,6 +968,7 @@ function og_entity_insert($entity, $entity_type) {
  * Implements hook_entity_update().
  */
 function og_entity_update($entity, $entity_type) {
+  _og_update_entity_fields($entity_type, $entity);
   if (!og_is_group($entity_type, $entity)) {
     return;
   }
@@ -915,6 +999,40 @@ function og_entity_update($entity, $entity_type) {
     }
   }
 }
+
+/**
+ * Update the field values in the entity, to reflect the membership.
+ *
+ * This is used to allow other modules that save a new/ existing entity
+ * to act on the field values, even before hook_field_load() is called.
+ */
+function _og_update_entity_fields($entity_type, $entity) {
+  list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+  if (!og_is_group_content_type($entity_type, $bundle)) {
+    return;
+  }
+
+  $wrapper = entity_metadata_wrapper($entity_type, $entity);
+  foreach (og_get_group_audience_fields($entity_type, $bundle, FALSE) as $field_name => $label) {
+    $field = field_info_field($field_name);
+    $gids = array();
+    if ($field['cardinality'] == 1) {
+      if ($og_membership = $wrapper->{$field_name . '__og_membership'}->value()) {
+        // Wrapper return an array.
+        $gids = $og_membership[0]->gid;
+      }
+    }
+    else {
+      foreach ($wrapper->{$field_name . '__og_membership'}->value() as $og_membership) {
+        $gids[] = $og_membership->gid;
+      }
+    }
+    if ($gids) {
+      $wrapper->{$field_name}->set($gids);
+    }
+  }
+}
+
 
 /**
  * Implements hook_entity_delete().
@@ -1229,7 +1347,7 @@ class OgMembership extends Entity {
     }
 
     if (!empty($field['settings']['handler_settings']['target_bundles']) && !in_array($group_bundle, $field['settings']['handler_settings']['target_bundles'])) {
-      throw new OgException(t('OG membership can not be created in entity %entity-type and bundle %entity-bundle using the field %field_name as the field does not reference %group-bundle bundle in %group-type entity type.', $params));
+      throw new OgException(t('OG membership can not be created in entity %entity-type and bundle %entity-bundle using the field %field-name as the field does not reference %group-bundle bundle in %group-type entity type.', $params));
     }
 
     $params += array('@cardinality' => $field['cardinality']);
@@ -1241,7 +1359,7 @@ class OgMembership extends Entity {
 
     // Check field is not a secondary field.
     if (!empty($field['settings']['handler_settings']['primary_field'])) {
-      throw new OgException(t('OG membership can not be created using the field %field_name as the field is defined as a secondary field.', $params));
+      throw new OgException(t('OG membership can not be created using the field %field-name as the field is defined as a secondary field.', $params));
     }
 
     if (empty($this->id) && $og_membership = og_get_membership($this->group_type, $this->gid, $this->entity_type, $this->etid)) {
@@ -1504,9 +1622,7 @@ function og_invalidate_cache($gids = array()) {
   $caches = array(
     'og_user_access',
     'og_user_access_alter',
-    'og_field_audience_options',
     'og_role_permissions',
-    'og_field_formatter_view',
     'og_get_user_roles',
     'og_get_permissions',
     'og_get_group_audience_fields',
@@ -1540,13 +1656,20 @@ function og_get_all_group($group_type = 'node') {
  * Get the first best matching group-audience field.
  *
  * @param $entity_type
+ *   The entity type.
  * @param $entity
+ *   The entity object.
+ * @param $group_type
+ *   The group type.
+ * @param $group_bundle
+ *   The group bundle.
+ * @param $skip_access
+ *   TRUE, if current user access to the field, should be skipped.
+ *   Defaults to FALSE.
  */
-function og_get_best_group_audience_field($entity_type, $entity, $group_type, $group) {
+function og_get_best_group_audience_field($entity_type, $entity, $group_type, $group_bundle, $skip_access = FALSE) {
   $entity_wrapper = entity_metadata_wrapper($entity_type, $entity);
-  $group_wrapper = entity_metadata_wrapper($group_type, $group);
   $bundle = $entity_wrapper->getBundle();
-  $group_bundle = $group_wrapper->getBundle();
 
   $field_names = og_get_group_audience_fields($entity_type, $bundle);
   if (!$field_names) {
@@ -1573,10 +1696,11 @@ function og_get_best_group_audience_field($entity_type, $entity, $group_type, $g
       // Field reached maximum.
       continue;
     }
-    if (!$entity_wrapper->{$field_name}->access('view')) {
+    if (!$skip_access && !$entity_wrapper->{$field_name}->access('view')) {
       // User can't access field.
       continue;
     }
+
     return $field_name;
   }
 }
@@ -1644,6 +1768,8 @@ function og_group($group_type, $gid, $values = array()) {
   }
 
   $wrapper = entity_metadata_wrapper($entity_type, $entity);
+  // If entity was an ID, get the object.
+  $entity = $wrapper->value();
   $bundle = $wrapper->getBundle();
   $id = $wrapper->getIdentifier();
 
@@ -1661,7 +1787,8 @@ function og_group($group_type, $gid, $values = array()) {
       '%group-bundle' => $group_bundle,
     );
 
-    $field_name = og_get_best_group_audience_field($entity_type, $entity, $group_type, $group);
+    // Allow getting fields not accessible by the user.
+    $field_name = og_get_best_group_audience_field($entity_type, $entity, $group_type, $group_bundle, TRUE);
     if (!$field_name) {
       throw new OgException(t('There are no OG fields in entity %entity-type and bundle %bundle referencing %group-type - %group-bundle.', $params));
     }
@@ -1805,7 +1932,12 @@ function og_user_access($group_type, $gid, $string, $account = NULL, $skip_alter
     // Let modules alter the permissions. since $perm is static we create a
     // clone of it.
     $temp_perm = $perm[$identifier][$account->uid];
-    $context = array('string' => $string, 'group_type' => $group_type, 'gid' => $gid, 'account' => $account);
+    $context = array(
+      'string' => $string,
+      'group_type' => $group_type,
+      'group' => $group,
+      'account' => $account,
+    );
     drupal_alter('og_user_access', $temp_perm, $context);
 
     // Re-assing the altered permissions.
@@ -1980,6 +2112,8 @@ function og_is_group_audience_field($field_name) {
  *   The entity type.
  * @param $bundle_name
  *   The bundle name to be checked.
+ * @param $include_secondary
+ *   TRUE, if secondary group-audience field should be also returned.
  *
  * @return
  *   Array keyed with the field name and the field label as the value.
@@ -2130,7 +2264,7 @@ function og_get_all_group_content_entity() {
  *
  * @return
  *   Array keyed with the entity type machine name and the entity human readable
- *   name as the value, or an empty array if no enteties are defined as group
+ *   name as the value, or an empty array if no entities are defined as group
  *   content.
  */
 function og_get_all_group_content_bundle() {
@@ -3034,9 +3168,16 @@ function og_node_create_links($group_type, $gid, $field_name, $destination = NUL
 
   $types = isset($types) ? $types : array_keys(node_type_get_types());
   foreach ($types as $type_name) {
-    if (og_is_group_content_type('node', $type_name) && node_access('create', $type_name)) {
-      $names[$type_name] = node_type_get_name($type_name);
+    if (!og_is_group_content_type('node', $type_name) || !node_access('create', $type_name)) {
+      continue;
     }
+
+    $instance = field_info_instance('node', $field_name, $type_name);
+    if (empty($instance['settings']['behaviors']['prepopulate']['status'])) {
+      // Instance doesn't allow prepopulating.
+      continue;
+    }
+    $names[$type_name] = node_type_get_name($type_name);
   }
 
   if (empty($names)) {

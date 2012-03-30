@@ -366,8 +366,14 @@ function og_ui_access_entity_role($perm, $group_type, $gid, $rid) {
   }
 
   $role = og_role_load($rid);
-  if (!$role || $role->group_type != $group_type || $role->gid != $gid) {
+  if (!$role || $role->group_type != $group_type) {
     // Role doesn't exist, or doesn't belong to the group.
+    return FALSE;
+  }
+
+  if ($role->gid && $role->gid != $gid) {
+    // Role isn't a global role (i.e. gid isn't 0), but it doesn't match the
+    // given role.
     return FALSE;
   }
 
@@ -519,7 +525,7 @@ function og_ui_field_formatter_view($entity_type, $entity, $field, $instance, $l
         return $element;
       }
 
-      list($id) = entity_extract_ids($entity_type, $entity);
+      list($id,, $bundle) = entity_extract_ids($entity_type, $entity);
       if (og_is_member($entity_type, $id, 'user', $account, array(OG_STATE_ACTIVE, OG_STATE_PENDING))) {
         if (og_user_access($entity_type, $id, 'unsubscribe', $account)) {
           $links['title'] = t('Unsubscribe from group');
@@ -534,15 +540,26 @@ function og_ui_field_formatter_view($entity_type, $entity, $field, $instance, $l
         }
 
         // Check if user can subscribe to the field.
-        if (empty($settings['field_name']) && $audience_field_name = og_get_best_group_audience_field('user', $user->uid, $entity_type, $entity)) {
+        if (empty($settings['field_name']) && $audience_field_name = og_get_best_group_audience_field('user', $user->uid, $entity_type, $bundle)) {
           $settings['field_name'] = $audience_field_name;
         }
         if (!$settings['field_name']) {
           return;
         }
 
+        $field_info = field_info_field($settings['field_name']);
+
+        // Check if entity is referencable.
+        if ($field_info['settings']['target_type'] != $entity_type) {
+          // Group type doesn't match.
+          return;
+        }
+        if (!empty($field_info['settings']['handler_settings']['target_bundles']) && !in_array($bundle, $field_info['settings']['handler_settings']['target_bundles'])) {
+          // Bundles don't match.
+          return;
+        }
+
         if (!og_check_field_cardinality('user', $user->uid, $settings['field_name'])) {
-          $field_info = field_info_field($settings['field_name']);
           $element[0] = array('#markup' => format_plural($field_info['cardinality'], 'You are already registered to another group', 'You are already registered to @count groups'));
           return $element;
         }
@@ -660,7 +677,7 @@ function og_ui_field_formatter_settings_form($field, $instance, $view_mode, $for
       '#title' => t('Field name'),
       '#description' => t('Select the field that should register the user subscription.'),
       '#type' => 'select',
-      '#options' => array(0 => t('Automatic (not recommended)')) + og_get_group_audience_fields('user', 'user', FALSE),
+      '#options' => array(0 => t('Automatic (best matching)')) + og_get_group_audience_fields('user', 'user', FALSE),
       '#default_value' => $settings['field_name'],
     );
   }
@@ -684,7 +701,7 @@ function og_ui_field_formatter_settings_summary($field, $instance, $view_mode) {
     return t('Field %label', array('%label' => $fields[$settings['field_name']]));
   }
   else {
-    return t('No field selected (not recommended)');
+    return t('No field selected (best matching)');
   }
 
 }
@@ -730,9 +747,10 @@ function og_ui_og_user_access_alter(&$perms, $context) {
   }
 
   $group_type = $context['group_type'];
-  $gid = $context['gid'];
+  $group = $context['group'];
 
-  $og_membership = og_get_membership($group_type, $gid, 'user', $context['account']->uid);
+  list($id) = entity_extract_ids($group_type, $group);
+  $og_membership = og_get_membership($group_type, $id, 'user', $context['account']->uid);
   if (empty($og_membership) || $og_membership->state != OG_STATE_PENDING) {
     return;
   }
@@ -748,9 +766,6 @@ function og_ui_forms() {
 
   // Form to define the global permissions.
   $forms['og_ui_admin_global_permissions']['callback'] = 'og_ui_admin_permissions';
-
-  // Form to define the global roles.
-  $forms['og_ui_admin_global_roles']['callback'] = 'og_ui_admin_roles';
 
   return $forms;
 }

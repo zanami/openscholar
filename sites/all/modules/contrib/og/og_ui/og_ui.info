@@ -8,9 +8,9 @@ version = VERSION
 files[] = og_ui.test
 configure = admin/config/group
 
-; Information added by drupal.org packaging script on 2012-03-12
-version = "7.x-2.0-alpha2+3-dev"
+; Information added by drupal.org packaging script on 2012-03-30
+version = "7.x-2.0-alpha2+44-dev"
 core = "7.x"
 project = "og"
-datestamp = "1331555319"
+datestamp = "1333067808"
 
