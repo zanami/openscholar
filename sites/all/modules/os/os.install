@@ -830,12 +830,14 @@ function _box_to_simpleview_box($box) {
       $box->options['content_type'] = 'book';
       $box->options['sorts'] = 'newest';    
     break;  
-    /*
+    
     case 'os_boxes_sv_list';
       $box->plugin_key = $plugin_key;
-      $box->options['content_type'] = (strpos($box->options['filter'])) ? str_replace('node:', '', $box->options['filter']): 'all';    
+      $box->options['content_type'] = (strpos($box->options['filter'], 'node:') !== FALSE) ? str_replace('node:', '', $box->options['filter']): 'all';    
+      unset($box->options['filter']);
     break;
     
+    /*
     case 'os_boxes_simple';
     here too!
     break;
