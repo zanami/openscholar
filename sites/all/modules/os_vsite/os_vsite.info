@@ -25,3 +25,6 @@ features[variable][] = "comment_vsite"
 features[variable][] = "node_options_vsite"
 features[variable][] = "node_preview_vsite"
 features[variable][] = "node_submitted_vsite"
+
+//The Group Ref Field for Page
+features[field][] = "node-page-og_group_ref"
