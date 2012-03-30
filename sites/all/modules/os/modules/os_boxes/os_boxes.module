@@ -195,7 +195,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_recent_docs'] = array(
-    'title' => 'Recent Documents',
+    //'title' => 'Recent Documents',
     'description' => 'List of Recently Created Documents',
     'tags' => array('Content'),
     'module dependencies' => array('scholar_book'),
@@ -208,7 +208,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_sv_list'] = array(
-    'title' => 'List of posts',
+    //'title' => 'List of posts',
     'description' => '',
     'tags' => array(
       'Content'
@@ -301,7 +301,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_pub_typ_list'] = array(
-    'title' => 'List of Publications',
+    //'title' => 'List of Publications',
     'description' => 'List of Publications',
     'tags' => array('Content'),
     'module dependencies' => array('scholar_publications'),
@@ -314,7 +314,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_present_list'] = array(
-    'title' => 'List of Presentations',
+   // 'title' => 'List of Presentations',
     'description' => 'List of Presentations',
     'tags' => array('Content'),
     'module dependencies' => array('scholar_presentations'),

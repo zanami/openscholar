@@ -112,7 +112,7 @@ function os_simpleview_boxes_plugins(){
   $info = array(); 
 
   $info['os_simpleview_box'] = array(
-    'title' => '(New) Post List',
+    'title' => 'List of Posts',
     'description' => 'Make a list of content by type',
     'tags' => array(
       'Content'
