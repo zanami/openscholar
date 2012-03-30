@@ -254,14 +254,19 @@ ol li {
 /*
  * body.node-inner is used to apply this theme to the wysiwyg editor as well
  * since we can't mimick layerd classes
+ * We also have to make a special case for boxes that use the WYSIWYG
  */  
 .node-inner .content ul,
-body.node-inner ul{
+body.node-inner ul,
+#block-boxes-scholar_front_simple_get_started,
+.box-os_boxes_simple {
   padding-left: 2em;
   }
 
 .node-inner .content ul li,
-body.node-inner ul li {
+body.node-inner ul li,
+#block-boxes-scholar_front_simple_get_started ul li,
+.box-os_boxes_simple ul li {
   list-style: disc outside;
   padding:0 0 0 3px;
   }
@@ -287,13 +292,17 @@ body.node-inner ul li {
   }
 
 .node-inner .content ul li li,
-body.node-inner ul li li {
+body.node-inner ul li li,
+#block-boxes-scholar_front_simple_get_started ul li li,
+.box-os_boxes_simple ul li li{
   list-style: circle outside;
   padding:0 0 0 3px;
   }
 
 .node-inner .content li ol li,
-body.node-inner li ol li {
+body.node-inner li ol li,
+#block-boxes-scholar_front_simple_get_started li ol li,
+.box-os_boxes_simple li ol li {
 	list-style-type: upper-alpha;
 	}
 
