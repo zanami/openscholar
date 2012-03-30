@@ -817,41 +817,7 @@ function _box_to_simpleview_box($box) {
       );
       break;
       
-    case 'os_boxes_pub_type':
-      $box->plugin_key = $plugin_key;
-      $box->options['content_type'] = 'biblio';
-      $box->options['number_of_items'] = 10;
-      $box->options['use_pager'] = TRUE;
-      $box->options['plugin_opts'] = array(
-        'pub_types' => $box->options['whitelist'],
-        //'show_all_types' => $box->options['show_all_types'],
-        'group_by' => 'type',
-      	'display_num' => $box->options['display_num'],  
-      );
-    break;
-    
-    case 'os_boxes_pub_ca':
-      $box->plugin_key = $plugin_key;
-      $box->options['content_type'] = 'biblio';
-      $box->options['number_of_items'] = 10;
-      $box->options['use_pager'] = TRUE;
-      $box->options['plugin_opts'] = array(
-        'group_by' => 'coauthor',
-      	'display_num' => $box->options['display_num'],
-      );
-    break;
-    
-    case 'os_boxes_pub_year':
-      $box->plugin_key = $plugin_key;
-      $box->options['content_type'] = 'biblio';
-      $box->options['number_of_items'] = 10;
-      $box->options['use_pager'] = TRUE;
-      $box->options['plugin_opts'] = array(
-        'group_by' => 'year',
-      	'display_num' => $box->options['display_num'],
-      );
-    break;
-    
+    //presentations
     case 'os_boxes_present_list':
       $box->plugin_key = $plugin_key;
       $box->options['content_type'] = 'presentations';
@@ -864,7 +830,16 @@ function _box_to_simpleview_box($box) {
       $box->options['content_type'] = 'book';
       $box->options['sorts'] = 'newest';    
     break;  
-      
+    /*
+    case 'os_boxes_sv_list';
+      $box->plugin_key = $plugin_key;
+      $box->options['content_type'] = (strpos($box->options['filter'])) ? str_replace('node:', '', $box->options['filter']): 'all';    
+    break;
+    
+    case 'os_boxes_simple';
+    here too!
+    break;
+      */
     default:
       return;
         
