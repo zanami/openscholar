@@ -56,13 +56,6 @@ padding:1px 20px 20px;
 
 #content-area #block-boxes-os_addthis.block .content {background: none;}
 
-.node-type-person .flL {
-    margin-top: 2.5em;
-}
-
-.page-people .flL {
-    margin-top: 0;
-}
 
 
 /* TYPOGRAPHY*/
@@ -117,11 +110,14 @@ padding: 3px 3px 0 0;
   	font-weight:bold;
   	text-transform: uppercase;
     margin-bottom:8px;
-    width:95%;
+    width:100%;
     border-bottom:2px solid #8996A0;
   }
   
-  
+.node-type-person #content-main h2.title {
+    border-bottom: none;
+    width: auto;
+}  
   
   .block h3.title {
    	height:43px;
@@ -215,6 +211,10 @@ h5 span {
     background: none repeat scroll 0 0 #293352;
     color: #FFFFFF;
     padding: 3px 5px;
+}
+
+.submitted {
+    font-weight: bold;
 }
 
 /* HEADER ELEMENTS */
