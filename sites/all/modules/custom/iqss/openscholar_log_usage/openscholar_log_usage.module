@@ -243,7 +243,7 @@ function _openscholar_log_usage_get_host($host) {
  * implmentation of hook_cron
  * gets list of hostnames.  pings a number of them (not all at once of course) based on which was pinged least recently
  * stores whether or not they ping.
- */
+ 
 function openscholar_log_usage_cron() {
 	
 	//Disabling for now, this data is not needed real time
@@ -292,6 +292,7 @@ function openscholar_log_usage_cron() {
   }
   
 }
+*/
 
 /**
  * @function _openscholar_log_usage_check_hosts
