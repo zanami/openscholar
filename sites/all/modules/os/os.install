@@ -775,6 +775,7 @@ function os_update_6015(&$sandbox) {
  * 
  * Enables new simpleviews boxes.  Replaces old boxes with new kind.
  **/
+/*
 function os_update_6016(&$sandbox) {
   $res = array();
   
@@ -798,6 +799,7 @@ function os_update_6016(&$sandbox) {
 
   return $res;
 }
+*/
 
 //return the simpleview version of a box if able, or nothing
 function _box_to_simpleview_box($box) {
