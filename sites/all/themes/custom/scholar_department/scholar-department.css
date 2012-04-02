@@ -217,6 +217,8 @@ h5 span {
     font-weight: bold;
 }
 
+#content-top a {text-decoration:none;}
+
 /* HEADER ELEMENTS */
 
 .box-os_boxes_modal_image:nth-child(2) {
@@ -364,8 +366,6 @@ border-right:none;
 /**** SLIDESHOW OVERRIDE STYLES ****/
 
 
-
-
 div.views-field-field-gallery-image-fid img {
     background-color: #FFF;
     border: none;
@@ -403,6 +403,8 @@ div.pager-item {font-size:11px;width:24px;height:24px;}
 .pager-item a:hover {background: #d9d9d9; color:#293352;text-decoration: none;}
 
 .pager-item.activeSlide a {background: #d9d9d9; color:#293352;}
+
+.pager a {text-decoration: none;}
   
 /**** FOOTER ****/
 
