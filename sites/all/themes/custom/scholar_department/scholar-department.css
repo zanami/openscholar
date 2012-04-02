@@ -54,11 +54,8 @@ padding:1px 20px 20px;
 #content-area .block .content {background: url('images/blockBg.png') repeat-x center bottom;}
 #content-area #content-top .block {padding-top:0;}
 
-#content-area #block-boxes-os_addthis .content {background: none;}
+#content-area #block-boxes-os_addthis.block .content {background: none;}
 
-.node-type-person .flL {
-    margin-top: 2.5em;
-}
 
 
 /* TYPOGRAPHY*/
@@ -113,11 +110,14 @@ padding: 3px 3px 0 0;
   	font-weight:bold;
   	text-transform: uppercase;
     margin-bottom:8px;
-    width:95%;
+    width:100%;
     border-bottom:2px solid #8996A0;
   }
   
-  
+.node-type-person #content-main h2.title {
+    border-bottom: none;
+    width: auto;
+}  
   
   .block h3.title {
    	height:43px;
@@ -137,8 +137,9 @@ padding: 3px 3px 0 0;
     margin-bottom:0;
   }
   
- #iqss-weekly h4 {margin-top: 1em;color:#666;}
-  #iqss-weekly h4:nth-child(1) {margin-top: 4.3em;}
+ #iqss-weekly h4 {margin: 1em 0 0.22em; color:#666;}
+  #iqss-weekly h4:nth-child(1) {margin: 1em 0 0.22em;}
+ #iqss-weekly-cal {display:none;}
   
  #boxes-box-vsite_taxonomy_fltr_cat ul li {  
    background: url("images/orangeBullet.png") no-repeat scroll 0 6px transparent;
@@ -212,6 +213,10 @@ h5 span {
     padding: 3px 5px;
 }
 
+.submitted {
+    font-weight: bold;
+}
+
 /* HEADER ELEMENTS */
 
 .box-os_boxes_modal_image:nth-child(2) {
@@ -269,12 +274,6 @@ clear:right;
 }
 
 #navbar li a:hover,
-#navbar li.active-trail a {
-  background: #8996A0;
-  color: #FFF;
-  text-decoration: none;
-}
-
 #navbar li a.active,
 #navbar li.active-trail a {
   background: #8996A0;
@@ -341,7 +340,8 @@ border-right:none;
   
 
 
-.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a.active { 
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a.active,
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a.active:hover { 
 	background: url('images/sideNavBg_on.png') no-repeat;
  color: #FFF;
  font-style: normal;
