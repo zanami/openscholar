@@ -234,12 +234,13 @@ p.unpublished {
 
 .node-inner ul li {
   list-style: disc inside;
+  margin-bottom: .8em;
   }
 
 .node-inner ul ul,
 .node-inner ol ul{
   padding-left: 3.5em;
-  padding-top: .8em;
+  padding-top: .4em;
   }
 
 ol {
