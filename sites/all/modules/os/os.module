@@ -113,7 +113,7 @@ function os_user_page(){
  * 404 error page.  Tries to suggest appropriate vsite.
  */
 function os_page_not_found_page() {
-  return t('The request page could not be found.  Return to ') . l('front page?', '<front>');
+  return t('The requested page could not be found.  Return to ') . l('front page?', '<front>');
 }
 
 /**
