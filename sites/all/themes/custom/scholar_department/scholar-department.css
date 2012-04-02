@@ -137,8 +137,11 @@ padding: 3px 3px 0 0;
     margin-bottom:0;
   }
   
- #iqss-weekly h4 {margin: 1em 0 0.22em; color:#666;}
-  #iqss-weekly h4:nth-child(1) {margin: 1em 0 0.22em;}
+  
+ #iqss-weekly  {margin-left:-20px;}
+ #iqss-weekly ul li {list-style-type:none;}
+ #iqss-weekly h4 {margin: 1.5em 0 0.22em .1em; color:#666;}
+  #iqss-weekly h4:nth-child(1) {margin: .1em 0 0.22em .1em;}
  #iqss-weekly-cal {display:none;}
   
  #boxes-box-vsite_taxonomy_fltr_cat ul li {  
@@ -215,6 +218,7 @@ h5 span {
 
 .submitted {
     font-weight: bold;
+    color: #666;
 }
 
 #content-top a {text-decoration:none;}
