@@ -239,13 +239,7 @@ function os_strongarm_alter(&$vars){
     $strongarm->value = 1;
     $strongarm->export_module = "vsite";
     $a_new_settings["itweak_upload_upload_preview_" . $type->type] = $strongarm;
-    
-    $strongarm = new stdClass;
-    $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-    $strongarm->api_version = 1;
-    $strongarm->name = 'site_404';
-    $strongarm->value = 'page_not_found';
-    $a_new_settings['site_404'] = $strongarm;
+
   }
 
   $vars = array_merge($a_new_settings,$vars); //Existing values take precedence
