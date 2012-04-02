@@ -24,5 +24,17 @@ function os_boxes_plugins_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_media'] = array(
+    'title' => 'Embed Media',
+    'description' => 'Embed a video, audio or other internet resource',
+    'tags' => array('Media'),
+    'handler' => array(
+      'class' => 'os_boxes_media',
+      'file' => 'os_boxes_media.inc',
+      'path' => $path.'/os_boxes_media',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
   return $info;
 }
