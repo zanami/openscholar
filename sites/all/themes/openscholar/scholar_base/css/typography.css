@@ -258,8 +258,8 @@ ol li {
  */  
 .node-inner .content ul,
 body.node-inner ul,
-#block-boxes-scholar_front_simple_get_started,
-.box-os_boxes_simple {
+#block-boxes-scholar_front_simple_get_started ul,
+.box-os_boxes_simple ul {
   padding-left: 2em;
   }
 
