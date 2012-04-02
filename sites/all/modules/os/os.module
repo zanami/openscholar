@@ -113,18 +113,7 @@ function os_user_page(){
  * 404 error page.  Tries to suggest appropriate vsite.
  */
 function os_page_not_found_page() {
-  $req = explode('/', $_REQUEST['q']);
-
-  //did the path match a vsite?
-  $query = 'SELECT * FROM node WHERE type = "%s" AND title = "%s"';
-  $result = db_query($query, variable_get('scholar_content_type', 'vsite'), $req[0]);
-  if ($row = db_fetch_object($result)) {
-    $txt = t('The requested page could not be found.  Did you mean ') . l($req[0], $req[0]) . '?';  
-  } else {
-    $txt = t('The request page could not be found.  Return to ') . l('front page?', '<front>');
-  }
-    
-  return $txt;
+  return t('The request page could not be found.  Return to ') . l('front page?', '<front>');
 }
 
 /**
