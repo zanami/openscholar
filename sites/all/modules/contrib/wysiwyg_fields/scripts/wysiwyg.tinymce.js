@@ -33,7 +33,7 @@
       range.selectNode(element);
 
       // Select the range.
-      if (sel.containsNode(element)) {
+      if (sel.containsNode(element, false)) {
 	      sel.removeAllRanges();
 	      sel.addRange(range);
       }
