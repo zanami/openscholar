@@ -27,20 +27,3 @@ function os_views_api() {
     return array("version" => "3.0");
   }
 }
-
-/**
- * Implements hook_node_info().
- */
-function os_node_info() {
-  $items = array(
-    'vsite' => array(
-      'name' => t('OS Site'),
-      'base' => 'node_content',
-      'description' => t('A OpenScholar site that will hold content and have members.'),
-      'has_title' => '1',
-      'title_label' => t('Site Name'),
-      'help' => '',
-    ),
-  );
-  return $items;
-}

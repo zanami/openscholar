@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * os.strongarm.inc
+ * os_vsite.strongarm.inc
  */
 
 /**
  * Implements hook_strongarm().
  */
-function os_strongarm() {
+function os_vsite_strongarm() {
   $export = array();
 
   $strongarm = new stdClass;
