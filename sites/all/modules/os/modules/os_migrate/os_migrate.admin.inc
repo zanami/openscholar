@@ -50,7 +50,7 @@ EOF
 
   $form['os_migrate_files'] = array(
     '#title' => t('Files directory'),
-    '#description' => t('Path to your Drupal 6 installation\'s uploaded files.  Files found here will be copied into your Drupal 7 installation of OpenScholar.  (e.g. /var/www/openscholar/sites/default/files)'),
+    '#description' => t('Path to your Drupal 6 installation\'s files.  Migrate will use this path for copying uploaded files (e.g. /var/www/openscholar/)'),
     '#type' => 'textfield',
     '#default_value' => variable_get('os_migrate_files'),
   );
