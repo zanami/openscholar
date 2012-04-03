@@ -11,7 +11,7 @@ function scholar_dvn_init() {
 function scholar_dvn_menu(){
   $items = array();
   $items['data'] = array(
-    'title' => 'data',
+    'title' => 'Data',
     'page callback' => 'scholar_dvn_data',
     'access callback' => 'spaces_access_feature',
     'access arguments' => array('view','scholar_dvn'),
