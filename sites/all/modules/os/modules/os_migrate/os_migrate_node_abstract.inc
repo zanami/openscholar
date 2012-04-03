@@ -128,7 +128,7 @@ abstract class NodeAbstractOSMigration extends OSMigration {
     
     
     //get file uploads
-    //$current_row->file_upload = parent::os_migrate_get_file_uploads($current_row->vid);
+    $current_row->file_upload = parent::os_migrate_get_file_uploads($current_row->vid);
     // file upload fields aren't in current page type.  
   }
 }
