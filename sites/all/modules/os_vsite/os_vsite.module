@@ -1,2 +1,39 @@
 <?php
 include_once('os_vsite.features.inc');
+
+/**
+ * Public Functions
+ */
+
+/**
+ * return the bundles that should be treated as group content
+ */
+function os_vsite_get_bundles(){
+  $bundles = array('page' => "Page");
+  
+  return $bundles;
+}
+
+/**
+ * Hooks
+ */
+
+/**
+ * Alter information returned from module/theme info files
+ */
+function os_vsite_system_info_alter(&$info, $file, $type) {
+	
+	//Only alter the os_vsite info file
+	if($type != 'module' || $file->name != 'os_vsite') return;
+  
+	// Add the feature settings for the dynamically managed og reference fields
+	if(!is_array($info['features']['field'])) $info['features']['field'] = array();
+	
+	include_once('os_vsite.features.field.inc');
+	foreach (os_vsite_get_group_fields() as $field => $definition) {
+		if(!in_array($field,$info['features']['field'])){
+      $info['features']['field'][] = $field;
+		}
+	}
+  
+}

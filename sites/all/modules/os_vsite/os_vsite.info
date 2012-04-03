@@ -11,6 +11,8 @@ dependencies[] = "og"
 dependencies[] = "og_ui"
 dependencies[] = "os"
 dependencies[] = "strongarm"
+//The Group Ref Field for Page
+features[field][] = "node-page-og_group_ref"
 features[ctools][] = "strongarm:strongarm:1"
 features[field][] = "node-vsite-group_access"
 features[field][] = "node-vsite-group_group"
@@ -25,6 +27,3 @@ features[variable][] = "comment_vsite"
 features[variable][] = "node_options_vsite"
 features[variable][] = "node_preview_vsite"
 features[variable][] = "node_submitted_vsite"
-
-//The Group Ref Field for Page
-features[field][] = "node-page-og_group_ref"
