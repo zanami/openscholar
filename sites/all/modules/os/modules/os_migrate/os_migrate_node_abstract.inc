@@ -27,18 +27,22 @@ abstract class NodeAbstractOSMigration extends OSMigration {
       
       /* mappings */
       $this->addSimpleMappings(array('nid', 'uid','created','changed','status','promote','sticky','language','comment',
-                                     'title'));
+                                     'title', 'tnid'));
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
       $this->addFieldMapping('revision_uid', 'nr_uid');
       $this->addFieldMapping('body', 'body'); //from nr
-      $this->addFieldMapping('revision')->defaultValue(TRUE);
+      $this->addFieldMapping('log', 'log'); //from nr
+      $this->addFieldMapping('revision', 'vid');
       $this->addFieldMapping('path', 'path'); //see prepareRow
       
       $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
       $this->addFieldMapping('field_file_upload', 'file_upload')->arguments($associated_files_args);
       
       /* Unmapped source fields.  Mark them as Do Not Map, so the UI knows they're intentionally ignored */
-      $this->addUnmigratedSources(array('moderate', 'tnid', 'translate', 'type', 'vid'), t('DNM'));
+      $this->addUnmigratedSources(array('moderate', 'translate', 'type'), t('DNM'));
+      //moderate appears to have been removed from node.
+      //type.  we're doing nodes one type at a time.  type should be handled there.
+      //translate unknown
       
     }
     //else - user is responsible for doing parent:query() and setting up source, destination, and map
@@ -59,6 +63,7 @@ abstract class NodeAbstractOSMigration extends OSMigration {
     $query->join('node_revisions', 'nr', 'n.vid = nr.vid');
     $query->addField('nr','body');
     $query->addField('nr','uid');    
+    $query->addField('nr','log');
     $query->orderBy('n.changed');
                
     return $query;
@@ -128,7 +133,7 @@ abstract class NodeAbstractOSMigration extends OSMigration {
     
     
     //get file uploads
-    //$current_row->file_upload = parent::os_migrate_get_file_uploads($current_row->vid);
+    $current_row->file_upload = parent::os_migrate_get_file_uploads($current_row->vid);
     // file upload fields aren't in current page type.  
   }
 }

@@ -1,14 +1,14 @@
 <?php
 /**
  * @file
- * os.features.field.inc
+ * os_vsite.features.field.inc
  */
 
 /**
  * Implements hook_field_default_fields().
  */
-function os_field_default_fields() {
-  $fields = array();
+function os_vsite_field_default_fields() {
+  $fields = os_vsite_get_group_fields();
 
   // Exported field: 'node-vsite-group_access'
   $fields['node-vsite-group_access'] = array(
@@ -177,4 +177,124 @@ function os_field_default_fields() {
   t('Group visibility');
 
   return $fields;
+}
+
+
+/**
+ * Add the entity reference fields to the vsite feature bundles
+ */
+function os_vsite_get_group_fields(){
+	$fields = array();
+	
+	$bundles = os_vsite_get_bundles();
+	
+	foreach ($bundles as $bundle => $name) {
+		// Exported field: 'node-BUNDLE-og_group_ref'
+    $fields["node-{$bundle}-og_group_ref"] = array(
+      'field_config' => array(
+        'active' => '1',
+        'cardinality' => '-1',
+        'deleted' => '0',
+        'entity_types' => array(),
+        'field_name' => 'og_group_ref',
+        'foreign keys' => array(
+          'node' => array(
+            'columns' => array(
+              'target_id' => 'nid',
+            ),
+            'table' => 'node',
+          ),
+        ),
+        'indexes' => array(
+          'target_id' => array(
+            0 => 'target_id',
+          ),
+        ),
+        'module' => 'entityreference',
+        'settings' => array(
+          'handler' => 'og',
+          'handler_settings' => array(
+            'behaviors' => array(
+              'og_behavior' => array(
+                'status' => TRUE,
+              ),
+              'views-select-list' => array(
+                'status' => 0,
+              ),
+            ),
+            'hide_secondary_field' => 1,
+            'membership_type' => 'og_membership_type_default',
+            'primary_field' => '0',
+            'reference_type' => 'my_groups',
+            'sort' => array(
+              'direction' => 'ASC',
+              'field' => 'body:value',
+              'property' => 'nid',
+              'type' => 'none',
+            ),
+            'target_bundles' => array(
+              'vsite' => 'vsite',
+            ),
+          ),
+          'handler_submit' => 'Change handler',
+          'target_type' => 'node',
+        ),
+        'translatable' => '0',
+        'type' => 'entityreference',
+      ),
+      'field_instance' => array(
+        'bundle' => $bundle,
+        'default_value' => NULL,
+        'deleted' => '0',
+        'description' => '',
+        'display' => array(
+          'default' => array(
+            'label' => 'above',
+            'module' => 'og_ui',
+            'settings' => array(),
+            'type' => 'og_list_default',
+            'weight' => 1,
+          ),
+          'teaser' => array(
+            'label' => 'above',
+            'settings' => array(),
+            'type' => 'hidden',
+            'weight' => 0,
+          ),
+        ),
+        'entity_type' => 'node',
+        'field_name' => 'og_group_ref',
+        'label' => 'Groups audience',
+        'required' => 0,
+        'settings' => array(
+          'user_register_form' => FALSE,
+        ),
+        'view modes' => array(
+          'full' => array(
+            'custom settings' => FALSE,
+            'label' => 'Full',
+            'type' => 'og_list_default',
+          ),
+          'teaser' => array(
+            'custom settings' => FALSE,
+            'label' => 'Teaser',
+            'type' => 'og_list_default',
+          ),
+        ),
+        'widget' => array(
+          'active' => 1,
+          'module' => 'entityreference',
+          'settings' => array(
+            'match_operator' => 'CONTAINS',
+            'path' => '',
+            'size' => '60',
+          ),
+          'type' => 'entityreference_autocomplete',
+          'weight' => '-3',
+        ),
+      ),
+    );
+	}
+	
+	return $fields;
 }

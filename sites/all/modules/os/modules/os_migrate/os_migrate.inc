@@ -57,6 +57,8 @@ abstract class OSMigration extends Migration {
    */
   function os_migrate_get_file_uploads($vid) {
     $output = array();
+    
+    // {upload}
     $query = self::d6_db_select('upload', 'u')
       ->fields('u', array('fid', 'vid', 'description', 'list'))
       ->condition('u.vid', $vid, '=');
@@ -76,11 +78,35 @@ abstract class OSMigration extends Migration {
       $output[] = drupal_json_encode($file);
     }
     
+    // {content_field_os_inline_files} - filefield
+    foreach (array('os_inline_files', 'presentation_file') as $field) {
+      $table = 'content_field_' . $field;  
+    
+      $query = self::d6_db_select($table, 'ff')
+        ->fields('ff', array('vid', 'nid', 'delta', 'field_'.$field.'_fid', 'field_'.$field.'_list', 'field_'.$field.'_data'))
+        ->condition('ff.vid', $vid, '=');
+      $query->join('files', 'f', 'ff.field_'.$field.'_fid = f.fid');
+      $query->addField('f', 'filepath');
+      $query->addField('f', 'timestamp');
+      $query->orderBy('f.fid', 'ASC');
+      $result = $query->execute();
+      
+      foreach ($result as $row) {
+        $ff_data = unserialize($row->{'field_'.$field.'_data'});
+        $file = array(
+          'path' => variable_get('os_migrate_files', FALSE) . '/' . $row->filepath,
+          'description' => $ff_data['description'],
+          'display' => $row->{'field_'.$field.'_list'},
+          'timestamp' => $row->timestamp,
+        );
+        $output[] = drupal_json_encode($file);
+      }
+    }
+    
+    
     return $output;
   }
-  
-  // general function for getting data from arbitrary content field?
-  
+    
   
 }
   
