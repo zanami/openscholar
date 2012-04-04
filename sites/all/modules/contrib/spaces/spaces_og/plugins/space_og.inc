@@ -14,7 +14,9 @@ class space_og extends space_type_purl {
   	$this->group_type = 'node';
     parent::__construct($type, $id);
     // Extend spaces object with og entity.
-    $this->og = entity_load_single($this->group_type, $this->id);
+    if($this->id){
+      $this->og = entity_load_single($this->group_type, $this->id);
+    }
   }
 
   /**
