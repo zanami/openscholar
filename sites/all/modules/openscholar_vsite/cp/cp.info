@@ -5,4 +5,4 @@ core = 6.x
 dependencies[] = "ctools"
 features[ctools][] = "context:context:3"
 features[context][] = "vsite-section-cp"
-version = "6.x-beta14"
+version = "6.x-rc1"

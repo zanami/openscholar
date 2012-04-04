@@ -2,7 +2,7 @@ name = "os simpleview"
 core = "6.x"
 description = "OS Simpleview"
 package = "OpenScholar"
-version = "6.x-beta14"
+version = "6.x-rc1"
 
 dependencies[] = "boxes"
 dependencies[] = "ctools"

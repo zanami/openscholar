@@ -54,7 +54,8 @@
           print '<li><em>p:</em> ' . $node->field_person_phone[0]['value'] . '</li>' ;
           }
         if ($node->field_person_email[0]['value']) {
-          print '<li>' . l('email', 'mailto:' . $node->field_person_email[0]['value']) . '</li>' ;
+        	list($m_user,$m_domain) = explode('@',$node->field_person_email[0]['value'],2);
+          print '<li>' . l('please enable javascript to view', '', array('attributes' => array('class' => 'show_hidden_email', 'email_user' => $m_user, 'email_domain' => $m_domain))) . '</li>' ;
           }
         if ($node->field_person_website[0]['url']) {
           print '<li>' . l('(Website)',url($node->field_person_website[0]['url'],array('query' => isset($node->field_person_website[0]['query']) ? $node->field_person_website[0]['query'] : NULL, 'fragment' => isset($node->field_person_website[0]['fragment']) ? $node->field_person_website[0]['fragment'] : NULL, 'absolute' => TRUE))) . '</li>';
