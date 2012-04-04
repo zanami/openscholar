@@ -92,7 +92,7 @@
 			ed.addButton('pdw', {
 				title : ed.getLang('pdw.desc', 0),
 				cmd : 'mcePDWToggleToolbars',
-				image : url + '/img/toolbars.gif'
+				image : Drupal.settings.wysiwyg.plugins.drupal.pdw.path + '/img/toolbars.gif'
 			});
 			
 			ed.onPostRender.add(function(){
