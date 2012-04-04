@@ -10,34 +10,6 @@
 function os_wysiwyg_filter_default_formats() {
   $formats = array();
 
-  // Exported format: Plain text
-  $formats['plain_text'] = array(
-    'format' => 'plain_text',
-    'name' => 'Plain text',
-    'cache' => '1',
-    'status' => '1',
-    'weight' => '10',
-    'filters' => array(
-      'filter_html_escape' => array(
-        'weight' => '0',
-        'status' => '1',
-        'settings' => array(),
-      ),
-      'filter_url' => array(
-        'weight' => '1',
-        'status' => '1',
-        'settings' => array(
-          'filter_url_length' => 72,
-        ),
-      ),
-      'filter_autop' => array(
-        'weight' => '2',
-        'status' => '1',
-        'settings' => array(),
-      ),
-    ),
-  );
-
   // Exported format: Filtered HTML
   $formats['filtered_html'] = array(
     'format' => 'filtered_html',
@@ -51,17 +23,17 @@ function os_wysiwyg_filter_default_formats() {
         'status' => '1',
         'settings' => array(
           'valid_elements' => '@[id|style|class],
-  a[!href|target<_blank|title],
-  div[align<center?justify?left?right],
-  p[align<center?justify?left?right],
-  br,span,cite,code,blockquote,ul,ol,li,dl,dt,dd,img[!src|width|height],
-  sup,sub,
-  table[style|border|align<center?left?right|cellpadding|cellspacing],
-  tr[align<center?justify?left?right|valign],
-  td[colspan|rowspan|align<center?justify?left?right|valign],
-  caption,
-  address,h2,h3,h4,h5,h6,pre,
-  strong/b,em/i,strike,u',
+    a[!href|target<_blank|title],
+    div[align<center?justify?left?right],
+    p[align<center?justify?left?right],
+    br,span,cite,code,blockquote,ul,ol,li,dl,dt,dd,img[!src|width|height],
+    sup,sub,
+    table[style|border|align<center?left?right|cellpadding|cellspacing],
+    tr[align<center?justify?left?right|valign],
+    td[colspan|rowspan|align<center?justify?left?right|valign],
+    caption,
+    address,h2,h3,h4,h5,h6,pre,
+    strong/b,em/i,strike,u',
           'allow_comments' => '1',
           'nofollow_policy' => 'disabled',
           'nofollow_domains' => array(),
@@ -201,6 +173,34 @@ function os_wysiwyg_filter_default_formats() {
       ),
       'filter_htmlcorrector' => array(
         'weight' => '-44',
+        'status' => '1',
+        'settings' => array(),
+      ),
+    ),
+  );
+
+  // Exported format: Plain text
+  $formats['plain_text'] = array(
+    'format' => 'plain_text',
+    'name' => 'Plain text',
+    'cache' => '1',
+    'status' => '1',
+    'weight' => '10',
+    'filters' => array(
+      'filter_html_escape' => array(
+        'weight' => '0',
+        'status' => '1',
+        'settings' => array(),
+      ),
+      'filter_url' => array(
+        'weight' => '1',
+        'status' => '1',
+        'settings' => array(
+          'filter_url_length' => 72,
+        ),
+      ),
+      'filter_autop' => array(
+        'weight' => '2',
         'status' => '1',
         'settings' => array(),
       ),
