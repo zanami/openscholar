@@ -54,6 +54,7 @@ function os_wysiwyg_wysiwyg_default_profiles() {
         ),
         'drupal' => array(
           'media' => 1,
+          'pdw' => 1,
           'break' => 1,
         ),
       ),
