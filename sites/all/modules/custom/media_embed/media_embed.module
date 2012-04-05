@@ -265,6 +265,17 @@ function media_embed_file_formatter_info() {
 }
 
 /**
+ * Implements hook_media_wysiwyg_allowed_view_modes.
+ *
+ * Limits the view modes for our file type to just original
+ */
+function media_embed_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file) {
+  if ($file->type == 'html') {
+    $view_modes = array('media_original' => $view_modes['media_original']);
+  }
+}
+
+/**
  * Implements hook_file_default_displays().
  *
  * Provides default display configurations for media types.
@@ -320,9 +331,10 @@ function media_embed_file_formatter_media_embed_view($file, $display, $langcode)
       return field_attach_view('file', $file, $display);
     }
 
-    // WYSIWYG will not handle iframes and the like properly. Just send back a placeholder image
+    // WYSIWYG will not handle iframes and the like properly.
+    // Just let Media create a placeholder image
     else {
-      return array();
+      //return array();
     }
   }
 }
