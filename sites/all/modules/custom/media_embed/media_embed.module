@@ -77,7 +77,8 @@ function media_embed_permission() {
 }
 
 function media_embed_add($form, &$form_state = array(), $types = NULL) {
-  $file = entity_create('file', array('type' => 'html'));
+  $file = file_uri_to_object("", FALSE);
+  $file->type = 'html';
   $form['#file'] = $file;
   $form_state['file'] = $file;
 
@@ -152,6 +153,11 @@ function media_embed_add_submit($form, &$form_state) {
   }
 }
 
+/**
+ * Validates the srcs of various html tags to ensure they're all
+ * from trusted domains
+ * @param $html - The html string we're checking against
+ */
 function media_embed_check_src($html) {
   // I could do this with regexes
   // but that would be harder than it needs to be

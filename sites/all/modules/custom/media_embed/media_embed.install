@@ -37,6 +37,11 @@ function media_embed_install() {
     'label' => 'Title',
     'bundle' => 'html',
     'required' => TRUE,
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+      ),
+    )
   ));
 
   field_create_instance(array(
@@ -45,6 +50,11 @@ function media_embed_install() {
     'label' => 'Embed Code',
     'bundle' => 'html',
     'required' => TRUE,
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+      ),
+    ),
   ));
 
   field_bundle_settings('file', 'html', array(
