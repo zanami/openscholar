@@ -54,8 +54,12 @@ function spaces_og_views_pre_view(&$view, &$display_id, &$args) {
   	//After we have determined that we are in an OG space lets make
   	//sure this display makes use of the spaces filter
   	if($view->get_item($display_id,'filter','current')){
-  	  //If so lets add the Relationship
-  		$view->add_item($display_id,'relationship',$view->base_table,'og_membership_rel');
+  		
+  		//Check to see if the relationship has already been added via the UI
+  		if(!$view->get_item($display_id,'relationship','og_membership_rel')){
+	  	  //If so lets add the Relationship
+	  		$view->add_item($display_id,'relationship',$view->base_table,'og_membership_rel');
+  		}
   		
   		//Set the 'current' space filter up to use the new og relationshipt
   		$view->set_item_option($display_id,'filter','current','relationship','og_membership_rel');
