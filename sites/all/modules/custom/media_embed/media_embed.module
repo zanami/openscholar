@@ -77,7 +77,8 @@ function media_embed_permission() {
 }
 
 function media_embed_add($form, &$form_state = array(), $types = NULL) {
-  $file = entity_create('file', array('type' => 'html'));
+  $file = file_uri_to_object("", FALSE);
+  $file->type = 'html';
   $form['#file'] = $file;
   $form_state['file'] = $file;
 
@@ -152,6 +153,11 @@ function media_embed_add_submit($form, &$form_state) {
   }
 }
 
+/**
+ * Validates the srcs of various html tags to ensure they're all
+ * from trusted domains
+ * @param $html - The html string we're checking against
+ */
 function media_embed_check_src($html) {
   // I could do this with regexes
   // but that would be harder than it needs to be
@@ -265,6 +271,17 @@ function media_embed_file_formatter_info() {
 }
 
 /**
+ * Implements hook_media_wysiwyg_allowed_view_modes.
+ *
+ * Limits the view modes for our file type to just original
+ */
+function media_embed_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file) {
+  if ($file->type == 'html') {
+    $view_modes = array('media_original' => $view_modes['media_original']);
+  }
+}
+
+/**
  * Implements hook_file_default_displays().
  *
  * Provides default display configurations for media types.
@@ -310,19 +327,20 @@ function media_embed_file_default_displays() {
 function media_embed_file_formatter_media_embed_view($file, $display, $langcode) {
   $scheme = file_uri_scheme($file->uri);
   if ($scheme == 'embed') {
-    $display['module'] = 'media_embed'; // prevents notice
 
     // Not a WYSIWYG editor instance.
     if (empty($file->override['wysiwyg'])) {
-      field_attach_prepare_view('file', array($file->fid => $file), $display);
+      field_attach_prepare_view('file', array($file->fid => $file), 'full');
       entity_prepare_view('file', array($file->fid => $file));
+      $file->field_html_code['und'][0]['safe_value'] = $file->field_html_code['und'][0]['value'];
 
-      return field_attach_view('file', $file, $display);
+      return field_attach_view('file', $file, 'full');
     }
 
-    // WYSIWYG will not handle iframes and the like properly. Just send back a placeholder image
+    // WYSIWYG will not handle iframes and the like properly.
+    // Just let Media create a placeholder image
     else {
-      return array();
+      //return array();
     }
   }
 }
