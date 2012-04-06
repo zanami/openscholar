@@ -187,14 +187,22 @@ class space_og extends space_type_purl {
     /**
      * TODO Fix ensure_table. This works only for certain relationships
      */
-    switch ($base_table) {
-      case 'node':
-        $table = $query->ensure_table('field_data_group_audience', $relationship);
-        $query->add_where(0, 'field_data_group_audience.group_audience_gid', $this->og->gid, '=');
+    switch ($relationship) {
+      case 'og_membership_'.$this->group_type:
+      	$table = $query->ensure_table('og_membership', $relationship);
+      	if($table){
+      		//Add og_membership relationship parameters
+      		$query->add_where(0, 'og_membership_'.$this->group_type.'.gid', $this->og->nid, '=');
+          $query->add_where(0, 'og_membership_'.$this->group_type.'.group_type', $this->group_type, '=');
+      	}
         break;
-      case 'users':
+      case 'og_membership_user':
         $table = $query->ensure_table('og_membership', $relationship);
-        $query->add_where(0, 'og_membership_users.gid', $this->og->gid);
+        if($table){
+          //Add og_membership relationship parameters
+          $query->add_where(0, 'og_membership_'.$this->group_type.'.gid', $this->og->nid, '=');
+          $query->add_where(0, 'og_membership_'.$this->group_type.'.group_type', $this->group_type, '=');
+        }
         break;
     }
   }

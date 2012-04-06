@@ -35,7 +35,30 @@ function spaces_og_views_handlers() {
  * Implements hook_views_data_alter().
  */
 function spaces_og_views_data_alter(&$data) {
-  if (isset($data['og_ancestry']['group_nid']['field']['handler'])) {
-    $data['og_ancestry']['group_nid']['field']['handler'] = 'spaces_og_handler_field_og_group_nids';
+  if (isset($data['og_membership']['gid']['field']['handler'])) {
+    $data['og_membership']['gid']['field']['handler'] = 'spaces_og_handler_field_og_group_nids';
+  }
+}
+
+/**
+ * Implements hook_views_pre_view().
+ */
+function spaces_og_views_pre_view(&$view, &$display_id, &$args) {
+  
+	// The Spaces Current Space filter is bound to the space data stub
+  // if we are in an og space we want to use the og membership relation
+  // to filter the posts
+	$space = spaces_get_space();
+	//Is this space of type OG and we are acting on users or nodes
+  if (is_object($space) && $space->type == 'og' && in_array($view->base_table,array('node','user'))) {
+  	//After we have determined that we are in an OG space lets make
+  	//sure this display makes use of the spaces filter
+  	if($view->get_item($display_id,'filter','current')){
+  	  //If so lets add the Relationship
+  		$view->add_item($display_id,'relationship',$view->base_table,'og_membership_rel');
+  		
+  		//Set the 'current' space filter up to use the new og relationshipt
+  		$view->set_item_option($display_id,'filter','current','relationship','og_membership_rel');
+  	}
   }
 }
