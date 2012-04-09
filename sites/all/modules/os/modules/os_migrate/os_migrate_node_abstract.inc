@@ -12,11 +12,11 @@
  * 
  * Defines mappings for node table.  Let each type implement this and dscribe the specifics
  */
-abstract class NodeAbstractOSMigration extends OSMigration {
+abstract class AbstractNodeOSMigration extends OSMigration {
   public function __construct($bundle, $create = TRUE) {
     
     parent::__construct();    
-    
+    //when extending this class, don't forget to update info file with new filename!
 
     // if desired, supply node with defaults.  
     if ($create) {   
@@ -26,20 +26,21 @@ abstract class NodeAbstractOSMigration extends OSMigration {
       $this->dependencies = array('UsersOS'); //og when that's done
       
       /* mappings */
-      $this->addSimpleMappings(array('nid', 'uid','created','changed','status','promote','sticky','language','comment',
+      $this->addSimpleMappings(array('uid','created','changed','status','promote','sticky','language','comment',
                                      'title', 'tnid'));
+      $this->addFieldMapping('nid', 'nid')->dedupe('node', 'nid');
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
       $this->addFieldMapping('revision_uid', 'nr_uid');
       $this->addFieldMapping('body', 'body'); //from nr
       $this->addFieldMapping('log', 'log'); //from nr
-      $this->addFieldMapping('revision', 'vid');
+      $this->addFieldMapping('revision')->defaultValue(TRUE); //create a new revision.  vid is automatically migrated
       $this->addFieldMapping('path', 'path'); //see prepareRow
       
       $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
       $this->addFieldMapping('field_file_upload', 'file_upload')->arguments($associated_files_args);
       
       /* Unmapped source fields.  Mark them as Do Not Map, so the UI knows they're intentionally ignored */
-      $this->addUnmigratedSources(array('moderate', 'translate', 'type'), t('DNM'));
+      $this->addUnmigratedSources(array('vid', 'moderate', 'translate', 'type'), t('DNM'));
       //moderate appears to have been removed from node.
       //type.  we're doing nodes one type at a time.  type should be handled there.
       //translate unknown
@@ -73,7 +74,7 @@ abstract class NodeAbstractOSMigration extends OSMigration {
     return array(
     	'nid'   => t('Node ID'),
       'path'  => t('URL Path Alias'),
-      'file_upload' => t('File attachments'),
+      'file_upload' => t('File attachments'), //this may have to move to individual classes
       //'nr.body'	=> t('Node\'s Content')
     );
   }
