@@ -10,6 +10,24 @@
 body {
     font: 13px/1.5em 'helvetica neue',helvetica,arial,sans-serif;
 }
+
+a, a:visited {
+color:#005C9C;
+text-decoration:none;
+}
+
+a {
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:transparent none repeat scroll 0 0;
+border:0 none;
+font-size:100%;
+margin:0;
+padding:0;
+vertical-align:baseline;
+}
+
 h1,
 h2,
 h3 {

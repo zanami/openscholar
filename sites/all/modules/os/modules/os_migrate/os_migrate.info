@@ -6,10 +6,14 @@ dependencies[] = os
 dependencies[] = migrate
 dependencies[] = migrate_extras
 dependencies[] = migrate_ui
+dependencies[] = link
 
 files[] = os_migrate.admin.inc
 
 files[] = os_migrate.inc
 files[] = os_migrate_node_abstract.inc
 files[] = os_migrate_node_page.inc
+files[] = os_migrate_node_class.inc
 files[] = os_migrate_users.inc
+
+

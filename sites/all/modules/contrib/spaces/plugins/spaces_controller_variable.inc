@@ -26,11 +26,9 @@ class spaces_controller_variable extends spaces_controller {
 
     // If we have overridden 'site_frontpage', we need to do some extra
     // work to reinit the drupal path.
-    // TODO: Is purl_language_strip still needed?
-    //if ($this->get('site_frontpage') !== $this->get('site_frontpage', 'original') && function_exists('purl_language_strip')) {
-    //  $_GET['q'] = purl_language_strip($_REQUEST['q']);
-    //  drupal_path_initialize();
-    //}
+    if ($this->get('site_frontpage') !== $this->get('site_frontpage', 'original')) {
+      drupal_path_initialize();
+    }
   }
 
   /**

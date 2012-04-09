@@ -103,6 +103,7 @@ abstract class OSMigration extends Migration {
       }
     }
 
+    //also get inline images, software packages, pubs?
 
     return $output;
   }
