@@ -6,16 +6,15 @@
   base theme  = os_basetheme
   
   
-stylesheets[all][]   = scholar-cayley.css
-conditional-stylesheets[if lt IE 9][all][] = scholar-cayley-ie.css
-conditional-stylesheets[if lte IE 7][all][] = scholar-cayley-ie.csss
+stylesheets[all][]   = scholar_cayley.css
+conditional-stylesheets[if lt IE 9][all][] = scholar_cayley-ie.css
+conditional-stylesheets[if lte IE 7][all][] = scholar_cayley-ie.csss
 
 ;os[widgets][boxes-site_logo] = false
 ;os[theme_type]   = "vsite"
 ;os[theme_access] = "public"
 
 ;----------// Regions
-
   regions[sidebar_first] = Sidebar first
   regions[sidebar_second] = Sidebar second
   regions[content]  = Main Content
@@ -25,4 +24,17 @@ conditional-stylesheets[if lte IE 7][all][] = scholar-cayley-ie.csss
   regions[header] = Header Main
   regions[header_right] = Header Right
   
-  
+  ;----------// Theme Settings
+
+  ; Layout settings
+
+  ; Standard bigscreen
+   settings[bigscreen_layout]         = 'three-col-grail'
+   settings[bigscreen_page_unit]      = 'px'
+   settings[bigscreen_sidebar_unit]   = 'px'
+   settings[bigscreen_max_width_unit] = 'px'
+   settings[bigscreen_page_width]     = 100
+   settings[bigscreen_sidebar_first]  = 174
+   settings[bigscreen_sidebar_second] = 210
+   settings[bigscreen_set_max_width]  = 1
+   settings[bigscreen_max_width]      = 980
