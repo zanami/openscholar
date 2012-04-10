@@ -15,6 +15,7 @@
 			container = $('#content');
 			header = $('#content-main .title').not('.book-menu .title');
 			orig_nid = active = $('#content-main .node').attr('id').replace('node-','');
+			history.replaceState({nid: orig_nid}, header.text(), location.href);
 		}
 		
 		// pages is a list of every page in the book
