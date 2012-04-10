@@ -52,7 +52,7 @@ abstract class OSMigration extends Migration {
     }
   }
 
-  
+
   /**
    * Gets files owned by node revision
    */
@@ -83,8 +83,8 @@ abstract class OSMigration extends Migration {
     // os_inline_files is going to take some extra processing.  matt is handling it elsewhere.  cck inline files go here.
     // they end up filefields
     foreach (array('presentation_file') as $field) {
-      $table = 'content_field_' . $field;  
-    
+      $table = 'content_field_' . $field;
+
       $query = self::d6_db_select($table, 'ff')
         ->fields('ff', array('vid', 'nid', 'delta', 'field_'.$field.'_fid', 'field_'.$field.'_list', 'field_'.$field.'_data'))
         ->condition('ff.vid', $vid, '=');
@@ -193,7 +193,7 @@ abstract class OSMigration extends Migration {
           ),
         ),
       );
-      $form = drupal_build_form('media_embed_add');
+      $form = drupal_build_form('media_embed_add', $form_state);
       // get the text to be inserted in the document
       $file = file_uri_to_object($form_state['file']->uri);
 
@@ -216,8 +216,41 @@ abstract class OSMigration extends Migration {
     }
 
     // oembed tags into links
+    $form_state = array(
+        'submitted' => true,
+        'programmed' => true,
+        'input' => array(
+          'embed_code' => '',
+        ),
+      );
     foreach ($media_oembed as $node) {
       // get the url
+      $html = $dom->saveHTML($node);
+
+      foreach ($row->os_inline_oembed as $f) {
+        $url = $f['field_os_inline_oembed'];
+        if ($oembed = oembedcore_oembed_data($url) && $oembed->html == $html) {
+          // this is the one we want
+          $form_state['input']['embed_code'] = $url;
+          drupal_build_form('media_internet_add', $form_state);
+          $file = file_uri_to_object($form_state['file']->uri);
+
+          $tag = array(
+            'type' => 'media',
+            'view_mode' => 'media_large',
+            'fid' => $file->fid,
+            'attributes' => array(
+              'class' => 'media-image',
+              'typeof' => 'foaf:Image',
+            ),
+          );
+          $text = $dom->createTextNode(drupal_json_encode($tag));
+
+          // replace the iframe with our new tag
+          $node->parentNode->replaceChild($text, $node);
+          break;
+        }
+      }
     }
 
     foreach ($media_local as $node) {
