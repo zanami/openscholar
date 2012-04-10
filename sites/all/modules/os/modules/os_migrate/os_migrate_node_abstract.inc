@@ -13,16 +13,16 @@
  * Defines mappings for node table.  Let each type implement this and dscribe the specifics
  */
 abstract class AbstractNodeOSMigration extends OSMigration {
-  public function __construct($bundle, $create = TRUE) {
+  public function __construct($destination_bundle, $source_content_type, $create = TRUE) {
     
     parent::__construct();    
     //when extending this class, don't forget to update info file with new filename!
 
     // if desired, supply node with defaults.  
     if ($create) {   
-      $this->source = $this->source($bundle); //condtion type?
-      $this->destination = $this->destination($bundle); 
-      $this->map = $this->map($bundle);
+      $this->source = $this->source($source_content_type); //condtion type?
+      $this->destination = $this->destination($destination_bundle); 
+      $this->map = $this->map($source_content_type);
       $this->dependencies = array('UsersOS'); //og when that's done
       
       /* mappings */
@@ -41,6 +41,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       
       /* Unmapped source fields.  Mark them as Do Not Map, so the UI knows they're intentionally ignored */
       $this->addUnmigratedSources(array('vid', 'moderate', 'translate', 'type'), t('DNM'));
+//      $this->addUnmigratedSources(array('oe_vid', 'oe_nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes') ,t('DNM'));
       //moderate appears to have been removed from node.
       //type.  we're doing nodes one type at a time.  type should be handled there.
       //translate unknown
@@ -56,10 +57,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
    * to use the provided options or come up with their own.
    */
   
-  public function query($bundle) {
+  public function query($content_type) {
     $query = parent::d6_db_select('node', 'n')
                     ->fields('n', $this->getNodeFields())
-                    ;//->condition('n.type', $bundle, '=');
+                    ->condition('n.type', $content_type, '=');
                     
     //nodes to test files with:
     //$query->condition('n.nid', '20301', '='); //prod node with uploads
@@ -71,6 +72,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $query->addField('nr','log');
     $query->orderBy('n.changed');
                
+
+    
     return $query;
   }
   
@@ -83,22 +86,22 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     );
   }
   
-  public function source($bundle) {
-    return new MigrateSourceSQL($this->query($bundle), $this->sourceFields(), null, array('map_joinable' => FALSE));
+  public function source($content_type) {
+    return new MigrateSourceSQL($this->query($content_type), $this->sourceFields(), null, array('map_joinable' => FALSE));
   }
   
   public function destination($bundle) {
     return new MigrateDestinationNode($bundle);
   }
   
-  public function map($bundle) {
+  public function map($content_type) {
     return new MigrateSQLMap($this->machineName,
       array(
       	'nid' => array(
           'type' => 'int',
           'not null' => TRUE,
           'unsigned' => TRUE,
-          'description' => 'D6 ' . $bundle . ' ID.',
+          'description' => 'D6 ' . $content_type . ' ID.',
           'alias' => 'n',
         ),
       ),
@@ -140,5 +143,17 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     //get file uploads
     $current_row->file_upload = parent::os_migrate_get_file_uploads($current_row->vid);
     // file upload fields aren't in current page type.  
+    
+    //get os inline oembeds
+    $current_row->os_inline_oembed = parent::os_migrate_inline_oembed($current_row->vid);
   }
+  
+  //prepare views the row after fields have been built and attached to entity but before entity is in db.  not using it yet, just here for debugging.
+  //matt's wysiwyg processing shenaigans will go here
+  function prepare($entity, $row) {
+    if (count($row->os_inline_oembed)) {
+      TRUE;
+    }
+  }
+  
 }

@@ -78,6 +78,7 @@ abstract class OSMigration extends Migration {
       );
       $output[] = drupal_json_encode($file);
     }
+    
 
     // {content_field_os_inline_files} - filefield
     // os_inline_files is going to take some extra processing.  matt is handling it elsewhere.  cck inline files go here.
@@ -109,6 +110,22 @@ abstract class OSMigration extends Migration {
     //also get inline images, software packages, pubs?
 
     return $output;
+  }
+  
+  //get all inline embeds.  return array of them.
+  function os_migrate_inline_oembed($vid) {
+    $query = self::d6_db_select('content_field_os_inline_oembed', 'oe')
+      ->fields('oe', array('vid', 'nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes'))      
+      ->condition('oe.vid', $vid, '=')
+      ->isNotNull('oe.field_os_inline_oembed_url');
+    $result = $query->execute();
+    
+    $embeds = array();
+    foreach ($result as $row) {
+      $embeds[$row->delta] = $row;
+    }
+
+    return $embeds;
   }
 
   function os_migrate_wf_to_media($row) {
