@@ -176,6 +176,8 @@ abstract class OSMigration extends Migration {
     $links = $dom->getElementsByTagName('a');
     for ($i=0,$l=$links->length; $i<$l; $i++) {
       $url = $links[$i]->getAttribute('href');
+
+      // check if url is a file
       if ($url_is_local && $url_is_file) {
         $media_local[] = $links[$i];
       }
@@ -202,23 +204,45 @@ abstract class OSMigration extends Migration {
           'field_html_title' => array(
             'und' => array(
               array(
-                'value' => 'Imported iframe code.',
+                'value' => 'Imported iframe code',
               )
             )
           ),
         ),
       );
       $form = drupal_build_form('media_embed_add');
-      // get the html to be inserted in the document
-      $element = drupal_render(media_get_file_without_label($form_state['file'], 'original', array('wysiwyg' => TRUE)));
-      $frag = $dom->createDocumentFragment();
-      $frag->appendXML($element);
+      // get the text to be inserted in the document
+      $file = file_uri_to_object($form_state['file']->uri);
 
-      // replace the iframe with our new code
-      $me->parentNode->replaceChild($frag, $me);
+      // i can afford to be dumb about this
+      // because there is no configuration that needs doing here
+      // the only thing that changes between iframes is the fid
+      $tag = array(
+        'type' => 'media',
+        'view_mode' => 'media_original',
+        'fid' => $file->fid,
+        'attributes' => array(
+          'class' => 'media-image',
+          'typeof' => 'foaf:Image',
+        ),
+      );
+      $text = $dom->createTextNode(drupal_json_encode($tag));
+
+      // replace the iframe with our new tag
+      $me->parentNode->replaceChild($text, $me);
+    }
+
+    // oembed tags into links
+    foreach ($media_oembed as $node) {
+      // get the url
+    }
+
+    foreach ($media_local as $node) {
+
     }
 
     // return the document to html
+    $body = $dom->saveHTML();
 
     // run through the new html looking for wysiwyg_fields tags
     // replace them with media tags
