@@ -60,6 +60,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $query = parent::d6_db_select('node', 'n')
                     ->fields('n', $this->getNodeFields())
                     ->condition('n.type', $bundle, '=');
+                    
+    //nodes to test files with:
+    //$query->condition('n.nid', '20301', '='); //prod node with uploads
+    //$query->condition('n.nid', '6811', '='); //prod node with inline files
     
     $query->join('node_revisions', 'nr', 'n.vid = nr.vid');
     $query->addField('nr','body');
