@@ -21,7 +21,11 @@ function os_migrate_migrate_api() {
  * for dev only, lets make sure all mails are sent to localhost
  **/
 function os_migrate_mail_alter(&$mail) {
-  $mail['to'] = preg_replace('@.*', '@localhost', $mail['to']);
+  try {
+    $mail['to'] = preg_replace('@.*', '@localhost', $mail['to']);
+  } catch (Exception $e) {
+    $mail['to'] = 'root@localhost'; //just in case previous mail was badly formed
+  }
 }
 
 /*

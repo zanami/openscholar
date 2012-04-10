@@ -4,7 +4,7 @@ class ClassNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
     
     // Let AbstractNode handle the source, dest, and map.
-    parent::__construct('class'); //current types are vsite, article, and page.  lets start with one of those instead?
+    parent::__construct('class', 'class'); //current types are vsite, article, and page.  lets start with one of those instead?
     $this->description = t('OS Class Nodes');    
     
     
@@ -33,8 +33,7 @@ class ClassNodeOSMigration extends AbstractNodeOSMigration {
   //also include content type's data
   public function query($bundle) {
     $query = parent::query($bundle);
-    $query->condition('n.type', 'class', '=');
-    $query->join('content_type_class', 'ct', 'n.nid = ct.nid');
+    $query->join('content_type_class', 'ct', 'n.vid = ct.vid');
     $query->fields('ct', array('field_class_link_url', 'field_class_link_title', 'field_class_link_attributes', 'field_class_semester_value', 'field_class_year_value'));
 
     return $query;
