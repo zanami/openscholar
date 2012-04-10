@@ -52,7 +52,7 @@ abstract class OSMigration extends Migration {
     }
   }
 
-  
+
   /**
    * Gets files owned by node revision
    */
@@ -78,13 +78,14 @@ abstract class OSMigration extends Migration {
       );
       $output[] = drupal_json_encode($file);
     }
+    
 
     // {content_field_os_inline_files} - filefield
     // os_inline_files is going to take some extra processing.  matt is handling it elsewhere.  cck inline files go here.
     // they end up filefields
     foreach (array('presentation_file') as $field) {
-      $table = 'content_field_' . $field;  
-    
+      $table = 'content_field_' . $field;
+
       $query = self::d6_db_select($table, 'ff')
         ->fields('ff', array('vid', 'nid', 'delta', 'field_'.$field.'_fid', 'field_'.$field.'_list', 'field_'.$field.'_data'))
         ->condition('ff.vid', $vid, '=');
@@ -109,6 +110,22 @@ abstract class OSMigration extends Migration {
     //also get inline images, software packages, pubs?
 
     return $output;
+  }
+  
+  //get all inline embeds.  return array of them.
+  function os_migrate_inline_oembed($vid) {
+    $query = self::d6_db_select('content_field_os_inline_oembed', 'oe')
+      ->fields('oe', array('vid', 'nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes'))      
+      ->condition('oe.vid', $vid, '=')
+      ->isNotNull('oe.field_os_inline_oembed_url');
+    $result = $query->execute();
+    
+    $embeds = array();
+    foreach ($result as $row) {
+      $embeds[$row->delta] = $row;
+    }
+
+    return $embeds;
   }
 
   function os_migrate_wf_to_media($row) {
@@ -159,6 +176,8 @@ abstract class OSMigration extends Migration {
     $links = $dom->getElementsByTagName('a');
     for ($i=0,$l=$links->length; $i<$l; $i++) {
       $url = $links[$i]->getAttribute('href');
+
+      // check if url is a file
       if ($url_is_local && $url_is_file) {
         $media_local[] = $links[$i];
       }
@@ -185,23 +204,78 @@ abstract class OSMigration extends Migration {
           'field_html_title' => array(
             'und' => array(
               array(
-                'value' => 'Imported iframe code.',
+                'value' => 'Imported iframe code',
               )
             )
           ),
         ),
       );
-      $form = drupal_build_form('media_embed_add');
-      // get the html to be inserted in the document
-      $element = drupal_render(media_get_file_without_label($form_state['file'], 'original', array('wysiwyg' => TRUE)));
-      $frag = $dom->createDocumentFragment();
-      $frag->appendXML($element);
+      $form = drupal_build_form('media_embed_add', $form_state);
+      // get the text to be inserted in the document
+      $file = file_uri_to_object($form_state['file']->uri);
 
-      // replace the iframe with our new code
-      $me->parentNode->replaceChild($frag, $me);
+      // i can afford to be dumb about this
+      // because there is no configuration that needs doing here
+      // the only thing that changes between iframes is the fid
+      $tag = array(
+        'type' => 'media',
+        'view_mode' => 'media_original',
+        'fid' => $file->fid,
+        'attributes' => array(
+          'class' => 'media-image',
+          'typeof' => 'foaf:Image',
+        ),
+      );
+      $text = $dom->createTextNode(drupal_json_encode($tag));
+
+      // replace the iframe with our new tag
+      $me->parentNode->replaceChild($text, $me);
+    }
+
+    // oembed tags into links
+    $form_state = array(
+        'submitted' => true,
+        'programmed' => true,
+        'input' => array(
+          'embed_code' => '',
+        ),
+      );
+    foreach ($media_oembed as $node) {
+      // get the url
+      $html = $dom->saveHTML($node);
+
+      foreach ($row->os_inline_oembed as $f) {
+        $url = $f['field_os_inline_oembed'];
+        if ($oembed = oembedcore_oembed_data($url) && $oembed->html == $html) {
+          // this is the one we want
+          $form_state['input']['embed_code'] = $url;
+          drupal_build_form('media_internet_add', $form_state);
+          $file = file_uri_to_object($form_state['file']->uri);
+
+          $tag = array(
+            'type' => 'media',
+            'view_mode' => 'media_large',
+            'fid' => $file->fid,
+            'attributes' => array(
+              'class' => 'media-image',
+              'typeof' => 'foaf:Image',
+            ),
+          );
+          $text = $dom->createTextNode(drupal_json_encode($tag));
+
+          // replace the iframe with our new tag
+          $node->parentNode->replaceChild($text, $node);
+          break;
+        }
+      }
+    }
+
+    foreach ($media_local as $node) {
+
     }
 
     // return the document to html
+    $body = $dom->saveHTML();
 
     // run through the new html looking for wysiwyg_fields tags
     // replace them with media tags
