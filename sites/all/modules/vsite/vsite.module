@@ -46,8 +46,6 @@ function vsite_spaces_plugins(){
   $plugins = array();
   $plugins['vsite'] = array(
     'handler' => array(
-      'path' => drupal_get_path('module', 'vsite') . '/plugins',
-      'file' => 'vsite.inc',
       'class' => 'vsite',
       'parent' => 'space_og'
     )

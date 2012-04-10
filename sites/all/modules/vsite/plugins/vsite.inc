@@ -175,12 +175,14 @@ class vsite extends space_og {
   protected function verify_purl() {
 
     $domain_method = variable_get('purl_method_vsite_domain',false);
-    $elements = purl_active()->get($domain_method);
-    foreach ($elements as $element) {
-      if ($element->provider == "vsite_domain" && $element->id == $this->id) {
-        $this->purl_provider = "vsite_domain";
-        return TRUE;
-      }
+    if($domain_method){
+	    $elements = purl_active()->get($domain_method);
+	    foreach ($elements as $element) {
+	      if ($element->provider == "vsite_domain" && $element->id == $this->id) {
+	        $this->purl_provider = "vsite_domain";
+	        return TRUE;
+	      }
+	    }
     }
 
     $method = variable_get("purl_method_spaces_{$this->type}", 'path');
