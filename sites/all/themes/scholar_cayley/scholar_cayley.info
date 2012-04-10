@@ -6,9 +6,9 @@
   base theme  = os_basetheme
   
   
-stylesheets[all][]   = scholar_cayley.css
-conditional-stylesheets[if lt IE 9][all][] = scholar_cayley-ie.css
-conditional-stylesheets[if lte IE 7][all][] = scholar_cayley-ie.csss
+stylesheets[all][]   = css/scholar_cayley.css
+conditional-stylesheets[if lt IE 9][all][] = css/scholar_cayley-ie.css
+conditional-stylesheets[if lte IE 7][all][] = css/scholar_cayley-ie.csss
 
 ;os[widgets][boxes-site_logo] = false
 ;os[theme_type]   = "vsite"
