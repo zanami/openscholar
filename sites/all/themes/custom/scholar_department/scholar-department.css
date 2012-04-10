@@ -404,7 +404,7 @@ div.views-field-field-gallery-image-fid img {
 
 .views_slideshow_controls .views_slideshow_pause,
 .views_slideshow_controls .views_slideshow_play {
-left:944px;
+left:940px;
   margin-top: -3px;
 }
 
@@ -428,7 +428,7 @@ div.pager-item {font-size:11px;width:24px;height:24px;}
 }
 
 #views_slideshow_singleframe_pager_os_slideshow-default {
-margin-right:22px;
+margin-right:26px;
 }
 
  .pager-item a { background: #FFF; color:#333;padding:2px 5px;text-decoration: none;
