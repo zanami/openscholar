@@ -1,0 +1,68 @@
+<?php
+include_once('vsite.features.inc');
+
+/**
+ * Public Functions
+ */
+
+/**
+ * return the bundles that should be treated as group content
+ */
+function vsite_get_bundles(){
+  $bundles = array('page' => "Page");
+  
+  return $bundles;
+}
+
+/**
+ * Hooks
+ */
+
+/**
+ * Alter information returned from module/theme info files
+ */
+function vsite_system_info_alter(&$info, $file, $type) {
+	
+	//Only alter the vsite info file
+	if($type != 'module' || $file->name != 'vsite') return;
+  
+	// Add the feature settings for the dynamically managed og reference fields
+	if(!is_array($info['features']['field'])) $info['features']['field'] = array();
+	
+	include_once('vsite.features.field.inc');
+	foreach (vsite_get_group_fields() as $field => $definition) {
+		if(!in_array($field,$info['features']['field'])){
+      $info['features']['field'][] = $field;
+		}
+	}
+  
+}
+
+/**
+ * Implementation of hook spaces_plugins
+ */
+function vsite_spaces_plugins(){
+	
+  $plugins = array();
+  $plugins['vsite'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'vsite') . '/plugins',
+      'file' => 'vsite.inc',
+      'class' => 'vsite',
+      'parent' => 'space_og'
+    )
+  );
+  return $plugins;
+}
+
+/**
+ * Implementation of hook registry_alter
+ * Alter the registry to tell spaces_og groups to use the vsite plugin by default
+ */
+function vsite_spaces_registry_alter(&$registry){
+
+	// use the vsite plugin by default
+  if (isset($registry['types']['og'])) {
+    $registry['types']['og']['plugin'] = 'vsite';
+  }
+}
