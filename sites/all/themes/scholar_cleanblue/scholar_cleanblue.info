@@ -1,0 +1,40 @@
+name        = Clean Blue
+description = Clean theme with blue and grey colors.
+flavor_name = "Blue"
+plugins[vsite_design][flavor] = flavors
+
+screenshot = screenshot.png
+core       = 7.x
+base theme = os_basetheme
+stylesheets[all][]   = css/scholar-cleanblue.css
+
+conditional-stylesheets[if lte IE 7][all][]   = css/scholar-cleanblue-ie7.css
+conditional-stylesheets[if IE][all][]         = css/scholar-cleanblue-ie.css
+
+os[theme_type]   = "vsite"
+os[theme_access] = "public"
+
+;----------// Regions
+  regions[sidebar_first] = Sidebar first
+  regions[sidebar_second] = Sidebar second
+  regions[content]  = Main Content
+  regions[menu_bar]  = Menu Bar
+  regions[footer] = Footer
+  regions[header_left] = Header Left
+  regions[header] = Header Main
+  regions[header_right] = Header Right
+  
+  ;----------// Theme Settings
+
+  ; Layout settings
+
+  ; Standard bigscreen
+   settings[bigscreen_layout]         = 'three-col-grail'
+   settings[bigscreen_page_unit]      = 'px'
+   settings[bigscreen_sidebar_unit]   = 'px'
+   settings[bigscreen_max_width_unit] = 'px'
+   settings[bigscreen_page_width]     = 100
+   settings[bigscreen_sidebar_first]  = 174
+   settings[bigscreen_sidebar_second] = 210
+   settings[bigscreen_set_max_width]  = 1
+   settings[bigscreen_max_width]      = 980
