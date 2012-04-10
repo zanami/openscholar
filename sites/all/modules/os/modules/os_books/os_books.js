@@ -15,6 +15,7 @@
 			container = $('#content');
 			header = $('#content-main .title').not('.book-menu .title');
 			orig_nid = active = $('#content-main .node').attr('id').replace('node-','');
+			history.replaceState({nid: orig_nid}, header.text(), location.href);
 		}
 		
 		// pages is a list of every page in the book
@@ -33,6 +34,8 @@
 		
 		// attach click handler to blocks
 		blocks.click(toc_click);
+		
+		window.onpopstate = history_change;
 	};
 	
 	function toc_click(e) {
@@ -42,28 +45,45 @@
 		var nid = e.target.getAttribute('data-nid');
 		if (content[nid]) {
 			e.preventDefault();
-			$('#comments', container).remove();
-			$('.node', container).replaceWith(content[nid].content);
-			// the 2nd .node is a different element from the first
-			var node = $('.node', container).hide().fadeIn();
-			header.html(content[nid].title);
 			
-			
-			// change drupal settings
-			Drupal.settings.getQ = "node/"+nid;
-			if (typeof Drupal.settings.disqus == 'object') 
-				Drupal.settings.disqus.identifier = "node/"+nid;	//TODO: Find a better way to do this
-			
-			Drupal.attachBehaviors(node[0]);
-			
-			// deal with the 'active' class
-			$('a[data-nid="'+active+'"], a[data-nid="'+orig_nid+'"]').removeClass('active');
-			$('a[data-nid="'+nid+'"]').addClass('active');
-			active = nid;
-			
-			if ($('.fb-social-comments-plugin').length) {
-				fbAsyncInit();
+			try {
+				history.pushState({nid: nid}, content[nid].title, e.target.href);
 			}
+			catch (ex) {
+				// don't break the script in crappy browsers
+			}
+			page_swap(nid);
+		}
+	}
+	
+	function history_change(e) {
+		if (e.state !== null) {
+			var nid = e.state.nid;
+			page_swap(nid);
+		}
+	}
+	
+	function page_swap(nid) {
+		$('#comments', container).remove();
+		$('.node', container).replaceWith(content[nid].content);
+		// the 2nd .node is a different element from the first
+		var node = $('.node', container).hide().fadeIn();
+		header.html(content[nid].title);
+
+		// change drupal settings
+		Drupal.settings.getQ = "node/"+nid;
+		if (typeof Drupal.settings.disqus == 'object') 
+			Drupal.settings.disqus.identifier = "node/"+nid;	//TODO: Find a better way to do this
+		
+		Drupal.attachBehaviors(node[0]);
+		
+		// deal with the 'active' class
+		$('a[data-nid="'+active+'"], a[data-nid="'+orig_nid+'"]').removeClass('active');
+		$('a[data-nid="'+nid+'"]').addClass('active');
+		active = nid;
+		
+		if ($('.fb-social-comments-plugin').length) {
+			fbAsyncInit();
 		}
 	}
 })(jQuery);

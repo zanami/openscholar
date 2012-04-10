@@ -127,6 +127,7 @@ body {
   padding-top: 10px;
   padding-bottom: 30px;
   }
+  
 
 /*
   Instead of the [sidebar, main-content, sidebar] layout we can easily change the layout to [main-content, sidebar, sidebar] thusly.
@@ -174,6 +175,7 @@ body.two-sidebars #sidebar-first {
 
 #header .hg-container {
   padding-left: 190px;
+      height: 134px;
   }
 
 /* HTML ITEMS */
