@@ -1,15 +1,16 @@
 name        = Clean Blue
 description = Clean theme with blue and grey colors.
-flavor_name = "Blue"
-plugins[vsite_design][flavor] = flavors
+core        = 7.x
+engine      = phptemplate
+screenshot  = screenshot.png
+base theme  = os_basetheme
+;flavor_name = "Blue"
+;plugins[vsite_design][flavor] = flavors
 
-screenshot = screenshot.png
-core       = 7.x
-base theme = os_basetheme
-stylesheets[all][]   = css/scholar-cleanblue.css
 
-conditional-stylesheets[if lte IE 7][all][]   = css/scholar-cleanblue-ie7.css
-conditional-stylesheets[if IE][all][]         = css/scholar-cleanblue-ie.css
+stylesheets[all][]   = css/scholar_cleanblue.css
+conditional-stylesheets[if lte IE 7][all][]   = css/scholar_cleanblue-ie7.css
+conditional-stylesheets[if IE][all][]         = css/scholar_cleanblue-ie.css
 
 os[theme_type]   = "vsite"
 os[theme_access] = "public"
@@ -34,7 +35,7 @@ os[theme_access] = "public"
    settings[bigscreen_sidebar_unit]   = 'px'
    settings[bigscreen_max_width_unit] = 'px'
    settings[bigscreen_page_width]     = 100
-   settings[bigscreen_sidebar_first]  = 174
-   settings[bigscreen_sidebar_second] = 210
+   settings[bigscreen_sidebar_first]  = 160
+   settings[bigscreen_sidebar_second] = 195
    settings[bigscreen_set_max_width]  = 1
    settings[bigscreen_max_width]      = 980
