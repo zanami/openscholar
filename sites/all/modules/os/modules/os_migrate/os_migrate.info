@@ -7,6 +7,7 @@ dependencies[] = migrate
 dependencies[] = migrate_extras
 dependencies[] = migrate_ui
 dependencies[] = link
+dependencies[] = date_migrate
 
 files[] = os_migrate.admin.inc
 

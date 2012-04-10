@@ -12,5 +12,12 @@ class PageNodeOSMigration extends AbstractNodeOSMigration {
      ************************************************************************/
     
   }
+  
+  //also include content type's data
+  public function query($bundle) {
+    $query = parent::query($bundle);
+    $query->condition('n.type', 'page', '=');
+    return $query;
+  }
 
 }

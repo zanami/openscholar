@@ -52,6 +52,7 @@ abstract class OSMigration extends Migration {
     }
   }
 
+  
   /**
    * Gets files owned by node revision
    */
@@ -79,9 +80,11 @@ abstract class OSMigration extends Migration {
     }
 
     // {content_field_os_inline_files} - filefield
-    foreach (array('os_inline_files', 'presentation_file') as $field) {
-      $table = 'content_field_' . $field;
-
+    // os_inline_files is going to take some extra processing.  matt is handling it elsewhere.  cck inline files go here.
+    // they end up filefields
+    foreach (array('presentation_file') as $field) {
+      $table = 'content_field_' . $field;  
+    
       $query = self::d6_db_select($table, 'ff')
         ->fields('ff', array('vid', 'nid', 'delta', 'field_'.$field.'_fid', 'field_'.$field.'_list', 'field_'.$field.'_data'))
         ->condition('ff.vid', $vid, '=');
@@ -96,7 +99,7 @@ abstract class OSMigration extends Migration {
         $file = array(
           'path' => variable_get('os_migrate_files', FALSE) . '/' . $row->filepath,
           'description' => $ff_data['description'],
-          'display' => $row->{'field_'.$field.'_list'},
+          'display' => ($row->{'field_'.$field.'_list'}),
           'timestamp' => $row->timestamp,
         );
         $output[] = drupal_json_encode($file);

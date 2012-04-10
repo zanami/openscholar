@@ -18,6 +18,9 @@ class ClassNodeOSMigration extends AbstractNodeOSMigration {
     // $arguments = MigrateLinkFieldHandler::arguments($fields);
     //pass info from fields to arguments[] in field_link's prepare()
     $this->addFieldMapping('field_link', 'field_link')->arguments($fields);
+    
+    $this->addFieldMapping('field_semester', 'field_class_semester_value');
+    $this->addFieldMapping('field_offered',  'field_class_year_value');
 
     $this->addUnmigratedSources(array('field_class_link_url', 'field_class_link_title', 'field_class_link_attributes'), t('DNM'));
     
@@ -30,8 +33,10 @@ class ClassNodeOSMigration extends AbstractNodeOSMigration {
   //also include content type's data
   public function query($bundle) {
     $query = parent::query($bundle);
+    $query->condition('n.type', 'class', '=');
     $query->join('content_type_class', 'ct', 'n.nid = ct.nid');
-    $query->fields('ct', array('field_class_link_url', 'field_class_link_title', 'field_class_link_attributes'));
+    $query->fields('ct', array('field_class_link_url', 'field_class_link_title', 'field_class_link_attributes', 'field_class_semester_value', 'field_class_year_value'));
+
     return $query;
   }
   
