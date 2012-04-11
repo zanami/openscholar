@@ -15,15 +15,6 @@ function os_migrate_migrate_api() {
   return array('api' => 2);
 }
 
-/**
- * implementation of hook_mail_alter
- * 
- * for dev only, lets make sure all mails are sent to localhost
- **/
-function os_migrate_mail_alter(&$mail) {
-  $mail['to'] = 'root@localhost'; //just in case previous mail was badly formed
-}
-
 /*
  * bash: set vars to also disable mail...
 echo user_mail_{register_{admin_created,no_approval_required,pending_approval},password_reset,status_{blocked,activated},cancel_confirm,status_canceled}_notify | xargs -n1 | while read var ; do drush @d7 vset -y $var '' ; done
