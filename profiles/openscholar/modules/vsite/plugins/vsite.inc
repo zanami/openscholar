@@ -84,13 +84,13 @@ class vsite extends space_og {
     switch ($op) {
     	case 'node':
     		//Route home if we are viewing the group node
-        if (og_is_group_type($object->type)) {
+        if (og_is_group_type('node',$object->type)) {
           //We are loading a group node, instead redirect to this groups home page
-          if (isset($object->nid) && (!$object->active || ($this->active && $this->id != $object->nid)) && $space = spaces_load('og', $object->nid)) {
+          if (isset($object->nid) && (!(isset($this->active) && $this->active)   || ($this->active && $this->id != $object->nid)) && $space = spaces_load('og', $object->nid)) {
           	$space->verify_purl(); //Setup the correct purl provider
 
-          	$current_url = url($_GET['q'], array('absolute' => TRUE, 'query' => drupal_query_string_encode($_GET, array('q'))));
-          	if($current_url != rtrim($this->get_absolute_url(),"/")){
+          	$current_url = url($_GET['q'], array('absolute' => TRUE, 'query' => drupal_http_build_query(drupal_get_query_parameters())));
+          	if($current_url != rtrim($space->get_absolute_url(),"/")){
               purl_goto("<front>", array( 'purl' => array( 'provider' => $space->purl_provider,'id' => $space->id)));
           	}
             return;
@@ -196,10 +196,12 @@ class vsite extends space_og {
 
     //No provider is active, lookup from id so redirection works
     //Return false if we have reached here
-    $valid_providers = array();
-    $result = db_query("SELECT provider FROM {purl} WHERE id = %d ", $this->id);
-    while ($provider = db_result($result)) $valid_providers[] = $provider;
-
+	  $valid_providers = db_select('purl','purl')
+	      ->fields('purl', array('provider'))
+	      ->condition('id', $this->id, '=')
+	      ->execute()
+	      ->fetchCol();
+    
     if(in_array('vsite_domain',$valid_providers)){
     	//This site has a domain provider
     	$this->purl_provider = 'vsite_domain';
