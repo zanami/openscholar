@@ -26,8 +26,7 @@ dependencies[] = toolbar
 dependencies[] = overlay
 dependencies[] = field_ui
 dependencies[] = file
-;TMP Disable causing error on install -RB  "Base table or view not found: 1146 Table 'scholar_d7.rdf_mapping' doesn't exist"
-;dependencies[] = rdf
+dependencies[] = rdf
 
 ; Contrib - core
 dependencies[] = ctools
@@ -55,7 +54,7 @@ dependencies[] = media_embed
 ; migrate
 dependencies[] = migrate
 dependencies[] = migrate_extras
-dependencies[] = os_migrate
+;dependencies[] = os_migrate
 
 
 ; dev
@@ -68,14 +67,13 @@ dependencies[] = os_boxes
 dependencies[] = os_wysiwyg
 
 ; vsite
-;Disabled og components, ctools/entity api issue  "Class 'OgMetadataController' not found"
-;dependencies[] = entityreference
-;dependencies[] = purl
-;dependencies[] = spaces
-;dependencies[] = spaces_og
-;dependencies[] = og_views
-;dependencies[] = vsite
-;dependencies[] = og
+dependencies[] = entityreference
+dependencies[] = purl
+dependencies[] = spaces
+dependencies[] = spaces_og
+dependencies[] = og_views
+dependencies[] = vsite
+dependencies[] = og
 
 ; Features
 dependencies[] = os_front
