@@ -14,8 +14,8 @@ class AnnouncementNodeOSMigration extends AbstractNodeOSMigration {
   }
   
   //also include content type's data
-  public function query($bundle) {
-    $query = parent::query($bundle);
+  public function query($content_type) {
+    $query = parent::query($content_type);
     
     $query->leftJoin('content_type_announcement', 'cta', 'n.vid = cta.vid');
     $query->fields('cta', array('field_announcement_photo_fid', 'field_announcement_photo_list', 'field_announcement_photo_data'));
