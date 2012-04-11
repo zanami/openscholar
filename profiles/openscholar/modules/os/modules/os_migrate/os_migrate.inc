@@ -112,6 +112,50 @@ abstract class OSMigration extends Migration {
     return $output;
   }
 
+  //adds joins and fields based on migrate object's cck_fields property
+  function addQueryCCK(&$query, $content_type, $table=NULL) {
+    $table = ($table) ? $table : 'content_type_' . $content_type;
+    //class has Link Date Text
+    $fields = array();
+    foreach($this->cck_fields as $name => $field) {
+      switch ($field) {
+        case 'Link':
+          $fields += array('field_'.$name.'_url', 'field_'.$name.'_title', 'field_'.$name.'_attributes');
+          break;
+          
+        case 'Date':
+        case 'Text':
+          $fields[] = 'field_'.$name.'_value';
+          break;
+          
+        default:
+          break;
+      }
+    }
+    
+    if (count($fields)) {
+      $query->leftjoin($table, 'ct', 'n.vid = ct.vid');
+      $query->fields('ct', $fields);
+    }
+  }
+
+  //perform common preparations for cck types
+  function prepareRowCCK(&$row) {
+    foreach($this->cck_fields as $name => $field) {
+      switch ($field) {
+        case 'Link':
+          $attr = 'field_'.$name.'_attributes';
+          if (strlen($row->$attr)) {
+            $row->$attr = unserialize($row->$attr);
+          }
+          break;
+          
+        default:
+          break;
+      }
+    }
+  }
+  
   //get all inline embeds.  return array of them.
   function os_migrate_inline_oembed($vid) {
     $query = self::d6_db_select('content_field_os_inline_oembed', 'oe')
