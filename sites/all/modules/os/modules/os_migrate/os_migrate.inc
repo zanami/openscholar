@@ -78,7 +78,7 @@ abstract class OSMigration extends Migration {
       );
       $output[] = drupal_json_encode($file);
     }
-    
+
 
     // {content_field_os_inline_files} - filefield
     // os_inline_files is going to take some extra processing.  matt is handling it elsewhere.  cck inline files go here.
@@ -111,15 +111,15 @@ abstract class OSMigration extends Migration {
 
     return $output;
   }
-  
+
   //get all inline embeds.  return array of them.
   function os_migrate_inline_oembed($vid) {
     $query = self::d6_db_select('content_field_os_inline_oembed', 'oe')
-      ->fields('oe', array('vid', 'nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes'))      
+      ->fields('oe', array('vid', 'nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes'))
       ->condition('oe.vid', $vid, '=')
       ->isNotNull('oe.field_os_inline_oembed_url');
     $result = $query->execute();
-    
+
     $embeds = array();
     foreach ($result as $row) {
       $embeds[$row->delta] = $row;
@@ -270,8 +270,31 @@ abstract class OSMigration extends Migration {
       }
     }
 
+    /** local files **/
     foreach ($media_local as $node) {
+      $url = '';
+      if ($url = $node->getAttribute('href')) {}
+      elseif ($url = $node->getAttribute('src')) {}
+      else { continue; }  // no url, found
 
+      $file = file_uri_to_object($url, false);  // get a file from our old uri. this is a dumb function so this works
+      $destination = '/path/to/the/file';    // TODO: Fill placeholder
+      file_copy($file, $destination, false);    // copy the file
+      $file = file_uri_to_object($file->uri);  // get the new file object so we cna make a tag out of it
+
+      $tag = array(
+        'type' => 'media',
+        'view_mode' => $node->nodeName=='A'?'media_link':'media_large',
+        'fid' => $file->fid,
+        'attributes' => array(
+          'class' => 'media-image',
+          'typeof' => 'foaf:Image',
+        ),
+      );
+      $text = $dom->createTextNode(drupal_json_encode($tag));
+
+      // replace the old html tag with our new markdownish one
+      $node->parentNode->replaceChild($text, $node);
     }
 
     // return the document to html
