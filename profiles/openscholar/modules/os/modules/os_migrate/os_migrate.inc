@@ -78,7 +78,7 @@ abstract class OSMigration extends Migration {
       );
       $output[] = drupal_json_encode($file);
     }
-    
+
 
     // {content_field_os_inline_files} - filefield
     // os_inline_files is going to take some extra processing.  matt is handling it elsewhere.  cck inline files go here.
@@ -111,15 +111,59 @@ abstract class OSMigration extends Migration {
 
     return $output;
   }
+
+  //adds joins and fields based on migrate object's cck_fields property
+  function addQueryCCK(&$query, $content_type, $table=NULL) {
+    $table = ($table) ? $table : 'content_type_' . $content_type;
+    //class has Link Date Text
+    $fields = array();
+    foreach($this->cck_fields as $name => $field) {
+      switch ($field) {
+        case 'Link':
+          $fields += array('field_'.$name.'_url', 'field_'.$name.'_title', 'field_'.$name.'_attributes');
+          break;
+          
+        case 'Date':
+        case 'Text':
+          $fields[] = 'field_'.$name.'_value';
+          break;
+          
+        default:
+          break;
+      }
+    }
+    
+    if (count($fields)) {
+      $query->leftjoin($table, 'ct', 'n.vid = ct.vid');
+      $query->fields('ct', $fields);
+    }
+  }
+
+  //perform common preparations for cck types
+  function prepareRowCCK(&$row) {
+    foreach($this->cck_fields as $name => $field) {
+      switch ($field) {
+        case 'Link':
+          $attr = 'field_'.$name.'_attributes';
+          if (strlen($row->$attr)) {
+            $row->$attr = unserialize($row->$attr);
+          }
+          break;
+          
+        default:
+          break;
+      }
+    }
+  }
   
   //get all inline embeds.  return array of them.
   function os_migrate_inline_oembed($vid) {
     $query = self::d6_db_select('content_field_os_inline_oembed', 'oe')
-      ->fields('oe', array('vid', 'nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes'))      
+      ->fields('oe', array('vid', 'nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes'))
       ->condition('oe.vid', $vid, '=')
       ->isNotNull('oe.field_os_inline_oembed_url');
     $result = $query->execute();
-    
+
     $embeds = array();
     foreach ($result as $row) {
       $embeds[$row->delta] = $row;
@@ -168,7 +212,7 @@ abstract class OSMigration extends Migration {
     for ($i=0,$l=$imgs->length; $i<$l; $i++) {
       $url = $imgs[$i]->getAttribute('src');
       // check url to see if its to a local file
-      if ($url_is_local) {
+      if ($this->url_is_local($url)) {
         $media_local[] = $imgs[$i];
       }
     }
@@ -178,7 +222,7 @@ abstract class OSMigration extends Migration {
       $url = $links[$i]->getAttribute('href');
 
       // check if url is a file
-      if ($url_is_local && $url_is_file) {
+      if ($this->url_is_local($url) && $this->url_is_file($url)) {
         $media_local[] = $links[$i];
       }
     }
@@ -226,7 +270,7 @@ abstract class OSMigration extends Migration {
           'typeof' => 'foaf:Image',
         ),
       );
-      $text = $dom->createTextNode(drupal_json_encode($tag));
+      $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
 
       // replace the iframe with our new tag
       $me->parentNode->replaceChild($text, $me);
@@ -261,7 +305,7 @@ abstract class OSMigration extends Migration {
               'typeof' => 'foaf:Image',
             ),
           );
-          $text = $dom->createTextNode(drupal_json_encode($tag));
+          $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
 
           // replace the iframe with our new tag
           $node->parentNode->replaceChild($text, $node);
@@ -270,8 +314,31 @@ abstract class OSMigration extends Migration {
       }
     }
 
+    /** local files **/
     foreach ($media_local as $node) {
+      $url = '';
+      if ($url = $node->getAttribute('href')) {}
+      elseif ($url = $node->getAttribute('src')) {}
+      else { continue; }  // no url, found
 
+      $file = file_uri_to_object($url, false);  // get a file from our old uri. this is a dumb function so this works
+      $destination = '/path/to/the/file';    // TODO: Fill placeholder
+      file_copy($file, $destination, false);    // copy the file
+      $file = file_uri_to_object($file->uri);  // get the new file object so we cna make a tag out of it
+
+      $tag = array(
+        'type' => 'media',
+        'view_mode' => $node->nodeName=='A'?'media_link':'media_large',
+        'fid' => $file->fid,
+        'attributes' => array(
+          'class' => 'media-image',
+          'typeof' => 'foaf:Image',
+        ),
+      );
+      $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
+
+      // replace the old html tag with our new markdownish one
+      $node->parentNode->replaceChild($text, $node);
     }
 
     // return the document to html
@@ -279,6 +346,50 @@ abstract class OSMigration extends Migration {
 
     // run through the new html looking for wysiwyg_fields tags
     // replace them with media tags
+
+    $pattern = '~\[wysiwyg_field wf_field="field_os_inline_oembed" wf_deltas="([,\d]+)" wf_formatter="([^"]+)" [^\]]*\]~';
+    $matches = array();
+    preg_match_all($pattern, $body, $matches, PREG_SET_ORDER);
+    foreach ($matches as $m) {
+      $deltas = explode(',', $m[1]);
+      $delta = $deltas[0];
+
+      if ($oembed = $row->os_inline_oembed[$delta]) {
+        $form_state = array(
+          'submitted' => true,
+          'programmed' => true,
+          'input' => array(
+            'embed_code' => $oembed['field_os_inline_oembed_url'],
+          ),
+        );
+        drupal_build_form('media_internet_add', $form_state);
+        $file = file_uri_to_object($form_state['file']->uri);
+
+        $tag = array(
+          'type' => 'media',
+          'view_mode' => 'media_large',  // do something with the formatter?
+          'fid' => $file->fid,
+          'attributes' => array(
+            'class' => 'media-image',
+            'typeof' => 'foaf:Image',
+          ),
+        );
+        $text = '[['.drupal_json_encode($tag).']]';
+
+        // replace the old tag with our new tag
+        str_replace($m[0], $text, $body);
+      }
+    }
+
+    $row->body = $body;
+  }
+
+  private function url_is_local($url) {
+    global $base_url;
+    return (strpos($url, $base_url) !== FALSE);
+  }
+
+  private function url_is_file($url) {
 
   }
 }

@@ -59,8 +59,10 @@ class UsersOSMigration extends OSMigration {
     
     
     /* addSimpleMappings handles the columns that haven't changed or been renamed */
-    $this->addSimpleMappings(array('uid','pass', 'name','mail', 'created', 'access', 'login', 'status', 'init', 'theme',
-                                   'signature', 'signature_format', 'language')); 
+    $this->addSimpleMappings(array('uid','pass', 'name', 'created', 'access', 'login', 'status', 'init', 'theme',
+                                   'signature', 'signature_format', 'language'));
+    //add mail back later.  for dev, don't migrate it.
+    $this->addFieldMapping('mail')->defaultValue('sagotsky@localhost'); 
     
     /* addFieldMapping lets you map one row to another or perform additional functions like setting a default */
     $this->addFieldMapping('timezone', 'timezone_name')->issueNumber(1791); //example issueNumber for linking to redmine
