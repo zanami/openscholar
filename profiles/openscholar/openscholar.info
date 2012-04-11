@@ -68,13 +68,13 @@ dependencies[] = os_migrate
 
 
 ; vsite
-dependencies[] = entityreference
-dependencies[] = purl
-dependencies[] = spaces
-dependencies[] = spaces_og
-dependencies[] = og_views
-dependencies[] = vsite
-dependencies[] = og
+;dependencies[] = entityreference
+;dependencies[] = purl
+;dependencies[] = spaces
+;dependencies[] = spaces_og
+;dependencies[] = og_views
+;dependencies[] = vsite
+;dependencies[] = og
 
 ; Features
 dependencies[] = os_front
