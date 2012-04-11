@@ -26,7 +26,8 @@ dependencies[] = toolbar
 dependencies[] = overlay
 dependencies[] = field_ui
 dependencies[] = file
-dependencies[] = rdf
+;TMP Disable causing error on install -RB  "Base table or view not found: 1146 Table 'scholar_d7.rdf_mapping' doesn't exist"
+;dependencies[] = rdf
 
 ; Contrib - core
 dependencies[] = ctools
@@ -52,8 +53,10 @@ dependencies[] = media_oembed
 dependencies[] = media_embed
 
 ; migrate
-dependencies[] = migrate
-dependencies[] = migrate_extras
+;TMP Disable Error on install "Integrity constraint violation: 1062 Duplicate entry 'PageNodeOSMigration-class' for key 'PRIMARY'"
+;dependencies[] = migrate
+;dependencies[] = migrate_extras
+;dependencies[] = os_migrate
 
 
 ; dev
@@ -64,10 +67,9 @@ dependencies[] = devel
 dependencies[] = os
 dependencies[] = os_boxes
 dependencies[] = os_wysiwyg
-dependencies[] = os_migrate
-
 
 ; vsite
+;Disabled og components, ctools/entity api issue  "Class 'OgMetadataController' not found"
 ;dependencies[] = entityreference
 ;dependencies[] = purl
 ;dependencies[] = spaces
