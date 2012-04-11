@@ -53,10 +53,9 @@ dependencies[] = media_oembed
 dependencies[] = media_embed
 
 ; migrate
-;TMP Disable Error on install "Integrity constraint violation: 1062 Duplicate entry 'PageNodeOSMigration-class' for key 'PRIMARY'"
-;dependencies[] = migrate
-;dependencies[] = migrate_extras
-;dependencies[] = os_migrate
+dependencies[] = migrate
+dependencies[] = migrate_extras
+dependencies[] = os_migrate
 
 
 ; dev
