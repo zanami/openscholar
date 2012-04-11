@@ -23,12 +23,12 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->source = $this->source($source_content_type); //condtion type?
       $this->destination = $this->destination($destination_bundle); 
       $this->map = $this->map($source_content_type);
-      $this->dependencies = array('UsersOS'); //og when that's done
+ //     $this->dependencies = array('UsersOS'); //og when that's done
       
       /* mappings */
       $this->addSimpleMappings(array('uid','created','changed','status','promote','sticky','language','comment',
                                      'title', 'tnid'));
-      $this->addFieldMapping('nid', 'nid')->dedupe('node', 'nid');
+      $this->addFieldMapping('nid', 'nid');
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
       $this->addFieldMapping('revision_uid', 'nr_uid');
       $this->addFieldMapping('body', 'body'); //from nr

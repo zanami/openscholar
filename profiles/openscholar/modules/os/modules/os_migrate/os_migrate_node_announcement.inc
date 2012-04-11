@@ -1,6 +1,6 @@
 <?php 
 
-class PageNodeOSMigration extends AbstractNodeOSMigration {
+class AnnouncementNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
     
     // Let AbstractNode handle the source, dest, and map.
