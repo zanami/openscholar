@@ -307,8 +307,37 @@ abstract class OSMigration extends Migration {
     $matches = array();
     preg_match_all($pattern, $body, $matches, PREG_SET_ORDER);
     foreach ($matches as $m) {
+      $deltas = explode(',', $m[1]);
+      $delta = $deltas[0];
 
+      if ($oembed = $row->os_inline_oembed[$delta]) {
+        $form_state = array(
+          'submitted' => true,
+          'programmed' => true,
+          'input' => array(
+            'embed_code' => $oembed['field_os_inline_oembed_url'],
+          ),
+        );
+        drupal_build_form('media_internet_add', $form_state);
+        $file = file_uri_to_object($form_state['file']->uri);
+
+        $tag = array(
+          'type' => 'media',
+          'view_mode' => 'media_large',  // do something with the formatter?
+          'fid' => $file->fid,
+          'attributes' => array(
+            'class' => 'media-image',
+            'typeof' => 'foaf:Image',
+          ),
+        );
+        $text = '[['.drupal_json_encode($tag).']]';
+
+        // replace the old tag with our new tag
+        str_replace($m[0], $text, $body);
+      }
     }
+
+    $row->body = $body;
   }
 }
 
