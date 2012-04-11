@@ -70,7 +70,7 @@ p.copy {
  /* width: 980px;*/
   margin: 0 auto;
   padding: 1px 0 0 0;
-  background: url('images/container.png') 0 0 repeat-y #fff;
+  background: url('../images/container.png') 0 0 repeat-y #fff;
   -moz-box-shadow: 0 0 30px #555;
   -webkit-box-shadow: 0 0 30px #555;
   box-shadow: 0 0 30px #555;
@@ -114,7 +114,7 @@ p.copy {
   padding-right: 250px;
   }
 
-#header {
+#header-container {
   background: #fff;
   }
 

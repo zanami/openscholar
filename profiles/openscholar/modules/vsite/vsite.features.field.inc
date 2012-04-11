@@ -1,14 +1,14 @@
 <?php
 /**
  * @file
- * os_vsite.features.field.inc
+ * vsite.features.field.inc
  */
 
 /**
  * Implements hook_field_default_fields().
  */
-function os_vsite_field_default_fields() {
-  $fields = os_vsite_get_group_fields();
+function vsite_field_default_fields() {
+  $fields = vsite_get_group_fields();
 
   // Exported field: 'node-vsite-group_access'
   $fields['node-vsite-group_access'] = array(
@@ -183,10 +183,10 @@ function os_vsite_field_default_fields() {
 /**
  * Add the entity reference fields to the vsite feature bundles
  */
-function os_vsite_get_group_fields(){
+function vsite_get_group_fields(){
 	$fields = array();
 	
-	$bundles = os_vsite_get_bundles();
+	$bundles = vsite_get_bundles();
 	
 	foreach ($bundles as $bundle => $name) {
 		// Exported field: 'node-BUNDLE-og_group_ref'

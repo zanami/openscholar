@@ -5,6 +5,6 @@
  */
 function openscholar_install() {
   // Install defaults from standard profile
-  require_once(drupal_get_path('profile', 'standard') . '/standard.install');
-  module_invoke('standard', 'install');
+  //require_once(drupal_get_path('profile', 'standard') . '/standard.install');
+  //module_invoke('standard', 'install');
 }

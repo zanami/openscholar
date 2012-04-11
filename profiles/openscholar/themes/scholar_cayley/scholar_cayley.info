@@ -1,18 +1,18 @@
-name        = Clean Blue
-description = Clean theme with blue and grey colors.
-flavor_name = "Blue"
-plugins[vsite_design][flavor] = flavors
+  name        = Cayley
+  description = Clean and elegant theme with light colors.  
+  core        = 7.x
+  engine      = phptemplate
+  screenshot  = screenshot.png
+  base theme  = os_basetheme
+  
+  
+stylesheets[all][]   = css/scholar_cayley.css
+conditional-stylesheets[if lt IE 9][all][] = css/scholar_cayley-ie.css
+conditional-stylesheets[if lte IE 7][all][] = css/scholar_cayley-ie.csss
 
-screenshot = screenshot.png
-core       = 7.x
-base theme = os_basetheme
-stylesheets[all][]   = css/scholar-cleanblue.css
-
-conditional-stylesheets[if lte IE 7][all][]   = css/scholar-cleanblue-ie7.css
-conditional-stylesheets[if IE][all][]         = css/scholar-cleanblue-ie.css
-
-os[theme_type]   = "vsite"
-os[theme_access] = "public"
+;os[widgets][boxes-site_logo] = false
+;os[theme_type]   = "vsite"
+;os[theme_access] = "public"
 
 ;----------// Regions
   regions[sidebar_first] = Sidebar first
