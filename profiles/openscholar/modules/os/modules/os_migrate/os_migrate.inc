@@ -168,7 +168,7 @@ abstract class OSMigration extends Migration {
     for ($i=0,$l=$imgs->length; $i<$l; $i++) {
       $url = $imgs[$i]->getAttribute('src');
       // check url to see if its to a local file
-      if ($url_is_local) {
+      if ($this->url_is_local($url)) {
         $media_local[] = $imgs[$i];
       }
     }
@@ -178,7 +178,7 @@ abstract class OSMigration extends Migration {
       $url = $links[$i]->getAttribute('href');
 
       // check if url is a file
-      if ($url_is_local && $url_is_file) {
+      if ($this->url_is_local($url) && $this->url_is_file($url)) {
         $media_local[] = $links[$i];
       }
     }
@@ -338,6 +338,15 @@ abstract class OSMigration extends Migration {
     }
 
     $row->body = $body;
+  }
+
+  private function url_is_local($url) {
+    global $base_url;
+    return (strpos($url, $base_url) !== FALSE);
+  }
+
+  private function url_is_file($url) {
+
   }
 }
 
