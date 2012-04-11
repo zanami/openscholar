@@ -226,7 +226,7 @@ abstract class OSMigration extends Migration {
           'typeof' => 'foaf:Image',
         ),
       );
-      $text = $dom->createTextNode(drupal_json_encode($tag));
+      $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
 
       // replace the iframe with our new tag
       $me->parentNode->replaceChild($text, $me);
@@ -261,7 +261,7 @@ abstract class OSMigration extends Migration {
               'typeof' => 'foaf:Image',
             ),
           );
-          $text = $dom->createTextNode(drupal_json_encode($tag));
+          $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
 
           // replace the iframe with our new tag
           $node->parentNode->replaceChild($text, $node);
@@ -291,7 +291,7 @@ abstract class OSMigration extends Migration {
           'typeof' => 'foaf:Image',
         ),
       );
-      $text = $dom->createTextNode(drupal_json_encode($tag));
+      $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
 
       // replace the old html tag with our new markdownish one
       $node->parentNode->replaceChild($text, $node);
@@ -303,6 +303,12 @@ abstract class OSMigration extends Migration {
     // run through the new html looking for wysiwyg_fields tags
     // replace them with media tags
 
+    $pattern = '~\[wysiwyg_field wf_field="field_os_inline_oembed" wf_deltas="([,\d]+)" wf_formatter="([^"]+)" [^\]]*\]~';
+    $matches = array();
+    preg_match_all($pattern, $body, $matches, PREG_SET_ORDER);
+    foreach ($matches as $m) {
+
+    }
   }
 }
 
