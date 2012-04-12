@@ -1,2 +1,50 @@
 <?php
 include_once('os.features.inc');
+
+/**
+ * Context Plugins
+ */
+function os_context_plugins() {
+  $plugins = array();
+  $plugins['os_context_reaction_feature'] = array(
+    'handler' => array(
+	    'path' => drupal_get_path('module', 'os') .'/plugins',
+	    'file' => 'os_context_reaction_feature',
+	    'class' => 'os_context_reaction_feature',
+	    'parent' => 'context_reaction',
+    ),
+  );
+  return $plugins;
+}
+
+/**
+ * Context registry.
+ */
+function os_context_registry() {
+  $registry = array();
+  $registry['reactions'] = array(
+    'os_feature' => array(
+      'title' => t('OpenScholar Feature'),
+      'description' => t('Set the current Openscholar feature using context.'),
+      'plugin' => 'os_context_reaction_feature',
+    ),
+  );
+  return $registry;
+}
+
+/**
+ * Get current Feature
+ * replaces "vsite_active_feature()"
+ */
+function os_active_feature(){
+	
+	static $once;
+	if(!isset($once)){
+		$once = true;
+		if ($plugin = context_get_plugin('reaction', 'os_feature')) {
+	    $plugin->execute();
+	  }
+	}
+	
+	return context_get('os','feature');
+}
