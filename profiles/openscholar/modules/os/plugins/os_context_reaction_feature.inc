@@ -7,6 +7,6 @@ class os_context_reaction_feature extends context_reaction {
   	$context = current($this->get_contexts());
     
     //set the context
-    context_set('os','feature',$context->xxxx);
+    context_set('os','feature',$context->feature);
   }
 }
