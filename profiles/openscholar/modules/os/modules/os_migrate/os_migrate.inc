@@ -122,17 +122,17 @@ abstract class OSMigration extends Migration {
         case 'Link':
           $fields += array('field_'.$name.'_url', 'field_'.$name.'_title', 'field_'.$name.'_attributes');
           break;
-          
+
         case 'Date':
         case 'Text':
           $fields[] = 'field_'.$name.'_value';
           break;
-          
+
         default:
           break;
       }
     }
-    
+
     if (count($fields)) {
       $query->leftjoin($table, 'ct', 'n.vid = ct.vid');
       $query->fields('ct', $fields);
@@ -149,13 +149,13 @@ abstract class OSMigration extends Migration {
             $row->$attr = unserialize($row->$attr);
           }
           break;
-          
+
         default:
           break;
       }
     }
   }
-  
+
   //get all inline embeds.  return array of them.
   function os_migrate_inline_oembed($vid) {
     $query = self::d6_db_select('content_field_os_inline_oembed', 'oe')
@@ -390,7 +390,8 @@ abstract class OSMigration extends Migration {
   }
 
   private function url_is_file($url) {
-
+    $frags = explode('.', $url);
+    return count($frags) > 1;
   }
 }
 
