@@ -47,12 +47,7 @@ function media_embed_media_browser_plugin_info() {
   $plugins = array();
   $plugins['media_embed'] = array(
     'title' => t('HTML'),
-    'handler' => array(
-      'path' => drupal_get_path('module', 'media_embed') . '/includes',
-      'file' => 'MediaBrowserHTML.inc',
-      'class' => 'MediaBrowserHTML',
-    ),
-    'access callback' => 'media_internet_access',
+    'class' => 'MediaBrowserHTML',
   );
   return $plugins;
 }

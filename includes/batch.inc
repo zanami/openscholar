@@ -361,7 +361,7 @@ function _batch_process() {
       $message .= $task_message;
     }
 
-    return array($percentage, $message);
+    return array($percentage, $message.'<br />'.print_r($current_set['results'],1)."<br />".print_r($queue->getAllItems(),1));
   }
   else {
     // If we are not in progressive mode, the entire batch has been processed.
