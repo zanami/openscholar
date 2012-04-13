@@ -247,5 +247,16 @@ function media_file_default_displays() {
     );
   }
 
+  foreach (media_type_get_types() as $name => $type) {
+    $display_name = $name.'__media_link__file_link';
+    $default_displays[$display_name] = (object) array(
+      'api_version' => 1,
+      'name' => $display_name,
+      'status' => 1,
+      'weight' => 5,
+      'settings' => array(),
+    );
+  }
+
   return $default_displays;
 }

@@ -388,6 +388,11 @@ function media_get_file_without_label($file, $view_mode, $settings = array()) {
     $file->override += $settings['attributes'];
   }
 
+  $types = media_type_get_types();
+  if (!isset($types[$file->type])) {
+    $file->type = 'default';
+  }
+
   $element = file_view_file($file, $view_mode);
 
   // The formatter invoked by file_view_file() can use $file->override to

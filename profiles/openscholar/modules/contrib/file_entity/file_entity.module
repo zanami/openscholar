@@ -432,6 +432,11 @@ function file_entity_file_formatter_info() {
     );
   }
 
+  $formatters['file_link'] = array(
+    'label' => t('Link'),
+    'view callback' => 'file_entity_file_formatter_file_link_view',
+  );
+
   return $formatters;
 }
 
@@ -566,6 +571,19 @@ function file_entity_file_formatter_file_image_settings($form, &$form_state, $se
     '#options' => image_style_options(FALSE),
     '#default_value' => $settings['image_style'],
     '#empty_option' => t('None (original image)'),
+  );
+  return $element;
+}
+
+/**
+ * Implements hook_file_formatter_FORMATTER_view().
+ *
+ * Returns a render array to display a file as just a link to that file.
+ */
+function file_entity_file_formatter_file_link_view($file, $display, $langcode) {
+  $element = array(
+    '#theme' => 'file_entity_file_link',
+    '#file' => $file,
   );
   return $element;
 }
