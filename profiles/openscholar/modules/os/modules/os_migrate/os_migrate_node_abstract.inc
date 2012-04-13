@@ -94,6 +94,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     return new MigrateDestinationNode($bundle);
   }
   
+  //map provides the schema for the primary key of the source table.  this lets migrate associate a unique source id
+  //with a migrated object
   public function map($content_type) {
     return new MigrateSQLMap($this->machineName,
       array(
