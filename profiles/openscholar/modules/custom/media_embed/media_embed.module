@@ -255,12 +255,14 @@ function media_embed_file_formatter_info() {
     'default settings' => array('width' => '560', 'height' => '340'),
     'view callback' => 'media_embed_file_formatter_media_embed_view',
     'settings callback' => 'media_embed_file_formatter_media_embed_settings',
+    'file types' => array('html'),
   );
   $formatters['media_embed_thumbnail'] = array(
     'label' => t('Embedded HTML Thumbnail'),
     'default settings' => array('width' => '560', 'height' => '340'),
     'view callback' => 'media_embed_file_formatter_media_embed_thumbnail_view',
     'settings callback' => 'media_embed_file_formatter_media_embed_thumbnail_settings',
+    'file types' => array('html'),
   );
   return $formatters;
 }
