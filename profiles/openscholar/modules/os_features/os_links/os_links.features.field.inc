@@ -161,7 +161,7 @@ function os_links_field_default_fields() {
         'module' => 'link',
         'settings' => array(),
         'type' => 'link_field',
-        'weight' => '1',
+        'weight' => '0',
       ),
     ),
   );
