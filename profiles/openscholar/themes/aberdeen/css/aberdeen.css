@@ -48,8 +48,9 @@ border-top-right-radius:5px;
 #menu-bar li a {
 color: #FFF;
   font-weight:bold;
-  font-size: 14px;
+  font-size: 16px;
   padding: 13px 15px;
+  text-shadow: #222 0px 1px 0px;
 
 }
 
@@ -59,4 +60,8 @@ color: #FFF;
   background: #8996A0;
   color: #FFF;
   text-decoration: none;
+  border-radius:5px;
+-moz-border-radius:5px;
+border-radius:5px;
+-moz-border-radius:5px;
 }
