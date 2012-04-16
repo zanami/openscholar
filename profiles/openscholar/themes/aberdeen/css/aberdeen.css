@@ -1,0 +1,16 @@
+body {
+background: url('../images/bodyBg.gif') no-repeat fixed center top #e3e3e3;
+  color: #292929;
+ }  
+ 
+a, a:visited, a, a:hover {color:#293352}
+
+
+/* LAYOUT ELEMENTS */
+
+#page {
+  width: 980px;
+margin: 0 auto 0 auto;
+background: #fff;
+
+ }
