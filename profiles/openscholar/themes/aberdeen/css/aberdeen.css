@@ -11,6 +11,52 @@ a, a:visited, a, a:hover {color:#293352}
 #page {
   width: 980px;
 margin: 0 auto 0 auto;
-background: #fff;
+}
+ 
+#columns {background: #fff;}
 
- }
+.region-sidebar-second {background:#eef2f2;height:100%;}
+
+
+/**** MAIN NAV BAR ****/
+
+
+#search-block-form {float:right;
+display:inline;
+clear:right;
+}
+
+#menu-bar {
+  background: url('../images/mainNavBg.png') repeat-x;
+  width:980px;
+ height:54px;
+border-top-left-radius:5px;
+-moz-border-radius-topleft:5px;
+border-top-right-radius:5px;
+-moz-border-radius-topright:5px;
+}
+
+#menu-bar ul {
+ float:left;
+ display:inline;
+  }
+
+#menu-bar li {
+  float:left;
+  }
+
+#menu-bar li a {
+color: #FFF;
+  font-weight:bold;
+  font-size: 14px;
+  padding: 13px 15px;
+
+}
+
+#menu-bar li a:hover,
+#menu-bar li a.active,
+#menu-bar li.active-trail a {
+  background: #8996A0;
+  color: #FFF;
+  text-decoration: none;
+}
