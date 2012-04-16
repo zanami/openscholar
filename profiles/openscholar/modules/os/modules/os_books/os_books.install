@@ -1,0 +1,7 @@
+<?php
+
+function os_books_schema() {
+  $schema['cache_book_pages'] = drupal_get_schema_unprocessed('system', 'cache');
+  $schema['cache_book_pages']['description'] = 'Cache table for the os_books module.';
+  return $schema;
+}
