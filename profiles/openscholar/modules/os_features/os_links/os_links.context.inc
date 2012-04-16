@@ -17,12 +17,22 @@ function os_links_context_default_contexts() {
   $context->description = 'List of links or a page of type link';
   $context->tag = 'OS features';
   $context->conditions = array(
+    'menu' => array(
+      'values' => array(
+        'links' => 'links',
+      ),
+    ),
     'node' => array(
       'values' => array(
         'link' => 'link',
       ),
       'options' => array(
         'node_form' => '0',
+      ),
+    ),
+    'views' => array(
+      'values' => array(
+        'links_listing' => 'links_listing',
       ),
     ),
   );
