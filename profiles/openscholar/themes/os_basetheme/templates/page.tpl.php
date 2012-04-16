@@ -83,14 +83,18 @@
 <header id="header" class="clearfix" role="banner">
 <!-- Three column 3x33 Gpanel -- OS Header Regions-->
 <?php if (
+  $page['three_33_top'] ||
   $page['three_33_first'] ||
   $page['three_33_second'] ||
-  $page['three_33_third']
+  $page['three_33_third'] ||
+  $page['three_33_bottom']
   ): ?>
   <div class="at-panel gpanel panel-display three-3x33 clearfix">
+    <?php print render($page['three_33_top']); ?>
     <?php print render($page['three_33_first']); ?>
     <?php print render($page['three_33_second']); ?>
     <?php print render($page['three_33_third']); ?>
+    <?php print render($page['three_33_bottom']); ?>
   </div>
 <?php endif; ?>
 </header>

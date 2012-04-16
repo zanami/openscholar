@@ -38,6 +38,8 @@ dependencies[] = views_ui
 dependencies[] = strongarm
 dependencies[] = date
 dependencies[] = entity
+dependencies[] = token
+dependencies[] = pathauto
 
 ; media / files / wysiwyg
 dependencies[] = media
@@ -81,4 +83,5 @@ dependencies[] = os_pages
 
 ; other
 dependencies[] = diff
+dependencies[] = context_ui
 
