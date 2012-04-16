@@ -6,7 +6,8 @@ class FileInlineOSMigration extends OSMigration {
     parent::__construct();
     $this->description = t('Inline Files');
     $this->dependencies = array();
-    $this->source = new MigrateSourceSQL($this->query(), array(), NULL,  array('map_joinable' => FALSE));
+    $add_fields = array('uri' => 'Absolute path to file.');
+    $this->source = new MigrateSourceSQL($this->query(), $add_fields , NULL,  array('map_joinable' => FALSE));
     $this->map = new MigrateSQLMap($this->machineName,
       array('field_os_inline_files_fid' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE)),
       MigrateDestinationFile::getKeySchema());
@@ -15,18 +16,18 @@ class FileInlineOSMigration extends OSMigration {
     
     // Field mappings //
     
-    $this->addSimpleMappings(array('uid', 'filename', 'filemime', 'status', 'timestamp'));
+    $this->addSimpleMappings(array('uid', 'filename', 'filemime', 'status', 'timestamp', 'uri'));
     //file entity's uri and path are unclear
     //assuming uri is full url (with http) to reach the file.  relative path shouldn't work unless there's some voodoo i haven't found handling those
     //path alias.  assuming its the file alias name rather than its actual name
-    $this->addFieldMapping('uri', 'filepath');
-    $this->addFieldMapping('path', 'filename');
+//    $this->addFieldMapping('path', 'filename');
+    
     
     //ignored
     $this->addUnmigratedDestinations(array('contents'), t('DNM')); //only used in copying blobs to files
     
     //data from inilne table.  may yet need it during prepare or joins
-    $this->addUnmigratedSources(array('vid', 'nid', 'delta', 'field_os_inline_files_fid', 'field_os_inline_files_list', 'field_os_inline_files_data'), t('DNM'));
+    $this->addUnmigratedSources(array('vid', 'nid', 'delta', 'field_os_inline_files_fid', 'field_os_inline_files_list', 'field_os_inline_files_data', 'filepath'), t('DNM'));
     
   }
   
@@ -42,9 +43,15 @@ class FileInlineOSMigration extends OSMigration {
     return $query;
   }
   
-/*  public function prepareRow($row) {
-    
-  }*/
+  public function prepareRow($row) {
+    //file::import expects to recieve the file from a url or db blob.  local copy is not available.  
+    //going with that for now.  may patch migrate if it's obnoxious.
+    $query = parent::d6_db_select('variable', 'v')
+      ->fields('v', array('value'))
+      ->condition('v.name', 'purl_base_domain', '=');
+    $purl = unserialize($query->execute()->fetchField());
+    $row->uri = $purl . '/' . $row->filepath; 
+  }
   
 
 }

@@ -52,7 +52,7 @@ EOF
     '#title' => t('Files directory'),
     '#description' => t('Path to your Drupal 6 installation\'s files.  Migrate will use this path for copying uploaded files (e.g. /var/www/openscholar/)'),
     '#type' => 'textfield',
-    '#default_value' => variable_get('os_migrate_files'),
+    '#default_value' => variable_get('os_migrate_files', ''),
   );
   
   return system_settings_form($form);
