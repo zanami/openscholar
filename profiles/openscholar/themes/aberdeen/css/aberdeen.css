@@ -16,9 +16,10 @@ margin: 0 auto 0 auto;
 
 /* TYPOGRAPHY*/ 
  
-a, a:visited, a, a:hover {color:#293352}
+a, a:visited, a {color:#293352;text-decoration:underline;}
+a:hover {text-decoration:none;}
 
-.more-link a {padding-right:11px;color:#4e84c4;background: url('../images/moreArrow.png') center right no-repeat}
+.more-link a {padding-right:11px;color:#4e84c4;background: url('../images/moreArrow.png') center right no-repeat;text-decoration:none;}
 
 h1,h2 {color:#5d5e59;}
 
@@ -45,6 +46,7 @@ border-radius:5px;
 #search-block-form {float:right;
 display:inline;
 clear:right;
+margin-top:-27px;
 }
 
 #menu-bar {
@@ -61,6 +63,7 @@ border-top-right-radius:5px;
 #menu-bar ul {
  float:left;
  display:inline;
+ clear:none;
   }
 
 #menu-bar li {
@@ -74,6 +77,7 @@ color: #FFF;
   font-size: 16px;
   padding: 8px 15px 5px;
   text-shadow: #444 0px 1px 0px;
+  text-decoration:none;
 
 }
 
