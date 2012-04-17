@@ -10,7 +10,7 @@ class FileInlineOSMigration extends OSMigration {
     $add_fields = array('uri' => 'Unique Resource Identifier.');
     $this->source = new MigrateSourceSQL($this->query(), $add_fields , NULL,  array('map_joinable' => FALSE));
     $this->map = new MigrateSQLMap($this->machineName,
-      array('field_os_inline_files_fid' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE)),
+      array('fid' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE)),
       MigrateDestinationFile::getKeySchema());
       
     $this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
@@ -30,15 +30,17 @@ class FileInlineOSMigration extends OSMigration {
   
     
   public function query() {
-    $query = parent::d6_db_select('content_field_os_inline_files', 'cf')
-      ->fields('cf', array('vid', 'nid', 'delta', 'field_os_inline_files_fid', 'field_os_inline_files_list', 'field_os_inline_files_data'))
+    $fid_query = parent::d6_db_select('content_field_os_inline_files', 'cf')
+      ->fields('cf', array('field_os_inline_files_fid'))
       ->isNotNull('field_os_inline_files_fid')
       ->distinct();
-    $query->join('files', 'f', 'cf.field_os_inline_files_fid = f.fid');
-    $query->fields('f', array('uid', 'filename', 'filepath', 'filemime', 'status', 'timestamp'));
-      
+        
+    $query = parent::d6_db_select('files', 'f')
+      ->fields('f', array('uid', 'filename', 'filemime', 'status', 'timestamp', 'fid', 'filepath'))
+      ->condition('f.fid', $fid_query, 'IN');
     //path, uri
-    return $query;
+
+      return $query;
   }
   
   public function prepareRow($row) {
@@ -84,6 +86,7 @@ class ImageInlineOSMigration extends OSMigration {
   public function query() {
     $fid_query = parent::d6_db_select('content_field_os_inline_image', 'cf')
       ->fields('cf', array('field_os_inline_image_fid'))
+      ->isNotNull('field_os_inline_image_fid')
       ->distinct();
     
     $query = parent::d6_db_select('files', 'f')
