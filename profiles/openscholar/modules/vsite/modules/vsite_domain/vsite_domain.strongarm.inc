@@ -14,7 +14,7 @@ function vsite_domain_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'purl_method_spaces_og';
-  $strongarm->value = 'path';
+  $strongarm->value = 'vsite_path';
   $export['purl_method_spaces_og'] = $strongarm;
   
   $strongarm = new stdClass();
