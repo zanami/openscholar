@@ -128,10 +128,22 @@ function os_books_node_view($node, $view_mode) {
         ), 'setting');
         $node->content['#attached']['js'][] = drupal_get_path('module', 'os_books').'/os_books.js';
       }
+
+      if (isset($node->book['toc_in_body']) && $node->book['toc_in_body']) {
+        $block_toc = os_books_build_toc($node, true);
+        //$output = theme_box($block_toc['subject'], $block_toc['content'], $region = 'main');
+        $output = '<div class="book-menu"><h3 class="title">' . $block_toc['subject'] . '</h3>' . $block_toc['content'] . '</div>';
+        $node->content['booktoc'] = array(
+          '#weight' => -10,
+          '#markup' => $output
+        );
+      }
+
+      // unset the book navigation links
+      if (module_exists('book') && book_type_is_allowed($node->type)) {
+        unset($node->content['book_navigation']);
+      }
     }
-  }
-  elseif ($view_mode == 'print') {
-    unset($node->content['booktoc']);
   }
 }
 
