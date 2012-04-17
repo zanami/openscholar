@@ -1,3 +1,4 @@
+
 body {
 background: url('../images/bodyBg.gif') no-repeat fixed center top #e3e3e3;
   color: #292929;
@@ -28,7 +29,6 @@ h1,h2 {color:#5d5e59;}
 border-radius:5px;
 -moz-border-radius:5px;
 border-radius:5px;
--moz-border-radius:5px;
 }
 
 .sidebar .item-list ul {
@@ -43,10 +43,14 @@ border-radius:5px;
 /**** MAIN NAV BAR ****/
 
 
-#search-block-form {float:right;
+#block-search-form {float:right;
 display:inline;
 clear:right;
-margin-top:-27px;
+margin-top:6px;
+}
+
+#block-system-main-menu {
+	width:80%;
 }
 
 #menu-bar {
@@ -60,18 +64,18 @@ border-top-right-radius:5px;
 -moz-border-radius-topright:5px;
 }
 
-#menu-bar ul {
+#menu-bar ul.menu {
  float:left;
  display:inline;
  clear:none;
   }
 
-#menu-bar li {
+#menu-bar ul.menu li {
   float:left;
   margin-right:5px;
   }
 
-#menu-bar li a {
+#menu-bar ul.menu li a {
 color: #FFF;
   font-weight:bold;
   font-size: 16px;
@@ -81,9 +85,9 @@ color: #FFF;
 
 }
 
-#menu-bar li a:hover,
-#menu-bar li a.active,
-#menu-bar li.active-trail a {
+#menu-bar ul.menu li a:hover,
+#menu-bar ul.menu li a.active,
+#menu-bar ul.menu li.active-trail a {
   background: #4e84c4;
   color: #FFF;
   text-decoration: none;
