@@ -6,15 +6,6 @@ include_once('vsite.features.inc');
  */
 
 /**
- * return the bundles that should be treated as group content
- */
-function vsite_get_bundles(){
-  $bundles = array('page' => "Page");
-  
-  return $bundles;
-}
-
-/**
  * Hooks
  */
 

@@ -110,3 +110,83 @@ class ImageInlineOSMigration extends OSMigration {
   }
 }
 
+
+
+
+class EmbedInlineOSMigration extends OSMigration {
+  public function __construct() {
+    parent::__construct();
+    $this->description = t('Inline Embeds');
+    $this->dependencies = array();
+    $add_fields = array('uri' => 'Unique Resource Identifier.', 'filemime' => 'File\'s mime type', 'filename' => 'File name');
+    $this->source = new MigrateSourceSQL($this->query(), $add_fields , NULL,  array('map_joinable' => FALSE));
+    $this->map = new MigrateSQLMap($this->machineName,
+      array('migrate_md5_uri' => array('type'=>'varchar', 'length'=>255)), //varchar 2048 is base, but too big for here
+           // 'nid' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE,)),
+      MigrateDestinationMedia::getKeySchema());
+      //file dest is no good heree.  oembed:// is unsupported
+    
+    $this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
+      
+    //mappings
+    $this->addSimpleMappings(array('uid', 'status', 'uri', 'filemime', 'filename'));
+    $this->addFieldMapping('timestamp', 'created');
+    
+    //ignored
+    $this->addUnmigratedSources(array('field_os_inline_oembed_url'), 'DNM');
+    $this->addUnmigratedDestinations(array('contents'), 'DNM'); //use this if we hvae to create a file.
+    
+  }
+  
+  public function query() {
+    /*
+    $query = parent::d6_db_select('content_field_os_inline_oembed', 'cf')
+      ->fields('cf', array('field_os_inline_oembed_url', 'nid')) //nid?  delta?
+      ->isNotNull('field_os_inline_oembed_url')
+      ->distinct();
+    $query->join('node', 'n', 'n.nid = cf.nid');
+    $query->fields('n', array('uid', 'status', 'created'));
+      */
+    /*
+    $fid_query = parent::d6_db_select('content_field_os_inline_oembed', 'cf')
+      ->fields('cf', array('field_os_inline_oembed_url'))
+      ->isNotNull('field_os_inline_oembed_url')
+      ->distinct();
+*/
+      
+    //uri is unique.  one row in file_managed per file.  the assumption is that multiple files of the same name would get renamed
+    //not valid for urls.  going to attempt to import each url once and hope the uid doesn't matter.
+    $query = parent::d6_db_select('content_field_os_inline_oembed', 'cf')
+      ->fields('cf', array('field_os_inline_oembed_url')) //nid?  delta?
+      ->isNotNull('field_os_inline_oembed_url')
+      ->distinct();
+    
+    
+    return $query;
+  }
+  
+  //oembed_url is not unique, but has to be treated as though it were unique when added to files 
+  public function prepareRow($row) {
+    $query = parent::d6_db_select('content_field_os_inline_oembed', 'cf')
+      ->fields('cf', array('nid'))
+      ->condition('field_os_inline_oembed_url', $row->field_os_inline_oembed_url, '=')
+      ->range(0,1); //limit 1
+    $query->leftJoin('node', 'n', 'n.nid = cf.nid');
+    $query->fields('n', array('uid', 'status', 'created'));
+    $results = $query->execute();
+    $node = $results->fetchCol();
+    
+    //urls are too long and migrate won't let me use big text as a key
+    $row->migrate_md5_uri = md5($row->field_os_inline_oembed_url);
+          
+    $row->uri = 'oembed://' . $row->field_os_inline_oembed_url;
+    $row->filemime = 'video/oembed'; //fill in more later
+    $row->filename = basename($row->uri); //or fetch this from media's name getting funcs.  slow as hell?
+    
+  }
+  
+  //destination forces public:// URI.  switch it back.  uri is also truncated to basename.  lets not make all youtube links the same, kthxbai
+  public function prepare($entity, $row) {
+    $entity->uri = str_replace('public://', 'oembed://', $row->uri); 
+  }
+}
