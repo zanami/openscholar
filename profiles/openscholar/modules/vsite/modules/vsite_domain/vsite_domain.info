@@ -11,3 +11,5 @@ features[features_api][] = api:1
 features[variable][] = purl_method_spaces_og
 features[variable][] = purl_method_vsite_domain
 features[variable][] = purl_types
+files[] = plugins/purl_vsite_domain.inc
+files[] = plugins/purl_vsite_path.inc
