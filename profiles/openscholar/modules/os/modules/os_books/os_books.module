@@ -40,7 +40,7 @@ function os_books_build_tree($node, $flatten = false) {
 
   // if we're in the middle of building this tree, do nothing
   // this prevents an infinite loop
-  if (isset($root->book) && !$building[$root->nid]) {
+  if (isset($root->book) && !isset($building[$root->nid])) {
     $building[$root->nid] = true;
     $cache = _os_books_get_cache($root->nid);
     if ($cache) return $cache;
@@ -50,7 +50,7 @@ function os_books_build_tree($node, $flatten = false) {
 
     $cache_key = _os_books_get_cache_key($root->nid, $root->book['bid']);
     cache_set($cache_key, $output, OS_BOOKS_CACHE, CACHE_PERMANENT);
-    $building[$root->nid] = false;
+    unset($building[$root->nid]);
     return $output;
   }
 }
@@ -96,7 +96,10 @@ function _os_books_build_tree_recursive($tree, $flatten = false) {
     if ($link['link']['has_children']) {
       $children = _os_books_build_tree_recursive($link['below'], $flatten);
       if ($flatten) {
-        $output = array_merge($output, $children);
+        // array merge blows away our nid keys
+        foreach ($children as $k => $v) {
+          $output[$k] = $v;
+        }
       }
       else {
         $output[$nid]['children'] = $children;
@@ -110,16 +113,20 @@ function _os_books_build_tree_recursive($tree, $flatten = false) {
 function os_books_node_view($node, $view_mode) {
   if ($view_mode == 'full') {
     if (isset($node->book) && $node->book) {
-    $content = os_books_build_tree($node, true);
+      $content = $node->content;
+      // drupal destroys $node->content during its build process.
+      // without it, we get fatal errors
+      $pages = os_books_build_tree($node, true);
+      $node->content = $content;
       // this is the page's node, not one we render through os_books
-      if ($content) {
+      if ($pages) {
         drupal_add_js(array(
         	'os_books' => array(
-            'pages' => $content,
+            'pages' => $pages,
             'settings' => _os_books_get_book_settings($node->book['bid']),
           ),
         ), 'setting');
-        unset($node->content['#printed']);
+        $node->content['#attached']['js'][] = drupal_get_path('module', 'os_books').'/os_books.js';
       }
     }
   }

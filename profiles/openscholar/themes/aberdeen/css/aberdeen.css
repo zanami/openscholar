@@ -1,0 +1,110 @@
+body {
+background: url('../images/bodyBg.gif') no-repeat fixed center top #e3e3e3;
+  color: #292929;
+ }  
+ 
+/* LAYOUT ELEMENTS */
+
+#page {
+  width: 980px;
+margin: 0 auto 0 auto;
+}
+ 
+#columns {background: #fff;}
+
+.region-sidebar-second {background:#eef2f2;min-height:100%;}
+
+/* TYPOGRAPHY*/ 
+ 
+a, a:visited, a {color:#293352;text-decoration:underline;}
+a:hover {text-decoration:none;}
+
+.more-link a {padding-right:11px;color:#4e84c4;background: url('../images/moreArrow.png') center right no-repeat;text-decoration:none;}
+
+h1,h2 {color:#5d5e59;}
+
+.sidebar h2 {
+	color:#FFF;background:#b8bfc0;padding:4px 0 2px 8px;border-top-left-radius:5px;
+border-radius:5px;
+-moz-border-radius:5px;
+border-radius:5px;
+-moz-border-radius:5px;
+}
+
+.sidebar .item-list ul {
+    list-style-image:url('../images/blueBullet.png');
+     margin: 8px 0 0 20px;
+}
+
+.sidebar .item-list ul li {
+     margin-bottom: 8px;
+}
+
+/**** MAIN NAV BAR ****/
+
+
+#search-block-form {float:right;
+display:inline;
+clear:right;
+margin-top:-27px;
+}
+
+#menu-bar {
+  background: url('../images/mainNavBg.png') repeat-x;
+  width:980px;
+ height:46px;
+ padding-top:8px;
+border-top-left-radius:5px;
+-moz-border-radius-topleft:5px;
+border-top-right-radius:5px;
+-moz-border-radius-topright:5px;
+}
+
+#menu-bar ul {
+ float:left;
+ display:inline;
+ clear:none;
+  }
+
+#menu-bar li {
+  float:left;
+  margin-right:5px;
+  }
+
+#menu-bar li a {
+color: #FFF;
+  font-weight:bold;
+  font-size: 16px;
+  padding: 8px 15px 5px;
+  text-shadow: #444 0px 1px 0px;
+  text-decoration:none;
+
+}
+
+#menu-bar li a:hover,
+#menu-bar li a.active,
+#menu-bar li.active-trail a {
+  background: #4e84c4;
+  color: #FFF;
+  text-decoration: none;
+  border-radius:5px;
+-moz-border-radius:5px;
+border-radius:5px;
+-moz-border-radius:5px;
+}
+
+
+
+
+
+ /* bigscreen three_col_grail */
+@media only screen and (min-width:1025px) {
+.container {width:980px}
+#content-column,.content-column,div.sidebar {float: left; clear: none}
+.two-sidebars .content-inner {margin-left: 200px; margin-right: 290px}
+.sidebar-first .content-inner {margin-left: 200px; margin-right: 0}
+.sidebar-second .content-inner {margin-right: 290px; margin-left: 0}
+.region-sidebar-first {width: 200px; margin-left: -100%}
+.region-sidebar-second {width: 290px; margin-left: -290px}
+.at-panel .region,.panel-row {display:inline;float:left}.inset-wrapper {float:left;width:75%}.five-5x20 .row-1 {width:40%}.five-5x20 .row-2 {width:60%}.three-50-25-25 .region,.three-25-50-25 .region,.three-25-25-50 .region,.region-three-inset-right-sidebar,.region-three-inset-left-sidebar {width:25%}.two-50 .region,.two-brick .region,.three-50-25-25 .region-three-50-25-25-first,.three-25-50-25 .region-three-25-50-25-second,.three-25-25-50 .region-three-25-25-50-third,.four-4x25 .region,.four-4x25 .row-1,.four-4x25 .row-2,.five-5x20 .row-1 .region,.six-6x16 .region {width:50%}.three-3x33 .region,.two-33-66 .region,.two-66-33 .region,.region-three-inset-right-inset,.region-three-inset-left-inset,.five-5x20 .row-2 .region,.six-6x16 .panel-row {width:33.333333%}.two-33-66 .region-two-33-66-second,.two-66-33 .region-two-66-33-first,.region-three-inset-left-middle,.region-three-inset-right-middle {width:66.666666%}.three-inset-right .region,.three-inset-right .inset-wrapper {float:right}.two-brick .panel-row {float:none}
+}

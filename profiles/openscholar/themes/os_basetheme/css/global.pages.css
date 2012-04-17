@@ -7,7 +7,7 @@
  * ul.links, .more-link, etc.
  */
 
-/* Temporarily (for testing) border the regions  */
+/* Temporarily (for testing) border the regions 
 
 
 .region-three-33-first {
@@ -39,7 +39,7 @@ background:#EEE;
 .region-footer {
 	background:#FF8811;	
 }
-
+ */
 
 /*
  * Wrappers
@@ -69,7 +69,9 @@ body {
 
 
 #main-content /* Wraps the main-content-header, the content region and feed-icons. */ {
+	 padding-top: 10px;
 }
+
 
 #content /* Wraps the content region. */ {
 }
@@ -84,6 +86,7 @@ body {
 
 
 .region-inner /* By default this sets up 20px gutters i.e. margin: 0 10px. */ {
+	 padding-top: 15px;
 }
 
 
