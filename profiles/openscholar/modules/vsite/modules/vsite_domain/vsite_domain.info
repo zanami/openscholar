@@ -8,5 +8,5 @@ dependencies[] = strongarm
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:1
 features[variable][] = purl_method_spaces_og
-features[variable][] = purl_types
 features[variable][] = purl_method_vsite_domain
+features[variable][] = purl_types
