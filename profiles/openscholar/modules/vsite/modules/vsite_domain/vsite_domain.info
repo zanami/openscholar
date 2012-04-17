@@ -5,6 +5,7 @@ package = OpenScholar vsite
 php = 5.2.4
 dependencies[] = ctools
 dependencies[] = strongarm
+dependencies[] = vsite
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:1
 features[variable][] = purl_method_spaces_og

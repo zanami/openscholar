@@ -75,6 +75,7 @@ dependencies[] = spaces
 dependencies[] = spaces_og
 dependencies[] = og_views
 dependencies[] = vsite
+dependencies[] = vsite_domain
 dependencies[] = og
 
 ; Features
