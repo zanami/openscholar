@@ -39,20 +39,18 @@ abstract class os_boxes_default extends boxes_box {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state) {
-    if (filter_access($this->options['format'])) {
-      $form['display_type'] = array(
-        '#type' => 'value',
-        '#title' => t('Visibility settings'),
-        '#default_value' => $this->options['visibility'],
-        '#options' => array(
-            //@todo *this* should be dynamic (i.e "publications section")
-            'page' => t('this page only'), // i.e. node view
-            'feature' => t('Show only in *this* section'),
-            'all' => t('Show everywhere in my site')),
-      );
+    $form['visibility'] = array(
+      '#type' => 'value',
+      '#title' => t('Visibility settings'),
+      '#default_value' => $this->options['visibility'],
+      '#options' => array(
+          //@todo *this* should be dynamic (i.e "publications section")
+          'page' => t('this page only'), // i.e. node view
+          'feature' => t('Show only in *this* section'),
+          'all' => t('Show everywhere in my site')),
+    );
 
-      return $form;
-    }
+    return $form;
   }
 
   /**

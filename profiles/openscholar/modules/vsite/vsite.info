@@ -1,7 +1,7 @@
 name = "Openscholar Vsite"
 description = "OpenScholar Vsite"
 core = "7.x"
-package = "OpenScholar VSite"
+package = "OpenScholar vsite"
 php = "5.2.4"
 dependencies[] = "ctools"
 dependencies[] = "entityreference"
