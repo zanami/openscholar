@@ -200,7 +200,7 @@ th {
 
 ul,
 ol {
-  margin: 0 0 1.5em 40px;
+  margin: 0 0 1.5em 3px;
   padding: 0;
 }
 
@@ -229,8 +229,10 @@ ol ul,
   margin-bottom: 0;
 }
 
+/** 1 A a (1) **/
+
 ul {
-  list-style-type: none;
+ list-style-type:none; 
 }
 
 ul ul ul {
@@ -253,6 +255,7 @@ ul ul,
 ul ul ul ul {
   list-style-type: circle;
 }
+
 
 dt {
   font-weight: 700;
