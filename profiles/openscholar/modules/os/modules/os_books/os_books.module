@@ -69,11 +69,11 @@ function os_books_build_toc($node, $separate = false) {
     $menu_tree = menu_tree_all_data($node->book['menu_name']);
     if ($separate) {
       $top = current($menu_tree);
-      $block['subject'] = theme('menu_item_link', $top['link']);
-      $block['content'] = menu_tree_output($top['below']);
+      $block['subject'] = theme('book_title_link', array('link' => $top['link']));
+      $block['content'] = render(menu_tree_output($top['below']));
     }
     else {
-      $block['content'] = menu_tree_output($menu_tree);
+      $block['content'] = render(menu_tree_output($menu_tree));
     }
   }
 
