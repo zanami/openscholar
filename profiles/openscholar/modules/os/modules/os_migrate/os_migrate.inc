@@ -43,7 +43,7 @@ abstract class OSMigration extends Migration {
         ->select($target, $alias, $options);
     } catch (DatabaseConnectionNotDefinedException $e) {
       flood_register_event('os_migrate_bad_db');
-      $msg = t('Unable to connect to db %db.  Please !link', array(
+      $msg = t('Unable to connect to legacy database %db.  Please !link', array(
       				  '%db' => $os_migrate_database,
       				  '!link'=>l('check settings','admin/config/os_migrate')));
       drupal_set_message($msg, 'error');
