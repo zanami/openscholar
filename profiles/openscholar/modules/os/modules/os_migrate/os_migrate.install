@@ -1,0 +1,30 @@
+<?php 
+
+/**
+ * @file os_migrate.install
+ */
+
+function os_migrate_install() {  
+  //migrate will be importing long urls into file->uri.  update db schema to store urls.
+
+  //make sure we haven't already updated
+  $schema = drupal_get_schema('file_managed');
+  if ($schema['fields']['uri']['type'] != 'text') {
+    
+    //store old data.
+    $query = db_select('file_managed', 'fm')->fields('fm', array('fid','uri'));
+    $results = $query->execute();
+    
+    //db_change_field() doesn't support varchar -> text, so drop the original 
+    db_drop_field('file_managed', 'uri');
+    db_add_field('file_managed', 'uri', array('type'=>'text', 'description'=>'The URI to access the file (either local or remote).'));
+    
+    //and restore the data
+    foreach($results as $row) {
+      db_update('file_managed')
+        ->fields(array('uri' => $row->uri))
+        ->condition('fid', $row->fid, '=')
+        ->execute();
+    }
+  }    
+}
