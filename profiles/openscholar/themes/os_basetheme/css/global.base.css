@@ -200,7 +200,7 @@ th {
 
 ul,
 ol {
-  margin: 0 0 1.5em 3px;
+  margin: 0 0 1.5em 17px;
   padding: 0;
 }
 
@@ -234,6 +234,23 @@ ol ul,
 ul {
  list-style-type:none; 
 }
+
+#content-column ul {
+ list-style-type:decimal; 
+}
+
+#content-column ul ul {
+ list-style-type: upper-alpha;
+}
+
+#content-column ul ul ul {
+ list-style-type: lower-alpha;
+}
+
+#content-column ul ul ul ul {
+ list-style-type: decimal;
+}
+
 
 ul ul ul {
   list-style-type: square;
