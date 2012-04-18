@@ -10,7 +10,7 @@
 function os_spaces_presets() {
   $export = array();
 
-  $spaces_presets = new stdClass;
+  $spaces_presets = new stdClass();
   $spaces_presets->disabled = FALSE; /* Edit this to true to make a default spaces_presets disabled initially */
   $spaces_presets->api_version = 3;
   $spaces_presets->name = 'os_department';
@@ -23,7 +23,7 @@ function os_spaces_presets() {
         'os_front' => 1,
         'os_pages' => 1,
       ),
-      'site_frontpage' => "xxxx",
+      'site_frontpage' => 'xxxx',
     ),
   );
 
@@ -32,7 +32,7 @@ function os_spaces_presets() {
   t('OS Department');
   $export['os_department'] = $spaces_presets;
 
-  $spaces_presets = new stdClass;
+  $spaces_presets = new stdClass();
   $spaces_presets->disabled = FALSE; /* Edit this to true to make a default spaces_presets disabled initially */
   $spaces_presets->api_version = 3;
   $spaces_presets->name = 'os_personal';
@@ -45,7 +45,7 @@ function os_spaces_presets() {
         'os_front' => 1,
         'os_pages' => 1,
       ),
-      'site_frontpage' => "home",
+      'site_frontpage' => 'home',
     ),
   );
 
