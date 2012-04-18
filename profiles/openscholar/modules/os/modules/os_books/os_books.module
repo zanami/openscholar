@@ -148,6 +148,23 @@ function os_books_node_view($node, $view_mode) {
       if (module_exists('book') && book_type_is_allowed($node->type)) {
         unset($node->content['book_navigation']);
       }
+
+      // add contextual links
+      // Drupal doesn't add contextual links to a node when we're on that node's page
+      // this'll probably have to go somewhere else eventually, to catch all nodes
+      if (node_is_page($node)) {
+        $node->content['#contextual_links']['node'] = array('node', array($node->nid));
+      }
+
+      // printed links
+      if (user_access('access printer-friendly version')) {
+        $node->content['links']['book']['#links']['book_printer_full'] = array(
+          'title' => t('Printer-friendly version'),
+          'href' => 'book/export/html/' . $node->book['bid'],
+          'attributes' => array('title' => t('Show a printer-friendly version of this book.'))
+        );
+        unset ($node->content['links']['book']['#links']['book_printer']);
+      }
     }
   }
 }

@@ -12,6 +12,7 @@ dependencies[] = link
 dependencies[] = node
 dependencies[] = strongarm
 dependencies[] = views
+spaces[types][] = "og"
 features[context][] = links_links
 features[ctools][] = context:context:3
 features[ctools][] = strongarm:strongarm:1

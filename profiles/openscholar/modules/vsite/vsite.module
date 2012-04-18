@@ -9,6 +9,12 @@ include_once('vsite.features.inc');
  * Hooks
  */
 
+function vsite_init(){
+	
+	
+	
+}
+
 /**
  * Alter information returned from module/theme info files
  */

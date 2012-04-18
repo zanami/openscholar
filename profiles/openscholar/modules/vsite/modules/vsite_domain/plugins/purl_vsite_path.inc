@@ -53,7 +53,7 @@ if (!class_exists('purl_vsite_path')) {
 	      
 	    if(array_key_exists('absolute',$options) && $options['absolute']){
 
-	      if($element->id && $vsite = vsite_get_vsite($element->id)){
+	      if($element->id && $vsite = spaces_load('og',$element->id)){
           $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
         }
           
