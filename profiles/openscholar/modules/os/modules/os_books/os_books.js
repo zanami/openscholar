@@ -3,13 +3,12 @@
  * or the book links in the content area and the actual contents of a book page
  */
 (function($){
-	var container, header, content = {}, active, orig_nid;
+	var container, header, content = {}, active, orig_nid, blocks = $().not("*");
 	
 	Drupal.behaviors.os_book_linkage = {
 		attach: function(ctx) {
 			if (!$('body.node-type-book').length) return;
-			var nid, url,
-				blocks = $().not("*");
+			var nid, url;
 			
 			if (ctx == document) {
 				content = Drupal.settings.os_books.pages;			
@@ -46,6 +45,9 @@
 			blocks.click(toc_click);
 			
 			window.onpopstate = history_change;
+		},
+		detach: function(ctx) {
+			blocks.unbind('click', toc_click);
 		}
 	};
 	function toc_click(e) {
@@ -74,6 +76,7 @@
 	}
 	
 	function page_swap(nid) {
+		Drupal.detachBehaviors($('.node', container)[0]);
 		$('#comments', container).remove();
 		$('.node', container).replaceWith(content[nid].content);
 		// the 2nd .node is a different element from the first
