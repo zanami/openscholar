@@ -71,7 +71,7 @@ class space_og extends space_type_purl {
     return parent::access_space($account) && (
       user_access('administer group') ||
       $this->group->{OG_ACCESS_FIELD}[LANGUAGE_NONE][0]['value'] != 1 || // Group is public, allow access
-      og_is_member($this->og->gid, 'user', $account) || // User is group member, allow access
+      og_is_member($this->group_type ,$this->id, 'user', $account) || // User is group member, allow access
       user_is_anonymous()); // User hasn't logged in -- provide entry point
   }
 
@@ -105,14 +105,14 @@ class space_og extends space_type_purl {
     // Only allow access if: user can administer OG, group is public,
     // or user is a member.
     $membership = FALSE;
-    if ($membership = og_get_group_membership($this->og->gid, 'user', $account->uid)) {
+    if ($membership = og_get_membership($this->group_type ,$this->id, 'user', $account->uid)) {
       $membership = $membership->state;
     }
     $access = $access && (user_access('administer group') || $this->group->{OG_ACCESS_FIELD}[LANGUAGE_NONE][0]['value'] == OG_CONTENT_ACCESS_PUBLIC || $membership);
 
     // Additional check for group membership if authoring content in this group.
     if ($op === 'create') {
-      return $access && og_is_member($this->og->gid, 'user', $account);
+      return $access && og_is_member($this->group_type ,$this->id, 'user', $account);
     }
     return $access;
   }
@@ -124,8 +124,8 @@ class space_og extends space_type_purl {
     global $user;
     $account = isset($account) ? $account : $user;
     // Test whether both user and account belong to current space.
-    $test_user = og_is_member($this->og->gid, 'user');
-    $test_account = og_is_member($this->og->gid, FALSE, $account->uid);
+    $test_user = og_is_member($this->group_type ,$this->id, 'user');
+    $test_account = og_is_member($this->group_type ,$this->id, FALSE, $account->uid);
     if (($test_user && $test_account) || user_access('view users outside groups')) {
       return parent::access_user($op, $account);
     }
@@ -167,7 +167,7 @@ class space_og extends space_type_purl {
           }
 
           // If the node belongs to the current active group space, or we're in an allowable other space type, pass thru
-          if ($this->active && in_array($this->og->gid, $gids)) {
+          if ($this->active && in_array($this->id, $gids)) {
             return;
           }
 
