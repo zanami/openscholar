@@ -9,10 +9,36 @@ include_once('vsite.features.inc');
  * Hooks
  */
 
-function vsite_init(){
+/**
+ * Alter the space presets to add vsite specific information
+ *
+ * @param $presets
+ */
+function vsite_spaces_presets_alter(&$presets){
 	
+	//Alter the preset to include the pathauto settings for nodes prefixed with the purl path
+	$pathauto_settings = _vsite_get_pathauto_settings();
+	foreach ($presets as $name => &$preset){
+		if(substr($name,0,3) == "os_"){
+			$preset->value['variable'] = array_merge($pathauto_settings,$preset->value['variable']);
+		}
+	}
+}
+
+/**
+ * @todo MOVE INTO INC FILE
+ */
+function _vsite_get_pathauto_settings(){
+	$pathauto_settings = array();
 	
-	
+	$bundles = os_get_bundles();
+	$entity = 'node';
+  foreach ($bundles as $bundle) {
+    $pattern = pathauto_pattern_load_by_entity($entity,$bundle);
+    $pathauto_settings["pathauto_{$entity}_{$bundle}_pattern"] = "[spaces_og]/".$pattern;
+  }
+  
+  return $pathauto_settings;
 }
 
 /**
