@@ -1,16 +1,17 @@
 <?php
-/**
- * Implements hook_ctools_plugin_api().
- */
-function os_boxes_plugins_ctools_plugin_api($module, $api) {
-  if ($module == 'boxes' && $api == 'plugins') {
-    return array('version' => 1);
-  }
-}
 
-function os_boxes_plugins_boxes_plugins() {
+function os_boxes_boxes_plugins() {
   $info = array();
-  $path = drupal_get_path('module', 'os_boxes_plugins').'/plugins';
+  $path = drupal_get_path('module', 'os_boxes').'/plugins/';
+
+  $info['os_boxes_default'] = array(
+    'handler' => array(
+      'class' => 'os_boxes_default',
+      'file' => 'os_boxes_default.inc',
+      'path' => $path,
+      'parent' => 'box',
+    ),
+  );
 
   $info['os_boxes_manual_list'] = array(
     'title' => 'Featured Posts',
@@ -24,7 +25,7 @@ function os_boxes_plugins_boxes_plugins() {
     ),
   );
 
-  $info['os_boxes_media'] = array(
+ /* $info['os_boxes_media'] = array(
     'title' => 'Embed Media',
     'description' => 'Embed a video, audio or other internet resource',
     'tags' => array('Media'),
@@ -34,7 +35,7 @@ function os_boxes_plugins_boxes_plugins() {
       'path' => $path.'/os_boxes_media',
       'parent' => 'os_boxes_default',
     ),
-  );
+  );*/
 
   $info['os_boxes_booktoc'] = array(
     'title' => 'Booklet: Table of Contents',
