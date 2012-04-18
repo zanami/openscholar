@@ -54,7 +54,7 @@ if (!class_exists('purl_vsite_domain')) {
     }
   
     private function remove_scholar_purl($path) {
-      if (!($vsite = vsite_get_vsite()) || !strlen($vsite->group->purl)) return $path;
+      if (!($vsite = spaces_get_space()) || !strlen($vsite->group->purl)) return $path;
       $args = explode('/', $path);
   
       // Remove the value from the front of the query string
@@ -88,9 +88,9 @@ if (!class_exists('purl_vsite_domain')) {
      * so that aliased paths will be picked up
      */
     public function adjust(&$value, $item, &$q) {
-      if ( (!($vsite = vsite_get_vsite()) && !($vsite = vsite_get_vsite($item->id))) || !strlen($vsite->group->purl)) return;
+      if ( (!($vsite = spaces_get_space()) && !($vsite = spaces_load('og', $item->id))) || !strlen($vsite->group->purl)) return;
       
-      if (trim($_GET['q'], '/') == trim($_REQUEST['q'], '/')) {
+      if (!in_array($vsite->group->purl,_vsite_domain_processed_purls())) {
         _vsite_domain_processed_purls($vsite->group->purl);
         
         $args = explode('/', trim($_GET['q'], '/'));
