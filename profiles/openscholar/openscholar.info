@@ -81,6 +81,7 @@ dependencies[] = og
 ; Features
 dependencies[] = os_front
 dependencies[] = os_pages
+dependencies[] = os_links
 
 ; other
 dependencies[] = diff
