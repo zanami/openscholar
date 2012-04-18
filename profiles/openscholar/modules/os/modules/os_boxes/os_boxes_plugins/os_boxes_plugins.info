@@ -1,6 +1,0 @@
-name = "OpenScholar: Boxes Plugins"
-description = "New Box types provided by OpenScholar"
-core = "7.x"
-package = "OpenScholar"
-php = "5.2.4"
-dependencies[] = "os_boxes"
