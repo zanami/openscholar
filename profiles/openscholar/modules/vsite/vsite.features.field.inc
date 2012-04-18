@@ -186,7 +186,7 @@ function vsite_field_default_fields() {
 function vsite_get_group_fields(){
 	$fields = array();
 	
-	$bundles = vsite_get_bundles();
+	$bundles = os_get_bundles();
 	
 	foreach ($bundles as $bundle => $name) {
 		// Exported field: 'node-BUNDLE-og_group_ref'
