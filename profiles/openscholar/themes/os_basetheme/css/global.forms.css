@@ -13,8 +13,8 @@
 .form-checkbox:focus,
 .form-radio:focus,
 .form-select:focus {
-  border: 1px solid #fc0;
-  background: #ffffdf;
+  border: 1px solid #D16103;
+  background: #FFF;
 }
 
 textarea:focus {
@@ -133,9 +133,10 @@ input.title {
 
 input.form-text,
 textarea {
-  border: 1px solid #ccc;
   height: auto;
-  padding: 2px;
+  padding: 4px;
+  background: url('../images/form-input-bg.gif') repeat-x scroll left top #FFFFFF;
+    border: 1px solid #CDCDCD;
 }
 
 html.js input.form-autocomplete {
@@ -381,3 +382,7 @@ form table .item-list ul {
 #devel-switch-user-form {
   margin-bottom: 0;
 }
+
+
+/* TINYMCE - WYSIWYG */
+#tinymce {background:#FFF;}
