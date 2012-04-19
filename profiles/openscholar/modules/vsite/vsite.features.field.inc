@@ -187,8 +187,7 @@ function vsite_get_group_fields(){
 	$fields = array();
 	
 	$bundles = os_get_bundles();
-	
-	foreach ($bundles as $bundle => $name) {
+	foreach ($bundles as $bundle) {
 		// Exported field: 'node-BUNDLE-og_group_ref'
     $fields["node-{$bundle}-og_group_ref"] = array(
       'field_config' => array(

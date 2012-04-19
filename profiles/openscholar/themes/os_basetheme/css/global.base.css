@@ -136,6 +136,13 @@ h5,
 h6 {
 }
 
+h1 a,
+h2 a,
+h3 a,
+h4 a {
+    text-decoration: none;
+}
+
 img,
 a img {
   border: 0;
@@ -231,23 +238,20 @@ ol ul,
 
 /** 1 A a (1) **/
 
-ul {
- list-style-type:none; 
-}
 
-#content-column ul {
+#content-column ol {
  list-style-type:decimal; 
 }
 
-#content-column ul ul {
+#content-column ol ol {
  list-style-type: upper-alpha;
 }
 
-#content-column ul ul ul {
+#content-column ol ol ol {
  list-style-type: lower-alpha;
 }
 
-#content-column ul ul ul ul {
+#content-column ol ol ol ol {
  list-style-type: decimal;
 }
 

@@ -4,10 +4,17 @@ include_once('os.features.inc');
 /**
  * return the bundles that should be treated as group content
  */
-function os_get_bundles(){
-  $bundles = array('page' => "Page", 'link' => "Link");
+function os_get_bundles($space_type = 'og'){
+	$features = spaces_features($space_type);
+  $node_bundles = array();
+  foreach ($features as $name => $feature) {
+    $feature_components = $feature->info['features'];
+    if(isset($feature_components['node'])){
+      $node_bundles = array_merge($node_bundles,$feature_components['node']);
+    }
+  }
   
-  return $bundles;
+  return $node_bundles;
 }
 
 /**

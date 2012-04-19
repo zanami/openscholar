@@ -1,0 +1,138 @@
+<?php
+
+/**
+ * Control Panel
+ */
+
+
+/**
+ * Implements hook_menu
+ */
+function cp_menu(){
+  $items = array();
+  
+  $spaces_path = drupal_get_path('module', 'spaces');
+  $items["cp/build"] = array(
+    'title' => 'Site building',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array(
+      'spaces_features_form'
+    ),
+    'file' => 'spaces.admin.inc',
+    'file path' => $spaces_path,
+    'weight' => 10
+  );
+  
+  $items["cp/build/features"] = array(
+    'title' => 'Features',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array(
+      'spaces_features_form'
+    ),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'file' => 'spaces.admin.inc',
+    'file path' => $spaces_path,
+    'weight' => 10
+  );
+  
+  $items["cp/build/layout"] = array(
+    'title' => 'Layout',
+    'page callback' => 'cp_layout',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10
+  );
+  
+  $items["cp/build/layout"] = array(
+    'title' => 'Features',
+    'page callback' => 'cp_layout',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10
+  );
+  
+  $items["cp/build/menu"] = array(
+    'title' => 'Menu',
+    'page callback' => 'cp_menu_callback',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10
+  );
+  
+  $items["cp/build/taxonomy"] = array(
+    'title' => 'Taxonomy',
+    'page callback' => 'cp_taxonomy',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10
+  );
+  
+  // Appearance
+  $items['cp/appearance'] = array(
+    'title' => "Appearance",
+    'page callback' => 'cp_appearance',
+    'weight' => 20,
+  );
+  
+  $items['cp/appearance/theme'] = array(
+    'title' => t('Theme'),
+    'page callback' => 'cp_appearance',
+
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 20,
+  );
+  
+  // Settings
+  $items['cp/settings'] = array(
+    'title' => "Settings",
+    'page callback' => 'cp_settings',
+    'weight' => 20,
+  );
+
+
+  
+  // make them all part of 'cp' menu
+  foreach ( $items as $path => $item ) {
+    if (! array_key_exists('menu_name', $item))
+      $items[$path]['menu_name'] = 'cp';
+      
+    // @todo maybe provide our own permissoin instead ? 
+    if (! array_key_exists('access callback', $item))
+      $items[$path]['access arguments'] = array('access content');
+  }
+  
+  
+  return $items;
+
+}
+
+/**
+ * cp/build/layout callback
+ */
+function cp_layout(){
+  return 'cp/build/layout';
+}
+
+/**
+ * cp/build/menu callback
+ */
+function cp_menu_callback(){
+  return 'cp/build/menu';
+}
+
+/**
+ * cp/build/taxonomy callback
+ */
+function cp_taxonomy(){
+  return 'cp/build/taxonomy';
+}
+
+/**
+ * cp/appearance callback
+ */
+function cp_appearance(){
+  return 'cp/appearance';
+}
+
+/**
+ * cp/settings callback
+ */
+function cp_settings(){
+  return 'cp/settings';
+}

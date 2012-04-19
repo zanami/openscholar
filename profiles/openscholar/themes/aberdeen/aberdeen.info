@@ -12,11 +12,9 @@
 
 ;----------// Stylesheets
 
-  ; Globals CSS, loads all global.[type].css files in /css/
-  stylesheets[screen][] = css/aberdeen.css
   
-
-
+  stylesheets[screen][] = css/aberdeen.css
+    
 ;----------// Regions
 
   regions[sidebar_first]     = Sidebar first

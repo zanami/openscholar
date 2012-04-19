@@ -64,6 +64,12 @@ class vsite extends space_og {
     }
 
     if (parent::activate()) {
+      $router_item = menu_get_item();
+      //If the current menu item relies on the space then reset the cached access information
+      if($router_item['access_callback'] == 'spaces_menu_access'){
+      	$router_items = &drupal_static('menu_get_item');
+      	unset($router_items[$_GET['q']]);
+      }
       return TRUE;
     }
 
@@ -152,7 +158,7 @@ class vsite extends space_og {
     	switch ($features[$feature]){
     		//Private
     		case 2:
-    			if(!og_is_group_member($this->id, TRUE, $account->uid)){
+    			if(!og_is_member_group_member($this->type,$this->id, TRUE, $account->uid)){
     				$access = false;
     			}//Admin or group member?
     		break;

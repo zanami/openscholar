@@ -1,0 +1,19 @@
+<?php
+
+function cp_enable() {
+  
+  $t = get_t();
+  
+  // Create a custom menu, if menu module is enabled.
+  // @see devel_modules_installed()
+  if (module_exists('menu')) {
+    $menu = array(
+      'menu_name' => 'cp', 
+      'title' => $t('Control Panel'), 
+      'description' => $t('Administration links') 
+    );
+    menu_save($menu);
+  }
+}
+
+
