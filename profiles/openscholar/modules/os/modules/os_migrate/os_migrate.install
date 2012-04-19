@@ -28,3 +28,58 @@ function os_migrate_install() {
     }
   }    
 }
+
+
+/**
+ * Implementation of hook_schema().
+ */
+function os_migrate_schema() {
+  //some migrations will need temporary tables to stash data that's between formats.  track them here.
+  $schema['os_migrate_special_tables'] = array(
+    'description' => 'List special case tables that have been migrated',
+    'fields' => array(
+      'name' => array(
+        'description' => 'Name of this special case',
+        'type' => 'varchar',
+        'length' => 255,
+        // Primary keys are implicitly not null.
+        'not null' => TRUE,
+        'unique' => TUE,
+      ),
+      'src' => array(
+        'description' => 'Legacy database table',
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+      'dst' => array(
+        'description' => 'New table for storing temp data',
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+    ),
+    'primary key' => array('name'),
+  );
+  
+  //store vid/delta/inline html os_migrate_body_inline_objects
+  $schema['os_migrate_body_inline_objects'] = array(
+    'description' => 'Temp table for migrating node bodies.  Holds different inline html values, associates with vid.',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary ID',  
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Node: Revision ID',
+      ),
+      'html' => array(
+        'type' => 'text',
+        'description' => 'HTML representation of embedded object',
+      )
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;   
+}
