@@ -1,0 +1,6 @@
+<?php
+function os_wysiwyg_install() {
+  $types = media_variable_get('wysiwyg_allowed_types');
+  $types[] = 'html';
+  media_variable_set('wysiwyg_allowed_types', $types);
+}
