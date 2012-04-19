@@ -5,7 +5,7 @@ include_once('os.features.inc');
  * return the bundles that should be treated as group content
  */
 function os_get_bundles($space_type = 'og'){
-	$features = spaces_features($space_type);
+  $features = spaces_features($space_type);
   $node_bundles = array();
   foreach ($features as $name => $feature) {
     $feature_components = $feature->info['features'];

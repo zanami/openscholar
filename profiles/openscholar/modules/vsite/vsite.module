@@ -1,5 +1,5 @@
 <?php
-include_once('vsite.features.inc');
+include_once ('vsite.features.inc');
 
 /**
  * Public Functions
@@ -15,63 +15,50 @@ include_once('vsite.features.inc');
  * @param $presets
  */
 function vsite_spaces_presets_alter(&$presets){
-	
-	//Alter the preset to include the pathauto settings for nodes prefixed with the purl path
-	$pathauto_settings = _vsite_get_pathauto_settings();
-	foreach ($presets as $name => &$preset){
-		if(substr($name,0,3) == "os_"){
-			$preset->value['variable'] = array_merge($pathauto_settings,$preset->value['variable']);
-		}
-	}
-}
-
-/**
- * @todo MOVE INTO INC FILE
- */
-function _vsite_get_pathauto_settings(){
-	$pathauto_settings = array();
-	
-	$bundles = os_get_bundles();
-	$entity = 'node';
-  foreach ($bundles as $bundle) {
-    $pattern = pathauto_pattern_load_by_entity($entity,$bundle);
-    $pathauto_settings["pathauto_{$entity}_{$bundle}_pattern"] = "[spaces_og]/".$pattern;
-  }
+  ctools_include('path', 'vsite');
   
-  return $pathauto_settings;
+  //Alter the preset to include the pathauto settings for nodes prefixed with the purl path
+  $pathauto_settings = _vsite_get_pathauto_settings();
+  foreach ( $presets as $name => &$preset ) {
+    if (substr($name, 0, 3) == "os_") {
+      $preset->value['variable'] = array_merge($pathauto_settings, $preset->value['variable']);
+    }
+  }
 }
 
 /**
  * Alter information returned from module/theme info files
  */
-function vsite_system_info_alter(&$info, $file, $type) {
-	
-	//Only alter the vsite info file
-	if($type != 'module' || $file->name != 'vsite') return;
+function vsite_system_info_alter(&$info, $file, $type){
   
-	// Add the feature settings for the dynamically managed og reference fields
-	if(!is_array($info['features']['field'])) $info['features']['field'] = array();
-	
-	include_once('vsite.features.field.inc');
-	foreach (vsite_get_group_fields() as $field => $definition) {
-		if(!in_array($field,$info['features']['field'])){
+  //Only alter the vsite info file
+  if ($type != 'module' || $file->name != 'vsite')
+    return;
+    
+  // Add the feature settings for the dynamically managed og reference fields
+  if (! is_array($info['features']['field']))
+    $info['features']['field'] = array();
+  
+  include_once ('vsite.features.field.inc');
+  foreach ( vsite_get_group_fields() as $field => $definition ) {
+    if (! in_array($field, $info['features']['field'])) {
       $info['features']['field'][] = $field;
-		}
-	}
-  
+    }
+  }
+
 }
 
 /**
  * Implementation of hook spaces_plugins
  */
 function vsite_spaces_plugins(){
-	
+  
   $plugins = array();
   $plugins['vsite'] = array(
-    'handler' => array(
-      'class' => 'vsite',
-      'parent' => 'space_og'
-    )
+      'handler' => array(
+          'class' => 'vsite',
+          'parent' => 'space_og'
+      )
   );
   return $plugins;
 }
@@ -81,8 +68,8 @@ function vsite_spaces_plugins(){
  * Alter the registry to tell spaces_og groups to use the vsite plugin by default
  */
 function vsite_spaces_registry_alter(&$registry){
-
-	// use the vsite plugin by default
+  
+  // use the vsite plugin by default
   if (isset($registry['types']['og'])) {
     $registry['types']['og']['plugin'] = 'vsite';
   }

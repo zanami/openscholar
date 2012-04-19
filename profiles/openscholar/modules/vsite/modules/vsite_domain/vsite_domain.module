@@ -14,17 +14,17 @@ define('PURL_VSITE_PATH', 'vsite_path');
 /**
  * Implements hook_enable().
  */
-function vsite_domain_enable() {
-
+function vsite_domain_enable(){
+  
   // Configure purl, grab OG method, replace path with vsite_path
   $purl_types = variable_get('purl_types', array());
   if (variable_get('purl_method_spaces_og', FALSE)) {
     //Remove standard path processing
-  	if(isset($purl_types['path'])){
-    	unset($purl_types['path']);
+    if (isset($purl_types['path'])) {
+      unset($purl_types['path']);
     }
     //Remove standard domain processing
-    if(isset($purl_types['domain'])){
+    if (isset($purl_types['domain'])) {
       unset($purl_types['domain']);
     }
     
@@ -37,20 +37,19 @@ function vsite_domain_enable() {
     variable_set('purl_method_vsite_domain', 'vsite_domain');
   }
   
-  if(!variable_get('purl_base_domain',false)){
-    variable_set('purl_base_domain','http://'.str_replace('http://','',$_SERVER['HTTP_HOST']));
+  if (! variable_get('purl_base_domain', false)) {
+    variable_set('purl_base_domain', 'http://' . str_replace('http://', '', $_SERVER['HTTP_HOST']));
   }
   
-
   // Weight vsite_domain to be after Spaces OG
-  $weight = db_query("SELECT weight FROM {system} WHERE type = :type AND name = :name", array(':type' => 'module', ':name' => 'spaces_og'))->fetchField();
+  $weight = db_query("SELECT weight FROM {system} WHERE type = :type AND name = :name", array(
+      ':type' => 'module',
+      ':name' => 'spaces_og'
+  ))->fetchField();
   
-  db_update('system')
-  ->fields(array(
-    'weight' => ($weight + 1),
-  ))
-  ->condition('name', 'vsite_domain')
-  ->execute();
+  db_update('system')->fields(array(
+      'weight' => ($weight + 1)
+  ))->condition('name', 'vsite_domain')->execute();
 }
 
 /**
@@ -58,7 +57,7 @@ function vsite_domain_enable() {
  */
 function vsite_domain_perm(){
   return array(
-    "change vsite domain",
+      "change vsite domain"
   );
 }
 
@@ -66,23 +65,25 @@ function vsite_domain_perm(){
  * Implementation of hook_purl_provider().
  * This provides the domain provider for vsite's
  */
-function vsite_domain_purl_provider() {
+function vsite_domain_purl_provider(){
   $items = array();
   $items['vsite_domain'] = array(
-    'name' => 'VSite Domain Provider',
-    'description' => t('Sets the spaces context for a domain match.'),
-    'callback' => 'vsite_domain_apply_context',
-    'callback arguments' => array('og'),
-    'example' => 'my-space',
+      'name' => 'VSite Domain Provider',
+      'description' => t('Sets the spaces context for a domain match.'),
+      'callback' => 'vsite_domain_apply_context',
+      'callback arguments' => array(
+          'og'
+      ),
+      'example' => 'my-space'
   );
-
+  
   return $items;
 }
 
 /**
  * Callback to activate the current space, using a domain provider
  */
-function vsite_domain_apply_context($space_type, $sid) {
+function vsite_domain_apply_context($space_type, $sid){
   static $once;
   if (empty($once)) {
     spaces_init_space($space_type, $sid);
@@ -95,27 +96,27 @@ function vsite_domain_apply_context($space_type, $sid) {
 /**
  * Context prefix provider callback.
  */
-function vsite_domain_purl_processor() {
+function vsite_domain_purl_processor(){
   $info = array();
   $info['vsite_domain'] = array(
-    'title' => t('Scholar Vsite Domain Modifier'),
-    'handler' => array(
-      'class' => 'purl_vsite_domain',
-      'file' => 'purl_vsite_domain.inc',
-      'path' => drupal_get_path('module', 'vsite_domain') .'/plugins',
-      'parent' => 'domain',
-    ),
+      'title' => t('Scholar Vsite Domain Modifier'),
+      'handler' => array(
+          'class' => 'purl_vsite_domain',
+          'file' => 'purl_vsite_domain.inc',
+          'path' => drupal_get_path('module', 'vsite_domain') . '/plugins',
+          'parent' => 'domain'
+      )
   );
   $info['vsite_path'] = array(
-    'title' => t('Scholar Vsite Path Modifier'),
-    'handler' => array(
-      'class' => 'purl_vsite_path',
-      'file' => 'purl_vsite_path.inc',
-      'path' => drupal_get_path('module', 'vsite_domain') .'/plugins',
-      'parent' => 'path',
-    ),
+      'title' => t('Scholar Vsite Path Modifier'),
+      'handler' => array(
+          'class' => 'purl_vsite_path',
+          'file' => 'purl_vsite_path.inc',
+          'path' => drupal_get_path('module', 'vsite_domain') . '/plugins',
+          'parent' => 'path'
+      )
   );
-
+  
   return $info;
 }
 
@@ -164,6 +165,7 @@ function vsite_domain_purl_processor() {
 //  return $a_settings;
 //}
 
+
 ///**
 // * Validate function for handling the vsite_domain generic setting
 // * @param $space vsite
@@ -175,6 +177,7 @@ function vsite_domain_purl_processor() {
 //
 //  return TRUE;
 //}
+
 
 /**
  * Submit function for handdling the vsite_domain generic setting
@@ -213,7 +216,6 @@ function vsite_domain_purl_processor() {
 //}
 
 
-
 /**
  * PRIVATE FUNCTIONALITY
  */
@@ -221,12 +223,14 @@ function vsite_domain_purl_processor() {
 /**
  * Maintain a array of purl's that have been processed, only one vsite_provider should adjust each path
  */
-function _vsite_domain_processed_purls($s_purl = FALSE) {
+function _vsite_domain_processed_purls($s_purl = FALSE){
   static $processed;
-
-  if (!isset($processed)) $processed = array();
-
-  if (strlen($s_purl)) $processed[$s_purl] = $s_purl;
-
+  
+  if (! isset($processed))
+    $processed = array();
+  
+  if (strlen($s_purl))
+    $processed[$s_purl] = $s_purl;
+  
   return $processed;
 }
