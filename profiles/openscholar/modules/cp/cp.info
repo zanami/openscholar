@@ -1,0 +1,4 @@
+name = "Control panel"
+description = "Admin interface mainly for OpnenScholar installs"
+core = 7.x
+
