@@ -13,9 +13,10 @@ background: url('../images/bodyBg.gif') no-repeat fixed center top #e3e3e3;
 margin: 0 auto 0 auto;
 }
  
-#columns {background: #fff; height:100%;}
+#columns {background:#fff;height:100%;}
 
-.region-sidebar-second {background:#eef2f2;height:100%;}
+
+.sidebar {background:#eef2f2;min-height:100%;}
 
 /* TYPOGRAPHY*/ 
  
