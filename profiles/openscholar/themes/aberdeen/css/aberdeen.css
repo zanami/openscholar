@@ -12,12 +12,10 @@ background: url('../images/bodyBg.gif') no-repeat fixed center top #e3e3e3;
 #page {
   width: 980px;
 margin: 0 auto 0 auto;
-height:100%;
 }
  
 #columns {background:#fff;height:100%;}
 
-#main-content {height:100px;}
 .sidebar {background:#eef2f2;min-height:100%;}
 
 /* TYPOGRAPHY*/ 
