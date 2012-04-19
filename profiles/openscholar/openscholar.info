@@ -69,14 +69,14 @@ dependencies[] = os_boxes
 dependencies[] = os_wysiwyg
 
 ; vsite
-dependencies[] = entityreference
-dependencies[] = purl
-dependencies[] = spaces
-dependencies[] = spaces_og
-dependencies[] = og_views
-dependencies[] = vsite
-dependencies[] = vsite_domain
-dependencies[] = og
+;dependencies[] = entityreference
+;dependencies[] = purl
+;dependencies[] = spaces
+;dependencies[] = spaces_og
+;dependencies[] = og_views
+;dependencies[] = vsite
+;dependencies[] = vsite_domain
+;dependencies[] = og
 
 ; Features
 dependencies[] = os_front
@@ -86,4 +86,7 @@ dependencies[] = os_links
 ; other
 dependencies[] = diff
 dependencies[] = context_ui
+
+files[] = openscholar.profile
+
 
