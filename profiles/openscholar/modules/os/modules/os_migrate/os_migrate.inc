@@ -156,22 +156,159 @@ abstract class OSMigration extends Migration {
     }
   }
 
-  //get all inline embeds.  return array of them.
-  function os_migrate_inline_oembed($vid) {
-    $query = self::d6_db_select('content_field_os_inline_oembed', 'oe')
-      ->fields('oe', array('vid', 'nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes'))
-      ->condition('oe.vid', $vid, '=')
-      ->isNotNull('oe.field_os_inline_oembed_url');
-    $result = $query->execute();
 
-    $embeds = array();
-    foreach ($result as $row) {
-      $embeds[$row->delta] = $row;
+    
+  //get the fids/urls/inline body for this node.
+  function os_migrate_list_inline_files($nid) {
+  
+    $query = $this->d6_db_select('node', 'n')
+      ->condition('n.nid', $nid, '=');
+    $query->join('content_field_os_inline_files', 'cff', 'n.nid = cff.nid');
+    $query->fields('cff', array('field_os_inline_files_fid'));
+    $query->join('content_field_os_inline_image', 'cfi', 'n.nid = cfi.nid');
+    $query->fields('cfi', array('field_os_inline_image_fid'));
+    $query->join('content_field_os_inline_oembed', 'cfu', 'n.nid = cfu.nid');
+    $query->fields('cfu', array('field_os_inline_oembed_url'));
+    $query->join('node_revisions', 'nr', 'n.nid = nr.nid');
+    
+    $query->condition(db_or()
+      ->isNotNull('cff.field_os_inline_files_fid')
+      ->isNotNull('cfi.field_os_inline_image_fid')
+      ->isNotNull('cfu.field_os_inline_oembed_url')
+      ->condition(db_or()
+        ->condition('body', '%<iframe%', 'LIKE')
+        ->condition('body', '%<object%', 'LIKE')
+        ));
+    
+    $files = array();
+    foreach ($query->execute() as $row) {
+      $arr = array_filter((array)$row);
+      if (!count($arr)) { $arr['body'] = TRUE; }      
+      $files[] = $arr;
     }
-
-    return $embeds;
+    
+    return $files;
+  }    
+  
+  function os_migrate_update_body_files(&$row, $fid) {
+    
   }
+  
+  function os_migrate_update_body_url(&$row, $fid) {
+  
+  }
+  
+  function os_migrate_update_body_body(&$row, $fid) {}
+  
+  //update body of $row to use $fid's new file entity
+  function os_migrate_update_body_image(&$row, $fid) {
+    $query = db_select('migrate_map_imageinlineos', 'm')
+      ->fields('m', array('destid1'))
+      ->condition('sourceid1', $fid, '=');
+    $entity_id = $query->execute()->fetchAssoc();
+    $entity = file_load($entity_id['destid1']);
+    
+    $uri = str_replace('public://', '', $entity->uri);
+    $a = explode('/', $uri);
+    $a = array_slice($a, 3);
+    $uri = implode('/', $a);
+    
+    $dom = filter_dom_load($row->body);
+    $images = $dom->getElementsByTagName('img');
+    $update = FALSE;
+    for ($i=0, $len=$images->length; $i < $len; $i++) {
+      $img = $images->item($i); 
+      if (isset($img) && strpos($img->getAttribute('src'), $uri)) {
+        $tag = array(
+          'type' => 'media',
+          'view_mode' => 'media_original',
+          'fid' => $entity->fid,
+          'attributes' => array(
+            'class' => 'media-image',
+            'typeof' => 'foaf:Image',
+          ),
+        );
+        $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
 
+        // replace the iframe with our new tag
+        $img->parentNode->replaceChild($text, $img);
+        $update = TRUE;
+      }
+    }
+    
+    if ($update) {
+      $body = $dom->saveHTML();
+      $body = preg_replace('/<!DOCTYPE.*?>/', '', $body); //remove doctype
+      $body = preg_replace('/.*\<body\>/m', '', $body); //remove html, body
+      $body = preg_replace('/<\/body>.*/m', '', $body); //remove closing tags
+      $row->body = $body;
+    }
+    
+  }
+   /**
+   * given a row (mainly nid and body) get new files.
+   * inlinefiles -> fid  => migmap_fileinlineos  -> dest fid
+   * inline_image -> fid => migmap_imageinlineos -> dest fid
+   * 
+   * inline_oembed -> nid => migmap_embedinlineos -> dest fid
+   */
+  //if this row has inline embeds, update them to refer to new file entities
+  function os_migrate_inline_update(&$current_row) {
+    $files = $this->os_migrate_list_inline_files($current_row->nid);
+    if (!count($files)) {
+      return;
+    }
+    
+    $file_funcs = array(
+      'field_os_inline_image_fid' => 'image',
+      'field_os_inline_files_fid' => 'files',
+    	'field_os_inline_oembed_url' => 'url',
+    	'body' => 'body',
+    );
+    
+    foreach ($files as $file) {
+      foreach ($file as $src => $fid) {
+        $func = 'os_migrate_update_body_' . $file_funcs[$src];
+        $this->$func($current_row, $fid);
+      }
+    }
+    return;
+    
+  }
+  
+  //update node body to use new file
+/*  function os_migrate_update_body_text(stdClass &$file_entity, $body, $desc) {
+    $dom = filter_dom_load($body);
+    $uri = str_replace('public://', '', $file_entity->uri);
+    
+    $anchors = $dom->getElementsByTagName('a');
+    for ($i=0, $len=$anchors->length; $i<$len; $i++) {
+      $a = $anchors->item($i);
+      $href = $a->getAttribute('href');
+      if (strpos($href, $uri)) {
+        //replace the anchor
+        $tag = array(
+          'type' => 'media',
+          'view_mode' => 'media_original',
+          'fid' => $file_entity->fid,
+          'attributes' => array(
+            'class' => 'media-image',
+            'typeof' => 'foaf:Image',
+          ),
+        );
+        $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
+
+        // replace the iframe with our new tag
+        $a->parentNode->replaceChild($text, $a);
+        break;
+      }
+    }
+    return $dom->saveHTML();
+  }
+  */
+  
+
+  
   function os_migrate_wf_to_media($row) {
     $b = $row->body;
     // things I need to find:
@@ -384,15 +521,7 @@ abstract class OSMigration extends Migration {
     $row->body = $body;
   }
 
-  private function url_is_local($url) {
-    global $base_url;
-    return (strpos($url, $base_url) !== FALSE);
-  }
 
-  private function url_is_file($url) {
-    $frags = explode('.', $url);
-    return count($frags) > 1;
-  }
 }
 
 
