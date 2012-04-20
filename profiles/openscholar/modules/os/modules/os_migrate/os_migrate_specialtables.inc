@@ -8,6 +8,7 @@ class SpecialTablesOSMigration extends OSMigration {
   public function __construct() {
     parent::__construct();
     $this->description = t('Special Tables');
+    $this->dependencies = array();
     
     $csv_columns = array(
       array('name', 'Name of this special case'),
@@ -67,6 +68,7 @@ class SpecialTablesOSMigration extends OSMigration {
   }
   
   //delete all the special temp tables during rollback
+  //yes this breaks the ability to control how many items roll back at a time.  
   public function preRollback(){
     $query = db_select('os_migrate_special_tables', 't')
       ->fields('t', array('dst'));

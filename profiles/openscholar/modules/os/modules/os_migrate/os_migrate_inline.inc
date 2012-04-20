@@ -117,7 +117,8 @@ class EmbedInlineOSMigration extends OSMigration {
   public function __construct() {
     parent::__construct();
     $this->description = t('Inline Embeds');
-    $this->dependencies = array();
+   // $this->dependencies = array('ImageInlineOSMigration', 'FileInlineOSMigration'); 
+    
     $add_fields = array('uri' => 'Unique Resource Identifier.', 'filemime' => 'File\'s mime type', 'filename' => 'File name');
     $this->source = new MigrateSourceSQL($this->query(), $add_fields , NULL,  array('map_joinable' => FALSE));
     $this->map = new MigrateSQLMap($this->machineName,
@@ -158,5 +159,87 @@ class EmbedInlineOSMigration extends OSMigration {
   public function prepare($entity, $row) { 
     $entity->uri = $row->uri;//preg_replace('/https?:\/\//', 'oembed://', $row->field_os_inline_oembed_url);
     
+  }
+}
+
+//import from node bodies too.
+//nids are in the sql map.  during node import, check htmlinline's migration table to see if there are
+//any previously unmapped files that are now available for use.
+class HTMLInlineOSMigration extends OSMigration {
+  public function __construct() {
+    parent::__construct();
+    $this->description = t('Inline HTML');
+    $this->dependencies = array('SpecialTablesOS');
+    
+    $add_fields = array('uri' => 'Unique Resource Identifier.', 'uid' => 'User ID', 
+    										'timestamp' => 'Node creation time', 'status' => 'Published status',
+                        'filename' => 'Name of file', 'filemime' => 'Application type of file');
+    $this->source = new MigrateSourceSQL($this->query(), $add_fields , NULL,  array('map_joinable' => FALSE));
+    $this->map = new MigrateSQLMap($this->machineName,
+      array('id' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE,)),
+      MigrateDestinationFile::getKeySchema());
+    $this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
+      
+    
+    // Field mappings //
+//    $this->addSimpleMappings(array('uid', 'filename', 'filemime', 'status', 'timestamp', 'uri'));
+    $this->addSimpleMappings(array('uid', 'timestamp', 'uri', 'filename', 'filemime', 'status'));
+    
+    //ignored
+    $this->addUnmigratedDestinations(array('contents'), t('DNM')); //only used in copying blobs to files
+    $this->addUnmigratedSources(array('vid', 'html'), t('DNM'));
+  }
+  
+  public function query() {
+    $query = db_select('os_migrate_body_inline_objects', 'o')
+      ->fields('o', array('id', 'vid', 'html'));  
+    return $query;
+  }
+  
+  public function prepareRow($row) {
+    $dom = filter_dom_load($row->html);
+  
+    //iframe
+    if ($iframe = $dom->getElementsByTagName('iframe')->item(0)) {
+      $row->uri = $iframe->getAttribute('src');
+    } elseif ($object = $dom->getElementsByTagName('object')->item(0)) {
+      //object
+      if ($embed = $dom->getElementsByTagName('embed')->item(0)) {
+        $row->uri = $embed->getAttribute('src');
+      } else {
+        $row->uri = $object->getAttribute('data'); //flickr
+        TRUE;
+      }
+    }
+
+    //object exists, but refers to nothing. drop it.
+    if (!strlen($row->uri)) {
+      return FALSE;
+    }
+    
+    //prep the row
+    $row->uri = preg_replace('/https?:\/\//', 'oembed://', $row->uri);
+    
+    //get additional data from d6
+    $query = parent::d6_db_select('node_revisions', 'nr')
+      ->fields('nr', array('uid'))
+      ->condition('nr.vid', $row->vid, '=');
+    $query->join('node', 'n', 'n.nid = nr.nid');
+    $query->fields('n', array('status'));
+    $node = $query->execute()->fetchAssoc();
+      
+    $row->status = $node->status;
+    $row->uid = $node->uid;
+    
+    //let media/oembed fetch file data
+    $f = file_uri_to_object($row->uri);
+    $row->filename = $f->filename;
+    $row->filemime = $f->filemime;
+
+    //$row->path;
+  }
+  
+  public function prepare($entity, $row) {
+    $entity->uri = $row->uri;
   }
 }
