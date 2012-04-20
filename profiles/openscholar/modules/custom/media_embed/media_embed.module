@@ -184,6 +184,9 @@ function media_embed_check_src($html) {
         elseif ($n->hasAttribute('data')) {
           $urls[] = $n->getAttribute('data');
         }
+        elseif ($n->hasAttribute('name') && $n->hasAttribute('value') && $n->getAttribute('name') == 'movie') {
+          $urls[] = $n->getAttribute('value');
+        }
       }
     }
 
