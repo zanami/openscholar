@@ -2,11 +2,27 @@
 include_once('os.features.inc');
 
 /**
+ * Implementation of hook menu
+ */
+function os_menu(){
+  $items = array();
+
+  $items['home'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => '',
+    'page callback' => 'os_frontpage',
+    'file' => 'os.pages.inc',
+    'access arguments' => array('access content'),
+    'weight' => 0,
+  );
+}
+
+/**
  * return the bundles that should be treated as group content
  */
 function os_get_bundles($space_type = 'og'){
   $features = spaces_features($space_type);
-  $node_bundles = array();
+  $node_bundles = array('page');
   foreach ($features as $name => $feature) {
     $feature_components = $feature->info['features'];
     if(isset($feature_components['node'])){

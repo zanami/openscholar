@@ -7,13 +7,13 @@
 /**
  * Implements hook_context_default_contexts().
  */
-function os_front_context_default_contexts() {
+function os_context_default_contexts() {
   $export = array();
 
   $context = new stdClass;
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
-  $context->name = 'openscholar-feature-front';
+  $context->name = 'os_front';
   $context->description = 'Front Page';
   $context->tag = 'Feature';
   $context->conditions = array(
@@ -39,9 +39,8 @@ function os_front_context_default_contexts() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('Feature');
   t('Front Page');
-  $export['openscholar-feature-front'] = $context;
+  $export['os_front'] = $context;
 
   return $export;
 }
