@@ -5002,7 +5002,7 @@ function _drupal_bootstrap_full() {
     ini_set('log_errors', 1);
     ini_set('error_log', 'public://error.log');
   }
-
+  
   // Initialize $_GET['q'] prior to invoking hook_init().
   drupal_path_initialize();
 

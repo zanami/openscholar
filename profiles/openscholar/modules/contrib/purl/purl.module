@@ -5,7 +5,9 @@
  * This hook is declared simply to ensure that PURL is loaded early enough for
  * url_alter detect its presence. (http://drupal.org/node/729862).
  */
-function purl_boot() { }
+function purl_boot() {
+  _purl_cache_q($_GET['q']);
+}
 
 /**
  * Implements hook_theme().
@@ -130,9 +132,10 @@ function purl_init() {
     // Initialize the PURL path modification stack.
     purl_inited(TRUE);
 
-    // TODO - is this still needed?? (Does language_init still modify $_GET['q'])
-    // $_GET['q'] = $q = purl_language_strip($_REQUEST['q']);
-    $_GET['q'] = $q = $_GET['q'];
+    /*
+     * URL Inbound alter still alters $_GET['q'] for language and aliases, it needs restoring
+     */
+    $_GET['q'] = $q = _purl_cache_q();
     purl_get_normal_path($q, TRUE);
     drupal_path_initialize();
   }
@@ -917,6 +920,23 @@ function _purl_skip($e, $o) {
     return in_array($e->provider, $o['purl']['remove']);
   }
   return false;
+}
+
+/**
+ * Hold a version of the querystring to act on from before inbound processing
+ *
+ * @param $q
+ *
+ * @return string the original querystring
+ */
+function _purl_cache_q($q = false){
+	static $querystring;
+	
+	if($q){
+		$querystring = $q;
+	}
+	
+	return $querystring;
 }
 
 /**
