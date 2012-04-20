@@ -44,7 +44,7 @@ function os_migrate_schema() {
         'length' => 255,
         // Primary keys are implicitly not null.
         'not null' => TRUE,
-        'unique' => TUE,
+        'unique' => TRUE,
       ),
       'src' => array(
         'description' => 'Legacy database table',

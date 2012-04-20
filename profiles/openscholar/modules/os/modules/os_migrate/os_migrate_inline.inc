@@ -228,8 +228,8 @@ class HTMLInlineOSMigration extends OSMigration {
     $query->fields('n', array('status'));
     $node = $query->execute()->fetchAssoc();
       
-    $row->status = $node->status;
-    $row->uid = $node->uid;
+    $row->status = $node['status'];
+    $row->uid = $node['uid'];
     
     //let media/oembed fetch file data
     $f = file_uri_to_object($row->uri);

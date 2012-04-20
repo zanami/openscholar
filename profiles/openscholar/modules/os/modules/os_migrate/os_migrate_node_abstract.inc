@@ -23,11 +23,12 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->source = $this->source($source_content_type); //condtion type?
       $this->destination = $this->destination($destination_bundle); 
       $this->map = $this->map($source_content_type);
-      $this->dependencies = array('UsersOS'); //og when that's done
+     // $this->dependencies = array('UsersOS', 'EmbedInlineOSMigration', 'ImageInlineOSMigration', 'FileInlineOSMigration'); //og when that's done
       
       /* mappings */
-      $this->addSimpleMappings(array('uid','created','changed','status','promote','sticky','language','comment',
+      $this->addSimpleMappings(array('created','changed','status','promote','sticky','language','comment',
                                      'title', 'tnid'));
+      $this->addFieldMapping('uid')->defaultValue(1); //make all nodes admin's by default for testing
       $this->addFieldMapping('nid', 'nid');
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
       $this->addFieldMapping('revision_uid', 'nr_uid');
@@ -147,15 +148,18 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     // file upload fields aren't in current page type.  
     
     //get os inline oembeds
-    $current_row->os_inline_oembed = parent::os_migrate_inline_oembed($current_row->vid);
+   // $current_row->os_inline_oembed = parent::os_migrate_inline_oembed($current_row->vid);
+    
+    //adjust the body to use new fids for inline objects
+    parent::os_migrate_inline_update($current_row);
   }
   
   //prepare views the row after fields have been built and attached to entity but before entity is in db.  not using it yet, just here for debugging.
   //matt's wysiwyg processing shenaigans will go here
-  function prepare($entity, $row) {
+ /* function prepare($entity, $row) {
     if (count($row->os_inline_oembed)) {
       TRUE;
     }
-  }
+  }*/
   
 }
