@@ -11,6 +11,7 @@ dependencies[] = "og"
 dependencies[] = "os"
 dependencies[] = "strongarm"
 files[] = plugins/vsite.inc
+files[] = "tests/vsite_access.test"
 //The Group Ref Field for Page
 features[field][] = "node-page-og_group_ref"
 features[ctools][] = "strongarm:strongarm:1"
