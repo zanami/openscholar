@@ -192,6 +192,36 @@ abstract class OSMigration extends Migration {
   
   function os_migrate_update_body_files(&$row, $fid) {
     //TODO
+    $query = db_select('migrate_map_fileinlineos', 'm') 
+      ->fields('m', array('destid1'))
+      ->condition('sourceid1', $fid, '=')
+      ->isNotNull(('destid1'));
+    $result = $query->execute();
+    $file = $result->fetchAssoc();
+    if (!$file) {
+      return; //files that didn't copy block this. 
+    }
+    $entity = file_load($file['destid1']);
+    $uri = explode('/',$entity->uri);
+    $uri = array_slice($uri, 3);
+    $uri = implode('/', $uri);
+      
+    $dom = filter_dom_load($row->body);
+    $links = $dom->getElementsByTagName('a');
+    $update = FALSE;
+    for ($i=0,$len=$links->length; $i<$len; $i++) {
+      $link = $links->item($i);
+      if ($link && strpos($link->getAttribute('href'), $uri)) {
+        $update = TRUE;
+        $tag = $this->_os_migrate_inline_tag('file', $entity->fid, $link);
+        $text = $dom->createTextNode($tag);
+        $link->parentNode->replaceChild($text, $link);
+      }
+    }
+    
+    if ($update) {
+      $row->body = $this->_os_migrate_update_body_clean($dom->saveHTML());
+    }
   }
   
   function os_migrate_update_body_url(&$row, $url) {
@@ -313,7 +343,8 @@ abstract class OSMigration extends Migration {
   function os_migrate_update_body_image(&$row, $fid) {
     $query = db_select('migrate_map_imageinlineos', 'm')
       ->fields('m', array('destid1'))
-      ->condition('sourceid1', $fid, '=');
+      ->condition('sourceid1', $fid, '=')
+      ->isNotNull(('destid1'));
     $entity_id = $query->execute()->fetchAssoc();
     $entity = file_load($entity_id['destid1']);
     
