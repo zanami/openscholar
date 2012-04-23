@@ -158,8 +158,13 @@ abstract class OSMigration extends Migration {
 
 
     
-  //get the fids/urls/inline body for this node.
-  function os_migrate_list_inline_files($nid) {
+    /**
+     * @function os_migrate_list_inline_files
+     * 
+     * Gets all the inline files associated with a nid.  Also checks if node bodies
+     * contain inline objects that may not be in inline table
+     **/
+    function os_migrate_list_inline_files($nid) {
   
     $query = $this->d6_db_select('node', 'n')
       ->condition('n.nid', $nid, '=');
@@ -190,8 +195,13 @@ abstract class OSMigration extends Migration {
     return $files;
   }    
   
+  /**
+   * @function os_migrate_update_body_files(&$row, $fid)
+   * 
+   * Given a node's row and the fid of an inline file in that node, update the body text to 
+   * refer to the new file entity
+   **/
   function os_migrate_update_body_files(&$row, $fid) {
-    //TODO
     $query = db_select('migrate_map_fileinlineos', 'm') 
       ->fields('m', array('destid1'))
       ->condition('sourceid1', $fid, '=')
@@ -199,8 +209,9 @@ abstract class OSMigration extends Migration {
     $result = $query->execute();
     $file = $result->fetchAssoc();
     if (!$file) {
-      return; //files that didn't copy block this. 
+      return; 
     }
+    
     $entity = file_load($file['destid1']);
     $uri = explode('/',$entity->uri);
     $uri = array_slice($uri, 3);
@@ -224,6 +235,12 @@ abstract class OSMigration extends Migration {
     }
   }
   
+  /**
+   * @function os_migrate_update_body_url(&$row, $url)
+   * 
+   * Given a node's row and the url of an inline link in that node, update the body text to 
+   * refer to the new file entity
+   **/
   function os_migrate_update_body_url(&$row, $url) {
     $query = db_select('migrate_map_embedinlineos', 'm')
       ->fields('m', array('destid1'))
@@ -263,7 +280,12 @@ abstract class OSMigration extends Migration {
     }
   }
   
-  //match current body with files imported from body text
+  /**
+   * @function os_migrate_update_body_body(&$row, $fid)
+   * 
+   * Given a node's row and the fid of a file extracted from the body of the node, update the body text to 
+   * refer to the new file entity
+   **/
   function os_migrate_update_body_body(&$row, $fid) {
     $query = db_select('os_migrate_body_inline_objects', 'o')
       ->fields('o', array('html'))
@@ -314,7 +336,7 @@ abstract class OSMigration extends Migration {
           //data objects - currently untested.
           if ($target_data == $src) {
             $update = TRUE;
-            $tag = $this->_os_migrate_inline_tag('object-data', $data['destid1'], &$object);
+            $tag = $this->_os_migrate_inline_tag('object-data', $data['destid1'], $object);
             $text = $dom->createTextNode($tag);
             $object->parentNode->replaceChild($text, $object);
             
@@ -323,7 +345,7 @@ abstract class OSMigration extends Migration {
             if ($target_embed_src == $embed->item(0)->getAttribute('src')) {
               $update = TRUE;
               //can't convince wysiwyg to take these strings.  lets ignore that for now and update tag later.
-              $tag = $this->_os_migrate_inline_tag('object-embed', $data['destid1'], &$object);
+              $tag = $this->_os_migrate_inline_tag('object-embed', $data['destid1'], $object);
               $text = $dom->createTextNode($tag);
               $object->parentNode->replaceChild($text, $object);
             }
@@ -339,7 +361,12 @@ abstract class OSMigration extends Migration {
     return;
   }
   
-  //update body of $row to use $fid's new file entity
+  /**
+   * @function os_migrate_update_body_image(&$row, $fid)
+   * 
+   * Given a node's row and the fid of an inline image in that node, update the body text to 
+   * refer to the new file entity
+   **/
   function os_migrate_update_body_image(&$row, $fid) {
     $query = db_select('migrate_map_imageinlineos', 'm')
       ->fields('m', array('destid1'))
@@ -359,40 +386,24 @@ abstract class OSMigration extends Migration {
     for ($i=0, $len=$images->length; $i < $len; $i++) {
       $img = $images->item($i); 
       if (isset($img) && strpos($img->getAttribute('src'), $uri)) {
-        $tag = array(
-          'type' => 'media',
-          'view_mode' => 'media_original',
-          'fid' => $entity->fid,
-          'attributes' => array(
-            'class' => 'media-image',
-            'typeof' => 'foaf:Image',
-          ),
-        );
+        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img);
         $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
-
-        // replace the iframe with our new tag
         $img->parentNode->replaceChild($text, $img);
         $update = TRUE;
       }
     }
     
     if ($update) {
-      $body = $dom->saveHTML();
-      $body = preg_replace('/<!DOCTYPE.*?>/', '', $body); //remove doctype
-      $body = preg_replace('/.*\<body\>/m', '', $body); //remove html, body
-      $body = preg_replace('/<\/body>.*/m', '', $body); //remove closing tags
-      $row->body = $body;
+      $row->body = $this->os_migrate_inline_update($row);
     }
     
   }
-   /**
-   * given a row (mainly nid and body) get new files.
-   * inlinefiles -> fid  => migmap_fileinlineos  -> dest fid
-   * inline_image -> fid => migmap_imageinlineos -> dest fid
+  
+  /**
+   * @function os_migrate_inline_update
    * 
-   * inline_oembed -> nid => migmap_embedinlineos -> dest fid
-   */
-  //if this row has inline embeds, update them to refer to new file entities
+   * Check node row for inline embeds.  If any exist update body to use new file entities.
+   **/
   function os_migrate_inline_update(&$current_row) {
     $files = $this->os_migrate_list_inline_files($current_row->nid);
     if (!count($files)) {
@@ -413,7 +424,6 @@ abstract class OSMigration extends Migration {
       }
     }
     return;
-    
   }
   
   //prepare the inline tag
@@ -438,252 +448,6 @@ abstract class OSMigration extends Migration {
     $body = preg_replace('/<\/body>.*/m', '', $body); //remove closing tags
     return $body;
   }
-  //update node body to use new file
-/*  function os_migrate_update_body_text(stdClass &$file_entity, $body, $desc) {
-    $dom = filter_dom_load($body);
-    $uri = str_replace('public://', '', $file_entity->uri);
-    
-    $anchors = $dom->getElementsByTagName('a');
-    for ($i=0, $len=$anchors->length; $i<$len; $i++) {
-      $a = $anchors->item($i);
-      $href = $a->getAttribute('href');
-      if (strpos($href, $uri)) {
-        //replace the anchor
-        $tag = array(
-          'type' => 'media',
-          'view_mode' => 'media_original',
-          'fid' => $file_entity->fid,
-          'attributes' => array(
-            'class' => 'media-image',
-            'typeof' => 'foaf:Image',
-          ),
-        );
-        $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
-
-        // replace the iframe with our new tag
-        $a->parentNode->replaceChild($text, $a);
-        break;
-      }
-    }
-    return $dom->saveHTML();
-  }
-  */
-  
-
-  
-  function os_migrate_wf_to_media($row) {
-    $b = $row->body;
-    // things I need to find:
-    // iframes              pasted iframes - go into media_embed
-    // object tags          old style oembeds - find the src. If it's external and not in media_embed's whitelist, go to oembed
-    // script tags
-    // images to local files  inline images - go to local file system
-    // links to local files   inline files - local file system
-    // [[wysiwyg_fields]] tags  new style oembeds - go into oembed
-    $media_embed = array();
-    $media_oembed = array();
-    $media_local = array();
-
-    // get a dom document
-    $dom = filter_dom_load($b);
-
-    // get the iframes
-    // all of these are pasted
-    $iframes = $dom->getElementsByTagName('iframe');
-    for ($i=0,$l=$iframes->length; $i<$l; $i++) {
-      $if = $iframes->item($i);
-      $media_embed[] = $if;
-    }
-
-    // get the objects
-    // these come from oembed pretty much exclusively
-    $objects = $dom->getElementsByTagName('object');
-    for ($i=0,$l=$objects->length; $i<$l; $i++) {
-      $media_oembed[] = $objects[$i];
-    }
-
-    $scripts = $dom->getElementsByTagName('script');
-    for ($i=0,$l=$scripts->length; $i<$l; $i++) {
-      $media_oembed[] = $scripts[$i];
-    }
-
-    $imgs = $dom->getElementsByTagName('img');
-    for ($i=0,$l=$imgs->length; $i<$l; $i++) {
-      $url = $imgs[$i]->getAttribute('src');
-      // check url to see if its to a local file
-      if ($this->url_is_local($url)) {
-        $media_local[] = $imgs[$i];
-      }
-    }
-
-    $links = $dom->getElementsByTagName('a');
-    for ($i=0,$l=$links->length; $i<$l; $i++) {
-      $url = $links[$i]->getAttribute('href');
-
-      // check if url is a file
-      if ($this->url_is_local($url) && $this->url_is_file($url)) {
-        $media_local[] = $links[$i];
-      }
-    }
-
-    // replace all the dom elements with media tags
-    foreach ($media_embed as $me) {
-      // save the html as an html file
-
-      // pretending its a form turns out to be the easiest way to create an entity from scratch
-      // assuming there's already a form.
-      // the form_state array is ugly but there's not much I can do about it
-      $form_state = array(
-        'submitted' => true,
-        'programmed' => true,
-        'input' => array(
-          'field_html_code' => array(
-            'und' => array(
-              array(
-                'value' => $dom->saveHTML($me),
-              )
-            ),
-          ),
-          'field_html_title' => array(
-            'und' => array(
-              array(
-                'value' => 'Imported iframe code',
-              )
-            )
-          ),
-        ),
-      );
-      $form = drupal_build_form('media_embed_add', $form_state);
-      // get the text to be inserted in the document
-      $file = file_uri_to_object($form_state['file']->uri);
-
-      // i can afford to be dumb about this
-      // because there is no configuration that needs doing here
-      // the only thing that changes between iframes is the fid
-      $tag = array(
-        'type' => 'media',
-        'view_mode' => 'media_original',
-        'fid' => $file->fid,
-        'attributes' => array(
-          'class' => 'media-image',
-          'typeof' => 'foaf:Image',
-        ),
-      );
-      $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
-
-      // replace the iframe with our new tag
-      $me->parentNode->replaceChild($text, $me);
-    }
-
-    // oembed tags into links
-    $form_state = array(
-        'submitted' => true,
-        'programmed' => true,
-        'input' => array(
-          'embed_code' => '',
-        ),
-      );
-    foreach ($media_oembed as $node) {
-      // get the url
-      $html = $dom->saveHTML($node);
-
-      foreach ($row->os_inline_oembed as $f) {
-        $url = $f['field_os_inline_oembed'];
-        if ($oembed = oembedcore_oembed_data($url) && $oembed->html == $html) {
-          // this is the one we want
-          $form_state['input']['embed_code'] = $url;
-          drupal_build_form('media_internet_add', $form_state);
-          $file = file_uri_to_object($form_state['file']->uri);
-
-          $tag = array(
-            'type' => 'media',
-            'view_mode' => 'media_large',
-            'fid' => $file->fid,
-            'attributes' => array(
-              'class' => 'media-image',
-              'typeof' => 'foaf:Image',
-            ),
-          );
-          $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
-
-          // replace the iframe with our new tag
-          $node->parentNode->replaceChild($text, $node);
-          break;
-        }
-      }
-    }
-
-    /** local files **/
-    foreach ($media_local as $node) {
-      $url = '';
-      if ($url = $node->getAttribute('href')) {}
-      elseif ($url = $node->getAttribute('src')) {}
-      else { continue; }  // no url, found
-
-      $file = file_uri_to_object($url, false);  // get a file from our old uri. this is a dumb function so this works
-      $destination = '/path/to/the/file';    // TODO: Fill placeholder
-      file_copy($file, $destination, false);    // copy the file
-      $file = file_uri_to_object($file->uri);  // get the new file object so we cna make a tag out of it
-
-      $tag = array(
-        'type' => 'media',
-        'view_mode' => $node->nodeName=='A'?'media_link':'media_large',
-        'fid' => $file->fid,
-        'attributes' => array(
-          'class' => 'media-image',
-          'typeof' => 'foaf:Image',
-        ),
-      );
-      $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
-
-      // replace the old html tag with our new markdownish one
-      $node->parentNode->replaceChild($text, $node);
-    }
-
-    // return the document to html
-    $body = $dom->saveHTML();
-
-    // run through the new html looking for wysiwyg_fields tags
-    // replace them with media tags
-
-    $pattern = '~\[wysiwyg_field wf_field="field_os_inline_oembed" wf_deltas="([,\d]+)" wf_formatter="([^"]+)" [^\]]*\]~';
-    $matches = array();
-    preg_match_all($pattern, $body, $matches, PREG_SET_ORDER);
-    foreach ($matches as $m) {
-      $deltas = explode(',', $m[1]);
-      $delta = $deltas[0];
-
-      if ($oembed = $row->os_inline_oembed[$delta]) {
-        $form_state = array(
-          'submitted' => true,
-          'programmed' => true,
-          'input' => array(
-            'embed_code' => $oembed['field_os_inline_oembed_url'],
-          ),
-        );
-        drupal_build_form('media_internet_add', $form_state);
-        $file = file_uri_to_object($form_state['file']->uri);
-
-        $tag = array(
-          'type' => 'media',
-          'view_mode' => 'media_large',  // do something with the formatter?
-          'fid' => $file->fid,
-          'attributes' => array(
-            'class' => 'media-image',
-            'typeof' => 'foaf:Image',
-          ),
-        );
-        $text = '[['.drupal_json_encode($tag).']]';
-
-        // replace the old tag with our new tag
-        str_replace($m[0], $text, $body);
-      }
-    }
-
-    $row->body = $body;
-  }
-
-
 }
 
 
