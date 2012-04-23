@@ -22,6 +22,6 @@ function media_embed_settings($form, &$form_state) {
 function media_embed_settings_submit($form, $form_state) {
   $domains = $form_state['values']['whitelist'];
 
-  $domains = array_filter(split("[\n\r|\n|\r]", $domains));
+  $domains = array_filter(explode("[\n\r|\n|\r]", $domains));
   variable_set('media_embed_whitelist', $domains);
 }

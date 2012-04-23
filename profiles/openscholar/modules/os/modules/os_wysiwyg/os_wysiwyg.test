@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * General tests for WYSIWYG functions in OpenScholar
+ */
+
+class OsWysiwygTestCase extends DrupalWebTestCase {
+
+  protected $urlList = array(
+    'youtube' => 'http://youtu.be/hUkiJOBYmU4',
+    'abcnews' => 'http://abcnews.go.com/GMA/video/zimmerman-injuries-exclusive-photo-night-trayvon-martin-death-16178849',
+    'barelypolitical' => 'http://www.barelypolitical.com/autotune/episode/BP_20090903/auto-tune-the-news-8-with-t-pain',
+    'chartly' => 'http://chart.ly/symbols/AAPL',
+    'cnbc' => 'http://www.cnbc.com/id/15840232?video=3000085290&play=1',
+    'flickr' => 'http://www.flickr.com/photos/chongkin/7093842851/',
+    'googlemaps' => 'http://maps.google.com/maps?saddr=6+Oakland+Avenue,+Somerville,+MA&daddr=779+McGrath+Highway,+Somerville,+MA+02145+(Super+Stop+%26+Shop)&hl=en&ll=42.389913,-71.091089&spn=0.010634,0.015557&sll=42.391199,-71.089988&sspn=0.010634,0.015557&geocode=FT_YhgIdWDDD-ykn89t_03DjiTHtwfdeWuhENg%3BFenVhgIdQlLD-yE9yREyExtYrSknkMdH13DjiTHXOR5s0nOx2A&oq=6+Oak&t=v&dirflg=w&mra=ls&z=16',
+    'hulu' => 'http://www.hulu.com/watch/348494/saturday-night-live-watch-what-happens-live',
+
+  );
+
+  // is this kind of thing ok?
+  protected $files = array(
+  );
+
+  public function testOembedCreation() {
+    $handler = new MediaInternetOEmbedHandler("");
+    foreach ($this->urlList as $source => $url) {
+      // create an oembed file for each link
+      $handler->embedCode = $url;
+      $handler->save();
+    }
+  }
+
+  public function testOembedFilter() {
+
+  }
+}
