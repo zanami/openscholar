@@ -32,7 +32,9 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->addFieldMapping('nid', 'nid');
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
       $this->addFieldMapping('revision_uid', 'nr_uid');
-      $this->addFieldMapping('body', 'body'); //from nr
+      $this->addFieldMapping('body', 'body')
+        //->arguments(array('format' => array('source_field'=>'name')));
+        ->arguments(array('format'=>'filtered_html'));
       $this->addFieldMapping('log', 'log'); //from nr
       $this->addFieldMapping('revision')->defaultValue(TRUE); //create a new revision.  vid is automatically migrated
       $this->addFieldMapping('path', 'path'); //see prepareRow
@@ -68,9 +70,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     //$query->condition('n.nid', '6811', '='); //prod node with inline files
     
     $query->join('node_revisions', 'nr', 'n.vid = nr.vid');
-    $query->addField('nr','body');
-    $query->addField('nr','uid');    
-    $query->addField('nr','log');
+    $query->fields('nr', array('body', 'uid', 'log'));
+    
+    $query->join('filter_formats', 'ff', 'nr.format = ff.format');
+    $query->fields('ff', array('name'));
     $query->orderBy('n.changed');
                
 
