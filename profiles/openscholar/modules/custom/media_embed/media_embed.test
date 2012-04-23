@@ -5,9 +5,9 @@
  * Tests for Media Embed
  */
 
-class MediaEmbedTests extends DrupalWebTestCase {
+class MediaEmbedTest extends DrupalWebTestCase {
 
-  protected $file;
+  protected $profile = 'openscholar';
 
   public static function getInfo() {
     return array(
@@ -91,6 +91,7 @@ class MediaEmbedTests extends DrupalWebTestCase {
       ),
     );
     $form = drupal_build_form('media_embed_add', $form_state);
+    debug($form_state);
 
     // get the final file entity
     // if it has an fid, submission succeeded
@@ -113,6 +114,7 @@ class MediaEmbedTests extends DrupalWebTestCase {
 
     if (count($result) == 0) {
       $this->error("Previous tests failed. No entities to test filter output with.");
+      return;
     }
     $file = $result[0];
 

@@ -4,4 +4,5 @@ package = "Media"
 core = 7.x
 files[] = includes/MediaEmbedStreamWrapper.inc
 files[] = includes/MediaBrowserHTML.inc
+files[] = media_embed.test
 dependencies[] = media

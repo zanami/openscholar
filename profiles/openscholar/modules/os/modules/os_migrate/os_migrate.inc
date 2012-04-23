@@ -194,8 +194,47 @@ abstract class OSMigration extends Migration {
     
   }
   
-  function os_migrate_update_body_url(&$row, $fid) {
-  
+  function os_migrate_update_body_url(&$row, $url) {
+    $query = db_select('migrate_map_embedinlineos', 'm')
+      ->fields('m', array('destid1'))
+      ->condition('sourceid1', $row->vid, '=');
+      
+    $entity_id = $query->execute()->fetchAssoc();
+    $entity = file_load($entity_id['destid1']);
+    
+    $dom = filter_dom_load($row->body);
+    //check all a tags.  we'll have to replace parent though since its a space for the oembed
+    $anchors = $dom->getElementsByTagName('a');
+    $update = FALSE;
+    for ($i=0, $len=$anchors->length; $i<$len; $i++) {
+      $a = $anchors->item($i);
+      if (isset($a) && ($a->getAttribute('href') == $url)) {
+        
+        //these tags are not rigorously tested.  probably not applicable everywhere.
+        $tag = array(
+          'type' => 'media',
+          'view_mode' => 'media_large', 
+          'fid' => $entity->fid,
+          'attributes' => array(
+            'class' => 'media-image',
+            'typeof' => 'foaf:Image',
+          ),
+        );
+        $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
+        $span = $a->parentNode;
+        $span->parentNode->replaceChild($text, $span);
+        
+        $update = TRUE;
+      }
+    }
+    
+    if ($update) {
+      $body = $dom->saveHTML();
+      $body = preg_replace('/<!DOCTYPE.*?>/', '', $body); //remove doctype
+      $body = preg_replace('/.*\<body\>/m', '', $body); //remove html, body
+      $body = preg_replace('/<\/body>.*/m', '', $body); //remove closing tags
+      $row->body = $body;
+    }
   }
   
   function os_migrate_update_body_body(&$row, $fid) {}
