@@ -191,7 +191,7 @@ abstract class OSMigration extends Migration {
   }    
   
   function os_migrate_update_body_files(&$row, $fid) {
-    
+    //TODO
   }
   
   function os_migrate_update_body_url(&$row, $url) {
@@ -229,15 +229,85 @@ abstract class OSMigration extends Migration {
     }
     
     if ($update) {
-      $body = $dom->saveHTML();
-      $body = preg_replace('/<!DOCTYPE.*?>/', '', $body); //remove doctype
-      $body = preg_replace('/.*\<body\>/m', '', $body); //remove html, body
-      $body = preg_replace('/<\/body>.*/m', '', $body); //remove closing tags
-      $row->body = $body;
+      $row->body = $this->_os_migrate_update_body_clean($dom->saveHTML());
     }
   }
   
-  function os_migrate_update_body_body(&$row, $fid) {}
+  //match current body with files imported from body text
+  function os_migrate_update_body_body(&$row, $fid) {
+    $query = db_select('os_migrate_body_inline_objects', 'o')
+      ->fields('o', array('html'))
+      ->condition('vid', $row->vid, '=');
+    $query->join('migrate_map_htmlinlineos', 'm', 'o.id = m.sourceid1');
+    $query->fields('m', array('destid1'));
+    $query->isNotNull('m.destid1');
+    
+    $data = $query->execute()->fetchAssoc();
+    $update = FALSE;
+    
+    //lets try iframes first
+    $target_dom = filter_dom_load($data['html']);
+    $target_iframes = $target_dom->getElementsByTagName('iframe');
+    if ($target_iframes->length) {
+      $target_src = $target_iframes->item(0)->getAttribute('src');
+      
+      $dom = filter_dom_load($row->body);
+      $iframes = $dom->getElementsByTagName('iframe');
+      for ($i=0,$len=$iframes->length; $i<$len; $i++) {
+        $iframe = $iframes->item($i);
+        if ($iframe && ($src = $iframe->getAttribute('src'))) {
+          if ($src == $target_src) {
+            $update = TRUE;
+            $tag = $this->_os_migrate_inline_tag('iframe', $data['destid1'], $iframe); 
+            $text = $dom->createTextNode($tag);
+            $iframe->parentNode->replaceChild($text, $iframe);     
+          }
+        }
+      }
+    }
+    
+    //and objects.  some have data.  others have children embeds.
+    $target_objects = $target_dom->getElementsByTagName('object');
+    if ($target_objects->length) {
+      $target_object = $target_objects->item(0);
+      $target_data = $target_object->getAttribute('data');
+      $target_embed = $target_object->getElementsByTagName('embed');
+      if ($target_embed->length) {
+        $target_embed_src = $target_embed->item(0)->getAttribute('src');
+      }
+      
+      $dom = filter_dom_load($row->body);
+      $objects = $dom->getElementsByTagName('object');
+      for ($i=0,$len=$objects->length; $i<$len; $i++) {
+        $object = $objects->item($i);
+        if ($object && ($src = $object->getAttribute('data'))) {
+          //data objects - currently untested.
+          if ($target_data == $src) {
+            $update = TRUE;
+            $tag = $this->_os_migrate_inline_tag('object-data', $data['destid1'], &$object);
+            $text = $dom->createTextNode($tag);
+            $object->parentNode->replaceChild($text, $object);
+            
+          } elseif ($object && ($embed = $object->getElementsByTagName('embed'))) {
+            //embed objects
+            if ($target_embed_src == $embed->item(0)->getAttribute('src')) {
+              $update = TRUE;
+              //can't convince wysiwyg to take these strings.  lets ignore that for now and update tag later.
+              $tag = $this->_os_migrate_inline_tag('object-embed', $data['destid1'], &$object);
+              $text = $dom->createTextNode($tag);
+              $object->parentNode->replaceChild($text, $object);
+            }
+          }
+        }
+      }
+    }
+    
+    if ($update) {
+      $row->body = $this->_os_migrate_update_body_clean($dom->saveHTML());
+    }
+
+    return;
+  }
   
   //update body of $row to use $fid's new file entity
   function os_migrate_update_body_image(&$row, $fid) {
@@ -315,6 +385,28 @@ abstract class OSMigration extends Migration {
     
   }
   
+  //prepare the inline tag
+  //generic for now.
+  function _os_migrate_inline_tag($type, $fid, &$dom_object) {
+    $tag = array(
+      'type' => 'media',
+      'view_mode' => 'media_original',
+      'fid' => $fid,
+      'attributes' => array(
+        'class' => 'media-image',
+        'typeof' => 'foaf:Image',
+      ),
+    );
+    return '[[' . drupal_json_encode($tag) . ']]';
+  }
+  
+  //body saved by dom is full document.  strip doctype, html, body tags.
+  function _os_migrate_update_body_clean($body) {
+    $body = preg_replace('/<!DOCTYPE.*?>/', '', $body); //remove doctype
+    $body = preg_replace('/.*\<body\>/m', '', $body); //remove html, body
+    $body = preg_replace('/<\/body>.*/m', '', $body); //remove closing tags
+    return $body;
+  }
   //update node body to use new file
 /*  function os_migrate_update_body_text(stdClass &$file_entity, $body, $desc) {
     $dom = filter_dom_load($body);
