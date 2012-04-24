@@ -117,12 +117,20 @@ abstract class OSMigration extends Migration {
     return $output;
   }
 
+  /*************************************
+   * CCK Field mappers
+   ***************************************/
+  
   //adds joins and fields based on migrate object's cck_fields property
   function addQueryCCK(&$query, $content_type, $table=NULL) {
     $table = ($table) ? $table : 'content_type_' . $content_type;
     //class has Link Date Text
     $fields = array();
-    foreach($this->cck_fields as $name => $field) {
+//    foreach($this->cck_fields as $name => $field) {
+    foreach($this->cck_fields as $value) {
+      $field = $value['cck_type'];
+      $name = $value['cck_name'];
+      
       switch ($field) {
         case 'Link':
           $fields += array('field_'.$name.'_url', 'field_'.$name.'_title', 'field_'.$name.'_attributes');
@@ -146,23 +154,72 @@ abstract class OSMigration extends Migration {
 
   //perform common preparations for cck types
   function prepareRowCCK(&$row) {
-    foreach($this->cck_fields as $name => $field) {
+    foreach($this->cck_fields as $value) {
+      $field = $value['cck_type'];
+      $name = $value['cck_name'];
+      
       switch ($field) {
         case 'Link':
           $attr = 'field_'.$name.'_attributes';
           if (strlen($row->$attr)) {
             $row->$attr = unserialize($row->$attr);
           }
-          break;
+          
+        break;
 
         default:
           break;
       }
     }
   }
+  
+  //map common cck fields to d7 fields
+  function addMappingsCCK() {
+    foreach($this->cck_fields as $value) {
+      $cck_type = $value['cck_type'];
+      $cck_name = $value['cck_name'];
+      $dest_name = $value['dest_name'];
+      $dest_type = $value['dest_type'];
+      
+      switch ($dest_type) {
+        case 'Link':
+          $field = 'field_'.$dest_name.'_link';
+          $cck = 'field_'.$cck_name . '_url';
+          // $arguments = MigrateLinkFieldHandler::arguments($fields);
+          //pass info from fields to arguments[] in field_link's prepare()
+          $this->addFieldMapping($field, $cck)->arguments(array( 
+            'url' =>        array('source_field' => 'field_'.$cck_name.'_url'),
+            'title' =>      array('source_field' => 'field_'.$cck_name.'_title'),
+            'attributes' => array('source_field' => 'field_'.$cck_name.'_attributes'),
+          ));    
+        break;
+      }
+    }
+  }
+  
+  function sourceFieldsCCK() {
+    $return = array();
+    foreach ($this->cck_fields as $value) {
+      $name = $value['cck_name'];
+      switch ($value['cck_type']) {
+        case 'Link':
+          $return += array(
+            //name => desc
+						'field_'.$name.'_url' => 'Link URL',
+            'field_'.$name.'_title' => 'Link Title',
+            'field_'.$name.'_attributes' => 'Link Attributes',
+          );
+        break;
+      }
+    }
+    return $return;
+  }
 
 
-    
+   /*************************
+    * inline file processing
+    *****************************/
+  
     /**
      * @function os_migrate_list_inline_files
      * 
