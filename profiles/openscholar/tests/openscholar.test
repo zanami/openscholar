@@ -184,7 +184,7 @@ class OpenscholarWebTestCase extends DrupalWebTestCase {
 	  // Although the profile module is marked as required, it needs to go after
 	  // every dependency, including non-required ones. So clear its required
 	  // flag for now to allow it to install late.
-	  $files[$install_state['parameters']['profile']]->info['required'] = FALSE;
+	  $files[$this->profile]->info['required'] = FALSE;
 	  // Add modules that other modules depend on.
 	  foreach ($modules as $module) {
 	    if ($files[$module]->requires) {
@@ -202,8 +202,11 @@ class OpenscholarWebTestCase extends DrupalWebTestCase {
 	    }
 	  }
 	  
-	  module_enable($required);
-	  module_enable($non_required);
+	  arsort($required);
+    arsort($non_required);
+  
+	  module_enable(array_keys($required));
+	  module_enable(array_keys($non_required));
 	
 	  $this->install_flavor();
 	  
