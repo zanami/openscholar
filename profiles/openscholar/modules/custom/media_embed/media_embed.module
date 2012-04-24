@@ -164,7 +164,7 @@ function media_embed_check_src($html) {
   catch (Exception $e) {
     return false;
   }
-  if ($dom->loadHTML($html)) {
+  if (@$dom->loadHTML($html)) {
     $urls = array();
     $iframes = $dom->getElementsByTagName('iframe');
     $embed = $dom->getElementsByTagName('embed');
@@ -228,6 +228,9 @@ function media_embed_check_src($html) {
  */
 function media_embed_get_whitelist() {
   $domains = module_invoke_all('media_embed_whitelist');
+  if (!is_array($domains)) {
+    $domains = array();
+  }
 
   $domains = array_merge($domains, variable_get('media_embed_whitelist', array()));
   return $domains;

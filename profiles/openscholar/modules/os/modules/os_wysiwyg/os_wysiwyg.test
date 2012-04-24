@@ -18,20 +18,37 @@ class OsWysiwygTestCase extends DrupalWebTestCase {
 
   );
 
-  // is this kind of thing ok?
-  protected $files = array(
-  );
+  protected function setUp() {
+    parent::setUp('media_oembed');
+  }
 
-  public function testOembedCreation() {
+  public function testOembedFilter() {
     $handler = new MediaInternetOEmbedHandler("");
     foreach ($this->urlList as $source => $url) {
       // create an oembed file for each link
       $handler->embedCode = $url;
       $handler->save();
+
+      $file = $handler->getFileObject();
+      $tag = array(
+        'type' => 'media',
+        'view_mode' => 'media_large',
+        'fid' => $file->fid,
+        'attributes' => array(
+          'class' => 'media-image',
+          'typeof' => 'foaf:Image',
+        ),
+      );
+
+      $text = '[['.drupal_json_encode($tag).']]';
+      $fulltext = 'lorem ipsum '.$text.' some other stuff';
+      $filtered = check_markup($fulltext);
+
+      $oembed = oembedcore_oembed_data($url);
+
+      $expected = 'lorem ipsum '.$oembed->html.' some other stuff';
+
+      $this->assertEqual($filtered, $expected);
     }
-  }
-
-  public function testOembedFilter() {
-
   }
 }
