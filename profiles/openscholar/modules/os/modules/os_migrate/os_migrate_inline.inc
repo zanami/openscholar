@@ -1,12 +1,17 @@
 <?php 
 
+class InlineOSMigration extends OSMigration {
+  public function __construct() {
+    parent::__construct(MigrateGroup::getInstance('inline', array('specialtables')));
+    $this->dependencies = array('SpecialTablesOS');
+  }
+}
+
 //copy inline files into file entities
 
-class FileInlineOSMigration extends OSMigration {
+class FileInlineOSMigration extends InlineOSMigration {
   public function __construct() {
     parent::__construct();
-    $this->description = t('Inline Files');
-    $this->dependencies = array();
     $add_fields = array('uri' => 'Unique Resource Identifier.');
     $this->source = new MigrateSourceSQL($this->query(), $add_fields , NULL,  array('map_joinable' => FALSE));
     $this->map = new MigrateSQLMap($this->machineName,
@@ -62,11 +67,10 @@ class FileInlineOSMigration extends OSMigration {
 
 
 
-class ImageInlineOSMigration extends OSMigration {
+class ImageInlineOSMigration extends InlineOSMigration {
   public function __construct() {
-    parent::__construct();
+  parent::__construct();
     $this->description = t('Inline Images');
-    $this->dependencies = array();
     $add_fields = array('uri' => 'Unique Resource Identifier.');
     $this->source = new MigrateSourceSQL($this->query(), $add_fields , NULL,  array('map_joinable' => FALSE));
     $this->map = new MigrateSQLMap($this->machineName,
@@ -113,9 +117,9 @@ class ImageInlineOSMigration extends OSMigration {
 
 
 
-class EmbedInlineOSMigration extends OSMigration {
+class EmbedInlineOSMigration extends InlineOSMigration {
   public function __construct() {
-    parent::__construct();
+  parent::__construct();
     $this->description = t('Inline Embeds');
    // $this->dependencies = array('ImageInlineOSMigration', 'FileInlineOSMigration'); 
     
@@ -165,11 +169,10 @@ class EmbedInlineOSMigration extends OSMigration {
 //import from node bodies too.
 //nids are in the sql map.  during node import, check htmlinline's migration table to see if there are
 //any previously unmapped files that are now available for use.
-class HTMLInlineOSMigration extends OSMigration {
+class HTMLInlineOSMigration extends InlineOSMigration {
   public function __construct() {
     parent::__construct();
     $this->description = t('Inline HTML');
-    $this->dependencies = array('SpecialTablesOS');
     
     $add_fields = array('uri' => 'Unique Resource Identifier.', 'uid' => 'User ID', 
     										'timestamp' => 'Node creation time', 'status' => 'Published status',

@@ -12,7 +12,7 @@
 class UsersOSMigration extends OSMigration {
   public function __construct() {
     
-    parent::__construct();
+    parent::__construct(MigrateGroup::getInstance('users'));
     $this->description = t('OS user accounts');    
     
     /******************************************************

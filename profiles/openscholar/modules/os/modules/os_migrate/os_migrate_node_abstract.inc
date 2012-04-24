@@ -15,7 +15,7 @@
 abstract class AbstractNodeOSMigration extends OSMigration {
   public function __construct($destination_bundle, $source_content_type, $create = TRUE) {
     
-    parent::__construct();    
+    parent::__construct(MigrateGroup::getInstance('node', array('inline', 'users')));    
     //when extending this class, don't forget to update info file with new filename!
 
     // if desired, supply node with defaults.  
@@ -23,7 +23,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->source = $this->source($source_content_type); //condtion type?
       $this->destination = $this->destination($destination_bundle); 
       $this->map = $this->map($source_content_type);
-     // $this->dependencies = array('UsersOS', 'EmbedInlineOSMigration', 'ImageInlineOSMigration', 'FileInlineOSMigration'); //og when that's done
+      $this->dependencies = array('UsersOS', 'EmbedInlineOS', 'ImageInlineOS', 'FileInlineOS', 'HTMLInlineOS'); //og when that's done
       
       /* mappings */
       $this->addSimpleMappings(array('created','changed','status','promote','sticky','language','comment',
@@ -43,7 +43,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->addFieldMapping('field_file_upload', 'file_upload')->arguments($associated_files_args);
       
       /* Unmapped source fields.  Mark them as Do Not Map, so the UI knows they're intentionally ignored */
-      $this->addUnmigratedSources(array('vid', 'moderate', 'translate', 'type'), t('DNM'));
+      $this->addUnmigratedSources(array('vid', 'moderate', 'translate', 'type', 'name'), t('DNM'));
 //      $this->addUnmigratedSources(array('oe_vid', 'oe_nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes') ,t('DNM'));
       //moderate appears to have been removed from node.
       //type.  we're doing nodes one type at a time.  type should be handled there.

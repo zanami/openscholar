@@ -6,9 +6,9 @@
  */
 class SpecialTablesOSMigration extends OSMigration {
   public function __construct() {
-    parent::__construct();
+    parent::__construct(MigrateGroup::getInstance('specialtables'));
     $this->description = t('Special Tables');
-    $this->dependencies = array();
+    //$this->dependencies = array();
     
     $csv_columns = array(
       array('name', 'Name of this special case'),

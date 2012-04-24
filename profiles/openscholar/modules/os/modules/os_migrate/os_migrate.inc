@@ -10,8 +10,13 @@
 abstract class OSMigration extends Migration {
   public function __construct() {
     // Always call the parent constructor first for basic setup
-    parent::__construct();
-
+    $args = func_get_args();
+    if (count($args)) {
+      parent::__construct($args[0]);
+    } else {
+      parent::__construct();
+    }
+    
     // With migrate_ui enabled, migration pages will indicate people involved in
     // the particular migration, with their role and contact info. We default the
     // list in the shared class; it can be overridden for specific migrations.
