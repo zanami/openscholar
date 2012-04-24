@@ -7,13 +7,13 @@
 
 class MediaEmbedTest extends DrupalWebTestCase {
 
-  protected $profile = 'openscholar';
+  //protected $profile = 'openscholar';
 
   public static function getInfo() {
     return array(
       'name' => 'Media Embed',
-      'desscription' => 'Tests for the embedding of iframes from a whitelisted domain',
-      'group' => 'Openscholar WYSIWYG',
+      'description' => 'Tests for the embedding of iframes from a whitelisted domain',
+      'group' => 'Media',
       'dependencies' => array('media_embed'),
     );
   }
@@ -23,7 +23,7 @@ class MediaEmbedTest extends DrupalWebTestCase {
    * @see DrupalWebTestCase::setUp()
    */
   public function setUp() {
-    parent::setUp();
+    parent::setUp(array('media_embed'));
     $whitelist = variable_get('media_embed_whitelist', array());
     $whitelist[] = 'test.com';
     variable_set('media_embed_whitelist', $whitelist);
@@ -47,19 +47,17 @@ class MediaEmbedTest extends DrupalWebTestCase {
     $iframe = '<iframe width="420" height="315" src="http://fail.com/embed/bD0vcmhmaCY" frameborder="0" allowfullscreen></iframe>';
     $iframeSub = '<iframe width="420" height="315" src="http://anything.subdomain.fail.com/embed/bD0vcmhmaCY" frameborder="0" allowfullscreen></iframe>';
     $iframeNotURL = '<iframe width="420" height="315" src="this_is_not_a_url" frameborder="0" allowfullscreen></iframe>';
-    $notevenhtml = 'What is this mess? This isn\'t even in HTMl. It\'s just random text with some wierd characters in it. <¿¥>';
 
     $this->assertFalse(media_embed_check_src($iframe), "Iframe with no subdomain.");
     $this->assertFalse(media_embed_check_src($iframeSub), "Iframe with a subdomain.");
     $this->assertFalse(media_embed_check_src($iframeNotURL), "Iframe with bad url");
-    $this->assertFalse(media_embed_check_src($notevenhtml), "Bad HTML");
   }
 
   /**
    * Tests URL validation in non-iframe tags.
    */
   public function testURLsInOtherThings() {
-    $object = '<object width="420" height="315"><param name="movie" value="http://www.test.com/v/bD0vcmhmaCY?version=3&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.test.com/v/bD0vcmhmaCY?version=3&amp;hl=en_US" type="application/x-shockwave-flash" width="420" height="315" allowscriptaccess="always" allowfullscreen="true"></embed></object>';
+    $object = '<object width="420" height="315"><param name="movie" value="http://www.test.com/v/bD0vcmhmaCY?version=3&amp;hl=en_US"><param name="allowFullScreen" value="true"><param name="allowscriptaccess" value="always"><embed src="http://www.test.com/v/bD0vcmhmaCY?version=3&amp;hl=en_US" type="application/x-shockwave-flash" width="420" height="315" allowscriptaccess="always" allowfullscreen="true"></embed></object>';
     $script = '<script src="http://www.test.com/v/bD0someotherstuff" type="text/javascript"></script>';
 
     $this->assertTrue(media_embed_check_src($object), "Object/param/embed tags.");
@@ -90,8 +88,8 @@ class MediaEmbedTest extends DrupalWebTestCase {
         ),
       ),
     );
+
     $form = drupal_build_form('media_embed_add', $form_state);
-    debug($form_state);
 
     // get the final file entity
     // if it has an fid, submission succeeded
@@ -107,16 +105,32 @@ class MediaEmbedTest extends DrupalWebTestCase {
    * Tests that our file entity can return the right text when being called through the filter
    */
   function testFilterOutput() {
-    $query = new EntityFieldQuery();
-    $query->entityCondition('entity_type', 'file');
-    $query->propertyCondition('uri', 'embed://%', 'LIKE');
-    $result = $query->execute();
+    $form_state = array(
+      'submitted' => true,
+      'programmed' => true,
+      'input' => array(
+        'field_html_code' => array(
+          'und' => array(
+            array(
+              'value' => '<iframe width="420" height="315" src="http://test.com/embed/bD0vcmhmaCY" frameborder="0" allowfullscreen></iframe>',
+            )
+          ),
+        ),
+        'field_html_title' => array(
+          'und' => array(
+            array(
+              'value' => 'Imported iframe code',
+            )
+          )
+        ),
+      ),
+    );
 
-    if (count($result) == 0) {
-      $this->error("Previous tests failed. No entities to test filter output with.");
-      return;
-    }
-    $file = $result[0];
+    $form = drupal_build_form('media_embed_add', $form_state);
+
+    // get the final file entity
+    // if it has an fid, submission succeeded
+    $file = file_uri_to_object($form_state['file']->uri);
 
     $tag = array(
       'type' => 'media',
