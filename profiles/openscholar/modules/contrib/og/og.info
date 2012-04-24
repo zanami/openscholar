@@ -5,6 +5,7 @@ dependencies[] = options
 dependencies[] = list
 dependencies[] = entity
 dependencies[] = entityreference
+dependencies[] = text
 core = 7.x
 
 files[] = og.module

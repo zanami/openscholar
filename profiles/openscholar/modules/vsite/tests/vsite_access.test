@@ -34,7 +34,7 @@ class VsiteAccessTest extends OpenscholarWebTestCase {
    * Set up test.
    */
   public function setUp(){
-  	parent::setUp('field_ui', 'context', 'purl', 'spaces', 'og', 'spaces_og', 'os', 'entityreference', 'features', 'os_links','vsite','vsite_domain');
+  	parent::setUp('purl', 'spaces', 'og', 'spaces_og', 'os_links','vsite','vsite_domain');
     
     // Create a user with access to add a link
     $this->user1 = $this->drupalCreateUser(array('create link content'));
