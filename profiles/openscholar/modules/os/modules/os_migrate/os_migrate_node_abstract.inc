@@ -68,6 +68,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     //nodes to test files with:
     //$query->condition('n.nid', '20301', '='); //prod node with uploads
     //$query->condition('n.nid', '6811', '='); //prod node with inline files
+    //$query->condition('n.nid', '13701', '='); //prod node with multiple images
     
     $query->join('node_revisions', 'nr', 'n.vid = nr.vid');
     $query->fields('nr', array('body', 'uid', 'log'));

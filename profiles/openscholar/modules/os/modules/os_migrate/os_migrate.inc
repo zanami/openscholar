@@ -261,18 +261,8 @@ abstract class OSMigration extends Migration {
     for ($i=0, $len=$anchors->length; $i<$len; $i++) {
       $a = $anchors->item($i);
       if (isset($a) && ($a->getAttribute('href') == $url)) {
-        
-        //these tags are not rigorously tested.  probably not applicable everywhere.
-        $tag = array(
-          'type' => 'media',
-          'view_mode' => 'media_large', 
-          'fid' => $entity->fid,
-          'attributes' => array(
-            'class' => 'media-image',
-            'typeof' => 'foaf:Image',
-          ),
-        );
-        $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
+        $tag = $this->_os_migrate_inline_tag('url', $entity->fid, $a);
+        $text = $dom->createTextNode($tag);
         $span = $a->parentNode;
         $span->parentNode->replaceChild($text, $span);
         
@@ -392,7 +382,7 @@ abstract class OSMigration extends Migration {
       $img = $images->item($i); 
       if (isset($img) && strpos($img->getAttribute('src'), $uri)) {
         $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img);
-        $text = $dom->createTextNode('[['.drupal_json_encode($tag).']]');
+        $text = $dom->createTextNode($tag);
         $img->parentNode->replaceChild($text, $img);
         $update = TRUE;
       }
@@ -443,7 +433,7 @@ abstract class OSMigration extends Migration {
         'typeof' => 'foaf:Image',
       ),
     );
-    return '[[' . drupal_json_encode($tag) . ']]';
+    return ' [[' . drupal_json_encode($tag) . ']] ';
   }
   
   //body saved by dom is full document.  strip doctype, html, body tags.
