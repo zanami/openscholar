@@ -5,7 +5,7 @@
  * Tests for Media Embed
  */
 
-class MediaEmbedTest extends DrupalWebTestCase {
+class MediaEmbedTest extends OpenscholarWebTestCase {
 
   //protected $profile = 'openscholar';
 
@@ -143,11 +143,11 @@ class MediaEmbedTest extends DrupalWebTestCase {
     );
     $text = '[['.drupal_json_encode($tag).']]';
     $fulltext = 'lorem ipsum '.$text.' some other stuff';
-    $filtered = check_markup($fulltext);
+    $filtered = media_filter($fulltext);
 
-    $expected = 'lorem ipsum '.$file->field_html_code['und'][0]['value'].' some other stuff';
+    $expected = $file->field_html_code['und'][0]['value'];
 
-    $this->assertEqual($filtered, $expected);
+    $this->assertTrue(strpos($filtered, $expected) !== FALSE);
   }
 
   /**
