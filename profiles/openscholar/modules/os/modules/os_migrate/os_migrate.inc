@@ -394,7 +394,7 @@ abstract class OSMigration extends Migration {
     }
     
     if ($update) {
-      $row->body = $this->os_migrate_inline_update($row);
+      $row->body = $this->_os_migrate_update_body_clean($dom->saveHTML());
     }
     
   }
