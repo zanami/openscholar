@@ -3,7 +3,7 @@ description = Install Openscholar
 core = 7.x
 files[] = openscholar.profile
 files[] = openscholar.install
-
+files[] = tests/openscholar.test
 
 ; Core
 dependencies[] = block
