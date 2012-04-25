@@ -47,17 +47,17 @@ class vsite extends space_og {
 
       if($this->purl_provider){
       	//Set the provider to use for redirection
-      	$options = array('query' => drupal_query_string_encode($_GET, array('q')), 'purl' => array('provider' => $this->purl_provider, 'id' => $this->id));
+      	$options = array('query' => drupal_http_build_query(drupal_get_query_parameters()), 'purl' => array('provider' => $this->purl_provider, 'id' => $this->id));
       	$path = $_GET['q'];
 
-      	$aliased = url($path);
-      	if($path != $aliased && isset($_REQUEST['q']) && $path == $_REQUEST['q']){
-      		// If the path we are going to has an alias, and the current page we are on does not use that
-      		// that alias value.  Then lets skip purl_goto since unaliased paths with a path prefix make it think it's
-      		// in a redirect loop.  ex( GET[q] will hold node/123 for both the aliases and non-aliased paths)
-      		$path = $this->get_absolute_url($path);
-      		drupal_goto($path);
-      	}
+//      	$aliased = url($path);
+//      	if($path != $aliased && isset($_REQUEST['q']) && $path == $_REQUEST['q']){
+//      		// If the path we are going to has an alias, and the current page we are on does not use that
+//      		// that alias value.  Then lets skip purl_goto since unaliased paths with a path prefix make it think it's
+//      		// in a redirect loop.  ex( GET[q] will hold node/123 for both the aliases and non-aliased paths)
+//      		$path = $this->get_absolute_url($path);
+//      		drupal_goto($path);
+//      	}
 
         purl_goto($path, $options);
       }//Just like the check in spaces_purl_provider but with dynamic provider
@@ -80,11 +80,6 @@ class vsite extends space_og {
     * Implementation of space->router().
     */
   public function router($op, $object = NULL) {
-  	
-  	//Fixes bug where when menu's are loaded any menu that points to a node causes redirection, leaving this not so eligant code in place till the following is resolved
-  	// http://drupal.org/node/936234
-  	//if(arg(0) == 'admin') return;
-  	// This is resolved, check to make sure that this function works as expected with the new execution flow
 
   	global $user;
     switch ($op) {
