@@ -607,8 +607,8 @@ function spaces_og_spaces_get_space_from_object($type, $object) {
       return spaces_load('og', $object->nid);
     }
     else if (og_is_group_content_type('node', $object->type)) {
-      if (isset($object->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['gid'])) {
-        return spaces_load('og', og_load($object->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['gid'])->etid);
+      if (isset($object->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'])) {
+        return spaces_load('og', $object->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id']);
       }
     }
   }

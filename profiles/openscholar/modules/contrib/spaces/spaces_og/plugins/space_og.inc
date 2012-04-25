@@ -162,7 +162,7 @@ class space_og extends space_type_purl {
         else if (og_is_group_content_type('node', $node->type)) {
           if (!empty($node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE])) {
             foreach($node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE] as $item) {
-              $gids[] = $item['gid'];
+              $gids[] = $item['target_id'];
             }
           }
 
@@ -174,7 +174,7 @@ class space_og extends space_type_purl {
           // Otherwise route
           $gid = reset($gids);
           if ($gid) {
-            spaces_load('og', og_load($gid)->etid)->activate();
+            spaces_load('og', $gid)->activate();
           }
           return;
         }
