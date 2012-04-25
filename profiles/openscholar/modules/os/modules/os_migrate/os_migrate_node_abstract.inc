@@ -135,6 +135,13 @@ abstract class AbstractNodeOSMigration extends OSMigration {
    */
   function prepareRow($current_row) {
     
+    //check if bundle exists.
+    $info = field_info_bundles('node');
+    if (!isset($info[$this->bundle])) {
+      Migration::displayMessage(t('Could not migrate into non-existant bundle'));
+      return FALSE;
+    }
+    
     //get path from {url_alias}
     $query = parent::d6_db_select('url_alias', 'ua')
       ->fields('ua', array('dst'))

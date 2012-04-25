@@ -2,10 +2,12 @@
 
 class PageNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
+    $this->bundle = 'page';
     
     // Let AbstractNode handle the source, dest, and map.
-    parent::__construct('page', 'page'); //current types are vsite, article, and page.  lets start with one of those instead?
+    parent::__construct($this->bundle, 'page'); //current types are vsite, article, and page.  lets start with one of those instead?
     $this->description = t('OS Page Nodes');    
+    
 
     /************************************************************************
      *  Field mappings tell Migrate which d7 column to deposit d6 data into *
