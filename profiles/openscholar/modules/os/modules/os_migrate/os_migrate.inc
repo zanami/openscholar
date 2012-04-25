@@ -116,6 +116,27 @@ abstract class OSMigration extends Migration {
 
     return $output;
   }
+  
+  /*
+   * Get variable from d6.  Cache var.
+   */
+  function d6_variable_get($var, $default=NULL) {
+    static $variable_cache;
+    
+    if (!isset($variable_cache)) {
+      $variable_cache = array();
+    }
+    
+    if (!isset($variable_cache[$var])) {
+      $query = $this::d6_db_select('variable', 'v')
+        ->fields('v', array('value'))
+        ->condition('v.name', $var, '=');
+      $value = unserialize($query->execute()->fetchField());
+      $variable_cache[$var] = (isset($value)) ? $value : $default;
+    }
+    
+    return $variable_cache[$var];
+  }
 
   /*************************************
    * CCK Field mappers
