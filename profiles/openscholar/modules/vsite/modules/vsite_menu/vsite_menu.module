@@ -1,0 +1,11 @@
+<?php
+
+/**
+ * Implements hook_block_view_alter().
+ */
+function vsite_menu_block_view_alter(&$data, $block) {
+  // Add contextual links for menu blocks or replace with vsite content..
+  if ($block->module == 'menu' && !empty($data['content'])) {
+    
+  }
+}

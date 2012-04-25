@@ -22,6 +22,7 @@ features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
 features[field][] = node-page-body
 features[node][] = page
+features[menu_custom][] = 'menu-secondary-menu'
 features[spaces_presets][] = os_department
 features[spaces_presets][] = os_personal
 features[taxonomy][] = vocab1
