@@ -47,7 +47,6 @@ class FileInlineOSMigration extends OSMigration {
     //going with that for now.  may patch migrate if it's obnoxious.
     //this appraoch does not take into account vsite_domain_names from spaces_overrides
     $purl = parent::d6_variable_get('purl_base_domain');
-    $purl .= '/fakepath/files/denied/';                     // TODO
     $row->uri = $purl . '/' . $row->filepath; 
 
   }
