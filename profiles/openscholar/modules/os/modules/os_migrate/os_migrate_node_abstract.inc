@@ -27,14 +27,13 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       
       /* mappings */
       $this->addSimpleMappings(array('created','changed','status','promote','sticky','language','comment',
-                                     'title', 'tnid'));
-      $this->addFieldMapping('uid')->defaultValue(1); //make all nodes admin's by default for testing
+                                     'title', 'tnid', 'uid'));
       $this->addFieldMapping('nid', 'nid');
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
       $this->addFieldMapping('revision_uid', 'nr_uid');
       $this->addFieldMapping('body', 'body')
-        //->arguments(array('format' => array('source_field'=>'name')));
-        ->arguments(array('format'=>'filtered_html'));
+        ->arguments(array('format' => array('source_field'=>'name')));
+        //->arguments(array('format'=>'filtered_html'));
       $this->addFieldMapping('log', 'log'); //from nr
       $this->addFieldMapping('revision')->defaultValue(TRUE); //create a new revision.  vid is automatically migrated
       $this->addFieldMapping('path', 'path'); //see prepareRow
