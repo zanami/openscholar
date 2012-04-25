@@ -27,14 +27,13 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       
       /* mappings */
       $this->addSimpleMappings(array('created','changed','status','promote','sticky','language','comment',
-                                     'title', 'tnid'));
-      $this->addFieldMapping('uid')->defaultValue(1); //make all nodes admin's by default for testing
+                                     'title', 'tnid', 'uid'));
       $this->addFieldMapping('nid', 'nid');
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
       $this->addFieldMapping('revision_uid', 'nr_uid');
       $this->addFieldMapping('body', 'body')
-        //->arguments(array('format' => array('source_field'=>'name')));
-        ->arguments(array('format'=>'filtered_html'));
+        ->arguments(array('format' => array('source_field'=>'name')));
+        //->arguments(array('format'=>'filtered_html'));
       $this->addFieldMapping('log', 'log'); //from nr
       $this->addFieldMapping('revision')->defaultValue(TRUE); //create a new revision.  vid is automatically migrated
       $this->addFieldMapping('path', 'path'); //see prepareRow
@@ -135,6 +134,13 @@ abstract class AbstractNodeOSMigration extends OSMigration {
    * Fetches path from {url_alias}
    */
   function prepareRow($current_row) {
+    
+    //check if bundle exists.
+    $info = field_info_bundles('node');
+    if (!isset($info[$this->bundle])) {
+      Migration::displayMessage(t('Could not migrate into non-existant bundle'));
+      return FALSE;
+    }
     
     //get path from {url_alias}
     $query = parent::d6_db_select('url_alias', 'ua')
