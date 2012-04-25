@@ -4,7 +4,7 @@
  * General tests for WYSIWYG functions in OpenScholar
  */
 
-class OsWysiwygTestCase extends DrupalWebTestCase {
+class OsWysiwygTestCase extends OpenscholarWebTestCase {
 
   protected $urlList = array(
     'youtube' => 'http://youtu.be/hUkiJOBYmU4',
@@ -18,8 +18,17 @@ class OsWysiwygTestCase extends DrupalWebTestCase {
 
   );
 
+  public static function getInfo() {
+    return array(
+      'name' => 'Media oEmbed',
+      'description' => 'Tests for the embedding of content from an oembed link',
+      'group' => 'Media',
+    );
+  }
+
   protected function setUp() {
     parent::setUp('media_oembed');
+    variable_set('oembedembedly_api_key', '7dad0ee8bec911e0b3a84040d3dc5c07');
   }
 
   public function testOembedFilter() {
@@ -27,12 +36,20 @@ class OsWysiwygTestCase extends DrupalWebTestCase {
     foreach ($this->urlList as $source => $url) {
       // create an oembed file for each link
       $handler->embedCode = $url;
-      $handler->save();
+      try {
+        $handler->save();
+      }
+      catch (PDOException $pe) {
+        // database error
+        // skip this link
+        $this->fail("Database error with ".$source);
+        continue;
+      }
 
       $file = $handler->getFileObject();
       $tag = array(
         'type' => 'media',
-        'view_mode' => 'media_large',
+        'view_mode' => 'media_original',
         'fid' => $file->fid,
         'attributes' => array(
           'class' => 'media-image',
@@ -41,14 +58,22 @@ class OsWysiwygTestCase extends DrupalWebTestCase {
       );
 
       $text = '[['.drupal_json_encode($tag).']]';
+      debug($text);
       $fulltext = 'lorem ipsum '.$text.' some other stuff';
-      $filtered = check_markup($fulltext);
+      $filtered = check_markup($fulltext, 'filtered_html');
 
       $oembed = oembedcore_oembed_data($url);
 
-      $expected = 'lorem ipsum '.$oembed->html.' some other stuff';
+      if ($oembed->type == 'video') {
+        $expected = $oembed->html;
+      }
+      else {
+        $expected = theme('oembed', $oembed);
+      }
+      debug($filtered);
+      debug($expected);
 
-      $this->assertEqual($filtered, $expected);
+      $this->assertTrue(strpos($filtered, $expected) !== FALSE, "Testing of provider: "+$source);
     }
   }
 }
