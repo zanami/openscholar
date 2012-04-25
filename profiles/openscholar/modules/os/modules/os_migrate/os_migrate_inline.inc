@@ -46,11 +46,9 @@ class FileInlineOSMigration extends OSMigration {
     //file::import expects to recieve the file from a url or db blob.  local copy is not available.  
     //going with that for now.  may patch migrate if it's obnoxious.
     //this appraoch does not take into account vsite_domain_names from spaces_overrides
-    $query = parent::d6_db_select('variable', 'v')
-      ->fields('v', array('value'))
-      ->condition('v.name', 'purl_base_domain', '=');
-    $purl = unserialize($query->execute()->fetchField());
+    $purl = parent::d6_variable_get('purl_base_domain');
     $row->uri = $purl . '/' . $row->filepath; 
+
   }
   
 
@@ -98,10 +96,7 @@ class ImageInlineOSMigration extends OSMigration {
     //file::import expects to recieve the file from a url or db blob.  local copy is not available.  
     //going with that for now.  may patch migrate if it's obnoxious.
     //this appraoch does not take into account vsite_domain_names from spaces_overrides
-    $query = parent::d6_db_select('variable', 'v')
-      ->fields('v', array('value'))
-      ->condition('v.name', 'purl_base_domain', '=');
-    $purl = unserialize($query->execute()->fetchField());
+    $purl = parent::d6_variable_get('purl_base_domain');
     $row->uri = $purl . '/' . $row->filepath;
 
    // $row->field_os_inline_image_fid = $row->field_os_inline_image_fid . $row->vid . $row->delta; 
