@@ -94,6 +94,8 @@ border-radius:5px;
 
 .sidebar ul li a:hover {text-decoration:underline;}
 
+.submitted {font-weight:bold;}
+
 /**** MAIN NAV BAR ****/
 
 
@@ -148,7 +150,7 @@ border-radius:5px;
 -moz-border-radius:5px;
 }
 
-/* SECONDARY NAV WHEN IN HEADER RIGHT -- IF PLACED ELSEWHERE, DEFAULT STYLING WILL RULE */ 
+/* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
 #header-right #block-vsite_menus-scholar_secondary_menu  {
    width:290px;
    margin-bottom: 30px;
@@ -173,6 +175,20 @@ float:right;
   border-right:none;
  }
 
+/* SECONDARY NAV WHEN IN A SIDEBAR  */ 
+
+.sidebar #block-vsite_menus-scholar_secondary_menu ul {
+	margin: 8px 0 0 15px;
+	}
+
+.sidebar #block-vsite_menus-scholar_secondary_menu ul li {
+	list-style-type:square;
+	}
+
+.sidebar #block-vsite_menus-scholar_secondary_menu ul li a {
+  font-weight:bold;
+  font-size:1.1em;
+}
 
 
 /**** SEARCH BOX ****/

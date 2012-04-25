@@ -7,6 +7,7 @@
   screenshot  = screenshot.png
   stylesheets[screen][] = css/aberdeen.css
 
+os[widgets][vsite-site_search] = navbar
 os[theme_type]   = "vsite"
 os[theme_access] = "public"
 
