@@ -13,6 +13,37 @@ function os_context_default_contexts() {
   $context = new stdClass();
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
+  $context->name = 'os_admin';
+  $context->description = 'Context that is active when in administrative areas of an Openscholar site, like the CP';
+  $context->tag = 'OpenScholar';
+  $context->conditions = array(
+    'node' => array(
+      'values' => array(
+        'link' => 'link',
+      ),
+      'options' => array(
+        'node_form' => '2',
+      ),
+    ),
+    'path' => array(
+      'values' => array(
+        'cp' => 'cp',
+        'cp/*' => 'cp/*',
+      ),
+    ),
+  );
+  $context->reactions = array();
+  $context->condition_mode = 0;
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Context that is active when in administrative areas of an Openscholar site, like the CP');
+  t('OpenScholar');
+  $export['os_admin'] = $context;
+
+  $context = new stdClass();
+  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
+  $context->api_version = 3;
   $context->name = 'os_front';
   $context->description = 'Front Page';
   $context->tag = 'OS features';
@@ -49,7 +80,19 @@ function os_context_default_contexts() {
   $context->name = 'os_public';
   $context->description = 'Context that is active in public parts of an OpenScholar site';
   $context->tag = 'OpenScholar';
-  $context->conditions = array();
+  $context->conditions = array(
+    'context' => array(
+      'values' => array(
+        '~os_admin' => '~os_admin',
+      ),
+    ),
+    'path' => array(
+      'values' => array(
+        '~cp/*' => '~cp/*',
+        '~admin/*' => '~admin/*',
+      ),
+    ),
+  );
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
@@ -68,7 +111,7 @@ function os_context_default_contexts() {
       ),
     ),
   );
-  $context->condition_mode = 0;
+  $context->condition_mode = 1;
 
   // Translatables
   // Included for use with string extractors like potx.
