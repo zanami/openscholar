@@ -77,7 +77,7 @@ function views_content_cache_votingapi_results($cached, $content_type, $content_
  */
 function views_content_cache_update_set($object, $object_type, $timestamp = NULL) {
   $update = FALSE;
-  $timestamp = isset($timestamp) ? $timestamp : (time() + 1);
+  $timestamp = isset($timestamp) ? $timestamp : time();
   if ($cids = views_content_cache_id_generate($object, $object_type)) {
     foreach ($cids as $cid) {
       if (!empty($cid)) {
