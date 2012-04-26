@@ -81,6 +81,7 @@ dependencies[] = os_wysiwyg
 
 ; Features
 dependencies[] = os_links
+dependencies[] = os_announcements
 
 ; other
 dependencies[] = diff
