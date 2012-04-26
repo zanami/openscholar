@@ -511,7 +511,53 @@ abstract class OSMigration extends Migration {
         'typeof' => 'foaf:Image',
       ),
     );
+        
+    $sizes = array(
+      'imagecache-inline_larger' => 'media_large',
+      'imagecache-inline_default' => 'media_original',
+      '' => 'media_large',
+    );
+    
+    $attributes = array();
+    
+    switch ($type) {
+      case 'image':
+        //images may have titles but there's no way to enter a title in media
+        $class = $dom_object->getAttribute('class');
+        if (isset($sizes[$class])) {
+          $tag['view_mode'] = $sizes[$class];
+        }
+        $attributes = array('width'=>'width', 'height'=>'height');
+      break;
+        
+      case 'file':
+      break;
+
+      case 'url':
+      break;
+      
+      case 'iframe':
+        $attributes = array('width'=>'width', 'height'=>'height');
+        //style attr?  keep or ditch
+      break;
+    }
+
+    $tag['attributes'] += $this->_os_migrate_get_attributes($attributes, $dom_object);
     return ' [[' . drupal_json_encode($tag) . ']] ';
+  }
+  
+  /**
+   * get attributes from dom element
+   * attr array maps old (d6) to new d7 attribute, just in case things change due to new schema
+   **/
+  function _os_migrate_get_attributes(array $attr, DOMElement $dom) {
+    $return = array();
+    foreach ($attr as  $old => $new) {
+      if ($value = $dom->getAttribute($old)) {
+        $return[$new] = $value;
+      }
+    }
+    return $return;
   }
   
   //body saved by dom is full document.  strip doctype, html, body tags.
