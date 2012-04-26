@@ -1,0 +1,19 @@
+; $Id: scholar_department.info,v 1.12 2012/03/10 22:43:32 dcabral Exp $
+  name        = Aberdeen
+  description = A public theme for use in OpenScholar.
+  
+  core        = 6.x
+  base theme  = scholar_base
+  screenshot  = screenshot.png
+  stylesheets[screen][] = css/aberdeen.css
+
+os[widgets][vsite-site_search] = navbar
+os[theme_type]   = "vsite"
+os[theme_access] = "public"
+
+
+
+
+
+
+
