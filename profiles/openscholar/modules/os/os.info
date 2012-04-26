@@ -32,6 +32,7 @@ features[spaces_presets][] = os_personal
 features[taxonomy][] = vocab1
 features[taxonomy][] = vocab2
 features[taxonomy][] = vocab3
+features[user_permission][] = administer nodes
 features[user_role][] = administrator
 features[user_role][] = manager
 features[user_role][] = vsite admin
