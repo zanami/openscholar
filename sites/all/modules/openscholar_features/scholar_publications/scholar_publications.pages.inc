@@ -38,6 +38,22 @@ function scholar_publications_settings($space) {
     '#region' => 'right',
   );
 
+  //citation distribute plugins
+  $plugins = _citation_distribute_plugins();
+  foreach($plugins as $plugin) {
+    if (strlen($plugin['title']) && $plugin['name']!='googlescholar') {
+      $var = $plugin['handler']['class'] . '_auto_flag';
+      $form[$var] = array(
+    		'#type' => 'checkbox',
+        '#title' => t('Link to %service', array('%service'=>$plugin['title'])),
+        '#return_value' => 1,
+        '#default_value' => variable_get($var, 0),
+        '#description' => t('Send this publiction to %service for indexing.', array('%service'=>$plugin['title'])),
+        '#region' => 'right',        
+      );
+    }
+  }
+  
   $form['scholar_publications_note_in_teaser'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show the "note" content in teaser?'),

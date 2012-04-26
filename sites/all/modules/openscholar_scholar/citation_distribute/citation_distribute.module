@@ -176,7 +176,10 @@ function citation_distribute_form_alter(&$form, $form_state, $form_id) {
 																  	$plugin['name'], $form['nid']['#value'] ));
 																				
 				//Automatically mark distribution of plugins with autoflag enabled
-				$autoflag = variable_get($plugin['handler']['class'] . '_auto_flag', false);
+				//$autoflag = variable_get($plugin['handler']['class'] . '_auto_flag', false);
+				$var = $plugin['handler']['class'] . '_auto_flag';
+				$vsite = vsite_get_vsite();
+				$autoflag = $vsite->controllers->variable->get($var);
 				$auto = (($autoflag || $status->nid) && !$status->noauto ) ; //noauto only true for published nodes, removed from CD autoflag.
 				
 				$form['citation_distribute_selections'][$plugin['name']] = array(

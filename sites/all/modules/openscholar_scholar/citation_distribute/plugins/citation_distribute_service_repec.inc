@@ -17,15 +17,15 @@ class citation_distribute_service_repec extends citation_distribute_service {
   public function __construct() {
   	parent::__construct();
   	
-  	$this->title = variable_get('citation_distribute_service_citation_distribute_service_repec_title', '');
-  	$this->inst_name = variable_get('citation_distribute_service_citation_distribute_service_repec_inst_name', '');
-  	$this->archive_code = variable_get('citation_distribute_service_citation_distribute_service_repec_archive_code', '');
-  	$this->maintainer_name = variable_get('citation_distribute_service_citation_distribute_service_repec_maintainer_name', '');
-  	$this->maintainer_email = variable_get('citation_distribute_service_citation_distribute_service_repec_maintainer_email', '');
-  	$this->archive_path = variable_get('citation_distribute_service_citation_distribute_service_repec_archive_path', '');
-  	$this->archive_url = variable_get('citation_distribute_service_citation_distribute_service_repec_archive_url', '');
-  	$this->provider_institution = variable_get('citation_distribute_service_citation_distribute_service_repec_provider_institution', '');
-  	$this->provider_homepage = variable_get('citation_distribute_service_citation_distribute_service_repec_provider_homepage', '');
+  	$this->title = variable_get('citation_distribute_service_repec_title', '');
+  	$this->inst_name = variable_get('citation_distribute_service_repec_inst_name', '');
+  	$this->archive_code = variable_get('citation_distribute_service_repec_archive_code', '');
+  	$this->maintainer_name = variable_get('citation_distribute_service_repec_maintainer_name', '');
+  	$this->maintainer_email = variable_get('citation_distribute_service_repec_maintainer_email', '');
+  	$this->archive_path = variable_get('citation_distribute_service_repec_archive_path', '');
+  	$this->archive_url = variable_get('citation_distribute_service_repec_archive_url', '');
+  	$this->provider_institution = variable_get('citation_distribute_service_repec_provider_institution', '');
+  	$this->provider_homepage = variable_get('citation_distribute_service_repec_provider_homepage', '');
   }
 		
 	/**
@@ -335,6 +335,7 @@ class citation_distribute_service_repec extends citation_distribute_service {
 		
 		//create the path if necessary.  otherwise fail.  mkdir goes to logs, but users get generic failure message
 		if (!( is_dir($path) || mkdir($path, 0775, TRUE) )) {
+		  drupal_set_message(t('Could not save repec metadata to "%path".  Please contact support.', array('%path'=>$path)), 'error');
 			return false;
 		}
 		
