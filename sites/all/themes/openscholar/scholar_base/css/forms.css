@@ -240,6 +240,7 @@ select option {
 
 .form-region-right .og-vocab-taxonomy select {
   max-width: 100%;
+  min-height: 150px;
   }
 
 .form-radios {
