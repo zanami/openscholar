@@ -37,6 +37,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->addFieldMapping('log', 'log'); //from nr
       $this->addFieldMapping('revision')->defaultValue(TRUE); //create a new revision.  vid is automatically migrated
       $this->addFieldMapping('path', 'path'); //see prepareRow
+      $this->addFieldMapping('pathauto')->defaultValue(0); //do not create new paths.  paths already exist.
       
       $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
       $this->addFieldMapping('field_file_upload', 'file_upload')->arguments($associated_files_args);
@@ -146,30 +147,14 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $query = parent::d6_db_select('url_alias', 'ua')
       ->fields('ua', array('dst'))
       ->condition('ua.src', 'node/'.$current_row->nid, '=');
-    
-    $results = $query->execute();
-    foreach($results as $row) {      //should be only one...
-      $current_row->path = $row->dst;
-    }
-    
+    $results = $query->execute()->fetchAssoc();
     
     //get file uploads
     $current_row->file_upload = parent::os_migrate_get_file_uploads($current_row->vid);
     // file upload fields aren't in current page type.  
     
-    //get os inline oembeds
-   // $current_row->os_inline_oembed = parent::os_migrate_inline_oembed($current_row->vid);
-    
     //adjust the body to use new fids for inline objects
     parent::os_migrate_inline_update($current_row);
   }
-  
-  //prepare views the row after fields have been built and attached to entity but before entity is in db.  not using it yet, just here for debugging.
-  //matt's wysiwyg processing shenaigans will go here
- /* function prepare($entity, $row) {
-    if (count($row->os_inline_oembed)) {
-      TRUE;
-    }
-  }*/
   
 }
