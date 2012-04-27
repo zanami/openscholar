@@ -26,8 +26,9 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->dependencies = array('UsersOS', 'EmbedInlineOS', 'ImageInlineOS', 'FileInlineOS', 'HTMLInlineOS'); //og when that's done
       
       /* mappings */
-      $this->addSimpleMappings(array('created','changed','status','promote','sticky','language','comment',
+      $this->addSimpleMappings(array('created','changed','status','promote','sticky','comment',
                                      'title', 'tnid', 'uid'));
+      $this->addFieldMapping('language', 'language')->defaultValue('und');
       $this->addFieldMapping('nid', 'nid');
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
       $this->addFieldMapping('revision_uid', 'nr_uid');
@@ -36,8 +37,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         //->arguments(array('format'=>'filtered_html'));
       $this->addFieldMapping('log', 'log'); //from nr
       $this->addFieldMapping('revision')->defaultValue(TRUE); //create a new revision.  vid is automatically migrated
-      $this->addFieldMapping('path', 'path'); //see prepareRow
-      $this->addFieldMapping('pathauto')->defaultValue(0); //do not create new paths.  paths already exist.
+      $this->addFieldMapping('path', 'path');
+      $this->addFieldMapping('pathauto')->defaultValue(FALSE); //do not create new paths.  paths already exist.
       
       $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
       $this->addFieldMapping('field_file_upload', 'file_upload')->arguments($associated_files_args);
@@ -148,10 +149,16 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       ->fields('ua', array('dst'))
       ->condition('ua.src', 'node/'.$current_row->nid, '=');
     $results = $query->execute()->fetchAssoc();
+    $current_row->path = $results['dst'];
     
     //get file uploads
     $current_row->file_upload = parent::os_migrate_get_file_uploads($current_row->vid);
     // file upload fields aren't in current page type.  
+    
+    //lanuage should be explicitly undefined instead of blank
+    if (!strlen($current_row->langauge)) {
+      $current_row->language = 'und';
+    }
     
     //adjust the body to use new fids for inline objects
     parent::os_migrate_inline_update($current_row);
