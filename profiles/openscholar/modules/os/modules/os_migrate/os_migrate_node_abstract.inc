@@ -33,8 +33,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
       $this->addFieldMapping('revision_uid', 'nr_uid');
       $this->addFieldMapping('body', 'body')
-        ->arguments(array('format' => array('source_field'=>'name')));
-        //->arguments(array('format'=>'filtered_html'));
+        ->arguments(array('format' => array('source_field'=>'format')));
+        //>arguments(array('format'=>'filtered_html'));
       $this->addFieldMapping('log', 'log'); //from nr
       $this->addFieldMapping('revision')->defaultValue(TRUE); //create a new revision.  vid is automatically migrated
       $this->addFieldMapping('path', 'path');
@@ -75,7 +75,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $query->fields('nr', array('body', 'uid', 'log'));
     
     $query->join('filter_formats', 'ff', 'nr.format = ff.format');
-    $query->fields('ff', array('name'));
+    $query->addField('ff', 'name', 'format_name');
     $query->orderBy('n.changed');
                
 
@@ -156,8 +156,17 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     // file upload fields aren't in current page type.  
     
     //lanuage should be explicitly undefined instead of blank
-    if (!strlen($current_row->langauge)) {
+    if (!strlen($current_row->language)) {
       $current_row->language = 'und';
+    }
+    
+    //format.  legacy formats are Filtered HTML, Full HTML, PHP Code, Comments HTML, Minimal WYSIWYG, FUll WYSWIWYG
+    switch ($current_row->format_name) {
+      case 'PHP Code':
+        $current_row->format = 'plain_text';
+        break;
+      default:
+        $current_row->format = 'filtered_html';
     }
     
     //adjust the body to use new fids for inline objects
