@@ -15,13 +15,13 @@ background: #fff;
 padding:1px 20px 20px;
  }
  
-  #content-main {padding:20px 0 0 0;}
+  #content-main {padding:15px 0 0 0;}
   
 
  
 #sidebar-second  {
     width: 250px;
-    margin-top:25px;
+    margin-top:21px;
 }
  
  .content-left.content-right #content-left {
@@ -156,7 +156,7 @@ padding: 3px 3px 0 0;
     padding: 3px 0 3px 0px;
   } 
     #boxes-box-vsite_taxonomy_fltr_cat ul li span {  
-  font-size: 11px;
+  display:none;
   }
   
   #content-bottom .box-os_boxes_simple  h3.title {
@@ -178,8 +178,9 @@ padding: 3px 3px 0 0;
   margin-left:8px;
   padding-left: 39px;
    } 
-   
 
+#block-boxes-scholar_announcements_latest .node-type-announcement.node-teaser {margin-bottom:25px;}
+#block-boxes-scholar_announcements_latest .submitted {margin-top:-8px;}
 
     #boxes-box-scholar_announcements_latest .boxes-box-content h3 {
   text-transform: none;
@@ -230,12 +231,12 @@ h5 span {
 }
 
 .box-os_boxes_modal_image:nth-child(3) {
-	 margin: 0 15px;
+	 margin: 17px -7px 0;
 	float:right;
 }
 
 .box-os_boxes_modal_image:nth-child(4) {
-	 margin: 20px -8px;
+	 margin: 13px -7px -20px;
 	float:right;
 }
 
@@ -291,7 +292,7 @@ clear:right;
 #header-right #block-vsite_menus-scholar_secondary_menu {
  clear: none;
     float: left;
-    margin-left: -121px;
+    margin-left: -85px;
     margin-top: 3px;
     padding: 0 0 5px 5px;
     width: 267px;
@@ -326,7 +327,30 @@ border-right:none;
   background: none; 
 	padding-top:0;
 }	
+
+.sidebar #block-boxes-scholar_book_current_toc ul {
+margin-left:0;
+  }
+
+.sidebar #block-boxes-scholar_book_current_toc ul li {
+	background:#acb5bc;
+  }
+
+
+.sidebar #block-boxes-scholar_book_current_toc ul li a {
+	font-size:14px;
+display: block;
+  text-decoration: none;
+font-weight:normal;
+   padding: 5px 0 6px 10px;
+  color: #fff;
+text-transform:uppercase;
+  } 
 	
+.sidebar #block-boxes-scholar_book_current_toc ul li a.active {
+font-style:normal;
+ } 
+		
 
 .sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li  {
   list-style: none;
@@ -341,6 +365,7 @@ border-right:none;
   text-decoration: none;
    padding: 5px 0 6px 24px;
   color: #666;
+text-transform:none;
   }
   
 
@@ -361,11 +386,6 @@ border-right:none;
     font-weight: normal;
  } 
  
-#boxes-box-scholar_book_current_toc a.active,
-#boxes-box-scholar_book_current_toc a {
-    display: none;
-}
- 
 /**** SLIDESHOW OVERRIDE STYLES ****/
 
 
@@ -385,15 +405,36 @@ div.views-field-field-gallery-image-fid img {
 .views_slideshow_singleframe_pager_os_slideshow-default a {text-decoration:none;}
 
 #views_slideshow_singleframe_prev_os_slideshow-default,
-#views_slideshow_singleframe_playpause_os_slideshow-default,
 #views_slideshow_singleframe_next_os_slideshow-default,
 .views-field-title {display:none;}
+
+.views_slideshow_controls .views_slideshow_pause,
+.views_slideshow_controls .views_slideshow_play {
+left:940px;
+  margin-top: -3px;
+}
+
+.views_slideshow_controls .views_slideshow_pause {
+    background: url('images/pause.gif') no-repeat scroll 0 0 transparent;
+    height: 19px;
+    width: 18px;
+}
+
+.views_slideshow_controls .views_slideshow_play {
+    background: url('images/play.gif') no-repeat scroll 0 0 transparent;
+    height: 19px;
+    width: 18px;
+}
 
 div.pager-item {font-size:11px;width:24px;height:24px;}
 
 .views_slideshow_singleframe_pager div {
     display: inline;
     padding-left: 7px;
+}
+
+#views_slideshow_singleframe_pager_os_slideshow-default {
+margin-right:26px;
 }
 
  .pager-item a { background: #FFF; color:#333;padding:2px 5px;text-decoration: none;

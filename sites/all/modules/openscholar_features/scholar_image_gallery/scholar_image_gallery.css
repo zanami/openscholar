@@ -16,7 +16,7 @@
 
 body.node-type-gallery #content .node-type-gallery .view-content ul li,
 li.image_field_gallery {
-  height: 190px;
+  height: auto;
   margin: 0 6px 1.5em 0;
   font-size: 11px;
   line-height: 14px;

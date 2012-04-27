@@ -7,7 +7,7 @@
 .views-slideshow-controls-bottom {background: url('images/imgGalleryControlsBg_light.png') repeat-x;height:22px;border:1px solid #DDD;border-top:none;width:100%;z-index:6;position:relative;}
 
 
-#views_slideshow_singleframe_main_os_slideshow-default {margin-bottom:-25px;}
+#views_slideshow_singleframe_main_os_slideshow-default {margin-bottom:-5px;}
 
 .views_slideshow_controls .views_slideshow_play {background: url('images/imgGalleryControlsPlay_light.png') no-repeat; width:17px; height:17px;text-indent:-9999px;position: absolute;left: 38px;}
 .views_slideshow_controls .views_slideshow_pause {background: url('images/imgGalleryControlsPause_light.png') no-repeat; width:17px; height:17px; text-indent:-9999px;position: absolute;left: 38px; }
