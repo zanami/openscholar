@@ -29,7 +29,13 @@ class views_content_cache_key_os_og extends views_content_cache_key_og {
     	}
     }
     
-    return parent::content_key($object,$object_type);
+    $return = parent::content_key($object,$object_type);
+    if(empty($return)){
+    	//We return null instead since we do not wish "ALL Sites" to be cleared
+    	return array(NULL);
+    }
+    
+    return $return;
   }
   
 }
