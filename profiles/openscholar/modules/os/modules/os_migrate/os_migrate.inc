@@ -147,7 +147,7 @@ abstract class OSMigration extends Migration {
     $table = ($table) ? $table : 'content_type_' . $content_type;
     //class has Link Date Text
     $fields = array();
-//    foreach($this->cck_fields as $name => $field) {
+    $leftjoin = array();
     foreach($this->cck_fields as $value) {
       $field = $value['cck_type'];
       $name = $value['cck_name'];
@@ -155,12 +155,19 @@ abstract class OSMigration extends Migration {
       switch ($field) {
         case 'Link':
           $fields += array('field_'.$name.'_url', 'field_'.$name.'_title', 'field_'.$name.'_attributes');
-          break;
+        break;
 
         case 'Date':
         case 'Text':
           $fields[] = 'field_'.$name.'_value';
-          break;
+        break;
+          
+        case 'File':
+          $fields += array("field_${name}_fid", "field_${name}_list", "field_${name}_data");   
+          $leftjoin[] = array('table'=>'files', 'alias'=>'f', 'join'=>"ct.field_${name}_fid = f.fid",
+            'fields'=>array('filepath',));
+          
+        break;
 
         default:
           break;
@@ -170,6 +177,11 @@ abstract class OSMigration extends Migration {
     if (count($fields)) {
       $query->leftjoin($table, 'ct', 'n.vid = ct.vid');
       $query->fields('ct', $fields);
+    }
+    //would do additional joins in case, but ct hasn't been added yet, so do them here instead.
+    foreach ($leftjoin as $join) {
+      $query->leftjoin($join['table'], $join['alias'], $join['join']);
+      $query->fields($join['alias'], $join['fields']);
     }
   }
 
@@ -187,6 +199,13 @@ abstract class OSMigration extends Migration {
           }
           
         break;
+        
+        case 'File':
+          if (isset($row->field_announcement_photo_fid)) {
+            $row->field_photo = variable_get('os_migrate_files', '') . '/' . $row->filepath;
+          }
+        break;
+          
 
         default:
           break;
@@ -200,7 +219,7 @@ abstract class OSMigration extends Migration {
       $cck_type = $value['cck_type'];
       $cck_name = $value['cck_name'];
       $dest_name = $value['dest_name'];
-      $dest_type = $value['dest_type'];
+      $dest_type = $value['dest_type'];  //whole name or just the common part?  field_photo implies whole name...
       
       switch ($dest_type) {
         case 'Link':
@@ -213,6 +232,13 @@ abstract class OSMigration extends Migration {
             'title' =>      array('source_field' => 'field_'.$cck_name.'_title'),
             'attributes' => array('source_field' => 'field_'.$cck_name.'_attributes'),
           ));    
+        break;
+        
+        case 'Image':
+          $this->addFieldMapping($dest_name, $dest_name)->arguments(array(
+            'file_function' => 'file_copy',
+            'file_source' => array('source_field'=>$row->filepath),
+          ));
         break;
       }
     }
@@ -229,6 +255,15 @@ abstract class OSMigration extends Migration {
 						'field_'.$name.'_url' => 'Link URL',
             'field_'.$name.'_title' => 'Link Title',
             'field_'.$name.'_attributes' => 'Link Attributes',
+          );
+        break;
+        
+        case 'File':
+          $return += array(
+            //name => desc
+						'field_'.$name.'_fid' => 'File ID',
+            'field_'.$name.'_list' => 'Show file?',
+            'field_'.$name.'_data' => 'Metadata about file',
           );
         break;
       }
