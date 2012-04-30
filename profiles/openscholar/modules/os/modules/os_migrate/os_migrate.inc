@@ -143,14 +143,16 @@ abstract class OSMigration extends Migration {
    ***************************************/
   
   //adds joins and fields based on migrate object's cck_fields property
-  function addQueryCCK(&$query, $content_type, $table=NULL) {
-    $table = ($table) ? $table : 'content_type_' . $content_type;
+  function addQueryCCK(&$query, $content_type) {
+    $table = 'content_type_' . $content_type;
+
     //class has Link Date Text
     $fields = array();
     $leftjoin = array();
     foreach($this->cck_fields as $value) {
       $field = $value['cck_type'];
       $name = $value['cck_name'];
+      //add a table override as well?
       
       switch ($field) {
         case 'Link':
@@ -237,7 +239,7 @@ abstract class OSMigration extends Migration {
         case 'Image':
           $this->addFieldMapping($dest_name, $dest_name)->arguments(array(
             'file_function' => 'file_copy',
-            'file_source' => array('source_field'=>$row->filepath),
+            'file_source' => array('source_field'=>'filepath'),
           ));
         break;
       }

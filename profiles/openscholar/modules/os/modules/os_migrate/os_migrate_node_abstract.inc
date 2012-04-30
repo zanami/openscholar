@@ -13,7 +13,9 @@
  * Defines mappings for node table.  Let each type implement this and dscribe the specifics
  */
 abstract class AbstractNodeOSMigration extends OSMigration {
+
   public function __construct($destination_bundle, $source_content_type, $create = TRUE) {
+    $this->bundle = $destination_bundle;
     
     parent::__construct(MigrateGroup::getInstance('node', array('inline', 'users')));    
     //when extending this class, don't forget to update info file with new filename!
@@ -39,6 +41,9 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->addFieldMapping('revision')->defaultValue(TRUE); //create a new revision.  vid is automatically migrated
       $this->addFieldMapping('path', 'path');
       $this->addFieldMapping('pathauto')->defaultValue(FALSE); //do not create new paths.  paths already exist.
+      
+      parent::addMappingsCCK(); //map additional cck fields
+      
       
       $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
       $this->addFieldMapping('field_file_upload', 'file_upload')->arguments($associated_files_args);
@@ -79,17 +84,21 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $query->orderBy('n.changed');
                
 
+    parent::addQueryCCK($query, $content_type); //include joins for cck fields base on class's cck_fields array
     
     return $query;
   }
   
   public function sourceFields() {
-    return array(
+    $source_fields =  array(
     	'nid'   => t('Node ID'),
       'path'  => t('URL Path Alias'),
       'file_upload' => t('File attachments'), //this may have to move to individual classes
       //'nr.body'	=> t('Node\'s Content')
     );
+    
+    $source_fields+= parent::sourceFieldsCCK();
+    return $source_fields;
   }
   
   public function source($content_type) {
@@ -171,6 +180,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     
     //adjust the body to use new fids for inline objects
     parent::os_migrate_inline_update($current_row);
+    
+    //prep cck field data
+    parent::prepareRowCCK($current_row);
+    
   }
   
 }

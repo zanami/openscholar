@@ -11,33 +11,12 @@ class LinkNodeOSMigration extends AbstractNodeOSMigration {
         'dest_type' => 'Link',
       ),
     );
-  
-    $this->bundle = 'link'; //destination node type    
-    
+      
     // Let AbstractNode handle the source, dest, and map.
-    parent::__construct($this->bundle, 'link'); //current types are vsite, article, and page.  lets start with one of those instead?
+    parent::__construct('link', 'link'); //current types are vsite, article, and page.  lets start with one of those instead?
     $this->description = t('OS Link Nodes');    
-    
-    parent::addMappingsCCK();
   }
 
 
-  //also include content type's data
-  public function query($content_type) {
-    $query = parent::query($content_type);
-    
-    parent::addQueryCCK($query, $content_type);
 
-    return $query;
-  }
-  
-  public function prepareRow($row) {
-    parent::prepareRowCCK($row);
-  }
-  
-  public function sourceFields() {
-    $fields = parent::sourceFields();
-    $fields += parent::sourceFieldsCCK();
-    return $fields;
-  }
 }
