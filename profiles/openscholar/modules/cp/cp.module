@@ -9,6 +9,18 @@ define('CP_MENU_MINI', 'mini');
 define('CP_MENU_FULL', 'full');
 
 /**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function cp_ctools_plugin_api(){
+  list($module, $api) = func_get_args();
+  if ($module == "context" && $api == "context") {
+    return array(
+      "version" => 3
+    );
+  }
+}
+
+/**
  * Implements hook_menu
  */
 function cp_menu(){
@@ -196,13 +208,11 @@ function _cp_full_menu() {
   $user_links[] = array(
     'title' => t('Logout'),
     'href' => "logout",
-    'query' => !context_isset('context', 'vsite-section-cp')?array('destination' => $_GET['q']):'',
+    'query' => !context_isset('context', 'cp-admin')?array('destination' => $_GET['q']):'',
   );
-  if (context_isset('context', 'vsite-section-cp')) {
+  if (context_isset('context', 'cp-admin')) {
     $user_links[] = array(
-      'title' => t('Back to <strong>!sitename</strong>', array(
-        '!sitename' => spaces_get_space()->group->purl
-      )),
+      'title' => t('Back to your site!'),
       'href' => "",
       'html' => TRUE
     );
