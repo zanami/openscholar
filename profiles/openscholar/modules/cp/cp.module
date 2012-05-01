@@ -140,16 +140,19 @@ function cp_settings(){
   return 'cp/settings';
 }
 
-function cp_preprocess_html(&$vars) {
-  $menu = '';
+function cp_page_build(&$page) {
+  $menu = array();
   switch (_cp_get_toolbar_setting()) {
     case CP_MENU_FULL:
-      $menu = _cp_full_menu();
-      break;
+        $menu = _cp_full_menu();
+        $page['#classes_array'][] = 'cp-menu-full';
+        break;
     case CP_MENU_MINI:
-      $menu = _cp_mini_menu();
-    break;
+        $menu = _cp_mini_menu();
+        $page['#classes_array'][] = 'cp-menu-mini';
+        break;
   }
+  $page['page_top']['cp_menu'] = $menu;
 }
 
 function _cp_get_toolbar_setting() {
@@ -166,14 +169,65 @@ function _cp_get_toolbar_setting() {
 }
 
 function _cp_full_menu() {
+  $links = array();
 
+  // Retrieve the admin menu from the database.
+  $tree = menu_tree_all_data('cp');
+  dpm($tree);
+  $links = menu_tree_output($tree);
+
+  // Add user-specific links
+  global $user;
+  $user_links = array();
+  $user_links[] = array(
+    'title' => t('Hello <strong>!username</strong>', array(
+      '!username' => $user->name
+    )),
+    'href' => 'user',
+    'html' => TRUE
+  );
+
+  /*$new_count = vsite_news_get_new_activity_count();
+  $user_links[] = array(
+    'title' => $new_count,
+    'href' => 'cp/news', //@TODO: replace this with new path
+    'attributes' => $new_count?array('class' => 'unread', 'title' => t('Unread Activity on your Site')):array('title' => t('All Activity on your Site')),
+  );*/
+
+  $user_links[] = array(
+    'title' => t('Logout'),
+    'href' => "logout",
+    'query' => !context_isset('context', 'vsite-section-cp')?array('destination' => $_GET['q']):'',
+  );
+  if (context_isset('context', 'vsite-section-cp')) {
+    $user_links[] = array(
+      'title' => t('Back to <strong>!sitename</strong>', array(
+        '!sitename' => spaces_get_space()->group->purl
+      )),
+      'href' => "",
+      'html' => TRUE
+    );
+  }
+
+  return array(
+    '#type' => 'container',
+    'toolbar' => $links,
+    'user' => array(
+      '#theme' => 'links',
+      '#links' => $user_links,
+    ),
+    '#attributes' => array(
+      'id' => array(
+        'cp-menu-full',
+      ),
+    ),
+  );
 }
 
 function _cp_mini_menu() {global $user;
-      $vsite = spaces_get_space();
       $user_links = array();
 
-      if ($vsite->access_admin()) {
+      if (spaces_access_admin()) {
         $user_links[] = l('Control Panel', 'cp/build/features', array('attributes' => array('class' => 'wrench', 'title' => t('Manage this Site'))));
 
         //$new_count = vsite_news_get_new_activity_count();
@@ -185,7 +239,7 @@ function _cp_mini_menu() {global $user;
             '!username' => $user->name
          )),
         'children' => array(
-          l('My Account', 'user'),
+          l('My OS Account', 'user'),
           l('Logout', 'logout'),
         )
       );
