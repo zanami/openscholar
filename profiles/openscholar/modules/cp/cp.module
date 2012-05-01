@@ -100,8 +100,6 @@ function cp_menu(){
     'weight' => 20,
   );
 
-
-
   // make them all part of 'cp' menu
   foreach ( $items as $path => $item ) {
     if (! array_key_exists('menu_name', $item))
@@ -111,10 +109,7 @@ function cp_menu(){
     if (! array_key_exists('access callback', $item))
       $items[$path]['access arguments'] = array('access content');
   }
-
-
   return $items;
-
 }
 
 /**
@@ -152,6 +147,34 @@ function cp_settings(){
   return 'cp/settings';
 }
 
+/**
+ * Block functions
+ * Implementations of block hooks to define the navigation block
+ */
+function cp_block_info() {
+  return array(
+    'cp_subnav' => array(
+      'info' => t('CP Subnavigation'),
+      'region' => 'sidebar_first',
+      'cache' => DRUPAL_CACHE_GLOBAL,
+      'visibility' => BLOCK_VISIBILITY_LISTED,
+      'pages' => 'cp/*',
+    ),
+  );
+}
+
+function cp_block_view($delta) {
+  if ($delta != 'cp_subnav') return;  // does this every happen?
+
+  return array(
+    'subject' => NULL,
+    'content' => menu_primary_local_tasks(),
+  );
+}
+
+/**
+ * Adds the CP menus to a page
+ */
 function cp_page_build(&$page) {
   $menu = array();
   switch (_cp_get_toolbar_setting()) {
@@ -167,6 +190,9 @@ function cp_page_build(&$page) {
   $page['page_top']['cp_menu'] = $menu;
 }
 
+/**
+ * Returns a constant reflecting the state of the CP menu
+ */
 function _cp_get_toolbar_setting() {
 
   if (!user_is_logged_in()) {
@@ -233,26 +259,32 @@ function _cp_full_menu() {
   );
 }
 
-function _cp_mini_menu() {global $user;
-      $user_links = array();
+function _cp_mini_menu() {
+  global $user;
+  $user_links = array();
 
-      if (spaces_access_admin()) {
-        $user_links[] = l('Control Panel', 'cp/build/features', array('attributes' => array('class' => 'wrench', 'title' => t('Manage this Site'))));
+  if (spaces_access_admin()) {
+    $user_links[] = l('Control Panel', 'cp/build/features', array('attributes' => array('class' => 'wrench', 'title' => t('Manage this Site'))));
 
-        //$new_count = vsite_news_get_new_activity_count();
-        $user_links[] = l($new_count, 'cp/news', $new_count?array('attributes' => array('class' => 'unread', 'title' => t('New Activity on this Site'))):array('attributes' => array('title' => t('All Activity on this Site'))));
-      }
+    //$new_count = vsite_news_get_new_activity_count();
+    $user_links[] = l($new_count, 'cp/news', $new_count?array('attributes' => array('class' => 'unread', 'title' => t('New Activity on this Site'))):array('attributes' => array('title' => t('All Activity on this Site'))));
+  }
 
-      $user_links[] = array(
-        'data' => t('Hello <strong>!username</strong>', array(
-            '!username' => $user->name
-         )),
-        'children' => array(
-          l('My OS Account', 'user'),
-          l('Logout', 'logout'),
-        )
-      );
+  $user_links[] = array(
+    'data' => t('Hello <strong>!username</strong>', array(
+        '!username' => $user->name
+     )),
+    'children' => array(
+      l('My Account', 'user'),
+      l('Logout', 'logout'),
+    )
+  );
 
-      $vars['cp_toolbar'] = theme('item_list', $user_links);
-      $vars['body_classes'] .= ' cp-toolbar-mini';
+  return array(
+  	'#theme' => 'item_list',
+    '#links' => $user_links,
+    '#attributes' => array(
+      'id' => 'cp-menu-mini',
+    )
+  );
 }
