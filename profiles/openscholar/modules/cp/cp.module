@@ -173,7 +173,6 @@ function _cp_full_menu() {
 
   // Retrieve the admin menu from the database.
   $tree = menu_tree_all_data('cp');
-  dpm($tree);
   $links = menu_tree_output($tree);
 
   // Add user-specific links
