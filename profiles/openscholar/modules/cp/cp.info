@@ -1,4 +1,7 @@
 name = "Control panel"
 description = "Admin interface mainly for OpnenScholar installs"
 core = 7.x
+dependencies[] = "ctools"
+features[ctools][] = "context:context:3"
+features[context][] = "cp-admin"
 
