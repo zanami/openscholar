@@ -12,7 +12,7 @@ class os_boxes_manual_list extends os_boxes_default {
     $form = array();
 
     $form['#attached']['js'] = array(
-      drupal_get_path('module', 'os_boxes_plugins').'/plugins/os_boxes_manual_list/os_boxes_manual_list.js'
+      drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_manual_list/os_boxes_manual_list.js'
     );
 
     $form['add'] = array(
