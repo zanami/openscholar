@@ -483,7 +483,10 @@ abstract class OSMigration extends Migration {
       ->condition('sourceid1', $fid, '=')
       ->isNotNull(('destid1'));
     $entity_id = $query->execute()->fetchAssoc();
-    $entity = file_load($entity_id['destid1']);
+    if (! ($entity_id && $entity = file_load($entity_id['destid1']))) {
+      self::displayMessage(t('Migration error on source file %fid.  Could not find file in migration tables.  Continuing without file.  Check Inline migrations.', array('%fid'=>$fid)), 'warning');
+      return; 
+    } 
     
     $uri = str_replace('public://', '', $entity->uri);
     $a = explode('/', $uri);
