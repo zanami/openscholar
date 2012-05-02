@@ -122,7 +122,7 @@
 						toolbar = cm.get(tdId);
 						if (typeof toolbar != 'undefined') {
 							cm.setActive('pdw_toggle', 1);
-							DOM.hide(id);
+							DOM.hide(toolbar.id);
 							t._resizeIframe(ed, tdId, 26);
 						}
 					}
