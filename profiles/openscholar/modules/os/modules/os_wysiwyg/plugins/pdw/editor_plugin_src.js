@@ -56,31 +56,37 @@
 		 * @param {string} url Absolute URL to where the plugin is located.
 		 */
 		init : function(ed, url) {
-			var t = this, 
-				toolbars = new Array(),	i;
+			var t = this, tbIds = new Array(), toolbars = new Array(), i;
 			
 			// Split toolbars
-			// toolbars = (Drupal.settings.wysiwyg.plugins.drupal.pdw.pdw_toggle_toolbars).split(',');
-			ed.onInit.add(function () {
-				var $breaks = jQuery('.mceToolbarEnd'); 
-				$breaks.each(function () {
-					var $this = jQuery(this);
-					toolbars.push(jQuery().add($this.nextUntil('.mceToolbarEnd')));
-				});
-			});
+			toolbars = (ed.settings.pdw_toggle_toolbars).split(',');
+			
+			for(i = 0; i < toolbars.length; i++){
+				tbIds[i] = ed.getParam('', 'toolbar' + (toolbars[i]).replace(' ',''));
+			}
 			
 			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');
 			ed.addCommand('mcePDWToggleToolbars', function() {
 			
-				var cm = ed.controlManager, 
-				id, j, 
-				Cookie = tinymce.util.Cookie,
-				Toggle_PDW, 
-				Toggle = Cookie.getHash("TinyMCE_toggle") || new Object();
-				
-				for(j = 0; j < toolbars.length; j++){
+				var cm = ed.controlManager, id, j, Cookie = tinymce.util.Cookie, Toggle_PDW, Toggle = Cookie.getHash("TinyMCE_toggle") || new Object();
+				for(j = 0; j < tbIds.length; j++){
 					
-					toolbars[j].fadeToggle();
+					obj = ed.controlManager.get(tbIds[j]);
+                    if(typeof obj =="undefined") {
+                        continue;
+                    }
+                    id = obj.id;
+					
+					if (DOM.isHidden(id)) {
+						Toggle_PDW = 0;
+						DOM.show(id);
+						t._resizeIframe(ed, tbIds[j], -26);
+						
+					} else {
+						Toggle_PDW = 1;
+						DOM.hide(id);
+						t._resizeIframe(ed, tbIds[j], 26);
+					}
 				}
 				cm.setActive('pdw_toggle', Toggle_PDW);
 				ed.settings.pdw_toggle_on = Toggle_PDW;
@@ -92,7 +98,7 @@
 			ed.addButton('pdw', {
 				title : ed.getLang('pdw.desc', 0),
 				cmd : 'mcePDWToggleToolbars',
-				image : Drupal.settings.wysiwyg.plugins.drupal.pdw.path + '/img/toolbars.gif'
+				image : url + '/img/toolbars.gif'
 			});
 			
 			ed.onPostRender.add(function(){
@@ -109,14 +115,16 @@
 			
 				if (run) {
 
-					var cm = ed.controlManager, tdId, id;
+					var cm = ed.controlManager, tdId, id, toolbar;
 					
-					for(i = 0; i < toolbars.length; i++){
-//						tbId = ed.getParam('', 'toolbar' + (toolbars[i]).replace(' ',''));
-//						id = ed.controlManager.get(tbId).id;
-						cm.setActive('pdw_toggle', 1);
-//						DOM.hide(id);
-//						t._resizeIframe(ed, tbId, 26);
+					for(i = 0; i < tbIds.length; i++){
+						tdId = tbIds[i];
+						toolbar = cm.get(tdId);
+						if (typeof toolbar != 'undefined') {
+							cm.setActive('pdw_toggle', 1);
+							DOM.hide(id);
+							t._resizeIframe(ed, tdId, 26);
+						}
 					}
 				}
 			});
