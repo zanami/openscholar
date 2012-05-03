@@ -138,6 +138,29 @@ abstract class OSMigration extends Migration {
     return $variable_cache[$var];
   }
 
+  /*
+   * Check that a file exists before letting migrate try to copy it.
+   * Inline images and files have been looping when a file isn't available.
+   * This helper function processes the path in the same way before trying to
+   * copy so we can bail out if the file is unavailable
+   */
+  function legacy_file_exists($path) {
+//  	$path = trim(parse_url($path, PHP_URL_PATH), '/');
+    $path = str_replace(' ', '%20', $path);
+
+    //try file first
+    if (file_exists($path)) {
+    	return TRUE;
+    } 
+    
+    //now try url
+    $headers = @get_headers($path);
+    if ($headers && ($headers[0] != 'HTTP/1.0 404 Not Found')) {
+    	return TRUE;
+    }
+  	
+    return FALSE;
+  }
   /*************************************
    * CCK Field mappers
    ***************************************/

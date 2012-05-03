@@ -99,11 +99,16 @@ class ImageInlineOSMigration extends OSMigration {
     $purl = parent::d6_variable_get('purl_base_domain');
     $row->uri = $purl . '/' . $row->filepath;
 
-   // $row->field_os_inline_image_fid = $row->field_os_inline_image_fid . $row->vid . $row->delta; 
+    // $row->field_os_inline_image_fid = $row->field_os_inline_image_fid . $row->vid . $row->delta;
+    
+    //lets fail all the inlines.  does that prevent errors?
+    if (!parent::legacy_file_exists($row->uri)) {
+      self::saveMessage(t('Could not copy inline image %uri.  Ignoring it.', array('%uri'=>$row->uri)));
+      //how to log message?
+      return FALSE;
+    }
   }
 }
-
-
 
 
 class EmbedInlineOSMigration extends OSMigration {
