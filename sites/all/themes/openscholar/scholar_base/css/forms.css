@@ -1,15 +1,12 @@
 /* Forms */
 
 .section-node-add #cp-content,
-.section-node-edit #cp-content  {
+.section-node-edit #cp-content,
+.view-og-members  {
   padding:30px 30px;
   }
   
-
-.view-og-members {
-  padding:30px 30px;
-  }
-
+  
 .section-node-add #cp-content,
 .section-node-edit #cp-content {
   background:#DFE1E3;

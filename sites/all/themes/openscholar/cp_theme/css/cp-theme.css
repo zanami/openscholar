@@ -143,6 +143,11 @@ body.sidebar-second #cp-content {
 #cp-content .view-vsite-support {
   margin: 30px 30px;
   }
+ 
+ .view-og-members {
+  margin-top: 45px;
+  }
+   
   
 body.page-cp-settings #cp-content .innerframe form  {
   margin-left: 75px;
