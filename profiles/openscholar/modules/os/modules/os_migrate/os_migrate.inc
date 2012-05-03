@@ -144,7 +144,7 @@ abstract class OSMigration extends Migration {
    * This helper function processes the path in the same way before trying to
    * copy so we can bail out if the file is unavailable
    */
-  function legacy_file_exists($path) {
+  function legacy_file_exists($path, $log_error=TRUE) {
 //  	$path = trim(parse_url($path, PHP_URL_PATH), '/');
     $path = str_replace(' ', '%20', $path);
 
@@ -158,7 +158,10 @@ abstract class OSMigration extends Migration {
     if ($headers && ($headers[0] != 'HTTP/1.0 404 Not Found')) {
     	return TRUE;
     }
-  	
+    
+    if ($log_error) {
+  	  self::saveMessage(t('Could not copy inline file %uri.  Ignoring it.', array('%uri'=>$path)));
+    }
     return FALSE;
   }
   /*************************************
