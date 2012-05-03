@@ -169,6 +169,7 @@ function citation_distribute_form_alter(&$form, $form_state, $form_id) {
 		  '#title' => t('Distribute this publication to the following academic repositories')
 		);
 		
+		$autoflags = variable_get('citation_distribute_autoflags', array());
 		// List all plugins with a title
 		foreach( _citation_distribute_plugins() as $plugin ) {
 			if (isset($plugin['title'])) {
@@ -177,9 +178,7 @@ function citation_distribute_form_alter(&$form, $form_state, $form_id) {
 																				
 				//Automatically mark distribution of plugins with autoflag enabled
 				//$autoflag = variable_get($plugin['handler']['class'] . '_auto_flag', false);
-				$var = $plugin['handler']['class'] . '_auto_flag';
-				$vsite = vsite_get_vsite();
-				$autoflag = $vsite->controllers->variable->get($var);
+				$autoflag = (isset($autoflags[$plugin['handler']['class']])) ? (bool) $autoflags[$plugin['handler']['class']] : FALSE;
 				$auto = (($autoflag || $status->nid) && !$status->noauto ) ; //noauto only true for published nodes, removed from CD autoflag.
 				
 				$form['citation_distribute_selections'][$plugin['name']] = array(
@@ -224,7 +223,8 @@ function citation_distribute_nodeapi(&$node, $op, $a3) {
 							$flag->flag('flag', $node->nid); //flag returns if the node was flagged.  my output never gets returned.
 							$distributed[] = $plugin['name'];
 						} else {
-							if (variable_get($plugin['handler']['class'] . '_auto_flag', false)) { //if user has unselected an autoflag, mark noauto.
+						  $autoflags = variable_get('citation_distribute_autoflags', array());
+							if ($autoflags[$plugin['handler']['class']]) { //if user has unselected an autoflag, mark noauto.
                 _citation_distribute_unlist_db($plugin['name'], $node->nid);
 							}
 							$flag->flag('unflag', $node->nid); //remove old flags

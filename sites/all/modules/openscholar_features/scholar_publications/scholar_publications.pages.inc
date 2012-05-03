@@ -39,20 +39,20 @@ function scholar_publications_settings($space) {
   );
 
   //citation distribute plugins
-  $plugins = _citation_distribute_plugins();
-  foreach($plugins as $plugin) {
-    if (strlen($plugin['title']) && $plugin['name']!='googlescholar') {
-      $var = $plugin['handler']['class'] . '_auto_flag';
-      $form[$var] = array(
-    		'#type' => 'checkbox',
-        '#title' => t('Link to %service', array('%service'=>$plugin['title'])),
-        '#return_value' => 1,
-        '#default_value' => variable_get($var, 0),
-        '#description' => t('Send this publiction to %service for indexing.', array('%service'=>$plugin['title'])),
-        '#region' => 'right',        
-      );
-    }
-  }
+   $form['citation_distribute_autoflags'] = array(
+     '#title' => t('Automatic Node Flagging'),
+     '#type' => 'checkboxes',
+     '#description' => t('New publications will automatically be flagged for distribution to the selected services.'),
+     '#default_value' => variable_get('citation_distribute_autoflags', array()),
+     '#options' => array(),
+     '#region' => 'right',
+   );
+   foreach (_citation_distribute_plugins() as $plugin) {
+     if (isset($plugin['title'])) {
+       $form['citation_distribute_autoflags']['#options'] += array($plugin['handler']['class'] => $plugin['title']);
+     }
+   }
+   
   
   $form['scholar_publications_note_in_teaser'] = array(
     '#type' => 'checkbox',
