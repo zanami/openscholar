@@ -769,6 +769,7 @@ a.delete {
 .node-inner ul.add-reference-node li a {
   	color:#228822;
   	font-size:16px;
+  	padding-left:13px;
   } 
 
 /* BUTTONS */

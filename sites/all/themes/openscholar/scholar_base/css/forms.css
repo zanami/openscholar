@@ -1,9 +1,13 @@
 /* Forms */
 
 .section-node-add #cp-content,
-.section-node-edit #cp-content,
+.section-node-edit #cp-content  {
+  padding:30px 30px;
+  }
+  
+
 .view-og-members {
-  padding:10px 30px;
+  padding:30px 30px;
   }
 
 .section-node-add #cp-content,
