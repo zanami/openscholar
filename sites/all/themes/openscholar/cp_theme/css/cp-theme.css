@@ -144,11 +144,7 @@ body.sidebar-second #cp-content {
   margin: 30px 30px;
   }
  
- .view-og-members {
-  margin-top: 45px;
-  }
-   
-  
+
 body.page-cp-settings #cp-content .innerframe form  {
   margin-left: 75px;
   }
@@ -184,8 +180,8 @@ right: 4px;
   
 .innerframe > .help {
 	position: absolute;
-right: 20px;
- top: 10px;
+right: 7px;
+ top: -25px;
   }  
   
 h2.title + .help {

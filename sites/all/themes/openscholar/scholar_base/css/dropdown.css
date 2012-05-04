@@ -219,6 +219,11 @@ margin-top:0px; /* This works only in Safari and Google Chrome */
   padding: 1px 8px 1px 25px !important;
 }
 
+.page-cp-users .context-links {
+position: relative;
+    z-index: 1;
+}
+
 
 #cp-settings-layout .ctools-dropdown {
 	  margin: 16px 12px 0 0;	
