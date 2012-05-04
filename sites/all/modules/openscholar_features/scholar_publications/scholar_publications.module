@@ -1083,8 +1083,8 @@ function scholar_publications_get_biblio_types($reset = FALSE){
  */
 function scholar_publications_get_plural_biblio_type($s_type){
 	
-	$a_add_s = array("book","book chapter","journal article","conference paper","newspaper article","magazine article","web article","report","film","broadcast","artwork","hearing","case","bill","statute","patent","manuscript","map","chart","database","government report","legal ruling","miscellaneous section","working paper");
-	$a_replace = array( "thesis" => "Theses", "unpublished" => "Unpublished Publications" );
+	$a_add_s = array('book','book chapter','journal article','conference paper','newspaper article','magazine article','web article','report','film','broadcast','artwork','hearing','case','bill','statute','patent','manuscript','map','chart','database','government report','legal ruling','miscellaneous section','working paper');
+	$a_replace = array( 'thesis' => 'Theses', 'unpublished' => 'Unpublished' );
 	
 	if(is_numeric($s_type)){
 	  	$a_all_types = scholar_publications_get_biblio_types();
