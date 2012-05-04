@@ -1042,6 +1042,14 @@ function scholar_publications_views_pre_view(&$view) {
      );
     $view->display_handler->set_option('sorts', array_merge($newsorts, $sorts));
   }
+  
+  //use biblio number of items per page setting on pages.  
+  if (in_array($view->name, array('publication_types', 'publication_contributors', 'publication_years')) &&
+      strpos($view->current_display, 'block') === FALSE) { //ignore blocks
+    if ($items = variable_get('biblio_rowsperpage', FALSE)) {
+      $view->display_handler->set_option('items_per_page', $items);
+    }
+  }
 }
 
 /**
