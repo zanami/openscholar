@@ -241,7 +241,6 @@ select option {
 
 .form-region-right .og-vocab-taxonomy select {
   max-width: 100%;
-  min-height: 150px;
   }
 
 .form-radios {
@@ -283,7 +282,6 @@ select {
   -moz-border-right:  2px solid #CDCDCD;
   -moz-border-top:  2px solid #CDCDCD;
   min-width:80px;
-  height:25px;
   padding-top:3px;
   color: #333333;
   font-size:12px;
