@@ -23,7 +23,7 @@ class sweaver_layout extends sweaver_plugin {
     // get the list of widgets
     $ctx_blocks = context_get_plugin('reaction', 'block');
     $blocks = $ctx_blocks->get_blocks();
-    dpm(array());
+    dpm(array());    // This needs to be before _block_get_renderable array or krumo doesn't work properly
 
     // subtract the ones that are already in the active contexts
     $this->filter_blocks($blocks);
@@ -38,17 +38,27 @@ class sweaver_layout extends sweaver_plugin {
     // render the widgets
     $rendered = _block_render_blocks($blocks);
 
+    // remove blocks with no subject
+    foreach ($rendered as $k => $v) {
+      if (!isset($v->subject) || !$v->subject) {
+        unset($rendered[$k]);
+      }
+    }
+
+    $path = drupal_get_path('module', 'sweaver_layout');
     $form['widgets'] = array(
       '#type' => 'container',
       'tabs' => array(
         '#type' => 'markup',
         '#markup' => '<ul><li>Tabs</li></ul>',
       ),
+      '#attached' => array(
+        'css' => array(
+          $path.'/theme/sweaver_layout.css',
+        ),
+      ),
     );
-   // foreach ($rendered as $d => $b) {
-      $form['widgets'] = _block_get_renderable_array($rendered);
-   // }
-    dpm($form['widgets']);
+    $form['widgets'] += _block_get_renderable_array($rendered);
     return $form;
   }
 
