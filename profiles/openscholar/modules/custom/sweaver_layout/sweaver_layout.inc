@@ -56,6 +56,10 @@ class sweaver_layout extends sweaver_plugin {
         'css' => array(
           $path.'/theme/sweaver_layout.css',
         ),
+        'js' => array(
+          $path.'/theme/sweaver_layout.js',
+          drupal_get_path('module', 'context_ui').'/jquery.pageEditor.js',
+        ),
       ),
     );
     $form['widgets'] += _block_get_renderable_array($rendered);
