@@ -181,7 +181,7 @@ right: 4px;
 .innerframe > .help {
 	position: absolute;
 right: 7px;
- top: -25px;
+ top: 5px;
   }  
   
 h2.title + .help {
