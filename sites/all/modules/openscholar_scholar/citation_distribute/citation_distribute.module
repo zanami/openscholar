@@ -468,7 +468,7 @@ function _citation_distribute_unlist_db($plugin, $nid, $batch_command = '') {
 function citation_distribute_flag_default_flags($flags = array(), $i = 0) {
 		
 	foreach (_citation_distribute_plugins() as $plugin) {
-		if ($plugin['title']) {
+		if (isset($plugin['title'])) {
 			$flags[] = array (
 			  'content_type' => 'node',
 			  'name' => $plugin['name'],
