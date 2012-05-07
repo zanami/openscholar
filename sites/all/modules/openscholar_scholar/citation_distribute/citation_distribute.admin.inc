@@ -37,22 +37,17 @@ function citation_distribute_admin() {
    );
    
    //list all our plugins, include autoflag checkboxes
-   $form['citation_distribute']['autoflag'] = array(
-	  '#type' => 'fieldset',
-	  '#title' => t('Automatic Node Flagging'),
-   	'#description' => 'Publication nodes should automatically select the following services for distribution:<br /><br />',
-	  '#collapsible' => FALSE,
-	  '#collapsed' => FALSE,
-	 );
-	 
+
+   $form['citation_distribute_autoflags'] = array(
+     '#title' => t('Automatic Node Flagging'),
+     '#type' => 'checkboxes',
+     '#description' => t('New publications will automatically be flagged for distribution to:'),
+     '#default_value' => array_flip(array_filter(variable_get('citation_distribute_autoflags', array()))),
+     '#options' => array(),
+   );
    foreach (_citation_distribute_plugins() as $plugin) {
      if (isset($plugin['title'])) {
-	     $name = $plugin['handler']['class'];	  
-	     $form['citation_distribute']['autoflag'][$name . '_auto_flag'] = array(
-	       '#type' => 'checkbox',
-	       '#default_value' => variable_get($name . '_auto_flag', false),
-	       '#title' => $plugin['title'] . '  (' . $name . ')',
-	     );
+       $form['citation_distribute_autoflags']['#options'] += array($plugin['handler']['class'] => $plugin['title']);
      }
    }
    

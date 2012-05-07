@@ -1,0 +1,19 @@
+
+  name        = Ballard
+  description = A public theme for use in OpenScholar.
+  
+  core        = 6.x
+  base theme  = scholar_base
+  screenshot  = screenshot.png
+  stylesheets[screen][] = css/ballard.css
+
+os[widgets][vsite-site_search] = navbar
+os[theme_type]   = "vsite"
+os[theme_access] = "public"
+
+
+
+
+
+
+

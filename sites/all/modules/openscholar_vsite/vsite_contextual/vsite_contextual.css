@@ -54,6 +54,10 @@ div.ctools-dropdown div.ctools-dropdown-container {
   z-index: 20;
 }
 
+.page-cp-users .os-links {
+ padding: 25px 0 5px 5px;
+}
+
 .block .node .os-links {
 	right: 15px;
 }

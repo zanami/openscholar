@@ -1042,6 +1042,14 @@ function scholar_publications_views_pre_view(&$view) {
      );
     $view->display_handler->set_option('sorts', array_merge($newsorts, $sorts));
   }
+  
+  //use biblio number of items per page setting on pages.  
+  if (in_array($view->name, array('publication_types', 'publication_contributors', 'publication_years')) &&
+      strpos($view->current_display, 'block') === FALSE) { //ignore blocks
+    if ($items = variable_get('biblio_rowsperpage', FALSE)) {
+      $view->display_handler->set_option('items_per_page', $items);
+    }
+  }
 }
 
 /**
@@ -1083,8 +1091,8 @@ function scholar_publications_get_biblio_types($reset = FALSE){
  */
 function scholar_publications_get_plural_biblio_type($s_type){
 	
-	$a_add_s = array("book","book chapter","journal article","conference paper","newspaper article","magazine article","web article","report","film","broadcast","artwork","hearing","case","bill","statute","patent","manuscript","map","chart","database","government report","legal ruling","miscellaneous section","working paper");
-	$a_replace = array( "thesis" => "Theses", "unpublished" => "Unpublished Publications" );
+	$a_add_s = array('book','book chapter','journal article','conference paper','newspaper article','magazine article','web article','report','film','broadcast','artwork','hearing','case','bill','statute','patent','manuscript','map','chart','database','government report','legal ruling','miscellaneous section','working paper');
+	$a_replace = array( 'thesis' => 'Theses', 'unpublished' => 'Unpublished' );
 	
 	if(is_numeric($s_type)){
 	  	$a_all_types = scholar_publications_get_biblio_types();
