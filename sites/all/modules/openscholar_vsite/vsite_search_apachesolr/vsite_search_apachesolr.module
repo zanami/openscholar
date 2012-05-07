@@ -1,11 +1,10 @@
 <?php
 
-
 /**
  * @file
  */
 
-include_once('vsite_search_apachesolr.features.inc');
+include_once ('vsite_search_apachesolr.features.inc');
 
 /**
  * Implementation of hook_taxononomy()
@@ -19,13 +18,14 @@ include_once('vsite_search_apachesolr.features.inc');
  *
  * @see vsite_search_apachesolr_luceneapi_facet_enable()
  */
-function vsite_search_apachesolr_taxonomy($op, $type, $array = NULL) {
+function vsite_search_apachesolr_taxonomy($op, $type, $array = NULL){
   switch ($type) {
-    case 'vocabulary':
+    case 'vocabulary' :
       switch ($op) {
-        case 'insert':
-          if(!vsite_search_apachesolr_server_status()) break;
-          // Enable the matching Solr facet for this vocabulary
+        case 'insert' :
+          if (! vsite_search_apachesolr_server_status())
+            break;
+            // Enable the matching Solr facet for this vocabulary
           $key = 'im_vid_' . $array['vid'];
           $facets = apachesolr_get_enabled_facets();
           $facets['apachesolr_search'][$key] = $key;
@@ -33,9 +33,10 @@ function vsite_search_apachesolr_taxonomy($op, $type, $array = NULL) {
           // This cache being stale can prevent new facet filters from working.
           apachesolr_clear_cache();
           break;
-        case 'delete':
-          if(!vsite_search_apachesolr_server_status()) break;
-          // Enable the matching Solr facet for this vocabulary
+        case 'delete' :
+          if (! vsite_search_apachesolr_server_status())
+            break;
+            // Enable the matching Solr facet for this vocabulary
           $key = 'im_vid_' . $array['vid'];
           $facets = apachesolr_get_enabled_facets();
           // Remove the facet corresponding to this vocabulary from the list of enabled facets
@@ -55,17 +56,19 @@ function vsite_search_apachesolr_taxonomy($op, $type, $array = NULL) {
  * Replaces the search form's submit handler with a custom submit handler to redirect to Apache Solr.
  *
  * @param object $form
- *   The FAPI form object
+ * The FAPI form object
  * @param mixes $form_state
- *   Associative array representing the submitted form
+ * Associative array representing the submitted form
  * @param string $form_id
- *   The unique id of the form
+ * The unique id of the form
  */
-function vsite_search_apachesolr_form_alter(&$form, $form_state, $form_id) {
+function vsite_search_apachesolr_form_alter(&$form, $form_state, $form_id){
   if ($form_id == 'search_form') {
     if (variable_get('apachesolr_search_make_default', 0) && vsite_search_apachesolr_server_status()) {
-      if (!isset($form['#submit'])) {
-        $form['#submit'] = array('vsite_search_apachesolr_solr_search_form_submit');
+      if (! isset($form['#submit'])) {
+        $form['#submit'] = array(
+            'vsite_search_apachesolr_solr_search_form_submit'
+        );
       }
       else {
         $key = array_search('search_form_submit', $form['#submit']);
@@ -80,58 +83,58 @@ function vsite_search_apachesolr_form_alter(&$form, $form_state, $form_id) {
   }
 }
 
-
 /**
  * Implementation of hook_context_load_alter().
  */
-function vsite_search_apachesolr_context_load_alter(&$context) {
+function vsite_search_apachesolr_context_load_alter(&$context){
   
-	if($context->name == 'openscholar-feature-search'){
-		  $vsite = vsite_get_vsite();
-		  
-		  $show_biblio_facets = FALSE;
-	    if ($query = apachesolr_current_query()) {
-	      if ($query->has_filter('type', 'biblio')) {
-	        $show_biblio_facets = TRUE;
-	      }
-	    }
-	    
-		  // Loop through the apachesolr_search blocks and remove the Biblio facet blocks if needed
-	    foreach ($context->reactions['block']['blocks'] as $bid => $block) {
-	      if (preg_match('/^apachesolr_biblio-/', $bid) && !$show_biblio_facets) {
-	        unset($context->reactions['block']['blocks'][$bid]);
-	      }
-	    }
-			
-		  if ($vsite) {
-		  	//If the context is within a specific vsite, remove the og facet block
-		    unset($context->reactions['block']['blocks']['apachesolr_og-im_og_gid']);
-		  }else{
-		  	//Not in a vsite
-		  	// Remove the Filter by Author facet block
-        unset($context->reactions['block']['blocks']['apachesolr_search-uid']);
-        // Remove the Filter by Contributor facet block
-        unset($context->reactions['block']['blocks']['apachesolr_biblio-sm_biblio_contributors']);
-		  }
+  if ($context->name == 'openscholar-feature-search') {
+    $vsite = vsite_get_vsite();
+    
+    $show_biblio_facets = FALSE;
+    if ($query = apachesolr_current_query()) {
+      if ($query->has_filter('type', 'biblio')) {
+        $show_biblio_facets = TRUE;
+      }
+    }
+    
+    // Loop through the apachesolr_search blocks and remove the Biblio facet blocks if needed
+    foreach ( $context->reactions['block']['blocks'] as $bid => $block ) {
+      if (preg_match('/^apachesolr_biblio-/', $bid) && ! $show_biblio_facets) {
+        unset($context->reactions['block']['blocks'][$bid]);
+      }
+    }
+    
+    if ($vsite) {
+      //If the context is within a specific vsite, remove the og facet block
+      unset($context->reactions['block']['blocks']['apachesolr_og-im_og_gid']);
+    }
+    else {
+      //Not in a vsite
+      // Remove the Filter by Author facet block
+      unset($context->reactions['block']['blocks']['apachesolr_search-uid']);
+      // Remove the Filter by Contributor facet block
+      unset($context->reactions['block']['blocks']['apachesolr_biblio-sm_biblio_contributors']);
+    }
   }
-  
+
 }
 
 /**
  * Submit handler for the core search form.  This function redirects searches to Apache Solr.
  * @param object $form
- *   The FAPI form object
+ * The FAPI form object
  * @param mixed $form_state
- *   Associative array representing the submitted form
+ * Associative array representing the submitted form
  */
-function vsite_search_apachesolr_solr_search_form_submit($form, &$form_state) {
+function vsite_search_apachesolr_solr_search_form_submit($form, &$form_state){
   $keys = $form_state['values']['keys'];
   // Handle Apache webserver clean URL quirks.
   if (variable_get('clean_url', '0')) {
     $keys = str_replace('+', '%2B', $keys);
   }
   // Redirect to Apache Solr, passing in the search keys
-  $form_state['redirect'] = 'search/apachesolr_search/'. trim($keys);
+  $form_state['redirect'] = 'search/apachesolr_search/' . trim($keys);
 }
 
 /**
@@ -141,35 +144,35 @@ function vsite_search_apachesolr_solr_search_form_submit($form, &$form_state) {
  * @param int $delta
  * @param mixed $edit
  */
-function vsite_search_apachesolr_block($op = 'list', $delta = 0, $edit = array()) {
+function vsite_search_apachesolr_block($op = 'list', $delta = 0, $edit = array()){
   switch ($op) {
-    case 'list':
+    case 'list' :
       $blocks = array();
       $blocks[0]['info'] = t('Categories');
       $blocks[1]['info'] = t('Faceted Browsing');
       return $blocks;
-    case 'view':
+    case 'view' :
       switch ($delta) {
-        case 0:
+        case 0 :
           $query = apachesolr_current_query();
           $vsite = vsite_get_vsite();
           if ($vsite) {
             $content = '';
-            foreach ($vsite->group->og_vocabularies as $vid => $vocab) {
+            foreach ( $vsite->group->og_vocabularies as $vid => $vocab ) {
               $delta = 'im_vid_' . $vid;
               $block = apachesolr_search_taxonomy_facet_block($response, $query, $delta);
-              if (!empty($block)) {
+              if (! empty($block)) {
                 $content .= '<h3>' . t($block['subject']) . '</h3>';
                 $content .= $block['content'];
               }
             }
           }
           return array(
-            'subject' => t('Categories'),
-            'content' => $content
+              'subject' => t('Categories'),
+              'content' => $content
           );
           break;
-        case 1:
+        case 1 :
           // No search has been performed; fetch the current context to prepare for faceted browsing
           $content = '';
           
@@ -179,7 +182,7 @@ function vsite_search_apachesolr_block($op = 'list', $delta = 0, $edit = array()
            */
           $blocks = apachesolr_search_browse(NULL, NULL, NULL, 'search/apachesolr_search');
           if (count($blocks) > 0) {
-            foreach ($blocks as $block) {
+            foreach ( $blocks as $block ) {
               if (strlen($block->content) > 0) {
                 $content .= '<h3 class="title">' . t($block->subject) . '</h3>';
                 $content .= $block->content;
@@ -188,8 +191,8 @@ function vsite_search_apachesolr_block($op = 'list', $delta = 0, $edit = array()
           }
           if (strlen($content) > 0) {
             return array(
-              'subject' => '',
-              'content' => $content,
+                'subject' => '',
+                'content' => $content
             );
           }
           break;
@@ -202,19 +205,31 @@ function vsite_search_apachesolr_block($op = 'list', $delta = 0, $edit = array()
  * Implementation of hook_apachesolr_modify_query()
  *
  * @param object $query
- *   Reference to the Solr_Base_Query object
+ * Reference to the Solr_Base_Query object
  * @param mixed $params
- *   Controlling params for the query object
+ * Controlling params for the query object
  */
-function vsite_search_apachesolr_apachesolr_modify_query(&$query, &$params, $caller) {
+function vsite_search_apachesolr_apachesolr_modify_query(&$query, &$params, $caller){
+  /**
+   * Retrieve the og_vocabs that are not releated to this site and exclude them for performance and query size reason's
+   * With all facet.field-vocabularies active we would have a huge query
+   */
+  $og_vocabs = array();
+  if (module_exists('og_vocab')) {
+    $result = db_query("SELECT DISTINCT vid FROM {og_vocab}");
+    while ( $vid = db_result($result) ) {
+      $og_vocabs[] = $vid;
+    }
+  }
+  
   /**
    * Retrieve the current group context.  If the user is viewing content within a group context, use the group's nid as a filter for the facets
    * to restrict results to within this group.  Searches performed outside of a vsite (top level) will not be filtered by group.
    */
   $vsite = vsite_get_vsite();
-  if (!empty($vsite)) {
-  	vsite_include('vsiteapi');
-  	
+  if (! empty($vsite)) {
+    vsite_include('vsiteapi');
+    
     // Add filter for group_id
     $query->add_filter('im_og_gid', $vsite->group->nid);
     
@@ -224,22 +239,25 @@ function vsite_search_apachesolr_apachesolr_modify_query(&$query, &$params, $cal
      * Bypass this check if the current uid is the site owner, or is a site member.
      */
     if (! og_is_group_member($vsite->group->nid, TRUE)) {
-      foreach (variable_get('spaces_features',array()) as $name => $status) {
+      foreach ( variable_get('spaces_features', array()) as $name => $status ) {
         // 0 = disabled, 2 = private, 1 = public
-        if (in_array($status,array(0,2))) {
+        if (in_array($status, array(
+            0,
+            2
+        ))) {
           $feature = features_get_features($name);
           // Attempt to derive the content types that are part of this feature
-          if (!empty($feature->info['features']['node'])) {
-            foreach ($feature->info['features']['node'] as $content_type) {
+          if (! empty($feature->info['features']['node'])) {
+            foreach ( $feature->info['features']['node'] as $content_type ) {
               $content_types[] = $content_type;
             }
           }
-          elseif (!empty($feature->info['features']['views'])) {
-            foreach ($feature->info['features']['views'] as $name) {
+          elseif (! empty($feature->info['features']['views'])) {
+            foreach ( $feature->info['features']['views'] as $name ) {
               $view = views_get_view($name);
               if ($view) {
-                foreach ($view->display as $display_name => $display_type) {
-                  if (!empty($display_type->display_options['filters']['type'])) {
+                foreach ( $view->display as $display_name => $display_type ) {
+                  if (! empty($display_type->display_options['filters']['type'])) {
                     if ($display_type->display_options['filters']['type']['operator'] == 'in') {
                       $content_types += array_values($display_type->display_options['filters']['type']['value']);
                     }
@@ -253,19 +271,19 @@ function vsite_search_apachesolr_apachesolr_modify_query(&$query, &$params, $cal
       }
       
       if (vsite_taxonomy_active_term()) {
-      	$term = vsite_taxonomy_active_term();
-      	$query->add_filter('tid', $term->tid);
+        $term = vsite_taxonomy_active_term();
+        $query->add_filter('tid', $term->tid);
       }
       
       // Get the content types from the current feature
       $node_types = array();
       $active_feature = vsite_active_feature();
-      if($active_feature){
+      if ($active_feature) {
         $a_info = features_get_features($active_feature);
         $node_types = $a_info->info['features']['node'];
       }
       
-      if (!empty($node_types)) {
+      if (! empty($node_types)) {
         /**
          * If there is more than one content type active in this context, additional filters need to be applied to the Solr query object
          * as an "or" condition instead of an "an" condition.  To do this, we need to utilize a Solr subquery.
@@ -274,7 +292,7 @@ function vsite_search_apachesolr_apachesolr_modify_query(&$query, &$params, $cal
          */
         if (count($node_types) > 1) {
           $subquery = apachesolr_drupal_query();
-          foreach ($node_types as $type) {
+          foreach ( $node_types as $type ) {
             if (in_array($type, $content_types)) {
               // Exclude the content types belonging to private features
               $subquery->add_filter('type', $type);
@@ -297,8 +315,8 @@ function vsite_search_apachesolr_apachesolr_modify_query(&$query, &$params, $cal
         }
       }
       else {
-        if (!empty($content_types)) {
-          foreach ($content_types as $type) {
+        if (! empty($content_types)) {
+          foreach ( $content_types as $type ) {
             $query->add_filter('type', $type, 'NOT');
           }
         }
@@ -308,12 +326,12 @@ function vsite_search_apachesolr_apachesolr_modify_query(&$query, &$params, $cal
       // Get the content types from the current context
       $node_types = array();
       $active_feature = vsite_active_feature();
-      if($active_feature){
+      if ($active_feature) {
         $a_info = features_get_features($active_feature);
         $node_types = $a_info->info['features']['node'];
       }
       
-      if (!empty($node_types)) {
+      if (! empty($node_types)) {
         /**
          * If there is more than one content type active in this context, additional filters need to be applied to the Solr query object
          * as an "or" condition instead of an "an" condition.  To do this, we need to utilize a Solr subquery.
@@ -322,7 +340,7 @@ function vsite_search_apachesolr_apachesolr_modify_query(&$query, &$params, $cal
          */
         if (count($node_types) > 1) {
           $subquery = apachesolr_drupal_query();
-          foreach ($node_types as $type) {
+          foreach ( $node_types as $type ) {
             $subquery->add_filter('type', $type);
             $query->add_subquery($subquery, 'OR');
           }
@@ -332,6 +350,23 @@ function vsite_search_apachesolr_apachesolr_modify_query(&$query, &$params, $cal
         }
       }
     }
+    
+    if (isset($vsite->group->og_vocabularies)) {
+      //Allow the og vocabs from the current vsite
+      $og_vocabs = array_diff($og_vocabs, array_keys($vsite->group->og_vocabularies));
+    }
+  }
+  
+  if (is_array($params['facet.field'])) {
+    //prepend "im_vid_" to the vid's
+    foreach ( $og_vocabs as $k => $v ) {
+      $og_vocabs[$k] = 'im_vid_' . $v;
+    }
+    
+    /**
+     * We will now remove the facets for vocabularies in other vsite's that should not be used
+     */
+    $params['facet.field'] = array_diff($params['facet.field'], $og_vocabs);
   }
 }
 
@@ -342,14 +377,16 @@ function vsite_search_apachesolr_apachesolr_modify_query(&$query, &$params, $cal
 function vsite_search_apachesolr_preprocess_search_result(&$vars){
   vsite_include('vsiteapi');
   $vsite = vsite_get_vsite();
-  if (!$vsite) {
+  if (! $vsite) {
     $gid = $vars['result']['fields']['im_og_gid']['value'];
-    if(is_array($gid)) $gid = array_shift($gid);
-   
-    if(intval($gid)){
-	    $query = "SELECT title FROM {node} WHERE nid = %d";
-	    $title = db_result(db_query($query, $gid));
-	    if($title) $vars['web_site'] = l($title, "node/$gid");
+    if (is_array($gid))
+      $gid = array_shift($gid);
+    
+    if (intval($gid)) {
+      $query = "SELECT title FROM {node} WHERE nid = %d";
+      $title = db_result(db_query($query, $gid));
+      if ($title)
+        $vars['web_site'] = l($title, "node/$gid");
     }
     
     // machine name of the content type
@@ -362,35 +399,34 @@ function vsite_search_apachesolr_preprocess_search_result(&$vars){
  *
  * @param $vars
  */
-function vsite_search_apachesolr_preprocess_block(&$vars) {
+function vsite_search_apachesolr_preprocess_block(&$vars){
   if (isset($vars['block']->module)) {
     list($name, $display_id) = explode('-', $vars['block']->delta);
     switch ($name) {
-      case 'im_og_gid':
+      case 'im_og_gid' :
         $vars['block']->subject = t('Scholar Sites');
         break;
-      case 'ss_biblio_year':
+      case 'ss_biblio_year' :
         $vars['block']->subject = t('Year of Publication');
         break;
-      case 'ss_biblio_authors':
+      case 'ss_biblio_authors' :
         $vars['block']->subject = t('Authors');
         break;
-      case 'sm_biblio_contributors':
+      case 'sm_biblio_contributors' :
         $vars['block']->subject = t('Authors');
         break;
-      case 'ss_biblio_publisher':
+      case 'ss_biblio_publisher' :
         $vars['block']->subject = t('Publisher');
         break;
-      case 'ss_biblio_secondary_title':
+      case 'ss_biblio_secondary_title' :
         $vars['block']->subject = t('Journal title');
         break;
-      case 'ss_biblio_type_of_work':
+      case 'ss_biblio_type_of_work' :
         $vars['block']->subject = t('Publication type');
         break;
     }
   }
 }
-
 
 /**
  * Periodically check server status, and disable solr if not avalible
@@ -398,11 +434,17 @@ function vsite_search_apachesolr_preprocess_block(&$vars) {
 function vsite_search_apachesolr_server_status($b_force_check = false){
   $vsite_solr_status = cache_get("vsite_search::solr_status");
   
-  if(!$vsite_solr_status || $b_force_check || ($vsite_solr_status->data['last_check'] < (time() - (60 * 30)))){
+  if (! $vsite_solr_status || $b_force_check || ($vsite_solr_status->data['last_check'] < (time() - (60 * 30)))) {
     
-    $vsite_solr_status = (object)array("data" => array('last_check' => time(), 'status' => apachesolr_server_status()));
-    cache_set('vsite_search::solr_status',$vsite_solr_status->data);
-  }//Check status every 30 minutes
+    $vsite_solr_status = ( object ) array(
+        "data" => array(
+            'last_check' => time(),
+            'status' => apachesolr_server_status()
+        )
+    );
+    cache_set('vsite_search::solr_status', $vsite_solr_status->data);
+  } //Check status every 30 minutes
   
+
   return $vsite_solr_status->data['status'];
 }
