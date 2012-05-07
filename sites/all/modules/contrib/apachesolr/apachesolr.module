@@ -153,7 +153,12 @@ function apachesolr_failure($search_name, $querystring) {
 
   switch ($fail_rule) {
     case 'show_error':
-      drupal_set_message(t('The Apache Solr search engine is not available. Please contact your site administrator.'), 'error');
+    	$contact = 'Please contact your site administrator.';
+    	if(user_access('access site-wide contact form')){
+    		$contact = l($contact,'contact');
+    	}
+    	
+      drupal_set_message(t('The search engine is not available. '.$contact), 'error');
       break;
     case 'show_drupal_results':
       drupal_set_message(t("%search_name is not available. Your search is being redirected.", array('%search_name' => $search_name)));
