@@ -487,7 +487,7 @@ function vsite_taxonomy_form_taxonomy_form_vocabulary_alter(&$form, &$form_state
 
   // filter the content type based on the vsite
   vsite_include('vsiteapi');
-  $vocab_types = vsite_content_types();
+  $vocab_types = vsite_content_types(array(1,2));
   drupal_alter('vsite_content_types', $vocab_types);
   $form['content_types']['nodes']['#options'] = $vocab_types;
   $form['content_types']['nodes']['#required'] = true; //Must select taxonomy
