@@ -20,6 +20,7 @@ files[] = os_migrate_node_book.inc
 files[] = os_migrate_node_class.inc
 files[] = os_migrate_node_page.inc
 files[] = os_migrate_node_link.inc
+files[] = os_migrate_node_vsite.inc
 files[] = os_migrate_users.inc
 files[] = os_migrate_specialtables.inc
 
