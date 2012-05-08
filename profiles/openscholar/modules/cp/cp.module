@@ -27,7 +27,6 @@ function cp_menu(){
   $items = array();
 
   $spaces_path = drupal_get_path('module', 'spaces');
-  $items["admin/cp-build"] = $manage +
   $items["cp/build"] = array(
     'title' => 'Site building',
     'page callback' => 'drupal_get_form',
@@ -172,17 +171,21 @@ function cp_block_view($delta) {
  */
 function cp_page_build(&$page) {
   $menu = array();
-  switch (_cp_get_toolbar_setting()) {
-    case CP_MENU_FULL:
-        $menu = _cp_full_menu();
-        $page['#classes_array'][] = 'cp-menu-full';
-        break;
-    case CP_MENU_MINI:
-        $menu = _cp_mini_menu();
-        $page['#classes_array'][] = 'cp-menu-mini';
-        break;
-  }
-  $page['page_top']['cp_menu'] = $menu;
+//  switch (_cp_get_toolbar_setting()) {
+//    case CP_MENU_FULL:
+//        $menu = _cp_full_menu();
+//        $page['#classes_array'][] = 'cp-menu-full';
+//        break;
+//    case CP_MENU_MINI:
+//        $menu = _cp_mini_menu();
+//        $page['#classes_array'][] = 'cp-menu-mini';
+//        break;
+//  }
+//  $page['page_top']['cp_menu'] = $menu;
+  $page['page_top']['cp_toolbaar'] = array(
+    '#pre_render' => array('cp_toolbar_pre_render'),
+    '#access' => spaces_access_admin_perms(array('access control panel')),
+  );
 }
 
 /**
@@ -284,3 +287,45 @@ function _cp_mini_menu() {
   );
 }
 
+function cp_toolbar_pre_render($toolbar) {
+  $toolbar = array_merge($toolbar, cp_toolbar_view());
+  return $toolbar;
+}
+
+/**
+ * Builds the admin menu as a structured array ready for drupal_render().
+ *
+ * @return
+ *   Array of links and settings relating to the admin menu.
+ */
+function cp_toolbar_view() {
+  $build = toolbar_view();
+
+  $build['toolbar_menu']['#links'] = toolbar_menu_navigation_links(cp_get_menu_tree());
+  $build['toolbar_drawer'] = array();
+  $build['toolbar_drawer_classes'] = '';
+  unset($build['toolbar_toggle']);
+
+  if ($GLOBALS['user']->uid == 1) {
+    unset($build['toolbar_home']);
+    unset($build['toolbar_user']);
+  }
+
+  return $build;
+}
+
+/**
+ * Gets only the top level items below the 'admin' path.
+ *
+ * @return
+ *   An array containing a menu tree of top level items below the 'admin' path.
+ */
+function cp_get_menu_tree() {
+  $tree = array();
+  $tree = menu_build_tree('cp', array(
+    'min_depth' => 1,
+    'max_depth' => 1,
+  ));
+
+  return $tree;
+}
