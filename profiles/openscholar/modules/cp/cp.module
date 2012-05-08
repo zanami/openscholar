@@ -20,6 +20,24 @@ function cp_ctools_plugin_api(){
   }
 }
 
+function cp_invoke($hook, $args) {
+  $module = $_GET['cp'];
+  if (is_null($module)) return;  // we're not in a cp context
+
+  module_load_include('inc', 'cp', 'includes/cp.'.$module);
+  $function = 'cp_'.$module.'_'.$hook;
+  if (function_exists($function)) {
+    $function($args);
+  }
+}
+
+/**
+ * Loads an include file based on a get
+ */
+function cp_init() {
+  cp_invoke('init');
+}
+
 /**
  * Implements hook_menu
  */
@@ -182,10 +200,12 @@ function cp_page_build(&$page) {
 //        break;
 //  }
 //  $page['page_top']['cp_menu'] = $menu;
-  $page['page_top']['cp_toolbaar'] = array(
+  $page['page_top']['cp_toolbar'] = array(
     '#pre_render' => array('cp_toolbar_pre_render'),
     '#access' => spaces_access_admin_perms(array('access control panel')),
   );
+
+  cp_invoke('page_build', $page);
 }
 
 /**
