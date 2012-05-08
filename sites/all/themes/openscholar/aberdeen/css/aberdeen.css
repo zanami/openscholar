@@ -22,11 +22,6 @@ font-family: helvetica,arial,sans-serif;
  
 /* LAYOUT ELEMENTS */
 
-#page {
-  width: 980px;
-margin: 0 auto 0 auto;
-}
- 
 #content-area {background:#fff;height:100%;}
 
 .sidebar {background:#eef2f2;min-height:100%;}
@@ -98,19 +93,17 @@ border-radius:5px;
 
 /**** MAIN NAV BAR ****/
 
-
-#block-vsite-site_search {float:right;
-display:inline;
-clear:right;
-margin-top:-2px;
-width:170px;
+#navbar #block-vsite-site_search {
+	float:right;
+	margin-bottom:-5px;
 }
 
 #navbar {
-  background: url('../images/mainNavBg.png') repeat-x;
-  width:970px;
- height: 31px;
- padding-top:18px;
+  background: url('../images/mainNavBg.png') #5c5d58 repeat-x;
+  width:950px;
+  min-height:35px;
+ /*padding:18px 15px 0 15px;*/
+ padding: 20px 15px 0;
 border-top-left-radius:5px;
 -moz-border-radius-topleft:5px;
 border-top-right-radius:5px;
@@ -192,12 +185,26 @@ float:right;
 
 
 /**** SEARCH BOX ****/
+
+#block-vsite-site_search {
+width:170px;
+}
+
+
+#block-vsite-site_search .form-text {
+    border-color: transparent;
+    border-style: none;
+    border-width: 1px medium 1px 1px;
+
+}
+
 .search-form input.form-submit,
 #search-block-form #edit-submit,
 #search-form #edit-submit{
   -moz-border-radius: 0 4px 4px 0;
   -webkit-border-radius: 0 4px 4px 0;
   border-radius: 0 4px 4px 0;
+   height: 22px;
   }
 
 .search-form .container-inline .form-item .form-text {
