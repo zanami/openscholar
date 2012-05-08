@@ -39,6 +39,8 @@ font-size:.8em;
 a, a:visited {color:#293352;text-decoration:none;}
 a:hover {text-decoration:underline;}
 
+#header a {color:#FFF;}
+
 .more-link a, 
 .node_read_more a {
 padding-right:13px;
@@ -54,6 +56,17 @@ font-size:1.11em;
 
 .node .node-inner .links li.node_read_more a {
    padding-right:13px;
+}
+
+
+.item-list ul.pager li.pager-current {
+    background: none repeat scroll 0 0 #293352;
+    color: #FFFFFF;
+    padding:3px;
+}
+
+.item-list ul.pager li a.active {
+    color:#293352;
 }
 
 #boxes-box-site_info  {
@@ -143,21 +156,17 @@ p.copy a.footer-login:hover {
 
 /**** MAIN NAV BAR ****/
 
-
-#block-vsite-site_search {float:right;
-display:inline;
-clear:right;
-margin-top:3px;
-width:170px;
+#navbar #block-vsite-site_search {
+	float:right;
+	margin:4px 0 -4px 0;
 }
 
 #navbar {
-  background: url('../images/mainNavBg.png') no-repeat;
-  width:970px;
- height:38px;
- padding-top: 10px;
-
-  }
+  background: url('../images/mainNavBg.png') #333333 repeat-x;
+  width:950px;
+min-height:42px;
+ padding: 10px 15px 0;
+}
 
 #navbar ul {
  margin-left:-5px;
@@ -167,23 +176,21 @@ width:170px;
 
 #navbar li {
   float:left;
- margin-top:4px;
+  margin-top:9px;
   }
 
 #navbar li a {
-  line-height: 25px;
   color: #F3F3F1;
   font-weight:normal;
   font-size: 14px;
-   padding: 18px 20px 15px;
+   padding: 20px 20px 15px;
    border-right:1px solid #5d5d5f;
-
 }
 
 #navbar li a:hover,
 #navbar li a.active,
 #navbar li.active-trail a {
-  background: url('../images/mainNavBg.png') 0 -53px no-repeat;
+  background: url('../images/mainNavBg.png') 0 -53px #333333 repeat-x;
   color: #F3F3F1;
   text-decoration: none;
 }
@@ -246,6 +253,11 @@ float:right;
 
 
 /**** SEARCH BOX ****/
+
+#block-vsite-site_search {
+width:170px;
+}
+
 .search-form input.form-submit,
 #search-block-form #edit-submit,
 #search-form #edit-submit{
@@ -283,7 +295,7 @@ div.views-field-field-gallery-image-fid img {
 .views_slideshow_controls .views_slideshow_pause,
 .views_slideshow_controls .views_slideshow_play {
 left:670px;
-margin-top: 1px;
+margin-top: 2px;
 }
 
 .views_slideshow_controls .views_slideshow_pause {
@@ -302,6 +314,7 @@ div.pager-item {width:14px;height:14px;}
 
 #views_slideshow_singleframe_pager_os_slideshow-default {
 margin-right:26px;
+padding-top:1px;
 }
 
 .views-slideshow-controls-bottom {
