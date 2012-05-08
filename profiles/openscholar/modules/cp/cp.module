@@ -25,7 +25,6 @@ function cp_ctools_plugin_api(){
  */
 function cp_menu(){
   $items = array();
-  $manage = array('menu_name' => 'management');
 
   $spaces_path = drupal_get_path('module', 'spaces');
   $items["admin/cp-build"] = $manage +
@@ -40,7 +39,6 @@ function cp_menu(){
     'weight' => 10
   );
 
-  $items["admin/cp-build/features"] = $manage +
   $items["cp/build/features"] = array(
     'title' => 'Features',
     'page callback' => 'drupal_get_form',
@@ -53,7 +51,6 @@ function cp_menu(){
     'weight' => 10
   );
 
-  $items["admin/cp-build/layout"] = $manage +
   $items["cp/build/layout"] = array(
     'title' => 'Layout',
     'page callback' => 'cp_layout',
@@ -61,7 +58,6 @@ function cp_menu(){
     'weight' => 10
   );
 
-  $items["admin/cp-build/menu"] = $manage +
   $items["cp/build/menu"] = array(
     'title' => 'Menu',
     'page callback' => 'cp_menu_callback',
@@ -69,7 +65,6 @@ function cp_menu(){
     'weight' => 10
   );
 
-  $items["admin/cp-build/taxonomy"] = $manage +
   $items["cp/build/taxonomy"] = array(
     'title' => 'Taxonomy',
     'page callback' => 'cp_taxonomy',
@@ -78,14 +73,12 @@ function cp_menu(){
   );
 
   // Appearance
-  $items["admin/cp-appearance"] = $manage +
   $items['cp/appearance'] = array(
     'title' => "Appearance",
     'page callback' => 'cp_appearance',
     'weight' => 20,
   );
 
-  $items["admin/cp-theme"] = $manage +
   $items['cp/appearance/theme'] = array(
     'title' => t('Theme'),
     'page callback' => 'cp_appearance',
@@ -95,7 +88,6 @@ function cp_menu(){
   );
 
   // Settings
-  $items["admin/cp-settings"] = $manage +
   $items['cp/settings'] = array(
     'title' => "Settings",
     'page callback' => 'cp_settings',
@@ -111,8 +103,6 @@ function cp_menu(){
     if (! array_key_exists('access callback', $item))
       $items[$path]['access arguments'] = array('access content');
   }
-
-  // proof of concept
 
   return $items;
 }
@@ -294,12 +284,3 @@ function _cp_mini_menu() {
   );
 }
 
-// proof of concept function
-function cp_preprocess_toolbar(&$variables) {
-  $cp_links = toolbar_menu_navigation_links(menu_build_tree('cp', array(
-    'max_depth' => 1,
-    'min_depth' => 1,
-  )));
-
-  $variables['toolbar']['toolbar_menu']['#links'] += $cp_links;
-}
