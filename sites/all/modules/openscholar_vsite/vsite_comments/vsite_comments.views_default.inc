@@ -499,6 +499,18 @@ function vsite_comments_views_default_views() {
       'comment_unpublish_action' => 0,
       'comment_unpublish_by_keyword_action' => 0,
     ),
+    'operations' => array(
+      'views_bulk_operations_delete_comment_action' => array(
+        'selected' => 1,
+        'skip_confirmation' => 0,
+        'label' => 'Delete',
+      ),
+      'comment_publish_action' => array(
+        'selected' => 1,
+        'skip_confirmation' => 0,
+        'label' => 'Approve',
+      ),
+    )
   ));
   $handler->override_option('path', 'cp/content/comments/approval');
   $handler->override_option('menu', array(
