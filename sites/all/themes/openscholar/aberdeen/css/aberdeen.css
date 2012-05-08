@@ -102,12 +102,12 @@ border-radius:5px;
   background: url('../images/mainNavBg.png') #5c5d58 repeat-x;
   width:950px;
   min-height:35px;
- /*padding:18px 15px 0 15px;*/
- padding: 20px 15px 0;
+ padding: 18px 15px 0;
 border-top-left-radius:5px;
 -moz-border-radius-topleft:5px;
 border-top-right-radius:5px;
 -moz-border-radius-topright:5px;
+
 }
 
 #navbar ul.menu {
@@ -119,6 +119,7 @@ border-top-right-radius:5px;
 #navbar ul.menu li {
   float:left;
   margin-right:5px;
+  margin-top:2px;
   }
 
 #navbar ul.menu li a {
