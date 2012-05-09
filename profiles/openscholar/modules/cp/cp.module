@@ -20,9 +20,8 @@ function cp_ctools_plugin_api(){
   }
 }
 
-function cp_invoke($hook, $args) {
-  $module = $_GET['cp'];
-  if (is_null($module)) return;  // we're not in a cp context
+function cp_invoke($hook, $args = array()) {
+  if (!isset($_GET['cp']) || is_null($_GET['cp'])) return;  // we're not in a cp mode
 
   module_load_include('inc', 'cp', 'includes/cp.'.$module);
   $function = 'cp_'.$module.'_'.$hook;
@@ -122,6 +121,17 @@ function cp_menu(){
   }
 
   return $items;
+}
+
+function cp_theme() {
+  $theme = array();
+  $theme['cp-toolbar'] = array(
+    'render element' => 'cp_toolbar',
+    'template' => 'cp-toolbar',
+    'path' => drupal_get_path('module', 'cp').'/theme',
+  );
+
+  return $theme;
 }
 
 /**
@@ -321,6 +331,8 @@ function cp_toolbar_pre_render($toolbar) {
 function cp_toolbar_view() {
   $build = toolbar_view();
 
+  $build['#theme'] = 'cp-toolbar';
+  $build['#attached']['css'] = array(drupal_get_path('module', 'cp').'/theme/cp-toolbar.css');
   $build['toolbar_menu']['#links'] = toolbar_menu_navigation_links(cp_get_menu_tree());
   $build['toolbar_drawer'] = array();
   $build['toolbar_drawer_classes'] = '';
