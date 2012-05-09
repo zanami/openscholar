@@ -75,7 +75,7 @@ function os_announcements_views_default_views() {
   $handler->display->display_options['menu']['title'] = 'Announcements';
   $handler->display->display_options['menu']['description'] = 'List of announcements';
   $handler->display->display_options['menu']['weight'] = '0';
-  $handler->display->display_options['menu']['name'] = 'main-menu';
+  $handler->display->display_options['menu']['name'] = 'primary-menu';
   $handler->display->display_options['menu']['context'] = 0;
 
   /* Display: Feed */
