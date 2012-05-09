@@ -96,15 +96,15 @@ function os_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'menu-menu-secondary-menu' => array(
-          'module' => 'menu',
-          'delta' => 'menu-secondary-menu',
+        'os-secondary-menu' => array(
+          'module' => 'os',
+          'delta' => 'secondary-menu',
           'region' => 'sidebar_first',
           'weight' => '-10',
         ),
-        'system-main-menu' => array(
-          'module' => 'system',
-          'delta' => 'main-menu',
+        'os-primary-menu' => array(
+          'module' => 'os',
+          'delta' => 'primary-menu',
           'region' => 'menu_bar',
           'weight' => '-10',
         ),

@@ -36,14 +36,12 @@ function cp_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'cp_0' => array(
+        'cp-cp_subnav' => array(
           'module' => 'cp',
-          'delta' => '0',
+          'delta' => 'cp_subnav',
           'weight' => 20,
-          'region' => 'left',
-          'status' => '0',
-          'label' => 'CP left menu',
-          'type' => 'context_ui',
+          'region' => 'sidebar_first',
+          'label' => 'CP Subnavigation',
         ),
       ),
     ),

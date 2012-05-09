@@ -83,3 +83,69 @@ function os_active_feature(){
 	
 	return context_get('os','feature');
 }
+
+////Implement hook_context_block_info_alter to modify the block list.
+//function os_context_block_info_alter(&$block_info){
+//	ctools_include('menu','os');
+//	_os_menu_context_block_info_alter($block_info);
+//
+//}
+
+/**
+ * Implements hook_block_info().
+ */
+function os_block_info() {
+	ctools_include('menu','os');
+	
+  $blocks['powered-by'] = array(
+    'info' => t('Powered by Openscholar'),
+    'weight' => '10',
+    'cache' => DRUPAL_CACHE_GLOBAL,
+  );
+  // System-defined menu blocks.
+  foreach (os_get_menus() as $menu_name => $title) {
+    $blocks[$menu_name]['info'] = t($title);
+    // Menu blocks can't be cached because each menu item can have
+    // a custom access callback. menu.inc manages its own caching.
+    $blocks[$menu_name]['cache'] = DRUPAL_NO_CACHE;
+  }
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Generate a block with a promotional link to openscholar.harvard.edu and
+ * all os menu blocks.
+ */
+function os_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+  	case 'powered-by':
+      $block['subject'] = NULL;
+      $block['content'] = theme('openscholar_powered_by');
+      return $block;
+    default:
+      // All os menu blocks.
+      ctools_include('menu','os');
+      $os_menus = os_get_menus();
+      if (isset($os_menus[$delta])) {
+        $block['subject'] = t($os_menus[$delta]);
+        $block['content'] = os_menu_tree($delta);
+        return $block;
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function os_theme() {
+  return array(
+    'openscholar_powered_by' => array(
+      'variables' => array(),
+      'file' => 'includes/themes.inc',
+    ),
+  );
+}

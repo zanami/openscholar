@@ -64,8 +64,8 @@ function os_announcements_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'menu_options_announcement';
   $strongarm->value = array(
-    0 => 'main-menu',
-    1 => 'menu-secondary-menu',
+    0 => 'primary-menu',
+    1 => 'secondary-menu',
   );
   $export['menu_options_announcement'] = $strongarm;
 
