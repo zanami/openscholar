@@ -101,7 +101,17 @@ function cp_menu(){
     'page callback' => 'cp_settings',
     'weight' => 20,
   );
-
+  
+  // Menu Wizard
+  $items['admin/cp-menu/%ctools_js'] = $manage + 
+  $items['cp/menu/%ctools_js'] = array(
+    'title' => 'Menu',
+    'page callback' => 'cp_menu_page',
+    'page arguments' => array(2),
+    'type' => MENU_CALLBACK,
+  );
+ 
+  
   // make them all part of 'cp' menu
   foreach ( $items as $path => $item ) {
     if (! array_key_exists('menu_name', $item))
@@ -113,6 +123,7 @@ function cp_menu(){
   }
 
   // proof of concept
+
 
   return $items;
 }
@@ -303,3 +314,189 @@ function cp_preprocess_toolbar(&$variables) {
 
   $variables['toolbar']['toolbar_menu']['#links'] += $cp_links;
 }
+
+// menu wizard
+function cp_menu_page($js = NULL, $step = NULL) {
+  //get cached results
+  $object_id = 'cp_menu';
+  if (empty($step)) {
+    $step = 'type';
+    cp_menu_cache_clear($object_id);
+  }
+  
+  $object = cp_menu_cache_get($object_id);
+  
+  $form_state = array(
+    'ajax' => $js,
+    'object_id' => $object_id,
+    'object' => &$object,  
+  );
+  
+  //prep multistep form info
+  $path = (strpos(current_path(), 'cp/menu') !== FALSE) ? 'cp/menu/' : 'admin/cp-menu/'; //depends on context.  admin/cp-menu or cp/menu
+  $form_info = array(
+    'id' => 'cp_menu_form',
+    'path' => $path . ($js ? 'ajax' : 'nojs') . '/%step',
+    'show trail' => TRUE,
+    'next callback' => 'cp_menu_wizard_next',
+    'finish callback' => 'cp_menu_wizard_finish',
+    'cancel callback' => 'cp_menu_wizard_cancel',
+    
+    //'order' => array('type' => 'Type of Link'), //is order necessary?  how to remove
+    'forms' => array(
+      'type' => array(
+      	'form id' => 'cp_menu_type',
+        'title'   => t('Link Type'),
+      ),
+    ),
+  );
+  
+  //add type dependent pages
+  $type = (isset($object['type'])) ? $object['type'] : $_POST['type'];
+  switch($type) {
+    case 'list':
+      $form_info['forms']['list_type'] = array('form id' => 'cp_menu_list_type', 'title'=>t('Type of List'));
+      
+      $list_type = (isset($object['list_type'])) ? $object['list_type'] : $_POST['list_type'];
+      //add more forms for pub/taxonomies.  
+      
+      break;
+      
+    case 'page':
+      $form_info['forms']['page'] = array('form id' => 'cp_menu_selectpage', 'title'=>t('Select or Create Page'));
+      break;
+      
+    case 'url':
+      $form_info['forms']['url'] = array('form id' => 'cp_menu_url', 'title'=>t('Link URL'));
+      break;
+  }
+
+  //add final page after type sensitive pages have been included
+  $form_info['forms']['title'] = array('form id' => 'cp_menu_title', 'title'=>t('Link Title'));
+  
+  ctools_include('wizard');
+  $form = ctools_wizard_multistep_form($form_info, $step, $form_state);
+  return drupal_render($form);
+}
+
+
+//cp menus forms
+function cp_menu_type($form, &$formstate) {
+  $form_state['title'] = t('Link Type');
+  
+  $form['type'] = array(
+    '#type' => 'radios',
+    '#options' => array('page'=>'Page', 'url'=>'URL', 'list'=>'List'),
+    '#description' => t('Type of content to link to.'),
+  );
+  
+  return $form;
+}
+
+function cp_menu_title($form, &$formstate) {
+  $form_state['title'] = t('Title');
+  
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#description' => t('Name your link.'),
+  );
+  
+  return $form;
+}
+
+function cp_menu_selectpage($form, &$formstate) {
+  $formstate['title'] = t('Select or Create a Page');
+  
+  $form['node'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Page'),
+    '#autocomplete_path' => 'ctools/autocomplete/node', //does not limit by vsite or user.  waiting for d7's version of vsite_node_autocomplete
+    '#description' => t('Select an existing page or !click to create a new one.', array('!click' => l(t('click here'), 'node/add'))), //overlay?
+  );
+  
+  return $form;
+}
+
+function cp_menu_url($form, &$formstate) {
+  $formstate['title'] = t('URL');
+  
+  $form['url'] = array(
+    '#type' => 'textfield',
+    '#description' => t('URL.'),
+  );
+  
+  return $form;  
+}
+
+function cp_menu_list_type($form, &$formstate) {
+  $form_state['title'] = t('Type of List');
+  
+  $form['list_type'] = array(
+    '#type' => 'radios',
+    '#options' => array('publications'=>'Publications', 'taxonomy'=>'Taxonomy'),
+    '#description' => t('Type of content to link to.'),
+  );
+  
+  //are we listing content of a type or grouping it by that type?
+  
+  $form['publications_type'] = array(
+    '#type' => 'radios', 
+    '#title' => 'Publications by ...',
+    '#options' => array('year'=>'Year', 'type'=>'Type', 'co'=>'Co-author'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="list_type"]' => array('value' => 'publications'),
+      ),
+    )
+  );
+  
+  $form['taxonomy_type'] = array(
+    '#type' => 'radios', 
+    '#title' => 'Taxonomy by ...',
+    '#options' => array('year'=>'Year'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="list_type"]' => array('value' => 'taxonomy'),
+      ),
+    )
+  );
+  
+  return $form;
+}
+/**
+* Cache helpers
+*/
+function cp_menu_cache_set($id, $object) {
+  ctools_include('object-cache');
+  ctools_object_cache_set('cp_menu', $id, $object);
+}
+
+/**
+* Get the current object from the cache, or default.
+*/
+function cp_menu_cache_get($id) {
+  ctools_include('object-cache');
+  $object = ctools_object_cache_get('cp_menu', $id);
+  return ($object) ? $object : array();
+}
+
+/**
+* Clear the wizard cache.
+*/
+function cp_menu_cache_clear($id) {
+  ctools_include('object-cache');
+  ctools_object_cache_clear('cp_menu', $id);
+}
+
+function cp_menu_wizard_next(&$form_state) {
+  $form_state['object'] += $form_state['values'];
+  cp_menu_cache_set($form_state['object_id'], $form_state['object']);
+}
+
+function cp_menu_wizard_cancel(&$form_state) {
+  
+}
+function cp_menu_wizard_finish() {
+  
+}
+
