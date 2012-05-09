@@ -1,6 +1,8 @@
 /**** IMPORT GRID/PANEL LAYOUT CSS ****/
 @import "ballard.layout.css"; 
 
+@import url(http://fonts.googleapis.com/css?family=Judson);
+
 body {
 background: url('../images/bodyBg.gif') no-repeat fixed center top #DDD;
   color: #444;
@@ -74,7 +76,7 @@ font-size:1.11em;
     padding-left: 7px;
 }
 
-#block-boxes-site_info h1 a {font-family: 'Palatino Linotype'; font-size:1.6em;text-decoration:none;color:#FFF;}
+#block-boxes-site_info h1 a {font-family: 'Rosarivo', georgia; font-size:1.5em;text-decoration:none;color:#FFF;}
 #block-boxes-site_info h2, 
 #block-boxes-site_info p {color:#d6d6d6;}
 
