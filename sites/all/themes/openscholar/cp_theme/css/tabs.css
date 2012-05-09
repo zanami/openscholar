@@ -9,7 +9,8 @@ div.tabs {
   right: 0;
   }
   
- .page-cp-content-comments div.tabs {
+ .page-cp-content-comments div.tabs,
+ .page-cp-content-comments-approval div.tabs {
   top: -32px;
   }
   
