@@ -67,12 +67,12 @@ function cp_menu(){
     'weight' => 10
   );
 
-  $items["cp/build/layout"] = array(
+/*  $items["cp/build/layout"] = array(
     'title' => 'Layout',
     'page callback' => 'cp_layout',
     'type' => MENU_LOCAL_TASK,
     'weight' => 10
-  );
+  );*/
 
   $items["cp/build/menu"] = array(
     'title' => 'Menu',
