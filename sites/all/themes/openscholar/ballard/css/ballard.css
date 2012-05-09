@@ -154,46 +154,48 @@ p.copy a.footer-login:hover {
 .sidebar .block .content {padding-right:6px;}
 .sidebar .block-vsite_menus-scholar_secondary_menu .block {background: #DDD;}
 
-/**** MAIN NAV BAR ****/
-
-#navbar #block-vsite-site_search {
-	float:right;
-	margin:4px 0 -4px 0;
-}
+/**** MAIN NAV BAR  ****/
 
 #navbar {
   background: url('../images/mainNavBg.png') #333333 repeat-x;
-  width:950px;
-min-height:42px;
- padding: 10px 15px 0;
+  width:970px;
+  padding:0 10px 0 0;
 }
 
-#navbar ul {
- margin-left:-5px;
- float:left;
- display:inline;
-  }
+#navbar ul
+{
+padding: 0;
+color: #F3F3F1;
+float: left;
 
-#navbar li {
-  float:left;
-  margin-top:9px;
-  }
-
-#navbar li a {
-  color: #F3F3F1;
-  font-weight:normal;
-  font-size: 14px;
-   padding: 20px 20px 15px;
-   border-right:1px solid #5d5d5f;
 }
 
-#navbar li a:hover,
-#navbar li a.active,
-#navbar li.active-trail a {
-  background: url('../images/mainNavBg.png') 0 -53px #333333 repeat-x;
-  color: #F3F3F1;
-  text-decoration: none;
+#navbar ul li { display: inline; }
+
+#navbar ul li a
+{
+padding: 1.2em 1.6em;
+background: url('../images/mainNavBg.png') #333333 repeat-x;
+color: #F3F3F1;
+text-decoration: none;
+float: left;
+border-right:1px solid #5d5d5f;
 }
+
+#navbar ul li a:hover,
+#navbar ul li a.active
+{
+background: url('../images/mainNavBg.png') 0 -53px #333333 repeat-x;
+color: #F3F3F1;
+}
+
+#navbar #block-vsite-site_search {
+	float: right;
+    height: 35px;
+    padding-top: 13px;
+    width: 180px;
+}
+
 
 /* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
 #header-right #block-vsite_menus-scholar_secondary_menu  {
