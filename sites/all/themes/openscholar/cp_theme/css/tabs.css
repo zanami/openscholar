@@ -8,6 +8,11 @@ div.tabs {
   left: 0;
   right: 0;
   }
+  
+ .page-cp-content-comments div.tabs {
+  top: -32px;
+  }
+  
 
 .page-cp-users div.tabs,
 .page-cp-users-myaccount-personal div.tabs {
