@@ -33,12 +33,8 @@ body.toolbar-drawer {
   background: #666;
   color: #ccc;
   font: normal small "Lucida Grande", Verdana, sans-serif;
-  left: 0;
   margin: 0 -20px;
   padding: 0 20px;
-  position: fixed;
-  right: 0;
-  top: 0;
   -moz-box-shadow: 0 3px 20px #000;
   -webkit-box-shadow: 0 3px 20px #000;
   box-shadow: 0 3px 20px #000;
