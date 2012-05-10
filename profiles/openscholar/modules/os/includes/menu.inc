@@ -4,16 +4,16 @@
  * Return the list of menu's that are associated with openscholar
  */
 function os_get_menus(){
-	
-	$menus = variable_get('os_menus',array(
-    'primary-menu' => 'Primary Menu',
-    'secondary-menu' => 'Secondary Menu',
+  
+  $menus = variable_get('os_menus', array(
+      'primary-menu' => 'Primary Menu',
+      'secondary-menu' => 'Secondary Menu'
   ));
-	
-  drupal_alter('os_menus',$menus);
+  
+  drupal_alter('os_menus', $menus);
   
   return $menus;
-  
+
 }
 
 /**
@@ -21,18 +21,19 @@ function os_get_menus(){
  *
  * Replaces 'menu_tree'
  */
-function os_menu_tree($menu_name) {
-	
+function os_menu_tree($menu_name){
+  
   $menu_output = &drupal_static(__FUNCTION__, array());
-
+  
   $menus = os_get_menus();
-  if(!isset($menus[$menu_name])) return;
+  if (! isset($menus[$menu_name]))
+    return;
+  
+  if (! isset($menu_output[$menu_name])) {
     
-  if (!isset($menu_output[$menu_name])) {
-  	
     $tree = menu_tree_page_data($menu_name);
     //Allow other modules to make changes to the tree
-    drupal_alter('os_menu_tree',$menu_key, $tree);
+    drupal_alter('os_menu_tree', $menu_name, $tree);
     
     $menu_output[$menu_name] = menu_tree_output($tree);
   }

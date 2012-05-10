@@ -16,6 +16,18 @@ function os_menu(){
     'weight' => 0,
   );
   
+  //TMP TEST URL TO TEST MENU SAVE SINCE ADMIN PATHS ARE EXCLUDED FROM VSITE'S
+  $items['cp/structure/menu/manage/%menu'] = array(
+    'title' => 'Customize menu',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_overview_form', 4),
+    'title callback' => 'menu_overview_title',
+    'title arguments' => array(4),
+    'access arguments' => array('administer menu'),
+    'file path' => drupal_get_path('module','menu'),
+    'file' => 'menu.admin.inc',
+  );
+  
   return $items;
 }
 

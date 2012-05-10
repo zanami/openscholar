@@ -1,17 +1,39 @@
 <?php
 
 /**
- * Implements hook_os_menu_tree_alter().
+ * Alter the os_menu to tailor it to a vsite
  */
-function vsite_menu_os_menu_tree_alter($menu_key, &$tree) {
-	
-	
-	
+function vsite_menu_os_menu_tree_alter($menu_key, &$tree){
+  $vsite = spaces_get_space();
+  
+  if ($vsite && isset($vsite->controllers->menus)) {
+    $tree = $vsite->controllers->menus->get($menu_key);
+  }
+
 }
 
+/**
+ * Implements hook_menu_overview_form_alter().
+ */
+function vsite_menu_form_menu_overview_form_alter(&$form, &$form_state, $form_id){
+  include_once drupal_get_path('module', 'vsite_menu') . '/vsite_menu.admin.inc';
+  
+  //Use the vsite submit handler which will either take over or call 'menu_overview_form_submit'
+  $key = array_search('menu_overview_form_submit', $form['#submit']);
+  $form['#submit'][$key] = 'vsite_menu_menu_overview_form_submit';
+}
 
-
-
+/**
+ * Implements hook_menu_update
+ *
+ * Informs modules that a custom menu was updated.
+ */
+function vsite_menu_menu_update($menu){
+  // For example, we track available menus in a variable.
+  $my_menus = variable_get('my_module_menus', array());
+  $my_menus[$menu['menu_name']] = $menu['menu_name'];
+  variable_set('my_module_menus', $my_menus);
+}
 
 /**
  * Controller Plugin Hooks
@@ -20,15 +42,15 @@ function vsite_menu_os_menu_tree_alter($menu_key, &$tree) {
 /**
  * Implements hook_spaces_plugins().
  */
-function vsite_menu_spaces_plugins() {
+function vsite_menu_spaces_plugins(){
   $plugins = array();
   $plugins['spaces_controller_menus'] = array(
-    'handler' => array(
-      'path' => drupal_get_path('module', 'vsite_menu') . '/plugins',
-      'file' => 'spaces_controller_menus.inc',
-      'class' => 'spaces_controller_menus',
-      'parent' => 'spaces_controler',
-    ),
+      'handler' => array(
+          'path' => drupal_get_path('module', 'vsite_menu') . '/plugins',
+          'file' => 'spaces_controller_menus.inc',
+          'class' => 'spaces_controller_menus',
+          'parent' => 'spaces_controler'
+      )
   );
   return $plugins;
 }
@@ -36,13 +58,13 @@ function vsite_menu_spaces_plugins() {
 /**
  * Implements hook_spaces_registry().
  */
-function vsite_menu_spaces_registry() {
+function vsite_menu_spaces_registry(){
   return array(
-    'controllers' => array(
-      'boxes' => array(
-        'title' => t('Menus'),
-        'plugin' => 'spaces_controller_menus',
-      ),
-    ),
+      'controllers' => array(
+          'menus' => array(
+              'title' => t('Menus'),
+              'plugin' => 'spaces_controller_menus'
+          )
+      )
   );
 }

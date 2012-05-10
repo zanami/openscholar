@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Spaces controller for boxes module.
+ * Spaces controller for menus module.
  */
 class spaces_controller_menus extends spaces_controller {
 
@@ -37,7 +37,28 @@ class spaces_controller_menus extends spaces_controller {
     			$this->values['preset'][$menu_name] = $this->tree_page_data($menu_name,$a_menu_links);
     		}
     	}
-      $this->loaded_all['preset'] = TRUE;
+    }
+  }
+  
+  // Override of load_space_values
+  protected function load_space_values($id = NULL) {
+    if (!$this->loaded_all['space']) {
+      if ($id && isset($this->loaded['space'][$id])){
+        return $this->values['space'][$id];
+      }
+      
+      parent::load_space_values($id);
+      
+      //Do some post processing to the menu to replace menu's db functions
+      if (!isset($id)) {
+        if(is_array($this->values['space'])){
+          foreach ($this->values['space'] as $menu_name => $a_menu_links) {
+            $this->values['space'][$menu_name] = $this->tree_page_data($menu_name,$a_menu_links);
+          }
+        }
+      }else if(isset($this->values['space'][$id])){
+        $this->values['space'][$id] = $this->tree_page_data($id,$this->values['space'][$id]);
+      }
     }
   }
   
@@ -88,7 +109,7 @@ class spaces_controller_menus extends spaces_controller {
    * @param string $cid
    */
   protected function menu_build_tree($menu_name, $tree_parameters, $menu_links, $cid){
-    $cache = cache_get($tree_cid, 'cache_menu');
+    $cache = cache_get($cid, 'cache_menu');
     if ($cache && isset($cache->data)) {
       return $cache->data;
     }
@@ -96,7 +117,7 @@ class spaces_controller_menus extends spaces_controller {
     $links = array();
     foreach ($menu_links as $mlid => $ml) {
     	// May not return data if it is an external link
-	    $query = db_select('menu_router', 'm', array('fetch' => PDO::FETCH_ASSOC));
+	    $query = db_select('menu_router', 'm');
 	    $query->addTag('translatable');
 	    $query->fields('m', array(
 	      'load_functions',
@@ -118,7 +139,7 @@ class spaces_controller_menus extends spaces_controller {
 	    ));
 	    $query->condition('m.path', $ml['router_path']);
     	
-	    $item = $query->execute();
+	    $item = $query->execute()->fetchAssoc();
 	    if(is_array($item)) $ml = array_merge($item,$ml);
 	    
 	    $links[] = $ml;
