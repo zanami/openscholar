@@ -395,7 +395,9 @@ function cp_menu_page($js = NULL, $step = NULL) {
   $form_info = array(
     'id' => 'cp_menu_form',
     'path' => $path . ($js ? 'ajax' : 'nojs') . '/%step',
-    'show trail' => TRUE,
+    'show trail' => FALSE,
+    'show back' => TRUE,
+    'show cancel' => FALSE,
     'next callback' => 'cp_menu_wizard_next',
     'finish callback' => 'cp_menu_wizard_finish',
     'cancel callback' => 'cp_menu_wizard_cancel',
@@ -416,7 +418,11 @@ function cp_menu_page($js = NULL, $step = NULL) {
       $form_info['forms']['list_type'] = array('form id' => 'cp_menu_list_type', 'title'=>t('Type of List'));
       
       $list_type = (isset($object['list_type'])) ? $object['list_type'] : $_POST['list_type'];
-      //add more forms for pub/taxonomies.  
+      if ($list_type == 'taxonomy') {
+        $form_info['forms']['term'] = array('form id' => 'cp_menu_list_term', 'title'=>t('Taxonomy Terms'));  
+      } elseif ($list_type == 'publications') {
+        $form_info; //pubs.
+      }  
       
       break;
       
@@ -550,20 +556,67 @@ function cp_menu_list_type($form, &$formstate) {
       ),
     )
   );
+
+  //is there a vsite aware version of this?
+  $options = array();
+  foreach (taxonomy_get_vocabularies() as $vid => $vocab) {
+    $options[$vocab->vid] = $vocab->name;
+  }
+
+  if (count($options)) {
+    $form['vocabulary'] = array(
+      '#type' => 'radios', 
+      '#title' => 'Vocabulary',
+      '#options' => $options,
+      '#states' => array(
+        'visible' => array(
+          ':input[name="list_type"]' => array('value' => 'taxonomy'),
+        ),
+      )
+    );
+  } else {
+    $form['taxonomy_not_found'] = array(
+      '#type' => 'item', 
+      '#title' => 'No vocabularies found.  Please create a vocabulary or choose another type of list.',
+      '#states' => array(
+        'visible' => array(
+          ':input[name="list_type"]' => array('value' => 'taxonomy'),
+        ),
+      )
+    );
+  }
   
-  $form['taxonomy_type'] = array(
-    '#type' => 'radios', 
-    '#title' => 'Taxonomy by ...',
-    '#options' => array('year'=>'Year'),
-    '#states' => array(
-      'visible' => array(
-        ':input[name="list_type"]' => array('value' => 'taxonomy'),
-      ),
-    )
+  return $form;
+}
+
+//list type validation function.  publications need a pub type and taxonomies need a vocab.  couldn't make this happen with just #state
+function cp_menu_list_type_validate(&$form, &$formstate) {
+  if ($formstate['values']['list_type'] == 'publications' && strlen($formstate['values']['publications_type']) == 0) {
+    form_set_error('publications_type', t('Publication list selected, but missing publication type.'));
+  }
+  if ($formstate['values']['list_type'] == 'taxonomy' && strlen($formstate['values']['vocabulary']) == 0) {
+    form_set_error('vocabulary', t('Taxonomy list selected, but missing vocabulary.'));
+  }
+}
+
+function cp_menu_list_term($form, &$formstate) {
+  $vid = $formstate['object']['vocabulary'];
+  $terms = taxonomy_get_tree($vid, 0);
+  
+  $options = array();
+  foreach ($terms as $term) {
+    $options[$term->tid] = $term->name;
+  }
+  
+  $form['term'] = array(
+    '#title' => t('Term'),
+    '#type' => 'radios',
+    '#options' => $options,
   );
   
   return $form;
 }
+  
 /**
 * Cache helpers
 */
