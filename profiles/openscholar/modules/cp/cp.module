@@ -375,6 +375,8 @@ function cp_get_menu_tree() {
 
 // menu wizard
 function cp_menu_page($js = NULL, $step = NULL) {
+  //can we collect the original menu?  should that be part of the menu link so the result can be added back in?
+  
   //get cached results
   $object_id = 'cp_menu';
   if (empty($step)) {
@@ -650,8 +652,52 @@ function cp_menu_wizard_next(&$form_state) {
 function cp_menu_wizard_cancel(&$form_state) {
   
 }
-function cp_menu_wizard_finish() {
+function cp_menu_wizard_finish(&$form_state) {
+  $values = cp_menu_cache_get($form_state['object_id']) + $form_state['values'];
+  //lets make the link first
   
+  switch ($values['type']) {
+    case 'url':
+      $url = check_url($values['url']);
+      break;
+      
+    case 'page':
+      $nid = (int)array_pop(explode(' ', $values['node']));
+      $url = 'node/'.$nid; 
+      $alias = drupal_lookup_path('alias', $url);
+      //is trimming the vsite name necssary?
+      //fail gracefully
+      break;
+      
+    default:
+      return;
+  }
+  
+  $menu_name = 'primary-menu'; //or something
+  
+  $new_menu = array(
+    $menu_name.':'.$url => array(  // TODO ever for externals?
+      'link_path' => $url,
+      'router_path' => 'node/%', // TODO where does this come from?
+      'link_title' => $values['title'],
+      'module' => 'system',
+      'has_children' => '0',
+      'expanded' => '0',
+      'menu_name' => 'features', // TODO really?
+      'weight' => '0', // TODO is there a way to add this in the form?  worth it?  maybe a slider?
+      'hidden' => '0',
+      'options' => array(  
+        //newwwindow,
+        //alt
+        //can I just add options here and proc them later or is there another place?
+      ),
+    ),
+  );
+
+  //then save to vsite or whole site
+  $menu = unserialize(variable_get($menu_name, 'a:0:{}'));
+  variable_set($menu_name, serialize($menu + $new_menu));
+  drupal_goto('<front>');
 }
 
 
