@@ -5,6 +5,11 @@ function cp_layout_full_form($form_state) {
   ctools_include('modal');
 
   $ctx = isset($form_state['build_info'])&&count($form_state['build_info']['args'])?$form_state['build_info']['args'][0]:'os_front';
+
+  $use_content_regions = false;
+  if ($ctx == 'os_front') {
+    $use_content_regions = true;
+  }
   $ctx = context_load($ctx);
 
   $form = array();
@@ -19,6 +24,7 @@ function cp_layout_full_form($form_state) {
   // filter out blocks we don't want
   // add info to existing blocks
   drupal_alter('layout_available_blocks', $blocks);
+
 
   $regions = array(
     'header_left',
@@ -56,6 +62,14 @@ function cp_layout_full_form($form_state) {
       '_cp_layout_rearrange_content_regions',
     ),
   );
+
+  if ($use_content_regions) {
+    $form['layout']['#attributes'] = array(
+    	'class' => array(
+        'content-regions',
+      ),
+    );
+  }
 
   foreach ($regions as $r) {
     $form['layout'][$r] = array(

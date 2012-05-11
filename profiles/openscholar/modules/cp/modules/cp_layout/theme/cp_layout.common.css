@@ -82,3 +82,20 @@
 	margin-top: 0.65em;
 	min-height: 8.45em;
 }
+
+.cp-layout-widget {
+	width: 100%;
+	height: 2em;
+}
+
+.cp-region-content .cp-region {
+	display: none;
+}
+
+.content-regions .cp-region-content .cp-region {
+	display: inline-block;
+}
+
+.content-regions .cp-region-content > .cp-layout-widget {
+	display: none;
+}
