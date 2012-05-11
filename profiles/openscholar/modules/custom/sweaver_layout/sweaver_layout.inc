@@ -57,8 +57,8 @@ class sweaver_layout extends sweaver_plugin {
           $path.'/theme/sweaver_layout.css',
         ),
         'js' => array(
-          $path.'/theme/sweaver_layout.js',
           drupal_get_path('module', 'context_ui').'/jquery.pageEditor.js',
+          $path.'/theme/sweaver_layout.js',
         ),
       ),
     );
