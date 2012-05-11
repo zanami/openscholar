@@ -100,3 +100,21 @@
 .content-regions .cp-region-content > .cp-layout-widget {
 	display: none;
 }
+
+#edit-layout-unused-widgets {
+	width: 100%;
+	overflow-x: auto;
+	height: 150px;
+	white-space: nowrap;
+}
+
+#edit-layout-unused-widgets .cp-layout-widget,
+.cp-layout-widget.draggin-in-progress {
+	display: inline-block;
+	height: 100px;
+	width: 100px;
+	background-color: black;
+	color: white;
+	vertical-align: top;
+	margin: 5px;
+}
