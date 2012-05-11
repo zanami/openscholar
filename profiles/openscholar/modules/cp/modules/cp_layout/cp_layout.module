@@ -1,0 +1,80 @@
+<?php
+
+function cp_layout_menu() {
+  $items = array();
+
+  $items['cp/build/layout'] = array(
+    'title' => 'Layout',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_layout_full_form'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
+    'access callback' => 'spaces_access_admin',
+    'file' => 'cp_layout.form.inc',
+  );
+
+  $items['cp/build/layout/ajax'] = array(
+    'title' => 'Layout AJAX Request',
+    'page callback' => 'cp_layout_ajax',
+    'type' => MENU_CALLBACK,
+    'file' => 'cp_layout.form.inc',
+  );
+
+  return $items;
+}
+
+function cp_layout_theme() {
+  $path = drupal_get_path('module', 'cp_layout').'/theme';
+  $items = array();
+  $items['cp_layout_widget'] = array(
+    'template' => 'cp_layout-widget',
+    'render element' => 'widget',
+    'path' =>  $path,
+  );
+
+  $items['cp_layout_unused_widgets'] = array(
+    'template' => 'cp_layout-unused_widgets',
+    'render element' => 'unused_widgets',
+    'path' => $path,
+  );
+
+  return $items;
+}
+
+function cp_layout_preprocess_cp_layout_widget(&$variables) {
+  $widget = $variables['widget']['#widget'];
+  $variables['bid'] = $widget->bid;
+  $classes_array = &$variables['classes_array'];
+
+  $classes_array[] = "cp-layout-item";
+
+  if (isset($widget->hidden) && $widget->hidden) {
+    $classes_array[] = 'disabled';
+  }
+
+  if (isset($widget->plugin)) {
+    $classes_array[] = $widget->plugin;
+  }
+
+  // extra classes used for tag selectin
+  if (isset($widget->class)) {
+    $classes_array[] = $widget->class;
+  }
+
+  if (isset($widget->overrides)) {
+  	$classes_array[] = $widget->overrides;
+  }
+
+  if (isset($widget->icon_path)) {
+  	$style = "style=\"background-image:url('{$w['icon_path']}');\"";
+  }
+
+  if (isset($widget->can_delete) && $widget->can_delete) {
+    $variables['can_delete'] = true;
+  }
+  else {
+    $variables['can_delete'] = false;
+  }
+}
+
+?>

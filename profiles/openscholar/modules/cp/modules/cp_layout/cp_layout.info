@@ -1,0 +1,4 @@
+name = "Control Panel: Layout"
+description = "A Control Panel for the layout of widgets on a page."
+core = 7.x
+dependencies[] = cp
