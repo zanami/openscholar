@@ -7,7 +7,7 @@ function vsite_menu_os_menu_tree_alter($menu_key, &$tree){
   $vsite = spaces_get_space();
   
   if ($vsite && isset($vsite->controllers->menus)) {
-    $tree = $vsite->controllers->menus->get($menu_key);
+    $tree = $vsite->controllers->menus->get_menu_tree($menu_key);
   }
 
 }
