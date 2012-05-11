@@ -1,6 +1,8 @@
 /**** IMPORT GRID/PANEL LAYOUT CSS ****/
 @import "ballard.layout.css"; 
 
+@import url(http://fonts.googleapis.com/css?family=Judson);
+
 body {
 background: url('../images/bodyBg.gif') no-repeat fixed center top #DDD;
   color: #444;
@@ -74,7 +76,7 @@ font-size:1.11em;
     padding-left: 7px;
 }
 
-#block-boxes-site_info h1 a {font-family: 'Palatino Linotype'; font-size:1.6em;text-decoration:none;color:#FFF;}
+#block-boxes-site_info h1 a {font-family: 'Judson', georgia; font-size:1.5em;text-decoration:none;color:#FFF;}
 #block-boxes-site_info h2, 
 #block-boxes-site_info p {color:#d6d6d6;}
 
@@ -90,7 +92,7 @@ h3.title a {color:#293352;}
 
 .sidebar h3.title,
 #content-bottom h3.title {
-color:#444;
+color:#666;
 background: url('../images/h3bg.png');
 padding: 7px 0 4px 8px;
  font-size: 1.2em;
@@ -200,7 +202,7 @@ color: #F3F3F1;
 /* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
 #header-right #block-vsite_menus-scholar_secondary_menu  {
    width:260px;
-   margin-bottom: 30px;
+   margin: -10px 0 40px;
 }
 
 #header-right #block-vsite_menus-scholar_secondary_menu ul {
@@ -288,7 +290,7 @@ div.views-field-field-gallery-image-fid img {
     padding: 0;
 }
 
-.box-os_boxes_slideshow {margin:-18px 0 15px -18px;}
+.box-os_boxes_slideshow {margin: 0 0 15px 0;}
 
 #views_slideshow_singleframe_prev_os_slideshow-default,
 #views_slideshow_singleframe_next_os_slideshow-default 
@@ -296,7 +298,7 @@ div.views-field-field-gallery-image-fid img {
 
 .views_slideshow_controls .views_slideshow_pause,
 .views_slideshow_controls .views_slideshow_play {
-left:670px;
+left:97%;
 margin-top: 2px;
 }
 
@@ -324,7 +326,7 @@ background: #e6e6e6;
 height:22px;
 border:none;
 border-top:none;
-width: 690px;
+width: 99%;
 z-index: 1;
 }
 
