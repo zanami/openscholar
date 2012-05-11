@@ -34,14 +34,14 @@ function cp_layout_theme() {
 
   $items['cp_layout_unused_widgets'] = array(
     'template' => 'cp_layout-unused_widgets',
-    'render element' => 'unused_widgets',
+    'variables' => array('children' => '', 'tags' => array(), 'factories' => array()),
     'path' => $path,
   );
 
   return $items;
 }
 
-function cp_layout_preprocess_cp_layout_widget(&$variables) {
+function template_preprocess_cp_layout_widget(&$variables) {
   $widget = $variables['widget']['#widget'];
   $variables['bid'] = $widget->bid;
   $classes_array = &$variables['classes_array'];
@@ -68,6 +68,8 @@ function cp_layout_preprocess_cp_layout_widget(&$variables) {
   if (isset($widget->icon_path)) {
   	$style = "style=\"background-image:url('{$w['icon_path']}');\"";
   }
+
+  $variables['widget_title'] = $widget->info;
 
   if (isset($widget->can_delete) && $widget->can_delete) {
     $variables['can_delete'] = true;

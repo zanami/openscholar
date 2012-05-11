@@ -42,8 +42,7 @@ function cp_layout_full_form($form_state) {
   );
 
   $form['unused'] = array(
-    '#theme' => 'cp_layout_unused_widgets',
-    '#widgets' => array(),
+    '#theme_wrappers' => array('cp_layout_unused_widgets'),
     '#tags' => array(),
     '#factories' => array()
   );
@@ -90,12 +89,12 @@ function cp_layout_full_form($form_state) {
     }
 
     if ($b->region == -1) {
-      $form['unused']['#widgets'][$bid] = array(
+      $form['unused'][$bid] = array(
         '#theme' => 'cp_layout_widget',
         '#widget' => $b,
       );
     }
-    else {
+    elseif (isset($form['layout'][$b->region])) {
       $form['layout'][$b->region][$bid] = array(
         '#theme' => 'cp_layout_widget',
         '#widget' => $b,
