@@ -373,7 +373,11 @@ function cp_get_menu_tree() {
   
 }
 
-// menu wizard
+/**
+ * Multi-step form wizard for adding links to menu.
+ * @param unknown_type $js
+ * @param unknown_type $step
+ */
 function cp_menu_page($js = NULL, $step = NULL) {
   //can we collect the original menu?  should that be part of the menu link so the result can be added back in?
   
@@ -382,10 +386,10 @@ function cp_menu_page($js = NULL, $step = NULL) {
   if (empty($step)) {
     $step = 'type';
     cp_menu_cache_clear($object_id);
-  }
-  
+  }  
   $object = cp_menu_cache_get($object_id);
   
+  //forge a form state
   $form_state = array(
     'ajax' => $js,
     'object_id' => $object_id,
@@ -399,7 +403,7 @@ function cp_menu_page($js = NULL, $step = NULL) {
     'path' => $path . ($js ? 'ajax' : 'nojs') . '/%step',
     'show trail' => FALSE,
     'show back' => TRUE,
-    'show cancel' => FALSE,
+    'show cancel' => TRUE,
     'next callback' => 'cp_menu_wizard_next',
     'finish callback' => 'cp_menu_wizard_finish',
     'cancel callback' => 'cp_menu_wizard_cancel',
@@ -413,8 +417,10 @@ function cp_menu_page($js = NULL, $step = NULL) {
     ),
   );
   
-  //add type dependent pages
-  $type = (isset($object['type'])) ? $object['type'] : $_POST['type'];
+  //add type dependent pages based on type form's results
+  $type = (isset($_POST['type'])) ? $_POST['type'] : NULL ;
+  $type = (isset($object['type'])) ? $object['type'] : $type ;
+  
   switch($type) {
     case 'list':
       $form_info['forms']['list_type'] = array('form id' => 'cp_menu_list_type', 'title'=>t('Type of List'));
@@ -440,13 +446,18 @@ function cp_menu_page($js = NULL, $step = NULL) {
   //add final page after type sensitive pages have been included
   $form_info['forms']['title'] = array('form id' => 'cp_menu_title', 'title'=>t('Link Title'));
   
+  //build and render the form
   ctools_include('wizard');
   $form = ctools_wizard_multistep_form($form_info, $step, $form_state);
   return drupal_render($form);
 }
 
 
-//cp menus forms
+/**
+ * @function cp_menu_type
+ * 
+ * Multistep form page for collecting the type of a link where type is page, url, or list.
+ */
 function cp_menu_type($form, &$formstate) {
   $form_state['title'] = t('Link Type');
   
@@ -459,15 +470,28 @@ function cp_menu_type($form, &$formstate) {
   return $form;
 }
 
-function cp_menu_title($form, &$formstate) {
+/**
+ * @function cp_menu_title
+ * 
+ * Multistep form page for setting the title and advanced options of a link.
+ */
+function cp_menu_title($form, &$form_state) {
   $form_state['title'] = t('Title');
   
+  //can this be prepopulated if we're coming from an existing node?
   $form['title'] = array(
     '#title' => t('Title'),
     '#type' => 'textfield',
     '#description' => t('Name your link.'),
   	'#required' => TRUE,
   );
+  
+  if ($form_state['object']['type'] == 'page') {
+    $nid = (int)array_pop(explode(' ', $form_state['object']['node']));
+    if (($node = node_load($nid)) != FALSE) {
+      $form['title']['#default_value'] = $node->title;
+    }
+  }
   
   //should we support other attributes here as well?  still undecided if new window should exist
   $form['advanced'] = array(
@@ -493,6 +517,11 @@ function cp_menu_title($form, &$formstate) {
   return $form;
 }
 
+/**
+ * @function cp_menu_selectpage
+ * 
+ * Multistep form page for choosing an existing node or creating a new one.
+ */
 function cp_menu_selectpage($form, &$formstate) {
   $formstate['title'] = t('Select or Create a Page');
   
@@ -506,6 +535,11 @@ function cp_menu_selectpage($form, &$formstate) {
   return $form;
 }
 
+/**
+ * @function cp_menu_url
+ * 
+ * Multistep form page for setting a URL.
+ */
 function cp_menu_url($form, &$formstate) {
   $formstate['title'] = t('URL');
   
@@ -518,7 +552,11 @@ function cp_menu_url($form, &$formstate) {
   return $form;  
 }
 
-//check that submitted url is legit
+/**
+ * @function cp_menu_url_validate
+ * 
+ * Validation for cp_menu_url.  Checks that URl exists.
+ */
 function cp_menu_url_validate(&$form, &$state) {
   $url = check_url($state['values']['url']);
 
@@ -535,6 +573,11 @@ function cp_menu_url_validate(&$form, &$state) {
   }
 }
 
+/**
+ * @function cp_menu_list_type
+ * 
+ * Multistep form page for gathering further information about the type of list to link to.
+ */
 function cp_menu_list_type($form, &$formstate) {
   $form_state['title'] = t('Type of List');
   
@@ -591,7 +634,12 @@ function cp_menu_list_type($form, &$formstate) {
   return $form;
 }
 
-//list type validation function.  publications need a pub type and taxonomies need a vocab.  couldn't make this happen with just #state
+/**
+ * @function cp_menu_list_type_validate
+ * 
+ * Validation for cp_menu_list_type.  Publication lists need a type (year, co-auth, etc) and taxonomy lists need a vocabulary.
+ * FAPI #states weren't quite up to the task of imposing conditional requirements. 
+ */
 function cp_menu_list_type_validate(&$form, &$formstate) {
   if ($formstate['values']['list_type'] == 'publications' && strlen($formstate['values']['publications_type']) == 0) {
     form_set_error('publications_type', t('Publication list selected, but missing publication type.'));
@@ -601,6 +649,11 @@ function cp_menu_list_type_validate(&$form, &$formstate) {
   }
 }
 
+/**
+ * @function cp_menu_list_term
+ * 
+ * Multistep form page for choosing the term to display in a vocabulary list.
+ */
 function cp_menu_list_term($form, &$formstate) {
   $vid = $formstate['object']['vocabulary'];
   $terms = taxonomy_get_tree($vid, 0);
@@ -620,7 +673,7 @@ function cp_menu_list_term($form, &$formstate) {
 }
   
 /**
-* Cache helpers
+* CP menu cache storage
 */
 function cp_menu_cache_set($id, $object) {
   ctools_include('object-cache');
@@ -628,7 +681,7 @@ function cp_menu_cache_set($id, $object) {
 }
 
 /**
-* Get the current object from the cache, or default.
+* CP menu cache retrieval
 */
 function cp_menu_cache_get($id) {
   ctools_include('object-cache');
@@ -644,18 +697,29 @@ function cp_menu_cache_clear($id) {
   ctools_object_cache_clear('cp_menu', $id);
 }
 
+/**
+* Advance the cp menu wizard to the next page.  Concatenate cached and submitted values
+*/
 function cp_menu_wizard_next(&$form_state) {
   $form_state['object'] += $form_state['values'];
   cp_menu_cache_set($form_state['object_id'], $form_state['object']);
 }
 
+/**
+* CP menu wizard cancelled.  
+*/
 function cp_menu_wizard_cancel(&$form_state) {
-  
+  cp_menu_cache_clear($form_state['object_id']);
 }
+
+/**
+* CP menu wizard has completed.  Add results to a menu.
+*/
 function cp_menu_wizard_finish(&$form_state) {
   $values = cp_menu_cache_get($form_state['object_id']) + $form_state['values'];
-  //lets make the link first
+  cp_menu_cache_clear($form_state['object_id']);
   
+  //Build the link from the collected data  
   switch ($values['type']) {
     case 'url':
       $url = check_url($values['url']);
@@ -667,6 +731,9 @@ function cp_menu_wizard_finish(&$form_state) {
       $alias = drupal_lookup_path('alias', $url);
       //is trimming the vsite name necssary?
       //fail gracefully
+      break;
+      
+    case 'list':
       break;
       
     default:
