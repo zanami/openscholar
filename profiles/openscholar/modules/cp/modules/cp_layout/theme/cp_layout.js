@@ -3,23 +3,26 @@
  */
 (function ($) {
   Drupal.behaviors.cp_layout = {
-      attach: vsite_layout_attach,
-      detach: vsite_layout_detach
+      attach: cp_layout_attach
   };
   
-  function vsite_layout_attach(ctx) {
+  function cp_layout_attach(ctx) {
     if (ctx == document) {
-      vsite_layout_init();
+      cp_layout_init();
     }
     else {
-      vsite_layout_process_ajax(ctx);
+      cp_layout_process_ajax(ctx);
     }
   }
   
   var $regions,
     sort_opts;
   
-  function vsite_layout_init() {
+  /**
+   * Called when the page first loads
+   * Sets up the sortables and any other behaviors we have
+   */
+  function cp_layout_init() {
     // things to do:
     // setup dragging regions
     $regions = $('.cp-region').not(':has(.cp-region)');
@@ -48,16 +51,43 @@
     });
     
     $('#edit-layout-unused-widgets').sortable(sort_opts);
+    
+    $('#cp-layout-full-form').submit(cp_layout_submit);
   }
   
-  function vsite_layout_ajax(ctx) {
+  /**
+   * Called when we get something through ctools' ajax mechanism
+   */
+  function cp_layout_ajax(ctx) {
     
   }
   
-  function vsite_layout_detach() {
-    // save form state before its submitted
+  /**
+   * Saves the form state before submission
+   */
+  function cp_layout_submit() {
+    
+    // loop through each region and take note of its widgets
+    $regions.each(function () {
+      var $input = $(this).find('input'),
+          $widgets = $(this).find('.cp-layout-widget'),
+          i = 0, l = $widgets.length,
+          data = [];
+      
+      for (;i<l;i++) {
+        data.push($widgets[i].id);
+      }
+      
+      // put the list of widgets into the hidden input element in each region
+      $input.val(data.join('|'));
+    });
+    
+    // TODO: Discuss if we want to have the form when the user leaves the page via a link.
   }
   
+  /**
+   * Do things when we drop a widget
+   */
   function on_stop() {
     
   }

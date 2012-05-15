@@ -49,6 +49,7 @@ function cp_layout_full_form($form_state) {
 
   $form['layout'] = array(
     '#type' => 'container',
+    '#tree' => TRUE,
     '#attached' => array(
       'js' => array(
         drupal_get_path('module', 'cp_layout').'/theme/cp_layout.js',
@@ -78,6 +79,10 @@ function cp_layout_full_form($form_state) {
           'cp-region',
           drupal_html_class('cp-region-'.$r),
         ),
+      ),
+      'widgets' => array(
+        '#type' => 'hidden',
+        '#default_value' => '',
       ),
     );
   }
@@ -111,6 +116,20 @@ function cp_layout_full_form($form_state) {
     }
   }
 
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+    ),
+    'cancel' => array(
+      '#type' => 'button',
+      '#value' => t('Cancel'),
+    ),
+  );
+
+  $form['#submit'][] = 'cp_layout_full_submit';
+
   return $form;
 }
 
@@ -127,4 +146,8 @@ function _cp_layout_rearrange_content_regions($elements) {
   }
 
   return $elements;
+}
+
+function cp_layout_full_submit($form, &$form_state) {
+  dpm($form_state);
 }
