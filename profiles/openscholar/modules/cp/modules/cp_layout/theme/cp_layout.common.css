@@ -7,8 +7,8 @@
 }
 
 .cp-region {
-	background-color: white;
-	outline: 1px solid blue;
+  background-color: white;
+  outline: 1px solid blue;
   display: inline-block;
   min-width: 20%;
   min-height: 4em;
@@ -16,105 +16,109 @@
 }
 
 .cp-region-header-left {
-	margin-right: 1%;
-	width: 24%;
-	min-height: 12em;
+  margin-right: 1%;
+  width: 24%;
+  min-height: 12em;
 }
 
 .cp-region-header-main {
-	width: 50%;
-	min-height: 12em;
+  width: 50%;
+  min-height: 12em;
 }
 
 .cp-region-header-right {
-	margin-left: 1%;
-	width: 24%;
-	min-height: 12em;
+  margin-left: 1%;
+  width: 24%;
+  min-height: 12em;
 }
 
 .cp-region-menu-bar {
-	width: 100%;
-	margin: 0.65em 0;
+  width: 100%;
+  margin: 0.65em 0;
 }
 
 .cp-region-sidebar-first {
-	width: 24%;
-	margin-right: 1%;
-	min-height: 36em;
+  width: 24%;
+  margin-right: 1%;
+  min-height: 36em;
 }
 
 .cp-region-content {
-	width: 50%;
+  width: 50%;
   min-height: 36em;
 }
 
 .cp-region-sidebar-second {
-	width: 24%;
-	margin-left: 1%;
+  width: 24%;
+  margin-left: 1%;
   min-height: 36em;
 }
 
 .cp-region-footer {
-	width: 100%;
-	margin: 0.65em 0;
+  width: 100%;
+  margin: 0.65em 0;
 }
 
 .cp-region-content-top {
-	width: 100%;
+  width: 100%;
   margin-bottom: 0.65em;
   min-height: 8.45em;
 }
 
 .cp-region-content-left {
-	width: 49%;
-	margin-right: 1%;
-	min-height: 18em;
+  width: 49%;
+  margin-right: 1%;
+  min-height: 18em;
 }
 
 .cp-region-content-right {
-	width: 49%;
-	margin-left: 1%;
-	min-height: 18em;
+  width: 49%;
+  margin-left: 1%;
+  min-height: 18em;
 }
 
 .cp-region-content-bottom {
-	width: 100%;
-	margin-top: 0.65em;
-	min-height: 8.45em;
+  width: 100%;
+  margin-top: 0.65em;
+  min-height: 8.45em;
 }
 
 .cp-region .cp-layout-widget {
-	padding: 0.75em 1em 1.5em 3.5em;
-	background-color: #CCCCCC;
-	outline: 1px solid #333333;
+  padding: 0.75em 1em 1.5em 3.5em;
+  background-color: #CCCCCC;
+  outline: 1px solid #333333;
 }
 
 .cp-region-content .cp-region {
-	display: none;
+  display: none;
 }
 
 .content-regions .cp-region-content .cp-region {
-	display: inline-block;
+  display: inline-block;
 }
 
 .content-regions .cp-region-content > .cp-layout-widget {
-	display: none;
+  display: none;
+}
+
+.content-regions.active {
+  background-color: #FFFFCC;
 }
 
 #edit-layout-unused-widgets {
-	width: 100%;
-	overflow-x: auto;
-	height: 150px;
-	white-space: nowrap;
+  width: 100%;
+  overflow-x: auto;
+  height: 150px;
+  white-space: nowrap;
 }
 
 #edit-layout-unused-widgets .cp-layout-widget,
-.cp-layout-widget.draggin-in-progress {
-	display: inline-block;
-	height: 100px;
-	width: 100px;
-	background-color: black;
-	color: white;
-	vertical-align: top;
-	margin: 5px;
+.cp-layout-widget.ui-sortable-helper {
+  display: inline-block;
+  height: 100px;
+  width: 100px;
+  background-color: black;
+  color: white;
+  vertical-align: top;
+  margin: 5px;
 }
