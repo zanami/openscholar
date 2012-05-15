@@ -10,6 +10,14 @@
 class spaces_controller_menus extends spaces_controller {
 
   /**
+   * Set override values for a given controller object in this space.
+   */
+  function set($id, $value) {
+    usort($value, '_vsite_menu_sort_weight');
+    return parent::set($id, $value);
+  }
+  
+  /**
    * Get menu tree
    * Similar to get(), except that the menu_links are converted to a menu_tree
    *

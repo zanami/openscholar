@@ -1,6 +1,43 @@
 <?php
 
 /**
+ * Form for editing an entire menu tree at once.
+ *
+ * Shows for one menu the menu links accessible to the current user and
+ * relevant operations.
+ */
+function vsite_menu_menu_overview_form($form, &$form_state, $menu) {
+  global $menu_admin;
+  $form['#attached']['css'] = array(drupal_get_path('module', 'menu') . '/menu.css');
+  
+  $vsite = spaces_get_space();
+  if(!$vsite || ! isset($vsite->controllers->menus)) return false;
+  
+  $tree = $existing_menu = $vsite->controllers->menus->get_menu_tree($menu['menu_name']);
+  $node_links = array();
+  menu_tree_collect_node_links($tree, $node_links);
+  // We indicate that a menu administrator is running the menu access check.
+  $menu_admin = TRUE;
+  menu_tree_check_access($tree, $node_links);
+  $menu_admin = FALSE;
+
+  $form = array_merge($form, _menu_overview_tree_form($tree));
+  $form['#menu'] =  $menu;
+
+  if (element_children($form)) {
+    $form['actions'] = array('#type' => 'actions');
+    $form['actions']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save configuration'),
+    );
+  }
+  else {
+    $form['#empty_text'] = t('There are no menu links yet. <a href="@link">Add link</a>.', array('@link' => url('admin/structure/menu/manage/'. $form['#menu']['menu_name'] .'/add')));
+  }
+  return $form;
+}
+
+/**
  * Submit handler for the menu overview form.
  * Replaces 'menu_overview_form_submit' inside a vsite
  *
@@ -54,16 +91,14 @@ function vsite_menu_menu_overview_form_submit($form, &$form_state){
         $element['#item']['customized'] = 1;
         $items[$mlid] = $element['#item'];
       }
-      
-      if (! isset($items[$mlid]))
-        $items[$mlid] = $element['#item'];
-        
-      //Clean up the Item for saving
-      $items[$mlid] = array_intersect_key($items[$mlid], $menu_links_schema['fields']);
     }
   }
   
-  $vsite->controllers->menus->set($menu_name, $items);
+  //Save the changed links and update thier parent items and depth
+  foreach ($items as $item){
+  	vsite_menu_menu_link_save($item);
+  }
+  
   drupal_set_message(t('Your configuration has been saved.'));
 }
 

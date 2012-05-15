@@ -76,9 +76,12 @@ function cp_menu(){
 
   $items["cp/build/menu"] = array(
     'title' => 'Menu',
-    'page callback' => 'cp_menu_callback',
     'type' => MENU_LOCAL_TASK,
-    'weight' => 10
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_menu_overview_form', 'primary-menu'),
+    'weight' => 10,
+    'file path' => drupal_get_path('module','os')."/includes",
+    'file' => 'menu.inc',
   );
 
   $items["cp/build/taxonomy"] = array(
@@ -389,7 +392,7 @@ function cp_menu_page($js = NULL, $step = NULL) {
   $form_state = array(
     'ajax' => $js,
     'object_id' => $object_id,
-    'object' => &$object,  
+    'object' => &$object,
   );
   
   //prep multistep form info
@@ -421,10 +424,10 @@ function cp_menu_page($js = NULL, $step = NULL) {
       
       $list_type = (isset($object['list_type'])) ? $object['list_type'] : $_POST['list_type'];
       if ($list_type == 'taxonomy') {
-        $form_info['forms']['term'] = array('form id' => 'cp_menu_list_term', 'title'=>t('Taxonomy Terms'));  
+        $form_info['forms']['term'] = array('form id' => 'cp_menu_list_term', 'title'=>t('Taxonomy Terms'));
       } elseif ($list_type == 'publications') {
         $form_info; //pubs.
-      }  
+      }
       
       break;
       
@@ -515,7 +518,7 @@ function cp_menu_url($form, &$formstate) {
     '#required' => TRUE,
   );
   
-  return $form;  
+  return $form;
 }
 
 //check that submitted url is legit
@@ -549,7 +552,7 @@ function cp_menu_list_type($form, &$formstate) {
   //are we listing content of a type or grouping it by that type?
   
   $form['publications_type'] = array(
-    '#type' => 'radios', 
+    '#type' => 'radios',
     '#title' => 'Publications by ...',
     '#options' => array('year'=>'Year', 'type'=>'Type', 'co'=>'Co-author'),
     '#states' => array(
@@ -567,7 +570,7 @@ function cp_menu_list_type($form, &$formstate) {
 
   if (count($options)) {
     $form['vocabulary'] = array(
-      '#type' => 'radios', 
+      '#type' => 'radios',
       '#title' => 'Vocabulary',
       '#options' => $options,
       '#states' => array(
@@ -578,7 +581,7 @@ function cp_menu_list_type($form, &$formstate) {
     );
   } else {
     $form['taxonomy_not_found'] = array(
-      '#type' => 'item', 
+      '#type' => 'item',
       '#title' => 'No vocabularies found.  Please create a vocabulary or choose another type of list.',
       '#states' => array(
         'visible' => array(
@@ -663,7 +666,7 @@ function cp_menu_wizard_finish(&$form_state) {
       
     case 'page':
       $nid = (int)array_pop(explode(' ', $values['node']));
-      $url = 'node/'.$nid; 
+      $url = 'node/'.$nid;
       $alias = drupal_lookup_path('alias', $url);
       //is trimming the vsite name necssary?
       //fail gracefully
@@ -686,7 +689,7 @@ function cp_menu_wizard_finish(&$form_state) {
       'menu_name' => 'features', // TODO really?
       'weight' => '0', // TODO is there a way to add this in the form?  worth it?  maybe a slider?
       'hidden' => '0',
-      'options' => array(  
+      'options' => array(
         //newwwindow,
         //alt
         //can I just add options here and proc them later or is there another place?
