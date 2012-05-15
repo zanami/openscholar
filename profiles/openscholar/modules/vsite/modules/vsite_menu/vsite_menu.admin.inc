@@ -9,11 +9,12 @@
 function vsite_menu_menu_overview_form($form, &$form_state, $menu) {
   global $menu_admin;
   $form['#attached']['css'] = array(drupal_get_path('module', 'menu') . '/menu.css');
+  include_once drupal_get_path('module', 'menu')."/menu.admin.inc";
   
   $vsite = spaces_get_space();
   if(!$vsite || ! isset($vsite->controllers->menus)) return false;
   
-  $tree = $existing_menu = $vsite->controllers->menus->get_menu_tree($menu['menu_name']);
+  $tree = $vsite->controllers->menus->get_menu_tree($menu['menu_name']);
   $node_links = array();
   menu_tree_collect_node_links($tree, $node_links);
   // We indicate that a menu administrator is running the menu access check.

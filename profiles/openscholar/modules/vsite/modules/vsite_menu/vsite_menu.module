@@ -23,7 +23,7 @@ function vsite_menu_form_os_menu_overview_form_alter(&$form, &$form_state, $form
   
   //Use the vsite submit handler which will either take over or call 'menu_overview_form_submit'
   $key = array_search('menu_overview_form_submit', $form['#submit']);
-  if($key) $form['#submit'][$key] = 'vsite_menu_menu_overview_form_submit';
+  if(isset($form['#submit'][$key])) $form['#submit'][$key] = 'vsite_menu_menu_overview_form_submit';
 }
 
 /**

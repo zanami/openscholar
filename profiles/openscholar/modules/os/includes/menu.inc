@@ -90,15 +90,22 @@ function os_menu_link_save(&$item) {
  */
 function os_menu_overview_form($form, &$form_state, $menu) {
   
-  if(module_exist('vsite_menu')){
+  //If the menu string was passed load the full menu
+  if(is_string($menu)) $menu = menu_load($menu);
+  
+  if(module_exists('vsite_menu')){
     include_once drupal_get_path('module', 'vsite_menu') . '/vsite_menu.admin.inc';
     
     //Retrieve a menu item using the vsite controllers
-    $form = vsite_menu_menu_overview_form($item);
+    $form = vsite_menu_menu_overview_form($form, &$form_state, $menu);
   }else{
     //Call the standard drupal menu retrieve
     $form = menu_overview_form($form, &$form_state, $menu);
   }
+  
+  //Setup default submit and theme handlers
+  $form['#submit'][] = 'menu_overview_form_submit';
+  $form['#theme'][] = 'menu_overview_form';
   
   return $form;
 }
