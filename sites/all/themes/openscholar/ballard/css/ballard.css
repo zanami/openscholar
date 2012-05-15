@@ -4,7 +4,7 @@
 @import url(http://fonts.googleapis.com/css?family=Judson);
 
 body {
-background: url('../images/bodyBg.gif') no-repeat fixed center top #DDD;
+background: url('../images/bodyBg.gif') no-repeat fixed center top #EFEFEF;
   color: #444;
 font-family: helvetica,arial,sans-serif;
 font-size:.8em;
@@ -18,7 +18,7 @@ font-size:.8em;
   box-shadow: 0 2px 1em #777;
 } 
 
-#content-area {background:#f1f1f1;padding:8px;}
+#content-area {background:#FFF;padding:8px;}
 
 
 #content-main div.views-row-last {
@@ -40,6 +40,7 @@ font-size:.8em;
  
 a, a:visited {color:#293352;text-decoration:none;}
 a:hover {text-decoration:underline;}
+
 
 #header a {color:#FFF;}
 
@@ -152,7 +153,7 @@ p.copy a.footer-login:hover {
 
 /****SIDEBAR BOX STYLES ****/
 
-.sidebar .block {background: #FFF;}
+.sidebar .block {background: #F7F7F7;}
 .sidebar .block .content {padding-right:6px;}
 .sidebar .block-vsite_menus-scholar_secondary_menu .block {background: #DDD;}
 
