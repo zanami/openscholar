@@ -91,8 +91,7 @@ h2.title {font-size:1.5em;margin-bottom:.7em;}
 h3.title {color:#666;font-size:1.2em;}
 h3.title a {color:#293352;}
 
-.sidebar h3.title,
-#content-bottom h3.title {
+.sidebar h3.title {
 color:#666;
 background: url('../images/h3bg.png');
 padding: 7px 0 4px 8px;
@@ -116,6 +115,8 @@ margin: 8px 0 0 20px;
 }
 
 #content-area .block ul li a:hover {text-decoration:underline;}
+
+.front #content-main .block ul {margin: 8px 0 0 0;}
 
 .submitted {font-weight:bold;}
 
