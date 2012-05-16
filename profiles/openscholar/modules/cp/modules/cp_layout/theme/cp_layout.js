@@ -53,13 +53,22 @@
     $('#edit-layout-unused-widgets').sortable(sort_opts);
     
     $('#cp-layout-full-form').submit(cp_layout_submit);
+    
+    $('#edit-context-selection').change(cp_layout_change);
   }
   
   /**
    * Called when we get something through ctools' ajax mechanism
    */
   function cp_layout_ajax(ctx) {
-    
+  }
+  
+  /**
+   * Change to a different context
+   */
+  function cp_layout_change() {
+    var new_ctx = $(this).val();
+    window.location.href = Drupal.encodePath(new_ctx);
   }
   
   /**
