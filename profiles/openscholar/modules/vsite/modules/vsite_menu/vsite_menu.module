@@ -78,7 +78,7 @@ function vsite_menu_menu_link_save(&$item) {
   $menu = $item['menu_name'];
   
   //Retrieve the existing menu data
-  $existing_menu = $vsite->controllers->menus->get_menu_tree($menu);
+  $existing_menu = $vsite->controllers->menus->get($menu);
   
   if (isset($item['mlid']) && array_key_exists($item['mlid'], $existing_menu)) {
     $existing_item = $existing_menu[$item['mlid']];
