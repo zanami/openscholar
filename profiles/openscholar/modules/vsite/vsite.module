@@ -10,6 +10,28 @@ include_once ('vsite.features.inc');
  */
 
 /**
+ * Implements hook_BASE_ID_form_alter().
+ *
+ * Runs on every node form
+ */
+function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
+  $vsite = spaces_get_space();
+  $os_bundles = os_get_bundles();
+  
+  if($vsite && in_array($form['#bundle'],$os_bundles)){
+    //Set the og_group_ref value to automatically be the current active site
+    $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = array(
+      '#type' => 'value',
+      '#default_value' => $vsite->group->nid,
+      '#field_name' => OG_AUDIENCE_FIELD,
+      '#language' => LANGUAGE_NONE,
+      '#entity_type' => 'node',
+      '#bundle' => $form['#bundle']
+    );
+  }
+}
+
+/**
  * Alter the space presets to add vsite specific information
  *
  * @param $presets
