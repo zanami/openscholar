@@ -60,9 +60,9 @@ margin-top:6px;
 }
 
 #menu-bar {
-  background: url('../images/mainNavBg.png') repeat-x;
+  background: url('../images/mainNavBg.png') #5c5d58 repeat-x;
   width:980px;
- height:46px;
+ min-height:46px;
  padding-top:8px;
 border-top-left-radius:5px;
 -moz-border-radius-topleft:5px;
