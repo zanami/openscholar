@@ -1,0 +1,81 @@
+
+;----------// Theme Information
+
+  name        = Ballard
+  description = A public theme for use in OpenScholar.
+  core        = 7.x
+  base theme  = os_basetheme
+  release     = 7.x-3.x
+  engine      = phptemplate
+  screenshot  = screenshot.png
+
+
+;----------// Stylesheets
+
+  
+  stylesheets[screen][] = css/ballard.css
+    
+;----------// Regions
+
+  regions[sidebar_first]     = Sidebar first
+  regions[sidebar_second]    = Sidebar second
+  regions[content]           = Main Content
+  regions[footer]            = Footer
+  regions[menu_bar]          = Menu Bar
+  regions[messages]          = Messages
+  regions[help]              = Help
+  
+;----------// Gpanel Regions
+
+  ; If you are using Gpanels copy and paste the region definitions here. You will find them
+  ; in each layout PHP file in adaptivetheme/layouts/gpanels
+  
+; 3 col 3x33
+regions[three_33_top] =3x33 Gpanel top
+regions[three_33_first]  = 3x33 Gpanel left
+regions[three_33_second] = 3x33 Gpanel center
+regions[three_33_third]  = 3x33 Gpanel right
+regions[three_33_bottom] =3x33 Gpanel bottom
+
+
+
+;----------// Site Features
+
+  features[] = logo
+  features[] = name
+  features[] = slogan
+  features[] = node_user_picture
+  features[] = comment_user_picture
+  features[] = comment_user_verification
+  features[] = favicon
+  features[] = main_menu
+  features[] = secondary_menu
+
+
+;----------// Theme Settings
+
+  ; Layout settings - Standard bigscreen
+  settings[bigscreen_layout]         = 'three_col_grail'
+  settings[bigscreen_page_unit]      = 'px'
+  settings[bigscreen_sidebar_unit]   = 'px'
+  settings[bigscreen_max_width_unit] = 'px'
+  settings[bigscreen_page_width]     = 980
+  settings[bigscreen_sidebar_first]  = 200
+  settings[bigscreen_sidebar_second] = 260
+  settings[bigscreen_set_max_width]  = 1
+  settings[bigscreen_max_width]      = 1140
+  settings[bigscreen_media_query]    = 'only screen and (min-width:1025px)'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
