@@ -1,7 +1,7 @@
 
 ;----------// Theme Information
 
-  name        = Aberdeen
+  name        = Ballard
   description = A public theme for use in OpenScholar.
   core        = 7.x
   base theme  = os_basetheme
@@ -13,7 +13,7 @@
 ;----------// Stylesheets
 
   
-  stylesheets[screen][] = css/aberdeen.css
+  stylesheets[screen][] = css/ballard.css
     
 ;----------// Regions
 
@@ -61,10 +61,18 @@ regions[three_33_bottom] =3x33 Gpanel bottom
   settings[bigscreen_max_width_unit] = 'px'
   settings[bigscreen_page_width]     = 980
   settings[bigscreen_sidebar_first]  = 200
-  settings[bigscreen_sidebar_second] = 290
+  settings[bigscreen_sidebar_second] = 260
   settings[bigscreen_set_max_width]  = 1
   settings[bigscreen_max_width]      = 1140
   settings[bigscreen_media_query]    = 'only screen and (min-width:1025px)'
+
+
+
+
+
+
+
+
 
 
 

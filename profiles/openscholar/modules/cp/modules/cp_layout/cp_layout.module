@@ -42,6 +42,12 @@ function cp_layout_theme() {
   return $items;
 }
 
+/**
+ * Implements hook_preprocess_cp_layout_widget
+ *
+ * Defines classes and additional variables needed by the cp_layout_widget template
+ * @param unknown_type $variables
+ */
 function template_preprocess_cp_layout_widget(&$variables) {
   $widget = $variables['widget']['#widget'];
   $variables['bid'] = $widget->bid;
@@ -78,6 +84,55 @@ function template_preprocess_cp_layout_widget(&$variables) {
   else {
     $variables['can_delete'] = false;
   }
+}
+
+/**
+ * Implements hook_preprocess_cp_layout_unused_widgets
+ *
+ * Renders the factory boxes as dropdowns.
+ * @param unknown_type $variables
+ */
+function template_preprocess_cp_layout_unused_widgets(&$variables) {
+  $factories = &$variables['factories'];
+
+  // sort factories by something
+  // TODO: Do this
+
+  $links = array();
+  foreach ($factories as $f) {
+    $l = array(
+      'html' => TRUE,
+      'title' => '',
+    );
+
+    $href = '';
+    $title = $f->info;
+    $options = array();
+    $html = l($title, $href, $options);
+
+    $help_opts = array(
+      'attributes' => array(
+        'class' => 'help',
+        'onclick' => "var w=window.open(this.href, 'advanced_help_window', 'width=500,height=500,scrollbars,resizable'); w.focus(); return false;"
+      ),
+      'query' => array(
+        'popup' => 1,
+      )
+    );
+    $help_exists = true;
+    if ($help_exists) {//TODO: implement $help_exists
+      $html .= ' '.l('?', 'help/os/widgets/'.$f->bid, $help_opts);  // TODO: This URL is wrong
+    }
+    $l['title'] = $html;
+    $links[] = $l;
+  }
+
+  $vars = array(
+    'title' => 'Factories',
+    'links' => $links,
+  );
+
+  $variables['factory_html'] = theme('ctools_dropdown', $vars);
 }
 
 ?>

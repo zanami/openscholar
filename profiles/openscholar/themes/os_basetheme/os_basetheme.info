@@ -71,6 +71,7 @@
   regions[content]           = Main Content
   regions[footer]            = Footer
   regions[menu_bar]          = Menu Bar
+  regions[messages]          = Messages
   regions[help]              = Help
   
 ;----------// Gpanel Regions
