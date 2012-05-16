@@ -731,12 +731,6 @@ function cp_menu_wizard_finish(&$form_state) {
     case 'page':
       $nid = (int)array_pop(explode(' ', $values['node']));
       $url = 'node/'.$nid;
-      $url = drupal_lookup_path('alias', $url); //vsite/content/name
-      //$url = implode('/', array_slice(explode('/', $url), 2));
-      
-      
-      //is trimming the vsite name necssary?
-      //fail gracefully
       break;
       
     case 'list':
