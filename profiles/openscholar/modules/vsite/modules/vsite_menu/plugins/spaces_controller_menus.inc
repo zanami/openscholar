@@ -13,7 +13,7 @@ class spaces_controller_menus extends spaces_controller {
    * Set override values for a given controller object in this space.
    */
   function set($id, $value) {
-    usort($value, '_vsite_menu_sort_weight');
+    uasort($value, '_vsite_menu_sort_weight');
     return parent::set($id, $value);
   }
   

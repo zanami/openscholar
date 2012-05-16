@@ -731,7 +731,10 @@ function cp_menu_wizard_finish(&$form_state) {
     case 'page':
       $nid = (int)array_pop(explode(' ', $values['node']));
       $url = 'node/'.$nid;
-      $alias = drupal_lookup_path('alias', $url);
+      $url = drupal_lookup_path('alias', $url); //vsite/content/name
+      //$url = implode('/', array_slice(explode('/', $url), 2));
+      
+      
       //is trimming the vsite name necssary?
       //fail gracefully
       break;
@@ -755,13 +758,17 @@ function cp_menu_wizard_finish(&$form_state) {
     'expanded' => '0',
     'weight' => '0', // TODO is there a way to add this in the form?  worth it?  maybe a slider?
     'hidden' => '0',
-    'options' => array(
-      //newwwindow,
-      //alt
-      //can I just add options here and proc them later or is there another place?
-    ),
+    'options' => array('attributes'=>array()),
   );
 
+  if ($values['new_window']) {
+    $new_menu['options']['attributes']['target'] = '_blank';
+  } 
+    
+  if ($values['tooltip']) {
+    $new_menu['options']['attributes']['title'] = check_plain($values['tooltip']);
+  }
+  
   //then save to vsite or whole site
   ctools_include('menu','os');
   os_menu_link_save($new_menu);

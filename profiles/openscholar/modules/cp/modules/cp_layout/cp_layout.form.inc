@@ -1,10 +1,21 @@
 <?php
 
-function cp_layout_full_form($form_state) {
+function cp_layout_full_form($form, $form_state, $ctx) {
+  $form = array();
   ctools_include('ajax');
   ctools_include('modal');
 
-  $ctx = isset($form_state['build_info'])&&count($form_state['build_info']['args'])?$form_state['build_info']['args'][0]:'os_front';
+  // Temporary: To be replaced by API function later
+  $contexts = context_context_list();
+  $ctx = $ctx?$ctx:'os_front';
+
+  $form['context_selection'] = array(
+    '#type' => 'select',
+    '#title' => t('Site Section'),
+    '#options' => $contexts,
+    '#default_value' => $ctx,
+    '#multiple' => false,
+  );
 
   $use_content_regions = false;
   if ($ctx == 'os_front') {
@@ -12,9 +23,14 @@ function cp_layout_full_form($form_state) {
   }
   $ctx = context_load($ctx);
 
-  $form = array();
   if ($ctx === FALSE) return $form;  // context doesn't exist. bail out
 
+  $form['context'] = array(
+    '#type' => 'value',
+    '#value' => $ctx,
+  );
+
+  // temporary: to be replaced with api calls
   $plugin = context_get_plugin('reaction', 'block');
 
   // will need to be replaced if it doesn't work with spaces
@@ -149,5 +165,16 @@ function _cp_layout_rearrange_content_regions($elements) {
 }
 
 function cp_layout_full_submit($form, &$form_state) {
+  dpm($form);
   dpm($form_state);
+  $regions = $form_state['values']['layout'];
+  foreach ($regions as $r => $d) {
+    $widgets = explode('|', $d['widgets']);
+  }
+  dpm($widgets);
+
+  // merging with sitewide context? is that still something we want to do?
+
+  // construct the data and save it
+  // straight to context? into spaces? what?
 }
