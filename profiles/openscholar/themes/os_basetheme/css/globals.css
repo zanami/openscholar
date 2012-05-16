@@ -27,7 +27,7 @@
 @import "global.pages.css";    /* General styles for page template elements */
 @import "global.nav.css";      /* Main navigation, menus, breadcrumbs, local tasks, action links, pager and skip navigation */
 @import "global.fields.css";   /* Global styles for fields */
- /* @import "global.nodes.css";   Content types */
+@import "global.nodes.css";  /* Content types */
 /*@import "global.comments.css";  Comment wrapper, commentss and the comment form */
 /*@import "global.blocks.css";    Block styles, includes all core blocks */
 /*@import "global.views.css";     Starter CSS for styling Views */
