@@ -466,7 +466,7 @@ function cp_menu_type($form, &$formstate) {
   
   $form['type'] = array(
     '#type' => 'radios',
-    '#options' => array('page'=>'Page', 'url'=>'URL', 'list'=>'List'),
+    '#options' => array('page'=>'Page', 'url'=>'URL'),//, 'list'=>'List'),
     '#description' => t('Type of content to link to.'),
   );
   
@@ -720,7 +720,7 @@ function cp_menu_wizard_cancel(&$form_state) {
 */
 function cp_menu_wizard_finish(&$form_state) {
   $values = cp_menu_cache_get($form_state['object_id']) + $form_state['values'];
-  cp_menu_cache_clear($form_state['object_id']);
+//  cp_menu_cache_clear($form_state['object_id']);
   
   //Build the link from the collected data  
   switch ($values['type']) {
@@ -746,28 +746,26 @@ function cp_menu_wizard_finish(&$form_state) {
   $menu_name = 'primary-menu'; //or something
   
   $new_menu = array(
-    $menu_name.':'.$url => array(  // TODO ever for externals?
-      'link_path' => $url,
-      'router_path' => 'node/%', // TODO where does this come from?
-      'link_title' => $values['title'],
-      'module' => 'system',
-      'has_children' => '0',
-      'expanded' => '0',
-      'menu_name' => 'features', // TODO really?
-      'weight' => '0', // TODO is there a way to add this in the form?  worth it?  maybe a slider?
-      'hidden' => '0',
-      'options' => array(
-        //newwwindow,
-        //alt
-        //can I just add options here and proc them later or is there another place?
-      ),
+    'link_path' => $url,
+    //'router_path' => 'node/%', // TODO where does this come from?
+    'menu_name' => $menu_name,
+    'link_title' => $values['title'],
+    'module' => 'system',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0', // TODO is there a way to add this in the form?  worth it?  maybe a slider?
+    'hidden' => '0',
+    'options' => array(
+      //newwwindow,
+      //alt
+      //can I just add options here and proc them later or is there another place?
     ),
   );
 
   //then save to vsite or whole site
-  $menu = unserialize(variable_get($menu_name, 'a:0:{}'));
-  variable_set($menu_name, serialize($menu + $new_menu));
-  drupal_goto('<front>');
+  ctools_include('menu','os');
+  os_menu_link_save($new_menu);
+  drupal_goto('cp/menu/js');
 }
 
 

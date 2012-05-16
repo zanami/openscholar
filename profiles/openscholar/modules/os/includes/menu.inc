@@ -72,7 +72,7 @@ function os_menu_tree($menu_name){
 function os_menu_link_save(&$item) {
   
   $mlid = false;
-  if(module_exist('vsite_menu')){
+  if(module_exists('vsite_menu')){
     //Save a menu item using the vsite controllers
     $mlid = vsite_menu_menu_link_save($item);
   }else{
