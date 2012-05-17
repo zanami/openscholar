@@ -4,7 +4,7 @@
 @import url(http://fonts.googleapis.com/css?family=Judson);
 
 body {
-background: url('../images/bodyBg.gif') no-repeat fixed center top #DDD;
+background: url('../images/bodyBg.gif') no-repeat fixed center top #EFEFEF;
   color: #444;
 font-family: helvetica,arial,sans-serif;
 font-size:.8em;
@@ -18,7 +18,7 @@ font-size:.8em;
   box-shadow: 0 2px 1em #777;
 } 
 
-#content-area {background:#f1f1f1;padding:8px;}
+#content-area {background:#FFF;padding:8px;}
 
 
 #content-main div.views-row-last {
@@ -40,6 +40,7 @@ font-size:.8em;
  
 a, a:visited {color:#293352;text-decoration:none;}
 a:hover {text-decoration:underline;}
+
 
 #header a {color:#FFF;}
 
@@ -90,8 +91,8 @@ h2.title {font-size:1.5em;margin-bottom:.7em;}
 h3.title {color:#666;font-size:1.2em;}
 h3.title a {color:#293352;}
 
-.sidebar h3.title,
-#content-bottom h3.title {
+
+.sidebar h3.title {
 color:#666;
 background: url('../images/h3bg.png');
 padding: 7px 0 4px 8px;
@@ -100,6 +101,14 @@ border-right: 1px solid #d6d6d6;
 border-bottom: 1px solid #d6d6d6;
 font-weight:normal;
 margin-bottom:0;
+}
+
+.sidebar .node-inner h3.title {
+background: none;
+padding: 7px 0 4px 3px;
+ font-size: 1.1em;
+border: none;
+line-height:18px;
 }
 
 #content-area .block ul {
@@ -115,6 +124,12 @@ margin: 8px 0 0 20px;
 }
 
 #content-area .block ul li a:hover {text-decoration:underline;}
+
+.front #content-main .block ul.links {margin: 8px 0 0 0;}
+
+#content-area .sidebar ul.links {
+    margin: 8px 0 0;
+}
 
 .submitted {font-weight:bold;}
 
@@ -152,8 +167,8 @@ p.copy a.footer-login:hover {
 
 /****SIDEBAR BOX STYLES ****/
 
-.sidebar .block {background: #FFF;}
-.sidebar .block .content {padding-right:6px;}
+.sidebar .block {background: #F7F7F7;}
+.sidebar .block .content {padding:3px;}
 .sidebar .block-vsite_menus-scholar_secondary_menu .block {background: #DDD;}
 
 /**** MAIN NAV BAR  ****/
