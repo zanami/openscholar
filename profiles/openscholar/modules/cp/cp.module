@@ -545,7 +545,7 @@ function cp_menu_title($form, &$form_state) {
         '#type' => 'select',
         '#title' => t('Create new'),
         '#description' => t('Create a new page.'),        
-        '#options' => cp_vsite_content_types(),
+        '#options' => vsite_content_types(),
         '#states' => array(
           'visible' => array(
             ':input[name="new_or_select"]' => array('value' => 'new'),
@@ -864,4 +864,34 @@ $vsite = spaces_get_space();
   }
 
   drupal_json_output($matches);
+}
+
+/**
+ * @function vsite_content_types
+ * 
+ * Return the content type of a vsite based on the privacy
+ * @param $privacy and array (or single value) (0 -> disabled, 2 -> private, 1 -> public)
+ * @param $vsite optional / the active vsite if nothing provided
+ * @return unknown_type
+ */
+function vsite_content_types($privacy = array(1), $vsite = NULL) {
+  if (! is_array($privacy)) {
+    $privacy = array($privacy);  
+  }
+
+  $result = array();
+  if ($vsite || $vsite = spaces_get_space()) {
+    $all_types = _node_types_build()->types; 
+    $site_features = variable_get('spaces_features', array());
+    
+    foreach (features_get_component_map('node') as $type => $features) {
+      foreach ($features as $feature) {
+        if (isset($site_features[$feature]) && in_array( (int)$site_features[$feature], $privacy )) {
+          $result[$type] = $all_types[$type]->name;
+        }
+      }
+    }
+  } 
+  
+  return $result;
 }
