@@ -1,0 +1,44 @@
+
+;----------// Theme Information
+
+  name        = Mobile
+  description = Mobile theme for OpenScholar.
+  core        = 7.x
+  base theme  = os_basetheme
+  release     = 7.x-3.x
+  engine      = phptemplate
+  screenshot  = screenshot.png
+
+
+;----------// Stylesheets
+
+  
+  stylesheets[screen][] = css/mobile.css
+    
+;----------// Regions
+  regions[header]            = Header
+  regions[content]           = Main Content
+  regions[footer]            = Footer
+  regions[menu_bar]          = Menu Bar
+  regions[messages]          = Messages
+  regions[help]              = Help
+  
+
+;----------// Site Features
+
+  features[] = logo
+  features[] = name
+  features[] = slogan
+  features[] = node_user_picture
+  features[] = comment_user_picture
+  features[] = comment_user_verification
+  features[] = favicon
+  features[] = main_menu
+  features[] = secondary_menu
+
+
+
+
+
+
+
