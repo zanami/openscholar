@@ -8,6 +8,8 @@ define('CP_MENU_OFF', 'off');
 define('CP_MENU_MINI', 'mini');
 define('CP_MENU_FULL', 'full');
 
+include_once('cp.features.inc');
+
 /**
  * Implementation of hook_ctools_plugin_api().
  */
@@ -131,6 +133,18 @@ function cp_menu(){
     if (! array_key_exists('access callback', $item))
       $items[$path]['access arguments'] = array('access content');
   }
+  
+  // nodeautocomplete callback for scholar @TODO find a better home
+  $items['vsite/node/autocomplete'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'something',
+    'page callback' => 'cp_vsite_node_autocomplete',
+    //'file' => 'nodeautocomplete.inc',
+    'access arguments' => array(
+      'access content'
+    ),
+    //'file path' => drupal_get_path('module', 'vsite') . '/includes'
+  );
 
   // proof of concept
   return $items;
@@ -446,11 +460,11 @@ function cp_menu_page($js = NULL, $step = NULL) {
       break;
       
     case 'page':
-      $form_info['forms']['page'] = array('form id' => 'cp_menu_selectpage', 'title'=>t('Select or Create Page'));
+   //   $form_info['forms']['page'] = array('form id' => 'cp_menu_selectpage', 'title'=>t('Select or Create Page'));
       break;
       
     case 'url':
-      $form_info['forms']['url'] = array('form id' => 'cp_menu_url', 'title'=>t('Link URL'));
+    //  $form_info['forms']['url'] = array('form id' => 'cp_menu_url', 'title'=>t('Link URL'));
       break;
   }
 
@@ -497,13 +511,58 @@ function cp_menu_title($form, &$form_state) {
   	'#required' => TRUE,
   );
   
-  if ($form_state['object']['type'] == 'page') {
+  //add type dependent fields
+  switch($form_state['object']['type']) {
+    case 'url':
+      $form['url'] = array(
+        '#type' => 'textfield',
+        '#title' => t('URL'),
+        '#required' => TRUE,
+      );
+      break;
+      
+    case 'page':
+      $form['new_or_select'] = array(
+        '#type' => 'radios',
+        '#options' => array('new'=>t('New Page'), 'select'=>t('Choose Existing')),
+        '#description' => t('Type of content to link to.'),
+      );
+
+      $form['node'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Page'),
+        '#autocomplete_path' => 'ctools/autocomplete/node', //does not limit by vsite or user.  waiting for d7's version of vsite_node_autocomplete
+        '#description' => t('Select an existing page.'),        
+        '#states' => array(
+          'visible' => array(
+            ':input[name="new_or_select"]' => array('value' => 'select'),
+          ),
+        ),
+      );
+      
+      //could collapse previous into this and have it be choose existing/new pub/new page/new etc, with the node autocomplete only showing up on choose existing.
+      $form['new_node'] = array(
+        '#type' => 'select',
+        '#title' => t('Create new'),
+        '#description' => t('Create a new page.'),        
+        '#options' => cp_vsite_content_types(),
+        '#states' => array(
+          'visible' => array(
+            ':input[name="new_or_select"]' => array('value' => 'new'),
+          ),
+        ),
+      );
+      
+      break;
+  }
+  
+/*  if ($form_state['object']['type'] == 'page') {
     $nid = (int)array_pop(explode(' ', $form_state['object']['node']));
     if (($node = node_load($nid)) != FALSE) {
       $form['title']['#default_value'] = $node->title;
     }
   }
-  
+  */
   //should we support other attributes here as well?  still undecided if new window should exist
   $form['advanced'] = array(
     '#type' => 'fieldset',
@@ -533,7 +592,7 @@ function cp_menu_title($form, &$form_state) {
  * 
  * Multistep form page for choosing an existing node or creating a new one.
  */
-function cp_menu_selectpage($form, &$formstate) {
+/*function cp_menu_selectpage($form, &$formstate) {
   $formstate['title'] = t('Select or Create a Page');
   
   $form['node'] = array(
@@ -545,13 +604,13 @@ function cp_menu_selectpage($form, &$formstate) {
   
   return $form;
 }
-
+*/
 /**
  * @function cp_menu_url
  * 
  * Multistep form page for setting a URL.
  */
-function cp_menu_url($form, &$formstate) {
+/*function cp_menu_url($form, &$formstate) {
   $formstate['title'] = t('URL');
   
   $form['url'] = array(
@@ -562,13 +621,13 @@ function cp_menu_url($form, &$formstate) {
   
   return $form;
 }
-
+*/
 /**
  * @function cp_menu_url_validate
  * 
  * Validation for cp_menu_url.  Checks that URl exists.
  */
-function cp_menu_url_validate(&$form, &$state) {
+/*function cp_menu_url_validate(&$form, &$state) {
   $url = check_url($state['values']['url']);
 
   if (url_is_external($url)) {
@@ -583,7 +642,7 @@ function cp_menu_url_validate(&$form, &$state) {
       form_set_error('url', t('Path does not exist'));
   }
 }
-
+*/
 /**
  * @function cp_menu_list_type
  * 
@@ -777,4 +836,32 @@ function cp_menu_wizard_finish(&$form_state) {
   drupal_goto('cp/menu/js');
 }
 
+//returns lsit of available content types.  temporary location - this probably won't live in cp forever.
+function cp_vsite_content_types() {
+  return array('page'=>'Page', 'announcement'=>'Announcement'); 
+}
 
+/**
+ * schlar nodeautocomplete callback function
+ */
+function cp_vsite_node_autocomplete($str){
+
+  //initialize view to generate sessions output when viewing a conference
+  $view = views_get_view('vsite_autocomplete');
+  $view->init();
+
+$vsite = spaces_get_space();
+  
+  $view->set_display('default');
+  $view->set_items_per_page(0);
+  $view->execute();
+  
+  $matches = array();
+  foreach ($view->result as $node){
+    if (stristr($node->node_title, $str)) {
+     $matches[$node->node_title. ' [nid:' . $node->nid . ']'] = check_plain($node->node_title);
+    }
+  }
+
+  drupal_json_output($matches);
+}
