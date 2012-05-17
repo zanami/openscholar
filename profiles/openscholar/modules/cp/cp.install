@@ -13,6 +13,18 @@ function cp_enable() {
       'description' => $t('Administration links') 
     );
     menu_save($menu);
+  
+    //update weight so cp is after menu.
+    $weight = db_select('system', 's')
+      ->fields('s', array('weight'))
+      ->condition('name', 'menu', '=')
+      ->execute()->fetchField(0);
+    
+    db_update('system')
+      ->fields(array('weight' => $weight + 1))
+      ->condition('name', 'cp', '=')
+      ->condition('type', 'module', '=')
+      ->execute();
   }
 }
 
