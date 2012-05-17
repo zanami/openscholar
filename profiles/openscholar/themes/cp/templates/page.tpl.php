@@ -16,7 +16,6 @@
     <div id="columns"><div class="columns-inner clearfix">
       <div id="content-column"><div class="content-inner">
 
-        <?php print render($page['highlighted']); ?>
 
         <<?php print $tag; ?> id="main-content">
 
@@ -51,11 +50,6 @@
           <?php endif; ?>
 
  
-
-        </<?php print $tag; ?>>
-
-  
-
       </div></div>
 
       <?php print render($page['sidebar_first']); ?>
