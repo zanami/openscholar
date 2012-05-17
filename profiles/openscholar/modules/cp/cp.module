@@ -67,19 +67,21 @@ function cp_menu(){
     'weight' => 10
   );
 
-/*  $items["cp/build/layout"] = array(
-    'title' => 'Layout',
-    'page callback' => 'cp_layout',
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 10
-  );*/
-
   $items["cp/build/menu"] = array(
     'title' => 'Menu',
     'type' => MENU_LOCAL_TASK,
     'page callback' => 'drupal_get_form',
     'page arguments' => array('os_menu_overview_form', 'primary-menu'),
     'weight' => 10,
+    'file path' => drupal_get_path('module','os')."/includes",
+    'file' => 'menu.inc',
+  );
+  
+  $items['cp/build/menu/%/%/edit'] = array(
+    'title' => 'Edit menu link',
+    'page callback' => 'drupal_get_form',
+    //page arguments (form_id, menu_id, mlid)
+    'page arguments' => array('os_menu_edit_item', 3, 4),
     'file path' => drupal_get_path('module','os')."/includes",
     'file' => 'menu.inc',
   );
@@ -389,7 +391,7 @@ function cp_menu_page($js = NULL, $step = NULL) {
   if (empty($step)) {
     $step = 'type';
     cp_menu_cache_clear($object_id);
-  }  
+  }
   $object = cp_menu_cache_get($object_id);
   
   //forge a form state
@@ -421,7 +423,7 @@ function cp_menu_page($js = NULL, $step = NULL) {
   );
   
   //add type dependent pages based on type form's results
-    if (isset($_POST['type'])) { 
+    if (isset($_POST['type'])) {
       $type = $_POST['type'];
       $object['type'] = $type;
       cp_menu_cache_set($object_id, $object);
@@ -466,7 +468,7 @@ function cp_menu_page($js = NULL, $step = NULL) {
 
 /**
  * @function cp_menu_type
- * 
+ *
  * Multistep form page for collecting the type of a link where type is page, url, or list.
  */
 function cp_menu_type($form, &$formstate) {
@@ -483,7 +485,7 @@ function cp_menu_type($form, &$formstate) {
 
 /**
  * @function cp_menu_title
- * 
+ *
  * Multistep form page for setting the title and advanced options of a link.
  */
 function cp_menu_title($form, &$form_state) {
@@ -530,7 +532,7 @@ function cp_menu_title($form, &$form_state) {
 
 /**
  * @function cp_menu_selectpage
- * 
+ *
  * Multistep form page for choosing an existing node or creating a new one.
  */
 function cp_menu_selectpage($form, &$formstate) {
@@ -548,7 +550,7 @@ function cp_menu_selectpage($form, &$formstate) {
 
 /**
  * @function cp_menu_url
- * 
+ *
  * Multistep form page for setting a URL.
  */
 function cp_menu_url($form, &$formstate) {
@@ -565,7 +567,7 @@ function cp_menu_url($form, &$formstate) {
 
 /**
  * @function cp_menu_url_validate
- * 
+ *
  * Validation for cp_menu_url.  Checks that URl exists.
  */
 function cp_menu_url_validate(&$form, &$state) {
@@ -586,7 +588,7 @@ function cp_menu_url_validate(&$form, &$state) {
 
 /**
  * @function cp_menu_list_type
- * 
+ *
  * Multistep form page for gathering further information about the type of list to link to.
  */
 function cp_menu_list_type($form, &$formstate) {
@@ -647,9 +649,9 @@ function cp_menu_list_type($form, &$formstate) {
 
 /**
  * @function cp_menu_list_type_validate
- * 
+ *
  * Validation for cp_menu_list_type.  Publication lists need a type (year, co-auth, etc) and taxonomy lists need a vocabulary.
- * FAPI #states weren't quite up to the task of imposing conditional requirements. 
+ * FAPI #states weren't quite up to the task of imposing conditional requirements.
  */
 function cp_menu_list_type_validate(&$form, &$formstate) {
   if ($formstate['values']['list_type'] == 'publications' && strlen($formstate['values']['publications_type']) == 0) {
@@ -662,7 +664,7 @@ function cp_menu_list_type_validate(&$form, &$formstate) {
 
 /**
  * @function cp_menu_list_term
- * 
+ *
  * Multistep form page for choosing the term to display in a vocabulary list.
  */
 function cp_menu_list_term($form, &$formstate) {
@@ -717,7 +719,7 @@ function cp_menu_wizard_next(&$form_state) {
 }
 
 /**
-* CP menu wizard cancelled.  
+* CP menu wizard cancelled.
 */
 function cp_menu_wizard_cancel(&$form_state) {
   cp_menu_cache_clear($form_state['object_id']);
@@ -730,7 +732,7 @@ function cp_menu_wizard_finish(&$form_state) {
   $values = cp_menu_cache_get($form_state['object_id']) + $form_state['values'];
 //  cp_menu_cache_clear($form_state['object_id']);
   
-  //Build the link from the collected data  
+  //Build the link from the collected data
   switch ($values['type']) {
     case 'url':
       $url = check_url($values['url']);
@@ -765,7 +767,7 @@ function cp_menu_wizard_finish(&$form_state) {
 
   if ($values['new_window']) {
     $new_menu['options']['attributes']['target'] = '_blank';
-  } 
+  }
     
   if ($values['tooltip']) {
     $new_menu['options']['attributes']['title'] = check_plain($values['tooltip']);
