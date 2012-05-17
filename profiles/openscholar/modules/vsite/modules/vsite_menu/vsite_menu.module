@@ -82,21 +82,7 @@ function vsite_menu_menu_link_save(&$item){
   $menu = $item['menu_name'];
   
   //Retrieve the existing menu data
-  $existing_menu = $vsite->controllers->menus->get($menu);
-  
-  //If there is no menu override avalible get the default links from the menu_link table
-  if (! is_array($existing_menu)) {
-    $sql = "SELECT ml.* FROM {menu_links} ml WHERE ml.menu_name = :menu ORDER BY p1 ASC, p2 ASC, p3 ASC, p4 ASC, p5 ASC, p6 ASC, p7 ASC, p8 ASC, p9 ASC";
-    $result = db_query($sql, array(
-        ':menu' => $menu
-    ), array(
-        'fetch' => PDO::FETCH_ASSOC
-    ));
-    $existing_menu = array();
-    foreach ( $result as $ml ) {
-      $existing_menu[$ml['mlid']] = $ml;
-    }
-  }
+  $existing_menu = _vsite_menu_get_menu_links($menu);
   
   if (isset($item['mlid']) && array_key_exists($item['mlid'], $existing_menu)) {
     $existing_item = $existing_menu[$item['mlid']];
@@ -175,6 +161,64 @@ function vsite_menu_menu_link_save(&$item){
 }
 
 /**
+ * Deletes a single menu link, in a vsite
+ *
+ * @param string $menu
+ *   A valid menu identifier
+ * @param int $mlid
+ *   A valid menu link mlid
+ */
+function vsite_menu_menu_link_delete($menu, $mlid){
+  $refresh_menu = false;
+  $vsite = spaces_get_space();
+  if (! $vsite){
+    return false;
+  }
+    
+  //Retrieve the existing menu data
+  $existing_menu = _vsite_menu_get_menu_links($menu);
+  
+  if (array_key_exists($mlid,$existing_menu)) {
+    $item = $existing_menu[$mlid];
+    // Children get re-attached to the item's parent.
+    if ($item['has_children']) {
+      
+      // Try to find a parent link. If found, assign it and derive its menu.
+      $children = _vsite_menu_link_find_children($item, $existing_menu);
+      foreach ($children as $child) {
+        $child['plid'] = $item['plid'];
+        vsite_menu_menu_link_save($child);
+        $refresh_menu = true;
+      }
+    }
+
+    //If we have made changes to the menu re-load it
+    if($refresh_menu){
+      $existing_menu = _vsite_menu_get_menu_links($menu);
+    }
+
+    //Delete this menu item
+    unset($existing_menu[$mlid]);
+    
+    // Try to find a parent link. If found, update it's child status.
+    $parent = _vsite_menu_link_find_parent($item, $existing_menu);
+    if($parent){
+      $remaining_children = _vsite_menu_link_find_children($parent, $existing_menu);
+      $existing_menu[$parent['mlid']]['has_children'] = count($remaining_children)?1:0;
+    }
+
+    //Save the Menu to Overrides
+    $vsite->controllers->menus->set($menu, $existing_menu);
+    
+    /**
+     * @todo CLEAR THE CACHE CORRECTLY
+     */
+    menu_cache_clear($item['menu_name']);
+    _menu_clear_page_cache();
+  }
+}
+
+/**
  * Find a possible parent for a given menu link.
  *
  * Because the parent of a given link might not exist anymore,
@@ -216,6 +260,58 @@ function _vsite_menu_link_find_parent($menu_link, $parent_candidates = array()){
   }
   
   return $parent;
+}
+
+/**
+ * Find possible children for a given menu link.
+ *
+ * @param $menu_link
+ *   A menu link.
+ * @param $child_candidates
+ *   An array of menu links keyed by mlid.
+ * @return
+ *   An array of menu links or empty array if no valid child
+ *   has been found.
+ */
+function _vsite_menu_link_find_children($menu_link, $child_candidates = array()){
+  $children = array();
+
+  // This item does not have childeren, skip the rest of the searching.
+  if (isset($menu_link['has_children']) && !$menu_link['has_children']) {
+    return $children;
+  }
+  
+  foreach ( $child_candidates as $mlid => $child ) {
+    // If we have a parent link ID, try to use that.
+    if (isset($child['plid']) && $child['plid'] == $menu_link['mlid']) {
+      return $childeren[$mlid] = $child;
+    }
+  }
+  
+  return $childeren;
+}
+
+/**
+ * Helper function to get an array of menu links from the controller or drupal, used by crud functions
+ */
+function _vsite_menu_get_menu_links($menu){
+  $vsite = spaces_get_space();
+  
+  if($vsite){
+    //Retrieve the menu data from the controller
+    $existing_menu = $vsite->controllers->menus->get($menu);
+  }
+  
+  //If there is no menu override avalible get the default links from the menu_link table
+  if (! is_array($existing_menu)) {
+    $menu_links = menu_load_links($menu);
+    $existing_menu = array();
+    foreach ($menu_links as $link){
+      $existing_menu[$link['mlid']] = $link;
+    }
+  }
+  
+  return $existing_menu;
 }
 
 /**

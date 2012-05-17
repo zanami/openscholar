@@ -421,9 +421,17 @@ function cp_menu_page($js = NULL, $step = NULL) {
   );
   
   //add type dependent pages based on type form's results
-  $type = (isset($_POST['type'])) ? $_POST['type'] : NULL ;
-  $type = (isset($object['type'])) ? $object['type'] : $type ;
+    if (isset($_POST['type'])) { 
+      $type = $_POST['type'];
+      $object['type'] = $type;
+      cp_menu_cache_set($object_id, $object);
+    } elseif (isset($object['type'])) {
+      $type = $object['type'];
+    } else {
+      $type = NULL;
+    }
   
+    
   switch($type) {
     case 'list':
       $form_info['forms']['list_type'] = array('form id' => 'cp_menu_list_type', 'title'=>t('Type of List'));
@@ -731,12 +739,6 @@ function cp_menu_wizard_finish(&$form_state) {
     case 'page':
       $nid = (int)array_pop(explode(' ', $values['node']));
       $url = 'node/'.$nid;
-      $url = drupal_lookup_path('alias', $url); //vsite/content/name
-      //$url = implode('/', array_slice(explode('/', $url), 2));
-      
-      
-      //is trimming the vsite name necssary?
-      //fail gracefully
       break;
       
     case 'list':

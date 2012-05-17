@@ -105,7 +105,7 @@ function cp_layout_full_form($form, $form_state, $ctx) {
 
   foreach ($blocks as $bid => $b) {
     // factory check
-    if (0) {
+    if (strpos($bid, 'boxes_add__') !== FALSE) {
       $form['unused']['#factories'][$bid] = $b;
     }
 
@@ -165,13 +165,10 @@ function _cp_layout_rearrange_content_regions($elements) {
 }
 
 function cp_layout_full_submit($form, &$form_state) {
-  dpm($form);
-  dpm($form_state);
   $regions = $form_state['values']['layout'];
   foreach ($regions as $r => $d) {
     $widgets = explode('|', $d['widgets']);
   }
-  dpm($widgets);
 
   // merging with sitewide context? is that still something we want to do?
 
