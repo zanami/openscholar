@@ -78,6 +78,13 @@ function template_preprocess_cp_layout_widget(&$variables) {
 
   $variables['widget_title'] = $widget->info;
 
+  if (isset($widget->can_edit) && $widget->can_edit) {
+    $variables['can_edit'] = true;
+  }
+  else {
+    $variables['can_edit'] = false;
+  }
+
   if (isset($widget->can_delete) && $widget->can_delete) {
     $variables['can_delete'] = true;
   }
