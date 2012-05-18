@@ -16,6 +16,14 @@ function os_get_menus(){
 
 }
 
+/**
+ * Returns the menu_tree page data ready for theming by 'menu_tree_output'
+ *
+ * @param string $menu_name
+ *
+ * @return Array
+ *   Menu Tree Page Data
+ */
 function os_menu_tree_data($menu_name) {
   $menu_data = &drupal_static(__FUNCTION__, array());
   $menus = os_get_menus();
