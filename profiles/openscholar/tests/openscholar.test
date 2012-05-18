@@ -113,10 +113,8 @@ class OpenscholarWebTestCase extends DrupalWebTestCase {
     variable_set('install_profile', $this->profile);
     $profile_details = install_profile_info($this->profile, 'en');
 
-    if($this->load_all_modules){
-      // Install the modules specified by the testing profile.
-      $this->install_profile_modules($profile_details['dependencies']);
-    }
+    // Install the modules specified by the testing profile.
+    $this->install_profile_modules($profile_details['dependencies']);
 
     // Install modules needed for this test. This could have been passed in as
     // either a single array argument or a variable number of string arguments.
@@ -209,7 +207,10 @@ class OpenscholarWebTestCase extends DrupalWebTestCase {
     arsort($non_required);
   
 	  module_enable(array_keys($required));
-	  module_enable(array_keys($non_required));
+	  
+	  if($this->load_all_modules){
+	    module_enable(array_keys($non_required));
+	  }
 	
 	  $this->install_flavor();
 	  

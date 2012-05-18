@@ -20,7 +20,7 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
    */
   public static function getInfo(){
     return array(
-        'name' => t('Vsite Menu: Menu Link APIs'),
+        'name' => t('Vsite Menu'),
         'description' => t('Test Menu Link API functions, adding moving, altering loading.'),
         'group' => t('vsite')
     );
@@ -118,7 +118,7 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
     
     $delete_item = key($start_menu);
     
-    vsite_menu_menu_link_delete($this->test_menu,$delete_item);
+    vsite_menu_delete_menu_link($this->test_menu,$delete_item);
     
     $new_menu = _vsite_menu_get_menu_links($this->test_menu);
     

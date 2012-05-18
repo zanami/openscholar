@@ -6,3 +6,4 @@ php = "5.2.4"
 dependencies[] = ctools
 dependencies[] = vsite
 dependencies[] = menu
+files[] = "tests/vsite_menu.test"
