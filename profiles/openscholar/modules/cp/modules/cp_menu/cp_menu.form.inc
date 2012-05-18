@@ -7,9 +7,84 @@
  * Other menus will be hidden to start and displayed when the user opts to
  * move a link to another menu
  */
-function cp_menu_build_form($form, $form_state, $menu) {
+function cp_menu_build_form($form, $form_state, $menu = '') {
   ctools_include('ajax');
   ctools_include('modal');
+  ctools_include('menu', 'os');
 
+  $menus = os_get_menus();
+  $menus += array(
+    'no-menu' => 'Not In Menu',
+  );
+  $is_active = false;
+  if (isset($menus[$menu])) {
+    $is_active = true;
+  }
 
+  $form['menus'] = array(
+    '#type' => 'markup',
+    '#theme' => 'cp_menu_table',
+  );
+
+  foreach ($menus as $m => $title) {
+    $form['menus'][$m] = array(
+      '#weight' => ($is_active?1:2),
+      'header' => array(
+        '#type' => 'markup',
+        '#markup' => $title,
+      ),
+    );
+    $links = _cp_menu_flatten_tree(os_menu_tree_data($m));
+    foreach ($links as $l) {
+      $url = url($l['link_path'], array('absolute' => true));
+      $form['menus'][$m][$l['mlid']] = array(
+        'title' => array(
+          '#markup' => $l['link_title'],
+          '#description' => l($url, $url),
+        ),
+        'edit_link' => array(
+          '#markup' => ctools_modal_text_button('Edit Link', 'cp/build/menu/nojs/'),
+        ),
+        'region' => array(
+          '#type' => 'select',
+          '#options' => $menus,
+          '#default_value' => $l['menu_name'],
+          '#attributes' => array(
+            'class' => 'field-region-select field-region-'. $l['menu_name'],
+          ),
+        ),
+        'weight' => array(
+          '#type' => 'textfield',
+          '#default_value' => $l['weight'],
+          '#size' => 3,
+          '#attributes' => array(
+            'class' => 'field-weight field-weight-'. $l['menu_name'],
+          ),
+        ),
+        'region-old' => array(
+          '#type' => 'hidden',
+          '#value' => $l['menu_name'],
+        ),
+      );
+    }
+  }
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Save settings'),
+    ),
+  );
+
+  return $form;
+}
+
+function _cp_menu_flatten_tree($tree) {
+  $copy = array();
+  foreach ($tree as $l) {
+    $copy = array_merge($copy, array($l), _cp_menu_flatten_tree($l['below']));
+  }
+
+  return $copy;
 }
