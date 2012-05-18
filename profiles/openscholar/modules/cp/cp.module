@@ -76,7 +76,7 @@ function cp_menu(){
     'file path' => drupal_get_path('module','os')."/includes",
     'file' => 'menu.inc',
   );
-  
+
   $items["cp/build/taxonomy"] = array(
     'title' => 'Taxonomy',
     'page callback' => 'cp_taxonomy',
@@ -105,7 +105,6 @@ function cp_menu(){
     'page callback' => 'cp_settings',
     'weight' => 20,
   );
-  
   // make them all part of 'cp' menu
   foreach ( $items as $path => $item ) {
     if (! array_key_exists('menu_name', $item))
@@ -115,7 +114,7 @@ function cp_menu(){
     if (! array_key_exists('access callback', $item))
       $items[$path]['access arguments'] = array('access content');
   }
-  
+
 
 
   // proof of concept
@@ -181,16 +180,33 @@ function cp_block_info() {
       'visibility' => BLOCK_VISIBILITY_LISTED,
       'pages' => 'cp/*',
     ),
+    'cp_minimenu' => array(
+      'info' => t('CP Mini-Menu'),
+      'region' => 'three_33_third',
+      'cache' => DRUPAL_CACHE_PER_ROLE,
+    ),
   );
 }
 
 function cp_block_view($delta) {
-  if ($delta != 'cp_subnav') return;  // does this every happen?
 
-  return array(
-    'subject' => NULL,
-    'content' => menu_primary_local_tasks(),
-  );
+  switch ($delta) {
+    case 'cp_subnav':
+      return array(
+        'subject' => NULL,
+        'content' => menu_primary_local_tasks(),
+      );
+    case 'cp_minimenu':
+      if (spaces_access_admin()) {
+        return array(
+          'subject' => NULL,
+          'content' => _cp_mini_menu(),
+        );
+      }
+      else {
+        return array();
+      }
+  }
 }
 
 /**
@@ -357,7 +373,7 @@ function cp_get_menu_tree() {
     'min_depth' => 1,
     'max_depth' => 1,
   ));
-  
+
   return $tree;
-  
+
 }
