@@ -79,15 +79,6 @@ function cp_menu(){
     'file' => 'menu.inc',
   );
   
-  $items['cp/build/menu/%/%/edit'] = array(
-    'title' => 'Edit menu link',
-    'page callback' => 'drupal_get_form',
-    //page arguments (form_id, menu_id, mlid)
-    'page arguments' => array('os_menu_edit_item', 3, 4),
-    'file path' => drupal_get_path('module','os')."/includes",
-    'file' => 'menu.inc',
-  );
-
   $items["cp/build/taxonomy"] = array(
     'title' => 'Taxonomy',
     'page callback' => 'cp_taxonomy',
@@ -534,7 +525,7 @@ function cp_menu_title($form, &$form_state) {
         '#type' => 'textfield',
         '#title' => t('Page'),
         '#autocomplete_path' => 'ctools/autocomplete/node', //does not limit by vsite or user.  waiting for d7's version of vsite_node_autocomplete
-        '#description' => t('Select an existing page.'),        
+        '#description' => t('Select an existing page.'),
         '#states' => array(
           'visible' => array(
             ':input[name="new_or_select"]' => array('value' => 'select'),
@@ -546,7 +537,7 @@ function cp_menu_title($form, &$form_state) {
       $form['new_node_type'] = array(
         '#type' => 'select',
         '#title' => t('Create new'),
-        '#description' => t('Create a new page.'),        
+        '#description' => t('Create a new page.'),
         '#options' => vsite_content_types(),
         '#states' => array(
           'visible' => array(
@@ -856,12 +847,12 @@ function cp_form_node_form_alter(&$form, &$form_state, $form_id) {
   $cache = cp_menu_cache_get('cp_menu');
   if (count($cache) && strpos($_SERVER['HTTP_REFERER'], 'cp/menu')) { //make sure you're coming from cp/menu page.  otherwise abandoned but not cleared form could hijack node/add
     $title = check_plain($cache['title']);
-    $form['title']['#default_value'] = $title; 
+    $form['title']['#default_value'] = $title;
     
     $form['menu']['enabled']['#default_value'] = 1;
     $form['menu']['link']['parent']['#default_value'];
-    $form['menu']['link']['link_title']['#default_value'] = $title; 
-    $form['menu']['link']['description']['#default_value'] = check_plain($cache['tooltip']); 
+    $form['menu']['link']['link_title']['#default_value'] = $title;
+    $form['menu']['link']['description']['#default_value'] = check_plain($cache['tooltip']);
     
   }
   
@@ -870,7 +861,7 @@ function cp_form_node_form_alter(&$form, &$form_state, $form_id) {
 
 //returns lsit of available content types.  temporary location - this probably won't live in cp forever.
 function cp_vsite_content_types() {
-  return array('page'=>'Page', 'announcement'=>'Announcement'); 
+  return array('page'=>'Page', 'announcement'=>'Announcement');
 }
 
 /**
@@ -900,7 +891,7 @@ $vsite = spaces_get_space();
 
 /**
  * @function vsite_content_types
- * 
+ *
  * Return the content type of a vsite based on the privacy
  * @param $privacy and array (or single value) (0 -> disabled, 2 -> private, 1 -> public)
  * @param $vsite optional / the active vsite if nothing provided
@@ -908,12 +899,12 @@ $vsite = spaces_get_space();
  */
 function vsite_content_types($privacy = array(1), $vsite = NULL) {
   if (! is_array($privacy)) {
-    $privacy = array($privacy);  
+    $privacy = array($privacy);
   }
 
   $result = array();
   if ($vsite || $vsite = spaces_get_space()) {
-    $all_types = _node_types_build()->types; 
+    $all_types = _node_types_build()->types;
     $site_features = variable_get('spaces_features', array());
     
     foreach (features_get_component_map('node') as $type => $features) {
@@ -923,7 +914,7 @@ function vsite_content_types($privacy = array(1), $vsite = NULL) {
         }
       }
     }
-  } 
+  }
   
   return $result;
 }
