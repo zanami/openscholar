@@ -67,7 +67,7 @@ function cp_menu(){
     'weight' => 10
   );
 
-  $items["cp/build/menu"] = array(
+ /* $items["cp/build/menu"] = array(
     'title' => 'Menu',
     'type' => MENU_LOCAL_TASK,
     'page callback' => 'drupal_get_form',
@@ -75,7 +75,7 @@ function cp_menu(){
     'weight' => 10,
     'file path' => drupal_get_path('module','os')."/includes",
     'file' => 'menu.inc',
-  );
+  );*/
 
   $items["cp/build/taxonomy"] = array(
     'title' => 'Taxonomy',
