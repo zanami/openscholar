@@ -41,12 +41,12 @@ function cp_menu_theme() {
  * @param unknown_type $js
  * @param unknown_type $step
  */
-function cp_menu_page($js = NULL, $step = NULL) {
+function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
   //can we collect the original menu?  should that be part of the menu link so the result can be added back in?
 
   //get cached results
   $object_id = 'cp_menu';
-  if (empty($step)) {
+  if (empty($step) || $step == 'new') {
     $step = 'type';
     cp_menu_cache_clear($object_id);
   }
@@ -54,9 +54,9 @@ function cp_menu_page($js = NULL, $step = NULL) {
 
   //check if step is a menu?  if so, stash it and clear it.
   ctools_include('menu','os');
-  if (in_array($step, array_flip(os_get_menus()))) {
-    $object['menu'] = $step;
-    $step = 'type';
+  if (in_array($menu, array_flip(os_get_menus()))) {
+    $object['menu'] = $menu;
+    cp_menu_cache_set($object_id, $object);
   }
 
   //forge a form state
@@ -76,8 +76,6 @@ function cp_menu_page($js = NULL, $step = NULL) {
     'next callback' => 'cp_menu_wizard_next',
     'finish callback' => 'cp_menu_wizard_finish',
     'cancel callback' => 'cp_menu_wizard_cancel',
-
-    //'order' => array('type' => 'Type of Link'), //is order necessary?  how to remove
     'forms' => array(
       'type' => array(
       	'form id' => 'cp_menu_type',
@@ -161,13 +159,17 @@ function cp_menu_title($form, &$form_state) {
         '#title' => t('URL'),
         '#required' => TRUE,
       );
+      
+      $form['#validate'][] = 'cp_menu_url_validate';
       break;
 
     case 'page':
       $form['new_or_select'] = array(
         '#type' => 'radios',
+        '#title' => t('Destination'),
         '#options' => array('new'=>t('New Page'), 'select'=>t('Choose Existing')),
-        '#description' => t('Type of content to link to.'),
+        '#description' => t('Choose a page you have already created or make a new page as the destination for your link'),
+        '#required' => TRUE,
       );
 
       $form['node'] = array(
@@ -182,8 +184,6 @@ function cp_menu_title($form, &$form_state) {
         ),
       );
 
-      //could collapse previous into this and have it be choose existing/new pub/new page/new etc, with the node autocomplete only showing up on choose existing.
-      $bundles = os_get_bundles();
       $form['new_node_type'] = array(
         '#type' => 'select',
         '#title' => t('Create new'),
@@ -199,13 +199,7 @@ function cp_menu_title($form, &$form_state) {
       break;
   }
 
-/*  if ($form_state['object']['type'] == 'page') {
-    $nid = (int)array_pop(explode(' ', $form_state['object']['node']));
-    if (($node = node_load($nid)) != FALSE) {
-      $form['title']['#default_value'] = $node->title;
-    }
-  }
-  */
+
   //should we support other attributes here as well?  still undecided if new window should exist
   $form['advanced'] = array(
     '#type' => 'fieldset',
@@ -230,47 +224,13 @@ function cp_menu_title($form, &$form_state) {
   return $form;
 }
 
-/**
- * @function cp_menu_selectpage
- *
- * Multistep form page for choosing an existing node or creating a new one.
- */
-/*function cp_menu_selectpage($form, &$formstate) {
-  $formstate['title'] = t('Select or Create a Page');
 
-  $form['node'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Page'),
-    '#autocomplete_path' => 'ctools/autocomplete/node', //does not limit by vsite or user.  waiting for d7's version of vsite_node_autocomplete
-    '#description' => t('Select an existing page or !click to create a new one.', array('!click' => l(t('click here'), 'node/add'))), //overlay?
-  );
-
-  return $form;
-}
-*/
-/**
- * @function cp_menu_url
- *
- * Multistep form page for setting a URL.
- */
-/*function cp_menu_url($form, &$formstate) {
-  $formstate['title'] = t('URL');
-
-  $form['url'] = array(
-    '#type' => 'textfield',
-    '#title' => t('URL'),
-    '#required' => TRUE,
-  );
-
-  return $form;
-}
-*/
 /**
  * @function cp_menu_url_validate
  *
  * Validation for cp_menu_url.  Checks that URl exists.
  */
-/*function cp_menu_url_validate(&$form, &$state) {
+function cp_menu_url_validate(&$form, &$state) {
   $url = check_url($state['values']['url']);
 
   if (url_is_external($url)) {
@@ -285,7 +245,7 @@ function cp_menu_title($form, &$form_state) {
       form_set_error('url', t('Path does not exist'));
   }
 }
-*/
+
 /**
  * @function cp_menu_list_type
  *
@@ -301,8 +261,6 @@ function cp_menu_list_type($form, &$formstate) {
     '#description' => t('Type of content to link to.'),
     '#required' => TRUE,
   );
-
-  //are we listing content of a type or grouping it by that type?
 
   $form['publications_type'] = array(
     '#type' => 'radios',
@@ -385,6 +343,8 @@ function cp_menu_list_term($form, &$formstate) {
   return $form;
 }
 
+
+
 /**
 * CP menu cache storage
 */
@@ -410,6 +370,7 @@ function cp_menu_cache_clear($id) {
   ctools_object_cache_clear('cp_menu', $id);
 }
 
+
 /**
 * Advance the cp menu wizard to the next page.  Concatenate cached and submitted values
 */
@@ -430,8 +391,6 @@ function cp_menu_wizard_cancel(&$form_state) {
 */
 function cp_menu_wizard_finish(&$form_state) {
   $values = cp_menu_cache_get($form_state['object_id']) + $form_state['values'];
-
-//  cp_menu_cache_clear($form_state['object_id']);
 
   //new node page
   if ($values['new_or_select'] == 'new') {
@@ -457,12 +416,10 @@ function cp_menu_wizard_finish(&$form_state) {
       return;
   }
 
-  $menu_name = 'primary-menu'; //or something
-
   $new_menu = array(
     'link_path' => $url,
     //'router_path' => 'node/%', // TODO where does this come from?
-    'menu_name' => $menu_name,
+    'menu_name' => isset($values['menu']) ? $values['menu'] : 'primary-menu',
     'link_title' => $values['title'],
     'module' => 'system',
     'has_children' => '0',
@@ -483,7 +440,8 @@ function cp_menu_wizard_finish(&$form_state) {
   //then save to vsite or whole site
   ctools_include('menu','os');
   os_menu_link_save($new_menu);
-  drupal_goto('cp/menu/js');
+  cp_menu_cache_clear($form_state['object_id']); 
+  drupal_goto('<front>'); //better destination?
 }
 
 
@@ -492,21 +450,32 @@ function cp_menu_wizard_finish(&$form_state) {
  * Implements hook_BASE_ID_form_alter().
  *
  * Prepopulates node/add/* with menu link data when a new node is created for the link.
+ * Moves menu to os_menu for later processing during node_insert (is this really necessary?  shouldn't it happen elsewhere?)
  */
 function cp_form_node_form_alter(&$form, &$form_state, $form_id) {
   $cache = cp_menu_cache_get('cp_menu');
-  if (count($cache) && strpos($_SERVER['HTTP_REFERER'], 'cp/menu')) { //make sure you're coming from cp/menu page.  otherwise abandoned but not cleared form could hijack node/add
+  if (count($cache) && strpos($_SERVER['HTTP_REFERER'], 'cp_menu')) { //make sure you're coming from cp/menu page.  otherwise abandoned but not cleared form could hijack node/add
     $title = check_plain($cache['title']); //primary-menu:0  wtf  value['menu'] => primary-menu
-    $form['title']['#default_value'] = $title;
 
-    $form['menu']['enabled']['#default_value'] = 1;
-    $form['menu']['link']['parent']['#default_value'];//TODO
-    $form['menu']['link']['link_title']['#default_value'] = $title;
-    $form['menu']['link']['description']['#default_value'] = check_plain($cache['tooltip']);
+    $form['title']['#default_value'] = $title; 
+    
+    $form['os_menu'] = $form['menu'];
+    unset($form['menu']);
+    
+    $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
+    $form['os_menu']['enabled']['#default_value'] = 1;
+    $form['os_menu']['link']['parent']['#default_value']; $menu . ':0'; //position shouldn't matter since we're overriding it later anyway
+    $form['os_menu']['link']['link_title']['#default_value'] = $title; 
+    $form['os_menu']['link']['description']['#default_value'] = check_plain($cache['tooltip']); 
 
-
+    if ($cache['new_window']) {
+      $form['os_menu']['target'] = array(
+        '#type' => 'value',
+        '#value' => '_blank',
+      );
+    }
   }
-
-  //and clear the cache
+  
+  cp_menu_cache_clear('cp_menu');
 }
 

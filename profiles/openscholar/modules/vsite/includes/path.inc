@@ -6,7 +6,7 @@
 function _vsite_get_pathauto_settings(){
   $pathauto_settings = array();
   
-  $bundles = os_get_bundles(true);
+  $bundles = array_keys(os_get_bundles(true));
   $entity = 'node';
   foreach ($bundles as $bundle) {
     $pattern = pathauto_pattern_load_by_entity($entity,$bundle);

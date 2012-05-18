@@ -44,11 +44,9 @@ function os_menu(){
  *
  * @return array array('bundle_id' => 'Bundle Name')
  */
-function os_get_bundles($privacy = array(1), $space_type = 'og'){
-  $bundles = array(
-      'page' => 'Page'
-  );
-  $ret_all = false;
+
+function os_get_bundles($privacy = array(1), $space_type = 'og') {
+  $bundles = array('page'=>'Page');
   
   if (is_bool($privacy) && $privacy) {
     $ret_all = TRUE;
@@ -58,14 +56,15 @@ function os_get_bundles($privacy = array(1), $space_type = 'og'){
         $privacy
     );
   }
+    
   
   $features = spaces_features($space_type);
   $site_features = variable_get('spaces_features', array());
   
   foreach ( $features as $name => $feature ) {
     $info = $feature->info['features'];
-    if (isset($info['node']) && ($ret_all || in_array($site_features[$name], $privacy))) {
-      $bundles[$info['node'][0]] = $feature->info['name'];
+    if (!$vsite || (isset($info['node']) && in_array($site_features[$name], $privacy))) {
+      $bundles[ $info['node'][0] ] = $feature->info['name'];
     }
   }
   
