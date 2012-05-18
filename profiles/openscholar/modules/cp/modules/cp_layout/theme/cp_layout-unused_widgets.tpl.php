@@ -11,6 +11,10 @@ if (count($tags) > 0) { ?>
   }
   ?></ul><?php
 }
+?>
+  <div class="widget-container">
+<?php
 echo $children;
 ?>
+  </div>
 </div>

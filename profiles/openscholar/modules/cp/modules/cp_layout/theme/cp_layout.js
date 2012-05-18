@@ -50,11 +50,13 @@
       $(this).sortable(sort_opts);
     });
     
-    $('#edit-layout-unused-widgets').sortable(sort_opts);
+    $('#edit-layout-unused-widgets .widget-container').sortable(sort_opts);
     
     $('#cp-layout-full-form').submit(cp_layout_submit);
     
     $('#edit-context-selection').change(cp_layout_change);
+    
+    $('.cp-layout-widget .close-this').click(remove);
   }
   
   /**
@@ -99,5 +101,13 @@
    */
   function on_stop() {
     
+  }
+  
+  /**
+   * Removes a widget from the layout, placing it in the unused widgets toolbar.
+   */
+  function remove(e) {
+    console.log(e);
+    var $w = $(event.target).parent('.cp-layout-widget').detach().appendTo('#edit-layout-unused-widgets .widget-container');
   }
 })(jQuery);
