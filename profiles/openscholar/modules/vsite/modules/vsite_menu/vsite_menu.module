@@ -213,7 +213,7 @@ function vsite_menu_menu_link_load($menu, $mlid){
  * @param int $mlid
  *   A valid menu link mlid
  */
-function vsite_menu_menu_link_delete($menu, $mlid){
+function vsite_menu_delete_menu_link($menu, $mlid){
   $refresh_menu = false;
   $vsite = spaces_get_space();
   if (! $vsite){

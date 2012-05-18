@@ -90,11 +90,11 @@ function os_menu_link_save(&$item) {
  * @param $mlid
  *   A valid menu link mlid
  */
-function os_menu_link_delete($menu, $mlid) {
+function os_delete_menu_link($menu, $mlid) {
   
   if(module_exists('vsite_menu')){
     //Delete a menu item using the vsite controllers
-    $mlid = vsite_menu_menu_link_delete($menu, $mlid);
+    $mlid = vsite_menu_delete_menu_link($menu, $mlid);
   }else{
     //Call the standard drupal menu delete (this will clear all menu caches)
     _menu_delete_item(db_query("SELECT * FROM {menu_links} WHERE mlid = :mlid", array(':mlid' => $mlid))->fetchAssoc());
