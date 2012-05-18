@@ -14,12 +14,12 @@ function cp_menu_menu() {
 
   $items['cp/build/menu'] =
   $items['cp/build/menu/%'] = array(
-    'title' => 'Control Panel: Menu',
+    'title' => 'Menu',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cp_menu_build_form'),
     'access callback' => 'spaces_access_admin',
     'type' => MENU_LOCAL_TASK,
-    'file' => 'cp_layout.menu.inc',
+    'file' => 'cp_menu.form.inc',
   );
 
   return $items;
