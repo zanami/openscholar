@@ -16,23 +16,51 @@ function os_menu(){
     'weight' => 0,
   );
   
+  // nodeautocomplete callback
+  $items['os/node/autocomplete'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'os_node_autocomplete',
+    'page callback' => 'os_node_autocomplete',
+    'file' => 'os.autocomplete.inc',
+    'access arguments' => array('access content'),
+    'file path' => drupal_get_path('module', 'vsite') . '/',
+  );
+  
   return $items;
 }
 
 /**
- * return the bundles that should be treated as group content
+ * @function os_get_bundles
+ *
+ * Return the content type of a vsite based on the privacy
+ * @param $privacy and array (or single value) (0 -> disabled, 2 -> private, 1 -> public)
+ * @param $vsite optional / the active vsite if nothing provided
+ * @param @space_type
+ * @return array
  */
-function os_get_bundles($space_type = 'og'){
+function os_get_bundles($privacy = array(1), $vsite = NULL, $space_type = 'og') {
+  $bundles = array('page'=>'Page');
+  
+  if (!is_array($privacy)) {
+    $privacy = array($privacy);
+  }
+
   $features = spaces_features($space_type);
-  $node_bundles = array('page');
+  
+  if ($vsite || $vsite = spaces_get_space()) {
+    $site_features = variable_get('spaces_features', array());
+  } else {
+    $all_visible = TRUE;
+  }
+  
   foreach ($features as $name => $feature) {
-    $feature_components = $feature->info['features'];
-    if(isset($feature_components['node'])){
-      $node_bundles = array_merge($node_bundles,$feature_components['node']);
+    $info = $feature->info['features'];
+    if ($all_visible || (isset($info['node']) && in_array($site_features[$name], $privacy))) { 
+      $bundles[ $info['node'][0] ] = $feature->info['name']; 
     }
   }
   
-  return $node_bundles;
+  return $bundles;
 }
 
 /**

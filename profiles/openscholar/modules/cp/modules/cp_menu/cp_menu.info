@@ -1,0 +1,6 @@
+name = "Control Panel Men"
+description = "OpenScholar Menu Management UI"
+core = 7.x
+dependencies[] = "ctools"
+dependencies[] = cp
+dependencies[] = os
