@@ -16,6 +16,29 @@ function os_get_menus(){
 
 }
 
+function os_menu_tree_data($menu_name) {
+  $menu_data = &drupal_static(__FUNCTION__, array());
+  $menus = os_get_menus();
+  if (!isset($menus[$menu_name])) {
+    return array();
+  }
+
+  if (!isset($menu_data[$menu_name])) {
+    if (module_exists('vsite_menu')) {
+      $tree = vsite_menu_os_menu_tree($menu_name);
+    }
+    if (!$tree) {
+      $tree = menu_tree_page_data($menu_name);
+    }
+
+    //Allow other modules to make changes to the tree
+    drupal_alter('os_menu_tree', $menu_name, $tree);
+    $menu_data[$menu_name] = $tree;
+  }
+
+  return $menu_data[$menu_name];
+}
+
 /**
  * Return an individual openscholar menu object
  *
@@ -23,28 +46,12 @@ function os_get_menus(){
  */
 function os_menu_tree($menu_name){
 
-  $menu_output = &drupal_static(__FUNCTION__, array());
-
   $menus = os_get_menus();
   if (! isset($menus[$menu_name]))
     return;
 
-  if (! isset($menu_output[$menu_name])) {
-
-    if(module_exists('vsite_menu')){
-      $tree = vsite_menu_os_menu_tree($menu_name);
-    }
-
-    if(!$tree){
-      $tree = menu_tree_page_data($menu_name);
-    }
-
-    //Allow other modules to make changes to the tree
-    drupal_alter('os_menu_tree', $menu_name, $tree);
-
-    $menu_output[$menu_name] = menu_tree_output($tree);
-  }
-  return $menu_output[$menu_name];
+  $menu_output = menu_tree_output(os_menu_tree_data($menu_name));
+  return $menu_output;
 }
 
 /**
