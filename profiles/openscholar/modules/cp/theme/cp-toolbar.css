@@ -30,18 +30,31 @@ body.toolbar-drawer {
  * across different themes, while still allowing browsers to resize the text.
  */
 #cp-toolbar {
-  background: #666;
-  color: #ccc;
+  height:30px;
+  background: #000;
+  color: #FFF;
   font: normal small "Lucida Grande", Verdana, sans-serif;
   margin: 0 -20px;
-  padding: 0 20px;
-  -moz-box-shadow: 0 3px 20px #000;
-  -webkit-box-shadow: 0 3px 20px #000;
-  box-shadow: 0 3px 20px #000;
-  filter: progid:DXImageTransform.Microsoft.Shadow(color=#000000, direction='180', strength='10');
-  -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(color=#000000, direction='180', strength='10')";
+  padding: 3px 20px;
   z-index: 600;
+  top: 31px;
+  position: fixed;
+  width: 100%;
 }
+
+.toolbar-drawer #cp-toolbar {
+  top: 65px;
+}
+
+.toolbar #page-wrapper {
+	margin-top:40px;
+}
+
+.toolbar.toolbar-drawer #page-wrapper {
+	margin-top:40px;
+}
+
+
 #cp-toolbar div.collapsed {
   display: none;
   visibility: hidden;
@@ -51,10 +64,30 @@ body.toolbar-drawer {
   font-size: .846em;
   text-decoration: none;
 }
+
+
 #cp-toolbar ul li,
 #cp-toolbar ul li a {
   float: left; /* LTR */
 }
+
+#cp-toolbar ul li {margin: 0 18px 0 0;}
+
+#cp-toolbar ul li a {
+  background: url("images/topmenu-icons.png") no-repeat;
+  padding-left: 30px !important;
+   height: 25px;
+}
+
+#cp-toolbar ul li a#toolbar-link-cp-appearance {
+ background-position: 0 -27px;
+}
+
+#cp-toolbar ul li a#toolbar-link-cp-settings {
+ background-position: 0 -52px;
+}
+
+
 
 /**
  * Administration menu.
@@ -104,23 +137,9 @@ body.toolbar-drawer {
 }
 #cp-toolbar div.toolbar-menu ul li a {
   padding: 0 10px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
+
 }
-#cp-toolbar div.toolbar-menu ul li a:focus,
-#cp-toolbar div.toolbar-menu ul li a:hover,
-#cp-toolbar div.toolbar-menu ul li a:active,
-#cp-toolbar div.toolbar-menu ul li a.active:focus {
-  background: #444;
-}
-#cp-toolbar div.toolbar-menu ul li a.active:hover,
-#cp-toolbar div.toolbar-menu ul li a.active:active,
-#cp-toolbar div.toolbar-menu ul li a.active,
-#cp-toolbar div.toolbar-menu ul li.active-trail a {
-  background: url(toolbar.png) 0 0 repeat-x;
-  text-shadow: #333 0 1px 0;
-}
+
 
 /**
  * Collapsed drawer of additional toolbar content.
