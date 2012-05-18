@@ -1,12 +1,8 @@
-name = "Control panel"
-description = "Admin interface mainly for OpnenScholar installs"
+name = "Control Panel"
+description = "Admin Interface for OpenScholar installs"
 core = 7.x
+package = "Control Panel"
 dependencies[] = "ctools"
+dependencies[] = "os"
 features[ctools][] = "context:context:3"
 features[context][] = "cp-admin"
-
-
-dependencies[] = views
-features[ctools][] = views:views_default:3.0
-features[features_api][] = api:1
-features[views_view][] = vsite_autocomplete
