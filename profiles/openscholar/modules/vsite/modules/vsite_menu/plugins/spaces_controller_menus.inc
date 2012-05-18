@@ -12,11 +12,11 @@ class spaces_controller_menus extends spaces_controller {
   /**
    * Set override values for a given controller object in this space.
    */
-  function set($id, $value) {
+  function set($id, $value){
     uasort($value, '_vsite_menu_sort_weight');
     return parent::set($id, $value);
   }
-  
+
   /**
    * Get menu tree
    * Similar to get(), except that the menu_links are converted to a menu_tree
@@ -125,29 +125,8 @@ class spaces_controller_menus extends spaces_controller {
     $links = array();
     foreach ( $menu_links as $mlid => $ml ) {
       // May not return data if it is an external link
-      $query = db_select('menu_router', 'm');
-      $query->addTag('translatable');
-      $query->fields('m', array(
-          'load_functions',
-          'to_arg_functions',
-          'access_callback',
-          'access_arguments',
-          'page_callback',
-          'page_arguments',
-          'delivery_callback',
-          'tab_parent',
-          'tab_root',
-          'title',
-          'title_callback',
-          'title_arguments',
-          'theme_callback',
-          'theme_arguments',
-          'type',
-          'description'
-      ));
-      $query->condition('m.path', $ml['router_path']);
+      $item = $this->get_router_data($ml['router_path']);
       
-      $item = $query->execute()->fetchAssoc();
       if (is_array($item))
         $ml = array_merge($item, $ml);
       
@@ -162,6 +141,39 @@ class spaces_controller_menus extends spaces_controller {
     cache_set($cid, $data, 'cache_menu');
     
     return $data;
+  }
+
+  /**
+   * Return router data when given a path, false means that there is no
+   * router data and the link is external.
+   *
+   * @param string $path
+   */
+  public function get_router_data($path){
+    // May not return data if it is an external link
+    $query = db_select('menu_router', 'm');
+    $query->addTag('translatable');
+    $query->fields('m', array(
+        'load_functions',
+        'to_arg_functions',
+        'access_callback',
+        'access_arguments',
+        'page_callback',
+        'page_arguments',
+        'delivery_callback',
+        'tab_parent',
+        'tab_root',
+        'title',
+        'title_callback',
+        'title_arguments',
+        'theme_callback',
+        'theme_arguments',
+        'type',
+        'description'
+    ));
+    $query->condition('m.path', $path);
+    
+    return $query->execute()->fetchAssoc();
   }
 
 }

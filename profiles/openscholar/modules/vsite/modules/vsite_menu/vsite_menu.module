@@ -139,12 +139,21 @@ function vsite_menu_menu_link_save(&$item){
   if (! $existing_item || (array_intersect_assoc($item, $existing_item)) != $existing_item) {
     
     $menu_links_schema = drupal_get_schema('menu_links');
+    
     //Clean up the Item for saving, removing anything that isn't in drupals DB
     $existing_menu[$item['mlid']] = array_intersect_key($item, $menu_links_schema['fields']);
     
     //Check the has_children status of the parent.
     if ($item['plid'] && $item['hidden'] == 0) {
       $existing_menu[$item['plid']]['has_children'] = 1;
+    }
+    
+    //Update the has_children of the old parent if the parent has changed
+    if ($existing_item && $existing_item['plid'] && $item['plid'] != $existing_item['plid']) {
+      $old_parent = _vsite_menu_link_find_parent($existing_item, $existing_menu);
+      
+      $remaining_children = _vsite_menu_link_find_children($old_parent, $existing_menu);
+      $existing_menu[$existing_item['plid']]['has_children'] = count($remaining_children)?1:0;
     }
     
     //Save the Menu to Overrides
@@ -154,10 +163,46 @@ function vsite_menu_menu_link_save(&$item){
      * Now clear the cache for this vsite.
      * @todo CACHE CLEAR CORRECTLY
      */
+    menu_cache_clear($menu);
     _menu_clear_page_cache();
   }
   
   return $item['mlid'];
+}
+
+/**
+ * Returns a menu_link that has been translated and has the access set, and is ready for display
+ *
+ * @param string $menu
+ *  The menu identifier
+ * @param number $mlid
+ *  The menu link identifier
+ */
+function vsite_menu_menu_link_load($menu, $mlid){
+  
+  $vsite = spaces_get_space();
+  if (! $vsite)
+    return false;
+    
+  $menu_links = _vsite_menu_get_menu_links($menu);
+  
+  if(isset($menu_links[$mlid])){
+    $item = $menu_links[$mlid];
+    
+    // May not return data if it is an external link
+    $router_info = $vsite->controllers->menus->get_router_data($item['router_path']);
+      
+    if (is_array($router_info)){
+      $item = array_merge($router_info, $item);
+    }
+    
+    _menu_link_translate($item);
+    
+    //Return the Full Menu Link
+    return $item;
+  }
+  
+  return false;
 }
 
 /**
@@ -284,11 +329,11 @@ function _vsite_menu_link_find_children($menu_link, $child_candidates = array())
   foreach ( $child_candidates as $mlid => $child ) {
     // If we have a parent link ID, try to use that.
     if (isset($child['plid']) && $child['plid'] == $menu_link['mlid']) {
-      return $childeren[$mlid] = $child;
+      return $children[$mlid] = $child;
     }
   }
   
-  return $childeren;
+  return $children;
 }
 
 /**

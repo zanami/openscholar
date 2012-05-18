@@ -1,0 +1,135 @@
+<?php
+/**
+ * Basic tests for OS Pages.
+ */
+class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
+
+  // The profile to install as a basis for testing.
+  protected $profile = 'openscholar';
+  
+  //A user that is a member of group1
+  protected $user1;
+  
+  //A vsite to load
+  protected $group_1;
+  
+  private $test_menu = 'vsite-menu-test';
+  
+  /**
+   * Test info.
+   */
+  public static function getInfo(){
+    return array(
+        'name' => t('Vsite Menu: Menu Link APIs'),
+        'description' => t('Test Menu Link API functions, adding moving, altering loading.'),
+        'group' => t('vsite')
+    );
+  }
+
+  /**
+   * Set up test.
+   */
+  public function setUp(){
+    parent::setUp('spaces', 'og', 'spaces_og', 'vsite', 'ctools', 'vsite_menu');
+    
+    // Create a user with access to add a link
+    $this->user1 = $this->drupalCreateUser(array('create link content'));
+    
+    //Create A Group Node
+    $group1 = array(
+        'title' => 'My Test Site',
+        'type' => 'vsite',
+        'purl' => 'group1',
+        'uid' => $this->user1->uid,
+    );
+    $this->group_1 = $this->drupalCreateNode($group1);
+    
+    //Create A Group Node
+    $group2 = array(
+      'title' => 'Group 2',
+      'type' => 'vsite',
+      'purl' => 'group2',
+      'uid' => $this->user1->uid,
+    );
+    
+    //Create the test menu
+    $menu = array(
+      'menu_name' => $this->test_menu,
+      'title' => 'Test Menu',
+      'description' => 'A Test Menu'
+    );
+    menu_save($menu);
+    
+    for ($i = 0; $i < 15; $i++) {
+      $menu_item = array(
+        'link_title' => 'link'.$i,
+        'menu_name' => $menu['menu_name'],
+        'weight' => $i,
+        'router_path' => 'node',
+      );
+    
+      menu_link_save($menu_item);
+    }
+    
+    $vsite = spaces_load('og',$this->group_1->nid);
+    //Set the Group
+    spaces_set_space($vsite);
+  }
+
+  /**
+   * Run Link Add test
+   */
+  public function testMenuLinkAdd(){
+    
+    $start_menu = _vsite_menu_get_menu_links($this->test_menu);
+    
+    $menu_item = array(
+        'link_title' => 'Test Link Add',
+        'menu_name' => $this->test_menu,
+        'weight' => 1000,
+        'router_path' => 'node',
+    );
+    
+    vsite_menu_menu_link_save($menu_item);
+    
+    $new_menu = _vsite_menu_get_menu_links($this->test_menu);
+    
+    $this->assertNotEqual($start_menu, $new_menu, "The menu has not been updated with the new item.");
+    
+    $diff = array_diff_assoc($new_menu,$start_menu);
+    
+    $this->assertTrue(count($diff) == 1, "Only one new menu item expected [".count($diff)."] found.");
+    
+    $retrieved_item = current($diff);
+    $this->assertTrue(array_key_exists('mlid',$retrieved_item),"Assure that a MLID was created");
+    
+    //Filter out extra fields
+    $retrieved_item = array_intersect_assoc($retrieved_item, $menu_item);
+    $this->assertEqual($menu_item,$retrieved_item);
+
+  }
+  
+  /**
+   * Run Link Delete test
+   */
+  public function testMenuLinkDelete(){
+    
+    $start_menu = _vsite_menu_get_menu_links($this->test_menu);
+    
+    $delete_item = key($start_menu);
+    
+    vsite_menu_menu_link_delete($this->test_menu,$delete_item);
+    
+    $new_menu = _vsite_menu_get_menu_links($this->test_menu);
+    
+    $this->assertNotEqual($start_menu, $new_menu, "The menu has not been updated without the old item.");
+    
+    $diff = array_diff_assoc($start_menu,$new_menu);
+    
+    $this->assertTrue(count($diff) == 1, t('Only one new menu item expected to be deleted [@value] found.', array('@value' => count($diff))));
+    
+    $deleted_item = current($diff);
+    $this->assertTrue((array_key_exists('mlid',$deleted_item) && $deleted_item['mlid'] == $delete_item),t("Assure that the correct item was deleted. MLID @mlid",array('@mlid' => $deleted_item['mlid'])));
+
+  }
+}

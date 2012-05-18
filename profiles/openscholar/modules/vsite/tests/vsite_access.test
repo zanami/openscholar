@@ -6,6 +6,9 @@ class VsiteAccessTest extends OpenscholarWebTestCase {
 
 	// The profile to install as a basis for testing.
   protected $profile = 'openscholar';
+  
+  //Load all of the profile modules, needed since one may effect access
+  protected $load_all_modules = true;
 	
 	//A user that is a member of group2
 	protected $user1;

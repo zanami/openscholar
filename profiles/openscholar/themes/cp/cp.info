@@ -35,21 +35,22 @@
   features[] = favicon
   features[] = main_menu
   features[] = secondary_menu
-
-
-;----------// Theme Settings
+  
+  ;----------// Theme Settings
 
   ; Layout settings - Standard bigscreen
   settings[bigscreen_layout]         = 'three_col_grail'
-  settings[bigscreen_page_unit]      = 'px'
+  settings[bigscreen_page_unit]      = '%'
   settings[bigscreen_sidebar_unit]   = 'px'
-  settings[bigscreen_max_width_unit] = 'px'
-  settings[bigscreen_page_width]     = 980
-  settings[bigscreen_sidebar_first]  = 240
-  settings[bigscreen_sidebar_second] = 290
+  settings[bigscreen_max_width_unit] = '%'
+  settings[bigscreen_page_width]     = 100
+  settings[bigscreen_sidebar_first]  = 170
+  settings[bigscreen_sidebar_second] = 260
   settings[bigscreen_set_max_width]  = 1
   settings[bigscreen_max_width]      = 1140
   settings[bigscreen_media_query]    = 'only screen and (min-width:1025px)'
+
+
 
 
 

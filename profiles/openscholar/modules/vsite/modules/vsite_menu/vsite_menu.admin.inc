@@ -26,6 +26,11 @@ function vsite_menu_menu_overview_form($form, &$form_state, $menu) {
   $form['#menu'] =  $menu;
 
   if (element_children($form)) {
+    //Remove drupal core edit links
+    foreach (element_children($form) as $link) {
+    	unset($form[$link]['operations']);
+    }
+    
     $form['actions'] = array('#type' => 'actions');
     $form['actions']['submit'] = array(
       '#type' => 'submit',
