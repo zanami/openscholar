@@ -4,3 +4,19 @@
 .sidebar-first .content-inner {margin-left: 170px; margin-right: 0}
 .region-sidebar-first {width: 170px; margin-left: -100%}
 .region-sidebar-first {background:#EFF0F0;border-right:1px solid #B2BABA;}
+
+
+
+#footer-wrapper {
+    background: url('../images/top-bottom-bg.png') repeat-x;
+    color: #FFFFFF;
+    height:40px;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+}
+
+#footer-wrapper a {
+    color: #FFFFFF;
+  }
