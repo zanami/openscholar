@@ -184,7 +184,6 @@ function cp_menu_title($form, &$form_state) {
         ),
       );
 
-      $bundles = os_get_bundles();
       $form['new_node_type'] = array(
         '#type' => 'select',
         '#title' => t('Create new'),
