@@ -102,6 +102,29 @@ function os_menu_link_delete($menu, $mlid) {
 }
 
 /**
+ * Load a menu link.
+ *
+ * @param $menu
+ *   A valid menu identifier
+ * @param $mlid
+ *   A valid menu link mlid
+ *
+ * @return
+ *   A menu link, with $item['access'] filled and link translated for
+ *   rendering.
+ */
+function os_menu_link_load($menu, $mlid) {
+  
+  if(module_exists('vsite_menu')){
+    //Return a menu item loaded from vsite menu controller
+    return vsite_menu_menu_link_load($menu, $mlid);
+  }else{
+    //Call the standard drupal menu_link_load, _menu_translate is run to set access
+    return menu_link_load($mlid);
+  }
+}
+
+/**
  * Form for editing an entire menu tree at once.
  *
  * Shows for one menu the menu links accessible to the current user and relevant operations.

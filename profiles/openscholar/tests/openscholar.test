@@ -11,6 +11,7 @@ class OpenscholarWebTestCase extends DrupalWebTestCase {
 	
 	protected $multi_tennant = true;
 	
+	protected $load_all_modules = false;
 	
   /**
    * Clone of DrupalWebTestCase::setup() to work with profiles
@@ -112,8 +113,10 @@ class OpenscholarWebTestCase extends DrupalWebTestCase {
     variable_set('install_profile', $this->profile);
     $profile_details = install_profile_info($this->profile, 'en');
 
-    // Install the modules specified by the testing profile.
-    $this->install_profile_modules($profile_details['dependencies']);
+    if($this->load_all_modules){
+      // Install the modules specified by the testing profile.
+      $this->install_profile_modules($profile_details['dependencies']);
+    }
 
     // Install modules needed for this test. This could have been passed in as
     // either a single array argument or a variable number of string arguments.

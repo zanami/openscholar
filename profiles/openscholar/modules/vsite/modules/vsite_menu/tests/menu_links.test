@@ -1,0 +1,84 @@
+<?php
+/**
+ * Basic tests for OS Pages.
+ */
+class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
+
+  // The profile to install as a basis for testing.
+  protected $profile = 'openscholar';
+  
+  //A user that is a member of group1
+  protected $user1;
+  
+  //A vsite to load
+  protected $group_1;
+  
+  private $test_menu = 'vsite-menu-test';
+  
+  /**
+   * Test info.
+   */
+  public static function getInfo(){
+    return array(
+        'name' => t('Vsite Menu: Menu Link APIs'),
+        'description' => t('Test Menu Link API functions, adding moving, altering loading.'),
+        'group' => t('vsite')
+    );
+  }
+
+  /**
+   * Set up test.
+   */
+  public function setUp(){
+    parent::setUp('spaces', 'og', 'spaces_og', 'vsite', 'vsite_menu');
+    
+    // Create a user with access to add a link
+    $this->user1 = $this->drupalCreateUser(array('create link content'));
+    
+    //Create A Group Node
+    $group1 = array(
+        'title' => 'My Test Site',
+        'type' => 'vsite',
+        'purl' => 'group1',
+        'uid' => $this->user1->uid,
+    );
+    $this->group_1 = $this->drupalCreateNode($group1);
+    
+    //Create A Group Node
+    $group2 = array(
+      'title' => 'Group 2',
+      'type' => 'vsite',
+      'purl' => 'group2',
+      'uid' => $this->user1->uid,
+    );
+    
+    //Create the test menu
+    $menu = array(
+      'menu_name' => $this->test_menu,
+      'title' => 'Test Menu',
+      'description' => 'A Test Menu'
+    );
+    menu_save($menu);
+    
+    for ($i = 0; $i < 15; $i++) {
+      $menu_item = array(
+        'link_title' => 'link'.$i,
+        'menu_name' => $menu['menu_name'],
+        'weight' => $i,
+        'router_path' => 'node',
+      );
+    
+      menu_link_save($menu_item);
+    }
+    
+    
+  }
+
+  /**
+   * Run Link Add test
+   */
+  public function testMenuLinkAdd(){
+    
+    
+  }
+}
