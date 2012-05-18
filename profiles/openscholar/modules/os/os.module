@@ -49,6 +49,7 @@ function os_get_bundles($privacy = array(1), $vsite = NULL, $space_type = 'og') 
   
   if ($vsite || $vsite = spaces_get_space()) {
     $site_features = variable_get('spaces_features', array());
+    $all_visible = FALSE;
   } else {
     $all_visible = TRUE;
   }
