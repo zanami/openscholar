@@ -1,0 +1,21 @@
+#header {background:#FFF;}
+#header a {color: #293352;}
+
+#boxes-box-site_info  {
+    border-left: 8px solid #CCC;
+}
+
+#block-boxes-site_info h1 a {color:#293352;}
+#block-boxes-site_info h2, 
+#block-boxes-site_info p {color:#777;}
+
+
+#header-right #block-vsite_menus-scholar_secondary_menu li {
+  border-right:1px solid #293352;
+ }
+ 
+#header-right #block-vsite_menus-scholar_secondary_menu li a {
+  color: #293352;
+ } 
+ 
+p a {color:#4E84C4;}

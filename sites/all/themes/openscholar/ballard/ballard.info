@@ -1,18 +1,17 @@
-
+; $Id: ballard.info,v 1.12 2012/05/18 22:43:32 dcabral Exp $
   name        = Ballard
   description = A public theme for use in OpenScholar.
+  flavor_name = "Dark"
+  plugins[vsite_design][flavor] = flavors
   
-  core        = 6.x
-  base theme  = scholar_base
-  screenshot  = screenshot.png
-  stylesheets[screen][] = css/ballard.css
+  screenshot = screenshot.png
+core       = 6.x
+base theme = scholar_base
+stylesheets[all][]   = css/ballard.css
 
 os[widgets][vsite-site_search] = navbar
 os[theme_type]   = "vsite"
 os[theme_access] = "public"
-
-
-
 
 
 

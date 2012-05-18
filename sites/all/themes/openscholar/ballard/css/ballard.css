@@ -58,6 +58,7 @@ font-size:1.11em;
 }
 
 .node .node-inner .links li.node_read_more a {
+	color:#293352;
    padding-right:13px;
 }
 
