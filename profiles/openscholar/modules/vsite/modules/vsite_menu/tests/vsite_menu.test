@@ -33,7 +33,7 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
     parent::setUp('spaces', 'og', 'spaces_og', 'vsite', 'ctools', 'vsite_menu');
     
     // Create a user with access to add a link
-    $this->user1 = $this->drupalCreateUser(array('create link content'));
+    $this->user1 = $this->drupalCreateUser();
     
     //Create A Group Node
     $group1 = array(
@@ -43,15 +43,7 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
         'uid' => $this->user1->uid,
     );
     $this->group_1 = $this->drupalCreateNode($group1);
-    
-    //Create A Group Node
-    $group2 = array(
-      'title' => 'Group 2',
-      'type' => 'vsite',
-      'purl' => 'group2',
-      'uid' => $this->user1->uid,
-    );
-    
+ 
     //Create the test menu
     $menu = array(
       'menu_name' => $this->test_menu,
@@ -65,7 +57,7 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
         'link_title' => 'link'.$i,
         'menu_name' => $menu['menu_name'],
         'weight' => $i,
-        'router_path' => 'node',
+        'link_path' => 'node',
       );
     
       menu_link_save($menu_item);
