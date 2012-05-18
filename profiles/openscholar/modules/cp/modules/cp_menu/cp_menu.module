@@ -29,7 +29,7 @@ function cp_menu_theme() {
   $items = array();
 
   $items['cp_menu_table'] = array(
-    'render element' => array('table' => array()),
+    'render element' => 'table',
     'file' => 'cp_menu.form.inc',
   );
 
@@ -159,7 +159,7 @@ function cp_menu_title($form, &$form_state) {
         '#title' => t('URL'),
         '#required' => TRUE,
       );
-      
+
       $form['#validate'][] = 'cp_menu_url_validate';
       break;
 
@@ -440,7 +440,7 @@ function cp_menu_wizard_finish(&$form_state) {
   //then save to vsite or whole site
   ctools_include('menu','os');
   os_menu_link_save($new_menu);
-  cp_menu_cache_clear($form_state['object_id']); 
+  cp_menu_cache_clear($form_state['object_id']);
   drupal_goto('<front>'); //better destination?
 }
 
@@ -457,16 +457,16 @@ function cp_form_node_form_alter(&$form, &$form_state, $form_id) {
   if (count($cache) && strpos($_SERVER['HTTP_REFERER'], 'cp_menu')) { //make sure you're coming from cp/menu page.  otherwise abandoned but not cleared form could hijack node/add
     $title = check_plain($cache['title']); //primary-menu:0  wtf  value['menu'] => primary-menu
 
-    $form['title']['#default_value'] = $title; 
-    
+    $form['title']['#default_value'] = $title;
+
     $form['os_menu'] = $form['menu'];
     unset($form['menu']);
-    
+
     $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
     $form['os_menu']['enabled']['#default_value'] = 1;
     $form['os_menu']['link']['parent']['#default_value']; $menu . ':0'; //position shouldn't matter since we're overriding it later anyway
-    $form['os_menu']['link']['link_title']['#default_value'] = $title; 
-    $form['os_menu']['link']['description']['#default_value'] = check_plain($cache['tooltip']); 
+    $form['os_menu']['link']['link_title']['#default_value'] = $title;
+    $form['os_menu']['link']['description']['#default_value'] = check_plain($cache['tooltip']);
 
     if ($cache['new_window']) {
       $form['os_menu']['target'] = array(
@@ -475,7 +475,7 @@ function cp_form_node_form_alter(&$form, &$form_state, $form_id) {
       );
     }
   }
-  
+
   cp_menu_cache_clear('cp_menu');
 }
 
