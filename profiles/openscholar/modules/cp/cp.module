@@ -406,6 +406,13 @@ function cp_menu_page($js = NULL, $step = NULL) {
   }  
   $object = cp_menu_cache_get($object_id);
   
+  //check if step is a menu?  if so, stash it and clear it.  
+  ctools_include('menu','os');
+  if (in_array($step, array_flip(os_get_menus()))) {
+    $object['menu'] = $step;
+    $step = 'type';
+  }
+  
   //forge a form state
   $form_state = array(
     'ajax' => $js,
@@ -445,27 +452,17 @@ function cp_menu_page($js = NULL, $step = NULL) {
       $type = NULL;
     }
   
+
     
-  switch($type) {
-    case 'list':
-      $form_info['forms']['list_type'] = array('form id' => 'cp_menu_list_type', 'title'=>t('Type of List'));
-      
-      $list_type = (isset($object['list_type'])) ? $object['list_type'] : $_POST['list_type'];
-      if ($list_type == 'taxonomy') {
-        $form_info['forms']['term'] = array('form id' => 'cp_menu_list_term', 'title'=>t('Taxonomy Terms'));
-      } elseif ($list_type == 'publications') {
-        $form_info; //pubs.
-      }
-      
-      break;
-      
-    case 'page':
-   //   $form_info['forms']['page'] = array('form id' => 'cp_menu_selectpage', 'title'=>t('Select or Create Page'));
-      break;
-      
-    case 'url':
-    //  $form_info['forms']['url'] = array('form id' => 'cp_menu_url', 'title'=>t('Link URL'));
-      break;
+  if ($type == 'list') {
+    $form_info['forms']['list_type'] = array('form id' => 'cp_menu_list_type', 'title'=>t('Type of List'));
+    
+    $list_type = (isset($object['list_type'])) ? $object['list_type'] : $_POST['list_type'];
+    if ($list_type == 'taxonomy') {
+      $form_info['forms']['term'] = array('form id' => 'cp_menu_list_term', 'title'=>t('Taxonomy Terms'));
+    } elseif ($list_type == 'publications') {
+      $form_info; //pubs.
+    }
   }
 
   //add final page after type sensitive pages have been included
@@ -853,11 +850,11 @@ function cp_menu_wizard_finish(&$form_state) {
 function cp_form_node_form_alter(&$form, &$form_state, $form_id) {
   $cache = cp_menu_cache_get('cp_menu');
   if (count($cache) && strpos($_SERVER['HTTP_REFERER'], 'cp/menu')) { //make sure you're coming from cp/menu page.  otherwise abandoned but not cleared form could hijack node/add
-    $title = check_plain($cache['title']);
+    $title = check_plain($cache['title']); //primary-menu:0  wtf  value['menu'] => primary-menu
     $form['title']['#default_value'] = $title; 
     
     $form['menu']['enabled']['#default_value'] = 1;
-    $form['menu']['link']['parent']['#default_value'];
+    $form['menu']['link']['parent']['#default_value'];//TODO
     $form['menu']['link']['link_title']['#default_value'] = $title; 
     $form['menu']['link']['description']['#default_value'] = check_plain($cache['tooltip']); 
     
