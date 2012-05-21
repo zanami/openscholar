@@ -206,6 +206,22 @@ function vsite_menu_menu_link_load($menu, $mlid){
 }
 
 /**
+ * Returns a mlid given a link path or false if it does not exist
+ *
+ * @param $menu
+ * @param $path
+ */
+function vsite_menu_get_link_path($menu, $path){
+  $menu_links = _vsite_menu_get_menu_links($menu);
+  
+  foreach ($menu_links as $mlid => $link) {
+  	if($link['link_path'] == $path && $link['mlid']){
+  	  return $link['mlid'];
+  	}
+  }
+}
+
+/**
  * Deletes a single menu link, in a vsite
  *
  * @param string $menu

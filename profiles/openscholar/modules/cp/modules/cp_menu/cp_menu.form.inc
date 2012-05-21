@@ -20,6 +20,7 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
   if (isset($menus[$menu])) {
     $is_active = true;
   }
+  $weight = 5;
 
   $form['menus'] = array(
     '#theme' => 'cp_menu_table',
@@ -28,11 +29,7 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
 
   foreach ($menus as $m => $title) {
     $form['menus'][$m] = array(
-      '#weight' => ($is_active?1:2),
-      'header' => array(
-        '#type' => 'markup',
-        '#markup' => $title,
-      ),
+      '#weight' => ($is_active?1:$weight++),
     );
     $links = _cp_menu_flatten_tree(os_menu_tree_data($m));
     foreach ($links as $link) {
@@ -44,14 +41,17 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
           '#description' => l($url, $url),
         ),
         'edit_link' => array(
-          '#markup' => ctools_modal_text_button('Edit Link', 'cp/build/menu/nojs/'),
+          '#markup' => ctools_modal_text_button('Edit Link', 'cp/build/menu/nojs/', ''),
         ),
         'menu' => array(
           '#type' => 'select',
           '#options' => $menus,
           '#default_value' => $l['menu_name'],
           '#attributes' => array(
-            'class' => 'menu-select menu-select-'. $l['menu_name'],
+            'class' => array(
+              'menu-select',
+              'menu-select-'. $l['menu_name']
+            ),
           ),
         ),
         'weight' => array(
@@ -59,14 +59,20 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
           '#default_value' => $l['weight'],
           '#size' => 3,
           '#attributes' => array(
-            'class' => 'menu-weight menu-weight-'. $l['menu_name'],
+            'class' => array(
+              'menu-weight',
+              'menu-weight-'. $l['menu_name']
+            ),
           ),
         ),
         'plid' => array(
           '#type' => 'hidden',
           '#default_valuee' => $l['plid'],
           '#attributes' => array(
-            'class' => 'menu-plid menu-plid-'.$l['menu_name'],
+            'class' => array(
+              'menu-plid',
+              'menu-plid-'.$l['menu_name']
+            ),
           ),
         ),
         'menu-old' => array(
@@ -103,7 +109,6 @@ function _cp_menu_flatten_tree($tree) {
  * @param unknown_type $variables
  */
 function theme_cp_menu_table($variables) {
-  dpm(func_get_args());
   $table_data = $variables['table'];
   $menus = os_get_menus();
   $menus += array(
@@ -117,17 +122,19 @@ function theme_cp_menu_table($variables) {
     t('Weight'),
   );
   uasort($table_data, 'element_sort');
+
   $rows = array();
-  foreach ($table_data as $m => $d) {
+  foreach (element_children($table_data) as $d) {
     $rows[] = array(
       'data' => array(
         array(
-          'data' => $menus[$m],
+          'data' => $menus[$d],
           'colspan' => 6,
         ),
       )
     );
-    foreach ($d as $l) {
+    foreach (element_children($table_data[$d]) as $link_name) {
+      $l = $table_data[$d][$link_name];
       $rows[] = array(
         theme('indentation', array('size' => $l['#depth'] - 1)).drupal_render($l['title']),
         drupal_render($l['edit_link']),
