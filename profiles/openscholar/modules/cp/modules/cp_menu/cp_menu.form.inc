@@ -129,20 +129,24 @@ function theme_cp_menu_table($variables) {
       'data' => array(
         array(
           'data' => $menus[$d],
-          'colspan' => 6,
+          'colspan' => 4,
         ),
       )
     );
     foreach (element_children($table_data[$d]) as $link_name) {
       $l = $table_data[$d][$link_name];
       $rows[] = array(
-        theme('indentation', array('size' => $l['#depth'] - 1)).drupal_render($l['title']),
-        drupal_render($l['edit_link']),
-        drupal_render($l['menu']),
-        drupal_render($l['weight']),
-        drupal_render($l['plid'])
+        'data' => array(
+          theme('indentation', array('size' => $l['#depth'] - 1)).drupal_render($l['title']),
+          drupal_render($l['edit_link']),
+          drupal_render($l['menu']),
+          drupal_render($l['weight']).drupal_render($l['plid']),
+        ),
+        'class' => array('draggable'),
       );
     }
   }
+  drupal_add_tabledrag('edit-menu-table', 'match', 'parent', 'menu-plid', 'menu-plid', 'menu-mlid', TRUE, MENU_MAX_DEPTH - 1);
+  drupal_add_tabledrag('edit-menu-table', 'order', 'sibling', 'menu-weight');
   return theme('table', array('header' => $headers, 'rows' => $rows, 'attributes' => array('id' => 'edit-menu-table')));
 }
