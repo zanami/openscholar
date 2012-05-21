@@ -30,6 +30,15 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
   foreach ($menus as $m => $title) {
     $form['menus'][$m] = array(
       '#weight' => ($is_active?1:$weight++),
+      'menu-name' => array(
+        '#type' => 'hidden',
+        '#value' => $m,
+        '#attributes' => array(
+          'class' => array(
+            'menu-name',
+          ),
+        ),
+      ),
     );
     $links = _cp_menu_flatten_tree(os_menu_tree_data($m));
     foreach ($links as $link) {
@@ -49,8 +58,8 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
           '#default_value' => $l['menu_name'],
           '#attributes' => array(
             'class' => array(
-              'menu-select',
-              'menu-select-'. $l['menu_name']
+              'menu-name',
+              'menu-name-'. $l['menu_name']
             ),
           ),
         ),
@@ -67,11 +76,21 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
         ),
         'plid' => array(
           '#type' => 'hidden',
-          '#default_valuee' => $l['plid'],
+          '#default_value' => $l['plid'],
           '#attributes' => array(
             'class' => array(
               'menu-plid',
               'menu-plid-'.$l['menu_name']
+            ),
+          ),
+        ),
+        'mlid' => array(
+          '#type' => 'hidden',
+          '#default_value' => $l['mlid'],
+          '#attributes' => array(
+            'class' => array(
+              'menu-mlid',
+              'menu-mlid'.$l['menu_name'],
             ),
           ),
         ),
@@ -90,6 +109,10 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
       '#type' => 'submit',
       '#value' => t('Save settings'),
     ),
+  );
+
+  $form['#submit'] = array(
+    'cp_menu_submit_form',
   );
 
   return $form;
@@ -128,25 +151,41 @@ function theme_cp_menu_table($variables) {
     $rows[] = array(
       'data' => array(
         array(
-          'data' => $menus[$d],
+          'data' => $menus[$d].drupal_render($table_data[$d]['menu-name']),
           'colspan' => 4,
         ),
       )
     );
     foreach (element_children($table_data[$d]) as $link_name) {
+      if ($link_name == 'menu-name') continue;
       $l = $table_data[$d][$link_name];
       $rows[] = array(
         'data' => array(
           theme('indentation', array('size' => $l['#depth'] - 1)).drupal_render($l['title']),
           drupal_render($l['edit_link']),
           drupal_render($l['menu']),
-          drupal_render($l['weight']).drupal_render($l['plid']),
+          drupal_render($l['weight']).drupal_render($l['plid']).drupal_render($l['mlid']),
         ),
         'class' => array('draggable'),
       );
     }
   }
+  //drupal_add_tabledrag('edit-menu-table', 'match', 'sibling', 'menu-name', 'menu-name', 'menu-name', FALSE);
   drupal_add_tabledrag('edit-menu-table', 'match', 'parent', 'menu-plid', 'menu-plid', 'menu-mlid', TRUE, MENU_MAX_DEPTH - 1);
   drupal_add_tabledrag('edit-menu-table', 'order', 'sibling', 'menu-weight');
   return theme('table', array('header' => $headers, 'rows' => $rows, 'attributes' => array('id' => 'edit-menu-table')));
+}
+
+function cp_menu_submit_form($form, &$form_state) {
+  foreach ($form_state['values']['menus'] as $links) {
+    foreach ($links as $l) {
+      if (!is_array($l)) continue;
+
+      $link = os_menu_link_load($l['menu'], $l['mlid']);
+      $link['weight'] = $l['weight'];
+      $link['menu_name'] = $l['menu'];
+      $link['plid'] = $l['plid'];
+      os_menu_link_save($link);
+    }
+  }
 }
