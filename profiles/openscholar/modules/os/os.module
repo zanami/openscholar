@@ -27,7 +27,7 @@ function os_menu(){
       'access arguments' => array(
           'access content'
       ),
-      'file path' => drupal_get_path('module', 'vsite') . '/'
+      'file path' => drupal_get_path('module', 'os') . '/'
   );
   
   return $items;

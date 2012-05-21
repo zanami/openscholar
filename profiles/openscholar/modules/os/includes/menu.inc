@@ -160,9 +160,9 @@ function os_menu_load_link_path($path){
   if (module_exists('vsite_menu')) {
     //Return a menu item loaded from vsite menu controller
     foreach ( $os_menus as $menu => $name ) {
-      $link_info = vsite_menu_get_link_path($menu, $path);
+      $mlid = vsite_menu_get_link_path($menu, $path);
       if ($mlid) {
-        return os_menu_link_load($mlid);
+        return os_menu_link_load($menu, $mlid);
       }
     }
   }
