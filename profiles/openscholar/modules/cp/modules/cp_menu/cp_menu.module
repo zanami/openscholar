@@ -43,22 +43,30 @@ function cp_menu_node_insert($node) {
     $options = (isset($link->options)) ? $link->options : array();
     
     $attributes = array('description'=>'title');
-    
     foreach ($attributes as $delta => $attr) {
       if (isset($link[$delta])) {
         $options['attributes'][$attr] = check_plain($link[$delta]);
       }
     }
     
-    cp_menu_link_save('node/'.$node->nid, $link['parent'], $link['link_title'], $options);
+    if ($link['new_window']) {
+      $options['attributes']['target'] = '_blank';
+    }
+    
+    $mlid = cp_menu_link_save('node/'.$node->nid, $link['parent'], $link['link_title'], $options);
+    
   }
+}
+
+function cp_menu_node_update($node) {
+  os_menu_link_load($menu, $mlid);
 }
 
 //wrapper for os_menu_link_save
 function cp_menu_link_save($link_path, $menu_name, $link_title, $options = array()) {
   ctools_include('menu', 'os');
   $item = compact('link_path', 'menu_name', 'link_title', 'options');
-  os_menu_link_save($item);
+  return os_menu_link_save($item);
 }
 
 /**
@@ -482,7 +490,13 @@ function cp_form_node_form_alter(&$form, &$form_state, $form_id) {
                                              
   $parents = array_diff($form['os_menu']['link']['#parents'], array('menu'));
   $form['os_menu']['link']['#parents'] = $parents + array('os_menu');
-                                             
+  $form['os_menu']['#attached'] = array('js' => array(drupal_get_path('module', 'cp_menu') . '/cp_menu.js'));
+  
+  $form['os_menu']['link']['new_window'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Open Link in New Window'),
+    '#default_value' => 0,
+  );
                                              
   //menu wizard - insert settings from wizard
   $cache = cp_menu_cache_get('cp_menu');
@@ -497,10 +511,7 @@ function cp_form_node_form_alter(&$form, &$form_state, $form_id) {
     $form['os_menu']['link']['description']['#default_value'] = check_plain($cache['tooltip']);
 
     if ($cache['new_window']) {
-      $form['os_menu']['target'] = array(
-        '#type' => 'value',
-        '#value' => '_blank',
-      );
+      $form['os_menu']['link']['new_window']['#default_value'] = 1;
     }
   }
 
