@@ -91,7 +91,7 @@ function vsite_menu_menu_link_save(&$item){
     $existing_item = FALSE;
     if (! isset($item['mlid'])) {
       //Increment to get a new mlid for this menu
-      $item['mlid'] = max(VSITE_MENU_CUSTOM_MLID, max(array_keys($existing_menu)) + 1);
+      $item['mlid'] = _vsite_menu_get_mlid();
     }
   }
   
@@ -407,6 +407,24 @@ function vsite_menu_spaces_registry(){
           )
       )
   );
+}
+
+/**
+ * Helper function to get a unique MLID per vsite
+ */
+function _vsite_menu_get_mlid(){
+  $vsite = spaces_get_space();
+  
+  $mlid = variable_get('vsite_menu_mlid_increment',VSITE_MENU_CUSTOM_MLID);
+  
+  //increment the mlid vsite-wide
+  if($vsite){
+    $vsite->controllers->variable->set('vsite_menu_mlid_increment',($mlid + 1));
+  }else{
+    variable_set('vsite_menu_mlid_increment',($mlid + 1));
+  }
+  
+  return $mlid;
 }
 
 /**
