@@ -36,6 +36,31 @@ function cp_menu_theme() {
   return $items;
 }
 
+//save new nodes to menus using os api instead of core
+function cp_menu_node_insert($node) {
+  if ($node->os_menu['enabled']) {
+    $link = $node->os_menu;
+    $options = (isset($link->options)) ? $link->options : array();
+    
+    $attributes = array('description'=>'title');
+    
+    foreach ($attributes as $delta => $attr) {
+      if (isset($link[$delta])) {
+        $options['attributes'][$attr] = check_plain($link[$delta]);
+      }
+    }
+    
+    cp_menu_link_save('node/'.$node->nid, $link['parent'], $link['link_title'], $options);
+  }
+}
+
+//wrapper for os_menu_link_save
+function cp_menu_link_save($link_path, $menu_name, $link_title, $options = array()) {
+  ctools_include('menu', 'os');
+  $item = compact('link_path', 'menu_name', 'link_title', 'options');
+  os_menu_link_save($item);
+}
+
 /**
  * Multi-step form wizard for adding links to menu.
  * @param unknown_type $js
@@ -416,30 +441,20 @@ function cp_menu_wizard_finish(&$form_state) {
       return;
   }
 
-  $new_menu = array(
-    'link_path' => $url,
-    //'router_path' => 'node/%', // TODO where does this come from?
-    'menu_name' => isset($values['menu']) ? $values['menu'] : 'primary-menu',
-    'link_title' => $values['title'],
-    'module' => 'system',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0', // TODO is there a way to add this in the form?  worth it?  maybe a slider?
-    'hidden' => '0',
-    'options' => array('attributes'=>array()),
-  );
-
+  $menu_name = isset($values['menu']) ? $values['menu'] : 'primary-menu';
+  $options = array();
+  
   if ($values['new_window']) {
     $new_menu['options']['attributes']['target'] = '_blank';
   }
 
   if ($values['tooltip']) {
-    $new_menu['options']['attributes']['title'] = check_plain($values['tooltip']);
+    $options['description'] = $values['tooltip'];
   }
 
   //then save to vsite or whole site
   ctools_include('menu','os');
-  os_menu_link_save($new_menu);
+  cp_menu_link_save($url, $menu_name, $values['title'], $options);
   cp_menu_cache_clear($form_state['object_id']); 
   drupal_goto('<front>'); //better destination?
 }
@@ -453,14 +468,31 @@ function cp_menu_wizard_finish(&$form_state) {
  * Moves menu to os_menu for later processing during node_insert (is this really necessary?  shouldn't it happen elsewhere?)
  */
 function cp_form_node_form_alter(&$form, &$form_state, $form_id) {
+  ctools_include('menu', 'os');
+  
+  $form['os_menu'] = $form['menu'];
+  unset($form['menu']);
+  
+  unset($form['os_menu']['link']['weight']);
+  $form['os_menu']['link']['#states']['invisible'] = array('input[name="os_menu[enabled]"]' => array('checked' => FALSE));
+  $form['os_menu']['link']['parent'] = array('#title' => t('Which Menu'),
+                                             '#options' => os_get_menus(),
+                                             '#default_value' => 'primary-menu',
+                                             ) + $form['os_menu']['link']['parent']; 
+                                             
+  $parents = array_diff($form['os_menu']['link']['#parents'], array('menu'));
+  $form['os_menu']['link']['#parents'] = $parents + array('os_menu');
+  //module?!
+                                             
+                                             
+                                             
+  //menu wizard - insert settings from wizard
   $cache = cp_menu_cache_get('cp_menu');
   if (count($cache) && strpos($_SERVER['HTTP_REFERER'], 'cp_menu')) { //make sure you're coming from cp/menu page.  otherwise abandoned but not cleared form could hijack node/add
     $title = check_plain($cache['title']); //primary-menu:0  wtf  value['menu'] => primary-menu
 
     $form['title']['#default_value'] = $title; 
     
-    $form['os_menu'] = $form['menu'];
-    unset($form['menu']);
     
     $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
     $form['os_menu']['enabled']['#default_value'] = 1;
