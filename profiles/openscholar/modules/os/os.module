@@ -1,29 +1,33 @@
 <?php
-include_once('os.features.inc');
+include_once ('os.features.inc');
 
 /**
  * Implementation of hook menu
  */
 function os_menu(){
   $items = array();
-
+  
   $items['home'] = array(
-    'type' => MENU_CALLBACK,
-    'title' => '',
-    'page callback' => 'os_frontpage',
-    'file' => 'os.pages.inc',
-    'access arguments' => array('access content'),
-    'weight' => 0,
+      'type' => MENU_CALLBACK,
+      'title' => '',
+      'page callback' => 'os_frontpage',
+      'file' => 'os.pages.inc',
+      'access arguments' => array(
+          'access content'
+      ),
+      'weight' => 0
   );
   
   // nodeautocomplete callback
   $items['os/node/autocomplete'] = array(
-    'type' => MENU_CALLBACK,
-    'title' => 'os_node_autocomplete',
-    'page callback' => 'os_node_autocomplete',
-    'file' => 'os.autocomplete.inc',
-    'access arguments' => array('access content'),
-    'file path' => drupal_get_path('module', 'vsite') . '/',
+      'type' => MENU_CALLBACK,
+      'title' => 'os_node_autocomplete',
+      'page callback' => 'os_node_autocomplete',
+      'file' => 'os.autocomplete.inc',
+      'access arguments' => array(
+          'access content'
+      ),
+      'file path' => drupal_get_path('module', 'vsite') . '/'
   );
   
   return $items;
@@ -32,30 +36,35 @@ function os_menu(){
 /**
  * @function os_get_bundles
  *
- * Return the content type of a vsite based on the privacy
- * @param $privacy and array (or single value) (0 -> disabled, 2 -> private, 1 -> public)
- * @param $vsite optional / the active vsite if nothing provided
+ * Return the avalible bundles based on the privacy
+ * @param $privacy and array (or single value)
+ * (0 -> disabled, 2 -> private, 1 -> public)
+ * TRUE returns all
  * @param @space_type
- * @return array
+ *
+ * @return array array('bundle_id' => 'Bundle Name')
  */
+
 function os_get_bundles($privacy = array(1), $space_type = 'og') {
   $bundles = array('page'=>'Page');
   
-  if (!is_array($privacy)) {
-    $privacy = array($privacy);
+  if (is_bool($privacy) && $privacy) {
+    $ret_all = TRUE;
   }
-
-  $features = spaces_features($space_type);
-  
-  if ($vsite = spaces_get_space()) {
-    $site_features = variable_get('spaces_features', array());
+  else if (! is_array($privacy)) {
+    $privacy = array(
+        $privacy
+    );
   }
     
   
-  foreach ($features as $name => $feature) {
+  $features = spaces_features($space_type);
+  $site_features = variable_get('spaces_features', array());
+  
+  foreach ( $features as $name => $feature ) {
     $info = $feature->info['features'];
-    if (!$vsite || (isset($info['node']) && in_array($site_features[$name], $privacy))) { 
-      $bundles[ $info['node'][0] ] = $feature->info['name']; 
+    if (isset($info['node']) && ($ret_all || in_array($site_features[$name], $privacy))) {
+      $bundles[ $info['node'][0] ] = $feature->info['name'];
     }
   }
   
@@ -65,15 +74,15 @@ function os_get_bundles($privacy = array(1), $space_type = 'og') {
 /**
  * Context Plugins
  */
-function os_context_plugins() {
+function os_context_plugins(){
   $plugins = array();
   $plugins['os_context_reaction_feature'] = array(
-    'handler' => array(
-	    'path' => drupal_get_path('module', 'os') .'/plugins',
-	    'file' => 'os_context_reaction_feature',
-	    'class' => 'os_context_reaction_feature',
-	    'parent' => 'context_reaction',
-    ),
+      'handler' => array(
+          'path' => drupal_get_path('module', 'os') . '/plugins',
+          'file' => 'os_context_reaction_feature',
+          'class' => 'os_context_reaction_feature',
+          'parent' => 'context_reaction'
+      )
   );
   return $plugins;
 }
@@ -81,14 +90,14 @@ function os_context_plugins() {
 /**
  * Context registry.
  */
-function os_context_registry() {
+function os_context_registry(){
   $registry = array();
   $registry['reactions'] = array(
-    'os_feature' => array(
-      'title' => t('OpenScholar Feature'),
-      'description' => t('Set the current Openscholar feature using context.'),
-      'plugin' => 'os_context_reaction_feature',
-    ),
+      'os_feature' => array(
+          'title' => t('OpenScholar Feature'),
+          'description' => t('Set the current Openscholar feature using context.'),
+          'plugin' => 'os_context_reaction_feature'
+      )
   );
   return $registry;
 }
@@ -98,17 +107,18 @@ function os_context_registry() {
  * replaces "vsite_active_feature()"
  */
 function os_active_feature(){
-	if(!module_exists('context')) return false;
-	
-	static $once;
-	if(!isset($once)){
-		$once = true;
-		if ($plugin = context_get_plugin('reaction', 'os_feature')) {
-	    $plugin->execute();
-	  }
-	}
-	
-	return context_get('os','feature');
+  if (! module_exists('context'))
+    return false;
+  
+  static $once;
+  if (! isset($once)) {
+    $once = true;
+    if ($plugin = context_get_plugin('reaction', 'os_feature')) {
+      $plugin->execute();
+    }
+  }
+  
+  return context_get('os', 'feature');
 }
 
 ////Implement hook_context_block_info_alter to modify the block list.
@@ -118,19 +128,20 @@ function os_active_feature(){
 //
 //}
 
+
 /**
  * Implements hook_block_info().
  */
-function os_block_info() {
-	ctools_include('menu','os');
-	
+function os_block_info(){
+  ctools_include('menu', 'os');
+  
   $blocks['powered-by'] = array(
-    'info' => t('Powered by Openscholar'),
-    'weight' => '10',
-    'cache' => DRUPAL_CACHE_GLOBAL,
+      'info' => t('Powered by Openscholar'),
+      'weight' => '10',
+      'cache' => DRUPAL_CACHE_GLOBAL
   );
   // System-defined menu blocks.
-  foreach (os_get_menus() as $menu_name => $title) {
+  foreach ( os_get_menus() as $menu_name => $title ) {
     $blocks[$menu_name]['info'] = t($title);
     // Menu blocks can't be cached because each menu item can have
     // a custom access callback. menu.inc manages its own caching.
@@ -145,16 +156,16 @@ function os_block_info() {
  * Generate a block with a promotional link to openscholar.harvard.edu and
  * all os menu blocks.
  */
-function os_block_view($delta = '') {
+function os_block_view($delta = ''){
   $block = array();
   switch ($delta) {
-  	case 'powered-by':
+    case 'powered-by' :
       $block['subject'] = NULL;
       $block['content'] = theme('openscholar_powered_by');
       return $block;
-    default:
+    default :
       // All os menu blocks.
-      ctools_include('menu','os');
+      ctools_include('menu', 'os');
       $os_menus = os_get_menus();
       if (isset($os_menus[$delta])) {
         $block['subject'] = t($os_menus[$delta]);
@@ -168,11 +179,11 @@ function os_block_view($delta = '') {
 /**
  * Implements hook_theme().
  */
-function os_theme() {
+function os_theme(){
   return array(
-    'openscholar_powered_by' => array(
-      'variables' => array(),
-      'file' => 'includes/themes.inc',
-    ),
+      'openscholar_powered_by' => array(
+          'variables' => array(),
+          'file' => 'includes/themes.inc'
+      )
   );
 }

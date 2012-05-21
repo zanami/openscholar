@@ -33,7 +33,7 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
     parent::setUp('spaces', 'og', 'spaces_og', 'vsite', 'ctools', 'vsite_menu');
     
     // Create a user with access to add a link
-    $this->user1 = $this->drupalCreateUser(array('create link content'));
+    $this->user1 = $this->drupalCreateUser();
     
     //Create A Group Node
     $group1 = array(
@@ -43,15 +43,7 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
         'uid' => $this->user1->uid,
     );
     $this->group_1 = $this->drupalCreateNode($group1);
-    
-    //Create A Group Node
-    $group2 = array(
-      'title' => 'Group 2',
-      'type' => 'vsite',
-      'purl' => 'group2',
-      'uid' => $this->user1->uid,
-    );
-    
+ 
     //Create the test menu
     $menu = array(
       'menu_name' => $this->test_menu,
@@ -65,7 +57,7 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
         'link_title' => 'link'.$i,
         'menu_name' => $menu['menu_name'],
         'weight' => $i,
-        'router_path' => 'node',
+        'link_path' => 'node',
       );
     
       menu_link_save($menu_item);
@@ -87,14 +79,14 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
         'link_title' => 'Test Link Add',
         'menu_name' => $this->test_menu,
         'weight' => 1000,
-        'router_path' => 'node',
+        'link_path' => 'node',
     );
     
     vsite_menu_menu_link_save($menu_item);
     
     $new_menu = _vsite_menu_get_menu_links($this->test_menu);
     
-    $this->assertNotEqual($start_menu, $new_menu, "The menu has not been updated with the new item.");
+    $this->assertNotEqual($start_menu, $new_menu, "The menu has been updated with the new item.");
     
     $diff = array_diff_assoc($new_menu,$start_menu);
     
@@ -105,7 +97,7 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
     
     //Filter out extra fields
     $retrieved_item = array_intersect_assoc($retrieved_item, $menu_item);
-    $this->assertEqual($menu_item,$retrieved_item);
+    $this->assertTrue((count(array_diff_assoc($retrieved_item,$menu_item)) == 0),"Arrays Equal, Computed differences:". var_export(array_diff_assoc($retrieved_item,$menu_item),TRUE));
 
   }
   
@@ -122,7 +114,7 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
     
     $new_menu = _vsite_menu_get_menu_links($this->test_menu);
     
-    $this->assertNotEqual($start_menu, $new_menu, "The menu has not been updated without the old item.");
+    $this->assertNotEqual($start_menu, $new_menu, "The menu has been updated without the old item.");
     
     $diff = array_diff_assoc($start_menu,$new_menu);
     
@@ -131,5 +123,94 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
     $deleted_item = current($diff);
     $this->assertTrue((array_key_exists('mlid',$deleted_item) && $deleted_item['mlid'] == $delete_item),t("Assure that the correct item was deleted. MLID @mlid",array('@mlid' => $deleted_item['mlid'])));
 
+  }
+  
+  /**
+   * Run Link Load
+   */
+  public function testMenuLinkLoad(){
+    
+    $menu_item = array(
+        'link_title' => 'Test Link Load',
+        'menu_name' => $this->test_menu,
+        'weight' => 1000,
+        'link_path' => 'node',
+    );
+    
+    vsite_menu_menu_link_save($menu_item);
+    
+    $full_tree = vsite_menu_os_menu_tree($this->test_menu);
+    $last_item = array_pop($full_tree);
+    $last_item = $last_item['link'];
+    
+    //Active trail should be the only diference
+    unset($last_item['in_active_trail']);
+    
+    $load_item = vsite_menu_menu_link_load($this->test_menu, $menu_item['mlid']);
+    
+    $this->assertEqual($load_item, $last_item);
+    
+    //This router entry should return true
+    $this->assertTrue($load_item['access'],"Check that access is set correctly.");
+    
+    $this->assertTrue($load_item['depth'] == 1,"Depth should be set to 1.");
+    
+    $this->assertEqual($load_item['mlid'], $load_item['p1'],"It should not have a parent (AKA it's own parent).");
+    
+    $this->assertEqual($load_item['link_title'], $menu_item['link_title'],"Title should be set and match.");
+    
+    $this->assertEqual($load_item['menu_name'], $menu_item['menu_name'],"Menu should be set and match.");
+    
+    $this->assertEqual($load_item['weight'], $menu_item['weight'],"Wieght should be set and match the menu_entry weight not the router weight.");
+    
+    $this->assertEqual($load_item['link_path'], $menu_item['link_path'],"Link Path should be set and match.");
+    
+    $this->assertFalse($load_item['external'],"This should be set as a non-external link.");
+    
+  }
+  
+/**
+   * Run Menu Tree
+   */
+  public function testMenuTree(){
+    
+    $menu_item = array(
+        'link_title' => 'Test Link Tree',
+        'menu_name' => $this->test_menu,
+        'weight' => 1000,
+        'link_path' => 'node',
+    );
+    
+    $start_tree = vsite_menu_os_menu_tree($this->test_menu);
+    $start_count = count($start_tree);
+    
+    $this->assertTrue($start_count == 15,"Check that the default tree was loaded.");
+    
+    vsite_menu_menu_link_save($menu_item);
+    $new_tree = vsite_menu_os_menu_tree($this->test_menu);
+    $new_count = count($new_tree);
+    
+    $this->assertTrue($start_count - $new_count == 1,"Check that one more item is now in the tree, and the it was not cached.");
+    
+    $last_item = array_pop($new_tree);
+    $last_item = $last_item['link'];
+    
+    //This router entry should return true
+    $this->assertTrue($last_item['access'],"Check that access is set correctly.");
+    
+    $this->assertTrue($last_item['depth'] == 1,"Depth should be set to 1.");
+    
+    $this->assertEqual($last_item['mlid'], $last_item['p1'],"It should not have a parent (AKA it's own parent).");
+    
+    $this->assertEqual($last_item['link_title'], $menu_item['link_title'],"Title should be set and match.");
+    
+    $this->assertEqual($last_item['menu_name'], $menu_item['menu_name'],"Menu should be set and match.");
+    
+    $this->assertEqual($last_item['weight'], $menu_item['weight'],"Wieght should be set and match the menu_entry weight not the router weight.");
+    
+    $this->assertEqual($last_item['link_path'], $menu_item['link_path'],"Link Path should be set and match.");
+    
+    $this->assertFalse($last_item['external'],"This should be set as a non-external link.");
+    
   }
 }

@@ -16,7 +16,7 @@ include_once ('vsite.features.inc');
  */
 function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
   $vsite = spaces_get_space();
-  $os_bundles = array_keys(os_get_bundles());
+  $os_bundles = array_keys(os_get_bundles(true));
   
   if($vsite && in_array($form['#bundle'],$os_bundles)){
     //Set the og_group_ref value to automatically be the current active site

@@ -4,3 +4,53 @@
 .sidebar-first .content-inner {margin-left: 170px; margin-right: 0}
 .region-sidebar-first {width: 170px; margin-left: -100%}
 .region-sidebar-first {background:#EFF0F0;border-right:1px solid #B2BABA;}
+
+#messages-help-wrapper {display:none;}
+
+#footer-wrapper {
+    background: url('../images/top-bottom-bg.png') repeat-x;
+    color: #FFFFFF;
+    height:40px;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+}
+
+#footer-wrapper a {
+    color: #FFFFFF;
+  }
+  
+/* CP/BUILD SIDE MENU */  
+#block-cp-cp-subnav .block-inner {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#block-cp-cp-subnav li {
+    list-style: none outside none !important;
+    padding: 0;
+}
+#block-cp-cp-subnav li a, #block-cp-cp-subnav li a:visited {
+    border-bottom: 1px solid #BFC6C6;
+    color: #626161;
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 6px 23px;
+}
+
+#block-cp-cp-subnav li a:hover {
+    background: none repeat scroll 0 0 #FFFFFF;
+    text-decoration: none;
+}
+#block-cp-cp-subnav li.active a, #block-cp-cp-subnav li.active-trail a {
+    background: none repeat scroll 0 0 #B8C0C0;
+    border-color: #A4ABAB;
+    color: #000000;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #E6E8EA;
+}  
+  
+/* CP/BUILD LAYOUT */   
+.page-cp-build-layout .content-inner {width:854px;}
