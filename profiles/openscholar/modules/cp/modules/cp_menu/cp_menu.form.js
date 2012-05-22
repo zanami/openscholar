@@ -7,28 +7,31 @@
  */
 (function($) {
 
-function changeRegions() {
-  console.log(this);
+function changeSelect() {
   var $this = $(this.oldRowElement),
-    $prev = $this.prev(),
+    $prev = $this.prevAll('.section-heading'),
     val = $prev.find('.menu-name').val(),
     select = $this.find('.menu-name');
   
   select.val(val);
 }
+
+function changeRegion() {
+  // remove the hidden class
+  $('input').filter(function (i) {
+     return (this.value && this.value == self.value);
+  }).parents('tr').removeClass('hidden');
+  
+  // move the field to the new region
+}
   
 Drupal.behaviors.cp_menu_form = {
   attach: function (ctx) {
     // remove the 'hidden' class when a menu is changed
-    $('select.menu-name', ctx).change(function () {
-      var self = this;
-      $('input').filter(function (i) {
-         return (this.value && this.value == self.value);
-      }).parents('tr').removeClass('hidden');
-    });
+    $('select.menu-name', ctx).change(changeRegion);
     
     var drag = Drupal.tableDrag['edit-menu-table'];
-    drag.onDrop = changeRegions;
+    drag.onDrop = changeSelect;
   }
 };
 })(jQuery);

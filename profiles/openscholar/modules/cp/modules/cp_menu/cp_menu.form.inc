@@ -163,10 +163,9 @@ function theme_cp_menu_table($variables) {
         array(
           'data' => $menus[$d].drupal_render($table_data[$d]['menu-name']),
           'colspan' => 4,
-          'class' => array('section-heading'),
         )
       ),
-      'class' => $extra_classes,
+      'class' => array_merge(array('section-heading'), $extra_classes),
     );
     $has_links = false;
     foreach (element_children($table_data[$d]) as $link_name) {
@@ -190,7 +189,7 @@ function theme_cp_menu_table($variables) {
        	  'colspan' => 4,
         ),
       ),
-      'class' => array($has_links?'section-populated':'section-empty'),
+      'class' => array('section-message', $has_links?'section-populated':'section-empty'),
     );
   }
   //drupal_add_tabledrag('edit-menu-table', 'match', 'sibling', 'menu-name', 'menu-name', 'menu-name', FALSE);
