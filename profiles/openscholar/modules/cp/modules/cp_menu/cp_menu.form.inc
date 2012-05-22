@@ -29,7 +29,8 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
 
   foreach ($menus as $m => $title) {
     $form['menus'][$m] = array(
-      '#weight' => ($is_active?1:$weight++),
+      '#weight' => (($is_active && $menu == $m)?1:$weight++),
+      '#hidden' => ($is_active && $menu != $m),
       'menu-name' => array(
         '#type' => 'hidden',
         '#value' => $m,
@@ -148,14 +149,19 @@ function theme_cp_menu_table($variables) {
 
   $rows = array();
   foreach (element_children($table_data) as $d) {
+    $extra_classes = array();
+    if ($table_data[$d]['#hidden']) {
+      $extra_classes[] = 'hidden';
+    }
     $rows[] = array(
       'data' => array(
         array(
           'data' => $menus[$d].drupal_render($table_data[$d]['menu-name']),
           'colspan' => 4,
           'class' => array('section-heading'),
-        ),
-      )
+        )
+      ),
+      'class' => $extra_classes,
     );
     foreach (element_children($table_data[$d]) as $link_name) {
       if ($link_name == 'menu-name') continue;
@@ -167,7 +173,7 @@ function theme_cp_menu_table($variables) {
           drupal_render($l['menu']),
           drupal_render($l['weight']).drupal_render($l['plid']).drupal_render($l['mlid']),
         ),
-        'class' => array('draggable'),
+        'class' => array_merge(array('draggable'), $extra_classes),
       );
     }
   }
