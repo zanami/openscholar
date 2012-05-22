@@ -7,6 +7,12 @@
 
 #messages-help-wrapper {display:none;}
 
+/* GENERAL CP STYLES */ 
+
+.page-cp-build .region-sidebar-first .region-inner {
+	padding-top: 0;
+}
+
 #footer-wrapper {
     background: url('../images/top-bottom-bg.png') repeat-x;
     color: #FFFFFF;
@@ -20,8 +26,7 @@
 #footer-wrapper a {
     color: #FFFFFF;
   }
-  
-/* CP/BUILD SIDE MENU */  
+
 #block-cp-cp-subnav .block-inner {
     margin-left: 0;
     margin-right: 0;
@@ -54,3 +59,11 @@
   
 /* CP/BUILD LAYOUT */   
 .page-cp-build-layout .content-inner {width:854px;}
+
+
+/* CP/BUILD MENU */ 
+.page-cp-build-menu table thead {
+	display:none;
+    }
+    
+#edit-menu-table {width:775px;}   
