@@ -48,7 +48,8 @@ body.toolbar-drawer {
   top: 65px;
 }
 
-.toolbar #page-wrapper {
+.toolbar #page-wrapper,
+.toolbar #page {
 	margin-top:40px;
 }
 
