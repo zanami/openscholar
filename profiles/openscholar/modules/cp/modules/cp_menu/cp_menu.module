@@ -63,8 +63,7 @@ function cp_menu_node_update($node) {
 
   if ($node->os_menu['enabled']) {
     cp_menu_node_insert($node);
-  } else {
-  if (!$node->os_menu['enabled'] || isset($node->os_menu['delete'])) {
+  } else if (!$node->os_menu['enabled'] || isset($node->os_menu['delete'])) {
     ctools_include('menu', 'os');
     if ($link = os_menu_load_link_path('node/' . $node->nid)) {
       os_delete_menu_link($link['menu_name'], $link['mlid']);
@@ -490,13 +489,8 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
 
   //
   //add link to existing node's form
-<<<<<<< HEAD
-  if (isset($form['#node'])) {
-    $link = os_menu_load_link_path('node/' . $form['#node']->nid);
-=======
   if (isset($form['#node']) && isset($form['#node']->nid)) {
     $link = os_menu_load_link_path('node/' . $form['#node']->nid);
->>>>>>> f8076d69225adc2c97df50ca5567e478719ed943
   }
 
   //replace old forms
