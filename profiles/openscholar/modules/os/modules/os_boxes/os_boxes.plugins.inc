@@ -13,6 +13,18 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_addthis'] = array(
+    'title' => 'AddThis',
+    'description' => 'Social networking links',
+    'tags' => array('Social'),
+    'handler' => array(
+      'class' => 'os_boxes_addthis',
+      'file' => 'os_boxes_addthis.inc',
+      'path' => $path.'/os_boxes_addthis',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+  
   $info['os_boxes_manual_list'] = array(
     'title' => 'Featured Posts',
     'description' => 'Create your own list of posts',
