@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * Apply a set of blocks to a vsite's context
+ *
+ * @param string $context
+ * @param array $blocks
+ */
+function vsite_layout_context_set($context, $blocks){
+  
+  $vsite = spaces_get_space();
+  
+  if($vsite && isset($vsite->controllers->context)){
+    $vsite->controllers->context->set($context.":reaction:block", $blocks);
+    return true;
+  }
+  
+  return false;
+}

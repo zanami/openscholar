@@ -71,63 +71,6 @@ function os_get_bundles($privacy = array(1), $space_type = 'og') {
   return $bundles;
 }
 
-/**
- * Context Plugins
- */
-function os_context_plugins(){
-  $plugins = array();
-  $plugins['os_context_reaction_feature'] = array(
-      'handler' => array(
-          'path' => drupal_get_path('module', 'os') . '/plugins',
-          'file' => 'os_context_reaction_feature',
-          'class' => 'os_context_reaction_feature',
-          'parent' => 'context_reaction'
-      )
-  );
-  return $plugins;
-}
-
-/**
- * Context registry.
- */
-function os_context_registry(){
-  $registry = array();
-  $registry['reactions'] = array(
-      'os_feature' => array(
-          'title' => t('OpenScholar Feature'),
-          'description' => t('Set the current Openscholar feature using context.'),
-          'plugin' => 'os_context_reaction_feature'
-      )
-  );
-  return $registry;
-}
-
-/**
- * Get current Feature
- * replaces "vsite_active_feature()"
- */
-function os_active_feature(){
-  if (! module_exists('context'))
-    return false;
-  
-  static $once;
-  if (! isset($once)) {
-    $once = true;
-    if ($plugin = context_get_plugin('reaction', 'os_feature')) {
-      $plugin->execute();
-    }
-  }
-  
-  return context_get('os', 'feature');
-}
-
-////Implement hook_context_block_info_alter to modify the block list.
-//function os_context_block_info_alter(&$block_info){
-//	ctools_include('menu','os');
-//	_os_menu_context_block_info_alter($block_info);
-//
-//}
-
 
 /**
  * Implements hook_block_info().

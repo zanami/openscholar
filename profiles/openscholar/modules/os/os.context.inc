@@ -13,7 +13,7 @@ function os_context_default_contexts() {
   $context = new stdClass();
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
-  $context->name = 'os_admin';
+  $context->name = 'os_cp';
   $context->description = 'Context that is active when in administrative areas of an Openscholar site, like the CP';
   $context->tag = 'OpenScholar';
   $context->conditions = array(
@@ -39,7 +39,7 @@ function os_context_default_contexts() {
   // Included for use with string extractors like potx.
   t('Context that is active when in administrative areas of an Openscholar site, like the CP');
   t('OpenScholar');
-  $export['os_admin'] = $context;
+  $export['os_cp'] = $context;
 
   $context = new stdClass();
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
@@ -83,7 +83,7 @@ function os_context_default_contexts() {
   $context->conditions = array(
     'context' => array(
       'values' => array(
-        '~os_admin' => '~os_admin',
+        '~os_cp' => '~os_cp',
       ),
     ),
     'path' => array(
