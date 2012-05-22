@@ -185,7 +185,7 @@ function theme_cp_menu_table($variables) {
     $rows[] = array(
       'data' => array(
         array(
-       	  'data' => 'This region has no links.',
+       	  'data' => 'This menu has no links.',
        	  'colspan' => 4,
         ),
       ),
