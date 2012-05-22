@@ -110,6 +110,11 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
       '#type' => 'submit',
       '#value' => t('Save settings'),
     ),
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'cp_menu').'/cp_menu.form.js',
+      ),
+    ),
   );
 
   $form['#submit'] = array(
