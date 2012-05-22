@@ -60,6 +60,19 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
+  
+  $info['os_boxes_twitterfeed'] = array(
+    'title' => 'Twitter',
+    'description' => 'Shows recent tweets',
+    'tags' => array('Social'),
+	  'module dependencies' => array('twitter_pull'),
+    'handler' => array(
+      'class' => 'os_boxes_twitterfeed',
+      'file' => 'os_boxes_twitterfeed.inc',
+      'path' => $path.'/os_boxes_twitterfeed',
+      'parent' => 'os_boxes_default',
+    ),
+  );
 
   return $info;
 }
