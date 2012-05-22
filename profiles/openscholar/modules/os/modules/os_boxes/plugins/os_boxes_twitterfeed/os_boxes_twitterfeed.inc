@@ -98,7 +98,7 @@ class os_boxes_twitterfeed extends os_boxes_default {
     $followme_link = $this->options['followme_link'];
     
     $output = '';
-    if (!module_exists('twitter_pull')) {
+    if (module_exists('twitter_pull')) {
       $output = twitter_pull_render($twitkey, $title = NULL, $num_items);
     }
       
