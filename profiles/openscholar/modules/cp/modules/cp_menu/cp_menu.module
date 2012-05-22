@@ -58,16 +58,18 @@ function cp_menu_node_insert($node) {
   }
 }
 
-//delete unwanted menus, or save link
+//delete old links, insert new ones.  
 function cp_menu_node_update($node) {
-  if ($node->os_menu['enabled']) {
-    cp_menu_node_insert($node);
-  } else {  
+  if (!$node->os_menu['enabled'] || isset($node->os_menu['delete'])) {  
     ctools_include('menu', 'os');
     if ($link = os_menu_load_link_path('node/' . $node->nid)) {
       os_delete_menu_link($link['menu_name'], $link['mlid']);
     }
-  } 
+  }  
+  
+  if ($node->os_menu['enabled']) {
+    cp_menu_node_insert($node);
+  }
 }
 
 //wrapper for os_menu_link_save
@@ -488,7 +490,7 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
   
   //
   //add link to existing node's form
-  if (isset($form['#node'])) {
+  if (isset($form['#node']) && isset($form['#node']->nid)) {
     $link = os_menu_load_link_path('node/' . $form['#node']->nid); 
   }
   
@@ -514,7 +516,7 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
   );
   
   //update the defaults to include $links
-  $form['os_menu']['enabled']['#default_value'] = (bool) $link;
+  $form['os_menu']['enabled']['#default_value'] = isset($link);
   $form['os_menu']['link']['link_title']['#default_value'] = (isset($link['link_title'])) ? $link['link_title'] : '';
   $form['os_menu']['link']['description']['#default_value'] = 
     (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : ''; 
@@ -540,3 +542,20 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
   cp_menu_cache_clear('cp_menu');
 }
 
+/**
+ * implementation of hook_node_submit
+ * 
+ * checks if link has been updated.  flags link for deletion.
+ */
+function cp_menu_node_submit($node, $form, &$state) {
+  foreach(array('link_title','description','parent','new_window') as $delta) {
+    if ($state['values']['os_menu'][$delta] != $form['os_menu']['link'][$delta]['#default_value']) {
+      $node->os_menu['delete'] = TRUE;
+      return;
+    }
+  }
+
+  if ((bool)$state['values']['os_menu']['enabled'] != (bool)$form['os_menu']['enabled']['#default_value']) {
+    $node->os_menu['delete'] = TRUE; 
+  }
+}
