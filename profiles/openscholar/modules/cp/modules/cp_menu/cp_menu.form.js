@@ -20,11 +20,20 @@ function changeSelect() {
 
 function changeRegion() {
   // remove the hidden class
+  var self = this;
   $('input').filter(function (i) {
      return (this.value && this.value == self.value);
   }).parents('tr').removeClass('hidden');
   
   // move the field to the new region
+  var $row = $(self).parents('tr'),
+      row = $row.get(0),
+      $dest = $('tr.section-heading').filter(function() {
+        return ($('.menu-name', this).val() == self.value);
+      });
+  $dest.after($row);
+  
+  // deal with tabledrag
   
   
   emptySections();
@@ -36,7 +45,6 @@ function changeRegion() {
  * Otherwise, switch to region-populated
  */
 function emptySections() {
-  console.log(drag);
   var $table = $(drag.table),
   // get all the section messages
     $sections = $('.section-message');
