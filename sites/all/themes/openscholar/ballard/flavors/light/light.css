@@ -18,4 +18,5 @@
   color: #293352;
  } 
  
-p a {color:#4E84C4;}
+p a,
+#content-main li a {color:#4E84C4;}
