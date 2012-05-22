@@ -153,6 +153,7 @@ function theme_cp_menu_table($variables) {
         array(
           'data' => $menus[$d].drupal_render($table_data[$d]['menu-name']),
           'colspan' => 4,
+          'class' => array('section-heading'),
         ),
       )
     );
