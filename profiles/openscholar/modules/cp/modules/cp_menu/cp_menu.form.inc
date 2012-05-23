@@ -13,9 +13,7 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
   ctools_include('menu', 'os');
 
   $menus = os_get_menus();
-  $menus += array(
-    'no-menu' => 'Not In Menu',
-  );
+
   $is_active = false;
   if (isset($menus[$menu])) {
     $is_active = true;
@@ -141,9 +139,6 @@ function theme_cp_menu_table($variables) {
   ctools_modal_add_js();
   $table_data = $variables['table'];
   $menus = os_get_menus();
-  $menus += array(
-    'no-menu' => 'Not In Menu',
-  );
 
   $headers = array(
     t('Title'),
