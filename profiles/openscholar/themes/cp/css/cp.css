@@ -7,6 +7,13 @@
 
 #messages-help-wrapper {display:none;}
 
+/* GENERAL CP STYLES */ 
+a {color:#4E84C4;}
+
+.page-cp-build .region-sidebar-first .region-inner {
+	padding-top: 0;
+}
+
 #footer-wrapper {
     background: url('../images/top-bottom-bg.png') repeat-x;
     color: #FFFFFF;
@@ -20,8 +27,7 @@
 #footer-wrapper a {
     color: #FFFFFF;
   }
-  
-/* CP/BUILD SIDE MENU */  
+
 #block-cp-cp-subnav .block-inner {
     margin-left: 0;
     margin-right: 0;
@@ -51,6 +57,53 @@
     text-decoration: none;
     text-shadow: 0 1px 0 #E6E8EA;
 }  
-  
+
+/** CP TABLE STYLES **/
+table .section-heading {
+	background: none repeat scroll 0 0 #ECECEC;
+    border-bottom: 3px solid #C4C2C2;
+    border-top: 3px solid #C4C2C2;
+    font-size: 14px;
+    height: 25px;
+    border-top: 20px solid #FFF;
+    font-weight:bold;
+    }
+    
+td {
+	color: #666666;
+	}   
+         
+         
+         
+
+         
+         
+#edit-menu-table tr.even,
+#edit-menu-table tr.odd,
+#spaces-features-form .spaces tr.even,
+#spaces-features-form .spaces tr.odd
+ {
+    background-color: #FFF;
+}
+ 
+#edit-menu-table td:first-child {
+    width: 70%;
+}
+ 
+ 
+#spaces-features-form .spaces {width:900px;} 
+#spaces-features-form .spaces tr:hover {background:#F0f0F0;}
+#spaces-features-form .spaces td {height: 50px;} 
+#spaces-features-form .spaces td.label strong {font-size: 1.1em;}    
+#spaces-features-form .spaces .description {font-size:.95em;}  
+ 
 /* CP/BUILD LAYOUT */   
 .page-cp-build-layout .content-inner {width:854px;}
+
+
+/* CP/BUILD MENU */ 
+.page-cp-build-menu table thead {
+	display:none;
+    }
+    
+#edit-menu-table {width:775px;}   

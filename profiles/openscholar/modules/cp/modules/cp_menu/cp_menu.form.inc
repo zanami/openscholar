@@ -29,7 +29,8 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
 
   foreach ($menus as $m => $title) {
     $form['menus'][$m] = array(
-      '#weight' => ($is_active?1:$weight++),
+      '#weight' => (($is_active && $menu == $m)?1:$weight++),
+      '#hidden' => ($is_active && $menu != $m),
       'menu-name' => array(
         '#type' => 'hidden',
         '#value' => $m,
@@ -109,6 +110,11 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
       '#type' => 'submit',
       '#value' => t('Save settings'),
     ),
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'cp_menu').'/cp_menu.form.js',
+      ),
+    ),
   );
 
   $form['#submit'] = array(
@@ -148,17 +154,24 @@ function theme_cp_menu_table($variables) {
 
   $rows = array();
   foreach (element_children($table_data) as $d) {
+    $extra_classes = array();
+    if ($table_data[$d]['#hidden']) {
+      $extra_classes[] = 'hidden';
+    }
     $rows[] = array(
       'data' => array(
         array(
           'data' => $menus[$d].drupal_render($table_data[$d]['menu-name']),
           'colspan' => 4,
-        ),
-      )
+        )
+      ),
+      'class' => array_merge(array('section-heading'), $extra_classes),
     );
+    $has_links = false;
     foreach (element_children($table_data[$d]) as $link_name) {
       if ($link_name == 'menu-name') continue;
       $l = $table_data[$d][$link_name];
+      $has_links = true;
       $rows[] = array(
         'data' => array(
           theme('indentation', array('size' => $l['#depth'] - 1)).drupal_render($l['title']),
@@ -166,9 +179,18 @@ function theme_cp_menu_table($variables) {
           drupal_render($l['menu']),
           drupal_render($l['weight']).drupal_render($l['plid']).drupal_render($l['mlid']),
         ),
-        'class' => array('draggable'),
+        'class' => array_merge(array('draggable'), $extra_classes),
       );
     }
+    $rows[] = array(
+      'data' => array(
+        array(
+       	  'data' => 'This menu has no links.',
+       	  'colspan' => 4,
+        ),
+      ),
+      'class' => array('section-message', $has_links?'section-populated':'section-empty'),
+    );
   }
   //drupal_add_tabledrag('edit-menu-table', 'match', 'sibling', 'menu-name', 'menu-name', 'menu-name', FALSE);
   drupal_add_tabledrag('edit-menu-table', 'match', 'parent', 'menu-plid', 'menu-plid', 'menu-mlid', TRUE, MENU_MAX_DEPTH - 1);

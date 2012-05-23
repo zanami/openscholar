@@ -30,23 +30,25 @@ body.toolbar-drawer {
  * across different themes, while still allowing browsers to resize the text.
  */
 #cp-toolbar {
-  height:30px;
   background: #000;
   color: #FFF;
   font: normal small "Lucida Grande", Verdana, sans-serif;
   margin: 0 -20px;
-  padding: 3px 20px;
+  padding: 0 20px;
   z-index: 600;
-  top: 31px;
+  top: 30px;
+  left: 0;
+  right: 0;
   position: fixed;
-  width: 100%;
 }
+
 
 .toolbar-drawer #cp-toolbar {
   top: 65px;
 }
 
-.toolbar #page-wrapper {
+.toolbar #page-wrapper,
+.toolbar #page {
 	margin-top:40px;
 }
 
@@ -61,7 +63,7 @@ body.toolbar-drawer {
 }
 #cp-toolbar a {
   color: #fff;
-  font-size: .846em;
+  font-size: .81em;
   text-decoration: none;
 }
 

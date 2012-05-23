@@ -16,7 +16,7 @@ function cp_menu_menu() {
   $items['cp/build/menu/%'] = array(
     'title' => 'Menu',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('cp_menu_build_form'),
+    'page arguments' => array('cp_menu_build_form', 3),
     'access callback' => 'spaces_access_admin',
     'type' => MENU_LOCAL_TASK,
     'file' => 'cp_menu.form.inc',
@@ -41,33 +41,34 @@ function cp_menu_node_insert($node) {
   if ($node->os_menu['enabled']) {
     $link = $node->os_menu;
     $options = (isset($link->options)) ? $link->options : array();
-    
+
     $attributes = array('description'=>'title');
     foreach ($attributes as $delta => $attr) {
       if (isset($link[$delta])) {
         $options['attributes'][$attr] = check_plain($link[$delta]);
       }
     }
-    
+
     if ($link['new_window']) {
       $options['attributes']['target'] = '_blank';
     }
-    
+
     $mlid = cp_menu_link_save('node/'.$node->nid, $link['parent'], $link['link_title'], $options);
-    
+
   }
 }
 
-//delete unwanted menus, or save link
+//delete old links, insert new ones.
 function cp_menu_node_update($node) {
+
   if ($node->os_menu['enabled']) {
     cp_menu_node_insert($node);
-  } else {  
+  } else if (!$node->os_menu['enabled'] || isset($node->os_menu['delete'])) {
     ctools_include('menu', 'os');
     if ($link = os_menu_load_link_path('node/' . $node->nid)) {
       os_delete_menu_link($link['menu_name'], $link['mlid']);
     }
-  } 
+  }
 }
 
 //wrapper for os_menu_link_save
@@ -459,7 +460,7 @@ function cp_menu_wizard_finish(&$form_state) {
 
   $menu_name = isset($values['menu']) ? $values['menu'] : 'primary-menu';
   $options = array();
-  
+
   if ($values['new_window']) {
     $new_menu['options']['attributes']['target'] = '_blank';
   }
@@ -471,7 +472,7 @@ function cp_menu_wizard_finish(&$form_state) {
   //then save to vsite or whole site
   ctools_include('menu','os');
   cp_menu_link_save($url, $menu_name, $values['title'], $options);
-  cp_menu_cache_clear($form_state['object_id']); 
+  cp_menu_cache_clear($form_state['object_id']);
   drupal_goto('<front>'); //better destination?
 }
 
@@ -483,47 +484,47 @@ function cp_menu_wizard_finish(&$form_state) {
  * Prepopulates node/add/* with menu link data when a new node is created for the link.
  * Moves menu to os_menu for later processing during node_insert (is this really necessary?  shouldn't it happen elsewhere?)
  */
-function cp_form_node_form_alter(&$form, &$form_state, $form_id) {
+function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
   ctools_include('menu', 'os');
-  
+
   //
   //add link to existing node's form
-  if (isset($form['#node'])) {
-    $link = os_menu_load_link_path('node/' . $form['#node']->nid); 
+  if (isset($form['#node']) && isset($form['#node']->nid)) {
+    $link = os_menu_load_link_path('node/' . $form['#node']->nid);
   }
-  
+
   //replace old forms
   $form['os_menu'] = $form['menu'];
   unset($form['menu']);
-  
+
   unset($form['os_menu']['link']['weight']);
   $form['os_menu']['link']['#states']['invisible'] = array('input[name="os_menu[enabled]"]' => array('checked' => FALSE));
   $form['os_menu']['link']['parent'] = array('#title' => t('Which Menu'),
                                              '#options' => os_get_menus(),
                                              '#default_value' => (isset($link['menu_name'])) ? $link['menu_name'] : 'primary-menu',
-                                             ) + $form['os_menu']['link']['parent'];                                       
-    
+                                             ) + $form['os_menu']['link']['parent'];
+
   $parents = array_diff($form['os_menu']['link']['#parents'], array('menu'));
   $form['os_menu']['link']['#parents'] = $parents + array('os_menu');
   $form['os_menu']['#attached'] = array('js' => array(drupal_get_path('module', 'cp_menu') . '/cp_menu.js'));
-  
+
   $form['os_menu']['link']['new_window'] = array(
     '#type' => 'checkbox',
     '#title' => t('Open Link in New Window'),
     '#default_value' => 0,
   );
-  
+
   //update the defaults to include $links
-  $form['os_menu']['enabled']['#default_value'] = (bool) $link;
+  $form['os_menu']['enabled']['#default_value'] = isset($link);
   $form['os_menu']['link']['link_title']['#default_value'] = (isset($link['link_title'])) ? $link['link_title'] : '';
-  $form['os_menu']['link']['description']['#default_value'] = 
-    (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : ''; 
-  $form['os_menu']['link']['new_window']['#default_value'] = (isset($link['options']['attributes']['target']) && $link['options']['attributes']['target'] == '_blank');      
-                                             
+  $form['os_menu']['link']['description']['#default_value'] =
+    (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
+  $form['os_menu']['link']['new_window']['#default_value'] = (isset($link['options']['attributes']['target']) && $link['options']['attributes']['target'] == '_blank');
+
   //menu wizard - insert settings from wizard
   $cache = cp_menu_cache_get('cp_menu');
   if (count($cache) && strpos($_SERVER['HTTP_REFERER'], 'cp_menu')) { //make sure you're coming from cp/menu page.  otherwise abandoned but not cleared form could hijack node/add
-    $title = check_plain($cache['title']); 
+    $title = check_plain($cache['title']);
     $form['title']['#default_value'] = $title;
 
     $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
@@ -540,3 +541,20 @@ function cp_form_node_form_alter(&$form, &$form_state, $form_id) {
   cp_menu_cache_clear('cp_menu');
 }
 
+/**
+ * implementation of hook_node_submit
+ *
+ * checks if link has been updated.  flags link for deletion.
+ */
+function cp_menu_node_submit($node, $form, &$state) {
+  foreach(array('link_title','description','parent','new_window') as $delta) {
+    if ($state['values']['os_menu'][$delta] != $form['os_menu']['link'][$delta]['#default_value']) {
+      $node->os_menu['delete'] = TRUE;
+      return;
+    }
+  }
+
+  if ((bool)$state['values']['os_menu']['enabled'] != (bool)$form['os_menu']['enabled']['#default_value']) {
+    $node->os_menu['delete'] = TRUE;
+  }
+}
