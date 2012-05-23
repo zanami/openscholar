@@ -40,3 +40,4 @@ features[variable][] = node_preview_announcement
 features[variable][] = node_submitted_announcement
 features[views_view][] = announcements_listing
 spaces[types][] = og
+spaces[types][] = site
