@@ -12,6 +12,15 @@ function cp_menu_menu() {
     'type' => MENU_CALLBACK,
   );
 
+ //$items['cp/build/%/edit'] =
+  $items['cp/build/%/edit/%ctools_js'] = array(
+    'title' => 'Edit Link',
+    'page callback' => 'cp_menu_edit_link',
+    'page arguments' => array(2, 4),
+    'access callback' => 'spaces_access_admin',
+    'type' => MENU_CALLBACK,
+  );
+
   $items['cp/build/menu'] =
   $items['cp/build/menu/%'] = array(
     'title' => 'Menu',
@@ -567,5 +576,118 @@ function cp_menu_node_submit($node, $form, &$state) {
 
   if ((bool)$state['values']['os_menu']['enabled'] != (bool)$form['os_menu']['enabled']['#default_value']) {
     $node->os_menu['delete'] = TRUE;
+  }
+}
+
+function cp_menu_edit_link($link, $js) {
+  ctools_include('menu', 'os');
+  $link = os_menu_link_load($link);
+  if ($js) {
+    ctools_include('modal');
+    ctools_include('ajax');
+    $form_state = array(
+      'title' => t('Edit Link'),
+      'ajax' => $js,
+      'build_info' => array(
+        'args' => array($link),
+      ),
+    );
+    $output = ctools_modal_form_wrapper('cp_menu_edit_link_form', $form_state);
+    // There are some possible states after calling the form wrapper:
+    // 1) We are not using $js and the form has been executed.
+    // 2) We are using $js and the form was successfully submitted and
+    //    we need to dismiss the modal.
+    // Most other states are handled automatically unless you set flags in
+    // $form_state to avoid handling them, so we only deal with those two
+    // states.
+    if ($form_state['executed'] && $js) {
+      $commands = array();
+      $commands[] = ctools_modal_command_dismiss(t('Link Saved'));
+      // In typical usage you will do something else here, such as update a
+      // div with HTML or redirect the page based upon the results of the modal
+      // form.
+      print ajax_render($commands);
+      exit;
+    }
+
+    // Otherwise, just return the output.
+    print ajax_render($output);
+    exit;
+  }
+  else {
+    return drupal_get_form('cp_menu_edit_link_form', $link);
+  }
+}
+
+function cp_menu_edit_link_form($form, $form_state, $link) {
+  $form_state['title'] = t('Title');
+
+  $form['#link'] = $link;
+
+  $form['title'] = array(
+    '#title' => t('Title'),
+    '#type' => 'textfield',
+    '#description' => t('Name your link.'),
+    '#default_value' => $link['link_title'],
+  );
+
+  $form['new_window'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('New Window'),
+    '#description' => t('Open link in new tab or window'),
+    '#default_value' => isset($link['options']['attributes']['target']),
+  );
+
+  $form['tooltip'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Tooltip'),
+    '#description' => t('Text displayed when mouse hovers over link'),
+    '#default_value' => $link['options']['attributes']['title'],
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+    ),
+    'delete' => array(
+      '#type' => 'submit',
+      '#value' => t('Delete'),
+    ),
+  );
+
+  $form['#validate'] = array('cp_menu_edit_link_form_validate');
+  $form['#submit'] = array('cp_menu_edit_link_form_submit');
+
+  return $form;
+}
+
+function cp_menu_edit_link_form_validate($form, &$form_state) {
+  if ($form_state['values']['op'] == t('Save')) {
+    if (empty($form_state['values']['title'])) {
+      form_set_error('title', t('Link must have a title.'));
+    }
+  }
+}
+
+function cp_menu_edit_link_form_submit($form, $form_state) {
+  ctools_include('menu', 'os');
+  $link = $form['#link'];
+
+  if ($form_state['values']['op'] == t('Save')) {
+    $link['link_title'] = $form_state['values']['title'];
+    $link['options']['attributes']['title'] = $form_state['values']['tooltip'];
+    if ($form_state['values']['new_window']) {
+      $link['options']['attributes']['target'] = '_blank';
+    }
+    else {
+      unset($link['options']['attributes']['target']);
+    }
+
+    os_menu_link_save($link);
+  }
+  elseif ($form_state['values']['op'] == t('Delete')) {
+    os_delete_menu_link($link['menu_name'], $link['mlid']);
   }
 }

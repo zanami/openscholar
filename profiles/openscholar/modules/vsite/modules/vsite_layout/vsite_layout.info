@@ -6,3 +6,4 @@ php = "5.2.4"
 dependencies[] = ctools
 dependencies[] = vsite
 dependencies[] = os
+files[] = "tests/vsite_layout.test"

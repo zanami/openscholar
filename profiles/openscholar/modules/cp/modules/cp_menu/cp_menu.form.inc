@@ -13,9 +13,7 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
   ctools_include('menu', 'os');
 
   $menus = os_get_menus();
-  $menus += array(
-    'no-menu' => 'Not In Menu',
-  );
+
   $is_active = false;
   if (isset($menus[$menu])) {
     $is_active = true;
@@ -51,7 +49,7 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
           '#description' => l($url, $url),
         ),
         'edit_link' => array(
-          '#markup' => ctools_modal_text_button('Edit Link', 'cp/build/menu/nojs/', ''),
+          '#markup' => ctools_modal_text_button('Edit Link', 'cp/build/'.$l['mlid'].'/edit/nojs/', ''),
         ),
         'menu' => array(
           '#type' => 'select',
@@ -138,11 +136,9 @@ function _cp_menu_flatten_tree($tree) {
  * @param unknown_type $variables
  */
 function theme_cp_menu_table($variables) {
+  ctools_modal_add_js();
   $table_data = $variables['table'];
   $menus = os_get_menus();
-  $menus += array(
-    'no-menu' => 'Not In Menu',
-  );
 
   $headers = array(
     t('Title'),
@@ -203,7 +199,7 @@ function cp_menu_submit_form($form, &$form_state) {
     foreach ($links as $l) {
       if (!is_array($l)) continue;
 
-      $link = os_menu_link_load($l['menu'], $l['mlid']);
+      $link = os_menu_link_load($l['mlid'], $l['menu']);
       $link['weight'] = $l['weight'];
       $link['menu_name'] = $l['menu'];
       $link['plid'] = $l['plid'];
