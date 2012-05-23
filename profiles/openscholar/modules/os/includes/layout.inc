@@ -1,12 +1,5 @@
 <?php
 
-function testmerichard(){
-  os_layout_get_multiple(array(
-      'os_public',
-      'announcements_announcements'
-  ));
-}
-
 /**
  * Returns the blocks for a individual context
  *
@@ -60,7 +53,7 @@ function os_layout_get_multiple($contexts){
     }
   }
   
-  return $blocks;
+  return $context_blocks;
 }
 
 /**
@@ -89,56 +82,94 @@ function os_layout_set($context, $blocks){
  *
  * @param array $contexts
  * @param array $blocks
- *  An array of blocks to save to the contexts with the correct block keys
+ * An array of blocks to save to the contexts with the correct block keys
  *
  * @return boolean Success
  */
 function os_layout_set_multiple($contexts, $blocks){
   usort($contexts, '_os_context_sort_by_hierarchy');
+  uasort($blocks, 'os_layout_block_sort');
   
   $removed_blocks = array();
   
   //Fields to check for changes
-  $block_fields = array('weight', 'region');
+  $block_fields = array(
+      'region',
+      'status',
+      'title',
+      'weight'
+  );
   
   $context_settings = array();
   //Resolve dependencies and alter the contexts accordingly
-  foreach ( $contexts as $context ) {
+  foreach ( $contexts as $index => $context ) {
     $layout_blocks = os_layout_get($context);
     
+    //Sort the blocks
+    uasort($layout_blocks, 'os_layout_block_sort');
+    
+    $last_child = (count($contexts) == ($index + 1));
+    
     //Get the removed blocks that no longer exist from this context
-    $removed_blocks = array_merge(array_diff(keys($layout_blocks), keys($blocks)), $removed_blocks);
+    $missing_blocks = array_diff(keys($layout_blocks), keys($blocks));
     
     //check common blocks for differences
-    foreach ( array_intersect_key($layout_blocks, $blocks) as $bid ) {
+    foreach ( array_intersect_key($blocks, $layout_blocks) as $bid ) {
       $changed = false;
       foreach ( $block_fields as $key ) {
         if ($layout_blocks[$bid][$key] != $blocks[$bid][$key]) {
-          $changed = true;
           /**
            * @todo Adapt block weights and check for removed bocks
            */
-          switch ($key){
-            case 'region':
-              
+          switch ($key) {
+            case 'weight' :
+              //If this is the childmost context, no need to adjust weights, just save them,
+              //same with if we need to save an override for another reason
+              if ($last_child || $changed)
+                break;
+              _os_layout_adjust_relative_weight($blocks, $layout_blocks);
+              //Check to see if the weight has been reset
+              $changed = ($layout_blocks[$bid][$key] != $blocks[$bid][$key]);
               break;
-            case 'weight':
-              
+            default :
+              //Nothing to do
+              $changed = true;
               break;
           }
         }
       }
       //Not changed take no action
-      if (! $changed) {
-        unset($blocks[$bid]);
+      if (! $changed && ! $last_child) {
+        $blocks[$bid]['default_matched'] = true;
+      }
+    }
+    
+    //If this context has a child context, queue up blocks to be set as removed in child
+    if (! $last_child) {
+      $removed_blocks = array_merge($missing_blocks, $removed_blocks);
+    }
+    else {
+      //This is the childmost context, add the blocks as regionless to override as removed
+      foreach ( $removed_blocks as $bid ) {
+        //Add this block without a region
+        $layout_blocks[$bid] = os_layout_load_block($bid, array(
+            'region' => false
+        ));
       }
     }
     
     $context_settings[$context] = $layout_blocks;
   }
   
+  foreach ( $blocks as $bid => $block ) {
+    //Remove those blocks that are represented in parents
+    if (isset($block['default_matched'])) {
+      unset($blocks[$bid]);
+    }
+  }
+  
   //Remaining block overrides belong in the child-most context
-  $context_settings[$context] = array_merge($context_settings[$context],$blocks);
+  $context_settings[$context] = array_merge($context_settings[$context], $blocks);
   
   //Commit the context settings
   foreach ( $context_settings as $context => $layout_blocks ) {
@@ -158,7 +189,22 @@ function os_layout_set_multiple($contexts, $blocks){
  * Blocks that are not used, with category info
  */
 function os_layout_get_unused_blocks($contexts){
+  
+  $blocks = os_layout_get_multiple($contexts);
+  foreach ( $blocks as $bid => $block ) {
+    if (! empty($block['region'])) {
+      unset($blocks[$bid]);
+    }
+  }
+  
+  if (module_exists('os_boxes')) {
+    //Get box instances and make them regionless blocks if not used
+  //$boxes = boxes_block_info();
+  
 
+  }
+  
+  return $blocks;
 }
 
 /**
@@ -178,6 +224,21 @@ function os_layout_put($block, $context){
     
     os_layout_set($context, $context_blocks);
   }
+}
+
+/**
+ *
+ * @param string $bid
+ * Block identifier [os-primary-menu]
+ *
+ * @return array $block
+ */
+function os_layout_load_block($bid, $defaults = array()){
+  
+  list($module, $delta) = explode('-', $bid, 2);
+  $block = block_load($module, $delta);
+  
+  return array_merge($block, $defaults);
 }
 
 /**
@@ -224,4 +285,80 @@ function _os_context_sort_by_hierarchy($context1, $context2){
     return 0;
   }
   return ($a < $b) ? - 1 : 1;
+}
+
+/**
+ * Adjust the weights of blocks in multiple contexts
+ *
+ * @param array $block_settings
+ * New block settings (already sorted)
+ * @param array $previous_layout
+ * Layout to compare against (already sorted)
+ * @param string $bid
+ * The block in question with the changed weight
+ *
+ */
+function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout, $bid){
+  
+  //Has the relative order changed
+  if (array_intersect_key($block_settings, $previous_layout) != array_intersect_key($previous_layout, $block_settings)) {
+    //If so, then this is an override and no adjustment is needed
+    return;
+  }
+  
+  //Loop through the old array
+  $w_new = $block_settings[$bid]['weight'];
+  $w_old = $previous_layout[$bid]['weight'];
+  //Blocks that need thier weight adjusted
+  $impacted_blocks = array();
+  $range_begin = false;
+  $range_end = false;
+  
+  foreach ( $block_settings as $id => $block ) {
+    if ($block['weight'] < min($w_new, $w_old)) {
+      $range_begin = $block['weight'];
+      continue;
+    }
+    elseif ($block['weight'] > max($w_new, $w_old)) {
+      $range_end = $block['weight'];
+      break;
+    }
+    
+    if ($block['default_matched']) {
+      //One of the blocks that we would have to adjust to reconcile this weight is
+      //owned by a parent context, so this is an override
+      return;
+    }
+    
+    if ($id != $bid) {
+      $impacted_blocks[] = $id;
+    }
+  }
+  
+  //Its ok to change it's weight
+  $block_settings[$bid]['weight'] = $w_old;
+  
+  //No other blocks impacted
+  if (! count($impacted_blocks))
+    return;
+  
+  if ($w_old < $w_new) {
+    //Decreasing weight
+    $increment = is_bool($range_begin) ? - 10 : ($range_begin - $w_old) / count($impacted_blocks);
+  }
+  else {
+    //Increasing weight
+    $increment = is_bool($range_end) ? 10 : ($range_end - $w_old) / count($impacted_blocks);
+  }
+  
+  foreach ( $impacted_blocks as $key => $impacted_bid ) {
+    $block_settings[$impacted_bid]['weight'] = $w_old + ($increment * ($key + 1));
+  }
+}
+
+/**
+ * Sort callback.
+ */
+function os_layout_block_sort($a, $b){
+  return ($a->weight - $b->weight);
 }
