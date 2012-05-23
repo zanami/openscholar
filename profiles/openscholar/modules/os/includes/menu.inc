@@ -132,11 +132,11 @@ function os_delete_menu_link($menu, $mlid){
  * A menu link, with $item['access'] filled and link translated for
  * rendering.
  */
-function os_menu_link_load($menu, $mlid){
+function os_menu_link_load($mlid, $menu = ''){
 
   if (module_exists('vsite_menu')) {
     //Return a menu item loaded from vsite menu controller
-    return vsite_menu_menu_link_load($menu, $mlid);
+    return vsite_menu_menu_link_load($mlid, $menu);
   }
   else {
     //Call the standard drupal menu_link_load, _menu_translate is run to set access
@@ -162,7 +162,7 @@ function os_menu_load_link_path($path){
     foreach ( $os_menus as $menu => $name ) {
       $mlid = vsite_menu_get_link_path($menu, $path);
       if ($mlid) {
-        return os_menu_link_load($menu, $mlid);
+        return os_menu_link_load($mlid, $menu);
       }
     }
   }

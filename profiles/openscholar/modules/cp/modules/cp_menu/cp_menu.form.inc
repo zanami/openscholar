@@ -203,7 +203,7 @@ function cp_menu_submit_form($form, &$form_state) {
     foreach ($links as $l) {
       if (!is_array($l)) continue;
 
-      $link = os_menu_link_load($l['menu'], $l['mlid']);
+      $link = os_menu_link_load($l['mlid'], $l['menu']);
       $link['weight'] = $l['weight'];
       $link['menu_name'] = $l['menu'];
       $link['plid'] = $l['plid'];

@@ -9,11 +9,11 @@ define('VSITE_MENU_CUSTOM_MLID', 1000);
  */
 function vsite_menu_os_menu_tree($menu_key){
   $vsite = spaces_get_space();
-  
+
   if ($vsite && isset($vsite->controllers->menus)) {
     return $vsite->controllers->menus->get_menu_tree($menu_key);
   }
-  
+
   return false;
 }
 
@@ -22,7 +22,7 @@ function vsite_menu_os_menu_tree($menu_key){
  */
 function vsite_menu_form_os_menu_overview_form_alter(&$form, &$form_state, $form_id){
   include_once drupal_get_path('module', 'vsite_menu') . '/vsite_menu.admin.inc';
-  
+
   //Use the vsite submit handler which will either take over or call 'menu_overview_form_submit'
   $key = array_search('menu_overview_form_submit', $form['#submit']);
   if (isset($form['#submit'][$key]))
@@ -57,11 +57,11 @@ function vsite_menu_menu_link_save(&$item){
   $vsite = spaces_get_space();
   if (! $vsite)
     return false;
-  
+
   $default_menu = key(os_get_menus());
   $existing_menu = FALSE;
   $existing_item = FALSE;
-  
+
   // This is the easiest way to handle the unique internal path '<front>',
   // since a path marked as external does not need to match a router path.
   $item['external'] = (url_is_external($item['link_path']) || $item['link_path'] == '<front>') ? 1 : 0;
@@ -78,12 +78,12 @@ function vsite_menu_menu_link_save(&$item){
       'customized' => 0,
       'updated' => 0
   );
-  
+
   $menu = $item['menu_name'];
-  
+
   //Retrieve the existing menu data
   $existing_menu = _vsite_menu_get_menu_links($menu);
-  
+
   if (isset($item['mlid']) && array_key_exists($item['mlid'], $existing_menu)) {
     $existing_item = $existing_menu[$item['mlid']];
   }
@@ -94,7 +94,7 @@ function vsite_menu_menu_link_save(&$item){
       $item['mlid'] = _vsite_menu_get_mlid();
     }
   }
-  
+
   // Try to find a parent link. If found, assign it and derive its menu.
   $parent = _vsite_menu_link_find_parent($item, $existing_menu);
   if (! empty($parent['mlid'])) {
@@ -105,7 +105,7 @@ function vsite_menu_menu_link_save(&$item){
   else {
     $item['plid'] = 0;
   }
-  
+
   // Directly fill parents for top-level links.
   if ($item['plid'] == 0) {
     $item['p1'] = $item['mlid'];
@@ -119,7 +119,7 @@ function vsite_menu_menu_link_save(&$item){
     $item['depth'] = $parent['depth'] + 1;
     _menu_link_parents_set($item, $parent);
   }
-  
+
   // Find the router_path.
   if (empty($item['router_path']) || ! $existing_item || ($existing_item['link_path'] != $item['link_path'])) {
     if ($item['external']) {
@@ -137,28 +137,28 @@ function vsite_menu_menu_link_save(&$item){
   // $item may have additional keys left over from building a router entry.
   // The intersect removes the extra keys, allowing a meaningful comparison.
   if (! $existing_item || (array_intersect_assoc($item, $existing_item)) != $existing_item) {
-    
+
     $menu_links_schema = drupal_get_schema('menu_links');
-    
+
     //Clean up the Item for saving, removing anything that isn't in drupals DB
     $existing_menu[$item['mlid']] = array_intersect_key($item, $menu_links_schema['fields']);
-    
+
     //Check the has_children status of the parent.
     if ($item['plid'] && $item['hidden'] == 0) {
       $existing_menu[$item['plid']]['has_children'] = 1;
     }
-    
+
     //Update the has_children of the old parent if the parent has changed
     if ($existing_item && $existing_item['plid'] && $item['plid'] != $existing_item['plid']) {
       $old_parent = _vsite_menu_link_find_parent($existing_item, $existing_menu);
-      
+
       $remaining_children = _vsite_menu_link_find_children($old_parent, $existing_menu);
       $existing_menu[$existing_item['plid']]['has_children'] = count($remaining_children)?1:0;
     }
-    
+
     //Save the Menu to Overrides
     $vsite->controllers->menus->set($menu, $existing_menu);
-    
+
     /**
      * Now clear the cache for this vsite.
      * @todo CACHE CLEAR CORRECTLY
@@ -166,42 +166,49 @@ function vsite_menu_menu_link_save(&$item){
     menu_cache_clear($menu);
     _menu_clear_page_cache();
   }
-  
+
   return $item['mlid'];
 }
 
 /**
  * Returns a menu_link that has been translated and has the access set, and is ready for display
  *
- * @param string $menu
- *  The menu identifier
  * @param number $mlid
  *  The menu link identifier
+ * @param string $menu
+ *  The menu identifier
  */
-function vsite_menu_menu_link_load($menu, $mlid){
-  
+function vsite_menu_menu_link_load($mlid, $menu = ''){
+
   $vsite = spaces_get_space();
   if (! $vsite)
     return false;
-    
-  $menu_links = _vsite_menu_get_menu_links($menu);
-  
+
+  if ($menu) {
+    $menu_links = _vsite_menu_get_menu_links($menu);
+  }
+  else {
+    foreach (os_get_menus() as $m => $name) {
+      $menu_links = array_merge($menu_links, _vsite_menu_get_menu_links($m));
+    }
+  }
+
   if(isset($menu_links[$mlid])){
     $item = $menu_links[$mlid];
-    
+
     // May not return data if it is an external link
     $router_info = $vsite->controllers->menus->get_router_data($item['router_path']);
-      
+
     if (is_array($router_info)){
       $item = array_merge($router_info, $item);
     }
-    
+
     _menu_link_translate($item);
-    
+
     //Return the Full Menu Link
     return $item;
   }
-  
+
   return false;
 }
 
@@ -213,7 +220,7 @@ function vsite_menu_menu_link_load($menu, $mlid){
  */
 function vsite_menu_get_link_path($menu, $path){
   $menu_links = _vsite_menu_get_menu_links($menu);
-  
+
   foreach ($menu_links as $mlid => $link) {
   	if($link['link_path'] == $path && $link['mlid']){
   	  return $link['mlid'];
@@ -235,15 +242,15 @@ function vsite_menu_delete_menu_link($menu, $mlid){
   if (! $vsite){
     return false;
   }
-    
+
   //Retrieve the existing menu data
   $existing_menu = _vsite_menu_get_menu_links($menu);
-  
+
   if (array_key_exists($mlid,$existing_menu)) {
     $item = $existing_menu[$mlid];
     // Children get re-attached to the item's parent.
     if ($item['has_children']) {
-      
+
       // Try to find a parent link. If found, assign it and derive its menu.
       $children = _vsite_menu_link_find_children($item, $existing_menu);
       foreach ($children as $child) {
@@ -260,7 +267,7 @@ function vsite_menu_delete_menu_link($menu, $mlid){
 
     //Delete this menu item
     unset($existing_menu[$mlid]);
-    
+
     // Try to find a parent link. If found, update it's child status.
     $parent = _vsite_menu_link_find_parent($item, $existing_menu);
     if($parent){
@@ -270,7 +277,7 @@ function vsite_menu_delete_menu_link($menu, $mlid){
 
     //Save the Menu to Overrides
     $vsite->controllers->menus->set($menu, $existing_menu);
-    
+
     /**
      * @todo CLEAR THE CACHE CORRECTLY
      */
@@ -295,31 +302,31 @@ function vsite_menu_delete_menu_link($menu, $mlid){
  */
 function _vsite_menu_link_find_parent($menu_link, $parent_candidates = array()){
   $parent = FALSE;
-  
+
   // This item is explicitely top-level, skip the rest of the parenting.
   if (isset($menu_link['plid']) && empty($menu_link['plid'])) {
     return $parent;
   }
-  
+
   // If we have a parent link ID, try to use that.
   $candidates = array();
   if (isset($menu_link['plid'])) {
     $candidates[] = $menu_link['plid'];
   }
-  
+
   // Else, if we have a link hierarchy try to find a valid parent in there.
   if (! empty($menu_link['depth']) && $menu_link['depth'] > 1) {
     for($depth = $menu_link['depth'] - 1; $depth >= 1; $depth --) {
       $candidates[] = $menu_link['p' . $depth];
     }
   }
-  
+
   foreach ( $candidates as $mlid ) {
     if (isset($parent_candidates[$mlid])) {
       return $parent_candidates[$mlid];
     }
   }
-  
+
   return $parent;
 }
 
@@ -341,14 +348,14 @@ function _vsite_menu_link_find_children($menu_link, $child_candidates = array())
   if (isset($menu_link['has_children']) && !$menu_link['has_children']) {
     return $children;
   }
-  
+
   foreach ( $child_candidates as $mlid => $child ) {
     // If we have a parent link ID, try to use that.
     if (isset($child['plid']) && $child['plid'] == $menu_link['mlid']) {
       return $children[$mlid] = $child;
     }
   }
-  
+
   return $children;
 }
 
@@ -357,12 +364,12 @@ function _vsite_menu_link_find_children($menu_link, $child_candidates = array())
  */
 function _vsite_menu_get_menu_links($menu){
   $vsite = spaces_get_space();
-  
+
   if($vsite){
     //Retrieve the menu data from the controller
     $existing_menu = $vsite->controllers->menus->get($menu);
   }
-  
+
   //If there is no menu override avalible get the default links from the menu_link table
   if (! is_array($existing_menu)) {
     $menu_links = menu_load_links($menu);
@@ -371,7 +378,7 @@ function _vsite_menu_get_menu_links($menu){
       $existing_menu[$link['mlid']] = $link;
     }
   }
-  
+
   return $existing_menu;
 }
 
@@ -414,16 +421,16 @@ function vsite_menu_spaces_registry(){
  */
 function _vsite_menu_get_mlid(){
   $vsite = spaces_get_space();
-  
+
   $mlid = variable_get('vsite_menu_mlid_increment',VSITE_MENU_CUSTOM_MLID);
-  
+
   //increment the mlid vsite-wide
   if($vsite){
     $vsite->controllers->variable->set('vsite_menu_mlid_increment',($mlid + 1));
   }else{
     variable_set('vsite_menu_mlid_increment',($mlid + 1));
   }
-  
+
   return $mlid;
 }
 
