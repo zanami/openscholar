@@ -188,8 +188,9 @@ function vsite_menu_menu_link_load($mlid, $menu = ''){
     $menu_links = _vsite_menu_get_menu_links($menu);
   }
   else {
+    $menu_links = array();
     foreach (os_get_menus() as $m => $name) {
-      $menu_links = array_merge($menu_links, _vsite_menu_get_menu_links($m));
+      $menu_links += _vsite_menu_get_menu_links($m);
     }
   }
 
