@@ -4,6 +4,7 @@ function cp_layout_full_form($form, $form_state, $ctx) {
   $form = array();
   ctools_include('ajax');
   ctools_include('modal');
+  ctools_include('layout', 'os');
 
   // Temporary: To be replaced by API function later
   $contexts = context_context_list();
@@ -21,26 +22,18 @@ function cp_layout_full_form($form, $form_state, $ctx) {
   if ($ctx == 'os_front') {
     $use_content_regions = true;
   }
-  $ctx = context_load($ctx);
-
-  if ($ctx === FALSE) return $form;  // context doesn't exist. bail out
+  $blocks = os_layout_get_multiple(array('os_public', $ctx));
 
   $form['context'] = array(
     '#type' => 'value',
     '#value' => $ctx,
   );
 
-  // temporary: to be replaced with api calls
-  $plugin = context_get_plugin('reaction', 'block');
-
-  // will need to be replaced if it doesn't work with spaces
-  // no idea if it will or not
-  $blocks = $plugin->get_blocks(null, $ctx);
-
   // filter out blocks we don't want
   // add info to existing blocks
   drupal_alter('layout_available_blocks', $blocks);
 
+  dpm($blocks);
 
   $regions = array(
     'header_left',
@@ -109,21 +102,21 @@ function cp_layout_full_form($form, $form_state, $ctx) {
       $form['unused']['#factories'][$bid] = $b;
     }
 
-    if ($b->region == -1) {
+    if ($b['region'] == -1) {
       $form['unused'][$bid] = array(
         '#theme' => 'cp_layout_widget',
         '#widget' => $b,
       );
     }
-    elseif (isset($form['layout'][$b->region])) {
-      $form['layout'][$b->region][$bid] = array(
+    elseif (isset($form['layout'][$b['region']])) {
+      $form['layout'][$b['region']][$bid] = array(
         '#theme' => 'cp_layout_widget',
         '#widget' => $b,
       );
     }
 
     if (isset($b->tags)) {
-      $tags = explode(', ', $b->tags);
+      $tags = explode(', ', $b['tags']);
       foreach ($tags as $t) {
         if (!in_array($t, $form['unused']['#tags'])) {
           $form['unused']['#tags'][] = $t;
@@ -166,12 +159,11 @@ function _cp_layout_rearrange_content_regions($elements) {
 
 function cp_layout_full_submit($form, &$form_state) {
   $regions = $form_state['values']['layout'];
+  $all = array();
   foreach ($regions as $r => $d) {
     $widgets = explode('|', $d['widgets']);
+    $all = array_merge($all);
   }
 
-  // merging with sitewide context? is that still something we want to do?
-
-  // construct the data and save it
-  // straight to context? into spaces? what?
+  os_layout_set_multiple(array('os-public', $form_state['values']['context']), $all);
 }
