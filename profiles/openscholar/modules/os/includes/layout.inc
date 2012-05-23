@@ -1,5 +1,12 @@
 <?php
 
+function testmerichard(){
+  os_layout_get_unused_blocks(array(
+      'os_public',
+      'announcements_announcements'
+  ));
+}
+
 /**
  * Returns the blocks for a individual context
  *
@@ -163,7 +170,7 @@ function os_layout_set_multiple($contexts, $blocks){
   
   foreach ( $blocks as $bid => $block ) {
     //Remove those blocks that are represented in parents
-    if (isset($block['default_matched'])) {
+    if(isset($block['default_matched'])){
       unset($blocks[$bid]);
     }
   }
@@ -191,17 +198,16 @@ function os_layout_set_multiple($contexts, $blocks){
 function os_layout_get_unused_blocks($contexts){
   
   $blocks = os_layout_get_multiple($contexts);
-  foreach ( $blocks as $bid => $block ) {
-    if (! empty($block['region'])) {
-      unset($blocks[$bid]);
-    }
+  foreach ($blocks as $bid => $block) {
+  	if(!empty($block['region'])){
+  	  unset($blocks[$bid]);
+  	}
   }
   
-  if (module_exists('os_boxes')) {
+  if(module_exists('os_boxes')){
     //Get box instances and make them regionless blocks if not used
-  //$boxes = boxes_block_info();
-  
-
+    //$boxes = boxes_block_info();
+    
   }
   
   return $blocks;
