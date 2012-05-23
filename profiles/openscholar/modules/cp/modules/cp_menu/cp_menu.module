@@ -600,7 +600,8 @@ function cp_menu_edit_link($link, $js) {
     }
 
     // Otherwise, just return the output.
-    return $output;
+    print ajax_render($output);
+    exit;
   }
   else {
     return drupal_get_form('cp_menu_edit_link_form', $link);

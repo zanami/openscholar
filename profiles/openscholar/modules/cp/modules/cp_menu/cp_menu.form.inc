@@ -51,7 +51,7 @@ function cp_menu_build_form($form, $form_state, $menu = '') {
           '#description' => l($url, $url),
         ),
         'edit_link' => array(
-          '#markup' => ctools_modal_text_button('Edit Link', 'cp/build/menu/nojs/', ''),
+          '#markup' => ctools_modal_text_button('Edit Link', 'cp/build/'.$l['mlid'].'/edit/nojs/', ''),
         ),
         'menu' => array(
           '#type' => 'select',
@@ -138,6 +138,7 @@ function _cp_menu_flatten_tree($tree) {
  * @param unknown_type $variables
  */
 function theme_cp_menu_table($variables) {
+  ctools_modal_add_js();
   $table_data = $variables['table'];
   $menus = os_get_menus();
   $menus += array(
