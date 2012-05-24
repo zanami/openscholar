@@ -3,7 +3,28 @@
 
 #messages {display:none;}
 
-/* GENERAL CP STYLES */ 
+/* GENERAL CP STYLES */
+
+.region-sidebar-first .region-inner {
+	 background: #F2F3F3;
+    position: fixed;
+    bottom: 0;
+    min-height: 200px;
+    position: fixed;
+    top: 0;
+    border-right:1px solid #BFC6C6;
+    width:170px;
+    margin-top:65px;
+  }
+ 
+.toolbar-drawer .region-sidebar-first .region-inner {
+	margin-top:100px;
+  }  
+	
+#content-column {
+  overflow: auto;
+  }
+
 a {color:#4E84C4;}
 
 .page-cp-build .region-sidebar-first .region-inner {
@@ -23,7 +44,6 @@ a {color:#4E84C4;}
 .region-footer a {
     color: #FFFFFF;
   }
-
 
 #block-cp-cp-subnav .block-inner {
     margin-left: 0;
@@ -64,7 +84,6 @@ a {color:#4E84C4;}
     background-color: #FFF;
 }
  	
-	
 #edit-menu-table .section-heading {
 	background: none repeat scroll 0 0 #ECECEC;
     border-bottom: 3px solid #C4C2C2;
@@ -83,7 +102,6 @@ td {
 #edit-menu-table td:first-child {
     width: 70%;
 }
- 
  
 #spaces-features-form .spaces {width:900px;} 
 #spaces-features-form .spaces tr:hover {background:#F0f0F0;}
