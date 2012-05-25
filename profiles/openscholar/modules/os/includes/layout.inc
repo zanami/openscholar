@@ -211,12 +211,8 @@ function os_layout_get_all_blocks($contexts, $filter_used = true){
     }
   }
   
-  if (module_exists('os_boxes')) {
-    //Get box instances and make them regionless blocks if not used
-  //$boxes = boxes_block_info();
-  
-
-  }
+  //Let other modules add widgets that are not in the contexts
+  $blocks = array_merge(module_invoke_all('os_widget'),$blocks);
   
   return $blocks;
 }

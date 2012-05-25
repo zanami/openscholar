@@ -63,3 +63,32 @@ function os_boxes_preprocess_boxes_box(&$variables) {
     ),
   ));
 }
+
+/**
+ * Implements hook os_widget
+ *
+ * @returns array
+ *    All of the blocks that os_boxes would like to be avalible in the layout
+ */
+function os_boxes_vsite_widget(){
+
+  //Block can make use of any field in the block schema
+  
+  return array();
+  
+}
+
+/**
+ * Implementation of hook os_widget_alter
+ *
+ * This function should add any parameters to the passed block that
+ * will be needed in the admin user interfaces.  Including access params
+ * config paths etc...
+ *
+ * @param $widget
+ */
+function os_boxes_os_widget_alter(&$widget){
+  if($widget->module == 'boxes'){
+    $widget['config_path'] = '/my/conf/path';
+  }
+}
