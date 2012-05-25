@@ -1,20 +1,37 @@
-/* layout */
-.container {width:100%}
-#content-column,.content-column,div.sidebar {float: left; clear: none}
-.sidebar-first .content-inner {margin-left: 170px; margin-right: 0}
-.region-sidebar-first {width: 170px; margin-left: -100%}
-.region-sidebar-first {background:#EFF0F0;border-right:1px solid #B2BABA;}
+/**** IMPORT GRID/PANEL LAYOUT CSS ****/
+@import "cp.responsive.layout.css"; 
 
-#messages-help-wrapper {display:none;}
+#messages {display:none;}
 
-/* GENERAL CP STYLES */ 
+/* GENERAL CP STYLES */
+
+.region-sidebar-first .region-inner {
+	 background: #F2F3F3;
+    position: fixed;
+    bottom: 0;
+    min-height: 200px;
+    position: fixed;
+    top: 0;
+    border-right:1px solid #BFC6C6;
+    width:170px;
+    margin-top:65px;
+  }
+ 
+.toolbar-drawer .region-sidebar-first .region-inner {
+	margin-top:100px;
+  }  
+	
+#content-column {
+  overflow: auto;
+  }
+
 a {color:#4E84C4;}
 
 .page-cp-build .region-sidebar-first .region-inner {
 	padding-top: 0;
 }
 
-#footer-wrapper {
+.region-footer {
     background: url('../images/top-bottom-bg.png') repeat-x;
     color: #FFFFFF;
     height:40px;
@@ -24,7 +41,7 @@ a {color:#4E84C4;}
     z-index: 10;
 }
 
-#footer-wrapper a {
+.region-footer a {
     color: #FFFFFF;
   }
 
@@ -36,7 +53,9 @@ a {color:#4E84C4;}
 #block-cp-cp-subnav li {
     list-style: none outside none !important;
     padding: 0;
-}
+    background: none repeat scroll 0 0 #F2F3F3;
+    }
+    
 #block-cp-cp-subnav li a, #block-cp-cp-subnav li a:visited {
     border-bottom: 1px solid #BFC6C6;
     color: #626161;
@@ -59,7 +78,13 @@ a {color:#4E84C4;}
 }  
 
 /** CP TABLE STYLES **/
-table .section-heading {
+#edit-menu-table tr,
+#spaces-features-form .spaces tr
+ {
+    background-color: #FFF;
+}
+ 	
+#edit-menu-table .section-heading {
 	background: none repeat scroll 0 0 #ECECEC;
     border-bottom: 3px solid #C4C2C2;
     border-top: 3px solid #C4C2C2;
@@ -73,23 +98,10 @@ td {
 	color: #666666;
 	}   
          
-         
-         
 
-         
-         
-#edit-menu-table tr.even,
-#edit-menu-table tr.odd,
-#spaces-features-form .spaces tr.even,
-#spaces-features-form .spaces tr.odd
- {
-    background-color: #FFF;
-}
- 
 #edit-menu-table td:first-child {
     width: 70%;
 }
- 
  
 #spaces-features-form .spaces {width:900px;} 
 #spaces-features-form .spaces tr:hover {background:#F0f0F0;}

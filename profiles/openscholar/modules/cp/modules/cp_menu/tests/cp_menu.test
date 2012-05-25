@@ -1,0 +1,73 @@
+<?php
+/**
+ * Basic tests for OS Pages.
+ */
+class CPMenu extends OpenscholarWebTestCase {
+  public static function getInfo(){
+    return array(
+        'name' => t('CP Menu'),
+        'description' => t('Test CP Menu form.'),
+        'group' => t('Control Panel')
+    );
+  }
+  
+  /**
+   * Set up test.
+   */
+  public function setUp() {
+    parent::setUp('spaces', 'og', 'spaces_og', 'vsite', 'ctools', 'cp_menu');
+  }
+  
+  /**
+   * Check that cp_menu wizard cache stores, retrieves, and clears its cache.
+   */
+  public function testCache() {
+    $id = 'cp_menu_test_cache';
+    $data = array('a', 'b', 'c', '1', '2', '3');
+    
+    $cached = cp_menu_cache_get($id);
+    $this->assertEqual($cached, array(), 'Empty cache is empty');
+    
+    unset($cached);
+    cp_menu_cache_set($id, $data);
+    $cached = cp_menu_cache_get($id);    
+    $this->assertEqual($cached, $data, 'Cache stores data');
+    
+    unset($cached);
+    cp_menu_cache_clear($id);
+    $cached = cp_menu_cache_get($id);    
+    $this->assertEqual($cached, array(), 'Cache can be cleared between sessions');
+  }
+  
+  public function testFormInternalUrlValidation() {
+    drupal_get_messages('error'); //clear the errors array
+    $form = null;
+    
+
+    $state = array('values'=>array('url'=>'node'));
+    cp_menu_url_validate(&$form, &$state);
+    $errors = drupal_get_messages('error');
+    $this->assertEqual($errors, array(), 'Real local url does validate.');
+    
+    $state = array('values'=>array('url'=>'this_url_is_fake'));
+    cp_menu_url_validate(&$form, &$state);
+    $errors = drupal_get_messages('error');
+    $this->assertNotEqual($errors, array(), 'Fake local url does not validate.');
+    
+  }
+  
+  public function testFormExternalUrlValidation() {
+    drupal_get_messages('error'); //clear the errors array
+    $form = null;
+  
+    $state = array('values'=>array('url'=>'http://asdfjklzxckjvhzlkxcvhjzkxcjhvzkxjcvh.mil'));
+    cp_menu_url_validate(&$form, &$state);
+    $errors = drupal_get_messages('error');
+    $this->assertNotEqual($errors, array(), 'Fake external url does not validate.');
+    
+    $state = array('values'=>array('url'=>'http://google.com'));
+    cp_menu_url_validate(&$form, &$state);
+    $errors = drupal_get_messages('error');
+    $this->assertEqual($errors, array(), 'Real external url does validate.');
+  }
+}

@@ -282,17 +282,28 @@ function cp_menu_title($form, &$form_state) {
  * Validation for cp_menu_url.  Checks that URl exists.
  */
 function cp_menu_url_validate(&$form, &$state) {
+  if ($state['values']['url'] == '<front>') {
+    return;
+  }
+  
   $url = check_url($state['values']['url']);
-
+  $menu = menu_get_item($url);
+  
   if (url_is_external($url)) {
-    $header = get_headers($url);
-    $http = explode(' ', $header[0]);
-    $http_code = $http[1];
+    $header = @get_headers($url);
+    
+    if (!$header) {
+      form_set_error('url', t('Could not connect to url: %url', array('%url'=>'$url')));
+    } else {
+      $http = explode(' ', $header[0]);
+      $http_code = $http[1];
 
-    if ($http_code >= 400) {
-      form_set_error('url', t('URL Returned Error: %error', array('%error' => $header[0])));
+      if ($http_code >= 400) {
+        form_set_error('url', t('URL Returned Error: %error', array('%error' => $header[0])));
+      }
     }
-  } elseif (!menu_get_item($url)) {
+     
+  } elseif (!$menu) {
       form_set_error('url', t('Path does not exist'));
   }
 }
