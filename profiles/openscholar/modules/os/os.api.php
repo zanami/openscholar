@@ -19,6 +19,7 @@ function hook_vsite_widget(){
   return array(
       array(
           'title' => "My Modules block",
+          'theme' => 'block_theme',
           'region' => 'sidebar_first',
           'weight' => 100,
           'hidden' => 0
