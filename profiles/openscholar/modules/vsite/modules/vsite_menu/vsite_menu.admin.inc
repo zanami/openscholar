@@ -68,10 +68,7 @@ function vsite_menu_menu_overview_form_submit($form, &$form_state){
   // See http://drupal.org/node/181126#comment-632270
   $order = array_flip(array_keys($form_state['input'])); // Get the $_POST order.
   $form = array_merge($order, $form); // Update our original form with the new order.
-  
-
-  $menu_links_schema = drupal_get_schema('menu_links');
-  
+   
   $items = array();
   $fields = array(
       'weight',

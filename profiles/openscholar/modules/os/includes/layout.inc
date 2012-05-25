@@ -1,6 +1,9 @@
 <?php
 
 function testmerichard(){
+  os_layout_load_block('node-recent');
+  os_layout_load_block('os-secondary-menu');
+  return;
   os_layout_get_unused_blocks(array(
       'os_public',
       'announcements_announcements'
@@ -37,7 +40,8 @@ function os_layout_get($context){
 }
 
 /**
- * Returns the blocks for aggregated contexts child contexts overriding the parents
+ * Returns the blocks for multiple contexts
+ * with child contexts overriding the parents
  *
  * @param array $contexts
  * A list of context identifiers to load and aggregate
@@ -72,6 +76,8 @@ function os_layout_get_multiple($contexts){
  * @return boolean Success
  */
 function os_layout_set($context, $blocks){
+  
+  _os_layout_sanitize_blocks($blocks);
   if (module_exists('vsite_layout')) {
     //Write the context to the overrides table
     vsite_layout_context_set($context, $blocks);
@@ -118,7 +124,7 @@ function os_layout_set_multiple($contexts, $blocks){
     $last_child = (count($contexts) == ($index + 1));
     
     //Get the removed blocks that no longer exist from this context
-    $missing_blocks = array_diff(keys($layout_blocks), keys($blocks));
+    $missing_blocks = array_diff(array_keys($layout_blocks), array_keys($blocks));
     
     //check common blocks for differences
     foreach ( array_intersect_key($blocks, $layout_blocks) as $bid ) {
@@ -159,7 +165,7 @@ function os_layout_set_multiple($contexts, $blocks){
       //This is the childmost context, add the blocks as regionless to override as removed
       foreach ( $removed_blocks as $bid ) {
         //Add this block without a region
-        $layout_blocks[$bid] = os_layout_load_block($bid, array(
+        $layout_blocks[$bid] = os_layout_load_block($bid, false, array(
             'region' => false
         ));
       }
@@ -170,7 +176,7 @@ function os_layout_set_multiple($contexts, $blocks){
   
   foreach ( $blocks as $bid => $block ) {
     //Remove those blocks that are represented in parents
-    if(isset($block['default_matched'])){
+    if (isset($block['default_matched'])) {
       unset($blocks[$bid]);
     }
   }
@@ -185,29 +191,31 @@ function os_layout_set_multiple($contexts, $blocks){
 }
 
 /**
- * Takes a single or multiple contexts and returns all unused blocks for that context.
- * This is an aggregation of blocks that have been removed from the default contexts, or do not have a region,
- * and box instances that have been created.
+ * Takes a single or multiple contexts and returns all avalible blocks for that context..
  *
  * @param array/string $contexts
  * One or more contexts to load blocks from
+ * @param bool $filter_used
+ * If true return blocks that have been removed from the default contexts, or do not have a region,
+ * and box instances that have been created
  *
  * @return array
- * Blocks that are not used, with category info
+ * All Blocks including box instances
  */
-function os_layout_get_unused_blocks($contexts){
+function os_layout_get_all_blocks($contexts, $filter_used = true){
   
   $blocks = os_layout_get_multiple($contexts);
-  foreach ($blocks as $bid => $block) {
-  	if(!empty($block['region'])){
-  	  unset($blocks[$bid]);
-  	}
+  foreach ( $blocks as $bid => $block ) {
+    if ($filter_used && ! empty($block['region'])) {
+      unset($blocks[$bid]);
+    }
   }
   
-  if(module_exists('os_boxes')){
+  if (module_exists('os_boxes')) {
     //Get box instances and make them regionless blocks if not used
-    //$boxes = boxes_block_info();
-    
+  //$boxes = boxes_block_info();
+  
+
   }
   
   return $blocks;
@@ -237,40 +245,75 @@ function os_layout_put($block, $context){
  * @param string $bid
  * Block identifier [os-primary-menu]
  *
+ * @param boolean $load_info
+ * Load Block meta-data used by admin forms
+ *
  * @return array $block
  */
-function os_layout_load_block($bid, $defaults = array()){
+function os_layout_load_block($bid, $load_meta = true, $defaults = array()){
   
   list($module, $delta) = explode('-', $bid, 2);
   $block = block_load($module, $delta);
+  
+  if ($load_meta) {
+    //Add standard information gleaned from the block_info hook
+    $info_hook = "{$module}_block_info";
+    if (function_exists($info_hook)) {
+      $block_info = $info_hook();
+      if (isset($block_info[$delta])) {
+        $block = array_merge($block_info[$delta], $block);
+      }
+    }
+    
+    //Populate block with the defaults from the schema
+    $block_schema = drupal_get_schema('blocks');
+    
+    foreach ($block_schema['fields'] as $field => $info) {
+      //If a default exists populate that
+      if(!isset($block[$field]) && isset($info['default'])){
+        $block[$field] = $info['default'];
+      }
+    }
+    
+    drupal_alter('os_widget',$block);
+  }
   
   return array_merge($block, $defaults);
 }
 
 /**
  * Return a context ranking
+ *
+ * @todo Add weight to context table
  */
 function _os_context_get_rank($context){
   $context_rank = drupal_static(__FUNCTION__, array());
   
   if (! isset($context_rank[$context])) {
-    //Global Special Contexts
-    if (in_array($context, array(
-        'os_public',
-        'os_cp'
-    ))) {
-      $context_rank[$context] = 1;
-      return $context_rank[$context];
-    }
-    
-    $map = features_get_component_map('context');
-    if (array_key_exists($context, $map)) {
-      //Feature context
-      $context_rank[$context] = 2;
+    $o_context = context_load($context);
+    if (isset($o_context->weight)) {
+      $context_rank[$context] = $o_context->weight;
     }
     else {
-      //Page or other non-feature context
-      $context_rank[$context] = 3;
+      
+      //Global Special Contexts
+      if (in_array($context, array(
+          'os_public',
+          'os_cp'
+      ))) {
+        $context_rank[$context] = 1;
+        return $context_rank[$context];
+      }
+      
+      $map = features_get_component_map('context');
+      if (array_key_exists($context, $map)) {
+        //Feature context
+        $context_rank[$context] = 2;
+      }
+      else {
+        //Page or other non-feature context
+        $context_rank[$context] = 3;
+      }
     }
   }
   
@@ -360,6 +403,21 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout, $
   foreach ( $impacted_blocks as $key => $impacted_bid ) {
     $block_settings[$impacted_bid]['weight'] = $w_old + ($increment * ($key + 1));
   }
+}
+
+/**
+ * Remove fields from blocks that are not part of the block schema
+ *
+ * @param array $blocks
+ */
+function _os_layout_sanitize_blocks(&$blocks){
+  
+  $block_schema = drupal_get_schema('blocks');
+  
+  foreach ($blocks as $bid => $block) {
+  	$blocks[$bid] = array_intersect_key($block, $block_schema['fields']);
+  }
+  
 }
 
 /**
