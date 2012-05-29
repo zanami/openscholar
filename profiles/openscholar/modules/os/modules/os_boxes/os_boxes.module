@@ -41,6 +41,110 @@ function os_boxes_load($key) {
   return false;
 }
 
+/**
+ * Get all the boxes plugins or a plugin by name
+ * @param $name
+ * 		Name of the box
+ */
+function os_boxes_get_boxes_plugins($name = NULL){
+  ctools_include('plugins');
+  $boxes = ctools_get_plugins('boxes', 'plugins');
+  drupal_alter('boxes_plugins', $boxes);
+
+  if (isset($name)) {
+    return isset($boxes[$name]) ? $boxes[$name] : FALSE;
+  }
+
+  return $boxes;
+}
+
+function os_boxes_os_widget() {
+  $boxes = boxes_box_load();
+  $widgets = array();
+  foreach ($boxes as $delta => $box) {
+    $widgets[] = array(
+      'module' => 'boxes',
+      'delta' => $delta,
+      'title' => $box->subject,
+      'weight' => $box->weight,
+      'region' => $box->region,
+      'info' => $box->description,
+    );
+  }
+
+  return $widgets;
+}
+
+/**
+ * Adds properties to widgets that the cp layout form needs
+ */
+function os_boxes_os_widget_alter(&$widget) {
+  if (isset($widget['module']) && $widget['module'] == 'boxes') {
+    $box = boxes_box_load($widget['delta']);
+    if (!$box) return;
+
+    $plugin = os_boxes_get_boxes_plugins($box->plugin_key);
+    if (!$plugin) return;
+
+    $widget['bid'] = 'boxes-'.$widget['delta'];
+
+    $widget['plugin'] = $box->plugin_key;
+    $widget['class'] = $plugin->tags;
+
+    $widget['can_edit'] = true;  // all boxes should be edittable. If they aren't, why are they a box
+
+    // deletion is trickier
+    if (strpos($widget['delta'], 'og-') !== FALSE) {
+      $widget['can_delete'] = true;
+    }
+    else {
+      $widget['can_delete'] = false;
+    }
+  }
+}
+
+function os_boxes_get_factories() {
+  $plugins = os_boxes_get_boxes_plugins();
+  $items = array();
+
+  foreach ($plugins as $p => $info) {
+    if (isset($info['title'])) {
+      $items["boxes-boxes_add__$p"] = array(
+        'module' => 'boxes',
+        'delta' => "boxes_add__$p",
+        'weight' => -10,
+        'region' => $info['region']?$info['region']:false,
+        'label' => $info['title'],
+        'block_config_path' => "os/boxes/boxes_add__{$p}",
+        'factory' => true,
+      );
+      if (is_array($info['tags']) && count($info['tags'])) {
+        $items["boxes-boxes_add__$p"]['tags'] = $info['tags'];
+      }
+
+      if ($info['factory_path']) {
+        $items["boxes-boxes_add__$p"]['block_config_path'] = $info['factory_path']."/modal/box/$p";
+      }
+    }
+  }
+}
+
+function os_boxes_get_tags() {
+  $plugins = os_boxes_get_boxes_plugins();
+  $items = array();
+
+  foreach ($plugins as $p => $info) {
+    if (isset($info['tags']) && is_array($info['tags']) && count($info['tags'])) {
+      $items = array_merge($items, $info['tags']);
+    }
+  }
+
+  return $items;
+}
+
+/**
+ * When a page from these paths are linked to, they open in an overlay
+ */
 function os_boxes_admin_paths() {
   $paths = array(
     'os/boxes/*' => TRUE,
@@ -49,6 +153,9 @@ function os_boxes_admin_paths() {
   return $paths;
 }
 
+/**
+ * Replaces the existing control links with our own.
+ */
 function os_boxes_preprocess_boxes_box(&$variables) {
   $block = &$variables['block'];
   $block['controls'] = theme('links', array(
