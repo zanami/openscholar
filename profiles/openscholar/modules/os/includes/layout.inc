@@ -292,7 +292,7 @@ function os_layout_load_block($bid, $load_meta = true, $block = array()){
     
     //Get the blocks current title by rendering it
     if(!isset($block['title'])){
-      $render_hook = "{$module}_block_render";
+      $render_hook = "{$module}_block_view";
       $block_render = $render_hook();
       $block['title'] = $block_render['title'];
     }
