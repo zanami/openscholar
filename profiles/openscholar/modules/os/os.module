@@ -30,18 +30,6 @@ function os_menu(){
       'file path' => drupal_get_path('module', 'os') . '/'
   );
   
-  //testmerichard
-  $items['testmerichard'] = array(
-      'type' => MENU_CALLBACK,
-      'title' => 'os_node_autocomplete',
-      'page callback' => 'testmerichard',
-      'file' => 'layout.inc',
-      'access arguments' => array(
-          'access content'
-      ),
-      'file path' => drupal_get_path('module', 'os') . '/includes'
-  );
-  
   return $items;
 }
 
