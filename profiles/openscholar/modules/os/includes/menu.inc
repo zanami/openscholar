@@ -1,4 +1,33 @@
 <?php
+/**
+ * @file menu.inc
+ *
+ * Provides menu management and crud functions
+ *
+ * os_get_menus
+ *  Return a list of menus avalible on the site
+ *
+ * os_menu_link_load
+ *  Load and return a menu link object
+ *
+ * os_menu_link_save
+ *  Save a new or existing menu link
+ *
+ * os_menu_load_link_path
+ *  Load return a menu link given a drupal path (ex node/123)
+ *
+ * os_delete_menu_link
+ *  Delete and existing menu link
+ *
+ * os_menu_tree
+ *  Return a fully themed menu tree for a menu
+ *
+ * os_menu_tree_data
+ *   Return menu tree object pre-theming
+ *
+ * os_menu_overview_form
+ *   An override of the standard drupal overview form
+ */
 
 /**
  * Return the list of menu's that are associated with openscholar
@@ -63,7 +92,7 @@ function os_menu_tree($menu_name){
 }
 
 /**
- * Saves a menu link.
+ * Saves an existing or a new menu link.
  *
  * @param $item
  * An associative array representing a menu link item, with elements:

@@ -100,7 +100,9 @@ function boxes_block_info() {
     // Let context group the instances together
     $blocks[$box->delta]['context_group'] = t('Boxes for @plugin', array('@plugin' => $plugins[$box->plugin_key]['title']));
     // Let each box determine how it is cached
-    $blocks[$box->delta]['cache'] = $box->cache_setting();
+    
+// @todo COMMENTED OUT TMP  5/29 throwing fatal error -RWB
+////    $blocks[$box->delta]['cache'] = $box->cache_setting();
   }
 
   // 'Add' blocks for editing a page inline

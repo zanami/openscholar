@@ -11,7 +11,7 @@
  * @returns array
  * Blocks that this module would like to be avalible in the openscholar layout
  */
-function hook_vsite_widget(){
+function hook_os_widget(){
   
   //Block can make use of any field in the block schema
   

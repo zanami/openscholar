@@ -48,14 +48,26 @@ class VsiteLayoutLayout extends OpenscholarWebTestCase {
     $vsite = spaces_load('og', $this->group_1->nid);
     //Set the Group
     spaces_set_space($vsite);
+    
+    //Include layout.inc
+    ctools_include('layout','os');
   }
 
   /**
    * Run Layout Altering
    */
-  public function testLayoutset(){
+  public function testLayoutget(){
     $contexts = context_context_list();
     $this->verbose(var_export($contexts,TRUE));
+    
+    $layout1 = os_layout_get('os_test');
+    $this->verbose(var_export($layout1,TRUE));
+    //array ( 'node-recent' => array ( 'module' => 'node', 'delta' => 'recent', 'region' => 'sidebar_second', 'weight' => '-10', ), )
+    
+    $layout_combined = os_layout_get_multiple(array('os_test','os_test2'));
+    $this->verbose(var_export($layout_combined,TRUE));
+    //array ( 'search-form' => array ( 'module' => 'search', 'delta' => 'form', 'region' => 'sidebar_first', 'weight' => '10', ), 'node-recent' => array ( 'module' => 'node', 'delta' => 'recent', 'region' => 'sidebar_second', 'weight' => '-10', ), )
+    
   }
 
   private function createTestContexts(){
@@ -93,9 +105,9 @@ class VsiteLayoutLayout extends OpenscholarWebTestCase {
     $context->reactions = array(
         'block' => array(
             'blocks' => array(
-                'node-recent' => array(
-                    'module' => 'node',
-                    'delta' => 'recent',
+                'search-form' => array(
+                    'module' => 'search',
+                    'delta' => 'form',
                     'region' => 'sidebar_first',
                     'weight' => '10'
                 )

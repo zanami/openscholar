@@ -1,14 +1,28 @@
 <?php
-
-function testmerichard(){
-  os_layout_load_block('node-recent');
-  os_layout_load_block('os-secondary-menu');
-  return;
-  os_layout_get_unused_blocks(array(
-      'os_public',
-      'announcements_announcements'
-  ));
-}
+/**
+ * @file layout.inc
+ *
+ * Provides layout management and crud functions
+ *
+ * os_layout_get
+ *  Return an array of block settings for a single context
+ *
+ * os_layout_get_multiple
+ *  Returns an array of block settings for multiple contexts
+ *
+ * os_layout_set
+ *  Saves block settings for a single context
+ *
+ * os_layout_set_multiple
+ *  Saves and array of block settings for multiple contexts
+ *
+ * os_layout_put
+ *  Helper function to add a single block to a layout
+ *
+ * os_layout_load_block
+ *  Given a blocks full meta-data including config paths and access parameters
+ *
+ */
 
 /**
  * Returns the blocks for a individual context
@@ -16,10 +30,16 @@ function testmerichard(){
  * @param string $context
  * The identifier string for a context
  *
+ * @param $load_meta
+ * Add meta-data used by admin forms
+ *
+ * @param $unused_blocks
+ * Add all unused site blocks
+ *
  * @return array
  * List of blocks
  */
-function os_layout_get($context){
+function os_layout_get($context, $load_meta = false, $unused_blocks = false){
   /**
    * Context load alters the context (for vsites) so no need to do anything extra
    */
@@ -27,11 +47,27 @@ function os_layout_get($context){
   
   if (is_object($o_context) && isset($o_context->reactions['block'])) {
     if (array_key_exists('blocks', $o_context->reactions['block'])) {
-      return $o_context->reactions['block']['blocks'];
+      $block_settings =  $o_context->reactions['block']['blocks'];
     }
     else {
       //No blocks set yet for this context
-      return array();
+      $block_settings =  array();
+    }
+  }
+  
+  if($unused_blocks){
+    $site_blocks = module_invoke_all('os_widget');
+    foreach ($site_blocks as $bid => $block) {
+    	if(!isset($block_settings[$bid])){
+    	  $block['region'] = false;
+    	  $block_settings[$bid] = $block;
+    	}//Add unused block
+    }
+  }
+  
+  if($load_meta){
+    foreach ($block_settings as $bid => $block) {
+    	$block_settings[$bid] = os_layout_load_block($bid,true,$block);
     }
   }
   
@@ -46,10 +82,16 @@ function os_layout_get($context){
  * @param array $contexts
  * A list of context identifiers to load and aggregate
  *
+ * @param $load_meta
+ * Add meta-data used by admin forms
+ *
+ * @param $unused_blocks
+ * Add all unused site blocks
+ *
  * @return array
  * List of blocks
  */
-function os_layout_get_multiple($contexts){
+function os_layout_get_multiple($contexts, $load_meta = false, $unused_blocks = false){
   usort($contexts, '_os_context_sort_by_hierarchy');
   
   $context_blocks = array();
@@ -57,7 +99,7 @@ function os_layout_get_multiple($contexts){
   //Retrieve all of the blocks
   foreach ( $contexts as $context ) {
     //Merge the blocks with child blocks replacing parent blocks
-    $blocks = os_layout_get($context);
+    $blocks = os_layout_get($context, $load_meta, $unused_blocks);
     
     if (is_array($blocks)) {
       $context_blocks = array_merge($context_blocks, $blocks);
@@ -191,33 +233,6 @@ function os_layout_set_multiple($contexts, $blocks){
 }
 
 /**
- * Takes a single or multiple contexts and returns all avalible blocks for that context..
- *
- * @param array/string $contexts
- * One or more contexts to load blocks from
- * @param bool $filter_used
- * If true return blocks that have been removed from the default contexts, or do not have a region,
- * and box instances that have been created
- *
- * @return array
- * All Blocks including box instances
- */
-function os_layout_get_all_blocks($contexts, $filter_used = true){
-  
-  $blocks = os_layout_get_multiple($contexts);
-  foreach ( $blocks as $bid => $block ) {
-    if ($filter_used && ! empty($block['region'])) {
-      unset($blocks[$bid]);
-    }
-  }
-  
-  //Let other modules add widgets that are not in the contexts
-  $blocks = array_merge(module_invoke_all('os_widget'),$blocks);
-  
-  return $blocks;
-}
-
-/**
  * Adds/Updates an individual block within a named context
  *
  * @param array $block
@@ -246,10 +261,14 @@ function os_layout_put($block, $context){
  *
  * @return array $block
  */
-function os_layout_load_block($bid, $load_meta = true, $defaults = array()){
+function os_layout_load_block($bid, $load_meta = true, $block = array()){
   
   list($module, $delta) = explode('-', $bid, 2);
-  $block = block_load($module, $delta);
+  
+  if(!isset($block['module'],$block['delta'])){
+    $db_block = block_load($module, $delta);
+    $block = array_merge($db_block,$block);
+  }
   
   if ($load_meta) {
     //Add standard information gleaned from the block_info hook
@@ -281,7 +300,7 @@ function os_layout_load_block($bid, $load_meta = true, $defaults = array()){
     drupal_alter('os_widget',$block);
   }
   
-  return array_merge($block, $defaults);
+  return $block;
 }
 
 /**
