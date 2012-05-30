@@ -129,6 +129,8 @@ function os_boxes_get_factories() {
       }
     }
   }
+
+  return $items;
 }
 
 function os_boxes_get_tags() {

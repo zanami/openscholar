@@ -29,8 +29,6 @@ function cp_layout_full_form($form, $form_state, $ctx) {
     '#value' => $ctx,
   );
 
-  dpm($blocks);
-
   $regions = array(
     'header_left',
     'header_main',

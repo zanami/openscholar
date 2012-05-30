@@ -116,7 +116,7 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
     );
 
     $href = '';
-    $title = $f->info;
+    $title = $f['label'];
     $options = array();
     $html = l($title, $href, $options);
 
@@ -131,7 +131,7 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
     );
     $help_exists = true;
     if ($help_exists) {//TODO: implement $help_exists
-      $html .= ' '.l('?', 'help/os/widgets/'.$f->bid, $help_opts);  // TODO: This URL is wrong
+      $html .= ' '.l('?', 'help/os/widgets/'.$f['delta'], $help_opts);  // TODO: This URL is wrong
     }
     $l['title'] = $html;
     $links[] = $l;
