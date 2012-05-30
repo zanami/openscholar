@@ -45,14 +45,17 @@ function os_layout_get($context, $load_meta = false, $unused_blocks = false){
    */
   $o_context = context_load($context);
 
-  if (is_object($o_context) && isset($o_context->reactions['block'])) {
-    if (array_key_exists('blocks', $o_context->reactions['block'])) {
-      $block_settings =  $o_context->reactions['block']['blocks'];
-    }
-    else {
-      //No blocks set yet for this context
-      $block_settings =  array();
-    }
+  if (!is_object($o_context) || !isset($o_context->reactions['block'])) {
+    //This was an invalid context
+    return false;
+  }
+
+  if (array_key_exists('blocks', $o_context->reactions['block'])) {
+    $block_settings =  $o_context->reactions['block']['blocks'];
+  }
+  else {
+    //No blocks set yet for this context
+    $block_settings =  array();
   }
 
   if($unused_blocks){
@@ -71,8 +74,7 @@ function os_layout_get($context, $load_meta = false, $unused_blocks = false){
     }
   }
 
-  //This was an invalid context
-  return false;
+  return $block_settings;
 }
 
 /**
