@@ -63,10 +63,8 @@ function cp_menu_node_insert($node) {
       $options['attributes']['target'] = '_blank';
     }
 
-    os_menu_link_save(array('link_path' => 'node/'.$node->nid,
-                            'menu_name' => $link['parent'],
-                            'link_title' => $link['link_title'],
-                            'options' => $options));    
+    $item = array('link_path' => 'node/'.$node->nid,'menu_name' => $link['parent'],'link_title' => $link['link_title'],'options' => $options);
+    os_menu_link_save();    
   }
 }
 
