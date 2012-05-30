@@ -412,7 +412,10 @@ function cp_menu_wizard_finish(&$form_state) {
 
   //then save to vsite or whole site
   ctools_include('menu','os');
-  cp_menu_link_save($url, $menu_name, $values['title'], $options);
+  os_menu_link_save(array('link_path' => $url,
+                          'menu_name' => $menu_name,
+                          'link_title' => $values['title'],
+                          'options' => $options));
   cp_menu_cache_clear($form_state['object_id']);
   drupal_goto('<front>'); //better destination?
 }

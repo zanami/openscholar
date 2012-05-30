@@ -63,8 +63,10 @@ function cp_menu_node_insert($node) {
       $options['attributes']['target'] = '_blank';
     }
 
-    $mlid = cp_menu_link_save('node/'.$node->nid, $link['parent'], $link['link_title'], $options);
-
+    os_menu_link_save(array('link_path' => 'node/'.$node->nid,
+                            'menu_name' => $link['parent'],
+                            'link_title' => $link['link_title'],
+                            'options' => $options));    
   }
 }
 
@@ -101,15 +103,6 @@ function cp_menu_node_delete($node) {
     os_delete_menu_link($link['menu_name'], $link['mlid']);
   }
 }
-
-//wrapper for os_menu_link_save
-function cp_menu_link_save($link_path, $menu_name, $link_title, $options = array()) {
-  ctools_include('menu', 'os');
-  $item = compact('link_path', 'menu_name', 'link_title', 'options');
-  return os_menu_link_save($item);
-}
-
-
 
 /**
  * @function cp_form_node_form_alter
