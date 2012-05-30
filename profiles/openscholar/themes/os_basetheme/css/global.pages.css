@@ -59,6 +59,7 @@ body {
 #header /* Main site header. */ {
 }
 
+/* bigscreen three_col_grail */
 
 #columns /* Wraps the 3 vertical columns - content, sidebar-first and sidebar-second. */ {
 }
@@ -92,6 +93,11 @@ body {
 
 .region-inner .region-inner /* Strip nested region-inner margins by default. */ {
   margin: 0;
+}
+
+.region-sidebar-first .block, .region-sidebar-second .block {
+    clear: both;
+    margin-bottom: 1.5em;
 }
 
 
@@ -349,3 +355,8 @@ ul.links li {
   background: #eee;
   padding: 30px;
 }
+
+/* OVERLAY OVERRIDE*/
+#overlay {
+   margin: 20px auto;
+   }
