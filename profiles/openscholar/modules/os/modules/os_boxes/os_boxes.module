@@ -76,7 +76,13 @@ function os_boxes_os_widget() {
 }
 
 /**
- * Adds properties to widgets that the cp layout form needs
+ * Implementation of hook os_widget_alter
+ *
+ * This function should add any parameters to the passed block that
+ * will be needed in the admin user interfaces.  Including access params
+ * config paths etc...
+ *
+ * @param $widget
  */
 function os_boxes_os_widget_alter(&$widget) {
   if (isset($widget['module']) && $widget['module'] == 'boxes') {
@@ -88,10 +94,11 @@ function os_boxes_os_widget_alter(&$widget) {
 
     $widget['bid'] = 'boxes-'.$widget['delta'];
 
+    $widget['info'] = $box->description;
     $widget['plugin'] = $box->plugin_key;
     $widget['class'] = $plugin->tags;
 
-    $widget['can_edit'] = true;  // all boxes should be edittable. If they aren't, why are they a box
+    $widget['can_edit'] = true;  // all boxes should be editable. If they aren't, why are they a box
 
     // deletion is trickier
     if (strpos($widget['delta'], 'og-') !== FALSE) {
@@ -112,17 +119,12 @@ function os_boxes_get_factories() {
       $items["boxes-boxes_add__$p"] = array(
         'module' => 'boxes',
         'delta' => "boxes_add__$p",
-        'weight' => -10,
-        'region' => $info['region']?$info['region']:false,
         'label' => $info['title'],
         'block_config_path' => "os/boxes/boxes_add__{$p}",
         'factory' => true,
       );
-      if (is_array($info['tags']) && count($info['tags'])) {
-        $items["boxes-boxes_add__$p"]['tags'] = $info['tags'];
-      }
 
-      if ($info['factory_path']) {
+      if (isset($info['factory_path'])) {
         $items["boxes-boxes_add__$p"]['block_config_path'] = $info['factory_path']."/modal/box/$p";
       }
     }
@@ -169,33 +171,4 @@ function os_boxes_preprocess_boxes_box(&$variables) {
       ),
     ),
   ));
-}
-
-/**
- * Implements hook os_widget
- *
- * @returns array
- *    All of the blocks that os_boxes would like to be avalible in the layout
- */
-function os_boxes_vsite_widget(){
-
-  //Block can make use of any field in the block schema
-  
-  return array();
-  
-}
-
-/**
- * Implementation of hook os_widget_alter
- *
- * This function should add any parameters to the passed block that
- * will be needed in the admin user interfaces.  Including access params
- * config paths etc...
- *
- * @param $widget
- */
-function os_boxes_os_widget_alter(&$widget){
-  if($widget->module == 'boxes'){
-    $widget['config_path'] = '/my/conf/path';
-  }
 }
