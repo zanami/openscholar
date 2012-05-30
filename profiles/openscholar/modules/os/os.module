@@ -6,7 +6,7 @@ include_once ('os.features.inc');
  */
 function os_menu(){
   $items = array();
-  
+
   $items['home'] = array(
       'type' => MENU_CALLBACK,
       'title' => '',
@@ -17,7 +17,7 @@ function os_menu(){
       ),
       'weight' => 0
   );
-  
+
   // nodeautocomplete callback
   $items['os/node/autocomplete'] = array(
       'type' => MENU_CALLBACK,
@@ -29,7 +29,7 @@ function os_menu(){
       ),
       'file path' => drupal_get_path('module', 'os') . '/'
   );
-  
+
   return $items;
 }
 
@@ -47,7 +47,7 @@ function os_menu(){
 
 function os_get_bundles($privacy = array(1), $space_type = 'og') {
   $bundles = array('page'=>'Page');
-  
+
   if (is_bool($privacy) && $privacy) {
     $ret_all = TRUE;
   }
@@ -56,18 +56,18 @@ function os_get_bundles($privacy = array(1), $space_type = 'og') {
         $privacy
     );
   }
-    
-  
+
+
   $features = spaces_features($space_type);
   $site_features = variable_get('spaces_features', array());
-  
+
   foreach ( $features as $name => $feature ) {
     $info = $feature->info['features'];
     if (isset($info['node']) && ($ret_all || in_array($site_features[$name], $privacy))) {
       $bundles[ $info['node'][0] ] = $feature->info['name'];
     }
   }
-  
+
   return $bundles;
 }
 
@@ -77,7 +77,7 @@ function os_get_bundles($privacy = array(1), $space_type = 'og') {
  */
 function os_block_info(){
   ctools_include('menu', 'os');
-  
+
   $blocks['powered-by'] = array(
       'info' => t('Powered by Openscholar'),
       'weight' => '10',
@@ -120,6 +120,38 @@ function os_block_view($delta = ''){
 }
 
 /**
+ * Implements hook_os_widget
+ *
+ * Builds cp widgets for the menus
+ */
+function os_os_widget() {
+  $blocks = array();
+  ctools_include('menu', 'os');
+
+  foreach ( os_get_menus() as $menu_name => $title ) {
+    $blocks['menu-'.$menu_name] = array(
+      'module' => 'menu',
+      'info' => t($title),
+      'delta' => $menu_name,
+      // Menu blocks can't be cached because each menu item can have
+      // a custom access callback. menu.inc manages its own caching.
+      'cache' => DRUPAL_NO_CACHE,
+    );
+  }
+
+  return $blocks;
+}
+
+function os_os_widget_alter(&$widget) {
+  if ($widget['module'] == 'menu') {
+    $widget += array(
+      'bid' => 'menu-'.$widget['delta'],
+      'class' => array('Other', 'menu'),
+    );
+  }
+}
+
+/**
  * Implements hook_theme().
  */
 function os_theme(){
@@ -130,3 +162,5 @@ function os_theme(){
       )
   );
 }
+
+

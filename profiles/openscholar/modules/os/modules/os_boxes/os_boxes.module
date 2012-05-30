@@ -139,7 +139,9 @@ function os_boxes_get_tags() {
 
   foreach ($plugins as $p => $info) {
     if (isset($info['tags']) && is_array($info['tags']) && count($info['tags'])) {
-      $items = array_merge($items, $info['tags']);
+      foreach ($info['tags'] as $t) {
+        $items[$t] = $t;
+      }
     }
   }
 
