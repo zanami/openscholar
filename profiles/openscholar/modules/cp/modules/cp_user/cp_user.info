@@ -1,0 +1,9 @@
+name = "Control Panel: Users"
+description = "OpenScholar User Management UI"
+core = 7.x
+package = "Control Panel"
+dependencies[] = "ctools"
+dependencies[] = cp
+dependencies[] = os
+files[] = cp_user.form.inc
+features[views] = cp_site_members
