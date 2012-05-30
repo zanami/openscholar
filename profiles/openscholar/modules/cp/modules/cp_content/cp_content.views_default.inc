@@ -429,15 +429,6 @@ function cp_content_views_default_views() {
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  /* Contextual filter: Content: Type */
-  $handler->display->display_options['arguments']['type']['id'] = 'type';
-  $handler->display->display_options['arguments']['type']['table'] = 'node';
-  $handler->display->display_options['arguments']['type']['field'] = 'type';
-  $handler->display->display_options['arguments']['type']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['type']['default_argument_skip_url'] = 1;
-  $handler->display->display_options['arguments']['type']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['type']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['type']['summary_options']['items_per_page'] = '25';
   /* Filter criterion: Content: Title */
   $handler->display->display_options['filters']['title']['id'] = 'title';
   $handler->display->display_options['filters']['title']['table'] = 'node';
@@ -463,43 +454,6 @@ function cp_content_views_default_views() {
   $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
   $handler->display->display_options['filters']['type']['expose']['multiple'] = 1;
   $handler->display->display_options['filters']['type']['expose']['reduce'] = 0;
-  /* Filter criterion: Content: Promoted to front page */
-  $handler->display->display_options['filters']['promote']['id'] = 'promote';
-  $handler->display->display_options['filters']['promote']['table'] = 'node';
-  $handler->display->display_options['filters']['promote']['field'] = 'promote';
-  $handler->display->display_options['filters']['promote']['group'] = 1;
-  $handler->display->display_options['filters']['promote']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['promote']['expose']['operator_id'] = '';
-  $handler->display->display_options['filters']['promote']['expose']['label'] = 'Promoted to front page';
-  $handler->display->display_options['filters']['promote']['expose']['use_operator'] = FALSE;
-  $handler->display->display_options['filters']['promote']['expose']['operator'] = 'promote_op';
-  $handler->display->display_options['filters']['promote']['expose']['identifier'] = 'promote';
-  $handler->display->display_options['filters']['promote']['expose']['multiple'] = FALSE;
-  /* Filter criterion: Content: Published */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'node';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = '1';
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['status']['expose']['operator_id'] = '';
-  $handler->display->display_options['filters']['status']['expose']['label'] = 'Published';
-  $handler->display->display_options['filters']['status']['expose']['use_operator'] = FALSE;
-  $handler->display->display_options['filters']['status']['expose']['operator'] = 'status_op';
-  $handler->display->display_options['filters']['status']['expose']['identifier'] = 'status';
-  $handler->display->display_options['filters']['status']['expose']['multiple'] = FALSE;
-  /* Filter criterion: Content: Sticky */
-  $handler->display->display_options['filters']['sticky']['id'] = 'sticky';
-  $handler->display->display_options['filters']['sticky']['table'] = 'node';
-  $handler->display->display_options['filters']['sticky']['field'] = 'sticky';
-  $handler->display->display_options['filters']['sticky']['group'] = 1;
-  $handler->display->display_options['filters']['sticky']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['sticky']['expose']['operator_id'] = '';
-  $handler->display->display_options['filters']['sticky']['expose']['label'] = 'Sticky';
-  $handler->display->display_options['filters']['sticky']['expose']['use_operator'] = FALSE;
-  $handler->display->display_options['filters']['sticky']['expose']['operator'] = 'sticky_op';
-  $handler->display->display_options['filters']['sticky']['expose']['identifier'] = 'sticky';
-  $handler->display->display_options['filters']['sticky']['expose']['multiple'] = FALSE;
   /* Filter criterion: Spaces: Content in current space */
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';

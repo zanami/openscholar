@@ -96,24 +96,33 @@ class CPMenu extends OpenscholarWebTestCase {
       'link_title' => 'foo',
     );
     
+    //check that node insert creates path
     cp_menu_node_insert($node);
     $path = os_menu_load_link_path('node/' . $node->nid);
-    $inserted = ($path && $path['parent'] == 'primary-menu');
+    $inserted = (count($path) && $path['menu_name'] == 'primary-menu');
     $this->assertTrue($inserted, 'cp_menu added node link to primary menu');
     
-    $this->verbose($path);
-    
+    //node update should move path
     $node->os_menu['parent'] = 'secondary-menu';
+    $node->os_menu['dirty'] = $node->os_menu['delete'] = TRUE;
     cp_menu_node_update($node);
     $path = os_menu_load_link_path('node/' . $node->nid);
-    $inserted = ($path && $path['parent'] == 'secondary-menu');
+    $inserted = (count($path) && $path['menu_name'] == 'secondary-menu');
     $this->assertTrue($inserted, 'cp_menu moved link from primary to secondary menu');
     
+    //disabling the menu deletes the link
+    $node->os_menu['dirty'] = TRUE;
     $node->os_menu['enabled'] = 0;
     cp_menu_node_update($node);
-    $path = os_menu_load_link_path($path);
-    $inserted = ($path);
-    $this->assertFalse($inserted, 'cp_menu deleted link path');
+    $path = os_menu_load_link_path('node/' . $node->nid);
+    $this->assertFalse($path, 'cp_menu deleted link path');
     
+    //as does deleting the node
+    $node->os_menu['enabled'] = 1;
+    $node->os_menu['dirty'] = TRUE;
+    cp_menu_node_update($node);
+    cp_menu_node_delete($node);
+    $path = os_menu_load_link_path('node/' . $node->nid);
+    $this->assertFalse($path, 'cp_menu deleted link path on node deletion');
   }
 }

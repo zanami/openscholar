@@ -48,7 +48,8 @@ function cp_menu_theme() {
 
 //save new nodes to menus using os api instead of core
 function cp_menu_node_insert($node) {
-  if ($node->os_menu['enabled']) {
+  if (isset($node->os_menu) && $node->os_menu['enabled']) {
+    ctools_include('menu','os');
     $link = $node->os_menu;
     $options = (isset($link->options)) ? $link->options : array();
 
@@ -59,12 +60,12 @@ function cp_menu_node_insert($node) {
       }
     }
 
-    if ($link['new_window']) {
+    if (isset($link['new_window']) && $link['new_window']) {
       $options['attributes']['target'] = '_blank';
     }
 
-    $mlid = cp_menu_link_save('node/'.$node->nid, $link['parent'], $link['link_title'], $options);
-
+    $item = array('link_path' => 'node/'.$node->nid,'menu_name' => $link['parent'],'link_title' => $link['link_title'],'options' => $options);
+    os_menu_link_save($item);    
   }
 }
 
@@ -101,15 +102,6 @@ function cp_menu_node_delete($node) {
     os_delete_menu_link($link['menu_name'], $link['mlid']);
   }
 }
-
-//wrapper for os_menu_link_save
-function cp_menu_link_save($link_path, $menu_name, $link_title, $options = array()) {
-  ctools_include('menu', 'os');
-  $item = compact('link_path', 'menu_name', 'link_title', 'options');
-  return os_menu_link_save($item);
-}
-
-
 
 /**
  * @function cp_form_node_form_alter
