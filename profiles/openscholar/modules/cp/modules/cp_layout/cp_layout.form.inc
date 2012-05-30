@@ -22,16 +22,12 @@ function cp_layout_full_form($form, $form_state, $ctx) {
   if ($ctx == 'os_front') {
     $use_content_regions = true;
   }
-  $blocks = os_layout_get_multiple(array('os_public', $ctx));
+  $blocks = os_layout_get_multiple(array('os_public', $ctx), true, true);
 
   $form['context'] = array(
     '#type' => 'value',
     '#value' => $ctx,
   );
-
-  // filter out blocks we don't want
-  // add info to existing blocks
-  drupal_alter('layout_available_blocks', $blocks);
 
   dpm($blocks);
 
@@ -52,8 +48,8 @@ function cp_layout_full_form($form, $form_state, $ctx) {
 
   $form['unused'] = array(
     '#theme_wrappers' => array('cp_layout_unused_widgets'),
-    '#tags' => array(),
-    '#factories' => array()
+    '#tags' => os_boxes_get_tags(),
+    '#factories' => os_boxes_get_factories(),
   );
 
   $form['layout'] = array(
@@ -97,10 +93,6 @@ function cp_layout_full_form($form, $form_state, $ctx) {
   }
 
   foreach ($blocks as $bid => $b) {
-    // factory check
-    if (strpos($bid, 'boxes_add__') !== FALSE) {
-      $form['unused']['#factories'][$bid] = $b;
-    }
 
     if ($b['region'] == -1) {
       $form['unused'][$bid] = array(
@@ -113,15 +105,6 @@ function cp_layout_full_form($form, $form_state, $ctx) {
         '#theme' => 'cp_layout_widget',
         '#widget' => $b,
       );
-    }
-
-    if (isset($b->tags)) {
-      $tags = explode(', ', $b['tags']);
-      foreach ($tags as $t) {
-        if (!in_array($t, $form['unused']['#tags'])) {
-          $form['unused']['#tags'][] = $t;
-        }
-      }
     }
   }
 
