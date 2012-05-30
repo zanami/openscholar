@@ -1,9 +1,10 @@
-name = "Control Panel: Users"
-description = "OpenScholar User Management UI"
+name = Control Panel: Users
+description = OpenScholar User Management UI
 core = 7.x
-package = "Control Panel"
-dependencies[] = "ctools"
+package = Control Panel
+php = 5.2.4
 dependencies[] = cp
+dependencies[] = ctools
 dependencies[] = os
+features[features_api][] = api:1
 files[] = cp_user.form.inc
-features[views] = cp_site_members
