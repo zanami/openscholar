@@ -48,7 +48,8 @@ function cp_menu_theme() {
 
 //save new nodes to menus using os api instead of core
 function cp_menu_node_insert($node) {
-  if ($node->os_menu['enabled']) {
+  if (isset($node->os_menu) && $node->os_menu['enabled']) {
+    ctools_include('menu','os');
     $link = $node->os_menu;
     $options = (isset($link->options)) ? $link->options : array();
 
@@ -59,12 +60,12 @@ function cp_menu_node_insert($node) {
       }
     }
 
-    if ($link['new_window']) {
+    if (isset($link['new_window']) && $link['new_window']) {
       $options['attributes']['target'] = '_blank';
     }
 
     $item = array('link_path' => 'node/'.$node->nid,'menu_name' => $link['parent'],'link_title' => $link['link_title'],'options' => $options);
-    os_menu_link_save();    
+    os_menu_link_save($item);    
   }
 }
 
