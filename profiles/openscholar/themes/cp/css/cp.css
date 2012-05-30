@@ -103,12 +103,14 @@ td {
     width: 70%;
 }
  
-#spaces-features-form .spaces {width:900px;} 
+#spaces-features-form .spaces {width:850px;} 
 #spaces-features-form .spaces tr:hover {background:#F0f0F0;}
 #spaces-features-form .spaces td {height: 50px;} 
 #spaces-features-form .spaces td.label strong {font-size: 1.1em;}    
 #spaces-features-form .spaces .description {font-size:.95em;}  
- 
+
+.page-cp-content .view-content table {width:100%;}
+
 /* CP/BUILD LAYOUT */   
 .page-cp-build-layout .content-inner {width:854px;}
 
@@ -119,3 +121,10 @@ td {
     }
     
 #edit-menu-table {width:775px;}   
+
+/* CP CONTENT */ 
+.page-cp-content .view-filters {
+	padding:8px; 
+	background:#F2F3F3;
+    border: 1px solid #DADADA;
+    }

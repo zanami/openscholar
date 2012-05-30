@@ -67,7 +67,7 @@ textarea:focus {
 
 /* Fieldsets */
 fieldset {
-  background: transparent;
+  background: #F2F3F3;
   border: 1px solid #dadada;
   margin: 10px 0;
   padding: 10px;

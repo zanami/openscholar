@@ -89,7 +89,9 @@ body.toolbar-drawer {
  background-position: 0 -52px;
 }
 
-
+#cp-toolbar ul li a#toolbar-link-cp-content {
+ background-position: 0 -76px;
+}
 
 /**
  * Administration menu.
