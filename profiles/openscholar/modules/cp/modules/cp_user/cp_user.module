@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Implements Hook Menu
+ */
 function cp_user_menu() {
   $items = array();
 
