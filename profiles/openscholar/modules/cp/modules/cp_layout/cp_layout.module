@@ -55,34 +55,41 @@ function template_preprocess_cp_layout_widget(&$variables) {
 
   $classes_array[] = "cp-layout-item";
 
-  if (isset($widget->hidden) && $widget->hidden) {
+  if (isset($widget['hidden']) && $widget->hidden) {
     $classes_array[] = 'disabled';
   }
 
-  if (isset($widget->plugin)) {
-    $classes_array[] = $widget->plugin;
+  if (isset($widget['plugin'])) {
+    $classes_array[] = $widget['plugin'];
   }
 
   // extra classes used for tag selectin
-  if (isset($widget->class)) {
-    $classes_array[] = $widget->class;
+  if (isset($widget['class'])) {
+    if (is_array($widget['class'])) {
+      $classes_array = array_merge($classes_array, $widget['class']);
+    }
+    else {
+      $classes_array[] = $widget['class'];
+    }
   }
 
   if (isset($widget->icon_path)) {
   	$style = "style=\"background-image:url('{$w['icon_path']}');\"";
   }
 
-  $variables['widget_title'] = $widget->info;
+  $variables['widget_title'] = $widget['info'];
 
-  if (isset($widget->can_edit) && $widget->can_edit) {
+  if (isset($widget['can_edit']) && $widget['can_edit']) {
     $variables['can_edit'] = true;
+    $variables['edit_path'] = '/path/to/box/edit';
   }
   else {
     $variables['can_edit'] = false;
   }
 
-  if (isset($widget->can_delete) && $widget->can_delete) {
+  if (isset($widget['can_delete']) && $widget['can_delete']) {
     $variables['can_delete'] = true;
+    $variables['delete_path'] = '/path/to/box/delete';
   }
   else {
     $variables['can_delete'] = false;
@@ -109,7 +116,7 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
     );
 
     $href = '';
-    $title = $f->info;
+    $title = $f['label'];
     $options = array();
     $html = l($title, $href, $options);
 
@@ -124,7 +131,7 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
     );
     $help_exists = true;
     if ($help_exists) {//TODO: implement $help_exists
-      $html .= ' '.l('?', 'help/os/widgets/'.$f->bid, $help_opts);  // TODO: This URL is wrong
+      $html .= ' '.l('?', 'help/os/widgets/'.$f['delta'], $help_opts);  // TODO: This URL is wrong
     }
     $l['title'] = $html;
     $links[] = $l;
