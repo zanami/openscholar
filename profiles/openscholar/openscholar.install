@@ -8,7 +8,8 @@ function openscholar_install() {
   $enable = array(
     'os_basetheme', 
     'seven', 
-    'aberdeen' 
+    'aberdeen' ,
+    'cp',
   );
   theme_enable($enable);
   
