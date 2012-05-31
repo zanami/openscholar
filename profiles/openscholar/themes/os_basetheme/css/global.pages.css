@@ -7,39 +7,6 @@
  * ul.links, .more-link, etc.
  */
 
-/* Temporarily (for testing) border the regions 
-
-
-.region-three-33-first {
-	background:#EE9911;
-}
-
-.region-three-33-second {
-	background:#AA4444;
-}
-
-.region-three-33-third {
-	background:#FFEE44;
-}
-
-.sidebar {
-background:#FF0044;
-}
-
-
-#content-column { 
-background:#ccc;	
-}
-
-
-#menu-bar  {
-background:#EEE;	
-	}
-
-.region-footer {
-	background:#FF8811;	
-}
- */
 
 /*
  * Wrappers
@@ -356,7 +323,86 @@ ul.links li {
   padding: 30px;
 }
 
-/* OVERLAY OVERRIDE*/
-#overlay {
-   margin: 20px auto;
-   }
+/* CTools MODAL OVERRIDES */
+
+#modalContent {
+  top: 0 !important;
+   color: #666;
+  }
+
+div.ctools-modal-content {
+  color: #555;
+  margin: 0;
+  text-align: left;
+  background: #fff;
+  -moz-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+  }
+
+div.ctools-modal-content .modal-title {
+  color: #666;
+  font-size:20px;
+  font-weight: normal;
+  }
+
+#modal-content {
+ padding: 20px 0 20px 25px;
+  }
+
+div.ctools-modal-content {
+  height: 100% !important;
+  border:none;
+  }
+
+div.ctools-modal-content .modal-header {
+  background: #EFEFEF;
+  border-bottom:2px solid #C4C2C2;
+ height:24px;
+ padding:10px;
+  }
+
+div.ctools-modal-content .modal-header a {
+float:right;
+color: transparent;
+background: url('../images/icon-close-window.png') no-repeat;
+width:30px;
+height:30px;
+  }
+
+div.ctools-modal-content .modal-content {
+  padding: 12px 12px 0 12px;
+  overflow: auto;
+  width: 575px;
+  height: 400px;
+  }
+
+#modalContent .spaces-customize-form .buttons input.form-submit {
+  margin-right: 140px;
+  }
+
+div.ctools-modal-content .button-div-wrapper {
+  display: inline;
+  }
+
+div.ctools-modal-content a.close:hover {
+  text-decoration: none;
+}
+
+div.ctools-modal-content a.close img {
+  position: relative;
+  top: 1px;
+  display:none;
+}
+
+div.ctools-modal-content .modal-content .modal-throbber-wrapper {
+  text-align: center;
+}
+
+div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
+  margin-top: 160px;
+}
+
+
+
+
