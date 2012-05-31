@@ -40,6 +40,9 @@ w
 a, a:visited {color:#293352;text-decoration:none;}
 a:hover {text-decoration:underline;}
 
+#main-content a,
+#main-content li a {text-decoration:underline;}
+
 
 #header a {color:#FFF;}
 
@@ -49,7 +52,6 @@ padding-right:13px;
 color:#293352;
 background: url('../images/moreArrow.png') center right no-repeat;
 text-decoration:none;
-font-size:1.11em;
 }
 
 .more-link a:after, .node_read_more a:after {
@@ -93,7 +95,7 @@ h3.block-title a {color:#293352;}
 .sidebar h2.block-title {
 color:#666;
 background: url('../images/h3bg.png');
-padding: 7px 0 4px 8px;
+padding: 7px 0 1px 8px;
  font-size: 1.2em;
 border-right: 1px solid #d6d6d6;
 border-bottom: 1px solid #d6d6d6;
