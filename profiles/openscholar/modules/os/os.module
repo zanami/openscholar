@@ -124,7 +124,7 @@ function os_block_view($delta = ''){
  *
  * Builds cp widgets for the menus
  */
-function os_os_widget() {
+function os_os2s_widget() {
   $blocks = array();
   ctools_include('menu', 'os');
 
@@ -143,10 +143,17 @@ function os_os_widget() {
 }
 
 function os_os_widget_alter(&$widget) {
-  if ($widget['module'] == 'menu') {
+  if ($widget['module'] == 'os') {
     $widget += array(
-      'bid' => 'menu-'.$widget['delta'],
-      'class' => array('Other', 'menu'),
+      'bid' => 'os-'.$widget['delta'],
+      'tags' => array('Other'),
+      'class' => array('menu'),
+    );
+  }
+  elseif ($widget['module'] == 'node') {
+    $widget += array(
+      'bid' => 'node-recent',
+      'tags' => array('Content'),
     );
   }
 }
