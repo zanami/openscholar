@@ -50,4 +50,5 @@ features[variable][] = menu_parent_page
 features[variable][] = node_options_page
 features[variable][] = node_preview_page
 features[variable][] = node_submitted_page
+features[views_view][] = os_site_members
 features[views_view][] = vsite_autocomplete
