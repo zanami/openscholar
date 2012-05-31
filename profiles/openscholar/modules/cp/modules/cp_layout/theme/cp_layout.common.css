@@ -189,7 +189,7 @@ background: #c6cccc;
     
     
 /** ADD NEW WIDGET DROPDOWN **/
-.page-cp-build-layout #cp-layout-full-form div.ctools-dropdown {
+.page-cp-build-layout #cp-layout-full-form .ctools-dropdown {
     /*background: url("/sites/all/themes/openscholar/scholar_base/images/scholarbase-sprite.png") no-repeat scroll 3px -380px #A1D4A1 !important;*/
     border-radius: 5px 5px 5px 5px;
     float: right;
@@ -197,16 +197,37 @@ background: #c6cccc;
     padding: 1px 8px 0 25px !important;
 }
 
-.page-cp-build-layout div.ctools-dropdown-container {
+
+
+html.js #cp-layout-full-form div.ctools-dropdown div.ctools-dropdown-container {
+    background:#FFFFFF;
+	color: #494949;
+    margin: 1px 1px 0 0;
     box-shadow: 0 2px 5px #777777;
     border:none;
-    color: #494949 !important;
-    margin: 0 1px 0 0;
     opacity: 0.93;
     padding: 5px 0;
     max-height: 670px;
     overflow: auto;
-    padding: 8px;
-    width: 300px;
-    left:840px;
+    width: 275px;
+    left:740px;
+    white-space: nowrap;
 }
+
+.page-cp-build-layout div.ctools-dropdown div.ctools-dropdown-container ul li a {
+    color: #293352 !important;
+    float:left;
+    display:inline;
+    width:90%;
+}
+
+.page-cp-build-layout div.ctools-dropdown div.ctools-dropdown-container ul li a:hover {
+    background:#FFF;
+}
+
+.page-cp-build-layout div.ctools-dropdown div.ctools-dropdown-container ul li a.help {
+	float:right;
+	display:inline;
+	width:10%;
+}
+
