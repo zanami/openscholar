@@ -34,6 +34,22 @@ function os_menu(){
 }
 
 /**
+ * Sets up menu entries for contextual links
+ *
+ * Requirements for contextual links:
+ *  - Link is a local task of a parent
+ *  - Link has the 'inline' context
+ */
+function os_menu_alter(&$menu) {
+  $types = os_get_bundles(true);
+  foreach ($types as $type => $title) {
+    $m = &$menu['node/add/'.$type];
+    $m['type'] = MENU_LOCAL_TASK;
+    $m['context'] = MENU_CONTEXT_INLINE;
+  }
+}
+
+/**
  * @function os_get_bundles
  *
  * Return the avalible bundles based on the privacy
@@ -170,4 +186,11 @@ function os_theme(){
   );
 }
 
-
+function os_page_build(&$page) {
+  $page['#contextual_links'] = array(
+    'os' => array(
+      'node/add',
+      array(),
+    )
+  );
+}
