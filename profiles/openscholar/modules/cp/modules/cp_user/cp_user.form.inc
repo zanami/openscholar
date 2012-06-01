@@ -8,14 +8,16 @@
 function cp_user_members(){
   $vsite = spaces_get_space();
   
+  $output = "<p>".l('Add New Member','cp/users/add')."</p>";
+  
   if($vsite){
     $view = views_get_view('os_site_members', 'default');
     $view->set_arguments(array('node', $vsite->id));
     $view->override_url = $_GET['q'];
-    return $view->preview();
+    $output .= $view->preview();
   }
   
-  return;
+  return $output;
 }
 
 /**
@@ -46,7 +48,7 @@ function cp_user_add_users($form, &$form_state, $group_type, $gid) {
 
   $form['og_user'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Add a group member to %group', array('%group' => $label)),
+    '#title' => t('Add an existing user to %group', array('%group' => $label)),
   );
   $form['og_user']['name'] = array(
     '#type' => 'textfield',
@@ -92,9 +94,12 @@ function cp_user_add_users($form, &$form_state, $group_type, $gid) {
     '#parents' => array('membership_fields'),
   );
   field_attach_form('og_membership', $og_membership, $form['membership_fields'], $form_state);
+  
+  //Do not require a request message when adding users in a vsite (This would send a notification to group administrators)
+  unset($form['membership_fields']['og_membership_request']);
 
   $form['actions'] = array('#type' => 'actions');
-  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Add users'));
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Add user'));
 
   return $form;
 }
