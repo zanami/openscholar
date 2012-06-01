@@ -2,7 +2,7 @@
 ;----------// Theme Information
 
   name        = OS Base Theme
-  description = Base theme from which all styles in sub themes, including the control panel, will be based on.v.
+  description = Base theme from which all styles in sub themes, including the control panel, will be based on.
   core        = 7.x
   base theme  = adaptivetheme
   release     = 7.x-3.x

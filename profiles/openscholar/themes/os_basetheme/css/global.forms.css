@@ -58,11 +58,21 @@ textarea:focus {
 }
 
 .form-submit /* The submit button */ {
+	padding:5px;
 }
 
 .container-inline div,
 .container-inline label /* Inline labels and form divs */ {
   display: inline;
+}
+
+
+.form-type-select .form-select {
+   background: #FFF;
+   min-width: 140px;
+   padding: 5px;
+   font-size: 12px;
+   border: 1px solid #ccc;
 }
 
 /* Fieldsets */
@@ -133,10 +143,11 @@ input.title {
 
 input.form-text,
 textarea {
+  font-size:13px;
   height: auto;
-  padding: 4px;
+  padding: 7px;
   background: url('../images/form-input-bg.gif') repeat-x scroll left top #FFFFFF;
-    border: 1px solid #CDCDCD;
+  border: 1px solid #CDCDCD;
 }
 
 html.js input.form-autocomplete {

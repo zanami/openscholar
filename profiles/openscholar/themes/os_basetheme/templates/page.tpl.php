@@ -78,7 +78,7 @@
  */
 ?>
 <div id="page" class="container <?php print $classes; ?>">
-	
+
 <!--header regions beg-->
 <header id="header" class="clearfix" role="banner">
 <!-- Three column 3x33 Gpanel -- OS Header Regions-->
@@ -146,13 +146,13 @@
             </div>
           <?php endif; ?>
 
-
+        </<?php print $tag; ?>>
       </div>
     </div>
 <!--sidebar first region beg-->
     <?php $sidebar_first = render($page['sidebar_first']); print $sidebar_first; ?>
-<!--sidebar first region end-->    
-<!--sidebar second region beg-->    
+<!--sidebar first region end-->
+<!--sidebar second region beg-->
     <?php $sidebar_second = render($page['sidebar_second']); print $sidebar_second; ?>
 <!--sidebar second region end-->
   </div>

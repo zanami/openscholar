@@ -74,6 +74,17 @@ function os_layout_get($context, $load_meta = false, $unused_blocks = false){
     }
   }
 
+  // ensure blocks all have the required fields
+  $required = array(
+      'region' => false,
+      'status' => 0,
+      'title' => '',
+      'weight' => 0
+  );
+  foreach ($block_settings as &$b) {
+    $b += $required;
+  }
+
   return $block_settings;
 }
 
@@ -120,7 +131,6 @@ function os_layout_get_multiple($contexts, $load_meta = false, $unused_blocks = 
  * @return boolean Success
  */
 function os_layout_set($context, $blocks){
-
   _os_layout_sanitize_blocks($blocks);
   if (module_exists('vsite_layout')) {
     //Write the context to the overrides table
@@ -130,7 +140,7 @@ function os_layout_set($context, $blocks){
     $o_context = context_load($context);
     $o_context->reactions['block']['blocks'] = $blocks;
     //write the context to the database
-    context_save($context);
+    context_save($o_context);
   }
 }
 
@@ -161,7 +171,7 @@ function os_layout_set_multiple($contexts, $blocks){
   //Resolve dependencies and alter the contexts accordingly
   foreach ( $contexts as $index => $context ) {
     $layout_blocks = os_layout_get($context);
-
+    // TODO: handle case when $layout_blocks is false
     //Sort the blocks
     uasort($layout_blocks, 'os_layout_block_sort');
 
@@ -170,8 +180,8 @@ function os_layout_set_multiple($contexts, $blocks){
     //Get the removed blocks that no longer exist from this context
     $missing_blocks = array_diff(array_keys($layout_blocks), array_keys($blocks));
 
-    //check common blocks for differences
-    foreach ( array_intersect_key($blocks, $layout_blocks) as $bid ) {
+    //check common blocks for differences)
+    foreach ( array_intersect_key($blocks, $layout_blocks) as $bid => $block) {
       $changed = false;
       foreach ( $block_fields as $key ) {
         if ($layout_blocks[$bid][$key] != $blocks[$bid][$key]) {
@@ -184,7 +194,7 @@ function os_layout_set_multiple($contexts, $blocks){
               //same with if we need to save an override for another reason
               if ($last_child || $changed)
                 break;
-              _os_layout_adjust_relative_weight($blocks, $layout_blocks);
+              _os_layout_adjust_relative_weight($blocks, $layout_blocks, $bid);
               //Check to see if the weight has been reset
               $changed = ($layout_blocks[$bid][$key] != $blocks[$bid][$key]);
               break;
@@ -436,10 +446,10 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout, $
  */
 function _os_layout_sanitize_blocks(&$blocks){
 
-  $block_schema = drupal_get_schema('blocks');
+  $block_schema = drupal_get_schema('block');
 
   foreach ($blocks as $bid => $block) {
-  	$blocks[$bid] = array_intersect_key($block, $block_schema['fields']);
+    $blocks[$bid] = array_intersect_key($block, $block_schema['fields']);
   }
 
 }
@@ -448,5 +458,7 @@ function _os_layout_sanitize_blocks(&$blocks){
  * Sort callback.
  */
 function os_layout_block_sort($a, $b){
-  return ($a->weight - $b->weight);
+  $aw = is_object($a)?$a->weight:$a['weight'];
+  $bw = is_object($b)?$b->weight:$b['weight'];
+  return ($aw-$bw);
 }
