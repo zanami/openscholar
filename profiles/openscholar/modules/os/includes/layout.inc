@@ -384,8 +384,7 @@ function _os_context_sort_by_hierarchy($context1, $context2){
 function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout, $bid){
 
   //Has the relative order changed
-  if (array_intersect_key($block_settings, $previous_layout) != array_intersect_key($previous_layout, $block_settings)) {
-    //If so, then this is an override and no adjustment is needed
+  if (array_keys(array_intersect_key($block_settings, $previous_layout)) != array_keys(array_intersect_key($previous_layout, $block_settings))) {
     return;
   }
 
@@ -398,6 +397,9 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout, $
   $range_end = false;
 
   foreach ( $block_settings as $id => $block ) {
+    //Skip this block if there is no weight setting OR they are not in the same region
+    if(!isset($block['weight']) || $block_settings[$bid]['region'] != $block['region']) continue;
+    
     if ($block['weight'] < min($w_new, $w_old)) {
       $range_begin = $block['weight'];
       continue;
