@@ -63,6 +63,7 @@ function os_menu_alter(&$menu) {
 
 function os_get_bundles($privacy = array(1), $space_type = 'og') {
   $bundles = array('page'=>'Page');
+  $ret_all = FALSE;
 
   $ret_all = false;
   if (is_bool($privacy) && $privacy) {
@@ -80,7 +81,7 @@ function os_get_bundles($privacy = array(1), $space_type = 'og') {
 
   foreach ( $features as $name => $feature ) {
     $info = $feature->info['features'];
-    if (isset($info['node']) && ($ret_all || in_array($site_features[$name], $privacy))) {
+    if (isset($info['node']) && ($ret_all || (isset($site_features[$name]) && in_array($site_features[$name], $privacy)))) {
       $bundles[ $info['node'][0] ] = $feature->info['name'];
     }
   }

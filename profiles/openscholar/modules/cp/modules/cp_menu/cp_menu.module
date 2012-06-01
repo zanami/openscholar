@@ -103,6 +103,24 @@ function cp_menu_node_delete($node) {
   }
 }
 
+//add contextual links to menu to create new links
+function cp_menu_contextual_links_view_alter(&$element, $items) {
+  ctools_include('menu','os');
+  $menus = array_keys(os_get_menus());
+  
+  foreach ($element['#contextual_links'] as $delta => $links) {
+    foreach ($links as $link) {
+      if (isset($link[0]) && $link[0] == 'os') {
+        $menu = $link[1];
+    
+        if (in_array($menu, $menus)) {
+          $element['#links']['menu-add'] = array('title' => t('Add menu item'),'href' => 'cp_menu/ajax/new/' . $menu);
+        }
+      }
+    }
+  }
+}
+
 /**
  * @function cp_form_node_form_alter
  * Implements hook_BASE_ID_form_alter().
