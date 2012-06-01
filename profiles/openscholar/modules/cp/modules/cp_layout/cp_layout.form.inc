@@ -140,11 +140,18 @@ function _cp_layout_rearrange_content_regions($elements) {
 
 function cp_layout_full_submit($form, &$form_state) {
   $regions = $form_state['values']['layout'];
-  $all = array();
+  $ctxs = array('os_public', $form_state['values']['context']);
+  $blocks = os_layout_get_multiple($ctxs, false, true);
   foreach ($regions as $r => $d) {
     $widgets = explode('|', $d['widgets']);
-    $all = array_merge($all);
+    $weight = 0;
+    foreach ($widgets as $w) {
+      if (isset($blocks[$w])) {
+        $blocks[$w]['region'] = $r;
+        $blocks[$w]['weight'] = $weight++;
+      }
+    }
   }
 
-  os_layout_set_multiple(array('os-public', $form_state['values']['context']), $all);
+  os_layout_set_multiple($ctxs, $blocks);
 }

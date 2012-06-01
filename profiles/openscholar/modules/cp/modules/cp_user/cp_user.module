@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * Implements Hook Menu
+ */
+function cp_user_menu() {
+  $items = array();
+
+  $items['cp/users'] = array(
+    'title' => 'Users',
+    'description' => 'Find and manage site members.',
+    'page callback' => 'cp_user_members',
+    'access arguments' => array('administer users'),
+    'file' => 'cp_user.form.inc',
+    'weight' => 50,
+  );
+
+  $items['cp/users/members'] = array(
+    'title' => 'Manage Members',
+    'description' => 'Find and manage site members.',
+    'page callback' => 'cp_user_members',
+    'access arguments' => array('administer users'),
+    'file' => 'cp_user.form.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 20,
+  );
+  
+  $items['cp/users/add'] = array(
+    'title' => 'Add User',
+    'page callback' => 'cp_user_add_user',
+    'access arguments' => array('administer users'),
+    'file' => 'cp_user.form.inc',
+    'type' => MENU_CALLBACK,
+    'weight' => 10
+  );
+
+//  $items['cp/users/user_lookup'] = array(
+//    'title' => 'Find Member',
+//    'page callback' => 'cp_user_user_search',
+//    'access callback' => 'cp_access_cp',
+//    'file' => 'cp_user.form.inc',
+//    'type' => MENU_CALLBACK,
+//    'weight' => 10
+//  );
+
+  return $items;
+}
+
