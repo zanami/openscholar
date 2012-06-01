@@ -64,6 +64,7 @@ function os_menu_alter(&$menu) {
 function os_get_bundles($privacy = array(1), $space_type = 'og') {
   $bundles = array('page'=>'Page');
 
+  $ret_all = false;
   if (is_bool($privacy) && $privacy) {
     $ret_all = TRUE;
   }
@@ -186,6 +187,9 @@ function os_theme(){
   );
 }
 
+/**
+ * Adds contextual links to the page's render array
+ */
 function os_page_build(&$page) {
   $page['#contextual_links'] = array(
     'os' => array(
@@ -193,4 +197,23 @@ function os_page_build(&$page) {
       array(),
     )
   );
+}
+
+/**
+ * Removes contextual links when we're in a Feature context
+ */
+function os_menu_contextual_links_alter(&$links, $router_item, $base_path) {
+  if ($base_path == 'node/add') {
+    dpm($links);
+    // unset links for disabled apps
+    $types = os_get_bundles(0);
+
+    foreach ($types as $type => $title) {
+      unset($links['os-'.$type]);
+    }
+
+    // get the active contexts
+    // if it's one the ones from an app, only display the node/add link for that app
+    // e.g. if we're in the Announcements context, only display the link for Add New Announcements
+  }
 }
