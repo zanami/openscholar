@@ -1,6 +1,6 @@
 
-<div id="page-wrapper"><div id="page">
-  <div id="header-wrapper"><div class="container clearfix">
+<div id="page-wrapper" data-role="page"><div id="page">
+  <div id="header-wrapper" data-theme="c" data-role="header"><div class="container clearfix">
     <header id="header" class="clearfix">
 
       <div id="branding" class="clearfix">
@@ -40,7 +40,7 @@
     </div></div>
   <?php endif; ?>
 
-  <div id="content-wrapper"><div class="container">
+  <div id="content-wrapper" data-theme="c" data-role="content"><div class="container">
     <div id="columns"><div class="columns-inner clearfix">
       <div id="content-column"><div class="content-inner">
 
@@ -85,7 +85,7 @@
 
 
   <?php if ($page['footer']): ?>
-    <div id="footer-wrapper"><div class="container clearfix">
+    <div id="footer-wrapper" data-theme="c"><div class="container clearfix">
       <footer class="clearfix">
         <?php print render($page['footer']); ?>
       </footer>
