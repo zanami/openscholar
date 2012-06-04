@@ -121,27 +121,6 @@ function cp_menu(){
   return $items;
 }
 
-/**
- * @function cp_menu_alter
- * implements hook_menu_alter
- * 
- * Alters theme callback for cp/* menu entries to use the cp theme.
- * Fires after views_menu_alter to catch menu entries added by views as well
- * 
- * @param array $items
- */
-function cp_menu_alter(&$items) {
-  $cp_items = preg_grep('/^cp\//', array_keys($items));
-  foreach ($cp_items as $delta) {
-    $items[$delta]['theme callback'] = '_cp_get_cp_theme';
-  }
-}
-
-//callback function returns name of control panel theme
-function _cp_get_cp_theme() {
-  return 'cp';
-}
-
 function cp_theme() {
   $theme = array();
   $theme['cp-toolbar'] = array(

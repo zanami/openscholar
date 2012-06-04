@@ -195,3 +195,13 @@ function os_page_build(&$page) {
     )
   );
 }
+
+//lets init spaces early to get custom theme to work right
+function os_custom_theme() {
+  purl_init();
+  $space = spaces_get_space();
+
+  if ($space && arg(0)=='cp') {
+    return 'cp';
+  }
+}
