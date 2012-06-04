@@ -247,4 +247,3 @@ function os_menu_contextual_links_alter(&$links, $router_item, $base_path) {
     dpm($links);
   }
 }
->>>>>>> 04f4c935083bf1d70745f327468300d3cb62e9f4
