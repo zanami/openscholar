@@ -57,6 +57,8 @@
     $('#edit-context-selection').change(cp_layout_change);
     
     $('.cp-layout-widget .close-this').click(remove);
+    
+    $('#widget-categories a').click(tab_change);
   }
   
   /**
@@ -108,5 +110,22 @@
    */
   function remove(e) {
     var $w = $(event.target).parents('.cp-layout-widget').detach().appendTo('#edit-layout-unused-widgets .widget-container');
+  }
+  
+  /**
+   * Changes the which widgets are visible based on the tab selected
+   */
+  function tab_change(e) {
+    $('#widget-categories a').removeClass('active');
+    var tar_class = $(e.target).addClass('active').text();
+    if (tar_class == 'All') {
+      $('#edit-layout-unused-widgets .cp-layout-widget').removeClass('hidden');
+    }
+    else {
+      var all = $('#edit-layout-unused-widgets .cp-layout-widget').addClass('hidden');
+      $('#edit-layout-unused-widgets .cp-layout-widget.'+tar_class).removeClass('hidden');
+    }
+    e.stopPropagation();
+    e.preventDefault();
   }
 })(jQuery);

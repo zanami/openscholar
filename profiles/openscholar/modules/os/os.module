@@ -244,6 +244,5 @@ function os_menu_contextual_links_alter(&$links, $router_item, $base_path) {
     if (!empty($new_links)) {
       $links = $new_links;
     }
-    dpm($links);
   }
 }
