@@ -377,3 +377,18 @@ function cp_get_menu_tree() {
   return $tree;
 
 }
+
+/**
+ * @function cp_use_cp_theme
+ *
+ * @return Bool indicating whether or not to use cp theme.
+ */
+function cp_use_cp_theme() {
+  if (($space = spaces_get_space()) == FALSE) {
+    return FALSE;
+  }
+  
+  if ((arg(0) == 'cp') ||  (arg(0)=='node' && arg(1)=='add') || (arg(0) == 'node' && arg(2) == 'edit')) {
+    return TRUE;
+  }
+}
