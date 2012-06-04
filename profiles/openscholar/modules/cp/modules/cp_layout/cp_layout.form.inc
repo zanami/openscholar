@@ -139,6 +139,7 @@ function _cp_layout_rearrange_content_regions($elements) {
 }
 
 function cp_layout_full_submit($form, &$form_state) {
+  dpm($form_state['values']);
   $regions = $form_state['values']['layout'];
   $ctxs = array('os_public', $form_state['values']['context']);
   $blocks = os_layout_get_multiple($ctxs, false, true);
