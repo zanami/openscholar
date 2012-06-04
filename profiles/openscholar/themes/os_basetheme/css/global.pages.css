@@ -38,6 +38,7 @@ body {
 
 #main-content /* Wraps the main-content-header, the content region and feed-icons. */ {
 	 padding-top: 10px;
+	 position: relative;
 }
 
 

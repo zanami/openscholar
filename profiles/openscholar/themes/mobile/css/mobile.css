@@ -1,3 +1,7 @@
+
+@import "jquery.mobile-1.1.0.min.css"; 
+
+
 /* layout */
 .container {width:100%}
 #content-column,.content-column,div.sidebar {float: left; clear: none}
@@ -8,7 +12,7 @@
 .region-sidebar-second {width: 290px; margin-left: -290px}
 
 
-/** MAIN NAV **/
+/** MAIN NAV  **/
 #block-system-main-menu {
 	margin-left: 0;
     margin-right: 0;
@@ -16,7 +20,6 @@
 	
 #menu-bar ul.menu {
 	width: 100%;
-	background-color: #efefef;
 }
 
 #menu-bar ul.menu li  {
@@ -34,4 +37,5 @@
   padding: 4px;
   color: #293352;
   }
-  
+ 
+#messages-help-wrapper {display:none;}

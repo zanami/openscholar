@@ -107,7 +107,6 @@
    * Removes a widget from the layout, placing it in the unused widgets toolbar.
    */
   function remove(e) {
-    console.log(e);
-    var $w = $(event.target).parent('.cp-layout-widget').detach().appendTo('#edit-layout-unused-widgets .widget-container');
+    var $w = $(event.target).parents('.cp-layout-widget').detach().appendTo('#edit-layout-unused-widgets .widget-container');
   }
 })(jQuery);
