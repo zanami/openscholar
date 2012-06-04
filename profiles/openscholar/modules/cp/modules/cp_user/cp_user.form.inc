@@ -1,6 +1,33 @@
 <?php
 
 /**
+ * @file
+ * Page callback for the cp user admin functions.
+ */
+function cp_user_admin($callback_arg = '') {
+  $op = isset($_POST['op']) ? $_POST['op'] : $callback_arg;
+  
+  $vsite = spaces_get_space();
+  
+  switch ($op) {
+    case t('Add existing user'):
+    case 'add':
+      if($vsite){
+        $build['user_add'] = drupal_get_form('cp_user_add_users','node', $vsite->id);
+      }
+      break;
+    case t('Create new account'):
+    case 'create':
+      $build['user_register'] = drupal_get_form('user_register_form');
+      break;
+    case 'members':
+    default:
+      $build = cp_user_members();
+  }
+  return $build;
+}
+
+/**
  * Load the users control panel
  *
  * @todo Adapt view to work outside of a space as well
@@ -8,7 +35,7 @@
 function cp_user_members(){
   $vsite = spaces_get_space();
   
-  $output = "<p>".l('Add New Member','cp/users/add')."</p>";
+  $output = '';// "<p>".l('Add New Member','cp/users/add')."</p>";
   
   if($vsite){
     $view = views_get_view('os_site_members', 'default');
@@ -20,20 +47,20 @@ function cp_user_members(){
   return $output;
 }
 
-/**
- *
- */
-function cp_user_add_user(){
-  $vsite = spaces_get_space();
-  
-  if($vsite){
-    
-    return drupal_get_form('cp_user_add_users','node', $vsite->id);
-  }
-  
-  return;
-  
-}
+///**
+// *
+// */
+//function cp_user_add_user(){
+//  $vsite = spaces_get_space();
+//
+//  if($vsite){
+//
+//    return drupal_get_form('cp_user_add_users','node', $vsite->id);
+//  }
+//
+//  return;
+//
+//}
 
 /**
  * Add users to group form.
@@ -151,4 +178,13 @@ function cp_user_add_users_submit($form, &$form_state) {
   $og_membership->save();
 
   drupal_set_message(t('%user has been added to group.', array('%user' => format_username($account))));
+}
+
+/**
+ * Add a new user to your site that does not already exist
+ *
+ * @todo Combine this with add user
+ */
+function cp_user_create_new_user(){
+  
 }

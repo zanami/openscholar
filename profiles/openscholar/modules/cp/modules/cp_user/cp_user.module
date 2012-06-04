@@ -3,46 +3,68 @@
 /**
  * Implements Hook Menu
  */
-function cp_user_menu() {
+function cp_user_menu(){
   $items = array();
-
+  
   $items['cp/users'] = array(
-    'title' => 'Users',
-    'description' => 'Find and manage site members.',
-    'page callback' => 'cp_user_members',
-    'access arguments' => array('administer users'),
-    'file' => 'cp_user.form.inc',
-    'weight' => 50,
+      'title' => 'Users',
+      'description' => 'Find and manage site members.',
+      'page callback' => 'cp_user_admin',
+      'access arguments' => array(
+          'administer users'
+      ),
+      'file' => 'cp_user.form.inc',
+      'weight' => 50
   );
-
+  
   $items['cp/users/members'] = array(
-    'title' => 'Manage Members',
-    'description' => 'Find and manage site members.',
-    'page callback' => 'cp_user_members',
-    'access arguments' => array('administer users'),
-    'file' => 'cp_user.form.inc',
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 20,
+      'title' => 'Manage Members',
+      'description' => 'Find and manage site members.',
+      'page callback' => 'cp_user_admin',
+      'access arguments' => array(
+          'administer users'
+      ),
+      'file' => 'cp_user.form.inc',
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'weight' => 20
   );
   
   $items['cp/users/add'] = array(
-    'title' => 'Add User',
-    'page callback' => 'cp_user_add_user',
-    'access arguments' => array('administer users'),
-    'file' => 'cp_user.form.inc',
-    'type' => MENU_CALLBACK,
-    'weight' => 10
+      'title' => 'Add User to Site',
+      'page arguments' => array(
+          'add'
+      ),
+      'access arguments' => array(
+          'administer users'
+      ),
+      'type' => MENU_LOCAL_ACTION,
+      'context' => MENU_CONTEXT_PAGE
   );
-
-//  $items['cp/users/user_lookup'] = array(
-//    'title' => 'Find Member',
-//    'page callback' => 'cp_user_user_search',
-//    'access callback' => 'cp_access_cp',
-//    'file' => 'cp_user.form.inc',
-//    'type' => MENU_CALLBACK,
-//    'weight' => 10
-//  );
-
+  
+  $items['cp/users/create'] = array(
+      'title' => 'Create New User',
+      'page arguments' => array(
+          'create'
+      ),
+      'access arguments' => array(
+          'administer users'
+      ),
+      'type' => MENU_LOCAL_ACTION,
+      'context' => MENU_CONTEXT_PAGE
+  );
+  
   return $items;
 }
 
+///**
+// * Adds contextual links to the user page
+// */
+//function cp_user_page_build(&$page) {
+//
+//  if(!is_array($page['#contextual_links'])) $page['#contextual_links'] = array();
+//
+//  $page['#contextual_links']['cp_user'] = array(
+//    'cp/users',
+//    array(),
+//  );
+//}

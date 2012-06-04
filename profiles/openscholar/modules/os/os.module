@@ -6,7 +6,7 @@ include_once ('os.features.inc');
  */
 function os_menu(){
   $items = array();
-
+  
   $items['home'] = array(
       'type' => MENU_CALLBACK,
       'title' => '',
@@ -17,7 +17,7 @@ function os_menu(){
       ),
       'weight' => 0
   );
-
+  
   // nodeautocomplete callback
   $items['os/node/autocomplete'] = array(
       'type' => MENU_CALLBACK,
@@ -29,7 +29,7 @@ function os_menu(){
       ),
       'file path' => drupal_get_path('module', 'os') . '/'
   );
-
+  
   return $items;
 }
 
@@ -37,13 +37,13 @@ function os_menu(){
  * Sets up menu entries for contextual links
  *
  * Requirements for contextual links:
- *  - Link is a local task of a parent
- *  - Link has the 'inline' context
+ * - Link is a local task of a parent
+ * - Link has the 'inline' context
  */
-function os_menu_alter(&$menu) {
+function os_menu_alter(&$menu){
   $types = os_get_bundles(true);
-  foreach ($types as $type => $title) {
-    $m = &$menu['node/add/'.$type];
+  foreach ( $types as $type => $title ) {
+    $m = &$menu['node/add/' . $type];
     $m['type'] = MENU_LOCAL_TASK;
     $m['context'] = MENU_CONTEXT_INLINE;
   }
@@ -61,10 +61,12 @@ function os_menu_alter(&$menu) {
  * @return array array('bundle_id' => 'Bundle Name')
  */
 
-function os_get_bundles($privacy = array(1), $space_type = 'og') {
-  $bundles = array('page'=>'Page');
+function os_get_bundles($privacy = array(1), $space_type = 'og'){
+  $bundles = array(
+      'page' => 'Page'
+  );
   $ret_all = FALSE;
-
+  
   $ret_all = false;
   if (is_bool($privacy) && $privacy) {
     $ret_all = TRUE;
@@ -74,28 +76,26 @@ function os_get_bundles($privacy = array(1), $space_type = 'og') {
         $privacy
     );
   }
-
-
+  
   $features = spaces_features($space_type);
   $site_features = variable_get('spaces_features', array());
-
+  
   foreach ( $features as $name => $feature ) {
     $info = $feature->info['features'];
     if (isset($info['node']) && ($ret_all || (isset($site_features[$name]) && in_array($site_features[$name], $privacy)))) {
-      $bundles[ $info['node'][0] ] = $feature->info['name'];
+      $bundles[$info['node'][0]] = $feature->info['name'];
     }
   }
-
+  
   return $bundles;
 }
-
 
 /**
  * Implements hook_block_info().
  */
 function os_block_info(){
   ctools_include('menu', 'os');
-
+  
   $blocks['powered-by'] = array(
       'info' => t('Powered by Openscholar'),
       'weight' => '10',
@@ -142,36 +142,42 @@ function os_block_view($delta = ''){
  *
  * Builds cp widgets for the menus
  */
-function os_os2s_widget() {
+function os_os2s_widget(){
   $blocks = array();
   ctools_include('menu', 'os');
-
+  
   foreach ( os_get_menus() as $menu_name => $title ) {
-    $blocks['menu-'.$menu_name] = array(
-      'module' => 'menu',
-      'info' => t($title),
-      'delta' => $menu_name,
-      // Menu blocks can't be cached because each menu item can have
-      // a custom access callback. menu.inc manages its own caching.
-      'cache' => DRUPAL_NO_CACHE,
+    $blocks['menu-' . $menu_name] = array(
+        'module' => 'menu',
+        'info' => t($title),
+        'delta' => $menu_name,
+        // Menu blocks can't be cached because each menu item can have
+        // a custom access callback. menu.inc manages its own caching.
+        'cache' => DRUPAL_NO_CACHE
     );
   }
-
+  
   return $blocks;
 }
 
-function os_os_widget_alter(&$widget) {
+function os_os_widget_alter(&$widget){
   if ($widget['module'] == 'os') {
     $widget += array(
-      'bid' => 'os-'.$widget['delta'],
-      'tags' => array('Other'),
-      'class' => array('menu'),
+        'bid' => 'os-' . $widget['delta'],
+        'tags' => array(
+            'Other'
+        ),
+        'class' => array(
+            'menu'
+        )
     );
   }
   elseif ($widget['module'] == 'node') {
     $widget += array(
-      'bid' => 'node-recent',
-      'tags' => array('Content'),
+        'bid' => 'node-recent',
+        'tags' => array(
+            'Content'
+        )
     );
   }
 }
@@ -191,26 +197,28 @@ function os_theme(){
 /**
  * Adds contextual links to the page's render array
  */
-function os_page_build(&$page) {
-  $page['#contextual_links'] = array(
-    'os' => array(
+function os_page_build(&$page){
+  if (! is_array($page['#contextual_links'])){
+    $page['#contextual_links'] = array();
+  }
+  
+  $page['#contextual_links']['os'] = array(
       'node/add',
-      array(),
-    )
+      array()
   );
 }
 
 /**
  * @function os_custom_theme
- * 
+ *
  * implements hook_custom_theme
  * returns name of theme to use
  */
-function os_custom_theme() {
+function os_custom_theme(){
   purl_init();
   $space = spaces_get_space();
-
-  if ($space && arg(0)=='cp') {
+  
+  if ($space && arg(0) == 'cp') {
     return 'cp';
   }
 }
@@ -218,30 +226,30 @@ function os_custom_theme() {
 /**
  * Removes contextual links when we're in a Feature context
  */
-function os_menu_contextual_links_alter(&$links, $router_item, $base_path) {
+function os_menu_contextual_links_alter(&$links, $router_item, $base_path){
   if ($base_path == 'node/add') {
     // unset links for disabled apps
     $types = os_get_bundles(0);
-
-    foreach ($types as $type => $title) {
-      unset($links['os-'.$type]);
+    
+    foreach ( $types as $type => $title ) {
+      unset($links['os-' . $type]);
     }
-
+    
     // get the active contexts
     // if it's one the ones from an app, only display the node/add link for that app
     // e.g. if we're in the Announcements context, only display the link for Add New Announcements
     $active = context_active_contexts();
-
+    
     $new_links = array();
-    foreach ($active as $a) {
+    foreach ( $active as $a ) {
       if (isset($a->conditions['node']['values']) && $a->conditions['node']['options']['node_form'] == 0) {
         $val = current($a->conditions['node']['values']);
-        if (isset($links['os-'.$val])) {
-          $new_links['os-'.$val] = $links['os-'.$val];
+        if (isset($links['os-' . $val])) {
+          $new_links['os-' . $val] = $links['os-' . $val];
         }
       }
     }
-    if (!empty($new_links)) {
+    if (! empty($new_links)) {
       $links = $new_links;
     }
   }
