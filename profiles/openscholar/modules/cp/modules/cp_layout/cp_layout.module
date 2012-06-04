@@ -73,6 +73,10 @@ function template_preprocess_cp_layout_widget(&$variables) {
     }
   }
 
+  if (isset($widget['tags']) && is_array($widget['tags'])) {
+    $classes_array = array_merge($classes_array, $widget['tags']);
+  }
+
   if (isset($widget->icon_path)) {
   	$style = "style=\"background-image:url('{$w['icon_path']}');\"";
   }
