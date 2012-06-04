@@ -201,6 +201,21 @@ function os_page_build(&$page) {
 }
 
 /**
+ * @function os_custom_theme
+ * 
+ * implements hook_custom_theme
+ * returns name of theme to use
+ */
+function os_custom_theme() {
+  purl_init();
+  $space = spaces_get_space();
+
+  if ($space && arg(0)=='cp') {
+    return 'cp';
+  }
+}
+
+/**
  * Removes contextual links when we're in a Feature context
  */
 function os_menu_contextual_links_alter(&$links, $router_item, $base_path) {
@@ -231,3 +246,4 @@ function os_menu_contextual_links_alter(&$links, $router_item, $base_path) {
     }
   }
 }
+>>>>>>> 04f4c935083bf1d70745f327468300d3cb62e9f4
