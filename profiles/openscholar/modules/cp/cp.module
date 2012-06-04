@@ -388,7 +388,7 @@ function cp_use_cp_theme() {
     return FALSE;
   }
   
-  if ((arg(0) == 'cp') ||  (arg(0)=='node' && arg(1)=='add')) {
+  if ((arg(0) == 'cp') ||  (arg(0)=='node' && arg(1)=='add') || (arg(0) == 'node' && arg(2) == 'edit')) {
     return TRUE;
   }
 }
