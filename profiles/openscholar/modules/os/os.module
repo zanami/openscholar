@@ -75,7 +75,7 @@ function os_get_bundles($privacy = array(1), $space_type = 'og'){
   }
   $bundles = array();
 
-  if (in_array(2, $privacy)) {
+  if ($ret_all || in_array(2, $privacy)) {
     $bundles['page'] = 'Page';
   }
 
