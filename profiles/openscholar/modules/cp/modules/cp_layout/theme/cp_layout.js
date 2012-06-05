@@ -52,13 +52,14 @@
     
     $('#edit-layout-unused-widgets .widget-container').sortable(sort_opts);
     
-    $('#cp-layout-full-form').submit(cp_layout_submit);
+    // event handlers
+    $('#cp-layout-full-form').submit(cp_layout_submit); // L#82
     
-    $('#edit-context-selection').change(cp_layout_change);
+    $('#edit-context-selection').change(cp_layout_change); // L#74
     
-    $('.cp-layout-widget .close-this').click(remove);
+    $('.cp-layout-widget .close-this').click(remove); // L#113
     
-    $('#widget-categories a').click(tab_change);
+    $('#widget-categories a').click(tab_change); // L#120
   }
   
   /**
@@ -90,6 +91,7 @@
       for (;i<l;i++) {
         data.push($widgets[i].id);
       }
+      // data is now an array of widget deltas
       
       // put the list of widgets into the hidden input element in each region
       $input.val(data.join('|'));
@@ -116,8 +118,11 @@
    * Changes the which widgets are visible based on the tab selected
    */
   function tab_change(e) {
+    // set the active class on the tabs themselves
     $('#widget-categories a').removeClass('active');
     var tar_class = $(e.target).addClass('active').text();
+    
+    // hide/show affected widgets
     if (tar_class == 'All') {
       $('#edit-layout-unused-widgets .cp-layout-widget').removeClass('hidden');
     }
@@ -125,6 +130,8 @@
       var all = $('#edit-layout-unused-widgets .cp-layout-widget').addClass('hidden');
       $('#edit-layout-unused-widgets .cp-layout-widget.'+tar_class).removeClass('hidden');
     }
+    
+    // prevent the browser from doing things with the link
     e.stopPropagation();
     e.preventDefault();
   }
