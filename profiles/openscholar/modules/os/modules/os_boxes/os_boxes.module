@@ -109,6 +109,7 @@ function os_boxes_os_widget_alter(&$widget) {
     $widget['class'] = $plugin['tags'];
 
     $widget['can_edit'] = true;  // all boxes should be editable. If they aren't, why are they a box
+    $widget['path'] = 'os/boxes/'.$widget['delta'];
 
     // deletion is trickier
     if (strpos($widget['delta'], 'og-') !== FALSE) {

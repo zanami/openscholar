@@ -67,7 +67,7 @@ function template_preprocess_cp_layout_widget(&$variables) {
     $classes_array[] = $widget['plugin'];
   }
 
-  // extra classes used for tag selectin
+  // extra classes used for tag selection
   if (isset($widget['class'])) {
     if (is_array($widget['class'])) {
       $classes_array = array_merge($classes_array, $widget['class']);
@@ -89,7 +89,7 @@ function template_preprocess_cp_layout_widget(&$variables) {
 
   if (isset($widget['can_edit']) && $widget['can_edit']) {
     $variables['can_edit'] = true;
-    $variables['edit_path'] = '/path/to/box/edit';
+    $variables['edit_path'] = $widget['path'].'/cp-layout';
   }
   else {
     $variables['can_edit'] = false;
@@ -97,7 +97,7 @@ function template_preprocess_cp_layout_widget(&$variables) {
 
   if (isset($widget['can_delete']) && $widget['can_delete']) {
     $variables['can_delete'] = true;
-    $variables['delete_path'] = '/path/to/box/delete';
+    $variables['delete_path'] = $widget['path'].'/delete';
   }
   else {
     $variables['can_delete'] = false;
