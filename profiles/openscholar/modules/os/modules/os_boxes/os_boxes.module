@@ -34,11 +34,19 @@ function os_boxes_load($key) {
     // this is an instance;
     return $box;
   }
-  if ($box = boxes_factory($key, array('delta' => time()))) { // TODO: Build a real delta
+  if ($box = boxes_factory($key, array('delta' => os_boxes_create_delta()))) { // TODO: Build a real delta
     // this is a plugin, so create a new box
     return $box;
   }
   return false;
+}
+
+/**
+ * Creates a delta from clues about the environment
+ * It just needs to be unique
+ */
+function os_boxes_create_delta() {
+  return time();  // TODO: Replace with real function
 }
 
 /**
