@@ -259,9 +259,10 @@ function os_menu_contextual_links_alter(&$links, $router_item, $base_path){
     $new_links = array();
     foreach ( $active as $a ) {
       if (isset($a->conditions['node']['values']) && $a->conditions['node']['options']['node_form'] == 0) {
-        $val = current($a->conditions['node']['values']);
-        if (isset($links['os-' . $val])) {
-          $new_links['os-' . $val] = $links['os-' . $val];
+        foreach ($a->conditions['node']['values'] as $val) {
+          if (isset($links['os-' . $val])) {
+            $new_links['os-' . $val] = $links['os-' . $val];
+          }
         }
       }
     }
