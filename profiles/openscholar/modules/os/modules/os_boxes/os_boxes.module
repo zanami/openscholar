@@ -34,7 +34,7 @@ function os_boxes_load($key) {
     // this is an instance;
     return $box;
   }
-  if ($box = boxes_factory($key)) {
+  if ($box = boxes_factory($key, array('delta' => time()))) { // TODO: Build a real delta
     // this is a plugin, so create a new box
     return $box;
   }
@@ -58,16 +58,22 @@ function os_boxes_get_boxes_plugins($name = NULL){
   return $boxes;
 }
 
-function os_boxes_os_widget() {
-  $boxes = boxes_box_load();
+function os_boxes_os_widget($box = NULL) {
+  if (isset($box)) {
+    $boxes = array('box-'.$box->delta, (object)$box);
+  }
+  else {
+    $boxes = boxes_box_load();
+  }
   $widgets = array();
   foreach ($boxes as $delta => $box) {
-    $widgets[] = array(
+    $bid = 'boxes-'.$delta;
+    $widgets[$bid] = array(
       'module' => 'boxes',
       'delta' => $delta,
-      'title' => $box->subject,
-      'weight' => $box->weight,
-      'region' => $box->region,
+      'title' => $box->title,
+      //'weight' => $box->weight,
+      //'region' => $box->region,
       'info' => $box->description,
     );
   }
@@ -96,7 +102,7 @@ function os_boxes_os_widget_alter(&$widget) {
 
     $widget['info'] = $box->description;
     $widget['plugin'] = $box->plugin_key;
-    $widget['class'] = $plugin->tags;
+    $widget['class'] = $plugin['tags'];
 
     $widget['can_edit'] = true;  // all boxes should be editable. If they aren't, why are they a box
 
@@ -120,7 +126,7 @@ function os_boxes_get_factories() {
         'module' => 'boxes',
         'delta' => "boxes_add__$p",
         'label' => $info['title'],
-        'block_config_path' => "os/boxes/boxes_add__{$p}",
+        'block_config_path' => "os/boxes/{$p}",
         'factory' => true,
       );
 
