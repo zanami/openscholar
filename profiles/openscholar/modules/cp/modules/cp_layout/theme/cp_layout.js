@@ -11,7 +11,7 @@
       cp_layout_init();
     }
     else {
-      cp_layout_process_ajax(ctx);
+      cp_layout_ajax(ctx);
     }
   }
   
