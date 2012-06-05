@@ -14,7 +14,8 @@ function cp_user_menu(){
           'administer users'
       ),
       'file' => 'cp_user.form.inc',
-      'weight' => 50
+      'weight' => 50,
+      'menu_name' => 'cp',
   );
   
   $items['cp/users/members'] = array(

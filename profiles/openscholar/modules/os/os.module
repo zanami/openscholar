@@ -198,7 +198,7 @@ function os_theme(){
  * Adds contextual links to the page's render array
  */
 function os_page_build(&$page){
-  if (! is_array($page['#contextual_links'])){
+  if (!isset($page['#contextual_links']) || !is_array($page['#contextual_links'])){
     $page['#contextual_links'] = array();
   }
   

@@ -10,7 +10,7 @@ function cp_user_admin($callback_arg = '') {
   $vsite = spaces_get_space();
   
   switch ($op) {
-    case t('Add existing user'):
+    case t('Add user'):
     case 'add':
       if($vsite){
         $build['user_add'] = drupal_get_form('cp_user_add_users','node', $vsite->id);
