@@ -62,9 +62,6 @@ function os_menu_alter(&$menu){
  */
 
 function os_get_bundles($privacy = array(1), $space_type = 'og'){
-  $bundles = array(
-      'page' => 'Page'
-  );
   $ret_all = FALSE;
 
   $ret_all = false;
@@ -75,6 +72,11 @@ function os_get_bundles($privacy = array(1), $space_type = 'og'){
     $privacy = array(
         $privacy
     );
+  }
+  $bundles = array();
+
+  if (in_array(2, $privacy)) {
+    $bundles['page'] = 'Page';
   }
 
   $features = spaces_features($space_type);
