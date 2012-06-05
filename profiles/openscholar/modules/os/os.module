@@ -268,3 +268,10 @@ function os_menu_contextual_links_alter(&$links, $router_item, $base_path){
     }
   }
 }
+
+/**
+ * Removes contextual links class from html.
+ */
+function os_preprocess_html(&$variables) {
+  $variables['classes_array'] = array_diff($variables['classes_array'], array('contextual-links-region'));
+}

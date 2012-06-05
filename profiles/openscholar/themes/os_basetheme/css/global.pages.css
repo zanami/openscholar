@@ -404,6 +404,10 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
   margin-top: 160px;
 }
 
+.contextual-links-region:hover .contextual-links-region a.contextual-links-trigger {
+  display: none;
+}
 
-
-
+.contextual-links-region .contextual-links-region:hover a.contextual-links-trigger {
+  display: block;
+}
