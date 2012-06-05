@@ -35,7 +35,8 @@ function os_boxes_widget_submit($form, $form_state) {
     case 'cp-layout':
       $b = os_boxes_os_widget($box);
       drupal_alter('os_widget', $b);
-      $html = theme('cp_layout_widget', $b);
+      $r = array('#theme' => 'cp_layout_widget', '#widget' => $b);
+      $html = drupal_render($r);
       $target = '.widget-container';
     break;
     case 'inline':

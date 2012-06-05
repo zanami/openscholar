@@ -49,6 +49,10 @@ function cp_layout_theme() {
  * @param unknown_type $variables
  */
 function template_preprocess_cp_layout_widget(&$variables) {
+  // used in template
+  ctools_include('ajax');
+  ctools_include('modal');
+
   $widget = $variables['widget']['#widget'];
   $variables['bid'] = $widget['bid'];
   $classes_array = &$variables['classes_array'];

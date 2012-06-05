@@ -60,7 +60,8 @@ function os_boxes_get_boxes_plugins($name = NULL){
 
 function os_boxes_os_widget($box = NULL) {
   if (isset($box)) {
-    $boxes = array('box-'.$box->delta, (object)$box);
+    $boxes = array($box->delta => (object)$box);
+    $return_single = true;
   }
   else {
     $boxes = boxes_box_load();
@@ -78,6 +79,9 @@ function os_boxes_os_widget($box = NULL) {
     );
   }
 
+  if (isset($return_single)) {
+    return current($widgets);
+  }
   return $widgets;
 }
 
