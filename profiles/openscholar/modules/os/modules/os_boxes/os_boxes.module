@@ -15,7 +15,7 @@ function os_boxes_ctools_plugin_api($module, $api) {
  * Implements hook_menu().
  */
 function os_boxes_menu() {
-  $item['os/boxes/%os_boxes'] = array(
+  $items['os/boxes/%os_boxes'] = array(
     'title' => 'Add/Edit Widget',
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(2),
@@ -23,7 +23,15 @@ function os_boxes_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
   );
-  return $item;
+  $items['os/boxes/%os_boxes/delete'] = array(
+    'title' => 'Delete Widget',
+    'page callback' => 'os_boxes_delete_widget',
+    'page arguments' => array(2),
+    'access callback' => 'boxes_access_admin',
+    'type' => MENU_CALLBACK,
+    'file' => 'os_boxes.admin.inc',
+  );
+  return $items;
 }
 
 /**
@@ -120,7 +128,7 @@ function os_boxes_os_widget_alter(&$widget) {
     $widget['path'] = 'os/boxes/'.$widget['delta'];
 
     // deletion is trickier
-    if (strpos($widget['delta'], 'og-') !== FALSE) {
+    if (1 || strpos($widget['delta'], 'og-') !== FALSE) {
       $widget['can_delete'] = true;
     }
     else {

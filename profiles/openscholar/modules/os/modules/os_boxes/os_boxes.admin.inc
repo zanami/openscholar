@@ -58,3 +58,61 @@ function os_boxes_widget_submit($form, $form_state) {
   ctools_include('modal');
   overlay_commands_add(ctools_modal_command_dismiss());  // overlay_close_dialog doesn't work because the form resets it
 }
+
+function os_boxes_delete_widget($box) {
+  $form_state = array(
+    'box' => $box,
+  );
+
+  $form = drupal_build_form('os_boxes_delete_widget_form', $form_state);
+
+  return $form;
+}
+
+function os_boxes_delete_widget_form($form_id, $form_state) {
+  $box = $form_state['box'];
+  $form = array();
+
+  $form['bid'] = array(
+    '#type' => 'value',
+    '#value' => $box->delta,
+  );
+
+  $form['warning'] = array(
+    '#markup' => t('Are you sure you want to delete this widget? This will delete the widget and remove it from all pages
+    it is currently placed on. This action is cannot be undone.'),
+  );
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'yes' => array(
+      '#type' => 'submit',
+      '#value' => t('Yes'),
+    ),
+    'no' => array(
+      '#type' => 'submit',
+      '#value' => t('No'),
+    ),
+  );
+
+  $form['#submit'][] = 'os_boxes_widget_delete_submit';
+
+  return $form;
+
+}
+
+function os_boxes_widget_delete_submit($form, $form_state) {
+  if ($form_state['values']['op'] == t('Yes')) {
+    if (module_exists('spaces') && $space = spaces_get_space()) {
+      $space->controllers->box->del($form_state['values']['bid']);
+    }
+    else {
+      if ($box = boxes_box_load($form_state['values']['bid']))
+        $box->delete();
+      block_custom_block_delete_submit($form, $form_state);
+      unset($form_state['redirect']);
+    }
+
+    overlay_commands_add(ajax_command_remove('#boxes-'.$form_state['values']['bid']));
+  }
+  overlay_commands_add(overlay_command_dismiss());
+}
