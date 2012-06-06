@@ -48,41 +48,20 @@ class vsite extends space_og {
    */
   function activate(){
     
-    if (! $this->verify_purl()) {
-      $this->purge_request_destination();
-      
-      if ($this->purl_provider) {
-        //Set the provider to use for redirection
-        $options = array(
-            'query' => drupal_http_build_query(drupal_get_query_parameters()),
-            'purl' => array(
-                'provider' => $this->purl_provider,
-                'id' => $this->id
-            )
-        );
-        $path = $_GET['q'];
-        
-        //      	$aliased = url($path);
-        //      	if($path != $aliased && isset($_REQUEST['q']) && $path == $_REQUEST['q']){
-        //      		// If the path we are going to has an alias, and the current page we are on does not use that
-        //      		// that alias value.  Then lets skip purl_goto since unaliased paths with a path prefix make it think it's
-        //      		// in a redirect loop.  ex( GET[q] will hold node/123 for both the aliases and non-aliased paths)
-        //      		$path = $this->get_absolute_url($path);
-        //      		drupal_goto($path);
-        //      	}
-        
-
-        purl_goto($path, $options);
-      } //Just like the check in spaces_purl_provider but with dynamic provider
-    }
+    //Test purl paths
+    $this->activate_purl_modifier();
     
     if (parent::activate()) {
+      //Setup user roles (call before menu_get_item caches access info)
+      $this->activate_user_roles();
+      
       $router_item = menu_get_item();
       //If the current menu item relies on the space then reset the cached access information
       if ($router_item['access_callback'] == 'spaces_menu_access') {
         $router_items = &drupal_static('menu_get_item');
         unset($router_items[$_GET['q']]);
       }
+      
       return TRUE;
     }
     
@@ -262,7 +241,9 @@ class vsite extends space_og {
         'site/register',
         'welcome',
         'contact',
-        'node'
+        'node',
+        'admin',
+        'admin/*'
     );
     
     $excluded = array_merge($excluded, $more);
@@ -279,19 +260,55 @@ class vsite extends space_og {
     return drupal_match_path($q, $paths) ? true : false;
   }
   
-//  /**
-//   * Override access_admin().
-//   */
-//  function access_admin($account = NULL) {
-//    global $user;
-//    $account = isset($account) ? $account : $user;
-//
-//    // Adventurous modules can cause us to arrive here before og_init() has fired.
-//    // See http://drupal.org/node/285696
-//    if ($account->uid && !isset($account->og_groups)) {
-//      $account = user_load($account->uid);
-//    }
-//
-//    return parent::access_admin($account);
-//  }
+  /**
+   * Ensure PURL modifier is present otherwise redirect via purl
+   */
+  protected function activate_purl_modifier(){
+    if (! $this->verify_purl()) {
+        $this->purge_request_destination();
+        
+        if ($this->purl_provider) {
+          //Set the provider to use for redirection
+          $options = array(
+              'query' => drupal_http_build_query(drupal_get_query_parameters()),
+              'purl' => array(
+                  'provider' => $this->purl_provider,
+                  'id' => $this->id
+              )
+          );
+          $path = $_GET['q'];
+          
+          //        $aliased = url($path);
+          //        if($path != $aliased && isset($_REQUEST['q']) && $path == $_REQUEST['q']){
+          //          // If the path we are going to has an alias, and the current page we are on does not use that
+          //          // that alias value.  Then lets skip purl_goto since unaliased paths with a path prefix make it think it's
+          //          // in a redirect loop.  ex( GET[q] will hold node/123 for both the aliases and non-aliased paths)
+          //          $path = $this->get_absolute_url($path);
+          //          drupal_goto($path);
+          //        }
+          
+  
+          purl_goto($path, $options);
+        } //Just like the check in spaces_purl_provider but with dynamic provider
+      }
+  }
+  
+  /**
+   * Activate User and modify roles based on the space
+   */
+  protected function activate_user_roles(){
+    global $user;
+    
+    $og_roles = og_get_user_roles($this->group_type, $this->id, $user->uid, FALSE);
+    $drupal_roles = user_roles(TRUE);
+    
+    //Get drupal core roles with the same name
+    $common_roles = array_intersect($drupal_roles,$og_roles);
+    
+    foreach ($common_roles as $role) {
+    	$rid = array_search($role, $drupal_roles);
+    	$user->roles[$rid] = $role;
+    }
+  }
+  
 }
