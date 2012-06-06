@@ -113,7 +113,9 @@ function os_user_page(){
  * 404 error page.  Tries to suggest appropriate vsite.
  */
 function os_page_not_found_page() {
-  return t('The requested page could not be found.  Return to ') . l('front page?', '<front>');
+  $t = '<b>' . t('This page cannot be found.  ') . '</b>';
+  $t .= t('The URL might be incorrect or have changed.  Please go back to the ') . l('homepage', '<front>') .'.';
+  return $t;
 }
 
 /**
