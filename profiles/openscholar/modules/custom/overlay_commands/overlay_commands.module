@@ -36,3 +36,9 @@ function overlay_commands_clear() {
 function overlay_commands_preprocess_html() {
   overlay_commands_clear();
 }
+
+function overlay_command_dismiss() {
+  return array(
+    'command' => 'modal_dismiss',
+  );
+}
