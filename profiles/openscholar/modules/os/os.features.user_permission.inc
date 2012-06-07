@@ -703,18 +703,6 @@ function os_user_default_permissions() {
     'module' => 'search',
   );
 
-  // Exported permission: use text format filtered_html.
-  $permissions['use text format filtered_html'] = array(
-    'name' => 'use text format filtered_html',
-    'roles' => array(
-      0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
-    ),
-    'module' => 'filter',
-  );
-
   // Exported permission: view file.
   $permissions['view file'] = array(
     'name' => 'view file',
