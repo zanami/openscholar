@@ -12,7 +12,7 @@
 .region-sidebar-second {width: 290px; margin-left: -290px}
 
 
-/** MAIN NAV  **/
+/** MAIN NAV 
 #block-system-main-menu {
 	margin-left: 0;
     margin-right: 0;
@@ -36,6 +36,6 @@
   text-decoration: none;
   padding: 4px;
   color: #293352;
-  }
+  } **/
  
 #messages-help-wrapper {display:none;}
