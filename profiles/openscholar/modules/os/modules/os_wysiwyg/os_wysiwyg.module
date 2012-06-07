@@ -3,6 +3,67 @@
  * @file
  */
 
+/**
+ * Scan the body of the post for any media tags
+ * If we find any, update those files with the nid of this post
+ * Enter description here ...
+ * @param unknown_type $node
+ */
+function os_wysiwyg_update_files($node) {
+  // get the list of files already in this node
+  $q = new EntityFieldQuery();
+  $q->entityCondition('entity_type', 'file')
+    ->fieldCondition('field_file_nid', 'target_id', $node->nid, 'CONTAINS');
+  $d = $q->execute();
+  $curr_files = array();
+  foreach ($d['file'] as $r) {
+    $curr_files[] = $r->fid;
+  }
+
+  // parse the node body for files the node actually links to
+  $body = $node->body['und'][0]['value'];
+  $pattern = '|"fid":"(\d*)"|';  // find everything between double braces
+  $matches = array();
+  $act_files = array();
+  preg_match_all($pattern, $body, $matches);
+  foreach ($matches[1] as $fid) {
+    if (!in_array($fid, $act_files))
+      $act_files[] = $fid;
+  }
+
+  $altered = array();
+
+  // remove files that the node no longer uses
+  $rem_files = array_diff($curr_files, $act_files);
+  $diff = array(array('target_id' => $node->nid));
+  foreach ($rem_files as $fid) {
+    $file = file_load($fid);
+    $file->field_file_nid['und'] = array_diff($file->field_file_nid['und'], $diff);
+    $altered[] = $file;
+  }
+
+  // add files that the node does use.
+  $new_files = array_diff($act_files, $curr_files);
+  foreach ($new_files as $fid) {
+    $file = file_load($fid);
+    $file->field_file_nid['und'][] = $node->nid;
+    $altered[] = $file;
+  }
+
+  // save changed files
+  foreach ($altered as $file) {
+    file_save($file);
+  }
+}
+
+function os_wysiwyg_node_insert(&$node) {
+  os_wysiwyg_update_files($node);
+}
+
+function os_wysiwyg_node_update($node) {
+  os_wysiwyg_update_files($node);
+}
+
 function os_wysiwyg_wysiwyg_editor_settings_alter(&$settings, $context) {
 
   // settings there are no UI options for
