@@ -411,3 +411,44 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 .contextual-links-region .contextual-links-region:hover a.contextual-links-trigger {
   display: block;
 }
+
+
+/** OVERLAY MODAL **/
+	
+#overlay-close, #overlay-close:hover {
+    background: url('../images/icon-close-window.png') no-repeat;
+	width:30px;
+	height:30px;
+	position: relative;
+ 	margin: -38px;   
+}
+	
+#overlay-titlebar {
+    padding: 15px 10px;
+    position: relative;
+    white-space: nowrap;
+    z-index: 100;
+    background: #EFEFEF;
+    border-bottom:2px solid #C4C2C2;
+    height:24px;
+}
+
+#overlay-title {
+    float: left;
+	margin: 0;
+    padding: 0.3em 0;
+    color: #666;
+    font-size:20px;
+    font-weight: normal;
+}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
