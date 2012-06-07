@@ -11,8 +11,8 @@ conditional-stylesheets[if lt IE 9][all][] = css/scholar_cayley-ie.css
 conditional-stylesheets[if lte IE 7][all][] = css/scholar_cayley-ie.csss
 
 ;os[widgets][boxes-site_logo] = false
-;os[theme_type]   = "vsite"
-;os[theme_access] = "public"
+os[theme_type]   = "vsite"
+os[theme_access] = "public"
 
 ;----------// Regions
   regions[sidebar_first] = Sidebar first
