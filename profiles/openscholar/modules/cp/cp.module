@@ -132,6 +132,14 @@ function cp_theme() {
   return $theme;
 }
 
+function cp_permission() {
+  return array(
+    'access control panel' => array(
+      'title' => t('Access Control Panel'),
+    ),
+  );
+}
+
 /**
  * cp/build/layout callback
  */
@@ -387,7 +395,7 @@ function cp_use_cp_theme() {
   if (($space = spaces_get_space()) == FALSE) {
     return FALSE;
   }
-  
+
   if ((arg(0) == 'cp') ||  (arg(0)=='node' && arg(1)=='add') || (arg(0) == 'node' && arg(2) == 'edit')) {
     return TRUE;
   }
