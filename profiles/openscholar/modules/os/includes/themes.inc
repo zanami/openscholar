@@ -72,3 +72,28 @@ function os_theme_get_flavors($theme = NULL) {
   return (array_key_exists($theme, $theme_plugins)) ? $theme_plugins[$theme] : array();
   
 }
+
+function os_theme_set($theme) {
+  if ($space = spaces_get_space()) {
+    return $space->controllers->variable->set('theme_default', $theme);
+  } else {
+    return variable_set('theme_default', $theme);
+  } 
+}
+
+function os_theme_get() {
+  if ($space = spaces_get_space()) {
+    return $space->controllers->variable->get('theme_default');
+  } else {
+    return variable_get('theme_default', '');
+  } 
+}
+
+
+function os_theme_del() {
+  if ($space = spaces_get_space()) {
+    return $space->controllers->variable->del('theme_default');
+  } else {
+    return variable_del('theme_default');
+  } 
+}

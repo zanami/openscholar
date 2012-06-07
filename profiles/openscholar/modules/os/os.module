@@ -225,6 +225,12 @@ function os_custom_theme(){
   if (module_exists('cp') && cp_use_cp_theme()) {
     return variable_get('os_cp_theme', 'cp');
   }
+  
+  if ($space = spaces_get_space()) {
+    ctools_include('themes', 'os');
+    $theme = os_theme_get();
+    return $theme;
+  }
 }
 
 /**

@@ -5,7 +5,7 @@ function cp_appearance_menu() {
   $items['cp/appearance'] = array(
     'title' => 'Appearance',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('cp_appearance_form'),
+    'page arguments' => array('cp_appearance_theme_picker_form'),
     'weight' => 20,
   	'menu_name' => 'cp',
   	'access arguments' => array('access content'),
@@ -15,7 +15,7 @@ function cp_appearance_menu() {
     'title' => t('Theme'),
     'page callback' => 'drupal_get_form',
     'type' => MENU_DEFAULT_LOCAL_TASK,
-  	'page arguments' => array('cp_appearance_form'),
+  	'page arguments' => array('cp_appearance_theme_picker_form'),
     'weight' => 20,
   	'menu_name' => 'cp',
   	'access arguments' => array('access content'),
@@ -41,7 +41,7 @@ function cp_appearance_theme() {
   return $theme;
 }
 
-function cp_appearance_form($form, &$state) {
+function cp_appearance_theme_picker_form($form, &$state) {
   ctools_include('themes', 'os');
   $themes = os_get_themes();
   if (count($themes)) {
@@ -54,6 +54,7 @@ function cp_appearance_form($form, &$state) {
   $form = array(
     '#title' => t('Theme Picker'),
     '#theme' => array('cp_appearance_theme_picker_form'),
+    '#submit' => array('cp_appearance_theme_picker_form_submit'),
   );
   
   foreach($themes as $theme) {
@@ -81,10 +82,10 @@ function cp_appearance_form($form, &$state) {
       }
     }
     
-    $theme = variable_get('vsite_design_maintheme', 'scholar_airstream');
-    if ($space = spaces_get_space() && isset($space->group->og_theme)) {
-      $theme = $space->group->og_theme;
-    }
+    $theme = os_theme_get(); //variable_get('vsite_design_maintheme', 'scholar_airstream');
+//    if ($space = spaces_get_space() && isset($space->group->og_theme)) {
+  //    $theme = $space->group->og_theme;
+    //}
   
     //Move default theme to the front of the array
     if (isset($themes[$theme])){
@@ -97,14 +98,31 @@ function cp_appearance_form($form, &$state) {
       '#enabled_themes' => $themes,
       '#type' => 'radios',
     	'#options' => $radio_options,
-    	'#default_value' => $default_theme,
+    	'#default_value' => $theme,
     	'#tree' => TRUE
     );
   }
   
+  $form['reset'] = array(
+    '#type' => 'submit',
+    '#value' => t('Reset to defaults'),
+  //  '#submit' => array('vsite_menus_settings_form_reset'),
+  );
+  
   $form = system_settings_form($form);
   
   return $form;
+}
+
+function cp_appearance_theme_picker_form_submit(&$form, &$form_state) {
+  ctools_include('themes', 'os');
+	$op = isset($form_state['values']['op']) ? $form_state['values']['op'] : '';
+	
+	if ($op != t('Reset to defaults')) {
+	  os_theme_set($form_state['values']['vsite_design_maintheme']);
+	} else {
+	  os_theme_del();
+	}
 }
 
 function _cp_appearance_get_flavor_options($theme_flavors, $info, &$default_flavor) {
