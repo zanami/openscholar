@@ -3,4 +3,49 @@ function os_wysiwyg_install() {
   $types = media_variable_get('wysiwyg_allowed_types');
   $types[] = 'html';
   media_variable_set('wysiwyg_allowed_types', $types);
+
+  // add nid and og group fields to files
+  try {
+    field_create_field(array(
+      'field_name' => 'field_file_nid',
+      'type' => 'entityreference',
+      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+    ));
+  }
+  catch (FieldException $fe) {
+    dpm($fe->getMessage());
+  }
+
+  $info = field_info_bundles('file');
+  $og = array(
+    'field_name' => OG_AUDIENCE_FIELD,
+    'entity_type' => 'file',
+    'label' => 'OG Group',
+    'bundle' => 'file',
+    'required' => TRUE,
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'type' => 'hidden',
+      ),
+    ),
+  );
+  $nid = array(
+    'field_name' => 'field_file_nid',
+    'entity_type' => 'file',
+    'label' => 'Attached Nodes',
+    'bundle' => 'file',
+    'required' => false,
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'type' => 'hidden',
+      ),
+    ),
+  );
+  foreach ($info as $type => $d) {
+    $og['bundle'] = $nid['bundle'] = $type;
+    field_create_instance($og);
+    field_create_instance($nid);
+  }
 }
