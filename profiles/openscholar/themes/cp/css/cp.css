@@ -123,8 +123,16 @@ td {
 #edit-menu-table {width:775px;}   
 
 /* CP CONTENT */ 
-.page-cp-content .view-filters {
+.page-cp-users .view-filters {
 	padding:8px; 
 	background:#F2F3F3;
     border: 1px solid #DADADA;
     }
+    
+/* CP USERS */ 
+.page-cp-users #user-register-form {
+	width:550px;
+	padding:8px;
+	background:#F2F3F3;
+	border: 1px solid #DADADA;
+    }    
