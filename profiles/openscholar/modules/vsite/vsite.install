@@ -6,6 +6,8 @@
 function vsite_install() {
   // Add the base vsite roles as OG roles
   $vsite_roles = array(
+    'member',
+    'non-member',
     'vsite user',
     'vsite admin',
   );
