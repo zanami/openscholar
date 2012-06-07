@@ -1,0 +1,18 @@
+<?php
+ 
+/**
+ * Implementation of hook_install
+ */
+function vsite_install() {
+  // Add the base vsite roles as OG roles
+  $vsite_roles = array(
+    'vsite user',
+    'vsite admin',
+  );
+  
+  foreach ($vsite_roles as $name) {
+  	$role = og_role_create($name,'node',0,'vsite');
+    og_role_save($role);
+  }
+  
+}
