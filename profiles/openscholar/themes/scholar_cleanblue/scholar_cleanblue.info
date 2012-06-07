@@ -5,7 +5,7 @@ engine      = phptemplate
 screenshot  = screenshot.png
 base theme  = os_basetheme
 ;flavor_name = "Blue"
-;plugins[vsite_design][flavor] = flavors
+plugins[os][flavor] = flavors
 
 
 stylesheets[all][]   = css/scholar_cleanblue.css
