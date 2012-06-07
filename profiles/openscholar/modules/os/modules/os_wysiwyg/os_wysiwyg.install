@@ -45,7 +45,7 @@ function os_wysiwyg_install() {
   );
   foreach ($info as $type => $d) {
     $og['bundle'] = $nid['bundle'] = $type;
-    field_create_instance($og);
+//    field_create_instance($og);
     field_create_instance($nid);
   }
 }
