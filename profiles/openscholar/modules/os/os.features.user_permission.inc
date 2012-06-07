@@ -91,6 +91,8 @@ function os_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
     ),
     'module' => 'overlay',
   );
@@ -339,6 +341,7 @@ function os_user_default_permissions() {
     'name' => 'administer site configuration',
     'roles' => array(
       0 => 'administrator',
+      1 => 'vsite admin',
     ),
     'module' => 'system',
   );
