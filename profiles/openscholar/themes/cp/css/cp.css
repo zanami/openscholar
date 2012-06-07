@@ -110,6 +110,9 @@ td {
 #spaces-features-form .spaces .description {font-size:.95em;}  
 
 .page-cp-content .view-content table {width:100%;}
+.page-cp-content-files .view-content tbody tr.even,
+.page-cp-content-comments .view-content tbody tr.even {background-color: #FFF;}
+
 
 /* CP/BUILD LAYOUT */   
 .page-cp-build-layout .content-inner {width:854px;}
