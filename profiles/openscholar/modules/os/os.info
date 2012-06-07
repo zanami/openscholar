@@ -10,6 +10,7 @@ dependencies[] = contextual
 dependencies[] = ctools
 dependencies[] = dashboard
 dependencies[] = devel
+dependencies[] = dblog
 dependencies[] = entityreference
 dependencies[] = features
 dependencies[] = file_entity
