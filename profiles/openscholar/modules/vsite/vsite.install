@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * Implementation of hook_install
+ */
+function vsite_install(){
+  // Add the base vsite roles as OG roles
+  $vsite_roles = array(
+      'member',
+      'non-member',
+      'vsite user',
+      'vsite admin'
+  );
+  
+  foreach ( $vsite_roles as $name ) {
+    $role = og_role_create($name, 'node', 0, 'vsite');
+    og_role_save($role);
+  }
+  
+  og_role_grant_permissions($rid, array_keys($grant));
+  
+  $roles = og_roles('node', 0, 'vsite', FALSE, FALSE);
+  //Set OG specific roles
+  foreach ( $roles as $rid => $role ) {
+    switch ($role) {
+      case 'vsite admin' :
+        og_role_grant_permissions($rid, array(
+            'view users outside groups',
+            'update group',
+            'unsubscribe',
+            'manage group space',
+            'approve and deny subscription',
+            'administer group',
+            'add user',
+            'access administration pages'
+        ));
+        break;
+      case 'vsite user' :
+        og_role_grant_permissions($rid, array(
+            'view users outside groups',
+            'unsubscribe'
+        ));
+        break;
+    }
+  }
+
+}

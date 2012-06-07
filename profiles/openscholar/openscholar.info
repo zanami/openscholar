@@ -79,6 +79,14 @@ dependencies[] = os_wysiwyg
 ;dependencies[] = vsite_domain
 ;dependencies[] = og
 
+; Control Panel
+dependencies[] = cp
+dependencies[] = cp_appearance
+dependencies[] = cp_layout
+dependencies[] = cp_menu
+dependencies[] = cp_user
+dependencies[] = cp_content
+
 ; Features
 dependencies[] = os_links
 dependencies[] = os_announcements

@@ -9,6 +9,9 @@
   engine      = phptemplate
   screenshot  = screenshot.png
 
+;----------// OpenScholar
+
+	os[theme_type] = 'vsite'
 
 ;----------// Stylesheets
 

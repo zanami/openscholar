@@ -91,6 +91,8 @@ function os_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
     ),
     'module' => 'overlay',
   );
@@ -339,6 +341,7 @@ function os_user_default_permissions() {
     'name' => 'administer site configuration',
     'roles' => array(
       0 => 'administrator',
+      1 => 'vsite admin',
     ),
     'module' => 'system',
   );
@@ -405,6 +408,7 @@ function os_user_default_permissions() {
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
+      2 => 'vsite admin',
     ),
     'module' => 'user',
   );
@@ -700,18 +704,6 @@ function os_user_default_permissions() {
       1 => 'authenticated user',
     ),
     'module' => 'search',
-  );
-
-  // Exported permission: use text format filtered_html.
-  $permissions['use text format filtered_html'] = array(
-    'name' => 'use text format filtered_html',
-    'roles' => array(
-      0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
-    ),
-    'module' => 'filter',
   );
 
   // Exported permission: view file.

@@ -10,6 +10,9 @@ function openscholar_install() {
     'seven', 
     'aberdeen' ,
     'cp',
+    'ballard',
+    'scholar_cayley',
+    'scholar_cleanblue',
   );
   theme_enable($enable);
   

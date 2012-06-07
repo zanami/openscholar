@@ -84,21 +84,6 @@ function cp_menu(){
     'weight' => 10
   );
 
-  // Appearance
-  $items['cp/appearance'] = array(
-    'title' => "Appearance",
-    'page callback' => 'cp_appearance',
-    'weight' => 20,
-  );
-
-  $items['cp/appearance/theme'] = array(
-    'title' => t('Theme'),
-    'page callback' => 'cp_appearance',
-
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => 20,
-  );
-
   // Settings
   $items['cp/settings'] = array(
     'title' => "Settings",
@@ -128,7 +113,7 @@ function cp_theme() {
     'template' => 'cp-toolbar',
     'path' => drupal_get_path('module', 'cp').'/theme',
   );
-
+  
   return $theme;
 }
 
@@ -161,12 +146,7 @@ function cp_taxonomy(){
   return 'cp/build/taxonomy';
 }
 
-/**
- * cp/appearance callback
- */
-function cp_appearance(){
-  return 'cp/appearance';
-}
+
 
 /**
  * cp/settings callback
