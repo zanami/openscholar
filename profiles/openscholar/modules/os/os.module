@@ -285,3 +285,41 @@ function os_menu_contextual_links_alter(&$links, $router_item, $base_path){
 function os_preprocess_html(&$variables) {
   $variables['classes_array'] = array_diff($variables['classes_array'], array('contextual-links-region'));
 }
+
+/**
+ * Implements hook_ctools_plugin_type
+ * 
+ * Inform CTools that the flavor plugin can be loaded from themes and that
+ * plugin implementors should use .flav files instead of .info files 
+ */
+function os_ctools_plugin_type() {
+  return array('flavor' => array(  
+    'load themes' => TRUE,
+    'info file' => TRUE,   
+    'extension' => 'flav',
+  ));
+}
+
+/**
+ * implemenets hook_preprocess
+ * 
+ * Includes flavor css
+ **/
+function os_init() {
+  ctools_include('themes', 'os');
+  if ($flavor = current(os_theme_get_flavor())) {
+
+    if (isset($flavor['css'])) {
+      foreach ($flavor['css'] as $css) {
+        drupal_add_css($flavor['path'] . '/' . $css, array('type'=>'file'));
+      }
+    }
+    
+    if (isset($flavor['conditional-css'])) {
+      foreach ($flavor['conditional-css'] as $cond => $css) {
+        //will this be supported?  
+        //http://drupal.org/node/522006
+      }
+    }
+  }
+}
