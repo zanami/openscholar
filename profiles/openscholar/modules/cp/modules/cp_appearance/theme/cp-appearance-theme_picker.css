@@ -18,9 +18,9 @@ padding:4px 0;
 	margin: 0 0 30px 70px;
   }
 
-li.item-theme-picker  {
+ul.theme-picker li.item-theme-picker  {
   padding: 0;
- margin: 3px 30px 30px 3px;
+ margin: 3px 20px 30px 3px;
   display: inline-block;
 	vertical-align: top;
   width: 300px;
@@ -45,8 +45,7 @@ ul.theme-picker li.current   {
 }
 
 ul.theme-picker li.checked {
-background:#FF0000;
-/*background:url('images/newThemeSelected.gif') no-repeat;*/
+background:url('images/newThemeSelected.gif') no-repeat;
 padding-top:20px;
 }
 
@@ -67,20 +66,9 @@ ul.theme-picker li.checked .theme-info {
   background: #1c598d;
   }
 
-.theme_subnav #next,
-.theme_subnav #prev {
-  width: 15px;
-  height: 14px;
-  background: transparent url(images/arrows.png) 0 0 no-repeat;
-  margin-top: 3px;
-  }
 
-.theme_subnav #prev {
-  background-position: 0 -14px;
-  }
-
-.theme-picker h2 {
-	margin:15px 0 0 0;
+.page-cp-appearance h1#page-title {
+	margin:5px 0 20px 0;
 }
 
 .theme-picker h3,
