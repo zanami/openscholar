@@ -77,7 +77,7 @@ function cp_appearance_theme_picker_form($form, &$state) {
     
     $theme_flavors = os_theme_get_flavors($theme->name);
     //$elem = 'vsite_design_'.$info['theme_name'] . '_flavor';
-    $elem = 'cp_appearance_'.$info['theme_name'] . '_flavor';
+    $elem = 'os_appearance_'.$info['theme_name'] . '_flavor';
     $default_flavor = '';
   
     //Get this theme's flavors and add them to the form
@@ -185,7 +185,7 @@ function theme_cp_appearance_theme_picker_form($variables) {
 		$a_info = array_merge((array)$o_theme->info, array('theme_name'=>$o_theme->name));
 
 		//flavor screenshots
-		$key = 'cp_appearance_' . $o_theme->name . '_flavor';
+		$key = 'os_appearance_' . $o_theme->name . '_flavor';
 		if (array_key_exists($key, $form)){
 			$sub_theme =  drupal_render($form[$key]);
 
@@ -214,39 +214,4 @@ function theme_cp_appearance_theme_picker_form($variables) {
 	$output .= drupal_render($form);
   
 	return $output;
-}
-
-/**
- * Inform CTools that the flavor plugin can be loaded from themes and that
- * plugin implementors should use inf files instead of inc files (to keep PHP code from getting executed)
- */
-function cp_appearance_ctools_plugin_type() {
-  return array('flavor' => array(  
-    'load themes' => true,
-    'info file' => true,  //info file implies .info, rendering extension useless.  omitting it requires a hook. 
-    'extension' => 'flav',
-    'module' => 'os',
-  ));
-}
-
-/**
- * implemenets hook_preprocess
- * 
- * Includes flavor css
- **/
-function cp_appearance_preprocess(&$vars, $hook) {
-  if ($hook == 'page') {
-    ctools_include('themes', 'os');
-    $flavor = current(os_theme_get_flavor());
-    
-    foreach ($flavor['css'] as $css) {
-      drupal_add_css($flavor['path'] . '/' . $css, array('type'=>'file'));
-    }
-
-    foreach ($flavor['conditional-css'] as $cond => $css) {
-      //will this be supported?  
-      //http://drupal.org/node/522006
-    }
-
-  }
 }
