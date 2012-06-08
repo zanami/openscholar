@@ -17,19 +17,6 @@ function os_wysiwyg_install() {
   }
 
   $info = field_info_bundles('file');
-  $og = array(
-    'field_name' => OG_AUDIENCE_FIELD,
-    'entity_type' => 'file',
-    'label' => 'OG Group',
-    'bundle' => 'file',
-    'required' => TRUE,
-    'display' => array(
-      'default' => array(
-        'label' => 'hidden',
-        'type' => 'hidden',
-      ),
-    ),
-  );
   $nid = array(
     'field_name' => 'field_file_nid',
     'entity_type' => 'file',
@@ -45,7 +32,6 @@ function os_wysiwyg_install() {
   );
   foreach ($info as $type => $d) {
     $og['bundle'] = $nid['bundle'] = $type;
-//    field_create_instance($og);
     field_create_instance($nid);
   }
 }
