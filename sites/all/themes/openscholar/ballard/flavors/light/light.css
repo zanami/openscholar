@@ -19,4 +19,5 @@
  } 
  
 p a,
+p a:visited,
 #content-main li a {color:#4E84C4;}

@@ -87,7 +87,7 @@ h3,
 h1 a,
 h2 a {color:#666;text-decoration:none;font-weight:normal;margin-bottom:.2em;}
 
-h2.title {font-size:1.5em;margin-bottom:.7em;}
+h2.title, h2 {font-size:1.8em;margin-bottom:.7em;}
 
 h3.title {color:#666;font-size:1.2em;}
 h3.title a {color:#293352;}
@@ -116,7 +116,8 @@ line-height:18px;
 margin: 8px 0 0 20px;
 }
 
-#content-area .block ul li {
+#content-area .block ul li,
+#content-area .content ul li {
  list-style-image:url('../images/listBullet.png');
 }
 
