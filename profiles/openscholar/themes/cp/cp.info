@@ -18,10 +18,24 @@
 ;----------// Regions
 
   regions[sidebar_first]     = Sidebar first
+  regions[sidebar_second]    = Sidebar second
   regions[content]           = Main Content
   regions[footer]            = Footer
+  regions[menu_bar]          = Menu Bar
   regions[messages]          = Messages
   regions[help]              = Help
+  
+;----------// Gpanel Regions
+
+  ; If you are using Gpanels copy and paste the region definitions here. You will find them
+  ; in each layout PHP file in adaptivetheme/layouts/gpanels
+  
+; 3 col 3x33
+regions[three_33_top] =3x33 Gpanel top
+regions[three_33_first]  = 3x33 Gpanel left
+regions[three_33_second] = 3x33 Gpanel center
+regions[three_33_third]  = 3x33 Gpanel right
+regions[three_33_bottom] =3x33 Gpanel bottom
   
 
 ;----------// Site Features

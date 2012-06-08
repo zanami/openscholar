@@ -1,9 +1,9 @@
-.page-cp-appearance-theme #cp-content {
+.page-cp-appearance #cp-content {
   overflow:auto;
   }
 
-#cp-content .innerframe #cp-settings-theme form#vsite-design-theme-picker-form,
-#cp-content .innerframe #cp-settings-theme form#vsite-design-theme-picker-form fieldset {
+#content-column .content-inner #cp-settings-theme form#cp-appearance-theme-picker-form,
+#content-column .content-inner #cp-settings-theme form#cp-appearance-theme-picker-form fieldset {
   margin:0;
   padding: 0;
   }
@@ -45,7 +45,8 @@ ul.theme-picker li.current   {
 }
 
 ul.theme-picker li.checked {
-background:url('images/newThemeSelected.gif') no-repeat;
+background:#FF0000;
+/*background:url('images/newThemeSelected.gif') no-repeat;*/
 padding-top:20px;
 }
 
@@ -117,7 +118,7 @@ ul.theme-picker li.checked h3,
   margin-top: 0;
   }
 
-#vsite-design-theme-picker-form {
+#cp-appearance-theme-picker-form {
   font-size: 1.1em;
   padding-top: 1px !important;
   margin: 0 !important;
@@ -155,11 +156,11 @@ ul.theme-picker li.checked h3,
   color: #fff;
   }
 
-form#vsite-design-theme-picker-form div.form-radios {
+form#cp-appearance-theme-picker-form div.form-radios {
   display:none;
 }
 
-#vsite-design-theme-picker-form  {
+#cp-appearance-theme-picker-form  {
   clear: both;
   }
 
