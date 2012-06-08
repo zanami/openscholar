@@ -74,7 +74,7 @@
    */
   function cp_layout_change() {
     var new_ctx = $(this).val();
-    window.location.href = Drupal.encodePath(new_ctx);
+    window.location.href = window.location.href.replace(Drupal.settings.getQ, 'cp/build/layout/'+new_ctx);
   }
   
   /**
