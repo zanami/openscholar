@@ -55,12 +55,14 @@ class vsite extends space_og {
       //Setup user roles (call before menu_get_item caches access info)
       $this->activate_user_roles();
       
-      $router_item = menu_get_item();
-      //If the current menu item relies on the space then reset the cached access information
-      if ($router_item['access_callback'] == 'spaces_menu_access') {
-        $router_items = &drupal_static('menu_get_item');
-        unset($router_items[$_GET['q']]);
-      }
+      $router_items = &drupal_static('menu_get_item');
+      if(isset($router_items[$_GET['q']])){
+        $router_item = menu_get_item();
+        //If the current menu item relies on the space then reset the cached access information
+        if ($router_item['access_callback'] == 'spaces_menu_access') {
+          unset($router_items[$_GET['q']]);
+        }
+      }//Have the menu access parms already been set
       
       return TRUE;
     }
