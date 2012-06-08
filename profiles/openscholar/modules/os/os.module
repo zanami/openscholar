@@ -220,12 +220,13 @@ function os_page_build(&$page){
  */
 function os_custom_theme(){
   purl_init();
-  drupal_static('purl_init_done', TRUE);
 
+  //cp
   if (module_exists('cp') && cp_use_cp_theme()) {
     return variable_get('os_cp_theme', 'cp');
   }
   
+  //global or space 
   if ($space = spaces_get_space()) {
     ctools_include('themes', 'os');
     $theme = os_theme_get();
@@ -240,7 +241,7 @@ function os_custom_theme(){
  * Removes purl from hook_init's implementations queue since it was already run during custom_theme
  */
 function os_module_implements_alter(&$implementations, $hook) {
-  if ($hook == 'init' && drupal_static('purl_init_done', FALSE)) {
+  if ($hook == 'init') {
     unset($implementations['purl']);
   }
 }

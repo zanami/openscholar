@@ -97,3 +97,25 @@ function os_theme_del() {
     return variable_del('theme_default');
   } 
 }
+
+/**
+ * gets the flavor of the currently selected theme
+ */
+function os_theme_get_flavor() {
+  global $theme_key;
+  $themes = os_get_themes();
+  $flavors = os_theme_get_flavors($theme_key);
+  
+  if (!array_key_exists($theme_key, $themes)) {
+    return FALSE;
+  }
+  
+  $flavor_key = 'cp_appearance_' . $theme_key . '_flavor';
+  if ($space = spaces_get_space()) {
+    $flavor = $space->controllers->variable->get($flavor_key);
+  } else {
+    $flavor = variable_get($flavor_key, FALSE);
+  }
+
+  return array($flavor => $flavors[$flavor]);
+}
