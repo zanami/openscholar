@@ -448,6 +448,31 @@ function vsite_users_form_alter(&$form, $form_state, $form_id) {
       //Hide the picture till it is used in some way, people are confusing this with site logo
       if (array_key_exists('field_user_profile_photo', $form)) vsite_users_hide_form_value($form['field_user_profile_photo']);
     break;
+    case 'user_login':
+    case 'user_login_block':
+      if (variable_get('os_login_with_email', true)) {
+        // Ensure a valid validate array.
+        $form['#validate'] = is_array($form['#validate']) ? $form['#validate'] : array();
+        // vsite_user's validation function must run first.
+        array_unshift($form['#validate'],'vsite_user_login_validate');
+        // Use theme functions to print the username field's textual labels.
+        $form['name']['#title']       = t('Username or e-mail');
+        if($form_id == 'user_login'){
+          $form['name']['#description'] = t('You may login with either your assigned username or your e-mail address.');
+        }//Only include description for main login form
+      }
+    break;
+  }
+}
+
+/**
+ * Custom validation for user login form to allow for e-mail address
+ */
+function vsite_user_login_validate($form, &$form_state) {
+  if (isset($form_state['values']['name']) && $form_state['values']['name']) {
+    if ($name = db_result(db_query("SELECT name FROM {users} WHERE LOWER(mail) = LOWER('%s')", $form_state['values']['name']))) {
+      form_set_value($form['name'], $name, $form_state);
+    }
   }
 }
 
