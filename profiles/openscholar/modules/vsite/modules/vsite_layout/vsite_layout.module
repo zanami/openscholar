@@ -7,13 +7,13 @@
  * @param array $blocks
  */
 function vsite_layout_context_set($context, $blocks){
-  
+
   $vsite = spaces_get_space();
-  
+
   if($vsite && isset($vsite->controllers->context)){
-    $vsite->controllers->context->set($context.":reaction:block", $blocks);
+    $vsite->controllers->context->set($context.":reaction:block", array('blocks' => $blocks));
     return true;
   }
-  
+
   return false;
 }
