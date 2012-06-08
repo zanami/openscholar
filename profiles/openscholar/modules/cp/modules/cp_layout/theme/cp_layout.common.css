@@ -115,6 +115,10 @@
   height:121px;
 }
 
+#edit-layout-unused-widgets .widget-container {
+  height: 100%;
+}
+
 #edit-layout-unused-widgets .cp-layout-widget,
 .cp-layout-widget.ui-sortable-helper {
   display: inline-block !important;

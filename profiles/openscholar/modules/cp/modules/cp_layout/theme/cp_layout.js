@@ -30,12 +30,13 @@
     $regions.each(function () {
       region_ids.push('#'+this.id);
     });
+    region_ids.push('#edit-layout-unused-widgets .widget-container');
     sort_opts = {
       appendTo: '#cp-layout-full-form',
       helper: 'clone',
       cursorAt: {top: 25, left: 38},
       connectWith: region_ids.join(', '),
-      stop: on_stop,
+      start: on_start,
       tolerance: 'pointer',
       forceHelperSize: true,
       over: function(event, ui) {
@@ -103,7 +104,7 @@
   /**
    * Do things when we drop a widget
    */
-  function on_stop() {
+  function on_start() {
     
   }
   
