@@ -56,14 +56,11 @@ class vsite extends space_og {
       $this->activate_user_roles();
       
       $router_items = &drupal_static('menu_get_item');
-      if(isset($router_items[$_GET['q']])){
-        $router_item = menu_get_item();
-        //If the current menu item relies on the space then reset the cached access information
-        if ($router_item['access_callback'] == 'spaces_menu_access') {
-          unset($router_items[$_GET['q']]);
-        }
-      }//Have the menu access parms already been set
-      
+      if (isset($router_items[$_GET['q']])) {
+        //If the current menu item may rely on the space so we reset the cached access information
+        unset($router_items[$_GET['q']]);
+      } //Have the menu access parms already been set
+
       return TRUE;
     }
     
@@ -261,40 +258,40 @@ class vsite extends space_og {
     
     return drupal_match_path($q, $paths) ? true : false;
   }
-  
+
   /**
    * Ensure PURL modifier is present otherwise redirect via purl
    */
   protected function activate_purl_modifier(){
     if (! $this->verify_purl()) {
-        $this->purge_request_destination();
+      $this->purge_request_destination();
+      
+      if ($this->purl_provider) {
+        //Set the provider to use for redirection
+        $options = array(
+            'query' => drupal_http_build_query(drupal_get_query_parameters()),
+            'purl' => array(
+                'provider' => $this->purl_provider,
+                'id' => $this->id
+            )
+        );
+        $path = $_GET['q'];
         
-        if ($this->purl_provider) {
-          //Set the provider to use for redirection
-          $options = array(
-              'query' => drupal_http_build_query(drupal_get_query_parameters()),
-              'purl' => array(
-                  'provider' => $this->purl_provider,
-                  'id' => $this->id
-              )
-          );
-          $path = $_GET['q'];
-          
-          //        $aliased = url($path);
-          //        if($path != $aliased && isset($_REQUEST['q']) && $path == $_REQUEST['q']){
-          //          // If the path we are going to has an alias, and the current page we are on does not use that
-          //          // that alias value.  Then lets skip purl_goto since unaliased paths with a path prefix make it think it's
-          //          // in a redirect loop.  ex( GET[q] will hold node/123 for both the aliases and non-aliased paths)
-          //          $path = $this->get_absolute_url($path);
-          //          drupal_goto($path);
-          //        }
-          
-  
-          purl_goto($path, $options);
-        } //Just like the check in spaces_purl_provider but with dynamic provider
-      }
+        //        $aliased = url($path);
+        //        if($path != $aliased && isset($_REQUEST['q']) && $path == $_REQUEST['q']){
+        //          // If the path we are going to has an alias, and the current page we are on does not use that
+        //          // that alias value.  Then lets skip purl_goto since unaliased paths with a path prefix make it think it's
+        //          // in a redirect loop.  ex( GET[q] will hold node/123 for both the aliases and non-aliased paths)
+        //          $path = $this->get_absolute_url($path);
+        //          drupal_goto($path);
+        //        }
+        
+
+        purl_goto($path, $options);
+      } //Just like the check in spaces_purl_provider but with dynamic provider
+    }
   }
-  
+
   /**
    * Activate User and modify roles based on the space
    */
@@ -305,12 +302,12 @@ class vsite extends space_og {
     $drupal_roles = user_roles(TRUE);
     
     //Get drupal core roles with the same name
-    $common_roles = array_intersect($drupal_roles,$og_roles);
+    $common_roles = array_intersect($drupal_roles, $og_roles);
     
-    foreach ($common_roles as $role) {
-    	$rid = array_search($role, $drupal_roles);
-    	$user->roles[$rid] = $role;
+    foreach ( $common_roles as $role ) {
+      $rid = array_search($role, $drupal_roles);
+      $user->roles[$rid] = $role;
     }
   }
-  
+
 }
