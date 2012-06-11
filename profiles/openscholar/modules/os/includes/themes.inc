@@ -34,7 +34,7 @@ function _os_is_os_theme($theme) {
   return (array_key_exists('os',$theme->info)
      && array_key_exists('theme_type', $theme->info['os'])
      && _os_get_theme_type() == $theme->info['os']['theme_type']
-     && ($theme->info['os']['theme_access'] != "private" || user_access('access private scholar themes') || $site_key == strtolower($theme->name))
+     && ((!isset($theme->info['os']['theme_access']) || $theme->info['os']['theme_access'] != "private") || user_access('access private scholar themes') || $site_key == strtolower($theme->name))
      && !empty($theme->status));
 }
 
