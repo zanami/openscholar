@@ -56,7 +56,7 @@ function os_wysiwyg_update_files($node) {
   }
 }
 
-function os_wysiwyg_node_insert(&$node) {
+function os_wysiwyg_node_insert($node) {
   os_wysiwyg_update_files($node);
 }
 
