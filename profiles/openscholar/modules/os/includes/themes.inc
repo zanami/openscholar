@@ -117,5 +117,9 @@ function os_theme_get_flavor() {
     $flavor = variable_get($flavor_key, FALSE);
   }
 
-  return array($flavor => $flavors[$flavor]);
+  if ($flavor) {
+    return array($flavor => $flavors[$flavor]);
+  } else {
+    return array();
+  }
 }

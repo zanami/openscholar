@@ -220,6 +220,11 @@ function os_page_build(&$page){
  */
 function os_custom_theme(){
   purl_init();
+  
+  global $theme; 
+  if (strlen($theme)) {
+   unset($GLOBALS['theme']); //following cache clear, purl_init sets a theme global
+  }
 
   //cp
   if (module_exists('cp') && cp_use_cp_theme()) {
