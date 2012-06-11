@@ -219,12 +219,7 @@ function os_page_build(&$page){
  * returns name of theme to use
  */
 function os_custom_theme(){
-  purl_init();
-  
-  global $theme; 
-  if (strlen($theme)) {
-   unset($GLOBALS['theme']); //following cache clear, purl_init sets a theme global
-  }
+  _os_purl_init();
 
   //cp
   if (module_exists('cp') && cp_use_cp_theme()) {
@@ -248,6 +243,39 @@ function os_custom_theme(){
 function os_module_implements_alter(&$implementations, $hook) {
   if ($hook == 'init') {
     unset($implementations['purl']);
+  }
+}
+
+/**
+ * @function _os_purl_init()
+ * 
+ * Calls purl_init.  This is used during hook_custom_theme, so that we can
+ * get the space earlier.  
+ * 
+ * Following a cache clear, the spaces presets need rebuilding.  At some 
+ * point in this process, l() is called to put a link in the description
+ * of a field in image.  If l() tries to theme the link it creates,
+ * drupal_initialize_theme is run, defeating the purpose of hook_custom_theme.
+ * 
+ * This function prevents l() from initalizing the theme by setting theme_link
+ * to false, running purl_init, and then restoring theme_link to its original
+ * value.  
+ * 
+ * This fixes the theme problem after a cache clear.  May have other unforseen
+ * consequences.
+ **/
+function _os_purl_init() {
+  //hack alert!
+  global $conf;
+  $theme_link = isset($conf['theme_link']) ? $conf['theme_link'] : NULL;
+  $conf['theme_link'] = FALSE;
+  
+  purl_init();
+  
+  if (isset($theme_link)) {
+    $conf['theme_link'] = $theme_link;
+  } else {
+    unset($conf['theme_link']);
   }
 }
 
