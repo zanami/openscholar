@@ -65,7 +65,7 @@ function cp_menu_node_insert($node) {
     }
 
     $item = array('link_path' => 'node/'.$node->nid,'menu_name' => $link['parent'],'link_title' => $link['link_title'],'options' => $options);
-    os_menu_link_save($item);    
+    os_menu_link_save($item);
   }
 }
 
@@ -78,7 +78,7 @@ function cp_menu_node_update($node) {
       os_delete_menu_link($link['menu_name'], $link['mlid']);
     }
   }
-  
+
   if ($node->os_menu['dirty']) {
     if ($link = os_menu_load_link_path('node/' . $node->nid)) {
       //updated existing
@@ -107,12 +107,12 @@ function cp_menu_node_delete($node) {
 function cp_menu_contextual_links_view_alter(&$element, $items) {
   ctools_include('menu','os');
   $menus = array_keys(os_get_menus());
-  
+
   foreach ($element['#contextual_links'] as $delta => $links) {
     foreach ($links as $link) {
       if (isset($link[0]) && $link[0] == 'os') {
         $menu = $link[1];
-    
+
         if (in_array($menu, $menus)) {
           $element['#links']['menu-add'] = array('title' => t('Add menu item'),'href' => 'cp_menu/ajax/new/' . $menu);
         }
@@ -159,7 +159,7 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
 
 
   //update the defaults to include $links
-  $form['os_menu']['enabled']['#default_value'] = isset($link);
+  $form['os_menu']['enabled']['#default_value'] = $link !== FALSE;
   $form['os_menu']['link']['link_title']['#default_value'] = (isset($link['link_title'])) ? $link['link_title'] : '';
   $form['os_menu']['link']['description']['#default_value'] =
     (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
@@ -196,7 +196,7 @@ function cp_menu_node_submit($node, $form, &$state) {
   if ($state['values']['os_menu']['parent'] != $form['os_menu']['link']['parent']['#default_value']) {
     $node->os_menu['delete'] = TRUE;
   }
-  
+
   foreach(array('link_title','description','parent','new_window') as $delta) {
     if ($state['values']['os_menu'][$delta] != $form['os_menu']['link'][$delta]['#default_value']) {
       $node->os_menu['dirty'] = TRUE;
@@ -212,7 +212,7 @@ function cp_menu_node_submit($node, $form, &$state) {
 function cp_menu_node_validate($node, $form, &$form_state) {
   $os_menu = &$form_state['values']['os_menu'];
   $os_menu['link_title'] = trim($os_menu['link_title']);
-  
+
   if ($os_menu['enabled'] && strlen($os_menu['link_title']) == 0) {
     form_set_error('os_menu][link_title', t('Please provide a link title.'));
   }
