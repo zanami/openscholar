@@ -73,3 +73,38 @@ function hook_os_menu_tree_alter($menu_name, &$tree){
   }
 
 }
+
+/**
+ * Implementation of hook os_layout_contexts
+ *
+ * Return Contexts along with thier label that your module creates
+ * and would like to allow users to edit
+ *
+ * @return array
+ * Avalible contexts with thier descriptions
+ */
+function hook_os_layout_contexts(){
+  
+  //Contexts provided by this module
+  $provided_contexts = array(
+      'my_context'=> 'Calendar Section',
+      'another_context' => 'Twitter Page',
+  );
+  
+  return $provided_contexts;
+}
+
+/**
+ * Implementation of hook os_layout_contexts_alter
+ *
+ * Modify the contexts that are avalible for a user to edit
+ */
+function hook_os_layout_contexts_alter(&$all_contexts){
+  
+  // I do not want people to be able to edit this context when specail module is not
+  // enabled so I am removing it from the list
+  if(isset($all_contexts['special_context']) && !module_exists('special_module')){
+    unset($all_contexts['special_context']);
+  }
+  
+}

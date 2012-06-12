@@ -20,8 +20,7 @@ function os_spaces_presets() {
   $spaces_presets->value = array(
     'variable' => array(
       'spaces_features' => array(
-        'os_front' => 1,
-        'os_pages' => 1,
+        'os' => 1,
       ),
       'site_frontpage' => 'xxxx',
     ),
@@ -42,8 +41,7 @@ function os_spaces_presets() {
   $spaces_presets->value = array(
     'variable' => array(
       'spaces_features' => array(
-        'os_front' => 1,
-        'os_pages' => 1,
+        'os' => 1,
       ),
       'site_frontpage' => 'home',
     ),
