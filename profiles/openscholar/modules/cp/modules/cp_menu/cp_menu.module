@@ -159,7 +159,7 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
 
 
   //update the defaults to include $links
-  $form['os_menu']['enabled']['#default_value'] = $link !== FALSE;
+  $form['os_menu']['enabled']['#default_value'] = isset($link) && $link !== FALSE;
   $form['os_menu']['link']['link_title']['#default_value'] = (isset($link['link_title'])) ? $link['link_title'] : '';
   $form['os_menu']['link']['description']['#default_value'] =
     (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
