@@ -217,7 +217,7 @@ function os_page_build(&$page){
  * returns name of theme to use
  */
 function os_custom_theme(){
-  purl_init();
+  _os_purl_init();
   
   //cp
   if (module_exists('cp') && cp_use_cp_theme()) {
@@ -241,6 +241,39 @@ function os_custom_theme(){
 function os_module_implements_alter(&$implementations, $hook){
   if ($hook == 'init') {
     unset($implementations['purl']);
+  }
+}
+
+/**
+ * @function _os_purl_init()
+ *
+ * Calls purl_init.  This is used during hook_custom_theme, so that we can
+ * get the space earlier.
+ *
+ * Following a cache clear, the spaces presets need rebuilding.  At some
+ * point in this process, l() is called to put a link in the description
+ * of a field in image.  If l() tries to theme the link it creates,
+ * drupal_initialize_theme is run, defeating the purpose of hook_custom_theme.
+ *
+ * This function prevents l() from initalizing the theme by setting theme_link
+ * to false, running purl_init, and then restoring theme_link to its original
+ * value.
+ *
+ * This fixes the theme problem after a cache clear.  May have other unforseen
+ * consequences.
+ **/
+function _os_purl_init() {
+  //hack alert!
+  global $conf;
+  $theme_link = isset($conf['theme_link']) ? $conf['theme_link'] : NULL;
+  $conf['theme_link'] = FALSE;
+  
+  purl_init();
+  
+  if (isset($theme_link)) {
+    $conf['theme_link'] = $theme_link;
+  } else {
+    unset($conf['theme_link']);
   }
 }
 
@@ -312,6 +345,7 @@ function os_init(){
   if ($flavor = current(os_theme_get_flavor())) {
     
     if (isset($flavor['css'])) {
+<<<<<<< HEAD
       foreach ( $flavor['css'] as $css ) {
         drupal_add_css($flavor['path'] . '/' . $css, array(
             'type' => 'file'
@@ -323,12 +357,36 @@ function os_init(){
       foreach ( $flavor['conditional-css'] as $cond => $css ) {
         //will this be supported?
       //http://drupal.org/node/522006
+=======
+      foreach ($flavor['css'] as $css) {
+        drupal_add_css($flavor['path'] . '/' . $css, array('type'=>'file', 'preprocess'=>FALSE));
+      }
+    }
+    
+    //conditional css provided by: conditional-stylesheets[if lte IE 7][all][]  = orange-ie.css
+    if (isset($flavor['conditional-stylesheets'])) {
+      foreach ($flavor['conditional-stylesheets'] as $cond => $media) {
+        foreach ($media as $type => $files) {
+          foreach ($files as $file) {
+            $options = array(
+            	'type' => 'file',
+            	'preprocess' => FALSE,
+              'media' => $type,
+              'browsers' => _os_conditional_css_browsers($cond),
+            );
+            drupal_add_css($flavor['path'] . '/' . $file, $options);
+          }
+        }
+        //will this be supported?
+        //http://drupal.org/node/522006
+>>>>>>> b941f32213666ff567f7ec1c9f6e9c8badad052c
       }
     }
   }
 }
 
 /**
+<<<<<<< HEAD
  * Implementation of hook os_layout_contexts
  *
  * @return array
@@ -372,3 +430,23 @@ function theme_openscholar_powered_by(){
       '@poweredby' => 'http://openscholar.harvard.edu'
   )) . '</span>';
 }
+=======
+ * @function _os_conditional_css_browsers($cond)
+ *
+ * Helper function for adding conditional css.  Takes a browser css condition,
+ * returns array to pass to drupal_add_css's $options['browser']
+ * http://api.drupal.org/api/drupal/includes%21common.inc/function/drupal_pre_render_conditional_comments/7
+ *
+ * @param string $cond // if IE lt 6
+ * @return array
+ */
+function _os_conditional_css_browsers($cond) {
+  $IE = FALSE;
+  $cond = str_replace('if ', '', $cond);
+  if (strpos($cond, 'IE')) {
+    $IE = $cond;
+  }
+  
+  return array('IE'=>$cond, '!IE'=>FALSE);
+}
+>>>>>>> b941f32213666ff567f7ec1c9f6e9c8badad052c

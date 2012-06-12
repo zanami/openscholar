@@ -100,7 +100,7 @@ function os_boxes_delete_widget_form($form_id, $form_state) {
 
 }
 
-function os_boxes_widget_delete_submit($form, $form_state) {
+function os_boxes_widget_delete_submit($form, &$form_state) {
   if ($form_state['values']['op'] == t('Yes')) {
     if (module_exists('spaces') && $space = spaces_get_space()) {
       $space->controllers->boxes->del($form_state['values']['bid']);
@@ -108,9 +108,11 @@ function os_boxes_widget_delete_submit($form, $form_state) {
     else {
       if ($box = boxes_box_load($form_state['values']['bid']))
         $box->delete();
-      block_custom_block_delete_submit($form, $form_state);
+     module_load_include('inc', 'block', 'block.admin');
+     block_custom_block_delete_submit($form, $form_state);
     }
     unset($form_state['redirect']);
+    $form_state['no_redirect'] = true;
 
     overlay_commands_add(ajax_command_remove('#boxes-'.$form_state['values']['bid']));
   }

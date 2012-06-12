@@ -1,7 +1,7 @@
 /**** IMPORT GRID/PANEL LAYOUT CSS ****/
 @import "cp.responsive.layout.css"; 
 
-#messages {display:none;} 
+/*#messages {display:none;} */
 
 /* GENERAL CP STYLES */
 
@@ -120,6 +120,10 @@ td {
 
 /* CP/BUILD LAYOUT */   
 .page-cp-build-layout .content-inner {width:854px;}
+.page-cp-build div.messages,
+.page-cp-content div.messages {
+    margin-left: 180px;
+}
 
 
 /* CP/BUILD MENU */ 

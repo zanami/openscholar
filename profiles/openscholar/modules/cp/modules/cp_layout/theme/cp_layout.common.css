@@ -11,7 +11,7 @@
   outline: 1px solid #8996A0;
   display: inline-block;
   min-width: 20%;
-  min-height: 4em;
+  min-height: 3em;
   vertical-align: top;
 }
 
@@ -83,12 +83,6 @@
   min-height: 8.45em;
 }
 
-.cp-region .cp-layout-widget {
-  padding: 0.75em 1em 1.5em 3.5em;
-  background-color: #CCCCCC;
-  outline: 1px solid #333333;
-  display: block !important;
-}
 
 .cp-region-content .cp-region {
   display: none;
@@ -135,6 +129,36 @@
 
 #edit-layout-unused-widgets .cp-layout-widget.hidden {
   display: none !important;
+}
+
+/* WIDGET STYLES IN LAYOUT GRID */
+.cp-region .cp-layout-widget {
+  display: block !important;
+  background: url("images/widget-placed-bg.png") no-repeat scroll 0 50% #F0F3F3;
+    border-bottom: 1px solid #666666;
+    border-top: 1px solid #CCCCCC;
+    margin: 0;
+    min-height: 18px;
+    overflow: hidden;
+    padding: 4px 20px 15px 31px;
+    font-size:1em;
+    color: #565E66;
+    cursor: pointer;
+    font-weight: bold;
+   position: relative;
+}
+
+.cp-layout-item .widget-controls {
+    position: absolute;
+    right: 7px;
+    top: 4px;
+}
+
+.close-this {
+    background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 0 transparent;
+    height: 12px;
+    text-indent: -999em;
+    width: 12px;
 }
 
 /**WIDGET TABS**/
