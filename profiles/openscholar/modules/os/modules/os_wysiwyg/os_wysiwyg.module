@@ -110,3 +110,14 @@ function os_wysiwyg_wysiwyg_include_directory($type) {
     return $type;
   }
 }
+
+/**
+ * Adds necessary relationship and filters to Media Browser view to make it work with spaces
+ */
+function os_wysiwyg_views_default_views_alter(&$views) {
+  $view = $views['media_default'];
+  $id = $view->add_item('default', 'relationship', 'field_data_field_file_nid', 'field_file_nid_target_id');
+  $rel = $view->get_item('default', 'relationship', $id);
+  $view->add_item('default', 'filter', 'spaces', 'current', array());
+  dpm($view);
+}
