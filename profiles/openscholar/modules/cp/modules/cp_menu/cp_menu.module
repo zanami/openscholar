@@ -8,7 +8,7 @@ function cp_menu_menu() {
     'title' => 'Menu',
     'page callback' => 'cp_menu_page',
     'page arguments' => array(2),
-    'access arguments' => array('administer content'),
+    'access callback' => array('spaces_access_admin'),
     'type' => MENU_CALLBACK,
     'file' => 'cp_menu.wizard.inc',
   );

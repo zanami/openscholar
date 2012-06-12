@@ -362,3 +362,30 @@ ul.action-links {
 
 ul.action-links li {
 }
+
+
+/** CONTEXTUAL DROPDOWN LINKS **/
+div.contextual-links-wrapper ul.contextual-links {
+  -moz-border-radius: 0; /* LTR */
+  -webkit-border-bottom-left-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -webkit-border-top-right-radius: 0; /* LTR */
+  -webkit-border-top-left-radius: 0; /* LTR */
+  border-radius: 0; /* LTR */
+}
+
+ul.contextual-links li a {
+padding: 0.5em .75em 0.5em 0.75em;
+font-size:1.12em;
+text-decoration:none !important;
+}
+
+ul.contextual-links li a:hover {
+background-color: #52854C !important;
+color: #FFF !important;
+}
+
+
+
+
+

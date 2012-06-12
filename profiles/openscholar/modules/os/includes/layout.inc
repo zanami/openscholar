@@ -49,6 +49,8 @@ function os_layout_get_contexts($privacy = array(1,2)){
     }
   }
   
+  drupal_alter('os_layout_contexts_alter',$os_contexts);
+  
   //Check privacy settings if needed
   if (is_array($privacy)) {
 //    //Retrieve the features that match the privacy settings
