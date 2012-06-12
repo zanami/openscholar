@@ -86,7 +86,6 @@ function cp_appearance_theme_picker_form($form, &$state) {
     $radio_options[$info['theme_name']] = $info['theme_name'];
 
     $theme_flavors = os_theme_get_flavors($theme->name);
-    //$elem = 'vsite_design_'.$info['theme_name'] . '_flavor';
     $elem = 'os_appearance_'.$info['theme_name'] . '_flavor';
     $default_flavor = '';
 
@@ -103,12 +102,6 @@ function cp_appearance_theme_picker_form($form, &$state) {
           'wrapper' => 'screenshot_' . $theme->name, 
         ),
       );
-
-      //Screenshot callback
-      if($info['screenshot'] && function_exists('ctools_ajax_associate_url_to_element')) {
-        ctools_ajax_associate_url_to_element($form, $form[$elem], url('cp/appearance/swap_screenshot/'.$info['theme_name']),'ctools-use-ajax-onchange');
-        // @TODO ajax menu http://api.drupal.org/api/drupal/includes%21ajax.inc/group/ajax/7
-      }
     }
   }
 
@@ -224,7 +217,7 @@ function theme_cp_appearance_theme_picker_form($variables) {
 	}
 
 	$output .= theme_item_list(array('items'=>$items, 'type'=>'ul', 'title'=>NULL, 'attributes'=>array('class' => 'theme-picker')));
-	unset($form['#theme']); //not sure how previous version got away without this...
+	unset($form['#theme']); 
 	$output .= drupal_render($form);
 
 	return $output;
