@@ -14,6 +14,6 @@ conditional-stylesheets[if IE][all][]          = commodore-ie.css
 
 os[widgets][vsite-site_search] = navbar
 os[theme_type]   = "vsite"
-os[theme_access] = "public"
+os[theme_access] = "private"
 
 os[cp_layout_css] = cp-layout-map.css
