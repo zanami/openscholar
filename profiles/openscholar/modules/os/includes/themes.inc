@@ -8,11 +8,19 @@
  * Returns all OS themes for current privacy settings
  */
   
-function os_get_themes($theme_type = 'vsite'){
+function os_get_themes($theme_name = NULL, $theme_type = 'vsite'){
   $allthemes = list_themes();
   _os_get_theme_type($theme_type);
 
-  return (array_filter($allthemes, '_os_is_os_theme'));
+  $themes = (array_filter($allthemes, '_os_is_os_theme'));
+  
+  if ($theme_name) {
+    if (isset($themes[$theme_name])) {
+      return $themes[$theme_name];
+    } 
+  } else {
+    return $themes;
+  }
 }
 
 /**
