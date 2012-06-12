@@ -7,7 +7,7 @@ function cp_layout_full_form($form, $form_state, $ctx) {
   ctools_include('layout', 'os');
 
   // Temporary: To be replaced by API function later
-  $contexts = context_context_list();
+  $contexts = os_layout_get_contexts(array(1,2));
   $ctx = $ctx?$ctx:'os_front';
 
   $form['context_selection'] = array(

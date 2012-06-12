@@ -5,15 +5,6 @@
  */
 
 /**
- * Returns HTML for the Powered by Openscholar text.
- *
- * @ingroup themeable
- */
-function theme_openscholar_powered_by() {
-  return '<span>' . t('Powered by <a href="@poweredby">OpenScholar</a>', array('@poweredby' => 'http://openscholar.harvard.edu')) . '</span>';
-}
-
-/**
  * Returns all OS themes for current privacy settings
  */
   
@@ -78,7 +69,7 @@ function os_theme_set($theme) {
     return $space->controllers->variable->set('theme_default', $theme);
   } else {
     return variable_set('theme_default', $theme);
-  } 
+  }
 }
 
 function os_theme_get() {
@@ -86,7 +77,7 @@ function os_theme_get() {
     return $space->controllers->variable->get('theme_default');
   } else {
     return variable_get('theme_default', '');
-  } 
+  }
 }
 
 
@@ -95,7 +86,7 @@ function os_theme_del() {
     return $space->controllers->variable->del('theme_default');
   } else {
     return variable_del('theme_default');
-  } 
+  }
 }
 
 /**
