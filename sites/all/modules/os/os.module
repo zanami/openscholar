@@ -64,10 +64,10 @@ function os_user($op, &$edit, &$account, $category = NULL){
 function os_menu() {
   $items = array();
   $items['os_page_not_found'] = array(
-    'type' => MENU_CALLBACK, 
-    'title' => 'Page not found', 
+    'type' => MENU_CALLBACK,
+    'title' => 'Page not found',
     'page callback' => 'os_page_not_found_page',
-    'access callback' => TRUE,  
+    'access callback' => TRUE,
   );
   return $items;
 }
@@ -247,3 +247,4 @@ function os_cron() {
 	module_load_include('inc', 'os', 'os.cron');
 	return _os_cron_run();
 }
+
