@@ -1,0 +1,29 @@
+
+/* bigscreen three_col_grail */
+
+#page {
+  width: 100%;
+margin: 0 auto 0 auto;
+}
+ 
+#header-left, #sidebar-first {
+    width: 180px;
+}
+
+#header-right,
+#sidebar-second {
+    width: 260px;
+}
+
+.hg-container {
+    padding-left: 200px;
+    padding-right: 300px;
+}
+
+#header-left, #sidebar-first {
+    left: -220px;
+    margin-left: -100%;
+}
+#header-right, #sidebar-second {
+    margin-right: -100%;
+}
