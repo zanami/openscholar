@@ -345,19 +345,6 @@ function os_init(){
   if ($flavor = current(os_theme_get_flavor())) {
     
     if (isset($flavor['css'])) {
-<<<<<<< HEAD
-      foreach ( $flavor['css'] as $css ) {
-        drupal_add_css($flavor['path'] . '/' . $css, array(
-            'type' => 'file'
-        ));
-      }
-    }
-    
-    if (isset($flavor['conditional-css'])) {
-      foreach ( $flavor['conditional-css'] as $cond => $css ) {
-        //will this be supported?
-      //http://drupal.org/node/522006
-=======
       foreach ($flavor['css'] as $css) {
         drupal_add_css($flavor['path'] . '/' . $css, array('type'=>'file', 'preprocess'=>FALSE));
       }
@@ -379,14 +366,12 @@ function os_init(){
         }
         //will this be supported?
         //http://drupal.org/node/522006
->>>>>>> b941f32213666ff567f7ec1c9f6e9c8badad052c
       }
     }
   }
 }
 
 /**
-<<<<<<< HEAD
  * Implementation of hook os_layout_contexts
  *
  * @return array
@@ -430,7 +415,8 @@ function theme_openscholar_powered_by(){
       '@poweredby' => 'http://openscholar.harvard.edu'
   )) . '</span>';
 }
-=======
+
+/**
  * @function _os_conditional_css_browsers($cond)
  *
  * Helper function for adding conditional css.  Takes a browser css condition,
@@ -449,4 +435,3 @@ function _os_conditional_css_browsers($cond) {
   
   return array('IE'=>$cond, '!IE'=>FALSE);
 }
->>>>>>> b941f32213666ff567f7ec1c9f6e9c8badad052c
