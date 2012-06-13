@@ -8,7 +8,6 @@ function cp_user_admin($callback_arg = '') {
   $op = isset($_POST['op']) ? $_POST['op'] : $callback_arg;
   
   $vsite = spaces_get_space();
-  
   switch ($op) {
     case t('Add user'):
     case 'add':
@@ -47,20 +46,6 @@ function cp_user_members(){
   return $output;
 }
 
-///**
-// *
-// */
-//function cp_user_add_user(){
-//  $vsite = spaces_get_space();
-//
-//  if($vsite){
-//
-//    return drupal_get_form('cp_user_add_users','node', $vsite->id);
-//  }
-//
-//  return;
-//
-//}
 
 /**
  * Add users to group form.
@@ -163,20 +148,14 @@ function cp_user_add_users_validate($form, &$form_state) {
  * Submit handler; Add users to group.
  */
 function cp_user_add_users_submit($form, &$form_state) {
-  $group_type = $form_state['values']['group_type'];
-  $gid = $form_state['values']['gid'];
-  $state = $form_state['values']['state'];
-  $og_membership = $form_state['og_membership'];
-  // Set the user and state.
-  field_attach_submit('og_membership', $og_membership, $form['membership_fields'], $form_state);
   $account = user_load_by_name($form_state['values']['name']);
-  // Ungroup user, in case they were already registered.
-  og_ungroup($group_type, $gid, 'user', $account);
-
-  $og_membership->etid = $account->uid;
-  $og_membership->state = $state;
-  $og_membership->save();
-
+  
+  //Handle the og_request message form here
+  field_attach_submit('og_membership', $form_state['og_membership'], $form['membership_fields'], $form_state);
+ 
+  ctools_include('user','os');
+  os_user_add($account->uid, $form_state['values']['gid'], $form_state['values']['state'], $form_state['values']['group_type']);
+  
   drupal_set_message(t('%user has been added to group.', array('%user' => format_username($account))));
 }
 
