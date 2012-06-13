@@ -44,46 +44,46 @@ function spaces_og_views_data_alter(&$data){
  * Implements hook_views_pre_view().
  */
 function spaces_og_views_pre_view(&$view, &$display_id, &$args){
-  
+
   // The Spaces Current Space filter is bound to the space data stub
   // if we are in an og space we want to use the og membership relation
   // to filter the posts
   $space = spaces_get_space();
-  
+
   //Is this space of type OG and we are acting on users or nodes
   if (is_object($space) && $space->type == 'og') {
     //After we have determined that we are in an OG space lets make
     //sure this display makes use of the spaces filter
     $filter = $view->get_item($display_id, 'filter', 'current');
-    
+
     if ($filter) {
-      
+
       $table = false;
       if ($filter['relationship'] == 'none') {
         $table = $view->base_table;
       }
       elseif (($rel = $view->get_item($display_id, 'relationship', $filter['relationship']))) {
         //Get Relationship data
-        $rel_data = views_get_handler($rel_data['table'], $rel_data['field'], 'relationship');
-        
+        $rel_data = views_get_handler($rel['table'], $rel['field'], 'relationship');
+
         //Use the base table for the relationship the current space filter is attached to
         if (isset($rel_data->definition['base'])) {
           $table = $rel_data->definition['base'];
         }
       }
       $table = 'node';
-      
+
       if (in_array($table, array(
           'node',
           'user'
       ))) {
-        
+
         //Check to see if the relationship has already been added via the UI
         if (! $view->get_item($display_id, 'relationship', 'og_membership_rel')) {
           //If so lets add the Relationship
           $view->add_item($display_id, 'relationship', $table, 'og_membership_rel');
         }
-        
+
         //Set the 'current' space filter up to use the new og relationshipt
         $view->set_item_option($display_id, 'filter', 'current', 'relationship', 'og_membership_rel');
       }
