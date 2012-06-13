@@ -102,7 +102,7 @@ function cp_theme() {
     'template' => 'cp-toolbar',
     'path' => drupal_get_path('module', 'cp').'/theme',
   );
-  
+
   return $theme;
 }
 
@@ -152,16 +152,16 @@ function cp_block_info() {
   return array(
     'cp_subnav' => array(
       'info' => t('CP Subnavigation'),
-      'region' => 'sidebar_first',
+      'region' => false,
       'cache' => DRUPAL_CACHE_GLOBAL,
       'visibility' => BLOCK_VISIBILITY_LISTED,
       'pages' => 'cp/*',
     ),
-    'cp_minimenu' => array(
+  /*'cp_minimenu' => array(
       'info' => t('CP Mini-Menu'),
       'region' => 'three_33_third',
       'cache' => DRUPAL_CACHE_PER_ROLE,
-    ),
+    ),*/
   );
 }
 
