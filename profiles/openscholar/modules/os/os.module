@@ -132,9 +132,56 @@ function os_block_view($delta = ''){
       if (isset($os_menus[$delta])) {
         $block['subject'] = t($os_menus[$delta]);
         $block['content'] = os_menu_tree($delta);
+        if (count($block['content']) && module_exists('nice_menus')) {
+          $block['content'] += array(
+            '#theme' => 'os_nice_menus',
+            '#menu_name' => $delta,
+          );
+        }
         return $block;
       }
       break;
+  }
+}
+
+/**
+ * Implements theme_HOOK
+ * 
+ * Applies nice_menus themes to our menus.   
+ */
+function theme_os_nice_menus($variables) {
+  ctools_include('menu', 'os');
+  ctools_include('layout', 'os');
+  
+  $variables += array(
+    'direction' => _os_nice_menus_direction($variables['menu_name']), //'down', //get from region
+    'depth' => -1, //variable?
+    'menu' => os_menu_tree_data($variables['menu_name']), //or just use this?
+  );
+  $block = theme('nice_menus', $variables); //has to be nice_menus.  the rest won't take a direction
+  return $block['content'];
+}
+
+/**
+ * @function _os_nice_menus_direction
+ *
+ * Given a menu returns the direction for menu tabs to use
+ *
+ * @param string $menu 
+ * 	Name of menu
+ * 
+ * @return string
+ * 	'right' or 'down' value for direction parameter of theme_nice_menus
+ */
+function _os_nice_menus_direction($menu) {
+  $c = context_get();  
+  foreach($c['context'] as $context) {
+    if (isset($context->{'reactions'}['block']['blocks']['os-'.$menu])) {
+      $region = $context->{'reactions'}['block']['blocks']['os-'.$menu]['region'];
+      $vertical_regions = array('sidebar_first', 'sidebar_second');
+      
+      return (in_array($region, $vertical_regions)) ? 'right' : 'down';
+    }
   }
 }
 
@@ -188,9 +235,12 @@ function os_os_widget_alter(&$widget){
  */
 function os_theme(){
   return array(
-      'openscholar_powered_by' => array(
-          'variables' => array()
-      )
+    'openscholar_powered_by' => array(
+      'variables' => array('elements' => array(),),
+    ),
+    'os_nice_menus' => array(
+      'variables' => array('menu_name' => ''),
+    ),
   );
 }
 
