@@ -15,6 +15,10 @@
   vertical-align: top;
 }
 
+.cp-region:hover {
+	background-color: #F3F3F3;
+}
+
 .cp-region-header-left {
   margin-right: 1%;
   width: 24%;
@@ -111,6 +115,7 @@
 
 #edit-layout-unused-widgets .widget-container {
   height: 100%;
+  /* position: absolute;*/
 }
 
 #edit-layout-unused-widgets .cp-layout-widget,
@@ -125,6 +130,7 @@
   vertical-align: top;
   width: 75px;
   height: 31px;
+  position: absolute;
 }
 
 #edit-layout-unused-widgets .cp-layout-widget.hidden {
@@ -148,17 +154,59 @@
    position: relative;
 }
 
-.cp-layout-item .widget-controls {
+.cp-region .cp-layout-widget:hover {
+background-color:#F8F9E2;
+background-position:-850px 50%;
+}
+
+#edit-layout .widget-controls {
     position: absolute;
     right: 7px;
     top: 4px;
 }
 
-.close-this {
+#edit-layout .close-this {
     background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 0 transparent;
     height: 12px;
     text-indent: -999em;
     width: 12px;
+}
+
+/* WIDGET STYLES IN UNUSED WIDGET BOX */
+.widget-container a.delete {
+    background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 -226px transparent;
+    display: block;
+    height: 11px;
+    left: 82px;
+    position: absolute;
+    text-indent: -999em;
+    top: 20px;
+    width: 10px;
+}
+
+.widget-container a.delete:hover {
+    background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll -14px -241px transparent;
+    display: block;
+    height: 11px;
+    text-indent: -999em;
+    width: 10px;
+}
+
+.widget-container a.edit {
+    background: url("images/configGearSmallOff.png") no-repeat scroll 0 0 transparent;
+    color: transparent;
+    display: block;
+    left: 81px;
+    position: absolute;
+    top: 42px;
+}
+
+.widget-container a.edit:hover {
+    background: url("images/configGearSmall.png") no-repeat scroll 0 0 transparent;
+}
+
+.widget-container .close-this {
+    display: none;
 }
 
 /**WIDGET TABS**/
