@@ -1,3 +1,5 @@
 /* MAIN NAV */
-#block-system-main-menu.menu-wrapper,
+#block-os-primary-menu.menu-wrapper,
 .block-inner {margin:0;}
+
+.block-content {padding:8px;}
