@@ -178,7 +178,8 @@ function _os_nice_menus_direction($menu) {
   foreach($c['context'] as $context) {
     if (isset($context->{'reactions'}['block']['blocks']['os-'.$menu])) {
       $region = $context->{'reactions'}['block']['blocks']['os-'.$menu]['region'];
-      $vertical_regions = array('sidebar_first', 'sidebar_second');
+      $vertical_regions = array('sidebar_first', 'sidebar_second'); 
+      //what about right hand sidebars?
       
       return (in_array($region, $vertical_regions)) ? 'right' : 'down';
     }

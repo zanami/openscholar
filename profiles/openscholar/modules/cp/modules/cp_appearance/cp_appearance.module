@@ -65,7 +65,6 @@ function cp_appearance_theme_picker_form($form, &$state) {
   $radio_options = array();
   drupal_add_js(drupal_get_path('module', 'cp_appearance') . '/theme/cp_appearance_theme_picker.js');
 
-
   $form = array(
     '#title' => t('Theme Picker'),
     '#theme' => array('cp_appearance_theme_picker_form'),
@@ -111,6 +110,8 @@ function cp_appearance_theme_picker_form($form, &$state) {
 	  $default_theme = $themes[$theme];
 	  unset($themes[$theme]);
 	  $themes = array_merge(array($theme => $default_theme),$themes);
+  } else {
+    $theme = 'aberdeen'; //do we have a default to fall back on anywhere?
   }
 
   //Add themes to form
@@ -161,9 +162,10 @@ function cp_appearance_theme_picker_form_submit(&$form, &$form_state) {
  * @return array
  */
 function _cp_appearance_get_flavor_options($theme_flavors, $info, &$default_flavor) {
+  $options = array();
   if (count($theme_flavors)) {
     $options = array(
-    	'default' => ($info['flavor_name']) ? $info['flavor_name'] : t('Default ') . t('(Default)'),
+    	'default' => (isset($info['flavor_name'])) ? $info['flavor_name'] : t('Default ') . t('(Default)'),
     );
 
     foreach ($theme_flavors as $key => $flavor) {
@@ -211,7 +213,7 @@ function theme_cp_appearance_theme_picker_form($variables) {
   			'item-theme-picker',
 		    ($o_theme->name == $form['cp_appearance_theme']['#default_value']) ? 'current' : ''
 		  ),
-			'id' => 'maintheme-'.str_replace('_','-',$o_theme->name),
+			'id' => 'theme-'.str_replace('_','-',$o_theme->name),
 		  'data' => theme('cp-appearance-theme-item', array('info'=>$a_info, 'sub_theme'=>$sub_theme)),
     );
 	}
