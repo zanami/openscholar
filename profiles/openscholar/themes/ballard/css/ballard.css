@@ -1,6 +1,7 @@
 /**** IMPORT GRID/PANEL LAYOUT CSS ****/
 @import "ballard.responsive.layout.css"; 
-@import "../../os_basetheme/css/d6buffer.css";
+@import "/profiles/openscholar/themes/os_basetheme/css/d6buffer.css";
+
 @import url(http://fonts.googleapis.com/css?family=Judson);
 
 body {
@@ -17,7 +18,7 @@ font-family: helvetica,arial,sans-serif;
   box-shadow: 0 2px 1em #777;
 } 
 
-#columns {background:#FFF;padding:8px;}
+#columns {background:#FFF;padding:15px;}
 
 
 #content-main div.views-row-last {
@@ -34,7 +35,7 @@ font-family: helvetica,arial,sans-serif;
     padding: 15px 20px;
 }
 
-w
+
 /* TYPOGRAPHY*/ 
  
 a, a:visited {color:#293352;text-decoration:none;}
