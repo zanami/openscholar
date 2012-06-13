@@ -37,3 +37,4 @@ features[variable][] = node_preview_vsite
 features[variable][] = node_submitted_vsite
 files[] = plugins/vsite.inc
 files[] = tests/vsite_access.test
+files[] = tests/vsite_user.test

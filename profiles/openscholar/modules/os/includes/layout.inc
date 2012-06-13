@@ -5,6 +5,9 @@
  *
  * Provides layout management and crud functions
  *
+ * os_layout_get_contexts
+ * Return an array of all the contexts avalible (optionally) filtered by privacy
+ *
  * os_layout_get
  * Return an array of block settings for a single context
  *
@@ -22,6 +25,9 @@
  *
  * os_layout_load_block
  * Given a blocks full meta-data including config paths and access parameters
+ *
+ * os_layout_block_delete
+ * Given a bid remove all instances of that block from the layout system
  *
  */
 
@@ -310,19 +316,6 @@ function os_layout_put($block, $context){
  * @param string $bid
  * Block identifier [os-primary-menu]
  *
- * @param array/string $contexts
- * An array of contexts or individual context to delete a block from, defaults to all contexts
- */
-function os_layout_delete($bid, $contexts = false){
-  
-  return $block;
-}
-
-/**
- *
- * @param string $bid
- * Block identifier [os-primary-menu]
- *
  * @param boolean $load_info
  * Load Block meta-data used by admin forms
  *
@@ -368,6 +361,34 @@ function os_layout_load_block($bid, $load_meta = true, $block = array()){
   }
   
   return $block;
+}
+
+/**
+ * Remove a block from one or more contexts
+ *
+ * @param string $bid
+ * Block identifier [os-primary-menu]
+ *
+ * @param array/string $contexts
+ * An array of contexts or individual context to delete a block from, defaults to all contexts
+ */
+function os_layout_block_delete($bid, $contexts = false){
+  if(!$contexts){
+    $contexts = os_layout_get_contexts(true);
+  }elseif (!is_array($contexts)){
+    $contexts = array($contexts);
+  }
+  
+  //Remove from each context
+  foreach ($contexts as $context) {
+  	$blocks = os_layout_get($context);
+  	if(isset($blocks[$bid])){
+  	  unset($blocks[$bid]);
+  	  os_layout_set($context);
+  	}
+  }
+  
+  return true;
 }
 
 /**
