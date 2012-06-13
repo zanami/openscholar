@@ -4,7 +4,7 @@ core        = 7.x
 engine      = phptemplate
 screenshot  = screenshot.png
 base theme  = os_basetheme
-;flavor_name = "Blue"
+flavor_name = "Blue"
 plugins[os][flavor] = flavors
 
 
