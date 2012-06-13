@@ -139,7 +139,7 @@ class VsiteUser extends OpenscholarWebTestCase {
    */
   public function testUserRoles(){
     
-    $test_role = 'vsite_user';
+    $test_role = 'vsite user';
 
     //A little sanity checking to make sure that the roles we will be using exist
     $roles = og_roles($this->group_1->group_type, $this->group_1->id, 'vsite');
@@ -159,8 +159,6 @@ class VsiteUser extends OpenscholarWebTestCase {
     //Add role to the user in the active group
     os_role_grant($this->user1->uid,$test_role);
     
-    //Clear OG role cache
-    drupal_static_reset('og_get_user_roles');
     $roles = og_get_user_roles($this->group_1->group_type, $this->group_1->id, $this->user1->uid);
     $this->assertTrue(in_array($test_role,$roles), "User1 recieved the new role in the active Group");
     
@@ -171,9 +169,6 @@ class VsiteUser extends OpenscholarWebTestCase {
     //Add the role for user2 to an inactive Group
     os_role_grant($this->user2->uid, $test_role, $this->group_2->id);
     
-    //Clear OG role cache
-    drupal_static_reset('og_get_user_roles');
-    
     $roles = og_get_user_roles($this->group_2->group_type, $this->group_2->id, $this->user2->uid);
     $this->assertTrue(in_array($test_role,$roles), "User2 was given the role in the inactive Group");
   
@@ -183,9 +178,6 @@ class VsiteUser extends OpenscholarWebTestCase {
     //Remove the role from User2 in the inactive group
     os_role_revoke($this->user2->uid, $test_role, $this->group_2->id);
     
-    //Clear OG role cache
-    drupal_static_reset('og_get_user_roles');
-    
     $roles = og_get_user_roles($this->group_2->group_type, $this->group_2->id, $this->user2->uid);
     $this->assertFalse(in_array($test_role,$roles), "User2 no longer has the role in the inactive Group");
     
@@ -194,9 +186,6 @@ class VsiteUser extends OpenscholarWebTestCase {
     
     $roles = og_get_user_roles($this->group_1->group_type, $this->group_1->id, $this->user1->uid);
     $this->assertTrue(in_array($test_role,$roles), "Role was NOT revoked from User1 in the active Group");
-    
-    //Clear OG role cache
-    drupal_static_reset('og_get_user_roles');
     
     //Remove role from User1 in the active group
     os_role_revoke($this->user1->uid, $test_role);
