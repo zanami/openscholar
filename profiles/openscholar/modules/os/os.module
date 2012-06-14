@@ -174,14 +174,13 @@ function theme_os_nice_menus($variables) {
  * 	'right' or 'down' value for direction parameter of theme_nice_menus
  */
 function _os_nice_menus_direction($menu) {
-  $c = context_get();  
-  foreach($c['context'] as $context) {
+  $contexts = context_get();  
+  foreach($contexts['context'] as $context) {
     if (isset($context->{'reactions'}['block']['blocks']['os-'.$menu])) {
-      $region = $context->{'reactions'}['block']['blocks']['os-'.$menu]['region'];
-      $vertical_regions = array('sidebar_first', 'sidebar_second'); 
-      //what about right hand sidebars?
+      $region = $context->{'reactions'}['block']['blocks']['os-'.$menu]['region']; 
+      $region_directions = array('sidebar_first' => 'right','sidebar_second' => 'left','footer' => 'up');      
       
-      return (in_array($region, $vertical_regions)) ? 'right' : 'down';
+      return (isset($region_directions[$region])) ? $region_directions[$region] : 'down';
     }
   }
 }
