@@ -79,6 +79,7 @@ body.toolbar-drawer {
   background: url("images/topmenu-icons.png") no-repeat;
   padding-left: 30px !important;
    height: 25px;
+   font-style: normal;
 }
 
 #cp-toolbar ul li a#toolbar-link-cp-appearance {
