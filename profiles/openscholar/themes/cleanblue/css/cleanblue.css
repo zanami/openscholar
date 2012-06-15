@@ -1,25 +1,23 @@
-/**** IMPORT GRID/PANEL LAYOUT CSS ****/
-@import "cleanblue.responsive.layout.css"; 
 @import "/profiles/openscholar/themes/os_basetheme/css/d6buffer.css";
-
+@import "cleanblue.responsive.layout.css"; 
 
 
 body  {
   color:#37352B;
   min-width: 980px;
-  background: url('images/bodyBg.png') repeat-x scroll 0px 160px #F7F7F9;
+  background: url('../images/bodyBg.png') repeat-x scroll 0px 160px #F7F7F9;
  }    
 
   body.admin-menu {
- 	background: url("images/bodyBg.png") repeat-x scroll 0 180px #F7F7F9;
+ 	background: url("../images/bodyBg.png") repeat-x scroll 0 180px #F7F7F9;
  	}
   
     body.cp-toolbar-full {
- 	background: url("images/bodyBg.png") repeat-x scroll 0 200px #F7F7F9;
+ 	background: url("../images/bodyBg.png") repeat-x scroll 0 200px #F7F7F9;
  	}
   
  body.header-none {
- 	background:url("images/bodyBg.png") repeat-x scroll 0px -89px #F7F7F9;
+ 	background:url("../images/bodyBg.png") repeat-x scroll 0px -89px #F7F7F9;
  	}
 
 
@@ -67,7 +65,7 @@ h2.block-title {
   font-size:1.2em;
   }
 
-#content-main h2.block-title a {
+#content-column h2.block-title a {
   color:#106599;
   }
 
@@ -83,7 +81,7 @@ h2.block-title {
   text-transform:uppercase;
   letter-spacing: .5px;
   margin-bottom: 10px;
-  background:url('images/greenHdrBg.gif') no-repeat; background-position: left;padding-left: 14px;
+  background:url('../images/greenHdrBg.gif') no-repeat; background-position: left;padding-left: 14px;
   }
 
 .region-sidebar-second h2.block-title, .region-sidebar-second h2.block-title a {
@@ -103,20 +101,14 @@ h2.block-title {
   color: #106599;
 }
   
-  .region-sidebar-first #block-os-primary-menu .content ul.menu {margin-left:1px;}
-   .region-sidebar-first #block-os-secondary-menu
- .content ul.menu {margin-left:18px;}
-  .region-sidebar-first #block-os-primary-menu .content ul.menu li, .region-sidebar-first #block-os-secondary-menu
- .content ul.menu li {list-style-image:url('images/mainNavLftIcon.gif');padding-bottom:12px;}
-  .region-sidebar-first #block-os-primary-menu .content ul.menu li  a, .region-sidebar-first #block-os-secondary-menu
- .content ul.menu li  a {color:#757575;font-weight:bold;padding-left:1px;text-transform:uppercase;line-height:10px;text-indent:20px;}
+  .region-sidebar-first #block-os-primary-menu ul.menu {margin-left:1px;}
+  .region-sidebar-first #block-os-secondary-menu ul.menu {margin-left:18px;}
+  .region-sidebar-first #block-os-primary-menu ul.menu li, .region-sidebar-first #block-os-secondary-menu ul.menu li {list-style-image:url('../images/mainNavLftIcon.gif');padding-bottom:12px;}
+  .region-sidebar-first #block-os-primary-menu ul.menu li a, .region-sidebar-first #block-os-secondary-menu ul.menu li a {color:#757575;font-weight:bold;padding-left:1px;text-transform:uppercase;line-height:10px;text-indent:20px;}
   
-  .region-sidebar-second #block-os-primary-menu .content ul.menu, .region-sidebar-second #block-os-secondary-menu
- .content ul.menu {margin-left:20px;}
-  .region-sidebar-second #block-os-primary-menu .content ul.menu li, .region-sidebar-second #block-os-secondary-menu
- .content ul.menu li  {list-style-image:url('images/mainNavLftIcon.gif');padding-bottom:10px;}
-  .region-sidebar-second #block-os-primary-menu .content ul.menu li  a,  .region-sidebar-second #block-os-secondary-menu
- .content ul.menu li  a {color:#757575;font-weight:bold;font-size:12px;text-transform:uppercase;}
+  .region-sidebar-second #block-os-primary-menu ul.menu, .region-sidebar-second #block-os-secondary-menu ul.menu {margin-left:20px;}
+  .region-sidebar-second #block-os-primary-menu ul.menu li, .region-sidebar-second #block-os-secondary-menu ul.menu li {list-style-image:url('../images/mainNavLftIcon.gif');padding-bottom:10px;}
+  .region-sidebar-second #block-os-primary-menu ul.menu li a,  .region-sidebar-second #block-os-secondary-menu ul.menu li a {color:#757575;font-weight:bold;font-size:12px;text-transform:uppercase;}
 
 p.copy {
   margin-top: 0;
@@ -138,15 +130,12 @@ p.copy {
 #header-container-left .box-os_boxes_modal_siteinfo .boxes-box, 
 #header-container-right .box-os_boxes_modal_siteinfo .boxes-box, 
 #header-container-main .box-os_boxes_modal_siteinfo .boxes-box {
-	height:84px;background:url('images/siteInfoBg.gif') no-repeat;background-position:left;padding-left:20px;margin-top: 20px;
+	height:84px;background:url('../images/siteInfoBg.gif') no-repeat;background-position:left;padding-left:20px;margin-top: 20px;
 	}
 
 /* LAYOUT ELEMENTS */
 
 #page {
-  width: 980px;
-  margin: 0 auto;
-  padding: 0px;
 background: #fff;
  }
 
@@ -157,26 +146,10 @@ background: #fff;
 
 #header-container-left
 {
-  width: 160px;
   height:125px;
   }
 
-.region-sidebar-first,
-#header-container-left {
-  left: -214px;
-  width: 160px;
-  }
 
-.region-sidebar-second,
-#header-container-right {
-  width: 195px;
-  }
-
-#columns .hg-container,
-#header-container-container {
-  padding-left: 194px;
-  padding-right: 250px;
-  }
 
 #header-container {
   background: #f7f7f9;
@@ -193,16 +166,16 @@ body.sidebar-first #columns .hg-container {
   padding-left: 210px;
   }
   
- #content-main, .region-sidebar-first, .region-sidebar-second  {
+ #content-column, .region-sidebar-first, .region-sidebar-second  {
   padding-top: 25px;
   }
 
 
-.sidebar-first #content-main { border-left:1px dotted #666; }
+.sidebar-first #content-column { border-left:1px dotted #666; }
 
-.sidebar-second #content-main { border-right:1px dotted #666; }
+.sidebar-second #content-column { border-right:1px dotted #666; }
 
-.two-sidebars #content-main {
+.two-sidebars #content-column {
    border-right:1px dotted #666;
   border-left:1px dotted #666; 
 }
@@ -217,10 +190,6 @@ body.navbar-off .region-sidebar-first {
 margin: 8px -15px 0 18px;
   padding: 0 0 30px 0;
   }
-  
-body.one-sidebar .region-sidebar-first {
-	left: -230px;	
-}
 
 /* HEADER ELEMENTS */
 
@@ -229,10 +198,6 @@ body.one-sidebar .region-sidebar-first {
 
   }
 
-.header-main #header-container-container,
-.header-main-right #header-container-container {
-  padding-right:250px;
-  }
 
 #header-container h1,
 #header-container h2,
@@ -271,7 +236,6 @@ body.one-sidebar .region-sidebar-first {
 #menu-bar {
   background: #FFF;
   border-bottom: 5px solid #d5d3d4;
-  padding:1px 5px 1px 5px;
   }
 
 #menu-bar .wrap {
@@ -299,7 +263,7 @@ body.one-sidebar .region-sidebar-first {
 
 #menu-bar li a:hover,
 #menu-bar li.active-trail a {
-  background: url('images/mainNavHover.png') repeat-x;
+  background: url('../images/mainNavHover.png') repeat-x;
    border-bottom:none;
   color: #FFF;
   text-decoration: none;
@@ -309,7 +273,7 @@ body.one-sidebar .region-sidebar-first {
 @-moz-document url-prefix() {
 #menu-bar li a:hover,
 #menu-bar li.active-trail a {
-        padding: 6px 15px 6px 15px;
+        padding: 6px 15px;
     }
 }
 
