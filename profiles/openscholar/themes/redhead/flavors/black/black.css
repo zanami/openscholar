@@ -1,0 +1,10 @@
+/*Black version*/
+
+#header-container,
+#menu-bar{
+  background: #000;
+  }
+
+a, a:visited {
+  color: #888;
+  }

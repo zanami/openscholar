@@ -1,0 +1,10 @@
+/*Grey version*/
+
+#header-container,
+#menu-bar {
+  background: #888;
+  }
+
+a, a:visited {
+  color: #888;
+  }

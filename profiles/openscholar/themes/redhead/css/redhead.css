@@ -1,0 +1,155 @@
+@import "redhead.responsive.layout.css";
+@import "/profiles/openscholar/themes/os_basetheme/css/d6buffer.css";
+
+html {
+    min-width: 910px;
+    }
+
+body {
+    color:#353535;
+    font-family: "Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
+    }
+
+.wrap {
+    width: 910px;
+    margin: 0 auto;
+    }
+
+a, a:visited {
+    color:#8A281B;
+    }
+
+a:hover {
+    color:#8A281B;
+    text-decoration: underline;
+    }
+
+
+h1, h2, h3, .region-sidebar-second a {
+    font-weight: normal;
+    color:#889095;
+    }
+
+h1, h2 {
+    font-size: 1.4em;
+    }
+
+
+h2, h3, h4 {
+  margin-bottom: 1em;
+  margin-top: 1em;
+  }
+
+h1#page-title {
+  margin-bottom: 1em;
+  }
+  
+.node-teaser.os-links-trail h3 {
+  margin-top: 0;
+}  
+
+h1 a, h2 a, h3 a, .region-sidebar-second a {
+    font-style: normal;
+    }
+
+/* LAYOUT ELEMENTS */
+
+#header,
+#menu-bar
+ {
+  background: #A03A25;
+  }
+
+#columns {
+  background: url('../images/body-bg.png') repeat-x 0 0 #fff;
+  padding-top: 20px;
+  }
+
+
+
+body.sidebar-first #columns .hg-container,
+body.header-left-main #header-container {
+  padding-right: 20px;
+  }
+
+.region-sidebar-second {
+    border-left: 1px solid #ccc;
+    }
+
+#footer {
+    font-size: .9em;
+    }
+
+/* HEADER ELEMENTS */
+
+#header-container {
+    padding: 16px 0 6px 0;
+    color: #FFF;
+    }
+
+#header-container h1 {
+    font-size: 24px;
+    line-height: 1.1em;
+    }
+
+#header-container h2 {
+    font-size: 18px;
+     line-height: 1.3em;
+    }
+
+#header-container h1,
+#header-container h2,
+#header-container h3,
+#header-container a,
+#header-container a:visited,
+#header-container h1 a,
+#header-container h1 a:visited {
+    color:#EFEFEF;
+    }
+
+#header-container a, #header-container a:visited {
+    text-decoration: none;
+    }
+
+#menu-bar
+ a,
+#menu-bar
+ a:visited {
+  color: #fff;
+  }
+
+#header a:hover,
+#header a.active {
+    color:#F9E433;
+    }
+
+#menu-bar
+ li {
+    margin-right: 1.5em;
+    text-transform: uppercase;
+    font-size: 1.1em;
+    }
+
+/* MAIN CONTENT AREA */
+
+body.sidebar-first #content {
+    margin-left: 30px;
+    }
+
+body.sidebar-second #content {
+    margin-right: 30px;
+    }
+
+
+body.two-sidebars #content {
+    margin-left: 20px;
+    margin-right: 20px;
+    }
+
+/* Nodes */
+
+.submitted {
+  color: #444;
+  border-bottom: 1px dashed #a1b1b1;
+  display:block;
+  }
