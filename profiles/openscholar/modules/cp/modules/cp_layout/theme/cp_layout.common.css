@@ -130,7 +130,7 @@
   vertical-align: top;
   width: 75px;
   height: 31px;
-  position: absolute;
+  position: relative;
 }
 
 #edit-layout-unused-widgets .cp-layout-widget.hidden {
@@ -159,18 +159,27 @@ background-color:#F8F9E2;
 background-position:-850px 50%;
 }
 
-#edit-layout .widget-controls {
-    position: absolute;
-    right: 7px;
-    top: 4px;
-}
-
-#edit-layout .close-this {
+#edit-layout .ui-sortable .close-this {
     background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 0 transparent;
     height: 12px;
     text-indent: -999em;
     width: 12px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
 }
+
+#edit-layout a.edit {
+    background: url("images/configGear.png") no-repeat scroll 0 0 transparent;
+    color: transparent;
+    text-indent: -999em;
+    width:15px;
+    height:15px;
+    padding-bottom:6px;
+}
+
+.widget-controls a.delete {display:none;}
+
 
 /* WIDGET STYLES IN UNUSED WIDGET BOX */
 .widget-container a.delete {
@@ -303,12 +312,21 @@ html.js #cp-layout-full-form div.ctools-dropdown div.ctools-dropdown-container {
   width:90%;
 }
 
-.page-cp-build-layout div.ctools-dropdown div.ctools-dropdown-container ul li a:hover {
-  background:#FFF;
+/*
+html.js div.ctools-dropdown div.ctools-dropdown-container ul li span {
+    background:#ccc;
 }
-
+*/
 .page-cp-build-layout div.ctools-dropdown div.ctools-dropdown-container ul li a.help {
   float:right;
   display:inline;
   width:10%;
+background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 -297px transparent;
+height: 19px;
+ text-indent: -999em;
+  
 }
+
+
+
+
