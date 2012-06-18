@@ -29,6 +29,12 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
         '#bundle' => $form['#bundle']
     );
   }
+  
+  if(og_is_group_type('node',$form['#bundle'])){
+    //Hide the comment settings form
+    $form['comment_settings']['#access'] = false;
+    $form['comment_settings']['comment']['#default_value'] = 1;
+  }
 }
 
 /**
