@@ -41,5 +41,7 @@ function vsite_install(){
         break;
     }
   }
+  
+  variable_set('og_group_manager_default_rids_vsite_node',array('member','vsite admin'));
 
 }
