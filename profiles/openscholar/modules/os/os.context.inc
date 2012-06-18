@@ -51,6 +51,11 @@ function os_context_default_contexts() {
         '<front>' => '<front>',
       ),
     ),
+    'context' => array(
+      'values' => array(
+        '~os_sitewide_*' => '~os_sitewide_*',
+      ),
+    ),
   );
   $context->reactions = array(
     'block' => array(
@@ -64,7 +69,7 @@ function os_context_default_contexts() {
       ),
     ),
   );
-  $context->condition_mode = 0;
+  $context->condition_mode = 1;
 
   // Translatables
   // Included for use with string extractors like potx.
