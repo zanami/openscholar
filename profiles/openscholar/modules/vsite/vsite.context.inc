@@ -22,6 +22,11 @@ function vsite_context_default_contexts() {
         '<front>' => '<front>',
       ),
     ),
+    'os_site' => array(
+      'values' => array(
+        '0' => '0',
+      ),
+    ),
   );
   $context->reactions = array(
     'block' => array(

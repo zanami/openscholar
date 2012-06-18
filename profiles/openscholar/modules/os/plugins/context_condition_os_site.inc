@@ -18,18 +18,20 @@ class context_condition_os_site extends context_condition {
     return $form;
   }
 
-  function execute($value){
-    if ($value && $this->condition_used()) {
+  function execute(){
+    if ($this->condition_used()) {
+      
+      //Default: NON Multi Tenant Always in a site
+      $value = 1;
       if(module_exists('spaces')){
         $vsite = spaces_get_space();
-      }else{
-        //NON Multi Tenant Always in a site
-        $vsite = true;
-      }
-      if ($vsite) {
-        foreach ( $this->get_contexts($value) as $context ) {
-          $this->condition_met($context, $value);
+        if(!$vsite){
+          $value = 0;
         }
+      }
+       
+      foreach ( $this->get_contexts($value) as $context ) {
+        $this->condition_met($context, $value);
       }
     }
   }
