@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Multi-Tenant context condition, to deterimine if you are in a OS Site
+ * OS Site context condition, to deterimine if you are in a OS Site
  */
-class context_condition_vsite extends context_condition {
+class context_condition_os_site extends context_condition {
 
   function condition_values(){
     return array(

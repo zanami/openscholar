@@ -141,7 +141,7 @@ function os_block_view($delta = ''){
 
 /**
  * Implements hook_block_view_alter
- * 
+ *
  * Tells OS menu blocks to use nice menus theme.  This would happen in
  * os_block_view, but the region isn't available yet there.
  */
@@ -159,8 +159,8 @@ function os_block_view_alter(&$block, &$data) {
 
 /**
  * Implements theme_HOOK
- * 
- * Applies nice_menus themes to our menus.   
+ *
+ * Applies nice_menus themes to our menus.
  */
 function theme_os_nice_menus($variables) {
   ctools_include('menu', 'os');
@@ -182,7 +182,7 @@ function theme_os_nice_menus($variables) {
  *
  * @param string $region
  * 	Region containing menu to expand
- * 
+ *
  * @return string
  * 	'right' or 'down' value for direction parameter of theme_nice_menus
  */
@@ -428,6 +428,11 @@ function os_init(){
       }
     }
   }
+  
+  //Execute the "In a OS Site" context condition
+  if ($plugin = context_get_plugin('condition', 'os_site')) {
+    $plugin->execute();
+  }
 }
 
 /**
@@ -473,6 +478,43 @@ function theme_openscholar_powered_by(){
   return '<span>' . t('Powered by <a href="@poweredby">OpenScholar</a>', array(
       '@poweredby' => 'http://openscholar.harvard.edu'
   )) . '</span>';
+}
+
+/**
+ * Implementation of hook_context_plugins().
+ *
+ * This is a ctools plugins hook.
+ */
+function os_context_plugins(){
+  $plugins = array();
+  
+  $plugins['context_condition_os_site'] = array(
+      'handler' => array(
+          'path' => drupal_get_path('module', 'os') . '/plugins',
+          'file' => 'context_condition_os_site.inc',
+          'class' => 'context_condition_os_site',
+          'parent' => 'context_condition'
+      )
+  );
+  
+  return $plugins;
+}
+
+/**
+ * Implementation of hook_context_registry().
+ */
+function os_context_registry(){
+  $registry = array();
+  
+  $registry['conditions'] = array(
+    'os_site' => array(
+      'title' => t('OS Site context'),
+      'description' => t('Should this context be set in a vsite? If <strong>false</strong>, this context will be active outside a "OS Site".'),
+      'plugin' => 'context_condition_os_site',
+    ),
+  );
+  
+  return $registry;
 }
 
 /**
