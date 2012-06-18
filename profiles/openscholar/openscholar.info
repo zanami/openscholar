@@ -95,6 +95,7 @@ dependencies[] = os_announcements
 dependencies[] = diff
 dependencies[] = context_ui
 dependencies[] = twitter_pull
+dependencies[] = nice_menus
 
 files[] = openscholar.profile
 
