@@ -71,7 +71,6 @@ function spaces_og_views_pre_view(&$view, &$display_id, &$args){
           $table = $rel_data->definition['base'];
         }
       }
-      $table = 'node';
 
       if (in_array($table, array(
           'node',
@@ -86,6 +85,14 @@ function spaces_og_views_pre_view(&$view, &$display_id, &$args){
 
         //Set the 'current' space filter up to use the new og relationshipt
         $view->set_item_option($display_id, 'filter', 'current', 'relationship', 'og_membership_rel');
+      }
+      
+      $i = 1;
+      //For views that use multiple spaces filters tie the multiple spaces filters to thier respective og_membership tables
+      while($view->get_item($display_id, 'filter', 'current_'.$i) && $view->get_item($display_id, 'relationship', 'og_membership_rel_'.$i)){
+        //Set the 'current_n' space filter up to use a og relationship
+        $view->set_item_option($display_id, 'filter', 'current_'.$i, 'relationship', 'og_membership_rel_'.$i);
+        $i++;
       }
     }
   }

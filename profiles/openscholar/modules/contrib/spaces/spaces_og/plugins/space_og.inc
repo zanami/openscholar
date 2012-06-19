@@ -184,16 +184,27 @@ class space_og extends space_type_purl {
 
   // Spaces OG views filter
   function views_filter(&$query, $base_table = '', $relationship = '') {
+    static $where_group;
     
-    switch ($relationship) {
-    	case 'og_membership_user':
-      case 'og_membership_'.$this->group_type:
+    switch ($base_table) {
+      case 'og_membership':
+        if(empty($where_group)){
+          $where_group = 5;
+        }else{
+          //If using multiple spaces_current_space we need to OR them together
+          $query->set_group_operator('OR');
+          $query->set_where_group('AND',$where_group);
+        }
+        
       	//Ensure that the og_membership relationship was added
       	$table = $query->ensure_table('og_membership', $relationship);
       	if($table){
+      	  
       		//Add og_membership relationship parameters
-      		$query->add_where(0, 'og_membership_'.$this->group_type.'.gid', $this->og->nid, '=');
-          $query->add_where(0, 'og_membership_'.$this->group_type.'.group_type', $this->group_type, '=');
+      		$query->add_where($where_group, $table.'.gid', $this->og->nid, '=');
+          $query->add_where($where_group, $table.'.group_type', $this->group_type, '=');
+          
+          $where_group++;
       	}
       break;
     }
