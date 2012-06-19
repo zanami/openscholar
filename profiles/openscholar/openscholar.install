@@ -12,7 +12,7 @@ function openscholar_install() {
     'cp',
     'ballard',
     'scholar_cayley',
-    'scholar_cleanblue',
+    'cleanblue',
     'mobile',
   );
   theme_enable($enable);
