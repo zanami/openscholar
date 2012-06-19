@@ -944,22 +944,11 @@ function cp_content_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '15';
   $handler->display->display_options['style_plugin'] = 'table';
-  /* Relationship: Entity Reference: Referenced Entity */
-  $handler->display->display_options['relationships']['field_file_nid_target_id']['id'] = 'field_file_nid_target_id';
-  $handler->display->display_options['relationships']['field_file_nid_target_id']['table'] = 'field_data_field_file_nid';
-  $handler->display->display_options['relationships']['field_file_nid_target_id']['field'] = 'field_file_nid_target_id';
-  $handler->display->display_options['relationships']['field_file_nid_target_id']['required'] = 0;
-  /* Relationship: File: Content using upload */
-  $handler->display->display_options['relationships']['reverse_field_upload_node']['id'] = 'reverse_field_upload_node';
-  $handler->display->display_options['relationships']['reverse_field_upload_node']['table'] = 'file_managed';
-  $handler->display->display_options['relationships']['reverse_field_upload_node']['field'] = 'reverse_field_upload_node';
-  $handler->display->display_options['relationships']['reverse_field_upload_node']['required'] = 0;
-  /* Relationship: Entity Reference: Referenced Entity */
-  $handler->display->display_options['relationships']['og_group_ref_target_id']['id'] = 'og_group_ref_target_id';
-  $handler->display->display_options['relationships']['og_group_ref_target_id']['table'] = 'field_data_og_group_ref';
-  $handler->display->display_options['relationships']['og_group_ref_target_id']['field'] = 'og_group_ref_target_id';
-  $handler->display->display_options['relationships']['og_group_ref_target_id']['relationship'] = 'field_file_nid_target_id';
-  $handler->display->display_options['relationships']['og_group_ref_target_id']['required'] = 0;
+  /* Relationship: File Usage: Content */
+  $handler->display->display_options['relationships']['file_to_node']['id'] = 'file_to_node';
+  $handler->display->display_options['relationships']['file_to_node']['table'] = 'file_usage';
+  $handler->display->display_options['relationships']['file_to_node']['field'] = 'file_to_node';
+  $handler->display->display_options['relationships']['file_to_node']['required'] = 0;
   /* Field: File: Name */
   $handler->display->display_options['fields']['filename']['id'] = 'filename';
   $handler->display->display_options['fields']['filename']['table'] = 'file_managed';
@@ -1005,11 +994,9 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['relationship'] = 'reverse_field_upload_node';
+  $handler->display->display_options['fields']['title']['relationship'] = 'file_to_node';
   $handler->display->display_options['fields']['title']['label'] = 'Post';
-  $handler->display->display_options['fields']['title']['exclude'] = TRUE;
   $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['title']['alter']['text'] = 'rewritten: [title]';
   $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['title']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['title']['alter']['external'] = 0;
@@ -1029,37 +1016,6 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
   $handler->display->display_options['fields']['title']['spaces'] = array(
-    'type' => 'spaces_og',
-    'frontpage' => 0,
-  );
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
-  $handler->display->display_options['fields']['title_1']['table'] = 'node';
-  $handler->display->display_options['fields']['title_1']['field'] = 'title';
-  $handler->display->display_options['fields']['title_1']['relationship'] = 'field_file_nid_target_id';
-  $handler->display->display_options['fields']['title_1']['label'] = 'Post';
-  $handler->display->display_options['fields']['title_1']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['title_1']['alter']['text'] = '00[title_1]';
-  $handler->display->display_options['fields']['title_1']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['title_1']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['title_1']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['title_1']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['title_1']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['title_1']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['title_1']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['title_1']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['title_1']['alter']['more_link'] = 0;
-  $handler->display->display_options['fields']['title_1']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['title_1']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['title_1']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['title_1']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['title_1']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['title_1']['empty'] = '[title]..';
-  $handler->display->display_options['fields']['title_1']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['title_1']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['title_1']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['title_1']['link_to_node'] = 1;
-  $handler->display->display_options['fields']['title_1']['spaces'] = array(
     'type' => 'spaces_og',
     'frontpage' => 0,
   );
@@ -1137,16 +1093,11 @@ function cp_content_views_default_views() {
   $handler->display->display_options['sorts']['timestamp']['table'] = 'file_managed';
   $handler->display->display_options['sorts']['timestamp']['field'] = 'timestamp';
   $handler->display->display_options['sorts']['timestamp']['order'] = 'DESC';
-  $handler->display->display_options['filter_groups']['groups'] = array(
-    1 => 'OR',
-    2 => 'OR',
-  );
   /* Filter criterion: File: Name */
   $handler->display->display_options['filters']['filename']['id'] = 'filename';
   $handler->display->display_options['filters']['filename']['table'] = 'file_managed';
   $handler->display->display_options['filters']['filename']['field'] = 'filename';
   $handler->display->display_options['filters']['filename']['operator'] = 'contains';
-  $handler->display->display_options['filters']['filename']['group'] = 1;
   $handler->display->display_options['filters']['filename']['exposed'] = TRUE;
   $handler->display->display_options['filters']['filename']['expose']['operator_id'] = 'filename_op';
   $handler->display->display_options['filters']['filename']['expose']['label'] = 'Name';
@@ -1158,14 +1109,6 @@ function cp_content_views_default_views() {
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
-  $handler->display->display_options['filters']['current']['relationship'] = 'field_file_nid_target_id';
-  $handler->display->display_options['filters']['current']['group'] = 2;
-  /* Filter criterion: Spaces: Content in current space */
-  $handler->display->display_options['filters']['current_1']['id'] = 'current_1';
-  $handler->display->display_options['filters']['current_1']['table'] = 'spaces';
-  $handler->display->display_options['filters']['current_1']['field'] = 'current';
-  $handler->display->display_options['filters']['current_1']['relationship'] = 'reverse_field_upload_node';
-  $handler->display->display_options['filters']['current_1']['group'] = 2;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
