@@ -14,7 +14,7 @@ function vsite_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('vsite_site_register_form'),
     'file' => 'vsite.site_register.form.inc',
-    'access callback' => TRUE,
+    'access callback' => 'vsite_exists_access',
   );
   
   return $items;
@@ -114,7 +114,21 @@ function vsite_spaces_registry_alter(&$registry){
   }
 }
 
-
+/**
+ * @function vsite_create_vsite
+ * 
+ * Creates a new vsite 
+ * 
+ * 
+ * @param string $name
+ * 	Name of site
+ * @param string $domain
+ * 	Path for new site
+ * @param string $uid
+ * 	Owner
+ * @param string $preset
+ * 	Type of object to create.  
+ */
 function vsite_create_vsite($name, $domain, $uid, $preset = 'vsite') {
   $node = new stdClass();
   $node->type = $preset; //fix later
@@ -125,4 +139,48 @@ function vsite_create_vsite($name, $domain, $uid, $preset = 'vsite') {
   $node->purl = array('value' => $domain, 'provider'=>'vsite_og', 'id'=>NULL);
   $node->uid = $uid;
   node_save($node);  
+}
+
+/**
+ * Gets all vsites owned by uid
+ **/
+function vsite_get_vsite_by_owner($uid) {
+  $query = new EntityFieldQuery();
+  $result = $query->entityCondition('entity_type', 'node')
+    ->entityCondition('uid', $uid)
+    ->entityCondition('bundle', 'vsite') //@TODO 
+    ->execute();
+    
+  $vsites = array();  
+  foreach(array_keys($result['node']) as $id) {
+    $vsites[] = spaces_load('og', $id);
+  }
+    
+  return array_filter($vsites);
+}
+
+/**
+ * Handles access rules for when site owner is attempting to create a another site
+ * @return  boolean
+ */
+function vsite_exists_access($vsites = array()){
+	global $user;
+  
+	if (!$vsites && $user->uid) {
+		$vsites = vsite_get_vsite_by_owner($user->uid);
+	}
+
+	//if user has permissions to create sites, return true
+  if (!user_access('create openscholar site on behalf of others') &&
+      !user_access('create own openscholar site')) {
+    return false;
+  }
+
+  //user owns one or more sites
+  if (count($vsites) >= variable_get('openscholar_vsites_per_user', 1)){
+  	//check whether user can create multiple sites
+    return user_access('create openscholar site on behalf of others');
+  }
+
+  return true;
 }

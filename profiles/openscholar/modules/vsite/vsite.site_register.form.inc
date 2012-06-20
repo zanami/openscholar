@@ -1,9 +1,11 @@
 <?php 
 
-
+/**
+ * @function vsite_site_register_form
+ *
+ * Provides form for site/register
+ */
 function vsite_site_register_form($form, &$state) {
-  $form = array();
-  
   $form['name'] = array(
     '#type' => 'textfield',
     '#size' => 35,
@@ -58,7 +60,12 @@ function vsite_site_register_form($form, &$state) {
   
 }
 
-function vsite_site_register_form_submit($form, &$state) {
+/**
+ * @function vsite_site_register_form
+ *
+ * Creates user and vsite when site/register form is submitted
+ */
+function vsite_site_register_form_submit(&$form, &$state) {
   ctools_include('user', 'os');
   $values = $state['values'];
   
@@ -83,4 +90,57 @@ function vsite_site_register_form_submit($form, &$state) {
 }
 
 
+/**
+ * @function vsite_site_register_form_validate
+ *
+ * Validation function for site/register form
+ */
+function vsite_site_register_form_validate(&$form, &$state) {
+  $values = $state['values'];
+  
+  //mail
+  if ($mail_error = user_validate_mail($values['mail'])) {
+    form_set_error('mail', $mail_error);
+  }
+  
+  if (_vsite_mail_in_use($values['mail'])) {
+    form_set_error('mail', t('Email address already in use.  Please try another.'));
+  }
+  
+  //username
+  if ($user_error = user_validate_name($values['name'])) {
+    form_set_error('name', $user_error);
+  }
+  
+  if ($user = user_load_by_name($values['name'])) {
+    form_set_error('name', t('Username %name is taken.  Please choose another.', array('%name' => $values['name'])));
+  }
+  
+  //domain
+  if (!purl_validate($values['domain']) || strlen($values['domain']) < 3) {
+    form_set_error('domain', t('Invalid URL specified.'));
+  }
+  
+  if (purl_load($values['domain']) || menu_get_item($values['domain'])) {
+    form_set_error('domain', t('URL %url is taken.  Please choose another.', array('%url'=>$values['domain'])));
+  }
+}
 
+/**
+ * @function _vsite_mail_in_use
+ * 
+ * Checks if an email address is already in use by another user.
+ * Code borrowed from user.module's user_account_form_validate()
+ * 
+ * @param string $mail
+ * 	email address
+ */
+function _vsite_mail_in_use($mail) {
+  return (bool) db_select('users')
+              ->fields('users', array('uid'))
+              ->condition('uid', $account->uid, '<>')
+              ->condition('mail', db_like($mail, 'LIKE'))
+              ->range(0, 1)
+              ->execute()
+              ->fetchField();
+}

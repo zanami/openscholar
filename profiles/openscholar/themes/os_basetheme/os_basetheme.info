@@ -218,7 +218,7 @@ plugins[panels][layouts] = layouts/panels
   settings[disable_responsive_styles]      = 0
   settings[enable_cascading_media_queries] = 0
   settings[cascade_media_query]            = 'only screen and (min-width:220px)'
-  settings[global_default_layout]          = 'smartphone-portrait'
+  settings[global_default_layout]          = 'standard-layout'
 
 
   ; Global settings - Polyfills
