@@ -155,3 +155,158 @@ function cp_layout_full_submit($form, &$form_state) {
 
   os_layout_set_multiple($ctxs, $blocks);
 }
+
+function cp_layout_layout_select($form, $form_state) {
+  $form = array();
+  ctools_include('themes', 'os');
+  $theme_name = os_theme_get();
+  $options = _cp_layout_get_layout_options($theme_name);
+  $form['layout'] = array(
+    '#type' => 'radios',
+    '#options' => array_combine($options, $options),
+    '#default_value' => theme_get_setting('bigscreen_layout'),
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+    ),
+    'cancel' => array(
+      '#type' => 'submit',
+      '#value' => t('Cancel'),
+    )
+  );
+
+  $form['#submit'] = array(
+    'cp_layout_select_submit',
+  );
+
+  return $form;
+}
+
+function cp_layout_select_submit($form, $form_state) {
+  // initialize some variables the adaptive theme inc file will need
+  if ($form_state['values']['op'] != t('Save')) return;
+
+  // Helper functions for processing the page layout and font families.
+  $path_to_at_core = drupal_get_path('theme', 'adaptivetheme');
+  require_once($path_to_at_core . '/inc/forms/at_core.submit.builders.inc');
+
+  $theme_name = os_theme_get();
+  $path = variable_get('theme_'.$theme_name.'_files_directory', '');
+  if (!$path) {
+    if (module_exists('vsite') && $space = spaces_get_space()) {
+      $path = 'public://'.$space->og->purl.'/css';
+      $space->controllers->variable->set('theme_'.$theme_name.'_files_directory', $path);
+    }
+  }
+  file_prepare_directory($path, FILE_CREATE_DIRECTORY);
+  $path_to_responsive_css = drupal_get_path('theme', $theme_name) . '/css/';
+
+  $space->controllers->variable->set('theme_'.$theme_name.'_bigscreen_layout', $form_state['values']['layout']);
+
+  /*
+   * responsive.inc needs several keys in the values array filled
+   *
+   * These are required or we will get notices
+   *  global_default_layout
+   *  enable_cascading_media_queries
+   *  smartphone_portrait_media_query
+   *  smartphone_landscape_layout
+   *  tablet_portrait_layout
+   *  tablet_landscape_layout
+   *  bigscreen_layout
+   *  disable_responsive_styles
+   *  load_ltie18css
+   *  load_respondjs
+   *
+   * These are optional and I don't know what they do
+   *  enable_extensions
+   *  enable_markup_overides
+   *  global_gutter_width
+   *
+   * In addition, the following prefixes exist for other variables
+   *  smartphone_portrait
+   *  smartphone_landscape
+   *  tablet_portrait
+   *  tablet_layout
+   *  bigscreen
+   *
+   * They can be combined with the following suffixes to create more keys in the values array
+   *  layout
+   *  media_query
+   *  page_width
+   *  page_unit
+   *  sidebar_first
+   *  sidebar_second
+   *  sidebar_unit
+   */
+  $values = array(
+    // this can also be smartphone-portrait.
+    // We're coming from a standard design first, so it should never be smartphone
+    'global_default_layout' => 'standard-layout',
+    // no reason not to to be enabled
+    'enable_cascading_media_queries' => true,
+    // The following are strings that refer tooo... something
+    'smartphone_portrait_media_query' => 'only screen and (max-width:320px)',
+    'smartphone_landscape_layout' => 'one-col-vert',
+    'tablet_portrait_layout' => 'one-col-vert',
+    'tablet_landscape_layout' => $form_state['values']['layout'],
+    'bigscreen_layout' => $form_state['values']['layout'],
+
+
+    // most of these will be defaults we don't want users messing with them
+    // I need to set them all or the files won't be generated correctly
+
+    // bigscreen layout stuff
+    'bigscreen_media_query' => 'only screen and (min-width:1025px)',
+    'bigscreen_page_width' => 980,
+    'bigscreen_page_unit' => 'px',
+    'bigscreen_sidebar_first' => 200,
+    'bigscreen_sidebar_second' => 290,
+    'bigscreen_sidebar_unit' => 'px',
+
+    // tablet landscape stuff
+    'tablet_landscape_media_query' => 'only screen and (min-width:769px) and (max-width:1024px)',
+    'tablet_landscape_page_width' => 100,
+    'tablet_landscape_page_unit' => '%',
+    'tablet_landscape_sidebar_first' => 20,
+    'tablet_landscape_sidebar_second' => 20,
+    'tablet_landscape_sidebar_unit' => '%',
+
+    // tablet portrait stuff
+    'tablet_portrait_media_query' => 'only screen and (min-width:481px) and (max-width:768px)',
+    'tablet_portrait_page_width' => 100,
+    'tablet_portrait_page_unit' => '%',
+    'tablet_portrait_sidebar_first' => 50,
+    'tablet_portrait_sidebar_second' => 50,
+    'tablet_portrait_sidebar_unit' => '%',
+
+    // smartphone landscape stuff
+    'smartphone_landscape_media_query' => 'only screen and (min-width:321px) and (max-width:480px)',
+    'smartphone_landscape_page_width' => 100,
+    'smartphone_landscape_page_unit' => '%',
+    'smartphone_landscape_sidebar_first' => 50,
+    'smartphone_landscape_sidebar_second' => 50,
+    'smartphone_landscape_sidebar_unit' => 'px',
+
+    // smartphone portrait
+    'smartphone_portrait_layout' => 'one_col_stack',
+    'smartphone_portrait_page_width' => 100,
+    'smartphone_portrait_page_unit' => '%',
+    'smartphone_portrait_sidebar_first' => 100,
+    'smartphone_portrait_sidebar_second' => 100,
+    'smartphone_portrait_sidebar_unit' => '%',
+  );
+
+  // AT separates its submit handler into several inc files that are just included as is
+  // Now that I have properly formed data, I can just ship it off to that tile
+  @require_once($path_to_at_core . '/inc/forms/at_core.submit.responsive.inc');
+}
+
+function _cp_layout_get_layout_options($theme_name) {
+  $layouts = responsive_page_layouts_device_group_options($theme_name);
+  return $layouts['bigscreen'];
+}
