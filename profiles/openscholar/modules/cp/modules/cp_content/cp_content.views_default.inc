@@ -949,7 +949,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['relationships']['field_file_nid_target_id']['table'] = 'field_data_field_file_nid';
   $handler->display->display_options['relationships']['field_file_nid_target_id']['field'] = 'field_file_nid_target_id';
   $handler->display->display_options['relationships']['field_file_nid_target_id']['required'] = 0;
-  /* Relationship: File: Content using Upload File */
+  /* Relationship: File: Content using upload */
   $handler->display->display_options['relationships']['reverse_field_upload_node']['id'] = 'reverse_field_upload_node';
   $handler->display->display_options['relationships']['reverse_field_upload_node']['table'] = 'file_managed';
   $handler->display->display_options['relationships']['reverse_field_upload_node']['field'] = 'reverse_field_upload_node';
@@ -1015,7 +1015,8 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['relationship'] = 'field_file_nid_target_id';
   $handler->display->display_options['fields']['title']['label'] = 'Post';
-  $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['title']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['title']['alter']['alter_text'] = 1;
   $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['title']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['title']['alter']['external'] = 0;
@@ -1030,6 +1031,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['html'] = 0;
   $handler->display->display_options['fields']['title']['element_label_colon'] = 1;
   $handler->display->display_options['fields']['title']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['title']['empty'] = '[title]';
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['hide_alter_empty'] = 1;
@@ -1043,6 +1045,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['title_1']['table'] = 'node';
   $handler->display->display_options['fields']['title_1']['field'] = 'title';
   $handler->display->display_options['fields']['title_1']['relationship'] = 'reverse_field_upload_node';
+  $handler->display->display_options['fields']['title_1']['label'] = 'Post';
   $handler->display->display_options['fields']['title_1']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['title_1']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['title_1']['alter']['absolute'] = 0;
@@ -1058,6 +1061,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['title_1']['alter']['html'] = 0;
   $handler->display->display_options['fields']['title_1']['element_label_colon'] = 1;
   $handler->display->display_options['fields']['title_1']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['title_1']['empty'] = '[title]';
   $handler->display->display_options['fields']['title_1']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title_1']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title_1']['hide_alter_empty'] = 1;

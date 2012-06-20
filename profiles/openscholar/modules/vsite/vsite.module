@@ -8,6 +8,17 @@ include_once ('vsite.features.inc');
 /**
  * Hooks
  */
+function vsite_menu() {
+  $items['site/register'] = array(
+    'title' => 'Create your web site',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vsite_site_register_form'),
+    'file' => 'vsite.site_register.form.inc',
+    'access callback' => TRUE,
+  );
+  
+  return $items;
+}
 
 /**
  * Implements hook_BASE_ID_form_alter().
@@ -101,4 +112,17 @@ function vsite_spaces_registry_alter(&$registry){
   if (isset($registry['types']['og'])) {
     $registry['types']['og']['plugin'] = 'vsite';
   }
+}
+
+
+function vsite_create_vsite($name, $domain, $uid, $preset = 'vsite') {
+  $node = new stdClass();
+  $node->type = $preset; //fix later
+  node_object_prepare($node);
+  
+  $node->title = $name;
+  $node->body = array('und' => array(array('value' => '')));
+  $node->purl = array('value' => $domain, 'provider'=>'vsite_og', 'id'=>NULL);
+  $node->uid = $uid;
+  node_save($node);  
 }

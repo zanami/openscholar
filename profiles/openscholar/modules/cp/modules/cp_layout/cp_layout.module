@@ -21,6 +21,15 @@ function cp_layout_menu() {
     'file' => 'cp_layout.form.inc',
   );
 
+  $items['cp/build/layout/select'] = array(
+    'title' => 'Select Layout',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_layout_layout_select'),
+    'type' => MENU_CALLBACK,
+    'access callback' => 'spaces_access_admin',
+    'file' => 'cp_layout.form.inc',
+  );
+
   return $items;
 }
 

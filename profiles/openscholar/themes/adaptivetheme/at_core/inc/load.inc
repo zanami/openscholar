@@ -57,7 +57,7 @@ function load_layout_css($path, $theme_name) {
   }
 
   // Next - check if we need to load the responsive layout
-  if (at_get_setting('disable_responsive_styles', $theme_name) === 0) {
+  if (at_get_setting('disable_responsive_styles', $theme_name) == 0) {
 
     // Responsiveness is not disabled, load the responsive layout
     $filepath = $path . '/' . $theme_name . '.responsive.layout.css';
