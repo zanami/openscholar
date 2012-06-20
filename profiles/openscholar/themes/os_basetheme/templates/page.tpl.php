@@ -78,26 +78,26 @@
  */
 ?>
 <div id="page" class="container <?php print $classes; ?>">
-
 <!--header regions beg-->
-<header id="header" class="clearfix" role="banner">
-<!-- Three column 3x33 Gpanel -- OS Header Regions-->
 <?php if (
-  $page['three_33_top'] ||
-  $page['three_33_first'] ||
-  $page['three_33_second'] ||
-  $page['three_33_third'] ||
-  $page['three_33_bottom']
+  $page['three_col_top'] ||
+  $page['three_col_first'] ||
+  $page['three_col_second'] ||
+  $page['three_col_third'] ||
+  $page['three_col_bottom']
   ): ?>
-  <div class="at-panel gpanel panel-display three-3x33 clearfix">
-    <?php print render($page['three_33_top']); ?>
-    <?php print render($page['three_33_first']); ?>
-    <?php print render($page['three_33_second']); ?>
-    <?php print render($page['three_33_third']); ?>
-    <?php print render($page['three_33_bottom']); ?>
+ <header id="header" class="clearfix" role="banner">
+  <div id="header-container">
+  <div class="at-panel gpanel panel-display three-col clearfix">
+    <?php print render($page['three_col_top']); ?>
+    <?php print render($page['three_col_first']); ?>
+    <?php print render($page['three_col_second']); ?>
+    <?php print render($page['three_col_third']); ?>
+    <?php print render($page['three_col_bottom']); ?>
   </div>
+  </div>
+  </header>
 <?php endif; ?>
-</header>
 <!--header regions end-->
 <!--main menu region beg-->
   <?php print render($page['menu_bar']); ?>

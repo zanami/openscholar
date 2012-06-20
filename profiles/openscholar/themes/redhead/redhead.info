@@ -37,11 +37,11 @@
   ; in each layout PHP file in adaptivetheme/layouts/gpanels
   
 ; 3 col 3x33
-regions[three_33_top] =3x33 Gpanel top
-regions[three_33_first]  = 3x33 Gpanel left
-regions[three_33_second] = 3x33 Gpanel center
-regions[three_33_third]  = 3x33 Gpanel right
-regions[three_33_bottom] =3x33 Gpanel bottom
+regions[three_col_top]    = Header top
+regions[three_col_first]  = Header left
+regions[three_col_second] = Header center
+regions[three_col_third]  = Header right
+regions[three_col_bottom] = Header bottom
 
 
 
