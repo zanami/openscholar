@@ -164,7 +164,7 @@ function cp_layout_layout_select($form, $form_state) {
   $form['layout'] = array(
     '#type' => 'radios',
     '#options' => array_combine($options, $options),
-    '#default_value' => theme_get_setting('bigscreen_layout'),
+    '#default_value' => at_get_setting('bigscreen_layout', $theme_name),
   );
 
   $form['actions'] = array(
@@ -195,6 +195,7 @@ function cp_layout_select_submit($form, $form_state) {
   require_once($path_to_at_core . '/inc/forms/at_core.submit.builders.inc');
 
   $theme_name = os_theme_get();
+  dpm($theme_name);
   $path = variable_get('theme_'.$theme_name.'_files_directory', '');
   if (!$path) {
     if (module_exists('vsite') && $space = spaces_get_space()) {
@@ -205,7 +206,16 @@ function cp_layout_select_submit($form, $form_state) {
   file_prepare_directory($path, FILE_CREATE_DIRECTORY);
   $path_to_responsive_css = drupal_get_path('theme', $theme_name) . '/css/';
 
-  $space->controllers->variable->set('theme_'.$theme_name.'_bigscreen_layout', $form_state['values']['layout']);
+  $settings = variable_get('theme_'.$theme_name.'_settings', array());
+  $settings['bigscreen_layout'] = $form_state['values']['layout'];
+  dpm($settings);
+
+  if (module_exists('vsite') && $space = spaces_get_space()) {
+    $space->controllers->variable->set('theme_'.$theme_name.'_settings', $settings);
+  }
+  else {
+    variable_set('theme_'.$theme_name.'_settings', $settings);
+  }
 
   /*
    * responsive.inc needs several keys in the values array filled
