@@ -256,6 +256,8 @@ function os_layout_set_multiple($contexts, $blocks){
       //Not changed take no action
       if (! $changed && ! $last_child) {
         $blocks[$bid]['default_matched'] = true;
+      }else{
+        $blocks[$bid]['default_matched'] = false;
       }
     }
     
@@ -278,7 +280,7 @@ function os_layout_set_multiple($contexts, $blocks){
   
   foreach ( $blocks as $bid => $block ) {
     //Remove those blocks that are represented in parents
-    if (isset($block['default_matched'])) {
+    if (!empty($block['default_matched'])) {
       unset($blocks[$bid]);
     }
   }
@@ -486,7 +488,7 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout, $
       break;
     }
     
-    if ($block['default_matched']) {
+    if (!empty($block['default_matched'])) {
       //One of the blocks that we would have to adjust to reconcile this weight is
       //owned by a parent context, so this is an override
       return;
