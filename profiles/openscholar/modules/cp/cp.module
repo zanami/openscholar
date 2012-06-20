@@ -188,24 +188,23 @@ function cp_block_view($delta) {
 
 /**
  * Adds the CP menus to a page
+ *
+ * @todo Add seperate mini toolbar
  */
 function cp_page_build(&$page) {
+  
   $menu = array();
-//  switch (_cp_get_toolbar_setting()) {
-//    case CP_MENU_FULL:
-//        $menu = _cp_full_menu();
-//        $page['#classes_array'][] = 'cp-menu-full';
-//        break;
-//    case CP_MENU_MINI:
-//        $menu = _cp_mini_menu();
-//        $page['#classes_array'][] = 'cp-menu-mini';
-//        break;
-//  }
-//  $page['page_top']['cp_menu'] = $menu;
-  $page['page_top']['cp_toolbar'] = array(
-    '#pre_render' => array('cp_toolbar_pre_render'),
-    '#access' => spaces_access_admin_perms(array('access control panel')),
-  );
+  switch (_cp_get_toolbar_setting()) {
+    case CP_MENU_FULL:
+    case CP_MENU_MINI:
+      //MINI Toolbar needed
+        $menu = array(
+          '#pre_render' => array('cp_toolbar_pre_render'),
+          '#access' => spaces_access_admin_perms(array('access control panel')),
+        );
+        break;
+  }
+  $page['page_top']['cp_toolbar'] = $menu;
 
   cp_invoke('page_build', $page);
 }
@@ -215,7 +214,8 @@ function cp_page_build(&$page) {
  */
 function _cp_get_toolbar_setting() {
 
-  if (!user_is_logged_in()) {
+  //If the user is logged out or we are not in a space, turn the menu off
+  if (!user_is_logged_in() || (module_exists('vsite') && !spaces_get_space())) {
     return CP_MENU_OFF;
   }
 
@@ -226,88 +226,88 @@ function _cp_get_toolbar_setting() {
   return CP_MENU_MINI;
 }
 
-function _cp_full_menu() {
-  $links = array();
+//function _cp_full_menu() {
+//  $links = array();
+//
+//  // Retrieve the admin menu from the database.
+//  // These are the 'Features/Appearance/Users/etc. buttons.
+//  $tree = menu_tree_all_data('cp');
+//  $links = menu_tree_output($tree);
+//
+//  // Add user-specific links
+//  global $user;
+//  $user_links = array();
+//  $user_links[] = array(
+//    'title' => t('Hello <strong>!username</strong>', array(
+//      '!username' => $user->name
+//    )),
+//    'href' => 'user',
+//    'html' => TRUE
+//  );
+//
+//  /*$new_count = vsite_news_get_new_activity_count();
+//  $user_links[] = array(
+//    'title' => $new_count,
+//    'href' => 'cp/news', //@TODO: replace this with new path
+//    'attributes' => $new_count?array('class' => 'unread', 'title' => t('Unread Activity on your Site')):array('title' => t('All Activity on your Site')),
+//  );*/
+//
+//  $user_links[] = array(
+//    'title' => t('Logout'),
+//    'href' => "logout",
+//    'query' => !context_isset('context', 'cp-admin')?array('destination' => $_GET['q']):'',
+//  );
+//  if (context_isset('context', 'cp-admin')) {
+//    $user_links[] = array(
+//      'title' => t('Back to your site!'),
+//      'href' => "",
+//      'html' => TRUE
+//    );
+//  }
+//
+//  return array(
+//    '#type' => 'container',
+//    'toolbar' => $links,
+//    'user' => array(
+//      '#theme' => 'links',
+//      '#links' => $user_links,
+//    ),
+//    '#attributes' => array(
+//      'id' => array(
+//        'cp-menu-full',
+//      ),
+//    ),
+//  );
+//}
 
-  // Retrieve the admin menu from the database.
-  // These are the 'Features/Appearance/Users/etc. buttons.
-  $tree = menu_tree_all_data('cp');
-  $links = menu_tree_output($tree);
-
-  // Add user-specific links
-  global $user;
-  $user_links = array();
-  $user_links[] = array(
-    'title' => t('Hello <strong>!username</strong>', array(
-      '!username' => $user->name
-    )),
-    'href' => 'user',
-    'html' => TRUE
-  );
-
-  /*$new_count = vsite_news_get_new_activity_count();
-  $user_links[] = array(
-    'title' => $new_count,
-    'href' => 'cp/news', //@TODO: replace this with new path
-    'attributes' => $new_count?array('class' => 'unread', 'title' => t('Unread Activity on your Site')):array('title' => t('All Activity on your Site')),
-  );*/
-
-  $user_links[] = array(
-    'title' => t('Logout'),
-    'href' => "logout",
-    'query' => !context_isset('context', 'cp-admin')?array('destination' => $_GET['q']):'',
-  );
-  if (context_isset('context', 'cp-admin')) {
-    $user_links[] = array(
-      'title' => t('Back to your site!'),
-      'href' => "",
-      'html' => TRUE
-    );
-  }
-
-  return array(
-    '#type' => 'container',
-    'toolbar' => $links,
-    'user' => array(
-      '#theme' => 'links',
-      '#links' => $user_links,
-    ),
-    '#attributes' => array(
-      'id' => array(
-        'cp-menu-full',
-      ),
-    ),
-  );
-}
-
-function _cp_mini_menu() {
-  global $user;
-  $user_links = array();
-
-  if (spaces_access_admin()) {
-    $user_links[] = l('Control Panel', 'cp/build/features', array('attributes' => array('class' => 'wrench', 'title' => t('Manage this Site'))));
-
-    //$new_count = vsite_news_get_new_activity_count();
-    //$user_links[] = l($new_count, 'cp/news', $new_count?array('attributes' => array('class' => 'unread', 'title' => t('New Activity on this Site'))):array('attributes' => array('title' => t('All Activity on this Site'))));
-  }
-
-  $user_links[] = array(
-    'data' => t('Hello <strong>!username</strong>', array(
-        '!username' => $user->name
-     )),
-    'children' => array(
-      l('My Account', 'user'),
-      l('Logout', 'logout'),
-    )
-  );
-  return array(
-  	'#theme' => 'item_list',
-    '#items' => $user_links,
-    '#attributes' => array(
-      'id' => 'cp-menu-mini',
-    )
-  );
-}
+//function _cp_mini_menu() {
+//  global $user;
+//  $user_links = array();
+//
+//  if (spaces_access_admin()) {
+//    $user_links[] = l('Control Panel', 'cp/build/features', array('attributes' => array('class' => 'wrench', 'title' => t('Manage this Site'))));
+//
+//    //$new_count = vsite_news_get_new_activity_count();
+//    //$user_links[] = l($new_count, 'cp/news', $new_count?array('attributes' => array('class' => 'unread', 'title' => t('New Activity on this Site'))):array('attributes' => array('title' => t('All Activity on this Site'))));
+//  }
+//
+//  $user_links[] = array(
+//    'data' => t('Hello <strong>!username</strong>', array(
+//        '!username' => $user->name
+//     )),
+//    'children' => array(
+//      l('My Account', 'user'),
+//      l('Logout', 'logout'),
+//    )
+//  );
+//  return array(
+//  	'#theme' => 'item_list',
+//    '#items' => $user_links,
+//    '#attributes' => array(
+//      'id' => 'cp-menu-mini',
+//    )
+//  );
+//}
 
 function cp_toolbar_pre_render($toolbar) {
   $toolbar = array_merge($toolbar, cp_toolbar_view());

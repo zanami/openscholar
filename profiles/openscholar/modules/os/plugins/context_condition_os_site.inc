@@ -3,7 +3,7 @@
 /**
  * OS Site context condition, to deterimine if you are in a OS Site
  */
-class context_condition_os_site extends context_condition {
+class os_context_condition_os_site extends context_condition {
 
   function condition_values(){
     return array(
