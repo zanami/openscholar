@@ -386,11 +386,11 @@ function os_preprocess_html(&$variables){
  */
 function os_ctools_plugin_type(){
   return array(
-      'flavor' => array(
-          'load themes' => TRUE,
-          'info file' => TRUE,
-          'extension' => 'flav'
-      )
+    'flavor' => array(
+      'load themes' => TRUE,
+      'info file' => TRUE,
+      'extension' => 'flav'
+    )
   );
 }
 
