@@ -165,8 +165,9 @@ function _cp_appearance_get_flavor_options($theme_flavors, $info, &$default_flav
   $options = array();
   if (count($theme_flavors)) {
     $options = array(
-    	'default' => (isset($info['flavor_name'])) ? $info['flavor_name'] : t('Default ') . t('(Default)'),
+    	'default' => (isset($info['flavor_name'])) ? $info['flavor_name'] : t('Default '),
     );
+    $options['default'] .=  t(' (Default)');
 
     foreach ($theme_flavors as $key => $flavor) {
       if (isset($flavor['flavor_name'])) {
