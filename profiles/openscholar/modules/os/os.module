@@ -497,6 +497,15 @@ function os_context_plugins(){
       )
   );
   
+  $plugins['os_context_reaction_block'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'os') . '/plugins',
+      'file' => 'os_context_reaction_block.inc',
+      'class' => 'os_context_reaction_block',
+      'parent' => 'context_reaction_block',
+    ),
+  );
+  
   return $plugins;
 }
 
@@ -515,6 +524,16 @@ function os_context_registry(){
   );
   
   return $registry;
+}
+
+/**
+ * Implementation of hook_context_registry_alter().
+ */
+function os_context_registry_alter(&$registry){
+  //Alter the registry to use OpenScholar's block reaction plugin which extends the standard
+  if(isset($registry['reactions']['block'])){
+    $registry['reactions']['block']['plugin'] = 'os_context_reaction_block';
+  }
 }
 
 /**
