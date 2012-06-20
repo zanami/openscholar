@@ -93,6 +93,8 @@ regions[three_33_bottom] = 3x33 Gpanel bottom
   ; it will add a layout to all device groups that does little else except provide
   ; and example page_layout plugin.
   ; plugins[page_layout][layouts] = custom_layouts
+  
+plugins[panels][layouts] = layouts/panels
 
 
 ;----------// Site Features
