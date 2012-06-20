@@ -67,6 +67,7 @@ function vsite_site_register_form($form, &$state) {
  */
 function vsite_site_register_form_submit(&$form, &$state) {
   ctools_include('user', 'os');
+  ctools_include('vsite', 'vsite');
   $values = $state['values'];
   
   // create user
