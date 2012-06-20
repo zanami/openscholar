@@ -11,22 +11,22 @@ body {
   }
   
 body.navbar-off #page {
-  background-image:url('images/body-bg-alt-sage.png');
+  background-image:url('../images/body-bg-alt-sage.png');
   }
 
-#navbar {
-  background-image: url('images/nav-sage.png');
+#menu-bar {
+  background-image: url('../images/nav-sage.png');
   }
 
 a, a:visited {
   color: #627840;
   }
   
-body.page-node h2.title {display:block;} 
+body.page-node h1#page-title {display:block;} 
   
-h2.title, body.node-type-page h2.title {
+h1#page-title, body.node-type-page h1#page-title {
    display:none;
 }
 
 
-#navbar, #header h1, #header h2, p, #content-area, h3, #sidebar-first, #sidebar-second, #sidebar-first a, #sidebar-second a {font-family: Arial,Verdana,sans-serif;}
+#menu-bar, #header-container h1, #header-container h2, p, #content-area, h3, .region-sidebar-first, .region-sidebar-second, .region-sidebar-first a, .region-sidebar-second a {font-family: Arial,Verdana,sans-serif;}

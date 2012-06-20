@@ -5,11 +5,11 @@ body {
   }
 
 body.navbar-off #page {
-  background-image:url('images/body-bg-alt-brown.png');
+  background-image:url('../images/body-bg-alt-brown.png');
   }
 
-#navbar {
-  background-image: url('images/nav-brown.png');
+#menu-bar {
+  background-image: url('../images/nav-brown.png');
   }
 
 a, a:visited {

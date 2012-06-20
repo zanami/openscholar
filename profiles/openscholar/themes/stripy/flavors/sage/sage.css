@@ -5,11 +5,11 @@ body {
   }
 
 body.navbar-off #page {
-  background-image:url('images/body-bg-alt-sage.png');
+  background-image:url('../images/body-bg-alt-sage.png');
   }
 
-#navbar {
-  background-image: url('images/nav-sage.png');
+#menu-bar {
+  background-image: url('../images/nav-sage.png');
   }
 
 a, a:visited {
