@@ -195,20 +195,18 @@ function cp_layout_select_submit($form, $form_state) {
   require_once($path_to_at_core . '/inc/forms/at_core.submit.builders.inc');
 
   $theme_name = os_theme_get();
-  dpm($theme_name);
   $path = variable_get('theme_'.$theme_name.'_files_directory', '');
-  if (!$path) {
-    if (module_exists('vsite') && $space = spaces_get_space()) {
-      $path = 'public://'.$space->og->purl.'/css';
-      $space->controllers->variable->set('theme_'.$theme_name.'_files_directory', $path);
-    }
+  if (module_exists('vsite') && $space = spaces_get_space()) {
+    $path = 'public://'.$space->og->purl.'/css';
+    $space->controllers->variable->set('theme_'.$theme_name.'_files_directory', $path);
   }
+
   file_prepare_directory($path, FILE_CREATE_DIRECTORY);
   $path_to_responsive_css = drupal_get_path('theme', $theme_name) . '/css/';
 
   $settings = variable_get('theme_'.$theme_name.'_settings', array());
   $settings['bigscreen_layout'] = $form_state['values']['layout'];
-  dpm($settings);
+  $settings['global_default_layout'] = 'standard-layout';
 
   if (module_exists('vsite') && $space = spaces_get_space()) {
     $space->controllers->variable->set('theme_'.$theme_name.'_settings', $settings);
