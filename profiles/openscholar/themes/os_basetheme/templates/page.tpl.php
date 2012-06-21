@@ -109,8 +109,25 @@
 <div id="columns" class="clearfix">
     <div id="content-column" role="main">
       <div class="content-inner">
-
-        <<?php print $tag; ?> id="main-content">
+      	<?php if ($is_front): ?>
+      	<?php if (
+  $page['two_col_top'] ||
+  $page['two_col_first'] ||
+  $page['two_col_second'] ||
+  $page['two_col_bottom']
+  ): ?>
+  <div class="at-panel gpanel panel-display two-col clearfix">
+    <?php print render($page['two_col_top']); ?>
+    <?php print render($page['two_col_first']); ?>
+    <?php print render($page['two_col_second']); ?>
+    <?php print render($page['two_col_bottom']); ?>
+  </div>
+  <?php endif; ?>
+  <?php endif; ?>   
+  
+  
+   	<?php if (!$is_front): ?>
+      	 <<?php print $tag; ?> id="main-content">
 
           <?php print render($title_prefix); ?>
           <?php if ($title || $primary_local_tasks || $secondary_local_tasks || $action_links = render($action_links)): ?>
@@ -146,7 +163,10 @@
             </div>
           <?php endif; ?>
 
-        </<?php print $tag; ?>>
+        </<?php print $tag; ?>><!--main content ends-->
+        <?php endif; ?>
+        
+        
       </div>
     </div>
 <!--sidebar first region beg-->
