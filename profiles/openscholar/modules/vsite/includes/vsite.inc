@@ -33,14 +33,16 @@ function vsite_create_vsite($name, $domain, $uid, $preset = 'vsite') {
 function vsite_get_vsite_by_owner($uid) {
   $query = new EntityFieldQuery();
   $result = $query->entityCondition('entity_type', 'node')
-    ->entityCondition('uid', $uid)
+    ->propertyCondition('uid', (int)$uid)
     ->entityCondition('bundle', 'vsite') //@TODO 
     ->execute();
     
   $vsites = array();  
-  foreach(array_keys($result['node']) as $id) {
-    $vsites[] = spaces_load('og', $id);
+  if (isset($result['node'])) {
+    foreach(array_keys($result['node']) as $id) {
+      $vsites[] = spaces_load('og', $id);
+    }
   }
-    
+      
   return array_filter($vsites);
 }
