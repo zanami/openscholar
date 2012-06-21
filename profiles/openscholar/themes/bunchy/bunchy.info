@@ -1,0 +1,134 @@
+
+;----------// Theme Information
+
+  name        = Bunchy
+  description = Dark theme with heavy header in the sidebars.
+  core        = 7.x
+  base theme  = os_basetheme
+  release     = 7.x-3.x
+  engine      = phptemplate
+  screenshot  = screenshot.png
+
+
+;----------// OpenScholar
+
+	os[theme_type] = 'vsite'
+	os[theme_access] = "public"
+
+;----------// Stylesheets
+
+  
+  stylesheets[screen][] = css/bunchy.css
+  os[cp_layout_css] = css/cp-layout-map.css
+
+    
+;----------// Regions
+
+  regions[sidebar_first]     = Sidebar first
+  regions[sidebar_second]    = Sidebar second
+  regions[content]           = Main Content
+  regions[footer]            = Footer
+  regions[menu_bar]          = Menu Bar
+  regions[messages]          = Messages
+  regions[help]              = Help
+  
+;----------// Gpanel Regions
+
+  ; If you are using Gpanels copy and paste the region definitions here. You will find them
+  ; in each layout PHP file in adaptivetheme/layouts/gpanels
+  
+; 3 col 3x33
+regions[three_col_top]    = Header top
+regions[three_col_first]  = Header left
+regions[three_col_second] = Header center
+regions[three_col_third]  = Header right
+regions[three_col_bottom] = Header bottom
+
+
+
+;----------// Site Features
+
+  features[] = logo
+  features[] = name
+  features[] = slogan
+  features[] = node_user_picture
+  features[] = comment_user_picture
+  features[] = comment_user_verification
+  features[] = favicon
+  features[] = main_menu
+  features[] = secondary_menu
+
+
+;----------// Theme Settings
+
+  ; Layout settings - Standard bigscreen
+  settings[bigscreen_layout]         = 'three_col_grail'
+  settings[bigscreen_page_unit]      = 'px'
+  settings[bigscreen_sidebar_unit]   = 'px'
+  settings[bigscreen_max_width_unit] = 'px'
+  settings[bigscreen_page_width]     = 970
+  settings[bigscreen_sidebar_first]  = 157
+  settings[bigscreen_sidebar_second] = 157
+  settings[bigscreen_set_max_width]  = 1
+  settings[bigscreen_max_width]      = 1140
+  settings[bigscreen_media_query]    = 'only screen and (min-width:1025px)'
+
+
+  ; Layout settings - Tablet landscape
+  settings[tablet_landscape_layout]         = 'three_col_grail'
+  settings[tablet_landscape_page_unit]      = '%'
+  settings[tablet_landscape_sidebar_unit]   = '%'
+  settings[tablet_landscape_page_width]     = 100
+  settings[tablet_landscape_sidebar_first]  = 20
+  settings[tablet_landscape_sidebar_second] = 20
+  settings[tablet_landscape_media_query]    = 'only screen and (min-width:769px) and (max-width:1024px)'
+
+
+  ; Layout settings - Tablet portrait
+  settings[tablet_portrait_layout]         = 'one_col_vert'
+  settings[tablet_portrait_page_unit]      = '%'
+  settings[tablet_portrait_sidebar_unit]   = '%'
+  settings[tablet_portrait_page_width]     = 100
+  settings[tablet_portrait_sidebar_first]  = 50
+  settings[tablet_portrait_sidebar_second] = 50
+  settings[tablet_portrait_media_query]    = 'only screen and (min-width:481px) and (max-width:768px)'
+
+
+  ; Layout settings - Smartphone landscape
+  settings[smartphone_landscape_layout]         = 'one_col_vert'
+  settings[smartphone_landscape_page_unit]      = '%'
+  settings[smartphone_landscape_sidebar_unit]   = '%'
+  settings[smartphone_landscape_page_width]     = 100
+  settings[smartphone_landscape_sidebar_first]  = 50
+  settings[smartphone_landscape_sidebar_second] = 50
+  settings[smartphone_landscape_media_query]    = 'only screen and (min-width:321px) and (max-width:480px)'
+
+
+  ; Layout settings - Smartphone portrait
+  settings[smartphone_portrait_layout]         = 'one_col_stack'
+  settings[smartphone_portrait_page_unit]      = '%'
+  settings[smartphone_portrait_sidebar_unit]   = '%'
+  settings[smartphone_portrait_page_width]     = 100
+  settings[smartphone_portrait_sidebar_first]  = 100
+  settings[smartphone_portrait_sidebar_second] = 100
+  settings[smartphone_portrait_media_query]    = 'only screen and (max-width:320px)'
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
