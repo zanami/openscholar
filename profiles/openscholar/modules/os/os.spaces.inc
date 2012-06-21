@@ -22,7 +22,7 @@ function os_spaces_presets() {
       'spaces_features' => array(
         'os' => 1,
       ),
-      'site_frontpage' => 'xxxx',
+      'site_frontpage' => 'home',
     ),
   );
 
