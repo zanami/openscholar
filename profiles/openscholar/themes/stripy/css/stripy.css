@@ -133,10 +133,12 @@ body.two-sidebars .region-sidebar-first {
 
 #menu-bar li a, #menu-bar li a:visited {
     color: #f5f5d8;
+    text-decoration:none;
     }
 
 #menu-bar li a:hover, #menu-bar li a.active {
     color: #F9E433;
+    text-decoration:none;
     }
 
 
