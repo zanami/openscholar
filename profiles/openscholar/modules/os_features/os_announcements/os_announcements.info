@@ -10,7 +10,6 @@ dependencies[] = ctools
 dependencies[] = features
 dependencies[] = media
 dependencies[] = node
-dependencies[] = os_links
 dependencies[] = strongarm
 dependencies[] = views
 features[context][] = announcements_announcements
