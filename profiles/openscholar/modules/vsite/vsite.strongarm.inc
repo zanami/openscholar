@@ -83,5 +83,19 @@ function vsite_strongarm() {
   $strongarm->value = 1;
   $export['node_submitted_vsite'] = $strongarm;
 
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'os_vsites_per_user';
+  $strongarm->value = 1;
+  $export['os_vsites_per_user'] = $strongarm;
+  
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'os_enabled_spaces_presets';
+  $strongarm->value = array('os_department'=>'os_department', 'os_personal'=>'os_personal');
+  $export['os_enabled_spaces_presets'] = $strongarm;
+
   return $export;
 }

@@ -1,0 +1,30 @@
+<?php
+/**
+ * @file vsite_register.module
+ * 
+ * Provides form so users can create vsites
+ */
+
+
+function vsite_register_menu() {
+  $items['site/register'] = array(
+    'title' => 'Create your web site',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vsite_register_form'),
+    'file' => 'vsite_register.form.inc',
+    'access callback' => 'vsite_vsite_exists_access', //@TODO
+  );
+  
+  $items['os_admin/vsite_register'] = array(
+    'title' => 'Vsite Registration',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vsite_register_admin_form'),
+    'file' => 'vsite_register.admin.inc', 
+    'access arguments' => array('access administration pages'),
+    //'type' => MENU_LOCAL_TASK,
+  
+  );
+  
+  return $items;
+}
+
