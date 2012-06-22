@@ -3,11 +3,11 @@
     <div class="widget-controls">
       <?php
       if ($can_edit) {
-        print ctools_modal_text_button("Edit", $edit_path, "Edit widget", "edit ctools-modal-openscholar-style-sefault");
+        print l('Edit', $edit_path, array('html' => TRUE, 'attributes' => array('class' => array('edit'), 'title' => 'Edit Widget')));
       }
 
       if ($can_delete) {
-        print ctools_modal_text_button("Delete", $delete_path, "Delete widget", "delete ctools-modal-openscholar-style-default");
+        print l('Delete', $delete_path, array('html' => TRUE, 'attributes' => array('class' => array('delete'), 'title' => 'Delete Widget')));
     } ?>
     <div class="close-this" title="Remove">Remove</div>
   </div>

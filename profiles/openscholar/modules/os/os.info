@@ -20,7 +20,6 @@ dependencies[] = media_internet
 dependencies[] = menu
 dependencies[] = migrate_ui
 dependencies[] = oembedcore
-dependencies[] = os_links
 dependencies[] = overlay
 dependencies[] = pathauto
 dependencies[] = search
