@@ -45,8 +45,8 @@ function cp_layout_full_form($form, $form_state, $ctx) {
     'sidebar_second',
     'footer',
     'two_col_top',
+    'two_col_first',
     'two_col_second',
-    'two_col_third',
     'two_col_bottom',
   );
 
