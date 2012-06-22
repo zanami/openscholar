@@ -112,6 +112,7 @@ function cp_layout_full_form($form, $form_state, $ctx) {
       $form['layout'][$b['region']][$bid] = array(
         '#theme' => 'cp_layout_widget',
         '#widget' => $b,
+        '#weight' => $b['weight'],
       );
     }
   }

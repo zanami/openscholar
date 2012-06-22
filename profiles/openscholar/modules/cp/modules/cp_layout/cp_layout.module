@@ -63,12 +63,13 @@ function template_preprocess_cp_layout_widget(&$variables) {
   ctools_include('modal');
 
   $widget = $variables['widget']['#widget'];
+  $classes_array = &$variables['classes_array'];
   if (!isset($widget['bid'])) {
     $classes_array[] = 'disabled';
-    return;
+    ctools_include('layout', 'os');
+    os_layout_block_delete($widget['module'].'-'.$widget['delta']);
   }
   $variables['bid'] = $widget['bid'];
-  $classes_array = &$variables['classes_array'];
 
   $classes_array[] = "cp-layout-item";
 
