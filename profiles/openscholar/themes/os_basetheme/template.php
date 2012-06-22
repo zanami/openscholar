@@ -12,7 +12,7 @@
  * // Adds classes to the body tag.
  */
 function os_basetheme_preprocess_page(&$vars) {
-
+dpm ($vars);
   //Adds OpenScholar header region awareness to body classes
   $regions = array (
     'left' => $vars['three_col_first'],
@@ -29,8 +29,6 @@ function os_basetheme_preprocess_page(&$vars) {
     $header_classes .= 'none';
   }
 
-  $classes[] = $header_classes;
-
-  $vars['body_classes'] = implode(' ', $classes);
+  $vars['classes_array'][] = $header_classes;
 }
 
