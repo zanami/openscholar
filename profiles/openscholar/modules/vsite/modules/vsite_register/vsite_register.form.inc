@@ -124,24 +124,20 @@ function vsite_register_form_submit(&$form, &$state) {
     $user = os_user_create($user_options, FALSE);
     
     //and send some email
+    if ($values['notify']) {
+      _user_mail_notify('register_no_approval_required', $user);
+    }
   } else {
     global $user;
   }
   
-  // create vsite - os_vsite_create
-  $node = vsite_create_vsite($values['name'], $values['domain'], $user->uid);
-  
-  if ($vsite = spaces_load('og', $node->nid)) {
+  //create the vsite
+  if ($vsite = vsite_create_vsite($values['name'], $values['domain'], $user->uid, $values['preset'])) {
     //add user to vsite
     os_user_add($user->uid, $vsite->id);
     os_role_grant($user->uid, 'vsite admin', $vsite->id);
-    
-    //set preset
-    if ($preset = spaces_preset_load($values['preset'])) {
-      spaces_preset_save_from_space($preset, $vsite);
-    }
-    
-    drupal_set_message(t('Success!'));
+       
+    drupal_set_message(t('Welcome to your new OpenScholar site.'));
     drupal_goto($values['domain']);
   } else {
     //errors
