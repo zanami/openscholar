@@ -50,6 +50,8 @@ function cp_layout_full_form($form, $form_state, $ctx) {
     'two_col_bottom',
   );
 
+  $weights = _cp_layout_get_weight_map($regions);
+
   $form['unused'] = array(
     '#theme_wrappers' => array('cp_layout_unused_widgets'),
     '#tags' => os_boxes_get_tags(),
@@ -65,6 +67,7 @@ function cp_layout_full_form($form, $form_state, $ctx) {
       ),
       'css' => array(
         drupal_get_path('module', 'cp_layout').'/theme/cp_layout.common.css',
+        drupal_get_path('module', 'cp_layout').'/theme/layouts/'.at_get_setting('bigscreen_layout', os_theme_get()).'.css',
       ),
     ),
     '#pre_render' => array(
@@ -83,6 +86,7 @@ function cp_layout_full_form($form, $form_state, $ctx) {
   foreach ($regions as $r) {
     $form['layout'][$r] = array(
       '#type' => 'container',
+      '#weight' => $weights[$r],
       '#attributes' => array(
         'class' => array(
           'cp-region',
@@ -142,6 +146,30 @@ function _cp_layout_rearrange_content_regions($elements) {
   }
 
   return $elements;
+}
+
+function _cp_layout_get_weight_map($regions) {
+  $map = array_fill_keys($regions, 1);
+  $i = 1;
+  foreach ($map as &$w) {
+    $w = $i++;
+  }
+  // drupal doesn't make including files from themes easy
+  $path = drupal_get_path('theme', 'adaptivetheme');
+  require_once($path.'/inc/get.inc');
+  ctools_include('themes', 'os');
+
+  // This is terrible
+  switch (at_get_setting('bigscreen_layout', os_theme_get())) {
+    case 'two_sidebars_left':
+      $map['sidebar_second'] = 5.5;
+      break;
+    case 'two_sidebars_right':
+      $map['sidebar_first'] = 6.5;
+      break;
+  }
+
+  return $map;
 }
 
 function cp_layout_full_submit($form, &$form_state) {

@@ -64,7 +64,8 @@ function template_preprocess_cp_layout_widget(&$variables) {
 
   $widget = $variables['widget']['#widget'];
   if (!isset($widget['bid'])) {
-    dpm($variables);
+    $classes_array[] = 'disabled';
+    return;
   }
   $variables['bid'] = $widget['bid'];
   $classes_array = &$variables['classes_array'];
