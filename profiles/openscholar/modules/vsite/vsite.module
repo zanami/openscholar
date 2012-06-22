@@ -8,17 +8,6 @@ include_once ('vsite.features.inc');
 /**
  * Hooks
  */
-function vsite_menu() {
-  $items['site/register'] = array(
-    'title' => 'Create your web site',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('vsite_site_register_form'),
-    'file' => 'vsite.site_register.form.inc',
-    'access callback' => 'vsite_exists_access',
-  );
-  
-  return $items;
-}
 
 /**
  * Implements hook_BASE_ID_form_alter().
@@ -118,7 +107,7 @@ function vsite_spaces_registry_alter(&$registry){
  * Handles access rules for when site owner is attempting to create a another site
  * @return  boolean
  */
-function vsite_exists_access($vsites = array()){
+function vsite_vsite_exists_access($vsites = array()){
   ctools_include('vsite', 'vsite');
 	global $user;
   
@@ -127,8 +116,8 @@ function vsite_exists_access($vsites = array()){
 	}
 
 	//if user has permissions to create sites, return true
-  if (!user_access('create openscholar site on behalf of others') &&
-      !user_access('create own openscholar site')) {
+  if (!user_access('create vsite content on behalf') &&
+      !user_access('create vsite content')) {
     return false;
   }
 
@@ -141,4 +130,13 @@ function vsite_exists_access($vsites = array()){
   //invoke a hook for rejecting access?  could include a &$var to a bool or something. 
 
   return true;
+}
+
+
+function vsite_permission() {
+  return array(
+    'create vsite content on behalf' => array(
+      'title' => t('Create vsite content on behalf of other users'),
+    )
+  );
 }

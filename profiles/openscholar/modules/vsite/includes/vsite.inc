@@ -15,16 +15,18 @@
  * @param string $preset
  * 	Type of object to create.  
  */
-function vsite_create_vsite($name, $domain, $uid, $preset = 'vsite') {
+function vsite_create_vsite($name, $domain, $uid) {
   $node = new stdClass();
-  $node->type = $preset; //fix later
+  $node->type = 'vsite'; 
   node_object_prepare($node);
   
   $node->title = $name;
   $node->body = array('und' => array(array('value' => '')));
   $node->purl = array('value' => $domain, 'provider'=>'vsite_og', 'id'=>NULL);
   $node->uid = $uid;
-  node_save($node);  
+  node_save($node); 
+
+  return $node;
 }
 
 /**

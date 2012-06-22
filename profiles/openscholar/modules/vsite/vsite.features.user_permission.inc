@@ -18,6 +18,16 @@ function vsite_user_default_permissions() {
     ),
     'module' => 'node',
   );
+  
+  // Exported permission: create vsite content on behalf.
+  $permissions['create vsite content on behalf'] = array(
+    'name' => 'create vsite content on behalf',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'manager',
+    ),
+    'module' => 'vsite',
+  );
 
   // Exported permission: delete any vsite content.
   $permissions['delete any vsite content'] = array(
