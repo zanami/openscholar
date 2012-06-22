@@ -46,6 +46,7 @@ function vsite_register_form($form, &$state) {
   
   if ($anonymous) {
     $form += _vsite_register_user_form();
+    
   } elseif($manager) {
     $form['new_user'] = array(
       '#type' => 'checkbox',
@@ -59,6 +60,12 @@ function vsite_register_form($form, &$state) {
     );
     
     $form['user_fieldset'] += _vsite_register_user_form();
+  } else {
+    
+    $form['new_user'] = array(
+      '#type' => 'value',
+      '#value' => FALSE,
+    );
   }
   
   $form['submit'] = array(
@@ -132,7 +139,7 @@ function vsite_register_form_submit(&$form, &$state) {
   }
   
   //create the vsite
-  if ($vsite = vsite_create_vsite($values['name'], $values['domain'], $user->uid, $values['preset'])) {
+  if ($vsite = vsite_create_vsite($user->name, $values['domain'], $user->uid, $values['preset'])) {
     //add user to vsite
     os_user_add($user->uid, $vsite->id);
     os_role_grant($user->uid, 'vsite admin', $vsite->id);

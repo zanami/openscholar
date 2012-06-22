@@ -122,7 +122,7 @@ function vsite_vsite_exists_access($vsites = array()){
   }
 
   //user owns one or more sites
-  if (count($vsites) >= variable_get('openscholar_vsites_per_user', 1)){
+  if (count($vsites) >= variable_get('os_vsites_per_user', 1)){
   	//check whether user can create multiple sites
     return user_access('create openscholar site on behalf of others');
   }
