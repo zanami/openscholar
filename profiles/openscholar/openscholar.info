@@ -78,7 +78,6 @@ dependencies[] = os_wysiwyg
 ;dependencies[] = vsite
 ;dependencies[] = vsite_domain
 ;dependencies[] = og
-dependencies[] = vsite_register
 
 ; Control Panel
 dependencies[] = cp

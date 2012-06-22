@@ -13,9 +13,11 @@
  * @param string $uid
  * 	Owner
  * @param string $preset
- * 	Type of object to create.  
+ * 	Type of vsite to create.
+ * 
+ * @return vsite $vsite
  */
-function vsite_create_vsite($name, $domain, $uid) {
+function vsite_create_vsite($name, $domain, $uid, $preset = FALSE) {
   $node = new stdClass();
   $node->type = 'vsite'; 
   node_object_prepare($node);
@@ -25,8 +27,12 @@ function vsite_create_vsite($name, $domain, $uid) {
   $node->purl = array('value' => $domain, 'provider'=>'vsite_og', 'id'=>NULL);
   $node->uid = $uid;
   node_save($node); 
-
-  return $node;
+  
+  if (($vsite = spaces_load('og', $node->nid)) && ($preset = spaces_preset_load($preset))) {
+    spaces_preset_save_from_space($preset, $vsite);
+  }
+ 
+  return $vsite;
 }
 
 /**
