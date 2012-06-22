@@ -13,13 +13,14 @@
  */
 function os_basetheme_preprocess_page(&$vars) {
   //Adds OpenScholar header region awareness to body classes
+  dpm($vars);
   $regions = array (
-    'left' => $vars['three_col_first'],
-    'main' => $vars['three_col_second'],
-    'right' => $vars['three_col_third'],
+    'left' => $vars['page']['three_col_first'],
+    'main' => $vars['page']['three_col_second'],
+    'right' => $vars['page']['three_col_third'],
   );
 
-  $non_empty_regions = array_filter($regions, "__scholar_base_is_empty");
+  $non_empty_regions = array_filter($regions, "__os_basetheme_is_empty");
   $header_classes = 'header-';
   if (count($non_empty_regions)) {
     $header_classes .= implode('-', array_keys($non_empty_regions));
@@ -31,3 +32,9 @@ function os_basetheme_preprocess_page(&$vars) {
   $vars['classes_array'][] = $header_classes;
 }
 
+/**
+ * For header region classes
+ */
+function __os_basetheme_is_empty($s){
+  return $s ? TRUE : FALSE;
+}
