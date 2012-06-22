@@ -381,19 +381,17 @@ div.pager-item {
      width: 50%;
 }
 
-.og-context-9015 #boxes-box-scholar_book_current_toc a:first-of-type, .og-context-9015 .box-os_boxes_booktoc a:first-of-type {
+#boxes-box-scholar_book_current_toc a:first-of-type, .box-os_boxes_booktoc a:first-of-type {
      display: none;
 }
 
-.og-context-9015 .front #footer {
+.front.og-context-9015 #footer {
      background: url('../images/frontFooterBg.gif') repeat-x 0 100px;
 }
 
-.og-context-9015 .front #content-area {
+.front.og-context-9015 #content-area {
     margin: 0 auto 10px;
 }
-
-
 
 
 p.copy a.footer-login {
