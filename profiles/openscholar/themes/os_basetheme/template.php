@@ -13,7 +13,6 @@
  */
 function os_basetheme_preprocess_page(&$vars) {
   //Adds OpenScholar header region awareness to body classes
-  dpm($vars);
   $regions = array (
     'left' => $vars['page']['three_col_first'],
     'main' => $vars['page']['three_col_second'],
