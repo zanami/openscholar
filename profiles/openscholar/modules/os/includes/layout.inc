@@ -390,7 +390,7 @@ function os_layout_block_delete($bid, $contexts = false){
       $set = true;
     }
     if ($set) {
-      os_layout_set($blocks);
+      os_layout_set($context, $blocks);
     }
 
   }
