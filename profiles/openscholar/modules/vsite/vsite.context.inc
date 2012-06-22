@@ -34,7 +34,7 @@ function vsite_context_default_contexts() {
         'views-os_websites-block' => array(
           'module' => 'views',
           'delta' => 'os_websites-block',
-          'region' => 'content',
+          'region' => 'sidebar_first',
           'weight' => '-10',
         ),
       ),
