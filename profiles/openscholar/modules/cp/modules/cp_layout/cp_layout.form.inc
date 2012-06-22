@@ -204,10 +204,10 @@ function cp_layout_layout_select_ajax($ajax) {
     $output = ctools_modal_form_wrapper('cp_layout_layout_select', $form_state);
     if ($form_state['executed']) {
       $output[] = ctools_modal_command_dismiss();
-    }
-    elseif (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Save')) {
-      ctools_include('ajax');
-      $output[] = ctools_ajax_command_reload();
+      if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Save')) {
+        ctools_include('ajax');
+        $output[] = ctools_ajax_command_reload();
+      }
     }
     echo ajax_render($output);
     exit;
