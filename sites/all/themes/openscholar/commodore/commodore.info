@@ -11,6 +11,7 @@ stylesheets[all][]   = css/commodore.css
 conditional-stylesheets[if lte IE 7][all][]   = commodore-ie7.css
 conditional-stylesheets[if IE][all][]          = commodore-ie.css
 
+scripts[] = commodore.js
 
 os[widgets][vsite-site_search] = navbar
 os[theme_type]   = "vsite"
