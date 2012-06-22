@@ -83,11 +83,68 @@ div.messages {
   margin-right: 10px;
 }
 
-/* AT Panels may need special margin wrangling when in the content region */
-#content .at-panel {
-}
+/* HEADER PANELS
+
+.header-left-main-right #header-container .region-inner {margin-left: 200px; margin-right: 200px}
+.header-left-main #header-container .region-inner {margin-left: 200px; margin-right: 0}
+.header-main-right #header-container .region-inner {margin-right: 200px; margin-left: 0}
+.region-three-col-first {width: 200px; margin-left: -100%}
+.region-three-col-third {width: 200px; margin-left: -200px}
+.region-three-col-second {width:100%;float: left; clear: none}
+
+header-left-main
+header-main-right
+header-left-main-right
+header-main*/
+
+#header-container .region {
+  float: left;
+  position: relative;
+ /* padding: 10px;*/
+  }
+
+.region-three-col-first,
+.region-three-col-third {
+  width: 200px;
+  }
+
+#header-container {
+  padding-left: 220px; /* left width incl. padding */
+  padding-right: 240px; /*right width incl. padding plus center padding */
+  }
+
+.region-three-col-second {
+  width: 100%;
+  }
+
+body.three-col-second .region-three-col-second {
+  width: auto;
+  float:none;
+  }
+
+.region-three-col-first {
+  left: -240px; /* left width incl. padding plus center padding */
+  margin-left: -100%;
+  }
+
+.region-three-col-third {
+  margin-right: -100%;
+  }
 
 
+/* FRONTPAGE PANELS */
+.two-col-first.two-col-second #region-two-col-first, 
+.two-col-first.two-col-second #region-two-col-second {
+	float:left;
+	clear:none;
+	display:inline;
+    width: 49%;
+    margin:15px 0;
+	}
+	
+.two-col-first.two-col-second #region-two-col-first {margin-right:2%;border-right:1px solid #CCC;width: 48%;}	  
+  
+  
 /*
  * Branding
  */
