@@ -383,11 +383,16 @@ function os_layout_block_delete($bid, $contexts = false){
 
   //Remove from each context
   foreach ($contexts as $context => $title) {
-  	$blocks = os_layout_get($context);
-  	if(isset($blocks[$bid])){
-  	  unset($blocks[$bid]);
-  	  os_layout_set($context);
-  	}
+    $blocks = os_layout_get($context);
+    $set = false;
+    if (isset($blocks[$bid])){
+      unset($blocks[$bid]);
+      $set = true;
+    }
+    if ($set) {
+      os_layout_set($blocks);
+    }
+
   }
 
   return true;
