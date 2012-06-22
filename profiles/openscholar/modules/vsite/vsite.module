@@ -108,28 +108,27 @@ function vsite_spaces_registry_alter(&$registry){
  * @return  boolean
  */
 function vsite_vsite_exists_access($vsites = array()){
-  ctools_include('vsite', 'vsite');
-	global $user;
-  
-	if (!$vsites && $user->uid) {
+  global $user;
+
+  //load user's vsites.  anon (uid 0) has no vsites
+	if (!$vsites && $user->uid) {  
+	  ctools_include('vsite', 'vsite');
 		$vsites = vsite_get_vsite_by_owner($user->uid);
 	}
 
 	//if user has permissions to create sites, return true
-  if (!user_access('create vsite content on behalf') &&
-      !user_access('create vsite content')) {
-    return false;
+  if (!user_access('create vsite content on behalf') && !user_access('create vsite content')) {
+    drupal_set_message(t('You do not have permission to create new sites.'), 'error', FALSE);
+    return FALSE;
   }
 
   //user owns one or more sites
-  if (count($vsites) >= variable_get('openscholar_vsites_per_user', 1)){
-  	//check whether user can create multiple sites
-    return user_access('create openscholar site on behalf of others');
+  if (!(count($vsites) < variable_get('os_vsites_per_user', 1) || user_access('create openscholar site on behalf of others'))) {
+    drupal_set_message(t('You have already created the maximum of %num OS sites.', array('%num' => count($vsites))), 'error', FALSE);
+    return FALSE;
   }
-  
-  //invoke a hook for rejecting access?  could include a &$var to a bool or something. 
 
-  return true;
+  return TRUE;
 }
 
 

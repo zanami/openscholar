@@ -16,8 +16,10 @@ function os_wysiwyg_update_files($node) {
     ->fieldCondition('field_file_nid', 'target_id', $node->nid, 'CONTAINS');
   $d = $q->execute();
   $curr_files = array();
-  foreach ($d['file'] as $r) {
-    $curr_files[] = $r->fid;
+  if (isset($d['file'])) {
+    foreach ($d['file'] as $r) {
+      $curr_files[] = $r->fid;
+    }
   }
 
   // parse the node body for files the node actually links to
