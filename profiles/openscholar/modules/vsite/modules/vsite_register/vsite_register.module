@@ -36,7 +36,7 @@ function vsite_register_menu() {
  */
 function vsite_register_block_info() {
   return array(
-    'get_your_site' => array('info' => t('Vsite Registration'),'status' => 0),
+    'get_your_site_block' => array('info' => t('Vsite Registration'),'status' => 0),
   );
 }
 
@@ -48,7 +48,7 @@ function vsite_register_block_view($delta = '') {
   ctools_include('vsite','vsite');
   
   switch ($delta) {
-    case 'get_your_site':
+    case 'get_your_site_block':
       if (user_access('vsite_vsite_exists_access')) {
         $content = l('Create your site', 'site/register', array());
         
@@ -72,3 +72,20 @@ function vsite_register_block_view($delta = '') {
   
   return $block;
 }
+
+/**
+ * Implements hook_context_registry_alter
+ * 
+ * Adds get_your_site_block to front page.
+ * @param unknown_type $registry
+ */
+function vsite_register_context_load_alter(&$context) {
+  if ($context->name == 'os_sitewide_front' && isset($context->reactions['block'])) {
+    $context->reactions['block']['blocks']['vsite_register-get_your_site_block'] = array(
+      'module' => 'vsite_register',
+      'delta' => 'get_your_site_block',
+      'region' => 'header_third',
+      'weight' => 0,
+    );
+  }
+} 

@@ -3,3 +3,5 @@ description = OpenScholar Vsite Registration
 core = 7.x
 package = OpenScholar vsite
 dependencies[] = vsite
+
+
