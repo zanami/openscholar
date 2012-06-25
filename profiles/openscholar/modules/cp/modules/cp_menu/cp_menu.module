@@ -98,6 +98,7 @@ function cp_menu_node_update($node) {
 
 //delete menu links when their node is deleted
 function cp_menu_node_delete($node) {
+  ctools_include('menu', 'os');
   if ($link = os_menu_load_link_path('node/' . $node->nid)) {
     os_menu_link_delete($link['menu_name'], $link['mlid']);
   }
