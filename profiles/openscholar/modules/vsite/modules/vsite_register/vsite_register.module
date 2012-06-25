@@ -5,7 +5,9 @@
  * Provides form so users can create vsites
  */
 
-
+/**
+ * Implements hook_menu
+ */
 function vsite_register_menu() {
   $items['site/register'] = array(
     'title' => 'Create your web site',
@@ -28,3 +30,45 @@ function vsite_register_menu() {
   return $items;
 }
 
+
+/**
+ * Implements hook_block_info
+ */
+function vsite_register_block_info() {
+  return array(
+    'get_your_site' => array('info' => t('Vsite Registration'),'status' => 0),
+  );
+}
+
+/**
+ * Implements hook_block_view
+ */
+function vsite_register_block_view($delta = '') {
+  $block = array();
+  ctools_include('vsite','vsite');
+  
+  switch ($delta) {
+    case 'get_your_site':
+      if (user_access('vsite_vsite_exists_access')) {
+        $content = l('Create your site', 'site/register', array());
+        
+      } elseif ($vsites = vsite_get_vsite_by_owner()) {
+        
+        if (count($vsites > 1)) {
+          $content = l('Go to your sites', 'user');
+        } else {
+          $content = l('Go to your site', $vsites[0]->og->purl);
+        }
+      }      
+      
+    break;
+  }
+  
+  if (isset($content)) {
+    $block['content'] = array(
+      '#markup' => $content,
+    );
+  }
+  
+  return $block;
+}

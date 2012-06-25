@@ -36,13 +36,18 @@ function vsite_create_vsite($name, $domain, $uid, $preset = FALSE) {
 }
 
 /**
- * Gets all vsites owned by uid
+ * Gets all vsites owned by uid or by current user
  **/
-function vsite_get_vsite_by_owner($uid) {
+function vsite_get_vsite_by_owner($uid = NULL) {
+  if (!$uid) {
+    global $user;
+    $uid = $user->uid;
+  }
+  
   $query = new EntityFieldQuery();
   $result = $query->entityCondition('entity_type', 'node')
     ->propertyCondition('uid', (int)$uid)
-    ->entityCondition('bundle', 'vsite') //@TODO 
+    ->entityCondition('bundle', 'vsite')  
     ->execute();
     
   $vsites = array();  

@@ -118,13 +118,13 @@ function vsite_vsite_exists_access($vsites = array()){
 
 	//if user has permissions to create sites, return true
   if (!user_access('create vsite content on behalf') && !user_access('create vsite content')) {
-    drupal_set_message(t('You do not have permission to create new sites.'), 'error', FALSE);
+    //drupal_set_message(t('You do not have permission to create new sites.'), 'error', FALSE);
     return FALSE;
   }
 
   //user owns one or more sites
   if (!(count($vsites) < variable_get('os_vsites_per_user', 1) || user_access('create openscholar site on behalf of others'))) {
-    drupal_set_message(t('You have already created the maximum of %num OS sites.', array('%num' => count($vsites))), 'error', FALSE);
+    //drupal_set_message(t('You have already created the maximum of %num OS sites.', array('%num' => count($vsites))), 'error', FALSE);
     return FALSE;
   }
 
