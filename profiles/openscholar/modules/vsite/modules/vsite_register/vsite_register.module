@@ -84,7 +84,7 @@ function vsite_register_context_load_alter(&$context) {
     $context->reactions['block']['blocks']['vsite_register-get_your_site_block'] = array(
       'module' => 'vsite_register',
       'delta' => 'get_your_site_block',
-      'region' => 'header_third',
+      'region' => 'three_col_third', //'header_third',
       'weight' => 0,
     );
   }
