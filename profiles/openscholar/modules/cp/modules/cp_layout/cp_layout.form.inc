@@ -36,18 +36,18 @@ function cp_layout_full_form($form, $form_state, $ctx) {
   );
 
   $regions = array(
-    'three_col_second',
-    'three_col_first',
-    'three_col_third',
+    'header_second',
+    'header_first',
+    'header_third',
     'menu_bar',
     'sidebar_first',
     'content',
     'sidebar_second',
     'footer',
-    'two_col_top',
-    'two_col_first',
-    'two_col_second',
-    'two_col_bottom',
+    'content_top',
+    'content_first',
+    'content_second',
+    'content_bottom',
   );
 
   $weights = _cp_layout_get_weight_map($regions);
@@ -140,7 +140,7 @@ function cp_layout_ajax() {
 
 function _cp_layout_rearrange_content_regions($elements) {
   foreach ($elements as $r => $region) {
-    if (strpos($r, 'two_col_') !== FALSE) {
+    if (strpos($r, 'content_') !== FALSE) {
       unset($elements[$r]);
       $elements['content'][$r] = $region;
     }
