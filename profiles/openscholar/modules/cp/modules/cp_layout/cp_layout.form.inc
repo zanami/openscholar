@@ -140,7 +140,7 @@ function cp_layout_ajax() {
 
 function _cp_layout_rearrange_content_regions($elements) {
   foreach ($elements as $r => $region) {
-    if (strpos($r, 'two_col_') !== FALSE) {
+    if (strpos($r, 'content_') !== FALSE) {
       unset($elements[$r]);
       $elements['content'][$r] = $region;
     }
