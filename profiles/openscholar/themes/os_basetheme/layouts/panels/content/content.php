@@ -13,24 +13,24 @@
 Region Deinitions:
 
 ; 2 col
-regions[two_col_top]    = 2x50 Gpanel top
-regions[two_col_first]  = 2x50 Gpanel left
-regions[two_col_second] = 2x50 Gpanel right
-regions[two_col_bottom] = 2x50 Gpanel bottom
+regions[content_top]    = 2x50 Gpanel top
+regions[content_first]  = 2x50 Gpanel left
+regions[content_second] = 2x50 Gpanel right
+regions[content_bottom] = 2x50 Gpanel bottom
 
  */
 ?>
 <!-- Two column 2x50 -->
 <?php if (
-  $page['two_col_top'] ||
-  $page['two_col_first'] ||
-  $page['two_col_second'] ||
-  $page['two_col_bottom']
+  $page['content_top'] ||
+  $page['content_first'] ||
+  $page['content_second'] ||
+  $page['content_bottom']
   ): ?>
-  <div class="at-panel gpanel panel-display two-col clearfix">
-    <?php print render($page['two_col_top']); ?>
-    <?php print render($page['two_col_first']); ?>
-    <?php print render($page['two_col_second']); ?>
-    <?php print render($page['two_col_bottom']); ?>
+  <div class="at-panel gpanel panel-display content clearfix">
+    <?php print render($page['content_top']); ?>
+    <?php print render($page['content_first']); ?>
+    <?php print render($page['content_second']); ?>
+    <?php print render($page['content_bottom']); ?>
   </div>
 <?php endif; ?>
