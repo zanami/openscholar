@@ -73,7 +73,7 @@ body.header-left-main #header-container {
   }
 
 .region-sidebar-second {
-    border-left: 1px solid #ccc;
+  /*  border-left: 1px solid #ccc;*/
     }
 
 #footer {

@@ -45,11 +45,11 @@ body.sidebar-first #columns .hg-container,
 body.header-left-main #header-container {
   padding-right: 20px;
   }
-
+/*
 .region-sidebar-second {
   border-left: 1px solid #D8D6D6;
   }
-
+*/
 body.sidebar-first #footer p.copy,
 body.two-sidebars #footer p.copy {
   margin-left: 209px;

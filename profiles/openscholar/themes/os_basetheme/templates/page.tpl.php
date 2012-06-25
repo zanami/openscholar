@@ -78,26 +78,26 @@
  */
 ?>
 <div id="page" class="container <?php print $classes; ?>">
-
 <!--header regions beg-->
-<header id="header" class="clearfix" role="banner">
-<!-- Three column 3x33 Gpanel -- OS Header Regions-->
 <?php if (
-  $page['three_33_top'] ||
-  $page['three_33_first'] ||
-  $page['three_33_second'] ||
-  $page['three_33_third'] ||
-  $page['three_33_bottom']
+  $page['three_col_top'] ||
+  $page['three_col_first'] ||
+  $page['three_col_second'] ||
+  $page['three_col_third'] ||
+  $page['three_col_bottom']
   ): ?>
-  <div class="at-panel gpanel panel-display three-3x33 clearfix">
-    <?php print render($page['three_33_top']); ?>
-    <?php print render($page['three_33_first']); ?>
-    <?php print render($page['three_33_second']); ?>
-    <?php print render($page['three_33_third']); ?>
-    <?php print render($page['three_33_bottom']); ?>
+ <header id="header" class="clearfix" role="banner">
+  <div id="header-container">
+  <div class="at-panel gpanel panel-display three-col clearfix">
+    <?php print render($page['three_col_top']); ?>
+    <?php print render($page['three_col_first']); ?>
+    <?php print render($page['three_col_second']); ?>
+    <?php print render($page['three_col_third']); ?>
+    <?php print render($page['three_col_bottom']); ?>
   </div>
+  </div>
+  </header>
 <?php endif; ?>
-</header>
 <!--header regions end-->
 <!--main menu region beg-->
   <?php print render($page['menu_bar']); ?>
@@ -109,8 +109,25 @@
 <div id="columns" class="clearfix">
     <div id="content-column" role="main">
       <div class="content-inner">
-
-        <<?php print $tag; ?> id="main-content">
+      	<?php if ($is_front): ?>
+      	<?php if (
+  $page['two_col_top'] ||
+  $page['two_col_first'] ||
+  $page['two_col_second'] ||
+  $page['two_col_bottom']
+  ): ?>
+  <div class="at-panel gpanel panel-display two-col clearfix">
+    <?php print render($page['two_col_top']); ?>
+    <?php print render($page['two_col_first']); ?>
+    <?php print render($page['two_col_second']); ?>
+    <?php print render($page['two_col_bottom']); ?>
+  </div>
+  <?php endif; ?>
+  <?php endif; ?>   
+  
+  
+   	<?php if (!$is_front): ?>
+      	 <<?php print $tag; ?> id="main-content">
 
           <?php print render($title_prefix); ?>
           <?php if ($title || $primary_local_tasks || $secondary_local_tasks || $action_links = render($action_links)): ?>
@@ -146,7 +163,10 @@
             </div>
           <?php endif; ?>
 
-        </<?php print $tag; ?>>
+        </<?php print $tag; ?>><!--main content ends-->
+        <?php endif; ?>
+        
+        
       </div>
     </div>
 <!--sidebar first region beg-->

@@ -40,6 +40,7 @@ a {color:#4E84C4;}
     position: fixed;
     width: 100%;
     z-index: 10;
+    text-align:right;
 }
 
 .region-footer a {
@@ -47,7 +48,7 @@ a {color:#4E84C4;}
   }
   
 .region-footer .region-inner {
-    padding: 10px 0 0 15px;
+    padding: 10px 20px 0 15px;
   }  
 
 #block-cp-cp-subnav .block-inner {

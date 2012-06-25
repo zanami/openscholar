@@ -102,6 +102,11 @@ function os_boxes_delete_widget_form($form_id, $form_state) {
 
 function os_boxes_widget_delete_submit($form, &$form_state) {
   if ($form_state['values']['op'] == t('Yes')) {
+    // remove it from contexts
+    ctools_include('layout', 'os');
+    os_layout_block_delete($form_state['values']['bid']);
+
+    // delete box instance
     if (module_exists('spaces') && $space = spaces_get_space()) {
       $space->controllers->boxes->del($form_state['values']['bid']);
     }

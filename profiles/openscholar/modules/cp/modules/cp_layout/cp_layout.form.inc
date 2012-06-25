@@ -4,6 +4,7 @@ function cp_layout_full_form($form, $form_state, $ctx) {
   $form = array();
   ctools_include('ajax');
   ctools_include('modal');
+  ctools_modal_add_js();
   ctools_include('layout', 'os');
 
   // Temporary: To be replaced by API function later
@@ -18,6 +19,11 @@ function cp_layout_full_form($form, $form_state, $ctx) {
     '#multiple' => false,
   );
 
+  $form['layout_selection'] = array(
+    '#type' => 'markup',
+    '#markup' => ctools_modal_text_button(t('Change Layout'), 'cp/build/layout/nojs/select', t('Change your layout'), 'cp-layout-change'),
+  );
+
   $use_content_regions = false;
   if ($ctx == 'os_front') {
     $use_content_regions = true;
@@ -30,19 +36,21 @@ function cp_layout_full_form($form, $form_state, $ctx) {
   );
 
   $regions = array(
-    'header_left',
-    'header_main',
-    'header_right',
+    'three_col_second',
+    'three_col_first',
+    'three_col_third',
     'menu_bar',
     'sidebar_first',
     'content',
     'sidebar_second',
     'footer',
-    'content_top',
-    'content_left',
-    'content_right',
-    'content_bottom',
+    'two_col_top',
+    'two_col_first',
+    'two_col_second',
+    'two_col_bottom',
   );
+
+  $weights = _cp_layout_get_weight_map($regions);
 
   $form['unused'] = array(
     '#theme_wrappers' => array('cp_layout_unused_widgets'),
@@ -59,6 +67,7 @@ function cp_layout_full_form($form, $form_state, $ctx) {
       ),
       'css' => array(
         drupal_get_path('module', 'cp_layout').'/theme/cp_layout.common.css',
+        drupal_get_path('module', 'cp_layout').'/theme/layouts/'.at_get_setting('bigscreen_layout', os_theme_get()).'.css',
       ),
     ),
     '#pre_render' => array(
@@ -77,6 +86,7 @@ function cp_layout_full_form($form, $form_state, $ctx) {
   foreach ($regions as $r) {
     $form['layout'][$r] = array(
       '#type' => 'container',
+      '#weight' => $weights[$r],
       '#attributes' => array(
         'class' => array(
           'cp-region',
@@ -102,6 +112,7 @@ function cp_layout_full_form($form, $form_state, $ctx) {
       $form['layout'][$b['region']][$bid] = array(
         '#theme' => 'cp_layout_widget',
         '#widget' => $b,
+        '#weight' => $b['weight'],
       );
     }
   }
@@ -129,13 +140,37 @@ function cp_layout_ajax() {
 
 function _cp_layout_rearrange_content_regions($elements) {
   foreach ($elements as $r => $region) {
-    if (strpos($r, 'content_') !== FALSE) {
+    if (strpos($r, 'two_col_') !== FALSE) {
       unset($elements[$r]);
       $elements['content'][$r] = $region;
     }
   }
 
   return $elements;
+}
+
+function _cp_layout_get_weight_map($regions) {
+  $map = array_fill_keys($regions, 1);
+  $i = 1;
+  foreach ($map as &$w) {
+    $w = $i++;
+  }
+  // drupal doesn't make including files from themes easy
+  $path = drupal_get_path('theme', 'adaptivetheme');
+  require_once($path.'/inc/get.inc');
+  ctools_include('themes', 'os');
+
+  // This is terrible
+  switch (at_get_setting('bigscreen_layout', os_theme_get())) {
+    case 'two_sidebars_left':
+      $map['sidebar_second'] = 5.5;
+      break;
+    case 'two_sidebars_right':
+      $map['sidebar_first'] = 6.5;
+      break;
+  }
+
+  return $map;
 }
 
 function cp_layout_full_submit($form, &$form_state) {
@@ -156,6 +191,36 @@ function cp_layout_full_submit($form, &$form_state) {
   os_layout_set_multiple($ctxs, $blocks);
 }
 
+
+/**
+ * Menu callback for ajax form
+ */
+function cp_layout_layout_select_ajax($ajax) {
+  if ($ajax) {
+    ctools_include('modal');
+    $form_state = array(
+      'ajax' => true,
+    );
+
+    $output = ctools_modal_form_wrapper('cp_layout_layout_select', $form_state);
+    if ($form_state['executed']) {
+      $output[] = ctools_modal_command_dismiss();
+      if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Save')) {
+        ctools_include('ajax');
+        $output[] = ctools_ajax_command_reload();
+      }
+    }
+    echo ajax_render($output);
+    exit;
+  }
+  else {
+    return drupal_get_form('cp_layout_layout_select');
+  }
+}
+
+/**
+ * Form for selecting which layout type the user wants for their site
+ */
 function cp_layout_layout_select($form, $form_state) {
   $form = array();
   ctools_include('themes', 'os');

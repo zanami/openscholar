@@ -6,7 +6,7 @@
 function openscholar_install_tasks($install_state) {
   $tasks = array();
   
-  // OS flavors (personal, department, project etc)
+  // OS flavors (production, development, etc)
   $tasks['openscholar_flavor_form'] = array(
     'display_name' => t('Choose a flavor'),
     'type' => 'form'
@@ -35,9 +35,7 @@ function openscholar_install_tasks($install_state) {
 function openscholar_flavor_form($form, &$form_state) {
   
   $options = array(
-    'personal' => 'Personal web site',
-    'department' => 'Academic department site',
-    'project' => 'Project site',
+    'production' => 'Production Deployment',
     'development' => 'Development',
   );
   
@@ -86,17 +84,9 @@ function openscholar_install_type($form, &$form_state) {
 function openscholar_flavor_form_submit($form, &$form_state) {
   $flavor = $form_state['input']['os_profile_flavor'];
   switch($flavor){
-    case 'personal':
-      //@todo when personal
+    case 'production':
+      //@todo when production
       break;
-    case 'department':
-      //@todo when department
-      break;
-      
-    case 'project':
-      //@todo when project
-      break;
-
     case 'development':       // dev
       //@todo when development
       //os_add_permissions(1, array('switch users')); //  yes anon users can switch users!!
@@ -133,6 +123,7 @@ function openscholar_vsite_modules_batch(&$install_state){
     'vsite_domain',
     'vsite_menu',
     'vsite_layout',
+    'vsite_register',
     'og'
   );
   

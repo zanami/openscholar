@@ -59,7 +59,7 @@ function spaces_og_views_pre_view(&$view, &$display_id, &$args){
     if ($filter) {
 
       $table = false;
-      if ($filter['relationship'] == 'none') {
+      if (!isset($filter['relationship']) || $filter['relationship'] == 'none') {
         $table = $view->base_table;
       }
       elseif (($rel = $view->get_item($display_id, 'relationship', $filter['relationship']))) {

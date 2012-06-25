@@ -16,21 +16,21 @@
 }
 
 .cp-region:hover {
-	background-color: #F3F3F3;
+  background-color: #F3F3F3;
 }
 
-.cp-region-header-left {
+.cp-region-three-col-second {
   margin-right: 1%;
   width: 24%;
   min-height: 12em;
 }
 
-.cp-region-header-main {
+.cp-region-three-col-first {
   width: 50%;
   min-height: 12em;
 }
 
-.cp-region-header-right {
+.cp-region-three-col-third {
   margin-left: 1%;
   width: 24%;
   min-height: 12em;
@@ -63,25 +63,25 @@
   margin: 0.65em 0;
 }
 
-.cp-region-content-top {
+.cp-region-two-col-top {
   width: 100%;
   margin-bottom: 0.65em;
   min-height: 8.45em;
 }
 
-.cp-region-content-left {
+.cp-region-two-col-first {
   width: 49%;
   margin-right: 1%;
   min-height: 18em;
 }
 
-.cp-region-content-right {
+.cp-region-two-col-second {
   width: 49%;
   margin-left: 1%;
   min-height: 18em;
 }
 
-.cp-region-content-bottom {
+.cp-region-two-col-bottom {
   width: 100%;
   margin-top: 0.65em;
   min-height: 8.45em;
@@ -282,11 +282,16 @@ background-position:-850px 50%;
 /** ADD NEW WIDGET DROPDOWN **/
 .page-cp-build-layout #cp-layout-full-form .ctools-dropdown {
   /*background: url("/sites/all/themes/openscholar/scholar_base/images/scholarbase-sprite.png") no-repeat scroll 3px -380px #A1D4A1 !important;*/
-  border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 0 0;
   float: right;
-  margin: 0 10px 0 0;
-  padding: 1px 8px 0 25px !important;
+  margin: 21px -1px 0;
+  padding: 1px 8px 0 5px !important;
+  background:#52854C;
 }
+
+.page-cp-build-layout #cp-layout-full-form .ctools-dropdown .ctools-dropdown-link-wrapper a {
+	color:#FFF;
+	}
 
 
 
