@@ -36,17 +36,17 @@
   ; in each layout PHP file in adaptivetheme/layouts/gpanels
   
 ; Header regions
-regions[three_col_top]    = Header top
-regions[three_col_first]  = Header left
-regions[three_col_second] = Header center
-regions[three_col_third]  = Header right
-regions[three_col_bottom] = Header bottom
+regions[header_top]    = Header top
+regions[header_first]  = Header left
+regions[header_second] = Header center
+regions[header_third]  = Header right
+regions[header_bottom] = Header bottom
 
 ; Frontpage regions
-regions[two_col_top]    = Content top
-regions[two_col_first]  = Content left
-regions[two_col_second] = Content right
-regions[two_col_bottom] = Content bottom
+regions[content_top]    = Content top
+regions[content_first]  = Content left
+regions[content_second] = Content right
+regions[content_bottom] = Content bottom
 
 
 ;----------// Site Features

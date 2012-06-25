@@ -80,20 +80,20 @@
 <div id="page" class="container <?php print $classes; ?>">
 <!--header regions beg-->
 <?php if (
-  $page['three_col_top'] ||
-  $page['three_col_first'] ||
-  $page['three_col_second'] ||
-  $page['three_col_third'] ||
-  $page['three_col_bottom']
+  $page['header_top'] ||
+  $page['header_first'] ||
+  $page['header_second'] ||
+  $page['header_third'] ||
+  $page['header_bottom']
   ): ?>
  <header id="header" class="clearfix" role="banner">
   <div id="header-container">
   <div class="at-panel gpanel panel-display three-col clearfix">
-    <?php print render($page['three_col_top']); ?>
-    <?php print render($page['three_col_first']); ?>
-    <?php print render($page['three_col_second']); ?>
-    <?php print render($page['three_col_third']); ?>
-    <?php print render($page['three_col_bottom']); ?>
+    <?php print render($page['header_top']); ?>
+    <?php print render($page['header_first']); ?>
+    <?php print render($page['header_second']); ?>
+    <?php print render($page['header_third']); ?>
+    <?php print render($page['header_bottom']); ?>
   </div>
   </div>
   </header>
@@ -110,19 +110,19 @@
     <div id="content-column" role="main">
       <div class="content-inner">
       	<?php if ($is_front): ?>
-      	<?php if (
-  $page['two_col_top'] ||
-  $page['two_col_first'] ||
-  $page['two_col_second'] ||
-  $page['two_col_bottom']
+<?php if (
+  $page['content_top'] ||
+  $page['content_first'] ||
+  $page['content_second'] ||
+  $page['content_bottom']
   ): ?>
-  <div class="at-panel gpanel panel-display two-col clearfix">
-    <?php print render($page['two_col_top']); ?>
-    <?php print render($page['two_col_first']); ?>
-    <?php print render($page['two_col_second']); ?>
-    <?php print render($page['two_col_bottom']); ?>
+  <div class="at-panel gpanel panel-display content clearfix">
+    <?php print render($page['content_top']); ?>
+    <?php print render($page['content_first']); ?>
+    <?php print render($page['content_second']); ?>
+    <?php print render($page['content_bottom']); ?>
   </div>
-  <?php endif; ?>
+<?php endif; ?>
   <?php endif; ?>   
   
   
