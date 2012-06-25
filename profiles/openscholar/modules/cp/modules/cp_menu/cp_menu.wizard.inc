@@ -54,6 +54,10 @@ function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
       ),
     ),
   );
+  
+  if (isset($object['type']) && $object['type'] == 'page') {
+    $form_info['finish text'] = t('Continue');
+  }
 
   //add type dependent pages based on type form's results
     if (isset($_POST['type'])) {

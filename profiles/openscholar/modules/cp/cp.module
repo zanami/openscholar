@@ -197,7 +197,7 @@ function cp_page_build(&$page) {
         break;
   }
   $page['page_top']['cp_toolbar'] = $menu;
-
+  
   cp_invoke('page_build', $page);
 }
 

@@ -36,12 +36,11 @@ body.toolbar-drawer {
   margin: 0 -20px;
   padding: 0 20px;
   z-index: 600;
-  top: 30px;
+  top: 0px;
   left: 0;
   right: 0;
   position: fixed;
 }
-
 
 .toolbar-drawer #cp-toolbar {
   top: 65px;

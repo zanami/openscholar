@@ -24,7 +24,7 @@ function vsite_context_default_contexts() {
     ),
     'os_site' => array(
       'values' => array(
-        '0' => '0',
+        0 => '0',
       ),
     ),
   );

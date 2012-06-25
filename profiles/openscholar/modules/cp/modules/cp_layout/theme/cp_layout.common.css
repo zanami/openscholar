@@ -282,11 +282,16 @@ background-position:-850px 50%;
 /** ADD NEW WIDGET DROPDOWN **/
 .page-cp-build-layout #cp-layout-full-form .ctools-dropdown {
   /*background: url("/sites/all/themes/openscholar/scholar_base/images/scholarbase-sprite.png") no-repeat scroll 3px -380px #A1D4A1 !important;*/
-  border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 0 0;
   float: right;
-  margin: 0 10px 0 0;
-  padding: 1px 8px 0 25px !important;
+  margin: 21px -1px 0;
+  padding: 1px 8px 0 5px !important;
+  background:#52854C;
 }
+
+.page-cp-build-layout #cp-layout-full-form .ctools-dropdown .ctools-dropdown-link-wrapper a {
+	color:#FFF;
+	}
 
 
 
