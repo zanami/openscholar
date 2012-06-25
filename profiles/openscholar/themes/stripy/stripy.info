@@ -19,34 +19,6 @@
   
   stylesheets[screen][] = css/stripy.css
 
-    
-;----------// Regions
-
-  regions[sidebar_first]     = Sidebar first
-  regions[sidebar_second]    = Sidebar second
-  regions[content]           = Main Content
-  regions[footer]            = Footer
-  regions[menu_bar]          = Menu Bar
-  regions[messages]          = Messages
-  regions[help]              = Help
-  
-;----------// Gpanel Regions
-
-  ; If you are using Gpanels copy and paste the region definitions here. You will find them
-  ; in each layout PHP file in adaptivetheme/layouts/gpanels
-  
-; Header regions
-regions[header_top]    = Header top
-regions[header_first]  = Header left
-regions[header_second] = Header center
-regions[header_third]  = Header right
-regions[header_bottom] = Header bottom
-
-; Frontpage regions
-regions[content_top]    = Content top
-regions[content_first]  = Content left
-regions[content_second] = Content right
-regions[content_bottom] = Content bottom
 
 
 ;----------// Site Features
