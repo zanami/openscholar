@@ -60,12 +60,6 @@ function os_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'node-recent' => array(
-          'module' => 'node',
-          'delta' => 'recent',
-          'region' => 'sidebar_second',
-          'weight' => '-10',
-        ),
       ),
     ),
   );
