@@ -49,7 +49,7 @@ function vsite_register_block_view($delta = '') {
   
   switch ($delta) {
     case 'get_your_site_block':
-      if (user_access('vsite_vsite_exists_access')) {
+      if (vsite_vsite_exists_access()) {
         $content = l('Create your site', 'site/register', array());
         
       } elseif ($vsites = vsite_get_vsite_by_owner()) {
