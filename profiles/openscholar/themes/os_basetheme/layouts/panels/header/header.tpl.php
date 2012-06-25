@@ -12,39 +12,39 @@
  *   added by Adaptivetheme in the appropriate process function.
  * - $panel_suffix: closing element for the $prefix.
  *
- * @see adaptivetheme_preprocess_three_col()
+ * @see adaptivetheme_preprocess_header()
  * @see adaptivetheme_preprocess_node()
  * @see adaptivetheme_process_node()
  */
 ?>
 <?php print $panel_prefix; ?>
-<div class="at-panel panel-display three-col clearfix" <?php if (!empty($css_id)) { print "id=\"$css_id\""; } ?>>
-  <?php if ($content['three_col_top']): ?>
-    <div class="region region-three-col-top region-conditional-stack">
+<div class="at-panel panel-display header clearfix" <?php if (!empty($css_id)) { print "id=\"$css_id\""; } ?>>
+  <?php if ($content['header_top']): ?>
+    <div class="region region-header-top region-conditional-stack">
       <div class="region-inner clearfix">
-        <?php print $content['three_col_top']; ?>
+        <?php print $content['header_top']; ?>
       </div>
     </div>
   <?php endif; ?>
-  <div class="region region-three-col-first">
+  <div class="region region-header-first">
     <div class="region-inner clearfix">
-      <?php print $content['three_col_first']; ?>
+      <?php print $content['header_first']; ?>
     </div>
   </div>
-  <div class="region region-three-col-second">
+  <div class="region region-header-second">
     <div class="region-inner clearfix">
-      <?php print $content['three_col_second']; ?>
+      <?php print $content['header_second']; ?>
     </div>
   </div>
-  <div class="region region-three-col-third">
+  <div class="region region-header-third">
     <div class="region-inner clearfix">
-      <?php print $content['three_col_third']; ?>
+      <?php print $content['header_third']; ?>
     </div>
   </div>
-  <?php if ($content['three_col_bottom']): ?>
-    <div class="region region-three-col-bottom region-conditional-stack">
+  <?php if ($content['header_bottom']): ?>
+    <div class="region region-header-bottom region-conditional-stack">
       <div class="region-inner clearfix">
-        <?php print $content['three_col_bottom']; ?>
+        <?php print $content['header_bottom']; ?>
       </div>
     </div>
   <?php endif; ?>

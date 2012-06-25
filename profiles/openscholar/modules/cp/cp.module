@@ -56,16 +56,6 @@ function cp_menu(){
     'weight' => 10
   );
 
- /* $items["cp/build/menu"] = array(
-    'title' => 'Menu',
-    'type' => MENU_LOCAL_TASK,
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('os_menu_overview_form', 'primary-menu'),
-    'weight' => 10,
-    'file path' => drupal_get_path('module','os')."/includes",
-    'file' => 'menu.inc',
-  );*/
-
   $items["cp/build/taxonomy"] = array(
     'title' => 'Taxonomy',
     'page callback' => 'cp_taxonomy',
@@ -79,20 +69,22 @@ function cp_menu(){
     'page callback' => 'cp_settings',
     'weight' => 20,
   );
+
+  return $items;
+}
+
+function cp_menu_alter(&$items) {
   // make them all part of 'cp' menu
   foreach ( $items as $path => $item ) {
-    if (! array_key_exists('menu_name', $item))
-      $items[$path]['menu_name'] = 'cp';
+    if (strpos($path, 'cp') === 0) {
+      if (! array_key_exists('menu_name', $item))
+        $items[$path]['menu_name'] = 'cp';
 
-    // @todo maybe provide our own permissoin instead ?
-    if (! array_key_exists('access callback', $item))
-      $items[$path]['access arguments'] = array('access content');
+      // @todo maybe provide our own permissoin instead ?
+      if (! array_key_exists('access callback', $item))
+        $items[$path]['access arguments'] = array('access control panel');
+    }
   }
-
-
-
-  // proof of concept
-  return $items;
 }
 
 function cp_theme() {
@@ -192,7 +184,7 @@ function cp_block_view($delta) {
  * @todo Add seperate mini toolbar
  */
 function cp_page_build(&$page) {
-  
+
   $menu = array();
   switch (_cp_get_toolbar_setting()) {
     case CP_MENU_FULL:
@@ -226,6 +218,10 @@ function _cp_get_toolbar_setting() {
   return CP_MENU_MINI;
 }
 
+// TODO: Rewrite to use Nice Menus
+// TODO: Add all CP links (including children) to mini menu
+// TODO: Add links for Add Content and Add Users below Content and Users
+// TODO: Make sure everything is in right place when not admin 1
 //function _cp_full_menu() {
 //  $links = array();
 //

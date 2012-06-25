@@ -6,3 +6,7 @@
 
 include_once 'cp_content.features.inc';
 
+function cp_content_menu_alter(&$items) {
+  $items['cp/content/add'] = $items['node/add'];
+  $items['cp/content/add']['weight'] = -1;
+}

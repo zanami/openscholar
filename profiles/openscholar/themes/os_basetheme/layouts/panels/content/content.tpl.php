@@ -12,34 +12,34 @@
  *   added by Adaptivetheme in the appropriate process function.
  * - $panel_suffix: closing element for the $prefix.
  *
- * @see adaptivetheme_preprocess_two_col()
+ * @see adaptivetheme_preprocess_content()
  * @see adaptivetheme_preprocess_node()
  * @see adaptivetheme_process_node()
  */
 ?>
 <?php print $panel_prefix; ?>
-<div class="at-panel panel-display two-col clearfix" <?php if (!empty($css_id)) { print "id=\"$css_id\""; } ?>>
-  <?php if ($content['two_col_top']): ?>
-    <div class="region region-two-col-top region-conditional-stack">
+<div class="at-panel panel-display content clearfix" <?php if (!empty($css_id)) { print "id=\"$css_id\""; } ?>>
+  <?php if ($content['content_top']): ?>
+    <div class="region region-content-top region-conditional-stack">
       <div class="region-inner clearfix">
-        <?php print $content['two_col_top']; ?>
+        <?php print $content['content_top']; ?>
       </div>
     </div>
   <?php endif; ?>
-  <div class="region region-two-col-first">
+  <div class="region region-content-first">
     <div class="region-inner clearfix">
-      <?php print $content['two_col_first']; ?>
+      <?php print $content['content_first']; ?>
     </div>
   </div>
-  <div class="region region-two-col-second">
+  <div class="region region-content-second">
     <div class="region-inner clearfix">
-      <?php print $content['two_col_second']; ?>
+      <?php print $content['content_second']; ?>
     </div>
   </div>
-  <?php if ($content['two_col_bottom']): ?>
-    <div class="region region-two-col-bottom region-conditional-stack">
+  <?php if ($content['content_bottom']): ?>
+    <div class="region region-content-bottom region-conditional-stack">
       <div class="region-inner clearfix">
-        <?php print $content['two_col_bottom']; ?>
+        <?php print $content['content_bottom']; ?>
       </div>
     </div>
   <?php endif; ?>
