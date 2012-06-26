@@ -18,6 +18,36 @@ function vsite_menu_os_menu_tree($menu_key){
 }
 
 /**
+ * Delete a menu from the vsite via the menu controller
+ *
+ * @param string $menu_key
+ */
+function vsite_menu_del($menu_key){
+  $vsite = spaces_get_space();
+
+  if ($vsite && isset($vsite->controllers->menus)) {
+    return $vsite->controllers->menus->del($menu_key);
+  }
+
+  return false;
+}
+
+/**
+ * Add a new menu to the vsite via the menu controller
+ *
+ * @param string $menu_key
+ */
+function vsite_menu_add($menu_key){
+  $vsite = spaces_get_space();
+
+  if ($vsite && isset($vsite->controllers->menus)) {
+    return $vsite->controllers->menus->set($menu_key,array());
+  }
+
+  return false;
+}
+
+/**
  * Implements hook_menu_overview_form_alter().
  */
 function vsite_menu_form_os_menu_overview_form_alter(&$form, &$form_state, $form_id){

@@ -17,7 +17,7 @@ function vsite_install(){
     og_role_save($role);
   }
   
-  $roles = og_roles('node', 0, 'vsite', FALSE, FALSE);
+  $roles = og_roles('node', 0, 'vsite', FALSE, TRUE);
   $manager_roles = array();
   //Set OG specific roles
   foreach ( $roles as $rid => $role ) {
