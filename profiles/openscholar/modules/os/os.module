@@ -29,7 +29,7 @@ function os_menu(){
       ),
       'file path' => drupal_get_path('module', 'os') . '/'
   );
-  
+
   $items['admin/config/openscholar'] = array(
     'title' => 'Openscholar',
     'description' => 'Administer OpenScholar specific settings.',
@@ -580,6 +580,7 @@ function os_system_info_alter(&$info, $file, $type) {
       'header_second' => 'Header Left',
       'header_third' => 'Header Right',
       'header_bottom' => 'Header Bottom',
+      'menu_bar' => 'Menu Bar',
       'content_top' => 'Content Top',
       'content_first' => 'Content Left',
       'content_second' => 'Content Right',
