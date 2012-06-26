@@ -13,19 +13,23 @@
  */
 function os_basetheme_preprocess_page(&$vars) {
   //Adds OpenScholar header region awareness to body classes
+  if ($GLOBALS['theme'] == 'cp_theme') return;
   $regions = array (
-    'left' => $vars['page']['three_col_first'],
-    'main' => $vars['page']['three_col_second'],
-    'right' => $vars['page']['three_col_third'],
+    'header-left' => $vars['page']['header_second'],
+    'header-main' => $vars['page']['header_first'],
+    'header-right' => $vars['page']['header_third'],
+    'content-top' => $vars['page']['content_top'],
+    'content-left' => $vars['page']['content_first'],
+    'content-right' => $vars['page']['content_second'],
+    'content-bottom' => $vars['page']['content_bottom'],
   );
 
   $non_empty_regions = array_filter($regions, "__os_basetheme_is_empty");
-  $header_classes = 'header-';
+  $header_classes = '';
   if (count($non_empty_regions)) {
-    $header_classes .= implode('-', array_keys($non_empty_regions));
+    $header_classes = implode(' ', array_keys($non_empty_regions));
    }
   else {
-    $header_classes .= 'none';
   }
 
   $vars['classes_array'][] = $header_classes;

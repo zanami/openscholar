@@ -1,7 +1,7 @@
 <?php
 /**
  * @file vsite_register.module
- * 
+ *
  * Provides form so users can create vsites
  */
 
@@ -17,11 +17,11 @@ function vsite_register_menu() {
     'file' => 'vsite_register.form.inc',
   );
   
-  $items['os_admin/vsite_register'] = array(
+  $items['admin/config/openscholar/vsite_register'] = array(
     'title' => 'Vsite Registration',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('vsite_register_admin_form'),
-    'file' => 'vsite_register.admin.inc', 
+    'file' => 'vsite_register.admin.inc',
     'access arguments' => array('access administration pages'),
     //'type' => MENU_LOCAL_TASK,
   );
@@ -58,7 +58,7 @@ function vsite_register_block_view($delta = '') {
         } else {
           $content = l('Go to your site', $vsites[0]->og->purl);
         }
-      }      
+      }
       
     break;
   }
@@ -75,7 +75,7 @@ function vsite_register_block_view($delta = '') {
 
 /**
  * Implements hook_context_registry_alter
- * 
+ *
  * Adds get_your_site_block to front page.
  * @param unknown_type $registry
  */
@@ -88,4 +88,4 @@ function vsite_register_context_load_alter(&$context) {
       'weight' => 0,
     );
   }
-} 
+}

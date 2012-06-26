@@ -21,35 +21,6 @@
   stylesheets[screen][] = css/bunchy.css
   os[cp_layout_css] = css/cp-layout-map.css
 
-    
-;----------// Regions
-
-  regions[sidebar_first]     = Sidebar first
-  regions[sidebar_second]    = Sidebar second
-  regions[content]           = Main Content
-  regions[footer]            = Footer
-  regions[menu_bar]          = Menu Bar
-  regions[messages]          = Messages
-  regions[help]              = Help
-  
-;----------// Gpanel Regions
-
-  ; If you are using Gpanels copy and paste the region definitions here. You will find them
-  ; in each layout PHP file in adaptivetheme/layouts/gpanels
-  
-; Header regions
-regions[three_col_top]    = Header top
-regions[three_col_first]  = Header left
-regions[three_col_second] = Header center
-regions[three_col_third]  = Header right
-regions[three_col_bottom] = Header bottom
-
-; Frontpage regions
-regions[two_col_top]    = Content top
-regions[two_col_first]  = Content left
-regions[two_col_second] = Content right
-regions[two_col_bottom] = Content bottom
-
 
 
 ;----------// Site Features
