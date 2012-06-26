@@ -28,7 +28,7 @@ function cp_menu_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cp_menu_build_form', 3),
     'access callback' => 'spaces_access_admin',
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_NORMAL_ITEM,
     'file' => 'cp_menu.form.inc',
   );
 
@@ -144,50 +144,50 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
   //replace old forms
   if (isset($form['menu']) && $form['os_menu'] = $form['menu']) {
     unset($form['menu']);
-  
+
     $form['os_menu']['link']['weight']['#type'] = 'value';
     $form['os_menu']['link']['#states']['invisible'] = array('input[name="os_menu[enabled]"]' => array('checked' => FALSE));
     $form['os_menu']['link']['parent'] = array('#title' => t('Which Menu'),
                                                '#options' => os_get_menus(),
                                                '#default_value' => (isset($link['menu_name'])) ? $link['menu_name'] : 'primary-menu',
                                                ) + $form['os_menu']['link']['parent'];
-  
+
     $parents = array_diff($form['os_menu']['link']['#parents'], array('menu'));
     $form['os_menu']['link']['#parents'] = $parents + array('os_menu');
     $form['os_menu']['#attached'] = array('js' => array(drupal_get_path('module', 'cp_menu') . '/cp_menu.js'));
-  
+
     $form['os_menu']['link']['new_window'] = array(
       '#type' => 'checkbox',
       '#title' => t('Open Link in New Window'),
       '#default_value' => 0,
     );
-  
-  
+
+
     //update the defaults to include $links
     $form['os_menu']['enabled']['#default_value'] = isset($link) && $link !== FALSE;
     $form['os_menu']['link']['link_title']['#default_value'] = (isset($link['link_title'])) ? $link['link_title'] : '';
     $form['os_menu']['link']['description']['#default_value'] =
       (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
     $form['os_menu']['link']['new_window']['#default_value'] = (isset($link['options']['attributes']['target']) && $link['options']['attributes']['target'] == '_blank');
-  
+
     //menu wizard - insert settings from wizard
     require_once(drupal_get_path('module', 'cp_menu') . '/cp_menu.wizard.inc');
     $cache = cp_menu_cache_get('cp_menu');
     if (count($cache) && strpos($_SERVER['HTTP_REFERER'], 'cp_menu')) { //make sure you're coming from cp/menu page.  otherwise abandoned but not cleared form could hijack node/add
       $title = check_plain($cache['title']);
       $form['title']['#default_value'] = $title;
-  
+
       $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
       $form['os_menu']['enabled']['#default_value'] = 1;
       $form['os_menu']['link']['parent']['#default_value']; $menu . ':0'; //position shouldn't matter since we're overriding it later anyway
       $form['os_menu']['link']['link_title']['#default_value'] = $title;
       $form['os_menu']['link']['description']['#default_value'] = check_plain($cache['tooltip']);
-  
+
       if ($cache['new_window']) {
         $form['os_menu']['link']['new_window']['#default_value'] = 1;
       }
     }
-    
+
     cp_menu_cache_clear('cp_menu');
   }
 }
@@ -203,14 +203,14 @@ function cp_menu_node_submit($node, $form, &$state) {
     if ($state['values']['os_menu']['parent'] != $form['os_menu']['link']['parent']['#default_value']) {
       $node->os_menu['delete'] = TRUE;
     }
-  
+
     foreach(array('link_title','description','parent','new_window') as $delta) {
       if ($state['values']['os_menu'][$delta] != $form['os_menu']['link'][$delta]['#default_value']) {
         $node->os_menu['dirty'] = TRUE;
         return;
       }
     }
-  
+
     if ((bool)$state['values']['os_menu']['enabled'] && !(bool)$form['os_menu']['link']['enabled']) {
       $node->os_menu['dirty'] = TRUE;
     }

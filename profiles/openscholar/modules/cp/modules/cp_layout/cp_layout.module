@@ -8,7 +8,7 @@ function cp_layout_menu() {
     'title' => 'Layout',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cp_layout_full_form', 3),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_NORMAL_ITEM,
     'weight' => 10,
     'access callback' => 'spaces_access_admin',
     'file' => 'cp_layout.form.inc',
