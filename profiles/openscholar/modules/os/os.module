@@ -562,7 +562,7 @@ function _os_conditional_css_browsers($cond) {
 function os_system_info_alter(&$info, $file, $type) {
   if ($type != 'theme') return;
 
-  if ($info['base theme'] == 'os_basetheme') {
+  if (isset($info['base theme']) && $info['base theme'] == 'os_basetheme') {
     $info['regions'] += array(
       'header_top' => 'Header Top',
       'header_first' => 'Header Main',
