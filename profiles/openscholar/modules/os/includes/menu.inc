@@ -7,6 +7,12 @@
  * os_get_menus
  *  Return a list of menus avalible on the site
  *
+ * os_menu_add
+ *  Add a new menu to be used in the OS Menu system
+ *
+ * os_menu_del
+ *  Delete a menu from the OS Menu system
+ *
  * os_menu_link_load
  *  Load and return a menu link object
  *
@@ -46,6 +52,70 @@ function os_get_menus(){
 }
 
 /**
+ * Add a new menu to be used in the OS Menu system
+ *
+ * @param $title The human readable menu title.
+ * @param $menu_name (optional) The unique name of the custom menu (composed of lowercase
+ *     letters, numbers, and hyphens).
+ * @param $description (optional) The custom menu description
+ */
+function os_menu_add($title, $menu_name = false, $description = ''){
+  
+  if(!$menu_name){
+    //Strip non alphanumeric char's
+    $menu_name = ereg_replace("[^a-z0-9-]", "",str_replace(" ","-",strtolower($title)));
+  }
+
+  $current_menus = os_get_menus();
+  $current_menus[$menu_name] = $title;
+  variable_set('os_menus',$current_menus);
+
+  if (module_exists('vsite_menu')) {
+    //Save a new menu using the vsite controllers
+    vsite_menu_add($menu_name);
+  }
+  else {
+    //Call the standard drupal menu save (this will clear all menu caches)
+    menu_save(array(
+      'title' => $title,
+      'menu_name' => $menu_name,
+      'description' => $description,
+    ));
+  }
+
+}
+
+/**
+ * Delete a menu from the OS Menu system
+ *
+ * @param $menu_name
+ */
+function os_menu_del($menu_name){
+  
+  $current_menus = os_get_menus();
+  //Is this a valid menu to remove?
+  if(!isset($current_menus[$menu_name])){
+    return false;
+  }
+  
+  //Remove the menu from the variable
+  unset($current_menus[$menu_name]);
+  variable_set('os_menus',$current_menus);
+
+  if (module_exists('vsite_menu')) {
+    //Delete a menu using the vsite controllers
+    vsite_menu_del($menu_name);
+  }
+  elseif (!module_exists('vsite')) {
+    //Call the standard drupal menu delete (this will clear all menu caches and delete all the menu links)
+    $menu = menu_load($menu_name);
+    menu_delete($menu);
+  }
+
+  return true;
+}
+
+/**
  * Returns the menu_tree page data ready for theming by 'menu_tree_output'
  *
  * @param string $menu_name
@@ -64,7 +134,7 @@ function os_menu_tree_data($menu_name){
     if (module_exists('vsite_menu')) {
       $tree = vsite_menu_os_menu_tree($menu_name);
     }
-    if (!isset($tree) || $tree == false) {
+    if (!isset($tree) || $tree === false) {
       $tree = menu_tree_page_data($menu_name);
     }
 
