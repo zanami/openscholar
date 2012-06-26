@@ -72,8 +72,6 @@ function vsite_register_form($form, &$state) {
         array('!create_new' => $ajax_link) 
       ),
     	'#autocomplete_path' => 'user/autocomplete',
-    	'#required' => TRUE,
-      '#attributes' => array('class' => array('register-existing-user')),
     );
     
     $form['user_fieldset']['new_user_div'] = array(
@@ -117,7 +115,7 @@ function _vsite_register_user_form() {
   $form['mail'] = array(
     '#type' => 'textfield',
     '#size' => 35,
-    '#title' => t('Your email address'),
+    '#title' => t('Email address'),
     '#description' => t('A valid e-mail address is required. All e-mails from OpenScholar will be sent to this address.'),
   );
   
@@ -148,7 +146,9 @@ function vsite_register_form_submit(&$form, &$state) {
   ctools_include('vsite', 'vsite');
   $values = $state['values'];
   
-  if ($values['new_user']) {
+  if ($values['vicarious_user'] && $values['existing_username']) {
+    $user = user_load_by_name($values['existing_username']);
+  } elseif ($values['vicarious_user'] && !$values['existing_username']) {
     // create user
     $user_options = array(
     	'name' => $values['name'],
@@ -189,7 +189,17 @@ function vsite_register_form_submit(&$form, &$state) {
 function vsite_register_form_validate(&$form, &$state) {
   $values = $state['values'];
   
-  if ($values['new_user']) {
+  if ($values['vicarious_user'] && $values['existing_username']) {
+    
+    //Giving a site to existing user
+    if (!$user = user_load_by_name($values['existing_username'])) {
+      form_set_error('existing_username', t('Username does not exist.  Did you mean to createa new user instead?'));
+    }
+    
+  } elseif ($values['vicarious_user'] && !$values['existing_username']) {
+    
+    //Giving a site to a new user
+    
     //mail
     if ($mail_error = user_validate_mail($values['mail'])) {
       form_set_error('mail', $mail_error);
@@ -199,24 +209,25 @@ function vsite_register_form_validate(&$form, &$state) {
       form_set_error('mail', t('Email address already in use.  Please try another.'));
     }
     
+    //username
     if ($user_error = user_validate_name($values['name'])) {
       form_set_error('name', $user_error);
     }
     
-    //username
     if ($user = user_load_by_name($values['name'])) {
       form_set_error('name', t('Username %name is taken.  Please choose another.', array('%name' => $values['name'])));
     }
-  } else {
-    //clear potential password errors.  browsers can fill in a pw even if it's not selected, making it fail validation
-    $errors = form_get_errors();
-    if ($msg = $errors['password']) {
-      $_SESSION['messages']['error'] = array_diff($_SESSION['messages']['error'], array($msg));
-      if (empty($_SESSION['messages']['error'])) {
-        unset($_SESSION['messages']['error']); 
-      }
+    
+    //password 
+    if (!$values['password']) {
+      form_set_error('password', t('You must enter a password'));
     }
+  
+    //tell javascript to switch to new user form instead of making user switch it again.
+    drupal_add_js(array('vsite_register' => array('new_user_clicked' => TRUE)), 'setting');
   }
+  
+  //domain availability applies to all cases
   
   //domain
   if (!purl_validate($values['domain']) || strlen($values['domain']) < 3) {
