@@ -269,27 +269,6 @@ function spaces_og_node_update($node, $op = 'update') {
       if (!empty($node->spaces_preset_og)) {
         $space->controllers->variable->set('spaces_preset_og', $node->spaces_preset_og);
       }
-      // Configure OG directly from space object as node_save() may be
-      // called from outside of actual group space.
-      $selective = $space->controllers->variable->get('spaces_og_selective');
-      $node->og_selective = $selective === NULL ? OG_OPEN : $selective;
-      $register = $space->controllers->variable->get('spaces_og_register');
-      $node->og_register = $register === NULL ? TRUE : $register;
-      $directory = $space->controllers->variable->get('spaces_og_directory');
-      $node->og_directory = $directory === NULL ? TRUE : $directory;
-      $private = $space->controllers->variable->get('spaces_og_private');
-      $field_langauge = field_language('node', $node, 'group_access');
-      if ($op == 'update' && $private != $node->group_access[$field_langauge][0]['value']) {
-        // Privacy has changed, update og_public flags, and queue a rebuid.
-        db_query("UPDATE {og_access_post} og_p
-          INNER JOIN {og_ancestry} og_a ON og_p.nid = og_a.nid
-          INNER JOIN {node} n ON og_p.nid = n.nid
-          SET og_public = %d WHERE og_a.group_nid = %d", ! $private, $node->nid);
-        node_access_needs_rebuild(TRUE);
-      }
-      $node->og_private = $private === NULL ? FALSE : $private;
-      // TODO determine the D7 equivalent of og_update_group().
-      // og_update_group($node);
     }
 
     // Save PURL modifier.

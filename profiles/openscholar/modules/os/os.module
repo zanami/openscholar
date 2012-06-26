@@ -29,6 +29,17 @@ function os_menu(){
       ),
       'file path' => drupal_get_path('module', 'os') . '/'
   );
+  
+  $items['admin/config/openscholar'] = array(
+    'title' => 'Openscholar',
+    'description' => 'Administer OpenScholar specific settings.',
+    'position' => 'left',
+    'weight' => -5,
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('administer content'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
 
   return $items;
 }
