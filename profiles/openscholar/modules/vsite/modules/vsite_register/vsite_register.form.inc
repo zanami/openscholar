@@ -45,24 +45,50 @@ function vsite_register_form($form, &$state) {
     
   
   if ($anonymous) {
+    //anonymous users always create new accounts
     $form += _vsite_register_user_form();
     
   } elseif($manager) {
-    $form['new_user'] = array(
+    //managers can create a new site, give a site to another user, or give a site to a new account.
+    $form['vicarious_user'] = array(
       '#type' => 'checkbox',
-    	'#title' => t('Create new user account to manage this OS Site.'),
+    	'#title' => t('Create this OS Site on behalf of another user.'),
     );
-  
+    
     $form['user_fieldset'] = array(
       '#type' => 'fieldset',
       '#collapsible' => FALSE,
-    	'#states' => array('visible' => array(':input[name="new_user"]' => array('checked' => TRUE))),
+    	'#states' => array('visible' => array(':input[name="vicarious_user"]' => array('checked' => TRUE))),
+      '#attached' => array('js' => array(drupal_get_path('module', 'vsite_register') . '/vsite_register.js')),
+    );
+    
+    //$ajax_link = l(t('create a new user'), 'javascript:void(0)', array('attributes'=>array('id'=>array('new-user-link'))));
+    $ajax_link = '<a href="javascript:void(0)" id="new-user-link">' . t('create a new user') . '</a>'; //figure out l() later
+    
+    $form['user_fieldset']['existing_username'] = array(
+      '#type' => 'textfield',
+    	'#title' => t('Find Existing User'),
+      '#description' => t('Enter the name of the user who will manage this new site or !create_new.',
+        array('!create_new' => $ajax_link) 
+      ),
+    	'#autocomplete_path' => 'user/autocomplete',
+    	'#required' => TRUE,
+      '#attributes' => array('class' => array('register-existing-user')),
+    );
+    
+    $form['user_fieldset']['new_user_div'] = array(
+      '#markup' => '<div id="new_user_div">',
     );
     
     $form['user_fieldset'] += _vsite_register_user_form();
-  } else {
     
-    $form['new_user'] = array(
+    $form['user_fieldset']['new_user_close_div'] = array(
+      '#markup' => '</div>',
+    );
+
+  } else {
+    //regular users can only create sites for themselves.
+    $form['vicarious_user'] = array(
       '#type' => 'value',
       '#value' => FALSE,
     );
@@ -99,7 +125,7 @@ function _vsite_register_user_form() {
   $form['password'] = array(
     '#type' => 'password_confirm',
     '#size' => 35,
-    '#description' => '',
+    '#description' => t('Password'),
   );
   
   $form['notify'] = array(
@@ -109,6 +135,8 @@ function _vsite_register_user_form() {
   
   return $form;
 }
+
+
 
 /**
  * @function vsite_site_register_form

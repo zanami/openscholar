@@ -13,8 +13,8 @@ function vsite_register_menu() {
     'title' => 'Create your web site',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('vsite_register_form'),
-    'file' => 'vsite_register.form.inc',
     'access callback' => 'vsite_vsite_exists_access', //@TODO
+    'file' => 'vsite_register.form.inc',
   );
   
   $items['os_admin/vsite_register'] = array(
@@ -24,7 +24,6 @@ function vsite_register_menu() {
     'file' => 'vsite_register.admin.inc', 
     'access arguments' => array('access administration pages'),
     //'type' => MENU_LOCAL_TASK,
-  
   );
   
   return $items;
@@ -72,6 +71,7 @@ function vsite_register_block_view($delta = '') {
   
   return $block;
 }
+
 
 /**
  * Implements hook_context_registry_alter
