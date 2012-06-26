@@ -35,7 +35,8 @@ function vsite_register_admin_form_validate(&$form, &$state) {
 function _vsite_register_list_presets() {
   $presets = array();
   foreach(spaces_preset_load() as $name => $preset) {
-    if ($preset->export_module != 'spaces_og') {
+    //if ($preset->export_module != 'spaces_og') {
+    if (!(isset($preset->disabled) && $preset->disabled)) {
       $presets[$name] = $preset->title;
     }
   }

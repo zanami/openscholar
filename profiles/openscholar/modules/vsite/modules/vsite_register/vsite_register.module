@@ -89,3 +89,24 @@ function vsite_register_context_load_alter(&$context) {
     );
   }
 }
+
+//alter spaces preset list to show disabled presets so they can be re-enabled
+function vsite_register_form_spaces_preset_list_alter(&$form, &$state, $form_id) {
+  $spaces_types = array('og'); //where does this come from?
+  foreach ($spaces_types as $type){
+    /*
+    $disabled_presets = array_diff(array_keys($form[$type]['labels']), 
+                                   array_keys($form[$type]['spaces_preset_' . $type]['#options']));
+                                   
+    foreach ($disabled_presets as $preset) {
+      $form[$type]['spaces_preset_'.$type][$preset] = array();
+      $form[$type]['storage'][$preset]['#markup'] = t('Disabled');
+    }*/
+    foreach(array_keys($form[$type]['labels']) as $preset) {
+      $form[$type]["spaces_preset_$type"][$preset] = array();
+      if (!isset($form[$type]["spaces_preset_$type"]['#options'][$preset])) {
+        $form[$type]['storage'][$preset]['#markup'] = t('Disabled');  
+      }
+    }
+  }
+}
