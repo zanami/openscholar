@@ -29,13 +29,14 @@ function vsite_register_form($form, &$state) {
   foreach($enabled_presets as $key => $value) {
     $enabled_presets[$key] = $presets[$key]->title;
   }
+  $default_preset = variable_get('spaces_preset_og', 'os_personal');
   
   $form['preset'] = array(
     '#title' => t('Type of site'),
     '#type' => 'select',
     '#required' => TRUE,
     '#options' => $enabled_presets,
-    '#default_value' => current($enabled_presets),
+    '#default_value' => (isset($enabled_presets[$default_preset])) ? $default_preset : current($enabled_presets),
   );
   
   if (count($enabled_presets) <= 1) {
