@@ -1,26 +1,45 @@
 <?php
 
 function cp_enable() {
-  
+
   $t = get_t();
-  
+
   // Create a custom menu, if menu module is enabled.
   // @see devel_modules_installed()
   if (module_exists('menu')) {
     $menu = array(
-      'menu_name' => 'cp', 
-      'title' => $t('Control Panel'), 
-      'description' => $t('Administration links') 
+      'menu_name' => 'cp',
+      'title' => $t('Control Panel'),
+      'description' => $t('Administration links')
     );
     menu_save($menu);
+
+    $user_link = array(
+      'link_path' => 'user',
+      'menu_name' => 'cp',
+      'module' => 'cp',
+      'weight' => 11,
+      'link_title' => 'Hello!'
+    );
+    menu_link_save($user_link);
+
+    $logout_link = array(
+      'link_path' => 'logout',
+      'menu_name' => 'cp',
+      'module' => 'cp',
+      'weight' => 13,
+      'link_title' => 'Logout',
+    );
+
+    menu_link_save($logout_link);
   }
-  
+
   //update weight so cp is after views and can alter views' menu alterations.
   $weight = db_select('system', 's')
     ->fields('s', array('weight'))
     ->condition('name', 'views', '=')
     ->execute()->fetchField(0);
-  
+
   db_update('system')
     ->fields(array('weight' => $weight + 1))
     ->condition('name', 'cp', '=')

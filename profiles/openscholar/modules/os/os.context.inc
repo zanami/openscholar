@@ -9,7 +9,7 @@
  */
 function os_context_default_contexts() {
   $export = array();
-  
+
   $context = new stdClass();
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
@@ -109,6 +109,12 @@ function os_context_default_contexts() {
           'delta' => 'primary-menu',
           'region' => 'menu_bar',
           'weight' => '-10',
+        ),
+        'cp-cp_minimenu' => array(
+          'module' => 'cp',
+          'delta' => 'cp_minimenu',
+          'region' => 'header_top',
+          'weight' => -10,
         ),
       ),
     ),
