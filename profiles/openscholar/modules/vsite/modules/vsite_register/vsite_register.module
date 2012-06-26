@@ -71,3 +71,42 @@ function vsite_register_block_view($delta = '') {
   
   return $block;
 }
+
+
+/**
+ * Implements hook_context_registry_alter
+ *
+ * Adds get_your_site_block to front page.
+ * @param unknown_type $registry
+ */
+function vsite_register_context_load_alter(&$context) {
+  if ($context->name == 'os_sitewide_front' && isset($context->reactions['block'])) {
+    $context->reactions['block']['blocks']['vsite_register-get_your_site_block'] = array(
+      'module' => 'vsite_register',
+      'delta' => 'get_your_site_block',
+      'region' => 'header_third',
+      'weight' => 0,
+    );
+  }
+}
+
+//alter spaces preset list to show disabled presets so they can be re-enabled
+function vsite_register_form_spaces_preset_list_alter(&$form, &$state, $form_id) {
+  $spaces_types = array('og'); //where does this come from?
+  foreach ($spaces_types as $type){
+    /*
+    $disabled_presets = array_diff(array_keys($form[$type]['labels']), 
+                                   array_keys($form[$type]['spaces_preset_' . $type]['#options']));
+                                   
+    foreach ($disabled_presets as $preset) {
+      $form[$type]['spaces_preset_'.$type][$preset] = array();
+      $form[$type]['storage'][$preset]['#markup'] = t('Disabled');
+    }*/
+    foreach(array_keys($form[$type]['labels']) as $preset) {
+      $form[$type]["spaces_preset_$type"][$preset] = array();
+      if (!isset($form[$type]["spaces_preset_$type"]['#options'][$preset])) {
+        $form[$type]['storage'][$preset]['#markup'] = t('Disabled');  
+      }
+    }
+  }
+}
