@@ -50,7 +50,7 @@ function cp_menu(){
     'page arguments' => array(
       'spaces_features_form'
     ),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'type' => MENU_NORMAL_ITEM,
     'file' => 'spaces.admin.inc',
     'file path' => $spaces_path,
     'weight' => 10
@@ -59,7 +59,7 @@ function cp_menu(){
   $items["cp/build/taxonomy"] = array(
     'title' => 'Taxonomy',
     'page callback' => 'cp_taxonomy',
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_NORMAL_ITEM,
     'weight' => 10
   );
 
@@ -107,33 +107,10 @@ function cp_permission() {
 }
 
 /**
- * cp/build/layout callback
- */
-function cp_layout(){
-  return 'cp/build/layout';
-}
-
-/**
- * cp/build/menu callback
- */
-function cp_menu_callback(){
-  return 'cp/build/menu';
-}
-
-/**
  * cp/build/taxonomy callback
  */
 function cp_taxonomy(){
   return 'cp/build/taxonomy';
-}
-
-
-
-/**
- * cp/settings callback
- */
-function cp_settings(){
-  return 'cp/settings';
 }
 
 /**
@@ -149,11 +126,11 @@ function cp_block_info() {
       'visibility' => BLOCK_VISIBILITY_LISTED,
       'pages' => 'cp/*',
     ),
-  /*'cp_minimenu' => array(
+    'cp_minimenu' => array(
       'info' => t('CP Mini-Menu'),
-      'region' => 'three_33_third',
+      'region' => false,
       'cache' => DRUPAL_CACHE_PER_ROLE,
-    ),*/
+    ),
   );
 }
 
@@ -166,10 +143,17 @@ function cp_block_view($delta) {
         'content' => menu_primary_local_tasks(),
       );
     case 'cp_minimenu':
-      if (spaces_access_admin()) {
+      if (_cp_get_toolbar_setting() == CP_MENU_MINI && spaces_access_admin()) {
+        return _cp_mini_menu();
+      }
+      else {
+        return array();
+      }
+    case 'cp_fullmenu':
+      if (_cp_get_toolbar_setting() == CP_MENU_FULL && spaces_access_admin()) {
         return array(
           'subject' => NULL,
-          'content' => _cp_mini_menu(),
+          'content' => _cp_full_menu(),
         );
       }
       else {
@@ -188,16 +172,16 @@ function cp_page_build(&$page) {
   $menu = array();
   switch (_cp_get_toolbar_setting()) {
     case CP_MENU_FULL:
-    case CP_MENU_MINI:
       //MINI Toolbar needed
         $menu = array(
           '#pre_render' => array('cp_toolbar_pre_render'),
           '#access' => spaces_access_admin_perms(array('access control panel')),
         );
         break;
+    case CP_MENU_MINI:
   }
   $page['page_top']['cp_toolbar'] = $menu;
-  
+
   cp_invoke('page_build', $page);
 }
 
@@ -222,88 +206,98 @@ function _cp_get_toolbar_setting() {
 // TODO: Add all CP links (including children) to mini menu
 // TODO: Add links for Add Content and Add Users below Content and Users
 // TODO: Make sure everything is in right place when not admin 1
-//function _cp_full_menu() {
-//  $links = array();
-//
-//  // Retrieve the admin menu from the database.
-//  // These are the 'Features/Appearance/Users/etc. buttons.
-//  $tree = menu_tree_all_data('cp');
-//  $links = menu_tree_output($tree);
-//
-//  // Add user-specific links
-//  global $user;
-//  $user_links = array();
-//  $user_links[] = array(
-//    'title' => t('Hello <strong>!username</strong>', array(
-//      '!username' => $user->name
-//    )),
-//    'href' => 'user',
-//    'html' => TRUE
-//  );
-//
-//  /*$new_count = vsite_news_get_new_activity_count();
-//  $user_links[] = array(
-//    'title' => $new_count,
-//    'href' => 'cp/news', //@TODO: replace this with new path
-//    'attributes' => $new_count?array('class' => 'unread', 'title' => t('Unread Activity on your Site')):array('title' => t('All Activity on your Site')),
-//  );*/
-//
-//  $user_links[] = array(
-//    'title' => t('Logout'),
-//    'href' => "logout",
-//    'query' => !context_isset('context', 'cp-admin')?array('destination' => $_GET['q']):'',
-//  );
-//  if (context_isset('context', 'cp-admin')) {
-//    $user_links[] = array(
-//      'title' => t('Back to your site!'),
-//      'href' => "",
-//      'html' => TRUE
-//    );
-//  }
-//
-//  return array(
-//    '#type' => 'container',
-//    'toolbar' => $links,
-//    'user' => array(
-//      '#theme' => 'links',
-//      '#links' => $user_links,
-//    ),
-//    '#attributes' => array(
-//      'id' => array(
-//        'cp-menu-full',
-//      ),
-//    ),
-//  );
-//}
+function _cp_full_menu() {
+  $links = array();
 
-//function _cp_mini_menu() {
-//  global $user;
-//  $user_links = array();
-//
-//  if (spaces_access_admin()) {
-//    $user_links[] = l('Control Panel', 'cp/build/features', array('attributes' => array('class' => 'wrench', 'title' => t('Manage this Site'))));
-//
-//    //$new_count = vsite_news_get_new_activity_count();
-//    //$user_links[] = l($new_count, 'cp/news', $new_count?array('attributes' => array('class' => 'unread', 'title' => t('New Activity on this Site'))):array('attributes' => array('title' => t('All Activity on this Site'))));
-//  }
-//
-//  $user_links[] = array(
-//    'data' => t('Hello <strong>!username</strong>', array(
-//        '!username' => $user->name
-//     )),
-//    'children' => array(
-//      l('My Account', 'user'),
-//      l('Logout', 'logout'),
-//    )
-//  );
-//  return array(
-//  	'#theme' => 'item_list',
-//    '#items' => $user_links,
-//    '#attributes' => array(
-//      'id' => 'cp-menu-mini',
-//    )
-//  );
-//}
+  // Retrieve the admin menu from the database.
+  // These are the 'Features/Appearance/Users/etc. buttons.
+  $tree = menu_tree_all_data('cp');
+  $links = menu_tree_output($tree);
+
+  // Add user-specific links
+  global $user;
+  $user_links = array();
+  $user_links[] = array(
+    'title' => t('Hello <strong>!username</strong>', array(
+      '!username' => $user->name
+    )),
+    'href' => 'user',
+    'html' => TRUE
+  );
+
+  /*$new_count = vsite_news_get_new_activity_count();
+  $user_links[] = array(
+    'title' => $new_count,
+    'href' => 'cp/news', //@TODO: replace this with new path
+    'attributes' => $new_count?array('class' => 'unread', 'title' => t('Unread Activity on your Site')):array('title' => t('All Activity on your Site')),
+  );*/
+
+  $user_links[] = array(
+    'title' => t('Logout'),
+    'href' => "logout",
+    'query' => !context_isset('context', 'cp-admin')?array('destination' => $_GET['q']):'',
+  );
+  if (context_isset('context', 'cp-admin')) {
+    $user_links[] = array(
+      'title' => t('Back to your site!'),
+      'href' => "",
+      'html' => TRUE
+    );
+  }
+
+  return array(
+    '#type' => 'container',
+    'toolbar' => $links,
+    'user' => array(
+      '#theme' => 'links',
+      '#links' => $user_links,
+    ),
+    '#attributes' => array(
+      'id' => array(
+        'cp-menu-full',
+      ),
+    ),
+  );
+}
+
+function _cp_mini_menu() {
+  global $user;
+  $user_links = array();
+/*
+  if (spaces_access_admin()) {
+    $links = menu_build_tree('cp');
+
+    foreach ($links as $l) {
+      $link = array(
+        'data' => theme('menu_link', array('element' => $l['link'])),
+        'children' => array(),
+      );
+      if (count($l['below'])) {
+        foreach ($l['below'] as $child) {
+          $link['children'][] = theme('menu_link', array('element' => $child));
+        }
+      }
+      $user_links[] = $link;
+    }
+    //$new_count = vsite_news_get_new_activity_count();
+    //$user_links[] = l($new_count, 'cp/news', $new_count?array('attributes' => array('class' => 'unread', 'title' => t('New Activity on this Site'))):array('attributes' => array('title' => t('All Activity on this Site'))));
+  }
+
+  $user_links[] = array(
+    'data' => t('Hello <strong>!username</strong>', array(
+        '!username' => $user->name
+     )),
+    'children' => array(
+      l('My Account', 'user'),
+      l('Logout', 'logout'),
+    )
+  );*/
+  return theme('nice_menus', array(
+    'id' => 'cp-minimenu',
+    'menu_name' => 'cp',
+    'direction' => 'down',
+  ));
+}
 
 function cp_toolbar_pre_render($toolbar) {
   $toolbar = array_merge($toolbar, cp_toolbar_view());
@@ -357,11 +351,8 @@ function cp_get_menu_tree() {
  * @return Bool indicating whether or not to use cp theme.
  */
 function cp_use_cp_theme() {
-  if (($space = spaces_get_space()) == FALSE) {
-    return FALSE;
-  }
-
   if ((arg(0) == 'cp') ||  (arg(0)=='node' && arg(1)=='add') || (arg(0) == 'node' && arg(2) == 'edit')) {
     return TRUE;
   }
+  return FALSE;
 }
