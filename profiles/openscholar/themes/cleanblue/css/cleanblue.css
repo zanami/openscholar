@@ -171,11 +171,11 @@ body.sidebar-first #columns .hg-container {
   }
 
 
-.sidebar-first #content-column { border-left:1px dotted #666; }
+.sidebar-first #content-column .content-inner { border-left:1px dotted #666; }
 
-.sidebar-second #content-column { border-right:1px dotted #666; }
+.sidebar-second #content-column .content-inner { border-right:1px dotted #666; }
 
-.two-sidebars #content-column {
+.two-sidebars #content-column .content-inner {
    border-right:1px dotted #666;
   border-left:1px dotted #666; 
 }
@@ -254,7 +254,7 @@ margin: 8px -15px 0 18px;
   color: #544f4f;
   font-weight:normal;
   font-size: 12px;
-  padding: 6px 15px 5px 15px;
+  padding: 2px 15px 1px;
   border-bottom:2px solid #106599;
  margin-right:3px;
  }
@@ -267,13 +267,13 @@ margin: 8px -15px 0 18px;
    border-bottom:none;
   color: #FFF;
   text-decoration: none;
-    padding: 6px 15px 7px 15px;
+ padding: 2px 15px 1px;
 }
 
 @-moz-document url-prefix() {
 #menu-bar li a:hover,
 #menu-bar li.active-trail a {
-        padding: 6px 15px;
+        padding: 2px 15px;
     }
 }
 

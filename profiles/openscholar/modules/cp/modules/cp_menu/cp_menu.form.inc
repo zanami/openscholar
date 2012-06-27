@@ -246,3 +246,90 @@ function cp_menu_submit_form($form, &$form_state){
     }
   }
 }
+
+/**
+ * Adds/Edit a menu in OpenScholar
+ *
+ */
+function cp_menu_edit_form($form, $form_state, $type = 'add', $menu_name = false){
+  ctools_include('menu', 'os');
+  
+  $title = '';
+  
+  $os_menus = os_get_menus();
+  if(isset($os_menus[$menu_name])){
+    $title = $os_menus[$menu_name];
+  }else{
+    $menu_name = false;
+  }
+  
+  //Is this new or existing?
+  $form['#insert'] = empty($menu_name);
+  $form['old_name'] = array(
+    '#type' => 'value',
+    '#value' => $menu_name,
+  );
+
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#default_value' => $title,
+    '#required' => TRUE,
+  );
+
+  $form['menu_name'] = array(
+    '#type' => 'machine_name',
+    '#title' => t('Menu name'),
+    '#default_value' => $menu_name,
+    '#maxlength' => MENU_MAX_MENU_NAME_LENGTH_UI,
+    '#description' => t('A unique name to construct the URL for the menu. It must only contain lowercase letters, numbers and hyphens.'),
+    '#machine_name' => array('exists' => 'cp_menu_menu_exists'),
+    // A menu's machine name cannot be changed.
+    '#disabled' => !empty($menu_name),
+  );
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#submit' => array('cp_menu_edit_submit'),
+  );
+  // Only custom menus may be deleted.
+  $form['actions']['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#access' => $type == 'edit',
+    '#submit' => array('os_menu_delete_submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit function for adding or editing a custom OpenScholar menu.
+ */
+function cp_menu_edit_submit($form, &$form_state) {
+  $menu = $form_state['values'];
+  
+  if ($form['#insert']) {
+    ctools_include('menu', 'os');
+    
+    // @todo Validation
+    os_menu_add($menu['title'],$menu['menu_name']);
+  }
+  else {
+    // @todo Edit a existing Menu's Name
+  }
+  
+  drupal_set_message(t('Your menu has been saved.'));
+}
+
+/**
+ * Check to see if that menu already exists
+ */
+function cp_menu_menu_exists($menu_name){
+   ctools_include('menu', 'os');
+   $menus = os_get_menus();
+   
+   return isset($menus[$menu_name]);
+ }

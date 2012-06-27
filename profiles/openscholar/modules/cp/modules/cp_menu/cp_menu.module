@@ -31,6 +31,15 @@ function cp_menu_menu() {
     'type' => MENU_NORMAL_ITEM,
     'file' => 'cp_menu.form.inc',
   );
+  
+  $items['cp/build/menu/add/os_menu'] = array(
+    'title' => 'Add Menu',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_menu_edit_form'),
+    'access callback' => 'spaces_access_admin',
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'cp_menu.form.inc',
+  );
 
   return $items;
 }
