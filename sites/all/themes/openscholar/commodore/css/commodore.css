@@ -2,7 +2,7 @@
 @import url("http://fonts.googleapis.com/css?family=Ovo");
 
 html, body {
-     background: url("../images/bodyBg.gif") repeat-x scroll 0% 0% transparent;
+     background: url("../images/bodyBg.gif") 0 3px transparent;
      color: #545454;
      font: 0.93em/22px Arial,Verdana,sans-serif;
 }
@@ -57,6 +57,10 @@ html, body {
      padding: 0;
 }
 
+.boxes-box ul.links li {
+    margin-bottom: 17px;
+}
+
 a, a:visited {
      color: #4E84C4;
      text-decoration: none;
@@ -108,6 +112,11 @@ h2.title {
 h4 {
      font-size: 1.35em;
      margin: 0.15em 0;
+}
+
+.front h4 {
+     font-size: 1.35em;
+     margin: 0.42em 0 0.15em;
 }
 
 .sidebar h3.title {
@@ -369,6 +378,10 @@ div.pager-item {
      margin: -75px 0 0 -23px;
 }
 
+.os-halfbanner {
+margin:-54px -2px 0;
+}
+
 #footer .box-os_boxes_simple .os-footerleft {
      float: left;
      text-align: left;
@@ -392,6 +405,16 @@ div.pager-item {
 .front.og-context-9015 #content-area {
     margin: 0 auto 10px;
 }
+
+.os-greyrule {width:99%; height:2px; border-top:1px solid #DDD;}
+
+.og-context-9015 .node-type-announcement .submitted {display:none;}
+
+.page-announcements.og-context-9015 .imagecache-square_50_50 {width:284px; height:182px;}
+
+.page-announcements.og-context-9015 h3 {font-size: 1.35em;}
+
+/* CUSTOM STYLES END */
 
 
 p.copy a.footer-login {
