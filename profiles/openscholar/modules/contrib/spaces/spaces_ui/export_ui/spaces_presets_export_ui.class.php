@@ -102,8 +102,10 @@ function spaces_preset_list($form, &$form_state, $export_ui) {
           $operations[$op]['query'] = array('token' => drupal_get_token($op));
         }
       }
-      $form[$type]['storage'][$item->name] = array('#type' => 'markup', '#markup' => check_plain($item->type));
+      $form[$type]['storage'][$item->name] = array('#type' => 'markup', '#markup' => (isset($item->disabled) && $item->disabled) ? t('Disabled') : check_plain($item->type));
       $form[$type]['actions'][$item->name] = array('#type' => 'markup', '#markup' => theme('links', array('links' => $operations)));
+      
+      $form[$type]["spaces_preset_$type"][$name] = array();
     }
   }
   $form = system_settings_form($form);
