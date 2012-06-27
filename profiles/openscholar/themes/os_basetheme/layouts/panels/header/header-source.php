@@ -31,8 +31,8 @@ regions[header_bottom] = 3x33 Gpanel bottom
   ): ?>
   <div class="at-panel gpanel panel-display header clearfix">
     <?php print render($page['header_top']); ?>
-    <?php print render($page['header_first']); ?>
     <?php print render($page['header_second']); ?>
+    <?php print render($page['header_first']); ?>
     <?php print render($page['header_third']); ?>
     <?php print render($page['header_bottom']); ?>
   </div>
