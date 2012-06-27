@@ -144,10 +144,20 @@ ul.menu {
   margin-left: 15px;
 }
 
+.sidebar ul.menu {
+  margin-left: 0;
+}
+
 ul.menu ul,
 ul.menu ul ul,
 ul.menu ul ul ul {
-  margin-left: 15px;
+ /* margin-left: 15px;*/
+}
+
+.sidebar ul.menu ul,
+.sidebar ul.menu ul ul,
+.sidebar ul.menu ul ul ul {
+  margin-left: 0;
 }
 
 ul.menu li {
@@ -385,7 +395,38 @@ background-color: #52854C !important;
 color: #FFF !important;
 }
 
+/** NICE MENU OVERRIDES **/
+
+ul.nice-menu {
+ margin-left: 0;
+}
 
 
+ul.nice-menu li {
+ border:none;
+}
 
+
+ul.nice-menu-down li.menuparent {
+    background: none;
+}
+
+ul.nice-menu a {
+    color: #293352;
+    text-decoration:none;
+}
+
+ul.nice-menu ul {
+    top: 2.9em;
+}
+
+ul.nice-menu ul li {
+ border:1px solid #CCC;
+ background:#EEE;
+}
+
+
+ul.nice-menu ul li a {
+    border:none;
+}
 
