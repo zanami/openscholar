@@ -13,7 +13,10 @@
 
       if (typeof Drupal.settings.wysiwygFields.fields[id].init == "undefined") {
         Drupal.settings.wysiwygFields.fields[id].init = true;
-
+        
+        // save the form object so we can move the dialog back here later
+        var form = $('#wysiwyg_fields-' + id + '-wrapper').parents('form');
+   
         // Create jQuery UI dialog.
         $('#wysiwyg_fields-' + id + '-wrapper').dialog({
           autoOpen: false,
@@ -28,12 +31,19 @@
           width: '80%',
           zIndex: 999999
         });
+        
         $('#wysiwyg_fields-' + id + '-wrapper').bind('dialogclose', function(event, ui) {
           Drupal.wysiwygFields.dialogClose(id);
         });
         $('#wysiwyg_fields-' + id + '-wrapper').parents('.ui-dialog')
           .attr('id', 'wysiwyg_fields-' + id + '-dialog')
           .addClass('wysiwyg_fields-dialog');
+        
+        // put the dialog back in the form
+        var dialog = $('#wysiwyg_fields-' + id + '-dialog').get(0);
+        dialog.parentNode.removeChild(dialog);
+        form.append(dialog);
+        
         $('#wysiwyg_fields-' + id + '-dialog .ui-dialog-buttonpane').hide();
 
         // Expand icon.
