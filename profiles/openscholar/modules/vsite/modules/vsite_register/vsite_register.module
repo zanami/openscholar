@@ -100,12 +100,12 @@ function vsite_register_theme() {
   $theme['vsite_register_form_errors'] = array(
     'render element' => 'form',
     'function' => 'theme_vsite_register_form_errors',
-    'variables' => array('name', 'errors'),
+    'variables' => array('name'=>NULL, 'errors'=>array()),
   );
   return $theme;
 }
 
 function theme_vsite_register_form_errors($vars) {
-  $list = theme_item_list(array('items'=>$vars['errors'], 'type'=>'ul', 'attributes'=>array('class'=>array('error'))));
+  $list = theme('item_list', array('items'=>$vars['errors'], 'type'=>'ul', 'attributes'=>array('class'=>array('error'))));
   return '<div id="' . $vars['name'] . '-errors">' . $list . '</div>';
 }

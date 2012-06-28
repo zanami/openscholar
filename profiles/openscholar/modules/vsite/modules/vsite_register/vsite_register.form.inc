@@ -25,7 +25,7 @@ function vsite_register_form($form, &$state) {
       'callback' => 'vsite_register_ajax_validation',
       'wrapper' => 'domain-errors',
     ),
-    '#field_suffix' => '<div id="domain-errors"></div>',
+    '#field_suffix' => theme('vsite_register_form_errors', array('name'=>'domain')), 
   );
   
   //Get enabled presets and load their titles
@@ -126,7 +126,7 @@ function _vsite_register_user_form() {
       'callback' => 'vsite_register_ajax_validation',
       'wrapper' => 'name-errors',
     ),
-    '#field_suffix' => '<div id="name-errors"></div>',
+    '#field_suffix' => theme('vsite_register_form_errors', array('name'=>'name')), 
   );
 
   $form['mail'] = array(
@@ -138,7 +138,7 @@ function _vsite_register_user_form() {
       'callback' => 'vsite_register_ajax_validation',
       'wrapper' => 'mail-errors',
     ),
-    '#field_suffix' => '<div id="mail-errors"></div>',
+    '#field_suffix' => theme('vsite_register_form_errors', array('name'=>'mail')), 
   );
   
   // password field
@@ -253,11 +253,10 @@ function vsite_register_form_validate(&$form, &$state) {
  */
 function vsite_register_ajax_validation(&$form, &$state) {
   $elem = $state['triggering_element']['#name'];
-  return theme_vsite_register_form_errors(array(
+  return theme('vsite_register_form_errors', (array(
     'name' => $elem,
     'errors' => _vsite_register_validate($elem, $state['values']), 
-  ));
-  
+  )));
 }
 
 /**
