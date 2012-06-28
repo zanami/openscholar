@@ -21,6 +21,11 @@ function vsite_register_form($form, &$state) {
     '#description' => t('Minimum of 3 characters. Punctuation is not allowed except for hyphens and underscores. <br />Example: a choice of \'jdoe\' would result in the URL: %site.', array(
       '%site' => $base_url . '/jdoe'
     )),
+    '#ajax' => array(
+      'callback' => 'vsite_register_ajax_validation',
+      'wrapper' => 'domain-errors',
+    ),
+    '#field_suffix' => '<div id="domain-errors"></div>',
   );
   
   //Get enabled presets and load their titles
@@ -75,6 +80,12 @@ function vsite_register_form($form, &$state) {
     	'#autocomplete_path' => 'user/autocomplete',
     );
     
+    //flag for JS to set when create new user is clicked
+    $form['user_fieldset']['create_new_user'] = array(
+      '#type' => 'hidden',
+      '#default_value' => FALSE,
+    );
+    
     $form['user_fieldset']['new_user_div'] = array(
       '#markup' => '<div id="new_user_div">',
     );
@@ -111,6 +122,11 @@ function _vsite_register_user_form() {
     '#size' => 35,
     '#title' => t('Desired user name'),
     '#description' => t('Spaces are allowed; punctuation is not allowed except for periods, hyphens, and underscores.'),
+    '#ajax' => array(
+      'callback' => 'vsite_register_ajax_validation',
+      'wrapper' => 'name-errors',
+    ),
+    '#field_suffix' => '<div id="name-errors"></div>',
   );
 
   $form['mail'] = array(
@@ -118,6 +134,11 @@ function _vsite_register_user_form() {
     '#size' => 35,
     '#title' => t('Email address'),
     '#description' => t('A valid e-mail address is required. All e-mails from OpenScholar will be sent to this address.'),
+    '#ajax' => array(
+      'callback' => 'vsite_register_ajax_validation',
+      'wrapper' => 'mail-errors',
+    ),
+    '#field_suffix' => '<div id="mail-errors"></div>',
   );
   
   // password field
@@ -190,35 +211,26 @@ function vsite_register_form_submit(&$form, &$state) {
 function vsite_register_form_validate(&$form, &$state) {
   $values = $state['values'];
   
-  if ($values['vicarious_user'] && $values['existing_username']) {
+  if ($values['vicarious_user'] && !$values['create_new_user']) {
     
     //Giving a site to existing user
     if (!$user = user_load_by_name($values['existing_username'])) {
-      form_set_error('existing_username', t('Username does not exist.  Did you mean to createa new user instead?'));
+      form_set_error('existing_username', t('Username does not exist.  Did you mean to create a new user instead?'));
     }
     
-  } elseif ($values['vicarious_user'] && !$values['existing_username']) {
-    
-    //Giving a site to a new user
-    
-    //mail
-    if ($mail_error = user_validate_mail($values['mail'])) {
-      form_set_error('mail', $mail_error);
+    if (empty($values['existing_username'])) {
+      form_set_error('existing_username', t('Please specify a user account for this web site.'));
     }
     
-    if (_vsite_register_mail_in_use($values['mail'])) {
-      form_set_error('mail', t('Email address already in use.  Please try another.'));
-    }
+  } elseif ($values['vicarious_user'] && $values['create_new_user']) {
     
-    //username
-    if ($user_error = user_validate_name($values['name'])) {
-      form_set_error('name', $user_error);
+    //name and mail are validated by ajax as well.  use that function
+    foreach (array('name', 'mail') as $element) {
+      if ($msg = _vsite_register_validate($element, $values)) {
+        form_set_error($element, implode('. ', $msg));
+      }
     }
-    
-    if ($user = user_load_by_name($values['name'])) {
-      form_set_error('name', t('Username %name is taken.  Please choose another.', array('%name' => $values['name'])));
-    }
-    
+ 
     //password 
     if (!$values['password']) {
       form_set_error('password', t('You must enter a password'));
@@ -228,18 +240,75 @@ function vsite_register_form_validate(&$form, &$state) {
     drupal_add_js(array('vsite_register' => array('new_user_clicked' => TRUE)), 'setting');
   }
   
-  //domain availability applies to all cases
+  //domain is also handled by ajax.  doublecheck it here against same function.
+  if ($msg = _vsite_register_validate('domain', $values)) {
+    form_set_error('domain', implode('. ', $msg));
+  }
+}
+
+/** 
+ * @function vsite_register_ajax_validation
+ *
+ * Callback function for ajax.  returns errors on ajaxy elements
+ */
+function vsite_register_ajax_validation(&$form, &$state) {
+  $elem = $state['triggering_element']['#name'];
+  return theme_vsite_register_form_errors(array(
+    'name' => $elem,
+    'errors' => _vsite_register_validate($elem, $state['values']), 
+  ));
   
-  //domain
-  if (!purl_validate($values['domain']) || strlen($values['domain']) < 3) {
-    form_set_error('domain', t('Invalid URL specified.'));
+}
+
+/**
+ * @function _vsite_register_validate
+ * 
+ * vsite_register_ajax_validation and vsite_register_form_validate are wrappers for this function.
+ * Common elements are validated here.
+ * 
+ * @param string $element
+ * 	Name of element to validate
+ * 
+ * @param array $values
+ * 	values array from returned form state
+ * 
+ * @return string listing all errors with form element.  Null if no errors.
+ */
+function _vsite_register_validate($element, &$values) {
+  $msg = array();
+  switch($element) {
+    
+    case 'domain':
+      if (strlen($values['domain']) < 3 || !purl_validate($values['domain'])) {
+        $msg[] = t('Invalid URL specified.');
+      }
+      if (purl_load(array('value'=>$values['domain'], 'provider'=>'spaces_og')) || menu_get_item($values['domain'])) {
+        $msg[] = t('URL %url is taken.  Please choose another.', array('%url'=>$values['domain']));
+      }    
+    break;
+    
+    case 'mail':
+      if ($mail_error = user_validate_mail($values['mail'])) {
+        $msg[] = $mail_error;
+      }
+    
+      if (_vsite_register_mail_in_use($values['mail'])) {
+        $msg[] = t('Email address already in use.  Please try another.');
+      }
+    break;
+      
+    case 'name':
+      if ($user_error = user_validate_name($values['name'])) {
+        $msg[] = $user_error ;
+      }
+    
+      if ($user = user_load_by_name($values['name'])) {
+        $msg[] =  t('Username %name is taken.  Please choose another.', array('%name' => $values['name']));
+      }
+    break;
   }
   
-  if (purl_load(array('value'=>$values['domain'], 'provider'=>'spaces_og')) || menu_get_item($values['domain'])) {
-    form_set_error('domain', t('URL %url is taken.  Please choose another.', array('%url'=>$values['domain'])));
-  }
-  
-  //check that user can make more vsites if making for self
+  return (count($msg)) ? $msg : NULL;
 }
 
 /**

@@ -10,6 +10,8 @@
 			var new_user = $('#new_user_div').detach();
 			  
 			$('#new-user-link').click(function() {
+			  $('input[name=create_new_user]').attr('value', 1);
+			  
 				$existing = $('#edit-existing-username');
 			  name = $existing.attr('value');
 			  $existing.attr('value', '');
@@ -23,7 +25,7 @@
 			  $(this).unbind('click');
 			});
 			
-			if (Drupal.settings.vsite_register.new_user_clicked) {
+			if (typeof Drupal.settings.vsite_register != 'undefined' && Drupal.settings.vsite_register.new_user_clicked) {
 				$('#new-user-link').click();
 			}
 		}
