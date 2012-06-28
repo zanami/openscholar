@@ -410,7 +410,9 @@ margin:-54px -2px 0;
 
 .og-context-9015 .node-type-announcement .submitted {display:none;}
 
-.page-announcements.og-context-9015 .imagecache-square_50_50 {width:284px; height:182px;}
+.page-announcements.og-context-9015 .node-type-announcement .content img {margin:0 18px 18px 0;}
+
+.page-announcements.og-context-9015 h3 {display: none;}
 
 .page-announcements.og-context-9015 h3 {font-size: 1.35em;}
 
