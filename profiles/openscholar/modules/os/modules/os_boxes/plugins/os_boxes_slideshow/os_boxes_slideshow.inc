@@ -47,15 +47,11 @@ class os_boxes_slideshow extends os_boxes_default {
     	'#type' => 'fieldset', 
     	'#title' => t('Your uploaded images'), 
     	'#collapsed' => FALSE,
+    	'#attached' => array('library' => array(array('media', 'media_base'))),
     );
     $form['media_browser_fieldset']['media_browser'] = array(
     	'#markup' => $view->render()
     );
-    media_attach_browser_js($form['media_browser_fieldset']);
-    require_once(drupal_get_path('module', 'media') . '/wysiwyg_plugins/media.inc');
-    media_include_browser_js();
- //   $form['media_browser_fieldset']['#attached']['js'][] = drupal_get_path('module', 'media') . '/js/plugins/media.library.js';
-    
 
     $form['images_fieldset'] = array(
       '#type' => 'fieldset', 
