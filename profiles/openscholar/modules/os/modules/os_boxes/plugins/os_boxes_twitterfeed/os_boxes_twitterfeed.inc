@@ -18,7 +18,8 @@ class os_boxes_twitterfeed extends os_boxes_default {
     $options['num_items'] = 5;
     $options['followme_link'] = 0;
     $options['followme_text'] = t("Follow me on twitter");
-    $options['followme_url'] = "";
+    $options['followme_url'] = '';
+    $options['twitter_type'] = 'Username';
     return $options;
   }
 
@@ -27,12 +28,24 @@ class os_boxes_twitterfeed extends os_boxes_default {
    */
   public function options_form(&$form_state){
     
+    $form['twitter_type'] = array(
+      '#type' => 'select',
+      '#required' => TRUE,
+      '#default_value' => $this->options['twitter_type'],
+      '#options' => array('user' => t('Username'), 'hashtag' => t('Hashtag Topic'), 'search' => t('Search Term')),
+      '#attached' => array('js' => array(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_twitterfeed/os_boxes_twitterfeed.js')),
+      '#title' => t('Display tweets from'),
+    );
+    
     $form['twitter_username'] = array(
       '#type' => 'textfield',
-      '#title' => t('Twitter key'),
+      //'#title' => t('Twitter key'),
       '#required' => TRUE,
       '#default_value' => $this->options['twitter_username'],
-      '#description' => "Can be a twitter username (prepended with @), a list (@username/listname), a hashtag (prepended with #) or a search keyword (no prefix)."
+      //'#description' => t('Can be a twitter username (prepended with @), a list (@username/listname), a hashtag (prepended with #) or a search keyword (no prefix).'),
+      //'#field_prefix' => '<span style="width:1em;float:left; text-align:right; border:1px gray solid;padding:1px; background-color:silver">' . $this->options['twitter_type'] . '</span>',
+      '#description' => t('Show tweets coming from a single user, a specific hashtag, or a search term.'),
+    
     );
     
     $form['num_items'] = array(
@@ -96,6 +109,18 @@ class os_boxes_twitterfeed extends os_boxes_default {
     $twitkey = $this->options['twitter_username'];
     $num_items = $this->options['num_items'];
     $followme_link = $this->options['followme_link'];
+    
+    if ($twitkey[0] != '@' || $twitkey[0] != '#') {
+      switch($this->options['twitter_type']) {
+        case 'user':
+          $twitkey = '@'.$twitkey;
+          break;
+          
+        case 'hashtag':
+          $twitkey = '#'.$twitkey;
+          break;
+      }
+    }
     
     $output = '';
     if (module_exists('twitter_pull')) {
