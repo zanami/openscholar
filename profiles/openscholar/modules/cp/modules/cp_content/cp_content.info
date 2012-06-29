@@ -1,4 +1,4 @@
-name = cp_content
+name = Control Panel: Content
 description = cp_content
 core = 7.x
 package = Control Panel

@@ -90,3 +90,22 @@ function vsite_register_context_load_alter(&$context) {
   }
 }
 
+/**
+ * Implements hook_theme
+ * 
+ * Provides theming for form errors
+ */
+function vsite_register_theme() {
+  $theme = array();
+  $theme['vsite_register_form_errors'] = array(
+    'render element' => 'form',
+    'function' => 'theme_vsite_register_form_errors',
+    'variables' => array('name'=>NULL, 'errors'=>array()),
+  );
+  return $theme;
+}
+
+function theme_vsite_register_form_errors($vars) {
+  $list = theme('item_list', array('items'=>$vars['errors'], 'type'=>'ul', 'attributes'=>array('class'=>array('error'))));
+  return '<div id="' . $vars['name'] . '-errors">' . $list . '</div>';
+}

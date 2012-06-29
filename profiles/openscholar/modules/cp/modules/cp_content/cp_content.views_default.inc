@@ -175,7 +175,7 @@ function cp_content_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'cp/content/comments';
-  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Comments';
   $handler->display->display_options['menu']['weight'] = '20';
   $handler->display->display_options['menu']['name'] = 'cp';
@@ -902,7 +902,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['path'] = 'cp/content';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Content';
-  $handler->display->display_options['menu']['weight'] = '40';
+  $handler->display->display_options['menu']['weight'] = '10';
   $handler->display->display_options['menu']['name'] = 'cp';
   $handler->display->display_options['menu']['context'] = 0;
   $handler->display->display_options['tab_options']['type'] = 'tab';
@@ -913,9 +913,10 @@ function cp_content_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
   $handler->display->display_options['path'] = 'cp/content/content';
-  $handler->display->display_options['menu']['type'] = 'default tab';
-  $handler->display->display_options['menu']['title'] = 'Content';
+  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['title'] = 'Manage Content';
   $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['menu']['name'] = 'cp';
   $handler->display->display_options['menu']['context'] = 0;
   $handler->display->display_options['tab_options']['weight'] = '0';
   $export['cp_content'] = $view;
@@ -949,7 +950,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['relationships']['field_file_nid_target_id']['table'] = 'field_data_field_file_nid';
   $handler->display->display_options['relationships']['field_file_nid_target_id']['field'] = 'field_file_nid_target_id';
   $handler->display->display_options['relationships']['field_file_nid_target_id']['required'] = 0;
-  /* Relationship: File: Content using upload */
+  /* Relationship: Broken/missing handler */
   $handler->display->display_options['relationships']['reverse_field_upload_node']['id'] = 'reverse_field_upload_node';
   $handler->display->display_options['relationships']['reverse_field_upload_node']['table'] = 'file_managed';
   $handler->display->display_options['relationships']['reverse_field_upload_node']['field'] = 'reverse_field_upload_node';
