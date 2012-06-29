@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Vsite public access field.
+ */
+define('VSITE_ACCESS_FIELD', 'group_access');
+
+/**
+ * Implements hook_views_api().
+ */
+function vsite_access_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'vsite_access'),
+  );
+}
+
+
+/**
+ * Implements hook_node_grants().
+ */
+function vsite_access_node_grants($account, $op) {
+	if ($op != 'view' || !($vsite = spaces_get_space())) {
+		return;
+	}
+
+	$wrapper = entity_metadata_wrapper('node', $vsite->group);
+	if (!empty($wrapper->{VSITE_ACCESS_FIELD}) && $wrapper->{VSITE_ACCESS_FIELD}->value()) {
+		// Private group.
+		if(!og_is_member('node', $vsite->id,'user',$account)){
+			//They are not a member, deny access
+		}
+	}
+
+	return !empty($grants) ? $grants : array();
+}

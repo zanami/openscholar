@@ -1,6 +1,5 @@
 core = 7.x
 dependencies[] = "og"
-dependencies[] = "og_access"
 dependencies[] = "og_views"
 dependencies[] = "spaces"
 dependencies[] = "purl"

@@ -124,6 +124,7 @@ function openscholar_vsite_modules_batch(&$install_state){
     'vsite_menu',
     'vsite_layout',
     'vsite_register',
+    'vsite_access',
     'og'
   );
   
