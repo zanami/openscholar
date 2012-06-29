@@ -54,22 +54,22 @@ function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
       ),
     ),
   );
-  
+
+  //add type dependent pages based on type form's results
+  if (isset($_POST['type'])) {
+    $type = $_POST['type'];
+    $object['type'] = $type;
+    cp_menu_cache_set($object_id, $object);
+  } elseif (isset($object['type'])) {
+    $type = $object['type'];
+  } else {
+    $type = NULL;
+  }
+
+  //new node gets continue instead of finish because node creation is another step, albeit outside of wizard
   if (isset($object['type']) && $object['type'] == 'page') {
     $form_info['finish text'] = t('Continue');
   }
-
-  //add type dependent pages based on type form's results
-    if (isset($_POST['type'])) {
-      $type = $_POST['type'];
-      $object['type'] = $type;
-      cp_menu_cache_set($object_id, $object);
-    } elseif (isset($object['type'])) {
-      $type = $object['type'];
-    } else {
-      $type = NULL;
-    }
-
 
 
   if ($type == 'list') {

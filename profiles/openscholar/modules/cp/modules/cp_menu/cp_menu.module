@@ -88,7 +88,7 @@ function cp_menu_node_update($node) {
     }
   }
 
-  if ($node->os_menu['dirty']) {
+  if (isset($node->os_menu['dirty']) && $node->os_menu['dirty']) {
     if ($link = os_menu_load_link_path('node/' . $node->nid)) {
       //updated existing
       $link['link_title'] = $node->os_menu['link_title'];

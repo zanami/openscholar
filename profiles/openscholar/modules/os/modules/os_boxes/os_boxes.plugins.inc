@@ -49,6 +49,18 @@ function os_boxes_boxes_plugins() {
     ),
   );*/
 
+  $info['os_boxes_slideshow'] = array(
+    'title' => 'Slideshow',
+    'description' => 'Displays a slideshow of your uploaded pictures.',
+    'tags' => array('Media'),
+    'handler' => array(
+      'class' => 'os_boxes_slideshow',
+      'file' => 'os_boxes_slideshow.inc',
+      'path' => $path . '/os_boxes_slideshow',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+  
   $info['os_boxes_booktoc'] = array(
     'title' => 'Booklet: Table of Contents',
     'description' => 'The table of contents for a booklet',
