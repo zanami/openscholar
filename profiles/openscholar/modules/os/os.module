@@ -212,7 +212,12 @@ function _os_nice_menus_direction($region) {
   } else {
     $columns = variable_get($settings_var, 'three_col_grail');
   }
-  $columns = $columns['bigscreen_layout'];
+  
+  if (count($columns)) {
+    $columns = $columns['bigscreen_layout'];
+  } else {
+    $columns = 'three_col_grail'; 
+  }
   
   $directions = (isset($region_directions[$columns])) ? $region_directions[$columns] : $region_directions['three_col_grail'];
   return (isset($directions[$region])) ? $directions[$region] : 'down';
