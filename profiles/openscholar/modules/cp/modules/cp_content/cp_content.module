@@ -11,6 +11,7 @@ function cp_content_menu() {
 
   $items['cp/content/add'] = array(
     'page callback' => 'cp_content_add_page',
+    'title' => 'Add New Content',
     'type' => MENU_NORMAL_ITEM,
     'access callback' => 'spaces_access_admin',
     'file' => 'cp_content.pages.inc',
