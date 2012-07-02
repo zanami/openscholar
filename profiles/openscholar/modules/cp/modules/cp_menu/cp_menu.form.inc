@@ -11,20 +11,20 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
   ctools_include('ajax');
   ctools_include('modal');
   ctools_include('menu', 'os');
-  
+
   $menus = os_get_menus();
-  
+
   $is_active = false;
   if (isset($menus[$menu])) {
     $is_active = true;
   }
   $weight = 5;
-  
+
   $form['menus'] = array(
       '#theme' => 'cp_menu_table',
       '#tree' => true
   );
-  
+
   foreach ( $menus as $m => $title ) {
     $form['menus'][$m] = array(
         '#weight' => (($is_active && $menu == $m) ? 1 : $weight ++),
@@ -103,7 +103,11 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
       );
     }
   }
-  
+
+  $form['add_new'] = array(
+    '#markup' => ctools_modal_text_button('Add New Menu', 'cp/build/menu/nojs/add', 'Add New Menu'),
+  );
+
   $form['actions'] = array(
       '#type' => 'actions',
       'submit' => array(
@@ -116,11 +120,11 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
           )
       )
   );
-  
+
   $form['#submit'] = array(
       'cp_menu_submit_form'
   );
-  
+
   return $form;
 }
 
@@ -131,7 +135,7 @@ function _cp_menu_flatten_tree($tree){
         $l
     ), _cp_menu_flatten_tree($l['below']));
   }
-  
+
   return $copy;
 }
 
@@ -143,7 +147,7 @@ function theme_cp_menu_table($variables){
   ctools_modal_add_js();
   $table_data = $variables['table'];
   $menus = os_get_menus();
-  
+
   $headers = array(
       t('Title'),
       t('Edit'),
@@ -151,7 +155,7 @@ function theme_cp_menu_table($variables){
       t('Weight')
   );
   uasort($table_data, 'element_sort');
-  
+
   $rows = array();
   foreach ( element_children($table_data) as $d ) {
     $extra_classes = array();
@@ -219,10 +223,10 @@ function cp_menu_submit_form($form, &$form_state){
     foreach ( $links as $l ) {
       if (! is_array($l))
         continue;
-      
+
       $l['menu_name'] = $l['menu'];
       $link = os_menu_link_load($l['mlid'], $l['menu-old']);
-      
+
       $modified = false;
       foreach ( array(
           'weight',
@@ -239,11 +243,34 @@ function cp_menu_submit_form($form, &$form_state){
           }
         }
       }
-      
+
       if ($modified) {
         os_menu_link_save($link);
       }
     }
+  }
+}
+
+function cp_menu_add_menu($ajax) {
+  if ($ajax) {
+    ctools_include('modal');
+    $form_state = array(
+      'ajax' => true,
+    );
+
+    $output = ctools_modal_form_wrapper('cp_menu_edit_form', $form_state);
+    if ($form_state['executed']) {
+      $output[] = ctools_modal_command_dismiss();
+      if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Save')) {
+        ctools_include('ajax');
+        $output[] = ctools_ajax_command_reload();
+      }
+    }
+    echo ajax_render($output);
+    exit;
+  }
+  else {
+    return drupal_get_form('cp_menu_edit_form');
   }
 }
 
@@ -253,16 +280,16 @@ function cp_menu_submit_form($form, &$form_state){
  */
 function cp_menu_edit_form($form, $form_state, $type = 'add', $menu_name = false){
   ctools_include('menu', 'os');
-  
+
   $title = '';
-  
+
   $os_menus = os_get_menus();
   if(isset($os_menus[$menu_name])){
     $title = $os_menus[$menu_name];
   }else{
     $menu_name = false;
   }
-  
+
   //Is this new or existing?
   $form['#insert'] = empty($menu_name);
   $form['old_name'] = array(
@@ -310,17 +337,17 @@ function cp_menu_edit_form($form, $form_state, $type = 'add', $menu_name = false
  */
 function cp_menu_edit_submit($form, &$form_state) {
   $menu = $form_state['values'];
-  
+
   if ($form['#insert']) {
     ctools_include('menu', 'os');
-    
+
     // @todo Validation
     os_menu_add($menu['title'],$menu['menu_name']);
   }
   else {
     // @todo Edit a existing Menu's Name
   }
-  
+
   drupal_set_message(t('Your menu has been saved.'));
 }
 
@@ -330,6 +357,6 @@ function cp_menu_edit_submit($form, &$form_state) {
 function cp_menu_menu_exists($menu_name){
    ctools_include('menu', 'os');
    $menus = os_get_menus();
-   
+
    return isset($menus[$menu_name]);
  }
