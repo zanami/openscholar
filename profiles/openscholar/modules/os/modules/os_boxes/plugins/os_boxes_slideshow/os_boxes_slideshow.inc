@@ -20,6 +20,7 @@ class os_boxes_slideshow extends os_boxes_default {
     $options['followme_text'] = t("Follow me on twitter");
     $options['followme_url'] = '';
     $options['twitter_type'] = 'Username';
+    $options['image_fids'] = implode(',', array()); //comma separated array for 
     return $options;
   }
 
@@ -27,6 +28,7 @@ class os_boxes_slideshow extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state) {
+    drupal_add_css(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_slideshow/os_boxes_slideshow.css');
     $form = array();
     
     $view = views_get_view('media_default');
@@ -47,10 +49,31 @@ class os_boxes_slideshow extends os_boxes_default {
     	'#type' => 'fieldset', 
     	'#title' => t('Your uploaded images'), 
     	'#collapsed' => FALSE,
-    	'#attached' => array('library' => array(array('media', 'media_base'))),
+ //   	'#attached' => array('library' => array(array('media', 'media_base'))),
     );
     $form['media_browser_fieldset']['media_browser'] = array(
-    	'#markup' => $view->render()
+    	'#markup' => $view->render(),
+    );
+    
+    //states may be tricky.  another hidden element to toggle them?
+    $form['add_selected_image'] = array(
+      '#type' => 'button',
+      '#value' => t('Add Image'),
+      '#executes_submit_callback' => FALSE,
+    	'#attributes' => array('onclick' => 'return (false);'),
+      '#states' => array(), //show for unselected images
+    );
+    $form['remove_selected_image'] = array(
+      '#type' => 'button',
+      '#value' => t('Remove Image'),
+    	'#attributes' => array('onclick' => 'return (false);'),
+    	'#states' => array(), //show for selected images
+    );
+    
+    //array of fids to use.  managed by javascript :-\
+    $form['image_fids'] = array(
+      '#type' => 'textfield', //'hidden',
+      '#default_value'=> $this->options['image_fids'], //json  
     );
 
     $form['images_fieldset'] = array(
@@ -62,6 +85,8 @@ class os_boxes_slideshow extends os_boxes_default {
     
     $form['images_fieldset']['images'] = array(
     );
+    
+    
     $form += parent::options_form($form_state);
     return $form;
   }
@@ -71,6 +96,20 @@ class os_boxes_slideshow extends os_boxes_default {
    */
   public function render() {
     $block = parent::render();
+    
+    $view = views_get_view('slideshow');
+    $view->init_display();
+    $handler = $view->display_handler;
+    
+    $filters = $handler->get_option('filters');
+    //view has file id filter.  uses regex to match any of our selected ids
+    $this->options['image_fids'] = array(1,3); //forms will save as a string.  how does javascript write an array?  this might get ugly..
+    $filters['fid']['value'] = implode('|', $this->options['image_fids']);
+    $filters = $handler->set_option('filters', $filters);
+    
+    
+    //filter out images here
+    $output = $view->render();
     
     $block['content'] = $output;
     return $block;
