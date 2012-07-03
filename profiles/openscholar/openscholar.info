@@ -41,6 +41,7 @@ dependencies[] = date
 dependencies[] = entity
 dependencies[] = token
 dependencies[] = pathauto
+dependencies[] = biblio
 
 ; media / files / wysiwyg
 dependencies[] = media
