@@ -1,0 +1,16 @@
+name = OS Image Gallery
+description = Gallery container for images
+core = 7.x
+package = OpenScholar
+php = 5.2.4
+version = 7.x-1.0-alpha1
+project = os_image_gallery
+dependencies[] = features
+dependencies[] = media_gallery
+dependencies[] = multiform
+features[features_api][] = api:1
+features[user_permission][] = create media_gallery content
+features[user_permission][] = delete own media_gallery content
+features[user_permission][] = edit own media_gallery content
+spaces[types][] = og
+spaces[types][] = site
