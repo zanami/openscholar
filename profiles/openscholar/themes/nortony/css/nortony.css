@@ -201,6 +201,7 @@ body.header-main-right #header-main {
     float:left;
     padding-right: 1px;
     line-height: 48px;
+    background: none;
     }
 
 #menu-bar #block-os-primary-menu li a,

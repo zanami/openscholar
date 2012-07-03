@@ -129,6 +129,7 @@ body.two-sidebars .region-sidebar-first {
     margin-right: 1.5em;
     text-transform: uppercase;
     font-size: 17px;
+    background:none;
     }
 
 #menu-bar li a, #menu-bar li a:visited {

@@ -119,16 +119,16 @@ border-top-right-radius:5px;
   float:left;
   margin-right:5px;
   margin-top:2px;
+  background: none;
   }
 
 #menu-bar ul.menu li a {
-color: #FFF;
+  color: #FFF;
   font-weight:bold;
   font-size: 16px;
-  padding: 9px 15px 7px;
+  padding: 7px 12px 5px;
   text-shadow: #444 0px 1px 0px;
   text-decoration:none;
-
 }
 
 #menu-bar ul.menu li a:hover,
@@ -139,8 +139,7 @@ color: #FFF;
   text-decoration: none;
   border-radius:5px;
 -moz-border-radius:5px;
-border-radius:5px;
--moz-border-radius:5px;
+-webkit-border-radius: 5px;
 }
 
 /* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
@@ -212,6 +211,8 @@ width:170px;
   -webkit-border-radius: 4px 0 0 4px;
   border-radius: 4px 0 0 4px;
 }
+
+
 
 /**** SLIDESHOW OVERRIDE STYLES ****/
 

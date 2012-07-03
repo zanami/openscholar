@@ -121,6 +121,11 @@ img {
   text-align:center;
   }
 
+#menu-bar ul.menu li {
+  text-align:center;
+  background:none;
+  }
+
 #block-os-primary-menu li {
   margin: 0 1em;
   text-transform: uppercase;

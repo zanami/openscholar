@@ -228,6 +228,7 @@ body.one-sidebar .region-sidebar-first {
 #menu-bar li {
   float:left;
   padding-right: 1px;
+  background: none;
   }
 
 #menu-bar li a,

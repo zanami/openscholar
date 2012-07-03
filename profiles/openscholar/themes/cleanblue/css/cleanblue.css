@@ -245,6 +245,7 @@ margin: 8px -15px 0 18px;
 #menu-bar li {
   float:left;
   padding-right: 1px;
+  background:none;
   }
 
 #menu-bar li a
