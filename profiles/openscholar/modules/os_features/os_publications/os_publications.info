@@ -1,0 +1,17 @@
+name = os_publications
+core = 7.x
+package = Features
+php = 5.2.4
+dependencies[] = biblio
+dependencies[] = context
+dependencies[] = ctools
+dependencies[] = features
+dependencies[] = menu
+dependencies[] = os
+dependencies[] = strongarm
+features[context][] = publications_publications
+features[ctools][] = context:context:3
+features[ctools][] = strongarm:strongarm:1
+features[features_api][] = api:1
+features[menu_links][] = primary-menu:publications
+features[variable][] = biblio_base

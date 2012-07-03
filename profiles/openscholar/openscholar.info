@@ -90,6 +90,7 @@ dependencies[] = cp_content
 ; Features
 dependencies[] = os_links
 dependencies[] = os_announcements
+dependencies[] = os_publications
 
 ; other
 dependencies[] = diff
