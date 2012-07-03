@@ -404,6 +404,7 @@ ul.nice-menu {
 
 ul.nice-menu li {
  border:none;
+ background-color: none;
 }
 
 
@@ -414,6 +415,7 @@ ul.nice-menu-down li.menuparent {
 ul.nice-menu a {
     color: #293352;
     text-decoration:none;
+    background: none;
 }
 
 ul.nice-menu ul {
@@ -482,12 +484,25 @@ top: 66px;
 	font-style: normal;
     height: 15px;
     padding-left: 23px !important;
+    padding-top: 5px !important;
+    
+    color:#293352;
+    font-size:13px;
+}
+
+#block-cp-cp-minimenu ul li a:visited,
+#block-cp-cp-minimenu ul li a:hover
+ {
     color:#293352;
 }
 
 #block-cp-cp-minimenu ul li ul {
 	border-top:none;
+	border-left:1px solid #CCC;
+	border-right:1px solid #CCC;
+	border-bottom:1px solid #CCC;
 	margin:-11px 0 0 18px;
+    top: 38px;
 }
 
 #block-cp-cp-minimenu ul li ul li {
@@ -496,7 +511,7 @@ top: 66px;
 
 #block-cp-cp-minimenu ul li ul li a {
 	background: #EFEFEF;
-	 padding-left: 5px !important;
+	 padding-left: 4px !important;
 }
 
 #block-cp-cp-minimenu h2 {
