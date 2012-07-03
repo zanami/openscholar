@@ -41,6 +41,7 @@ dependencies[] = date
 dependencies[] = entity
 dependencies[] = token
 dependencies[] = pathauto
+dependencies[] = biblio
 
 ; media / files / wysiwyg
 dependencies[] = media
@@ -91,6 +92,7 @@ dependencies[] = cp_content
 dependencies[] = os_links
 dependencies[] = os_announcements
 dependencies[] = os_image_gallery
+dependencies[] = os_publications
 
 ; other
 dependencies[] = diff
