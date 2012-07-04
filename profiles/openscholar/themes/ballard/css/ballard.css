@@ -201,6 +201,35 @@ color: #F3F3F1;
     width: 180px;
 }
 
+/** NICE MENUS **/
+#menu-bar ul.nice-menu ul {
+	margin-top:13px;
+	border:none;
+	}
+	
+#menu-bar ul.nice-menu ul ul {
+	margin-top:50px;
+	}
+		
+	
+#menu-bar ul.nice-menu ul li {
+	margin-top:0;
+	background:#353535;
+}
+	
+#menu-bar ul.nice-menu ul li a {
+	color:#FFF;
+	background:#353535;
+}
+
+
+#menu-bar ul.nice-menu ul li a:hover {
+	color:#FFF;
+	background:#444;
+
+}
+
+
 
 /* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
 #header-right #block-vsite_menus-scholar_secondary_menu  {

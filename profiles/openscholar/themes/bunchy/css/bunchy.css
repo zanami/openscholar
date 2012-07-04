@@ -166,6 +166,35 @@ body {
   color:#ec8501;
   font-size: 16px;
   }
+  
+  /** NICE MENUS **/
+#menu-bar ul.nice-menu ul {
+	margin-top:-20px;
+	border:none;
+	}
+	
+#menu-bar ul.nice-menu ul ul {
+	margin-top:18px;
+	}
+		
+	
+#menu-bar ul.nice-menu ul li {
+	margin-top:0;
+	background:#252A2B;
+}
+	
+#menu-bar ul.nice-menu ul li a {
+	color:#FFF;
+	background:#353535;
+}
+
+
+#menu-bar ul.nice-menu ul li a:hover {
+	color:#FFF;
+	background:#444;
+
+}
+
 
 #footer {
   padding-top: 4px;

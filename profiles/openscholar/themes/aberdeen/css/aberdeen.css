@@ -142,6 +142,37 @@ border-top-right-radius:5px;
 -webkit-border-radius: 5px;
 }
 
+/** NICE MENUS **/
+#menu-bar ul.nice-menu ul {
+	margin-top:8px;
+	border:none;
+	}
+	
+#menu-bar ul.nice-menu ul ul {
+	margin-top:35px;
+	}
+		
+	
+#menu-bar ul.nice-menu ul li {
+	margin-top:0;
+}
+	
+#menu-bar ul.nice-menu ul li a {
+	color:#FFF;
+	background:#5D5E59;
+}
+
+
+#menu-bar ul.nice-menu ul li a:hover {
+	color:#FFF;
+	background:#444;
+	border-radius:0;
+-moz-border-radius:0;
+-webkit-border-radius: 0;
+}
+
+
+
 /* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
 #header-container-right #block-os-secondary-menu  {
    width:290px;
