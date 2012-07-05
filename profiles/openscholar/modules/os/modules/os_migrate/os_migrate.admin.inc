@@ -55,6 +55,22 @@ EOF
     '#default_value' => variable_get('os_migrate_files', ''),
   );
   
+  $form['dev_fieldset'] = array(
+    '#title' => t('Development Settings'),
+    '#type' => 'fieldset',
+    '#collapsed' => FALSE,
+    '#collapsible' => TRUE,
+  );
+  $form['dev_fieldset']['os_migrate_email_notification'] = array(
+    '#title' => t('Email Notification'),
+    '#description' => t('Creating a user account during migration will send that user an email.  
+    										When this is checked, user accounts will be created with the email address
+    										in the legacy database.  Leave this unchecked during development to munge
+    										the email addresses to avoid spamming all the users.'),
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('os_migrate_email_notification', FALSE),
+  );
+  
   return system_settings_form($form);
 }
 
