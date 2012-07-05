@@ -152,7 +152,7 @@ class vsite extends space_og {
     
     $access = parent::access_feature($op, $feature, $account);
     
-    //Check 'Private' Settings
+    //Check Feature 'privacy' Settings
     $features = variable_get('spaces_features', array());
     if ($access && $features[$feature] > 1) {
       //Handle privacy levels that are not simple Public/Disabled
@@ -168,6 +168,11 @@ class vsite extends space_og {
           $access = false;
           break;
       }
+    }
+    
+    // Additional check for private sites.
+    if ($access && module_exists('vsite_access')) {
+    	return $access && vsite_access_user_access($this->group,$account);
     }
     
     return $access;
@@ -309,5 +314,14 @@ class vsite extends space_og {
       $user->roles[$rid] = $role;
     }
   }
+  
+  /**
+   * Override of access_space().
+   */
+  function access_space($account = NULL) {
+  
+  	return parent::access_space($account) && (!module_exists('vsite_access') || vsite_access_user_access($this->group,$account));
+  }
+  
 
 }

@@ -25,12 +25,25 @@ function vsite_access_node_access($node, $op, $account) {
 	}
 
 	//We are in a vsite
-	$wrapper = entity_metadata_wrapper('node', $vsite->group);
-	if (og_is_group_content_type('node', $node->type) && !empty($wrapper->{VSITE_ACCESS_FIELD}) && $wrapper->{VSITE_ACCESS_FIELD}->value()) {
+	if (og_is_group_content_type('node', $node->type) && !vsite_access_user_access($vsite->group,$account)) {
+	  return NODE_ACCESS_DENY;
+	}
+}
+
+function vsite_access_user_access($group, $account = NULL){
+	global $user;
+	$account = isset($account) ? $account : $user;
+	
+	$wrapper = entity_metadata_wrapper('node', $group);
+	
+	if(!empty($wrapper->{VSITE_ACCESS_FIELD}) && $wrapper->{VSITE_ACCESS_FIELD}->value()){
 		// Private group.
-		if(!og_is_member('node', $vsite->id,'user',$account)){
+		if(!user_access('administer group') && !og_is_member('node', $group->nid,'user',$account)){
 			//They are not a member, deny access
-			return NODE_ACCESS_DENY;
+			return false;
 		}
 	}
+	
+	//This is a public site, or they have access
+	return true;
 }

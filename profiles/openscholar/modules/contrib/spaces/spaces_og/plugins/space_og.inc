@@ -68,9 +68,11 @@ class space_og extends space_type_purl {
     global $user;
     $account = isset($account) ? $account : $user;
 
+    $public = (!module_exists('og_access') || $this->group->{OG_ACCESS_FIELD}[LANGUAGE_NONE][0]['value'] != 1);
+    
     return parent::access_space($account) && (
       user_access('administer group') ||
-      $this->group->{OG_ACCESS_FIELD}[LANGUAGE_NONE][0]['value'] != 1 || // Group is public, allow access
+      $public || // Group is public, allow access
       og_is_member($this->group_type ,$this->id, 'user', $account) || // User is group member, allow access
       user_is_anonymous()); // User hasn't logged in -- provide entry point
   }
@@ -108,7 +110,7 @@ class space_og extends space_type_purl {
     if ($membership = og_get_membership($this->group_type ,$this->id, 'user', $account->uid)) {
       $membership = $membership->state;
     }
-    $access = $access && (user_access('administer group') || $this->group->{OG_ACCESS_FIELD}[LANGUAGE_NONE][0]['value'] == OG_CONTENT_ACCESS_PUBLIC || $membership);
+    $access = $access && (user_access('administer group') || (!module_exists('og_access') || $this->group->{OG_ACCESS_FIELD}[LANGUAGE_NONE][0]['value'] == OG_CONTENT_ACCESS_PUBLIC) || $membership);
 
     // Additional check for group membership if authoring content in this group.
     if ($op === 'create') {
