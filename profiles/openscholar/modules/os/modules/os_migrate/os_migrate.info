@@ -18,6 +18,7 @@ files[] = os_migrate_node_abstract.inc
 files[] = os_migrate_node_announcement.inc
 files[] = os_migrate_node_book.inc
 files[] = os_migrate_node_class.inc
+files[] = os_migrate_node_gallery.inc
 files[] = os_migrate_node_page.inc
 files[] = os_migrate_node_link.inc
 files[] = os_migrate_node_vsite.inc

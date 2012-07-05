@@ -57,12 +57,34 @@ abstract class OSMigration extends Migration {
     }
   }
 
-
+  /**
+   * @function os_migrate_prepare_files
+   * 
+   * Helper function for translating db results to array for file field. 
+   * 
+   * @param DatabaseStatementBase $result
+   * 	Results from query on files table.  Requires filepath, description, list, and timestamp.
+   * 
+   * @return array
+   */
+  function os_migrate_prepare_files($result) {
+    $output = array();
+    foreach ($result as $row) {
+      $file = array(
+        'path' => variable_get('os_migrate_files', FALSE) . '/' . $row->filepath,
+        'description' => $row->description,
+        'display' => $row->list,
+        'timestamp' => $row->timestamp,
+      );
+      $output[] = drupal_json_encode($file);
+    }
+    return $output;
+  }
+  
   /**
    * Gets files owned by node revision
    */
   function os_migrate_get_file_uploads($vid) {
-    $output = array();
 
     // {upload}
     $query = self::d6_db_select('upload', 'u')
@@ -74,6 +96,7 @@ abstract class OSMigration extends Migration {
     $query->orderBy('u.fid', 'ASC');
     $result = $query->execute();
 
+    /*
     foreach ($result as $row) {
       $file = array(
         'path' => variable_get('os_migrate_files', FALSE) . '/' . $row->filepath,
@@ -82,7 +105,8 @@ abstract class OSMigration extends Migration {
         'timestamp' => $row->timestamp,
       );
       $output[] = drupal_json_encode($file);
-    }
+    }*/
+    $output = $this->os_migrate_prepare_files($result);
 
 
     // {content_field_os_inline_files} - filefield
