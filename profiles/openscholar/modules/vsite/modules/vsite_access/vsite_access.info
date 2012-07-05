@@ -5,4 +5,3 @@ package = "OpenScholar vsite"
 php = "5.2.4"
 dependencies[] = ctools
 dependencies[] = vsite
-files[] = plugins/views_handler_filter_vsite_access.inc

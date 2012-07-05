@@ -12,7 +12,7 @@ function vsite_access_views_pre_view(&$view, &$display_id, &$args){
 		
 		//After we have determined that we are not in an OG space lets make
 		//sure we add our filters
-		$group_filter = $view->get_item($display_id, 'filter', 'group_access_value');
+		$group_filter = $view->get_item($display_id, 'filter', VSITE_ACCESS_FIELD.'_value');
 
 		//If the group filter is already present there is no need to do anything
 		if (!$group_filter) {
@@ -28,9 +28,9 @@ function vsite_access_views_pre_view(&$view, &$display_id, &$args){
 				}
 				
 				//Lets add the relationship to the group node
-				if (! $view->get_item($display_id, 'relationship', 'og_membership_related_node')) {
+				if (! $view->get_item($display_id, 'relationship', 'og_membership_related_node_group')) {
 					//lets add the Relationship to the og table
-					$view->add_item($display_id, 'relationship', 'og_membership', 'og_membership_related_node');
+					$view->add_item($display_id, 'relationship', 'og_membership', 'og_membership_related_node_group');
 				}
 				
 				$group_filter = array(
@@ -38,11 +38,11 @@ function vsite_access_views_pre_view(&$view, &$display_id, &$args){
 						'table' => 'field_data_group_access',
 						'field' => 'group_access_value',
 						'group_type' => 'group',
-						'operator' => 'NOT IN',
+						'operator' => 'not in',
 						'group' => '1',
 						'exposed' => false,
-						'relationship' => 'node_og_membership',
-						'value' => array(1 => 1),
+						'relationship' => 'og_membership_related_node_group',
+						'value' => array('1' => '1'),
 				);
 				
 				//Lets add the filter for group access field
