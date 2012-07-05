@@ -174,8 +174,12 @@ body {
 	}
 	
 #menu-bar ul.nice-menu ul ul {
-	margin-top:18px;
+	margin-top:0;
 	}
+		
+#menu-bar ul.nice-menu ul ul li {
+	margin-bottom:0;
+}
 		
 	
 #menu-bar ul.nice-menu ul li {

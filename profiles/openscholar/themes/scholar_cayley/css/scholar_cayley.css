@@ -240,6 +240,37 @@ body.one-sidebar .region-sidebar-first {
   font-size: 11px;
   padding: 6px 15px 5px 15px;
   }
+  
+  /** NICE MENUS **/
+#menu-bar ul.nice-menu ul {
+	margin-top:0;
+	border:none;
+	}
+	
+#menu-bar ul.nice-menu ul ul {
+	margin-top:0;
+}
+
+#menu-bar ul.nice-menu ul ul li {
+	margin-bottom:0;
+}
+	
+#menu-bar ul.nice-menu ul li {
+	margin-top:0;
+	background:#252A2B;
+}
+	
+#menu-bar ul.nice-menu ul li a {
+	color:#544F4F;
+	background:#EAE5AC;
+}
+
+
+#menu-bar ul.nice-menu ul li a:hover {
+	color:#544F4F;
+	background:#e7d504;
+
+}  
 
 .region-sidebar-first #block-os-primary-menu li a {
   padding-left: 30px;

@@ -130,6 +130,37 @@ body.header-left-main #header-container {
     font-size: 1.1em;
     background: none;
     }
+    
+  /** NICE MENUS **/
+#menu-bar ul.nice-menu ul {
+	margin-top:-20px;
+	border:none;
+	}
+	
+#menu-bar ul.nice-menu ul ul {
+	margin-top:0;
+}
+
+#menu-bar ul.nice-menu ul ul li {
+	margin-bottom:0;
+}	
+	
+#menu-bar ul.nice-menu ul li {
+	margin-top:0;
+	background:#252A2B;
+}
+	
+#menu-bar ul.nice-menu ul li a {
+	color:#FFF;
+	background:#777;
+}
+
+
+#menu-bar ul.nice-menu ul li a:hover {
+	color:#FFF;
+	background:#A03A25;
+
+}    
 
 /* MAIN CONTENT AREA */
 

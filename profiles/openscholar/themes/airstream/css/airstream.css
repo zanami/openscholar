@@ -136,6 +136,37 @@ body.navbar #header-container p {
   padding: 0 9px;
   height: 34px;
   }
+  
+  /** NICE MENUS **/
+#menu-bar ul.nice-menu ul {
+	margin-top:-5px;
+	border:none;
+	}
+	
+#menu-bar ul.nice-menu ul ul {
+	margin-top:0;
+}
+
+#menu-bar ul.nice-menu ul ul li {
+	margin-bottom:0;
+}
+	
+#menu-bar ul.nice-menu ul li {
+	margin-top:0;
+	background:#CCC;
+}
+	
+#menu-bar ul.nice-menu ul li a {
+	color:#5088BA;
+	background:#CCC;
+}
+
+
+#menu-bar ul.nice-menu ul li a:hover {
+	color:#5088BA;
+	background:#F1F3F4;
+}
+  
 
 body.sidebar-first #columns .hg-container,
 body.two-sidebars #columns .hg-container {

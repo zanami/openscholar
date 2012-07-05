@@ -343,6 +343,36 @@ padding:0px;
   text-shadow: #222 0px 1px 0px;
 }
 
+  /** NICE MENUS **/
+#menu-bar ul.nice-menu ul {
+	margin-top:12px;
+	border:none;
+	}
+	
+#menu-bar ul.nice-menu ul ul {
+	margin-top:0;
+}
+
+#menu-bar ul.nice-menu ul ul li {
+	margin-bottom:0;
+}
+
+#menu-bar ul.nice-menu ul li {
+	margin-top:0;
+	background:#252A2B;
+}
+	
+#menu-bar ul.nice-menu ul li a {
+	color:#FFF;
+	background:#353535;
+}
+
+
+#menu-bar ul.nice-menu ul li a:hover {
+	color:#FFF;
+	background:#444;
+}
+
 /** MAIN NAV IN SIDEBARS **/
    .sidebar#block-os-primary-menu .content  ul.menu{
 	width: 100%;

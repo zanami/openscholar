@@ -141,6 +141,37 @@ body.two-sidebars .region-sidebar-first {
     color: #F9E433;
     text-decoration:none;
     }
+    
+   /** NICE MENUS **/
+#menu-bar ul.nice-menu ul {
+	margin-top:-8px;
+	border:none;
+	}
+	
+#menu-bar ul.nice-menu ul ul {
+	margin-top:0;
+}
+
+#menu-bar ul.nice-menu ul ul li {
+	margin-bottom:0;
+}	
+	
+#menu-bar ul.nice-menu ul li {
+	margin-top:0;
+	background:#777;
+}
+	
+#menu-bar ul.nice-menu ul li a {
+	color:#FFF;
+	background:#777;
+}
+
+
+#menu-bar ul.nice-menu ul li a:hover {
+	color:#FFF;
+	background:#A95A3C;
+
+}     
 
 
 /* MAIN CONTENT AREA */

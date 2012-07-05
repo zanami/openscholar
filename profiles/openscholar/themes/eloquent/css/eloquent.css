@@ -147,6 +147,40 @@ img {
   color: #F8EE7C;
   text-decoration: none;
   }
+  
+  /** NICE MENUS **/
+#menu-bar ul.nice-menu ul {
+	margin:-23px 0 0 -15px;
+	border:none;
+	
+	}
+	
+#menu-bar ul.nice-menu ul ul {
+	margin-top:0;
+}
+
+#menu-bar ul.nice-menu ul ul li {
+	margin-bottom:0;
+}
+	
+#menu-bar ul.nice-menu ul li {
+	margin-top:0;
+	background:#252A2B;
+	text-align:left;
+}
+	
+#menu-bar ul.nice-menu ul li a {
+	color:#FFF;
+	background:#353535;
+}
+
+
+#menu-bar ul.nice-menu ul li a:hover {
+	color:#FFF;
+	background:#44514f;
+
+}
+  
 
 /* MAIN CONTENT AREA */
 
@@ -161,7 +195,7 @@ img {
   padding: 0 15px;
   }
 
-##content-column .views-row {
+#content-column .views-row {
 	margin: 0;
 }
   

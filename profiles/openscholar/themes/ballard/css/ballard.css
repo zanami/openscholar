@@ -208,8 +208,12 @@ color: #F3F3F1;
 	}
 	
 #menu-bar ul.nice-menu ul ul {
-	margin-top:50px;
+	margin-top:0;
 	}
+		
+#menu-bar ul.nice-menu ul ul li {
+	margin-bottom:-3px;
+}
 		
 	
 #menu-bar ul.nice-menu ul li {

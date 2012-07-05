@@ -144,17 +144,17 @@ border-top-right-radius:5px;
 
 /** NICE MENUS **/
 #menu-bar ul.nice-menu ul {
-	margin-top:8px;
+	margin-top:6px;
 	border:none;
 	}
 	
+
 #menu-bar ul.nice-menu ul ul {
-	margin-top:35px;
-	}
-		
-	
-#menu-bar ul.nice-menu ul li {
-	margin-top:0;
+	margin-top:-2px;
+}
+
+#menu-bar ul.nice-menu ul ul li {
+	margin-bottom:-3px;
 }
 	
 #menu-bar ul.nice-menu ul li a {
