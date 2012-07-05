@@ -38,7 +38,7 @@ function vsite_access_views_pre_view(&$view, &$display_id, &$args){
 						'table' => 'field_data_group_access',
 						'field' => 'group_access_value',
 						'group_type' => 'group',
-						'operator' => 'in',
+						'operator' => 'NOT IN',
 						'group' => '1',
 						'exposed' => false,
 						'relationship' => 'node_og_membership',
