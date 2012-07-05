@@ -8,7 +8,7 @@ function vsite_access_views_pre_view(&$view, &$display_id, &$args){
 	$space = spaces_get_space();
 	
 	//If we are not in a vsite, add our filter, inside a vsite we can restrict access without filters overhead
-	if (false || !is_object($space)) {
+	if (!is_object($space)) {
 		
 		//After we have determined that we are not in an OG space lets make
 		//sure we add our filters
@@ -46,56 +46,13 @@ function vsite_access_views_pre_view(&$view, &$display_id, &$args){
 				);
 				
 				//Lets add the filter for group access field
-				$view->set_item($display_id, 'filter', 'group_access_value', $group_filter);
+				$view->set_item($display_id, 'filter', VSITE_ACCESS_FIELD.'_value', $group_filter);
 
 			}
 
-			//$view->set_item_option($display_id, 'filter', 'vsssssite_access', 'relationship', 'og_membership_rel);
+
 		}
+	}else if(!og_is_member('node', $space->id)){
+		//The None of the view content is visible if the space is private
 	}
-}
-
-/**
- * Override the node access plugin for views
- *
- * @param array $plugins
- */
-function vsite_access_views_data_alter(&$data){
-
-	// ----------------------------------------------------------------------
-	// Vsite access
-	$data['node_access']['nid']['filter']['handler'] = 'views_handler_filter_vsite_access';
-	return;
-
-	if(isset($data['og_membership']['og_membership_related_node'])){
-		$data['og_membership']['og_membership_related_node']['etid']['filter'] = array(
-				'handler' => 'views_handler_filter_vsite_access',
-		);
-	}
-
-	return;
-
-	// 	// Define the base group of this table. Fields that don't
-	// 	// have a group defined will go into this field by default.
-	// 	$data['node_access']['table']['group']  = t('Content access');
-
-	// 	// For other base tables, explain how we join
-	// 	$data['node_access']['table']['join'] = array(
-	// 			// Directly links to node table.
-	// 			'node' => array(
-	// 					'left_field' => 'nid',
-	// 					'field' => 'nid',
-	// 			),
-	// 	);
-	// 	// nid field
-	// 	$data['node_access']['nid'] = array(
-	// 			'title' => t('Access'),
-	// 			'help' => t('Filter by access.'),
-	// 			'filter' => array(
-	// 					'handler' => 'views_handler_filter_node_access',
-	// 					'help' => t('Filter for content by view access. <strong>Not necessary if you are using node as your base table.</strong>'),
-	// 			),
-	// 	);
-
-	return $data;
 }

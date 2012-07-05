@@ -17,20 +17,20 @@ function vsite_access_views_api() {
 
 
 /**
- * Implements hook_node_grants().
+ * Implements hook_node_access().
  */
-function vsite_access_node_grants($account, $op) {
+function vsite_access_node_access($node, $op, $account) {
 	if ($op != 'view' || !($vsite = spaces_get_space())) {
 		return;
 	}
 
+	//We are in a vsite
 	$wrapper = entity_metadata_wrapper('node', $vsite->group);
-	if (!empty($wrapper->{VSITE_ACCESS_FIELD}) && $wrapper->{VSITE_ACCESS_FIELD}->value()) {
+	if (og_is_group_content_type('node', $node->type) && !empty($wrapper->{VSITE_ACCESS_FIELD}) && $wrapper->{VSITE_ACCESS_FIELD}->value()) {
 		// Private group.
 		if(!og_is_member('node', $vsite->id,'user',$account)){
 			//They are not a member, deny access
+			return NODE_ACCESS_DENY;
 		}
 	}
-
-	return !empty($grants) ? $grants : array();
 }
