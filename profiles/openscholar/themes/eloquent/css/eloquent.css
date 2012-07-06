@@ -180,6 +180,26 @@ img {
 	background:#44514f;
 
 }
+
+.sidebar ul.nice-menu ul {
+	margin-top:-45px;
+	border:none;
+	}
+	
+
+.region-sidebar-second #block-os-primary-menu li {
+    margin: 0;
+  }		
+			
+.region-sidebar-second.sidebar ul.nice-menu ul {
+	margin-top:0;
+
+	}	
+
+.sidebar ul.nice-menu ul ul {
+	margin-top:0;
+	border:none;
+	}	
   
 
 /* MAIN CONTENT AREA */
