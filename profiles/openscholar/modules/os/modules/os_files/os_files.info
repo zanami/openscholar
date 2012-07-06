@@ -1,0 +1,7 @@
+name = OpenScholar: Files
+description = Standardizes OpenScholar File handling
+core = 7.x
+package = OpenScholar
+dependencies[] = features
+features[features_api][] = api:1
+features[variable][] = media__file_extensions

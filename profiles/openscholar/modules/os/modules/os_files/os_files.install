@@ -1,0 +1,34 @@
+<?php
+function os_files_install() {
+	
+  // add files to node ref field
+  try {
+    field_create_field(array(
+      'field_name' => 'field_file_nid',
+      'type' => 'entityreference',
+      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+    ));
+  }
+  catch (FieldException $fe) {
+    dpm($fe->getMessage());
+  }
+
+  $info = field_info_bundles('file');
+  $nid = array(
+    'field_name' => 'field_file_nid',
+    'entity_type' => 'file',
+    'label' => 'Attached Nodes',
+    'bundle' => 'file',
+    'required' => false,
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'type' => 'hidden',
+      ),
+    ),
+  );
+  foreach ($info as $type => $d) {
+    $og['bundle'] = $nid['bundle'] = $type;
+    field_create_instance($nid);
+  }
+}
