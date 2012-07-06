@@ -1,0 +1,94 @@
+<?php 
+/**
+ * @file os_image_gallery.install
+ */
+
+/**
+ * @function os_image_gallery_enable
+ * 
+ * Add our fields to media gallery's file entities
+ */
+function os_image_gallery_enable() {
+  _os_image_gallery_enable_fields_and_instances();
+}
+
+/**
+ * @function os_image_gallery_enable_fields_and_instances()
+ * 
+ * Ensures that all fields and instances return by functions 
+ * _os_image_gallery_{fields,instances} are enabled.  Safe to
+ * run during hook_update_N - will not create duplicates.  
+ */
+function _os_image_gallery_enable_fields_and_instances() {
+  //supply our own field/instance defs, but use media_gallery's helper functions to enable them.
+  require_once(drupal_get_path('module', 'media_gallery') . '/media_gallery.install');
+  
+  // Create fields (but not instances yet) for media_gallery nodes
+  foreach (_os_image_gallery_fields() as $field) {
+    _media_gallery_ensure_field($field);
+  }
+  
+  //set up instances
+  foreach (_os_image_gallery_instances() as $instance) {
+    _media_gallery_ensure_instance($instance);
+  }   
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function os_image_gallery_uninstall() {
+  // Delete fields and instances.
+  require_once(drupal_get_path('module', 'media_gallery') . '/media_gallery.install');
+  foreach (array_keys(_os_image_gallery_fields()) as $field) {
+    field_delete_field($field);
+  }
+  $instances = _os_image_gallery_instances();
+  foreach ($instances as $instance_name => $instance) {
+    field_delete_instance($instance);
+  }
+}
+
+/**
+ * Instances to add to media gallery's file entities
+ */
+function _os_image_gallery_instances() {
+  $t = get_t();
+  $media_instances = array(
+    'media_author' => array(
+      'field_name' => 'media_author',
+      'label' => $t('Content Author'),
+      'display' => array(
+        'default' => array('type' => 'below'),
+        'media_gallery_thumbnail' => array('type' => 'text_default', 'label' => 'below'),
+        'media_gallery_lightbox' => array('type' => 'text_default', 'label' => 'below'),
+        'media_gallery_detail' => array('type' => 'text_default', 'label' => 'below'),
+      ),
+    ),
+  );
+  
+  foreach (media_type_get_types() as $bundle => $type) {
+    foreach ($media_instances as $delta => $instance) {
+      $media_instances[$delta] += array('entity_type' => 'file', 'bundle' => $bundle);
+    }   
+  }
+  
+  return $media_instances;
+}
+
+/**
+ * Returns definitions for fields this module both creates and deletes.
+ */
+function _os_image_gallery_fields() {
+  $fields = array(
+    // The media items that make up the gallery.
+    'media_author' => array(
+      'field_name' => 'media_author',
+      'cardinality' => 1,
+     // 'locked' => TRUE,
+      'type' => 'text',
+    ),
+  );
+  return $fields;
+}
+      
