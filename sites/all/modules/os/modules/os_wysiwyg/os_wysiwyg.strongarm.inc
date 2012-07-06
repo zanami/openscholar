@@ -174,7 +174,7 @@ statcounter.com';
   $strongarm->value = array(
     'color' => 'color',
     'background' => 0,
-    'background-color' => 0,
+    'background-color' => 'background-color',
     'background-image' => 0,
     'background-repeat' => 0,
     'background-attachment' => 0,
@@ -189,7 +189,7 @@ statcounter.com';
   $strongarm->value = array(
     'color' => 'color',
     'background' => 0,
-    'background-color' => 0,
+    'background-color' => 'background-color',
     'background-image' => 0,
     'background-repeat' => 0,
     'background-attachment' => 0,
@@ -204,7 +204,7 @@ statcounter.com';
   $strongarm->value = array(
     'color' => 'color',
     'background' => 0,
-    'background-color' => 0,
+    'background-color' => 'background-color',
     'background-image' => 0,
     'background-repeat' => 0,
     'background-attachment' => 0,
@@ -267,7 +267,7 @@ statcounter.com';
     'font-size' => 'font-size',
     'font-size-adjust' => 0,
     'font-stretch' => 0,
-    'font-style' => 0,
+    'font-style' => 'font-style',
     'font-variant' => 0,
     'font-weight' => 0,
   );
@@ -284,7 +284,7 @@ statcounter.com';
     'font-weight' => 'font-weight',
     'font-size-adjust' => 0,
     'font-stretch' => 0,
-    'font-style' => 0,
+    'font-style' => 'font-style',
     'font-variant' => 0,
   );
   $export['wysiwyg_filter_styles_font_5'] = $strongarm;
@@ -301,7 +301,7 @@ statcounter.com';
     'font-size-adjust' => 0,
     'font-stretch' => 0,
     'font-variant' => 0,
-    'font-weight' => 0,
+    'font-weight' => 'font-weight',
   );
   $export['wysiwyg_filter_styles_font_6'] = $strongarm;
 
@@ -385,7 +385,7 @@ statcounter.com';
   $strongarm->value = array(
     'text-align' => 'text-align',
     'text-decoration' => 'text-decoration',
-    'text-indent' => 0,
+    'text-indent' => 'text-indent',
     'text-transform' => 0,
     'letter-spacing' => 0,
     'word-spacing' => 0,
