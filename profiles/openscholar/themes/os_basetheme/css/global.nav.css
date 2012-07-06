@@ -386,7 +386,8 @@ div.contextual-links-wrapper ul.contextual-links {
 
 ul.contextual-links li a {
 padding: 0.5em .75em 0.5em 0.75em;
-font-size:1.12em;
+font-family: helvetica;
+font-size: 11px;
 text-decoration:none !important;
 }
 
