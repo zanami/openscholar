@@ -8,7 +8,7 @@ function vsite_access_views_pre_view(&$view, &$display_id, &$args){
 	$space = spaces_get_space();
 	
 	//If we are not in a vsite, add our filter, inside a vsite we can restrict access without filters overhead
-	if (!is_object($space)) {
+	if (arg(0) === 'admin' || !is_object($space)) {
 		
 		//After we have determined that we are not in an OG space lets make
 		//sure we add our filters
