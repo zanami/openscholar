@@ -39,13 +39,15 @@ function _os_image_gallery_enable_fields_and_instances() {
  */
 function os_image_gallery_uninstall() {
   // Delete fields and instances.
-  require_once(drupal_get_path('module', 'media_gallery') . '/media_gallery.install');
-  foreach (array_keys(_os_image_gallery_fields()) as $field) {
-    field_delete_field($field);
-  }
+ // require_once(drupal_get_path('module', 'media_gallery') . '/media_gallery.install');
+  
   $instances = _os_image_gallery_instances();
   foreach ($instances as $instance_name => $instance) {
     field_delete_instance($instance);
+  }
+  
+  foreach (array_keys(_os_image_gallery_fields()) as $field) {
+    field_delete_field($field);
   }
 }
 
@@ -54,6 +56,7 @@ function os_image_gallery_uninstall() {
  */
 function _os_image_gallery_instances() {
   $t = get_t();
+  $return = array();
   $media_instances = array(
     'media_author' => array(
       'field_name' => 'media_author',
@@ -69,11 +72,11 @@ function _os_image_gallery_instances() {
   
   foreach (media_type_get_types() as $bundle => $type) {
     foreach ($media_instances as $delta => $instance) {
-      $media_instances[$delta] += array('entity_type' => 'file', 'bundle' => $bundle);
+      $return[] = $media_instances[$delta] + array('entity_type' => 'file', 'bundle' => $bundle); //keeps adding media @author sagotsky
     }   
   }
   
-  return $media_instances;
+  return $return;
 }
 
 /**
