@@ -21,6 +21,7 @@ features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
 features[field][] = node-link-body
 features[field][] = node-link-field_links_link
+features[menu_link] = primary-menu:links
 features[node][] = link
 features[user_permission][] = create link content
 features[user_permission][] = delete any link content
