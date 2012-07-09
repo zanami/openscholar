@@ -373,6 +373,21 @@ padding:0px;
 	background:#444;
 }
 
+.sidebar ul.nice-menu ul {
+	margin-top:-36px;
+	border:none;
+	}
+	
+.region-sidebar-second.sidebar ul.nice-menu ul {
+	margin-top:0;
+
+	}	
+
+.sidebar ul.nice-menu ul ul {
+	margin-top:0;
+	border:none;
+	}	
+
 /** MAIN NAV IN SIDEBARS **/
    .sidebar#block-os-primary-menu .content  ul.menu{
 	width: 100%;

@@ -53,6 +53,10 @@ function vsite_register_form($form, &$state) {
   if ($anonymous) {
     //anonymous users always create new accounts
     $form += _vsite_register_user_form();
+    $form['vicarious_user'] = array(
+      '#type' => 'hidden',
+    	'#value' => FALSE,
+    );
     
   } elseif($manager) {
     //managers can create a new site, give a site to another user, or give a site to a new account.
@@ -169,30 +173,42 @@ function vsite_register_form_submit(&$form, &$state) {
   $values = $state['values'];
   
   if ($values['vicarious_user'] && $values['existing_username']) {
-    $user = user_load_by_name($values['existing_username']);
-  } elseif ($values['vicarious_user'] && !$values['existing_username']) {
-    // create user
+    //user account already exists
+    $site_owner = user_load_by_name($values['existing_username']);
+    
+  } elseif (($values['vicarious_user'] && !$values['existing_username']) || (!$values['vicarious_user'] && $values['name'])) {
+    // create user for self or on someone's behalf
     $user_options = array(
     	'name' => $values['name'],
     	'pass' => $values['password'],
     	'mail' => $values['mail'],
     	'status' => 1,
     );
-    $user = os_user_create($user_options, FALSE);
+    $site_owner = os_user_create($user_options, FALSE);
     
     //and send some email
     if ($values['notify']) {
-      _user_mail_notify('register_no_approval_required', $user);
+      _user_mail_notify('register_no_approval_required', $site_owner);
     }
-  } else {
+    
+    //log in as new user, if we're not already logged in.
     global $user;
+    if ($user->uid == 0) {
+      $user = $site_owner;
+      user_login_finalize($state);
+    }
+    
+  } else {
+    //creating site for self.  no need to create a new user
+    global $user;
+    $site_owner = $user;
   }
   
   //create the vsite
-  if ($vsite = vsite_create_vsite($user->name, $values['domain'], $user->uid, $values['preset'])) {
+  if ($vsite = vsite_create_vsite($site_owner->name, $values['domain'], $site_owner->uid, $values['preset'])) {
     //add user to vsite
-    os_user_add($user->uid, $vsite->id);
-    os_role_grant($user->uid, 'vsite admin', $vsite->id);
+    os_user_add($site_owner->uid, $vsite->id);
+    os_role_grant($site_owner->uid, 'vsite admin', $vsite->id);
        
     drupal_set_message(t('Welcome to your new OpenScholar site.'));
     drupal_goto($values['domain']);

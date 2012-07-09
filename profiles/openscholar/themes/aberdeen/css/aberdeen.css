@@ -142,13 +142,43 @@ border-top-right-radius:5px;
 -webkit-border-radius: 5px;
 }
 
+/**** MAIN NAV IN SIDEBAR ****/
+
+.sidebar ul.menu li {
+ list-style-image:NONE;
+  }
+
+.sidebar ul.menu li a {
+  color: #FFF;
+  font-weight:bold;
+  font-size: 16px;
+  padding: 4px 9px 2px;
+  text-shadow: #444 0px 1px 0px;
+  text-decoration:none;
+  background: #777;
+}
+
+.sidebar ul.menu li a:hover,
+.sidebar ul.menu li a.active,
+.sidebar ul.menu li.active-trail a {
+  background: #4e84c4;
+  color: #FFF;
+  text-decoration: none;
+  border-radius:5px;
+-moz-border-radius:5px;
+-webkit-border-radius: 5px;
+}
+
+
+
+
 /** NICE MENUS **/
 #menu-bar ul.nice-menu ul {
 	margin-top:6px;
 	border:none;
 	}
 	
-
+	
 #menu-bar ul.nice-menu ul ul {
 	margin-top:-2px;
 }
@@ -156,12 +186,12 @@ border-top-right-radius:5px;
 #menu-bar ul.nice-menu ul ul li {
 	margin-bottom:-3px;
 }
-	
+
+
 #menu-bar ul.nice-menu ul li a {
 	color:#FFF;
 	background:#5D5E59;
 }
-
 
 #menu-bar ul.nice-menu ul li a:hover {
 	color:#FFF;
@@ -171,7 +201,30 @@ border-top-right-radius:5px;
 -webkit-border-radius: 0;
 }
 
+.sidebar ul.nice-menu ul {
+	margin-top:-39px;
+	border:none;
+	}
 
+.sidebar ul.nice-menu ul ul {
+	margin-top:0;
+}
+
+ .region-sidebar-second.sidebar ul.nice-menu ul {
+	margin-top:5px;
+}
+
+.sidebar ul.nice-menu ul ul li {
+	margin-bottom:-2px;
+}
+
+.sidebar ul.nice-menu ul li a:hover {
+	color:#FFF;
+	background:#5D5E59;
+	border-radius:0;
+-moz-border-radius:0;
+-webkit-border-radius: 0;
+}
 
 /* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
 #header-container-right #block-os-secondary-menu  {

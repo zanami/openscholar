@@ -173,6 +173,20 @@ body.two-sidebars .region-sidebar-first {
 
 }     
 
+.sidebar ul.nice-menu ul {
+	margin-top:-39px;
+	border:none;
+	}
+	
+.region-sidebar-second.sidebar ul.nice-menu ul {
+	margin-top:0;
+
+	}	
+
+.sidebar ul.nice-menu ul ul {
+	margin-top:0;
+	border:none;
+	}
 
 /* MAIN CONTENT AREA */
 
