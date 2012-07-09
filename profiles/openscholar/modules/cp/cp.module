@@ -140,7 +140,10 @@ function cp_block_view($delta) {
     case 'cp_subnav':
       return array(
         'subject' => NULL,
-        'content' => menu_primary_local_tasks(),
+        'content' => array(
+          '#theme' => 'links',
+          '#links' => menu_navigation_links('cp', 1)
+        ),
       );
     case 'cp_minimenu':
       if (_cp_get_toolbar_setting() == CP_MENU_MINI && spaces_access_admin()) {

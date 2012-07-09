@@ -8,12 +8,14 @@ project = os_image_gallery
 dependencies[] = features
 dependencies[] = media_gallery
 dependencies[] = multiform
+dependencies[] = colorbox
+spaces[types][] = og
+spaces[types][] = site
 features[features_api][] = api:1
 features[user_permission][] = create media_gallery content
 features[user_permission][] = delete own media_gallery content
 features[user_permission][] = delete any media_gallery content
 features[user_permission][] = edit own media_gallery content
 features[user_permission][] = edit any media_gallery content
-;features[node][] = media_gallery ;when this is active, I get access denied in vsite
-spaces[types][] = og
-spaces[types][] = site
+features[node][] = media-gallery
+

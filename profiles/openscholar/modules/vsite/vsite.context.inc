@@ -41,7 +41,7 @@ function vsite_context_default_contexts(){
               'vsite_register-get_your_site_block' => array(
                   'module' => 'vsite_register',
                   'delta' => 'get_your_site_block',
-                  'region' => 'header_third',
+                  'region' => 'sidebar_first',
                   'weight' => '-10'
               )
           )

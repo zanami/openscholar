@@ -355,7 +355,9 @@ function media_gallery_media_page_edit($gallery, $file) {
   // Since we have a $form_state, we can't call drupal_get_form(), so pass the
   // expected arguments to drupal_build_form().
   $form_state['build_info']['args'] = array($file);
-  return drupal_build_form('media_edit', $form_state);
+  
+  module_load_include('inc', 'file_entity', 'file_entity.pages');
+  return drupal_build_form('file_entity_edit', $form_state);
 }
 
 /**
