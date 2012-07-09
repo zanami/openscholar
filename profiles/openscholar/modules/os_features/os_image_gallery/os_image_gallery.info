@@ -8,6 +8,7 @@ project = os_image_gallery
 dependencies[] = features
 dependencies[] = media_gallery
 dependencies[] = multiform
+dependencies[] = colorbox
 spaces[types][] = og
 spaces[types][] = site
 features[features_api][] = api:1
