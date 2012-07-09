@@ -274,6 +274,25 @@ body.header-main-right #header-main {
 
 } 
 
+ul.nice-menu-right li.menuparent {
+    background: none;
+}
+
+.sidebar ul.nice-menu ul {
+	margin-top:-39px;
+	border:none;
+	}
+	
+.region-sidebar-second.sidebar ul.nice-menu ul {
+	margin-top:0;
+
+	}	
+
+.sidebar ul.nice-menu ul ul {
+	margin-top:0;
+	border:none;
+	}
+
 #scholar-shield {
   margin-right:0;
   }

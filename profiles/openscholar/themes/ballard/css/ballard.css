@@ -103,11 +103,11 @@ font-weight:normal;
 margin-bottom:0;
 }
 
-#columns .block ul {
+.block ul {
 margin: 8px 0 0 20px;
 }
 
-#columns .block ul li {
+.block ul li {
  list-style-image:url('../images/listBullet.png');
 }
 
@@ -172,7 +172,7 @@ p.copy a.footer-login:hover {
 padding: 0;
 color: #F3F3F1;
 float: left;
-
+margin:0;
 }
 
 #menu-bar ul li { display: inline; }
@@ -201,6 +201,37 @@ color: #F3F3F1;
     width: 180px;
 }
 
+/**** MAIN NAV IN SIDEBAR ****/
+#columns .sidebar .block ul.menu ul.nice-menu-,
+#columns .sidebar .block ul.menu {
+margin: 8px 0 0 0;
+  }
+
+#columns .sidebar .block ul.menu li {
+ list-style-image:NONE;
+
+  }
+
+.sidebar ul.menu li a {
+  color: #FFF;
+
+
+  padding: 4px 9px 2px;
+ 
+  text-decoration:none;
+  background: #2F2F2F;
+}
+
+.sidebar ul.menu li a:hover,
+.sidebar ul.menu li a.active,
+.sidebar ul.menu li.active-trail a {
+  background: #555;
+  color: #FFF;
+  text-decoration: none;
+}
+
+
+
 /** NICE MENUS **/
 #menu-bar ul.nice-menu ul {
 	margin-top:13px;
@@ -224,6 +255,7 @@ color: #F3F3F1;
 #menu-bar ul.nice-menu ul li a {
 	color:#FFF;
 	background:#353535;
+	padding: 3px 5px;
 }
 
 
@@ -231,6 +263,23 @@ color: #F3F3F1;
 	color:#FFF;
 	background:#444;
 
+}
+
+.sidebar ul.nice-menu ul {
+	margin-top:-39px;
+	border:none;
+	}
+
+.sidebar ul.nice-menu ul ul {
+	margin-top:0;
+}
+
+ .region-sidebar-second.sidebar ul.nice-menu ul {
+	margin-top:0;
+}
+
+.sidebar ul.nice-menu ul ul li {
+	margin-bottom:-2px;
 }
 
 

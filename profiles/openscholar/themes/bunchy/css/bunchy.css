@@ -199,6 +199,30 @@ body {
 
 }
 
+ul.nice-menu-left li.menuparent {
+    background: none;
+    border:none;
+}
+
+.sidebar ul.nice-menu ul {
+	margin-top:-39px;
+	border:none;
+	}
+
+.sidebar ul.nice-menu li a {
+	color: #EC8501;
+	}	
+	
+.region-sidebar-second.sidebar ul.nice-menu ul {
+	margin-top:0;
+
+	}	
+
+.sidebar ul.nice-menu ul ul {
+	margin-top:0;
+	border:none;
+	}	
+  
 
 #footer {
   padding-top: 4px;

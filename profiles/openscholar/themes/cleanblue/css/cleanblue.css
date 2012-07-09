@@ -107,7 +107,6 @@ h2.block-title {
   .region-sidebar-first #block-os-primary-menu ul.menu li a, .region-sidebar-first #block-os-secondary-menu ul.menu li a {color:#757575;font-weight:bold;padding-left:1px;text-transform:uppercase;line-height:10px;text-indent:20px;}
   
   .region-sidebar-second #block-os-primary-menu ul.menu, .region-sidebar-second #block-os-secondary-menu ul.menu {margin-left:20px;}
-  .region-sidebar-second #block-os-primary-menu ul.menu li, .region-sidebar-second #block-os-secondary-menu ul.menu li {list-style-image:url('../images/mainNavLftIcon.gif');padding-bottom:10px;}
   .region-sidebar-second #block-os-primary-menu ul.menu li a,  .region-sidebar-second #block-os-secondary-menu ul.menu li a {color:#757575;font-weight:bold;font-size:12px;text-transform:uppercase;}
 
 p.copy {
@@ -319,6 +318,36 @@ margin: 8px -15px 0 18px;
 	background:#444;
 
 }
+
+.sidebar ul.nice-menu ul {
+	margin-top:-36px;
+	border:none;
+	}
+	
+.region-sidebar-second.sidebar ul.nice-menu li {
+	list-style-image: none;
+    padding-bottom: 10px;	
+	}	
+
+	
+ul.nice-menu-right li.menuparent {
+    background: none;
+}
+
+ul.nice-menu-right li.menuparent a:hover {
+    background: none;
+}	
+	
+	
+.region-sidebar-second.sidebar ul.nice-menu ul {
+	margin-top:0;
+
+	}	
+
+.sidebar ul.nice-menu ul ul {
+	margin-top:0;
+	border:none;
+	}	
 
 
 /* FOOTER  */
