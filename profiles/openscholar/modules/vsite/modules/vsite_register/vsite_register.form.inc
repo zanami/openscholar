@@ -53,6 +53,10 @@ function vsite_register_form($form, &$state) {
   if ($anonymous) {
     //anonymous users always create new accounts
     $form += _vsite_register_user_form();
+    $form['vicarious_user'] = array(
+      '#type' => 'hidden',
+    	'#value' => FALSE,
+    );
     
   } elseif($manager) {
     //managers can create a new site, give a site to another user, or give a site to a new account.
@@ -170,7 +174,7 @@ function vsite_register_form_submit(&$form, &$state) {
   
   if ($values['vicarious_user'] && $values['existing_username']) {
     $user = user_load_by_name($values['existing_username']);
-  } elseif ($values['vicarious_user'] && !$values['existing_username']) {
+  } elseif (($values['vicarious_user'] && !$values['existing_username']) || (!$values['vicarious_user'] && $values['name'])) {
     // create user
     $user_options = array(
     	'name' => $values['name'],
