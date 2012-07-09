@@ -2,3 +2,19 @@
 /**
  * @file
  */
+
+
+/**
+ * Implements hook_contextual_links_view_alter
+ * 
+ * OS and media_gallery both add contextuals.  Clean that up.
+ */
+function os_image_gallery_contextual_links_view_alter(&$element, $items) {
+  if (isset($element['#contextual_links']['media_gallery'])) {
+    unset($element['#links']['media-gallery-edit']);
+    unset($element['#links']['media-gallery-remove']);
+  }
+}
+
+
+// href field
