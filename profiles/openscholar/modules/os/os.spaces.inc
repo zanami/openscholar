@@ -44,7 +44,7 @@ function os_spaces_presets() {
         'os' => 1,
       ),
       'site_frontpage' => 'home',
-      'theme_default' => 'aberdeen',
+      'theme_default' => 'cleanblue',
     ),
   );
 
