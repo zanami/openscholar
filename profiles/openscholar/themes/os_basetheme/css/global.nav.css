@@ -486,7 +486,7 @@ top: 66px;
     height: 15px;
     padding-left: 23px !important;
     padding-top: 5px !important;
-    
+    font-weight:normal;
     color:#293352;
     font-size:13px;
 }
@@ -513,6 +513,7 @@ top: 66px;
 #block-cp-cp-minimenu ul li ul li a {
 	background: #EFEFEF;
 	 padding-left: 4px !important;
+	  font-weight: normal;
 }
 
 #block-cp-cp-minimenu h2 {
