@@ -39,7 +39,7 @@ class OgUiUserPermissionsTestCase extends DrupalWebTestCase {
     $this->assertTrue(og_user_access('entity_test', $entity1->pid, 'subscribe', $web_user), t('User has "subscribe" permission.'));
 
     // Remove a permission.
-    $this->drupalPost('admin/config/group/permissions/entity_test/main', array('4[subscribe]' => FALSE), t('Save global permissions'));
+    $this->drupalPost('admin/config/group/permissions/entity_test/main', array('1[subscribe]' => FALSE), t('Save permissions'));
     $this->assertText(t('The changes have been saved.'), t('Successful save message displayed.'));
 
     // FIXME: There is an og_invalidate_cache() on permissions granting
@@ -49,12 +49,100 @@ class OgUiUserPermissionsTestCase extends DrupalWebTestCase {
     $this->assertFalse(og_user_access('entity_test', $entity1->pid, 'subscribe', $web_user), t('User now does not have "subscribe" permission.'));
 
     // Re-add permission.
-    $this->drupalPost('admin/config/group/permissions/entity_test/main', array('4[subscribe]' => TRUE), t('Save global permissions'));
+    $this->drupalPost('admin/config/group/permissions/entity_test/main', array('1[subscribe]' => TRUE), t('Save permissions'));
 
     // FIXME: There is an og_invalidate_cache() on permissions granting
     // and revoking, but somehow, we need to do it manually here.
     og_invalidate_cache();
     $this->assertTrue(og_user_access('entity_test', $entity1->pid, 'subscribe', $web_user), t('User has "subscribe" permission again.'));
+  }
+}
+
+class OgUiAdminPermissionsTestCase extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'OG UI admin section',
+      'description' => 'Verify that only users with group admin permissions can see the admin tabs.',
+      'group' => 'Organic groups UI'
+    );
+  }
+
+  function setUp() {
+    parent::setUp('og_ui');
+
+    // Add OG group fields.
+    og_create_field(OG_GROUP_FIELD, 'node', 'article');
+  }
+
+  /**
+   * Check access permissions to the group admin tab.
+   */
+  function testOgUiAdminTabAccess() {
+    $user1 = $this->drupalCreateUser();
+    $user2 = $this->drupalCreateUser();
+
+    $settings = array();
+    $settings['uid'] = $user1->uid;
+    $settings['type'] = 'article';
+    $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
+    $node = $this->drupalCreateNode($settings);
+
+    $this->drupalLogin($user2);
+
+    // User does not have any access permissions.
+    $this->drupalGet('node/' . $node->nid . '/group');
+    $this->assertResponse(403, t('User without privileges can not access group admin tabs.'));
+
+    $perms = array(
+      'add user',
+      'manage members',
+      'manage roles',
+      'manage permissions',
+    );
+
+    $roles = og_roles('node', 'article');
+    $auth_rid = array_search(OG_ANONYMOUS_ROLE, $roles);
+    foreach ($perms as $perm) {
+      // Add an admin permission to allow the user to access to the admin tabs.
+      og_role_grant_permissions($auth_rid, array($perm));
+      $this->drupalGet('node/' . $node->nid . '/group');
+      $this->assertResponse(200, t('User with "@perm" privilege can access group admin tabs.', array('@perm' => $perm)));
+      // Remove the admin permission to restrict user access to the admin tabs.
+      // User is left without admin permissions for the next loop.
+      og_role_revoke_permissions($auth_rid, array($perm));
+    }
+  }
+
+  /**
+   * Check access to restricted permissions on the permissions edit page.
+   */
+  function testOgUiAdminPermissionsAccess() {
+    $user1 = $this->drupalCreateUser();
+    $user2 = $this->drupalCreateUser();
+
+    $settings = array();
+    $settings['uid'] = $user1->uid;
+    $settings['type'] = 'article';
+    $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
+    $node = $this->drupalCreateNode($settings);
+
+    $this->drupalLogin($user2);
+    $roles = og_roles('node', 'article');
+    $auth_rid = array_search(OG_ANONYMOUS_ROLE, $roles);
+    $text = t('Warning: Give to trusted roles only; this permission has security implications in the group context.');
+
+    // Check that restricted permissions are not displayed to the user with
+    // manage permissions but not administer group.
+    og_role_grant_permissions($auth_rid, array('manage permissions'));
+    $this->drupalGet('group/node/' . $node->nid . '/admin/permissions');
+    $this->assertNoText($text, t('Restricted permissions are not displayed to the unprivileged user.'));
+
+    // Check that restricted permissions are displayed to a user with administer
+    // group.
+    og_role_revoke_permissions($auth_rid, array('manage permissions'));
+    og_role_grant_permissions($auth_rid, array('administer group'));
+    $this->drupalGet('group/node/' . $node->nid . '/admin/permissions');
+    $this->assertText($text, t('Restricted permissions are displayed to the privileged user.'));
   }
 }
 
@@ -116,7 +204,7 @@ class OgUiSubscribeTestCase extends DrupalWebTestCase {
     $this->assertFalse(og_is_member('node', $node->nid, 'user', $user2, array(OG_STATE_ACTIVE, OG_STATE_PENDING)), t('User unsubscribed from group.'));
 
     // Change global permissions to allow user to subscribe without approval.
-    $og_roles = og_roles('node', 0, 'article');
+    $og_roles = og_roles('node', 'article');
     $rid = array_search(OG_ANONYMOUS_ROLE, $og_roles);
     og_role_change_permissions($rid, array('subscribe without approval' => 1));
 
@@ -221,7 +309,11 @@ class OgUiMigrate7000TestCase extends UpgradePathTestCase {
     module_load_include('inc', 'entity' ,'includes/entity');
     module_load_include('inc', 'entity' ,'includes/entity.controller');
     module_load_include('inc', 'entity' ,'includes/entity.wrapper');
-    module_load_include('inc', 'og' ,'includes/og.info');
+
+    module_load_include('inc', 'og' ,'og.info');
+    module_load_include('inc', 'og' ,'includes/og.exception');
+    module_load_include('inc', 'og' ,'includes/og.membership');
+    module_load_include('inc', 'og' ,'includes/og.membership_type');
 
     module_enable(array('og_migrate', 'og_ui'));
 
@@ -283,7 +375,7 @@ class OgUiMigrate7000TestCase extends UpgradePathTestCase {
 
       // TODO: There is some issue with og_is_group_default_access()
       // returning a wrong result, due to $wrapper not being up-to-date.
-      $og_roles = og_roles('node', $nid, 'test_group', TRUE);
+      $og_roles = og_roles('node', 'test_group', $nid, TRUE);
       $permissions = og_role_permissions($og_roles);
 
       $anon_rid = array_search(OG_ANONYMOUS_ROLE, $og_roles);

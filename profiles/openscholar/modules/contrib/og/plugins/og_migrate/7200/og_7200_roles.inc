@@ -5,7 +5,7 @@
  */
 $plugin = array(
   'name' => t('Upgrade OG roles - 7.2'),
-  'description' => t('Add per-bundle OG roles, based on the global roles.'),
+  'description' => t('Add per-bundle OG roles.'),
   'access callback' => 'og_migrate_7200_access',
 );
 
@@ -15,7 +15,7 @@ $plugin = array(
 function og_7200_roles(&$context) {
   foreach (og_get_all_group_bundle() as $group_type => $bundles) {
     foreach ($bundles as $bundle => $label) {
-      og_roles_override($group_type, 0, $bundle);
+      og_roles_override($group_type, $bundle, 0);
     }
   }
 
@@ -61,13 +61,16 @@ function og_7200_roles(&$context) {
 
   foreach ($result as $row) {
     list($group_type, $gid) = og_migrate_get_group($row->gid);
-    $group = entity_load_single($group_type, $gid);
-    list(,,$bundle) = entity_extract_ids($group_type, $group);
+    // Some installations might have missing entities, so we don't assume
+    // they exist.
+    if ($gid && $group = entity_load_single($group_type, $gid)) {
+      list(,,$bundle) = entity_extract_ids($group_type, $group);
 
-    db_update('og_role')
-      ->fields(array('group_type' => $group_type, 'gid' => $gid, 'group_bundle' => $bundle))
-      ->condition('rid', $row->rid, '=')
-      ->execute();
+      db_update('og_role')
+        ->fields(array('group_type' => $group_type, 'gid' => $gid, 'group_bundle' => $bundle))
+        ->condition('rid', $row->rid, '=')
+        ->execute();
+    }
 
     $context['sandbox']['progress']++;
     $context['sandbox']['last'] = $row->rid;

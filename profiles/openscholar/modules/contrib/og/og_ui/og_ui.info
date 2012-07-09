@@ -8,9 +8,12 @@ version = VERSION
 files[] = og_ui.test
 configure = admin/config/group
 
-; Information added by drupal.org packaging script on 2012-03-30
-version = "7.x-2.0-alpha2+44-dev"
+; Views handlers
+files[] = includes/views/handlers/og_ui_handler_area_og_membership_overview.inc
+
+; Information added by drupal.org packaging script on 2012-07-01
+version = "7.x-2.0-beta1"
 core = "7.x"
 project = "og"
-datestamp = "1333067808"
+datestamp = "1341174150"
 
