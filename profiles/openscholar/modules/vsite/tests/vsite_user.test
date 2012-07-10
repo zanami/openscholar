@@ -142,7 +142,7 @@ class VsiteUser extends OpenscholarWebTestCase {
     $test_role = 'vsite user';
 
     //A little sanity checking to make sure that the roles we will be using exist
-    $roles = og_roles($this->group_1->group_type, $this->group_1->id, 'vsite');
+    $roles = og_roles($this->group_1->group_type, 'vsite', $this->group_1->id);
     $exists = false;
     foreach ($roles as $rid => $role) {
       if($role == $test_role){
