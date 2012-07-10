@@ -1,8 +1,11 @@
 /* MAIN NAV */
-#block-os-primary-menu.menu-wrapper,
-.block-inner {margin:0;}
+/*#block-os-primary-menu.menu-wrapper,
+.block-inner {margin:0;}*/
 
 #columns {padding:0 10px;}
 
 
-#messages {display:none;}
+/*#messages {display:none;}*/
+
+
+.boxes-box-controls {display:none;}

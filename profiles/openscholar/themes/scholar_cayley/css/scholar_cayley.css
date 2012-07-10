@@ -74,7 +74,7 @@ p.copy {
   width: 980px;
   margin: 0 auto;
   padding: 1px 0 0 0;
-  background: url('images/container.png') 0 0 repeat-y #fff;
+  background: url('../images/container.png') 0 0 repeat-y #fff;
   -moz-box-shadow: 0 0 30px #555;
   -webkit-box-shadow: 0 0 30px #555;
   box-shadow: 0 0 30px #555;
@@ -160,7 +160,6 @@ body.navbar-off .region-sidebar-first {
   }
 
 .region-sidebar-first #block-os-primary-menu {
-  background: #edecdd;
   margin: 0 -15px 0 -27px;
   padding: 0 0 30px 0;
   }
@@ -222,7 +221,9 @@ body.one-sidebar .region-sidebar-first {
 
 #menu-bar #block-os-primary-menu {
   background:#eae5ac;
-  height: 36px;
+  height: 26px;
+  margin-left: 0;
+  margin-right: 0;
   }
 
 #menu-bar li {
@@ -233,17 +234,18 @@ body.one-sidebar .region-sidebar-first {
 
 #menu-bar li a,
 .region-sidebar-first #block-os-primary-menu li a {
-  line-height: 25px;
-  text-transform:uppercase;
-  color: #544f4f;
-  font-weight:normal;
-  font-size: 11px;
-  padding: 6px 15px 5px 15px;
+   color: #544F4F;
+     font-size: 11px;
+     font-weight: normal;
+     line-height: 20px;
+     padding: 4px 15px 2px;
+     text-transform: uppercase;
   }
   
   /** NICE MENUS **/
+ 	
 #menu-bar ul.nice-menu ul {
-	margin-top:0;
+	 margin-top: -10px;
 	border:none;
 	}
 	
@@ -271,6 +273,27 @@ body.one-sidebar .region-sidebar-first {
 	background:#e7d504;
 
 }  
+
+.sidebar ul.nice-menu {
+	border-top:none;
+	}
+	
+.sidebar ul.nice-menu li {
+	background:none;
+	}	
+	
+.sidebar ul.nice-menu li a {
+	padding-left:0;
+	}	
+	
+.sidebar ul.nice-menu li a:hover {
+	background:transparent;
+	}
+	
+.sidebar ul.nice-menu ul li a:hover {
+	background:#F6F6E9;
+	border:none;
+	}	
 
 .sidebar ul.nice-menu ul {
 	margin-top:-39px;
