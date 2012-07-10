@@ -50,7 +50,7 @@ abstract class OSMigration extends Migration {
       flood_register_event('os_migrate_bad_db');
       $msg = t('Unable to connect to legacy database %db  Please !link', array(
       				  '%db' => $os_migrate_database . '.',
-      				  '!link'=>l('check settings','admin/config/os_migrate')));
+      				  '!link'=>l('check settings','admin/config/openscholar/os_migrate')));
       drupal_set_message($msg, 'error');
 
       throw $e;
@@ -74,7 +74,8 @@ abstract class OSMigration extends Migration {
         'path' => variable_get('os_migrate_files', FALSE) . '/' . $row->filepath,
         'description' => $row->description,
         'display' => $row->list,
-        'timestamp' => $row->timestamp,
+        'timestamp' => $row->timestamp, //would n.created be more accurate?  people have adjusted that for ordering's sake
+        'title' => $row->title
       );
       $output[] = drupal_json_encode($file);
     }

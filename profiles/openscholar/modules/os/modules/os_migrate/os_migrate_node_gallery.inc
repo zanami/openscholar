@@ -61,15 +61,29 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     $current_row;
     
     //grab associated images.  
-    $query = parent::d6_db_select('node', 'n');    
+    $query = parent::d6_db_select('node', 'n');
+    
+        
     $query->join('content_type_image', 'cti', 'n.nid = cti.field_gallery_nid');
     $query->condition('field_gallery_nid', $current_row->nid, '=');
+    $query->addField('cti', 'field_gallery_image_list', 'list');
+    $query->addField('cti', 'field_gallery_image_data', 'description');
     
     $query->join('files', 'f', 'f.fid = cti.field_gallery_image_fid');
     $query->fields('f', array('filepath', 'timestamp'));
-    $query->addField('cti', 'field_gallery_image_list', 'list');
-    $query->addField('cti', 'field_gallery_image_data', 'description');
+    
+    $query->join('node', 'img', 'img.nid = cti.nid');
+    $query->addField('img', 'title');
+    $query->orderBy('img.sticky', 'DESC'); 
+    $query->orderBy('img.created', 'ASC');
+    $query->orderBy('img.title', 'ASC');
+    
     $result = $query->execute();
+    
+    //results should be ordered.  d6 used sticky desc, post asc, title asc.
+    //how does d7 set order?
+    //  media_gallery_media attaches files with a delta.  delta determines order.
+    
     
     $current_row->prepared_files = parent::os_migrate_prepare_files($result);
     //purl isn't a valid destination yet, but still works somehow.

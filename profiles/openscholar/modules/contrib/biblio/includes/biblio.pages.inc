@@ -215,9 +215,9 @@ function biblio_page_content($nids = array(), $extras = array()) {
 
   $content['pager']['#markup'] = theme('pager');
   if ($count == 0) {
-    $content .= "<h3>" . t("No items found") . "</h3>";
+    $content['message']['#markup'] = "<h3>" . t("No items found") . "</h3>";
     if (strstr($content, "Filters:")) {
-      $content['message']['#markup'] = t('!modify_link or !remove_link your filters and try again.', array('!modify_link' => l(t('Modify'), "$base/filter"), '!remove_link' => l(t('remove'), "$base/filter/clear")));
+      $content['message']['#markup'] .= t('!modify_link or !remove_link your filters and try again.', array('!modify_link' => l(t('Modify'), "$base/filter"), '!remove_link' => l(t('remove'), "$base/filter/clear")));
     }
   }
   return $content;

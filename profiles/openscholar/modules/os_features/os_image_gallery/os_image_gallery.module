@@ -3,7 +3,7 @@
  * @file
  */
 
-include_once 'os_image_gallery.features.inc';
+include_once('os_image_gallery.features.inc');
 
 
 /**
