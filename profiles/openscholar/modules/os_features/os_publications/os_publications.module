@@ -5,3 +5,25 @@
  */
 
 include_once 'os_publications.features.inc';
+
+function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
+  $space = spaces_get_space();
+  if (module_exists('spaces') && $space->type == 'og') {
+    $query->innerJoin('field_data_og_group_ref', 'ogrf', 'n.nid = ogrf.entity_id');
+    $query->condition('ogrf.og_group_ref_target_id', $space->id);
+  }
+}
+
+function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
+  $form['og_group_ref']['und'][0]['target_id']['#type'] = 'value';
+  if ($space = spaces_get_space()) {
+    $form['og_group_ref']['und'][0]['target_id']['#value'] = $space->id;
+  }
+}
+
+function _os_publications_space_default_value() {
+  if ($space = spaces_get_space()) {
+    return $space->id;
+  }
+  return 0;
+}

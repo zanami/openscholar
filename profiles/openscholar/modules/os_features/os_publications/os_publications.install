@@ -14,5 +14,6 @@ function os_publications_install() {
         'type' => 'hidden',
       ),
     ),
+    'default_value_function' => '_os_publications_space_default_value',
   ));
 }
