@@ -183,3 +183,4 @@
   <?php endif; ?>
 
 </div><!--page area ends-->
+ <div id="extradiv"></div>

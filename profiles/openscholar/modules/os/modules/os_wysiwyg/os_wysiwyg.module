@@ -36,6 +36,7 @@ function os_wysiwyg_update_files($node) {
   $altered = array();
 
   // remove files that the node no longer uses
+  // @todo Take into account files that are linked in ways other than via wysiwyg
   $rem_files = array_diff($curr_files, $act_files);
   $diff = array(array('target_id' => $node->nid));
   foreach ($rem_files as $fid) {
@@ -119,8 +120,8 @@ function os_wysiwyg_wysiwyg_include_directory($type) {
 function os_wysiwyg_views_default_views_alter(&$views) {
   if (isset($views['media_default'])) {
     $view = $views['media_default'];
-    $id = $view->add_item('default', 'relationship', 'field_data_field_file_nid', 'field_file_nid_target_id');
-    $rel = $view->get_item('default', 'relationship', $id);
+    
+    $view->add_item('default', 'relationship', 'field_data_field_file_nid', 'field_file_nid_target_id');
     $view->add_item('default', 'filter', 'spaces', 'current', array('relationship' => 'field_file_nid_target_id'));
   }
 }

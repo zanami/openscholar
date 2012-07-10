@@ -79,10 +79,6 @@ function og_uninstall() {
  * Implements hook_schema().
  */
 function og_schema() {
-  return og_schema_info();
-}
-
-function og_schema_info() {
   $schema = array();
 
   $schema['og_role_permission'] = array(
@@ -96,7 +92,7 @@ function og_schema_info() {
       ),
       'permission' => array(
         'type' => 'varchar',
-        'length' => 64,
+        'length' => 128,
         'not null' => TRUE,
         'default' => '',
         'description' => 'A single permission granted to the role identified by rid.',
@@ -246,6 +242,14 @@ function og_schema_info() {
         'length' => 255,
         'not null' => FALSE,
       ),
+
+      'language' => array(
+        'description' => 'The {languages}.language of this membership type.',
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+      ),
     ),
     'primary key' => array('id'),
     'unique keys' => array(
@@ -315,6 +319,13 @@ function og_schema_info() {
         'not null' => TRUE,
         'default' => '',
         'description' => "The name of the field holding the group ID, the OG memebership is associated with.",
+      ),
+      'language' => array(
+        'description' => 'The {languages}.language of this membership.',
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
       ),
     ),
     'primary key' => array('id'),
@@ -777,9 +788,19 @@ function og_update_7000(&$sandbox) {
     db_rename_table('og_ancestry', 'd6_og_ancestry');
     db_rename_table('og_uid', 'd6_og_uid');
 
+    // The tables that will need to be processed.
+    $tables = array('d6_og', 'd6_og_ancestry', 'd6_og_uid');
+
+    // If OG user roles module was installed in the past, make a copy of
+    // its table.
+    if (db_table_exists('og_users_roles')) {
+      db_rename_table('og_users_roles', 'd6_og_users_roles');
+      $tables[] = 'd6_og_users_roles';
+    }
+
     // Add serial ID to d6_og* tables so we can keep track of records that were
     // processed.
-    foreach (array('d6_og', 'd6_og_ancestry', 'd6_og_uid') as $table) {
+    foreach ($tables as $table) {
       // Drop the current primary key, as we are adding a serial column.
       db_drop_primary_key($table);
       db_add_field($table, 'upgrade_id', array(
@@ -919,3 +940,78 @@ function og_update_7200() {
   entity_info_cache_clear();
 }
 
+/**
+ * Add "language" column to all OG membership's related entities.
+ */
+function og_update_7201(&$sandbox) {
+  //Update the existing entities, with the default language.
+  $langcode = language_default()->language;
+
+  $tables = array(
+    'og_membership_type',
+    'og_membership',
+  );
+
+  if (!isset($sandbox['total'])) {
+    foreach ($tables as $key => $table) {
+      $name = str_replace('_', ' ', $table);
+      $column = array(
+        'description' => "The {languages}.language of this $name.",
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => $langcode,
+      );
+      db_add_field($table, 'language', $column);
+
+      if ($table == 'og_membership') {
+        // We don't want to time out when updating og_membership, so we will
+        // process it using batches.
+        $query = db_select($table);
+        $sandbox['last'] = 0;
+        $sandbox['total'] = $query->countQuery()->execute()->fetchField();
+        $sandbox['#finished'] = 0;
+      }
+      else {
+        db_update($table)
+          ->fields(array(
+            'language' => $langcode,
+          ))
+          ->execute();
+      }
+    }
+  }
+  elseif ($sandbox['last'] <= $sandbox['total']  && $sandbox['total'] > 0) {
+    // Update og_memberships.
+    $batch_size = 200;
+    db_update('og_membership')
+      ->fields(array(
+        'language' => $langcode,
+      ))
+      ->condition('id', $sandbox['last'], '>')
+      ->execute();
+
+    $sandbox['last'] += $batch_size;
+    $sandbox['#finished'] = min(0.99, $sandbox['last'] / $sandbox['total']);
+  }
+  else {
+    // Finished processing.
+    $sandbox['#finished'] = 1;
+  }
+}
+
+/**
+ * Extend the length of permission field in og_role_permission.
+ */
+function og_update_7202() {
+  $column = array(
+    'type' => 'varchar',
+    'length' => 128,
+    'not null' => TRUE,
+    'default' => '',
+    'description' => 'A single permission granted to the role identified by rid.',
+  );
+
+  db_change_field('og_role_permission', 'permission', 'permission', $column);
+  return t('Updated column definition for {og_role_permission} table.');
+}

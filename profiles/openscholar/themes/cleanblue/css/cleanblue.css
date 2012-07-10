@@ -5,8 +5,10 @@
 body  {
   color:#37352B;
   min-width: 980px;
-  background: url('../images/bodyBg.png') repeat-x scroll 0px 160px #F7F7F9;
- }    
+  background: url('../images/bodyBg.png') repeat-x scroll 0 160px #F7F7F9;
+ }   
+ 
+
 
   body.admin-menu {
  	background: url("../images/bodyBg.png") repeat-x scroll 0 180px #F7F7F9;
@@ -16,9 +18,6 @@ body  {
  	background: url("../images/bodyBg.png") repeat-x scroll 0 200px #F7F7F9;
  	}
   
- body.header-none {
- 	background:url("../images/bodyBg.png") repeat-x scroll 0px -89px #F7F7F9;
- 	}
 
 
 /* TYPOGRAPHY*/
@@ -283,7 +282,7 @@ margin: 8px -15px 0 18px;
   color: #000;
   text-decoration: none;
    border-bottom:none;
-   padding: 6px 15px 7px 15px;
+   padding: 3px 15px 2px;
 }
 
   /** NICE MENUS **/

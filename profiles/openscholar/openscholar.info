@@ -67,6 +67,7 @@ dependencies[] = devel
 
 ; OS 
 dependencies[] = os
+dependencies[] = os_files
 dependencies[] = os_boxes
 dependencies[] = os_wysiwyg
 

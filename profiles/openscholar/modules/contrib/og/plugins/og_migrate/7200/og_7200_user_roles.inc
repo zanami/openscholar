@@ -50,26 +50,30 @@ function og_7200_user_roles(&$context) {
     return;
   }
 
-  $global_roles = og_get_global_roles();
+  // Fetch the global roles.
+  $default_roles = og_roles('', '');
 
   foreach ($result as $row) {
     list($group_type, $gid) = og_migrate_get_group($row->gid);
 
-    // Get the bundle from the entity.
-    $group = entity_load_single($group_type, $gid);
-    list(,,$bundle) = entity_extract_ids($group_type, $group);
+    // Some installations might have missing entities, so we don't assume
+    // they exist.
+    if ($gid && $group = entity_load_single($group_type, $gid)) {
+      // Get the bundle from the entity.
+      list(,,$bundle) = entity_extract_ids($group_type, $group);
 
-    // Get the per-bundle roles, and replace the role ID, with the
-    // per-bundle role ID.
-    $og_roles = og_roles($group_type, $gid, $bundle);
-    $rid = array_search($global_roles[$row->rid], $og_roles);
+      // Get the per-bundle roles, and replace the role ID, with the
+      // per-bundle role ID.
+      $og_roles = og_roles($group_type, $bundle, $gid);
+      $rid = array_search($default_roles[$row->rid], $og_roles);
 
-    db_update('og_users_roles')
-      ->fields(array('rid' => $rid, 'group_type' => $group_type, 'gid' => $gid))
-      ->condition('uid', $row->uid, '=')
-      ->condition('rid', $row->rid, '=')
-      ->condition('gid', $row->gid, '=')
-      ->execute();
+      db_update('og_users_roles')
+        ->fields(array('rid' => $rid, 'group_type' => $group_type, 'gid' => $gid))
+        ->condition('uid', $row->uid, '=')
+        ->condition('rid', $row->rid, '=')
+        ->condition('gid', $row->gid, '=')
+        ->execute();
+    }
 
     $context['sandbox']['progress']++;
     $context['sandbox']['last'] = $row->uid;
@@ -79,3 +83,4 @@ function og_7200_user_roles(&$context) {
     $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
   }
 }
+
