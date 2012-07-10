@@ -1,0 +1,21 @@
+#extradiv {
+  background-image: url('../images/fabric-strip-asian-leaves.png');
+  }
+
+body {
+  background-color: #342A0C;
+  }
+
+#menu-bar {
+  background: url('../images/menu-strip-asian-leaves.png') #9D7D2E;
+  }
+
+a, a:visited {
+  color:#C74235;
+  }
+
+#menu-bar li a:hover,
+#menu-bar li a.active,
+#menu-bar .active-trail a {
+  background: #c74336;
+  }
