@@ -74,7 +74,7 @@ abstract class OSMigration extends Migration {
         'path' => variable_get('os_migrate_files', FALSE) . '/' . $row->filepath,
         'description' => $row->description,
         'display' => $row->list,
-        'timestamp' => $row->timestamp, //would n.created be more accurate?  people have adjusted that for ordering's sake
+        'timestamp' => $row->timestamp,
         'title' => $row->title
       );
       $output[] = drupal_json_encode($file);
