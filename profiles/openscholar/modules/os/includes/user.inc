@@ -136,7 +136,7 @@ function os_role_grant($uid, $role_name, $site_id = false, $group_type = 'node')
   
   if($site_id){
     //Add role via OG
-    $roles = og_roles($group_type, $site_id, 'vsite');
+    $roles = og_roles($group_type, 'vsite', $site_id);
     foreach ($roles as $rid => $role) {
     	if($role == $role_name){
     	  og_role_grant($group_type, $site_id, $uid, $rid);
