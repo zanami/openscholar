@@ -353,7 +353,10 @@ function biblio_build_query($arg_list) {
       //$sortby = "ORDER BY bt.name %s, b.biblio_year DESC ";
       $query->addField('n', 'title');
       $query->orderBy($type_name, $arg_list['o']);
+      $query->orderBy('biblio_year', 'DESC');
+      $query->orderBy('biblio_date', 'DESC');
       $query->orderBy('biblio_sort_title', $arg_list['o']);
+      $query->orderBy('biblio_sort_title');
             break;
     case 'title':
       $query->addField('n', 'title');
