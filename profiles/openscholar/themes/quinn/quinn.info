@@ -44,8 +44,8 @@
   settings[bigscreen_sidebar_unit]   = 'px'
   settings[bigscreen_max_width_unit] = 'px'
   settings[bigscreen_page_width]     = 980
-  settings[bigscreen_sidebar_first]  = 180
-  settings[bigscreen_sidebar_second] = 200
+  settings[bigscreen_sidebar_first]  = 210
+  settings[bigscreen_sidebar_second] = 180
   settings[bigscreen_set_max_width]  = 1
   settings[bigscreen_max_width]      = 1140
   settings[bigscreen_media_query]    = 'only screen and (min-width:1025px)'

@@ -21,6 +21,16 @@ function os_image_gallery_user_default_permissions() {
     'module' => 'node',
   );
 
+  // Exported permission: delete any media_gallery content.
+  $permissions['delete any media_gallery content'] = array(
+    'name' => 'delete any media_gallery content',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'manager',
+    ),
+    'module' => 'node',
+  );
+
   // Exported permission: delete own media_gallery content.
   $permissions['delete own media_gallery content'] = array(
     'name' => 'delete own media_gallery content',
@@ -32,20 +42,9 @@ function os_image_gallery_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: edit own media_gallery content.
-  $permissions['edit own media_gallery content'] = array(
-    'name' => 'edit own media_gallery content',
-    'roles' => array(
-      0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-    ),
-    'module' => 'node',
-  );
-  
-  // Exported permission: delete own media_gallery content.
-  $permissions['delete any media_gallery content'] = array(
-    'name' => 'delete any media_gallery content',
+  // Exported permission: edit any media_gallery content.
+  $permissions['edit any media_gallery content'] = array(
+    'name' => 'edit any media_gallery content',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
@@ -54,11 +53,12 @@ function os_image_gallery_user_default_permissions() {
   );
 
   // Exported permission: edit own media_gallery content.
-  $permissions['edit any media_gallery content'] = array(
-    'name' => 'edit any media_gallery content',
+  $permissions['edit own media_gallery content'] = array(
+    'name' => 'edit own media_gallery content',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
+      2 => 'vsite admin',
     ),
     'module' => 'node',
   );

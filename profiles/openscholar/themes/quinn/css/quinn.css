@@ -9,11 +9,6 @@ html, body {
   }
 
 
-#page {
-  max-width: 1260px;
-  min-width: 780px;
-  margin: 0 auto;
-  }
 
 a, a:visited {
   text-decoration: none;
