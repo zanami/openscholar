@@ -1,19 +1,2 @@
 <?php
-function os_publications_install() {
-  // add an og ref field to biblio nodes
-
-  field_create_instance(array(
-    'field_name' => 'og_group_ref',
-    'entity_type' => 'node',
-    'label' => 'Group Ref',
-    'bundle' => 'biblio',
-    'required' => true,
-    'display' => array(
-      'default' => array(
-        'label' => 'hidden',
-        'type' => 'hidden',
-      ),
-    ),
-    'default_value_function' => '_os_publications_space_default_value',
-  ));
-}
+// we'll need this eventually
