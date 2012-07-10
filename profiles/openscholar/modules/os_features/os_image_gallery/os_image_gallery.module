@@ -3,6 +3,8 @@
  * @file
  */
 
+include_once 'os_image_gallery.features.inc';
+
 
 /**
  * Implements hook_contextual_links_view_alter
