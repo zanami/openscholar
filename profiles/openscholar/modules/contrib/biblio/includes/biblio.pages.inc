@@ -313,6 +313,9 @@ function biblio_build_query($arg_list) {
   //add a tag of "node_access" to ensure that only nodes to which the user has access are retrieved
   $query->addTag('node_access');
 
+  // add tag so other modules may modify query
+  $query->addTag('biblio');
+
   $query->addField('n', 'nid');
   $type_name = $query->addField('bt', 'name', 'biblio_type_name');
   $query->leftJoin('biblio', 'b', 'n.vid=b.vid');
@@ -350,7 +353,10 @@ function biblio_build_query($arg_list) {
       //$sortby = "ORDER BY bt.name %s, b.biblio_year DESC ";
       $query->addField('n', 'title');
       $query->orderBy($type_name, $arg_list['o']);
+      $query->orderBy('biblio_year', 'DESC');
+      $query->orderBy('biblio_date', 'DESC');
       $query->orderBy('biblio_sort_title', $arg_list['o']);
+      $query->orderBy('biblio_sort_title');
             break;
     case 'title':
       $query->addField('n', 'title');
@@ -922,6 +928,7 @@ function biblio_search_query($keys) {
     $query->join('node', 'n', 'n.nid = i.sid');
     $query->condition('n.status', 1)
       ->addTag('node_access')
+      ->addTag('biblio')
       ->searchExpression($keys, 'node');
 
     // Insert special keywords.
