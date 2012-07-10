@@ -62,11 +62,22 @@ function _os_image_gallery_instances() {
       'field_name' => 'media_author',
       'label' => $t('Content Author'),
       'display' => array(
-        'default' => array('type' => 'below'),
+        'default' => array('type' => 'text_default', 'label'=>'below'),
         'media_gallery_thumbnail' => array('type' => 'text_default', 'label' => 'below'),
         'media_gallery_lightbox' => array('type' => 'text_default', 'label' => 'below'),
         'media_gallery_detail' => array('type' => 'text_default', 'label' => 'below'),
       ),
+    ),
+    'media_link' => array(
+      'field_name' => 'media_link',
+      'label' => $t('Link'),
+      'display' => array(
+        'default' => array('type' => 'text_default', 'label' => 'none'),
+        'media_gallery_thumbnail' => array('type' => 'text_default', 'label' => 'none'),
+        'media_gallery_lightbox' => array('type' => 'text_default', 'label' => 'none'),
+        'media_gallery_detail' => array('type' => 'text_default', 'label' => 'none'),
+      ),
+      'description' => $t('When viewed in the slideshow widget, this image will link to the URL provided here.'),
     ),
   );
   
@@ -88,8 +99,14 @@ function _os_image_gallery_fields() {
     'media_author' => array(
       'field_name' => 'media_author',
       'cardinality' => 1,
-     // 'locked' => TRUE,
+      'locked' => TRUE,
       'type' => 'text',
+    ),
+    'media_link' => array(
+      'field_name' => 'media_link',
+      'cardinality' => 1,
+      'locked' => TRUE,
+      'type' => 'link_field',
     ),
   );
   return $fields;
