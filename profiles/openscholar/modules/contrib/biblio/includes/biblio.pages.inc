@@ -634,6 +634,9 @@ function _biblio_filter_info_line($args = array()) {
   if (count($filters)) {
     $i = 0;
     foreach ($filters as $type => $value) {
+      if ($type == 'no_filter') {
+        return '';
+      }
       if ($type == 'search') {
         $search_content = $value;
         continue;

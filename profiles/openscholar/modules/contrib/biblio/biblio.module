@@ -1018,7 +1018,7 @@ function biblio_filter_clear() {
   if (isset($_GET['order'])) {
     $options['order'] = $_GET['order'];
   }
-  drupal_goto($base, $options);
+  drupal_goto($base.'/no_filter', $options);
 }
 
 function biblio_remove_brace($title_string) {
