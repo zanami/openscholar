@@ -1,0 +1,42 @@
+diff --git a/media_gallery.dragdrop.js b/media_gallery.dragdrop.js
+index 0e43155..a054cb7 100644
+--- a/media_gallery.dragdrop.js
++++ b/media_gallery.dragdrop.js
+@@ -15,7 +15,7 @@ Drupal.behaviors.mediaGallerySort.attach = function (context, settings) {
+     $collection.bind('sortstop', Drupal.mediaGallerySort.setHeight);
+   }
+   // Create a drag-and-drop editor for individual gallery grid pages.
+-  var $gallery = $('body.page-node #block-system-main .node-media-gallery .media-gallery-media > .field-items').once('media-gallery-sortable');
++  var $gallery = $('.media-gallery-view-full.media-gallery-media > .field-items').once('media-gallery-sortable');
+   $('.media-gallery-item-wrapper', $gallery).once('media-gallery-draggable', Drupal.mediaGallerySort.addDraggableIcon);
+   if ($gallery.length && settings.mediaGallerySortGalleryUrl) {
+     $gallery.sortable();
+@@ -77,7 +77,7 @@ Drupal.mediaGallerySort.handle_update = function (event, ui) {
+     if (reorder) {
+       var $ = jQuery;
+       var i, newId, $item;
+-      var $toReorder = $('#block-system-main [id^=' + data.idPrefix + ']').addClass('media-gallery-to-reorder');
++      var $toReorder = $('.media-gallery-view-full [id^=' + data.idPrefix + ']').addClass('media-gallery-to-reorder');
+       if ($toReorder.length !== data.order.length) {
+         // We seem to have the wrong set of objects to reorder, so just
+         // refresh the page; the server has the right order already.
+diff --git a/media_gallery.module b/media_gallery.module
+index 70f3932..2153dea 100644
+--- a/media_gallery.module
++++ b/media_gallery.module
+@@ -1175,10 +1175,15 @@ function media_gallery_preprocess_field(&$variables, $hook) {
+         break;
+       case 'full':
+         $columns = $variables['element']['#object']->media_gallery_columns['und'][0]['value'];
++        $media_gallery_view_mode_css = 'media-gallery-view-full';
+         break;
+     }
+     // Don't add the columning classes if the field is being displayed in a teaser
+     $variables['classes_array'][] = ($variables['element']['#view_mode'] != 'teaser') ? 'clearfix media-gallery-media mg-col mg-col-' . $columns : 'clearfix media-gallery-media';
++    // add css to find draggalbe elements (see media_gallery.dragdrop.js)
++    if (!empty($media_gallery_view_mode_css)) {
++      $variables['classes_array'][] = $media_gallery_view_mode_css;
++    }
+     foreach ($variables['items'] as $delta => $item) {
+       $variables['item_attributes_array'][$delta] = array('id' => 'media-gallery-media-' . $delta);
+ 

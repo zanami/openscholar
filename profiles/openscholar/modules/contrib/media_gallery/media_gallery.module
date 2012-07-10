@@ -1175,10 +1175,15 @@ function media_gallery_preprocess_field(&$variables, $hook) {
         break;
       case 'full':
         $columns = $variables['element']['#object']->media_gallery_columns['und'][0]['value'];
+        $media_gallery_view_mode_css = 'media-gallery-view-full';
         break;
     }
     // Don't add the columning classes if the field is being displayed in a teaser
     $variables['classes_array'][] = ($variables['element']['#view_mode'] != 'teaser') ? 'clearfix media-gallery-media mg-col mg-col-' . $columns : 'clearfix media-gallery-media';
+    // add css to find draggalbe elements (see media_gallery.dragdrop.js)
+    if (!empty($media_gallery_view_mode_css)) {
+      $variables['classes_array'][] = $media_gallery_view_mode_css;
+    }
     foreach ($variables['items'] as $delta => $item) {
       $variables['item_attributes_array'][$delta] = array('id' => 'media-gallery-media-' . $delta);
 
