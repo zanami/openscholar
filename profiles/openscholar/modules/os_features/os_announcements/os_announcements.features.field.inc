@@ -142,6 +142,24 @@ function os_announcements_field_default_fields() {
         'default_image' => 0,
         'file_directory' => '',
         'file_extensions' => 'png gif jpg jpeg',
+        'filefield_paths' => array(
+          'active_updating' => 0,
+          'file_name' => array(
+            'options' => array(
+              'pathauto' => 0,
+              'transliterate' => 0,
+            ),
+            'value' => '[file:ffp-name-only-original].[file:ffp-extension-original]',
+          ),
+          'file_path' => array(
+            'options' => array(
+              'pathauto' => 0,
+              'transliterate' => 0,
+            ),
+            'value' => '[vsite:site-purl]/',
+          ),
+          'retroactive_update' => 0,
+        ),
         'max_filesize' => '15 MB',
         'max_resolution' => '800x800',
         'min_resolution' => '250x250',
@@ -169,7 +187,7 @@ function os_announcements_field_default_fields() {
             'media_default--media_browser_1' => 'media_default--media_browser_1',
             'media_embed' => 0,
             'media_internet' => 0,
-            'upload' => 0,
+            'upload' => 'upload',
           ),
           'progress_indicator' => 'throbber',
         ),
