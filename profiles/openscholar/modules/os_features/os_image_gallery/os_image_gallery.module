@@ -17,4 +17,25 @@ function os_image_gallery_contextual_links_view_alter(&$element, $items) {
 }
 
 
-// href field
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ * 
+ * Removes block option from media_gallery node edit.  OS blocks are managed by layout CP.  This shouldn't be exception.
+ */
+function os_image_gallery_form_media_gallery_node_form_alter(&$form, &$form_state) {
+  $form['block']['#type'] = 'hidden';
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ * 
+ * Makes sure that os_image_gallery alters the media_gallery form after media_gallery
+ */
+function os_image_gallery_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'form_alter' && isset($implementations['media_gallery'], $implementations['os_image_gallery'])) {
+    $os_image_gallery = $implementations['os_image_gallery'];
+    unset($implementations['os_image_gallery']);
+    $implementations['os_image_gallery'] = $os_image_gallery;
+  }
+}
