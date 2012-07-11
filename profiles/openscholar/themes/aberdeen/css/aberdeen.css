@@ -100,8 +100,8 @@ border-radius:5px;
 #menu-bar {
   background: url('../images/mainNavBg.png') #5c5d58 repeat-x;
   width:950px;
-  min-height:35px;
- padding: 8px 15px 10px;
+ min-height: 25px;
+    padding: 3px 15px 5px;
 border-top-left-radius:5px;
 -moz-border-radius-topleft:5px;
 border-top-right-radius:5px;
@@ -170,11 +170,9 @@ border-top-right-radius:5px;
 }
 
 
-
-
 /** NICE MENUS **/
 #menu-bar ul.nice-menu ul {
-	margin-top:6px;
+	margin-top:1px;
 	border:none;
 	}
 	
