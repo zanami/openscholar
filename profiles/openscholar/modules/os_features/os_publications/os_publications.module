@@ -34,4 +34,10 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
   }
 }
 
-
+/**
+ * Alters the biblio form to do a lot of things
+ */
+function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
+  dpm($form);
+  dpm($form_state);
+}
