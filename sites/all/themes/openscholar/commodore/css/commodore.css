@@ -242,8 +242,8 @@ h4 {
      list-style-type: disc;
 }
 
-.view-scholar-announcements .views-row {border-bottom:1px solid #CCC;margin:0 0 10px 0;}
-.view-scholar-announcements .views-row:last-of-type {border-bottom:none;margin-bottom:0;}
+.view-scholar-announcements .views-row {border-bottom:1px solid #DDD;}
+.view-scholar-announcements .views-row:last-of-type {border-bottom:none;}
 
 div.views-field-field-gallery-image-fid img {
      background-color: #FFFFFF;
@@ -410,6 +410,8 @@ margin:-54px -2px 0;
 
 .page-announcements.og-context-9015 .node-type-announcement .content img,
 .node-type-announcement.og-context-9015 .content img {margin:0 18px 18px 0;}
+
+.page-announcements.og-context-9015 #content-main .views-row {min-height:210px;}
 
 .page-announcements.og-context-9015 h3 {display: none;}
 
