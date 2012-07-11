@@ -223,9 +223,6 @@ h4 {
 }
 
 
-
-
-
 #boxes-box-scholar_book_current_toc ul.menu ul, .box-os_boxes_booktoc ul.menu ul {
      color: #ED7918;
      margin: 0px 0 0 18px;
@@ -245,7 +242,8 @@ h4 {
      list-style-type: disc;
 }
 
-
+.view-scholar-announcements .views-row {border-bottom:1px solid #CCC;margin:0 0 10px 0;}
+.view-scholar-announcements .views-row:last-of-type {border-bottom:none;margin-bottom:0;}
 
 div.views-field-field-gallery-image-fid img {
      background-color: #FFFFFF;
@@ -410,7 +408,8 @@ margin:-54px -2px 0;
 
 .og-context-9015 .node-type-announcement .submitted {display:none;}
 
-.page-announcements.og-context-9015 .node-type-announcement .content img {margin:0 18px 18px 0;}
+.page-announcements.og-context-9015 .node-type-announcement .content img,
+.node-type-announcement.og-context-9015 .content img {margin:0 18px 18px 0;}
 
 .page-announcements.og-context-9015 h3 {display: none;}
 
