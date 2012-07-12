@@ -1,11 +1,123 @@
-<?php 
+<?php
+define('OS_FILE_FILEPATH_MULTITENANT', '[vsite:site-purl]');
+define('OS_FILE_FILEPATH_SINGLETENANT', 'share');
 
 /**
  * File Display
  */
 
+/**
+ * Implements hook_menu().
+ */
+function os_files_menu() {
+  $items = array();
+  
+  $items['files/%'] = array(
+    'title' => 'File download',
+    'page callback' => 'os_files_download',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  
+  return $items;
+}
+
+/**
+ * Entry point for vsite aliased file downloads
+ */
+function os_files_download(){
+  $args = func_get_args();
+  
+  if(module_exists('vsite')){
+   $prefix = vsite_get_purl();
+   if($prefix){
+     //Add the prefix as an arg
+     array_unshift($args, $prefix);
+   }
+  }
+  //Use the public schema
+  array_unshift($args, 'public');
+  
+  //Serve the file via the standard download handler
+  call_user_func_array('file_download',$args);
+}
 
 
 /**
  * File Settings
  */
+function os_files_media_browser_params_alter(&$media_params){
+  
+  //Are we in multi-tenant?  get the file path
+  if(spaces_get_space()){
+    $filepath = OS_FILE_FILEPATH_MULTITENANT;
+  }else {
+    $filepath = OS_FILE_FILEPATH_SINGLETENANT;
+  }
+  
+  if(!empty($filepath) && (empty($media_params['file_directory']) || !strstr($media_params['file_directory'], $filepath))){
+    if(!empty($media_params['file_directory'])){
+      //Prepend the file path
+      $media_params['file_directory'] = $filepath."/".$media_params['file_directory'];
+    }else{
+      //Set the default file path
+      $media_params['file_directory'] = $filepath;      
+    }
+    
+  }
+}
+
+/**
+ * Implements hook stream_wrappers_alter
+ * 
+ * Used to extend the public stream wrapper
+ * 
+ * @param array $wrappers
+ */
+function os_files_stream_wrappers_alter(&$wrappers){
+  //Use OS Stream Wrapper
+  if(isset($wrappers['public'])){
+    $wrappers['public']['class'] = 'OSPublicStreamWrapper';
+  }
+}
+
+
+/**
+ * Implement hook file download to serve public files from a vsite directory
+ *
+ * Implements hook_file_download().
+ */
+function os_files_file_download($uri) {
+  $path = file_uri_target($uri);
+  $scheme = file_uri_scheme($uri);
+  
+  if($scheme != 'public' || !module_exists('vsite')){
+    return null;
+  }
+  
+  $prefix = vsite_get_purl();
+  
+  // Public file access for vsite paths.
+  if (strpos($path, $prefix.'/') === 0) {
+    
+    // Get the file record based on the URI. If not in the database just return.
+    $files = file_load_multiple(array(), array('uri' => $uri));
+    if (count($files)) {
+      foreach ($files as $item) {
+        // Since some database servers sometimes use a case-insensitive comparison
+        // by default, double check that the filename is an exact match.
+        if ($item->uri === $uri) {
+          $file = $item;
+          break;
+        }
+      }
+    }
+    if (!isset($file)) {
+      return;
+    }
+    
+    return file_get_content_headers($file);
+  }
+  
+}
