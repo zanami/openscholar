@@ -1,6 +1,7 @@
-name = OpenScholar Publications
+name = OS Publications
 core = 7.x
 package = Features
+description = "Create and maintain bibliographic records of publications."
 php = 5.2.4
 dependencies[] = biblio
 dependencies[] = context

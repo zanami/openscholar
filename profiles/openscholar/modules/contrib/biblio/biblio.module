@@ -1267,7 +1267,12 @@ function biblio_form($node, &$form_state) {
       }
 
       if ( $fld['common']  || $fld['visible'] ) {
-        $tabs[$fld['vtab']][$key] = $element;
+        if ($fld['vtab']) {
+          $tabs[$fld['vtab']][$key] = $element;
+        }
+        else {
+          $form[$key] = $element;
+        }
       }
 
     }

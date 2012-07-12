@@ -140,7 +140,7 @@ function os_announcements_field_default_fields() {
       'settings' => array(
         'alt_field' => 0,
         'default_image' => 0,
-        'file_directory' => '',
+        'file_directory' => '[vsite:site-purl]',
         'file_extensions' => 'png gif jpg jpeg',
         'filefield_paths' => array(
           'active_updating' => 0,
@@ -153,7 +153,7 @@ function os_announcements_field_default_fields() {
           ),
           'file_path' => array(
             'options' => array(
-              'pathauto' => 0,
+              'pathauto' => 1,
               'transliterate' => 0,
             ),
             'value' => '[vsite:site-purl]/',

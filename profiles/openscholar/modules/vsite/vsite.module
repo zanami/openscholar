@@ -6,6 +6,24 @@ include_once ('vsite.features.inc');
  */
 
 /**
+ * Helper function to return the current purl prefix
+ * 
+ * @param vsite $vsite
+ */
+function vsite_get_purl($vsite = false){
+  
+  if(!$vsite){
+    $vsite = spaces_get_space();
+  }
+  
+  if(!$vsite || !isset($vsite->group)){
+    return "";
+  }
+  
+  return $vsite->group->purl;
+}
+
+/**
  * Hooks
  */
 
