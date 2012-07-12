@@ -27,30 +27,36 @@ class os_boxes_slideshow extends os_boxes_default {
     $form = array();
     $form += parent::options_form($form_state);
     
-    // get gallery nids
-    /*
-    $view = views_get_view('cp_content'); //we shouldn't depend on cp here.  new view?  or entityfieldquery
-    $view->set_display('page_1'); //block 1 showed all content
-    $view->init_display();
-    $handler = $view->display_handler;
-    $filters = $handler->get_option('filters');
-    $filters['type']['value'] = array('media_gallery' => 'media_gallery');
-    $filters = $handler->set_option('filters', $filters);
-    $view->execute();*/
-    
-    $query = new EntityFieldQuery();
-    $query->entityCondition('entity_type', 'node')
-      ->propertyCondition('type', 'media_gallery');
-    if ($space = spaces_get_space()) {
-      //$query->fieldCondition('og_group_ref', '')
+    //get the media gallery nodes.  have to set fields here since slideshow views don't store them.
+    if ($view = views_get_view('gallery_slideshow')) {
+      $view->init_display();
+      $handler = $view->display_handler;
+      $fields = $handler->get_option('fields');
+      $fields['nid'] = array(
+        'id' => 'nid',
+        'table' => 'node',
+        'field' => 'nid',
+        'relationship' => 'reverse_media_gallery_media_node',
+      );
+      $fields['title'] = array(
+      	'id' => 'title',
+        'table' => 'node',
+        'field' => 'title',
+        'relationship' => 'reverse_media_gallery_media_node',
+      );
+      $handler->set_option('fields', $fields);
+      $handler->set_option('row_plugin', 'fields');
+      $view->execute();
+      $view->result;
     }
-    $result = $query->execute();
-    dpm($result);
-    $n = entity_load('node', array(3));
-    dpm($n);
+    
+    
+    //just use slideshow view and get nids form that.  
     $galleries = array();
     foreach ($view->result as $result) {
-      $galleries[$result->nid] = $result->node_title;
+      if (!isset($galleries[$result->media_gallery_media_file_managed_nid])) {
+        $galleries[$result->media_gallery_media_file_managed_nid] = $result->media_gallery_media_file_managed_title;
+      }
     }
 
     $form['gallery_nid'] = array(
@@ -93,25 +99,26 @@ class os_boxes_slideshow extends os_boxes_default {
   public function render() {
     $block = parent::render();
     
-    $view = views_get_view('gallery_slideshow');
-    $view = views_get_view('g'); //wtf views?  why you rename my view
-  
-    if (((int)$this->options['gallery_nid']) > 0) {
-      $view->set_arguments($this->options['gallery_nid']);
-    }
-    $view->init_display();
-    $handler = $view->display_handler;
-    $style_options = $handler->get_option('style_options');
-
-    foreach(array('pager', 'controls', 'slide_counter') as $option) {
-      foreach($style_options['widgets'] as $position => $info) {
-        $style_options['widgets'][$position]['views_slideshow_' . $option]['enable'] = ($position == $this->options[$option]);
-      }
-    } 
-    $handler->set_option('style_options', $style_options);
+    if ($view = views_get_view('gallery_slideshow')) {
     
-    $output = $view->render();
-    $block['content'] = $output;
+      if (((int)$this->options['gallery_nid']) > 0) {
+        $view->set_arguments($this->options['gallery_nid']);
+      }
+      $view->init_display();
+      $handler = $view->display_handler;
+      $style_options = $handler->get_option('style_options');
+  
+      foreach(array('pager', 'controls', 'slide_counter') as $option) {
+        foreach($style_options['widgets'] as $position => $info) {
+          $style_options['widgets'][$position]['views_slideshow_' . $option]['enable'] = ($position == $this->options[$option]);
+        }
+      } 
+      $handler->set_option('style_options', $style_options);
+      
+      $output = $view->render();
+      $block['content'] = $output;
+    }
+    
     return $block;
   }
 
