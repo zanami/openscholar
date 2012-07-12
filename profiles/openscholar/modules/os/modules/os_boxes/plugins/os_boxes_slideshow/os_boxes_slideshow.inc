@@ -12,15 +12,7 @@ class os_boxes_slideshow extends os_boxes_default {
    */
   public function options_defaults() {
     $options = parent::options_defaults();
-    
-    // the default value for the form
-    $options['twitter_username'] = '';
-    $options['num_items'] = 5;
-    $options['followme_link'] = 0;
-    $options['followme_text'] = t("Follow me on twitter");
-    $options['followme_url'] = '';
-    $options['twitter_type'] = 'Username';
-    $options['image_fids'] = implode(',', array()); //comma separated array for 
+    $options['gallery_nid'] = 'all';
     return $options;
   }
 
@@ -30,28 +22,36 @@ class os_boxes_slideshow extends os_boxes_default {
   public function options_form(&$form_state) {
 
     $form = array();
-    
-    //efq to get galleries in this vsite.  api function instead?
-    $query = new EntityFieldQuery();
-    $query->entityCondition('entity_type', 'node')
-      ->propertyCondition('type', 'media_gallery');
       
-    if ($space = spaces_get_space()) {
-      //$query->fieldCondition('og_group_ref', 'gid', '=', $space->id);
-    }
-    
-    $result = $query->execute();
-    $nodes = node_load_multiple(array_keys($result['node']));
-    
-    
-    /*
-    $view = views_get_view('media_default');
+    // get gallery nids
+    $view = views_get_view('cp_content'); //we shouldn't depend on cp here.  new view?  or entityfieldquery
+    $view->set_display('page_1'); //block 1 showed all content
     $view->init_display();
     $handler = $view->display_handler;
     $filters = $handler->get_option('filters');
-    */
-
+    $filters['type']['value'] = array('media_gallery' => 'media_gallery');
+    $filters = $handler->set_option('filters', $filters);
+    $view->execute();
     
+    $galleries = array();
+    foreach ($view->result as $result) {
+      $galleries[$result->nid] = $result->node_title;
+    }
+
+    $form['gallery_nid'] = array(
+      '#type' => 'select',
+      '#title' => t('Gallery'),
+      '#description' => t('Select a gallery to use as a slideshow.'),
+      '#options' => (count($galleries)) ? array('all' => t('All')) + $galleries : array(),
+      '#default_value' => $this->options['gallery_nid'],
+
+       //state hide when empty
+    );
+    
+    $form['new_gallery'] = array(
+      '#type' => 'markup',
+      '#markup' => t('Or create a new gallery'),
+    );
     
     $form += parent::options_form($form_state);
     return $form;
@@ -63,16 +63,14 @@ class os_boxes_slideshow extends os_boxes_default {
   public function render() {
     $block = parent::render();
     
-    $view = views_get_view('slideshow');
-    $view->init_display();
-    $handler = $view->display_handler;
+    $view = views_get_view('gallery_slideshow');
+    $view = views_get_view('g'); //wtf views?  why you rename my view
+  
+    if (((int)$this->options['gallery_nid']) > 0) {
+      $view->set_arguments($this->options['gallery_nid']);
+    }
     
-    $filters = $handler->get_option('filters');
-    //view has file id filter.  uses regex to match any of our selected ids
-    $this->options['image_fids'] = array(1,3); //forms will save as a string.  how does javascript write an array?  this might get ugly..
-    $filters['fid']['value'] = implode('|', $this->options['image_fids']);
-    $filters = $handler->set_option('filters', $filters);
-    
+   
     
     //filter out images here
     $output = $view->render();
