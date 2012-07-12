@@ -106,7 +106,7 @@ div.messages {
 .header-left.header-main .region-header-second .region-inner {margin-left: 200px; margin-right: 0;}
 .header-main.header-right .region-header-second .region-inner {margin-right: 200px; margin-left: 0;}
 .region-header-first {width:200px; margin-left:-100%;}
-.region-header-third {width:200px; margin-left:-200px;}
+.region-header-third {width:200px; margin-left:-200px;text-align: right;}
 .region-header-second {width:100%;}
 
   
