@@ -26,11 +26,13 @@ function os_publications_menu_alter(&$items) {
  * Joins to the og_membership table, which is where these relationships are stored
  */
 function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
-  $space = spaces_get_space();
-  if (module_exists('spaces') && $space->type == 'og') {
-    $query->innerJoin('og_membership', 'ogm', 'n.nid = ogm.etid');
-    $query->condition('ogm.entity_type', 'node');
-    $query->condition('ogm.gid', $space->id);
+  if (module_exists('spaces') && $space = spaces_get_space()) {
+    // this has to be separate because of scoping.
+    if ($space->type != 'og') {
+      $query->innerJoin('og_membership', 'ogm', 'n.nid = ogm.etid');
+      $query->condition('ogm.entity_type', 'node');
+      $query->condition('ogm.gid', $space->id);
+    }
   }
 }
 
@@ -40,4 +42,33 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
 function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   dpm($form);
   dpm($form_state);
+
+  $tid = !empty($form_state['biblio_type']) ? $form_state['biblio_type'] :
+          ( isset($node->biblio_type) ? $node->biblio_type : 0);
+
+  // hide the biblio_image field
+  $form['field_biblio_image']['#access'] = false;
+
+  switch ($tid) {
+    case 100:
+      // book type
+      $form['field_biblio_image']['#access'] = true;
+  }
+
+  $form['biblio_authors'] = $form['biblio_tabs']['biblio_authors'];
+  $form['biblio_authors']['#collapsible'] = FALSE;
+  unset($form['biblio_authors']['#group']);
+  unset($form['biblio_tabs']['biblio_authors']);
+
+  $form['publication_extras'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Publication Extras',
+    'biblio_tabs' => $form['biblio_tabs'],
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  unset($form['biblio_tabs']);
+
+  dpm($form);
 }
