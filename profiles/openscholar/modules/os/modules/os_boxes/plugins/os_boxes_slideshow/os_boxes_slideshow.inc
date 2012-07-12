@@ -27,31 +27,12 @@ class os_boxes_slideshow extends os_boxes_default {
     $form = array();
     $form += parent::options_form($form_state);
     
-    //get the media gallery nodes.  have to set fields here since slideshow views don't store them.
+    //get the media gallery nodes. 
     if ($view = views_get_view('gallery_slideshow')) {
-      $view->init_display();
-      $handler = $view->display_handler;
-      $fields = $handler->get_option('fields');
-      $fields['nid'] = array(
-        'id' => 'nid',
-        'table' => 'node',
-        'field' => 'nid',
-        'relationship' => 'reverse_media_gallery_media_node',
-      );
-      $fields['title'] = array(
-      	'id' => 'title',
-        'table' => 'node',
-        'field' => 'title',
-        'relationship' => 'reverse_media_gallery_media_node',
-      );
-      $handler->set_option('fields', $fields);
-      $handler->set_option('row_plugin', 'fields');
       $view->execute();
-      $view->result;
     }
     
-    
-    //just use slideshow view and get nids form that.  
+    //jsut get gallery nids and titles  
     $galleries = array();
     foreach ($view->result as $result) {
       if (!isset($galleries[$result->media_gallery_media_file_managed_nid])) {
