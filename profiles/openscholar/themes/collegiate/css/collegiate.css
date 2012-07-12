@@ -224,7 +224,6 @@ padding-left: 280px;
 -webkit-border-radius:5px;
 border-radius: 5px;
 border: 1px solid #CCCCCC;
-padding: 0 4px 8px 4px;
 width: 100%;
 }
 
@@ -301,16 +300,18 @@ body.one-sidebar .region-sidebar-first {
 
 /**** NAVIGATION ELEMENTS ****/
 
+#block-os-primary-menu {margin-left:0;margin-right:0;}
+
 #menu-bar {
   background: url('../images/navBg.png') no-repeat;
 padding:0px;
   width:980px;
- height:57px;
+ height:56px;
   }
 
 #menu-bar ul{
   height:48px;
-  padding-top:0px;
+  padding-top:1px;
   }
 
 #menu-bar li {
@@ -321,7 +322,7 @@ padding:0px;
   color: #FFF;
   font-weight:normal;
   font-size: 14px;
-  padding: 17px 15px 11px;
+  padding: 16px 15px 10px;
    background: #555;
    border-right:1px solid #000;
  text-shadow: #222 0px 2px 0px;
@@ -372,6 +373,8 @@ padding:0px;
 	color:#FFF;
 	background:#444;
 }
+
+
 
 .sidebar ul.nice-menu ul {
 	margin-top:-36px;
