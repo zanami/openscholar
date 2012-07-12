@@ -13,6 +13,9 @@ class os_boxes_slideshow extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
     $options['gallery_nid'] = 'all';
+    $options['pager'] = 'none';
+    $options['controls'] = 'none';
+    $options['slide_counter'] = 'none';
     return $options;
   }
 
@@ -22,8 +25,10 @@ class os_boxes_slideshow extends os_boxes_default {
   public function options_form(&$form_state) {
 
     $form = array();
-      
+    $form += parent::options_form($form_state);
+    
     // get gallery nids
+    /*
     $view = views_get_view('cp_content'); //we shouldn't depend on cp here.  new view?  or entityfieldquery
     $view->set_display('page_1'); //block 1 showed all content
     $view->init_display();
@@ -31,8 +36,18 @@ class os_boxes_slideshow extends os_boxes_default {
     $filters = $handler->get_option('filters');
     $filters['type']['value'] = array('media_gallery' => 'media_gallery');
     $filters = $handler->set_option('filters', $filters);
-    $view->execute();
+    $view->execute();*/
     
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->propertyCondition('type', 'media_gallery');
+    if ($space = spaces_get_space()) {
+      //$query->fieldCondition('og_group_ref', '')
+    }
+    $result = $query->execute();
+    dpm($result);
+    $n = entity_load('node', array(3));
+    dpm($n);
     $galleries = array();
     foreach ($view->result as $result) {
       $galleries[$result->nid] = $result->node_title;
@@ -53,7 +68,22 @@ class os_boxes_slideshow extends os_boxes_default {
       '#markup' => t('Or create a new gallery'),
     );
     
-    $form += parent::options_form($form_state);
+    $form['display'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Display Options'),
+      '#collapsible' => TRUE,
+    	'#collapsed' => TRUE,
+    );
+    
+    $display_options = array('pager' => t('Show Pager'), 'controls' => t('Show Controls'), 'slide_counter' => t('Slide Counter'));
+    foreach ($display_options as $option => $title)
+    $form['display'][$option] = array(
+      '#type' => 'radios',
+      '#title' => $title,
+      '#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
+      '#default_value' => $this->options[$option],
+    );
+    
     return $form;
   }
 
@@ -69,12 +99,18 @@ class os_boxes_slideshow extends os_boxes_default {
     if (((int)$this->options['gallery_nid']) > 0) {
       $view->set_arguments($this->options['gallery_nid']);
     }
+    $view->init_display();
+    $handler = $view->display_handler;
+    $style_options = $handler->get_option('style_options');
+
+    foreach(array('pager', 'controls', 'slide_counter') as $option) {
+      foreach($style_options['widgets'] as $position => $info) {
+        $style_options['widgets'][$position]['views_slideshow_' . $option]['enable'] = ($position == $this->options[$option]);
+      }
+    } 
+    $handler->set_option('style_options', $style_options);
     
-   
-    
-    //filter out images here
     $output = $view->render();
-    
     $block['content'] = $output;
     return $block;
   }
