@@ -28,7 +28,7 @@ function os_publications_menu_alter(&$items) {
 function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
   if (module_exists('spaces') && $space = spaces_get_space()) {
     // this has to be separate because of scoping.
-    if ($space->type != 'og') {
+    if ($space->type == 'og') {
       $query->innerJoin('og_membership', 'ogm', 'n.nid = ogm.etid');
       $query->condition('ogm.entity_type', 'node');
       $query->condition('ogm.gid', $space->id);
@@ -40,7 +40,6 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
  * Alters the biblio form to do a lot of things
  */
 function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
-  dpm($form);
 
   $tid = !empty($form_state['biblio_type']) ? $form_state['biblio_type'] :
           ( isset($node->biblio_type) ? $node->biblio_type : 0);
@@ -48,12 +47,18 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   // hide the biblio_image field
   $form['field_biblio_image']['#access'] = false;
 
+  // we're on the first step of a biblio form. bail out.
+  if (empty($tid)) return;
+
   switch ($tid) {
     case 100:
       // book type
       $form['field_biblio_image']['#access'] = true;
   }
 
+  // move fields into our out of the vertical tabs
+  // I like how the form looks with the tabs in. Much cleaner.
+  // So I'm keeping them.
   $form['biblio_authors'] = $form['biblio_tabs']['biblio_authors'];
   $form['biblio_authors']['#collapsible'] = FALSE;
   unset($form['biblio_authors']['#group']);
@@ -61,16 +66,26 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   $form['biblio_tabs']['biblio_full_text']['body'] = $form['body'];
   unset($form['body']);
 
+  foreach (array(2,3,8) as $tab) {
+    if (!isset($form['biblio_tabs'][$tab]) || !is_array($form['biblio_tabs'][$tab])) continue;
+    $children = element_children($form['biblio_tabs'][$tab]);
+    foreach ($children as $elem) {
+      $form[$elem] = $form['biblio_tabs'][$tab][$elem];
+      unset($form['biblio_tabs'][$tab][$elem]);
+    }
+    if (count(element_children($form['biblio_tabs'][$tab])) == 0) {
+      unset($form['biblio_tabs'][$tab]);
+    }
+  }
+
   $form['publication_extras'] = array(
     '#type' => 'fieldset',
     '#title' => 'Publication Extras',
+    '#weight' => 20,
     'biblio_tabs' => $form['biblio_tabs'],
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
 
   unset($form['biblio_tabs']);
-
-
-  dpm($form);
 }
