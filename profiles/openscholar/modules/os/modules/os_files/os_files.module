@@ -121,3 +121,18 @@ function os_files_file_download($uri) {
   }
   
 }
+
+/**
+ * Implements hook views_alter
+ * 
+ * Adds necessary relationship and filters to Media Browser view to make it work with spaces
+ */
+function os_files_views_default_views_alter(&$views) {
+  if (module_exists('vsite') && isset($views['media_default'])) {
+    $view = $views['media_default'];
+
+    //Link in Files related via file_usage
+    $view->add_item('default', 'relationship', 'file_usage', 'file_to_node');
+    $view->add_item('default', 'filter', 'spaces', 'current', array('relationship' => 'file_to_node'));
+  }
+}
