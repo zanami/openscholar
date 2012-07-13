@@ -14,25 +14,34 @@
 function os_basetheme_preprocess_page(&$vars) {
   //Adds OpenScholar header region awareness to body classes
   if ($GLOBALS['theme'] == 'cp_theme') return;
-  $regions = array (
+  $header = array(
     'header-left' => $vars['page']['header_second'],
     'header-main' => $vars['page']['header_first'],
     'header-right' => $vars['page']['header_third'],
+  );
+  $content = array(
     'content-top' => $vars['page']['content_top'],
     'content-left' => $vars['page']['content_first'],
     'content-right' => $vars['page']['content_second'],
     'content-bottom' => $vars['page']['content_bottom'],
   );
 
-  $non_empty_regions = array_filter($regions, "__os_basetheme_is_empty");
-  $header_classes = '';
-  if (count($non_empty_regions)) {
-    $header_classes = implode(' ', array_keys($non_empty_regions));
-   }
-  else {
+  foreach (array('header',  'content') as $var) {
+    $visible = array_filter($$var, "__os_basetheme_is_empty");
+    if (count($visible)) {
+      $vars['classes_array'] = array_merge($vars['classes_array'], array_keys($visible));
+     }
+    else {
+      $vars['classes_array'][] = $var.'-none';
+    }
   }
 
-  $vars['classes_array'][] = $header_classes;
+  if (__os_basetheme_is_empty($vars['page']['menu_bar'])) {
+    $vars['classes_array'][] = 'navbar-on';
+  }
+  else {
+    $vars['classes_array'][] = 'navbar-off';
+  }
 }
 
 /**
