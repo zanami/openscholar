@@ -37,8 +37,7 @@ features[field][] = taxonomy_term-gallery_collections-media_gallery_image_info_w
 features[field][] = taxonomy_term-gallery_collections-media_gallery_rows
 features[menu_links][] = primary-menu:galleries
 ; os bundles needs medi_gallery.  node access media-gallery.  wtf. can't have both
-;features[node][] = media_gallery
-features[node][] = media-gallery
+features[node][] = media_gallery
 features[taxonomy][] = gallery_collections
 features[user_permission][] = create media_gallery content
 features[user_permission][] = delete any media_gallery content
