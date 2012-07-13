@@ -32,6 +32,9 @@ function theme_os_publications_tabular(&$vars) {
 
   $citation = _os_publications_plain_citation($node);
 
+  // These fields should not be printed under any circumstances
+  // They appear elsewhere with special handling, either in the citation
+  // or elsewhere in this function
   $hidden = array(
     'biblio_pages',
     'biblio_publisher',
@@ -40,14 +43,59 @@ function theme_os_publications_tabular(&$vars) {
     'biblio_year',
     'biblio_place_published',
     'biblio_type_name',
-    'biblio_secondary_title'
+    'biblio_secondary_title',
+    'biblio_coins',
+    'biblio_lang',
   );
+  $rows = array();
 
   foreach ($fields as $f) {
+    if (in_array($f['name'], $hidden)) continue;  // field has already been processed. do nothing
+    if (!isset($node->$f['name'])) continue;  // field doesn't exist. do nothing
 
+    $value = $node->$f['name'];
+
+    switch ($f['name']) {
+      case 'biblio_url':
+        $data = '<p>'.l('External URL', $value).'</p>';
+        break;
+      default:
+        if ($f['type'] == 'text_format') {
+          $data = check_markup($value, $node->biblio_formats[$f['name']]);
+        }
+        else {
+          $data = check_plain($value);
+        }
+    }
+    $rows[] = array(
+      array(
+        'data' => t($f['title']),
+        'class' => 'biblio-row-title biblio-field-title-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
+      ),
+      array(
+        'data' => $data,
+        'class' => 'biblio-field-contents-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
+      )
+    );
+  }
+  $output = '<div id="biblio-node">';
+  $output .= filter_xss($node->biblio_coins, array('span'));
+  $output .= $citation;
+
+  foreach ($rows as $row){
+    if ($row[0]['data'])
+      $output .= "<h3>".$row[0]['data'].":</h3>";
+    $output .= $row[1]['data'];
   }
 
-  return $citation;
+  if (strlen(trim($node->body[LANGUAGE_NONE][0]['value'])) && user_access('view full text')) {
+    $output .= '<h3>Full Text</h3>';
+    $output .= check_markup($node->body[LANGUAGE_NONE][0]['value'], $node->body[LANGUAGE_NONE][0]['format'], FALSE);
+  }
+
+  $output .= '</div>';
+
+  return $output;
 }
 
 /**
