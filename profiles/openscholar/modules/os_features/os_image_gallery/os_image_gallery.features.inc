@@ -12,19 +12,18 @@ function os_image_gallery_ctools_plugin_api() {
   if ($module == "context" && $api == "context") {
     return array("version" => "3");
   }
+  list($module, $api) = func_get_args();
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
-  
 }
 
 /**
-* Implements hook_views_api().
-*/
+ * Implements hook_views_api().
+ */
 function os_image_gallery_views_api() {
   return array("version" => "3.0");
 }
-
 
 /**
  * Implements hook_node_info().

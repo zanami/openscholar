@@ -7,10 +7,13 @@ version = 7.x-1.0-alpha1
 project = os_image_gallery
 dependencies[] = colorbox
 dependencies[] = context
+dependencies[] = entityreference
 dependencies[] = features
-dependencies[] = media_gallery
 dependencies[] = file
-
+dependencies[] = media_gallery
+dependencies[] = og_ui
+dependencies[] = strongarm
+dependencies[] = vsite
 features[context][] = gallery_gallery
 features[ctools][] = context:context:3
 features[ctools][] = strongarm:strongarm:1
@@ -32,7 +35,9 @@ features[field][] = taxonomy_term-gallery_collections-field_license
 features[field][] = taxonomy_term-gallery_collections-media_gallery_columns
 features[field][] = taxonomy_term-gallery_collections-media_gallery_image_info_where
 features[field][] = taxonomy_term-gallery_collections-media_gallery_rows
-features[menu_link][] = primary-menu:links
+features[menu_links][] = primary-menu:galleries
+; os bundles needs medi_gallery.  node access media-gallery.  wtf. can't have both
+;features[node][] = media_gallery
 features[node][] = media-gallery
 features[taxonomy][] = gallery_collections
 features[user_permission][] = create media_gallery content
@@ -43,7 +48,7 @@ features[user_permission][] = edit own media_gallery content
 features[variable][] = comment_media_gallery
 features[variable][] = node_options_media_gallery
 features[variable][] = node_submitted_media_gallery
+features[views_view][] = gallery_listing
 features[views_view][] = gallery_slideshow
-
 spaces[types][] = og
 spaces[types][] = site

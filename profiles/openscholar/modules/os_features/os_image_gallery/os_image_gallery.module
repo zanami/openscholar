@@ -32,12 +32,35 @@ function os_image_gallery_form_media_gallery_node_form_alter(&$form, &$form_stat
 /**
  * Implements hook_module_implements_alter().
  * 
- * Makes sure that os_image_gallery alters the media_gallery form after media_gallery
+ * Makes sure that os_image_gallery alters the media_gallery form after media_gallery, but before vsite
  */
 function os_image_gallery_module_implements_alter(&$implementations, $hook) {
-  if ($hook == 'form_alter' && isset($implementations['media_gallery'], $implementations['os_image_gallery'])) {
+  if ($hook == 'form_alter' && isset($implementations['media_gallery'], $implementations['os_image_gallery'])) {    
     $os_image_gallery = $implementations['os_image_gallery'];
     unset($implementations['os_image_gallery']);
     $implementations['os_image_gallery'] = $os_image_gallery;
+    
+    $vsite = $implementations['vsite'];
+    unset($implementations['vsite']);
+    $implementations['vsite'] = $vsite;
+  }
+}
+
+/**
+ * Implements hook_node_view().
+ * 
+ * This feature has claimed the media_gallery node type, making it so media_gallery_view
+ * is no longer called on it.  Pass those along here instead.
+ */
+function os_image_gallery_node_view($node, $view_mode) {
+  if ($node->type == 'media_gallery') {
+    media_gallery_view($node, $view_mode);
+  }
+  return $node;
+}
+
+function os_image_gallery_form_node_form_alter(&$form, &$form_state, $form_id){
+  if (isset($form['#bundle']) && $form['#bundle'] == 'media_gallery') {
+    $form['#bundle'] = 'media-gallery';
   }
 }
