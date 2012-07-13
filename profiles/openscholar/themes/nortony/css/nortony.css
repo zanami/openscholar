@@ -41,6 +41,9 @@ h2, h3, h4 {
 h1#page-title {
   margin-top: 0;
   margin-bottom: 1em;
+  font-size:1.3em;
+  font-style: italic;
+  font-weight:normal;
   }
 
 .links li {
@@ -141,7 +144,6 @@ p.copy a.poweredby {
   }
 
 #header-container {
-  padding-left: 149px;
   padding-bottom:5px;
   }
 
@@ -196,6 +198,12 @@ body.header-main-right #header-main {
   height: 48px;
   padding: 0;
   }
+  
+#block-os-primary-menu {
+	margin-left:0;
+	margin-right:0;
+	
+}
 
 #menu-bar li {
     float:left;
@@ -278,9 +286,14 @@ ul.nice-menu-right li.menuparent {
     background: none;
 }
 
+.sidebar ul.nice-menu {
+	border-top:none;
+	}
+
 .sidebar ul.nice-menu ul {
 	margin-top:-39px;
 	border:none;
+	border-top:none;
 	}
 	
 .region-sidebar-second.sidebar ul.nice-menu ul {
@@ -292,6 +305,30 @@ ul.nice-menu-right li.menuparent {
 	margin-top:0;
 	border:none;
 	}
+	
+.sidebar ul.nice-menu ul li a {
+	color:#000;
+	}	
+	
+ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
+    background: none;
+}	
+
+ul.nice-menu-right li.menuparent, ul.nice-menu-right li li.menuparent,
+ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent,
+ul.nice-menu-right li.menuparent:hover, ul.nice-menu-right li li.menuparent:hover,
+ul.nice-menu-left li.menuparent:hover, ul.nice-menu-left li li.menuparent:hover {
+    background: none;
+}
+
+ul.nice-menu-left a, ul.nice-menu-left ul a {
+    padding-left: 0;
+}
+
+ul.nice-menu-right a, ul.nice-menu-right ul a {
+    padding-right: 0;
+}	
+
 
 #scholar-shield {
   margin-right:0;

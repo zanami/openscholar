@@ -10,10 +10,14 @@ body {
     font-family: "Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
     }
 
-.wrap {
+#columns,#header-container, #block-os-primary-menu {
     width: 910px;
     margin: 0 auto;
     }
+    
+#columns {
+    margin-top: 20px;
+    }    
 
 a, a:visited {
     color:#8A281B;
@@ -32,6 +36,15 @@ h1, h2, h3, .region-sidebar-second a {
 
 h1, h2 {
     font-size: 1.4em;
+    }
+    
+h1.node-title,
+h1.node-title a {
+	 font-size: 1.09em;
+}
+
+h2.block-title {
+    font-size: 1.12em;
     }
 
 
@@ -60,10 +73,6 @@ h1 a, h2 a, h3 a, .region-sidebar-second a {
   background: #A03A25;
   }
 
-#columns {
-  background: url('../images/body-bg.png') repeat-x 0 0 #fff;
-  padding-top: 20px;
-  }
 
 
 
@@ -85,6 +94,7 @@ body.header-left-main #header-container {
 #header-container {
     padding: 16px 0 6px 0;
     color: #FFF;
+ 
     }
 
 #header-container h1 {
@@ -118,8 +128,8 @@ body.header-left-main #header-container {
   color: #fff;
   }
 
-#header a:hover,
-#header a.active {
+#header-container a:hover,
+#header-container a.active {
     color:#F9E433;
     }
 
@@ -162,10 +172,19 @@ body.header-left-main #header-container {
 
 }  
 
+.sidebar ul.nice-menu a {
+	color: #8A281B;
+    font-size:1.1em;
+	}
+
 .sidebar ul.nice-menu ul {
 	margin-top:-38px;
-	border:none;
+	border-top:none;
 	}
+	
+.sidebar ul.nice-menu {
+	border-top:none;
+	}	
 	
 .region-sidebar-second.sidebar ul.nice-menu ul {
 	margin-top:0;
@@ -176,6 +195,21 @@ body.header-left-main #header-container {
 	margin-top:0;
 	border:none;
 	}  
+	
+ul.nice-menu-right li.menuparent, ul.nice-menu-right li li.menuparent,
+ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent,
+ul.nice-menu-right li.menuparent:hover, ul.nice-menu-right li li.menuparent:hover,
+ul.nice-menu-left li.menuparent:hover, ul.nice-menu-left li li.menuparent:hover {
+    background: none;
+}
+
+ul.nice-menu-left a, ul.nice-menu-left ul a {
+    padding-left: 0;
+}
+
+ul.nice-menu-right a, ul.nice-menu-right ul a {
+    padding-right: 0;
+}	
 
 /* MAIN CONTENT AREA */
 

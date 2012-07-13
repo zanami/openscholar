@@ -30,6 +30,11 @@ body {
 
 /*TYPOGRAPHY*/
 
+a, a:visited {
+    color: #005C9C;
+    text-decoration: none;
+}
+
 #header-container a {
   color: #9AD5E0;
   }
@@ -57,8 +62,8 @@ body {
   font-size: 20px;
   }
 
-.region-sidebar-first h3,
-.region-sidebar-second h3,
+.region-sidebar-first h2.block-title,
+.region-sidebar-second h2.block-title,
 .region-sidebar-second div.litecal .litecal-title h3.litecal-title,
 .region-sidebar-first div.litecal .litecal-title h3.litecal-title {
   background: #353a3c;
@@ -73,6 +78,10 @@ body {
   margin-bottom: 1em;
   }
 
+h1#page-title {
+	font-size:1.21em;
+	margin-bottom:20px;
+}
 
 #header-main .block-vsite_menus li a:hover {
   color: #fff;
@@ -88,6 +97,7 @@ body {
 
 #columns {
   background: #fff;
+  padding-top:10px;
   }
 
 #header-container {
@@ -106,24 +116,15 @@ body {
   margin: 10px 0 0 auto;
   }
 
-.region-sidebar-first {
+.region-sidebar-first .region-inner {
+border-left: 1px solid #919191;
+}
 
-  padding-top:0;
-  padding-left: 9px;
-  padding-right:6px;
+.region-sidebar-second .region-inner {
+border-left: 1px solid #919191;
+}
 
-  border-left: 1px solid #919191;
-  margin: 0;
-  }
-/*
-.region-sidebar-second {
 
-  padding-top:0;
-  padding-left: 9px;
-  padding-right:6px;
-  border-left: 1px solid #919191;
-  }
-*/
 #content-area {
   background: #fdfdfd;
   padding-top: 10px;
@@ -145,7 +146,6 @@ body {
   }
 
 #header-container {
-  padding-left: 190px;
       height: 134px;
   }
 
@@ -204,13 +204,17 @@ ul.nice-menu-left li.menuparent {
     border:none;
 }
 
+.sidebar ul.nice-menu {
+	border-top:none;
+	}
+
 .sidebar ul.nice-menu ul {
 	margin-top:-39px;
 	border:none;
 	}
 
 .sidebar ul.nice-menu li a {
-	color: #EC8501;
+	color: #005C9C;
 	}	
 	
 .region-sidebar-second.sidebar ul.nice-menu ul {
@@ -223,6 +227,16 @@ ul.nice-menu-left li.menuparent {
 	border:none;
 	}	
   
+ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
+    background: none;
+}	
+
+ul.nice-menu-right li.menuparent, ul.nice-menu-right li li.menuparent,
+ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent,
+ul.nice-menu-right li.menuparent:hover, ul.nice-menu-right li li.menuparent:hover,
+ul.nice-menu-left li.menuparent:hover, ul.nice-menu-left li li.menuparent:hover {
+    background: none;
+}  
 
 #footer {
   padding-top: 4px;
