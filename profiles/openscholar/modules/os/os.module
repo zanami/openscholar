@@ -68,10 +68,11 @@ function os_menu_alter(&$menu){
  * (0 -> disabled, 2 -> private, 1 -> public)
  * TRUE returns all
  * @param @space_type
+ * @param $reset (reset features cache)
  *
  * @return array array('bundle_id' => 'Bundle Name')
  */
-function os_get_bundles($privacy = array(1), $space_type = 'og'){
+function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = false){
 
   $ret_all = false;
   if (is_bool($privacy) && $privacy) {
@@ -89,7 +90,7 @@ function os_get_bundles($privacy = array(1), $space_type = 'og'){
   }
 
   //Reset static feature list
-  $features = spaces_features($space_type,TRUE);
+  $features = spaces_features($space_type, $reset);
   $site_features = variable_get('spaces_features', array());
 
   foreach ( $features as $name => $feature ) {
