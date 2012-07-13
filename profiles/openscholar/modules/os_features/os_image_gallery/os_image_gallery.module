@@ -59,8 +59,8 @@ function os_image_gallery_node_view($node, $view_mode) {
   return $node;
 }
 
-function os_image_gallery_form_node_form_alter(&$form, &$form_state, $form_id){
-  if (isset($form['#bundle']) && $form['#bundle'] == 'media_gallery') {
-    $form['#bundle'] = 'media-gallery';
-  }
-}
+// function os_image_gallery_form_node_form_alter(&$form, &$form_state, $form_id){
+//   if (isset($form['#bundle']) && $form['#bundle'] == 'media_gallery') {
+//     $form['#bundle'] = 'media-gallery';
+//   }
+// }

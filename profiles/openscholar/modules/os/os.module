@@ -71,7 +71,6 @@ function os_menu_alter(&$menu){
  *
  * @return array array('bundle_id' => 'Bundle Name')
  */
-
 function os_get_bundles($privacy = array(1), $space_type = 'og'){
 
   $ret_all = false;
@@ -89,7 +88,8 @@ function os_get_bundles($privacy = array(1), $space_type = 'og'){
     $bundles['page'] = 'Page';
   }
 
-  $features = spaces_features($space_type);
+  //Reset static feature list
+  $features = spaces_features($space_type,TRUE);
   $site_features = variable_get('spaces_features', array());
 
   foreach ( $features as $name => $feature ) {

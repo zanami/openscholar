@@ -77,9 +77,14 @@ function vsite_spaces_presets_alter(&$presets){
  */
 function vsite_system_info_alter(&$info, $file, $type){
   
+  static $working;
+  
   //Only alter the vsite info file
-  if ($type != 'module' || $file->name != 'vsite')
+  if ($type != 'module' || $file->name != 'vsite' || $working){
     return;
+  }
+  
+  $working = true;
     
   // Add the feature settings for the dynamically managed og reference fields
   if (! is_array($info['features']['field']))
@@ -92,6 +97,7 @@ function vsite_system_info_alter(&$info, $file, $type){
     }
   }
 
+  $working = false;
 }
 
 /**
