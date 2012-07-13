@@ -15,7 +15,7 @@ function os_image_gallery_menu_default_menu_links() {
     'menu_name' => 'primary-menu',
     'link_path' => 'galleries',
     'router_path' => 'galleries',
-    'link_title' => 'galleries',
+    'link_title' => 'Galleries',
     'options' => array(),
     'module' => 'system',
     'hidden' => '0',
@@ -26,7 +26,7 @@ function os_image_gallery_menu_default_menu_links() {
   );
   // Translatables
   // Included for use with string extractors like potx.
-  t('galleries');
+  t('Galleries');
 
 
   return $menu_links;

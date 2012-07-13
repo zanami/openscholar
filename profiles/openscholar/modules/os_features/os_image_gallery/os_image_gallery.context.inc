@@ -19,7 +19,7 @@ function os_image_gallery_context_default_contexts() {
   $context->conditions = array(
     'menu' => array(
       'values' => array(
-        'taxonomy/term/1' => 'taxonomy/term/1',
+        'galleries' => 'galleries',
       ),
     ),
     'node' => array(
@@ -28,6 +28,12 @@ function os_image_gallery_context_default_contexts() {
       ),
       'options' => array(
         'node_form' => '0',
+      ),
+    ),
+    'path' => array(
+      'values' => array(
+        'galleries' => 'galleries',
+        'galleries/*' => 'galleries/*',
       ),
     ),
   );
