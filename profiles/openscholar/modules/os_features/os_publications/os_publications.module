@@ -37,6 +37,25 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
 }
 
 /**
+ * Replaces biblio theme functions with our own.
+ */
+function os_publications_theme_registry_alter(&$reg) {
+  $reg['biblio_tabular'] = array_merge($reg['biblio_tabular'], array(
+    'file' => 'os_publications.theme.inc',
+    'theme path' => drupal_get_path('module', 'os_publications'),
+    'function' => 'theme_os_publications_tabular'
+  ));
+  $reg['biblio_tabular']['includes'][] = drupal_get_path('module', 'os_publications').'/os_publications.theme.inc';
+
+  $reg['biblio_entry'] = array_merge($reg['biblio_entry'], array(
+    'file' => 'os_publications.theme.inc',
+    'theme path' => drupal_get_path('module', 'os_publications'),
+    'function' => 'theme_os_publications_entry',
+  ));
+  $reg['biblio_entry']['includes'][] = drupal_get_path('module', 'os_publications').'/os_publications.theme.inc';
+}
+
+/**
  * Alters the biblio form to do a lot of things
  */
 function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
@@ -66,6 +85,9 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   $form['biblio_tabs']['biblio_full_text']['body'] = $form['body'];
   unset($form['body']);
 
+  // vtabs 2, 3 and 8 always contain fields we either want outside of vtabs or don't want at all
+  // fields we don't want are taken out through biblio's field system
+  // so we just have to pull everything left outside of the vtabs
   foreach (array(2,3,8) as $tab) {
     if (!isset($form['biblio_tabs'][$tab]) || !is_array($form['biblio_tabs'][$tab])) continue;
     $children = element_children($form['biblio_tabs'][$tab]);
@@ -78,6 +100,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
     }
   }
 
+  // hide the rest of the vtabs behind a collapsible fieldset
   $form['publication_extras'] = array(
     '#type' => 'fieldset',
     '#title' => 'Publication Extras',
