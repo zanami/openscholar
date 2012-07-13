@@ -9,10 +9,10 @@ html, body {
   }
 
 
-
 a, a:visited {
   text-decoration: none;
   padding: 0 2px 0 2px;
+  
   }
 
 a.toggle,
@@ -55,6 +55,11 @@ h2, h1#page-title {
 h1#page-title {
   margin-bottom: .4em;
   }
+  
+  
+h2.block-title {
+	font-size:1.1em;
+}
 
 /* LAYOUT */
 
@@ -94,7 +99,7 @@ h1#page-title {
   }
 
 
-#content-column {
+#content-column .content-inner {
   background: #fff;
   -moz-box-shadow: 0 3px 1em #ccc;
   -webkit-box-shadow: 0 3px 1em #ccc;
@@ -179,6 +184,34 @@ h1#page-title {
 .region-sidebar-first #scholar-shield {
   margin: 0 0 0 auto;
   }
+  
+ul.nice-menu-right,
+ul.nice-menu-left  {
+    border-top: none;
+}  
+
+.region-sidebar-first ul.menu ul ul {
+    margin-left: 22px;
+    top:0;
+} 
+
+.region-sidebar-second ul.menu ul ul {
+    margin-left: 23px;
+    top:0;
+} 
+
+ul.nice-menu-right li.menuparent, ul.nice-menu-right li li.menuparent,
+ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
+    background: none;
+}
+
+ul.nice-menu-right li.menuparent a {
+    background: none;
+}
+
+ul.nice-menu-right li.menuparent a:hover {
+   background: #CCC;
+}
 
 /* SIDEBARS */
 
@@ -200,8 +233,8 @@ h1#page-title {
   }
 
 .region-sidebar-first .block a {
-  padding-right: 16px;
-  margin-right: -16px;
+  padding-right: 22px;
+  margin-right: -22px;
   }
   
 .region-sidebar-first .block .os-links a {
@@ -214,8 +247,8 @@ h1#page-title {
   }
 
 .region-sidebar-second .block a {
-  margin-left: -16px;
-  padding-left: 16px;
+  margin-left: -22px;
+  padding-left: 22px;
   }
   
 .region-sidebar-second .block .os-links a {

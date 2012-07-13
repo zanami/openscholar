@@ -15,11 +15,6 @@ body.navbar-off {
   margin-top: 38px;
   }
 
-.wrap {
-  width: 910px;
-  margin: 0 auto;
-  }
-
 a, a:visited {
   color:#306696;
   font-style: italic;
@@ -37,9 +32,21 @@ h1, h2, h3, .region-sidebar-first a, #header-container {
 h1 a, h2 a, h3 a, .region-sidebar-first a {
   font-style: normal;
   }
+  
+h1#page-title {
+	font-size: 1.3em;
+}
+
+h2.block-title {
+	font-size: 1.16em;
+	}
 
 /* LAYOUT ELEMENTS */
 
+#columns, #header-container, #block-os-primary-menu {
+	margin:0 auto;
+	width:910px;
+}
 
 body.sidebar-first #columns .hg-container,
 body.header-left-main #header-container {
