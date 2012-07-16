@@ -84,6 +84,10 @@ function os_image_gallery_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'media_gallery' => 'media_gallery',
   );
+  /* Filter criterion: Spaces: Content in current space */
+  $handler->display->display_options['filters']['current']['id'] = 'current';
+  $handler->display->display_options['filters']['current']['table'] = 'spaces';
+  $handler->display->display_options['filters']['current']['field'] = 'current';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');

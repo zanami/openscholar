@@ -36,6 +36,11 @@ function os_image_gallery_context_default_contexts() {
         'galleries/*' => 'galleries/*',
       ),
     ),
+    'views' => array(
+      'values' => array(
+        'gallery_slideshow' => 'gallery_slideshow',
+      ),
+    ),
   );
   $context->reactions = array();
   $context->condition_mode = 0;
