@@ -205,7 +205,7 @@ function vsite_register_form_submit(&$form, &$state) {
   }
   
   //create the vsite
-  if ($vsite = vsite_create_vsite($site_owner->name, $values['domain'], $site_owner->uid, $values['preset'])) {
+  if ($vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['preset'])) {
     //add user to vsite
     os_user_add($site_owner->uid, $vsite->id);
     os_role_grant($site_owner->uid, 'vsite admin', $vsite->id);
