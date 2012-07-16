@@ -18,6 +18,15 @@ function os_publications_menu_alter(&$items) {
     'file' => drupal_get_path('module', 'os_publications').'/os_publications.pages.inc',
     'menu_name' => 'primary',
   );
+
+  $items['publications/export'] = array(
+    'title'             => '',
+    'page callback'     => 'os_publications_export',
+    'access callback'   => 'user_access',
+    'access arguments'  => array('show export links'),
+    'file'              => drupal_get_path('module', 'os_publications').'/os_publications.pages.inc',
+    'type'              => MENU_CALLBACK
+  );
 }
 
 /**
