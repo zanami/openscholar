@@ -58,13 +58,3 @@ function os_image_gallery_node_view($node, $view_mode) {
   }
   return $node;
 }
-
-/**
- * Implements hook_menu_alter
- * 
- * os_image_alter adds contextual for media_gallery, but should have been media-gallery
- */
-function os_image_gallery_menu_alter(&$menu){
-  $menu['node/add/media-gallery'] += $menu['node/add/media_gallery']; 
-  unset($menu['node/add/media_gallery']);
-}
