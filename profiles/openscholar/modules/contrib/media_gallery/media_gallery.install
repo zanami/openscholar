@@ -81,8 +81,8 @@ function media_gallery_install() {
   }
 
   // Now that the gallery_collection vocabulary exists and has fields attached,
-  // create an "All galleries" term for galleries to belong to by default.
-  media_gallery_create_taxonomy_term($vocabulary);
+  // create an "All galleries" term for galleries to belong to by default./
+//  media_gallery_create_taxonomy_term($vocabulary);
 
   // Attach fields to the media gallery node type (including a term reference
   // for the default collection).
