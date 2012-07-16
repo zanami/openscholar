@@ -54,7 +54,8 @@ function os_menu(){
 function os_menu_alter(&$menu){
   $types = os_get_bundles(true);
   foreach ( $types as $type => $title ) {
-    $m = &$menu['node/add/' . $type];
+    $type_url_str = str_replace('_', '-', $type);
+    $m = &$menu['node/add/' . $type_url_str];
     $m['type'] = MENU_LOCAL_TASK;
     $m['context'] = MENU_CONTEXT_INLINE;
   }
