@@ -6,6 +6,7 @@ body {
     background: #4e4e4e;
     color:#000;
     font: 13px/1.6em 'HelveticaNeue-Light', 'helvetica neue', helvetica, arial, sans-serif;
+
     }
 
 /* TYPOGRAPHY*/
@@ -48,9 +49,12 @@ p.copy {
 /* LAYOUT ELEMENTS */
 
 #page {
-  background: url('../images/bg.png') repeat-y 0 0 transparent;
+   -moz-box-shadow: 0 10px 10px 3px #222222;
+   -webkit-box-shadow: 0 10px 10px 3px #222222;
+   box-shadow: 0 10px 10px 3px #222222;
   margin:auto;
   padding-top:0;
+  background:#FFF;
   }
 
 #page-wrapper {
@@ -61,7 +65,7 @@ p.copy {
   margin:0 48px;
   }
 
-#header-container .wrap {
+#header-container .three-col {
   min-height: 99px;
   background:#d9e3e5;
   padding: 0 30px;
@@ -69,47 +73,45 @@ p.copy {
 
 #footer {
   padding-top: 0;
-  height: 154px;
+  height: 104px;
   position: relative;
-  }
+  background:#BBC6C8;
+   }
 
 #header-container {
-  background: url(images/header.png) no-repeat 50% 0;
+  background: url('../images/header.png') no-repeat 50% 0;
   padding-top:1px;
   }
 
-#content-column #content {
-  padding-right:21px;
-  padding-left: 25px;
-  padding-top: 30px;
+#content-column {
+  padding:15px;
   }
+  
+#columns {
+  overflow:hidden;
+}
+
+#content-column, .region-sidebar-first, .region-sidebar-second {
+margin-bottom: -2000px;
+padding-bottom: 2000px;
+}
 
 .region-sidebar-first {
   padding-top:30px;
   padding-left: 0;
   padding-right:0;
-  right: 173px;
-  background:#e0ece8;
-  margin: 0;
+ background:#e0ece8;
   left: 0;
-  margin-right: -100%;
   }
 
 .region-sidebar-second {
-
+	height:100%;
   padding-top:30px;
   padding-left: 0;
   padding-right:0;
   background: #d9e3e5;
   }
 
-/*#content-column,
-.region-sidebar-first,
-.region-sidebar-second {
-  padding-bottom: 20010px;   X + padding-bottom 
-  margin-bottom: -20000px;  
-  }
- */
 #columns .hg-container {
   overflow: hidden;
   }
@@ -118,9 +120,6 @@ p.copy {
   overflow: visible;
   }
 
-/*
-  Instead of the [sidebar, main-content, sidebar] layout we can easily change the layout to [main-content, sidebar, sidebar] thusly.
-*/
 
 #columns .hg-container,
 body.two-sidebars #columns .hg-container {
@@ -210,6 +209,8 @@ body.two-sidebars #columns .hg-container {
   padding-left: 25px;
   padding-right: 25px;
   background: #d4d866;
+  margin-left: 0;
+  margin-right: 0;
   }
 
 #menu-bar li {
@@ -232,6 +233,33 @@ body.two-sidebars #columns .hg-container {
   padding-right: 12px;
   padding-left: 12px;
   }
+  
+/** NICE MENU **/ 
+  
+#menu-bar ul.nice-menu ul {
+  top: 3.2em;
+  } 
+
+#menu-bar ul.nice-menu ul ul {
+  top: -2px;
+  } 
+  
+ul.nice-menu-right li.menuparent, ul.nice-menu-right li li.menuparent,
+ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
+    background: none;
+}  
+
+.sidebar ul.nice-menu li {
+    background:none;
+   }
+   
+.sidebar ul.nice-menu ul li {
+    background:#ccc;
+   }   
+  
+.sidebar ul.nice-menu ul {
+    top: -.15em;
+}
 
 #header-container #block-os-secondary-menu {
   width: 251px;
