@@ -5,7 +5,7 @@ Drupal.behaviors.mediaGallerySort.attach = function (context, settings) {
   var $ = jQuery;
   // Create a drag-and-drop editor for gallery collections.
   var $collection = $('.media-gallery-collection', context).once('media-gallery-sortable');
-  $('.node-media-gallery.node-teaser .float-overflow', $gallery).once('media-gallery-draggable', Drupal.mediaGallerySort.addDraggableIcon);
+  $('.media-collection-item-wrapper', $collection).once('media-gallery-draggable', Drupal.mediaGallerySort.addDraggableIcon);
   if ($collection.length && settings.mediaGallerySortCollectionUrl) {
     $collection.sortable();
     //Drupal.mediaGallerySort.setHeight($collection);
