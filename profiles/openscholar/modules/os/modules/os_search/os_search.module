@@ -1,0 +1,73 @@
+<?php 
+
+
+/**
+ * Implements hook_block_info().
+ */
+function os_search_block_info(){
+  $blocks = array();
+  
+  $blocks['site-search'] = array(
+      'info' => t('Site Search'),
+      'weight' => '10',
+      //'cache' => DRUPAL_CACHE_CUSTOM
+  );
+  
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Generate a block with a promotional link to openscholar.harvard.edu and
+ * all os menu blocks.
+ */
+function os_search_block_view($delta = ''){
+  $block = array();
+  switch ($delta) {
+    case 'site-search' :
+      $block['subject'] = NULL;
+      $block['content'] = drupal_get_form('search_block_form');
+      return $block;
+
+    default:
+    break;
+  }
+}
+
+// /**
+//  * Implements hook_theme().
+//  */
+// function os_search_theme(){
+//   return array(
+//       'openscholar_search' => array(
+//           'variables' => array(),
+//       ),
+//   );
+// }
+
+// /**
+//  * Returns HTML for the Powered by Openscholar text.
+//  *
+//  * @ingroup themeable
+//  */
+// function theme_openscholar_search(){
+//   return '<span>' . t('Powered by <a href="@poweredby">OpenScholar</a>', array(
+//       '@poweredby' => 'http://openscholar.harvard.edu'
+//   )) . '</span>';
+// }
+
+
+/**
+ * Alter the query after it's prepared and cached.
+ * 
+ * @param object $query
+ *   An object implementing DrupalSolrQueryInterface. No need for &.
+ */
+function os_search_apachesolr_query_alter($query) {
+  
+  if(module_exists('vsite') && ($vsite = spaces_get_space())){
+    // I only want to see items in this site
+    $query->addFilter("sm_og_group_ref", $vsite->group_type.":".$vsite->id);
+  }
+}

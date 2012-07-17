@@ -1,0 +1,6 @@
+name = OpenScholar: Search
+description = Provides OpenScholar Search support and facets
+core = 7.x
+package = OpenScholar
+dependencies[] = features
+features[apachesolr_search_page][] = core_search 
