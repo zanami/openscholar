@@ -16,6 +16,7 @@ class os_boxes_slideshow extends os_boxes_default {
     $options['pager'] = 'none';
     $options['controls'] = 'none';
     $options['slide_counter'] = 'none';
+    $options['items'] = 10;
     return $options;
   }
 
@@ -26,33 +27,39 @@ class os_boxes_slideshow extends os_boxes_default {
 
     $form = array();
     $form += parent::options_form($form_state);
-    
+
     //get the media gallery nodes. 
     if ($view = views_get_view('gallery_slideshow')) {
-      $view->execute();
+      $view->execute_display('default', array());
     }
     
     //jsut get gallery nids and titles  
     $galleries = array();
+    $r = $view->result;
     foreach ($view->result as $result) {
-      if (!isset($galleries[$result->media_gallery_media_file_managed_nid])) {
-        $galleries[$result->media_gallery_media_file_managed_nid] = $result->media_gallery_media_file_managed_title;
+      if (!isset($galleries[$result->node_file_usage_nid])) {
+        $galleries[$result->node_file_usage_nid] = $result->node_file_usage_title;
       }
     }
 
-    $form['gallery_nid'] = array(
-      '#type' => 'select',
-      '#title' => t('Gallery'),
-      '#description' => t('Select a gallery to use as a slideshow.'),
-      '#options' => (count($galleries)) ? array('all' => t('All')) + $galleries : array(),
-      '#default_value' => $this->options['gallery_nid'],
-
-       //state hide when empty
-    );
-    
+    if (count($galleries)) {
+      $form['gallery_nid'] = array(
+        '#type' => 'select',
+        '#title' => t('Gallery'),
+        '#description' => t('Select a gallery to use as a slideshow.'),
+        '#options' => array('all' => t('All')) + $galleries,
+        '#default_value' => $this->options['gallery_nid'],
+      );
+    } else {    
+      $form['no_gallery_message'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div>' . t('You must create a gallery to use as a slideshow.') . '</div>',
+      );
+    }
+        
     $form['new_gallery'] = array(
       '#type' => 'markup',
-      '#markup' => t('Or create a new gallery'),
+      '#markup' => l(t('Create new gallery'), 'node/add/media-gallery'), //overlay?
     );
     
     $form['display'] = array(
@@ -71,6 +78,13 @@ class os_boxes_slideshow extends os_boxes_default {
       '#default_value' => $this->options[$option],
     );
     
+    $form['display']['items'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Number of items'),
+      '#description' => t('Limit to this many images per slideshow.  Use 0 for no limit.'),
+      '#default_value' => (int) $this->options['items'],
+    );
+    
     return $form;
   }
 
@@ -82,6 +96,7 @@ class os_boxes_slideshow extends os_boxes_default {
     
     if ($view = views_get_view('gallery_slideshow')) {
     
+      
       if (((int)$this->options['gallery_nid']) > 0) {
         $view->set_arguments($this->options['gallery_nid']);
       }
@@ -89,14 +104,19 @@ class os_boxes_slideshow extends os_boxes_default {
       $handler = $view->display_handler;
       $style_options = $handler->get_option('style_options');
   
+      //add slideshow widgets
       foreach(array('pager', 'controls', 'slide_counter') as $option) {
         foreach($style_options['widgets'] as $position => $info) {
           $style_options['widgets'][$position]['views_slideshow_' . $option]['enable'] = ($position == $this->options[$option]);
         }
       } 
+      
+      //num items
+      
+      
       $handler->set_option('style_options', $style_options);
       
-      $output = $view->render();
+      $output = $view->preview();
       $block['content'] = $output;
     }
     
