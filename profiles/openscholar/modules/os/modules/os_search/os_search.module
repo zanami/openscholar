@@ -1,6 +1,5 @@
 <?php 
 
-
 /**
  * Implements hook_block_info().
  */
@@ -34,29 +33,6 @@ function os_search_block_view($delta = ''){
     break;
   }
 }
-
-// /**
-//  * Implements hook_theme().
-//  */
-// function os_search_theme(){
-//   return array(
-//       'openscholar_search' => array(
-//           'variables' => array(),
-//       ),
-//   );
-// }
-
-// /**
-//  * Returns HTML for the Powered by Openscholar text.
-//  *
-//  * @ingroup themeable
-//  */
-// function theme_openscholar_search(){
-//   return '<span>' . t('Powered by <a href="@poweredby">OpenScholar</a>', array(
-//       '@poweredby' => 'http://openscholar.harvard.edu'
-//   )) . '</span>';
-// }
-
 
 /**
  * Alter the query after it's prepared and cached.

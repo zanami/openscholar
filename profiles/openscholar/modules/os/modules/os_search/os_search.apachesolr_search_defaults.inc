@@ -13,7 +13,7 @@ function os_search_apachesolr_search_default_searchers() {
   $searcher = new stdClass();
   $searcher->disabled = FALSE; /* Edit this to true to make a default searcher disabled initially */
   $searcher->api_version = 3;
-  $searcher->page_id = 'openscholar_search';
+  $searcher->page_id = 'core_search';
   $searcher->label = 'Openscholar Search';
   $searcher->description = 'Openscholar Search Page';
   $searcher->search_path = 'search/site';
@@ -29,7 +29,7 @@ function os_search_apachesolr_search_default_searchers() {
     'apachesolr_search_spellcheck' => 1,
     'apachesolr_search_allow_user_input' => 0,
   );
-  $export['openscholar_search'] = $searcher;
+  $export['core_search'] = $searcher;
 
   return $export;
 }

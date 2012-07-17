@@ -1,0 +1,10 @@
+<?php
+
+/**
+ * Perform any needed search setup functions
+ */
+function os_search_install() {
+  
+  variable_set('apachesolr_search_default_search_page', 'openscholar_search');
+	
+}
