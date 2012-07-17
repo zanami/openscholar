@@ -16,7 +16,8 @@ class os_boxes_slideshow extends os_boxes_default {
     $options['pager'] = 'none';
     $options['controls'] = 'none';
     $options['slide_counter'] = 'none';
-    $options['items'] = 10;
+    $options['items_per_page'] = 10;
+    $options['effect'] = 'fade';
     return $options;
   }
 
@@ -78,12 +79,23 @@ class os_boxes_slideshow extends os_boxes_default {
       '#default_value' => $this->options[$option],
     );
     
-    $form['display']['items'] = array(
+    $form['display']['items_per_page'] = array(
       '#type' => 'textfield',
       '#title' => t('Number of items'),
       '#description' => t('Limit to this many images per slideshow.  Use 0 for no limit.'),
-      '#default_value' => (int) $this->options['items'],
+      '#default_value' => (int) $this->options['items_per_page'],
     );
+    
+/*    $state = array();
+    $slideshow_form_full = drupal_retrieve_form('views_slideshow_cycle_views_slideshow_slideshow_type_form', $state);
+    $form['display']['effects'] = $slideshow_form_full['views_slideshow_cycle']['effects'];*/
+    
+    //get jquery effects from view (include file hsould arleady be loaded)
+    $slideshow_form_full = $state = array();
+    @views_slideshow_cycle_views_slideshow_slideshow_type_form($slideshow_form_full, $state, $view);
+    $form['display']['effect'] = $slideshow_form_full['views_slideshow_cycle']['effect'];
+    $form['display']['effect']['#default_value'] = $this->options['effect'];
+    
     
     return $form;
   }
@@ -111,10 +123,13 @@ class os_boxes_slideshow extends os_boxes_default {
         }
       } 
       
-      //num items
-      
-      
+      $style_options['views_slideshow_cycle']['effect'] = $this->options['effect'];
       $handler->set_option('style_options', $style_options);
+      
+      //number of items
+      if ((int)$this->options['items_per_page'] > 0) {
+        $handler->set_option('items_per_page', (int)$this->options['items_per_page']);
+      }
       
       $output = $view->preview();
       $block['content'] = $output;

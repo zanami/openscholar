@@ -60,6 +60,8 @@ dependencies[] = migrate
 dependencies[] = migrate_extras
 ;dependencies[] = os_migrate
 
+; boxes
+dependencies[] = views_slideshow_cycle
 
 ; dev
 dependencies[] = devel
