@@ -79,7 +79,8 @@ p.copy {
   -webkit-box-shadow: 0 0 30px #555;
   box-shadow: 0 0 30px #555;
   }
-
+  
+ 
 .sidebar-first #page {
   background-position: -980px 0;
   }
@@ -96,27 +97,8 @@ p.copy {
   font-size: 13px;
   }
 
-.region-sidebar-first,
-#header-container-left,
-#logo {
-  width: 174px;
-  }
 
-.region-sidebar-first,
-#header-container-left {
-  left: -214px;
-  }
 
-.region-sidebar-second,
-#header-container-right {
-  width: 210px;
-  }
-
-#columns .hg-container,
-#header-container-container {
-  padding-left: 194px;
-  padding-right: 250px;
-  }
 
 #header-container {
   background: #fff;
@@ -152,6 +134,7 @@ body.sidebar-first #columns .hg-container {
   background: #edecdd;
   }
 
+#columns, #content-column .content-inner {padding:0 10px;}
 
 /*SIDEBAR ELEMENTS */
 

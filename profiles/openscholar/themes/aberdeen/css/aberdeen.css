@@ -35,6 +35,15 @@ font-family: helvetica,arial,sans-serif;
     text-align: center;
 }
 
+#columns {
+  overflow:hidden;
+}
+
+#content-column, .region-sidebar-first, .region-sidebar-second {
+margin-bottom: -2000px;
+padding-bottom: 2000px;
+}
+
 #header-container-right {text-align: right;}
 
 /* TYPOGRAPHY*/ 
