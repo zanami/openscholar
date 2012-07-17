@@ -65,7 +65,6 @@ function os_search_block_view($delta = ''){
  *   An object implementing DrupalSolrQueryInterface. No need for &.
  */
 function os_search_apachesolr_query_alter($query) {
-  
   if(module_exists('vsite') && ($vsite = spaces_get_space())){
     // I only want to see items in this site
     $query->addFilter("sm_og_group_ref", $vsite->group_type.":".$vsite->id);
