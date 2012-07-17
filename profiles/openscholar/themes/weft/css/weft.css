@@ -12,7 +12,7 @@ body {
   min-width: 960px;
   }
 
-#columns .wrap {
+#columns {
   background: #FCF5E5;
   padding-bottom: 30px;
   }
@@ -30,7 +30,7 @@ body {
   box-shadow: 0 0 20px #000;
   }
 
-.wrap {
+#header, #block-os-primary-menu, #columns, #footer {
     padding: 0 0 0 30px;
     width: 943px;
     margin: 0 auto;
@@ -56,6 +56,12 @@ h1 a,
 h1 a:visited {
   color: #FBF3E6;
   }
+  
+h1.node-title a {
+	color: #B8690B;
+    text-decoration: none;
+    font-size:.55em;
+}
 
 h2,
 h3,
@@ -87,11 +93,15 @@ h2.block-title {
 
 h2.block-title {
   font-size: 1em;
+  color: #444444;
+  font-family:none;
+  text-transform:uppercase;
   }
+  
+
+
 
 /* LAYOUT ELEMENTS */
-
-
 
 #header-left,
 #logo {
@@ -99,10 +109,7 @@ h2.block-title {
   }
 
 
-
-
-
-.region-sidebar-second {
+.region-sidebar-second .region-inner {
     border-left: 1px solid #ccc;
  
     }
@@ -172,6 +179,8 @@ p.copy a.poweredby {
     font-weight: normal;
     }
 
+#menu-bar ul li:hover,
+#menu-bar ul ul li:hover,
 #menu-bar li a:hover,
 #menu-bar li a.active,
 #menu-bar .active-trail a {
@@ -179,3 +188,29 @@ p.copy a.poweredby {
     background: #b8690c;
     text-decoration: none;
     }
+
+/* NICE MENUS */
+ul.nice-menu ul {
+    top: 1em;
+    border-top:none;
+}
+
+ul.nice-menu li a {
+    color:#FFF;
+}
+
+ul.nice-menu ul ul {
+    top: 1em;
+}
+
+ul.nice-menu-down li ul li ul {
+ 
+    top: -15px;
+}
+
+ul.nice-menu li li.menuparent {
+     background: #b8690c;
+}
+
+
+
