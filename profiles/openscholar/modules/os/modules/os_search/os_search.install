@@ -3,8 +3,49 @@
 /**
  * Perform any needed search setup functions
  */
-function os_search_install() {
+function os_search_install(){
   
-  variable_set('apachesolr_search_default_search_page', 'openscholar_search');
-	
+  // Set the default search page to search/site
+  variable_set('apachesolr_search_default_search_page', 'core_search');
+  
+  // Disable node and user search and enable solr search
+  variable_set('search_active_modules', array(
+      'apachesolr_search' 
+  ));
+  
+  // Set the default search module to solr
+  variable_set('search_default_module', 'apachesolr_search');
+  
+  // Let the solr server parse/extract attachments
+  variable_set('apachesolr_attachments_extract_using', 'solr');
+  
+  if (module_exists('facetapi')) {
+    
+    // Gets delta map
+    $map = facetapi_get_delta_map();
+    
+    $transaction = db_transaction();
+    try {
+      
+      $string = facetapi_build_delta('apachesolr@solr', 'block', 'bundle');
+      $delta = array_search($string, $map);
+      
+      // Update block title for Filter by Type
+      db_update('block')->fields(array(
+          'title' => "Filter By Post Type" 
+      ))->condition('module', 'facetapi')->condition('delta', $delta)->execute();
+      
+      $string = facetapi_build_delta('apachesolr@solr', 'block', 'sm_og_group_ref');
+      $delta = array_search($string, $map);
+      
+      // Update block title for Filter by Site
+      db_update('block')->fields(array(
+          'title' => "Filter By Site" 
+      ))->condition('module', 'facetapi')->condition('delta', $delta)->execute();
+    } catch ( Exception $e ) {
+      $transaction->rollback();
+      watchdog_exception('block', $e);
+      throw $e;
+    }
+  }
 }

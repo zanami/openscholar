@@ -50,12 +50,12 @@ function os_search_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-8',
         ),
-        'facetapi-wWWinJ0eOefOtAMbjo2yl86Mnf1rO12j' => array(
-          'module' => 'facetapi',
-          'delta' => 'wWWinJ0eOefOtAMbjo2yl86Mnf1rO12j',
-          'region' => 'sidebar_second',
-          'weight' => '-7',
-        ),
+//         'facetapi-wWWinJ0eOefOtAMbjo2yl86Mnf1rO12j' => array(
+//           'module' => 'facetapi',
+//           'delta' => 'wWWinJ0eOefOtAMbjo2yl86Mnf1rO12j',
+//           'region' => 'sidebar_second',
+//           'weight' => '-7',
+//         ),
         'facetapi-n18E4x0qRRaIP7nV6I0SDYiCJsq77HCB' => array(
           'module' => 'facetapi',
           'delta' => 'n18E4x0qRRaIP7nV6I0SDYiCJsq77HCB',
@@ -66,7 +66,7 @@ function os_search_context_default_contexts() {
           'module' => 'facetapi',
           'delta' => 'CpjIe0iO04QY4VGdG5PfZfBQqRWCmc4G',
           'region' => 'sidebar_second',
-          'weight' => '-5',
+          'weight' => '-12',
         ),
       ),
     ),
