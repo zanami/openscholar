@@ -107,7 +107,6 @@ class os_boxes_slideshow extends os_boxes_default {
     $block = parent::render();
     
     if ($view = views_get_view('gallery_slideshow')) {
-    
       
       if (((int)$this->options['gallery_nid']) > 0) {
         $view->set_arguments($this->options['gallery_nid']);
@@ -128,7 +127,9 @@ class os_boxes_slideshow extends os_boxes_default {
       
       //number of items
       if ((int)$this->options['items_per_page'] > 0) {
-        $handler->set_option('items_per_page', (int)$this->options['items_per_page']);
+        $view->set_items_per_page((int) $this->options['items_per_page']);
+      } else {
+        $handler->set_option('use_pager', FALSE);
       }
       
       $output = $view->preview();
