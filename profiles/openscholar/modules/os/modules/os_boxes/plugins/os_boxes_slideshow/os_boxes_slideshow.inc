@@ -18,6 +18,7 @@ class os_boxes_slideshow extends os_boxes_default {
     $options['slide_counter'] = 'none';
     $options['items_per_page'] = 10;
     $options['effect'] = 'fade';
+    $options['style'] = 'dark';
     return $options;
   }
 
@@ -70,10 +71,20 @@ class os_boxes_slideshow extends os_boxes_default {
     	'#collapsed' => TRUE,
     );
     
+    $form['display']['style'] = array(
+      '#title' => t('Player Styles'),
+      '#type' => 'select',
+      '#options' => array('dark' => t('Dark'), 'light' => t('Light')),
+      '#default_value' => $this->options['style'],
+      //'#pre_render' => array('os_slideshow_box_style_thumbs'),
+      '#attributes' => array('class' => array('thumbnails')),
+      '#description' => t('Choose between a black or light grey player style.'),
+    );
+
     $display_options = array('pager' => t('Show Pager'), 'controls' => t('Show Controls'), 'slide_counter' => t('Slide Counter'));
     foreach ($display_options as $option => $title)
     $form['display'][$option] = array(
-      '#type' => 'radios',
+      '#type' => 'select',
       '#title' => $title,
       '#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
       '#default_value' => $this->options[$option],
@@ -85,10 +96,6 @@ class os_boxes_slideshow extends os_boxes_default {
       '#description' => t('Limit to this many images per slideshow.  Use 0 for no limit.'),
       '#default_value' => (int) $this->options['items_per_page'],
     );
-    
-/*    $state = array();
-    $slideshow_form_full = drupal_retrieve_form('views_slideshow_cycle_views_slideshow_slideshow_type_form', $state);
-    $form['display']['effects'] = $slideshow_form_full['views_slideshow_cycle']['effects'];*/
     
     //get jquery effects from view (include file hsould arleady be loaded)
     $slideshow_form_full = $state = array();
@@ -105,6 +112,7 @@ class os_boxes_slideshow extends os_boxes_default {
    */
   public function render() {
     $block = parent::render();
+    drupal_add_css(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_slideshow/theme/os-slideshow-' . $this->options['style'] . '.css');
     
     if ($view = views_get_view('gallery_slideshow')) {
       
