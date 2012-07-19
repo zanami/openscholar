@@ -489,6 +489,7 @@ top: 66px;
     font-weight:normal;
     color:#293352;
     font-size:13px;
+    text-transform:none;
 }
 
 #block-cp-cp-minimenu ul li a:visited,
