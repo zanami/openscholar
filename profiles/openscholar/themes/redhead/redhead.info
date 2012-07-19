@@ -13,7 +13,8 @@
 
 ;----------// OpenScholar
 
-	os[theme_type] = 'vsite'
+os[theme_type]   = 'vsite'
+os[theme_access] = 'public'
 
 ;----------// Stylesheets
 
