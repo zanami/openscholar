@@ -1,3 +1,6 @@
+@import "psr.responsive.layout.css"; 
+@import "/profiles/openscholar/themes/os_basetheme/css/d6buffer.css";
+
 body,
 #footer {
   background:#0c0c0c;

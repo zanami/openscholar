@@ -1,3 +1,6 @@
+@import "ptr.responsive.layout.css"; 
+@import "/profiles/openscholar/themes/os_basetheme/css/d6buffer.css";
+
 html,body {
   height: 100%;
   min-width:900px;
