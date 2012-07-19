@@ -180,6 +180,7 @@ p.copy #powered-link {
   }
 
 p.copy a.poweredby  {
+ /* background: url('../images/poweredby.png') no-repeat 60px 0 transparent;*/
   background: url('../images/poweredby.png') no-repeat 0 0 transparent;
   text-indent:-999em;
   display:block;
@@ -286,7 +287,21 @@ body.node-inner ul li,
   padding: 0;
   display: inline-block;
   }
+  
+  
+.terms .slider ul.inline li, .terms .slider ul.inline li a {
+     background: url("../images/listbullet.gif") no-repeat 0pt 7px;
+     color: #444444;
+     display: inline;
+     padding: 0px 0px 0px 6px;
+     text-decoration: underline;
+}
 
+.terms .slider ul.inline li:first-of-type, .terms .slider ul.inline li a:first-of-type {
+     background: none;
+    padding: 0;
+}
+     
 #content .node div.links ul li ul {
   margin:0;
   }
