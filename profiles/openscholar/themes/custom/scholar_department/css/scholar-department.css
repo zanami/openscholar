@@ -1,0 +1,485 @@
+@import "scholar-department.responsive.layout.css"; 
+@import "/profiles/openscholar/themes/os_basetheme/css/d6buffer.css";
+
+body {
+background: url('../images/bodyBg.png') no-repeat fixed center top #F8F8F8;
+  color: #292929;
+  font: 13px/normal Arial,Verdana,sans-serif;
+ }    
+ 
+ 
+
+/* LAYOUT ELEMENTS */
+
+#page {
+  width: 970px;
+margin: 25px auto 0 auto;
+background: #fff;
+padding:1px 20px 20px;
+ }
+ 
+  #content-column {padding:15px 0 0 0;}
+  
+
+ 
+.region-sidebar-second  {
+    width: 250px;
+    margin-top:21px;
+}
+ 
+ .content-left.content-right #content-left {
+    border-right: none;
+}
+
+.content-left.content-right #content-left, 
+.content-left.content-right #content-right,
+.content-left.content-right #content-bottom {
+    clear: none;
+    display: inline;
+    float: left;
+    margin: 15px 0;
+    width: 32%;
+}
+
+.content-left.content-right #content-left, 
+.content-left.content-right #content-right {
+  margin-right: 15px;
+  }
+
+
+.node-inner {
+    padding: 0;
+}
+
+
+/**** BLOCK STYLES ****/
+#columns .block {background: url('../images/blockTitleBg.png') left top repeat-x; padding-top:7px;}
+#columns .block .content {background: url('../images/blockBg.png') repeat-x center bottom;}
+#columns #content-top .block {padding-top:0;}
+
+#columns #block-boxes-os_addthis.block .content {background: none;}
+
+
+
+/* TYPOGRAPHY*/
+
+td {color: #292929;}
+
+p {
+    line-height: 20px;
+}
+
+p span {
+   color:#D16103;
+}
+
+
+
+#content-column a, 
+#content-column a:visited {
+    color:#293352;
+  text-decoration: underline;
+    }
+
+#content-column a:hover {
+    text-decoration: none;
+     }
+     
+
+.sidebar a, 
+.sidebar a:visited {
+    color:#293352;
+  text-decoration: none;
+    }   
+    
+/*
+.more-link {background:#588bb8;
+width:40px;
+height:18px; 
+background: url('../images/mainNavBg.png') repeat-x -10px -10px;
+border: 1px solid #DADADA;
+padding: 3px 3px 0 0;
+}
+
+.more-link a {
+	text-transform:capitalize;
+  color:#A61D31;
+  }
+  */
+  
+#content-column h1#page-title {
+	color:#666;
+  	font-size:15px;
+  	font-weight:bold;
+  	text-transform: uppercase;
+    margin-bottom:8px;
+    width:100%;
+    border-bottom:2px solid #8996A0;
+  }
+  
+.node-type-person #content-column h1#page-title {
+    border-bottom: none;
+    width: auto;
+}  
+  
+  .block h2.block-title {
+   	height:43px;
+  	font-size:14px;
+  	font-weight:normal;
+  	text-transform: uppercase;
+  	padding:7px 0 0 35px;
+    margin-bottom:0;
+  }
+  
+  .sidebar  .block h2.block-title {
+   	height:28px;
+  	font-size:14px;
+  	font-weight:normal;
+  	text-transform: uppercase;
+  	padding:7px 0 0 5px;
+    margin-bottom:0;
+  }
+  
+ 
+ #iqss-weekly ul li {list-style-type:none;}
+ #iqss-weekly h4 {margin: 1.5em 0 0.22em .1em; color:#666;}
+  #iqss-weekly h4:nth-child(1) {margin: .1em 0 0.22em .1em;}
+ #iqss-weekly-cal {display:none;}
+  
+ #boxes-box-vsite_taxonomy_fltr_cat ul li {  
+   background: url("../images/orangeBullet.png") no-repeat scroll 0 6px transparent;
+   margin-left: 5px;
+    padding: 3px 0 3px 15px;
+  }
+  
+ #boxes-box-vsite_taxonomy_fltr_cat ul li ul li {  
+   background: none;
+   list-style-type:disc;
+ margin-left:-20px;
+    padding: 3px 0 3px 0px;
+  } 
+    #boxes-box-vsite_taxonomy_fltr_cat ul li span {  
+  display:none;
+  }
+  
+  #content-bottom .box-os_boxes_simple  h2.block-title {
+  background: url('../images/eventsIcon.png') no-repeat;
+  margin-left:8px;
+  padding-left: 39px;
+   } 
+   
+  
+  .box-os_boxes_twitterfeed h2.block-title {
+  background: url('../images/twitterIcon.png') no-repeat;
+  margin-left:8px;
+  padding-left: 34px;
+   } 
+   
+   
+   #block-boxes-scholar_announcements_latest h2.block-title:nth-child(1) {
+  background: url('../images/announcementsIcon.png') no-repeat;
+  margin-left:8px;
+  padding-left: 39px;
+   } 
+
+#block-boxes-scholar_announcements_latest .node-type-announcement.node-teaser {margin-bottom:25px;}
+#block-boxes-scholar_announcements_latest .submitted {margin-top:-8px;}
+
+    #boxes-box-scholar_announcements_latest .boxes-box-content h3 {
+  text-transform: none;
+  font-size:13px;
+  padding:0;
+   } 
+
+
+h5 {
+	font-family: georgia,arial;
+	font-size: 18px;
+	color:#8C8179;
+	font-weight:normal;
+}
+
+h5 span {
+	color:#A51C30;
+	
+}
+
+#header h1 {font-family:georgia, arial;color:#e17c29;margin-top:15px;}
+#header h1 a {color:#e17c29;font-size:33px;}
+#header h2 {color:#666666;}
+
+#content .node-type-person ul.inline {
+    color: #293352;
+    margin: 0 0 10px 0;
+}
+
+.item-list ul.pager li.pager-current {
+    background: none repeat scroll 0 0 #293352;
+    color: #FFFFFF;
+    padding: 3px 5px;
+}
+
+.submitted {
+    font-weight: bold;
+    color: #666;
+}
+
+#content-top a {text-decoration:none;}
+
+/* HEADER ELEMENTS */
+
+.box-os_boxes_modal_image:nth-child(2) {
+	 margin: 0 -9px;
+	float:right;
+}
+
+.box-os_boxes_modal_image:nth-child(3) {
+	 margin: 17px -7px 0;
+	float:right;
+}
+
+.box-os_boxes_modal_image:nth-child(4) {
+	 margin: 13px -7px -20px;
+	float:right;
+}
+
+
+/**** MAIN NAV BAR ****/
+
+
+#block-os-site_search {float:right;
+display:inline;
+clear:right;
+ margin: 5px 15px 0 0;
+    width: 180px;
+}
+
+#menu-bar {
+  background: url('../images/mainNavBg.png') no-repeat;
+  width:968px;
+ height:43px;
+  }
+
+#menu-bar ul {
+ margin-left:-5px;
+ float:left;
+ display:inline;
+  }
+
+#menu-bar li {
+  float:left;
+ margin-top:4px;
+  }
+
+#menu-bar li a {
+  line-height: 25px;
+  text-transform:uppercase;
+  color: #292929;
+  font-weight:normal;
+  font-size: 14px;
+  padding: 13px 15px;
+   border-right:1px solid #d9d9d9;
+
+}
+
+#menu-bar li a:hover,
+#menu-bar li a.active,
+#menu-bar li.active-trail a {
+  background: #8996A0;
+  color: #FFF;
+  text-decoration: none;
+}
+
+/* SECONDARY NAV LINKS */
+
+.region-header-third #block-os-secondary-menu {
+ clear: none;
+    float: left;
+    margin-left: -85px;
+    margin-top: 3px;
+    padding: 0 0 5px 5px;
+    width: 267px;
+  }
+
+.region-header-third #block-os-secondary-menu li {
+  float:left;
+  padding-right: 1px;
+  }
+
+.region-header-third #block-os-secondary-menu li a {
+ 	 text-decoration: underline;
+  color: #293352;
+  font-weight:normal;
+  font-size: 12px;
+ padding: 1px 8px;
+border-right:1px solid #293352;
+ }
+ 
+.region-header-third #block-os-secondary-menu li a:hover {
+ 	 text-decoration: none;
+ } 
+
+.region-header-third #block-os-secondary-menu li.last a {
+border-right:none;
+ }
+
+
+/** BOOKLET NAVIGATION **/
+	
+.sidebar #block-boxes-scholar_book_current_toc.block {
+  background: none; 
+	padding-top:0;
+}	
+
+.sidebar #block-boxes-scholar_book_current_toc ul {
+margin-left:0;
+  }
+
+.sidebar #block-boxes-scholar_book_current_toc ul li {
+	background:#acb5bc;
+  }
+
+
+.sidebar #block-boxes-scholar_book_current_toc ul li a {
+	font-size:14px;
+display: block;
+  text-decoration: none;
+font-weight:normal;
+   padding: 5px 0 6px 10px;
+  color: #fff;
+text-transform:uppercase;
+  } 
+	
+.sidebar #block-boxes-scholar_book_current_toc ul li a.active {
+font-style:normal;
+ } 
+		
+
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li  {
+  list-style: none;
+  background: url('../images/sideNavBg_off.png') no-repeat;
+ text-align: left;
+  margin: 0;
+}
+
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a {
+	font-size:14px;
+  display: block;
+  text-decoration: none;
+   padding: 5px 0 6px 24px;
+  color: #666;
+text-transform:none;
+  }
+  
+
+
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a.active,
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a.active:hover { 
+	background: url('../images/sideNavBg_on.png') no-repeat;
+ color: #FFF;
+ font-style: normal;
+    font-weight: normal;
+ }
+ 
+ 
+.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a:hover { 
+	background: url('../images/sideNavBg_over.png') no-repeat;
+ color: #FFF;
+ font-style: normal;
+    font-weight: normal;
+ } 
+ 
+/**** SLIDESHOW OVERRIDE STYLES ****/
+
+
+div.views-field-field-gallery-image-fid img {
+    background-color: #FFF;
+    border: none;
+    padding: 0;
+}
+
+#views_slideshow_singleframe_main_os_slideshow-default {
+	z-index:5;position:relative;	
+}
+
+
+.box-os_boxes_slideshow {margin-left:3px;}
+.views-slideshow-controls-bottom {background: none;height:22px;border:none;border-top:none;width: 960px;z-index:6;position:relative;margin-top: -22px}
+.views_slideshow_singleframe_pager_os_slideshow-default a {text-decoration:none;}
+
+#views_slideshow_singleframe_prev_os_slideshow-default,
+#views_slideshow_singleframe_next_os_slideshow-default,
+.views-field-title {display:none;}
+
+.views_slideshow_controls .views_slideshow_pause,
+.views_slideshow_controls .views_slideshow_play {
+left:940px;
+  margin-top: -3px;
+}
+
+.views_slideshow_controls .views_slideshow_pause {
+    background: url('../images/pause.gif') no-repeat scroll 0 0 transparent;
+    height: 19px;
+    width: 18px;
+}
+
+.views_slideshow_controls .views_slideshow_play {
+    background: url('../images/play.gif') no-repeat scroll 0 0 transparent;
+    height: 19px;
+    width: 18px;
+}
+
+div.pager-item {font-size:11px;width:24px;height:24px;}
+
+.views_slideshow_singleframe_pager div {
+    display: inline;
+    padding-left: 7px;
+}
+
+#views_slideshow_singleframe_pager_os_slideshow-default {
+margin-right:26px;
+}
+
+ .pager-item a { background: #FFF; color:#333;padding:2px 5px;text-decoration: none;
+ -moz-border-radius:0;
+  -webkit-border-radius:0;
+  border-radius: 0;
+  border:1px solid #c1c1c1;
+}
+
+.pager-item a:hover {background: #d9d9d9; color:#293352;text-decoration: none;}
+
+.pager-item.activeSlide a {background: #d9d9d9; color:#293352;}
+
+.pager a {text-decoration: none;}
+  
+/**** FOOTER ****/
+
+#footer .wrap {
+	height:28px;
+  padding: 10px 15px;
+  position:relative;
+  bottom: -42px;
+  line-height:18px;
+  background:#F8F8F8;
+  border-top:1px solid #c1c1c1;
+  margin-bottom:25px;
+  }
+
+#footer .wrap a {
+	text-decoration:underline;
+	color:#293352;
+}
+
+#footer .wrap a:hover {
+	text-decoration:none;
+}
+ 
+ 
+#footer .wrap  #powered-link {margin-top:-23px;}
+
+
+
+ 
+ 
+

@@ -13,8 +13,8 @@ stylesheets[all][]   = css/cleanblue.css
 conditional-stylesheets[if lte IE 7][all][]   = css/cleanblue-ie7.css
 conditional-stylesheets[if IE][all][]         = css/cleanblue-ie.css
 
-os[theme_type]   = "vsite"
-os[theme_access] = "public"
+os[theme_type]   = 'vsite'
+os[theme_access] = 'public'
 
 
 

@@ -1,0 +1,8 @@
+#footer {
+  _position: absolute;
+  display:block;
+  }
+
+#footer {
+   _width:expression(document.body.clientWidth-0); »
+  }

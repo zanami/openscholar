@@ -27,7 +27,7 @@ function media_gallery_file_view_modes() {
     'media_gallery_lightbox' => t('Gallery lightbox'),
     'media_gallery_detail' => t('Gallery detail'),
     'media_gallery_block_thumbnail' => t('Gallery block thumbnail'),
-    'media_gallery_collection_thumbnail' => t('Gallery collection thumbnail'),
+//    'media_gallery_collection_thumbnail' => t('Gallery collection thumbnail'),
   );
 }
 
@@ -135,6 +135,7 @@ function media_gallery_menu() {
 /**
  * Implements hook_menu_alter().
  */
+/*
 function media_gallery_menu_alter(&$items) {
   // Take over taxonomy term list pages by substituting our own callback.
   // TODO: Use hook_entity_info_alter() to change the entity uri callback for
@@ -150,7 +151,7 @@ function media_gallery_menu_alter(&$items) {
   // @todo Perhaps this should be changed in the media module itself?
   $items['media/%file/delete']['context'] = MENU_CONTEXT_PAGE;
 }
-
+*/
 /**
  * Implements hook_admin_paths().
  */
