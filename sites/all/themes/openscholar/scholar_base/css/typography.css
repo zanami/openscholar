@@ -120,7 +120,7 @@ p.copy a.footer-login {
   margin: 4px;
   float: left;
   line-height: normal;
-  padding-bottom:1px important!;
+  padding-bottom:1px !important;
   }
 
 .quote {
@@ -184,7 +184,7 @@ p.copy a.poweredby  {
   background: url('../images/poweredby.png') no-repeat 0 0 transparent;
   text-indent:-999em;
   display:block;
-  width:145px;
+  width:85px;
   height:26px;
   text-decoration: none !important;
   border: none !important;
