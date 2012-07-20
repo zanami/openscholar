@@ -109,6 +109,16 @@ h2.title {
      text-align: center;
 }
 
+.front #content-main .node-teaser h3.title {
+  border-bottom: none;
+  text-align:left;
+}
+
+.front #content-main .node-teaser h3.title a {
+  font-size: .60em;
+  line-height:6px;
+}
+
 h4 {
      font-size: 1.35em;
      margin: 0.15em 0;
@@ -407,6 +417,24 @@ margin:-54px -2px 0;
 .os-greyrule {width:99%; height:2px; border-top:1px solid #DDD;}
 
 .og-context-9015 .node-type-announcement .submitted {display:none;}
+
+
+.front.og-context-9015 #content-main .node-teaser h3.title {
+    float:right;
+    display:inline;
+    clear:none;
+    width:190px;
+}
+
+.front.og-context-9015 .node-type-announcement.node-teaser .content img {float:left;
+    display:inline;
+    clear:none;
+    width:100px;
+    height:64px;}
+
+.front.og-context-9015 .node-type-announcement.node-teaser .content {font-size:0;color:#FFF;}
+
+.front.og-context-9015 .node-type-announcement.node-teaser .links-inline {display:none;}
 
 .page-announcements.og-context-9015 .node-type-announcement .content img,
 .node-type-announcement.og-context-9015 .content img {margin:0 18px 18px 0;}
