@@ -90,7 +90,7 @@ function os_publications_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('biblio_image');
+  t('Book Cover');
 
   return $fields;
 }

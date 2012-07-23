@@ -17,7 +17,7 @@ function os_publications_overview() {
 }
 
 function os_publications_export($format = "tagged", $nid = NULL, $popup = FALSE) {
-  module_load_include('inc', 'biblio', 'biblio.import.export');
+  module_load_include('inc', 'biblio', 'includes/biblio.import.export');
 
   $title = 'publications';
   if ($nid !== null) {
@@ -34,7 +34,7 @@ function os_publications_export($format = "tagged", $nid = NULL, $popup = FALSE)
       $args = array('type', $defaults);
     }
     // Setup the default query
-    module_load_include('inc', 'biblio', 'biblio.pages');
+    module_load_include('inc', 'biblio', 'includes/biblio.pages');
     biblio_build_query($args);
   }
 
@@ -46,25 +46,17 @@ function os_publications_export($format = "tagged", $nid = NULL, $popup = FALSE)
 
     // handle for spaces
     if (module_exists('spaces') && $space = spaces_get_space()) {
-      $title = $space->group->name.'-'.$title;
+      $title = $space->group->purl.'-'.$title;
     }
 
-    $owner_name = $vsite->group->name;
-    switch ($format) {
-      case 'tagged':
-        drupal_add_http_header('Content-Disposition', 'filename="'.$title.'-tagged.enw"');
-      	break;
-      case 'xml':
-      case 'endnote8':
-      	drupal_add_http_header('Content-Disposition', 'attachment; filename="'.$title.'.xml"');
-      break;
-      case 'bibtex':
-      	drupal_add_http_header('Content-Disposition', 'filename="'.$title.'-Bibtex.bib"');
-      break;
-      case 'csv':
-        drupal_add_http_header('Content-Disposition', 'attachment; filename="'.$title.'-export.csv"');
-      break;
-    }
+    $header = drupal_get_http_header('Content-Disposition');
+
+    $match = array();
+    preg_match('!filename="([^"]+)"!', $header, $match);
+    $filename = str_replace(array('Drupal-Biblio', 'Biblio'), $title, $match[1]);
+    $header_new = preg_replace('!filename="([^"]+)"!', 'filename="'.$filename.'"', $header);
+
+    drupal_add_http_header('Content-Disposition', $header_new);
     echo $output;
   }
   else {
