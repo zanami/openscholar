@@ -109,6 +109,9 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
     }
   }
 
+  $years = variable_get('biblio_years_text', array(9999 => t('Submitted'), 9998 => t('In Press')));
+  $form['biblio_year']['#description'] = implode(', ', $years).', or YYYY';
+
   // hide the rest of the vtabs behind a collapsible fieldset
   $form['publication_extras'] = array(
     '#type' => 'fieldset',
