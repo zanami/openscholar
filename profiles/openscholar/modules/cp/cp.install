@@ -14,15 +14,6 @@ function cp_enable() {
     );
     menu_save($menu);
 
-    $user_link = array(
-      'link_path' => 'user',
-      'menu_name' => 'cp',
-      'module' => 'cp',
-      'weight' => 11,
-      'link_title' => 'Hello!'
-    );
-    menu_link_save($user_link);
-
     $logout_link = array(
       'link_path' => 'logout',
       'menu_name' => 'cp',
