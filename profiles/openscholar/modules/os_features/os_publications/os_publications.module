@@ -70,7 +70,7 @@ function os_publications_theme_registry_alter(&$reg) {
 function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
 
   $tid = !empty($form_state['biblio_type']) ? $form_state['biblio_type'] :
-          ( isset($node->biblio_type) ? $node->biblio_type : 0);
+          ( isset($form_state['node']->biblio_type) ? $form_state['node']->biblio_type : 0);
 
   // hide the biblio_image field
   $form['field_biblio_image']['#access'] = false;
