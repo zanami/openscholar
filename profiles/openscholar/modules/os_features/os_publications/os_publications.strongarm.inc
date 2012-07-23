@@ -27,6 +27,19 @@ function os_publications_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'biblio_export_links';
+  $strongarm->value = array(
+    'bibtex' => 'bibtex',
+    'rtf' => 'rtf',
+    'tagged' => 'tagged',
+    'xml' => 'xml',
+    'ris' => 'ris',
+  );
+  $export['biblio_export_links'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'biblio_init_auth_count';
   $strongarm->value = '1';
   $export['biblio_init_auth_count'] = $strongarm;

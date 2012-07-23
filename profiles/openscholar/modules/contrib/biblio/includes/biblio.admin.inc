@@ -574,6 +574,20 @@ function biblio_admin_settings() {
     '#description' => t('You can set the default style for the /biblio page here.'),
     '#group' => 'biblio_settings',
   );
+
+  $years = variable_get('biblio_years_text', array(9999 => t('Submitted'), 9998 => t('In Press')));
+  $str = '';
+  foreach ($years as $y => $t) {
+    $str .= $y.': '.$t."\n";
+  }
+
+  $form['style']['biblio_years_text'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Allow text to be entered in Year field.'),
+    '#default_value' => $str,
+    '#description' => t('Enter a number to use in the database and a string that to be displayed for that number. Put each entry on a new line. Example: 9999: Submitted'),
+  );
+
   $form['style']['biblio_no_year_text'] = array(
     '#type' => 'textfield',
     '#title' => t('Text to display if no year of publication is available'),
@@ -675,6 +689,17 @@ function biblio_admin_settings_form_submit($form, $form_state) {
 //      taxonomy_save_vocabulary($vocabulary);
 //    }
 //  }
+
+  $years = array();
+  $yr_str = $form_state['values']['biblio_years_text'];
+  $lines = preg_split('![\\n|\\r|\\n\\r]!', $yr_str);
+  foreach ($lines as $l) {
+    $m = array();
+    preg_match('!([\d]+):[\s]*(.+)$!', $l, $m);
+    if (!isset($m[1])) continue;
+    $years[$m[1]] = $m[2];
+  }
+  variable_set('biblio_years_text', $years);
 
   if( ($form['#biblio_base'] != $form_state['values']['biblio_base']) ||
       ($form['biblio_profile']['#biblio_show_profile'] != $form_state['values']['biblio_show_profile']) ||
