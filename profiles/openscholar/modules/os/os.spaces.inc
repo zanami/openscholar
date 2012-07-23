@@ -20,7 +20,11 @@ function os_spaces_presets() {
   $spaces_presets->value = array(
     'variable' => array(
       'spaces_features' => array(
-        'os' => 1,
+        'os' => '1',
+        'os_announcements' => '1',
+        'os_image_gallery' => '1',
+        'os_links' => '1',
+        'os_publications' => '1',
       ),
       'site_frontpage' => 'home',
     ),
@@ -41,7 +45,11 @@ function os_spaces_presets() {
   $spaces_presets->value = array(
     'variable' => array(
       'spaces_features' => array(
-        'os' => 1,
+        'os' => '1',
+        'os_announcements' => '1',
+        'os_image_gallery' => '1',
+        'os_links' => '1',
+        'os_publications' => '1',
       ),
       'site_frontpage' => 'home',
       'theme_default' => 'cleanblue',
