@@ -12,7 +12,10 @@ function vsite_context_default_contexts(){
   $export = array();
   
   $context = new stdClass();
-  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
+  $context->disabled = FALSE; /*
+                               * Edit this to true to make a default context
+                               * disabled initially
+                               */
   $context->api_version = 3;
   $context->name = 'os_sitewide_front';
   $context->description = 'Active on the frontpage in multi-tenant installs';
@@ -20,32 +23,38 @@ function vsite_context_default_contexts(){
   $context->conditions = array(
       'path' => array(
           'values' => array(
-              '<front>' => '<front>'
-          )
-      ),
+              '<front>' => '<front>' 
+          ) 
+      ), 
       'os_site' => array(
           'values' => array(
-              0 => '0'
-          )
-      )
+              '0' => '0' 
+          ) 
+      ) 
   );
   $context->reactions = array(
       'block' => array(
           'blocks' => array(
+              'os_search-site-search' => array(
+                  'module' => 'os_search', 
+                  'delta' => 'site-search', 
+                  'region' => 'sidebar_first', 
+                  'weight' => '-10' 
+              ), 
               'views-os_websites-block' => array(
-                  'module' => 'views',
-                  'delta' => 'os_websites-block',
-                  'region' => 'sidebar_first',
-                  'weight' => '-10'
-              ),
+                  'module' => 'views', 
+                  'delta' => 'os_websites-block', 
+                  'region' => 'sidebar_first', 
+                  'weight' => '-9' 
+              ), 
               'vsite_register-get_your_site_block' => array(
-                  'module' => 'vsite_register',
-                  'delta' => 'get_your_site_block',
-                  'region' => 'sidebar_first',
-                  'weight' => '-10'
-              )
-          )
-      )
+                  'module' => 'vsite_register', 
+                  'delta' => 'get_your_site_block', 
+                  'region' => 'sidebar_first', 
+                  'weight' => '-8' 
+              ) 
+          ) 
+      ) 
   );
   $context->condition_mode = 1;
   
