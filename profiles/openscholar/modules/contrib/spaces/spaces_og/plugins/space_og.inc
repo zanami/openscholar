@@ -116,7 +116,7 @@ class space_og extends space_type_purl {
     
     // Additional check for group membership if authoring content in this group.
     if ($op === 'create') {
-      return $access && og_is_member($this->group_type, $this->id, 'user', $account);
+      return $access && (user_access('administer group') || og_is_member($this->group_type, $this->id, 'user', $account));
     }
     return $access;
   }
