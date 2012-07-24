@@ -153,6 +153,9 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
  * Is given a render array representing the biblio node ready for rendering in the list view
  * @param unknown_type $entry
  */
-function os_publications_biblio_entry_alter(&$entry) {
+function os_publications_biblio_entry_alter(&$entry, $node) {
   unset($entry['export_links']);
+
+  field_attach_prepare_view('node', array($node->nid => $node), 'teaser');
+  $entry += field_attach_view('node', $node, 'teaser');
 }

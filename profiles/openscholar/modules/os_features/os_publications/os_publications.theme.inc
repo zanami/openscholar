@@ -45,11 +45,13 @@ function theme_os_publications_tabular(&$vars) {
     if (!isset($node->$f['name'])) continue;  // field doesn't exist. do nothing
 
     $value = $node->$f['name'];
+    $display_title = true;
 
     switch ($f['name']) {
       case 'biblio_url':
         // no need to check plain. l does it for us
         $data = '<p>'.l($node->biblio_url_title, $value).'</p>';
+        $display_title = false;
         break;
       case 'biblio_url_title':
         break;
@@ -62,16 +64,26 @@ function theme_os_publications_tabular(&$vars) {
         }
     }
     if (trim($data)) {
-      $rows[] = array(
-        array(
-          'data' => t($f['title']),
-          'class' => 'biblio-row-title biblio-field-title-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
-        ),
-        array(
-          'data' => $data,
-          'class' => 'biblio-field-contents-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
-        )
-      );
+      if ($display_title) {
+        $rows[] = array(
+          array(
+            'data' => t($f['title']),
+            'class' => 'biblio-row-title biblio-field-title-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
+          ),
+          array(
+            'data' => $data,
+            'class' => 'biblio-field-contents-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
+          )
+        );
+      }
+      else {
+        $rows[] = array(
+          1 => array(
+            'data' => $data,
+            'class' => 'biblio-field-contents-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
+          )
+        );
+      }
     }
   }
   $output = '<div id="biblio-node">';
@@ -79,7 +91,7 @@ function theme_os_publications_tabular(&$vars) {
   $output .= $citation;
 
   foreach ($rows as $row){
-    if ($row[0]['data'])
+    if (isset($row[0]['data']) && $row[0]['data'])
       $output .= "<h3>".$row[0]['data'].":</h3>";
     $output .= $row[1]['data'];
   }
