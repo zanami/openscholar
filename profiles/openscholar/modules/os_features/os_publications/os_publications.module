@@ -62,6 +62,13 @@ function os_publications_theme_registry_alter(&$reg) {
     'function' => 'theme_os_publications_entry',
   ));
   $reg['biblio_entry']['includes'][] = drupal_get_path('module', 'os_publications').'/os_publications.theme.inc';
+
+  $reg['biblio_export_links'] = array_merge($reg['biblio_export_links'], array(
+    'file' => 'os_publications.theme.inc',
+    'theme path' => drupal_get_path('module', 'os_publications'),
+    'function' => 'theme_os_publications_export_links',
+  ));
+  $reg['biblio_export_links']['includes'][] = drupal_get_path('module', 'os_publications').'/os_publications.theme.inc';
 }
 
 /**
@@ -123,4 +130,12 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   );
 
   unset($form['biblio_tabs']);
+}
+
+/**
+ * Is given a render array representing the biblio node ready for rendering in the list view
+ * @param unknown_type $entry
+ */
+function os_publications_biblio_entry_alter(&$entry) {
+  unset($entry['export_links']);
 }
