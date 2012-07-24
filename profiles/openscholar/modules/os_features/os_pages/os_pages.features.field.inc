@@ -7,7 +7,7 @@
 /**
  * Implements hook_field_default_fields().
  */
-function os_field_default_fields() {
+function os_pages_field_default_fields() {
   $fields = array();
 
   // Exported field: 'node-page-body'
