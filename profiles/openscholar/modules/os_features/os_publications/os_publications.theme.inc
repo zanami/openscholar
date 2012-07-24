@@ -174,6 +174,7 @@ function theme_os_publications_export_links($variables) {
     $export_links = module_invoke_all('biblio_export_link', $nid, $filter);
     $links = array_merge($lookup_links, $export_links);
   }
+  $title = 'Export';
   if (empty($node) && !empty($links)) {
     $title = t('Export @count results', array('@count' => $pager_total_items[0])) . ': ';
   }
