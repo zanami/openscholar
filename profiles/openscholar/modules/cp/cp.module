@@ -198,7 +198,7 @@ function _cp_get_toolbar_setting() {
     return CP_MENU_OFF;
   }
 
-  if (spaces_access_admin() && (context_isset('context', 'cp-admin') || variable_get('cp_admin_menu', 0))) {
+  if (spaces_access_admin() && (context_isset('context', 'os_cp') || variable_get('cp_admin_menu', 0))) {
     return CP_MENU_FULL;
   }
 
@@ -358,4 +358,19 @@ function cp_use_cp_theme() {
     return TRUE;
   }
   return FALSE;
+}
+
+/**
+ * Provide a form-specific alteration instead of the global hook_form_alter().
+ *
+ * Alter the features form in the cp to remove un-needed componentes
+ *
+ * @param $form
+ * @param $form_state
+ * @param $form_id
+ */
+function cp_form_spaces_feature_form_alter(&$form, &$form_state, $form_id) {
+  if (context_isset('context', 'os_cp')) {
+    
+  }
 }
