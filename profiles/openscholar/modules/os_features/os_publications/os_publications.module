@@ -175,6 +175,5 @@ function os_publications_node_view_alter(&$build, $type) {
         }
       }
     }
-    dpm($build);
   }
 }
