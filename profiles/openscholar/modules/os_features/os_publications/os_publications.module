@@ -190,3 +190,18 @@ function os_publications_contextual_links_view_alter(&$element, $items) {
     $element['#links']['os-biblio']['title'] = t('Add Publication');
   }
 }
+
+function os_publications_form_biblio_import_form_alter(&$form, $form_state) {
+
+  // always use batch processing
+  // 99% of our users won't kno what this is anyway
+  $form['batch_process']['#type'] = 'value';
+
+  // set the user id to the current user
+  // and make it unchangable
+  $form['userid']['#type'] = 'value';
+  $form['userid']['#type'] = $GLOBALS['user']->uid;
+
+  // unset taxonomy settings
+  unset($form['import_taxonomy']);
+}
