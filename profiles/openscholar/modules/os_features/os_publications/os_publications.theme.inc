@@ -88,7 +88,7 @@ function theme_os_publications_tabular(&$vars) {
   }
   $output = '<div id="biblio-node">';
   $output .= filter_xss($node->biblio_coins, array('span'));
-  $output .= $citation;
+  $output .= '<h3>Citation:</h3><div id="citation-wrapper">'.$citation.''.theme('biblio_export_links', array('node' => $node)).'</div>';
 
   foreach ($rows as $row){
     if (isset($row[0]['data']) && $row[0]['data'])
@@ -151,7 +151,7 @@ function _os_publications_plain_citation($node) {
   	div.select();
   }
 }','inline');
-  $citation = "<dl><dt>Citation:</dt><dd class=\"biblio-citation\" onclick=\"if (event.target) selectText(event.target); else selectText(this);\">{$citation}</dd></dl>";
+  $citation = "<div class=\"biblio-citation\" onclick=\"if (event.target) selectText(event.target); else selectText(this);\">{$citation}</div>";
 
   return $citation;
 }
