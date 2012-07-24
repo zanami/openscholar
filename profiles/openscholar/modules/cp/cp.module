@@ -372,11 +372,6 @@ function cp_use_cp_theme() {
 function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
   //Only make changes if we are in the Openscholar Admin section
   if (context_isset('context', 'os_cp')) {
-    if(isset($form['spaces_features']['os'])){
-      //The base OS feature is always enabled, user can not disable this
-      $form['spaces_features']['os']['#type'] = 'value';
-      $form['labels']['os']['#markup'] = '';
-    }
     
     if(isset($form['site_frontpage'])){
       //Only allow users with  administer spaces permission to change the site path

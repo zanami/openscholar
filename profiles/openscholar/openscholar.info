@@ -96,6 +96,7 @@ dependencies[] = os_links
 dependencies[] = os_announcements
 dependencies[] = os_image_gallery
 dependencies[] = os_publications
+dependencies[] = os_pages
 
 ; other
 dependencies[] = diff
