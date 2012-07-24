@@ -282,6 +282,8 @@ function biblio_entry($node) {
     );
   }
 
+  drupal_alter('biblio_entry', $entry);
+
   return $entry;
 }
 
