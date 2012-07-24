@@ -1,14 +1,5 @@
 <?php
 /**
- * The "Teaser" View
- * Should just display the citation and book cover if there is one
- * @param unknown_type $vars
- */
-function theme_os_publications_entry(&$vars) {
-
-}
-
-/**
  * Full Node View
  * Displays the citation in a field that can be clicked to select all of it
  * Also displays abstract, full text and notes if enabled.
@@ -67,16 +58,18 @@ function theme_os_publications_tabular(&$vars) {
           $data = check_plain($value);
         }
     }
-    $rows[] = array(
-      array(
-        'data' => t($f['title']),
-        'class' => 'biblio-row-title biblio-field-title-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
-      ),
-      array(
-        'data' => $data,
-        'class' => 'biblio-field-contents-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
-      )
-    );
+    if (trim($data)) {
+      $rows[] = array(
+        array(
+          'data' => t($f['title']),
+          'class' => 'biblio-row-title biblio-field-title-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
+        ),
+        array(
+          'data' => $data,
+          'class' => 'biblio-field-contents-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
+        )
+      );
+    }
   }
   $output = '<div id="biblio-node">';
   $output .= filter_xss($node->biblio_coins, array('span'));
@@ -88,7 +81,7 @@ function theme_os_publications_tabular(&$vars) {
     $output .= $row[1]['data'];
   }
 
-  if (strlen(trim($node->body[LANGUAGE_NONE][0]['value'])) && user_access('view full text')) {
+  if (isset($node->body[LANGUAGE_NONE][0]['value']) && strlen(trim($node->body[LANGUAGE_NONE][0]['value'])) && user_access('view full text')) {
     $output .= '<h3>Full Text</h3>';
     $output .= check_markup($node->body[LANGUAGE_NONE][0]['value'], $node->body[LANGUAGE_NONE][0]['format'], FALSE);
   }

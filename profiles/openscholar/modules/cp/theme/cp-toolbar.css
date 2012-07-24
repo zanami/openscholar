@@ -72,13 +72,23 @@ body.toolbar-drawer {
   float: left; /* LTR */
 }
 
-#cp-toolbar ul li {margin: 0 18px 0 0;}
+#cp-toolbar ul li {
+  margin: 0 18px 0 0;
+}
 
-#cp-toolbar ul li a {
-  background: url("images/topmenu-icons.png") no-repeat;
+#cp-toolbar #toolbar-user ul li {
+  margin: 0 0 0 18px;
+}
+
+#cp-toolbar ul#toolbar-menu li a {
+  background: url("images/topmenu-icons.png") no-repeat -30px 0;
   padding-left: 30px !important;
-   height: 25px;
-   font-style: normal;
+  height: 25px;
+  font-style: normal;
+}
+
+#cp-toolbar ul li a#toolbar-link-cp-build {
+  background-position: 0 0;
 }
 
 #cp-toolbar ul li a#toolbar-link-cp-appearance {
@@ -103,22 +113,22 @@ body.toolbar-drawer {
 #cp-toolbar div.toolbar-menu {
   background: #000;
   line-height: 20px;
-  padding: 5px 50px 5px 10px; /* LTR */
+  padding: 5px 10px 5px 10px; /* LTR */
   position: relative;
 }
-#cp-toolbar-home a span {
+#toolbar-home a span {
   background: url(toolbar.png) no-repeat 0 -45px;
   display: block;
   height: 14px;
   margin: 3px 0px;
-  text-indent: -9999px;
+  /*text-indent: -9999px;*/
   vertical-align: text-bottom;
   width: 11px;
 }
-#cp-toolbar-user {
+#toolbar-user {
   float: right; /* LTR */
 }
-#cp-toolbar-menu {
+#toolbar-menu {
   float: left; /* LTR */
 }
 #cp-toolbar div.toolbar-menu a.toggle {

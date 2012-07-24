@@ -13,25 +13,6 @@ function cp_enable() {
       'description' => $t('Administration links')
     );
     menu_save($menu);
-
-    $user_link = array(
-      'link_path' => 'user',
-      'menu_name' => 'cp',
-      'module' => 'cp',
-      'weight' => 11,
-      'link_title' => 'Hello!'
-    );
-    menu_link_save($user_link);
-
-    $logout_link = array(
-      'link_path' => 'logout',
-      'menu_name' => 'cp',
-      'module' => 'cp',
-      'weight' => 13,
-      'link_title' => 'Logout',
-    );
-
-    menu_link_save($logout_link);
   }
 
   //update weight so cp is after views and can alter views' menu alterations.
