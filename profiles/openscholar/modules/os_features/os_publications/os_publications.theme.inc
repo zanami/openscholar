@@ -45,11 +45,13 @@ function theme_os_publications_tabular(&$vars) {
     if (!isset($node->$f['name'])) continue;  // field doesn't exist. do nothing
 
     $value = $node->$f['name'];
+    $display_title = true;
 
     switch ($f['name']) {
       case 'biblio_url':
         // no need to check plain. l does it for us
         $data = '<p>'.l($node->biblio_url_title, $value).'</p>';
+        $display_title = false;
         break;
       case 'biblio_url_title':
         break;
@@ -62,16 +64,26 @@ function theme_os_publications_tabular(&$vars) {
         }
     }
     if (trim($data)) {
-      $rows[] = array(
-        array(
-          'data' => t($f['title']),
-          'class' => 'biblio-row-title biblio-field-title-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
-        ),
-        array(
-          'data' => $data,
-          'class' => 'biblio-field-contents-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
-        )
-      );
+      if ($display_title) {
+        $rows[] = array(
+          array(
+            'data' => t($f['title']),
+            'class' => 'biblio-row-title biblio-field-title-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
+          ),
+          array(
+            'data' => $data,
+            'class' => 'biblio-field-contents-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
+          )
+        );
+      }
+      else {
+        $rows[] = array(
+          1 => array(
+            'data' => $data,
+            'class' => 'biblio-field-contents-'.str_replace('_', '-', str_replace('biblio_', '', $f['name']))
+          )
+        );
+      }
     }
   }
   $output = '<div id="biblio-node">';
@@ -79,7 +91,7 @@ function theme_os_publications_tabular(&$vars) {
   $output .= $citation;
 
   foreach ($rows as $row){
-    if ($row[0]['data'])
+    if (isset($row[0]['data']) && $row[0]['data'])
       $output .= "<h3>".$row[0]['data'].":</h3>";
     $output .= $row[1]['data'];
   }
@@ -142,4 +154,31 @@ function _os_publications_plain_citation($node) {
   $citation = "<dl><dt>Citation:</dt><dd class=\"biblio-citation\" onclick=\"if (event.target) selectText(event.target); else selectText(this);\">{$citation}</dd></dl>";
 
   return $citation;
+}
+
+function theme_os_publications_export_links($variables) {
+
+  global $pager_total_items;
+  $node = $variables['node'];
+  $filter = ($variables['node'] == NULL && isset($variables['filter'])) ? $variables['filter'] : array();
+  $links = array();
+  $output = '';
+
+  if (biblio_access('export')) {
+    $show_link = variable_get('biblio_lookup_links', array('google' => TRUE));
+    $lookup_links = module_invoke_all('biblio_lookup_link', $node);
+    if ($show_link['google'] && !empty($node)) {
+      $lookup_links['biblio_google_scholar'] = theme('google_scholar_link', array('node' => $node));
+    }
+    $nid = (isset($node->nid)) ? $node->nid : NULL;
+    $export_links = module_invoke_all('biblio_export_link', $nid, $filter);
+    $links = array_merge($lookup_links, $export_links);
+  }
+  $title = 'Export';
+  if (empty($node) && !empty($links)) {
+    $title = t('Export @count results', array('@count' => $pager_total_items[0])) . ': ';
+  }
+
+  return theme('ctools_dropdown', array('links' => $links, 'title' => $title, 'attributes' => array('class' => array('biblio-export-buttons'))));
+
 }
