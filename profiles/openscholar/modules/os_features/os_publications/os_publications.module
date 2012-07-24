@@ -159,3 +159,22 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
   field_attach_prepare_view('node', array($node->nid => $node), 'teaser');
   $entry += field_attach_view('node', $node, 'teaser');
 }
+
+/**
+ * Removes the export links from the full view of the node
+ */
+function os_publications_node_view_alter(&$build, $type) {
+  if ($type == 'node' && $build['#bundle'] == 'biblio') {
+    $links = &$build['links'];
+    foreach ($links as $k => $l) {
+      if (is_array($l) && isset($l['#links'])) {
+        foreach ($l['#links'] as $id => $arr) {
+          if (strpos($arr['href'], 'export') !== FALSE) {
+            unset($links[$k]['#links'][$id]);
+          }
+        }
+      }
+    }
+    dpm($build);
+  }
+}
