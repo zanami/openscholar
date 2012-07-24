@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * os.features.field.inc
+ * os_pages.features.field.inc
  */
 
 /**
