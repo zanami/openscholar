@@ -46,6 +46,7 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
         '#entity_type' => 'node',
         '#bundle' => $form['#bundle']
     );
+    
   }
   
   if(og_is_group_type('node',$form['#bundle'])){
