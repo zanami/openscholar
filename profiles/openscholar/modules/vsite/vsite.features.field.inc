@@ -224,7 +224,7 @@ function vsite_get_group_fields(){
             'hide_secondary_field' => 1,
             'membership_type' => 'og_membership_type_default',
             'primary_field' => '0',
-            'reference_type' => 'my_groups',
+            'reference_type' => 'all_groups',
             'sort' => array(
               'direction' => 'ASC',
               'field' => 'body:value',
