@@ -379,9 +379,9 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
     }
     
     if(isset($form['site_frontpage'])){
-      //Only allow users with  group administrator permission to change the site path
-      $form['site_frontpage']['#access'] = user_access('administer group');
-      $form['site_frontpage_path']['#access'] = user_access('administer group');
+      //Only allow users with  administer spaces permission to change the site path
+      $form['site_frontpage']['#access'] = user_access('administer spaces');
+      $form['site_frontpage_path']['#access'] = user_access('administer spaces');
     }
   }
 }
