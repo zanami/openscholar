@@ -48,7 +48,10 @@ function theme_os_publications_tabular(&$vars) {
 
     switch ($f['name']) {
       case 'biblio_url':
-        $data = '<p>'.l('External URL', $value).'</p>';
+        // no need to check plain. l does it for us
+        $data = '<p>'.l($node->biblio_url_title, $value).'</p>';
+        break;
+      case 'biblio_url_title':
         break;
       default:
         if ($f['type'] == 'text_format') {
