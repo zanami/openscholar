@@ -83,7 +83,11 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   $form['field_biblio_image']['#access'] = false;
 
   // we're on the first step of a biblio form. bail out.
-  if (empty($tid)) return;
+  if (empty($tid)) {
+    $form['biblio_type']['#weight'] = -1000;
+
+    return;
+  }
 
   switch ($tid) {
     case 100:
@@ -91,7 +95,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
       $form['field_biblio_image']['#access'] = true;
   }
 
-  // move fields into our out of the vertical tabs
+  // move fields out of the vertical tabs
   // I like how the form looks with the tabs in. Much cleaner.
   // So I'm keeping them.
   $form['biblio_authors'] = $form['biblio_tabs']['biblio_authors'];
@@ -115,6 +119,21 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
       unset($form['biblio_tabs'][$tab]);
     }
   }
+
+  $form['biblio_tabs'][5]['url'] = array(
+    '#type' => 'container',
+    '#prefix' => '<h4>'.t('Related External Link').'</h4>',
+    'biblio_url' => $form['biblio_tabs'][5]['biblio_url'],
+    'biblio_url_title' => array(
+      '#default_value' => isset($node->biblio_url_title)?$node->biblio_url_title:'',
+      '#type' => 'textfield',
+      '#title' => 'Title',
+      '#description' => t('Text to show when linking to external URL.'),
+    )
+  );
+
+  $form['biblio_tabs'][5]['url']['biblio_url']['#title'] = t('URL');
+  unset($form['biblio_tabs'][5]['biblio_url']);
 
   $years = variable_get('biblio_years_text', array(9999 => t('Submitted'), 9998 => t('In Press')));
   $form['biblio_year']['#description'] = implode(', ', $years).', or YYYY';
