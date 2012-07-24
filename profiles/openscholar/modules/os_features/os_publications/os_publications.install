@@ -1,7 +1,27 @@
 <?php
 
+function os_publications_install() {
+  db_add_field('biblio', 'biblio_url_title', array(
+    'type' => 'varchar',
+    'length' => 128,
+    'not null' => FALSE,
+    'description' => 'A title to go with the Relevant URL',
+  ));
+}
+
+function os_publications_uninstall() {
+  db_drop_field('biblio', 'biblio_url_title');
+}
+
 function os_publications_enable() {
   _os_publications_update_field_data();
+
+  // place it behind import/export modules
+  db_update('system')
+    ->fields(array('weight' => 20))
+    ->condition('name', 'os_publications', '=')
+    ->condition('type', 'module', '=')
+    ->execute();
 }
 
 /*
