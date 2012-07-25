@@ -86,10 +86,6 @@ function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = false)
   }
   $bundles = array();
 
-  if ($ret_all || in_array(1, $privacy)) {
-    $bundles['page'] = 'Page';
-  }
-
   //Reset static feature list
   $features = spaces_features($space_type, $reset);
   $site_features = variable_get('spaces_features', array());

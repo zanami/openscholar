@@ -21,6 +21,7 @@ function os_spaces_presets() {
     'variable' => array(
       'spaces_features' => array(
         'os' => '1',
+        'os_pages' => '1',
         'os_announcements' => '1',
         'os_image_gallery' => '1',
         'os_links' => '1',
@@ -46,6 +47,7 @@ function os_spaces_presets() {
     'variable' => array(
       'spaces_features' => array(
         'os' => '1',
+        'os_pages' => '1',
         'os_announcements' => '1',
         'os_image_gallery' => '1',
         'os_links' => '1',
