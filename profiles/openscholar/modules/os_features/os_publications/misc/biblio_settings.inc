@@ -2500,23 +2500,7 @@ $biblio_contributor_type = array(
 
 $biblio_contributor_type_data = array(
   array('auth_type'=>1,'title'=>'Author','hint'=>''),
-  array('auth_type'=>2,'title'=>'Secondary Author','hint'=>''),
-  array('auth_type'=>3,'title'=>'Tertiary Author','hint'=>''),
-  array('auth_type'=>4,'title'=>'Subsidiary Author','hint'=>''),
-  array('auth_type'=>5,'title'=>'Corporate Author','hint'=>''),
-  array('auth_type'=>10,'title'=>'Series Editor','hint'=>''),
-  array('auth_type'=>11,'title'=>'Performers','hint'=>''),
-  array('auth_type'=>12,'title'=>'Sponsor','hint'=>''),
-  array('auth_type'=>13,'title'=>'Translator','hint'=>''),
-  array('auth_type'=>14,'title'=>'Editor','hint'=>''),
-  array('auth_type'=>15,'title'=>'Counsel','hint'=>''),
-  array('auth_type'=>16,'title'=>'Series Director','hint'=>''),
-  array('auth_type'=>17,'title'=>'Producer','hint'=>''),
-  array('auth_type'=>18,'title'=>'Department','hint'=>''),
-  array('auth_type'=>19,'title'=>'Issuing Organization','hint'=>''),
-  array('auth_type'=>20,'title'=>'International Author','hint'=>''),
-  array('auth_type'=>21,'title'=>'Recipient','hint'=>''),
-  array('auth_type'=>22,'title'=>'Advisor','hint'=>'')
+  array('auth_type'=>2,'title'=>'Editor','hint'=>''),
 );
 
 

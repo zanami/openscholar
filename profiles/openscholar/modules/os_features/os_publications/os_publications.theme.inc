@@ -180,5 +180,36 @@ function theme_os_publications_export_links($variables) {
   }
 
   return theme('ctools_dropdown', array('links' => $links, 'title' => $title, 'attributes' => array('class' => array('biblio-export-buttons'))));
+}
 
+
+/**
+ * @param $form
+ * @return unknown_type
+ */
+function theme_os_publications_contributors($variables) {
+  $form = $variables['form'];
+  $rows = array();
+  $display_role = true;
+  $headers = array('', t('Name'), t('Role'), t('Weight'));
+  drupal_add_tabledrag($form['#id'], 'order', 'sibling', 'rank');
+
+  foreach (element_children($form) as $key) {
+    // No need to print the field title every time.
+//    unset($form[$key]['name']['#title'], $form[$key]['auth_type']['#title'], $form[$key]['auth_category']['#title']);
+    // Add class to group weight fields for drag and drop.
+    $form[$key]['rank']['#attributes']['class'] = array('rank');
+
+    // Build the table row.
+    $row = array('');
+    $row[] = array('data' => drupal_render($form[$key]['name']).drupal_render($form[$key]['auth_category']),
+                   'class' => array('biblio-contributor'));
+    $row[] = array('data' => drupal_render($form[$key]['auth_type']),
+                     'class' => array('biblio-contributor-type'));
+    $row[] = drupal_render($form[$key]['rank']);
+    $rows[] = array('data' => $row, 'class' => array('draggable'));
+  }
+  $output = theme('table', array('header' => $headers, 'rows' => $rows, 'attributes' => array('id' => $form['#id'])));
+  //$output .= drupal_render_children($form);
+  return $output;
 }

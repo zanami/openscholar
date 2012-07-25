@@ -49,9 +49,14 @@ class space_taxonomy extends space_type_purl {
         $fields = field_info_fields();
         foreach ($fields as $name => $field) {
           if ($field['type'] == 'taxonomy_term_reference' && $vocab == $field['settings']['allowed_values'][0]['vocabulary']) {
-            $term = isset($node->{$name}['und'][0]['taxonomy_term'])
-                        ? $node->{$name}['und'][0]['taxonomy_term']
-                        : taxonomy_term_load($node->{$name}['und'][0]['tid']);
+            $term = NULL;
+            if (isset($node->{$name}['und'][0]['taxonomy_term'])) {
+              $term = $node->{$name}['und'][0]['taxonomy_term'];
+            }
+            elseif (isset($node->{$name}['und'][0]['tid'])) {
+              $term = taxonomy_term_load($node->{$name}['und'][0]['tid']);
+            }
+
             if ($term) {
               $this->router_term($term);
               return;
