@@ -819,6 +819,9 @@ function spaces_init() {
   // Simplist case, get the node.
   if ($object = menu_get_object()) {
     $type = 'node';
+  } elseif ($object = menu_get_object('comment')) {
+    $type = 'node';
+    $object = node_load($object->nid);
   }
   // user has various load functions
   elseif (($item = menu_get_item()) && isset($item['map'])) {
