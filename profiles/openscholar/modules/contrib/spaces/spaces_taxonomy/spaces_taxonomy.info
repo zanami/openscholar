@@ -9,9 +9,9 @@ dependencies[] = taxonomy
 files[] = spaces_taxonomy.module
 files[] = plugins/space_taxonomy.inc
 
-; Information added by drupal.org packaging script on 2012-02-16
-version = "7.x-3.x-dev"
+; Information added by drupal.org packaging script on 2012-05-20
+version = "7.x-3.0-alpha1+2-dev"
 core = "7.x"
 project = "spaces"
-datestamp = "1329352606"
+datestamp = "1337476038"
 
