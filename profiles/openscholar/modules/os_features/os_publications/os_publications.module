@@ -62,6 +62,13 @@ function os_publications_theme_registry_alter(&$reg) {
     'function' => 'theme_os_publications_export_links',
   ));
   $reg['biblio_export_links']['includes'][] = drupal_get_path('module', 'os_publications').'/os_publications.theme.inc';
+
+  $reg['biblio_contributors'] = array_merge($reg['biblio_contributors'], array(
+    'file' => 'os_publications.theme.inc',
+    'theme path' => drupal_get_path('module', 'os_publications'),
+    'function' => 'theme_os_publications_contributors',
+  ));
+  $reg['biblio_contributors']['includes'][] = drupal_get_path('module', 'os_publications').'/os_publications.theme.inc';
 }
 
 /**
@@ -91,10 +98,26 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   // move fields out of the vertical tabs
   // I like how the form looks with the tabs in. Much cleaner.
   // So I'm keeping them.
-  $form['biblio_authors'] = $form['biblio_tabs']['biblio_authors'];
-  $form['biblio_authors']['#collapsible'] = FALSE;
+  $form['biblio_authors'] = &$form['biblio_tabs']['biblio_authors'];
   unset($form['biblio_authors']['#group']);
+  $form['biblio_authors']['add_more']['#value'] = t('Add Another Field');
+  $form['biblio_authors']['#collapsible'] = FALSE;
+  foreach ($form['biblio_authors']['biblio_contributors'] as $k => &$f) {
+    if (is_array($f) && strpos($k, '#') !== 0) {
+      $f['auth_category']['#type'] = 'hidden';
+      if (count($f['auth_category']['#options']) > 1) {
+        $form['biblio_authors']['#attached']['js'] = array(drupal_get_path('module', 'os_publications').'/misc/os_publications.js');
+      }
+    }
+  }
+
+
+  // We're coming from biblio's ajax callback. It requires the form structure for authors be unchanged.
+  if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Add Another Field')) {
+    return;
+  }
   unset($form['biblio_tabs']['biblio_authors']);
+
   $form['biblio_tabs']['biblio_full_text']['body'] = $form['body'];
   unset($form['body']);
 
@@ -147,6 +170,8 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   );
 
   unset($form['biblio_tabs']);
+
+  dpm($form);
 }
 
 /**
