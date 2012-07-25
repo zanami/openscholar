@@ -44,9 +44,12 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       
       parent::addMappingsCCK(); //map additional cck fields
       
-      
+      /** migrate <= 2.3 files are deprecated! **
       $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
       $this->addFieldMapping('field_file_upload', 'file_upload')->arguments($associated_files_args);
+      **/
+      // MigrateFileURI is default file, no need to specify
+      //$this->addFieldMapping('field_file_upload')
       
       /* Unmapped source fields.  Mark them as Do Not Map, so the UI knows they're intentionally ignored */
       $this->addUnmigratedSources(array('vid', 'moderate', 'translate', 'type', 'name'), t('DNM'));

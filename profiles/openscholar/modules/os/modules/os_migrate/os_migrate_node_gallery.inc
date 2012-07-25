@@ -7,7 +7,7 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     // Let AbstractNode handle the source, dest, and map.
     parent::__construct('media_gallery', 'gallery'); 
     //in d7, images are fields of the media gallery.  in 6, images were a separate content type.  errr.
-    
+    $this->dependencies = array(); //just for dev, lets skip the horrible inline shenanigans
     
     //a separate import for projects?
     $this->description = t('OS galleries');    
@@ -31,9 +31,24 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     } 
     
     //copy d6 files
-    $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
-    $this->addFieldMapping('media_gallery_media', 'prepared_files')->arguments($associated_files_args);
+//    $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
+//    $this->addFieldMapping('media_gallery_media', 'prepared_files')->arguments($associated_files_args);
+
+    //field: media_gallery_media
+    $this->addFieldMapping('media_gallery_media', 'media_gallery_media_'); //clean up the underscore elsewhere first
+    $this->addFieldMapping('media_gallery_media:source_dir')
+      ->defaultValue(variable_get('os_migrate_files', FALSE)); //adequate or does 2.4 need full path?
+      
+    //$this->addFieldMapping('media_gallery_media:alt', 'image_alt');
+    //$this->addFieldMapping('media_gallery_media:title', 'image_title');
+    $this->addFieldMapping('media_gallery_media:description', 'image_description');
+    $this->addFieldMapping('media_gallery_media:display', 'image_display');
+    $this->addFieldMapping('media_gallery_media:language', 'image_language');
     
+    $this->addUnmigratedDestinations(array('media_gallery_media:file_class', 'media_gallery_media:destination_dir', 'media_gallery_media:destination_file', 'media_gallery_media:file_replace', 'media_gallery_media:preserve_files'), t('DNM')); //happy with defaults    
+    
+    
+    $this->addFieldMapping('og_group_ref')->defaultValue(1);
   }
   
   public function sourceFields() {
@@ -81,7 +96,7 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     $query->fields('f', array('filepath', 'timestamp'));
     
     $query->join('node', 'img', 'img.nid = cti.nid');
-    $query->addField('img', 'title');
+    $query->fields('img', array('title', 'language'));
     
     //gallery will be sorted in order that these images are added.  therefore we order them by d6's view sort parameters
     $query->orderBy('img.sticky', 'DESC'); 
@@ -93,13 +108,16 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     $query->condition('img_og.group_nid', $og_id, '=');
     
     $result = $query->execute();
-    $current_row->prepared_files = parent::os_migrate_prepare_files($result);
+    //$current_row->prepared_files = parent::os_migrate_prepare_files($result);
+    //this gets subfields, but media_gallery_media still has nothing
+    $fields = array('language' => 'language', 'description' => 'description', 'display' => 'display');
+    parent::os_migrate_prepare_files_v24($result, $current_row, 'media_gallery_media', $fields);
 
-    $current_row->purl = array(
+  /*  $current_row->purl = array(
     	'value' => $current_row->value,
       'provider' => $current_row->provider,
       'id' => $current_row->nid,
     );
-    
+    */
   } 
 }

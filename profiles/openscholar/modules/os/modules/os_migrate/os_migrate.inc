@@ -82,6 +82,34 @@ abstract class OSMigration extends Migration {
     return $output;
   }
   
+  //update for previous function for v2.4 api.  instead of json, we use row->field:subfield.  
+  //we could provide db aliases and map to those, except that some fields (ie image galleries) have multiple values
+  function os_migrate_prepare_files_v24($results, &$row, $field_name, $extra_fields = array()) {
+    //or should we fetch row here?
+    //$fields = array('alt', 'title') + $extra_fields; //assoc array for src/dst?
+    
+    //d6 col -> d7 field
+    $fields = array('filepath' => '') + $extra_fields;
+    
+    foreach ($results as $result) {
+          //also need a blank field for file itself.
+      foreach ($fields as $col => $field) {
+        $delta = "${field_name}_${field}";
+         
+        if (!isset($row->$delta)) {
+          $row->$delta = array();
+        }
+      
+   //     if (isset($result->$col)) {
+          @array_push($row->$delta, $result->{$col}); //yes, pushing null when there's no result is correct.  it's a placeholder
+     //   } else {
+       //   array_push($row->$delta, NULL); //placeholder
+       // }
+      }
+    }
+  }
+  
+  
   /**
    * Gets files owned by node revision
    */
