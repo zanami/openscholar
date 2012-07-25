@@ -52,7 +52,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       //$this->addFieldMapping('field_file_upload')
       
       /* Unmapped source fields.  Mark them as Do Not Map, so the UI knows they're intentionally ignored */
-      $this->addUnmigratedSources(array('vid', 'moderate', 'translate', 'type', 'name'), t('DNM'));
+      $this->addUnmigratedSources(array('vid', 'moderate', 'translate', 'type', 'format_name'), t('DNM'));
 //      $this->addUnmigratedSources(array('oe_vid', 'oe_nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes') ,t('DNM'));
       //moderate appears to have been removed from node.
       //type.  we're doing nodes one type at a time.  type should be handled there.
@@ -96,7 +96,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $source_fields =  array(
     	'nid'   => t('Node ID'),
       'path'  => t('URL Path Alias'),
-      'file_upload' => t('File attachments'), //this may have to move to individual classes
+//      'file_upload' => t('File attachments'), //this may have to move to individual classes
       //'nr.body'	=> t('Node\'s Content')
     );
     
@@ -164,7 +164,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $current_row->path = $results['dst'];
     
     //get file uploads
-    $current_row->file_upload = parent::os_migrate_get_file_uploads($current_row->vid);
+//    $current_row->file_upload = parent::os_migrate_get_file_uploads($current_row->vid);
     // file upload fields aren't in current page type.  
     
     //lanuage should be explicitly undefined instead of blank

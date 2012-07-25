@@ -34,34 +34,55 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
 //    $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
 //    $this->addFieldMapping('media_gallery_media', 'prepared_files')->arguments($associated_files_args);
 
+    /* Field: description */
+    $this->removeFieldMapping('body', 'body'); //node abstract did this, but gallery has description instead of body
+    $this->addFieldMapping('media_gallery_description', 'body')
+      ->defaultValue('i am a description.  why body no add here?');
+    $this->addFieldMapping('media_gallery_description:format')
+        ->defaultValue('filtered_html');
+    $this->addFieldMapping('media_gallery_description:language', 'language');
+
     //field: media_gallery_media
-    $this->addFieldMapping('media_gallery_media', 'media_gallery_media_'); //clean up the underscore elsewhere first
+    
+    $this->addFieldMapping('media_gallery_media', 'media_gallery_media'); 
     $this->addFieldMapping('media_gallery_media:source_dir')
       ->defaultValue(variable_get('os_migrate_files', FALSE)); //adequate or does 2.4 need full path?
       
-    //$this->addFieldMapping('media_gallery_media:alt', 'image_alt');
-    //$this->addFieldMapping('media_gallery_media:title', 'image_title');
-    $this->addFieldMapping('media_gallery_media:description', 'image_description');
-    $this->addFieldMapping('media_gallery_media:display', 'image_display');
-    $this->addFieldMapping('media_gallery_media:language', 'image_language');
+    $this->addFieldMapping('media_gallery_media:description', 'media_gallery_media_description');
+    $this->addFieldMapping('media_gallery_media:display', 'media_gallery_media_display');
+    $this->addFieldMapping('media_gallery_media:language', 'media_gallery_media_language');
     
-    $this->addUnmigratedDestinations(array('media_gallery_media:file_class', 'media_gallery_media:destination_dir', 'media_gallery_media:destination_file', 'media_gallery_media:file_replace', 'media_gallery_media:preserve_files'), t('DNM')); //happy with defaults    
+    $this->addUnmigratedDestinations(array('media_gallery_media:file_class', 'media_gallery_media:destination_dir', 'media_gallery_media:destination_file', 'media_gallery_media:file_replace', 'media_gallery_media:preserve_files', 'media_gallery_image_info_where'), t('DNM')); //happy with defaults
+
+    $this->addFieldMapping('media_gallery_format')
+      ->defaultValue('lightbox'); //use the lightbox by default.  no previous setting to import.
+    $this->addFieldMapping('media_gallery_lightbox_extras')
+      ->defaultValue(0); //no title/description in lightbox because no images have them.  no previous setting
+      
+      
     
     
     $this->addFieldMapping('og_group_ref')->defaultValue(1);
   }
   
   public function sourceFields() {
-    $source_fields =  array(
-      'prepared_files' => t('Images in gallery, built during prepare_row'),
+    $fields = parent::sourceFields();
+    
+    $fields +=  array(
+    	'media_gallery_media' => t('Images in gallery.'),
+    	'media_gallery_media_description' => t('Image\'s text description'),
+    	'media_gallery_media_display' => t('Image\'s listing status'),
+      'media_gallery_media_language' => t('Language used in image\'s description'),
     );
     
-    return $source_fields;
+    return $fields;
   }
   
-  public function query() {
-    $query = parent::d6_db_select('node', 'n')->fields('n', $this->getNodeFields());
-    $query->condition('n.type', 'gallery', '=');
+  public function query($content_type) {
+    $query = parent::query($content_type);
+    
+    //$query = parent::d6_db_select('node', 'n')->fields('n', $this->getNodeFields());
+    //$query->condition('n.type', 'gallery', '=');
     
 
     
@@ -73,8 +94,9 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     
   }
   function prepareRow($current_row) {
-    $current_row;
+    parent::prepareRow($current_row);
     
+        
     //In testing there were a handful of instances of images in someone else's gallery.
     //Views' spaces_current_space prevented those from showing up in the gallery.
     //Let's just remove them here instead by checking against the og group id. 
@@ -95,8 +117,9 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     $query->join('files', 'f', 'f.fid = cti.field_gallery_image_fid');
     $query->fields('f', array('filepath', 'timestamp'));
     
+    //join associated image node as img.  a little confusing since we have two nodes here
     $query->join('node', 'img', 'img.nid = cti.nid');
-    $query->fields('img', array('title', 'language'));
+    $query->fields('img', array('title', 'language')); //no galleries or images actually have a language...
     
     //gallery will be sorted in order that these images are added.  therefore we order them by d6's view sort parameters
     $query->orderBy('img.sticky', 'DESC'); 
@@ -110,8 +133,15 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     $result = $query->execute();
     //$current_row->prepared_files = parent::os_migrate_prepare_files($result);
     //this gets subfields, but media_gallery_media still has nothing
-    $fields = array('language' => 'language', 'description' => 'description', 'display' => 'display');
+    $fields = array('language' => 'language', 'description' => 'description', 'list' => 'display');
     parent::os_migrate_prepare_files_v24($result, $current_row, 'media_gallery_media', $fields);
+    
+    //description may be serialized array
+    if (isset($current_row->media_gallery_media_description) && is_string($current_row->media_gallery_media_description)) {
+      if ($desc = @unserialize($current_row->media_description)) {
+        $current_row->media_gallery_media_description = (isset($desc['description'])) ? $desc['description'] : '';
+      }
+    }
 
   /*  $current_row->purl = array(
     	'value' => $current_row->value,

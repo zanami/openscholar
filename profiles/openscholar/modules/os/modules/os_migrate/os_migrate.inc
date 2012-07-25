@@ -94,7 +94,7 @@ abstract class OSMigration extends Migration {
     foreach ($results as $result) {
           //also need a blank field for file itself.
       foreach ($fields as $col => $field) {
-        $delta = "${field_name}_${field}";
+        $delta = (strlen($field)) ? "${field_name}_${field}" : $field_name;
          
         if (!isset($row->$delta)) {
           $row->$delta = array();
