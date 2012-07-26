@@ -69,6 +69,13 @@ function os_publications_theme_registry_alter(&$reg) {
     'function' => 'theme_os_publications_contributors',
   ));
   $reg['biblio_contributors']['includes'][] = drupal_get_path('module', 'os_publications').'/os_publications.theme.inc';
+
+  $reg['biblio_download_links'] = array_merge($reg['biblio_download_links'], array(
+    'file' => 'os_publications.theme.inc',
+    'theme path' => drupal_get_path('module', 'os_publications'),
+    'function' => 'theme_os_publications_download_links',
+  ));
+  $reg['biblio_download_links']['includes'][] = drupal_get_path('module', 'os_publications').'/os_publications.theme.inc';
 }
 
 /**
@@ -98,16 +105,14 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   // move fields out of the vertical tabs
   // I like how the form looks with the tabs in. Much cleaner.
   // So I'm keeping them.
-  $form['biblio_authors'] = &$form['biblio_tabs']['biblio_authors'];
+  $form['biblio_authors'] = $form['biblio_tabs']['biblio_authors'];
   unset($form['biblio_authors']['#group']);
   $form['biblio_authors']['add_more']['#value'] = t('Add Another Field');
   $form['biblio_authors']['#collapsible'] = FALSE;
-  foreach ($form['biblio_authors']['biblio_contributors'] as $k => &$f) {
+  $form['biblio_authors']['#attached']['js'] = array(drupal_get_path('module', 'os_publications').'/misc/os_publications.js');
+  foreach ($form['biblio_authors']['biblio_contributors'] as $k => $f) {
     if (is_array($f) && strpos($k, '#') !== 0) {
-      $f['auth_category']['#type'] = 'hidden';
-      if (count($f['auth_category']['#options']) > 1) {
-        $form['biblio_authors']['#attached']['js'] = array(drupal_get_path('module', 'os_publications').'/misc/os_publications.js');
-      }
+      $form['biblio_authors']['biblio_contributors'][$k]['auth_category']['#type'] = 'hidden';
     }
   }
 
@@ -170,8 +175,6 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   );
 
   unset($form['biblio_tabs']);
-
-  dpm($form);
 }
 
 /**
