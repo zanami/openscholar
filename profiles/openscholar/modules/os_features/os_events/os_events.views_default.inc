@@ -378,6 +378,7 @@ function os_events_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'event' => 'event',
   );
+  $handler->display->display_options['block_description'] = 'Upcoming Events';
   $export['os_events'] = $view;
 
   return $export;
