@@ -258,7 +258,6 @@ function os_publications_node_delete($node) {
  * @param unknown_type $node
  */
 function _os_publications_clear_cache($node) {
-  dpm($node);
   $frags = array();
   $frags[] = 'type:'.$node->biblio_type;
   $frags[] = 'year:'.$node->biblio_year;
@@ -271,7 +270,6 @@ function _os_publications_clear_cache($node) {
     $sel->condition('cid', '%space:'.$space->id.'%', 'LIKE');
   }
   $rows = $sel->execute();
-  dpm($rows);
 
   foreach ($rows as $r) {
     $check = str_replace($frags, '|', $r->cid);
