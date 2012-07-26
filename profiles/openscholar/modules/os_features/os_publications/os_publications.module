@@ -233,3 +233,52 @@ function os_publications_form_biblio_import_form_alter(&$form, $form_state) {
   // unset taxonomy settings
   unset($form['import_taxonomy']);
 }
+
+function os_publications_node_insert($node) {
+  if ($node->type == 'biblio') {
+    _os_publications_clear_cache($node);
+  }
+}
+
+function os_publications_node_update($node) {
+  if ($node->type == 'biblio') {
+    _os_publications_clear_cache($node);
+  }
+}
+
+function os_publications_node_delete($node) {
+  if ($node->type == 'biblio') {
+    _os_publications_clear_cache($node);
+  }
+}
+
+// debug function -- remove it when done testing
+function os_publications_node_view($node) {
+  if ($node->type == 'biblio') {
+    _os_publications_clear_cache($node);
+  }
+}
+
+/**
+ * Puts together a list of all the cids that a given node would affect
+ * And then clears them from the cache table
+ * @param unknown_type $node
+ */
+function _os_publications_clear_cache($node) {
+  dpm($node);
+  $frags = array();
+  $frags[] = 'type:'.$node->biblio_type;
+  $frags[] = 'year:'.$node->biblio_year;
+  foreach ($node->biblio_contributors as $c) {
+    $frags[] = 'author:'.$c->cid;
+  }
+
+  $rows = db_select('cache_biblio_lists', 'bl')->fields('bl', array('cid'))->execute();
+
+  foreach ($rows as $r) {
+    $check = str_replace($frags, '|', $r->cid);
+    if (strpos($check, '|') !== FALSE) {
+      cache_clear_all($r->cid, 'cache_biblio_lists');
+    }
+  }
+}

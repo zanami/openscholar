@@ -1,5 +1,11 @@
 <?php
 
+function os_publications_schema() {
+  $schema['cache_biblio_lists'] = drupal_get_schema_unprocessed('system', 'cache');
+  $schema['cache_biblio_lists']['description'] = 'Cache table for biblio lists module.';
+  return $schema;
+}
+
 function os_publications_install() {
   db_add_field('biblio', 'biblio_url_title', array(
     'type' => 'varchar',
