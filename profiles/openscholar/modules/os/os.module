@@ -226,7 +226,7 @@ function _os_nice_menus_direction($region) {
  *
  * Builds cp widgets for the menus
  */
-function os_os2s_widget(){
+function os_os_widget(){
   $blocks = array();
   ctools_include('menu', 'os');
 
