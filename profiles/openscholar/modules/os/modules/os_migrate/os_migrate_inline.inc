@@ -77,25 +77,32 @@ class ImageInlineOSMigration extends OSMigration {
       array('fid' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE,)),
       //array('os_inline_image_migrate_id' => array('type'=>'varchar'), 'length'=>255, 'not null'=>TRUE, 'description' => 'Unique ids for migrate'),
       MigrateDestinationFile::getKeySchema());
-    $this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
+    //$this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
       
+    $this->destination = new MigrateDestinationFile('file', 'MigrateFileURI');
+    $this->addFieldMapping('value', 'uri');
+    $this->addFieldMapping('destination_file', 'filename');
+    $this->addFieldMapping('uid', 'uid');
+    
+    $this->addFieldMapping('timestamp', 'timestamp');
     
     // Field mappings //
     $this->addSimpleMappings(array('uid', 'filename', 'filemime', 'status', 'timestamp', 'uri'));
    
     //ignored
-    $this->addUnmigratedDestinations(array('contents'), t('DNM')); //only used in copying blobs to files
+        $this->addUnmigratedDestinations(array('file_replace', 'preserve_files'), t('DNM'));
   }
   
-  public function query() {
-    $fid_query = parent::d6_db_select('content_field_os_inline_image', 'cf')
-      ->fields('cf', array('field_os_inline_image_fid'))
+  public function query() {     
+      
+    $query = parent::d6_db_select('content_field_os_inline_image', 'cf')
+      ->fields('cf', array('field_os_inline_image_fid', 'nid'))
       ->isNotNull('field_os_inline_image_fid')
-      ->distinct();
+      ->groupBy('nid');
+    $query->join('files', 'f', 'f.fid = cf.field_os_inline_image_fid');
+    $query->fields('f', array('uid', 'filename', 'timestamp',  'filepath', 'fid'));
+      
     
-    $query = parent::d6_db_select('files', 'f')
-      ->fields('f', array('uid', 'filename', 'filemime', 'status', 'timestamp', 'fid', 'filepath'))
-      ->condition('f.fid', $fid_query, 'IN');
     
     return $query;
   }
@@ -128,7 +135,10 @@ class EmbedInlineOSMigration extends OSMigration {
       MigrateDestinationMedia::getKeySchema());
       //file dest is no good heree.  oembed:// is unsupported
     
-    $this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
+    $this->destination = new MigrateDestinationFile('file', 'MigrateFileURI');
+    $this->addFieldMapping('value', 'uri');
+    $this->addFieldMapping('destination_file', 'filename');
+    $this->addFieldMapping('uid', 'uid');
       
     //mappings
     $this->addSimpleMappings(array('uid', 'status', 'uri', 'filemime', 'filename'));
@@ -146,7 +156,7 @@ class EmbedInlineOSMigration extends OSMigration {
       ->isNotNull('field_os_inline_oembed_url')
       ->groupBy('field_os_inline_oembed_url');
     $query->leftJoin('node', 'n', 'cf.nid = n.nid');
-    $query->fields('n', array('uid', 'status', 'created'));
+    $query->fields('n', array('uid', 'status', 'created', 'nid'));
     return $query;
   }
   
@@ -180,8 +190,12 @@ class HTMLInlineOSMigration extends OSMigration {
     $this->map = new MigrateSQLMap($this->machineName,
       array('id' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE,)),
       MigrateDestinationFile::getKeySchema());
-    $this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
+    //$this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
       
+    $this->destination = new MigrateDestinationFile('file', 'MigrateFileURI');
+    $this->addFieldMapping('value', 'uri');
+    $this->addFieldMapping('destination_file', 'filename');
+    $this->addFieldMapping('uid', 'uid');
     
     // Field mappings //
 //    $this->addSimpleMappings(array('uid', 'filename', 'filemime', 'status', 'timestamp', 'uri'));
@@ -227,11 +241,12 @@ class HTMLInlineOSMigration extends OSMigration {
       ->fields('nr', array('uid'))
       ->condition('nr.vid', $row->vid, '=');
     $query->join('node', 'n', 'n.nid = nr.nid');
-    $query->fields('n', array('status'));
+    $query->fields('n', array('status', 'nid'));
     $node = $query->execute()->fetchAssoc();
       
     $row->status = $node['status'];
     $row->uid = $node['uid'];
+    $row->nid = $node['nid'];
     
     //let media/oembed fetch file data
     $f = file_uri_to_object($row->uri);
