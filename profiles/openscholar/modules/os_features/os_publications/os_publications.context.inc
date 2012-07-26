@@ -15,7 +15,7 @@ function os_publications_context_default_contexts() {
   $context->api_version = 3;
   $context->name = 'publications_publications';
   $context->description = 'List of publications';
-  $context->tag = 'OS Features';
+  $context->tag = 'OS features';
   $context->conditions = array(
     'node' => array(
       'values' => array(
