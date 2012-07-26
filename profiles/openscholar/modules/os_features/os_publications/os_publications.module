@@ -252,13 +252,6 @@ function os_publications_node_delete($node) {
   }
 }
 
-// debug function -- remove it when done testing
-function os_publications_node_view($node) {
-  if ($node->type == 'biblio') {
-    _os_publications_clear_cache($node);
-  }
-}
-
 /**
  * Puts together a list of all the cids that a given node would affect
  * And then clears them from the cache table
@@ -270,10 +263,15 @@ function _os_publications_clear_cache($node) {
   $frags[] = 'type:'.$node->biblio_type;
   $frags[] = 'year:'.$node->biblio_year;
   foreach ($node->biblio_contributors as $c) {
-    $frags[] = 'author:'.$c->cid;
+    $frags[] = 'author:'.$c['cid'];
   }
 
-  $rows = db_select('cache_biblio_lists', 'bl')->fields('bl', array('cid'))->execute();
+  $sel = db_select('cache_biblio_lists', 'bl')->fields('bl', array('cid'));
+  if (module_exists('spaces') && $space = spaces_get_space()) {
+    $sel->condition('cid', '%space:'.$space->id.'%', 'LIKE');
+  }
+  $rows = $sel->execute();
+  dpm($rows);
 
   foreach ($rows as $r) {
     $check = str_replace($frags, '|', $r->cid);

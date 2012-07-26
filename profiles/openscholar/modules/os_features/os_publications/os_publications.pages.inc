@@ -60,6 +60,11 @@ function _os_publications_cache_key($args) {
     $key[] = $arg_list['o'];
   }
 
+  if (module_exists('spaces') && $space = spaces_get_space()) {
+    $key[] = 'space';
+    $key[] = $space->id;
+  }
+
   return implode(':', $key);
 }
 
