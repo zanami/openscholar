@@ -1,0 +1,13 @@
+<?php 
+
+/**
+ * Perform install-time configurations for events
+ */
+function os_events_install(){
+  
+  //Store authenticated users 'Date' preferences so they see the same month when they revisit the page
+  variable_set('calendar_track_date',1);
+  
+  //Use colorbox for the calendar
+  variable_set('calendar_add_colorbox',1);
+}
