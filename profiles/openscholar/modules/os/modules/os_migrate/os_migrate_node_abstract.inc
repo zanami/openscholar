@@ -29,18 +29,29 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       
       /* mappings */
       $this->addSimpleMappings(array('created','changed','status','promote','sticky','comment',
-                                     'title', 'tnid', 'uid'));
+                                     'title', 'tnid', 'uid', 'nid', 'type'));
+      
       $this->addFieldMapping('language', 'language')->defaultValue('und');
-      $this->addFieldMapping('nid', 'nid');
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
       $this->addFieldMapping('revision_uid', 'nr_uid');
-      $this->addFieldMapping('body', 'body')
-        ->arguments(array('format' => array('source_field'=>'format')));
-        //>arguments(array('format'=>'filtered_html'));
+      
+      $this->addFieldMapping('body', 'body');
+      $this->addFieldMapping('body:format', 'format');
+      $this->addFieldMapping('body:language', 'language')->defaultValue('und');
+      $this->addFieldMapping('body:summary', 'teaser');
+      
       $this->addFieldMapping('log', 'log'); //from nr
       $this->addFieldMapping('revision')->defaultValue(TRUE); //create a new revision.  vid is automatically migrated
       $this->addFieldMapping('path', 'path');
       $this->addFieldMapping('pathauto')->defaultValue(FALSE); //do not create new paths.  paths already exist.
+      
+      $force_og = variable_get('os_migrate_force_og', 0);    //see dev settings
+      if (!$force_og) {   
+        $this->addFieldMapping('og_group_ref', 'group_nid');
+      } else {
+        $this->addFieldMapping('og_group_ref')
+          ->defaultValue($force_og);
+      }
       
       parent::addMappingsCCK(); //map additional cck fields
       
@@ -71,7 +82,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   
   public function query($content_type) {
     $query = parent::d6_db_select('node', 'n')
-                    ->fields('n', $this->getNodeFields())
+                    ->fields('n')
                     ->condition('n.type', $content_type, '=');
                     
     //nodes to test files with:
@@ -80,13 +91,15 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     //$query->condition('n.nid', '13701', '='); //prod node with multiple images
     
     $query->join('node_revisions', 'nr', 'n.vid = nr.vid');
-    $query->fields('nr', array('body', 'uid', 'log'));
+    $query->fields('nr', array('body', 'uid', 'log', 'teaser'));
     
     $query->join('filter_formats', 'ff', 'nr.format = ff.format');
     $query->addField('ff', 'name', 'format_name');
     $query->orderBy('n.changed');
-               
 
+    $query->join('og_ancestry', 'og', 'n.nid = og.nid');
+    $query->fields('og', array('group_nid'));
+      
     parent::addQueryCCK($query, $content_type); //include joins for cck fields base on class's cck_fields array
     
     return $query;
@@ -128,17 +141,6 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       MigrateDestinationNode::getKeySchema()
     );
   }
-  /**
-   * @function getNodeFields()
-   *
-   *	helper function returns array of fields in node
-   **/  
-  function getNodeFields() {
-    return array('nid', 'vid', 'type','language','title','uid','status','created',
-                 'changed','comment','promote','moderate','sticky','tnid','translate',
-    );
-  }
-  
 
 
 
@@ -188,5 +190,6 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     parent::prepareRowCCK($current_row);
     
   }
+
   
 }

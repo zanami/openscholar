@@ -412,10 +412,8 @@ abstract class OSMigration extends Migration {
     }
     
     $entity = file_load($file['destid1']);
-    $uri = explode('/',$entity->uri);
-    $uri = array_slice($uri, 3);
-    $uri = implode('/', $uri);
-      
+    $uri = $this->_uri_trim($entity->uri);
+        
     $dom = filter_dom_load($row->body);
     $links = $dom->getElementsByTagName('a');
     $update = FALSE;
@@ -568,9 +566,11 @@ abstract class OSMigration extends Migration {
     } 
     
     $uri = str_replace('public://', '', $entity->uri);
-    $a = explode('/', $uri);
-    $a = array_slice($a, 3);
-    $uri = implode('/', $a);
+    if (strpos($uri, '/') !== FALSE) {
+      $a = explode('/', $uri);
+      $a = array_slice($a, 2);
+      $uri = implode('/', $a);
+    }
     
     $dom = filter_dom_load($row->body);
     $images = $dom->getElementsByTagName('img');
@@ -685,6 +685,15 @@ abstract class OSMigration extends Migration {
     $body = preg_replace('/.*\<body\>/m', '', $body); //remove html, body
     $body = preg_replace('/<\/body>.*/m', '', $body); //remove closing tags
     return $body;
+  }
+  
+  //remove public:// or whatever :// appears before uri
+  function _uri_trim($uri) {
+    $pattern = '/:\/\//';
+    if (preg_match($pattern, $uri)) {
+      $uri = preg_replace($pattern, '', $uri);
+    }
+    return $uri;
   }
   
   //file entities have no field for og_group_ref.  update file_usage

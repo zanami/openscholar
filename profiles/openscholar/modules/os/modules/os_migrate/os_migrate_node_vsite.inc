@@ -16,7 +16,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
   }
   
   public function query() {
-    $query = parent::d6_db_select('node', 'n')->fields('n', $this->getNodeFields());
+    $query = parent::d6_db_select('node', 'n')->fields('n');
     $query->condition('n.type', 'vsite', '=');
     
     $query->join('purl', 'p', 'n.nid = p.id');
