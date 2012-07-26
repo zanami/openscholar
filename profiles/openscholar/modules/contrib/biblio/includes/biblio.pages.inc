@@ -554,7 +554,7 @@ function _biblio_sort_tabs() {
   $sort_links = array();
   $tabs = variable_get('biblio_sort_tabs_style', 0);
   $uri = drupal_parse_url(request_uri());
-  $uri['path'] = variable_get('biblio_base', 'biblio');
+  $uri['path'] = $_GET['q'];
   if (substr($uri['path'], 0, 1) == '/') $uri['path'] = substr($uri['path'], 1);
 
   $default = array(

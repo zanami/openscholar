@@ -11,9 +11,61 @@ function os_publications_overview() {
     }
   }
 
-  module_load_include('inc', 'biblio', 'includes/biblio.pages');
+  $ckey = _os_publications_cache_key($args);
+  if ($cache = cache_get($ckey, 'cache_biblio_lists')) {
+    return $cache->data;
+  }
 
-  return call_user_func_array('biblio_page', $args);
+  module_load_include('inc', 'biblio', 'includes/biblio.pages');
+  $output = call_user_func_array('biblio_page', $args);
+
+  // handle caching
+  cache_set($ckey, $output, 'cache_biblio_lists');
+
+  return $output;
+}
+
+function _os_publications_cache_key($args) {
+  $info = array(
+    'func_args' => $args,
+    'uri' => drupal_parse_url(request_uri()),
+  );
+  module_load_include('inc', 'biblio', 'includes/biblio.pages');
+  $arg_list = biblio_arg_handler($info);
+
+  $key = array();
+  $key[] = 'biblio';
+  if (isset($arg_list['f'])) {
+    foreach ($arg_list['f'] as $l => $d) {
+      if (is_array($d)) {
+        foreach ($d as $v) {
+          $key[] = $l;
+          $key[] = $v;
+        }
+      }
+      else {
+        $key[] = $l;
+        $key[] = $d;
+      }
+    }
+  }
+
+  if (isset($arg_list['s'])) {
+    $key[] = 'sort';
+    $key[] = $arg_list['s'];
+  }
+
+  if (isset($arg_list['o'])) {
+    $key[] = 'order';
+    $key[] = $arg_list['o'];
+  }
+
+  if (module_exists('spaces') && $space = spaces_get_space()) {
+    $key[] = 'space';
+    $key[] = $space->id;
+  }
+
+  return implode(':', $key);
 }
 
 function os_publications_export($format = "tagged", $nid = NULL, $popup = FALSE) {
