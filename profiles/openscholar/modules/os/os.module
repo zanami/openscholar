@@ -247,7 +247,6 @@ function os_os2s_widget(){
 function os_os_widget_alter(&$widget){
   if ($widget['module'] == 'os') {
     $widget += array(
-        'bid' => 'os-' . $widget['delta'],
         'tags' => array(
             'Other'
         ),
@@ -258,7 +257,6 @@ function os_os_widget_alter(&$widget){
   }
   elseif ($widget['module'] == 'node') {
     $widget += array(
-        'bid' => 'node-recent',
         'tags' => array(
             'Content'
         )
