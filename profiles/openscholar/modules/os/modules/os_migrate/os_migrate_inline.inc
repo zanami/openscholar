@@ -12,34 +12,33 @@ class FileInlineOSMigration extends OSMigration {
       array('fid' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE)),
       MigrateDestinationFile::getKeySchema());
       
-    $this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
+    //////$this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
     
-    // Field mappings //
     
-    $this->addSimpleMappings(array('uid', 'filename', 'filemime', 'status', 'timestamp', 'uri'));
-   
+    $this->destination = new MigrateDestinationFile('file', 'MigrateFileURI');
+    $this->addFieldMapping('value', 'uri');
+    $this->addFieldMapping('destination_file', 'filename');
+    $this->addFieldMapping('uid', 'uid');
     
-    //ignored
-    $this->addUnmigratedDestinations(array('contents'), t('DNM')); //only used in copying blobs to files
+    $this->addFieldMapping('timestamp', 'timestamp');
+    //$this->addFieldMapping('path');
+    //$this->addFieldMapping('destination_dir');
+    //$this->addFieldMapping('source_dir');
     
-    //data from inilne table.  may yet need it during prepare or joins
-    $this->addUnmigratedSources(array('vid', 'nid', 'delta', 'field_os_inline_files_fid', 'field_os_inline_files_list', 'field_os_inline_files_data', 'filepath'), t('DNM'));
+    $this->addUnmigratedDestinations(array('file_replace', 'preserve_files'), t('DNM'));
+    $this->addUnmigratedSources(array('nid', 'field_os_inline_files_fid', 'filepath'), t('DNM'));
     
   }
   
     
   public function query() {
-    $fid_query = parent::d6_db_select('content_field_os_inline_files', 'cf')
-      ->fields('cf', array('field_os_inline_files_fid'))
-      ->isNotNull('field_os_inline_files_fid')
-      ->distinct();
-        
-    $query = parent::d6_db_select('files', 'f')
-      ->fields('f', array('uid', 'filename', 'filemime', 'status', 'timestamp', 'fid', 'filepath'))
-      ->condition('f.fid', $fid_query, 'IN');
-    //path, uri
-
-      return $query;
+    $query = parent::d6_db_select('content_field_os_inline_files', 'cf')
+      ->fields('cf', array('field_os_inline_files_fid', 'nid'))
+      ->isNotNull('field_os_inline_files_fid');
+    $query->join('files', 'f', 'f.fid = cf.field_os_inline_files_fid');
+    $query->fields('f', array('uid', 'filename', 'timestamp',  'filepath', 'fid'));
+      
+    return $query;
   }
   
   public function prepareRow($row) {
@@ -55,7 +54,12 @@ class FileInlineOSMigration extends OSMigration {
     
   }
   
-
+  //called immediately after entity is saved
+  public function complete($entity, stdClass $row) {
+    //update file usage here
+    parent::_os_migrate_inline_files_update_file_usage($entity, $row);
+    
+  }
 }
 
 //for migrating media, MigrateDesinationMedia extends File...

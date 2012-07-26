@@ -686,6 +686,14 @@ abstract class OSMigration extends Migration {
     $body = preg_replace('/<\/body>.*/m', '', $body); //remove closing tags
     return $body;
   }
+  
+  //file entities have no field for og_group_ref.  update file_usage
+  //to let drupal know which node they're attached to
+  function _os_migrate_inline_files_update_file_usage($entity, $row) {
+    if ($entity->fid && $row->nid) {
+      file_usage_add($entity, 'os_wysiwyg', 'node', $row->nid);
+    }
+  }
 }
 
 
