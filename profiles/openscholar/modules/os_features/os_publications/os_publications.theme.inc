@@ -213,3 +213,45 @@ function theme_os_publications_contributors($variables) {
   //$output .= drupal_render_children($form);
   return $output;
 }
+
+/**
+ * Replacement for the default biblio download links theme
+ */
+function theme_os_publications_download_links($variables) {
+  static $langcode = NULL;
+  $file_links = array();
+  $node = $variables['node'];
+  if (!isset($langcode)) {
+    $langcode = $GLOBALS['language_content']->language;
+  }
+
+  $fields = field_attach_view('node', $node, 'full', $langcode);
+  foreach (element_children($fields) as $field) {
+
+    if($fields[$field]['#access']  && $fields[$field]['#field_type'] == 'file' && $field != 'field_biblio_image') {
+      foreach ($fields[$field]['#items'] as $delta => $item) {
+        if (module_exists('filefield_paths')) {
+          $alias =  drupal_get_path_alias('filefield_paths/alias/' . $item['fid']);
+          $item->uri = $alias;
+        }
+        $file_links[] = array(
+          theme('file_link', array('file' => (object) $item)),
+        );
+      }
+
+    }
+  }
+  $files = '';
+  if (count($file_links) > 0 && (user_access('show download links') || user_access('show own download links'))) {
+    $files .= '<span class="biblio_file_links">';
+   // $files .= '&nbsp;' . t('Download') . ':&nbsp;';
+    $file_count = 0;
+    foreach ($file_links as $file) {
+        $files .= $file[0];
+
+    }
+    $files .= '</span>';
+  }
+
+  return $files;
+}
