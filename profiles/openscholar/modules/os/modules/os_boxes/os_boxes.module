@@ -118,8 +118,6 @@ function os_boxes_os_widget_alter(&$widget) {
     $plugin = os_boxes_get_boxes_plugins($box->plugin_key);
     if (!$plugin) return;
 
-    $widget['bid'] = 'boxes-'.$widget['delta'];
-
     $widget['info'] = $box->description;
     $widget['plugin'] = $box->plugin_key;
     $widget['class'] = $plugin['tags'];

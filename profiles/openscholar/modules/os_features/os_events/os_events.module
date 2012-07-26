@@ -14,7 +14,6 @@ function os_events_os_widget(){
       'delta' => 'os_events-block_1', 
       'region' => 'sidebar_second', 
       'weight' => '-10', 
-      'title' => 'Mini calendar' 
   );
   
   //List of upcoming events
@@ -23,7 +22,6 @@ function os_events_os_widget(){
       'delta' => 'os_events-block_2', 
       'region' => 'sidebar_second', 
       'weight' => '-15',       
-      'title' => 'Upcoming Events' 
   );
   
   return $items;
