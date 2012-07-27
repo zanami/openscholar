@@ -179,6 +179,7 @@ function os_boxes_get_tags() {
 function os_boxes_admin_paths() {
   $paths = array(
     'os/boxes/*' => TRUE,
+    '*/os/boxes/*' => TRUE,    // catches spaces
   );
 
   return $paths;
