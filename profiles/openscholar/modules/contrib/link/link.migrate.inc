@@ -55,4 +55,12 @@ class MigrateLinkFieldHandler extends MigrateFieldHandler {
 
     return isset($return) ? $return : NULL;
   }
+  
+  public function fields($migration = NULL) {
+    $fields = array(
+      'title' => t('Field: Link Title'),
+      'attributes' => t('Field: Link Attributes'),
+    );
+    return $fields;
+  }
 }

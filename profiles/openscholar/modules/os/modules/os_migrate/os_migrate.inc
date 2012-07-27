@@ -305,14 +305,13 @@ abstract class OSMigration extends Migration {
       switch ($dest_type) {
         case 'Link':
           $field = 'field_'.$dest_name.'_link';
-          $cck = 'field_'.$cck_name . '_url';
+          $cck = 'field_'.$cck_name;// . '_url';
           // $arguments = MigrateLinkFieldHandler::arguments($fields);
           //pass info from fields to arguments[] in field_link's prepare()
-          $this->addFieldMapping($field, $cck)->arguments(array( 
-            'url' =>        array('source_field' => 'field_'.$cck_name.'_url'),
-            'title' =>      array('source_field' => 'field_'.$cck_name.'_title'),
-            'attributes' => array('source_field' => 'field_'.$cck_name.'_attributes'),
-          ));    
+          $this->addFieldMapping($field, $cck.'_url');
+          $this->addFieldMapping($field.':title', $cck.'_title');
+          $this->addFieldMapping($field.':attributes', $cck.'_attributes');
+              
         break;
         
         case 'Image':
@@ -334,8 +333,6 @@ abstract class OSMigration extends Migration {
           $return += array(
             //name => desc
 						'field_'.$name.'_url' => 'Link URL',
-            'field_'.$name.'_title' => 'Link Title',
-            'field_'.$name.'_attributes' => 'Link Attributes',
           );
         break;
         
