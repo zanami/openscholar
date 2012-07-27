@@ -1,0 +1,13 @@
+name = OS Reader
+description = "Pull in useful content from other sites on the internet, including your Twitter feed--directly to your site."
+core = 7.x
+package = Features
+php = 5.2.4
+project = os_events
+dependencies[] = job_scheduler
+dependencies[] = feeds
+dependencies[] = feeds_news
+features[node][] = feed
+features[node][] = feed_item
+spaces[types][] = og
+spaces[types][] = site
