@@ -114,5 +114,18 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_pub_year'] = array(
+    'title' => 'Publications: Years',
+    'description' => 'Displays a list of years you have published something in',
+    'tags' => array('Content'),
+    'module dependencies' => array('os_publications'),
+    'handler' => array(
+      'class' => 'os_boxes_pub_year',
+      'file' => 'os_boxes_pub_year.inc',
+      'path' => $path.'/os_boxes_pub_year',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
   return $info;
 }
