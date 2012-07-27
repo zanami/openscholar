@@ -24,7 +24,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
-  
+
   $info['os_boxes_manual_list'] = array(
     'title' => 'Featured Posts',
     'description' => 'Create your own list of posts',
@@ -52,7 +52,7 @@ function os_boxes_boxes_plugins() {
   $info['os_boxes_slideshow'] = array(
     'title' => 'Slideshow',
     'description' => 'Displays a slideshow of your uploaded pictures.',
-	  'module dependencies' => array('os_image_gallery'),  
+    'module dependencies' => array('os_image_gallery'),
     'tags' => array('Media'),
     'handler' => array(
       'class' => 'os_boxes_slideshow',
@@ -61,7 +61,7 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
-  
+
   $info['os_boxes_booktoc'] = array(
     'title' => 'Booklet: Table of Contents',
     'description' => 'The table of contents for a booklet',
@@ -73,16 +73,30 @@ function os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
-  
+
   $info['os_boxes_twitterfeed'] = array(
     'title' => 'Twitter',
     'description' => 'Shows recent tweets',
     'tags' => array('Social'),
-	  'module dependencies' => array('twitter_pull'),
+    'module dependencies' => array('twitter_pull'),
     'handler' => array(
       'class' => 'os_boxes_twitterfeed',
       'file' => 'os_boxes_twitterfeed.inc',
       'path' => $path.'/os_boxes_twitterfeed',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
+  // Publication Boxes
+  $info['os_boxes_pub_ca'] = array(
+    'title' => 'Publications: Coauthors',
+    'description' => 'Displays a list of coauthors of your publications',
+    'tags' => array('Content'),
+    'module dependencies' => array('os_publications'),
+    'handler' => array(
+      'class' => 'os_boxes_pub_ca',
+      'file' => 'os_boxes_pub_ca.inc',
+      'path' => $path.'/os_boxes_pub_ca',
       'parent' => 'os_boxes_default',
     ),
   );
