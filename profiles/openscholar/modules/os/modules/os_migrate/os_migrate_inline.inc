@@ -82,10 +82,7 @@ class ImageInlineOSMigration extends OSMigration {
     $this->destination = new MigrateDestinationFile('file', 'MigrateFileURI');
     $this->addFieldMapping('value', 'uri');
     $this->addFieldMapping('destination_file', 'filename');
-    $this->addFieldMapping('uid', 'uid');
-    
-    $this->addFieldMapping('timestamp', 'timestamp');
-    
+       
     // Field mappings //
     $this->addSimpleMappings(array('uid', 'filename', 'filemime', 'status', 'timestamp', 'uri'));
    
@@ -94,15 +91,13 @@ class ImageInlineOSMigration extends OSMigration {
   }
   
   public function query() {     
-      
+
     $query = parent::d6_db_select('content_field_os_inline_image', 'cf')
       ->fields('cf', array('field_os_inline_image_fid', 'nid'))
       ->isNotNull('field_os_inline_image_fid')
-      ->groupBy('nid');
+      ->distinct();
     $query->join('files', 'f', 'f.fid = cf.field_os_inline_image_fid');
     $query->fields('f', array('uid', 'filename', 'timestamp',  'filepath', 'fid'));
-      
-    
     
     return $query;
   }
@@ -115,6 +110,7 @@ class ImageInlineOSMigration extends OSMigration {
     $row->uri = $purl . '/' . $row->filepath;
 
     if (!parent::legacy_file_exists($row->uri)) {
+      Migration::displayMessage(t('Image Migration Error.  File not found: %uri', array('%uri'=>$row->uri)));
       return FALSE;
     }
   }
@@ -138,7 +134,6 @@ class EmbedInlineOSMigration extends OSMigration {
     $this->destination = new MigrateDestinationFile('file', 'MigrateFileURI');
     $this->addFieldMapping('value', 'uri');
     $this->addFieldMapping('destination_file', 'filename');
-    $this->addFieldMapping('uid', 'uid');
       
     //mappings
     $this->addSimpleMappings(array('uid', 'status', 'uri', 'filemime', 'filename'));
@@ -195,7 +190,6 @@ class HTMLInlineOSMigration extends OSMigration {
     $this->destination = new MigrateDestinationFile('file', 'MigrateFileURI');
     $this->addFieldMapping('value', 'uri');
     $this->addFieldMapping('destination_file', 'filename');
-    $this->addFieldMapping('uid', 'uid');
     
     // Field mappings //
 //    $this->addSimpleMappings(array('uid', 'filename', 'filemime', 'status', 'timestamp', 'uri'));

@@ -60,9 +60,6 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
       ->defaultValue(0); //no title/description in lightbox because no images have them.  no previous setting
       
       
-    
-    
-    $this->addFieldMapping('og_group_ref')->defaultValue(1);
   }
   
   public function sourceFields() {

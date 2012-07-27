@@ -565,12 +565,15 @@ abstract class OSMigration extends Migration {
       return; 
     } 
     
+    //replace this with generic function.  does the one I wrote make sense?  wtf is this one doing?
+    //were we stripping just the purl for the site?
+    $uri = $this::_uri_trim($entity->uri);/*
     $uri = str_replace('public://', '', $entity->uri);
     if (strpos($uri, '/') !== FALSE) {
       $a = explode('/', $uri);
       $a = array_slice($a, 2);
       $uri = implode('/', $a);
-    }
+    }*/
     
     $dom = filter_dom_load($row->body);
     $images = $dom->getElementsByTagName('img');
@@ -689,7 +692,7 @@ abstract class OSMigration extends Migration {
   
   //remove public:// or whatever :// appears before uri
   function _uri_trim($uri) {
-    $pattern = '/:\/\//';
+    $pattern = '/.*?:\/\//';
     if (preg_match($pattern, $uri)) {
       $uri = preg_replace($pattern, '', $uri);
     }

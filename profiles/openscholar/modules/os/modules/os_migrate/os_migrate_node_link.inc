@@ -11,6 +11,12 @@ class LinkNodeOSMigration extends AbstractNodeOSMigration {
         'dest_type' => 'Link',
       ),
     );
+    
+    $this->cck_fields = array(
+      array('cck' => array('name' => 'link_href', 'type' => 'Link'), 
+            'field' => array('name' => 'links', 'type' => 'Link'),
+      )
+    );
       
     // Let AbstractNode handle the source, dest, and map.
     parent::__construct('link', 'link'); //current types are vsite, article, and page.  lets start with one of those instead?
