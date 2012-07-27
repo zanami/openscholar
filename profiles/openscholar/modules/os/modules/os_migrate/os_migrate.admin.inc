@@ -61,6 +61,7 @@ EOF
     '#collapsed' => FALSE,
     '#collapsible' => TRUE,
   );
+  
   $form['dev_fieldset']['os_migrate_email_notification'] = array(
     '#title' => t('Email Notification'),
     '#description' => t('Creating a user account during migration will send that user an email.  
@@ -71,6 +72,19 @@ EOF
     '#default_value' => variable_get('os_migrate_email_notification', FALSE),
   );
   
+  $form['dev_fieldset']['os_migrate_ignore_dependencies'] = array(
+    '#title' => t('Ignore Dependencies'),
+    '#description' => t('Migration dependencies will be ignored by default.'),
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('os_migrate_ignore_dependencies', FALSE),
+  );
+  
+  $form['dev_fieldset']['os_migrate_force_og'] = array(
+    '#title' => t('Force Group ID'),
+    '#description' => t('Force all content into group.'),
+    '#type' => 'textfield',
+    '#default_value' => variable_get('os_migrate_force_og', FALSE),
+  );
   return system_settings_form($form);
 }
 
