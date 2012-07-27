@@ -294,3 +294,15 @@ function _os_publications_clear_cache($node) {
     }
   }
 }
+
+/**
+ * implementation of hook_views_pre_render
+ * maps biblio years to their text values
+ */
+function scholar_publications_views_pre_render(&$view) {
+  if ($view->name == 'publication_years') {
+    foreach ($view->result as $delta => $obj) {
+      $view->result[$delta]->link = _biblio_text_year($obj->biblio_biblio_year);
+    }
+  }
+}

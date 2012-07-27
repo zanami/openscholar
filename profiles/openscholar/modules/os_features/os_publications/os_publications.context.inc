@@ -38,7 +38,7 @@ function os_publications_context_default_contexts() {
   // Translatables
   // Included for use with string extractors like potx.
   t('List of publications');
-  t('OS Features');
+  t('OS features');
   $export['publications_publications'] = $context;
 
   return $export;
