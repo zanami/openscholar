@@ -1,1 +1,19 @@
 <?php 
+
+/**
+ * Alter system information to assign the feed node types to this feature
+ */
+function os_reader_system_info_alter(&$info, $file, $type){
+
+  //Only alter this info file
+  if ($type != 'module' || $file->name != 'os_reader'){
+    return;
+  }
+
+  // Add the feature settings for feed node types
+  if (! is_array($info['features']['node']))
+    $info['features']['node'] = array();
+
+  $info['features']['node'][] = 'feed';
+  $info['features']['node'][] = 'feed_item';
+} 
