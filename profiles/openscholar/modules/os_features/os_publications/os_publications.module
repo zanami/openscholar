@@ -250,6 +250,14 @@ function os_publications_form_biblio_import_form_alter(&$form, $form_state) {
   unset($form['import_taxonomy']);
 }
 
+function os_publications_node_prepare($node) {
+  if (!isset($node->og_group_ref) && $space = spaces_get_space()) {
+    $node->type = 'biblio';
+    field_attach_load('node', array($node->nid => $node));
+    $node->og_group_ref[LANGUAGE_NONE][0]['target_id'] = $space->id;
+  }
+}
+
 function os_publications_node_insert($node) {
   if ($node->type == 'biblio') {
     _os_publications_clear_cache($node);
