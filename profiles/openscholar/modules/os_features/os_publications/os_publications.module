@@ -35,7 +35,7 @@ function os_publications_menu_alter(&$items) {
     'access callback' => module_exists('spaces') ? 'spaces_access_admin' : 'user_access',
     'access arguments' => module_exists('spaces') ? array() : array('administer site configuration'),
     'type' => MENU_CALLBACK,
-    'file' => 'scholar_publications.pages.inc',
+    'file' => 'os_publications.pages.inc',
   );
 }
 
@@ -251,8 +251,7 @@ function os_publications_form_biblio_import_form_alter(&$form, $form_state) {
 }
 
 function os_publications_node_prepare($node) {
-  if (!isset($node->og_group_ref) && $space = spaces_get_space()) {
-    $node->type = 'biblio';
+  if ($node->type == 'biblio' && isset($node->nid) && !isset($node->og_group_ref) && $space = spaces_get_space()) {
     field_attach_load('node', array($node->nid => $node));
     $node->og_group_ref[LANGUAGE_NONE][0]['target_id'] = $space->id;
   }
