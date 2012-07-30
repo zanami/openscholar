@@ -22,13 +22,17 @@ class os_boxes_pub_type extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state){
-    $rows = db_query("SELECT tid, name FROM {biblio_types} WHERE tid > 0 AND visible = 1")->execute();
+    $rows = db_select('biblio_types', 'bt')
+            ->fields('bt', array('tid', 'name'))
+            ->condition('tid', 0, '>')
+            ->condition('visible', 1)
+            ->execute();
     $options = array('all' => 'Select All');
     $value = $this->options['whitelist'];
-    $all = in_array('all', $value);
+    $all = in_array('all', $value) && $value['all'] === 'all';
     foreach ($rows as $r) {
-      $options[$r['tid']] = $r['name'];
-      if ($all) $value[] = $r['tid'];
+      $options[$r->tid] = $r->name;
+      if ($all) $value[$r->tid] = $r->tid;
     }
 
     $form['whitelist'] = array(
@@ -36,8 +40,13 @@ class os_boxes_pub_type extends os_boxes_default {
       '#options' => $options,
       '#default_value' => $value,
       '#title' => t('Show the following types:'),
-      '#attributes' => array('class' => 'pub_type'),
-      '#description' => t('Select the types you want to appear in the widget.')
+      '#attributes' => array('class' => array('pub_type')),
+      '#description' => t('Select the types you want to appear in the widget.'),
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'os_boxes').'/misc/selectAll.js',
+        ),
+      ),
     );
 
     $form['display_num'] = array(
@@ -45,7 +54,7 @@ class os_boxes_pub_type extends os_boxes_default {
       '#title' => t('Display number of items in category'),
       '#default_value' => $this->options['display_num'],
     );
-    drupal_add_js(drupal_get_path('module', 'os_boxes').'/theme/js/selectAll.js');
+    //drupal_add_js(drupal_get_path('module', 'os_boxes').'/theme/js/selectAll.js');
 
     $form += parent::options_form($form_state);
     return $form;
@@ -62,7 +71,7 @@ class os_boxes_pub_type extends os_boxes_default {
     list($name, $display_id) = explode('-', $delta);
     if ($view = views_get_view($name)) {
       if ($view->access($display_id)) {
-        $view->set_display('block_1');
+        $view->set_display('block');
         if (!in_array('all', $this->options['whitelist']) || !$this->options['whitelist']['all']) {
           $filter = array(
             'operator' => 'in',
@@ -81,8 +90,13 @@ class os_boxes_pub_type extends os_boxes_default {
             ),
             'relationship' => 'none',
           );
-          $view->set_item('block_1', 'filter', 'tid', $filter);
+          $view->set_item('block', 'filter', 'tid', $filter);
         }
+
+  	//Set the display num in the view (the count)
+  	$arguments = $view->display_handler->get_option('arguments');
+  	$arguments['name']['style_options']['count'] = ($this->options['display_num'])?1:0;
+  	$view->display_handler->override_option('arguments', $arguments);
 
         //Tie this view to this box (this tells the view to call this box's view alter)
         $view->dom_id = "boxes-".$this->delta;
@@ -103,11 +117,6 @@ class os_boxes_pub_type extends os_boxes_default {
    * @param view $view
    */
   public function views_alter(&$view, &$display_id, &$args){
-
-  	//Set the display num in the view (the count)
-  	$arguments = $view->display_handler->get_option('arguments');
-  	$arguments['name']['style_options']['count'] = ($this->options['display_num'])?1:0;
-  	$view->display_handler->override_option('arguments', $arguments);
   }
 
   /**

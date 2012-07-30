@@ -413,7 +413,7 @@ if(module_exists(\'apachesolr_search\')){
   $handler->display->display_options['path'] = 'publications/types/%';
 
   /* Display: Block */
-  $handler = $view->new_display('block', 'Block', 'block_1');
+  $handler = $view->new_display('block', 'Block', 'block');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Publications By Type';
   $handler->display->display_options['defaults']['arguments'] = FALSE;
@@ -433,8 +433,8 @@ if(module_exists(\'apachesolr_search\')){
   $handler->display->display_options['arguments']['name']['path_case'] = 'lower';
   $handler->display->display_options['arguments']['name']['transform_dash'] = TRUE;
 
-  /* Display: Block */
-  $handler = $view->new_display('block', 'Block', 'block_2');
+  /* Display: Block By Taxonomy */
+  $handler = $view->new_display('block', 'Block By Taxonomy', 'block_by_taxonomy');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Tag by Type';
   $handler->display->display_options['defaults']['relationships'] = FALSE;
