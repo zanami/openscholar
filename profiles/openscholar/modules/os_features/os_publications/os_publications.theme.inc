@@ -203,7 +203,7 @@ function theme_os_publications_contributors($variables) {
     // Build the table row.
     $row = array('');
     $row[] = array('data' => drupal_render($form[$key]['name']).drupal_render($form[$key]['auth_category']),
-                   'class' => array('biblio-contributor'));
+                   'class' => array('biblio-contributor', 'biblio-contributor-category'));
     $row[] = array('data' => drupal_render($form[$key]['auth_type']),
                      'class' => array('biblio-contributor-type'));
     $row[] = drupal_render($form[$key]['rank']);

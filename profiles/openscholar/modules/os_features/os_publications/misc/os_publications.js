@@ -3,15 +3,12 @@
  */
 Drupal.behaviors.osPublications = {
   attach: function (ctx) {
-    // change the author category when the role is changed 
-    var $ = jQuery,
-        $hidden = $('#edit-biblio-contributors input[type="hidden"]');
-    $hidden.each(function (i) {
-      var $this = $(this),
-          $select = $this.parents('tr').find('select');
-      $select.change(function () {
-        $this.val($(this).val());
-      });
+    // change the author category to the role when the form is submitted
+    var $ = jQuery;
+    $('form').submit(function (i) {
+      var hidden = $('#edit-biblio-contributors .biblio-contributor-category input[type="hidden"]').not('.autocomplete'),
+          val = hidden.parents('tr').find('select').val();
+      hidden.val(val);
     });
   }
 };
