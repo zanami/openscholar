@@ -15,5 +15,4 @@ function os_reader_system_info_alter(&$info, $file, $type){
     $info['features']['node'] = array();
 
   $info['features']['node'][] = 'feed';
-  $info['features']['node'][] = 'feed_item';
 } 
