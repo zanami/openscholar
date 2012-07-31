@@ -127,5 +127,17 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_follow'] = array(
+    'title' => 'Follow Me Widget',
+    'description' => 'Displays a list of links to your social media profiles.',
+    'tags' => array('Social'),
+    'handler' => array(
+      'class' => 'os_boxes_follow',
+      'file' => 'os_boxes_follow.inc',
+      'path' => $path.'/os_boxes_follow',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
   return $info;
 }
