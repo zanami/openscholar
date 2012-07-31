@@ -1,0 +1,15 @@
+name = OS Reader
+description = Pull in useful content from other sites on the internet, including your Twitter feed--directly to your site.
+core = 7.x
+package = Features
+php = 5.2.4
+project = os_events
+dependencies[] = feeds
+;dependencies[] = job_scheduler
+dependencies[] = os
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:1
+features[menu_links][] = primary-menu:reader
+features[views_view][] = reader
+git statspaces[types][] = site
+spaces[types][] = og

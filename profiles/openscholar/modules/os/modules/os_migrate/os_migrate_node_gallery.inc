@@ -12,11 +12,6 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     //a separate import for projects?
     $this->description = t('OS galleries');    
     
-    //$this->addSimpleMappings(array('purl'));
-    
-    //gropu_group is this a group?
-    //group_access public?
-    
     //media_gallery has some features os_image_gallery lacked.  lets set some defaults here since there's nothing to import.
     $defaults = array(
       'media_gallery_columns' => 4,
@@ -30,10 +25,6 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
       $this->addFieldMapping($field)->defaultValue($value);
     } 
     
-    //copy d6 files
-//    $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
-//    $this->addFieldMapping('media_gallery_media', 'prepared_files')->arguments($associated_files_args);
-
     /* Field: description */
     $this->removeFieldMapping('body', 'body'); //node abstract did this, but gallery has description instead of body
     $this->addFieldMapping('media_gallery_description', 'body')
@@ -58,7 +49,9 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
       ->defaultValue('lightbox'); //use the lightbox by default.  no previous setting to import.
     $this->addFieldMapping('media_gallery_lightbox_extras')
       ->defaultValue(0); //no title/description in lightbox because no images have them.  no previous setting
-      
+
+    $this->removeFieldMapping('body', 'body'); //body comes from node abstract but isn't in gallery nodes
+    $this->addUnmigratedSources(array('body'), t('DNM'));
       
   }
   

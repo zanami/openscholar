@@ -315,10 +315,12 @@ abstract class OSMigration extends Migration {
         break;
         
         case 'Image':
-          $this->addFieldMapping($dest_name, $dest_name)->arguments(array(
-            'file_function' => 'file_copy',
-            'file_source' => array('source_field'=>'filepath'),
-          ));
+          $this->addFieldMapping($dest_name, $dest_name);
+          foreach (array('language', 'alt', 'title') as $sub) {
+            $this->addFieldMapping($dest_name . ':' . $sub, 'field_' . $cck_name . '_' . $sub);
+          }
+          $this->addUnmigratedDestinations(array('field_photo:file_class', 'field_photo:destination_dir', 'field_photo:destination_file', 'field_photo:file_replace', 'field_photo:preserve_files', 'field_photo:source_dir'), t('DNM'));
+          
         break;
       }
     }

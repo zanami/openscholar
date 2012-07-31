@@ -64,8 +64,10 @@ class UsersOSMigration extends OSMigration {
     
     //hide email during development
     if (!variable_get('os_migrate_email_notification', FALSE)) {
-      $this->addFieldMapping('mail')->defaultValue('root@localhost');
-    } 
+      $this->addSimpleMappings(array('mail'));
+    } else {
+      $this->addUnmigratedSources(array('mail'), t('DNM'));
+    }
     
     
     /* addFieldMapping lets you map one row to another or perform additional functions like setting a default */
@@ -80,7 +82,7 @@ class UsersOSMigration extends OSMigration {
     $this->addUnmigratedSources(array('mode','sort','threshold', 'timezone', 'data'), t('DNM'));
    
     /* Unmapped destination fields */
-    $this->addUnmigratedDestinations(array('group_audience', 'path'), t('DNM')); //just ignore them for today
+    $this->addUnmigratedDestinations(array('role_names', 'path', 'pathauto'), t('DNM')); //just ignore them for today
 
   }
   
