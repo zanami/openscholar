@@ -305,21 +305,22 @@ abstract class OSMigration extends Migration {
       switch ($dest_type) {
         case 'Link':
           $field = 'field_'.$dest_name.'_link';
-          $cck = 'field_'.$cck_name . '_url';
+          $cck = 'field_'.$cck_name;// . '_url';
           // $arguments = MigrateLinkFieldHandler::arguments($fields);
           //pass info from fields to arguments[] in field_link's prepare()
-          $this->addFieldMapping($field, $cck)->arguments(array( 
-            'url' =>        array('source_field' => 'field_'.$cck_name.'_url'),
-            'title' =>      array('source_field' => 'field_'.$cck_name.'_title'),
-            'attributes' => array('source_field' => 'field_'.$cck_name.'_attributes'),
-          ));    
+          $this->addFieldMapping($field, $cck.'_url');
+          $this->addFieldMapping($field.':title', $cck.'_title');
+          $this->addFieldMapping($field.':attributes', $cck.'_attributes');
+              
         break;
         
         case 'Image':
-          $this->addFieldMapping($dest_name, $dest_name)->arguments(array(
-            'file_function' => 'file_copy',
-            'file_source' => array('source_field'=>'filepath'),
-          ));
+          $this->addFieldMapping($dest_name, $dest_name);
+          foreach (array('language', 'alt', 'title') as $sub) {
+            $this->addFieldMapping($dest_name . ':' . $sub, 'field_' . $cck_name . '_' . $sub);
+          }
+          $this->addUnmigratedDestinations(array('field_photo:file_class', 'field_photo:destination_dir', 'field_photo:destination_file', 'field_photo:file_replace', 'field_photo:preserve_files', 'field_photo:source_dir'), t('DNM'));
+          
         break;
       }
     }
@@ -334,8 +335,6 @@ abstract class OSMigration extends Migration {
           $return += array(
             //name => desc
 						'field_'.$name.'_url' => 'Link URL',
-            'field_'.$name.'_title' => 'Link Title',
-            'field_'.$name.'_attributes' => 'Link Attributes',
           );
         break;
         
@@ -565,12 +564,15 @@ abstract class OSMigration extends Migration {
       return; 
     } 
     
+    //replace this with generic function.  does the one I wrote make sense?  wtf is this one doing?
+    //were we stripping just the purl for the site?
+    $uri = $this::_uri_trim($entity->uri);/*
     $uri = str_replace('public://', '', $entity->uri);
     if (strpos($uri, '/') !== FALSE) {
       $a = explode('/', $uri);
       $a = array_slice($a, 2);
       $uri = implode('/', $a);
-    }
+    }*/
     
     $dom = filter_dom_load($row->body);
     $images = $dom->getElementsByTagName('img');
@@ -689,7 +691,7 @@ abstract class OSMigration extends Migration {
   
   //remove public:// or whatever :// appears before uri
   function _uri_trim($uri) {
-    $pattern = '/:\/\//';
+    $pattern = '/.*?:\/\//';
     if (preg_match($pattern, $uri)) {
       $uri = preg_replace($pattern, '', $uri);
     }

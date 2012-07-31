@@ -39,7 +39,7 @@ function _os_publications_update_field_data() {
 
   if ($run_once) return;  // this only needs to be run once per update
 
-  $file = drupal_get_path('module', 'scholar_publications').'/misc/biblio_settings.inc';
+  $file = drupal_get_path('module', 'os_publications').'/misc/biblio_settings.inc';
   if (!file_exists($file)) return;
 
   list ($biblio_field_type, $biblio_field_type_data, $biblio_contributor_type, $biblio_contributor_type_data) = include($file);
@@ -59,8 +59,9 @@ function _os_publications_update_field_data() {
     drupal_write_record('biblio_contributor_type', $contrib_type);
   }
 
+  db_truncate('biblio_contributor_type_data')->execute();
   foreach ($biblio_contributor_type_data as $contrib_type_data) {
     //Run the query manually to override the serials
-    db_query("INSERT INTO {biblio_contributor_type_data} (auth_type, title, hint) VALUES ( %d, '%s', '%s')",array($contrib_type_data['auth_type'],$contrib_type_data['title'],$contrib_type_data['hint']));
+    drupal_write_record('biblio_contributor_type_data', $contrib_type_data);
   }
 }

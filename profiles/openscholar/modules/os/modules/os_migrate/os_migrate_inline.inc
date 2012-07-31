@@ -25,7 +25,7 @@ class FileInlineOSMigration extends OSMigration {
     //$this->addFieldMapping('destination_dir');
     //$this->addFieldMapping('source_dir');
     
-    $this->addUnmigratedDestinations(array('file_replace', 'preserve_files'), t('DNM'));
+    $this->addUnmigratedDestinations(array('file_replace', 'preserve_files', 'path', 'destination_dir', 'source_dir'), t('DNM'));
     $this->addUnmigratedSources(array('nid', 'field_os_inline_files_fid', 'filepath'), t('DNM'));
     
   }
@@ -82,27 +82,23 @@ class ImageInlineOSMigration extends OSMigration {
     $this->destination = new MigrateDestinationFile('file', 'MigrateFileURI');
     $this->addFieldMapping('value', 'uri');
     $this->addFieldMapping('destination_file', 'filename');
-    $this->addFieldMapping('uid', 'uid');
-    
-    $this->addFieldMapping('timestamp', 'timestamp');
-    
+       
     // Field mappings //
-    $this->addSimpleMappings(array('uid', 'filename', 'filemime', 'status', 'timestamp', 'uri'));
+    $this->addSimpleMappings(array('uid', 'timestamp'));
    
     //ignored
-        $this->addUnmigratedDestinations(array('file_replace', 'preserve_files'), t('DNM'));
+    $this->addUnmigratedDestinations(array('file_replace', 'preserve_files', 'path', 'destination_dir', 'source_dir'), t('DNM'));
+    $this->addUnmigratedSources(array('filepath', 'fid', 'nid', 'field_os_inline_image_fid'), t('DNM'));  
   }
   
   public function query() {     
-      
+
     $query = parent::d6_db_select('content_field_os_inline_image', 'cf')
       ->fields('cf', array('field_os_inline_image_fid', 'nid'))
       ->isNotNull('field_os_inline_image_fid')
-      ->groupBy('nid');
+      ->distinct();
     $query->join('files', 'f', 'f.fid = cf.field_os_inline_image_fid');
     $query->fields('f', array('uid', 'filename', 'timestamp',  'filepath', 'fid'));
-      
-    
     
     return $query;
   }
@@ -115,6 +111,7 @@ class ImageInlineOSMigration extends OSMigration {
     $row->uri = $purl . '/' . $row->filepath;
 
     if (!parent::legacy_file_exists($row->uri)) {
+      Migration::displayMessage(t('Image Migration Error.  File not found: %uri', array('%uri'=>$row->uri)));
       return FALSE;
     }
   }
@@ -127,10 +124,9 @@ class EmbedInlineOSMigration extends OSMigration {
     $this->description = t('Inline Embeds');
    // $this->dependencies = array('ImageInlineOSMigration', 'FileInlineOSMigration'); 
     
-    $add_fields = array('uri' => 'Unique Resource Identifier.', 'filemime' => 'File\'s mime type', 'filename' => 'File name');
+    $add_fields = array('uri' => 'Unique Resource Identifier.', 'filename' => 'File name');
     $this->source = new MigrateSourceSQL($this->query(), $add_fields , NULL,  array('map_joinable' => FALSE));
     $this->map = new MigrateSQLMap($this->machineName,
-      //array('migrate_md5_uri' => array('type'=>'varchar', 'length'=>255)), //varchar 2048 is base, but too big for here
       array('vid' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE,)),
       MigrateDestinationMedia::getKeySchema());
       //file dest is no good heree.  oembed:// is unsupported
@@ -138,15 +134,14 @@ class EmbedInlineOSMigration extends OSMigration {
     $this->destination = new MigrateDestinationFile('file', 'MigrateFileURI');
     $this->addFieldMapping('value', 'uri');
     $this->addFieldMapping('destination_file', 'filename');
-    $this->addFieldMapping('uid', 'uid');
       
     //mappings
-    $this->addSimpleMappings(array('uid', 'status', 'uri', 'filemime', 'filename'));
+    $this->addSimpleMappings(array('uid'));
     $this->addFieldMapping('timestamp', 'created');
     
     //ignored
-    $this->addUnmigratedSources(array('field_os_inline_oembed_url'), 'DNM');
-    $this->addUnmigratedDestinations(array('contents'), 'DNM'); //use this if we hvae to create a file.
+    $this->addUnmigratedSources(array('field_os_inline_oembed_url', 'nid'), 'DNM');
+    $this->addUnmigratedDestinations(array('destination_dir', 'path', 'file_replace', 'preserve_files', 'source_dir'), 'DNM'); //acceptable defaults
     
   }
   
@@ -156,7 +151,7 @@ class EmbedInlineOSMigration extends OSMigration {
       ->isNotNull('field_os_inline_oembed_url')
       ->groupBy('field_os_inline_oembed_url');
     $query->leftJoin('node', 'n', 'cf.nid = n.nid');
-    $query->fields('n', array('uid', 'status', 'created', 'nid'));
+    $query->fields('n', array('uid', 'created', 'nid'));
     return $query;
   }
   
@@ -183,26 +178,21 @@ class HTMLInlineOSMigration extends OSMigration {
     
     $this->description = t('Inline HTML');
     
-    $add_fields = array('uri' => 'Unique Resource Identifier.', 'uid' => 'User ID', 
-    										'timestamp' => 'Node creation time', 'status' => 'Published status',
-                        'filename' => 'Name of file', 'filemime' => 'Application type of file');
+    $add_fields = array('uid' => 'User ID', 'timestamp' => 'Node creation time', 'uri' => 'Unique Resource Identifier', 'filename' => 'Filename');
     $this->source = new MigrateSourceSQL($this->query(), $add_fields , NULL,  array('map_joinable' => FALSE));
     $this->map = new MigrateSQLMap($this->machineName,
       array('id' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE,)),
       MigrateDestinationFile::getKeySchema());
-    //$this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
       
     $this->destination = new MigrateDestinationFile('file', 'MigrateFileURI');
     $this->addFieldMapping('value', 'uri');
     $this->addFieldMapping('destination_file', 'filename');
-    $this->addFieldMapping('uid', 'uid');
     
     // Field mappings //
-//    $this->addSimpleMappings(array('uid', 'filename', 'filemime', 'status', 'timestamp', 'uri'));
-    $this->addSimpleMappings(array('uid', 'timestamp', 'uri', 'filename', 'filemime', 'status'));
+    $this->addSimpleMappings(array('uid', 'timestamp'));
     
     //ignored
-    $this->addUnmigratedDestinations(array('contents'), t('DNM')); //only used in copying blobs to files
+    $this->addUnmigratedDestinations(array('path', 'destination_dir', 'file_replace', 'preserve_files', 'source_dir'), t('DNM')); //only used in copying blobs to files
     $this->addUnmigratedSources(array('vid', 'html'), t('DNM'));
   }
   

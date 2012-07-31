@@ -27,6 +27,16 @@ function os_publications_menu_alter(&$items) {
     'file'              => drupal_get_path('module', 'os_publications').'/os_publications.pages.inc',
     'type'              => MENU_CALLBACK
   );
+
+  $items['features/scholar_publications'] = array(
+    'title' => 'Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('scholar_publications_settings'),
+    'access callback' => module_exists('spaces') ? 'spaces_access_admin' : 'user_access',
+    'access arguments' => module_exists('spaces') ? array() : array('administer site configuration'),
+    'type' => MENU_CALLBACK,
+    'file' => 'os_publications.pages.inc',
+  );
 }
 
 /**
@@ -76,6 +86,10 @@ function os_publications_theme_registry_alter(&$reg) {
     'function' => 'theme_os_publications_download_links',
   ));
   $reg['biblio_download_links']['includes'][] = drupal_get_path('module', 'os_publications').'/os_publications.theme.inc';
+
+  //Override publications by year box so biblio years display submitted/inpress/etc
+  $reg['views_view_summary__publication_years__block'] = $reg['views_view_summary'];
+  $reg['views_view_summary__publication_years__block']['preprocess functions'][] = 'theme_os_publications_biblio_year_row';
 }
 
 /**
@@ -116,9 +130,9 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
     }
   }
 
-
   // We're coming from biblio's ajax callback. It requires the form structure for authors be unchanged.
   if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Add Another Field')) {
+    $form['biblio_tabs']['biblio_authors'] = $form['biblio_authors'];
     return;
   }
   unset($form['biblio_tabs']['biblio_authors']);
@@ -164,6 +178,11 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   $years = variable_get('biblio_years_text', array(9999 => t('Submitted'), 9998 => t('In Press')));
   $form['biblio_year']['#description'] = implode(', ', $years).', or YYYY';
 
+  // Change the Notes field's description to include a link to the settings form
+  ctools_include('ajax');
+  ctools_include('modal');
+  $form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser',false)?'public':'private')).ctools_modal_text_button('Change Note Settings', 'features/nojs/os_publications', 'Change Note Settings');
+
   // hide the rest of the vtabs behind a collapsible fieldset
   $form['publication_extras'] = array(
     '#type' => 'fieldset',
@@ -206,6 +225,9 @@ function os_publications_node_view_alter(&$build, $type) {
   }
 }
 
+/**
+ * Adds a page contextual link for importing biblio nodes.
+ */
 function os_publications_contextual_links_view_alter(&$element, $items) {
   if (isset($items['os-biblio'])) {
     $element['#links']['os-biblio-import'] = array(
@@ -219,10 +241,14 @@ function os_publications_contextual_links_view_alter(&$element, $items) {
   }
 }
 
+/**
+ * Removes some things our users don't need to know about from the import form
+ * They don't need to know about batch processing, user id or taxonomy settings
+ */
 function os_publications_form_biblio_import_form_alter(&$form, $form_state) {
 
   // always use batch processing
-  // 99% of our users won't kno what this is anyway
+  // 99% of our users won't know what this is anyway
   $form['batch_process']['#type'] = 'value';
 
   // set the user id to the current user
@@ -234,6 +260,17 @@ function os_publications_form_biblio_import_form_alter(&$form, $form_state) {
   unset($form['import_taxonomy']);
 }
 
+/**
+ * Ensures the space is set on imported biblio nodes
+ */
+function os_publications_node_prepare($node) {
+  if ($node->type == 'biblio' && isset($node->nid) && !isset($node->og_group_ref) && $space = spaces_get_space()) {
+    field_attach_load('node', array($node->nid => $node));
+    $node->og_group_ref[LANGUAGE_NONE][0]['target_id'] = $space->id;
+  }
+}
+
+// Clear relevant caches when a biblio node is added, changed or deleted
 function os_publications_node_insert($node) {
   if ($node->type == 'biblio') {
     _os_publications_clear_cache($node);
@@ -276,5 +313,17 @@ function _os_publications_clear_cache($node) {
     if (strpos($check, '|') !== FALSE) {
       cache_clear_all($r->cid, 'cache_biblio_lists');
     }
+  }
+}
+
+/**
+ * @function theme_os_publications_biblio_year_row
+ *
+ * Themes biblio years during preprocessing.  Changes the link title to the biblio year text,
+ * but does not change the link to the numerical year.
+ */
+function theme_os_publications_biblio_year_row(&$vars) {
+  foreach ($vars['rows']as $delta => $row) {
+    $vars['rows'][$delta]->link = _biblio_text_year($row->link);
   }
 }

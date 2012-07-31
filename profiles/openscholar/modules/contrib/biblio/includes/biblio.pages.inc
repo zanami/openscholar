@@ -510,7 +510,12 @@ function biblio_build_query($arg_list) {
           $query->condition('b.biblio_citekey', $value);
           break;
         case 'type':
-          $query->condition('b.biblio_type', $value);
+          if (is_array($value)) {
+            foreach ($value as $k => $v) {
+              $k = ucwords(strtolower(str_replace(array('-', '_'), ' ', $v)));
+            }
+          }
+          $query->condition(db_or()->condition('b.biblio_type', $value)->condition('bt.name', $value));
           break;
         case 'search':
           $search_nids = array();
@@ -687,8 +692,13 @@ function _biblio_filter_info_line($args = array()) {
         //return;
         $type = t("First letter of title");
       }
-      if ($type == 'type' && $value > 0) {
-        if (($pub_type = db_query('SELECT t.* FROM {biblio_types} as t WHERE t.tid=:tid', array(':tid' => $value))->fetchObject())) {
+      if ($type == 'type' && ($value > 0 || !is_numeric($value))) {
+        if (is_array($value)) {
+          foreach ($value as $k => $v) {
+            $k = ucwords(strtolower(str_replace(array('-', '_'), ' ', $v)));
+          }
+        }
+        if (($pub_type = db_query('SELECT t.* FROM {biblio_types} as t WHERE t.tid=:tid OR t.name=:name', array(':tid' => $value, ':name' => $value))->fetchObject())) {
           $value = drupal_ucfirst(_biblio_localize_type($pub_type->tid, $pub_type->name));
           $type = t("Type");
         }

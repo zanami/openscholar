@@ -13,7 +13,7 @@ function os_publications_overview() {
 
   $ckey = _os_publications_cache_key($args);
   if ($cache = cache_get($ckey, 'cache_biblio_lists')) {
-    return $cache->data;
+//    return $cache->data;
   }
 
   module_load_include('inc', 'biblio', 'includes/biblio.pages');
@@ -115,4 +115,130 @@ function os_publications_export($format = "tagged", $nid = NULL, $popup = FALSE)
     ob_end_clean();
     return $output;
   }
+}
+
+function scholar_publications_settings($space) {
+  $s_style = biblio_get_style();
+
+  $form['left'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => 'column column-left',
+    )
+  );
+  $form['right'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => 'column column-right',
+    )
+  );
+  $form['left']['biblio_style'] = array(
+    '#type' => 'radios',
+    '#title' => t('Select your preferred bibliographic format'),
+    //'#description' => t('This alters the bibliographic format of your publications.'),
+    '#default_value' => biblio_get_style(),
+    '#options' => biblio_get_styles(),
+  );
+
+  $form['right']['biblio_export_links'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Select which export formats should accompany each bibliographic record'),
+    '#default_value' => variable_get('biblio_export_links', array('tagged', 'xml', 'bibtex')),
+    '#options' => array(
+      'tagged'  => t('EndNote Tagged'),
+      'xml'     => t('EndNote XML'),
+      'bibtex'  => t('BibTex'),
+    ),
+    '#description' => t('Each selected format will appear in its own export link.'),
+  );
+
+  $form['right']['biblio_google_link'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Link to Google Scholar'),
+    '#return_value' => 1,
+    '#default_value' => variable_get('biblio_google_link', 1),
+    '#description' => t('This adds the necessary metadata to your web site to allow Google Scholar to properly index your publication.'),
+  );
+
+  //citation distribute plugins
+  /*
+   $form['right']['citation_distribute_autoflags'] = array(
+     '#title' => t('Automatic Node Flagging'),
+     '#type' => 'checkboxes',
+     '#description' => t('New publications will automatically be flagged for distribution to the selected services.'),
+     '#default_value' => variable_get('citation_distribute_autoflags', array()),
+     '#options' => array(),
+   );
+   foreach (_citation_distribute_plugins() as $plugin) {
+     if (isset($plugin['title'])) {
+       $form['citation_distribute_autoflags']['#options'] += array($plugin['handler']['class'] => $plugin['title']);
+     }
+   }*/
+
+
+  $form['right']['os_publications_note_in_teaser'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show the "note" content in teaser?'),
+    //'#description' => t('This alters the bibliographic format of your publications.'),
+    '#default_value' => variable_get('os_publications_note_in_teaser', false),
+    '#description' => t('If this is checked and you add a note to a publication then it will show as part of a publications teaser.'),
+  );
+
+  $form['left']['biblio_rowsperpage'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Publications per page'),
+    '#size' => 5,
+    '#default_value' => variable_get('biblio_rowsperpage',25),
+    '#description' => t('Select the number of publication to be displayed on each page.'),
+  );
+
+  $form['left']['biblio_sort'] = array(
+    '#type' => 'radios',
+    '#title' => t('By default, sort publications by which category'),
+    '#default_value' => variable_get('biblio_sort','year'),
+    '#options' => array('author' => t('Author'), 'keyword' => t('Keyword'), 'title' => t('Title'), 'type' => t('Type'), 'year' => t('Year')),
+  );
+
+  $form['left']['biblio_order'] = array(
+    '#type' => 'radios',
+    '#title' => t('Select default order of the sort category'),
+    '#default_value' => variable_get('biblio_order', 'DESC'),
+    '#options' => array('DESC' => t('Descending'), 'ASC' => t('Ascending')),
+  );
+
+  $form['left']['biblio_sort_tabs'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Allow additional sorting of your publications by'),
+    '#default_value' => variable_get('biblio_sort_tabs', array('author'=>'author', 'title'=>'title', 'type'=>'type', 'year'=>'year')),
+    '#options' => array('author' => t('Author'), 'title' => t('Title'), 'type' => t('Type'), 'year' => t('Year')),
+    //'#description' => t('You turn the sorting links at the top of the /biblio page here.'),
+  );
+
+  $result = db_query('SELECT t.* FROM {biblio_types} as t WHERE tid > -2 AND visible = 1');
+  foreach ($result as $option) {
+    $results[$option->tid] = $option->name;
+  }
+  asort($results);
+
+  $form['right']['scholar_publications_filter_publication_types'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Show only publications of type'),
+    '#default_value' => variable_get('scholar_publications_filter_publication_types', array_keys($results)),
+    '#options' => $results,
+    '#description' => t('The main list of publications on your publications page will list the types slected here.'),
+    '#attributes' => array("class" => "form-checkboxes-scrolling"),
+  );
+
+  //Should urls in citations be shortened?
+  /*$form['scholar_publications'] = array(
+  '#type' => 'fieldset',
+  );
+
+  $form['scholar_publications']['scholar_publications_shorten_citations'] = array(
+   '#type' => 'checkbox',
+   '#title' => t('When this is checked, a shortened URL will be included in the citation.'),
+   '#default_value' => variable_get('scholar_publications_shorten_citations', 0),
+  );*/
+
+  return system_settings_form($form);
 }

@@ -19,6 +19,13 @@ function os_publications_ctools_plugin_api() {
 }
 
 /**
+ * Implements hook_views_api().
+ */
+function os_publications_views_api() {
+  return array("version" => "3.0");
+}
+
+/**
  * Implements hook_image_default_styles().
  */
 function os_publications_image_default_styles() {

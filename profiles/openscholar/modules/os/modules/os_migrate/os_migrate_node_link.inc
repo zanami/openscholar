@@ -11,6 +11,7 @@ class LinkNodeOSMigration extends AbstractNodeOSMigration {
         'dest_type' => 'Link',
       ),
     );
+    
       
     // Let AbstractNode handle the source, dest, and map.
     parent::__construct('link', 'link'); //current types are vsite, article, and page.  lets start with one of those instead?
