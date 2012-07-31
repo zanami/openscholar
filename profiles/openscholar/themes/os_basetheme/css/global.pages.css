@@ -446,7 +446,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 }
 	
 #overlay-titlebar {
-    padding: 15px 10px;
+    padding: 7px 10px 17px;
     position: relative;
     white-space: nowrap;
     z-index: 100;
