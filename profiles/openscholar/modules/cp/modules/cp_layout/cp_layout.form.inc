@@ -185,7 +185,7 @@ function cp_layout_full_submit($form, &$form_state) {
   $regions = $form_state['values']['layout'];
   $ctxs = array('os_public', $form_state['values']['context']);
   $blocks = os_layout_get_multiple($ctxs, false, true);
-dpm($regions);
+
   // go through our regions and change the blocks to match their new position and weight
   foreach ($regions as $r => $d) {
     $widgets = explode('|', $d['widgets']);
