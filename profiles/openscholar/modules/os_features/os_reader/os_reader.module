@@ -1,18 +1,85 @@
-<?php 
+<?php
 
 /**
- * Alter system information to assign the feed node types to this feature
+ * Implements hook_field_formatter_info().
  */
-function os_reader_system_info_alter(&$info, $file, $type){
+function os_reader_field_formatter_info(){
+  return array(
+      'os_reader_google_feedapi' => array(
+          'label' => t('Display feed using Googles FeedAPI'), 
+          'field types' => array(
+              'link_field' 
+          ), 
+          'multiple values' => FIELD_BEHAVIOR_DEFAULT, 
+          'settings' => array(
+              'num_to_show' => 10 
+          ) 
+      ) 
+  );
+}
 
-  //Only alter this info file
-  if ($type != 'module' || $file->name != 'os_reader'){
-    return;
+function os_reader_field_formatter_settings_summary($field, $instance, $view_mode){
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  
+  $summary = t('Showing @num feed items.', array(
+      '@num' => $settings['num_to_show'] 
+  ));
+  
+  return $summary;
+}
+
+function os_reader_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state){
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  
+  $element = array();
+  
+  $element['num_to_show'] = array(
+      '#title' => t('Feeds to show'), 
+      '#type' => 'textfield', 
+      '#size' => 20, 
+      '#default_value' => $settings['num_to_show'], 
+      '#element_validate' => array(
+          'element_validate_integer_positive' 
+      ), 
+      '#required' => TRUE 
+  );
+  
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ * This code just passes straight
+ * through to a theme function, os_reader_formatter_FORMATTER
+ * (e.g. os_reader_formatter_os_reader_google_feedapi).
+ */
+function os_reader_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display){
+  $elements = array();
+  foreach ( $items as $delta => $item ) {
+    $elements[$delta] = array(
+        '#markup' => theme('os_reader_formatter_' . $display['type'], array(
+            'element' => $item, 
+            'num_to_show' => $display['settings']['num_to_show'],
+        )) ,
+    );
   }
+  return $elements;
+}
 
-  // Add the feature settings for feed node types
-  if (! is_array($info['features']['node']))
-    $info['features']['node'] = array();
-
-  $info['features']['node'][] = 'feed';
-} 
+/**
+ * Implements hook_theme().
+ */
+function os_reader_theme(){
+  return array(
+      // The theme function that our formatter uses:
+      'os_reader_formatter_os_reader_google_feedapi' => array(
+          'file' => 'os_reader.theme.inc', 
+          'variables' => array(
+              'element' => NULL, 
+              'field' => NULL 
+          ) 
+      ) 
+  );
+}
