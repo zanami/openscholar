@@ -98,7 +98,15 @@
       $input.val(data.join('|'));
     });
     
-    // TODO: Discuss if we want to have the form when the user leaves the page via a link.
+    // special handling for unused widgets
+    var data = [],
+      $input = $('input[name="layout[unused][widgets]"]');
+    $('#edit-layout-unused-widgets .widget-container').find('.cp-layout-widget').each(function () {
+      data.push(this.id);
+    });
+    $input.val(data.join('|'));
+    
+    // TODO: Discuss if we want to have the form submit when the user leaves the page via a link.
   }
   
   /**

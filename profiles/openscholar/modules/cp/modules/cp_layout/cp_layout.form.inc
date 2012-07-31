@@ -58,6 +58,8 @@ function cp_layout_full_form($form, $form_state, $ctx) {
     '#factories' => os_boxes_get_factories(),
   );
 
+  // TODO: Take custom themes into account
+
   $form['layout'] = array(
     '#type' => 'container',
     '#tree' => TRUE,
@@ -72,6 +74,12 @@ function cp_layout_full_form($form, $form_state, $ctx) {
     ),
     '#pre_render' => array(
       '_cp_layout_rearrange_content_regions',
+    ),
+    'unused' => array(
+      'widgets' => array(
+        '#type' => 'hidden',
+        '#default_value' => '',
+      )
     ),
   );
 
@@ -177,9 +185,12 @@ function cp_layout_full_submit($form, &$form_state) {
   $regions = $form_state['values']['layout'];
   $ctxs = array('os_public', $form_state['values']['context']);
   $blocks = os_layout_get_multiple($ctxs, false, true);
+dpm($regions);
+  // go through our regions and change the blocks to match their new position and weight
   foreach ($regions as $r => $d) {
     $widgets = explode('|', $d['widgets']);
     $weight = 0;
+    if ($r == 'unused') $r = false;
     foreach ($widgets as $w) {
       if (isset($blocks[$w])) {
         $blocks[$w]['region'] = $r;
