@@ -24,5 +24,3 @@ features[variable][] = menu_parent_blog_entry
 features[variable][] = node_options_blog_entry
 features[variable][] = node_preview_blog_entry
 features[variable][] = node_submitted_blog_entry
-spaces[types][] = og
-spaces[types][] = site
