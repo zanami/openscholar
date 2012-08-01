@@ -25,5 +25,6 @@ features[variable][] = node_options_blog_entry
 features[variable][] = node_preview_blog_entry
 features[variable][] = node_submitted_blog_entry
 features[views_view][] = os_blog
+features[views_view][] = os_blog_comments
 spaces[types][] = og
 spaces[types][] = site

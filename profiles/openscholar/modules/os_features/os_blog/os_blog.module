@@ -1,7 +1,21 @@
 <?php
-/**
- * @file
- * Code for the OS Blog feature.
- */
-
 include_once 'os_blog.features.inc';
+
+/**
+ * hook os_widget
+ * 
+ * Exposes blocks as OpenScholar widgets.
+ */
+function os_blog_os_widget(){
+  $items = array();
+  
+  // Displays "Archive" list of blog entry nodes by month
+  $items['views-os_blog-block_1'] = array(
+      'module' => 'views', 
+      'delta' => 'os_blog-block_1', 
+      'region' => 'sidebar_second', 
+      'weight' => '-10', 
+  );
+  
+  return $items;
+}
