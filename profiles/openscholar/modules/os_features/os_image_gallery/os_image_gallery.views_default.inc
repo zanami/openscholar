@@ -178,15 +178,6 @@ function os_image_gallery_views_default_views() {
   $handler->display->display_options['fields']['filename']['alter']['ellipsis'] = FALSE;
   $handler->display->display_options['fields']['filename']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['filename']['link_to_file'] = TRUE;
-  /* Field: File: Rendered File */
-  $handler->display->display_options['fields']['rendered_entity']['id'] = 'rendered_entity';
-  $handler->display->display_options['fields']['rendered_entity']['table'] = 'views_entity_file';
-  $handler->display->display_options['fields']['rendered_entity']['field'] = 'rendered_entity';
-  $handler->display->display_options['fields']['rendered_entity']['label'] = '';
-  $handler->display->display_options['fields']['rendered_entity']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['rendered_entity']['link_to_entity'] = 1;
-  $handler->display->display_options['fields']['rendered_entity']['display'] = 'view';
-  $handler->display->display_options['fields']['rendered_entity']['view_mode'] = 'media_preview';
   /* Field: Content: Nid */
   $handler->display->display_options['fields']['nid']['id'] = 'nid';
   $handler->display->display_options['fields']['nid']['table'] = 'node';
@@ -209,6 +200,14 @@ function os_image_gallery_views_default_views() {
     'type' => 'spaces_og',
     'frontpage' => 0,
   );
+  /* Field: File: Path */
+  $handler->display->display_options['fields']['uri']['id'] = 'uri';
+  $handler->display->display_options['fields']['uri']['table'] = 'file_managed';
+  $handler->display->display_options['fields']['uri']['field'] = 'uri';
+  $handler->display->display_options['fields']['uri']['label'] = '';
+  $handler->display->display_options['fields']['uri']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['uri']['alter']['text'] = '<img src="[uri]" width="100%" height="100%">';
+  $handler->display->display_options['fields']['uri']['element_label_colon'] = FALSE;
   /* Sort criterion: File: Upload date */
   $handler->display->display_options['sorts']['timestamp']['id'] = 'timestamp';
   $handler->display->display_options['sorts']['timestamp']['table'] = 'file_managed';

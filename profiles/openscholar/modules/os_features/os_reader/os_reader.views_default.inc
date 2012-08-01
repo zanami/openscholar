@@ -23,7 +23,8 @@ function os_reader_views_default_views() {
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Reader';
-  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['type'] = 'spaces_feature';
+  $handler->display->display_options['access']['spaces_feature'] = 'os_reader';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
@@ -38,20 +39,22 @@ function os_reader_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  /* Field: Content: URL */
+  $handler->display->display_options['fields']['field_url']['id'] = 'field_url';
+  $handler->display->display_options['fields']['field_url']['table'] = 'field_data_field_url';
+  $handler->display->display_options['fields']['field_url']['field'] = 'field_url';
+  $handler->display->display_options['fields']['field_url']['label'] = '';
+  $handler->display->display_options['fields']['field_url']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_url']['click_sort_column'] = 'url';
+  $handler->display->display_options['fields']['field_url']['type'] = 'os_reader_google_feedapi';
+  $handler->display->display_options['fields']['field_url']['settings'] = array(
+    'num_to_show' => '3',
+  );
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  /* Contextual filter: Feeds source: Feed node id */
-  $handler->display->display_options['arguments']['feed_nid']['id'] = 'feed_nid';
-  $handler->display->display_options['arguments']['feed_nid']['table'] = 'feeds_source';
-  $handler->display->display_options['arguments']['feed_nid']['field'] = 'feed_nid';
-  $handler->display->display_options['arguments']['feed_nid']['title_enable'] = TRUE;
-  $handler->display->display_options['arguments']['feed_nid']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['feed_nid']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['feed_nid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['feed_nid']['summary_options']['items_per_page'] = '25';
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
@@ -64,7 +67,7 @@ function os_reader_views_default_views() {
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
-    'feed_item' => 'feed_item',
+    'feed' => 'feed',
   );
   /* Filter criterion: Spaces: Content in current space */
   $handler->display->display_options['filters']['current']['id'] = 'current';
