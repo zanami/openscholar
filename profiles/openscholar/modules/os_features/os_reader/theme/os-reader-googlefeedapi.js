@@ -24,9 +24,24 @@ Drupal.behaviors.osReaderGoogleFeeds = {
 		            for (var i = 0; i < result.feed.entries.length; i++) {
 		           	  var entry = result.feed.entries[i];
 		           	  
-		              var div = $("<div>" +
-                      		"<a href='" + entry.link + "'>" + entry.title + "</a>" +
-                      		entry.description +
+		           	  var date = "";
+		           	  if(typeof entry.publishedDate != 'undefined'){
+		           		//@todo find a good way to do FuzzyTime in js
+		           		date = entry.publishedDate;
+		           	  }
+		           	  
+		           	  var content = entry.content;
+		           	
+		           	  if(feed_setting.content_summary && typeof entry.contentSnippet != 'undefined'){
+		           		content = entry.contentSnippet;
+		           	  }
+		           	  
+		              var div = $("<div class='feed_item'>" +
+		            		date +
+                      		"<a class='title' href='" + entry.link + "'>" + entry.title + "</a>" +
+                      		"<span class='description'>" +
+                      		content + 
+                      		"<span/>" +
                       		"</div>");
 		   	          container.append(div);
 		    	    }
