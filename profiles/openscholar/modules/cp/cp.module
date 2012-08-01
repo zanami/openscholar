@@ -382,6 +382,7 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id){
       $form['actions']['space_overrides'] = array(
           '#markup' => l('overrides', 'node/'.$vsite->id.'/features/overrides'),
           '#weight' => 100, 
+          '#access' => user_access('administer spaces'),
       );
     }
   }
