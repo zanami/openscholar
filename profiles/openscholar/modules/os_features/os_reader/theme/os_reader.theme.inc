@@ -31,7 +31,7 @@ function _os_reader_load_common_feed_js(){
   static $common_js;
   if (! isset($common_js)) {
     $common_js = true;
-    drupal_add_js('https://www.google.com/jsapi', array(
+    drupal_add_js('https://www.google.com/jsapi?autoload='.urlencode('{"modules" : [{"name" : "feeds","version" : "1"}]}'), array(
         'type' => 'external', 
         'scope' => 'header',
         'group' => JS_LIBRARY,

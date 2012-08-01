@@ -1,8 +1,4 @@
 
-//Load the FeedAPI, this needs to happen early
-google.load("feeds", "1");
-
-
 (function ($) {
 
 /**
@@ -10,7 +6,11 @@ google.load("feeds", "1");
  */
 Drupal.behaviors.osReaderGoogleFeeds = {
   attach: function (context, settings) {
-	//Loop through the feeds that are on this page
+	  if (typeof google == 'undefined'){
+		  return;
+	  }
+	  
+	  //Loop through the feeds that are on this page
 	  $.each(settings.osReaderGoogleFeeds, function(div_id, feed_setting) { 
 		  
 		  //Run the feed processing only once per feed
