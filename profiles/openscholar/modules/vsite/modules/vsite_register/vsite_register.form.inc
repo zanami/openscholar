@@ -57,6 +57,11 @@ function vsite_register_form($form, &$state) {
       '#type' => 'hidden',
     	'#value' => FALSE,
     );
+    //flag for JS to set when create new user is clicked
+    $form['user_fieldset']['create_new_user'] = array(
+      '#type' => 'hidden',
+      '#default_value' => TRUE,
+    );
     
   } elseif($manager) {
     //managers can create a new site, give a site to another user, or give a site to a new account.
@@ -238,7 +243,7 @@ function vsite_register_form_validate(&$form, &$state) {
       form_set_error('existing_username', t('Please specify a user account for this web site.'));
     }
     
-  } elseif ($values['vicarious_user'] && $values['create_new_user']) {
+  } elseif ($values['create_new_user']) {
     
     //name and mail are validated by ajax as well.  use that function
     foreach (array('name', 'mail') as $element) {
