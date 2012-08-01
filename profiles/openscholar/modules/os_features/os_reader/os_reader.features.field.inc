@@ -121,6 +121,7 @@ function os_reader_field_default_fields() {
           'label' => 'hidden',
           'module' => 'os_reader',
           'settings' => array(
+            'content_summary' => FALSE,
             'num_to_show' => 10,
           ),
           'type' => 'os_reader_google_feedapi',
@@ -130,6 +131,7 @@ function os_reader_field_default_fields() {
           'label' => 'hidden',
           'module' => 'os_reader',
           'settings' => array(
+            'content_summary' => 1,
             'num_to_show' => '3',
           ),
           'type' => 'os_reader_google_feedapi',
