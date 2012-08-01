@@ -28,3 +28,4 @@ features[views_view][] = os_blog
 features[views_view][] = os_blog_comments
 spaces[types][] = og
 spaces[types][] = site
+files[] = os_blog.test
