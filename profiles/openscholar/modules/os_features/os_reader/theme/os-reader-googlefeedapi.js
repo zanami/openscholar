@@ -23,10 +23,10 @@ Drupal.behaviors.osReaderGoogleFeeds = {
 		          if (!result.error) {
 		            for (var i = 0; i < result.feed.entries.length; i++) {
 		           	  var entry = result.feed.entries[i];
-		           	  var div = document.createElement("div");
-		              div.appendChild(document.createTextNode(entry.title));
-                      div = $(div);
-		   	          //div.append($(feed_text));
+		           	  
+		              var div = $("<div>" +
+                      		"<a href='" + entry.link + "'>" + entry.title + "</a>" +
+                      		"</div>");
 		   	          container.append(div);
 		    	    }
 		      	  

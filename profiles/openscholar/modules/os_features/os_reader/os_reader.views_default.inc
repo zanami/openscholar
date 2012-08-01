@@ -43,7 +43,7 @@ function os_reader_views_default_views() {
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  /* Contextual filter: Feeds source: Feed node id */
+  /* Contextual filter: Broken/missing handler */
   $handler->display->display_options['arguments']['feed_nid']['id'] = 'feed_nid';
   $handler->display->display_options['arguments']['feed_nid']['table'] = 'feeds_source';
   $handler->display->display_options['arguments']['feed_nid']['field'] = 'feed_nid';
