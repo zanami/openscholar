@@ -26,6 +26,7 @@ Drupal.behaviors.osReaderGoogleFeeds = {
 		           	  
 		              var div = $("<div>" +
                       		"<a href='" + entry.link + "'>" + entry.title + "</a>" +
+                      		entry.description +
                       		"</div>");
 		   	          container.append(div);
 		    	    }
