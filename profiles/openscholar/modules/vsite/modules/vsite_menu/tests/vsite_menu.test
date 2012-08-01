@@ -88,7 +88,7 @@ class VsiteMenuMenuLinks extends OpenscholarWebTestCase {
     
     $this->assertNotEqual($start_menu, $new_menu, "The menu has been updated with the new item.");
     
-    $diff = array_diff_assoc($new_menu,$start_menu);
+    $diff = array_diff_assoc($new_menu, $start_menu);
     
     $this->assertTrue(count($diff) == 1, "Only one new menu item expected [".count($diff)."] found.");
     
