@@ -1,27 +1,14 @@
-.shield_wrapper {
- position: relative;
+#edit-shield .form-item-shield {
+  display: inline-block;
+  vertical-align: top;
 }
 
-.shield_wrapper fieldset {
-  border: none;
-  }
+.item-shield-picker {
+  border: white solid 2px;
+  padding: 18px;
+  height: 90px;
+}
 
-.shield-picker li {
-  float: left;
-  width: 63px;
-  padding: 20px;
-  height: 75px;
-  border: 1px solid #ccc;
-  margin: 2px;
-  cursor: pointer;
-  }
-
-.shield-picker img {
-  max-width:100%;
-  }
-
-.shield-picker li.checked {
+.item-shield-picker.active {
   border-color: green;
-  border-width: 3px;
-  padding:18px;
-  }
+}
