@@ -39,6 +39,17 @@ function os_reader_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  /* Field: Content: URL */
+  $handler->display->display_options['fields']['field_url']['id'] = 'field_url';
+  $handler->display->display_options['fields']['field_url']['table'] = 'field_data_field_url';
+  $handler->display->display_options['fields']['field_url']['field'] = 'field_url';
+  $handler->display->display_options['fields']['field_url']['label'] = '';
+  $handler->display->display_options['fields']['field_url']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_url']['click_sort_column'] = 'url';
+  $handler->display->display_options['fields']['field_url']['type'] = 'os_reader_google_feedapi';
+  $handler->display->display_options['fields']['field_url']['settings'] = array(
+    'num_to_show' => '3',
+  );
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';

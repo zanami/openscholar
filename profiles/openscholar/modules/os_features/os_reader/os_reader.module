@@ -1,4 +1,5 @@
 <?php
+include_once 'os_reader.features.inc';
 
 /**
  * Implements hook_field_formatter_info().
@@ -12,7 +13,8 @@ function os_reader_field_formatter_info(){
           ), 
           'multiple values' => FIELD_BEHAVIOR_DEFAULT, 
           'settings' => array(
-              'num_to_show' => 10 
+              'num_to_show' => 10,
+              'content_summary' => false,
           ) 
       ) 
   );
@@ -22,8 +24,9 @@ function os_reader_field_formatter_settings_summary($field, $instance, $view_mod
   $display = $instance['display'][$view_mode];
   $settings = $display['settings'];
   
-  $summary = t('Showing @num feed items.', array(
-      '@num' => $settings['num_to_show'] 
+  $summary = t('Showing @num feed items. @trim', array(
+      '@num' => $settings['num_to_show'] ,
+      '@trim' => ($settings['content_summary'])?"(trimmed)":""
   ));
   
   return $summary;
@@ -46,6 +49,13 @@ function os_reader_field_formatter_settings_form($field, $instance, $view_mode, 
       '#required' => TRUE 
   );
   
+  $element['content_summary'] = array(
+      '#title' => t('Show Content Summary'),
+      '#description' => t('Show a short summary of the feed content if avalible.'),
+      '#type' => 'checkbox',
+      '#default_value' => $settings['content_summary'],
+  );
+  
   return $element;
 }
 
@@ -65,6 +75,7 @@ function os_reader_field_formatter_view($entity_type, $entity, $field, $instance
             'entity_type' => $entity_type,
             'delta' => $delta,
             'num_to_show' => $display['settings']['num_to_show'],
+            'content_summary' => $display['settings']['content_summary'],
         )) ,
     );
   }
