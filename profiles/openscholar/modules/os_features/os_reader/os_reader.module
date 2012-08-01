@@ -61,6 +61,9 @@ function os_reader_field_formatter_view($entity_type, $entity, $field, $instance
     $elements[$delta] = array(
         '#markup' => theme('os_reader_formatter_' . $display['type'], array(
             'element' => $item, 
+            'entity' => $entity,
+            'entity_type' => $entity_type,
+            'delta' => $delta,
             'num_to_show' => $display['settings']['num_to_show'],
         )) ,
     );
@@ -75,11 +78,34 @@ function os_reader_theme(){
   return array(
       // The theme function that our formatter uses:
       'os_reader_formatter_os_reader_google_feedapi' => array(
-          'file' => 'os_reader.theme.inc', 
+          'file' => 'theme/os_reader.theme.inc', 
           'variables' => array(
               'element' => NULL, 
-              'field' => NULL 
+              'delta' => NULL,
+              'num_to_show' => NULL,
+              'entity_type' => NULL,
+              'entity' => NULL,
           ) 
       ) 
+  );
+}
+
+/**
+ * Implements hook_library().
+ */
+function os_reader_library(){
+  return array(
+      // The theme function that our formatter uses:
+      'google-feeds' => array(
+          'title' => 'OS Reader Google FeedAPI Integration',
+          'website' => "https://developers.google.com/feed/v1/devguide",
+          'version' => '1.1',
+          'js' => array(
+              drupal_get_path('module', 'os_reader').'/theme/os-reader-googlefeedapi.js' => array(),
+           ),
+          'css' => array(
+              drupal_get_path('module', 'os_reader').'/theme/os-reader-googlefeedapi.css' => array(),
+          ),
+      )
   );
 }
