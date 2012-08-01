@@ -19,6 +19,7 @@ class os_boxes_slideshow extends os_boxes_default {
     $options['items_per_page'] = 10;
     $options['effect'] = 'fade';
     $options['style'] = 'dark';
+    $options['size'] = 600;
     return $options;
   }
 
@@ -30,12 +31,12 @@ class os_boxes_slideshow extends os_boxes_default {
     $form = array();
     $form += parent::options_form($form_state);
 
-    //get the media gallery nodes. 
+    //get the media gallery nodes.
     if ($view = views_get_view('gallery_slideshow')) {
       $view->execute_display('default', array());
     }
-    
-    //jsut get gallery nids and titles  
+
+    //jsut get gallery nids and titles
     $galleries = array();
     $r = $view->result;
     foreach ($view->result as $result) {
@@ -52,25 +53,25 @@ class os_boxes_slideshow extends os_boxes_default {
         '#options' => array('all' => t('All')) + $galleries,
         '#default_value' => $this->options['gallery_nid'],
       );
-    } else {    
+    } else {
       $form['no_gallery_message'] = array(
         '#type' => 'markup',
         '#markup' => '<div>' . t('You must create a gallery to use as a slideshow.') . '</div>',
       );
     }
-        
+
     $form['new_gallery'] = array(
       '#type' => 'markup',
       '#markup' => l(t('Create new gallery'), 'node/add/media-gallery'), //overlay?
     );
-    
+
     $form['display'] = array(
       '#type' => 'fieldset',
       '#title' => t('Display Options'),
       '#collapsible' => TRUE,
     	'#collapsed' => TRUE,
     );
-    
+
     $form['display']['style'] = array(
       '#title' => t('Player Styles'),
       '#type' => 'select',
@@ -81,6 +82,20 @@ class os_boxes_slideshow extends os_boxes_default {
       '#description' => t('Choose between a black or light grey player style.'),
     );
 
+    $form['display']['size'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Size'),
+      '#default_value' => $this->options['size'],
+      '#field_suffix' => 'px',
+      '#description' => t('Enter the width of the slideshow in pixels. It should be between 400 and 960 pixels.'),
+      '#element_validate' => array('os_boxes_slideshow_accepted_range'),
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_slideshow/os_slideshow_form.js'
+        )
+      ),
+    );
+
     $display_options = array('pager' => t('Show Pager'), 'controls' => t('Show Controls'), 'slide_counter' => t('Slide Counter'));
     foreach ($display_options as $option => $title)
     $form['display'][$option] = array(
@@ -89,21 +104,21 @@ class os_boxes_slideshow extends os_boxes_default {
       '#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
       '#default_value' => $this->options[$option],
     );
-    
+
     $form['display']['items_per_page'] = array(
       '#type' => 'textfield',
       '#title' => t('Number of items'),
       '#description' => t('Limit to this many images per slideshow.  Use 0 for no limit.'),
       '#default_value' => (int) $this->options['items_per_page'],
     );
-    
+
     //get jquery effects from view (include file hsould arleady be loaded)
     $slideshow_form_full = $state = array();
     @views_slideshow_cycle_views_slideshow_slideshow_type_form($slideshow_form_full, $state, $view);
     $form['display']['effect'] = $slideshow_form_full['views_slideshow_cycle']['effect'];
     $form['display']['effect']['#default_value'] = $this->options['effect'];
-    
-    
+
+
     return $form;
   }
 
@@ -113,37 +128,76 @@ class os_boxes_slideshow extends os_boxes_default {
   public function render() {
     $block = parent::render();
     drupal_add_css(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_slideshow/theme/os-slideshow-' . $this->options['style'] . '.css');
-    
+    drupal_add_css(drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_slideshow/os_boxes_slideshow.css');
+
     if ($view = views_get_view('gallery_slideshow')) {
-      
+
       if (((int)$this->options['gallery_nid']) > 0) {
         $view->set_arguments($this->options['gallery_nid']);
       }
       $view->init_display();
       $handler = $view->display_handler;
       $style_options = $handler->get_option('style_options');
-  
+
       //add slideshow widgets
       foreach(array('pager', 'controls', 'slide_counter') as $option) {
         foreach($style_options['widgets'] as $position => $info) {
           $style_options['widgets'][$position]['views_slideshow_' . $option]['enable'] = ($position == $this->options[$option]);
         }
-      } 
-      
+      }
+
       $style_options['views_slideshow_cycle']['effect'] = $this->options['effect'];
       $handler->set_option('style_options', $style_options);
-      
+
       //number of items
       if ((int)$this->options['items_per_page'] > 0) {
         $view->set_items_per_page((int) $this->options['items_per_page']);
       } else {
         $handler->set_option('use_pager', FALSE);
       }
-      
+
       $output = $view->preview();
+
+      // dynamic size adjustments
+      $styles = image_styles();
+      $prefix = 'slideshow_';
+      $data = array();
+      foreach ($styles as $name => $presets) {
+        if (strpos($name, $prefix) !== false) {
+          $dim = current($presets['effects']);
+          $dim = $dim['data'];
+          $data[$dim['width']] = $dim;
+        }
+      }
+      ksort($data);
+
+      foreach ($data as $width => $dim) {
+        if ($this->options['size'] <= $width) {
+          $ratio = $dim['height']/$dim['width'];
+          $preset = $prefix.$width;
+          break;
+        }
+      }
+
+      $width = $this->options['size'];
+      $height = $width * $ratio;
+
+      // swap out the dimenions of the preset with the dimenions the user wants
+      $patt_w = '/(<img [^>]* width=")([^"]*)("[^>]*>)/';
+      $patt_h = '/(<img [^>]* height=")([^"]*)("[^>]*>)/';
+      $patt_url = '/<img [^>]*src="([^"]*)"[^>]*>/';
+
+      $output = preg_replace($patt_w, '${1}'.($width).'px'.'${3}', $output);
+      $output = preg_replace($patt_h, '${1}'.($height).'px'.'${3}', $output);
+      $matches = array();
+      preg_match_all($patt_url, $output, $matches, PREG_SET_ORDER);
+      foreach ($matches as $m) {
+        $output = str_replace($m[1], image_style_url($preset, $m[1]), $output);
+      }
+
       $block['content'] = $output;
     }
-    
+
     return $block;
   }
 
@@ -151,9 +205,9 @@ class os_boxes_slideshow extends os_boxes_default {
    * Return the cache parameters for this box
    */
   public function cache_info() {
-    
+
     return array();
-    
+
   //  	//Clear any time the site is saved
   //    $cache_key = array(
   //      'os_og' => array('current' => 'current'),
@@ -163,4 +217,14 @@ class os_boxes_slideshow extends os_boxes_default {
   //    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key, 'max_lifespan' => 900);
   }
 
+}
+
+/**
+ * Ensures the value given is within acceptable ranges
+ */
+function os_boxes_slideshow_accepted_range($element, &$form_state) {
+  if ($element['#value'] < 400 || $element['#value'] > 960) {
+    form_error($element, t('Slideshow width out of bounds: Width should be between 400 and 960 pixels.'));
+  }
+  $element['#value'] = (int)$element['#value'];
 }
