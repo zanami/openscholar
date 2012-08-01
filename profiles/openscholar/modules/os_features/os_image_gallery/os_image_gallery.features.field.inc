@@ -227,7 +227,6 @@ function os_image_gallery_field_default_fields() {
       ),
     ),
   );
-;
 
   // Exported field: 'node-media_gallery-media_gallery_columns'
   $fields['node-media_gallery-media_gallery_columns'] = array(
@@ -849,18 +848,13 @@ function os_image_gallery_field_default_fields() {
     ),
   );
 
-
   // Translatables
   // Included for use with string extractors like potx.
   t('Allow downloading of the original image');
-  t('Choose a default <a href="http://creativecommons.org">Creative Commons</a> license for all Gallery media. Later you can change the license for each piece of media.');
   t('Create a block of most recently added media');
-  t('Default license settings');
   t('Description');
   t('Display a "download original image" link');
-  t('Gallery collection');
   t('Gallery format');
-  t('Gallery information');
   t('Gallery media');
   t('Lightbox title and description');
   t('Media information');
