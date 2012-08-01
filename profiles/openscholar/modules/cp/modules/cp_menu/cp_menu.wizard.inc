@@ -22,7 +22,8 @@ function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
     cp_menu_cache_clear($object_id);
   }
   $object = cp_menu_cache_get($object_id);
-
+  $object['js'] = ($js != 'nojs');
+  
   //check if step is a menu?  if so, stash it and clear it.
   ctools_include('menu','os');
   if (in_array($menu, array_flip(os_get_menus()))) {
@@ -38,6 +39,7 @@ function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
   );
 
   //prep multistep form info
+  
   $form_info = array(
     'id' => 'cp_menu_form',
     'path' => 'cp_menu/' . ($js ? 'ajax' : 'nojs') . '/%step',
@@ -89,7 +91,14 @@ function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
   //build and render the form
   ctools_include('wizard');
   $form = ctools_wizard_multistep_form($form_info, $step, $form_state);
-  return drupal_render($form);
+  $output = drupal_render($form);
+  if ($js) {
+  	ctools_include('ajax');
+  	ctools_include('modal');
+  	ctools_modal_render(t('Add menu item'), $output);
+  } else {
+  	return $output;
+  }
 }
 
 
@@ -105,6 +114,7 @@ function cp_menu_type($form, &$formstate) {
     '#type' => 'radios',
     '#options' => array('page'=>'Page', 'url'=>'URL'),//, 'list'=>'List'),
     '#description' => t('Type of content to link to.'),
+  	'#required' => TRUE,
   );
 
   return $form;
@@ -370,7 +380,20 @@ function cp_menu_wizard_next(&$form_state) {
 * CP menu wizard cancelled.
 */
 function cp_menu_wizard_cancel(&$form_state) {
+	$cached = cp_menu_cache_get($form_state['object_id']);
   cp_menu_cache_clear($form_state['object_id']);
+  
+  if ($cached['js']) {
+  	ctools_include('ajax');
+  	ctools_include('modal');
+  	$commands = array();
+  	$commands[] = ctools_modal_command_dismiss();
+  	print ajax_render($commands);
+  	exit;
+  	
+  } else {
+  	drupal_goto('<front>');
+  }
 }
 
 /**
@@ -382,7 +405,17 @@ function cp_menu_wizard_finish(&$form_state) {
   //new node page
   if ($values['type'] == 'page' && $values['new_or_select'] == 'new') {
     cp_menu_cache_set($form_state['object_id'], $values);
-    drupal_goto('node/add/' . $values['new_node_type']);
+    
+    if ($values['js']) {
+    	ctools_include('ajax');
+    	ctools_include('modal');
+    	$commands = array();
+    	$commands[] = ctools_ajax_command_redirect('node/add/' . $values['new_node_type']);
+    	print ajax_render($commands);
+    	exit;
+    } else {
+    	drupal_goto('node/add/' . $values['new_node_type']);
+    }
   }
 
   //Build the link from the collected data
@@ -419,6 +452,17 @@ function cp_menu_wizard_finish(&$form_state) {
   $item = array('link_path' => $url, 'menu_name' => $menu_name, 'link_title' => $values['title'],'options' => $options);
   $mlid = os_menu_link_save($item);
   cp_menu_cache_clear($form_state['object_id']);
-  drupal_goto('<front>'); //better destination?
+  if ($values['js']) {
+  	ctools_include('ajax');
+  	ctools_include('modal');
+  	$commands = array();
+  	$commands[] = ctools_modal_command_dismiss();
+  	$commands[] = ctools_ajax_command_reload();
+  	print ajax_render($commands);
+  	exit;
+  	 
+  } else {
+  	drupal_goto('<front>');
+  }
 }
 
