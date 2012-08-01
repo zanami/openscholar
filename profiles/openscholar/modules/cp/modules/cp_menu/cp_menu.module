@@ -134,15 +134,20 @@ function cp_menu_contextual_links_view_alter(&$element, $items) {
         $menu = $link[1];
 
         if (in_array($menu, $menus)) {
-          $element['#links']['menu-add'] = array('title' => t('Add menu item'),'href' => 'cp_menu/ajax/new/' . $menu);
+          $fragment = 'cp_menu/ajax/new/'; 
+          if ($space = spaces_get_space()) {
+            $fragment = $space->group->purl . '/' . $fragment;
+          }
+          //$element['#links']['menu-add'] = array('title' => t('Add menu item'), 'href' => '', 'fragment' => 'overlay=' . $fragment . $menu);
+          
+          //modal includes should probably live elsewhre
+          ctools_include('modal');
+          ctools_modal_add_js();
+          $element['#links']['menu-add'] = array('title' => t('Add menu item'), 'href' => $fragment . $menu, 'attributes' => array('class' => array('ctools-use-modal')));
         }
       }
     }
   }
-}
-
-function cp_menu_admin_paths_alter(&$paths) {
-  $paths['cp_menu/*'] = TRUE;
 }
 
 /**
@@ -188,25 +193,27 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
     $form['os_menu']['link']['description']['#default_value'] =
       (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
     $form['os_menu']['link']['new_window']['#default_value'] = (isset($link['options']['attributes']['target']) && $link['options']['attributes']['target'] == '_blank');
+  }
+  
+  //menu wizard - insert settings from wizard
+  require_once(drupal_get_path('module', 'cp_menu') . '/cp_menu.wizard.inc');
+  $cache = cp_menu_cache_get('cp_menu');
+  if (count($cache)) { //make sure you're coming from cp/menu page.  otherwise abandoned but not cleared form could hijack node/add
+    $title = check_plain($cache['title']);
+    $form['title']['#default_value'] = $title;
 
-    //menu wizard - insert settings from wizard
-    require_once(drupal_get_path('module', 'cp_menu') . '/cp_menu.wizard.inc');
-    $cache = cp_menu_cache_get('cp_menu');
-    if (count($cache) && strpos($_SERVER['HTTP_REFERER'], 'cp_menu')) { //make sure you're coming from cp/menu page.  otherwise abandoned but not cleared form could hijack node/add
-      $title = check_plain($cache['title']);
-      $form['title']['#default_value'] = $title;
-
-      $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
-      $form['os_menu']['enabled']['#default_value'] = 1;
-      $form['os_menu']['link']['parent']['#default_value']; $menu . ':0'; //position shouldn't matter since we're overriding it later anyway
-      $form['os_menu']['link']['link_title']['#default_value'] = $title;
-      $form['os_menu']['link']['description']['#default_value'] = check_plain($cache['tooltip']);
-
-      if ($cache['new_window']) {
-        $form['os_menu']['link']['new_window']['#default_value'] = 1;
-      }
+    $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
+    if (isset($form['os_menu'])) {
+	    $form['os_menu']['enabled']['#default_value'] = 1;
+	    $form['os_menu']['link']['parent']['#default_value']; $menu . ':0'; //position shouldn't matter since we're overriding it later anyway
+	    $form['os_menu']['link']['link_title']['#default_value'] = $title;
+	    $form['os_menu']['link']['description']['#default_value'] = check_plain($cache['tooltip']);
     }
-
+    
+    if ($cache['new_window']) {
+      $form['os_menu']['link']['new_window']['#default_value'] = 1;
+    }
+    
     cp_menu_cache_clear('cp_menu');
   }
 }
