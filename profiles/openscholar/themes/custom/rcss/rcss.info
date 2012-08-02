@@ -3,7 +3,7 @@
 name        = Research Computer for the Social Sciences
 description = Clean theme for RCSS
   core        = 7.x
-  base theme = scholar_base
+  base theme = os_basetheme
   release     = 7.x-3.x
   engine      = phptemplate
   screenshot  = screenshot.png

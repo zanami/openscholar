@@ -8,6 +8,12 @@ body {
 
 /* TYPOGRAPHY */
 
+h1#page-title {
+    font-size: 1.3em;
+    font-weight: normal;
+    letter-spacing: 0;
+}
+
 h2 {
   font-weight: normal;
   letter-spacing: 0;
@@ -20,7 +26,7 @@ h4 {
 /*LAYOUT ITEMS */
 
 
-.wrap {
+#header-container, #block-os-primary-menu, #columns, #footer {
   width: 1006px;
   margin: 0 auto;
   }
@@ -95,6 +101,10 @@ div.links {
 #menu-bar ul {
   height: 56px;
   }
+  
+ul.nice-menu ul {
+    top: 4.3em;
+}
 
 #menu-bar li {
  margin: 0;
