@@ -7,7 +7,6 @@
  */
 class BookNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
-    $this->cck_fields = array();
     $this->dependencies[] = 'BookTableOS';
     $this->dependencies[] = 'MenuLinksTableOS';
     

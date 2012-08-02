@@ -56,7 +56,51 @@ abstract class OSMigration extends Migration {
       throw $e;
     }
   }
-
+  
+  public function d6_db_query ($query, array $args = array(), array $options = array()) {
+    static $os_migrate_database;
+    if (!isset($os_migrate_database)) {
+      $os_migrate_database =  variable_get('os_migrate_database', '');
+    }
+    $options['target'] = $os_migrate_database;
+    
+    try {
+      return Database::getConnection($options['target'], $os_migrate_database)->query($query, $args, $options);
+    }  catch (DatabaseConnectionNotDefinedException $e) {
+      flood_register_event('os_migrate_bad_db');
+      $msg = t('Unable to connect to legacy database %db  Please !link', array(
+          '%db' => $os_migrate_database . '.',
+          '!link'=>l('check settings','admin/config/openscholar/os_migrate')));
+      drupal_set_message($msg, 'error');
+    
+      throw $e;
+    }
+  }
+  
+  /**
+   * @function d6_db_table_exists
+   * 
+   * Check if table exists in legacy database.  Borrows code from db_table_exists.
+   */
+  function d6_db_table_exists($table) {
+    static $os_migrate_database;
+    if (!isset($os_migrate_database)) {
+      $os_migrate_database =  variable_get('os_migrate_database', '');
+    }
+    
+    try {
+      return Database::getConnection('default', $os_migrate_database)->schema()->tableExists($table);
+    } catch (DatabaseConnectionNotDefinedException $e) {
+      flood_register_event('os_migrate_bad_db');
+      $msg = t('Unable to connect to legacy database %db  Please !link', array(
+          '%db' => $os_migrate_database . '.',
+          '!link'=>l('check settings','admin/config/openscholar/os_migrate')));
+      drupal_set_message($msg, 'error');
+    
+      throw $e;
+    }
+  }
+  
   /**
    * @function os_migrate_prepare_files
    * 
@@ -217,6 +261,8 @@ abstract class OSMigration extends Migration {
     }
     return FALSE;
   }
+  
+  
   /*************************************
    * CCK Field mappers
    ***************************************/
@@ -235,7 +281,7 @@ abstract class OSMigration extends Migration {
       
       switch ($field) {
         case 'Link':
-          $fields += array('field_'.$name.'_url', 'field_'.$name.'_title', 'field_'.$name.'_attributes');
+          $fields += array_keys($this->_getCCKField($field, $name));
         break;
 
         case 'Date':
@@ -244,7 +290,8 @@ abstract class OSMigration extends Migration {
         break;
           
         case 'File':
-          $fields += array("field_${name}_fid", "field_${name}_list", "field_${name}_data");   
+          //$fields += array("field_${name}_fid", "field_${name}_list", "field_${name}_data");   
+          $fields += array_keys($this->_getCCKField($field, $name));
           $leftjoin[] = array('table'=>'files', 'alias'=>'f', 'join'=>"ct.field_${name}_fid = f.fid",
             'fields'=>array('filepath',));
           
@@ -268,29 +315,55 @@ abstract class OSMigration extends Migration {
 
   //perform common preparations for cck types
   function prepareRowCCK(&$row) {
+    
     foreach($this->cck_fields as $value) {
-      $field = $value['cck_type'];
-      $name = $value['cck_name'];
+      $cck_type = $value['cck_type'];
+      $cck_name = $value['cck_name'];
+      $dest_name = $value['dest_name'];
+      $dest_type = $value['dest_type'];
       
-      switch ($field) {
-        case 'Link':
-          $attr = 'field_'.$name.'_attributes';
-          if (strlen($row->$attr)) {
-            $row->$attr = unserialize($row->$attr);
-          }
+      switch ($dest_type) {
+      	case 'Image':
+      	  $data = 'field_' . $cck_name . '_data';
+      	  if (isset($row->$data)) {
+      	    $a_data = unserialize($row->$data); 
+	      	  $row->alt = $a_data['alt']; //this is where alt would appear if we had a way to add it through the gui.
+      	  } 
+      	  
+      	  $row->$dest_name = $row->filepath;
+      	  break;			
+      	  
+      	case 'Link':
+      	  $attr = 'field_'.$cck_name.'_attributes';
+      	  if (strlen($row->$attr)) {
+      	    $row->$attr = unserialize($row->$attr);
+      	  }
+      	  
+      }
+      
+      
+//       switch ($field) {
+//         case 'Link':
+//           $attr = 'field_'.$name.'_attributes';
+//           if (strlen($row->$attr)) {
+//             $row->$attr = unserialize($row->$attr);
+//           }
           
-        break;
+//         break;
         
-        case 'File':
-          if (isset($row->field_announcement_photo_fid)) {
-            $row->field_photo = variable_get('os_migrate_files', '') . '/' . $row->filepath;
-          }
-        break;
+//         case 'File':
+//           if (isset($row->field_announcement_photo_fid)) {
+//             $row->field_photo = variable_get('os_migrate_files', '') . '/' . $row->filepath;
+//           }
+//         break;
           
 
-        default:
-          break;
-      }
+//         default:
+//           break;
+//       }
+
+      
+      
     }
   }
   
@@ -316,41 +389,85 @@ abstract class OSMigration extends Migration {
         
         case 'Image':
           $this->addFieldMapping($dest_name, $dest_name);
-          foreach (array('language', 'alt', 'title') as $sub) {
-            $this->addFieldMapping($dest_name . ':' . $sub, 'field_' . $cck_name . '_' . $sub);
+          $subs = $this->_getSubFields($dest_type, $dest_name);
+          foreach ($subs as $row_data => $subfield) {
+            $this->addFieldMapping($subfield, $row_data);
           }
           $this->addUnmigratedDestinations(array('field_photo:file_class', 'field_photo:destination_dir', 'field_photo:destination_file', 'field_photo:file_replace', 'field_photo:preserve_files', 'field_photo:source_dir'), t('DNM'));
+          $this->addUnmigratedSources(array_keys($this->sourceFieldsCCK()), t('DNM'));
           
         break;
       }
     }
   }
   
+  //gets mappings for all source fields
   function sourceFieldsCCK() {
     $return = array();
     foreach ($this->cck_fields as $value) {
-      $name = $value['cck_name'];
-      switch ($value['cck_type']) {
-        case 'Link':
-          $return += array(
-            //name => desc
-						'field_'.$name.'_url' => 'Link URL',
-          );
-        break;
-        
-        case 'File':
-          $return += array(
-            //name => desc
-						'field_'.$name.'_fid' => 'File ID',
-            'field_'.$name.'_list' => 'Show file?',
-            'field_'.$name.'_data' => 'Metadata about file',
-          );
-        break;
-      }
+      $return += $this->_getCCKField($value['cck_type'], $value['cck_name']);
+      $return += $this->_extraSourceFields($value['cck_type'], $value['cck_name']);
+      $return += array($value['dest_name'] => t('Field: %type', array('%type' => $value['dest_type'])));
     }
     return $return;
   }
+  
+  //gets columns for a single cck field
+  function _getCCKField($type, $name) {
+    $fields = array();
+    switch ($type) {
+      case 'File':
+        $fields = array(
+          "field_${name}_fid" => t('File ID'),
+          "field_${name}_list" => t('Boolean: Show file?'),
+          "field_${name}_data" => t('Metadata about file'),
+        );
+        break;
+        
+      case 'Link':
+        $fields = array(
+        	"field_${name}_url" => t('URL'),
+          "field_${name}_title" => t('Display title'), 
+        	"field_${name}_attributes" => t('Additional attributes for URL'),
+        );
+        break;
+    }
+    
+    return $fields;
+  }
+  
+  //get subfields
+  function _getSubFields($type, $name) {
+    $subfields = array();
+    
+    switch($type) {
+      case 'Image':
+        $subfields = array(
+          'language' => "${name}:language",
+        	'alt' => "${name}:alt",
+        	'title' => "${name}:title",
+        );
+        break;
+    }
+    
+    return $subfields;
+  }
 
+  //for declaring additional source fields in a content type that WON'T be queried from the db.  ie image alt is derived from other fields
+  function _extraSourceFields($type, $name) {
+    $source_fields = array();
+    
+    switch($type) {
+    	case 'File':
+    	  $source_fields = array(
+    	  	'alt' => t('Alt tag (images only).'),
+    	  );
+    	  break;
+    	  
+    }
+    
+    return $source_fields;
+  }
 
    /*************************
     * inline file processing

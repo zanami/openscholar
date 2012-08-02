@@ -29,7 +29,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       
       /* mappings */
       $this->addSimpleMappings(array('created','changed','status','promote','sticky','comment',
-                                     'title', 'tnid', 'uid', 'nid', 'type'));
+                                     'title', 'tnid', 'uid', 'nid'));
       
       $this->addFieldMapping('language', 'language')->defaultValue('und');
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
@@ -45,15 +45,17 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->addFieldMapping('path', 'path');
       $this->addFieldMapping('pathauto')->defaultValue(FALSE); //do not create new paths.  paths already exist.
       
-      $force_og = variable_get('os_migrate_force_og', 0);    //see dev settings
+      //dev setting: force nodes to be in a set group
+      $force_og = variable_get('os_migrate_force_og', 0);   
       if (!$force_og) {   
         $this->addFieldMapping('og_group_ref', 'group_nid');
       } else {
         $this->addFieldMapping('og_group_ref')
           ->defaultValue($force_og);
+        $this->addUnmigratedSources(array('group_nid'), t('DNM'));
       }
       
-      parent::addMappingsCCK(); //map additional cck fields
+//      parent::addMappingsCCK(); //map additional cck fields
       
       /** migrate <= 2.3 files are deprecated! **
       $associated_files_args = MigrateFileFieldHandler::arguments(NULL, 'file_copy', FILE_EXISTS_REPLACE);
@@ -82,7 +84,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   
   public function query($content_type) {
     $query = parent::d6_db_select('node', 'n')
-                    ->fields('n')
+                    ->fields('n', $this->getNodeFields())
                     ->condition('n.type', $content_type, '=');
                     
     //nodes to test files with:
@@ -100,25 +102,47 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $query->join('og_ancestry', 'og', 'n.nid = og.nid');
     $query->fields('og', array('group_nid'));
       
-    parent::addQueryCCK($query, $content_type); //include joins for cck fields base on class's cck_fields array
+    $table = 'content_type_' . $content_type;
+    if (parent::d6_db_table_exists($table)) { 
+      $query->leftjoin($table, 'ct', 'n.vid = ct.vid');
+			$query->fields('ct');      
+    }
+
     
     return $query;
   }
   
-  public function sourceFields() {
+  private function getNodeFields() {
+    return array('nid', 'vid', 'type','language','title','uid','status','created', 'changed','comment','promote','moderate','sticky','tnid','translate');
+  }
+  
+  public function sourceFields($content_type) {
     $source_fields =  array(
     	'nid'   => t('Node ID'),
       'path'  => t('URL Path Alias'),
+      'format' => t('Text format.  Usually filtered html.'),
 //      'file_upload' => t('File attachments'), //this may have to move to individual classes
       //'nr.body'	=> t('Node\'s Content')
     );
     
-    $source_fields+= parent::sourceFieldsCCK();
+    //get columns front content_type_$content_type
+    $table = 'content_type_' . $content_type;
+    if (parent::d6_db_table_exists($table)) {
+	    $result = parent::d6_db_query('DESCRIBE '. $table);
+	    while ($row = $result->fetchAssoc()) { 
+	      $field = $row['Field'];
+	      if (!in_array($field, array('nid', 'vid'))) {
+	        $source_fields[$field] = t('(From node abstract) @field', array('@field' => $field));
+	      }
+	    }
+    }
+    
+//    $source_fields += parent::sourceFieldsCCK();
     return $source_fields;
   }
   
   public function source($content_type) {
-    return new MigrateSourceSQL($this->query($content_type), $this->sourceFields(), null, array('map_joinable' => FALSE));
+    return new MigrateSourceSQL($this->query($content_type), $this->sourceFields($content_type), null, array('map_joinable' => FALSE));
   }
   
   public function destination($bundle) {
@@ -187,7 +211,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     parent::os_migrate_inline_update($current_row);
     
     //prep cck field data
-    parent::prepareRowCCK($current_row);
+//    parent::prepareRowCCK($current_row);
     
   }
 
