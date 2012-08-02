@@ -7,19 +7,19 @@ include_once ('vsite.features.inc');
 
 /**
  * Helper function to return the current purl prefix
- * 
+ *
  * @param vsite $vsite
  */
 function vsite_get_purl($vsite = false){
-  
+
   if(!$vsite){
     $vsite = spaces_get_space();
   }
-  
+
   if(!$vsite || !isset($vsite->group)){
     return "";
   }
-  
+
   return $vsite->group->purl;
 }
 
@@ -35,7 +35,7 @@ function vsite_get_purl($vsite = false){
 function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
   $vsite = spaces_get_space();
   $os_bundles = array_keys(os_get_bundles(true));
-  
+
   if ($vsite && in_array($form['#bundle'], $os_bundles)) {
     //Set the og_group_ref value to automatically be the current active site
     $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = array(
@@ -46,9 +46,9 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
         '#entity_type' => 'node',
         '#bundle' => $form['#bundle']
     );
-    
+
   }
-  
+
   if(og_is_group_type('node',$form['#bundle'])){
     //Hide the comment settings form
     $form['comment_settings']['#access'] = false;
@@ -63,7 +63,7 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
  */
 function vsite_spaces_presets_alter(&$presets){
   ctools_include('path', 'vsite');
-  
+
   //Alter the preset to include the pathauto settings for nodes prefixed with the purl path
   $pathauto_settings = _vsite_get_pathauto_settings();
   foreach ( $presets as $name => &$preset ) {
@@ -77,20 +77,20 @@ function vsite_spaces_presets_alter(&$presets){
  * Alter information returned from module/theme info files
  */
 function vsite_system_info_alter(&$info, $file, $type){
-  
+
   static $working;
-  
+
   //Only alter the vsite info file
   if ($type != 'module' || $file->name != 'vsite' || $working){
     return;
   }
-  
+
   $working = true;
-    
+
   // Add the feature settings for the dynamically managed og reference fields
   if (! is_array($info['features']['field']))
     $info['features']['field'] = array();
-  
+
   include_once ('vsite.features.field.inc');
   foreach ( vsite_get_group_fields() as $field => $definition ) {
     if (! in_array($field, $info['features']['field'])) {
@@ -120,7 +120,7 @@ function vsite_spaces_plugins(){
  * Alter the registry to tell spaces_og groups to use the vsite plugin by default
  */
 function vsite_spaces_registry_alter(&$registry){
-  
+
   // use the vsite plugin by default
   if (isset($registry['types']['og'])) {
     $registry['types']['og']['plugin'] = 'vsite';
@@ -136,7 +136,7 @@ function vsite_vsite_exists_access($vsites = array()){
   global $user;
 
   //load user's vsites.  anon (uid 0) has no vsites
-	if (!$vsites && $user->uid) {  
+	if (!$vsites && $user->uid) {
 	  ctools_include('vsite', 'vsite');
 		$vsites = vsite_get_vsite_by_owner($user->uid);
 	}
@@ -176,4 +176,122 @@ function vsite_modules_enabled($modules) {
 //   if(count($features_newly_enabled)){
 //   	drupal_set_message("New Group Content has been enabled, ".l("Revert the feature vsite",'admin/structure/features/vsite')." to add fields to the new module.","warning");
 //   }
+}
+
+/**
+ * Add the entity reference fields to the vsite feature bundles
+ */
+function vsite_get_group_fields(){
+  $fields = array();
+
+  $bundles = array_keys(os_get_bundles(true, 'og', true));
+  foreach ($bundles as $bundle) {
+    // Exported field: 'node-BUNDLE-og_group_ref'
+    $fields["node-{$bundle}-og_group_ref"] = array(
+      'field_config' => array(
+        'active' => '1',
+        'cardinality' => '1',
+        'deleted' => '0',
+        'entity_types' => array(),
+        'field_name' => 'og_group_ref',
+        'foreign keys' => array(
+          'node' => array(
+            'columns' => array(
+              'target_id' => 'nid',
+            ),
+            'table' => 'node',
+          ),
+        ),
+        'indexes' => array(
+          'target_id' => array(
+            0 => 'target_id',
+          ),
+        ),
+        'module' => 'entityreference',
+        'settings' => array(
+          'handler' => 'og',
+          'handler_settings' => array(
+            'behaviors' => array(
+              'og_behavior' => array(
+                'status' => TRUE,
+              ),
+              'views-select-list' => array(
+                'status' => 0,
+              ),
+            ),
+            'hide_secondary_field' => 1,
+            'membership_type' => 'og_membership_type_default',
+            'primary_field' => '0',
+            'reference_type' => 'all_groups',
+            'sort' => array(
+              'direction' => 'ASC',
+              'field' => 'body:value',
+              'property' => 'nid',
+              'type' => 'none',
+            ),
+            'target_bundles' => array(
+              'vsite' => 'vsite',
+            ),
+          ),
+          'handler_submit' => 'Change handler',
+          'target_type' => 'node',
+        ),
+        'translatable' => '0',
+        'type' => 'entityreference',
+      ),
+      'field_instance' => array(
+        'bundle' => $bundle,
+        'default_value' => NULL,
+        'deleted' => '0',
+        'description' => '',
+        'display' => array(
+          'default' => array(
+            'label' => 'above',
+            'module' => 'og_ui',
+            'settings' => array(),
+            'type' => 'og_list_default',
+            'weight' => 1,
+          ),
+          'teaser' => array(
+            'label' => 'above',
+            'settings' => array(),
+            'type' => 'hidden',
+            'weight' => 0,
+          ),
+        ),
+        'entity_type' => 'node',
+        'field_name' => 'og_group_ref',
+        'label' => 'Groups audience',
+        'required' => 0,
+        'settings' => array(
+          'user_register_form' => FALSE,
+        ),
+        'view modes' => array(
+          'full' => array(
+            'custom settings' => FALSE,
+            'label' => 'Full',
+            'type' => 'og_list_default',
+          ),
+          'teaser' => array(
+            'custom settings' => FALSE,
+            'label' => 'Teaser',
+            'type' => 'og_list_default',
+          ),
+        ),
+        'widget' => array(
+          'active' => 1,
+          'module' => 'entityreference',
+          'settings' => array(
+            'match_operator' => 'CONTAINS',
+            'path' => '',
+            'size' => '60',
+          ),
+          'type' => 'entityreference_autocomplete',
+          'weight' => '-3',
+        ),
+      ),
+    );
+  }
+
+  return $fields;
 }
