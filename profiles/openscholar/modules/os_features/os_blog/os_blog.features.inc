@@ -34,7 +34,7 @@ function os_blog_views_api() {
  */
 function os_blog_node_info() {
   $items = array(
-    'blog_entry' => array(
+    'blog' => array(
       'name' => t('Blog entry'),
       'base' => 'node_content',
       'description' => '',

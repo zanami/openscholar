@@ -19,7 +19,7 @@ function os_blog_context_default_contexts() {
   $context->conditions = array(
     'node' => array(
       'values' => array(
-        'blog_entry' => 'blog_entry',
+        'blog' => 'blog',
       ),
       'options' => array(
         'node_form' => '0',
