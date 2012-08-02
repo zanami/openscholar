@@ -164,3 +164,16 @@ function vsite_permission() {
     )
   );
 }
+
+/**
+ * Implement hook modules_enabled
+ * @param array $modules
+ */
+function vsite_modules_enabled($modules) {
+  // Check if any of the newly enabled modules require the og_group_ref field
+//   $features = spaces_features('og', true);
+//   $features_newly_enabled = array_intersect($modules, array_keys($features));
+//   if(count($features_newly_enabled)){
+//   	drupal_set_message("New Group Content has been enabled, ".l("Revert the feature vsite",'admin/structure/features/vsite')." to add fields to the new module.","warning");
+//   }
+}

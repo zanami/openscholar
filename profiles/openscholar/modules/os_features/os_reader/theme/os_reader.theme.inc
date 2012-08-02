@@ -19,7 +19,8 @@ function theme_os_reader_formatter_os_reader_google_feedapi($info){
       'osReaderGoogleFeeds' => array(
           $feed_div_id => array(
               'url' => $info['element']['url'], 
-              'num_feeds' => $info['num_to_show'] 
+              'num_feeds' => $info['num_to_show'],
+              'content_summary' => $info['content_summary'],
           ) 
       )
   ), 'setting');

@@ -8,7 +8,7 @@ function cp_menu_menu() {
     'title' => 'Menu',
     'page callback' => 'cp_menu_page',
     'page arguments' => array(2),
-    'access callback' => array('spaces_access_admin'),
+    'access callback' => 'spaces_access_admin',
     'type' => MENU_CALLBACK,
     'file' => 'cp_menu.wizard.inc',
   );
@@ -128,25 +128,24 @@ function cp_menu_contextual_links_view_alter(&$element, $items) {
   ctools_include('menu','os');
   $menus = array_keys(os_get_menus());
 
-  foreach ($element['#contextual_links'] as $delta => $links) {
-    foreach ($links as $link) {
-      if (isset($link[0]) && $link[0] == 'os') {
-        $menu = $link[1];
-
-        if (in_array($menu, $menus)) {
-          $fragment = 'cp_menu/ajax/new/'; 
-          if ($space = spaces_get_space()) {
-            $fragment = $space->group->purl . '/' . $fragment;
-          }
-          //$element['#links']['menu-add'] = array('title' => t('Add menu item'), 'href' => '', 'fragment' => 'overlay=' . $fragment . $menu);
-          
-          //modal includes should probably live elsewhre
-          ctools_include('modal');
-          ctools_modal_add_js();
-          $element['#links']['menu-add'] = array('title' => t('Add menu item'), 'href' => $fragment . $menu, 'attributes' => array('class' => array('ctools-use-modal')));
-        }
-      }
-    }
+  if (spaces_access_admin()) {
+	  foreach ($element['#contextual_links'] as $delta => $links) {
+	    foreach ($links as $link) {
+	      if (isset($link[0]) && $link[0] == 'os') {
+	        $menu = $link[1];
+	
+	        if (in_array($menu, $menus)) {
+	          $fragment = 'cp_menu/ajax/new/'; 
+	          if ($space = spaces_get_space()) {
+	            $fragment = $space->group->purl . '/' . $fragment;
+	          }
+	          ctools_include('modal');
+	          ctools_modal_add_js();
+	          $element['#links']['menu-add'] = array('title' => t('Add menu item'), 'href' => $fragment . $menu, 'attributes' => array('class' => array('ctools-use-modal')));
+	        }
+	      }
+	    }
+	  }
   }
 }
 
