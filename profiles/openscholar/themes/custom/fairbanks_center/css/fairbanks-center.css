@@ -10,7 +10,7 @@ body {
 	}
 
 #page {
-	width: 904px;
+
 	margin:0 auto;
 	}
 
@@ -185,27 +185,21 @@ div.biblio-authors {
 /* LAYOUT */
 
 .region-sidebar-first {
-  width: 160px;
-  right: 232px;
-  margin-left: -100%;
+
   padding:0;
-	left: auto;
+	
   }
 
 .region-sidebar-second {
   padding: 58px 48px 0 0;
-  width: 175px;
-  margin-right: -295px;
+
   }
 
 #content-column {
   padding: 0 36px;
   }
 
-#columns .hg-container {
-  padding-left: 160px;
-  padding-right: 295px;
-  }
+
 
 /* LEFT SIDEBAR */
 
@@ -219,7 +213,7 @@ div.biblio-authors {
   background: url('../images/seal.jpg') no-repeat 34px 100%;
   }
 
-.region-sidebar-first li, #sidebar h2.block-title {
+.region-sidebar-first li, .sidebar h2.block-title {
   padding: 4px 0 0 34px;
   border-bottom:1px solid #B3C4C2;
   margin-bottom: 5px;
@@ -228,7 +222,7 @@ div.biblio-authors {
   line-height: 125%;
   }
 
-#sidebar h2.block-title {
+.sidebar h2.block-title {
   text-transform: uppercase;
   font-weight: normal;
   }
