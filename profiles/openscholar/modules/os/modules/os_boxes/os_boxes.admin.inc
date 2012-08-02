@@ -44,10 +44,9 @@ function os_boxes_widget_submit($form, $form_state) {
       $t = _block_render_blocks(array($block));
       $html = theme('block', $t[0]);
       $target = '.widget-container';  // TODO: replace with the real thing
-    break;
   }
   if (!(isset($form_state['box']->new) && $form_state['box']->new)) {
-    $target = '#boxes-'.$box->delta;
+    $target = '#boxes-box-'.$box->delta;
     $op = 'replace';
   }
 
@@ -104,7 +103,7 @@ function os_boxes_widget_delete_submit($form, &$form_state) {
   if ($form_state['values']['op'] == t('Yes')) {
     // remove it from contexts
     ctools_include('layout', 'os');
-    os_layout_block_delete($form_state['values']['bid']);
+    os_layout_block_delete('boxes-'.$form_state['values']['bid']);
 
     // delete box instance
     if (module_exists('spaces') && $space = spaces_get_space()) {
