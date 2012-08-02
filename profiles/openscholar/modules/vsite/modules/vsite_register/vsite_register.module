@@ -92,3 +92,29 @@ function theme_vsite_register_form_errors($vars) {
   $list = theme('item_list', array('items'=>$vars['errors'], 'type'=>'ul', 'attributes'=>array('class'=>array('error'))));
   return '<div id="' . $vars['name'] . '-errors">' . $list . '</div>';
 }
+
+/**
+ * Implementation of hook_vsite_regsiter_message()
+ * @return the message shown after a successful  web site registration
+ */
+function vsite_register_message($form, $domain){
+  global $user, $base_url;
+
+  $word_replace = user_access("create openscholar site on behalf of others") ? 'the' : 'your';
+
+  $message  = '<div id="success-message" class="status">';
+  $message .= '<p>Success! ' . ucfirst($word_replace) . ' new site has been created.</p>';
+  $message .= '<p>The url of ' . $word_replace . ' site is ' . $base_url . '/' . $domain . ' ' . l(t("Go there now"), $base_url . '/' . $domain) . '</p>';
+  if (in_array('anonymous user', $user -> roles)){
+    $message .= '<p>Check your email account for further details on how to login in to start adding features and content.</p>';
+  }
+  $message .= '</div>';
+
+  //give other modules a chance to alter message
+  module_invoke_all('vsite_register_message',  $message, $form, $domain);
+  return $message;
+}
+
+function _vsite_register_form_error(){
+  return ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
+}
