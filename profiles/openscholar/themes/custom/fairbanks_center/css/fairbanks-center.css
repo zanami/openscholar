@@ -29,7 +29,7 @@ body {
 
 /*styles*/
 
-h2, h3 {
+h1,h2, h3 {
 	font-size: 13px;
 	font-weight: bold;
 	line-height: 25px;
@@ -84,6 +84,8 @@ a img {
 .term-head {
 	color: #b00921;
 }
+
+
 
 .region-header-second,
 #boxes-box-site_info h1,
@@ -191,13 +193,11 @@ div.biblio-authors {
   }
 
 .region-sidebar-second {
-  padding: 58px 48px 0 0;
+  padding: 58px 0 0;
 
   }
 
-#content-column {
-  padding: 0 36px;
-  }
+
 
 
 
@@ -231,6 +231,17 @@ div.biblio-authors {
   color: #b00921;
   font-weight: bold;
   }
+  
+  ul.nice-menu li {
+   
+    background: none;
+ 
+}
+  
+ul.nice-menu-right, ul.nice-menu-left, ul.nice-menu-right li, ul.nice-menu-left li {
+    width: 125px;
+    border-bottom:1px solid #B3C4C2;
+}
 
 /* RIGHT SIDEBAR */
 
