@@ -37,7 +37,7 @@ function os_blog_node_info() {
     'blog' => array(
       'name' => t('Blog entry'),
       'base' => 'node_content',
-      'description' => 'Use <em>Blog entries</em> to directly publish discussions to the web.',
+      'description' => t('Use <em>Blog entries</em> to directly publish discussions to the web.'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',
