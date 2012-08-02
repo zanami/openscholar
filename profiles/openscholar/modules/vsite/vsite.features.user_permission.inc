@@ -18,7 +18,7 @@ function vsite_user_default_permissions() {
     ),
     'module' => 'node',
   );
-  
+
   // Exported permission: create vsite content on behalf.
   $permissions['create vsite content on behalf'] = array(
     'name' => 'create vsite content on behalf',

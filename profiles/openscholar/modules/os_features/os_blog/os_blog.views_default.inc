@@ -23,7 +23,8 @@ function os_blog_views_default_views() {
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Blog';
-  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['type'] = 'spaces_feature';
+  $handler->display->display_options['access']['spaces_feature'] = 'os_blog';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
@@ -84,7 +85,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
-    'blog_entry' => 'blog_entry',
+    'blog' => 'blog',
   );
   /* Filter criterion: Spaces: Content in current space */
   $handler->display->display_options['filters']['current']['id'] = 'current';
@@ -106,8 +107,8 @@ function os_blog_views_default_views() {
   $handler->display->display_options['menu']['title'] = 'Blog';
   $handler->display->display_options['menu']['name'] = 'primary-menu';
 
-  /* Display: Feed */
-  $handler = $view->new_display('feed', 'Feed', 'feed');
+  /* Display: RSS Feed */
+  $handler = $view->new_display('feed', 'RSS Feed', 'feed');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Blog';
   $handler->display->display_options['pager']['type'] = 'some';
@@ -120,8 +121,8 @@ function os_blog_views_default_views() {
   );
   $handler->display->display_options['sitename_title'] = 1;
 
-  /* Display: Block */
-  $handler = $view->new_display('block', 'Block', 'block');
+  /* Display: Archive Block */
+  $handler = $view->new_display('block', 'Archive Block', 'block');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Archive';
   $handler->display->display_options['defaults']['pager'] = FALSE;

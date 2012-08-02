@@ -139,5 +139,16 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_site_info'] = array(
+    'title' => 'Site Info', // TODO: Remove when the box is exported
+    'tags' => array('Misc'),
+    'handler' => array(
+      'class' => 'os_boxes_site_info',
+      'file' => 'os_boxes_site_info.inc',
+      'path' => $path.'/os_boxes_site_info',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
   return $info;
 }

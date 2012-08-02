@@ -10,8 +10,8 @@
 function os_blog_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-blog_entry-body'
-  $fields['node-blog_entry-body'] = array(
+  // Exported field: 'node-blog-body'
+  $fields['node-blog-body'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -39,7 +39,7 @@ function os_blog_field_default_fields() {
       'type' => 'text_with_summary',
     ),
     'field_instance' => array(
-      'bundle' => 'blog_entry',
+      'bundle' => 'blog',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',

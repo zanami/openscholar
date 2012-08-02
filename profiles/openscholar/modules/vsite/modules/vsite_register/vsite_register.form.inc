@@ -117,6 +117,10 @@ function vsite_register_form($form, &$state) {
     '#type' => 'submit',
     '#value' => t('Create your site'),
     '#weight' => 40,
+    '#suffix' => '<div id="submit-suffix"></div>',
+    '#attributes' => array('class' => array('use-ajax-submit') ),
+      
+     
   );
 
   return $form;
@@ -215,12 +219,24 @@ function vsite_register_form_submit(&$form, &$state) {
     os_user_add($site_owner->uid, $vsite->id);
     os_role_grant($site_owner->uid, 'vsite admin', $vsite->id);
        
-    drupal_set_message(t('Welcome to your new OpenScholar site.'));
-    drupal_goto($values['domain']);
+    //drupal_set_message(t('Welcome to your new OpenScholar site.'));
+    //drupal_goto($values['domain']);
+    $message = vsite_register_message($form, $values['domain']);
+    $commands[] = ajax_command_replace ('#submit-suffix', $message );
+    $commands[] = ajax_command_remove('#edit-submit');
+    
   } else {
-    //errors
+    $commands[] = _vsite_register_form_error();
   }
   
+  //call any other submit functions here
+  foreach($form['#submit'] as $fnc){
+    if (__FUNCTION__ !== $fnc){
+      call_user_func($fnc, $form, $state);
+    }
+  }
+  print ajax_render($commands);
+  exit;
 }
 
 
@@ -230,6 +246,10 @@ function vsite_register_form_submit(&$form, &$state) {
  * Validation function for site/register form
  */
 function vsite_register_form_validate(&$form, &$state) {
+  if ($_POST['js']) {
+    return vsite_register_ajax_submit_validation($form, $state);
+  }
+  
   $values = $state['values'];
   
   if ($values['vicarious_user'] && !$values['create_new_user']) {
@@ -278,6 +298,38 @@ function vsite_register_ajax_validation(&$form, &$state) {
     'name' => $elem,
     'errors' => _vsite_register_validate($elem, $state['values']), 
   )));
+}
+
+/**
+ * @function vsite_register_ajax_submit_validation
+ * 
+ * Called when submit button is clicked and ajax is enabled.  
+ */
+function vsite_register_ajax_submit_validation(&$form, &$state) {
+  $values = $state['values'];
+  $elements = array('domain');
+  
+  if ($values['create_new_user']) {
+    $elements += array('name', 'mail', 'password');
+  } else {
+    $elements[] = 'existing_username';
+  }
+  
+  $failed = array();
+  foreach($elements as $element) {
+    if ($failure = _vsite_register_validate($element, $values)) {
+			$failed = array_merge($failed, $failure);
+    }
+  }
+  
+  
+  //bail out with an ajax error
+  if (count($failed)) {		
+    $msg = theme('item_list', array( 'items' => $failed, 'type' => 'ul', 'attributes' => array('class' => array('error'))));
+    $commands[] = ajax_command_html('#submit-suffix', $msg);
+    print ajax_render($commands);
+    exit;
+  }
 }
 
 /**
