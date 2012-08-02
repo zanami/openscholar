@@ -8,12 +8,6 @@
 class EventNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
 
-    /**
-     * cck_fields array helps AbstractNode migrate data from d6's CCK fields into d7's core fields.
-     * 
-     * Document this!  link has a newer version.
-     */
-    $this->cck_fields = array();
     
     /**
      * AbstractNodeOSMigration's __construct() will set up most of the common node migration. 
@@ -33,23 +27,10 @@ class EventNodeOSMigration extends AbstractNodeOSMigration {
      * Modify the query.  Add joins and fields here.
      */
 
-    $query->join('content_type_event', 'cte', 'n.vid = cte.vid');
-    $query->fields('cte', array('field_date_value', 'field_date_value2'));
-   // parent::addQueryCCK($query, $content_type);  //shouldn't this be in the parent query?  maybe check if cck is provided first
     return $query;
   }
   
-  
-  public function sourceFields() {
-    $fields = parent::sourceFields();
 
-    /**
-     * Describe each of the source columns
-     */
-    
-    return $fields;
-  }
-  
   public function prepareRow($current_row) {
     parent::prepareRow($current_row); 
 

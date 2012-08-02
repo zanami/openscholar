@@ -2,7 +2,6 @@
 
 class GalleryNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
-    $this->cck_fields = array();
     
     // Let AbstractNode handle the source, dest, and map.
     parent::__construct('media_gallery', 'gallery'); 
@@ -11,6 +10,14 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     
     //a separate import for projects?
     $this->description = t('OS galleries');    
+    
+    //unmap fields provided by node abstract that aren't used by media_gallery
+    foreach(array('format', 'body:format', 'body:language', 'body:summary', 'teaser') as $field) {
+      $this->removeFieldMapping($field, $field); 
+      $this->addUnmigratedSources(array($field), t('DNM'));
+    }
+    $this->removeFieldMapping('body', 'body'); //unmap body -> body, but don't DNM it.  media_gallery_descripotion uses it. 
+    
     
     //media_gallery has some features os_image_gallery lacked.  lets set some defaults here since there's nothing to import.
     $defaults = array(
@@ -26,9 +33,7 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     } 
     
     /* Field: description */
-    $this->removeFieldMapping('body', 'body'); //node abstract did this, but gallery has description instead of body
-    $this->addFieldMapping('media_gallery_description', 'body')
-      ->defaultValue('i am a description.  why body no add here?');
+    $this->addFieldMapping('media_gallery_description', 'body');
     $this->addFieldMapping('media_gallery_description:format')
         ->defaultValue('filtered_html');
     $this->addFieldMapping('media_gallery_description:language', 'language');
@@ -50,19 +55,22 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('media_gallery_lightbox_extras')
       ->defaultValue(0); //no title/description in lightbox because no images have them.  no previous setting
 
-    $this->removeFieldMapping('body', 'body'); //body comes from node abstract but isn't in gallery nodes
-    $this->addUnmigratedSources(array('body'), t('DNM'));
+
       
   }
   
-  public function sourceFields() {
-    $fields = parent::sourceFields();
+  public function sourceFields($content_type) {
+    $fields = parent::sourceFields($content_type);
     
     $fields +=  array(
     	'media_gallery_media' => t('Images in gallery.'),
     	'media_gallery_media_description' => t('Image\'s text description'),
     	'media_gallery_media_display' => t('Image\'s listing status'),
       'media_gallery_media_language' => t('Language used in image\'s description'),
+    
+      'body:format' => t('Provided by node abstract, but ignored here.'),
+    	'body:language' => t('Provided by node abstract, but ignored here.'),
+    	'body:summary' => t('Provided by node abstract, but ignored here.'),
     );
     
     return $fields;
