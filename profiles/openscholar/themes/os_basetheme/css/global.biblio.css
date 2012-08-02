@@ -78,8 +78,10 @@ dl.bibliomultiselect .form-item {
   color: #000000;
   font-weight: bold;
   background: transparent;
+  border: none;
   border-bottom: 1px solid #ccc;
   margin-top: 1.5em;
+  padding: 0;
 }
 
 .biblio-toolbar {
