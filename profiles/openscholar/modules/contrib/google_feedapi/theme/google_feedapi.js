@@ -4,17 +4,17 @@
 /**
  * This script reads through feed settings and fetches feed data using the Google FeedAPI
  */
-Drupal.behaviors.osReaderGoogleFeeds = {
+Drupal.behaviors.googleFeedAPI = {
   attach: function (context, settings) {
 	  if (typeof google == 'undefined'){
 		  return;
 	  }
 	  
 	  //Loop through the feeds that are on this page
-	  $.each(settings.osReaderGoogleFeeds, function(div_id, feed_setting) { 
+	  $.each(settings.googleFeedAPI, function(div_id, feed_setting) { 
 		  
 		  //Run the feed processing only once per feed
-		  $('div#'+div_id, context).once('osReaderGoogleFeeds', function () {
+		  $('div#'+div_id, context).once('googleFeedAPI', function () {
 			    //Load Feed
 			    var container = $(this);
 			    var feed = new google.feeds.Feed(feed_setting.url);

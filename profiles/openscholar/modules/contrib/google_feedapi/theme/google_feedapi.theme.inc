@@ -3,8 +3,8 @@
 /**
  * Theme function for 'os_reader_google_feedapi' link field formatter.
  */
-function theme_os_reader_formatter_os_reader_google_feedapi($info){
-  _os_reader_load_common_feed_js();
+function theme_google_feedapi_formatter_google_feedapi($info){
+  _google_feedapi_load_common_feed_js();
   
   list($id) = entity_extract_ids($info['entity_type'], $info['entity']);
   
@@ -16,7 +16,7 @@ function theme_os_reader_formatter_os_reader_google_feedapi($info){
   ));
   
   drupal_add_js(array(
-      'osReaderGoogleFeeds' => array(
+      'googleFeedAPI' => array(
           $feed_div_id => array(
               'url' => $info['element']['url'], 
               'num_feeds' => $info['num_to_show'],
@@ -28,7 +28,7 @@ function theme_os_reader_formatter_os_reader_google_feedapi($info){
   return "<div id='{$feed_div_id}'></div>";
 }
 
-function _os_reader_load_common_feed_js(){
+function _google_feedapi_load_common_feed_js(){
   static $common_js;
   if (! isset($common_js)) {
     $common_js = true;
@@ -40,6 +40,6 @@ function _os_reader_load_common_feed_js(){
     ));
     
     // Add required JavaScript and Stylesheets for the google feeds
-    drupal_add_library('os_reader', 'google-feeds');
+    drupal_add_library('google_feedapi', 'google-feeds');
   }
 }

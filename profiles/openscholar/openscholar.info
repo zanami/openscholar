@@ -98,6 +98,8 @@ dependencies[] = os_image_gallery
 dependencies[] = os_publications
 dependencies[] = os_pages
 dependencies[] = os_events
+dependencies[] = os_reader
+dependencies[] = os_blog
 
 ; other
 dependencies[] = diff
