@@ -40,21 +40,15 @@ function os_blog_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'boxes-boxes_add__os_boxes_addthis' => array(
-          'module' => 'boxes',
-          'delta' => 'boxes_add__os_boxes_addthis',
+        'views-os_blog_comments-block' => array(
+          'module' => 'views',
+          'delta' => 'os_blog_comments-block',
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),
         'views-os_blog-block' => array(
           'module' => 'views',
           'delta' => 'os_blog-block',
-          'region' => 'sidebar_second',
-          'weight' => '-10',
-        ),
-        'views-os_blog_comments-block' => array(
-          'module' => 'views',
-          'delta' => 'os_blog_comments-block',
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),

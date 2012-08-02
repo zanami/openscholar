@@ -222,6 +222,11 @@ ol {
   margin: 0;
   padding: 0;
 }
+
+.block ul {
+    padding-left: 0;
+}
+
 ul ul,
 ul ol,
 ol ol,

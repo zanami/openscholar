@@ -12,13 +12,6 @@
 
 class StubNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
-
-    /**
-     * cck_fields array helps AbstractNode migrate data from d6's CCK fields into d7's core fields.
-     * 
-     * Document this!  link has a newer version.
-     */
-    $this->cck_fields = array();
     
     /**
      * AbstractNodeOSMigration's __construct() will set up most of the common node migration. 
@@ -38,7 +31,7 @@ class StubNodeOSMigration extends AbstractNodeOSMigration {
     $query = parent::query($content_type);
 
     /**
-     * Modify the query.  Add joins and fields here.
+     * Modify the query.  Add joins and fields here.  content_type_${content_type} and its fields are already included.
      */
     
    // parent::addQueryCCK($query, $content_type);  //shouldn't this be in the parent query?  maybe check if cck is provided first
@@ -46,8 +39,8 @@ class StubNodeOSMigration extends AbstractNodeOSMigration {
   }
   
   
-  public function sourceFields() {
-    $fields = parent::sourceFields();
+  public function sourceFields($content_type) {
+    $fields = parent::sourceFields($content_type);
 
     /**
      * Describe each of the source columns

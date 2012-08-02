@@ -1,0 +1,121 @@
+<?php 
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function google_feedapi_field_formatter_info(){
+  return array(
+      'google_feedapi' => array(
+          'label' => t('Display feed using Googles FeedAPI'),
+          'field types' => array(
+              'link_field'
+          ),
+          'multiple values' => FIELD_BEHAVIOR_DEFAULT,
+          'settings' => array(
+              'num_to_show' => 10,
+              'content_summary' => false,
+          )
+      )
+  );
+}
+
+function google_feedapi_field_formatter_settings_summary($field, $instance, $view_mode){
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = t('Showing @num feed items. @trim', array(
+      '@num' => $settings['num_to_show'] ,
+      '@trim' => ($settings['content_summary'])?"(trimmed)":""
+  ));
+
+  return $summary;
+}
+
+function google_feedapi_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state){
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $element = array();
+
+  $element['num_to_show'] = array(
+      '#title' => t('Feeds to show'),
+      '#type' => 'textfield',
+      '#size' => 20,
+      '#default_value' => $settings['num_to_show'],
+      '#element_validate' => array(
+          'element_validate_integer_positive'
+      ),
+      '#required' => TRUE
+  );
+
+  $element['content_summary'] = array(
+      '#title' => t('Show Content Summary'),
+      '#description' => t('Show a short summary of the feed content if avalible.'),
+      '#type' => 'checkbox',
+      '#default_value' => $settings['content_summary'],
+  );
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ * This code just passes straight
+ * through to a theme function, google_feedapi_formatter_FORMATTER
+ * (e.g. google_feedapi_formatter_google_feedapi).
+ */
+function google_feedapi_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display){
+  $elements = array();
+  foreach ( $items as $delta => $item ) {
+    $elements[$delta] = array(
+        '#markup' => theme('google_feedapi_formatter_' . $display['type'], array(
+            'element' => $item,
+            'entity' => $entity,
+            'entity_type' => $entity_type,
+            'delta' => $delta,
+            'num_to_show' => $display['settings']['num_to_show'],
+            'content_summary' => $display['settings']['content_summary'],
+        )) ,
+    );
+  }
+  return $elements;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function google_feedapi_theme(){
+  return array(
+      // The theme function that our formatter uses:
+      'google_feedapi_formatter_google_feedapi' => array(
+          'file' => 'theme/google_feedapi.theme.inc',
+          'variables' => array(
+              'element' => NULL,
+              'delta' => NULL,
+              'num_to_show' => NULL,
+              'entity_type' => NULL,
+              'entity' => NULL,
+          )
+      )
+  );
+}
+
+/**
+ * Implements hook_library().
+ */
+function google_feedapi_library(){
+  return array(
+      // The theme function that our formatter uses:
+      'google-feeds' => array(
+          'title' => 'Google FeedAPI Integration',
+          'website' => "https://developers.google.com/feed/v1/devguide",
+          'version' => '1.1',
+          'js' => array(
+              drupal_get_path('module', 'google_feedapi').'/theme/google_feedapi.js' => array(),
+          ),
+          'css' => array(
+              drupal_get_path('module', 'google_feedapi').'/theme/google_feedapi.css' => array(),
+          ),
+      )
+  );
+}

@@ -11,7 +11,7 @@ OpenScholar blog provides simple blog functionality for an OpenScholar site.
 
 ## Components
 
-### 1. Content type *Blog entry* (`blog_entry`)
+### 1. Content type *Blog entry* (`blog`)
 
 1. Navigate to **Content > Add new content > Blog entry**
 2. Enter a title and optional body and file attachment.

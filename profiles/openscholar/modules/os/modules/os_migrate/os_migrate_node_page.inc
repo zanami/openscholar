@@ -2,7 +2,6 @@
 
 class PageNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
-    $this->cck_fields = array();
     
     // Let AbstractNode handle the source, dest, and map.
     parent::__construct('page', 'page'); //current types are vsite, article, and page.  lets start with one of those instead?

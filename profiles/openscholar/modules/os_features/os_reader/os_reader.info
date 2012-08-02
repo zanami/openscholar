@@ -1,11 +1,12 @@
 name = OS Reader
-description = Pull in useful content from other sites on the internet, including your Twitter feed--directly to your site.
+description = Pull in useful content from other sites on the internet.
 core = 7.x
 package = Features
 php = 5.2.4
 project = os_events
 dependencies[] = link
 dependencies[] = os
+dependencies[] = google_feedapi
 features[ctools][] = strongarm:strongarm:1
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
