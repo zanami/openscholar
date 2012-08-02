@@ -1,0 +1,60 @@
+<?php
+/** 
+ * Function to check to see if the field exists
+ */
+function checkExists($fieldName) {
+	// first check to see if the field exists
+	$iqssTable = drupal_schema_fields_sql('iqss_pinserver_register');	
+	// gather all the fields in this table
+	// now check if we're in the array
+	if(!in_array($fieldName, $iqssTable)) {
+		return TRUE;
+	}else{
+		return FALSE;
+	}// end if
+}
+
+/**
+ * Implementation of hook_schema_alter().
+ */
+function harvard_activity_reports_schema_alter(&$schema) {
+	if (isset($schema['iqss_pinserver_register'])) {
+    	$schema['iqss_pinserver_register']['fields']['hashID'] = array(
+      		'type' => 'varchar',
+   			'length' => 256,
+   			'not null' => FALSE,
+         	'default' => '',
+    	);
+	}// end if isset
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function harvard_activity_reports_install() {
+  	$ret = array();
+  	$schema['iqss_pin_registration'] = array();
+	if(checkExists('hashID')==FALSE) {
+		// its not in there, add it
+  		harvard_activity_reports_schema_alter($schema);
+  		foreach ($schema['iqss_pin_registration']['fields'] as $name => $spec) {
+    		db_add_field($ret, 'iqss_pin_registration', $name, $spec);
+  		}// end foreach
+	}// end if !in array
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function harvard_activity_reports_uninstall() {
+  	$ret = array();
+  	$schema['iqss_pin_registration'] = array();
+  	// first check to see if the field exists
+	if(checkExists('hashID')==TRUE) {
+		// its not in there, drop it
+  		harvard_activity_reports_schema_alter($schema);
+  		foreach ($schema['iqss_pin_registration']['fields'] as $name => $spec) {
+    		db_drop_field($ret, 'iqss_pin_registration', $name);
+  		}// end foreach
+	}// end check
+}

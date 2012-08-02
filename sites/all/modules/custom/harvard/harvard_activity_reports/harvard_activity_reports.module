@@ -1,0 +1,120 @@
+<?php
+
+/**
+ * @file
+ * Allows faculty members to import a list of their publications.
+*/
+ 
+/**
+ * Display help and module information
+ * @param path which path of the site we're displaying help
+ * @param arg array that holds the current path as would be returned from arg() function
+ * @return help text for the path
+ */
+function harvard_activity_reports_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#harvard_activity_reports': // links from the main Drupal help section
+      $output = '<p>'. t('Harvard Activity Report (HAR) will display a list of publications for a given faculty member.') .'</p>';
+      return $output;
+  }
+}
+
+
+/**
+ * Valid permissions for this module
+ * @return array An array of valid permissions for the onthisdate module
+*/
+function harvard_activity_reports_perm() {
+  return array('access harvard_activity_reports content');
+} // function har_perm()
+ 
+ 
+/**
+ * Implementation of hook_menu().
+*/
+function harvard_activity_reports_menu() {
+  $items['harvard_activity_reports'] = array(
+    'title' => 'Harvard Activity Report', // Give it a title
+    'page callback' => 'harvard_activity_reports_page', // Call back is for page to display
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+
+/**
+ * 
+ * Implementation har_query_user().
+ * Custom query to pull the user publicatios from the passed HUID
+ */
+function harvard_activity_reports_query_user() {
+	$bibContents = array();
+	// use drupal_get_query_parameters when we switch over to 7
+	
+	// using an ID for right now since no hashs exists
+	
+	// get the ID from the "id" parameter of the link
+	if(isset($_GET['id'])) { // make sure it's set first
+		//assign it to a variable
+		$hashID = $_GET['id'];
+		
+		// query the DB and check if the user exists for this hash
+		$query = "SELECT uid FROM {iqss_pinserver_register} WHERE huid = '%s'"; // setup the query
+		$results = db_query($query, $hashID); // perform the query
+		// make sure there are results
+		if($results) {
+			$row = db_fetch_object($results); // grab the resulting uid
+			$uid = $row->uid; // push it into a variable
+			
+			// now that we have have the ID, join the rest of the info.
+			// join them to the biblio table
+			$bibQuery = "SELECT b.biblio_secondary_title, b.vid, b.biblio_year, n.vid FROM {node} n, {biblio} b WHERE n.uid = %d AND n.vid = b.vid";
+			$bibRes = db_query($bibQuery, $uid);
+			while($bibRow = db_fetch_array($bibRes)) {
+				$page_content[] = $bibRow;
+			}
+		}
+	}else{ // no id set, tell them
+		$page_content = "No HUID present.";
+	}
+	
+	// return the content
+	return $page_content;
+}
+ 
+function harvard_activity_reports_create_xml() {
+	$xmlReturn = '';
+	// pull in the xml
+	$xml = harvard_activity_reports_query_user();
+	
+/* create a dom document with encoding utf8 */
+    $domtree = new DOMDocument('1.0', 'UTF-8');
+
+    /* create the root element of the xml tree */
+    $xmlRoot = $domtree->createElement("xml");
+    /* append it to the document created */
+    $xmlRoot = $domtree->appendChild($xmlRoot);
+	
+    foreach($xml as $xmlData) {
+    	$currentPub = $domtree->createElement("publication");
+    	$currentPub = $xmlRoot->appendChild($currentPub);
+    	/* you should enclose the following two lines in a cicle */
+    	$currentPub->appendChild($domtree->createElement('title',$xmlData['biblio_secondary_title']));
+    	$currentPub->appendChild($domtree->createElement('published',$xmlData['biblio_year']));
+    }
+    
+    $xmlReturn = $domtree->saveXML();
+    
+    return $xmlReturn;
+	
+}
+
+function harvard_activity_reports_page() {
+	// test to see if this works
+	$xml = '';
+	
+	$xml .= harvard_activity_reports_create_xml();
+	
+	return $xml;	
+}
