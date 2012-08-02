@@ -44,13 +44,12 @@ os[theme_access] = "private"
   settings[bigscreen_max_width_unit] = 'px'
   settings[bigscreen_page_width]     = 100
   settings[bigscreen_sidebar_first]  = 180
-  settings[bigscreen_sidebar_second] = 260
+  settings[bigscreen_sidebar_second] = 254
   settings[bigscreen_set_max_width]  = 1
   settings[bigscreen_max_width]      = 1140
   settings[bigscreen_media_query]    = 'only screen and (min-width:1025px)'
-
-
-  ; Layout settings - Tablet landscape
+  
+    ; Layout settings - Tablet landscape
   settings[tablet_landscape_layout]         = 'three_col_grail'
   settings[tablet_landscape_page_unit]      = '%'
   settings[tablet_landscape_sidebar_unit]   = '%'
@@ -88,6 +87,8 @@ os[theme_access] = "private"
   settings[smartphone_portrait_sidebar_first]  = 100
   settings[smartphone_portrait_sidebar_second] = 100
   settings[smartphone_portrait_media_query]    = 'only screen and (max-width:320px)'
+
+
 
 
 
