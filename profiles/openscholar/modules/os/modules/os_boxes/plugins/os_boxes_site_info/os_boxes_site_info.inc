@@ -56,6 +56,8 @@ class os_boxes_site_info extends os_boxes_default {
     if (module_exists('vsite') && $space = spaces_get_space()) {
       // populate the vsite with this information
       $node = $space->group;
+      $node->title = $this->options['site_title'];
+
       $node->field_site_description[LANGUAGE_NONE][0] = array(
         'value' => $this->options['descrip'],
         'format' => NULL,

@@ -150,5 +150,16 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_site_logo'] = array(
+    'title' => 'Site Logo', // TODO: Remove when the box is exported
+    'tags' => array('Misc'),
+    'handler' => array(
+      'class' => 'os_boxes_site_logo',
+      'file' => 'os_boxes_site_logo.inc',
+      'path' => $path.'/os_boxes_site_logo',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
   return $info;
 }
