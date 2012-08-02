@@ -19,7 +19,6 @@ function harvard_activity_reports_help($path, $arg) {
   }
 }
 
-
 /**
  * Valid permissions for this module
  * @return array An array of valid permissions for the onthisdate module
@@ -41,7 +40,6 @@ function harvard_activity_reports_menu() {
 
   return $items;
 }
-
 
 /**
  * 
@@ -67,54 +65,103 @@ function harvard_activity_reports_query_user() {
 			$row = db_fetch_object($results); // grab the resulting uid
 			$uid = $row->uid; // push it into a variable
 			
-			// now that we have have the ID, join the rest of the info.
-			// join them to the biblio table
-			$bibQuery = "SELECT b.biblio_secondary_title, b.vid, b.biblio_year, n.vid FROM {node} n, {biblio} b WHERE n.uid = %d AND n.vid = b.vid";
-			$bibRes = db_query($bibQuery, $uid);
-			while($bibRow = db_fetch_array($bibRes)) {
-				$page_content[] = $bibRow;
+			// now that we have the UID, grab their VSITE node ID from the Node table
+			$nodeQuery = "SELECT nid FROM {node} WHERE uid = %d AND type='vsite'";
+			$nodeResults = db_query($nodeQuery,$uid);
+			if($nodeResults) {
+				$nodeRow = db_fetch_object($nodeResults);
+				$nid = $nodeRow->nid;
+			}else{
+				$nid = FALSE;
 			}
 		}
 	}else{ // no id set, tell them
-		$page_content = "No HUID present.";
+		$nid = FALSE;
 	}
 	
 	// return the content
-	return $page_content;
-}
- 
-function harvard_activity_reports_create_xml() {
+	return $nid;
+}// end function
+
+/**
+ * 
+ * Function to pull the users information via node load
+ */
+function harvard_activity_reports_load_user_info($nid){ 
+	// make sure we have a proper nid first
+	if($nid != FALSE){
+		// query for all the biblio nodes
+		// using a stand alone ID for right now until error checking and site url can be implemented
+		$bibQuery = "SELECT n.nid FROM {node} n INNER JOIN {og_ancestry} oa ON n.nid = oa.nid WHERE oa.group_nid = 3543 AND n.type = 'biblio'";
+		$bibResults = db_query($bibQuery,$nid);
+		if($bibResults) {
+			while($bibRow = db_fetch_array($bibResults)){
+				// assign them to a variable
+				$biblio[] = $bibRow;
+			}
+			//echo count($biblio);
+		}else {
+			$biblio = FALSE;
+		}
+	}else {
+		$biblio = FALSE;
+	}
+	
+	return $biblio;
+}// end function
+
+/**
+ * 
+ * Function to create the XML based on the info passed into it from the load_user_info functon
+ * @param unknown_type $nodeLoad
+ */
+function harvard_activity_reports_create_xml($nodeLoad) {
 	$xmlReturn = '';
 	// pull in the xml
-	$xml = harvard_activity_reports_query_user();
-	
-/* create a dom document with encoding utf8 */
+	$xml = $nodeLoad;
+	print_r($xml);
+	/* create a dom document with encoding utf8 */
     $domtree = new DOMDocument('1.0', 'UTF-8');
-
+	
     /* create the root element of the xml tree */
     $xmlRoot = $domtree->createElement("xml");
     /* append it to the document created */
     $xmlRoot = $domtree->appendChild($xmlRoot);
 	
-    foreach($xml as $xmlData) {
+    foreach($xml as $key=>$value) {
     	$currentPub = $domtree->createElement("publication");
     	$currentPub = $xmlRoot->appendChild($currentPub);
     	/* you should enclose the following two lines in a cicle */
-    	$currentPub->appendChild($domtree->createElement('title',$xmlData['biblio_secondary_title']));
-    	$currentPub->appendChild($domtree->createElement('published',$xmlData['biblio_year']));
+    	$currentPub->appendChild($domtree->createElement('title',$value));
+    	//$currentPub->appendChild($domtree->createElement('published',$xmlData['title']));
     }
     
     $xmlReturn = $domtree->saveXML();
     
     return $xmlReturn;
 	
-}
+}// end function
 
+
+/**
+ * 
+ *  Implementation of the hook_page() function
+ */
 function harvard_activity_reports_page() {
 	// test to see if this works
 	$xml = '';
+	$nid = harvard_activity_reports_query_user();
+	$xml = harvard_activity_reports_load_user_info($nid);
+	foreach($xml as $xmlLoad) {
+		//$newXML .= $xmlLoad['nid'];
+		//$newXML[] = node_load($xmlLoad['nid'], NULL, TRUE);
+		// node load was killing the page, using a simple query instead for testing right now
+		$selTitle = "SELECT title FROM {node} WHERE nid = %d";
+		$titleRes = db_query($selTitle,$xmlLoad['nid']);
+		$titleRow = db_fetch_object($titleRes);
+		$title[] = $titleRow->title;
+	}
+	$testXML = harvard_activity_reports_create_xml($title);
 	
-	$xml .= harvard_activity_reports_create_xml();
-	
-	return $xml;	
+	return $testXML;	
 }
