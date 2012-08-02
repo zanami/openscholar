@@ -31,7 +31,7 @@ a:hover {
 	text-decoration: none;
   }
 
-h2, h3, h4 {
+h1, h2, h3, h4 {
   margin-bottom: 0;
   margin-top: 0;
   font-weight:normal;
@@ -97,7 +97,6 @@ p.copy {
 /* LAYOUT ELEMENTS */
 
 #page {
-  width: 938px;
   margin: 0 auto;
   }
 
@@ -105,24 +104,15 @@ p.copy {
 .region-sidebar-second {
   font-size: .8em;
   line-height: 1.1em;
-  width: 186px;
-  padding:30px 22px;
+  padding:30px 0;
   }
   
 .region-sidebar-first .block, .region-sidebar-second .block {
 	margin-bottom: 2.0em;
 }
 
-.region-sidebar-first {
-  left: -250px;
-  }
 
-#columns .hg-container {
-  padding-left: 230px;
-  padding-right: 250px;
-  }
-
-body.sidebar-second #columns .hg-container {
+body.sidebar-second #columns .content-inner {
   padding-left:10px;
   }
 
@@ -261,6 +251,23 @@ body.header-main-right .region-header-second {
   text-decoration:none;
   color: #087af8;
   }
+
+ul.nice-menu ul {
+    top: 2.5em;
+}
+
+ul.nice-menu li {
+    background: none;
+}
+
+ul.nice-menu ul li {
+    background: none repeat scroll 0 0 #F26C4F;
+    border: 1px solid #F26C4F;
+}
+
+ul.nice-menu-down li.menuparent:hover {
+    background: none;
+}
 
 .region-sidebar-first #block-os-primary-menu li a,
 .region-sidebar-first #block-os-primary-menu li a:visited {
