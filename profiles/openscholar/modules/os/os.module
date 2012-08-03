@@ -454,26 +454,65 @@ function os_preprocess_page(&$variables){
   
   $links = array();
   $active = context_active_contexts();
-  
-  foreach ( $types as $type => $name ) {
-    foreach ( $active as $a ) {
+  $is_front = isset($active['os_front']);
+  $context = 'os_front';
+  $feature = 'os_front';
+
+  foreach ($types as $type => $name) {
+    $printed = $is_front;
+    foreach ($active as $a) {
       if (isset($a->conditions['node']['values']) && $a->conditions['node']['options']['node_form'] == 0) {
         if (in_array($type, $a->conditions['node']['values'])) {
-          $links[] = array(
-              'href' => 'node/add/' . $type, 
-              'title' => ucwords(str_replace('_', ' ', $type)) 
-          );
+          $printed = TRUE;
+          $context = $a->name;
+          $module = $a->export_module;
         }
       }
     }
+    if ($printed) {
+      $links[$type] = array(
+        'href' => 'node/add/'.$type,
+        'title' => ucwords(str_replace('_', ' ', $type)),
+      );
+    }
   }
   
+  $section_links = array(
+    'header' => array(
+      'title' => 'This Section',
+    ),
+    'settings' => array(
+      'title' => t('Settings'),
+      'href' => 'features/customize/'.$module,
+    ),
+    'layout' => array(
+      'title' => t('Layout'),
+      'href' => 'cp/build/layout/'.$context,
+    ),
+  );
+
   drupal_alter('add_new_links', $links);
-  $variables['title_suffix']['add_new'] = array(
-      '#theme' => 'ctools_dropdown', 
-      '#links' => $links, 
-      '#title' => t('Add New'), 
-      '#class' => 'add_new' 
+  $variables['title_suffix']['controls'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => array(
+        'contextual-controls-wrapper'
+      ),
+    ),
+  );
+  $variables['title_suffix']['controls']['add_new'] = array(
+    '#theme' => 'ctools_dropdown',
+    '#links' => $links,
+    '#title' => t('Add New'),
+    '#class' => 'add_new',
+    '#access' => spaces_access_admin(),
+  );
+  $variables['title_suffix']['controls']['section_links'] = array(
+    '#theme' => 'ctools_dropdown',
+    '#links' => $section_links,
+    '#title' => 'Links',
+    '#class' => 'section_links',
+    '#access' => spaces_access_admin(),
   );
 }
 
