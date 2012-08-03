@@ -110,6 +110,7 @@
     <div id="content-column" role="main">
       <div class="content-inner">
       	<?php if ($is_front): ?>
+          <?php print render($title_suffix); ?>
 <?php if (
   $page['content_top'] ||
   $page['content_first'] ||
@@ -123,9 +124,9 @@
     <?php print render($page['content_bottom']); ?>
   </div>
 <?php endif; ?>
-  <?php endif; ?>   
-  
-  
+  <?php endif; ?>
+
+
    	<?php if (!$is_front): ?>
       	 <<?php print $tag; ?> id="main-content">
 
@@ -165,8 +166,8 @@
 
         </<?php print $tag; ?>><!--main content ends-->
         <?php endif; ?>
-        
-        
+
+
       </div>
     </div>
 <!--sidebar first region beg-->
