@@ -109,6 +109,23 @@ function harvard_activity_reports_load_user_info($nid){
 
 /**
  * 
+ * Function to sort my xml array by the biblio_year
+ * Function was "borrowed" from http://www.firsttube.com/read/sorting-a-multi-dimensional-array-with-php/
+ */
+
+function subval_sort($a,$subkey) {
+	foreach($a as $k=>$v) {
+		$b[$k] = strtolower($v[$subkey]);
+	}
+	arsort($b); // altered to sort high to low, so most recent publications first
+	foreach($b as $key=>$val) {
+		$c[] = $a[$key];
+	}
+	return $c;
+}
+
+/**
+ * 
  * Function to create the XML based on the info passed into it from the load_user_info functon
  * @param unknown_type $nodeLoad
  */
@@ -117,8 +134,13 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID) {
 	$huID = $huID;
 	// pull in the xml
 	$xml = $nodeLoad;
+	
+	// sort the XML by year, most recent first
+	$xml = subval_sort($xml, 'biblio_year');
+	
 	/* create a dom document with encoding utf8 */
     $domtree = new DOMDocument('1.0', 'UTF-8');
+    $domtree->formatOutput=true;
 	
     /* create the root element of the xml tree */
     $xmlRoot = $domtree->createElement("response");
@@ -156,7 +178,7 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID) {
     foreach($xml as $value) {
     	// create the pub element
     	$currentPub = $domtree->createElement("publication");
-    	$currentPub = $xmlRoot->appendChild($currentPub);
+    	$currentPub = $personElement->appendChild($currentPub);
     	// now we'll add attributes to it
     		// publication nid
     		$nidAtt = $domtree->createAttribute("id");
@@ -181,7 +203,7 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID) {
     		
     	// biblio basic info
     	// $currentPub->appendChild($domtree->createElement('biblio_url',$value['biblio_url']));
-    	$currentPub->appendChild($domtree->createElement('linkToPublishedArticle',$value['biblio_path']));
+    	$currentPub->appendChild($domtree->createElement('linkToPublishedArticle',"http://scholar.harvard.edu/".$value['biblio_path']));
     	// biblio citation information 
     	$currentPub->appendChild($domtree->createElement('yearOfPublication',$value['biblio_year']));
     	// $currentPub->appendChild($domtree->createElement('biblio_volume',$value['biblio_volume']));
@@ -254,6 +276,8 @@ function harvard_activity_reports_page() {
 					}
 					$authorCounter++;		
 				}
+				
+				// print_r($biblioDataRow);
 			
 				// push the final author list into the main array
 			$biblioDataArray[$counter]['biblio_author'] = $authorList;
@@ -269,3 +293,4 @@ function harvard_activity_reports_page() {
 	// send back the xml
 	echo $xmlReturn;	
 }//end function
+
