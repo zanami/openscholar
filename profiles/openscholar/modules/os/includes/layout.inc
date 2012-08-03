@@ -162,6 +162,11 @@ function os_layout_get_multiple($contexts, $load_meta = false, $unused_blocks = 
     //Merge the blocks with child blocks replacing parent blocks
     $blocks = os_layout_get($context, $load_meta, $unused_blocks);
 
+    //If this was true then the unused blocks were all added
+    //on the first run, there is no need to keep getting them
+    //also this prevents un-intended overrides
+    $unused_blocks = false;
+    
     if (is_array($blocks)) {
       $context_blocks = array_merge($context_blocks, $blocks);
     }
