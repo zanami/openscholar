@@ -412,7 +412,6 @@ function os_preprocess_page(&$variables) {
   $is_front = isset($active['os_front']);
   $context = 'os_front';
   $feature = 'os_front';
-  dpm($active);
 
   foreach ($types as $type => $name) {
     $printed = $is_front;
