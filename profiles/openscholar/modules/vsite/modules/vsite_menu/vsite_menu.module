@@ -27,7 +27,7 @@ function vsite_menu_del($menu_key){
 
   $current_menus = os_get_menus();
   //Remove the menu from the variable
-  unset($current_menus[$menu_name]);
+  unset($current_menus[$menu_key]);
   
   if ($vsite && isset($vsite->controllers->menus)) {
     $vsite->controllers->menus->del($menu_key);
@@ -48,7 +48,7 @@ function vsite_menu_add($title, $menu_key){
   $vsite = spaces_get_space();
 
   $current_menus = os_get_menus();
-  $current_menus[$menu_name] = $title;
+  $current_menus[$menu_key] = $title;
   
   if ($vsite && isset($vsite->controllers->menus)) {
     $vsite->controllers->menus->set($menu_key,array());

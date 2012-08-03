@@ -262,8 +262,8 @@ function os_os_widget(){
   ctools_include('menu', 'os');
   
   foreach ( os_get_menus() as $menu_name => $title ) {
-    $blocks['menu-' . $menu_name] = array(
-        'module' => 'menu', 
+    $blocks['os-' . $menu_name] = array(
+        'module' => 'os', 
         'info' => t($title), 
         'delta' => $menu_name, 
         // Menu blocks can't be cached because each menu item can have
