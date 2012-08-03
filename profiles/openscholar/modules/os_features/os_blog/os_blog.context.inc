@@ -58,6 +58,12 @@ function os_blog_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-8',
         ),
+        'boxes-blog_rss_feed' => array(
+          'module' => 'boxes',
+          'delta' => 'blog_rss_feed',
+          'region' => 'footer',
+          'weight' => '-10',
+        ),
       ),
     ),
   );
