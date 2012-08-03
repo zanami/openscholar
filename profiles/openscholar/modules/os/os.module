@@ -409,26 +409,36 @@ function os_preprocess_page(&$variables) {
 
   $links = array();
   $active = context_active_contexts();
+  $is_front = isset($active['os_front']);
 
   foreach ($types as $type => $name) {
+    $printed = $is_front;
     foreach ($active as $a) {
       if (isset($a->conditions['node']['values']) && $a->conditions['node']['options']['node_form'] == 0) {
         if (in_array($type, $a->conditions['node']['values'])) {
-          $links[] = array(
-            'href' => 'node/add/'.$type,
-            'title' => ucwords(str_replace('_', ' ', $type)),
-          );
+          $printed = TRUE;
         }
       }
+    }
+    if ($printed) {
+      $links[] = array(
+        'href' => 'node/add/'.$type,
+        'title' => ucwords(str_replace('_', ' ', $type)),
+      );
     }
   }
 
   drupal_alter('add_new_links', $links);
+  $variables['title_suffix']['controls'] = array(
+    '#type' => 'container',
+    '#attributes' => array()
+  );
   $variables['title_suffix']['add_new'] = array(
     '#theme' => 'ctools_dropdown',
     '#links' => $links,
     '#title' => t('Add New'),
-    '#class' => 'add_new'
+    '#class' => 'add_new',
+    '#access' => spaces_access_admin(),
   );
 }
 
