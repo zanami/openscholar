@@ -91,11 +91,18 @@ function vsite_layout_cp_layout_form_submit($form, &$form_state) {
     	  }
     	  break;
       case t('Save to @title', array('@title' => $preset->title)):
+        //Standard Submit, run the default submit handler to save context data before saving to preset
+        cp_layout_full_submit($form, $form_state);
+        
         if($preset){
-          $space->controllers->variable->del($key);
-          $preset->value['variable'][$key] = $value;
-          //@todo Actuall make the alter to preset
-          drupal_set_message(t('The configuration options have been saved for %title.', array('%title' => $preset->title)));
+          //Loop through all the contexts
+          foreach (os_layout_get_contexts(array(0,1,2)) as $context => $name){
+            $preset->value['context'][$context . ":reaction:block"] = array(
+                'blocks' => os_layout_get($context),
+            );
+          }
+          
+          drupal_set_message(t('The layout settings have been saved to %title.', array('%title' => $preset->title)));
           spaces_preset_save($preset);
         }
         break;
