@@ -60,12 +60,13 @@ function harvard_activity_reports_query_user() {
 		$hashID = $_GET['id'];
 		
 		// query the DB and check if the user exists for this hash
-		$query = "SELECT uid FROM {iqss_pinserver_register} WHERE huid = '%s'"; // setup the query
+		$query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE huid = '%s'"; // setup the query
 		$results = db_query($query, $hashID); // perform the query
 		// make sure there are results
 		if($results) {
 			$row = db_fetch_object($results); // grab the resulting uid
 			$uid = $row->uid; // push it into a variable
+			$huID = $row->huid;
 			
 			// now that we have the UID, grab their VSITE node ID from the Node table
 			$nodeQuery = "SELECT nid FROM {node} WHERE uid = %d AND type='vsite'";
@@ -94,7 +95,7 @@ function harvard_activity_reports_load_user_info($nid){
 	if($nid != FALSE){
 		// query for all the biblio nodes
 		// using a stand alone ID for right now until error checking and site url can be implemented
-		$bibQuery = "SELECT n.nid FROM {node} n INNER JOIN {og_ancestry} oa ON n.nid = oa.nid WHERE oa.group_nid = 3543 AND n.type = 'biblio'";
+		$bibQuery = "SELECT n.nid FROM {node} n INNER JOIN {og_ancestry} oa ON n.nid = oa.nid WHERE oa.group_nid = %d AND n.type = 'biblio'";
 		$bibResults = db_query($bibQuery,$nid);
 		if($bibResults) {
 			while($bibRow = db_fetch_array($bibResults)){
@@ -116,8 +117,9 @@ function harvard_activity_reports_load_user_info($nid){
  * Function to create the XML based on the info passed into it from the load_user_info functon
  * @param unknown_type $nodeLoad
  */
-function harvard_activity_reports_create_xml($nodeLoad) {
+function harvard_activity_reports_create_xml($nodeLoad, $huID) {
 	$xmlReturn = '';
+	$huID = $huID;
 	// pull in the xml
 	$xml = $nodeLoad;
 	/* create a dom document with encoding utf8 */
@@ -137,13 +139,24 @@ function harvard_activity_reports_create_xml($nodeLoad) {
     $xsiValue = $domtree->createTextNode("far_response.xsd");
     $xsiAtt->appendChild($xsiValue);
     //
-     
     /* append it to the document created */
     $xmlRoot = $domtree->appendChild($xmlRoot);
     
     // create the person element
     $personElement = $domtree->createElement("person");
     $xmlRoot->appendChild($personElement);
+    // add the person attributes
+    $huidAtt = $domtree->createAttribute("huid");
+    $personElement->appendChild($huidAtt);
+    // now the test node
+    $huidAttValue = $domtree->createTextNode($huID);
+    $huidAtt->appendChild($huidAttValue);
+    // attribute #2
+    $asAtt = $domtree->createAttribute("action_status");
+    $personElement->appendChild($asAtt);
+    // now the test node
+    $asAttValue = $domtree->createTextNode("ok");
+    $asAtt->appendChild($asAttValue);
 	// loop through the array data for the publications and create XML elements with them
     foreach($xml as $value) {
     	// create the pub element
@@ -168,11 +181,12 @@ function harvard_activity_reports_create_xml($nodeLoad) {
     		// publication source value
     		$pubSourceValue = $domtree->createTextNode('OpenScholar');
     		$pubSource->appendChild($pubSourceValue);
+    	// citation info
+    	$currentPub->appendChild($domtree->createElement("citation",$value['biblio_author'] . ". " . $value['biblio_title'] . ". " . $value['biblio_secondary_title']));
+    		
     	// biblio basic info
-    	//$currentPub->appendChild($domtree->createElement('biblio_id',$value['biblio_nid']));
-    	$currentPub->appendChild($domtree->createElement('biblio_title',$value['biblio_title']));
-    	$currentPub->appendChild($domtree->createElement('biblio_url',$value['biblio_url']));
-    	$currentPub->appendChild($domtree->createElement('biblio_path',$value['biblio_path']));
+    	// $currentPub->appendChild($domtree->createElement('biblio_url',$value['biblio_url']));
+    	$currentPub->appendChild($domtree->createElement('linkToPublishedArticle',$value['biblio_path']));
     	// biblio citation information 
     	$currentPub->appendChild($domtree->createElement('yearOfPublication',$value['biblio_year']));
     	// $currentPub->appendChild($domtree->createElement('biblio_volume',$value['biblio_volume']));
@@ -195,6 +209,12 @@ function harvard_activity_reports_page() {
 	$nid = harvard_activity_reports_query_user();
 	// check to make sure we have the users HUID or site_url
 	if($nid != FALSE) {
+		// grab the users HUID
+		$selectHUID = "SELECT i.huid FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = %d AND i.uid = n.uid";
+		$huidResult = db_query($selectHUID, $nid);
+		$huidRow = db_fetch_object($huidResult);
+		$huID = $huidRow->huid;
+		
 		// now load in the user's biblio 
 		$xml = harvard_activity_reports_load_user_info($nid);
 		// create an instance of the citation class
@@ -217,29 +237,40 @@ function harvard_activity_reports_page() {
 			
 			// grab the citation data now
 			$biblioDataArray[$counter]['biblio_year'] = $biblioDataRow->biblio_year;
-			$biblioDataArray[$counter]['biblio_volume'] = $biblioDataRow->biblio_volume;
-			$biblioDataArray[$counter]['biblio_issue'] = $biblioDataRow->biblio_issue;
+			$biblioDataArray[$counter]['biblio_secondary_title'] = $biblioDataRow->biblio_secondary_title;
+			// $biblioDataArray[$counter]['biblio_volume'] = $biblioDataRow->biblio_volume; - not needed (yet)
+			// $biblioDataArray[$counter]['biblio_issue'] = $biblioDataRow->biblio_issue; - not needed (yet)
+			// push all authors from the citations list into another array
+			$contributers = $biblioDataRow->biblio_contributors[1];
+			// author work
+				// get the counts of the number of authors
+				$authorCounter = 1; 
+				$authorCount = count($contributers);
+				$authorList = '';
+				// grab out all the contributers and list them
+				foreach($contributers as $contributeAuthor){
+					if($authorCounter == $authorCount) {
+						// append an "and" at the end
+						$authorList .= " and " . $contributeAuthor['name'];
+					}elseif ($authorCount == 0) {
+						$authorList .= $contributeAuthor['name'];
+					}else{
+						$authorList .= $contributeAuthor['name'] . ", ";
+					}
+					$authorCounter++;		
+				}
+			
+				// push the final author list into the main array
+			$biblioDataArray[$counter]['biblio_author'] = $authorList;
 			// increment the counter
 			$counter++;
-			$contributers = $biblioDataRow->biblio_contributors[1];
-			// get the counts of the number of authors
-			$authorCounter = 0; 
-			$authorCount = count($contributers);
-			$authorList = '';
-			// grab out all the contributers and list them
-			foreach($contributers as $contributeAuthor){
-				
-				$authorList .= $contributeAuthor['name'] ", ";
-				$authorCounter++;			
-			}
-			//print_r($biblioDataArray);
 			//$mapped = $citationTest->map_metadata($xmlLoad['nid']);
 		}// end foreach
 	}else{
 		$xmlReturn = "HUID/site url is missing or incorrect.";
 	}// end if nid != false
 	// call the xml creation function
-	$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray);
+	$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID);
 	// send back the xml
-	return $xmlReturn;	
+	echo $xmlReturn;	
 }//end function
