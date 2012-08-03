@@ -26,8 +26,6 @@ class os_boxes_site_logo extends os_boxes_default {
         return $form;
       }
 
-      $original = _imagefield_crop_file_to_crop($this->options['fid']);
-
       $form['file'] = array(
         '#type' => 'managed_file',
         '#title' => t('Site Logo'),
@@ -35,7 +33,7 @@ class os_boxes_site_logo extends os_boxes_default {
         '#process' => array(
           '_os_boxes_site_logo_process',
         ),
-        '#default_value' => $original->fid,
+        '#default_value' => $this->options['fid'],
         '#dimensions' => array(
           'x' => $this->options['x'],
           'y' => $this->options['y'],
@@ -68,12 +66,18 @@ class os_boxes_site_logo extends os_boxes_default {
         'height' => 140,
       );
 
+      // this creates two images
+      // $orig is the original, unmodified image
+      // its saved so we can refer to it later
+      // $file is original uploaded image that is then cropped to fit
+      // it is the file that is displayed in render
+      // it 'contains' the orig file, through the file usage table
       $orig = imagefield_crop_create_copy($file);
       file_usage_add($orig, 'imagefield_crop', 'file', $file->fid);
-      _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $orig);
+      _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $file);
       file_save($file);
 
-      $this->options['fid'] = $orig->fid;
+      $this->options['fid'] = $file->fid;
 
       $this->options['x'] = $file_data['x'];
       $this->options['y'] = $file_data['y'];
@@ -83,12 +87,7 @@ class os_boxes_site_logo extends os_boxes_default {
       if (module_exists('vsite') && $space = spaces_get_space()) {
         $node = $space->group;
 
-//        $node->field_site_logo[LANGUAGE_NONE][0] = (array)$orig + array(
-//        'cropbox_x' => $this->options['x'],
-//        'cropbox_y' => $this->options['y'],
-//        'cropbox_height' => $this->options['height'],
-//        'cropbox_width' => $this->options['width'],
-//      );
+        $node->field_site_logo[LANGUAGE_NONE][0] = $file;
       }
     }
 
@@ -96,7 +95,6 @@ class os_boxes_site_logo extends os_boxes_default {
       $block = parent::render();
 
       $file = file_load($this->options['fid']);
-      dpm($file);
       $output = file_view($file, 'media_original');
       $block['content'] = render($output);
 
@@ -106,10 +104,13 @@ class os_boxes_site_logo extends os_boxes_default {
 
 function _os_boxes_site_logo_process($element, $form_state, $form) {
   $element = file_managed_file_process($element, $form_state, $form);
+  $element['remove_button']['#submit'][] = '_os_boxes_site_logo_remove_handler';
+
   $fid = isset($element['#value']['fid']) ? $element['#value']['fid'] : 0;
 
   if ($fid && $element['#file']) {
     unset($element['filename']);
+    // file_to_crop() take the cropped image and gets the original back
     $file_to_crop = _imagefield_crop_file_to_crop($element['#file']->fid);
     $element['preview'] = array(
       '#type' => 'markup',
@@ -209,4 +210,17 @@ function _os_boxes_site_logo_preview_process($element, $form_state, $form) {
   $element['#imagefield_crop']['#height'] = 140;
 
   return $element;
+}
+
+function _os_boxes_site_logo_remove_handler($form, $form_state) {
+  $parents = $form_state['triggering_element']['#array_parents'];
+  $element = drupal_array_get_nested_value($form, $parents);
+
+  if (isset($element['#file'])) {
+    $orig = _imagefield_crop_file_to_crop($element['#file']->fid);
+    file_usage_delete($orig, 'imagecrop');
+    file_delete($orig);
+    file_delete($element['#file']);
+    unset($element['#file']);
+  }
 }
