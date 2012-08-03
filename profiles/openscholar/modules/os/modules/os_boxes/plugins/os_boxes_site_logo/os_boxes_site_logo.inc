@@ -6,7 +6,7 @@ class os_boxes_site_logo extends os_boxes_default {
       $options = parent::options_defaults();
 
       $options += array(
-        'fid' => 0,
+        'fid' => NULL,
         'x' => 0,
         'y' => 0,
         'height' => 100,
@@ -33,51 +33,60 @@ class os_boxes_site_logo extends os_boxes_default {
         '#process' => array(
           '_os_boxes_site_logo_process',
         ),
+        '#default_value' => $this->options['fid'],
+        '#dimensions' => array(
+          'x' => $this->options['x'],
+          'y' => $this->options['y'],
+          'height' => $this->options['height'],
+          'width' => $this->options['width'],
+        ),
       );
 
       if (module_exists('vsite') && $space = spaces_get_space()) {
         $form['file']['#upload_location'] = 'public://'.$space->group->purl.'/files';
       }
 
-      $form['x'] = array(
-        '#type' => 'hidden',
-        '#default_value' => $this->options['x'],
-      );
-
-      $form['y'] = array(
-        '#type' => 'hidden',
-        '#default_value' => $this->options['y'],
-      );
-
-      $form['height'] = array(
-        '#type' => 'hidden',
-        '#default_value' => $this->options['height'],
-      );
-
-      $form['width'] = array(
-        '#type' => 'hidden',
-        '#default_value' => $this->options['width'],
-      );
-
       return $form;
     }
 
     function options_submit($form, $form_state) {
-      $form = parent::options_submit($form, $form_state);
-
       // do the cropping bit now
-      dpm($form_state);
+      $file_data = $form_state['input']['file'];
+      $file = file_load($file_data['fid']);
 
+      $item = array(
+        'cropbox_x' => $file_data['x'],
+        'cropbox_y' => $file_data['y'],
+        'cropbox_height' => $file_data['height'],
+        'cropbox_width' => $file_data['width'],
+      );
+
+      $scale = array(
+        'width' => 180,
+        'height' => 140,
+      );
+
+      $orig = imagefield_crop_create_copy($file);
+      file_usage_add($orig, 'imagefield_crop', 'file', $file->fid);
+      _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $file);
+      file_save($file);
+
+      $this->options['fid'] = $orig->fid;
+
+      $this->options['x'] = $file_data['x'];
+      $this->options['y'] = $file_data['y'];
+      $this->options['height'] = $file_data['height'];
+      $this->options['width'] = $file_data['width'];
 
       if (module_exists('vsite') && $space = spaces_get_space()) {
         $node = $space->group;
 
-        $node->field_site_logo[LANGUAGE_NONE][0] = (array)$file + array(
-          'cropbox_x' => $this->options['x'],
-          'cropbox_y' => $this->options['y'],
-          'cropbox_height' => $this->options['height'],
-          'cropbox_width' => $this->options['width'],
-        );
+//        $node->field_site_logo[LANGUAGE_NONE][0] = (array)$orig + array(
+//        'cropbox_x' => $this->options['x'],
+//        'cropbox_y' => $this->options['y'],
+//        'cropbox_height' => $this->options['height'],
+//        'cropbox_width' => $this->options['width'],
+//      );
       }
     }
 
@@ -142,6 +151,46 @@ function _os_boxes_site_logo_process($element, $form_state, $form) {
     $element['#attached']['js'][] = drupal_get_path('module', 'imagefield_crop').'/Jcrop/js/jquery.Jcrop.js';
     $element['#attached']['js'][] = drupal_get_path('module', 'imagefield_crop').'/imagefield_crop.js';
     $element['#attached']['css'][] = drupal_get_path('module', 'imagefield_crop').'/Jcrop/css/jquery.Jcrop.css';
+
+    $element['x'] = array(
+      '#type' => 'hidden',
+      '#default_value' => $element['#dimensions']['x'],
+      '#attributes' => array(
+        'class' => array(
+          'edit-image-crop-x'
+        )
+      )
+    );
+
+    $element['y'] = array(
+      '#type' => 'hidden',
+      '#default_value' => $element['#dimensions']['y'],
+      '#attributes' => array(
+        'class' => array(
+          'edit-image-crop-y'
+        )
+      )
+    );
+
+    $element['height'] = array(
+      '#type' => 'hidden',
+      '#default_value' => $element['#dimensions']['height'],
+      '#attributes' => array(
+        'class' => array(
+          'edit-image-crop-height'
+        )
+      )
+    );
+
+    $element['width'] = array(
+      '#type' => 'hidden',
+      '#default_value' => $element['#dimensions']['width'],
+      '#attributes' => array(
+        'class' => array(
+          'edit-image-crop-width'
+        )
+      )
+    );
   }
 
   return $element;
