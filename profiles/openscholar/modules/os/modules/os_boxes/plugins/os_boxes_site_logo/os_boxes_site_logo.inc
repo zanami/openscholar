@@ -72,8 +72,11 @@ class os_boxes_site_logo extends os_boxes_default {
       // $file is original uploaded image that is then cropped to fit
       // it is the file that is displayed in render
       // it 'contains' the orig file, through the file usage table
-      $orig = imagefield_crop_create_copy($file);
-      file_usage_add($orig, 'imagefield_crop', 'file', $file->fid);
+      $orig = _imagefield_crop_file_to_crop($file->fid);
+      if ($orig->fid == $file->fid) {
+        $orig = imagefield_crop_create_copy($file);
+        file_usage_add($orig, 'imagefield_crop', 'file', $file->fid);
+      }
       _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $file);
       file_save($file);
 
@@ -87,7 +90,14 @@ class os_boxes_site_logo extends os_boxes_default {
       if (module_exists('vsite') && $space = spaces_get_space()) {
         $node = $space->group;
 
-        $node->field_site_logo[LANGUAGE_NONE][0] = $file;
+        $node->field_site_logo[LANGUAGE_NONE][0] = (array)$file + array(
+          'cropbox_x' => $file_data['x'],
+          'cropbox_y' => $file_data['y'],
+          'cropbox_width' => $file_data['width'],
+          'cropbox_height' => $file_data['height'],
+        );
+
+        node_save($node);
       }
     }
 
