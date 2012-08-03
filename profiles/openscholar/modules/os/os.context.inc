@@ -136,7 +136,15 @@ function os_context_default_contexts(){
                   'delta' => 'cp_minimenu', 
                   'region' => 'header_top', 
                   'weight' => - 10 
-              ) 
+              ),
+              'os-get-started' => array(
+                  'module' => 'os',
+                  'delta' => 'get-started',
+                  'weight' => -1,
+                  'region' => 'content',
+                  'status' => '0',
+                  'label' => 'Get Started (admin-only)',
+              ),
           ) 
       ) 
   );
