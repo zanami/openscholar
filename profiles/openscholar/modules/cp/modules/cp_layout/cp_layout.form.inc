@@ -135,6 +135,11 @@ function cp_layout_full_form($form, $form_state, $ctx) {
       '#type' => 'button',
       '#value' => t('Cancel'),
     ),
+    'reset' => array(
+      '#type' => 'submit',
+      '#value' => t('Reset to defaults'),
+      '#access' => (module_exists('vsite') && user_access('administer spaces')),
+    ),
   );
 
   $form['#submit'][] = 'cp_layout_full_submit';
@@ -182,24 +187,35 @@ function _cp_layout_get_weight_map($regions) {
 }
 
 function cp_layout_full_submit($form, &$form_state) {
-  $regions = $form_state['values']['layout'];
-  $ctxs = array('os_public', $form_state['values']['context']);
-  $blocks = os_layout_get_multiple($ctxs, false, true);
-
-  // go through our regions and change the blocks to match their new position and weight
-  foreach ($regions as $r => $d) {
-    $widgets = explode('|', $d['widgets']);
-    $weight = 0;
-    if ($r == 'unused') $r = false;
-    foreach ($widgets as $w) {
-      if (isset($blocks[$w])) {
-        $blocks[$w]['region'] = $r;
-        $blocks[$w]['weight'] = $weight++;
-      }
-    }
+  $op = isset($form_state['values']['op']) ? $form_state['values']['op'] : '';
+  switch ($op){
+  	case t('Reset to defaults'):
+  	  if(os_layout_revert($form_state['values']['context'])){
+  	    drupal_set_message(t('The layout %layout has been reset to its default values.', array('%layout' => $form_state['values']['context'])));
+  	  }
+  	break;
+  	default:
+  	  //Standard form submit, save off the settings
+  	  $regions = $form_state['values']['layout'];
+  	  $ctxs = array('os_public', $form_state['values']['context']);
+  	  $blocks = os_layout_get_multiple($ctxs, false, true);
+  	  
+  	  // go through our regions and change the blocks to match their new position and weight
+  	  foreach ($regions as $r => $d) {
+  	    $widgets = explode('|', $d['widgets']);
+  	    $weight = 0;
+  	    if ($r == 'unused') $r = false;
+  	    foreach ($widgets as $w) {
+  	      if (isset($blocks[$w])) {
+  	        $blocks[$w]['region'] = $r;
+  	        $blocks[$w]['weight'] = $weight++;
+  	      }
+  	    }
+  	  }
+  	  
+  	  os_layout_set_multiple($ctxs, $blocks);
   }
-
-  os_layout_set_multiple($ctxs, $blocks);
+  
 }
 
 

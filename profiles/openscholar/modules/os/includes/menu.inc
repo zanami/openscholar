@@ -66,15 +66,16 @@ function os_menu_add($title, $menu_name = false, $description = ''){
     $menu_name = ereg_replace("[^a-z0-9-]", "",str_replace(" ","-",strtolower($title)));
   }
 
-  $current_menus = os_get_menus();
-  $current_menus[$menu_name] = $title;
-  variable_set('os_menus',$current_menus);
-
   if (module_exists('vsite_menu')) {
     //Save a new menu using the vsite controllers
-    vsite_menu_add($menu_name);
+    vsite_menu_add($title, $menu_name);
   }
   else {
+    
+    $current_menus = os_get_menus();
+    $current_menus[$menu_name] = $title;
+    variable_set('os_menus',$current_menus);
+    
     //Call the standard drupal menu save (this will clear all menu caches)
     menu_save(array(
       'title' => $title,
@@ -98,21 +99,48 @@ function os_menu_del($menu_name){
     return false;
   }
   
-  //Remove the menu from the variable
-  unset($current_menus[$menu_name]);
-  variable_set('os_menus',$current_menus);
-
   if (module_exists('vsite_menu')) {
     //Delete a menu using the vsite controllers
     vsite_menu_del($menu_name);
   }
   elseif (!module_exists('vsite')) {
+    
+    //Remove the menu from the variable
+    unset($current_menus[$menu_name]);
+    variable_set('os_menus',$current_menus);
+    
     //Call the standard drupal menu delete (this will clear all menu caches and delete all the menu links)
     $menu = menu_load($menu_name);
     menu_delete($menu);
   }
 
   return true;
+}
+
+/**
+ * Revert the OS menu(s) back to defaults
+ *
+ * Menu to revert, or all menus by default
+ * @param $menu_name (optional)
+ */
+function os_menu_revert($menu_name = false){
+
+  $current_menus = os_get_menus();
+  //Is this a valid menu to remove?
+  if($menu_name && !isset($current_menus[$menu_name])){
+    return false;
+  }
+
+  if (module_exists('vsite_menu')) {
+    //Delete a menu using the vsite controllers
+    vsite_menu_revert($menu_name);
+    return true;
+  }
+  else {
+    //Nothing to do in single-tenant no overrides
+    // @todo possibly delete custom menu's that were not present on install
+    return false;
+  }  
 }
 
 /**

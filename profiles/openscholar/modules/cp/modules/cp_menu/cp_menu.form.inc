@@ -114,6 +114,11 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
           '#type' => 'submit',
           '#value' => t('Save settings')
       ),
+      'reset' => array(
+          '#type' => 'submit',
+          '#value' => t('Reset to defaults'),
+          '#access' => (module_exists('vsite') && user_access('administer spaces')),
+      ),
       '#attached' => array(
           'js' => array(
               drupal_get_path('module', 'cp_menu') . '/cp_menu.form.js'
@@ -219,6 +224,16 @@ function theme_cp_menu_table($variables){
 }
 
 function cp_menu_submit_form($form, &$form_state){
+  $op = isset($form_state['values']['op']) ? $form_state['values']['op'] : '';
+  if($op == t('Reset to defaults')){
+    //Reset the menus to thier defaults
+    if(os_menu_revert()){
+      drupal_set_message(t('The menus have been reset to their default values.'));
+    }
+    return;
+  }
+  
+  //Save as normal
   foreach ( $form_state['values']['menus'] as $links ) {
     foreach ( $links as $l ) {
       if (! is_array($l))

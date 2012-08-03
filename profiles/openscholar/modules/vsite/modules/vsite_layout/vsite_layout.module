@@ -17,3 +17,22 @@ function vsite_layout_context_set($context, $blocks){
 
   return false;
 }
+
+/**
+ * Reverts a individual context back to defaults
+ *
+ * @param string $context
+ *
+ * @return boolean Success
+ */
+function vsite_layout_context_revert($context){
+
+  $vsite = spaces_get_space();
+
+  if($vsite && isset($vsite->controllers->context)){
+    $vsite->controllers->context->del($context.":reaction:block");
+    return true;
+  }
+
+  return false;
+}

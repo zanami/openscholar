@@ -25,8 +25,15 @@ function vsite_menu_os_menu_tree($menu_key){
 function vsite_menu_del($menu_key){
   $vsite = spaces_get_space();
 
+  $current_menus = os_get_menus();
+  //Remove the menu from the variable
+  unset($current_menus[$menu_name]);
+  
   if ($vsite && isset($vsite->controllers->menus)) {
-    return $vsite->controllers->menus->del($menu_key);
+    $vsite->controllers->menus->del($menu_key);
+    
+    //Set the active menus
+    return $vsite->controllers->variable->set('os_menus', $current_menus);
   }
 
   return false;
@@ -37,13 +44,48 @@ function vsite_menu_del($menu_key){
  *
  * @param string $menu_key
  */
-function vsite_menu_add($menu_key){
+function vsite_menu_add($title, $menu_key){
   $vsite = spaces_get_space();
 
+  $current_menus = os_get_menus();
+  $current_menus[$menu_name] = $title;
+  
   if ($vsite && isset($vsite->controllers->menus)) {
-    return $vsite->controllers->menus->set($menu_key,array());
+    $vsite->controllers->menus->set($menu_key,array());
+    
+    //Set the active menus
+    $vsite->controllers->variable->set('os_menus', $current_menus);
   }
 
+  return false;
+}
+
+/**
+ * Revert the OS menu(s) back to defaults
+ *
+ * @param $menu_name (optional)
+ */
+function vsite_menu_revert($menu_name = false){
+
+  $vsite = spaces_get_space();
+
+  $current_menus = os_get_menus();
+  
+  if ($vsite && isset($vsite->controllers->menus)) {
+    if($menu_name){
+      //Reset this one menu
+      $vsite->controllers->menus->del($menu_name);
+    }else{
+      foreach ($current_menus as $menu_key => $title){
+        $vsite->controllers->menus->del($menu_key);
+      }
+      //Reset the active menus
+      $vsite->controllers->variable->del('os_menus');
+    }
+    
+    return true;
+  }
+  
   return false;
 }
 

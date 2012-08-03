@@ -193,6 +193,26 @@ function os_layout_set($context, $blocks){
 }
 
 /**
+ * Reverts a individual context back to defaults
+ *
+ * @param string $context
+ *
+ * @return boolean Success
+ */
+function os_layout_revert($context){
+  
+  if (module_exists('vsite_layout')) {
+    //Write the context to the overrides table
+    vsite_layout_context_revert($context);
+    return true;
+  }
+  else {
+    //No overrides in single tenant, nothing to do
+    return false;
+  }
+}
+
+/**
  * Saves an array blocks to multiple contexts, resolving weight issues and deciding what overrides need to be made
  *
  * @param array $contexts

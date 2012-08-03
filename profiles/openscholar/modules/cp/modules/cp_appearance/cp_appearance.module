@@ -124,11 +124,7 @@ function cp_appearance_theme_picker_form($form, &$state) {
   );
 
   $form = system_settings_form($form);
-  $form['reset'] = array(
-    '#type' => 'submit',
-    '#value' => t('Reset to defaults'),
-  );
-
+  
   return $form;
 }
 
