@@ -1,7 +1,4 @@
 <?php
-include_once( 'sites/all/modules/openscholar_scholar/citation_distribute/plugins/citation_distribute_service.inc');
-include_once( 'sites/all/modules/openscholar_scholar/citation_distribute/plugins/citation_distribute_service_googlescholar.inc');
-
 /**
  * @file
  * Allows faculty members to import a list of their publications.
@@ -63,11 +60,10 @@ function harvard_activity_reports_query_user() {
 		$query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE huid = '%s'"; // setup the query
 		$results = db_query($query, $hashID); // perform the query
 		// make sure there are results
-		if($results) {
+		if($results->num_rows>0) {
 			$row = db_fetch_object($results); // grab the resulting uid
 			$uid = $row->uid; // push it into a variable
 			$huID = $row->huid;
-			
 			// now that we have the UID, grab their VSITE node ID from the Node table
 			$nodeQuery = "SELECT nid FROM {node} WHERE uid = %d AND type='vsite'";
 			$nodeResults = db_query($nodeQuery,$uid);
@@ -81,7 +77,6 @@ function harvard_activity_reports_query_user() {
 	}else{ // no id set, tell them
 		$nid = FALSE;
 	}
-	
 	// return the content
 	return $nid;
 }// end function
@@ -97,7 +92,7 @@ function harvard_activity_reports_load_user_info($nid){
 		// using a stand alone ID for right now until error checking and site url can be implemented
 		$bibQuery = "SELECT n.nid FROM {node} n INNER JOIN {og_ancestry} oa ON n.nid = oa.nid WHERE oa.group_nid = %d AND n.type = 'biblio'";
 		$bibResults = db_query($bibQuery,$nid);
-		if($bibResults) {
+		if($bibResults->num_rows>0) {
 			while($bibRow = db_fetch_array($bibResults)){
 				// assign them to a variable
 				$biblio[] = $bibRow;
@@ -214,7 +209,7 @@ function harvard_activity_reports_page() {
 		$huidResult = db_query($selectHUID, $nid);
 		$huidRow = db_fetch_object($huidResult);
 		$huID = $huidRow->huid;
-		
+
 		// now load in the user's biblio 
 		$xml = harvard_activity_reports_load_user_info($nid);
 		// create an instance of the citation class
@@ -266,11 +261,11 @@ function harvard_activity_reports_page() {
 			$counter++;
 			//$mapped = $citationTest->map_metadata($xmlLoad['nid']);
 		}// end foreach
+		// call the xml creation function
+		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID);
 	}else{
 		$xmlReturn = "HUID/site url is missing or incorrect.";
 	}// end if nid != false
-	// call the xml creation function
-	$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID);
 	// send back the xml
 	echo $xmlReturn;	
 }//end function
