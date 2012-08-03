@@ -10,6 +10,7 @@ dependencies[] = strongarm
 dependencies[] = views
 dependencies[] = vsite
 features[box][] = blog_addthis
+features[box][] = blog_rss_feed
 features[context][] = blog_blog
 features[ctools][] = boxes:box:1
 features[ctools][] = context:context:3
