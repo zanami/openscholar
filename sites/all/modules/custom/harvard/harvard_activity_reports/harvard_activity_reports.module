@@ -101,7 +101,6 @@ function harvard_activity_reports_load_user_info($nid){
 				// assign them to a variable
 				$biblio[] = $bibRow;
 			}
-			//echo count($biblio);
 		}else {
 			$biblio = FALSE;
 		}
@@ -125,16 +124,59 @@ function harvard_activity_reports_create_xml($nodeLoad) {
     $domtree = new DOMDocument('1.0', 'UTF-8');
 	
     /* create the root element of the xml tree */
-    $xmlRoot = $domtree->createElement("xml");
+    $xmlRoot = $domtree->createElement("response");
+    
+    // setup the response xml root
+    $response = $domtree->createAttribute("xmlns:xsi");
+    $xmlRoot->appendChild($response);
+    $responseValue = $domtree->createTextNode("http://www.w3.org/2001/XMLSchema-instance");
+    $response->appendChild($responseValue);
+    // response part 2
+    $xsiAtt = $domtree->createAttribute("xsi:noNamespacesSchemaLocation");
+    $xmlRoot->appendChild($xsiAtt);
+    $xsiValue = $domtree->createTextNode("far_response.xsd");
+    $xsiAtt->appendChild($xsiValue);
+    //
+     
     /* append it to the document created */
     $xmlRoot = $domtree->appendChild($xmlRoot);
-	
-    foreach($xml as $key=>$value) {
+    
+    // create the person element
+    $personElement = $domtree->createElement("person");
+    $xmlRoot->appendChild($personElement);
+	// loop through the array data for the publications and create XML elements with them
+    foreach($xml as $value) {
+    	// create the pub element
     	$currentPub = $domtree->createElement("publication");
     	$currentPub = $xmlRoot->appendChild($currentPub);
-    	/* you should enclose the following two lines in a cicle */
-    	$currentPub->appendChild($domtree->createElement('title',$value));
-    	//$currentPub->appendChild($domtree->createElement('published',$xmlData['title']));
+    	// now we'll add attributes to it
+    		// publication nid
+    		$nidAtt = $domtree->createAttribute("id");
+    		$currentPub->appendChild($nidAtt);
+    		// nid value
+    		$nidValue = $domtree->createTextNode($value['biblio_nid']);
+    		$nidAtt->appendChild($nidValue);
+    		// publication type
+    		$pubTypeAtt = $domtree->createAttribute("pubType");
+    		$currentPub->appendChild($pubTypeAtt);
+    		// publication value
+    		$pubTypeValue = $domtree->createTextNode($value['biblio_type_name']);
+    		$pubTypeAtt->appendChild($pubTypeValue);
+    		// publication source
+    		$pubSource = $domtree->createAttribute("pubSource");
+    		$currentPub->appendChild($pubSource);
+    		// publication source value
+    		$pubSourceValue = $domtree->createTextNode('OpenScholar');
+    		$pubSource->appendChild($pubSourceValue);
+    	// biblio basic info
+    	//$currentPub->appendChild($domtree->createElement('biblio_id',$value['biblio_nid']));
+    	$currentPub->appendChild($domtree->createElement('biblio_title',$value['biblio_title']));
+    	$currentPub->appendChild($domtree->createElement('biblio_url',$value['biblio_url']));
+    	$currentPub->appendChild($domtree->createElement('biblio_path',$value['biblio_path']));
+    	// biblio citation information 
+    	$currentPub->appendChild($domtree->createElement('yearOfPublication',$value['biblio_year']));
+    	// $currentPub->appendChild($domtree->createElement('biblio_volume',$value['biblio_volume']));
+    	// $currentPub->appendChild($domtree->createElement('biblio_issue',$value['biblio_issue']));
     }
     
     $xmlReturn = $domtree->saveXML();
@@ -155,30 +197,49 @@ function harvard_activity_reports_page() {
 	if($nid != FALSE) {
 		// now load in the user's biblio 
 		$xml = harvard_activity_reports_load_user_info($nid);
+		// create an instance of the citation class
+		// $citationTest = new citation_distribute_service_googlescholar(); - no longer needed, found the same info in the node load
+		// create array
+		$biblioDataArray = array();
+		// counter for multidimem array
+		$counter = 0;
+		// loop through each node
 		foreach($xml as $xmlLoad) {
-			// node load was killing the page, using a simple query instead for testing right now
-			$selTitle = "SELECT title FROM {node} WHERE nid = %d";
-			$titleRes = db_query($selTitle,$xmlLoad['nid']);
-			$titleRow = db_fetch_object($titleRes);
-			$title[] = $titleRow->title;
+			// node load in all the data, found the MySQL query to get the same data was intensive and just about as heavy
+			// so to save work, we'll back to node load 
+			$biblioDataRow = node_load($xmlLoad['nid'], NULL, TRUE);
+			// push the data needed into the array by key name
+			$biblioDataArray[$counter]['biblio_nid'] = $biblioDataRow->nid;
+			$biblioDataArray[$counter]['biblio_title'] = $biblioDataRow->title;
+			$biblioDataArray[$counter]['biblio_url'] = $biblioDataRow->biblio_url;
+			$biblioDataArray[$counter]['biblio_type_name'] = $biblioDataRow->biblio_type_name;
+			$biblioDataArray[$counter]['biblio_path'] = $biblioDataRow->path;
+			
+			// grab the citation data now
+			$biblioDataArray[$counter]['biblio_year'] = $biblioDataRow->biblio_year;
+			$biblioDataArray[$counter]['biblio_volume'] = $biblioDataRow->biblio_volume;
+			$biblioDataArray[$counter]['biblio_issue'] = $biblioDataRow->biblio_issue;
+			// increment the counter
+			$counter++;
+			$contributers = $biblioDataRow->biblio_contributors[1];
+			// get the counts of the number of authors
+			$authorCounter = 0; 
+			$authorCount = count($contributers);
+			$authorList = '';
+			// grab out all the contributers and list them
+			foreach($contributers as $contributeAuthor){
+				
+				$authorList .= $contributeAuthor['name'] ", ";
+				$authorCounter++;			
+			}
+			//print_r($biblioDataArray);
+			//$mapped = $citationTest->map_metadata($xmlLoad['nid']);
 		}// end foreach
 	}else{
 		$xmlReturn = "HUID/site url is missing or incorrect.";
 	}// end if nid != false
-	$xmlReturn = harvard_activity_reports_create_xml($title);
-	
-	/// Citation attempt
-		$citationTest = new citation_distribute_service_googlescholar();
-		// map the data
-		$mapped = $citationTest->map_metadata('26749');
-		
-		print_r($mapped);
-	///
-	
-	
-	// test real quick
-	$testNode = node_load(26749, NULL, TRUE);
-	print_r($testNode);
-	
+	// call the xml creation function
+	$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray);
+	// send back the xml
 	return $xmlReturn;	
 }//end function
