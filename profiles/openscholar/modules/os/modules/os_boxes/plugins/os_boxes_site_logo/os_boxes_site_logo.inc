@@ -26,6 +26,8 @@ class os_boxes_site_logo extends os_boxes_default {
         return $form;
       }
 
+      $original = _imagefield_crop_file_to_crop($this->options['fid']);
+
       $form['file'] = array(
         '#type' => 'managed_file',
         '#title' => t('Site Logo'),
@@ -33,7 +35,7 @@ class os_boxes_site_logo extends os_boxes_default {
         '#process' => array(
           '_os_boxes_site_logo_process',
         ),
-        '#default_value' => $this->options['fid'],
+        '#default_value' => $original->fid,
         '#dimensions' => array(
           'x' => $this->options['x'],
           'y' => $this->options['y'],
@@ -68,7 +70,7 @@ class os_boxes_site_logo extends os_boxes_default {
 
       $orig = imagefield_crop_create_copy($file);
       file_usage_add($orig, 'imagefield_crop', 'file', $file->fid);
-      _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $file);
+      _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $orig);
       file_save($file);
 
       $this->options['fid'] = $orig->fid;
@@ -94,8 +96,9 @@ class os_boxes_site_logo extends os_boxes_default {
       $block = parent::render();
 
       $file = file_load($this->options['fid']);
-      $output = file_view($file, 'original');
-      $block['content'] = $output;
+      dpm($file);
+      $output = file_view($file, 'media_original');
+      $block['content'] = render($output);
 
       return $block;
     }
