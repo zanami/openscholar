@@ -32,7 +32,7 @@ function os_blog_default_box() {
   $box->plugin_key = 'simple';
   $box->title = '';
   $box->description = 'Blog RSS Feed';
-  $box->options = array( /* [or] @FIXME this should use the non-app-specific RSS module */
+  $box->options = array(
     'body' => array(
       'value' => '<p><a href="/blog/feed"><img src="/feed.png" alt="Subscribe" title="Subscribe" /> Subscribe</a></p>',
       'format' => 'filtered_html',

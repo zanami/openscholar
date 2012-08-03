@@ -36,6 +36,7 @@ features[variable][] = menu_parent_blog
 features[variable][] = node_options_blog
 features[variable][] = node_preview_blog
 features[variable][] = node_submitted_blog
+features[variable][] = pathauto_blog_pattern
 features[views_view][] = os_blog
 features[views_view][] = os_blog_comments
 files[] = os_blog.test
