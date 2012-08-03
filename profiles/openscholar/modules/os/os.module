@@ -454,7 +454,7 @@ function os_preprocess_page(&$variables){
 
   $links = array();
   $active = context_active_contexts();
-  if (!isset($active['os_public']) || arg(1) != 'os') return;  // do nothing if we aren't in the cp
+  if (!isset($active['os_public']) || arg(0) == 'os') return;  // do nothing if we aren't in the cp
 
   $is_front = isset($active['os_front']);
   $context = 'os_front';
