@@ -19,13 +19,13 @@
   background-color: #F3F3F3;
 }
 
-.cp-region-header-second {
+.cp-region-header-first {
   margin-right: 1%;
   width: 24%;
   min-height: 12em;
 }
 
-.cp-region-header-first {
+.cp-region-header-second {
   width: 50%;
   min-height: 12em;
 }

@@ -36,8 +36,8 @@ function cp_layout_full_form($form, $form_state, $ctx) {
   );
 
   $regions = array(
-    'header_second',
     'header_first',
+    'header_second',
     'header_third',
     'menu_bar',
     'sidebar_first',
