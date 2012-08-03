@@ -78,7 +78,16 @@ function os_context_default_contexts(){
   );
   $context->reactions = array(
       'block' => array(
-          'blocks' => array() 
+          'blocks' => array(
+              'os-get-started' => array(
+                  'module' => 'os',
+                  'delta' => 'get-started',
+                  'weight' => -1,
+                  'region' => 'sidebar_second',
+                  'status' => '0',
+                  'label' => 'Get Started (admin-only)',
+              ),
+          ) 
       ) 
   );
   $context->condition_mode = 1;
@@ -136,14 +145,6 @@ function os_context_default_contexts(){
                   'delta' => 'cp_minimenu', 
                   'region' => 'header_top', 
                   'weight' => - 10 
-              ),
-              'os-get-started' => array(
-                  'module' => 'os',
-                  'delta' => 'get-started',
-                  'weight' => -1,
-                  'region' => 'content',
-                  'status' => '0',
-                  'label' => 'Get Started (admin-only)',
               ),
           ) 
       ) 

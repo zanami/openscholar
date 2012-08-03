@@ -451,12 +451,14 @@ function os_preprocess_html(&$variables){
 
 function os_preprocess_page(&$variables){
   $types = os_get_bundles();
-  
+
   $links = array();
   $active = context_active_contexts();
+  if (!isset($active['os_public']) || arg(1) != 'os') return;  // do nothing if we aren't in the cp
+
   $is_front = isset($active['os_front']);
   $context = 'os_front';
-  $feature = 'os_front';
+  $module = 'os_front';
 
   foreach ($types as $type => $name) {
     $printed = $is_front;
@@ -632,14 +634,14 @@ function theme_openscholar_get_started(){
     $create_time = $vsite->group->created;
   }
   
-  $links = theme('item_list', array(
+  $links = theme('item_list', array('items' => array(
       l("Enable or disable features for your site", 'cp/build/features'), 
       l("Add/manage content", 'cp/content'), 
       l("Manage who may use your site", 'cp/users'), 
       l("Change the look of your site", 'cp/appearance'), 
       l("Move elements in your page layout", 'cp/build/layout'), 
       l("View documentation", "help/vsitehelp/OpenScholar-Documentation") 
-  ));
+  )));
   
   // Created in the last 26 hours?
   $s_welcome_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Welcome to your new website!" : "";
