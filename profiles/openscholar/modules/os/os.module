@@ -202,21 +202,21 @@ function _os_nice_menus_direction($region) {
     'two_sidebars_right' => array('sidebar_first' => 'left','sidebar_second' => 'left','footer' => 'up'),
   	'two_sidebars_left'  => array('sidebar_first' => 'right','sidebar_second' => 'right','footer' => 'up'),
   );
-  
-  
+
+
   $settings_var = 'theme_' . os_theme_get() . '_settings';
   if ($space = spaces_get_space()) {
     $columns = $space->controllers->variable->get($settings_var);
   } else {
     $columns = variable_get($settings_var, 'three_col_grail');
   }
-  
+
   if (count($columns)) {
     $columns = $columns['bigscreen_layout'];
   } else {
-    $columns = 'three_col_grail'; 
+    $columns = 'three_col_grail';
   }
-  
+
   $directions = (isset($region_directions[$columns])) ? $region_directions[$columns] : $region_directions['three_col_grail'];
   return (isset($directions[$region])) ? $directions[$region] : 'down';
 }
@@ -402,6 +402,34 @@ function os_preprocess_html(&$variables){
   $variables['classes_array'] = array_diff($variables['classes_array'], array(
       'contextual-links-region'
   ));
+}
+
+function os_preprocess_page(&$variables) {
+  $types = os_get_bundles();
+
+  $links = array();
+  $active = context_active_contexts();
+
+  foreach ($types as $type => $name) {
+    foreach ($active as $a) {
+      if (isset($a->conditions['node']['values']) && $a->conditions['node']['options']['node_form'] == 0) {
+        if (in_array($type, $a->conditions['node']['values'])) {
+          $links[] = array(
+            'href' => 'node/add/'.$type,
+            'title' => ucwords(str_replace('_', ' ', $type)),
+          );
+        }
+      }
+    }
+  }
+
+  drupal_alter('add_new_links', $links);
+  $variables['title_suffix']['add_new'] = array(
+    '#theme' => 'ctools_dropdown',
+    '#links' => $links,
+    '#title' => t('Add New'),
+    '#class' => 'add_new'
+  );
 }
 
 /**
