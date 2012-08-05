@@ -6,14 +6,25 @@
 function openscholar_install() {
   // enable the following themes
   $enable = array(
-    'os_basetheme',
-    'seven',
-    'aberdeen' ,
-    'cp',
-    'ballard',
-    'scholar_cayley',
-    'cleanblue',
-    'mobile',
+  	'aberdeen',
+  	'aglet',
+  	'airstream',
+  	'ballard',
+  	'bigpic',
+  	'bunchy',
+  	'cayley',
+  	'cleanblue',
+  	'collegiate',
+  	'commodore',
+  	'cp',
+  	'eloquent',
+  	'mobile',
+  	'nortony',
+  	'quinn',
+  	'seven',
+  	'stripy',
+  	'weft',
+  	'os_basetheme',
   );
   theme_enable($enable);
   
