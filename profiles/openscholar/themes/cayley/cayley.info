@@ -7,9 +7,9 @@
   release = 7.x-3.x
   
   
-stylesheets[all][]   = css/scholar_cayley.css
-conditional-stylesheets[if lt IE 9][all][] = css/scholar_cayley-ie.css
-conditional-stylesheets[if lte IE 7][all][] = css/scholar_cayley-ie.csss
+stylesheets[all][]   = css/cayley.css
+conditional-stylesheets[if lt IE 9][all][] = css/cayley-ie.css
+conditional-stylesheets[if lte IE 7][all][] = css/cayley-ie.csss
 
 ;os[widgets][boxes-site_logo] = false
 
