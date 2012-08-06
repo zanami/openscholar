@@ -19,9 +19,7 @@ os[cp_layout_css] = cp-layout-map.css
 
   
   stylesheets[screen][] = css/gking.css
-  
-  ;----------// LOOK AT HIS IE CSS FILE REFER HERE
-  conditional-stylesheets[if IE][all][]         = gking-ie.css
+  ie_stylesheets[screen][lt IE 10] = gking-ie.css
 
   scripts[] = gking.js
 

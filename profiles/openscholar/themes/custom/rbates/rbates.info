@@ -18,7 +18,7 @@ os[theme_access] = "private"
 
   
 stylesheets[screen][] = css/rbates.css
-ie_stylesheets[screen][IE 7] = css/rbates-ie.css
+ie_stylesheets[screen][lt IE 10] = css/rbates-ie.css
   
 scripts[]               = rbates.js
 

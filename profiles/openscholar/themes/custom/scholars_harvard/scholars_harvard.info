@@ -18,8 +18,8 @@ os[theme_access] = "private"
 
 stylesheets[screen][] = css/scholars-harvard.css
 stylesheets[all][]   = css/forms.css
-ie_stylesheets[screen][IE 8] = css/scholars-harvard-ie.css
-ie_stylesheets[screen][IE 7] = css/scholars-harvard-ie7.css
+ie_stylesheets[screen][lt IE 10] = css/scholars-harvard-ie.css
+
 
 scripts[]               = js/scholars-harvard.js
 

@@ -16,8 +16,8 @@ os[theme_access] = "private"
 
 ;----------// Stylesheets
 
-    stylesheets[screen][] = css/projects-harvard.css
-  ie_stylesheets[screen][IE 7] = css/projects-harvard-ie.css
+  stylesheets[screen][] = css/projects-harvard.css
+  ie_stylesheets[screen][lt IE 10] = css/projects-harvard-ie.css
 
 
 ;----------// Site Features

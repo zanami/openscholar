@@ -20,6 +20,7 @@
 
   
   stylesheets[screen][] = css/airstream.css
+  ie_stylesheets[screen][lt IE 10] = css/airstream-ie.css
 
 
 
