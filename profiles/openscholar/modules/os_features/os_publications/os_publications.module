@@ -228,16 +228,14 @@ function os_publications_node_view_alter(&$build, $type) {
 /**
  * Adds a page contextual link for importing biblio nodes.
  */
-function os_publications_contextual_links_view_alter(&$element, $items) {
-  if (isset($items['os-biblio'])) {
-    $element['#links']['os-biblio-import'] = array(
+function os_publications_add_new_links_alter(&$links) {
+  if (isset($links['biblio'])) {
+    $links['biblio-import'] = array(
       'title' => t('Import Publications'),
       'href' => 'publications/import',
       'html' => TRUE,
-      'query' => $element['#links']['os-biblio']['query'],
     );
-
-    $element['#links']['os-biblio']['title'] = t('Add Publication');
+    $links['biblio']['title'] = 'Publication';
   }
 }
 
