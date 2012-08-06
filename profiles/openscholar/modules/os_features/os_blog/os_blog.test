@@ -14,7 +14,7 @@
  */
 class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
   protected $profile = 'openscholar';
-  protected $vsite_admin_user;
+  protected $user;
   protected $vsite_node;
   
   public static function getInfo() {
@@ -24,23 +24,29 @@ class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
       'group' => 'Features',
     );
   }
-
+  
   // Creates admin user, creates vsite node, and enables blog feature module
   public function setUp() {
-    // Enables any modules required for the test
     parent::setUp('spaces', 'og', 'spaces_og', 'vsite', 'os_blog');
-    // Creates admin user with proper role.
-    ctools_include('user', 'os'); // Includes resources to grant user roles.
-    static $vsite_admin_role = 'vsite admin';
-    $this->vsite_admin_user = $this->drupalCreateUser(array());
-    os_role_grant($this->vsite_admin_user->uid, $vsite_admin_role);
-    
-    /**
-     * @FIXME fails
+    $user = $this->osCreateVsiteAdminUser();
+    $this->drupalLogin($user);
+    /*$this->vsite_admin_user = $this->drupalCreateUser(array(
+      'Access Control Panel',
+      'Manage features',
+      'Administer content',
+      'Blog entry: Create new content',
+      'Blog entry: Edit own content',
+      'Administer site configuration',
+    ));    
     $this->drupalLogin($this->vsite_admin_user);
-     */
-     
+
+    // Creates admin user with proper role.
+    ctools_include('user', 'os'); // Includes resources to grant user roles.    
+    static $vsite_admin_role = 'vsite admin';
+    os_role_grant($this->vsite_admin_user->uid, $vsite_admin_role);*/
+
     // Creates an OS Site node and sets as og space
+    /*
     $vsite_node = array(
         'title' => 'My Test Site',
         'type' => 'vsite',
@@ -48,10 +54,7 @@ class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
     );
     $this->vsite_node = $this->drupalCreateNode($vsite_node);
     $vsite = spaces_load('og', $this->vsite_node->nid);
-    /**
-     * @FIXME
     spaces_set_space($vsite);
-     */
     $this->drupalGet('node/' . $this->vsite_node->nid);
     debug($this->url);
     $this->verbose($this->url);
@@ -67,32 +70,9 @@ class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
     $edit = array();
     $edit['spaces_features[os_blog]'] = $enable_value;
     $submit_value = t('Save for ') . $vsite_node['title'];
-    /**
-     * @FIXME
     $this->drupalPost($cp_path, $edit, $submit_value);
     $this->assertText(t('The configuration options have been saved for @title.', array('@title' => $vsite_node['title']))); 
-     */
-  }
-  
-  // Views page, primary menu item, and archive block
-  public function testOpenscholarBlogViewComponents() {
-    // Visits the Blog view page, activates context
-    $blog_page_title = t('Blog');
-    $blog_page_path = '/' . $this->vsite_node->purl . '/blog';
-    $sitename = t(variable_get('site_name', 'Drupal'));
-    $this->drupalGet($blog_page_path);
-    /**
-     * @FIXME
-    // Views the Page Display with title "Blog" at /blog
-    $this->assertTitle(t('@title | @sitename', array('@title' => $blog_page_title, '@sitename' => $sitename)));
-    
-    // Views the primary menu link provided by "Blog" Page Display
-    $this->assertLink($blog_page_title);
-    $this->assertLinkbyHref($blog_page_path);
-
-    // Views the Archive block in context of "Blog" Page Display
-    $this->assertText('Archive');
-     */
+    */
   }
 
   // Creates a Blog entry node using the node form
@@ -101,11 +81,8 @@ class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
     $edit = array();
     $edit['title'] = $this->randomName(8);
     $edit["body[und][0][value]"] = $this->randomName(16);
-    /**
-     * @FIXME
-    $this->drupalPost('node/add/blog', $edit, t('Save'));
+    $this->drupalPost('/node/add/blog', $edit, t('Save'));
     $this->assertText(t('Blog entry @title has been created.', array('@title' => $edit['title'])));
-     */
   }
 
   // Creates a Blog entry node and loads the node edit form.
@@ -120,6 +97,7 @@ class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
     // For debugging, only outputs when testing settings are set as 'verbose'
     $this->verbose('Blog entry node created: ' . var_export($node, TRUE));
     // Runs normal test not on the testbot
+    /* Untested after lastest change.
     if (!$this->runningOnTestbot()) {
       debug('We are not running on the PIFR testing server, so will go ahead and catch the failure.');
       $this->drupalGet("node/{$node->nid}/edit");
@@ -130,6 +108,7 @@ class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
       // Asserts page contains title text, indicates edit form render success
       $this->assertText(t("@title", array('@title' => $settings['title'])), "Found title in edit form");
     }
+    */
   }
 
   // Create a Blog entry node and views it displayed on page and archive block.
@@ -143,7 +122,7 @@ class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
 
     // For debugging, only outputs when testing settings are set as 'verbose'
     $this->verbose('Blog entry node created: ' . var_export($node, TRUE));
-
+    /* Untested after latest change
     // Runs normal test not on the testbot
     if (!$this->runningOnTestbot()) {
       debug('We are not running on the PIFR testing server, so will go ahead and catch the failure.');
@@ -155,8 +134,22 @@ class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
       // Asserts page contains title text, indicates edit form render success
       $this->assertText(t("@title", array('@title' => $settings['title'])), "Found title in edit form");
     }
+    */
   }
 
+  /**
+   *
+   */
+  public function osCreateVsiteAdminUser($permissions = array()) {
+    static $vsite_admin = 'vsite admin';
+    $roles = user_roles();
+    $index = array_search($vsite_admin, $roles);
+    $perms = user_role_permissions(array(array_search($vsite_admin, $roles) => $vsite_admin));
+    $perms = array_keys($perms[array_search($vsite_admin, $roles)]);
+    $admin = $this->drupalCreateUser($perms);
+    $user->roles[$index] = $vsite_admin;
+    return user_save($user);
+  }
   /**
    * Detect if we're running on PIFR testbot
    *
