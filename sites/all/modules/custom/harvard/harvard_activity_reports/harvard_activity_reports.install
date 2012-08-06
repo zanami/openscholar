@@ -23,7 +23,7 @@ function harvard_activity_reports_schema_alter(&$schema) {
       		'type' => 'varchar',
    			'length' => 256,
    			'not null' => FALSE,
-         	'default' => '',
+         	'default' => NULL,
     	);
 	}// end if isset
 }
@@ -33,13 +33,9 @@ function harvard_activity_reports_schema_alter(&$schema) {
  */
 function harvard_activity_reports_install() {
   	$ret = array();
-  	$schema['iqss_pin_registration'] = array();
-	if(checkExists('hashID')==FALSE) {
+	if(checkExists('hashID')==TRUE) {
 		// its not in there, add it
-  		harvard_activity_reports_schema_alter($schema);
-  		foreach ($schema['iqss_pin_registration']['fields'] as $name => $spec) {
-    		db_add_field($ret, 'iqss_pin_registration', $name, $spec);
-  		}// end foreach
+  		db_add_field($ret, 'iqss_pinserver_register', 'hashID', array('type' => 'varchar','length' => 256,'not null' => FALSE,'default' => NULL));
 	}// end if !in array
 }
 
@@ -48,13 +44,9 @@ function harvard_activity_reports_install() {
  */
 function harvard_activity_reports_uninstall() {
   	$ret = array();
-  	$schema['iqss_pin_registration'] = array();
   	// first check to see if the field exists
-	if(checkExists('hashID')==TRUE) {
+	if(checkExists('hashID')==FALSE) {
 		// its not in there, drop it
-  		harvard_activity_reports_schema_alter($schema);
-  		foreach ($schema['iqss_pin_registration']['fields'] as $name => $spec) {
-    		db_drop_field($ret, 'iqss_pin_registration', $name);
-  		}// end foreach
+    	db_drop_field($ret, 'iqss_pinserver_register', 'hashID');
 	}// end check
 }
