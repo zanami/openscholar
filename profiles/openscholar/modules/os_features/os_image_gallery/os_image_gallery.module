@@ -14,7 +14,7 @@ include_once('os_image_gallery.features.inc');
 function os_image_gallery_contextual_links_view_alter(&$element, $items) {
   if (isset($element['#contextual_links']['media_gallery'])) {
     unset($element['#links']['media-gallery-edit']);
-    unset($element['#links']['media-gallery-remove']);
+    unset($element['#links']['file-delete']);
   }
 }
 
