@@ -39,10 +39,12 @@ function vsite_layout_context_revert($context){
 
 /**
  * Implements hook_form_alter().
+ * 
+ * Alter the cp form to add Reset to Default and Save to Preset controls
  */
-function vsite_layout_cp_layout_full_form_form_alter(&$form, &$form_state, $form_id){
+function vsite_layout_form_cp_layout_full_form_alter(&$form, &$form_state, $form_id){
   // For administrators, let them save to either the space or the preset
-  if ($vsite = spaces_get_space() && user_access('administer spaces')) {
+  if (($vsite = spaces_get_space()) && user_access('administer spaces')) {
     
     if (! empty($form['#submit'])) {
       $position = array_search('cp_layout_full_submit', $form['#submit'], TRUE);

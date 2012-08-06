@@ -21,85 +21,85 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
   $weight = 5;
 
   $form['menus'] = array(
-      '#theme' => 'cp_menu_table',
-      '#tree' => true
+    '#theme' => 'cp_menu_table',
+    '#tree' => true
   );
 
-  foreach ( $menus as $m => $title ) {
+  foreach ($menus as $m => $title) {
     $form['menus'][$m] = array(
-        '#weight' => (($is_active && $menu == $m) ? 1 : $weight ++),
-        '#hidden' => ($is_active && $menu != $m),
-        'menu-name' => array(
-            '#type' => 'hidden',
-            '#value' => $m,
-            '#attributes' => array(
-                'class' => array(
-                    'menu-name'
-                )
-            )
+      '#weight' => (($is_active && $menu == $m) ? 1 : $weight ++),
+      '#hidden' => ($is_active && $menu != $m),
+      'menu-name' => array(
+        '#type' => 'hidden',
+        '#value' => $m,
+        '#attributes' => array(
+          'class' => array(
+            'menu-name'
+          )
         )
+      )
     );
     $links = _cp_menu_flatten_tree(os_menu_tree_data($m));
-    foreach ( $links as $link ) {
+    foreach ($links as $link) {
       $l = $link['link'];
       $url = url($l['link_path'], array(
-          'absolute' => true
+        'absolute' => true
       ));
       $form['menus'][$m][$l['mlid']] = array(
-          'title' => array(
-              '#markup' => $l['link_title'],
-              '#description' => l($url, $url)
-          ),
-          'edit_link' => array(
-              '#markup' => ctools_modal_text_button('Edit Link', 'cp/build/' . $l['mlid'] . '/edit/nojs/', '')
-          ),
-          'menu' => array(
-              '#type' => 'select',
-              '#options' => $menus,
-              '#default_value' => $l['menu_name'],
-              '#attributes' => array(
-                  'class' => array(
-                      'menu-name',
-                      'menu-name-' . $l['menu_name']
-                  )
-              )
-          ),
-          'weight' => array(
-              '#type' => 'textfield',
-              '#default_value' => $l['weight'],
-              '#size' => 3,
-              '#attributes' => array(
-                  'class' => array(
-                      'menu-weight',
-                      'menu-weight-' . $l['menu_name']
-                  )
-              )
-          ),
-          'plid' => array(
-              '#type' => 'hidden',
-              '#default_value' => $l['plid'],
-              '#attributes' => array(
-                  'class' => array(
-                      'menu-plid',
-                      'menu-plid-' . $l['menu_name']
-                  )
-              )
-          ),
-          'mlid' => array(
-              '#type' => 'hidden',
-              '#default_value' => $l['mlid'],
-              '#attributes' => array(
-                  'class' => array(
-                      'menu-mlid',
-                      'menu-mlid' . $l['menu_name']
-                  )
-              )
-          ),
-          'menu-old' => array(
-              '#type' => 'hidden',
-              '#value' => $l['menu_name']
-          ),
-          '#depth' => $l['depth']
+        'title' => array(
+          '#markup' => $l['link_title'],
+          '#description' => l($url, $url)
+        ),
+        'edit_link' => array(
+          '#markup' => ctools_modal_text_button('Edit Link', 'cp/build/' . $l['mlid'] . '/edit/nojs/', '')
+        ),
+        'menu' => array(
+          '#type' => 'select',
+          '#options' => $menus,
+          '#default_value' => $l['menu_name'],
+          '#attributes' => array(
+            'class' => array(
+              'menu-name',
+              'menu-name-' . $l['menu_name']
+            )
+          )
+        ),
+        'weight' => array(
+          '#type' => 'textfield',
+          '#default_value' => $l['weight'],
+          '#size' => 3,
+          '#attributes' => array(
+            'class' => array(
+              'menu-weight',
+              'menu-weight-' . $l['menu_name']
+            )
+          )
+        ),
+        'plid' => array(
+          '#type' => 'hidden',
+          '#default_value' => $l['plid'],
+          '#attributes' => array(
+            'class' => array(
+              'menu-plid',
+              'menu-plid-' . $l['menu_name']
+            )
+          )
+        ),
+        'mlid' => array(
+          '#type' => 'hidden',
+          '#default_value' => $l['mlid'],
+          '#attributes' => array(
+            'class' => array(
+              'menu-mlid',
+              'menu-mlid' . $l['menu_name']
+            )
+          )
+        ),
+        'menu-old' => array(
+          '#type' => 'hidden',
+          '#value' => $l['menu_name']
+        ),
+        '#depth' => $l['depth']
       );
     }
   }
@@ -109,25 +109,20 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
   );
 
   $form['actions'] = array(
-      '#type' => 'actions',
-      'submit' => array(
-          '#type' => 'submit',
-          '#value' => t('Save settings')
-      ),
-      'reset' => array(
-          '#type' => 'submit',
-          '#value' => t('Reset to defaults'),
-          '#access' => (module_exists('vsite') && user_access('administer spaces')),
-      ),
-      '#attached' => array(
-          'js' => array(
-              drupal_get_path('module', 'cp_menu') . '/cp_menu.form.js'
-          )
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Save settings')
+    ),
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'cp_menu') . '/cp_menu.form.js'
       )
+    )
   );
 
   $form['#submit'] = array(
-      'cp_menu_submit_form'
+    'cp_menu_submit_form'
   );
 
   return $form;
@@ -137,7 +132,7 @@ function _cp_menu_flatten_tree($tree){
   $copy = array();
   foreach ( $tree as $l ) {
     $copy = array_merge($copy, array(
-        $l
+      $l
     ), _cp_menu_flatten_tree($l['below']));
   }
 
@@ -168,15 +163,15 @@ function theme_cp_menu_table($variables){
       $extra_classes[] = 'hidden';
     }
     $rows[] = array(
-        'data' => array(
-            array(
-                'data' => $menus[$d] . drupal_render($table_data[$d]['menu-name']),
-                'colspan' => 4
-            )
-        ),
-        'class' => array_merge(array(
-            'section-heading'
-        ), $extra_classes)
+      'data' => array(
+        array(
+          'data' => $menus[$d] . drupal_render($table_data[$d]['menu-name']),
+          'colspan' => 4
+        )
+      ),
+      'class' => array_merge(array(
+        'section-heading'
+      ), $extra_classes)
     );
     $has_links = false;
     foreach ( element_children($table_data[$d]) as $link_name ) {
@@ -185,57 +180,49 @@ function theme_cp_menu_table($variables){
       $l = $table_data[$d][$link_name];
       $has_links = true;
       $rows[] = array(
-          'data' => array(
-              theme('indentation', array(
-                  'size' => $l['#depth'] - 1
-              )) . drupal_render($l['title']),
-              drupal_render($l['edit_link']),
-              drupal_render($l['menu']),
-              drupal_render($l['weight']) . drupal_render($l['plid']) . drupal_render($l['mlid'])
-          ),
-          'class' => array_merge(array(
-              'draggable'
-          ), $extra_classes)
+        'data' => array(
+          theme('indentation', array(
+            'size' => $l['#depth'] - 1
+          )) . drupal_render($l['title']),
+          drupal_render($l['edit_link']),
+          drupal_render($l['menu']),
+          drupal_render($l['weight']) . drupal_render($l['plid']) . drupal_render($l['mlid'])
+        ),
+        'class' => array_merge(array(
+          'draggable'
+        ), $extra_classes)
       );
     }
     $rows[] = array(
-        'data' => array(
-            array(
-                'data' => 'This menu has no links.',
-                'colspan' => 4
-            )
-        ),
-        'class' => array(
-            'section-message',
-            $has_links ? 'section-populated' : 'section-empty'
-        )
+      'data' => array(
+        array(
+          'data' => 'This menu has no links.',
+          'colspan' => 4
+          )
+      ),
+      'class' => array(
+        'section-message',
+        $has_links ? 'section-populated' : 'section-empty'
+      )
     );
   }
   //drupal_add_tabledrag('edit-menu-table', 'match', 'sibling', 'menu-name', 'menu-name', 'menu-name', FALSE);
   drupal_add_tabledrag('edit-menu-table', 'match', 'parent', 'menu-plid', 'menu-plid', 'menu-mlid', TRUE, MENU_MAX_DEPTH - 1);
   drupal_add_tabledrag('edit-menu-table', 'order', 'sibling', 'menu-weight');
   return theme('table', array(
-      'header' => $headers,
-      'rows' => $rows,
-      'attributes' => array(
-          'id' => 'edit-menu-table'
-      )
+    'header' => $headers,
+    'rows' => $rows,
+    'attributes' => array(
+      'id' => 'edit-menu-table'
+    )
   ));
 }
 
 function cp_menu_submit_form($form, &$form_state){
-  $op = isset($form_state['values']['op']) ? $form_state['values']['op'] : '';
-  if($op == t('Reset to defaults')){
-    //Reset the menus to thier defaults
-    if(os_menu_revert()){
-      drupal_set_message(t('The menus have been reset to their default values.'));
-    }
-    return;
-  }
-  
+
   //Save as normal
-  foreach ( $form_state['values']['menus'] as $links ) {
-    foreach ( $links as $l ) {
+  foreach ($form_state['values']['menus'] as $links) {
+    foreach ($links as $l) {
       if (! is_array($l))
         continue;
 
@@ -243,11 +230,7 @@ function cp_menu_submit_form($form, &$form_state){
       $link = os_menu_link_load($l['mlid'], $l['menu-old']);
 
       $modified = false;
-      foreach ( array(
-          'weight',
-          'menu_name',
-          'plid'
-      ) as $param ) {
+      foreach (array('weight', 'menu_name', 'plid') as $param ) {
         //Has this menu links parameters been modified?
         if ($link[$param] != $l[$param]) {
           $modified = true;

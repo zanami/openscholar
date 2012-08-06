@@ -28,10 +28,10 @@ function vsite_menu_del($menu_key){
   $current_menus = os_get_menus();
   //Remove the menu from the variable
   unset($current_menus[$menu_key]);
-  
+
   if ($vsite && isset($vsite->controllers->menus)) {
     $vsite->controllers->menus->del($menu_key);
-    
+
     //Set the active menus
     return $vsite->controllers->variable->set('os_menus', $current_menus);
   }
@@ -49,10 +49,10 @@ function vsite_menu_add($title, $menu_key){
 
   $current_menus = os_get_menus();
   $current_menus[$menu_key] = $title;
-  
+
   if ($vsite && isset($vsite->controllers->menus)) {
     $vsite->controllers->menus->set($menu_key,array());
-    
+
     //Set the active menus
     $vsite->controllers->variable->set('os_menus', $current_menus);
   }
@@ -70,7 +70,7 @@ function vsite_menu_revert($menu_name = false){
   $vsite = spaces_get_space();
 
   $current_menus = os_get_menus();
-  
+
   if ($vsite && isset($vsite->controllers->menus)) {
     if($menu_name){
       //Reset this one menu
@@ -82,10 +82,10 @@ function vsite_menu_revert($menu_name = false){
       //Reset the active menus
       $vsite->controllers->variable->del('os_menus');
     }
-    
+
     return true;
   }
-  
+
   return false;
 }
 
@@ -425,7 +425,7 @@ function _vsite_menu_link_find_children($menu_link, $child_candidates = array())
   foreach ( $child_candidates as $mlid => $child ) {
     // If we have a parent link ID, try to use that.
     if (isset($child['plid']) && $child['plid'] == $menu_link['mlid']) {
-      return $children[$mlid] = $child;
+      $children[$mlid] = $child;
     }
   }
 
@@ -514,4 +514,88 @@ function _vsite_menu_sort_weight($a, $b){
   $a_weight = $a['weight'] ? $a['weight'] : 0;
   $b_weight = $b['weight'] ? $b['weight'] : 0;
   return $a_weight - $b_weight;
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Alter the cp form to add Reset to Default and Save to Preset controls
+ */
+function vsite_menu_form_cp_menu_build_form_alter(&$form, &$form_state, $form_id){
+  // For administrators, let them save to either the space or the preset
+  if (($vsite = spaces_get_space()) && user_access('administer spaces')) {
+
+    if (! empty($form['#submit'])) {
+      $position = array_search('cp_menu_submit_form', $form['#submit'], TRUE);
+      if ($position !== FALSE) {
+        // Add our submit handler to the cp_layout settings forms
+        $form['#submit'][$position] = 'vsite_menu_cp_menu_form_submit';
+
+        if ($preset = $vsite->controllers->variable->get('spaces_preset_' . $vsite->type)) {
+          $preset = spaces_preset_load($preset, $vsite->type);
+          $form['actions']['preset'] = array(
+              '#type' => 'submit',
+              '#value' => t('Save to @title', array(
+                  '@title' => $preset->title
+              ))
+          );
+          $form['actions']['reset'] = array(
+              '#type' => 'submit',
+              '#value' => t('Reset to defaults')
+          );
+          $form['actions']['submit']['#value'] = t('Save for @name', array(
+              '@name' => $vsite->title()
+          ));
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Form submit handler for menu settings form.
+ * Similar to cp_menu_submit_form() but provides revert and save to preset.
+ */
+function vsite_menu_cp_menu_form_submit($form, &$form_state) {
+  if ($space = spaces_get_space()) {
+    $op = isset($form_state['values']['op']) ? $form_state['values']['op'] : '';
+
+    if ($preset = $space->controllers->variable->get('spaces_preset_' . $space->type)) {
+      $preset = spaces_preset_load($preset, $space->type);
+    }
+
+    //Reset, Save to preset, or call standard submit handler
+    switch ($op){
+    	case t('Reset to defaults'):
+    	  if(os_menu_revert()){
+    	    drupal_set_message(t('The menus have been reset to thier default values.'));
+    	  }
+    	  break;
+    	case t('Save to @title', array('@title' => $preset->title)):
+    	  //Standard Submit, run the default submit handler to save context data before saving to preset
+    	  cp_menu_submit_form($form, $form_state);
+
+    	  if($preset){
+
+    	    //Loop through all menus
+    	    foreach (os_get_menus() as $menu_name => $title){
+    	      $override = $space->controllers->menus->get($menu_name);
+    	      if($override){
+    	        $preset->value['menus'][$menu_name] = $override;
+    	      }
+    	    }
+
+    	    //Set the default Menus
+    	    $preset->value['variable']['os_menus'] = os_get_menus();
+
+    	    drupal_set_message(t('The layout settings have been saved to %title.', array('%title' => $preset->title)));
+    	    spaces_preset_save($preset);
+    	  }
+    	  break;
+    	default:
+    	  //Standard Submit, run the default submit handler
+    	  cp_menu_submit_form($form, $form_state);
+    	  break;
+    }
+  }
 }

@@ -14,6 +14,10 @@ function changeSelect() {
     val = $prev.find('.menu-name').val(),
     select = $this.find('.menu-name');
   
+  $.each(this.rowObject.children, function () {
+    $(this).find('.menu-name').val(val);
+  });
+  
   select.val(val);
   emptySections();
 }
