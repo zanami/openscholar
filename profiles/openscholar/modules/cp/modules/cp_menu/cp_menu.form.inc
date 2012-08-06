@@ -117,7 +117,10 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
     '#attached' => array(
       'js' => array(
         drupal_get_path('module', 'cp_menu') . '/cp_menu.form.js'
-      )
+      ),
+      'css' => array(
+        drupal_get_path('module', 'cp_menu') . '/cp_menu.form.css'
+      ),
     )
   );
 
@@ -166,8 +169,14 @@ function theme_cp_menu_table($variables){
       'data' => array(
         array(
           'data' => $menus[$d] . drupal_render($table_data[$d]['menu-name']),
-          'colspan' => 4
-        )
+          'colspan' => 2,
+        ),
+        array(
+          'data' => ctools_modal_text_button('Add New Link', 'cp_menu/nojs/new/'.$d, 'Add New Link'),
+        ),
+        array(
+          'data' => '',
+        ),
       ),
       'class' => array_merge(array(
         'section-heading'
