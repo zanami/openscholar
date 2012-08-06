@@ -686,7 +686,7 @@ function os_system_info_alter(&$info, $file, $type){
     return;
 
   if (isset($info['base theme'])) {
-    $base = drupal_find_base_themes(list_themes(), $file->name);
+    //$base = drupal_find_base_themes(list_themes(), $file->name);
 
     if (isset($base['os_basetheme'])) {
       $info['regions'] += array(
