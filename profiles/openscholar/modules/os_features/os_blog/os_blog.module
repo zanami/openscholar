@@ -10,9 +10,9 @@ function os_blog_os_widget(){
   $items = array();
   
   // Displays "Archive" list of blog entry nodes by month
-  $items['views-os_blog-block_1'] = array(
+  $items['views-os_blog-block'] = array(
       'module' => 'views', 
-      'delta' => 'os_blog-block_1', 
+      'delta' => 'os_blog-block', 
       'region' => 'sidebar_second', 
       'weight' => '-10',
       'info' => 'Blog Archive'
