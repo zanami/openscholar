@@ -235,17 +235,17 @@ body.navbar .region-sidebar-first {
 /* MAIN CONTENT AREA 
 
 body.sidebar-first #content,
-body.header-left-main #header-main .content {
+body.header-left-main .region-header-second .content {
     margin-left: 20px;
     }
 
 body.sidebar-second #content, b
-ody.header-main-right #header-main .content {
+ody.header-main-right .region-header-second .content {
     margin-right: 20px;
     }
 
 body.two-sidebars #content,
-body.header-left-main-right #header-main .content {
+body.header-left-main-right .region-header-second .content {
     margin-left: 20px;
     margin-right: 20px;
     }*/

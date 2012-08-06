@@ -513,7 +513,7 @@ padding:0 32px 0 0;
   padding-top:0;
   }
 
-.box-os_boxes_modal_siteinfo h1,
+.block-boxes-os_boxes_site_info h1,
 #menu-bar ul li {
   float: left;
   margin: 0;
@@ -554,7 +554,7 @@ ul.nice-menu ul {
 }
 
 
-#boxes-box-site_info h1 {
+.block-boxes-os_boxes_site_info h1 {
   width: 168px;
   text-align: center;
   font-weight: normal;
@@ -562,8 +562,8 @@ ul.nice-menu ul {
   font-size: 19px;
   }
 
-#boxes-box-site_info h1 a,
-#boxes-box-site_info h1 a:visited {
+.block-boxes-os_boxes_site_info h1 a,
+.block-boxes-os_boxes_site_info h1 a:visited {
   color:#fff;
   background:#636363;
   display:block;
@@ -571,12 +571,12 @@ ul.nice-menu ul {
   height: 29px;
   }
 
-#boxes-box-site_info h1 a:hover {
+.block-boxes-os_boxes_site_info h1 a:hover {
   background-color: #000;
   color: #fff;
   }
 
-#menu-bar ul li a, #boxes-box-site_info h1 a {
+#menu-bar ul li a, .block-boxes-os_boxes_site_info h1 a {
   display:block;
   }
 
@@ -592,7 +592,7 @@ ul.nice-menu ul {
   background-color:#db7002;
   }
 
-.box-os_boxes_modal_siteinfo h2, .box-os_boxes_modal_siteinfo p {
+.block-boxes-os_boxes_site_info h2, .block-boxes-os_boxes_site_info p {
   display:none;
   }
 
@@ -978,7 +978,7 @@ border:none;
 
 /* Search form*/
 
-.column .box-os_boxes_modal_siteinfo {
+.column .block-boxes-os_boxes_site_info{
   padding-top: 13px;
   }
 
@@ -1156,8 +1156,8 @@ body.gking-alt #menu-bar {
   height: 30px;
   }
 
-body.gking-alt .box-os_boxes_modal_siteinfo h1,
-body.gking-alt .box-os_boxes_modal_siteinfo h1 a {
+body.gking-alt .block-boxes-os_boxes_site_info h1,
+body.gking-alt .block-boxes-os_boxes_site_info h1 a {
   height:30px;
   line-height: 30px;
   }

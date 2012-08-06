@@ -160,7 +160,7 @@ background: #fff;
   line-height: 1.3em;
   }
 
-#header-left {
+.region-header-first {
 
   height:125px;
   }
@@ -227,7 +227,7 @@ border: 1px solid #CCCCCC;
 width: 100%;
 }
 
-.sidebar .box-os_boxes_modal_siteinfo,
+.sidebar .block-boxes-os_boxes_site_info,
 .sidebar  #block-os-primary-menu,
 .sidebar  #block-os-secondary-menu,
 .sidebar #block-boxes-os_addthis,

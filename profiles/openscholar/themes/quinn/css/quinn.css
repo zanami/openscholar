@@ -93,7 +93,7 @@ h2.block-title {
   padding-left: 0;
   }
 
-#header-right {
+.region-header-third {
   padding-right: 0;
 
   }
@@ -177,7 +177,7 @@ h2.block-title {
   width: 55px;
   }
 
-#header-left #scholar-shield {
+.region-header-first #scholar-shield {
   float:right;
   }
 

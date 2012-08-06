@@ -25,7 +25,7 @@ font-family: helvetica,arial,sans-serif;
 }
 
 #header {padding:12px 0; background:#2f2f2f;}
-#header-right {text-align: right;}
+.region-header-third {text-align: right;}
 
 #footer {
     text-align: center;
@@ -74,7 +74,7 @@ text-decoration:none;
     color:#293352;
 }
 
-#boxes-box-site_info  {
+.block-boxes-os_boxes_site_info  {
     border-left: 8px solid #565656;
     padding-left: 7px;
 }
@@ -286,28 +286,28 @@ margin: 8px 0 0 0;
 
 
 /* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
-#header-right #block-vsite_menus-scholar_secondary_menu  {
+.region-header-third #block-vsite_menus-scholar_secondary_menu  {
    width:260px;
    margin: -10px 0 40px;
 }
 
-#header-right #block-vsite_menus-scholar_secondary_menu ul {
+.region-header-third #block-vsite_menus-scholar_secondary_menu ul {
 float:right;
  }
  
-#header-right #block-vsite_menus-scholar_secondary_menu li {
+.region-header-third #block-vsite_menus-scholar_secondary_menu li {
     float: left;
     padding: 0 7px;
     border-right:1px solid #F3F3F1;
  }
  
-#header-right #block-vsite_menus-scholar_secondary_menu li a {
+.region-header-third #block-vsite_menus-scholar_secondary_menu li a {
   text-decoration: underline;
   color: #F3F3F1;
   font-size:.9em;
  } 
 
-#header-right #block-vsite_menus-scholar_secondary_menu li.last {
+.region-header-third #block-vsite_menus-scholar_secondary_menu li.last {
   border-right:none;
  }
 

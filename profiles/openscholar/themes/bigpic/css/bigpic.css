@@ -72,7 +72,7 @@ h2.block-title {
   font-weight: bold;
   }
 
-#header-container-main .block-vsite_menus li a:hover {
+.region-header-second .block-vsite_menus li a:hover {
   color: #fff;
   }
 
@@ -153,8 +153,8 @@ right:0;
 
 
 
-#header-container-left,
-#header-container-right,
+.region-header-first,
+.region-header-third,
 #header-container #logo {
   width:80px;
   }
