@@ -14,7 +14,8 @@ function os_blog_os_widget(){
       'module' => 'views', 
       'delta' => 'os_blog-block_1', 
       'region' => 'sidebar_second', 
-      'weight' => '-10', 
+      'weight' => '-10',
+      'info' => 'Blog Archive'
   );
   
   return $items;
