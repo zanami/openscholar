@@ -30,6 +30,7 @@ class os_boxes_site_logo extends os_boxes_default {
         '#type' => 'managed_file',
         '#title' => t('Site Logo'),
         '#description' => t('Upload a photo and position the cropping tool over it if necessary.'),
+        '#required' => TRUE,
         '#process' => array(
           '_os_boxes_site_logo_process',
         ),
