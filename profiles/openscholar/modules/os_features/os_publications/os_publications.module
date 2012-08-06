@@ -96,7 +96,12 @@ function os_publications_theme_registry_alter(&$reg) {
  * Alters the biblio form to do a lot of things
  */
 function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
-
+  if (!isset($form['#node']->nid)) {
+    drupal_set_title(t('Create @name', array('@name' => 'Publication')), PASS_THROUGH);
+  }
+  else {
+    drupal_set_title(t('<em>Edit @type</em> @title', array('@type' => 'Publication', '@title' => $node->title)), PASS_THROUGH);
+  }
   $tid = !empty($form_state['biblio_type']) ? $form_state['biblio_type'] :
           ( isset($form_state['node']->biblio_type) ? $form_state['node']->biblio_type : 0);
 
