@@ -28,10 +28,10 @@ function vsite_menu_del($menu_key){
   $current_menus = os_get_menus();
   //Remove the menu from the variable
   unset($current_menus[$menu_key]);
-  
+
   if ($vsite && isset($vsite->controllers->menus)) {
     $vsite->controllers->menus->del($menu_key);
-    
+
     //Set the active menus
     return $vsite->controllers->variable->set('os_menus', $current_menus);
   }
@@ -49,10 +49,10 @@ function vsite_menu_add($title, $menu_key){
 
   $current_menus = os_get_menus();
   $current_menus[$menu_key] = $title;
-  
+
   if ($vsite && isset($vsite->controllers->menus)) {
     $vsite->controllers->menus->set($menu_key,array());
-    
+
     //Set the active menus
     $vsite->controllers->variable->set('os_menus', $current_menus);
   }
@@ -70,7 +70,7 @@ function vsite_menu_revert($menu_name = false){
   $vsite = spaces_get_space();
 
   $current_menus = os_get_menus();
-  
+
   if ($vsite && isset($vsite->controllers->menus)) {
     if($menu_name){
       //Reset this one menu
@@ -82,10 +82,10 @@ function vsite_menu_revert($menu_name = false){
       //Reset the active menus
       $vsite->controllers->variable->del('os_menus');
     }
-    
+
     return true;
   }
-  
+
   return false;
 }
 
@@ -425,7 +425,7 @@ function _vsite_menu_link_find_children($menu_link, $child_candidates = array())
   foreach ( $child_candidates as $mlid => $child ) {
     // If we have a parent link ID, try to use that.
     if (isset($child['plid']) && $child['plid'] == $menu_link['mlid']) {
-      return $children[$mlid] = $child;
+      $children[$mlid] = $child;
     }
   }
 
@@ -518,7 +518,7 @@ function _vsite_menu_sort_weight($a, $b){
 
 /**
  * Implements hook_form_alter().
- * 
+ *
  * Alter the cp form to add Reset to Default and Save to Preset controls
  */
 function vsite_menu_form_cp_menu_build_form_alter(&$form, &$form_state, $form_id){
@@ -576,18 +576,18 @@ function vsite_menu_cp_menu_form_submit($form, &$form_state) {
     	  cp_menu_submit_form($form, $form_state);
 
     	  if($preset){
-    	    
+
     	    //Loop through all menus
     	    foreach (os_get_menus() as $menu_name => $title){
     	      $override = $space->controllers->menus->get($menu_name);
     	      if($override){
     	        $preset->value['menus'][$menu_name] = $override;
-    	      } 
+    	      }
     	    }
 
     	    //Set the default Menus
     	    $preset->value['variable']['os_menus'] = os_get_menus();
-    	    
+
     	    drupal_set_message(t('The layout settings have been saved to %title.', array('%title' => $preset->title)));
     	    spaces_preset_save($preset);
     	  }
