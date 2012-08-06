@@ -12,6 +12,7 @@ dependencies[] = os_announcements
 dependencies[] = date_migrate
 
 files[] = os_migrate.admin.inc
+files[] = os_migrate_biblio_tables.inc
 files[] = os_migrate.inc
 files[] = os_migrate_inline.inc
 files[] = os_migrate_node_abstract.inc
@@ -26,5 +27,6 @@ files[] = os_migrate_node_link.inc
 files[] = os_migrate_node_vsite.inc
 files[] = os_migrate_users.inc
 files[] = os_migrate_specialtables.inc
+files[] = os_migrate_tablecopy.inc
 
 
