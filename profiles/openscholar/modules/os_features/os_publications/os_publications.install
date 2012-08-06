@@ -24,7 +24,7 @@ function os_publications_enable() {
 
   // place it behind import/export modules
   db_update('system')
-    ->fields(array('weight' => 20))
+    ->fields(array('weight' => 50))
     ->condition('name', 'os_publications', '=')
     ->condition('type', 'module', '=')
     ->execute();
