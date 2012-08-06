@@ -9,7 +9,7 @@ For a non-technical overview, see the [User Documentation](http://scholar.harvar
 
 1. [Install](https://github.com/openscholar/openscholar/wiki/Install) the Drupal profile ([Troubleshooting](https://github.com/openscholar/openscholar/wiki/Troubleshooting))
 1. [Create an OS Site](https://github.com/openscholar/openscholar/wiki/Create-an-os-site)
-1. [Customize]()https://github.com/openscholar/openscholar/wiki/Customize) everything really simply
+1. [Customize](https://github.com/openscholar/openscholar/wiki/Customize) everything really simply
 1. Repeat steps 2-4
 
 ## Tutorials
