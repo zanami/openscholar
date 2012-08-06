@@ -52,28 +52,29 @@ function harvard_activity_reports_query_user() {
 	// using an ID for right now since no hashs exists
 	
 	// get the ID from the "id" parameter of the link
-	if(isset($_GET['id'])) { // make sure it's set first
+	if(isset($_GET['id']) || isset($_GET['site_url'])) { // make sure it's set first
 		//assign it to a variable
-		$hashID = $_GET['id'];
-		
-		// query the DB and check if the user exists for this hash
-		$query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE huid = '%s'"; // setup the query
-		$results = db_query($query, $hashID); // perform the query
-		// make sure there are results
-		if($results->num_rows>0) {
-			$row = db_fetch_object($results); // grab the resulting uid
-			$uid = $row->uid; // push it into a variable
-			$huID = $row->huid;
-			// now that we have the UID, grab their VSITE node ID from the Node table
-			$nodeQuery = "SELECT nid FROM {node} WHERE uid = %d AND type='vsite'";
-			$nodeResults = db_query($nodeQuery,$uid);
-			if($nodeResults) {
-				$nodeRow = db_fetch_object($nodeResults);
-				$nid = $nodeRow->nid;
-			}else{
-				$nid = FALSE;
-			}
-		}
+		if(isset($_GET['id'])){
+			$hashID = $_GET['id'];
+			// query the DB and check if the user exists for this hash
+			$query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE huid = '%s'"; // setup the query
+			$results = db_query($query, $hashID); // perform the query
+			// make sure there are results
+			if($results->num_rows>0) {
+				$row = db_fetch_object($results); // grab the resulting uid
+				$uid = $row->uid; // push it into a variable
+				$huID = $row->huid;
+				// now that we have the UID, grab their VSITE node ID from the Node table
+				$nodeQuery = "SELECT nid FROM {node} WHERE uid = %d AND type='vsite'";
+				$nodeResults = db_query($nodeQuery,$uid);
+				if($nodeResults) {
+					$nodeRow = db_fetch_object($nodeResults);
+					$nid = $nodeRow->nid;
+				}else{
+					$nid = FALSE;
+				}// end node results
+			}// end num rows
+		}// end isset id
 	}else{ // no id set, tell them
 		$nid = FALSE;
 	}
@@ -112,7 +113,6 @@ function harvard_activity_reports_load_user_info($nid){
  * Function to sort my xml array by the biblio_year
  * Function was "borrowed" from http://www.firsttube.com/read/sorting-a-multi-dimensional-array-with-php/
  */
-
 function subval_sort($a,$subkey) {
 	foreach($a as $k=>$v) {
 		$b[$k] = strtolower($v[$subkey]);
@@ -129,14 +129,13 @@ function subval_sort($a,$subkey) {
  * Function to create the XML based on the info passed into it from the load_user_info functon
  * @param unknown_type $nodeLoad
  */
-function harvard_activity_reports_create_xml($nodeLoad, $huID) {
+function harvard_activity_reports_create_xml($nodeLoad, $huID, $status) {
 	$xmlReturn = '';
 	$huID = $huID;
 	// pull in the xml
 	$xml = $nodeLoad;
-	
-	// sort the XML by year, most recent first
-	$xml = subval_sort($xml, 'biblio_year');
+	// grab the status
+	$xmlStatus = $status;
 	
 	/* create a dom document with encoding utf8 */
     $domtree = new DOMDocument('1.0', 'UTF-8');
@@ -172,44 +171,53 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID) {
     $asAtt = $domtree->createAttribute("action_status");
     $personElement->appendChild($asAtt);
     // now the test node
-    $asAttValue = $domtree->createTextNode("ok");
+    $asAttValue = $domtree->createTextNode($xmlStatus);
     $asAtt->appendChild($asAttValue);
-	// loop through the array data for the publications and create XML elements with them
-    foreach($xml as $value) {
-    	// create the pub element
-    	$currentPub = $domtree->createElement("publication");
-    	$currentPub = $personElement->appendChild($currentPub);
-    	// now we'll add attributes to it
-    		// publication nid
-    		$nidAtt = $domtree->createAttribute("id");
-    		$currentPub->appendChild($nidAtt);
-    		// nid value
-    		$nidValue = $domtree->createTextNode($value['biblio_nid']);
-    		$nidAtt->appendChild($nidValue);
-    		// publication type
-    		$pubTypeAtt = $domtree->createAttribute("pubType");
-    		$currentPub->appendChild($pubTypeAtt);
-    		// publication value
-    		$pubTypeValue = $domtree->createTextNode($value['biblio_type_name']);
-    		$pubTypeAtt->appendChild($pubTypeValue);
-    		// publication source
-    		$pubSource = $domtree->createAttribute("pubSource");
-    		$currentPub->appendChild($pubSource);
-    		// publication source value
-    		$pubSourceValue = $domtree->createTextNode('OpenScholar');
-    		$pubSource->appendChild($pubSourceValue);
-    	// citation info
-    	$currentPub->appendChild($domtree->createElement("citation",$value['biblio_author'] . ". " . $value['biblio_title'] . ". " . $value['biblio_secondary_title']));
-    		
-    	// biblio basic info
-    	// $currentPub->appendChild($domtree->createElement('biblio_url',$value['biblio_url']));
-    	$currentPub->appendChild($domtree->createElement('linkToPublishedArticle',"http://scholar.harvard.edu/".$value['biblio_path']));
-    	// biblio citation information 
-    	$currentPub->appendChild($domtree->createElement('yearOfPublication',$value['biblio_year']));
-    	// $currentPub->appendChild($domtree->createElement('biblio_volume',$value['biblio_volume']));
-    	// $currentPub->appendChild($domtree->createElement('biblio_issue',$value['biblio_issue']));
-    }
-    
+    // case swith on the status
+    switch($xmlStatus) {
+    	case "ok":
+    		// sort the XML by year, most recent first
+			$xml = subval_sort($xml, 'biblio_year');
+			// loop through the array data for the publications and create XML elements with them
+   		 	foreach($xml as $value) {
+   			 	// create the pub element
+  	 		 	$currentPub = $domtree->createElement("publication");
+   			 	$currentPub = $personElement->appendChild($currentPub);
+   			 	// now we'll add attributes to it
+    				// publication nid
+    				$nidAtt = $domtree->createAttribute("id");
+    				$currentPub->appendChild($nidAtt);
+    				// nid value
+    				$nidValue = $domtree->createTextNode($value['biblio_nid']);
+    				$nidAtt->appendChild($nidValue);
+    				// publication type
+    				$pubTypeAtt = $domtree->createAttribute("pubType");
+    				$currentPub->appendChild($pubTypeAtt);
+    				// publication value
+    				$pubTypeValue = $domtree->createTextNode($value['biblio_type_name']);
+    				$pubTypeAtt->appendChild($pubTypeValue);
+    				// publication source
+    				$pubSource = $domtree->createAttribute("pubSource");
+    				$currentPub->appendChild($pubSource);
+    				// publication source value
+    				$pubSourceValue = $domtree->createTextNode('OpenScholar');
+    				$pubSource->appendChild($pubSourceValue);
+    			// citation info
+    			$currentPub->appendChild($domtree->createElement("citation",$value['biblio_author'] . ". " . $value['biblio_title'] . ". " . $value['biblio_secondary_title']));
+    			
+    			// biblio basic info
+    			// $currentPub->appendChild($domtree->createElement('biblio_url',$value['biblio_url']));
+    			$currentPub->appendChild($domtree->createElement('linkToPublishedArticle',"http://scholar.harvard.edu/".$value['biblio_path']));
+    			// biblio citation information 
+    			$currentPub->appendChild($domtree->createElement('yearOfPublication',$value['biblio_year']));
+    			// $currentPub->appendChild($domtree->createElement('biblio_volume',$value['biblio_volume']));
+    			// $currentPub->appendChild($domtree->createElement('biblio_issue',$value['biblio_issue']));
+    		}// end foreach
+    		break;
+    	case "error":
+    		$xmlRoot->appendChild($domtree->createElement('errorMessage',$xml['biblio_error_message']));	
+    		break;
+    }// end case switch    
     $xmlReturn = $domtree->saveXML();
     
     return $xmlReturn;
@@ -226,6 +234,8 @@ function harvard_activity_reports_page() {
 	$nid = harvard_activity_reports_query_user();
 	// check to make sure we have the users HUID or site_url
 	if($nid != FALSE) {
+		// xml status is ok
+		$status = "ok";
 		// grab the users HUID
 		$selectHUID = "SELECT i.huid FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = %d AND i.uid = n.uid";
 		$huidResult = db_query($selectHUID, $nid);
@@ -276,19 +286,18 @@ function harvard_activity_reports_page() {
 					}
 					$authorCounter++;		
 				}
-				
-				// print_r($biblioDataRow);
-			
 				// push the final author list into the main array
 			$biblioDataArray[$counter]['biblio_author'] = $authorList;
 			// increment the counter
 			$counter++;
-			//$mapped = $citationTest->map_metadata($xmlLoad['nid']);
 		}// end foreach
 		// call the xml creation function
-		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID);
+		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}else{
-		$xmlReturn = "HUID/site url is missing or incorrect.";
+		$status = "error";
+		$huID = null;
+		$biblioDataArray['biblio_error_message'] = "NO HUID ID found - please try again with a site url";
+		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}// end if nid != false
 	// send back the xml
 	echo $xmlReturn;	
