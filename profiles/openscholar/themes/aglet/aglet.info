@@ -21,6 +21,7 @@ os[cp_layout_css] = cp-layout-map.css
 
  
   stylesheets[screen][] = css/aglet.css
+  ie_stylesheets[screen][lt IE 10] = css/aglet-ie.css
 
 
 

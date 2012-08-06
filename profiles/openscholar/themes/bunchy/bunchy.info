@@ -20,6 +20,7 @@ os[cp_layout_css] = cp-layout-map.css
 
 
 stylesheets[screen][] = css/bunchy.css
+ie_stylesheets[screen][lt IE 10] = css/bunchy-ie.css
  
 ;----------// Site Features
 

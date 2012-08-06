@@ -17,7 +17,7 @@ os[theme_access] = "private"
 ;----------// Stylesheets
 
 stylesheets[screen][] = css/spinker.css
-ie_stylesheets[screen][IE 7] = css/spinker-ie.css
+ie_stylesheets[screen][lt IE 10] = css/spinker-ie.css
 
 scripts[] = spinker.js
   

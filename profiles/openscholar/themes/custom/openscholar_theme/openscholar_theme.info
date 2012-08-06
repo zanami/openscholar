@@ -17,7 +17,6 @@ os[theme_access] = "private"
 ;----------// Stylesheets
 
   stylesheets[screen][] = css/openscholar-theme.css
-  ie_stylesheets[screen][IE 7] = css/openscholar-theme-ie7.css
 
 
 ;----------// Site Features
