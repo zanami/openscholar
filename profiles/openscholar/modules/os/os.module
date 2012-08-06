@@ -47,23 +47,6 @@ function os_menu(){
 }
 
 /**
- * Sets up menu entries for contextual links
- *
- * Requirements for contextual links:
- * - Link is a local task of a parent
- * - Link has the 'inline' context
- */
-function os_menu_alter(&$menu){
-  $types = os_get_bundles(true);
-  foreach ( $types as $type => $title ) {
-    $type_url_str = str_replace('_', '-', $type);
-    $m = &$menu['node/add/' . $type_url_str];
-    $m['type'] = MENU_LOCAL_TASK;
-    $m['context'] = MENU_CONTEXT_INLINE;
-  }
-}
-
-/**
  * @function os_get_bundles
  *
  * Return the avalible bundles based on the privacy
