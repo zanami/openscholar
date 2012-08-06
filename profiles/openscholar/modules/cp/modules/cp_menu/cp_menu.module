@@ -4,7 +4,7 @@ function cp_menu_menu() {
   $items = array();
 
   // Menu Wizard
-  $items['cp_menu/%ctools_js'] = array(
+  $items['cp/menu/%ctools_js'] = array(
     'title' => 'Menu',
     'page callback' => 'cp_menu_page',
     'page arguments' => array(2),
@@ -90,11 +90,11 @@ function cp_menu_node_insert($node) {
 //delete old links, insert new ones.
 function cp_menu_node_update($node) {
   ctools_include('menu', 'os');
-  
+
   if (!isset($node->os_menu)) {
     return;
   }
-  
+
   if (!$node->os_menu['enabled'] || $node->os_menu['delete']) {
     //delete unwanted menu
     if ($link = os_menu_load_link_path('node/' . $node->nid)) {
@@ -137,9 +137,9 @@ function cp_menu_contextual_links_view_alter(&$element, $items) {
 	    foreach ($links as $link) {
 	      if (isset($link[0]) && $link[0] == 'os') {
 	        $menu = $link[1];
-	
+
 	        if (in_array($menu, $menus)) {
-	          $fragment = 'cp_menu/ajax/new/'; 
+	          $fragment = 'cp/menu/ajax/new/';
 	          if ($space = spaces_get_space()) {
 	            $fragment = $space->group->purl . '/' . $fragment;
 	          }
@@ -197,12 +197,12 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
       (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
     $form['os_menu']['link']['new_window']['#default_value'] = (isset($link['options']['attributes']['target']) && $link['options']['attributes']['target'] == '_blank');
   }
-  
+
   //menu wizard - insert settings from wizard
   require_once(drupal_get_path('module', 'cp_menu') . '/cp_menu.wizard.inc');
   $cache = cp_menu_cache_get('cp_menu');
-  if (count($cache)) { 
-    
+  if (count($cache)) {
+
     if (isset($cache['title']) && isset($form['title'])) {
 	    $title = check_plain($cache['title']);
   	  $form['title']['#default_value'] = $title;
@@ -215,11 +215,11 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
 	    $form['os_menu']['link']['link_title']['#default_value'] = isset($title) ? $title : '' ;
 	    $form['os_menu']['link']['description']['#default_value'] = isset($cache['tooltip']) ? check_plain($cache['tooltip']) : '';
     }
-    
+
     if (isset($cache['new_window']) && $cache['new_window']) {
       $form['os_menu']['link']['new_window']['#default_value'] = 1;
     }
-    
+
     cp_menu_cache_clear('cp_menu');
   }
 }
@@ -243,7 +243,7 @@ function cp_menu_node_submit($node, $form, &$state) {
       }
     }
 
-    if (isset($state['values']['os_menu']['enabled'], $form['os_menu']['link']['enabled']) && 
+    if (isset($state['values']['os_menu']['enabled'], $form['os_menu']['link']['enabled']) &&
         ((bool)$state['values']['os_menu']['enabled'] && !(bool)$form['os_menu']['link']['enabled'])) {
       $node->os_menu['dirty'] = TRUE;
     }
