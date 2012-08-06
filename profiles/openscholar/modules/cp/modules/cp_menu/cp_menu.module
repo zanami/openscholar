@@ -91,6 +91,10 @@ function cp_menu_node_insert($node) {
 function cp_menu_node_update($node) {
   ctools_include('menu', 'os');
   
+  if (!isset($node->os_menu)) {
+    return;
+  }
+  
   if (!$node->os_menu['enabled'] || $node->os_menu['delete']) {
     //delete unwanted menu
     if ($link = os_menu_load_link_path('node/' . $node->nid)) {
@@ -239,7 +243,8 @@ function cp_menu_node_submit($node, $form, &$state) {
       }
     }
 
-    if ((bool)$state['values']['os_menu']['enabled'] && !(bool)$form['os_menu']['link']['enabled']) {
+    if (isset($state['values']['os_menu']['enabled'], $form['os_menu']['link']['enabled']) && 
+        ((bool)$state['values']['os_menu']['enabled'] && !(bool)$form['os_menu']['link']['enabled'])) {
       $node->os_menu['dirty'] = TRUE;
     }
   }

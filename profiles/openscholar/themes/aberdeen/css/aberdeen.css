@@ -44,7 +44,7 @@ margin-bottom: -2000px;
 padding-bottom: 2000px;
 }
 
-#header-container-right {text-align: right;}
+.region-header-third {text-align: right;}
 
 /* TYPOGRAPHY*/ 
  
@@ -234,27 +234,27 @@ border-top-right-radius:5px;
 }
 
 /* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
-#header-container-right #block-os-secondary-menu  {
+.region-header-third #block-os-secondary-menu  {
    width:290px;
    margin-bottom: 30px;
 }
 
-#header-container-right #block-os-secondary-menu ul {
+.region-header-third #block-os-secondary-menu ul {
 float:right;
  }
  
 
-#header-container-right #block-os-secondary-menu li {
+.region-header-third #block-os-secondary-menu li {
     float: left;
     padding: 0 5px;
     border-right:1px solid #293352;
  }
  
-#header-container-right #block-os-secondary-menu li a {
+.region-header-third #block-os-secondary-menu li a {
   text-decoration: underline;
  } 
 
-#header-container-right #block-os-secondary-menu li.last {
+.region-header-third #block-os-secondary-menu li.last {
   border-right:none;
  }
 

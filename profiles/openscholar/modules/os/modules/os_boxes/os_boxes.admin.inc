@@ -19,6 +19,7 @@ function os_boxes_edit_widget($box, $source = '') {
 }
 
 function os_boxes_form_boxes_box_form_alter(&$form, &$form_state) {
+  $form['cancel']['#submit'][] = 'os_boxes_widget_submit';
   $form['#submit'][] = 'os_boxes_widget_submit';
 }
 
@@ -27,33 +28,35 @@ function os_boxes_form_boxes_box_form_alter(&$form, &$form_state) {
  * Through overlay_commands
  */
 function os_boxes_widget_submit($form, $form_state) {
-  $box = boxes_box_load($form_state['box']->delta);
-  $html = '';
-  $target = '';
-  $op = 'prepend';
-  switch ($form_state['source']) {
-    case 'cp-layout':
-      $b = os_boxes_os_widget($box);
-      drupal_alter('os_widget', $b);
-      $r = array('#theme' => 'cp_layout_widget', '#widget' => $b);
-      $html = drupal_render($r);
-      $target = '.widget-container';
-    break;
-    case 'inline':
-      $block = boxes_block_view($box->delta);
-      $t = _block_render_blocks(array($block));
-      $html = theme('block', $t[0]);
-      $target = '.widget-container';  // TODO: replace with the real thing
-  }
-  if (!(isset($form_state['box']->new) && $form_state['box']->new)) {
-    $target = '#boxes-box-'.$box->delta;
-    $op = 'replace';
-  }
+  if ($form_state['values']['op'] !== t('Cancel')) {
+    $box = boxes_box_load($form_state['box']->delta);
+    $html = '';
+    $target = '';
+    $op = 'prepend';
+    switch ($form_state['source']) {
+      case 'cp-layout':
+        $b = os_boxes_os_widget($box);
+        drupal_alter('os_widget', $b);
+        $r = array('#theme' => 'cp_layout_widget', '#widget' => $b);
+        $html = drupal_render($r);
+        $target = '.widget-container';
+      break;
+      case 'inline':
+        $block = boxes_block_view($box->delta);
+        $t = _block_render_blocks(array($block));
+        $html = theme('block', $t[0]);
+        $target = '.widget-container';  // TODO: replace with the real thing
+    }
+    if (!(isset($form_state['box']->new) && $form_state['box']->new)) {
+      $target = '#boxes-box-'.$box->delta;
+      $op = 'replace';
+    }
 
-  $command = 'ajax_command_'.$op;
-  $command = $command($target, $html);
+    $command = 'ajax_command_'.$op;
+    $command = $command($target, $html);
 
-  overlay_commands_add($command);
+    overlay_commands_add($command);
+  }
   ctools_include('modal');
   overlay_commands_add(ctools_modal_command_dismiss());  // overlay_close_dialog doesn't work because the form resets it
 }

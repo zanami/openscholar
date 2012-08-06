@@ -1,9 +1,9 @@
-body.header-left-main-right #header-left {
+body.header-left-main-right .region-header-first {
 left: 190px;
 *left: -200px;
   }
 
-body.header-left-main #header-left {
+body.header-left-main .region-header-first {
   left: -20px !important;
 	}
 

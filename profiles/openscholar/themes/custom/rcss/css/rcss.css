@@ -137,6 +137,6 @@ ul.nice-menu ul {
 
 /* REMOVE ONCE RICHARD FIXES STUFF */
 
-.box-os_boxes_modal_sitelogo h2, .box-os_boxes_modal_sitelogo p {
+.block-boxes-os_boxes_site_logo h2, .block-boxes-os_boxes_site_logo p {
   display:none;
   }

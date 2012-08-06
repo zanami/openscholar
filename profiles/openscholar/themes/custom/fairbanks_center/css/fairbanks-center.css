@@ -88,29 +88,29 @@ a img {
 
 
 .region-header-second,
-#boxes-box-site_info h1,
-#boxes-box-site_info h2,
-#boxes-box-site_info p {
+.block-boxes-os_boxes_site_info h1,
+.block-boxes-os_boxes_site_info h2,
+.block-boxes-os_boxes_site_info p {
   text-indent: -999em;
   margin:0 !important;
   padding: 0 !important;
   }
 
-#boxes-box-site_info h2,
-#boxes-box-site_info p {
+.block-boxes-os_boxes_site_info h2,
+.block-boxes-os_boxes_site_info p {
   height: 1px;
   border: none !important
   }
 
-#boxes-box-site_info h1 {
+.block-boxes-os_boxes_site_info h1 {
   background: url('../images/banner_writing.png') 0 0 no-repeat #950000;
   width: 904px;
   height:169px;
   text-indent: -999em;
   }
 
-#boxes-box-site_info h1 a,
-#boxes-box-site_info h1 a:visited {
+.block-boxes-os_boxes_site_info h1 a,
+.block-boxes-os_boxes_site_info h1 a:visited {
   display:block;
   width: 904px;
   height:171px;

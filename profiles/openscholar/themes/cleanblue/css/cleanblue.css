@@ -125,9 +125,9 @@ p.copy {
 
 .field-content a {color:#106599;}
 
-#header-container-left .box-os_boxes_modal_siteinfo .boxes-box, 
-#header-container-right .box-os_boxes_modal_siteinfo .boxes-box, 
-#header-container-main .box-os_boxes_modal_siteinfo .boxes-box {
+.region-header-first .block-boxes-os_boxes_site_info .boxes-box, 
+.region-header-third .block-boxes-os_boxes_site_info .boxes-box, 
+.region-header-second .block-boxes-os_boxes_site_info .boxes-box {
 	height:84px;background:url('../images/siteInfoBg.gif') no-repeat;background-position:left;padding-left:20px;margin-top: 20px;
 	}
 
@@ -142,7 +142,7 @@ background: #fff;
   line-height: 1.41em;
   }
 
-#header-container-left
+.region-header-first
 {
   height:125px;
   }

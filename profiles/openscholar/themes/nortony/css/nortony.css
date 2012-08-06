@@ -133,13 +133,13 @@ p.copy a.poweredby {
 /* HEADER ELEMENTS */
 
 
-#header-left,
+.region-header-first,
 #logo {
   width: 139px;
   padding-left: 0;
   }
 
-#header-left {
+.region-header-first {
   left: -169px;
   }
 
@@ -152,12 +152,12 @@ body.header-main-right #header-container {
   padding-right:298px;
   }
 
-body.header-main #header-main,
-body.header-main-right #header-main {
+body.header-main .region-header-second,
+body.header-main-right .region-header-second {
   padding-left: 22px;
   }
 
-.box-os_boxes_modal_sitelogo {
+.block-boxes-os_boxes_site_logo {
   display:table-cell;
   vertical-align:middle;
   }

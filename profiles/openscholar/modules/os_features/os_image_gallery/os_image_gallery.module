@@ -14,7 +14,7 @@ include_once('os_image_gallery.features.inc');
 function os_image_gallery_contextual_links_view_alter(&$element, $items) {
   if (isset($element['#contextual_links']['media_gallery'])) {
     unset($element['#links']['media-gallery-edit']);
-    unset($element['#links']['media-gallery-remove']);
+    unset($element['#links']['file-delete']);
   }
 }
 
@@ -83,5 +83,25 @@ function os_image_gallery_form_alter(&$form, &$form_state, $form_id) {
     //make an image instead of a link
     $form['preview']['#theme'] = 'media_admin_thumbnail';
     
+  }
+}
+
+/**
+ * Implements hook_file_delete
+ * 
+ * When an image is deleted, remove it from media_gallery nodes first.
+ */
+function os_image_gallery_file_delete($file) {
+  $query = new EntityFieldQuery();
+  $result = $query->entityCondition('entity_type', 'node')
+              ->fieldCondition('media_gallery_media', 'fid', $file->fid, '=')
+              ->execute();
+  
+  if (isset($result['node'])) {
+    $nids = array_keys($result['node']);
+    $nodes = entity_load('node', $nids);
+    foreach ($nodes as $node) {
+      media_gallery_remove_item_from_gallery($node, $file);
+    }
   }
 }

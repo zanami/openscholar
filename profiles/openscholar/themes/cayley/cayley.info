@@ -1,55 +1,38 @@
-
-;----------// Theme Information
-
-  name        = PSR
-  description = Theme for Program on Survey Research
+  name        = Cayley
+  description = Clean and elegant theme with light colors.  
   core        = 7.x
-  base theme  = scholar_aglet
-  release     = 7.x-3.x
   engine      = phptemplate
   screenshot  = screenshot.png
+  base theme  = os_basetheme
+  release = 7.x-3.x
+  
+  
+stylesheets[all][]   = css/cayley.css
+conditional-stylesheets[if lt IE 9][all][] = css/cayley-ie.css
+conditional-stylesheets[if lte IE 7][all][] = css/cayley-ie.csss
 
-;----------// OpenScholar
+;os[widgets][boxes-site_logo] = false
 
-os[widgets][boxes-site_logo] = false
-os[theme_type]   = "vsite"
-os[theme_access] = "private"
-
-;----------// Stylesheets
+os[theme_type]   = 'vsite'
+os[theme_access] = 'public'
 
   
-  stylesheets[screen][] = css/psr.css
-  ie_stylesheets[screen][IE 7] = css/psr-ie.css
+  ;----------// Theme Settings
 
+  ; Layout settings
 
-;----------// Site Features
-
-  features[] = logo
-  features[] = name
-  features[] = slogan
-  features[] = node_user_picture
-  features[] = comment_user_picture
-  features[] = comment_user_verification
-  features[] = favicon
-  features[] = main_menu
-  features[] = secondary_menu
-
-
-;----------// Theme Settings
-
-  ; Layout settings - Standard bigscreen
-  settings[bigscreen_layout]         = 'three_col_grail'
-  settings[bigscreen_page_unit]      = '%'
-  settings[bigscreen_sidebar_unit]   = 'px'
-  settings[bigscreen_max_width_unit] = 'px'
-  settings[bigscreen_page_width]     = 100
-  settings[bigscreen_sidebar_first]  = 180
-  settings[bigscreen_sidebar_second] = 254
-  settings[bigscreen_set_max_width]  = 1
-  settings[bigscreen_max_width]      = 1140
-  settings[bigscreen_media_query]    = 'only screen and (min-width:1025px)'
-  
-    ; Layout settings - Tablet landscape
+  ; Standard bigscreen
+   settings[bigscreen_layout]         = 'three-col-grail'
+   settings[bigscreen_page_unit]      = 'px'
+   settings[bigscreen_sidebar_unit]   = 'px'
+   settings[bigscreen_max_width_unit] = 'px'
+   settings[bigscreen_page_width]     = 100
+   settings[bigscreen_sidebar_first]  = 174
+   settings[bigscreen_sidebar_second] = 210
+   settings[bigscreen_set_max_width]  = 1
+   settings[bigscreen_max_width]      = 980
+   
+     ; Layout settings - Tablet landscape
   settings[tablet_landscape_layout]         = 'three_col_grail'
   settings[tablet_landscape_page_unit]      = '%'
   settings[tablet_landscape_sidebar_unit]   = '%'
@@ -87,25 +70,3 @@ os[theme_access] = "private"
   settings[smartphone_portrait_sidebar_first]  = 100
   settings[smartphone_portrait_sidebar_second] = 100
   settings[smartphone_portrait_media_query]    = 'only screen and (max-width:320px)'
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
