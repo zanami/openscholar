@@ -103,6 +103,16 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   // hide the biblio_image field
   $form['field_biblio_image']['#access'] = false;
 
+  // hide look up and pasting fields
+  if (isset($form['biblio_doi_lookup']))
+    $form['biblio_doi_lookup']['#access'] = false;
+  if (isset($form['biblio_pubmed_lookup']))
+    $form['biblio_pubmed_lookup']['#access'] = false;
+  if (isset($form['biblio_ris_paste']))
+    $form['biblio_ris_paste']['#access'] = false;
+  if (isset($form['biblio_cut_paste']))
+    $form['biblio_cut_paste']['#access'] = false;
+
   // do things based on what pub type we have selected
   switch ($tid) {
     case 0:
