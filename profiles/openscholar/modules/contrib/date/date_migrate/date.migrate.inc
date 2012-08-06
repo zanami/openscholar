@@ -63,25 +63,37 @@ class DateMigrateFieldHandler extends MigrateFieldHandler {
     else {
       $default_timezone = 'UTC';
     }
+    
     if (isset($arguments['timezone_db'])) {
       $default_timezone_db = $arguments['timezone_db'];
     }
     else {
       $default_timezone_db = NULL;
     }
+    
     if (isset($arguments['rrule'])) {
       $default_rrule = $arguments['rrule'];
     }
     else {
       $default_rrule = NULL;
     }
+    
+    if (isset($arguments['from'])) {
+      $from = $arguments['from'];
+    }
+    
+    if (isset($arguments['to'])) {
+      $to = $arguments['to'];
+    } else {
+      $to = NULL;
+    }
+    
     $language = $this->getFieldLanguage($entity, $field_info, $arguments);
 
     // Setup the standard Field API array for saving.
     $delta = 0;
     foreach ($values as $from) {
       // Set defaults.
-      $to = NULL;
       $timezone = $default_timezone;
       $timezone_db = $default_timezone_db;
       $rrule = $default_rrule;
@@ -171,5 +183,14 @@ class DateMigrateFieldHandler extends MigrateFieldHandler {
       $return = NULL;
     }
     return $return;
+  }
+  
+  public function fields($migration = NULL) {
+    return array(
+      'timezone' => t('Timezone'),
+      'rrule' => t('Recurring event rule'),
+      'to' => t('Start date'),
+      'from' => t('End date'),      
+    );
   }
 }
