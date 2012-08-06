@@ -85,3 +85,23 @@ function os_image_gallery_form_alter(&$form, &$form_state, $form_id) {
     
   }
 }
+
+/**
+ * Implements hook_file_delete
+ * 
+ * When an image is deleted, remove it from media_gallery nodes first.
+ */
+function os_image_gallery_file_delete($file) {
+  $query = new EntityFieldQuery();
+  $result = $query->entityCondition('entity_type', 'node')
+              ->fieldCondition('media_gallery_media', 'fid', $file->fid, '=')
+              ->execute();
+  
+  if (isset($result['node'])) {
+    $nids = array_keys($result['node']);
+    $nodes = entity_load('node', $nids);
+    foreach ($nodes as $node) {
+      media_gallery_remove_item_from_gallery($node, $file);
+    }
+  }
+}
