@@ -86,7 +86,12 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
 		
   }
   
-  //preps an entity for saving IIRC
+  /**
+   * @function prepare()
+   * 
+   * Biblio's fields aren't really fields so migrate isn't aware of them.  But migrate provides
+   * us with the prepare function, which lets you modify an entity before it's saved.    
+   */
   function prepare($entity, $row) {
     foreach(get_object_vars($row) as $key => $value) {
       if (strpos($key, 'biblio_') === 0 && $row->$key) {
