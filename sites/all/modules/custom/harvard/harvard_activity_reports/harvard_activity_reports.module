@@ -42,38 +42,123 @@ function harvard_activity_reports_menu() {
 
 /**
  * 
+ * Funciton to query the iqss_pinserver_register table for a user id and returns the id
+ * accepts a hashed HUID
+ * @param unknown_type $id
+ */
+function harvard_activity_reports_query_user_by_id($id)  {
+	$hashID = $id;
+	// query the DB and check if the user exists for this hash
+	$query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE huid = '%s'"; // setup the query
+	$results = db_query($query, $hashID); // perform the query
+	// make sure there are results
+	if($results->num_rows>0) {
+		$row = db_fetch_object($results); // grab the resulting uid
+		$uid = $row->uid; // push it into a variable
+		$huID = $row->huid;
+	}else {
+		$uid = FALSE;
+	}//
+	return $uid;
+}// end function
+
+/**
+ * 
+ * Function to query and return back a users UID  
+ * accepts a site variable and the url is parsed and queried from the purl table
+ * @param unknown_type $site
+ */
+function harvard_activity_reports_query_user_by_site($site) {	
+	// scholar variable
+	$scholarHost = "scholar.harvard.edu";
+	
+	$siteUrl = $site;
+	
+	// parse the url
+	$parseUrl = parse_url($siteUrl);
+	// the host is what we'll be looking for
+	$host = $parseUrl['host'];
+	// make sure it's not empty
+	if($host != ""){
+		// check to see if it matches scholar.harvard.edu
+		if($host == $scholarHost){
+		 	// grab the path for the url
+		 	// remove the / before the path
+			$path = substr($parseUrl['path'],1);
+		 	$provider = "spaces_og";
+		 }else{
+		 	// they are a unique user, just use the host
+		 	$provider = "vsite_domain";
+			$path = $host;
+			
+		 } 
+		 // query the database
+		 $selectNode = "SELECT n.uid FROM {node} n, {purl} p WHERE p.value = '%s' AND p.provider = '%s' AND n.nid = p.id";
+		 $urlNodeResult = db_query($selectNode, $path, $provider); 
+		 if($urlNodeResult->num_rows>0) {
+		 	$urlNodeRow = db_fetch_object($urlNodeResult);
+		 	$userSiteID = $urlNodeRow->uid;
+		 }else{
+		 	$userSiteID = FALSE;
+		 }
+	}
+	return $userSiteID;
+}// end function
+
+/**
+ * 
+ * function to query and return a users vsite ID based on their UID 
+ * vsite id will then be used to node load
+ * @param unknown_type $uid
+ */
+function harvard_activity_reports_query_vsite_id($uid) {
+	// now that we have the UID, grab their VSITE node ID from the Node table
+	$nodeQuery = "SELECT nid FROM {node} WHERE uid = %d AND type='vsite'";
+	$nodeResults = db_query($nodeQuery,$uid);
+	if($nodeResults) {
+		$nodeRow = db_fetch_object($nodeResults);
+		$nid = $nodeRow->nid;
+	}else{
+		$nid = FALSE;
+	}// end node results
+	
+	return $nid;
+}
+
+/**
+ * 
  * Implementation harvard_activity_reports_query_user().
  * Custom query to pull the user publicatios from the passed HUID
  */
 function harvard_activity_reports_query_user() {
-	$bibContents = array();
 	// use drupal_get_query_parameters when we switch over to 7
-	
-	// using an ID for right now since no hashs exists
 	
 	// get the ID from the "id" parameter of the link
 	if(isset($_GET['id']) || isset($_GET['site_url'])) { // make sure it's set first
 		//assign it to a variable
 		if(isset($_GET['id'])){
 			$hashID = $_GET['id'];
-			// query the DB and check if the user exists for this hash
-			$query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE huid = '%s'"; // setup the query
-			$results = db_query($query, $hashID); // perform the query
-			// make sure there are results
-			if($results->num_rows>0) {
-				$row = db_fetch_object($results); // grab the resulting uid
-				$uid = $row->uid; // push it into a variable
-				$huID = $row->huid;
-				// now that we have the UID, grab their VSITE node ID from the Node table
-				$nodeQuery = "SELECT nid FROM {node} WHERE uid = %d AND type='vsite'";
-				$nodeResults = db_query($nodeQuery,$uid);
-				if($nodeResults) {
-					$nodeRow = db_fetch_object($nodeResults);
-					$nid = $nodeRow->nid;
-				}else{
-					$nid = FALSE;
-				}// end node results
-			}// end num rows
+			// query the user by ID
+			$uid = harvard_activity_reports_query_user_by_id($hashID);
+			// now get their vsite
+			if($uid != FALSE) {
+				$nid =  harvard_activity_reports_query_vsite_id($uid);
+			}else{
+				$nid = FALSE;
+			}
+		}elseif(isset($_GET['site_url'])){
+			// assign it to a variable
+			$siteUrl = $_GET['site_url'];
+			// query the user by site_url
+			$uid = harvard_activity_reports_query_user_by_site($siteUrl);
+			// now get their vsite
+			if($uid != FALSE) {
+				$nid = harvard_activity_reports_query_vsite_id($uid);
+			}else{
+				$nid = FALSE;
+			}
+		}else{
+			$nid = FALSE;	
 		}// end isset id
 	}else{ // no id set, tell them
 		$nid = FALSE;
@@ -300,6 +385,7 @@ function harvard_activity_reports_page() {
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}// end if nid != false
 	// send back the xml
+	
 	echo $xmlReturn;	
 }//end function
 
