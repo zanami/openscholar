@@ -685,7 +685,7 @@ function os_system_info_alter(&$info, $file, $type){
   if ($type != 'theme')
     return;
 
-  if (isset($info['base theme'])) {
+  if (isset($info['base theme']) && $info['base theme'] == 'os_basetheme') {
     //$base = drupal_find_base_themes(list_themes(), $file->name);
 
     if (isset($base['os_basetheme'])) {
