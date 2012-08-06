@@ -17,7 +17,10 @@ class EventNodeOSMigration extends AbstractNodeOSMigration {
     $this->description = t('Calendar events.');
     
     $this->addFieldMapping('field_date', 'field_date_value');
+    $this->addFieldMapping('field_date:from', 'field_date_value');
+    $this->addFieldMapping('field_date:to', 'field_date_value2');
     
+    $this->addUnmigratedDestinations(array('field_date:timezone', 'field_date:rrule'), t('DNM'));
   }
   
   public function query($content_type) {
