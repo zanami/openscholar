@@ -2,7 +2,7 @@
 /** 
  * Function to check to see if the field exists
  */
-function checkExists($fieldName) {
+function harvard_activity_reports_checkExists($fieldName) {
 	// first check to see if the field exists
 	$iqssTable = drupal_schema_fields_sql('iqss_pinserver_register');	
 	// gather all the fields in this table
@@ -29,14 +29,54 @@ function harvard_activity_reports_schema_alter(&$schema) {
 }
 
 /**
+ * Function on install to loop the iqss_pinserver_table and hash all the huids
+ * allowing the module to match up properly with the hashed ids being sent
+ */
+function harvard_activity_reports_hash_uids(){
+	// use the FAS suffix
+	$suffix = "klA+j230-a819xzm,fy";
+	// select all the huids where there is no hashed HUID already
+	$selectHUIDS = "SELECT uid,huid FROM {iqss_pinserver_register} WHERE hashID is NULL";
+	$huidsRes = db_query($selectHUIDS);
+	if($huidsRes->num_rows>0) {
+		// loop the results for hashing
+		while($huidsRow = db_fetch_array($huidsRes)) {
+			$uid = $huidsRow['uid'];
+			$huid = $huidsRow['huid'];
+			$hashedID = md5($huid.$suffix);
+			
+			// now that they're hashed, update the row
+			$updateHuid = "UPDATE {iqss_pinserver_register} SET hashID = '%s' WHERE uid = %d";
+			$updateRes = db_query($updateHuid,$hashedID,$uid);
+		}// end while
+	}
+}// end function
+
+/**
+ * Function to alter the table and set the column to accept nulls
+ */
+function harvard_activity_reports_alter_null() {
+	$ret = array();
+	 db_change_field($ret,'iqss_pinserver_register','huid','huid', array('type' => 'varchar','length' => 255, 'not null' => FALSE,'default' => NULL));
+}// end function
+
+/**
  * Implementation of hook_install().
  */
 function harvard_activity_reports_install() {
   	$ret = array();
-	if(checkExists('hashID')==TRUE) {
+	if(harvard_activity_reports_checkExists('hashID')==TRUE) {
 		// its not in there, add it
   		db_add_field($ret, 'iqss_pinserver_register', 'hashID', array('type' => 'varchar','length' => 256,'not null' => FALSE,'default' => NULL));
 	}// end if !in array
+	
+	// alter the table
+	harvard_activity_reports_alter_null();
+	
+	// run the inserts
+	harvard_activity_reports_hash_uids();
+	
+	// check for the huid field and alter it to remove the NOT NULL attribute
 }
 
 /**
@@ -45,7 +85,7 @@ function harvard_activity_reports_install() {
 function harvard_activity_reports_uninstall() {
   	$ret = array();
   	// first check to see if the field exists
-	if(checkExists('hashID')==FALSE) {
+	if(harvard_activity_reports_checkExists('hashID')==FALSE) {
 		// its not in there, drop it
     	db_drop_field($ret, 'iqss_pinserver_register', 'hashID');
 	}// end check
