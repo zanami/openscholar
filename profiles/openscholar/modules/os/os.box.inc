@@ -24,6 +24,4 @@ function os_default_box() {
     'additional_classes' => '',
   );
   $export['os_addthis'] = $box;
-
-  return $export;
 }
