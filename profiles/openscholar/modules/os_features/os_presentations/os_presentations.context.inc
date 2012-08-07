@@ -25,6 +25,12 @@ function os_presentations_context_default_contexts() {
         'node_form' => '0',
       ),
     ),
+    'path' => array(
+      'values' => array(
+        'presentations' => 'presentations',
+        'presentations/*' => 'presentations/*',
+      ),
+    ),
     'views' => array(
       'values' => array(
         'os_presentations' => 'os_presentations',
