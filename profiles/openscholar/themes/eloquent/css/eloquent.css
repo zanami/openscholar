@@ -65,9 +65,13 @@ img {
 #scholar-shield img {
   border: none;
   }
+ 
+ .region-inner {
+    padding: 0 15px;
+}
   
   .region-sidebar-first .content ul.menu {margin-left:12px;}
-  .region-sidebar-first .content ul.menu li {list-style-image:url('../images/mainNavLftIcon.gif');color:#106599;margin-bottom: 6px;}
+  .region-sidebar-first .content ul.menu li {list-style-image:url('../images/mainNavLftIcon.gif');color:#106599;}
   .region-sidebar-first .content ul.menu li  a {padding-left:0px;}
   
   .region-sidebar-second .content ul.menu {margin-left:12px;}
@@ -183,6 +187,10 @@ img {
 .sidebar #nice-menu-{border-top:none;}
 .sidebar ul.nice-menu ul {
     top: 0;
+}
+
+.sidebar ul.nice-menu li {
+	background: none;
 }
 
 ul.nice-menu-right li.menuparent, ul.nice-menu-right li li.menuparent {

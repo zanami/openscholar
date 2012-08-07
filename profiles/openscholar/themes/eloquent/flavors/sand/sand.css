@@ -34,7 +34,9 @@ h2, h3, #header-container {
     font-weight: normal;
     }
 
-
+.biblio-title a, .biblio-title-chicago a {
+    font: 15px 'Book Antiqua',garamond,'times new roman',times,serif;
+}
 
 /* HEADER ELEMENTS */
 
@@ -64,6 +66,9 @@ h2, h3, #header-container {
     color:#00552F;
     }
 
+#menu-bar {
+	padding-bottom: 5px;
+}
 
 #menu-bar a,
 #menu-bar a:visited {
@@ -85,3 +90,7 @@ h2, h3, #header-container {
   -webkit-box-shadow: 1px 0 1em #777777;
   box-shadow: 1px 0 1em #777777;
   }
+  
+ul.menu li a:link, ul.menu li a:visited {
+color: #6D1102;
+}
