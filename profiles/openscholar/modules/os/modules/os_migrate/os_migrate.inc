@@ -153,6 +153,23 @@ abstract class OSMigration extends Migration {
     }
   }
   
+  /**
+   * @function subfields
+   * 
+   * Shortcut for getting an array of field:sub1, field:sub2, etc without typing field over and over.
+   * 
+   * @param string $field
+   *   Name of field
+   * @param array $subfields
+   *   List of subfields
+   * @param string $glue
+   *   Specify another string to use between field subfield.  Default=':'.  
+   * @return array
+   */
+  function subfields($field, array $subfields, $glue = ':') {
+    $callback = create_function('$str', 'return "' . $field . $glue . '" . $str;');
+    return array_map($callback, $subfields);
+  }
   
   /**
    * Gets files owned by node revision

@@ -15,7 +15,6 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     
     $this->description = t('Publications migration.');
     
-    //$this->dependencies[] = 'StubNodeOS'; // append dependencies.  these classes must be migrated before this class.
     
     //$this->addUnmigratedDestinations($fields)
     function _subfield_prefix($str) { return 'field_biblio_image:' . $str; }
