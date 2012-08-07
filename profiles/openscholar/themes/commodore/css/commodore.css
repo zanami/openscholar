@@ -78,18 +78,18 @@ a:hover {
      text-decoration: underline;
 }
 
-#header h1 {
+#header-container h1 {
      color: #545454;
      font-family: georgia,arial;
      margin-top: 15px;
 }
 
-#header h1 a {
+#header-container h1 a {
      color: #545454;
      font-size: 1.55em;
 }
 
-#header h2 {
+#header-container h2 {
      color: #666666;
 }
 

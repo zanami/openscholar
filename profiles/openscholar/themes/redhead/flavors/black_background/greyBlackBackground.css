@@ -29,7 +29,7 @@ text-decoration:underline;
  color:#FFF;
   }
   
-#menu-bar a, #header a {
+#menu-bar a, #header-container a {
 	text-decoration:none;
 }
 

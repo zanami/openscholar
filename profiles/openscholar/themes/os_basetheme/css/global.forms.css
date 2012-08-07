@@ -58,7 +58,7 @@ textarea:focus {
 }
 
 .form-submit /* The submit button */ {
-	padding:5px;
+	margin-right:10px;
 }
 
 .container-inline div,
@@ -87,6 +87,10 @@ fieldset {
   border: 1px solid #dadada;
   margin: 10px 0;
   padding: 10px;
+}
+
+.vertical-tabs-panes fieldset {
+  background: none;
 }
 
 fieldset fieldset:last-child {

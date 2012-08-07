@@ -70,7 +70,7 @@ h1#page-title {font-size:1.3em;}
 #block-os-primary-menu.menu-wrapper, #columns, #footer {width:910px;margin:0 auto;}
 
 body.sidebar-first #columns .hg-container,
-body.header-left-main #header .hg-container {
+body.header-left-main #header-container .hg-container {
   padding-right: 20px;
   }
 
@@ -118,7 +118,7 @@ body.two-sidebars .region-sidebar-first {
     line-height: 1em;
     }
 
-#header-container a, #header a:visited {
+#header-container a, #header-container a:visited {
     text-decoration: none;
     }
 

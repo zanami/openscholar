@@ -1,17 +1,17 @@
-#navbar {
+#menu-bar {
 	background: #C75A26;
 	}
 
-#navbar .wrap {
+#menu-bar .wrap {
 	background: #C75A26;
 	}
 
-#navbar li a {
+#menu-bar li a {
 	background: none; color:#FFFFFF;
 	border-bottom:none;
 }
 
-#navbar li a.active, #navbar li.active-trail a {
+#menu-bar li a.active, #menu-bar li.active-trail a {
 background: #D4D4D5;  
 color: #C75A26;
 }
@@ -24,8 +24,8 @@ color: #C75A26;
 
 .sidebar .content h1 a {color:#C75A26;}
 
-#header h1 a,
-#header h1 a:visited {
+#header-container h1 a,
+#header-container h1 a:visited {
     color:#C75A26;
     }
     

@@ -35,7 +35,7 @@ a:hover {
   background: transparent;
   }
 
-h1, h2, h3, .region-sidebar-second a, #menu-bar, #header {
+h1, h2, h3, .region-sidebar-second a, #menu-bar, #header-container {
   font-weight: bold;
   }
 

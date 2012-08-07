@@ -128,7 +128,7 @@ ul.grid {
 
 /* WRAPPER ELEMENTS */
 
-.wrap {
+#header-container, #block-os-primary-menu, #columns{
   width:1000px;
   margin: 0 auto;
   position: relative;
@@ -155,12 +155,12 @@ ul.grid {
 
 /* HEADER */
 
-#header {
+#header-container {
   height: 120px;
   background: #fff;
   }
   
-#header .column {
+#header-container .column {
 	padding: 0 10px;
 }
 
@@ -181,17 +181,17 @@ ul.grid {
   height: 58px;
   }
 
-#header ul.menu {
+#header-container ul.menu {
   text-align: right;
   }
 
-#header ul.menu li {
+#header-container ul.menu li {
   text-align: right;
   display:inline-block;
   }
 
-#header ul.menu li a,
-#header ul.menu li a:visited {
+#header-container ul.menu li a,
+#header-container ul.menu li a:visited {
   font-size: 13px;
   padding: 0 7px;
   display:block;
@@ -221,11 +221,11 @@ ul.grid {
   color: #000;
   }
 
-#header ul.menu li a.active {
+#header-container ul.menu li a.active {
   color: #df0800 !important;
   }
 
-#header h1 {
+#header-container h1 {
   width:285px;
   height: 31px;
   text-indent: -999em;
@@ -233,13 +233,13 @@ ul.grid {
   margin: 15px 0 0 5px;
   }
 
-#header h1 a, #header h1 a:visited {
+#header-container h1 a, #header-container h1 a:visited {
   display:block;
   width:279px;
   height: 31px;
   }
 
-#header h2, #header p {
+#header-container h2, #header-container p {
   display:none;
   }
 
@@ -268,17 +268,17 @@ ul.grid {
 
 /* SEARCH BOX */
 
-#header #search-form,
-#header .search-form {
+#header-container #search-form,
+#header-container .search-form {
   padding: 0;
   margin: 0;
   }
 
-#header .block-boxes-os_boxes_site_info{
+#header-container .block-boxes-os_boxes_site_info{
   margin-top: 17px;
   }
 
-#header #search-form .container-inline {
+#header-container #search-form .container-inline {
   height: 24px;
   max-width: none;
   width: auto;
@@ -286,11 +286,11 @@ ul.grid {
   padding:0;
   }
 
-#header #search-form #edit-keys-wrapper {
+#header-container #search-form #edit-keys-wrapper {
   width:245px;
   }
 
-#header #search-form #edit-keys {
+#header-container #search-form #edit-keys {
   width: 233px;
   background: #abaaaa;
   height: 24px;
@@ -299,8 +299,8 @@ ul.grid {
   border: none;
   }
 
-#header #search-form input#edit-submit,
-#header #search-form input.form-submit  {
+#header-container #search-form input#edit-submit,
+#header-container #search-form input.form-submit  {
   width:64px;
   -moz-border-radius:0;
   -webkit-border-radius:0;
@@ -384,7 +384,7 @@ p.copy a.poweredby {
 
 /* FRONT PAGE*/
 
-.front #header {
+.front #header-container {
   height: 58px;
   }
 
