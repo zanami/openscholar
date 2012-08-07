@@ -384,7 +384,12 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID, $status) {
     			
     			// biblio basic info
     			// $currentPub->appendChild($domtree->createElement('biblio_url',$value['biblio_url']));
-    			$currentPub->appendChild($domtree->createElement('linkToArticle',"http://scholar.harvard.edu/".$value['biblio_path']));
+    			// check to see if the path is empty - if so, just point it back at the node id
+    			if($value['biblio_path']=="") {
+    				$currentPub->appendChild($domtree->createElement('linkToArticle',"http://scholar.harvard.edu/".$value['biblio_site_name']."/".$value['biblio_nid']));
+    			}else {
+    				$currentPub->appendChild($domtree->createElement('linkToArticle',"http://scholar.harvard.edu/".$value['biblio_path']));
+    			}// end if
     			// biblio citation information 
     			$currentPub->appendChild($domtree->createElement('yearOfPublication',$value['biblio_year']));
     			// $currentPub->appendChild($domtree->createElement('biblio_volume',$value['biblio_volume']));
@@ -447,7 +452,7 @@ function harvard_activity_reports_page() {
 				$biblioDataArray[$counter]['biblio_url'] = $biblioDataRow->biblio_url;
 				$biblioDataArray[$counter]['biblio_type_name'] = $biblioDataRow->biblio_type_name;
 				$biblioDataArray[$counter]['biblio_path'] = $biblioDataRow->path;
-				
+				$biblioDataArray[$counter]['biblio_site_name'] = $biblioDataRow->name;
 				// grab the citation data now
 				$biblioDataArray[$counter]['biblio_year'] = $biblioDataRow->biblio_year;
 				$biblioDataArray[$counter]['biblio_secondary_title'] = $biblioDataRow->biblio_secondary_title;
