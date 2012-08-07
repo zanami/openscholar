@@ -40,9 +40,9 @@ function os_blog_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'boxes-blog_addthis' => array(
+        'boxes-os_addthis' => array(
           'module' => 'boxes',
-          'delta' => 'blog_addthis',
+          'delta' => 'os_addthis',
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),
@@ -66,6 +66,7 @@ function os_blog_context_default_contexts() {
         ),
       ),
     ),
+    'menu' => 'blog',
   );
   $context->condition_mode = 0;
 
