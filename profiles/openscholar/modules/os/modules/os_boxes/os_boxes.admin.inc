@@ -133,3 +133,41 @@ function os_boxes_widget_delete_submit($form, &$form_state) {
   }
   overlay_commands_add(overlay_command_dismiss());
 }
+
+function os_boxes_remove_widget($box, $target=false) {
+  $contexts = $_GET['contexts'];
+
+  // remove the box from the contexts
+  ctools_include('layout', 'os');
+  $blocks = os_layout_get_multiple($contexts);
+
+  $old_region = $blocks['boxes-'.$box->delta]['region'];
+  $blocks['boxes-'.$box->delta]['region'] = $target;
+  os_layout_set_multiple($contexts, $blocks);
+
+  // create the notice
+
+  if (!$target) {
+    $render = array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'id' => 'block-boxes-'.$box->delta,
+      ),
+      'text' => array(
+        '#type' => 'markup',
+        '#markup' => t('This widget has been removed from this section. You can undo this action by clicking !url', array(
+          '!url' => l('Here', 'os/boxes/'.$box->delta.'/remove/'.$old_region, array('query' => array('contexts' => $contexts)))
+        ))
+      )
+    );
+  }
+  else {
+    $t = _block_render_blocks(array((object)$blocks['boxes-'.$box->delta]));
+    $t = _block_get_renderable_array($t);
+    $render = array_shift($t);
+  }
+  $html = drupal_render($render);
+  overlay_commands_add(ajax_command_replace('#block-boxes-'.$box->delta, $html));
+  overlay_commands_add(overlay_command_dismiss());
+  return '';
+}
