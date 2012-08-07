@@ -5,7 +5,8 @@
  * For error checking, this module is using:
  * 0 for no errors
  * 1 for first pass errors (i.e. no user for hashed ID, return to use site url)
- * 2 for complete error, no user found for either hashed ID no site url
+ * 2 for site url attempt only (no hashed huid)
+ * 3 for complete error, no user found for either hashed ID no site url
 */
  
 /**
@@ -158,6 +159,25 @@ function harvard_activity_reports_update_huid_hash($uid,$hashID) {
 }// end function 
 
 /**
+ * Function to return the HUID that was originally sent over
+ * will be used to add into the XML with erros.  Requested to be added
+ * in by Michael Kerry of FAS.
+ */
+function harvard_activity_reports_get_url_id () {
+	if(isset($_GET['id'])) {
+		$urlID = $_GET['id'];
+		// make sure it's not null
+		if($urlID == '') {
+			$urlID = NULL;
+		}// end if
+	}else{
+		$urlID = NULL;
+	}
+	
+	return $urlID;
+}// end function
+
+/**
  * 
  * Implementation harvard_activity_reports_query_user().
  * Custom query to pull the user publicatios from the passed HUID
@@ -189,10 +209,10 @@ function harvard_activity_reports_query_user() {
 						// now update the iqss_pinserver_registration table to reflect the new hashed id
 						// $newHashID = harvard_activity_reports_update_huid_hash($uid, $hashID);
 					}else{
-						$nid = 2;
+						$nid = 3;
 					}
 				}else{ // error out
-					$nid = 2;
+					$nid = 3;
 				}
 			}// end s
 		}elseif(isset($_GET['id'])){ // no check for just the site id
@@ -214,7 +234,7 @@ function harvard_activity_reports_query_user() {
 			if($uid != 1) {
 				$nid = harvard_activity_reports_query_vsite_id($uid);
 			}else{
-				$nid = 1;
+				$nid = 2;
 			}// end if
 		}else{ // neither are here, error out
 			$nid = 1;	
@@ -445,17 +465,22 @@ function harvard_activity_reports_page() {
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}elseif($nid==1){
 		$status = "error";
-		$huID = null;
-		$biblioDataArray['biblio_error_message'] = "No huid found - please try again with a site url";
+		$huID = harvard_activity_reports_get_url_id();
+		$biblioDataArray['biblio_error_message'] = "No data found - please try again with a site url";
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}elseif($nid==2){
+		$status = "error";
+		$huID = harvard_activity_reports_get_url_id();
+		$biblioDataArray['biblio_error_message'] = "No data found for that site url - please try again with an huid.";
+		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
+	}elseif($nid==3){
 		$status = "unknown";
-		$huID = null;
+		$huID = harvard_activity_reports_get_url_id();
 		$biblioDataArray['biblio_error_message'] = "Neither huid nor site has been found - please correct these errors and try again.";
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}else{
 		$status = "unknown";
-		$huID = null;
+		$huID = harvard_activity_reports_get_url_id();
 		$biblioDataArray['biblio_error_message'] = "Neither huid nor site has been found - please correct these errors and try again.";
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}// end if nid != false
