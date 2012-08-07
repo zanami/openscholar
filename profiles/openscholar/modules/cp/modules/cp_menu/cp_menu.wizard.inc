@@ -452,7 +452,7 @@ function cp_menu_wizard_finish(&$form_state) {
   $item = array('link_path' => $url, 'menu_name' => $menu_name, 'link_title' => $values['title'],'options' => $options);
   $mlid = os_menu_link_save($item);
   cp_menu_cache_clear($form_state['object_id']);
-  if ($values['js']) {
+  if ($form_state['ajax']) {
   	ctools_include('ajax');
   	ctools_include('modal');
   	$commands = array();
