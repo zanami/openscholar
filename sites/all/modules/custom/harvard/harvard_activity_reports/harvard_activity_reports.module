@@ -464,12 +464,12 @@ function harvard_activity_reports_page() {
 		// call the xml creation function
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}elseif($nid==1){
-		$status = "error";
+		$status = "unknown";
 		$huID = harvard_activity_reports_get_url_id();
 		$biblioDataArray['biblio_error_message'] = "No data found - please try again with a site url";
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}elseif($nid==2){
-		$status = "error";
+		$status = "unknown";
 		$huID = harvard_activity_reports_get_url_id();
 		$biblioDataArray['biblio_error_message'] = "No data found for that site url - please try again with an huid.";
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
@@ -479,9 +479,9 @@ function harvard_activity_reports_page() {
 		$biblioDataArray['biblio_error_message'] = "Neither huid nor site has been found - please correct these errors and try again.";
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}else{
-		$status = "unknown";
+		$status = "error";
 		$huID = harvard_activity_reports_get_url_id();
-		$biblioDataArray['biblio_error_message'] = "Neither huid nor site has been found - please correct these errors and try again.";
+		$biblioDataArray['biblio_error_message'] = "Error generating xml, please try again.";
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}// end if nid != false
 	// send back the xml
