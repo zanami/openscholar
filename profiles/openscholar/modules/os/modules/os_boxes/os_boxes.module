@@ -15,21 +15,26 @@ function os_boxes_ctools_plugin_api($module, $api) {
  * Implements hook_menu().
  */
 function os_boxes_menu() {
-  $items['os/boxes/%os_boxes'] = array(
-    'title' => 'Add/Edit Widget',
+  $items['os/boxes/%os_boxes'] =
+  $items['os/boxes/%os_boxes/edit'] = array(
+    'title' => 'Edit Widget',
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(2),
     'access callback' => 'boxes_access_admin',
-    'type' => MENU_CALLBACK,
+    'type' => MENU_LOCAL_TASK,
     'file' => 'os_boxes.admin.inc',
+    'context' => MENU_CONTEXT_INLINE,
+    'weight' => 1,
   );
   $items['os/boxes/%os_boxes/delete'] = array(
     'title' => 'Delete Widget',
     'page callback' => 'os_boxes_delete_widget',
     'page arguments' => array(2),
     'access callback' => 'boxes_access_admin',
-    'type' => MENU_CALLBACK,
+    'type' => MENU_LOCAL_TASK,
     'file' => 'os_boxes.admin.inc',
+    'context' => MENU_CONTEXT_INLINE,
+    'weight' => 2,
   );
   return $items;
 }
@@ -186,19 +191,27 @@ function os_boxes_admin_paths() {
 }
 
 /**
- * Replaces the existing control links with our own.
+ * Gets rid of the controls that boxes provides.
+ * We want to use our own
  */
 function os_boxes_preprocess_boxes_box(&$variables) {
-  $block = &$variables['block'];
-  $block['controls'] = theme('links', array(
-    'links' => array(
-      'edit' => array(
-        'title' => t('Edit Widget'),
-        'href' => 'os/boxes/'.$block['delta'],
-        'attributes' => array(
-          'class' => 'boxes-processed',
-        ),
-      ),
-    ),
-  ));
+  unset($variables['block']['controls']);
+}
+
+/**
+ * Adds contextual links to our box widgets
+ */
+function os_boxes_block_view_alter(&$array, $block) {
+  if ($block->module == 'boxes') {
+    if (!is_array($array['content'])) {
+      $array['content'] = array('#markup' => $array['content']);
+    }
+
+    $array['content']['#contextual_links']['box'] = array(
+      'os/boxes',
+      array($block->delta),
+    );
+
+    unset($array['controls']);
+  }
 }
