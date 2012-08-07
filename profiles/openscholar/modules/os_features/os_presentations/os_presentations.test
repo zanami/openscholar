@@ -2,7 +2,7 @@
 
 /**
  * @file
- * A test case for the OpenScholar Blog (OS Blog) feature module.
+ * A test case for the OpenScholar Presentations (OS Presentations) feature module.
  */
 
 /**
@@ -12,22 +12,22 @@
  *
  * @see DrupalWebTestCase
  */
-class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
+class OpenscholarPresentationsTestCase extends OpenscholarWebTestCase {
   protected $profile = 'openscholar';
   protected $user;
   protected $vsite_node;
   
   public static function getInfo() {
     return array(
-      'name' => 'OpenScholar Blog',
-      'description' => 'Ensure that the os_blog components provided function properly.',
+      'name' => 'OpenScholar Presentations',
+      'description' => 'Ensure that the os_presentations components provided function properly.',
       'group' => 'Features',
     );
   }
   
-  // Creates admin user, creates vsite node, and enables blog feature module
+  // Creates admin user, creates vsite node, and enables presentations feature module
   public function setUp() {
-    parent::setUp('spaces', 'og', 'spaces_og', 'vsite', 'os_blog');
+    parent::setUp('spaces', 'og', 'spaces_og', 'vsite', 'os_presentations');
     $user = $this->osCreateVsiteAdminUser();
     $this->drupalLogin($user);
 
@@ -48,40 +48,40 @@ class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
     debug($this->url);
     $this->verbose($this->url);
     
-    // Enables the OS Blog feature module
+    // Enables the OS Presentations feature module
 
     $cp_path      = $vsite_node['purl'] . '/cp/build';
     $enable_value = 'Public'; // Public option value
 
     $edit = array();
-    $edit['spaces_features[os_blog]'] = $enable_value;
+    $edit['spaces_features[os_presentations]'] = $enable_value;
     $submit_value = t('Save for ') . $vsite_node['title'];
     $this->drupalPost($cp_path, $edit, $submit_value);
     $this->assertText(t('The configuration options have been saved for @title.', array('@title' => $vsite_node['title']))); 
     */
   }
 
-  // Creates a Blog entry node using the node form
-  public function testOpenscholarBlogCreate() {
+  // Creates a Presentations entry node using the node form
+  public function testOpenscholarPresentationsCreate() {
     // Creates node to edit.
     $edit = array();
     $edit['title'] = $this->randomName(8);
     $edit["body[und][0][value]"] = $this->randomName(16);
-    $this->drupalPost('/node/add/blog', $edit, t('Save'));
-    $this->assertText(t('Blog entry @title has been created.', array('@title' => $edit['title'])));
+    $this->drupalPost('/node/add/presentations', $edit, t('Save'));
+    $this->assertText(t('Presentations entry @title has been created.', array('@title' => $edit['title'])));
   }
 
-  // Creates a Blog entry node and loads the node edit form.
-  public function testOpenscholarBlogEdit() {
+  // Creates a Presentations entry node and loads the node edit form.
+  public function testOpenscholarPresentationsEdit() {
     $settings = array(
-      'type' => 'blog',
+      'type' => 'presentations',
       'title' => $this->randomName(32),
       'body' => array(LANGUAGE_NONE => array(array($this->randomName(64)))),
     );
     $node = $this->drupalCreateNode($settings);
 
     // For debugging, only outputs when testing settings are set as 'verbose'
-    $this->verbose('Blog entry node created: ' . var_export($node, TRUE));
+    $this->verbose('Presentations entry node created: ' . var_export($node, TRUE));
     // Runs normal test not on the testbot
     /* Untested after lastest change.
     if (!$this->runningOnTestbot()) {
@@ -97,17 +97,17 @@ class OpenscholarBlogTestCase extends OpenscholarWebTestCase {
     */
   }
 
-  // Create a Blog entry node and views it displayed on page and archive block.
+  // Create a Presentations entry node and views it displayed on page and archive block.
   public function testOpenscholarViewContent() {
     $settings = array(
-      'type' => 'blog',
+      'type' => 'presentations',
       'title' => $this->randomName(32),
       'body' => array(LANGUAGE_NONE => array(array($this->randomName(64)))),
     );
     $node = $this->drupalCreateNode($settings);
 
     // For debugging, only outputs when testing settings are set as 'verbose'
-    $this->verbose('Blog entry node created: ' . var_export($node, TRUE));
+    $this->verbose('Presentations entry node created: ' . var_export($node, TRUE));
     /* Untested after latest change
     // Runs normal test not on the testbot
     if (!$this->runningOnTestbot()) {
