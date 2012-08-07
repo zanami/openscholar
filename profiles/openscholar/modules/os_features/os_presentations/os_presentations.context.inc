@@ -38,7 +38,19 @@ function os_presentations_context_default_contexts() {
       ),
     ),
   );
-  $context->reactions = array();
+  $context->reactions = array(
+    'block' => array(
+      'blocks' => array(
+        'views-os_presentations-block' => array(
+          'module' => 'views',
+          'delta' => 'os_presentations-block',
+          'region' => 'sidebar_second',
+          'weight' => '-10',
+        ),
+      ),
+    ),
+    'menu' => 'presentations',
+  );
   $context->condition_mode = 0;
 
   // Translatables

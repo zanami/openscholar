@@ -8,7 +8,7 @@ function openscholar_install_tasks($install_state) {
   
   // OS flavors (production, development, etc)
   $tasks['openscholar_flavor_form'] = array(
-    'display_name' => t('Choose a flavor'),
+    'display_name' => t('Choose a enviroment'),
     'type' => 'form'
   );
   
@@ -21,9 +21,9 @@ function openscholar_install_tasks($install_state) {
   // If multitenant, we need to do some extra work, e.g. some extra modules
   // otherwise, skip this step
   $tasks['openscholar_vsite_modules_batch'] = array(
-    'display_name' => t('Choose a flavor'),
+    'display_name' => t('Install supplemental modules'),
     'type' => 'batch',
-    'run' => (variable_get('os_profile_type', '') == 'vsite') ? INSTALL_TASK_RUN_IF_NOT_COMPLETED : INSTALL_TASK_SKIP
+    'run' => (variable_get('os_profile_type', false) == 'vsite' || variable_get('os_profile_flavor', false) == 'development') ? INSTALL_TASK_RUN_IF_NOT_COMPLETED : INSTALL_TASK_SKIP
   );
   
   return $tasks;
@@ -82,18 +82,8 @@ function openscholar_install_type($form, &$form_state) {
  * Form submit handler when selecting an installation type
  */
 function openscholar_flavor_form_submit($form, &$form_state) {
-  $flavor = $form_state['input']['os_profile_flavor'];
-  switch($flavor){
-    case 'production':
-      //@todo when production
-      break;
-    case 'development':       // dev
-      //@todo when development
-      //os_add_permissions(1, array('switch users')); //  yes anon users can switch users!!
-      break;
-  }
-  
-  variable_set('os_profile_flavor', $flavor);
+  //Save the chosen flavor
+  variable_set('os_profile_flavor', $form_state['input']['os_profile_flavor']);
 }
 
 
@@ -101,11 +91,8 @@ function openscholar_flavor_form_submit($form, &$form_state) {
  * Form submit handler when selecting an installation type
  */
 function openscholar_install_type_submit($form, &$form_state) {
-  if ($form_state['input']['os_profile_type'] == 'vsite'){
-      variable_set('os_profile_type', 'vsite');
-  }
-  else {
-      // nothing for now
+  if(in_array($form_state['input']['os_profile_type'], array('vsite','single-tenant'))){
+    variable_set('os_profile_type', $form_state['input']['os_profile_type']);
   }
 }
 
@@ -113,20 +100,24 @@ function openscholar_install_type_submit($form, &$form_state) {
 
 function openscholar_vsite_modules_batch(&$install_state){
   //@todo this should be in an .inc file or something.
-  $modules = array(
-    'entityreference',
-    'purl',
-    'spaces',
-    'spaces_og',
-    'og_views',
-    'vsite',
-    'vsite_domain',
-    'vsite_menu',
-    'vsite_layout',
-    'vsite_register',
-    'vsite_access',
-    'og'
-  );
+  $modules = array();
+  $profile = drupal_get_profile();
+  
+  if(variable_get('os_profile_type', false) == 'vsite'){
+    $data = file_get_contents("profiles/$profile/$profile.vsite.inc");
+    $info = drupal_parse_info_format($data);
+    if(is_array($info['dependencies'])){
+      $modules = array_merge($modules,$info['dependencies']);
+    }
+  }
+  
+  if(variable_get('os_profile_flavor', false) == 'development'){
+    $data = file_get_contents("profiles/$profile/$profile.development.inc");
+    $info = drupal_parse_info_format($data);
+    if(is_array($info['dependencies'])){
+      $modules = array_merge($modules,$info['dependencies']);
+    }
+  }
   
   return _opnescholar_module_batch($modules);
 }
@@ -182,11 +173,23 @@ function _opnescholar_module_batch($modules) {
       );
     }
   }
+  
+  $additions = "";
+  if(variable_get('os_profile_type', false) == 'vsite'){
+    $additions .= "Multi-Tenant";
+  }
+  
+  if(variable_get('os_profile_flavor', false) == 'development'){
+    if(strlen($additions)){
+      $additions .= " and ";
+    }
+    $additions .= "Development";
+  }
+  
   $batch = array(
     'operations' => $operations,
-    'title' => st('Installing @current out of @total modules.'),
+    'title' => st('Installing @needed modules.', array('@needed' => $additions)),
     'error_message' => st('The installation has encountered an error.'),
-    //'file' => 'includes/install.core.inc',
     'finished' => '_install_profile_modules_finished'
   );
   return $batch;

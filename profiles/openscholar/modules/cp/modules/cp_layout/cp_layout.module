@@ -86,12 +86,8 @@ function template_preprocess_cp_layout_widget(&$variables) {
       $classes_array[] = $widget['class'];
     }
   }
-
-  if (!isset($widget['tags'])) {
-    $widget['tags'] = array('Misc');
-  }
-  if (is_array($widget['tags'])) {
-    $classes_array = array_merge($classes_array, $widget['tags']);
+  else {
+    $classes_array[] = 'Misc';
   }
 
   if (isset($widget->icon_path)) {
@@ -168,5 +164,3 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
   sort($variables['tags']);
   array_unshift($variables['tags'], 'All');
 }
-
-?>

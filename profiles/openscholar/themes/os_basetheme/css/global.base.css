@@ -283,6 +283,9 @@ ul ul ul ul {
   list-style-type: circle;
 }
 
+.view-gallery-listing ul {
+list-style-type: none;	
+}
 
 dt {
   font-weight: 700;

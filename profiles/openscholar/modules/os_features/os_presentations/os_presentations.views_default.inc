@@ -73,7 +73,9 @@ function os_presentations_views_default_views() {
   $handler->display->display_options['path'] = 'presentations';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Presentations';
-  $handler->display->display_options['menu']['name'] = 'cp';
+  $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['menu']['name'] = 'primary-menu';
+  $handler->display->display_options['menu']['context'] = 0;
 
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block');
