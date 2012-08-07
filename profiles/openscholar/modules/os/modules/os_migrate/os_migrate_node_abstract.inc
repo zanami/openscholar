@@ -25,7 +25,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->source = $this->source($source_content_type); //condtion type?
       $this->destination = $this->destination($destination_bundle); 
       $this->map = $this->map($source_content_type);
-      $this->dependencies = array('UsersOS', 'EmbedInlineOS', 'ImageInlineOS', 'FileInlineOS', 'HTMLInlineOS'); //og when that's done
+      $this->dependencies = array('UsersOS', 'EmbedInlineOS', 'ImageInlineOS', 'FileInlineOS', 'HTMLInlineOS', 'VsiteNodeOS'); //og when that's done
       
       /* mappings */
       $this->addSimpleMappings(array('created','changed','status','promote','sticky','comment',
@@ -101,6 +101,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
 
     $query->join('og_ancestry', 'og', 'n.nid = og.nid');
     $query->fields('og', array('group_nid'));
+    
+    //drop orphaned content by required the node with group_nid to exist
+    $query->join('node', 'vsite', 'vsite.nid = og.group_nid');
+    $query->condition('vsite.type', 'vsite', '=');
       
     $table = 'content_type_' . $content_type;
     if (parent::d6_db_table_exists($table)) { 
@@ -209,11 +213,20 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     
     //adjust the body to use new fids for inline objects
     parent::os_migrate_inline_update($current_row);
-    
-    //prep cck field data
-//    parent::prepareRowCCK($current_row);
+
     
   }
 
+  function prepare($entity, $row) {
+    $gid = $row->group_nid;
+    $node = node_load($gid);
+    if (!$node) {
+      return ; //gid = 3058, 5354
+    }
+    $isgroup = og_is_group('node', $node);
+    if (!$isgroup) {
+      TRUE;
+    }
+  }
   
 }
