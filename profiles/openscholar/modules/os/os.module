@@ -685,10 +685,10 @@ function os_system_info_alter(&$info, $file, $type){
   if ($type != 'theme')
     return;
 
-  if (isset($info['base theme']) && $info['base theme'] == 'os_basetheme') {
-    //$base = drupal_find_base_themes(list_themes(), $file->name);
-
-    //if (isset($base['os_basetheme'])) {
+  //If the base theme for this theme is 'os_basetheme' or if the is a 'vsite' theme add the default regions
+  if ((isset($info['base theme']) && $info['base theme'] == 'os_basetheme') || 
+      (isset($info['os']['theme_type']) && $info['os']['theme_type'] == 'vsite')) {
+    
       $info['regions'] += array(
         'header_top' => 'Header Top',
         'header_first' => 'Header Main',
@@ -701,6 +701,5 @@ function os_system_info_alter(&$info, $file, $type){
         'content_second' => 'Content Right',
         'content_bottom' => 'Content Bottom'
       );
-    //}
   }
 }
