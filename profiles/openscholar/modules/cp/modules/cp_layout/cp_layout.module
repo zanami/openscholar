@@ -64,7 +64,7 @@ function template_preprocess_cp_layout_widget(&$variables) {
 
   $widget = $variables['widget']['#widget'];
   $classes_array = &$variables['classes_array'];
-  
+
   $variables['bid'] = $widget['module']."-".$widget['delta'];
 
   $classes_array[] = "cp-layout-item";
@@ -87,7 +87,10 @@ function template_preprocess_cp_layout_widget(&$variables) {
     }
   }
 
-  if (isset($widget['tags']) && is_array($widget['tags'])) {
+  if (!isset($widget['tags'])) {
+    $widget['tags'] = array('Misc');
+  }
+  if (is_array($widget['tags'])) {
     $classes_array = array_merge($classes_array, $widget['tags']);
   }
 
