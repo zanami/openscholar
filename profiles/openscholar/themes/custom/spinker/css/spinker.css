@@ -186,7 +186,7 @@ body.header-main-right .region-header-second {
   vertical-align:middle;
   }
 
-#header h1, #header h2, #header p {
+#header-container h1, #header-container h2, #header-container p {
     font-size: 23px;
     line-height: 28px;
     font-weight:normal;
@@ -194,29 +194,29 @@ body.header-main-right .region-header-second {
     margin: 0;
     }
     
-#header h1 {
+#header-container h1 {
 	text-transform: uppercase;
   font-size: 25px;
   margin-bottom: 5px;
 }
 
-#header h2 {
+#header-container h2 {
   font-size: 13px;
   line-height: 18px;
   font-style:normal;
   }
 
-#header p {
+#header-container p {
   font-size: 13px;
   line-height: 18px;
   margin-bottom: 5px;
   text-transform: uppercase;
   }
 
-#header a, #header a:visited {
+#header-container a, #header-container a:visited {
 	color: #087af8;
 }
-#header a:hover {
+#header-container a:hover {
     color:#00ff00;
     text-decoration: none;
     }

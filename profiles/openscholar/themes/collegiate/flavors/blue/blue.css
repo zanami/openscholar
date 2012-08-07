@@ -52,19 +52,19 @@ body.front #content-bottom ul li.views-row
 
 /* LAYOUT ELEMENTS */
 
-#header {
+#header-container {
 	 background: url('images/headerBg.png') repeat-x;
 	 background-color: #013E73;
  }
  
 /**** NAVIGATION ELEMENTS ****/
-#navbar li a:hover,
-#navbar li.active-trail a {
+#menu-bar li a:hover,
+#menu-bar li.active-trail a {
   background: #78A0D7;
 }
 
-#navbar li a.active,
-#navbar li.active-trail a {
+#menu-bar li a.active,
+#menu-bar li.active-trail a {
   background: #78A0D7;
 }
 

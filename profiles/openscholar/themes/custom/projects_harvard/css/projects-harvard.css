@@ -84,11 +84,11 @@ h2 {
 
 /* HEADER ELEMENTS */
 
-#header {
+#header-container {
     height: 110px;
     }
 
-#header h1 {
+#header-container h1 {
   width: 231px;
   height: 76px;
   background: url(../images/logo.png) no-repeat;
@@ -98,22 +98,22 @@ h2 {
   margin-left: 9px;
   }
 
-#header h1 a,
-#header h1 a:visited {
+#header-container h1 a,
+#header-container h1 a:visited {
   display:block;
   width: 231px;
   height: 76px;
   }
 
-#header h1 a,
-#header h1 a:visited {
+#header-container h1 a,
+#header-container h1 a:visited {
   display:block;
   width: 231px;
   height: 76px;
   }
 
-#header h1 a,
-#header h1 a:visited {
+#header-container h1 a,
+#header-container h1 a:visited {
     color:#282828;
     }
 
@@ -716,7 +716,7 @@ body {
   background:url('../images/projects-bg.png') fixed repeat-x 0 100% #a13804;
   }
 
-#header h1 {
+#header-container h1 {
   width: 233px;
   height: 76px;
   margin-left: 0px;

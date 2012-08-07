@@ -167,7 +167,7 @@ background: #fff;
 
 #columns {margin-top:18px;}
 
-#header {
+#header-container {
   background: url('../images/headerBg.png') repeat-x;
   min-height:153px;
   background-size: cover;
@@ -175,7 +175,7 @@ background: #fff;
  }
  
 
-body.navbar-off #header {
+body.navbar-off #header-container {
 	border-bottom:5px solid #BABABA;
 }
 
@@ -254,7 +254,7 @@ body.one-sidebar .region-sidebar-first {
 
 /* HEADER ELEMENTS */
 
-#header .column {
+#header-container .column {
   padding-top: 15px;
 } 
 

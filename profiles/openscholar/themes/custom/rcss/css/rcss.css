@@ -31,7 +31,7 @@ h4 {
   margin: 0 auto;
   }
 
-#header .wrap {
+#header-container .wrap {
   margin-top: 16px;
   height: 88px;
   }
@@ -73,20 +73,20 @@ div.links {
 
 /* HEADER ITEMS */
 
-#header .column {
+#header-container .column {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   }
 
- #header h1 {
+ #header-container h1 {
   width: 272px;
   height: 66px;
   text-indent: -999em;
   background: url('../images/logo.png') no-repeat transparent;
   }
 
-#header h1 a,
-#header h1 a:visited {
+#header-container h1 a,
+#header-container h1 a:visited {
   width: 272px;
   height: 66px;
   display:block;
