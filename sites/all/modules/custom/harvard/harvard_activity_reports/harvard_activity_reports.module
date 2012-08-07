@@ -56,7 +56,7 @@ function harvard_activity_reports_query_user_by_id($id)  {
 	// make sure it's not empty
 	if($hashID != "") {
 		// query the DB and check if the user exists for this hash
-		$query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE huid = '%s'"; // setup the query
+		$query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE hashID = '%s'"; // setup the query
 		$results = db_query($query, $hashID); // perform the query
 		// make sure there are results
 		if($results->num_rows>0) {
@@ -81,13 +81,21 @@ function harvard_activity_reports_query_user_by_id($id)  {
 function harvard_activity_reports_query_user_by_site($site) {	
 	// scholar variable
 	$scholarHost = "scholar.harvard.edu";
-	
+	$scheme = "http";
 	$siteUrl = $site;
 	
 	// make sure its not empty
 	if($siteUrl != "") {
 		// parse the url
 		$parseUrl = parse_url($siteUrl);
+		// make sure they put the http:// before their site
+		// if not, we'll add it for them
+		if($parseUrl['scheme'] != $scheme) {
+			// add the scheme to it and reparse
+			$siteTemp = $scheme."://".$siteUrl;
+			// reparse it
+			$parseUrl = parse_url($siteTemp);
+		}
 		// the host is what we'll be looking for
 		$host = $parseUrl['host'];
 		// make sure it's not empty
@@ -97,6 +105,11 @@ function harvard_activity_reports_query_user_by_site($site) {
 			 	// grab the path for the url
 			 	// remove the / before the path
 				$path = substr($parseUrl['path'],1);
+				// make sure they didnt add a slash at the end of their site
+				if (strpos($path, '/') !== FALSE) { // they did, remove it
+					$slashTwo = strpos($path, '/');
+			 		$path = substr($path,0,$slashTwo);
+				}// end second if check
 			 	$provider = "spaces_og";
 			 }else{
 			 	// they are a unique user, just use the host
@@ -165,7 +178,7 @@ function harvard_activity_reports_update_huid_hash($uid,$hashID) {
  */
 function harvard_activity_reports_get_url_id () {
 	if(isset($_GET['id'])) {
-		$urlID = $_GET['id'];
+		$urlID = strip_tags($_GET['id']);
 		// make sure it's not null
 		if($urlID == '') {
 			$urlID = NULL;
@@ -191,8 +204,8 @@ function harvard_activity_reports_query_user() {
 		// do we have both?
 		if(isset($_GET['id']) && isset($_GET['site_url'])) { // yes
 			// assign both to variables
-			$hashID = trim($_GET['id']);
-			$siteUrl = $_GET['site_url'];
+			$hashID = strip_tags($_GET['id']);
+			$siteUrl = strip_tags($_GET['site_url']);
 			// first see if the user exists
 			$uid = harvard_activity_reports_query_user_by_id($hashID);
 			if($uid != 1) {
@@ -203,9 +216,9 @@ function harvard_activity_reports_query_user() {
 				if($siteUrl != "") {
 					$uid = harvard_activity_reports_query_user_by_site($siteUrl);
 					if($uid != 1) {
-						// user exists, just continue on here no reason to work with the site url
+						// user exists via site url
 						$nid =  harvard_activity_reports_query_vsite_id($uid);
-						// insert the data
+						// grab their hashedID and insert them into the pin table
 						// now update the iqss_pinserver_registration table to reflect the new hashed id
 						// $newHashID = harvard_activity_reports_update_huid_hash($uid, $hashID);
 					}else{
@@ -216,7 +229,7 @@ function harvard_activity_reports_query_user() {
 				}
 			}// end s
 		}elseif(isset($_GET['id'])){ // no check for just the site id
-			$hashID = $_GET['id'];
+			$hashID = strip_tags($_GET['id']);
 			// query the user by ID
 			$uid = harvard_activity_reports_query_user_by_id($hashID);
 			// now get their vsite
@@ -227,7 +240,7 @@ function harvard_activity_reports_query_user() {
 			}// end if
 		}elseif(isset($_GET['site_url'])){ // no check for the site url
 			// assign it to a variable
-			$siteUrl = $_GET['site_url'];
+			$siteUrl = strip_tags($_GET['site_url']);
 			// query the user by site_url
 			$uid = harvard_activity_reports_query_user_by_site($siteUrl);
 			// now get their vsite
@@ -371,7 +384,7 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID, $status) {
     			
     			// biblio basic info
     			// $currentPub->appendChild($domtree->createElement('biblio_url',$value['biblio_url']));
-    			$currentPub->appendChild($domtree->createElement('linkToPublishedArticle',"http://scholar.harvard.edu/".$value['biblio_path']));
+    			$currentPub->appendChild($domtree->createElement('linkToArticle',"http://scholar.harvard.edu/".$value['biblio_path']));
     			// biblio citation information 
     			$currentPub->appendChild($domtree->createElement('yearOfPublication',$value['biblio_year']));
     			// $currentPub->appendChild($domtree->createElement('biblio_volume',$value['biblio_volume']));
@@ -394,7 +407,13 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID, $status) {
  *  Implementation of the hook_page() function
  */
 function harvard_activity_reports_page() {
-	// test to see if this works
+	// check for any year parameter
+	if(isset($_GET['year'])) {
+		$year = $_GET['year'];
+	}else {
+		// assign year to the current year
+		$year = date("Y");
+	}
 	// load up the user from the query
 	$nid = harvard_activity_reports_query_user();
 	// check to make sure we have the users HUID or site_url
@@ -420,72 +439,78 @@ function harvard_activity_reports_page() {
 			// node load in all the data, found the MySQL query to get the same data was intensive and just about as heavy
 			// so to save work, we'll back to node load 
 			$biblioDataRow = node_load($xmlLoad['nid'], NULL, TRUE);
-			// push the data needed into the array by key name
-			$biblioDataArray[$counter]['biblio_nid'] = $biblioDataRow->nid;
-			$biblioDataArray[$counter]['biblio_title'] = $biblioDataRow->title;
-			$biblioDataArray[$counter]['biblio_url'] = $biblioDataRow->biblio_url;
-			$biblioDataArray[$counter]['biblio_type_name'] = $biblioDataRow->biblio_type_name;
-			$biblioDataArray[$counter]['biblio_path'] = $biblioDataRow->path;
-			
-			// grab the citation data now
-			$biblioDataArray[$counter]['biblio_year'] = $biblioDataRow->biblio_year;
-			$biblioDataArray[$counter]['biblio_secondary_title'] = $biblioDataRow->biblio_secondary_title;
-			// $biblioDataArray[$counter]['biblio_volume'] = $biblioDataRow->biblio_volume; - not needed (yet)
-			// $biblioDataArray[$counter]['biblio_issue'] = $biblioDataRow->biblio_issue; - not needed (yet)
-			// push all authors from the citations list into another array
-			$contributers = $biblioDataRow->biblio_contributors[1];
-			// author work
-				// get the counts of the number of authors
-				$authorCounter = 1; 
-				$authorCount = count($contributers);
-				$authorList = '';
-				// grab out all the contributers and list them
-				foreach($contributers as $contributeAuthor){
-					// as long as there are more than one author 
-					if($authorCount !=1){
-						if($authorCounter == $authorCount) {
-							// append an "and" at the end
-							$authorList .= " and " . $contributeAuthor['name'];
-						}elseif ($authorCount == 0) {
+			// check to make sure we're greater than or = too the $year variable
+			if($biblioDataRow->biblio_year >= $year) {
+				// push the data needed into the array by key name
+				$biblioDataArray[$counter]['biblio_nid'] = $biblioDataRow->nid;
+				$biblioDataArray[$counter]['biblio_title'] = $biblioDataRow->title;
+				$biblioDataArray[$counter]['biblio_url'] = $biblioDataRow->biblio_url;
+				$biblioDataArray[$counter]['biblio_type_name'] = $biblioDataRow->biblio_type_name;
+				$biblioDataArray[$counter]['biblio_path'] = $biblioDataRow->path;
+				
+				// grab the citation data now
+				$biblioDataArray[$counter]['biblio_year'] = $biblioDataRow->biblio_year;
+				$biblioDataArray[$counter]['biblio_secondary_title'] = $biblioDataRow->biblio_secondary_title;
+				// $biblioDataArray[$counter]['biblio_volume'] = $biblioDataRow->biblio_volume; - not needed (yet)
+				// $biblioDataArray[$counter]['biblio_issue'] = $biblioDataRow->biblio_issue; - not needed (yet)
+				// push all authors from the citations list into another array
+				$contributers = $biblioDataRow->biblio_contributors[1];
+				// author work
+					// get the counts of the number of authors
+					$authorCounter = 1; 
+					$authorCount = count($contributers);
+					$authorList = '';
+					// grab out all the contributers and list them
+					foreach($contributers as $contributeAuthor){
+						// as long as there are more than one author 
+						if($authorCount !=1){
+							if($authorCounter == $authorCount) {
+								// append an "and" at the end
+								$authorList .= " and " . $contributeAuthor['name'];
+							}elseif ($authorCount == 0) {
+								$authorList .= $contributeAuthor['name'];
+							}else{ // append a comma after each other
+								$authorList .= $contributeAuthor['name'] . ", ";
+							}
+						}else{ // only one author, no need for "ands" or ","
 							$authorList .= $contributeAuthor['name'];
-						}else{ // append a comma after each other
-							$authorList .= $contributeAuthor['name'] . ", ";
 						}
-					}else{ // only one author, no need for "ands" or ","
-						$authorList .= $contributeAuthor['name'];
+						$authorCounter++;		
 					}
-					$authorCounter++;		
-				}
-				// push the final author list into the main array
-			$biblioDataArray[$counter]['biblio_author'] = $authorList;
-			// increment the counter
-			$counter++;
+					// push the final author list into the main array
+				$biblioDataArray[$counter]['biblio_author'] = $authorList;
+				// increment the counter
+				$counter++;
+			}// end if
 		}// end foreach
 		// call the xml creation function
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
-	}elseif($nid==1){
+	}elseif($nid==1){ // huid not found
 		$status = "unknown";
 		$huID = harvard_activity_reports_get_url_id();
-		$biblioDataArray['biblio_error_message'] = "No data found - please try again with a site url";
+		//$biblioDataArray['biblio_error_message'] = "No data found - please try again with a site url";
+		$biblioDataArray = '';
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
-	}elseif($nid==2){
+	}elseif($nid==2){ // site url not found
 		$status = "unknown";
 		$huID = harvard_activity_reports_get_url_id();
-		$biblioDataArray['biblio_error_message'] = "No data found for that site url - please try again with an huid.";
+		//$biblioDataArray['biblio_error_message'] = "No data found for that site url - please try again with an huid.";
+		$biblioDataArray = '';
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
-	}elseif($nid==3){
+	}elseif($nid==3){ // both site url and huid not found
 		$status = "unknown";
 		$huID = harvard_activity_reports_get_url_id();
-		$biblioDataArray['biblio_error_message'] = "Neither huid nor site has been found - please correct these errors and try again.";
+		//$biblioDataArray['biblio_error_message'] = "Neither huid nor site has been found - please correct these errors and try again.";
+		$biblioDataArray = '';
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
-	}else{
+	}else{ // just erroring out
 		$status = "error";
 		$huID = harvard_activity_reports_get_url_id();
-		$biblioDataArray['biblio_error_message'] = "Error generating xml, please try again.";
+		//$biblioDataArray['biblio_error_message'] = "Error generating xml, please try again.";
+		$biblioDataArray = '';
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}// end if nid != false
 	// send back the xml
-
 	echo $xmlReturn;	
 }//end function
 
