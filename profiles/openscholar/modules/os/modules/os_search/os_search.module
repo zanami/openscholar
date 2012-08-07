@@ -46,3 +46,23 @@ function os_search_apachesolr_query_alter($query) {
     $query->addFilter("sm_og_group_ref", $vsite->group_type.":".$vsite->id);
   }
 }
+
+/**
+ * Alter the standard node db search query
+ * @param QueryAlterableInterface $query
+ */
+function os_search_query_alter(QueryAlterableInterface $query) {
+  if(module_exists('vsite') && ($vsite = spaces_get_space())){
+    // I only want to see items in this site
+    if (!($query instanceof PagerDefault) ) return;
+    
+    $tables = $query->getTables();
+    if(isset($tables['i']) && $tables['i']['table'] == 'search_index' && isset($tables['n'])){
+      $query->innerJoin('og_membership', 'ogmem', 'ogmem.etid = n.nid');
+      $query->condition('ogmem.gid', $vsite->id, '=');
+      $query->condition('ogmem.group_type', $vsite->group_type, '=');
+      $query->condition('ogmem.entity_type', "node", '=');
+    }
+  }
+}
+
