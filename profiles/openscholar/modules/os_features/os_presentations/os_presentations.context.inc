@@ -49,6 +49,7 @@ function os_presentations_context_default_contexts() {
         ),
       ),
     ),
+    'menu' => 'presentations',
   );
   $context->condition_mode = 0;
 
