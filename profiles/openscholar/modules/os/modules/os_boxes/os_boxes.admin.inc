@@ -33,23 +33,31 @@ function os_boxes_widget_submit($form, $form_state) {
     $html = '';
     $target = '';
     $op = 'prepend';
+    $new_box = isset($form_state['box']->new) && $form_state['box']->new;
     switch ($form_state['source']) {
       case 'cp-layout':
         $b = os_boxes_os_widget($box);
         drupal_alter('os_widget', $b);
         $r = array('#theme' => 'cp_layout_widget', '#widget' => $b);
         $html = drupal_render($r);
-        $target = '.widget-container';
+        if ($new_box) {
+          $target = '.widget-container';
+        }
+        else {
+          $target = '#boxes-'.$box->delta;
+          $op = 'replace';
+        }
       break;
-      case 'inline':
-        $block = boxes_block_view($box->delta);
-        $t = _block_render_blocks(array($block));
-        $html = theme('block', $t[0]);
-        $target = '.widget-container';  // TODO: replace with the real thing
-    }
-    if (!(isset($form_state['box']->new) && $form_state['box']->new)) {
-      $target = '#boxes-box-'.$box->delta;
-      $op = 'replace';
+      default:  // coming from public view
+        // can only edit boxes from this view
+        $b = (object)os_boxes_os_widget($box);
+        $t = _block_render_blocks(array($b));
+        $block = array_shift($t);
+        $block->region = 'dummy';  // do this or else notices will throw. absolutely nothing is done with it but whatever
+        $array = array('#theme' => 'block', '#block' => $block);
+        $html = drupal_render($array);
+        $target = '#boxes-box-'.$box->delta;
+        $op = 'replace';
     }
 
     $command = 'ajax_command_'.$op;
