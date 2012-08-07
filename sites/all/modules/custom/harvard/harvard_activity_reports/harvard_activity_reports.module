@@ -136,7 +136,26 @@ function harvard_activity_reports_query_vsite_id($uid) {
 	}// end node results
 	
 	return $nid;
-}
+}// end function
+
+/**
+ * Function to update the users HUID if it doesnt already exist
+ */
+function harvard_activity_reports_update_huid_hash($uid,$hashID) {
+	$uid = $uid;
+	$hashID = $hashID;
+	// sanity check to make sure once again that this id does not exist in the table
+	$selectUid = "SELECT count(uid) AS uidCount FROM {iqss_pinserver_register} WHERE uid = %d";
+	$uidResults = db_query($selectUid, $uid);
+	if($uidResults->num_rows>0) {
+		// no nothing
+	}else{
+		// insert the new value
+		db_query("INSERT INTO {iqss_pinserver_register} (uid, hashID) VALUES ('%s', '%s')", $uid, $hashID  );
+	}
+	// no need to return anything
+	return $return;
+}// end function 
 
 /**
  * 
@@ -166,7 +185,9 @@ function harvard_activity_reports_query_user() {
 					if($uid != 1) {
 						// user exists, just continue on here no reason to work with the site url
 						$nid =  harvard_activity_reports_query_vsite_id($uid);
+						// insert the data
 						// now update the iqss_pinserver_registration table to reflect the new hashed id
+						// $newHashID = harvard_activity_reports_update_huid_hash($uid, $hashID);
 					}else{
 						$nid = 2;
 					}
@@ -245,7 +266,7 @@ function subval_sort($a,$subkey) {
 		$c[] = $a[$key];
 	}
 	return $c;
-}
+}// end function
 
 /**
  * 
@@ -345,9 +366,7 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID, $status) {
     		break;
     }// end case switch    
     $xmlReturn = $domtree->saveXML();
-    
-    return $xmlReturn;
-	
+    return $xmlReturn;	
 }// end function
 
 /**
