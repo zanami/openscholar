@@ -161,9 +161,9 @@ function harvard_activity_reports_update_huid_hash($uid,$hashID) {
 	// sanity check to make sure once again that this id does not exist in the table
 	$selectUid = "SELECT count(uid) AS uidCount FROM {iqss_pinserver_register} WHERE uid = %d";
 	$uidResults = db_query($selectUid, $uid);
-	if($uidResults->num_rows>0) {
-		// no nothing
-	}else{
+	$uidRow = db_fetch_object($uidResults);
+	$uidCount = $uidRow->uidCount;
+	if(uidCount==0) {
 		// insert the new value
 		db_query("INSERT INTO {iqss_pinserver_register} (uid, hashID) VALUES ('%s', '%s')", $uid, $hashID  );
 	}
@@ -220,7 +220,7 @@ function harvard_activity_reports_query_user() {
 						$nid =  harvard_activity_reports_query_vsite_id($uid);
 						// grab their hashedID and insert them into the pin table
 						// now update the iqss_pinserver_registration table to reflect the new hashed id
-						// $newHashID = harvard_activity_reports_update_huid_hash($uid, $hashID);
+						$newHashID = harvard_activity_reports_update_huid_hash($uid, $hashID);
 					}else{
 						$nid = 3;
 					}
