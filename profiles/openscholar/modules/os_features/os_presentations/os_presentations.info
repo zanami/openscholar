@@ -41,3 +41,5 @@ features[variable][] = node_options_presentation
 features[variable][] = node_preview_presentation
 features[variable][] = node_submitted_presentation
 features[views_view][] = os_presentations
+spaces[types][] = og
+spaces[types][] = site
