@@ -10,7 +10,7 @@
   }
 
 body,
-#header,
+#header-container, 
 #footer,
 #page {
   background: #2f341f;

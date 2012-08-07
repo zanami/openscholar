@@ -67,7 +67,7 @@ h1 a, h2 a, h3 a, .region-sidebar-second a {
 
 /* LAYOUT ELEMENTS */
 
-#header,
+#header-container, 
 #menu-bar
  {
   background: #A03A25;

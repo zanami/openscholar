@@ -396,6 +396,104 @@ background-color: #52854C !important;
 color: #FFF !important;
 }
 
+/** CONTEXTUAL ADD NEW AND CONFIG DROPDOWN LINK CONTROLS **/
+.contextual-controls-wrapper {
+	float:right;
+	width:130px;
+	margin:15px 0 10px 0;
+	position:relative;
+	z-index: 2000;
+}
+
+.contextual-controls-wrapper a {
+	color:#293352;
+    font-family:helvetica;
+    font-style:normal;
+}
+
+.contextual-controls-wrapper a:hover {
+	color:#293352;
+    text-decoration:none;
+}
+
+
+.ctools-dropdown.add_new {
+	float:left;
+	display:inline;
+	 background: url("../images/scholarbase-sprite.png") no-repeat scroll 3px -380px #A1D4A1 !important;
+    border-radius: 5px 5px 5px 5px;
+    float: left;
+    margin: 0 10px 0 0;
+    padding: 3px 8px 1px 11px !important;
+	}
+
+html.js div.ctools-dropdown a.ctools-dropdown-text-link {
+    background: none;
+    padding:0 0 0 13px;
+    font-size:13px;
+    color: #293352;
+    text-decoration:none;
+}	
+
+	
+.ctools-dropdown.section_links {
+	float:right;
+	display:inline;
+	}	
+	
+.contextual-controls-wrapper div.ctools-dropdown.section_links a.ctools-dropdown-text-link {
+ float:right;
+  background: url('../images/scholarbase-sprite.png') no-repeat 0px -331px !important;
+  width:23px;
+  height:23px;
+  text-indent: -9999px;
+  margin-left:-20px;
+}
+
+.contextual-controls-wrapper div.ctools-dropdown.section_links a.ctools-dropdown-text-link:hover {
+ float:right;
+  background: url('../images/scholarbase-sprite.png') no-repeat 0px -355px !important;
+  width:23px;
+  height:23px;
+  text-indent: -9999px;
+  margin-left:-20px;
+}	
+
+html.js div.ctools-dropdown div.ctools-dropdown-container {
+background: none repeat scroll 0 0 #FFFFFF !important;
+    border: 1px solid #A8BED8;
+    box-shadow: 0 2px 5px #777777;
+    color: #293352 !important;
+    margin: 0 1px 0 0;
+    opacity: 0.93;
+    padding: 5px 0;
+    right: 45px;
+    width: auto;
+}
+
+html.js div.ctools-dropdown div.ctools-dropdown-container ul li a {
+    color: #293352;
+    padding: 0 0 2px 5px;
+    text-decoration: none;
+    font-weight:normal;
+    font-size:13px;
+    font-style:normal;
+}
+
+
+html.js div.ctools-dropdown.section_links div.ctools-dropdown-container {
+  margin: 22px 1px 0 0;
+  right: 12px;
+}
+
+
+html.js div.ctools-dropdown div.ctools-dropdown-container ul li span {
+    background:#777;
+    color:#FFF;
+    padding-left:5px;
+    font-family:helvetica;
+}
+
 /** NICE MENU OVERRIDES **/
 
 ul.nice-menu {
@@ -406,6 +504,7 @@ ul.nice-menu {
 ul.nice-menu li {
  border:none;
  background-color: none;
+ background: none;
 }
 
 
@@ -458,6 +557,7 @@ top: 66px;
 
 #block-cp-cp-minimenu ul li {
 	background: url("/profiles/openscholar/modules/cp/theme/images/topmenu-icons-mini.png") no-repeat scroll 0 0 transparent;
+	 list-style: none;
    }
 
 #block-cp-cp-minimenu ul li.menu-path-cp-content {
