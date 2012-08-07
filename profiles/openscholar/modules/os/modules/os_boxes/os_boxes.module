@@ -31,10 +31,19 @@ function os_boxes_menu() {
     'page callback' => 'os_boxes_delete_widget',
     'page arguments' => array(2),
     'access callback' => 'boxes_access_admin',
+    'type' => MENU_CALLBACK,
+    'file' => 'os_boxes.admin.inc',
+    'weight' => 2,
+  );
+  $items['os/boxes/%os_boxes/remove'] = array(
+    'title' => 'Remove Widget',
+    'page callback' => 'os_boxes_remove_widget',
+    'page arguments' => array(2),
+    'access callback' => 'boxes_access_admin',
     'type' => MENU_LOCAL_TASK,
     'file' => 'os_boxes.admin.inc',
     'context' => MENU_CONTEXT_INLINE,
-    'weight' => 2,
+    'weight' => 3,
   );
   return $items;
 }
@@ -214,4 +223,11 @@ function os_boxes_block_view_alter(&$array, $block) {
 
     unset($array['controls']);
   }
+}
+
+/**
+ * Remove core block link from contextual
+ */
+function os_boxes_menu_contextual_links_alter(&$links, $router_item, $path) {
+  unset($links['block-configure']);
 }
