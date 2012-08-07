@@ -688,7 +688,7 @@ function os_system_info_alter(&$info, $file, $type){
   if (isset($info['base theme']) && $info['base theme'] == 'os_basetheme') {
     //$base = drupal_find_base_themes(list_themes(), $file->name);
 
-    if (isset($base['os_basetheme'])) {
+    //if (isset($base['os_basetheme'])) {
       $info['regions'] += array(
         'header_top' => 'Header Top',
         'header_first' => 'Header Main',
@@ -701,6 +701,6 @@ function os_system_info_alter(&$info, $file, $type){
         'content_second' => 'Content Right',
         'content_bottom' => 'Content Bottom'
       );
-    }
+    //}
   }
 }
