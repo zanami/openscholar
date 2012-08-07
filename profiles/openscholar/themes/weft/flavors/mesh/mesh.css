@@ -21,7 +21,7 @@ a, a:visited {
   background: #ededed;
   }
 
-#header,
+#header-container, 
 #header-container h1,
 #header-container h2,
 #header-container h3,

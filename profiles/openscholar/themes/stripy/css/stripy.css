@@ -40,7 +40,7 @@ h2,
 h3,
 .region-sidebar-second a,
 #menu-bar,
-#header,
+#header-container, 
 .region-sidebar-second,
 .region-sidebar-first {
   font-weight: normal;
