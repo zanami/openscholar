@@ -12,7 +12,6 @@ dependencies[] = list
 dependencies[] = og
 dependencies[] = og_ui
 dependencies[] = os
-dependencies[] = os_search
 dependencies[] = strongarm
 dependencies[] = views
 features[context][] = os_sitewide_front
