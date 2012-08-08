@@ -328,6 +328,17 @@ function cp_toolbar_view(){
 }
 
 /**
+ * Make a decision about the active theme
+ */
+function cp_os_active_theme(){
+
+  //Turn the CP theme on
+  if (cp_use_cp_theme()) {
+    return variable_get('os_cp_theme', 'cp');
+  }
+}
+
+/**
  * Gets only the top level items below the 'admin' path.
  *
  * @return An array containing a menu tree of top level items below the 'admin'
