@@ -301,14 +301,14 @@ function harvard_activity_reports_subval_sort($a,$subkey) {
  * Function to create the XML based on the info passed into it from the load_user_info functon
  * @param unknown_type $nodeLoad
  */
-function harvard_activity_reports_create_xml($nodeLoad, $huID, $status) {
+function harvard_activity_reports_create_xml($nodeLoad, $huID, $status,$nid) {
 	$xmlReturn = '';
 	$huID = $huID;
+	$siteNID = $nid;
 	// pull in the xml
 	$xml = $nodeLoad;
 	// grab the status
 	$xmlStatus = $status;
-	
 	/* create a dom document with encoding utf8 */
     $domtree = new DOMDocument('1.0', 'UTF-8');
     $domtree->formatOutput=true;
@@ -345,6 +345,9 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID, $status) {
     // now the test node
     $asAttValue = $domtree->createTextNode($xmlStatus);
     $asAtt->appendChild($asAttValue);
+	
+    // load in the vsite data
+    $vsite=vsite_get_vsite($siteNID);
     // case swith on the status
     switch($xmlStatus) {
     	case "ok":
@@ -374,17 +377,18 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID, $status) {
     				// publication source value
     				$pubSourceValue = $domtree->createTextNode('OpenScholar');
     				$pubSource->appendChild($pubSourceValue);
+					
+    				// Get the URL of the publication on the users site only
+					$nid = $value['biblio_nid']; // Node ID
+					// load in the url from the vsite module
+					$vsite->get_absolute_url('node/' . $nid);
+    				
     			// citation info
     			$currentPub->appendChild($domtree->createElement("citation",$value['biblio_author'] . ". " . $value['biblio_title'] . ". " . $value['biblio_secondary_title']));
     			
     			// biblio basic info
-    			// $currentPub->appendChild($domtree->createElement('biblio_url',$value['biblio_url']));
-    			// check to see if the path is empty - if so, just point it back at the node id
-    			if($value['biblio_path']=="") {
-    				$currentPub->appendChild($domtree->createElement('linkToArticle',"http://scholar.harvard.edu/".$value['biblio_site_name']."/".$value['biblio_nid']));
-    			}else {
-    				$currentPub->appendChild($domtree->createElement('linkToArticle',"http://scholar.harvard.edu/".$value['biblio_path']));
-    			}// end if
+    			// create the proper linkTo
+    			$currentPub->appendChild($domtree->createElement('linkToArticle',$value['biblio_url']));
     			// biblio citation information 
     			$currentPub->appendChild($domtree->createElement('yearOfPublication',$value['biblio_year']));
     			// $currentPub->appendChild($domtree->createElement('biblio_volume',$value['biblio_volume']));
@@ -425,7 +429,6 @@ function harvard_activity_reports_page() {
 		$huidResult = db_query($selectHUID, $nid);
 		$huidRow = db_fetch_object($huidResult);
 		$huID = $huidRow->huid;
-
 		// now load in the user's biblio 
 		$xml = harvard_activity_reports_load_user_info($nid);
 		// create an instance of the citation class
@@ -484,18 +487,19 @@ function harvard_activity_reports_page() {
 			}// end if
 		}// end foreach
 		// call the xml creation function
-		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
+		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status,$nid);
 	}elseif($nid==FALSE){ // huid not found
 		$status = "unknown";
 		$huID = harvard_activity_reports_get_url_id();
 		//$biblioDataArray['biblio_error_message'] = "No data found - please try again with a site url";
 		$biblioDataArray = '';
-		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
+		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status,$nid);
 	}else{
+		$nid=NULL;
 		$status = "error";
 		$huID = harvard_activity_reports_get_url_id();
 		$biblioDataArray = '';
-		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
+		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status,$nid);
 	}// end if nid != false
 	// send back the xml
 	
