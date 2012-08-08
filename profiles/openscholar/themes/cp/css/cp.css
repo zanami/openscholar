@@ -3,6 +3,12 @@
 
 /*#messages {display:none;} */
 
+
+#overlay-content #content-column .content-inner {
+    margin-left: 0;
+    margin-right: 260px;
+}
+
 /* GENERAL CP STYLES */
 
 .region-sidebar-first .region-inner {
@@ -135,14 +141,13 @@ td {
     
 #edit-menu-table {width:775px;}   
 
-/* CP CONTENT */ 
+ /* CP USERS */
 .page-cp-users .view-filters {
 	padding:8px; 
 	background:#F2F3F3;
     border: 1px solid #DADADA;
     }
     
-/* CP USERS */ 
 .page-cp-users #user-register-form {
 	width:550px;
 	padding:8px;
@@ -150,8 +155,15 @@ td {
 	border: 1px solid #DADADA;
     }   
 
+/* CP CONTENT */
+.page-cp-content dt a {
+	font-size:16px;
+}
 
 
+.page-cp-content dd {
+    margin: 0 0 1.5em 0;
+}
 
 
 

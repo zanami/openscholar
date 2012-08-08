@@ -9,7 +9,7 @@ html, body {
      font: 0.93em/22px Arial,Verdana,sans-serif;
 }
 
-#header, #menu-bar {
+#header-container,  #menu-bar {
      margin: 0 auto;
      width: 960px;
 }
