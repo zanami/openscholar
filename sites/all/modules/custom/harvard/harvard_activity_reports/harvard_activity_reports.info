@@ -1,5 +1,8 @@
 name = Harvard Activity Report
 description = This module allows for FAR users to inport their publications from OpenScholar into their FAR websites.
+dependencies[] = "purl"
+dependencies[] = "biblio"
+dependencies[] = "iqss_pinserver_register"
 package = "OpenScholar Harvard"
 version = "6.x-beta1"
 core = 6.x
