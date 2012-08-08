@@ -90,9 +90,7 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     
     
   }
-  function prepareRow($current_row) {
-    parent::prepareRow($current_row);
-    
+  function prepareRow($current_row) {    
         
     //In testing there were a handful of instances of images in someone else's gallery.
     //Views' spaces_current_space prevented those from showing up in the gallery.
@@ -146,5 +144,7 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
       'id' => $current_row->nid,
     );
     */
+    return parent::prepareRow($current_row); //false -> skip this row
+    
   } 
 }
