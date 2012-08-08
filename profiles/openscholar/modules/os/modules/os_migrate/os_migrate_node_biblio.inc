@@ -17,8 +17,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     
     
     //$this->addUnmigratedDestinations($fields)
-    function _subfield_prefix($str) { return 'field_biblio_image:' . $str; }
-    $this->addUnmigratedDestinations(array_map('_subfield_prefix', array('file_class', 'language', 'destination_dir', 'destination_file', 'file_replace', 'preserve_files', 'source_dir')), t('DNM'));
+    $this->addUnmigratedDestinations(parent::subfields('field_biblio_image', array('file_class', 'language', 'destination_dir', 'destination_file', 'file_replace', 'preserve_files', 'source_dir')), t('DNM'));
     
     $this->addUnmigratedSources(array('field_biblio_image_fid', 'field_biblio_image_list', 'field_biblio_image_data'), t('DNM'));
    
@@ -58,8 +57,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     return $fields;
   }
   
-  public function prepareRow($current_row) {
-    parent::prepareRow($current_row); 
+  public function prepareRow($current_row) { 
 		
     /**
      * This method is called while looping over the results of the query provided earlier.
@@ -82,6 +80,9 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
 		    $current_row->{'field_biblio_image:title'} = isset($data['title']) ? $data['title'] : '';
 		  }
 		}
+		
+		return parent::prepareRow($current_row); //false -> skip this row
+		
 		
   }
   

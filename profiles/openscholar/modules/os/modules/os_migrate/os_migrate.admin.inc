@@ -85,6 +85,13 @@ EOF
     '#type' => 'textfield',
     '#default_value' => variable_get('os_migrate_force_og', FALSE),
   );
+  
+  $form['dev_fieldset']['os_migrate_legacy_site'] = array(
+      '#title' => t('Legacy Site'),
+      '#description' => t('(optional) Full URL to site from which content is being migrated.  Nodes that yield errors will attempt to link back to the original content if this setting is provided.'),
+      '#type' => 'textfield',
+      '#default_value' => variable_get('os_migrate_legacy_site', FALSE),
+  );
   return system_settings_form($form);
 }
 

@@ -182,8 +182,16 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       ->condition('type', 'vsite', '=')
       ->condition('nid', $current_row->group_nid, '=');
     if (!$query->execute()->fetchAssoc()) {
-      Migration::displayMessage(t('Vsite @gid does not exist.  Assuming node @nid is orphaned.', 
+      $os_migrate_legacy_site = variable_get('os_migrate_legacy_site', '');
+      if (strlen($os_migrate_legacy_site)) {
+        $blank = array('attributes' => array('target'=>'_blank'));
+        Migration::displayMessage(t('Vsite !gid does not exist.  Assuming node !nid is orphaned.',
+          array('!gid' => l($current_row->group_nid, $os_migrate_legacy_site . '/node/' . $current_row->group_nid, $blank),
+                 '!nid' => l($current_row->nid, $os_migrate_legacy_site . '/node/' . $current_row->nid, $blank))));
+      } else {
+        Migration::displayMessage(t('Vsite @gid does not exist.  Assuming node @nid is orphaned.', 
                                 array('@gid' => $current_row->group_nid, '@nid' => $current_row->nid)));
+      }
       return FALSE;
     }
     

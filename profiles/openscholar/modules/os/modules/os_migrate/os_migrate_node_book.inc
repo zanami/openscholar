@@ -16,8 +16,8 @@ class BookNodeOSMigration extends AbstractNodeOSMigration {
     
   }
   
-  public function prepareRow($row) {
-    $row;
+  function prepareRow($current_row) {
+    return parent::prepareRow($current_row);
   }
 }
 

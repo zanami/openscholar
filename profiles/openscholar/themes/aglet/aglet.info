@@ -25,19 +25,6 @@ os[cp_layout_css] = cp-layout-map.css
 
 
 
-;----------// Site Features
-
-  features[] = logo
-  features[] = name
-  features[] = slogan
-  features[] = node_user_picture
-  features[] = comment_user_picture
-  features[] = comment_user_verification
-  features[] = favicon
-  features[] = main_menu
-  features[] = secondary_menu
-
-
 ;----------// Theme Settings
 
   ; Layout settings - Standard bigscreen

@@ -62,8 +62,8 @@ class StubNodeOSMigration extends AbstractNodeOSMigration {
      * file fields for images.  While looping over d6 gallery nodes, prepareRow uses additional queries
      * to get those image nodes and extract everything needed by file fields.)
      */
+
+    return parent::prepareRow($current_row); //false -> skip this row
     
-    //again, shouldn't this live in parent?
-    //parent::prepareRowCCK($current_row); //handle listed cck fields.
   }
 }

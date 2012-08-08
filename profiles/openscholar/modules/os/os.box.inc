@@ -24,7 +24,7 @@ function os_default_box() {
     'additional_classes' => '',
   );
   $export['os_addthis'] = $box;
-  
+
   $box = new stdClass();
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
@@ -37,6 +37,48 @@ function os_default_box() {
     'additional_classes' => '',
   );
   $export['os_taxonomy_fltr_cat'] = $box;
+
+  $box = new stdClass();
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
+  $box->delta = 'shield';
+  $box->plugin_key = 'os_shields_box';
+  $box->title = '';
+  $box->description = 'Shield';
+  $box->options = array();
+  $export['shield'] = $box;
+
+  $box = new stdClass();
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
+  $box->delta = 'site_info';
+  $box->plugin_key = 'os_boxes_site_info';
+  $box->title = '';
+  $box->description = 'Site Info';
+  $box->options = array(
+    'site_title' => 'Your Name',
+    'descrip' => 'Hover over here, and then click the gear to change me.',
+    'address1' => '13 Somewhere Dr.',
+    'address2' => 'That Town, USA',
+  );
+  $export['site_info'] = $box;
+
+  $box = new stdClass();
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
+  $box->delta = 'site_logo';
+  $box->plugin_key = 'os_boxes_site_logo';
+  $box->title = '';
+  $box->description = 'Site Logo';
+  $box->options = array(
+    'visibility' => 'feature',
+    'fid' => NULL,
+    'x' => 0,
+    'y' => 0,
+    'height' => 100,
+    'width' => 150,
+  );
+  $export['site_logo'] = $box;
 
   return $export;
 }
