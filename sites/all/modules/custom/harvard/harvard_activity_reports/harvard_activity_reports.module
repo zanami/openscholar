@@ -469,7 +469,7 @@ function harvard_activity_reports_page() {
 						if($authorCount !=1){
 							if($authorCounter == $authorCount) {
 								// append an "and" at the end
-								$authorList .= " and " . $contributeAuthor['name'];
+								$authorList .= "and " . $contributeAuthor['name'];
 							}elseif ($authorCount == 0) {
 								$authorList .= $contributeAuthor['name'];
 							}else{ // append a comma after each other
@@ -502,7 +502,6 @@ function harvard_activity_reports_page() {
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status,$nid);
 	}// end if nid != false
 	// send back the xml
-	
 	echo $xmlReturn;	
 }//end function
 
