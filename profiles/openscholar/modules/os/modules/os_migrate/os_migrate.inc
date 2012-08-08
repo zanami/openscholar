@@ -292,32 +292,44 @@ abstract class OSMigration extends Migration {
      * contain inline objects that may not be in inline table
      **/
     function os_migrate_list_inline_files($nid) {
-  
-    $query = $this->d6_db_select('node', 'n')
-      ->condition('n.nid', $nid, '=');
-    $query->join('content_field_os_inline_files', 'cff', 'n.nid = cff.nid');
-    $query->fields('cff', array('field_os_inline_files_fid'));
-    $query->join('content_field_os_inline_image', 'cfi', 'n.nid = cfi.nid');
-    $query->fields('cfi', array('field_os_inline_image_fid'));
-    $query->join('content_field_os_inline_oembed', 'cfu', 'n.nid = cfu.nid');
-    $query->fields('cfu', array('field_os_inline_oembed_url'));
-    $query->join('node_revisions', 'nr', 'n.nid = nr.nid');
-    
-    $query->condition(db_or()
-      ->isNotNull('cff.field_os_inline_files_fid')
-      ->isNotNull('cfi.field_os_inline_image_fid')
-      ->isNotNull('cfu.field_os_inline_oembed_url')
-      ->condition(db_or()
-        ->condition('body', '%<iframe%', 'LIKE')
-        ->condition('body', '%<object%', 'LIKE')
-        ));
-    
-    $files = array();
-    foreach ($query->execute() as $row) {
-      $arr = array_filter((array)$row);
-      if (!count($arr)) { $arr['body'] = TRUE; }      
-      $files[] = $arr;
-    }
+      $files = array();
+      
+      //map of tables/fields which contain references to inline media
+      $table_fields = array(
+        'content_field_os_inline_files' => 'field_os_inline_files_fid',
+        'content_field_os_inline_image' => 'field_os_inline_image_fid',
+        'content_field_os_inline_oembed' => 'field_os_inline_oembed_url',
+      );
+      
+      //query each table individually.  one big query consumes too much memory.
+      foreach($table_fields as $table => $field) {
+        $query = $this->d6_db_select('node', 'n')
+          ->condition('n.nid', $nid, '=');
+        $query->join($table, 't', 'n.nid = t.nid');
+        $query->fields('t', array($field));
+        $query->isNotNull($field);
+      
+        foreach ($query->execute() as $row) {
+          $files[] = array_filter((array)$row);
+        }
+      }
+      
+      //and check the node bodies (done separately since condition is more complicated
+      
+      $query = $this->d6_db_select('node', 'n')
+        ->condition('n.nid', $nid, '=');
+      $query->join('node_revisions', 'nr', 'n.nid = nr.nid');
+      $query->fields('nr', array('body'));
+      $query->condition(db_or() 
+        ->condition('nr.body', '%<iframe%', 'LIKE')
+        ->condition('nr.body', '%<object%', 'LIKE')
+      );
+      
+      foreach ($query->execute() as $row) {
+        $arr = array_filter((array)$row);
+        if (!count($arr)) { $arr['body'] = TRUE; }
+        $files[] = $arr;
+      }
     
     return $files;
   }    
