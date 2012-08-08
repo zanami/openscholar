@@ -6,7 +6,6 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     // Let AbstractNode handle the source, dest, and map.
     parent::__construct('media_gallery', 'gallery'); 
     //in d7, images are fields of the media gallery.  in 6, images were a separate content type.  errr.
-    $this->dependencies = array(); //just for dev, lets skip the horrible inline shenanigans
     
     //a separate import for projects?
     $this->description = t('OS galleries');    
