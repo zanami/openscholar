@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * os_search.context.inc
+ * os_search_solr.context.inc
  */
 
 /**
  * Implements hook_context_default_contexts().
  */
-function os_search_context_default_contexts() {
+function os_search_solr_context_default_contexts() {
   $export = array();
 
   $context = new stdClass();
