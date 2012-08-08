@@ -314,10 +314,9 @@ function os_custom_theme(){
     $active_theme = array_pop($active_themes);
   }
   
-  if($active_theme){
-    return $theme;
+  if(!empty($active_theme)){
+    return $active_theme;
   }
-  
 }
 
 /**
