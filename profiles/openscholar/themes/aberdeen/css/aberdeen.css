@@ -21,7 +21,7 @@ font-family: helvetica,arial,sans-serif;
  
 /* LAYOUT ELEMENTS */
 
-#columns {background:#fff;height:100%;}
+#columns {background:#fff;height:100%;padding: 0;}
 
 .sidebar {background:#eef2f2;min-height:100%;}
 
@@ -60,8 +60,9 @@ a:hover {text-decoration:underline;}
    padding-right:11px;
 }
 
-#block-boxes-site_info h1 a {font-family: 'Palatino Linotype'; font-size:1.6em;text-decoration:none;}
-#block-boxes-site_info h2, #block-boxes-site_info p {color:#777;}
+.block-boxes-os_boxes_site_info h1 a {font-family: 'Palatino Linotype'; font-size:1.6em;text-decoration:none;}
+.block-boxes-os_boxes_site_info h2 {font-size:1.4em;}
+.block-boxes-os_boxes_site_info h2, .block-boxes-os_boxes_site_info p {color:#777;}
 
 h2,
 h3,

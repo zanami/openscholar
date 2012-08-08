@@ -406,7 +406,7 @@ function cp_menu_wizard_finish(&$form_state) {
   if ($values['type'] == 'page' && $values['new_or_select'] == 'new') {
     cp_menu_cache_set($form_state['object_id'], $values);
 
-    if ($values['js']) {
+    if ($form_state['ajax']) {
     	ctools_include('ajax');
     	ctools_include('modal');
     	$commands = array();

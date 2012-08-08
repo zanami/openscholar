@@ -66,11 +66,12 @@ h1 a, h2 a, h3 a, .region-sidebar-second a {
     }
 
 /* LAYOUT ELEMENTS */
-
+#header,
 #header-container, 
 #menu-bar
  {
   background: #A03A25;
+
   }
 
 
@@ -106,6 +107,14 @@ body.header-left-main #header-container {
     font-size: 18px;
      line-height: 1.3em;
     }
+
+#header-container h1,
+#header-container h2 {
+ margin-bottom: 0;
+ margin-top: 0;
+}
+
+
 
 #header-container h1,
 #header-container h2,

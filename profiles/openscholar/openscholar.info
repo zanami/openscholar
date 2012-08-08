@@ -68,6 +68,7 @@ dependencies[] = os
 dependencies[] = os_files
 dependencies[] = os_boxes
 dependencies[] = os_wysiwyg
+dependencies[] = os_search_db
 
 ; Control Panel
 dependencies[] = cp
