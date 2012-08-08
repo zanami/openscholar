@@ -35,7 +35,6 @@ class EventNodeOSMigration extends AbstractNodeOSMigration {
   
 
   public function prepareRow($current_row) {
-    parent::prepareRow($current_row); 
 
     /**
      * This method is called while looping over the results of the query provided earlier.
@@ -48,7 +47,6 @@ class EventNodeOSMigration extends AbstractNodeOSMigration {
      * to get those image nodes and extract everything needed by file fields.)
      */
     
-    //again, shouldn't this live in parent?
-    //parent::prepareRowCCK($current_row); //handle listed cck fields.
+    return parent::prepareRow($current_row); //false -> skip this row
   }
 }
