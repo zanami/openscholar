@@ -1,9 +1,10 @@
 <?php
+
 /**
- * Provides frequently used functions that get theme info, settings etc.
+ * @file
+ * Provides frequently used functions that get theme info, settings and
+ * other data.
  */
-global $theme_key;
-$theme_name = $theme_key;
 
 /**
  * Retrieve a setting for the current theme or for a given theme.
@@ -18,7 +19,6 @@ $theme_name = $theme_key;
  * @see http://api.drupal.org/api/drupal/includes!theme.inc/function/theme_get_setting/7
  */
 function at_get_setting($setting_name, $theme = NULL) {
-
   $cache = &drupal_static(__FUNCTION__, array());
 
   // If no key is given, use the current theme if we can determine it.
@@ -63,7 +63,6 @@ function at_get_setting($setting_name, $theme = NULL) {
  * @param $theme_name
  */
 function at_get_info($theme_name) {
-
   $info = drupal_static(__FUNCTION__, array());
   if (empty($info)) {
     $lt = list_themes();
@@ -87,7 +86,6 @@ function at_get_info($theme_name) {
  * @param $theme_name, usually the active theme.
  */
 function at_get_info_trail($theme_name) {
-
   $info_trail = drupal_static(__FUNCTION__, array());
   if (empty($info_trail)) {
     $lt = list_themes();
@@ -121,7 +119,6 @@ function at_get_info_trail($theme_name) {
  * @param $theme_name, usually the active theme.
  */
 function at_get_css_files($theme_name) {
-
   $styles = &drupal_static(__FUNCTION__, array());
   if (empty($styles)) {
     if ($cache = cache_get('at_get_css_files')) {
@@ -153,7 +150,7 @@ function at_get_css_files($theme_name) {
           $libraries[$lib] = $files;
         }
         foreach ($libraries as $lib_key => $library) {
-          if(is_array($library) && !empty($library)) {
+          if (is_array($library) && !empty($library)) {
             foreach ($library as $lib_file) {
               $styles[$lib_file->uri] = array(
                 'type' => 'library',
@@ -167,7 +164,7 @@ function at_get_css_files($theme_name) {
       // Theme info defined files
       $info_data = at_get_info_trail($theme_name);
       foreach ($info_data as $provider => $theme_info) {
-        foreach($theme_info as $this_info => $info) {
+        foreach ($theme_info as $this_info => $info) {
           if ($this_info == 'info') {
             // AT Core defined
             if (isset($info['unset_core'])) {
@@ -199,10 +196,29 @@ function at_get_css_files($theme_name) {
           }
         }
       }
-      array_unique($styles);
+
       cache_set('at_get_css_files', $styles, 'cache');
     }
   }
 
   return $styles;
+}
+
+/**
+ * Return a device context.
+ * Wrapper for browscap_get_browser().
+ */
+function at_get_browser() {
+  $is_mobile = &drupal_static(__FUNCTION__, array());
+  if (empty($is_mobile)) {
+    $is_mobile = FALSE;
+    if (function_exists('browscap_get_browser')) {
+      $browser = browscap_get_browser();
+      if ($browser['ismobiledevice'] == 1) {
+        $is_mobile = TRUE;
+      }
+    }
+  }
+
+  return $is_mobile;
 }

@@ -1,5 +1,9 @@
 <?php
+
 /**
+ * @file
+ * Gpanel snippet for the five column layout
+ *
  * Gpanels are drop in multi-column snippets for displaying blocks.
  * Most Gpanels are stacked, meaning they have top and bottom regions
  * by default, however you do not need to use them. You should always
@@ -13,11 +17,11 @@
 Region Deinitions:
 
 ; 5 col
-regions[five_first]  = 5col Gpanel - 1
-regions[five_second] = 5col Gpanel - 2
-regions[five_third]  = 5col Gpanel - 3
-regions[five_fourth] = 5col Gpanel - 4
-regions[five_fifth]  = 5col Gpanel - 5
+regions[five_first]  = AT Five column 5x20 - 1
+regions[five_second] = AT Five column 5x20 - 2
+regions[five_third]  = AT Five column 5x20 - 3
+regions[five_fourth] = AT Five column 5x20 - 4
+regions[five_fifth]  = AT Five column 5x20 - 5
 
  */
 ?>

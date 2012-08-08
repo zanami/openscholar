@@ -3,6 +3,23 @@
  * @file
  * Adaptivetheme implementation to display a node.
  *
+ * Adaptivetheme variables:
+ * AT Core sets special time and date variables for use in templates:
+ * - $submitted: Submission information created from $name and $date during
+ *   adaptivetheme_preprocess_node(), uses the $publication_date variable.
+ * - $datetime: datetime stamp formatted correctly to ISO8601.
+ * - $publication_date: publication date, formatted with time element and
+ *   pubdate attribute.
+ * - $datetime_updated: datetime stamp formatted correctly to ISO8601.
+ * - $last_update: last updated date/time, formatted with time element and
+ *   pubdate attribute.
+ * - $custom_date_and_time: date time string used in $last_update.
+ * - $header_attributes: attributes such as classes to apply to the header element.
+ * - $footer_attributes: attributes such as classes to apply to the footer element.
+ * - $links_attributes: attributes such as classes to apply to the nav element.
+ * - $is_mobile: Bool, requires the Browscap module to return TRUE for mobile
+ *   devices. Use to test for a mobile context.
+ *
  * Available variables:
  * - $title: the (sanitized) title of the node.
  * - $content: An array of node items. Use render($content) to print them all,
@@ -15,8 +32,6 @@
  * - $name: Themed username of node author output from theme_username().
  * - $node_url: Direct url of the current node.
  * - $display_submitted: Whether submission information should be displayed.
- * - $submitted: Submission information created from $name and $date during
- *   template_preprocess_node().
  * - $classes: String of classes that can be used to style contextually through
  *   CSS. It can be manipulated through the variable $classes_array from
  *   preprocess functions. The default values can be one or more of the
@@ -78,14 +93,22 @@
  * @see adaptivetheme_preprocess_node()
  * @see adaptivetheme_process_node()
  */
+
+/**
+ * Hiding Content and Printing it Separately
+ *
+ * Use the hide() function to hide fields and other content, you can render it
+ * later using the render() function. Install the Devel module and use
+ * <?php print dsm($content); ?> to find variable names to hide() or render().
+ */
+hide($content['comments']);
+hide($content['links']);
 ?>
 <article id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
-
-  <?php print $unpublished; ?>
-
   <?php print render($title_prefix); ?>
+
   <?php if ($title && !$page): ?>
-    <header>
+    <header<?php print $header_attributes; ?>>
       <?php if ($title): ?>
         <h1<?php print $title_attributes; ?>>
           <a href="<?php print $node_url; ?>" rel="bookmark"><?php print $title; ?></a>
@@ -93,27 +116,23 @@
       <?php endif; ?>
     </header>
   <?php endif; ?>
-  <?php print render($title_suffix); ?>
 
-  <?php if ($display_submitted): ?>
-    <footer class="submitted<?php $user_picture ? print ' with-user-picture' : ''; ?>">
+  <?php if(!empty($user_picture) || $display_submitted): ?>
+    <footer<?php print $footer_attributes; ?>>
       <?php print $user_picture; ?>
       <p class="author-datetime"><?php print $submitted; ?></p>
     </footer>
   <?php endif; ?>
 
   <div<?php print $content_attributes; ?>>
-  <?php
-    hide($content['comments']);
-    hide($content['links']);
-    print render($content);
-  ?>
+    <?php print render($content); ?>
   </div>
 
   <?php if ($links = render($content['links'])): ?>
-    <nav class="clearfix"><?php print $links; ?></nav>
+    <nav<?php print $links_attributes; ?>><?php print $links; ?></nav>
   <?php endif; ?>
 
   <?php print render($content['comments']); ?>
 
+  <?php print render($title_suffix); ?>
 </article>

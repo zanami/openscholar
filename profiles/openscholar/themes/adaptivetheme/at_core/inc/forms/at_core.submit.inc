@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @file
+ * Process all form values. Uses multiple other include files and helper
+ * functions to handle various operations.
+ */
+
 global $path_to_at_core;
 $path_to_at_core = drupal_get_path('theme', 'adaptivetheme');
 
@@ -16,8 +22,6 @@ require_once($path_to_at_core . '/inc/forms/at_core.submit.builders.inc');
 function at_core_settings_submit($form, &$form_state) {
   global $path_to_at_core;
 
-  //dsm($form_state);
-
   // Set form_state values into one variable
   $values = $form_state['values'];
 
@@ -28,12 +32,23 @@ function at_core_settings_submit($form, &$form_state) {
   $path_to_panels_css = $path_to_at_core . '/layouts/css/';
   $path_to_responsive_css = drupal_get_path('theme', $theme_name) . '/css/';
 
-  // Set up our files directory for the generated files. Files are never
-  // overwritten, however the files are really small - total around 25kb
-  // depending, of which around 8kb is never loaded - the theme info
-  // config file, which is just a backup.
-  $id = $theme_name . '_files_' . substr(hash('sha256', serialize($theme_name) . microtime()), 0, 8);
-  $path  = 'public://adaptivetheme/' . $id;
+  // Set values for our three possible paths to the generated files
+  $public_files = 'public://adaptivetheme/' . $theme_name . '_files';
+  $theme_directory = drupal_get_path('theme', $theme_name) . '/generated_files';
+  $custom_path = $values['custom_files_path'];
+
+  // Set the path variable to the right path
+  if ($values['global_files_path'] === 'public_files') {
+    $path = $public_files;
+  }
+  elseif ($values['global_files_path'] === 'theme_directory') {
+    $path = $theme_directory;
+  }
+  elseif ($values['global_files_path'] === 'custom_path') {
+    $path = $custom_path;
+  }
+
+  // Set up the files directory for the generated files
   file_prepare_directory($path, FILE_CREATE_DIRECTORY);
   variable_set('theme_' . $theme_name . '_files_directory', $path);
 
@@ -43,7 +58,7 @@ function at_core_settings_submit($form, &$form_state) {
   // Include processing for page & panels layouts, and responsive styles
   require_once($path_to_at_core . '/inc/forms/at_core.submit.responsive.inc');
 
-  if($values['enable_extensions'] === 1) {
+  if ($values['enable_extensions'] === 1) {
     // Include processing for fonts
     if (isset($values['enable_font_settings']) && $values['enable_font_settings'] === 1) {
       require_once($path_to_at_core . '/inc/fonts.inc');
@@ -54,9 +69,9 @@ function at_core_settings_submit($form, &$form_state) {
       require_once($path_to_at_core . '/inc/forms/at_core.submit.customcss.inc');
     }
   }
-  
+
   // Color inc save
-  if(module_exists('color')) {
+  if (module_exists('color')) {
     if (isset($values['at-color']) && $values['at-color'] == TRUE) {
       require_once($path_to_at_core . '/inc/forms/at_core.submit.color.inc');
     }

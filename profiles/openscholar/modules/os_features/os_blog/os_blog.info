@@ -8,7 +8,6 @@ dependencies[] = ctools
 dependencies[] = features
 dependencies[] = strongarm
 dependencies[] = views
-dependencies[] = vsite
 features[box][] = blog_rss_feed
 features[context][] = blog_blog
 features[ctools][] = boxes:box:1

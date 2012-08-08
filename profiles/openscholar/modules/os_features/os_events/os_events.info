@@ -19,7 +19,6 @@ dependencies[] = features
 dependencies[] = os
 dependencies[] = strongarm
 dependencies[] = views
-dependencies[] = vsite
 features[context][] = events_events
 features[ctools][] = context:context:3
 features[ctools][] = strongarm:strongarm:1

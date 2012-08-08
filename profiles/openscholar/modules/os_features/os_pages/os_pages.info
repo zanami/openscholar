@@ -5,7 +5,6 @@ package = Features
 php = 5.2.4
 dependencies[] = ctools
 dependencies[] = features
-dependencies[] = vsite
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:1
 features[field][] = node-page-body

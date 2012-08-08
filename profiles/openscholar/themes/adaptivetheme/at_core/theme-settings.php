@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Implimentation of hook_form_system_theme_settings_alter()
+ *
+ * @param $form: Nested array of form elements that comprise the form.
+ * @param $form_state: A keyed array containing the current state of the form.
+ */
+
 // Get our plugin system functions.
 require_once(drupal_get_path('theme', 'adaptivetheme') . '/inc/plugins.inc');
 
@@ -23,28 +31,41 @@ function adaptivetheme_form_system_theme_settings_alter(&$form, &$form_state, $f
   // Get the active theme name, we need it at some stage.
   $theme_name = $form_state['build_info']['args'][0];
 
-  // Nag users of legacy sub-themes.
-  $legacy_info = at_get_info($theme_name);
-  if (!isset($legacy_info['release']) || $legacy_info['release'] === '7.x-2.x') {
-    $version_message = t('<p>The version of your theme is not designed to run on <a href="!link_project" target="_blank">Adaptivetheme 7.x.3.x</a>. It will probably run, but your experience will not be optimal. You have three courses of action to choose from:</p>', array('!link_project' => 'http://drupal.org/project/adaptivetheme'));
-    $version_message .= t('<ol><li>Downgrade Adaptivetheme to 7.x-2.x</li><li>Upgrade your theme to the 7.x-3.x branch&thinsp;&mdash;&thinsp;you will need to check if an upgrade exists.</li><li>Add the line <code>"release = 7.x-3.x"</code> (less quotes) to your sub-themes info file and clear the cache to make this message go away.</li></ol>');
-    drupal_set_message($version_message, 'warning');
+  // Get the active themes info array
+  $info_array = at_get_info($theme_name);
+
+  // Version messages
+  if (at_get_setting('atcore_version_test', $theme_name) === 1) {
+    $legacy_info = at_get_info($theme_name);
+    // Nag users of legacy sub-themes...
+    if (!isset($legacy_info['release']) || $legacy_info['release'] === '7.x-2.x') {
+      $version_message = t('<p>The version of your theme (@theme) is not designed to run on <a href="!link_project" target="_blank">Adaptivetheme 7.x.3.x</a>. It will probably run, but your experience will not be optimal. You have three courses of action to choose from:</p>', array('!link_project' => 'http://drupal.org/project/adaptivetheme', '@theme' => $theme_name));
+      $version_message .= t('<ol><li>Downgrade Adaptivetheme to 7.x-2.x</li><li>Upgrade your theme to the 7.x-3.x branch&thinsp;&mdash;&thinsp;you will need to check if an upgrade exists.</li><li>Add the line <code>"release = 7.x-3.x"</code> (less quotes) to your sub-themes info file and clear the cache to make this message go away.</li></ol>');
+      $version_message .= t('<p>You can turn off this message in the Debug settings, look for "Sub-theme compatibility test".</p>');
+      drupal_set_message(filter_xss_admin($version_message), 'warning');
+    }
+    // Celebrate the nouveau intelligentsia...
+    if (isset($legacy_info['release']) && $legacy_info['release'] === '7.x-3.x') {
+      $version_message = t('<p>This theme (@theme) is compatible with <a href="!link_project" target="_blank">Adaptivetheme 7.x.3.x</a>. You are good to go! You can turn off this message in the Debug settings, look for "Sub-theme compatibility test".</p>', array('!link_project' => 'http://drupal.org/project/adaptivetheme', '@theme' => $theme_name));
+      drupal_set_message(filter_xss_admin($version_message), 'status');
+    }
   }
 
   // Get the admin theme so we can set a class for styling this form,
   // variable_get() returns 0 if the admin theme is the default theme.
   $admin_theme = variable_get('admin_theme') ? variable_get('admin_theme') : $theme_name;
-  $admin_theme_class = 'admin-theme-'. drupal_html_class($admin_theme);
+  $admin_theme_class = 'admin-theme-' . drupal_html_class($admin_theme);
 
   // LAYOUT SETTINGS
   // Build a custom header for the layout settings form.
   $logo = file_create_url(drupal_get_path('theme', 'adaptivetheme') . '/logo.png');
   $layout_header  = '<div class="at-settings-form layout-settings-form ' . $admin_theme_class . '"><div class="layout-header theme-settings-header clearfix">';
-  $layout_header .= '<h1>' . t('Layout, Global Settings &amp; Polyfills') . '</h1>';
-  $layout_header .= '<a href="http://adaptivethemes.com" title="Adaptivethemes.com - Rocking the hardest since 2006" target="_blank"><img class="at-logo" src="' . $logo . '" /></a>';
+  $layout_header .= '<h1>' . t('Layout &amp; General Settings') . '</h1>';
+  $layout_header .= '<p class="docs-link"><a href="http://adaptivethemes.com/documentation/adaptivetheme-7x-3x" title="View online documentation" target="_blank">View online documentation</a></p>';
+  $layout_header .= '<p class="logo-link"><a href="http://adaptivethemes.com" title="Adaptivethemes.com - Rocking the hardest since 2006" target="_blank"><img class="at-logo" src="' . $logo . '" /></a></p>';
   $layout_header .= '</div>';
 
-  $form['at-layout'] = array(
+  $form['at-settings'] = array(
     '#type' => 'vertical_tabs',
     '#description' => t('Layout'),
     '#prefix' => $layout_header,
@@ -54,95 +75,89 @@ function adaptivetheme_form_system_theme_settings_alter(&$form, &$form_state, $f
       'css' => array(drupal_get_path('theme', 'adaptivetheme') . '/css/at.settings.form.css'),
     ),
   );
-  // Include layout forms, global settings and debug.
+
+  // Include all the default settings forms.
   require_once($path_to_at_core . '/inc/forms/settings.pagelayout.inc');
   require_once($path_to_at_core . '/inc/forms/settings.responsivepanels.inc');
   require_once($path_to_at_core . '/inc/forms/settings.global.inc');
   require_once($path_to_at_core . '/inc/forms/settings.polyfills.inc');
+  require_once($path_to_at_core . '/inc/forms/settings.metatags.inc');
   require_once($path_to_at_core . '/inc/forms/settings.debug.inc');
+  require_once($path_to_at_core . '/inc/forms/settings.extensions.inc');
 
   // EXTENSIONS
-  if (at_get_setting('enable_extensions') === 1) {
+  $enable_extensions = isset($form_state['values']['enable_extensions']);
+  if (($enable_extensions && $form_state['values']['enable_extensions'] == 1) || (!$enable_extensions && $form['at-settings']['extend']['enable_extensions']['#default_value'] == 1)) {
 
     // Build a custom header for the Extensions settings form.
     $styles_header  = '<div class="at-settings-form style-settings-form ' . $admin_theme_class . '"><div class="styles-header theme-settings-header clearfix">';
     $styles_header .= '<h1>' . t('Extensions') . '</h1>';
+    $styles_header .= '<p class="docs-link"><a href="http://adaptivethemes.com/documentation/extensions" title="View online documentation for Extensions" target="_blank">View online documentation</a></p>';
     $styles_header .= '</div>';
 
-    $form['at'] = array(
-      '#type' => 'vertical_tabs',
+    $form['at'] = array('#type' => 'vertical_tabs',
       '#weight' => -9,
       '#prefix' => $styles_header,
       '#suffix' => '</div>',
-      '#states' => array(
-        'visible' => array(':input[name="enable_extensions"]' => array('checked' => TRUE)),
-      ),
     );
 
-    // Include the font functions if the Fonts or Headings extensions are active.
-    if (at_get_setting('enable_font_settings') === 1 || at_get_setting('enable_heading_settings') === 1) {
-      include_once($path_to_at_core . '/inc/fonts.inc');
-    }
-
-    // Heading styles
-    if(at_get_setting('enable_heading_settings') === 1) {
-      require_once($path_to_at_core . '/inc/forms/settings.headings.inc');
-    }
+    // Include fonts.inc by default, the conditional logic to wrap around this is
+    // too hairy to even comtemplate.
+    require_once($path_to_at_core . '/inc/fonts.inc');
 
     // Fonts
-    if(at_get_setting('enable_font_settings') === 1) {
+    $enable_font_settings = isset($form_state['values']['enable_font_settings']);
+    if (($enable_font_settings && $form_state['values']['enable_font_settings'] == 1) || (!$enable_font_settings && $form['at-settings']['extend']['enable']['enable_font_settings']['#default_value'] == 1)) {
       require_once($path_to_at_core . '/inc/forms/settings.fonts.inc');
     }
 
     // Heading styles
-    if(at_get_setting('enable_heading_settings') === 1) {
+    $enable_heading_settings = isset($form_state['values']['enable_heading_settings']);
+    if (($enable_heading_settings && $form_state['values']['enable_heading_settings'] == 1) || (!$enable_heading_settings && $form['at-settings']['extend']['enable']['enable_heading_settings']['#default_value'] == 1)) {
       require_once($path_to_at_core . '/inc/forms/settings.headings.inc');
     }
 
-    // Breadcrumbs
-    if (at_get_setting('enable_breadcrumb_settings') === 1) {
-      require_once($path_to_at_core . '/inc/forms/settings.breadcrumbs.inc');
-    }
-
-    // Images
-    if(at_get_setting('enable_image_settings') === 1) {
+    // Image alignment
+    $enable_image_settings = isset($form_state['values']['enable_image_settings']);
+    if (($enable_image_settings && $form_state['values']['enable_image_settings'] == 1) || (!$enable_image_settings && $form['at-settings']['extend']['enable']['enable_image_settings']['#default_value'] == 1)) {
       require_once($path_to_at_core . '/inc/forms/settings.images.inc');
     }
 
-    // Horizonatal login block
-    if (at_get_setting('horizontal_login_block_enable') === 'on') {
-      if (at_get_setting('enable_loginblock_settings') === 1) {
-        require_once($path_to_at_core . '/inc/forms/settings.loginblock.inc');
-      }
-    }
-
-    // Modify output
-    if (at_get_setting('enable_markup_overides') === 1) {
-      require_once($path_to_at_core . '/inc/forms/settings.modifyoutput.inc');
-    }
-
     // Exclude CSS
-    if (at_get_setting('enable_exclude_css') === 1) {
+    $enable_exclude_css = isset($form_state['values']['enable_exclude_css']);
+    if (($enable_exclude_css && $form_state['values']['enable_exclude_css'] == 1) || (!$enable_exclude_css && $form['at-settings']['extend']['enable']['enable_exclude_css']['#default_value'] == 1)) {
       require_once($path_to_at_core . '/inc/forms/settings.cssexclude.inc');
     }
 
-    // Metatags
-    if (at_get_setting('enable_mobile_metatags') === 1) {
-      require_once($path_to_at_core . '/inc/forms/settings.metatags.inc');
-    }
-
     // Touch icons
-    if (at_get_setting('enable_apple_touch_icons') === 1) {
+    $enable_apple_touch_icons = isset($form_state['values']['enable_apple_touch_icons']);
+    if (($enable_apple_touch_icons && $form_state['values']['enable_apple_touch_icons'] == 1) || (!$enable_apple_touch_icons && $form['at-settings']['extend']['enable']['enable_apple_touch_icons']['#default_value'] == 1)) {
       require_once($path_to_at_core . '/inc/forms/settings.touchicons.inc');
     }
 
     // Custom CSS
-    if (at_get_setting('enable_custom_css') === 1) {
+    $enable_custom_css = isset($form_state['values']['enable_custom_css']);
+    if (($enable_custom_css && $form_state['values']['enable_custom_css'] == 1) || (!$enable_custom_css && $form['at-settings']['extend']['enable']['enable_custom_css']['#default_value'] == 1)) {
       require_once($path_to_at_core . '/inc/forms/settings.customcss.inc');
     }
 
-    // Always include tweaks (extension settings)
-    require_once($path_to_at_core . '/inc/forms/settings.tweaks.inc');
+    // Mobile regions and blocks
+    $enable_context_regions = isset($form_state['values']['enable_context_regions']);
+    if (($enable_context_regions && $form_state['values']['enable_context_regions'] == 1) || (!$enable_context_regions && $form['at-settings']['extend']['enable']['enable_context_regions']['#default_value'] == 1)) {
+      require_once($path_to_at_core . '/inc/forms/settings.contextregions.inc');
+    }
+
+    // Float Region blocks
+    $enable_float_region_blocks = isset($form_state['values']['enable_float_region_blocks']);
+    if (($enable_float_region_blocks && $form_state['values']['enable_float_region_blocks'] == 1) || (!$enable_float_region_blocks && $form['at-settings']['extend']['enable']['enable_float_region_blocks']['#default_value'] == 1)) {
+      require_once($path_to_at_core . '/inc/forms/settings.floatregionblocks.inc');
+    }
+
+    // Modify output
+    $enable_markup_overides = isset($form_state['values']['enable_markup_overides']);
+    if (($enable_markup_overides && $form_state['values']['enable_markup_overides'] == 1) || (!$enable_markup_overides && $form['at-settings']['extend']['enable']['enable_markup_overides']['#default_value'] == 1)) {
+      require_once($path_to_at_core . '/inc/forms/settings.modifyoutput.inc');
+    }
 
   }
 

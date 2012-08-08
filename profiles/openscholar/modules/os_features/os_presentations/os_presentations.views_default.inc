@@ -77,8 +77,8 @@ function os_presentations_views_default_views() {
   $handler->display->display_options['menu']['name'] = 'primary-menu';
   $handler->display->display_options['menu']['context'] = 0;
 
-  /* Display: Block */
-  $handler = $view->new_display('block', 'Block', 'block');
+  /* Display: Recent Presentations */
+  $handler = $view->new_display('block', 'Recent Presentations', 'block');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Recent Presentations';
   $handler->display->display_options['defaults']['pager'] = FALSE;

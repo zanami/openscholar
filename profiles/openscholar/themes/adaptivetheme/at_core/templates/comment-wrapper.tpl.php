@@ -3,6 +3,10 @@
  * @file
  * Adaptivetheme implementation to provide an HTML container for comments.
  *
+ * Adaptivetheme variables:
+ * - $is_mobile: Bool, requires the Browscap module to return TRUE for mobile
+ *   devices. Use to test for a mobile context.
+ *
  * Available variables:
  * - $content: The array of content-related elements for the node. Use
  *   render($content) to print them all, or
@@ -35,6 +39,7 @@
  */
 ?>
 <section id="comments" class="<?php print $classes; ?>"<?php print $attributes; ?>>
+
   <?php if ($content['comments'] && $node->type != 'forum'): ?>
     <?php print render($title_prefix); ?>
     <h2 class="comment-title title"><?php print t('Comments'); ?></h2>
@@ -47,4 +52,5 @@
     <h2 class="comment-title title comment-form"><?php print t('Add new comment'); ?></h2>
     <?php print render($content['comment_form']); ?>
   <?php endif; ?>
+
 </section>

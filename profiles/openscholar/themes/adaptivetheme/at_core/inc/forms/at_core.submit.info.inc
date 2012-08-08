@@ -1,8 +1,14 @@
 <?php
-// Automagical Info file builder
-// This is the theme info backed up to a file. Its formatted and holds all
-// current values - useful for migration or simply capturing the current
-// theme settings as defaults, which is why I built it.
+
+/**
+ * @file
+ * Automagical Info file builder
+ *
+ * This is the theme info backed up to a file. Its formatted and holds all
+ * current values - useful for migration or simply capturing the current
+ * theme settings as defaults.
+ */
+
 $theme_settings = $values;
 if ($theme_settings) {
   $dynamic_settings_info = array();
@@ -12,11 +18,12 @@ if ($theme_settings) {
     if ($theme_name == $key) {
       $this_themes_info = $lt[$theme_name]->info;
       foreach ($this_themes_info as $k => $v) {
+        // Basic info - name, desc, base theme, release, core, engine and screenshot
         if ($k == 'name') {
           $static_settings_info[] = 'name = ' . $v;
         }
         if ($k == 'description') {
-          $v = $v ? $v : $theme_name. ' is rocking the hardest!';
+          $v = $v ? $v : $theme_name . ' is rocking the hardest!';
           $static_settings_info[] = 'description = ' . $v;
         }
         if ($k == 'base theme') {
@@ -34,26 +41,48 @@ if ($theme_settings) {
         if ($k == 'screenshot') {
           $static_settings_info[] = 'screenshot = screenshot.png';
         }
+        // Stylesheets
         if ($k == 'stylesheets' && !empty($k)) {
           foreach ($v as $media_target => $stylesheet_file) {
             foreach ($stylesheet_file as $stylesheet_file_name => $stylesheet_file_path) {
-              $static_settings_info[] = 'stylesheets[' . $media_target . '][] = ' . $stylesheet_file_name;
+              $static_settings_info[] = "stylesheets[$media_target][] = $stylesheet_file_name";
             }
           }
         }
+        // IE Stylesheets
+        if ($k == 'ie_stylesheets' && !empty($k)) {
+          foreach ($v as $media_target => $condition) {
+            foreach ($condition as $conditional_comment => $condition_file) {
+              foreach ($condition_file as $conditional_file_path) {
+                $static_settings_info[] = "ie_stylesheets[$media_target][$conditional_comment][] = $conditional_file_path";
+              }
+            }
+          }
+        }
+        // Scripts
         if ($k == 'scripts' && !empty($k)) {
           foreach ($v as $script => $file) {
-            $static_settings_info[] = 'scripts[] = ' . $script;
+            $static_settings_info[] = "scripts[] = $script";
           }
         }
+        // IE Scripts
+        if ($k == 'ie_scripts' && !empty($k)) {
+          foreach ($v as $condition => $condition_file) {
+            foreach ($condition_file as $conditional_file_path) {
+              $static_settings_info[] = "ie_scripts[$condition][] = $conditional_file_path";
+            }
+          }
+        }
+        // Regions
         if ($k == 'regions') {
           foreach ($v as $name => $label) {
-            $static_settings_info[] = 'regions[' . $name . '] = ' . $label;
+            $static_settings_info[] = "regions[$name] = $label";
           }
         }
+        // Features
         if ($k == 'features') {
           foreach ($v as $feature_key => $feature) {
-            $static_settings_info[] = 'features[] = ' . $feature;
+            $static_settings_info[] = "features[] = $feature";
           }
         }
       }
@@ -83,24 +112,29 @@ if ($theme_settings) {
     'theme',
     'info',
     'at-layout__active_tab',
+    'at-settings__active_tab',
+    'at__active_tab',
   );
   foreach ($theme_settings as $setting_name => $setting_value) {
-    if (isset($setting_name) && !in_array($setting_name, $exclusions)) {
-      $setting_value = $setting_value ? $setting_value : "''";
-      $dynamic_settings_info[] = 'settings['. $setting_name .'] = ' . $setting_value;
+    if ($setting_name == 'global_gutter_width') {
+      if (empty($setting_value)) {
+        $exclusions[] = 'global_gutter_width';
+      }
+    }
+    if (isset($setting_value) && $setting_value !== '<none>' && !in_array($setting_name, $exclusions)) {
+      if (empty($setting_value) && !is_numeric($setting_value)) {
+        $setting_value = "''";
+      }
+      $dynamic_settings_info[] = "settings[$setting_name] = $setting_value";
     }
   }
   if (!empty($dynamic_settings_info)) {
-    // Interesting trivial fact about info files, if the line ends with an equals operator (=) then the line
-    // is not ended and the content of the next line will be assigned, therefor we can never leave an empty
-    // setting with a hanging equals, so we set an empty string. I still need to test this properly because
-    // it might be better, or even required to set it to a 0.
     $dynamic_settings_info = $dynamic_settings_info ? $dynamic_settings_info : "''";
     $dynamic_settings = implode("\n", $dynamic_settings_info);
   }
   if (!empty($static_settings_info) && !empty($dynamic_settings_info)) {
-    $sanitized_values = filter_xss_admin($static_settings . "\n" . $dynamic_settings); // run a final sanity check
+    $combined_values = $static_settings . "\n" . $dynamic_settings; // ideally run a sanity check but all of them convert entities, which won't work for code
     $filepath = $path . '/' . $theme_name . '_settings.info';
-    file_save_data($sanitized_values, $filepath, FILE_EXISTS_REPLACE);
+    file_unmanaged_save_data($combined_values, $filepath, FILE_EXISTS_REPLACE);
   }
 }

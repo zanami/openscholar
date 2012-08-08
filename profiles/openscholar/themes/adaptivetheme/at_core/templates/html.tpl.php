@@ -5,9 +5,16 @@
  * Drupal page.
  *
  * Adaptivetheme Variables:
- * - $polyfills: polyfill scripts to support legacy browsers.
+ * - $html_attributes: structure attributes, includes the lang and dir attributes
+ *   by default, use $vars['html_attributes_array'] to add attributes in preprcess
+ * - $polyfills: prints IE conditional polyfill scripts enabled via theme
+ *   settings.
+ * - $skip_link_target: prints an ID for the skip navigation target, set in
+ *   theme settings.
+ * - $is_mobile: Bool, requires the Browscap module to return TRUE for mobile
+ *   devices. Use to test for a mobile context.
  *
- * Variables:
+ * Available Variables:
  * - $css: An array of CSS files for the current page.
  * - $language: (object) The language the site is being displayed in.
  *   $language->language contains its textual representation.
@@ -45,11 +52,11 @@
  * @see adaptivetheme_process_html()
  */
 ?><!DOCTYPE html>
-<!--[if IEMobile 7]><html class="iem7" <?php print $html_attributes; ?>><![endif]-->
-<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7" <?php print $html_attributes; ?>><![endif]-->
-<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8" <?php print $html_attributes; ?>><![endif]-->
-<!--[if IE 8]><html class="lt-ie9" <?php print $html_attributes; ?>><![endif]-->
-<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html <?php print $html_attributes . $rdf_namespaces; ?>><!--<![endif]-->
+<!--[if IEMobile 7]><html class="iem7"<?php print $html_attributes; ?>><![endif]-->
+<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7"<?php print $html_attributes; ?>><![endif]-->
+<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8"<?php print $html_attributes; ?>><![endif]-->
+<!--[if IE 8]><html class="lt-ie9"<?php print $html_attributes; ?>><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html<?php print $html_attributes . $rdf_namespaces; ?>><!--<![endif]-->
 <head>
 <?php print $head; ?>
 <title><?php print $head_title; ?></title>

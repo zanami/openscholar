@@ -1,18 +1,23 @@
 <?php
+
 /**
+ * @file
  * All Process functions for templates and theme fucntions.
+ *
  * If you need to add or modify process functions do it in your sub-theme.
  */
 
 /**
  * Process variables for html.tpl.php
  */
-function adaptivetheme_process_html(&$vars, $hook) {
-  global $theme_key;
-  $theme_name = $theme_key;
+function adaptivetheme_process_html(&$vars) {
+  // Flatten attributes arrays
+  $vars['html_attributes'] = empty($vars['html_attributes_array']) ? '' : drupal_attributes($vars['html_attributes_array']);
 
-  // Set path to core files
-  $path_to_at_core = drupal_get_path('theme', 'adaptivetheme');
+  // $rdf_namespaces is kept to maintain backwards compatibility, and because we
+  // only want this to print once in html.tpl.php, and not in every conditional
+  // comment for IE.
+  $vars['rdf_namespaces'] = empty($vars['rdf_namespaces_array']) ? '' : drupal_attributes($vars['rdf_namespaces_array']);
 
   if (!empty($vars['polyfills_array'])) {
     $vars['polyfills'] = drupal_static('adaptivetheme_process_html_polyfills');
@@ -34,25 +39,16 @@ function adaptivetheme_process_html(&$vars, $hook) {
   else {
     $vars['polyfills'] = '';
   }
-
-  // Load the panels test
-  if (at_get_setting('load_all_panels', $theme_name) === 1) {
-    if (drupal_is_front_page()) {
-      $panels_test = file_get_contents($path_to_at_core . '/layouts/panels_test.html');
-      $vars['page'] = $panels_test;
-    }
-  }
 }
 
 /**
  * Process variables for the html tag
  */
-function adaptivetheme_process_html_tag(&$vars, $hook) {
+function adaptivetheme_process_html_tag(&$vars) {
   $tag = &$vars['element'];
   if ($tag['#tag'] === 'style' || $tag['#tag'] === 'script') {
     // Remove redundant type attribute and CDATA comments.
     unset($tag['#attributes']['type'], $tag['#value_prefix'], $tag['#value_suffix']);
-
     // Remove media="all" but leave others unaffected.
     if (isset($tag['#attributes']['media']) && $tag['#attributes']['media'] === 'all') {
       unset($tag['#attributes']['media']);
@@ -63,11 +59,21 @@ function adaptivetheme_process_html_tag(&$vars, $hook) {
 /**
  * Process variables for page.tpl.php
  */
-function adaptivetheme_process_page(&$vars, $hook) {
+function adaptivetheme_process_page(&$vars) {
   global $theme_key;
   $theme_name = $theme_key;
 
-  // theme the menu bars
+  // Attributes
+  $vars['page_attributes'] = empty($vars['page_attributes_array']) ? '' : drupal_attributes($vars['page_attributes_array']);
+  $vars['header_attributes'] = empty($vars['header_attributes_array']) ? '' : drupal_attributes($vars['header_attributes_array']);
+  $vars['branding_attributes'] = empty($vars['branding_attributes_array']) ? '' : drupal_attributes($vars['branding_attributes_array']);
+  $vars['hgroup_attributes'] = empty($vars['hgroup_attributes_array']) ? '' : drupal_attributes($vars['hgroup_attributes_array']);
+  $vars['site_name_attributes'] = empty($vars['site_name_attributes_array']) ? '' : drupal_attributes($vars['site_name_attributes_array']);
+  $vars['site_slogan_attributes'] = empty($vars['site_slogan_attributes_array']) ? '' : drupal_attributes($vars['site_slogan_attributes_array']);
+  $vars['content_header_attributes'] = empty($vars['content_header_attributes_array']) ? '' : drupal_attributes($vars['content_header_attributes_array']);
+  $vars['footer_attributes'] = empty($vars['footer_attributes_array']) ? '' : drupal_attributes($vars['footer_attributes_array']);
+
+  // Theme the menu bars
   if (!empty($vars['primary_navigation'])) {
     $vars['primary_navigation'] = theme('menubar', array('menu' => $vars['primary_navigation'], 'type' => 'primary'));
   }
@@ -78,22 +84,45 @@ function adaptivetheme_process_page(&$vars, $hook) {
   // Generate the wrapper element for the main content
   $vars['tag'] = $vars['title'] ? 'section' : 'div';
 
-  // Force full width wrapper template suggestion if enabled
-  if (at_get_setting('page_full_width_wrappers', $theme_name) === 1) {
-    array_unshift($vars['theme_hook_suggestions'], 'page__full_width_wrappers');
+  // Process enabled Extensions
+  if (at_get_setting('enable_extensions', $theme_name) === 1) {
+    if (at_get_setting('enable_markup_overides', $theme_name) === 1) {
+      // Add page template suggestions per node type, but make the suggestion weak
+      // so other suggestions can easily override it.
+      if (at_get_setting('page_content_type_suggestions', $theme_name) === 1) {
+        if (isset($vars['node'])) {
+          $suggestion = 'page__' . str_replace('_', '--', $vars['node']->type);
+          array_unshift($vars['theme_hook_suggestions'], $suggestion);
+        }
+      }
+      // Force full width wrapper template suggestion if enabled
+      if (at_get_setting('page_full_width_wrappers', $theme_name) === 1) {
+        array_unshift($vars['theme_hook_suggestions'], 'page__full_width_wrappers');
+      }
+      // Remove the frontpage title if set in theme settings
+      if (at_get_setting('frontpage_remove_title') === 1 && $vars['is_front'] === TRUE) {
+        $vars['title'] = '';
+      }
+    }
   }
 
-  // Remove the breadcrumb from these two pages, its pointless and very annoying
-  // for designers.
-  if (arg(0) === 'user' && (arg(1) === 'password' || arg(1) === 'register')) {
-    $vars['breadcrumb'] = '';
+  // Page template suggestions for Panels pages
+  if (module_exists('page_manager')) {
+    if($panel_page = page_manager_get_current_page()) {
+      // add a generic suggestion for all panel pages
+      $suggestions[] = 'page__panels';
+      // add the panel page machine name to the template suggestions
+      $suggestions[] = 'page__' . $panel_page['name'];
+      // merge the suggestions in to the existing suggestions (as more specific than the existing suggestions)
+      $vars['theme_hook_suggestions'] = array_merge($vars['theme_hook_suggestions'], $suggestions);
+    }
   }
 }
 
 /**
  * Process variables for region.tpl.php
  */
-function adaptivetheme_process_region(&$vars, $hook) {
+function adaptivetheme_process_region(&$vars) {
   // Initialize and populate the outer wrapper variables
   $vars['outer_prefix'] = '<div class="' . $vars['classes'] . '">';
   $vars['outer_suffix'] = '</div>';
@@ -122,53 +151,24 @@ function adaptivetheme_process_region(&$vars, $hook) {
  * Process variables for block.tpl.php
  */
 function adaptivetheme_process_block(&$vars) {
-  // Generate the wrapper element, if there's a title use section
-  $vars['block']->subject ? $vars['tag'] = 'section' : $vars['tag'] = 'div';
-
-  // Search is never a section, its just a div
-  if ($vars['block_html_id'] === 'block-search-form') {
-    $vars['tag'] = 'div';
-  }
-
-  // Use a $title variable instead of $block->subject
-  $vars['title'] = $vars['block']->subject;
+  // Now we know all the block $tag's, we can generate our wrapper, $tag is
+  // set in preprocess. We cant introduce these in preprocess due to attributes
+  // and classes not being flattened untill we hit process.
+  $vars['outer_prefix'] = '<' . $vars['tag'] . ' id="' . $vars['block_html_id'] . '" class="' . $vars['classes'] . '" ' . $vars['attributes'] . '>';
+  $vars['outer_suffix'] = '</' . $vars['tag'] . '>';
 
   // Wrap the content variable in a div with attributes
   $vars['content_processed'] = '<div' . $vars['content_attributes'] . '>' . $vars['content'] . '</div>';
 
-  // Initialize and populate the inner wrapper variables
-  $vars['inner_prefix'] = '<div class="block-inner clearfix">';
-  $vars['inner_suffix'] = '</div>';
-
-  // Use nav element for menu blocks and provide a suggestion for all of them
-  $nav_blocks = array('navigation', 'main-menu', 'management', 'user-menu');
-  if (in_array($vars['block']->delta, $nav_blocks)) {
-    $vars['tag'] = 'nav';
-    array_unshift($vars['theme_hook_suggestions'], 'block__menu');
-  }
-  $nav_modules = array('superfish', 'nice_menus');
-  if (in_array($vars['block']->module, $nav_modules)) {
-    $vars['tag'] = 'nav';
-    array_unshift($vars['theme_hook_suggestions'], 'block__menu');
-  }
-
   // The menu bar region gets special treatment for the block template
   if ($vars['block']->region === 'menu_bar') {
-    // They are always menu blocks, right?
-    $vars['tag'] = 'nav';
     $vars['inner_prefix'] = '';
     $vars['inner_suffix'] = '';
-    $vars['content_processed'] = $vars['content']; // this could get a wrapper
+    $vars['content_processed'] = $vars['content']; // remove the default wrapper
   }
 
-  // Now we know all the block $tag's, we can generate our wrapper
-  $vars['outer_prefix'] = '<' . $vars['tag'] . ' id="' . $vars['block_html_id'] . '" class="' . $vars['classes'] . '" ' . $vars['attributes'] . '>';
-  $vars['outer_suffix'] = '</' . $vars['tag'] . '>';
-
-  // Wait, some blocks look like shit with wrappers, blow them away...
-  if ($vars['block_html_id'] === 'block-system-main') {
-    $vars['outer_prefix'] = '';
-    $vars['outer_suffix'] = '';
+  // Some blocks look bad with wrappers so we strip them
+  if ($vars['block']->region === 'content') {
     $vars['inner_prefix'] = '';
     $vars['inner_suffix'] = '';
     $vars['content_processed'] = $vars['content'];
@@ -186,14 +186,14 @@ function adaptivetheme_process_block(&$vars) {
 /**
  * Process variables for node.tpl.php
  */
-function adaptivetheme_process_node(&$vars, $hook) {
+function adaptivetheme_process_node(&$vars) {
   global $theme_key;
   $theme_name = $theme_key;
 
   // Strip default drupal classes if not required
   if (at_get_setting('extra_article_classes', $theme_name) === 0) {
     $classes = explode(' ', $vars['classes']);
-    $striped_classes = array('node-sticky','node-promoted','node-teaser','node-preview');
+    $striped_classes = array('node-sticky', 'node-promoted', 'node-teaser', 'node-preview');
     foreach ($striped_classes as $class) {
       if (in_array($class, $classes)) {
         $classes = str_replace($class, '', $classes);
@@ -201,6 +201,11 @@ function adaptivetheme_process_node(&$vars, $hook) {
     }
     $vars['classes'] = trim(implode(' ', $classes));
   }
+
+  // Flatten the additional wrapper attributes array
+  $vars['header_attributes'] = empty($vars['header_attributes_array']) ? '' : drupal_attributes($vars['header_attributes_array']);
+  $vars['footer_attributes'] = empty($vars['footer_attributes_array']) ? '' : drupal_attributes($vars['footer_attributes_array']);
+  $vars['links_attributes'] = empty($vars['links_attributes_array']) ? '' : drupal_attributes($vars['links_attributes_array']);
 
   // If a panels layout is being used by Display Suite in a node, we wrap the
   // the layout in markup to make the themers life a little easier and remove
@@ -223,28 +228,19 @@ function adaptivetheme_process_node(&$vars, $hook) {
     $vars['panel_suffix'] = '</article>';
   }
   */
-
-  /* this does not work, its a test...
-  if (module_exists('panelizer')) {
-    if (isset($vars['node']->panelizer)) {
-      $vars['panel_prefix'] = '<article id="node-' . $vars['node']->nid . '" class="' . $vars['classes'] . ' clearfix"' . $vars['attributes'] . '>';
-      $vars['panel_suffix'] = '</article>';
-    }
-  }
-  */
 }
 
 /**
  * Process variables for comment.tpl.php
  */
-function adaptivetheme_process_comment(&$vars, $hook) {
+function adaptivetheme_process_comment(&$vars) {
   global $theme_key;
   $theme_name = $theme_key;
 
-  // Strip default drupal classes if not required
+  // Strip default drupal classes if not required.
   if (at_get_setting('extra_comment_classes', $theme_name) === 0) {
     $classes = explode(' ', $vars['classes']);
-    $striped_classes = array('comment-by-anonymous','comment-by-node-autho','comment-by-viewer','comment-new');
+    $striped_classes = array('comment-by-anonymous', 'comment-by-node-autho', 'comment-by-viewer', 'comment-new');
     foreach ($striped_classes as $class) {
       if (in_array($class, $classes)) {
         $classes = str_replace($class, '', $classes);
@@ -252,18 +248,50 @@ function adaptivetheme_process_comment(&$vars, $hook) {
     }
     $vars['classes'] = trim(implode(' ', $classes));
   }
+
+  // Flatten the additional wrapper attributes array
+  $vars['header_attributes'] = empty($vars['header_attributes_array']) ? '' : drupal_attributes($vars['header_attributes_array']);
+  $vars['footer_attributes'] = empty($vars['footer_attributes_array']) ? '' : drupal_attributes($vars['footer_attributes_array']);
+  $vars['links_attributes'] = empty($vars['links_attributes_array']) ? '' : drupal_attributes($vars['links_attributes_array']);
 }
 
 /**
  * Process variables for adaptivtheme_menubar()
  */
-function adaptivetheme_process_menubar(&$vars, $hook) {
+function adaptivetheme_process_menubar(&$vars) {
   // The default theme implementation is a function, so template_process() does
   // not automatically run, so we need to flatten the classes and attributes
   // here. For best performance, only call drupal_attributes() when needed, and
   // note that template_preprocess_menubar() does not initialize the
   // *_attributes_array variables.
-  $vars['classes'] = implode(' ',$vars['classes_array']);
+  $vars['classes'] = implode(' ', $vars['classes_array']);
   $vars['attributes'] = empty($vars['attributes_array']) ? '' : drupal_attributes($vars['attributes_array']);
   $vars['content_attributes'] = empty($vars['content_attributes_array']) ? '' : drupal_attributes($vars['content_attributes_array']);
+}
+
+/**
+ * Process variables for maintenance-page.tpl.php
+ */
+function adaptivetheme_process_maintenance_page(&$vars) {
+  // Load polyfills for the maintenance page, its HTML5 also
+  if (!empty($vars['polyfills_array'])) {
+    $vars['polyfills'] = drupal_static('adaptivetheme_process_html_polyfills');
+    if (empty($vars['polyfills'])) {
+      $ie_scripts = array();
+      if (!empty($vars['polyfills_array'])) {
+        foreach ($vars['polyfills_array'] as $ke => $va) {
+          foreach ($va as $k => $v) {
+            $ies[$k][] = implode("\n", $v);
+          }
+        }
+      }
+      foreach ($ies as $kv => $kvp) {
+        $aus[$kv] = implode("\n", $kvp);
+      }
+      $vars['polyfills'] = at_theme_conditional_scripts($aus);
+    }
+  }
+  else {
+    $vars['polyfills'] = '';
+  }
 }

@@ -14,6 +14,10 @@
  * @see user-profile.tpl.php
  *      where all items and categories are collected and printed out.
  *
+ * Adaptivetheme variables:
+ * - $is_mobile: Bool, requires the Browscap module to return TRUE for mobile
+ *   devices. Use to test for a mobile context.
+ *
  * Available variables:
  * - $title: Category title for the group of items.
  * - $profile_items: All the items for the group rendered through
@@ -24,10 +28,13 @@
  */
 ?>
 <section class="<?php print drupal_html_class($title); ?>">
+
   <?php if ($title) : ?>
     <h3><?php print $title; ?></h3>
   <?php endif; ?>
+
   <dl<?php print $attributes; ?>>
     <?php print $profile_items; ?>
   </dl>
+
 </section>
