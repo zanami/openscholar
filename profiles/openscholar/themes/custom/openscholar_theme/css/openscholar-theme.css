@@ -167,17 +167,15 @@ ul.grid {
 .region-header-first {
   width:260px;
   right:300px;
-  left: auto;
+
   }
 
 .region-header-third {
   width:330px;
-  margin-right: -370px;
   }
 
 #header-container {
-  padding-left:280px;
-  padding-right:370px;
+
   height: 58px;
   }
 

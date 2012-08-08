@@ -3,15 +3,15 @@
 /**
  * Implements hook_block_info().
  */
-function os_search_block_info(){
+function os_search_db_block_info(){
   $blocks = array();
-  
+
   $blocks['site-search'] = array(
       'info' => t('Site Search'),
       'weight' => '10',
       //'cache' => DRUPAL_CACHE_CUSTOM
   );
-  
+
   return $blocks;
 }
 
@@ -21,29 +21,16 @@ function os_search_block_info(){
  * Generate a block with a promotional link to openscholar.harvard.edu and
  * all os menu blocks.
  */
-function os_search_block_view($delta = ''){
+function os_search_db_block_view($delta = ''){
   $block = array();
   switch ($delta) {
-    case 'site-search' :
-      $block['subject'] = NULL;
-      $block['content'] = drupal_get_form('search_block_form');
-      return $block;
+  	case 'site-search' :
+  	  $block['subject'] = NULL;
+  	  $block['content'] = drupal_get_form('search_block_form');
+  	  return $block;
 
-    default:
-    break;
-  }
-}
-
-/**
- * Alter the query after it's prepared and cached.
- * 
- * @param object $query
- *   An object implementing DrupalSolrQueryInterface. No need for &.
- */
-function os_search_apachesolr_query_alter($query) {
-  if(module_exists('vsite') && ($vsite = spaces_get_space())){
-    // I only want to see items in this site
-    $query->addFilter("sm_og_group_ref", $vsite->group_type.":".$vsite->id);
+  	default:
+  	  break;
   }
 }
 
@@ -51,11 +38,11 @@ function os_search_apachesolr_query_alter($query) {
  * Alter the standard node db search query
  * @param QueryAlterableInterface $query
  */
-function os_search_query_alter(QueryAlterableInterface $query) {
+function os_search_db_query_alter(QueryAlterableInterface $query) {
   if(module_exists('vsite') && ($vsite = spaces_get_space())){
     // I only want to see items in this site
     if (!($query instanceof PagerDefault) ) return;
-    
+
     $tables = $query->getTables();
     if(isset($tables['i']) && $tables['i']['table'] == 'search_index' && isset($tables['n'])){
       $query->innerJoin('og_membership', 'ogmem', 'ogmem.etid = n.nid');
@@ -65,4 +52,3 @@ function os_search_query_alter(QueryAlterableInterface $query) {
     }
   }
 }
-

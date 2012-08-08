@@ -9,7 +9,21 @@
  */
 
 /**
- * // Adds classes to the body tag.
+ * add classes to the body of a page
+ */
+function os_basetheme_preprocess_html(&$vars) {
+  if ($GLOBALS['theme'] == 'cp_theme') return;
+
+  if (isset($vars['page']['menu_bar'])) {
+    $vars['classes_array'][] = 'navbar-on';
+  }
+  else {
+    $vars['classes_array'][] = 'navbar-off';
+  }
+}
+
+/**
+ * Adds classes to the page element
  */
 function os_basetheme_preprocess_page(&$vars) {
   //Adds OpenScholar header region awareness to body classes
@@ -34,13 +48,6 @@ function os_basetheme_preprocess_page(&$vars) {
     else {
       $vars['classes_array'][] = $var.'-none';
     }
-  }
-
-  if (__os_basetheme_is_empty($vars['page']['menu_bar'])) {
-    $vars['classes_array'][] = 'navbar-on';
-  }
-  else {
-    $vars['classes_array'][] = 'navbar-off';
   }
 }
 
