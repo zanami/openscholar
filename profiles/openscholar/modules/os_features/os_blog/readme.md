@@ -35,3 +35,6 @@ OpenScholar blog provides simple blog functionality for an OpenScholar site.
 1. Navigate to **Site Building > Layout**
 2. In the **All** widget tab section, view the new **Archive** widget.
 
+## Read more
+
+* [User documentation](http://scholar.harvard.edu/help/vsitehelp/Blog-feature)
