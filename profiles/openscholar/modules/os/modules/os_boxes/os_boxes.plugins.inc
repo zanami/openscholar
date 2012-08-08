@@ -140,7 +140,6 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_site_info'] = array(
-    'title' => 'Site Info', // TODO: Remove when the box is exported
     'tags' => array('Misc'),
     'handler' => array(
       'class' => 'os_boxes_site_info',
@@ -151,7 +150,6 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_site_logo'] = array(
-    'title' => 'Site Logo', // TODO: Remove when the box is exported
     'tags' => array('Misc'),
     'handler' => array(
       'class' => 'os_boxes_site_logo',
@@ -172,6 +170,6 @@ function os_boxes_boxes_plugins() {
           'parent' => 'os_boxes_default',
       ),
   );
-  
+
   return $info;
 }
