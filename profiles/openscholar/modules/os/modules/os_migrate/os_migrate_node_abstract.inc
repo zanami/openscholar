@@ -101,11 +101,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
 
     $query->join('og_ancestry', 'og', 'n.nid = og.nid');
     $query->fields('og', array('group_nid'));
+    $query->condition('og.group_nid', '0', '!='); 
     
-    //drop orphaned content by required the node with group_nid to exist
-    $query->join('node', 'vsite', 'vsite.nid = og.group_nid');
-    $query->condition('vsite.type', 'vsite', '=');
-      
     $table = 'content_type_' . $content_type;
     if (parent::d6_db_table_exists($table)) { 
       $query->leftjoin($table, 'ct', 'n.vid = ct.vid');
@@ -179,6 +176,18 @@ abstract class AbstractNodeOSMigration extends OSMigration {
    */
   function prepareRow($current_row) {
     
+    //check that destination vsite exists.  some vsites have been removed, but their content still exists
+    $query = db_select('node', 'n')
+      ->fields('n')
+      ->condition('type', 'vsite', '=')
+      ->condition('nid', $current_row->group_nid, '=');
+    if (!$query->execute()->fetchAssoc()) {
+      Migration::displayMessage(t('Vsite @gid does not exist.  Assuming node @nid is orphaned.', 
+                                array('@gid' => $current_row->group_nid, '@nid' => $current_row->nid)));
+      return FALSE;
+    }
+    
+    
     //check if bundle exists.
     $info = field_info_bundles('node');
     if (!isset($info[$this->bundle])) {
@@ -217,16 +226,5 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     
   }
 
-  function prepare($entity, $row) {
-    $gid = $row->group_nid;
-    $node = node_load($gid);
-    if (!$node) {
-      return ; //gid = 3058, 5354
-    }
-    $isgroup = og_is_group('node', $node);
-    if (!$isgroup) {
-      TRUE;
-    }
-  }
   
 }
