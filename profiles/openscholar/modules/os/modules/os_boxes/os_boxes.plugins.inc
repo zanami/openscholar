@@ -161,5 +161,17 @@ function os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_taxonomy_fbt'] = array(
+      'title' => 'Taxonomy widget',
+      'description' => 'Filter content by category',
+      'tags' => array('Content'),
+      'handler' => array(
+          'class' => 'os_taxonomy_fbt',
+          'file' =>  'os_taxonomy_fbt.inc',
+          'path' => $path . '/os_taxonomy_fbt',
+          'parent' => 'os_boxes_default',
+      ),
+  );
+  
   return $info;
 }
