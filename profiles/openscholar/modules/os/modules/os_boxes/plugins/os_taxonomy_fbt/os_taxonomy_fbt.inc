@@ -15,7 +15,7 @@ class os_taxonomy_fbt extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
 
-    
+
 
     return $options;
   }
@@ -27,7 +27,7 @@ class os_taxonomy_fbt extends os_boxes_default {
 
   	$form = array();
 
-    $form += parent::options_form(&$form_state);
+    $form += parent::options_form($form_state);
     return $form;
   }
 
@@ -35,20 +35,20 @@ class os_taxonomy_fbt extends os_boxes_default {
    * Implementation of boxes_content::render().
    */
   public function render() {
-    
+
   	$block = parent::render();
 
 	$block['content'] = "Filter By Category Block [STUB]";
-	  
+
 
     return $block;
   }
-  
+
   /**
    * Return the cache parameters for this box
    */
   public function cache_info(){
-  	
+
   }
 
 }
