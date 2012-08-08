@@ -2,11 +2,6 @@
 /**
  * @file
  * Allows faculty members to import a list of their publications.
- * For error checking, this module is using:
- * 0 for no errors
- * 1 for first pass errors (i.e. no user for hashed ID, return to use site url)
- * 2 for site url attempt only (no hashed huid)
- * 3 for complete error, no user found for either hashed ID no site url
 */
  
 /**
@@ -64,10 +59,10 @@ function harvard_activity_reports_query_user_by_id($id)  {
 			$uid = $row->uid; // push it into a variable
 			$huID = $row->huid;
 		}else {
-			$uid = 1;
+			$uid = FALSE;
 		}//
 	}else {
-			$uid = 1;
+			$uid = FALSE;
 	}//
 	return $uid;
 }// end function
@@ -123,11 +118,11 @@ function harvard_activity_reports_query_user_by_site($site) {
 		 		$urlNodeRow = db_fetch_object($urlNodeResult);
 			 	$userSiteID = $urlNodeRow->uid;
 		 	}else{
-		 		$userSiteID = 1;
+		 		$userSiteID = FALSE;
 		 	}// end if
 		}// end if
 	}else{
-		$userSiteID = 1;
+		$userSiteID = FALSE;
 	}// end if
 	return $userSiteID;
 }// end function
@@ -146,7 +141,7 @@ function harvard_activity_reports_query_vsite_id($uid) {
 		$nodeRow = db_fetch_object($nodeResults);
 		$nid = $nodeRow->nid;
 	}else{
-		$nid = 1;
+		$nid = FALSE;
 	}// end node results
 	
 	return $nid;
@@ -208,24 +203,24 @@ function harvard_activity_reports_query_user() {
 			$siteUrl = strip_tags($_GET['site_url']);
 			// first see if the user exists
 			$uid = harvard_activity_reports_query_user_by_id($hashID);
-			if($uid != 1) {
+			if($uid != FALSE) {
 				// user exists, just continue on here no reason to work with the site url
 				$nid =  harvard_activity_reports_query_vsite_id($uid);
 			}else{
 				// user id failed so check their site url now
 				if($siteUrl != "") {
 					$uid = harvard_activity_reports_query_user_by_site($siteUrl);
-					if($uid != 1) {
+					if($uid != FALSE) {
 						// user exists via site url
 						$nid =  harvard_activity_reports_query_vsite_id($uid);
 						// grab their hashedID and insert them into the pin table
 						// now update the iqss_pinserver_registration table to reflect the new hashed id
 						$newHashID = harvard_activity_reports_update_huid_hash($uid, $hashID);
 					}else{
-						$nid = 3;
+						$nid = FALSE;
 					}
 				}else{ // error out
-					$nid = 3;
+					$nid = FALSE;
 				}
 			}// end s
 		}elseif(isset($_GET['id'])){ // no check for just the site id
@@ -236,7 +231,7 @@ function harvard_activity_reports_query_user() {
 			if($uid != 1) {
 				$nid =  harvard_activity_reports_query_vsite_id($uid);
 			}else{
-				$nid = 1;
+				$nid = FALSE;
 			}// end if
 		}elseif(isset($_GET['site_url'])){ // no check for the site url
 			// assign it to a variable
@@ -244,16 +239,16 @@ function harvard_activity_reports_query_user() {
 			// query the user by site_url
 			$uid = harvard_activity_reports_query_user_by_site($siteUrl);
 			// now get their vsite
-			if($uid != 1) {
+			if($uid != FALSE) {
 				$nid = harvard_activity_reports_query_vsite_id($uid);
 			}else{
-				$nid = 2;
+				$nid = FALSE;
 			}// end if
 		}else{ // neither are here, error out
-			$nid = 1;	
+			$nid = FALSE;	
 		}// end isset id
 	}else{ // no id set, tell them
-		$nid = 1;
+		$nid = FALSE;
 	}
 	// return the content
 	return $nid;
@@ -265,7 +260,7 @@ function harvard_activity_reports_query_user() {
  */
 function harvard_activity_reports_load_user_info($nid){ 
 	// make sure we have a proper nid first
-	if($nid != 1){
+	if($nid != FALSE){
 		// query for all the biblio nodes
 		// using a stand alone ID for right now until error checking and site url can be implemented
 		$bibQuery = "SELECT n.nid FROM {node} n INNER JOIN {og_ancestry} oa ON n.nid = oa.nid WHERE oa.group_nid = %d AND n.type = 'biblio'";
@@ -276,10 +271,10 @@ function harvard_activity_reports_load_user_info($nid){
 				$biblio[] = $bibRow;
 			}
 		}else {
-			$biblio = 1;
+			$biblio = FALSE;
 		}
 	}else {
-		$biblio = 1;
+		$biblio = FALSE;
 	}
 	
 	return $biblio;
@@ -290,7 +285,7 @@ function harvard_activity_reports_load_user_info($nid){
  * Function to sort my xml array by the biblio_year
  * Function was "borrowed" from http://www.firsttube.com/read/sorting-a-multi-dimensional-array-with-php/
  */
-function subval_sort($a,$subkey) {
+function harvard_activity_reports_subval_sort($a,$subkey) {
 	foreach($a as $k=>$v) {
 		$b[$k] = strtolower($v[$subkey]);
 	}
@@ -354,7 +349,7 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID, $status) {
     switch($xmlStatus) {
     	case "ok":
     		// sort the XML by year, most recent first
-			$xml = subval_sort($xml, 'biblio_year');
+			$xml = harvard_activity_reports_subval_sort($xml, 'biblio_year');
 			// loop through the array data for the publications and create XML elements with them
    		 	foreach($xml as $value) {
    			 	// create the pub element
@@ -422,7 +417,7 @@ function harvard_activity_reports_page() {
 	// load up the user from the query
 	$nid = harvard_activity_reports_query_user();
 	// check to make sure we have the users HUID or site_url
-	if($nid > 2) {
+	if($nid != FALSE) {
 		// xml status is ok
 		$status = "ok";
 		// grab the users HUID
@@ -490,32 +485,20 @@ function harvard_activity_reports_page() {
 		}// end foreach
 		// call the xml creation function
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
-	}elseif($nid==1){ // huid not found
+	}elseif($nid==FALSE){ // huid not found
 		$status = "unknown";
 		$huID = harvard_activity_reports_get_url_id();
 		//$biblioDataArray['biblio_error_message'] = "No data found - please try again with a site url";
 		$biblioDataArray = '';
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
-	}elseif($nid==2){ // site url not found
-		$status = "unknown";
-		$huID = harvard_activity_reports_get_url_id();
-		//$biblioDataArray['biblio_error_message'] = "No data found for that site url - please try again with an huid.";
-		$biblioDataArray = '';
-		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
-	}elseif($nid==3){ // both site url and huid not found
-		$status = "unknown";
-		$huID = harvard_activity_reports_get_url_id();
-		//$biblioDataArray['biblio_error_message'] = "Neither huid nor site has been found - please correct these errors and try again.";
-		$biblioDataArray = '';
-		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
-	}else{ // just erroring out
+	}else{
 		$status = "error";
 		$huID = harvard_activity_reports_get_url_id();
-		//$biblioDataArray['biblio_error_message'] = "Error generating xml, please try again.";
 		$biblioDataArray = '';
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status);
 	}// end if nid != false
 	// send back the xml
+	
 	echo $xmlReturn;	
 }//end function
 
