@@ -239,7 +239,7 @@ function os_presentations_field_default_fields() {
               'pathauto' => 0,
               'transliterate' => 0,
             ),
-            'value' => '',
+            'value' => 'files',
           ),
           'retroactive_update' => 0,
         ),
