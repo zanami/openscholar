@@ -97,6 +97,25 @@ function os_strongarm() {
   $strongarm->name = 'node_submitted_page';
   $strongarm->value = FALSE;
   $export['node_submitted_page'] = $strongarm;
+  
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'spaces_features';
+  $strongarm->value = array(
+    'os' => '1',
+    'os_pages' => '1',
+    'os_announcements' => '1',
+    'os_image_gallery' => '1',
+    'os_links' => '1',
+    'os_publications' => '1',
+    'os_events' => '1',
+    'os_blog' => '1',
+    'os_presentations' => '1',
+    'os_profiles' => '1',
+    'os_reader' => '1',
+  );
+  $export['spaces_features'] = $strongarm;
 
   return $export;
 }
