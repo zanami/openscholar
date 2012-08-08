@@ -236,7 +236,6 @@ function os_shields_boxes_plugins() {
   $plugins = array();
 
   $plugins['os_shields_box'] = array(
-    'title' => 'Shield Box',
     'tags' => array('Misc'),
     'handler' => array(
       'class' => 'os_shields_box',
