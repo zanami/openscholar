@@ -186,18 +186,13 @@ div.biblio-authors {
 
 /* LAYOUT */
 
-.region-sidebar-first {
 
-  padding:0;
-	
-  }
-
-.region-sidebar-second {
-  padding: 58px 0 0;
-
-  }
-
-
+#header-container .block-inner,
+#header-container .region-inner {
+margin-left: 0;
+margin-right: 0;
+padding-top: 0;
+}
 
 
 
@@ -211,7 +206,17 @@ div.biblio-authors {
 .region-sidebar-first #block-os-primary-menu {
   padding-bottom: 96px;
   background: url('../images/seal.jpg') no-repeat 34px 100%;
+  margin-left: -18px;
   }
+  
+.region-sidebar-first #block-os-secondary-menu {
+  margin-left: -18px;
+  }  
+  
+.region-sidebar-first #block-os-primary-menu li,
+.region-sidebar-first #block-os-secondary-menu li {
+ padding-left: 23px;
+  }  
 
 .region-sidebar-first li, .sidebar h2.block-title {
   padding: 4px 0 0 34px;

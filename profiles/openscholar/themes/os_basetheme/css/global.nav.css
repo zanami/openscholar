@@ -402,7 +402,7 @@ color: #FFF !important;
 	width:130px;
 	margin:15px 0 10px 0;
 	position:relative;
-	z-index: 2000;
+	z-index: 500;
 }
 
 .contextual-controls-wrapper a {
