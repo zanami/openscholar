@@ -1,5 +1,7 @@
 <?php
+
 /**
+ * @file
  * Generate or get classes, mainly classes used on the body element and called
  * via themename_preprocess_html().
  */
@@ -11,7 +13,6 @@
  * @param $theme_name, the active theme.
  */
 function generate_html_classes(&$vars, $theme_name) {
-
   $classes_array = &drupal_static(__FUNCTION__, array());
   if (empty($classes_array)) {
 
@@ -19,6 +20,14 @@ function generate_html_classes(&$vars, $theme_name) {
     // classes are very useful and AT does this a lot
     if (at_get_setting('toggle_name', $theme_name) === 0) {
       $classes_array[] = 'site-name-hidden';
+    }
+
+    // Add debugging classes
+    if (at_get_setting('expose_regions', $theme_name) === 1 || at_get_setting('load_all_panels', $theme_name) === 1) {
+       $classes_array[] = 'debug-regions';
+    }
+    if (at_get_setting('load_all_panels', $theme_name) === 1 && drupal_is_front_page()) {
+       $classes_array[] = 'debug-panels';
     }
 
     // Extra Classes
@@ -54,51 +63,129 @@ function generate_html_classes(&$vars, $theme_name) {
         $section = check_plain($section);
         $classes_array[] = drupal_html_class('section-' . $section);
       }
-
-      // Set classes for views and panels pages
-      $vars['menu_item'] = menu_get_item();
-      switch ($vars['menu_item']['page_callback']) {
-        case 'views_page':
-          // Is this a Views page?
-          $classes_array[] = 'page-views';
-          break;
-        case 'page_manager_page_execute':
-        case 'page_manager_node_view':
-        case 'page_manager_contact_site':
-          // Is this a Panels page?
-          $classes_array[] = 'page-panels';
-          break;
-      }
     }
 
-    // Extensions
-    if(at_get_setting('enable_extensions', $theme_name) === 1) {
-      // Page title classes - added in html.tpl.php on body, since title_attributes_array is useless
-      if(at_get_setting('enable_heading_settings', $theme_name) === 1) {
-        $page_title_settings_array = array(
-          'page_title_case',
-          'page_title_weight',
-          'page_title_alignment',
-          'page_title_shadow',
+    // Set classes for views and panels pages
+    $vars['menu_item'] = menu_get_item();
+    switch ($vars['menu_item']['page_callback']) {
+      case 'views_page':
+        // Is this a Views page?
+        $classes_array[] = 'page-views';
+        break;
+      case 'page_manager_page_execute':
+      case 'page_manager_node_view':
+      case 'page_manager_contact_site':
+        // Is this a Panels page?
+        $classes_array[] = 'page-panels';
+        break;
+    }
+  }
+
+  return $classes_array;
+}
+
+/**
+ * Return an array of classes to be used for page classes in page.tpl.php
+ *
+ * @param $vars, passed in the adaptivetheme_preprocess_page()
+ * @param $theme_name, the active theme.
+ */
+function generate_page_classes(&$vars, $theme_name) {
+  $classes_array = &drupal_static(__FUNCTION__, array());
+  if (empty($classes_array)) {
+
+    // Site name classes
+    if (isset($vars['hide_site_name']) && $vars['hide_site_name'] === FALSE) {
+      if (at_get_setting('enable_heading_settings', $theme_name) === 1) {
+        $site_name_settings_array = array(
+          'site_name_case',
+          'site_name_weight',
+          'site_name_alignment',
+          'site_name_shadow',
         );
-        foreach ($page_title_settings_array as $page_title_setting) {
-          if ($heading_settings = at_get_setting($page_title_setting, $theme_name)) {
-            $classes_array[] = $heading_settings;
+        foreach ($site_name_settings_array as $site_name_setting) {
+          if ($site_name_setting = at_get_setting($site_name_setting, $theme_name)) {
+            $classes_array[] = $site_name_setting;
           }
         }
       }
-      // Images
-      if(at_get_setting('enable_image_settings', $theme_name) === 1) {
-        $image_settings_array = array(
-          'image_caption_full',
-          'image_caption_teaser',
-          'image_alignment',
-          'image_alignment_teaser',
+    }
+
+    // Slogan classes
+    if (isset($vars['site_slogan'])) {
+      if (at_get_setting('enable_heading_settings', $theme_name) === 1) {
+        $site_slogan_settings_array= array(
+          'site_slogan_case',
+          'site_slogan_weight',
+          'site_slogan_alignment',
+          'site_slogan_shadow',
         );
-        foreach ($image_settings_array as $setting) {
-          if ($image_setting = at_get_setting($setting, $theme_name)) {
-            $classes_array[] = $image_setting;
+        foreach ($site_slogan_settings_array as $site_slogan_setting) {
+          if ($site_slogan_setting = at_get_setting($site_slogan_setting, $theme_name)) {
+            $classes_array[] = $site_slogan_setting;
           }
+        }
+      }
+    }
+
+    // Block title classes
+    if (at_get_setting('enable_heading_settings', $theme_name) === 1) {
+      $block_title_settings_array = array(
+        'block_title_case',
+        'block_title_weight',
+        'block_title_alignment',
+        'block_title_shadow',
+      );
+      foreach ($block_title_settings_array as $setting) {
+        if ($block_title_setting = at_get_setting($setting, $theme_name)) {
+          $classes_array[] = $block_title_setting;
+        }
+      }
+    }
+
+    // Node title classes
+    if (at_get_setting('enable_heading_settings', $theme_name) === 1) {
+      $node_title_settings_array = array(
+        'node_title_case',
+        'node_title_weight',
+        'node_title_alignment',
+        'node_title_shadow',
+      );
+      foreach ($node_title_settings_array as $setting) {
+        if ($node_title_setting = at_get_setting($setting, $theme_name)) {
+          $classes_array[] = $node_title_setting;
+        }
+      }
+    }
+
+    // Comment title classes
+    if (at_get_setting('comments_hide_title', $theme_name) !== 1) {
+      if (at_get_setting('enable_heading_settings', $theme_name) === 1) {
+        $comment_title_settings_array = array(
+          'comment_title_case',
+          'comment_title_weight',
+          'comment_title_alignment',
+          'comment_title_shadow',
+        );
+        foreach ($comment_title_settings_array as $setting) {
+          if ($comment_title_setting = at_get_setting($setting, $theme_name)) {
+            $classes_array[] = $comment_title_setting;
+          }
+        }
+      }
+    }
+
+    // Page title classes
+    if (at_get_setting('enable_heading_settings', $theme_name) === 1) {
+      $page_title_settings_array = array(
+        'page_title_case',
+        'page_title_weight',
+        'page_title_alignment',
+        'page_title_shadow',
+      );
+      foreach ($page_title_settings_array as $setting) {
+        if ($page_title_setting = at_get_setting($setting, $theme_name)) {
+          $classes_array[] = $page_title_setting;
         }
       }
     }
@@ -126,7 +213,7 @@ function css_browser_selector($ua = NULL) {
   $o = 'opera';
 
   $b = array();
-  if(!preg_match('/opera|webtv/i', $ua) && preg_match('/msie\s(\d)/', $ua, $array)) {
+  if (!preg_match('/opera|webtv/i', $ua) && preg_match('/msie\s(\d)/', $ua, $array)) {
     $b[] = 'ie ie' . $array[1];
   }
   elseif (strstr($ua, 'firefox')) {
@@ -230,7 +317,6 @@ function css_browser_selector($ua = NULL) {
  * @param $theme_name
  */
 function get_color_scheme_name($theme_name) {
-
   $scheme_name = drupal_static(__FUNCTION__, array());
   if (empty($scheme_name)) {
     if (module_exists('color')) {

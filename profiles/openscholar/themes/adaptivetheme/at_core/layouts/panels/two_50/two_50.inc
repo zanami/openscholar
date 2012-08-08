@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * @file
+ * Implementation of hook_panels_layouts
+ */
 function adaptivetheme_two_50_panels_layouts() {
   $items['two_50'] = array(
     'title'    => t('AT Two column 50/50'),
@@ -13,7 +18,7 @@ function adaptivetheme_two_50_panels_layouts() {
       'two_50_second' => t('Right'),
       'two_50_bottom' => t('Bottom (conditional)'),
     ),
-    // AT
+    // AT Core
     'type' => 'two',
     'options' => array(
       'two-50' => 'default',
@@ -22,12 +27,12 @@ function adaptivetheme_two_50_panels_layouts() {
     'styles' => array(
       'two-50' => array(
         'css' => array(
-          '50' => array('.two-50 .region' => 'width:50%'),
+          '50' => array('.two-50 > .region' => 'width:50%'),
         ),
       ),
       'two-50-stack' => array(
         'css' => array(
-          'fdw' => array('.two-50 .region' => 'float:none;display:block;width:100%;clear:both'),
+          'fdw' => array('.two-50 > .region' => 'float:none;display:block;width:100%;clear:both'),
         ),
       ),
     ),
@@ -36,6 +41,9 @@ function adaptivetheme_two_50_panels_layouts() {
   return $items;
 }
 
+/**
+ * Preprocess variables for two-50.tpl.php
+ */
 function template_preprocess_two_50(&$vars) {
   $vars['panel_prefix'] = '';
   $vars['panel_suffix'] = '';

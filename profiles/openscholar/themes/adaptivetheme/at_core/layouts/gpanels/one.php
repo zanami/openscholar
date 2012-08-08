@@ -1,5 +1,9 @@
 <?php
+
 /**
+ * @file
+ * Gpanel snippet for the one column layout
+ *
  * Gpanels are drop in multi-column snippets for displaying blocks.
  * Most Gpanels are stacked, meaning they have top and bottom regions
  * by default, however you do not need to use them. You should always
@@ -13,7 +17,7 @@
 Region Deinitions:
 
 ; 1 col
-regions[one_main] = 1 col Gpanel
+regions[one_main] = AT One column
 
  */
 ?>

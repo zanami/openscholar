@@ -1,5 +1,9 @@
 <?php
+
 /**
+ * @file
+ * Gpanel snippet for the six column layout
+ *
  * Gpanels are drop in multi-column snippets for displaying blocks.
  * Most Gpanels are stacked, meaning they have top and bottom regions
  * by default, however you do not need to use them. You should always
@@ -13,12 +17,12 @@
 Region Deinitions:
 
 ; 6 col
-regions[six_first]  = 6col Gpanel - 1
-regions[six_second] = 6col Gpanel - 2
-regions[six_third]  = 6col Gpanel - 3
-regions[six_fourth] = 6col Gpanel - 4
-regions[six_fifth]  = 6col Gpanel - 5
-regions[six_sixth]  = 6col Gpanel - 6
+regions[six_first]  = AT Six column 6x16 - 1
+regions[six_second] = AT Six column 6x16 - 2
+regions[six_third]  = AT Six column 6x16 - 3
+regions[six_fourth] = AT Six column 6x16 - 4
+regions[six_fifth]  = AT Six column 6x16 - 5
+regions[six_sixth]  = AT Six column 6x16 - 6
 
  */
 ?>
@@ -36,7 +40,7 @@ regions[six_sixth]  = 6col Gpanel - 6
       <?php print render($page['six_first']); ?>
       <?php print render($page['six_second']); ?>
     </div>
-    <div class="panel-row row-2 clearfix">    
+    <div class="panel-row row-2 clearfix">
       <?php print render($page['six_third']); ?>
       <?php print render($page['six_fourth']); ?>
     </div>

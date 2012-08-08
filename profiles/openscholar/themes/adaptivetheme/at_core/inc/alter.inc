@@ -1,84 +1,23 @@
 <?php
+
 /**
+ * @file
  * General alters.
  */
-global $theme_key, $theme_name;
-$theme_name = $theme_key;
-$path_to_at_core = drupal_get_path('theme', 'adaptivetheme');
 
 /**
  * hook_html_head_alter()
  */
 function adaptivetheme_html_head_alter(&$head_elements) {
-  global $theme_name, $path_to_at_core;
+  global $theme_key;
+  $theme_name = $theme_key;
 
   // charset utf-8
   $head_elements['system_meta_content_type']['#attributes'] = array('charset' => 'utf-8');
 
-  // This injects new meta tags for mobile, it uses all user entered data so
-  // we do heavy sanity checking.
-
-  // Viewport
-  if (at_get_setting('disable_responsive_styles', $theme_name) === 0) {
-    if (at_get_setting('enable_mobile_metatags', $theme_name) === 1) {
-      // Viewport
-      $adaptivetheme_meta_viewport = filter_xss_admin(at_get_setting('adaptivetheme_meta_viewport', $theme_name));
-      $head_elements['adaptivetheme_meta_viewport'] = array(
-        '#type' => 'html_tag',
-        '#tag' => 'meta',
-        '#attributes' => array(
-          'name' => 'viewport',
-          'content' => $adaptivetheme_meta_viewport,
-        ),
-        '#weight' => 1,
-      );
-      // MobileOptimized
-      $adaptivetheme_meta_mobileoptimized = filter_xss_admin(at_get_setting('adaptivetheme_meta_mobileoptimized', $theme_name));
-      $head_elements['adaptivetheme_meta_mobileoptimized'] = array(
-        '#type' => 'html_tag',
-        '#tag' => 'meta',
-        '#attributes' => array(
-          'name' => "MobileOptimized",
-          'content' => $adaptivetheme_meta_mobileoptimized,
-        ),
-        '#weight' => 2,
-      );
-      // HandheldFriendly
-      $adaptivetheme_meta_handheldfriendly = filter_xss_admin(at_get_setting('adaptivetheme_meta_handheldfriendly', $theme_name));
-      $head_elements['adaptivetheme_meta_handheldfriendly'] = array(
-        '#type' => 'html_tag',
-        '#tag' => 'meta',
-        '#attributes' => array(
-          'name' => "HandheldFriendly",
-          'content' => $adaptivetheme_meta_handheldfriendly,
-        ),
-        '#weight' => 3,
-      );
-      // apple-mobile-web-app-capable
-      $adaptivetheme_meta_apple_mobile_web_app_capable = filter_xss_admin(at_get_setting('adaptivetheme_meta_apple_mobile_web_app_capable', $theme_name));
-      $head_elements['adaptivetheme_meta_apple_mobile_web_app_capable'] = array(
-        '#type' => 'html_tag',
-        '#tag' => 'meta',
-        '#attributes' => array(
-          'name' => "apple-mobile-web-app-capable",
-          'content' => $adaptivetheme_meta_apple_mobile_web_app_capable,
-        ),
-        '#weight' => 4,
-      );
-    }
-  }
+  // Metatags for mobile
+  // X-UA-Compatible
   if (at_get_setting('chrome_edge', $theme_name) === 1) {
-    // cleartype
-    $head_elements['adaptivetheme_meta_cleartype'] = array(
-      '#type' => 'html_tag',
-      '#tag' => 'meta',
-      '#attributes' => array(
-        'http-equiv' => "cleartype",
-        'content' => "on",
-      ),
-      '#weight' => 5,
-    );
-    // X-UA-Compatible
     $head_elements['adaptivetheme_meta_x_ua_compatible'] = array(
       '#type' => 'html_tag',
       '#tag' => 'meta',
@@ -86,15 +25,86 @@ function adaptivetheme_html_head_alter(&$head_elements) {
         'http-equiv' => "X-UA-Compatible",
         'content' => "IE=edge, chrome=1",
       ),
-      '#weight' => 6,
+      '#weight' => 1,
     );
   }
-  // Apple touch icons
+
+  // cleartype
+  if (at_get_setting('clear_type', $theme_name) === 1) {
+    $head_elements['adaptivetheme_meta_cleartype'] = array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'http-equiv' => "cleartype",
+        'content' => "on",
+      ),
+      '#weight' => 2,
+    );
+  }
+
+  // Don't add these if responsive styles are disabled
+  if (at_get_setting('disable_responsive_styles', $theme_name) === 0) {
+
+    // Viewport
+    if ($adaptivetheme_meta_viewport = at_get_setting('adaptivetheme_meta_viewport', $theme_name)) {
+      $head_elements['adaptivetheme_meta_viewport'] = array(
+        '#type' => 'html_tag',
+        '#tag' => 'meta',
+        '#attributes' => array(
+          'name' => 'viewport',
+          'content' => check_plain($adaptivetheme_meta_viewport),
+        ),
+        '#weight' => 3,
+      );
+    }
+
+    // MobileOptimized
+    if ($adaptivetheme_meta_mobileoptimized = at_get_setting('adaptivetheme_meta_mobileoptimized', $theme_name)) {
+      $head_elements['adaptivetheme_meta_mobileoptimized'] = array(
+        '#type' => 'html_tag',
+        '#tag' => 'meta',
+        '#attributes' => array(
+          'name' => "MobileOptimized",
+          'content' => check_plain($adaptivetheme_meta_mobileoptimized),
+        ),
+        '#weight' => 4,
+      );
+    }
+
+    // HandheldFriendly
+    if ($adaptivetheme_meta_handheldfriendly = at_get_setting('adaptivetheme_meta_handheldfriendly', $theme_name)) {
+      $head_elements['adaptivetheme_meta_handheldfriendly'] = array(
+        '#type' => 'html_tag',
+        '#tag' => 'meta',
+        '#attributes' => array(
+          'name' => "HandheldFriendly",
+          'content' => check_plain($adaptivetheme_meta_handheldfriendly),
+        ),
+        '#weight' => 5,
+      );
+    }
+
+    // apple-mobile-web-app-capable
+    if ($adaptivetheme_meta_apple_mobile_web_app_capable = at_get_setting('adaptivetheme_meta_apple_mobile_web_app_capable', $theme_name)) {
+    $head_elements['adaptivetheme_meta_apple_mobile_web_app_capable'] = array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => "apple-mobile-web-app-capable",
+        'content' => check_plain($adaptivetheme_meta_apple_mobile_web_app_capable),
+      ),
+      '#weight' => 6,
+      );
+    }
+  }
+
+  // Apple touch icons - low, medium and high (see the Apple docs on touch icons)
   if (at_get_setting('enable_apple_touch_icons') === 1) {
+    $path_to_theme = drupal_get_path('theme', $theme_name);
     // low
-    $apple_touch_icon_path_l = filter_xss_admin(at_get_setting('apple_touch_icon_path_l', $theme_name));
+    $apple_touch_icon_path_l = check_plain(at_get_setting('apple_touch_icon_path_l', $theme_name));
     if (!empty($apple_touch_icon_path_l)) {
-      $l = drupal_get_path('theme', $theme_name) .'/'. $apple_touch_icon_path_l;
+      $l = $path_to_theme . '/' . $apple_touch_icon_path_l;
       $touch_icon_l = file_create_url($l);
       $head_elements['adaptivetheme_touch_icon_nokia'] = array(
         '#type' => 'html_tag',
@@ -111,14 +121,14 @@ function adaptivetheme_html_head_alter(&$head_elements) {
         '#weight' => -98,
         '#attributes' => array(
           'href' => $touch_icon_l,
-          'rel' => "apple-touch-icon-processed",
+          'rel' => "apple-touch-icon-precomposed",
         ),
       );
     }
     // medium
-    $apple_touch_icon_path_m = filter_xss_admin(at_get_setting('apple_touch_icon_path_m', $theme_name));
+    $apple_touch_icon_path_m = check_plain(at_get_setting('apple_touch_icon_path_m', $theme_name));
     if (!empty($apple_touch_icon_path_m)) {
-      $m = drupal_get_path('theme', $theme_name) .'/'. $apple_touch_icon_path_m;
+      $m = $path_to_theme . '/' . $apple_touch_icon_path_m;
       $touch_icon_m = file_create_url($m);
       $head_elements['adaptivetheme_touch_icon_medium'] = array(
         '#type' => 'html_tag',
@@ -126,15 +136,15 @@ function adaptivetheme_html_head_alter(&$head_elements) {
         '#weight' => -99,
         '#attributes' => array(
           'href' => $touch_icon_m,
-          'rel' => "apple-touch-icon-processed",
+          'rel' => "apple-touch-icon-precomposed",
           'sizes' => "72x72",
         ),
       );
     }
     // high
-    $apple_touch_icon_path_h = filter_xss_admin(at_get_setting('apple_touch_icon_path_h', $theme_name));
+    $apple_touch_icon_path_h = check_plain(at_get_setting('apple_touch_icon_path_h', $theme_name));
     if (!empty($apple_touch_icon_path_h)) {
-      $h = drupal_get_path('theme', $theme_name) .'/'. $apple_touch_icon_path_h;
+      $h = $path_to_theme . '/' . $apple_touch_icon_path_h;
       $touch_icon_h = file_create_url($h);
       $head_elements['adaptivetheme_touch_icon_high'] = array(
         '#type' => 'html_tag',
@@ -142,7 +152,7 @@ function adaptivetheme_html_head_alter(&$head_elements) {
         '#weight' => -100,
         '#attributes' => array(
           'href' => $touch_icon_h,
-          'rel' => "apple-touch-icon-processed",
+          'rel' => "apple-touch-icon-precomposed",
           'sizes' => "114x114",
         ),
       );
@@ -166,10 +176,11 @@ function adaptivetheme_js_alter(&$javascript) {
  * hook_css_alter()
  */
 function adaptivetheme_css_alter(&$css) {
-  global $theme_key, $language;
+  global $theme_key;
 
   // Never allow this to run in our admin theme and only if the extension is enabled.
   if (at_get_setting('enable_exclude_css') === 1 && $theme_key !== 'adaptivetheme_admin') {
+
     // Get $css_data from the cache
     if ($cache = cache_get('at_get_css_files')) {
       $css_data = $cache->data;
@@ -177,6 +188,7 @@ function adaptivetheme_css_alter(&$css) {
     else {
       $css_data = at_get_css_files($theme_key);
     }
+
     // We need the right theme name to get the theme settings
     $_get_active_theme_data = array_pop($css_data);
     if ($_get_active_theme_data['type'] == 'theme') {
@@ -185,19 +197,23 @@ function adaptivetheme_css_alter(&$css) {
     else {
       $theme_name = $theme_key;
     }
+
+    // Get the theme setting and unset files
     foreach ($css_data as $key => $value) {
-      $setting = 'unset_css_' . drupal_html_class($key);
-      if (theme_get_setting($setting, $theme_name) === 1) {
+      $setting = 'unset_css_' . preg_replace('/[^a-zA-Z0-9-]+/', '_', $key);
+      if (at_get_setting($setting, $theme_name) === 1) {
         if (isset($css[$key])) {
           unset($css[$key]);
         }
       }
     }
-    // Unset -rtl.css files if language dir is RTL
-    if ($language->dir === 'rtl') {
+
+    // Unset -rtl.css files if language dir is RTL, in some contexts dir is
+    // unset, but I don't know if this is a core bug or not.
+    if (isset($language->dir) && $language->dir === 'rtl') {
       foreach ($css_data as $key => $value) {
-        $setting = 'unset_css_' . drupal_html_class($key);
-        if (theme_get_setting($setting, $theme_name) === 1) {
+        $setting = 'unset_css_' . preg_replace('/[^a-zA-Z0-9-]+/', '_', $key);
+        if (at_get_setting($setting, $theme_name) === 1) {
           $key = str_replace('.css', '-rtl.css', $key);
           if (isset($css[$key])) {
             unset($css[$key]);
@@ -212,16 +228,120 @@ function adaptivetheme_css_alter(&$css) {
  * hook_page_alter()
  */
 function adaptivetheme_page_alter(&$page) {
-  // Look in each visible region for blocks.
-  foreach (system_region_list($GLOBALS['theme'], REGIONS_VISIBLE) as $region => $name) {
+  global $theme_key;
+  $theme_name = $theme_key;
+
+  // Is this a mobile context?
+  $page['is_mobile'] = at_get_browser();
+
+  // Get the menu item
+  $menu_item = menu_get_item();
+
+  // Theme taxonomy term pages sensibly, remove redundant and potentially empty
+  // markup and wrap the node list in section elements with a class for theming.
+  if ($menu_item['tab_root'] == 'taxonomy/term/%') {
+    unset($page['content']['system_main']['term_heading']['#prefix']);
+    unset($page['content']['system_main']['term_heading']['#suffix']);
+    $page['content']['system_main']['nodes']['#prefix'] = '<section class="nodes">';
+    $page['content']['system_main']['nodes']['#suffix'] = '</section>';
+  }
+
+  if (at_get_setting('enable_extensions', $theme_name) === 1) {
+    if (at_get_setting('enable_markup_overides', $theme_name) === 1) {
+      // Remove block system main, just from the front page
+      if (drupal_is_front_page()) {
+        if (at_get_setting('unset_block_system_main_front', $theme_name) === 1) {
+          $page['content']['system_main']['#access'] = FALSE; // Brutal but effective
+        }
+      }
+    }
+  }
+
+  // Get all the regions with blocks
+  $block_regions = &drupal_static(__FUNCTION__, array());
+
+  if (empty($blocks_regions)) {
+    $block_regions = system_region_list($GLOBALS['theme'], REGIONS_VISIBLE);
+  }
+
+  // Look in each visible region for blocks
+  foreach ($block_regions as $region => $name) {
     if (!empty($page[$region])) {
-      // Find the last block in the region.
+
+      // Find the last block in the region
       $blocks = array_reverse(element_children($page[$region]));
       while ($blocks && !isset($page[$region][$blocks[0]]['#block'])) {
         array_shift($blocks);
       }
+
       if ($blocks) {
+        
+        // Set a bool for the last class for blocks feature
         $page[$region][$blocks[0]]['#block']->last_in_region = TRUE;
+
+        // Alter regions and block visibility. Note that ideally this would all
+        // be better in hook_page_build(), however themes can't fire that hook.
+        if (at_get_setting('enable_extensions', $theme_name) === 1) {
+          if (at_get_setting('enable_context_regions') === 1) {
+
+            if ($page['is_mobile'] == TRUE && $region !== 'content') {
+
+              // Get the target region if set, check blocks can move and its not set to unset
+              if (($target_region = at_get_setting('move_' . $region)) && ($target_region !== 'do_not_move') && (at_get_setting('unset_' . $region) !== 1)) {
+
+                // Sanitize possible vector
+                $target_region = check_plain($target_region);
+
+                // Initialize the classes array
+                $classes = array();
+
+                // Move each block
+                foreach ($blocks as $block) {
+
+                  // If the $target_region is empty the region markup does not print
+                  // so we need to generate it manually. This is bad because it
+                  // cannot account for region specific template suggestions and
+                  // Adaptivethemes own region prefix and suffix wrappers.
+                  if (empty($page[$target_region])) {
+                    $classes[] = 'region';
+                    $classes[] = 'region-' . $target_region;
+                    if ($target_region == 'sidebar_first' || $target_region == 'sidebar_second') {
+                      $classes[] = 'sidebar';
+                    }
+                    $classes = implode(' ', $classes);
+                    $page[$target_region]['#prefix'] = '<div class="' .  $classes . '"><div class="region-inner clearfix">';
+                    $page[$target_region]['#suffix'] = '</div></div>';
+                  }
+
+                  // Move the blocks to the target region
+                  $page[$target_region][$block] = $page[$region][$block];
+
+                  // Unset the original block
+                  unset($page[$region][$block]);
+                }
+
+                // Unset the region, all blocks are now moved
+                unset($page[$region]);
+              }
+
+              // Unset unwanted regions in mobile
+              if (at_get_setting('unset_' . $region) === 1) {
+                unset($page[$region]);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Run the panels test
+  if (theme_get_setting('load_all_panels') === 1) {
+    if (drupal_is_front_page()) {
+      $page['content']['#markup'] = at_debug_panels();
+      if (theme_get_setting('load_all_panels_no_sidebars') === 1) {
+        unset($page['sidebar_first']);
+        unset($page['sidebar_second']);
       }
     }
   }
@@ -242,9 +362,9 @@ function adaptivetheme_form_alter(&$form, &$form_state, $form_id) {
 
 /**
  * hook_form_FORM_ID_alter()
+ * Modify the Advanced Search Form
  */
 function adaptivetheme_form_search_form_alter(&$form, $form_state) {
-
   // The problem with Drupals standard Advanced search form is that each
   // criterion group is wrapped in a DIV, whereas it should be a fieldset with
   // a legend, this is better semantics and improves accessibility by
@@ -331,7 +451,43 @@ function adaptivetheme_form_search_form_alter(&$form, $form_state) {
 }
 
 /**
+ * hook_form_FORM_ID_alter()
+ * Modify the User Login Block Form
+ */
+function adaptivetheme_form_user_login_block_alter(&$form, &$form_state, $form_id) {
+  global $theme_key;
+  $theme_name = $theme_key;
+  if (at_get_setting('enable_extensions', $theme_name) === 1) {
+    if (at_get_setting('enable_markup_overides', $theme_name) === 1) {
+      if (at_get_setting('login_block_remove_links', $theme_name) === 1) {
+        // Remove the links
+        if (isset($form['links'])) {
+          unset($form['links']);
+        }
+      }
+      if (at_get_setting('login_block_remove_openid', $theme_name) === 1) {
+        if (module_exists('openid')) {
+          // Remove OpenID elements
+          unset($form['openid_links']);
+          unset($form['openid_identifier']);
+          unset($form['openid.return_to']);
+        }
+      }
+      if (at_get_setting('horizontal_login_block', $theme_name) === 1) {
+        // Move the links to the end of the form, so they are after the submit,
+        // OpenID really messes up the weight and I can't be bothered fighting
+        // Drupal to deal with it.
+        if (isset($form['links'])) {
+          $form['links']['#weight'] = 100;
+        }
+      }
+    }
+  }
+}
+
+/**
  * hook_form_BASE_FORM_ID_alter()
+ * Modify field classes on node forms.
  */
 function adaptivetheme_form_node_form_alter(&$form, &$form_state, $form_id) {
   // Remove if #1245218 is backported to D7 core.
@@ -358,9 +514,341 @@ function adaptivetheme_wysiwyg_editor_settings_alter(&$settings, &$context) {
   $settings['bodyClass'] = 'wysiwygeditor';
 }
 
-/* debug
-function adaptivetheme_block_view_alter(&$data, $block) {
-  dsm($data);
-  dsm($block);
+/**
+ * Output for the debug panels test.
+ */
+function at_debug_panels() {
+  $output = <<<EOF
+<div class="all-panel-layouts debug-panels">
+
+    <h1>Panels/Gpanels Layout Test</h1>
+    <p>To disable this test uncheck the theme setting <em>Debuggers > Load all panels in the front page content region</em></p>
+
+    <div class="at-panel panel-display one-column clearfix">
+      <div class="region region-one-main">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-display two-50 clearfix">
+      <div class="region region-two-50-top region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-two-50-first">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-two-50-second">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-two-50-bottom region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-display two-33-66 clearfix">
+      <div class="region region-two-33-66-top region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-two-33-66-first">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-two-33-66-second">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-two-33-66-bottom region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-display two-66-33 clearfix">
+      <div class="region region-two-66-33-top region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-two-66-33-first">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-two-66-33-second">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-two-66-33-bottom region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-display two-brick clearfix">
+      <div class="region region-two-brick-top region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="panel-row row-1 clearfix">
+        <div class="region region-two-brick-left-above">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-two-brick-right-above">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+      </div>
+      <div class="region region-two-brick-middle region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="panel-row row-2 clearfix">
+        <div class="region region-two-brick-left-below">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-two-brick-right-below">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+      </div>
+      <div class="region region-two-brick-bottom region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-display three-3x33 clearfix">
+      <div class="region region-three-33-top region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-33-first">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-33-second">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-33-third">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-33-bottom region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-display three-25-50-25 clearfix">
+      <div class="region region-three-25-50-25-top region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-25-50-25-first">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-25-50-25-second">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-25-50-25-third">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-25-50-25-bottom region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-display three-25-25-50 clearfix">
+      <div class="region region-three-25-25-50-top region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-25-25-50-first">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-25-25-50-second">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-25-25-50-third">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-25-25-50-bottom region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-display three-50-25-25 clearfix">
+      <div class="region region-three-50-25-25-top region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-50-25-25-first">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-50-25-25-second">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-50-25-25-third">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="region region-three-50-25-25-bottom region-conditional-stack">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-display four-4x25 clearfix">
+      <div class="panel-row row-1 clearfix">
+        <div class="region region-four-first">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-four-second">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+      </div>
+      <div class="panel-row row-2 clearfix">
+        <div class="region region-four-third">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-four-fourth">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-display five-5x20 clearfix">
+      <div class="panel-row row-1 clearfix">
+        <div class="region region-five-first">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-five-second">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+      </div>
+      <div class="panel-row row-2 clearfix">
+        <div class="region region-five-third">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-five-fourth">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-five-fifth">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-display six-6x16 multicolumn clearfix">
+      <div class="panel-row row-1 clearfix">
+        <div class="region region-six-first">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-six-second">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+      </div>
+      <div class="panel-row row-2 clearfix">
+        <div class="region region-six-third">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-six-fourth">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+      </div>
+      <div class="panel-row row-3 clearfix">
+        <div class="region region-six-fifth">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-six-sixth">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-panel three-inset-left clearfix">
+      <div class="region region-three-inset-left-sidebar">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="inset-wrapper clearfix">
+        <div class="region region-three-inset-left-top region-conditional-stack">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-three-inset-left-middle">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-three-inset-left-inset">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-three-inset-left-bottom region-conditional-stack">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="at-panel panel-panel three-inset-right clearfix">
+      <div class="region region-three-inset-right-sidebar">
+        <div class="region-inner clearfix">
+        </div>
+      </div>
+      <div class="inset-wrapper clearfix">
+        <div class="region region-three-inset-right-top region-conditional-stack">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-three-inset-right-middle">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-three-inset-right-inset">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+        <div class="region region-three-inset-right-bottom region-conditional-stack">
+          <div class="region-inner clearfix">
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+EOF;
+
+  return $output;
 }
-*/

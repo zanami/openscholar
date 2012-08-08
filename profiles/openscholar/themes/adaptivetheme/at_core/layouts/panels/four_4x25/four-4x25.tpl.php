@@ -12,46 +12,41 @@
  *   added by Adaptivetheme in the appropriate process function.
  * - $panel_suffix: closing element for the $prefix.
  *
- * @see adaptivetheme_preprocess_six_6x16()
+ * @see adaptivetheme_preprocess_four_4x25()
  * @see adaptivetheme_preprocess_node()
  * @see adaptivetheme_process_node()
  */
+
+// Ensure variables are always set. In the last hours before cutting a stable
+// release I found these are not set when inside a Field Collection using Display
+// Suite, even though they are initialized in the templates preprocess function.
+// This is a workaround, that may or may not go away.
+$panel_prefix = isset($panel_prefix) ? $panel_prefix : '';
+$panel_suffix = isset($panel_suffix) ? $panel_suffix : '';
 ?>
 <?php print $panel_prefix; ?>
-<div class="at-panel panel-display six-6x16 multicolumn clearfix" <?php if (!empty($css_id)) { print "id=\"$css_id\""; } ?>>
+<div class="at-panel panel-display four-4x25 clearfix" <?php if (!empty($css_id)): print "id=\"$css_id\""; endif; ?>>
   <div class="panel-row row-1 clearfix">
-    <div class="region region-six-first">
+    <div class="region region-four-first">
       <div class="region-inner clearfix">
-        <?php print $content['six_first']; ?>
+        <?php print $content['four_first']; ?>
       </div>
     </div>
-    <div class="region region-six-second">
+    <div class="region region-four-second">
       <div class="region-inner clearfix">
-        <?php print $content['six_second']; ?>
+        <?php print $content['four_second']; ?>
       </div>
     </div>
   </div>
   <div class="panel-row row-2 clearfix">
-    <div class="region region-six-third">
+    <div class="region region-four-third">
       <div class="region-inner clearfix">
-        <?php print $content['six_third']; ?>
+        <?php print $content['four_third']; ?>
       </div>
     </div>
-    <div class="region region-six-fourth">
+    <div class="region region-four-fourth">
       <div class="region-inner clearfix">
-        <?php print $content['six_fourth']; ?>
-      </div>
-    </div>
-  </div>
-  <div class="panel-row row-3 clearfix">
-    <div class="region region-six-fifth">
-      <div class="region-inner clearfix">
-        <?php print $content['six_fifth']; ?>
-      </div>
-    </div>
-    <div class="region region-six-sixth">
-      <div class="region-inner clearfix">
-        <?php print $content['six_sixth']; ?>
+        <?php print $content['four_fourth']; ?>
       </div>
     </div>
   </div>

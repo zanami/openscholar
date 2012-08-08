@@ -1,5 +1,9 @@
 <?php
+
 /**
+ * @file
+ * Gpanel snippet for the four column layout
+ *
  * Gpanels are drop in multi-column snippets for displaying blocks.
  * Most Gpanels are stacked, meaning they have top and bottom regions
  * by default, however you do not need to use them. You should always
@@ -13,10 +17,10 @@
 Region Deinitions:
 
 ; 4 col
-regions[four_first]  = 4col Gpanel - 1
-regions[four_second] = 4col Gpanel - 2
-regions[four_third]  = 4col Gpanel - 3
-regions[four_fourth] = 4col Gpanel - 4
+regions[four_first]  = AT Four column 4x25 - 1
+regions[four_second] = AT Four column 4x25 - 2
+regions[four_third]  = AT Four column 4x25 - 3
+regions[four_fourth] = AT Four column 4x25 - 4
 
  */
 ?>
@@ -32,7 +36,7 @@ regions[four_fourth] = 4col Gpanel - 4
       <?php print render($page['four_first']); ?>
       <?php print render($page['four_second']); ?>
     </div>
-    <div class="panel-row row-2 clearfix">  
+    <div class="panel-row row-2 clearfix">
       <?php print render($page['four_third']); ?>
       <?php print render($page['four_fourth']); ?>
     </div>

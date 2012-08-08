@@ -1,18 +1,28 @@
 <?php
+
 /**
+ * @file
  * All Preprocess functions for templates and theme fucntions.
  * If you need to add or modify preprocess functions do it in your sub-theme.
  */
 
 /**
+ * Preprocess variables for all templates.
+ */
+function adaptivetheme_preprocess(&$vars) {
+  // Provide a variable to all templates to test for a mobile context, this
+  // requires the Browscap module and returns TRUE or FALSE.
+  $vars['is_mobile'] = at_get_browser();
+}
+
+/**
  * Preprocess variables for html.tpl.php
  */
-function adaptivetheme_preprocess_html(&$vars, $hook) {
+function adaptivetheme_preprocess_html(&$vars) {
   global $theme_key, $language;
   $theme_name = $theme_key;
 
-  // Set some paths
-  $path_to_at_core = drupal_get_path('theme', 'adaptivetheme');
+  // Set variable for the base path
   $vars['base_path'] = base_path();
 
   // Get the info file data
@@ -24,10 +34,20 @@ function adaptivetheme_preprocess_html(&$vars, $hook) {
   $vars['doctype'] = '<!DOCTYPE html>' . "\n";
   $vars['rdf_profile'] = '';
 
-  // Clean up the lang attributes.
-  $vars['html_attributes'] = 'lang="' . $language->language . '" dir="' . $language->dir . '"';
+  // Use a proper attributes array for the html attributes
+  $vars['html_attributes_array']['lang'][] = $language->language;
+  $vars['html_attributes_array']['dir'][] = $language->dir;
 
-  // Set the path to the directory where our CSS files are saved
+  // Convert RDF Namespaces into structured data using drupal_attributes.
+  $vars['rdf_namespaces'] = array();
+  if (function_exists('rdf_get_namespaces')) {
+    foreach (rdf_get_namespaces() as $prefix => $uri) {
+      $prefixes[] = $prefix . ': ' . $uri;
+    }
+    $vars['rdf_namespaces_array']['prefix'] = implode(' ', $prefixes);
+  }
+
+  // Get the path to the directory where our CSS files are saved
   $path = variable_get('theme_' . $theme_name . '_files_directory');
 
   // Load Layout
@@ -39,19 +59,28 @@ function adaptivetheme_preprocess_html(&$vars, $hook) {
   }
 
   // Load fonts and/or Custom CSS
-  if(at_get_setting('enable_extensions', $theme_name) === 1) {
-
+  if (at_get_setting('enable_extensions', $theme_name) === 1) {
+    // Fonts CSS
     if (at_get_setting('enable_font_settings', $theme_name) === 1) {
       load_fonts($path, $theme_name);
     }
-
+    // Custom CSS
     if (at_get_setting('enable_custom_css', $theme_name) === 1) {
       load_custom_css($path, $theme_name);
     }
+    // Load Extension Settings CSS
+    load_extensions_css($theme_name);
   }
 
-  // Load Extension Settings CSS
-  load_extensions_css($theme_name);
+  // Load conditional stylesheets declared in the info file
+  if (isset($info['ie_stylesheets'])) {
+    load_subtheme_conditional_styles($theme_name);
+  }
+
+  // Load specific subtheme scripts
+  if (at_get_setting('load_onmediaqueryjs', $theme_name) === 1) {
+    load_subtheme_script('scripts/media_queries.js', $theme_name, 'footer', '100');
+  }
 
   // Build an array of polyfilling scripts
   $vars['polyfills_array'] = '';
@@ -75,14 +104,11 @@ function adaptivetheme_preprocess_html(&$vars, $hook) {
   // on the old system. Scan for the existence of a "release" key and
   // conditionally load google.web.fonts.inc
   if (!isset($info['release']) || $info['release'] === '7.x-2.x') {
-    include_once($path_to_at_core . '/inc/google.web.fonts.inc');
+    include_once(drupal_get_path('theme', 'adaptivetheme') . '/inc/google.web.fonts.inc');
   }
 
-  // Load debuggers if enabled.
-  if (
-    at_get_setting('expose_regions', $theme_name) === 1 ||
-    at_get_setting('load_all_panels', $theme_name) === 1 ||
-    at_get_setting('show_window_size', $theme_name) === 1) {
+  // Load debuggers if enabled. Panels page debugger is a menu item, see alter.inc
+  if (at_get_setting('expose_regions', $theme_name) === 1 || at_get_setting('show_window_size', $theme_name) === 1 || at_get_setting('load_all_panels', $theme_name) === 1) {
     load_debuggers($theme_name);
   }
 }
@@ -90,7 +116,7 @@ function adaptivetheme_preprocess_html(&$vars, $hook) {
 /**
  * Preprocess variables for page.tpl.php
  */
-function adaptivetheme_preprocess_page(&$vars, $hook) {
+function adaptivetheme_preprocess_page(&$vars) {
   global $theme_key;
   $theme_name = $theme_key;
 
@@ -101,51 +127,35 @@ function adaptivetheme_preprocess_page(&$vars, $hook) {
       $logo_path = check_url($vars['logo']);
       $logo_alt = check_plain(variable_get('site_name', t('Site logo')));
       $logo_vars = array('path' => $logo_path, 'alt' => $logo_alt, 'attributes' => array('class' => 'site-logo'));
-      $logo_img = theme('image', $logo_vars);
-      $vars['site_logo'] = $logo_img ? l($logo_img, '<front>', array('attributes' => array('title' => t('Home page')), 'html' => TRUE)) : '';
+      $vars['logo_img'] = theme('image', $logo_vars);
+      $vars['site_logo'] = $vars['logo_img'] ? l($vars['logo_img'], '<front>', array('attributes' => array('title' => t('Home page')), 'html' => TRUE)) : '';
     }
     // Maintain backwards compatibility with 7.x-2.x sub-themes
-    $vars['logo_img'] = isset($logo_img) ? $logo_img : '';
     $vars['linked_site_logo'] = $vars['site_logo'];
   }
   else {
     $vars['site_logo'] = '';
+    $vars['logo_img'] = '';
+    $vars['linked_site_logo'] = '';
   }
 
   // Site name
   $vars['site_name'] = &drupal_static('adaptivetheme_preprocess_page_site_name');
   if (empty($vars['site_name'])) {
-    $sitename = variable_get('site_name', 'Drupal');
-    $vars['site_name'] = l($sitename, '<front>', array('attributes' => array('title' => t('Home page'))));
+    $vars['site_name_title'] = variable_get('site_name', 'Drupal');
+    $vars['site_name'] = l($vars['site_name_title'], '<front>', array('attributes' => array('title' => t('Home page'))));
+    $vars['site_name_unlinked'] = $vars['site_name_title'];
   }
 
-  // Hide the site name if toggled off, don't remove it
+  // Site name visibility and other classes and variables
+  $vars['site_name_attributes_array'] = array();
+  $vars['visibility'] = '';
+  $vars['hide_site_name'] = FALSE;
   if (at_get_setting('toggle_name', $theme_name) === 0) {
+    // Keep the visibility variable to maintain backwards compatibility
     $vars['visibility'] = 'element-invisible';
+    $vars['site_name_attributes_array']['class'][] = $vars['visibility'];
     $vars['hide_site_name'] = TRUE;
-  }
-  else {
-    $vars['visibility'] = '';
-    $vars['hide_site_name'] = FALSE;
-  }
-
-  // Site Name and Slogan classes
-  if(at_get_setting('enable_heading_settings', $theme_name) === 1) {
-    $heading_settings_array = &drupal_static('adaptivetheme_preprocess_page_heading_settings');
-    if (empty($heading_settings_array)) {
-      if ($vars['hide_site_name'] == FALSE) {
-        $sitename_classes = array('site_name_case', 'site_name_weight', 'site_name_alignment', 'site_name_shadow');
-      }
-      if ($vars['site_slogan']) {
-        $slogan_classes = array('site_slogan_case', 'site_slogan_weight', 'site_slogan_alignment', 'site_slogan_shadow');
-      }
-      $heading_settings_array = array_merge($sitename_classes, $slogan_classes);
-    }
-    foreach ($heading_settings_array as $setting) {
-      if ($heading_setting = at_get_setting($setting, $theme_name)) {
-        $vars['classes_array'][] = $heading_setting;
-      }
-    }
   }
 
   // Build a variable for the main menu
@@ -188,17 +198,63 @@ function adaptivetheme_preprocess_page(&$vars, $hook) {
     $vars['search_box'] = '<div id="search-box">' . drupal_render($search_box) . '</div>';
   }
 
-  // Remove the infernal feed icons
-  if (at_get_setting('feed_icons_hide', $theme_name) === 1) {
-    $vars['feed_icons'] = '';
-  }
-
-  // Remove block system main, just from the front page
-  if (drupal_is_front_page()) {
-    if (at_get_setting('unset_block_system_main_front', $theme_name) === 1) {
-      $vars['page']['content']['system_main'] = ''; // Brutal but effective
+  // Process enabled Extensions
+  if (at_get_setting('enable_extensions', $theme_name) === 1) {
+    // Generate page classes, in AT Core these are all Extensions
+    if ($page_classes = generate_page_classes($vars, $theme_name)) {
+      foreach ($page_classes as $class_name) {
+        $vars['classes_array'][] = $class_name;
+      }
+    }
+    // Process modify markup settings
+    if (at_get_setting('enable_markup_overides', $theme_name) === 1) {
+      // Remove the infernal feed icons
+      if (at_get_setting('feed_icons_hide', $theme_name) === 1) {
+        $vars['feed_icons'] = '';
+      }
     }
   }
+
+  // Strip stupid contextual-links-region class, wtf?
+  $vars['classes_array'] = array_values(array_diff($vars['classes_array'], array('contextual-links-region')));
+
+  // page attributes
+  $vars['page_attributes_array']['id'][] = 'page';
+  $vars['page_attributes_array']['class'] = $vars['classes_array'];
+
+  // header attributes
+  $vars['header_attributes_array']['id'][] = 'header';
+  $vars['header_attributes_array']['class'][] = 'clearfix';
+  $vars['header_attributes_array']['role'][] = 'banner';
+
+  // hgroup attributes
+  $vars['hgroup_attributes_array'] = array();
+  if (!$vars['site_slogan'] && $vars['hide_site_name']) {
+    $vars['hgroup_attributes_array']['class'][] = $vars['visibility'];
+  }
+
+  // branding attributes
+  $vars['branding_attributes_array']['id'][] = 'branding';
+  $vars['branding_attributes_array']['class'][] = 'branding-elements';
+  $vars['branding_attributes_array']['class'][] = 'clearfix';
+
+  // hgroup attributes
+  $vars['hgroup_attributes_array']['id'][] = 'name-and-slogan';
+
+  // site name attributes
+  $vars['site_name_attributes_array']['id'][] = 'site-name';
+
+  // site slogan attributes
+  $vars['site_slogan_attributes_array']['id'][] = 'site-slogan';
+
+  // main content header attributes
+  $vars['content_header_attributes_array']['id'][] = 'main-content-header';
+  $vars['content_header_attributes_array']['class'][] = 'clearfix';
+
+  // footer attributes
+  $vars['footer_attributes_array']['id'][] = 'footer';
+  $vars['footer_attributes_array']['class'][] = 'clearfix';
+  $vars['footer_attributes_array']['role'][] = 'contentinfo';
 
   // Attribution variable used in admin theme and some others
   $vars['attribution'] = "<small class=\"attribution\"><a href=\"http://adaptivethemes.com\">Premium Drupal Themes</a></small>";
@@ -221,14 +277,45 @@ function adaptivetheme_preprocess_page(&$vars, $hook) {
 /**
  * Preprocess variables for region.tpl.php
  */
-function adaptivetheme_preprocess_region(&$vars, $hook) {
+function adaptivetheme_preprocess_region(&$vars) {
+  global $theme_key;
+  $theme_name = $theme_key;
+
+  $region = $vars['region'];
 
   // Add a "sidebar" class to sidebar regions
-  if (strpos($vars['region'], 'sidebar_') === 0) {
+  if (strpos($region, 'sidebar_') === 0) {
     $vars['classes_array'][] = 'sidebar';
+    // Allow a region-specific template to override the region--sidebar suggestion.
+    array_unshift($vars['theme_hook_suggestions'], 'region__sidebar');
   }
 
-  // Add classes to conditional stack regions in Gpanel regions, in the Panels layout plugins these are hard coded.
+  // Float region block classes
+  if (at_get_setting('enable_extensions', $theme_name) === 1) {
+    if (at_get_setting('enable_float_region_blocks', $theme_name) === 1) {
+
+      // Make sure there is something set for the region, get the column count
+      if ($float_blocks_regions_class = at_get_setting('float_block_' . $region)) {
+
+        // Do nothing if its <none>
+        if ($float_blocks_regions_class !== '<none>') {
+
+          // Set a class for the number of columns selected, default to nothing
+          $float_blocks_regions_class = isset($float_blocks_regions_class) ? check_plain($float_blocks_regions_class) : '';
+          $vars['classes_array'][] = 'float-blocks-' . $float_blocks_regions_class;
+
+          // Add the float direction class, default to left if the setting fails
+          if ($float_block_direction_class = at_get_setting('float_block_direction_' . $region)) {
+            $float_block_direction_class = isset($float_block_direction_class) ? check_plain($float_block_direction_class) : 'left';
+            $vars['classes_array'][] = 'float-blocks-' . $float_block_direction_class;
+          }
+        }
+      }
+    }
+  }
+
+  // Add classes to conditional stack regions in Gpanel regions, in the Panels
+  // layout plugins these are hard coded.
   $conditional_stack_regions = &drupal_static(__FUNCTION__, array());
   if (empty($conditional_stack_regions)) {
     $conditional_stack_regions = array(
@@ -255,7 +342,7 @@ function adaptivetheme_preprocess_region(&$vars, $hook) {
       'threecol_inset_right_bottom',
     );
   }
-  if (in_array($vars['region'], $conditional_stack_regions)) {
+  if (in_array($region, $conditional_stack_regions)) {
     $vars['classes_array'][] = 'region-conditional-stack';
   }
 }
@@ -263,9 +350,58 @@ function adaptivetheme_preprocess_region(&$vars, $hook) {
 /**
  * Preprocess variables for block.tpl.php
  */
-function adaptivetheme_preprocess_block(&$vars, $hook) {
+function adaptivetheme_preprocess_block(&$vars) {
   global $theme_key;
   $theme_name = $theme_key;
+
+  // Block subject, under certain conditions, is not set
+  $vars['tag'] = 'div';
+  $vars['title'] = '';
+
+  if (isset($vars['block']->subject)) {
+    if (!empty($vars['block']->subject)) {
+      // Generate the wrapper element, if there's a title use section
+      $vars['tag'] = 'section';
+
+      // Use a $title variable instead of $block->subject
+      $vars['title'] = $vars['block']->subject;
+    }
+    // subject can be set and empty, i.e. using <none>
+    else {
+      $vars['classes_array'][] = 'no-title';
+    }
+  }
+  // sometimes subject is not set at all
+  else {
+    $vars['classes_array'][] = 'no-title';
+  }
+
+  // Search is never a section, its just a div
+  if ($vars['block_html_id'] === 'block-search-form') {
+    $vars['tag'] = 'div';
+  }
+
+  // Initialize and populate the inner wrapper variables
+  $vars['inner_prefix'] = '<div class="block-inner clearfix">';
+  $vars['inner_suffix'] = '</div>';
+
+  // Use nav element for menu blocks and provide a suggestion for all of them
+  $nav_blocks = array('navigation', 'main-menu', 'management', 'user-menu');
+  if (in_array($vars['block']->delta, $nav_blocks)) {
+    $vars['tag'] = 'nav';
+    array_unshift($vars['theme_hook_suggestions'], 'block__menu');
+  }
+  $nav_modules = array('superfish', 'nice_menus', 'menu_block');
+  if (in_array($vars['block']->module, $nav_modules)) {
+    $vars['tag'] = 'nav';
+    array_unshift($vars['theme_hook_suggestions'], 'block__menu');
+  }
+
+  // The menu bar region gets special treatment for the block template
+  if ($vars['block']->region === 'menu_bar') {
+    // They are always menu blocks, right?
+    $vars['tag'] = 'nav';
+  }
 
   // The menu bar region gets special treatment for the block template
   if ($vars['block']->region === 'menu_bar') {
@@ -298,35 +434,17 @@ function adaptivetheme_preprocess_block(&$vars, $hook) {
     $vars['classes_array'][] = drupal_html_class('block-' . $vars['block']->delta);
   }
 
-  // Add title style classes, these are loaded via the classes_array and not
-  // title_attributes_array so we can style the whole block depending on the
-  // title styles.
-  if (isset($vars['block']->subject)) {
-    if(at_get_setting('enable_heading_settings', $theme_name) === 1) {
-      $settings_array = &drupal_static('adaptivetheme_preprocess_block_heading_settings');
-      if (empty($settings_array)) {
-        $settings_array = array('block_title_case', 'block_title_weight', 'block_title_alignment', 'block_title_shadow');
+  // Add classes to theme the horizontal block option
+  if (at_get_setting('enable_extensions', $theme_name) === 1) {
+    if (at_get_setting('enable_markup_overides', $theme_name) === 1) {
+      if (at_get_setting('horizontal_login_block', $theme_name) === 1 && $vars['block']->module === 'user' && $vars['block']->delta === 'login') {
+        $vars['classes_array'][] = 'lb-h';
+        $vars['title_attributes_array']['class'][] = 'element-invisible';
       }
-      foreach ($settings_array as $setting) {
-        if ($heading_setting = at_get_setting($setting, $theme_name)) {
-          $vars['classes_array'][] = $heading_setting;
-        }
+      if (at_get_setting('slider_login_block', $theme_name) === 1 && $vars['block']->module === 'user' && $vars['block']->delta === 'login') {
+        $vars['classes_array'][] = 'lb-s';
       }
     }
-  }
-
-  // Add classes to theme the horizontal block option
-  if (at_get_setting('horizontal_login_block', $theme_name) === 1 &&
-    $vars['block']->module === 'user' &&
-    $vars['block']->delta === 'login')
-    {
-    $vars['classes_array'][] = 'lb-h';
-  }
-  if (at_get_setting('slider_login_block', $theme_name) === 1 &&
-    $vars['block']->module === 'user' &&
-    $vars['block']->delta === 'login')
-    {
-    $vars['classes_array'][] = 'lb-s';
   }
 
   // Give our block titles and content some additional class
@@ -396,9 +514,83 @@ function adaptivetheme_preprocess_block(&$vars, $hook) {
 }
 
 /**
+ * Preprocess variables for panels_pane.tpl.php
+ */
+function adaptivetheme_preprocess_panels_pane(&$vars) {
+  // Top level wrapper
+  $vars['tag'] = $vars['title'] ? 'section' : 'div';
+
+  // Add the same classes as blocks
+  if (empty($vars['title'])) {
+    $vars['classes_array'][] = 'no-title';
+  }
+  $vars['classes_array'][] = 'block';
+
+  // Use the attributes arrays to add classes.
+  $vars['title_attributes_array']['class'][] = 'block-title';
+  $vars['attributes_array']['class'] = $vars['classes_array'];
+  $vars['content_attributes_array']['class'][] = 'block-content';
+}
+
+/**
+ * Preprocess variables for field.tpl.php
+ */
+function adaptivetheme_preprocess_field(&$vars) {
+  global $theme_key;
+  $theme_name = $theme_key;
+
+  $element = $vars['element'];
+
+ // Set the top level element as either <section> (if the field label is showing),
+ // or <div> if the field label is hidden.
+  $vars['tag'] = 'section';
+  if (isset($vars['label_hidden']) && $vars['label_hidden'] == TRUE) {
+    $vars['tag'] = 'div';
+  }
+
+  $vars['field_view_mode'] = '';
+  if (isset($element['#view_mode'])) {
+    // add a view mode class to fields
+    $vars['classes_array'][] = 'view-mode-' . $element['#view_mode'];
+    // Set variable for view mode, appears to be not gettable in a template
+    $vars['field_view_mode'] = $element['#view_mode'];
+  }
+
+  // Image fields
+  if ($element['#field_type'] === 'image') {
+
+    // Set some vars for image captioning, these always need to be initialized
+    $vars['image_caption_teaser'] = FALSE;
+    $vars['image_caption_full'] = FALSE;
+
+    // Dont run anything if extensions or image settings are disabled
+    if (at_get_setting('enable_extensions', $theme_name) === 1) {
+      if (at_get_setting('enable_image_settings', $theme_name) === 1) {
+
+        // Reduce number of images in teaser view mode to single image
+        if (at_get_setting('image_teaser', $theme_name) === 1) {
+          if ($element['#view_mode'] == 'teaser') {
+            $item = reset($vars['items']);
+            $vars['items'] = array($item);
+          }
+        }
+
+        // Captions
+        if (at_get_setting('image_caption_teaser', $theme_name) === 1) {
+          $vars['image_caption_teaser'] = TRUE;
+        }
+        if (at_get_setting('image_caption_full', $theme_name) === 1) {
+          $vars['image_caption_full'] = TRUE;
+        }
+      }
+    }
+  }
+}
+
+/**
  * Preprocess variables for node.tpl.php
  */
-function adaptivetheme_preprocess_node(&$vars, $hook) {
+function adaptivetheme_preprocess_node(&$vars) {
   global $theme_key;
   $theme_name = $theme_key;
 
@@ -419,8 +611,10 @@ function adaptivetheme_preprocess_node(&$vars, $hook) {
     }
 
     // User picture?
-    if ($vars['display_submitted'] && !empty($vars['picture'])) {
-      $vars['classes_array'][] = 'node-with-picture';
+    if (at_get_setting('toggle_node_user_picture', $theme_name) === 1) {
+      if ($vars['display_submitted'] && !empty($vars['picture'])) {
+        $vars['classes_array'][] = 'node-with-picture';
+      }
     }
 
     // Class for each view mode, core assumes we only need to target teasers but neglects custom view modes or full
@@ -429,17 +623,23 @@ function adaptivetheme_preprocess_node(&$vars, $hook) {
     }
   }
 
-  // Add title style classes, as per blocks these are added to classes_array not title_attraibutes_array
-  // so we can style the entire node based on how the title wants to be handled (such as alignmment)
-  if (isset($vars['title'])) {
-    if(at_get_setting('enable_heading_settings', $theme_name) === 1) {
-      $settings_array = &drupal_static('adaptivetheme_preprocess_node_heading_settings');
-      if (empty($settings_array)) {
-        $settings_array = array('node_title_case', 'node_title_weight', 'node_title_alignment', 'node_title_shadow');
+  // Image alignment and caption classes
+  if (at_get_setting('enable_extensions', $theme_name) === 1) {
+    if (at_get_setting('enable_image_settings', $theme_name) === 1) {
+      if ($vars['view_mode'] !== 'teaser') {
+        if ($image_caption_full = at_get_setting('image_caption_full', $theme_name)) {
+          $vars['classes_array'][] = $image_caption_full;
+        }
+        if ($image_alignment = at_get_setting('image_alignment', $theme_name)) {
+          $vars['classes_array'][] = $image_alignment;
+        }
       }
-      foreach ($settings_array as $setting) {
-        if ($heading_setting = at_get_setting($setting, $theme_name)) {
-          $vars['classes_array'][] = $heading_setting;
+      if ($vars['view_mode'] == 'teaser') {
+        if ($image_caption_teaser = at_get_setting('image_caption_teaser', $theme_name)) {
+          $vars['classes_array'][] = $image_caption_teaser;
+        }
+        if ($image_alignment_teaser = at_get_setting('image_alignment_teaser', $theme_name)) {
+          $vars['classes_array'][] = $image_alignment_teaser;
         }
       }
     }
@@ -448,17 +648,41 @@ function adaptivetheme_preprocess_node(&$vars, $hook) {
   // ARIA Role
   $vars['attributes_array']['role'][] = 'article';
 
-  // Title and content classes
+  // Classes and attributes
   $vars['title_attributes_array']['class'][] = 'node-title';
   $vars['content_attributes_array']['class'][] = 'node-content';
+  $vars['title_attributes_array']['rel'][] = 'nofollow';
 
-  // Build the submitted by and time elements
-  $vars['datetime'] = format_date($vars['created'], 'custom', 'Y-m-d\TH:i:s\Z'); // PHP 'c' format is not proper ISO8601!
+  // header, submitted and links wrappers have their own attributes
+  $vars['header_attributes_array']['class'][] = 'node-header';
+  $vars['footer_attributes_array']['class'][] = 'submitted';
+  if ($vars['user_picture']) {
+    $vars['footer_attributes_array']['class'][] = 'with-user-picture';
+  }
+  $vars['links_attributes_array']['class'][] = 'clearfix';
+
+  //
+  // AT Core builds additional time and date variables for use in templates
+  //
+  // datetime stamp formatted correctly to ISO8601
+  $vars['datetime'] = format_date($vars['created'], 'custom', 'Y-m-d\TH:i:sO'); // PHP 'c' format is not proper ISO8601!
+
+  // Publication date, formatted with time element
+  $vars['publication_date'] = '<time datetime="' . $vars['datetime'] . '" pubdate="pubdate">' . $vars['date'] . '</time>';
+
+  // Last update variables
+  $vars['datetime_updated'] = format_date($vars['node']->changed, 'custom', 'Y-m-d\TH:i:sO');
+  $vars['custom_date_and_time'] = date('jS F, Y - g:ia', $vars['node']->changed);
+
+  // Last updated formatted in time element
+  $vars['last_update'] = '<time datetime="' . $vars['datetime_updated'] . '" pubdate="pubdate">' . $vars['custom_date_and_time'] . '</time>';
+
+  // Build the submitted variable used by default in node templates
   if (variable_get('node_submitted_' . $vars['node']->type, TRUE)) {
     $vars['submitted'] = t('Submitted by !username on !datetime',
       array(
         '!username' => $vars['name'],
-        '!datetime' => '<time datetime="' . $vars['datetime'] . '" pubdate="pubdate">' . $vars['date'] . '</time>',
+        '!datetime' => $vars['publication_date'],
       )
     );
   }
@@ -466,17 +690,23 @@ function adaptivetheme_preprocess_node(&$vars, $hook) {
     $vars['submitted'] = '';
   }
 
-  // Unpublised?
-  $vars['unpublished'] = '';
+  // Unpublished?
+  $vars['unpublished'] = ''; // Initialize for backwards compatibility
   if (!$vars['status']) {
-    $vars['unpublished'] = '<p class="unpublished">' . t('Unpublished') . '</p>';
+    // Use the title prefix to render the unpublished message
+    $vars['title_prefix']['unpublished']['#markup'] = '<p class="unpublished">' . t('Unpublished') . '</p>';
+  }
+
+  // Add nofollow to Book module print/export links
+  if (isset($vars['content']['links']['book']['#links']['book_printer'])) {
+    $vars['content']['links']['book']['#links']['book_printer']['attributes'] = array('rel' => array('nofollow'));
   }
 }
 
 /**
  * Preprocess variables for comment.tpl.php
  */
-function adaptivetheme_preprocess_comment(&$vars, $hook) {
+function adaptivetheme_preprocess_comment(&$vars) {
   global $theme_key;
   $theme_name = $theme_key;
 
@@ -500,12 +730,14 @@ function adaptivetheme_preprocess_comment(&$vars, $hook) {
     }
 
     // User picture?
-    if (isset($vars['picture'])) {
-      $vars['classes_array'][] = 'comment-with-picture';
+    if (at_get_setting('toggle_comment_user_picture', $theme_name) === 1) {
+      if (!empty($vars['picture'])) {
+        $vars['classes_array'][] = 'comment-with-picture';
+      }
     }
 
     // Signature?
-    if (isset($vars['signature'])) {
+    if (!empty($vars['signature'])) {
       $vars['classes_array'][] = 'comment-with-signature';
     }
   }
@@ -514,27 +746,24 @@ function adaptivetheme_preprocess_comment(&$vars, $hook) {
   $vars['title_attributes_array']['class'][] = 'comment-title';
 
   // Title hidden?
-  if (at_get_setting('comments_hide_title', $theme_name) === 1) {
-    $vars['title_attributes_array']['class'][] = 'element-invisible';
-  }
-
-  // Add title style classes
-  if (at_get_setting('comments_hide_title', $theme_name) !== 1) {
-    if(at_get_setting('enable_heading_settings', $theme_name) === 1) {
-      $settings_array = &drupal_static('adaptivetheme_preprocess_comment_heading_settings');
-      if (empty($settings_array)) {
-        $settings_array = array('comment_title_case', 'comment_title_weight', 'comment_title_alignment', 'comment_title_shadow');
-      }
-      foreach ($settings_array as $setting) {
-        if ($heading_setting = at_get_setting($setting, $theme_name)) {
-          $vars['classes_array'][] = $heading_setting;
-        }
+  if (at_get_setting('enable_extensions', $theme_name) === 1) {
+    if (at_get_setting('enable_markup_overides', $theme_name) === 1) {
+      if (at_get_setting('comments_hide_title', $theme_name) === 1) {
+        $vars['title_attributes_array']['class'][] = 'element-invisible';
       }
     }
   }
 
   // Classes for comment content
   $vars['content_attributes_array']['class'][] = 'comment-content';
+
+  // header, submitted and links wrappers have their own attributes
+  $vars['header_attributes_array']['class'][] = 'comment-header';
+  $vars['footer_attributes_array']['class'][] = 'submitted';
+  if ($vars['picture']) {
+    $vars['footer_attributes_array']['class'][] = 'with-user-picture';
+  }
+  $vars['links_attributes_array']['class'][] = 'clearfix';
 
   // Build the submitted by and time elements
   $uri = entity_uri('comment', $vars['comment']);
@@ -551,16 +780,17 @@ function adaptivetheme_preprocess_comment(&$vars, $hook) {
   );
 
   // Unpublished?
-  $vars['unpublished'] = '';
+  $vars['unpublished'] = ''; // Initialize for backwards compatibility
   if ($vars['status'] === 'comment-unpublished') {
-    $vars['unpublished'] = '<p class="unpublished">' . t('Unpublished') . '</p>';
+    // Use the title prefix to render the unpublished message
+    $vars['title_prefix']['unpublished']['#markup'] = '<p class="unpublished">' . t('Unpublished') . '</p>';
   }
 }
 
 /**
  * Preprocess variables for the search block form.
  */
-function adaptivetheme_preprocess_search_block_form(&$vars, $hook) {
+function adaptivetheme_preprocess_search_block_form(&$vars) {
   // Changes the search form to use the "search" input element attribute (HTML5)
   // We have to replace the string because FAPI don't know what type=search is, i.e.
   // no way we can do this in a form alter hook.
@@ -568,44 +798,12 @@ function adaptivetheme_preprocess_search_block_form(&$vars, $hook) {
 }
 
 /**
- * Preprocess variables for field.tpl.php
- */
-function adaptivetheme_preprocess_field(&$vars) {
-  global $theme_key;
-  $theme_name = $theme_key;
-
-  $element = $vars['element'];
-
-  // add a view mode class to fields
-  $vars['classes_array'][] = 'view-mode-' . $element['#view_mode'];
-
-  // provide an variable we can use to test the view mode inside templates, I found
-  // $element['#view_mode'] impossible to get to inside the template, which may be a
-  // lack of understanding of render arrays and how we can access variables, or that
-  // Drupal theme layer is so horribly inconsistant it drives me insane.
-  $vars['field_view_mode'] = $element['#view_mode'] ? $element['#view_mode'] : '';
-
-  // enable captioning capability for image fields
-  if ($element['#field_type'] === 'image') {
-    $vars['image_caption_teaser'] = FALSE;
-    $vars['image_caption_full'] = FALSE;
-    if (at_get_setting('image_caption_teaser', $theme_name) === 1) {
-      $vars['image_caption_teaser'] = TRUE;
-    }
-    if (at_get_setting('image_caption_full', $theme_name) === 1) {
-      $vars['image_caption_full'] = TRUE;
-    }
-  }
-}
-
-/**
  * Preprocess variables for aggregator-item.tpl.php
  */
-function adaptivetheme_preprocess_aggregator_item(&$vars, $hook) {
+function adaptivetheme_preprocess_aggregator_item(&$vars) {
   $item = $vars['item'];
   // We want the same highly accurate time stamp feature as nodes and comments
-  $vars['datetime'] = format_date($item->timestamp, 'custom', 'Y-m-d\TH:i:s\Z');
-
+  $vars['datetime'] = format_date($item->timestamp, 'custom', 'Y-m-d\TH:i:sO');
   // Give our aggregator items some class
   $vars['classes_array'][] = 'feed-item clearfix';
   $vars['title_attributes_array']['class'][] = 'title feed-item-title';
@@ -613,20 +811,98 @@ function adaptivetheme_preprocess_aggregator_item(&$vars, $hook) {
 }
 
 /**
- * Preprocess variables for maintenance-page.tpl.php
- */
-function adaptivetheme_preprocess_maintenance_page(&$vars, $hook) {
-  $vars['attribution'] = "<small id=\"attribution\"><a href=\"http://adaptivethemes.com\">Premium Drupal Themes</a></small>";
-}
-
-/**
  * Preprocess variables for adaptivtheme_menubar()
  */
-function adaptivetheme_preprocess_menubar(&$vars, $hook) {
+function adaptivetheme_preprocess_menubar(&$vars) {
   $type = $vars['type'];
   $vars['menubar_id'] = $type . '-menu-bar';
   $vars['classes_array'][] = 'nav clearfix';
   $vars['content_attributes_array']['role'][] = 'navigation';
-  $vars['content_attributes_array']['class'][] = $type .'-menu-wrapper menu-wrapper clearfix';
+  $vars['content_attributes_array']['class'][] = $type . '-menu-wrapper menu-wrapper clearfix';
+  // Add suggstions per menu type
   $vars['theme_hook_suggestions'][] = 'menubar__' . $type;
+}
+
+/**
+ * Preprocess variables for the username.
+ */
+function adaptivetheme_preprocess_username(&$vars) {
+  global $theme_key;
+  $theme_name = $theme_key;
+  // Add rel=author for SEO and supporting search engines
+  if (at_get_setting('enable_extensions', $theme_name) === 1) {
+    if (at_get_setting('enable_markup_overides', $theme_name) === 1) {
+      if (at_get_setting('rel_author', $theme_name) === 1) {
+        if (isset($vars['link_path'])) {
+          $vars['link_attributes']['rel'][] = 'author';
+        }
+        else {
+          $vars['attributes_array']['rel'][] = 'author';
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Preprocess variables for theme_image()
+ */
+function adaptivetheme_preprocess_image(&$vars) {
+  // Add a class to image elements based on the image style
+  if (isset($vars['style_name'])) {
+    $vars['attributes']['class'][] = 'image-style-' . drupal_html_class($vars['style_name']);
+  }
+}
+
+/**
+ * Preprocess variables for maintenance-page.tpl.php
+ */
+function adaptivetheme_preprocess_maintenance_page(&$vars) {
+  global $theme_key;
+  $theme_name = $theme_key;
+
+  // Get the path to the directory where our CSS files are saved
+  $path = variable_get('theme_' . $theme_name . '_files_directory');
+
+  // Load Layout
+  load_layout_css($path, $theme_name);
+
+  // Load Responsive Styles.
+  if (at_get_setting('disable_responsive_styles', $theme_name) === 0) {
+    load_responsive_css($path, $theme_name);
+  }
+
+  // Load fonts and/or Custom CSS
+  if (at_get_setting('enable_extensions', $theme_name) === 1) {
+    // Fonts CSS
+    if (at_get_setting('enable_font_settings', $theme_name) === 1) {
+      load_fonts($path, $theme_name);
+    }
+    // Custom CSS
+    if (at_get_setting('enable_custom_css', $theme_name) === 1) {
+      load_custom_css($path, $theme_name);
+    }
+    // Load Extension Settings CSS
+    load_extensions_css($theme_name);
+  }
+
+  // Build an array of polyfilling scripts
+  $vars['polyfills_array'] = '';
+  $vars['polyfills_array'] = load_polyfills($theme_name, $vars);
+
+  // Load the colors stylesheet for the active color scheme. This only works
+  // for maintenance mode, when there is a database error the default color
+  // scheme will be used.
+  if (module_exists('color')) {
+    $color_file = variable_get('color_' . $theme_name . '_stylesheets', NULL);
+    if (file_exists($color_file[0])) {
+      drupal_add_css($color_file[0], array(
+        'group' => CSS_THEME,
+        'weight' => 99,
+        )
+      );
+    }
+  }
+
+  $vars['attribution'] = "<small id=\"attribution\"><a href=\"http://adaptivethemes.com\">Premium Drupal Themes</a></small>";
 }

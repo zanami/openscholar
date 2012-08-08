@@ -14,6 +14,7 @@
  * function to control the markup. For example a typical navigation tempate might look
  * like this:
  *
+ * @code
  * <nav id="<?php print $block_html_id; ?>" class="<?php print $classes; ?>"<?php print $attributes; ?>>
  *   <div class="block-inner clearfix">
  *     <?php print render($title_prefix); ?>
@@ -26,6 +27,7 @@
  *     </div>
  *   </div>
  * </nav>
+ * @endcode
  *
  * Adativetheme supplied variables:
  * - $outer_prefix: Holds a conditional element such as nav, section or div and
@@ -36,6 +38,8 @@
  * - $title: Holds the block->subject.
  * - $content_processed: Pre-wrapped in div and attributes, but for some
  *   blocks these are stripped away, e.g. menu bar and main content.
+ * - $is_mobile: Bool, requires the Browscap module to return TRUE for mobile
+ *   devices. Use to test for a mobile context.
  *
  * Available variables:
  * - $block->subject: Block title.
@@ -79,9 +83,12 @@
 ?>
 <?php print $outer_prefix . $inner_prefix; ?>
   <?php print render($title_prefix); ?>
+
   <?php if ($title): ?>
     <h2<?php print $title_attributes; ?>><?php print $title; ?></h2>
   <?php endif; ?>
-  <?php print render($title_suffix); ?>
+
   <?php print $content_processed; ?>
+
+  <?php print render($title_suffix); ?>
 <?php print $inner_suffix . $outer_suffix; ?>

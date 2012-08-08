@@ -1,5 +1,9 @@
 <?php
+
 /**
+ * @file
+ * Gpanel snippet for the two column 66/33 layout
+ *
  * Gpanels are drop in multi-column snippets for displaying blocks.
  * Most Gpanels are stacked, meaning they have top and bottom regions
  * by default, however you do not need to use them. You should always
@@ -13,17 +17,17 @@
 Region Deinitions:
 
 ; 2 col 66-33
-regions[two_66_33_top]    = 66-33 Gpanel top
-regions[two_66_33_first]  = 66-33 Gpanel left
-regions[two_66_33_second] = 66-33 Gpanel right
-regions[two_66_33_bottom] = 66-33 Gpanel bottom
+regions[two_66_33_top]    = AT Two column 66/33 - top
+regions[two_66_33_first]  = AT Two column 66/33 - left
+regions[two_66_33_second] = AT Two column 66/33 - right
+regions[two_66_33_bottom] = AT Two column 66/33 - bottom
 
  */
 ?>
 <!-- Two column 66-33 -->
 <?php if (
   $page['two_66_33_top'] ||
-  $page['two_66_33_first'] || 
+  $page['two_66_33_first'] ||
   $page['two_66_33_second'] ||
   $page['two_66_33_bottom']
   ): ?>

@@ -1,11 +1,13 @@
 <?php
+
 /**
+ * @file
  * Font Elements Config Array.
+ *
  * The fonts array is used by the fonts sub-system to generate forms,
  * build stylesheets and load font styles.
  */
 function font_elements() {
-
   $elements_array = &drupal_static(__FUNCTION__, array());
   if (empty($elements_array)) {
     $elements_array = array(
@@ -13,7 +15,7 @@ function font_elements() {
         'type' => 'default',
         'subtype' => 'global',
         'element' => 'bf',
-        'selector' => 'html',
+        'selector' => 'body',
         'setting' => 'base_font',
       ),
       'site_name' => array(
@@ -118,21 +120,21 @@ function font_elements() {
         'type' => 'menu',
         'subtype' => 'menu_variable',
         'element' => 'mm',
-        'selector' => '#menu-bar ul,#primary-menu ul',
+        'selector' => '#menu-bar .menu-wrapper,#primary-menu-bar .menu-wrapper',
         'setting' => 'main_menu_font',
       ),
       'secondary_menu' => array(
         'type' => 'menu',
         'subtype' => 'menu_variable',
         'element' => 'sm',
-        'selector' => '#secondary-menu ul',
+        'selector' => '#secondary-menu-bar .menu-wrapper,#menu-bar #block-system-user-menu',
         'setting' => 'secondary_menu_font',
       ),
-      'block_menu' => array(
+      'block_menus' => array(
         'type' => 'menu',
-        'subtype' => 'menu_block',
+        'subtype' => 'menu_blocks',
         'element' => 'bm',
-        'selector' => 'nav.block ul',
+        'selector' => 'nav.block .block-content',
         'setting' => 'block_menu_font',
       ),
       'selectors' => array(
@@ -195,7 +197,6 @@ function font_list($type, $element) {
  * @param $element
  */
 function websafe_fonts_list($element) {
-
   $fonts = &drupal_static(__FUNCTION__, array());
   if (empty($fonts)) {
     $fonts = array(
@@ -225,7 +226,6 @@ function websafe_fonts_list($element) {
  * @pararm $element
  */
 function font_your_face_fonts_list($element) {
-
   $fonts = &drupal_static(__FUNCTION__, array());
   if (empty($fonts)) {
     $font_your_face_enabled = font_your_face_fonts_enabled();
@@ -254,7 +254,6 @@ function font_your_face_fonts_list($element) {
  * available for use in the theme settings.
  */
 function font_your_face_fonts_enabled() {
-
   $fonts_enabled = FALSE;
   if (module_exists('fontyourface')) {
     $enabled_fonts = fontyourface_get_fonts('enabled = 1');
@@ -273,13 +272,55 @@ function font_your_face_fonts_enabled() {
   return $fonts_enabled;
 }
 
+
+/**
+ * Google font charsets.
+ */
+function google_font_charsets() {
+  $charset_array = &drupal_static(__FUNCTION__, array());
+  if (empty($charset_array)) {
+    $charset_array = array(
+      'latin' => t('Latin'),
+      'latin-ext' => t('Latin extended'),
+      'greek' => t('Greek'),
+      'greek-ext' => t('Greek extended'),
+      'cyrillic' => t('Cyrillic'),
+      'cyrillic-ext' => t('Cyrillic extended'),
+      'khmer' => t('Khmer'),
+      'vietnamese' => t('Vietnamese'),
+    );
+  }
+
+  return $charset_array;
+}
+
+/**
+ * Google font styles.
+ */
+function google_font_styles() {
+  $styles_array = &drupal_static(__FUNCTION__, array());
+  if (empty($styles_array)) {
+    $styles_array = array(
+      '300' => t('Book 300'),
+      '300italic' => t('Book 300 Italic'),
+      '400' => t('Normal 400'),
+      '400italic' => t('Normal 400 Italic'),
+      '700' => t('Bold 700'),
+      '700italic' => t('Bold 700 Italic'),
+    );
+  }
+
+  return $styles_array;
+}
+
 /**
  * Build an array of Google web fonts.
+ * Deprecated.
  *
  * @pararm $element
+ * TODO: remove this function, first check everything is working in the new system.
  */
 function google_fonts_list($element) {
-
   $fonts = &drupal_static(__FUNCTION__, array());
   if (empty($fonts)) {
     $google_fonts = google_font_names();
@@ -301,7 +342,6 @@ function google_fonts_list($element) {
  * variants. Last update: 27/02/2012
  */
 function google_font_names() {
-
   $google_font_names_array = &drupal_static(__FUNCTION__, array());
   if (empty($google_font_names_array)) {
     // Try to get the list from the cache table.
@@ -980,7 +1020,6 @@ function line_heights($type) {
  * @param $element
  */
 function font_style_options($style, $element) {
-
   $options = &drupal_static(__FUNCTION__, array());
   switch ($style) {
     case ('case'):
