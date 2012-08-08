@@ -13,7 +13,7 @@ function cp_invoke($hook, $args = array()){
   if (! isset($_GET['cp']) || is_null($_GET['cp']))
     return; // we're not in a
                                                              // cp mode
-  
+
   module_load_include('inc', 'cp', 'includes/cp.' . $module);
   $function = 'cp_' . $module . '_' . $hook;
   if (function_exists($function)) {
@@ -33,45 +33,45 @@ function cp_init(){
  */
 function cp_menu(){
   $items = array();
-  
+
   $spaces_path = drupal_get_path('module', 'spaces');
   $items["cp/build"] = array(
-      'title' => 'Site building', 
-      'page callback' => 'drupal_get_form', 
+      'title' => 'Site building',
+      'page callback' => 'drupal_get_form',
       'page arguments' => array(
-          'spaces_features_form' 
-      ), 
-      'file' => 'spaces.admin.inc', 
-      'file path' => $spaces_path, 
-      'weight' => 10 
+          'spaces_features_form'
+      ),
+      'file' => 'spaces.admin.inc',
+      'file path' => $spaces_path,
+      'weight' => 10
   );
-  
+
   $items["cp/build/features"] = array(
-      'title' => 'Features', 
-      'page callback' => 'drupal_get_form', 
+      'title' => 'Features',
+      'page callback' => 'drupal_get_form',
       'page arguments' => array(
-          'spaces_features_form' 
-      ), 
-      'type' => MENU_NORMAL_ITEM, 
-      'file' => 'spaces.admin.inc', 
-      'file path' => $spaces_path, 
-      'weight' => 10 
+          'spaces_features_form'
+      ),
+      'type' => MENU_NORMAL_ITEM,
+      'file' => 'spaces.admin.inc',
+      'file path' => $spaces_path,
+      'weight' => 10
   );
-  
+
   $items["cp/build/taxonomy"] = array(
-      'title' => 'Taxonomy', 
-      'page callback' => 'cp_taxonomy', 
-      'type' => MENU_NORMAL_ITEM, 
-      'weight' => 10 
+      'title' => 'Taxonomy',
+      'page callback' => 'cp_taxonomy',
+      'type' => MENU_NORMAL_ITEM,
+      'weight' => 10
   );
-  
+
   // Settings
   $items['cp/settings'] = array(
-      'title' => "Settings", 
-      'page callback' => 'cp_settings', 
-      'weight' => 20 
+      'title' => "Settings",
+      'page callback' => 'cp_settings',
+      'weight' => 20
   );
-  
+
   return $items;
 }
 
@@ -81,11 +81,11 @@ function cp_menu_alter(&$items){
     if (strpos($path, 'cp') === 0) {
       if (! array_key_exists('menu_name', $item))
         $items[$path]['menu_name'] = 'cp';
-        
+
         // @todo maybe provide our own permissoin instead ?
       if (! array_key_exists('access callback', $item))
         $items[$path]['access arguments'] = array(
-            'access control panel' 
+            'access control panel'
         );
     }
   }
@@ -94,19 +94,19 @@ function cp_menu_alter(&$items){
 function cp_theme(){
   $theme = array();
   $theme['cp-toolbar'] = array(
-      'render element' => 'cp_toolbar', 
-      'template' => 'cp-toolbar', 
-      'path' => drupal_get_path('module', 'cp') . '/theme' 
+      'render element' => 'cp_toolbar',
+      'template' => 'cp-toolbar',
+      'path' => drupal_get_path('module', 'cp') . '/theme'
   );
-  
+
   return $theme;
 }
 
 function cp_permission(){
   return array(
       'access control panel' => array(
-          'title' => t('Access Control Panel') 
-      ) 
+          'title' => t('Access Control Panel')
+      )
   );
 }
 
@@ -124,30 +124,35 @@ function cp_taxonomy(){
 function cp_block_info(){
   return array(
       'cp_subnav' => array(
-          'info' => t('CP Subnavigation'), 
-          'region' => false, 
-          'cache' => DRUPAL_CACHE_GLOBAL, 
-          'visibility' => BLOCK_VISIBILITY_LISTED, 
-          'pages' => 'cp/*' 
-      ), 
+          'info' => t('CP Subnavigation'),
+          'region' => false,
+          'cache' => DRUPAL_CACHE_GLOBAL,
+          'visibility' => BLOCK_VISIBILITY_LISTED,
+          'pages' => 'cp/*'
+      ),
       'cp_minimenu' => array(
-          'info' => t('CP Mini-Menu'), 
-          'region' => false, 
-          'cache' => DRUPAL_CACHE_PER_ROLE 
-      ) 
+          'info' => t('CP Mini-Menu'),
+          'region' => false,
+          'cache' => DRUPAL_CACHE_PER_ROLE
+      )
   );
 }
 
 function cp_block_view($delta){
   switch ($delta) {
     case 'cp_subnav' :
-      return array(
-          'subject' => NULL, 
-          'content' => array(
-              '#theme' => 'links', 
-              '#links' => menu_navigation_links('cp', 1) 
-          ) 
-      );
+      $links = menu_navigation_links('cp', 1);
+      if (count($links))
+        return array(
+            'subject' => NULL,
+            'content' => array(
+                '#theme' => 'links',
+                '#links' =>  $links,
+            )
+        );
+      else {
+        return array();
+      }
     case 'cp_minimenu' :
       if (_cp_get_toolbar_setting() == CP_MENU_MINI && spaces_access_admin()) {
         return _cp_mini_menu();
@@ -158,8 +163,8 @@ function cp_block_view($delta){
     case 'cp_fullmenu' :
       if (_cp_get_toolbar_setting() == CP_MENU_FULL && spaces_access_admin()) {
         return array(
-            'subject' => NULL, 
-            'content' => _cp_full_menu() 
+            'subject' => NULL,
+            'content' => _cp_full_menu()
         );
       }
       else {
@@ -180,17 +185,17 @@ function cp_page_build(&$page){
       // MINI Toolbar needed
       $menu = array(
           '#pre_render' => array(
-              'cp_toolbar_pre_render' 
-          ), 
+              'cp_toolbar_pre_render'
+          ),
           '#access' => spaces_access_admin_perms(array(
-              'access control panel' 
-          )) 
+              'access control panel'
+          ))
       );
       break;
     case CP_MENU_MINI :
   }
   $page['page_top']['cp_toolbar'] = $menu;
-  
+
   cp_invoke('page_build', $page);
 }
 
@@ -198,16 +203,16 @@ function cp_page_build(&$page){
  * Returns a constant reflecting the state of the CP menu
  */
 function _cp_get_toolbar_setting(){
-  
+
   // If the user is logged out or we are not in a space, turn the menu off
   if (! user_is_logged_in() || (module_exists('vsite') && ! spaces_get_space())) {
     return CP_MENU_OFF;
   }
-  
+
   if (spaces_access_admin() && (context_isset('context', 'os_cp') || variable_get('cp_admin_menu', 0))) {
     return CP_MENU_FULL;
   }
-  
+
   return CP_MENU_MINI;
 }
 
@@ -217,23 +222,23 @@ function _cp_get_toolbar_setting(){
 // TODO: Make sure everything is in right place when not admin 1
 function _cp_full_menu(){
   $links = array();
-  
+
   // Retrieve the admin menu from the database.
   // These are the 'Features/Appearance/Users/etc. buttons.
   $tree = menu_tree_all_data('cp');
   $links = menu_tree_output($tree);
-  
+
   // Add user-specific links
   global $user;
   $user_links = array();
   $user_links[] = array(
       'title' => t('Hello <strong>!username</strong>', array(
-          '!username' => $user->name 
-      )), 
-      'href' => 'user', 
-      'html' => TRUE 
+          '!username' => $user->name
+      )),
+      'href' => 'user',
+      'html' => TRUE
   );
-  
+
   /*
    * $new_count = vsite_news_get_new_activity_count(); $user_links[] = array(
    * 'title' => $new_count, 'href' => 'cp/news', //@TODO: replace this with new
@@ -241,34 +246,34 @@ function _cp_full_menu(){
    * t('Unread Activity on your Site')):array('title' => t('All Activity on your
    * Site')), );
    */
-  
+
   $user_links[] = array(
-      'title' => t('Logout'), 
-      'href' => "logout", 
+      'title' => t('Logout'),
+      'href' => "logout",
       'query' => ! context_isset('context', 'cp-admin') ? array(
-          'destination' => $_GET['q'] 
-      ) : '' 
+          'destination' => $_GET['q']
+      ) : ''
   );
   if (context_isset('context', 'cp-admin')) {
     $user_links[] = array(
-        'title' => t('Back to your site!'), 
-        'href' => "", 
-        'html' => TRUE 
+        'title' => t('Back to your site!'),
+        'href' => "",
+        'html' => TRUE
     );
   }
-  
+
   return array(
-      '#type' => 'container', 
-      'toolbar' => $links, 
+      '#type' => 'container',
+      'toolbar' => $links,
       'user' => array(
-          '#theme' => 'links', 
-          '#links' => $user_links 
-      ), 
+          '#theme' => 'links',
+          '#links' => $user_links
+      ),
       '#attributes' => array(
           'id' => array(
-              'cp-menu-full' 
-          ) 
-      ) 
+              'cp-menu-full'
+          )
+      )
   );
 }
 
@@ -291,9 +296,9 @@ function _cp_mini_menu(){
    * l('Logout', 'logout'), ) );
    */
   return theme('nice_menus', array(
-      'id' => 'cp-minimenu', 
-      'menu_name' => 'cp', 
-      'direction' => 'down' 
+      'id' => 'cp-minimenu',
+      'menu_name' => 'cp',
+      'direction' => 'down'
   ));
 }
 
@@ -309,21 +314,21 @@ function cp_toolbar_pre_render($toolbar){
  */
 function cp_toolbar_view(){
   $build = toolbar_view();
-  
+
   $build['#theme'] = 'cp-toolbar';
   $build['#attached']['css'] = array(
-      drupal_get_path('module', 'cp') . '/theme/cp-toolbar.css' 
+      drupal_get_path('module', 'cp') . '/theme/cp-toolbar.css'
   );
   $build['toolbar_menu']['#links'] = toolbar_menu_navigation_links(cp_get_menu_tree());
   $build['toolbar_drawer'] = array();
   $build['toolbar_drawer_classes'] = '';
   unset($build['toolbar_toggle']);
-  
+
   if ($GLOBALS['user']->uid == 1) {
     unset($build['toolbar_home']);
     unset($build['toolbar_user']);
   }
-  
+
   return $build;
 }
 
@@ -336,10 +341,10 @@ function cp_toolbar_view(){
 function cp_get_menu_tree(){
   $tree = array();
   $tree = menu_build_tree('cp', array(
-      'min_depth' => 1, 
-      'max_depth' => 1 
+      'min_depth' => 1,
+      'max_depth' => 1
   ));
-  
+
   return $tree;
 }
 
@@ -370,18 +375,18 @@ function cp_use_cp_theme(){
 function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id){
   // Only make changes if we are in the Openscholar Admin section
   if (context_isset('context', 'os_cp')) {
-    
+
     if (isset($form['site_frontpage'])) {
       // Only allow users with administer spaces permission to change the site
       // path
       $form['site_frontpage']['#access'] = user_access('administer spaces');
       $form['site_frontpage_path']['#access'] = user_access('administer spaces');
     }
-    
+
     if (module_exists('vsite') && ($vsite = spaces_get_space())) {
       $form['actions']['space_overrides'] = array(
           '#markup' => l('overrides', 'node/'.$vsite->id.'/features/overrides'),
-          '#weight' => 100, 
+          '#weight' => 100,
           '#access' => user_access('administer spaces'),
       );
     }
