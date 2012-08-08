@@ -29,6 +29,7 @@ dependencies[] = toolbar
 dependencies[] = views
 dependencies[] = views_content
 features[box][] = os_addthis
+features[box][] = os_taxonomy_fltr_cat
 features[context][] = os_cp
 features[context][] = os_front
 features[context][] = os_public

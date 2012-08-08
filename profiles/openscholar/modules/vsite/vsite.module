@@ -178,6 +178,22 @@ function vsite_modules_enabled($modules) {
 //   }
 }
 
+/**
+ * Any path in spaces is immediately disqualified from being in an overlay because none
+ * of them start with a wildcard. They expect something like node/5/edit, when they get
+ * site01/node/5/edit and fail.
+ * This is rectified by putting a wildcard at the beginning to catch the space modifier.
+ */
+function vsite_admin_paths_alter(&$paths) {
+  $new_paths = array();
+  foreach ($paths as $p => $b) {
+    if (strpos($p, '*/') !== 0) {
+      $new_paths['*/'.$p] = TRUE;
+    }
+  }
+  $paths = array_merge($paths, $new_paths);
+}
+
 
 /**
  * Add the entity reference fields to the vsite feature bundles
