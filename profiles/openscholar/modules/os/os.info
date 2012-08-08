@@ -24,6 +24,7 @@ dependencies[] = search
 dependencies[] = shortcut
 dependencies[] = simpletest
 dependencies[] = strongarm
+dependencies[] = spaces
 dependencies[] = taxonomy
 dependencies[] = toolbar
 dependencies[] = views
