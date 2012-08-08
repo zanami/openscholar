@@ -1,4 +1,4 @@
-#header-container .wrap {
+#header-container .gpanel {
   background: #898989;
   }
 
@@ -13,7 +13,7 @@
   color: #fff;
   }
 
-#menu-bar .wrap {
+#menu-bar #block-os-primary-menu {
   background: #8a5a57;
   }
 
