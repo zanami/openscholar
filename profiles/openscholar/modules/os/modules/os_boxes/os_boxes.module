@@ -139,8 +139,10 @@ function os_boxes_os_widget_alter(&$widget) {
     $widget['can_edit'] = true;  // all boxes should be editable. If they aren't, why are they a box
     $widget['path'] = 'os/boxes/'.$widget['delta'];
 
-    // deletion is trickier
-    if (1 || strpos($widget['delta'], 'og-') !== FALSE) {
+    // deletion is easier now.
+    // if they can recreate the widget, we let them delete it
+    // otherwise, no.
+    if (isset($plugin['title'])) {
       $widget['can_delete'] = true;
     }
     else {
