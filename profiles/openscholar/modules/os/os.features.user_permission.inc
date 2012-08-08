@@ -647,6 +647,13 @@ function os_user_default_permissions() {
     'module' => 'search',
   );
 
+  // Exported permission: use text format filtered_html.
+  $permissions['use text format filtered_html'] = array(
+    'name' => 'use text format filtered_html',
+    'roles' => array(),
+    'module' => 'filter',
+  );
+
   // Exported permission: view file.
   $permissions['view file'] = array(
     'name' => 'view file',
