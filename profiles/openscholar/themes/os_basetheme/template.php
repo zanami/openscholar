@@ -14,7 +14,7 @@
 function os_basetheme_preprocess_html(&$vars) {
   if ($GLOBALS['theme'] == 'cp_theme') return;
 
-  if (__os_basetheme_is_empty($vars['page']['menu_bar'])) {
+  if (isset($vars['page']['menu_bar'])) {
     $vars['classes_array'][] = 'navbar-on';
   }
   else {
