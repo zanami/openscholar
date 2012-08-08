@@ -49,7 +49,7 @@ class AnnouncementNodeOSMigration extends AbstractNodeOSMigration {
       $row->field_photo = $row->{'field_photo:source_dir'} = NULL;
     }
     
-    
+    return parent::prepareRow($row); //false -> skip this row
   }
 
 }

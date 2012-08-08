@@ -50,7 +50,6 @@ class ClassNodeOSMigration extends AbstractNodeOSMigration {
   }
   
   public function prepareRow($current_row) {
-    parent::prepareRow($current_row); //why no pass by ref?
 
     //field_link
     if (strlen($current_row->field_class_link_url)) {
@@ -62,5 +61,8 @@ class ClassNodeOSMigration extends AbstractNodeOSMigration {
         //unserialize($current_row->field_class_link_attributes) : array();
       $current_row->field_link[] = $current_row->field_class_link_url; //add link
     }
+    
+    return parent::prepareRow($current_row); //false -> skip this row
+    
   }
 }
