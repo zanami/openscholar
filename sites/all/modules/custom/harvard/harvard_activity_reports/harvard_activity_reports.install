@@ -19,11 +19,36 @@ function harvard_activity_reports_checkExists($fieldName) {
  */
 function harvard_activity_reports_schema_alter(&$schema) {
 	if (isset($schema['iqss_pinserver_register'])) {
-    	$schema['iqss_pinserver_register']['fields']['hashID'] = array(
-      		'type' => 'varchar',
-   			'length' => 256,
-   			'not null' => FALSE,
-         	'default' => NULL,
+    	$schema['iqss_pinserver_register'] = array(
+    	'fields' => array(
+    		'uid' => array(
+    			'description' => t('Drupal user ID'),
+    			'type' => 'int',
+    			'not null' => TRUE,
+    			'default' => 0,
+    		),
+    		'huid' => array(
+    			'description' => t("Holds the Harvard ID of returning users"),
+    			'type' => 'varchar',
+    			'length' => 255,
+    			'not null' => FALSE,
+    			'default' => '',
+    		),
+    		'hashID' => array(
+      			'type' => 'varchar',
+   				'length' => 256,
+   				'not null' => FALSE,
+   		      	'default' => NULL,
+    		),
+    		'reg_time' => array(
+    			'description' => t("The time of user registration"),
+    			'type' => 'int',
+    		),
+    	),  
+  			'unique keys' => array(
+   			'huid' =>array('huid'),
+   		),
+ 			 'primary key' => array( 'uid')
     	);
 	}// end if isset
 }
@@ -85,8 +110,8 @@ function harvard_activity_reports_install() {
 function harvard_activity_reports_uninstall() {
   	$ret = array();
   	// first check to see if the field exists
-	if(harvard_activity_reports_checkExists('hashID')==FALSE) {
+	//if(harvard_activity_reports_checkExists('hashID')==FALSE) {
 		// its not in there, drop it
     	db_drop_field($ret, 'iqss_pinserver_register', 'hashID');
-	}// end check
+	//}// end check
 }
