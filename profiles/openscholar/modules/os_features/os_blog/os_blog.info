@@ -6,7 +6,6 @@ php = 5.2.4
 dependencies[] = boxes
 dependencies[] = ctools
 dependencies[] = features
-dependencies[] = os_presentations
 dependencies[] = strongarm
 dependencies[] = views
 dependencies[] = vsite
