@@ -54,17 +54,6 @@ a:hover {
   line-height: 17px;
   text-transform: uppercase;
   }
-  
-h1#page-title {
-	margin-bottom: 1.5em;
-	font-size:1.3em;
-}
-  
-h2.block-title {
-	font-size: 14px;
-    line-height: 17px;
-    text-transform: uppercase;
-}
 
 .block-vsite_menus li a,
 .block-vsite_menus li a:visited {
@@ -79,80 +68,90 @@ h2.block-title {
 /* LAYOUT */
 
 #page {
-margin: 10px auto;
-    padding: 21px 23px;
   background: rgba(0,0,0,0.4);
-
+  margin: 10px auto;
+  padding: 21px 23px;
   }
 
 #header-container {
-  width:540px;
   padding-bottom: 9px;
-  float: left;
+  
   }
 
 #menu-bar {
   width: 414px;
   padding: 0 0 0 0;
   min-height: 71px;
-  top:20px;
-  position:absolute;
-  text-align:right;
-  right:0;
   }
-  
 
 #columns {
   clear:both;
-  padding-top: 9px;
+  padding: 9px 0 0;
   }
+  
+  
+.content-inner {
+	padding:0 15px;
+}
 
 #columns,
 #footer .region-footer {
-  background: url('../images/header-footer.png') no-repeat 100% 0;
+  background: url('../images/header-footer.png') no-repeat 100% 0 transparent;
   }
 
-#footer .wrap {
+#footer .region-footer {
   padding-top:16px;
-  }
-
-#columns {
-  background: url('../images/main-wrapper.png') repeat-y #fff;
-  overflow:auto;
-  padding: 30px 0;
   }
 
 .one-sidebar #columns,
 .one-sidebar #footer .region-footer {
   background-position: 748px 0;
   }
-  
-  
-.two-sidebars #columns,
-.two-sidebars #footer .region-footer {
-  background-position: 620px 0;
-  }  
 
 .no-sidebars #columns,
 .no-sidebars #footer {
   background: transparent;
   }
 
+#columns .hg-container {
+  background: url('../images/main-wrapper.png') 0 0 repeat-y #fff;
+  overflow:auto;
+  padding: 30px 0;
+  }
+
 #columns .hg-container .column {
   position: static;
   }
 
-.one-sidebar #columns {
+.one-sidebar #columns .hg-container {
   background-position: -953px 0;
   }
 
 .no-sidebars #columns .hg-container {
   background: #fff;
   }
+/*
+#content-column,
+.one-sidebar #content-column,
+.no-sidebars #content-column{
+  padding: 0 33px;
+  }
 
+.one-sidebar #content-column {
+  width:681px;
+  }
 
+.two-sidebars #content-column {
+  width: 473px;
 
+  }
 
+.region-sidebar-first,
+.region-sidebar-second {
+
+  padding: 0 20px;
+  }
+*/
 .region-header-first,
 .region-header-third,
 #header-container #logo {
@@ -162,6 +161,8 @@ margin: 10px auto;
 #header-container #scholar-shield {
   width: 55px;
   }
+
+
 
 
 #menu-bar {
