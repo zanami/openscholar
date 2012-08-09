@@ -17,7 +17,7 @@ font-family: helvetica,arial,sans-serif;
   box-shadow: 0 2px 1em #777;
 } 
 
-#columns {background:#FFF;padding:15px;}
+#columns {background:#FFF;padding:15px 10px;}
 
 
 #content-main div.views-row-last {
