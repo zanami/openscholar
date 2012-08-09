@@ -30,6 +30,7 @@ features[user_permission][] = delete any vsite content
 features[user_permission][] = delete own vsite content
 features[user_permission][] = edit any vsite content
 features[user_permission][] = edit own vsite content
+features[user_permission][] = view users outside groups
 features[variable][] = comment_anonymous_vsite
 features[variable][] = comment_default_mode_vsite
 features[variable][] = comment_default_per_page_vsite

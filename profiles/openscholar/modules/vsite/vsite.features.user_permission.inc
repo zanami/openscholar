@@ -66,6 +66,15 @@ function vsite_user_default_permissions() {
     ),
     'module' => 'node',
   );
+  
+  // Exported permission: view users outside groups.
+  $permissions['view users outside groups'] = array(
+      'name' => 'view users outside groups',
+      'roles' => array(
+          0 => 'authenticated user',
+      ),
+      'module' => 'spaces_og',
+  );
 
   return $permissions;
 }
