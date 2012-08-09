@@ -140,6 +140,7 @@ function os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_site_info'] = array(
+    'title' => 'Site Info',
     'tags' => array('Misc'),
     'handler' => array(
       'class' => 'os_boxes_site_info',
@@ -147,9 +148,11 @@ function os_boxes_boxes_plugins() {
       'path' => $path.'/os_boxes_site_info',
       'parent' => 'os_boxes_default',
     ),
+    'factory' => FALSE,
   );
 
   $info['os_boxes_site_logo'] = array(
+    'title' => 'Site Logo',
     'tags' => array('Misc'),
     'handler' => array(
       'class' => 'os_boxes_site_logo',
@@ -157,18 +160,19 @@ function os_boxes_boxes_plugins() {
       'path' => $path.'/os_boxes_site_logo',
       'parent' => 'os_boxes_default',
     ),
+    'factory' => FALSE,
   );
 
   $info['os_taxonomy_fbt'] = array(
-      'title' => 'Taxonomy widget',
-      'description' => 'Filter content by category',
-      'tags' => array('Content'),
-      'handler' => array(
-          'class' => 'os_taxonomy_fbt',
-          'file' =>  'os_taxonomy_fbt.inc',
-          'path' => $path . '/os_taxonomy_fbt',
-          'parent' => 'os_boxes_default',
-      ),
+    'title' => 'Taxonomy widget',
+    'description' => 'Filter content by category',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_taxonomy_fbt',
+      'file' =>  'os_taxonomy_fbt.inc',
+      'path' => $path . '/os_taxonomy_fbt',
+      'parent' => 'os_boxes_default',
+    ),
   );
 
   return $info;

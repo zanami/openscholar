@@ -156,7 +156,9 @@ function os_boxes_get_factories() {
   $items = array();
 
   foreach ($plugins as $p => $info) {
-    if (isset($info['title'])) {
+    // title catches abstract boxes
+    // factory catchs our boxes
+    if (isset($info['title']) && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
       $items["boxes-boxes_add__$p"] = array(
         'module' => 'boxes',
         'delta' => "boxes_add__$p",
@@ -164,10 +166,6 @@ function os_boxes_get_factories() {
         'block_config_path' => "os/boxes/{$p}",
         'factory' => true,
       );
-
-      if (isset($info['factory_path'])) {
-        $items["boxes-boxes_add__$p"]['block_config_path'] = $info['factory_path']."/modal/box/$p";
-      }
     }
   }
 
