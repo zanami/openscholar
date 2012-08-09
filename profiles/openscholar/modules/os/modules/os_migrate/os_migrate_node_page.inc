@@ -6,7 +6,9 @@ class PageNodeOSMigration extends AbstractNodeOSMigration {
     // Let AbstractNode handle the source, dest, and map.
     parent::__construct('page', 'page'); //current types are vsite, article, and page.  lets start with one of those instead?
     $this->description = t('OS Page Nodes');    
+
     
+    //does page bundle exist?  did name change?
   }
   
   //also include content type's data

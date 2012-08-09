@@ -134,7 +134,8 @@ function os_boxes_os_widget_alter(&$widget) {
 
     $widget['info'] = $box->description;
     $widget['plugin'] = $box->plugin_key;
-    $widget['class'] = $plugin['tags'];
+    if (isset($plugin['tags']))
+      $widget['class'] = $plugin['tags'];
 
     $widget['can_edit'] = true;  // all boxes should be editable. If they aren't, why are they a box
     $widget['path'] = 'os/boxes/'.$widget['delta'];

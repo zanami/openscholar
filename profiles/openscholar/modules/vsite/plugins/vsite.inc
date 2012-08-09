@@ -313,6 +313,9 @@ class vsite extends space_og {
       $rid = array_search($role, $drupal_roles);
       $user->roles[$rid] = $role;
     }
+    
+    //Clear any staticly cached permissions
+    drupal_static('user_access',NULL,TRUE);
   }
   
   /**
