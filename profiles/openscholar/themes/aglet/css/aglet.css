@@ -88,7 +88,9 @@ p.copy {
   
 #columns {
   overflow:hidden;
+  padding: 0 ;
 }
+
 
 #content-column, .region-sidebar-first, .region-sidebar-second {
 margin-bottom: -2000px;
