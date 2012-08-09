@@ -14,6 +14,8 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     parent::__construct('biblio', 'biblio'); //args are d7 bundle, d6 content type.
     
     $this->description = t('Publications migration.');
+    $this->dependencies[] = 'BiblioContributorTypeTable';
+    $this->dependencies[] = 'BiblioContributorTypeDataTable';
     
     
     //$this->addUnmigratedDestinations($fields)
@@ -98,6 +100,40 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
         $entity->$key = $value;
       }
     }
+    
+    $entity->biblio_contributors = $this->_prepare_biblio_contributors($row->vid, $row->nid);
+    
+  }
+  
+  /**
+   * @function _prepare_biblio_contributors
+   * 
+   * Builds the contributors array from the d6 table.
+   * 
+   * @param int $vid
+   *   Revision of biblio node with contributors.
+   * @return array()
+   *   Returns array of contributor arrays to attach to node
+   */
+  function _prepare_biblio_contributors($vid, $nid) {
+    $contributors = array();
+    $query = parent::d6_db_select('biblio_contributor', 'bc')
+      ->fields('bc', array('nid', 'vid', 'auth_type', 'auth_category', 'rank'))
+      ->condition('bc.vid', $vid, '=');
+    $query->join('biblio_contributor_data', 'bc_data', 'bc.cid = bc_data.cid');
+    $query->fields('bc_data', array('name', 'lastname'));
+    $result = $query->execute();
+    
+    while ($r = $result->fetchAssoc()) {
+      //in d6 we used secondary authors as editors.  new os_publications uses all sorts of roles, but we should convert secondary
+      if ($r['auth_type'] == 2) {
+        $r['auth_type'] = 14;
+      }
+      $r['cid'] = NULL;
+      $contributors[] = $r;
+    }
+    
+    return $contributors;
   }
   
 }
