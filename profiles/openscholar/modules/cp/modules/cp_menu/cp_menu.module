@@ -196,6 +196,9 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
     $form['os_menu']['link']['description']['#default_value'] =
       (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
     $form['os_menu']['link']['new_window']['#default_value'] = (isset($link['options']['attributes']['target']) && $link['options']['attributes']['target'] == '_blank');
+
+    $url = l('Page Layout', 'cp/build/layout', array());
+    $form['os_menu']['link']['parent']['#description'] = t('Select the menu where you would like this link to appear. Some menus may not show on your page if they are not included in your !url.', array('!url' => $url));
   }
 
   //menu wizard - insert settings from wizard
