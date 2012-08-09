@@ -241,15 +241,6 @@ function os_user_default_permissions() {
     'module' => 'filter',
   );
 
-  // Exported permission: administer group.
-  $permissions['administer group'] = array(
-    'name' => 'administer group',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'og',
-  );
-
   // Exported permission: administer image styles.
   $permissions['administer image styles'] = array(
     'name' => 'administer image styles',
@@ -539,17 +530,6 @@ function os_user_default_permissions() {
     'module' => 'features',
   );
 
-  // Exported permission: manage group space.
-  $permissions['manage group space'] = array(
-    'name' => 'manage group space',
-    'roles' => array(
-      0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-    ),
-    'module' => 'spaces_og',
-  );
-
   // Exported permission: migration information.
   $permissions['migration information'] = array(
     'name' => 'migration information',
@@ -682,15 +662,6 @@ function os_user_default_permissions() {
       0 => 'administrator',
     ),
     'module' => 'system',
-  );
-
-  // Exported permission: view users outside groups.
-  $permissions['view users outside groups'] = array(
-    'name' => 'view users outside groups',
-    'roles' => array(
-      0 => 'authenticated user',
-    ),
-    'module' => 'spaces_og',
   );
 
   return $permissions;
