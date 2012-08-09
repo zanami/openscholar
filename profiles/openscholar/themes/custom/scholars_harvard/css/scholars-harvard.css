@@ -5,34 +5,24 @@
 @import url('http://fonts.googleapis.com/css?family=Radley');
 
 html,body {
-  background: url('../../images/body-bg.jpg') repeat-x fixed 0 100% #698da2;
+  background: url('../images/body-bg.jpg') repeat-x fixed 0 100% #698da2;
   }
 
 body {
 font-family: 'PT Sans', arial, serif;
   }
 
-.wrap {
-  width:980px;
-  margin: 0 auto;
-  }
 
-#columns .hg-container {
+#columns {
   background: #fff;
-  border-radius: 5px;
-  -moz-border-radius: 5px;
-  margin-top: 70px;
+  margin-top: 10px;
+  padding: 0;
   }
 
 #page {
   position: relative;
   }
 
-#content-column,
-body.no-sidebars #content-column {
-  padding-top:10px;
-  padding-bottom: 20px;
-  }
 
 #content-column h1#page-title {
   margin-top:1em;
@@ -95,10 +85,10 @@ p.copy a.poweredby {
   position: relative;
   }
 
-#startpage {
+body.front  {
   height: 100%;
   overflow: hidden;
-background: url('../../images/startpage-bg.png') no-repeat 50% 0 transparent;
+background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
   }
 
 #reasons {
@@ -109,7 +99,7 @@ background: url('../../images/startpage-bg.png') no-repeat 50% 0 transparent;
   }
 
 .front .wrap {
-  background: url('../../images/wrap.png') no-repeat 50% 0 transparent;
+  background: url('../images/wrap.png') no-repeat 50% 0 transparent;
   min-height: 1300px;
   }
 
@@ -128,46 +118,41 @@ background: url('../../images/startpage-bg.png') no-repeat 50% 0 transparent;
   height: 76px;
   }
 
-.header h1,
-.header h2,
-.header ul,
-.header li
-.header #search,
+#header-container h1,
+#header-container h2,
+#header-container ul,
+#header-container li
+#header-container #search,
 #reasons-home {
   float: left;
   }
 
-.header h1 {
-  text-indent: -999em;
-  width: 183px;
-  height:56px;
-  background: url('../../images/logo.png') no-repeat 0 0 transparent;
-  margin-top:11px;
+#header-container h1 {
+  color: #FFFFFF;
+    font: 15px 'Radley','Times New Roman',serif;
+    margin-bottom: 0;
+    margin-right: 100px;
+    margin-top: 20px;
   }
 
-.section-site .header h1 {
+.section-site #header-container h1 {
   margin-left: 30px;
   margin-bottom: 5px;
   }
 
-.header h1 a,
-.header h1 a:visited {
+#header-container h1 a,
+#header-container h1 a:visited {
   display:block;
   width: 183px;
   height:56px;
   }
 
-.header h2,
-ul#header-info,
-#reasons-home {
-  margin-left: 40px;
-  }
 
-.header h2 {
-  font: 15px/normal 'Radley', 'Times New Roman', serif;
+#header-container h2 {
+  font: 15px/normal 'PT Sans',arial,serif;
   font-weight: normal;
-  color: #fff;
-  margin-top: 20px;
+  color: #FEF1AB;
+
   margin-bottom: 0;
   margin-right: 100px
   }
@@ -185,7 +170,7 @@ ul#header-info li a:visited {
 a.big-button {
   display:block;
   height: 80px;
-  background: url('../../images/arrow1.png') no-repeat 100% 0 #f28316;
+  background: url('../images/arrow1.png') no-repeat 100% 0 #f28316;
   padding-left: 39px;
   color: #fefdc8;
   line-height: 80px;
@@ -226,7 +211,7 @@ margin-left:5px;
 /* Start Page */
 
 #start-content {
-  background: url('../../images/start-content-bg.png') repeat-y 0 0;
+  background: url('../images/start-content-bg.png') repeat-y 0 0;
   }
 
 .col {
@@ -335,7 +320,7 @@ margin:27px 327px 0 0; } }
   }
 
 #col-2 #start-learnmore a {
-  background:url('../../images/arrow2.png') 100% 50% no-repeat transparent;
+  background:url('../images/arrow2.png') 100% 50% no-repeat transparent;
   padding-right: 30px;
   color:#b23325;
   margin-left: 30px;
@@ -479,7 +464,7 @@ color:#FFF;
  	}
  	
  #block-iqss_openscholar_front-stats dt {
-  background: url('../../images/stats_ddBullet.gif') left center no-repeat;	
+  background: url('../images/stats_ddBullet.gif') left center no-repeat;	
   padding-left:17px;
  	} 	
 
@@ -503,7 +488,7 @@ p.copy a:hover {
   }
 
 .front p.copy a.poweredby {
-  background: url('../../images/powered_by.png') 19px 37px no-repeat #234f6e;
+  background: url('../images/powered_by.png') 19px 37px no-repeat #234f6e;
   display:block;
   width: 119px;
   height:115px;
@@ -578,56 +563,56 @@ p.copy a:hover {
   }
 
 #features #feature-academic-content {
-  /*background:url('../../images/create-anything.jpg');*/
+  /*background:url('../images/create-anything.jpg');*/
   }
 
 #features #feature-biblio {
-  background:url('../../images/biblio.jpg');
+  background:url('../images/biblio.jpg');
   }
 
 #features #feature-look-feel {
-  background:url('../../images/look-feel.jpg');
+  background:url('../images/look-feel.jpg');
   }
 
 #features #feature-collaborate {
-  background:url('../../images/collaborate.png') no-repeat 50% 100% #fff;
+  background:url('../images/collaborate.png') no-repeat 50% 100% #fff;
   }
 
 #features #smart-publishing {
-  /*background:url('../../images/smart-publishing.jpg') no-repeat 0 181px #fff;*/
+  /*background:url('../images/smart-publishing.jpg') no-repeat 0 181px #fff;*/
   }
 
 #features #semantic-urls {
-  background:url('../../images/semantic-urls.jpg') no-repeat 0 100% #fff;
+  background:url('../images/semantic-urls.jpg') no-repeat 0 100% #fff;
   word-wrap: break-word;
   }
 
 #features #categorize {
-  background:url('../../images/categorize.jpg') no-repeat 0 100% #F7F0D3;
+  background:url('../images/categorize.jpg') no-repeat 0 100% #F7F0D3;
   }
 
 #features #pluggable-features {
-  /*background:url('../../images/features.png') no-repeat 0 186px #fff;*/
+  /*background:url('../images/features.png') no-repeat 0 186px #fff;*/
   }
 
 #features #sharing {
-  background:url('../../images/share.jpg') no-repeat 50% 143px #fff;
+  background:url('../images/share.jpg') no-repeat 50% 143px #fff;
   }
 
 #features #content-aggregation {
-  /*background:url('../../images/rss.png') no-repeat 50% 211px #fff;*/
+  /*background:url('../images/rss.png') no-repeat 50% 211px #fff;*/
   }
 
 #features #analytics {
-  /*background:url('../../images/analytics.png') no-repeat 0 100% #fff;*/
+  /*background:url('../images/analytics.png') no-repeat 0 100% #fff;*/
   }
 
 #features #feature-events {
-  background:url('../../images/events.png') no-repeat 0 100% #fff;
+  background:url('../images/events.png') no-repeat 0 100% #fff;
   }
 
 #features #word-out {
-  background:url('../../images/wordout.jpg') no-repeat 0 100% #fff;
+  background:url('../images/wordout.jpg') no-repeat 0 100% #fff;
   }
 
 #features #feature-look-feel,
@@ -657,7 +642,7 @@ p.copy a:hover {
   width: 205px;
   font-size: 15px;
   line-height: 23px;
-  background: url('../../images/help-button.jpg') no-repeat 100% 50%;
+  background: url('../images/help-button.jpg') no-repeat 100% 50%;
   padding-top: 15px;
   padding-right:113px;
   margin: 0 auto;
@@ -669,7 +654,7 @@ p.copy a:hover {
   }
 
 #more-info li.os-link span {
-  background: url('../../images/floating-glasses.png') no-repeat 100% 50%;
+  background: url('../images/floating-glasses.png') no-repeat 100% 50%;
   margin-bottom: 0;
   width: 259px;
   border: none;
