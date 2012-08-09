@@ -39,7 +39,6 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     $query->join('biblio', 'b', 'n.vid = b.vid');
     $query->fields('b');
     
-   // parent::addQueryCCK($query, $content_type);  //shouldn't this be in the parent query?  maybe check if cck is provided first
     return $query;
   }
   
@@ -102,7 +101,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     }
     
     $entity->biblio_contributors = $this->_prepare_biblio_contributors($row->vid, $row->nid);
-    
+    $entity->biblio_keywords = $this->_prepare_biblio_keywords($row->vid);
   }
   
   /**
@@ -134,6 +133,24 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     }
     
     return $contributors;
+  }
+  
+  //gets keywords.  returns array of id => word.
+  function _prepare_biblio_keywords($vid) {
+    $keywords = array();
+    //lets try just using bib nodes with keywords
+    $query = parent::d6_db_select('biblio_keyword', 'bk')
+      ->condition('bk.vid', $vid, '=');
+   
+    $query->join('biblio_keyword_data', 'bkd', 'bk.kid = bkd.kid');
+    $query->fields('bkd', array('kid', 'word'));
+    $results = $query->execute();
+    
+    while ($r = $results->fetchAssoc()) {
+      $keywords[ $r['kid'] ] = $r['word'];
+    }
+    //biblio_get_keyword_by_id($kid) //might be useful?
+    return $keywords;
   }
   
 }
