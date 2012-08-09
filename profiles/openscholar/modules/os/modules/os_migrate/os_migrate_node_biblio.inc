@@ -129,6 +129,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
       if ($r['auth_type'] == 2) {
         $r['auth_type'] = 14;
       }
+      $r['cid'] = NULL;
       $contributors[] = $r;
     }
     
