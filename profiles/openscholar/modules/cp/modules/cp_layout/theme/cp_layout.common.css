@@ -110,7 +110,7 @@
   overflow-x: auto;
   white-space: nowrap;
   border:1px solid #C0C7C7;
-  height:121px;
+  height:auto;
 }
 
 #edit-layout-unused-widgets .widget-container {
@@ -125,7 +125,7 @@
   color: #444545;
   font-weight: bold;
   font-size: 11px;
-  padding: 62px 15px 0;
+  padding: 62px 15px 5px;
   text-align: center;
   vertical-align: top;
   width: 75px;
