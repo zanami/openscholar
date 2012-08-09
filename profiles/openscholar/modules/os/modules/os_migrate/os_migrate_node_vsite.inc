@@ -9,7 +9,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $this->description = t('OS vsites');    
     $this->dependencies = preg_grep('/^VsiteNodeOS$/', $this->dependencies, PREG_GREP_INVERT);    
     
-    $this->addSimpleMappings(array('purl'));
+    //$this->addSimpleMappings(array('purl'));
     
     $this->addFieldMapping('field_site_description', 'og_description');
     $this->addFieldMapping('field_site_description:language', 'og_language')->defaultValue('und');
@@ -19,10 +19,17 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('field_site_address:language', 'og_language')->defaultValue('und');
     $this->addFieldMapping('field_site_address:format', 'field_vsite_address_format')->defaultValue('plain_text');
     
-    //gropu_group is this a group?
-    //group_access public?
     $this->addFieldMapping('group_access', 'og_private')->defaultValue(0);
     $this->addFieldMapping('group_group')->defaultValue(1);
+    
+    //$this->addFieldMapping('field_site_logo', '???') imagefield_crop isn't a mig 2.4 destination yet
+    
+    //undo what nodeabstract has done
+    $unmap = array_merge(array('body', 'group_nid', 'og_group_ref',),  
+        parent::subfields('body', array('format', 'language', 'summary')));
+    foreach ($unmap as $destination_field) {   
+      $this->removeFieldMapping($destination_field);
+    }
   }
   
   public function query() {
