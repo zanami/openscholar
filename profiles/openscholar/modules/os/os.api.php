@@ -108,17 +108,3 @@ function hook_os_layout_contexts_alter(&$all_contexts){
   }
   
 }
-
-/**
- * Implementation of hook os_active_theme
- *
- * This function should return the active openscholar theme
- *
- */
-function hook_os_active_theme(){
-
-  //Turn the CP theme on
-  if (cp_use_cp_theme()) {
-    return variable_get('os_cp_theme', 'cp');
-  }
-}

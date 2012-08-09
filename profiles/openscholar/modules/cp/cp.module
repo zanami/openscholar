@@ -335,7 +335,7 @@ function cp_toolbar_view(){
 /**
  * Make a decision about the active theme
  */
-function cp_os_active_theme(){
+function cp_custom_theme(){
 
   //Turn the CP theme on
   if (cp_use_cp_theme()) {

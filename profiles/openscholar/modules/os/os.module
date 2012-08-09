@@ -302,24 +302,6 @@ function os_theme(){
 }
 
 /**
- * @function os_custom_theme
- *
- * implements hook_custom_theme
- * returns name of theme to use
- */
-function os_custom_theme(){
-  
-  $active_themes = array_filter(module_invoke_all('os_active_theme'), 'drupal_theme_access');
-  if (!empty($active_themes)) {
-    $active_theme = array_pop($active_themes);
-  }
-  
-  if(!empty($active_theme)){
-    return $active_theme;
-  }
-}
-
-/**
  * @function os_module_implements_alter
  *
  * Implements hook_module_implements_alter

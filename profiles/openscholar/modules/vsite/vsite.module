@@ -59,8 +59,9 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
 /**
  * Make a decision about the active theme
  */
-function vsite_os_active_theme(){
+function vsite_custom_theme(){
   
+  //See function description for why this is called here
   _vsite_purl_init();
   
   if ($space = spaces_get_space() && (!module_exists('cp') || !cp_use_cp_theme())) {
