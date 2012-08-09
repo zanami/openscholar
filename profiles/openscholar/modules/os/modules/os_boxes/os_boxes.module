@@ -134,7 +134,8 @@ function os_boxes_os_widget_alter(&$widget) {
 
     $widget['info'] = $box->description;
     $widget['plugin'] = $box->plugin_key;
-    $widget['class'] = $plugin['tags'];
+    if (isset($plugin['tags']))
+      $widget['class'] = $plugin['tags'];
 
     $widget['can_edit'] = true;  // all boxes should be editable. If they aren't, why are they a box
     $widget['path'] = 'os/boxes/'.$widget['delta'];
@@ -156,7 +157,9 @@ function os_boxes_get_factories() {
   $items = array();
 
   foreach ($plugins as $p => $info) {
-    if (isset($info['title'])) {
+    // title catches abstract boxes
+    // factory catchs our boxes
+    if (isset($info['title']) && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
       $items["boxes-boxes_add__$p"] = array(
         'module' => 'boxes',
         'delta' => "boxes_add__$p",
@@ -164,10 +167,6 @@ function os_boxes_get_factories() {
         'block_config_path' => "os/boxes/{$p}",
         'factory' => true,
       );
-
-      if (isset($info['factory_path'])) {
-        $items["boxes-boxes_add__$p"]['block_config_path'] = $info['factory_path']."/modal/box/$p";
-      }
     }
   }
 

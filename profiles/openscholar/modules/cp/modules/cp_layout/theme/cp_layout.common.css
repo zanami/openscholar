@@ -141,41 +141,46 @@
 .cp-region .cp-layout-widget {
   display: block !important;
   background: url("images/widget-placed-bg.png") no-repeat scroll 0 50% #F0F3F3;
-    border-bottom: 1px solid #666666;
-    border-top: 1px solid #CCCCCC;
-    margin: 0;
-    min-height: 18px;
-    overflow: hidden;
-    padding: 4px 20px 15px 31px;
-    font-size:1em;
-    color: #565E66;
-    cursor: pointer;
-    font-weight: bold;
-   position: relative;
+  border-bottom: 1px solid #666666;
+  border-top: 1px solid #CCCCCC;
+  margin: 0;
+  min-height: 18px;
+  overflow: hidden;
+  padding: 4px 20px 15px 31px;
+  font-size:1em;
+  color: #565E66;
+  cursor: pointer;
+  font-weight: bold;
+  position: relative;
+}
+
+#edit-layout-unused-widgets .cp-layout-widget.disabled,
+.cp-region .cp-layout-widget.disabled {
+  display: none !important;
 }
 
 .cp-region .cp-layout-widget:hover {
-background-color:#F8F9E2;
-background-position:-850px 50%;
+  background-color:#F8F9E2;
+  background-position:-850px 50%;
 }
 
 #edit-layout .ui-sortable .close-this {
-    background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 0 transparent;
-    height: 12px;
-    text-indent: -999em;
-    width: 12px;
-    position: absolute;
-    right: 5px;
-    top: 5px;
+  background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 0 transparent;
+  height: 12px;
+  text-indent: -999em;
+  width: 12px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
 }
 
 #edit-layout a.edit {
-    background: url("images/configGear.png") no-repeat scroll 0 0 transparent;
-    color: transparent;
-    text-indent: -999em;
-    width:15px;
-    height:15px;
-    padding-bottom:6px;
+  background: url("images/configGear.png") no-repeat scroll 0 0 transparent;
+  color: transparent;
+  text-indent: -999em;
+  width:15px;
+  height:15px;
+  padding-bottom:6px;
 }
 
 .widget-controls a.delete {display:none;}
@@ -183,39 +188,39 @@ background-position:-850px 50%;
 
 /* WIDGET STYLES IN UNUSED WIDGET BOX */
 .widget-container a.delete {
-    background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 -226px transparent;
-    display: block;
-    height: 11px;
-    left: 82px;
-    position: absolute;
-    text-indent: -999em;
-    top: 20px;
-    width: 10px;
+  background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 -226px transparent;
+  display: block;
+  height: 11px;
+  left: 82px;
+  position: absolute;
+  text-indent: -999em;
+  top: 20px;
+  width: 10px;
 }
 
 .widget-container a.delete:hover {
-    background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll -14px -241px transparent;
-    display: block;
-    height: 11px;
-    text-indent: -999em;
-    width: 10px;
+  background: url("/profiles/openscholar/themes/cp/images/scholarbase-sprite.png") no-repeat scroll -14px -241px transparent;
+  display: block;
+  height: 11px;
+  text-indent: -999em;
+  width: 10px;
 }
 
 .widget-container a.edit {
-    background: url("images/configGearSmallOff.png") no-repeat scroll 0 0 transparent;
-    color: transparent;
-    display: block;
-    left: 81px;
-    position: absolute;
-    top: 42px;
+  background: url("images/configGearSmallOff.png") no-repeat scroll 0 0 transparent;
+  color: transparent;
+  display: block;
+  left: 81px;
+  position: absolute;
+  top: 42px;
 }
 
 .widget-container a.edit:hover {
-    background: url("images/configGearSmall.png") no-repeat scroll 0 0 transparent;
+  background: url("images/configGearSmall.png") no-repeat scroll 0 0 transparent;
 }
 
 .widget-container .close-this {
-    display: none;
+  display: none;
 }
 
 /**WIDGET TABS**/
