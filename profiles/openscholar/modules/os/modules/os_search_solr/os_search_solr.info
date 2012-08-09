@@ -1,5 +1,5 @@
-name = OpenScholar: Search
-description = Provides OpenScholar Search support and facets
+name = OpenScholar: Solr Search
+description = Provides OpenScholar Solr Search support and facets
 core = 7.x
 package = OpenScholar
 php = 5.2.4
