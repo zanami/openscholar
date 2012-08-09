@@ -67,6 +67,14 @@ function template_preprocess_cp_layout_widget(&$variables) {
 
   $variables['bid'] = $widget['module']."-".$widget['delta'];
 
+  if (!isset($widget['info'])) {
+    $classes_array[] = 'disabled';
+    $variables['widget_title'] = '';
+  }
+  else {
+    $variables['widget_title'] = $widget['info'];
+  }
+
   $classes_array[] = "cp-layout-item";
 
   if (isset($widget['hidden']) && $widget->hidden) {
@@ -93,8 +101,6 @@ function template_preprocess_cp_layout_widget(&$variables) {
   if (isset($widget->icon_path)) {
   	$style = "style=\"background-image:url('{$w['icon_path']}');\"";
   }
-
-  $variables['widget_title'] = $widget['info'];
 
   if (isset($widget['can_edit']) && $widget['can_edit']) {
     $variables['can_edit'] = true;
