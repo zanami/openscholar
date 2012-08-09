@@ -105,9 +105,14 @@ class os_boxes_site_logo extends os_boxes_default {
     function render() {
       $block = parent::render();
 
-      $file = file_load($this->options['fid']);
-      $output = file_view($file, 'media_original');
-      $block['content'] = render($output);
+      try {
+        $file = file_load($this->options['fid']);
+        $output = file_view($file, 'media_original');
+        $block['content'] = render($output);
+      }
+      catch (Exception $e) {
+        return array();
+      }
 
       return $block;
     }
