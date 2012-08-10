@@ -315,6 +315,13 @@ function os_software_views_default_views() {
   $handler->display->display_options['filters']['field_software_recommended_value']['value'] = array(
     1 => '1',
   );
+
+  /* Display: Recommended */
+  $handler = $view->new_display('entity_view', 'Recommended', 'entity_view_1');
+  $handler->display->display_options['entity_type'] = 'node';
+  $handler->display->display_options['bundles'] = array(
+    0 => 'software_project',
+  );
   $export['os_software_releases'] = $view;
 
   return $export;

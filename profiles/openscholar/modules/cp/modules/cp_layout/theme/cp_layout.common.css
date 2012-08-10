@@ -110,7 +110,8 @@
   overflow-x: auto;
   white-space: nowrap;
   border:1px solid #C0C7C7;
-  height:auto;
+  min-height: 113px;
+
 }
 
 #edit-layout-unused-widgets .widget-container {
@@ -276,7 +277,7 @@
 
 #websiteLabelTab { 
   height: 16px;
-  left: 736px;
+  left: 740px;
   position: relative;
   top: 40px;
   width: 99px;
@@ -311,7 +312,7 @@ html.js #cp-layout-full-form div.ctools-dropdown div.ctools-dropdown-container {
   max-height: 670px;
   overflow: auto;
   width: 275px;
-  left:560px;
+  left:564px;
   white-space: nowrap;
 }
 
