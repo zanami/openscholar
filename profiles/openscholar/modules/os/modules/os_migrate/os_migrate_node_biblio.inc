@@ -101,7 +101,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     }
     
     $entity->biblio_contributors = $this->_prepare_biblio_contributors($row->vid, $row->nid);
-    $entity->biblio_keywords = $this->_prepare_biblio_keywords($row->vid);
+    // $entity->biblio_keywords = $this->_prepare_biblio_keywords($row->vid); //not supporting keywords. 
   }
   
   /**
