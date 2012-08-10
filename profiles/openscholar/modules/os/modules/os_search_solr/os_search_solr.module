@@ -35,6 +35,25 @@ function os_search_solr_block_view($delta = ''){
 }
 
 /**
+ * hook os_widget
+ *
+ * Exposes blocks as OpenScholar widgets.
+ */
+function os_search_solr_os_widget(){
+  $items = array();
+
+  // Displays site search box
+  $items['os_search_solr-site-search'] = array(
+      'module' => 'os_search_solr',
+      'delta' => 'site-search',
+      'weight' => '-10',
+      'info' => 'Search Box'
+  );
+
+  return $items;
+}
+
+/**
  * Alter the query after it's prepared and cached.
  * 
  * @param object $query

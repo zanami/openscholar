@@ -31,8 +31,14 @@ function vsite_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'os_search-site-search' => array(
-          'module' => 'os_search',
+        'os_search_solr-site-search' => array(
+          'module' => 'os_search_solr',
+          'delta' => 'site-search',
+          'region' => 'sidebar_first',
+          'weight' => '-10',
+        ),
+        'os_search_db-site-search' => array(
+          'module' => 'os_search_db',
           'delta' => 'site-search',
           'region' => 'sidebar_first',
           'weight' => '-10',

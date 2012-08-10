@@ -79,6 +79,18 @@ function os_context_default_contexts(){
   $context->reactions = array(
       'block' => array(
           'blocks' => array(
+              'os_search_solr-site-search' => array(
+                  'module' => 'os_search_solr',
+                  'delta' => 'site-search',
+                  'region' => 'sidebar_second',
+                  'weight' => '-10',
+              ),
+              'os_search_db-site-search' => array(
+                  'module' => 'os_search_db',
+                  'delta' => 'site-search',
+                  'region' => 'sidebar_second',
+                  'weight' => '-10',
+              ),
               'os-get-started' => array(
                   'module' => 'os',
                   'delta' => 'get-started',
