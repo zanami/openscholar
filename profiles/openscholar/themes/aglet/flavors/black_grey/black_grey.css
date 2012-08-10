@@ -1,5 +1,4 @@
-body,
-#footer {
+body, #footer {
   background:#0c0c0c;
   }
 
@@ -10,42 +9,41 @@ body,
   }
 
 #header-container, #columns, #block-os-primary-menu, #footer  {
-  width:1000px;
-  padding: 0 48px;
+  width:940px;
+  padding: 0;
   margin: 0 auto;
   }
 
 #header-container {
-  background:url('../images/header.png') repeat-x 0 100%;
+  background:url('images/header.png') repeat-x 0 100%;
 
   }
 
 #header-container .gpanel {
   background: #4a4a4a 50% 100%;
-width: 940px;
+  width: 940px;
   }
 
 #menu-bar,
 #columns {
-  background: #9a9c9f;
+  background: none repeat scroll 0 0 #9A9C9F;
   }
 
 #menu-bar #block-os-primary-menu {
-  background:url('../images/nav-wrap.png') repeat-y 50% 0;
+  background:url('images/nav-wrap.png') repeat-y 50% 0;
   padding: 0 48px;
   }
 
-body.one-sidebar #columns .wrap {
-  background:url('../images/content-wrap-wide.png') repeat-y 50% 0;
+body.one-sidebar #columns {
+  background:url('images/content-wrap-wide.png') repeat-y 50% 0;
   }
 
-#columns .wrap {
-  background:url('../images/content-wrap.png') repeat-y 50% 0;
-  }
+#columns {
+  background:url('images/content-wrap.png') repeat-y scroll 50% 0 transparent;
+}
 
-#footer .wrap {
+#footer {
   background:#d0d7d8;
-  width: 884px;
   }
 
 #header-container .gpanel .hg-container {
@@ -57,6 +55,10 @@ body.one-sidebar #columns .wrap {
 #menu-bar li {
   height: 36px;
   }
+
+#menu-bar {
+    padding: 0 150px;
+}
 
 .region-sidebar-first {
   background:#f6f7d7;
@@ -108,7 +110,7 @@ h1#page-title, h2.block-title {
 #menu-bar li a.active,
 #menu-bar li.active-trail a,
 #menu-bar li.active-trail a:hover {
-  background: url('../images/nav-over.png') no-repeat 50% 0 transparent;
+  background: url('images/nav-over.png') no-repeat 50% 0 transparent;
   color: #fff;
   top: 0;
   height: 43px;
