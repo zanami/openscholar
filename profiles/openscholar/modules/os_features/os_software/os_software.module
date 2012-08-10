@@ -30,7 +30,7 @@ function os_software_node_update($node) {
   
   // Compares original and updated "Recommended" field value
   $node_original = node_load($node->nid);
-  if (isset($node_original->title)) { 
+  if (isset($node_original->title)) { // Only compare values if an original node exists
     $node_updated = $node;
     
     $recommended_value_original = $node_original->field_software_recommended['und'][0]['value'];
