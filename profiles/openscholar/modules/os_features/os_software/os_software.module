@@ -7,22 +7,38 @@
 include_once 'os_software.features.inc';
 
 /**
+ * Implements hook_node_insert()
+ * 
+ * Enforces single recommended release per project constraint for "Software Release" 
+ */
+function os_software_node_insert($node) {
+  if ($node->type !== 'software_release') return;
+  
+  $recommended_value = $node->field_software_recommended['und'][0]['value'];
+  if ($recommended_value === 0) return;
+  
+  _os_software_new_recommended_release($node);
+}
+
+/**
  * Implements hook_node_update()
  * 
  * Enforces single recommended release per project constraint for "Software Release" 
  */
-function hook_node_update($node) {
+function os_software_node_update($node) {
   if ($node->type !== 'software_release') return;
   
-  // Compares original and updated "Recommended" field value.
+  // Compares original and updated "Recommended" field value
   $node_original = node_load($node->nid);
-  $node_updated = $node;
-  $recommended_value_original = $node_original->field_software_recommended['und'][0]['value'];
-  $recommended_value_updated = $node_updated->field_software_recommended['und'][0]['value'];
-  if ($recommended_value_updated === $recommended_value_original) return;
-  
+  if (isset($node_original->title)) { 
+    $node_updated = $node;
+    
+    $recommended_value_original = $node_original->field_software_recommended['und'][0]['value'];
+    $recommended_value_updated = $node_updated->field_software_recommended['und'][0]['value'];
+    if ($recommended_value_updated === $recommended_value_original) return;
+  }  
   // Only updates other Software Release nodes if this value has changed to "Recommended"
-  if ($recommended_value_updated === 'Not recommended') return;
+  if ($recommended_value_updated === 0) return;
   
   _os_software_new_recommended_release($node);
 }
@@ -31,14 +47,14 @@ function hook_node_update($node) {
  * Finds other recommended releases, marks them "Not recommended"
  */
 function _os_software_new_recommended_release($node) {
-  // Uses [:os_software_relesases:] view to filter only valid releases for this project.
+  // Uses [:os_software_relesases:] view to filter only valid releases for this project
   $view = views_get_view('os_software_releases');
   $view->set_arguments(array($node->field_software_project['und'][0]['target_id']));
   $view->execute('block_1');
   foreach ($view->result as $data) {
     if (!isset($node->nid) || $data->nid !== $node->nid) {
       $release_node = node_load($data->nid);
-      $release_node->field_scholar_software_recommend[0]['value'] = 0;
+      $release_node->field_software_recommended['und'][0]['value'] = 0;
       $release_node->pathauto_perform_alias = false;
       node_save($release_node);
     }
