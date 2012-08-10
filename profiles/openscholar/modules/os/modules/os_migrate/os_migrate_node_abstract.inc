@@ -29,7 +29,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       
       /* mappings */
       $this->addSimpleMappings(array('created','changed','status','promote','sticky','comment',
-                                     'title', 'tnid', 'uid', 'nid', 'vid'));
+                                     'title', 'tnid', 'uid', 'nid'));
       
       $this->addFieldMapping('language', 'language')->defaultValue('und');
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
@@ -65,7 +65,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       //$this->addFieldMapping('field_file_upload')
       
       /* Unmapped source fields.  Mark them as Do Not Map, so the UI knows they're intentionally ignored */
-      $this->addUnmigratedSources(array('moderate', 'translate', 'type', 'format_name'), t('DNM'));
+      $this->addUnmigratedSources(array('moderate', 'translate', 'type', 'format_name', 'vid'), t('DNM'));
 //      $this->addUnmigratedSources(array('oe_vid', 'oe_nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes') ,t('DNM'));
       //moderate appears to have been removed from node.
       //type.  we're doing nodes one type at a time.  type should be handled there.
