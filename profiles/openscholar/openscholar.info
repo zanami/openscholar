@@ -22,7 +22,6 @@ dependencies[] = search
 dependencies[] = shortcut
 dependencies[] = toolbar
 dependencies[] = overlay
-dependencies[] = field_ui
 dependencies[] = file
 dependencies[] = rdf
 
@@ -32,7 +31,6 @@ dependencies[] = context
 dependencies[] = features
 dependencies[] = boxes
 dependencies[] = views
-dependencies[] = views_ui
 dependencies[] = strongarm
 dependencies[] = date
 dependencies[] = entity
@@ -51,11 +49,6 @@ dependencies[] = media_oembed
 
 ; media custom
 dependencies[] = media_embed
-
-; migrate
-dependencies[] = migrate
-dependencies[] = migrate_extras
-;dependencies[] = os_migrate
 
 ; boxes
 dependencies[] = views_slideshow_cycle
@@ -88,7 +81,6 @@ dependencies[] = os_blog
 
 ; other
 dependencies[] = diff
-dependencies[] = context_ui
 dependencies[] = twitter_pull
 dependencies[] = nice_menus
 
