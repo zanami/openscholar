@@ -55,7 +55,7 @@ function _os_software_new_recommended_release($node) {
     if (!isset($node->nid) || $data->nid !== $node->nid) {
       $release_node = node_load($data->nid);
       $release_node->field_software_recommended['und'][0]['value'] = 0;
-      $release_node->pathauto_perform_alias = false;
+      $release_node->path['pathauto'] = ''; // Prevents pathauto from aliasing on save
       node_save($release_node);
     }
   }
