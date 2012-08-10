@@ -1,26 +1,24 @@
 <?php 
 
 /**
- * @file os_migrate_node_stub.inc
- * 
- * When creating new migration classes, use this as a starting point.  It includes placeholders
- * for all the functions you will have to fill out.
- * 
- * Remember to add your new migration class to os_migrate.info.  Do not add the stub file to 
- * os_migrate.info
+ * @file os_migrate_node_feed.inc
  */
 
-class StubNodeOSMigration extends AbstractNodeOSMigration {
+class FeedNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
     
     /**
      * AbstractNodeOSMigration's __construct() will set up most of the common node migration. 
      */
-    parent::__construct('stub', 'stub'); //args are d7 bundle, d6 content type.
+    parent::__construct('feed', 'feed'); //args are d7 bundle, d6 content type.
     
-    $this->description = t('Stub class for making content type migration classes.');
+    $this->description = t('Feed migration class.');
     
-    $this->dependencies[] = 'StubNodeOS'; // append dependencies.  these classes must be migrated before this class.
+    $this->addFieldMapping('field_url', 'source');
+    $this->addFieldMapping('field_url:title', 'title');
+    $this->addUnmigratedDestinations(array('field_url:attributes'), t('DNM')); //unused
+    
+    //$this->dependencies[] = 'StubNodeOS'; // append dependencies.  these classes must be migrated before this class.
     
     
     
@@ -33,6 +31,9 @@ class StubNodeOSMigration extends AbstractNodeOSMigration {
     /**
      * Modify the query.  Add joins and fields here.  content_type_${content_type} and its fields are already included.
      */
+    
+    $query->join('feeds_source', 'fs', 'n.nid = fs.feed_nid');
+    $query->fields('fs', array('source'));
     
     return $query;
   }
