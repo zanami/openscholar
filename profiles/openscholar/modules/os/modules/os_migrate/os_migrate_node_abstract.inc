@@ -29,7 +29,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       
       /* mappings */
       $this->addSimpleMappings(array('created','changed','status','promote','sticky','comment',
-                                     'title', 'tnid', 'uid', 'nid'));
+                                     'title', 'tnid', 'uid', 'nid', 'vid'));
       
       $this->addFieldMapping('language', 'language')->defaultValue('und');
       $this->addFieldMapping('is_new')->defaultValue(TRUE);
@@ -65,7 +65,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       //$this->addFieldMapping('field_file_upload')
       
       /* Unmapped source fields.  Mark them as Do Not Map, so the UI knows they're intentionally ignored */
-      $this->addUnmigratedSources(array('vid', 'moderate', 'translate', 'type', 'format_name'), t('DNM'));
+      $this->addUnmigratedSources(array('moderate', 'translate', 'type', 'format_name'), t('DNM'));
 //      $this->addUnmigratedSources(array('oe_vid', 'oe_nid', 'delta', 'field_os_inline_oembed_url', 'field_os_inline_oembed_title', 'field_os_inline_oembed_attributes') ,t('DNM'));
       //moderate appears to have been removed from node.
       //type.  we're doing nodes one type at a time.  type should be handled there.
@@ -188,10 +188,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         $blank = array('attributes' => array('target'=>'_blank'));
         Migration::saveMessage(t('Vsite !gid does not exist.  Assuming node !nid is orphaned.',
           array('!gid' => l($current_row->group_nid, $os_migrate_legacy_site . '/node/' . $current_row->group_nid, $blank),
-                 '!nid' => l($current_row->nid, $os_migrate_legacy_site . '/node/' . $current_row->nid, $blank))));
+                 '!nid' => l($current_row->nid, $os_migrate_legacy_site . '/node/' . $current_row->nid, $blank))), Migration::MESSAGE_NOTICE);
       } else {
         Migration::saveMessage(t('Vsite @gid does not exist.  Assuming node @nid is orphaned.', 
-                                array('@gid' => $current_row->group_nid, '@nid' => $current_row->nid)));
+                                array('@gid' => $current_row->group_nid, '@nid' => $current_row->nid)), Migration::MESSAGE_NOTICE);
       }
       return FALSE;
     }
@@ -200,7 +200,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     //check if bundle exists.
     $info = field_info_bundles('node');
     if (!isset($info[$this->bundle])) {
-      Migration::saveMessage(t('Could not migrate into non-existant bundle'));
+      Migration::saveMessage(t('Could not migrate into non-existant bundle: @bundle', array('@bundle' => $this->bundle)));
       return FALSE;
     }
     

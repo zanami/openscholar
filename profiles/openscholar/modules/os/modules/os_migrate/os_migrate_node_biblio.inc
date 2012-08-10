@@ -94,14 +94,59 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
    * us with the prepare function, which lets you modify an entity before it's saved.    
    */
   function prepare($entity, $row) {
+    $ignore = array('biblio_md5');
     foreach(get_object_vars($row) as $key => $value) {
-      if (strpos($key, 'biblio_') === 0 && $row->$key) {
+      if (strpos($key, 'biblio_') === 0 && $row->$key && !in_array($key, $ignore)) {
         $entity->$key = $value;
       }
     }
     
     $entity->biblio_contributors = $this->_prepare_biblio_contributors($row->vid, $row->nid);
     // $entity->biblio_keywords = $this->_prepare_biblio_keywords($row->vid); //not supporting keywords. 
+  }
+  
+  /**
+   * @see Migration::preRollback()
+   * 
+   * Make a list of migrated nodes before rollback.  Post rollback will use this
+   * to determine which rows to delete from duplicates.  This isn't necessary for
+   * just migrating, but for a migration mixed with new nodes, we don't want to
+   * delete any new nodes just because they're not in the migrate map.
+   */
+  function preRollback() {
+    $query = db_query('SELECT destid1 FROM migrate_map_biblionodeos');
+    $nids = $query->fetchCol('destid1');
+    variable_set('os_migrate_biblio_prerollback', serialize($nids));
+  }
+  
+  /**
+   * @see Migration::postRollback()
+   * 
+   * Biblio does not delete from the duplicates table after a node is deleted.
+   * This means that duplicates that are rolled back will have a collision the
+   * next time they're imported.
+   * 
+   * Instead, clear out after rolling back.
+   */
+  function postRollback() {
+    $query = db_query('SELECT destid1 FROM migrate_map_biblionodeos');
+    $remaining_nids = $query->fetchCol('destid1');
+    
+    $pre_nids = variable_get('os_migrate_biblio_prerollback', FALSE);
+    variable_del('os_migrate_biblio_prerollback');
+    
+    if ($pre_nids) {
+      $pre_nids = unserialize($pre_nids);
+      
+      $deleted_nids = array_diff($pre_nids, $remaining_nids);
+      if (count($deleted_nids)) {
+        db_delete('biblio_duplicates')
+          ->condition(db_or()->condition('vid', $deleted_nids, 'IN')->condition('did', $deleted_nids, 'IN'))
+          ->execute();
+          
+          
+      }
+    }
   }
   
   /**
