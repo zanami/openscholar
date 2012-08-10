@@ -384,6 +384,11 @@ abstract class OSMigration extends Migration {
       ->condition('sourceid1', $row->vid, '=');
       
     $entity_id = $query->execute()->fetchAssoc();
+    if (!$entity_id) {
+      parent::saveMessage(t('Could not update url in node body.  Missing file entity. @nid', array('@nid'=>$row->nid)));
+      return FALSE;
+    }
+    
     $entity = file_load($entity_id['destid1']);
     
     $dom = filter_dom_load($row->body);
