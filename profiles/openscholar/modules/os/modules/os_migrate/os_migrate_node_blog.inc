@@ -1,26 +1,20 @@
 <?php 
 
 /**
- * @file os_migrate_node_stub.inc
- * 
- * When creating new migration classes, use this as a starting point.  It includes placeholders
- * for all the functions you will have to fill out.
- * 
- * Remember to add your new migration class to os_migrate.info.  Do not add the stub file to 
- * os_migrate.info
+ * @file os_migrate_node_blog.inc
  */
 
-class StubNodeOSMigration extends AbstractNodeOSMigration {
+class BlogNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
     
     /**
      * AbstractNodeOSMigration's __construct() will set up most of the common node migration. 
      */
-    parent::__construct('stub', 'stub'); //args are d7 bundle, d6 content type.
+    parent::__construct('blog', 'blog'); //args are d7 bundle, d6 content type.
     
-    $this->description = t('Stub class for making content type migration classes.');
+    $this->description = t('Blog migration classes.');
     
-    $this->dependencies[] = 'StubNodeOS'; // append dependencies.  these classes must be migrated before this class.
+    
     
     
     
@@ -50,6 +44,7 @@ class StubNodeOSMigration extends AbstractNodeOSMigration {
   }
   
   public function prepareRow($current_row) {
+ 
 
     /**
      * This method is called while looping over the results of the query provided earlier.

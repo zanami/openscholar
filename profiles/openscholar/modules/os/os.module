@@ -312,6 +312,10 @@ function os_module_implements_alter(&$implementations, $hook){
   if ($hook == 'init') {
     unset($implementations['purl']);
   }
+  if ($hook == 'form_alter') {
+    unset($implementations['os']);
+    $implementations['os'] = false;
+  }
 }
 
 /**
@@ -429,6 +433,14 @@ function os_preprocess_page(&$variables){
     }
   }
 
+}
+
+/**
+ * Cleans up some advanced settings and places them in a fieldset
+ */
+function os_form_node_form_alter(&$form, $form_state) {
+  unset($form['options']['promote']);
+  $form['path']['pathauto']['#description'] = t('Uncheck this to create a custom alias below.');
 }
 
 /**
@@ -629,9 +641,9 @@ function os_system_info_alter(&$info, $file, $type){
     return;
 
   //If the base theme for this theme is 'os_basetheme' or if the is a 'vsite' theme add the default regions
-  if ((isset($info['base theme']) && $info['base theme'] == 'os_basetheme') || 
+  if ((isset($info['base theme']) && $info['base theme'] == 'os_basetheme') ||
       (isset($info['os']['theme_type']) && $info['os']['theme_type'] == 'vsite')) {
-    
+
       $info['regions'] += array(
         'header_top' => 'Header Top',
         'header_first' => 'Header Main',

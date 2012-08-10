@@ -107,6 +107,7 @@
   <?php print render($page['help']); ?>
 
 <div id="columns" class="clearfix">
+	<div class="hg-container">
     <div id="content-column" role="main">
       <div class="content-inner">
       	<?php if ($is_front): ?>
@@ -166,10 +167,8 @@
 
         </<?php print $tag; ?>><!--main content ends-->
         <?php endif; ?>
-
-
       </div>
-    </div>
+       </div>
 <!--sidebar first region beg-->
     <?php $sidebar_first = render($page['sidebar_first']); print $sidebar_first; ?>
 <!--sidebar first region end-->
@@ -177,11 +176,10 @@
     <?php $sidebar_second = render($page['sidebar_second']); print $sidebar_second; ?>
 <!--sidebar second region end-->
   </div>
-
+ </div>
 
   <?php if ($page['footer']): ?>
     <footer id="footer" class="clearfix" role="contentinfo"><?php print render($page['footer']); ?></footer>
   <?php endif; ?>
-
 </div><!--page area ends-->
  <div id="extradiv"></div>
