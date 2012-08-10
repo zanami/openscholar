@@ -26,6 +26,7 @@ function os_search_db_block_view($delta = ''){
   switch ($delta) {
   	case 'site-search' :
   	  $block['subject'] = NULL;
+  	  $block['title'] = "Search Box";
   	  $block['content'] = drupal_get_form('search_block_form');
   	  return $block;
 
