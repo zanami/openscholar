@@ -1776,6 +1776,7 @@ function os_software_field_default_fields() {
     'field_instance' => array(
       'bundle' => 'software_release',
       'default_value' => NULL,
+      'default_value_function' => 'entityreference_prepopulate_field_default_value',
       'deleted' => '0',
       'description' => '',
       'display' => array(
@@ -1800,6 +1801,14 @@ function os_software_field_default_fields() {
       'label' => 'Project',
       'required' => 1,
       'settings' => array(
+        'behaviors' => array(
+          'prepopulate' => array(
+            'action' => 'hide',
+            'fallback' => 'none',
+            'skip_perm' => 'administer nodes',
+            'status' => 1,
+          ),
+        ),
         'user_register_form' => FALSE,
       ),
       'widget' => array(
@@ -1874,7 +1883,7 @@ function os_software_field_default_fields() {
         'settings' => array(
           'display_label' => 0,
         ),
-        'type' => 'options_onoff',
+        'type' => 'options_buttons',
         'weight' => '8',
       ),
     ),

@@ -9,7 +9,7 @@ html,body {
   }
 
 body {
-font-family: 'PT Sans', arial, serif;
+font-family: helvetica, arial, serif;
   }
 
 
@@ -81,12 +81,128 @@ p.copy a.poweredby {
 
 /* FRONT PAGE*/
 
+/* Specific Content Classes */
+
+.os-topheadings {
+	color:#FFF;
+	font-size:14px;
+}
+
+.os-topheadings a {
+	color: #FEF1AB;
+}
+
+.os-leftcol {
+	color:#333;
+    font-size: 1.3em;
+   
+}
+
+.os-leftcol ul {
+    float: right;
+    margin-left: 20px;
+    margin-top: 30px;
+}
+
+.os-leftcol li {
+    display: inline;
+    margin-right: 5px;
+}
+
+.os-leftcol ul li a {
+background: none repeat scroll 0 0 #EDEEF1;
+    border: 1px solid #DCDCDD;
+    border-radius: 12px 12px 12px 12px;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5) inset;
+    color: #000000;
+    font-size: 11px;
+    margin: 5px 5px 15px 0;
+    padding: 0 9px;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+.os-leftcol ul li a:hover {
+background: #FE8716;
+color:#EFEFEF;
+}
+
+
+.os-rightcol {
+	color: #7C7C7C;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+	
+}
+
+.os-featuredSites {
+    float: left;
+    height: 19px;
+    margin: 2px 327px 0 0;
+    width: 162px;
+}
+
+p.os-leadin {
+	 margin-top: 7px;
+}
+
+.os-rightcol p, .os-rightcol li {
+    font-weight: bold;
+    margin-bottom: 43px;
+}
+
+.os-rightcol li span {
+    color: #414141;
+    font-size: 17px;
+  
+}
+
+.os-rightcol .os-learnmore a {
+    background: url("/profiles/openscholar/themes/custom/scholars_harvard/images/arrow2.png") no-repeat scroll 100% 50% transparent;
+    color: #B23325;
+    margin-left: 20px;
+    padding-right: 30px;
+}
+
+
+
+.os-rightcol, .os-leftcol {
+    margin: 0;
+    padding: 15px 40px 0 29px;
+}
+
+
+.front #columns .region-inner {
+    padding-top: 0;
+}
+
+
+
+.front .region-sidebar-second {
+	background:#F5F5F5;
+}
+
+
+.front .block-inner {
+	margin-left: 0;
+    margin-right: 0;
+}
+/*
+.front #content-column, .front .region-sidebar-first, .front .region-sidebar-second {
+margin-bottom: -2000px;
+padding-bottom: 2000px;
+}
+*/
+
+
+
+
 .page {
   position: relative;
+  
   }
 
 body.front  {
-  height: 100%;
+
   overflow: hidden;
 background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
   }
@@ -428,14 +544,16 @@ margin:27px 327px 0 0; } }
   color: #ff8207;
   }
 
-.footer {
+#footer {
   float:left;
   width: 100%;
+  margin-bottom:30px;
   }
   
  /* FOOTER STYLES SPECIFIC TO STATS BLOCK ON FP ONLY */ 
-.front .footer {
-height: 75px;
+.front #footer {
+height: 110px;
+background:#7691A7;
 }
   
 #block-iqss_openscholar_front-stats {
@@ -481,17 +599,18 @@ p.copy a:hover {
   border-color: #fff;
   }
   
-.front .footer #powered-link {
+.front #footer .os-powered-link {
   float:right;
   position:relative;
-  top: -119px;
+  top: -20px;
   }
 
-.front p.copy a.poweredby {
-  background: url('../images/powered_by.png') 19px 37px no-repeat #234f6e;
+.front .os-powered-link a.os-poweredby {
+  background: url('/profiles/openscholar/themes/custom/scholars_harvard/images/powered_by.png') 19px 37px no-repeat #234f6e;
   display:block;
   width: 119px;
   height:115px;
+   text-indent: -999em;
   }
 
 
@@ -669,6 +788,3 @@ p.copy a:hover {
 	margin-top: 80px;
 }
 
-.sidebar .block {
-	margin-top: 1.3em;
-}
