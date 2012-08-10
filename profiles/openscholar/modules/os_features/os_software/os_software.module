@@ -7,6 +7,10 @@
 include_once 'os_software.features.inc';
 
 /**
+ * Drupal hooks
+ */
+
+/**
  * Implements hook_node_insert()
  * 
  * Enforces single recommended release per project constraint for "Software Release" 
@@ -44,6 +48,95 @@ function os_software_node_update($node) {
 }
 
 /**
+ * Implements hook_node_delete()
+ */
+function os_software_node_delete($node) {
+  if ($node->type !== 'software_project') return;
+  // @TODO Delete all referencing software release nodes
+}
+
+/**
+ * Implements hook_theme()
+ */
+function os_software_theme() {
+  return array();
+  // @TODO Define custom template for Software Release node view.
+}
+
+/**
+ * Implements hook_menu_alter()
+ * 
+ * Hides software release node add link unless a software project has been created
+ */
+function os_software_menu_alter(&$items) {
+  if(!isset($items['node/add/software-release'])) return;
+  
+  switch($items['node/add/software-release']['access callback']) {
+    case "node_access":
+      $items['node/add/software-release']['access callback'] = '_os_software_access_release';
+    break;
+    
+    case "spaces_menu_access":
+      $items['node/add/software-release']['access arguments'][] = '_os_software_access_release';
+    break;
+  }
+}
+
+/**
+ * Implementation of hook_form_alter() for scholar_software_release_node_form.
+ *  @FIXME: maybe we still need this?
+ *
+function scholar_software_form_scholar_software_release_node_form_alter(&$form, $form_state) {
+  drupal_add_css(drupal_get_path('module', 'scholar_software') . '/scholar_software.css');
+} */
+
+/**
+ * OpenScholar hooks
+ */
+
+/**
+ * Implements hook_os_widget()
+ * 
+ * Exposes blocks as OpenScholar widgets.
+ */
+function os_software_os_widget() {
+  $items = array();
+  
+  $items['views-os_software_releases-block'] = array(
+    'module' => 'views', 
+    'delta' => 'os_software_releases-block', 
+    'region' => 'sidebar_second', 
+    'weight' => '-10',
+    'info' => 'All Recent Releases',
+  );
+  
+  return $items;
+}
+
+/**
+ * Implements hook_scholar_admin_link() on behalf of the node module.
+ * @FIXME this is not how it's done in Drupal 7
+function scholar_software_vsite_admin_link($type, $object) {
+  $links = array();
+  if ($type == 'node' && $object->type == 'scholar_software_project' && empty($object->field_scholar_software_method[0]['value'])) {
+
+    $item = menu_get_item('node/add/scholar-software-release');
+    if ($item && $item['access']) {
+      $links['scholar-software-add-release'] = array(
+        'title' => t('Add new Release'),
+        'href' => 'node/add/scholar-software-release',
+        'query' => array('software_name' => $object->field_scholar_software_name[0]['value']),
+      );
+    }
+  }
+  return $links;
+} */
+
+/**
+ * Custom functions
+ */
+
+/**
  * Finds other recommended releases, marks them "Not recommended"
  */
 function _os_software_new_recommended_release($node) {
@@ -59,4 +152,16 @@ function _os_software_new_recommended_release($node) {
       node_save($release_node);
     }
   }
+}
+
+/**
+ * Only allows access to authorized users with Software Project nodes
+ */
+function _os_software_access_release() {
+  $view = views_get_view('os_software_projects');
+  if (empty($view)) return FALSE;
+  if (!node_access('create', 'software_release')) return FALSE;
+  
+  $view->execute();
+  return (count($view->result) > 0);
 }
