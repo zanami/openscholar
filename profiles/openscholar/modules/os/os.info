@@ -8,7 +8,6 @@ dependencies[] = comment
 dependencies[] = context
 dependencies[] = contextual
 dependencies[] = ctools
-dependencies[] = dashboard
 dependencies[] = devel
 dependencies[] = features
 dependencies[] = file_entity
