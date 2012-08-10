@@ -228,7 +228,7 @@ function harvard_activity_reports_query_user() {
 			// query the user by ID
 			$uid = harvard_activity_reports_query_user_by_id($hashID);
 			// now get their vsite
-			if($uid != 1) {
+			if($uid != FALSE) {
 				$nid =  harvard_activity_reports_query_vsite_id($uid);
 			}else{
 				$nid = FALSE;
