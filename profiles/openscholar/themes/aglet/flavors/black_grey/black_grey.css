@@ -6,28 +6,27 @@ body, #footer {
 #page-wrapper {
   width: 100%;
   background: transparent;
+  box-shadow: none;
   }
 
 #header-container, #columns, #block-os-primary-menu, #footer  {
-  width:940px;
-  padding: 0;
+  width:1000px;
+  padding: 0 48px;
   margin: 0 auto;
   }
 
 #header-container {
-  background:url('images/header.png') repeat-x 0 100%;
-
-  }
+  background: url('images/header.png') repeat-x scroll 0 100% transparent;
+}
 
 #header-container .gpanel {
   background: #4a4a4a 50% 100%;
-  width: 940px;
   }
 
 #menu-bar,
 #columns {
   background: none repeat scroll 0 0 #9A9C9F;
-  }
+}
 
 #menu-bar #block-os-primary-menu {
   background:url('images/nav-wrap.png') repeat-y 50% 0;
@@ -44,6 +43,7 @@ body.one-sidebar #columns {
 
 #footer {
   background:#d0d7d8;
+  padding: 0;
   }
 
 #header-container .gpanel .hg-container {
@@ -57,7 +57,7 @@ body.one-sidebar #columns {
   }
 
 #menu-bar {
-    padding: 0 150px;
+    padding: 0 91px;
 }
 
 .region-sidebar-first {
