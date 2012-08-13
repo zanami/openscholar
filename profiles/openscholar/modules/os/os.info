@@ -62,7 +62,6 @@ features[user_permission][] = access user profiles
 features[user_permission][] = add media as raw html
 features[user_permission][] = add media from remote sources
 features[user_permission][] = administer actions
-features[user_permission][] = administer blocks
 features[user_permission][] = administer comments
 features[user_permission][] = administer content types
 features[user_permission][] = administer features

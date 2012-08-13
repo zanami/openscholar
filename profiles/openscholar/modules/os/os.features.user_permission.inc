@@ -162,16 +162,6 @@ function os_user_default_permissions() {
     'module' => 'system',
   );
 
-  // Exported permission: administer blocks.
-  $permissions['administer blocks'] = array(
-    'name' => 'administer blocks',
-    'roles' => array(
-      0 => 'administrator',
-      1 => 'manager',
-    ),
-    'module' => 'block',
-  );
-
   // Exported permission: administer comments.
   $permissions['administer comments'] = array(
     'name' => 'administer comments',
