@@ -4,7 +4,7 @@
 @import url(http://fonts.googleapis.com/css?family=Judson);
 
 body {
-background: url('../images/bodyBg.gif') no-repeat fixed center top #EFEFEF;
+background: url('../images/bodyBg.gif') no-repeat fixed center -110px #EFEFEF;
   color: #444;
 font-family: helvetica,arial,sans-serif;
 font-size:.8em;
@@ -32,6 +32,15 @@ font-size:.8em;
     background:url('../images/footerbg.png');
     height:35px;
     padding: 15px 20px;
+}
+
+#footer p.copy {
+    margin: 55px auto 0;
+   
+}
+
+p.copy a.poweredby {
+    background-position: 0 0;
 }
 
 #header-right {text-align: right;}
@@ -146,10 +155,10 @@ p.copy a.footer-login {
     border-radius: none;
     border-style: none;
     border-width: none;
-    color: #F3F3F1 !important;
+    color: #444 !important;
     cursor: pointer;
     font-size: 13px;
-    margin: 5px 5px 15px 0;
+     margin: 1px 5px 15px 0;
     padding: 0 9px !important;
     text-align: center;
     text-shadow: none;
@@ -373,8 +382,4 @@ background:url('../images/transparentBg.png') no-repeat;
 .pager a {text-decoration: none;}
   
 
-/* POWERED BY BG IMG REPOSITION */
-p.copy a.poweredby {
-    background-position: 0 -25px;
-}
 
