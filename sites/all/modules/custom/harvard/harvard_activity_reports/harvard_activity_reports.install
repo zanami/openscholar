@@ -1,4 +1,8 @@
 <?php
+// include the file for function to check if a module exists
+// this function needed on both the .install and .module file
+include_once('harvard_activity_reports.function.inc');
+
 /** 
  * Function to check to see if the field exists
  */
@@ -58,23 +62,26 @@ function harvard_activity_reports_schema_alter(&$schema) {
  * allowing the module to match up properly with the hashed ids being sent
  */
 function harvard_activity_reports_hash_uids(){
-	// use the FAS suffix
-	$suffix = "klA+j230-a819xzm,fy";
-	// select all the huids where there is no hashed HUID already
-	$selectHUIDS = "SELECT uid,huid FROM {iqss_pinserver_register} WHERE hashID is NULL";
-	$huidsRes = db_query($selectHUIDS);
-	if($huidsRes->num_rows>0) {
-		// loop the results for hashing
-		while($huidsRow = db_fetch_array($huidsRes)) {
-			$uid = $huidsRow['uid'];
-			$huid = $huidsRow['huid'];
-			$hashedID = md5($huid.$suffix);
+	// run the check module exists
+	if(harvard_activity_reports_check_module('iqss_pinserver_register')==TRUE) {
+		// use the FAS suffix
+		$suffix = "klA+j230-a819xzm,fy";
+		// select all the huids where there is no hashed HUID already
+		$selectHUIDS = "SELECT uid,huid FROM {iqss_pinserver_register} WHERE hashID is NULL";
+		$huidsRes = db_query($selectHUIDS);
+		if($huidsRes->num_rows>0) {
+			// loop the results for hashing
+			while($huidsRow = db_fetch_array($huidsRes)) {
+				$uid = $huidsRow['uid'];
+				$huid = $huidsRow['huid'];
+				$hashedID = md5($huid.$suffix);
 			
-			// now that they're hashed, update the row
-			$updateHuid = "UPDATE {iqss_pinserver_register} SET hashID = '%s' WHERE uid = %d";
-			$updateRes = db_query($updateHuid,$hashedID,$uid);
-		}// end while
-	}
+				// now that they're hashed, update the row
+				$updateHuid = "UPDATE {iqss_pinserver_register} SET hashID = '%s' WHERE uid = %d";
+				$updateRes = db_query($updateHuid,$hashedID,$uid);
+			}// end while
+		}// end if
+	}// end if
 }// end function
 
 /**
@@ -90,28 +97,29 @@ function harvard_activity_reports_alter_null() {
  */
 function harvard_activity_reports_install() {
   	$ret = array();
-	if(harvard_activity_reports_checkExists('hashID')==TRUE) {
-		// its not in there, add it
-  		db_add_field($ret, 'iqss_pinserver_register', 'hashID', array('type' => 'varchar','length' => 256,'not null' => FALSE,'default' => NULL));
-	}// end if !in array
+  	// run the check module exists
+	if(harvard_activity_reports_check_module('iqss_pinserver_register')==TRUE) {
+		if(harvard_activity_reports_checkExists('hashID')==TRUE) {
+			// its not in there, add it
+  			db_add_field($ret, 'iqss_pinserver_register', 'hashID', array('type' => 'varchar','length' => 256,'not null' => FALSE,'default' => NULL));
+		}// end if !in array
 	
-	// alter the table
-	harvard_activity_reports_alter_null();
+		// alter the table
+		harvard_activity_reports_alter_null();
 	
-	// run the inserts
-	harvard_activity_reports_hash_uids();
+		// run the inserts
+		harvard_activity_reports_hash_uids();
+	}// end if
 	
-	// check for the huid field and alter it to remove the NOT NULL attribute
-}
+}// end function
 
 /**
  * Implementation of hook_uninstall().
  */
 function harvard_activity_reports_uninstall() {
   	$ret = array();
-  	// first check to see if the field exists
-	//if(harvard_activity_reports_checkExists('hashID')==FALSE) {
-		// its not in there, drop it
+  	// run the check module exists
+	//if(harvard_activity_reports_check_module('iqss_pinserver_register')==TRUE) {
     	db_drop_field($ret, 'iqss_pinserver_register', 'hashID');
 	//}// end check
 }
