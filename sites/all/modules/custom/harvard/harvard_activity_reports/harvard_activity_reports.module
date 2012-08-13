@@ -3,6 +3,9 @@
  * @file
  * Allows faculty members to import a list of their publications.
 */
+// include the file for function to check if a module exists
+// this function needed on both the .install and .module file
+include_once('harvard_activity_reports.function.inc');
  
 /**
  * Display help and module information
@@ -17,6 +20,7 @@ function harvard_activity_reports_help($path, $arg) {
       return $output;
   }
 } // end function
+
 
 /**
  * Valid permissions for this module
@@ -48,22 +52,27 @@ function harvard_activity_reports_menu() {
  */
 function harvard_activity_reports_query_user_by_id($id)  {
 	$hashID = $id;
-	// make sure it's not empty
-	if($hashID != "") {
-		// query the DB and check if the user exists for this hash
-		$query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE hashID = '%s'"; // setup the query
-		$results = db_query($query, $hashID); // perform the query
-		// make sure there are results
-		if($results->num_rows>0) {
-			$row = db_fetch_object($results); // grab the resulting uid
-			$uid = $row->uid; // push it into a variable
-			$huID = $row->huid;
+	// run the check module exists
+	if(harvard_activity_reports_check_module('iqss_pinserver_register')==TRUE) {
+		// make sure it's not empty
+		if($hashID != "") {
+			// query the DB and check if the user exists for this hash
+			$query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE hashID = '%s'"; // setup the query
+			$results = db_query($query, $hashID); // perform the query
+			// make sure there are results
+			if($results->num_rows>0) {
+				$row = db_fetch_object($results); // grab the resulting uid
+				$uid = $row->uid; // push it into a variable
+				$huID = $row->huid;
+			}else {
+				$uid = FALSE;
+			}//
 		}else {
-			$uid = FALSE;
+				$uid = FALSE;
 		}//
-	}else {
-			$uid = FALSE;
-	}//
+	}else{
+		$uid = FALSE;
+	}
 	return $uid;
 }// end function
 
@@ -153,15 +162,18 @@ function harvard_activity_reports_query_vsite_id($uid) {
 function harvard_activity_reports_update_huid_hash($uid,$hashID) {
 	$uid = $uid;
 	$hashID = $hashID;
-	// sanity check to make sure once again that this id does not exist in the table
-	$selectUid = "SELECT count(uid) AS uidCount FROM {iqss_pinserver_register} WHERE uid = %d";
-	$uidResults = db_query($selectUid, $uid);
-	$uidRow = db_fetch_object($uidResults);
-	$uidCount = $uidRow->uidCount;
-	if(uidCount==0) {
-		// insert the new value
-		db_query("INSERT INTO {iqss_pinserver_register} (uid, hashID) VALUES ('%s', '%s')", $uid, $hashID  );
-	}
+	// run the check module exists
+	if(harvard_activity_reports_check_module('iqss_pinserver_register')==TRUE) {
+		// sanity check to make sure once again that this id does not exist in the table
+		$selectUid = "SELECT count(uid) AS uidCount FROM {iqss_pinserver_register} WHERE uid = %d";
+		$uidResults = db_query($selectUid, $uid);
+		$uidRow = db_fetch_object($uidResults);
+		$uidCount = $uidRow->uidCount;
+		if(uidCount==0) {
+			// insert the new value
+			db_query("INSERT INTO {iqss_pinserver_register} (uid, hashID) VALUES ('%s', '%s')", $uid, $hashID  );
+		}// end if
+	}// end if
 	// no need to return anything
 	return $return;
 }// end function 
@@ -427,10 +439,17 @@ function harvard_activity_reports_page() {
 		// xml status is ok
 		$status = "ok";
 		// grab the users HUID
-		$selectHUID = "SELECT i.huid FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = %d AND i.uid = n.uid";
-		$huidResult = db_query($selectHUID, $nid);
-		$huidRow = db_fetch_object($huidResult);
-		$huID = $huidRow->huid;
+		
+		// run the check module exists
+		if(harvard_activity_reports_check_module('iqss_pinserver_register')==TRUE) {
+			$selectHUID = "SELECT i.huid FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = %d AND i.uid = n.uid";
+			$huidResult = db_query($selectHUID, $nid);
+			$huidRow = db_fetch_object($huidResult);
+			$huID = $huidRow->huid;
+		}else{
+			$huID = NULL;
+		}// end if
+		
 		// now load in the user's biblio 
 		$xml = harvard_activity_reports_load_user_info($nid);
 		// create an instance of the citation class
