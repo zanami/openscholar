@@ -20,16 +20,16 @@ class os_context_condition_os_site extends context_condition {
 
   function execute(){
     if ($this->condition_used()) {
-      
+
       //Default: NON Multi Tenant Always in a site
       $value = 1;
-      if(module_exists('spaces')){
+      if(module_exists('vsite')){
         $vsite = spaces_get_space();
         if(!$vsite){
           $value = 0;
         }
       }
-       
+
       foreach ( $this->get_contexts($value) as $context ) {
         $this->condition_met($context, $value);
       }

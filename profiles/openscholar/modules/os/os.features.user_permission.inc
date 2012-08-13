@@ -417,6 +417,9 @@ function os_user_default_permissions() {
     'name' => 'create url aliases',
     'roles' => array(
       0 => 'administrator',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
     ),
     'module' => 'path',
   );
@@ -462,15 +465,6 @@ function os_user_default_permissions() {
     'module' => 'comment',
   );
 
-  // Exported permission: execute php code.
-  $permissions['execute php code'] = array(
-    'name' => 'execute php code',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'devel',
-  );
-
   // Exported permission: import media.
   $permissions['import media'] = array(
     'name' => 'import media',
@@ -490,15 +484,6 @@ function os_user_default_permissions() {
       2 => 'vsite admin',
     ),
     'module' => 'features',
-  );
-
-  // Exported permission: migration information.
-  $permissions['migration information'] = array(
-    'name' => 'migration information',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'migrate_ui',
   );
 
   // Exported permission: notify of path changes.
@@ -568,15 +553,6 @@ function os_user_default_permissions() {
       0 => 'administrator',
     ),
     'module' => 'shortcut',
-  );
-
-  // Exported permission: switch users.
-  $permissions['switch users'] = array(
-    'name' => 'switch users',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'devel',
   );
 
   // Exported permission: use advanced search.

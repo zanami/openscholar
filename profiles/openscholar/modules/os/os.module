@@ -371,7 +371,7 @@ function os_preprocess_page(&$variables){
     ),
   );
 
-  drupal_alter('add_new_links', $links);
+  drupal_alter('os_add_new_links', $links);
 
   ksort($links);
   $variables['title_suffix']['controls'] = array(
