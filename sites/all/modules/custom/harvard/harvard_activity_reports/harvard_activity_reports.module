@@ -3,6 +3,11 @@
  * @file
  * Allows faculty members to import a list of their publications.
 */
+
+// include the file for function to check if a module exists
+// this function needed on both the .install and .module file
+include_once('harvard_activity_reports.function.inc');
+
  
 /**
  * Display help and module information
@@ -17,6 +22,7 @@ function harvard_activity_reports_help($path, $arg) {
       return $output;
   }
 } // end function
+
 
 /**
  * Valid permissions for this module
@@ -48,25 +54,30 @@ function harvard_activity_reports_menu() {
  */
 function harvard_activity_reports_query_user_by_id($id)  {
 	$hashID = $id;
-	// make sure it's not empty
-	if($hashID != "") {
-		// query the DB and check if the user exists for this hash
-		// updated for Drupal 7
-		$results = db_query('SELECT uid, huid FROM {iqss_pinserver_register} WHERE hashID = :hashID', array(':hashID'=>$hashID))->fetchObject(); // perform the query
-		// make sure there are results
-		if($results!='') {
-			// updated for drupal 7 - > db_fetch_array removed
-			//$row = $results->fetchAssoc(); // grab the resulting uid
-			//foreach($results as $row) {
-			$uid = $results->uid; // push it into a variable
-			$huID = $results->huid;
-		//}
+	// run the check module exists
+	if(harvard_activity_reports_check_module('iqss_pinserver_register')==TRUE) {
+		// make sure it's not empty
+		if($hashID != "") {
+			// query the DB and check if the user exists for this hash
+			// updated for Drupal 7
+			$results = db_query('SELECT uid, huid FROM {iqss_pinserver_register} WHERE hashID = :hashID', array(':hashID'=>$hashID))->fetchObject(); // perform the query
+			// make sure there are results
+			if($results!='') {
+				// updated for drupal 7 - > db_fetch_array removed
+				//$row = $results->fetchAssoc(); // grab the resulting uid
+				//foreach($results as $row) {
+				$uid = $results->uid; // push it into a variable
+				$huID = $results->huid;
+			//}
+			}else {
+				$uid = FALSE;
+			}//
 		}else {
-			$uid = FALSE;
+				$uid = FALSE;
 		}//
-	}else {
-			$uid = FALSE;
-	}//
+	}else{
+		$uid = FALSE;
+	}// end if
 	return $uid;
 }// end function
 
@@ -78,8 +89,8 @@ function harvard_activity_reports_query_user_by_id($id)  {
  */
 function harvard_activity_reports_query_user_by_site($site) {	
 	// scholar variable
-	$scholarHost = "scholar.harvard.edu";
-	//$scholarHost = "os7dev";
+	//$scholarHost = "scholar.harvard.edu";
+	$scholarHost = "os7dev";
 	$scheme = "http";
 	$siteUrl = $site;
 	
@@ -154,20 +165,23 @@ function harvard_activity_reports_query_vsite_id($uid) {
 function harvard_activity_reports_update_huid_hash($uid,$hashID) {
 	$uid = $uid;
 	$hashID = $hashID;
-	// sanity check to make sure once again that this id does not exist in the table
-	$uidResults = db_query("SELECT count(uid) AS uidCount FROM {iqss_pinserver_register} WHERE uid = :uid", array(':uid'=>$uid))->fetchField();
-	// updated for drupal 7 - db_fetch_object renoved
-	$uidCount = $uidResults;
-	if(uidCount==0) {
-		// insert the new value
-		// updated for Drupal 7 - new methond of inserting
-		$hashInsert = db_insert('iqss_pinserver_register')
-			->fields(array(
-			'uid'=>$uid,
-			'hashID'=>$hashID,
-			))
-			->execute();
-	}
+	// run the check module exists
+	if(harvard_activity_reports_check_module('iqss_pinserver_register')==TRUE) {
+		// sanity check to make sure once again that this id does not exist in the table
+		$uidResults = db_query("SELECT count(uid) AS uidCount FROM {iqss_pinserver_register} WHERE uid = :uid", array(':uid'=>$uid))->fetchField();
+		// updated for drupal 7 - db_fetch_object renoved
+		$uidCount = $uidResults;
+		if(uidCount==0) {
+			// insert the new value
+			// updated for Drupal 7 - new methond of inserting
+			$hashInsert = db_insert('iqss_pinserver_register')
+				->fields(array(
+				'uid'=>$uid,
+				'hashID'=>$hashID,
+				))
+				->execute();
+		}// end if
+	}// end if 
 	// no need to return anything
 	return $return;
 }// end function 
@@ -436,9 +450,16 @@ function harvard_activity_reports_page() {
 		// xml status is ok
 		$status = "ok";
 		// grab the users HUID
-		$huidResult = db_query("SELECT i.huid FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = :nid AND i.uid = n.uid",array(':nid'=>$nid))->fetchField();
-		// updated for Drupal 7 - removed db_fetch_object
-		$huID = $huidResult;
+		
+		// run the check module exists
+		if(harvard_activity_reports_check_module('iqss_pinserver_register')==TRUE) {
+			$huidResult = db_query("SELECT i.huid FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = :nid AND i.uid = n.uid",array(':nid'=>$nid))->fetchField();
+			// updated for Drupal 7 - removed db_fetch_object
+			$huID = $huidResult;
+		}else{
+			$huID = NULL;
+		}// end if
+		
 		// now load in the user's biblio 
 		$xml = harvard_activity_reports_load_user_info($nid);
 		// create an instance of the citation class
@@ -468,7 +489,7 @@ function harvard_activity_reports_page() {
 					// $biblioDataArray[$counter]['biblio_volume'] = $biblioDataRow->biblio_volume; - not needed (yet)
 					// $biblioDataArray[$counter]['biblio_issue'] = $biblioDataRow->biblio_issue; - not needed (yet)
 					// push all authors from the citations list into another array
-					$contributers = $biblioDataRow->biblio_contributors[1];
+					$contributers = $biblioDataRow->biblio_contributors;
 					// author work
 						// get the counts of the number of authors
 						$authorCounter = 1; 
@@ -511,7 +532,7 @@ function harvard_activity_reports_page() {
 					// $biblioDataArray[$counter]['biblio_volume'] = $biblioDataRow->biblio_volume; - not needed (yet)
 					// $biblioDataArray[$counter]['biblio_issue'] = $biblioDataRow->biblio_issue; - not needed (yet)
 					// push all authors from the citations list into another array
-					$contributers = $biblioDataRow->biblio_contributors[1];
+					$contributers = $biblioDataRow->biblio_contributors;
 					// author work
 						// get the counts of the number of authors
 						$authorCounter = 1; 
