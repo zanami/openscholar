@@ -22,7 +22,6 @@ function cp_feature_customize($js, $feature_name) {
     // the page callback should be drupal_get_form and the first arg is form_id
     $form_id = array_shift($item['page_arguments']);
     // if any file needs to be included (usually ${feature_name}.pages.inc)
-    // dvm(print_r($item));
     if ($file = $item['include_file']){
       require_once($file);
     }
