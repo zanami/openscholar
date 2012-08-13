@@ -117,19 +117,19 @@ function os_publications_export($format = "tagged", $nid = NULL, $popup = FALSE)
   }
 }
 
-function scholar_publications_settings($space) {
+function os_publications_settings() {
   $s_style = biblio_get_style();
 
   $form['left'] = array(
     '#type' => 'container',
     '#attributes' => array(
-      'class' => 'column column-left',
+      'class' => array('column', 'column-left'),
     )
   );
   $form['right'] = array(
     '#type' => 'container',
     '#attributes' => array(
-      'class' => 'column column-right',
+      'class' => array('column', 'column-right'),
     )
   );
   $form['left']['biblio_style'] = array(
@@ -196,7 +196,7 @@ function scholar_publications_settings($space) {
     '#type' => 'radios',
     '#title' => t('By default, sort publications by which category'),
     '#default_value' => variable_get('biblio_sort','year'),
-    '#options' => array('author' => t('Author'), 'keyword' => t('Keyword'), 'title' => t('Title'), 'type' => t('Type'), 'year' => t('Year')),
+    '#options' => array('author' => t('Author'), 'title' => t('Title'), 'type' => t('Type'), 'year' => t('Year')),
   );
 
   $form['left']['biblio_order'] = array(
