@@ -73,10 +73,10 @@ function cp_menu(){
   );
 
   // feature customize form
-  $items['features/%ctools_js/%'] = array(
+  $items['cp/build/features/%ctools_js/%'] = array(
     'title' => 'Features',
     'page callback' => 'cp_feature_customize',
-    'page arguments' => array(1,2),
+    'page arguments' => array(3,4),
     'access callback' => 'spaces_access_admin',
     'file' => 'cp.pages.inc',
   );
@@ -414,7 +414,7 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id){
       if ($item && $item['href'] != 'features' && $item['access'] && $is_enabled) {
       	$class = (isset($_GET['open_feature_settings']) && $_GET['open_feature_settings'] == $f_name)?"modal_click_onload":"";
 
-        $link = ctools_modal_text_button('customize', 'features/nojs/' . $f_name, 'customize ' . $f_name, $class); //, 'ctools-modal-openscholar-style-default');
+        $link = ctools_modal_text_button('customize', 'cp/build/features/nojs/' . $f_name, 'customize ' . $f_name, $class); //, 'ctools-modal-openscholar-style-default');
         $form['settings'][$f_name] = array(
           '#type' => 'markup',
           '#markup' => $link
