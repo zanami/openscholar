@@ -28,14 +28,14 @@ function os_publications_menu_alter(&$items) {
     'type'              => MENU_CALLBACK
   );
 
-  $items['features/scholar_publications'] = array(
+  $items['features/os_publications'] = array(
     'title' => 'Settings',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('scholar_publications_settings'),
-    'access callback' => module_exists('spaces') ? 'spaces_access_admin' : 'user_access',
-    'access arguments' => module_exists('spaces') ? array() : array('administer site configuration'),
+    'page arguments' => array('os_publications_settings'),
+    'access callback' => module_exists('vsite') ? 'spaces_access_admin' : 'user_access',
+    'access arguments' => module_exists('vsite') ? array() : array('administer site configuration'),
     'type' => MENU_CALLBACK,
-    'file' => 'os_publications.pages.inc',
+    'file' => drupal_get_path('module', 'os_publications').'/os_publications.pages.inc',
   );
 }
 
@@ -243,7 +243,7 @@ function os_publications_node_view_alter(&$build, $type) {
 /**
  * Adds a page contextual link for importing biblio nodes.
  */
-function os_publications_add_new_links_alter(&$links) {
+function os_publications_os_add_new_links_alter(&$links) {
   if (isset($links['biblio'])) {
     $links['biblio-import'] = array(
       'title' => t('Import Publications'),
