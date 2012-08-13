@@ -72,6 +72,15 @@ function cp_menu(){
       'weight' => 20
   );
 
+  // feature customize form
+  $items['features/%ctools_js/%'] = array(
+    'title' => 'Features',
+    'page callback' => 'cp_feature_customize',
+    'page arguments' => array(1,2),
+    'access callback' => 'spaces_access_admin',
+    'file' => 'cp.pages.inc',
+  );
+
   return $items;
 }
 
@@ -386,6 +395,33 @@ function cp_use_cp_theme(){
 function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id){
   // Only make changes if we are in the Openscholar Admin section
   if (context_isset('context', 'os_cp')) {
+    ctools_include('ajax');
+    ctools_include('modal');
+    ctools_modal_add_js();
+
+    $spaces_features = variable_get('spaces_features', array());
+
+    foreach ( array_keys($form['spaces_features']) as $f_name ) {
+      if ($f_name[0] == '#') continue;
+
+      // is this feature customizable ?
+      // by convenction feature settings form is at features/feature_name
+      $item = menu_get_item('features/' . $f_name);
+
+      $is_enabled = $spaces_features[$f_name];
+      // if the href of this items is just 'features' (i.e. parent), that path does not exist
+      // and so no settings exists for this feature
+      if ($item && $item['href'] != 'features' && $item['access'] && $is_enabled) {
+      	$class = (isset($_GET['open_feature_settings']) && $_GET['open_feature_settings'] == $f_name)?"modal_click_onload":"";
+
+        $link = ctools_modal_text_button('customize', 'features/nojs/' . $f_name, 'customize ' . $f_name, $class); //, 'ctools-modal-openscholar-style-default');
+        $form['settings'][$f_name] = array(
+          '#type' => 'markup',
+          '#markup' => $link
+        );
+      }
+
+    }
 
     if (isset($form['site_frontpage'])) {
       // Only allow users with administer spaces permission to change the site
