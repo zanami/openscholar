@@ -67,24 +67,6 @@ function os_user_default_permissions() {
     'module' => 'contextual',
   );
 
-  // Exported permission: access dashboard.
-  $permissions['access dashboard'] = array(
-    'name' => 'access dashboard',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'dashboard',
-  );
-
-  // Exported permission: access devel information.
-  $permissions['access devel information'] = array(
-    'name' => 'access devel information',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'devel',
-  );
-
   // Exported permission: access overlay.
   $permissions['access overlay'] = array(
     'name' => 'access overlay',
