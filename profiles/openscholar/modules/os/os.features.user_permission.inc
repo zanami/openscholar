@@ -483,15 +483,6 @@ function os_user_default_permissions() {
     'module' => 'features',
   );
 
-  // Exported permission: migration information.
-  $permissions['migration information'] = array(
-    'name' => 'migration information',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'migrate_ui',
-  );
-
   // Exported permission: notify of path changes.
   $permissions['notify of path changes'] = array(
     'name' => 'notify of path changes',

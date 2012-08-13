@@ -136,7 +136,6 @@ function cp_block_info(){
           'info' => t('CP Subnavigation'),
           'region' => false,
           'cache' => DRUPAL_CACHE_GLOBAL,
-          'visibility' => BLOCK_VISIBILITY_LISTED,
           'pages' => 'cp/*'
       ),
       'cp_minimenu' => array(

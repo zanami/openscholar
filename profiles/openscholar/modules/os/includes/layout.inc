@@ -382,7 +382,9 @@ function os_layout_load_block($bid, $load_meta = true, $block = array()){
       $render_hook = "{$module}_block_view";
       if(function_exists($render_hook)){
         $block_render = $render_hook($block['delta']);
-        $block['title'] = $block_render['title'];
+        if(isset($block_render['title'])){
+          $block['title'] = $block_render['title'];
+        }
       }
     }
 
