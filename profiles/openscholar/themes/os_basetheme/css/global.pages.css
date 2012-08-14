@@ -113,6 +113,21 @@ div.messages {
 /*
  * Branding
  */
+.os-powered-link {
+    float: right;
+}
+
+.os-powered-link a.os-poweredby {
+    background: url("/profiles/openscholar/themes/os_basetheme/images/poweredby.png") no-repeat scroll 0 0 transparent;
+    border: medium none !important;
+    display: block;
+    height: 26px;
+    padding: 0 !important;
+    text-decoration: none !important;
+    text-indent: -999em;
+    width: 85px;
+}
+
 #logo /* Wrapping link for logo */ {
   padding: 10px 0;
 }
