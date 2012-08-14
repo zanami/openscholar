@@ -2,7 +2,7 @@
 @import "/profiles/openscholar/themes/os_basetheme/css/d6buffer.css";
 
 body {
-background: url('../images/bodyBg.gif') no-repeat fixed center top #e3e3e3;
+background: url('../images/bodyBg.gif') no-repeat fixed center -110px #e3e3e3;
   color: #292929;
   height:100%;
 font-family: helvetica,arial,sans-serif;
@@ -21,9 +21,9 @@ font-family: helvetica,arial,sans-serif;
  
 /* LAYOUT ELEMENTS */
 
-#columns {background:#fff;height:100%;padding: 0;}
+#columns {background:#fff;height:100%;padding: 0;overflow:hidden;}
 
-.sidebar {background:#eef2f2;min-height:100%;}
+.sidebar {background:#eef2f2;}
 
 #header-container {padding:12px 0;}
 
@@ -33,10 +33,6 @@ font-family: helvetica,arial,sans-serif;
 
 #footer {
     text-align: center;
-}
-
-#columns {
-  overflow:hidden;
 }
 
 #content-column, .region-sidebar-first, .region-sidebar-second {
