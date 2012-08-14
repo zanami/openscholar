@@ -74,7 +74,6 @@ function cp_menu(){
 
   // feature customize forms
   $features = spaces_features('site');
-  dpm($features);
   foreach ($features as $name => $feature) {
     $items['cp/build/features/%ctools_js/'.$name] = array(
       'title' => 'Features',
