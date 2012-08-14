@@ -20,7 +20,7 @@ function cp_feature_customize($js, $feature_name) {
   );
 
   $output = ctools_modal_form_wrapper('cp_feature_customize_form', $form_state);
-  if (empty($output)) {
+  if (empty($output) || $form_state['triggering_element']['#value'] == t('Ok')) {
     $output[] = ctools_modal_command_dismiss();
   }
   else {
@@ -38,10 +38,11 @@ function cp_feature_customize($js, $feature_name) {
  * Any modules that want to alter all of them can do so by altering this form
  */
 function cp_feature_customize_form($form, $form_state, $feature) {
-  if ($item = menu_get_item('features/'. $feature)) {
+  $item = menu_get_item('features/'. $feature);
+  if ($item['path'] == 'features/'.$feature) {
     $form_id = array_shift($item['page_arguments']);
     if ($file = $item['include_file']) {
-      require_once($file);
+      require_once(DRUPAL_ROOT . '/' .$file);
     }
 
     if (count($item['page_arguments'])) {
@@ -49,6 +50,17 @@ function cp_feature_customize_form($form, $form_state, $feature) {
     }
 
     $form += drupal_retrieve_form($form_id, $form_state);
+  }
+  else {
+    $form['no_form'] = array(
+      '#prefix' => '<p>',
+      '#markup' => t('This feature has no settings.'),
+      '#suffix' => '</p>',
+    );
+    $form['ok'] = array(
+      '#type' => 'submit',
+      '#value' => t('Ok'),
+    );
   }
 
   return $form;
