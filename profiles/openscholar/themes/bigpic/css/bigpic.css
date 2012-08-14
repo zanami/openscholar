@@ -44,6 +44,7 @@ a:hover {
 
 #header-container #block-os-primary-menu  {
   margin-top: 10px;
+  text-align:right;
   }
 
 .region-sidebar-first h3,
@@ -169,6 +170,7 @@ a:hover {
   width: 400px;
   float: right;
   clear: none;
+
   }
 
 #menu-bar ul {
@@ -196,6 +198,10 @@ a:hover {
   color: #EDEF1D;
   }
 
+.clearfix:after {
+	  display: inline;
+	
+}
 
 
 /* HTML ITEMS */
