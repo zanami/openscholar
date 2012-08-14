@@ -42,7 +42,7 @@ function cp_feature_customize_form($form, $form_state, $feature) {
   if ($item['path'] == 'features/'.$feature) {
     $form_id = array_shift($item['page_arguments']);
     if ($file = $item['include_file']) {
-      require_once($file);
+      require_once(DRUPAL_ROOT . '/' .$file);
     }
 
     if (count($item['page_arguments'])) {
