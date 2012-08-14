@@ -57,6 +57,34 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
 }
 
 /**
+ * Return the default value for the homepage path
+ */
+function vsite_group_default_homepage_value($entity_type, $entity, $field, $instance, $langcode){
+  
+  $a;
+  
+}
+
+// /**
+//  * Act on field_attach_presave().
+//  *
+//  * This hook is invoked after the field module has performed the operation.
+//  * Apply custom insert behaviors to this field
+//  *
+//  * See field_attach_presave() for details and arguments.
+//  */
+// function vsite_field_attach_presave($entity_type, $entity) {
+//   list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+//   if(og_is_group_type($entity_type,$bundle)){
+//     $fields = field_get_items($entity_type,$entity,'field_group_path');
+//     if(!isset($entity->field_group_path)){
+      
+//     }
+  
+//   }
+// }
+
+/**
  * Make a decision about the active theme
  */
 function vsite_custom_theme(){

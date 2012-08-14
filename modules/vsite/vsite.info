@@ -49,3 +49,5 @@ features[views_view][] = os_websites
 files[] = plugins/vsite.inc
 files[] = tests/vsite_access.test
 files[] = tests/vsite_user.test
+files[] = includes/vsite_handler_field_node.inc
+files[] = includes/spaces.views.inc
