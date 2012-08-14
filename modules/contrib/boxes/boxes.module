@@ -182,7 +182,6 @@ function boxes_block_view($delta) {
     // Generate content and provide an editing form if user has proper
     // permissions.
     $block = $box->render();
-    if (!isset($block['delta'])) dpm($box);
     if (boxes_access_edit()) {
       if (variable_get('boxes_edit_location', BOXES_EDIT_IN_PLACE) == BOXES_EDIT_IN_PLACE) {
         $edit_link = array(
