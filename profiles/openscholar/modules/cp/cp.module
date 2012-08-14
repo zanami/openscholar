@@ -72,14 +72,18 @@ function cp_menu(){
       'weight' => 20
   );
 
-  // feature customize form
-  $items['cp/build/features/%ctools_js/%'] = array(
-    'title' => 'Features',
-    'page callback' => 'cp_feature_customize',
-    'page arguments' => array(3,4),
-    'access callback' => 'spaces_access_admin',
-    'file' => 'cp.pages.inc',
-  );
+  // feature customize forms
+  $features = spaces_features('site');
+  dpm($features);
+  foreach ($features as $name => $feature) {
+    $items['cp/build/features/%ctools_js/'.$name] = array(
+      'title' => 'Features',
+      'page callback' => 'cp_feature_customize',
+      'page arguments' => array(3,4),
+      'access callback' => 'spaces_access_admin',
+      'file' => 'cp.pages.inc',
+    );
+  }
 
   return $items;
 }
