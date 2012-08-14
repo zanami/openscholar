@@ -57,3 +57,20 @@ function os_basetheme_preprocess_page(&$vars) {
 function __os_basetheme_is_empty($s){
   return $s ? TRUE : FALSE;
 }
+
+/**
+ * Hide adapativetheme's status message complaining about missing files
+ */
+function os_basetheme_preprocess_status_messages(&$vars) {
+  if (isset($_SESSION['messages']['warning'])) {
+    foreach ($_SESSION['messages']['warning'] as $k => $v) {
+      if (strpos($v, 'One or more CSS files were not found') !== FALSE) {
+        unset($_SESSION['messages']['warning'][$k]);
+      }
+    }
+
+    if (count($_SESSION['messages']['warning']) == 0) {
+      unset ($_SESSION['messages']['warning']);
+    }
+  }
+}

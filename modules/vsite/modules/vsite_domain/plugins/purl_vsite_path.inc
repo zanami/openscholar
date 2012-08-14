@@ -28,14 +28,12 @@ if (!class_exists('purl_vsite_path')) {
         if ($a_settings->provider == 'spaces_og' && variable_get('purl_base_domain', FALSE)) {
         	$vsite_domain = db_query("SELECT value FROM {spaces_overrides} WHERE type = :type AND id = :id AND object_id = 'vsite_domain_name' AND object_type = 'variable' ", array(':type' => 'og', ':id' => $a_settings->id, ))->fetchField();
           if($vsite_domain) $vsite_domain = unserialize($vsite_domain);
-          
+
           if(!is_string($vsite_domain)) $vsite_domain = false;
-          
+
           if (in_array($a_settings->value, self::$a_disabled) ||
-             (strlen($vsite_domain) &&
-             str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain) ||
-             (!strlen($vsite_domain) &&
-             str_replace('http://', '', $_SERVER['HTTP_HOST']) != str_replace('http://', '', variable_get('purl_base_domain', 'scholar.iq.harvard.edu')))
+             (strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != $vsite_domain)
+ //            || (!strlen($vsite_domain) && str_replace('http://', '', $_SERVER['HTTP_HOST']) != str_replace('http://', '', variable_get('purl_base_domain', 'scholar.iq.harvard.edu')))
              ) {
             unset($a_parsed[$s_site]);
           }
@@ -45,18 +43,18 @@ if (!class_exists('purl_vsite_path')) {
     }
 
 	  public function rewrite(&$path, &$options, $element) {
-	  	
+
 	  	$plugin = ctools_get_plugins('spaces', 'plugins','vsite');
       if($plugin) $class = ctools_plugin_get_class($plugin, 'handler');
       //Do not alter excluded paths
       if(isset($class) && call_user_func(array($class,'is_excluded_path'),$path)) return;
-	      
+
 	    if(array_key_exists('absolute',$options) && $options['absolute']){
 
 	      if($element->id && $vsite = spaces_load('og',$element->id)){
           $vsite_domain = $vsite->controllers->variable->get('vsite_domain_name');
         }
-          
+
         if($vsite_domain){
           $options['base_url'] = "http://".$vsite_domain;
         }else{

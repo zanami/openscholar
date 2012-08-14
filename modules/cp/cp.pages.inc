@@ -14,42 +14,54 @@ function cp_feature_customize($js, $feature_name) {
   $form_state = array(
     'title' => $feature_title,
     'ajax' => TRUE,
+    'build_info' => array(
+      'args' => array($feature_name),
+    ),
   );
 
-  // We should have all feature form settings named ${feature_name}_settings
-  // but just in case
-  if ($item = menu_get_item('features/'. $feature_name)) {
-    // the page callback should be drupal_get_form and the first arg is form_id
-    $form_id = array_shift($item['page_arguments']);
-    // if any file needs to be included (usually ${feature_name}.pages.inc)
-    if ($file = $item['include_file']){
-      require_once($file);
-    }
-
-    if(count($item['page_arguments'])){
-    	$form_state['args'] = $item['page_arguments'];
-    }
-
-    $output = ctools_modal_form_wrapper($form_id, $form_state);
-
-    if (empty($output)) {
-      $output = array();
-      if (isset($_REQUEST['refresh']) && $_REQUEST['refresh'] == 'yes'){
-        $output[] = ctools_ajax_command_reload();
-      }
-      else {
-        $output[] = ctools_modal_command_dismiss();
-      }
-    }
-    else {
-      $output[] = ajax_command_append('#modal-content div.buttons','<input class="form-submit close" onClick="$(\'div.modal-header a.close\').click(); return false;" value="Cancel" />');
-      $output[] = ajax_command_after('#modal-content #edit-reset','<input class="form-submit close" onClick="$(\'div.modal-header a.close\').click(); return false;" value="Cancel" />');
-    }
+  $output = ctools_modal_form_wrapper('cp_feature_customize_form', $form_state);
+  if (empty($output) || $form_state['triggering_element']['#value'] == t('Ok')) {
+    $output[] = ctools_modal_command_dismiss();
   }
   else {
-    $output[] = ctools_modal_command_dismiss();
+    $output[] = ajax_command_append('#modal-content div.buttons','<input class="form-submit close" onClick="$(\'div.modal-header a.close\').click(); return false;" value="Cancel" />');
+    $output[] = ajax_command_after('#modal-content #edit-reset','<input class="form-submit close" onClick="$(\'div.modal-header a.close\').click(); return false;" value="Cancel" />');
   }
 
   echo ajax_render($output);
   exit;
+}
+
+/**
+ * Wrapper form function
+ * Feature customization pages all pass through here
+ * Any modules that want to alter all of them can do so by altering this form
+ */
+function cp_feature_customize_form($form, $form_state, $feature) {
+  $item = menu_get_item('features/'. $feature);
+  if ($item['path'] == 'features/'.$feature) {
+    $form_id = array_shift($item['page_arguments']);
+    if ($file = $item['include_file']) {
+      require_once(DRUPAL_ROOT . '/' .$file);
+    }
+
+    if (count($item['page_arguments'])) {
+      $form_state['build_info']['args'] = $item['page_arguments'];
+    }
+
+    $form += drupal_retrieve_form($form_id, $form_state);
+  }
+  else {
+    $form['no_form'] = array(
+      '#prefix' => '<p>',
+      '#markup' => t('This feature has no settings.'),
+      '#suffix' => '</p>',
+    );
+    $form['ok'] = array(
+      '#type' => 'submit',
+      '#value' => t('Ok'),
+    );
+  }
+
+  return $form;
 }

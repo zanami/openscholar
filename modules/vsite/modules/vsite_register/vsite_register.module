@@ -104,10 +104,12 @@ function vsite_register_message($form, $domain){
 
   $message  = '<div id="success-message" class="status">';
   $message .= '<p>Success! ' . ucfirst($word_replace) . ' new site has been created.</p>';
-  $message .= '<p>The url of ' . $word_replace . ' site is ' . $base_url . '/' . $domain . ' ' . l(t("Go there now"), $base_url . '/' . $domain) . '</p>';
+  
   if (in_array('anonymous user', $user -> roles)){
     $message .= '<p>Check your email account for further details on how to login in to start adding features and content.</p>';
   }
+  
+  $message .= '<p>The url of ' . $word_replace . ' site is ' . $base_url . '/' . $domain . ' ' . l(t("Go there now"), $base_url . '/' . $domain) . '</p>';
   $message .= '</div>';
 
   //give other modules a chance to alter message
