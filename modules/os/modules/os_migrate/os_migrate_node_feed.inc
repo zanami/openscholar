@@ -61,6 +61,12 @@ class FeedNodeOSMigration extends AbstractNodeOSMigration {
      * file fields for images.  While looping over d6 gallery nodes, prepareRow uses additional queries
      * to get those image nodes and extract everything needed by file fields.)
      */
+    
+    //Feeds with feed:// are not recognized by google's feed api.
+    $pattern = '/^feed:/';
+    if (preg_match($pattern, $current_row->source)) {
+      $current_row->source = preg_replace($pattern, 'http:', $current_row->source);
+    }
 
     return parent::prepareRow($current_row); //false -> skip this row
     
