@@ -1,7 +1,4 @@
 .project
-sites/*/files
-sites/*/private
-sites/default/settings.php
 .buildpath
 .settings
 
