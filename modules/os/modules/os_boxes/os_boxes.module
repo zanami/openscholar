@@ -231,4 +231,9 @@ function os_boxes_block_view_alter(&$array, $block) {
  */
 function os_boxes_menu_contextual_links_alter(&$links, $router_item, $path) {
   unset($links['block-configure']);
+
+  if (isset($links['box-remove'])) {
+    $ctxs = array_keys(context_active_contexts());
+    $links['box-remove']['localized_options']['query']['contexts'] = $ctxs;
+  }
 }
