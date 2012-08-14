@@ -447,7 +447,7 @@ function os_software_field_default_fields() {
         'behaviors' => array(
           'prepopulate' => array(
             'action' => 'hide',
-            'fallback' => 'none',
+            'fallback' => 'redirect',
             'skip_perm' => 'administer nodes',
             'status' => 1,
           ),

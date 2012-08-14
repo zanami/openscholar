@@ -248,12 +248,16 @@ function os_software_views_default_views() {
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Test Releases';
+  $handler->display->display_options['title'] = 'Recent Releases';
+  $handler->display->display_options['use_more'] = TRUE;
+  $handler->display->display_options['use_more_text'] = 'more releases &raquo;';
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '5';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
     'title' => 'title',
@@ -345,6 +349,10 @@ function os_software_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'software_release' => 'software_release',
   );
+  /* Filter criterion: Spaces: Content in current space */
+  $handler->display->display_options['filters']['current']['id'] = 'current';
+  $handler->display->display_options['filters']['current']['table'] = 'spaces';
+  $handler->display->display_options['filters']['current']['field'] = 'current';
 
   /* Display: EVA Field */
   $handler = $view->new_display('entity_view', 'EVA Field', 'entity_view_1');
