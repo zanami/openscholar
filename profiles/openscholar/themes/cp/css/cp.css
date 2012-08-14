@@ -167,8 +167,18 @@ td {
 
 
 
-
-
+/* CP APPEARANCE */
+.page-cp-appearance #edit-actions {
+    /*background: url("/sites/all/modules/openscholar_vsite/vsite_design/theme/images/themePickerSubButtsBg.png") repeat-x scroll 0 0 transparent;*/
+    background:#EFEFEF;
+    bottom: 26px;
+    padding: 6px 0 2px 20px;
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+    margin-left: -9px;
+    border-top:1px solid #EDEDED;
+}
 
 
   
