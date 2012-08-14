@@ -1,0 +1,184 @@
+/**** IMPORT GRID/PANEL LAYOUT CSS ****/
+@import "cp.responsive.layout.css"; 
+
+/*#messages {display:none;} */
+
+
+#overlay-content #content-column .content-inner {
+    margin-left: 0;
+    margin-right: 260px;
+}
+
+/* GENERAL CP STYLES */
+
+.region-sidebar-first .region-inner {
+	 background: #F2F3F3;
+    position: fixed;
+    bottom: 0;
+    min-height: 200px;
+    position: fixed;
+    top: 0;
+    border-right:1px solid #BFC6C6;
+    width:170px;
+    margin-top:65px;
+  }
+ 
+.toolbar-drawer .region-sidebar-first .region-inner {
+	margin-top:100px;
+  }  
+	
+#content-column {
+  overflow: auto;
+  padding-bottom: 55px;
+  }
+
+a {color:#4E84C4;}
+
+.page-cp-build .region-sidebar-first .region-inner {
+	padding-top: 0;
+}
+
+.region-footer {
+    background: url('../images/top-bottom-bg.png') repeat-x;
+    color: #FFFFFF;
+    height:40px;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+    text-align:right;
+}
+
+.region-footer a {
+    color: #FFFFFF;
+  }
+  
+.region-footer .region-inner {
+    padding: 10px 20px 0 15px;
+  }  
+
+#block-cp-cp-subnav .block-inner {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#block-cp-cp-subnav li {
+    list-style: none outside none !important;
+    padding: 0;
+    background: none repeat scroll 0 0 #F2F3F3;
+    }
+    
+#block-cp-cp-subnav li a, #block-cp-cp-subnav li a:visited {
+    border-bottom: 1px solid #BFC6C6;
+    color: #626161;
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 6px 23px;
+}
+
+#block-cp-cp-subnav li a:hover {
+    background: none repeat scroll 0 0 #FFFFFF;
+    text-decoration: none;
+}
+#block-cp-cp-subnav li.active a, #block-cp-cp-subnav li.active-trail a {
+    background: none repeat scroll 0 0 #B8C0C0;
+    border-color: #A4ABAB;
+    color: #000000;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #E6E8EA;
+}  
+
+/** CP TABLE STYLES **/
+#edit-menu-table tr,
+#spaces-features-form .spaces tr
+ {
+    background-color: #FFF;
+}
+ 	
+#edit-menu-table .section-heading {
+	background: none repeat scroll 0 0 #ECECEC;
+    border-bottom: 3px solid #C4C2C2;
+    border-top: 3px solid #C4C2C2;
+    font-size: 14px;
+    height: 25px;
+    border-top: 20px solid #FFF;
+    font-weight:bold;
+    }
+    
+td {
+	color: #666666;
+	}   
+         
+
+#edit-menu-table td:first-child {
+    width: 70%;
+}
+ 
+#spaces-features-form .spaces {width:850px;} 
+#spaces-features-form .spaces tr:hover {background:#F0f0F0;}
+#spaces-features-form .spaces td {height: 50px;} 
+#spaces-features-form .spaces td.label strong {font-size: 1.1em;}    
+#spaces-features-form .spaces .description {font-size:.95em;}  
+
+.page-cp-content .view-content table {width:100%;}
+.page-cp-content-files .view-content tbody tr.even,
+.page-cp-content-comments .view-content tbody tr.even {background-color: #FFF;}
+
+
+/* CP/BUILD LAYOUT */   
+.page-cp-build-layout .content-inner {width:854px;}
+.page-cp-build div.messages,
+.page-cp-content div.messages {
+    margin-left: 180px;
+}
+
+
+/* CP/BUILD MENU */ 
+.page-cp-build-menu table thead {
+	display:none;
+    }
+    
+#edit-menu-table {width:775px;}   
+
+ /* CP USERS */
+.page-cp-users .view-filters {
+	padding:8px; 
+	background:#F2F3F3;
+    border: 1px solid #DADADA;
+    }
+    
+.page-cp-users #user-register-form {
+	width:550px;
+	padding:8px;
+	background:#F2F3F3;
+	border: 1px solid #DADADA;
+    }   
+
+/* CP CONTENT */
+.page-cp-content dt a {
+	font-size:16px;
+}
+
+
+.page-cp-content dd {
+    margin: 0 0 1.5em 0;
+}
+
+
+
+/* CP APPEARANCE */
+.page-cp-appearance #edit-actions {
+    /*background: url("/sites/all/modules/openscholar_vsite/vsite_design/theme/images/themePickerSubButtsBg.png") repeat-x scroll 0 0 transparent;*/
+    background:#EFEFEF;
+    bottom: 26px;
+    padding: 6px 0 2px 20px;
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+    margin-left: -9px;
+    border-top:1px solid #EDEDED;
+}
+
+
+  
