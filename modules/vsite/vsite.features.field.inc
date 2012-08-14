@@ -10,6 +10,89 @@
 function vsite_field_default_fields() {
   $fields = vsite_get_group_fields();
 
+  // Exported field: 'node-vsite-field_group_path'
+  $fields['node-vsite-field_group_path'] = array(
+      'field_config' => array(
+          'active' => '1',
+          'cardinality' => '1',
+          'deleted' => '0',
+          'entity_types' => array(),
+          'field_name' => 'field_group_path',
+          'foreign keys' => array(),
+          'indexes' => array(),
+          'module' => 'link',
+          'settings' => array(
+              'attributes' => array(
+                  'class' => '',
+                  'rel' => '',
+                  'target' => 'default',
+              ),
+              'display' => array(
+                  'url_cutoff' => 80,
+              ),
+              'enable_tokens' => 1,
+              'title' => 'optional',
+              'title_maxlength' => 128,
+              'title_value' => '',
+              'url' => 0,
+          ),
+          'translatable' => '0',
+          'type' => 'link_field',
+      ),
+      'field_instance' => array(
+          'bundle' => 'vsite',
+          'default_value' => NULL,
+          'default_value_function' => 'vsite_group_default_homepage_value',
+          'deleted' => '0',
+          'description' => '',
+          'display' => array(
+          'default' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '5',
+      ),
+      'teaser' => array(
+      'label' => 'above',
+      'settings' => array(),
+      'type' => 'hidden',
+      'weight' => 0,
+      ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_group_path',
+      'label' => 'Group Homepage Path',
+      'required' => 0,
+      'settings' => array(
+      'attributes' => array(
+      'class' => '',
+      'configurable_title' => 0,
+      'rel' => '',
+      'target' => 'default',
+      'title' => '',
+      ),
+      'display' => array(
+      'url_cutoff' => '80',
+      ),
+      'enable_tokens' => 0,
+      'rel_remove' => 'default',
+      'title' => 'none',
+      'title_maxlength' => '128',
+      'title_value' => '',
+      'url' => 0,
+      'user_register_form' => FALSE,
+      'validate_url' => 0,
+      ),
+      'widget' => array(
+      'active' => 0,
+      'module' => 'link',
+      'settings' => array(),
+      'type' => 'link_field',
+      'weight' => '2',
+      ),
+      ),
+  );
+  
   // Exported field: 'node-vsite-field_site_address'
   $fields['node-vsite-field_site_address'] = array(
     'field_config' => array(
