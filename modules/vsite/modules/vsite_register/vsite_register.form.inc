@@ -48,6 +48,13 @@ function vsite_register_form($form, &$state) {
     $form['preset']['#type'] = 'value';
     $form['preset']['#value'] = current($enabled_presets);
   }
+  
+  $form['vsite_private'] = array(
+    '#title' => t('Private Site'),
+    '#type' => 'checkbox',
+    '#default_value' => FALSE,
+    '#description' => t('Make your site private.  It won\'t be visible to anyone but you and won\'t be indexed by Google until you make it public.')
+  );
     
   
   if ($anonymous) {
@@ -119,8 +126,7 @@ function vsite_register_form($form, &$state) {
     '#weight' => 40,
     '#suffix' => '<div id="submit-suffix"></div>',
     '#attributes' => array('class' => array('use-ajax-submit') ),
-      
-     
+    '#ajax' => array('callback' => 'vsite_register_form_submit'),
   );
 
   return $form;
@@ -219,11 +225,13 @@ function vsite_register_form_submit(&$form, &$state) {
     os_user_add($site_owner->uid, $vsite->id);
     os_role_grant($site_owner->uid, 'vsite admin', $vsite->id);
        
-    //drupal_set_message(t('Welcome to your new OpenScholar site.'));
-    //drupal_goto($values['domain']);
     $message = vsite_register_message($form, $values['domain']);
     $commands[] = ajax_command_replace ('#submit-suffix', $message );
     $commands[] = ajax_command_remove('#edit-submit');
+    
+    if (isset($values['vsite_private']) && $values['vsite_private']) {
+      $vsite->controllers->variable->set('vsite_private', $values['vsite_private']);
+    }
     
   } else {
     $commands[] = _vsite_register_form_error();
@@ -246,7 +254,7 @@ function vsite_register_form_submit(&$form, &$state) {
  * Validation function for site/register form
  */
 function vsite_register_form_validate(&$form, &$state) {
-  if ($_POST['js']) {
+  if ($_GET['q'] == 'system/ajax') {
     return vsite_register_ajax_submit_validation($form, $state);
   }
   
@@ -309,24 +317,22 @@ function vsite_register_ajax_submit_validation(&$form, &$state) {
   $values = $state['values'];
   $elements = array('domain');
   
-  if ($values['create_new_user']) {
+  if ($values['vicarious_user'] && $values['create_new_user']) {
     $elements += array('name', 'mail', 'password');
-  } else {
+  } elseif ($values['vicarious_user']) {
     $elements[] = 'existing_username';
   }
   
-  $failed = array();
   foreach($elements as $element) {
     if ($failure = _vsite_register_validate($element, $values)) {
-			$failed = array_merge($failed, $failure);
-    }
+      $msg = theme('item_list', array( 'items' => array($failure), 'type' => 'ul', 'attributes' => array('class' => array('error'))));
+      $commands[] = ajax_command_html("#$element-errors", $msg);
+    } 
   }
   
   
-  //bail out with an ajax error
-  if (count($failed)) {		
-    $msg = theme('item_list', array( 'items' => $failed, 'type' => 'ul', 'attributes' => array('class' => array('error'))));
-    $commands[] = ajax_command_html('#submit-suffix', $msg);
+  //print new errors
+  if (count($commands)) {		
     print ajax_render($commands);
     exit;
   }
@@ -354,7 +360,7 @@ function _vsite_register_validate($element, &$values) {
       if (strlen($values['domain']) < 3 || !purl_validate($values['domain'])) {
         $msg[] = t('Invalid URL specified.');
       }
-      if (purl_load(array('value'=>$values['domain'], 'provider'=>'spaces_og')) || menu_get_item($values['domain'])) {
+      if (($purl = purl_load(array('value'=>$values['domain'], 'provider'=>'spaces_og'), TRUE)) || menu_get_item($values['domain'])) {
         $msg[] = t('URL %url is taken.  Please choose another.', array('%url'=>$values['domain']));
       }    
     break;
