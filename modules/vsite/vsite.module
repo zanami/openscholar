@@ -8,18 +8,17 @@ include_once ('vsite.features.inc');
 /**
  * Helper function to return the current purl prefix
  *
- * @param vsite $vsite
+ * @param vsite $vsite          
  */
 function vsite_get_purl($vsite = false){
-
-  if(!$vsite){
+  if (! $vsite) {
     $vsite = spaces_get_space();
   }
-
-  if(!$vsite || !isset($vsite->group)){
+  
+  if (! $vsite || ! isset($vsite->group)) {
     return "";
   }
-
+  
   return $vsite->group->purl;
 }
 
@@ -35,22 +34,21 @@ function vsite_get_purl($vsite = false){
 function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
   $vsite = spaces_get_space();
   $os_bundles = array_keys(os_get_bundles(true));
-
+  
   if ($vsite && in_array($form['#bundle'], $os_bundles)) {
-    //Set the og_group_ref value to automatically be the current active site
+    // Set the og_group_ref value to automatically be the current active site
     $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = array(
-        '#type' => 'value',
-        '#default_value' => $vsite->group->nid,
-        '#field_name' => OG_AUDIENCE_FIELD,
-        '#language' => LANGUAGE_NONE,
-        '#entity_type' => 'node',
-        '#bundle' => $form['#bundle']
+        '#type' => 'value', 
+        '#default_value' => $vsite->group->nid, 
+        '#field_name' => OG_AUDIENCE_FIELD, 
+        '#language' => LANGUAGE_NONE, 
+        '#entity_type' => 'node', 
+        '#bundle' => $form['#bundle'] 
     );
-
   }
-
-  if(og_is_group_type('node',$form['#bundle'])){
-    //Hide the comment settings form
+  
+  if (og_is_group_type('node', $form['#bundle'])) {
+    // Hide the comment settings form
     $form['comment_settings']['#access'] = false;
     $form['comment_settings']['comment']['#default_value'] = 1;
   }
@@ -60,39 +58,35 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
  * Return the default value for the homepage path
  */
 function vsite_group_default_homepage_value($entity_type, $entity, $field, $instance, $langcode){
+  global $base_url;
   
-  $a;
-  
+  list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+  // Is this a group node
+  if (og_is_group_type($entity_type, $bundle)) {
+    // When a site is first created it does not have a domain provider, use the
+    // path provider that is attached to the entity, we can't use the standard
+    // purl modifier here because the entry has not been made in the table yet
+    return array(
+        0 => array(
+            'title' => '',
+            'url' => url($entity->purl['value'], array(
+                'base_url' => variable_get('purl_base_domain', $base_url), 
+                'absolute' => true 
+            )) 
+        ) 
+    );
+  }
 }
-
-// /**
-//  * Act on field_attach_presave().
-//  *
-//  * This hook is invoked after the field module has performed the operation.
-//  * Apply custom insert behaviors to this field
-//  *
-//  * See field_attach_presave() for details and arguments.
-//  */
-// function vsite_field_attach_presave($entity_type, $entity) {
-//   list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
-//   if(og_is_group_type($entity_type,$bundle)){
-//     $fields = field_get_items($entity_type,$entity,'field_group_path');
-//     if(!isset($entity->field_group_path)){
-      
-//     }
-  
-//   }
-// }
 
 /**
  * Make a decision about the active theme
  */
 function vsite_custom_theme(){
   
-  //See function description for why this is called here
+  // See function description for why this is called here
   _vsite_purl_init();
   
-  if ($space = spaces_get_space() && (!module_exists('cp') || !cp_use_cp_theme())) {
+  if ($space = spaces_get_space() && (! module_exists('cp') || ! cp_use_cp_theme())) {
     ctools_include('themes', 'os');
     $theme = os_theme_get();
     return $theme;
@@ -102,12 +96,14 @@ function vsite_custom_theme(){
 /**
  * Alter the space presets to add vsite specific information
  *
- * @param $presets
+ * @param
+ *          $presets
  */
 function vsite_spaces_presets_alter(&$presets){
   ctools_include('path', 'vsite');
-
-  //Alter the preset to include the pathauto settings for nodes prefixed with the purl path
+  
+  // Alter the preset to include the pathauto settings for nodes prefixed with
+  // the purl path
   $pathauto_settings = _vsite_get_pathauto_settings();
   foreach ( $presets as $name => &$preset ) {
     if (substr($name, 0, 3) == "os_") {
@@ -120,27 +116,26 @@ function vsite_spaces_presets_alter(&$presets){
  * Alter information returned from module/theme info files
  */
 function vsite_system_info_alter(&$info, $file, $type){
-
   static $working;
-
-  //Only alter the vsite info file
-  if ($type != 'module' || $file->name != 'vsite' || $working){
+  
+  // Only alter the vsite info file
+  if ($type != 'module' || $file->name != 'vsite' || $working) {
     return;
   }
-
+  
   $working = true;
-
+  
   // Add the feature settings for the dynamically managed og reference fields
   if (! is_array($info['features']['field']))
     $info['features']['field'] = array();
-
+  
   include_once ('vsite.features.field.inc');
   foreach ( vsite_get_group_fields() as $field => $definition ) {
     if (! in_array($field, $info['features']['field'])) {
       $info['features']['field'][] = $field;
     }
   }
-
+  
   $working = false;
 }
 
@@ -150,209 +145,201 @@ function vsite_system_info_alter(&$info, $file, $type){
 function vsite_spaces_plugins(){
   $plugins = array();
   $plugins['vsite'] = array(
-    'handler' => array(
-      'class' => 'vsite',
-      'parent' => 'space_og'
-    )
+      'handler' => array(
+          'class' => 'vsite', 
+          'parent' => 'space_og' 
+      ) 
   );
   return $plugins;
 }
 
 /**
  * Implementation of hook registry_alter
- * Alter the registry to tell spaces_og groups to use the vsite plugin by default
+ * Alter the registry to tell spaces_og groups to use the vsite plugin by
+ * default
  */
 function vsite_spaces_registry_alter(&$registry){
-
+  
   // use the vsite plugin by default
   if (isset($registry['types']['og'])) {
     $registry['types']['og']['plugin'] = 'vsite';
   }
 }
 
-
 /**
- * Handles access rules for when site owner is attempting to create a another site
- * @return  boolean
+ * Handles access rules for when site owner is attempting to create a another
+ * site
+ *
+ * @return boolean
  */
 function vsite_vsite_exists_access($vsites = array()){
   global $user;
-
-  //load user's vsites.  anon (uid 0) has no vsites
-	if (!$vsites && $user->uid) {
-	  ctools_include('vsite', 'vsite');
-		$vsites = vsite_get_vsite_by_owner($user->uid);
-	}
-
-	//if user has permissions to create sites, return true
-  if (!user_access('create vsite content on behalf') && !user_access('create vsite content')) {
-    //drupal_set_message(t('You do not have permission to create new sites.'), 'error', FALSE);
+  
+  // load user's vsites. anon (uid 0) has no vsites
+  if (! $vsites && $user->uid) {
+    ctools_include('vsite', 'vsite');
+    $vsites = vsite_get_vsite_by_owner($user->uid);
+  }
+  
+  // if user has permissions to create sites, return true
+  if (! user_access('create vsite content on behalf') && ! user_access('create vsite content')) {
+    // drupal_set_message(t('You do not have permission to create new sites.'),
+    // 'error', FALSE);
     return FALSE;
   }
-
-  //user owns one or more sites
-  if (!(count($vsites) < variable_get('os_vsites_per_user', 1) || user_access('create openscholar site on behalf of others'))) {
-    //drupal_set_message(t('You have already created the maximum of %num OS sites.', array('%num' => count($vsites))), 'error', FALSE);
+  
+  // user owns one or more sites
+  if (! (count($vsites) < variable_get('os_vsites_per_user', 1) || user_access('create openscholar site on behalf of others'))) {
+    // drupal_set_message(t('You have already created the maximum of %num OS
+    // sites.', array('%num' => count($vsites))), 'error', FALSE);
     return FALSE;
   }
-
+  
   return TRUE;
 }
 
-
-function vsite_permission() {
+function vsite_permission(){
   return array(
-    'create vsite content on behalf' => array(
-      'title' => t('Create vsite content on behalf of other users'),
-    )
+      'create vsite content on behalf' => array(
+          'title' => t('Create vsite content on behalf of other users') 
+      ) 
   );
 }
 
 /**
- * Implement hook modules_enabled
- * @param array $modules
- */
-function vsite_modules_enabled($modules) {
-  // Check if any of the newly enabled modules require the og_group_ref field
-//   $features = spaces_features('og', true);
-//   $features_newly_enabled = array_intersect($modules, array_keys($features));
-//   if(count($features_newly_enabled)){
-//   	drupal_set_message("New Group Content has been enabled, ".l("Revert the feature vsite",'admin/structure/features/vsite')." to add fields to the new module.","warning");
-//   }
-}
-
-/**
- * Any path in spaces is immediately disqualified from being in an overlay because none
- * of them start with a wildcard. They expect something like node/5/edit, when they get
+ * Any path in spaces is immediately disqualified from being in an overlay
+ * because none
+ * of them start with a wildcard.
+ * They expect something like node/5/edit, when they get
  * site01/node/5/edit and fail.
- * This is rectified by putting a wildcard at the beginning to catch the space modifier.
+ * This is rectified by putting a wildcard at the beginning to catch the space
+ * modifier.
  */
-function vsite_admin_paths_alter(&$paths) {
+function vsite_admin_paths_alter(&$paths){
   $new_paths = array();
-  foreach ($paths as $p => $b) {
+  foreach ( $paths as $p => $b ) {
     if (strpos($p, '*/') !== 0) {
-      $new_paths['*/'.$p] = TRUE;
+      $new_paths['*/' . $p] = TRUE;
     }
   }
   $paths = array_merge($paths, $new_paths);
 }
-
 
 /**
  * Add the entity reference fields to the vsite feature bundles
  */
 function vsite_get_group_fields(){
   $fields = array();
-
+  
   $bundles = array_keys(os_get_bundles(true, 'og', true));
   foreach ( $bundles as $bundle ) {
     // Exported field: 'node-BUNDLE-og_group_ref'
     $fields["node-{$bundle}-og_group_ref"] = array(
         'field_config' => array(
-            'active' => '1',
-            'cardinality' => '1',
-            'deleted' => '0',
-            'entity_types' => array(),
-            'field_name' => 'og_group_ref',
+            'active' => '1', 
+            'cardinality' => '1', 
+            'deleted' => '0', 
+            'entity_types' => array(), 
+            'field_name' => 'og_group_ref', 
             'foreign keys' => array(
                 'node' => array(
                     'columns' => array(
-                        'target_id' => 'nid'
-                    ),
-                    'table' => 'node'
-                )
-            ),
+                        'target_id' => 'nid' 
+                    ), 
+                    'table' => 'node' 
+                ) 
+            ), 
             'indexes' => array(
                 'target_id' => array(
-                    0 => 'target_id'
-                )
-            ),
-            'module' => 'entityreference',
+                    0 => 'target_id' 
+                ) 
+            ), 
+            'module' => 'entityreference', 
             'settings' => array(
-                'handler' => 'og',
+                'handler' => 'og', 
                 'handler_settings' => array(
                     'behaviors' => array(
                         'og_behavior' => array(
-                            'status' => TRUE
-                        ),
+                            'status' => TRUE 
+                        ), 
                         'views-select-list' => array(
-                            'status' => 0
-                        )
-                    ),
-                    'hide_secondary_field' => 1,
-                    'membership_type' => 'og_membership_type_default',
-                    'primary_field' => '0',
-                    'reference_type' => 'all_groups',
+                            'status' => 0 
+                        ) 
+                    ), 
+                    'hide_secondary_field' => 1, 
+                    'membership_type' => 'og_membership_type_default', 
+                    'primary_field' => '0', 
+                    'reference_type' => 'all_groups', 
                     'sort' => array(
-                        'direction' => 'ASC',
-                        'field' => 'body:value',
-                        'property' => 'nid',
-                        'type' => 'none'
-                    ),
+                        'direction' => 'ASC', 
+                        'field' => 'body:value', 
+                        'property' => 'nid', 
+                        'type' => 'none' 
+                    ), 
                     'target_bundles' => array(
-                        'vsite' => 'vsite'
-                    )
-                ),
-                'handler_submit' => 'Change handler',
-                'target_type' => 'node'
-            ),
-            'translatable' => '0',
-            'type' => 'entityreference'
-        ),
+                        'vsite' => 'vsite' 
+                    ) 
+                ), 
+                'handler_submit' => 'Change handler', 
+                'target_type' => 'node' 
+            ), 
+            'translatable' => '0', 
+            'type' => 'entityreference' 
+        ), 
         'field_instance' => array(
-            'bundle' => $bundle,
-            'default_value' => NULL,
-            'deleted' => '0',
-            'description' => '',
+            'bundle' => $bundle, 
+            'default_value' => NULL, 
+            'deleted' => '0', 
+            'description' => '', 
             'display' => array(
                 'default' => array(
-                    'label' => 'above',
-                    'module' => 'og_ui',
-                    'settings' => array(),
-                    'type' => 'og_list_default',
-                    'weight' => 1
-                ),
+                    'label' => 'above', 
+                    'module' => 'og_ui', 
+                    'settings' => array(), 
+                    'type' => 'og_list_default', 
+                    'weight' => 1 
+                ), 
                 'teaser' => array(
-                    'label' => 'above',
-                    'settings' => array(),
-                    'type' => 'hidden',
-                    'weight' => 0
-                )
-            ),
-            'entity_type' => 'node',
-            'field_name' => 'og_group_ref',
-            'label' => 'Groups audience',
-            'required' => 0,
+                    'label' => 'above', 
+                    'settings' => array(), 
+                    'type' => 'hidden', 
+                    'weight' => 0 
+                ) 
+            ), 
+            'entity_type' => 'node', 
+            'field_name' => 'og_group_ref', 
+            'label' => 'Groups audience', 
+            'required' => 0, 
             'settings' => array(
-                'user_register_form' => FALSE
-            ),
+                'user_register_form' => FALSE 
+            ), 
             'view modes' => array(
                 'full' => array(
-                    'custom settings' => FALSE,
-                    'label' => 'Full',
-                    'type' => 'og_list_default'
-                ),
+                    'custom settings' => FALSE, 
+                    'label' => 'Full', 
+                    'type' => 'og_list_default' 
+                ), 
                 'teaser' => array(
-                    'custom settings' => FALSE,
-                    'label' => 'Teaser',
-                    'type' => 'og_list_default'
-                )
-            ),
+                    'custom settings' => FALSE, 
+                    'label' => 'Teaser', 
+                    'type' => 'og_list_default' 
+                ) 
+            ), 
             'widget' => array(
-                'active' => 1,
-                'module' => 'entityreference',
+                'active' => 1, 
+                'module' => 'entityreference', 
                 'settings' => array(
-                    'match_operator' => 'CONTAINS',
-                    'path' => '',
-                    'size' => '60'
-                ),
-                'type' => 'entityreference_autocomplete',
-                'weight' => '-3'
-            )
-        )
+                    'match_operator' => 'CONTAINS', 
+                    'path' => '', 
+                    'size' => '60' 
+                ), 
+                'type' => 'entityreference_autocomplete', 
+                'weight' => '-3' 
+            ) 
+        ) 
     );
   }
-
+  
   return $fields;
 }
 
@@ -379,9 +366,9 @@ function _vsite_purl_init(){
   global $conf;
   $theme_link = isset($conf['theme_link']) ? $conf['theme_link'] : NULL;
   $conf['theme_link'] = FALSE;
-
+  
   purl_init();
-
+  
   if (isset($theme_link)) {
     $conf['theme_link'] = $theme_link;
   }
