@@ -388,14 +388,14 @@ function cp_content_views_default_views() {
       'label' => '',
     ),
     'action::node_make_sticky_action' => array(
-      'selected' => 1,
+      'selected' => 0,
       'use_queue' => 0,
       'skip_confirmation' => 0,
       'override_label' => 0,
       'label' => '',
     ),
     'action::node_make_unsticky_action' => array(
-      'selected' => 1,
+      'selected' => 0,
       'use_queue' => 0,
       'skip_confirmation' => 0,
       'override_label' => 0,
