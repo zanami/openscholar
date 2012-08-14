@@ -32,6 +32,7 @@ features[field][] = node-software_release-body
 features[field][] = node-software_release-field_software_package
 features[field][] = node-software_release-field_software_project
 features[field][] = node-software_release-field_software_recommended
+features[field][] = node-software_release-field_software_version
 features[node][] = software_project
 features[node][] = software_release
 features[user_permission][] = create software_project content

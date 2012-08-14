@@ -122,17 +122,20 @@ function os_software_views_default_views() {
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['style_plugin'] = 'table';
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['label'] = 'Empty text';
+  $handler->display->display_options['empty']['area']['empty'] = FALSE;
+  $handler->display->display_options['empty']['area']['content'] = 'No releases.';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Relationship: Content: Package (field_software_package:fid) */
   $handler->display->display_options['relationships']['field_software_package_fid']['id'] = 'field_software_package_fid';
   $handler->display->display_options['relationships']['field_software_package_fid']['table'] = 'field_data_field_software_package';
   $handler->display->display_options['relationships']['field_software_package_fid']['field'] = 'field_software_package_fid';
   $handler->display->display_options['relationships']['field_software_package_fid']['label'] = 'Package';
   $handler->display->display_options['relationships']['field_software_package_fid']['required'] = TRUE;
-  /* Relationship: Entity Reference: Referenced Entity */
-  $handler->display->display_options['relationships']['field_software_project_target_id']['id'] = 'field_software_project_target_id';
-  $handler->display->display_options['relationships']['field_software_project_target_id']['table'] = 'field_data_field_software_project';
-  $handler->display->display_options['relationships']['field_software_project_target_id']['field'] = 'field_software_project_target_id';
-  $handler->display->display_options['relationships']['field_software_project_target_id']['label'] = 'Project';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -167,6 +170,10 @@ function os_software_views_default_views() {
   $handler->display->display_options['fields']['created']['label'] = 'Date';
   $handler->display->display_options['fields']['created']['date_format'] = 'custom';
   $handler->display->display_options['fields']['created']['custom_date_format'] = 'M j Y';
+  /* Field: Content: Version */
+  $handler->display->display_options['fields']['field_software_version']['id'] = 'field_software_version';
+  $handler->display->display_options['fields']['field_software_version']['table'] = 'field_data_field_software_version';
+  $handler->display->display_options['fields']['field_software_version']['field'] = 'field_software_version';
   /* Sort criterion: Content: Sticky */
   $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['table'] = 'node';
@@ -176,6 +183,13 @@ function os_software_views_default_views() {
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
+  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
+  $handler->display->display_options['sorts']['created']['granularity'] = 'minute';
+  /* Sort criterion: Content: Title */
+  $handler->display->display_options['sorts']['title']['id'] = 'title';
+  $handler->display->display_options['sorts']['title']['table'] = 'node';
+  $handler->display->display_options['sorts']['title']['field'] = 'title';
+  $handler->display->display_options['sorts']['title']['order'] = 'DESC';
   /* Contextual filter: Content: Project (field_software_project) */
   $handler->display->display_options['arguments']['field_software_project_target_id']['id'] = 'field_software_project_target_id';
   $handler->display->display_options['arguments']['field_software_project_target_id']['table'] = 'field_data_field_software_project';
@@ -327,10 +341,57 @@ function os_software_views_default_views() {
 
   /* Display: Recommended */
   $handler = $view->new_display('entity_view', 'Recommended', 'entity_view_1');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Recommended Releases';
+  $handler->display->display_options['defaults']['header'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Path */
+  $handler->display->display_options['fields']['path']['id'] = 'path';
+  $handler->display->display_options['fields']['path']['table'] = 'node';
+  $handler->display->display_options['fields']['path']['field'] = 'path';
+  $handler->display->display_options['fields']['path']['exclude'] = TRUE;
+  /* Field: Content: Version */
+  $handler->display->display_options['fields']['field_software_version']['id'] = 'field_software_version';
+  $handler->display->display_options['fields']['field_software_version']['table'] = 'field_data_field_software_version';
+  $handler->display->display_options['fields']['field_software_version']['field'] = 'field_software_version';
+  $handler->display->display_options['fields']['field_software_version']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['field_software_version']['alter']['path'] = '/[path]';
+  /* Field: File: Size */
+  $handler->display->display_options['fields']['filesize']['id'] = 'filesize';
+  $handler->display->display_options['fields']['filesize']['table'] = 'file_managed';
+  $handler->display->display_options['fields']['filesize']['field'] = 'filesize';
+  $handler->display->display_options['fields']['filesize']['relationship'] = 'field_software_package_fid';
+  $handler->display->display_options['fields']['filesize']['exclude'] = TRUE;
+  /* Field: Content: Package */
+  $handler->display->display_options['fields']['field_software_package']['id'] = 'field_software_package';
+  $handler->display->display_options['fields']['field_software_package']['table'] = 'field_data_field_software_package';
+  $handler->display->display_options['fields']['field_software_package']['field'] = 'field_software_package';
+  $handler->display->display_options['fields']['field_software_package']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['field_software_package']['alter']['text'] = '<a href="[field_software_package]">Download</a> ([filesize])';
+  $handler->display->display_options['fields']['field_software_package']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_software_package']['type'] = 'file_url_plain';
+  /* Field: Content: Post date */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'node';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['label'] = 'Date';
+  $handler->display->display_options['fields']['created']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['created']['custom_date_format'] = 'M j Y';
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Contextual filter: Content: Project (field_software_project) */
+  $handler->display->display_options['arguments']['field_software_project_target_id']['id'] = 'field_software_project_target_id';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['table'] = 'field_data_field_software_project';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['field'] = 'field_software_project_target_id';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['entity_type'] = 'node';
   $handler->display->display_options['bundles'] = array(
     0 => 'software_project',
   );
+  $handler->display->display_options['show_title'] = 1;
   $export['os_software_releases'] = $view;
 
   return $export;
