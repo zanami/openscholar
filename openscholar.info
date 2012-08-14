@@ -1,6 +1,6 @@
 name = OpenScholar
 description = Install Openscholar
-core = 7.x
+core = 7.15
 files[] = openscholar.profile
 files[] = openscholar.install
 files[] = tests/openscholar.test
