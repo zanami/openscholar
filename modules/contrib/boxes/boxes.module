@@ -46,8 +46,12 @@ function boxes_menu() {
 /**
  * Access check for whether current user is able to edit boxes.
  */
-function boxes_access_edit() {
-  return user_access('administer boxes') || user_access('edit boxes');
+function boxes_access_edit($box = null) {
+  $box_type_check = false;
+  if (isset($box)) {
+    $box_type_check = user_access('edit '.$box->plugin_key.' box type');
+  }
+  return $box_type_check || user_access('administer boxes') || user_access('edit boxes');
 }
 
 /**
