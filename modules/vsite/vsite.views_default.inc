@@ -22,7 +22,7 @@ function vsite_views_default_views() {
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Websites';
+  $handler->display->display_options['title'] = 'Featured Sites';
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
@@ -31,8 +31,7 @@ function vsite_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '24';
   $handler->display->display_options['style_plugin'] = 'grid';
-  $handler->display->display_options['row_plugin'] = 'node';
-  $handler->display->display_options['row_options']['links'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'fields';
   /* No results behavior: Global: Text area */
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
@@ -41,13 +40,43 @@ function vsite_views_default_views() {
   $handler->display->display_options['empty']['area']['empty'] = FALSE;
   $handler->display->display_options['empty']['area']['content'] = 'No sites have been created yet.';
   $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
+  /* Field: Content: Group Homepage Path */
+  $handler->display->display_options['fields']['field_group_path']['id'] = 'field_group_path';
+  $handler->display->display_options['fields']['field_group_path']['table'] = 'field_data_field_group_path';
+  $handler->display->display_options['fields']['field_group_path']['field'] = 'field_group_path';
+  $handler->display->display_options['fields']['field_group_path']['label'] = '';
+  $handler->display->display_options['fields']['field_group_path']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_group_path']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_group_path']['click_sort_column'] = 'url';
+  /* Field: Content: site_logo */
+  $handler->display->display_options['fields']['field_site_logo']['id'] = 'field_site_logo';
+  $handler->display->display_options['fields']['field_site_logo']['table'] = 'field_data_field_site_logo';
+  $handler->display->display_options['fields']['field_site_logo']['field'] = 'field_site_logo';
+  $handler->display->display_options['fields']['field_site_logo']['label'] = '';
+  $handler->display->display_options['fields']['field_site_logo']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['field_site_logo']['alter']['path'] = '[field_group_path]';
+  $handler->display->display_options['fields']['field_site_logo']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_site_logo']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_site_logo']['settings'] = array(
+    'image_style' => 'square_thumbnail',
+    'image_link' => '',
+  );
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['title']['alter']['path'] = '[field_group_path]';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
+  /* Sort criterion: Content: Sticky */
+  $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';
+  $handler->display->display_options['sorts']['sticky']['table'] = 'node';
+  $handler->display->display_options['sorts']['sticky']['field'] = 'sticky';
+  $handler->display->display_options['sorts']['sticky']['order'] = 'DESC';
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
@@ -87,7 +116,7 @@ function vsite_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'some';
   $handler->display->display_options['pager']['options']['items_per_page'] = '5';
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
-  $handler->display->display_options['style_plugin'] = 'default';
+  $handler->display->display_options['style_plugin'] = 'list';
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
   $handler->display->display_options['row_plugin'] = 'fields';
