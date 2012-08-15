@@ -158,6 +158,11 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
     if (!isset($tag_info['fid'])) {
       throw new Exception('No file Id');
     }
+
+    // The class attribute is a string, but drupal requires it to be
+    // an array, so we fix it here.
+    $tag_info['attributes']['class'] = explode(" ", $tag_info['attributes']['class']);
+
     if (!isset($tag_info['view_mode'])) {
       // Should we log or throw an exception here instead?
       // Do we need to validate the view mode for fields API?
