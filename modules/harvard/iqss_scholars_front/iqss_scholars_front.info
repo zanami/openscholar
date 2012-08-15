@@ -1,0 +1,13 @@
+name = Scholars at Harvard FrontPage
+description = Scholars at Harvard FrontPage configuration
+core = 7.x
+package = IQSS
+php = 5.2.4
+dependencies[] = boxes
+dependencies[] = ctools
+dependencies[] = features
+features[box][] = iqss_scholars_fp_headertext
+features[box][] = iqss_scholars_fp_infoblock
+features[box][] = iqss_scholars_fp_learnmore
+features[ctools][] = boxes:box:1
+features[features_api][] = api:1

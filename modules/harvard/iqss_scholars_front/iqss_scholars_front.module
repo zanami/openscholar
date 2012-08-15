@@ -1,0 +1,31 @@
+<?php 
+
+/**
+ * implementation of hook_context_default_contexts_alter
+ */
+function iqss_openscholar_front_context_load_alter(&$context){
+  // add some extra blocks/boxes to the 'sitewide_front'
+  if ($context->name == 'os_sitewide_front') {
+
+    $context->reactions['block']['blocks']['boxes-iqss_scholars_fp_headertext'] = array(
+        'module' => 'boxes',
+        'delta' => 'iqss_scholars_fp_headertext',
+        'weight' => 10,
+        'region' => 'header_second',
+    );
+    
+    $context->reactions['block']['blocks']['boxes-iqss_scholars_fp_infoblock'] = array(
+        'module' => 'boxes',
+        'delta' => 'iqss_scholars_fp_infoblock',
+        'weight' => 10,
+        'region' => 'content_top',
+    );
+
+    $context->reactions['block']['blocks']['boxes-iqss_scholars_fp_learnmore'] = array(
+        'module' => 'boxes',
+        'delta' => 'iqss_scholars_fp_learnmore',
+        'weight' => 100,
+        'region' => 'sidebar_second',
+    );
+  }
+}
