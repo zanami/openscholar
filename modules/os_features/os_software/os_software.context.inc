@@ -23,7 +23,7 @@ function os_software_context_default_contexts() {
         'software_release' => 'software_release',
       ),
       'options' => array(
-        'node_form' => '1',
+        'node_form' => '0',
       ),
     ),
     'path' => array(
