@@ -61,7 +61,27 @@ function boxes_access_admin() {
  * Implements hook_permission().
  */
 function boxes_permission() {
-  return array(
+  $perms = array();
+  ctools_include('plugins');
+  $plugins = ctools_get_plugins('boxes', 'plugins');
+  foreach ($plugins as $name => $info) {
+    $perms += array(
+      'create '.$name.' box type' => array(
+        'title' => t('Create !type Box', array('!type' => isset($info['title'])?$info['title']:$name)),
+        'description' => t('Create boxes of type !type', array('!type' => isset($info['title'])?$info['title']:$name)),
+      ),
+      'edit '.$name.' box type' => array(
+        'title' => t('Edit !type Boxes', array('!type' => isset($info['title'])?$info['title']:$name)),
+        'description' => t('Edit boxes of type !type', array('!type' => isset($info['title'])?$info['title']:$name)),
+      ),
+      'delete '.$name.' box type' => array(
+        'title' => t('Delete !type Boxes', array('!type' => isset($info['title'])?$info['title']:$name)),
+        'description' => t('Delete boxes of type !type', array('!type' => isset($info['title'])?$info['title']:$name)),
+      ),
+    );
+  }
+
+  return $perms + array(
     'edit boxes' => array(
       'title' => t('Edit boxes'),
       'description' => t('Edit existing boxes'),

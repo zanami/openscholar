@@ -47,34 +47,63 @@ function os_software_node_update($node) {
   _os_software_new_recommended_release($node);
 }
 
+
+/**
+ * Implements hook_node_presave()
+ * 
+ * Generates the node title for Software Releases 
+ */
+function os_software_node_presave($node) {
+  if ($node->type !== 'software_release') return;
+  
+  // Sets the node title like "[project-node:title] [release-node:version]"
+  $title = _os_software_prepare_release_title($node);
+  $node->title = $title;
+}
+
 /**
  * Implements hook_node_view()
  * 
  * Sets the custom release node title 
  */
-function os_software_node_view($node, $view_mode, $langcode) {
+function os_software_node_view($node, $view_mode, $langcode) {  
   if ($node->type !== 'software_release') return;
-
-  // Note: the Software Release node type has no stored title.
+  
+  // Add inline contextual links for "Add new > Software Release"
+  $release_type = 'software_release';
+  
+  $links = array(
+    $release_type => array(
+      'href' => 'node/add/' . str_replace('_', '-', $release_type) . '?field_software_project=' . $node->nid,
+      'title' => ucwords(str_replace('_', ' ', $release_type)),
+    ),
+  );
+  
+  $node->content['controls'] = array(
+    '#type' => 'container',
+    '#weight' => 1,
+    '#attributes' => array(
+      'class' => array(
+        'contextual-controls-wrapper'
+      ),
+    ),
+  );
+  $node->content['controls']['add_new'] = array(
+    '#theme' => 'ctools_dropdown',
+    '#links' => $links,
+    '#title' => t('Add New'),
+    '#class' => 'add_new',
+    '#access' => spaces_access_admin(),
+  );
+  
+  if ($view_mode !== 'full' || TRUE) return;
   
   // Prepares and sets the page body title (<h1>) and head title (<title>)
+  $append_sitename = TRUE;
+  $title = _os_software_prepare_release_title($node, $append_sitename);
+  drupal_set_title($title);
   
-  $default_prefix = 'Project Release';
-  $sitename = trim(drupal_get_title());
-  
-  $project_node = node_load($node->field_software_project['und'][0]['target_id']);
-  $project_title = (!empty($project_node->title)) ? $project_node->title : $default_prefix;
-  
-  $version = trim($node->field_software_version['und'][0]['value']);
-  
-  // Sets the head title
-  $head_title_parts = array(
-    $project_title,
-    $version,
-    $sitename,
-  );
-  $head_title = implode(' ', $head_title_parts);
-  drupal_set_title($head_title);
+  // Prepares "Add new > Software Release" contextual dropdown on node
 }
 
 /**
@@ -117,25 +146,6 @@ function os_software_os_widget() {
 }
 
 /**
- * Implements hook_scholar_admin_link() on behalf of the node module.
- * @FIXME this is not how it's done in Drupal 7
-function scholar_software_vsite_admin_link($type, $object) {
-  $links = array();
-  if ($type == 'node' && $object->type == 'scholar_software_project' && empty($object->field_scholar_software_method[0]['value'])) {
-
-    $item = menu_get_item('node/add/scholar-software-release');
-    if ($item && $item['access']) {
-      $links['scholar-software-add-release'] = array(
-        'title' => t('Add new Release'),
-        'href' => 'node/add/scholar-software-release',
-        'query' => array('software_name' => $object->field_scholar_software_name[0]['value']),
-      );
-    }
-  }
-  return $links;
-} */
-
-/**
  * Custom functions
  */
 
@@ -155,4 +165,29 @@ function _os_software_new_recommended_release($node) {
       node_save($release_node);
     }
   }
+}
+
+/**
+ * Prepares Software Release node title for presave and view
+ */
+function _os_software_prepare_release_title($node, $append_sitename = FALSE) {
+  $default_prefix = 'Project Release';
+  
+  $project_node = node_load($node->field_software_project['und'][0]['target_id']);
+  $project_title = (!empty($project_node->title)) ? $project_node->title : $default_prefix;
+  $version = trim($node->field_software_version['und'][0]['value']);
+
+  $title_parts = array(
+    $project_title,
+    $version,
+  );
+  
+  if ($append_sitename) {
+    $sitename = trim(drupal_get_title);
+    $separator = '|';
+    $title_parts[] = $separator;
+    $title_parts[] = $sitename;
+  }
+  
+  return implode(' ', $title_parts);
 }

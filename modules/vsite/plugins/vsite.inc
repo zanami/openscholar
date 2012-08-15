@@ -102,8 +102,8 @@ class vsite extends space_og {
         }
         break;
       case 'init' :
-        $private = $this->controllers->variable->get('vsite_private');
-        if ($this->active && $private && ! og_is_member($this->type, $this->id)) {
+	    // Additional check for private sites.
+        if ($this->active && module_exists('vsite_access') && !vsite_access_user_access($this->group, $user)) {
           purl_goto("private_site", array(
               'purl' => array(
                   'provider' => $this->purl_provider,
