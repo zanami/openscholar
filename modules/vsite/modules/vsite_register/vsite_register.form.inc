@@ -231,8 +231,10 @@ function vsite_register_form_submit(&$form, &$state) {
     $commands[] = ajax_command_replace ('#submit-suffix', $message );
     $commands[] = ajax_command_remove('#edit-submit');
     
-    if (isset($values['vsite_private']) && $values['vsite_private']) {
-      $vsite->controllers->variable->set('vsite_private', $values['vsite_private']);
+    if (isset($values['vsite_private']) && $values['vsite_private'] && module_exists('vsite_access')) {
+      $node = node_load($vsite->group->nid);
+      $node->group_access[LANGUAGE_NONE][0]['value'] = 1;
+      node_save($node);
     }
     
   } else {
