@@ -43,7 +43,13 @@ function os_context_default_contexts(){
                   'weight' => 20,
                   'region' => 'sidebar_first',
                   'label' => 'CP Subnavigation'
-              )
+              ),
+              'os-powered-by' => array(
+                  'module' => 'os',
+                  'delta' => 'powered-by',
+                  'region' => 'footer',
+                  'weight' => '10',
+              ),
           )
       )
   );
@@ -175,6 +181,12 @@ function os_context_default_contexts(){
                 'delta' => 'shield',
                 'region' => 'header_third',
                 'weight' => '-10',
+              ),
+              'os-powered-by' => array(
+                  'module' => 'os',
+                  'delta' => 'powered-by',
+                  'region' => 'footer',
+                  'weight' => '10',
               ),
           )
       )

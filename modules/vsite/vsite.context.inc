@@ -34,13 +34,13 @@ function vsite_context_default_contexts() {
         'os_search_solr-site-search' => array(
           'module' => 'os_search_solr',
           'delta' => 'site-search',
-          'region' => 'sidebar_first',
+          'region' => 'header_third',
           'weight' => '-10',
         ),
         'os_search_db-site-search' => array(
           'module' => 'os_search_db',
           'delta' => 'site-search',
-          'region' => 'sidebar_first',
+          'region' => 'header_third',
           'weight' => '-10',
         ),
         'views-os_websites-block' => array(
@@ -52,8 +52,14 @@ function vsite_context_default_contexts() {
         'vsite_register-get_your_site_block' => array(
           'module' => 'vsite_register',
           'delta' => 'get_your_site_block',
-          'region' => 'sidebar_first',
+          'region' => 'sidebar_second',
           'weight' => '-8',
+        ),
+        'os-powered-by' => array(
+            'module' => 'os',
+            'delta' => 'powered-by',
+            'region' => 'footer',
+            'weight' => '10',
         ),
       ),
     ),
