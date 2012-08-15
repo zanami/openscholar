@@ -42,6 +42,14 @@ function os_menu(){
       'file' => 'system.admin.inc',
       'file path' => drupal_get_path('module', 'system')
   );
+  
+  $items['page_not_found'] = array(
+    'type' => MENU_CALLBACK,
+    'file' => 'os.pages.inc',
+    'page callback' => 'os_page_not_found_page',
+    'file path' => drupal_get_path('module', 'os') . '/',
+    'access arguments' => array('access content'),
+  );
 
   return $items;
 }
