@@ -101,6 +101,13 @@ function os_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'site_404';
+  $strongarm->value = 'page_not_found';
+  $export['site_404'] = $strongarm;
+  
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'spaces_features';
   $strongarm->value = array(
     'os' => '1',
