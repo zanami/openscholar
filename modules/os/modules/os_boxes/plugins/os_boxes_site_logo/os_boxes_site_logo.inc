@@ -30,7 +30,6 @@ class os_boxes_site_logo extends os_boxes_default {
         '#type' => 'managed_file',
         '#title' => t('Site Logo'),
         '#description' => t('Upload a photo and position the cropping tool over it if necessary.'),
-        '#required' => TRUE,
         '#process' => array(
           '_os_boxes_site_logo_process',
         ),
@@ -41,6 +40,13 @@ class os_boxes_site_logo extends os_boxes_default {
           'height' => $this->options['height'],
           'width' => $this->options['width'],
         ),
+        '#attached' => array(
+          'css' => array(
+            '.form-managed-file img { max-width: none; }' => array(
+              'type' => 'inline'
+            )
+          )
+        )
       );
 
       if (module_exists('vsite') && $space = spaces_get_space()) {
@@ -80,6 +86,7 @@ class os_boxes_site_logo extends os_boxes_default {
       }
       _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $file);
       file_save($file);
+      file_usage_add($file, 'os_boxes', 'box', 1);  // prevents errors when trying to reuse the same image
 
       $this->options['fid'] = $file->fid;
 
@@ -235,13 +242,21 @@ function _os_boxes_site_logo_preview_process($element, $form_state, $form) {
 
 function _os_boxes_site_logo_remove_handler($form, $form_state) {
   $parents = $form_state['triggering_element']['#array_parents'];
+  $button_key = array_pop($parents);
   $element = drupal_array_get_nested_value($form, $parents);
 
+  // @see: file_managed_file_submit
   if (isset($element['#file'])) {
     $orig = _imagefield_crop_file_to_crop($element['#file']->fid);
-    file_usage_delete($orig, 'imagecrop');
+    file_usage_delete($orig, 'imagefield_crop', null, null, 0);
+    file_usage_delete($element['#file'], 'os_boxes', null, null, 0);
     file_delete($orig);
     file_delete($element['#file']);
+    $element['#value']['fid'] = null;
     unset($element['#file']);
+
+    $values_element = $element['#extended'] ? $element['fid'] : $element;
+    form_set_value($values_element, NULL, $form_state);
+    drupal_array_set_nested_value($form_state['input'], $values_element['#parents'], NULL);
   }
 }

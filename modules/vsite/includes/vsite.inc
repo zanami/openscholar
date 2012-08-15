@@ -26,13 +26,12 @@ function vsite_create_vsite($name, $domain, $uid, $preset = FALSE) {
   $node->body = array('und' => array(array('value' => '')));
   $node->purl = array('value' => $domain, 'provider'=>'vsite_og', 'id'=>NULL);
   $node->uid = $uid;
+  $node->spaces_preset_og = $preset; 
   node_save($node); 
   
-  if (($vsite = spaces_load('og', $node->nid)) && ($preset = spaces_preset_load($preset))) {
-    spaces_preset_save_from_space($preset, $vsite);
+  if ($vsite = spaces_load('og', $node->nid)) {
+    return $vsite;
   }
- 
-  return $vsite;
 }
 
 /**

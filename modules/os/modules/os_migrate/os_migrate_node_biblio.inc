@@ -23,7 +23,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     
     $this->addUnmigratedSources(array('field_biblio_image_fid', 'field_biblio_image_list', 'field_biblio_image_data'), t('DNM'));
    
-    $this->addSimpleMappings(array('field_biblio_image', 'field_biblio_image:alt', 'field_biblio_image:title', 'vid'));
+    $this->addSimpleMappings(array('field_biblio_image', 'field_biblio_image:alt', 'field_biblio_image:title'));
     
     
   }
@@ -103,6 +103,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     
     $entity->biblio_contributors = $this->_prepare_biblio_contributors($row->vid, $row->nid);
     // $entity->biblio_keywords = $this->_prepare_biblio_keywords($row->vid); //not supporting keywords. 
+    //$entity->vid = $row->vid;
   }
   
   /**

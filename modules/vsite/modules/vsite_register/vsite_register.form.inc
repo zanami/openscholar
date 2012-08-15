@@ -11,6 +11,7 @@ function vsite_register_form($form, &$state) {
   $form = array();
   $anonymous = ($user->uid == 0);
   $manager = (user_access('create vsite content on behalf') && user_access('administer users'));
+
   
   $form['domain'] = array(
     '#type' => 'textfield',
@@ -21,10 +22,10 @@ function vsite_register_form($form, &$state) {
     '#description' => t('Minimum of 3 characters. Punctuation is not allowed except for hyphens and underscores. <br />Example: a choice of \'jdoe\' would result in the URL: %site.', array(
       '%site' => $base_url . '/jdoe'
     )),
-    '#ajax' => array(
-      'callback' => 'vsite_register_ajax_validation',
-      'wrapper' => 'domain-errors',
-    ),
+     '#ajax' => array(
+       'callback' => 'vsite_register_ajax_validation',
+       'wrapper' => 'domain-errors',
+     ),
     '#field_suffix' => theme('vsite_register_form_errors', array('name'=>'domain')), 
   );
   
@@ -124,6 +125,7 @@ function vsite_register_form($form, &$state) {
     '#type' => 'submit',
     '#value' => t('Create your site'),
     '#weight' => 40,
+    '#prefix' => '<div id="form-errors"></div>',
     '#suffix' => '<div id="submit-suffix"></div>',
     '#attributes' => array('class' => array('use-ajax-submit') ),
     '#ajax' => array('callback' => 'vsite_register_form_submit'),
@@ -254,44 +256,28 @@ function vsite_register_form_submit(&$form, &$state) {
  * Validation function for site/register form
  */
 function vsite_register_form_validate(&$form, &$state) {
+  //Ajax validation.  
   if ($_GET['q'] == 'system/ajax') {
-    return vsite_register_ajax_submit_validation($form, $state);
+    if ($state['triggering_element']['#ajax']['callback'] == 'vsite_register_ajax_validation') {
+      //ajax callback will validate just this element and return a message.
+      return; 
+    } else {
+      //form is done.  maybe this should happen after the validate?  or at least duplicate its efforts.
+      return vsite_register_ajax_submit_validation($form, $state);
+    }
   }
   
+  //Fall back to standard validation
   $values = $state['values'];
+  foreach (vsite_register_validate_elements($values) as $element => $msg) {
+    if ($msg) {
+      form_set_error($element, $msg);
+    }
+  }
   
-  if ($values['vicarious_user'] && !$values['create_new_user']) {
-    
-    //Giving a site to existing user
-    if (!$user = user_load_by_name($values['existing_username'])) {
-      form_set_error('existing_username', t('Username does not exist.  Did you mean to create a new user instead?'));
-    }
-    
-    if (empty($values['existing_username'])) {
-      form_set_error('existing_username', t('Please specify a user account for this web site.'));
-    }
-    
-  } elseif ($values['create_new_user']) {
-    
-    //name and mail are validated by ajax as well.  use that function
-    foreach (array('name', 'mail') as $element) {
-      if ($msg = _vsite_register_validate($element, $values)) {
-        form_set_error($element, implode('. ', $msg));
-      }
-    }
- 
-    //password 
-    if (!$values['password']) {
-      form_set_error('password', t('You must enter a password'));
-    }
-  
+  if ($values['create_new_user']) { 
     //tell javascript to switch to new user form instead of making user switch it again.
     drupal_add_js(array('vsite_register' => array('new_user_clicked' => TRUE)), 'setting');
-  }
-  
-  //domain is also handled by ajax.  doublecheck it here against same function.
-  if ($msg = _vsite_register_validate('domain', $values)) {
-    form_set_error('domain', implode('. ', $msg));
   }
 }
 
@@ -301,11 +287,13 @@ function vsite_register_form_validate(&$form, &$state) {
  * Callback function for ajax.  returns errors on ajaxy elements
  */
 function vsite_register_ajax_validation(&$form, &$state) {
+  drupal_get_messages(); //clear this to avoid having notices clutter the form during ajax validation
   $elem = $state['triggering_element']['#name'];
   return theme('vsite_register_form_errors', (array(
     'name' => $elem,
     'errors' => _vsite_register_validate($elem, $state['values']), 
   )));
+  //$errors = form_get_errors();//$state['triggering_element']['#name']);
 }
 
 /**
@@ -315,27 +303,59 @@ function vsite_register_ajax_validation(&$form, &$state) {
  */
 function vsite_register_ajax_submit_validation(&$form, &$state) {
   $values = $state['values'];
-  $elements = array('domain');
-  
-  if ($values['vicarious_user'] && $values['create_new_user']) {
-    $elements += array('name', 'mail', 'password');
-  } elseif ($values['vicarious_user']) {
-    $elements[] = 'existing_username';
+  $valid = $commands = array();
+
+  foreach (vsite_register_validate_elements($values) as $element => $msg) {
+    if ($msg) {
+      $html = theme('item_list', array('items'=>array($msg), 'type'=>'ul', 'attributes'=>array('class'=>array('error'))));
+      $commands[] = ajax_command_html("#${element}-errors", $html);
+    } else {
+      $valid[] = ajax_command_html("#${element}-errors", '');
+    }
   }
-  
-  foreach($elements as $element) {
-    if ($failure = _vsite_register_validate($element, $values)) {
-      $msg = theme('item_list', array( 'items' => array($failure), 'type' => 'ul', 'attributes' => array('class' => array('error'))));
-      $commands[] = ajax_command_html("#$element-errors", $msg);
-    } 
-  }
-  
   
   //print new errors
   if (count($commands)) {		
-    print ajax_render($commands);
+    print ajax_render(array_merge($commands, $valid));
     exit;
+  } 
+}
+
+/**
+ * @function vsite_register_validate_elements
+ * 
+ * Validates form elements, returns errors.  Errors can be handled as usual or ajax rendered.  
+ * 
+ * Exists as separate function because there's more logic than usual in choosing which elements need to validate 
+ * based on the state of the form.
+ * 
+ * @param array $values
+ *   Form state's values array
+ * @return array 
+ *   element => error
+ */
+function vsite_register_validate_elements($values) {
+  //always check domain and form
+  $elements = array('domain', 'form');
+  
+  //new user
+  if ($values['create_new_user']) {
+    $elements = array_merge($elements, array('name', 'mail', 'password'));
   }
+
+  //existing user
+  if ($values['vicarious_user'] && !$values['create_new_user']) {
+    $elements = array_merge($elements, array('existing_username'));
+  }
+  
+  $msgs = array();
+  foreach ($elements as $element) {
+    if ($errors = _vsite_register_validate($element, $values)) {    
+      $msgs[$element] = implode(' ', $errors);
+    }
+  }
+  
+  return $msgs;
 }
 
 /**
@@ -357,7 +377,7 @@ function _vsite_register_validate($element, &$values) {
   switch($element) {
     
     case 'domain':
-      if (strlen($values['domain']) < 3 || !purl_validate($values['domain'])) {
+      if (strlen($values['domain']) < 3 || !valid_url($values['domain']) || !_vsite_register_valid_url($values['domain'])) {
         $msg[] = t('Invalid URL specified.');
       }
       if (($purl = purl_load(array('value'=>$values['domain'], 'provider'=>'spaces_og'), TRUE)) || menu_get_item($values['domain'])) {
@@ -384,6 +404,40 @@ function _vsite_register_validate($element, &$values) {
         $msg[] =  t('Username %name is taken.  Please choose another.', array('%name' => $values['name']));
       }
     break;
+    
+    //check that all dependent fields are provided.
+    case 'form':
+      //on behalf selected, but no user specified.
+      if ($values['vicarious_user'] && !(strlen($values['existing_username']) || $values['create_new_user'])) {
+        $msg[] = t('You have selected to create this site on behalf of another user.  Please specify an existing user or create a new account.');
+      }
+      
+      //new user
+      if ($values['create_new_user']) {
+        if (!(strlen($values['name']) && strlen($values['mail']) && strlen($values['password']))) {
+          $msg[] = t('You have selected to create a new user.  Please provide a username, email address, and password for the new user.');
+        }
+        
+        //confirm_password 
+        $pass1 = trim($_POST['password']['pass1']);
+        $pass2 = trim($_POST['password']['pass2']);
+        if (!empty($pass1) || !empty($pass2)) {
+          if (strcmp($pass1, $pass2)) {
+            $msg[] = t('The specified passwords do not match.');
+          }
+        } else {
+          $msg[] = t('The password field is required.');
+        }
+      }
+      
+      //existing user
+      if ($values['vicarious_user'] && !$values['create_new_user']) {
+        if (!user_load_by_name($values['existing_username'])) {
+          $msg[] = t('User @name does not exist.  Please try another user name or create a new user account instead.', array('@name'=>$values['existing_username']));
+        }
+      }
+    break;
+      
   }
   
   return (count($msg)) ? $msg : NULL;
@@ -405,4 +459,21 @@ function _vsite_register_mail_in_use($mail) {
               ->range(0, 1)
               ->execute()
               ->fetchField();
+}
+
+/**
+ * @function _vsite_register_valid_url
+ * 
+ * Checks a url for bad characters.  
+ * 
+ * @param string $url
+ */
+function _vsite_register_valid_url($url) {
+  foreach (array('!', ';', '/', '?', ':', '@', '&', '=', '"', "'",) as $char) {
+    if (strpos($url, $char) !== FALSE) {
+      return FALSE;
+    }
+  }
+  
+  return TRUE;
 }
