@@ -12,10 +12,11 @@ include_once 'os_software.features.inc';
 
 
 /**
- * Implements hook_FORM_ID_form_alter()
+ * Implements hook_form_FORM_ID_form_alter()
  */
-function os_software_software_project_node_form_form_alter() {
+function os_software_form_software_project_node_form_alter(&$form, &$form_state, $form_id) {
   drupal_add_js(drupal_get_path('module', 'os_software') . '/os_software.js');
+  dpm('added js');
 }
 
 /**
