@@ -219,6 +219,5 @@ function _os_software_prepare_release_title($node) {
  */
 function _os_software_packaging_method_options() {
   $options = module_invoke_all('os_packaging_method_option');
-  dpm($options);
   return $options;
 }
