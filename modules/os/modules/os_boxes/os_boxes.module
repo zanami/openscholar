@@ -19,7 +19,7 @@ function os_boxes_menu() {
     'title' => 'Add Widget',
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(2),
-    'access callback' => 'boxes_access',
+    'access callback' => 'os_boxes_access',
     'access arguments' => array('create', 2),
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
@@ -29,7 +29,7 @@ function os_boxes_menu() {
     'title' => 'Edit Widget',
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(2),
-    'access callback' => 'boxes_access',
+    'access callback' => 'os_boxes_access',
     'access arguments' => array('edit', 2),
     'type' => MENU_LOCAL_TASK,
     'file' => 'os_boxes.admin.inc',
@@ -48,7 +48,7 @@ function os_boxes_menu() {
     'title' => 'Delete Widget',
     'page callback' => 'os_boxes_delete_widget',
     'page arguments' => array(2),
-    'access callback' => 'boxes_access',
+    'access callback' => 'os_boxes_access',
     'access arguments' => array('delete', 2),
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
@@ -58,7 +58,7 @@ function os_boxes_menu() {
     'title' => 'Remove Widget',
     'page callback' => 'os_boxes_remove_widget',
     'page arguments' => array(2),
-    'access callback' => 'boxes_access_admin',
+    'access callback' => 'os_boxes_access_admin',
     'type' => MENU_LOCAL_TASK,
     'file' => 'os_boxes.admin.inc',
     'context' => MENU_CONTEXT_INLINE,
@@ -186,7 +186,7 @@ function os_boxes_get_factories() {
   foreach ($plugins as $p => $info) {
     // title catches abstract boxes
     // factory catchs our boxes
-    if (user_access('create '.$p.' box type') && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
+    if (user_access('create '.$p.' box type') && isset($info['title']) && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
       $items["boxes-boxes_add__$p"] = array(
         'module' => 'boxes',
         'delta' => "boxes_add__$p",
