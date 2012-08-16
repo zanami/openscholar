@@ -8,7 +8,7 @@
   
   
 stylesheets[all][]   = css/cayley.css
-ie_stylesheets[screen][lt IE 10] = css/cayley-ie.csss
+ie_stylesheets[screen][lt IE 10][] = css/cayley-ie.csss
 
 ;os[widgets][boxes-site_logo] = false
 

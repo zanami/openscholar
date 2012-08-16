@@ -190,7 +190,7 @@ function os_software_views_default_views() {
   $handler->display->display_options['sorts']['title']['table'] = 'node';
   $handler->display->display_options['sorts']['title']['field'] = 'title';
   $handler->display->display_options['sorts']['title']['order'] = 'DESC';
-  /* Contextual filter: Content: Project (field_software_project) */
+  /* Contextual filter: Content: Software Project (field_software_project) */
   $handler->display->display_options['arguments']['field_software_project_target_id']['id'] = 'field_software_project_target_id';
   $handler->display->display_options['arguments']['field_software_project_target_id']['table'] = 'field_data_field_software_project';
   $handler->display->display_options['arguments']['field_software_project_target_id']['field'] = 'field_software_project_target_id';
@@ -311,9 +311,8 @@ function os_software_views_default_views() {
   $handler->display->display_options['fields']['nothing_1']['table'] = 'views';
   $handler->display->display_options['fields']['nothing_1']['field'] = 'nothing';
   $handler->display->display_options['fields']['nothing_1']['label'] = '';
-  $handler->display->display_options['fields']['nothing_1']['alter']['text'] = 'Release info';
-  $handler->display->display_options['fields']['nothing_1']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['nothing_1']['alter']['path'] = '/[path]';
+  $handler->display->display_options['fields']['nothing_1']['alter']['text'] = '<a href="[path]">Release info</a>';
+  $handler->display->display_options['fields']['nothing_1']['alter']['path'] = '/';
   $handler->display->display_options['fields']['nothing_1']['element_label_colon'] = FALSE;
   /* Field: Content: Post date */
   $handler->display->display_options['fields']['created']['id'] = 'created';
@@ -327,15 +326,6 @@ function os_software_views_default_views() {
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  /* Contextual filter: Content: Project (field_software_project) */
-  $handler->display->display_options['arguments']['field_software_project_target_id']['id'] = 'field_software_project_target_id';
-  $handler->display->display_options['arguments']['field_software_project_target_id']['table'] = 'field_data_field_software_project';
-  $handler->display->display_options['arguments']['field_software_project_target_id']['field'] = 'field_software_project_target_id';
-  $handler->display->display_options['arguments']['field_software_project_target_id']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['field_software_project_target_id']['default_argument_type'] = 'node';
-  $handler->display->display_options['arguments']['field_software_project_target_id']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['field_software_project_target_id']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['field_software_project_target_id']['summary_options']['items_per_page'] = '25';
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
@@ -364,7 +354,6 @@ function os_software_views_default_views() {
   $handler->display->display_options['title'] = 'Recent Releases';
   $handler->display->display_options['defaults']['use_more'] = FALSE;
   $handler->display->display_options['use_more'] = TRUE;
-  $handler->display->display_options['use_more_text'] = 'more releases »';
   $handler->display->display_options['link_url'] = 'software/!1/releases';
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
@@ -432,7 +421,6 @@ function os_software_views_default_views() {
   /* Display: All */
   $handler = $view->new_display('page', 'All', 'page_1');
   $handler->display->display_options['defaults']['use_more'] = FALSE;
-  $handler->display->display_options['use_more_text'] = 'more releases &raquo;';
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '15';
@@ -486,7 +474,7 @@ function os_software_views_default_views() {
   $handler->display->display_options['fields']['created']['date_format'] = 'custom';
   $handler->display->display_options['fields']['created']['custom_date_format'] = 'M j Y';
   $handler->display->display_options['defaults']['arguments'] = FALSE;
-  /* Contextual filter: Content: Project (field_software_project) */
+  /* Contextual filter: Content: Software Project (field_software_project) */
   $handler->display->display_options['arguments']['field_software_project_target_id']['id'] = 'field_software_project_target_id';
   $handler->display->display_options['arguments']['field_software_project_target_id']['table'] = 'field_data_field_software_project';
   $handler->display->display_options['arguments']['field_software_project_target_id']['field'] = 'field_software_project_target_id';
@@ -502,7 +490,62 @@ function os_software_views_default_views() {
   $handler->display->display_options['arguments']['field_software_project_target_id']['validate_options']['types'] = array(
     'software_project' => 'software_project',
   );
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'software_release' => 'software_release',
+  );
   $handler->display->display_options['path'] = 'software/%/releases';
+
+  /* Display: Filesize Field */
+  $handler = $view->new_display('entity_view', 'Filesize Field', 'entity_view_3');
+  $handler->display->display_options['defaults']['pager'] = FALSE;
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'default';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: File: Size */
+  $handler->display->display_options['fields']['filesize']['id'] = 'filesize';
+  $handler->display->display_options['fields']['filesize']['table'] = 'file_managed';
+  $handler->display->display_options['fields']['filesize']['field'] = 'filesize';
+  $handler->display->display_options['fields']['filesize']['relationship'] = 'field_software_package_fid';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'software_release' => 'software_release',
+  );
+  $handler->display->display_options['filters']['type']['group'] = 1;
+  $handler->display->display_options['entity_type'] = 'node';
+  $handler->display->display_options['bundles'] = array(
+    0 => 'software_release',
+  );
   $export['os_software_releases_eva'] = $view;
 
   return $export;

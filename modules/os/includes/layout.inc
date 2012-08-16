@@ -575,10 +575,17 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout, $
  * @param array $blocks          
  */
 function _os_layout_sanitize_blocks(&$blocks){
-  $block_schema = drupal_get_schema('block');
   
-  foreach ( $blocks as $bid => $block ) {
-    $blocks[$bid] = array_intersect_key($block, $block_schema['fields']);
+  // Load block install file
+  module_load_include('install', 'block', 'block');
+  
+  if (function_exists('block_schema')) {
+    // Populate block with the defaults from the schema
+    $block_schema = block_schema();
+  
+    foreach ( $blocks as $bid => $block ) {
+      $blocks[$bid] = array_intersect_key($block, $block_schema['block']['fields']);
+    }
   }
 }
 
