@@ -16,7 +16,6 @@ include_once 'os_software.features.inc';
  */
 function os_software_form_software_project_node_form_alter(&$form, &$form_state, $form_id) {
   drupal_add_js(drupal_get_path('module', 'os_software') . '/os_software.js');
-  dpm('added js');
 }
 
 /**
