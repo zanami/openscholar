@@ -250,7 +250,7 @@ function os_software_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 0,
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -320,11 +320,11 @@ function os_software_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'inline',
           'module' => 'file',
           'settings' => array(),
           'type' => 'file_default',
-          'weight' => 1,
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -424,13 +424,13 @@ function os_software_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'inline',
           'module' => 'entityreference',
           'settings' => array(
-            'link' => FALSE,
+            'link' => 1,
           ),
           'type' => 'entityreference_label',
-          'weight' => 2,
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -441,7 +441,7 @@ function os_software_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_software_project',
-      'label' => 'Project',
+      'label' => 'Software Project',
       'required' => 1,
       'settings' => array(
         'behaviors' => array(
@@ -500,11 +500,10 @@ function os_software_field_default_fields() {
       'description' => 'The recommended releases will be displayed on the project page. The latest recommended release per major version will be offered for update status.',
       'display' => array(
         'default' => array(
-          'label' => 'above',
-          'module' => 'list',
+          'label' => 'inline',
           'settings' => array(),
-          'type' => 'list_default',
-          'weight' => 6,
+          'type' => 'hidden',
+          'weight' => '4',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -567,11 +566,11 @@ function os_software_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'inline',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 7,
+          'weight' => '1',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -607,9 +606,9 @@ function os_software_field_default_fields() {
   t('Notes');
   t('Package');
   t('Packaging Method');
-  t('Project');
   t('Recommended');
   t('Repository URL');
+  t('Software Project');
   t('The recommended releases will be displayed on the project page. The latest recommended release per major version will be offered for update status.');
   t('Version');
 

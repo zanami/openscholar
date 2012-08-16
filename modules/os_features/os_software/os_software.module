@@ -47,7 +47,6 @@ function os_software_node_update($node) {
   _os_software_new_recommended_release($node);
 }
 
-
 /**
  * Implements hook_node_presave()
  * 
@@ -69,7 +68,7 @@ function os_software_node_presave($node) {
 function os_software_node_view($node, $view_mode, $langcode) {  
   if ($node->type !== 'software_project') return;
   
-  // Add inline contextual links for "Add new > Software Release"
+  // Adds inline contextual links for "Add new > Software Release"
   $release_type = 'software_release';
   
   $links = array(
@@ -178,7 +177,6 @@ function _os_software_delete_child_releases($node) {
   }
   node_delete_multiple($nids);
 }
-
 
 /**
  * Prepares Software Release node title for presave and view
