@@ -15,12 +15,22 @@ function os_boxes_ctools_plugin_api($module, $api) {
  * Implements hook_menu().
  */
 function os_boxes_menu() {
+  $items['os/boxes/%os_boxes/add'] = array(
+    'title' => 'Add Widget',
+    'page callback' => 'os_boxes_edit_widget',
+    'page arguments' => array(2),
+    'access callback' => 'boxes_access',
+    'access arguments' => array('create', 2),
+    'type' => MENU_CALLBACK,
+    'file' => 'os_boxes.admin.inc',
+  );
+
   $items['os/boxes/%os_boxes/edit'] = array(
     'title' => 'Edit Widget',
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(2),
-    'access callback' => 'boxes_access_edit',
-    'access arguments' => array(2),
+    'access callback' => 'boxes_access',
+    'access arguments' => array('edit', 2),
     'type' => MENU_LOCAL_TASK,
     'file' => 'os_boxes.admin.inc',
     'context' => MENU_CONTEXT_INLINE,
@@ -38,8 +48,8 @@ function os_boxes_menu() {
     'title' => 'Delete Widget',
     'page callback' => 'os_boxes_delete_widget',
     'page arguments' => array(2),
-    'access callback' => 'os_boxes_access_delete',
-    'access arguments' => array(2),
+    'access callback' => 'boxes_access',
+    'access arguments' => array('delete', 2),
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
     'weight' => 2,
@@ -81,8 +91,16 @@ function os_boxes_create_delta() {
 }
 
 /**
- * Access function. Ensures
+ * Access function. Ensures user has permission to delete boxes
  */
+function os_boxes_access_delete($box = null) {
+  $box_type_check = false;
+  if (isset($box)) {
+    $box_type_check = user_access('delete '.$box->plugin_key.' box type');
+  }
+
+  return $box_type_check || user_access('administer boxes');
+}
 
 /**
  * Get all the boxes plugins or a plugin by name
@@ -150,18 +168,14 @@ function os_boxes_os_widget_alter(&$widget) {
     if (isset($plugin['tags']))
       $widget['class'] = $plugin['tags'];
 
-    $widget['can_edit'] = true;  // all boxes should be editable. If they aren't, why are they a box
+    $widget['can_edit'] = boxes_access('edit', $box);  // all boxes should be editable. If they aren't, why are they a box
     $widget['path'] = 'os/boxes/'.$widget['delta'];
 
     // deletion is easier now.
-    // if they can recreate the widget, we let them delete it
-    // otherwise, no.
-    if (isset($plugin['title'])) {
-      $widget['can_delete'] = true;
-    }
-    else {
-      $widget['can_delete'] = false;
-    }
+    // just refer to the permission.
+    // Generally speaking, if they can create a widget, they can delete it.
+    // If they can't create it, they can't delete it either
+    $widget['can_delete'] = boxes_access('delete', $box);
   }
 }
 
@@ -172,12 +186,12 @@ function os_boxes_get_factories() {
   foreach ($plugins as $p => $info) {
     // title catches abstract boxes
     // factory catchs our boxes
-    if (isset($info['title']) && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
+    if (user_access('create '.$p.' box type') && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
       $items["boxes-boxes_add__$p"] = array(
         'module' => 'boxes',
         'delta' => "boxes_add__$p",
         'label' => $info['title'],
-        'block_config_path' => "os/boxes/{$p}",
+        'block_config_path' => "os/boxes/add/{$p}",
         'factory' => true,
       );
     }
