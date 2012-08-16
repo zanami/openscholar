@@ -3,25 +3,26 @@
 /**
  * implementation of hook_context_default_contexts_alter
  */
-function iqss_openscholar_front_context_load_alter(&$context){
+function iqss_scholars_front_context_default_contexts_alter(&$contexts){
   // add some extra blocks/boxes to the 'sitewide_front'
-  if ($context->name == 'os_sitewide_front') {
+  if (isset($contexts['os_sitewide_front'])) {
+    $fp_blocks = &$contexts['os_sitewide_front']->reactions['block']['blocks'];
 
-    $context->reactions['block']['blocks']['boxes-iqss_scholars_fp_headertext'] = array(
+    $fp_blocks['boxes-iqss_scholars_fp_headertext'] = array(
         'module' => 'boxes',
         'delta' => 'iqss_scholars_fp_headertext',
         'weight' => 10,
         'region' => 'header_second',
     );
     
-    $context->reactions['block']['blocks']['boxes-iqss_scholars_fp_infoblock'] = array(
+    $fp_blocks['boxes-iqss_scholars_fp_infoblock'] = array(
         'module' => 'boxes',
         'delta' => 'iqss_scholars_fp_infoblock',
         'weight' => 10,
         'region' => 'content_top',
     );
 
-    $context->reactions['block']['blocks']['boxes-iqss_scholars_fp_learnmore'] = array(
+    $fp_blocks['boxes-iqss_scholars_fp_learnmore'] = array(
         'module' => 'boxes',
         'delta' => 'iqss_scholars_fp_learnmore',
         'weight' => 100,
