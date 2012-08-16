@@ -32,16 +32,11 @@ body {
   padding-bottom:30px;
   }
 
-.wrap {
-  width: 980px;
-  margin: 0 auto;
-  }
-
-#columns .hg-container{
+#columns {
   background: #fff;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  border-radius: 6px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
   -moz-box-shadow: 0 5px 2em rgba(0,0,0,0.35);
   -webkit-box-shadow: 0 5px 2em rgba(0,0,0,0.35);
   box-shadow: 0 5px 2em rgba(0,0,0,0.35);
@@ -55,7 +50,7 @@ body.no-sidebars #columns .hg-container .column {
   padding-top: 30px;
   }
 
-#content-bottom {
+.region-content-bottom {
   clear: both;
   padding-bottom: 19px;
   border-top: 1px solid #ccc;
@@ -75,6 +70,8 @@ body.page-site-register #content-column {
   padding:0;
   }
 
+
+
 h2 {
   color: #b71313;
   font-size: 18px;
@@ -82,21 +79,31 @@ h2 {
   font-weight: normal;
   }
 
+
+.os-slider {
+	width:980px;
+	background:#FFF;
+}
+
+
+a, a:visited {
+	color:#293352;
+}
+
 /* HEADER ELEMENTS */
 
 #header-container {
     height: 110px;
     }
 
+  
 #header-container h1 {
-  width: 231px;
+  width: 233px;
   height: 76px;
-  background: url(../images/logo.png) no-repeat;
-  text-indent: -999em;
-  float:left;
-  margin-top:14px;
-  margin-left: 9px;
+  margin-left: 0px;
+  background: url('../images/projects-at-harvard-logo.png') 0 0 no-repeat;
   }
+
 
 #header-container h1 a,
 #header-container h1 a:visited {
@@ -117,17 +124,21 @@ h2 {
     color:#282828;
     }
 
-.region-header-third {
-  width: 218px;
-  }
 
-#header-container {
-  padding-right: 258px;
-  }
 
 h2 {
   margin: 0 0 .5em 0;
   }
+  
+  
+.region-header-second #block-os-primary-menu {
+	float:right;
+	margin-top:20px;
+	}
+	
+.region-header-second #block-os-primary-menu ul li {
+	margin-left:15px;
+	}	
 
 /* SEARCH FORM */
 
@@ -176,7 +187,7 @@ h2 {
   width:25px !important;
   }
 
-p.big-button {
+.os-big-button {
   text-align: center;
   font-size: .9em !important;
   line-height: normal !important;
@@ -185,7 +196,7 @@ p.big-button {
   color: #777;
   }
 
-p.big-button a {
+.os-big-button a {
   background:url('../images/get-your-site-button.png') no-repeat transparent;
   line-height: 48px !important;
   font-size: 19px;
@@ -475,19 +486,20 @@ row {
   color:#418f9e;
   }
 
-#video-link {
-  float:left;
-  width: 638px;
-  margin-right: 15px;
-  margin-left: 44px;
+.os-fp-imageholder {
+float: left;
+    margin-left: 20px;
+    margin-right: 25px;
+    width: 638px;
   }
 
-#more-info {
+.os-more-info {
   float:left;
   width:268px;
   font-size:17px;
   line-height: 1.2em;
   margin-top: .6em;
+  clear:right;
   }
 
 .row {
@@ -506,13 +518,14 @@ row {
   padding-bottom: 1.5em;
   }
 
-.row-features {
+.os-row-features {
   padding: 15px 0 30px 0;
   background:#000;
+  margin-left: -8px;
   }
 
-.row-features h2 {
-  margin-left: 30px;
+.os-row-features h2 {
+   margin: -5px 0 8px 30px;
   color: #fff;
   text-shadow: #666 0px 1px 1px;
   text-shadow: rgba(51,51,51, .2) 0px 1px 1px;
@@ -618,18 +631,18 @@ td, td.description {
 /* FRONT PAGE vSITE PROFILES */
 
 
-#block-views-openscholar_sites-block_2 ul {
+.os-projfeaturedsites ul {
   padding-top: 22px;
   width: 860px;
   margin: 0 0 0 85px;
   }
 
-#block-views-openscholar_sites-block_2,
+.os-projfeaturedsites,
 #footer {
   position:relative;
   }
 
-#block-views-openscholar_sites-block_2 h3 {
+.os-projfeaturedsites h3 {
   background: url('../images/featured.png') 0 0 no-repeat transparent;
   text-indent: -999em;
   width:70px;
@@ -639,13 +652,15 @@ td, td.description {
   float:left;
   }
 
-#block-views-openscholar_sites-block_2 {
+.os-projfeaturedsites {
   clear: both;
   background:#fff;
   position:relative;
+  width:980px;
+ margin: -14px 0 0 -8px;
   }
 
-#block-views-openscholar_sites-block_2 .views-row {
+.os-projfeaturedsites .views-row {
   float: left;
   clear: none;
   width: 270px;
@@ -653,13 +668,13 @@ td, td.description {
   overflow: hidden;
   }
 
-#block-views-openscholar_sites-block_2 .views-row,
+.os-projfeaturedsites .views-row,
 .view-openscholar-sites td {
   height: 100px;
   font-size: 12px;
   }
 
-#block-views-openscholar_sites-block_2 img,
+.os-projfeaturedsites img,
 .view-openscholar-sites img,
 .view-openscholar-sites img {
   border: 1px solid #8b8b8b;
@@ -679,29 +694,29 @@ td, td.description {
   font-family: 'SlingBold', serif;
   }
 
-#block-views-openscholar_sites-block_2 .more-link {
+.os-projfeaturedsites .more-link {
   clear: both;
   }
 
-#block-views-openscholar_sites-block_2 .more-link a:after {
+.os-projfeaturedsites .more-link a:after {
   content: '';
   }
 
-#block-views-openscholar_sites-block_2 .views-admin-links {
+.os-projfeaturedsites .views-admin-links {
   position:absolute;
   right:0;
   top: 0;
   width: 103px;
   }
 
-#block-views-openscholar_sites-block_2 .views-admin-links ul {
+.os-projfeaturedsites .views-admin-links ul {
   background: transparent;
   height: auto;
   padding: 0;
   margin:0;
   }
 
-#block-views-openscholar_sites-block_2 .more-link a {
+.os-projfeaturedsites .more-link a {
   background: url('../images/black-arrow-right.png') no-repeat 100% 50% #fff;
   padding-right: 11px;
   color: #000;
@@ -713,14 +728,7 @@ td, td.description {
 /* END of old Scholars at Harvard CSS */
 
 body {
-  background:url('../images/projects-bg.png') fixed repeat-x 0 100% #a13804;
-  }
-
-#header-container h1 {
-  width: 233px;
-  height: 76px;
-  margin-left: 0px;
-  background: url('../images/projects-at-harvard-logo.png') 0 0 no-repeat;
+  background:#EEE;
   }
 
 .row-video {
@@ -745,7 +753,7 @@ body {
   margin: 0 0 0 -1px;
   }
 
-#more-info p {
+.os-more-info p {
   margin-bottom: 1em;
   font-size: 16px;
   }
@@ -763,23 +771,23 @@ p.copy {
   margin-top: 0;
   }
 
-#more-info, #more-info p {
+.os-more-info, .os-more-info p {
   margin-top: 0;
   }
 
-#block-views-openscholar_sites-block_2 ul {
+.os-projfeaturedsites ul {
   padding-top: 30px;
   padding-left: 111px;
   }
 
-#block-views-openscholar_sites-block_2 .views-row {
+.os-projfeaturedsites .views-row {
   width: 206px;
   height: 50px;
   margin-bottom: .5em;
   margin-right: 62px;
   }
 
-#block-views-openscholar_sites-block_2 .views-row .views-field-field-vsite-logo-fid,
+.os-projfeaturedsites .views-row .views-field-field-vsite-logo-fid,
 body.section-websites .views-field-field-vsite-logo-fid {
   display:none;
   }
