@@ -17,7 +17,7 @@ os[theme_access] = "private"
 ;----------// Stylesheets
 
   stylesheets[screen][] = css/fairbanks-center.css
-  ie_stylesheets[screen][lt IE 10] = css/fairbanks-center-ie.css
+  ie_stylesheets[screen][lt IE 10][] = css/fairbanks-center-ie.css
 
 
 
