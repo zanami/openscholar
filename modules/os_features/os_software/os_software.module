@@ -103,7 +103,9 @@ function os_software_node_view($node, $view_mode, $langcode) {
  */
 function os_software_node_delete($node) {
   if ($node->type !== 'software_project') return;
-  // @TODO Delete all referencing software release nodes
+  
+  // Deletes all referencing software release nodes
+  _os_software_delete_child_releases($node);
 }
 
 /**
@@ -146,9 +148,11 @@ function os_software_os_widget() {
  */
 function _os_software_new_recommended_release($node) {
   // Uses [:os_software_relesases:] view to filter only valid releases for this project
-  $view = views_get_view('os_software_releases');
+  $view = views_get_view('os_software_releases_eva');
+  $view->set_display('page_1');
   $view->set_arguments(array($node->field_software_project['und'][0]['target_id']));
-  $view->execute('block_1');
+  $view->execute();
+  
   foreach ($view->result as $data) {
     if (!isset($node->nid) || $data->nid !== $node->nid) {
       $release_node = node_load($data->nid);
@@ -159,10 +163,27 @@ function _os_software_new_recommended_release($node) {
 }
 
 /**
+ * Finds all child Software Release nodes and deletes them
+ */
+function _os_software_delete_child_releases($node) {
+  // Uses [:os_software_relesases_eva:] view to filter only releases for this project
+  $view = views_get_view('os_software_releases_eva');
+  $view->set_display('page_1');
+  $view->set_arguments(array($node->nid));
+  $view->execute();
+  
+  $nids = array();
+  foreach ($view->result as $data) {
+    if (is_numeric($data->nid)) $nids[] = $data->nid;
+  }
+  node_delete_multiple($nids);
+}
+
+
+/**
  * Prepares Software Release node title for presave and view
  */
-function _os_software_prepare_release_title($node, $append_sitename = FALSE) {
-  dpm($node);
+function _os_software_prepare_release_title($node) {
   $default_prefix = 'Project Release';
   
   $project_node = node_load($node->field_software_project['und'][0]['target_id']);
@@ -173,13 +194,6 @@ function _os_software_prepare_release_title($node, $append_sitename = FALSE) {
     $project_title,
     $version,
   );
-  
-  if ($append_sitename) {
-    $sitename = trim(drupal_get_title);
-    $separator = '|';
-    $title_parts[] = $separator;
-    $title_parts[] = $sitename;
-  }
   
   return implode(' ', $title_parts);
 }
