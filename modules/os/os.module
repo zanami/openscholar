@@ -568,41 +568,16 @@ function theme_openscholar_powered_by(){
 function theme_openscholar_login($variables){
   global $user;
   
+  //do not print the login link if you are logged in
   if ($user->uid)
     return "";
     
-    // Use $_GET here to retrieve the original path in source form.
-  $path = isset($_GET['q']) ? $_GET['q'] : '';
-  
-  $options = array(
-      'fragment' => '', 
-      'query' => '', 
-      'absolute' => FALSE, 
-      'alias' => FALSE, 
-      'prefix' => '' 
-  );
-  // Allow other modules to alter the outbound URL and options.
-  drupal_alter('url_outbound', $path, $options, $path);
-  
-  if ($options['prefix']) {
-    $path = $options['prefix'] . $path;
-  }
-  
-  // Add the existing query string if it exists
-  $query = drupal_http_build_query(drupal_get_query_parameters($_GET, array('q')));
-  if ($query != '') {
-    $path .= '?' . $query;
-  }
-  
   return l($variables['link_text'], "user", array(
       'purl' => array(
           'disabled' => TRUE 
       ), 
       'attributes' => $variables['attributes'], 
       'alias' => TRUE, 
-      'query' => array(
-          'destination' => drupal_encode_path($path) 
-      ) 
   ));
 }
 
@@ -754,4 +729,59 @@ function os_system_info_alter(&$info, $file, $type){
         'content_bottom' => 'Content Bottom' 
     );
   }
+}
+
+/**
+ * Implements hook_url_outbound_alter().
+ *
+ * Rewrites path to add a return destination wherever it is clicked from.
+ */
+function os_url_outbound_alter(&$path, &$options, $original) {
+  
+  //Pages to add a destination return to their links
+  $loop_back_pages = array(
+      'user',
+      'user/logout',
+      );
+  
+  // Only altering the logout/login path and
+  // only when there is not already a destination
+  if(!in_array($path,$loop_back_pages) || !empty($options['query']['destination'])) return;
+  
+  //If we are in the CP then just go to the homepage of the site
+  if(!context_isset('context', 'os_cp') || !isset($_GET['q'])){
+    // Use $_GET here to retrieve the original path in source form.
+    $dest_path = $_GET['q'];
+  }else{ 
+    $dest_path = '';
+  }
+  
+  //Prevent possibility of infinate loops
+  if(in_array($dest_path,$loop_back_pages)){
+    return;
+  }
+  
+  //Some defaults for altering the current path
+  $current_options = array(
+      'fragment' => '',
+      'query' => '',
+      'absolute' => FALSE,
+      'alias' => FALSE,
+      'prefix' => ''
+  );
+  // Allow other modules to alter the outbound URL and options.
+  drupal_alter('url_outbound', $dest_path, $current_options, $dest_path);
+  
+  if ($current_options['prefix']) {
+    $dest_path = $current_options['prefix'] . $dest_path;
+  }
+  
+  // Add the existing query string if it exists
+  $query = drupal_http_build_query(drupal_get_query_parameters($_GET, array('q')));
+  if ($query != '') {
+    $dest_path .= '?' . $query;
+  }
+  
+   $options['query']['destination'] = drupal_encode_path($dest_path);
+  
 }

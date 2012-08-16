@@ -261,13 +261,13 @@ function _cp_get_toolbar_setting(){
 //   $user_links[] = array(
 //       'title' => t('Logout'),
 //       'href' => "logout",
-//       'query' => ! context_isset('context', 'cp-admin') ? array(
+//       'query' => ! context_isset('context', 'os_cp') ? array(
 //           'destination' => $_GET['q']
 //       ) : array(
 //           'destination' => '<front>'
 //       )
 //   );
-//   if (context_isset('context', 'cp-admin')) {
+//   if (context_isset('context', 'os_cp')) {
 //     $user_links[] = array(
 //         'title' => t('Back to your site!'),
 //         'href' => "",
