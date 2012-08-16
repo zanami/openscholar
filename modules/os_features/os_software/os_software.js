@@ -7,13 +7,11 @@
   Drupal.behaviors.os_software = {
     attach: function(context){
       var inputSelector = '#edit-field-software-method-und';
-      var selectedValue = $(inputSelector + ' option:selected').val();
       var urlFieldSelector = '#field-software-repo-add-more-wrapper';
       
       // Toggles Repo URL visible or hidden based on new selection
       $(inputSelector).change(function(){
         var newValue = $(this).val().toLowerCase();
-        alert(newValue);
         if (newValue === 'manual upload') {
           $(urlFieldSelector).hide();
         } else {
