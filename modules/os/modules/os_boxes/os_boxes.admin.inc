@@ -151,7 +151,7 @@ function os_boxes_remove_widget($box, $target=false) {
     $render = array(
       '#type' => 'container',
       '#attributes' => array(
-        'id' => 'block-boxes-'.$box->delta,
+        'id' => 'block-boxes-'.drupal_html_class($box->delta),
       ),
       'text' => array(
         '#type' => 'markup',
@@ -167,7 +167,7 @@ function os_boxes_remove_widget($box, $target=false) {
     $render = array_shift($t);
   }
   $html = drupal_render($render);
-  overlay_commands_add(ajax_command_replace('#block-boxes-'.$box->delta, $html));
+  overlay_commands_add(ajax_command_replace('#block-boxes-'.drupal_html_class($box->delta), $html));
   overlay_commands_add(overlay_command_dismiss());
   return '';
 }

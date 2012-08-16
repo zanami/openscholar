@@ -47,7 +47,8 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('media_gallery_media:display', 'media_gallery_media_display');
     $this->addFieldMapping('media_gallery_media:language', 'media_gallery_media_language');
     
-    $this->addUnmigratedDestinations(array('media_gallery_media:file_class', 'media_gallery_media:destination_dir', 'media_gallery_media:destination_file', 'media_gallery_media:file_replace', 'media_gallery_media:preserve_files', 'media_gallery_image_info_where'), t('DNM')); //happy with defaults
+    $this->addUnmigratedDestinations(parent::subfields('media_gallery_media', array('file_class', 'destination_dir', 'destination_file', 'file_replace', 'preserve_files')), t('DNM')); //happy with defaults
+    $this->addUnmigratedDestinations(array('media_gallery_image_info_where'), t('DNM'));
 
     $this->addFieldMapping('media_gallery_format')
       ->defaultValue('lightbox'); //use the lightbox by default.  no previous setting to import.
@@ -129,7 +130,8 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     //$current_row->prepared_files = parent::os_migrate_prepare_files($result);
     //this gets subfields, but media_gallery_media still has nothing
     $fields = array('language' => 'language', 'description' => 'description', 'list' => 'display');
-    parent::os_migrate_prepare_files_v24($result, $current_row, 'media_gallery_media', $fields);
+    //parent::os_migrate_prepare_files_v24($result, $current_row, 'media_gallery_media', $fields);
+    parent::os_migrate_prepare_files($result, $current_row, 'media_gallery_media', $fields);
     
     //description may be serialized array
     if (isset($current_row->media_gallery_media_description) && is_string($current_row->media_gallery_media_description)) {

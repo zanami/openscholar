@@ -44,14 +44,23 @@ function boxes_menu() {
 }
 
 /**
- * Access check for whether current user is able to edit boxes.
+ * Function to support legacy code
  */
 function boxes_access_edit($box = null) {
+  return boxes_access('edit', $box) || user_access('edit boxes');
+}
+
+/**
+ * Checks access for a given operation against a given box.
+ * if the box isn't set or the user doesn't have that permission,
+ * we check if user has administer boxes
+ */
+function boxes_access($op, $box = null) {
   $box_type_check = false;
   if (isset($box)) {
-    $box_type_check = user_access('edit '.$box->plugin_key.' box type');
+    $box_type_check = user_access($op.' '.$box->plugin_key.' box type');
   }
-  return $box_type_check || user_access('administer boxes') || user_access('edit boxes');
+  return $box_type_check || user_access('administer boxes');
 }
 
 /**
@@ -206,7 +215,7 @@ function boxes_block_view($delta) {
     // Generate content and provide an editing form if user has proper
     // permissions.
     $block = $box->render();
-    if (boxes_access_edit()) {
+    if (boxes_access_edit($box)) {
       if (variable_get('boxes_edit_location', BOXES_EDIT_IN_PLACE) == BOXES_EDIT_IN_PLACE) {
         $edit_link = array(
           'title' => t('Edit Box'),
@@ -285,6 +294,7 @@ function boxes_footer() {
       $plugin_key = $_GET['plugin_key'];
       $delta = $_GET['boxes_delta'];
       $box = boxes_box_load($delta);
+      if (!boxes_access_edit($box)) exit;
       if (!$box && $plugin_key) {
         $box = boxes_factory($plugin_key, array('delta' => $delta));
         $form_state = array(

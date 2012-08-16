@@ -11,6 +11,13 @@ include_once 'os_software.features.inc';
  */
 
 /**
+ * Implements hook_form_FORM_ID_form_alter()
+ */
+function os_software_form_software_project_node_form_alter(&$form, &$form_state, $form_id) {
+  drupal_add_js(drupal_get_path('module', 'os_software') . '/os_software.js');
+}
+
+/**
  * Implements hook_node_insert()
  * 
  * Enforces single recommended release per project constraint for "Software Release" 
@@ -67,7 +74,9 @@ function os_software_node_presave($node) {
  */
 function os_software_node_view($node, $view_mode, $langcode) {  
   if ($node->type !== 'software_project') return;
-  
+  if ($node->field_software_method['und'][0]['value'] !== 'Manual upload') {
+    return;
+  }
   // Adds inline contextual links for "Add new > Software Release"
   $release_type = 'software_release';
   
@@ -139,6 +148,16 @@ function os_software_os_widget() {
 }
 
 /**
+ * Provides default packaging method field option for Software Package nodes
+ */
+function os_software_os_packaging_method_option() {
+  $options = array(
+   	'Manual upload' => t('Manual upload'),
+  );
+  return $options;
+}
+
+/**
  * Custom functions
  */
 
@@ -194,4 +213,12 @@ function _os_software_prepare_release_title($node) {
   );
   
   return implode(' ', $title_parts);
+}
+
+/**
+ * Invokes hooks to provide packaging method field options
+ */
+function _os_software_packaging_method_options() {
+  $options = module_invoke_all('os_packaging_method_option');
+  return $options;
 }

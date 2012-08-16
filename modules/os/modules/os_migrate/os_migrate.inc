@@ -111,20 +111,21 @@ abstract class OSMigration extends Migration {
    * 
    * @return array
    */
-  function os_migrate_prepare_files($result) {
-    $output = array();
-    foreach ($result as $row) {
-      $file = array(
-        'path' => variable_get('os_migrate_files', FALSE) . '/' . $row->filepath,
-        'description' => $row->description,
-        'display' => $row->list,
-        'timestamp' => $row->timestamp,
-        'title' => $row->title
-      );
-      $output[] = drupal_json_encode($file);
-    }
-    return $output;
-  }
+  // obsolete!  kept for reference
+//   function os_migrate_prepare_files($result) {
+//     $output = array();
+//     foreach ($result as $row) {
+//       $file = array(
+//         'path' => variable_get('os_migrate_files', FALSE) . '/' . $row->filepath,
+//         'description' => $row->description,
+//         'display' => $row->list,
+//         'timestamp' => $row->timestamp,
+//         'title' => $row->title
+//       );
+//       $output[] = drupal_json_encode($file);
+//     }
+//     return $output;
+//   }
   
   //update for previous function for v2.4 api.  instead of json, we use row->field:subfield.  
   //we could provide db aliases and map to those, except that some fields (ie image galleries) have multiple values
@@ -151,6 +152,48 @@ abstract class OSMigration extends Migration {
        // }
       }
     }
+  }
+  
+  //attaches results to row, minding the subfields (field => col) 
+  function os_migrate_prepare_files($files, &$row, $field_name, $subfields = array()) {
+    //turn db statement into array of objects if that's what we're starting with.
+    if (!is_array($files) && get_class($files) == 'DatabaseStatementBase') {
+      $_files = array();
+      while ($file_row = $files->fetchObject()) {
+        $_files[] = $file_row;
+      }
+      $files = $_files;
+    }
+    
+    //make subfields associative if it isn't.
+    if (array_keys($subfields) === range(0, count($subfields)-1)) {
+      $subfields = array_combine($subfields, $subfields);
+    }
+        
+    //don't forget the field itself
+    $subfields[''] = 'filepath';
+    
+    //create field if necessary, add results to it.
+    foreach ($files as $file) {
+      foreach ($subfields as $field => $column) {
+        $delta = (strlen($field)) ? "${field_name}_${field}" : $field_name;
+        
+        if (!isset($row->$delta)) {
+          $row->$delta = array(); 
+        }
+        //null results SHOULD be pushed.  they're placeholders.
+        @array_push($row->$delta, $file->$column);
+      }
+    }
+    
+  }
+  
+  function get_file_by_fid($fid) {
+    $result = $this->d6_db_select('files', 'f')
+      ->fields('f')
+      ->condition('fid', $fid, '=')
+      ->execute();
+    return $result->fetchObject();
   }
   
   /**
