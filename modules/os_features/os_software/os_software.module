@@ -147,6 +147,16 @@ function os_software_os_widget() {
 }
 
 /**
+ * Provide default packaging method field option for Software Package nodes
+ */
+function os_software_os_packaging_method_option() {
+  $options = array(
+   	'Manual upload' => t('Manual upload'),
+  );
+  return $options;
+}
+
+/**
  * Custom functions
  */
 
@@ -202,4 +212,13 @@ function _os_software_prepare_release_title($node) {
   );
   
   return implode(' ', $title_parts);
+}
+
+/**
+ * Invokes hooks to provide packaging method field options
+ */
+function _os_software_packaging_method_options() {
+  $options = module_invoke_all('os_packaging_method_option');
+  dpm($options);
+  return $options;
 }

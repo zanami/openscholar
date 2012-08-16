@@ -99,11 +99,8 @@ function os_software_field_default_fields() {
       ),
       'module' => 'list',
       'settings' => array(
-        'allowed_values' => array(
-          'Manual upload' => 'Manual upload',
-          'Rbuild repository' => 'Rbuild repository',
-        ),
-        'allowed_values_function' => '',
+        'allowed_values' => array(),
+        'allowed_values_function' => '_os_software_packaging_method_options',
       ),
       'translatable' => '0',
       'type' => 'list_text',
