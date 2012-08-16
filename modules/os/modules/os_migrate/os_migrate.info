@@ -31,4 +31,5 @@ files[] = os_migrate_users.inc
 files[] = os_migrate_specialtables.inc
 files[] = os_migrate_tablecopy.inc
 
+files[] = plugins/imagefield_crop.inc
 
