@@ -84,7 +84,7 @@ function harvard_activity_reports_query_user_by_id($id)  {
  */
 function harvard_activity_reports_query_user_by_site($site) {	
 	// scholar variable
-	$scholarHost = "scholar.harvard.edu";
+	//$scholarHost = "scholar.harvard.edu";
 	$scheme = "http";
 	$siteUrl = $site;
 	
@@ -92,6 +92,7 @@ function harvard_activity_reports_query_user_by_site($site) {
 	if($siteUrl != "") {
 		// parse the url
 		$parseUrl = parse_url($siteUrl);
+
 		// make sure they put the http:// before their site
 		// if not, we'll add it for them
 		if($parseUrl['scheme'] != $scheme) {
@@ -104,8 +105,8 @@ function harvard_activity_reports_query_user_by_site($site) {
 		$host = $parseUrl['host'];
 		// make sure it's not empty
 		if($host != ""){
-			// check to see if it matches scholar.harvard.edu
-			if($host == $scholarHost){
+			// check to see if it is empty, if not, they must be an og site
+			if($parseUrl['path']!=""){
 			 	// grab the path for the url
 			 	// remove the / before the path
 				$path = substr($parseUrl['path'],1);
@@ -129,6 +130,8 @@ function harvard_activity_reports_query_user_by_site($site) {
 		 	}else{
 		 		$userSiteID = FALSE;
 		 	}// end if
+		}else{
+			$userSiteID = FALSE;
 		}// end if
 	}else{
 		$userSiteID = FALSE;
