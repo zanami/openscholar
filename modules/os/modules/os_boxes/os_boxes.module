@@ -15,22 +15,31 @@ function os_boxes_ctools_plugin_api($module, $api) {
  * Implements hook_menu().
  */
 function os_boxes_menu() {
-  $items['os/boxes/%os_boxes'] =
   $items['os/boxes/%os_boxes/edit'] = array(
     'title' => 'Edit Widget',
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(2),
-    'access callback' => 'boxes_access_admin',
+    'access callback' => 'boxes_access_edit',
+    'access arguments' => array(2),
     'type' => MENU_LOCAL_TASK,
     'file' => 'os_boxes.admin.inc',
     'context' => MENU_CONTEXT_INLINE,
     'weight' => 1,
   );
+
+  // This item is just a helper for contextual links
+  // It should always be accessible, and just not go anywhere.
+  $items['os/boxes/%os_boxes'] = array(
+    'access callback' => true,  // always allow. There's nothing here
+    'page callback' => 'os_boxes_placeholder',
+  ) + $items['os/boxes/%os_boxes/edit'];
+
   $items['os/boxes/%os_boxes/delete'] = array(
     'title' => 'Delete Widget',
     'page callback' => 'os_boxes_delete_widget',
     'page arguments' => array(2),
-    'access callback' => 'boxes_access_admin',
+    'access callback' => 'os_boxes_access_delete',
+    'access arguments' => array(2),
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
     'weight' => 2,
@@ -70,6 +79,10 @@ function os_boxes_load($key) {
 function os_boxes_create_delta() {
   return time();  // TODO: Replace with real function
 }
+
+/**
+ * Access function. Ensures
+ */
 
 /**
  * Get all the boxes plugins or a plugin by name
