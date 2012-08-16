@@ -250,45 +250,45 @@ function _cp_get_toolbar_setting(){
 //       'html' => TRUE
 //   );
 
-  /*
-   * $new_count = vsite_news_get_new_activity_count(); $user_links[] = array(
-   * 'title' => $new_count, 'href' => 'cp/news', //@TODO: replace this with new
-   * path 'attributes' => $new_count?array('class' => 'unread', 'title' =>
-   * t('Unread Activity on your Site')):array('title' => t('All Activity on your
-   * Site')), );
-   */
+//   /*
+//    * $new_count = vsite_news_get_new_activity_count(); $user_links[] = array(
+//    * 'title' => $new_count, 'href' => 'cp/news', //@TODO: replace this with new
+//    * path 'attributes' => $new_count?array('class' => 'unread', 'title' =>
+//    * t('Unread Activity on your Site')):array('title' => t('All Activity on your
+//    * Site')), );
+//    */
 
-  $user_links[] = array(
-      'title' => t('Logout'),
-      'href' => "logout",
-      'query' => ! context_isset('context', 'cp-admin') ? array(
-          'destination' => $_GET['q']
-      ) : array(
-          'destination' => '<front>'
-      )
-  );
-  if (context_isset('context', 'cp-admin')) {
-    $user_links[] = array(
-        'title' => t('Back to your site!'),
-        'href' => "",
-        'html' => TRUE
-    );
-  }
+//   $user_links[] = array(
+//       'title' => t('Logout'),
+//       'href' => "logout",
+//       'query' => ! context_isset('context', 'cp-admin') ? array(
+//           'destination' => $_GET['q']
+//       ) : array(
+//           'destination' => '<front>'
+//       )
+//   );
+//   if (context_isset('context', 'cp-admin')) {
+//     $user_links[] = array(
+//         'title' => t('Back to your site!'),
+//         'href' => "",
+//         'html' => TRUE
+//     );
+//   }
 
-  return array(
-      '#type' => 'container',
-      'toolbar' => $links,
-      'user' => array(
-          '#theme' => 'links',
-          '#links' => $user_links
-      ),
-      '#attributes' => array(
-          'id' => array(
-              'cp-menu-full'
-          )
-      )
-  );
-}
+//   return array(
+//       '#type' => 'container',
+//       'toolbar' => $links,
+//       'user' => array(
+//           '#theme' => 'links',
+//           '#links' => $user_links
+//       ),
+//       '#attributes' => array(
+//           'id' => array(
+//               'cp-menu-full'
+//           )
+//       )
+//   );
+// }
 
 function _cp_mini_menu(){
   global $user;
