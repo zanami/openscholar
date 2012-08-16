@@ -285,7 +285,7 @@ abstract class OSMigration extends Migration {
     }
     
     if (!isset($variable_cache[$var])) {
-      $query = $this::d6_db_select('variable', 'v')
+      $query = self::d6_db_select('variable', 'v')
         ->fields('v', array('value'))
         ->condition('v.name', $var, '=');
       $value = unserialize($query->execute()->fetchField());
@@ -555,7 +555,7 @@ abstract class OSMigration extends Migration {
     
     //replace this with generic function.  does the one I wrote make sense?  wtf is this one doing?
     //were we stripping just the purl for the site?
-    $uri = $this::_uri_trim($entity->uri);/*
+    $uri = self::_uri_trim($entity->uri);/*
     $uri = str_replace('public://', '', $entity->uri);
     if (strpos($uri, '/') !== FALSE) {
       $a = explode('/', $uri);
