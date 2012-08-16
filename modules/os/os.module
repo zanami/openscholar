@@ -89,8 +89,21 @@ function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = false)
   foreach ( $features as $name => $feature ) {
     $info = $feature->info['features'];
     if (isset($info['node']) && ($ret_all || (isset($site_features[$name]) && in_array($site_features[$name], $privacy)))) {
+      
+      // Get bundle name, we call the node_info hook directly since
+      // this is called during bootstrap
+      module_load_include('features.inc', $name);
+      if(function_exists($name.'_node_info')){
+        $ni = $name.'_node_info';
+        $node_info = $ni();
+      }
+      
       foreach ($info['node'] as $nodetype) {
-        $bundles[$nodetype] = $feature->info['name'];
+         if(isset($node_info[$nodetype]['name'])){
+           $bundles[$nodetype] = $node_info[$nodetype]['name'];
+         }else{
+          $bundles[$nodetype] = $feature->info['name'];
+        }
       }
     }
   }
