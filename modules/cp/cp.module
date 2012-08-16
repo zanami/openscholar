@@ -263,7 +263,9 @@ function _cp_full_menu(){
       'href' => "logout",
       'query' => ! context_isset('context', 'cp-admin') ? array(
           'destination' => $_GET['q']
-      ) : ''
+      ) : array(
+          'destination' => '<front>'
+      )
   );
   if (context_isset('context', 'cp-admin')) {
     $user_links[] = array(
@@ -334,11 +336,6 @@ function cp_toolbar_view(){
   $build['toolbar_drawer'] = array();
   $build['toolbar_drawer_classes'] = '';
   unset($build['toolbar_toggle']);
-
-  if ($GLOBALS['user']->uid == 1) {
-    unset($build['toolbar_home']);
-    unset($build['toolbar_user']);
-  }
 
   return $build;
 }

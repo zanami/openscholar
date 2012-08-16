@@ -61,6 +61,12 @@ function vsite_context_default_contexts() {
             'region' => 'footer',
             'weight' => '10',
         ),
+        'os-login' => array(
+            'module' => 'os',
+            'delta' => 'login',
+            'region' => 'footer',
+            'weight' => '-10',
+        ),
       ),
     ),
   );

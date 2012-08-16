@@ -47,12 +47,12 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
 
     $query->join('content_type_vsite', 'ct', 'n.nid = ct.nid');
     $query->fields('ct', parent::subfields('field_vsite',array('address_value', 'logo_fid', 'logo_list', 'logo_data'), '_')); 
-    $query->isNotNull('field_vsite_logo_fid'); //uncomment to test logo presence
+    //$query->isNotNull('field_vsite_logo_fid'); //uncomment to test logo presence
     
     
     $query->join('purl', 'p', 'n.nid = p.id');
     $query->fields('p', array('value', 'provider'));
-    //$query->condition('p.provider', 'spaces_og', '='); //domain sites had an extra entry for vsite_domain.  add those elsewehre later
+    $query->condition('p.provider', 'spaces_og', '='); //domain sites had an extra entry for vsite_domain.  add those elsewehre later
 
 //     $query->join('og_ancestry', 'oga', 'n.nid = oga.nid'); //node membership
 //     $query->fields('oga', array('group_nid'));
