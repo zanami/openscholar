@@ -13,7 +13,7 @@ function os_software_views_default_views() {
   $view = new view();
   $view->name = 'os_software_projects';
   $view->description = 'Os Software > Software';
-  $view->tag = 'default';
+  $view->tag = 'os_feature';
   $view->base_table = 'node';
   $view->human_name = 'OS Software Projects';
   $view->core = 7;
@@ -101,9 +101,9 @@ function os_software_views_default_views() {
   $view = new view();
   $view->name = 'os_software_releases';
   $view->description = 'Provides release displays for project nodes.';
-  $view->tag = 'OS features';
+  $view->tag = 'os_feature';
   $view->base_table = 'node';
-  $view->human_name = 'OS Software Releases EVA';
+  $view->human_name = 'OS Software Releases';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
