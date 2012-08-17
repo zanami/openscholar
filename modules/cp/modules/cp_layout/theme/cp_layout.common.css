@@ -124,14 +124,16 @@
   display: inline-block !important;
   background: url("images/widget-bg.png") no-repeat scroll 50% 10px transparent;
   color: #444545;
+  cursor: move;
   font-weight: bold;
   font-size: 11px;
   padding: 62px 15px 5px;
   text-align: center;
   vertical-align: top;
-  width: 75px;
+  width: 75px !important;
   height: 31px;
   position: relative;
+  white-space: normal;
 }
 
 #edit-layout-unused-widgets .cp-layout-widget.hidden {
@@ -141,18 +143,24 @@
 /* WIDGET STYLES IN LAYOUT GRID */
 .cp-region .cp-layout-widget {
   display: block !important;
-  background: url("images/widget-placed-bg.png") no-repeat scroll 0 50% #F0F3F3;
+  background: #F0F3F3;
   border-bottom: 1px solid #666666;
   border-top: 1px solid #CCCCCC;
   margin: 0;
   min-height: 18px;
   overflow: hidden;
-  padding: 4px 20px 15px 31px;
+  padding: 4px 4px 15px 7px;
   font-size:1em;
   color: #565E66;
-  cursor: pointer;
+  cursor: auto;
   font-weight: bold;
   position: relative;
+}
+
+.cp-region.unlocked .cp-layout-widget {
+  background: url("images/widget-placed-bg.png") no-repeat scroll 0 50%;
+  padding-left: 31px;
+  cursor: move;
 }
 
 #edit-layout-unused-widgets .cp-layout-widget.disabled,
@@ -184,7 +192,17 @@
   padding-bottom:6px;
 }
 
-.widget-controls a.delete {display:none;}
+.widget-controls a.delete {
+  display:none;
+}
+
+.ui-sortable-helper .widget-controls {
+  display: none;
+}
+
+.cp-region.locked-down .widget-controls {
+  display: none;
+}
 
 
 /* WIDGET STYLES IN UNUSED WIDGET BOX */

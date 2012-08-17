@@ -15,7 +15,7 @@ function os_boxes_ctools_plugin_api($module, $api) {
  * Implements hook_menu().
  */
 function os_boxes_menu() {
-  $items['os/boxes/%os_boxes/add'] = array(
+  $items['os/boxes/add/%os_boxes'] = array(
     'title' => 'Add Widget',
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(2),
