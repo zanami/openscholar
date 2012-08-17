@@ -1,0 +1,375 @@
+<?php 
+
+/**
+ * @file
+ * 
+ * os_simpleview module
+ * Let's users provide settings to vsite_view_base view per content type
+ * Accessible for creating a page or box
+ **/
+
+include_once('os_simpleview.features.inc');
+
+/**
+ * Implements hook_menu()
+ */
+function os_simpleview_menu() {
+  $items = array();
+  $items['os_simpleview/%ctools_js'] = array(
+    'type' => MENU_CALLBACK, 
+    'title' => 'New List Items', 
+    'page callback' => 'os_simpleview_page',
+    'page arguments' => array(1), 
+    'access callback' => 'spaces_access_admin',
+  );
+  $items['os_simpleview/%ctools_js/%step'] = $items['os_simpleview/%ctools_js'];
+  $items['os_simpleview/%ctools_js/%step']['page arguments'] = array(1,2); 
+  return $items;
+}
+
+/**
+ * @function os_simpleview_page
+ *
+ * Menu item shows wizard/form
+ */
+function os_simpleview_page($js = NULL, $step = NULL, $delta=NULL) {
+  ctools_include('wizard');
+  ctools_include('ajax');
+  ctools_include('modal');
+  $cache_name = 'os_simpleview';
+
+  // Starting a new form, set first page and a new cache
+  if (empty($step) || $step == 'dropdown') { //going back empties the step...
+    os_simpleview_cache_clear($cache_name);
+    $origin = arg(5);
+    $origin = ($origin) ? $origin : '';
+    $step = 'basics';
+  }
+
+  //get what's already cached and construct a form state
+  $cached = os_simpleview_cache_get($cache_name);
+  $cached['origin'] = isset($origin) ? $origin : $cached['origin'];
+  $form_state = array(
+      'ajax' => $js,
+      'cache_name' => $cache_name,
+      'cached' => &$cached,
+  );
+
+  if ($delta) {
+    $cached['delta'] = $delta;
+  }
+
+  os_simpleview_cache_set($cache_name, $cached);
+
+  //build and display multistep form
+  if (isset($cached['content_type'])) {
+    $content_type = $cached['content_type'];
+  } elseif (isset($_POST['content_type'])) {
+    $content_type = $_POST['content_type'];
+  } else {
+    $content_type = 'default';
+  }
+  
+  $form_info = os_simpleview_multiform_info($js, $content_type);
+  $output = ctools_wizard_multistep_form($form_info, $step, $form_state);
+
+  return os_simpleview_ajax_render($form_state, $output);
+}
+
+/**
+ * @function os_simpleview_multiform_info
+ *
+ * Sets up multistep form, retrieiving forms from active plugin
+ */
+function os_simpleview_multiform_info($js, $content_type) {
+  $form_info = array(
+      'id' => 'os_simpleviews_list',
+      'path' => ($js) ? 'os_simpleview/ajax/%step' : 'os_simpleview/nojs/%step',
+      'show trail' => TRUE,
+      'show back' => TRUE,
+      'show return' => FALSE,
+      'next callback' => 'os_simpleview_multiform_next',
+      'finish callback' => 'os_simpleview_multiform_finish',
+      'cancel callback' => 'os_simpleview_multiform_cancel',
+  );
+
+  //Append forms from appropriate content type
+  $plugin = os_simpleview_plugin_by_type($content_type);
+  if ($class = os_simpleview_plugin_get_class($plugin)) {
+    $instance = new $class();
+
+    //Get forms from plugins.  Override the method to generic form and tell generic form which class to load to get original method
+    $forms = $instance->multiform_info();
+    foreach ($forms as $key => $form) {
+      $forms[$key]['class'] = $class;
+      $forms[$key]['form method'] = $forms[$key]['form id'];
+      $forms[$key]['form id'] = 'os_simpleview_simpleview_class_form';
+    }
+    $form_info['forms'] = $forms;
+  }
+
+  return $form_info;
+}
+
+/**
+ * @function os_simpleview_simpleview_class_form
+ *
+ * Each form is fetched from an object.  That object's methods are not available globally.
+ * When using such a form, that form id is replaced with simpleview_class_form, which returns
+ * the form in our object
+ */
+function os_simpleview_simpleview_class_form($form, &$form_state) {
+  ctools_include('dependent');
+  ctools_add_js('dependent');
+  drupal_add_js('misc/jquery.form.js');
+  ctools_add_js('ajax-responder');
+
+  $step = $form_state['step'];
+  $class = $form_state['form_info']['forms'][$step]['class'];
+  $instance = new $class();
+  $form_method = $form_state['form_info']['forms'][$step]['form method'];
+
+  //build up default options to show in the form.  order matters.  array union (+) ignores fields that are already in left array
+  $default_options = array();
+
+  //options set during this session are highest priority
+  if ($form_state['cached']) {
+    $default_options += $form_state['cached'];
+  }
+
+  //set any unincluded checkboxes to false.  otherwise they're set to default since they have no setting.
+  if (isset($form_state['input']['checkbox_list'])) {
+    foreach(explode(',', $form_state['input']['checkbox_list']) as $checkbox) {
+      if (!isset($form_method['input'][$checkbox])) {
+        $default_options[$checkbox] = FALSE;
+      }
+    }
+  }
+
+  //if we're editing an existing box, include the box's options that are already set
+  if (isset($form_state['cached']['delta'])) {
+    $default_options += _os_simpleview_box_options($form_state['cached']['delta']);
+  }
+
+  //finally, the basic defaults if nothing else is set
+  $default_options += $instance->options_defaults();
+  $default_options += $default_options['plugin_opts'];
+
+  $plugin_form = $instance->$form_method($default_options);
+  $form += $plugin_form;
+  $form_state['input'] += $default_options; //makes sure elements are in post so fapi can use default values
+
+  //track the checkbox elements being sent.  if they're absent at the next input, assume they're false.
+  $checkboxes = array();
+  foreach($form as $key => $element) {
+    if (isset($element['#type']) && ($element['#type'] == 'checkbox')) {
+      $checkboxes[] = $key;
+    }
+  }
+  $form['checkbox_list'] = array('#type'=>'hidden', '#value'=>implode(',', $checkboxes) );
+
+  return $form;
+}
+
+/**
+ * @function os_simpleview_ajax_render
+ *
+ * When using ajax, passes rendered form back to browser
+ * See http://drupal.org/node/689746
+ *
+ * also used as generic finish up function before passing form back home
+ */
+
+function os_simpleview_ajax_render(&$form_state, $output) {
+  if ($form_state['ajax']) {
+    $commands = array();
+    $commands = ctools_modal_form_render($form_state, $output);
+    ajax_render($commands);
+
+  } else {
+    return $output;
+  }
+}
+
+
+/**
+ * object_cache functions
+ * os_simpleview_cache_{get,set,clear}
+ */
+
+function os_simpleview_cache_set($cache_name, $object) {
+  ctools_include('object-cache');
+  ctools_object_cache_set('os_simpleview', $cache_name, $object);
+}
+
+function os_simpleview_cache_get($cache_name) {
+  ctools_include('object-cache');
+  $cache = ctools_object_cache_get('os_simpleview', $cache_name);
+  return ($cache) ? $cache : array();
+}
+
+function os_simpleview_cache_clear($cache_name) {
+  ctools_include('object-cache');
+  ctools_object_cache_clear('os_simpleview', $cache_name);
+};
+
+
+
+
+/**
+ * multiform functions - next, cancel return
+ * handle cases for user clicking next, cancel, or return.
+ */
+function os_simpleview_multiform_next(&$form_state) {
+  os_simpleview_cache_set($form_state['cache_name'], $form_state['cached'] + $form_state['values']);
+
+  //ctools has advanced the form a step, let it be rendered
+  if ($form_state['ajax']) {
+    $form_state['ajax render'] = 'os_simpleview_ajax_render';
+    $form_state['rerender'] = TRUE;
+  } else {
+    $op = $form_state['clicked_button']['#value'];
+    $next = $form_state['form_info']['next text'];
+    $back = $form_state['form_info']['back text'];
+    
+    //default values, form hasn't been hit
+    if (!isset($form_state['submit_handlers'])) { // && ($op != $next)) {
+      if ($form_state['no_redirect']) {
+        $form_state['redirect'] = FALSE;
+      }
+    }
+    
+    switch ($op) {
+      case $next:
+        if ($form_state['no_redirect'] && empty($form_state['next'])) {
+          $form_state['redirect'] = FALSE;
+        }
+      break;
+      
+      case $back: //op is set to Back before it returns...
+        if ($form_state['no_redirect'] && empty($form_state['next'])) {
+         //$form_state['redirect'] = FALSE;
+        }
+      break;
+        
+    }
+//instead of values how about clicked_button of #value.  Back
+//     switch ($form_state['values']['op']) {
+//       case 'Continue':
+        //form has been advanced and we've already redirected, but the redirect is still stored.
+        
+//      break;
+      
+//       case 'Back':
+//         TRUE;
+//       break;
+    
+//     }
+  } 
+  
+};
+
+function os_simpleview_multiform_cancel(&$form_state) {
+  ctools_object_cache_clear('os_simpleview', $form_state['cache_name']);
+  drupal_set_message('Multi-step form cancelled.');
+  $form_state['redirect'] = 'os_simpleview';
+
+};
+
+
+
+/** 
+ * ctools plugin loader functions 
+ **/
+
+/**
+ * Implementation of hook_ctools_plugin_directory
+ */
+function os_simpleview_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'os_simpleview' && !empty($plugin)) {
+    return "plugins/$plugin";
+  }
+}
+
+/**
+ * Implementation of hook_ctools_plugin_type
+ */
+function os_simpleview_ctools_plugin_type() {
+  return array('os_simpleview' => array(
+      'use hooks' => TRUE,
+      'class' => array('class')
+  ));
+}
+
+/**
+ * @function os_simpleview_plugin_load
+ *
+ * Load one or all plugins
+ */
+function os_simpleview_plugin_load($type = NULL) {
+  ctools_include('plugins');
+  $plugins = ctools_get_plugins('os_simpleview', 'os_simpleview');
+
+  if (isset($type)) {
+    return $plugins[$type];
+  } else {
+    return $plugins;
+  }
+}
+
+/**
+ * @function os_simpleview_get_content_type_plugin
+ *
+ * Returns a plugin for the specified content type.  If none match, returns default.
+ */
+function os_simpleview_plugin_by_type($content_type) {
+  $plugins = os_simpleview_plugin_load();
+  foreach($plugins as $key => $plugin) {
+    if (isset($plugin['content_type']) && ($plugin['content_type'] == $content_type) && ($content_type != NULL)) {
+      return $plugin;
+    }
+  }
+
+  return $plugins['os_simpleview_default'];
+}
+
+//returns class of a plugin.  loads parent classes, since ctools doesn't anymore.
+function os_simpleview_plugin_get_class(array $plugin) {
+  if (isset($plugin['parent'])) {
+    os_simpleview_plugin_get_class(os_simpleview_plugin_load($plugin['parent']));
+  }
+  
+  return ctools_plugin_load_class('os_simpleview', 'os_simpleview', $plugin['name'], 'class');
+}
+
+
+
+//returns list of content types.  
+function _os_simpleview_content_types() {
+  return os_get_bundles(array(1,2));
+}
+
+/**
+ * @function _os_simpleview_content_type_to_vsite_path
+ *
+ * Given a content type, returns path to that content type in this vsite.
+ * not vsite dependent!
+ */
+function _os_simpleview_content_type_path($content_type) {
+  $feature_types = features_get_component_map('node');
+  
+  if (isset($feature_types[$content_type]) && $feature_name = $feature_types[$content_type][0]) {  
+    $menu_links = features_get_component_map('menu_links');
+    
+    foreach ($menu_links as $key => $feature) {
+      if (in_array($feature_name, $feature)) {
+        list(,$path) = explode(':', $key, 2);
+        //os_menu_
+      }
+    }
+  }
+  
+  return $content_type; //not sure how to recreate some vsite api functions outside of vsite...
+ // $menu_item = vsite_menus_get_feature_menu_item($feature_types[$content_type][0]);
+  return (isset($menu_item[0]['link_path'])) ? $menu_item[0]['link_path'] : FALSE;
+}
