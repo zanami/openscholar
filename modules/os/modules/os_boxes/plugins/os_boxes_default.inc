@@ -17,11 +17,6 @@
 abstract class os_boxes_default extends boxes_box {
 
   /*
-   * Define the default region for this box.
-   */
-  //public $region;  // shouldn't this be done through context?
-
-  /*
    * If this box has been overridden the changed timestamp will be held here
    */
   public $changed;
@@ -39,6 +34,9 @@ abstract class os_boxes_default extends boxes_box {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state) {
+    $form = array();
+
+    /*
     $form['visibility'] = array(
       '#type' => 'value',
       '#title' => t('Visibility settings'),
@@ -49,6 +47,7 @@ abstract class os_boxes_default extends boxes_box {
           'feature' => t('Show only in *this* section'),
           'all' => t('Show everywhere in my site')),
     );
+    */
 
     return $form;
   }
@@ -61,6 +60,7 @@ abstract class os_boxes_default extends boxes_box {
     $block['title'] = $title;
     $block['subject'] = $title;
     $block['delta'] = $this->delta;
+    $block['content'] = '';
     return $block;
   }
 }
