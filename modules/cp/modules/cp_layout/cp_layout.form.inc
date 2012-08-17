@@ -113,7 +113,8 @@ function cp_layout_full_form($form, $form_state, $ctx){
       '#attributes' => array(
         'class' => array(
           'cp-region',
-          drupal_html_class('cp-region-' . $r)
+          drupal_html_class('cp-region-' . $r),
+          !(user_access('edit region '.$r) || user_access('edit all regions'))?'locked-down':'unlocked',
         )
       ),
       'widgets' => array(

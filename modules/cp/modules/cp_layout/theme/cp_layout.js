@@ -25,7 +25,7 @@
   function cp_layout_init() {
     // things to do:
     // setup dragging regions
-    $regions = $('.cp-region').not(':has(.cp-region)');
+    $regions = $('.cp-region').not(':has(.cp-region)').not('.locked-down');
     var region_ids = [];
     $regions.each(function () {
       region_ids.push('#'+this.id);

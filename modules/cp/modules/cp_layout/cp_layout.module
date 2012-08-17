@@ -104,7 +104,7 @@ function template_preprocess_cp_layout_widget(&$variables) {
 
   if (isset($widget['can_edit']) && $widget['can_edit']) {
     $variables['can_edit'] = true;
-    $variables['edit_path'] = $widget['path'].'/cp-layout';
+    $variables['edit_path'] = $widget['path'].'/edit/cp-layout';
   }
   else {
     $variables['can_edit'] = false;

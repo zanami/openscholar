@@ -15,12 +15,12 @@ function os_boxes_ctools_plugin_api($module, $api) {
  * Implements hook_menu().
  */
 function os_boxes_menu() {
-  $items['os/boxes/%os_boxes/add'] = array(
+  $items['os/boxes/add/%os_boxes'] = array(
     'title' => 'Add Widget',
     'page callback' => 'os_boxes_edit_widget',
-    'page arguments' => array(2),
+    'page arguments' => array(3),
     'access callback' => 'boxes_access',
-    'access arguments' => array('create', 2),
+    'access arguments' => array('create', 3),
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
   );
@@ -274,7 +274,7 @@ function os_boxes_get_region($box, $contexts = array()) {
     }
   }
 
-  return $blocks[$box->delta];
+  return isset($blocks[$box->delta])?$blocks[$box->delta]:false;
 }
 
 function os_boxes_access_region($box) {
