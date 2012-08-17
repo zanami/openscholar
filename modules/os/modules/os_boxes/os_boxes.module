@@ -274,7 +274,7 @@ function os_boxes_get_region($box, $contexts = array()) {
     }
   }
 
-  return $blocks[$box->delta];
+  return isset($blocks[$box->delta])?$blocks[$box->delta]:false;
 }
 
 function os_boxes_access_region($box) {
