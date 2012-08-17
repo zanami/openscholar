@@ -99,7 +99,7 @@ function os_software_views_default_views() {
   $export['os_software_projects'] = $view;
 
   $view = new view();
-  $view->name = 'os_software_releases_eva';
+  $view->name = 'os_software_releases';
   $view->description = 'Provides release displays for project nodes.';
   $view->tag = 'OS features';
   $view->base_table = 'node';
@@ -523,7 +523,7 @@ function os_software_views_default_views() {
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
-  $export['os_software_releases_eva'] = $view;
+  $export['os_software_releases'] = $view;
 
   return $export;
 }

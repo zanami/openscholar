@@ -70,6 +70,6 @@ features[variable][] = node_preview_software_release
 features[variable][] = node_submitted_software_project
 features[variable][] = node_submitted_software_release
 features[views_view][] = os_software_projects
-features[views_view][] = os_software_releases_eva
+features[views_view][] = os_software_releases
 spaces[types][] = og
 spaces[types][] = site
