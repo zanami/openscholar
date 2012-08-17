@@ -15,12 +15,12 @@ function os_boxes_ctools_plugin_api($module, $api) {
  * Implements hook_menu().
  */
 function os_boxes_menu() {
-  $items['os/boxes/%os_boxes/add'] = array(
+  $items['os/boxes/add/%os_boxes'] = array(
     'title' => 'Add Widget',
     'page callback' => 'os_boxes_edit_widget',
-    'page arguments' => array(2),
+    'page arguments' => array(3),
     'access callback' => 'boxes_access',
-    'access arguments' => array('create', 2),
+    'access arguments' => array('create', 3),
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
   );
@@ -40,7 +40,8 @@ function os_boxes_menu() {
   // This item is just a helper for contextual links
   // It should always be accessible, and just not go anywhere.
   $items['os/boxes/%os_boxes'] = array(
-    'access callback' => true,  // always allow. There's nothing here
+    'access callback' => 'os_boxes_access_region',  // for contextual links
+    'access arguments' => array(2),
     'page callback' => 'os_boxes_placeholder',
   ) + $items['os/boxes/%os_boxes/edit'];
 
@@ -88,18 +89,6 @@ function os_boxes_load($key) {
  */
 function os_boxes_create_delta() {
   return time();  // TODO: Replace with real function
-}
-
-/**
- * Access function. Ensures user has permission to delete boxes
- */
-function os_boxes_access_delete($box = null) {
-  $box_type_check = false;
-  if (isset($box)) {
-    $box_type_check = user_access('delete '.$box->plugin_key.' box type');
-  }
-
-  return $box_type_check || user_access('administer boxes');
 }
 
 /**
@@ -186,7 +175,7 @@ function os_boxes_get_factories() {
   foreach ($plugins as $p => $info) {
     // title catches abstract boxes
     // factory catchs our boxes
-    if (user_access('create '.$p.' box type') && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
+    if (user_access('create '.$p.' box type') && isset($info['title']) && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
       $items["boxes-boxes_add__$p"] = array(
         'module' => 'boxes',
         'delta' => "boxes_add__$p",
@@ -248,8 +237,6 @@ function os_boxes_block_view_alter(&$array, $block) {
       'os/boxes',
       array($block->delta),
     );
-
-    unset($array['controls']);
   }
 }
 
@@ -263,4 +250,54 @@ function os_boxes_menu_contextual_links_alter(&$links, $router_item, $path) {
     $ctxs = array_keys(context_active_contexts());
     $links['box-remove']['localized_options']['query']['contexts'] = $ctxs;
   }
+}
+
+/**
+ * Regional permissions
+ * this may be spun off into its own module, so I'm putting it all in one place
+ */
+
+function os_boxes_get_region($box, $contexts = array()) {
+  if (empty($contexts)) {
+    $contexts = context_active_contexts();
+  }
+
+  $plugin = context_get_plugin('reaction', 'block');
+
+  $blocks = &drupal_static(__FUNCTION__, array());
+  if (empty($blocks)) {
+    foreach ($contexts as $c) {
+      foreach ($plugin->get_blocks(null, $c) as $bid => $block) {
+        if ($block->module == 'boxes')
+          $blocks[$block->delta] = $block->region;
+      }
+    }
+  }
+
+  return isset($blocks[$box->delta])?$blocks[$box->delta]:false;
+}
+
+function os_boxes_access_region($box) {
+  $region = os_boxes_get_region($box);
+
+  return user_access('edit region '.$region) || user_access('edit all regions');
+}
+
+function os_boxes_permission() {
+  $regions = array_keys(system_region_list(variable_get('theme_default')));
+
+  $perms = array(
+    'edit all regions' => array(
+      'title' => t('Edit All Regions'),
+      'description' => t('Edit the contents of all regions'),
+    )
+  );
+  foreach ($regions as $r) {
+    $perms['edit region '.$r] = array(
+      'title' => t('Edit Region !region', array('!region' => $r)),
+      'description' => t('Edit the contents of the region !region', array('!region' => $r)),
+    );
+  }
+
+  return $perms;
 }

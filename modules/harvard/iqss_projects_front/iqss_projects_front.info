@@ -1,0 +1,12 @@
+name = Projects at Harvard FrontPage
+description = Projects at Harvard FrontPage configuration
+core = 7.x
+package = IQSS
+php = 5.2.4
+dependencies[] = boxes
+dependencies[] = ctools
+dependencies[] = features
+features[box][] = iqss_projects_fp_features
+features[box][] = iqss_projects_fp_infoblock
+features[ctools][] = boxes:box:1
+features[features_api][] = api:1

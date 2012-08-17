@@ -54,6 +54,12 @@ function os_software_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-9',
         ),
+        'views-e99bd9fc465ac189dce3b71ba9fe2c95' => array(
+          'module' => 'views',
+          'delta' => 'e99bd9fc465ac189dce3b71ba9fe2c95',
+          'region' => 'sidebar_second',
+          'weight' => '-10',
+        ),
       ),
     ),
     'menu' => 'software',

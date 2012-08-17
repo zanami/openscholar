@@ -6,52 +6,65 @@ include_once ('os.features.inc');
  */
 function os_menu(){
   $items = array();
-
+  
   $items['home'] = array(
-      'type' => MENU_CALLBACK,
-      'title' => '',
-      'page callback' => 'os_frontpage',
-      'file' => 'os.pages.inc',
+      'type' => MENU_CALLBACK, 
+      'title' => '', 
+      'page callback' => 'os_frontpage', 
+      'file' => 'os.pages.inc', 
       'access arguments' => array(
-          'access content'
-      ),
-      'weight' => 0
+          'access content' 
+      ), 
+      'weight' => 0 
   );
-
+  
   // nodeautocomplete callback
   $items['os/node/autocomplete'] = array(
-      'type' => MENU_CALLBACK,
-      'title' => 'os_node_autocomplete',
-      'page callback' => 'os_node_autocomplete',
-      'file' => 'os.autocomplete.inc',
+      'type' => MENU_CALLBACK, 
+      'title' => 'os_node_autocomplete', 
+      'page callback' => 'os_node_autocomplete', 
+      'file' => 'os.autocomplete.inc', 
       'access arguments' => array(
-          'access content'
-      ),
-      'file path' => drupal_get_path('module', 'os') . '/'
+          'access content' 
+      ), 
+      'file path' => drupal_get_path('module', 'os') . '/' 
   );
-
+  
   $items['admin/config/openscholar'] = array(
-      'title' => 'Openscholar',
-      'description' => 'Administer OpenScholar specific settings.',
-      'position' => 'left',
-      'weight' => - 5,
-      'page callback' => 'system_admin_menu_block_page',
+      'title' => 'Openscholar', 
+      'description' => 'Administer OpenScholar specific settings.', 
+      'position' => 'left', 
+      'weight' => - 5, 
+      'page callback' => 'system_admin_menu_block_page', 
       'access arguments' => array(
-          'administer content'
-      ),
-      'file' => 'system.admin.inc',
-      'file path' => drupal_get_path('module', 'system')
+          'administer content' 
+      ), 
+      'file' => 'system.admin.inc', 
+      'file path' => drupal_get_path('module', 'system') 
   );
   
   $items['page_not_found'] = array(
-    'type' => MENU_CALLBACK,
-    'file' => 'os.pages.inc',
-    'page callback' => 'os_page_not_found_page',
-    'file path' => drupal_get_path('module', 'os') . '/',
-    'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK, 
+      'file' => 'os.pages.inc', 
+      'page callback' => 'os_page_not_found_page', 
+      'file path' => drupal_get_path('module', 'os') . '/', 
+      'access arguments' => array(
+          'access content' 
+      ) 
   );
-
+  
   return $items;
+}
+
+/**
+ * Implementation of hook menu_alter
+ */
+function os_menu_alter(&$items){
+  if (isset($items['user'])) {
+    $items['user']['page callback'] = 'os_user_page';
+    $items['user']['file'] = 'os.pages.inc';
+    $items['user']['file path'] = drupal_get_path('module', 'os');
+  }
 }
 
 /**
@@ -67,7 +80,7 @@ function os_menu(){
  *          @space_type
  * @param $reset (reset
  *          features cache)
- *
+ *          
  * @return array array('bundle_id' => 'Bundle Name')
  */
 function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = false){
@@ -77,15 +90,15 @@ function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = false)
   }
   else if (! is_array($privacy)) {
     $privacy = array(
-        $privacy
+        $privacy 
     );
   }
   $bundles = array();
-
+  
   // Reset static feature list
   $features = spaces_features($space_type, $reset);
   $site_features = variable_get('spaces_features', array());
-
+  
   foreach ( $features as $name => $feature ) {
     $info = $feature->info['features'];
     if (isset($info['node']) && ($ret_all || (isset($site_features[$name]) && in_array($site_features[$name], $privacy)))) {
@@ -93,21 +106,22 @@ function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = false)
       // Get bundle name, we call the node_info hook directly since
       // this is called during bootstrap
       module_load_include('features.inc', $name);
-      if(function_exists($name.'_node_info')){
-        $ni = $name.'_node_info';
+      if (function_exists($name . '_node_info')) {
+        $ni = $name . '_node_info';
         $node_info = $ni();
       }
       
-      foreach ($info['node'] as $nodetype) {
-         if(isset($node_info[$nodetype]['name'])){
-           $bundles[$nodetype] = $node_info[$nodetype]['name'];
-         }else{
+      foreach ( $info['node'] as $nodetype ) {
+        if (isset($node_info[$nodetype]['name'])) {
+          $bundles[$nodetype] = $node_info[$nodetype]['name'];
+        }
+        else {
           $bundles[$nodetype] = $feature->info['name'];
         }
       }
     }
   }
-
+  
   return $bundles;
 }
 
@@ -116,18 +130,23 @@ function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = false)
  */
 function os_block_info(){
   ctools_include('menu', 'os');
-
+  
   $blocks['powered-by'] = array(
-      'info' => t('Powered by Openscholar'),
-      'weight' => '10',
-      'cache' => DRUPAL_CACHE_GLOBAL
+      'info' => t('Powered by Openscholar'), 
+      'weight' => '10', 
+      'cache' => DRUPAL_CACHE_GLOBAL 
+  );
+  $blocks['login'] = array(
+      'info' => t('Login Button'), 
+      'weight' => '10', 
+      'cache' => DRUPAL_CACHE_GLOBAL 
   );
   $blocks['get-started'] = array(
-      'info' => t('Get Started - A block to help site admins setup thier site.'),
-      'weight' => '-10',
-      'cache' => DRUPAL_NO_CACHE
+      'info' => t('Get Started - A block to help site admins setup thier site.'), 
+      'weight' => '-10', 
+      'cache' => DRUPAL_NO_CACHE 
   );
-
+  
   // System-defined menu blocks.
   foreach ( os_get_menus() as $menu_name => $title ) {
     $blocks[$menu_name]['info'] = t($title);
@@ -151,13 +170,17 @@ function os_block_view($delta = ''){
       $block['subject'] = NULL;
       $block['content'] = theme('openscholar_powered_by');
       return $block;
+    case 'login' :
+      $block['subject'] = NULL;
+      $block['content'] = theme('openscholar_login');
+      return $block;
     case 'get-started' :
       if (user_access('manage group space')) {
         $block['subject'] = NULL;
         $block['content'] = theme('openscholar_get_started');
       }
       return $block;
-
+    
     default :
       // All os menu blocks.
       ctools_include('menu', 'os');
@@ -178,12 +201,12 @@ function os_block_view($delta = ''){
  */
 function os_block_view_alter(&$block, &$data){
   ctools_include('menu', 'os');
-
+  
   if (array_key_exists($data->delta, os_get_menus()) && count($block['content'])) {
     $block['content'] += array(
-        '#theme' => 'os_nice_menus',
-        '#menu_name' => $data->delta,
-        '#region' => $data->region
+        '#theme' => 'os_nice_menus', 
+        '#menu_name' => $data->delta, 
+        '#region' => $data->region 
     );
   }
 }
@@ -196,11 +219,14 @@ function os_block_view_alter(&$block, &$data){
 function theme_os_nice_menus($variables){
   ctools_include('menu', 'os');
   ctools_include('layout', 'os');
-
+  
   $variables += array(
-      'direction' => _os_nice_menus_direction($variables['region']),  // 'down', get from region
-      'depth' => - 1,  // variable?
-      'menu' => os_menu_tree_data($variables['menu_name'])  // or just use this?
+      // 'down, get from region
+      'direction' => _os_nice_menus_direction($variables['region']), 
+      // variable?
+      'depth' => - 1,  
+      // or just use this?
+      'menu' => os_menu_tree_data($variables['menu_name']),  
   );
   $block = theme('nice_menus', $variables); // has to be nice_menus. the rest
                                             // won't take a direction
@@ -214,7 +240,7 @@ function theme_os_nice_menus($variables){
  *
  * @param string $region
  *          Region containing menu to expand
- *
+ *          
  * @return string 'right' or 'down' value for direction parameter of
  *         theme_nice_menus
  */
@@ -222,22 +248,22 @@ function _os_nice_menus_direction($region){
   ctools_include('themes', 'os');
   $region_directions = array(
       'three_col_grail' => array(
-          'sidebar_first' => 'right',
-          'sidebar_second' => 'left',
-          'footer' => 'up'
-      ),
+          'sidebar_first' => 'right', 
+          'sidebar_second' => 'left', 
+          'footer' => 'up' 
+      ), 
       'two_sidebars_right' => array(
-          'sidebar_first' => 'left',
-          'sidebar_second' => 'left',
-          'footer' => 'up'
-      ),
+          'sidebar_first' => 'left', 
+          'sidebar_second' => 'left', 
+          'footer' => 'up' 
+      ), 
       'two_sidebars_left' => array(
-          'sidebar_first' => 'right',
-          'sidebar_second' => 'right',
-          'footer' => 'up'
-      )
+          'sidebar_first' => 'right', 
+          'sidebar_second' => 'right', 
+          'footer' => 'up' 
+      ) 
   );
-
+  
   $settings_var = 'theme_' . os_theme_get() . '_settings';
   if ($space = spaces_get_space()) {
     $columns = $space->controllers->variable->get($settings_var);
@@ -245,14 +271,14 @@ function _os_nice_menus_direction($region){
   else {
     $columns = variable_get($settings_var, 'three_col_grail');
   }
-
+  
   if (count($columns)) {
     $columns = $columns['bigscreen_layout'];
   }
   else {
     $columns = 'three_col_grail';
   }
-
+  
   $directions = (isset($region_directions[$columns])) ? $region_directions[$columns] : $region_directions['three_col_grail'];
   return (isset($directions[$region])) ? $directions[$region] : 'down';
 }
@@ -265,18 +291,18 @@ function _os_nice_menus_direction($region){
 function os_os_widget(){
   $blocks = array();
   ctools_include('menu', 'os');
-
+  
   foreach ( os_get_menus() as $menu_name => $title ) {
     $blocks['os-' . $menu_name] = array(
-        'module' => 'os',
-        'info' => t($title),
-        'delta' => $menu_name,
+        'module' => 'os', 
+        'info' => t($title), 
+        'delta' => $menu_name, 
         // Menu blocks can't be cached because each menu item can have
         // a custom access callback. menu.inc manages its own caching.
-        'cache' => DRUPAL_NO_CACHE
+        'cache' => DRUPAL_NO_CACHE 
     );
   }
-
+  
   return $blocks;
 }
 
@@ -284,18 +310,18 @@ function os_os_widget_alter(&$widget){
   if ($widget['module'] == 'os') {
     $widget += array(
         'tags' => array(
-            'Other'
-        ),
+            'Other' 
+        ), 
         'class' => array(
-            'menu'
-        )
+            'menu' 
+        ) 
     );
   }
   elseif ($widget['module'] == 'node') {
     $widget += array(
         'tags' => array(
-            'Content'
-        )
+            'Content' 
+        ) 
     );
   }
 }
@@ -307,20 +333,28 @@ function os_theme(){
   return array(
       'openscholar_powered_by' => array(
           'variables' => array(
-              'elements' => array()
-          )
-      ),
+              'elements' => array() 
+          ) 
+      ), 
+      'openscholar_login' => array(
+          'variables' => array(
+              'link_text' => 'Login', 
+              'attributes' => array(
+                  'class' => 'footer-login' 
+              ) 
+          ) 
+      ), 
       'openscholar_get_started' => array(
           'variables' => array(
-              'elements' => array()
-          )
-      ),
+              'elements' => array() 
+          ) 
+      ), 
       'os_nice_menus' => array(
           'variables' => array(
-              'menu_name' => '',
-              'region' => ''
-          )
-      )
+              'menu_name' => '', 
+              'region' => '' 
+          ) 
+      ) 
   );
 }
 
@@ -346,24 +380,27 @@ function os_module_implements_alter(&$implementations, $hook){
  */
 function os_preprocess_html(&$variables){
   $variables['classes_array'] = array_diff($variables['classes_array'], array(
-      'contextual-links-region'
+      'contextual-links-region' 
   ));
 }
 
 function os_preprocess_page(&$variables){
   $types = os_get_bundles();
-
+  
   $links = array();
   $active = context_active_contexts();
-  if (!isset($active['os_public']) || arg(0) == 'os') return;  // do nothing if we aren't in the cp
-
+  if (! isset($active['os_public']) || arg(0) == 'os')
+    return; // do nothing if
+                                                                // we aren't in
+                                                                // the cp
+  
   $is_front = isset($active['os_front']);
   $context = 'os_front';
   $module = 'os_front';
-
-  foreach ($types as $type => $name) {
+  
+  foreach ( $types as $type => $name ) {
     $printed = $is_front;
-    foreach ($active as $a) {
+    foreach ( $active as $a ) {
       if (isset($a->conditions['node']['values']) && $a->conditions['node']['options']['node_form'] == 0) {
         if (in_array($type, $a->conditions['node']['values'])) {
           $printed = TRUE;
@@ -374,67 +411,67 @@ function os_preprocess_page(&$variables){
     }
     if ($printed) {
       $links[$type] = array(
-        'href' => 'node/add/'.str_replace('_', '-', $type),
-        'title' => ucwords(str_replace('_', ' ', $type)),
+          'href' => 'node/add/' . str_replace('_', '-', $type), 
+          'title' => ucwords(str_replace('_', ' ', $type)) 
       );
     }
   }
-
+  
   $section_links = array(
-    'header' => array(
-      'title' => 'This Section',
-    ),
-    'settings' => array(
-      'title' => t('Settings'),
-      'href' => 'features/customize/'.$module,
-    ),
-    'layout' => array(
-      'title' => t('Layout'),
-      'href' => 'cp/build/layout/'.$context,
-    ),
+      'header' => array(
+          'title' => 'This Section' 
+      ), 
+      'settings' => array(
+          'title' => t('Settings'), 
+          'href' => 'features/customize/' . $module 
+      ), 
+      'layout' => array(
+          'title' => t('Layout'), 
+          'href' => 'cp/build/layout/' . $context 
+      ) 
   );
-
+  
   drupal_alter('os_add_new_links', $links);
-
+  
   ksort($links);
   $variables['title_suffix']['controls'] = array(
-    '#type' => 'container',
-    '#attributes' => array(
-      'class' => array(
-        'contextual-controls-wrapper'
-      ),
-    ),
+      '#type' => 'container', 
+      '#attributes' => array(
+          'class' => array(
+              'contextual-controls-wrapper' 
+          ) 
+      ) 
   );
   $variables['title_suffix']['controls']['add_new'] = array(
-    '#theme' => 'ctools_dropdown',
-    '#links' => $links,
-    '#title' => t('Add New'),
-    '#class' => 'add_new',
-    '#access' => spaces_access_admin(),
+      '#theme' => 'ctools_dropdown', 
+      '#links' => $links, 
+      '#title' => t('Add New'), 
+      '#class' => 'add_new', 
+      '#access' => spaces_access_admin() 
   );
   $variables['title_suffix']['controls']['section_links'] = array(
-    '#theme' => 'ctools_dropdown',
-    '#links' => $section_links,
-    '#title' => 'Links',
-    '#class' => 'section_links',
-    '#access' => spaces_access_admin(),
+      '#theme' => 'ctools_dropdown', 
+      '#links' => $section_links, 
+      '#title' => 'Links', 
+      '#class' => 'section_links', 
+      '#access' => spaces_access_admin() 
   );
-
-  //append flavor css
+  
+  // append flavor css
   ctools_include('themes', 'os');
   if ($flavor = current(os_theme_get_flavor())) {
-
+    
     if (isset($flavor['css'])) {
       foreach ( $flavor['css'] as $css ) {
         drupal_add_css($flavor['path'] . '/' . $css, array(
-          'type' => 'file',
-          'preprocess' => FALSE,
-          'weight' => 100,
-          'group' => CSS_THEME,
+            'type' => 'file', 
+            'preprocess' => FALSE, 
+            'weight' => 100, 
+            'group' => CSS_THEME 
         ));
       }
     }
-
+    
     // conditional css provided by: conditional-stylesheets[if lte IE 7][all][]
     // = orange-ie.css
     if (isset($flavor['conditional-stylesheets'])) {
@@ -442,10 +479,10 @@ function os_preprocess_page(&$variables){
         foreach ( $media as $type => $files ) {
           foreach ( $files as $file ) {
             $options = array(
-                'type' => 'file',
-                'preprocess' => FALSE,
-                'media' => $type,
-                'browsers' => _os_conditional_css_browsers($cond)
+                'type' => 'file', 
+                'preprocess' => FALSE, 
+                'media' => $type, 
+                'browsers' => _os_conditional_css_browsers($cond) 
             );
             drupal_add_css($flavor['path'] . '/' . $file, $options);
           }
@@ -455,13 +492,12 @@ function os_preprocess_page(&$variables){
       }
     }
   }
-
 }
 
 /**
  * Cleans up some advanced settings and places them in a fieldset
  */
-function os_form_node_form_alter(&$form, $form_state) {
+function os_form_node_form_alter(&$form, $form_state){
   unset($form['options']['promote']);
   $form['path']['pathauto']['#description'] = t('Uncheck this to create a custom alias below.');
 }
@@ -475,10 +511,10 @@ function os_form_node_form_alter(&$form, $form_state) {
 function os_ctools_plugin_type(){
   return array(
       'flavor' => array(
-          'load themes' => TRUE,
-          'info file' => TRUE,
-          'extension' => 'flav'
-      )
+          'load themes' => TRUE, 
+          'info file' => TRUE, 
+          'extension' => 'flav' 
+      ) 
   );
 }
 
@@ -499,17 +535,17 @@ function os_init(){
  */
 function os_os_layout_contexts(){
   $provided_contexts = &drupal_static(__FUNCTION__);
-
+  
   if (count($provided_contexts)) {
     return $provided_contexts;
   } // Static cache of avalible contexts
-
+    
   // Contexts provided by this module
   $provided_contexts = array(
-      'os_public' => 'All Sections',
-      'os_front' => 'Front Page'
+      'os_public' => 'All Sections', 
+      'os_front' => 'Front Page' 
   );
-
+  
   // Contexts provided by features
   $features = spaces_features('og');
   foreach ( $features as $name => $feature ) {
@@ -520,7 +556,7 @@ function os_os_layout_contexts(){
       }
     }
   }
-
+  
   return $provided_contexts;
 }
 
@@ -531,8 +567,29 @@ function os_os_layout_contexts(){
  */
 function theme_openscholar_powered_by(){
   return '<span>' . t('Powered by <a href="@poweredby">OpenScholar</a>', array(
-      '@poweredby' => 'http://openscholar.harvard.edu'
+      '@poweredby' => 'http://openscholar.harvard.edu' 
   )) . '</span>';
+}
+
+/**
+ * Returns the HTML for the login link
+ * 
+ * Encode the destination path to return the the current page you are on, accounting for aliases and groups
+ */
+function theme_openscholar_login($variables){
+  global $user;
+  
+  //do not print the login link if you are logged in
+  if ($user->uid)
+    return "";
+    
+  return l($variables['link_text'], "user", array(
+      'purl' => array(
+          'disabled' => TRUE 
+      ), 
+      'attributes' => $variables['attributes'], 
+      'alias' => TRUE, 
+  ));
 }
 
 /**
@@ -540,27 +597,30 @@ function theme_openscholar_powered_by(){
  *
  * @todo Add Slider
  * @todo Add 'hide forever' code
- * @ingroup themeable
+ *       @ingroup themeable
  */
 function theme_openscholar_get_started(){
   if (module_exists('vsite') && $vsite = spaces_get_space()) {
     $create_time = $vsite->group->created;
   }
-
-  $links = theme('item_list', array('items' => array(
-      l("Enable or disable features for your site", 'cp/build/features'),
-      l("Add/manage content", 'cp/content'),
-      l("Manage who may use your site", 'cp/users'),
-      l("Change the look of your site", 'cp/appearance'),
-      l("Move elements in your page layout", 'cp/build/layout'),
-      l("View documentation", "help/vsitehelp/OpenScholar-Documentation")
-  )));
-
+  
+  $links = theme('item_list', array(
+      'items' => array(
+          l("Enable or disable features for your site", 'cp/build/features'), 
+          l("Add/manage content", 'cp/content'), 
+          l("Manage who may use your site", 'cp/users'), 
+          l("Change the look of your site", 'cp/appearance'), 
+          l("Move elements in your page layout", 'cp/build/layout'), 
+          l("View documentation", "help/vsitehelp/OpenScholar-Documentation") 
+      ) 
+  ));
+  
   // Created in the last 26 hours?
   $s_welcome_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Welcome to your new website!" : "";
   $s_short_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Need help <span>getting started?</span>" : "Need quick access to <span>common settings?</span>";
-  // drupal_add_js(drupal_get_path('module', 'vsite').'/theme/vsite.js','module');
-
+  // drupal_add_js(drupal_get_path('module',
+  // 'vsite').'/theme/vsite.js','module');
+  
   $result = <<<MESSAGE
       <div id="message_welcome_message">
         <div class="toggle">$s_short_message</div>
@@ -571,7 +631,7 @@ function theme_openscholar_get_started(){
         </div> <!-- SLIDER -->
       </div>
 MESSAGE;
-
+  
   return $result;
 }
 
@@ -582,25 +642,25 @@ MESSAGE;
  */
 function os_context_plugins(){
   $plugins = array();
-
+  
   $plugins['os_context_condition_os_site'] = array(
       'handler' => array(
-          'path' => drupal_get_path('module', 'os') . '/plugins',
-          'file' => 'os_context_condition_os_site.inc',
-          'class' => 'os_context_condition_os_site',
-          'parent' => 'context_condition'
-      )
+          'path' => drupal_get_path('module', 'os') . '/plugins', 
+          'file' => 'os_context_condition_os_site.inc', 
+          'class' => 'os_context_condition_os_site', 
+          'parent' => 'context_condition' 
+      ) 
   );
-
+  
   $plugins['os_context_reaction_block'] = array(
       'handler' => array(
-          'path' => drupal_get_path('module', 'os') . '/plugins',
-          'file' => 'os_context_reaction_block.inc',
-          'class' => 'os_context_reaction_block',
-          'parent' => 'context_reaction_block'
-      )
+          'path' => drupal_get_path('module', 'os') . '/plugins', 
+          'file' => 'os_context_reaction_block.inc', 
+          'class' => 'os_context_reaction_block', 
+          'parent' => 'context_reaction_block' 
+      ) 
   );
-
+  
   return $plugins;
 }
 
@@ -609,15 +669,15 @@ function os_context_plugins(){
  */
 function os_context_registry(){
   $registry = array();
-
+  
   $registry['conditions'] = array(
       'os_site' => array(
-          'title' => t('OS Site context'),
-          'description' => t('Should this context be set in a vsite? If <strong>false</strong>, this context will be active outside a "OS Site".'),
-          'plugin' => 'os_context_condition_os_site'
-      )
+          'title' => t('OS Site context'), 
+          'description' => t('Should this context be set in a vsite? If <strong>false</strong>, this context will be active outside a "OS Site".'), 
+          'plugin' => 'os_context_condition_os_site' 
+      ) 
   );
-
+  
   return $registry;
 }
 
@@ -649,10 +709,10 @@ function _os_conditional_css_browsers($cond){
   if (strpos($cond, 'IE')) {
     $IE = $cond;
   }
-
+  
   return array(
-      'IE' => $cond,
-      '!IE' => FALSE
+      'IE' => $cond, 
+      '!IE' => FALSE 
   );
 }
 
@@ -662,22 +722,77 @@ function _os_conditional_css_browsers($cond){
 function os_system_info_alter(&$info, $file, $type){
   if ($type != 'theme')
     return;
-
-  //If the base theme for this theme is 'os_basetheme' or if the is a 'vsite' theme add the default regions
-  if ((isset($info['base theme']) && $info['base theme'] == 'os_basetheme') ||
-      (isset($info['os']['theme_type']) && $info['os']['theme_type'] == 'vsite')) {
-
-      $info['regions'] += array(
-        'header_top' => 'Header Top',
-        'header_first' => 'Header Main',
-        'header_second' => 'Header Left',
-        'header_third' => 'Header Right',
-        'header_bottom' => 'Header Bottom',
-        'menu_bar' => 'Menu Bar',
-        'content_top' => 'Content Top',
-        'content_first' => 'Content Left',
-        'content_second' => 'Content Right',
-        'content_bottom' => 'Content Bottom'
-      );
+    
+    // If the base theme for this theme is 'os_basetheme' or if the is a 'vsite'
+  // theme add the default regions
+  if ((isset($info['base theme']) && $info['base theme'] == 'os_basetheme') || (isset($info['os']['theme_type']) && $info['os']['theme_type'] == 'vsite')) {
+    
+    $info['regions'] += array(
+        'header_top' => 'Header Top', 
+        'header_first' => 'Header Main', 
+        'header_second' => 'Header Left', 
+        'header_third' => 'Header Right', 
+        'header_bottom' => 'Header Bottom', 
+        'menu_bar' => 'Menu Bar', 
+        'content_top' => 'Content Top', 
+        'content_first' => 'Content Left', 
+        'content_second' => 'Content Right', 
+        'content_bottom' => 'Content Bottom' 
+    );
   }
+}
+
+/**
+ * Implements hook_url_outbound_alter().
+ *
+ * Rewrites path to add a return destination wherever it is clicked from.
+ */
+function os_url_outbound_alter(&$path, &$options, $original) {
+  
+  //Pages to add a destination return to their links
+  $loop_back_pages = array(
+      'user',
+      'user/logout',
+      );
+  
+  // Only altering the logout/login path and
+  // only when there is not already a destination
+  if(!in_array($path,$loop_back_pages) || !empty($options['query']['destination'])) return;
+  
+  //If we are in the CP then just go to the homepage of the site
+  if(!context_isset('context', 'os_cp') || !isset($_GET['q'])){
+    // Use $_GET here to retrieve the original path in source form.
+    $dest_path = $_GET['q'];
+  }else{ 
+    $dest_path = '';
+  }
+  
+  //Prevent possibility of infinate loops
+  if(in_array($dest_path,$loop_back_pages)){
+    return;
+  }
+  
+  //Some defaults for altering the current path
+  $current_options = array(
+      'fragment' => '',
+      'query' => '',
+      'absolute' => FALSE,
+      'alias' => FALSE,
+      'prefix' => ''
+  );
+  // Allow other modules to alter the outbound URL and options.
+  drupal_alter('url_outbound', $dest_path, $current_options, $dest_path);
+  
+  if ($current_options['prefix']) {
+    $dest_path = $current_options['prefix'] . $dest_path;
+  }
+  
+  // Add the existing query string if it exists
+  $query = drupal_http_build_query(drupal_get_query_parameters($_GET, array('q')));
+  if ($query != '') {
+    $dest_path .= '?' . $query;
+  }
+  
+   $options['query']['destination'] = drupal_encode_path($dest_path);
+  
 }
