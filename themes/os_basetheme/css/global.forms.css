@@ -304,8 +304,7 @@ input[type="search"] {
   border-radius:4px;
 -moz-border-radius:4px;
 border-radius:4px;
-padding:4px 16px 4px 2px;
-margin-right:-21px;
+padding: 3px 16px 3px 2px;
 }
 
 #search-block-form input[type="submit"] {
@@ -314,14 +313,10 @@ background : url("../images/searchArrow.png") no-repeat center center;
 	height:16px;
 	border: none;
 	color: transparent;	
-	margin-top:3px;
+
 }
 
-@-moz-document url-prefix() {
-    #search-block-form input[type="submit"]{
-       margin-top:0;
-    }
-}
+
 
 
 
