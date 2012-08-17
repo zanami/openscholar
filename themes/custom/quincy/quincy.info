@@ -11,7 +11,7 @@ description = Quincy theme, based on Cayley
 ;----------// OpenScholar
 
 os[theme_type]   = "vsite"
-os[theme_access] = "private"
+os[theme_access] = "public"
 
 ;----------// Stylesheets
 
