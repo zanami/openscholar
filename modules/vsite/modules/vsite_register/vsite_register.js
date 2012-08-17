@@ -31,18 +31,31 @@
 				Drupal.settings.vsite_register = {new_user_clicked: false};
 			}
 			
+			//init display of new user xor existing user
 			if ($('#new_user_div').css('display') == $('#edit-existing-username').parent().css('display')) {
 				Drupal.behaviors.vsite_register.toggle_user_forms();
 			}
 			
+			//attach click event to new user link.  only do this once, even if this behavior ahppens again
 			var link = $('#new-user-link');
-			var link_data = link.data();
-			if ((typeof link_data['events'] == 'undefined') || link_data['events'].click.length < 1) {
-				$('#new-user-link').click( function() {
-					$('input[name=create_new_user]').attr('value', 1); //store this so form appears right after refresh
-					Drupal.behaviors.vsite_register.toggle_user_forms();
-				});
+			if (link.length) {
+				var link_data = link.data();
+				if ((typeof link_data['events'] == 'undefined') || link_data['events'].click.length < 1) {
+					link.click( function() {
+						$('input[name=create_new_user]').attr('value', 1); //store this so form appears right after refresh
+						Drupal.behaviors.vsite_register.toggle_user_forms();
+					});
+				}
 			}
+			
+			//http://drupal.org/node/1232416   hide the ajax error that comes up when an ajax call is left dangling
+			$.ajaxSetup({
+				beforeSend: function(jqXHR, settings) {
+				  settings.error = function(jqXHR, textStatus, errorThrown) { 
+				  	//{console.log('ajax error: ' + textStatus);};
+				  };
+				}
+			});
 			
 			Drupal.detachBehaviors($(this)); //we don't want to set up the hidden element on every page load
 

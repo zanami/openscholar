@@ -27,6 +27,7 @@ function vsite_register_form($form, &$state) {
        'wrapper' => 'domain-errors',
      ),
     '#field_suffix' => theme('vsite_register_form_errors', array('name'=>'domain')), 
+    '#attached' => array('js' => array(drupal_get_path('module', 'vsite_register') . '/vsite_register.js')),  
   );
   
   //Get enabled presets and load their titles
@@ -82,7 +83,6 @@ function vsite_register_form($form, &$state) {
       '#type' => 'fieldset',
       '#collapsible' => FALSE,
     	'#states' => array('visible' => array(':input[name="vicarious_user"]' => array('checked' => TRUE))),
-      '#attached' => array('js' => array(drupal_get_path('module', 'vsite_register') . '/vsite_register.js')),
     );
     
     //$ajax_link = l(t('create a new user'), 'javascript:void(0)', array('attributes'=>array('id'=>array('new-user-link'))));
