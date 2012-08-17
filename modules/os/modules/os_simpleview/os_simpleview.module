@@ -221,6 +221,8 @@ function os_simpleview_cache_clear($cache_name) {
  * handle cases for user clicking next, cancel, or return.
  */
 function os_simpleview_multiform_next(&$form_state) {
+  $form_state['cached']['advancing wizard'] = (empty($form_state['cached']['advancing wizard']));
+  
   os_simpleview_cache_set($form_state['cache_name'], $form_state['cached'] + $form_state['values']);
 
   //ctools has advanced the form a step, let it be rendered
@@ -228,54 +230,85 @@ function os_simpleview_multiform_next(&$form_state) {
     $form_state['ajax render'] = 'os_simpleview_ajax_render';
     $form_state['rerender'] = TRUE;
   } else {
-    $op = $form_state['clicked_button']['#value'];
-    $next = $form_state['form_info']['next text'];
-    $back = $form_state['form_info']['back text'];
-    
-    //default values, form hasn't been hit
-    if (!isset($form_state['submit_handlers'])) { // && ($op != $next)) {
-      if ($form_state['no_redirect']) {
-        $form_state['redirect'] = FALSE;
-      }
+    //first pass through this function advances the wizard.  at second pass, that's already happened, so block the redirect.
+    if (!$form_state['cached']['advancing wizard'] && $form_state['no_redirect']) {
+      $form_state['redirect'] = FALSE;
     }
-    
-    switch ($op) {
-      case $next:
-        if ($form_state['no_redirect'] && empty($form_state['next'])) {
-          $form_state['redirect'] = FALSE;
-        }
-      break;
-      
-      case $back: //op is set to Back before it returns...
-        if ($form_state['no_redirect'] && empty($form_state['next'])) {
-         //$form_state['redirect'] = FALSE;
-        }
-      break;
-        
-    }
-//instead of values how about clicked_button of #value.  Back
-//     switch ($form_state['values']['op']) {
-//       case 'Continue':
-        //form has been advanced and we've already redirected, but the redirect is still stored.
-        
-//      break;
-      
-//       case 'Back':
-//         TRUE;
-//       break;
-    
-//     }
-  } 
+  }
+}
   
-};
 
 function os_simpleview_multiform_cancel(&$form_state) {
   ctools_object_cache_clear('os_simpleview', $form_state['cache_name']);
   drupal_set_message('Multi-step form cancelled.');
-  $form_state['redirect'] = 'os_simpleview';
+  $form_state['redirect'] = 'os_simpleview'; //origin maybe?
 
+}
+
+
+function os_simpleview_multiform_finish(&$form_state) {
+  $cached = os_simpleview_cache_get($form_state['cache_name']);
+  $cached = ($cached) ? $cached : array();
+  $values = $cached + $form_state['values'];
+  $commands = array();
+
+  //update an existing box
+  if ($cached['delta']) {
+    $box = os_boxes_load($values['delta']);
+
+    //update box properties - title, desc, etc
+    foreach (array_intersect_key((array)$box, $values) as $key => $value) {
+      $box->$key = $values[$key];
+    }
+
+    //update box options
+    foreach (array_intersect_key($box->options, $values) as $key => $value) {
+      $box->options[$key] = $values[$key];
+    }
+
+    $plugin = os_simpleview_get_content_type_plugin($cached['content_type']);
+    $class = ctools_plugin_get_class($plugin, 'handler');
+    $instance = new $class();
+    $options_defaults = $instance->options_defaults();
+    $plugin_opts = $options_defaults['plugin_opts'];
+
+    //update plugin options
+    foreach(array_intersect_key($plugin_opts, $values) as $key => $value) {
+      $box->options['plugin_opts'][$key] = $values[$key];
+    }
+
+    if (module_exists('spaces') && $space = spaces_get_space()) {
+      $space->controllers->boxes->set($box->delta, $box);
+    } else {
+      $box->save();
+    }
+
+    //in a vsite, reload to see updated widget.
+    if ($cached['origin'] == 'front') {
+      $commands[] = ctools_ajax_command_reload();
+    }
+    //cp: do nothing
+    //$commands[] = ctools_ajax_command_changed('#boxes-'.$box->delta);
+
+  } else {
+    //new box
+    if (($box = os_simpleview_make_box($values)) != FALSE) {
+      os_simpleview_cache_clear($form_state['cache_name']); //do this once it's complete, not before we make box
+      $commands[] = ctools_ajax_command_before('#scholarlayout-top-widgets .scholarlayout-item:nth-child(2)', theme('vsite_layout_ui_cp_widget', 'boxes-'.$box->delta, os_boxes_get_vsite_widget($box)));
+      $commands[] = ctools_ajax_command_changed('#boxes-'.$box->delta);
+    }
+  }
+
+  //redirect or just close the form depending on js/modal
+  if ($form_state['ajax']) {
+    $commands[] = ctools_modal_command_dismiss();
+    ctools_ajax_render($commands);
+  } else {
+    drupal_set_message('form done');
+    drupal_goto('os_simpleview/nojs'); //where to send them? @TODO
+  }
+   
 };
-
 
 
 /** 
