@@ -57,6 +57,17 @@ function os_menu(){
 }
 
 /**
+ * Implementation of hook menu_alter
+ */
+function os_menu_alter(&$items){
+  if (isset($items['user'])) {
+    $items['user']['page callback'] = 'os_user_page';
+    $items['user']['file'] = 'os.pages.inc';
+    $items['user']['file path'] = drupal_get_path('module', 'os');
+  }
+}
+
+/**
  * @function os_get_bundles
  *
  * Return the avalible bundles based on the privacy
