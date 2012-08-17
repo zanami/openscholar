@@ -1,0 +1,30 @@
+<?php 
+
+/**
+ * implementation of hook_context_default_contexts_alter
+ */
+function iqss_projects_front_context_default_contexts_alter(&$contexts){
+  // add some extra blocks/boxes to the 'sitewide_front'
+  if (isset($contexts['os_sitewide_front'])) {
+    $fp_blocks = &$contexts['os_sitewide_front']->reactions['block']['blocks'];
+
+    $fp_blocks['boxes-iqss_projects_fp_infoblock'] = array(
+        'module' => 'boxes',
+        'delta' => 'iqss_projects_fp_infoblock',
+        'weight' => -100,
+        'region' => 'content_top',
+    );
+    
+    $fp_blocks['boxes-iqss_projects_fp_features'] = array(
+        'module' => 'boxes',
+        'delta' => 'iqss_projects_fp_features',
+        'weight' => 10,
+        'region' => 'content_first',
+    );
+    
+    if(isset($fp_blocks['vsite_register-get_your_site_block'])){
+      //Move the get_your_site button to the content_top region
+      $fp_blocks['vsite_register-get_your_site_block']['region'] = 'content_top';
+    }
+  }
+}
