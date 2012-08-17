@@ -148,9 +148,9 @@ function os_software_os_add_new_links_alter(&$links) {
 function os_software_os_widget() {
   $items = array();
   
-  $items['views-os_software_releases_eva-block-1'] = array(
+  $items['views-os_software_releases-block-1'] = array(
     'module' => 'views', 
-    'delta' => 'os_software_releases_eva-block_1', 
+    'delta' => 'os_software_releases-block_1', 
     'region' => 'sidebar_second', 
     'weight' => '-10',
     'info' => 'Software Releases',
@@ -178,7 +178,7 @@ function os_software_os_packaging_method_option() {
  */
 function _os_software_new_recommended_release($node) {
   // Uses [:os_software_relesases:] view to filter only valid releases for this project
-  $view = views_get_view('os_software_releases_eva');
+  $view = views_get_view('os_software_releases');
   $view->set_display('page_1');
   $view->set_arguments(array($node->field_software_project['und'][0]['target_id']));
   $view->execute();
@@ -197,7 +197,7 @@ function _os_software_new_recommended_release($node) {
  */
 function _os_software_delete_child_releases($node) {
   // Uses [:os_software_relesases_eva:] view to filter only releases for this project
-  $view = views_get_view('os_software_releases_eva');
+  $view = views_get_view('os_software_releases');
   $view->set_display('page_1');
   $view->set_arguments(array($node->nid));
   $view->execute();
