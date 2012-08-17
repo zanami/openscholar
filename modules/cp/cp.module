@@ -60,9 +60,14 @@ function cp_menu(){
 
   $items["cp/build/taxonomy"] = array(
       'title' => 'Taxonomy',
-      'page callback' => 'cp_taxonomy',
       'type' => MENU_NORMAL_ITEM,
-      'weight' => 10
+      'weight' => 10,
+      'page callback' => 'cp_taxonomy',
+//       'page callback' => 'drupal_get_form',
+//       'page arguments' => array('taxonomy_overview_vocabularies'),
+//       'access arguments' => array('administer taxonomy'),
+//       'file' => 'taxonomy.admin.inc',
+//       'file path' => drupal_get_path('module', 'taxonomy'),
   );
 
   // Settings
@@ -126,7 +131,12 @@ function cp_permission(){
  * cp/build/taxonomy callback
  */
 function cp_taxonomy(){
-  return 'cp/build/taxonomy';
+  if(module_exists('vsite')){
+	  $vsite = spaces_get_space();
+	  return l("Edit/ADD this Groups Vocabularies","group/{$vsite->group_type}/{$vsite->id}/admin/taxonomy").t("(outside CP for now)");
+  }
+  
+  return drupal_get_form('taxonomy_overview_vocabularies');
 }
 
 /**

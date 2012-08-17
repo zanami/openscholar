@@ -1,2 +1,11 @@
-name = vsite vocab
+name = vsite taxonomy integration
+description = Integration with OG Vocabulary
 core = 7.x
+package = IQSS
+php = 5.2.4
+dependencies[] = ctools
+dependencies[] = entityreference
+dependencies[] = features
+dependencies[] = og_vocab
+features[features_api][] = api:1
+features[field][] = node-announcement-og_vocabulary
