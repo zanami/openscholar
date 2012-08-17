@@ -796,3 +796,20 @@ function os_url_outbound_alter(&$path, &$options, $original) {
    $options['query']['destination'] = drupal_encode_path($dest_path);
   
 }
+
+/**
+ * Add defaults to blocks as required
+ * 
+ * Some of this was handled by the core block module which is no longer used
+ * 
+ * @param array $blocks
+ */
+function os_context_block_info_alter(&$blocks){
+  
+  foreach ($blocks as $key => $block){
+    // Make sure weight is set.
+    if (!isset($block->weight)) {
+      $blocks[$key]->weight = 0;
+    }
+  }
+}
