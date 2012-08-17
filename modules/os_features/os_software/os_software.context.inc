@@ -34,8 +34,10 @@ function os_software_context_default_contexts() {
     ),
     'views' => array(
       'values' => array(
+        'os_software_projects' => 'os_software_projects',
         'os_software_projects:page' => 'os_software_projects:page',
-        'os_software_releases:page' => 'os_software_releases:page',
+        'os_software_releases' => 'os_software_releases',
+        'os_software_releases:page_1' => 'os_software_releases:page_1',
       ),
     ),
   );
@@ -54,9 +56,9 @@ function os_software_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-9',
         ),
-        'views-e99bd9fc465ac189dce3b71ba9fe2c95' => array(
+        'views-os_software_releases-block_1' => array(
           'module' => 'views',
-          'delta' => 'e99bd9fc465ac189dce3b71ba9fe2c95',
+          'delta' => 'os_software_releases-block_1',
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),

@@ -20,7 +20,7 @@ function cp_feature_customize($js, $feature_name) {
   );
 
   $output = ctools_modal_form_wrapper('cp_feature_customize_form', $form_state);
-  if (empty($output) || $form_state['triggering_element']['#value'] == t('Ok')) {
+  if ($form_state['submitted']) {
     $output[] = ctools_modal_command_dismiss();
   }
   else {
