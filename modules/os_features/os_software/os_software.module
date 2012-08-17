@@ -117,16 +117,28 @@ function os_software_node_delete($node) {
 }
 
 /**
- * Implements hook_theme()
+ * Implements hook_cron()
+ * 
+ * Invokes hook to automatically create release content (i.e. Rbuild)
  */
-function os_software_theme() {
-  return array();
-  // @TODO Define custom template for Software Release node view.
+function os_software_cron() {
+  module_invoke_all('os_software_process_remote_release');  
 }
 
 /**
  * OpenScholar hooks
  */
+
+/**
+ * Implements hook_os_add_new_links_alter()
+ * 
+ * Removes "Add new > Software Release" link from "Add new" contextual links
+ */
+function os_software_os_add_new_links_alter(&$links) {
+  if (isset($links['software_release'])) {
+    unset($links['software_release']);
+  }
+}
 
 /**
  * Implements hook_os_widget()
