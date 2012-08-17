@@ -268,8 +268,9 @@ function os_boxes_get_region($box, $contexts = array()) {
   if (empty($blocks)) {
     foreach ($contexts as $c) {
       foreach ($plugin->get_blocks(null, $c) as $bid => $block) {
-        if ($block->module == 'boxes')
+        if ($block->module == 'boxes' && isset($block->region)){
           $blocks[$block->delta] = $block->region;
+        }
       }
     }
   }
