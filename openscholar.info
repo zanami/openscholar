@@ -78,6 +78,7 @@ dependencies[] = os_pages
 dependencies[] = os_events
 dependencies[] = os_reader
 dependencies[] = os_blog
+dependencies[] = os_presentations
 dependencies[] = os_software
 
 ; other
