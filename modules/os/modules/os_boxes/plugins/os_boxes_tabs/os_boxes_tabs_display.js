@@ -3,7 +3,12 @@
  * Restores this tab as the active tab when we return.
  */
 
-Drupal.behaviors.quickTabsRemember = function (ctx) {
+Drupal.behaviors.os_boxes_tabs = { attach: function (ctx) {
+  var $ = jQuery;
+  $('.block-boxes-os_boxes_tabs', ctx).once('tabs', function () {
+    $('.block-content', this).not('.block-content .block-content').tabs({ajaxOptions: null});
+  });
+  
 	$('.box-os_modal_tabbed', ctx).each(function () {
 		var id = this.id,
 			$this = $(this),
@@ -26,4 +31,4 @@ Drupal.behaviors.quickTabsRemember = function (ctx) {
 		
 		sessionStorage[id] = val;
 	}
-};
+}};
