@@ -27,5 +27,10 @@ function iqss_projects_front_context_default_contexts_alter(&$contexts){
       //Move the get_your_site button to the content_top region
       $fp_blocks['vsite_register-get_your_site_block']['region'] = 'content_top';
     }
+    
+    if(isset($fp_blocks['views-os_websites-block'])){
+      //Move the websites grid to the content_top region
+      $fp_blocks['views-os_websites-block']['region'] = 'content_bottom';
+    }
   }
 }

@@ -121,6 +121,13 @@ background: none repeat scroll 0 0 #EDEEF1;
     text-shadow: 0 1px 0 #FFFFFF;
 }
 
+.os-featuredSites {
+    float: left;
+    height: 19px;
+     margin: 26px 327px 0 0;
+    width: 162px;
+}
+
 .os-leftcol ul li a:hover {
 background: #FE8716;
 color:#EFEFEF;
@@ -134,12 +141,7 @@ color:#EFEFEF;
 	
 }
 
-.os-featuredSites {
-    float: left;
-    height: 19px;
-    margin: 2px 327px 0 0;
-    width: 162px;
-}
+
 
 p.os-leadin {
 	 margin-top: 7px;
@@ -156,6 +158,18 @@ p.os-leadin {
   
 }
 
+#block-vsite-register-get-your-site-block {
+	margin-top:31px;
+	}
+
+#block-vsite-register-get-your-site-block a {
+
+	 padding: 34px 199px;
+	background: url('/profiles/openscholar/themes/custom/scholars_harvard/images/getsitenowButton.png')no-repeat;
+	text-indent:-9999px;
+	position: relative;
+}
+
 .os-rightcol .os-learnmore a {
     background: url("/profiles/openscholar/themes/custom/scholars_harvard/images/arrow2.png") no-repeat scroll 100% 50% transparent;
     color: #B23325;
@@ -165,10 +179,16 @@ p.os-leadin {
 
 
 
-.os-rightcol, .os-leftcol {
+.os-leftcol {
+    margin: 0;
+    padding: 35px 40px 0 29px;
+}
+
+.os-rightcol {
     margin: 0;
     padding: 15px 40px 0 29px;
 }
+
 
 
 .front #columns .region-inner {
@@ -229,6 +249,16 @@ background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
   }
 
 /*header*/
+
+#header-container h1 {
+  width: 231px;
+  height: 76px;
+  background: url(images/logo.png) no-repeat;
+  text-indent: -999em;
+  float:left;
+  margin-top:14px;
+  margin-left: 9px;
+  }
 
 #startpage-header {
   height: 76px;
@@ -442,11 +472,16 @@ margin:27px 327px 0 0; } }
   margin-left: 30px;
   }
 
-.view-iqss-openscholar-front {
+#block-views-os-websites-block h2.block-title {
+	display:none;
+}
+
+
+.view-id-os_websites {
   clear:both;
   }
 
-.view-iqss-openscholar-front li.views-row {
+.view-id-os_websites li.views-row {
   width: 161px;
   height: 164px;
   margin: 0;
@@ -458,12 +493,12 @@ margin:27px 327px 0 0; } }
   position:relative;
   }
 
-.view-iqss-openscholar-front li.views-row img {
+.view-id-os_websites li.views-row img {
   width: 161px;
   height: 125px;
   }
 
-.view-iqss-openscholar-front li.views-row a {
+.view-id-os_websites li.views-row a {
   display:block;
   color: #fff;
   width: 161px;
@@ -473,22 +508,22 @@ margin:27px 327px 0 0; } }
   background: #000;
   }
 
-.view-iqss-openscholar-front li.views-row a:hover {
+.view-id-os_websites li.views-row a:hover {
   text-decoration: none;
   }
 
-.view-iqss-openscholar-front .views-admin-links ul.links li {
+.view-id-os_websites .views-admin-links ul.links li {
  float:none;
  }
 
-.view-iqss-openscholar-front li.views-row .flag-wrapper {
+.view-id-os_websites li.views-row .flag-wrapper {
   position: absolute;
   top:0;
   right:0;
   padding:0;
   }
 
-.view-iqss-openscholar-front li.views-row .flag-wrapper a {
+.view-id-os_websites li.views-row .flag-wrapper a {
   width: auto;
   height: auto;
   overflow:auto;
@@ -498,7 +533,7 @@ margin:27px 327px 0 0; } }
   line-height: normal;
   }
 
-.view-iqss-openscholar-front li.views-row span.content {
+.view-id-os_websites li.views-row span.content {
   padding: 6px 9px 0 9px;
   position:absolute;
   bottom:5px;
@@ -510,15 +545,15 @@ margin:27px 327px 0 0; } }
   overflow:hidden;
   }
 
-.view-iqss-openscholar-front li.views-row.views-row-3,
-.view-iqss-openscholar-front li.views-row.views-row-6,
-.view-iqss-openscholar-front li.views-row.views-row-9 {
+.view-id-os_websites li.views-row.views-row-3,
+.view-id-os_websites li.views-row.views-row-6,
+.view-id-os_websites li.views-row.views-row-9 {
   border-right: none;
   }
 
-.view-iqss-openscholar-front li.views-row.views-row-7,
-.view-iqss-openscholar-front li.views-row.views-row-8,
-.view-iqss-openscholar-front li.views-row.views-row-9 {
+.view-id-os_websites li.views-row.views-row-7,
+.view-id-os_websites li.views-row.views-row-8,
+.view-id-os_websites li.views-row.views-row-9 {
   border-bottom: none;
   }
 
@@ -599,18 +634,19 @@ p.copy a:hover {
   border-color: #fff;
   }
   
-.front #footer .os-powered-link {
+.front #footer #block-os-powered-by {
   float:right;
   position:relative;
-  top: -20px;
+  top: -40px;
   }
 
-.front .os-powered-link a.os-poweredby {
+.front #block-os-powered-by a {
   background: url('/profiles/openscholar/themes/custom/scholars_harvard/images/powered_by.png') 19px 37px no-repeat #234f6e;
   display:block;
   width: 119px;
   height:115px;
-   text-indent: -999em;
+  text-indent: -9999px;
+  
   }
 
 
