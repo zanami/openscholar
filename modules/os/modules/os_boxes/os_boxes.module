@@ -1,6 +1,5 @@
 <?php
 
-include('os_boxes.plugins.inc');
 
 /**
  * Implements hook_ctools_plugin_api().
@@ -9,6 +8,15 @@ function os_boxes_ctools_plugin_api($module, $api) {
   if ($module == 'boxes' && $api == 'plugins') {
     return array('version' => 1);
   }
+}
+
+/**
+ * Passthrough function so box plugin definitions are only loaded when they're needed
+ * We don't need to include and process the file on every page
+ */
+function os_boxes_boxes_plugins() {
+  include('os_boxes.plugins.inc');
+  _os_boxes_boxes_plugins();
 }
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-function os_boxes_boxes_plugins() {
+function _os_boxes_boxes_plugins() {
   $info = array();
   $path = drupal_get_path('module', 'os_boxes').'/plugins/';
 
