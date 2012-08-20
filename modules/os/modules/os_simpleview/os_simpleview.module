@@ -310,6 +310,50 @@ function os_simpleview_multiform_finish(&$form_state) {
    
 };
 
+/**
+ * @function os_simpleviewlist_make_box
+ *
+ * Form is complete.  Build a box and add it to the vsite.
+ */
+// function os_simpleview_make_box($opts){
+//   //this could be a generic save box function that saves or makes depending on presence of delta...  would clean up finish a bit
+//   if (($space = spaces_get_space()) != FALSE) {
+//     $type = 'os_simpleview_box';
+//     $opts['plugin_opts'] = os_simpleview_plugin_opts($opts); //populate plugin_opts
+
+//     $ignore = array_flip(array('return', 'previous', 'form_id', 'form_token', 'form_build_id', 'op', 'next'));
+//     $opts = array_diff_key($opts, $ignore);
+// //    require_once drupal_get_path('module', 'os') . '/includes/os.boxes.inc';
+
+//     return os_boxes_mk_box($vsite, $type, $opts);
+//   }
+//   return false;
+// }
+
+/**
+ * @function os_simpleview_plugin_opts
+ *
+ * Boxes can only set a pretedetermined list of options when a box is created.
+ * That list is not able to retrieve option_defaults from individual plugins.
+ * Instead, it includes an array called plugin_opts.  This function looks at
+ * the options we're about to pass to the box and returns an array of options
+ * from the appropriate content type plugin, to be used as plugin_opts
+ */
+function os_simpleview_plugin_opts($opts = array()) {
+  $plugin = os_simpleview_get_content_type_plugin($opts['content_type']);
+  $class = ctools_plugin_get_class($plugin, 'handler');
+  $instance = new $class();
+  $options_defaults = $instance->options_defaults();
+  $plugin_opts = $options_defaults['plugin_opts'];
+
+  foreach($plugin_opts as $option => $value) {
+    $plugin_opts[$option] = (isset($opts[$option])) ? $opts[$option] : $value;
+  }
+
+  return $plugin_opts;
+}
+
+
 
 /** 
  * ctools plugin loader functions 
@@ -321,8 +365,11 @@ function os_simpleview_multiform_finish(&$form_state) {
 function os_simpleview_ctools_plugin_directory($module, $plugin) {
   if ($module == 'os_simpleview' && !empty($plugin)) {
     return "plugins/$plugin";
+  } elseif ($module == 'boxes') {
+    return 'plugins/boxes';
   }
 }
+
 
 /**
  * Implementation of hook_ctools_plugin_type

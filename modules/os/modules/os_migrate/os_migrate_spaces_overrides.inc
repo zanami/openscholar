@@ -36,13 +36,22 @@ class SpacesOverridesTableMigration extends TableCopyMigration {
   }
   
   public function prepareRow(&$row) {
-    if ($row->object_type == 'variable') {
-      switch($row->object_id) {
-        case 'foo':
-        break;
-      }
+    if (preg_match('/_flavor$/', $row->object_id)) {
+      $this->_update_flavors($row);
     }
-    TRUE;
+  }
+  
+  /*
+   * @function _update_flavors
+   * 
+   * Updates flavor variables and names.
+   */
+  public function _update_flavors(&$row) {
+    $row->object_id = preg_replace('/vsite_design_scholar/', 'os_appearance', $row->object_id);
+    
+    $flavor = unserialize($row->value);
+    $flavor = preg_replace('/^scholar_/', '', $flavor);
+    $row->value = serialize($flavor);
   }
 }
 

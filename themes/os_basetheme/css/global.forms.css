@@ -156,8 +156,12 @@ input[disabled] {
 
 #block-os-login a {
 	background:#EFEFEF;
-	padding:3px 6px;
-	color:#222;
+ 	color:#222;
+	border: 1px solid #777777;
+   	padding: 2px 4px;
+   	 border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
 	
 }
 
@@ -321,8 +325,8 @@ padding: 3px 16px 3px 2px;
 
 #search-block-form input[type="submit"] {
 background : url("../images/searchArrow.png") no-repeat center center;
-	width: 16px;
-	height:16px;
+	width: 18px;
+	height:18px;
 	border: none;
 	color: transparent;	
 

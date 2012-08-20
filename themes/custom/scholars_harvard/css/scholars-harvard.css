@@ -491,6 +491,7 @@ margin:27px 327px 0 0; } }
   float: left;
   clear: none;
   position:relative;
+  list-style: none;
   }
 
 .view-id-os_websites li.views-row img {
@@ -637,7 +638,7 @@ p.copy a:hover {
 .front #footer #block-os-powered-by {
   float:right;
   position:relative;
-  top: -40px;
+  top: -39px;
   }
 
 .front #block-os-powered-by a {
