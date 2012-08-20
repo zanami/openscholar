@@ -136,5 +136,6 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
          'id' => $current_row->nid,
      );
    }
+   
 
 }
