@@ -175,5 +175,17 @@ function _os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_tabs'] = array(
+    'title' => 'Tabs',
+    'description' => 'Place several widgets into a tabbed container',
+    'tags' => array('Misc'),
+    'handler' => array(
+      'class' => 'os_boxes_tabs',
+      'file' => 'os_boxes_tabs.inc',
+      'path' => $path .'/os_boxes_tabs',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
   return $info;
 }
