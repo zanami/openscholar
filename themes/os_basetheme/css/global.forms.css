@@ -148,6 +148,19 @@ input[disabled] {
   cursor: default;
 }
 
+/** OS LOGIN BUTTON **/
+#block-os-login {
+	bottom:0;
+	position:relative;
+}
+
+#block-os-login a {
+	background:#EFEFEF;
+	padding:3px 6px;
+	color:#222;
+	
+}
+
 input.text,
 input.title {
   padding: .5em;
@@ -292,7 +305,6 @@ html.js #user-login-form li.openid-link,
 }
 
 
-
 /*
  * Search
  */
@@ -315,11 +327,6 @@ background : url("../images/searchArrow.png") no-repeat center center;
 	color: transparent;	
 
 }
-
-
-
-
-
 
 
 input[type="search"]::-webkit-search-decoration,

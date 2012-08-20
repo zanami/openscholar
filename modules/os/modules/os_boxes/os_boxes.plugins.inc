@@ -1,6 +1,6 @@
 <?php
 
-function os_boxes_boxes_plugins() {
+function _os_boxes_boxes_plugins() {
   $info = array();
   $path = drupal_get_path('module', 'os_boxes').'/plugins/';
 
@@ -171,6 +171,18 @@ function os_boxes_boxes_plugins() {
       'class' => 'os_taxonomy_fbt',
       'file' =>  'os_taxonomy_fbt.inc',
       'path' => $path . '/os_taxonomy_fbt',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
+  $info['os_boxes_tabs'] = array(
+    'title' => 'Tabs',
+    'description' => 'Place several widgets into a tabbed container',
+    'tags' => array('Misc'),
+    'handler' => array(
+      'class' => 'os_boxes_tabs',
+      'file' => 'os_boxes_tabs.inc',
+      'path' => $path .'/os_boxes_tabs',
       'parent' => 'os_boxes_default',
     ),
   );

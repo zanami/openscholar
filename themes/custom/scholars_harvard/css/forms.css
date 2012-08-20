@@ -59,7 +59,7 @@
 .region-header-third #vsite-widgets-search-form #edit-search {
   width: 43px;
   }
-
+/*
 #search-theme-form input.form-submit,
 #search-block-form #edit-submit,
 #search-form #edit-submit{
@@ -74,7 +74,7 @@
   -moz-border-radius: 0;
   -webkit-border-radius: 0;
   border-radius: 0;
-}
+}*/
 
 #search-form fieldset.search-advanced {
   clear: left;

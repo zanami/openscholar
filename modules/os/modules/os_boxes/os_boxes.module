@@ -1,6 +1,5 @@
 <?php
 
-include('os_boxes.plugins.inc');
 
 /**
  * Implements hook_ctools_plugin_api().
@@ -9,6 +8,15 @@ function os_boxes_ctools_plugin_api($module, $api) {
   if ($module == 'boxes' && $api == 'plugins') {
     return array('version' => 1);
   }
+}
+
+/**
+ * Passthrough function so box plugin definitions are only loaded when they're needed
+ * We don't need to include and process the file on every page
+ */
+function os_boxes_boxes_plugins() {
+  require_once('os_boxes.plugins.inc');
+  return _os_boxes_boxes_plugins();
 }
 
 /**
@@ -252,11 +260,18 @@ function os_boxes_menu_contextual_links_alter(&$links, $router_item, $path) {
   }
 }
 
-/**
+
+
+/*
  * Regional permissions
  * this may be spun off into its own module, so I'm putting it all in one place
  */
 
+/**
+ * Given a box and a set of contexts, return the region the box is in
+ * This function will be called multiple times per page, so we get all the
+ * regions at once and cache them in a static var.
+ */
 function os_boxes_get_region($box, $contexts = array()) {
   if (empty($contexts)) {
     $contexts = context_active_contexts();
@@ -278,12 +293,19 @@ function os_boxes_get_region($box, $contexts = array()) {
   return isset($blocks[$box->delta])?$blocks[$box->delta]:false;
 }
 
+/**
+ * Given a box, return whether it can be editted based on its region.
+ */
 function os_boxes_access_region($box) {
   $region = os_boxes_get_region($box);
 
   return user_access('edit region '.$region) || user_access('edit all regions');
 }
 
+/**
+ * Implementation of hook_permission()
+ * Defines permissions for all the regions of the default theme
+ */
 function os_boxes_permission() {
   $regions = array_keys(system_region_list(variable_get('theme_default')));
 
