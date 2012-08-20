@@ -5,6 +5,8 @@
   screenshot  = screenshot.png
   base theme  = os_basetheme
   release = 7.x-3.x
+  flavor_name = "Sand"
+  plugins[os][flavor] = flavors
   
   
 stylesheets[all][]   = css/cayley.css

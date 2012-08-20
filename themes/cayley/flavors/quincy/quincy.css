@@ -1,6 +1,3 @@
-@import "quincy.responsive.layout.css"; 
-@import "/profiles/openscholar/themes/os_basetheme/css/d6buffer.css";
-
 body {
 	font:0.9em/1.5em Helvetica Neue,Helvetica,Arial,sans-serif;
 	background: #909d9c;
@@ -15,7 +12,7 @@ h2, h3, h4 {
 	}
 	
 #page {
-	background: url('../images/container.png') transparent repeat-y 0 0;
+	background: url('images/container.png') transparent repeat-y 0 0;
 	box-shadow: 0 0 30px #555555;
     margin: 0 auto;
     padding: 1px 0 0;
@@ -62,15 +59,17 @@ body.header-main .region-header-second {
 	}
 	
 #menu-bar {
-	background: none repeat scroll 0 0 #FFFFFF;
+	/*background: none repeat scroll 0 0 #FFFFFF;*/
 	border-bottom: 1px #D17033;
     /*border-top: 0 none;*/
     padding-left: 17px;
 }
+
 	
 /*#menu-bar .wrap {
 	background: transparent;
 }*/
+
 #menu-bar li {
 	padding-top: 2px;
 	padding-left: 1px;
@@ -217,7 +216,7 @@ td.welcome {
 	margin: 0 auto;
 	width:144px;
 	height:36px;
-	background:url('../images/download_bkgnd.gif') no-repeat;
+	background:url('images/download_bkgnd.gif') no-repeat;
 	text-align:center;
 	}
 
@@ -242,7 +241,7 @@ td.welcome {
 	}
 
 .action_button {
-	background:transparent url('../images/button_bkgnd.gif') no-repeat scroll 0 0;
+	background:transparent url('images/button_bkgnd.gif') no-repeat scroll 0 0;
 	height:36px;
 	margin:0 auto;
 	text-align:center;
