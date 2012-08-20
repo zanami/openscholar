@@ -122,7 +122,7 @@ class ThemeOSMigration extends OSMigration {
       parent::saveMessage(t('Ignoring theme, @theme.  It is no longer supported.', array('@theme'=>$current_row->value)), MigrationBase::MESSAGE_NOTICE);
       $current_row->value = 'ballard';
     }
-    $current_row->value = serialize(array($current_row->value));
+    $current_row->value = serialize($current_row->value);
 
     $current_row->type = 'og';
     $current_row->object_type = 'variable';
