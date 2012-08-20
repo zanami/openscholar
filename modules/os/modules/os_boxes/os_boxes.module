@@ -15,8 +15,8 @@ function os_boxes_ctools_plugin_api($module, $api) {
  * We don't need to include and process the file on every page
  */
 function os_boxes_boxes_plugins() {
-  include('os_boxes.plugins.inc');
-  _os_boxes_boxes_plugins();
+  require_once('os_boxes.plugins.inc');
+  return _os_boxes_boxes_plugins();
 }
 
 /**
