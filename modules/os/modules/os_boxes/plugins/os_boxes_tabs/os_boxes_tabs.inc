@@ -7,10 +7,7 @@ class os_boxes_tabs extends os_boxes_default {
    */
   public function options_defaults() {
     $options = parent::options_defaults();
-    $options['qt_obj'] = array(
-      'default_tab' => FALSE,
-      'tabs' => array(),
-    );
+    $options['tabs'] = array();
     return $options;
   }
 
@@ -19,11 +16,7 @@ class os_boxes_tabs extends os_boxes_default {
    */
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
-
-    if (!module_exists('quicktabs')) {
-      $form['warning'] = array('#markup' => t('This widget requires the QuickTabs module to be enabled.'));
-      return $form;
-    }
+    dpm($this);
 
     $form['#attached'] = array(
       'library' => array(
@@ -47,8 +40,7 @@ class os_boxes_tabs extends os_boxes_default {
       // This needs to be rectified somehow.
     }
 
-    $qt = (array)$this->options['qt_obj'];
-    $existing = $qt['tabs'];
+    $existing = $this->options['tabs'];
     if (!count($existing)) {
       $existing[] = array(
         'type' => 'block',
@@ -138,42 +130,11 @@ class os_boxes_tabs extends os_boxes_default {
     return $form;
   }
 
-  public function options_submit(&$form, &$form_state) {
-    $vals = &$form_state['values'];
-    dpm($vals);
-
-    $qt = array(
-      'machine_name' => strtolower(str_replace(' ', '_', $vals['description'])),
-      'ajax' => 0,
-      'hide_empty_tabs' => 0,
-      'title' => $vals['description'],
-      'tabs' => array(),
-    );
-
-    foreach ($vals['tabs'] as $k => $t) {
-      if ($k == 'tab-new' || $t['bid'] == 'os_boxes_tabs-remove') continue;
-      $qt['tabs'][$t['weight']] = $t;
-    }
-
-    ksort($qt['tabs']);
-    reset($qt['tabs']);
-    $qt['default_tab'] = key($qt['tabs']);
-    $vals['box']['qt_obj'] = $qt;
-    $vals['box']['title'] = $vals['title'];
-    $vals['box']['description'] = $vals['description'];
-
-    return parent::submit($form, $form_state);
-  }
-
   /**
    * Implementation of render().
    */
   public function render() {
     $block = parent::render();
-    if (!module_exists('quicktabs')) {
-      $block['content'] = t('This widget requires the QuickTabs module to be enabled.');
-      return $block;
-    }
 
     $plugin = context_get_plugin('reaction', 'block');
     $qt = $this->options['qt_obj'];
@@ -216,15 +177,14 @@ class os_boxes_tabs extends os_boxes_default {
 function os_modal_tabbed_add_new_tabs(&$element, &$form_state, &$form) {
   for ($i=$element['#default_value']; $i < $element['#value']; $i++) {
     $new_tab = 'tab-'.$i;
-    $form['options']['tabs'][$new_tab] = $form['options']['tabs']['tab-new'];
-    $form['options']['tabs'][$new_tab] += array(
+    $form['options']['tabs'][$new_tab] = array(
       '#attributes' => array('id' => $i),
       '#parents' => array('tabs', $new_tab),
       '#array_parents' => array('options', 'tabs', $new_tab),
       '#tree' => TRUE,
     );
-    $form['options']['tabs'][$i] += $form['options']['tabs']['blank'];
-    foreach ($form['options']['tabs'][$i] as $key => &$child) {
+    $form['options']['tabs'][$new_tab] += $form['options']['tabs']['tab-new'];
+    foreach ($form['options']['tabs'][$new_tab] as $key => &$child) {
       if (strpos($key, '#') !== 0) {
         unset($child['#parents']);
         unset($child['#name']);
@@ -233,7 +193,7 @@ function os_modal_tabbed_add_new_tabs(&$element, &$form_state, &$form) {
     }
     form_builder($form['form_id']['#value'], $form['options']['tabs'][$new_tab], $form_state);
   }
-  unset($form_state['values']['tabs']['blank']);
+  unset($form_state['values']['tabs']['tab-new']);
 
   // remove nids that aren't in the post
   if (is_array($form_state['values'])) {

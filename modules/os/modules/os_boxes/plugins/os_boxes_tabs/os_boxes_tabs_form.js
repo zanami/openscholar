@@ -62,7 +62,7 @@ Drupal.behaviors.tabs = {
   		// and replace the automatically generated panel with it
   		$('#'+id).html($('#tab-new').html().replace(/tab-new/g, id));
   		$('#tabs').tabs("select", id);
-  		var count = $('#edit-tab-count');
+  		var count = $('#edit-count');
   		count.val(parseInt(count.val())+1);
   		
   		$('#'+id+' .tab-title').parent().hide();
