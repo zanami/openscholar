@@ -10,3 +10,5 @@ dependencies[] = "spaces"
 dependencies[] = "views"
 features[views][] = "os_simpleview_base"
 features[views_api][] = "api:2"
+features[box][] = simpleview_box
+files[] = plugins/boxes/os_simpleview.box.inc
