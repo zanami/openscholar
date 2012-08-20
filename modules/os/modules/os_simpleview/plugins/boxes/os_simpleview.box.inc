@@ -10,19 +10,23 @@ class os_simpleview_box extends os_boxes_default {
   
   final public function get_config_path() {
      // return $this->config_path().'/modal/box/'.($this->delta?$this->delta:$this->plugin_key);
-     return 'os_simplview_list/nojs/config_path_yay!';
+     return 'os_simpleview_list/nojs/';
+  }
+  
+  public function use_multistep_create() {
+    return TRUE;
   }
   
   public function options_defaults() {
     $options = parent::options_defaults();
     //need to know $class in order to get defaults from svlist plugin
-    $options += $this->_get_list_class()->options_defaults(); 
+    //$options += $this->_get_list_class()->options_defaults(); 
     
     return $options;
   }
   
   /* in this case options_form only applies to box conf */
-  public function options_form() {
+  public function options_form(&$state) {
     
     //if we're editing the page , give them the form page.  ctools_render should take over before this can return
     if ($_POST['js']) {
