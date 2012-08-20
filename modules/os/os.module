@@ -566,7 +566,7 @@ function os_os_layout_contexts(){
  * @ingroup themeable
  */
 function theme_openscholar_powered_by(){
-  return '<span>' . t('Powered by <a href="@poweredby">OpenScholar</a>', array(
+  return '<span>' . t('<a href="@poweredby">OpenScholar</a>', array(
       '@poweredby' => 'http://openscholar.harvard.edu' 
   )) . '</span>';
 }
