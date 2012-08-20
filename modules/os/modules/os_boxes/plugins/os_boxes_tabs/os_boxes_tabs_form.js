@@ -1,6 +1,7 @@
 
 Drupal.behaviors.tabs = {
   attach: function () {
+    var $ = jQuery;
   	// initialize the tabs and the sortable
   	$('#tabs').tabs({
 			// keep the new_tab link from being a tab
@@ -16,7 +17,7 @@ Drupal.behaviors.tabs = {
 			axis: 'x',
 			// don't let them sort the new_tab
 			items: 'li:not(.new_tab)',
-			update: updateWeightAndDefault,
+			update: updateWeightAndDefault
 	  });
   	
   	// update the weights of the tabs
@@ -37,7 +38,7 @@ Drupal.behaviors.tabs = {
   	// since I can't tell it to display something when not this value
   	$('.panel .tab-delta').live('change', function () {
   		var $this = $(this);
-  		if ($this.val() != 'os_modal_tabbed-remove') {
+  		if ($this.val() != 'os_boxes_tabs-remove') {
   			$('.tab-title', $this.parents('.panel')).parent().show();
   		}
   		else {
@@ -53,7 +54,7 @@ Drupal.behaviors.tabs = {
   	});
   	
   	// add a new tab when the new_tab is clicked on
-  	$('#tabs .links .new a').click(function () {
+  	$('#tabs .links a[href="#tab-new"]').click(function () {
   		var id = 'tab-'+($('#tabs .links li').length-1);
   		$('#tabs').tabs('add', '#'+id, 'New Tab', $('#tabs .links li').length-1);
   
@@ -61,7 +62,7 @@ Drupal.behaviors.tabs = {
   		// and replace the automatically generated panel with it
   		$('#'+id).html($('#tab-new').html().replace(/tab-new/g, id));
   		$('#tabs').tabs("select", id);
-  		var count = $('#edit-tab-count');
+  		var count = $('#edit-count');
   		count.val(parseInt(count.val())+1);
   		
   		$('#'+id+' .tab-title').parent().hide();

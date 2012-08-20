@@ -68,8 +68,25 @@ function os_ga_init() {
   	// Build tracker code for footer.
   	$script = '';
 	
-	//global pageTracker object
-	if($ga_vars['global_id']){
+  	// check to see if both global and site specific GA accounts are set
+  	if(($ga_vars['global_id']!="")&&($ga_vars['vsite_id']!="")) {
+  		// set both to be tracked
+  		$script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['vsite_id']) . ']);';
+	 	$script .= '_gaq.push(["_trackPageview"]);';
+	  	// add in our globak account as well
+	  	$script .= '_gaq.push(["b._setAccount", ' . drupal_json_encode($ga_vars['global_id']) . ']);';
+		$script .= '_gaq.push(["b._trackPageview"]);';
+	  	// finish up the script
+		$script .= '(function() {';
+	  	$script .= 'var ga = document.createElement("script");';
+	  	$script .= 'ga.type = "text/javascript";';
+	  	$script .= 'ga.async = true;';
+	  	$script .= 'ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";';
+	  	$script .= 'var s = document.getElementsByTagName("script")[0];';
+	  	$script .= 's.parentNode.insertBefore(ga, s);';
+	  	$script .= '})();';
+  	}elseif($ga_vars['global_id']){ 
+  		//global pageTracker object
 	  	$script = 'var _gaq = _gaq || [];';
 	  	$script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['global_id']) . ']);';
 		//pass segmentation data to pageTrackerGlobal account
@@ -85,9 +102,8 @@ function os_ga_init() {
 	  	$script .= 'var s = document.getElementsByTagName("script")[0];';
 	  	$script .= 's.parentNode.insertBefore(ga, s);';
 	  	$script .= '})();';
-	 }// end if
-	 	
-	 if($ga_vars['vsite_id']){ //vsite pageTracker object
+	 }elseif($ga_vars['vsite_id']){ 
+	 	//vsite pageTracker object
 	  	$script .= 'var _gaq = _gaq || [];';
 	  	$script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['vsite_id']) . ']);';
 	 	$script .= '_gaq.push(["_trackPageview"]);';
@@ -103,8 +119,10 @@ function os_ga_init() {
 	  	$script .= 'var s = document.getElementsByTagName("script")[0];';
 	  	$script .= 's.parentNode.insertBefore(ga, s);';
 	  	$script .= '})();';
+	 }else{
+	 	$script = '';
 	 } // default to out global account
-  	
+	 
   	if (strlen($script)){
     	//code snippet goes in header by default
    	 	drupal_add_js($script, 'inline', variable_get('vsite_ga_scope' , 'header'));
@@ -116,9 +134,9 @@ function os_ga_init() {
  */
 function _os_ga_ga_id_vars(){
 	$ga_vars = array();
-
   	//global id
   	// load in the vsite info
+  	//global id
   	$vsite = vsite_get_vsite();
   	if ($vsite) {
     	if (strlen($vsite->controllers->variable->get('vsite_ga_google_analytics_id', 'original'))) {
