@@ -174,7 +174,6 @@ class os_boxes_tabs extends os_boxes_default {
         }
       }
     }
-    dpm($render);
     $block['content'] = drupal_render($render);
 
     return $block;
