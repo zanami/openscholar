@@ -16,7 +16,6 @@ class os_boxes_tabs extends os_boxes_default {
    */
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
-    dpm($this);
 
     $form['#attached'] = array(
       'library' => array(
@@ -137,31 +136,46 @@ class os_boxes_tabs extends os_boxes_default {
     $block = parent::render();
 
     $plugin = context_get_plugin('reaction', 'block');
-    $qt = $this->options['qt_obj'];
-    foreach ($qt['tabs'] as $k => &$t) {
-      if ($b = $plugin->get_block($t['bid'])) {
-        $b->subject = '';
-        if (empty($b->content)) {
-          unset($qt['tabs'][$k]);
-        }
-        else {
-          if ($block_arr = _block_render_blocks(array($block))) {
-            if (!empty($block_arr["{$block->module}_{$block->delta}"]->content)) {
-              $build = _block_get_renderable_array($block_arr);
-              $t['content'] = $build;
-            }
+    $blocks = $plugin->get_blocks();
+    $render = array(
+      'links' => array(
+        '#theme' => 'links',
+        '#links' => array(),
+      ),
+      '#attached' => array(
+        'library' => array(
+          array('system', 'ui.tabs'),
+        ),
+        'js' => array(
+          drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_tabs/os_boxes_tabs_display.js',
+        )
+      )
+    );
+    foreach ($this->options['tabs'] as $k => &$t) {
+      if ($b = $blocks[$t['bid']]) {
+        if ($block_arr = _block_render_blocks(array($b))) {
+          if (!empty($block_arr["{$b->module}_{$b->delta}"]->content)) {
+
+            $render['links']['#links'][] = array(
+              'title' => $t['title'],
+              'href' => '',
+              'fragment' => $k,
+              'external' => TRUE,
+            );
+
+            $build = _block_get_renderable_array($block_arr);
+            $build['#attributes']['id'] = '';
+            $render[$t['bid']] = array(
+              '#type' => 'container',
+              '#attributes' => array('id' => $k),
+              $t['bid'] => $build,
+            );
           }
         }
       }
-      else {
-        unset($qt['tabs'][$k]);
-      }
     }
-    $qt_obj = quicktabs_build_quicktabs('os_boxes_quicktabs-'.$this->delta, $qt);
-    if (isset($qt_obj['content']) && !empty($qt_obj['content'])) {
-      $block['content'] = drupal_render($qt_obj['content']);
-      drupal_add_js(drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_tabs/os_modal_tabbed_display.js');
-    }
+    dpm($render);
+    $block['content'] = drupal_render($render);
 
     return $block;
   }
