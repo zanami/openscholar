@@ -1,0 +1,109 @@
+<?php
+/**
+ * @file
+ * Code for Rbuild module
+ * 
+ * Rbuild extends the OS Software feature module, providing a new field option
+ * called "Rbuild repository", which OS Software provides to the field
+ * field_software_method.
+ * 
+ * OS Software responds to this field to show/hide the "Add new > Software
+ * Release" contextual link, and also to show/hide a second field
+ * field_software_repo on the node edit form.
+ * 
+ * Rbuild also checks for regular updates, fetches any new packages, and creates
+ * new Software Release nodes if a newer version exists.
+ */
+
+/**
+ * Drupal hooks
+ */
+
+/**
+ * OpenScholar hooks
+ */
+
+/**
+ * Implements hook_os_packaging_method_option().
+ */
+function rbuild_os_packaging_method_option() {
+  $options = array(
+    'Rbuild repository' => t('Rbuild repository'),
+  );
+  return $options;
+}
+
+/**
+ * Implements hook_os_software_process_remote_release().
+ */
+function rbuild_os_software_process_remote_release() {
+
+  // Checks for new releases every 20 minutes, invoked by cron.
+  $default_interval = 20 * 60;
+  $interval = variable_get('rbuild_cron_update_interval', $default_interval);
+  $now = time();
+
+  $rbuild_project_nodes = _rbuild_query_all_rbuild_project_nodes();
+  
+  foreach ($rbuild_project_nodes as $project_node) {
+    $time_to_check = (bool)(($project_node->changed + $interval) < $now); 
+    if ($time_to_check === TRUE) {
+      // Imports any new file and creates Software Release node
+    	_rbuild_fetch_new_releases($project_node);
+    }
+  }
+}
+
+/**
+ * Custom functions
+ */
+
+/**
+ * Checks for and imports any new releases.
+ * 
+ * @param object $project_node
+ *   An individual project node with packaging method "Rbuild repository"
+ *   
+ * @see rbuild_os_software_process_remote_release()
+ */
+function _rbuild_fetch_new_releases($project_node) {
+  
+}
+
+/**
+ * Finds all Software Project nodes set to Rbuild.
+ */
+function _rbuild_query_all_rbuild_project_nodes() {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'software_project')
+    ->propertyCondition('status', 1) // Published
+    ->fieldCondition('field_software_method', 'value', 'Rbuild repository', '=')
+    ->fieldCondition('field_software_repo', 'value', '', '!=')
+    ->addMetaData('account', user_load(1)); // run the query as user 1
+  
+  $result = $query->execute();
+  return _rbuild_query_load_nodes($result);
+}
+
+/**
+ * Returns an array of loaded nodes.
+ *
+ * @param object $query_result
+ *   An EntityFieldQuery where entity_type = node
+ * @return mixed $result 
+ *   An array of node entity objects, or empty array if no results.
+ *   
+ * @todo possibly rename and move elsewhere as a generic helper function.
+ * @see _rbuild_query_all_rbuild_project_nodes()
+ */
+function _rbuild_query_load_nodes($query_result) {
+  if (isset($query_result['node'])) {
+    $nids = array_keys($query_result['node']);
+    $nodes = entity_load('node', $nids);
+    return $nodes;
+  }
+  
+  return array();
+}
+
