@@ -110,16 +110,7 @@ body.header-left-main-right #header-container {
   background: transparent;
   }
 
-body.no-sidebars #header-container,
-body.no-sidebars #columns .hg-container,
-body.sidebar-second #columns .hg-container,
-body.no-sidebars #footer {
-  padding-left: 43px;
-  }
 
-body.sidebar-first #columns .hg-container {
-  padding-left: 210px;
-  }
 
 .sidebar-first #content-main,
 .two-sidebars #content-main{

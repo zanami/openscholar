@@ -160,10 +160,7 @@ body.no-sidebars #footer {
   padding-left: 10px;
   }
   
-body.sidebar-first #columns .hg-container {
-  padding-left: 210px;
-  }
-  
+
  #content-column, .region-sidebar-first, .region-sidebar-second  {
   padding-top: 15px;
   }
