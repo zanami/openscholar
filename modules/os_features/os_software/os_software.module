@@ -164,7 +164,7 @@ function os_software_os_widget() {
  */
 function os_software_os_packaging_method_option() {
   $options = array(
-   	'Manual upload' => t('Manual upload'),
+    'Manual upload' => t('Manual upload'),
   );
   return $options;
 }

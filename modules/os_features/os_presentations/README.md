@@ -1,4 +1,4 @@
-# OS Blog
+# OS Presentations
 
 OpenScholar blog provides simple blog functionality for an OpenScholar site.
 
