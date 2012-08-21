@@ -8,7 +8,7 @@ function cp_settings_form($form_state) {
 
   $settings = cp_settings_get_setting_forms();
   foreach ($settings as $key => $s) {
-    if (isset($s['form'])) continue;
+    if (!isset($s['form'])) continue;
 
     // if the setting defines a group for itself,
     // that group should be created and the form placed
