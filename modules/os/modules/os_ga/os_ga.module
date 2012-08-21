@@ -67,7 +67,7 @@ function os_ga_init() {
 	global $user;
   	// Build tracker code for footer.
   	$script = '';
-	
+	print_r($ga_vars);
   	// check to see if both global and site specific GA accounts are set
   	if(($ga_vars['global_id']!="")&&($ga_vars['vsite_id']!="")) {
   		// set both to be tracked
@@ -135,11 +135,11 @@ function os_ga_init() {
 function _os_ga_ga_id_vars(){
 	$ga_vars = array();
   	//global id
-  	// load in the vsite info
+  	// load in the spaces info
   	//global id
-  	$vsite = vsite_get_vsite();
-  	if ($vsite) {
-    	if (strlen($vsite->controllers->variable->get('vsite_ga_google_analytics_id', 'original'))) {
+  	$spaces = spaces_get_space();
+  	if ($spaces) {
+    	if (strlen($spaces->controllers->variable->get('vsite_ga_google_analytics_id', 'original'))) {
       		$ga_vars['global_id'] = variable_get('vsite_ga_global_id' , '');
     	}
 
