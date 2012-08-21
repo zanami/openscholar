@@ -156,7 +156,7 @@ function os_boxes_remove_widget($box, $target=false) {
       'text' => array(
         '#type' => 'markup',
         '#markup' => t('This widget has been removed from this section. You can undo this action by clicking !url', array(
-          '!url' => l('Here', 'os/boxes/'.$box->delta.'/remove/'.$old_region, array('query' => array('contexts' => $contexts)))
+          '!url' => l('Here', 'cp/boxes/'.$box->delta.'/remove/'.$old_region, array('query' => array('contexts' => $contexts)))
         ))
       )
     );

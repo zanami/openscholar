@@ -117,7 +117,7 @@ function os_shields_form_submit(&$form, &$form_state) {
   $shield_info = variable_get('os_shields_shield_info', array());
 
   $shields = $form['container'];
-  $default = $_POST['default'];
+  $default = isset($_POST['default'])?$_POST['default']:0;
   foreach ($form_state['values'] as $name => $data) {
     if (!is_array($data)) continue;
     $shield = $shields[$name]['image']['#value'];
@@ -158,17 +158,22 @@ function os_shields_form_submit(&$form, &$form_state) {
   if ($_FILES['files']['error']['new_shield'] == UPLOAD_ERR_OK) {
 
     $dest = 'public://os_shields';
-    $new_file = file_save_upload('new_shield', array(), $dest, true);
-    $new_file->status = FILE_STATUS_PERMANENT;
-    file_save($new_file);
-    if (empty($shield_info)) {
-      // this is our first new shield. make it the default by... default...
-      $shield_info[$new_file->filename]['default'] = 1;
-      variable_set('os_shields_shield', $new_file->filename);
-    }
+    if (file_prepare_directory($dest, FILE_CREATE_DIRECTORY)) {
+      $new_file = file_save_upload('new_shield', array(), $dest, true);
+      $new_file->status = FILE_STATUS_PERMANENT;
+      file_save($new_file);
+      if (empty($shield_info)) {
+        // this is our first new shield. make it the default by... default...
+        $shield_info[$new_file->filename]['default'] = 1;
+        variable_set('os_shields_shield', $new_file->filename);
+      }
 
-    $shield_info[$new_file->filename]['hidden'] = 0;
-    $shield_info[$new_file->filename]['fid'] = $new_file->fid;
+      $shield_info[$new_file->filename]['hidden'] = 0;
+      $shield_info[$new_file->filename]['fid'] = $new_file->fid;
+    }
+    else {
+      drupal_set_message('Error creating the directory. Check that your server has proper permissions set on the files directory.', 'error');
+    }
   }
 
   variable_set('os_shields_shield_info', $shield_info);
