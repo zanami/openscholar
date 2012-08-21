@@ -35,10 +35,10 @@ function os_ga_menu(){
 }
 
 /**
- * Implementation hook os_ga_vsite_generic_settings()
+ * Implementation hook os_ga_cp_settings()
  * @return array
  */
-function os_ga_vsite_generic_settings(){
+function os_ga_cp_settings(){
   $a_settings = array();
 
   $a_settings['vsite_ga_google_analytics_id'] = array(
@@ -67,9 +67,9 @@ function os_ga_init() {
 	global $user;
   	// Build tracker code for footer.
   	$script = '';
-
   	// check to see if both global and site specific GA accounts are set
-  	if(($ga_vars['global_id']!="")&&($ga_vars['vsite_id']!="")) {
+  	if((!empty($ga_vars['global_id']))&&(!empty($ga_vars['vsite_id']))) {
+  		echo "and im here";
   		// set both to be tracked
   		$script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['vsite_id']) . ']);';
 	 	$script .= '_gaq.push(["_trackPageview"]);';
@@ -85,7 +85,7 @@ function os_ga_init() {
 	  	$script .= 'var s = document.getElementsByTagName("script")[0];';
 	  	$script .= 's.parentNode.insertBefore(ga, s);';
 	  	$script .= '})();';
-  	}elseif($ga_vars['global_id']){ 
+  	}elseif(!empty($ga_vars['global_id'])){ 
   		//global pageTracker object
 	  	$script = 'var _gaq = _gaq || [];';
 	  	$script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['global_id']) . ']);';
@@ -102,7 +102,7 @@ function os_ga_init() {
 	  	$script .= 'var s = document.getElementsByTagName("script")[0];';
 	  	$script .= 's.parentNode.insertBefore(ga, s);';
 	  	$script .= '})();';
-	 }elseif($ga_vars['vsite_id']){ 
+	 }elseif(!empty($ga_vars['vsite_id'])){ 
 	 	//vsite pageTracker object
 	  	$script .= 'var _gaq = _gaq || [];';
 	  	$script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['vsite_id']) . ']);';
