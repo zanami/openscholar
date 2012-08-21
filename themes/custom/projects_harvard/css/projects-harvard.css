@@ -174,18 +174,7 @@ h2 {
   padding: 0;
   }
 
-.search-form input.form-submit,
-#search-block-form #edit-submit,
-#search-form #edit-submit {
-  background: transparent !important;
-  border:medium none !important;
-  float:left;
-  height:30px !important;
-  margin-left:10px;
-  margin-right:0;
-  margin-top:2px;
-  width:25px !important;
-  }
+
 
 .os-big-button {
   text-align: center;
@@ -519,7 +508,7 @@ float: left;
   }
 
 .os-row-features {
-  padding: 15px 0 30px 0;
+  padding: 15px 0 20px 0;
   background:#000;
   margin-left: -8px;
   }
@@ -631,18 +620,18 @@ td, td.description {
 /* FRONT PAGE vSITE PROFILES */
 
 
-.os-projfeaturedsites ul {
+#block-views-os-websites-block ul {
   padding-top: 22px;
   width: 860px;
   margin: 0 0 0 85px;
   }
 
-.os-projfeaturedsites,
+#block-views-os-websites-block,
 #footer {
   position:relative;
   }
 
-.os-projfeaturedsites h3 {
+#block-views-os-websites-block h2 {
   background: url('../images/featured.png') 0 0 no-repeat transparent;
   text-indent: -999em;
   width:70px;
@@ -652,7 +641,7 @@ td, td.description {
   float:left;
   }
 
-.os-projfeaturedsites {
+#block-views-os-websites-block {
   clear: both;
   background:#fff;
   position:relative;
@@ -660,7 +649,7 @@ td, td.description {
  margin: -14px 0 0 -8px;
   }
 
-.os-projfeaturedsites .views-row {
+#block-views-os-websites-block .views-row {
   float: left;
   clear: none;
   width: 270px;
@@ -668,13 +657,13 @@ td, td.description {
   overflow: hidden;
   }
 
-.os-projfeaturedsites .views-row,
+#block-views-os-websites-block .views-row,
 .view-openscholar-sites td {
   height: 100px;
   font-size: 12px;
   }
 
-.os-projfeaturedsites img,
+#block-views-os-websites-block img,
 .view-openscholar-sites img,
 .view-openscholar-sites img {
   border: 1px solid #8b8b8b;
@@ -689,34 +678,34 @@ td, td.description {
   font-size: 11px;
   }
 
-.view-openscholar-sites .views-field-title a {
+#block-views-os-websites-block .views-field-title a {
   font-weight: normal;
   font-family: 'SlingBold', serif;
   }
 
-.os-projfeaturedsites .more-link {
+#block-views-os-websites-block .more-link {
   clear: both;
   }
 
-.os-projfeaturedsites .more-link a:after {
+#block-views-os-websites-block .more-link a:after {
   content: '';
   }
 
-.os-projfeaturedsites .views-admin-links {
+#block-views-os-websites-block .views-admin-links {
   position:absolute;
   right:0;
   top: 0;
   width: 103px;
   }
 
-.os-projfeaturedsites .views-admin-links ul {
+#block-views-os-websites-block .views-admin-links ul {
   background: transparent;
   height: auto;
   padding: 0;
   margin:0;
   }
 
-.os-projfeaturedsites .more-link a {
+#block-views-os-websites-block .more-link a {
   background: url('../images/black-arrow-right.png') no-repeat 100% 50% #fff;
   padding-right: 11px;
   color: #000;
@@ -775,19 +764,19 @@ p.copy {
   margin-top: 0;
   }
 
-.os-projfeaturedsites ul {
+#block-views-os-websites-block ul {
   padding-top: 30px;
   padding-left: 111px;
   }
 
-.os-projfeaturedsites .views-row {
+#block-views-os-websites-block .views-row {
   width: 206px;
   height: 50px;
   margin-bottom: .5em;
   margin-right: 62px;
   }
 
-.os-projfeaturedsites .views-row .views-field-field-vsite-logo-fid,
+#block-views-os-websites-block .views-row .views-field-field-vsite-logo-fid,
 body.section-websites .views-field-field-vsite-logo-fid {
   display:none;
   }

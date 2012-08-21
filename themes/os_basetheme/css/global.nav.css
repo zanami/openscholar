@@ -532,6 +532,9 @@ ul.nice-menu ul li a {
     border:none;
 }
 
+ul.nice-menu-right, ul.nice-menu-left, ul.nice-menu-right li, ul.nice-menu-left li {
+    width: 100%;
+}
 
 /* CP MINI MENU */
 

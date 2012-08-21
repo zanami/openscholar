@@ -185,10 +185,6 @@ body.no-sidebars #footer {
   padding-left: 10px;
   }
 
-body.sidebar-first #columns .hg-container {
-  padding-left: 210px;
-  }
-
 .biblio-separator-bar {
    border-bottom: 2px dotted #CCC;
 }
@@ -201,20 +197,6 @@ body.navbar-off.header-none #columns {
 	padding-top:10px;
 }
 
-/** IF ONLY (1) SIDEBAR IS PRESENT MAKE SIDEBAR 250PX WIDE **/
-
-body.one-sidebar.sidebar-first .region-sidebar-first, 
-body.one-sidebar.sidebar-second .region-sidebar-second {
-    width: 250px;
-}
-
-body.one-sidebar.sidebar-second #columns .hg-container {
-  padding-right: 300px;
-}
-
-body.one-sidebar.sidebar-first #columns .hg-container {
-padding-left: 280px;
-}
 
 
 /*SIDEBAR ELEMENTS */

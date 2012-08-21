@@ -98,7 +98,7 @@ function iqss_projects_front_default_box() {
     'body' => array(
       'value' => '<div class="os-fp-imageholder"><img src="/profiles/openscholar/themes/custom/projects_harvard/images/top_image.png"></div>
 <div class="os-more-info"><strong>Projects at Harvard</strong> is a free web site building tool available to groups at Harvard wishing to create a site for their project. It is one of two main Harvard installations of <strong>OpenScholar</strong> and a creation of Harvard’s <em>Institute for Quantitative Social Science.</em><br><br><strong>Projects at Harvard</strong> (and the personal site-oriented <strong>Scholars at Harvard</strong>) provide simple web site creation and management with a suite of features tailored to the particular needs of academics.
-</div>',
+<div class="os-big-button"><a href="/site/register">Get your web site!</a></div></div>',
       'format' => 'filtered_html',
     ),
     'additional_classes' => '',
