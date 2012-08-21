@@ -321,6 +321,7 @@ input[type="search"] {
 -moz-border-radius:4px;
 border-radius:4px;
 padding: 3px 16px 3px 2px;
+ width: 70%;
 }
 
 #search-block-form input[type="submit"] {
