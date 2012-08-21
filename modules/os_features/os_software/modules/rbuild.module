@@ -30,6 +30,7 @@ function rbuild_os_packaging_method_option() {
   $options = array(
     'Rbuild repository' => t('Rbuild repository'),
   );
+  
   return $options;
 }
 
@@ -49,7 +50,7 @@ function rbuild_os_software_process_remote_release() {
     $time_to_check = (bool)(($project_node->changed + $interval) < $now); 
     if ($time_to_check === TRUE) {
       // Imports any new file and creates Software Release node
-    	_rbuild_fetch_new_releases($project_node);
+      _rbuild_fetch_new_releases($project_node);
     }
   }
 }
@@ -71,7 +72,183 @@ function _rbuild_fetch_new_releases($project_node) {
 }
 
 /**
+ * Creates a new Software Release node for a given Software Project.
+ * 
+ * @param object $project_node
+ *   The parent Software Project node, which will be referenced by a field.
+ * @param string $version
+ *   The text version info from the remote server for the new Release.
+ * @param string $filename
+ *   The package file to be saved to the release node field for download.
+ * @param array $package
+ * @param string $url
+ * @param array $context
+ */
+function _rbuild_add_release_node($project_node, $version, $filename, $package, $url, &$context) {
+  $start_time = time();
+  
+	// Prepares basic node settings and fields
+  $release_node = new stdClass();
+  $release_node->type = 'software_release';
+  $release_node->uid = $project_node->uid;
+  $release_node->og_groups = $project_node->og_groups;
+  $release_node->spaces_og = $project_node->spaces_og;
+  $release_node->status = 1;
+  $release_node->active = 1;
+  $release_node->field_software_project['und'][0]['target_id'] = $project_node->nid;
+  $release_node->field_software_version['und'][0]['value'] = $version;
+  $release_node->field_software_recommended[0]['value'] = ($version == $package['version']) ? 1 : 0;
+  
+  // Prepares file field
+  $file = _rbuild_import_file($filepath, $filename, $project_node->uid);
+  $release_node->field_software_package['und'][0] = get_object_vars($file);
+  
+  /* array(
+    'fid' => $file->fid,
+    'title' => basename($file->filename),
+    'filename' => $file->filename,
+    'filepath' => $file->filepath,
+    'filesize' => $file->filesize,
+    'mimetype' => $file->filemime,
+    'description' => basename($file->filename),
+    'list' => 1,
+  ); */
+  
+  // Tells file_fields to leave this alone
+  if(!$file->process_file) {
+    $release_node->field_software_package[0]['status'] = 1;
+  }
+  
+  if($file->timestamp < $start_time) $release_node->created = $file->timestamp;
+  
+  // Saves the new Software Release node to the database
+  node_save($release_node);
+  
+  $context['results'][] = $release_node->nid .' : '. $release_node->title;
+  $context['message'] = $release_node->title;
+}
+
+/**
+ * Creates a new Drupal File object for a remote file.
+ * 
+ * @param string $path
+ *   The external path of the file to import.
+ * @param string $filename
+ *   The filename of the file located at the external path.
+ * @param int $uid
+ *   The Drupal user ID who owns the returned file
+ * @param bool $get_contents
+ *   Whether or not to retrieve the file contents.
+ *   
+ * @return object $file
+ *   A Drupal File object to attach to a new Software Release node.
+ */
+function _rbuild_import_file($url, $filename, $uid, $get_contents = FALSE) {
+  
+  // Generates new local filepath
+  $filepath = $url . '/' . $filename;
+  $new_filepath = $filepath;
+  if ($get_contents) {
+	  $data = _rbuild_get_file_contents($filepath);
+	  $new_filepath = file_save_data($data, $filename);
+  }
+  
+  // Prepares metadata for new file object
+  $mimetype = 'application/octet-stream'; // Gzip file
+  $last_modified = FALSE;
+  $filesize = @filesize($new_filepath);
+  if (!$filesize) {
+    $headers = _rbuild_get_file_headers($filepath);
+    foreach ($headers as $header) {
+    	list($header_name, $header_val) = explode(":", $header, 2);
+    	if (strtolower(trim($header_name)) === 'content-length') {
+    		$filesize = intval($header_val);
+    	}
+      if (strtolower(trim($header_name)) === 'last-modified') {
+        $last_modified = strtotime($header_val);
+      }
+    }
+  }
+  
+  // Prepares file object
+  $file = new stdClass();
+  $file->filename = basename($new_filepath);
+  $file->filepath = $new_filepath;
+  $file->filemime = $mimetype;
+  $file->filesize = $filesize;
+  
+  $file->uid = $uid;
+  $file->status = FILE_STATUS_PERMANENT;
+  $file->timestamp = $last_modified ? $last_modified : time();
+  drupal_write_record('files', $file);
+  $file->fid = db_result(db_query("SELECT fid FROM {files} WHERE filepath = '%s'", $file->filepath));
+  
+  $file->process_file = $get_contents;
+  
+  return $file;
+}
+
+/**
+ * Gets the file contents of a remote file using curl.
+ * 
+ * @param string $url
+ *   The URL to fetch data from.
+ * 
+ * @return mixed
+ *   If the response is 404, returns FALSE
+ *   Else, returns the output from curl_exec()
+ */
+function _rbuild_get_file_contents($url) {
+	
+	// Initializes curl session
+  $ch = curl_init();
+
+  // Set curl to return the data instead of printing it to the browser.
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_URL, $url);
+  
+  // Executes curl fetch
+  $data = curl_exec($ch);
+  
+  $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  if ((int)$http_code === (int)404) return FALSE;
+  
+  // Closes the connection
+  curl_close($ch);
+	
+  return $data;
+}
+
+/**
+ * Returns file headers on a URL using curl.
+ * 
+ * @param string $url
+ *   The URL to fetch headers for.
+ * 
+ * @return array $headers
+ *   An array of strings containing header information.
+ */
+function _rbuild_get_file_headers($url) {
+	$ch = curl_init();
+
+	curl_setopt($ch, CURLOPT_URL,            $url);
+	curl_setopt($ch, CURLOPT_HEADER,         TRUE);
+	curl_setopt($ch, CURLOPT_NOBODY,         TRUE);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	curl_setopt($ch, CURLOPT_TIMEOUT,        10);
+	
+	$response = curl_exec($ch);
+	$headers = explode('\n', $response);
+	curl_close($ch);
+	
+	return $headers;
+}
+
+/**
  * Finds all Software Project nodes set to Rbuild.
+ * 
+ * @return array
+ *   An array of loaded Software Project node objects.
  */
 function _rbuild_query_all_rbuild_project_nodes() {
   $query = new EntityFieldQuery();
@@ -87,6 +264,32 @@ function _rbuild_query_all_rbuild_project_nodes() {
 }
 
 /**
+ * Finds all Software Release nodes for a given Project and Version.
+ * 
+ * @return bool $exists
+ *   Only TRUE if query returns at least 1 result, otherwise FALSE.
+ */
+function _rbuild_query_release_node_exists($project_nid, $version) {
+  $exists = FALSE;
+  
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'software_release')
+    ->propertyCondition('status', 1) // Published
+    ->fieldCondition('field_software_project', 'target_id', $project_nid, '=')
+    ->fieldCondition('field_software_version', 'value', $version, '=')
+    ->addMetaData('account', user_load(1)); // run the query as user 1
+  $result = $query->execute();
+  if (is_array($result['node'])) {
+    if (sizeof($result['node']) > 0) {
+      $exists = TRUE;
+    }
+  }
+  
+  return $exists;
+}
+
+/**
  * Returns an array of loaded nodes.
  *
  * @param object $query_result
@@ -97,9 +300,9 @@ function _rbuild_query_all_rbuild_project_nodes() {
  * @todo possibly rename and move elsewhere as a generic helper function.
  * @see _rbuild_query_all_rbuild_project_nodes()
  */
-function _rbuild_query_load_nodes($query_result) {
-  if (isset($query_result['node'])) {
-    $nids = array_keys($query_result['node']);
+function _rbuild_query_load_nodes($result) {
+  if (isset($result['node'])) {
+    $nids = array_keys($result['node']);
     $nodes = entity_load('node', $nids);
     return $nodes;
   }
