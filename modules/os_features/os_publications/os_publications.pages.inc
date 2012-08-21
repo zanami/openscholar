@@ -132,7 +132,8 @@ function os_publications_settings() {
       'class' => array('column', 'column-right'),
     )
   );
-  $form['left']['biblio_style'] = array(
+  $style = module_exists('biblio_citeproc')?'biblio_citeproc_style':'biblio_style';
+  $form['left'][$style] = array(
     '#type' => 'radios',
     '#title' => t('Select your preferred bibliographic format'),
     //'#description' => t('This alters the bibliographic format of your publications.'),
