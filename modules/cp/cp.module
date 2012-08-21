@@ -443,7 +443,7 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id){
  */
 function cp_cp_settings() {
   $setting = array();
-  $setting['cp-menu'] = array(
+  $setting['cp_admin_menu'] = array(
     'group' => array(
       '#title' => t('Admin Menu'),
       '#id' => 'admin-menu',
