@@ -12,7 +12,6 @@ h2, h3, h4 {
 	}
 	
 #page {
-	background: url('images/container.png') transparent repeat-y 0 0;
 	box-shadow: 0 0 30px #555555;
     margin: 0 auto;
     padding: 1px 0 0;
@@ -82,8 +81,24 @@ body.header-main .region-header-second {
 	color: #fff;
 	}
 	
+#columns {
+	overflow:hidden;
+	}
+
+#content-column, .region-sidebar-first, .region-sidebar-second {
+margin-bottom: -2000px;
+padding-bottom: 2000px;
+}
+
+#content-column {
+	background: #F8F8EF;
+}
+
+.region-sidebar-first {
+	background: #FFFFFF;
+}
 .region-sidebar-second {
-	background: none repeat scroll 0 0 transparent;
+	background: #EBEFF1;
 	padding-left: 30px;
 	width: 170px;
 }
