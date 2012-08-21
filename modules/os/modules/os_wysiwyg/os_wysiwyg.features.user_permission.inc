@@ -13,7 +13,9 @@ function os_wysiwyg_user_default_permissions() {
   // Exported permission: use text format filtered_html.
   $permissions['use text format filtered_html'] = array(
     'name' => 'use text format filtered_html',
-    'roles' => array(),
+    'roles' => array(
+      0 => 'authenticated user',
+    ),
     'module' => 'filter',
   );
 
