@@ -70,13 +70,6 @@ function cp_menu(){
 //       'file path' => drupal_get_path('module', 'taxonomy'),
   );
 
-  // Settings
-  $items['cp/settings'] = array(
-      'title' => "Settings",
-      'page callback' => 'cp_settings',
-      'weight' => 20
-  );
-
   // feature customize forms
   $features = spaces_features('site');
   foreach ($features as $name => $feature) {
@@ -135,7 +128,7 @@ function cp_taxonomy(){
 	  $vsite = spaces_get_space();
 	  return l("Edit/ADD this Groups Vocabularies","group/{$vsite->group_type}/{$vsite->id}/admin/taxonomy").t("(outside CP for now)");
   }
-  
+
   return drupal_get_form('taxonomy_overview_vocabularies');
 }
 
