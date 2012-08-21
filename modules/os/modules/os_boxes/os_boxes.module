@@ -23,7 +23,7 @@ function os_boxes_boxes_plugins() {
  * Implements hook_menu().
  */
 function os_boxes_menu() {
-  $items['os/boxes/add/%os_boxes'] = array(
+  $items['cp/boxes/add/%os_boxes'] = array(
     'title' => 'Add Widget',
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(3),
@@ -33,7 +33,7 @@ function os_boxes_menu() {
     'file' => 'os_boxes.admin.inc',
   );
 
-  $items['os/boxes/%os_boxes/edit'] = array(
+  $items['cp/boxes/%os_boxes/edit'] = array(
     'title' => 'Edit Widget',
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(2),
@@ -47,13 +47,13 @@ function os_boxes_menu() {
 
   // This item is just a helper for contextual links
   // It should always be accessible, and just not go anywhere.
-  $items['os/boxes/%os_boxes'] = array(
+  $items['cp/boxes/%os_boxes'] = array(
     'access callback' => 'os_boxes_access_region',  // for contextual links
     'access arguments' => array(2),
     'page callback' => 'os_boxes_placeholder',
-  ) + $items['os/boxes/%os_boxes/edit'];
+  ) + $items['cp/boxes/%os_boxes/edit'];
 
-  $items['os/boxes/%os_boxes/delete'] = array(
+  $items['cp/boxes/%os_boxes/delete'] = array(
     'title' => 'Delete Widget',
     'page callback' => 'os_boxes_delete_widget',
     'page arguments' => array(2),
@@ -63,7 +63,7 @@ function os_boxes_menu() {
     'file' => 'os_boxes.admin.inc',
     'weight' => 2,
   );
-  $items['os/boxes/%os_boxes/remove'] = array(
+  $items['cp/boxes/%os_boxes/remove'] = array(
     'title' => 'Remove Widget',
     'page callback' => 'os_boxes_remove_widget',
     'page arguments' => array(2),
@@ -165,8 +165,8 @@ function os_boxes_os_widget_alter(&$widget) {
     if (isset($plugin['tags']))
       $widget['class'] = $plugin['tags'];
 
-    $widget['can_edit'] = boxes_access('edit', $box);  // all boxes should be editable. If they aren't, why are they a box
-    $widget['path'] = 'os/boxes/'.$widget['delta'];
+    $widget['can_edit'] = boxes_access_edit($box);  // all boxes should be editable. If they aren't, why are they a box
+    $widget['path'] = 'cp/boxes/'.$widget['delta'];
 
     // deletion is easier now.
     // just refer to the permission.
@@ -188,7 +188,7 @@ function os_boxes_get_factories() {
         'module' => 'boxes',
         'delta' => "boxes_add__$p",
         'label' => $info['title'],
-        'block_config_path' => "os/boxes/add/{$p}",
+        'block_config_path' => "cp/boxes/add/{$p}",
         'factory' => true,
       );
     }
@@ -217,8 +217,8 @@ function os_boxes_get_tags() {
  */
 function os_boxes_admin_paths() {
   $paths = array(
-    'os/boxes/*' => TRUE,
-    '*/os/boxes/*' => TRUE,    // catches spaces
+    'cp/boxes/*' => TRUE,
+    '*/cp/boxes/*' => TRUE,    // catches spaces
   );
 
   return $paths;
@@ -242,7 +242,7 @@ function os_boxes_block_view_alter(&$array, $block) {
     }
 
     $array['content']['#contextual_links']['box'] = array(
-      'os/boxes',
+      'cp/boxes',
       array($block->delta),
     );
   }
