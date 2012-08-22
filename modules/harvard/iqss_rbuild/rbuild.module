@@ -20,6 +20,17 @@
  */
 
 /**
+ * Implements hook_node_view().
+ */
+function rbuild_node_view($node, $view_mode, $langcode) {
+  $testing = TRUE;
+  if ($testing) {
+    dpm($node);
+    rbuild_os_software_process_remote_release();
+  }
+}
+
+/**
  * OpenScholar hooks
  */
 
@@ -40,13 +51,14 @@ function rbuild_os_packaging_method_option() {
 function rbuild_os_software_process_remote_release() {
 
   // Checks for new releases every 20 minutes, invoked by cron.
-  $default_interval = 20 * 60;
+  $default_interval = 20; //20 * 60;
   $interval = variable_get('rbuild_cron_update_interval', $default_interval);
   $now = time();
 
   $rbuild_project_nodes = _rbuild_query_all_rbuild_project_nodes();
   
   foreach ($rbuild_project_nodes as $project_node) {
+    dpm('Checking project: ' . $project_node->title);
     $time_to_check = (bool)(($project_node->changed + $interval) < $now); 
     if ($time_to_check === TRUE) {
       // Imports any new file and creates Software Release node
@@ -68,6 +80,7 @@ function rbuild_os_software_process_remote_release() {
  * @see rbuild_os_software_process_remote_release()
  */
 function _rbuild_fetch_new_releases($project_node) {
+  dpm('Fetching new releases...');
   // Requires the [:rbuild_handler:] PHP class
   require_once('rbuild.handler.inc');
   
@@ -104,8 +117,7 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
   $release_node = new stdClass();
   $release_node->type = 'software_release';
   $release_node->uid = $project_node->uid;
-  $release_node->og_groups = $project_node->og_groups;
-  $release_node->spaces_og = $project_node->spaces_og;
+  $release_node->og_group_ref['und'][0]['target_id'] = $project_node->og_group_ref['und'][0]['target_id'];
   $release_node->status = 1;
   $release_node->active = 1;
   $release_node->field_software_project['und'][0]['target_id'] = $project_node->nid;
@@ -194,7 +206,7 @@ function _rbuild_import_file($url, $filename, $uid, $get_contents = FALSE) {
   $file->status = FILE_STATUS_PERMANENT;
   $file->timestamp = $last_modified ? $last_modified : time();
   drupal_write_record('files', $file);
-  $file->fid = db_result(db_query("SELECT fid FROM {files} WHERE filepath = '%s'", $file->filepath));
+  // $file->fid = db_result(db_query("SELECT fid FROM {files} WHERE filepath = '%s'", $file->filepath));
   
   $file->process_file = $get_contents;
   
@@ -212,7 +224,6 @@ function _rbuild_import_file($url, $filename, $uid, $get_contents = FALSE) {
  *   Else, returns the output from curl_exec()
  */
 function _rbuild_get_file_contents($url) {
-	
 	// Initializes curl session
   $ch = curl_init();
 
@@ -224,10 +235,10 @@ function _rbuild_get_file_contents($url) {
   $data = curl_exec($ch);
   
   $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-  if ((int)$http_code === (int)404) return FALSE;
-  
-  // Closes the connection
   curl_close($ch);
+  
+  // Exits if HTTP status not OK
+  if ((int)$http_code !== (int)200) return FALSE; 
 	
   return $data;
 }
@@ -294,11 +305,8 @@ function _rbuild_query_release_node_exists($project_nid, $version) {
     ->fieldCondition('field_software_version', 'value', $version, '=')
     ->addMetaData('account', user_load(1)); // run the query as user 1
   $result = $query->execute();
-  if (is_array($result['node'])) {
-    if (sizeof($result['node']) > 0) {
-      $exists = TRUE;
-    }
-  }
+
+  if (isset($result['node'])) $exists = TRUE;
   
   return $exists;
 }

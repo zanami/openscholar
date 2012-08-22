@@ -7,7 +7,7 @@
 /**
  * 
  */
-require_once(drupal_get_path('module', 'os_software') . "/package_handlers/scholar_software_handler.inc");
+require_once(drupal_get_path('module', 'os_software') . "/os_software.handler.inc");
 
 /**
  * Implements OS Software handler for Rbuild.
@@ -28,12 +28,12 @@ class rbuild_handler implements os_software_handler {
    * @param string $app_key
    */
   function __construct($url, $short_name = FALSE) {
-  	
+  	dpm('New rBuild handler for ' . $short_name . ' at ' . $url);
     // Caches all projects
   	if ($url) {
   	  $new_url = $this->create_url($url);
   	  if (!array_key_exists($new_url, self::$cached_packages)) {
-  		  self::$cached_packages[$new_url] = $this->rbuild_parse($new_url);
+  		  self::$cached_packages[$new_url] = $this->parse($new_url);
   	  }
   	}
   	
@@ -41,7 +41,7 @@ class rbuild_handler implements os_software_handler {
   	if(count(self::$cached_packages[$this->create_url($url)])){
   		$this->packages = self::$cached_packages[$this->create_url($url)];
   	} elseif ($url) {
-  		$this->packages = $this->rbuild_parse($this->create_url($url, $short_name));
+  		$this->packages = $this->parse($this->create_url($url, $short_name));
   	}
   	
     $this->short_name = $short_name;
@@ -64,13 +64,16 @@ class rbuild_handler implements os_software_handler {
   }
 
   /**
-   * Gets the package if App Key is defined.
+   * Gets the package if rBuild short name is defined.
    * 
    * @return mixed $package
    *   Returns array if exists, otherwise returns FALSE.
    */
   public function get_package() {
+    dpm('short_name: '. $this->short_name);
   	if (!$this->short_name) return FALSE;
+  	dpm('$this->packages');
+  	dpm($this->packages);
   	if (!array_key_exists($this->short_name, $this->packages)) return FALSE;
   	
     return $this->packages[$this->short_name];
@@ -82,14 +85,15 @@ class rbuild_handler implements os_software_handler {
    */
   public function alter_project(&$project_node) {
     $changed = FALSE;
+    dpm('Altering project: finding package info...');
   	if(!($package = $this->get_package())) return $changed;
-  	
+  	dpm($package);
   	// Updates the title with what is in rbuild
   	if(!strlen($project_node->title)) {
   	  $short_name_stored = substr($package['title'], 0, strlen($this->short_name));
   	  $is_new_key = (strtolower($short_name_stored) != strtolower($this->short_name));
 	  	if (strlen($this->short_name) && $is_new_key) {
-	  	  $short_name = "$this->short_name: ";
+	  	  $short_name = $this->short_name . ': ';
 	  	} else {
 	  	  $short_name = '';
 	  	}
@@ -107,7 +111,7 @@ class rbuild_handler implements os_software_handler {
 	  	$body_headers = _rbuild_get_file_headers($docs_source_path);
 	  	
 	  	// Adds any new documentation to the Software Project node.
-	  	if (!module_exists('iqss_remote_source') || strstr($body_headers[0], '404 Not Found')) {
+	  	if (!module_exists('iqss_remote_source') || strstr($body_headers[0], 'Not Found')) {
 	  	  $body_content = '<!-- RBuild Docs -->';
 		  	if (strlen($package['author'])) {
 		  	  $body_content .= ''
@@ -171,21 +175,23 @@ class rbuild_handler implements os_software_handler {
    * Proccesses cron job to check for updates.
    */
   public function find_new_releases(&$project_node, $fetch_releases = FALSE) {
-    
+    dpm('Finding new releases...');
     // Only proceeds if we have a package
-    if(!($package = $this->get_package())) return FALSE;
-    
+    $package = $this->get_package();
+    dpm($package);
+    if(!($package)) return FALSE;
+    dpm('Package found...');
     // Updates title and description
     $changed = $this->alter_project($project_node);
-    
+    dpm('Updated title...');
     // Checks to see if latest release already exists as a node.
     $project_nid = $project_node->nid;
     $version = $package['version'];
     $release_node_exists = _rbuild_query_release_node_exists($project_nid, $version);
-    
+    dpm('Does this release already exist? "' . $project_nid . '_' . $version . '"');
     // Exits without making changes if the release already exists
     if ($release_node_exists === TRUE) return FALSE;
-    
+    dpm('No.');
     // Adds this new Software Release node then returns TRUE
    	$filename = $this->short_name . '_' . $package['version'] . '.tar.gz';
   	_rbuild_add_release_node($project_node, $package['version'], $filename, $package, $this->url);
@@ -218,31 +224,33 @@ class rbuild_handler implements os_software_handler {
    * @param $url
    * @return array $packages
    */
-  private function rbuild_parse($url) {
+  private function parse($url) {
     $package_file = _rbuild_get_file_contents($url);
-    
-    $packages_raw = split("\n\n\n", $package_file);
-    
+    $packages_raw = preg_split("#\n\n#", $package_file);
+    dpm('Again, after preg_split');
+    dpm($packages_raw);
     // Prepares package name and information.
     $packages = array();
     foreach ($packages_raw as $package_raw) {
     	$package_info = array();
     	$package_name = FALSE;
     	$package_raw = trim($package_raw);
-      $lines = split("\n", $package_raw);
+      $lines = preg_split("#\n#", $package_raw);
       
       // Searches lines like "Key: Value" for package name and metadata.
       foreach ($lines as $line) {
         $line_elements = (explode(':', $line, 2));
-        if (count($line_elements) == 2) {
+        if (count($line_elements) === 2) {
           $current_key = strtolower(trim($line_elements[0]));
           $current_value = trim($line_elements[1]);
           if ($current_key === 'package') {
             $package_name = $current_value;
           }
           $package_info[$current_key] = $current_value;
-        } else if ($current_key) {
-          $package_info[$current_key] .= ' ' . trim($line_elements[0]);
+        }
+        else if (count($line_elements) === 1) {
+          $line_full = $line_elements[0];
+          $package_info[$line_full] = ' ' . $line_full;
         }
       }
       
