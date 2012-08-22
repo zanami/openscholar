@@ -115,7 +115,7 @@ function os_software_field_default_fields() {
       'bundle' => 'software_project',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Note: Verify this unique rBuild short name corresponds to the Repository URL and Version values above',
+      'description' => 'Note: Verify this unique rBuild short name corresponds to the Repository URL value above',
       'display' => array(
         'default' => array(
           'label' => 'above',
