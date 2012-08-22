@@ -51,6 +51,10 @@ class rbuild_handler implements os_software_handler {
   }
   
   /**
+   * Public functions
+   */
+  
+  /**
    * Gets all packages
    * 
    * @return array $packages
@@ -141,7 +145,7 @@ class rbuild_handler implements os_software_handler {
   }
   
   /**
-   * Validates the rbuild submission
+   * Checks that App Key is found at URL
    */
   public function validate() {
     if(!($package = $this->get_package())) {
@@ -175,6 +179,10 @@ class rbuild_handler implements os_software_handler {
     
     return $changed;
   }
+
+  /**
+   * Private functions
+   */
   
   /**
    * Creates URL path.
