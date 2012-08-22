@@ -3,23 +3,6 @@ body {
 
   }
 
-body.front #header-container {background: url('../images/header.gif') no-repeat; width:1000px;height:397px;border-right:3px solid #333;border-left:3px solid #333;border-top:3px solid #333;}
-body.front #menu-bar {background: #6E1205; width:990px;height:94px;border-right:3px solid #333;border-left:3px solid #333;border-bottom:3px solid #333;height: 56px;padding-top: 38px;}
-
-#page_splash {width:1000px;margin: 30px auto;}
-
-body.front #menu-bar a, body.front #menu-bar a:visited {
-    color: #E0D0B1;
-    font-size: 18px;
-}
-
-body.front #menu-bar a:hover, body.front #menu-bar a:active {
-    color: #FFF;
-    text-decoration: none;
-    text-shadow: 0 0 0.1em #FFF, 0 0 0.1em #FFF;
-    
-}
-
 
 a, a:visited {
     color:#6D1102;
