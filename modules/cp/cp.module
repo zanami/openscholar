@@ -87,8 +87,12 @@ function cp_menu(){
     'title callback' => 'cp_user_title',
     'page callback' => 'user_page',
     'access callback' => TRUE,
+    'file path' => drupal_get_path('module', 'user'),
     'file' => 'user.pages.inc',
     'weight' => 100,
+    'options' => array(
+      'alter' => TRUE,
+    )
   );
 
   $items['cp/account/logout'] = array(
@@ -96,7 +100,11 @@ function cp_menu(){
     'access callback' => 'user_is_logged_in',
     'page callback' => 'user_logout',
     'weight' => 10,
+    'file path' => drupal_get_path('module', 'user'),
     'file' => 'user.pages.inc',
+    'options' => array(
+      'alter' => TRUE,
+    )
   );
 
   return $items;
@@ -118,8 +126,23 @@ function cp_menu_alter(&$items){
   }
 }
 
+/**
+ * Change the title of the Account link to have the user's name in it
+ */
 function cp_user_title() {
-  return t('Hello @username', array('@username' => format_username($GLOBALS['user'])));
+  if (user_is_logged_in()) {
+    return t('Hello @username', array('@username' => format_username($GLOBALS['user'])));
+  }
+  return t('Login');
+}
+
+/**
+ * Alter CP user links to return to the current page when finished.
+ */
+function cp_translated_menu_link_alter(&$link) {
+  if (strpos($link['link_path'], 'cp/account') !== FALSE) {
+    $link['localized_options']['query'] = drupal_get_destination();
+  }
 }
 
 function cp_theme(){
@@ -189,7 +212,7 @@ function cp_block_view($delta){
         return array();
       }
     case 'cp_minimenu' :
-      if (_cp_get_toolbar_setting() == CP_MENU_MINI && spaces_access_admin()) {
+      if (_cp_get_toolbar_setting() == CP_MENU_MINI) {
         return _cp_mini_menu();
       }
       else {
@@ -240,7 +263,7 @@ function cp_page_build(&$page){
 function _cp_get_toolbar_setting(){
 
   // If the user is logged out or we are not in a space, turn the menu off
-  if (! user_is_logged_in() || (module_exists('vsite') && ! spaces_get_space())) {
+  if ((module_exists('vsite') && ! spaces_get_space())) {
     return CP_MENU_OFF;
   }
 
