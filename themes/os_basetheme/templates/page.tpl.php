@@ -78,6 +78,7 @@
  */
 ?>
 <div id="page" class="container <?php print $classes; ?>">
+	<div id="page-wrapper">
 <!--header regions beg-->
 <?php if (
   $page['header_top'] ||
@@ -181,5 +182,5 @@
   <?php if ($page['footer']): ?>
     <footer id="footer" class="clearfix" role="contentinfo"><?php print render($page['footer']); ?></footer>
   <?php endif; ?>
-</div><!--page area ends-->
+</div></div><!--page area ends-->
  <div id="extradiv"></div>
