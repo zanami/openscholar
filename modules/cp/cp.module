@@ -133,7 +133,7 @@ function cp_menu_alter(&$items){
  */
 function cp_user_title() {
   if (user_is_logged_in()) {
-    return t('Hello <strong>!username</strong>', array('!username' => ''.format_username($GLOBALS['user']).''));
+    return t('Hello <strong>@username</strong>', array('@username' => ''.format_username($GLOBALS['user']).''));
   }
   return t('Login');
 }
