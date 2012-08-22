@@ -92,6 +92,7 @@ function cp_menu(){
     'weight' => 100,
     'options' => array(
       'alter' => TRUE,
+      'html' => TRUE,
     )
   );
 
@@ -104,6 +105,7 @@ function cp_menu(){
     'file' => 'user.pages.inc',
     'options' => array(
       'alter' => TRUE,
+      'html' => TRUE,
     )
   );
 
@@ -131,7 +133,7 @@ function cp_menu_alter(&$items){
  */
 function cp_user_title() {
   if (user_is_logged_in()) {
-    return t('Hello @username', array('@username' => format_username($GLOBALS['user'])));
+    return t('Hello <strong>!username</strong>', array('!username' => ''.format_username($GLOBALS['user']).''));
   }
   return t('Login');
 }
