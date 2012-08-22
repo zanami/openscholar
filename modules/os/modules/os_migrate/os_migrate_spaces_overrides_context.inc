@@ -10,9 +10,18 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
   public function query() {
     $query = parent::query();
     
-    //would filtering contexts that match og_group where nid = nid be overkill?
+    $query->join('og', 'og', 'og.nid = s.id');
+
+    
+    /* Only use contexts from the currently selected theme.  In d7 we aren't storing context overrides based on theme anymore, so no use migrating the rest.
+     * This is the equivalent of 'WHERE  object_id LIKE CONCAT("%", og_theme) '
+     * but dbtng requires the placeholder, even for a string like this. */
+    $query->where('object_id LIKE CONCAT(:per, og_theme) ', array(':per' => '%'));
+    
     return $query;
   }
+  
+  
   
   public function prepareRow(&$row) {
     $value = unserialize($row->value);
@@ -24,6 +33,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       return FALSE; //skip this row.
     }
     
+    $row->object_id = $object_id;
     $row->value = serialize($value);
     return parent::prepareRow($row);
   }
@@ -73,23 +83,14 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'openscholar-section-sitewide' => FALSE, //no obvious mapping.  nothing in db
       'openscholar-section-sitewide_front' => 'os_sitewide_front',
       'vsite-section-cp' => 'os_cp',
-      'vsite-section-public' => 'os_public',
+      //'vsite-section-public' => 'os_public', //not used in overrides
       'openscholar-feature-image_gallery' => 'gallery_gallery',
       'openscholar-feature-front' => 'os_front',
+      'openscholar-feature-none' => 'os_public', //all sections
     );
-  
-    // In d6 we stored settings per theme.  Not doing that anymore.  Drop all settings that weren't using active theme.
-    $og_theme = parent::d6_db_select('og')
-    ->fields('og', array('og_theme'))
-    ->condition('nid', $nid, '=')
-    ->execute()
-    ->fetchField();
-  
+
     list($context, $action, $type, $theme) = explode(':', $object_id);
-    if ($theme != $og_theme) {
-      return FALSE;
-    }
-  
+
     //update the context name
     if (isset($contexts[$context])) {
       $context = $contexts[$context];
