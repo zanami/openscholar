@@ -1,6 +1,6 @@
 name = Rbuild
 description = Automatically fetch and create Software Releases using rbuild.
 core = 7.x
-package = OpenScholar
+package = IQSS
 php = 5.2.4
 dependencies[] = os_software
