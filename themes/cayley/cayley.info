@@ -1,10 +1,11 @@
+  
   name        = Cayley
-  description = Clean and elegant theme with light colors.  
+  description = Clean and elegant theme with light colors.
   core        = 7.x
+  base theme  = os_basetheme
+  release     = 7.x-3.x
   engine      = phptemplate
   screenshot  = screenshot.png
-  base theme  = os_basetheme
-  release = 7.x-3.x
   flavor_name = "Sand"
   plugins[os][flavor] = flavors
   
