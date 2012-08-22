@@ -211,7 +211,7 @@ function os_modal_tabbed_add_new_tabs(&$element, &$form_state, &$form) {
   // remove nids that aren't in the post
   if (is_array($form_state['values'])) {
     foreach ($form_state['values']['tabs'] as $k => $v) {
-      if (!isset($form_state['input']['tabs'][$k])) {
+      if (!isset($form_state['input']['tabs'][$k]) || !isset($form_state['input']['tabs'][$k]['bid']) || $form_state['input']['tabs'][$k]['bid'] == 'os_boxes_tabs-remove') {
         unset($form_state['values']['tabs'][$k]);
       }
     }
