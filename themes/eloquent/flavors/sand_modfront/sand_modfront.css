@@ -4,6 +4,8 @@ body {
   }
 
 
+
+
 a, a:visited {
     color:#6D1102;
     }
@@ -77,3 +79,45 @@ h2, h3, #header-container {
 ul.menu li a:link, ul.menu li a:visited {
 color: #6D1102;
 }
+
+/* GORDON */
+.front #header-container {
+    padding-bottom: 0;
+    height:415px;
+}
+
+.front .region-header-second p {
+    margin: 0 0 -5px;
+
+}
+
+.front .block-inner {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.front .region-inner {
+    padding: 0;
+}
+
+.front #menu-bar .os-menu {background: #6E1205;width: 1002px;height:94px;height: 56px;padding-top: 38px;}
+
+.front #menu-bar ul.os-menu  {text-align:center;}
+
+.front #page {width:1020px;margin: 30px auto;}
+
+body.front #menu-bar .os-menu li a, body.front #menu-bar .os-menu li a:visited {
+    color: #E0D0B1;
+    font-size: 18px;
+    text-transform: uppercase;
+    margin-right:30px;
+}
+
+body.front #menu-bar .os-menu li a:hover, body.front #menu-bar .os-menu li a:active {
+    color: #FFF;
+    text-decoration: none;
+    text-shadow: 0 0 0.1em #FFF, 0 0 0.1em #FFF;
+    
+}
+
+

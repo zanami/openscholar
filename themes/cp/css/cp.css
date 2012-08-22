@@ -89,6 +89,20 @@ a {color:#4E84C4;}
     text-shadow: 0 1px 0 #E6E8EA;
 }  
 
+#block-os-powered-by {
+	float:left;
+	text-align:left;
+}
+
+#block-os-powered-by a {
+    background: url("../images/footer-logo.png") no-repeat;
+    height: 23px;
+    margin-top: 0;
+    text-indent: -9999px;
+    width: 353px;
+    display: block;
+}
+
 /** CP TABLE STYLES **/
 #edit-menu-table tr,
 #spaces-features-form .spaces tr

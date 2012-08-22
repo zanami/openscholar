@@ -330,6 +330,7 @@ background : url("../images/searchArrow.png") no-repeat center center;
 	height:18px;
 	border: none;
 	color: transparent;	
+	margin-bottom:-6px;
 
 }
 

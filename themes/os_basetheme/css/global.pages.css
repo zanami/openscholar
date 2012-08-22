@@ -33,6 +33,7 @@ body {
 
 
 #content-column /* Floats the main content column. */ {
+	 position: relative;
 }
 
 

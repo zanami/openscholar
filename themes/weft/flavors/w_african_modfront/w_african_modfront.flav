@@ -1,0 +1,5 @@
+name = West African Modified Front
+description = A West African theme with a modified front page
+screenshot = screenshot.png
+
+css[] = w_african_modfront.css
