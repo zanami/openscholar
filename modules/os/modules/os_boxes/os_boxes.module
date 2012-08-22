@@ -183,7 +183,9 @@ function os_boxes_get_factories() {
   foreach ($plugins as $p => $info) {
     // title catches abstract boxes
     // factory catchs our boxes
-    if (user_access('create '.$p.' box type') && isset($info['title']) && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
+    $dummy = new stdClass();
+    $dummy->plugin_key = $p;
+    if (boxes_access('create', $dummy) && isset($info['title']) && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
       $items["boxes-boxes_add__$p"] = array(
         'module' => 'boxes',
         'delta' => "boxes_add__$p",

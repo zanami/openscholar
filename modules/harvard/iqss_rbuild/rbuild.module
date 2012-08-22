@@ -68,7 +68,20 @@ function rbuild_os_software_process_remote_release() {
  * @see rbuild_os_software_process_remote_release()
  */
 function _rbuild_fetch_new_releases($project_node) {
+  // Requires the [:rbuild_handler:] PHP class
+  require_once('rbuild.handler.inc');
   
+  // Prepares parameters to construct an Rbuild Handler object
+  $repo_url = $project_node->field_software_repo['und'][0]['value'];
+  $short_name = $project_node->field_rbuild_short_name['und'][0]['value'];
+  
+  // Instantiates a handler object to process cron
+  $handler = new rbuild_handler($repo_url, $short_name);
+  if (!method_exists($handler, 'find_new_releases')) return;
+
+  // Saves the project node if new releases are found
+  $found_new_releases = $handler->find_new_releases($project_node);
+  if ($found_new_releases) node_save($project_node);
 }
 
 /**
@@ -84,7 +97,7 @@ function _rbuild_fetch_new_releases($project_node) {
  * @param string $url
  * @param array $context
  */
-function _rbuild_add_release_node($project_node, $version, $filename, $package, $url, &$context) {
+function _rbuild_add_release_node($project_node, $version, $filename, $package, $url, &$context = array()) {
   $start_time = time();
   
 	// Prepares basic node settings and fields
@@ -247,7 +260,7 @@ function _rbuild_get_file_headers($url) {
 /**
  * Finds all Software Project nodes set to Rbuild.
  * 
- * @return array
+ * @return array $project_nodes
  *   An array of loaded Software Project node objects.
  */
 function _rbuild_query_all_rbuild_project_nodes() {
@@ -260,7 +273,8 @@ function _rbuild_query_all_rbuild_project_nodes() {
     ->addMetaData('account', user_load(1)); // run the query as user 1
   
   $result = $query->execute();
-  return _rbuild_query_load_nodes($result);
+  $project_nodes = _rbuild_query_load_nodes($result);
+  return $project_nodes;
 }
 
 /**
