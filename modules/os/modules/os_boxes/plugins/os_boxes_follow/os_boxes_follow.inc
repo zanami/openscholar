@@ -194,7 +194,7 @@ function os_boxes_follow_add_new_fields(&$element, &$form_state, &$form) {
   // remove links that aren't in the post
   if (is_array($form_state['values'])) {
     foreach ($form_state['values']['links'] as $k => $v) {
-      if (!isset($form_state['input']['links'][$k])) {
+      if (!isset($form_state['input']['links'][$k]) || !isset($form_state['input']['links'][$k]['domain'])) {
         unset($form_state['values']['links'][$k]);
       }
     }

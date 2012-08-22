@@ -113,7 +113,7 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
   $release_node->field_software_recommended[0]['value'] = ($version == $package['version']) ? 1 : 0;
   
   // Prepares file field
-  $file = _rbuild_import_file($filepath, $filename, $project_node->uid);
+  $file = _rbuild_import_file($url, $filename, $project_node->uid);
   $release_node->field_software_package['und'][0] = get_object_vars($file);
   
   /* array(

@@ -77,7 +77,7 @@ class os_shields_box extends os_boxes_default {
     $block = parent::render();
 
     $filename = isset($this->options['shield'])?$this->options['shield']:variable_get('os_shields_shield', '');
-    if (file_exists($filename)) {
+    if ($filename && file_exists('public://os_shields/'.$filename)) {
       $block['subject'] = $block['title'] = '';
       $block['content'] = '<div id="scholar-shield"><img src="'.file_create_url('public://os_shields/'.$filename).'" /> </div>';
     }
