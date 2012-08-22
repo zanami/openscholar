@@ -18,16 +18,16 @@ class rbuild_handler implements os_software_handler {
   
 	private static $cached_packages = array();
 	
-  private $packages = array();
-  private $app_key = FALSE;
-  private $url = FALSE;
+  private $packages = array();  // An array of associative arrays of releases
+  private $short_name = FALSE;  // Unique machine name for this Rbuild product
+  private $url = FALSE;         // The remote repository URL
 
   /**
    * Constructor
    * @param string $url
    * @param string $app_key
    */
-  function __construct($url, $app_key = FALSE) {
+  function __construct($url, $short_name = FALSE) {
   	
     // Caches all projects
   	if ($url) {
@@ -41,10 +41,10 @@ class rbuild_handler implements os_software_handler {
   	if(count(self::$cached_packages[$this->create_url($url)])){
   		$this->packages = self::$cached_packages[$this->create_url($url)];
   	} elseif ($url) {
-  		$this->packages = $this->rbuild_parse($this->create_url($url, $app_key));
+  		$this->packages = $this->rbuild_parse($this->create_url($url, $short_name));
   	}
   	
-    $this->app_key = $app_key;
+    $this->short_name = $short_name;
     $this->url = rtrim($url, '/ ');
     
     return count($this->packages) ? TRUE : FALSE;
@@ -70,10 +70,10 @@ class rbuild_handler implements os_software_handler {
    *   Returns array if exists, otherwise returns FALSE.
    */
   public function get_package() {
-  	if (!$this->app_key) return FALSE;
-  	if (!array_key_exists($this->app_key, $this->packages)) return FALSE;
+  	if (!$this->short_name) return FALSE;
+  	if (!array_key_exists($this->short_name, $this->packages)) return FALSE;
   	
-    return $this->packages[$this->app_key];
+    return $this->packages[$this->short_name];
   }
   
   /**
@@ -86,15 +86,15 @@ class rbuild_handler implements os_software_handler {
   	
   	// Updates the title with what is in rbuild
   	if(!strlen($project_node->title)) {
-  	  $package_app_key = substr($package['title'], 0, strlen($this->app_key));
-  	  $is_new_key = (strtolower($package_app_key) != strtolower($this->app_key));
-	  	if (strlen($this->app_key) && $is_new_key) {
-	  	  $app_key = "$this->app_key: ";
+  	  $short_name_stored = substr($package['title'], 0, strlen($this->short_name));
+  	  $is_new_key = (strtolower($short_name_stored) != strtolower($this->short_name));
+	  	if (strlen($this->short_name) && $is_new_key) {
+	  	  $short_name = "$this->short_name: ";
 	  	} else {
-	  	  $app_key = "";
+	  	  $short_name = '';
 	  	}
 	  	
-	  	$project_node->title = $app_key . $package['title'];
+	  	$project_node->title = $short_name . $package['title'];
 	  	$changed = TRUE;
   	}
   	
@@ -102,7 +102,7 @@ class rbuild_handler implements os_software_handler {
   	 * @todo do we still need this? [or] 2012-08-21
   	 */
   	if(!strlen($project_node->body)) {
-	  	$s_remote_body = "http://r.iq.harvard.edu/docs/".strtolower($this->app_key)."/".$package['version']."/index.shtml";
+	  	$s_remote_body = "http://r.iq.harvard.edu/docs/".strtolower($this->short_name)."/".$package['version']."/index.shtml";
 	  	$a_remote_body_headers = _rbuild_get_file_headers($s_remote_body);
 	  	if (!module_exists('iqss_remote_source') || strstr($a_remote_body_headers[0],'404 Not Found')){
 		  	$s_contributors  = strlen($package['author'])?"Contributors: ".strip_tags(trim($package['author'],' ,'))."<br /><br />":"";
@@ -123,12 +123,12 @@ class rbuild_handler implements os_software_handler {
   public function init_releases($project_node) {
   	if (!$project_node->is_new || !$project_node->nid) return;
   	
-  	$releases  = $this->rbuild_get_release_files(); // array
-  	$package = $this->get_package();                // array
+  	$releases = $this->rbuild_get_release_files(); // array
+  	$package  = $this->get_package();              // array
   	
   	$operations = array();
   	foreach ($releases as $version => $filename){
-  		// Creates Release
+  		// Creates new Software Release node
   		$operations[] = array(
   			'_rbuild_add_release_node',
   		  array($project_node, $version, $filename, $package, $this->url),
@@ -145,39 +145,38 @@ class rbuild_handler implements os_software_handler {
   }
   
   /**
-   * Checks that App Key is found at URL
+   * Checks that rBuild short name is found at URL
    */
   public function validate() {
     if(!($package = $this->get_package())) {
-      form_set_error('rbuild identifier', "Invalid Application Shortname [$this->app_key] not found at [$this->url]");
+      form_set_error('rbuild identifier', "Invalid rBuild short name [$this->short_name] not found at [$this->url]");
     }
   }
   
   /**
    * Proccesses cron job to check for updates.
    */
-  public function process_cron(&$project_node, $fetch_releases = FALSE) {
+  public function find_new_releases(&$project_node, $fetch_releases = FALSE) {
+    
+    // Only proceeds if we have a package
     if(!($package = $this->get_package())) return FALSE;
     
     // Updates title and description
     $changed = $this->alter_project($project_node);
-    $context = array();
     
     // Checks to see if latest release already exists as a node.
     $project_nid = $project_node->nid;
     $version = $package['version'];
     $release_node_exists = _rbuild_query_release_node_exists($project_nid, $version);
     
-    // Adds new Software Release node
-    if ($release_node_exists === FALSE) {
-    	$filename = $this->app_key . '_' . $package['version'] . '.tar.gz';
-    	_rbuild_add_release_node($project_node, $package['version'], $filename, $package, $this->url, $context);
-    	$changed = TRUE;
-    }
+    // Exits without making changes if the release already exists
+    if ($release_node_exists === TRUE) return FALSE;
     
-    if ($fetch_releases) return $context;
-    
-    return $changed;
+    // Adds this new Software Release node then returns TRUE
+   	$filename = $this->short_name . '_' . $package['version'] . '.tar.gz';
+  	_rbuild_add_release_node($project_node, $package['version'], $filename, $package, $this->url);
+  	
+    return TRUE;
   }
 
   /**
@@ -191,11 +190,11 @@ class rbuild_handler implements os_software_handler {
    * @param string $s_app_key
    * @return string
    */
-  private function create_url($url, $app_key = FALSE) {
+  private function create_url($url, $short_name = FALSE) {
   	$path = rtrim($url, '/ ') . '/PACKAGES';
   	
-  	// Adds App Key if given
-    if (strlen($app_key)) $path .= $app_key;
+  	// Appends rBuild short name if given
+    if (strlen($short_name) > 0) $path .= $short_name;
     
     return $path;
   }
@@ -223,10 +222,11 @@ class rbuild_handler implements os_software_handler {
         $line_elements = (explode(':', $line, 2));
         if (count($line_elements) == 2) {
           $current_key = strtolower(trim($line_elements[0]));
-          if ($current_key == 'package') {
-            $package_name = trim($line_elements[1]);
+          $current_value = trim($line_elements[1]);
+          if ($current_key === 'package') {
+            $package_name = $current_value;
           }
-          $package_info[$current_key] = trim($line_elements[1]);
+          $package_info[$current_key] = $current_value;
         } else if ($current_key) {
           $package_info[$current_key] .= ' ' . trim($line_elements[0]);
         }
@@ -253,7 +253,7 @@ class rbuild_handler implements os_software_handler {
   	$index_file_data = _rbuild_get_file_contents($this->url . '/');
 	  if (strlen($index_file_data)) {
 	  	$matches = array();
-	  	$pattern = '/(a href\=")(' . $this->app_key . '([\._-\d]*)\.tar\.gz)(")/i';
+	  	$pattern = '/(a href\=")(' . $this->short_name . '([\._-\d]*)\.tar\.gz)(")/i';
 	  	preg_match_all($pattern, $index_file_data, $matches);
 	    foreach ($matches[2] as $index => $filename) {
 	    	$releases[trim($matches[3][$index], '_')] = $filename;
@@ -262,7 +262,7 @@ class rbuild_handler implements os_software_handler {
     
 	  if (!count($releases)) {
 	  	$package = $this->get_package();
-	  	$default_filepath = $this->url . '/' . $this->app_key . '_' . $package['version'] . '.tar.gz';
+	  	$default_filepath = $this->url . '/' . $this->short_name . '_' . $package['version'] . '.tar.gz';
 	  	if (file_exists($default_filepath)) {
 	  	  $releases[$package['version']] = $default_filepath;
 	  	}
