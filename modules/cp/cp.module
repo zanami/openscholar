@@ -82,6 +82,23 @@ function cp_menu(){
     );
   }
 
+  $items['cp/account'] = array(
+    'title' => 'Account',
+    'title callback' => 'cp_user_title',
+    'page callback' => 'user_page',
+    'access callback' => TRUE,
+    'file' => 'user.pages.inc',
+    'weight' => 100,
+  );
+
+  $items['cp/account/logout'] = array(
+    'title' => 'Log out',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => 'user_logout',
+    'weight' => 10,
+    'file' => 'user.pages.inc',
+  );
+
   return $items;
 }
 
@@ -99,6 +116,10 @@ function cp_menu_alter(&$items){
         );
     }
   }
+}
+
+function cp_user_title() {
+  return t('Hello @username', array('@username' => format_username($GLOBALS['user'])));
 }
 
 function cp_theme(){
