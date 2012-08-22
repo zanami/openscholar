@@ -398,11 +398,12 @@ color: #FFF !important;
 
 /** CONTEXTUAL ADD NEW AND CONFIG DROPDOWN LINK CONTROLS **/
 .contextual-controls-wrapper {
-	float:right;
-	width:130px;
-	margin:15px 0 10px 0;
-	position:relative;
-	z-index: 500;
+    margin: 15px 0 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 130px;
+    z-index: 500;
 }
 
 .contextual-controls-wrapper a {
