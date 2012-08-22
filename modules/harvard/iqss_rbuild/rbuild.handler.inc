@@ -100,19 +100,33 @@ class rbuild_handler implements os_software_handler {
   	
   	/**
   	 * @todo do we still need this? [or] 2012-08-21
-  	 */
+  	 *
   	if(!strlen($project_node->body)) {
-	  	$s_remote_body = "http://r.iq.harvard.edu/docs/".strtolower($this->short_name)."/".$package['version']."/index.shtml";
-	  	$a_remote_body_headers = _rbuild_get_file_headers($s_remote_body);
-	  	if (!module_exists('iqss_remote_source') || strstr($a_remote_body_headers[0],'404 Not Found')){
-		  	$s_contributors  = strlen($package['author'])?"Contributors: ".strip_tags(trim($package['author'],' ,'))."<br /><br />":"";
-		  	$project_node->body = "<!-- RBuild Docs -->".$s_contributors.$package['description'];
+  	  // Checks for remote docs
+	  	$docs_source_path = $this->docs_source_path($this->short_name, $package['version']);
+	  	$body_headers = _rbuild_get_file_headers($docs_source_path);
+	  	
+	  	// Adds any new documentation to the Software Project node.
+	  	if (!module_exists('iqss_remote_source') || strstr($body_headers[0], '404 Not Found')) {
+	  	  $body_content = '<!-- RBuild Docs -->';
+		  	if (strlen($package['author'])) {
+		  	  $body_content .= ''
+		  	    . 'Contributors: '
+		  	    . strip_tags(trim($package['author'], ' ,'))
+		  	    . '<br /><br />';
+		  	}
+		  	$body_content .= $package['description'];
+		  	$project_node->body = $body_content;
         $changed = TRUE;
-	  	} else if ($project_node->iqss_remote_source_path != $s_remote_body){
-	      $project_node->iqss_remote_source_path = $s_remote_body;
+	  	}
+	  	
+	  	else if ($project_node->iqss_remote_source_path != $docs_source_path) {
+	      $project_node->iqss_remote_source_path = $docs_source_path;
 	  	  $changed = TRUE;
 	  	}
   	}
+  	 */
+  	
   	return $changed;
   }
   
@@ -269,5 +283,30 @@ class rbuild_handler implements os_software_handler {
 	  }
 	  
 	  return $releases;
-  } 
+  }
+  
+  /**
+   * Formats a documentation URL
+   * 
+   * @param string $short_name
+   * @param string $version
+   * 
+   * @return string $url
+   *
+   * @todo still needed?
+   * @see rbuild_package_handler::alter_project()
+   * 
+  public function docs_source_path($short_name, $version) {
+    $url_parts = array(
+      'http://r.iq.harvard.edu/docs/',
+      strtolower($short_name),
+      '/',
+      $version,
+      '/index.shtml',
+    );
+    
+    $url = implode('', $url_parts);
+    return $url;
+  }
+   */
 }
