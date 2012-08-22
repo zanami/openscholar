@@ -38,20 +38,17 @@
   public function query() {
     $query = parent::query();
     $query->condition('object_type', $this->source_object, '='); 
+    
+    //check that vsite exists?
+    
     return $query;
   }
   
-//   public function prepareRow(&$row) {
-//     //return if no processing?  add that later for speed?
-//     $value = unserialize($row->value);
-//     $object_id = $row->object_id;
-    
-
-
-    
-//     $row->value = serialize($value);
-    
-//   }
+   public function prepareRow(&$row) {
+     if ($this->source_object != $this->dest_object) {
+       $row->object_type = $this->dest_object;
+     }
+   }
 
 
   
