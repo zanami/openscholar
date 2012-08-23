@@ -96,8 +96,10 @@ function os_mailchimp_subscribe_page($js=TRUE, $delta) {
     'use_ctools' => TRUE,
   );
   
+  
   $output = ctools_modal_form_wrapper('os_mailchimp_form', $form_state);
-  ctools_modal_render('title', $output);
+  
+  ctools_modal_render('Mailing List Subscription', $output);
 }
 
 /**
@@ -282,7 +284,6 @@ function os_mailchimp_form_submit($form, $form_state) {
 
   //try to subscribe
   $sub = os_mailchimp_subscribe($api, $v['list'], $v['email'], $v['fn'], $v['ln']);
-
   //get the return message/status
   if ($sub['success']) {
     $msg = t("Thank you for subscribing to our mailing list.  You will recieve an email to confirm your subscription shortly.");
@@ -294,11 +295,13 @@ function os_mailchimp_form_submit($form, $form_state) {
   }
 
   //pass message and status back to user interactively or on next page depending on how they got here
+  // ctools no longer supports the ctools_ajax_render so in order to push the result message back to the user
+  // I'm using the commnd_display function...  
   if (isset($form_state['use_ctools']) && $form_state['use_ctools']) {
-    $commands = array();
-    $commands[] = ctools_modal_command_dismiss();
-    $commands[] = ctools_ajax_command_before('#content', '<div class="'.$status.'">'.$msg.'</div>');
-    ctools_ajax_render($commands);
+  	$commands = array();
+    $commands[] = ctools_modal_command_display('Mailing List Subscription', $msg);
+    print ajax_render($commands);
+    exit;
   } else {
     drupal_set_message($msg, $status);
   }
