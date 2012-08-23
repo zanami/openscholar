@@ -51,7 +51,7 @@ Drupal.cp_toolbar.drawer_toggle = function (event) {
     $this.addClass('active-path').blur();
     $drawer.addClass('active-path');
     $drawer.parentsUntil('#toolbar').addClass('active-path');
-    $('body').css('paddingTop', Drupal.toolbar.height());
+    //$('body').css('paddingTop', Drupal.toolbar.height());
   }
   
   Drupal.overlay.eventhandlerAlterDisplacedElements();
