@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * 
+ * Implements os_software_handler for rBuild
  */
 
 /**
- * 
+ * Includes os_software_handler PHP Interface
  */
 require_once(drupal_get_path('module', 'os_software') . "/os_software.handler.inc");
 
