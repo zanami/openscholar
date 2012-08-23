@@ -38,6 +38,7 @@
   public function query() {
     $query = parent::query();
     $query->condition('object_type', $this->source_object, '='); 
+    $query->isNotNull('value');
     
     //check that vsite exists?
     

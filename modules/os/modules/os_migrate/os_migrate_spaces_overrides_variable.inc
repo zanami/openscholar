@@ -14,7 +14,12 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   }
   
   public function prepareRow(&$row) {
-    $value = unserialize($row->value);
+    if (!$value = unserialize($row->value)) {
+      if ($row->value == 'NULL') {
+        return; //unless we have to update object_ids.
+      }
+      $value = $row->value; //serialize them all when we're done.
+    }
     $object_id = $row->object_id;
     
     //flavor variables get new names
@@ -42,7 +47,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   *
   * Updates flavor variables and names.
   */
-  public function _update_flavors($object_id, array $value) {
+  public function _update_flavors($object_id, $value) {
     $object_id = preg_replace('/vsite_design_scholar/', 'os_appearance', $object_id);
     $value = preg_replace('/^scholar_/', '', $value);
     return array($object_id, $value);
@@ -62,8 +67,20 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
    * Update the spaces_features variable by fixing the module names.
    */
   public function _update_variable_spaces_features($object_id, array $value) {
-    $spaces_features = array_flip( $this->_upate_module(array_flip($value)) );   //should this rename be a function?
+    $spaces_features = array_flip( $this->_update_module(array_flip($value)) );   //should this rename be a function?
     return array($object_id, $value);
+  }
+  
+  /**
+   * spaces_preset_og variable
+   */
+  public function _update_variable_spaces_preset_og($object_id, $value) {
+    $presets = array(
+      'scholar' => 'os_personal',
+      'project' => 'os_department',
+    );
+    
+    return (isset($presets[$value])) ? $presets['value'] : FALSE;
   }
   
 }

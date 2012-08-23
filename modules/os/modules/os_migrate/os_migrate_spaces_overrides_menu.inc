@@ -3,6 +3,7 @@
 class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
   
   public function __construct() {
+    $this->dependencies = array('SpacesOverridesVariable'); //preset needs to be migrated before menus will work
     $this->source_object ='vsite_menu'; 
     $this->dest_object = 'menus';
     parent::__construct();
@@ -24,6 +25,8 @@ class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
     $object_id = $row->object_id;
     
     $object_id = $this->_update_menu_name($object_id);
+   
+    ctools_include('menu', 'os');
     
     
     //menu storage has changed a bit.  there's more info now.
@@ -60,11 +63,14 @@ class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
   public function _update_menu_item($menu_item, $gid) {
     //update name
     $menu_item['menu_name'] = $this->_update_menu_name($menu_item['menu_name']);
-    $menu_item['module'] = 'menu';
+    $menu_item['module'] = 'system';
+    $menu_item['router_path'] = _menu_find_router_path($menu_item['link_path']);
     
-    //make mlid
-    $mlid = $this->_os_migrate_get_mlid($gid);
-    
+    //get or make mlid
+//    if (($mlid = os_menu_load_link_path($menu_item['link_path'])) === FALSE) {
+      $mlid = $this->_os_migrate_get_mlid($menu_item['link_path'], $gid);
+  //  }
+      
     //attach defaults missing from d6
     $menu_item += array(
       'customized' => 0,
@@ -93,7 +99,27 @@ class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
   }
   
   //get a new mlid.  update existing mlid counter
-  public function _os_migrate_get_mlid($gid) {
+  public function _os_migrate_get_mlid($path, $gid) {
+    //lets see if an mlid already exists
+    $result = db_select('menu_links', 'ml')
+      ->fields('ml', array('mlid'))
+      ->condition('link_path', $path, '=')
+      ->condition('menu_name', array('primary-menu', 'secondary-menu'), 'IN')
+      ->condition('module', 'system', '=')
+      //->condition('module', 'menu', '=')
+      ->execute();
+      
+    if ($result->rowCount()) {
+      return $result->fetchField();
+    }
+           
+    
+    
+//     $mlid = db_query_range("SELECT mlid FROM {menu_links} WHERE link_path = :path AND module = 'menu' AND menu_name IN (:type_menus) ORDER BY mlid ASC", 0, 1, array(
+//         ':path' => $path,
+//         ':type_menus' => array_keys($os_menus)
+//     ))->fetchField();
+    
     $result = db_select('spaces_overrides', 's')
       ->fields('s', array('value'))
       ->condition('id', $gid, '=')
