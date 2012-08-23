@@ -210,4 +210,30 @@ form#spaces-features-form td.actions a {
     margin-left: 6px;
 }
 
+
+/** VSITE OS LOGIN CONTAINER STYLES **/	
+body.page-cp.page-cp-account {
+	background:#EEE;
+}
+
+body.page-cp.page-cp-account #messages {
+	margin: 0 auto -80px;
+    width: 560px;
+}
+
+.page-cp.page-cp-account #columns {
+	background: #FFFFFF;
+	width:540px;
+	border-radius:8px;
+	-moz-border-radius:8px;
+	border-radius:8px;
+	margin:100px auto;
+	border:3px solid #8996A0;
+}
+
+.page-cp.page-cp-account #columns #main-content-header { 
+	background: #DDD;
+	margin:-10px -8px;
+	padding:7px;
+}
   
