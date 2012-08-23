@@ -28,7 +28,6 @@ class rbuild_handler implements os_software_handler {
    * @param string $app_key
    */
   function __construct($url, $short_name = FALSE) {
-  	dpm('New rBuild handler for ' . $short_name . ' at ' . $url);
     // Caches all projects
   	if ($url) {
   	  $new_url = $this->create_url($url);
@@ -70,10 +69,7 @@ class rbuild_handler implements os_software_handler {
    *   Returns array if exists, otherwise returns FALSE.
    */
   public function get_package() {
-    dpm('short_name: '. $this->short_name);
   	if (!$this->short_name) return FALSE;
-  	dpm('$this->packages');
-  	dpm($this->packages);
   	if (!array_key_exists($this->short_name, $this->packages)) return FALSE;
   	
     return $this->packages[$this->short_name];
@@ -81,85 +77,72 @@ class rbuild_handler implements os_software_handler {
   
   /**
    * Alters a project node before it is saved
+   * 
    * @param object $project_node
+   * 
+   * @return bool $changed
+   *   TRUE only if changes were made to the Software Project node
    */
   public function alter_project(&$project_node) {
     $changed = FALSE;
-    dpm('Altering project: finding package info...');
   	if(!($package = $this->get_package())) return $changed;
-  	dpm($package);
+
   	// Updates the title with what is in rbuild
   	if(!strlen($project_node->title)) {
   	  $short_name_stored = substr($package['title'], 0, strlen($this->short_name));
-  	  $is_new_key = (strtolower($short_name_stored) != strtolower($this->short_name));
+  	  $is_new_key = (strtolower($short_name_stored) !== strtolower($this->short_name));
 	  	if (strlen($this->short_name) && $is_new_key) {
-	  	  $short_name = $this->short_name . ': ';
+	  	  $title_prefix = $this->short_name . ': ';
 	  	} else {
-	  	  $short_name = '';
+	  	  $title_prefix = '';
 	  	}
 	  	
-	  	$project_node->title = $short_name . $package['title'];
+	  	$project_node->title = $title_prefix . $package['title'];
 	  	$changed = TRUE;
   	}
-  	
-  	/**
-  	 * @todo do we still need this? [or] 2012-08-21
-  	 *
-  	if(!strlen($project_node->body)) {
-  	  // Checks for remote docs
-	  	$docs_source_path = $this->docs_source_path($this->short_name, $package['version']);
-	  	$body_headers = _rbuild_get_file_headers($docs_source_path);
-	  	
-	  	// Adds any new documentation to the Software Project node.
-	  	if (!module_exists('iqss_remote_source') || strstr($body_headers[0], 'Not Found')) {
-	  	  $body_content = '<!-- RBuild Docs -->';
-		  	if (strlen($package['author'])) {
-		  	  $body_content .= ''
-		  	    . 'Contributors: '
-		  	    . strip_tags(trim($package['author'], ' ,'))
-		  	    . '<br /><br />';
-		  	}
-		  	$body_content .= $package['description'];
-		  	$project_node->body = $body_content;
-        $changed = TRUE;
-	  	}
-	  	
-	  	else if ($project_node->iqss_remote_source_path != $docs_source_path) {
-	      $project_node->iqss_remote_source_path = $docs_source_path;
-	  	  $changed = TRUE;
-	  	}
-  	}
-  	 */
   	
   	return $changed;
   }
   
   /**
    * Creates the initial batch of release files
-   * @param $project_node
+   * 
+   * @param object $project_node
    */
   public function init_releases($project_node) {
-  	if (!$project_node->is_new || !$project_node->nid) return;
+  	if (!is_numeric($project_node->nid)) return FALSE;
   	
-  	$releases = $this->rbuild_get_release_files(); // array
-  	$package  = $this->get_package();              // array
+  	$releases = $this->find_all_release_files(); // array
+
+  	if (sizeof($releases) === 0) return FALSE;
+  	
+  	$package = $this->get_package(); // array
   	
   	$operations = array();
-  	foreach ($releases as $version => $filename){
+  	foreach ($releases as $version => $filename) {
   		// Creates new Software Release node
+  		$node_exists = _rbuild_query_release_node_exists($project_node->nid, $version);
+  		if ($node_exists) continue;
+  		
+  		// Adds this node to the operations queue only if it doesn't exist yet.
   		$operations[] = array(
   			'_rbuild_add_release_node',
   		  array($project_node, $version, $filename, $package, $this->url),
   		);
   	}
   	
+  	if (count($operations) === 0) return;
+  	
   	$batch = array(
-			'title' => t('Importing'),
+			'title' => t('Importing all Software Releases for <em>' . $project_node->title . '</em>'),
+  	  'init_message' => t('Finding packages for <em>' . $this->short_name . '</em> at <em>' . $this->url . '</em>...'),
 			'operations' => $operations,
-			'finished' => 'iqss_rbuild_batch_finished',
+			'finished' => '_rbuild_batch_finished',
 		);
 		
   	batch_set($batch);
+  	batch_process(drupal_lookup_path('alias', 'node/' . $project_node->nid));
+  	return TRUE;
   }
   
   /**
@@ -174,29 +157,23 @@ class rbuild_handler implements os_software_handler {
   /**
    * Proccesses cron job to check for updates.
    */
-  public function find_new_releases(&$project_node, $fetch_releases = FALSE) {
-    dpm('Finding new releases...');
+  public function find_new_release(&$project_node, $fetch_releases = FALSE) {
+    $added_new_release = FALSE;
+    
     // Only proceeds if we have a package
     $package = $this->get_package();
-    dpm($package);
-    if(!($package)) return FALSE;
-    dpm('Package found...');
+    if(!($package)) return $added_new_release; // FALSE
+
     // Updates title and description
     $changed = $this->alter_project($project_node);
-    dpm('Updated title...');
-    // Checks to see if latest release already exists as a node.
-    $project_nid = $project_node->nid;
-    $version = $package['version'];
-    $release_node_exists = _rbuild_query_release_node_exists($project_nid, $version);
-    dpm('Does this release already exist? "' . $project_nid . '_' . $version . '"');
-    // Exits without making changes if the release already exists
-    if ($release_node_exists === TRUE) return FALSE;
-    dpm('No.');
-    // Adds this new Software Release node then returns TRUE
+
+    // Adds this new Software Release node if new, then returns TRUE
    	$filename = $this->short_name . '_' . $package['version'] . '.tar.gz';
-  	_rbuild_add_release_node($project_node, $package['version'], $filename, $package, $this->url);
+  	$added_new_release = _rbuild_add_release_node_wrapper($project_node, $package['version'], $filename, $package, $this->url);
   	
-    return TRUE;
+  	// Returns TRUE only if the node did not already exist
+  	// Returns FALSE if the node already exists (no content was added)
+    return $added_new_release;
   }
 
   /**
@@ -227,8 +204,7 @@ class rbuild_handler implements os_software_handler {
   private function parse($url) {
     $package_file = _rbuild_get_file_contents($url);
     $packages_raw = preg_split("#\n\n#", $package_file);
-    dpm('Again, after preg_split');
-    dpm($packages_raw);
+
     // Prepares package name and information.
     $packages = array();
     foreach ($packages_raw as $package_raw) {
@@ -267,29 +243,42 @@ class rbuild_handler implements os_software_handler {
    * 
    * @param $url
    * @return array $releases
-   *   An array of strings containing release package filepaths
+   *   An array of strings containing release package filepaths like:
+   *   
+   *   array(
+   *     '1.0' => 'http://harvard.edu/src/short_name-1.0.tar.gz',
+   *     '2.0' => 'http://harvard.edu/src/short_name-2.0.tar.gz',
+   *   )
    */
-  private function rbuild_get_release_files() {
+  private function find_all_release_files() {
   	
   	$releases = array();
+  	
+  	// Reads in the full list of download files
   	$index_file_data = _rbuild_get_file_contents($this->url . '/');
-	  if (strlen($index_file_data)) {
-	  	$matches = array();
-	  	$pattern = '/(a href\=")(' . $this->short_name . '([\._-\d]*)\.tar\.gz)(")/i';
-	  	preg_match_all($pattern, $index_file_data, $matches);
-	    foreach ($matches[2] as $index => $filename) {
-	    	$releases[trim($matches[3][$index], '_')] = $filename;
-	    }
-	  }
+  	if (strlen($index_file_data) === 0) return $releases; // Empty array()
+  	
+  	// Finds all links to gzip files matching this project's short name
+  	$matches = array();
+  	// Matches all links with this project's shortname in the href value
+  	$pattern = '/(a href\=")(' . $this->short_name . '([\._-\d]*)\.tar\.gz)(")/i';
+  	preg_match_all($pattern, $index_file_data, $matches);
+
+  	// Extracts the parts we want: unique versions and package filenames.
+  	$filenames = $matches[2];
+  	$versions = $matches[3];
+    foreach ($filenames as $index => $filename) {
+    	$releases[trim($versions[$index], '_')] = $filename;
+    }
+    if (count($releases) === 0) return $releases; // Empty array()
     
-	  if (!count($releases)) {
-	  	$package = $this->get_package();
-	  	$default_filepath = $this->url . '/' . $this->short_name . '_' . $package['version'] . '.tar.gz';
-	  	if (file_exists($default_filepath)) {
-	  	  $releases[$package['version']] = $default_filepath;
-	  	}
-	  }
-	  
+    // Ensures the current release is also included in the $releases array
+  	$package = $this->get_package();
+  	$source_path = $this->url . '/' . $this->short_name . '_' . $package['version'] . '.tar.gz';
+  	if (file_exists($source_path)) {
+  	  $releases[$package['version']] = $source_path;
+  	}
+
 	  return $releases;
   }
   
