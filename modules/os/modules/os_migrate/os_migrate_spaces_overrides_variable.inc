@@ -14,7 +14,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   }
   
   public function prepareRow(&$row) {
-    if (!$value = unserialize($row->value)) {
+    if (($value = unserialize($row->value)) === FALSE) {
       if ($row->value == 'NULL') {
         return; //unless we have to update object_ids.
       }
@@ -80,7 +80,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
       'project' => 'os_department',
     );
     
-    return (isset($presets[$value])) ? $presets['value'] : FALSE;
+    return (isset($presets[$value])) ? array($object_id, $presets[$value]) : FALSE;
   }
   
 }

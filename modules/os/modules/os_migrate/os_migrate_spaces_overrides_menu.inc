@@ -50,6 +50,12 @@ class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
     return parent::prepareRow($row);
   }
   
+  //clear the menu cache after import.
+  public function postImport() {
+    parent::postImport();
+    drupal_flush_all_caches();
+  }
+  
   public function _update_menu_name($name) {
     $menus = array(
       'features' => 'primary-menu',
@@ -80,7 +86,8 @@ class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
       'mlid' => $mlid,
       'plid' => 0,
       'p1' => $mlid,
-      'depth' => 0,
+      'depth' => 1,
+      'has_children' => 0,
     );
     
     foreach (range(2,9) as $n) {

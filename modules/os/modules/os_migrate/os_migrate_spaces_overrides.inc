@@ -40,6 +40,9 @@
     $query->condition('object_type', $this->source_object, '='); 
     $query->isNotNull('value');
     
+    //$query->condition('id', '27024'); // good site for testing menus: http://scholar.harvard.edu/goldin/ <- econ has weirdm enus.
+  //  $query->condition('id', '28752');
+    
     //check that vsite exists?
     
     return $query;
