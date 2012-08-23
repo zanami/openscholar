@@ -103,6 +103,12 @@ a {color:#4E84C4;}
     display: block;
 }
 
+
+#edit-submit,#edit-preset {
+   
+    margin-right: 15px;
+}
+
 /** CP TABLE STYLES **/
 #edit-menu-table tr,
 #spaces-features-form .spaces tr
@@ -194,5 +200,14 @@ td {
     border-top:1px solid #EDEDED;
 }
 
+/* CP FEATURES */
+form#spaces-features-form td.actions a {
+    background: url("../images/featureCustGear.png") no-repeat scroll 0 0 transparent;
+    color: #105EA9;
+    height: 25px;
+    padding: 2px 0 5px 22px;
+    width: 100px;
+    margin-left: 6px;
+}
 
   

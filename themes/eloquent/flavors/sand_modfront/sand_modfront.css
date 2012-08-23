@@ -100,7 +100,13 @@ color: #6D1102;
     padding: 0;
 }
 
-.front #menu-bar .os-menu {background: #6E1205;width: 1002px;height:94px;height: 56px;padding-top: 38px;}
+.front #menu-bar {
+	padding-bottom: 0;
+}
+
+.front #menu-bar .os-menu {background: #6E1205; height: 60px;
+    padding-top: 35px;
+    width: 1002px;}
 
 .front #menu-bar ul.os-menu  {text-align:center;}
 

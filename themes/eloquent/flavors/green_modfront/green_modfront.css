@@ -3,16 +3,23 @@ body, #container, #header-container,  #footer {
   }
   
 .front #columns {
-  background: #44514f;
+ background: #44514f;
+  
   -moz-box-shadow: none;
   -webkit-box-shadow: none;
   box-shadow: none;
   }
   
 .front #page {
-    width: 844px;
+    width: 910px;
 }
+
+.front #header-container,
+.front #menu-bar {
+  margin-left: 25px;
+  }
 
 .front img {
     border: none;
 }
+
