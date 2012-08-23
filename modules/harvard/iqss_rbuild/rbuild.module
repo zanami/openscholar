@@ -117,17 +117,21 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
   $release_node = new stdClass();
   $release_node->type = 'software_release';
   $release_node->uid = $project_node->uid;
+  $release_node->language = 'und';
   $release_node->og_group_ref['und'][0]['target_id'] = $project_node->og_group_ref['und'][0]['target_id'];
   $release_node->status = 1;
   $release_node->active = 1;
   $release_node->field_software_project['und'][0]['target_id'] = $project_node->nid;
   $release_node->field_software_version['und'][0]['value'] = $version;
-  $release_node->field_software_recommended[0]['value'] = ($version == $package['version']) ? 1 : 0;
+  $release_node->field_software_recommended['und'][0]['value'] = ($version == $package['version']) ? 1 : 0;
   
   // Prepares file field
   $file = _rbuild_import_file($url, $filename, $project_node->uid);
-  $release_node->field_software_package['und'][0] = get_object_vars($file);
-  
+  dpm($file);
+  if ($file === FALSE) return;
+
+  $release_node->field_software_package['und'][0] = (array)$file;
+
   /* array(
     'fid' => $file->fid,
     'title' => basename($file->filename),
@@ -138,11 +142,6 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
     'description' => basename($file->filename),
     'list' => 1,
   ); */
-  
-  // Tells file_fields to leave this alone
-  if(!$file->process_file) {
-    $release_node->field_software_package[0]['status'] = 1;
-  }
   
   if($file->timestamp < $start_time) $release_node->created = $file->timestamp;
   
@@ -169,7 +168,7 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
  *   A Drupal File object to attach to a new Software Release node.
  */
 function _rbuild_import_file($url, $filename, $uid, $get_contents = FALSE) {
-  
+  /*
   // Generates new local filepath
   $filepath = $url . '/' . $filename;
   $new_filepath = $filepath;
@@ -209,7 +208,31 @@ function _rbuild_import_file($url, $filename, $uid, $get_contents = FALSE) {
   // $file->fid = db_result(db_query("SELECT fid FROM {files} WHERE filepath = '%s'", $file->filepath));
   
   $file->process_file = $get_contents;
+  */
   
+  $filepath = $url . '/' . $filename;
+  /*
+  // Create managed File object and associate with Image field.
+  $file = (object) array(
+    'uid' => $uid,
+    'uri' => $filepath,
+    'filemime' => file_get_mimetype($filepath),
+    'status' => 1,
+    'display' => 1,
+  );
+  */
+  
+  // Only allows import of Gzip files
+  $filemime = file_get_mimetype($filepath);
+  if ($filemime !== 'application/octet-stream') {
+    drupal_set_message(t('Expected file mimetype "application/octet-stream", not' . $file->filemime), 'error');
+    return FALSE;
+  }
+  
+  // Saves file to the root of the files directory.
+  $contents = file_get_contents($filepath);
+  $file = file_save_data($contents, 'public://' . $filename, FILE_EXISTS_RENAME);
+  $file->display = 1;
   return $file;
 }
 
