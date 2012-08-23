@@ -66,7 +66,15 @@
       $block['module'] = $this->_update_module($block['module']);
     }
     
-    //$block['plugin'] almost certainly needs an update    
+    if (isset($block['plugin_key'])) {
+      if ($key = $this->_update_block_plugin_key($block['plugin_key'])) {
+        $block['plugin_key'] = $key;
+      } else {
+        return FALSE;
+      }
+    }
+    
+    //$block['plugin'] almost certainly needs an update    .  plugin_key?
     return $block;
   }
   
@@ -119,6 +127,27 @@
       'footer' => 'footer',
     );
     return isset($regions[$region]) ? $regions[$region] : FALSE;
+  }
+  
+  public function _update_block_plugin_key($key) {
+    $box_map = array();
+    
+    if (isset($box_map[$key])) {
+      $key = $box_map[$key];
+    } 
+    
+    if (module_exists('os_boxes')) {
+      $boxes = os_boxes_get_boxes_plugins();
+      if (isset($boxes[$key])) {
+        return $key;
+      } else {
+        parent::saveMessage(t('Ignoring box of plugin: %key (unsupported)', array('%key'=>$key)), MigrationBase::MESSAGE_NOTICE);
+        return FALSE;
+      }    
+    } else {
+      return $key;
+    }
+    
   }
 }
 
