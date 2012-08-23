@@ -254,7 +254,7 @@ function cp_page_build(&$page){
       break;
     case CP_MENU_MINI :
   }
-  $page['page_top']['cp_toolbar'] = $menu;
+  //$page['page_top']['cp_toolbar'] = $menu;
 
   cp_invoke('page_build', $page);
 }
@@ -364,30 +364,6 @@ function _cp_mini_menu(){
   ));
 }
 
-function cp_toolbar_pre_render($toolbar){
-  $toolbar = array_merge($toolbar, cp_toolbar_view());
-  return $toolbar;
-}
-
-/**
- * Builds the admin menu as a structured array ready for drupal_render().
- *
- * @return Array of links and settings relating to the admin menu.
- */
-function cp_toolbar_view(){
-  $build = toolbar_view();
-
-  $build['#theme'] = 'cp-toolbar';
-  $build['#attached']['css'] = array(
-      drupal_get_path('module', 'cp') . '/theme/cp-toolbar.css'
-  );
-  $build['toolbar_menu']['#links'] = toolbar_menu_navigation_links(cp_get_menu_tree());
-  $build['toolbar_drawer'] = array();
-  $build['toolbar_drawer_classes'] = '';
-  unset($build['toolbar_toggle']);
-
-  return $build;
-}
 
 /**
  * Make a decision about the active theme

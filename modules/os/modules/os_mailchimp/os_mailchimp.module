@@ -173,13 +173,39 @@ function content_profile_load($type, $uid, $lang = '', $reset = NULL) {
       'type' => $type,
       'uid' => $uid,
     );
-    if ($node = node_load($lang ? $params + array('language' => $lang) : $params, NULL, $reset)) {
-      $cache[$type][$uid][$lang] = $node->nid;
-    }
+    //if ($node = node_load($lang ? $params + array('language' => $lang) : $params, NULL, $reset)) {
+    //  $cache[$type][$uid][$lang] = $node->nid;
+    //}
     return $node;
+    echo "Yello?";
   }
   return !empty($cache[$type][$uid][$lang]) ? node_load($cache[$type][$uid][$lang]) : FALSE;
 }
+
+/** 
+ * Function os_mailchimp_profile_load
+ * Replaced the content_profile_load function that was previously used
+ * as it was not included in the D7 upgrade and also passed arrays into node_load
+ * which is depreciated in d7
+ */
+function os_mailchimp_profile_load($type, $user) {
+  	// check to make sure there is a user_profile
+	$query = new EntityFieldQuery();
+  	$entities = $query->entityCondition('entity_type', 'node')
+  		->propertyCondition('type', $type)
+  		->propertyCondition('uid', $user)
+  		->range(0,1)
+  		->execute();
+	
+  	if (!empty($entities['node'])) { // there is, load the node with the userid
+    	$node = node_load($user);
+  	}else{
+  		$node = FALSE;
+  	}
+  	
+  	return $node;
+}// end function
+
 
 /**
  * @function os_mailchimp_form
@@ -214,12 +240,19 @@ function os_mailchimp_form($state, $args=array()) {
     	$mail = $user->mail;
 
     	//get names from profile, or username if those aren't available
-    	$profile = content_profile_load('vsite_users_profile',$user->uid);
-    	
-    	if ($fn = $profile->vsite_users_first_name[0]['value']){
-      		$ln = $profile->vsite_users_last_name[0]['value'];
-    	} else {
-      		$fn = $user->name;
+    	$profile = os_mailchimp_profile_load('vsite_users_profile',$user->uid);
+    	// default the fn to the user
+    	$fn = $user->name;
+    	// make sure there's node infornmation
+    	if($profile!=FALSE) {
+    		// check for the first name set
+    		if(!empty($profile->vsite_users_first_name[0]['value'])) {
+    			$fn = $profile->vsite_users_first_name[0]['value'];
+    		}
+    		// check for the last name set
+    		if (!empty($profile->vsite_users_last_name[0]['value'])){
+      			$ln = $profile->vsite_users_last_name[0]['value'];
+    		} 
     	}// end if
   	}// end if
 

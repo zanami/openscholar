@@ -241,7 +241,7 @@ function os_software_field_default_fields() {
       'bundle' => 'software_project',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Example: http://r.harvard.edu/src/PACKAGE.CookingRecipes',
+      'description' => 'Example: http://r.iq.harvard.edu/src/PACKAGE.CookingRecipes',
       'display' => array(
         'default' => array(
           'label' => 'above',

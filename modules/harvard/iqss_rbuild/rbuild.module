@@ -20,6 +20,52 @@
  */
 
 /**
+ * Implements hook_node_insert().
+ * 
+ * Triggers init_releases() for new rBuild Software Project nodes.
+ */
+function rbuild_node_insert($node) {
+  if ($node->type !== 'software_project') return;
+  
+  $software_method = $node->field_software_method['und'][0]['value'];
+  if ($software_method !== 'Rbuild repository') return;
+  
+  _rbuild_init_releases($node);
+}
+
+/**
+ * Implements hook_node_update()
+ * 
+ * Triggers init_releases() if updated 'Rbuild repository' or 'rBuild Short Name'
+ */
+function rbuild_node_update($node) {
+  if ($node->type !== 'software_project') return;
+
+  // Ignores new nodes; hook_node_insert() takes care of new Software Projects
+  $node_original = node_load($node->nid);
+  if (!isset($node_original->title)) return;
+  
+  // Exits if the updated packaging method is not 'Rbuild repository'
+  $software_method = $node->field_software_method['und'][0]['value'];
+  if ($software_method !== 'Rbuild repository') return;
+  
+  // Compares original and updated field values
+  $node_updated = $node;
+  $repo_value_original = $node_original->field_software_repo['und'][0]['value'];
+  $repo_value_updated = $node_updated->field_software_repo['und'][0]['value'];
+  $same_repo = ($repo_value_updated === $repo_value_original);
+  
+  $short_name_value_original = $node_original->field_rbuild_short_name['und'][0]['value'];
+  $short_name_value_updated = $node_updated->field_rbuild_short_name['und'][0]['value'];
+  $same_short_name = ($short_name_value_updated === $short_name_value_original);
+  
+  // Exits if the rBuild fields have not changed.
+  if ($same_repo && $same_short_name) return;
+  
+  _rbuild_init_releases($node);
+}
+
+/**
  * OpenScholar hooks
  */
 
@@ -40,7 +86,7 @@ function rbuild_os_packaging_method_option() {
 function rbuild_os_software_process_remote_release() {
 
   // Checks for new releases every 20 minutes, invoked by cron.
-  $default_interval = 20 * 60;
+  $default_interval = 20; //20 * 60;
   $interval = variable_get('rbuild_cron_update_interval', $default_interval);
   $now = time();
 
@@ -68,24 +114,54 @@ function rbuild_os_software_process_remote_release() {
  * @see rbuild_os_software_process_remote_release()
  */
 function _rbuild_fetch_new_releases($project_node) {
-  // Requires the [:rbuild_handler:] PHP class
-  require_once('rbuild.handler.inc');
-  
-  // Prepares parameters to construct an Rbuild Handler object
-  $repo_url = $project_node->field_software_repo['und'][0]['value'];
-  $short_name = $project_node->field_rbuild_short_name['und'][0]['value'];
-  
-  // Instantiates a handler object to process cron
-  $handler = new rbuild_handler($repo_url, $short_name);
+  $handler = _rbuild_new_handler($project_node);
   if (!method_exists($handler, 'find_new_releases')) return;
 
   // Saves the project node if new releases are found
-  $found_new_releases = $handler->find_new_releases($project_node);
+  $found_new_releases = $handler->find_new_release($project_node);
   if ($found_new_releases) node_save($project_node);
 }
 
 /**
- * Creates a new Software Release node for a given Software Project.
+ * Checks for and imports any new releases.
+ * 
+ * @param object $project_node
+ *   An individual project node with packaging method "Rbuild repository"
+ *   
+ * @see rbuild_os_software_process_remote_release()
+ */
+function _rbuild_init_releases($project_node) {
+  $handler = _rbuild_new_handler($project_node);
+  if (!method_exists($handler, 'init_releases')) return;
+
+  // Saves the project node if new releases are found
+  $init_releases = $handler->init_releases($project_node);
+  if ($init_releases) node_save($project_node);
+}
+
+/**
+ * Creates a new Software Release node if the version is new.
+ * 
+ * @param object $project_node
+ *   The parent Software Project node, which will be referenced by a field.
+ * @param string $version
+ *   The text version info from the remote server for the new Release.
+ * @param string $filename
+ *   The package file to be saved to the release node field for download.
+ * @param array $package
+ * @param string $url
+ * @param array $context
+ */
+function _rbuild_add_release_node_wrapper($project_node, $version, $filename, $package, $url, &$context = array()) {
+  $node_exists = _rbuild_query_release_node_exists($project_node->nid, $version);
+  if ($node_exists) return FALSE;
+  
+  _rbuild_add_release_node($project_node, $version, $filename, $package, $url, &$context);
+  return TRUE;
+}
+
+/**
+ * Creates a new Software Release node.
  * 
  * @param object $project_node
  *   The parent Software Project node, which will be referenced by a field.
@@ -104,33 +180,19 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
   $release_node = new stdClass();
   $release_node->type = 'software_release';
   $release_node->uid = $project_node->uid;
-  $release_node->og_groups = $project_node->og_groups;
-  $release_node->spaces_og = $project_node->spaces_og;
+  $release_node->language = 'und';
+  $release_node->og_group_ref['und'][0]['target_id'] = $project_node->og_group_ref['und'][0]['target_id'];
   $release_node->status = 1;
   $release_node->active = 1;
   $release_node->field_software_project['und'][0]['target_id'] = $project_node->nid;
   $release_node->field_software_version['und'][0]['value'] = $version;
-  $release_node->field_software_recommended[0]['value'] = ($version == $package['version']) ? 1 : 0;
+  $release_node->field_software_recommended['und'][0]['value'] = ($version == $package['version']) ? 1 : 0;
   
   // Prepares file field
   $file = _rbuild_import_file($url, $filename, $project_node->uid);
-  $release_node->field_software_package['und'][0] = get_object_vars($file);
-  
-  /* array(
-    'fid' => $file->fid,
-    'title' => basename($file->filename),
-    'filename' => $file->filename,
-    'filepath' => $file->filepath,
-    'filesize' => $file->filesize,
-    'mimetype' => $file->filemime,
-    'description' => basename($file->filename),
-    'list' => 1,
-  ); */
-  
-  // Tells file_fields to leave this alone
-  if(!$file->process_file) {
-    $release_node->field_software_package[0]['status'] = 1;
-  }
+  if ($file === FALSE) return;
+
+  $release_node->field_software_package['und'][0] = (array)$file;
   
   if($file->timestamp < $start_time) $release_node->created = $file->timestamp;
   
@@ -158,45 +220,19 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
  */
 function _rbuild_import_file($url, $filename, $uid, $get_contents = FALSE) {
   
-  // Generates new local filepath
   $filepath = $url . '/' . $filename;
-  $new_filepath = $filepath;
-  if ($get_contents) {
-	  $data = _rbuild_get_file_contents($filepath);
-	  $new_filepath = file_save_data($data, $filename);
+
+  // Only allows import of Gzip files
+  $filemime = file_get_mimetype($filepath);
+  if ($filemime !== 'application/octet-stream') {
+    drupal_set_message(t('Expected file mimetype "application/octet-stream", not' . $file->filemime), 'error');
+    return FALSE;
   }
   
-  // Prepares metadata for new file object
-  $mimetype = 'application/octet-stream'; // Gzip file
-  $last_modified = FALSE;
-  $filesize = @filesize($new_filepath);
-  if (!$filesize) {
-    $headers = _rbuild_get_file_headers($filepath);
-    foreach ($headers as $header) {
-    	list($header_name, $header_val) = explode(":", $header, 2);
-    	if (strtolower(trim($header_name)) === 'content-length') {
-    		$filesize = intval($header_val);
-    	}
-      if (strtolower(trim($header_name)) === 'last-modified') {
-        $last_modified = strtotime($header_val);
-      }
-    }
-  }
-  
-  // Prepares file object
-  $file = new stdClass();
-  $file->filename = basename($new_filepath);
-  $file->filepath = $new_filepath;
-  $file->filemime = $mimetype;
-  $file->filesize = $filesize;
-  
-  $file->uid = $uid;
-  $file->status = FILE_STATUS_PERMANENT;
-  $file->timestamp = $last_modified ? $last_modified : time();
-  drupal_write_record('files', $file);
-  $file->fid = db_result(db_query("SELECT fid FROM {files} WHERE filepath = '%s'", $file->filepath));
-  
-  $file->process_file = $get_contents;
+  // Saves file to the root of the files directory.
+  $contents = file_get_contents($filepath);
+  $file = file_save_data($contents, 'public://' . $filename, FILE_EXISTS_RENAME);
+  $file->display = 1;
   
   return $file;
 }
@@ -212,7 +248,6 @@ function _rbuild_import_file($url, $filename, $uid, $get_contents = FALSE) {
  *   Else, returns the output from curl_exec()
  */
 function _rbuild_get_file_contents($url) {
-	
 	// Initializes curl session
   $ch = curl_init();
 
@@ -224,10 +259,10 @@ function _rbuild_get_file_contents($url) {
   $data = curl_exec($ch);
   
   $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-  if ((int)$http_code === (int)404) return FALSE;
-  
-  // Closes the connection
   curl_close($ch);
+  
+  // Exits if HTTP status not OK
+  if ((int)$http_code !== (int)200) return FALSE; 
 	
   return $data;
 }
@@ -294,11 +329,8 @@ function _rbuild_query_release_node_exists($project_nid, $version) {
     ->fieldCondition('field_software_version', 'value', $version, '=')
     ->addMetaData('account', user_load(1)); // run the query as user 1
   $result = $query->execute();
-  if (is_array($result['node'])) {
-    if (sizeof($result['node']) > 0) {
-      $exists = TRUE;
-    }
-  }
+
+  if (isset($result['node'])) $exists = TRUE;
   
   return $exists;
 }
@@ -324,3 +356,36 @@ function _rbuild_query_load_nodes($result) {
   return array();
 }
 
+/**
+ * 
+ * Enter description here ...
+ * @param object $project_node
+ * 
+ * @return object $handler
+ */
+function _rbuild_new_handler($project_node) {
+  // Requires the [:rbuild_handler:] PHP class
+  require_once('rbuild.handler.inc');
+  
+  // Prepares parameters to construct an Rbuild Handler object
+  $repo_url = $project_node->field_software_repo['und'][0]['value'];
+  $short_name = $project_node->field_rbuild_short_name['und'][0]['value'];
+  
+  // Instantiates a handler object to process cron
+  $handler = new rbuild_handler($repo_url, $short_name);
+  return $handler;
+}
+
+/**
+ * Responds to batch import completion
+ * 
+ * @see rbuild_handler::init_releases()
+ */
+function _rbuild_batch_finished($success, $results, $operations) {
+	if ($success) {
+		drupal_set_message(format_plural(count($results), '1 release processed.', '@count releases processed.'));
+	}
+	else {
+		drupal_set_message(t('Unable to import all release information.'));
+	}
+}
