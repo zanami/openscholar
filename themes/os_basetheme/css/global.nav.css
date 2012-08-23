@@ -533,9 +533,6 @@ ul.nice-menu ul li a {
     border:none;
 }
 
-ul.nice-menu-right, ul.nice-menu-left, ul.nice-menu-right li, ul.nice-menu-left li {
-    width: 100%;
-}
 
 /* CP MINI MENU */
 
@@ -549,6 +546,12 @@ ul.nice-menu-right, ul.nice-menu-left, ul.nice-menu-right li, ul.nice-menu-left 
 	border-bottom:1px solid #CCC;
 	border-radius:0 0 0 6px;
 	-moz-border-radius:0 0 0 6px;
+}
+
+
+.not-logged-in #block-cp-cp-minimenu {
+    padding:0 !important;
+   
 }
 
 .toolbar #block-cp-cp-minimenu {
@@ -582,7 +585,15 @@ top: 66px;
    
 #block-cp-cp-minimenu ul li.menu-path-cp-users {
 	background-position: 2px -85px ;
-   }         
+   } 
+   
+#block-cp-cp-minimenu ul li.menu-path-cp-account {
+	background-position: 2px -130px ;
+   }   
+   
+.not-logged-in #block-cp-cp-minimenu ul li.menu-path-cp-account {
+	background: none;
+   }             
       
 #block-cp-cp-minimenu ul li a {
 	font-family:helvetica;
@@ -594,6 +605,11 @@ top: 66px;
     color:#293352;
     font-size:13px;
     text-transform:none;
+}
+
+.not-logged-in #block-cp-cp-minimenu ul li a {
+ 	padding-left: 0 !important;
+   
 }
 
 #block-cp-cp-minimenu ul li a:visited,
@@ -617,12 +633,12 @@ top: 66px;
 
 #block-cp-cp-minimenu ul li ul li a {
 	background: #EFEFEF;
-	 padding-left: 4px !important;
-	  font-weight: normal;
+	padding-left: 4px !important;
+	font-weight: normal;
 }
 
 #block-cp-cp-minimenu h2 {
-display:none;
+    display:none;
 }
 
 #block-cp-cp-minimenu ul li.menu-path-user a {
