@@ -289,7 +289,7 @@ function cp_toolbar_fill_drawer() {
       'taxonomy' => menu_get_item('cp/build/taxonomy'),
     ),
     '#attributes' => array(
-      'class' => 'toolbar-manage',
+      'class' => 'toolbar-gear',
     ),
   );
 
@@ -307,7 +307,7 @@ function cp_toolbar_fill_drawer() {
   $drawer['admin-drawer']['manage'] = array(
     '#theme' => 'links',
     '#attributes' => array(
-      'class' => 'toolbar-manage',
+      'class' => 'toolbar-gear',
     ),
     '#links' => toolbar_menu_navigation_links(toolbar_get_menu_tree()),
   );
