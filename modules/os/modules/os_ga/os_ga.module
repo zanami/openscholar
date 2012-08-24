@@ -40,7 +40,7 @@ function os_ga_menu(){
  */
 function os_ga_cp_settings(){
   $a_settings = array();
-
+	
   $a_settings['vsite_ga_google_analytics_id'] = array(
     'form' => array(
       '#type' => 'textfield',
@@ -69,7 +69,7 @@ function os_ga_init() {
   	$script = '';
   	// check to see if both global and site specific GA accounts are set
   	if((!empty($ga_vars['global_id']))&&(!empty($ga_vars['vsite_id']))) {
-  		echo "and im here";
+  		
   		// set both to be tracked
   		$script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['vsite_id']) . ']);';
 	 	$script .= '_gaq.push(["_trackPageview"]);';
@@ -139,19 +139,28 @@ function _os_ga_ga_id_vars(){
   	//global id
   	
   	$spaces = spaces_get_space();
+  	
   	if ($spaces) {
-    	if (strlen($spaces->controllers->variable->get('vsite_ga_google_analytics_id', 'original'))) {
-      		$ga_vars['global_id'] = variable_get('vsite_ga_global_id' , '');
+    	//if (strlen($spaces->controllers->variable->get('vsite_ga_google_analytics_id', 'original'))) {
+    	// check for the global GA account set from the admin bar
+  		if($global_id = variable_get('vsite_ga_global_id', '')) {
+      		if (strlen($global_id)) {
+      			$ga_vars['global_id'] = $global_id;
+      			
+      		}
     	}
 
-    	//site-specific id
+    	// check for the site specific GA account set from the users Settings 
     	if($local_id = variable_get('vsite_ga_google_analytics_id', '')) {
       		if (strlen($local_id)) {
         		$ga_vars['vsite_id'] = $local_id;
+        		
       		}
     	}
   	}else {
-    	if($global_id = variable_get('vsite_ga_google_analytics_id', '')) {
+    	//if($global_id = variable_get('vsite_ga_google_analytics_id', '')) {
+    	// no personal GA account nor spaces set, grab the global GA account
+  		if($global_id = variable_get('vsite_ga_global_id', '')) {
       		if (strlen($global_id)) {
         		$ga_vars['global_id'] = $global_id;
       		}
