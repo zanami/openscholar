@@ -37,13 +37,6 @@ function os_context_default_contexts(){
   $context->reactions = array(
       'block' => array(
           'blocks' => array(
-              'cp-cp_subnav' => array(
-                  'module' => 'cp',
-                  'delta' => 'cp_subnav',
-                  'weight' => 20,
-                  'region' => 'sidebar_first',
-                  'label' => 'CP Subnavigation'
-              ),
               'os-powered-by' => array(
                   'module' => 'os',
                   'delta' => 'powered-by',
