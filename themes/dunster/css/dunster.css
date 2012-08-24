@@ -1,5 +1,6 @@
-@import url("dunster.layout.css");
+@import url("dunster.responsive.layout.css");
 @import "/profiles/openscholar/themes/os_basetheme/css/d6buffer.css";
+
 @import url('http://fonts.googleapis.com/css?family=Arvo');
 
 body {
@@ -105,45 +106,6 @@ p.copy {
 	padding-bottom: 77px;
 	}
 
-/*.wrap {
-	width: 980px;
-	margin:0 auto;
-	}*/
-
-/*#header-container {
-	background: url("../images/bg_header.png") repeat-x scroll 0 -48px transparent;
-    height: 84px;
-}*/
-
-#header-container-left,
-#header-container-right,
-.region-sidebar-first,
-.region-sidebar-second {
-	width:230px;
-	padding:0;
-	}
-#content-column,
-#header-container-main {
-  padding: 10px 30px;
-  }
-
-#content-column,
-.region-sidebar-first {
-  padding-top: 15px;
-  }
-
-#header-container-left,
-.region-sidebar-first {
-  width: 216px;
-  right: 256px;
-  }
-
-#columns .hg-container,
-#header-container-container {
-	padding-left: 216px;
-	padding-right: 290px;
-  }
-
 .region-sidebar-first .block,
 .region-sidebar-second .block {
   margin-bottom:0!important;
@@ -151,13 +113,10 @@ p.copy {
 
 .region-sidebar-second {
 	color:#555;
-  left: 21px;
+
   }
 
-#footer {
-	padding:30px 30px 0 30px;
-	width: 920px;
-	}
+
 
 /* SIDEBAR ELEMENTS */
 
@@ -180,7 +139,7 @@ p.copy {
 
 #header-container {
 	background: url("../images/bg_header.png") repeat-x 0 -48px;
-	width: 980px;
+	
 	padding:0;
 	margin: 0 auto;
 	}
@@ -192,25 +151,31 @@ p.copy {
 
 .region-header-third {
 	background: none repeat scroll 0 0 #DCE7EF;
-	margin-left: -230px;
+
     text-align: right;
-    width: 230px;
+  
 }
 
 #header-container h1,
 #header-container h2,
 #header-container p {
 	color:#3A6F8F;
-	font-size:23px;
+	font-size:13px;
 	font-weight:normal;
-	line-height:28px;
+	line-height:18px;
 	margin:0;
 	}
 
-#header-container h2,
-#header-container p {
-  display:none;
+#header-container h1 {
+	color: #3A6F8F;
+    font-size: 23px;
+    font-weight: normal;
+    line-height: 28px;
+    margin: 0;
   }
+
+
+
 
 #header-container h1 a, #header-container h1 a:visited {
 	color:#446677;
@@ -226,21 +191,11 @@ p.copy {
 
 #menu-bar {
 	background: none repeat scroll 0 0 #DC6700;
-	width: 980px;
+
 	height:31px;
 	padding:0;
 	margin: 0 auto;
   }
-
-/*#menu-bar .wrap {
-	background:#DC6700;
-	height:31px;
-  }*/
- 
-/*#header-container-right {
-	background:#DCE7EF;
-	height: 84px;
-	}*/
 
 #menu-bar li {
 	float:left;
@@ -294,12 +249,6 @@ p.copy {
 	color:#fff;
 	}
 
-#header-container h1 {
-  height: 58px;
-  width:599px;
-  background: url(../images/scholars_web_jwelogo.gif) no-repeat;
-  text-indent: -999em;
-  }
 
 #header-container h1 a,
 #header-container h1 a:visited {
@@ -329,12 +278,6 @@ img {
 	vertical-align:top;
 	}
 
-#content-column {
-	padding-bottom:50px;
-	padding-left: 20px;
-	padding-right: 20px;
-	}
-
 #header-container-right ul.menu {
 	font-size:12px;
   }
@@ -345,9 +288,7 @@ img {
 	color:#fff;
 	}
 	
-.region-sidebar-first {
-	left: auto;
-}
+
 
 .region-sidebar-first .block, .region-sidebar-second .block{
 	border:bottom:1px solid red;
@@ -510,32 +451,31 @@ body.sidebar-second #columns .hg-container {
   position:relative;
   }
 
-.front #front-rotate {
+/*.front #front-rotate {
   width: 750px;
   height: 274px;
   position: absolute;
   top:0;
   left:-216px;
   border-bottom: 1px solid #DB6600;
-  }
+  }*/
 
-.front #content h3:first-child {
+/*.front #content h3:first-child {
   border-top: none;
   margin-top: 0;
-  }
+  }*/
 
-.front .region-sidebar-first{
+/*.front .region-sidebar-first{
   margin-top: 274px;
   padding-top: 0;
-}
-
+}*/
 /*
  * Pushes whatever is in the content area below the image that displays on the front page
  */
-.front #content-column {
+/*.front #content-column {
   padding-top: 277px;
 }
   
 .front #content-column .title {
 	display: none;
-}
+}*/
