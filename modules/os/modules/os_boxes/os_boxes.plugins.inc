@@ -187,5 +187,17 @@ function _os_boxes_boxes_plugins() {
     ),
   );
 
+  $info['os_boxes_html'] = array(
+    'title' => 'Custom Text/HTML',
+    'description' => 'A blank slate to fill with what',
+    'tags' => array('Misc'),
+    'handler' => array(
+      'class' => 'os_boxes_html',
+      'file' => 'os_boxes_html.inc',
+      'path' => $path.'/os_boxes_html',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
   return $info;
 }

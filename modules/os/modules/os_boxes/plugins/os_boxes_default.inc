@@ -25,9 +25,7 @@ abstract class os_boxes_default extends boxes_box {
    * Implementation of boxes_content::options_defaults().
    */
   public function options_defaults() {
-    return array(
-      'visibility' => 'feature',
-    );
+    return array();
   }
 
   /**
@@ -36,18 +34,14 @@ abstract class os_boxes_default extends boxes_box {
   public function options_form(&$form_state) {
     $form = array();
 
-    /*
-    $form['visibility'] = array(
-      '#type' => 'value',
-      '#title' => t('Visibility settings'),
-      '#default_value' => $this->options['visibility'],
-      '#options' => array(
-          //@todo *this* should be dynamic (i.e "publications section")
-          'page' => t('this page only'), // i.e. node view
-          'feature' => t('Show only in *this* section'),
-          'all' => t('Show everywhere in my site')),
+    $form['advanced'] = array(
+      '#type' => 'fieldset',
+      '#access' => user_access('use boxes advanced settings'),
+      '#title' => t('Advanced Settings'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#weight' => 1000
     );
-    */
 
     return $form;
   }

@@ -40,14 +40,14 @@ function os_ga_menu(){
  */
 function os_ga_cp_settings(){
   $a_settings = array();
-
-  $a_settings['vsite_ga_google_analytics_id'] = array(
+	
+  $a_settings['os_ga_google_analytics_id'] = array(
     'form' => array(
       '#type' => 'textfield',
       '#title' => t('Enter your Google Analytics ID'),
       '#size' => 20,
       '#maxlength' => 255,
-      '#default_value' => variable_get('vsite_ga_google_analytics_id',''),
+      '#default_value' => variable_get('os_ga_google_analytics_id',''),
       '#description' => t("Entering your ID this will send page and visitor data to your Google Analytics account. Go to the <a href=\"http://www.google.com/analytics/\">Google Analytics site</a> to set one up. Your ID will be in the format UA-XXXXXXX-XX."),
       '#element_validate' => array('os_ga_analytics_id_validate')
   	),
@@ -68,10 +68,10 @@ function os_ga_init() {
   	// Build tracker code for footer.
   	$script = '';
   	// check to see if both global and site specific GA accounts are set
-  	if((!empty($ga_vars['global_id']))&&(!empty($ga_vars['vsite_id']))) {
-  		echo "and im here";
+  	if((!empty($ga_vars['global_id']))&&(!empty($ga_vars['os_id']))) {
+  		
   		// set both to be tracked
-  		$script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['vsite_id']) . ']);';
+  		$script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['os_id']) . ']);';
 	 	$script .= '_gaq.push(["_trackPageview"]);';
 	  	// add in our globak account as well
 	  	$script .= '_gaq.push(["b._setAccount", ' . drupal_json_encode($ga_vars['global_id']) . ']);';
@@ -102,10 +102,10 @@ function os_ga_init() {
 	  	$script .= 'var s = document.getElementsByTagName("script")[0];';
 	  	$script .= 's.parentNode.insertBefore(ga, s);';
 	  	$script .= '})();';
-	 }elseif(!empty($ga_vars['vsite_id'])){ 
+	 }elseif(!empty($ga_vars['os_id'])){ 
 	 	//vsite pageTracker object
 	  	$script .= 'var _gaq = _gaq || [];';
-	  	$script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['vsite_id']) . ']);';
+	  	$script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['os_id']) . ']);';
 	 	$script .= '_gaq.push(["_trackPageview"]);';
 	  	// add in our globak account as well
 	  	// $script .= '_gaq.push(["b._setAccount", ' . drupal_json_encode($globalAccount) . ']);';
@@ -139,19 +139,28 @@ function _os_ga_ga_id_vars(){
   	//global id
   	
   	$spaces = spaces_get_space();
+  	
   	if ($spaces) {
-    	if (strlen($spaces->controllers->variable->get('vsite_ga_google_analytics_id', 'original'))) {
-      		$ga_vars['global_id'] = variable_get('vsite_ga_global_id' , '');
+    	//if (strlen($spaces->controllers->variable->get('vsite_ga_google_analytics_id', 'original'))) {
+    	// check for the global GA account set from the admin bar
+  		if($global_id = variable_get('os_ga_global_id', '')) {
+      		if (strlen($global_id)) {
+      			$ga_vars['global_id'] = $global_id;
+      			
+      		}
     	}
 
-    	//site-specific id
-    	if($local_id = variable_get('vsite_ga_google_analytics_id', '')) {
+    	// check for the site specific GA account set from the users Settings 
+    	if($local_id = variable_get('os_ga_google_analytics_id', '')) {
       		if (strlen($local_id)) {
-        		$ga_vars['vsite_id'] = $local_id;
+        		$ga_vars['os_id'] = $local_id;
+        		
       		}
     	}
   	}else {
-    	if($global_id = variable_get('vsite_ga_google_analytics_id', '')) {
+    	//if($global_id = variable_get('vsite_ga_google_analytics_id', '')) {
+    	// no personal GA account nor spaces set, grab the global GA account
+  		if($global_id = variable_get('os_ga_global_id', '')) {
       		if (strlen($global_id)) {
         		$ga_vars['global_id'] = $global_id;
       		}

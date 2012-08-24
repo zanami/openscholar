@@ -18,7 +18,6 @@ dependencies[] = oembedcore
 dependencies[] = overlay
 dependencies[] = pathauto
 dependencies[] = search
-dependencies[] = shortcut
 dependencies[] = strongarm
 dependencies[] = spaces
 dependencies[] = taxonomy

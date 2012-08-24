@@ -46,16 +46,28 @@
 }
 
 .toolbar-drawer #toolbar .toolbar-menu {
+  z-index: 5;
   display: block;
   padding: 0 45px 0 0;
 }
 
 #toolbar div.toolbar-drawer {
-  display: none;
+  position: absolute;
+  background-color: #282828;
+  top: -200%;
+  left: 20px;
+  right: 20px;
   padding: 12px;
+  z-index: 4;
+  -webkit-transition: top 0.25s;
+  -moz-transition: top 0.25s;
+  -o-transition: top 0.25s;
+  -ms-transition: top 0.25;
+  transition: top 0.25s;
 }
 
 #toolbar div.toolbar-drawer.active-path {
+  top: 100%;
   display: block;
 }
 
@@ -90,7 +102,7 @@
   background-image: none;
 }
 
-#toolbar div.toolbar-menu ul li a[drawer] {
+#toolbar div.toolbar-menu ul li a[data-drawer] {
   background-image: url('images/toolbar_drawer_link_arrow.png');
   background-repeat: no-repeat;
   background-position: right center;
@@ -103,9 +115,9 @@
   background-color: #434343;
 }
 
-#toolbar div.toolbar-menu ul li a[drawer].active-path:hover,
-#toolbar div.toolbar-menu ul li a[drawer].active-path:active,
-#toolbar div.toolbar-menu ul li a[drawer].active-path,
+#toolbar div.toolbar-menu ul li a[data-drawer].active-path:hover,
+#toolbar div.toolbar-menu ul li a[data-drawer].active-path:active,
+#toolbar div.toolbar-menu ul li a[data-drawer].active-path,
 #toolbar div.toolbar-menu ul li.active-trail a[drawer] {
   background-color: #282828;
   background-image: url('images/toolbar_drawer_link_arrow.png');
