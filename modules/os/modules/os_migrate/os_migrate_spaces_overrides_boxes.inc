@@ -4,6 +4,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
   
   public function __construct() {
     $this->source_object = $this->dest_object = 'boxes';
+    $this->dependencies[] = 'ModalImageNodeOS'; //images have to be copied before modal boxes can migrate.
     parent::__construct();
   }
   
@@ -13,6 +14,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     
     
     //$query->condition('value', '%os_boxes_node%', 'LIKE'); //testing the port function
+    $query->condition('value', '%os_boxes_modal_image%', 'LIKE'); //testing the port function
     
     
     return $query;
@@ -95,6 +97,32 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     } 
     
     return;
+  }
+  
+  public function _port_box_os_boxes_modal_image($box, $key_only) {
+    if ($key_only) {
+      return 'simple';
+    }
+    
+    //migrate_map_modalimagenodeos.  sourceid1 = d6 nid.  destid1 = media id.
+    
+    $image_vars = array(
+      'path',
+      'width',
+      'height',
+      'alt',
+      'title',
+      'attributes' => array(),
+    );
+    
+    //modal image should have a separate content type migration.  lets use that for moving the image.
+    $box->plugin_key = 'simple';
+    $box->options = array(
+      'format' => 'filtered_html',
+      'body' => theme_image($image_vars), //theme imagecrop_field? 
+     // theme_image_crop_summary($variables)
+      );
+    return $box;
   }
   
   //convert os_boxes_node to custom html.  102 in db
