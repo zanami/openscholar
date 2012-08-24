@@ -61,7 +61,6 @@ function os_ga_cp_settings(){
 }
 
 function os_ga_init() {
-	//echo "THIS IS WHATS SET: ".variable_get('vsite_ga_google_analytics_id', '');
 	$ga_vars = _os_ga_ga_id_vars();
 	if(!count($ga_vars)) return;  //if no ga ids are saved, then return
 	
