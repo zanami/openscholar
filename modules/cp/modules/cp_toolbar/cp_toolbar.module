@@ -136,14 +136,6 @@ function cp_toolbar_view() {
       ),
       'description' => t('Content is what is on your site'),
     ),
-    'people' => array(
-      'title' => t('People'),
-      'href' => 'cp/users',
-      'html' => TRUE,
-      'attributes' => array('title' => t('People'), 'data-drawer' => 'people-drawer'),
-      '#paths' => array(),
-      'description' => t('People are your users'),
-    ),
     'site' => array(
       'title' => t('Build'),
       'href' => 'cp/build',
@@ -151,6 +143,14 @@ function cp_toolbar_view() {
       'attributes' => array('title' => t('Site'), 'data-drawer' => 'site-drawer'),
       '#paths' => array(),
       'description' => t('Build is the structure of your site'),
+    ),
+    'people' => array(
+      'title' => t('People'),
+      'href' => 'cp/users',
+      'html' => TRUE,
+      'attributes' => array('title' => t('People'), 'data-drawer' => 'people-drawer'),
+      '#paths' => array(),
+      'description' => t('People are your users'),
     ),
     'appearance' => array(
       'title' => t('Appearance'),
