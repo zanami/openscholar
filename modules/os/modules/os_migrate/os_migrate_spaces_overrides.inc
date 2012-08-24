@@ -130,7 +130,14 @@
   }
   
   public function _update_block_plugin_key($key) {
-    $box_map = array();
+    $box_map = array(
+      'os_modal_tabbed' => 'os_boxes_tabs',
+      'os_boxes_shield' => 'os_shields_box',
+      'os_boxes_modal_sitelogo' => 'os_boxes_sitelogo', //needs pulling from orig vsite
+      'os_boxes_modal_siteinfo' => 'os_boxes_siteinfo', //needs pulling from orig vsite
+      'vsite_taxonomy_fbt' => 'os_taxonomy_fbt',
+      'os_boxes_currtoc' => 'os_boxes_booktoc', //needs an option added
+    );
     
     if (isset($box_map[$key])) {
       $key = $box_map[$key];

@@ -13,6 +13,8 @@
 class ThemeOSMigration extends OSMigration {
 
   public function __construct() {
+    /* A handful of custom themes have become flavors.  Set those AFTER flavors are imported */
+    $this->dependencies = array('SpacesOverridesVariable'); 
     $this->description = t('Vsite theme settings');
     $this->destination_schema =       array(
         'type' => array(
@@ -115,6 +117,9 @@ class ThemeOSMigration extends OSMigration {
       $current_row->value = preg_replace($prefix, '', $current_row->value);
     }
     
+    //several custom themes were made into flavors.  
+    $this->_custom_theme_to_flavor($current_row);
+    
     //removed: Burroughs, collector, density.
     
     $themes = list_themes();
@@ -130,4 +135,36 @@ class ThemeOSMigration extends OSMigration {
   }
 
   
+  function _custom_theme_to_flavor(&$row) {
+    //get the new theme
+    switch ($row->value) {
+      case 'rbates':
+        $row->value = 'weft';
+        $flavor = 'w_african_nostrip';
+      break;
+
+      case 'agordon':
+        $row->value = 'eloquent';
+        $flavor = 'eloquent_sand_modfront';
+      break;
+      
+      case 'kshepsle':
+        $row->value = 'eloquent';
+        $flavor = 'eloquent_sand_modfront';
+      break;
+      
+      default:
+        return;
+    }
+    
+    //set the flavor.  
+    $object_id = 'os_appearance_' . $row->value . '_flavor';
+    db_insert('spaces_overrides')->fields(array(
+      'type' => 'og',
+      'id' => $row->id,
+      'object_type' => 'variable',
+      'object_id' => $object_id,
+      'value' => $flavor,
+    ))->execute();
+  }
 }
