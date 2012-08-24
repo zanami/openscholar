@@ -14,8 +14,10 @@ function cp_toolbar_theme_registry_alter(&$theme_registry) {
   }
 }
 function cp_page_alter(&$page) {
-  $page['page_top']['toolbar']['#pre_render'] = array('cp_toolbar_pre_render');
-  $page['page_top']['toolbar']['#access'] = $page['page_top']['toolbar']['#access'] || spaces_access_admin();
+  if (isset($page['page_top']['toolbar'])) {
+    $page['page_top']['toolbar']['#pre_render'] = array('cp_toolbar_pre_render');
+    $page['page_top']['toolbar']['#access'] = $page['page_top']['toolbar']['#access'] || spaces_access_admin();
+  }
 }
 
 function cp_toolbar_pre_render($toolbar) {
