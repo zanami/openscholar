@@ -284,6 +284,7 @@ function cp_toolbar_fill_drawer() {
       'features' => menu_get_item('cp/build/features'),
       'layout' => menu_get_item('cp/build/layout'),
       'menu' => menu_get_item('cp/build/menu'),
+      'taxonomy' => menu_get_item('cp/build/taxonomy'),
     ),
     '#attributes' => array(
       'class' => 'toolbar-manage',
