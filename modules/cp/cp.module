@@ -184,12 +184,6 @@ function cp_taxonomy(){
  */
 function cp_block_info(){
   return array(
-      'cp_subnav' => array(
-          'info' => t('CP Subnavigation'),
-          'region' => false,
-          'cache' => DRUPAL_CACHE_GLOBAL,
-          'pages' => 'cp/*'
-      ),
       'cp_minimenu' => array(
           'info' => t('CP Mini-Menu'),
           'region' => false,
@@ -200,19 +194,6 @@ function cp_block_info(){
 
 function cp_block_view($delta){
   switch ($delta) {
-    case 'cp_subnav' :
-      $links = menu_navigation_links('cp', 1);
-      if (count($links))
-        return array(
-            'subject' => NULL,
-            'content' => array(
-                '#theme' => 'links',
-                '#links' =>  $links,
-            )
-        );
-      else {
-        return array();
-      }
     case 'cp_minimenu' :
       if (!module_exists('cp_toolbar') && _cp_get_toolbar_setting() == CP_MENU_MINI) {
         return _cp_mini_menu();

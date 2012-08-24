@@ -136,14 +136,6 @@ function cp_toolbar_view() {
       ),
       'description' => t('Content is what is on your site'),
     ),
-    'people' => array(
-      'title' => t('People'),
-      'href' => 'cp/users',
-      'html' => TRUE,
-      'attributes' => array('title' => t('People'), 'data-drawer' => 'people-drawer'),
-      '#paths' => array(),
-      'description' => t('People are your users'),
-    ),
     'site' => array(
       'title' => t('Build'),
       'href' => 'cp/build',
@@ -151,6 +143,14 @@ function cp_toolbar_view() {
       'attributes' => array('title' => t('Site'), 'data-drawer' => 'site-drawer'),
       '#paths' => array(),
       'description' => t('Build is the structure of your site'),
+    ),
+    'people' => array(
+      'title' => t('People'),
+      'href' => 'cp/users',
+      'html' => TRUE,
+      'attributes' => array('title' => t('People'), 'data-drawer' => 'people-drawer'),
+      '#paths' => array(),
+      'description' => t('People are your users'),
     ),
     'appearance' => array(
       'title' => t('Appearance'),
@@ -289,7 +289,7 @@ function cp_toolbar_fill_drawer() {
       'taxonomy' => menu_get_item('cp/build/taxonomy'),
     ),
     '#attributes' => array(
-      'class' => 'toolbar-manage',
+      'class' => 'toolbar-gear',
     ),
   );
 
@@ -307,7 +307,7 @@ function cp_toolbar_fill_drawer() {
   $drawer['admin-drawer']['manage'] = array(
     '#theme' => 'links',
     '#attributes' => array(
-      'class' => 'toolbar-manage',
+      'class' => 'toolbar-gear',
     ),
     '#links' => toolbar_menu_navigation_links(toolbar_get_menu_tree()),
   );
