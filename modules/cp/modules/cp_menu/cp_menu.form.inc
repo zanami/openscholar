@@ -216,7 +216,9 @@ function theme_cp_menu_table($variables){
     );
   }
   //drupal_add_tabledrag('edit-menu-table', 'match', 'sibling', 'menu-name', 'menu-name', 'menu-name', FALSE);
-  drupal_add_tabledrag('edit-menu-table', 'match', 'parent', 'menu-plid', 'menu-plid', 'menu-mlid', TRUE, MENU_MAX_DEPTH - 1);
+  if (variable_get('os_use_dropdowns', 1)) {
+    drupal_add_tabledrag('edit-menu-table', 'match', 'parent', 'menu-plid', 'menu-plid', 'menu-mlid', TRUE, MENU_MAX_DEPTH - 1);
+  }
   drupal_add_tabledrag('edit-menu-table', 'order', 'sibling', 'menu-weight');
   return theme('table', array(
     'header' => $headers,
