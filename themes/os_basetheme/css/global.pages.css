@@ -488,7 +488,38 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
  	margin: -30px 0 0;
  	right: 50px;
  }	
+ 
+ 
+/** MEDIA BROWSER MODAL OVERRIDES **/
 	
+
+#mediaBrowser {
+	border-radius: 0;
+	background: #FFF;
+  -moz-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+  }
+ 
+.ui-corner-all {
+    border-radius: 0;
+    border:0;
+} 
+ 
+ #media-browser-tabset .media-browser-tab {
+    border: NONE;
+}
+
+#media-browser-tabset .ui-tabs-nav {
+    border-bottom: 1px solid #AAAAAA;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+	
+.ui-widget-header {
+    background:none;
+}	
 	
 /** OS LOGIN CONTAINER STYLES **/	
 .page-site-register #columns,
