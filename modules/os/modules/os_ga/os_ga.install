@@ -8,10 +8,8 @@
  */
 function os_ga_update_7001(&$sandbox) {
   
-	$res = '';
-  
   	if(!db_table_exists('spaces_overrides')){
-  	  	$res = 'Spaces Overrdide table does not exist, aborting till spaces updates are run.';
+  	  	throw new DrupalUpdateException(t('Spaces Overrdide table does not exist, aborting till spaces updates are run.'));
 		//return $res;
   	}
 
@@ -36,9 +34,6 @@ function os_ga_update_7001(&$sandbox) {
 				))
 				->execute();
     	}// end while
-    	$res = 'Google Analytics settings successfully migrated.';
+    	return t('Google Analytics settings successfully migrated.');
   	}// end if
-
-  	//
-  	return $res;
 }// end function
