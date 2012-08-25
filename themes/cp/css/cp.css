@@ -24,7 +24,7 @@
   }
  
 .toolbar-drawer .region-sidebar-first .region-inner {
-	margin-top:100px;
+	margin-top: 30px;
   }  
 	
 #content-column {
@@ -192,13 +192,21 @@ td {
     /*background: url("/sites/all/modules/openscholar_vsite/vsite_design/theme/images/themePickerSubButtsBg.png") repeat-x scroll 0 0 transparent;*/
     background:#EFEFEF;
     bottom: 26px;
-    padding: 6px 0 2px 20px;
-    position: fixed;
+	position: fixed;
     width: 100%;
     z-index: 10;
-    margin-left: -9px;
-    border-top:1px solid #EDEDED;
+ 	border-top:1px solid #EDEDED;
+    margin-left: -40px;
+    padding: 6px 0 2px 35px;
 }
+
+.page-cp-build #columns,
+.page-cp-appearance #cp-appearance-theme-picker-form,
+.page-cp-appearance h1#page-title {
+ 
+   padding-left: 20px;
+}
+
 
 /* CP FEATURES */
 form#spaces-features-form td.actions a {
