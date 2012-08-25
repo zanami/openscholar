@@ -137,14 +137,6 @@ border-left: 1px solid #919191;
 */
 
 
-.region-header-first {
-	left: auto;
-  width: 180px;
-  right:210px;
-  margin-bottom: 10px;
-  padding-left:0;
-  }
-
 #header-container {
       height: 134px;
   }

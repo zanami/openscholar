@@ -11,7 +11,6 @@
 
 body {
   color:#37352B;
-  min-width: 980px;
   }
 
 /* TYPOGRAPHY*/
@@ -71,7 +70,7 @@ p.copy {
 /* LAYOUT ELEMENTS */
 
 #page {
-  width: 980px;
+
   margin: 0 auto;
   padding: 1px 0 0 0;
   background: url('../images/container.png') 0 0 repeat-y #fff;

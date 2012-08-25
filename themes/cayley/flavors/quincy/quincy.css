@@ -15,12 +15,9 @@ h2, h3, h4 {
 	box-shadow: 0 0 30px #555555;
     margin: 0 auto;
     padding: 1px 0 0;
-    width: 980px;
+    background: #fff;
 }
 
-.sidebar-second #page {
-	background-position: -2040px 0;
-}
 
 body.header-main .region-header-second {
 	padding-top: 4px;
@@ -32,9 +29,6 @@ body.header-main .region-header-second {
 	background: none repeat scroll 0 0 #FFFFFF;
 	}
 
-.region-header-first {
-	right:268px;
-	}
 
 .region-header-first.column {
 	padding-top:2px;
@@ -43,11 +37,7 @@ body.header-main .region-header-second {
 	}
 
 
-.region-header-second h1 a {
-	width: 208px;
-	height: 113px;
-	display: block;
-	}
+
 	
 #menu-bar {
 	background: none repeat scroll 0 0 #FFFFFF;
@@ -88,6 +78,7 @@ body.header-main .region-header-second {
 	
 #columns {
 	overflow:hidden;
+	padding:0;
 	}
 
 #content-column, .region-sidebar-first, .region-sidebar-second {
@@ -95,195 +86,14 @@ margin-bottom: -2000px;
 padding-bottom: 2000px;
 }
 
-#content-column {
-	background: #F8F8EF;
-}
 
-.region-sidebar-first {
-	background: #FFFFFF;
-}
+.region-sidebar-first,
 .region-sidebar-second {
-	background: #EBEFF1;
-	padding-left: 30px;
-	width: 170px;
+	background: #EEE;
 }
 
-.region-sidebar-second h2.block-title,
-.region-sidebar-first h2.block-title {
-	color:#C55B28;
-	}
-
-.region-sidebar-second li a,
-.region-sidebar-first li a {
-	color: #0C54B3;
-	}
-
-.region-sidebar-second ul.menu li,
-.region-sidebar-first ul.booktoc li {
-	padding: 2px 0;
-	line-height: 1.5em;
-	list-style: none outside none;
-	}
-
-.region-sidebar-second ul.menu li a,
-.region-sidebar-first ul.booktoc li a {
-	display: block;
-	border-bottom: 1px dotted #ccc;
-	}
-
-.region-sidebar-first ul.booktoc a.active {
-	font-weight: bold;
-	}
-
-.region-sidebar-first li.booktoc ul.booktoc li a {
-	padding-left: 1em;
-	}
-
-.block-scholar_book h2.block-title {
-	margin-bottom: 1em;
-	}
-
-.hmpgblurbs td {
-	vertical-align: top;
-	border-bottom: 1px dotted #ccc;
-	padding: 20px 0;
-	}
-
-.blurb ul, .blurb li {
-	list-style-type: none;
-	margin: 0px;
-	padding: 0px;
-	}
-
-.blurb {
-	width:340px;
-	padding-right: 20px;
-	}
-
-.blurb h3 {
-	margin:0 0 .25em 0;
-	font-size: 1.7em;
-	font-style: normal;
-	color: #c55b28;
-	}
-
-.blurb p {
-	margin:0;
-	padding:0;
-	}
-
-.blurb .readmore {
-	margin-top:.5em;
-	}
-
-.blurb .quicklinks h5 {
-	font-weight:normal;
-	padding-bottom:0;
-	margin-top:1em;
-	margin-bottom:.25em;
-	}
-
-.blurb .quicklinks ul {
-	list-style:none;
-	padding:0;
-	margin-top:0;
-	margin-bottom:0;
-	}
-
-.blurb .quicklinks li {
-	padding:0;
-	}
-
-td.welcome {
-	vertical-align: middle;
-	}
-
-.view-Downloads .view-content {
-	padding-left:12px;
-	border-left: 1px dotted #ccc;
-	}
-
-.view-Downloads .views-field-title,
-.view-Downloads .views-field-teaser {
-	padding: 0 8px;
-	}
-
-.view-Downloads .views-field-title h4 {
-	margin: 1em 0;
-	padding: 0;
-	font-size: 1.2em;
-	text-align:left;
-	}
-
-.view-Downloads .views-field-title h4 a {
-	color:#757a84;
-	}
-
-.view-Downloads .views-field-title h4 a:hover {
-	color:#BF4C00;
-	}
-
-.view-Downloads .views-field-teaser p {
-	margin: 0;
-	text-align:left;
-	}
-
-#download_button {
-	margin: 0 auto;
-	width:144px;
-	height:36px;
-	background:url('images/download_bkgnd.gif') no-repeat;
-	text-align:center;
-	}
-
-#download_button a {
-	color:#fff;
-	text-decoration:none;
-	}
-
-#download_button h3 {
-	width:144px;
-	height:36px;
-	line-height:36px;
-	font-size: 16px;
-	margin: 0;
-	padding: 0;
-	text-align:center;
-	}
-
-.footnotes {
-	border-top: 1px dotted #ccc;
-	font-size: .75em;
-	}
-
-.action_button {
-	background:transparent url('images/button_bkgnd.gif') no-repeat scroll 0 0;
-	height:36px;
-	margin:0 auto;
-	text-align:center;
-	width:188px;
-  }
-
-.action_button h3 {
-	font-size:16px;
-	height:36px;
-	line-height:36px;
-	margin:0;
-	padding:0;
-	text-align:center;
-	width:188px;
-  }
-
-.action_button a {
-	color:#FFFFFF;
-	text-decoration:none;
-	}
-	
-.front #columns .title {
-	display: none;
+#footer {
+    background: #FFFFFF;
+    border-top: 1px solid #DDDDDD;
 }
-body.no-sidebars #header, 
-body.no-sidebars #columns .hg-container, 
-body.sidebar-second #columns .hg-container, 
-body.no-sidebars #footer {
-  padding-left: 21px;
+

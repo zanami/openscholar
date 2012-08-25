@@ -80,32 +80,32 @@ p.copy {
 #page {
 
   margin: 0 auto;
-  background: url(../images/container.png) repeat-y 0 0 #fff;
   }
 
 .region-sidebar-first,
 .region-sidebar-second {
   font-size: .8em;
   line-height: 1.1em;
-
+background:#000;
   }
+ 
+ #columns {
+	overflow:hidden;
+	background:#FFF;
+	padding:0;
+} 
+  
+  #content-column, .region-sidebar-first, .region-sidebar-second {
+margin-bottom: -2000px;
+padding-bottom: 2000px;
+}
 
-body.sidebar-second #columns .hg-container {
-  padding-left:10px;
-  }
+
 
 #footer {
   padding-top: 14px;
   padding-bottom: 45px;
    }
-
-body.sidebar-first #page {
-  background-position: -708px 0;
-  }
-
-body.sidebar-second #page {
-  background-position: 708px 0;
-  }
 
 body.no-sidebars #page  {
   background:#fff;

@@ -1,11 +1,6 @@
 @import "eloquent.responsive.layout.css"; 
 @import "/profiles/openscholar/themes/os_basetheme/css/d6buffer.css";
 
-html,
-body {
-    min-width: 910px;
-    }
-
 body {
   background-color: #44514f;
   color:#333;
@@ -121,14 +116,18 @@ img {
     color:#F9E433;
     }
 
-#menu-bar ul.menu {
+#menu-bar ul {
   text-align:center;
   }
 
 #menu-bar ul.menu li {
-  text-align:center;
   background:none;
+  
   }
+  
+#menu-bar ul.menu {
+text-align:center;
+  }  
 
 #block-os-primary-menu li {
   margin: 0 1em;
