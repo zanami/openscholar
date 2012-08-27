@@ -48,7 +48,7 @@ function rbuild_node_update($node) {
   // Exits if the updated packaging method is not 'Rbuild repository'
   $software_method = $node->field_software_method['und'][0]['value'];
   if ($software_method !== 'Rbuild repository') return;
-  
+
   // Compares original and updated field values
   $node_updated = $node;
   $repo_value_original = $node_original->field_software_repo['und'][0]['value'];
