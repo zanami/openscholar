@@ -44,7 +44,7 @@ function os_dataverse_menu() {
  */
 function os_dataverse_preprocess_page(&$vars) {
   $active_menu = menu_get_item();
-  if($active_menu['path'] == 'data'){
+  if ($active_menu['path'] == 'data') {
     $vars['title'] = '';
   }
 }
@@ -59,6 +59,8 @@ function os_dataverse_preprocess_page(&$vars) {
   
 /**
  * Provides content for page at /data
+ * 
+ * @todo cleanup inline markup into theme hook
  */
 function _os_dataverse_data_view() {
   drupal_add_js(drupal_get_path('module', 'os_dataverse') . '/os_dataverse.js');
@@ -71,14 +73,26 @@ function _os_dataverse_data_view() {
     if(strlen($_REQUEST['dvn_subpage'])) $path .= "/".ltrim($_REQUEST['dvn_subpage'],"/");
     return "<div id=\"feature-dataverse\"><iframe name=\"res\" scrolling=\"auto\" src =\"" . $path . "\"></iframe></div>";
   }
-  elseif ($vsite && $vsite->access_admin()) {
+  else if ($vsite && $vsite->access_admin()) {
     $l1 = l('feature', "cp/build/features");
     $l2 = l('http://dvn.iq.harvard.edu', 'http://dvn.iq.harvard.edu', array('absolute' => TRUE));
     $result = "<p>No dataverse alias was found. Please set up your dataverse alias in your \"scholar dvn\" " . $l1 . " settings </p>";
-    $result .= "<p> If you don't have a dataverse, go to " .$l2.  " to create your own dataverse to upload your data </p>";
+    $result .= "<p> If you don't have a dataverse, go to " . $l2 .  " to create your own dataverse to upload your data </p>";
     return $result;
   }
   else {
-    return t('no dataverse available yet');
+    return t('No dataverse available yet');
+  }
+}
+
+/**
+ * Throws error if dataverse URL does not begin with http://
+ * 
+ * @param unknown_type $element
+ * @param unknown_type $form_state
+ */
+function _os_dataverse_alias_validate($element, &$form_state) {
+  if (strpos($form_state['values']['scholar_dvn_dvn_alias'], 'http:') === FALSE) {
+    form_set_error('os_dataverse_alias', t('Dataverse alias must begin with http://'));
   }
 }

@@ -16,7 +16,18 @@ function os_dataverse_context_default_contexts() {
   $context->name = 'dataverse_dataverse';
   $context->description = '';
   $context->tag = 'OS features';
-  $context->conditions = array();
+  $context->conditions = array(
+    'menu' => array(
+      'values' => array(
+        'data' => 'data',
+      ),
+    ),
+    'path' => array(
+      'values' => array(
+        'data' => 'data',
+      ),
+    ),
+  );
   $context->reactions = array();
   $context->condition_mode = 0;
 
