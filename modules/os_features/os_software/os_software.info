@@ -18,7 +18,6 @@ dependencies[] = options
 dependencies[] = os
 dependencies[] = strongarm
 dependencies[] = views
-dependencies[] = vsite
 features[box][] = os_filter_by_category
 features[context][] = software_software
 features[ctools][] = boxes:box:1
