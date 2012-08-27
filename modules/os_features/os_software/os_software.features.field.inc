@@ -115,7 +115,7 @@ function os_software_field_default_fields() {
       'bundle' => 'software_project',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Note: Verify this unique rBuild short name corresponds to the Repository URL value above',
+      'description' => 'Note: Verify this unique rBuild short name corresponds to the Repository URL and Version values above',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -241,7 +241,7 @@ function os_software_field_default_fields() {
       'bundle' => 'software_project',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Example: http://r.iq.harvard.edu/src/PACKAGE.CookingRecipes',
+      'description' => 'Example: http://r.harvard.edu/src/PACKAGE.CookingRecipes',
       'display' => array(
         'default' => array(
           'label' => 'above',
