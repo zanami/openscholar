@@ -813,3 +813,22 @@ function os_context_block_info_alter(&$blocks){
     }
   }
 }
+
+/**
+ * Allow altering of views before build but after the filters are attached
+ * 
+ * @param view $view
+ */
+function os_views_pre_build(&$view){
+  
+  /**
+   * Is this the RSS Feed View
+   */
+  if($view->name == 'os_feed'){
+    
+    //Alter the view to only display enabled content types
+    $bundles = array_keys(os_get_bundles());
+	$view->filter['type']->value = $bundles;
+  }
+  
+}
