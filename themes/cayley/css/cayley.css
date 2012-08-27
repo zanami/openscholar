@@ -73,24 +73,13 @@ p.copy {
 
   margin: 0 auto;
   padding: 1px 0 0 0;
-  background: url('../images/container.png') 0 0 repeat-y #fff;
+  background: #fff;
   -moz-box-shadow: 0 0 30px #555;
   -webkit-box-shadow: 0 0 30px #555;
   box-shadow: 0 0 30px #555;
   }
   
- 
-.sidebar-first #page {
-  background-position: -980px 0;
-  }
 
-.sidebar-second #page {
-  background-position: -1960px 0;
-  }
-
-.two-sidebars #page {
-  background-position: -2940px 0;
-  }
 
 .sidebar {
   font-size: 13px;
@@ -111,8 +100,7 @@ body.header-left-main-right #header-container {
 
 
 
-.sidebar-first #content-main,
-.two-sidebars #content-main{
+#content-column .content-inner {
   background: #f8f7ee;
   }
 
@@ -124,7 +112,16 @@ body.header-left-main-right #header-container {
   background: #edecdd;
   }
 
-#columns, #content-column .content-inner {padding:0 10px;}
+#content-column .content-inner {padding:0 10px;}
+
+#columns {padding:0;}
+
+#content-column .content-inner, .region-sidebar-first, .region-sidebar-second {
+margin-bottom: -2000px;
+padding-bottom: 2000px;
+}
+
+#columns {overflow:hidden;}
 
 /*SIDEBAR ELEMENTS */
 
