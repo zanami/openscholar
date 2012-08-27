@@ -64,22 +64,25 @@ function os_dataverse_preprocess_page(&$vars) {
  */
 function _os_dataverse_data_view() {
   drupal_add_js(drupal_get_path('module', 'os_dataverse') . '/os_dataverse.js');
-  $vsite = vsite_get_vsite();
-  $dvn_alias = variable_get('os_dataverse_dataverse_alias', '');
-
-  if ($vsite && $dvn_alias) {
-    // Embeds contents of Dataverse (DVN) hosted web page in an iframe
+  $space = spaces_get_space();
+  dpm($space);
+  $dvn_alias = variable_get('os_dataverse_dvn_alias', '');
+  
+  // Embeds contents of Dataverse (DVN) hosted web page in an iframe
+  if ($space && $dvn_alias) {
     $path = $dvn_alias;
-    if(strlen($_REQUEST['dvn_subpage'])) $path .= "/".ltrim($_REQUEST['dvn_subpage'],"/");
+    if(strlen($_REQUEST['dvn_subpage'])) $path .= "/" . ltrim($_REQUEST['dvn_subpage'], "/");
     return "<div id=\"feature-dataverse\"><iframe name=\"res\" scrolling=\"auto\" src =\"" . $path . "\"></iframe></div>";
   }
-  else if ($vsite && $vsite->access_admin()) {
-    $l1 = l('feature', "cp/build/features");
-    $l2 = l('http://dvn.iq.harvard.edu', 'http://dvn.iq.harvard.edu', array('absolute' => TRUE));
-    $result = "<p>No dataverse alias was found. Please set up your dataverse alias in your \"scholar dvn\" " . $l1 . " settings </p>";
-    $result .= "<p> If you don't have a dataverse, go to " . $l2 .  " to create your own dataverse to upload your data </p>";
+  // Instructs admin to enter their DVN alias at the control panel settings page
+  else if ($space && $space->access_admin()) {
+    $l1 = l('feature settings page', "cp/build/features");
+    $l2 = l('create one now', 'http://dvn.iq.harvard.edu', array('absolute' => TRUE));
+    $result = "<p>Please set up your Dataverse Network alias at the " . $l1 . ".</p>";
+    $result .= "<p>If you don't have a Dataverse Network alias yet, go " . $l2 .  ".</p>";
     return $result;
   }
+  // Displays empty text to non-admin users.
   else {
     return t('No dataverse available yet');
   }
@@ -92,7 +95,7 @@ function _os_dataverse_data_view() {
  * @param unknown_type $form_state
  */
 function _os_dataverse_alias_validate($element, &$form_state) {
-  if (strpos($form_state['values']['scholar_dvn_dvn_alias'], 'http:') === FALSE) {
-    form_set_error('os_dataverse_alias', t('Dataverse alias must begin with http://'));
+  if (strpos($form_state['values']['os_dataverse_dvn_alias'], 'http:') === FALSE) {
+    form_set_error('os_dataverse_dvn_alias', t('Dataverse alias must begin with http://'));
   }
 }

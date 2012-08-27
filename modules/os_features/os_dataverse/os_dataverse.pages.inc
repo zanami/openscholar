@@ -13,11 +13,11 @@ function os_dataverse_settings() {
   
   $form = array();
   
-  $form['os_dataverse_alias'] = array(
+  $form['os_dataverse_dvn_alias'] = array(
     '#type' => 'textfield',
     '#title' => t('Dataverse alias'),
     '#default_value' => variable_get('os_dataverse_dvn_alias', ''),
-    '#description' => t('Enter full URL for your dataverse. For example, http://dvn.iq.harvard.edu/dvn/dv/youralias'),
+    '#description' => t('The full URL of your dataverse; example: http://dvn.iq.harvard.edu/dvn/dv/youralias'),
     '#size' => 60,
     '#maxlength' => 128,
     '#required' => TRUE,
