@@ -95,64 +95,28 @@ a:hover {
 	padding:0 15px;
 }
 
-#columns,
-#footer .region-footer {
-  background: url('../images/header-footer.png') no-repeat 100% 0 transparent;
-  }
+
+.region-sidebar-first .region-inner,
+.region-sidebar-second .region-inner {
+	border-left:1px dashed #CCC;
+}
 
 #footer .region-footer {
   padding-top:16px;
   }
 
-.one-sidebar #columns,
-.one-sidebar #footer .region-footer {
-  background-position: 748px 0;
-  }
-
-.no-sidebars #columns,
-.no-sidebars #footer {
-  background: transparent;
-  }
 
 #columns .hg-container {
-  background: url('../images/main-wrapper.png') 0 0 repeat-y #fff;
+  background: #fff;
   overflow:auto;
   padding: 30px 0;
   }
 
-#columns .hg-container .column {
-  position: static;
-  }
-
-.one-sidebar #columns .hg-container {
-  background-position: -953px 0;
-  }
 
 .no-sidebars #columns .hg-container {
   background: #fff;
   }
-/*
-#content-column,
-.one-sidebar #content-column,
-.no-sidebars #content-column{
-  padding: 0 33px;
-  }
 
-.one-sidebar #content-column {
-  width:681px;
-  }
-
-.two-sidebars #content-column {
-  width: 473px;
-
-  }
-
-.region-sidebar-first,
-.region-sidebar-second {
-
-  padding: 0 20px;
-  }
-*/
 .region-header-first,
 .region-header-third,
 #header-container #logo {
@@ -162,8 +126,6 @@ a:hover {
 #header-container #scholar-shield {
   width: 55px;
   }
-
-
 
 
 #menu-bar {

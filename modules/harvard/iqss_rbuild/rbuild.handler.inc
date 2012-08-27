@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * 
+ * Implements os_software_handler for rBuild
  */
 
 /**
- * 
+ * Includes os_software_handler PHP Interface
  */
 require_once(drupal_get_path('module', 'os_software') . "/os_software.handler.inc");
 
@@ -140,8 +140,12 @@ class rbuild_handler implements os_software_handler {
 			'finished' => '_rbuild_batch_finished',
 		);
 		
-  	batch_set($batch);
-  	batch_process(drupal_lookup_path('alias', 'node/' . $project_node->nid));
+  	// Redirects user to node view page after batch process.
+  	$project_path = 'node/' . $project_node->nid; // like "node/13"
+  	$project_path = drupal_lookup_path('alias', $project_path); // like "software/title"
+  	
+    batch_set($batch);
+  	batch_process($project_path);
   	return TRUE;
   }
   

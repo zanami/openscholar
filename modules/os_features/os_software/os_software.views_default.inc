@@ -112,7 +112,7 @@ function os_software_views_default_views() {
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'All Releases';
   $handler->display->display_options['use_more'] = TRUE;
-  $handler->display->display_options['use_more_text'] = 'more releases &raquo;';
+  $handler->display->display_options['use_more_text'] = 'more releases';
   $handler->display->display_options['link_display'] = 'custom_url';
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['cache']['type'] = 'none';
@@ -217,6 +217,16 @@ function os_software_views_default_views() {
   $handler->display->display_options['defaults']['use_more'] = FALSE;
   $handler->display->display_options['use_more'] = TRUE;
   $handler->display->display_options['link_url'] = 'software/!1/releases';
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Contextual filter: Content: Software Project (field_software_project) */
+  $handler->display->display_options['arguments']['field_software_project_target_id']['id'] = 'field_software_project_target_id';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['table'] = 'field_data_field_software_project';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['field'] = 'field_software_project_target_id';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Content: Published */
@@ -251,6 +261,16 @@ function os_software_views_default_views() {
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Recommended Releases';
   $handler->display->display_options['link_url'] = 'software/!1/releases';
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Contextual filter: Content: Software Project (field_software_project) */
+  $handler->display->display_options['arguments']['field_software_project_target_id']['id'] = 'field_software_project_target_id';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['table'] = 'field_data_field_software_project';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['field'] = 'field_software_project_target_id';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['field_software_project_target_id']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Content: Published */

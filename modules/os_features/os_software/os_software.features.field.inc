@@ -667,8 +667,8 @@ function os_software_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Description');
-  t('Example: http://r.harvard.edu/src/PACKAGE.CookingRecipes');
-  t('Note: Verify this unique rBuild short name corresponds to the Repository URL and Version values above');
+  t('Example: http://r.iq.harvard.edu/src/PACKAGE.CookingRecipes');
+  t('Note: Verify this unique rBuild short name corresponds to the Repository URL value above');
   t('Notes');
   t('Package');
   t('Packaging Method');
