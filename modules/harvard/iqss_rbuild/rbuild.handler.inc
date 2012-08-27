@@ -140,7 +140,7 @@ class rbuild_handler implements os_software_handler {
 			'finished' => '_rbuild_batch_finished',
 		);
 		
-  	
+  	// Redirects user to node view page after batch process.
   	$project_path = 'node/' . $project_node->nid; // like "node/13"
   	$project_path = drupal_lookup_path('alias', $project_path); // like "software/title"
   	
