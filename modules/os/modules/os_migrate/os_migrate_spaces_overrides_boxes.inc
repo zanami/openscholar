@@ -104,25 +104,56 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
       return 'simple';
     }
     
-    //migrate_map_modalimagenodeos.  sourceid1 = d6 nid.  destid1 = media id.
+    //get fid of new entity from migrate's status tables
+    $fid = db_select('migrate_map_modalimagenodeos', 'm')
+      ->condition('sourceid1', $box->options['nid'])
+      ->fields('m', array('destid1'))
+      ->execute()
+      ->fetchCol();
+    $fid = current($fid);
     
-    $image_vars = array(
-      'path',
-      'width',
-      'height',
-      'alt',
-      'title',
-      'attributes' => array(),
-    );
-    
-    //modal image should have a separate content type migration.  lets use that for moving the image.
-    $box->plugin_key = 'simple';
-    $box->options = array(
-      'format' => 'filtered_html',
-      'body' => theme_image($image_vars), //theme imagecrop_field? 
-     // theme_image_crop_summary($variables)
+    //get crop data from legacy db
+    $image_info = parent::d6_db_select('content_type_modal_image', 'ct')
+      ->condition('nid', $box->options['nid'])
+      ->fields('ct', array('field_modal_image_data', 'field_link_from_image_url', 'field_modal_image_size_value'))
+      ->execute()
+      ->fetchAssoc();
+
+    if ($fid && ($file = file_load($fid))) {      
+      //migrate_map_modalimagenodeos.  sourceid1 = d6 nid.  destid1 = media id.
+      
+      $image_vars = array(
+        'path' => $file->uri,
+        //'width',
+        //'height',
+        'alt' => $box->description,
+        'title' => $box->title,
+        'attributes' => array(),
       );
-    return $box;
+      
+      $img_html = theme_image($image_vars);
+      if (isset($image_info['field_link_from_image_url'])) {
+        $img_html = l($img_html, $image_info['field_link_from_image_url'], array('html' => TRUE));  
+      }
+      
+      //modal image should have a separate content type migration.  lets use that for moving the image.
+      $box->plugin_key = 'simple';
+      $box->options = array(
+        'format' => 'filtered_html',
+        'body' => $img_html, 
+      );
+      
+      return $box;
+    } else {
+      //in most cases of a modal_image node that didn't import, there was no group owner.
+      if ($fid === FALSE) {
+        $fid = 'FALSE'; 
+      }
+      
+      parent::saveMessage(t('Could not port os_boxes_modal_image.  No file with fid @fid.  Check legacy node: @nid', 
+        array('@nid' => $box->options['nid'], '@fid' => $fid)), MigrationBase::MESSAGE_WARNING);
+      return FALSE;
+    }
   }
   
   //convert os_boxes_node to custom html.  102 in db
