@@ -39,6 +39,10 @@ function cp_feature_customize($js, $feature_name) {
  */
 function cp_feature_customize_form($form, $form_state, $feature) {
   $item = menu_get_item('features/'. $feature);
+  
+  //Set the feature on the form
+  $form['#feature'] = $feature;
+  
   if ($item['path'] == 'features/'.$feature) {
     $form_id = array_shift($item['page_arguments']);
     if ($file = $item['include_file']) {
@@ -51,17 +55,25 @@ function cp_feature_customize_form($form, $form_state, $feature) {
 
     $form += drupal_retrieve_form($form_id, $form_state);
   }
-  else {
-    $form['no_form'] = array(
+  
+  $form['no_form'] = array(
       '#prefix' => '<p>',
       '#markup' => t('This feature has no settings.'),
       '#suffix' => '</p>',
-    );
-    $form['ok'] = array(
-      '#type' => 'submit',
-      '#value' => t('Ok'),
-    );
-  }
+      '#states' => array(
+          // Only show this field when there are no other inputs
+          'visible' => array(
+              ':input:not([type="submit"])' => array('empty' => TRUE),
+          ),
+      ),
+  );
+  
+  //Add Cancel button to modal
+  $form['actions']['cancel'] = array(
+      '#type' => 'button',
+      '#attributes' => array('class' => array('ctools-close-modal')),
+      '#value' => t('Cancel'),
+  );
 
   return $form;
 }

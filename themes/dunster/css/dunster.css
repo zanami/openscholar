@@ -149,7 +149,9 @@ padding-bottom: 2000px;
 /* HEADER ELEMENTS */
 
 #header-container {
-	background: #e4e2e3;
+	background-image: -moz-linear-gradient(top, #F6F6F6 0%, #E4E2E3 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F6F6F6), color-stop(1, #E4E2E3));
+	background-image: linear-gradient(to bottom, #F6F6F6 0%, #E4E2E3 100%);
 	padding-top: 10px;
 	margin: 0 auto;
 	}

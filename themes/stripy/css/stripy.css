@@ -182,10 +182,10 @@ body.two-sidebars .region-sidebar-first {
    border-top:none;
 	}
 
-.sidebar ul.nice-menu ul {
+/*.sidebar ul.nice-menu ul {
 	margin-top:-46px;
 	border-top:none;
-	}
+	}*/
 	
 .sidebar ul.nice-menu li {
 	background:none;
@@ -200,25 +200,23 @@ body.two-sidebars .region-sidebar-first {
 	color:#8c2e08;
 	} 	
 	
-.sidebar ul.nice-menu ul li {
+/*.sidebar ul.nice-menu ul li {
     background: #EEEEEE;
-
 }	
-	
+	*/
 ul.nice-menu-left a, ul.nice-menu-left ul a {
     padding-left: 0;
 }	
 	
 	
-.region-sidebar-second.sidebar ul.nice-menu ul {
+/*.region-sidebar-second.sidebar ul.nice-menu ul {
 	margin-top:0;
-
 	}	
 
 .sidebar ul.nice-menu ul ul {
 	margin-top:0;
 	border:none;
-	}
+	}*/
 
 /* MAIN CONTENT AREA */
 

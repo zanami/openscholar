@@ -183,10 +183,13 @@ text-align:center;
 	background:#44514f;
 }
 
-.sidebar #nice-menu-{border-top:none;}
-.sidebar ul.nice-menu ul {
+.sidebar #nice-menu-{
+	border-top:none;
+	}
+
+/*.sidebar ul.nice-menu ul {
     top: 0;
-}
+}*/
 
 .sidebar ul.nice-menu li {
 	background: none;
@@ -211,15 +214,14 @@ ul.nice-menu-left li.menuparent:hover, ul.nice-menu-left li li.menuparent:hover 
     margin: 0;
   }		
 			
-.region-sidebar-second.sidebar ul.nice-menu ul {
+/*.region-sidebar-second.sidebar ul.nice-menu ul {
 	margin-top:0;
-
 	}	
 
 .sidebar ul.nice-menu ul ul {
 	margin-top:0;
 	border:none;
-	}	
+	}*/	
   
 
 /* MAIN CONTENT AREA */

@@ -51,6 +51,22 @@ function iqss_scholars_front_default_box() {
   $box = new stdClass();
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
+  $box->delta = 'iqss_scholars_fp_logoblock';
+  $box->plugin_key = 'simple';
+  $box->title = '';
+  $box->description = 'Scholars Logo';
+  $box->options = array(
+    'body' => array(
+      'value' => '<h1>Scholars at Harvard</h1>',
+      'format' => 'filtered_html',
+    ),
+    'additional_classes' => '',
+  );
+  $export['iqss_scholars_fp_logoblock'] = $box;
+
+  $box = new stdClass();
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
   $box->delta = 'iqss_scholars_fp_learnmore';
   $box->plugin_key = 'simple';
   $box->title = '';

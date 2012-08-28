@@ -290,7 +290,7 @@ ul.nice-menu-right li.menuparent {
 	border-top:none;
 	}
 
-.sidebar ul.nice-menu ul {
+/*.sidebar ul.nice-menu ul {
 	margin-top:-39px;
 	border:none;
 	border-top:none;
@@ -308,7 +308,7 @@ ul.nice-menu-right li.menuparent {
 	
 .sidebar ul.nice-menu ul li a {
 	color:#000;
-	}	
+	}*/	
 	
 ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
     background: none;

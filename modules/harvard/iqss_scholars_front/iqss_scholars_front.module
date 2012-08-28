@@ -22,6 +22,13 @@ function iqss_scholars_front_context_default_contexts_alter(&$contexts){
         'weight' => 10,
         'region' => 'content_top',
     );
+    
+    $fp_blocks['boxes-iqss_scholars_fp_logoblock'] = array(
+        'module' => 'boxes',
+        'delta' => 'iqss_scholars_fp_logoblock',
+        'weight' => 10,
+        'region' => 'header_first',
+    );
 
     $fp_blocks['boxes-iqss_scholars_fp_learnmore'] = array(
         'module' => 'boxes',
