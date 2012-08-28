@@ -14,7 +14,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     
     
     //$query->condition('value', '%os_boxes_node%', 'LIKE'); //testing the port function
-    $query->condition('value', '%os_boxes_modal_sitelogo%', 'LIKE'); //testing the port function
+   // $query->condition('value', '%os_boxes_modal_sitelogo%', 'LIKE'); //testing the port function
     
     
     return $query;
@@ -255,6 +255,26 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
       'format' => $format,
     );
     $box->plugin_key = $key;
+    
+    return $box;
+  }
+  
+  //twitter prefix is separated into separate variable
+  public function _port_box_os_boxes_twitterfeed($box, $id, $key_only) {
+    if ($key_only) {
+      return 'os_boxes_twitterfeed';
+    }
+
+    $prefix = $box->options['twitter_username'][0];
+    if ($prefix == '@') {
+      $box->options['twitter_type'] = 'user';
+      $box->options['twitter_username'] = substr($box->options['twitter_username'], 1);
+    } elseif ($prefix == '#') {
+      $box->options['twitter_type'] = 'hashtag';
+      $box->options['twitter_username'] = substr($box->options['twitter_username'], 1);
+    } else {
+      $box->options['twitter_type'] = 'search';
+    }
     
     return $box;
   }
