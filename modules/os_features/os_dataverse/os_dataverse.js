@@ -5,7 +5,7 @@
  */
 (function($){
   Drupal.behaviors.os_dataverse = {
-    attach: function(context){
+    attach: function(context) {
       // Adds "Loading Dataverse" message with throbber 
       $('#os-dataverse-data').prepend('<h2 id="os-dataverse-loading" class="title ajax-progress">Loading Dataverse<span class="throbber">&nbsp</span></h2>');
       // Removes the "Loading Dataverse" message when iframe loads
