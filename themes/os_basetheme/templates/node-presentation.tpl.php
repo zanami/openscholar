@@ -8,9 +8,6 @@
 ?>
 <div id="node-<?php print $node->nid; ?>" class="<?php print $node_classes; ?>">
   <div class="node-inner">
-    <div class="os-links">
-      <?php print $vsite_admin_links; ?>
-    </div>
     <?php if (!$page): // begin teaser ?>
       <span class="title">
       	<a href="<?php print $node_url; ?>" title="<?php print $title ?>">
