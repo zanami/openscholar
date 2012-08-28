@@ -61,9 +61,13 @@ strong {
   font-size: .9em;
   }
 
+.region-sidebar-first {
+  background:#fff;
+  }
+
 .region-sidebar-second {
-	color: #555;
-	}
+  background:#dce7ef;
+  }
 
 .region-sidebar-second h2.block-title,
 .region-sidebar-first h2.block-title,
@@ -98,25 +102,32 @@ p.copy {
 /* LAYOUT ELEMENTS */
 
 #page {
-  background: url('../images/wrapper-bg.png') repeat-y 50% 0 #fff;
+	-moz-box-shadow: 0 0 30px #555555;
+	-webkit-box-shadow: 0 0 30px #555555;
+	box-shadow: 0 0 30px #555555;
+    margin: 0 auto;
+    padding: 0;
+    background: #fff;
+}
+
+#columns {
+	overflow:hidden;
+	padding: 0;
 	}
 
-#page-wrapper {
-  background: url('../images/wrapper-inner-bg.png') no-repeat 50% 100% transparent;
-	padding-bottom: 77px;
-	}
+#content-column, .region-sidebar-first, .region-sidebar-second {
+margin-bottom: -2000px;
+padding-bottom: 2000px;
+}
+
+.content-inner {
+	padding: 0 38px;
+}
 
 .region-sidebar-first .block,
 .region-sidebar-second .block {
   margin-bottom:0!important;
   }
-
-.region-sidebar-second {
-	color:#555;
-
-  }
-
-
 
 /* SIDEBAR ELEMENTS */
 
@@ -138,9 +149,8 @@ p.copy {
 /* HEADER ELEMENTS */
 
 #header-container {
-	background: url("../images/bg_header.png") repeat-x 0 -48px;
-	
-	padding:0;
+	background: #e4e2e3;
+	padding-top: 10px;
 	margin: 0 auto;
 	}
 
@@ -150,10 +160,7 @@ p.copy {
 	}
 
 .region-header-third {
-	background: none repeat scroll 0 0 #DCE7EF;
-
-    text-align: right;
-  
+	background: #dce7ef;
 }
 
 #header-container h1,
@@ -174,9 +181,6 @@ p.copy {
     margin: 0;
   }
 
-
-
-
 #header-container h1 a, #header-container h1 a:visited {
 	color:#446677;
 	font-family:arial;
@@ -191,7 +195,6 @@ p.copy {
 
 #menu-bar {
 	background: none repeat scroll 0 0 #DC6700;
-
 	height:31px;
 	padding:0;
 	margin: 0 auto;
@@ -288,8 +291,6 @@ img {
 	color:#fff;
 	}
 	
-
-
 .region-sidebar-first .block, .region-sidebar-second .block{
 	border:bottom:1px solid red;
 	}
@@ -405,9 +406,9 @@ body.header-left-right #header-container-right {
 	border-top:none;
   }
 
-body.sidebar-second #columns .hg-container {
+/*body.sidebar-second #columns .hg-container {
 	padding-left:25px!important;
-	}
+	}*/
 
 .node-teaser.node-type-person {
   border-bottom: 1px dashed #ddd;
@@ -450,32 +451,3 @@ body.sidebar-second #columns .hg-container {
 .page-home #columns .hg-container-inner {
   position:relative;
   }
-
-/*.front #front-rotate {
-  width: 750px;
-  height: 274px;
-  position: absolute;
-  top:0;
-  left:-216px;
-  border-bottom: 1px solid #DB6600;
-  }*/
-
-/*.front #content h3:first-child {
-  border-top: none;
-  margin-top: 0;
-  }*/
-
-/*.front .region-sidebar-first{
-  margin-top: 274px;
-  padding-top: 0;
-}*/
-/*
- * Pushes whatever is in the content area below the image that displays on the front page
- */
-/*.front #content-column {
-  padding-top: 277px;
-}
-  
-.front #content-column .title {
-	display: none;
-}*/
