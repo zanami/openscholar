@@ -40,6 +40,7 @@ function os_comments_form_cp_feature_customize_form_alter(&$form, &$form_state, 
     	}
     }
     
+    $form['#submit'][] = 'comment_sources_save_admin_form';
   }
 
 }
