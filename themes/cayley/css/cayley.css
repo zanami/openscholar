@@ -100,7 +100,7 @@ body.header-left-main-right #header-container {
 
 
 
-#content-column .content-inner {
+#columns {
   background: #f8f7ee;
   }
 
@@ -116,7 +116,7 @@ body.header-left-main-right #header-container {
 
 #columns {padding:0;}
 
-#content-column .content-inner, .region-sidebar-first, .region-sidebar-second {
+#content-column, .region-sidebar-first, .region-sidebar-second {
 margin-bottom: -2000px;
 padding-bottom: 2000px;
 }

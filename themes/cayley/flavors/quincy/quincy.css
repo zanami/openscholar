@@ -19,23 +19,6 @@ h2, h3, h4 {
 }
 
 
-body.header-main .region-header-second {
-	padding-top: 4px;
-	padding-bottom: 0;
-	}
-
-#header-container {
-	height:123px;
-	background: none repeat scroll 0 0 #FFFFFF;
-	}
-
-
-.region-header-first.column {
-	padding-top:2px;
-	padding-left:0;
-	padding-right:0;
-	}
-
 
 
 	
@@ -77,19 +60,18 @@ body.header-main .region-header-second {
 	}
 	
 #columns {
-	overflow:hidden;
+	background: #FFF;
 	padding:0;
 	}
-
-#content-column, .region-sidebar-first, .region-sidebar-second {
-margin-bottom: -2000px;
-padding-bottom: 2000px;
-}
 
 
 .region-sidebar-first,
 .region-sidebar-second {
 	background: #EEE;
+}
+
+#content-column .content-inner {
+	background: #FFF;
 }
 
 #footer {
