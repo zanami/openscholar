@@ -121,5 +121,6 @@ features[variable][] = node_preview_page
 features[variable][] = node_submitted_page
 features[variable][] = site_404
 features[variable][] = spaces_features
+features[views_view][] = os_feed
 features[views_view][] = os_site_members
 features[views_view][] = vsite_autocomplete

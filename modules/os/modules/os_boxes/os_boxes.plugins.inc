@@ -198,6 +198,18 @@ function _os_boxes_boxes_plugins() {
       'parent' => 'os_boxes_default',
     ),
   );
+  
+  $info['os_boxes_rss'] = array(
+      'title' => 'RSS feed',
+      'description' => 'A feed of your posts allowing visitors to follow you.',
+      'tags' => array('Social'),
+      'handler' => array(
+          'class' => 'os_boxes_rss',
+          'file' => 'os_boxes_rss.inc',
+          'path' => $path . '/os_boxes_rss',
+          'parent' => 'os_boxes_default',
+      ),
+  );
 
   return $info;
 }
