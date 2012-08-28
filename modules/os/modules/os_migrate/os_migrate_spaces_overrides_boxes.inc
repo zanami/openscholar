@@ -14,7 +14,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     
     
     //$query->condition('value', '%os_boxes_node%', 'LIKE'); //testing the port function
-    $query->condition('value', '%os_boxes_simple%', 'LIKE'); //testing the port function
+    $query->condition('value', '%os_boxes_modal_sitelogo%', 'LIKE'); //testing the port function
     
     
     return $query;
@@ -40,7 +40,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
 //     } else {
 //       $value = (object)$value;
 //     }
-    if ($box = $this->_update_box($value)) {
+    if ($box = $this->_update_box($value, $row->id)) {
       $value = $box;
     } else {
       return FALSE;
@@ -54,7 +54,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
   
   
   //refactored _update_block that also updates the box.  
-  public function _update_box($box) {
+  public function _update_box($box, $id) {
 
     if (isset($box->region)) {
       $box->region = $this->_update_region($box->region);
@@ -73,7 +73,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     */
     
     //first try box, box/key change.  if a function does this it should be complete and we can exit.
-    $new = $this->_port_box($box);
+    $new = $this->_port_box($box, $id);
     if (isset($new)) {
       return $new; //set or false, it returns. 
     } 
@@ -89,17 +89,47 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
   
   
   //wrapper function around the _port_box_$PLUGIN functions
+  //id is vsite's group id.  not usually necessary for a particular box, but vital for some
   //key only is used for getting the key of the box without actually porting it.  seems easier than maintaining an array
-  public function _port_box($box, $key_only = FALSE) {
+  public function _port_box($box, $id, $key_only = FALSE) {
     $port = '_port_box_' . $box->plugin_key;
     if (method_exists($this, $port)) {
-      return $this->$port($box, $key_only);
+      return $this->$port($box, $id, $key_only);
     } 
     
     return;
   }
   
-  public function _port_box_os_boxes_modal_image($box, $key_only) {
+  public function _port_box_os_boxes_modal_sitelogo($box, $id, $key_only) {
+    $key = 'os_boxes_site_logo';
+    if ($key_only) {
+      return $key;
+    }
+    
+    if (($vsite = node_load($id)) == FALSE) {
+      return FALSE;
+    }
+    
+    if (isset($vsite->field_site_logo[LANGUAGE_NONE]) && $logo = current($vsite->field_site_logo[LANGUAGE_NONE])) {
+      $box->options = array(
+        'fid' => $logo['fid'],
+        'x' => $logo['cropbox_x'],
+        'y' => $logo['cropbox_y'],
+        'height' => $logo['cropbox_height'],
+        'width' => $logo['cropbox_width'],
+      );
+      $box->plugin_key = $key;
+      
+      return $box;
+    } else {
+      parent::saveMessage(t('Could not migrate site logo.  Image does not exist.  Vsite nid: @nid', array('@nid' => $id)), MigrationBase::MESSAGE_WARNING);
+      return FALSE;
+    }
+    
+    
+  }
+  
+  public function _port_box_os_boxes_modal_image($box, $id, $key_only) {
     if ($key_only) {
       return 'os_boxes_html';
     }
@@ -209,7 +239,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
 //   }
   
   //port html box
-  public function _port_box_os_boxes_simple($box, $key_only) {
+  public function _port_box_os_boxes_simple($box, $id, $key_only) {
     $key = 'os_boxes_html';
     if ($key_only) {
       return $key;
@@ -230,7 +260,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
   }
   
   //convert os_boxes_node to custom html.  102 in db
-  public function _port_box_os_boxes_node($box, $key_only) {
+  public function _port_box_os_boxes_node($box, $id, $key_only) {
     if ($key_only) {
       return 'os_boxes_html';
     }
