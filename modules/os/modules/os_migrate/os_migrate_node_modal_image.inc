@@ -26,11 +26,11 @@ class ModalImageNodeOSMigration extends OSMigration {
     );
 
     $this->addSimpleMappings(array('uid', 'timestamp', 'path'));
-    $this->addUnmigratedDestinations(array('destination_dir', 'destination_file', 'file_replace', 'preserve_files', 'source_dir'), t('DNM')); //good defaults
+    $this->addUnmigratedDestinations(array('destination_dir', 'destination_file', 'file_replace', 'preserve_files'), t('DNM')); //good defaults
+    $this->addUnmigratedSources(array('group_nid', 'filename'), t('DNM')); //group nid is in prepare.  filename is in the full path
     
     $this->addFieldMapping('value', 'filepath');
     $this->addFieldMapping('source_dir')->defaultValue(variable_get('os_migrate_files', FALSE)); //adequate or does 2.4 need full path?
-    $this->addFieldMapping('og_group_ref', 'group_nid');
     
   }
   
@@ -73,7 +73,43 @@ class ModalImageNodeOSMigration extends OSMigration {
     ->condition('ua.src', 'node/'.$current_row->nid, '=');
     $results = $query->execute()->fetchAssoc();
     $current_row->path = $results['dst'];
+  }
+  
 
+
+  //file is saved.  add it to usage table.
+  public function complete($entity, stdClass $row) {
+    file_usage_add($entity, 'file', 'file', $row->group_nid);
+  }
+  
+  //get full list of migrated 
+  public function preRollback() {
+    parent::preRollback();
+
+    $query = db_query('SELECT destid1 FROM migrate_map_modalimagenodeos');
+    $fids = $query->fetchCol('destid1');
     
+    variable_set('os_migrate_modalimage_prerollback', serialize($fids));  
+  }
+  
+  //remove rolled back files from the usage table
+  public function postRollback() {
+    parent::postRollback();
+  
+    $query = db_query('SELECT destid1 FROM migrate_map_modalimagenodeos');
+    $remaining_fids = $query->fetchCol('destid1');
+    
+    $pre_fids = variable_get('os_migrate_modalimage_prerollback', FALSE);
+    variable_del('os_migrate_modalimage_prerollback');
+    
+    if ($pre_fids) {
+      $pre_fids = unserialize($pre_fids);
+    
+      $deleted_fids = array_diff($pre_fids, $remaining_fids);
+      foreach ($deleted_fids as $fid) {
+        $file = (object) array('fid' => $fid);
+        file_usage_delete($file, 'file', 'file');
+      }
+    }
   }
 }
