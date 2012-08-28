@@ -101,7 +101,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
   
   public function _port_box_os_boxes_modal_image($box, $key_only) {
     if ($key_only) {
-      return 'simple';
+      return 'os_boxes_html';
     }
     
     //get fid of new entity from migrate's status tables
@@ -137,10 +137,10 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
       }
       
       //modal image should have a separate content type migration.  lets use that for moving the image.
-      $box->plugin_key = 'simple';
+      $box->plugin_key = 'os_boxes_html';
       $box->options = array(
         'format' => 'filtered_html',
-        'body' => $img_html, 
+        'value' => $img_html, 
       );
       
       return $box;
@@ -232,7 +232,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
   //convert os_boxes_node to custom html.  102 in db
   public function _port_box_os_boxes_node($box, $key_only) {
     if ($key_only) {
-      return 'simple';
+      return 'os_boxes_html';
     }
     
     $body = '';
@@ -272,7 +272,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
         $body .= $node->teaser;
       }
       
-      $box->plugin_key = 'simple';
+      $box->plugin_key = 'os_boxes_html';
       $box->options = array(
         'value' => $body,
         'format' => ($node->format == 1) ? 'filtered_html' : 'plain_text',  
