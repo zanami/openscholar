@@ -16,34 +16,21 @@ hide($content['links']);
   <?php print render($title_prefix); ?>
   
   <?php if (!$page): // begin teaser ?>
-    <?php // dpm($node); ?>
     <span class="title">
-    	<a href="<?php print $node_url; ?>" title="<?php print $title ?>">
-    	  <?php print $title; ?>
-    	</a>
-    	<?php if ($node->field_presentation_location[0]['value']): ?>
-    		<?php print ', '; ?>
-      <?php endif; ?>
+    	<strong>
+    		<a href="<?php print $node_url; ?>" title="<?php print $title ?>">
+    		  <?php print $title; ?></a><?php if ($node->field_presentation_location['und'][0]['value']) print ', '; ?>
+    	</strong>
     </span>
-    <?php if ($node->field_presentation_location[0]['value']):?>
+    <?php if ($node->field_presentation_location['und'][0]['value']): ?>
       at 
       <span class="location">
-        <?php print $node->field_presentation_location[0]['value']; ?>
-        <?php if ($node->field_presentation_date[0]['value']): ?>
-          <?php print ', '; ?>
-        <?php endif; ?>
+        <strong><?php print $node->field_presentation_location['und'][0]['value']; ?></strong><?php if ($node->field_presentation_date['und'][0]['value']) print ', '; ?>
       </span>
     <?php endif; ?>
-    <?php if ($node->field_presentation_date[0]['value']): ?>
-      <?php print $node->field_presentation_date[0]['view']; ?>
-      <?php if ($node->field_presentation_file[0]['fid']): ?>
-        <?php print ': '; ?>
-      <?php endif; ?>
-    <?php endif; ?>
-    <?php if ($node->field_presentation_file[0]['fid']): ?>
-      <?php foreach ($node->field_presentation_file as $file): ?>
-        <?php print $file['view']; ?>
-      <?php endforeach; ?>
+    <?php if (isset($node->field_presentation_date['und'][0]['value'])): ?><?php print $content['field_presentation_date'][0]['#markup']; ?><?php if ($node->field_presentation_file['und'][0]['fid']) print ': '; ?><?php endif; ?>
+    <?php if (!empty($content['field_presentation_file']['#items'])): ?>
+      <?php print render($content['field_presentation_file']); ?>
     <?php endif; ?>
   <?php endif; // end teaser ?>
   <?php if ($page): // begin default adaptivetheme full page node tpl ?>
