@@ -14,7 +14,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     
     
     //$query->condition('value', '%os_boxes_node%', 'LIKE'); //testing the port function
-    $query->condition('value', '%os_boxes_modal_image%', 'LIKE'); //testing the port function
+    $query->condition('value', '%os_boxes_simple%', 'LIKE'); //testing the port function
     
     
     return $query;
@@ -146,6 +146,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
       return $box;
     } else {
       //in most cases of a modal_image node that didn't import, there was no group owner.
+      //but psaces_overrides knows the group.  acquire from there?  maybe modal_image could do a prepare query for one type then the other 
       if ($fid === FALSE) {
         $fid = 'FALSE'; 
       }
@@ -154,6 +155,78 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
         array('@nid' => $box->options['nid'], '@fid' => $fid)), MigrationBase::MESSAGE_WARNING);
       return FALSE;
     }
+  }
+  
+  //port sitelogo
+//   public function _port_box_os_boxes_modal_sitelogo($box, $key_only) {
+
+//   }
+  
+//   public function _port_box_os_boxes_modal_siteinfo($box, $key_only) {
+//     $key = 'os_boxes_site_info';
+//     if ($key_only) {
+//       return $key;
+//     }
+    
+    
+//     //title
+//     $query = parent::d6_db_select('node', 'n')
+//       ->condition('type', 'vsite')
+//       ->condition('nid', $nid)
+//       ->fields('n', array('title')); 
+    
+//     //address
+//     $query->join('content_type_vsite', 'ct', 'n.nid = ct.nid');
+//     $query->fields('ct', array('field_vsite_address_value', 'field_vsite_address_format'));
+    
+//     //description
+//     $query->join('og', 'og', 'n.nid = og.nid');
+//     $query->fields('og', array('og_description'));
+    
+//     if ($result = $query->execute()->fetchAssoc()) {
+//       $box->plugin_key = $key;
+      
+//       $box->options = array(
+//         'site_title' => $result['title'],
+//         'descrip' => $result['og_descrioption'],
+//         'address1' => $result['field_vsite_address_value'],
+//       );
+      
+//       return $box;
+//     } else {
+//       return FALSE;
+//     }
+    
+    
+//   }
+  
+//   public function _port_box_os_boxes_curr_toc($box, $key_only) {
+//     $key = 'os_boxes_booktoc';
+//     if ($key_only) {
+//       return $key;
+//     }
+    
+//   }
+  
+  //port html box
+  public function _port_box_os_boxes_simple($box, $key_only) {
+    $key = 'os_boxes_html';
+    if ($key_only) {
+      return $key;
+    }
+    
+    $body = $box->options['body'];
+    $format = (isset($box->options['format']) && $box->options['format'] == 1) ? 'filtered_html' : 'plain_text';
+    
+    unset($box->options['body'], $box->options['format']);
+    
+    $box->options = array(
+      'value' => $body,
+      'format' => $format,
+    );
+    $box->plugin_key = $key;
+    
+    return $box;
   }
   
   //convert os_boxes_node to custom html.  102 in db
