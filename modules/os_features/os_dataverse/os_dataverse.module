@@ -44,7 +44,7 @@ function os_dataverse_menu() {
  */
 function os_dataverse_preprocess_page(&$vars) {
   $active_menu = menu_get_item();
-  if ($active_menu['path'] == 'data') {
+  if ($active_menu['path'] === 'data') {
     $vars['title'] = '';
   }
 }
@@ -63,17 +63,31 @@ function os_dataverse_preprocess_page(&$vars) {
  * @todo cleanup inline markup into theme hook
  */
 function _os_dataverse_data_view() {
-  drupal_add_js(drupal_get_path('module', 'os_dataverse') . '/os_dataverse.js');
+  // Adds custom CSS and JS to page to format iframe
+  $module_path = drupal_get_path('module', 'os_dataverse');
+  drupal_add_js($module_path . '/os_dataverse.js');
+  drupal_add_css($module_path . '/os_dataverse.css');
+  
+  // Varies display based on space and DVN alias system variable
   $space = spaces_get_space();
-  dpm($space);
   $dvn_alias = variable_get('os_dataverse_dvn_alias', '');
   
   // Embeds contents of Dataverse (DVN) hosted web page in an iframe
   if ($space && $dvn_alias) {
     $path = $dvn_alias;
-    if(strlen($_REQUEST['dvn_subpage'])) $path .= "/" . ltrim($_REQUEST['dvn_subpage'], "/");
-    return "<div id=\"feature-dataverse\"><iframe name=\"res\" scrolling=\"auto\" src =\"" . $path . "\"></iframe></div>";
+    // Properly formats any subpage to keep users from leaving OS site.
+    if (array_key_exists('dvn_subpage', $_REQUEST)) {
+      if (strlen($_REQUEST['dvn_subpage'])) {
+        $path .= '/' . ltrim($_REQUEST['dvn_subpage'], '/');
+      } 
+    }
+    return ''
+      . '<div id="os-dataverse-data">'
+      . '  <iframe name="res" scrolling="auto" src ="' . $path . '">'
+      . '  </iframe>'
+      . '</div>';
   }
+  
   // Instructs admin to enter their DVN alias at the control panel settings page
   else if ($space && $space->access_admin()) {
     $l1 = l('feature settings page', "cp/build/features");
@@ -82,6 +96,7 @@ function _os_dataverse_data_view() {
     $result .= "<p>If you don't have a Dataverse Network alias yet, go " . $l2 .  ".</p>";
     return $result;
   }
+  
   // Displays empty text to non-admin users.
   else {
     return t('No dataverse available yet');
