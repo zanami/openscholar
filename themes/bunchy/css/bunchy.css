@@ -200,24 +200,23 @@ ul.nice-menu-left li.menuparent {
 	border-top:none;
 	}
 
-.sidebar ul.nice-menu ul {
+/*.sidebar ul.nice-menu ul {
 	margin-top:-39px;
 	border:none;
-	}
+	}*/
 
 .sidebar ul.nice-menu li a {
 	color: #005C9C;
 	}	
 	
-.region-sidebar-second.sidebar ul.nice-menu ul {
+/*.region-sidebar-second.sidebar ul.nice-menu ul {
 	margin-top:0;
+	}*/	
 
-	}	
-
-.sidebar ul.nice-menu ul ul {
+/*.sidebar ul.nice-menu ul ul {
 	margin-top:0;
 	border:none;
-	}	
+	}*/	
   
 ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
     background: none;

@@ -200,20 +200,16 @@ border-top-right-radius:5px;
 	color:#FFF;
 	background:#444;
 	border-radius:0;
--moz-border-radius:0;
--webkit-border-radius: 0;
+	-moz-border-radius:0;
+	-webkit-border-radius: 0;
 }
 
-.sidebar ul.nice-menu ul {
+/*.sidebar ul.nice-menu ul {
 	margin-top:-39px;
 	border:none;
 	}
 
-.sidebar ul.nice-menu ul ul {
-	margin-top:0;
-}
-
- .region-sidebar-second.sidebar ul.nice-menu ul {
+.region-sidebar-second.sidebar ul.nice-menu ul {
 	margin-top:1px;
 }
 
@@ -227,7 +223,7 @@ border-top-right-radius:5px;
 	border-radius:0;
 -moz-border-radius:0;
 -webkit-border-radius: 0;
-}
+}*/
 
 /* SECONDARY NAV WHEN IN HEADER RIGHT  */ 
 .region-header-third #block-os-secondary-menu  {

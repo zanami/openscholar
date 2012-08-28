@@ -181,29 +181,28 @@ body.header-left-main #header-container {
 
 }  
 
+.sidebar ul.nice-menu {
+	border-top:none;
+	}	
+	
 .sidebar ul.nice-menu a {
 	color: #8A281B;
     font-size:1.1em;
 	}
 
-.sidebar ul.nice-menu ul {
+/*.sidebar ul.nice-menu ul {
 	margin-top:-38px;
 	border-top:none;
 	}
 	
-.sidebar ul.nice-menu {
-	border-top:none;
-	}	
-	
 .region-sidebar-second.sidebar ul.nice-menu ul {
 	margin-top:0;
-
 	}	
 
 .sidebar ul.nice-menu ul ul {
 	margin-top:0;
 	border:none;
-	}  
+	} */ 
 	
 ul.nice-menu-right li.menuparent, ul.nice-menu-right li li.menuparent,
 ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent,

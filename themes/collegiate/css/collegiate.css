@@ -357,7 +357,7 @@ padding:0px;
 
 
 
-.sidebar ul.nice-menu ul {
+/*.sidebar ul.nice-menu ul {
 	margin-top:-36px;
 	border:none;
 	}
@@ -370,7 +370,7 @@ padding:0px;
 .sidebar ul.nice-menu ul ul {
 	margin-top:0;
 	border:none;
-	}	
+	}*/	
 
 /** MAIN NAV IN SIDEBARS **/
    .sidebar#block-os-primary-menu .content  ul.menu{
