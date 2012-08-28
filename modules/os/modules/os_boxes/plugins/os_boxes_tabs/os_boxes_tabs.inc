@@ -151,10 +151,13 @@ class os_boxes_tabs extends os_boxes_default {
         )
       )
     );
+    module_load_include('module', 'block', 'block');
     foreach ($this->options['tabs'] as $k => &$t) {
       if ($b = $blocks[$t['bid']]) {
         if ($block_arr = _block_render_blocks(array($b))) {
           if (!empty($block_arr["{$b->module}_{$b->delta}"]->content)) {
+            $b_obj = &$block_arr[$b->module.'_'.$b->delta];
+            $b_obj->region = $this->delta;
 
             $render['links']['#links'][] = array(
               'title' => $t['title'],

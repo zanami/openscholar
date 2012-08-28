@@ -24,9 +24,9 @@ class os_boxes_mailchimp extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state){
+
     $form = array();
     // added for 
-    //$form = parent::options_form($form_state);
     
     // using spaces_get_space instead of vsite_get_vsite to remove the vsite dependency
     //if (($vsite=vsite_get_vsite()) != FALSE) {
@@ -39,8 +39,10 @@ class os_boxes_mailchimp extends os_boxes_default {
     
     if (!$api) {
       $form['subscribe']['api_warning'] = array(
-        '#value' => '<div class="error">You have not set a <strong>MailChimp API key</strong>.  Until you do so, mailing lists will not work.  You can set up an API key in <a href="/'.$space->group->purl.'/cp/settings" target="_new">site settings</a>.</div>',
+        '#markup' => '<div class="error">You have not set a <strong>MailChimp API key</strong>.  Until you do so, mailing lists will not work.  You can set up an API key in <a href="/'.$space->group->purl.'/cp/settings" target="_new">site settings</a>.</div>',
+      	'#type' => 'markup',
       );
+      
     } else {
       
       $form['subscribe']['list'] = array(
@@ -66,8 +68,11 @@ class os_boxes_mailchimp extends os_boxes_default {
         '#default_value' => $this->options['display'],
         '#description' => t('Show a link to subscription popup or entire form by default.'),
       );
+
+      
     }
-        
+    //$form = parent::options_form($form_state);
+    
     return $form;
   }
   

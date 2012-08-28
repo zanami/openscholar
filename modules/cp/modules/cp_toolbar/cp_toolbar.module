@@ -144,14 +144,6 @@ function cp_toolbar_view() {
       '#paths' => array(),
       'description' => t('Build is the structure of your site'),
     ),
-    'people' => array(
-      'title' => t('People'),
-      'href' => 'cp/users',
-      'html' => TRUE,
-      'attributes' => array('title' => t('People'), 'data-drawer' => 'people-drawer'),
-      '#paths' => array(),
-      'description' => t('People are your users'),
-    ),
     'appearance' => array(
       'title' => t('Appearance'),
       'href' => 'cp/appearance',
@@ -159,6 +151,22 @@ function cp_toolbar_view() {
       'attributes' => array('title' => t('Appearance'), 'id' => 'toolbar-link-admin-appearance'),
       '#paths' => array(),
       'description' => t('Change the style of your site'),
+    ),
+    'settings' => array(
+      'title' => t('Settings'),
+      'href' => 'cp/settings',
+      'html' => TRUE,
+      'attributes' => array('title' => t('Settings')),
+      '#paths' => array(),
+      'description' => t('Change site-wide settings'),
+    ),
+    'people' => array(
+      'title' => t('People'),
+      'href' => 'cp/users',
+      'html' => TRUE,
+      'attributes' => array('title' => t('People'), 'data-drawer' => 'people-drawer'),
+      '#paths' => array(),
+      'description' => t('People are your users'),
     ),
   );
   if (user_access('access toolbar')) {

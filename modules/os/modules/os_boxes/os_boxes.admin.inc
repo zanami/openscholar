@@ -50,6 +50,7 @@ function os_boxes_widget_submit($form, $form_state) {
       break;
       default:  // coming from public view
         // can only edit boxes from this view
+        module_load_include('module', 'block', 'block');
         $b = (object)os_boxes_os_widget($box);
         $t = _block_render_blocks(array($b));
         $block = array_shift($t);
@@ -162,6 +163,7 @@ function os_boxes_remove_widget($box, $target=false) {
     );
   }
   else {
+    module_load_include('module', 'block', 'block');
     $t = _block_render_blocks(array((object)$blocks['boxes-'.$box->delta]));
     $t = _block_get_renderable_array($t);
     $render = array_shift($t);
