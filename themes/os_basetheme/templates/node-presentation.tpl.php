@@ -16,6 +16,7 @@ hide($content['links']);
   <?php print render($title_prefix); ?>
   
   <?php if (!$page): // begin teaser ?>
+    <?php // dpm($node); ?>
     <span class="title">
     	<a href="<?php print $node_url; ?>" title="<?php print $title ?>">
     	  <?php print $title; ?>
