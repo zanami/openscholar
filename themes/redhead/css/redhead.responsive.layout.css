@@ -17,4 +17,12 @@
 .region-header-first {width:180px; margin-left:-100%;}
 .region-header-third {width:200px; margin-left:-200px;text-align: right;}
 .region-header-second {width:100%;}
+
+
+
+
+#columns,#header-container, #block-os-primary-menu {
+    width: 910px;
+    }
+    
 }
