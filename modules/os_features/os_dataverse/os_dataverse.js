@@ -7,10 +7,10 @@
   Drupal.behaviors.os_dataverse = {
     attach: function(context){
       // Adds "Loading Dataverse" message with throbber 
-      $('#feature-dataverse').prepend('<h2 id="dvn_loading" class="title">Loading Dataverse<span class="views-throbbing">&nbsp</span></h2>');
+      $('#os-dataverse-data').prepend('<h2 id="os-dataverse-loading" class="title ajax-progress">Loading Dataverse<span class="throbber">&nbsp</span></h2>');
       // Removes the "Loading Dataverse" message when iframe loads
-      $('#feature-dataverse iframe').load(function () {
-        $('#feature-dataverse #dvn_loading').remove();
+      $('#os-dataverse-data iframe').load(function () {
+        $('#os-dataverse-data #os-dataverse-loading').remove();
       });
     }
   };
