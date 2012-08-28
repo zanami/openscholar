@@ -16,6 +16,13 @@ function iqss_projects_front_context_default_contexts_alter(&$contexts){
         'region' => 'content_top',
     );
     
+    $fp_blocks['boxes-iqss_projects_fp_logoblock'] = array(
+        'module' => 'boxes',
+        'delta' => 'iqss_projects_fp_logoblock',
+        'weight' => -100,
+        'region' => 'header_first',
+    );
+    
     $fp_blocks['boxes-iqss_projects_fp_features'] = array(
         'module' => 'boxes',
         'delta' => 'iqss_projects_fp_features',
