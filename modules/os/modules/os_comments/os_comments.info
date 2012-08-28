@@ -1,0 +1,9 @@
+name = OpenScholar: Comments
+description = Provides OpenScholar Comment integration with features/comment_sources
+core = 7.x
+package = OpenScholar
+php = 5.2.4
+dependencies[] = os
+dependencies[] = comment_sources
+dependencies[] = disqus
+dependencies[] = fb_social
