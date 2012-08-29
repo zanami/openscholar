@@ -14,7 +14,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     
     
     //$query->condition('value', '%os_boxes_node%', 'LIKE'); //testing the port function
-    $query->condition('value', '%os_boxes_modal_image%', 'LIKE'); //testing the port function
+    //$query->condition('value', '%os_boxes_modal_image%', 'LIKE'); //testing the port function
     
     
     return $query;
@@ -35,9 +35,10 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     }
     
     
-    if ($box = $this->_update_box($value)) {
+    if ($box = $this->_update_box($value, $row->id)) {
       $value = $box;
     } else {
+      parent::saveMessage(t('Could not migrate box: @key', array('@key'=>$value->plugin_key)), MigrationBase::MESSAGE_NOTICE); 
       return FALSE;
     }
     
@@ -51,9 +52,9 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     return parent::prepareRow($row);
   }
 
-  function _update_box($box) {
+  function _update_box($box, $id) {
     $BP = new BoxPorter($this);
-    $box = $BP->_update_box($box);
+    return $BP->_update_box($box, $id);
   }
   
   function _box_key_exists($key) {
@@ -94,7 +95,7 @@ class BoxPorter {
     } 
 
     //check if we have a function for it
-    if ($newkey = $this->_port_box($key, TRUE)) {
+    if ($newkey = $this->_port_box($key, 0, TRUE)) {
       return $newkey;
     }
   
@@ -120,14 +121,14 @@ class BoxPorter {
   }
   
   //refactored _update_block that also updates the box.  
-  public function _update_box($box) {
+  public function _update_box($box, $id) {
 
     if (isset($box->region)) {
-      $box->region = $this->_update_region($box->region);
+      $box->region = $this->migration->_update_region($box->region);
     }
     
     if (isset($box->module)) {
-      $box->module = $this->_update_module($box->module);
+      $box->module = $this->migration->_update_module($box->module);
     }
     
     /* three kinds of updates
@@ -139,7 +140,7 @@ class BoxPorter {
     */
     
     //first try box, box/key change.  if a function does this it should be complete and we can exit.
-    $new = $this->_port_box($box);
+    $new = $this->_port_box($box, $id);
     if (isset($new)) {
       return $new; //set or false, it returns. 
     } 
@@ -156,22 +157,22 @@ class BoxPorter {
   
   //wrapper function around the _port_box_$PLUGIN functions
   //key only is used for getting the key of the box without actually porting it.  seems easier than maintaining an array
-  public function _port_box($box, $key_only = FALSE) {
+  public function _port_box($box, $id, $key_only = FALSE) {
     if (is_string($box) && $key_only) {
       $box = (object) array('plugin_key' => $box); //make a box object for the purpose of fetching a new key.
     }
     
     $port = '_port_box_' . $box->plugin_key;
     if (method_exists($this, $port)) {
-      return $this->$port($box, $key_only);
+      return $this->$port($box, $id, $key_only);
     } 
     
     return;
   }
   
-  public function _port_box_os_boxes_modal_image($box, $key_only) {
+  public function _port_box_os_boxes_modal_image($box, $id, $key_only) {
     if ($key_only) {
-      return 'simple';
+      return 'os_boxes_html';
     }
     
     //get fid of new entity from migrate's status tables
@@ -207,7 +208,7 @@ class BoxPorter {
       }
       
       //modal image should have a separate content type migration.  lets use that for moving the image.
-      $box->plugin_key = 'simple';
+      $box->plugin_key = 'os_boxes_html';
       $box->options = array(
         'format' => 'filtered_html',
         'body' => $img_html, 
@@ -227,10 +228,126 @@ class BoxPorter {
     }
   }
   
-  //convert os_boxes_node to custom html.  102 in db
-  public function _port_box_os_boxes_node($box, $key_only) {
+  // public function _port_box_os_boxes_modal_siteinfo($box, $key_only) {
+  // $key = 'os_boxes_site_info';
+  // if ($key_only) {
+  // return $key;
+  // }
+  
+  
+  // //title
+  // $query = parent::d6_db_select('node', 'n')
+  // ->condition('type', 'vsite')
+  // ->condition('nid', $nid)
+  // ->fields('n', array('title'));
+  
+  // //address
+  // $query->join('content_type_vsite', 'ct', 'n.nid = ct.nid');
+  // $query->fields('ct', array('field_vsite_address_value', 'field_vsite_address_format'));
+  
+  // //description
+  // $query->join('og', 'og', 'n.nid = og.nid');
+  // $query->fields('og', array('og_description'));
+  
+  // if ($result = $query->execute()->fetchAssoc()) {
+  // $box->plugin_key = $key;
+  
+  // $box->options = array(
+  // 'site_title' => $result['title'],
+  // 'descrip' => $result['og_descrioption'],
+  // 'address1' => $result['field_vsite_address_value'],
+  // );
+  
+  // return $box;
+  // } else {
+  // return FALSE;
+  // }
+  
+  
+  // }
+  
+  // public function _port_box_os_boxes_curr_toc($box, $key_only) {
+  // $key = 'os_boxes_booktoc';
+  // if ($key_only) {
+  // return $key;
+  // }
+  
+  // }
+  
+  //port html box
+  public function _port_box_os_boxes_simple($box, $id, $key_only) {
+    $key = 'os_boxes_html';
     if ($key_only) {
-      return 'simple';
+      return $key;
+    }
+  
+    $body = $box->options['body'];
+    $format = (isset($box->options['format']) && $box->options['format'] == 1) ? 'filtered_html' : 'plain_text';
+  
+    unset($box->options['body'], $box->options['format']);
+  
+    $box->options = array(
+      'body' => $body,
+      'format' => $format,
+    );
+    $box->plugin_key = $key;
+  
+    return $box;
+  }
+  
+  //twitter prefix is separated into own variable
+  public function _port_box_os_boxes_twitterfeed($box, $id, $key_only) {
+    if ($key_only) {
+      return 'os_boxes_twitterfeed';
+    }
+  
+    $prefix = $box->options['twitter_username'][0];
+    if ($prefix == '@') {
+      $box->options['twitter_type'] = 'user';
+      $box->options['twitter_username'] = substr($box->options['twitter_username'], 1);
+    } elseif ($prefix == '#') {
+      $box->options['twitter_type'] = 'hashtag';
+      $box->options['twitter_username'] = substr($box->options['twitter_username'], 1);
+    } else {
+      $box->options['twitter_type'] = 'search';
+    }
+  
+    return $box;
+  }
+  
+  public function _port_box_os_boxes_modal_sitelogo($box, $id, $key_only) {
+    $key = 'os_boxes_site_logo';
+    if ($key_only) {
+      return $key;
+    }
+  
+    if (($vsite = node_load($id)) == FALSE) {
+      return FALSE;
+    }
+  
+    if (isset($vsite->field_site_logo[LANGUAGE_NONE]) && $logo = current($vsite->field_site_logo[LANGUAGE_NONE])) {
+      $box->options = array(
+        'fid' => $logo['fid'],
+        'x' => $logo['cropbox_x'],
+        'y' => $logo['cropbox_y'],
+        'height' => $logo['cropbox_height'],
+        'width' => $logo['cropbox_width'],
+      );
+      $box->plugin_key = $key;
+  
+      return $box;
+    } else {
+      parent::saveMessage(t('Could not migrate site logo. Image does not exist. Vsite nid: @nid', array('@nid' => $id)), MigrationBase::MESSAGE_WARNING);
+      return FALSE;
+    }
+  
+  
+  }
+  
+  //convert os_boxes_node to custom html.  102 in db
+  public function _port_box_os_boxes_node($box, $id,  $key_only) {
+    if ($key_only) {
+      return 'os_boxes_html';
     }
     
     $body = '';
@@ -270,7 +387,7 @@ class BoxPorter {
         $body .= $node->teaser;
       }
       
-      $box->plugin_key = 'simple';
+      $box->plugin_key = 'os_boxes_html';
       $box->options = array(
         'value' => $body,
         'format' => ($node->format == 1) ? 'filtered_html' : 'plain_text',  
