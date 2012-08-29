@@ -67,13 +67,27 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
   
       //and block
       //(02:40:42 PM) Matt Petrovic: context only needs module, delta, region, weight, status and title
-      $keep = array('module', 'delta', 'region', 'weight', 'status', 'title');
-      $block = array_intersect_key($block, array_flip($keep));
-      $block['title'] = '';
-      $value['blocks'][$new_id] = $this->_update_block($block);
+//       $keep = array('module', 'delta', 'region', 'weight', 'status', 'title');
+//       $block = array_intersect_key($block, array_flip($keep));
+//       $block['title'] = '';
+      //$value['blocks'][$new_id] = $this->_update_block($block);
+      $value['blocks'][$new_id] = $this->_update_context_block($block);
     }
   
     return array($object_id, $value);
+  }
+  
+  //updates only the relevant portions of a block for this context
+  public function _update_context_block($block) {
+    $keep = array('module', 'delta', 'region', 'weight', 'status', 'title', 'plugin');
+    $block = array_intersect_key($block, array_flip($keep));
+    $block['title'] = '';
+    
+    if (isset($block['plugin'])) {
+      require_once(drupal_get_path('module', 'os_migrate') . '/os_migrate_spaces_overrides_boxes.inc');
+      $BP = new BoxPorter($this);
+      $block['plugin'] = $BP->_update_block_plugin_key($block['plugin']);
+    }
   }
   
   //update a context's key.  return false if we're dropping it.

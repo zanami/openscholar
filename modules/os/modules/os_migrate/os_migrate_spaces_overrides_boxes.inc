@@ -35,23 +35,89 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     }
     
     
-//     if (($value = $this->_update_block((array)$value)) === FALSE) {
-//       return FALSE;
-//     } else {
-//       $value = (object)$value;
-//     }
     if ($box = $this->_update_box($value)) {
       $value = $box;
     } else {
       return FALSE;
     }
     
+    if (!$this->_box_key_exists($box->plugin_key)) {
+      parent::saveMessage(t('Box @key does not exist in destination.  Ignoring box.', array('@key'=>$box->plugin_key)), MigrationBase::MESSAGE_WARNING);
+      return FALSE;
+    }
     
 //    $row->object_id = $object_id;
     $row->value = serialize($value);
     return parent::prepareRow($row);
   }
+
+  function _update_box($box) {
+    $BP = new BoxPorter($this);
+    $box = $BP->_update_box($box);
+  }
   
+  function _box_key_exists($key) {
+    $BP = new BoxPorter($this);
+    return $BP->_box_key_exists($key);
+  }
+}
+
+/**
+ * @class BoxPorter
+ * 
+ * Box porting functions need to be avaialble to contexts, but shouldn't be part of the rest of migration.  Lets put them all here to contain them but make them accessible.
+ * 
+ * @author sagotsky
+ *
+ */
+class BoxPorter {
+  
+  public function __construct($migration) {
+    $this->migration = $migration;
+  }
+  
+  public function _update_block_plugin_key($key) {
+  
+    $box_map = array(
+      'os_modal_tabbed' => 'os_boxes_tabs',
+      'os_boxes_shields' => 'os_shields_box',
+      'os_boxes_modal_sitelogo' => 'os_boxes_sitelogo', //needs pulling from orig vsite
+      'os_boxes_modal_siteinfo' => 'os_boxes_siteinfo', //needs pulling from orig vsite
+      'vsite_taxonomy_fbt' => 'os_taxonomy_fbt',
+      'os_boxes_currtoc' => 'os_boxes_booktoc', //needs an option added
+    );
+  
+    
+    //try mapping the key
+    if (isset($box_map[$key])) {
+      return $box_map[$key];
+    } 
+
+    //check if we have a function for it
+    if ($newkey = $this->_port_box($key, TRUE)) {
+      return $newkey;
+    }
+  
+    //check if the key we're using exists or if we're ignoring it.
+    if (module_exists('os_boxes')) {
+      $boxes = os_boxes_get_boxes_plugins();
+      if (isset($boxes[$key])) {
+        return $key;
+      } else {
+        return FALSE;
+      }
+    } else {
+      return $key;
+    }
+  
+  }
+  
+  public function _box_key_exists($plugin_key) {
+    if (module_exists('os_boxes')) {
+      $boxes = os_boxes_get_boxes_plugins();
+      return isset($boxes[$plugin_key]);
+    }
+  }
   
   //refactored _update_block that also updates the box.  
   public function _update_box($box) {
@@ -91,6 +157,10 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
   //wrapper function around the _port_box_$PLUGIN functions
   //key only is used for getting the key of the box without actually porting it.  seems easier than maintaining an array
   public function _port_box($box, $key_only = FALSE) {
+    if (is_string($box) && $key_only) {
+      $box = (object) array('plugin_key' => $box); //make a box object for the purpose of fetching a new key.
+    }
+    
     $port = '_port_box_' . $box->plugin_key;
     if (method_exists($this, $port)) {
       return $this->$port($box, $key_only);
@@ -113,7 +183,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     $fid = current($fid);
     
     //get crop data from legacy db
-    $image_info = parent::d6_db_select('content_type_modal_image', 'ct')
+    $image_info = $this->migration->d6_db_select('content_type_modal_image', 'ct')
       ->condition('nid', $box->options['nid'])
       ->fields('ct', array('field_modal_image_data', 'field_link_from_image_url', 'field_modal_image_size_value'))
       ->execute()
@@ -150,7 +220,8 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
         $fid = 'FALSE'; 
       }
       
-      parent::saveMessage(t('Could not port os_boxes_modal_image.  No file with fid @fid.  Check legacy node: @nid', 
+      //OSMigration::saveMessage
+      $this->migration->saveMessage(t('Could not port os_boxes_modal_image.  No file with fid @fid.  Check legacy node: @nid', 
         array('@nid' => $box->options['nid'], '@fid' => $fid)), MigrationBase::MESSAGE_WARNING);
       return FALSE;
     }
@@ -175,11 +246,11 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     }
     
     if (!$nid) {
-      parent::saveMessage(t('Could not port os_boxes_node.  Missing nid.'), MigrationBase::MESSAGE_WARNING);
+      $this->migration->saveMessage(t('Could not port os_boxes_node.  Missing nid.'), MigrationBase::MESSAGE_WARNING);
       return FALSE; //can't port this without a nid.
     }
     
-    $query = parent::d6_db_select('node', 'n')
+    $query = $this->migration->d6_db_select('node', 'n')
       ->fields('n', array('nid'))
       ->condition('n.nid', $nid);
     $query->join('node_revisions', 'nr', 'n.vid = nr.vid');
@@ -207,7 +278,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
       
       return $box;
     } else {
-      parent::saveMessage(t('Could not port os_boxes_node.  No node with nid @nid.', array('@nid' => $nid)), MigrationBase::MESSAGE_WARNING);
+      $this->migration->saveMessage(t('Could not port os_boxes_node.  No node with nid @nid.', array('@nid' => $nid)), MigrationBase::MESSAGE_WARNING);
       return FALSE;
     }
   }

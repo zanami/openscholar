@@ -56,27 +56,27 @@
 
 
   
-  //update a block's array
-  public function _update_block(array $block) {
-    if (isset($block['region'])) {
-      $block['region'] = $this->_update_region($block['region']);
-    }
+//   //update a block's array
+//   public function _update_block(array $block) {
+//     if (isset($block['region'])) {
+//       $block['region'] = $this->_update_region($block['region']);
+//     }
     
-    if (isset($block['module'])) {
-      $block['module'] = $this->_update_module($block['module']);
-    }
+//     if (isset($block['module'])) {
+//       $block['module'] = $this->_update_module($block['module']);
+//     }
     
-    if (isset($block['plugin_key'])) {
-      if ($key = $this->_update_block_plugin_key($block['plugin_key'])) {
-        $block['plugin_key'] = $key;
-      } else {
-        return FALSE;
-      }
-    }
+//     if (isset($block['plugin_key'])) {
+//       if ($key = $this->_update_block_plugin_key($block['plugin_key'])) {
+//         $block['plugin_key'] = $key;
+//       } else {
+//         return FALSE;
+//       }
+//     }
     
-    //$block['plugin'] almost certainly needs an update    .  plugin_key?
-    return $block;
-  }
+//     //$block['plugin'] almost certainly needs an update    .  plugin_key?
+//     return $block;
+//   }
   
   /**
    * @function _update_module
@@ -129,32 +129,5 @@
     return isset($regions[$region]) ? $regions[$region] : FALSE;
   }
   
-  public function _update_block_plugin_key($key) {
-    $box_map = array(
-      'os_modal_tabbed' => 'os_boxes_tabs',
-      'os_boxes_shield' => 'os_shields_box',
-      'os_boxes_modal_sitelogo' => 'os_boxes_sitelogo', //needs pulling from orig vsite
-      'os_boxes_modal_siteinfo' => 'os_boxes_siteinfo', //needs pulling from orig vsite
-      'vsite_taxonomy_fbt' => 'os_taxonomy_fbt',
-      'os_boxes_currtoc' => 'os_boxes_booktoc', //needs an option added
-    );
-    
-    if (isset($box_map[$key])) {
-      $key = $box_map[$key];
-    } 
-    
-    if (module_exists('os_boxes')) {
-      $boxes = os_boxes_get_boxes_plugins();
-      if (isset($boxes[$key])) {
-        return $key;
-      } else {
-        parent::saveMessage(t('Ignoring box of plugin: %key (unsupported)', array('%key'=>$key)), MigrationBase::MESSAGE_NOTICE);
-        return FALSE;
-      }    
-    } else {
-      return $key;
-    }
-    
-  }
 }
 
