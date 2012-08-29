@@ -31,15 +31,18 @@
       <?php print render($toolbar['toolbar_right']); ?>
     </div>
   </div>
-  
+
   <?php print render($toolbar['toolbar_toggle']); ?>
 
-  <div class="<?php echo $toolbar['toolbar_drawer']['toolbar_drawer_classes']; ?>">
-    <?php print render($toolbar['toolbar_drawer']); ?>
+  <div id="toolbar-drawer-anchor">
+    <div id="toolbar-drawer-slider">
+      <div class="<?php echo $toolbar['toolbar_drawer']['toolbar_drawer_classes']; ?>">
+        <?php print render($toolbar['toolbar_drawer']); ?>
+      </div>
+
+      <?php if (isset($toolbar['tooltips'])): ?>
+      <div class="toolbar-tooltips"></div>
+      <?php endif; ?>
+    </div>
   </div>
-  
-  <?php if (isset($toolbar['tooltips'])): ?>
-  <div class="toolbar-tooltips"></div>
-  <?php endif; ?>
-  
 </div>

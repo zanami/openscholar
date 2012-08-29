@@ -18,8 +18,8 @@ Drupal.behaviors.cp_toolbar = {
     $(document).bind('drupalOverlayLoad', Drupal.cp_toolbar.activeTrail);
     $(document).bind('drupalOverlayClose', Drupal.cp_toolbar.drawer_close);
     
-    //$('#toolbar li').bind('mouseenter', Drupal.cp_toolbar.tooltipShow);
-    //$('#toolbar').bind('mouseleave', Drupal.cp_toolbar.tooltipHide);
+    $('#toolbar li').bind('mouseenter', Drupal.cp_toolbar.tooltipShow);
+    $('#toolbar').bind('mouseleave', Drupal.cp_toolbar.tooltipHide);
     $('#toolbar').bind('mouseleave', Drupal.cp_toolbar.drawer_close);
     $('#tooltip .toolbar-menu li').bind('mouseleave', Drupal.cp_toolbar.tooltipHide);
     
@@ -37,6 +37,11 @@ Drupal.cp_toolbar.drawer_toggle = function (event) {
     // Let normal interaction proceed
     Drupal.cp_toolbar.drawer_close();
     $(this).addClass('active').blur();
+    
+    if ($this.attr('data-tooltip') != '') {
+      $('#toolbar .active-path').removeClass('active-path');
+      $('.toolbar-tooltips').parentsUntil('#toolbar').addClass('active-path');
+    }
     return;
   }
   
@@ -76,16 +81,11 @@ Drupal.cp_toolbar.activeTrail = function (event) {
 };
 
 Drupal.cp_toolbar.tooltipShow = function (event) {
-  var index = $(this).find('a').attr('href');
-  if ($(this).is('.toolbar-menu li')) {
-    index = 'href' + index;
-  }
-  if (index == 'hrefundefined') {
-    index = 'href/admin/appearance';
-  }
-  var text = Drupal.settings.toolbar.tooltips.default;
-  if (event.type == 'mouseenter' && Drupal.settings.toolbar.tooltips[index] != '') {
-    text = Drupal.settings.toolbar.tooltips[index]
+  var link = $(this).find('a');
+
+  var text = Drupal.t('This is your administrative toolbar.');
+  if (event.type == 'mouseenter' && link.attr('data-tooltip') != '') {
+    text = link.attr('data-tooltip');
   }
   
   if (!$('.toolbar-drawer').hasClass('active') && event.type == 'mouseleave') {
@@ -93,14 +93,12 @@ Drupal.cp_toolbar.tooltipShow = function (event) {
   }
   
   $('.toolbar-tooltips').html(text);
-  $('.toolbar-tooltips').show(500);
 };
 
 Drupal.cp_toolbar.tooltipHide = function (event) {
   event.stopPropagation();
   event.preventDefault();
   if ($(this).attr('id') == 'toolbar' || !$('#toolbar .toolbar-drawer').hasClass('active')) {
-    $('.toolbar-tooltips').hide(500);
   }
 };
 
