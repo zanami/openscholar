@@ -13,6 +13,7 @@ function os_booklets_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+<<<<<<< HEAD
   $strongarm->name = 'book_allowed_types';
   $strongarm->value = array(
     0 => 'book',
@@ -94,6 +95,8 @@ function os_booklets_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+=======
+>>>>>>> 59e58e8669f7c8d68d5e3cc77a0e1d6af70b3756
   $strongarm->name = 'node_options_book';
   $strongarm->value = array(
     0 => 'status',
@@ -103,6 +106,7 @@ function os_booklets_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+<<<<<<< HEAD
   $strongarm->name = 'node_preview_book';
   $strongarm->value = '1';
   $export['node_preview_book'] = $strongarm;
@@ -117,6 +121,8 @@ function os_booklets_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+=======
+>>>>>>> 59e58e8669f7c8d68d5e3cc77a0e1d6af70b3756
   $strongarm->name = 'pathauto_node_book_pattern';
   $strongarm->value = 'book/[node:title]';
   $export['pathauto_node_book_pattern'] = $strongarm;

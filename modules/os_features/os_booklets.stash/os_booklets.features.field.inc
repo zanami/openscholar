@@ -82,6 +82,7 @@ function os_booklets_field_default_fields() {
     ),
   );
 
+<<<<<<< HEAD
   // Exported field: 'node-book-og_group_ref'
   $fields['node-book-og_group_ref'] = array(
     'field_config' => array(
@@ -194,6 +195,11 @@ function os_booklets_field_default_fields() {
   // Included for use with string extractors like potx.
   t('Body');
   t('Groups audience');
+=======
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Body');
+>>>>>>> 59e58e8669f7c8d68d5e3cc77a0e1d6af70b3756
 
   return $fields;
 }
