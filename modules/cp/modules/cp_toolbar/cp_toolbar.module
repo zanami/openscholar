@@ -23,6 +23,7 @@ function cp_page_alter(&$page) {
 function cp_toolbar_pre_render($toolbar) {
   $toolbar = array_merge($toolbar, cp_toolbar_view());
   $toolbar['toolbar_drawer'] = array_merge($toolbar['toolbar_drawer'], cp_toolbar_fill_drawer());
+  $toolbar['tooltips'] = cp_toolbar_set_tooltips($toolbar);
   return $toolbar;
 }
 
@@ -66,7 +67,6 @@ function cp_toolbar_view() {
         'title' => t('<strong>@username</strong>', array('@username' => format_username($user))),
         'href' => 'user',
         'html' => TRUE,
-        'attributes' => array('title' => t('User account')),
         'description' => t('View or edit your user account'),
       ),
       'logout' => array(
@@ -99,7 +99,6 @@ function cp_toolbar_view() {
       'title' => t('Help'),
       'href' => 'admin/help',
       'html' => TRUE,
-      'attributes' => array('title' => t('Help')),
       'description' => t('Get help on various topics'),
     ),
   );
@@ -130,7 +129,7 @@ function cp_toolbar_view() {
       'title' => t('Content'),
       'href' => 'cp/content',
       'html' => TRUE,
-      'attributes' => array('title' => t('Content'), 'data-drawer' => 'content-drawer'),
+      'attributes' => array('alt' => t('Content'), 'data-drawer' => 'content-drawer'),
       '#paths' => array(
         'node/add',
       ),
@@ -140,7 +139,7 @@ function cp_toolbar_view() {
       'title' => t('Build'),
       'href' => 'cp/build',
       'html' => TRUE,
-      'attributes' => array('title' => t('Site'), 'data-drawer' => 'site-drawer'),
+      'attributes' => array('alt' => t('Site'), 'data-drawer' => 'site-drawer'),
       '#paths' => array(),
       'description' => t('Build is the structure of your site'),
     ),
@@ -148,7 +147,7 @@ function cp_toolbar_view() {
       'title' => t('Appearance'),
       'href' => 'cp/appearance',
       'html' => TRUE,
-      'attributes' => array('title' => t('Appearance'), 'id' => 'toolbar-link-admin-appearance'),
+      'attributes' => array('alt' => t('Appearance'), 'id' => 'toolbar-link-admin-appearance'),
       '#paths' => array(),
       'description' => t('Change the style of your site'),
     ),
@@ -156,7 +155,7 @@ function cp_toolbar_view() {
       'title' => t('Settings'),
       'href' => 'cp/settings',
       'html' => TRUE,
-      'attributes' => array('title' => t('Settings')),
+      'attributes' => array('alt' => t('Settings')),
       '#paths' => array(),
       'description' => t('Change site-wide settings'),
     ),
@@ -164,7 +163,7 @@ function cp_toolbar_view() {
       'title' => t('People'),
       'href' => 'cp/users',
       'html' => TRUE,
-      'attributes' => array('title' => t('People'), 'data-drawer' => 'people-drawer'),
+      'attributes' => array('alt' => t('People'), 'data-drawer' => 'people-drawer'),
       '#paths' => array(),
       'description' => t('People are your users'),
     ),
@@ -174,7 +173,7 @@ function cp_toolbar_view() {
       'title' => t('Admin'),
       'href' => 'admin',
       'html' => TRUE,
-      'attributes' => array('title' => t('Admin'), 'data-drawer' => 'admin-drawer'),
+      'attributes' => array('alt' => t('Admin'), 'data-drawer' => 'admin-drawer'),
       '#paths' => array(),
       'description' => t('The global administration pages.'),
     );
@@ -352,4 +351,26 @@ function theme_cp_toolbar_drawer_section($vars) {
   $output .= drupal_render_children($element);
   $output .= '</div>';
   return $output;
+}
+
+function cp_toolbar_set_tooltips(&$parent) {
+  if (!is_array($parent)) return;
+  foreach(element_children($parent) as $child_key) {
+    if (is_array($parent[$child_key]) && isset($parent[$child_key]['#links'])) {
+      foreach($parent[$child_key]['#links'] as $key => $link) {
+        $tooltip = '';
+        if (isset($link['description'])) {
+          $tooltip = $link['description'];
+        }
+        elseif (isset($link['attributes']['title'])) {
+          $tooltip = $link['attributes']['title'];
+        }
+        unset($link['attributes']['title']);
+
+        $parent[$child_key]['#links'][$key]['attributes']['data-tooltip'] = $tooltip;
+      }
+    }
+    cp_toolbar_set_tooltips($parent[$child_key]);
+  }
+  return true;
 }
