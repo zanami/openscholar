@@ -30,6 +30,7 @@ function cp_menu_menu() {
     'access callback' => 'spaces_access_admin',
     'type' => MENU_NORMAL_ITEM,
     'file' => 'cp_menu.form.inc',
+    'description' => 'Create and edit your site\'s menus',
   );
 
   $items['cp/build/menu/add/os_menu'] = array(
