@@ -12,6 +12,7 @@ function cp_layout_menu() {
     'weight' => 10,
     'access callback' => 'spaces_access_admin',
     'file' => 'cp_layout.form.inc',
+    'description' => 'Change the placement of widgets, and the overall layout, of your site.'
   );
 
   $items['cp/build/layout/ajax'] = array(

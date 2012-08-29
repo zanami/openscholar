@@ -153,30 +153,6 @@ function os_mailchimp_default_box() {
   return $export;
 }
 
-/** 
- * Function os_mailchimp_profile_load
- * Replaced the content_profile_load function that was previously used
- * as it was not included in the D7 upgrade and also passed arrays into node_load
- * which is depreciated in d7
- */
-function os_mailchimp_profile_load($type, $user) {
-  	// check to make sure there is a user_profile
-	$query = new EntityFieldQuery();
-  	$entities = $query->entityCondition('entity_type', 'node')
-  		->propertyCondition('type', $type)
-  		->propertyCondition('uid', $user)
-  		->range(0,1)
-  		->execute();
-	
-  	if (!empty($entities['node'])) { // there is, load the node with the userid
-    	$node = node_load($user);
-  	}else{
-  		$node = FALSE;
-  	}
-  	
-  	return $node;
-}// end function
-
 /**
  * @function os_mailchimp_form
  *
@@ -207,24 +183,28 @@ function os_mailchimp_form($state, $args=array()) {
   	
   	// check for a logged in user
   	if ($user->uid != 0) { // grab their info
-    	$mail = $user->mail;
-
-    	//get names from profile, or username if those aren't available
-    	$profile = os_mailchimp_profile_load('vsite_users_profile',$user->uid);
+  		
+  		// get their email
+  		$mail = $user->mail;
+  		// at first, set their first name to their username
+  		// assuming we haven't yet added custom fields to the user account
+  		$fn = $user->name;
+  		// check if new fields have been added
+    	$userLoad = user_load($user->uid);
     	
-    	// default the fn to the user
-    	$fn = $user->name;
-    	// make sure there's node infornmation
-    	if($profile!=FALSE) {
-    		// check for the first name set
-    		if(!empty($profile->vsite_users_first_name[0]['value'])) {
-    			$fn = $profile->vsite_users_first_name[0]['value'];
-    		}
-    		// check for the last name set
-    		if (!empty($profile->vsite_users_last_name[0]['value'])){
-      			$ln = $profile->vsite_users_last_name[0]['value'];
-    		} 
-    	}// end if
+		// for testing I added field_first_name and field_last_name
+		// I will change this when a decision is made on what/if to use
+		// but it works on my end
+		
+    	// check for a first name
+    	if(!empty($userLoad->field_first_name['und'][0]['value'])) {
+    		$fn = $userLoad->field_first_name['und'][0]['value'];
+    	}
+    	
+    	// check for a last name
+  		if(!empty($userLoad->field_last_name['und'][0]['value'])) {
+    		$ln = $userLoad->field_last_name['und'][0]['value'];
+  		}
   	}// end if
 
  	$form = array();
