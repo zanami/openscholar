@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * @file
  * Custom teaser and full node display overrides for Presentation nodes.
@@ -10,6 +10,20 @@
 hide($content['comments']);
 hide($content['links']);
 
+// Accesses field values safely using $content[FIELD], not $node->FIELD
+if ($content['field_presentation_location']['#items'][0]['value'] !== NULL) {
+  $location_value = $content['field_presentation_location']['#items'][0]['value'];
+}
+
+if ($content['field_presentation_date'][0]['#markup'] !== NULL) {
+  $date_value = $content['field_presentation_date'][0]['#markup'];
+}
+
+if ($node->field_presentation_file['und'][0]['fid']) {
+  // Renders all files in a list
+  $file_value = render($content['field_presentation_file']);
+}
+
 ?>
 <article id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
   <div class="node-inner">
@@ -19,18 +33,18 @@ hide($content['links']);
     <span class="title">
     	<strong>
     		<a href="<?php print $node_url; ?>" title="<?php print $title ?>">
-    		  <?php print $title; ?></a><?php if ($node->field_presentation_location['und'][0]['value']) print ', '; ?>
+    		  <?php print $title; ?></a><?php if ($location_value): ?>, <?php endif; ?>
     	</strong>
     </span>
-    <?php if ($node->field_presentation_location['und'][0]['value']): ?>
+    <?php if ($location_value): ?>
       at 
       <span class="location">
-        <strong><?php print $node->field_presentation_location['und'][0]['value']; ?></strong><?php if ($node->field_presentation_date['und'][0]['value']) print ', '; ?>
+        <strong><?php print $location_value; ?></strong><?php if ($date_value) ?>, <?php endif; ?>
       </span>
     <?php endif; ?>
-    <?php if (isset($node->field_presentation_date['und'][0]['value'])): ?><?php print $content['field_presentation_date'][0]['#markup']; ?><?php if ($node->field_presentation_file['und'][0]['fid']) print ': '; ?><?php endif; ?>
-    <?php if (!empty($content['field_presentation_file']['#items'])): ?>
-      <?php print render($content['field_presentation_file']); ?>
+    <?php if ($date_value): ?><?php print $date_value; ?><?php if ($file_value): ?>: <?php endif; ?>
+    <?php if ($file_value): ?>
+      <?php print $file_value; ?>
     <?php endif; ?>
   <?php endif; // end teaser ?>
   <?php if ($page): // begin default adaptivetheme full page node tpl ?>
