@@ -67,10 +67,7 @@ function os_software_node_presave($node) {
  * 
  * Sets the custom release node title 
  */
-function os_software_node_view($node, $view_mode, $langcode) {  
-  $field_items = field_get_items('node', $node, 'field_software_recommended');
-  dpm($field_items);
-  
+function os_software_node_view($node, $view_mode, $langcode) {
   if ($node->type !== 'software_project') return;
   
   $method_field_item = field_get_items('node', $node, 'field_software_method');
@@ -78,32 +75,20 @@ function os_software_node_view($node, $view_mode, $langcode) {
     return;
   }
   // Adds inline contextual links for "Add new > Software Release"
-  $release_type = 'software_release';
-  
-  $links = array(
-    $release_type => array(
-      'href' => 'node/add/' . str_replace('_', '-', $release_type),
-      'query' => array('field_software_project' => $node->nid),
-      'title' => ucwords(str_replace('_', ' ', $release_type)),
-    ),
-  );
-  
-  $node->content['controls'] = array(
-    '#type' => 'container',
-    '#weight' => 1,
-    '#attributes' => array(
-      'class' => array(
-        'contextual-controls-wrapper'
+  if (node_access('update', $node)) {
+    $node->content['add_release_link'] = array(
+      '#theme' => 'menu_local_action',
+      '#link' => array(
+        'title' => t('Add new software release'),
+        'href' => 'node/add/software-release',
+        'localized_options' => array(
+          'query' => array('field_software_project' => $node->nid),
+        ),
       ),
-    ),
-  );
-  $node->content['controls']['add_new'] = array(
-    '#theme' => 'ctools_dropdown',
-    '#links' => $links,
-    '#title' => t('Add New'),
-    '#class' => 'add_new',
-    '#access' => spaces_access_admin(),
-  );
+      '#prefix' => '<ul class="field action-links">',
+      '#suffix' => '</ul>',
+    );
+  }
 }
 
 /**
@@ -187,9 +172,9 @@ function _os_software_new_recommended_release($node) {
   foreach ($view->result as $data) {
     if (!isset($node->nid) || $data->nid !== $node->nid) {
       $release_node = node_load($data->nid);
-      $rec_field_instance = field_get_field('node', $release_node, 'field_software_recommended');
-      $rec_field_instance['#items'][0]['value'] = 0;
-      field_update_instance($rec_field_instance);
+      $wrapper = entity_metadata_wrapper('node', $release_node);
+      $wrapper->field_software_recommended[0]->set(0);
+      $wrapper->save();
     }
   }
 }
@@ -217,9 +202,12 @@ function _os_software_delete_child_releases($node) {
 function _os_software_prepare_release_title($node) {
   $default_prefix = 'Project Release';
   
-  $project_node = node_load($node->field_software_project['und'][0]['target_id']);
+  $project_field = field_get_items('node', $node, 'field_software_project');
+  $project_node = node_load($project_field[0]['target_id']);
   $project_title = (!empty($project_node->title)) ? $project_node->title : $default_prefix;
-  $version = trim($node->field_software_version['und'][0]['value']);
+  
+  $version_field = field_get_items('node', $node, 'field_software_version');
+  $version = trim($version_field[0]['value']);
 
   $title_parts = array(
     $project_title,
