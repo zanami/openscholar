@@ -1,33 +1,7 @@
 @import "projects.responsive.layout.css"; 
 @import "/profiles/openscholar/themes/os_basetheme/css/d6buffer.css";
 
-@import url(http://fonts.googleapis.com/css?family=Kreon);
 
-/* OLD SCHOLARS at HARVARD CSS */
-
-@font-face {
-	font-family: 'SlingNormal';
-	src: url('fonts/Sling-webfont.eot');
-	src: local('☺'), url('fonts/Sling-webfont.woff') format('woff'), url('fonts/Sling-webfont.ttf') format('truetype'), url('fonts/Sling-webfont.svg#webfontY1VDFwG7') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
-
-@font-face {
-	font-family: 'SlingLight';
-	src: url('fonts/SlingLight-webfont.eot');
-	src: local('☺'), url('fonts/SlingLight-webfont.woff') format('woff'), url('fonts/SlingLight-webfont.ttf') format('truetype'), url('fonts/SlingLight-webfont.svg#webfontRMLRpMeQ') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
-
-@font-face {
-	font-family: 'Kreon';
-	src: url('fonts/Kreon-webfont.eot');
-	src: local('☺'), url('fonts/Kreon-webfont.woff') format('woff'), url('fonts/Kreon-webfont.ttf') format('truetype'), url('fonts/Kreon-webfont.svg#webfontsRyI6C7k') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
 
 body {
   font: 12px/17px 'helvetica neue', helvetica, arial,sans-serif;
@@ -79,7 +53,6 @@ body.page-site-register #content-column {
 h2 {
   color: #b71313;
   font-size: 18px;
-  font-family: 'Kreon', georgia, serif;
   font-weight: normal;
   }
 
@@ -518,7 +491,7 @@ float: left;
   }
 
 .os-row-features h2 {
-   margin: -5px 0 8px 30px;
+   margin: -5px 0 8px 15px;
   color: #fff;
   text-shadow: #666 0px 1px 1px;
   text-shadow: rgba(51,51,51, .2) 0px 1px 1px;
@@ -687,7 +660,6 @@ td, td.description {
 
 #block-views-os-websites-block .views-field-title a {
   font-weight: normal;
-  font-family: 'Kreon', serif;
   }
 
 #block-views-os-websites-block .more-link {
@@ -724,7 +696,7 @@ td, td.description {
 /* END of old Scholars at Harvard CSS */
 
 body {
-  background:#EEE;
+  background:#DDD;
   }
 
 .row-video {
