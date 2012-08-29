@@ -737,7 +737,9 @@ function os_system_info_alter(&$info, $file, $type){
         'content_top' => 'Content Top',
         'content_first' => 'Content Left',
         'content_second' => 'Content Right',
-        'content_bottom' => 'Content Bottom'
+        'content_bottom' => 'Content Bottom',
+        'sidebar_first' => 'SideBar Left',
+        'sidebar_second' => 'SideBar Right',
     );
   }
 }
