@@ -30,36 +30,7 @@ if ($node->field_presentation_file['und'][0]['fid']) {
   <?php print render($title_prefix); ?>
   
   <?php if (!$page): // begin teaser ?>
-    <?php // dpm($node); ?>
     <span class="title">
-<<<<<<< HEAD:themes/os_basetheme/templates/node-presentation.tpl.php
-    	<a href="<?php print $node_url; ?>" title="<?php print $title ?>">
-    	  <?php print $title; ?>
-    	</a>
-    	<?php if ($node->field_presentation_location[0]['value']): ?>
-    		<?php print ', '; ?>
-      <?php endif; ?>
-    </span>
-    <?php if ($node->field_presentation_location[0]['value']):?>
-      at 
-      <span class="location">
-        <?php print $node->field_presentation_location[0]['value']; ?>
-        <?php if ($node->field_presentation_date[0]['value']): ?>
-          <?php print ', '; ?>
-        <?php endif; ?>
-      </span>
-    <?php endif; ?>
-    <?php if ($node->field_presentation_date[0]['value']): ?>
-      <?php print $node->field_presentation_date[0]['view']; ?>
-      <?php if ($node->field_presentation_file[0]['fid']): ?>
-        <?php print ': '; ?>
-      <?php endif; ?>
-    <?php endif; ?>
-    <?php if ($node->field_presentation_file[0]['fid']): ?>
-      <?php foreach ($node->field_presentation_file as $file): ?>
-        <?php print $file['view']; ?>
-      <?php endforeach; ?>
-=======
     	<strong>
     		<a href="<?php print $node_url; ?>" title="<?php print $title ?>">
     		  <?php print $title; ?></a><?php if ($location_value): ?>, <?php endif; ?>
@@ -74,7 +45,6 @@ if ($node->field_presentation_file['und'][0]['fid']) {
     <?php if ($date_value): ?><?php print $date_value; ?><?php if ($file_value): ?>: <?php endif; ?>
     <?php if ($file_value): ?>
       <?php print $file_value; ?>
->>>>>>> use $content[FIELD] to access values, remove $node->FIELD:themes/os_basetheme/templates/node--presentation.tpl.php
     <?php endif; ?>
   <?php endif; // end teaser ?>
   <?php if ($page): // begin default adaptivetheme full page node tpl ?>
