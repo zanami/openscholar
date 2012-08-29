@@ -337,7 +337,7 @@ class BoxPorter {
   
       return $box;
     } else {
-      parent::saveMessage(t('Could not migrate site logo. Image does not exist. Vsite nid: @nid', array('@nid' => $id)), MigrationBase::MESSAGE_WARNING);
+      $this->migration->saveMessage(t('Could not migrate site logo. Image does not exist. Vsite nid: @nid', array('@nid' => $id)), MigrationBase::MESSAGE_WARNING);
       return FALSE;
     }
   
