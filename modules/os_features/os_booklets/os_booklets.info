@@ -4,10 +4,7 @@ core = 7.x
 package = Features
 php = 5.2.4
 dependencies[] = ctools
-<<<<<<< HEAD
 dependencies[] = entityreference
-=======
->>>>>>> 59e58e8669f7c8d68d5e3cc77a0e1d6af70b3756
 dependencies[] = features
 dependencies[] = menu
 dependencies[] = os
@@ -19,15 +16,8 @@ features[ctools][] = strongarm:strongarm:1
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
 features[field][] = node-book-body
-<<<<<<< HEAD
-features[field][] = node-book-og_group_ref
 features[menu_links][] = primary-menu:documents
 features[node][] = book
-features[user_permission][] = create booklet content
-features[user_permission][] = delete any booklet content
-features[user_permission][] = delete own booklet content
-features[user_permission][] = edit any booklet content
-features[user_permission][] = edit own booklet content
 features[variable][] = book_allowed_types
 features[variable][] = book_child_type
 features[variable][] = comment_anonymous_book
@@ -44,7 +34,6 @@ features[variable][] = node_preview_book
 features[variable][] = node_submitted_book
 features[variable][] = pathauto_node_book_pattern
 features[views_view][] = os_booklets
-=======
 features[menu_links][] = primary-menu:documents
 features[node][] = book
 features[variable][] = node_options_book
@@ -52,4 +41,3 @@ features[variable][] = pathauto_node_book_pattern
 features[views_view][] = os_booklets
 spaces[types][] = og
 spaces[types][] = site
->>>>>>> 59e58e8669f7c8d68d5e3cc77a0e1d6af70b3756

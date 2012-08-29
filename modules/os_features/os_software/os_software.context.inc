@@ -44,9 +44,9 @@ function os_software_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'boxes-os_filter_by_category' => array(
+        'boxes-os_taxonomy_fltr_cat' => array(
           'module' => 'boxes',
-          'delta' => 'os_filter_by_category',
+          'delta' => 'os_taxonomy_fltr_cat',
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),
