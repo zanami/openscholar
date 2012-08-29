@@ -1,22 +1,14 @@
 <?php
 /**
  * @file
-<<<<<<< HEAD
  * Code for the OS Booklets feature.
-=======
- * Code for the OS Booklets feature module.
->>>>>>> 59e58e8669f7c8d68d5e3cc77a0e1d6af70b3756
  */
 
 include_once 'os_booklets.features.inc';
 
 /**
  * hook os_widget
-<<<<<<< HEAD
  *
-=======
- * 
->>>>>>> 59e58e8669f7c8d68d5e3cc77a0e1d6af70b3756
  * Exposes blocks as OpenScholar widgets.
  */
 function os_booklets_os_widget() {
@@ -24,22 +16,12 @@ function os_booklets_os_widget() {
   
   // Displays "Archive" list of blog entry nodes by month
   $items['views-os_booklets-block'] = array(
-<<<<<<< HEAD
       'module' => 'views',
       'delta' => 'os_booklets-block',
       'region' => 'sidebar_second',
-=======
-      'module' => 'views', 
-      'delta' => 'os_booklets-block', 
-      'region' => 'sidebar_second', 
->>>>>>> 59e58e8669f7c8d68d5e3cc77a0e1d6af70b3756
       'weight' => '-10',
       'info' => 'Recent Documents'
   );
   
   return $items;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 59e58e8669f7c8d68d5e3cc77a0e1d6af70b3756
