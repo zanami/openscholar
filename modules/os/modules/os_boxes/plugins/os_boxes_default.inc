@@ -40,7 +40,8 @@ abstract class os_boxes_default extends boxes_box {
       '#title' => t('Advanced Settings'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-      '#weight' => 1000
+      '#weight' => 1000,
+      '#after_build' => array('_os_boxes_default_advanced_handler'),
     );
 
     return $form;
@@ -57,4 +58,13 @@ abstract class os_boxes_default extends boxes_box {
     $block['content'] = '';
     return $block;
   }
+}
+
+function _os_boxes_default_advanced_handler($element, $form_state) {
+  $children = element_children($element);
+  if (empty($children)) {
+    $form['advanced']['#access'] = false;
+  }
+
+  $form_state['complete form']['boxes_adv']['#access'] = false;
 }
