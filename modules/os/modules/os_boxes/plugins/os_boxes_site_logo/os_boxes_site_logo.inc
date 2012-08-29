@@ -16,7 +16,7 @@ class os_boxes_site_logo extends os_boxes_default {
       return $options;
     }
 
-    function options_form(&$form_state) {
+    function box_form(&$form_state) {
       $form = parent::options_form($form_state);
 
       if (!module_exists('imagefield_crop')) {
@@ -26,6 +26,20 @@ class os_boxes_site_logo extends os_boxes_default {
         return $form;
       }
 
+      $fid = $this->options['fid'];
+      $x = $this->options['x'];
+      $y = $this->options['y'];
+      $height = $this->options['height'];
+      $width = $this->options['width'];
+      if (module_exists('vsite') && $vsite = spaces_get_space()) {
+        $file = $vsite->group->field_site_logo[LANGUAGE_NONE][0];
+        $fid = $file['fid'];
+        $x = $file['cropbox_x'];
+        $y = $file['cropbox_y'];
+        $height = $file['cropbox_height'];
+        $width = $file['cropbox_width'];
+      }
+
       $form['file'] = array(
         '#type' => 'managed_file',
         '#title' => t('Site Logo'),
@@ -33,12 +47,12 @@ class os_boxes_site_logo extends os_boxes_default {
         '#process' => array(
           '_os_boxes_site_logo_process',
         ),
-        '#default_value' => $this->options['fid'],
+        '#default_value' => $fid,
         '#dimensions' => array(
-          'x' => $this->options['x'],
-          'y' => $this->options['y'],
-          'height' => $this->options['height'],
-          'width' => $this->options['width'],
+          'x' => $x,
+          'y' => $y,
+          'height' => $height,
+          'width' => $width,
         ),
         '#attached' => array(
           'css' => array(
@@ -53,40 +67,23 @@ class os_boxes_site_logo extends os_boxes_default {
         $form['file']['#upload_location'] = 'public://'.$space->group->purl.'/files';
       }
 
+      $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save'),
+        '#submit' => array('os_boxes_site_logo_submit'),
+      );
+      $form['cancel'] = array(
+        '#type' => 'submit',
+        '#value' => t('Cancel'),
+        '#limit_validation_errors' => array(),
+      );
+
       return $form;
     }
 
     function options_submit($form, $form_state) {
       // do the cropping bit now
       $file_data = $form_state['input']['file'];
-      $file = file_load($file_data['fid']);
-
-      $item = array(
-        'cropbox_x' => $file_data['x'],
-        'cropbox_y' => $file_data['y'],
-        'cropbox_height' => $file_data['height'],
-        'cropbox_width' => $file_data['width'],
-      );
-
-      $scale = array(
-        'width' => 180,
-        'height' => 140,
-      );
-
-      // this creates two images
-      // $orig is the original, unmodified image
-      // its saved so we can refer to it later
-      // $file is original uploaded image that is then cropped to fit
-      // it is the file that is displayed in render
-      // it 'contains' the orig file, through the file usage table
-      $orig = _imagefield_crop_file_to_crop($file->fid);
-      if ($orig->fid == $file->fid) {
-        $orig = imagefield_crop_create_copy($file);
-        file_usage_add($orig, 'imagefield_crop', 'file', $file->fid);
-      }
-      _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $file);
-      file_save($file);
-      file_usage_add($file, 'os_boxes', 'box', 1);  // prevents errors when trying to reuse the same image
 
       $this->options['fid'] = $file->fid;
 
@@ -94,27 +91,19 @@ class os_boxes_site_logo extends os_boxes_default {
       $this->options['y'] = $file_data['y'];
       $this->options['height'] = $file_data['height'];
       $this->options['width'] = $file_data['width'];
-
-      if (module_exists('vsite') && $space = spaces_get_space()) {
-        $node = $space->group;
-
-        $node->field_site_logo[LANGUAGE_NONE][0] = (array)$file + array(
-          'cropbox_x' => $file_data['x'],
-          'cropbox_y' => $file_data['y'],
-          'cropbox_width' => $file_data['width'],
-          'cropbox_height' => $file_data['height'],
-        );
-
-        node_save($node);
-      }
     }
 
     function render() {
       $block = parent::render();
 
+      $fid = $this->options['fid'];
+      if (module_exists('vsite') && $vsite = spaces_get_space()) {
+        $fid = $vsite->group->field_site_logo[LANGUAGE_NONE][0]['fid'];
+      }
+
       try {
-        if (isset($this->options['fid'])) {
-          $file = file_load($this->options['fid']);
+        if (isset($fid)) {
+          $file = file_load($fid);
           $output = file_view($file, 'media_original');
           $block['content'] = render($output);
         }
@@ -128,6 +117,54 @@ class os_boxes_site_logo extends os_boxes_default {
 
       return $block;
     }
+}
+
+function os_boxes_site_logo_submit($form, $form_state) {
+  $file_data = $form_state['input']['file'];
+  $file = file_load($file_data['fid']);
+
+  $item = array(
+    'cropbox_x' => $file_data['x'],
+    'cropbox_y' => $file_data['y'],
+    'cropbox_height' => $file_data['height'],
+    'cropbox_width' => $file_data['width'],
+  );
+
+  $scale = array(
+    'width' => 180,
+    'height' => 140,
+  );
+
+  // this creates two images
+  // $orig is the original, unmodified image
+  // its saved so we can refer to it later
+  // $file is original uploaded image that is then cropped to fit
+  // it is the file that is displayed in render
+  // it 'contains' the orig file, through the file usage table
+  $orig = _imagefield_crop_file_to_crop($file->fid);
+  if ($orig->fid == $file->fid) {
+    $orig = imagefield_crop_create_copy($file);
+    file_usage_add($orig, 'imagefield_crop', 'file', $file->fid);
+  }
+  _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $file);
+  file_save($file);
+  file_usage_add($file, 'os_boxes', 'box', 1);  // prevents errors when trying to reuse the same image
+
+  if (module_exists('vsite') && $space = spaces_get_space()) {
+    $node = $space->group;
+
+    $node->field_site_logo[LANGUAGE_NONE][0] = (array)$file + array(
+      'cropbox_x' => $file_data['x'],
+      'cropbox_y' => $file_data['y'],
+      'cropbox_width' => $file_data['width'],
+      'cropbox_height' => $file_data['height'],
+    );
+
+    node_save($node);
+  }
+  else {
+    boxes_box_form_submit($form, $form_state);
+  }
 }
 
 function _os_boxes_site_logo_process($element, $form_state, $form) {
