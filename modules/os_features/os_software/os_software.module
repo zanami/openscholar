@@ -11,13 +11,6 @@ include_once 'os_software.features.inc';
  */
 
 /**
- * Implements hook_form_FORM_ID_form_alter()
- */
-function os_software_form_software_project_node_form_alter(&$form, &$form_state, $form_id) {
-  drupal_add_js(drupal_get_path('module', 'os_software') . '/os_software.js');
-}
-
-/**
  * Implements hook_node_insert()
  * 
  * Enforces single recommended release per project constraint for "Software Release" 
@@ -25,7 +18,8 @@ function os_software_form_software_project_node_form_alter(&$form, &$form_state,
 function os_software_node_insert($node) {
   if ($node->type !== 'software_release') return;
   
-  $recommended_value = $node->field_software_recommended['und'][0]['value'];
+  $field_items = field_get_items('node', $node, 'field_software_recommended');
+  $recommended_value = $field_items[0]['value'];
   if ($recommended_value === 0) return;
   
   _os_software_new_recommended_release($node);
@@ -43,9 +37,10 @@ function os_software_node_update($node) {
   $node_original = node_load($node->nid);
   if (isset($node_original->title)) { // Only compare values if an original node exists
     $node_updated = $node;
-    
-    $recommended_value_original = $node_original->field_software_recommended['und'][0]['value'];
-    $recommended_value_updated = $node_updated->field_software_recommended['und'][0]['value'];
+    $rec_field_item_original = field_get_items('node', $node_original, 'field_software_recommended');
+    $rec_field_item_updated = field_get_items('node', $node_updated, 'field_software_recommended');
+    $rec_value_original = $rec_field_item_original[0]['value'];
+    $rec_value_updated = $rec_field_item_updated[0]['value'];
     if ($recommended_value_updated === $recommended_value_original) return;
   }  
   // Only updates other Software Release nodes if this value has changed to "Recommended"
@@ -73,8 +68,13 @@ function os_software_node_presave($node) {
  * Sets the custom release node title 
  */
 function os_software_node_view($node, $view_mode, $langcode) {  
+  $field_items = field_get_items('node', $node, 'field_software_recommended');
+  dpm($field_items);
+  
   if ($node->type !== 'software_project') return;
-  if ($node->field_software_method['und'][0]['value'] !== 'Manual upload') {
+  
+  $method_field_item = field_get_items('node', $node, 'field_software_method');
+  if ($method_field_item[0]['value'] !== 'Manual upload') {
     return;
   }
   // Adds inline contextual links for "Add new > Software Release"
@@ -180,14 +180,16 @@ function _os_software_new_recommended_release($node) {
   // Uses [:os_software_relesases:] view to filter only valid releases for this project
   $view = views_get_view('os_software_releases');
   $view->set_display('page_1');
-  $view->set_arguments(array($node->field_software_project['und'][0]['target_id']));
+  $project_field_item = field_get_items('node', $node, 'field_software_project');
+  $view->set_arguments(array($project_field_item[0]['target_id']));
   $view->execute();
   
   foreach ($view->result as $data) {
     if (!isset($node->nid) || $data->nid !== $node->nid) {
       $release_node = node_load($data->nid);
-      $release_node->field_software_recommended['und'][0]['value'] = 0;
-      node_save($release_node);
+      $rec_field_instance = field_get_field('node', $release_node, 'field_software_recommended');
+      $rec_field_instance['#items'][0]['value'] = 0;
+      field_update_instance($rec_field_instance);
     }
   }
 }

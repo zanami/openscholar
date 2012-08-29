@@ -20,6 +20,20 @@
  */
 
 /**
+ * Implements hook_form_FORM_ID_form_alter() for software_project_node_form
+ */
+function rbuild_form_software_project_node_form_alter(&$form, &$form_state, $form_id) {
+  $form['#attached'] = array(
+  	'js' => array(
+  		'type' => 'file',
+  		'data' => drupal_get_path('module', 'rbuild') . '/rbuild.js',
+  	),
+  );
+}
+
+
+
+/**
  * Implements hook_node_insert().
  * 
  * Triggers init_releases() for new rBuild Software Project nodes.

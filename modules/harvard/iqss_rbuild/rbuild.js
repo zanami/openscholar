@@ -3,9 +3,9 @@
  * 
  * Only shows the rbuild fields if "Rbuild repository" is selected
  */
-(function($){
-  Drupal.behaviors.os_software = {
-    attach: function(context){
+(function ($) {
+  Drupal.behaviors.rbuild = {
+    attach: function(context) {
       var inputSelector = '#edit-field-software-method-und';
       var urlFieldSelector = '#field-software-repo-add-more-wrapper';
       var shortNameFieldSelector = '#field-rbuild-short-name-add-more-wrapper';

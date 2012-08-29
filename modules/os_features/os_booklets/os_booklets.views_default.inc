@@ -95,7 +95,6 @@ function os_booklets_views_default_views() {
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
   $handler->display->display_options['row_plugin'] = 'fields';
   $handler->display->display_options['defaults']['row_options'] = FALSE;
-<<<<<<< HEAD
 
   /* Display: Documents Page */
   $handler = $view->new_display('page', 'Documents Page', 'page_1');
@@ -127,8 +126,7 @@ function os_booklets_views_default_views() {
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'primary-menu';
   $handler->display->display_options['menu']['context'] = 0;
-=======
->>>>>>> 59e58e8669f7c8d68d5e3cc77a0e1d6af70b3756
+
   $export['os_booklets'] = $view;
 
   return $export;
