@@ -15,9 +15,19 @@ class os_boxes_site_info extends os_boxes_default {
     return $options;
   }
 
-  function options_form(&$form_state) {
+  function box_form(&$form_state) {
     $form = parent::options_form($form_state);
 
+    if (module_exists('vsite') && $vsite = spaces_get_space()) {
+      $group = $vsite->group;
+      $addr = explode('<br>', $group->field_site_address[LANGUAGE_NONE][0]['value']);
+      $this->options = array_merge($this->options, array(
+        'site_title' => $group->title,
+        'descrip' => $group->field_site_description[LANGUAGE_NONE][0]['value'],
+        'address1' => $addr[0],
+        'address2' => $addr[1],
+      ));
+    }
     $form['site_title'] = array(
       '#type' => 'textfield',
       '#title' => t('Title'),
@@ -49,29 +59,34 @@ class os_boxes_site_info extends os_boxes_default {
       '#description' => t('Ex. Cambridge, MA 02138'),
     );
 
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+      '#submit' => array('os_boxes_site_info_submit'),
+    );
+    $form['cancel'] = array(
+      '#type' => 'submit',
+      '#value' => t('Cancel'),
+      '#limit_validation_errors' => array(),
+    );
+
     return $form;
-  }
-
-  function options_submit($form, $form_state) {
-    if (module_exists('vsite') && $space = spaces_get_space()) {
-      // populate the vsite with this information
-      $node = $space->group;
-      $node->title = $this->options['site_title'];
-
-      $node->field_site_description[LANGUAGE_NONE][0] = array(
-        'value' => $this->options['descrip'],
-        'format' => NULL,
-      );
-      $node->field_site_address[LANGUAGE_NONE][0] = array(
-        'value' => $this->options['address1'].'<br>'.$this->options['address2'],
-        'format' => NULL,
-      );
-      node_save($node);
-    }
   }
 
   function render() {
     $block = parent::render();
+
+    if (module_exists('vsite') && $vsite = spaces_get_space()) {
+      $group = $vsite->group;
+      $addr = explode('<br>', $group->field_site_address[LANGUAGE_NONE][0]['value']);
+      $this->options = array_merge($this->options, array(
+        'site_title' => $group->title,
+        'descrip' => $group->field_site_description[LANGUAGE_NONE][0]['value'],
+        'address1' => $addr[0],
+        'address2' => $addr[1],
+      ));
+    }
+
     $output = '';
 
     $output = '<h1>'.$this->options['site_title'].'</h1>
@@ -81,5 +96,27 @@ class os_boxes_site_info extends os_boxes_default {
 
     $block['content'] = $output;
     return $block;
+  }
+}
+
+function os_boxes_site_info_submit($form, &$form_state) {
+  $box = $form_state['box'];
+  if (module_exists('vsite') && $space = spaces_get_space()) {
+    // populate the vsite with this information
+    $node = $space->group;
+    $node->title = $form_state['values']['site_title'];
+
+    $node->field_site_description[LANGUAGE_NONE][0] = array(
+      'value' => $form_state['values']['descrip'],
+      'format' => NULL,
+    );
+    $node->field_site_address[LANGUAGE_NONE][0] = array(
+      'value' => $form_state['values']['address1'].'<br>'.$form_state['values']['address2'],
+      'format' => NULL,
+    );
+    node_save($node);
+  }
+  else {
+    boxes_box_form_submit($form, $form_state);
   }
 }
