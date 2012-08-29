@@ -45,9 +45,9 @@ class ModalImageNodeOSMigration extends OSMigration {
     $query->join('files', 'f', 'ct.field_modal_image_fid = f.fid');
     $query->fields('f');
     
-    $query->join('og_ancestry', 'og', 'n.nid = og.nid');
-    $query->fields('og', array('group_nid'));
-    $query->condition('og.group_nid', '0', '!=');
+//     $query->leftjoin('og_ancestry', 'og', 'n.nid = og.nid');
+//     $query->fields('og', array('group_nid'));
+//     $query->condition('og.group_nid', '0', '!=');
 
     /**
      * Modify the query.  Add joins and fields here.  content_type_${content_type} and its fields are already included.
@@ -67,6 +67,23 @@ class ModalImageNodeOSMigration extends OSMigration {
   }
   
   public function prepareRow($current_row) {
+    //get og group
+    $og = parent::d6_db_select('og_ancestry', 'og')
+      ->condition('nid', $current_row->nid)
+      ->fields('og', array('group_nid'))
+      ->execute()
+      ->fetchCol();
+    
+    if (!$og) {
+      $og = $this->_infer_og($current_row->nid);
+      if (empty($og)) {
+        parent::saveMessage(t('Could not find group for modal image: @nid', array('@nid' => $current_row->nid)));
+        return FALSE;
+      }
+    }
+    
+    $current_row->group_nid = $og;
+    
     //get path from {url_alias}
     $query = parent::d6_db_select('url_alias', 'ua')
     ->fields('ua', array('dst'))
@@ -75,7 +92,6 @@ class ModalImageNodeOSMigration extends OSMigration {
     $current_row->path = $results['dst'];
   }
   
-
 
   //file is saved.  add it to usage table.
   public function complete($entity, stdClass $row) {
@@ -111,5 +127,20 @@ class ModalImageNodeOSMigration extends OSMigration {
         file_usage_delete($file, 'file', 'file');
       }
     }
+  }
+  
+  //some modal images don't have a group.  this is incorrect.  but they're used by a box, which does have a group.  by our powers of inference....
+  function _infer_og($nid) {
+    $likenid = '%' . $nid . '%';
+    //$regex = '.*nid:s:\d+:' . $nid . '.*';
+    $og = parent::d6_db_select('spaces_overrides', 'so')
+      ->condition('object_type', 'boxes')
+     ->condition('value', '%os_boxes_modal_image%', 'LIKE')
+     ->condition('value', $likenid, 'LIKE')
+    //->condition('value', $regex, 'REGEXP')
+      ->fields('so', array('id'))
+      ->execute()
+      ->fetchCol();
+    return $og;
   }
 }
