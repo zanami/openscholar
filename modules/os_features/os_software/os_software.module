@@ -11,6 +11,23 @@ include_once 'os_software.features.inc';
  */
 
 /**
+ * Implements hook_form_FORM_ID_form_alter() for software_project_node_form
+ * 
+ * Hides the packaging method field if only one option exists.
+ */
+function os_software_form_software_project_node_form_alter(&$form, &$form_state, $form_id) {
+  $method_field_options = _os_software_packaging_method_options();
+  if (sizeof($method_field_options) > 1) return;
+  
+  $form['#attached'] = array(
+  	'css' => array(
+  		'type' => 'file',
+  		'data' => drupal_get_path('module', 'os_software') . '/os_software.css',
+  	),
+  );
+}
+
+/**
  * Implements hook_node_insert()
  * 
  * Enforces single recommended release per project constraint for "Software Release" 

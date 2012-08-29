@@ -107,7 +107,7 @@ function os_software_field_default_fields() {
     ),
     'field_instance' => array(
       'bundle' => 'software_project',
-      'default_value' => NULL,
+      'default_value' => 'Manual upload',
       'deleted' => '0',
       'description' => '',
       'display' => array(
