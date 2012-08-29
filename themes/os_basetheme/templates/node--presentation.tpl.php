@@ -19,7 +19,7 @@ if ($content['field_presentation_date'][0]['#markup'] !== NULL) {
   $date_value = $content['field_presentation_date'][0]['#markup'];
 }
 
-if ($node->field_presentation_file['und'][0]['fid']) {
+if ($node->field_presentation_file['und'][0]['fid'] !== NULL) {
   // Renders all files in a list
   $file_value = render($content['field_presentation_file']);
 }
@@ -42,7 +42,8 @@ if ($node->field_presentation_file['und'][0]['fid']) {
         <strong><?php print $location_value; ?></strong><?php if ($date_value) ?>, <?php endif; ?>
       </span>
     <?php endif; ?>
-    <?php if ($date_value): ?><?php print $date_value; ?><?php if ($file_value): ?>: <?php endif; ?>
+    <?php if ($date_value): ?>
+      <?php print $date_value; ?><?php if ($file_value): ?>: <?php endif; ?>
     <?php if ($file_value): ?>
       <?php print $file_value; ?>
     <?php endif; ?>

@@ -80,6 +80,8 @@ dependencies[] = os_reader
 dependencies[] = os_blog
 dependencies[] = os_presentations
 dependencies[] = os_software
+dependencies[] = os_dataverse
+dependencies[] = os_booklets
 
 ; other
 dependencies[] = diff
