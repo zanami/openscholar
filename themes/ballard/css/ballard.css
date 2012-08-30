@@ -238,7 +238,7 @@ margin: 8px 0 0 0;
 
 /** NICE MENUS **/
 #menu-bar ul.nice-menu ul {
-	margin-top:13px;
+	margin:13px 0 0 -1px;
 	border:none;
 	}
 	
@@ -259,7 +259,7 @@ margin: 8px 0 0 0;
 #menu-bar ul.nice-menu ul li a {
 	color:#FFF;
 	background:#353535;
-	padding: 3px 5px;
+    padding: .8em 1.4em;
 	border: none;
 }
 

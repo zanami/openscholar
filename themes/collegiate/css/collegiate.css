@@ -327,7 +327,7 @@ padding:0px;
 
   /** NICE MENUS **/
 #menu-bar ul.nice-menu ul {
-	margin-top:12px;
+	margin-top:10px;
 	border:none;
 	}
 	
@@ -355,7 +355,10 @@ padding:0px;
 	background:#444;
 }
 
-
+ul.nice-menu {
+    border-top:none;
+   
+}
 
 .sidebar ul.nice-menu ul {
 	margin-top:-36px;
