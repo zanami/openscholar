@@ -129,6 +129,8 @@ class rbuild_handler implements os_software_handler {
   			'_rbuild_add_release_node',
   		  array($project_node, $version, $filename, $package, $this->url),
   		);
+  		// Orders operations to import oldest releases first
+  		$operations = array_reverse($operations);
   	}
   	
   	if (count($operations) === 0) return;

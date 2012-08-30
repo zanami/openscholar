@@ -15,7 +15,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     
     //$query->condition('value', '%os_boxes_node%', 'LIKE'); //testing the port function
     //$query->condition('value', '%os_boxes_modal_image%', 'LIKE'); //testing the port function
-    
+ //   $query->condition('value', '%manual%', 'LIKE');
     
     return $query;
   }
@@ -123,8 +123,10 @@ class BoxPorter {
   //refactored _update_block that also updates the box.  
   public function _update_box($box, $id) {
 
-    if (isset($box->region)) {
-      $box->region = $this->migration->_update_region($box->region);
+    if (isset($box->region) && ($newregion = $this->migration->_update_region($box->region))) {
+      $box->region = $newregion;
+    } else {
+      unset($box->region);
     }
     
     if (isset($box->module)) {

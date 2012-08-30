@@ -101,15 +101,7 @@ div.messages {
     clear: both;
 }
 
-/* HEADER PANELS 
-#header-container .gpanel .region {float: left; clear: none;}
-.header-left.header-main.header-right .region-header-second .region-inner {margin-left: 200px; margin-right: 200px;}
-.header-left.header-main .region-header-second .region-inner {margin-left: 200px; margin-right: 0;}
-.header-main.header-right .region-header-second .region-inner {margin-right: 200px; margin-left: 0;}
-.region-header-first {width:200px; margin-left:-100%;}
-.region-header-third {width:200px; margin-left:-200px;text-align: right;}
-.region-header-second {width:100%;}
-*/
+
   
 /*
  * Branding
@@ -199,6 +191,7 @@ div.status /* Normal priority messages */ {
 div.warning,
 tr.warning /* Medium priority messages */ {
   /* border: 1px solid #f0c020; Drupal core uses: 1px solid #f0c020 */
+ 
 }
 
 
@@ -214,6 +207,7 @@ tr.error /* High priority messages. See also the .error declaration below. */ {
 
 .warning /* Warnings that are separate from div.messages status messages. */ {
   /* color: #e09010; Drupal core uses a #e09010 background */
+ padding: 1.5em 10px;
 }
 
 

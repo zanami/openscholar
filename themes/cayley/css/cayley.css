@@ -71,7 +71,7 @@ p.copy {
 
 #page {
 
-  margin: 0 auto;
+  margin: 0 auto 20px auto;
   padding: 1px 0 0 0;
   background: #fff;
   -moz-box-shadow: 0 0 30px #555;

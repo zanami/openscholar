@@ -83,11 +83,21 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     $block = array_intersect_key($block, array_flip($keep));
     $block['title'] = '';
     
+    if (isset($block['region'])) {
+      $block['region'] = $this->_update_region($block['region']); 
+    }
+    
+    if (isset($block['module'])) {
+      $block['module'] = $this->_update_module($block['module']);
+    }
+    
     if (isset($block['plugin'])) {
       require_once(drupal_get_path('module', 'os_migrate') . '/os_migrate_spaces_overrides_boxes.inc');
       $BP = new BoxPorter($this);
       $block['plugin'] = $BP->_update_block_plugin_key($block['plugin']);
     }
+    
+    return $block;
   }
   
   //update a context's key.  return false if we're dropping it.

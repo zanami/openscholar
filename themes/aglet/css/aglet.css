@@ -148,12 +148,11 @@ body.two-sidebars #columns .hg-container {
   padding-top: 0;
   }
 
-.region-sidebar-first h2.block-title,
-.region-sidebar-second h2.block-title {
+.sidebar h2.block-title {
   padding-top: 21px;
   padding-bottom: 24px;
   background: #d1dcd8;
-  margin: 0 -25px 0 -14px;
+  margin: 0 -33px 0 -21px;
   }
 
 .region-sidebar-second .block
@@ -240,6 +239,11 @@ body.two-sidebars #columns .hg-container {
 #menu-bar ul.nice-menu ul {
   top: 3.2em;
   } 
+  
+ul.nice-menu ul li {
+    background: #898989;
+  
+}
 
 #menu-bar ul.nice-menu ul ul {
   top: -2px;
