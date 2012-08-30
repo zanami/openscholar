@@ -317,7 +317,7 @@ abstract class OSMigration extends Migration {
     }
     
     if ($log_error) {
-  	  self::saveMessage(t('Could not copy inline file %uri.  Ignoring it.', array('%uri'=>$path)));
+  	  self::saveMessage(t('Could not copy inline file %uri.  Ignoring it.', array('%uri'=>$path)), MigrationBase::MESSAGE_WARNING);
     }
     return FALSE;
   }
@@ -549,7 +549,7 @@ abstract class OSMigration extends Migration {
       ->isNotNull(('destid1'));
     $entity_id = $query->execute()->fetchAssoc();
     if (! ($entity_id && $entity = file_load($entity_id['destid1']))) {
-      self::displayMessage(t('Migration error on source file %fid.  Could not find file in migration tables.  Continuing without file.  Check Inline migrations.', array('%fid'=>$fid)), 'warning');
+      self::saveMessage(t('Migration error on source file %fid.  Could not find file in migration tables.  Continuing without file.  Check Inline migrations.', array('%fid'=>$fid)), MigrationBase::MESSAGE_WARNING);
       return; 
     } 
     

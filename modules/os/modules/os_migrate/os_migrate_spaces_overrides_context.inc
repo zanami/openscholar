@@ -3,6 +3,7 @@
 class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
   
   public function __construct() {
+    $this->dependencies = array('SpacesOverridesMenu');
     $this->source_object = $this->dest_object = 'context';
     parent::__construct();
   }

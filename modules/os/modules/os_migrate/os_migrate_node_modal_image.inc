@@ -9,6 +9,7 @@ class ModalImageNodeOSMigration extends OSMigration {
     
     parent::__construct(); // nope!  AbstractNode assumes node->node
     $this->dependencies = array('UsersOS');
+   
     
     $this->destination = new MigrateDestinationMedia();
     $this->description = t('Modal image node -> media migration class.');
@@ -63,6 +64,7 @@ class ModalImageNodeOSMigration extends OSMigration {
       'filepath' => t('Path to file'),
       'timestamp' => t('File creation timestamp'),
       'path' => t('URL alias'),
+      'group_nid' => t('Group nid'),
       );
   }
   
