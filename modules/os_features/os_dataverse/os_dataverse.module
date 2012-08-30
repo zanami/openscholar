@@ -21,7 +21,7 @@ function os_dataverse_menu() {
     'page callback' => '_os_dataverse_data_view',
     'access callback' => 'spaces_access_feature',
     'access arguments' => array('view', 'os_dataverse'),
-    'menu_name' => 'features',
+    'menu_name' => 'primary-menu',
   );
 
  $items['features/os_dataverse'] = array(

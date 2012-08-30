@@ -6,12 +6,12 @@
 function scholar_dvn_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: features:data
-  $menu_links['features:data'] = array(
-    'menu_name' => 'features',
+  // Exported menu link: primary-menu:data
+  $menu_links['primary-menu:data'] = array(
+    'menu_name' => 'primary-menu',
     'link_path' => 'data',
     'router_path' => 'data',
-    'link_title' => 'data',
+    'link_title' => 'Data',
     'options' => array(),
     'module' => 'system',
     'hidden' => '0',
@@ -22,7 +22,7 @@ function scholar_dvn_menu_default_menu_links() {
   );
   // Translatables
   // Included for use with string extractors like potx.
-  t('data');
+  t('Data');
 
 
   return $menu_links;
