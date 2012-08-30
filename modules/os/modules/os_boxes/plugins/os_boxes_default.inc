@@ -63,8 +63,9 @@ abstract class os_boxes_default extends boxes_box {
 function _os_boxes_default_advanced_handler($element, $form_state) {
   $children = element_children($element);
   if (empty($children)) {
-    $form['advanced']['#access'] = false;
+    $element['#access'] = false;
   }
 
   $form_state['complete form']['boxes_adv']['#access'] = false;
+  return $element;
 }

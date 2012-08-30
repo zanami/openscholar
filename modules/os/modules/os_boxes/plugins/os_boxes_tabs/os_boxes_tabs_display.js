@@ -8,7 +8,7 @@ Drupal.behaviors.os_boxes_tabs = { attach: function (ctx) {
   $('.block-boxes-os_boxes_tabs', ctx).once('tabs', function () {
     $('.block-content', this).not('.block-content .block-content').tabs({
       show: clickHandle,
-      selected: (typeof sessionStorage[this.id] != 'undefined')?sessionStorage[this.id]:0,
+      selected: (typeof window.sessionStorage != 'undefined' && typeof sessionStorage[this.id] != 'undefined')?sessionStorage[this.id]:0
     });
   });
 
@@ -17,6 +17,7 @@ Drupal.behaviors.os_boxes_tabs = { attach: function (ctx) {
       id = $this.parents('.block').attr('id'),
       val = $(this).tabs('option', 'selected');
 
-    sessionStorage[id] = val;
+    if (typeof window.sessionStorage != 'undefined')
+      window.sessionStorage[id] = val;
   }
 }};

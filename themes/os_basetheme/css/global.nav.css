@@ -251,6 +251,25 @@ ul.pager li.pager-current {
   margin: 0;
 }
 
+/* Throbber */
+.ajax-progress {
+  float: left; /* LTR */
+}
+.ajax-progress .throbber {
+  background: transparent url('/profiles/openscholar/themes/os_basetheme/images/throbber.gif') no-repeat 0px 0;
+  float: left; /* LTR */
+  height: 11px;
+  margin: 4px 2px;
+  width: 16px;
+}
+tr .ajax-progress .throbber {
+  margin: 0 2px;
+}
+.ajax-progress-bar {
+  width: 16em;
+}
+
+
 /* Theme the various states of pager links. */
 ul.pager li a:link,
 ul.pager li a:visited {
@@ -260,6 +279,12 @@ ul.pager li a:hover,
 ul.pager li a:focus,
 ul.pager li a:active {
 }
+
+
+.item-list .pager li {
+    padding: 0.3em;
+}
+
 
 /* Note: .pager-current is for the current page. */
 ul.pager li.pager-item  {
@@ -272,6 +297,7 @@ ul.pager li.last {
 }
 
 ul.pager li.pager-current {
+	font-weight:bold;
 }
 
 ul.pager li.pager-first {
@@ -521,6 +547,7 @@ ul.nice-menu a {
 
 ul.nice-menu ul {
     top: 2.9em;
+     z-index:20;
 }
 
 ul.nice-menu ul li {
@@ -533,6 +560,60 @@ ul.nice-menu ul li a {
     border:none;
 }
 
+
+ul.nice-menu-left a, 
+ul.nice-menu-left ul a {
+    padding-left: 0;
+}
+
+/******************************
+ HORIZONTAL (down) menus
+******************************/
+
+ul.nice-menu-down {
+  float: left; /* LTR */
+  border: 0;
+}
+
+ul.nice-menu-down li {
+  border-top: none;
+}
+
+ul.nice-menu-down li li {
+  border-top: 0;
+}
+
+ul.nice-menu-down ul {
+  left: 0; /* LTR */
+}
+
+ul.nice-menu-down ul li {
+  clear: both;
+}
+
+ul.nice-menu-down li ul li ul {
+  left: 12.5em; /* LTR */
+  top: -1px;
+}
+
+ul.nice-menu-down .menuparent a {
+  padding-right: 10px; /* LTR */
+}
+
+ul.nice-menu-down li.menuparent {
+  background: none; /* LTR */
+}
+
+ul.nice-menu-down li.menuparent:hover {
+  background: none; /* LTR */
+}
+
+ul.nice-menu-down li li.menuparent {
+  background: none; /* LTR */
+}
+
+ul.nice-menu-down li li.menuparent:hover {
+  background: none; /* LTR */
 
 /* CP MINI MENU */
 

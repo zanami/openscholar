@@ -100,12 +100,20 @@ h2.block-title {
 }
   
   .region-sidebar-first #block-os-primary-menu ul.menu {margin-left:1px;border-top:none;}
-  .region-sidebar-first #block-os-secondary-menu ul.menu {margin-left:18px;}
-  .region-sidebar-first #block-os-primary-menu ul.menu li,.region-sidebar-second #block-os-primary-menu ul.menu li, .region-sidebar-first #block-os-secondary-menu ul.menu li {list-style-image:url('../images/mainNavLftIcon.gif');background:#FFF;padding-bottom:12px;}
-  .region-sidebar-first #block-os-primary-menu ul.menu li a,.region-sidebar-second #block-os-primary-menu ul.menu li a, .region-sidebar-first #block-os-secondary-menu ul.menu li a {color:#757575;font-weight:bold;padding-left:1px;text-transform:uppercase;line-height:10px;}
+  .region-sidebar-first #block-os-secondary-menu ul.menu {margin-left:12px;}
+  .region-sidebar-first #block-os-primary-menu ul.menu li,
+  .region-sidebar-second #block-os-primary-menu ul.menu li, 
+  .region-sidebar-first #block-os-secondary-menu ul.menu li,
+  .region-sidebar-second #block-os-secondary-menu ul.menu li {list-style-image:url('../images/mainNavLftIcon.gif');background:#FFF;padding-bottom:10px;}
   
-  .region-sidebar-second #block-os-primary-menu ul.menu, .region-sidebar-second #block-os-secondary-menu ul.menu {margin-left:20px;}
-  .region-sidebar-second #block-os-primary-menu ul.menu li a,  .region-sidebar-second #block-os-secondary-menu ul.menu li a {color:#757575;font-weight:bold;font-size:12px;text-transform:uppercase;}
+  .region-sidebar-first #block-os-primary-menu ul.menu li a,
+  .region-sidebar-second #block-os-primary-menu ul.menu li a,
+  .region-sidebar-first #block-os-secondary-menu ul.menu li a {color:#757575;font-weight:bold;padding-left:1px;text-transform:uppercase;line-height:10px;}
+  
+  .region-sidebar-second #block-os-primary-menu ul.menu, 
+  .region-sidebar-second #block-os-secondary-menu ul.menu {margin-left:20px;}
+  .region-sidebar-second #block-os-primary-menu ul.menu li a, 
+   .region-sidebar-second #block-os-secondary-menu ul.menu li a {color:#757575;font-weight:bold;font-size:12px;text-transform:uppercase;}
 
 p.copy {
   margin-top: 0;
