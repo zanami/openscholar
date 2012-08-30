@@ -87,6 +87,10 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       $block['module'] = $this->_update_module($block['module']);
     }
     
+    if (isset($block['delta'])) {
+      $block['delta'] = $this->_update_context_delta($block['delta']);
+    }
+    
     if (!isset($block['info']) && isset($block['label'])) {
       $block['info'] = $block['label'];
     }
@@ -102,11 +106,20 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
   
   function _update_context_block_id($id) {
     $id_map = array(
-      'vsite_menus-features' => 'os-primary-menu',
-      'vsite_menus-scholar_secondary_menu' => 'os-secondary-menu',
+      'vsite_menus-features' => 'primary-menu',
+      'vsite_menus-scholar_secondary_menu' => 'secondary-menu',
     );
     
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
+  }
+  
+  function _update_context_delta($delta) {
+    $delta_map = array(
+      'features' => 'primary-menu',
+      'scholar_secondary_menu' => 'secondary-menu',
+    );
+    
+    return (isset($delta_map[$delta])) ? $delta_map[$delta] : $delta;
   }
   
   //update a context's key.  return false if we're dropping it.
