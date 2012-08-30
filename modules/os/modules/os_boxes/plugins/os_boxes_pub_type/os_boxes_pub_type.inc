@@ -95,7 +95,7 @@ class os_boxes_pub_type extends os_boxes_default {
 
   	//Set the display num in the view (the count)
   	$arguments = $view->display_handler->get_option('arguments');
-  	$arguments['name']['style_options']['count'] = ($this->options['display_num'])?1:0;
+  	$arguments['name']['summary_options']['count'] = ($this->options['display_num'])?1:0;
   	$view->display_handler->override_option('arguments', $arguments);
 
         //Tie this view to this box (this tells the view to call this box's view alter)
