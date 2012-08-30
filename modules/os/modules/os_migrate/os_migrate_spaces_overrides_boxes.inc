@@ -56,9 +56,9 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     $BP = new BoxPorter($this);
     $box = $BP->_update_box($box, $id);
     
-    if (isset($box->region)) {
-      unset($box->region);
-    }
+//     if (isset($box->region)) {
+//       unset($box->region);
+//     }
     
     return $box;
   }
