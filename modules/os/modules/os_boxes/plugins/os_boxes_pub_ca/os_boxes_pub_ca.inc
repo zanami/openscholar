@@ -20,15 +20,15 @@ class os_boxes_pub_ca extends os_boxes_default {
   /**
    * Implementation of boxes_content::options_form().
    */
-  public function options_form(&$form_state){
+  public function options_form(&$form_state) {
+    $form = parent::options_form($form_state);
 
     $form['display_num'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Display number of items in category:'),
+      '#title' => t('Display number of items in category.'),
       '#default_value' => $this->options['display_num'],
     );
 
-    $form += parent::options_form($form_state);
     return $form;
   }
 
@@ -50,7 +50,7 @@ class os_boxes_pub_ca extends os_boxes_default {
 
         //Set the display num in the view (the count)
         $arguments = $view->display_handler->get_option('arguments');
-        $arguments['lastname']['style_options']['count'] = ($this->options['display_num'])?1:0;
+        $arguments['lastname']['summary_options']['count'] = ($this->options['display_num'])?1:0;
         $view->display_handler->override_option('arguments', $arguments);
 
         $output = $view->execute_display('block');
