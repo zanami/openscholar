@@ -13,7 +13,7 @@ h2, h3, h4 {
 	
 #page {
 	box-shadow: 0 0 30px #555555;
-    margin: 0 auto;
+    margin: 0 auto 30px auto;
     padding: 1px 0 0;
     background: #fff;
 }
@@ -58,6 +58,40 @@ h2, h3, h4 {
 	background: #C55B28;
 	color: #fff;
 	}
+	
+  /** NICE MENUS **/
+ 	
+#menu-bar ul.nice-menu ul {
+	 margin-top: -5px;
+	border:none;
+	}
+	
+#menu-bar ul.nice-menu ul ul {
+	margin-top:0;
+}
+
+#menu-bar ul.nice-menu ul ul li {
+	margin-bottom:0;
+}
+	
+#menu-bar ul.nice-menu ul li {
+	margin-top:0;
+	background:#252A2B;
+	border:none;
+}
+	
+#menu-bar ul.nice-menu ul li a {
+	color:#333;
+	background:#eee;
+}
+
+
+#menu-bar ul.nice-menu ul li a:hover {
+	color:#fff;
+	background:#C55B28;
+
+}  
+	
 	
 #columns {
 	background: #FFF;
