@@ -36,4 +36,3 @@ function os_ctools_plugin_api() {
 function os_views_api() {
   return array("version" => "3.0");
 }
-

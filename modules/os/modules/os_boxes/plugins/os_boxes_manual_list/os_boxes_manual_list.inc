@@ -5,6 +5,7 @@ class os_boxes_manual_list extends os_boxes_default {
   public function options_defaults() {
     return array(
       'nodes' => array(),
+      'style' => 'titles',
     );
   }
 
@@ -64,6 +65,17 @@ class os_boxes_manual_list extends os_boxes_default {
       $nodes[$k] = $n;
     }
 
+    $form['style'] = array(
+      '#type' => 'select',
+      '#title' => t('Display Style'),
+      '#options' => array(
+          'teasers' => t('List of teasers'),
+          'titles' => t('List of titles')
+      ),
+      '#required' => TRUE,
+      '#default_value' => $this->options['style']
+    );
+
     $form['count'] = array(
       '#type' => 'hidden',
       '#default_value' => count($this->options['nodes'])-1,
@@ -80,14 +92,26 @@ class os_boxes_manual_list extends os_boxes_default {
     $block = parent::render();
     $links = array();
     foreach ($this->options['nodes'] as $n) {
-      $l = array(
-        'href' => 'node/'.$n['nid'],
-        'title' => $n['title'],
-      );
-      $links[$n['weight']] = $l;
+      if ($this->options['style'] == 'teasers') {
+        // Theme the nodes as a teaser
+        $node = node_load($n['nid']);
+        $links[$n['weight']] = render(node_view($node, 'teaser'));
+      }
+      else {
+        $l = array(
+          'href' => 'node/'.$n['nid'],
+          'title' => $n['title'],
+        );
+        $links[$n['weight']] = $l;
+      }
     }
     ksort($links);
-    $block['content'] = theme('links', array('links' => $links, 'attributes' => array('class' => array('featured-links'))));
+    if ($this->options['style'] == 'teasers') {
+      $block['content'] = theme('item_list', array('items' => $links, 'attributes' => array('class' => array('featured-links'))));
+    }
+    else {
+      $block['content'] = theme('links', array('links' => $links, 'attributes' => array('class' => array('featured-links'))));
+    }
     return $block;
   }
 }
