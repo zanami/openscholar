@@ -6,6 +6,24 @@ include_once ('vsite.features.inc');
  */
 
 /**
+ * Helper function to return the current vsite
+ */
+function vsite_get_vsite($sid = false){
+
+  if($sid && intal($sid)){
+    $vsite = spaces_load('og', $sid, false);
+  }else{
+    $vsite = spaces_get_space();
+  }
+
+  if($vsite && $vsite->type == 'og'){
+    return $vsite;
+  }
+
+  return false;
+}
+
+/**
  * Helper function to return the current purl prefix
  *
  * @param vsite $vsite          
