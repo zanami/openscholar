@@ -98,7 +98,8 @@ class os_boxes_site_logo extends os_boxes_default {
 
       $fid = $this->options['fid'];
       if (module_exists('vsite') && $vsite = spaces_get_space()) {
-        $fid = $vsite->group->field_site_logo[LANGUAGE_NONE][0]['fid'];
+        $fid = field_get_items('node', $vsite->group, 'field_site_logo');
+        $fid = $fid[0]['fid'];
       }
 
       try {
