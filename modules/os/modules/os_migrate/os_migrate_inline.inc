@@ -111,7 +111,7 @@ class ImageInlineOSMigration extends OSMigration {
     $row->uri = $purl . '/' . $row->filepath;
 
     if (!parent::legacy_file_exists($row->uri)) {
-      Migration::displayMessage(t('Image Migration Error.  File not found: %uri', array('%uri'=>$row->uri)));
+      parent::saveMessage(t('Image Migration Error.  File not found: %uri', array('%uri'=>$row->uri)), MigrationBase::MESSAGE_WARNING);
       return FALSE;
     }
   }

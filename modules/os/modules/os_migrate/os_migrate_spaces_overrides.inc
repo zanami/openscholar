@@ -41,7 +41,7 @@
     $query->isNotNull('value');
     
     //$query->condition('id', '27024'); // good site for testing menus: http://scholar.harvard.edu/goldin/ <- econ has weirdm enus.
- //   $query->condition('id', '8921'); //jlepore
+    $query->condition('id', '8921'); //jlepore
     
     //check that vsite exists?
     
