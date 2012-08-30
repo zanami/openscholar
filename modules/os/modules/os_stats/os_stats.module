@@ -19,7 +19,7 @@ function os_stats_block_view($delta='') {
 	$block = array(); 
 	switch ($delta) {
 		case 'os_stats':
-			$block['title'] = t('OpenScholar Stats');
+			//$block['title'] = t('OpenScholar Stats');
 			$block['content'] = os_stats_content();
 			break;
 	}// end switgh
@@ -83,8 +83,48 @@ function os_stats_block_save($delta='',$edit = array()) {
  * 
  */
 function os_stats_content() {
-	// just placeholder text to ensure the block was displaying
-	return '</p><div class="body">OpenScholar Stats</div><p>';
+	$data = array();
+	
+	//check cache
+	if ($cache = cache_get('os_stats_data')) {
+	  	if ($cache->expire < time()) {
+	    	cache_clear_all('os_stats_data', 'cache'); //clear the expired data.  still using it for this run though.
+	  	}// end if
+		$data = unserialize($cache->data);		
+	} else {
+  		$stats = _os_stats();
+  		function _stats_weight($a, $b) {
+  	  		return ($a['weight'] > $b['weight']);
+  		}// end if
+  		uasort($stats, '_stats_weight');
+  		$enabled = unserialize(variable_get('os_stats_enabled', FALSE));
+  	
+  		foreach($stats as $stat => $def) {
+  	  		//$args = (isset($def['query_args']) && is_array($def['query_args'])) ? $def['query_args'] : array();
+  	 		if ($enabled[$stat] || !isset($enabled[$stat])) {
+  	 		 	// if the query has an array, assign it
+ 				if((!empty($def['query_args'])) && (!empty($def['query_args_type']))) {
+ 					$type = $def['query_args_type'];
+ 					$queryArray = $def['query_args'];
+ 					// new query
+ 					$result = db_query($def['query'], array($type => $queryArray))->fetchField();
+ 				}else {
+ 					$result = db_query($def['query'])->fetchField();
+ 				}// end if
+  	 		  	if($result) {
+  	    			// apply optional callback.  necessary for file size labels.
+  	  				if (isset($def['callback']) && function_exists($def['callback'])) {
+    					$result = $def['callback']($result);
+    				}// end if
+    		
+    				$data[$def['title']] = $result;
+  	 		  	}// end if
+  	  		}// end if
+  		}// end foreach
+  		cache_set('os_stats_data', serialize($data), 'cache', time() + variable_get('os_stats_cache_expiration', 24*3600));	
+	}// end if
+		
+	return _os_stats_theme_item_dt($data);
 }// end function
 
 /**
@@ -93,18 +133,19 @@ function os_stats_content() {
  */
 function _os_stats() {
   $content_type = variable_get('scholar_content_type', 'vsite');
-	return array(
+	$test = array(
 		'Publications' => array(
 			'title' => t('Publications'),
 			'description' => t('Biblio publications'),
-			'query' => 	'SELECT COUNT(nid) FROM {node} WHERE type="biblio"',
+			'query' => 	'SELECT COUNT(nid) FROM {node} WHERE type=\'biblio\'',
 			'weight' => 20,
 		),
 		'Vsites' => array(
 			'title' => t('Websites'),
 			'description' => t('Virtual sites in this OS installation'),
-		  	'query' => 'SELECT COUNT(nid) FROM {node} WHERE type = "%s" ',
+		  	'query' => 'SELECT COUNT(nid) FROM {node} WHERE type = :typeVal ',
 		  	'query_args' => array(variable_get('scholar_content_type', 'vsite')),
+			'query_args_type' => 'typeVal',
 		  	'weight' => 0,
 		),
 		'Nodes' => array(
@@ -134,6 +175,7 @@ function _os_stats() {
 			'weight' => -10,
 		),
 	);// end array
+	return $test;
 }// end function
 
 /**
@@ -148,4 +190,19 @@ function _os_stats_file_units($fs) {
 		$fs = $fs/1024.0;
 	}
 	return round($fs, 1) . $units[$c];
-}
+}// end function
+
+/**
+ * @function _theme_item_dt
+ * function that returns definition list from an associative array
+ */
+function _os_stats_theme_item_dt($data) {
+  	$out = '<dl>';
+  	foreach ($data as $dt => $dd) {
+    	$out .= '  <dt>' . $dt . ':</dt>';
+    	$out .= '    <dd>' . $dd . '</dd>';
+  	}// end foreach
+  	$out .= '</dl>';
+  
+  	return $out;
+}// end function }
