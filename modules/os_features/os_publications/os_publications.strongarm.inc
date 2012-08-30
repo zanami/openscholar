@@ -20,6 +20,13 @@ function os_publications_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'biblio_base_title';
+  $strongarm->value = 'Publications';
+  $export['biblio_base_title'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'biblio_contrib_fields_delta';
   $strongarm->value = '1';
   $export['biblio_contrib_fields_delta'] = $strongarm;
