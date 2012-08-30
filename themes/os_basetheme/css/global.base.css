@@ -145,6 +145,14 @@ h4 a {
     text-decoration: none;
 }
 
+#boxes-box-site_info {
+	line-height:1;
+}
+
+.view .date-nav-wrapper .date-heading h3 {
+    font-size: 1.3em;
+}
+
 img,
 a img {
   border: 0;
