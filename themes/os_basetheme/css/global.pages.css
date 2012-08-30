@@ -86,6 +86,12 @@ div.messages {
 
 
 /*** FRONTPAGE PANELS ***/
+
+.region-content-first, 
+.region-content-second {
+    width: 100%;
+}
+	
 .content-left.content-right .region-content-first, 
 .content-left.content-right .region-content-second {
 	float:left;
@@ -102,7 +108,6 @@ div.messages {
 }
 
 
-  
 /*
  * Branding
  */
@@ -526,9 +531,28 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 }
 
 
-
+/**	 QUICK TABS**/
 	
+.ui-tabs .ui-tabs-panel {
+/* IE10 Consumer Preview */ 
+background-image: -ms-linear-gradient(top, #F5F2F2 0%, #FFFFFF 100%);
+/* Mozilla Firefox */ 
+background-image: -moz-linear-gradient(top, #F5F2F2 0%, #FFFFFF 100%);
+/* Webkit (Safari/Chrome 10) */ 
+background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F5F2F2), color-stop(1, #FFFFFF));
+/* Webkit (Chrome 11+) */ 
+background-image: -webkit-linear-gradient(top, #F5F2F2 0%, #FFFFFF 100%);
+/* W3C Markup, IE10 Release Preview */ 
+background-image: linear-gradient(to bottom, #F5F2F2 0%, #FFFFFF 100%);
+padding:10px;
+-moz-margin-top: 0px;
+margin-top: 1px;
+border-top:1px solid #ccc;
+	}
 	
+.ui-tabs .ui-tabs-nav li a {
+    padding: 0.15em 1em;
+  }
 	
 	
 	

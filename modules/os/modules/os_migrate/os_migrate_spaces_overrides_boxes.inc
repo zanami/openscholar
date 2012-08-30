@@ -56,9 +56,9 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     $BP = new BoxPorter($this);
     $box = $BP->_update_box($box, $id);
     
-    if (isset($box->region)) {
-      unset($box->region);
-    }
+//     if (isset($box->region)) {
+//       unset($box->region);
+//     }
     
     return $box;
   }
@@ -87,7 +87,6 @@ class BoxPorter {
   
     $box_map = array(
       'os_modal_tabbed' => 'os_boxes_tabs',
-      'os_boxes_shields' => 'os_shields_box',
       'os_boxes_modal_sitelogo' => 'os_boxes_sitelogo', //needs pulling from orig vsite
       'os_boxes_modal_siteinfo' => 'os_boxes_siteinfo', //needs pulling from orig vsite
       'vsite_taxonomy_fbt' => 'os_taxonomy_fbt',
@@ -137,9 +136,6 @@ class BoxPorter {
       $box->module = $this->migration->_update_module($box->module);
     }
     
-    if (!isset($box->info)) {
-      $box->info = 'FIXED: ' . $box->title;
-    }
     /* three kinds of updates
      no change
     key changes
@@ -301,6 +297,47 @@ class BoxPorter {
     ));
     $box->plugin_key = $key;
   
+    return $box;
+  }
+  
+  //attach a style option
+  public function _port_box_os_boxes_manual_list($box, $id, $key_only) {
+    if ($key_only) {
+      return $id;
+    }
+    
+    if (!isset($box->options['style'])) {
+      $box->options['style'] = 'title';
+    }
+    
+    return $box;
+  }
+  
+  //'os_boxes_shields' => 'os_shields_box', (box holds the filename.  used to be in a var.)
+  public function _port_box_os_shields_box($box, $id, $key_only) {
+    $key = 'os_shields_box';
+    if ($key_only) {
+      return $key;
+    }
+    
+    //this depends on variable having already been imported.
+    $value = db_select('spaces_overrides', 'so')
+      ->condition('object_type', 'variable')
+      ->condition('object_id', 'os_shields_shield') //name has already been transformed...
+      ->condition('id', $id)
+      ->condition('type', 'og')
+      ->fields('so', array('value'))
+      ->execute()
+      ->fetchCol();
+    
+    if ($shield_path = unserialize($value)) {
+      $shield_file = end(explode('/', $shield_path));
+      $box->options['shield'] = $shield_file;
+    } else {
+      $box->options['shield'] = '';
+    }
+    $box->plugin_key = $key;
+    
     return $box;
   }
   

@@ -42,7 +42,7 @@ class AnnouncementNodeOSMigration extends AbstractNodeOSMigration {
     	->execute();
     
     $photo = $result->fetchAssoc();
-    if ($photo) {
+    if (is_array($photo) && count($photo)) {
       $row->field_photo = $photo->filename;
       $row->{'field_photo:source_dir'} = $photo->filepath;
     } else {

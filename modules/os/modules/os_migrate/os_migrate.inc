@@ -692,6 +692,8 @@ abstract class OSMigration extends Migration {
   function _os_migrate_inline_files_update_file_usage($entity, $row) {
     if ($entity->fid && $row->nid) {
       file_usage_add($entity, 'os_wysiwyg', 'node', $row->nid);
+    } else {
+      return FALSE; //does this ever happen?  nid==0
     }
   }
 }

@@ -294,8 +294,16 @@ ul ul ul ul {
   list-style-type: circle;
 }
 
-.view-gallery-listing ul {
+.views-field-media-gallery-media ul {
+clear:right;
+}
+
+.view-gallery-listing ul li,
+.views-field-media-gallery-media ul li {
 list-style-type: none;	
+display:inline;
+margin: 10px 10px 0 0;
+float: left;
 }
 
 dt {

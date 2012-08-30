@@ -84,8 +84,8 @@ class os_boxes_site_info extends os_boxes_default {
       $this->options = array_merge($this->options, array(
         'site_title' => $group->title,
         'descrip' => $descrip[0]['value'],
-        'address1' => $addr[0],
-        'address2' => $addr[1],
+        'address1' => (isset($addr[0])) ? $addr[0] : '',
+        'address2' => (isset($addr[1])) ? $addr[1] : '',
       ));
     }
 
