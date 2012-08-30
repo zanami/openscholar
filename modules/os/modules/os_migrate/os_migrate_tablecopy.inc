@@ -22,8 +22,13 @@ abstract class TableCopyMigration extends OSMigration {
    *   ),
    *  );  
    */
-  public function __construct($table, $schema) {
-    parent::__construct(MigrateGroup::getInstance('table_copy'));
+  public function __construct($table, $schema, $group=NULL) {
+    if ($group) {
+      parent::__construct($group);
+    } else {
+      parent::__construct();
+    }
+    
     
     $this->table = $table;
     $this->alias = $table[0];

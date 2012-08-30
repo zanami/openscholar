@@ -62,27 +62,22 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
      
     //boxes in values
     foreach ($value['blocks'] as $id => $block) {
-      //update id
-      $new_id = $id;
+
+      list($new_id, $block) = $this->_update_context_block($id, $block);
       unset($value['blocks'][$id]);
-  
-      //and block
-      //(02:40:42 PM) Matt Petrovic: context only needs module, delta, region, weight, status and title
-//       $keep = array('module', 'delta', 'region', 'weight', 'status', 'title');
-//       $block = array_intersect_key($block, array_flip($keep));
-//       $block['title'] = '';
-      //$value['blocks'][$new_id] = $this->_update_block($block);
-      $value['blocks'][$new_id] = $this->_update_context_block($block);
+      $value['blocks'][$new_id] = $block;
     }
   
     return array($object_id, $value);
   }
   
   //updates only the relevant portions of a block for this context
-  public function _update_context_block($block) {
-    $keep = array('module', 'delta', 'region', 'weight', 'status', 'title', 'plugin');
+  public function _update_context_block($id, $block) {
+    $id = $this->_update_context_block_id($id);
+    
+    $keep = array('module', 'delta', 'region', 'weight', 'status', 'title', 'plugin', 'label');
     $block = array_intersect_key($block, array_flip($keep));
-    $block['title'] = '';
+    //$block['title'] = '';
     
     if (isset($block['region'])) {
       $block['region'] = $this->_update_region($block['region']); 
@@ -92,13 +87,26 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       $block['module'] = $this->_update_module($block['module']);
     }
     
+    if (!isset($block['info']) && isset($block['label'])) {
+      $block['info'] = $block['label'];
+    }
+    
     if (isset($block['plugin'])) {
       require_once(drupal_get_path('module', 'os_migrate') . '/os_migrate_spaces_overrides_boxes.inc');
       $BP = new BoxPorter($this);
       $block['plugin'] = $BP->_update_block_plugin_key($block['plugin']);
     }
     
-    return $block;
+    return array($id, $block);
+  }
+  
+  function _update_context_block_id($id) {
+    $id_map = array(
+      'vsite_menus-features' => 'os-primary-menu',
+      'vsite_menus-scholar_secondary_menu' => 'os-secondary-menu',
+    );
+    
+    return (isset($id_map[$id])) ? $id_map[$id] : $id;
   }
   
   //update a context's key.  return false if we're dropping it.
