@@ -118,6 +118,8 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   if (isset($form['biblio_cut_paste']))
     $form['biblio_cut_paste']['#access'] = false;
 
+  ksort($form['biblio_type']['#options']);
+
   // do things based on what pub type we have selected
   switch ($tid) {
     case 0:

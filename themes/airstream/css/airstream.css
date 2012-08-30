@@ -114,8 +114,8 @@ body.navbar #header-container p {
 
 
 
-#menu-bar a,
-#menu-bar a:visited,
+#menu-bar ul.menu li a,
+#menu-bar ul.menu li a:visited,
 .region-sidebar-first ul.menu li a,
 .region-sidebar-first ul.menu li a:visited {
   font-style: normal;
@@ -125,18 +125,18 @@ body.navbar #header-container p {
   text-decoration:none;
   }
 
-#menu-bar a:hover,
+#menu-bar ul.menu li a:hover,
 .region-sidebar-first ul.menu li a:hover,
-#menu-bar a.active,
+#menu-bar ul.menu li a.active,
 .region-sidebar-first  ul.menu li a.active,
-#menu-bar li.active-trail,
+#menu-bar ul.menu li.active-trail,
 .region-sidebar-first  ul.menu li.active-trail {
   background:#F9FAFA;
   }
 
 /*Navbar Specific */
 
-#menu-bar li {
+#menu-bar ul.menu li  {
   font-size: 1em;
   line-height: 34px;
   font-weight: bold;
@@ -144,12 +144,12 @@ body.navbar #header-container p {
   border-right: 1px solid #D8D6D6;
   }
 
-#menu-bar li.first {
+#menu-bar ul.menu li.first {
   border-left: 1px solid #D8D6D6;
   }
 
-#menu-bar a,
-#menu-bar a:visited {
+#menu-bar ul.menu li a,
+#menu-bar ul.menu li a:visited {
   padding: 0 9px;
   height: 34px;
   }

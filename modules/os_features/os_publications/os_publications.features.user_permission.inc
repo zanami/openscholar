@@ -15,9 +15,11 @@ function os_publications_user_default_permissions() {
     'name' => 'access biblio content',
     'roles' => array(
       0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
+      1 => 'anonymous user',
+      2 => 'authenticated user',
+      3 => 'manager',
+      4 => 'vsite admin',
+      5 => 'vsite user',
     ),
     'module' => 'biblio',
   );
@@ -60,9 +62,11 @@ function os_publications_user_default_permissions() {
     'name' => 'show download links',
     'roles' => array(
       0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
+      1 => 'anonymous user',
+      2 => 'authenticated user',
+      3 => 'manager',
+      4 => 'vsite admin',
+      5 => 'vsite user',
     ),
     'module' => 'biblio',
   );
@@ -72,9 +76,11 @@ function os_publications_user_default_permissions() {
     'name' => 'show export links',
     'roles' => array(
       0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
+      1 => 'anonymous user',
+      2 => 'authenticated user',
+      3 => 'manager',
+      4 => 'vsite admin',
+      5 => 'vsite user',
     ),
     'module' => 'biblio',
   );
@@ -84,9 +90,11 @@ function os_publications_user_default_permissions() {
     'name' => 'show filter tab',
     'roles' => array(
       0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
+      1 => 'anonymous user',
+      2 => 'authenticated user',
+      3 => 'manager',
+      4 => 'vsite admin',
+      5 => 'vsite user',
     ),
     'module' => 'biblio',
   );
@@ -96,9 +104,11 @@ function os_publications_user_default_permissions() {
     'name' => 'show sort links',
     'roles' => array(
       0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
+      1 => 'anonymous user',
+      2 => 'authenticated user',
+      3 => 'manager',
+      4 => 'vsite admin',
+      5 => 'vsite user',
     ),
     'module' => 'biblio',
   );
