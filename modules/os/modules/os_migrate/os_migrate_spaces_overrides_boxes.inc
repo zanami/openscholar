@@ -132,6 +132,7 @@ class BoxPorter {
       $box->region = $newregion;
     } 
     
+    //matt says plugins should always have boxes as a module.
     if (isset($box->module)) {
       $box->module = $this->migration->_update_module($box->module);
     }

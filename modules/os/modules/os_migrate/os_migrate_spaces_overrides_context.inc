@@ -84,7 +84,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     }
     
     if (isset($block['module'])) {
-      $block['module'] = $this->_update_module($block['module']);
+      $block['module'] = $this->_update_module($block['module']); //always boxes for box plugins
     }
     
     if (isset($block['delta'])) {
