@@ -54,7 +54,13 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
 
   function _update_box($box, $id) {
     $BP = new BoxPorter($this);
-    return $BP->_update_box($box, $id);
+    $box = $BP->_update_box($box, $id);
+    
+    if (isset($box->region)) {
+      unset($box->region);
+    }
+    
+    return $box;
   }
   
   function _box_key_exists($key) {
@@ -125,14 +131,15 @@ class BoxPorter {
 
     if (isset($box->region) && ($newregion = $this->migration->_update_region($box->region))) {
       $box->region = $newregion;
-    } else {
-      unset($box->region);
-    }
+    } 
     
     if (isset($box->module)) {
       $box->module = $this->migration->_update_module($box->module);
     }
     
+    if (!isset($box->info)) {
+      $box->info = 'FIXED: ' . $box->title;
+    }
     /* three kinds of updates
      no change
     key changes
@@ -211,10 +218,10 @@ class BoxPorter {
       
       //modal image should have a separate content type migration.  lets use that for moving the image.
       $box->plugin_key = 'os_boxes_html';
-      $box->options = array(
+      $box->options = array('text' => array(
         'format' => 'filtered_html',
-        'body' => $img_html, 
-      );
+        'value' => $img_html, 
+      ));
       
       return $box;
     } else {
@@ -288,10 +295,10 @@ class BoxPorter {
   
     unset($box->options['body'], $box->options['format']);
   
-    $box->options = array(
-      'body' => $body,
+    $box->options = array('text' => array(
+      'value' => $body,
       'format' => $format,
-    );
+    ));
     $box->plugin_key = $key;
   
     return $box;
@@ -342,8 +349,6 @@ class BoxPorter {
       $this->migration->saveMessage(t('Could not migrate site logo. Image does not exist. Vsite nid: @nid', array('@nid' => $id)), MigrationBase::MESSAGE_WARNING);
       return FALSE;
     }
-  
-  
   }
   
   //convert os_boxes_node to custom html.  102 in db
@@ -390,10 +395,10 @@ class BoxPorter {
       }
       
       $box->plugin_key = 'os_boxes_html';
-      $box->options = array(
+      $box->options = array('text'=>array(
         'value' => $body,
         'format' => ($node->format == 1) ? 'filtered_html' : 'plain_text',  
-      );
+      ));
       
       return $box;
     } else {

@@ -32,7 +32,7 @@
 
     $table = 'spaces_overrides';
 
-    parent::__construct($table, $key_schema);
+    parent::__construct($table, $key_schema, MigrateGroup::getInstance('spacesoverrides'));
   }
   
   public function query() {
@@ -84,6 +84,14 @@
    * Updates a module name where the scholar prefix was shortened to os.  Takes array of names or a single string.
    */
   public function _update_module($module) {
+    $module_map = array(
+      'vsite_menus' => 'os',
+    );
+    
+    if (isset($module_map[$module])) {
+      return $module_map[$module];
+    }
+    
     return preg_replace('/^scholar_/', 'os_', $module);
   }
   
