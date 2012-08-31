@@ -82,6 +82,16 @@ function cp_menu(){
     );
   }
 
+  $items['cp/settings'] = array(
+    'title' => 'Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_settings_form'),
+    'file' => 'cp.form.inc',
+    'type' => MENU_NORMAL_ITEM,
+    'access callback' => 'spaces_access_admin',
+    'weight' => 30,
+  );
+
   $items['cp/account'] = array(
     'title' => 'Account',
     'title callback' => 'cp_user_title',
@@ -438,6 +448,17 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id){
       );
     }
   }
+}
+
+/**
+ * Gets all the settings a module could define for a site
+ * but there aren't enough of to have its own page.
+ */
+function cp_get_setting_forms() {
+  $settings = module_invoke_all('cp_settings');
+  drupal_alter('cp_settings', $settings);
+
+  return $settings;
 }
 
 /**

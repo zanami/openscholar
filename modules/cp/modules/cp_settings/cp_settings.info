@@ -1,5 +1,0 @@
-name = "Control Panel: Settings"
-description = "A Control Panel for generic settings that have no other place to go."
-core = 7.x
-package = "Control Panel"
-dependencies[] = cp
