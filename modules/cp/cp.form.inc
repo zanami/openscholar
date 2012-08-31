@@ -6,7 +6,7 @@ function cp_settings_form($form_state) {
   $form = array();
   $form['#submit'] = array();
 
-  $settings = cp_settings_get_setting_forms();
+  $settings = cp_get_setting_forms();
   foreach ($settings as $key => $s) {
     if (!isset($s['form'])) continue;
 
