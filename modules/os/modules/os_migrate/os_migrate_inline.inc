@@ -9,7 +9,9 @@ class FileInlineOSMigration extends OSMigration {
     $add_fields = array('uri' => 'Unique Resource Identifier.');
     $this->source = new MigrateSourceSQL($this->query(), $add_fields , NULL,  array('map_joinable' => FALSE));
     $this->map = new MigrateSQLMap($this->machineName,
-      array('fid' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE)),
+      array('fid' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE),
+             'vid' => array('type'=>'int', 'unsigned'=>TRUE, 'not null'=>TRUE),
+        ),
       MigrateDestinationFile::getKeySchema());
       
     //////$this->destination = new MigrateDestinationFile(array('copy_file'=>TRUE));
@@ -33,7 +35,7 @@ class FileInlineOSMigration extends OSMigration {
     
   public function query() {
     $query = parent::d6_db_select('content_field_os_inline_files', 'cf')
-      ->fields('cf', array('field_os_inline_files_fid', 'nid'))
+      ->fields('cf', array('field_os_inline_files_fid', 'nid', 'vid'))
       ->isNotNull('field_os_inline_files_fid');
     $query->join('files', 'f', 'f.fid = cf.field_os_inline_files_fid');
     $query->fields('f', array('uid', 'filename', 'timestamp',  'filepath', 'fid'));
@@ -48,6 +50,7 @@ class FileInlineOSMigration extends OSMigration {
     $purl = parent::d6_variable_get('purl_base_domain');
     $row->uri = $purl . '/' . $row->filepath; 
 
+
     if (!parent::legacy_file_exists($row->uri)) {
       return FALSE;
     }
@@ -56,6 +59,7 @@ class FileInlineOSMigration extends OSMigration {
   
   //called immediately after entity is saved
   public function complete($entity, stdClass $row) {
+    
     //update file usage here
     parent::_os_migrate_inline_files_update_file_usage($entity, $row);
     
