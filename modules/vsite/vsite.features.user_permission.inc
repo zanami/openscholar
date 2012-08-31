@@ -12,13 +12,13 @@ function vsite_user_default_permissions() {
 
   // Exported permission: administer group.
   $permissions['administer group'] = array(
-      'name' => 'administer group',
-      'roles' => array(
-          0 => 'administrator',
-      ),
-      'module' => 'og',
+    'name' => 'administer group',
+    'roles' => array(
+      0 => 'administrator',
+    ),
+    'module' => 'og',
   );
-  
+
   // Exported permission: create vsite content.
   $permissions['create vsite content'] = array(
     'name' => 'create vsite content',
@@ -86,14 +86,14 @@ function vsite_user_default_permissions() {
     ),
     'module' => 'spaces_og',
   );
-  
+
   // Exported permission: view users outside groups.
   $permissions['view users outside groups'] = array(
-      'name' => 'view users outside groups',
-      'roles' => array(
-          0 => 'authenticated user',
-      ),
-      'module' => 'spaces_og',
+    'name' => 'view users outside groups',
+    'roles' => array(
+      0 => 'authenticated user',
+    ),
+    'module' => 'spaces_og',
   );
 
   return $permissions;
