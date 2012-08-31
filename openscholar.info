@@ -90,6 +90,7 @@ dependencies[] = os_booklets
 dependencies[] = diff
 dependencies[] = twitter_pull
 dependencies[] = nice_menus
+dependencies[] = password_hustle
 
 files[] = openscholar.profile
 
