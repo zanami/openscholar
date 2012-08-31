@@ -101,7 +101,9 @@ class os_boxes_slideshow extends os_boxes_default {
     $form['display'][$option] = array(
       '#type' => 'select',
       '#title' => $title,
-      '#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
+      //omitting top/bottom options, but leaving this here so we can add it back in when we're ready for new features.
+      //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
+      '#options' => array('none' => t('No'), 'bottom' => t('Yes')),
       '#default_value' => $this->options[$option],
     );
 
@@ -155,7 +157,7 @@ class os_boxes_slideshow extends os_boxes_default {
       } else {
         $handler->set_option('use_pager', FALSE);
       }
-
+      
       $output = $view->preview();
 
       // dynamic size adjustments
