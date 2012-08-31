@@ -103,21 +103,16 @@ body.navbar #header-container p {
   border: none;
   }
 
-
-
-
 #scholar-shield {
   width:55px;
   }
 
 /*Navbar & sidebar shared */
 
-
-
-#menu-bar ul.menu li a,
-#menu-bar ul.menu li a:visited,
-.region-sidebar-first ul.menu li a,
-.region-sidebar-first ul.menu li a:visited {
+#menu-bar ul.nice-menu li a,
+#menu-bar ul.nice-menu li a:visited,
+.region-sidebar-first ul.nice-menu li a,
+.region-sidebar-first ul.nice-menu li a:visited {
   font-style: normal;
   display:block;
   color: #5088BA;
@@ -125,18 +120,18 @@ body.navbar #header-container p {
   text-decoration:none;
   }
 
-#menu-bar ul.menu li a:hover,
-.region-sidebar-first ul.menu li a:hover,
-#menu-bar ul.menu li a.active,
-.region-sidebar-first  ul.menu li a.active,
-#menu-bar ul.menu li.active-trail,
-.region-sidebar-first  ul.menu li.active-trail {
+#menu-bar ul.nice-menu li a:hover,
+.region-sidebar-first ul.nice-menu li a:hover,
+#menu-bar ul.nice-menu li a.active,
+.region-sidebar-first  ul.nice-menu li a.active,
+#menu-bar ul.nice-menu li.active-trail,
+.region-sidebar-first  ul.nice-menu li.active-trail {
   background:#F9FAFA;
   }
 
 /*Navbar Specific */
 
-#menu-bar ul.menu li  {
+#menu-bar ul.nice-menu li  {
   font-size: 1em;
   line-height: 34px;
   font-weight: bold;
@@ -144,12 +139,12 @@ body.navbar #header-container p {
   border-right: 1px solid #D8D6D6;
   }
 
-#menu-bar ul.menu li.first {
+#menu-bar ul.nice-menu li.first {
   border-left: 1px solid #D8D6D6;
   }
 
-#menu-bar ul.menu li a,
-#menu-bar ul.menu li a:visited {
+#menu-bar ul.nice-menu li a,
+#menu-bar ul.nice-menu li a:visited {
   padding: 0 9px;
   height: 34px;
   }
@@ -185,21 +180,7 @@ body.navbar #header-container p {
 }
   
   
-.sidebar ul.nice-menu ul {
-	margin-top:-39px;
-	border:none;
-	}
-	
-.region-sidebar-second.sidebar ul.nice-menu ul {
-	margin-top:0;
 
-	}	
-
-.sidebar ul.nice-menu ul ul {
-	margin-top:0;
-	border:none;
-	}	
-  
 
 body.sidebar-first #columns .hg-container,
 body.two-sidebars #columns .hg-container {
@@ -220,9 +201,14 @@ body.navbar .region-sidebar-first {
   padding: 0 0 10px 0;
   }
 
+.region-sidebar-first #block-os-primary-menu ul {
+  width: 179px;
+  }
+
 .region-sidebar-first #block-os-primary-menu li {
   list-style: none;
   margin: 0 1px;
+  width: 179px;
   }
 
 .region-sidebar-first #block-os-primary-menu a,
