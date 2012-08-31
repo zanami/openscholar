@@ -7,5 +7,6 @@ dependencies[] = ctools
 dependencies[] = entityreference
 dependencies[] = features
 dependencies[] = og_vocab
+dependencies[] = og_context
 features[features_api][] = api:1
 features[field][] = node-announcement-og_vocabulary
