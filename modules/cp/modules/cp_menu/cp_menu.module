@@ -377,12 +377,3 @@ function cp_menu_edit_link_form_submit($form, $form_state) {
     os_menu_link_delete($link['menu_name'], $link['mlid']);
   }
 }
-
-function cp_menu_form_nice_menus_admin_settings_alter(&$form, $form_state) {
-  $form['os_use_dropdowns'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Use Dropdowns'),
-    '#default_value' => variable_get('os_use_dropdowns', 1),
-    '#description' => t('Enable dropdowns globally across your site. Unchecking will disable all custom menus from having dropdowns at all.'),
-  );
-}
