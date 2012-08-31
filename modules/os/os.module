@@ -31,16 +31,15 @@ function os_menu(){
   );
 
   $items['admin/config/openscholar'] = array(
-      'title' => 'Openscholar',
+      'title' => 'Openscholar Settings',
       'description' => 'Administer OpenScholar specific settings.',
       'position' => 'left',
       'weight' => - 5,
-      'page callback' => 'system_admin_menu_block_page',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('os_settings_form'),
       'access arguments' => array(
           'administer content'
       ),
-      'file' => 'system.admin.inc',
-      'file path' => drupal_get_path('module', 'system')
   );
 
   $items['page_not_found'] = array(
@@ -502,6 +501,72 @@ function os_form_node_form_alter(&$form, $form_state){
   $form['path']['pathauto']['#description'] = t('Uncheck this to create a custom alias below.');
 }
 
+function os_settings_form($form_state) {
+  $form = array();
+
+  // get children forms
+  $q = db_select('menu_router', 'mr')
+    ->fields('mr')
+    ->condition('mr.tab_root', 'admin/config/openscholar/%', 'LIKE')
+    ->execute();
+  foreach ($q as $r) {
+    if ($r->page_callback == 'drupal_get_form') {
+      $child = unserialize($r->page_arguments);
+      include($r->include_file);
+      if (function_exists($child[0])) {
+        $title = $r->title_callback;
+        $form[$child[0]] = $child[0]($form, $form_state) + array(
+          '#type' => 'fieldset',
+          '#title' => $title($r->title),
+          '#collapsible' => false,
+          '#tree' => TRUE,
+        );
+        unset($form[$child[0]]['actions']);
+      }
+    }
+  }
+
+  $form['other'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Other Settings'),
+    '#collapsible' => false,
+  );
+
+  $form['other']['os_use_dropdowns'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use Dropdowns'),
+    '#default_value' => variable_get('os_use_dropdowns', 1),
+    '#description' => t('Enable dropdowns globally across your site. Unchecking will disable all custom menus from having dropdowns at all.'),
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+      '#submit' => array('os_settings_submit'),
+    ),
+  );
+
+  return $form;
+}
+
+function os_settings_submit($form, $form_state) {
+  foreach (element_children($form) as $ec) {
+    if (isset($form[$ec]['#submit'])) {
+      $copy = $form_state;
+      $copy['values'] = $form_state['values'][$ec];
+      foreach ($form[$ec]['#submit'] as $func) {
+        $func($form, $copy);
+      }
+    }
+  }
+  // clear out existing messages from previous submit handlers
+  unset($_SESSION['messages']['status']);
+
+  system_settings_form_submit($form, $form_state);
+}
+
 /**
  * Implements hook_ctools_plugin_type
  *
@@ -818,19 +883,19 @@ function os_context_block_info_alter(&$blocks){
 
 /**
  * Allow altering of views before build but after the filters are attached
- * 
+ *
  * @param view $view
  */
 function os_views_pre_build(&$view){
-  
+
   /**
    * Is this the RSS Feed View
    */
   if($view->name == 'os_feed'){
-    
+
     //Alter the view to only display enabled content types
     $bundles = array_keys(os_get_bundles());
 	$view->filter['type']->value = $bundles;
   }
-  
+
 }
