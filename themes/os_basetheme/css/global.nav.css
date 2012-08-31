@@ -535,10 +535,6 @@ ul.nice-menu li {
 }
 
 
-ul.nice-menu-down li.menuparent {
-    background: none;
-}
-
 ul.nice-menu a {
     color: #293352;
     text-decoration:none;
@@ -549,6 +545,7 @@ ul.nice-menu ul {
     top: 2.9em;
      z-index:20;
 }
+
 
 ul.nice-menu ul li {
  border:1px solid #CCC;
@@ -566,6 +563,26 @@ ul.nice-menu-left ul a {
     padding-left: 0;
 }
 
+.sidebar ul.nice-menu ul {
+    border-top: none;
+}
+
+.sidebar ul.nice-menu ul li {
+    display:none;
+}
+
+.sidebar ul.nice-menu {
+    width:100%;
+   border-top: none;
+}
+
+ul.nice-menu-left li.menuparent,
+ul.nice-menu-right li.menuparent,
+ul.nice-menu-left li.menuparent:hover,
+ul.nice-menu-right li.menuparent:hover {
+    background:none;
+}
+
 /******************************
  HORIZONTAL (down) menus
 ******************************/
@@ -573,6 +590,7 @@ ul.nice-menu-left ul a {
 ul.nice-menu-down {
   float: left; /* LTR */
   border: 0;
+  z-index: 400;
 }
 
 ul.nice-menu-down li {
@@ -614,6 +632,7 @@ ul.nice-menu-down li li.menuparent {
 
 ul.nice-menu-down li li.menuparent:hover {
   background: none; /* LTR */
+}
 
 /* CP MINI MENU */
 

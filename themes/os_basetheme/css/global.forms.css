@@ -180,6 +180,10 @@ textarea {
   width:60%;
 }
 
+.page-cp-users-create input.password-confirm, .page-cp-users-create input.password-field {
+	width:40%;
+}
+
 html.js input.form-autocomplete {
   background-position: 100% 4px; /* Adjust trobber background position when changing text field padding */
 }

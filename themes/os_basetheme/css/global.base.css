@@ -306,6 +306,11 @@ margin: 10px 10px 0 0;
 float: left;
 }
 
+.page-galleries .view-gallery-listing img {
+	width:98px;
+	height:98px;
+}
+
 dt {
   font-weight: 700;
 }
