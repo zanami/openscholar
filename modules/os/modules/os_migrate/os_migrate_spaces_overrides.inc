@@ -40,7 +40,7 @@
     $query->condition('object_type', $this->source_object, '='); 
     $query->isNotNull('value');
     
-    //$query->condition('id', '8921'); //jlepore
+    $query->condition('id', '8921'); //jlepore
    // $query->condition('id', '10061'); //charlesmaier
     
     //check that vsite exists?
