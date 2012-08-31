@@ -32,7 +32,7 @@ body {
 }
 
 
-#content-column /* Floats the main content column. */ {
+#content-column .content-inner /* Floats the main content column. */ {
 	 position: relative;
 }
 
@@ -71,7 +71,7 @@ body {
 
 
 /* Modify gutters */
-#main-content,
+
 .block-inner, 
 .pane-inner, 
 .menu-wrapper,  
@@ -84,6 +84,10 @@ div.messages {
   margin-right: 8px;
 }
 
+#main-content {
+  margin-left: 15px;
+  margin-right: 15px;
+}
 
 /*** FRONTPAGE PANELS ***/
 
