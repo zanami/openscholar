@@ -10,10 +10,14 @@ include_once 'os_blog.features.inc';
  *
  * Removes the username from $submitted info on blog type nodes.
  */
-function os_blog_process_node(&$variables) {
-  if ($variables['type'] !== 'blog') return;
-
-  $variables['submitted'] = _os_blog_format_submitted($variables['submitted']);
+function os_blog_process_node(&$vars) {
+  if ($vars['type'] !== 'blog') return;
+  // Build the submitted variable used by default in node templates
+  $vars['submitted'] = t('Submitted on !datetime',
+    array(
+      '!datetime' => $vars['publication_date'],
+    )
+  );
 }
 
 /**
@@ -34,26 +38,4 @@ function os_blog_os_widget() {
   );
   
   return $items;
-}
-
-/**
- * Strips the username from $submitted display.
- * 
- * Preserves nice HTML5 microformat time markup and default time display.
- * @param string $original
- *   A string like  "Submitted by <a>user</a> on <time>date</time>"
- * @return string $updated
- *   A string like  "Submitted on <time>date</time>"
- */
-function _os_blog_format_submitted($original) {
-  // Removes user link
-  $updated = strip_tags($original, '<time>');
-
-  // Preserves time tag
-  $time_position = strpos($updated, '<time');
-  if ($time_position === FALSE) return $original;
-  
-  $updated = 'Submitted on ' . substr($updated, $time_position);
-
-  return $updated;
 }

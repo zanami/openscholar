@@ -504,67 +504,14 @@ function os_form_node_form_alter(&$form, $form_state){
 function os_settings_form($form_state) {
   $form = array();
 
-  // get children forms
-  $q = db_select('menu_router', 'mr')
-    ->fields('mr')
-    ->condition('mr.tab_root', 'admin/config/openscholar/%', 'LIKE')
-    ->execute();
-  foreach ($q as $r) {
-    if ($r->page_callback == 'drupal_get_form') {
-      $child = unserialize($r->page_arguments);
-      include($r->include_file);
-      if (function_exists($child[0])) {
-        $title = $r->title_callback;
-        $form[$child[0]] = $child[0]($form, $form_state) + array(
-          '#type' => 'fieldset',
-          '#title' => $title($r->title),
-          '#collapsible' => false,
-          '#tree' => TRUE,
-        );
-        unset($form[$child[0]]['actions']);
-      }
-    }
-  }
-
-  $form['other'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Other Settings'),
-    '#collapsible' => false,
-  );
-
-  $form['other']['os_use_dropdowns'] = array(
+  $form['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use Dropdowns'),
     '#default_value' => variable_get('os_use_dropdowns', 1),
     '#description' => t('Enable dropdowns globally across your site. Unchecking will disable all custom menus from having dropdowns at all.'),
   );
 
-  $form['actions'] = array(
-    '#type' => 'actions',
-    'submit' => array(
-      '#type' => 'submit',
-      '#value' => t('Save'),
-      '#submit' => array('os_settings_submit'),
-    ),
-  );
-
-  return $form;
-}
-
-function os_settings_submit($form, $form_state) {
-  foreach (element_children($form) as $ec) {
-    if (isset($form[$ec]['#submit'])) {
-      $copy = $form_state;
-      $copy['values'] = $form_state['values'][$ec];
-      foreach ($form[$ec]['#submit'] as $func) {
-        $func($form, $copy);
-      }
-    }
-  }
-  // clear out existing messages from previous submit handlers
-  unset($_SESSION['messages']['status']);
-
-  system_settings_form_submit($form, $form_state);
+  return system_settings_form($form);
 }
 
 /**
@@ -815,16 +762,21 @@ function os_system_info_alter(&$info, $file, $type){
  * Rewrites path to add a return destination wherever it is clicked from.
  */
 function os_url_outbound_alter(&$path, &$options, $original) {
-
+  global $user;
+  
   //Pages to add a destination return to their links
   $loop_back_pages = array(
-      'user',
-      'user/logout',
-      );
+    'user',
+    'user/logout',
+  );
 
   // Only altering the logout/login path and
   // only when there is not already a destination
-  if(!in_array($path,$loop_back_pages) || !empty($options['query']['destination'])) return;
+  // only alter login path if the user is logged 
+  // out, otherwise it is a link to "My account"
+  if(!in_array($path,$loop_back_pages) || !empty($options['query']['destination']) || ($path == 'user' && $user->uid)){
+    return;
+  }
 
   //If we are in the CP then just go to the homepage of the site
   if(!context_isset('context', 'os_cp') || !isset($_GET['q'])){
