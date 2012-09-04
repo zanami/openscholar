@@ -40,8 +40,9 @@
     $query->condition('object_type', $this->source_object, '='); 
     $query->isNotNull('value');
     
-    $query->condition('id', '8921'); //jlepore
+    //$query->condition('id', '8921'); //jlepore
    // $query->condition('id', '10061'); //charlesmaier
+    $query->condition('id', array('21094', '8921'), 'IN'); //dan's test account.  has many box
     
     //check that vsite exists?
     

@@ -106,8 +106,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
   
   function _update_context_block_id($id) {
     $id_map = array(
-      'vsite_menus-features' => 'primary-menu',
-      'vsite_menus-scholar_secondary_menu' => 'secondary-menu',
+      'vsite_menus-features' => 'os-primary-menu',
+      'vsite_menus-scholar_secondary_menu' => 'os-secondary-menu',
     );
     
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
