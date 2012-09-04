@@ -62,6 +62,9 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $query->join('og', 'og', 'n.nid = og.nid');
     $query->fields('og', parent::subfields('og', array('description', 'language', 'private'), '_'));    
     
+    $query->condition('n.nid', array('21094', '8921', '6879'), 'IN'); //dancabral, jlepore, jsagotsky
+    
+    
     return $query;
   }
   
@@ -72,7 +75,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $fields['format_name'] = t('Format name');
     $fields['field_site_logo'] = t('Site Logo');
 
-    foreach(parent::subfields('field_site_logo', array('alt','title','cropbox_x','cropbox_y','language','cropbox_width','cropbox_height')) as $field) {
+    foreach(parent::subfields('field_site_logo', array('alt','title','cropbox_x','cropbox_y','language','cropbox_width','cropbox_height', 'destination_file')) as $field) {
       $fields[$field] = t('Site logo subfield: @field', array('@field' => $field));
     } 
     
@@ -83,15 +86,16 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
      
      if (isset($row->field_vsite_logo_fid)) {
        $file = parent::get_file_by_fid($row->field_vsite_logo_fid);
+       $row->{'field_site_logo:destination_file'} = $file->filepath;
        
        //if we have crop data and the original image still exists, use that instead of the pre-cropped image.
        $original_file = $file->filepath . '.crop_display.jpg';
        if (is_readable(variable_get('os_migrate_files', '') . '/' . $original_file) && strlen($row->field_vsite_logo_data)) {
-         $file->filepath = $original_file;               
+         $file->filepath = $original_file;
        } else {       
          //only the cropped remains.  don't crop it anymore.
        }
-       $row->{'field_site_logo:destination_file'} = $file->filepath;
+       //$row->{'field_site_logo:destination_file'} = $file->filepath;
        
        if (!is_readable(variable_get('os_migrate_files', '') . '/' . $file->filepath)) {
          Migration::saveMessage(t('Could not read file @file.  Ignoring it.', array('@file' => $file->filepath)), Migration::MESSAGE_NOTICE);
@@ -147,5 +151,46 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
      );
    }
    
+//   //borrowed from os boxes, site logo submit func 
+//   function _complete_site_logo($node, $fid, $x, $y, $h, $w) {
+//    $file = file_load($fid);
+  
+//    $item = array(
+//      'cropbox_x' => $x,
+//      'cropbox_y' => $y,
+//      'cropbox_height' => $h,
+//      'cropbox_width' => $w,
+//    );
+  
+//    $scale = array(
+//      'width' => 180,
+//      'height' => 140,
+//    );
+  
+//    // this creates two images
+//    // $orig is the original, unmodified image
+//    // its saved so we can refer to it later
+//    // $file is original uploaded image that is then cropped to fit
+//    // it is the file that is displayed in render
+//    // it 'contains' the orig file, through the file usage table
+//    $orig = _imagefield_crop_file_to_crop($file->fid);
+//    if ($orig->fid == $file->fid) {
+//      $orig = imagefield_crop_create_copy($file);
+//      file_usage_add($orig, 'imagefield_crop', 'file', $file->fid);
+//    }
+   
+//    _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $file);
+//    file_save($file);
+//    file_usage_add($file, 'os_boxes', 'box', 1);  // prevents errors when trying to reuse the same image
+  
+//    if (module_exists('vsite') && $space = spaces_get_space()) {
+//     // $node = $space->group;
+  
+//      $node->field_site_logo[LANGUAGE_NONE][0] = (array)$file + $item;
+  
+//      node_save($node);
+//    }
+//   }
+
 
 }
