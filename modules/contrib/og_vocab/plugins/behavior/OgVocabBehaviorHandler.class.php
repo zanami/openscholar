@@ -9,6 +9,29 @@ class OgVocabBehaviorHandler extends EntityReference_BehaviorHandler_Abstract {
     return $field['field_name'] == OG_VOCAB_FIELD;
   }
 
+  public function settingsForm($field, $instance) {
+    $form = parent::settingsForm($field, $instance);
+
+    $settings = $field['settings']['handler_settings']['behaviors']['og_vocab'];
+    $settings += array(
+      'use_context' => 'yes',
+    );
+
+    $form['use_context'] = array(
+      '#type' => 'select',
+      '#title' => t('Use context'),
+      '#required' => TRUE,
+      '#options' => array(
+        'force' => t('Hide widget if no context found'),
+        'yes' => t('Use if possible'),
+        'no' => t('Do not use'),
+      ),
+      '#description' => t('Should the OG vocabularies appear according to OG context. Depends on OG-context module.'),
+      '#default_value' => $settings['use_context'],
+    );
+    return $form;
+  }
+
   public function is_empty_alter(&$empty, $item, $field) {
     if (!empty($item['target_id']) && $item['target_id'] == 'autocreate') {
       $empty = FALSE;

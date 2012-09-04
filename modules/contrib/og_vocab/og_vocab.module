@@ -959,29 +959,24 @@ function og_vocab_get_accessible_vocabs($entity_type = NULL, $entity = NULL, $ac
     global $user;
     $account = clone $user;
   }
-  
-  if ($setting_vocab_from_user_or_context || true){
-    //Retrieve group from context
-    $context = og_vocab_is_group_admin_context();
-    if($context){
-      $gids[$context['group_type']] = array($context['gid']);
-    }
-  }else{
-    //Retrieve the users groups
+  $field = field_info_field(OG_VOCAB_FIELD);
+  $use_context = !empty($field['settings']['handler_settings']['behaviors']['og_vocab']['use_context']) ? $field['settings']['handler_settings']['behaviors']['og_vocab']['use_context'] : 'yes';
+  $context = FALSE;
+  $gids = array();
+
+  if (in_array($use_context, array('force', 'yes')) && module_exists('og_context') && $context = og_context()) {
+    $gids[$context['group_type']][$context['gid']] = array($context['gid']);
+  }
+
+  if (in_array($use_context, array('yes', 'no')) && !$gids) {
     $gids = og_get_entity_groups('user', $account);
   }
-  
-  if(!$gids){
+
+  if (!$gids) {
     return;
   }
 
-  list($id,, $bundle) = entity_extract_ids($entity_type, $entity);
-
-  if (!$id) {
-    // TODO: This is a create form, for a non-saved entity, so we can get
-    // the context by Entity reference prepopulate.
-    // This should probably be a setting (i.e. show terms by context).
-  }
+  list(,, $bundle) = entity_extract_ids($entity_type, $entity);
 
   $query = db_select('og_vocab_relation', 'ogr');
   $query->fields('ogr', array('vid'));
