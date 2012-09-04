@@ -389,6 +389,32 @@ class BoxPorter {
     }
   }
   
+  public function _port_box_os_boxes_gallery($box, $id, $key_only) {
+    $key = 'os_boxes_slideshow';
+    if ($key_only) {
+      return $key;
+    }
+
+    $box->options += array(
+      'controls' => 'none',
+      'slide_counter' => 'none',
+      'pager' => 'none',
+      'effect' => 'fade',
+      'style' => 'dark',
+      'size' => 600,
+    );
+   
+    $box->options['gallery_nid'] = $box->options['gallery'];
+    unset($box->options['gallery']);
+    
+    $box->options['items_per_page'] = $box->options['number_of_items'];
+    unset($box->options['number_of_items']);
+    
+    $box->plugin_key = $key;
+    
+    return $box;
+  }
+  
   //convert os_boxes_node to custom html.  102 in db
   public function _port_box_os_boxes_node($box, $id,  $key_only) {
     if ($key_only) {
