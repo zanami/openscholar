@@ -29,6 +29,7 @@ function rbuild_form_software_project_node_form_alter(&$form, &$form_state, $for
   		'data' => drupal_get_path('module', 'rbuild') . '/rbuild.js',
   	),
   );
+  $form['#validate'][] ='_rbuild_project_node_validate';
 }
 
 
@@ -41,8 +42,10 @@ function rbuild_form_software_project_node_form_alter(&$form, &$form_state, $for
 function rbuild_node_insert($node) {
   if ($node->type !== 'software_project') return;
   
-  $software_method = $node->field_software_method['und'][0]['value'];
-  if ($software_method !== 'Rbuild repository') return;
+  // Initializes releases only for Projects whose Method field == "rBuild".
+  $field_items = field_get_items('node', $node, 'field_software_method');
+  $field_value = $field_items[0]['value'];
+  if ($field_value !== 'Rbuild repository') return;
   
   _rbuild_init_releases($node);
 }
@@ -60,17 +63,22 @@ function rbuild_node_update($node) {
   if (!isset($node_original->title)) return;
   
   // Exits if the updated packaging method is not 'Rbuild repository'
-  $software_method = $node->field_software_method['und'][0]['value'];
-  if ($software_method !== 'Rbuild repository') return;
+  $field_items = field_get_items('node', $node, 'field_software_method');
+  $field_value = $field_items[0]['value'];
+  if ($field_value !== 'Rbuild repository') return;
 
   // Compares original and updated field values
   $node_updated = $node;
-  $repo_value_original = $node_original->field_software_repo['und'][0]['value'];
-  $repo_value_updated = $node_updated->field_software_repo['und'][0]['value'];
+  $field_items = field_get_items('node', $node_original, 'field_software_repo');
+  $repo_value_original = $field_items[0]['value'];
+  $field_items = field_get_items('node', $node_updated, 'field_software_repo');
+  $repo_value_updated = $field_items[0]['value'];
   $same_repo = ($repo_value_updated === $repo_value_original);
   
-  $short_name_value_original = $node_original->field_rbuild_short_name['und'][0]['value'];
-  $short_name_value_updated = $node_updated->field_rbuild_short_name['und'][0]['value'];
+  $field_items = field_get_items('node', $node_original, 'field_rbuild_short_name');
+  $short_name_value_original = $field_items[0]['value'];
+  $field_items = field_get_items('node', $node_updated, 'field_rbuild_short_name');
+  $short_name_value_updated = $field_items[0]['value'];
   $same_short_name = ($short_name_value_updated === $short_name_value_original);
   
   // Exits if the rBuild fields have not changed.
@@ -189,32 +197,43 @@ function _rbuild_add_release_node_wrapper($project_node, $version, $filename, $p
  */
 function _rbuild_add_release_node($project_node, $version, $filename, $package, $url, &$context = array()) {
   $start_time = time();
+  $default_language = 'und';
   
-	// Prepares basic node settings and fields
-  $release_node = new stdClass();
-  $release_node->type = 'software_release';
-  $release_node->uid = $project_node->uid;
-  $release_node->language = 'und';
-  $release_node->og_group_ref['und'][0]['target_id'] = $project_node->og_group_ref['und'][0]['target_id'];
-  $release_node->status = 1;
-  $release_node->active = 1;
-  $release_node->field_software_project['und'][0]['target_id'] = $project_node->nid;
-  $release_node->field_software_version['und'][0]['value'] = $version;
-  $release_node->field_software_recommended['und'][0]['value'] = ($version == $package['version']) ? 1 : 0;
+	// Prepares basic settings of our new Software Release node
+  $node = new stdClass();
+  $node->type = 'software_release';
+  $node->uid = $project_node->uid;
+  $node->language = $default_language;
+  $node->status = 1;
+  $node->active = 1;
+
+  // Sets the OG group audience for this space
+  $field_items = field_get_items('node', $project_node, 'og_group_ref');
+  $og_group_ref = $field_items[0]['target_id'];
+  $node->og_group_ref[$default_language][0]['target_id'] = $og_group_ref;
   
-  // Prepares file field
+  node_save($node); // Adds $node->nid and more properties
+  
+  // Prepares field values
+  $recommended = ($version == $package['version']) ? 1 : 0;
   $file = _rbuild_import_file($url, $filename, $project_node->uid);
   if ($file === FALSE) return;
+  
+  // Sets field values using entity_metadata_wrapper
+  $wrapper = entity_metadata_wrapper('node', $node);
 
-  $release_node->field_software_package['und'][0] = (array)$file;
+  if ($file->timestamp < $start_time) {
+    $wrapper->created->set($file->timestamp); 
+  }
   
-  if($file->timestamp < $start_time) $release_node->created = $file->timestamp;
+  $wrapper->field_software_project->set($project_node->nid);
+  $wrapper->field_software_version->set($version);
+  $wrapper->field_software_recommended->set($recommended);
+  $wrapper->field_software_package->set((array)$file);
+  $wrapper->save();
   
-  // Saves the new Software Release node to the database
-  node_save($release_node);
-  
-  $context['results'][] = $release_node->nid .' : '. $release_node->title;
-  $context['message'] = $release_node->title;
+  $context['results'][] = $node->nid .' : '. $node->title;
+  $context['message'] = $node->title;
 }
 
 /**
@@ -373,17 +392,20 @@ function _rbuild_query_load_nodes($result) {
 /**
  * 
  * Enter description here ...
- * @param object $project_node
- * 
+ * @param object $node
+ *   A Software Project [software_project] type node.
  * @return object $handler
  */
-function _rbuild_new_handler($project_node) {
+function _rbuild_new_handler($node) {
   // Requires the [:rbuild_handler:] PHP class
   require_once('rbuild.handler.inc');
   
   // Prepares parameters to construct an Rbuild Handler object
-  $repo_url = $project_node->field_software_repo['und'][0]['value'];
-  $short_name = $project_node->field_rbuild_short_name['und'][0]['value'];
+  $field_items = field_get_items('node', $node, 'field_software_repo');
+  $repo_url = $field_items[0]['value'];
+  
+  $field_items = field_get_items('node', $node, 'field_rbuild_short_name');
+  $short_name = $field_items[0]['value'];
   
   // Instantiates a handler object to process cron
   $handler = new rbuild_handler($repo_url, $short_name);
@@ -402,4 +424,25 @@ function _rbuild_batch_finished($success, $results, $operations) {
 	else {
 		drupal_set_message(t('Unable to import all release information.'));
 	}
+}
+
+/**
+ * Checks that the provided Repository URL and Short Name are valid.
+ * 
+ * @param array $form
+ * @param array $form_state
+ */
+function _rbuild_project_node_validate($form, &$form_state) {
+  $lang = $form_state['values']['language'];
+  if ($form_state['values']['field_software_method'][$lang][0]['value'] !== 'Rbuild repository') return;
+  
+  $repo_url = $form_state['values']['field_software_repo'][$lang][0]['value'];
+  $short_name = $form_state['values']['field_rbuild_short_name'][$lang][0]['value'];
+  
+  // Requires the [:rbuild_handler:] PHP class
+  require_once('rbuild.handler.inc');
+  
+  // Instantiates a handler object to validate
+  $handler = new rbuild_handler($repo_url, $short_name);
+  $handler->validate();
 }
