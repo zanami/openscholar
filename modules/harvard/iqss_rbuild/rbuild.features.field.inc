@@ -108,9 +108,9 @@ function rbuild_field_default_fields() {
     ),
     'field_instance' => array(
       'bundle' => 'software_project',
-      'default_value' => NULL,
+      'default_value' => 'http://r.iq.harvard.edu/src/contrib',
       'deleted' => '0',
-      'description' => 'Example: http://r.iq.harvard.edu/src/PACKAGE.CookingRecipes',
+      'description' => 'Example: http://r.iq.harvard.edu/src/contrib',
       'display' => array(
         'default' => array(
           'label' => 'above',
