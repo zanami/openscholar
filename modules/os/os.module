@@ -815,16 +815,21 @@ function os_system_info_alter(&$info, $file, $type){
  * Rewrites path to add a return destination wherever it is clicked from.
  */
 function os_url_outbound_alter(&$path, &$options, $original) {
-
+  global $user;
+  
   //Pages to add a destination return to their links
   $loop_back_pages = array(
-      'user',
-      'user/logout',
-      );
+    'user',
+    'user/logout',
+  );
 
   // Only altering the logout/login path and
   // only when there is not already a destination
-  if(!in_array($path,$loop_back_pages) || !empty($options['query']['destination'])) return;
+  // only alter login path if the user is logged 
+  // out, otherwise it is a link to "My account"
+  if(!in_array($path,$loop_back_pages) || !empty($options['query']['destination']) || ($path == 'user' && $user->uid)){
+    return;
+  }
 
   //If we are in the CP then just go to the homepage of the site
   if(!context_isset('context', 'os_cp') || !isset($_GET['q'])){
