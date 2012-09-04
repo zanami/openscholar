@@ -39,6 +39,17 @@ function os_publications_menu_alter(&$items) {
   );
 }
 
+/** 
+ * Implementation of hook_form_user_profile_form_alter
+ * This hook will remove the "bibio" fieldset from the users profile form
+ */
+function os_publications_form_user_profile_form_alter(&$form, &$form_state) {
+	// check to make sure it's set 
+	if(isset($form['biblio_fieldset'])) {
+		$form['biblio_fieldset']['#access'] = false;
+	}// end if
+}// end function
+
 /**
  * Alters biblio queries to take spaces into account
  *
