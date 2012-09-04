@@ -19,7 +19,7 @@ function os_stats_block_view($delta='') {
 	$block = array(); 
 	switch ($delta) {
 		case 'os_stats':
-			//$block['title'] = t('OpenScholar Stats');
+			$block['title'] = t('OpenScholar Stats');
 			$block['content'] = os_stats_content();
 			break;
 	}// end switgh
@@ -32,6 +32,7 @@ function os_stats_block_view($delta='') {
  */
 function os_stats_block_configure($delta='') {
 	$form = array();
+	$tablerows = array();
 	if($delta == 'os_stats'){
 		$form['os_stats_cache_expiration'] = array(
    			'#type' => 'textfield',
@@ -48,15 +49,17 @@ function os_stats_block_configure($delta='') {
   		$enabled = unserialize(variable_get('os_stats_enabled', FALSE));
   			
   		foreach($stats as $stat => $def) {
-  			echo $stat." = stat";
   			$form['os_stats_select']['os_stat_'.$stat] = array(
+  			//$form['os_stats_select']['os_stats_'.$stat] = array(
   				'#type' => 'checkbox',
   				'#title' => $def['description'],
   				'#default_value' => (isset($enabled[$stat])) ? $enabled[$stat] : TRUE,      
   			);	
   		}//end for each
 	}// enf if
+    
 	return $form;
+	
 }// end function
 
 /**
@@ -124,58 +127,78 @@ function os_stats_content() {
   		cache_set('os_stats_data', serialize($data), 'cache', time() + variable_get('os_stats_cache_expiration', 24*3600));	
 	}// end if
 		
-	return _os_stats_theme_item_dt($data);
+	return _theme_os_stats_item_dt($data);
 }// end function
+
+/** 
+ * Function to check to make sure the tables exist we
+ * want to pull stats from
+ * 
+ */
+function os_stats_check_table($table) {
+	if(db_table_exists($table)) {
+		return true;
+	}else {
+		return false;
+	}
+}
 
 /**
  * function to list stat, title, description, query, [callback] for stats to display
  * 
  */
 function _os_stats() {
-  $content_type = variable_get('scholar_content_type', 'vsite');
-	$test = array(
-		'Publications' => array(
+  	$content_type = variable_get('scholar_content_type', 'vsite');
+	
+  	$statsArray = array();
+	
+	if(os_stats_check_table('node')==true) {
+		$statsArray['Publications'] = array(
 			'title' => t('Publications'),
 			'description' => t('Biblio publications'),
 			'query' => 	'SELECT COUNT(nid) FROM {node} WHERE type=\'biblio\'',
-			'weight' => 20,
-		),
-		'Vsites' => array(
+			'weight' => 20
+		);
+		$statsArray['Vsites'] = array(
 			'title' => t('Websites'),
 			'description' => t('Virtual sites in this OS installation'),
 		  	'query' => 'SELECT COUNT(nid) FROM {node} WHERE type = :typeVal ',
 		  	'query_args' => array(variable_get('scholar_content_type', 'vsite')),
 			'query_args_type' => 'typeVal',
-		  	'weight' => 0,
-		),
-		'Nodes' => array(
+		  	'weight' => 0
+		);
+		$statsArray['Nodes'] = array(
 			'title' => t('Posts'),
 			'description' => t('Drupal nodes'),
 			'query' => 'SELECT COUNT(nid) FROM {node}',
 			'weight' => 10,
-		),
-		'Files' => array(
+		);
+	}
+	if(os_stats_check_table('files')==true) {
+		$statsArray['Files'] = array(
 			'title' => t('Uploaded Files'),
 			'description' => t('Files uploaded by users'),
 			'query' => 'SELECT COUNT(fid) FROM {files}',
 			'weight' => 30,
-		),
-		'Filesize' => array(
+		);
+		$statsArray['Filesize'] = array(
 			'title' => t('Total uploaded'),
 			'description' => t('Size of all files uploaded by users'),
 			'query' => 'SELECT SUM(filesize) FROM {files}',
 			'callback' => '_os_stats_file_units',
 		  	'weight' => -10,
 			//should the callback be in a specific file so it doesn't have to load all the time?
-		),
-		'Users' => array(
+		);
+	}
+	if(os_stats_check_table('users')==true) {
+		$statsArray['Users'] = array(
 		  	'title' => t('Users'),
 		  	'description' => t('User accounts'),
 		  	'query' => 'SELECT COUNT(uid) FROM {users}',
 			'weight' => -10,
-		),
-	);// end array
-	return $test;
+		);
+	}
+	return $statsArray;
 }// end function
 
 /**
@@ -196,7 +219,7 @@ function _os_stats_file_units($fs) {
  * @function _theme_item_dt
  * function that returns definition list from an associative array
  */
-function _os_stats_theme_item_dt($data) {
+function _theme_os_stats_item_dt($data) {
   	$out = '<dl>';
   	foreach ($data as $dt => $dd) {
     	$out .= '  <dt>' . $dt . ':</dt>';
@@ -205,4 +228,4 @@ function _os_stats_theme_item_dt($data) {
   	$out .= '</dl>';
   
   	return $out;
-}// end function }
+}// end function 

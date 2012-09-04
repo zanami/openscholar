@@ -70,7 +70,6 @@ dependencies[] = cp_menu
 dependencies[] = cp_user
 dependencies[] = cp_content
 dependencies[] = cp_toolbar
-dependencies[] = cp_settings
 
 ; Features
 dependencies[] = os_links
