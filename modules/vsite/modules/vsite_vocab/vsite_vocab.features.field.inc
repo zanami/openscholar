@@ -51,7 +51,8 @@ function vsite_vocab_get_vocab_fields(){
                 'handler_settings' => array(
                     'behaviors' => array(
                         'og_vocab' => array(
-                            'status' => TRUE 
+                            'status' => TRUE,
+                            'use_context' => 'force',
                         ), 
                         'views-select-list' => array(
                             'status' => 0 
