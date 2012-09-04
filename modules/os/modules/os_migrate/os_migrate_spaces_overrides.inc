@@ -42,7 +42,7 @@
     
     //$query->condition('id', '8921'); //jlepore
    // $query->condition('id', '10061'); //charlesmaier
-    $query->condition('id', array('21094', '8921'), 'IN'); //dan's test account.  has many box
+    $query->condition('id', array('21094', '8921', '6879'), 'IN'); //dancabral, jlepore, jsagotsky
     
     //check that vsite exists?
     
