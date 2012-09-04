@@ -39,6 +39,17 @@ function os_publications_menu_alter(&$items) {
   );
 }
 
+/** 
+ * Implementation of hook_form_user_profile_form_alter
+ * This hook will remove the "bibio" fieldset from the users profile form
+ */
+function os_publications_form_user_profile_form_alter(&$form, &$form_state) {
+	// check to make sure it's set 
+	if(isset($form['biblio_fieldset'])) {
+		$form['biblio_fieldset']['#access'] = false;
+	}// end if
+}// end function
+
 /**
  * Alters biblio queries to take spaces into account
  *
@@ -275,19 +286,10 @@ function os_publications_form_biblio_import_form_alter(&$form, $form_state) {
   unset($form['import_taxonomy']);
 }
 
-/**
- * Ensures the space is set on imported biblio nodes
- */
-function os_publications_node_prepare($node) {
-  if ($node->type == 'biblio' && isset($node->nid) && !isset($node->og_group_ref) && $space = spaces_get_space()) {
-    field_attach_load('node', array($node->nid => $node));
-    $node->og_group_ref[LANGUAGE_NONE][0]['target_id'] = $space->id;
-  }
-}
-
 // Clear relevant caches when a biblio node is added, changed or deleted
 function os_publications_node_insert($node) {
   if ($node->type == 'biblio') {
+    _os_publications_handle_import($node);
     _os_publications_clear_cache($node);
   }
 }
@@ -328,6 +330,16 @@ function _os_publications_clear_cache($node) {
     if (strpos($check, '|') !== FALSE) {
       cache_clear_all($r->cid, 'cache_biblio_lists');
     }
+  }
+}
+
+/**
+ * Ensures the space is set on imported biblio nodes
+ */
+function _os_publications_handle_import($node) {
+  if ($node->type == 'biblio' && isset($node->nid) && !isset($node->og_group_ref) && $space = spaces_get_space()) {
+    field_attach_load('node', array($node->nid => $node));
+    $node->og_group_ref[LANGUAGE_NONE][0]['target_id'] = $space->id;
   }
 }
 

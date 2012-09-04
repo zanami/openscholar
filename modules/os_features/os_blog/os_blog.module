@@ -13,11 +13,9 @@ include_once 'os_blog.features.inc';
 function os_blog_process_node(&$vars) {
   if ($vars['type'] !== 'blog') return;
   // Build the submitted variable used by default in node templates
-  $vars['submitted'] = t('Submitted on !datetime',
-    array(
-      '!datetime' => $vars['publication_date'],
-    )
-  );
+  $pubdate = format_date($vars['created'], 'custom', 'F j, Y');
+  // Publication date, formatted with time element
+  $vars['submitted'] = '<time datetime="' . $vars['datetime'] . '" pubdate="pubdate">' . $pubdate . '</time>';
 }
 
 /**
