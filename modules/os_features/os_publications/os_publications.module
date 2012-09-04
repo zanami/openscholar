@@ -275,9 +275,6 @@ function os_publications_form_biblio_import_form_alter(&$form, $form_state) {
   unset($form['import_taxonomy']);
 }
 
-function os_publications_node_prepare($node) {
-}
-
 // Clear relevant caches when a biblio node is added, changed or deleted
 function os_publications_node_insert($node) {
   if ($node->type == 'biblio') {
