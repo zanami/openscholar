@@ -96,6 +96,12 @@ border-radius:5px;
 
 .submitted {font-weight:bold;}
 
+
+/**** BLOCK/BOX STYLES ****/
+#boxes-box-os_addthis {margin-top:10px;}
+
+
+
 /**** MAIN NAV BAR ****/
 
 #menu-bar #block-os-site_search {
@@ -131,6 +137,10 @@ top:3.1em;
   margin-top:2px;
   background: none;
   }
+
+#menu-bar ul.nice-menu ul li {
+  margin-top:0;
+}
 
 #menu-bar ul.nice-menu li a {
   color: #FFF;
@@ -172,11 +182,9 @@ top:3.1em;
 .sidebar ul.nice-menu li {
  list-style-type:none;
  list-style-image:none;
+ margin-bottom: 0;
   }
 
-.sidebar ul.nice-menu li {
- list-style-type:none;
-  }
 
 .sidebar ul.nice-menu li a,
 .sidebar ul.nice-menu li a:hover,

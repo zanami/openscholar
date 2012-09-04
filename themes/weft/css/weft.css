@@ -189,26 +189,20 @@ p.copy a.poweredby {
 
 /* NICE MENUS */
 ul.nice-menu ul {
-    top: 1em;
+    top: 2em;
     border-top:none;
 }
+
+#menu-bar ul.nice-menu ul li {
+    line-height: auto;
+    margin-top:auto;
+    }
+
 
 ul.nice-menu li a {
     color:#FFF;
 }
 
-ul.nice-menu ul ul {
-    top: 1em;
-}
-
-ul.nice-menu-down li ul li ul {
- 
-    top: -15px;
-}
-
-ul.nice-menu li li.menuparent {
-     background: #b8690c;
-}
 
 
 
