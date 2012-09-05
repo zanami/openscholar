@@ -1,20 +1,27 @@
 <?php 
 
 /**
- * Add the passed entity to the current group, entity must have an ID
+ * Add the passed entity to a group
  *
  *  The entity that you wish to put into a group
  *  @param entity $entity
+ *  
  *  The type of entity you are passing (default node)
  *  @param string $entity_type
+ *  
+ *  The spaces group object to add the entity to
+ *  @param space $vsite
  */
-function vsite_add_group($entity, $entity_type = 'node'){
+function vsite_add_group($entity, $entity_type = 'node', $vsite = false){
 
   //Make sure the entity is valid
   list($id) = entity_extract_ids($entity_type, $entity);
 
   //Get the active space
-  $vsite = spaces_get_space();
+  if(!$vsite){
+    $vsite = spaces_get_space();
+  }
+  
   if($id && $vsite){
 
     $values = array(
@@ -23,8 +30,9 @@ function vsite_add_group($entity, $entity_type = 'node'){
     );
 
     //Add this entity to the active group
-    og_group($vsite->group_type, $vsite->id, $values);
+    return og_group($vsite->group_type, $vsite->id, $values);
   }
+  
   return false;
 }
 
