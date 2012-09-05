@@ -49,8 +49,12 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $force_og = variable_get('os_migrate_force_og', 0);   
       if (!$force_og) {   
         $this->addFieldMapping('og_group_ref', 'group_nid');
+        $this->addFieldMapping('field_og_general', 'group_nid');
+        
       } else {
         $this->addFieldMapping('og_group_ref')
+          ->defaultValue($force_og);
+        $this->addFieldMapping('field_og_general')
           ->defaultValue($force_og);
         $this->addUnmigratedSources(array('group_nid'), t('DNM'));
       }
@@ -109,6 +113,11 @@ abstract class AbstractNodeOSMigration extends OSMigration {
 			$query->fields('ct');      
     }
 
+
+    if (isset($this->restrict_vsites)) {
+      $query->condition('og.group_nid', $this->restrict_vsites, 'IN'); //dancabral, jlepore, jsagotsky, gary
+    }
+    
     
     return $query;
   }
