@@ -231,6 +231,8 @@ class os_sv_list_box extends os_boxes_default {
   	return $form;
   }
   
+  /** sorting functions **/
+  
   function sort_newest(&$efq) {
   	$efq->propertyOrderBy('created', 'DESC');
   }
@@ -249,8 +251,11 @@ class os_sv_list_box extends os_boxes_default {
 //   }
   
   function sort_event(&$efq) {
-  	
+  	$efq->fieldOrderBy('field_date', 'value', 'ASC');
+  	$efq->fieldCondition('field_date', 'value', date('Y-m-d'), '>=');
   }
+  
+  /** display functions **/
   
   function display_body($nodes) {
     $items = node_view_multiple($nodes, 'body');
