@@ -84,7 +84,6 @@ dependencies[] = os_presentations
 dependencies[] = os_software
 dependencies[] = os_dataverse
 dependencies[] = os_booklets
-dependencies[] = os_og
 
 ; other
 dependencies[] = diff
