@@ -22,7 +22,8 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     }
     $object_id = $row->object_id;
     if ($this->_discontinued_variable($object_id)) {
-      return FALSE; //message?
+      parent::saveMessage(t('Dropping variable: @var', array('@var' => $object_id)), MigrationBase::MESSAGE_NOTICE);
+      return FALSE;
     }
     
     //flavor variables get new names
@@ -113,7 +114,10 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   
   // check if a variable is discontinued
   public function _discontinued_variable($object_id) {
-    $discontinued = array('vsite_design_disable_shield', 'vsite_shields_disable_shield');
+    $discontinued = array(
+      'vsite_design_disable_shield', 
+      'vsite_shields_disable_shield',
+    );
     return in_array($object_id, $discontinued);
   }
   

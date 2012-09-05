@@ -65,6 +65,10 @@ class ThemeOSMigration extends OSMigration {
     $query->addField('og', 'nid', 'id');
                     //->fields('og', array('og_theme', 'nid'));
     //filter only vsite objects?
+    if (isset($this->restrict_vsites)) {
+      $query->condition('nid', $this->restrict_vsites, 'IN'); //dancabral, jlepore, jsagotsky, gary
+    }
+    
     return $query;
   }
   
