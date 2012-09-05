@@ -18,7 +18,7 @@ function os_blog_default_box() {
   $box->title = '';
   $box->description = 'Blog RSS Feed';
   $box->options = array(
-    'content' => 'blog',
+    'content' => array('blog'),
   );
   $export['os_blog-blog_rss_feed'] = $box;
 
