@@ -6,6 +6,5 @@ version = "7.x-rc1"
 
 dependencies[] = "boxes"
 dependencies[] = "ctools"
-dependencies[] = "os_og"
 features[box][] = simpleview_box
 files[] = plugins/boxes/os_sv_list.box.inc

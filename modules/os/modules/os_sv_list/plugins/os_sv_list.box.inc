@@ -10,8 +10,11 @@ class os_sv_list_box extends os_boxes_default {
 
     $options += array(
     	'content_type' => 'all',
-    	'display' => 'title',
-    	'more_link' => FALSE,
+    	'display' => 'display_title',
+    	'more' => FALSE,
+      'more_text' => t('More'),
+      'more_link' => 'node', //what's a good default?
+      
     	'pager' => FALSE,
     	'number_of_items' => 5,
     	'sort_by' => 'sort_newest',
@@ -55,11 +58,28 @@ class os_sv_list_box extends os_boxes_default {
     											'sort_alpha' => t('Alphabetical')),
                           //$this->callback_function => display name
     );
-    
+
+    $form['more'] = array(
+      '#title' => 'Show "more" link',
+      '#type' => 'checkbox',
+      '#default_value' => $this->options['more'],
+    );
     $form['more_link'] = array(
-      '#title' => 'Link to more content',
-    	'#type' => 'checkbox',
-    	'#default_value' => $this->options['more_link'],
+      '#title' => 'URL for the more link',
+      '#type' => 'textfield',
+      '#default_value' => $this->options['more_link'],
+      '#states' => array(
+        'visible' => array('input[name=more]' => array('checked' => TRUE)),
+      )
+    );
+    
+    $form['more_text'] = array(
+      '#title' => 'Label of the more link (default: "more")',
+    	'#type' => 'textfield',
+    	'#default_value' => $this->options['more_text'],
+      '#states' => array(
+        'visible' => array('input[name=more]' => array('checked' => TRUE)),
+      )
     );
     
     $form['pager'] = array(
@@ -114,9 +134,8 @@ class os_sv_list_box extends os_boxes_default {
 	  }
 	      
 	  //more link
-	  if ($this->options['more_link']) {
-	    $ct = ($this->options['content_type'] == 'all') ? 'node' : $this->options['content_type']; //TODO fix me
-	    $block['content'] .= l(t('More'), $ct);
+	  if ($this->options['more']) {
+	    $block['content'] .= l($this->options['more_text'], $this->options['more_link']);
 	  }
 	  
     return $block;  	
@@ -131,9 +150,7 @@ class os_sv_list_box extends os_boxes_default {
  	  $efq->propertyCondition('type', array_keys(os_get_bundles(1)), 'IN');
     
 	  //vsite
-	  if (module_exists('spaces') && $space = spaces_get_space()) {
-    //	$efq->fieldCondition('og_group_ref', 'target_id', $space->id, '='); //why no work?
-    	//field_data_og_group_ref is empty.  does that keep efq from working?
+	  if (module_exists('vsite') && $space = spaces_get_space()) {
     	$efq->fieldCondition('field_og_general', 'target_id', $space->id);
 	  }
 	  
