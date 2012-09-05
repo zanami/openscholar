@@ -120,6 +120,14 @@ div.messages {
 .os-powered-link,
 #block-os-powered-by {
     float: right;
+    bottom:-26px;
+    position:relative;
+}
+
+.page-cp #block-os-powered-by {
+  
+    bottom:0;
+   
 }
 
 #block-os-powered-by a,
