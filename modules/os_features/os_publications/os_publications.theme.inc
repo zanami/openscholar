@@ -57,7 +57,7 @@ function theme_os_publications_tabular(&$vars) {
         break;
       default:
         if ($f['type'] == 'text_format') {
-          $data = check_markup($value, $node->biblio_formats[$f['name']]);
+          $data = check_markup($value, isset($node->biblio_formats[$f['name']])?$node->biblio_formats[$f['name']]:filter_default_format());
         }
         else {
           $data = check_plain($value);

@@ -226,13 +226,39 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
 
 /**
  * Is given a render array representing the biblio node ready for rendering in the list view
+ *
+ * Adds any fields that may have been added to the node type
+ * Adds the Abstract link to the teaser
  * @param unknown_type $entry
  */
 function os_publications_biblio_entry_alter(&$entry, $node) {
   unset($entry['export_links']);
 
+  // add abstract link
+  if (strlen($node->biblio_abst_e)) {
+    $html = &$entry['entry']['#markup'];
+    $insert = strrpos($html, '</div>');
+    $extra = l('Abstract', 'node/'.$node->nid, array('attributes' => array('class' => array('biblio-abstract-link', 'toggle'))));
+    $render = array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'class' => array(
+      	  'biblio-abstract-display',
+          'slider',
+        )
+      ),
+      'abstract' => array(
+        '#markup' => check_markup($node->biblio_abst_e, filter_default_format()),
+      )
+    );
+    $extra .= render($render);
+    $html = substr_replace($html, ' '.$extra, $insert, 0);
+  }
+
+  // add fields
   field_attach_prepare_view('node', array($node->nid => $node), 'teaser');
   $entry += field_attach_view('node', $node, 'teaser');
+  $entry['#attached']['js'][] = drupal_get_path('module', 'os').'/theme/os_toggle.js';
 }
 
 /**

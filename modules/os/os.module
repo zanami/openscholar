@@ -83,11 +83,11 @@ function os_menu_alter(&$items){
  * @return array array('bundle_id' => 'Bundle Name')
  */
 function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = false){
-  $ret_all = false;
+  $ret_all = FALSE;
   if (is_bool($privacy) && $privacy) {
     $ret_all = TRUE;
   }
-  else if (! is_array($privacy)) {
+  else if (!is_array($privacy)) {
     $privacy = array(
         $privacy
     );
@@ -98,25 +98,26 @@ function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = false)
   $features = spaces_features($space_type, $reset);
   $site_features = variable_get('spaces_features', array());
 
-  foreach ( $features as $name => $feature ) {
+  foreach ($features as $name => $feature) {
+
     $info = $feature->info['features'];
-    if (isset($info['node']) && ($ret_all || (isset($site_features[$name]) && in_array($site_features[$name], $privacy)))) {
+    if (!isset($info['node'])) continue;
+    if (!$ret_all && (!isset($site_features[$name]) || !in_array($site_features[$name], $privacy))) continue;
 
-      // Get bundle name, we call the node_info hook directly since
-      // this is called during bootstrap
-      module_load_include('features.inc', $name);
-      if (function_exists($name . '_node_info')) {
-        $ni = $name . '_node_info';
-        $node_info = $ni();
+    // Get bundle name, we call the node_info hook directly since
+    // this is called during bootstrap
+    module_load_include('features.inc', $name);
+    $node_info_hook = $name . '_node_info';
+    if (function_exists($node_info_hook)) {
+      $node_info = $node_info_hook();
+    }
+
+    foreach ($info['node'] as $nodetype) {
+      if (isset($node_info[$nodetype]['name'])) {
+        $bundles[$nodetype] = $node_info[$nodetype]['name'];
       }
-
-      foreach ( $info['node'] as $nodetype ) {
-        if (isset($node_info[$nodetype]['name'])) {
-          $bundles[$nodetype] = $node_info[$nodetype]['name'];
-        }
-        else {
-          $bundles[$nodetype] = $feature->info['name'];
-        }
+      else {
+        $bundles[$nodetype] = $feature->info['name'];
       }
     }
   }
@@ -504,6 +505,10 @@ function os_form_node_form_alter(&$form, $form_state){
 function os_settings_form($form_state) {
   $form = array();
 
+  if (!overlay_get_mode() == 'child') {
+    $form['#redirect'] = '';
+  }
+
   $form['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use Dropdowns'),
@@ -763,7 +768,7 @@ function os_system_info_alter(&$info, $file, $type){
  */
 function os_url_outbound_alter(&$path, &$options, $original) {
   global $user;
-  
+
   //Pages to add a destination return to their links
   $loop_back_pages = array(
     'user',
@@ -772,7 +777,7 @@ function os_url_outbound_alter(&$path, &$options, $original) {
 
   // Only altering the logout/login path and
   // only when there is not already a destination
-  // only alter login path if the user is logged 
+  // only alter login path if the user is logged
   // out, otherwise it is a link to "My account"
   if(!in_array($path,$loop_back_pages) || !empty($options['query']['destination']) || ($path == 'user' && $user->uid)){
     return;
