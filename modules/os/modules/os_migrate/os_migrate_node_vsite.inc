@@ -62,7 +62,9 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $query->join('og', 'og', 'n.nid = og.nid');
     $query->fields('og', parent::subfields('og', array('description', 'language', 'private'), '_'));    
     
-    $query->condition('n.nid', array('21094', '8921', '6879'), 'IN'); //dancabral, jlepore, jsagotsky
+    if (isset($this->restrict_vsites)) {
+      $query->condition('n.nid', $this->restrict_vsites, 'IN'); //dancabral, jlepore, jsagotsky, gary
+    }
     
     
     return $query;

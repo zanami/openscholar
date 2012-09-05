@@ -39,10 +39,13 @@
     $query = parent::query();
     $query->condition('object_type', $this->source_object, '='); 
     $query->isNotNull('value');
+    $query->distinct();
     
     //$query->condition('id', '8921'); //jlepore
    // $query->condition('id', '10061'); //charlesmaier
-    $query->condition('id', array('21094', '8921', '6879'), 'IN'); //dancabral, jlepore, jsagotsky
+    if (isset($this->restrict_vsites)) {
+      $query->condition('id', $this->restrict_vsites, 'IN'); //dancabral, jlepore, jsagotsky, gary
+    }
     
     //check that vsite exists?
     

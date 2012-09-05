@@ -83,6 +83,10 @@ class BoxPorter {
     $this->migration = $migration;
   }
   
+  function _update_format($format = NULL) { //no format -> plain_text
+    return (in_array($format, array(1,2,4,5,6))) ? 'filtered_html' : 'plain_text';
+  }
+  
   public function _update_block_plugin_key($key) {
   
     $box_map = array(
@@ -288,7 +292,7 @@ class BoxPorter {
     }
   
     $body = $box->options['body'];
-    $format = (isset($box->options['format']) && in_array($box->options['format'], array(1,2,4,5,6))) ? 'filtered_html' : 'plain_text'; //filtered, full, comment, minimal, full -> filtered.
+    $format = $this->_update_format($box->options['format']);
   
     unset($box->options['body'], $box->options['format']);
   
@@ -461,7 +465,7 @@ class BoxPorter {
       $box->plugin_key = 'os_boxes_html';
       $box->options = array('text'=>array(
         'value' => $body,
-        'format' => ($node->format == 1) ? 'filtered_html' : 'plain_text',  
+        'format' => $this->_update_format($node->format),  
       ));
       
       return $box;
