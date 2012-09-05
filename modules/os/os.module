@@ -83,11 +83,11 @@ function os_menu_alter(&$items){
  * @return array array('bundle_id' => 'Bundle Name')
  */
 function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = false){
-  $ret_all = false;
+  $ret_all = FALSE;
   if (is_bool($privacy) && $privacy) {
     $ret_all = TRUE;
   }
-  else if (! is_array($privacy)) {
+  else if (!is_array($privacy)) {
     $privacy = array(
         $privacy
     );
@@ -98,25 +98,26 @@ function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = false)
   $features = spaces_features($space_type, $reset);
   $site_features = variable_get('spaces_features', array());
 
-  foreach ( $features as $name => $feature ) {
+  foreach ($features as $name => $feature) {
+
     $info = $feature->info['features'];
-    if (isset($info['node']) && ($ret_all || (isset($site_features[$name]) && in_array($site_features[$name], $privacy)))) {
+    if (!isset($info['node'])) continue;
+    if (!$ret_all && (!isset($site_features[$name]) || !in_array($site_features[$name], $privacy))) continue;
 
-      // Get bundle name, we call the node_info hook directly since
-      // this is called during bootstrap
-      module_load_include('features.inc', $name);
-      if (function_exists($name . '_node_info')) {
-        $ni = $name . '_node_info';
-        $node_info = $ni();
+    // Get bundle name, we call the node_info hook directly since
+    // this is called during bootstrap
+    module_load_include('features.inc', $name);
+    $node_info_hook = $name . '_node_info';
+    if (function_exists($node_info_hook)) {
+      $node_info = $node_info_hook();
+    }
+
+    foreach ($info['node'] as $nodetype) {
+      if (isset($node_info[$nodetype]['name'])) {
+        $bundles[$nodetype] = $node_info[$nodetype]['name'];
       }
-
-      foreach ( $info['node'] as $nodetype ) {
-        if (isset($node_info[$nodetype]['name'])) {
-          $bundles[$nodetype] = $node_info[$nodetype]['name'];
-        }
-        else {
-          $bundles[$nodetype] = $feature->info['name'];
-        }
+      else {
+        $bundles[$nodetype] = $feature->info['name'];
       }
     }
   }

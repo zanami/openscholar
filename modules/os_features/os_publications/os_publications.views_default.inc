@@ -251,7 +251,9 @@ if(module_exists(\'apachesolr_search\')){
   $handler->display->display_options['arguments']['lastname']['title_enable'] = TRUE;
   $handler->display->display_options['arguments']['lastname']['title'] = 'Coauthored Publications with: %1';
   $handler->display->display_options['arguments']['lastname']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['lastname']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['lastname']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['lastname']['summary_options']['base_path'] = 'publications/author';
   $handler->display->display_options['arguments']['lastname']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['lastname']['specify_validation'] = TRUE;
   $handler->display->display_options['arguments']['lastname']['limit'] = '0';
@@ -281,10 +283,6 @@ if(module_exists(\'apachesolr_search\')){
   $handler->display->display_options['filters']['current']['operator'] = 'all';
   $handler->display->display_options['filters']['current']['group'] = '0';
   $handler->display->display_options['filters']['current']['expose']['operator'] = FALSE;
-
-  /* Display: Page */
-  $handler = $view->new_display('page', 'Page', 'page_1');
-  $handler->display->display_options['path'] = 'publications/contributors/%';
 
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block');
@@ -437,7 +435,9 @@ if(module_exists(\'apachesolr_search\')){
   $handler->display->display_options['arguments']['name']['title_enable'] = TRUE;
   $handler->display->display_options['arguments']['name']['title'] = '%1';
   $handler->display->display_options['arguments']['name']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['name']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['name']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['name']['summary_options']['base_path'] = 'publications/type';
   $handler->display->display_options['arguments']['name']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['name']['specify_validation'] = TRUE;
   $handler->display->display_options['arguments']['name']['limit'] = '0';
@@ -611,12 +611,15 @@ if(module_exists(\'apachesolr_search\')){
   $handler->display->display_options['arguments']['biblio_year']['title'] = 'Publications in the Year: %1';
   $handler->display->display_options['arguments']['biblio_year']['default_argument_type'] = 'fixed';
   $handler->display->display_options['arguments']['biblio_year']['summary']['sort_order'] = 'desc';
+  $handler->display->display_options['arguments']['biblio_year']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['biblio_year']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['biblio_year']['summary_options']['base_path'] = 'publications/year';
   $handler->display->display_options['arguments']['biblio_year']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['biblio_year']['specify_validation'] = TRUE;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
+  $handler->display->display_options['enabled'] = FALSE;
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   /* Contextual filter: Biblio: Year of Publication */
   $handler->display->display_options['arguments']['biblio_year']['id'] = 'biblio_year';
