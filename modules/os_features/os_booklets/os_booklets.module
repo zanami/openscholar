@@ -23,11 +23,15 @@ function os_booklets_form_book_node_form_alter(&$form, &$form_state, $form_id) {
   $add_edit_child_mode = ($book_is_set || $existing_node);
   
   if ($new_book_root_mode) {
+    // Hides book options and ensures new book is created on node save
     _os_booklets_book_root_form_alter($form);
   }
 
   else if ($add_edit_child_mode) {
+    // Hides certain book settings and customize appearance on node edit form.
     _os_booklets_child_page_form_alter($form);
+    // Filters book options by current space
+    _os_booklets_option_filter_form_alter($form);
   }
 }
 
@@ -127,22 +131,6 @@ function _os_booklets_child_page_form_alter(&$form) {
         '!booklet' => $form['book']['bid']['#options'][$val],
       ));
   $form['book']['plid']['#description'] = t('Set the parent item of this page. Your selection will determine the place where this page will reside in this booklet\'s hierarchy. You can think of the booklet\'s hierarchy as the "table of contents" for your booklet. You could select the top-level booklet itself or another page within the booklet. The maximum depth for a booklet and all child pages is 9.');
-  
-  // Filters book options by current space
-  _os_booklets_option_filter_form_alter($form);
-  
-  // Keeps only necessary bid form elements (why? -or)
-//  $keep_elements = array(
-//    '#type',
-//    '#value',
-//    '#description',
-//    '#options'
-//  );
-//  foreach ($form['book']['bid'] as $key => $element) {
-//    if (!in_array($key, $keep_elements)) {
-//      unset($form['book']['bid'][$key]);
-//    }
-//  }
 }
 
 /**
