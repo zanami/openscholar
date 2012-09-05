@@ -1,0 +1,112 @@
+<?php 
+
+/**
+ * @file
+ * 
+ * os_simpleview module
+ * Let's users provide settings to vsite_view_base view per content type
+ * Accessible for creating a page or box
+ **/
+
+//include_once('os_simpleview.features.inc');
+
+/**
+ * Implements hook_menu()
+ */
+function os_sv_list_menu() {
+  $items = array();
+  $items['os_sv_list_ajax/'] = array(
+    'type' => MENU_CALLBACK, 
+    'title' => 'ajax', 
+    'page callback' => 'os_sv_list_ajax',
+    'page arguments' => array(1), 
+  );
+  return $items;
+}
+
+/**
+ * @function os_sv_list_ajax
+ * 
+ * Ajax page.  Returns next item requested by pager
+ */
+function os_sv_list_ajax() {
+	//probably has to load the box, then pass it (or at least the query) to os_sv_list_render
+	
+	//ajax can pass page # into function here, but not into box->render.  so we'll have the box call out here.
+}
+
+/**
+ * Implements hook_form_FORMID_alter
+ * 
+ * Adds os_sv_list_boxes_box as the first submit handler for this form.  First is important because
+ * it has to copy content specific values before boxes creates the box
+ */
+function os_sv_list_form_boxes_box_form_alter(&$form, &$state) {
+	if ($form['plugin_key']['#value'] == 'os_sv_list_box') {
+		array_unshift($form['#submit'], 'os_sv_list_boxes_box_form_submit');
+	}
+}
+
+//use the values from content spefic form items if that content type is selected
+function os_sv_list_boxes_box_form_submit(&$form, &$state) {
+  //instead of this, why not put an array in the form opts and run off that?
+	$ct = $state['values']['content_type'];
+	if ($ct != 'all') {
+		foreach ($state['box']->options as $key => $value) {
+			$ct_key = "${ct}_${key}";
+			if (isset($state['values'][$ct_key])) {
+				$state['values'][$key] = $state['values'][$ct_key];
+			}
+		}
+	}
+}
+
+function os_sv_list_render($box, $start=0) {
+	//function renders the next page given the box.
+	
+//	//defaults
+//	$efq = new EntityFieldQuery();
+//  $efq->entityCondition('entity_type', 'node');
+//  $efq->propertyCondition('status', 1);
+//  $efq->propertyCondition('type', os_get_bundles(1), 'IN');
+//  
+//  $f = field_info_fields();
+//  //vsite
+//  if (module_exists('spaces') && $space = spaces_get_space()) {
+//  	$efq->fieldCondition('og_group_ref', 'target_id', $space->id, '='); //why no work?
+//  }
+//  
+//  
+//  $efq->pager(3);
+//  $result = $efq->execute();
+//    
+//  $nodes = node_load_multiple(array_keys($result['node']));
+//  $items = node_view_multiple($nodes, 'title');
+//  return drupal_render($items);
+//  return $items;
+//    
+}
+
+function os_sv_list_ctools_plugin_api($module, $api) {
+  if ($module == 'boxes' && $api == 'plugins') {
+    return array('version' => 1);
+  }
+}
+
+function os_sv_list_boxes_plugins() {
+  $plugins = array();
+
+  $plugins['os_sv_list_box'] = array(
+    'title' => 'sv list',
+    'tags' => array('Content'),
+    'handler' => array(
+      'class' => 'os_sv_list_box',
+      'file' => 'os_sv_list.box.inc',
+      'path' => drupal_get_path('module', 'os_sv_list').'/plugins/',
+      'parent' => 'os_boxes_default',
+    ),
+    'factory' => TRUE,
+  );
+
+  return $plugins;
+}

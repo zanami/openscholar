@@ -122,6 +122,28 @@ class BoxPorter {
   
   }
   
+  //os_sv_list_box uses function names for display types.  update them here.
+  function _sv_list_box_style($style) {
+    $style_map = array(
+      'teasers' => 'display_teaser',
+      'teaser' => 'display_teaser',
+      'titles' => 'display_title',
+      'title' => 'display_title',
+      );
+    
+    return (isset($style_map[$style])) ? $style_map[$style] : 'display_teaser';
+  }
+  
+  function _sv_list_box_sort($sort) { 
+    $sort_map = array(
+      'a-z' => 'sort_alpha',
+      'newest' => 'sort_newest',
+      'oldest' => 'sort_oldest',
+      );
+    return (isset($sort_map[$sort])) ? $sort_map[$sort] : 'sort_newest';
+  }
+  
+  
   public function _box_key_exists($plugin_key) {
     if (module_exists('os_boxes')) {
       $boxes = os_boxes_get_boxes_plugins();
@@ -342,6 +364,32 @@ class BoxPorter {
       $box->options['shield'] = '';
     }
     $box->plugin_key = $key;
+    
+    return $box;
+  }
+  
+  public function _port_box_os_boxes_sv_list($box, $id, $key_only) {
+    $key = 'os_sv_list_box';
+    if ($key_only) {
+      return $key;
+    }
+    
+    $box->plugin_key = $key;
+    $ct = $box->options['filter'];
+    if (strpos($ct, ':')) {
+      list(,$ct) = explode(':', $ct);
+    }
+    $options = array(
+      'content_type' =>     $ct,
+      'display' =>          $this->_sv_list_box_style($box->options['style']),
+      'more' =>             $box->options['more'],
+      'more_link' =>        $box->options['more_link'],
+      'more_text' =>        $box->options['more_text'],
+      'pager' =>            $box->options['user_pager'],
+      'number_of_items' =>  $box->options['number_of_items'],
+      'sort_by' =>          $this->_sv_list_box_sort($box->options['sort']),
+    );
+    $box->options = $options;
     
     return $box;
   }
