@@ -53,7 +53,7 @@ dependencies[] = media_embed
 ; boxes
 dependencies[] = views_slideshow_cycle
 
-; OS 
+; OS
 dependencies[] = os
 dependencies[] = os_files
 dependencies[] = os_boxes
@@ -84,6 +84,7 @@ dependencies[] = os_presentations
 dependencies[] = os_software
 dependencies[] = os_dataverse
 dependencies[] = os_booklets
+dependencies[] = os_og
 
 ; other
 dependencies[] = diff

@@ -1,0 +1,6 @@
+name = OpenScholar: Organic groups
+description = Integration between OpenScholar and Organic groups.
+core = 7.x
+package = OpenScholar
+dependencies[] = og
+dependencies[] = os
