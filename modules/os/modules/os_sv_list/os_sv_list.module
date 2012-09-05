@@ -15,11 +15,12 @@
  */
 function os_sv_list_menu() {
   $items = array();
-  $items['os_sv_list_ajax/'] = array(
+  $items['os_sv_list_ajax'] = array(
     'type' => MENU_CALLBACK, 
     'title' => 'ajax', 
     'page callback' => 'os_sv_list_ajax',
-    'page arguments' => array(1), 
+    'page arguments' => array(1,2), 
+    'access callback' => TRUE,
   );
   return $items;
 }
@@ -27,12 +28,28 @@ function os_sv_list_menu() {
 /**
  * @function os_sv_list_ajax
  * 
- * Ajax page.  Returns next item requested by pager
+ * Ajax page.  Returns ajax command to replace box with next page or redirects to self with a parameter for the pager to advance
  */
-function os_sv_list_ajax() {
+function os_sv_list_ajax($ajax=FALSE, $box_delta=NULL, $page=NULL) {
+  $box_delta = $_GET['sv_list_box_delta'];
+  $page =  (int)$_GET['page'];
+  $dest = trim($_GET['dest'], '/');
+  
+  if (!$ajax || $ajax == 'nojs') {    
+    drupal_goto($dest, array('options' => array('absolute'=>FALSE), 'query' => array('page' => $page)));
+  }
+
 	//probably has to load the box, then pass it (or at least the query) to os_sv_list_render
+	if ($box = os_boxes_load($box_delta)) {
+  	$block = $box->render();
+  	$html = $block['content'];
+	  $selector = '#box-' . $box_delta . '-wrapper';
 	
-	//ajax can pass page # into function here, but not into box->render.  so we'll have the box call out here.
+	  $commands[] = ajax_command_replace($selector, $html);
+	  ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+	}
+
+	exit;
 }
 
 /**

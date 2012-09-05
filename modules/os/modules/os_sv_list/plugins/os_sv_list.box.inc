@@ -103,12 +103,6 @@ class os_sv_list_box extends os_boxes_default {
 //   * Implementation of boxes_content::render().
    */
   public function render() {
-    $block = $this->render_page();
-    return $block;
-  }
-  
-  //render for the pager.  called by $this->render or by ajax.  using separte function so we can have an arg
-  public function render_page($page=0) {
     $block = parent::render();
 		
 		$efq = $this->init_query();
@@ -133,10 +127,25 @@ class os_sv_list_box extends os_boxes_default {
 	  	$block['content'] = $this->$display_func($nodes);
 	  }
 	      
+	  //pager
+	  if ($this->options['pager']) {
+	    //theme_pager();
+	    $parameters = array('sv_list_box_delta' => $this->delta); 
+	    $pager = theme('pager', array('parameters' => $parameters));
+	    
+	    $pager = preg_replace('/<a /', '<a class="use-ajax" ', $pager); //add use-ajax class.  theme_pager won't do it for us...
+	    $pager = preg_replace('/href="(.*?)\?/', 'href="os_sv_list_ajax/nojs?dest=$1&amp;', $pager);
+	    
+	    $block['content'] .= $pager;
+	  }
+	  
 	  //more link
 	  if ($this->options['more']) {
 	    $block['content'] .= l($this->options['more_text'], $this->options['more_link']);
 	  }
+	  
+	  drupal_add_library('system', 'drupal.ajax');
+	  $block['content'] = '<div id="box-' . $this->delta . '-wrapper">' . $block['content'] . '</div>';
 	  
     return $block;  	
   }
