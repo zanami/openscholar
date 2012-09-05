@@ -24,33 +24,6 @@ function vsite_get_vsite($sid = false){
 }
 
 /**
- * Add the passed entity to the current group, entity must have an ID
- * 
- *  @param entity $entity
- *  @param string $entity_type
- */
-function vsite_add_group($entity, $entity_type = 'node'){
-  
-  //Make sure the entity is valid
-  list($id) = entity_extract_ids($entity_type, $entity);
-  
-  //Get the active space
-  $vsite = spaces_get_space();
-  if($id && $vsite){
-    
-    $values = array(
-        'entity_type' => $entity_type,
-        'entity' => $entity,
-    );
-    
-    //Add this entity to the active group
-    og_group($vsite->group_type, $vsite->id, $values);
-  }
-  return false;
-}
-
-
-/**
  * Helper function to return the current purl prefix
  *
  * @param vsite $vsite
