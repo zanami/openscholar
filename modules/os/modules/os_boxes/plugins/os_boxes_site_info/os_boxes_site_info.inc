@@ -82,18 +82,18 @@ class os_boxes_site_info extends os_boxes_default {
       $addr = explode('<br>', $addr[0]['value']);
       $descrip = field_get_items('node', $group, 'field_site_description');
       $this->options = array_merge($this->options, array(
-        'site_title' => check_plain($group->title),
-        'descrip' => check_plain($descrip[0]['value']),
-        'address1' => (isset($addr[0])) ? check_plain($addr[0]) : '',
-        'address2' => (isset($addr[1])) ? check_plain($addr[1]) : '',
+        'site_title' => $group->title,
+        'descrip' => $descrip[0]['value'],
+        'address1' => (isset($addr[0])) ? $addr[0] : '',
+        'address2' => (isset($addr[1])) ? $addr[1] : '',
       ));
     }
 
     $output = '';
 
     $output = '<h1>'.l($this->options['site_title'], '<front>').'</h1>
-    <h2>'.$this->options['descrip'].'</h2>
-    <p>'.$this->options['address1'].'<br>'.$this->options['address2'].'
+    <h2>'.check_plain($this->options['descrip']).'</h2>
+    <p>'.check_plain($this->options['address1']).'<br>'.check_plain($this->options['address2']).'
     '.l('(email)', 'contact_owner').'</p>';
 
     $block['content'] = $output;
