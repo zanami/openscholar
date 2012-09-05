@@ -505,6 +505,10 @@ function os_form_node_form_alter(&$form, $form_state){
 function os_settings_form($form_state) {
   $form = array();
 
+  if (!overlay_get_mode() == 'child') {
+    $form['#redirect'] = '';
+  }
+
   $form['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use Dropdowns'),
@@ -764,7 +768,7 @@ function os_system_info_alter(&$info, $file, $type){
  */
 function os_url_outbound_alter(&$path, &$options, $original) {
   global $user;
-  
+
   //Pages to add a destination return to their links
   $loop_back_pages = array(
     'user',
@@ -773,7 +777,7 @@ function os_url_outbound_alter(&$path, &$options, $original) {
 
   // Only altering the logout/login path and
   // only when there is not already a destination
-  // only alter login path if the user is logged 
+  // only alter login path if the user is logged
   // out, otherwise it is a link to "My account"
   if(!in_array($path,$loop_back_pages) || !empty($options['query']['destination']) || ($path == 'user' && $user->uid)){
     return;
