@@ -288,7 +288,7 @@ class BoxPorter {
     }
   
     $body = $box->options['body'];
-    $format = (isset($box->options['format']) && $box->options['format'] == 1) ? 'filtered_html' : 'plain_text';
+    $format = (isset($box->options['format']) && in_array($box->options['format'], array(1,2,4,5,6))) ? 'filtered_html' : 'plain_text'; //filtered, full, comment, minimal, full -> filtered.
   
     unset($box->options['body'], $box->options['format']);
   

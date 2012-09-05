@@ -156,7 +156,15 @@ class rbuild_handler implements os_software_handler {
    */
   public function validate() {
     if(!($package = $this->get_package())) {
-      form_set_error('rbuild identifier', "Invalid rBuild short name [$this->short_name] not found at [$this->url]");
+      form_set_error(
+      	'rbuild short name',
+      	t('Invalid rBuild settings: Product <em>!shortname</em> not found at <em>!url</em>.',
+      	  array(
+      	    '!shortname' => $this->short_name,
+      	    '!url' => $this->url,
+      	  )
+      	)
+      );
     }
   }
   
