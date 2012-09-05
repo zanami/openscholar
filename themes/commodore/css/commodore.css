@@ -158,14 +158,14 @@ h4 {
      margin-left: 8px;
 }
 
-#menu-bar #block-os-site_search {
+#menu-bar .block-os-search-db {
      float: right;
      height: 35px;
      padding-top: 13px;
      width: 180px;
 }
 
-#search-form #edit-submit {
+.block-os-search-db #edit-submit {
      background: url("../images/searchIcon.gif") no-repeat scroll 0 0 transparent;
 }
 
@@ -194,10 +194,24 @@ h4 {
      text-transform: uppercase;
 }
 
+
 #menu-bar ul li a:hover, #menu-bar ul li a.active {
      background: none repeat scroll 0% 0% #DADADA;
      color: #5D7485;
 }
+
+#menu-bar ul.nice-menu ul li a {
+     padding: .5em 0 .5em 1.6em;
+  
+}
+
+
+
+#menu-bar ul li a:hover, #menu-bar ul li a.active {
+     background: none;
+     color: #5D7485;
+}
+
 
 /* NICE MEUNS */
 ul.nice-menu ul {

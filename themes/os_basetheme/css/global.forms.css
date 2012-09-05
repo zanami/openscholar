@@ -150,7 +150,7 @@ input[disabled] {
 
 /** OS LOGIN BUTTON **/
 #block-os-login {
-	bottom:0;
+	bottom:-22px;
 	position:relative;
 }
 
@@ -158,10 +158,11 @@ input[disabled] {
 	background:#EFEFEF;
  	color:#222;
 	border: 1px solid #777777;
-   	padding: 2px 4px;
-   	 border-radius:5px;
-	-moz-border-radius:5px;
-	border-radius:5px;
+   	padding: 1px 3px;
+   	 border-radius:3px;
+	-moz-border-radius:3px;
+	border-radius:3px;
+	
 	
 }
 
