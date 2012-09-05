@@ -62,27 +62,22 @@ function os_user_create($user_info, $add_user = TRUE){
  * @param $site_id
  * Site ID
  *
- * @param $state
- * User state
- *
- * @param $group_type
- * The group type you would like to add to
- *
  * @return bool
  * Success
  */
 /**
  * Add a user, and if you are in a group add them to your group
  */
-function os_user_add($uid, $site_id = false, $state = OG_STATE_ACTIVE, $group_type = 'node'){
+function os_user_add($uid, $site_id = false){
   
-  if(!$site_id){
-    if(module_exists('vsite') && ($vsite = spaces_get_space())){
-      $site_id = $vsite->id;
-    }else{
-      //No SID passed and we are not in a site
-      return false;
-    }
+  if(!module_exists('vsite')){
+    //Nothing to do for single tenant installs
+    return false;
+  }
+  
+  $vsite = false;
+  if($site_id){
+    $vsite = spaces_load('og', $site_id);
   }
   
   $account = user_load($uid);
@@ -91,25 +86,10 @@ function os_user_add($uid, $site_id = false, $state = OG_STATE_ACTIVE, $group_ty
     //An invalid user has been passed
     return false;
   }
-  elseif (og_get_membership($group_type, $site_id, 'user', $uid)) {
-    //The User is already a member of this group
-    return false;
-  }
-  // Check field cardinality.
-  elseif (!og_check_field_cardinality('user', $account, 'og_user_group_ref')) {
-    //This group has reached the maximum number of members
-    return false;
-  }
   
-  $values = array();
-  $og_membership = og_membership_create($group_type, $site_id, 'user', $uid, 'og_user_group_ref', $values);
-  
-  // Ungroup user, in case they were already registered.
-  og_ungroup($group_type, $site_id, 'user', $account);
-
-  $og_membership->etid = $uid;
-  $og_membership->state = $state;
-  $og_membership->save();
+  module_load_include('inc', 'vsite', 'includes/vsite');
+  //Add the user to the site
+  vsite_add_entity($account, 'user'. $vsite);
   
   return true;
 }

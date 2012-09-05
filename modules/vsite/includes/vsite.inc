@@ -1,6 +1,42 @@
 <?php 
 
 /**
+ * Add the passed entity to a group
+ *
+ *  The entity that you wish to put into a group
+ *  @param entity $entity
+ *  
+ *  The type of entity you are passing (default node)
+ *  @param string $entity_type
+ *  
+ *  The spaces group object to add the entity to
+ *  @param space $vsite
+ */
+function vsite_add_entity($entity, $entity_type = 'node', $vsite = false){
+
+  //Make sure the entity is valid
+  list($id) = entity_extract_ids($entity_type, $entity);
+
+  //Get the active space
+  if(!$vsite){
+    $vsite = spaces_get_space();
+  }
+  
+  if($id && $vsite){
+
+    $values = array(
+        'entity_type' => $entity_type,
+        'entity' => $entity,
+    );
+
+    //Add this entity to the active group
+    return og_group($vsite->group_type, $vsite->id, $values);
+  }
+  
+  return false;
+}
+
+/**
  * @function vsite_create_vsite
  * 
  * Creates a new vsite 
@@ -35,26 +71,25 @@ function vsite_create_vsite($name, $domain, $uid, $preset = FALSE) {
 }
 
 /**
- * Gets all vsites owned by uid or by current user
+ * Gets all vsites a user is a member of
+ * 
+ * The UID of the user to lookup
+ * Defaults to current user
+ * @param $uid
  **/
 function vsite_get_vsite_by_owner($uid = NULL) {
-  if (!$uid) {
-    global $user;
-    $uid = $user->uid;
-  }
-  
-  $query = new EntityFieldQuery();
-  $result = $query->entityCondition('entity_type', 'node')
-    ->propertyCondition('uid', (int)$uid)
-    ->entityCondition('bundle', 'vsite')  
-    ->execute();
+
+  //Retrieve all group memberships for the user
+  $groups = og_get_entity_groups('user',$uid);
     
   $vsites = array();  
-  if (isset($result['node'])) {
-    foreach(array_keys($result['node']) as $id) {
-      $vsites[] = spaces_load('og', $id);
+  if (isset($groups['node'])) {
+    foreach($groups['node'] as $mid => $gid) {
+      //Load the space object
+      $vsites[]  = spaces_load('og', $gid);
     }
   }
       
+  //Filter out any spaces that were not loaded
   return array_filter($vsites);
 }
