@@ -12,7 +12,7 @@
  *  The spaces group object to add the entity to
  *  @param space $vsite
  */
-function vsite_add_group($entity, $entity_type = 'node', $vsite = false){
+function vsite_add_entity($entity, $entity_type = 'node', $vsite = false){
 
   //Make sure the entity is valid
   list($id) = entity_extract_ids($entity_type, $entity);
