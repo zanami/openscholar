@@ -17,12 +17,28 @@ function os_profiles_context_default_contexts() {
   $context->description = '';
   $context->tag = 'OS features';
   $context->conditions = array(
+    'menu' => array(
+      'values' => array(
+        'people' => 'people',
+      ),
+    ),
     'node' => array(
       'values' => array(
         'person' => 'person',
       ),
       'options' => array(
         'node_form' => '0',
+      ),
+    ),
+    'path' => array(
+      'values' => array(
+        'people' => 'people',
+      ),
+    ),
+    'views' => array(
+      'values' => array(
+        'os_profiles' => 'os_profiles',
+        'os_profiles:page' => 'os_profiles:page',
       ),
     ),
   );
