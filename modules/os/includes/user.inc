@@ -89,7 +89,7 @@ function os_user_add($uid, $site_id = false){
   
   module_load_include('inc', 'vsite', 'includes/vsite');
   //Add the user to the site
-  vsite_add_entity($account, 'user'. $vsite);
+  vsite_add_entity($account, 'user', $vsite);
   
   return true;
 }
