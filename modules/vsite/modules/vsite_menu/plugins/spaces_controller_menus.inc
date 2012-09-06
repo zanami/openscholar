@@ -13,7 +13,11 @@ class spaces_controller_menus extends spaces_controller {
    * Set override values for a given controller object in this space.
    */
   function set($id, $value){
-    uasort($value, '_vsite_menu_sort_weight');
+    // Change the order of the menu links to match core
+    // Collect all the parent links, and then add all of
+    // their children to the list as well.
+    $value = self::sort_tree($value);
+    
     return parent::set($id, $value);
   }
 
@@ -174,6 +178,41 @@ class spaces_controller_menus extends spaces_controller {
     $query->condition('m.path', $path);
     
     return $query->execute()->fetchAssoc();
+  }
+  
+  /**
+   * Given a full tree of menu links return a properly sorted
+   * list of links.
+   * 
+   * With the optional parent set this can be used to retrieve a ordered subtree
+   * 
+   * The links to sort
+   * @param array $links
+   * 
+   * The active tree, defaults to whole tree
+   * @param array $parents
+   */
+  public static function sort_tree($links, $parents = array(0)){
+    
+    $result = array();
+    foreach ($links as $mlid => $link) {
+      if(in_array($link['plid'], $parents) && !in_array($mlid, $parents)){
+        $result[$mlid] = $link;
+      }
+    }
+    
+    if(!count($result)){
+      return $result;
+    }
+    
+    //Sort the links by weight
+    uasort($result, '_vsite_menu_sort_weight');
+    
+    //Retrieve the children for these parents
+    $children = self::sort_tree(array_diff_key($links, $result), array_merge($parents,array_keys($result)));
+    
+    //Append the children to the end of the array
+    return $result + $children;
   }
 
 }
