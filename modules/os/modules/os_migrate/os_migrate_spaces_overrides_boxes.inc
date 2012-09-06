@@ -4,7 +4,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
   
   public function __construct() {
     $this->source_object = $this->dest_object = 'boxes';
-    $this->dependencies = array('ModalImageNodeOS', 'SpacesOverridesContext'); //images have to be copied before modal boxes can migrate.
+    $this->dependencies = array('ModalImageNodeOS', 'SpacesOverridesContext', 'PageNodeOS', 'AnnouncementNodeOS', 'BiblioNodeOS'); //images have to be copied before modal boxes can migrate.
     parent::__construct();
   }
   
@@ -490,26 +490,37 @@ class BoxPorter {
       return FALSE; //can't port this without a nid.
     }
     
-    $query = $this->migration->d6_db_select('node', 'n')
-      ->fields('n', array('nid'))
-      ->condition('n.nid', $nid);
-    $query->join('node_revisions', 'nr', 'n.vid = nr.vid');
-    $query->fields('nr', array('title', 'body', 'teaser', 'format'));
-    $result = $query->execute();
+    //if nodes are already migrated, render new node. 
+    if ($node = node_load($nid)) {
+      $build = node_view($node, $teaser);
+      unset($build['#contextual_links']); //don't hardcode the admin links into the html box...
+      $body = drupal_render($build);
+      $node->format = 1; //make sure to use filtered html later
+    } else { 
+      //if they haven't migrated, fetch the old node's body
+      $query = $this->migration->d6_db_select('node', 'n')
+        ->fields('n', array('nid'))
+        ->condition('n.nid', $nid);
+      $query->join('node_revisions', 'nr', 'n.vid = nr.vid');
+      $query->fields('nr', array('title', 'body', 'teaser', 'format'));
+      $result = $query->execute();
+      
+      if ($result->rowCount()) {
+        $node = $result->fetchObject();
+        
+        if ($show_title) {
+          $body .= $node->title;
+        }
+        
+        if ($teaser = 'body') {
+          $body .= $node->body;
+        } else {
+          $body .= $node->teaser;
+        }
+      }
+    }
     
-    if ($result->rowCount()) {
-      $node = $result->fetchObject();
-      
-      if ($show_title) {
-        $body .= $node->title;
-      }
-      
-      if ($teaser = 'body') {
-        $body .= $node->body;
-      } else {
-        $body .= $node->teaser;
-      }
-      
+    if ($body) {
       $box->plugin_key = 'os_boxes_html';
       $box->options = array('text'=>array(
         'value' => $body,
