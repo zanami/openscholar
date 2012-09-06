@@ -201,18 +201,29 @@ class spaces_controller_menus extends spaces_controller {
       }
     }
     
-    if(!count($result)){
+    //Sort the parents by weight
+    uasort($result, '_vsite_menu_sort_weight');
+    
+    //Check to see if there is any processing left to do
+    if(!count($result) || count($result) == count($links)){
       return $result;
     }
     
-    //Sort the links by weight
-    uasort($result, '_vsite_menu_sort_weight');
+    //Retrieve the children for this parent
+    foreach ($result as $mlid => $link) {
+      $children[] = self::sort_tree(array_diff_key($links, $result), array_merge($parents,array($mlid)));
+    }
     
-    //Retrieve the children for these parents
-    $children = self::sort_tree(array_diff_key($links, $result), array_merge($parents,array_keys($result)));
+    $offset = 1;
+    $children = array_filter($children);
+    foreach ($children as $index => $tree) {
+      //Add the child tree after the parent for efficient tree display
+      $result = array_slice($result,0, ($offset + $index), true) + $tree + array_slice($result, ($offset + $index), null, true);
+      $offset += count($tree);
+    }
     
-    //Append the children to the end of the array
-    return $result + $children;
+    //Return sorted list ready for save
+    return $result;
   }
 
 }
