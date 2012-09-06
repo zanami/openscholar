@@ -1,40 +1,6 @@
 <?php
 
 /**
- * Implementation of hook menu
- */
-function os_ga_menu(){
-  $items = array();
-
-  $items['admin/settings/scholar_ga'] = array(
-    'type' => MENU_NORMAL_ITEM,
-    'title' => 'Google Analytics for OpenScholar',
-    'description' => 'Settings for Global Google Analytics.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('os_ga_settings_form'),
-    'file' => 'os_ga.admin.inc',
-    'access callback' => 'user_access',
-    'access arguments' => array('administer site configuration'),
-    'weight' => 10,
-  );
-/*
- * Do we really need this?
-  $items['admin/settings/scholar_ga/settings'] = array(
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'title' => 'Settings for OpenScholar Google Analytics',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('vsite_ga_settings_form'),
-    'file' => 'vsite_ga.admin.inc',
-    'access callback' => 'user_access',
-    'access arguments' => array('administer site configuration'),
-    'weight' => 0,
-	// test commit
-  ); */
-
-  return $items;
-}
-
-/**
  * Implement hook_form_FORM_ID_alter
  * Need to hook into the openscholar settings form
  * to allow admins to set the global Google Analytics ID
