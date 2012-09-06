@@ -127,6 +127,26 @@ class os_sv_list_box extends os_boxes_default {
           $options['sort_by'] = 'sort_presentation';
         }
         break;
+        
+      case 'biblio':
+        $page = 0; //add pager properly later
+        $items = $options['number_of_items'];
+        $query = db_select('node', 'n')
+          ->condition('n.type', 'biblio')
+          ->condition('n.status', 1);
+          
+        if (module_exists('vsite') && $space = spaces_get_space()) {
+          $query->join('og_membership', 'og', 'og.etid = n.nid');
+          $query->condition('og.gid', $space->id);
+        }
+          
+        $query->join('biblio', 'b', 'n.vid = b.vid');
+        $query->orderBy('biblio_year', 'DESC');
+        $query->range($page*$items, $items);
+        $query->fields('n', array('nid'));
+        
+        $biblio_nids = $query->execute()->fetchCol();
+        break;
     }
     
     // content type
@@ -134,22 +154,31 @@ class os_sv_list_box extends os_boxes_default {
       $efq->propertyCondition('type', $options['content_type']);
     }
     
-    // item limit
-    $efq->pager($options['number_of_items'], $this->delta);
+    // pager for efq
+    if ($options['pager']) {
+      $efq->pager($options['number_of_items'], $this->delta);
+    }
     
     // sort
     $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
     $this->$sort_func($efq);
     
     // display
-    $result = $efq->execute();
-    if (isset($result['node']) && count($result['node'])) {
+    if ($options['content_type'] != 'biblio') {
+      $result = $efq->execute();
+      $nids = isset($result['node']) ? array_keys($result['node']) : array();
+    } else {
+      $nids = $biblio_nids;
+    }
+    
+    if (count($nids)) {
       $display_func = (method_exists($this, $options['display'])) ? $options['display'] : 'display_title';
-      $nodes = node_load_multiple(array_keys($result['node']));
+      $nodes = node_load_multiple($nids);
+
       $block['content'] = $this->$display_func($nodes);
     }
     
-    // pager
+    // pager widget
     if ($options['pager']) {
       // theme_pager();
       $parameters = array(
@@ -300,5 +329,16 @@ class os_sv_list_box extends os_boxes_default {
       'items' => $items,
       'type' => 'ul'
     ));
+  }
+  
+  
+  //biblio doesn't use normal fields.  sort after the fact instead.
+  function _biblio_sort_nodes($nodes) {
+    function cmp_function($a, $b) {
+      return ((int)$a->biblio_year < (int)$b->biblio_year);
+    }
+    
+    uasort($nodes, 'cmp_function');
+    return $nodes;
   }
 }
