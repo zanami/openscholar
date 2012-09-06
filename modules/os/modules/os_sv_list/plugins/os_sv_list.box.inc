@@ -102,7 +102,7 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['number_of_items']
     );
     
-    $form = $this->form_content_types($form, $content_types);
+//    $form = $this->form_content_types($form, $content_types);
     
     return $form;
   }
@@ -111,37 +111,53 @@ class os_sv_list_box extends os_boxes_default {
    */
   public function render() {
     $block = parent::render();
-    
     $efq = $this->init_query();
+    $options = $this->options;
+    
+    //exceptions
+    switch ($options['content_type']) {
+      case 'event': 
+        if ($options['sort_by'] == 'sort_newest') {
+          $options['sort_by'] = 'sort_event';
+        }
+        break;
+        
+      case 'presentation':
+        if ($options['sort_by'] == 'sort_newest') {
+          $options['sort_by'] = 'sort_presentation';
+        }
+        break;
+    }
     
     // content type
-    if ($this->options['content_type'] != 'all') {
-      $efq->propertyCondition('type', $this->options['content_type']);
+    if ($options['content_type'] != 'all') {
+      $efq->propertyCondition('type', $options['content_type']);
     }
     
     // item limit
-    $efq->pager($this->options['number_of_items']);
+    $efq->pager($options['number_of_items'], $this->delta);
     
     // sort
-    $sort_func = (method_exists($this, $this->options['sort_by'])) ? $this->options['sort_by'] : 'sort_newest';
+    $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
     $this->$sort_func($efq);
     
     // display
     $result = $efq->execute();
     if (isset($result['node']) && count($result['node'])) {
-      $display_func = (method_exists($this, $this->options['display'])) ? $this->options['display'] : 'display_title';
+      $display_func = (method_exists($this, $options['display'])) ? $options['display'] : 'display_title';
       $nodes = node_load_multiple(array_keys($result['node']));
       $block['content'] = $this->$display_func($nodes);
     }
     
     // pager
-    if ($this->options['pager']) {
+    if ($options['pager']) {
       // theme_pager();
       $parameters = array(
         'sv_list_box_delta' => $this->delta
       );
       $pager = theme('pager', array(
-        'parameters' => $parameters
+        'parameters' => $parameters,
+        'element' => $this->delta,
       ));
       
       //add use-ajax class and replace the link.  theme_pager won't pass these along all the way to the links
@@ -152,8 +168,8 @@ class os_sv_list_box extends os_boxes_default {
     }
     
     // more link
-    if ($this->options['more']) {
-      $block['content'] .= l($this->options['more_text'], $this->options['more_link']);
+    if ($options['more']) {
+      $block['content'] .= l($options['more_text'], $options['more_link']);
     }
     
     drupal_add_library('system', 'drupal.ajax');
@@ -194,56 +210,56 @@ class os_sv_list_box extends os_boxes_default {
    * handle the new element and the box won't store the option
    * anyway.
    */
-  function form_content_types($form, $content_types) {
-    // make some weights. content specific elements should appear in same
-    // position as original element.
-    $weight = 0;
-    foreach ( $form as $key => $value ) {
-      if (empty($form[$key]['#weight'])) {
-        $form[$key]['#weight'] = $weight;
-        $weight += 100;
-      }
-    }
+//   function form_content_types($form, $content_types) {
+//     // make some weights. content specific elements should appear in same
+//     // position as original element.
+//     $weight = 0;
+//     foreach ( $form as $key => $value ) {
+//       if (empty($form[$key]['#weight'])) {
+//         $form[$key]['#weight'] = $weight;
+//         $weight += 100;
+//       }
+//     }
     
-    $original_form = $form; // array clone. we're modifying as we go but need to
-                            // be able to compare to the original
-    foreach ( array_keys($content_types) as $ct ) {
-      $method = 'content_alter_form_' . $ct;
-      if (method_exists($this, $method)) {
-        $altered = $this->$method($original_form);
+//     $original_form = $form; // array clone. we're modifying as we go but need to
+//                             // be able to compare to the original
+//     foreach ( array_keys($content_types) as $ct ) {
+//       $method = 'content_alter_form_' . $ct;
+//       if (method_exists($this, $method)) {
+//         $altered = $this->$method($original_form);
         
-        // find what changed. add form #state and append to both forms
-        foreach ( array_keys($original_form) as $elem ) {
-          if ($original_form[$elem] != $altered[$elem]) {
-            $altered[$elem]['#states'] = array(
-              'visible' => array('select[name=content_type]' => array('value' => $ct))
-            );
-            $form["${ct}_${elem}"] = $altered[$elem];
+//         // find what changed. add form #state and append to both forms
+//         foreach ( array_keys($original_form) as $elem ) {
+//           if ($original_form[$elem] != $altered[$elem]) {
+//             $altered[$elem]['#states'] = array(
+//               'visible' => array('select[name=content_type]' => array('value' => $ct))
+//             );
+//             $form["${ct}_${elem}"] = $altered[$elem];
             
-            $form[$elem]['#states']['invisible']['select[name=content_type]'][] = array(
-              'value' => $ct
-            );
-          }
-        }
-      }
-    }
+//             $form[$elem]['#states']['invisible']['select[name=content_type]'][] = array(
+//               'value' => $ct
+//             );
+//           }
+//         }
+//       }
+//     }
     
-    return $form;
-  }
+//     return $form;
+//   }
   
   // events sort by date ascending, starting now, not in past.
-  function content_alter_form_event($form) {
-    $form['sort_by']['#options'] = array('sort_event' => t('Event Date')) + $form['sort_by']['#options'];
+//   function content_alter_form_event($form) {
+//     $form['sort_by']['#options'] = array('sort_event' => t('Event Date')) + $form['sort_by']['#options'];
     
-    if ($this->new) {
-      $form['sort_by']['#default_value'] = 'sort_event';
-    }
+//     if ($this->new) {
+//       $form['sort_by']['#default_value'] = 'sort_event';
+//     }
     
-    return $form;
-  }
+//     return $form;
+//   }
   
   /**
-   * sorting functions *
+   * sorting functions 
    */
   function sort_newest(&$efq) {
     $efq->propertyOrderBy('created', 'DESC');
@@ -260,8 +276,12 @@ class os_sv_list_box extends os_boxes_default {
     $efq->fieldCondition('field_date', 'value', date('Y-m-d'), '>=');
   }
   
+  function sort_presentation(&$efq) {
+    $efq->fieldOrderBy('field_presentation_date', 'value', 'DESC');
+    $this->sort_newest($efq);
+  }
   /**
-   * display functions *
+   * display functions 
    */
   function display_body($nodes) {
     $items = node_view_multiple($nodes, 'body');
