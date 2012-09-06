@@ -130,11 +130,13 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
              $row->{'field_site_logo:cropbox_width'} = 180;
            }
          } else {
-           //image provided, but no data.  
-           $row->{'field_site_logo:cropbox_height'} = 140;
-           $row->{'field_site_logo:cropbox_width'} = 180;
-           $row->{'field_site_logo:cropbox_x'} = 0;
-           $row->{'field_site_logo:cropbox_y'} = 0;
+           if (!$this->_get_missing_coords($row)) {
+             //image provided, but no data.  
+             $row->{'field_site_logo:cropbox_height'} = 140;
+             $row->{'field_site_logo:cropbox_width'} = 180;
+             $row->{'field_site_logo:cropbox_x'} = 0;
+             $row->{'field_site_logo:cropbox_y'} = 0;
+           }
          }
        }       
      } else {
@@ -153,46 +155,44 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
      );
    }
    
-//   //borrowed from os boxes, site logo submit func 
-//   function _complete_site_logo($node, $fid, $x, $y, $h, $w) {
-//    $file = file_load($fid);
-  
-//    $item = array(
-//      'cropbox_x' => $x,
-//      'cropbox_y' => $y,
-//      'cropbox_height' => $h,
-//      'cropbox_width' => $w,
-//    );
-  
-//    $scale = array(
-//      'width' => 180,
-//      'height' => 140,
-//    );
-  
-//    // this creates two images
-//    // $orig is the original, unmodified image
-//    // its saved so we can refer to it later
-//    // $file is original uploaded image that is then cropped to fit
-//    // it is the file that is displayed in render
-//    // it 'contains' the orig file, through the file usage table
-//    $orig = _imagefield_crop_file_to_crop($file->fid);
-//    if ($orig->fid == $file->fid) {
-//      $orig = imagefield_crop_create_copy($file);
-//      file_usage_add($orig, 'imagefield_crop', 'file', $file->fid);
-//    }
-   
-//    _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $file);
-//    file_save($file);
-//    file_usage_add($file, 'os_boxes', 'box', 1);  // prevents errors when trying to reuse the same image
-  
-//    if (module_exists('vsite') && $space = spaces_get_space()) {
-//     // $node = $space->group;
-  
-//      $node->field_site_logo[LANGUAGE_NONE][0] = (array)$file + $item;
-  
-//      node_save($node);
-//    }
-//   }
+  //some vsites have logos, but no coords.  if they're here and hardcoded, use them.
+  function _get_missing_coords(&$row) {
+    $known_missing = array(
+      //nid => x, y, w, h
+      2 => array(0, 0, 1114, 836),
+      5 => array(0, 0, 789, 592),
+      7 => array(0, 0, 2304, 1728),
+      13 => array(0, 0, 350, 263),
+      17 => array(0, 0, 180, 140),
+      19 => array(0, 0, 251, 188),
+      21 => array(0, 0, 180, 140),
+      25 => array(0, 0, 581, 436),
+      26 => array(0, 0, 312, 243),
+      541 => array(0, 0, 99, 77),
+      619 => array(0, 0, 595, 463),
+      660 => array(0, 0, 140 , 105),      
+      1487 => array(0, 0, 175, 128),     
+      1791 => array(0, 0, 180, 140),      
+      1793 => array(0, 0, 180, 140),
+      1813 => array(0, 0, 180, 140),
+      1815 => array(0, 0, 180, 140),
+      1836 => array(0, 0, 180, 140), //doesn't use the widget.  assuming default.
+      1857 => array(0, 0, 180, 140),     
+    );
+    
+    if (isset($known_missing[$row->nid])) {
+      $crop = $known_missing[$row->nid];
+      $row->{'field_site_logo:cropbox_x'} = $crop[0];
+      $row->{'field_site_logo:cropbox_y'} = $crop[1];
+      $row->{'field_site_logo:cropbox_width'} = $crop[2];
+      $row->{'field_site_logo:cropbox_height'} = $crop[3];
+      return TRUE;
+      
+    } else {
+      return FALSE;
+    }
+    
+  }
 
 
 }
