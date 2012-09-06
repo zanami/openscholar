@@ -5,3 +5,31 @@
  */
 
 include_once 'os_profiles.features.inc';
+
+/**
+ * Implements hook_node_presave().
+ * 
+ * Generates node title for Person nodes
+ */
+function os_software_node_presave($node) {
+  if ($node->type !== 'person') return;
+  
+  // Sets the node title like "[first] [middle] [last]"
+  $title = _os_profiles_person_node_title($node);
+  if ($title) $node->title = $title;
+}
+
+/**
+ * Prepares the node title for person nodes.
+ */
+function _os_profiles_person_node_title($node) {
+  $fields = array('first_name', 'middle_name_or_initial', 'last_name');
+  $values = array();
+  foreach ($fields as $field) {
+    $items = field_get_items('node', $node, 'field_' . $field);
+    if (!empty($items[0]['value'])) $values[] = $items[0]['value'];
+  }
+  
+  $title = implode(' ', $values);
+  return $title;
+}
