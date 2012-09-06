@@ -16,3 +16,26 @@ function vsite_vocab_field_create_instance($instance) {
   }
   og_create_field(OG_VOCAB_FIELD, $instance['entity_type'], $instance['bundle']);
 }
+
+/**
+ * Implements hook_form_FORM-ID_alter().
+ *
+ * 1) Limit avalible bundles to just Publc/Private bundles in OS.
+ *
+ * @see og_vocab_form_taxonomy_form_vocabulary_alter().
+ */
+function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
+  if(isset($form['og_vocab'])){
+    
+    //Get enabled bundles
+    $bundles = array_keys(os_get_bundles(array(1,2)));
+    
+    //Remove bundle configuration for bundles not enabled in this site
+    foreach (element_children($form['og_vocab']) as $child){
+      list($bundle_type, $bundle) = explode(":", $child, 2);
+      if(!in_array($bundle, $bundles)){
+        unset($form['og_vocab'][$child]);
+      }
+    }
+  }
+}

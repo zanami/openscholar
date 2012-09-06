@@ -30,7 +30,8 @@ function os_context_default_contexts(){
       'path' => array(
           'values' => array(
               'cp' => 'cp',
-              'cp/*' => 'cp/*'
+              'cp/*' => 'cp/*',
+              'group/node/*' => 'group/node/*' //On OG administration pages
           )
       )
   );
