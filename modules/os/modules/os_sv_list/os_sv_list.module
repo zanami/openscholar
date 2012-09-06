@@ -49,42 +49,6 @@ function os_sv_list_ajax($ajax = FALSE, $box_delta = NULL, $page = NULL) {
 }
 
 /**
- * Implements hook_form_FORMID_alter
- *
- * Adds os_sv_list_boxes_box as the first submit handler for this form. First is
- * important because
- * it has to copy content specific values before boxes creates the box
- */
-// function os_sv_list_form_boxes_box_form_alter(&$form, &$state) {
-//   if ($form['plugin_key']['#value'] == 'os_sv_list_box') {
-//     array_unshift($form['#submit'], 'os_sv_list_boxes_box_form_submit');
-//   }
-// }
-
-/**
- * @function os_sv_list_boxes_box_form_submit
- * 
- * Submit function for sv_list_box forms.  Copies values from content specific form 
- * elements to the default form given a content type.  boxes isn't aware that when
- * biblio is selected, the form should use the biblio_sort option instead of the sort one.
- * This copies biblio_sort's value into sort when content_type == biblio.
- */
-
-//removing form shenanigans.  box->options should have had its own optinos array and render could have
-//selected the right content type option at display time.  oh well
-// function os_sv_list_boxes_box_form_submit(&$form, &$state) {
-//   $ct = $state['values']['content_type'];
-//   if ($ct != 'all') {
-//     foreach ( $state['box']->options as $key => $value ) {
-//       $ct_key = "${ct}_${key}";
-//       if (isset($state['values'][$ct_key])) {
-//         $state['values'][$key] = $state['values'][$ct_key];
-//       }
-//     }
-//   }
-// }
-
-/**
  * Implements hook_ctools_plugin_api
  */
 function os_sv_list_ctools_plugin_api($module, $api) {
