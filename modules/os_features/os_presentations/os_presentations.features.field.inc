@@ -219,7 +219,7 @@ function os_presentations_field_default_fields() {
           'weight' => 5,
         ),
         'teaser' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'file',
           'settings' => array(),
           'type' => 'file_default',

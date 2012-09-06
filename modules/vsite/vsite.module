@@ -767,3 +767,12 @@ function _vsite_purl_init(){
     unset($conf['theme_link']);
   }
 }
+
+/** 
+ * Implements hook_menu_alter()
+ * Using this function to remove the "Groups" link
+ * from the users 'edit' form
+ */
+function vsite_menu_alter(&$items) {
+	$items['user/%user/edit/groups']['access callback'] = false;
+}// end function
