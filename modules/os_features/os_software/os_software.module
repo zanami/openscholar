@@ -67,7 +67,7 @@ function os_software_node_update($node) {
 }
 
 /**
- * Implements hook_node_presave()
+ * Implements hook_node_presave().
  * 
  * Generates the node title for Software Releases 
  */

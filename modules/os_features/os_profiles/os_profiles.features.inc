@@ -34,8 +34,8 @@ function os_profiles_node_info() {
       'name' => t('Person'),
       'base' => 'node_content',
       'description' => '',
-      'has_title' => '1',
-      'title_label' => t('Title'),
+      'has_title' => '0',
+      'title_label' => '',
       'help' => '',
     ),
   );
