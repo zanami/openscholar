@@ -899,14 +899,16 @@ border:none;
 
 #footer #block-os-powered-by,
 #footer #block-os-login {
-  margin-left: 30px;
-
-  float:right;
-  margin-top:2px;
+  margin-top: 1px;
   color: #fff;
-  font-size:10px;
   clear:none;
+   float: right;
   }
+
+#footer #block-os-login {
+    bottom: -5px;
+
+}
 
 #footer p.copy a.footer-login {
   margin-left: 0;
@@ -975,9 +977,13 @@ border:none;
   }
 
 #footer #boxes-shield_default {
-  margin-top: 8px;
+  margin-top: 7px;
   }
 
+
+#footer #block-boxes-os-addthis {
+	margin-top:5px;
+}
 
 /* Search form*/
 
@@ -1001,8 +1007,9 @@ border:none;
   width: auto;
   width:216px;
   }
-
-#footer #search-form #edit-keys {
+  
+  
+#footer input[type="search"] {
   border: 1px solid #c3c3c3;
   -moz-border-bottom-colors: #c3c3c3;
   -moz-border-left-colors: #c3c3c3;
@@ -1011,13 +1018,17 @@ border:none;
   padding: 3px 4px 1px 0;
   background: #fff;
   height: 14px;
+  -moz-border-radius:0;
+border-radius:0;
+width: 200px;
+margin-top:5px;
   }
 
-#footer #search-form input#edit-submit {
+#footer #search-block-form input[type="submit"] {
   background: #79929c;
   color: #fff !important;
   width: 52px;
-  height: 20px;
+  height: 18px;
   text-indent:0;
   text-transform: uppercase;
   -moz-border-radius:0;

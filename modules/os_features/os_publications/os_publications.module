@@ -235,13 +235,30 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
   unset($entry['export_links']);
 
   // add abstract link
-  $html = &$entry['entry']['#markup'];
-  $insert = strrpos($html, '</div>');
-  $html = substr_replace($html, ' Abstract', $insert, 0);
+  if (strlen($node->biblio_abst_e)) {
+    $html = &$entry['entry']['#markup'];
+    $insert = strrpos($html, '</div>');
+    $extra = l('Abstract', 'node/'.$node->nid, array('attributes' => array('class' => array('biblio-abstract-link', 'toggle'))));
+    $render = array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'class' => array(
+      	  'biblio-abstract-display',
+          'slider',
+        )
+      ),
+      'abstract' => array(
+        '#markup' => check_markup($node->biblio_abst_e, filter_default_format()),
+      )
+    );
+    $extra .= render($render);
+    $html = substr_replace($html, ' '.$extra, $insert, 0);
+  }
 
   // add fields
   field_attach_prepare_view('node', array($node->nid => $node), 'teaser');
   $entry += field_attach_view('node', $node, 'teaser');
+  $entry['#attached']['js'][] = drupal_get_path('module', 'os').'/theme/os_toggle.js';
 }
 
 /**
