@@ -37,8 +37,8 @@ function os_profiles_context_default_contexts() {
     ),
     'views' => array(
       'values' => array(
-        'profiles_listing' => 'profiles_listing',
-        'profiles_listing:page' => 'profiles_listing:page',
+        'os_profiles' => 'os_profiles',
+        'os_profiles:page' => 'os_profiles:page',
       ),
     ),
   );

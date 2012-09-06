@@ -11,11 +11,11 @@ function os_profiles_views_default_views() {
   $export = array();
 
   $view = new view();
-  $view->name = 'profiles_listing';
+  $view->name = 'os_profiles';
   $view->description = '';
   $view->tag = 'default';
   $view->base_table = 'node';
-  $view->human_name = 'profiles_listing';
+  $view->human_name = 'OS Profiles';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -94,7 +94,7 @@ function os_profiles_views_default_views() {
     'default' => 'default',
     'page' => 'page',
   );
-  $export['profiles_listing'] = $view;
+  $export['os_profiles'] = $view;
 
   return $export;
 }
