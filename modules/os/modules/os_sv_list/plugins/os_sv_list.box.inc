@@ -219,7 +219,7 @@ class os_sv_list_box extends os_boxes_default {
     
     // vsite
     if (module_exists('vsite') && $space = spaces_get_space()) {
-      $efq->fieldCondition('field_og_general', 'target_id', $space->id);
+      $efq->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
     }
     
     return $efq;

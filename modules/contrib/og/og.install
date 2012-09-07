@@ -880,9 +880,27 @@ function og_update_7101() {
  * Deprecate OG group entity, and add per-bundle roles.
  */
 function og_update_7200() {
+  // Delete the old group-audience field. The OG membership is not
+  // affected by this.
+  $instances = array();
+  foreach (field_info_instances() as $entity_type => $bundles) {
+    foreach ($bundles as $bundle => $field_names) {
+      if (!empty($field_names['group_audience'])) {
+        $instances[$entity_type][$bundle] = $bundle;
+        field_delete_instance($field_names['group_audience']);
+      }
+    }
+  }
+  field_delete_field('group_audience');
+
+  // Create a temporary variable that will be used to later re-add the new
+  // group-audience field.
+  variable_set('og_migrate_7200_field_instances', $instances);
+
   if (!module_enable(array('entityreference'))) {
     throw new DrupalUpdateException('This version of OG requires Entity reference, but it could not be enabled.');
   }
+
   $column = array(
     'description' => "The group's entity type (e.g. node, comment, etc').",
     'type' => 'varchar',
@@ -926,16 +944,13 @@ function og_update_7200() {
   );
   db_add_field('og_membership', 'field_name', $column);
 
-  // Delete the old group-audience field. The OG membership is not
-  // affected by this.
-  field_delete_field('group_audience');
-
   // Variable cleanup.
   variable_del('og_skip_access');
 
   // We can't call og_needs_migrate() directly, so just set the variable.
   variable_set('og_needs_migrate', TRUE);
 
+  // Clear entity cache.
   // See http://drupal.org/node/996236
   entity_info_cache_clear();
 }
@@ -1014,4 +1029,62 @@ function og_update_7202() {
 
   db_change_field('og_role_permission', 'permission', 'permission', $column);
   return t('Updated column definition for {og_role_permission} table.');
+}
+
+/**
+ * Update group-audience field to use "OG group" widget type.
+ */
+function og_update_7203() {
+  if (!module_exists('field_sql_storage')) {
+    return;
+  }
+
+  // List of secondary group-audience fields.
+  $secondary_fields = array();
+
+  foreach (field_info_fields() as $field_name => $field) {
+    if ($field['type'] != 'entityreference' || $field['settings']['handler'] != 'og') {
+      continue;
+    }
+
+    if (!empty($field['settings']['handler_settings']['primary_field'])) {
+      field_delete_field($field_name);
+      $secondary_fields[] = $field_name;
+      continue;
+    }
+
+    foreach ($field['bundles'] as $entity_type => $bundles) {
+      foreach ($bundles as $bundle) {
+        $og_widget =
+        $instance = field_info_instance($entity_type, $field_name, $bundle);
+        $instance['settings']['behaviors']['og_widget'] = array(
+          'status' => TRUE,
+          'default' => array(
+            'widget_type' => 'options_select',
+          ),
+          'admin' => array(
+            'widget_type' => 'entityreference_autocomplete',
+          ),
+        );
+
+        $instance['widget'] = array(
+          'type' => 'og_complex',
+          'module' => 'og',
+          'settings' => array(),
+        );
+
+        field_update_instance($instance);
+      }
+    }
+  }
+
+  if ($secondary_fields) {
+    $output = t('The following "secondary" fields were deleted, as they are no longer in use:');
+    $output .= theme('item_list', array('items' => $secondary_fields));
+  }
+  else {
+    $output = t('All group-audience fields were updated');
+  }
+
+  return $output;
 }
