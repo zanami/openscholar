@@ -1,4 +1,22 @@
 <?php 
+/**
+ * Provides and CRUD functions relating to the vsite group
+ *
+ * @file vsite.inc
+ *
+ * Provides vsite management and crud functions
+ *
+ * vsite_add_entity
+ *   Generic function to add a passed entity to a vsite
+ *
+ * vsite_create_vsite
+ *   Creates a new vsite group
+ *
+ * vsite_get_vsite_by_owner
+ *   Gets all of the groups owned by a user
+ *
+ */
+
 
 /**
  * Add the passed entity to a vsite
