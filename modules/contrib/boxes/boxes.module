@@ -47,7 +47,7 @@ function boxes_menu() {
  * Function to support legacy code
  */
 function boxes_access_edit($box = null) {
-  return boxes_access('edit', $box) || user_access('edit boxes');
+  return boxes_access('edit', $box);
 }
 
 /**
@@ -60,7 +60,13 @@ function boxes_access($op, $box = null) {
   if (isset($box)) {
     $box_type_check = user_access($op.' '.$box->plugin_key.' box type');
   }
-  return $box_type_check || user_access('administer boxes');
+
+  $spaces_check = true;
+  if (module_exists('spaces') && !spaces_access_admin()) {
+    $space_check = false;
+  }
+
+  return ($box_type_check || user_access($op.' boxes') || user_access('administer boxes')) && $spaces_check;
 }
 
 /**
@@ -94,16 +100,24 @@ function boxes_permission() {
     );
   }
 
-  return $perms + array(
+  return array(
+    'create boxes' => array(
+      'title' => t('Create boxes'),
+      'description' => t('Create a box of any kind'),
+    ),
     'edit boxes' => array(
       'title' => t('Edit boxes'),
-      'description' => t('Edit existing boxes'),
+      'description' => t('Edit a box of any kind'),
+    ),
+    'delete boxes' => array(
+      'title' => t('Delete boxes'),
+      'description' => t('Delete a box of any kind'),
     ),
     'administer boxes' => array(
       'title' => t('Administer boxes'),
       'description' => t('Administer boxes'),
     ),
-  );
+  ) + $perms;
 }
 
 /**
