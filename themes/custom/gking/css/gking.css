@@ -175,7 +175,7 @@ a.more {
   }
 
 
-.front .region-header-second .box-os_boxes_simple a.more {
+.front .region-header-second .block-boxes-os_boxes_html a.more {
  font-weight: bold;
  text-decoration: none;
  font-size: 11px;
@@ -399,11 +399,11 @@ body.front .box-vsite_taxonomy_fbt div.description  {
 .column {
   padding: 0;
   }
-
+/*
 .sidebar-second #content-column {
   padding-left: 0;
   }
-
+*/
 #main-content,
 #content-top,
 .sidebar .block {
@@ -461,12 +461,22 @@ padding:0 32px 0 0;
   right: 293px;
   }
 
-#block-os-primary-menu.menu-wrapper, #columns {
+#block-os-primary-menu, #columns, #header-container, #block-boxes-site-info {
   width: 984px;
   margin: 0 auto;
-  padding: 1px 8px;
+  padding: 0;
   position: relative;
   }
+  
+#block-os-primary-menu {
+  z-index:1;	  
+}
+
+#block-boxes-site-info {
+  z-index:2;	
+}
+
+
 /*
 #menu-bar #block-os-primary-menu {
   width: 1000px;
@@ -503,9 +513,9 @@ padding:0 32px 0 0;
   padding-top: 38px;
   }
 
-#header-container {
+/* #header-container {
   margin-top: 38px;
-  }
+}*/
 
 #header-container .region-header-second,
 #header-container .region-header-third,
@@ -525,7 +535,7 @@ padding:0 32px 0 0;
   }
 
 #menu-bar ul {
-  width: 826px;
+  width: 810px;
   float: right;
   }
 
@@ -576,7 +586,7 @@ ul.nice-menu ul {
   height: 29px;
   }
 
-.block-boxes-os_boxes_site_info h1 a:hover {
+#menu-bar .block-boxes-os_boxes_site_info h1 a:hover {
   background-color: #000;
   color: #fff;
   }
@@ -630,10 +640,6 @@ ul.nice-menu ul {
   padding-right: 8px;
   }
 
-.front .region-sidebar-second {
-  width: 200px;
-  }
-
 
 #content-column,
 .region-sidebar-first,
@@ -641,10 +647,11 @@ ul.nice-menu ul {
   padding-bottom: 105px;
   }
 
+/*
 .front #columns .hg-container {
   padding-right: 208px;
   }
-
+*/
 body.header-left-main #header-container-container {
   padding-right:8px;
   }
@@ -661,7 +668,7 @@ body.header-right-main #header-container-container {
 
 /* FRONT PAGE ELEMENTS */
 
-.front .region-header-second .box-os_boxes_simple {
+.front .region-header-second .block-boxes-os_boxes_html {
   background: url('../images/front-photo.jpg') 0 0 no-repeat transparent;
   position:relative;
   padding-top:66px;
@@ -678,11 +685,11 @@ body.header-right-main #header-container-container {
   font-size:1.1em;
   }
 
-.front .region-header-second .box-os_boxes_simple h3 {
+.front .region-header-second .block-boxes-os_boxes_html h3 {
   display:none;
   }
 
-.front .region-header-second .box-os_boxes_simple .content {
+.front .region-header-second .block-boxes-os_boxes_html .content {
 font-size: 1.04em;
 margin: -9px 0 0 140px;
 width: 505px;
@@ -982,7 +989,7 @@ border:none;
 
 
 #footer #block-boxes-os-addthis {
-	margin-top:5px;
+	margin-top:7px;
 }
 
 /* Search form*/

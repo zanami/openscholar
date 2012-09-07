@@ -43,8 +43,10 @@ class os_sv_list_box extends os_boxes_default {
       '#options' => $content_types,
       '#ajax' => array(
         'callback' => 'os_sv_list_more_link_ajax',
-        'wrapper' => 'more_link_div',
+        //'wrapper' => 'more_link_div',
+        'wrapper' => 'edit-more-link',
         'method' => 'replace',
+        'effect' => 'none',
       ),
     );
     
@@ -81,7 +83,9 @@ class os_sv_list_box extends os_boxes_default {
       '#type' => 'textfield',
       '#default_value' => $this->options['more_link'],
       '#states' => array(
-        'visible' => array('input[name=more]' => array('checked' => TRUE))
+        'visible' => array('input[name=more]' => array('checked' => TRUE)),
+        'invisible'  => array('input[name=more]' => array('checked' => FALSE))
+        
       ),
       '#prefix' => '<div id="more_link_div">',
       '#suffix' => '</div>',
@@ -134,6 +138,19 @@ class os_sv_list_box extends os_boxes_default {
           $options['sort_by'] = 'sort_presentation';
         }
         break;
+        
+      case 'book':
+        //limit book depth to 1.  not a field, so use a regular query
+        $query = db_select('menu_links', 'ml')
+          ->condition('module', 'book')
+          ->condition('depth', 1);
+        $query->addField('ml', 'link_path');
+        $book_nids = $query->execute()->fetchCol();
+        $book_nids = preg_replace('/node\//', '', $book_nids);
+        
+        $efq->propertyCondition('nid', $book_nids, 'IN');
+        break;
+        
         
       case 'biblio':
         $page = 0; //add pager properly later
