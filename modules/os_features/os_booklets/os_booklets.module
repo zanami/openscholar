@@ -153,7 +153,7 @@ function _os_booklets_option_filter_form_alter(&$form) {
   $result = $query->execute();
   if (!isset($result['node'])) return;
   
-  $nids_in_current_space = array_keys($query['node']);
+  $nids_in_current_space = array_keys($result['node']);
   
   // Removes options for books not in this space.
   foreach ($form['book']['bid']['#options'] as $key => $value) {
