@@ -201,7 +201,7 @@ function vsite_register_form_submit(&$form, &$state) {
     	'mail' => $values['mail'],
     	'status' => 1,
     );
-    $site_owner = os_user_create($user_options, FALSE);
+    $site_owner = os_user_create($user_options);
     
     //and send some email
     if ($values['notify']) {
@@ -224,7 +224,9 @@ function vsite_register_form_submit(&$form, &$state) {
   //create the vsite
   if ($vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['preset'])) {
     //add user to vsite
-    os_user_add($site_owner->uid, $vsite->id);
+    module_load_include('inc', 'vsite', 'includes/user');
+    vsite_user_add($site_owner);
+    
     os_role_grant($site_owner->uid, 'vsite admin', $vsite->id);
        
     $message = vsite_register_message($form, $values['domain']);

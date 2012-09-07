@@ -380,6 +380,12 @@ function vsite_get_group_fields() {
 function vsite_get_group_type_fields() {
   $groups = og_get_all_group_bundle();
   $fields = array();
+  
+  if(!isset($groups['node'])){
+    //No group_group fields have been added yet
+    //@todo create these fields when the group field is created with "hook_field_create_instance"
+    return $fields;
+  }
 
   foreach ($groups['node'] as $bundle => $title) {
     $fields['node-'.$bundle.'-field_site_address'] = array(

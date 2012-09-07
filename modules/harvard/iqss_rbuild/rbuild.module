@@ -23,13 +23,20 @@
  * Implements hook_form_FORM_ID_form_alter() for software_project_node_form
  */
 function rbuild_form_software_project_node_form_alter(&$form, &$form_state, $form_id) {
+  // Only shows the rbuild fields if "Rbuild repository" method is selected
   $form['#attached'] = array(
   	'js' => array(
   		'type' => 'file',
   		'data' => drupal_get_path('module', 'rbuild') . '/rbuild.js',
   	),
   );
+  
+  // Checks that the provided Repository URL and Short Name are valid
   $form['#validate'][] ='_rbuild_project_node_validate';
+  
+  // Hides the Documentation text field unless user 1.
+  global $user;
+  $form['field_rbuild_docs']['#access'] = ((int)$user->uid === 1);
 }
 
 
@@ -160,7 +167,7 @@ function _rbuild_init_releases($project_node) {
 
   // Saves the project node if new releases are found
   $init_releases = $handler->init_releases($project_node);
-  if ($init_releases) node_save($project_node);
+  // if ($init_releases) node_save($project_node);
 }
 
 /**
@@ -208,13 +215,13 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
   $node->language = $default_language;
   $node->status = 1;
   $node->active = 1;
-
-  // Sets the OG group audience for this space
-  $field_items = field_get_items('node', $project_node, 'og_group_ref');
-  $og_group_ref = $field_items[0]['target_id'];
-  $node->og_group_ref[$default_language][0]['target_id'] = $og_group_ref;
   
   node_save($node); // Adds $node->nid and more properties
+  $node = node_load($node->nid);
+  if (module_exists('vsite')) {
+    include_once(drupal_get_path('module', 'vsite') . '/includes/vsite.inc');
+    vsite_add_entity($node); 
+  }
   
   // Prepares field values
   $recommended = ($version == $package['version']) ? 1 : 0;
