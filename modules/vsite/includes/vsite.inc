@@ -1,15 +1,15 @@
 <?php 
 
 /**
- * Add the passed entity to a group
+ * Add the passed entity to a vsite
  *
- *  The entity that you wish to put into a group
+ *  The entity that you wish to add to the vsite
  *  @param entity $entity
  *  
  *  The type of entity you are passing (default node)
  *  @param string $entity_type
  *  
- *  The spaces group object to add the entity to
+ *  The vsite object to add the entity to
  *  @param space $vsite
  */
 function vsite_add_entity($entity, $entity_type = 'node', $vsite = false){
