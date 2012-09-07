@@ -16,7 +16,7 @@ files[] = includes/og.membership.inc
 files[] = includes/og.membership_type.inc
 files[] = includes/views/og.views.inc
 
-; Test files.
+; Test files
 files[] = og.test
 files[] = tests/upgrade/og.upgrade.test
 
@@ -39,9 +39,9 @@ files[] = includes/views/handlers/og_handler_relationship.inc
 
 
 
-; Information added by drupal.org packaging script on 2012-07-21
-version = "7.x-2.0-beta1+10-dev"
+; Information added by drupal.org packaging script on 2012-09-07
+version = "7.x-2.0-beta1+33-dev"
 core = "7.x"
 project = "og"
-datestamp = "1342874583"
+datestamp = "1347022055"
 

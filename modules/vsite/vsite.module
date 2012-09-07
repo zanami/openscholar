@@ -97,49 +97,6 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
 }
 
 /**
- * Implements hook_node_presave().
- *
- * Iterate over all group-audience fields in a node, and save them into
- * the administration "field_og_general" field.
- *
- * @see vsite_get_group_fields().
- */
-function vsite_node_presave($node) {
-  if (!og_is_group_content_type('node', $node->type)) {
-    return;
-  }
-
-  $wrapper = entity_metadata_wrapper('node', $node);
-  $gids = array();
-  foreach (og_get_group_audience_fields('node', $node->type) as $field_name => $label) {
-    $field = field_info_field($field_name);
-    if ($field['settings']['target_type'] != 'node') {
-      // Field doesn't reference to groups of type node.
-      continue;
-    }
-    $values = $wrapper->{$field_name}->value(array('identifier' => TRUE));
-    $values = is_array($values) ? $values : array($values);
-    $gids = array_merge($gids, $values);
-  }
-
-  $wrapper->field_og_general->set($gids);
-}
-
-/**
- * Implements hook_field_access().
- *
- * Hide the "field_og_general" field, as it used only for DX, to allow
- * easier query using entityFieldQuery.
- */
-function vsite_field_access($op, $field, $entity_type, $entity, $account) {
-  if ($field['field_name'] != 'field_og_general') {
-    return;
-  }
-
-  return false;
-}
-
-/**
  * Make a decision about the active theme
  */
 function vsite_custom_theme(){
