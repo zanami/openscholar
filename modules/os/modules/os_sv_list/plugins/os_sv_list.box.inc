@@ -139,6 +139,19 @@ class os_sv_list_box extends os_boxes_default {
         }
         break;
         
+      case 'book':
+        //limit book depth to 1.  not a field, so use a regular query
+        $query = db_select('menu_links', 'ml')
+          ->condition('module', 'book')
+          ->condition('depth', 1);
+        $query->addField('ml', 'link_path');
+        $book_nids = $query->execute()->fetchCol();
+        $book_nids = preg_replace('/node\//', '', $book_nids);
+        
+        $efq->propertyCondition('nid', $book_nids, 'IN');
+        break;
+        
+        
       case 'biblio':
         $page = 0; //add pager properly later
         $items = $options['number_of_items'];
