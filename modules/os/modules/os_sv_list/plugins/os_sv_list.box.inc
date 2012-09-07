@@ -27,7 +27,6 @@ class os_sv_list_box extends os_boxes_default {
    */
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
-    drupal_add_js(drupal_get_path('module', 'os_sv_list') . '/plugins/os_sv_list_box.js');
     
     $content_types = array(
       'all' => t('All')
@@ -41,7 +40,12 @@ class os_sv_list_box extends os_boxes_default {
       '#type' => 'select',
       '#title' => 'Content Type',
       '#default_value' => $this->options['content_type'],
-      '#options' => $content_types
+      '#options' => $content_types,
+      '#ajax' => array(
+        'callback' => 'os_sv_list_more_link_ajax',
+        'wrapper' => 'more_link_div',
+        'method' => 'replace',
+      ),
     );
     
     $form['display'] = array(
@@ -78,7 +82,9 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['more_link'],
       '#states' => array(
         'visible' => array('input[name=more]' => array('checked' => TRUE))
-      )
+      ),
+      '#prefix' => '<div id="more_link_div">',
+      '#suffix' => '</div>',
     );
     
     $form['more_text'] = array(
