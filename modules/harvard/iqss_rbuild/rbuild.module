@@ -48,6 +48,7 @@ function rbuild_node_insert($node) {
   if ($field_value !== 'Rbuild repository') return;
   
   _rbuild_init_releases($node);
+  _rbuild_node_save_modify_docs_field_value($node);
 }
 
 /**
@@ -85,6 +86,7 @@ function rbuild_node_update($node) {
   if ($same_repo && $same_short_name) return;
   
   _rbuild_init_releases($node);
+  _rbuild_node_save_modify_docs_field_value($node);
 }
 
 /**
@@ -446,3 +448,51 @@ function _rbuild_project_node_validate($form, &$form_state) {
   $handler = new rbuild_handler($repo_url, $short_name);
   $handler->validate();
 }
+
+/**
+ * Modifies the rbuild docs field value before node save.
+ *
+ * Only triggers for new nodes, and for changed rbuild repo or short name.
+ * 
+ * @param object $node
+ *   a project-type node
+ *   
+ * @see hook_node_insert()
+ * @see hook_node_update()
+ */
+function _rbuild_node_save_modify_docs_field_value(&$node) {
+  $items = field_get_items('node', $node, 'field_rbuild_short_name');
+  $short_name = $items[0]['value'];
+  
+  $docs_path = _rbuild_docs_source_path($short_name);
+  $node->field_rbuild_docs[$node->language][0]['value'] = $docs_path;
+}
+
+/**
+ * Formats a documentation URL
+ * 
+ * @param string $short_name
+ * @param string $version
+ * 
+ * @return string $url
+ *
+ * @see _rbuild_node_save_modify_docs_field_value()
+ */
+function _rbuild_docs_source_path($short_name, $version = '') {
+    $url_parts = array(
+      'http://r.iq.harvard.edu/docs/',
+      strtolower($short_name),
+      /* Links to the parent directory now, not the index.shtml for latest version.
+       * 
+       * Why? Because the index.shtml pages tend to link to deprecated OS /docs/ page.
+       * However, r.iq.harvard.edu automatic index generation does not.
+       * Furthermore, this way exposes documentation for all releases.
+       '/',
+      $version,
+      '/index.shtml',
+       */
+    );
+    
+    $url = implode('', $url_parts);
+    return $url;
+  }

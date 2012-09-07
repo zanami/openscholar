@@ -109,7 +109,7 @@ class rbuild_handler implements os_software_handler {
    * 
    * @param object $project_node
    */
-  public function init_releases($project_node) {
+  public function init_releases(&$project_node) {
   	if (!is_numeric($project_node->nid)) return FALSE;
   	
   	$releases = $this->find_all_release_files(); // array
@@ -180,7 +180,8 @@ class rbuild_handler implements os_software_handler {
 
     // Updates title and description
     $changed = $this->alter_project($project_node);
-
+    if ($changed) node_save($project_node);
+    
     // Adds this new Software Release node if new, then returns TRUE
    	$filename = $this->short_name . '_' . $package['version'] . '.tar.gz';
   	$added_new_release = _rbuild_add_release_node_wrapper($project_node, $package['version'], $filename, $package, $this->url);
@@ -295,29 +296,4 @@ class rbuild_handler implements os_software_handler {
 
 	  return $releases;
   }
-  
-  /**
-   * Formats a documentation URL
-   * 
-   * @param string $short_name
-   * @param string $version
-   * 
-   * @return string $url
-   *
-   * @todo still needed?
-   * @see rbuild_package_handler::alter_project()
-   * 
-  public function docs_source_path($short_name, $version) {
-    $url_parts = array(
-      'http://r.iq.harvard.edu/docs/',
-      strtolower($short_name),
-      '/',
-      $version,
-      '/index.shtml',
-    );
-    
-    $url = implode('', $url_parts);
-    return $url;
-  }
-   */
 }
