@@ -43,8 +43,10 @@ class os_sv_list_box extends os_boxes_default {
       '#options' => $content_types,
       '#ajax' => array(
         'callback' => 'os_sv_list_more_link_ajax',
-        'wrapper' => 'more_link_div',
+        //'wrapper' => 'more_link_div',
+        'wrapper' => 'edit-more-link',
         'method' => 'replace',
+        'effect' => 'none',
       ),
     );
     
@@ -81,7 +83,9 @@ class os_sv_list_box extends os_boxes_default {
       '#type' => 'textfield',
       '#default_value' => $this->options['more_link'],
       '#states' => array(
-        'visible' => array('input[name=more]' => array('checked' => TRUE))
+        'visible' => array('input[name=more]' => array('checked' => TRUE)),
+        'invisible'  => array('input[name=more]' => array('checked' => FALSE))
+        
       ),
       '#prefix' => '<div id="more_link_div">',
       '#suffix' => '</div>',

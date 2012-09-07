@@ -53,11 +53,17 @@ function os_sv_list_more_link_ajax($form, $state) {
   } else {
     $link = $current;
   }
-  $form['options']['more_link']['#value'] = $link;
-  $built = drupal_render($form['options']['more_link']);
-  //$state['values']['more_link'] = $link;
 
-  return $built;  
+  $form['options']['more_link']['#value'] = $link;
+
+  //just return the input element.  states has modified this element's parent to show/hide.  
+  //ajax call won't retrigger states check, so just replace the input itself to preserve visiblity
+  $built = drupal_render($form['options']['more_link']);
+  $built = explode("\n", $built);
+  $built = preg_grep('/input/', $built);
+  $input = current($built);
+
+  return $input;  
 }
 
 /**
