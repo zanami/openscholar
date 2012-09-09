@@ -659,9 +659,9 @@ function vsite_menu_alter(&$items) {
  */
 function vsite_load_user_sites($userId) {
 	$sites = array();
+	$sitesArray = array();
 	// grab their sites 
 	$vsites = vsite_get_vsite_by_owner($userId);
-	
 	// create each site as a link
 	foreach($vsites as $site) {
 		$sites=array('#title'=>$site->group->title, '#type'=>'link','#href'=>$site->get_absolute_url());
@@ -699,7 +699,7 @@ function vsite_user_view_alter(&$build) {
 		if($user->uid) {
 		// Additions section
 			// load their link created vsites
-			$vsites = (vsite_load_user_sites($user->uid));
+			$vsites = (vsite_load_user_sites($build['#account']->uid));
 	
 			// in d6 a plural or singular was used in order to apply the correct CSS selector to the list
 			// retain that functionality
@@ -720,4 +720,14 @@ function vsite_user_view_alter(&$build) {
    		 	);//
    		 //
 	}// end if
+}// end function
+
+/**
+ * Implement hook_mail_alter
+ * function to alter some of the emails that are sent out
+ * to users based on certain actions
+ * 
+ */
+function vsite_mail_alter(&$message) {
+	// ToDo
 }// end function
