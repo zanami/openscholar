@@ -124,6 +124,7 @@ class os_sv_list_box extends os_boxes_default {
     $block = parent::render();
     $efq = $this->get_default_query();
     $options = $this->options;
+    $page_num = isset($_GET['page'])?$_GET['page']:0;
 
     //exceptions
     switch ($options['content_type']) {
@@ -166,7 +167,7 @@ class os_sv_list_box extends os_boxes_default {
 
         $query->join('biblio', 'b', 'n.vid = b.vid');
         $query->orderBy('biblio_year', 'DESC');
-        $query->range($page*$items, $items);
+        $query->range($page_num*$items, $items);
         $query->fields('n', array('nid'));
 
         $biblio_nids = $query->execute()->fetchCol();
@@ -205,6 +206,7 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // pager widget
+    $pager = '';
     if ($options['pager']) {
       // theme_pager();
       $parameters = array(
@@ -214,12 +216,6 @@ class os_sv_list_box extends os_boxes_default {
         'parameters' => $parameters,
         'element' => $page,
       ));
-
-      //add use-ajax class and replace the link.  theme_pager won't pass these along all the way to the links
-      $pager = preg_replace('/<a /', '<a class="use-ajax" ', $pager);
-      $pager = preg_replace('/href="(.*?)\?/', 'href="os_sv_list_ajax/nojs?dest=$1&amp;', $pager);
-
-      $block['content'] .= $pager;
     }
 
     // more link
@@ -228,8 +224,8 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     drupal_add_library('system', 'drupal.ajax');
-    $block['content'] = '<div id="box-' . $this->delta . '-wrapper">' . $block['content'] . '</div>';
-
+    drupal_add_js(drupal_get_path('module', 'os_sv_list'). '/os_sv_list_display.js');
+    $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'">' . $block['content'] . '</div>' . $pager;
     return $block;
   }
 

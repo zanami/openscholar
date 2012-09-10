@@ -168,15 +168,20 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       return;
     }
 
-    $whitelist = array(
+    //only keep these blocks in the context
+    $whitelist = array('boxes-site_info', 'boxes-site_logo', 'os-primary-menu', 'boxes-shield');
+
+    //null out the region of these blcoks
+    $null_region_list = array(
       //kshepsle
-      '1' => array( 'boxes-site_info', 'boxes-site_logo', 'os-primary-menu'),
+      '1' => array(),
       //rbates
-      '8' => array( 'boxes-site_info', 'boxes-site_logo',),
+      '8' => array('os-primary-menu'),
       //agordon.net
-      '10057' => array( 'os-primary-menu'),
+      '10057' => array( 'os-primary-menu', 'boxes-site_info', 'boxes-site_logo', 'boxes-shield'),
     );
 
+    //add these blocks to context
     $add_blocks = array(
       '1' => array(
         'kshepsle_custom_box' => array(
@@ -194,7 +199,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
           'module' => 'boxes',
           'delta' => 'rbates_custom_box',
           'weight' => 0,
-          'region' => 'header_second',
+          'region' => 'content_top',
           'label' => '',
           'info' => 'rbates_custom_box',
         ),
@@ -224,7 +229,12 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     //gordon, bates need menus explicitly removed from the context.  they're appearing by default.
 
     //filter out unwanted blocks
-    $value['blocks'] = array_intersect_key($value['blocks'], array_flip($whitelist[$nid]));
+    $value['blocks'] = array_intersect_key($value['blocks'], array_flip($whitelist));
+
+    //hide regions by annulling their regions.
+    foreach ($null_region_list[$nid] as $block) {
+      $value['blocks'][$block]['region'] = FALSE;
+    }
 
     //add the custom ones.
     $value['blocks'] += $add_blocks[$nid];
