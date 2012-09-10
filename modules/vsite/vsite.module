@@ -648,79 +648,77 @@ function _vsite_purl_init(){
 /** 
  * Implements hook_menu_alter()
  * Using this function to remove the "Groups" link
- * from the users 'edit' form
+ * from the users 'edit' form.
  */
 function vsite_menu_alter(&$items) {
 	$items['user/%user/edit/groups']['access callback'] = false;
-}// end function
+}
 
 /**
- * Function to load all the sites the user belongs to
+ * Function to return all sites a user belongs to.
  */
-function vsite_load_user_sites($userId) {
+function vsite_load_user_sites($user_id) {
 	$sites = array();
-	$sitesArray = array();
-	// grab their sites 
-	$vsites = vsite_get_vsite_by_owner($userId);
-	// create each site as a link
+	$sites_array = array();
+	// Grab their sites. 
+	$vsites = vsite_get_vsite_by_owner($user_id);
+	// Create each site as a link.
 	foreach($vsites as $site) {
-		$sites=array('#title'=>$site->group->title, '#type'=>'link','#href'=>$site->get_absolute_url());
-		// prepare them for theme_list_item
-		$sitesArray[] = array('data'=>drupal_render($sites));
-	}// end foreach
+		$sites = array('#title'=>$site->group->title, '#type'=>'link','#href'=>$site->get_absolute_url());
+		// Prepare them for theme_list_item.
+		$sites_array[] = array('data'=>drupal_render($sites));
+	}
 	
-	return $sitesArray;
-}// end function
+	return $sites_array;
+}
 
 /**
- * Implementation of hook_user_view_alter()
+ * Implementation of hook_user_view_alter().
  * Altering the user view to remove history, groups and other groups
  * also altering to add in "My Websites" for all sites the user belongs to.
  */
 function vsite_user_view_alter(&$build) {
 	global $user;
 	
-	// Removal section
-		// remove the "history" and "member for" info if it's there
+	// Removal section.
+		// Remove the "history" and "member for" info if it's there.
 		if(isset($build['summary'])) {
 			unset($build['summary']);
-		}// end if
-		// remove the og_user_group_ref
+		}
+		// Remove the og_user_group_ref.
 		if(isset($build['og_user_group_ref'])) {
-			$build['og_user_group_ref']['#access'] = false;
-		}// end if
-		// remove the og_other_user_group_ref
+			$build['og_user_group_ref']['#access'] = FALSE;
+		}
+		// Remove the og_other_user_group_ref.
 		if(isset($build['og_other_user_group_ref'])) {
-			$build['og_other_user_group_ref']['#access'] = false;
-		}// end if
-	// 
+			$build['og_other_user_group_ref']['#access'] = FALSE;
+		}
 
-		// make sure they're logged in
+		// Make sure they're logged in.
 		if($user->uid) {
-		// Additions section
-			// load their link created vsites
-			$vsites = (vsite_load_user_sites($build['#account']->uid));
+		// Additions section.
+			// Load their link created vsites.
+			$vsites = vsite_load_user_sites($build['#account']->uid);
 	
-			// in d6 a plural or singular was used in order to apply the correct CSS selector to the list
-			// retain that functionality
+			// In d6 a plural or singular was used in order to apply the correct CSS selector to the list
+			// retain that functionality.
 			if(count($vsites)>1) {
 				$cssSelector = array('class'=>'plural');
 			}else{
 				$cssSelector = array('class'=>'single');
 			}// end if
 			
-			// pass the items to theme_item_list
+			// Pass the items to theme_item_list.
 			$vsitesList = theme_item_list(array('items'=>$vsites, 'title'=>'','type'=>'ul','attributes'=>$cssSelector));
 			
-			// set a new field
+			// Set a new field.
 			$build['web_sites'] = array(
-			      	'#title' => 'My Websites',
-			      	'#type' => 'user_profile_item', 
-					'#markup' => $vsitesList,
-   		 	);//
-   		 //
-	}// end if
-}// end function
+			  '#title' => 'My Websites',
+			  '#type' => 'user_profile_item', 
+			  '#markup' => $vsitesList,
+   		 	);
+	}
+}
 
 /**
  * Implement hook_mail_alter
@@ -730,4 +728,4 @@ function vsite_user_view_alter(&$build) {
  */
 function vsite_mail_alter(&$message) {
 	// ToDo
-}// end function
+}
