@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_publications.features.field.inc
@@ -98,3 +101,4 @@ function os_publications_field_default_fields() {
 
   return $fields;
 }
+
