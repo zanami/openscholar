@@ -94,6 +94,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
           'additional_classes' => '',
           'plugin_key' => 'os_boxes_html',
           'options' => array('text' => array('value'=>$box['body'], 'format'=>'filtered_html')),
+          'info' => $id,
         );
 
         $new_boxes[] = array(
