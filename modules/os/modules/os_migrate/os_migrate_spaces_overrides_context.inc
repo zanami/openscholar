@@ -169,7 +169,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     }
 
     //only keep these blocks in the context
-    $whitelist = array('boxes-site_info', 'boxes-site_logo', 'os-primary-menu', 'boxes-shield');
+    $whitelist = array('boxes-site_info', 'boxes-site_logo', 'os-primary-menu', 'boxes-shield', 'boxes-shield_default', 'os-secondary-menu');
 
     //null out the region of these blcoks
     $null_region_list = array(
@@ -178,7 +178,51 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       //rbates
       '8' => array('os-primary-menu'),
       //agordon.net
-      '10057' => array( 'os-primary-menu', 'boxes-site_info', 'boxes-site_logo', 'boxes-shield'),
+      '10057' => array( 'os-primary-menu', 'boxes-site_info', 'boxes-site_logo', 'os-secondary-menu', 'boxes-shield_default'),
+    );
+
+    //if blocks above aren't overridden, here they are to include.
+    $preset_boxes = array(
+      'boxes-site_logo' => array (
+        'module' => 'boxes',
+        'delta' => 'site_logo',
+        'region' => FALSE,
+        'weight' => 0,
+        'status' => 0,
+        'title' => '',
+      ),
+      'boxes-shield' => array (
+        'module' => 'boxes',
+        'delta' => 'shield',
+        'region' => FALSE,
+        'weight' => 0,
+        'status' => 0,
+        'title' => '',
+      ),
+      'boxes-site_info' => array (
+        'module' => 'boxes',
+        'delta' => 'site_info',
+        'region' => FALSE,
+        'weight' => 0,
+        'status' => 0,
+        'title' => '',
+      ),
+      'os-primary-menu' => array (
+        'module' => 'os',
+        'delta' => 'primary-menu',
+        'region' => FALSE,
+        'weight' => 0,
+        'status' => 0,
+        'title' => '',
+      ),
+      'os-secondary-menu' => array (
+        'module' => 'os',
+        'delta' => 'secondary-menu',
+        'region' => FALSE,
+        'weight' => 0,
+        'status' => 0,
+        'title' => '',
+      ),
     );
 
     //add these blocks to context
@@ -233,7 +277,11 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
 
     //hide regions by annulling their regions.
     foreach ($null_region_list[$nid] as $block) {
-      $value['blocks'][$block]['region'] = FALSE;
+      if (isset($value['blocks'][$block])) {
+        $value['blocks'][$block]['region'] = FALSE;
+      } else {
+        $values['blocks'][$block] = $preset_boxes[$block];
+      }
     }
 
     //add the custom ones.
