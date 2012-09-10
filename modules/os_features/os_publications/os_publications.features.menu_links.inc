@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_publications.features.menu_links.inc
@@ -38,4 +35,3 @@ function os_publications_menu_default_menu_links() {
 
   return $menu_links;
 }
-

@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_publications.strongarm.inc
@@ -14,32 +11,28 @@ function os_publications_strongarm() {
   $export = array();
 
   $strongarm = new stdClass();
-  /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->disabled = FALSE;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'biblio_base';
   $strongarm->value = 'publications';
   $export['biblio_base'] = $strongarm;
 
   $strongarm = new stdClass();
-  /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->disabled = FALSE;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'biblio_base_title';
   $strongarm->value = 'Publications';
   $export['biblio_base_title'] = $strongarm;
 
   $strongarm = new stdClass();
-  /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->disabled = FALSE;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'biblio_contrib_fields_delta';
   $strongarm->value = '1';
   $export['biblio_contrib_fields_delta'] = $strongarm;
 
   $strongarm = new stdClass();
-  /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->disabled = FALSE;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'biblio_export_links';
   $strongarm->value = array(
@@ -52,8 +45,7 @@ function os_publications_strongarm() {
   $export['biblio_export_links'] = $strongarm;
 
   $strongarm = new stdClass();
-  /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->disabled = FALSE;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'biblio_init_auth_count';
   $strongarm->value = '1';
@@ -61,4 +53,3 @@ function os_publications_strongarm() {
 
   return $export;
 }
-

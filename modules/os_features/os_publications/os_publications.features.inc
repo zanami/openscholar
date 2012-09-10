@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_publications.features.inc
@@ -82,4 +79,3 @@ function os_publications_image_default_styles() {
 
   return $styles;
 }
-
