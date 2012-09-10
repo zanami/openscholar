@@ -1,5 +1,6 @@
 <?php
 include_once ('vsite.features.inc');
+include_once ('includes/vsite.inc');
 
 /**
  * Public Functions
@@ -50,21 +51,6 @@ function vsite_get_purl($vsite = false){
  * Runs on every node form
  */
 function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
-  $vsite = spaces_get_space();
-  $os_bundles = array_keys(os_get_bundles(true));
-
-  if ($vsite && in_array($form['#bundle'], $os_bundles)) {
-    // Set the og_group_ref value to automatically be the current active site
-    $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = array(
-        '#type' => 'value',
-        '#default_value' => $vsite->group->nid,
-        '#field_name' => OG_AUDIENCE_FIELD,
-        '#language' => LANGUAGE_NONE,
-        '#entity_type' => 'node',
-        '#bundle' => $form['#bundle']
-    );
-  }
-
   if (og_is_group_type('node', $form['#bundle'])) {
     // Hide the comment settings form
     $form['comment_settings']['#access'] = false;
@@ -316,6 +302,7 @@ function vsite_get_group_fields() {
       ),
       'field_instance' => array(
         'bundle' => $bundle,
+        'default_value_function' => 'vsite_group_audience_field_default_value',
         'default_value' => NULL,
         'deleted' => '0',
         'description' => '',
@@ -380,6 +367,12 @@ function vsite_get_group_fields() {
 function vsite_get_group_type_fields() {
   $groups = og_get_all_group_bundle();
   $fields = array();
+
+  if(!isset($groups['node'])){
+    //No group_group fields have been added yet
+    //@todo create these fields when the group field is created with "hook_field_create_instance"
+    return $fields;
+  }
 
   foreach ($groups['node'] as $bundle => $title) {
     $fields['node-'.$bundle.'-field_site_address'] = array(
@@ -638,11 +631,117 @@ function _vsite_purl_init(){
   }
 }
 
-/** 
+/**
+ * Sets the default value for the group audience fields.
+ * This works even if the widget is not shown, e.g. due to restricted field access.
+ */
+function vsite_group_audience_field_default_value(){
+
+  $vsite = spaces_get_space();
+
+  if ($vsite) {
+    // Set the group audience value to automatically be the current active site
+    $default[] = array('target_id' => $vsite->group->nid);
+
+    return $default;
+  }
+}
+
+/**
+ * Implements hook_field_access().
+ */
+function vsite_field_access($op, $field, $entity_type, $entity, $account) {
+  if ($op != 'edit' || $field['type'] != 'entityreference' || !og_is_group_audience_field($field['field_name'])) {
+    return;
+  }
+
+  //If we are not on the field settings form, then deny access
+  if (!empty($entity)) {
+    return false;
+  }
+}
+
+/**
  * Implements hook_menu_alter()
  * Using this function to remove the "Groups" link
- * from the users 'edit' form
+ * from the users 'edit' form.
  */
 function vsite_menu_alter(&$items) {
 	$items['user/%user/edit/groups']['access callback'] = false;
-}// end function
+}
+
+/**
+ * Function to return all sites a user belongs to.
+ */
+function vsite_load_user_sites($user_id) {
+	$sites = array();
+	$sites_array = array();
+	// Grab their sites.
+	$vsites = vsite_get_vsite_by_owner($user_id);
+	// Create each site as a link.
+	foreach($vsites as $site) {
+		$sites = array('#title'=>$site->group->title, '#type'=>'link','#href'=>$site->get_absolute_url());
+		// Prepare them for theme_list_item.
+		$sites_array[] = array('data'=>drupal_render($sites));
+	}
+
+	return $sites_array;
+}
+
+/**
+ * Implementation of hook_user_view_alter().
+ * Altering the user view to remove history, groups and other groups
+ * also altering to add in "My Websites" for all sites the user belongs to.
+ */
+function vsite_user_view_alter(&$build) {
+	global $user;
+
+	// Removal section.
+		// Remove the "history" and "member for" info if it's there.
+		if(isset($build['summary'])) {
+			unset($build['summary']);
+		}
+		// Remove the og_user_group_ref.
+		if(isset($build['og_user_group_ref'])) {
+			$build['og_user_group_ref']['#access'] = FALSE;
+		}
+		// Remove the og_other_user_group_ref.
+		if(isset($build['og_other_user_group_ref'])) {
+			$build['og_other_user_group_ref']['#access'] = FALSE;
+		}
+
+		// Make sure they're logged in.
+		if($user->uid) {
+		// Additions section.
+			// Load their link created vsites.
+			$vsites = vsite_load_user_sites($build['#account']->uid);
+
+			// In d6 a plural or singular was used in order to apply the correct CSS selector to the list
+			// retain that functionality.
+			if(count($vsites)>1) {
+				$cssSelector = array('class'=>'plural');
+			}else{
+				$cssSelector = array('class'=>'single');
+			}// end if
+
+			// Pass the items to theme_item_list.
+			$vsitesList = theme_item_list(array('items'=>$vsites, 'title'=>'','type'=>'ul','attributes'=>$cssSelector));
+
+			// Set a new field.
+			$build['web_sites'] = array(
+			  '#title' => 'My Websites',
+			  '#type' => 'user_profile_item',
+			  '#markup' => $vsitesList,
+   		 	);
+	}
+}
+
+/**
+ * Implement hook_mail_alter
+ * function to alter some of the emails that are sent out
+ * to users based on certain actions
+ *
+ */
+function vsite_mail_alter(&$message) {
+	// ToDo
+}

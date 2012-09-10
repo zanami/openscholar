@@ -198,6 +198,7 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     if (count($nids)) {
+      $nids = array_slice($nids, 0, $options['number_of_items']);
       $display_func = (method_exists($this, $options['display'])) ? $options['display'] : 'display_title';
       $nodes = node_load_multiple($nids);
 
@@ -215,12 +216,6 @@ class os_sv_list_box extends os_boxes_default {
         'parameters' => $parameters,
         'element' => $page,
       ));
-
-      //add use-ajax class and replace the link.  theme_pager won't pass these along all the way to the links
-      //$pager = preg_replace('/<a /', '<a class="use-ajax" ', $pager);
-      //$pager = preg_replace('/href="(.*?)\?/', 'href="os_sv_list_ajax/nojs?dest=$1&amp;', $pager);
-
-      //$block['content'] .= $pager;
     }
 
     // more link
@@ -231,7 +226,6 @@ class os_sv_list_box extends os_boxes_default {
     drupal_add_library('system', 'drupal.ajax');
     drupal_add_js(drupal_get_path('module', 'os_sv_list'). '/os_sv_list_display.js');
     $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'">' . $block['content'] . '</div>' . $pager;
-
     return $block;
   }
 

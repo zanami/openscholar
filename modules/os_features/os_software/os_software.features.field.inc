@@ -49,7 +49,7 @@ function os_software_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '1',
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -536,17 +536,13 @@ function os_software_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Description');
-  t('Example: http://r.iq.harvard.edu/src/PACKAGE.CookingRecipes');
-  t('Note: Verify this unique rBuild short name corresponds to the Repository URL value above');
   t('Notes');
   t('Package');
   t('Packaging Method');
   t('Recommended');
-  t('Repository URL');
   t('Software Project');
   t('The recommended releases will be displayed on the project page. The latest recommended release per major version will be offered for update status.');
   t('Version');
-  t('rBuild Short Name');
 
   return $fields;
 }

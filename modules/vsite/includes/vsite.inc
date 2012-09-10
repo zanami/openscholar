@@ -1,4 +1,22 @@
 <?php 
+/**
+ * Provides and CRUD functions relating to the vsite group
+ *
+ * @file vsite.inc
+ *
+ * Provides vsite management and crud functions
+ *
+ * vsite_add_entity
+ *   Generic function to add a passed entity to a vsite
+ *
+ * vsite_create_vsite
+ *   Creates a new vsite group
+ *
+ * vsite_get_vsite_by_owner
+ *   Gets all of the groups owned by a user
+ *
+ */
+
 
 /**
  * Add the passed entity to a vsite
@@ -15,7 +33,7 @@
 function vsite_add_entity($entity, $entity_type = 'node', $vsite = false){
 
   //Make sure the entity is valid
-  list($id) = entity_extract_ids($entity_type, $entity);
+  list($id) = entity_extract_ids($entity_type, &$entity);
 
   //Get the active space
   if(!$vsite){
@@ -30,7 +48,23 @@ function vsite_add_entity($entity, $entity_type = 'node', $vsite = false){
     );
 
     //Add this entity to the active group
-    return og_group($vsite->group_type, $vsite->id, $values);
+    $subscription = og_group($vsite->group_type, $vsite->id, $values);
+    $gids[] = $subscription->gid;
+    
+    $wrapper = entity_metadata_wrapper($entity_type, $entity);
+    $field = field_info_field($subscription->field_name);
+    
+    //If this was a member of other groups add them to the field
+    if ($field['cardinality'] != 1) {
+      foreach ($wrapper->{$subscription->field_name . '__og_membership'}->value() as $og_membership) {
+        $gids[] = $og_membership->gid;
+      }
+    }
+      
+    //Add the new group to the entity
+    $wrapper->{$subscription->field_name}->set(array_unique($gids));
+    
+    return $subscription;
   }
   
   return false;

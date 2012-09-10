@@ -10,9 +10,6 @@
  * os_user_create
  *   Creates a new drupal user and (optionally) automatically adds them to the current site
  *
- * os_user_add
- *  Add users to a OpenScholar site (multi-tenant)
- *
  * os_user_remove
  *  Removes a user from an Openscholar site (multi-tenant)
  *
@@ -32,13 +29,10 @@
  *   => 'My name'). Key / value pairs added to the $edit['data'] will be
  *   serialized and saved in the {users.data} column.
  *
- * @param $add_user
- * If true and you are in a group add them to your group
- *
  * @return $account
  *   The new user account or false if there was an error
  */
-function os_user_create($user_info, $add_user = TRUE){
+function os_user_create($user_info){
   
   $account = user_save(null,$user_info);
   
@@ -46,52 +40,12 @@ function os_user_create($user_info, $add_user = TRUE){
     return false;
   }
   
-  if($add_user){
-    os_user_add($account->uid);
+  if(module_exists('vsite')){
+    module_load_include('inc', 'vsite', 'includes/user');
+    vsite_user_add($account);
   }
   
   return $account;
-}
-
-/**
- * Add users to a OpenScholar site
- *
- * @param int $uid
- * The identifier string for a context
- *
- * @param $site_id
- * Site ID
- *
- * @return bool
- * Success
- */
-/**
- * Add a user, and if you are in a group add them to your group
- */
-function os_user_add($uid, $site_id = false){
-  
-  if(!module_exists('vsite')){
-    //Nothing to do for single tenant installs
-    return false;
-  }
-  
-  $vsite = false;
-  if($site_id){
-    $vsite = spaces_load('og', $site_id);
-  }
-  
-  $account = user_load($uid);
-  //Do some basic validation
-  if (!$account) {
-    //An invalid user has been passed
-    return false;
-  }
-  
-  module_load_include('inc', 'vsite', 'includes/vsite');
-  //Add the user to the site
-  vsite_add_entity($account, 'user', $vsite);
-  
-  return true;
 }
 
 /**
@@ -101,39 +55,26 @@ function os_user_add($uid, $site_id = false){
  *   The user ID.
  * @param $rid
  *   The role ID.
+ * @param $site_id
+ *   Group ID (OPTIONAL multi-tenant only)
  */
-function os_role_grant($uid, $role_name, $site_id = false, $group_type = 'node') {
+function os_role_grant($uid, $role_name, $site_id = false) {
   
-  if(!$site_id && module_exists('vsite')){
-    $vsite = spaces_get_space();
-    if($vsite){
-      $site_id = $vsite->id;
-    }else{
-      //not in a site
-      return false;
-    }
+  if(module_exists('vsite')){
+    module_load_include('inc', 'vsite', 'includes/user');
+    return vsite_role_grant($uid, $role_name, $site_id);
   }
   
-  if($site_id){
-    //Add role via OG
-    $roles = og_roles($group_type, 'vsite', $site_id);
-    foreach ($roles as $rid => $role) {
-    	if($role == $role_name){
-    	  og_role_grant($group_type, $site_id, $uid, $rid);
-    	  return true;
-    	}
-    }
-  }else{
-    //Add role via standard drupal
-    $role = user_role_load_by_name($role_name);
-    if($role){
-      $user = user_load($uid,TRUE);
-      $user->role[$role->rid] = $role;
-      user_save($user);
-      return true;
-    }
+  //Add role via standard drupal
+  $role = user_role_load_by_name($role_name);
+  if($role){
+    $user = user_load($uid,TRUE);
+    $user->role[$role->rid] = $role;
+    user_save($user);
+    return true;
   }
   
+  //Invalid Role
   return false;
 }
 
