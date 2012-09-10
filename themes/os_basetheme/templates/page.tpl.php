@@ -77,6 +77,13 @@
  * @see adaptivetheme_process_page()
  */
 ?>
+ <!--FLEXIBLE ADMIN HEADER FOR USE BY SELECT GROUPS USING OS-->
+<?php if ($page['flexheader']): ?>
+<div id="flexheader">
+	<?php print render($page['flexheader']); ?>
+</div>	
+<?php endif; ?>	
+
 <div id="page" class="container <?php print $classes; ?>">
 	<div id="page-wrapper">
 <!--header regions beg-->
@@ -184,3 +191,10 @@
   <?php endif; ?>
 </div></div><!--page area ends-->
  <div id="extradiv"></div>
+ 
+ <!--FLEXIBLE ADMIN FOOTER FOR USE BY SELECT GROUPS USING OS-->
+ <?php if ($page['flexfooter']): ?>
+<div id="flexfooter">
+	<?php print render($page['flexfooter']); ?>
+</div>	
+<?php endif; ?>	
