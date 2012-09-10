@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_announcements.features.field.inc
@@ -317,3 +320,4 @@ function os_announcements_field_default_fields() {
 
   return $fields;
 }
+

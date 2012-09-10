@@ -41,6 +41,6 @@ features[variable][] = menu_parent_announcement
 features[variable][] = node_options_announcement
 features[variable][] = node_preview_announcement
 features[variable][] = node_submitted_announcement
-features[views_view][] = announcements_listing
+features[views_view][] = os_announcements
 spaces[types][] = og
 spaces[types][] = site
