@@ -161,6 +161,7 @@ class BoxPorter {
       'os_boxes_modal_siteinfo' => 'os_boxes_siteinfo', //needs pulling from orig vsite
       'vsite_taxonomy_fbt' => 'os_taxonomy_fbt',
       'os_boxes_currtoc' => 'os_boxes_booktoc', //needs an option added
+      'os_boxes_pub_typ_list' => 'os_boxes_pub_type',
     );
 
 
@@ -406,6 +407,16 @@ class BoxPorter {
     return $box;
   }
 
+  //wrap other shield funciton.  apparently shield boxes had differeing names
+  public function _port_box_os_boxes_shields($box, $id, $key_only) {
+    $key = 'os_shields_box';
+    if ($key_only) {
+      return $key;
+    }
+
+    return $this->_port_box_os_shields_box($box, $id, $key_only);
+  }
+
   //'os_boxes_shields' => 'os_shields_box', (box holds the filename.  used to be in a var.)
   public function _port_box_os_shields_box($box, $id, $key_only) {
     $key = 'os_shields_box';
@@ -434,6 +445,28 @@ class BoxPorter {
     return $box;
   }
 
+  //recent docs list can convert to sv list
+  public function _port_box_os_boxes_recent_docs($box, $id, $key_only) {
+    $key = 'os_sv_list_box';
+    if ($key_only) {
+      return $key;
+    }
+
+    $box->options['filter'] = 'book';
+    return $this->_port_box_os_boxes_sv_list($box, $id, $key_only);
+  }
+
+  //present list should be converted to sv list
+  public function _port_box_os_boxes_present_list($box, $id, $key_only) {
+    $key = 'os_sv_list_box';
+    if ($key_only) {
+      return $key;
+    }
+
+    $box->options['filter'] = 'presentation';
+    return $this->_port_box_os_boxes_sv_list($box, $id, $key_only);
+  }
+
   public function _port_box_os_boxes_sv_list($box, $id, $key_only) {
     $key = 'os_sv_list_box';
     if ($key_only) {
@@ -458,22 +491,12 @@ class BoxPorter {
     );
 
     $options = $box->options + $defaults;
-//     array(
-//       'content_type' =>     $ct,
-//       'display' =>          $this->_sv_list_box_style($box->options['style']),
-//       'more' =>             $box->options['more'],
-//       'more_link' =>        $box->options['more_link'],
-//       'more_text' =>        $box->options['more_text'],
-//       'pager' =>            $box->options['use_pager'],
-//       'number_of_items' =>  $box->options['number_of_items'],
-//       'sort_by' =>          $this->_sv_list_box_sort($box->options['sort']),
-//     );
 
-     $options['content_type'] = $ct;
-     $options['display'] = $this->_sv_list_box_style($options['display']);
-     $options['sort_by'] = $this->_sv_list_box_sort($options['sort_by']);
-     $options['number_of_items'] = min(20, $options['number_of_items']); //new box only goes up to 20.
-     $box->options = $options;
+    $options['content_type'] = $ct;
+    $options['display'] = $this->_sv_list_box_style($options['display']);
+    $options['sort_by'] = $this->_sv_list_box_sort($options['sort_by']);
+    $options['number_of_items'] = min(20, $options['number_of_items']); //new box only goes up to 20.
+    $box->options = $options;
 
     return $box;
   }
