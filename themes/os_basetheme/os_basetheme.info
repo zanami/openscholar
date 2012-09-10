@@ -73,6 +73,11 @@
   regions[menu_bar]          = Menu Bar
   regions[messages]          = Messages
   regions[help]              = Help
+
+;----------// Special Institutional Regions for use by select OS users
+  
+  regions[flexheader]        = flexheader
+  regions[flexfooter]        = flexfooter
   
 ;----------// Gpanel Regions
 
