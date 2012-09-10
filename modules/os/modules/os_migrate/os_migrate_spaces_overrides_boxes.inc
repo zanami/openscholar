@@ -161,9 +161,7 @@ class BoxPorter {
       'os_boxes_modal_siteinfo' => 'os_boxes_siteinfo', //needs pulling from orig vsite
       'vsite_taxonomy_fbt' => 'os_taxonomy_fbt',
       'os_boxes_currtoc' => 'os_boxes_booktoc', //needs an option added
-      'fb_social_activityf' => 'fb_social_activityfeed',
-      'fb_social_recommend' => 'fb_social_recommendations',
-      'os_boxes_pub_type_list' => 'os_boxes_pub_type',
+      'os_boxes_pub_typ_list' => 'os_boxes_pub_type',
     );
 
 
@@ -407,6 +405,16 @@ class BoxPorter {
     }
 
     return $box;
+  }
+
+  //wrap other shield funciton.  apparently shield boxes had differeing names
+  public function _port_box_os_boxes_shields($box, $id, $key_only) {
+    $key = 'os_shields_box';
+    if ($key_only) {
+      return $key;
+    }
+
+    return $this->_port_box_os_shields_box($box, $id, $key_only);
   }
 
   //'os_boxes_shields' => 'os_shields_box', (box holds the filename.  used to be in a var.)
