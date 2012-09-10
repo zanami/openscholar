@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_publications.features.user_permission.inc
@@ -115,3 +118,4 @@ function os_publications_user_default_permissions() {
 
   return $permissions;
 }
+
