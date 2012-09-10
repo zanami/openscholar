@@ -78,9 +78,9 @@
  */
 ?>
  <!--FLEXIBLE ADMIN HEADER FOR USE BY SELECT GROUPS USING OS-->
-<?php if ($page['flexheader']): ?>
-<div id="flexheader">
-	<?php print render($page['flexheader']); ?>
+<?php if ($page['branding_header']): ?>
+<div id="branding_header">
+	<?php print render($page['branding_header']); ?>
 </div>	
 <?php endif; ?>	
 
@@ -193,8 +193,8 @@
  <div id="extradiv"></div>
  
  <!--FLEXIBLE ADMIN FOOTER FOR USE BY SELECT GROUPS USING OS-->
- <?php if ($page['flexfooter']): ?>
-<div id="flexfooter">
-	<?php print render($page['flexfooter']); ?>
+ <?php if ($page['branding_footer']): ?>
+<div id="branding_footer">
+	<?php print render($page['branding_footer']); ?>
 </div>	
 <?php endif; ?>	
