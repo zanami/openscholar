@@ -1,17 +1,20 @@
 <?php
+// $Id$
+
+
 /**
  * @file
- * os_pages.features.field.inc
+ * os_biocv.features.field.inc
  */
 
 /**
  * Implements hook_field_default_fields().
  */
-function os_pages_field_default_fields() {
+function os_biocv_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-page-body'
-  $fields['node-page-body'] = array(
+  // Exported field: 'node-bio-body'
+  $fields['node-bio-body'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -39,7 +42,7 @@ function os_pages_field_default_fields() {
       'type' => 'text_with_summary',
     ),
     'field_instance' => array(
-      'bundle' => 'page',
+      'bundle' => 'bio',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
@@ -49,7 +52,7 @@ function os_pages_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '0',
+          'weight' => 0,
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -77,19 +80,91 @@ function os_pages_field_default_fields() {
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
-        'weight' => '-4',
+        'weight' => 0,
       ),
     ),
   );
 
-  // Exported field: 'node-page-field_upload'
-  $fields['node-page-field_upload'] = array(
+  // Exported field: 'node-cv-body'
+  $fields['node-cv-body'] = array(
     'field_config' => array(
       'active' => '1',
-      'cardinality' => '-1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(
+        0 => 'node',
+      ),
+      'field_name' => 'body',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'module' => 'text',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'text_with_summary',
+    ),
+    'field_instance' => array(
+      'bundle' => 'cv',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(
+            'trim_length' => 600,
+          ),
+          'type' => 'text_summary_or_trimmed',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'body',
+      'label' => 'Body',
+      'required' => FALSE,
+      'settings' => array(
+        'display_summary' => TRUE,
+        'text_processing' => 1,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'module' => 'text',
+        'settings' => array(
+          'rows' => 20,
+          'summary_rows' => 5,
+        ),
+        'type' => 'text_textarea_with_summary',
+        'weight' => '0',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-cv-field_biocv_pdf_upload'
+  $fields['node-cv-field_biocv_pdf_upload'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_upload',
+      'field_name' => 'field_biocv_pdf_upload',
       'foreign keys' => array(
         'fid' => array(
           'columns' => array(
@@ -113,16 +188,16 @@ function os_pages_field_default_fields() {
       'type' => 'file',
     ),
     'field_instance' => array(
-      'bundle' => 'page',
+      'bundle' => 'cv',
       'deleted' => '0',
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'hidden',
+          'label' => 'above',
           'module' => 'file',
           'settings' => array(),
           'type' => 'file_default',
-          'weight' => '3',
+          'weight' => 1,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -132,13 +207,13 @@ function os_pages_field_default_fields() {
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'field_upload',
-      'label' => 'upload',
+      'field_name' => 'field_biocv_pdf_upload',
+      'label' => 'PDF Upload',
       'required' => 0,
       'settings' => array(
         'description_field' => 0,
         'file_directory' => '',
-        'file_extensions' => 'jpg jpeg gif png txt doc docx gz xls pdf ppt pps odt ods odp tex tgz xml zip',
+        'file_extensions' => 'pdf',
         'filefield_paths' => array(
           'active_updating' => 0,
           'file_name' => array(
@@ -157,36 +232,17 @@ function os_pages_field_default_fields() {
           ),
           'retroactive_update' => 0,
         ),
-        'max_filesize' => '128 MB',
+        'max_filesize' => '',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'media',
+        'module' => 'file',
         'settings' => array(
-          'allowed_schemes' => array(
-            'embed' => 0,
-            'oembed' => 0,
-            'public' => 'public',
-          ),
-          'allowed_types' => array(
-            'audio' => 0,
-            'default' => 0,
-            'html' => 0,
-            'image' => 'image',
-            'video' => 0,
-          ),
-          'browser_plugins' => array(
-            'library' => 0,
-            'media_default--media_browser_1' => 0,
-            'media_embed' => 0,
-            'media_internet' => 0,
-            'upload' => 'upload',
-          ),
           'progress_indicator' => 'throbber',
         ),
-        'type' => 'media_generic',
-        'weight' => '32',
+        'type' => 'file_generic',
+        'weight' => '31',
       ),
     ),
   );
@@ -194,8 +250,8 @@ function os_pages_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Body');
-  t('General group reference');
-  t('upload');
+  t('PDF Upload');
 
   return $fields;
 }
+

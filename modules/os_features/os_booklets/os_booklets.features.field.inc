@@ -119,11 +119,9 @@ function os_booklets_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'hidden',
-          'module' => 'file_entity',
-          'settings' => array(
-            'file_view_mode' => 'default',
-          ),
-          'type' => 'file_rendered',
+          'module' => 'file',
+          'settings' => array(),
+          'type' => 'file_default',
           'weight' => '1',
         ),
         'teaser' => array(
