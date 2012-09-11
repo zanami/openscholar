@@ -150,6 +150,13 @@ function vsite_system_info_alter(&$info, $file, $type){
 }
 
 function vsite_field_default_fields_alter(&$fields) {
+  foreach ($fields as &$f) {
+    if ($f['field_config']['type'] == 'file'
+        && isset($f['field_instance']['settings']['filefield_paths']['file_path'])
+        && strpos($f['field_instance']['settings']['filefield_paths']['file_path']['value'], '[vsite:purl_path]') == FALSE) {
+      $f['field_instance']['settings']['filefield_paths']['file_path']['value'] = '[vsite:purl_path]/files/'.$f['field_instance']['settings']['filefield_paths']['file_path']['value'];
+    }
+  }
   if (isset($fields['node-vsite-field_group_path'])) {
     $fields += vsite_get_group_fields();
     $fields += vsite_get_group_type_fields();
