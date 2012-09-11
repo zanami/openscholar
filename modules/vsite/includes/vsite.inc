@@ -132,6 +132,9 @@ function vsite_create_vsite($name, $domain, $uid, $preset = FALSE) {
 
   if ($vsite = spaces_load('og', $node->nid)) {
     return $vsite;
+  } else {
+    error_log(t('Error creating vsite: @nid', array('@nid'=>$node->nid)), LOG_WARNING);
+    return FALSE;
   }
 }
 

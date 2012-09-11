@@ -4,13 +4,13 @@
 
 /**
  * @file
- * os_reader.features.inc
+ * os_biocv.features.inc
  */
 
 /**
  * Implements hook_ctools_plugin_api().
  */
-function os_reader_ctools_plugin_api() {
+function os_biocv_ctools_plugin_api() {
   list($module, $api) = func_get_args();
   if ($module == "context" && $api == "context") {
     return array("version" => "3");
@@ -22,21 +22,22 @@ function os_reader_ctools_plugin_api() {
 }
 
 /**
- * Implements hook_views_api().
- */
-function os_reader_views_api() {
-  return array("version" => "3.0");
-}
-
-/**
  * Implements hook_node_info().
  */
-function os_reader_node_info() {
+function os_biocv_node_info() {
   $items = array(
-    'feed' => array(
-      'name' => t('Feed'),
+    'bio' => array(
+      'name' => t('Bio'),
       'base' => 'node_content',
-      'description' => t('Used to show the contents of and aggregate external feeds.'),
+      'description' => t('A user\'s personal biography.'),
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+    'cv' => array(
+      'name' => t('CV'),
+      'base' => 'node_content',
+      'description' => t('A user\'s personal curriculum vitae.'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',

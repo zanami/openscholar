@@ -150,6 +150,13 @@ function vsite_system_info_alter(&$info, $file, $type){
 }
 
 function vsite_field_default_fields_alter(&$fields) {
+  foreach ($fields as &$f) {
+    if ($f['field_config']['type'] == 'file'
+        && isset($f['field_instance']['settings']['filefield_paths']['file_path'])
+        && strpos($f['field_instance']['settings']['filefield_paths']['file_path']['value'], '[vsite:purl_path]') == FALSE) {
+      $f['field_instance']['settings']['filefield_paths']['file_path']['value'] = '[vsite:purl_path]/files/'.$f['field_instance']['settings']['filefield_paths']['file_path']['value'];
+    }
+  }
   if (isset($fields['node-vsite-field_group_path'])) {
     $fields += vsite_get_group_fields();
     $fields += vsite_get_group_type_fields();
@@ -662,7 +669,7 @@ function vsite_field_access($op, $field, $entity_type, $entity, $account) {
 }
 
 /**
- * Implements hook_menu_alter()
+ * Implements hook_menu_alter().
  * Using this function to remove the "Groups" link
  * from the users 'edit' form.
  */
@@ -689,13 +696,12 @@ function vsite_load_user_sites($user_id) {
 }
 
 /**
- * Implementation of hook_user_view_alter().
+ * Implements hook_user_view_alter().
  * Altering the user view to remove history, groups and other groups
  * also altering to add in "My Websites" for all sites the user belongs to.
  */
 function vsite_user_view_alter(&$build) {
 	global $user;
-
 	// Removal section.
 		// Remove the "history" and "member for" info if it's there.
 		if(isset($build['summary'])) {
@@ -710,38 +716,88 @@ function vsite_user_view_alter(&$build) {
 			$build['og_other_user_group_ref']['#access'] = FALSE;
 		}
 
-		// Make sure they're logged in.
-		if($user->uid) {
-		// Additions section.
-			// Load their link created vsites.
-			$vsites = vsite_load_user_sites($build['#account']->uid);
+	// Additions section.
+		// Load their link created vsites.
+		$vsites = vsite_load_user_sites($build['#account']->uid);
 
-			// In d6 a plural or singular was used in order to apply the correct CSS selector to the list
-			// retain that functionality.
-			if(count($vsites)>1) {
-				$cssSelector = array('class'=>'plural');
-			}else{
-				$cssSelector = array('class'=>'single');
-			}// end if
+		// In d6 a plural or singular was used in order to apply the correct CSS selector to the list
+		// retain that functionality.
+		if(count($vsites)>1) {
+			$cssSelector = array('class'=>'plural');
+		}else{
+			$cssSelector = array('class'=>'single');
+		}// end if
 
-			// Pass the items to theme_item_list.
-			$vsitesList = theme_item_list(array('items'=>$vsites, 'title'=>'','type'=>'ul','attributes'=>$cssSelector));
+		// Pass the items to theme_item_list.
+		$vsitesList = theme_item_list(array('items'=>$vsites, 'title'=>'','type'=>'ul','attributes'=>$cssSelector));
 
-			// Set a new field.
-			$build['web_sites'] = array(
-			  '#title' => 'My Websites',
-			  '#type' => 'user_profile_item',
-			  '#markup' => $vsitesList,
-   		 	);
-	}
+		// Set a new field.
+		$build['web_sites'] = array(
+		  '#title' => 'My Websites',
+		  '#type' => 'user_profile_item',
+		  '#weight' => '10',
+		  '#markup' => $vsitesList,
+   		);
 }
 
 /**
- * Implement hook_mail_alter
- * function to alter some of the emails that are sent out
- * to users based on certain actions
- *
+ * Implement hook_mail_alter().
+ * Function to alter some of the emails that are sent out
+ * to users based on certain actions.
  */
 function vsite_mail_alter(&$message) {
-	// ToDo
+	global $base_url;
+	switch($message['id']) {
+	  // Account created during "Create this OS Site on behalf of another user".
+	  case 'user_register_no_approval_required':
+	    // Get the user id we just created.
+		$n_new_user = $message['params']['account']->uid;
+		// Load the user.
+		$o_user = user_load($n_new_user);
+		// Grab their first name, if it doesnt exist, use their user name.
+		if(!empty($o_user->field_first_name['und'][0]['value'])) {
+		  $first_name = $o_user->field_first_name['und'][0]['value'];
+		}else{
+		  $first_name = $o_user->name;
+		}
+		// Alter the subject.
+		$message['subject'] = t('An OpenScholar account has been created for you at !site_name', array('!site_name' => variable_get('site_name', 'OpenScholar')));
+      	$a_msg_variables = array(
+          '!site' => variable_get('site_name', 'OpenScholar'),
+          '!login_url' => user_pass_reset_url($o_user),
+          '!mailto' => $o_user->mail,
+          '!firstname' => $first_name,
+          '!username' => $o_user->name,
+      	  '!futurelogin' => $base_url.'/user/',
+        );
+
+        // Alter the body message.
+        $message['body'][0] = t("Dear !firstname,\n\nA site owner at the !site website has created an account for you. You may now log in by either clicking through on the following link or pasting it into your browser:\n\n !login_url\n\n(Note: This login can be used only once.)\n\nYour username is: !username \n\nAfter setting your password with the included link, you will be able to log in at !futurelogin in the future.\n\nSincerely,\nThe !site Team", $a_msg_variables);
+	  	break;
+	  // Account created by admin in the admin/people panel.
+	  case 'user_register_admin_created':
+	  	// Get the user id we just created.
+		$n_new_user = $message['params']['account']->uid;
+		// Load the user data.
+		$o_user = user_load($n_new_user);
+		// Grab their first name, if it doesnt exist, use their user name.
+		if(!empty($o_user->field_first_name['und'][0]['value'])) {
+		  $first_name = $o_user->field_first_name['und'][0]['value'];
+		}else{
+		  $first_name = $o_user->name;
+		}
+		// Alter the email subject.
+		$message['subject'] = t('An OpenScholar account has been created for you at !site_name', array('!site_name' => variable_get('site_name', 'OpenScholar')));
+      	$a_msg_variables = array(
+          '!site' => variable_get('site_name', 'OpenScholar'),
+          '!login_url' => user_pass_reset_url($o_user),
+          '!mailto' => $o_user->mail,
+          '!firstname' => $first_name,
+      	  '!username' => $o_user->name,
+      	  '!futurelogin' => $base_url.'/user/',
+        );
+		// Alter the message body.
+        $message['body'][0] = t("Dear !firstname,\n\nA site owner at the !site website has created an account for you. You may now log in by either clicking through on the following link or pasting it into your browser:\n\n !login_url\n\n(Note: This login can be used only once.)\n\nYour username is: !username \n\nAfter setting your password with the included link, you will be able to log in at !futurelogin in the future.\n\nSincerely,\nThe !site Team", $a_msg_variables);
+	  	break;
+	}
 }
