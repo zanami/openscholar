@@ -1,0 +1,112 @@
+<?php
+// $Id$
+
+
+/**
+ * @file
+ * Code for the OS Bio/CV feature.
+ */
+
+include_once 'os_biocv.features.inc';
+
+/**
+ * Implements hook_block_info().
+ */
+function os_biocv_block_info() {
+  $blocks['os_biocv_bio'] = array(
+    'info' => t('OS Bio/CV: bio'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function os_biocv_block_configure($delta = '') {
+
+  $form = array();
+  if ($delta == 'os_biocv_bio') {
+    // $form['os_biocv_bio_show_pdf'] = array();
+  }
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function os_biocv_block_save($delta = '', $edit = array()) {
+  if ($delta == 'os_biocv_bio') {
+    // variable_set('os_biocv_string', $edit['os_biocv_string']);
+  }
+  return;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function os_biocv_block_view($delta = '') {
+  switch ($delta) {
+    case 'os_biocv_bio':
+      $block['subject'] = t('');
+      $block['content'] = _os_biocv_bio_block_contents();
+      break;
+  }
+  return $block;
+}
+
+/**
+ * A module-defined block content function.
+ */
+function _os_biocv_bio_block_contents() {
+  global $user;
+
+  $user_has_bio_node = _os_biocv_user_has_bio_node($user->uid);
+  if ($user_has_bio_node) {
+    $node = _os_biocv_get_bio_to_display($user->uid);
+  }
+  else {
+
+  }
+}
+
+/**
+ * Checks to see if current user is the author of a Bio node.
+ *
+ * @return bool $user_has_bio_node
+ *   TRUE iff the user is the author of at least one Bio node.
+ */
+function _os_biocv_user_has_bio_node($uid = 0) {
+  if ((int)$uid === 0) {
+    return FALSE;
+  }
+
+  $query = new OpenscholarNodeFieldQuery();
+  $result = $query->execute();
+
+  $user_has_bio_node = (bool)isset($result['node']);
+  return $user_has_bio_node;
+}
+
+/**
+ * Finds the Bio node of the user with the lowest NID value.
+ *
+ * @return bool|object
+ *   A Drupal node object owned by user, if found. Otherwise FALSE.
+ */
+function _os_biocv_get_bio_to_display($uid = 0) {
+  if ((int)$uid === 0) {
+    return FALSE;
+  }
+
+  $query = new OpenscholarNodeFieldQuery();
+  $result = $query->execute();
+
+  if (!isset($result['node'][0])) {
+    return FALSE;
+  }
+
+  $node = node_load($result['node'][0]);
+  return $node;
+}
