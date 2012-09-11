@@ -71,6 +71,37 @@ function vsite_add_entity($entity, $entity_type = 'node', $vsite = false){
 }
 
 /**
+ * Remove the passed entity from a vsite
+ *
+ *  The entity that you wish to remove from a vsite
+ *  @param entity $entity
+ *
+ *  The type of entity you are passing (default node)
+ *  @param string $entity_type
+ *
+ *  The vsite object to add the entity to
+ *  @param space $vsite
+ */
+function vsite_remove_entity($entity, $entity_type = 'node', $vsite = false){
+
+  //Make sure the entity is valid
+  list($id) = entity_extract_ids($entity_type, $entity);
+
+  //Get the active space
+  if(!$vsite){
+    $vsite = spaces_get_space();
+  }
+
+  if($id && $vsite){
+
+    //Remove this entity from the group
+    return og_ungroup($vsite->group_type, $vsite->id, $entity_type, $id);
+  }
+
+  return false;
+}
+
+/**
  * @function vsite_create_vsite
  *
  * Creates a new vsite
