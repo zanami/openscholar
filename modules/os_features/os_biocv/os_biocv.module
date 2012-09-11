@@ -125,7 +125,7 @@ function _os_biocv_bio_block_contents() {
  * Finds the Bio node of the user with the lowest NID value.
  *
  * @return bool|object
- *   A Drupal node object owned by user, if found; otherwise FALSE.
+ *   A Drupal node object in the current space, if found; otherwise FALSE.
  */
 function _os_biocv_get_bio_node($type = 'bio') {
 
@@ -136,7 +136,7 @@ function _os_biocv_get_bio_node($type = 'bio') {
   $query = new EntityFieldQuery();
   $query
     ->entityCondition('entity_type', 'node')
-    ->entityCondition('bundle', 'bio')
+    ->entityCondition('bundle', $type)
     ->propertyCondition('status', 1)
     ->propertyOrderBy('nid');
 
