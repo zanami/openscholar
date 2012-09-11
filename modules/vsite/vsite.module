@@ -1,7 +1,6 @@
 <?php
 include_once ('vsite.features.inc');
 include_once ('includes/vsite.inc');
-include_once ('modules/vsite_register/vsite_register.form.inc');
 
 /**
  * Public Functions
