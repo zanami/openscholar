@@ -3,13 +3,13 @@
 
 /**
  * @file
- *
+ * Message to display to admin if bio has not been created yet for this site.
  */
-
-<?php if (!empty($message)): ?>
-  <div id="os-biocv-bio-block-empty-text">
+?>
+<div id="os-biocv-bio-block-empty-text">
+  <?php if (!empty($message)): ?>
     <p>
       <?php print $message; ?>
     </p>
-  </div>
-<?php endif; ?>
+  <?php endif; ?>
+</div>

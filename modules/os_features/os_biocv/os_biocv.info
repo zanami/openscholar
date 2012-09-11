@@ -54,3 +54,6 @@ features[variable][] = node_preview_bio
 features[variable][] = node_preview_cv
 features[variable][] = node_submitted_bio
 features[variable][] = node_submitted_cv
+spaces[types][] = og
+spaces[types][] = site
+
