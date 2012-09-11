@@ -139,13 +139,50 @@ function vsite_create_vsite($name, $domain, $uid, $preset = FALSE) {
 }
 
 /**
- * Gets all vsites a user is a member of
+ * Gets all vsites a user "owns"
  *
  * The UID of the user to lookup
  * Defaults to current user
  * @param $uid
  **/
 function vsite_get_vsite_by_owner($uid = NULL) {
+
+  if (!$uid) {
+    global $user;
+    $uid = $user->uid;
+  }
+
+  $group_bundles = og_get_all_group_bundle();
+  if(empty($group_bundles['node'])){
+    //can't determine group content types
+    return false;
+  }
+  $bundles = array_keys($group_bundles['node']);
+
+  $query = new EntityFieldQuery();
+  $result = $query->entityCondition('entity_type', 'node')
+    ->propertyCondition('uid', (int) $uid)
+    ->entityCondition('bundle', $bundles, 'IN')
+    ->execute();
+
+  $vsites = array();
+  if (isset($result['node'])) {
+    foreach(array_keys($result['node']) as $id) {
+      $vsites[] = spaces_load('og', $id);
+    }
+  }
+
+  return array_filter($vsites);
+}
+
+/**
+ * Gets all vsites a user is a member of
+ *
+ * The UID of the user to lookup
+ * Defaults to current user
+ * @param $uid
+ **/
+function vsite_get_user_vsites($uid = NULL) {
 
   //Retrieve all group memberships for the user
   $groups = og_get_entity_groups('user',$uid);
