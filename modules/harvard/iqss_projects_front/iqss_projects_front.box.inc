@@ -85,11 +85,6 @@ function iqss_projects_front_default_box() {
     ),
     'additional_classes' => '',
   );
-  // Add in the jcarousel call.
-  // Make sure we're on the front page only
-  if(drupal_is_front_page() == TRUE) {
-    jcarousel_add($selector = '#features-carousel',$options = array('skin'=>'os_front'), $add = TRUE);
-  }
   $export['iqss_projects_fp_features'] = $box;
 
   $box = new stdClass();
