@@ -194,7 +194,6 @@ function os_pages_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Body');
-  t('General group reference');
   t('upload');
 
   return $fields;
