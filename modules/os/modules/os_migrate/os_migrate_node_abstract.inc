@@ -257,19 +257,21 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   function _prepare_file_field(&$row) {
     if ($this->_has_file_field()) {
       $files_query = parent::os_migrate_node_get_files_query($row->vid);
-      $fields = array('description', 'list', 'filepath');
+      $fields = array('description' => 'description', 'list' => 'display', 'filepath' => 'field_upload');
       parent::os_migrate_prepare_files($files_query->execute(), $row, 'field_upload', $fields);
     }
   }
 
   function _map_file_field() {
     if ($this->_has_file_field()) {
-      $this->addSimpleMappings(array('field_upload') + parent::subfields('field_upload', array('language', 'description', 'display',)));
+      $this->addFieldMapping('field_upload', 'field_upload')
+      ->defaultValue(NULL);
+      $this->addSimpleMappings(parent::subfields('field_upload', array('language', 'description', 'display',)));
       $this->addFieldMapping('field_upload:destination_file', 'filepath');
       $this->addFieldMapping('field_upload:source_dir')
         ->defaultValue(variable_get('os_migrate_files', FALSE));
       //good defaults
-      $this->addUnmigratedDestinations(parent::subfields('field_upload', array('file_class', 'language', 'destination_dir', 'file_replace', 'preserve_files',)));
+      $this->addUnmigratedDestinations(parent::subfields('field_upload', array('file_class', 'destination_dir', 'file_replace', 'preserve_files',)));
     }
   }
 
