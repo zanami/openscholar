@@ -47,8 +47,8 @@ class os_boxes_feedreader extends os_boxes_default {
       return $form;
     }
 
-    foreach ( $result['node'] as $nid => $node ) {
-      $node = node_load($nid);
+    $nodes = node_load_multiple(array_keys($result['node']));
+    foreach ( $nodes as $nid => $node ) {
       //First 25 chars of title
       $options[$nid] = substr($node->title,0,25);
     }
