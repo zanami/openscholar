@@ -13,7 +13,7 @@ class BioNodeOSMigration extends AbstractNodeOSMigration {
      */
     parent::__construct('bio', 'bio'); //args are d7 bundle, d6 content type.
 
-    $this->description = t('Stub class for making content type migration classes.');
+    $this->description = t('Bio node migration.');
 
     //$this->dependencies[] = 'StubNodeOS'; // append dependencies.  these classes must be migrated before this class.
 
