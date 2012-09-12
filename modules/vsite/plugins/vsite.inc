@@ -87,7 +87,7 @@ class vsite extends space_og {
 
             $current_url = url($_GET['q'], array(
                 'absolute' => TRUE,
-                'query' => drupal_http_build_query(drupal_get_query_parameters())
+                'query' => drupal_get_query_parameters(),
             ));
             if ($current_url != rtrim($space->get_absolute_url(), "/")) {
               purl_goto("<front>", array(
