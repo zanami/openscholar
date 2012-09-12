@@ -302,15 +302,15 @@ float:right;
 }
 
 /* BOOKLET NAV  */ 
-.sidebar #block-boxes-scholar_book_current_toc ul ul {
+.sidebar #block-book-navigation ul ul {
     margin: 0px 0 0 18px;
 }
 
-.sidebar #block-boxes-scholar_book_current_toc ul ul li {
+.sidebar #block-book-navigation ul ul li {
     list-style-image: url("../images/childBullet.png");
 }
 
-.sidebar #block-boxes-scholar_book_current_toc ul ul ul li {
+.sidebar #block-book-navigation ul ul ul li {
     list-style-type: disc;
 }
 
