@@ -87,6 +87,7 @@ dependencies[] = os_software
 dependencies[] = os_dataverse
 dependencies[] = os_booklets
 dependencies[] = os_profiles
+dependencies[] = os_taxonomy
 
 ; other
 dependencies[] = diff
