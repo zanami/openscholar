@@ -117,7 +117,7 @@ function os_menu_del($menu_name) {
     menu_delete($menu);
   }
 
-  return FALSE;
+  return TRUE;
 }
 
 /**
@@ -138,7 +138,7 @@ function os_menu_revert($menu_name = FALSE) {
   if (module_exists('vsite_menu')) {
     //Delete a menu using the vsite controllers
     vsite_menu_revert($menu_name);
-    return FALSE;
+    return TRUE;
   }
   else {
     // Nothing to do in single-tenant no overrides.
