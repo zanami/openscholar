@@ -2,26 +2,26 @@
 
 class AnnouncementNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
-
-
     // Let AbstractNode handle the source, dest, and map.
     parent::__construct('announcement', 'announcement'); //current types are vsite, article, and page.  lets start with one of those instead?
     $this->description = t('OS Announcement Nodes');
 
-    $this->addSimpleMappings(array('field_photo', 'field_photo:language', 'field_photo:alt', 'field_photo:title'));
+
+    //field_photo
+    $this->addSimpleMappings(parent::subfields('field_photo', array('language', 'alt', 'title', 'destination_file')));
+    $this->addSimpleMappings(array('field_photo'));
     $this->addFieldMapping('field_photo:source_dir', 'field_photo:source_dir')
       ->defaultValue(variable_get('os_migrate_files', FALSE));
-
-    $this->addUnmigratedDestinations(array('field_photo:file_class', 'field_photo:destination_dir', 'field_photo:destination_file', 'field_photo:file_replace',
+    $this->addUnmigratedDestinations(array('field_photo:file_class', 'field_photo:destination_dir', 'field_photo:file_replace',
         'field_photo:preserve_files', ), t('DNM'));
 
-    //field_upload
-    $this->addSimpleMappings(array('field_upload') + parent::subfields('field_upload', array('language', 'description', 'display',)));
-    $this->addFieldMapping('field_upload:destination_file', 'filepath');
-    $this->addFieldMapping('field_upload:source_dir')
-      ->defaultValue(variable_get('os_migrate_files', FALSE));
-    //good defaults
-    $this->addUnmigratedDestinations(parent::subfields('field_upload', array('file_class', 'language', 'destination_dir', 'file_replace', 'preserve_files',)));
+//     //field_upload
+//     $this->addSimpleMappings(array('field_upload') + parent::subfields('field_upload', array('language', 'description', 'display',)));
+//     $this->addFieldMapping('field_upload:destination_file', 'filepath');
+//     $this->addFieldMapping('field_upload:source_dir')
+//       ->defaultValue(variable_get('os_migrate_files', FALSE));
+//     //good defaults
+//     $this->addUnmigratedDestinations(parent::subfields('field_upload', array('file_class', 'language', 'destination_dir', 'file_replace', 'preserve_files',)));
   }
 
   public function query($content_type) {
@@ -53,17 +53,16 @@ class AnnouncementNodeOSMigration extends AbstractNodeOSMigration {
     $photo = $result->fetchAssoc();
     if (is_array($photo) && count($photo)) {
       $row->field_photo = $photo['filename'];
+      $row->{'field_photo:destination_file'} = $photo['filename'];
       $row->{'field_photo:source_dir'} = $photo['filepath'];
     } else {
       $row->field_photo = $row->{'field_photo:source_dir'} = NULL;
     }
 
-    //file attachments
-    //$upload_fields = array('description', 'list');
-    $files_query = parent::os_migrate_node_get_files_query($row->vid);
-    $fields = array('description', 'list', 'filepath');
-    //$files_query->fields('u', $upload_fields);
-    parent::os_migrate_prepare_files($files_query->execute(), $row, 'field_upload', $fields);
+//     //file attachments
+//     $files_query = parent::os_migrate_node_get_files_query($row->vid);
+//     $fields = array('description', 'list', 'filepath');
+//     parent::os_migrate_prepare_files($files_query->execute(), $row, 'field_upload', $fields);
 
     return parent::prepareRow($row); //false -> skip this row
   }
