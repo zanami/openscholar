@@ -49,16 +49,6 @@ function os_taxonomy_theme() {
 }
 
 /**
-<<<<<<< HEAD
- * Implements hook_views_api().
- */
-function os_taxonomy_views_api() {
-  return array(
-    'api' => 3,
-  );
-}
-
-/**
  * Building the content for each row in the terms list.
  *
  *  @param Array $varibles
