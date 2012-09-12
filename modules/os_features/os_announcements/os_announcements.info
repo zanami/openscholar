@@ -14,7 +14,6 @@ dependencies[] = media
 dependencies[] = node
 dependencies[] = strongarm
 dependencies[] = views
-dependencies[] = vsite
 features[context][] = announcements_announcements
 features[ctools][] = context:context:3
 features[ctools][] = strongarm:strongarm:1
