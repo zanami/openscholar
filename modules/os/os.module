@@ -855,3 +855,11 @@ function os_views_pre_build(&$view) {
     $view->filter['type']->value = $bundles;
   }
 }
+
+function os_admin_paths_alter(&$paths) {
+  foreach ($paths as $k => $p) {
+    if (strpos($k, 'node/*/edit') !== FALSE || strpos($k, 'node/add')) {
+      unset($paths[$k]);
+    }
+  }
+}

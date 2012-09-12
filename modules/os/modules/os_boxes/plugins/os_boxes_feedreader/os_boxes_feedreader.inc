@@ -14,6 +14,7 @@ class os_boxes_feedreader extends os_boxes_default {
 
     $options['feed'] = false;
     $options['number_of_items'] = 5;
+    $options['feed_display'] = 'title';
 
     return $options;
   }
@@ -59,6 +60,15 @@ class os_boxes_feedreader extends os_boxes_default {
       '#description' => t('Select the feed to draw items from')
     );
 
+    $form['feed_display'] = array(
+      '#type' => 'select',
+      '#title' => t('Feed item display'),
+      '#options' => array('title' => t("The feed title"), 'content' => "The feed title and content summary."),
+      '#required' => TRUE,
+      '#default_value' => $this->options['feed_display'],
+      '#description' => t('Select the way you wis the feed items to be displayed.')
+    );
+
     $form['number_of_items'] = array(
       '#type' => 'textfield',
       '#title' => t('Number of items to display'),
@@ -87,6 +97,9 @@ class os_boxes_feedreader extends os_boxes_default {
     $instance = field_info_instance('node', 'field_url', 'feed');
     $display = field_get_display($instance, 'teaser', $node);
     $display['settings']['num_to_show'] = $this->options['number_of_items'];
+
+    //Just display the title and no content summary
+    $display['settings']['show_content'] = ($this->options['feed_display'] == 'content');
 
     $field = field_info_field_by_id($instance['field_id']);
     $result = google_feedapi_field_formatter_view('node', $node, $field, $instance, 'und', $node->field_url['und'], $display);
