@@ -17,6 +17,7 @@ files[] = os_migrate.inc
 files[] = os_migrate_inline.inc
 files[] = os_migrate_node_abstract.inc
 files[] = os_migrate_node_announcement.inc
+files[] = os_migrate_node_bio.inc
 files[] = os_migrate_node_biblio.inc
 files[] = os_migrate_node_blog.inc
 files[] = os_migrate_node_book.inc
@@ -37,6 +38,7 @@ files[] = os_migrate_spaces_overrides_boxes.inc
 files[] = os_migrate_spaces_overrides_variable.inc
 files[] = os_migrate_spaces_overrides_shields.inc
 
+files[] = os_migrate_og_vocab_tables.inc
 files[] = os_migrate_specialtables.inc
 files[] = os_migrate_tablecopy.inc
 files[] = os_migrate_theme.inc
