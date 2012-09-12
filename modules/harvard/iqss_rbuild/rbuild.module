@@ -17,6 +17,9 @@
  * new Software Release nodes if a newer version exists.
  */
 
+// Sets module to cache documentation for 1 year.
+define('RBUILD_DOC_CACHE_LEN', 31536000);
+
 /**
  * Drupal hooks
  */
@@ -389,13 +392,7 @@ function _rbuild_get_file_headers($url) {
 function _rbuild_query_all_rbuild_project_nodes() {
   $query = new EntityFieldQuery();
 
-  $query
-    ->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', 'software_project')
-    ->propertyCondition('status', 1)
-    ->fieldCondition('field_software_method', 'value', 'Rbuild repository')
-    ->fieldCondition('field_software_repo', 'value', '', '!=')
-    ->addMetaData('account', user_load(1));
+  $query->entityCondition('entity_type', 'node')->propertyCondition('type', 'software_project')->propertyCondition('status', 1)->fieldCondition('field_software_method', 'value', 'Rbuild repository')->fieldCondition('field_software_repo', 'value', '', '!=')->addMetaData('account', user_load(1));
 
   $result = $query->execute();
   $project_nodes = _rbuild_query_load_nodes($result);
@@ -413,13 +410,7 @@ function _rbuild_query_release_node_exists($project_nid, $version) {
 
   $query = new EntityFieldQuery();
 
-  $query
-    ->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', 'software_release')
-    ->propertyCondition('status', 1)
-    ->fieldCondition('field_software_project', 'target_id', $project_nid, '=')
-    ->fieldCondition('field_software_version', 'value', $version, '=')
-    ->addMetaData('account', user_load(1));
+  $query->entityCondition('entity_type', 'node')->propertyCondition('type', 'software_release')->propertyCondition('status', 1)->fieldCondition('field_software_project', 'target_id', $project_nid, '=')->fieldCondition('field_software_version', 'value', $version, '=')->addMetaData('account', user_load(1));
 
   $result = $query->execute();
 
@@ -575,8 +566,8 @@ function _rbuild_docs_exist($node) {
     return FALSE;
   }
 
-  $field_name = 'field_software_method';
-  $items = field_get_items('node', $node, $field_name);
+  $field_name  = 'field_software_method';
+  $items       = field_get_items('node', $node, $field_name);
   $field_value = strtolower($items[0]['value']);
   if ($field_value != 'rbuild repository') {
     return FALSE;
@@ -604,57 +595,157 @@ function _rbuild_docs_exist($node) {
 /**
  * Get a doc for a specified URL
  *
- * @param $o_project
+ * @param object $node
+ *   A Software Project node
  * @param $s_url_extra
- * @return unknown_type
+ *
+ * @return string|bool
  *
  * @todo verify works -oren
  */
-function _rbuild_get_doc($o_project,$s_url_extra = 'index.html'){
+function _rbuild_get_doc($node, $path = 'index.html') {
+  // Finds the (string) recommended release version for this Software Project.
+  $version = _rbuild_get_recommended_release_version($node->nid);
+  if (!$version) {
+    return FALSE;
+  }
 
-  $s_featured_version = _rbuild_get_featured_release($o_project);
-  if(!$s_featured_version) return false;
+  $delta = $node->nid . $path;
 
-  $s_key = $o_project->nid.$s_url_extra;
+  static $docs;
+  if (!isset($docs)) {
+    $docs = array();
+  }
 
-	static $a_doc_data;
-	if(!isset($a_doc_data)) $a_doc_data = array();
+  if (!array_key_exists($delta, $docs)) {
+    //Get data from cache
+    $cache = cache_get($delta, 'cache_rbuild');
+    $data = $cache->data;
 
-	if(!array_key_exists($s_key,$a_doc_data)){
-		//Get data from cache
-		$o_cache_obj = cache_get($s_key,'cache_iqss_rbuild');
-		$a_cache = $o_cache_obj->data;
+    if (!$data || $data['version'] != $version) {
+      $data = array('version' => $version);
+      $data['content'] = _rbuild_fetch_docs_contents($node, $version, $path);
 
-		if(!$a_cache || $a_cache['version'] != $s_featured_version){
-			$a_cache = array('version' => $s_featured_version);
-			$a_cache['content'] = _iqss_rbuild_retrieve_doc($o_project,$s_featured_version,$s_url_extra);
-			if(!$a_cache['content'] && $s_url_extra == 'index.html'){
-			   $a_cache['content'] = _iqss_rbuild_retrieve_doc($o_project,$s_featured_version,$s_url_extra);
-			}//If the index file is not present try one with the package name which is a default
-			cache_set($s_key,$a_cache,'cache_iqss_rbuild', time() + IQSS_RBUILD_DOC_CACHE_LEN); //Third param can be expire time
-		}//Validate cache and get new if required
-		$a_doc_data[$s_key] = $a_cache;
-	}
+      // If the index file is not present try the package (default)
+      if (!$data['content'] && $path == 'index.html') {
+        $data['content'] = _rbuild_fetch_docs_contents($node, $version, $path);
+      }
 
-	return $a_doc_data[$s_key]['content'];
+      // Third param can be expire time
+      cache_set($delta, $data, 'cache_rbuild', time() + RBUILD_DOC_CACHE_LEN);
+    }
+    // Validates cache and get new if required
+    $docs[$delta] = $data;
+  }
+
+  return $docs[$delta]['content'];
 }
 
 /**
- * @param unknown_type $o_project
  *
- * @todo verify working
+ * @param int $nid
+ *   A Software Project node ID.
+ *
+ * @return string $version
+ *   The Version field value of the Software Project node's recommended release.
+ *
+ * @todo verify works -oren
  */
-function _iqss_rbuild_get_featured_release($o_project){
-  //Load Featured Version
-  $s_version = false;
-  $view = views_get_view('scholar_software_releases');
-  $view->set_arguments(array($o_project->nid));
-  $view->execute('block_1');
-  if(count($view->result)){
-    $data = current($view->result);
-    $release = node_load($data->nid);
-    $s_version = scholar_software_generate_version($release,true);
+function _rbuild_get_recommended_release_version($nid, $type = 'software_release') {
+  $version = '';
+
+  $query = new EntityFieldQuery();
+  $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $type)
+    ->propertyCondition('status', 1)
+    ->propertyOrderBy('nid')
+    ->fieldCondition('field_software_project', 'target_id', $nid)
+    ->fieldCondition('field_software_recommended', 'value', '1');
+
+  if (module_exists('vsite') && $space = spaces_get_space()) {
+    $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
   }
 
-  return $s_version;
+  $result = $query->execute();
+
+  if (!isset($result['node']) || !sizeof($result['node'])) {
+    return $version;
+  }
+
+  $item = array_shift($result['node']);
+  $node = node_load($item->nid);
+
+  $items = field_get_items('node', $node, 'field_software_version');
+  $version = $items[0]['value'];
+
+  return $version;
 }
+
+/**
+ * Go and get the doc from the server
+ *
+ * @param object $node
+ *   A Software Project node
+ * @param string $version
+ *   The Software Project node's recommended release version
+ * @param $s_url_extra
+ *
+ * @return string / false on error
+ *
+ * @todo verify works -oren
+ */
+function _rbuild_fetch_docs_contents($node, $version, $path) {
+  if (!strlen($version)) {
+    return FALSE;
+  }
+  // Returns FALSE if invalid rBuild Short Name or Repository URL field value.
+  $field_name = 'field_rbuild_short_name';
+  $items = field_get_items('node', $node, $field_name);
+  $short_name = $items[0]['value'];
+  if (!strlen($short_name))  {
+    return FALSE;
+  }
+
+  $field_name = 'field_software_repo';
+  $items = field_get_items('node', $node, $field_name);
+  $repo = $items[0]['value'];
+  $repo_url = parse_url($repo);
+  if (!$repo_url) {
+    return FALSE;
+  }
+
+  $base_uri = $repo_url['scheme'] . '://' . $repo_url['host'] . '/docs/' . strtolower($short_name) . '/' . $version . '/';
+  $contents = _rbuild_get_file_contents($base_uri . $path);
+  if (!strlen($contents)) {
+    return FALSE;
+  }
+
+  return _rbuild_format_docs_contents($contents, $base_uri);
+}
+
+/**
+ * Modify the content returned from the remote server
+ *
+ * @param string $contents
+ * @param string $base_uri
+ *
+ * @return string $contents
+ */
+function _rbuild_format_docs_contents($contents, $base_uri) {
+  // Fetches just the contents of the body tag
+  $matches = array();
+  preg_match("/<body[^>]*>(.*)<\/body>/si", $contents, $matches);
+  if (count($matches)) {
+    $contents = $matches[1];
+  }
+
+  // Removes script tags
+  $contents = preg_replace('#<script[^>]*>(.*)</script[^>]*>#Ui', '', $contents);
+
+  // Replaces img src attribute to use absolute URL with base URI
+  $contents = preg_replace('#(<img[^>]*src=")(.*"[^>]*>)#Ui', '${1}' . $base_uri . '${2}', $contents);
+
+  return $contents;
+}
+
