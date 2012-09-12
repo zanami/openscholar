@@ -336,21 +336,21 @@ border-right:none;
 
 /** BOOKLET NAVIGATION **/
 	
-.sidebar #block-boxes-scholar_book_current_toc.block {
+.sidebar #block-book-navigation.block {
   background: none; 
 	padding-top:0;
 }	
 
-.sidebar #block-boxes-scholar_book_current_toc ul {
+.sidebar #block-book-navigation ul {
 margin-left:0;
   }
 
-.sidebar #block-boxes-scholar_book_current_toc ul li {
+.sidebar #block-book-navigation ul li {
 	background:#acb5bc;
   }
 
 
-.sidebar #block-boxes-scholar_book_current_toc ul li a {
+.sidebar #block-book-navigation ul li a {
 	font-size:14px;
 display: block;
   text-decoration: none;
@@ -360,19 +360,19 @@ font-weight:normal;
 text-transform:uppercase;
   } 
 	
-.sidebar #block-boxes-scholar_book_current_toc ul li a.active {
+.sidebar #block-book-navigation ul li a.active {
 font-style:normal;
  } 
 		
 
-.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li  {
+.sidebar #block-book-navigation ul li ul.menu li  {
   list-style: none;
   background: url('../images/sideNavBg_off.png') no-repeat;
  text-align: left;
   margin: 0;
 }
 
-.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a {
+.sidebar #block-book-navigation ul li ul.menu li a {
 	font-size:14px;
   display: block;
   text-decoration: none;
@@ -383,8 +383,8 @@ text-transform:none;
   
 
 
-.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a.active,
-.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a.active:hover { 
+.sidebar #block-book-navigation ul li ul.menu li a.active,
+.sidebar #block-book-navigation ul li ul.menu li a.active:hover { 
 	background: url('../images/sideNavBg_on.png') no-repeat;
  color: #FFF;
  font-style: normal;
@@ -392,7 +392,7 @@ text-transform:none;
  }
  
  
-.sidebar #block-boxes-scholar_book_current_toc ul li ul.menu li a:hover { 
+.sidebar #block-book-navigation ul li ul.menu li a:hover { 
 	background: url('../images/sideNavBg_over.png') no-repeat;
  color: #FFF;
  font-style: normal;
