@@ -64,6 +64,18 @@ function rbuild_menu() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function rbuild_theme() {
+  return array(
+    'rbuild_docs_iframe' => array(
+      'variables' => array('path' => NULL),
+      'template' => 'rbuild-docs-iframe',
+    ),
+  );
+}
+
+/**
  * Implements hook_node_insert().
  *
  * Triggers init_releases() for new rBuild Software Project nodes.
@@ -80,7 +92,6 @@ function rbuild_node_insert($node) {
     return;
   }
 
-  _rbuild_node_save_modify_docs_field_value($node);
   _rbuild_init_releases($node);
 }
 
@@ -127,7 +138,6 @@ function rbuild_node_update($node) {
   }
 
   _os_software_delete_child_releases($node);
-  _rbuild_node_save_modify_docs_field_value($node);
   _rbuild_init_releases($node);
 }
 
@@ -505,25 +515,6 @@ function _rbuild_project_node_validate($form, &$form_state) {
 }
 
 /**
- * Modifies the rbuild docs field value before node save.
- *
- * Only triggers for new nodes, and for changed rbuild repo or short name.
- *
- * @param object $node
- *   a project-type node
- *
- * @see hook_node_insert()
- * @see hook_node_update()
- */
-function _rbuild_node_save_modify_docs_field_value(&$node) {
-  $items = field_get_items('node', $node, 'field_rbuild_short_name');
-  $short_name = $items[0]['value'];
-
-  $docs_path = _rbuild_docs_source_path($short_name);
-  $node->field_rbuild_docs[$node->language][0]['value'] = $docs_path;
-}
-
-/**
  * Formats a documentation URL
  *
  * @param string $short_name
@@ -533,19 +524,20 @@ function _rbuild_node_save_modify_docs_field_value(&$node) {
  *
  * @see _rbuild_node_save_modify_docs_field_value()
  */
-function _rbuild_docs_source_path($short_name, $version = '') {
+function _rbuild_format_docs_url($short_name, $version, $path) {
+  $short_name = strtolower($short_name);
+
+  if (!strlen($path)) {
+    $path = 'index.html';
+  }
+
   $url_parts = array(
     'http://r.iq.harvard.edu/docs/',
-    strtolower($short_name),
-    /* Links to the parent directory now, not the index.shtml for latest version.
-       *
-       * Why? Because the index.shtml pages tend to link to deprecated OS /docs/ page.
-       * However, r.iq.harvard.edu automatic index generation does not.
-       * Furthermore, this way exposes documentation for all releases.
-       '/',
-      $version,
-      '/index.shtml',
-       */
+    $short_name,
+    '/',
+    $version,
+    '/',
+    $path,
   );
 
   $url = implode('', $url_parts);
@@ -553,37 +545,60 @@ function _rbuild_docs_source_path($short_name, $version = '') {
 }
 
 /**
- * Checks whether
+ * Page access callback; returns whether rBuild docs exist for project node.
  *
  * @param object $node
- *   The Project node accessed at /node/%/rbuild_documentation
+ *   The Software Project node accessed at /node/%/rbuild_documentation/[...]
+ *
+ * @return bool $has_content
+ *   TRUE if file contents of formatted docs url are available.
  *
  * @see rbuild_menu()
  */
-function _rbuild_docs_exist($node) {
-  if ($node->type != 'scholar_software_project') {
+function _rbuild_docs_page_access($node) {
+  // Returns FALSE if this is not a Software Project node.
+  if ($node->type != 'software_project') {
     return FALSE;
   }
 
+  // Verifies all necessary field values are available.
   $field_name  = 'field_software_method';
   $items       = field_get_items('node', $node, $field_name);
   $field_value = strtolower($items[0]['value']);
-  if ($field_value != 'rbuild repository') {
+  if ($field_value !== 'rbuild repository') {
     return FALSE;
   }
 
+  $version = _rbuild_get_recommended_release_version($node->nid);
+  if (strlen($version) === 0) {
+    return FALSE;
+  }
+
+  $field_name = 'field_rbuild_short_name';
+  $items      = field_get_items('node', $node, $field_name);
+  $short_name = $items[0]['value'];
+  if (strlen($short_name) === 0) {
+    return FALSE;
+  }
+
+  $field_name = 'field_software_repo';
+  $items      = field_get_items('node', $node, $field_name);
+  $repo       = $items[0]['value'];
+  if (strlen($repo) === 0) {
+    return FALSE;
+  }
+
+  // Prepares external path and version information to request remote page.
   $drupal_path = arg();
+  $path = '';
   if (in_array('rbuild_documentation', $drupal_path)) {
     // Removes the first parts of the path, leaves just the docs path.
     while ((array_shift($drupal_path)) != 'rbuild_documentation');
     $path = implode("/", $drupal_path);
   }
-
-  if (!strlen($path)) {
-    $path = "index.html";
-  }
-
-  if (!_rbuild_get_docs($node, $path)) {
+  $docs_url = _rbuild_format_docs_url($short_name, $version, $path);
+  $contents = _rbuild_get_file_contents($docs_url);
+  if (!strlen($contents)) {
     return FALSE;
   }
 
@@ -591,55 +606,7 @@ function _rbuild_docs_exist($node) {
 }
 
 /**
- * Get a doc for a specified URL
- *
- * @param object $node
- *   A Software Project node
- * @param $s_url_extra
- *
- * @return string|bool
- *
- * @todo verify works -oren
- */
-function _rbuild_get_docs($node, $path = 'index.html') {
-  // Finds the (string) recommended release version for this Software Project.
-  $version = _rbuild_get_recommended_release_version($node->nid);
-  if (!$version) {
-    return FALSE;
-  }
-
-  $delta = $node->nid . $path;
-
-  static $docs;
-  if (!isset($docs)) {
-    $docs = array();
-  }
-
-  if (!array_key_exists($delta, $docs)) {
-    //Get data from cache
-    $cache = cache_get($delta, 'cache_rbuild');
-    $data = $cache->data;
-
-    if (!$data || $data['version'] != $version) {
-      $data = array('version' => $version);
-      $data['content'] = _rbuild_fetch_docs_contents($node, $version, $path);
-
-      // If the index file is not present try the package (default)
-      if (!$data['content'] && $path == 'index.html') {
-        $data['content'] = _rbuild_fetch_docs_contents($node, $version, $path);
-      }
-
-      // Third param can be expire time
-      cache_set($delta, $data, 'cache_rbuild', time() + RBUILD_DOC_CACHE_LEN);
-    }
-    // Validates cache and get new if required
-    $docs[$delta] = $data;
-  }
-
-  return $docs[$delta]['content'];
-}
-
-/**
+ * Finds the recommended release version value of a Software Project node.
  *
  * @param int $nid
  *   A Software Project node ID.
@@ -653,92 +620,29 @@ function _rbuild_get_recommended_release_version($nid, $type = 'software_release
   $version = '';
 
   $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'node')->entityCondition('bundle', $type)->propertyCondition('status', 1)->propertyOrderBy('nid')->fieldCondition('field_software_project', 'target_id', $nid)->fieldCondition('field_software_recommended', 'value', '1');
-
+  $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $type)
+    ->propertyCondition('status', 1)
+    ->propertyOrderBy('nid')
+    ->fieldCondition('field_software_project', 'target_id', $nid)
+    ->fieldCondition('field_software_recommended', 'value', '1');
   if (module_exists('vsite') && $space = spaces_get_space()) {
     $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
   }
-
   $result = $query->execute();
 
+  // Returns '' (empty string) if no results.
   if (!isset($result['node']) || !sizeof($result['node'])) {
     return $version;
   }
 
   $item = array_shift($result['node']);
   $node = node_load($item->nid);
-
   $items = field_get_items('node', $node, 'field_software_version');
   $version = $items[0]['value'];
 
   return $version;
-}
-
-/**
- * Go and get the doc from the server
- *
- * @param object $node
- *   A Software Project node
- * @param string $version
- *   The Software Project node's recommended release version
- * @param $s_url_extra
- *
- * @return string / false on error
- *
- * @todo verify works -oren
- */
-function _rbuild_fetch_docs_contents($node, $version, $path) {
-  if (!strlen($version)) {
-    return FALSE;
-  }
-  // Returns FALSE if invalid rBuild Short Name or Repository URL field value.
-  $field_name = 'field_rbuild_short_name';
-  $items      = field_get_items('node', $node, $field_name);
-  $short_name = $items[0]['value'];
-  if (!strlen($short_name)) {
-    return FALSE;
-  }
-
-  $field_name = 'field_software_repo';
-  $items      = field_get_items('node', $node, $field_name);
-  $repo       = $items[0]['value'];
-  $repo_url   = parse_url($repo);
-  if (!$repo_url) {
-    return FALSE;
-  }
-
-  $base_uri = $repo_url['scheme'] . '://' . $repo_url['host'] . '/docs/' . strtolower($short_name) . '/' . $version . '/';
-  $contents = _rbuild_get_file_contents($base_uri . $path);
-  if (!strlen($contents)) {
-    return FALSE;
-  }
-
-  return _rbuild_format_docs_contents($contents, $base_uri);
-}
-
-/**
- * Modify the content returned from the remote server
- *
- * @param string $contents
- * @param string $base_uri
- *
- * @return string $contents
- */
-function _rbuild_format_docs_contents($contents, $base_uri) {
-  // Fetches just the contents of the body tag
-  $matches = array();
-  preg_match("/<body[^>]*>(.*)<\/body>/si", $contents, $matches);
-  if (count($matches)) {
-    $contents = $matches[1];
-  }
-
-  // Removes script tags
-  $contents = preg_replace('#<script[^>]*>(.*)</script[^>]*>#Ui', '', $contents);
-
-  // Replaces img src attribute to use absolute URL with base URI
-  $contents = preg_replace('#(<img[^>]*src=")(.*"[^>]*>)#Ui', '${1}' . $base_uri . '${2}', $contents);
-
-  return $contents;
 }
 
 /**
@@ -748,6 +652,8 @@ function _rbuild_format_docs_contents($contents, $base_uri) {
  *  A Project Node with field Packaging Method "Rbuild repository"
  *
  * @return string $contents
+ *
+ * @see _rbuild_docs_page_access()
  */
 function _rbuild_docs_page_contents($node) {
   $drupal_path = arg();
@@ -759,18 +665,6 @@ function _rbuild_docs_page_contents($node) {
     drupal_goto($_GET['q'] . "/");
   }
 
-  $contents = strlen($path) ? _rbuild_get_docs($node, $path) : _rbuild_get_docs($node);
-
-  // Just prints this file if cached PDF or errant image
-  $pathinfo = pathinfo($path);
-  $extension = strtolower($pathinfo['extension']);
-  $allowed_types = array('pdf' => 'application/pdf', 'exe' => 'application/octet-stream', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'gif' => 'image/gif', 'bmp' => 'image/bmp', 'png' => 'image/png');
-  if ($path && array_key_exists($extension, $allowed_types)) {
-    header('Content-type: ' . $allowed_types[$extension]);
-    print $contents;
-    exit(0);
-  }
-
-  return $contents;
+  return theme('rbuild_docs_iframe', $path);
 }
 

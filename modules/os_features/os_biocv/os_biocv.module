@@ -62,7 +62,7 @@ function os_biocv_block_view($delta = '') {
 
 /**
  * Implements hook_theme().
- */
+ *
 function os_biocv_theme() {
   return array(
     'os_biocv_bio_block_empty_text' => array(
@@ -70,7 +70,7 @@ function os_biocv_theme() {
       'template' => 'bio-block-empty-text',
     ),
   );
-}
+}*/
 
 /**
  * OpenScholar hooks
