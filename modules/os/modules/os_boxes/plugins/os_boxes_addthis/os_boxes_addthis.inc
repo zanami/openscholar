@@ -94,9 +94,21 @@ class os_boxes_addthis extends os_boxes_default {
 
     $block = parent::render();
     $block['content'] = $html;
-    //$this->addthis_add_default_js();
     drupal_add_js('http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4e9eeefa6983da55', 'external');
+
+    //after removing and readding this widget, page needs a reload.  trigger it with js
+    if (preg_match('/os\/boxes\/os_addthis\/remove\/\w/', $_GET['q'])) {
+      $js = <<<EOF
+jQuery(document).ready( function() {
+  var url = window.parent.location.href;
+  url = url.split('#');
+  window.location = url[0];
+});
+EOF;
+      drupal_add_js($js, 'inline');
+
+    }
     return $block;
   }
- 
+
 }
