@@ -430,7 +430,6 @@ function _rbuild_query_release_node_exists($project_nid, $version) {
  * @return mixed $result
  *   An array of node entity objects, or empty array if no results.
  *
- * @todo possibly rename and move elsewhere as a generic helper function.
  * @see _rbuild_query_all_rbuild_project_nodes()
  */
 function _rbuild_query_load_nodes($result) {
@@ -573,11 +572,10 @@ function _rbuild_docs_exist($node) {
     return FALSE;
   }
 
-  // @todo what is happening here? -oren
   $drupal_path = arg();
   if (in_array('rbuild_documentation', $drupal_path)) {
+    // Removes the first parts of the path, leaves just the docs path.
     while ((array_shift($drupal_path)) != 'rbuild_documentation');
-
     $path = implode("/", $drupal_path);
   }
 
@@ -585,7 +583,7 @@ function _rbuild_docs_exist($node) {
     $path = "index.html";
   }
 
-  if (!_rbuild_get_doc($node, $path)) {
+  if (!_rbuild_get_docs($node, $path)) {
     return FALSE;
   }
 
@@ -603,7 +601,7 @@ function _rbuild_docs_exist($node) {
  *
  * @todo verify works -oren
  */
-function _rbuild_get_doc($node, $path = 'index.html') {
+function _rbuild_get_docs($node, $path = 'index.html') {
   // Finds the (string) recommended release version for this Software Project.
   $version = _rbuild_get_recommended_release_version($node->nid);
   if (!$version) {
@@ -655,13 +653,7 @@ function _rbuild_get_recommended_release_version($nid, $type = 'software_release
   $version = '';
 
   $query = new EntityFieldQuery();
-  $query
-    ->entityCondition('entity_type', 'node')
-    ->entityCondition('bundle', $type)
-    ->propertyCondition('status', 1)
-    ->propertyOrderBy('nid')
-    ->fieldCondition('field_software_project', 'target_id', $nid)
-    ->fieldCondition('field_software_recommended', 'value', '1');
+  $query->entityCondition('entity_type', 'node')->entityCondition('bundle', $type)->propertyCondition('status', 1)->propertyOrderBy('nid')->fieldCondition('field_software_project', 'target_id', $nid)->fieldCondition('field_software_recommended', 'value', '1');
 
   if (module_exists('vsite') && $space = spaces_get_space()) {
     $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
@@ -701,16 +693,16 @@ function _rbuild_fetch_docs_contents($node, $version, $path) {
   }
   // Returns FALSE if invalid rBuild Short Name or Repository URL field value.
   $field_name = 'field_rbuild_short_name';
-  $items = field_get_items('node', $node, $field_name);
+  $items      = field_get_items('node', $node, $field_name);
   $short_name = $items[0]['value'];
-  if (!strlen($short_name))  {
+  if (!strlen($short_name)) {
     return FALSE;
   }
 
   $field_name = 'field_software_repo';
-  $items = field_get_items('node', $node, $field_name);
-  $repo = $items[0]['value'];
-  $repo_url = parse_url($repo);
+  $items      = field_get_items('node', $node, $field_name);
+  $repo       = $items[0]['value'];
+  $repo_url   = parse_url($repo);
   if (!$repo_url) {
     return FALSE;
   }
@@ -745,6 +737,39 @@ function _rbuild_format_docs_contents($contents, $base_uri) {
 
   // Replaces img src attribute to use absolute URL with base URI
   $contents = preg_replace('#(<img[^>]*src=")(.*"[^>]*>)#Ui', '${1}' . $base_uri . '${2}', $contents);
+
+  return $contents;
+}
+
+/**
+ * Page callback; returns an iframe of the remote docs page.
+ *
+ * @param object $node
+ *  A Project Node with field Packaging Method "Rbuild repository"
+ *
+ * @return string $contents
+ */
+function _rbuild_docs_page_contents($node) {
+  $drupal_path = arg();
+  // Removes the first parts of the path, leaves just the docs path.
+  while ((array_shift($drupal_path)) != 'rbuild_documentation');
+  $path = implode("/", $drupal_path);
+
+  if (!$path && substr($_SERVER['REQUEST_URI'], -1) != "/") {
+    drupal_goto($_GET['q'] . "/");
+  }
+
+  $contents = strlen($path) ? _rbuild_get_docs($node, $path) : _rbuild_get_docs($node);
+
+  // Just prints this file if cached PDF or errant image
+  $pathinfo = pathinfo($path);
+  $extension = strtolower($pathinfo['extension']);
+  $allowed_types = array('pdf' => 'application/pdf', 'exe' => 'application/octet-stream', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'gif' => 'image/gif', 'bmp' => 'image/bmp', 'png' => 'image/png');
+  if ($path && array_key_exists($extension, $allowed_types)) {
+    header('Content-type: ' . $allowed_types[$extension]);
+    print $contents;
+    exit(0);
+  }
 
   return $contents;
 }
