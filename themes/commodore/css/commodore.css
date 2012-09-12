@@ -250,22 +250,22 @@ ul.nice-menu ul {
 }
 
 
-#block-book-navigation ul.menu ul, .box-os_boxes_booktoc ul.menu ul {
+#boxes-box-scholar_book_current_toc ul.menu ul, .box-os_boxes_booktoc ul.menu ul {
      color: #ED7918;
      margin: 0px 0 0 18px;
 }
 
-#block-book-navigation ul.menu ul li, .box-os_boxes_booktoc ul.menu ul li {
+#boxes-box-scholar_book_current_toc ul.menu ul li, .box-os_boxes_booktoc ul.menu ul li {
      list-style-type: square;
 }
 
-#block-book-navigation ul.menu ul li a, .box-os_boxes_booktoc ul.menu ul li a {
+#boxes-box-scholar_book_current_toc ul.menu ul li a, .box-os_boxes_booktoc ul.menu ul li a {
      color: #5D7485;
      display: block;
 }
 
 
-#block-book-navigation ul.menu ul ul li, .box-os_boxes_booktoc ul.menu ul ul li {
+#boxes-box-scholar_book_current_toc ul.menu ul ul li, .box-os_boxes_booktoc ul.menu ul ul li {
      list-style-type: disc;
 }
 
@@ -419,7 +419,7 @@ margin:-54px -2px 0;
      width: 50%;
 }
 
-#block-book-navigation a:first-of-type, .box-os_boxes_booktoc a:first-of-type {
+#boxes-box-scholar_book_current_toc a:first-of-type, .box-os_boxes_booktoc a:first-of-type {
      display: none;
 }
 
