@@ -97,6 +97,16 @@ function os_biocv_os_widget() {
 }
 
 /**
+ * Implements hook_vsite_og_node_type_info().
+ */
+function os_biocv_vsite_og_node_type_info() {
+  return array(
+    'bio' => 'group content',
+    'cv' => 'group content',
+  );
+}
+
+/**
  * Custom functions
  */
 

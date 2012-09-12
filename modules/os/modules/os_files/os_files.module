@@ -136,3 +136,17 @@ function os_files_views_default_views_alter(&$views) {
     $view->add_item('default', 'filter', 'spaces', 'current', array('relationship' => 'file_to_node'));
   }
 }
+
+
+/**
+ * Media Gallery adds some fields to every file bundle. We don't want one of them.
+ */
+function os_files_module_installed($modules) {
+  if (in_array('media_gallery', $modules)) {
+    _os_files_clean_up_fields();
+  }
+}
+
+function _os_files_clean_up_fields() {
+  field_delete_field('field_license');
+}
