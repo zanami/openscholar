@@ -28,11 +28,11 @@ class os_boxes_bio extends os_boxes_default {
 
     // Exits if we are not in a vsite
     // @todo  2012-09-12 Why? -oren
-//    if (($vsite = vsite_get_vsite()) == FALSE) {
-//      return array();
-//    }
+    //    if (($vsite = vsite_get_vsite()) == FALSE) {
+    //      return array();
+    //    }
 
-  	$default_nid = $this->options['nid'];
+    $default_nid = $this->options['nid'];
 
     $form += parent::options_form();
     $form['nid']['#type'] = 'value';
@@ -40,15 +40,15 @@ class os_boxes_bio extends os_boxes_default {
     unset($form['nid']['#element_validate']);
 
     $form['teaser'] = array(
-      '#type' =>  'radios',
+      '#type' => 'radios',
       '#title' => 'Display Mode',
       '#default_value' => $this->options['teaser'],
-      '#options' => array('teaser'=>'Teaser Only', 'full'=>'Full Bio'),
+      '#options' => array('teaser' => 'Teaser Only', 'full' => 'Full Bio'),
       '#description' => 'Display your entire Bio in this widget, or just the teaser.',
     );
 
     $form['show_title'] = array(
-      '#type' =>  'checkbox',
+      '#type' => 'checkbox',
       '#title' => 'Display title of your Bio',
       '#default_value' => $this->options['show_title'],
     );
@@ -78,7 +78,7 @@ class os_boxes_bio extends os_boxes_default {
 
       $nid = $this->options['nid'];
 
-      if((int)$nid !== 0){
+      if ((int)$nid !== 0) {
         $node = node_load($nid);
       }
 
@@ -86,7 +86,8 @@ class os_boxes_bio extends os_boxes_default {
         $teaser = ($this->options['teaser'] == 'teaser') ? TRUE : FALSE;
 
         if (isset($this->options['show_title']) && !$this->options['show_title']) {
-        	$node->title = '';//Hide the nide title
+          // Hide the nide title
+          $node->title = '';
         }
 
         $output = node_view($node, $teaser, FALSE, FALSE);
@@ -115,9 +116,9 @@ class os_boxes_bio extends os_boxes_default {
 
     // Otherwise, displays vsite admin empty text, prompting bio configuration.
     $wrapper = array(
-  		'#type' => 'container',
-  		'#attributes' => array(
-    		'id' => array('os-boxes-bio-empty-text'),
+      '#type' => 'container',
+      '#attributes' => array(
+        'id' => array('os-boxes-bio-empty-text'),
       ),
     );
 

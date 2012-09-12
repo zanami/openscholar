@@ -16,18 +16,6 @@ include_once 'os_biocv.features.inc';
  */
 
 /**
- * Implements hook_theme().
- *
-function os_biocv_theme() {
-  return array(
-    'os_biocv_bio_block_empty_text' => array(
-      'variables' => array('message' => _os_biocv_bio_block_empty_text()),
-      'template' => 'bio-block-empty-text',
-    ),
-  );
-}*/
-
-/**
  * OpenScholar hooks
  */
 
