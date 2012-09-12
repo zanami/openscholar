@@ -14,6 +14,17 @@ class os_taxonomy_fbt extends os_boxes_default {
   public function options_defaults() {
     $options = parent::options_defaults();
 
+    $options['vocabulary'] = false;
+    $options['views'] = false;
+    $options['bundles'] = array('--all--');
+    $options['range'] = 10;
+    $options['offset'] = 0;
+    $options['show_empty_terms'] = false;
+    $options['terms_description'] = false;
+    $options['show_childs'] = true;
+    $options['add_childs'] = false;
+    $options['depth'] = 0;
+
     return $options;
   }
 
@@ -30,7 +41,7 @@ class os_taxonomy_fbt extends os_boxes_default {
 
     // Reset the keys.
     foreach (array_keys($form) as $setting) {
-      $setting_value = !empty($this->options['settings'][$setting]) ? $this->options['settings'][$setting] : NULL;
+      $setting_value = !empty($this->options[$setting]) ? $this->options[$setting] : NULL;
       $form[$setting]['#default_value'] = $setting_value;
     }
     $form += parent::options_form($form_state);
@@ -158,15 +169,14 @@ class os_taxonomy_fbt extends os_boxes_default {
     }
 
     $block = parent::render();
-    $block['content'] = "Filter By Category Block [STUB]";
     // For now - display the first vocabulary terms.
-    if (isset($this->options['settings']['bundles']['--all--'])) {
-      $this->options['settings']['bundles'] = array();
+    if (isset($this->options['bundles']['--all--'])) {
+      $this->options['bundles'] = array();
     }
 
-    $block['content'] .= theme('volcabulary_term_list', array(
-      'vid' => $this->options['settings']['vocabulary'],
-      'options' => $this->options['settings'],
+    $block['content'] = theme('volcabulary_term_list', array(
+      'vid' => $this->options['vocabulary'],
+      'options' => $this->options,
     ));
 
     return $block;

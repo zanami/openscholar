@@ -446,34 +446,3 @@ function os_taxonomy_views_pre_render(&$view) {
     $rendered_content[$key]['#view_mode'] = $view->args[2]['view_mode'];
   }
 }
-
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function os_taxonomy_form_boxes_box_form_alter(&$form, $form_state) {
-  $form['#submit'][] = 'os_taxonomy_save_os_taxonomy_plugin_settings';
-}
-
-/**
- * Custom submit function for saving the taxonomy plugin settings.
- */
-function os_taxonomy_save_os_taxonomy_plugin_settings($form, &$form_state) {
-  if ($form_state['clicked_button']['#value'] == t('Cancel') || !method_exists('os_taxonomy_fbt', 'form_elements')) {
-    return;
-  }
-
-  $box = boxes_factory($form_state['values']['plugin_key'], $form_state['values']);
-
-  // Saving settings.
-  foreach (array_keys(os_taxonomy_fbt::form_elements()) as $setting) {
-    $box->options['settings'][$setting] = $form_state['values'][$setting];
-  }
-
-  // Let's set the additional_classes as an option
-  if (module_exists('spaces') && $space = spaces_get_space()) {
-    $space->controllers->boxes->set($box->delta, $box);
-  }
-  else {
-    $box->save();
-  }
-}
