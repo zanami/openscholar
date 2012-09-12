@@ -22,7 +22,7 @@ function iqss_projects_front_default_box() {
       'value' => '<div class="os-row-features">
 <h2>Features</h2>
 <div class="os-slider">
-<div class=" jcarousel-skin-os_front"><div class="jcarousel-container jcarousel-container-horizontal" style="display: block;"><div class="jcarousel-prev jcarousel-prev-horizontal jcarousel-prev-disabled jcarousel-prev-disabled-horizontal" style="display: block;" disabled="true"></div><div class="jcarousel-next jcarousel-next-horizontal" style="display: block;" disabled="false"></div><div class="jcarousel-clip jcarousel-clip-horizontal"><ul id="features-carousel" class="jcarousel-processed jcarousel-list jcarousel-list-horizontal" style="width: 2940px; left: 0px;">
+<div class="jcarousel-skin-os_front"><div class="jcarousel-container jcarousel-container-horizontal" style="display: block;"><div class="jcarousel-prev jcarousel-prev-horizontal jcarousel-prev-disabled jcarousel-prev-disabled-horizontal" style="display: block;" disabled="true"></div><div class="jcarousel-next jcarousel-next-horizontal" style="display: block;" disabled="false"></div><div class="jcarousel-clip jcarousel-clip-horizontal"><ul id="features-carousel" class="jcarousel-processed jcarousel-list jcarousel-list-horizontal" style="width: 2940px; left: 0px;">
       <li id="feature-academic-content" class="jcarousel-item jcarousel-item-horizontal jcarousel-item-1 jcarousel-item-1-horizontal" jcarouselindex="1">
         <h3>Create anything related to an academic site.</h3>
         <p>Your mission statement, bios, publications, a blog, image galleries, class materials and more.</p>
@@ -85,6 +85,11 @@ function iqss_projects_front_default_box() {
     ),
     'additional_classes' => '',
   );
+  // Add in the jcarousel call.
+  // Make sure we're on the front page only
+  if(drupal_is_front_page() == TRUE) {
+    jcarousel_add($selector = '#features-carousel',$options = array('skin'=>'os_front'), $add = TRUE);
+  }
   $export['iqss_projects_fp_features'] = $box;
 
   $box = new stdClass();
@@ -149,27 +154,26 @@ function iqss_projects_front_navblock_content() {
   global $user;
   $items[] = array(
     '#title' => $user -> uid ? 'Log out' : 'Log in',
-    '#href' =>  $user -> uid ? 'logout' : 'user',
+    '#href' =>  $user -> uid ? 'user/logout' : 'user',
     '#type' => 'link',
   );
 
   $vsites = vsite_get_vsite_by_owner($user->uid);
   if (!vsite_vsite_exists_access($vsites)) {
     if($vsites){
-    	//print_r($vsites);
 	    $items[] = array(
-		    '#title' => ((count($vsites) > 1) ? 'Go to your sites' : "Go to your site"),
-		    '#href' => ((count($vsites) > 1) ? 'user' : $vsites[0]->get_absolute_url()),
-	        '#type' => 'link',
-		  );
+		  '#title' => ((count($vsites) > 1) ? 'Go to your sites' : "Go to your site"),
+		  '#href' => ((count($vsites) > 1) ? 'user' : $vsites[0]->get_absolute_url()),
+	      '#type' => 'link',
+		);
     } //No sites or ablility to create one
   }else{
   	//Create a site
   	$items[] = array(
-	    '#title' => ((count($vsites) > 1)?"Create a web site.":'Get your web site!'),
-	    '#href' => 'site/register',
-  	    '#type' => 'link',
-	  );
+	  '#title' => ((count($vsites) > 1)?"Create a web site.":'Get your web site!'),
+	  '#href' => 'site/register',
+  	  '#type' => 'link',
+	);
   }
 
   $txt = 'Need a Site for a Project?';
