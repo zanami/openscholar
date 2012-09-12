@@ -98,15 +98,7 @@ class os_boxes_addthis extends os_boxes_default {
 
     //after removing and readding this widget, page needs a reload.  trigger it with js
     if (preg_match('/os\/boxes\/os_addthis\/remove\/\w/', $_GET['q'])) {
-      $js = <<<EOF
-jQuery(document).ready( function() {
-  var url = window.parent.location.href;
-  url = url.split('#');
-  window.location = url[0];
-});
-EOF;
-      drupal_add_js($js, 'inline');
-
+      $block['content'] = '<script type="text/javascript">window.location.reload();</script>';
     }
     return $block;
   }
