@@ -120,7 +120,7 @@ function os_layout_get($context, $load_meta = FALSE, $unused_blocks = FALSE) {
 
   if ($load_meta) {
     foreach ($block_settings as $bid => $block) {
-      $block_settings[$bid] = os_layout_load_block($bid, FALSE, $block);
+      $block_settings[$bid] = os_layout_load_block($bid, TRUE, $block);
     }
   }
 
@@ -350,7 +350,7 @@ function os_layout_put($block, $context) {
  * @return
  *  Block.
  */
-function os_layout_load_block($bid, $load_meta = FALSE, $block = array()) {
+function os_layout_load_block($bid, $load_meta = TRUE, $block = array()) {
   list($module, $delta) = explode('-', $bid, 2);
 
   if ($load_meta) {
@@ -419,7 +419,7 @@ function os_layout_block_delete($bid, $contexts = FALSE) {
     $set = FALSE;
     if (isset($blocks[$bid])) {
       unset($blocks[$bid]);
-      $set = FALSE;
+      $set = TRUE;
     }
     if ($set) {
       os_layout_set($context, $blocks);
