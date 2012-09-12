@@ -88,6 +88,9 @@ class os_boxes_feedreader extends os_boxes_default {
     $display = field_get_display($instance, 'teaser', $node);
     $display['settings']['num_to_show'] = $this->options['number_of_items'];
 
+    //Just display the title and no content summary
+    $display['settings']['show_content'] = false;
+
     $field = field_info_field_by_id($instance['field_id']);
     $result = google_feedapi_field_formatter_view('node', $node, $field, $instance, 'und', $node->field_url['und'], $display);
 
