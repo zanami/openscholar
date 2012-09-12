@@ -22,7 +22,7 @@ function iqss_projects_front_default_box() {
       'value' => '<div class="os-row-features">
 <h2>Features</h2>
 <div class="os-slider">
-<div class="jcarousel-skin-os_front">
+<div class="os-jcarousel-skin-os_front">
 	<ul id="jcarousel-features-carousel" class="jcarousel-features-carousel">
       <li id="mce-feature-academic-content">
         <h3>Create anything related to an academic site.</h3>
@@ -90,7 +90,7 @@ function iqss_projects_front_default_box() {
   // Make sure we're on the front page only and the jcarousel module exists.
   if(module_exists('jcarousel')) {
     if(drupal_is_front_page() == TRUE) {
-      jcarousel_add($selector = 'jcarousel-features-carousel',$options = array('skin'=>'os_front'), $add = TRUE);
+      jcarousel_add('os-jcarousel-skin-os_front ul',array('skin'=>'os_front'),TRUE);
     }
   }
   $export['iqss_projects_fp_features'] = $box;
