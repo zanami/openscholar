@@ -629,6 +629,11 @@ font-size: 1.2em;
 	float:left; width:100%; margin: -65px 0 12px 18px;
 }
 
+.logged-in .block-os-stats dl {
+	margin: 55px 0 12px 18px;
+}
+
+
 .block-os-stats dt, .block-os-stats dd {
 float:left; width: auto; margin:0; padding:0 .5em 0 0; 
 color:#FFF;
@@ -664,6 +669,12 @@ p.copy a:hover {
   position:relative;
   top: -115px;
   }
+ 
+ .front.logged-in #footer #block-os-powered-by {
+  top: -85px;
+  } 
+  
+   
 
 .front #block-os-powered-by a {
   background: url('../images/powered_by.png') 19px 37px no-repeat #234f6e;
@@ -671,8 +682,9 @@ p.copy a:hover {
   width: 119px;
   height:115px;
   text-indent: -9999px;
-  
   }
+  
+
 
 
 /* REASONS PAGE */
