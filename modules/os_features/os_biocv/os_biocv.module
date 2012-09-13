@@ -86,16 +86,11 @@ function _os_biocv_get_bio_node($type = 'bio') {
   // vsite module is enabled. Otherwise it leaves out that condition and will
   // tell us whether any published bio nodes exist on this installation at all.
   // In case there are multiple bio nodes, defaults to order by nid ASC.
-  $query = new EntityFieldQuery();
-  $query
-    ->entityCondition('entity_type', 'node')
-    ->entityCondition('bundle', $type)
-    ->propertyCondition('status', 1)
-    ->propertyOrderBy('nid');
+  include_once drupal_get_path('module', 'os') . '/includes/node.inc';
 
-  if (module_exists('vsite') && $space = spaces_get_space()) {
-    $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
-  }
+  $query = new OpenscholarNodeFieldQuery($type);
+  $query
+    ->propertyOrderBy('nid');
 
   $result = $query->execute();
 
