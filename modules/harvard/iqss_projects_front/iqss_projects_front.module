@@ -89,18 +89,6 @@ function iqss_projects_front_strongarm() {
   	return $export;
 }// end function
 
-
-function iqss_projects_front_context_load_alter(&$context) {
-  // Make sure we're on the front page first.
-  if(drupal_is_front_page()) {
-    // Now check for the os_sitewide_front context.
-    if($context->name == 'os_sitewide_front' && isset($context->reactions['block'])) {
-	  // We want to unset the context, because we're using the same logic in another portion of the context
-	  //unset($context->reactions['block']['blocks']['vsite_register-get_your_site_block']);
-    }
-  }
-}
-
 /**
  * Implements hook_preprocess_page().
  * Add the jcarousel call into the preprocess page for the projects front page
