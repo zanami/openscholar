@@ -812,6 +812,11 @@ border-bottom-left-radius: 3px;
      width: 100%;
 }
 
+.logged-in .block-os-stats dl {
+    margin: 8px 0 12px;
+    
+}
+
 .block-os-stats dt, .block-os-stats dd {
      color: #FFFFFF;
      float: left;
