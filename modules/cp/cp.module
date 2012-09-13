@@ -402,7 +402,7 @@ function cp_use_cp_theme(){
   if ((arg(0) == 'cp') ||
       (arg(0) == 'os') ||
       (arg(0) == 'media') ||
-      (arg(0) == 'node' && (arg(1) == 'add' || arg(2) == 'edit'))) {
+      (arg(0) == 'node' && (arg(1) == 'add' || arg(2) == 'edit' || arg(2) == 'delete'))) {
     return TRUE;
   }
   return FALSE;
