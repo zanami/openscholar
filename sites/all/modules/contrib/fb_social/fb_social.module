@@ -188,9 +188,8 @@ function fb_social_link($type, $object, $teaser = FALSE) {
 }
 
 /**
- * Implementation of hook init
+ * Implementation of hook preprocess_page
  */
-
 function fb_social_preprocess_page(&$vars) {
 
   // Add simple OpenGraph metatags
@@ -215,6 +214,7 @@ function fb_social_preprocess_page(&$vars) {
 
   $data .= '<meta property="fb:app_id" content="' . check_plain(variable_get('fb_social_appid', '')) . '"/>' . "\n";
   $vars['head'] .= $data;
+  drupal_set_html_head($data);
 }
 
 // ctools hooks / api
