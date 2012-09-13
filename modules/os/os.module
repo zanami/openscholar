@@ -31,7 +31,8 @@ function os_menu() {
     'file path' => drupal_get_path('module', 'os') . '/',
   );
 
-  $items['admin/config/openscholar'] = array(
+  $items['admin/config/openscholar'] =
+  $items['admin/config/openscholar/openscholar'] = array(
     'title' => 'Openscholar Settings',
     'description' => 'Administer OpenScholar specific settings.',
     'position' => 'left',
