@@ -221,10 +221,6 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $results = $query->execute()->fetchAssoc();
     $current_row->path = $results['dst'];
 
-    //get file uploads
-    //$current_row->file_upload = parent::os_migrate_get_file_uploads($current_row->vid);
-    // file upload fields aren't in current page type.
-
     //lanuage should be explicitly undefined instead of blank
     if (!strlen($current_row->language)) {
       $current_row->language = 'und';
@@ -281,6 +277,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'field_upload' => t('Uploaded file'),
         'field_upload:description' => t('Uploaded file\'s desctription'),
         'field_upload:display' => t('Include uploaded file in listing'),
+        'field_upload:language' => t('Uploaded file\'s langauge'),
         'filepath' => t('Full path to file'),
       );
     } else {
