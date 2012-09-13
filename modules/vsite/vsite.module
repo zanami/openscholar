@@ -695,9 +695,12 @@ function vsite_load_user_sites($user_id) {
   $sites = array();
   $sites_array = array();
   // Grab their sites.
-  $vsites = vsite_get_vsite_by_owner($user_id);
+  // First sites they are an 'owner' of.
+  $vsites_owner = vsite_get_vsite_by_owner($user_id);
+  // Now get the sites they are a 'member' of.
+  $vsites_member = vsite_get_user_vsites($user_id);
   // Create each site as a link.
-  foreach($vsites as $site) {
+  foreach($vsites_owner as $site) {
     $sites = array('#title'=>$site->group->title, '#type'=>'link','#href'=>$site->get_absolute_url());
     // Prepare them for theme_list_item.
     $sites_array[] = array('data'=>drupal_render($sites));
@@ -713,7 +716,6 @@ function vsite_load_user_sites($user_id) {
  */
 function vsite_user_view_alter(&$build) {
   global $user;
-
   // Removal section.
     // Remove the "history" and "member for" info if it's there.
     if(isset($build['summary'])) {
@@ -727,9 +729,11 @@ function vsite_user_view_alter(&$build) {
     if(isset($build['og_other_user_group_ref'])) {
       $build['og_other_user_group_ref']['#access'] = FALSE;
     }
+    // Remove the og_user_node.
+	if(isset($build['og_user_node'])) {
+      $build['og_user_node']['#access'] = FALSE;
+    }
 
-    // Make sure they're logged in.
-    if($user->uid) {
     // Additions section.
       // Load their link created vsites.
       $vsites = vsite_load_user_sites($build['#account']->uid);
@@ -750,8 +754,8 @@ function vsite_user_view_alter(&$build) {
         '#title' => 'My Websites',
         '#type' => 'user_profile_item',
         '#markup' => $vsitesList,
-          );
-  }
+        '#weight' => '10',
+      );
 }
 
 /**
@@ -761,6 +765,7 @@ function vsite_user_view_alter(&$build) {
  */
 function vsite_mail_alter(&$message) {
   global $base_url;
+
   switch($message['id']) {
     // Account created during "Create this OS Site on behalf of another user".
     case 'user_register_no_approval_required':
@@ -786,7 +791,7 @@ function vsite_mail_alter(&$message) {
         );
 
         // Alter the body message.
-        $message['body'][0] = t("Dear !firstname,\n\nA site owner at the !site website has created an account for you. You may now log in by either clicking through on the following link or pasting it into your browser:\n\n !login_url\n\n(Note: This login can be used only once.)\n\nYour username is: !username \n\nAfter setting your password with the included link, you will be able to log in at !futurelogin in the future.\n\nSincerely,\nThe !site Team", $a_msg_variables);
+        $message['body'][0] = t("Dear !firstname,\n\nYour account at the !site website has been created for you. You may now log in by either clicking through on the following link or pasting it into your browser:\n\n !login_url\n\n(Note: This login can be used only once.)\n\nYour username is: !username \n\nAfter setting your password with the included link, you will be able to log in at !futurelogin in the future.\n\nSincerely,\nThe !site Team", $a_msg_variables);
       break;
     // Account created by admin in the admin/people panel.
     case 'user_register_admin_created':

@@ -29,6 +29,7 @@ files[] = os_migrate_node_feed.inc
 files[] = os_migrate_node_link.inc
 files[] = os_migrate_node_modal_image.inc
 files[] = os_migrate_node_page.inc
+files[] = os_migrate_node_presentation.inc
 files[] = os_migrate_node_vsite.inc
 files[] = os_migrate_users.inc
 
@@ -39,7 +40,6 @@ files[] = os_migrate_spaces_overrides_boxes.inc
 files[] = os_migrate_spaces_overrides_variable.inc
 files[] = os_migrate_spaces_overrides_shields.inc
 
-files[] = os_migrate_og_vocab_tables.inc
 files[] = os_migrate_specialtables.inc
 files[] = os_migrate_tablecopy.inc
 files[] = os_migrate_theme.inc
