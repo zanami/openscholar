@@ -407,8 +407,9 @@ bookiconsprite.png
 
 #modalContent {
   top: 0 !important;
-   color: #666;
-  }
+  color: #666;
+  position: fixed !important;
+}
 
 div.ctools-modal-content {
   color: #555;
