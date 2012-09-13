@@ -24,7 +24,7 @@ class os_boxes_bio extends os_boxes_default {
   /**
    * Implements boxes_content::options_form().
    */
-  public function options_form() {
+  public function options_form(&$form_state) {
 
     // Exits if we are not in a vsite
     // @todo  2012-09-12 Why? -oren
@@ -34,7 +34,7 @@ class os_boxes_bio extends os_boxes_default {
 
     $default_nid = $this->options['nid'];
 
-    $form += parent::options_form();
+    $form = parent::options_form();
     $form['nid']['#type'] = 'value';
     $form['nid']['#value'] = 0;
     unset($form['nid']['#element_validate']);
