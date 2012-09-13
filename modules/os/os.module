@@ -390,6 +390,10 @@ function os_preprocess_page(&$variables) {
     return;
   }
 
+  if (overlay_get_mode() == 'child') {
+    return;
+  }
+
   $is_front = isset($active['os_front']);
   $context = 'os_front';
   $module = 'os_front';
