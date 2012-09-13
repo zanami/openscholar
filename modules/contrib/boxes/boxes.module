@@ -230,7 +230,7 @@ function boxes_block_view($delta) {
     // permissions.
     $block = $box->render();
     if (boxes_access_edit($box)) {
-      if (!isset($box->delta)) dpm($box);
+      if (!isset($block['delta'])) dpm($box);
       if (variable_get('boxes_edit_location', BOXES_EDIT_IN_PLACE) == BOXES_EDIT_IN_PLACE) {
         $edit_link = array(
           'title' => t('Edit Box'),
