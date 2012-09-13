@@ -182,7 +182,6 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
   );
   switch ($display['type']) {
     case 'os_files_image_list':
-      dpm($items);
       $images = array();
       $other = array();
       foreach ($items as $i) {
