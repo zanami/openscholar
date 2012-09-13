@@ -48,9 +48,9 @@ function os_biocv_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),
-        'boxes-os_biocv_bio' => array(
-          'module' => 'os_biocv',
-          'delta' => 'bio',
+        'boxes-os_boxes_bio' => array(
+          'module' => 'boxes',
+          'delta' => 'os_boxes_bio',
           'region' => 'content_top',
           'weight' => '-10',
         ),

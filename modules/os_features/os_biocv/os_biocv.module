@@ -16,6 +16,22 @@ include_once 'os_biocv.features.inc';
  */
 
 /**
+ * Implements hook_menu_alter().
+ *
+ * Prevents new bio nodes from being created if a bio node already exists here.
+ */
+function os_biocv_menu_alter(&$items) {
+  $node = _os_biocv_get_bio_node();
+  $access = ($node === FALSE);
+
+  if (!isset($items['node/add/bio'])) {
+    return;
+  }
+
+  $items['node/add/bio']['access callback'] = $access;
+}
+
+/**
  * OpenScholar hooks
  */
 
@@ -29,9 +45,8 @@ function os_biocv_os_widget() {
 
   // Displays user's Bio node if available, otherwise prompts user.
   $items['os_biocv-bio'] = array(
-      'module' => 'os_biocv',
+      'module' => 'boxes',
       'delta' => 'os_biocv_bio',
-      'region' => 'content_top',
       'weight' => '-10',
       'info' => 'Bio Teaser',
   );
@@ -54,27 +69,6 @@ function os_biocv_vsite_og_node_type_info() {
  */
 
 /**
- * Returns block content for $blocks['os_biocv_bio']
- */
-function _os_biocv_bio_block_contents() {
-  $type = 'bio';
-
-  $node = _os_biocv_get_bio_node($type);
-  // Renders the Bio node if it exists.
-  if ($node !== FALSE) {
-    return render(node_view($node, 'teaser'));
-  }
-
-  // Otherwise, displays a prompt message to admin users.
-  if (user_access('create ' . $type . ' content')) {
-    return theme('os_biocv_bio_block_empty_text');
-  }
-
-  // Otherwise, displays nothing to non-admin users.
-  return NULL;
-}
-
-/**
  * Finds the Bio node of the user with the lowest NID value.
  *
  * @return bool|object
@@ -82,7 +76,7 @@ function _os_biocv_bio_block_contents() {
  */
 function _os_biocv_get_bio_node($type = 'bio') {
 
-  // Note that this EntityFieldQuery will filter for the current space iff
+  // Note that this OpenscholarNodeFieldQuery will filter the current space if
   // vsite module is enabled. Otherwise it leaves out that condition and will
   // tell us whether any published bio nodes exist on this installation at all.
   // In case there are multiple bio nodes, defaults to order by nid ASC.
