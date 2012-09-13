@@ -203,6 +203,12 @@ function vsite_register_form_submit(&$form, &$state) {
     );
     $site_owner = os_user_create($user_options);
 
+    // Send out an email to notify the user of the newly created account.
+    // Email only sent if user requested to be notified of new account.
+    if ($values['notify']) {
+      _user_mail_notify('register_no_approval_required', $site_owner);
+    }
+
     //log in as new user, if we're not already logged in.
     global $user;
     if ($user->uid == 0) {
@@ -234,10 +240,9 @@ function vsite_register_form_submit(&$form, &$state) {
       node_save($node);
     }
 
-    // Send out an email to notify the user of the newly created site.
-    if ($values['notify']) {
-      vsite_register_notify_user($vsite);
-    }
+    // Email user to inform them of new created site, email is always sent.
+    vsite_register_notify_user($vsite);
+
     //it worked, clear the errors
     drupal_get_messages('error');
 
