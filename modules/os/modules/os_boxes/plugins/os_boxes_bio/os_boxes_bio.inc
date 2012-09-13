@@ -18,6 +18,8 @@ class os_boxes_bio extends os_boxes_default {
    */
   public function options_defaults() {
     $options = parent::options_defaults();
+    $options['teaser'] = 'teaser';
+    $options['show_title'] = 0;
     return $options;
   }
 
@@ -26,23 +28,14 @@ class os_boxes_bio extends os_boxes_default {
    */
   public function options_form(&$form_state) {
 
-    // Exits if we are not in a vsite
-    // @todo  2012-09-12 Why? -oren
-    //    if (($vsite = vsite_get_vsite()) == FALSE) {
-    //      return array();
-    //    }
+    $form = parent::options_form($form_state);
 
-    $default_nid = $this->options['nid'];
-
-    $form = parent::options_form();
-    $form['nid']['#type'] = 'value';
-    $form['nid']['#value'] = 0;
-    unset($form['nid']['#element_validate']);
+    $option_defaults = $this->options_defaults();
 
     $form['teaser'] = array(
       '#type' => 'radios',
       '#title' => 'Display Mode',
-      '#default_value' => $this->options['teaser'],
+      '#default_value' => $option_defaults['teaser'],
       '#options' => array('teaser' => 'Teaser Only', 'full' => 'Full Bio'),
       '#description' => 'Display your entire Bio in this widget, or just the teaser.',
     );
@@ -50,7 +43,7 @@ class os_boxes_bio extends os_boxes_default {
     $form['show_title'] = array(
       '#type' => 'checkbox',
       '#title' => 'Display title of your Bio',
-      '#default_value' => $this->options['show_title'],
+      '#default_value' => $option_defaults['show_title'],
     );
 
     return $form;
@@ -60,50 +53,36 @@ class os_boxes_bio extends os_boxes_default {
    * Implements boxes_content::render().
    */
   public function render() {
-
-    // Exits if we are not in a vsite
-    if (($vsite = vsite_get_vsite()) == FALSE) {
-      return array();
-    }
-
-    // Automatically fills in Bio node ID if available.
+    // Returns the bio node object, or FALSE if none.
     $node = _os_biocv_get_bio_node();
-    if ($node !== FALSE) {
-      $this->options['nid'] = $node->nid;
-      $block = parent::render();
 
-      if (($vsite = vsite_get_vsite()) == FALSE) {
-        return $block;
-      }
 
-      $nid = $this->options['nid'];
-
-      if ((int)$nid !== 0) {
-        $node = node_load($nid);
-      }
-
-      if ($node) {
-        $teaser = ($this->options['teaser'] == 'teaser') ? TRUE : FALSE;
-
-        if (isset($this->options['show_title']) && !$this->options['show_title']) {
-          // Hide the nide title
-          $node->title = '';
-        }
-
-        $output = node_view($node, $teaser, FALSE, FALSE);
-        $block['content'] = $output;
-      }
-    }
-    // Renders empty text if no bio exists yet.
-    else {
+    if ($node === FALSE) {
       $block['content'] = $this->render_no_bio();
+      return $block;
     }
 
-    return $block;
+    $block['content'] = $this->render_bio($node->nid);
   }
 
   /**
-   * Renders empty text for a vsite admin without a Bio node
+   * Renders the bio node as teaser/full and with/without title displayed.
+   *
+   * @todo 2012-09-13 return some content! -oren
+   */
+  protected function render_bio($nid) {
+    $block = parent::render();
+
+    if (isset($this->options['show_title']) && !$this->options['show_title']) {
+      $node->title = '';
+    }
+
+    $view_mode = ($this->options['teaser'] == 'teaser') ? 'teaser' : 'full';
+    $block['content'] = render(node_view(node_load($nid), $view_mode));
+    return $block;
+  }
+  /**
+   * Renders empty text for a vsite admin without a Bio node.
    */
   protected function render_no_bio() {
 
@@ -121,15 +100,11 @@ class os_boxes_bio extends os_boxes_default {
         'id' => array('os-boxes-bio-empty-text'),
       ),
     );
-
+    $create_bio  = l(t('Create your bio now'), 'node/add/bio');
+    $edit_layout = l(t('change what displays'), 'cp/build/layout', array('query' => array('page_type' => 'front')));
     $wrapper['empty_text'] = array(
       '#type' => 'markup',
-      '#markup' => t('Your sites front page is set to display your bio by default. @create_bio or @edit_layout for the front page of your site.',
-        array(
-          '@create_bio' => l(t('Create your bio now'), '/node/add/bio'),
-          '@edit_layout' => l(t('change what displays'), '/cp/build/layout', array('query' => array('page_type' => 'front'))),
-        )
-      ),
+      '#markup' => t("Your site's front page is set to display your bio by default. $create_bio or $edit_layout for the front page of your site."),
     );
 
     return render($wrapper);
