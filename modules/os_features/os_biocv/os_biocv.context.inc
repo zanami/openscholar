@@ -50,7 +50,7 @@ function os_biocv_context_default_contexts() {
         ),
         'boxes-os_boxes_bio' => array(
           'module' => 'boxes',
-          'delta' => 'os_boxes_bio',
+          'delta' => 'bio',
           'region' => 'content_top',
           'weight' => '-10',
         ),

@@ -29,7 +29,7 @@ function os_biocv_default_box() {
     'nid' => $nid,
     'teaser' => 'teaser',
   );
-  $export['os_biocv-bio'] = $box;
+  $export['boxes-bio'] = $box;
 
   return $export;
 }

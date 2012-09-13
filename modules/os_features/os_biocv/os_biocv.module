@@ -46,7 +46,7 @@ function os_biocv_os_widget() {
   // Displays user's Bio node if available, otherwise prompts user.
   $items['os_biocv-bio'] = array(
       'module' => 'boxes',
-      'delta' => 'os_biocv_bio',
+      'delta' => 'boxes-bio',
       'weight' => '-10',
       'info' => 'Bio Teaser',
   );
