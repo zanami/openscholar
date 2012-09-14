@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * Code for the OS Bio/CV feature.
@@ -14,6 +13,54 @@ include_once 'os_biocv.features.inc';
 /**
  * Drupal hooks
  */
+function os_biocv_menu() {
+  $items = array();
+  $items['biocv'] = array(
+    'title' => 'Biography',
+    'page callback' => '_os_biocv_bio_page_contents',
+    'access callback' => 'spaces_access_feature',
+    'access arguments' => array('view', 'os_biocv'),
+    'menu_name' => 'features',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['biocv/bio'] = array(
+    'title' => 'Biography',
+    'page callback' => '_os_biocv_bio_page_contents',
+    'access callback' => '_os_biocv_show_local_tasks',
+    'menu_name' => 'features',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['biocv/cv'] = array(
+    'title' => 'Curriculum Vitae',
+    'page callback' => '_os_biocv_cv_page_contents',
+    'access callback' => '_os_biocv_show_local_tasks',
+    'menu_name' => 'features',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['cp/build/features/os_biocv'] = array(
+    'title' => 'Bio/CV Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_biocv_settings'),
+    'access callback' => module_exists('spaces') ? 'spaces_access_admin' : 'user_access',
+    'access arguments' => module_exists('spaces') ? array() : array('administer site configuration'),
+    'type' => MENU_CALLBACK,
+    'file' => 'os_biocv.pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Edit cv form to add link to settings page.
+ */
+function os_biocv_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id !== 'cv_node_form') {
+    return;
+  }
+  $settings_link = l('Bio feature settings', 'features/os_biocv');
+}
 
 /**
  * Implements hook_menu_alter().
@@ -71,10 +118,10 @@ function os_biocv_os_widget() {
 
   // Displays user's Bio node if available, otherwise prompts user.
   $items['os_biocv-bio'] = array(
-      'module' => 'boxes',
-      'delta' => 'boxes-bio',
-      'weight' => '-10',
-      'info' => 'Bio Teaser',
+    'module' => 'boxes',
+    'delta' => 'boxes-bio',
+    'weight' => '-10',
+    'info' => 'Bio Teaser',
   );
 
   return $items;
@@ -88,6 +135,41 @@ function os_biocv_vsite_og_node_type_info() {
     'bio' => 'group content',
     'cv' => 'group content',
   );
+}
+
+/**
+ * Implements hook_vsite_admin_link().
+ *
+ * Adds the "(config-gear) > Edit CV" link when admin view Bio node.
+ */
+function os_biocv_vsite_admin_link($type, $object) {
+  $links = array();
+
+  // Only proceeds for admin links when viewing Bio and CV exists.
+  $cv_node = _os_biocv_get_cv_node();
+  if (!($type == 'node' && $object->type == 'bio' && $cv_node !== FALSE)) {
+    return $links;
+  }
+
+  // Only proceeds if the current user can access the CV edit page.
+  $path = "node/{$cv_node->nid}/edit";
+  $item = menu_get_item($path);
+  if (!($item && $item['access'])) {
+    return $links;
+  }
+
+  $links['node-edit-cv'] = array(
+    'title' => t('Edit CV'),
+    'href' => $path,
+    'attributes' => array(
+      'class' => 'icon-edit',
+    ),
+    'query' => array(
+      'destination' => $_GET['q'],
+    ),
+  );
+
+  return $links;
 }
 
 /**
@@ -122,9 +204,8 @@ function _os_biocv_get_first_node($type = 'bio') {
   // In case there are multiple bio nodes, defaults to order by nid ASC.
   include_once drupal_get_path('module', 'os') . '/includes/node.inc';
 
-  $query = new OpenscholarNodeFieldQuery($type);
-  $query
-    ->propertyOrderBy('nid');
+  $query = new OSNodeFieldQuery($type);
+  $query->propertyOrderBy('nid');
 
   $result = $query->execute();
 
@@ -159,3 +240,89 @@ function _os_biocv_cv_exists() {
   return (bool)($node !== FALSE);
 }
 
+/**
+ * Page callback; renders a Bio node.
+ */
+function _os_biocv_bio_page_contents() {
+  $output = '';
+
+  $vsite = vsite_get_vsite();
+
+  // Loads the bio node for the owner of this vsite
+  $node = _os_biocv_get_bio_node();
+  dpm($node);
+  $cv_filepath = FALSE;
+  if (!_os_biocv_show_local_tasks()) {
+    $cv_node = _os_biocv_get_cv_node();
+    if ($cv_node !== FALSE) {
+      dpm('getting filepath...');
+      $cv_filepath = _os_biocv_get_cv_filepath($cv_node);
+    }
+  }
+  if ($cv_filepath !== FALSE) {
+    $output .= t("<h3 class='cv-direct-download'>Download CV: ") . l('PDF', $cv_filepath) . "</h3>";
+  }
+
+  if ($node) {
+    drupal_set_title($node->title);
+    $output .= render(node_view($node, 'full'));
+  }
+  return $output;
+}
+
+/**
+ *
+ */
+function _os_biocv_cv_page_contents() {
+  $output = '';
+  drupal_set_title(t(''));
+
+  if ($vsite->access_admin()) {
+    $links = array();
+    if ($node) {
+      $links[] = array('custom' => TRUE, 'title' => 'Edit your CV', 'href' => "node/{$node->nid}/edit", 'query' => drupal_get_destination());
+    }
+    else {
+      // an appropriate message and a link for the user to create their CV
+      $links[] = array('custom' => TRUE, 'title' => 'Add your CV', 'href' => "node/add/cv", 'query' => drupal_get_destination());
+    }
+    $output .= theme('links', $links);
+  }
+
+  $node = _os_biocv_get_cv_node();
+
+  if ($node === FALSE) {
+    return $output;
+  }
+  drupal_set_title(t('%title', array('%title' => $node->title)));
+
+  $cv_filepath = _os_biocv_get_cv_filepath($node);
+  if ($cv_filepath !== FALSE) {
+    $output .= t("<h3>") . l('Download CV', file_create_url($node->field_cv_attach[0]['filepath']), array('attributes' => array('class' => "cv-direct-download"))) . t("</h3>please use the above link to download a PDF copy of my CV</p>");
+  }
+  else {
+    $output .= node_view($node, FALSE, TRUE, TRUE);
+  }
+
+  return $output;
+}
+
+/**
+ * Returns the filepath for PDF download of given CV node, or FALSE if none.
+ */
+function _os_biocv_get_cv_filepath($node) {
+  $field_name = 'field_biocv_pdf_upload';
+  $items = field_get_items('node', $node, $field_name);
+  if (!isset($items[0]['uri']) || strlen($items[0]['uri']) < 1) {
+    return FALSE;
+  }
+  $filepath = file_create_url($items[0]['uri']);
+  return $filepath;
+}
+
+/**
+ * Returns TRUE if user has selected to display Bio/CV as two separate sections.
+ */
+function _os_biocv_show_local_tasks() {
+  return ((int)variable_get('os_biocv_use_pdf_as_cv', 0) === 0);
+}
