@@ -53,33 +53,34 @@ class os_boxes_bio extends os_boxes_default {
    * Implements boxes_content::render().
    */
   public function render() {
+    // Prepares $block array with 'title', 'subject', 'delta' & empty 'content'.
+    $block = parent::render();
+
     // Returns the bio node object, or FALSE if none.
     $node = _os_biocv_get_bio_node();
 
-
     if ($node === FALSE) {
       $block['content'] = $this->render_no_bio();
-      return $block;
     }
-
-    $block['content'] = $this->render_bio($node->nid);
+    else {
+      $block['content'] = $this->render_bio($node->nid);
+    }
+    return $block;
   }
 
   /**
-   * Renders the bio node as teaser/full and with/without title displayed.
-   *
-   * @todo 2012-09-13 return some content! -oren
+   * Renders the bio node according to selected options.
    */
   protected function render_bio($nid) {
-    $block = parent::render();
-
-    if (isset($this->options['show_title']) && !$this->options['show_title']) {
+    // Prepares node with selected view_mode and show_title options.
+    $view_mode = ($this->options['teaser'] == 'teaser') ? 'teaser' : 'full';
+    $node = node_load($nid);
+    if (isset($this->options['show_title']) && (int)$this->options['show_title'] === 0) {
       $node->title = '';
     }
 
-    $view_mode = ($this->options['teaser'] == 'teaser') ? 'teaser' : 'full';
-    $block['content'] = render(node_view(node_load($nid), $view_mode));
-    return $block;
+    $content = render(node_view($node, $view_mode));
+    return $content;
   }
   /**
    * Renders empty text for a vsite admin without a Bio node.

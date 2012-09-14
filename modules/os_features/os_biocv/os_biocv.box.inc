@@ -15,8 +15,8 @@ function os_biocv_default_box() {
   $box->api_version = 1;
   $box->delta = 'test_bio_box';
   $box->plugin_key = 'os_boxes_bio';
-  $box->title = 'Bio Box';
-  $box->description = 'Test Bio Box';
+  $box->title = '';
+  $box->description = 'Bio Teaser';
   $box->options = array(
     'additional_classes' => '',
   );

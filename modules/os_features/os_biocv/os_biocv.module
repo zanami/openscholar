@@ -18,22 +18,48 @@ include_once 'os_biocv.features.inc';
 /**
  * Implements hook_menu_alter().
  *
- * Prevents new bio nodes from being created if a bio node already exists here.
+ * Prevents new bio/cv nodes from being created if a bio node already exists.
  */
 function os_biocv_menu_alter(&$items) {
-  $node = _os_biocv_get_bio_node();
-  $access = ($node === FALSE);
-
-  if (!isset($items['node/add/bio'])) {
+  // Only proceeds if current user has access to create bios in the first place.
+  if (!isset($items['node/add/bio']) && !isset($items['node/add/cv'])) {
     return;
   }
 
-  $items['node/add/bio']['access callback'] = $access;
+  // Prevents a duplicate node from being created if Bio already exists.
+  $bio_exists = _os_biocv_bio_exists();
+  if ($bio_exists && isset($items['node/add/bio']['access callback'])) {
+    $items['node/add/bio']['access callback'] = FALSE;
+  }
+  // Prevents a duplicate node from being created if Bio already exists.
+  $cv_exists = _os_biocv_cv_exists();
+  if ($bio_exists && isset($items['node/add/cv']['access callback'])) {
+    $items['node/add/cv']['access callback'] = FALSE;
+  }
 }
 
 /**
  * OpenScholar hooks
  */
+
+/**
+ * Implements hook_os_add_new_links_alter()
+ *
+ * Removes "Add new > Bio" link from "Add new" contextual links if Bio exists.
+ */
+function os_biocv_os_add_new_links_alter(&$links) {
+  if (!isset($links['bio']) && !isset($links['cv'])) {
+    return;
+  }
+  $bio_exists = _os_biocv_bio_exists();
+  if ($bio_exists && isset($links['bio'])) {
+    unset($links['bio']);
+  }
+  $cv_exists = _os_biocv_cv_exists();
+  if ($cv_exists && isset($links['cv'])) {
+    unset($links['cv']);
+  }
+}
 
 /**
  * Implements hook_os_widget().
@@ -69,12 +95,26 @@ function os_biocv_vsite_og_node_type_info() {
  */
 
 /**
- * Finds the Bio node of the user with the lowest NID value.
+ * Finds the Bio of the user with the lowest NID value, FALSE if none.
+ */
+function _os_biocv_get_bio_node() {
+  return _os_biocv_get_first_node('bio');
+}
+
+/**
+ * Finds the CV of the user with the lowest NID value, FALSE if none.
+ */
+function _os_biocv_get_cv_node() {
+  return _os_biocv_get_first_node('cv');
+}
+
+/**
+ * Finds the node of the user with the lowest NID value of the given type.
  *
  * @return bool|object
  *   A Drupal node object in the current space, if found; otherwise FALSE.
  */
-function _os_biocv_get_bio_node($type = 'bio') {
+function _os_biocv_get_first_node($type = 'bio') {
 
   // Note that this OpenscholarNodeFieldQuery will filter the current space if
   // vsite module is enabled. Otherwise it leaves out that condition and will
@@ -96,3 +136,26 @@ function _os_biocv_get_bio_node($type = 'bio') {
   $node = node_load($item->nid);
   return $node;
 }
+
+/**
+ * Returns TRUE if Bio node exists.
+ *
+ * @see os_biocv_menu_alter()
+ * @see os_biocv_os_add_new_links_alter()
+ */
+function _os_biocv_bio_exists() {
+  $node = _os_biocv_get_bio_node();
+  return (bool)($node !== FALSE);
+}
+
+/**
+ * Returns TRUE if CV node exists.
+ *
+ * @see os_biocv_menu_alter()
+ * @see os_biocv_os_add_new_links_alter()
+ */
+function _os_biocv_cv_exists() {
+  $node = _os_biocv_get_cv_node();
+  return (bool)($node !== FALSE);
+}
+
