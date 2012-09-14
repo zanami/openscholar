@@ -28,7 +28,7 @@ function os_spaces_presets() {
         'os_publications' => '1',
       ),
       'site_frontpage' => 'home',
-      'theme_default' => 'cleanblue',
+      'theme_default' => 'ballard',
     ),
   );
 
