@@ -68,10 +68,10 @@ function os_software_node_update($node) {
     $rec_field_item_updated = field_get_items('node', $node_updated, 'field_software_recommended');
     $rec_value_original = $rec_field_item_original[0]['value'];
     $rec_value_updated = $rec_field_item_updated[0]['value'];
-    if ($recommended_value_updated === $recommended_value_original) return;
+    if ($rec_value_updated === $rec_value_original) return;
   }
   // Only updates other Software Release nodes if this value has changed to "Recommended"
-  if ($recommended_value_updated === 0) return;
+  if ($rec_value_updated === 0) return;
 
   _os_software_new_recommended_release($node);
 }

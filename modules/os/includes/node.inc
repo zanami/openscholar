@@ -10,7 +10,7 @@
 /**
  * Prepares an EntityFieldQuery with any necessary vsite-sensitive conditions.
  */
-class OpenscholarNodeFieldQuery extends EntityFieldQuery {
+class OSNodeFieldQuery extends EntityFieldQuery {
   public function __construct($type = NULL) {
     // Limits only to published nodes.
     $this
@@ -26,7 +26,7 @@ class OpenscholarNodeFieldQuery extends EntityFieldQuery {
     }
 
     $space = spaces_get_space();
-    if (!is_numeric($space->id)) {
+    if (is_object($space) && !is_numeric($space->id)) {
       return;
     }
 
