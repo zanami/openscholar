@@ -132,7 +132,7 @@ div.messages {
 
 #block-os-powered-by a,
 .os-powered-link a.os-poweredby {
-    background: url("/profiles/openscholar/themes/os_basetheme/images/poweredby.png") no-repeat scroll 0 0 transparent;
+    background: url("../images/poweredby.png") no-repeat scroll 0 0 transparent;
     border: medium none !important;
     display: block;
     height: 26px;
