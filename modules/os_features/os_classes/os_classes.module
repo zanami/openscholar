@@ -1,0 +1,11 @@
+<?php
+// $Id$
+
+
+/**
+ * @file
+ * Code for the OS Classes feature.
+ */
+
+include_once 'os_classes.features.inc';
+
