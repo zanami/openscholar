@@ -149,8 +149,10 @@ div.messages {
 }
 
 
-#boxes-box-site_logo img {
-  vertical-align: bottom;
+#scholar-shield {
+    margin: 0 auto;
+    text-align: center;
+    width: 75px;
 }
 
 

@@ -195,7 +195,9 @@ textarea {
 }
 
 .page-cp-users-create input.password-confirm, .page-cp-users-create input.password-field,
-.page-site-register input.password-confirm, .page-site-register input.password-field {
+.page-site-register input.password-confirm, .page-site-register input.password-field,
+.page-user-reset input.password-confirm, .page-cp-users-create input.password-field,
+.page-user-reset input.password-confirm, .page-user-reset input.password-field {
 	width:40%;
 }
 

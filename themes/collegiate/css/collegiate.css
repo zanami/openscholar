@@ -5,6 +5,10 @@
 body {
 color:#37352B;
 background: url('../images/bodyBg.png') repeat-x scroll 0px -12px #EFEFEF;
+ }  
+ 
+body.logged-in {
+background: url('../images/bodyBg.png') repeat-x scroll 0px 30px #EFEFEF;
  }    
 
 /* TYPOGRAPHY*/
@@ -239,12 +243,12 @@ body.one-sidebar .region-sidebar-first {
 #header-container .column {
   padding-top: 15px;
 } 
-
+/*
 .header-main #header-container,
 .header-main-right #header-container {
   padding-right:250px;
   }
-
+*/
 #header-container h1,
 #header-container h2 {
     font-size: 3em;
