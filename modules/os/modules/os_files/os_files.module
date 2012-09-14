@@ -190,9 +190,10 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
           $title = isset($title[0])?$title[0]['value']:'';
           $alt = field_get_items('file', (object)$i, 'media_description');
           $alt = isset($alt[0])?$alt[0]['value']:'';
+          $image_info = image_get_info($i['uri']);
           $images[] = array(
             'href' => file_create_url($i['uri']),
-            'title' => theme('image_style', array('path' => $i['uri'], 'style_name' => 'thumbnail', 'title' => $title, 'alt' => $alt)),
+            'title' => theme('image_style', array('path' => $i['uri'], 'style_name' => 'thumbnail', 'title' => $title, 'alt' => $alt, 'width' => $image_info['width'], 'height' => $image_info['height'])),
             'html' => TRUE
           );
         }
@@ -222,7 +223,8 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
         '#links' => $images,
         '#attributes' => array(
           'class' => array(
-            'os-files-image-list'
+            'os-files-image-list',
+            'jcarousel-skin-default'
           ),
         ),
       );
