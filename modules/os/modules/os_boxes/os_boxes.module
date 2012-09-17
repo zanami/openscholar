@@ -148,7 +148,7 @@ function os_boxes_os_widget_alter(&$widget) {
       $widget['class'] = $plugin['tags'];
 
     $widget['can_edit'] = boxes_access_edit($box);  // all boxes should be editable. If they aren't, why are they a box
-    $widget['path'] = 'os/boxes/'.$widget['delta'];
+    $widget['path'] = 'os/widget/boxes/'.$widget['delta'];
 
     // deletion is easier now.
     // just refer to the permission.
