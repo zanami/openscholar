@@ -151,6 +151,10 @@ function os_software_os_add_new_links_alter(&$links) {
   if (isset($links['software_release'])) {
     unset($links['software_release']);
   }
+  if (isset($links['software_project'])) {
+    $request_path = request_path();
+    $links['software_project']['query'] = array('destination' => $request_path);
+  }
 }
 
 /**
@@ -200,9 +204,9 @@ function _os_software_new_recommended_release($node) {
   foreach ($view->result as $data) {
     if (!isset($node->nid) || $data->nid !== $node->nid) {
       $release_node = node_load($data->nid);
-      $wrapper = entity_metadata_wrapper('node', $release_node);
-      $wrapper->field_software_recommended[0]->set(0);
-      $wrapper->save();
+      $language = $release_node->language;
+      $release_node->field_software_recommended[$language][0]['value'] = 0;
+      node_save($release_node);
     }
   }
 }
