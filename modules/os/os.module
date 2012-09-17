@@ -50,6 +50,33 @@ function os_menu() {
     'access arguments' => array('access content'),
   );
 
+  // widget management menu entries
+
+  // This item is just a helper for contextual links
+  // It should always be accessible, and just not go anywhere.
+  $items['os/widget/%/%'] = array(
+    'title' => 'Widget',
+    'access callback' => 'os_access_region',  // for contextual links
+    'access arguments' => array(2, 3),
+    'page callback' => 'os_boxes_placeholder',
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'os_boxes.admin.inc',
+    'context' => MENU_CONTEXT_INLINE,
+    'weight' => 1,
+  );
+
+  $items['os/widget/%/%/remove'] = array(
+    'title' => 'Remove Widget',
+    'page callback' => 'os_boxes_remove_widget',
+    'page arguments' => array(2, 3),
+    'access callback' => 'boxes_access_admin',
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'os_boxes.admin.inc',
+    'file path' => drupal_get_path('module', 'os_boxes'),
+    'context' => MENU_CONTEXT_INLINE,
+    'weight' => 3,
+  );
+
   return $items;
 }
 
@@ -881,4 +908,63 @@ function os_node_view_alter(&$build) {
   	  $build['og_group_ref']['#access'] = FALSE;
     }
   }
+}
+
+/**
+ * Implementation of hook_permission()
+ * Defines permissions for all the regions of the default theme
+ */
+function os_permission() {
+  $regions = array_keys(system_region_list(variable_get('theme_default')));
+
+  $perms = array(
+    'edit all regions' => array(
+      'title' => t('Edit All Regions'),
+      'description' => t('Edit the contents of all regions'),
+    )
+  );
+  foreach ($regions as $r) {
+    $perms['edit region '.$r] = array(
+      'title' => t('Edit Region !region', array('!region' => $r)),
+      'description' => t('Edit the contents of the region !region', array('!region' => $r)),
+    );
+  }
+
+  return $perms;
+}
+
+/**
+ * Given a box and a set of contexts, return the region the box is in
+ * This function will be called multiple times per page, so we get all the
+ * regions at once and cache them in a static var.
+ */
+function os_get_region($module, $delta, $contexts = array()) {
+  if (empty($contexts)) {
+    $contexts = context_active_contexts();
+  }
+
+  $plugin = context_get_plugin('reaction', 'block');
+  $bid = $module.'-'.$delta;
+
+  $blocks = &drupal_static(__FUNCTION__, array());
+  if (empty($blocks)) {
+    foreach ($contexts as $c) {
+      foreach ($plugin->get_blocks(null, $c) as $bid => $block) {
+        if (isset($block->region)){
+          $blocks[$block->module.'-'.$block->delta] = $block->region;
+        }
+      }
+    }
+  }
+
+  return isset($blocks[$bid])?$blocks[$bid]:false;
+}
+
+/**
+ * Given a box, return whether it can be editted based on its region.
+ */
+function os_access_region($module, $delta) {
+  $region = os_get_region($module, $delta);
+
+  return user_access('edit region '.$region) || user_access('edit all regions');
 }
