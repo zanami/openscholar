@@ -109,8 +109,10 @@ class os_boxes_site_logo extends os_boxes_default {
           $block['content'] = l(render($output), '<front>', array('html' => true));
         }
         else {
-          $output = theme('image', array('path' => drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_site_logo/default_logo.jpg'));
-          $block['content'] = l($output, '<front>', array('html' => true));
+          if (spaces_access_admin()) {
+            $output = t('Edit this widget to add a logo to your site.');
+            $block['content'] = l($output, '<front>', array('html' => true));
+          }
         }
       }
       catch (Exception $e) {
