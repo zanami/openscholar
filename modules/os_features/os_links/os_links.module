@@ -17,3 +17,13 @@ function os_links_vsite_og_node_type_info() {
     'link' => 'group content',
   );
 }
+
+/**
+ * Implements hook_context_links_alter().
+ * @todo this hook has not been migrated to D7 yet, and might not belong here.
+ * 2012-09-17 -oren
+function os_links_context_links_alter(&$links) {
+  if (!empty($links['link'])) {
+    $links['link']['query'] = drupal_get_destination();
+  }
+} */

@@ -28,4 +28,3 @@ function os_biocv_default_box() {
 
   return $export;
 }
-
