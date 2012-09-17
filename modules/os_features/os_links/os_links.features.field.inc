@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_links.features.field.inc
@@ -130,9 +127,8 @@ function os_links_field_default_fields() {
         ),
         'teaser' => array(
           'label' => 'above',
-          'module' => 'link',
           'settings' => array(),
-          'type' => 'link_default',
+          'type' => 'hidden',
           'weight' => '1',
         ),
       ),
@@ -173,9 +169,8 @@ function os_links_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Description');
-  t('URL (Web address)');
   t('The web address of the link. Starts with: http://');
+  t('URL (Web address)');
 
   return $fields;
 }
-
