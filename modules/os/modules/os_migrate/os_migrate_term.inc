@@ -13,16 +13,20 @@ class TermOSMigration extends DynamicMigration {
 
   public function __construct(array $arguments){
     $this->description = t('OS taxonomy term migration');
+    $this->arguments = $arguments;
+
     $group = MigrateGroup::getInstance('taxonomy');
+
 
     parent::__construct($group);
 
-    $query = Database::getConnection('default', variable_get('os_migrate_database', ''))->select('term_data', 'td')->fields('td', array(
-      'tid',
-      'name',
-      'description',
-      'weight'
-    ))->orderBy('parent')->distinct();
+    $query = Database::getConnection('default', variable_get('os_migrate_database', ''))
+      ->select('term_data', 'td')
+      ->fields('td', array('tid','name','description','weight'))
+      ->orderBy('parent')
+      ->condition('td.vid', $arguments['src_vid'])
+      ->distinct();
+
     // Join to the hierarchy so we can sort on parent, but we'll pull the
     // actual parent values in separately in case there are multiples.
     $query->leftJoin('term_hierarchy', 'th', 'td.tid=th.tid');
@@ -39,7 +43,7 @@ class TermOSMigration extends DynamicMigration {
     $this->source = new MigrateSourceSQL($query, $key_schema, null, array(
       'map_joinable' => FALSE
     ));
-    $this->destination = new MigrateDestinationTerm($arguments['dst_vocabulary']);
+    $this->destination = new MigrateDestinationTerm($this->arguments['dst_vocabulary']);
 
     $this->map = new MigrateSQLMap($this->machineName, $key_schema, MigrateDestinationTerm::getKeySchema());
 
@@ -83,6 +87,19 @@ class TermOSMigration extends DynamicMigration {
 
     return TRUE; // FALSE to skip a row.
   }
+
+
+  /**
+   * Construct the machine name from the source file name.
+   */
+  protected function generateMachineName($class_name = NULL) {
+
+//     $current_row->machine_name = "vocabulary_".$current_row->vid;
+//     Migration::registerMigration('TermOSMigration', 'TermOSMigration'.$current_row->machine_name, array('dst_voc
+
+    return 'TermOSMigrationVocabulary_' . $this->arguments['src_vid'];
+  }
+
 }
 
 
