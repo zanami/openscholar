@@ -35,6 +35,7 @@ function os_software_form_software_project_node_form_alter(&$form, &$form_state,
   		'data' => drupal_get_path('module', 'os_software') . '/os_software.css',
   	),
   );
+  $form['actions']['submit']['#submit'][] = '_os_software_form_redirect';
 }
 
 /**
@@ -250,4 +251,11 @@ function _os_software_prepare_release_title($node) {
 function _os_software_packaging_method_options() {
   $options = module_invoke_all('os_packaging_method_option');
   return $options;
+}
+
+/**
+ * Redirects user to Links page, individual link nodes should not be viewed.
+ */
+function _os_software_form_redirect($form, &$form_state) {
+  $form_state['redirect'] = 'software';
 }
