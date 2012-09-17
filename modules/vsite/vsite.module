@@ -250,33 +250,41 @@ function vsite_get_type_from_bundle($bundle = NULL) {
  * @see hook_vsite_og_node_type_info().
  */
 function vsite_field_attach_create_bundle($entity_type, $bundle) {
-  if ($entity_type != 'node') {
-    return;
-  }
+  switch ($entity_type) {
+    case 'file':
+      // every file is group content
+      drupal_set_message('Adding og_group_ref field to file type '.$bundle.' in create_bundle');
+      vsite_attach_fields_to_group_content('file', $bundle);
+    break;
+    case 'node':
+      if (!$type = vsite_get_type_from_bundle($bundle)) {
+        return;
+      }
 
-  if (!$type = vsite_get_type_from_bundle($bundle)) {
-    return;
-  }
-
-  if ($type == 'group') {
-    vsite_attach_fields_to_group($bundle);
-  }
-  else {
-    // Group content.
-    vsite_attach_fields_to_group_content($bundle);
+      if ($type == 'group') {
+        vsite_attach_fields_to_group($bundle);
+      }
+      else {
+        // Group content.
+        vsite_attach_fields_to_group_content('node', $bundle);
+      }
+    break;
   }
 }
 
 /**
  * Add group content fields to bundle.
  *
+ * @param $entity_type
+ *   The entity type of the bundle we want to attach the field to
+ *
  * @param $bundle
- *   The node-type to attach the fields to.
+ *   The bundle to attach the fields to.
  */
-function vsite_attach_fields_to_group_content($bundle) {
+function vsite_attach_fields_to_group_content($entity_type, $bundle) {
   $og_field = og_fields_info(OG_AUDIENCE_FIELD);
   $og_field['instance']['default_value_function'] = 'vsite_group_audience_field_default_value';
-  og_create_field(OG_AUDIENCE_FIELD, 'node', $bundle, $og_field);
+  og_create_field(OG_AUDIENCE_FIELD, $entity_type, $bundle, $og_field);
 }
 
 /**
