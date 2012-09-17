@@ -151,6 +151,10 @@ function os_software_os_add_new_links_alter(&$links) {
   if (isset($links['software_release'])) {
     unset($links['software_release']);
   }
+  if (isset($links['software_project'])) {
+    $request_path = request_path();
+    $links['software_project']['query'] = array('destination' => $request_path);
+  }
 }
 
 /**
