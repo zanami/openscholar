@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_classes.features.field.inc
@@ -495,3 +498,4 @@ function os_classes_field_default_fields() {
 
   return $fields;
 }
+
