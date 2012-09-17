@@ -67,6 +67,7 @@ function template_preprocess_cp_layout_widget(&$variables) {
   $classes_array = &$variables['classes_array'];
 
   $variables['bid'] = $widget['module']."-".$widget['delta'];
+
   if (!isset($widget['info'])) {
     // This is an error case, but "Untitled" is better than a blank widget
     $variables['widget_title'] = 'Untitled';
