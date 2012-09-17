@@ -228,6 +228,10 @@ body.header-main-right .region-header-second {
   padding: 0;
   }
 
+.sidebar ul.menu {
+text-align: right;
+}
+
 #menu-bar li {
     display: inline-block;
     padding-right: 1px;
