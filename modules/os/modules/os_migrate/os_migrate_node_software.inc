@@ -102,7 +102,9 @@ class SoftwareReleaseNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('field_software_package:description', 'field_scholar_software_file_data');
     $this->addFieldMapping('field_software_package:display', 'field_scholar_software_file_list');
 
-    $this->addUnmigratedDestinations(parent::subfields('field_software_package', array('file_class', 'destination_dir', 'file_replace', 'preserve_files')));
+    $this->addFieldMapping('file_class', 'file_class'); //can be overridden to accept a url
+
+    $this->addUnmigratedDestinations(parent::subfields('field_software_package', array('destination_dir', 'file_replace', 'preserve_files')));
 
 
   }
@@ -143,7 +145,7 @@ class SoftwareReleaseNodeOSMigration extends AbstractNodeOSMigration {
 
     $http = '/http:\/\//';
     if (preg_match($http, $current_row->filepath)) {
-      $current_row->filepath = preg_replace($http, '', $current_row->filepath);
+      $current_row->file_class = 'MigrateFileUri';
     }
 //     $file = parent::get_file_by_fid('field_scholar_software_file_fid');
 //     if ($file) {
