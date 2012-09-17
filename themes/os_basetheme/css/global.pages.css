@@ -206,10 +206,14 @@ div.messages ul {
 
 
 div.status /* Normal priority messages */ {
-	 background-image: none;
+	
 }
 
-
+div#success-message.status {
+  padding:3px 0  0 25px;
+  border-color: #be7;
+  background-repeat:no-repeat;
+}
 
 
 div.warning,
