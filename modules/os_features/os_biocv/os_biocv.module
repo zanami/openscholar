@@ -97,6 +97,24 @@ function os_biocv_process_node(&$vars) {
 }
 
 /**
+ * Implements hook_context_load_alter().
+ *
+ * Adds Bio Teaser block to os_front context
+ */
+function os_biocv_context_load_alter(&$context) {
+  if ($context->name !== 'os_front' || !isset($context->reactions['block'])) {
+    return;
+  }
+
+  $context->reactions['block']['blocks']['boxes-bio_teaser'] = array(
+    'module' => 'boxes',
+    'delta' => 'bio_teaser',
+    'region' => 'content_top',
+    'weight' => '-10',
+  );
+}
+
+/**
  * OpenScholar hooks
  */
 
@@ -117,25 +135,6 @@ function os_biocv_os_add_new_links_alter(&$links) {
   if ($cv_exists && isset($links['cv'])) {
     unset($links['cv']);
   }
-}
-
-/**
- * Implements hook_os_widget().
- *
- * Exposes blocks as OpenScholar widgets.
- */
-function os_biocv_os_widget() {
-  $items = array();
-
-  // Displays user's Bio node if available, otherwise prompts user.
-  $items['boxes-test_bio_box'] = array(
-    'module' => 'boxes',
-    'delta' => 'test_bio_box',
-    'weight' => '-10',
-    'info' => 'Bio Teaser',
-  );
-
-  return $items;
 }
 
 /**

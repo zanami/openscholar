@@ -90,7 +90,7 @@ class os_boxes_bio extends os_boxes_default {
     $spaces_features = variable_get('spaces_features', array());
 
     // If the bio is disabled show nothing
-    if (!$spaces_features["os_biocv"]) {
+    if (!isset($spaces_features["os_biocv"])) {
       return '';
     }
 
