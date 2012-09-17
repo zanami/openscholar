@@ -191,7 +191,7 @@ div.messages {
 }
 
 
-h1#page-title, /* The title of the page. */ {
+h1#page-title /* The title of the page. */ {
 }
 
 div.messages /* Important messages (status, warning, and error) for the user. See also the declarations in messages.css. */ {
@@ -206,7 +206,10 @@ div.messages ul {
 
 
 div.status /* Normal priority messages */ {
+	 background-image: none;
 }
+
+
 
 
 div.warning,
