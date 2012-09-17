@@ -67,10 +67,7 @@ function template_preprocess_cp_layout_widget(&$variables) {
   $classes_array = &$variables['classes_array'];
 
   $variables['bid'] = $widget['module']."-".$widget['delta'];
-<<<<<<< HEAD
-=======
 
->>>>>>> remote exported context biocv_biocv and implement hook_context_load_alter
   if (!isset($widget['info'])) {
     // This is an error case, but "Untitled" is better than a blank widget
     $variables['widget_title'] = 'Untitled';
