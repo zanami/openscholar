@@ -39,7 +39,7 @@ class OSNodeFieldQuery extends EntityFieldQuery {
  * Usage
 
 include_once drupal_get_path('module', 'os') . '/includes/node.inc';
-$query = new OpenscholarNodeFieldQuery('announcement');
+$query = new OSNodeFieldQuery('announcement');
 $query
   ->propertyOrderBy('created', 'DESC')
   ->fieldCondition('field_whatever', 'value', '1')
