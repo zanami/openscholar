@@ -138,7 +138,7 @@ function os_links_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_links_link',
-      'label' => 'Link URL',
+      'label' => 'URL (Web address)',
       'required' => 1,
       'settings' => array(
         'attributes' => array(
@@ -173,7 +173,7 @@ function os_links_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Description');
-  t('Link URL');
+  t('URL (Web address)');
   t('The web address of the link. Starts with: http://');
 
   return $fields;
