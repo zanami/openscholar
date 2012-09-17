@@ -26,7 +26,7 @@ class OSNodeFieldQuery extends EntityFieldQuery {
     }
 
     $space = spaces_get_space();
-    if (is_object($space) && !is_numeric($space->id)) {
+    if (!is_object($space) || !is_numeric($space->id)) {
       return;
     }
 
