@@ -110,11 +110,11 @@ class os_boxes_slideshow extends os_boxes_default {
 
     $form['display']['show_image_titles'] = array(
       '#type' => 'select',
-      '#title' => $title,
+      '#title' => t('Show image titles'),
       //omitting top/bottom options, but leaving this here so we can add it back in when we're ready for new features.
       //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
       '#options' => array('none' => t('No'), 'top' => t('Yes')),
-      '#default_value' => $this->options[$option],
+      '#default_value' => $this->options['show_image_titles'],
       );
 
     $form['display']['items_per_page'] = array(
