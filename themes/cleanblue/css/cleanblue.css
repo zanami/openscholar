@@ -154,7 +154,7 @@ background: #fff;
 
 #header-container {
   background: #f7f7f9;
-  height: 160px;
+  min-height: 160px;
   }
 
 body.no-sidebars #columns .hg-container,
