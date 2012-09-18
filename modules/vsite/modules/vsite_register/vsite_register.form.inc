@@ -19,7 +19,7 @@ function vsite_register_form($form, &$state) {
     '#required' => TRUE,
     '#field_prefix' => $base_url . '/',
     '#size' => 35,
-    '#description' => t('Minimum of 3 characters. Punctuation is not allowed except for hyphens and underscores. <br />Example: a choice of \'jdoe\' would result in the URL: %site.', array(
+    '#description' => t('Minimum of 3 characters, which must be lowercase. Punctuation is not allowed except for hyphens and underscores. <br />Example: a choice of \'jdoe\' would result in the URL: %site.', array(
       '%site' => $base_url . '/jdoe'
     )),
      '#ajax' => array(
@@ -395,6 +395,7 @@ function _vsite_register_validate($element, &$values) {
       if (($purl = purl_load(array('value'=>$values['domain'], 'provider'=>'spaces_og'), TRUE)) || menu_get_item($values['domain'])) {
         $msg[] = t('URL %url is taken.  Please choose another.', array('%url'=>$values['domain']));
       }
+
     break;
 
     case 'mail':
@@ -487,7 +488,7 @@ function _vsite_register_valid_url($url) {
     }
   }
 
-  return TRUE;
+  return purl_validate(array('value' => $url, 'provider' => 'spaces_og'));
 }
 
 /*

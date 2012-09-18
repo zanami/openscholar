@@ -1,19 +1,17 @@
 <?php
-
-// /**
-//  * @file
-//  *
-//  * Migration class
-//  **/
-
 /**
- * Vocab table migration class
+ *
+ * Migration class VocabularyOSMigration
+ *
+ * Migrates Taxonomy Vocabularies, for each vocab that migrated it will spawn an instance of TermOSMigration to migrate it's terms
  */
 class VocabularyOSMigration extends TableCopyMigration {
+
   public function __construct() {
 
     $this->description = t('OS taxonomy vocab migration');
 
+    //The D6 primary key for vocabularies
     $key_schema = array(
         'vid' => array(
             'type' => 'int',
@@ -26,6 +24,7 @@ class VocabularyOSMigration extends TableCopyMigration {
     $dest_table = 'taxonomy_vocabulary';
     $group = MigrateGroup::getInstance('taxonomy');
 
+    //Create a one-to-one migrate from D6 vocabulary to D7 taxonomy_vocabulary
     parent::__construct($table, $key_schema, $group, $dest_table);
 
   }
@@ -38,8 +37,8 @@ class VocabularyOSMigration extends TableCopyMigration {
 
     //New Machine name field
     $current_row->machine_name = "vocabulary_".$current_row->vid;
-    //Migration::registerMigration('TermOSMigration', 'TermOSMigration'.$current_row->machine_name, array('dst_vocabulary' => $current_row->machine_name, 'src_vid' => $current_row->vid));
-    //No longer used
+
+    //No longer used fields
     unset($current_row->relations);
     unset($current_row->help);
     unset($current_row->multiple);
@@ -49,8 +48,15 @@ class VocabularyOSMigration extends TableCopyMigration {
     return TRUE;  // FALSE to skip a row.
   }
 
+  /**
+   * Implements postImport
+   * @see Migration::postImport()
+   *
+   * After vocab import has completed create the term migrations for those vocabs that completed
+   */
   public function postImport() {
-    //register newly imported migrations.
+
+    //register newly imported vocabs as term migrations.
     $result = db_select('migrate_map_vocabularyos', 'm')
       ->fields('m', array('destid1'))
       ->execute();
@@ -89,6 +95,12 @@ class VocabularyOSMigration extends TableCopyMigration {
     variable_del('os_migrate_prerollback_vocabulary');
   }
 
+  /**
+   * The machine name to use for Term migrations
+   *
+   * @param int $vid
+   * @return string
+   */
   function _TermOSMachineName($vid) {
     return 'TermOSMigrationvocabulary_' . $vid;
   }
