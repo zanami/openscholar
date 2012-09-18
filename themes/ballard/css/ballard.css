@@ -205,6 +205,11 @@ color: #F3F3F1;
     width: 180px;
 }
 
+#menu-bar ul.nice-menu ul ul {
+    top: -1px;
+    left: 12.4em;
+}
+
 /**** MAIN NAV IN SIDEBAR ****/
 #columns .sidebar .block ul.nice-menu ul.nice-menu-,
 #columns .sidebar .block ul.nice-menu {
