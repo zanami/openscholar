@@ -860,3 +860,11 @@ function vsite_mail_alter(&$message) {
       break;
   }
 }
+
+/**
+ * Implements hook_node_presave().
+ */
+function vsite_node_presave($node) {
+  include_once(drupal_get_path('module', 'vsite') . '/includes/path.inc');
+  _vsite_alter_node_path_settings($node);
+}
