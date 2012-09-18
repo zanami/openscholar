@@ -60,7 +60,7 @@ class PresentationNodeOSMigration extends AbstractNodeOSMigration {
     return $fields;
   }
 
-  public function prepareRow($current_row) {
+  public function prepareRow(&$current_row) {
 
     /**
      * This method is called while looping over the results of the query provided earlier.
@@ -76,7 +76,7 @@ class PresentationNodeOSMigration extends AbstractNodeOSMigration {
     //need to get files from content_field_presentation_file
     $query = $this->_presentation_files_query($current_row->nid);
     $fields = array('filepath' => 'destination_file', 'data'=>'description', 'list' => 'display');
-    parent::os_migrate_prepare_files($query, $current_row, 'field_presentation_file', $fields);
+    parent::os_migrate_prepare_files($query->execute(), $current_row, 'field_presentation_file', $fields);
 
     return parent::prepareRow($current_row); //false -> skip this row
 
