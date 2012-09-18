@@ -33,16 +33,16 @@ class os_boxes_slideshow extends os_boxes_default {
     $form += parent::options_form($form_state);
 
     //get the media gallery nodes.
-    if ($view = views_get_view('gallery_slideshow')) {
-      $view->execute_display('default', array());
-    }
-
-    //jsut get gallery nids and titles
     $galleries = array();
-    $r = $view->result;
-    foreach ($view->result as $result) {
-      if (!isset($galleries[$result->node_file_usage_nid])) {
-        $galleries[$result->node_file_usage_nid] = $result->node_file_usage_title;
+    if ($view = views_get_view('os_image_gallery_slideshow')) {
+      $view->execute_display('default', array());
+
+      //just get gallery nids and titles
+      $r = $view->result;
+      foreach ($r as $result) {
+        if (!isset($galleries[$result->node_file_usage_nid])) {
+          $galleries[$result->node_file_usage_nid] = $result->node_file_usage_title;
+        }
       }
     }
 
