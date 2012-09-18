@@ -509,6 +509,9 @@ function vsite_register_notify_user($vsite){
   $count = count(vsite_get_vsite_by_owner($user -> uid));
   $timestamp = time();
 
+  $subject = t("An OpenScholar web site has been created for you.", array(
+    '!site_name' => variable_get('site_name', 'OpenScholar')
+  ));
   $msg_variables = array(
     '!vsite-count' => $count,
     '!username' => $user->name,
@@ -534,18 +537,11 @@ function vsite_register_notify_user($vsite){
 
   //detemine if user is creating first site or additional site, send appropriate message
   if(count(vsite_get_vsite_by_owner($user -> uid)) > 1){
-    $body = t("Hi !username,\n\nYour new website at !site has been activated!\n\nYour website url is: !scholar_site_url \n\nYou will be able to log into your site at !site_login_uri with username: !username \n\nWe hope you will enjoy your new web site.\n\nSincerely,\nThe !site Team", $msg_variables);
-  	$subject = t("An additional OpenScholar website has been created for you.", array(
-      '!site_name' => variable_get('site_name', 'OpenScholar')
-  	));
+    $body = t("Hi !username,\n\nYour new web site at !site has been activated. Your web site url is !scholar_site_url\n\nYou will be able to log into your site at !site_login_uri with username:\n\n!username\n\nWe hope you will enjoy your new web site.\n\nSincerely,\nThe !site Team", $msg_variables);
   }else{
     $body = t(variable_get('openscholar_register_email_message', _vsite_register_get_default_mail_message()), $msg_variables);
-    $subject = t("An OpenScholar website has been created for you.", array(
-      '!site_name' => variable_get('site_name', 'OpenScholar')
-  	));
   }
 
-  //$body = t("Hi !username,\n\nYour new web site at !site has been activated. Your web site url is !scholar_site_url\n\nYou will be able to log into your site at !site_login_uri with username:\n\n!username\n\nWe hope you will enjoy your new web site.\n\nSincerely,\nThe !site Team", $msg_variables);
   $params['subject'] = $subject;
   $params['body'] = $body;
   $result = drupal_mail('vsite_register', 'vsite_register_notify', $user->mail, $language, $params, $from, $send=TRUE);
@@ -571,5 +567,5 @@ function vsite_register_mail($key, &$message, $params) {
  *
  */
 function _vsite_register_get_default_mail_message(){
-  return "Hi !username,\n\nYour new website at !site has been activated!\n\nYour website url is: !scholar_site_url \n\nYou may now log in by clicking on this link below or copying and pasting it in your browser:\n!login_url \n\nThis login can be used only once. After logging in, you will be redirected to !scholar_edit_url so you can change your password. \n\nOnce you have set your own password, you will be able to log in at !site_login_uri with your new username: !username\n\nWe hope you will enjoy your new web site.\n\nSincerely,\nThe !site Team";
+  return "Hi !username,\n\nYour new web site at !site has been activated.\n\nYour web site url is !scholar_site_url\nYou may now log in by clicking on this link or copying and pasting it in your browser: \n\n !login_url \n\nThis login can be used only once. After logging in, you will be redirected to !scholar_edit_url so you can change your password. Once you have set your own password, you will be able to log in at !site_login_uri as username:\n\n!username\n\nWe hope you will enjoy your new web site.\n\nSincerely,\nThe !site Team";
 }
