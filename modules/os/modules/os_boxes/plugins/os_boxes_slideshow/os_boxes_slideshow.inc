@@ -126,10 +126,14 @@ class os_boxes_slideshow extends os_boxes_default {
 
     //get jquery effects from view (include file hsould arleady be loaded)
     $slideshow_form_full = $state = array();
-    @views_slideshow_cycle_views_slideshow_slideshow_type_form($slideshow_form_full, $state, $view);
-    $form['display']['effect'] = $slideshow_form_full['views_slideshow_cycle']['effect'];
-    $form['display']['effect']['#default_value'] = $this->options['effect'];
-
+    if (module_exists('views_slideshow_cycle')) {
+      if (!function_exists('views_slideshow_cycle_views_slideshow_slideshow_type_form')) {
+        require_once drupal_get_path('module', 'views_slideshow_cycle') . '/views_slideshow_cycle.views_slideshow.inc';
+      }
+      @views_slideshow_cycle_views_slideshow_slideshow_type_form($slideshow_form_full, $state, $view);
+      $form['display']['effect'] = $slideshow_form_full['views_slideshow_cycle']['effect'];
+      $form['display']['effect']['#default_value'] = $this->options['effect'];
+    }
 
     return $form;
   }
