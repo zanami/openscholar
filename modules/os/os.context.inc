@@ -152,12 +152,6 @@ function os_context_default_contexts(){
                   'region' => 'menu_bar',
                   'weight' => '-10'
               ),
-              'cp-cp_minimenu' => array(
-                  'module' => 'cp',
-                  'delta' => 'cp_minimenu',
-                  'region' => 'header_top',
-                  'weight' => - 10
-              ),
               'boxes-site_logo' => array(
                 'module' => 'boxes',
                 'delta' => 'site_logo',
