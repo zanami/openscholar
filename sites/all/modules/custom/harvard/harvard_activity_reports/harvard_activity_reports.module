@@ -318,8 +318,16 @@ function harvard_activity_reports_subval_sort($a,$subkey) {
  */
 function harvard_activity_reports_create_xml($nodeLoad, $huID, $status,$nid) {
 	$xmlReturn = '';
-	$huID = $huID;
+	$hu_id = $huID;
 	$siteNID = $nid;
+	// load in the vsite data
+    $vsite = vsite_get_vsite($siteNID);
+    if(!empty($vsite)) {
+	  // Create the source url.
+	  $source_url = $vsite->get_absolute_url();
+    }else{
+      $source_url = '';
+    }
 	// pull in the xml
 	$xml = $nodeLoad;
 	// grab the status
@@ -352,17 +360,21 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID, $status,$nid) {
     $huidAtt = $domtree->createAttribute("huid");
     $personElement->appendChild($huidAtt);
     // now the test node
-    $huidAttValue = $domtree->createTextNode($huID);
+    $huidAttValue = $domtree->createTextNode($hu_id);
     $huidAtt->appendChild($huidAttValue);
-    // attribute #2
+    // Attribute #2 sourceURL.
+    $url_att = $domtree->createAttribute("sourceUrl");
+    $personElement->appendChild($url_att);
+    // Create the text for the sourceUrl attribute
+    $url_att_value = $domtree->createTextNode($source_url);
+    $url_att->appendChild($url_att_value);
+    // attribute #3
     $asAtt = $domtree->createAttribute("action_status");
     $personElement->appendChild($asAtt);
     // now the test node
     $asAttValue = $domtree->createTextNode($xmlStatus);
     $asAtt->appendChild($asAttValue);
 
-    // load in the vsite data
-    $vsite=vsite_get_vsite($siteNID);
     // case swith on the status
     switch($xmlStatus) {
     	case "ok":
@@ -446,10 +458,10 @@ function harvard_activity_reports_page() {
 
 		// run the check module exists
 		if(harvard_activity_reports_check_module('iqss_pinserver_register')==TRUE) {
-			$selectHUID = "SELECT i.huid FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = %d AND i.uid = n.uid";
+			$selectHUID = "SELECT i.hashID FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = %d AND i.uid = n.uid";
 			$huidResult = db_query($selectHUID, $nid);
 			$huidRow = db_fetch_object($huidResult);
-			$huID = $huidRow->huid;
+			$huID = $huidRow->hashID;
 		}else{
 			$huID = NULL;
 		}// end if
