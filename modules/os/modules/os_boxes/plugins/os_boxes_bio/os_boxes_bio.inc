@@ -93,7 +93,11 @@ class os_boxes_bio extends os_boxes_default {
     if (!isset($spaces_features["os_biocv"])) {
       return '';
     }
-
+    //
+    $vsite = vsite_get_vsite();
+    if(!$vsite || !$vsite->access_admin()) {
+      return '';
+    }
     // Otherwise, displays vsite admin empty text, prompting bio configuration.
     $wrapper = array(
       '#type' => 'container',
