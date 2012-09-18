@@ -11,16 +11,6 @@ include_once 'os_software.features.inc';
  */
 
 /**
- * Implements hook_vsite_og_node_type_info().
- */
-function os_software_vsite_og_node_type_info() {
-  return array(
-    'software_project' => 'group content',
-    'software_release' => 'group content',
-  );
-}
-
-/**
  * Implements hook_form_FORM_ID_form_alter() for software_project_node_form
  *
  * Hides the packaging method field if only one option exists.
@@ -143,6 +133,16 @@ function os_software_cron() {
  */
 
 /**
+ * Implements hook_vsite_og_node_type_info().
+ */
+function os_software_vsite_og_node_type_info() {
+  return array(
+    'software_project' => 'group content',
+    'software_release' => 'group content',
+  );
+}
+
+/**
  * Implements hook_os_add_new_links_alter()
  *
  * Removes "Add new > Software Release" link from "Add new" contextual links
@@ -150,6 +150,10 @@ function os_software_cron() {
 function os_software_os_add_new_links_alter(&$links) {
   if (isset($links['software_release'])) {
     unset($links['software_release']);
+  }
+  if (isset($links['software_project'])) {
+    $request_path = request_path();
+    $links['software_project']['query'] = array('destination' => $request_path);
   }
 }
 

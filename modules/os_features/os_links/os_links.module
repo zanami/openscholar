@@ -33,15 +33,20 @@ function os_links_process_node(&$vars) {
 }
 
 /**
- * Implements hook_form_FORM_ID_form_alter() for link_node_form.
- */
-function os_links_form_link_node_form_alter(&$form, &$form_state, $form_id) {
-  $form['actions']['submit']['#submit'][] = '_os_links_form_redirect';
-}
-
-/**
  * OpenScholar hooks
  */
+
+/**
+ * Implements hook_os_add_new_links_alter()
+ *
+ * Redirects user after creating Link node from "Add new" links
+ */
+function os_links_os_add_new_links_alter(&$links) {
+  if (isset($links['link'])) {
+    $request_path = request_path();
+    $links['link']['query'] = array('destination' => $request_path);
+  }
+}
 
 /**
  * Implements hook_vsite_og_node_type_info().
@@ -52,14 +57,4 @@ function os_links_vsite_og_node_type_info() {
   );
 }
 
-/**
- * Custom functions
- */
-
-/**
- * Redirects user to Links page, individual link nodes should not be viewed.
- */
-function _os_links_form_redirect($form, &$form_state) {
-  $form_state['redirect'] = 'links';
-}
 
