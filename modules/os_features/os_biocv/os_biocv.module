@@ -16,25 +16,25 @@ include_once 'os_biocv.features.inc';
 function os_biocv_menu() {
   $items = array();
   $items['biocv'] = array(
-    'title' => 'Biography',
+    'title' => 'Bio',
     'page callback' => '_os_biocv_bio_page_contents',
     'access callback' => 'spaces_access_feature',
     'access arguments' => array('view', 'os_biocv'),
-    'menu_name' => 'features',
+    'menu_name' => 'primary-menu',
     'type' => MENU_NORMAL_ITEM,
   );
   $items['biocv/bio'] = array(
     'title' => 'Biography',
     'page callback' => '_os_biocv_bio_page_contents',
     'access callback' => '_os_biocv_show_local_tasks',
-    'menu_name' => 'features',
+    'menu_name' => 'primary-menu',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['biocv/cv'] = array(
     'title' => 'Curriculum Vitae',
     'page callback' => '_os_biocv_cv_page_contents',
     'access callback' => '_os_biocv_show_local_tasks',
-    'menu_name' => 'features',
+    'menu_name' => 'primary-menu',
     'type' => MENU_LOCAL_TASK,
   );
   $items['cp/build/features/os_biocv'] = array(

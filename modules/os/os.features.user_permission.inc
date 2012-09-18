@@ -79,16 +79,6 @@ function os_user_default_permissions() {
     'module' => 'overlay',
   );
 
-  // Exported permission: access printer-friendly version.
-  $permissions['access printer-friendly version'] = array(
-    'name' => 'access printer-friendly version',
-    'roles' => array(
-      0 => 'anonymous user',
-      1 => 'authenticated user',
-    ),
-    'module' => 'book',
-  );
-
   // Exported permission: access site in maintenance mode.
   $permissions['access site in maintenance mode'] = array(
     'name' => 'access site in maintenance mode',

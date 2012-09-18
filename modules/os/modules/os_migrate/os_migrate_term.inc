@@ -14,18 +14,16 @@ class TermOSMigration extends DynamicMigration {
   public function __construct(array $arguments){
     $this->description = t('OS taxonomy term migration');
     $this->arguments = $arguments;
+    $this->machineName = "TermOSMigrationvocabulary_" . $this->arguments['src_vid'];
 
-    $group = MigrateGroup::getInstance('taxonomy');
+    parent::__construct(MigrateGroup::getInstance('taxonomy'));
 
-
-    parent::__construct($group);
-
-    $query = Database::getConnection('default', variable_get('os_migrate_database', ''))
-      ->select('term_data', 'td')
-      ->fields('td', array('tid','name','description','weight'))
-      ->orderBy('parent')
-      ->condition('td.vid', $arguments['src_vid'])
-      ->distinct();
+    $query = Database::getConnection('default', variable_get('os_migrate_database', ''))->select('term_data', 'td')->fields('td', array(
+      'tid',
+      'name',
+      'description',
+      'weight'
+    ))->orderBy('parent')->condition('td.vid', $arguments['src_vid'])->distinct();
 
     // Join to the hierarchy so we can sort on parent, but we'll pull the
     // actual parent values in separately in case there are multiples.
@@ -66,6 +64,9 @@ class TermOSMigration extends DynamicMigration {
     if (module_exists('pathauto')) {
       $this->addFieldMapping('pathauto')->description('By default, disable in favor of migrated paths')->defaultValue(0);
     }
+
+    // Drupal 6 had no format for terms.
+    $this->addFieldMapping('format');
   }
 
   /**
@@ -82,24 +83,24 @@ class TermOSMigration extends DynamicMigration {
       'parent'
     ))->condition('tid', $current_row->tid)->execute();
     foreach ( $result as $parent_row ) {
-      $row->parent[] = $parent_row->parent;
+      $current_row->parent[] = $parent_row->parent;
+    }
+
+    // Add the path to the source row, if relevant
+    if (module_exists('path')) {
+
+      $query = Database::getConnection('default', variable_get('os_migrate_database', ''))->select('url_alias', 'ua')->fields('ua', array(
+        'dst'
+      ))->condition('ua.src', 'taxonomy/term/' . $current_row->tid, '=');
+      $results = $query->execute()->fetchAssoc();
+
+      if ($results) {
+        $current_row->path = $results['dst'];
+      }
     }
 
     return TRUE; // FALSE to skip a row.
   }
-
-
-  /**
-   * Construct the machine name from the source file name.
-   */
-  protected function generateMachineName($class_name = NULL) {
-
-//     $current_row->machine_name = "vocabulary_".$current_row->vid;
-//     Migration::registerMigration('TermOSMigration', 'TermOSMigration'.$current_row->machine_name, array('dst_voc
-
-    return 'TermOSMigrationVocabulary_' . $this->arguments['src_vid'];
-  }
-
 }
 
 
