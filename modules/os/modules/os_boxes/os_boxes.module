@@ -172,7 +172,7 @@ function os_boxes_get_factories() {
         'module' => 'boxes',
         'delta' => "boxes_add__$p",
         'label' => $info['title'],
-        'block_config_path' => "os/boxes/add/{$p}",
+        'block_config_path' => "os/widget/add/{$p}",
         'factory' => true,
       );
     }
