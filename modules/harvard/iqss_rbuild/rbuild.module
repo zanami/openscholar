@@ -39,9 +39,50 @@ function rbuild_form_software_project_node_form_alter(&$form, &$form_state, $for
   // Checks that the provided Repository URL and Short Name are valid
   $form['#validate'][] = '_rbuild_project_node_validate';
 
-  // Hides the Documentation text field unless user 1.
+  // Prevents users from changing packaging method info after creating node.
   global $user;
-  $form['field_rbuild_docs']['#access'] = ((int)$user->uid === 1);
+  $is_user_1 = ((int)$user->uid === 1);
+  $is_new = (!isset($form['#node']->nid));
+  if ($is_new || $is_user_1) {
+    return;
+  }
+  $form['field_software_method']['#disabled'] = TRUE;
+  $form['field_software_repo']['#disabled'] = TRUE;
+  $form['field_rbuild_short_name']['#disabled'] = TRUE;
+}
+
+/**
+ * Implements hook_form_FORM_ID_form_alter() for software_project_node_form
+ */
+function rbuild_form_software_release_node_form_alter(&$form, &$form_state, $form_id) {
+  // Hides the package URL from the form
+  $form['field_rbuild_package_url']['#access'] = FALSE;
+
+  // Displays the package URL if the project is Rbuild
+  $node = node_load($form['#node']->nid);
+  if (!isset($node->nid)) {
+    return;
+  }
+  $items = field_get_items('node', $node, 'field_software_project');
+  $project_nid = $items[0]['value'];
+  $node = node_load($project_nid);
+  if (!isset($node->nid)) {
+    return;
+  }
+  $items = field_get_items('node', $node, 'field_software_method');
+  $is_not_rbuild = ($items[0]['value'] !== 'Rbuild repository');
+  if ($is_not_rbuild) {
+    return;
+  }
+  $form['field_rbuild_package_url']['#access'] = TRUE;
+
+  // Disables the URL field unless user 1.
+  global $user;
+  $is_user_1 = ((int)$user->uid === 1);
+  if ($is_user_1) {
+    return;
+  }
+  $form['field_rbuild_package_url']['#disabled'] = TRUE;
 }
 
 /**
@@ -137,7 +178,6 @@ function rbuild_node_update($node) {
     return;
   }
 
-  _os_software_delete_child_releases($node);
   _rbuild_init_releases($node);
 }
 

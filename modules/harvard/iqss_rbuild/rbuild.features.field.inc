@@ -13,14 +13,14 @@
 function rbuild_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-software_project-field_rbuild_docs'
-  $fields['node-software_project-field_rbuild_docs'] = array(
+  // Exported field: 'node-software_project-field_rbuild_package_url'
+  $fields['node-software_project-field_rbuild_package_url'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_rbuild_docs',
+      'field_name' => 'field_rbuild_package_url',
       'foreign keys' => array(
         'format' => array(
           'columns' => array(
@@ -62,7 +62,7 @@ function rbuild_field_default_fields() {
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'field_rbuild_docs',
+      'field_name' => 'field_rbuild_package_url',
       'label' => 'Documentation',
       'required' => 0,
       'settings' => array(
