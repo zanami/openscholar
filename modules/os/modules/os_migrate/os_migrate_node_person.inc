@@ -41,12 +41,15 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
 
 
     //photo
-    $this->addFieldMapping('field_person_photo', 'filepath')
+    $this->addFieldMapping('field_person_photo', 'field_person_photo')
       ->defaultValue(NULL);
     $this->addSimpleMappings(parent::subfields('field_person_photo', array('destination_file', 'cropbox_x', 'cropbox_y', 'cropbox_height' ,'cropbox_width', 'alt', 'title')));
     $this->addFieldMapping('field_person_photo:source_dir')
       ->defaultValue(variable_get('os_migrate_files', NULL));
     $this->addUnmigratedDestinations(parent::subfields('field_person_photo', array('file_class', 'language', 'destination_dir', 'file_replace', 'preserve_files')));
+
+    //node abstract cleanup
+    $this->removeFieldMapping('title');
   }
 
   public function query($content_type) {
@@ -67,10 +70,14 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
      * Describe each of the source columns
      */
 
+    $crop_subfields = parent::subfields('field_person_photo', array('destination_file', 'cropbox_x', 'cropbox_y', 'cropbox_height', 'cropbox_width', 'alt', 'title'));
+    $fields += array_combine($crop_subfields, $crop_subfields);
+    $fields['filepath'] = t('Path to profile image');
+
     return $fields;
   }
 
-  public function prepareRow($current_row) {
+  public function prepareRow(&$current_row) {
 
     /**
      * This method is called while looping over the results of the query provided earlier.
@@ -85,7 +92,9 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
 
     if ($current_row->field_person_photo_fid && $data = unserialize($current_row->field_person_photo_data)) {
       $file = parent::get_file_by_fid($current_row->field_person_photo_fid);
-      $current_row->{'field_person_photo'} = $file->filepath;
+      parent::os_migrate_prepare_files(array($file), $current_row, 'field_person_photo');
+
+//      $current_row->{'field_person_photo'} = $file->filepath;
       $current_row->{'field_person_photo:destination_file'} = $file->filepath;
 
       $crop = $data['crop'];
