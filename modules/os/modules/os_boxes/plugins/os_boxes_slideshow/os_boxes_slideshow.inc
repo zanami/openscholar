@@ -16,6 +16,7 @@ class os_boxes_slideshow extends os_boxes_default {
     $options['pager'] = 'none';
     $options['controls'] = 'none';
     $options['slide_counter'] = 'none';
+    $options['show_image_titles'] = 'none';
     $options['items_per_page'] = 10;
     $options['effect'] = 'fade';
     $options['style'] = 'dark';
@@ -107,6 +108,15 @@ class os_boxes_slideshow extends os_boxes_default {
       '#default_value' => $this->options[$option],
     );
 
+    $form['display']['show_image_titles'] = array(
+      '#type' => 'select',
+      '#title' => $title,
+      //omitting top/bottom options, but leaving this here so we can add it back in when we're ready for new features.
+      //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
+      '#options' => array('none' => t('No'), 'top' => t('Yes')),
+      '#default_value' => $this->options[$option],
+      );
+
     $form['display']['items_per_page'] = array(
       '#type' => 'textfield',
       '#title' => t('Number of items'),
@@ -151,13 +161,20 @@ class os_boxes_slideshow extends os_boxes_default {
       $style_options['views_slideshow_cycle']['effect'] = $this->options['effect'];
       $handler->set_option('style_options', $style_options);
 
+      //title
+      if ($this->options['show_image_titles'] == 'none') {
+        $fields = $handler->get_option('fields');
+        $fields['filename']['exclude'] = TRUE;
+        $handler->set_option('fields', $fields);
+      }
+
       //number of items
       if ((int)$this->options['items_per_page'] > 0) {
         $view->set_items_per_page((int) $this->options['items_per_page']);
       } else {
         $handler->set_option('use_pager', FALSE);
       }
-      
+
       $output = $view->preview();
 
       // dynamic size adjustments
