@@ -344,7 +344,7 @@ input[type="search"] {
 -moz-border-radius:3px;
 border-radius:3px;
 padding: 5px 16px 5px 2px;
- width: 70%;
+ width:125px;
 }
 
 #search-block-form input[type="submit"] {
