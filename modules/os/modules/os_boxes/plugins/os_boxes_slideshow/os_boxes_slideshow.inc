@@ -33,16 +33,16 @@ class os_boxes_slideshow extends os_boxes_default {
     $form += parent::options_form($form_state);
 
     //get the media gallery nodes.
-    if ($view = views_get_view('gallery_slideshow')) {
-      $view->execute_display('default', array());
-    }
-
-    //jsut get gallery nids and titles
     $galleries = array();
-    $r = $view->result;
-    foreach ($view->result as $result) {
-      if (!isset($galleries[$result->node_file_usage_nid])) {
-        $galleries[$result->node_file_usage_nid] = $result->node_file_usage_title;
+    if ($view = views_get_view('os_image_gallery_slideshow')) {
+      $view->execute_display('default', array());
+
+      //just get gallery nids and titles
+      $r = $view->result;
+      foreach ($r as $result) {
+        if (!isset($galleries[$result->node_file_usage_nid])) {
+          $galleries[$result->node_file_usage_nid] = $result->node_file_usage_title;
+        }
       }
     }
 
@@ -110,11 +110,11 @@ class os_boxes_slideshow extends os_boxes_default {
 
     $form['display']['show_image_titles'] = array(
       '#type' => 'select',
-      '#title' => $title,
+      '#title' => t('Show image titles'),
       //omitting top/bottom options, but leaving this here so we can add it back in when we're ready for new features.
       //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
       '#options' => array('none' => t('No'), 'top' => t('Yes')),
-      '#default_value' => $this->options[$option],
+      '#default_value' => $this->options['show_image_titles'],
       );
 
     $form['display']['items_per_page'] = array(
@@ -126,10 +126,14 @@ class os_boxes_slideshow extends os_boxes_default {
 
     //get jquery effects from view (include file hsould arleady be loaded)
     $slideshow_form_full = $state = array();
-    @views_slideshow_cycle_views_slideshow_slideshow_type_form($slideshow_form_full, $state, $view);
-    $form['display']['effect'] = $slideshow_form_full['views_slideshow_cycle']['effect'];
-    $form['display']['effect']['#default_value'] = $this->options['effect'];
-
+    if (module_exists('views_slideshow_cycle')) {
+      if (!function_exists('views_slideshow_cycle_views_slideshow_slideshow_type_form')) {
+        require_once drupal_get_path('module', 'views_slideshow_cycle') . '/views_slideshow_cycle.views_slideshow.inc';
+      }
+      @views_slideshow_cycle_views_slideshow_slideshow_type_form($slideshow_form_full, $state, $view);
+      $form['display']['effect'] = $slideshow_form_full['views_slideshow_cycle']['effect'];
+      $form['display']['effect']['#default_value'] = $this->options['effect'];
+    }
 
     return $form;
   }
