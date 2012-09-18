@@ -146,7 +146,7 @@ class os_boxes_slideshow extends os_boxes_default {
     drupal_add_css(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_slideshow/theme/os-slideshow-' . $this->options['style'] . '.css');
     drupal_add_css(drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_slideshow/os_boxes_slideshow.css');
 
-    if ($view = views_get_view('gallery_slideshow')) {
+    if ($view = views_get_view('os_image_gallery_slideshow')) {
 
       if (((int)$this->options['gallery_nid']) > 0) {
         $view->set_arguments($this->options['gallery_nid']);
