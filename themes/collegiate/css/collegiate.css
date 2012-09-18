@@ -336,7 +336,7 @@ padding:0px;
 	}
 	
 #menu-bar ul.nice-menu ul ul {
-	margin-top:0;
+	margin-top:-1px;
 }
 
 #menu-bar ul.nice-menu ul ul li {
@@ -351,6 +351,7 @@ padding:0px;
 #menu-bar ul.nice-menu ul li a {
 	color:#FFF;
 	background:#353535;
+	padding: 10px 15px 5px;
 }
 
 

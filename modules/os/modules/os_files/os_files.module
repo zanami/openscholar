@@ -152,6 +152,8 @@ function _os_files_clean_up_fields() {
 }
 
 /**
+ * Implements hook_field_formatter_info.
+ *
  * Formatter that splits images into its own list
  * Used in conjunction with jCarousel
  */
@@ -168,6 +170,8 @@ function os_files_field_formatter_info() {
 }
 
 /**
+ * Implements hook_field_formatter_view.
+ *
  * This formatter renders a list of files as two elements:
  * 1. A list of images
  * 2. A table of everything else
@@ -250,4 +254,17 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
 function os_files_jcarousel_add($elements) {
   jcarousel_add('os-files-image-list');
   return $elements;
+}
+
+/**
+ * Implements hook_views_data_alter.
+ *
+ * Adds file_managed as a table the pseudo-table spaces can be joined to.
+ * This enables files to use the spaces_current_space filter
+ */
+function os_files_views_data_alter(&$data) {
+  $data['spaces']['table']['join']['file_managed'] = array(
+    'left_field' => 'fid',
+    'field' => 'id',
+  );
 }
