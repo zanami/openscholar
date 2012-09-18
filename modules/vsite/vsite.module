@@ -331,7 +331,6 @@ function vsite_attach_fields_to_group($bundle) {
   if (!field_info_instance('node', 'field_site_address', $bundle)) {
     $instance = array(
       'bundle' => $bundle,
-      'default_value' => array(array('value' => 'Your Town<br>Your City, State, ZIP')),
       'deleted' => '0',
       'description' => '',
       'display' => array(
@@ -404,7 +403,6 @@ function vsite_attach_fields_to_group($bundle) {
   if (!field_info_instance('node', 'field_site_description', $bundle)) {
     $instance = array(
       'bundle' => $bundle,
-      'default_value' => array(array('value' => 'Your website')),
       'deleted' => '0',
       'description' => '',
       'display' => array(
