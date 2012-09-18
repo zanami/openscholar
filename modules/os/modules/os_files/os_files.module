@@ -132,8 +132,7 @@ function os_files_views_default_views_alter(&$views) {
     $view = $views['media_default'];
 
     //Link in Files related via file_usage
-    $view->add_item('default', 'relationship', 'file_usage', 'file_to_node');
-    $view->add_item('default', 'filter', 'spaces', 'current', array('relationship' => 'file_to_node'));
+    $view->add_item('default', 'filter', 'spaces', 'current');
   }
 }
 
