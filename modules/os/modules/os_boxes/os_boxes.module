@@ -216,22 +216,6 @@ function os_boxes_preprocess_boxes_box(&$variables) {
 }
 
 /**
- * Adds contextual links to our box widgets
- */
-function os_boxes_block_view_alter(&$array, $block) {
-  if ($block->module == 'boxes') {
-    if (!is_array($array['content'])) {
-      $array['content'] = array('#markup' => $array['content']);
-    }
-
-    $array['content']['#contextual_links']['widget'] = array(
-      'os/widget',
-      array($block->module, $block->delta),
-    );
-  }
-}
-
-/**
  * Remove core block link from contextual
  */
 function os_boxes_menu_contextual_links_alter(&$links, $router_item, $path) {

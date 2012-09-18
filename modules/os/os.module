@@ -237,6 +237,15 @@ function os_block_view_alter(&$block, &$data) {
       '#region' => $data->region,
     );
   }
+
+  if (!is_array($block['content'])) {
+    $block['content'] = array('#markup' => $block['content']);
+  }
+
+  $block['content']['#contextual_links']['widget'] = array(
+    'os/widget',
+    array($data->module, $data->delta),
+  );
 }
 
 /**
