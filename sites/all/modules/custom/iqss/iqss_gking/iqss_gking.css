@@ -81,7 +81,7 @@ body.front .box-vsite_taxonomy_fbt .description {
     position:absolute;
     display:none;
     width:224px;
-    min-height: 184px;
+    min-height: 219px;
     padding: 5px 14px;
     border-left: 2px solid #db7002;
     left:230px;
@@ -208,6 +208,16 @@ body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(8) div.de
 @-moz-document url-prefix() {  body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(8) div.description {
       top: -193px;
 } }
+
+
+body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(9) div.description {
+     top: -212px;
+}
+
+@-moz-document url-prefix("")  {
+  body.front .box-vsite_taxonomy_fbt ul.term-applications li:nth-of-type(9) div.description { top: -219px; }
+}
+
 
 body.front .box-vsite_taxonomy_fbt li {
     position:relative;
