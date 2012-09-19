@@ -294,12 +294,15 @@ ul ul ul ul {
   list-style-type: circle;
 }
 
+.view-os-image-gallery ul,
 .views-field-media-gallery-media ul {
 clear:right;
 }
 
+.view-os-image-gallery ul li,
 .view-gallery-listing ul li,
-.views-field-media-gallery-media ul li {
+.views-field-media-gallery-media ul li,
+.view-os-image-gallery ul li {
 list-style-type: none;	
 display:inline;
 margin: 10px 10px 0 0;
