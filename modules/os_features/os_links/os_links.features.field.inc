@@ -55,7 +55,7 @@ function os_links_field_default_fields() {
           'label' => 'hidden',
           'module' => 'text',
           'settings' => array(
-            'trim_length' => 600,
+            'trim_length' => 100,
           ),
           'type' => 'text_summary_or_trimmed',
           'weight' => '0',
