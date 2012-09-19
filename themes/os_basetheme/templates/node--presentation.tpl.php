@@ -51,7 +51,6 @@ if (!$page) {
   <?php endif; // end teaser ?>
   <?php if ($page): // begin default adaptivetheme full page node tpl ?>
   <?php print render($title_prefix); ?>
-  <?php dpm($content); ?>
   <?php if ($title && !$page): ?>
     <header<?php print $header_attributes; ?>>
       <?php if ($title): ?>
