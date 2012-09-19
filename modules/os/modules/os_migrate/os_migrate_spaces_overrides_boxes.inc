@@ -22,6 +22,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
 
 
   public function prepareRow(&$row) {
+
     if (($value = @unserialize($row->value)) === FALSE) {
       if (strlen($row->value) > 65535) {
         //single image saved some images inline (ie img src='data:image:png....).  these were truncated in db and don't function
@@ -267,6 +268,18 @@ class BoxPorter {
     }
 
     return;
+  }
+
+  public function _port_box_os_boxes_bio($box, $id, $key_only) {
+    if ($key_only) {
+      return $id; //no change
+    }
+
+    if (isset($box->options['nid'])) {
+      unset ($box->options['nid']);
+    }
+
+    return $box;
   }
 
   public function _port_box_os_boxes_modal_image($box, $id, $key_only) {
