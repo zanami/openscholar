@@ -96,7 +96,6 @@ function _vsite_alias_without_purl($node) {
  */
 function _vsite_get_pathauto_pattern($node) {
   if (variable_get('language_content_type_' . $node->type, 0)) {
-    // @todo make sure language default var name same
     $pattern = trim(variable_get('pathauto_node_' . $node->type . '_' . $node->language . '_pattern', FALSE));
   }
   // Otherwise, gets the default pattern
