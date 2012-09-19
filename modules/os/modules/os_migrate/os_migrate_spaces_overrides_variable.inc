@@ -17,6 +17,14 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   }
 
   public function prepareRow(&$row) {
+    //correct some known unserialized rows
+    if ($row->value == '0') {
+      $row->value = 'b:0;';
+    }
+    if ($row->value == '1') {
+      $row->value = 'b:1;';
+    }
+
     if (($value = @unserialize($row->value)) === FALSE) {
       if (empty($row->value) || $row->value == 'NULL') {
         return; //unless we have to update object_ids.
