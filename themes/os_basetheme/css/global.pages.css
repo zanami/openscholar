@@ -324,7 +324,7 @@ ul.links li {
 }
 
 
-bookiconsprite.png
+/*bookiconsprite.png*/
 
 .feed-icon /* The link to the RSS or Atom feed for the current list of content */ {
 }
@@ -338,6 +338,7 @@ bookiconsprite.png
   margin: 0;
 }
 
+.views-row {margin-bottom:1.5em;}
 
 /*
  * First sidebar (on left in LTR languages, on right in RTL)
