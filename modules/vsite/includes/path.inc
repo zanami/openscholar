@@ -17,10 +17,17 @@ function _vsite_get_pathauto_settings(){
 }
 
 /**
- * Integrates pathauto & purl
+ * Integrates pathauto & purl.
  *
- * - Adds validation to verify paths without a purl prefix do not already exist
- * - Adds purl prefix to manually created paths to preserve namespace
+ * - Adds validation to verify paths without a purl prefix do not already exist.
+ *   i.e. Somehow a node is saved with a missing token for pathauto aliasing,
+ *   in many cases, i.e. a blog without a title, the pathauto alias 'blog'
+ *   for a node collides with the OS App menu item to list all blogs.
+ *
+ * - Adds purl prefix to manually created paths to preserve namespace.
+ *   i.e. A user Mary saves a Software Project with alias "mysoftware"
+ *   Without this check here, now a sitewide alias "mysoftware" would exist,
+ *   which would redirect to "mary/mysoftware".
  *
  * @see vsite_node_presave()
  */
@@ -29,7 +36,7 @@ function _vsite_alter_node_path_settings(&$node) {
   if (!(module_exists('path') && module_exists('pathauto') && $vsite)) {
     return;
   }
-
+  /*
   module_load_include('inc', 'pathauto');
   $pattern = _vsite_get_pathauto_pattern($node);
 
@@ -44,15 +51,15 @@ function _vsite_alter_node_path_settings(&$node) {
       $node->pathauto_perform_alias = FALSE;
       return;
     }
-  }
+  }*/
 
   // For manually entered aliases, prefix alias with the purl modifier.
   // Note that Drupal has already validated the path prior to hook_node_presave,
   // so there's no way that an existing path has gotten to this point.
   else {
     // Did they provide a path? Is the site purl already prepended?
-    if (strlen($node->path) && strpos($node->path, $vsite->group->purl . "/") !== 0 && $node->nid != $vsite->group->nid && strlen($vsite->group->purl)) {
-      $node->path = $vsite->group->purl . "/" . $node->path;
+    if (strlen($node->path['alias']) && strpos($node->path['alias'], $vsite->group->purl . "/") !== 0 && $node->nid != $vsite->group->nid && strlen($vsite->group->purl)) {
+      $node->path['alias'] = $vsite->group->purl . "/" . $node->path['alias'];
     }
   }
 }
