@@ -23,7 +23,7 @@ function os_classes_context_default_contexts() {
         'class_material' => 'class_material',
       ),
       'options' => array(
-        'node_form' => '1',
+        'node_form' => '0',
       ),
     ),
     'path' => array(

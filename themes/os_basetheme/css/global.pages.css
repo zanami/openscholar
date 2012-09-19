@@ -546,12 +546,13 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	
 
 #mediaBrowser {
-	border-radius: 0;
-	background: #FFF;
+  padding: 0;
+  border-radius: 0;
+  background: #FFF;
   -moz-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
   -webkit-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
   box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
-  }
+}
  
 .ui-corner-all {
     border-radius: 0;
