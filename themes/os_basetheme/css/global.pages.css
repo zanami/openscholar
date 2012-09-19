@@ -130,7 +130,7 @@ div.messages {
    
 }
 
-#block-os-powered-by a,
+#block-os-powered-by span a,
 .os-powered-link a.os-poweredby {
     background: url("../images/poweredby.png") no-repeat scroll 0 0 transparent;
     border: medium none !important;
@@ -141,8 +141,12 @@ div.messages {
     text-indent: -999em;
     width: 85px;
     margin-top:-25px;
-   
-}
+  }
+
+.page-cp #block-os-powered-by span a {
+    background: url("../images/poweredby.png") no-repeat scroll 0 -27px transparent;
+    margin-top:0;
+  }
 
 #logo /* Wrapping link for logo */ {
   padding: 10px 0;
