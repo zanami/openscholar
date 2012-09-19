@@ -67,7 +67,7 @@ h1#page-title {font-size:1.3em;}
 
 /* LAYOUT ELEMENTS */
 
-#block-os-primary-menu.menu-wrapper, #columns, #footer {width:910px;margin:0 auto;}
+
 
 body.sidebar-first #columns .hg-container,
 body.header-left-main #header-container .hg-container {
@@ -94,11 +94,6 @@ body.two-sidebars .region-sidebar-first {
 /* HEADER ELEMENTS */
 
 
-#header-container {
-    padding: 25px 0 15px;
-    margin:0 auto;
-    width:910px;
-    }
 
 #header-container h1 {
     font-size: 31px;
