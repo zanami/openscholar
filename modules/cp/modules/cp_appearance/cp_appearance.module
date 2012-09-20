@@ -18,7 +18,7 @@ function cp_appearance_menu() {
     'weight' => 20,
   	'menu_name' => 'cp',
     'access callback' => array('spaces_access_admin'),
-  
+
   );
 
   $items['cp/appearance/theme'] = array(
@@ -29,7 +29,7 @@ function cp_appearance_menu() {
     'weight' => 20,
   	'menu_name' => 'cp',
     'access callback' => array('spaces_access_admin'),
-  
+
   );
 
   return $items;
@@ -98,7 +98,7 @@ function cp_appearance_theme_picker_form($form, &$state) {
         '#default_value' => variable_get($elem, $default_flavor),
         '#ajax' => array(
           'callback' => 'cp_appearance_swap_screenshot',
-          'wrapper' => 'screenshot_' . $theme->name, 
+          'wrapper' => 'screenshot_' . $theme->name,
         ),
       );
     }
@@ -124,7 +124,7 @@ function cp_appearance_theme_picker_form($form, &$state) {
   );
 
   $form = system_settings_form($form);
-  
+
   return $form;
 }
 
@@ -139,8 +139,6 @@ function cp_appearance_theme_picker_form_submit(&$form, &$form_state) {
 
 	if ($op != t('Reset to defaults')) {
 	  os_theme_set($form_state['values']['cp_appearance_theme']);
-	} else {
-	  os_theme_del();
 	}
 }
 
@@ -182,7 +180,7 @@ function _cp_appearance_get_flavor_options($theme_flavors, $info, &$default_flav
  * Themes the theme_picker form
  */
 function theme_cp_appearance_theme_picker_form($variables) {
-  $form = $variables['form']; 
+  $form = $variables['form'];
   $output = drupal_render($form['cp_appearance_theme']);
   $items = array();
 
@@ -216,7 +214,7 @@ function theme_cp_appearance_theme_picker_form($variables) {
 	}
 
 	$output .= theme_item_list(array('items'=>$items, 'type'=>'ul', 'title'=>NULL, 'attributes'=>array('class' => 'theme-picker')));
-	unset($form['#theme']); 
+	unset($form['#theme']);
 	$output .= drupal_render($form);
 
 	return $output;
@@ -227,30 +225,30 @@ function theme_cp_appearance_theme_picker_form($variables) {
  */
 function cp_appearance_swap_screenshot($form, &$state) {
   ctools_include('themes', 'os');
-  
+
   $trigger = $state['triggering_element']['#name'];
   $flavor = $state['values'][$trigger];
-  
+
   $flavors = os_theme_get_flavors();
   if (array_key_exists($flavor, $flavors)) {
     $path = $flavors[$flavor]['path'] . '/' . $flavors[$flavor]['screenshot'];
     $module = $flavors[$flavor]['module'];
-  } 
-  
+  }
+
   //no screenshot or flavor.  just use the default
   if (!($path && file_exists($path))) {
     $module = str_replace('os_appearance_', '', $trigger);
     $module = str_replace('_flavor', '', $module);
     $theme = os_get_themes($module);
-    $path = $theme->info['screenshot']; 
+    $path = $theme->info['screenshot'];
   }
-  
+
 
   return theme('image', array(
-    'path' => $path, 
-    'alt' => t('Screenshot for %theme theme', array('%theme' => $module)), 
-    'title' => '', 
-    'attributes' => array('class' => 'screenshot', 'id' => 'screenshot_' . $module), 
+    'path' => $path,
+    'alt' => t('Screenshot for %theme theme', array('%theme' => $module)),
+    'title' => '',
+    'attributes' => array('class' => 'screenshot', 'id' => 'screenshot_' . $module),
     'getsize' => FALSE
   ));
 }
