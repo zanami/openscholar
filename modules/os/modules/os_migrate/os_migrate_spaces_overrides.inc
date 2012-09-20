@@ -52,6 +52,14 @@
     return $query;
   }
 
+  public function countQuery() {
+
+    $query =  clone $this->query();
+    $query->addExpression("COUNT(DISTINCT `type`, `id`, `object_type`, `object_id`)","count");
+
+    return $query;
+  }
+
    public function prepareRow(&$row) {
      if ($this->source_object != $this->dest_object) {
        $row->object_type = $this->dest_object;
