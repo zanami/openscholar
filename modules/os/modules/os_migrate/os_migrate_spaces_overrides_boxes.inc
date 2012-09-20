@@ -52,6 +52,15 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     return parent::prepareRow($row);
   }
 
+  /**
+   * @see Migration::preImport()
+   */
+  public function preImport() {
+    parent::preImport();
+
+    $this->_copy_shield_files();
+  }
+
   //after importing boxes, create 3 special boxes for what used to be custom themes.
   //don't worry about rollbacks.  spaces_overrides rollbacks delete entire table.
   public function postImport() {
@@ -134,6 +143,71 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     $BP = new BoxPorter($this);
     return $BP->_box_key_exists($key);
   }
+
+  /*
+   * @function _copy_shield_files
+   *
+   * Copies shields from d6's vsite_shields.  Sets up varibles so they're accessible in shields box.
+   */
+  function _copy_shield_files() {
+    //path to legacy module
+    $src = variable_get('os_migrate_files', '');
+    $src .= '/sites/all/modules/openscholar_vsite/vsite_shields/theme/shields/';
+
+    //get files or bail out
+    if (($files = scandir($src)) === FALSE) {
+      parent::saveMessage(t('Could not read shields directory.  No shields migrated.'), MigrationBase::MESSAGE_NOTICE);
+      return FALSE;
+    }
+
+    $dest = 'public://os_shields';
+    file_prepare_directory($dest, FILE_CREATE_DIRECTORY);
+    $shield_info = array();
+    $files = preg_grep('/\.png/', $files);
+
+    //get a default
+    $legacy_info = parent::d6_variable_get('vsite_shields_shield_info', FALSE);
+    if ($legacy_info) {
+      foreach ($legacy_info as $file => $info) {
+        if ($info['default']) {
+          $default = $file;
+        }
+      }
+    }
+    if (empty($default)) {
+      $default = $files[0]; //use first shield as default.
+    }
+    variable_set('os_shields_shield', $default);
+
+    //add each file
+    foreach ($files as $file) {
+      $fh = fopen($src.$file, 'r');
+      if ($saved = file_save_data($fh, $dest.'/'.$file)) {
+        $shield_info[$saved->filename]['hidden'] = 0;
+        $shield_info[$saved->filename]['default'] = (int)($saved->filename == $default);
+        $shield_info[$saved->filename]['fid'] = $saved->fid;
+      }
+      fclose($fh);
+    }
+
+    //and save the settings
+    variable_set('os_shields_shield_info', $shield_info);
+  }
+
+  /**
+   * @function _remove_shield_files
+   *
+   * Removes shields added by _copy_shield_files
+   */
+//   function _remove_shield_files() {
+//     $shields = variable_get('os_shields_shield_info', array());
+//     foreach($shields as $fn => $info) {
+//       file_delete($shield, true);
+//       unset($shield_info[$shield->filename]);
+//     }
+
+
+//   }
 }
 
 /**

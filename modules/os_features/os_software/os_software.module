@@ -121,7 +121,7 @@ function os_software_node_delete($node) {
  * Invokes hook to automatically create release content (i.e. Rbuild)
  */
 function os_software_cron() {
-  module_invoke_all('os_software_process_remote_release');
+  module_invoke('rbuild', 'os_software_process_remote_release');
 }
 
 /**

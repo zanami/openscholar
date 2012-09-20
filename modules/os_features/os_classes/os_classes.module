@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * Code for the OS Classes feature.
@@ -25,7 +24,8 @@ function os_classes_field_extra_fields() {
         'description' => t('Add "Class Material" to this class'),
         'weight' => 100,
       ),
-    ));
+    ),
+  );
 
   return $extra;
 }
@@ -58,12 +58,12 @@ function os_classes_node_view($node, $view_mode, $langcode) {
   $links = array();
   $links[] = array(
     'title' => t("Add class material"),
-    'href' =>  'node/add/class-material',
+    'href' => 'node/add/class-material',
     'query' => array('field_class' => $node->nid),
   );
   $node->content[$name]['#markup'] = theme('links', array(
-  		'links' => $links,
-    	'attributes' => array('class' => array('node-reference-node'))
+      'links' => $links,
+      'attributes' => array('class' => array('node-reference-node')),
     ));
 }
 
@@ -77,17 +77,16 @@ function os_classes_node_delete($node) {
   _os_classes_delete_children($node->nid);
 }
 
-
 /**
  * Implements hook_link_alter().
  *
  * @todo verify works -oren
  *
-function os_classes_node_view_alter(&$build) {
-  if (isset($links['class_material_field_class'])) {
-    unset($links['class_material_field_class']);
-  }
-} */
+ function os_classes_node_view_alter(&$build) {
+ if (isset($links['class_material_field_class'])) {
+ unset($links['class_material_field_class']);
+ }
+ } */
 
 /**
  * Implements hook_vsite_og_node_type_info().
@@ -118,8 +117,7 @@ function os_classes_os_add_new_links_alter(&$links) {
 function _os_classes_delete_children($nid) {
   include_once drupal_get_path('module', 'os') . '/includes/node.inc';
   $query = new OSNodeFieldQuery('class_material');
-  $query
-    ->fieldCondition('field_class', 'target_id', $nid);
+  $query->fieldCondition('field_class', 'target_id', $nid);
   $result = $query->execute();
 
   if (!isset($result['node'])) {
@@ -128,3 +126,4 @@ function _os_classes_delete_children($nid) {
 
   node_delete_multiple(array_keys($result['node']));
 }
+
