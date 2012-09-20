@@ -39,7 +39,12 @@ abstract class TableCopyMigration extends OSMigration {
       $map_schema[$key]['alias'] = $this->alias;
     }
 
-    $this->source = new MigrateSourceSQL($this->query(), array(), null, array('map_joinable' => FALSE));
+    $count_query = null;
+    if (method_exists($this, 'countQuery')) {
+      $count_query = $this->countQuery();
+    }
+
+    $this->source = new MigrateSourceSQL($this->query(), array(), $count_query, array('map_joinable' => FALSE));
     $this->destination = new MigrateDestinationTableCopy($this->dest_table, $schema);
     $this->map = new MigrateSQLMap($this->machineName, $map_schema, $schema);
 
