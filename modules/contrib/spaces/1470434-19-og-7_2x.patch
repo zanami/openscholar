@@ -1,8 +1,8 @@
 diff --git a/spaces_og/plugins/space_og.inc b/spaces_og/plugins/space_og.inc
-index 84f94e7..4c27dfd 100644
+index 407025f..2244511 100644
 --- a/spaces_og/plugins/space_og.inc
 +++ b/spaces_og/plugins/space_og.inc
-@@ -4,39 +4,43 @@
+@@ -4,35 +4,39 @@
   * Organic groups integration for Spaces.
   */
  class space_og extends space_type_purl {
@@ -41,19 +41,13 @@ index 84f94e7..4c27dfd 100644
        // TODO determine what replaces this in D7.
        // og_set_group_context($this->group);
        // og_set_language($this->group);
--
-+      
+ 
        // Handle theme switching for OG
 -      if (!empty($this->group->og_theme)) {
 +      if (! empty($this->group->og_theme)) {
          global $custom_theme;
          $custom_theme = $this->group->og_theme;
        }
--
-+      
-       return TRUE;
-     }
-     return FALSE;
 @@ -45,7 +49,7 @@ class space_og extends space_type_purl {
    /**
     * Override of load().
@@ -63,7 +57,7 @@ index 84f94e7..4c27dfd 100644
      // The 0 id means a new group is being saved. Instantiate a space
      // so preset values can become active.
      if ($this->id === 0) {
-@@ -60,30 +64,34 @@ class space_og extends space_type_purl {
+@@ -60,21 +64,25 @@ class space_og extends space_type_purl {
    /**
     * Override of access_space().
     */
@@ -71,15 +65,14 @@ index 84f94e7..4c27dfd 100644
 +  function access_space($account = NULL){
      global $user;
      $account = isset($account) ? $account : $user;
--
+ 
 -    return parent::access_space($account) && (
 -      user_access('administer group') ||
 -      $this->group->{OG_ACCESS_FIELD}[LANGUAGE_NONE][0]['value'] != 1 || // Group is public, allow access
 -      og_is_member($this->og->gid, 'user', $account) || // User is group member, allow access
 -      user_is_anonymous()); // User hasn't logged in -- provide entry point
-+    
 +    $public = (! module_exists('og_access') || $this->group->{OG_ACCESS_FIELD}[LANGUAGE_NONE][0]['value'] != 1);
-+    
++
 +    return parent::access_space($account) && (user_access('administer group') || $public ||     // Group is public, allow access
 +    og_is_member($this->group_type, $this->id, 'user', $account) ||     // User is
 +                                                                    // group
@@ -96,9 +89,8 @@ index 84f94e7..4c27dfd 100644
 +  function access_admin($account = NULL){
      global $user;
      $account = isset($account) ? $account : $user;
--
-+    
-     if ($this->og && ($this->og_is_group_admin($this->og, $account) || $this->group->uid === $account->uid)) {
+ 
+@@ -82,8 +90,8 @@ class space_og extends space_type_purl {
        return TRUE;
      }
      else {
@@ -109,19 +101,16 @@ index 84f94e7..4c27dfd 100644
        }
      }
      return parent::access_admin($account);
-@@ -92,23 +100,23 @@ class space_og extends space_type_purl {
+@@ -92,7 +100,7 @@ class space_og extends space_type_purl {
    /**
     * Override of access_feature().
     */
 -  function access_feature($op = 'view', $feature, $account = NULL) {
 +  function access_feature($op = 'view', $feature, $account = NULL){
      $access = parent::access_feature($op, $feature, $account);
--
-+    
+ 
      global $user;
-     $account = isset($account) ? $account : $user;
--
-+    
+@@ -101,14 +109,16 @@ class space_og extends space_type_purl {
      // Only allow access if: user can administer OG, group is public,
      // or user is a member.
      $membership = FALSE;
@@ -130,9 +119,10 @@ index 84f94e7..4c27dfd 100644
        $membership = $membership->state;
      }
 -    $access = $access && (user_access('administer group') || $this->group->{OG_ACCESS_FIELD}[LANGUAGE_NONE][0]['value'] == OG_CONTENT_ACCESS_PUBLIC || $membership);
--
-+    $access = $access && (user_access('administer group') || (! module_exists('og_access') || $this->group->{OG_ACCESS_FIELD}[LANGUAGE_NONE][0]['value'] == OG_CONTENT_ACCESS_PUBLIC) || $membership);
-+    
++
++    $wrapper = entity_metadata_wrapper('node', $this->group);
++    $access = $access && (user_access('administer group') || (!module_exists('og_access') || empty($wrapper->{OG_ACCESS_FIELD}) || !$wrapper->{OG_ACCESS_FIELD}->value()) || $membership);
+ 
      // Additional check for group membership if authoring content in this group.
      if ($op === 'create') {
 -      return $access && og_is_member($this->og->gid, 'user', $account);
@@ -140,7 +130,7 @@ index 84f94e7..4c27dfd 100644
      }
      return $access;
    }
-@@ -116,12 +124,12 @@ class space_og extends space_type_purl {
+@@ -116,12 +126,12 @@ class space_og extends space_type_purl {
    /**
     * Override of access_user().
     */
@@ -156,7 +146,7 @@ index 84f94e7..4c27dfd 100644
      if (($test_user && $test_account) || user_access('view users outside groups')) {
        return parent::access_user($op, $account);
      }
-@@ -131,66 +139,80 @@ class space_og extends space_type_purl {
+@@ -131,46 +141,49 @@ class space_og extends space_type_purl {
    /**
     * Implementation of space->router().
     */
@@ -171,9 +161,8 @@ index 84f94e7..4c27dfd 100644
 +      case 'node' :
          $node = $object;
 -        $form = !isset($node->nid) || isset($node->date) ? TRUE : FALSE;
--
 +        $form = ! isset($node->nid) || isset($node->date) ? TRUE : FALSE;
-+        
+ 
          // Group node
          if (og_is_group_type('node', $node->type)) {
            // Don't make new groups from within a group space.
@@ -204,17 +193,15 @@ index 84f94e7..4c27dfd 100644
 +              $gids[] = $item['target_id'];
              }
            }
--
+ 
 -          // If the node belongs to the current active group space, or we're in an allowable other space type, pass thru
 -          if ($this->active && in_array($this->og->gid, $gids)) {
-+          
 +          // If the node belongs to the current active group space, or we're in
 +          // an allowable other space type, pass thru
 +          if ($this->active && in_array($this->id, $gids)) {
              return;
            }
--
-+          
+ 
            // Otherwise route
            $gid = reset($gids);
            if ($gid) {
@@ -223,22 +210,17 @@ index 84f94e7..4c27dfd 100644
            }
            return;
          }
-         break;
-     }
+@@ -179,15 +192,29 @@ class space_og extends space_type_purl {
    }
--
-+  
+ 
    // Spaces OG views filter
 -  function views_filter(&$query, $base_table = '', $relationship = '') {
--    /**
--     * TODO Fix ensure_table. This works only for certain relationships
--     */
 +  function views_filter(&$query, $base_table = '', $relationship = ''){
-+    
++
      switch ($base_table) {
 -      case 'node':
 -        $table = $query->ensure_table('field_data_group_audience', $relationship);
--        $query->add_where(0, 'field_data_group_audience.group_audience_gid', $this->og->gid, '=');
+-        $query->add_where(0, "$table.group_audience_gid", $this->og->gid);
 -        break;
 -      case 'users':
 +      case 'og_membership' :
@@ -252,12 +234,12 @@ index 84f94e7..4c27dfd 100644
 +          $query->set_group_operator('OR');
 +          $where_group = $query->set_where_group('AND');
 +        }
-+        
++
 +        // Ensure that the og_membership relationship was added
          $table = $query->ensure_table('og_membership', $relationship);
--        $query->add_where(0, 'og_membership_users.gid', $this->og->gid);
+-        $query->add_where(0, "$table.gid", $this->og->gid);
 +        if ($table) {
-+          
++
 +          // Add og_membership relationship parameters
 +          $query->add_where($where_group, $table . '.gid', $this->og->nid, '=');
 +          $query->add_where($where_group, $table . '.group_type', $this->group_type, '=');
@@ -265,7 +247,7 @@ index 84f94e7..4c27dfd 100644
          break;
      }
    }
-@@ -199,7 +221,7 @@ class space_og extends space_type_purl {
+@@ -196,7 +223,7 @@ class space_og extends space_type_purl {
     * Custom function group_node_admin_access().
     * Check that the current menu node object is also a group node.
     */
@@ -274,7 +256,7 @@ index 84f94e7..4c27dfd 100644
      if ($node && og_is_group_type('node', $node->type)) {
        return $this->admin_access();
      }
-@@ -209,15 +231,16 @@ class space_og extends space_type_purl {
+@@ -206,15 +233,16 @@ class space_og extends space_type_purl {
    /**
     * Check if the user is a group administator.
     *
@@ -298,7 +280,7 @@ index 84f94e7..4c27dfd 100644
      }
      return FALSE;
    }
-@@ -226,7 +249,7 @@ class space_og extends space_type_purl {
+@@ -223,7 +251,7 @@ class space_og extends space_type_purl {
     * Override of excluded_paths().
     * Adds og, og/* paths.
     */
@@ -382,10 +364,10 @@ index 34ccdab..b0f3265 100644
  
    return $gids;
 diff --git a/spaces_og/views/spaces_og.views.inc b/spaces_og/views/spaces_og.views.inc
-index 3074c72..83369d5 100644
+index 3074c72..a9a0568 100644
 --- a/spaces_og/views/spaces_og.views.inc
 +++ b/spaces_og/views/spaces_og.views.inc
-@@ -3,39 +3,97 @@
+@@ -3,39 +3,98 @@
  /**
   * Implements hook_views_plugins().
   */
@@ -478,8 +460,9 @@ index 3074c72..83369d5 100644
 +      }
 +
 +      if (in_array($table, array(
-+          'node',
-+          'user'
++        'file_managed',
++        'node',
++        'user'
 +      ))) {
 +
 +        //Check to see if the relationship has already been added via the UI
@@ -491,7 +474,7 @@ index 3074c72..83369d5 100644
 +        //Set the 'current' space filter up to use the new og relationshipt
 +        $view->set_item_option($display_id, 'filter', 'current', 'relationship', 'og_membership_rel');
 +      }
-+      
++
 +      $i = 1;
 +      //For views that use multiple spaces filters tie the multiple spaces filters to thier respective og_membership tables
 +      while($view->get_item($display_id, 'filter', 'current_'.$i) && $view->get_item($display_id, 'relationship', 'og_membership_rel_'.$i)){
