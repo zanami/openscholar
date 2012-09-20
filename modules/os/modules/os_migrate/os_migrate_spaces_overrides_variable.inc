@@ -129,6 +129,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
       'vsite_design_disable_shield',
       'vsite_shields_disable_shield',
       'vsite_design_maintheme', //Populated directly from og_theme
+      'scholar_front_show_title', //No longer used
     );
     return in_array($object_id, $discontinued);
   }
