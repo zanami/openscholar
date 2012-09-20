@@ -308,7 +308,7 @@ width:170px;
     bottom: 5px;
     padding: 2px 0 4px 8px;
     position: absolute;
-    width: 98.5%;
+    width: 98.75%;
     z-index: 6;
     color:#FFF;
 }
@@ -341,7 +341,7 @@ width:170px;
     border: none;
     height: 22px;
     position: absolute;
-    width: 98.5%;
+    width: 98.75%;
     z-index: 10;
     top:160px;
 }
