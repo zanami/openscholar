@@ -72,6 +72,32 @@ function os_wysiwyg_node_update($node){
   os_wysiwyg_update_files($node);
 }
 
+function os_wysiwyg_node_delete($node) {
+  $files = array();
+  $body = field_get_items('node', $node, 'body');
+  if (isset($body[0]['value'])) {
+
+    $matches = array();
+    if (preg_match_all("/\[\[.*?\]\]/s", $body[0]['value'], $matches)) {
+
+      $matches = $matches[0];
+      $matches = str_replace("[[", "", $matches);
+      $matches = str_replace("]]", "", $matches);
+      foreach ($matches as $tag) {
+        if (!is_string($tag)) {
+          continue;
+        }
+
+        $tag_info = drupal_json_decode($tag);
+        if ($tag_info['type'] == 'media' && $tag_info['fid'] && $file = file_load($tag_info['fid'])) {
+          file_usage_delete($file, 'os_wysiwyg', 'node', $node->nid, 1);
+          file_delete($file);
+        }
+      }
+    }
+  }
+}
+
 function os_wysiwyg_wysiwyg_editor_settings_alter(&$settings, $context){
 
   // settings there are no UI options for
