@@ -36,3 +36,14 @@ function os_events_vsite_og_node_type_info() {
     'event' => 'group content',
   );
 }
+
+/**
+ * Implements hook_views_pre_render
+ *
+ * Adds a js file to handle overlays being opened from the colorbox
+ */
+function os_events_views_pre_render(&$view) {
+  if ($view->name == 'os_events') {
+    drupal_add_js(drupal_get_path('module', 'os_events').'/os_events.js');
+  }
+}
