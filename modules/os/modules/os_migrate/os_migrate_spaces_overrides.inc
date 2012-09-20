@@ -30,9 +30,10 @@
         ),
     );
 
-    $table = 'spaces_overrides';
+    $this->table = 'spaces_overrides';
+    $this->alias = 's';
 
-    parent::__construct($table, $key_schema, MigrateGroup::getInstance('spacesoverrides'));
+    parent::__construct($this->table, $key_schema, MigrateGroup::getInstance('spacesoverrides'), NULL, $this->altCountQuery());
   }
 
   public function query() {
@@ -52,10 +53,14 @@
     return $query;
   }
 
-  public function countQuery() {
+  public function altCountQuery() {
 
-    $query =  clone $this->query();
-    $query->addExpression("COUNT(DISTINCT `type`, `id`, `object_type`, `object_id`)","count");
+    $query = $this->query()->countQuery();
+    $exp = &$query->getExpressions();
+    if(count($exp) && isset($exp['expression'])){
+      //Replace the default COUNT(*)
+      $exp['expression']['expression'] = "COUNT(DISTINCT `type`, `id`, `object_type`, `object_id`)";
+    }
 
     return $query;
   }

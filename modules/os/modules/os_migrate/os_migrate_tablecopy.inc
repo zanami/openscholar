@@ -22,7 +22,7 @@ abstract class TableCopyMigration extends OSMigration {
    *   ),
    *  );
    */
-  public function __construct($table, $schema, $group=NULL, $dest_table=NULL) {
+  public function __construct($table, $schema, $group=NULL, $dest_table=NULL, $count_query = NULL) {
     if ($group) {
       parent::__construct($group);
     } else {
@@ -37,11 +37,6 @@ abstract class TableCopyMigration extends OSMigration {
     $map_schema = $schema;
     foreach($map_schema as $key => $key_schema) {
       $map_schema[$key]['alias'] = $this->alias;
-    }
-
-    $count_query = null;
-    if (method_exists($this, 'countQuery')) {
-      $count_query = $this->countQuery();
     }
 
     $this->source = new MigrateSourceSQL($this->query(), array(), $count_query, array('map_joinable' => FALSE));
