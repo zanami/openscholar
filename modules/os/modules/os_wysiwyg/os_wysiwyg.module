@@ -149,10 +149,5 @@ function os_wysiwyg_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file) 
  * Adds a prerender to the text_format element
  */
 function os_wysiwyg_element_info_alter(&$elements) {
-  $elements['text_format']['#pre_render'][] = 'os_wysiwyg_format_toggle';
-}
-
-function os_wysiwyg_format_toggle($element) {
-  $element['#attached']['js'][] = drupal_get_path('module', 'os_wysiwyg').'/os_wysiwyg.js';
-  return $element;
+  $elements['text_format']['#attached']['js'][] = drupal_get_path('module', 'os_wysiwyg').'/os_wysiwyg.js';
 }
