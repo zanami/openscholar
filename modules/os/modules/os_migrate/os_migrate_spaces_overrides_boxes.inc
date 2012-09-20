@@ -128,6 +128,15 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
 
   }
 
+  /**
+   * @see Migration::postRollback()
+   */
+  public function postRollback() {
+    parent::postRollback();
+
+    $this->_remove_shield_files();
+  }
+
   function _update_box($box, $id) {
     $BP = new BoxPorter($this);
     $box = $BP->_update_box($box, $id);
@@ -152,40 +161,34 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
   function _copy_shield_files() {
     //path to legacy module
     $src = variable_get('os_migrate_files', '');
-    $src .= '/sites/all/modules/openscholar_vsite/vsite_shields/theme/shields/';
+    $src .= '/' . parent::d6_variable_get('file_directory_path');
+    $src .= '/vsite_shields/';
 
     //get files or bail out
-    if (($files = scandir($src)) === FALSE) {
-      parent::saveMessage(t('Could not read shields directory.  No shields migrated.'), MigrationBase::MESSAGE_NOTICE);
-      return FALSE;
-    }
+//     if (($files = scandir($src)) === FALSE) {
+//       parent::saveMessage(t('Could not read shields directory.  No shields migrated.'), MigrationBase::MESSAGE_NOTICE);
+//       return FALSE;
+//     }
 
     $dest = 'public://os_shields';
     file_prepare_directory($dest, FILE_CREATE_DIRECTORY);
     $shield_info = array();
-    $files = preg_grep('/\.png/', $files);
+    //$files = preg_grep('/\.png/', $files);
 
     //get a default
     $legacy_info = parent::d6_variable_get('vsite_shields_shield_info', FALSE);
-    if ($legacy_info) {
-      foreach ($legacy_info as $file => $info) {
-        if ($info['default']) {
-          $default = $file;
-        }
-      }
-    }
-    if (empty($default)) {
-      $default = $files[0]; //use first shield as default.
-    }
-    variable_set('os_shields_shield', $default);
 
     //add each file
-    foreach ($files as $file) {
-      $fh = fopen($src.$file, 'r');
+    foreach ($legacy_info as $file => $info) {
+      $filepath = $src . $file;
+      $fh = fopen($filepath, 'r');
       if ($saved = file_save_data($fh, $dest.'/'.$file)) {
-        $shield_info[$saved->filename]['hidden'] = 0;
-        $shield_info[$saved->filename]['default'] = (int)($saved->filename == $default);
+        $shield_info[$saved->filename]['hidden'] = $info['hidden'];
+        $shield_info[$saved->filename]['default'] = $info['default'];
         $shield_info[$saved->filename]['fid'] = $saved->fid;
+        if ($info['default']) {
+          variable_set('os_shields_shield', $saved->filename);
+        }
       }
       fclose($fh);
     }
@@ -199,15 +202,17 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
    *
    * Removes shields added by _copy_shield_files
    */
-//   function _remove_shield_files() {
-//     $shields = variable_get('os_shields_shield_info', array());
-//     foreach($shields as $fn => $info) {
-//       file_delete($shield, true);
-//       unset($shield_info[$shield->filename]);
-//     }
+  function _remove_shield_files() {
+    $shields = variable_get('os_shields_shield_info', array());
+    foreach($shields as $fn => $info) {
+      if ($file = file_load($info['fid'])) {
+        file_delete($file, TRUE);
+      }
+    }
 
-
-//   }
+    variable_del('os_shields_shield_info');
+    variable_del('os_shields_shield');
+  }
 }
 
 /**
