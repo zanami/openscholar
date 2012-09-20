@@ -1,0 +1,4 @@
+name = Body Readmore
+description = Hides read more links on teasers that show the entire body field.
+core = 7.x
+files[] = body_readmore.test
