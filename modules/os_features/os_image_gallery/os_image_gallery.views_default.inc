@@ -232,6 +232,12 @@ function os_image_gallery_views_default_views() {
   $handler->display->display_options['fields']['uri']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['uri']['alter']['text'] = '<img src="[uri]" width="100%" height="100%">';
   $handler->display->display_options['fields']['uri']['element_label_colon'] = FALSE;
+  /* Field: File: Title */
+  $handler->display->display_options['fields']['media_title']['id'] = 'media_title';
+  $handler->display->display_options['fields']['media_title']['table'] = 'field_data_media_title';
+  $handler->display->display_options['fields']['media_title']['field'] = 'media_title';
+  $handler->display->display_options['fields']['media_title']['label'] = '';
+  $handler->display->display_options['fields']['media_title']['element_label_colon'] = FALSE;
   /* Field: Global: View result counter */
   $handler->display->display_options['fields']['counter']['id'] = 'counter';
   $handler->display->display_options['fields']['counter']['table'] = 'views';
@@ -239,6 +245,7 @@ function os_image_gallery_views_default_views() {
   $handler->display->display_options['fields']['counter']['label'] = '';
   $handler->display->display_options['fields']['counter']['exclude'] = TRUE;
   $handler->display->display_options['fields']['counter']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['counter']['alter']['text'] = '[media_title]';
   $handler->display->display_options['fields']['counter']['alter']['make_link'] = TRUE;
   $handler->display->display_options['fields']['counter']['alter']['path'] = '[uri]';
   $handler->display->display_options['fields']['counter']['alter']['absolute'] = TRUE;
