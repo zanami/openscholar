@@ -37,16 +37,15 @@ function _vsite_get_pathauto_settings() {
  */
 function _vsite_alter_node_path_settings(&$node) {
   $vsite = vsite_get_vsite();
-  if (!(module_exists('path') && module_exists('pathauto') && $vsite)) {
+  if (!$vsite || ((int) $node->nid === (int) $vsite->group->nid)) {
     return;
   }
-
   module_load_include('inc', 'pathauto');
-  $pattern = _vsite_get_pathauto_pattern($node);
+  $pattern = pathauto_pattern_load_by_entity('node', $node->type, $node->language);
 
   // For pathauto generated aliases, verify no naming collisions
   // Only checks aliases if a pathauto pattern exists and pathauto will alias.
-  if ($pattern && (!isset($node->pathauto_perform_alias) || $node->pathauto_perform_alias)) {
+  if ($pattern && (!(isset($node->path['pathauto']) && empty($node->path['pathauto'])))) {
     // Generates the pathauto alias and removes pURL modifiers
     $alias = _vsite_alias_without_purl($node);
     // Aborts pathauto for this node if the path already exists.
@@ -60,9 +59,14 @@ function _vsite_alter_node_path_settings(&$node) {
   // Note that Drupal has already validated the path prior to hook_node_presave,
   // so there's no way that an existing path has gotten to this point.
   else {
-    // Did they provide a path? Is the site purl already prepended?
-    if (strlen($node->path['alias']) && strpos($node->path['alias'], $vsite->group->purl . "/") !== 0 && $node->nid != $vsite->group->nid && strlen($vsite->group->purl)) {
-      $node->path['alias'] = $vsite->group->purl . "/" . $node->path['alias'];
+    $path = ltrim($node->path['alias'], "/");
+    // Is there a valid path provided by the user?
+    if (strlen($path) === 0) {
+      return;
+    }
+    $no_purl_prefix = (strlen($vsite->group->purl) && (strpos($path, $vsite->group->purl . "/") !== 0));
+    if ($no_purl_prefix) {
+      $node->path['alias'] = $vsite->group->purl . "/" . $path;
     }
   }
 }
@@ -89,22 +93,5 @@ function _vsite_alias_without_purl($node) {
   }
 
   return $alias;
-}
-
-/**
- * Gets the most specific pattern for a node, or FALSE if no default defined.
- */
-function _vsite_get_pathauto_pattern($node) {
-  if (variable_get('language_content_type_' . $node->type, 0)) {
-    $pattern = trim(variable_get('pathauto_node_' . $node->type . '_' . $node->language . '_pattern', FALSE));
-  }
-  // Otherwise, gets the default pattern
-  if (empty($pattern)) {
-    $pattern = trim(variable_get('pathauto_node_' . $node->type . '_pattern', FALSE));
-    if (empty($pattern)) {
-      $pattern = trim(variable_get('pathauto_node_pattern', FALSE));
-    }
-  }
-  return $pattern;
 }
 
