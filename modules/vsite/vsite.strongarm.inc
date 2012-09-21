@@ -63,7 +63,7 @@ function vsite_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'locale_custom_strings_en';
-  $strongarm->value = array(
+  $strongarm->value = array(''=>array(
     '%user has been added to group.' => '%user has been added to the website.',
     'Allow non-members to join a group without an approval from group administrators.' => 'Allow non-members to join a website without an approval from group administrators.',
     'OG audience list' => 'Website audience list',
@@ -103,7 +103,7 @@ function vsite_strongarm() {
     'book' => 'booklet',
     'Book' => 'Booklet',
     'Book Page' => 'Booklet',
-  );
+  ),);
   $export['locale_custom_strings_en'] = $strongarm;
 
   $strongarm = new stdClass();
