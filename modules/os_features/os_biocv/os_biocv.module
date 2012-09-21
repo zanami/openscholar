@@ -10,10 +10,6 @@
 
 include_once 'os_biocv.features.inc';
 
-function os_biocv_init() {
-  dpm("cogito ergo sum");
-}
-
 /**
  * Implements hook_menu().
  */
@@ -197,7 +193,6 @@ function os_biocv_get_cv_node() {
  *   A Drupal node object in the current space, if found; otherwise FALSE.
  */
 function _os_biocv_get_first_node($type = 'bio') {
-  dpm($type, __FUNCTION__);
   // Note that this OSNodeFieldQuery will filter the current space if
   // vsite module is enabled. Otherwise it leaves out that condition and will
   // tell us whether any published bio nodes exist on this installation at all.
@@ -252,7 +247,6 @@ function _os_biocv_bio_page_contents() {
   if (!_os_biocv_show_local_tasks()) {
     $cv_node = os_biocv_get_cv_node();
     if ($cv_node !== FALSE) {
-      dpm('getting filepath...');
       $cv_filepath = _os_biocv_get_cv_filepath($cv_node);
     }
   }
