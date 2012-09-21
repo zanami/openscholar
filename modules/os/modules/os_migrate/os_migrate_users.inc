@@ -105,14 +105,21 @@ class UsersOSMigration extends OSMigration {
   public function prepareRow($current_row) {
     //roles
     $query = parent::d6_db_select('users_roles', 'r')
-      ->fields('r', array('uid', 'rid'))
-      ->condition('r.uid', $current_row->uid, '=');
+      ->fields('r', array('uid'))
+      ->fields('ro', array('name'))
+      ->innerJoin('role','ro',"ro.rid = r.rid")
+      ->condition('r.uid', $current_row->uid, '=')
+    	->condition('ro.name',array('administrator','manager'),"IN");
 
     $results = $query->execute();
-    $current_row->roles = array('2' => '2'); //default role: authenticated user
+    $def = $this->get_current_rid('authenticated user');
+    $current_row->roles = array($def => $def); //default role: authenticated user
 
     foreach($results as $row) {
-      $current_row->roles[$row->rid] = $row->rid;
+      $rid = $this->get_current_rid($row->name);
+      if($rid){
+        $current_row->roles[$rid] = $rid;
+      }
     }
 
     //first, last names
@@ -129,6 +136,22 @@ class UsersOSMigration extends OSMigration {
     }
 
     return TRUE;  // FALSE to skip a row.
+  }
+
+  /**
+   * Given a role name get the current RID
+   *
+   * @param string $role
+   * @return int
+   */
+  private function get_current_rid($role){
+    static $roles;
+
+    if(!isset($roles)){
+      $roles = user_roles(TRUE);
+    }
+
+    return array_search($role, $roles);
   }
 
   /**
