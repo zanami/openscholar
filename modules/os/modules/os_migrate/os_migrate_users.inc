@@ -37,7 +37,6 @@ class UsersOSMigration extends OSMigration {
       'field_last_name' => t('last name'),
       'field_last_name:format' => t('last name\'s language'),
       'field_last_name:language' => t('last name\'s format'),
-      'og_user_group_ref' => t('List of group IDs of which this user is a member'),
     );
     $this->source = new MigrateSourceSQL($query, $source_fields, null, array('map_joinable' => FALSE));
     $this->destination = new MigrateDestinationUser(array('md5_passwords'=>TRUE));
@@ -70,7 +69,7 @@ class UsersOSMigration extends OSMigration {
 
     /* addSimpleMappings handles the columns that haven't changed or been renamed */
     $this->addSimpleMappings(array('uid','pass', 'name', 'created', 'access', 'login', 'status', 'init', 'theme',
-                                   'signature', 'signature_format', 'language', 'og_user_group_ref'));
+                                   'signature', 'signature_format', 'language'));
 
     //hide email during development
     if (!variable_get('os_migrate_email_notification', FALSE)) {
@@ -129,9 +128,6 @@ class UsersOSMigration extends OSMigration {
       $current_row->{'field_last_name:language'} = LANGUAGE_NONE;
     }
 
-    //og memberships
-    $current_row->og_user_group_ref = $this->_get_group_memberships($current_row->uid);
-
     return TRUE;  // FALSE to skip a row.
   }
 
@@ -154,19 +150,4 @@ class UsersOSMigration extends OSMigration {
     return (count($results)) ? array($results['vsite_users_first_name_value'], $results['vsite_users_last_name_value']) : array(FALSE, FALSE);
   }
 
-  /**
-   * @function _get_group_memberships
-   *
-   * @param int $uid
-   *   user id
-   * @return array groups
-   *   List of group ids of which user is a member
-   */
-  function _get_group_memberships($uid) {
-    $result = parent::d6_db_select('og_uid', 'ogu')
-      ->fields('ogu', array('nid'))
-      ->condition('uid', $uid)
-      ->execute();
-    return $result->fetchCol();
-  }
 }
