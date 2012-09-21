@@ -37,6 +37,7 @@ class UsersOSMigration extends OSMigration {
       'field_last_name' => t('last name'),
       'field_last_name:format' => t('last name\'s language'),
       'field_last_name:language' => t('last name\'s format'),
+      'og_user_group_ref' => t('List of group IDs of which this user is a member'),
     );
     $this->source = new MigrateSourceSQL($query, $source_fields, null, array('map_joinable' => FALSE));
     $this->destination = new MigrateDestinationUser(array('md5_passwords'=>TRUE));
@@ -69,7 +70,7 @@ class UsersOSMigration extends OSMigration {
 
     /* addSimpleMappings handles the columns that haven't changed or been renamed */
     $this->addSimpleMappings(array('uid','pass', 'name', 'created', 'access', 'login', 'status', 'init', 'theme',
-                                   'signature', 'signature_format', 'language'));
+                                   'signature', 'signature_format', 'language', 'og_user_group_ref'));
 
     //hide email during development
     if (!variable_get('os_migrate_email_notification', FALSE)) {
@@ -103,6 +104,7 @@ class UsersOSMigration extends OSMigration {
    * `roles` isn't in the old DB's users table.  This function fetches it.
    **/
   public function prepareRow($current_row) {
+    //roles
     $query = parent::d6_db_select('users_roles', 'r')
       ->fields('r', array('uid', 'rid'))
       ->condition('r.uid', $current_row->uid, '=');
@@ -114,7 +116,8 @@ class UsersOSMigration extends OSMigration {
       $current_row->roles[$row->rid] = $row->rid;
     }
 
-    list ($fn, $ln) = $this->_get_full_name($row->uid);
+    //first, last names
+    list ($fn, $ln) = $this->_get_full_name($current_row->uid);
     if ($fn) {
       $current_row->field_first_name = $fn;
       $current_row->{'field_first_name:format'} = 'plain_text';
@@ -125,6 +128,9 @@ class UsersOSMigration extends OSMigration {
       $current_row->{'field_last_name:format'} = 'plain_text';
       $current_row->{'field_last_name:language'} = LANGUAGE_NONE;
     }
+
+    //og memberships
+    $current_row->og_user_group_ref = $this->_get_group_memberships($current_row->uid);
 
     return TRUE;  // FALSE to skip a row.
   }
@@ -146,5 +152,21 @@ class UsersOSMigration extends OSMigration {
 
     $results = $query->execute()->fetchAssoc();
     return (count($results)) ? array($results['vsite_users_first_name_value'], $results['vsite_users_last_name_value']) : array(FALSE, FALSE);
+  }
+
+  /**
+   * @function _get_group_memberships
+   *
+   * @param int $uid
+   *   user id
+   * @return array groups
+   *   List of group ids of which user is a member
+   */
+  function _get_group_memberships($uid) {
+    $result = parent::d6_db_select('og_uid', 'ogu')
+      ->fields('ogu', array('nid'))
+      ->condition('uid', $uid)
+      ->execute();
+    return $result->fetchCol();
   }
 }
