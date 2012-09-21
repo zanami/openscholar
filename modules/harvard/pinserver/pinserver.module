@@ -56,9 +56,9 @@ function pinserver_permission(){
  */
 function pinserver_theme() {
   return array(
-  'pinserver_token_error' => array(
-  'arguments' => array('values' => NULL)
-  ),
+    'pinserver_token_error' => array(
+      'arguments' => array('values' => NULL)
+    ),
   );
 }
 
