@@ -983,3 +983,16 @@ function os_access_region($module, $delta) {
 
   return user_access('edit region '.$region) || user_access('edit all regions');
 }
+
+/**
+ * Checks to see if the colorbox js has been loaded,
+ * and loads a small script to fix an issue if its been found
+ */
+function os_js_alter(&$javascript) {
+  foreach ($javascript as $url => $js) {
+    if (strpos($url, 'colorbox.js')) {
+      $file = drupal_get_path('module', 'os').'/theme/os_colorbox.js';
+      $javascript[$file] = drupal_js_defaults($file);
+    }
+  }
+}
