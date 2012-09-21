@@ -48,6 +48,7 @@ files[] = os_migrate_spaces_overrides_shields.inc
 
 files[] = os_migrate_specialtables.inc
 files[] = os_migrate_tablecopy.inc
+files[] = os_migrate_tables.inc
 files[] = os_migrate_theme.inc
 
 
