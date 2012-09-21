@@ -13,6 +13,7 @@ dependencies[] = date_migrate
 
 files[] = os_migrate.admin.inc
 files[] = os_migrate_biblio_tables.inc
+files[] = os_migrate_comments.inc
 files[] = os_migrate.inc
 files[] = os_migrate_inline.inc
 files[] = os_migrate_node_abstract.inc
