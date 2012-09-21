@@ -238,14 +238,17 @@ function os_block_view_alter(&$block, &$data) {
     );
   }
 
-  if (!is_array($block['content'])) {
-    $block['content'] = array('#markup' => $block['content']);
-  }
+  if (!isset($block['content'])) {  // if the block has no content, nothing should be rendered
+    // if it isn't an array, its a string. Convert it into a render array.
+    if (!is_array($block['content'])) {
+      $block['content'] = array('#markup' => $block['content']);
+    }
 
-  $block['content']['#contextual_links']['widget'] = array(
-    'os/widget',
-    array($data->module, $data->delta),
-  );
+    $block['content']['#contextual_links']['widget'] = array(
+      'os/widget',
+      array($data->module, $data->delta),
+    );
+  }
 }
 
 /**
