@@ -354,7 +354,7 @@ height: 22px;
     background-color: #FFF;
     border: none;
     padding: 0;
-    margin-bottom:-25px;
+     margin-bottom:0;
 }
 
 
@@ -365,10 +365,9 @@ left:97%;
 }
 
 .views-slideshow-controls-text a {width:16px;height:14px;text-indent: 100%;white-space: nowrap;overflow:hidden;float:left;margin-left:0;}
-.views-slideshow-controls-text-previous a {background: url('../images/rev.png')no-repeat;margin-left:5px;}
-.views-slideshow-controls-text-next a {background: url('../images/fwd.png')no-repeat;}
-.views-slideshow-controls-text-pause a {background: url('../images/play.png')no-repeat;}
-.views-slideshow-controls-text-play a {background: url('../images/play.png')no-repeat;}
+.views-slideshow-controls-text-previous a {display:none;}
+.views-slideshow-controls-text-next a {display:none;}
+.views-slideshow-controls-text-pause a {background: url('../images/play.png')no-repeat;margin:-2px 0 0 0;}
 
 
 .view-os-image-gallery-slideshow .views-slideshow-controls-bottom{
@@ -376,20 +375,35 @@ height:20px;
 border:none;
 border-top:none;
 width: 99%;
-z-index: 1;
+z-index: 5;
  color: #444;
+margin-top:-23px;
+position: relative;
 }
 
 .views-slideshow-controls-text {float:right;padding-top:3px;}
 
-.view-os-image-gallery-slideshow .views-field-filename {
-background:url('../images/transparentBg.png') no-repeat;
-    position: absolute;
-    bottom:-22px;
-     color: #444;
-     font-size:1.1em;
+.views-slideshow-pager-field-item {
+	background: none repeat scroll 0 0 #293352;
+    border: 1px solid #C1C1C1;
+    color: #293352;
+    display: inline;
+    float: left;
+    font-size: 11px;
+    height: 14px;
+    margin-left: 4px;
+    width: 16px;
+    }
+.views-slideshow-pager-field-item:hover {cursor:pointer;}
+.views-slideshow-pager-field-item.active {color:#cb9719;background:#cb9719;}
+
+
+.view-os-image-gallery-slideshow .views-field-media-title {
+ margin-top:-5px;
+ position: relative;
+ float:left;
+ display:inline;
+ color: #444;
+ 
 }
-
-.view-os-image-gallery-slideshow .views-field-filename a {color:#333;}
-
 

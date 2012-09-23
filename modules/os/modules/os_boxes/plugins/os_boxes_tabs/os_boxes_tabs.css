@@ -9,6 +9,11 @@
 	padding-left: 5px;
 }
 
+.page-os-widget #tabs,
+.page-os-widget #tabs .links {
+	border: none;
+}
+
 #tabs .panel {
 	padding: 10px;
 }

@@ -309,6 +309,9 @@ margin: 10px 10px 0 0;
 float: left;
 }
 
+.tweets-pulled-listing ul {
+	margin-left:0;
+}
 
 dt {
   font-weight: 700;

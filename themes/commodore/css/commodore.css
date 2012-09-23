@@ -360,7 +360,7 @@ p.copy a.footer-login {
     background-color: #FFF;
     border: none;
     padding: 0;
-    margin-bottom:-25px;
+   margin-bottom:-70px;
 }
 
 
@@ -370,30 +370,51 @@ left:97%;
 
 }
 
-.views-slideshow-controls-text a {width:22px;height:19px;text-indent: 100%;white-space: nowrap;overflow:hidden;float:left;margin-left:0;}
-.views-slideshow-controls-text-previous a {background: url('../../custom/scholar_department/images/rev_1.png')no-repeat;margin-left:5px;}
-.views-slideshow-controls-text-next a {background: url('../../custom/scholar_department/images/fwd_1.png')no-repeat;}
+.views-slideshow-controls-text a {width:22px;height:19px;text-indent: 100%;white-space: nowrap;overflow:hidden;float:left;margin:0;}
+.views-slideshow-controls-text-previous a {display:none;}
+.views-slideshow-controls-text-next a {display:none;}
 .views-slideshow-controls-text-pause a {background: url('../../custom/scholar_department/images/play_1.png')no-repeat;}
-.views-slideshow-controls-text-play a {background: url('../../custom/scholar_department/images/play_1.png')no-repeat;}
 
 
-.view-os-image-gallery-slideshow .views-slideshow-controls-bottom{
+
+.view-os-image-gallery-slideshow .views-slideshow-controls-bottom {
 height:20px;
 border:none;
 border-top:none;
 width: 99%;
-z-index: 1;
+z-index: 5;
  color: #444;
+margin-top:-22px;
+position: relative;
 }
 
 .views-slideshow-controls-text {float:right;}
 
-.view-os-image-gallery-slideshow .views-field-filename {
-background:url('../images/transparentBg.png') no-repeat;
-    position: absolute;
-    bottom:-22px;
-     color: #444;
-     font-size:1.1em;
+
+.view-os-image-gallery-slideshow .views-field-media-title {
+    color: #333333;
+    margin-top:62px;
+    position: relative;
+    float:left;
+     display:inline;
+
 }
 
-.view-os-image-gallery-slideshow .views-field-filename a {color:#333;}
+.views-slideshow-pager-field-item {
+	background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #C1C1C1;
+    color: #293352;
+    display: inline;
+    float: left;
+    font-size: 11px;
+    height: 10px;
+    margin-left: 4px;
+    padding: 0 4px 7px 1px;
+    width: 13px;
+    }
+.views-slideshow-pager-field-item:hover {cursor:pointer;}
+.views-slideshow-pager-field-item.active {color:#293352;background:#D9D9D9;}
+
+
+
+

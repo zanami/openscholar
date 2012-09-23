@@ -19,6 +19,8 @@
 
   
   stylesheets[screen][] = css/aberdeen.css
+  
+  scripts[] = aberdeen.js
     
 
 ;----------// Theme Settings
