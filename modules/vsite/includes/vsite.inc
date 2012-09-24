@@ -128,6 +128,7 @@ function vsite_create_vsite($name, $domain, $uid, $preset = FALSE) {
   $node->purl = array('value' => $domain, 'provider'=>'vsite_og', 'id'=>NULL);
   $node->uid = $uid;
   $node->spaces_preset_og = $preset;
+  $node->language = LANGUAGE_NONE;
   node_save($node);
 
   if ($vsite = spaces_load('og', $node->nid)) {
