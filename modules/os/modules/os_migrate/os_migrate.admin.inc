@@ -15,6 +15,7 @@ function os_migrate_admin() {
     '#title' => t('Migration database'),
     '#description' => t('Drupal 6 database from which to migrate data.'),
     '#type' => 'textfield',
+    '#required' => TRUE,
     '#default_value' => variable_get('os_migrate_database', ''),
   );
 
@@ -52,6 +53,7 @@ EOF
     '#title' => t('Files directory'),
     '#description' => t('Path to your Drupal 6 installation\'s files.  Migrate will use this path for copying uploaded files (e.g. /var/www/openscholar/)'),
     '#type' => 'textfield',
+    '#required' => TRUE,
     '#default_value' => variable_get('os_migrate_files', ''),
   );
   
