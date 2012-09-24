@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 
 /**
@@ -15,7 +16,7 @@ function os_boxes_ctools_plugin_api($module, $api) {
  * We don't need to include and process the file on every page
  */
 function os_boxes_boxes_plugins() {
-  require_once('os_boxes.plugins.inc');
+  require_once ('os_boxes.plugins.inc');
   return _os_boxes_boxes_plugins();
 }
 
@@ -67,37 +68,39 @@ function os_boxes_menu() {
  * Title callback
  * Adds the plugin key to the title
  *
- * TODO: This doesn't work in all cases due to the way the menu system works.
+ * @todo This doesn't work in all cases due to the way the menu system works.
  *  As it is now, the title is never generated for modals, since local tasks are never in the active path
  *  If I make the edit link no longer a local task, it doesn't appear in the contextual links
  *  @see http://drupal.org/node/996302
  *
-function os_boxes_edit_title($box, $is_deleting = false) {
-  if ($box->new) {
-    $info = ctools_get_plugins('boxes', 'plugins', $box->plugin_key);
-    return t('Add New @plugin', array('@plugin' => $info['title']));
-  }
-  elseif ($is_deleting) {
-    return t('Delete @info', array('@info' => $box->description));
-  }
-  else {
-    return t('Edit @info', array('@info' => $box->description));
-  }
-}
-
-/**
- * Implements hook_load().
+ function os_boxes_edit_title($box, $is_deleting = false) {
+ if ($box->new) {
+ $info = ctools_get_plugins('boxes', 'plugins', $box->plugin_key);
+ return t('Add New @plugin', array('@plugin' => $info['title']));
+ }
+ elseif ($is_deleting) {
+ return t('Delete @info', array('@info' => $box->description));
+ }
+ else {
+ return t('Edit @info', array('@info' => $box->description));
+ }
+ }
  */
+
+ /**
+  * Implements hook_load().
+  */
 function os_boxes_load($key) {
   if ($box = boxes_box_load($key)) {
     // this is an instance;
     return $box;
   }
-  if ($box = boxes_factory($key, array('delta' => os_boxes_create_delta()))) { // TODO: Build a real delta
+  // TODO: Build a real delta
+  if ($box = boxes_factory($key, array('delta' => os_boxes_create_delta()))) {
     // this is a plugin, so create a new box
     return $box;
   }
-  return false;
+  return FALSE;
 }
 
 /**
@@ -105,15 +108,17 @@ function os_boxes_load($key) {
  * It just needs to be unique
  */
 function os_boxes_create_delta() {
-  return time();  // TODO: Replace with real function
+  // TODO: Replace with real function
+  return time();
 }
 
 /**
- * Get all the boxes plugins or a plugin by name
+ * Retrieves all boxes plugins, or the plugin of the given name
+ *
  * @param $name
  * 		Name of the box
  */
-function os_boxes_get_boxes_plugins($name = NULL){
+function os_boxes_get_boxes_plugins($name = NULL) {
   ctools_include('plugins');
   $boxes = ctools_get_plugins('boxes', 'plugins');
   drupal_alter('boxes_plugins', $boxes);
@@ -125,23 +130,24 @@ function os_boxes_get_boxes_plugins($name = NULL){
   return $boxes;
 }
 
+/**
+ * Impements hook_os_widget().
+ */
 function os_boxes_os_widget($box = NULL) {
   if (isset($box)) {
     $boxes = array($box->delta => (object)$box);
-    $return_single = true;
+    $return_single = TRUE;
   }
   else {
     $boxes = boxes_box_load();
   }
   $widgets = array();
   foreach ($boxes as $delta => $box) {
-    $bid = 'boxes-'.$delta;
+    $bid = 'boxes-' . $delta;
     $widgets[$bid] = array(
       'module' => 'boxes',
       'delta' => $delta,
       'title' => $box->title,
-      //'weight' => $box->weight,
-      //'region' => $box->region,
       'info' => $box->description,
     );
   }
@@ -153,7 +159,7 @@ function os_boxes_os_widget($box = NULL) {
 }
 
 /**
- * Implementation of hook os_widget_alter
+ * Implements hook_os_widget_alter().
  *
  * This function should add any parameters to the passed block that
  * will be needed in the admin user interfaces.  Including access params
@@ -164,18 +170,24 @@ function os_boxes_os_widget($box = NULL) {
 function os_boxes_os_widget_alter(&$widget) {
   if (isset($widget['module']) && $widget['module'] == 'boxes') {
     $box = boxes_box_load($widget['delta']);
-    if (!$box) return;
+    if (!$box) {
+      return;
+    }
 
     $plugin = os_boxes_get_boxes_plugins($box->plugin_key);
-    if (!$plugin) return;
+    if (!$plugin) {
+      return;
+    }
 
     $widget['info'] = $box->description;
     $widget['plugin'] = $box->plugin_key;
-    if (isset($plugin['tags']))
+    if (isset($plugin['tags'])) {
       $widget['class'] = $plugin['tags'];
+    }
 
-    $widget['can_edit'] = boxes_access_edit($box);  // all boxes should be editable. If they aren't, why are they a box
-    $widget['path'] = 'os/widget/boxes/'.$widget['delta'];
+    // all boxes should be editable. If they aren't, why are they a box
+    $widget['can_edit'] = boxes_access_edit($box);
+    $widget['path'] = 'os/widget/boxes/' . $widget['delta'];
 
     // deletion is easier now.
     // just refer to the permission.
@@ -185,6 +197,9 @@ function os_boxes_os_widget_alter(&$widget) {
   }
 }
 
+/**
+ * Retrieves the list of boxes plugins.
+ */
 function os_boxes_get_factories() {
   $plugins = os_boxes_get_boxes_plugins();
   $items = array();
@@ -200,7 +215,7 @@ function os_boxes_get_factories() {
         'delta' => "boxes_add__$p",
         'label' => $info['title'],
         'block_config_path' => "os/widget/add/{$p}",
-        'factory' => true,
+        'factory' => TRUE,
       );
     }
   }
@@ -208,6 +223,9 @@ function os_boxes_get_factories() {
   return $items;
 }
 
+/**
+ * Returns an array containing all box plugin tags.
+ */
 function os_boxes_get_tags() {
   $plugins = os_boxes_get_boxes_plugins();
   $items = array();
@@ -224,7 +242,9 @@ function os_boxes_get_tags() {
 }
 
 /**
- * When a page from these paths are linked to, they open in an overlay
+ * Implements hook_admin_paths().
+ *
+ * Provides paths that should be opened in an overlay when linked to.
  */
 function os_boxes_admin_paths() {
   $paths = array(
@@ -235,15 +255,18 @@ function os_boxes_admin_paths() {
 }
 
 /**
- * Gets rid of the controls that boxes provides.
- * We want to use our own
+ * Implements hook_preprocess_HOOK() for boxes_box.
+ *
+ * Removes default boxes controls; we use our own.
  */
 function os_boxes_preprocess_boxes_box(&$variables) {
   unset($variables['block']['controls']);
 }
 
 /**
- * Remove core block link from contextual
+ * Implements hook_menu_contextual_links_alter().
+ *
+ * Removes core block link from contextual links.
  */
 function os_boxes_menu_contextual_links_alter(&$links, $router_item, $path) {
   unset($links['block-configure']);
@@ -254,16 +277,13 @@ function os_boxes_menu_contextual_links_alter(&$links, $router_item, $path) {
   }
 }
 
-
-
-/*
- * Regional permissions
- * this may be spun off into its own module, so I'm putting it all in one place
- */
-
 /**
- * Implementation of hook_permission()
+ * Implements hook_permission().
+ *
  * Defines permissions for all the regions of the default theme
+ *
+ * @todo Regional permissions
+ * This may be spun off into its own module, so I'm putting it all in one place
  */
 function os_boxes_permission() {
   $regions = array_keys(system_region_list(variable_get('theme_default')));
@@ -272,8 +292,9 @@ function os_boxes_permission() {
     'use boxes advanced settings' => array(
       'title' => t('Use Boxes Advanced Settings'),
       'description' => t('Enable use of a boxes\' advanced settings'),
-    )
+    ),
   );
 
   return $perms;
 }
+
