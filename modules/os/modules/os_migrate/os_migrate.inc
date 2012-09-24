@@ -103,6 +103,13 @@ abstract class OSMigration extends Migration {
     }
   }
 
+  //list all content types used in d6
+  function d6_list_content_types() {
+    $query = self::d6_db_select('node', 'n')
+      ->fields('n', array('type'))
+      ->distinct();
+    return $query->execute()->fetchCol();
+  }
   /**
    * @function os_migrate_prepare_files
    *

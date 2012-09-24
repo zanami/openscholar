@@ -49,4 +49,14 @@ abstract class TableCopyMigration extends OSMigration {
     return parent::d6_db_select($this->table, $this->alias)
       ->fields($this->alias);
   }
+
+  public function prepareRow(&$row) {
+    //don't migrate tables unless their modules exist already
+    if (isset($this->required_modules) && count($this->required_modules)) {
+      $modules = array_map('module_exists', $this->required_modules);
+      if (in_array(FALSE, $modules)) {
+        return FALSE;
+      }
+    }
+  }
 }
