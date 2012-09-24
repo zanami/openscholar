@@ -72,7 +72,7 @@ function os_publications_form_user_profile_form_alter(&$form, &$form_state) {
  *
  * Joins to the og_membership table, which is where these relationships are stored
  */
-function os_publications_query_biblio_alter(QueryAlterableInterface$query) {
+function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
   if (module_exists('spaces') && $space = spaces_get_space()) {
     // this has to be separate because of scoping.
     if ($space->type == 'og') {
