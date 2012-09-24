@@ -75,3 +75,58 @@ class VariableTableMigration extends TableCopyMigration {
     return $query;
   }
 }
+
+class UrlAliasTableMigration extends TableCopyMigration {
+
+  public function __construct() {
+    $key_schema = array(
+      'pid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    );
+
+    $table = 'url_alias';
+    parent::__construct($table, $key_schema);
+
+    //stash pids here so we don't overwrite any imported with nodes/users
+    $this->used_pids = db_select('url_alias')->fields('url_alias', array('pid'))->execute()->fetchCol();
+  }
+
+  public function query() {
+    $query = parent::query();
+
+    $prefixes = array('nodeorder', 'iqss_gking_research_group', 'filefield_paths'); //taxonomies too?
+    $or = db_or();
+    foreach($prefixes as $prefix) {
+      $or->condition('src', $prefix.'/%', 'LIKE');
+    }
+
+    $query->condition($or);
+
+    return $query;
+  }
+
+  public function prepareRow(&$row) {
+    $row->source = $row->src;
+    unset($row->src);
+
+    $row->alias = $row->dst;
+    unset($row->dst);
+
+    $row->pid = $this->getPID($row->pid);
+  }
+
+  //returns this pid if available.  if not, gets new one.  updates list
+  function getPID($pid) {
+    if (!in_array($pid, $this->used_pids)) {
+      return $pid;
+    }
+
+    $new = 1 + max($this->used_pids);
+    $this->used_pids[] = $new;
+    return $new;
+  }
+}
+
