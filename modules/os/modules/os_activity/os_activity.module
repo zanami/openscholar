@@ -10,7 +10,7 @@ include_once 'os_activity.features.inc';
  * Implements hook_node_insert().
  */
 function os_activity_node_insert($node) {
-  if (!og_is_group_content_type('node', $node->type)) {
+  if (!og_get_entity_groups('node', $node)) {
     return;
   }
   os_activity_message_node_create($node, 'insert');
@@ -20,7 +20,7 @@ function os_activity_node_insert($node) {
  * Implements hook_node_update().
  */
 function os_activity_node_update($node) {
-  if (!og_is_group_content_type('node', $node->type)) {
+  if (!og_get_entity_groups('node', $node)) {
     return;
   }
   os_activity_message_node_create($node, 'update');
@@ -122,15 +122,12 @@ function os_activity_exit() {
 function os_activity_message_node_create($node, $op) {
   $node_wrapper = entity_metadata_wrapper('node', $node);
 
-  $action = $op == 'insert' ? t('posted') : t('edited');
+  $message_type = $op == 'insert' ? 'os_create_node' : 'os_edit_node';
   $values = array(
     'uid' => $node->uid,
-    'arguments' => array(
-      '@action' => $action,
-    ),
   );
 
-  $message = message_create('os_node', $values);
+  $message = message_create($message_type, $values);
   $wrapper = entity_metadata_wrapper('message', $message);
   $wrapper->field_node_reference->set($node);
 
