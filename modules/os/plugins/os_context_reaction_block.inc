@@ -45,20 +45,20 @@ class os_context_reaction_block extends context_reaction_block {
       }
 
       $this->is_editable_check($context_blocks);
-      foreach ($context_blocks as $r => $blocks) {
+      foreach ($context_blocks as $block_region => $blocks) {
         // do nothing for blocks that are in no region
-        if (!$r) continue;
-        $context_blocks[$r] = _block_render_blocks($blocks);
+        if (!$block_region) continue;
+        $context_blocks[$block_region] = _block_render_blocks($blocks);
 
         // Make blocks editable if allowed.
-        if ($this->is_editable_region($r)) {
-          foreach ($context_blocks[$r] as $key => $block) {
-            $context_blocks[$r][$key] = $this->editable_block($block);
+        if ($this->is_editable_region($block_region)) {
+          foreach ($context_blocks[$block_region] as $key => $block) {
+            $context_blocks[$block_region][$key] = $this->editable_block($block);
           }
         }
 
         // Sort blocks.
-        uasort($context_blocks[$r], array('context_reaction_block', 'block_sort'));
+        uasort($context_blocks[$block_region], array('context_reaction_block', 'block_sort'));
       }
     }
     return isset($context_blocks[$region]) ? $context_blocks[$region] : array();
