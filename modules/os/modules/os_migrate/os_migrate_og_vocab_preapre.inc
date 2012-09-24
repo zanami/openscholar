@@ -30,7 +30,7 @@ class OsOgVocabMigratePrepare extends Migration {
     $this->map = new MigrateSQLMap($this->machineName, $key, $key);
 
     // Create a MigrateSource object, which manages retrieving the input data.
-    $this->source = new MigrateSourceSQL($this->query);
+    $this->source = new MigrateSourceSQL($this->query, array(), null, array('map_joinable' => FALSE));
     $this->destination = new MigrateDestinationTable('og_vocab_relation');
 
     $this->addFieldMapping('gid', 'nid');

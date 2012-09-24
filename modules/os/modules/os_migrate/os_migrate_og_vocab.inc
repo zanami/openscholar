@@ -15,7 +15,7 @@ class OsOgVocabMigrate extends DynamicMigration {
 
     $this->description = t('Populate the OG vocabulary field from a remote Drupal 6 source.');
 
-    $this->dependencies = array('OsOgVocabMigratePrepare');
+    //$this->dependencies = array('OsOgVocabMigratePrepare');
 
     $query = OSMigration::d6_db_select('term_node', 'tn');
     $query->innerJoin('og_vocab', 'ogv', 'tn.vid = ogv.vid');
