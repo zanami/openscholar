@@ -130,3 +130,45 @@ class UrlAliasTableMigration extends TableCopyMigration {
   }
 }
 
+class UsageLogTableMigration extends TableCopyMigration {
+  public function __construct() {
+    $this->required_modules = array('openscholar_log_usage');
+
+    $key_schema = array(
+      'host' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'vsite' => array(
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+      ),
+      'age' => array(
+        'type' => 'varchar',  //used to be datetime.
+        'length' => 100,
+        'not null' => TRUE,
+      )
+    );
+
+    $table = 'openscholar_usage_log'; //why is the table named differently than the module?
+
+    parent::__construct($table, $key_schema);
+  }
+
+  public function query() {
+    //check if old table exists.
+    if (parent::d6_db_table_exists('openscholar_usage_log')) {
+      //return actual query
+      return parent::query();
+    } else {
+      //return something null that won't give errors when called.
+      return parent::d6_db_select('node', 'n')
+        ->isNull('nid');
+
+    }
+  }
+
+}
+
