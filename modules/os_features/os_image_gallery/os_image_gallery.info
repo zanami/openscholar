@@ -1,4 +1,4 @@
-name = OS Image Gallery
+name = Image Gallery
 description = Gallery container for images
 core = 7.x
 package = Features

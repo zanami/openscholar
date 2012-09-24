@@ -1,4 +1,4 @@
-name = OS Links
+name = Links
 description = Create and maintain useful external links to other sites that may of interest to your web site users.
 core = 7.x
 package = Features

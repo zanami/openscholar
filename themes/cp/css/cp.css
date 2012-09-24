@@ -146,12 +146,6 @@ td {
 .page-cp-content-comments .view-content tbody tr.even {background-color: #FFF;}
 
 
-/* CP/BUILD LAYOUT */   
-.page-cp-build-layout .content-inner {width:854px;}
-.page-cp-build div.messages,
-.page-cp-content div.messages {
-    margin-left: 180px;
-}
 
 
 /* CP/BUILD MENU */ 
@@ -207,6 +201,9 @@ td {
    padding-left: 20px;
 }
 
+
+/* CP/BUILD LAYOUT */   
+.page-cp-build-layout .content-inner {width:854px;}
 
 /* CP FEATURES */
 form#spaces-features-form td.actions a {

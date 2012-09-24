@@ -1,4 +1,4 @@
-name = OS Reader
+name = Reader
 description = Pull in useful content from other sites on the internet.
 core = 7.x
 package = Features

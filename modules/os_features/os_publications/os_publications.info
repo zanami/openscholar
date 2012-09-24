@@ -1,4 +1,4 @@
-name = OS Publications
+name = Publications
 description = Create and maintain bibliographic records of publications.
 core = 7.x
 package = Features

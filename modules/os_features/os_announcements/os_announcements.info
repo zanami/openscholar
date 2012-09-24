@@ -1,4 +1,4 @@
-name = OS Announcements
+name = Announcements
 description = Create and maintain announcements on your site.
 core = 7.x
 package = Features

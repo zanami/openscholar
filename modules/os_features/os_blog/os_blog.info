@@ -1,4 +1,4 @@
-name = OS Blog
+name = Blog
 description = Provides simple blog functionality for your site.
 core = 7.x
 package = Features

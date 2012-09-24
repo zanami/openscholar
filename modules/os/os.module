@@ -616,7 +616,7 @@ function os_ctools_plugin_type() {
 }
 
 /**
- * Implemenets hook_init().
+ * Implements hook_init().
  */
 function os_init() {
   // Execute the "In a OS Site" context condition

@@ -240,9 +240,7 @@ a.more {
   text-align: center;
   }
   
-.block-boxes-twitter ul {
-	margin-left:0;
-}
+
 
 div.tweets-pulled-listing div.tweet-divider {
     border-bottom: 1px dashed #CCCCCC;
@@ -943,7 +941,6 @@ border:none;
 
 #footer #block-os-powered-by,
 #footer #block-os-login {
-  margin-top: 1px;
   color: #fff;
   clear:none;
    float: right;
@@ -1155,7 +1152,7 @@ body.section-category .no-indent .node-teaser {
 
 /*FRONT PAGE BIO*/
 
-.front .region-header-second #block-boxes-scholar_biocv_bio {
+.front .region-content-top .block-boxes-os_boxes_bio {
   position: fixed;
   background: #fff;
   margin:0;
@@ -1172,7 +1169,7 @@ body.section-category .no-indent .node-teaser {
   display:none;
 }
 
-.front .region-header-second #boxes-box-scholar_biocv_bio .node-inner {
+.front .region-content-top .block-boxes-os_boxes_bio .block-inner {
    position:absolute;
    overflow:auto;
    bottom: 0;
@@ -1182,11 +1179,11 @@ body.section-category .no-indent .node-teaser {
    padding-right:25px;
    }
    
-body.front #header-container .node.node-type-bio {
+body.front .region-content-top .node.node-bio {
     position:static;
 }
 
-#header-container .node-type-bio p {
+.region-content-top .node-bio p {
     margin-bottom: 1em;
    }
 

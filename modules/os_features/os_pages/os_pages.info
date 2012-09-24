@@ -1,4 +1,4 @@
-name = OS Basic Page
+name = Basic Pages
 description = Create basic web pages for your web site.
 core = 7.x
 package = Features

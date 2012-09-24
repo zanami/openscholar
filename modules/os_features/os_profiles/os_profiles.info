@@ -1,4 +1,4 @@
-name = OS Profiles
+name = Profiles
 description = Maintain a directory of people, collaborators, contributors to your project or organization.
 core = 7.x
 package = Features

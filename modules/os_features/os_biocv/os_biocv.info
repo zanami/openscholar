@@ -1,4 +1,4 @@
-name = OS Bio/CV
+name = Bio/CV
 description = Create and manage your curriculum vitae as well as your biography.
 core = 7.x
 package = Features

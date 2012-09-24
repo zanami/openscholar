@@ -1,15 +1,15 @@
 <?php
 
-class OgUserOsMigration extends OSMigration {
+class OgUsersOSMigration extends OSMigration {
 
   public function __construct() {
     parent::__construct(MigrateGroup::getInstance('og'));
 
     $this->description = t('Create user relation to group.');
-    $this->dependencies[] = 'VsiteNodeOSMigration';
-    $this->dependencies[] = 'UsersOSMigration';
+    $this->dependencies[] = 'VsiteNodeOS';
+    $this->dependencies[] = 'UsersOS';
 
-    $this->query = $query = parent::d6_db_select('og_uid', 'ogu')
+    $this->query = parent::d6_db_select('og_uid', 'ogu')
       ->fields('ogu');
 
     $source_key = array(
@@ -26,7 +26,7 @@ class OgUserOsMigration extends OSMigration {
     );
 
     $this->map = new MigrateSQLMap($this->machineName, $source_key, MigrateDestinationOGMembership::getKeySchema());
-    $this->source = new MigrateSourceSQL($this->query);
+    $this->source = new MigrateSourceSQL($this->query, array(), null, array('map_joinable' => FALSE));
     $this->destination = new MigrateDestinationOGMembership();
 
     $field_names = array(
@@ -49,5 +49,33 @@ class OgUserOsMigration extends OSMigration {
   public function prepareRow($row) {
     $row->state = !empty($row->state) ? OG_STATE_ACTIVE : OG_STATE_PENDING;
     parent::prepareRow($row);
+  }
+
+  /**
+   * Provides some OS specific post-processing to handle roles
+   * @param og_membership $entity
+   */
+  public function complete($entity, $row){
+
+    $cache = &drupal_static(__FUNCTION__, array());
+    if (isset($cache["$entity->group_type:$entity->gid"])) {
+      $og_roles = $cache["$entity->group_type:$entity->gid"];
+    }
+    else {
+      $og_roles = og_roles($entity->group_type, NULL, $entity->gid);
+      $cache["$entity->group_type:$entity->gid"] = $og_roles;
+    }
+
+    //If they were previously group admins give them the vsite admin role, otherwise vsite user
+    if(!empty($entity->is_admin)){
+      $rid = array_search('vsite admin', $og_roles);
+    }else{
+      $rid = array_search('vsite user', $og_roles);
+    }
+
+    if($rid){
+      og_role_grant($entity->group_type, $entity->gid, $entity->etid, $rid);
+    }
+
   }
 }

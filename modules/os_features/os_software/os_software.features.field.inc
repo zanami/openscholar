@@ -46,10 +46,10 @@ function os_software_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'hidden',
-          'module' => 'os_files',
+          'module' => 'text',
           'settings' => array(),
-          'type' => 'os_files_image_list',
-          'weight' => '2',
+          'type' => 'text_default',
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -58,7 +58,7 @@ function os_software_field_default_fields() {
             'trim_length' => 600,
           ),
           'type' => 'text_summary_or_trimmed',
-          'weight' => '0',
+          'weight' => 0,
         ),
       ),
       'entity_type' => 'node',
