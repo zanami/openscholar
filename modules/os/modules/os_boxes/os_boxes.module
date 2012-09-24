@@ -24,8 +24,8 @@ function os_boxes_boxes_plugins() {
  */
 function os_boxes_menu() {
   $items['os/widget/add/%os_boxes'] = array(
-    'title callback' => 'os_boxes_edit_title',
-    'title arguments' => array(3),
+    //'title callback' => 'os_boxes_edit_title',
+    //'title arguments' => array(3),
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(3),
     'access callback' => 'boxes_access',
@@ -36,8 +36,8 @@ function os_boxes_menu() {
 
   $items['os/widget/%/%os_boxes/edit'] = array(
     'title' => 'Edit Widget',
-    'title callback' => 'os_boxes_edit_title',
-    'title arguments' => array(3),
+    //'title callback' => 'os_boxes_edit_title',
+    //'title arguments' => array(3),
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(3),
     'access callback' => 'boxes_access_edit',
@@ -50,8 +50,8 @@ function os_boxes_menu() {
 
   $items['os/widget/%/%os_boxes/delete'] = array(
     'title' => 'Delete Widget',
-    'title callback' => 'os_boxes_edit_title',
-    'title arguments' => array(3, true),
+    //'title callback' => 'os_boxes_edit_title',
+    //'title arguments' => array(3, true),
     'page callback' => 'os_boxes_delete_widget',
     'page arguments' => array(3),
     'access callback' => 'boxes_access',
@@ -66,7 +66,12 @@ function os_boxes_menu() {
 /**
  * Title callback
  * Adds the plugin key to the title
- */
+ *
+ * TODO: This doesn't work in all cases due to the way the menu system works.
+ *  As it is now, the title is never generated for modals, since local tasks are never in the active path
+ *  If I make the edit link no longer a local task, it doesn't appear in the contextual links
+ *  @see http://drupal.org/node/996302
+ *
 function os_boxes_edit_title($box, $is_deleting = false) {
   if ($box->new) {
     $info = ctools_get_plugins('boxes', 'plugins', $box->plugin_key);

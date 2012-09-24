@@ -35,6 +35,8 @@ class os_boxes_feedreader extends os_boxes_default {
 
     $result = $query->execute();
 
+    $form = parent::options_form($form_state);
+
     if (! isset($result['node']) || ! count($result['node'])) {
       $form['error'] = array(
         '#type' => 'item',

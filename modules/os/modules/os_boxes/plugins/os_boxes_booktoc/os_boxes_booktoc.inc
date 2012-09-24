@@ -19,7 +19,7 @@ class os_boxes_booktoc extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state) {
-
+    $form = parent::options_form($form_state);
     // custom query
     $q = db_select('book', 'b');
     $q->join('node', 'n', 'b.bid = n.nid');
@@ -44,7 +44,6 @@ class os_boxes_booktoc extends os_boxes_default {
       '#default_value' => $this->options['book_nid'],
     );
 
-    $form += parent::options_form($form_state);
     return $form;
   }
 

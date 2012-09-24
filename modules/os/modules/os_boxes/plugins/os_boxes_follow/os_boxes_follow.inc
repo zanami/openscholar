@@ -9,7 +9,7 @@ class os_boxes_follow extends os_boxes_default {
   }
 
   public function options_form(&$form_state) {
-    $form = array();
+    $form = parent::options_form($form_state);
 
     // add js and settings
     $domains = os_follow_default_networks();

@@ -5,6 +5,14 @@ function os_boxes_edit_widget($box, $source = '') {
     return MENU_NOT_FOUND;
   }
 
+  if ($box->new) {
+    $info = ctools_get_plugins('boxes', 'plugins', $box->plugin_key);
+    drupal_set_title(t('Add New @plugin Widget', array('@plugin' => $info['title'])));
+  }
+  else{
+    drupal_set_title(t('Edit @info', array('@info' => $box->description)));
+  }
+
   $form_state = array(
     'box' => $box,
     'source' => $source,
@@ -19,6 +27,12 @@ function os_boxes_edit_widget($box, $source = '') {
 }
 
 function os_boxes_form_boxes_box_form_alter(&$form, &$form_state) {
+  $form['description']['#title'] = t('Widget Description');
+  $form['description']['#description'] = t('A brief description of the widget. Only displayed in the Layout section.');
+
+  $form['title']['#title'] = t('Widget Title');
+  $form['title']['#description'] = t('The title of the widget that is seen by your visitors.');
+
   $form['cancel']['#submit'][] = 'os_boxes_widget_submit';
   $form['#submit'][] = 'os_boxes_widget_submit';
 }
@@ -74,6 +88,8 @@ function os_boxes_delete_widget($box) {
   $form_state = array(
     'box' => $box,
   );
+
+  drupal_set_title(t('Delete @info', array('@info' => $box->description)));
 
   $form = drupal_build_form('os_boxes_delete_widget_form', $form_state);
 
