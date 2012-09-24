@@ -35,8 +35,9 @@ class os_boxes_tabs extends os_boxes_default {
     $options = array('os_boxes_tabs-remove' => t('No Widget'));
     ctools_include('layout', 'os');
     foreach ($widgets as $wgt => $info) {
-      $options[$wgt] = $info['info'];  // not everything we get back from hook_os_widget has an info field.
-      // This needs to be rectified somehow.
+      if (isset($info['info'])) {
+        $options[$wgt] = $info['info'];  // not everything we get back from hook_os_widget has an info field.
+      }
     }
 
     $existing = $this->options['tabs'];
