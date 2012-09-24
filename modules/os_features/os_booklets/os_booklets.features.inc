@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_booklets.features.inc
@@ -45,3 +48,4 @@ function os_booklets_node_info() {
   );
   return $items;
 }
+

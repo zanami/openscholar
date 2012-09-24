@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * os_announcements.strongarm.inc
@@ -15,6 +14,7 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_announcement';
@@ -23,6 +23,7 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_anonymous_announcement';
@@ -31,6 +32,7 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_announcement';
@@ -39,6 +41,7 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_per_page_announcement';
@@ -47,6 +50,7 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_form_location_announcement';
@@ -55,6 +59,7 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_preview_announcement';
@@ -63,6 +68,7 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_subject_field_announcement';
@@ -71,6 +77,7 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'menu_options_announcement';
@@ -82,6 +89,7 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'menu_parent_announcement';
@@ -90,6 +98,7 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_options_announcement';
@@ -101,6 +110,7 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_preview_announcement';
@@ -109,11 +119,21 @@ function os_announcements_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_submitted_announcement';
   $strongarm->value = 1;
   $export['node_submitted_announcement'] = $strongarm;
+
+  $strongarm = new stdClass();
+  /* Edit this to true to make a default strongarm disabled initially */
+
+  $strongarm->disabled = FALSE;
+  $strongarm->api_version = 1;
+  $strongarm->name = 'pathauto_node_announcement_pattern';
+  $strongarm->value = 'announcements/[node:title]';
+  $export['pathauto_node_announcement_pattern'] = $strongarm;
 
   return $export;
 }

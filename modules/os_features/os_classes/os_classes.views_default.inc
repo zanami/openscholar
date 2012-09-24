@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * os_classes.views_default.inc
@@ -22,9 +21,11 @@ function os_classes_views_default_views() {
   $view->core        = 7;
   $view->api_version = '3.0';
   /* Edit this to true to make a default view disabled initially */
+
   $view->disabled = FALSE;
 
   /* Display: Master */
+
 
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Related Materials';
@@ -39,6 +40,7 @@ function os_classes_views_default_views() {
   $handler->display->display_options['row_plugin'] = 'node';
   /* Field: Content: Title */
 
+
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
@@ -47,11 +49,13 @@ function os_classes_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   /* Sort criterion: Content: Sticky */
 
+
   $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['table'] = 'node';
   $handler->display->display_options['sorts']['sticky']['field'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['order'] = 'DESC';
   /* Sort criterion: Content: Offered (field_offered_year) */
+
 
   $handler->display->display_options['sorts']['field_offered_year_value']['id'] = 'field_offered_year_value';
   $handler->display->display_options['sorts']['field_offered_year_value']['table'] = 'field_data_field_offered_year';
@@ -59,16 +63,19 @@ function os_classes_views_default_views() {
   $handler->display->display_options['sorts']['field_offered_year_value']['order'] = 'DESC';
   /* Sort criterion: Content: Semester (field_semester) */
 
+
   $handler->display->display_options['sorts']['field_semester_value']['id'] = 'field_semester_value';
   $handler->display->display_options['sorts']['field_semester_value']['table'] = 'field_data_field_semester';
   $handler->display->display_options['sorts']['field_semester_value']['field'] = 'field_semester_value';
   /* Sort criterion: Content: Post date */
+
 
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
   /* Filter criterion: Content: Published */
+
 
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
@@ -78,6 +85,7 @@ function os_classes_views_default_views() {
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
   /* Filter criterion: Content: Type */
 
+
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
@@ -86,11 +94,13 @@ function os_classes_views_default_views() {
   );
   /* Filter criterion: Spaces: Content in current space */
 
+
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
 
   /* Display: Page */
+
 
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['defaults']['title'] = FALSE;
@@ -101,6 +111,7 @@ function os_classes_views_default_views() {
   $handler->display->display_options['menu']['name'] = 'primary-menu';
 
   /* Display: EVA Field */
+
 
   $handler = $view->new_display('entity_view', 'EVA Field', 'entity_view_1');
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
@@ -115,6 +126,7 @@ function os_classes_views_default_views() {
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   /* Contextual filter: Content: Class (field_class) */
 
+
   $handler->display->display_options['arguments']['field_class_target_id']['id'] = 'field_class_target_id';
   $handler->display->display_options['arguments']['field_class_target_id']['table'] = 'field_data_field_class';
   $handler->display->display_options['arguments']['field_class_target_id']['field'] = 'field_class_target_id';
@@ -127,6 +139,7 @@ function os_classes_views_default_views() {
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Content: Published */
 
+
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -135,6 +148,7 @@ function os_classes_views_default_views() {
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
   /* Filter criterion: Content: Type */
 
+
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
@@ -142,6 +156,7 @@ function os_classes_views_default_views() {
     'class_material' => 'class_material',
   );
   /* Filter criterion: Spaces: Content in current space */
+
 
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';

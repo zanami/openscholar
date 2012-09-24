@@ -1,4 +1,6 @@
 <?php
+// $Id$
+
 include_once 'os_events.features.inc';
 
 /**
@@ -6,23 +8,23 @@ include_once 'os_events.features.inc';
  *
  * Events blocks that can be used on an OpenScholar site
  */
-function os_events_os_widget(){
+function os_events_os_widget() {
   $items = array();
 
   //Mini calendar that displays events by month
   $items['views-os_events-block_1'] = array(
-      'module' => 'views',
-      'delta' => 'os_events-block_1',
-      'region' => 'sidebar_second',
-      'weight' => '-10',
+    'module' => 'views',
+    'delta' => 'os_events-block_1',
+    'region' => 'sidebar_second',
+    'weight' => '-10',
   );
 
   //List of upcoming events
   $items['views-os_events-block_2'] = array(
-      'module' => 'views',
-      'delta' => 'os_events-block_2',
-      'region' => 'sidebar_second',
-      'weight' => '-15',
+    'module' => 'views',
+    'delta' => 'os_events-block_2',
+    'region' => 'sidebar_second',
+    'weight' => '-15',
   );
 
   return $items;
@@ -36,3 +38,4 @@ function os_events_vsite_og_node_type_info() {
     'event' => 'group content',
   );
 }
+

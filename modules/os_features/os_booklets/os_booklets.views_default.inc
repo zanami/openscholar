@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_booklets.views_default.inc
@@ -10,17 +13,19 @@
 function os_booklets_views_default_views() {
   $export = array();
 
-  $view = new view();
-  $view->name = 'os_booklets';
+  $view              = new view();
+  $view->name        = 'os_booklets';
   $view->description = 'Page, block and entity reference';
-  $view->tag = 'default';
-  $view->base_table = 'node';
-  $view->human_name = 'OS Booklets';
-  $view->core = 7;
+  $view->tag         = 'default';
+  $view->base_table  = 'node';
+  $view->human_name  = 'OS Booklets';
+  $view->core        = 7;
   $view->api_version = '3.0';
-  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+  /* Edit this to true to make a default view disabled initially */
+  $view->disabled = FALSE;
 
   /* Display: Master */
+
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Documents';
   $handler->display->display_options['access']['type'] = 'spaces_feature';
@@ -33,6 +38,7 @@ function os_booklets_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'node';
   /* Field: Content: Title */
+
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
@@ -40,16 +46,19 @@ function os_booklets_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   /* Sort criterion: Content: Sticky */
+
   $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['table'] = 'node';
   $handler->display->display_options['sorts']['sticky']['field'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['order'] = 'DESC';
   /* Sort criterion: Content: Title */
+
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'node';
   $handler->display->display_options['sorts']['title']['field'] = 'title';
   $handler->display->display_options['sorts']['title']['order'] = 'DESC';
   /* Filter criterion: Content: Published */
+
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -57,6 +66,7 @@ function os_booklets_views_default_views() {
   $handler->display->display_options['filters']['status']['group'] = 1;
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
   /* Filter criterion: Content: Type */
+
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
@@ -64,16 +74,19 @@ function os_booklets_views_default_views() {
     'book' => 'book',
   );
   /* Filter criterion: Book: Depth */
+
   $handler->display->display_options['filters']['depth']['id'] = 'depth';
   $handler->display->display_options['filters']['depth']['table'] = 'book_menu_links';
   $handler->display->display_options['filters']['depth']['field'] = 'depth';
   $handler->display->display_options['filters']['depth']['value']['value'] = '1';
   /* Filter criterion: Spaces: Content in current space */
+
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
 
   /* Display: Documents Page */
+
   $handler = $view->new_display('page', 'Documents Page', 'page');
   $handler->display->display_options['path'] = 'documents';
   $handler->display->display_options['menu']['type'] = 'normal';
@@ -83,6 +96,7 @@ function os_booklets_views_default_views() {
   $handler->display->display_options['menu']['context'] = 0;
 
   /* Display: Recent Documents Block */
+
   $handler = $view->new_display('block', 'Recent Documents Block', 'block');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Recent Documents';
@@ -97,10 +111,12 @@ function os_booklets_views_default_views() {
   $handler->display->display_options['defaults']['row_options'] = FALSE;
 
   /* Display: Documents Page */
+
   $handler = $view->new_display('page', 'Documents Page', 'page_1');
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Content: Published */
+
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -108,6 +124,7 @@ function os_booklets_views_default_views() {
   $handler->display->display_options['filters']['status']['group'] = 1;
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
   /* Filter criterion: Content: Type */
+
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
@@ -115,6 +132,7 @@ function os_booklets_views_default_views() {
     'book' => 'book',
   );
   /* Filter criterion: Book: Depth */
+
   $handler->display->display_options['filters']['depth']['id'] = 'depth';
   $handler->display->display_options['filters']['depth']['table'] = 'book_menu_links';
   $handler->display->display_options['filters']['depth']['field'] = 'depth';
@@ -130,3 +148,4 @@ function os_booklets_views_default_views() {
 
   return $export;
 }
+
