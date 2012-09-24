@@ -14,7 +14,7 @@
  * @author rbrandon
  *
  */
-interfaceos_software_handler {
+interface os_software_handler {
 
   /**
    * Returns the packages found at the target url.
