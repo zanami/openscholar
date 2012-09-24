@@ -313,6 +313,91 @@ float: left;
 	margin-left:0;
 }
 
+/* BOOK NAVS */
+.book-menu {
+  width: 33%;
+  float: right;
+  margin: 0 0 1em 1.5em;
+  border-left: 1px dashed #ccc;
+  padding-left: .7em;
+  font-size: .95em;
+  }
+
+.book-menu h3 {
+  margin: .5em 0;
+  }
+
+#block-book-navigation ul.menu,
+.block-boxes-os_boxes_booktoc ul.menu {
+  padding: 0;
+  margin: 0;
+  }
+
+.book-menu ul.menu li, 
+#block-book-navigation ul.menu li,
+.block-boxes-os_boxes_booktoc ul.menu li {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1em;
+  font-weight: bold;
+  }
+
+.book-menu ul.menu li {
+  list-style: disc;
+}
+
+.book-menu ul.menu li li, 
+#block-book-navigation ul.menu li li,
+.block-boxes-os_boxes_booktoc ul.menu li li {
+  margin-bottom: 0;
+  font-weight: normal;
+  }
+
+.book-menu ul.menu li a, 
+#block-book-navigation ul.menu li a,
+.block-boxes-os_boxes_booktoc ul.menu li a {
+  display:block;
+  border-bottom: 1px dotted #ccc;
+  padding-top: .3em;
+  padding-bottom: .1em;
+  }
+
+.book-menu ul.menu ul a, 
+#block-book-navigation ul.menu ul a,
+.block-boxes-os_boxes_booktoc ul.menu ul a {
+  padding:0 0 0 .5em;
+  }
+
+.book-menu ul.menu ul ul a,
+#block-book-navigation ul.menu ul ul a,
+.block-boxes-os_boxes_booktoc ul.menu ul ul a {
+  padding:0 0 0 1.5em;
+  }
+
+.book-menu ul.menu ul ul ul a,
+#block-book-navigation ul.menu ul ul ul a,
+.block-boxes-os_boxes_booktoc ul.menu ul ul ul a {
+  padding:0 0 0 2em;
+  }
+
+.book-menu ul.menu ul ul ul ul a,
+#block-book-navigation ul.menu ul ul ul ul a,
+.block-boxes-os_boxes_booktoc ul.menu ul ul ul ul a {
+  padding:0 0 0 2.5em;
+  }
+  
+  
+#boxes-box-scholar_book_recent_docs a.active, 
+#boxes-box-scholar_book_current_toc a.active,
+#block-book-navigation a.active,
+.block-boxes-os_boxes_booktoc a.active,
+.book-menu .active {
+    font-weight: bolder;
+    font-style: italic;
+     } 
+  
+
+
 dt {
   font-weight: 700;
 }
