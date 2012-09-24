@@ -1,4 +1,4 @@
-name = OS Software
+name = Software
 description = Create and maintain information on your software projects.
 core = 7.x
 package = Features

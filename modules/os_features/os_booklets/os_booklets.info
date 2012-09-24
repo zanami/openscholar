@@ -1,4 +1,4 @@
-name = OS Booklets
+name = Booklets
 description = Create and manage booklets; A booklet is is a set of pages tied together in a hierarchical sequence
 core = 7.x
 package = Features

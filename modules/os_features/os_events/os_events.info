@@ -1,4 +1,4 @@
-name = OS Events
+name = Events
 description = Create and manage events on your web site.
 core = 7.x
 package = Features

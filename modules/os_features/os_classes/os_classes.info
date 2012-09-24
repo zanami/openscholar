@@ -1,4 +1,4 @@
-name = OS Classes
+name = Classes
 description = Create and manage information on classes taught or otherwise relevant.
 core = 7.x
 package = Features

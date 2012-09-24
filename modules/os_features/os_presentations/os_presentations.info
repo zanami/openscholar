@@ -1,4 +1,4 @@
-name = OS Presentations
+name = Presentations
 core = 7.x
 package = Features
 php = 5.2.4
