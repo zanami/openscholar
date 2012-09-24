@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * Code for the OS Presentations feature.
@@ -14,3 +17,4 @@ function os_presentations_vsite_og_node_type_info() {
     'presentation' => 'group content',
   );
 }
+

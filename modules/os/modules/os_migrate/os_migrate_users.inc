@@ -104,12 +104,14 @@ class UsersOSMigration extends OSMigration {
    **/
   public function prepareRow($current_row) {
     //roles
-    $query = parent::d6_db_select('users_roles', 'r')
+    $query = parent::d6_db_select('users_roles', 'r');
+    $query->innerJoin('role','ro',"ro.rid = r.rid");
+
+    $query
       ->fields('r', array('uid'))
       ->fields('ro', array('name'))
-      ->innerJoin('role','ro',"ro.rid = r.rid")
       ->condition('r.uid', $current_row->uid, '=')
-    	->condition('ro.name',array('administrator','manager'),"IN");
+      ->condition('ro.name',array('administrator','manager'),"IN");
 
     $results = $query->execute();
     $def = $this->get_current_rid('authenticated user');

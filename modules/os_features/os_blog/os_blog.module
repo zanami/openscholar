@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * Code for OS Blog module
@@ -11,7 +14,9 @@ include_once 'os_blog.features.inc';
  * Removes the username from $submitted info on blog type nodes.
  */
 function os_blog_process_node(&$vars) {
-  if ($vars['type'] !== 'blog') return;
+  if ($vars['type'] !== 'blog') {
+    return;
+  }
   // Build the submitted variable used by default in node templates
   $pubdate = format_date($vars['created'], 'custom', 'F j, Y');
   // Publication date, formatted with time element
@@ -37,12 +42,13 @@ function os_blog_os_widget() {
 
   // Displays "Archive" list of blog entry nodes by month
   $items['views-os_blog-block'] = array(
-      'module' => 'views',
-      'delta' => 'os_blog-block',
-      'region' => 'sidebar_second',
-      'weight' => '-10',
-      'info' => 'Blog Archive'
+    'module' => 'views',
+    'delta' => 'os_blog-block',
+    'region' => 'sidebar_second',
+    'weight' => '-10',
+    'info' => 'Blog Archive',
   );
 
   return $items;
 }
+

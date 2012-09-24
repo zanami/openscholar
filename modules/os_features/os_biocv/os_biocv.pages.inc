@@ -1,14 +1,13 @@
 <?php
 // $Id$
 
-
 /**
  * Biocv settings form
  */
 function os_biocv_settings() {
   $options = array(
     0 => t('Display as a separate section with configurable text and PDF attachment'),
-    1 => t('Display as a PDF link on my Bio')
+    1 => t('Display as a PDF link on my Bio'),
   );
 
   $upload_link = l(t('upload a PDF'), 'node/add/cv');

@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * Code for the OS Software feature.
@@ -13,13 +16,15 @@ include_once 'os_software.features.inc';
  */
 function os_software_form_software_project_node_form_alter(&$form, &$form_state, $form_id) {
   $method_field_options = _os_software_packaging_method_options();
-  if (sizeof($method_field_options) > 1) return;
+  if (sizeof($method_field_options) > 1) {
+    return;
+  }
 
   $form['#attached'] = array(
-  	'css' => array(
-  		'type' => 'file',
-  		'data' => drupal_get_path('module', 'os_software') . '/os_software.css',
-  	),
+    'css' => array(
+      'type' => 'file',
+      'data' => drupal_get_path('module', 'os_software') . '/os_software.css',
+    ),
   );
   $form['actions']['submit']['#submit'][] = '_os_software_form_redirect';
 }
@@ -30,11 +35,15 @@ function os_software_form_software_project_node_form_alter(&$form, &$form_state,
  * Enforces single recommended release per project constraint for "Software Release"
  */
 function os_software_node_insert($node) {
-  if ($node->type !== 'software_release') return;
+  if ($node->type !== 'software_release') {
+    return;
+  }
 
   $field_items = field_get_items('node', $node, 'field_software_recommended');
   $recommended_value = $field_items[0]['value'];
-  if ($recommended_value === 0) return;
+  if ($recommended_value === 0) {
+    return;
+  }
 
   _os_software_new_recommended_release($node);
 }
@@ -45,20 +54,27 @@ function os_software_node_insert($node) {
  * Enforces single recommended release per project constraint for "Software Release"
  */
 function os_software_node_update($node) {
-  if ($node->type !== 'software_release') return;
+  if ($node->type !== 'software_release') {
+    return;
+  }
 
   // Compares original and updated "Recommended" field value
   $node_original = node_load($node->nid);
-  if (isset($node_original->title)) { // Only compare values if an original node exists
+  // Only compare values if an original node exists
+  if (isset($node_original->title)) {
     $node_updated = $node;
     $rec_field_item_original = field_get_items('node', $node_original, 'field_software_recommended');
     $rec_field_item_updated = field_get_items('node', $node_updated, 'field_software_recommended');
     $rec_value_original = $rec_field_item_original[0]['value'];
     $rec_value_updated = $rec_field_item_updated[0]['value'];
-    if ($rec_value_updated === $rec_value_original) return;
+    if ($rec_value_updated === $rec_value_original) {
+      return;
+    }
   }
   // Only updates other Software Release nodes if this value has changed to "Recommended"
-  if ($rec_value_updated === 0) return;
+  if ($rec_value_updated === 0) {
+    return;
+  }
 
   _os_software_new_recommended_release($node);
 }
@@ -69,7 +85,9 @@ function os_software_node_update($node) {
  * Generates the node title for Software Releases
  */
 function os_software_node_presave($node) {
-  if ($node->type !== 'software_release') return;
+  if ($node->type !== 'software_release') {
+    return;
+  }
 
   // Sets the node title like "[project-node:title] [release-node:version]"
   $title = _os_software_prepare_release_title($node);
@@ -82,7 +100,9 @@ function os_software_node_presave($node) {
  * Sets the custom release node title
  */
 function os_software_node_view($node, $view_mode, $langcode) {
-  if ($node->type !== 'software_project') return;
+  if ($node->type !== 'software_project') {
+    return;
+  }
 
   $method_field_item = field_get_items('node', $node, 'field_software_method');
   if ($method_field_item[0]['value'] !== 'Manual upload') {
@@ -109,7 +129,9 @@ function os_software_node_view($node, $view_mode, $langcode) {
  * Implements hook_node_delete()
  */
 function os_software_node_delete($node) {
-  if ($node->type !== 'software_project') return;
+  if ($node->type !== 'software_project') {
+    return;
+  }
 
   // Deletes all referencing software release nodes
   _os_software_delete_child_releases($node);
@@ -241,8 +263,7 @@ function _os_software_delete_child_releases($node) {
 function _os_software_get_software_release_nids($nid) {
   include_once drupal_get_path('module', 'os') . '/includes/node.inc';
   $query = new OSNodeFieldQuery('software_release');
-  $query
-    ->fieldCondition('field_software_project', 'target_id', $nid);
+  $query->fieldCondition('field_software_project', 'target_id', $nid);
   $result = $query->execute();
 
   if (!isset($result['node'])) {
@@ -272,7 +293,7 @@ function _os_software_prepare_release_title($node) {
   $default_prefix = 'Project Release';
 
   $project_field = field_get_items('node', $node, 'field_software_project');
-  $project_node = node_load($project_field[0]['target_id']);
+  $project_node  = node_load($project_field[0]['target_id']);
   $project_title = (!empty($project_node->title)) ? $project_node->title : $default_prefix;
 
   $version_field = field_get_items('node', $node, 'field_software_version');
@@ -300,3 +321,4 @@ function _os_software_packaging_method_options() {
 function _os_software_form_redirect($form, &$form_state) {
   $form_state['redirect'] = 'software';
 }
+
