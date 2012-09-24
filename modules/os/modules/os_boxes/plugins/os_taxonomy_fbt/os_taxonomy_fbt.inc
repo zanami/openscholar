@@ -32,7 +32,7 @@ class os_taxonomy_fbt extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state) {
-    $form = array();
+    $form = parent::options_form($form_state);
 
     ctools_include('dependent');
     ctools_add_js('dependent');

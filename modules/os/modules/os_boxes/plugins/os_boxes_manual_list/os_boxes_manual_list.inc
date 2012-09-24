@@ -10,7 +10,7 @@ class os_boxes_manual_list extends os_boxes_default {
   }
 
   public function options_form(&$form_state) {
-    $form = array();
+    $form = parent::options_form($form_state);
 
     $form['#attached']['js'] = array(
       drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_manual_list/os_boxes_manual_list.js'

@@ -12,7 +12,7 @@ class os_boxes_twitterfeed extends os_boxes_default {
    */
   public function options_defaults(){
     $options = parent::options_defaults();
-    
+
     // the default value for the form
     $options['twitter_username'] = '';
     $options['num_items'] = 5;
@@ -27,7 +27,8 @@ class os_boxes_twitterfeed extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state){
-    
+    $form = parent::options_form($form_state);
+
     $form['twitter_type'] = array(
       '#type' => 'select',
       '#required' => TRUE,
@@ -36,7 +37,7 @@ class os_boxes_twitterfeed extends os_boxes_default {
       '#attached' => array('js' => array(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_twitterfeed/os_boxes_twitterfeed.js')),
       '#title' => t('Display tweets from'),
     );
-    
+
     $form['twitter_username'] = array(
       '#type' => 'textfield',
       //'#title' => t('Twitter key'),
@@ -45,16 +46,16 @@ class os_boxes_twitterfeed extends os_boxes_default {
       //'#description' => t('Can be a twitter username (prepended with @), a list (@username/listname), a hashtag (prepended with #) or a search keyword (no prefix).'),
       //'#field_prefix' => '<span style="width:1em;float:left; text-align:right; border:1px gray solid;padding:1px; background-color:silver">' . $this->options['twitter_type'] . '</span>',
       '#description' => t('Show tweets coming from a single user, a specific hashtag, or a search term.'),
-    
+
     );
-    
+
     $form['num_items'] = array(
       '#type' => 'textfield',
       '#title' => t('Number of tweets'),
       '#default_value' => $this->options['num_items'],
       '#description' => t('Number of tweets to display')
     );
-    
+
     $form['followme_link'] = array(
       '#type' => 'checkbox',
       '#title' => t('Include a "follow me link"'),
@@ -62,10 +63,10 @@ class os_boxes_twitterfeed extends os_boxes_default {
       '#description' => t('This will add a more link to the bottom of this widget, which will link to your twitter page'),
       '#tree' => TRUE
     );
-    
+
     ctools_include('dependent');
     ctools_add_js('dependent');
-    
+
     $form['followme_text'] = array(
       '#type' => 'textfield',
       '#title' => t('Text'),
@@ -80,7 +81,7 @@ class os_boxes_twitterfeed extends os_boxes_default {
         )
       )
     );
-    
+
     $form['followme_url'] = array(
       '#type' => 'textfield',
       '#title' => t('Link'),
@@ -95,7 +96,7 @@ class os_boxes_twitterfeed extends os_boxes_default {
         )
       )
     );
-    
+
     $form += parent::options_form($form_state);
     return $form;
   }
@@ -105,33 +106,33 @@ class os_boxes_twitterfeed extends os_boxes_default {
    */
   public function render(){
     $block = parent::render();
-    
+
     $twitkey = $this->options['twitter_username'];
     $num_items = $this->options['num_items'];
     $followme_link = $this->options['followme_link'];
-    
+
     if ($twitkey[0] != '@' || $twitkey[0] != '#') {
       switch($this->options['twitter_type']) {
         case 'user':
           $twitkey = '@'.$twitkey;
           break;
-          
+
         case 'hashtag':
           $twitkey = '#'.$twitkey;
           break;
       }
     }
-    
+
     $output = '';
     if (module_exists('twitter_pull')) {
       $output = twitter_pull_render($twitkey, $title = NULL, $num_items);
     }
-      
+
     // include a followme link
     if ($this->options['followme_link']) {
       $output .= '<div class="twitter-followme">' . l($this->options['followme_text'], $this->options['followme_url']) . '</div>';
     }
-    
+
     $block['content'] = $output;
     return $block;
   }
@@ -140,11 +141,11 @@ class os_boxes_twitterfeed extends os_boxes_default {
    * Return the cache parameters for this box
    */
   public function cache_info(){
-    
+
     // Do not cache twitter_pull has is't own caching so the impact is low and running through the theme function will change the last updated times
     // Caching should be added back if we use other services here
     return array();
-    
+
   //  	//Clear any time the site is saved
   //    $cache_key = array(
   //      'os_og' => array('current' => 'current'),
