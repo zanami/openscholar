@@ -19,5 +19,12 @@ function os_wysiwyg_user_default_permissions() {
     'module' => 'filter',
   );
 
+  // Exported permission: use text format full_html.
+  $permissions['use text format full_html'] = array(
+    'name' => 'use text format full_html',
+    'roles' => array(),
+    'module' => 'filter',
+  );
+
   return $permissions;
 }
