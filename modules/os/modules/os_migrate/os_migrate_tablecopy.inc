@@ -38,6 +38,7 @@ abstract class TableCopyMigration extends OSMigration {
     foreach($map_schema as $key => $key_schema) {
       $map_schema[$key]['alias'] = $this->alias;
     }
+    $this->map_schema = $map_schema;
 
     $this->source = new MigrateSourceSQL($this->query(), array(), $count_query, array('map_joinable' => FALSE));
     $this->destination = new MigrateDestinationTableCopy($this->dest_table, $schema);
@@ -46,17 +47,19 @@ abstract class TableCopyMigration extends OSMigration {
   }
 
   function query() {
-    return parent::d6_db_select($this->table, $this->alias)
+    $query = parent::d6_db_select($this->table, $this->alias)
       ->fields($this->alias);
-  }
 
-  public function prepareRow(&$row) {
-    //don't migrate tables unless their modules exist already
+    //invalidate the query to prevent migration if required modules are not present.
     if (isset($this->required_modules) && count($this->required_modules)) {
       $modules = array_map('module_exists', $this->required_modules);
       if (in_array(FALSE, $modules)) {
-        return FALSE;
+        foreach(array_keys($this->map_schema) as $key) {
+          $query->isNull($key);
+        }
       }
     }
+
+    return $query;
   }
 }

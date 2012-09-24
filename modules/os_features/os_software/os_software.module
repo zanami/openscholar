@@ -205,27 +205,29 @@ function os_software_os_packaging_method_option() {
 }
 
 /**
- * Custom functions
- */
-
-/**
  * Finds other recommended releases, marks them "Not recommended"
  */
 function _os_software_new_recommended_release($node) {
-  // Uses [:os_software_relesases:] view to filter only valid releases for this project
-  $view = views_get_view('os_software_releases');
-  $view->set_display('page_1');
-  $project_field_item = field_get_items('node', $node, 'field_software_project');
-  $view->set_arguments(array($project_field_item[0]['target_id']));
-  $view->execute();
+  // Retrieves the list of all other software releases for this node's parent
+  // Software Project node.
+  $field_name = 'field_software_project';
+  $items = field_get_items('node', $node, $field_name);
+  $project_nid = $items[0]['target_id'];
+  $release_nids = _os_software_get_software_release_nids($project_nid);
+  if (sizeof($release_nids) < 1) {
+    return;
+  }
 
-  foreach ($view->result as $data) {
-    if (!isset($node->nid) || $data->nid !== $node->nid) {
-      $release_node = node_load($data->nid);
-      $language = $release_node->language;
-      $release_node->field_software_recommended[$language][0]['value'] = 0;
-      node_save($release_node);
+  // Sets all sibling Software Release node's "recommended" field to '0'.
+  foreach ($release_nids as $nid) {
+    // Skips over the release that triggered this update.
+    if ((int) $nid === (int) $node->nid) {
+      return;
     }
+    $release_node = node_load($nid);
+    $language = isset($release_node->language) ? $release_node->language : LANGUAGE_NONE;
+    $release_node->field_software_recommended[$language][0]['value'] = 0;
+    node_save($release_node);
   }
 }
 
