@@ -11,3 +11,4 @@ function os_reader_vsite_og_node_type_info() {
     'feed' => 'group content',
   );
 }
+

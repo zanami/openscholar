@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_events.features.field.inc
@@ -285,3 +288,4 @@ function os_events_field_default_fields() {
 
   return $fields;
 }
+

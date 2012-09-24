@@ -179,6 +179,7 @@ function os_publications_settings() {
 
 
 
+
   $form['right']['os_publications_note_in_teaser'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show the "note" content in teaser?'),
@@ -242,6 +243,7 @@ function os_publications_settings() {
    '#title' => t('When this is checked, a shortened URL will be included in the citation.'),
    '#default_value' => variable_get('scholar_publications_shorten_citations', 0),
   );*/
+
 
 
   return system_settings_form($form);

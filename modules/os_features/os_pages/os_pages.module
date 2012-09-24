@@ -1,4 +1,6 @@
 <?php
+// $Id$
+
 include_once ('os_pages.features.inc');
 
 /**
@@ -9,3 +11,4 @@ function os_pages_vsite_og_node_type_info() {
     'page' => 'group content',
   );
 }
+

@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_blog.features.field.inc
@@ -198,3 +201,4 @@ function os_blog_field_default_fields() {
 
   return $fields;
 }
+
