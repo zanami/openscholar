@@ -30,12 +30,12 @@ class os_boxes_bio extends os_boxes_default {
 
     $form = parent::options_form($form_state);
 
-    $option_defaults = $this->options_defaults();
+    $defaults = $this->options_defaults();
 
     $form['teaser'] = array(
       '#type' => 'radios',
       '#title' => 'Display Mode',
-      '#default_value' => $option_defaults['teaser'],
+      '#default_value' => isset($this->options['teaser']) ? $this->options['teaser'] : $defaults['teaser'],
       '#options' => array('teaser' => 'Teaser Only', 'full' => 'Full Bio'),
       '#description' => 'Display your entire Bio in this widget, or just the teaser.',
     );
@@ -43,7 +43,7 @@ class os_boxes_bio extends os_boxes_default {
     $form['show_title'] = array(
       '#type' => 'checkbox',
       '#title' => 'Display title of your Bio',
-      '#default_value' => $option_defaults['show_title'],
+      '#default_value' => isset($this->options['show_title']) ? $this->options['show_title'] : $defaults['show_title'],
     );
 
     return $form;

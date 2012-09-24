@@ -45,3 +45,88 @@ class CitationDistributeTableMigration extends TableCopyMigration {
     parent::__construct($table, $key_schema);
   }
 }
+
+class VariableTableMigration extends TableCopyMigration {
+
+  public function __construct() {
+    $this->whitelist = array('mollom_private_key', 'mollom_public_key', 'os_mailchimp_api', 'os_mailchimp_list', 'olark_code');
+
+    $this->whitelist += parent::subfields('comment', parent::d6_list_content_types(), '_');
+    $this->whitelist += parent::subfields('citation_distribute', array('dash_password', 'module_mode', 'service_googlescholar_auto_flag', 'service_repec_archive_code', 'service_repec_inst_name', 'service_repec_maintainer_email', 'service_repec_maintainer_name', 'service_repec_provider_homepage', 'service_repec_provider_institution', 'service_repec_title'), '_');
+
+    // the following look like they should be migrated, but I'm not sure
+    //pinserver*, shorten*,
+
+    $key_schema = array(
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+    );
+
+    $table = 'variable';
+    parent::__construct($table, $key_schema);
+  }
+
+  public function query() {
+    $query = parent::query();
+    $query->condition('name', $this->whitelist, 'IN');
+    return $query;
+  }
+}
+
+class UrlAliasTableMigration extends TableCopyMigration {
+
+  public function __construct() {
+    $key_schema = array(
+      'pid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    );
+
+    $table = 'url_alias';
+    parent::__construct($table, $key_schema);
+
+    //stash pids here so we don't overwrite any imported with nodes/users
+    $this->used_pids = db_select('url_alias')->fields('url_alias', array('pid'))->execute()->fetchCol();
+  }
+
+  public function query() {
+    $query = parent::query();
+
+    $prefixes = array('nodeorder', 'iqss_gking_research_group', 'filefield_paths'); //taxonomies too?
+    $or = db_or();
+    foreach($prefixes as $prefix) {
+      $or->condition('src', $prefix.'/%', 'LIKE');
+    }
+
+    $query->condition($or);
+
+    return $query;
+  }
+
+  public function prepareRow(&$row) {
+    $row->source = $row->src;
+    unset($row->src);
+
+    $row->alias = $row->dst;
+    unset($row->dst);
+
+    $row->pid = $this->getPID($row->pid);
+  }
+
+  //returns this pid if available.  if not, gets new one.  updates list
+  function getPID($pid) {
+    if (!in_array($pid, $this->used_pids)) {
+      return $pid;
+    }
+
+    $new = 1 + max($this->used_pids);
+    $this->used_pids[] = $new;
+    return $new;
+  }
+}
+

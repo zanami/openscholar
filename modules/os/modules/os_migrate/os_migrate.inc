@@ -39,7 +39,7 @@ abstract class OSMigration extends Migration {
    * As db_select, but targets old d6 database
    * Sends users to admin page on a misconfigured db
    */
-  public function d6_db_select($target, $alias = NULL, array $options = array()) {
+  static public function d6_db_select($target, $alias = NULL, array $options = array()) {
     static $os_migrate_database;
     if (!isset($os_migrate_database)) {
       $os_migrate_database =  variable_get('os_migrate_database', '');
@@ -103,6 +103,13 @@ abstract class OSMigration extends Migration {
     }
   }
 
+  //list all content types used in d6
+  function d6_list_content_types() {
+    $query = self::d6_db_select('node', 'n')
+      ->fields('n', array('type'))
+      ->distinct();
+    return $query->execute()->fetchCol();
+  }
   /**
    * @function os_migrate_prepare_files
    *

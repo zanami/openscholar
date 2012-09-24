@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_software.features.user_permission.inc
@@ -120,3 +123,4 @@ function os_software_user_default_permissions() {
 
   return $permissions;
 }
+

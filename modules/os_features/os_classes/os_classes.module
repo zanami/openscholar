@@ -78,17 +78,6 @@ function os_classes_node_delete($node) {
 }
 
 /**
- * Implements hook_link_alter().
- *
- * @todo verify works -oren
- *
- function os_classes_node_view_alter(&$build) {
- if (isset($links['class_material_field_class'])) {
- unset($links['class_material_field_class']);
- }
- } */
-
-/**
  * Implements hook_vsite_og_node_type_info().
  */
 function os_classes_vsite_og_node_type_info() {

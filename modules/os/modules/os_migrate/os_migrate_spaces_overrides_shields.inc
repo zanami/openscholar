@@ -1,22 +1,22 @@
-<?php 
+<?php
 
 class SpacesOverridesShieldsMigration extends SpacesOverridesTableMigration {
-  
+
   public function __construct() {
-    $this->source_object = 'variable'; 
+    $this->source_object = 'variable';
     $this->dest_object = 'boxes';
     $this->dependencies = array('SpacesOverridesBoxes');
     parent::__construct();
   }
-  
+
   public function query() {
     $query = parent::query();
     $query->condition('object_id', 'vsite_shields_shield');
-    $query->fields('s', array('id', 'value', 'type'));
+    $query->fields('spaces_overrides', array('id', 'value', 'type'));
     $query->distinct(FALSE);
     return $query;
   }
-  
+
   public function prepareRow(&$row) {
     if (($value = @unserialize($row->value)) === FALSE) {
       if (empty($row->value) || $row->value == 'NULL') {
@@ -25,7 +25,7 @@ class SpacesOverridesShieldsMigration extends SpacesOverridesTableMigration {
       $value = $row->value; //serialize them all when we're done.
     }
 
-    //get the migrated shield box 
+    //get the migrated shield box
     $result = db_select('spaces_overrides', 'so')
       ->condition('object_type', 'boxes')
       ->condition('type', 'og')
@@ -33,12 +33,12 @@ class SpacesOverridesShieldsMigration extends SpacesOverridesTableMigration {
       ->condition('value', '%os_boxes_shield%', 'LIKE')
       ->fields('so', array('value'))
       ->execute();
-    
+
     if ($result->rowCount()) {
       //use existing
       parent::saveMessage(t('Ignoring shield for @nid.  Migrated with box override.', array('@nid'=>$row->id)), MigrationBase::MESSAGE_NOTICE);
       return FALSE;
-      
+
     } else {
       //create new box
       $shield = (object) array(
@@ -52,14 +52,14 @@ class SpacesOverridesShieldsMigration extends SpacesOverridesTableMigration {
         'plugin_key' => 'os_shields_box',
       );
     }
-    
-    
+
+
     if (strlen($value)) {
       $shield_file = end(explode('/', $value));
     } else {
       $shield_file = '';
     }
-    
+
     $shield->options['shield'] = $shield_file;
 
     $row->object_type = 'boxes';

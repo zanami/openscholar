@@ -140,22 +140,27 @@ class SoftwareReleaseNodeOSMigration extends AbstractNodeOSMigration {
   public function prepareRow(&$current_row) {
 
     if ($description = @unserialize($current_row->field_scholar_software_file_data)) {
-      $current_row->field_scholar_software_file_data = $description;
+      $current_row->field_scholar_software_file_data = (isset($description['description'])) ? $description['description'] : '';
+    } else {
+      $current_row->field_scholar_software_file_data = '';
     }
 
+    //concatenate possible version strings
     $current_row->field_software_version = $current_row->field_versionmajor_value;
+    if (strlen($current_row->field_versionpatch_value)) {
+      $current_row->field_software_version .= '.' . $current_row->field_versionpatch_value;
+    }
     if (strlen($current_row->field_versionextra_value)) {
       $current_row->field_software_version .= ':' . $current_row->field_versionextra_value;
     }
-    if (strlen($current_row->field_versionpatch_value)) {
-      $current_row->field_software_version .= ':' . $current_row->field_versionpatch_value;
-    }
+
 
     $file = parent::get_file_by_fid($current_row->field_scholar_software_file_fid);
     if ($file) {
       parent::os_migrate_prepare_files(array($file), $current_row, 'field_software_package');
       $current_row->{'field_software_package:destination_file'} = $current_row->filepath;
-
+    } else {
+      $current_row->field_software_package = array();
     }
 
     return parent::prepareRow($current_row); //false -> skip this row

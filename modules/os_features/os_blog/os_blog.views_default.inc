@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_blog.views_default.inc
@@ -10,17 +13,19 @@
 function os_blog_views_default_views() {
   $export = array();
 
-  $view = new view();
-  $view->name = 'os_blog';
+  $view              = new view();
+  $view->name        = 'os_blog';
   $view->description = 'OS Blog > Blog, OS Blog > Archive, OS Blog > RSS Feed';
-  $view->tag = 'os_feature';
-  $view->base_table = 'node';
-  $view->human_name = 'OS Blog';
-  $view->core = 7;
+  $view->tag         = 'os_feature';
+  $view->base_table  = 'node';
+  $view->human_name  = 'OS Blog';
+  $view->core        = 7;
   $view->api_version = '3.0';
-  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+  /* Edit this to true to make a default view disabled initially */
+  $view->disabled = FALSE;
 
   /* Display: Master */
+
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Blog';
   $handler->display->display_options['access']['type'] = 'spaces_feature';
@@ -33,6 +38,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'node';
   /* Field: Content: Title */
+
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
@@ -40,16 +46,19 @@ function os_blog_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   /* Sort criterion: Content: Post date */
+
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
   /* Sort criterion: Content: Sticky */
+
   $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['table'] = 'node';
   $handler->display->display_options['sorts']['sticky']['field'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['order'] = 'DESC';
   /* Contextual filter: Content: Author uid */
+
   $handler->display->display_options['arguments']['uid']['id'] = 'uid';
   $handler->display->display_options['arguments']['uid']['table'] = 'node';
   $handler->display->display_options['arguments']['uid']['field'] = 'uid';
@@ -62,6 +71,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['arguments']['uid']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['uid']['specify_validation'] = TRUE;
   /* Contextual filter: Content: Created year + month */
+
   $handler->display->display_options['arguments']['created_year_month']['id'] = 'created_year_month';
   $handler->display->display_options['arguments']['created_year_month']['table'] = 'node';
   $handler->display->display_options['arguments']['created_year_month']['field'] = 'created_year_month';
@@ -74,6 +84,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['arguments']['created_year_month']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['created_year_month']['specify_validation'] = TRUE;
   /* Filter criterion: Content: Published */
+
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -81,6 +92,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['filters']['status']['group'] = 1;
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
   /* Filter criterion: Content: Type */
+
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
@@ -88,10 +100,12 @@ function os_blog_views_default_views() {
     'blog' => 'blog',
   );
   /* Filter criterion: Spaces: Content in current space */
+
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
   /* Filter criterion: Content: Post date */
+
   $handler->display->display_options['filters']['created']['id'] = 'created';
   $handler->display->display_options['filters']['created']['table'] = 'node';
   $handler->display->display_options['filters']['created']['field'] = 'created';
@@ -100,6 +114,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['filters']['created']['value']['type'] = 'offset';
 
   /* Display: Page */
+
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['display_comment'] = 'The OS Blog > Blog page is a condition for the OS Blog context.';
   $handler->display->display_options['path'] = 'blog';
@@ -110,6 +125,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['menu']['context'] = 0;
 
   /* Display: RSS Feed */
+
   $handler = $view->new_display('feed', 'RSS Feed', 'feed');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Blog';
@@ -124,6 +140,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['sitename_title'] = 1;
 
   /* Display: Archive Block */
+
   $handler = $view->new_display('block', 'Archive Block', 'block');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Archive';
@@ -132,6 +149,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['pager']['options']['items_per_page'] = '5';
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   /* Contextual filter: Global: Null */
+
   $handler->display->display_options['arguments']['null']['id'] = 'null';
   $handler->display->display_options['arguments']['null']['table'] = 'views';
   $handler->display->display_options['arguments']['null']['field'] = 'null';
@@ -142,6 +160,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['arguments']['null']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['null']['summary_options']['items_per_page'] = '25';
   /* Contextual filter: Content: Created year + month */
+
   $handler->display->display_options['arguments']['created_year_month']['id'] = 'created_year_month';
   $handler->display->display_options['arguments']['created_year_month']['table'] = 'node';
   $handler->display->display_options['arguments']['created_year_month']['field'] = 'created_year_month';
@@ -155,17 +174,19 @@ function os_blog_views_default_views() {
   $handler->display->display_options['arguments']['created_year_month']['specify_validation'] = TRUE;
   $export['os_blog'] = $view;
 
-  $view = new view();
-  $view->name = 'os_blog_comments';
+  $view              = new view();
+  $view->name        = 'os_blog_comments';
   $view->description = 'OS Blog > Recent comments';
-  $view->tag = 'default';
-  $view->base_table = 'comment';
-  $view->human_name = 'OS Blog Comments';
-  $view->core = 7;
+  $view->tag         = 'default';
+  $view->base_table  = 'comment';
+  $view->human_name  = 'OS Blog Comments';
+  $view->core        = 7;
   $view->api_version = '3.0';
-  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+  /* Edit this to true to make a default view disabled initially */
+  $view->disabled = FALSE;
 
   /* Display: Master */
+
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Recent comments';
   $handler->display->display_options['access']['type'] = 'perm';
@@ -177,17 +198,20 @@ function os_blog_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'list';
   $handler->display->display_options['row_plugin'] = 'fields';
   /* Relationship: Comment: Content */
+
   $handler->display->display_options['relationships']['nid']['id'] = 'nid';
   $handler->display->display_options['relationships']['nid']['table'] = 'comment';
   $handler->display->display_options['relationships']['nid']['field'] = 'nid';
   $handler->display->display_options['relationships']['nid']['required'] = TRUE;
   /* Field: Comment: Author */
+
   $handler->display->display_options['fields']['name']['id'] = 'name';
   $handler->display->display_options['fields']['name']['table'] = 'comment';
   $handler->display->display_options['fields']['name']['field'] = 'name';
   $handler->display->display_options['fields']['name']['label'] = '';
   $handler->display->display_options['fields']['name']['element_label_colon'] = FALSE;
   /* Field: Comment: Post date */
+
   $handler->display->display_options['fields']['created']['id'] = 'created';
   $handler->display->display_options['fields']['created']['table'] = 'comment';
   $handler->display->display_options['fields']['created']['field'] = 'created';
@@ -196,6 +220,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['fields']['created']['date_format'] = 'custom';
   $handler->display->display_options['fields']['created']['custom_date_format'] = 'n/j/Y';
   /* Field: Comment: Title */
+
   $handler->display->display_options['fields']['subject']['id'] = 'subject';
   $handler->display->display_options['fields']['subject']['table'] = 'comment';
   $handler->display->display_options['fields']['subject']['field'] = 'subject';
@@ -203,11 +228,13 @@ function os_blog_views_default_views() {
   $handler->display->display_options['fields']['subject']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['subject']['alter']['ellipsis'] = FALSE;
   /* Sort criterion: Comment: Post date */
+
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'comment';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
   /* Filter criterion: Comment: Approved */
+
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'comment';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -215,6 +242,7 @@ function os_blog_views_default_views() {
   $handler->display->display_options['filters']['status']['group'] = 1;
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
   /* Filter criterion: Content: Published */
+
   $handler->display->display_options['filters']['status_node']['id'] = 'status_node';
   $handler->display->display_options['filters']['status_node']['table'] = 'node';
   $handler->display->display_options['filters']['status_node']['field'] = 'status';
@@ -223,16 +251,19 @@ function os_blog_views_default_views() {
   $handler->display->display_options['filters']['status_node']['group'] = 1;
   $handler->display->display_options['filters']['status_node']['expose']['operator'] = FALSE;
   /* Filter criterion: Content access: Access */
+
   $handler->display->display_options['filters']['nid']['id'] = 'nid';
   $handler->display->display_options['filters']['nid']['table'] = 'node_access';
   $handler->display->display_options['filters']['nid']['field'] = 'nid';
   $handler->display->display_options['filters']['nid']['relationship'] = 'nid';
   /* Filter criterion: Spaces: Content in current space */
+
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
   $handler->display->display_options['filters']['current']['relationship'] = 'nid';
   /* Filter criterion: Comment: Post date */
+
   $handler->display->display_options['filters']['created']['id'] = 'created';
   $handler->display->display_options['filters']['created']['table'] = 'comment';
   $handler->display->display_options['filters']['created']['field'] = 'created';
@@ -241,9 +272,11 @@ function os_blog_views_default_views() {
   $handler->display->display_options['filters']['created']['value']['type'] = 'offset';
 
   /* Display: Block "Recent comments" */
+
   $handler = $view->new_display('block', 'Block "Recent comments"', 'block');
   $handler->display->display_options['display_description'] = 'Recent comments on blog entry nodes';
   $export['os_blog_comments'] = $view;
 
   return $export;
 }
+
