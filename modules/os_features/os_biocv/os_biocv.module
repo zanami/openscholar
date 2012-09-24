@@ -70,7 +70,8 @@ function os_biocv_node_access($node, $op, $account) {
   if (!in_array($type, array('bio', 'cv'))) {
     return NODE_ACCESS_IGNORE;
   }
-  if (_os_biocv_get_first_node($type) !== FALSE) {
+  $node_exists = _os_biocv_get_first_node($type);
+  if ($node_exists === FALSE) {
     return NODE_ACCESS_IGNORE;
   }
   return NODE_ACCESS_DENY;
