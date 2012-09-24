@@ -93,6 +93,8 @@ function os_classes_views_default_views() {
   /* Display: Page */
 
   $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Classes';
   $handler->display->display_options['path'] = 'classes';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Classes';
