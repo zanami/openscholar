@@ -131,8 +131,12 @@ function os_layout_get($context, $load_meta = FALSE, $unused_blocks = FALSE) {
       'title' => '',
       'weight' => 0,
   );
-  foreach ($block_settings as &$b) {
-    $b += $required;
+  foreach ($block_settings as $k => &$b) {
+    if(os_layout_block_exists($b)){
+      $b += $required;
+    }else{
+      unset($block_settings[$k]);
+    }
   }
 
   return $block_settings;
@@ -423,6 +427,27 @@ function os_layout_block_delete($bid, $contexts = FALSE) {
     }
     if ($set) {
       os_layout_set($context, $blocks);
+    }
+  }
+
+  return TRUE;
+}
+
+/**
+ * Check to see if this block exists.
+ *
+ * It's module or plugin could have been deleted
+ *
+ * @param $block
+ *  Block
+ */
+function os_layout_block_exists($block){
+  if(isset($block['module']) && !module_exists($block['module'])){
+    return FALSE;
+  }
+  if(isset($block['module']) && isset($block['delta']) && $block['module'] == 'boxes'){
+    if (!boxes_box_load($block['delta'])) {
+      return FALSE;
     }
   }
 
