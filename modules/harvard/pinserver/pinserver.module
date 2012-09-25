@@ -77,7 +77,10 @@ function pinserver_check_user(){
 
   // First, parse and validate the PIN token.
   $token_data = pinserver_check_token();
-  
+
+error_log(__FUNCTION__); 
+error_log($token_data['user_id']);
+ 
   //Uncomment to fake auth locally
   //unset($token_data['errors']);
 
@@ -101,6 +104,9 @@ function pinserver_check_user(){
   module_invoke_all('pinserver');
     
   //redirect user to landing page that was set in pinserver configuration page
+
+error_log(__FUNCTION__ . ' ' . $landing_path);
+
   drupal_goto($landing_path);
 }
  
