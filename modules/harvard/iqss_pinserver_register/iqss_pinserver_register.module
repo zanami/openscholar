@@ -1,6 +1,5 @@
 <?php
 
-include_once(drupal_get_path('module', 'scholarregister') . '/scholarregister.pages.inc');
 include_once(drupal_get_path('module', 'vsite_register') . '/vsite_register.form.inc');
 
 /**
@@ -10,10 +9,10 @@ function iqss_pinserver_register_menu(){
   $items = array();
 
   $items['iqss-pinserver-register/huid_js'] = array(
-  'title' => 'Create your web site',
-  'page callback' => 'iqss_pinserver_register_huid_js',
-  'access arguments' => array('access content'),
-  'type' => MENU_CALLBACK,
+    'title' => 'Create your web site',
+    'page callback' => 'iqss_pinserver_register_huid_js',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
   );
   
   return $items;
@@ -40,43 +39,29 @@ function iqss_pinserver_register_menu_alter(&$items){
 function iqss_pinserver_register_form_alter(&$form, $form_state, $form_id){
   global $user;
 
-error_log(__FUNCTION__);
-
   //add the submit function for pinserver
   switch ($form_id) {
 
     case 'vsite_register_form':
-    case 'scholarregister_signup_form':
-
-error_log('STILL HERE -- form ID: ' . $form_id);
-//die(var_dump($_SESSION));
 
       //add submit and validate functions
       $form['#submit'][] = 'iqss_pinserver_register_submit';
       $form['#validate'][] = 'iqss_pinserver_register_validate';
 
-      if (!in_array('authenticated user', $user -> roles)){
-        //add password field
-        _scholarregister_password_field($form);
-        //change email field description
-        $form['mail']['#description'] =  t('A valid e-mail address is required. All e-mails from OpenScholar will be sent to this address.');
-      }
-      
       //if user is has create vsite permissions, then load additional field(s)
       if (user_access('create vsite content on behalf')){
         //add huid field
 	_iqss_pinserver_register_huid_field($form);
-//        ctools_ajax_associate_url_to_element($form, $form['huid'], url('iqss-pinserver-register/huid_js'), 'ctools-use-ajax-onchange');
       }
-      break;
+    break;
 
-      //remove and replace submit function from vsite_users to avoid redirect to 'home' after submit
+    //remove and replace submit function from vsite_users to avoid redirect to 'home' after submit
     case 'vsite_users_profile_node_form':
       if(isset($form['buttons']['submit'])){
         $key = array_search('vsite_users_form_vsite_users_profile_node_submit', $form['buttons']['submit']['#submit']);
         if($key) $form['buttons']['submit']['#submit'][$key] = 'iqss_pinserver_register_vsite_users_profile_node_submit';
       }
-      break;
+    break;
   }
 }
 
@@ -99,7 +84,7 @@ function iqss_pinserver_register_vsite_users_profile_node_submit($form, &$form_s
 function iqss_pinserver_register_validate($form, &$form_state){
   //check if multiple sites is limited and if site already exists
   if($uid && !user_access('create vsite content on behalf') && count(vsite_get_vsite_by_owner($uid)) >= variable_get('openscholar_vsites_per_user', 1)){
-    $commands[] = _scholarregister_vsite_error();
+    $commands[] = ctools_ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
     ctools_ajax_render($commands);
   }
 }
@@ -109,12 +94,6 @@ function iqss_pinserver_register_validate($form, &$form_state){
  */
 function iqss_pinserver_register_submit($form, $state){
   global $user;
-error_log(__FUNCTION__ . ' -- ' . $user->uid);
-
-//die(var_dump($state) . "\n<br><br>SESSION:<br><br>\n" . var_dump($_SESSION));
-//die("SESSION:<br><br>\n" . var_dump($_SESSION));
-
-dpm($state);
 
   //new user and vsite should have already been created, check to make sure the user information is present
   if (isset($_SESSION['pinserver']['huid']) && !empty($_SESSION['pinserver']['huid']) && isset($user->uid) && !empty($user->uid)) {
@@ -145,38 +124,42 @@ dpm($state);
 /**
  * Check if huid exists
  */
-function iqss_pinserver_register_huid_validate($huid){
-  //harvard id must be numeric
-  if(!is_numeric($huid)){
-    return "The Harvard ID must be numeric.";
+function iqss_pinserver_register_validate_huid($huid) {
+  $msg = array();
+
+  // harvard id must be numeric
+  if (!is_numeric($huid)) {
+    $msg[] = t('The Harvard ID must be numeric.');
   }
+
   //need to check if huid already exist in table
-  if(iqss_pinserver_register_check_row($huid)){
-    return "The Harvard ID you have entered already exists in the database.";
+  elseif (iqss_pinserver_register_check_row($huid)) {
+    $msg[] = t('The Harvard ID you have entered already exists in the database.');
   }
-  return false;
+
+  return $msg;
 }
 
 /**
  * ajax callback for huid field
  */
-function iqss_pinserver_register_huid_js() {
-  $huid = $_POST['ctools_changed'];
 
-  if ($error = iqss_pinserver_register_huid_validate($huid)){
-    scholarregister_ctools_message('#huid-suffix', $error, 'error');
-  }
-  else {
-    scholarregister_ctools_message('#huid-suffix', 'Harvard ID passed validation', 'status');  // unique huid has been entered
-  }
+function iqss_pinserver_register_ajax_validation(&$form, &$state) {
+  drupal_get_messages(); //clear this to avoid having notices clutter the form during ajax validation
+  $elem = $state['triggering_element']['#name'];
+  return theme('vsite_register_form_errors', (array(
+    'name' => $elem,
+    'errors' => iqss_pinserver_register_validate_huid($state['values']['huid']),
+  )));
 }
+
 
 /**
  * Implementation of hook_mail_alter()
  */
 function iqss_pinserver_register_mail_alter(&$message){
 
-  if ($message['id'] == 'scholarregister_scholar-register-notify') {
+  if ($message['id'] == 'vsite_register_vsite_register_notify') {
 
     //altering the contents of the welcome email
     $params = iqss_pinserver_register_notify($message['user'], $message['vsite']);
@@ -196,7 +179,7 @@ function iqss_pinserver_register_notify($user, $vsite, $alter = TRUE) {
 			'!site_name' => variable_get('site_name', 'OpenScholar')
   ));
 
-  $scholar_site_url =  url($vsite -> purl, array('absolute' => TRUE));
+  $scholar_site_url =  url($vsite->purl, array('absolute' => TRUE));
   $timestamp = time();
 
   $msg_variables = array(
@@ -228,25 +211,26 @@ function iqss_pinserver_register_notify($user, $vsite, $alter = TRUE) {
 function iqss_pinserver_register_form_access(){
   global $user;
 
-error_log(__FUNCTION__);
-
-  include_once(drupal_get_path('module', 'scholarregister')) . '/scholarregister.pages.inc';
   include_once(drupal_get_path('module', 'vsite_register')) . '/vsite_register.form.inc';
 
   //system check logic
   $settings_info = pinserver_check_system_settings();
   if($settings_info['value'] == false){
     error_log($settings_info['message']);
-    $support_mail = !empty(variable_get('pinserver_support_contact')) ? variable_get('pinserver_support_contact') : 'scholar_dev@help.hmdc.harvard.edu';
+    $support_mail = strlen(variable_get('pinserver_support_contact')) ? variable_get('pinserver_support_contact') : 'scholar_dev@help.hmdc.harvard.edu';
     drupal_set_message(t("New web sites are not available at this time but should be available shortly.  Please check back within the hour or email us at:  !support_mail", array('!support_mail' => $support_mail)));
     drupal_goto();
   }
 
-  /*** Check what to do before loading scholarregister form ***/
+  /*** Check what to do before loading vsite_register form ***/
   //user already owns a site or has create vsite permissions - no need to send to pinserver
   if(vsite_get_vsite_by_owner($user->uid) || user_access('create vsite content on behalf')) {
-    return scholarregister_form_process();
-//    return drupal_get_form('vsite_register_form');
+    if (!vsite_vsite_exists_access()){
+      return drupal_goto(_iqss_pinserver_register_get_redirect(vsite_get_vsite_by_owner($user->uid)));  //redirect user away from the form
+    }
+    else {
+      return drupal_get_form('vsite_register_form');
+    }
   }
 
   //maybe user is site owner,  but has not logged in locally or via the pinserver, so send to pinserver
@@ -269,8 +253,7 @@ error_log(__FUNCTION__);
 	sess_regenerate();
       }
     }
-    return scholarregister_form_process();
-//    return drupal_get_form('vsite_register_form');
+    return drupal_get_form('vsite_register_form');
   }
 }
 
@@ -299,8 +282,9 @@ function iqss_pinserver_register_add_row($uid, $huid){
  */
 function iqss_pinserver_register_check_row($huid = NULL){
   $id = ($huid) ? $huid : $_SESSION['pinserver']['huid'];
+
   if ($id){
-    return db_query("SELECT uid FROM {iqss_pinserver_register} WHERE huid = '%s'", array($id))->fetchField();
+    return db_query("SELECT uid FROM {iqss_pinserver_register} WHERE huid = :huid", array(':huid' => $id))->fetchField();
   }
   return false;
 }
@@ -329,7 +313,7 @@ function iqss_pinserver_register_user($op, &$edit, &$account, $category = NULL){
 function iqss_pinserver_register_pinserver_landing_path(){
   global $user;
   $vsites = vsite_get_vsite_by_owner($user->uid);
-  if (!scholarregister_vsite_exists_access($vsites)) {
+  if (!vsite_vsite_exists_access($vsites)) {
     return (!$vsites || (count($vsites) > 1) ? 'user' : $vsites[0]->get_absolute_url());
   }
 
@@ -352,23 +336,38 @@ function _iqss_pinserver_register_huid_field(&$form){
     '#weight' => 10,
     '#required' => FALSE,
     '#description' => t('Optional: Enter the %harvard ID of the web site owner', array('%harvard' => 'Harvard')),
-    '#prefix' => '<div id="huid-field">',
-    '#suffix' => '<div id="huid-suffix"></div></div>',
+    '#ajax' => array(
+      'callback' => 'iqss_pinserver_register_ajax_validation',
+      'wrapper' => 'huid-errors',
+    ),
+    '#field_suffix' => theme('vsite_register_form_errors', array('name'=>'huid')),
+//    '#prefix' => '<div id="huid-field">',
+//    '#suffix' => '<div id="huid-suffix"></div></div>',
   );
+
 }
 
 /**
- * Implementation of hook_scholarregister_message()
+ * Private function - Provides redirect path and message for certain regstration form access conditions
+ * @param  $vsites array created from vsite_get_vsite_by_owner()
  */
-function iqss_pinserver_register_scholarregister_message(&$message, $form, $domain){
-  global $user, $base_url;
+function _iqss_pinserver_register_get_redirect($vsites = array()){
+  switch (count($vsites)){
+    case 0:
+      //This should not happen unless $vsites was not passed properly or is empty array
+      error_log(__FUNCTION__ . ' was called with an empty array as the first argument');
+      return null;
+      break;
 
-  $word_replace = user_access('create vsite content on behalf') ? 'the' : 'your';
-  $logged_in = in_array('authenticated user', $user -> roles) ? 'You are now logged in. ' : '';
-  
-  $message  = '<div id="success-message">';
-  $message .= '<p>Success! ' . ucfirst($word_replace) . ' new site has been created.</p>';
-  $message .= '<p>The url of ' . $word_replace . ' site is ' . $base_url . '/' . $domain . ' ' . l(t('Go there now'), $base_url . '/' . $domain) . '</p>';
-  $message .= '<p>' . $logged_in . 'Check your email account for further details on how to get started with adding features and customizing your site.</p>';
-  $message .= '</div>';
+    case 1:
+      global $base_url;
+      drupal_set_message(t('You already have a registered web site.' . l(' Go there now.', $vsites[0]->get_absolute_url())));
+      return $base_url;
+      break;
+
+    default:
+      drupal_set_message(t('You have already registered the maximum number of web sites.' ));
+      return 'user';
+      break;
+  }
 }

@@ -13,7 +13,7 @@
 function os_software_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-software_project-body'
+  // Exported field: 'node-software_project-body'.
   $fields['node-software_project-body'] = array(
     'field_config' => array(
       'active' => '1',
@@ -36,6 +36,7 @@ function os_software_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -61,7 +62,7 @@ function os_software_field_default_fields() {
             'trim_length' => 600,
           ),
           'type' => 'text_summary_or_trimmed',
-          'weight' => 0,
+          'weight' => '0',
         ),
       ),
       'entity_type' => 'node',
@@ -86,7 +87,7 @@ function os_software_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-software_project-field_software_method'
+  // Exported field: 'node-software_project-field_software_method'.
   $fields['node-software_project-field_software_method'] = array(
     'field_config' => array(
       'active' => '1',
@@ -100,6 +101,7 @@ function os_software_field_default_fields() {
           0 => 'value',
         ),
       ),
+      'locked' => '0',
       'module' => 'list',
       'settings' => array(
         'allowed_values' => array(),
@@ -128,7 +130,7 @@ function os_software_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '4',
+          'weight' => '6',
         ),
       ),
       'entity_type' => 'node',
@@ -148,7 +150,7 @@ function os_software_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-software_project-field_upload'
+  // Exported field: 'node-software_project-field_upload'.
   $fields['node-software_project-field_upload'] = array(
     'field_config' => array(
       'active' => '1',
@@ -169,6 +171,7 @@ function os_software_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'file',
       'settings' => array(
         'display_default' => 0,
@@ -194,7 +197,7 @@ function os_software_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => 0,
+          'weight' => '5',
         ),
       ),
       'entity_type' => 'node',
@@ -257,7 +260,7 @@ function os_software_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-software_release-body'
+  // Exported field: 'node-software_release-body'.
   $fields['node-software_release-body'] = array(
     'field_config' => array(
       'active' => '1',
@@ -280,6 +283,7 @@ function os_software_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -330,7 +334,7 @@ function os_software_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-software_release-field_software_package'
+  // Exported field: 'node-software_release-field_software_package'.
   $fields['node-software_release-field_software_package'] = array(
     'field_config' => array(
       'active' => '1',
@@ -351,6 +355,7 @@ function os_software_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'file',
       'settings' => array(
         'display_default' => 0,
@@ -420,7 +425,7 @@ function os_software_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-software_release-field_software_project'
+  // Exported field: 'node-software_release-field_software_project'.
   $fields['node-software_release-field_software_project'] = array(
     'field_config' => array(
       'active' => '1',
@@ -441,6 +446,7 @@ function os_software_field_default_fields() {
           0 => 'target_id',
         ),
       ),
+      'locked' => '0',
       'module' => 'entityreference',
       'settings' => array(
         'handler' => 'views',
@@ -510,7 +516,7 @@ function os_software_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-software_release-field_software_recommended'
+  // Exported field: 'node-software_release-field_software_recommended'.
   $fields['node-software_release-field_software_recommended'] = array(
     'field_config' => array(
       'active' => '1',
@@ -524,6 +530,7 @@ function os_software_field_default_fields() {
           0 => 'value',
         ),
       ),
+      'locked' => '0',
       'module' => 'list',
       'settings' => array(
         'allowed_values' => array(
@@ -577,7 +584,7 @@ function os_software_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-software_release-field_software_version'
+  // Exported field: 'node-software_release-field_software_version'.
   $fields['node-software_release-field_software_version'] = array(
     'field_config' => array(
       'active' => '1',
@@ -598,6 +605,7 @@ function os_software_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '255',
@@ -647,6 +655,7 @@ function os_software_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Attach Files');
   t('Description');
   t('Notes');
   t('Package');
@@ -655,7 +664,6 @@ function os_software_field_default_fields() {
   t('Software Project');
   t('The recommended releases will be displayed on the project page. The latest recommended release per major version will be offered for update status.');
   t('Version');
-  t('upload');
 
   return $fields;
 }
