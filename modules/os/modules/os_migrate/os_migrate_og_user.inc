@@ -3,7 +3,7 @@
 class OgUsersOSMigration extends OSMigration {
 
   public function __construct() {
-    parent::__construct(MigrateGroup::getInstance('og'));
+    parent::__construct(MigrateGroup::getInstance('users'));
 
     $this->description = t('Create user relation to group.');
     $this->dependencies[] = 'VsiteNodeOS';

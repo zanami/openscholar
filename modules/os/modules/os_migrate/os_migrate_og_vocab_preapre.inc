@@ -9,7 +9,7 @@
 class OsOgVocabMigratePrepare extends Migration {
 
   public function __construct() {
-    parent::__construct();
+    parent::__construct(MigrateGroup::getInstance('taxonomy'));
 
     $this->description = t('Prepare the OG-vocab migration.');
 
