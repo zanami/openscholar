@@ -97,7 +97,8 @@ function scholarregister_signup_form(){
       '#field_prefix' => $base_url . '/',
       '#size' => 35,
       '#weight' => 20,
-      '#default_value' => $form_values['name'],
+//      '#default_value' => $form_values['name'],
+      '#default_value' => '',
       '#description' => t('Minimum of 3 characters. Punctuation is not allowed except for hyphens and underscores. <br />Example: a choice of \'jdoe\' would result in the URL: %site.', array(
           '%site' => $base_url . '/jdoe'
       )),
@@ -106,12 +107,21 @@ function scholarregister_signup_form(){
   );
 //  ctools_ajax_associate_url_to_element($form, $form['domain'], url('scholarregister/domain_js'), 'ctools-use-ajax-onchange');
 
-  $form['submit'] = array(
+/*  $form['submit'] = array(
       '#type' => 'submit',
       '#value' => ($b_create_sites) ? t('Create a new site') : t('Create your site'),
       '#weight' => 40,
       '#attributes' => array('class' => 'ctools-use-ajax' ),
       '#suffix' => '<div id="submit-suffix"></div>'
+  );
+*/
+  $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => ($b_create_sites) ? t('Create a new site') : t('Create your site'),
+      '#weight' => 40,
+      '#suffix' => '<div id="submit-suffix"></div>',
+      '#attributes' => array('class' => array('use-ajax-submit')),
+      '#ajax' => array('callback' => 'vsite_register_form_submit'),
   );
 
 //die(var_dump($form));
@@ -152,6 +162,8 @@ function scholarregister_signup_form_validate($form, &$form_state){
  * the submit handler for the registration form
  */
 function scholarregister_signup_form_submit($form, &$form_state) {
+
+error_log(__FUNCTION__);
   //capture domain field
   $domain = $form_state ['values'] ['domain'];
   os_include('os.crud');

@@ -51,12 +51,19 @@ function scholarregister_form_access(){
 function scholarregister_form_process(){
   global $user;
 
+error_log(__FUNCTION__);
+error_log('USER UID: ' . $user->uid);
+
+//die(var_dump($_SESSION));
+
   //check if user should be re-directed somewhere
   if (!scholarregister_vsite_exists_access()){
     return drupal_goto(_scholarregister_get_redirect(vsite_get_vsite_by_owner($user->uid)));  //redirect user away from the form
   }
 
-  //return drupal_get_form('scholarregister_signup_form'); //load the form
+error_log('STILL IN ' . __FUNCTION__);
+
+//  return drupal_get_form('scholarregister_signup_form'); //load the form
   return drupal_get_form('vsite_register_form'); //load the form
 
 }
