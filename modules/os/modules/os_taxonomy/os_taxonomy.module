@@ -273,7 +273,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
       'description' => $item['description'],
       'link_to_empty_terms' => $options['link_to_empty_terms'],
       'terms_description' => $options['terms_description'],
-      'menu-class' => 'term-' . check_plain($parent['term_name']),
+      'menu-class' => 'termchild-' . check_plain($parent['term_name']),
       'childs' => $child_content,
     ));
   }

@@ -278,12 +278,12 @@ div.tweets-pulled-listing div.tweet-divider {
   padding-bottom: 5px;
   }
 
-.region-sidebar-second .box-vsite_taxonomy_fbt {
+.region-sidebar-second .block.block-boxes-os_taxonomy_fbt {
   background:#3b4e4e;
   }
 
-.front .box-vsite_taxonomy_fbt h2.block-title,
-.region-sidebar-second .box-vsite_taxonomy_fbt h2.block-title {
+.front .block-boxes-os_taxonomy_fbt h2.block-title,
+.region-sidebar-second .block-boxes-os_taxonomy_fbt h2.block-title {
   background: url('../images/aor-h3.png') 0 100% repeat-x #504F4B;
   color: #fff;
   margin-left: -16px;
@@ -298,57 +298,60 @@ div.tweets-pulled-listing div.tweet-divider {
   line-height: 38px;
   }
   
-  body.front .block ul.term-applications {
+  body.front .block ul.term-Applications {
     margin-left: -20px;
 }
 
 
-body.front .box-vsite_taxonomy_fbt div.description  {
+body.front .block-boxes-os_taxonomy_fbt div.description  {
     color: #FFFFFF;
 
 }
 
-.region-sidebar-second .box-vsite_taxonomy_fbt li,
-.region-sidebar-second .box-vsite_taxonomy_fbt a,
-.region-sidebar-second .box-vsite_taxonomy_fbt a:visited {
+
+.region-sidebar-second .block-boxes-os_taxonomy_fbt a,
+.region-sidebar-second .block-boxes-os_taxonomy_fbt a:visited{
+  color: #68efde;
+ } 
+ 
+ 
+.region-sidebar-second .block-boxes-os_taxonomy_fbt ul.termchild-Applications a,
+.region-sidebar-second .block-boxes-os_taxonomy_fbt ul.termchild-Methods a
+ {
   color: #fff;
   font-weight:bold;
   }
 
-.region-sidebar-second .box-vsite_taxonomy_fbt a:hover {
+ .region-sidebar-second .block-boxes-os_taxonomy_fbt li a:hover {
   color:#e87702;
   text-decoration: none;
   }
 
-.region-sidebar-second .box-vsite_taxonomy_fbt ul .term-methods>div:first-of-type a,
-.region-sidebar-second .box-vsite_taxonomy_fbt ul .term-applications>div:first-of-type a
-{
+
+/*
+
+.region-sidebar-second .block-boxes-os_taxonomy_fbt ul .term-Methods>div:first-of-type a,
+.region-sidebar-second .block-boxes-os_taxonomy_fbt ul .term-Applications>div:first-of-type a {
   margin-bottom: 0;
   color:#68efde;
   font-weight: bold;
   }
-  
+  */
 
-.region-sidebar-second .box-vsite_taxonomy_fbt dd {
+.region-sidebar-second .block-boxes-os_taxonomy_fbt dd {
   display:none;
   }
 
-.region-sidebar-second .box-vsite_taxonomy_fbt {
+.region-sidebar-second .block-boxes-os_taxonomy_fbt {
   margin-bottom: .5em;
   }
 
-.region-sidebar-second .box-vsite_taxonomy_fbt li.term-methods .count,
-.region-sidebar-second .box-vsite_taxonomy_fbt li.term-applications .count {
+.region-sidebar-second .block-boxes-os_taxonomy_fbt li.term-Methods .count,
+.region-sidebar-second .block-boxes-os_taxonomy_fbt li.term-Applications .count {
   display: none;
   }
   
-  .region-sidebar-second .box-vsite_taxonomy_fbt ul.term-methods,
-  .region-sidebar-second .box-vsite_taxonomy_fbt ul.term-applications
-   {
-  margin-left: -20px;
-  }
-
-  .region-sidebar-second .box-vsite_taxonomy_fbt ul li a
+  .region-sidebar-second .block-boxes-os_taxonomy_fbt ul li a
    {
   font-weight: bold;
   }
@@ -1022,9 +1025,10 @@ border:none;
   }
 
 
-#footer #block-boxes-os-addthis {
+#footer .block-boxes-os_boxes_addthis {
 	margin-top:7px;
 }
+
 
 /* Search form*/
 
@@ -1068,7 +1072,7 @@ margin-top:5px;
 #footer #search-block-form input[type="submit"] {
   background: #79929c;
   color: #fff !important;
-  width: 52px;
+  min-width: 65px;
   height: 18px;
   text-indent:0;
   text-transform: uppercase;
@@ -1111,24 +1115,24 @@ margin-top:5px;
 
 body.section-category .node-teaser,
 body.section-taxonomy .node-teaser,
-body.page-gking-category-research-interests-applications-legislative-redistricting .node-teaser,
-body.page-gking-category-research-interests-methods-causal-inference .node-teaser,
-body.page-gking-category-research-interests-methods-event-counts-and-durations .node-teaser,
-body.page-gking-category-research-interests-methods-ecological-inference .node-teaser,
-body.page-gking-category-research-interests-methods-missing-data .node-teaser,
-body.page-gking-category-research-interests-methods-qualitative-research .node-teaser,
-body.page-gking-category-research-interests-methods-rare-events .node-teaser,
-body.page-gking-category-research-interests-methods-survey-research .node-teaser,
-body.page-gking-category-research-interests-methods-unifying-statistical-analysis .node-teaser,
-body.page-gking-category-research-interests-applications-automated-test-analysis .node-teaser,
-body.page-gking-category-research-interests-applications-incumbancy-advantage .node-teaser,
-body.page-gking-category-research-interests-applications-automated-text-analysis .node-teaser,
-body.page-gking-category-research-interests-applications-mexican-health-care-evaluation .node-teaser,
-body.page-gking-category-research-interests-applications-presidency-research-voting-behavior .node-teaser,
-body.page-gking-category-research-interests-applications-informatics-and-data-sharing .node-teaser,
-body.page-gking-category-research-interests-applications-international-conflict .node-teaser,
-body.page-gking-category-research-interests-applications-legistlative-redistricting .node-teaser,
-body.page-gking-category-research-interests-applications-mortality-studies .node-teaser {
+body.page-gking-category-research-interests-Applications-legislative-redistricting .node-teaser,
+body.page-gking-category-research-interests-Methods-causal-inference .node-teaser,
+body.page-gking-category-research-interests-Methods-event-counts-and-durations .node-teaser,
+body.page-gking-category-research-interests-Methods-ecological-inference .node-teaser,
+body.page-gking-category-research-interests-Methods-missing-data .node-teaser,
+body.page-gking-category-research-interests-Methods-qualitative-research .node-teaser,
+body.page-gking-category-research-interests-Methods-rare-events .node-teaser,
+body.page-gking-category-research-interests-Methods-survey-research .node-teaser,
+body.page-gking-category-research-interests-Methods-unifying-statistical-analysis .node-teaser,
+body.page-gking-category-research-interests-Applications-automated-test-analysis .node-teaser,
+body.page-gking-category-research-interests-Applications-incumbancy-advantage .node-teaser,
+body.page-gking-category-research-interests-Applications-automated-text-analysis .node-teaser,
+body.page-gking-category-research-interests-Applications-mexican-health-care-evaluation .node-teaser,
+body.page-gking-category-research-interests-Applications-presidency-research-voting-behavior .node-teaser,
+body.page-gking-category-research-interests-Applications-informatics-and-data-sharing .node-teaser,
+body.page-gking-category-research-interests-Applications-international-conflict .node-teaser,
+body.page-gking-category-research-interests-Applications-legistlative-redistricting .node-teaser,
+body.page-gking-category-research-interests-Applications-mortality-studies .node-teaser {
   margin-bottom:.7em;
   padding-left: 2em;
   }
