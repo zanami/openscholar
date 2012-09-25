@@ -1,27 +1,27 @@
 <?php
 /**
- * Provides and CRUD functions relating to the vsite group
+ * Provides and CRUD functions relating to the vsite group.
  *
  * @file vsite.inc
  *
  * Provides vsite management and crud functions
  *
  * vsite_add_entity
- *   Generic function to add a passed entity to a vsite
+ *   Generic function to add a passed entity to a vsite.
  *
  * vsite_create_vsite
- *   Creates a new vsite group
+ *   Creates a new vsite group.
  *
  * vsite_get_vsite_by_owner
- *   Gets all of the groups owned by a user
+ *   Gets all of the groups owned by a user.
  *
  */
 
 
 /**
- * Add the passed entity to a vsite
+ * Add the passed entity to a vsite.
  *
- *  The entity that you wish to add to the vsite
+ *  The entity that you wish to add to the vsite.
  *  @param entity $entity
  *
  *  The type of entity you are passing (default node)
@@ -49,20 +49,9 @@ function vsite_add_entity($entity, $entity_type = 'node', $vsite = false){
 
     //Add this entity to the active group
     $subscription = og_group($vsite->group_type, $vsite->id, $values);
-    $gids[] = $subscription->gid;
 
-    $wrapper = entity_metadata_wrapper($entity_type, $entity);
-    $field = field_info_field($subscription->field_name);
-
-    //If this was a member of other groups add them to the field
-    if ($field['cardinality'] != 1) {
-      foreach ($wrapper->{$subscription->field_name . '__og_membership'}->value() as $og_membership) {
-        $gids[] = $og_membership->gid;
-      }
-    }
-
-    //Add the new group to the entity
-    $wrapper->{$subscription->field_name}->set(array_unique($gids));
+    //Tell OG to ignore the existing field settings on this entity
+    $entity->skip_og_membership = TRUE;
 
     return $subscription;
   }
