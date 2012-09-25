@@ -223,7 +223,7 @@ class os_sv_list_box extends os_boxes_default {
 
     // more link
     if ($options['more']) {
-      $block['content'] .= l($options['more_text'], $options['more_link']);
+      $block['content'] .= l($options['more_text'], $options['more_link'], array('attributes' => array('class' => array('more-link'))));
     }
 
     drupal_add_library('system', 'drupal.ajax');
