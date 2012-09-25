@@ -16,8 +16,8 @@ jQuery(document).ready(function() {
       }
     });
     
-    //jQuery(".front #pub_type_tabs").tabs({ fx: { opacity: 'toggle' } });
+    jQuery(".front #pub_type_tabs").tabs({ fx: { opacity: 'toggle' } });
     
-   // jQuery(".front #header-top .wrap").addClass('clearfix');
+    jQuery(".front #header-top .wrap").addClass('clearfix');
     
 });
