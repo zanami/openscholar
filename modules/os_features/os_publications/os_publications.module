@@ -370,11 +370,18 @@ function os_publications_node_delete($node) {
  * @param unknown_type $node
  */
 function _os_publications_clear_cache($node) {
+  //Sanity check the passed node
+  if($node->type != 'biblio'){
+    return;
+  }
   $frags   = array();
   $frags[] = 'type:' . $node->biblio_type;
   $frags[] = 'year:' . $node->biblio_year;
-  foreach ($node->biblio_contributors as $c) {
-    $frags[] = 'author:' . $c['cid'];
+  //If there are contributors, add them to the cache key
+  if(isset($node->biblio_contributors) && is_array($node->biblio_contributors)){
+    foreach ($node->biblio_contributors as $c) {
+      $frags[] = 'author:' . $c['cid'];
+    }
   }
 
   $sel = db_select('cache_biblio_lists', 'bl')->fields('bl', array('cid'));
