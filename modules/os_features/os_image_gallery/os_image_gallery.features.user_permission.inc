@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * os_image_gallery.features.user_permission.inc

@@ -1,8 +1,24 @@
 <?php
+// $Id$
+
+/**
+ * Provides edit form for an OS Widget.
+ *
+ * @param object $box
+ * @param string $source
+ * @return array $form
+ */
 function os_boxes_edit_widget($box, $source = '') {
   if (!$box) {
-    // TODO: Multi-step form to choosen plugin type?
+    // @todo Multi-step form to choosen plugin type?
     return MENU_NOT_FOUND;
+  }
+  if ($box->new) {
+    $info = ctools_get_plugins('boxes', 'plugins', $box->plugin_key);
+    drupal_set_title(t('Add New @plugin Widget', array('@plugin' => $info['title'])));
+  }
+  else {
+    drupal_set_title(t('Edit @info', array('@info' => $box->description)));
   }
 
   $form_state = array(
@@ -18,21 +34,30 @@ function os_boxes_edit_widget($box, $source = '') {
   return $form;
 }
 
+/**
+ * Implements hook_form_FORM_ID_form_alter() for boxes_box
+ */
 function os_boxes_form_boxes_box_form_alter(&$form, &$form_state) {
+  $form['description']['#title'] = t('Widget Description');
+  $form['description']['#description'] = t('A brief description of the widget. Only displayed in the Layout section.');
+
+  $form['title']['#title'] = t('Widget Title');
+  $form['title']['#description'] = t('The title of the widget that is seen by your visitors.');
+
   $form['cancel']['#submit'][] = 'os_boxes_widget_submit';
   $form['#submit'][] = 'os_boxes_widget_submit';
 }
 
 /**
- * Generate the HTML for our widget and pass it as an ajax command
- * Through overlay_commands
+ * Generates the HTML for widget and passes it as an AJAX command using
+ * ctools overlay_commands
  */
 function os_boxes_widget_submit($form, $form_state) {
   if ($form_state['values']['op'] !== t('Cancel')) {
-    $box = boxes_box_load($form_state['box']->delta);
-    $html = '';
-    $target = '';
-    $op = 'prepend';
+    $box     = boxes_box_load($form_state['box']->delta);
+    $html    = '';
+    $target  = '';
+    $op      = 'prepend';
     $new_box = isset($form_state['box']->new) && $form_state['box']->new;
     switch ($form_state['source']) {
       case 'cp-layout':
@@ -44,42 +69,56 @@ function os_boxes_widget_submit($form, $form_state) {
           $target = '.widget-container';
         }
         else {
-          $target = '#boxes-'.$box->delta;
+          $target = '#boxes-' . $box->delta;
           $op = 'replace';
         }
-      break;
-      default:  // coming from public view
+        break;
+
+      default:
+        // coming from public view
         // can only edit boxes from this view
         module_load_include('module', 'block', 'block');
-        $b = (object)os_boxes_os_widget($box);
-        $t = _block_render_blocks(array($b));
+        $b     = (object)os_boxes_os_widget($box);
+        $t     = _block_render_blocks(array($b));
         $block = array_shift($t);
-        $block->region = 'dummy';  // do this or else notices will throw. absolutely nothing is done with it but whatever
-        $array = array('#theme' => 'block', '#block' => $block);
-        $html = drupal_render($array);
-        $target = '#boxes-box-'.$box->delta;
-        $op = 'replace';
+        // do this or else notices will throw. absolutely nothing is done with it but whatever
+        $block->region = 'dummy';
+        $array         = array('#theme' => 'block', '#block' => $block);
+        $html          = drupal_render($array);
+        $target        = '#boxes-box-' . $box->delta;
+        $op            = 'replace';
     }
 
-    $command = 'ajax_command_'.$op;
+    $command = 'ajax_command_' . $op;
     $command = $command($target, $html);
 
     overlay_commands_add($command);
   }
   ctools_include('modal');
-  overlay_commands_add(ctools_modal_command_dismiss());  // overlay_close_dialog doesn't work because the form resets it
+  // overlay_close_dialog doesn't work because the form resets it
+  overlay_commands_add(ctools_modal_command_dismiss());
 }
 
+/**
+ * Provides form to delete a widget.
+ */
 function os_boxes_delete_widget($box) {
   $form_state = array(
     'box' => $box,
   );
+
+  drupal_set_title(t('Delete @info', array('@info' => $box->description)));
 
   $form = drupal_build_form('os_boxes_delete_widget_form', $form_state);
 
   return $form;
 }
 
+/**
+ * Creates a form array for deleting a Box widget.
+ *
+ * @see os_boxes_delete_widget()
+ */
 function os_boxes_delete_widget_form($form_id, $form_state) {
   $box = $form_state['box'];
   $form = array();
@@ -108,70 +147,78 @@ function os_boxes_delete_widget_form($form_id, $form_state) {
   $form['#submit'][] = 'os_boxes_widget_delete_submit';
 
   return $form;
-
 }
 
+/**
+ * Submit callback; deletes widget.
+ *
+ * @see os_boxes_delete_widget_form()
+ */
 function os_boxes_widget_delete_submit($form, &$form_state) {
   if ($form_state['values']['op'] == t('Yes')) {
-    // remove it from contexts
+    // Removes box from contexts
     ctools_include('layout', 'os');
-    os_layout_block_delete('boxes-'.$form_state['values']['bid']);
+    os_layout_block_delete('boxes-' . $form_state['values']['bid']);
 
-    // delete box instance
+    // Deletes box instance
     if (module_exists('spaces') && $space = spaces_get_space()) {
       $space->controllers->boxes->del($form_state['values']['bid']);
     }
     else {
-      if ($box = boxes_box_load($form_state['values']['bid']))
+      if ($box = boxes_box_load($form_state['values']['bid'])) {
         $box->delete();
-     module_load_include('inc', 'block', 'block.admin');
-     block_custom_block_delete_submit($form, $form_state);
+      }
+      module_load_include('inc', 'block', 'block.admin');
+      block_custom_block_delete_submit($form, $form_state);
     }
     unset($form_state['redirect']);
-    $form_state['no_redirect'] = true;
+    $form_state['no_redirect'] = TRUE;
 
-    overlay_commands_add(ajax_command_remove('#boxes-'.$form_state['values']['bid']));
+    overlay_commands_add(ajax_command_remove('#boxes-' . $form_state['values']['bid']));
   }
   overlay_commands_add(overlay_command_dismiss());
 }
 
-function os_boxes_remove_widget($module, $delta, $target=false) {
+/**
+ * Handles removing a widget from a theme region, provides undo link.
+ */
+function os_boxes_remove_widget($module, $delta, $target = FALSE) {
   $contexts = $_GET['contexts'];
 
-  // remove the box from the contexts
+  // Removes the box from the contexts.
   ctools_include('layout', 'os');
   $blocks = os_layout_get_multiple($contexts);
 
-  $bid = $module.'-'.$delta;
+  $bid = $module . '-' . $delta;
 
   $old_region = $blocks[$bid]['region'];
   $blocks[$bid]['region'] = $target;
   os_layout_set_multiple($contexts, $blocks);
 
-  // create the notice
-
+  // Creates the notice
   if (!$target) {
     $render = array(
       '#type' => 'container',
       '#attributes' => array(
-        'id' => 'block-'.drupal_html_class($bid),
+        'id' => 'block-' . drupal_html_class($bid),
       ),
       'text' => array(
         '#type' => 'markup',
-        '#markup' => t('This widget has been removed from this section. You can undo this action by clicking !url', array(
-          '!url' => l('Here', 'os/widget/'.$module.'/'.$delta.'/remove/'.$old_region, array('query' => array('contexts' => $contexts)))
-        ))
-      )
+        '#markup' => t('This widget has been removed from this section. You can !undo', array(
+            '!undo' => l(t('undo this action'), 'os/widget/' . $module . '/' . $delta . '/remove/' . $old_region, array('query' => array('contexts' => $contexts))),
+          )),
+      ),
     );
   }
   else {
     module_load_include('module', 'block', 'block');
-    $t = _block_render_blocks(array((object)$blocks[$bid]));
-    $t = _block_get_renderable_array($t);
+    $t      = _block_render_blocks(array((object)$blocks[$bid]));
+    $t      = _block_get_renderable_array($t);
     $render = array_shift($t);
   }
   $html = drupal_render($render);
-  overlay_commands_add(ajax_command_replace('#block-'.drupal_html_class($bid), $html));
+  overlay_commands_add(ajax_command_replace('#block-' . drupal_html_class($bid), $html));
   overlay_commands_add(overlay_command_dismiss());
   return '';
 }
+

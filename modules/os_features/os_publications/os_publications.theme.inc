@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * Full Node View
  * Displays the citation in a field that can be clicked to select all of it
@@ -24,6 +23,7 @@ function theme_os_publications_tabular(&$vars) {
     $node->biblio_url = l($url_title, $node->biblio_url, $attrib);
   }
   */
+
 
 
   $citation = _os_publications_plain_citation($node);
@@ -141,6 +141,7 @@ function _os_publications_plain_citation($node) {
      * biblio_coins follow end of citation and block an easy RE match, so we're appending them.
      */
 
+
     $coins = filter_xss($node->biblio_coins, array('span'));
     $re = '/' . '[!-~] (<\/\w*>)?' . preg_quote($coins, '/') . '/';
 
@@ -252,6 +253,7 @@ function theme_os_publications_download_links($variables) {
           $alias = drupal_get_path_alias('filefield_paths/alias/' . $item['fid']);
           $item['uri'] = $alias;
         }*/
+
         $file_links[] = array(
           theme('file_link', array('file' => (object) $item)),
         );

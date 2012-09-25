@@ -70,7 +70,8 @@ function os_biocv_node_access($node, $op, $account) {
   if (!in_array($type, array('bio', 'cv'))) {
     return NODE_ACCESS_IGNORE;
   }
-  if (_os_biocv_get_first_node($type) !== FALSE) {
+  $node_exists = _os_biocv_get_first_node($type);
+  if ($node_exists === FALSE) {
     return NODE_ACCESS_IGNORE;
   }
   return NODE_ACCESS_DENY;
@@ -277,17 +278,17 @@ function _os_biocv_cv_page_contents() {
     $node = os_biocv_get_cv_node();
     if ($node !== FALSE) {
       $links[] = array(
-      	'title' => 'Edit your CV',
-      	'href' => "node/{$node->nid}/edit",
-      	'query' => drupal_get_destination(),
+        'title' => 'Edit your CV',
+        'href' => "node/{$node->nid}/edit",
+        'query' => drupal_get_destination(),
       );
     }
     else {
       // an appropriate message and a link for the user to create their CV
       $links[] = array(
-      	'title' => 'Add your CV',
-      	'href' => "node/add/cv",
-      	'query' => drupal_get_destination()
+        'title' => 'Add your CV',
+        'href' => "node/add/cv",
+        'query' => drupal_get_destination(),
       );
     }
 
@@ -338,3 +339,4 @@ function _os_biocv_access_admin() {
   }
   return user_access('administer site configuration');
 }
+

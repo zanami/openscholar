@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * os_profiles.features.menu_links.inc

@@ -28,9 +28,7 @@ class os_boxes_slideshow extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state) {
-
-    $form = array();
-    $form += parent::options_form($form_state);
+    $form = parent::options_form($form_state);
 
     //get the media gallery nodes.
     $galleries = array();

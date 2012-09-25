@@ -63,6 +63,7 @@ function os_menu() {
     'file' => 'os_boxes.admin.inc',
     'context' => MENU_CONTEXT_INLINE,
     'weight' => 1,
+    'menu_name' => 'widgets',
   );
 
   $items['os/widget/%/%/remove'] = array(
@@ -238,7 +239,7 @@ function os_block_view_alter(&$block, &$data) {
     );
   }
 
-  if (!isset($block['content'])) {  // if the block has no content, nothing should be rendered
+  if (isset($block['content'])) {  // if the block has no content, nothing should be rendered
     // if it isn't an array, its a string. Convert it into a render array.
     if (!is_array($block['content'])) {
       $block['content'] = array('#markup' => $block['content']);

@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * @file
+ *
+ * citation_distribute allows users to push biblio nodes to myriad repositories
+ */
+
+/**
+ * Implements hook_menu()
+ */
+function citation_distribute_menu() {
+  $items = array();
+
+  /* main admin menu for this module */
+  $items['admin/config/openscholar/citation_distribute'] = array(
+    'title' => t('Citation Distribute'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('citation_distribute_admin' ),
+    'file' => 'citation_distribute.admin.inc',
+    'access arguments' => array('administer citation distribute' ),
+  	'type' => MENU_CALLBACK,
+  );
+  $items['admin/config/openscholar/citation_distribute/citation_distribute'] = $items['admin/config/openscholar/citation_distribute'];
+  $items['admin/config/openscholar/citation_distribute/citation_distribute']['type'] = MENU_DEFAULT_LOCAL_TASK; 
+	$items['admin/config/openscholar/citation_distribute/citation_distribute']['title'] = t('Common Settings');
+	
+  /* add a menu link for each plugin that implements admin_menu() */
+  foreach (_citation_distribute_plugins() as $plugin) {
+    if ($plugin['title'] && $service = _citation_distribute_load_plugin($plugin)) {
+      if (method_exists($service, 'admin_form')) {
+        $items['admin/config/openscholar/citation_distribute/'.$plugin['name']] = array(
+          'title' => t('Configure ' . $plugin['title']),
+          'page callback' => 'drupal_get_form',
+          'page arguments' => array('citation_distribute_plugin_admin_form', $plugin['name']),
+          'file' => 'citation_distribute.admin.inc',
+          'access arguments' => array('administer citation distribute'),
+          'type' => MENU_LOCAL_TASK,
+        );
+      }
+    }
+  }
+  dpm($items);
+  return $items;
+}
+
+
+/**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function citation_distribute_ctools_plugin_api($module, $api) {
+  if ($module == 'citation_distribute' && $api == 'service') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implementation of hook_ctools_plugin_directory
+ */
+function citation_distribute_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'citation_distribute' && $plugin == 'service') {
+    return 'plugins/service/';
+  }
+}
+
+function citation_distribute_ctools_plugin_type() {
+  return array(
+    'service' => array(
+      'use hooks' => TRUE,
+      'class' => array('class'),
+    )
+  );
+}
+
+/**
+ * @function _citation_distribute_plugins()
+ *
+ * @return
+ *   List of all citation_distribute plugins
+ */
+function _citation_distribute_plugins() {
+  ctools_include('plugins');
+  $plugins = ctools_get_plugins('citation_distribute', 'service');
+  return $plugins;
+}
+
+/**
+ * @function _citation_distribute_load_plugin
+ *
+ * Returns an instantiated citation_distribute service plugin object
+ */
+function _citation_distribute_load_plugin($plugin) {
+  //if all we have is the name, load the info
+  if (is_string($plugin)) {
+    $plugins = _citation_distribute_plugins();
+    if (empty($plugins[$plugin])) {
+      return FALSE;
+    }
+    $plugin = $plugins[$plugin];
+  }
+
+  $class = ctools_plugin_get_class($plugin, 'class');
+  $service = new $class();
+  return $service;
+}
+

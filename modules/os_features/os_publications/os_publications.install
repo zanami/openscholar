@@ -24,7 +24,11 @@ function os_publications_enable() {
   _os_publications_update_field_data();
 
   // place it behind import/export modules
-  db_update('system')->fields(array('weight' => 50))->condition('name', 'os_publications', '=')->condition('type', 'module', '=')->execute();
+  db_update('system')
+    ->fields(array('weight' => 50))
+    ->condition('name', 'os_publications', '=')
+    ->condition('type', 'module', '=')
+    ->execute();
 }
 
 /*

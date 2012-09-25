@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  */
@@ -102,9 +101,10 @@ function os_image_gallery_form_alter(&$form, &$form_state, $form_id) {
  */
 function os_image_gallery_file_delete($file) {
   $query = new EntityFieldQuery();
-  $result = $query->entityCondition('entity_type', 'node')
-      ->fieldCondition('media_gallery_media', 'fid', $file->fid, '=')
-      ->execute();
+  $query
+    ->entityCondition('entity_type', 'node')
+    ->fieldCondition('media_gallery_media', 'fid', $file->fid, '=');
+  $result = $query->execute();
 
   if (isset($result['node'])) {
     $nids = array_keys($result['node']);

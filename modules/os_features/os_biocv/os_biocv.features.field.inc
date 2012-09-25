@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * os_biocv.features.field.inc

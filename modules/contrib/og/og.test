@@ -496,36 +496,6 @@ class OgGroupAndUngroup extends DrupalWebTestCase {
   }
 
   /**
-   * Test piping group association via the group-audience field.
-   */
-  function testGroupAudienceField() {
-    $user1 = $this->drupalCreateUser();
-    $user2 = $this->drupalCreateUser();
-
-    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
-    $wrapper->{OG_GROUP_FIELD}->set(1);
-    $wrapper->save();
-
-    $settings = array();
-    $settings['type'] = 'article';
-    $settings['uid'] = $user2->uid;
-    $node = $this->drupalCreateNode($settings);
-
-    $wrapper = entity_metadata_wrapper('node', $node);
-
-    $this->assertFalse(og_is_member('entity_test', $entity1->pid, 'node', $node), t('Node is not assigned to group1.'));
-    $wrapper->{OG_AUDIENCE_FIELD}[] = $entity1->pid;
-    $wrapper->save();
-    $og_membership = og_get_membership('entity_test', $entity1->pid, 'node', $node->nid);
-    $id = $og_membership->id;
-    $this->assertTrue(og_is_member('entity_test', $entity1->pid, 'node', $node), t('Node is assigned to group1 with active state.'));
-
-    $wrapper->{OG_AUDIENCE_FIELD}->set(NULL);
-    $wrapper->save();
-    $this->assertFalse(og_get_entity_groups('node', $node), t('Node is not associated with any group.'));
-  }
-  /**
    * Test granting deault role to group manager.
    */
   function testGroupManagerDefaultRoles() {
@@ -1080,6 +1050,8 @@ class OgMigrate7200TestCase extends UpdatePathTestCase {
   function testUpgrade() {
     $this->assertTrue($this->performUpgrade(), t('The upgrade was completed successfully.'));
 
+    $this->assertFalse(field_info_field('group_audience'), 'Group audience field was deleted.');
+
     // spl_autoload_register() wasn't called, so we do it here, to allow
     // classes to be auto-loaded.
     spl_autoload_register('drupal_autoload_class');
@@ -1088,14 +1060,13 @@ class OgMigrate7200TestCase extends UpdatePathTestCase {
     module_enable(array('og', 'migrate'));
 
     // FIXME: migrate_flush_caches() crashes, so we register manually.
-    MigrationBase::registerMigration('OgMigrateGroupAudience');
+    MigrationBase::registerMigration('OgMigrateMembership');
     MigrationBase::registerMigration('OgMigrateRoles');
     MigrationBase::registerMigration('OgMigrateUserRoles');
-    MigrationBase::registerMigration('OgMigrateMembership');
 
-    $migration = Migration::getInstance('OgMigrateGroupAudience');
+    $migration = Migration::getInstance('OgMigrateMembership');
     $result = $migration->processImport();
-    $this->assertEqual($result, Migration::RESULT_COMPLETED, 'OgMigrateGroupAudience returned RESULT_COMPLETED');
+    $this->assertEqual($result, Migration::RESULT_COMPLETED, 'OgMigrateMembership returned RESULT_COMPLETED');
 
     $migration = Migration::getInstance('OgMigrateRoles');
     $result = $migration->processImport();
@@ -1104,12 +1075,6 @@ class OgMigrate7200TestCase extends UpdatePathTestCase {
     $migration = Migration::getInstance('OgMigrateUserRoles');
     $result = $migration->processImport();
     $this->assertEqual($result, Migration::RESULT_COMPLETED, 'OgMigrateUserRoles returned RESULT_COMPLETED');
-
-    $migration = Migration::getInstance('OgMigrateMembership');
-    $result = $migration->processImport();
-    $this->assertEqual($result, Migration::RESULT_COMPLETED, 'OgMigrateMembership returned RESULT_COMPLETED');
-
-    $this->assertFalse(field_info_field('group_audience'), 'Group audience field was deleted.');
 
     // Assert group roles.
     $roles = array(
@@ -1124,7 +1089,7 @@ class OgMigrate7200TestCase extends UpdatePathTestCase {
 
     // Assert field name was registered in the OG membership.
     $og_membership = entity_load_single('og_membership', 1);
-    $this->assertEqual($og_membership->field_name, 'og_group_ref_user_user', 'Field name was registered in the OG membership.');
+    $this->assertEqual($og_membership->field_name, 'og_node', 'Field name was registered in the OG membership.');
   }
 }
 
@@ -1351,5 +1316,95 @@ class OgAudienceFieldAutoCreateTestCase extends DrupalWebTestCase {
     $this->assertFalse(field_info_instance('user', 'og_user_node1', 'user'), 'Alternative field does not exist in user entity yet.');
     og_create_field(OG_GROUP_FIELD, 'node', $type2->type);
     $this->assertTrue(field_info_instance('user', 'og_user_node1', 'user'), 'Alternative field was added to the user entity.');
+  }
+}
+
+
+class OgBehaviorHandlerTestCase  extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'OG widget behavior',
+      'description' => 'Test the widget behavior of group-audience fields.',
+      'group' => 'Organic groups',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('og_test', 'entity_feature');
+
+    // Add OG group field to the entity_test's "main" bundle.
+    og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
+
+    $type = $this->drupalCreateContentType();
+    $this->group_content = $type->type;
+
+    // Add OG audience field to the node's "article" bundle.
+    $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+    $og_field['field']['settings']['target_type'] = 'entity_test';
+    og_create_field(OG_AUDIENCE_FIELD, 'node', $type->type, $og_field);
+  }
+
+  /**
+   * Test piping group association via the group-audience field.
+   */
+  function testGroupAudienceField() {
+    $user1 = $this->drupalCreateUser();
+    $user2 = $this->drupalCreateUser();
+
+    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $wrapper->{OG_GROUP_FIELD}->set(1);
+    $wrapper->save();
+
+    $settings = array();
+    $settings['type'] = $this->group_content;
+    $settings['uid'] = $user2->uid;
+    $node = $this->drupalCreateNode($settings);
+
+    $wrapper = entity_metadata_wrapper('node', $node);
+
+    $this->assertFalse(og_is_member('entity_test', $entity1->pid, 'node', $node), t('Node is not assigned to group1.'));
+    $wrapper->{OG_AUDIENCE_FIELD}[] = $entity1->pid;
+    $wrapper->save();
+    $og_membership = og_get_membership('entity_test', $entity1->pid, 'node', $node->nid);
+    $id = $og_membership->id;
+    $this->assertTrue(og_is_member('entity_test', $entity1->pid, 'node', $node), t('Node is assigned to group1 with active state.'));
+
+    $wrapper->{OG_AUDIENCE_FIELD}->set(NULL);
+    $wrapper->save();
+    $this->assertFalse(og_get_entity_groups('node', $node), t('Node is not associated with any group.'));
+  }
+
+  /**
+   * Test skipping OgBehaviorHandler.
+   */
+  function testGroupAudienceFieldSkipBehavior() {
+    $user1 = $this->drupalCreateUser();
+    $user2 = $this->drupalCreateUser();
+
+    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $wrapper->{OG_GROUP_FIELD}->set(1);
+    $wrapper->save();
+
+    $settings = array();
+    $settings['type'] = $this->group_content;
+    $settings['uid'] = $user2->uid;
+    $node = $this->drupalCreateNode($settings);
+
+    og_group('entity_test', $entity1, array('entity_type' => 'node', 'entity' => $node));
+    $node->og_group_on_save = array('group_type' => 'entity_test', 'gid' => $entity1->pid);
+    node_save($node);
+
+    $this->assertFalse(og_get_entity_groups('node', $node), 'Widget behavior removed group association as expected.');
+
+    $node = node_load($node->nid);
+    $node->og_group_on_save = array('group_type' => 'entity_test', 'gid' => $entity1->pid);
+    $node->skip_og_membership = TRUE;
+    node_save($node);
+
+    $gids = og_get_entity_groups('node', $node);
+    $this->assertEqual(array_values($gids['entity_test']), array($entity1->pid), 'Widget behavior was skipped and removed group association as expected.');
   }
 }
