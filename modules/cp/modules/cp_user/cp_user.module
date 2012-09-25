@@ -56,7 +56,6 @@ function cp_user_admin_access() {
  */
 function cp_user_admin($op = 'members') {
   $vsite = spaces_get_space();
-
   switch ($op) {
     case 'add':
       module_load_include('inc', 'og_ui', 'og_ui.admin');
@@ -131,15 +130,24 @@ function cp_user_create_new_user(){
  * that will also add a user to the site
  */
 function cp_user_form_user_register_form_alter(&$form, &$form_state, $form_id) {
-  // Create a hidden field to control our JS
-  $form['switch'] = array(
-    '#title' => t('switch'),
-    '#default_value' => 1,
-    '#type' => 'hidden',
-    '#attributes' => array('id'=>'switch'),
-  );
+  // The only time we want to alter this form is when the user is in their "cp",
+  // other than that the form should not get altered.
+  $path = trim($_GET['q'], '/');         // Get the current normal drupal path.
+  $path = drupal_get_path_alias($path);  // Get its alias.
+  $path = explode('/', $path);           // Break it up.
 
-  $form['#submit'][] = 'cp_user_user_register_submit';
+  if($path[0] == 'cp') {
+    // Create a hidden field to control our JS
+    $form['switch'] = array(
+      '#title' => t('switch'),
+      '#default_value' => 1,
+      '#type' => 'hidden',
+      '#attributes' => array('id'=>'switch'),
+    );
+
+	// Add a secondary submit function that also submits the user add function
+    $form['#submit'][] = 'cp_user_user_register_submit';
+  }
 
 }
 
