@@ -76,16 +76,22 @@ function citation_distribute_admin_validate($form, &$form_state) {
 /*
  * Fetches and returns admin form from a plugin.
  */
-function citation_distribute_plugin_admin($args, $plugin) {
-  $plugins = _citation_distribute_plugins();
+function citation_distribute_plugin_admin_form($form, &$state, $service) {
 
-  if ($class = ctools_plugin_get_class($plugins[$plugin], 'handler', TRUE)) {
-    if ($service = new $class()) {
-      if (method_exists($service, 'admin_form')) {
-        $form = $service->admin_form();
-        return system_settings_form($form);
-      }
+	$plugins = _citation_distribute_plugins();
+	foreach ($plugins as $plugin => $info) {
+		if ($service == $info['name']) {
+			break;
+		}
+	}
+	
+	if ($instance = _citation_distribute_load_plugin($plugins[$plugin])) {
+		if (method_exists($instance, 'admin_form')) {
+      $form = $instance->admin_form();
+      return system_settings_form($form);
     }
-  }
+	}
+
+	return array();
 }
 

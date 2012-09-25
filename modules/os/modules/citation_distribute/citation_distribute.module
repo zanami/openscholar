@@ -13,14 +13,18 @@ function citation_distribute_menu() {
   $items = array();
 
   /* main admin menu for this module */
-  $items ['admin/config/openscholar/citation_distribute'] = array(
-    'title' => t( 'Citation Distribute' ),
+  $items['admin/config/openscholar/citation_distribute'] = array(
+    'title' => t('Citation Distribute'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('citation_distribute_admin' ),
     'file' => 'citation_distribute.admin.inc',
-    'access arguments' => array('administer citation distribute' )
+    'access arguments' => array('administer citation distribute' ),
+  	'type' => MENU_CALLBACK,
   );
-
+  $items['admin/config/openscholar/citation_distribute/citation_distribute'] = $items['admin/config/openscholar/citation_distribute'];
+  $items['admin/config/openscholar/citation_distribute/citation_distribute']['type'] = MENU_DEFAULT_LOCAL_TASK; 
+	$items['admin/config/openscholar/citation_distribute/citation_distribute']['title'] = t('Common Settings');
+	
   /* add a menu link for each plugin that implements admin_menu() */
   foreach (_citation_distribute_plugins() as $plugin) {
     if ($plugin['title'] && $service = _citation_distribute_load_plugin($plugin)) {
@@ -28,7 +32,7 @@ function citation_distribute_menu() {
         $items['admin/config/openscholar/citation_distribute/'.$plugin['name']] = array(
           'title' => t('Configure ' . $plugin['title']),
           'page callback' => 'drupal_get_form',
-          'page arguments' => array('citation_distribute_plugin_admin', $plugin['name']),
+          'page arguments' => array('citation_distribute_plugin_admin_form', $plugin['name']),
           'file' => 'citation_distribute.admin.inc',
           'access arguments' => array('administer citation distribute'),
           'type' => MENU_LOCAL_TASK,
@@ -36,6 +40,7 @@ function citation_distribute_menu() {
       }
     }
   }
+  dpm($items);
   return $items;
 }
 
