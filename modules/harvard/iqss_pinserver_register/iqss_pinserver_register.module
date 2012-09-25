@@ -102,11 +102,14 @@ function iqss_pinserver_register_submit($form, $state){
 
     if (in_array('anonymous user', $user->roles) && !user_access('create vsite content on behalf')) {
       // log user in
-      watchdog('user', 'Session opened for %name.', array('%name' => $user->name));
       // Update the user table timestamp noting user has logged in.
       // This is also used to invalidate one-time login links.
       $user->login = time();
-      db_query("UPDATE {users} SET login = %d WHERE uid = %d", $user->login, $user->uid);
+
+      db_update('users')
+        ->fields(array('login' => $user->login))
+        ->condition('uid', $user->uid, '==')
+        ->execute();
 
       // Regenerate the session ID to prevent against session fixation attacks.
       sess_regenerate();
@@ -242,13 +245,15 @@ function iqss_pinserver_register_form_access(){
   if (pinserver_check_status()) {
     if ($uid = iqss_pinserver_register_check_row()) {
       //user has just logged in via pinsever, determine if user already has a site
-      if($vsites = vsite_get_vsite_by_owner( $uid)) {
+      if($vsites = vsite_get_vsite_by_owner($uid)) {
 
         global $user;
         $user = user_load(array('uid' => $uid));
-        watchdog('user', 'Session opened for %name.', array('%name' => $user->name));
 	$user->login = time();
-	db_query("UPDATE {users} SET login = %d WHERE uid = %d", $user->login, $user->uid);
+	db_update('users')
+	  ->fields(array('login' => $user->login))
+	  ->condition('uid', $user->uid, '==')
+	  ->execute();
 	// Regenerate the session ID to prevent against session fixation attacks.
 	sess_regenerate();
       }
@@ -297,13 +302,17 @@ function iqss_pinserver_register_user($op, &$edit, &$account, $category = NULL){
   switch($op){
     case 'login':
       //nothing here right now
-      break;
+    break;
+
     case 'delete':
-      $sql_delete = db_query("DELETE FROM {iqss_pinserver_register} WHERE uid = %d", array((int)$account->uid));
-      break;
+      db_delete('iqss_pinserver_register')
+        ->condition('uid', (int)$account->uid)
+	->execute();
+    break;
+
     case 'logout':
       pinserver_remove_session();
-      break;
+    break;
   }
 }
 
