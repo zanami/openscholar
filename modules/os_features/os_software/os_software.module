@@ -95,18 +95,17 @@ function os_software_node_presave($node) {
 
 /**
  * Implements hook_node_view()
- *
- * Sets the custom release node title
  */
 function os_software_node_view($node, $view_mode, $langcode) {
-  if ($node->type !== 'software_project') {
+  // Only customizes full node view for Manual upload Software Project nodes.
+  if ($node->type !== 'software_project' || $view_mode !== 'full') {
     return;
   }
-
   $method_field_item = field_get_items('node', $node, 'field_software_method');
   if ($method_field_item[0]['value'] !== 'Manual upload') {
     return;
   }
+
   // Adds inline contextual links for "Add new > Software Release"
   if (node_access('update', $node)) {
     $node->content['add_release_link'] = array(
@@ -121,6 +120,31 @@ function os_software_node_view($node, $view_mode, $langcode) {
       '#prefix' => '<ul class="field action-links">',
       '#suffix' => '</ul>',
     );
+  }
+}
+
+/**
+ * Implements hook_process_HOOK for node.
+ */
+function os_software_process_node(&$vars) {
+  if ($vars['type'] !== 'software_project') {
+    return;
+  }
+  if ($vars['view_mode'] === 'full') {
+    // Orders the EVA fields so that "Recommended" is above "Recent".
+    if (isset($vars['content']['os_software_releases_entity_view_2']['#weight']) && isset($vars['content']['os_software_releases_entity_view_1'])) {
+      $weight = $vars['content']['os_software_releases_entity_view_2']['#weight'];
+      $vars['content']['os_software_releases_entity_view_1']['#weight'] = $weight + 1;
+    }
+  }
+  else if ($vars['view_mode'] === 'teaser') {
+    // Hides EVA fields "Recommended Release" and "Recent Releases" on /software.
+    if (isset($vars['content']['os_software_releases_entity_view_1'])) {
+      unset($vars['content']['os_software_releases_entity_view_1']);
+    }
+    if (isset($vars['content']['os_software_releases_entity_view_2'])) {
+      unset($vars['content']['os_software_releases_entity_view_2']);
+    }
   }
 }
 
@@ -144,10 +168,6 @@ function os_software_node_delete($node) {
 function os_software_cron() {
   module_invoke('rbuild', 'os_software_process_remote_release');
 }
-
-/**
- * OpenScholar hooks
- */
 
 /**
  * Implements hook_vsite_og_node_type_info().
