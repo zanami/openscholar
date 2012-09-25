@@ -1,0 +1,7 @@
+name = OS Help
+description = Ties in the advanced help icons for the generated help documents.
+core = 7.x
+package = OpenScholar
+dependencies[] = advanced_help
+dependencies[] = os
+stylesheets[all][] = os_help.css
