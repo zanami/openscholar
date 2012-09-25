@@ -103,6 +103,11 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
     '#type' => 'value',
     '#value' => 'og_user_node',
   );
+
+  // Remove the "Last Message" form element that gets hooked into the og_ui_add_users form.
+  if(isset($form['membership_fields']) && isset($form['membership_fields']['field_message'])) {
+  	$form['membership_fields']['field_message']['#access'] = FALSE;
+  }
 }
 
 /**
