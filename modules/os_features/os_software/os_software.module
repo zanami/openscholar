@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * Code for the OS Software feature.
@@ -210,9 +209,9 @@ function os_software_os_packaging_method_option() {
 function _os_software_new_recommended_release($node) {
   // Retrieves the list of all other software releases for this node's parent
   // Software Project node.
-  $field_name = 'field_software_project';
-  $items = field_get_items('node', $node, $field_name);
-  $project_nid = $items[0]['target_id'];
+  $field_name   = 'field_software_project';
+  $items        = field_get_items('node', $node, $field_name);
+  $project_nid  = $items[0]['target_id'];
   $release_nids = _os_software_get_software_release_nids($project_nid);
   if (sizeof($release_nids) < 1) {
     return;
