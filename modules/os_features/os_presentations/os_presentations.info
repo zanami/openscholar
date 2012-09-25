@@ -1,4 +1,5 @@
 name = Presentations
+description = Create and manage presentations.
 core = 7.x
 package = Features
 php = 5.2.4
