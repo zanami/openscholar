@@ -284,6 +284,14 @@ function vsite_field_attach_create_bundle($entity_type, $bundle){
 function vsite_attach_fields_to_group_content($entity_type, $bundle){
   $og_field = og_fields_info(OG_AUDIENCE_FIELD);
   $og_field['instance']['default_value_function'] = 'vsite_group_audience_field_default_value';
+  $og_field['instance']['display'] = array(
+    'default' => array(
+      'type' => 'hidden'
+    ),
+    'teaser' => array(
+      'type' => 'hidden'
+    )
+  );
   og_create_field(OG_AUDIENCE_FIELD, $entity_type, $bundle, $og_field);
 }
 
