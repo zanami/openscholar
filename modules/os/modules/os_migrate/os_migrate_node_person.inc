@@ -11,7 +11,7 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
     /**
      * AbstractNodeOSMigration's __construct() will set up most of the common node migration.
      */
-    parent::__construct('person', 'person'); //args are d7 bundle, d6 content type.
+    parent::__construct('person'); //args are d7 bundle, d6 content type.
 
     $this->description = t('Person node migration class.');
 

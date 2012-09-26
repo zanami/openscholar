@@ -8,7 +8,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
 
     // Let AbstractNode handle the source, dest, and map.
-    parent::__construct('vsite', 'vsite'); //current types are vsite, article, and page.  lets start with one of those instead?
+    parent::__construct('vsite'); //current types are vsite, article, and page.  lets start with one of those instead?
     //a separate import for projects?
     $this->description = t('OS vsites');
     $this->dependencies = preg_grep('/^VsiteNodeOS$/', $this->dependencies, PREG_GREP_INVERT);

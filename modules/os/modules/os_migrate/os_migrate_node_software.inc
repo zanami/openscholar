@@ -10,7 +10,7 @@ class SoftwareProjectNodeOSMigration extends AbstractNodeOSMigration {
     /**
      * AbstractNodeOSMigration's __construct() will set up most of the common node migration.
      */
-    parent::__construct('software_project', 'scholar_software_project'); //args are d7 bundle, d6 content type.
+    parent::__construct('software_project'); //args are d7 bundle, d6 content type.
 
     $this->description = t('Software Project');
 
@@ -77,7 +77,7 @@ class SoftwareReleaseNodeOSMigration extends AbstractNodeOSMigration {
     /**
      * AbstractNodeOSMigration's __construct() will set up most of the common node migration.
      */
-    parent::__construct('software_release', 'scholar_software_release'); //args are d7 bundle, d6 content type.
+    parent::__construct('software_release'); //args are d7 bundle, d6 content type.
 
     $this->description = t('Software release');
 

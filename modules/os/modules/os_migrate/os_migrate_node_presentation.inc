@@ -10,7 +10,7 @@ class PresentationNodeOSMigration extends AbstractNodeOSMigration {
     /**
      * AbstractNodeOSMigration's __construct() will set up most of the common node migration.
      */
-    parent::__construct('presentation', 'presentation'); //args are d7 bundle, d6 content type.
+    parent::__construct('presentation'); //args are d7 bundle, d6 content type.
 
     $this->description = t('Presentation migration class.');
 

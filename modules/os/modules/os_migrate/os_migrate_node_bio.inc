@@ -11,7 +11,7 @@ class BioNodeOSMigration extends AbstractNodeOSMigration {
     /**
      * AbstractNodeOSMigration's __construct() will set up most of the common node migration.
      */
-    parent::__construct('bio', 'bio'); //args are d7 bundle, d6 content type.
+    parent::__construct('bio'); //args are d7 bundle, d6 content type.
 
     $this->description = t('Bio node migration.');
 

@@ -4,7 +4,7 @@ class ClassNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
 
     // Let AbstractNode handle the source, dest, and map.
-    parent::__construct('class', 'class'); //current types are vsite, article, and page.  lets start with one of those instead?
+    parent::__construct('class'); //current types are vsite, article, and page.  lets start with one of those instead?
     $this->description = t('OS Class Nodes');
 
     //semester
@@ -37,7 +37,7 @@ class ClassMaterialNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
 
     // Let AbstractNode handle the source, dest, and map.
-    parent::__construct('class_material', 'class_material'); //current types are vsite, article, and page.  lets start with one of those instead?
+    parent::__construct('class_material'); //current types are vsite, article, and page.  lets start with one of those instead?
     $this->description = t('OS Class Material Nodes');
 
     /************************************************************************

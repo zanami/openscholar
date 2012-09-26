@@ -13,9 +13,11 @@ class OsOgVocabMigrate extends DynamicMigration {
     parent::__construct(MigrateGroup::getInstance('taxonomy'));
     $this->bundle = $bundle = $arguments['bundle'];
 
+    $source_bundle = AbstractNodeOSMigration::get_source_bundle($bundle);
+
     $this->description = t('Populate the OG vocabulary field from a remote Drupal 6 source.');
 
-    $this->dependencies = array('VocabularyOS','TermOS');
+    $this->dependencies = array('VocabularyOS');
 
     $query = OSMigration::d6_db_select('term_node', 'tn');
     $query->innerJoin('og_vocab', 'ogv', 'tn.vid = ogv.vid');

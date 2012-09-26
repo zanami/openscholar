@@ -10,7 +10,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     /**
      * AbstractNodeOSMigration's __construct() will set up most of the common node migration.
      */
-    parent::__construct('biblio', 'biblio'); //args are d7 bundle, d6 content type.
+    parent::__construct('biblio'); //args are d7 bundle, d6 content type.
 
     $this->description = t('Publications migration.');
     $this->dependencies[] = 'BiblioContributorTypeTable';

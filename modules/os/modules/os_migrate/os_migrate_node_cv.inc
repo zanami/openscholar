@@ -11,7 +11,7 @@ class CVNodeOSMigration extends AbstractNodeOSMigration {
     /**
      * AbstractNodeOSMigration's __construct() will set up most of the common node migration.
      */
-    parent::__construct('cv', 'cv'); //args are d7 bundle, d6 content type.
+    parent::__construct('cv'); //args are d7 bundle, d6 content type.
 
     $this->description = t('CV node migration.');
 

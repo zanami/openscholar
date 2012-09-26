@@ -14,9 +14,16 @@
  */
 abstract class AbstractNodeOSMigration extends OSMigration {
 
-  public function __construct($destination_bundle, $source_content_type, $create = TRUE) {
-    $this->bundle = $destination_bundle;
+  //Map of bundle names that have changed
+  public static $source_bundle_map = array(
+    'software_project' => 'scholar_software_project',
+    'software_release' => 'scholar_software_release',
+    'media_gallery' => 'gallery',
+  );
 
+  public function __construct($destination_bundle) {
+    $this->bundle = $destination_bundle;
+    $source_content_type = self::get_source_bundle($destination_bundle);
 
     parent::__construct(MigrateGroup::getInstance('node', array('inline', 'users')));
     //when extending this class, don't forget to update info file with new filename!
@@ -283,6 +290,18 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     } else {
       return array();
     }
+  }
+
+  /**
+   * Map bundle names from existing to new
+   */
+  public static function get_source_bundle($bundle){
+
+    if(in_array($bundle, self::$source_bundle_map)){
+      return self::$source_bundle_map[$bundle];
+    }
+
+    return $bundle;
   }
 
 }
