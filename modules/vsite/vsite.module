@@ -921,3 +921,32 @@ function vsite_node_presave($node){
   include_once (drupal_get_path('module', 'vsite') . '/includes/path.inc');
   _vsite_alter_node_path_settings($node);
 }
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function vsite_form_user_profile_form_alter(&$form,&$form_state,&$form_id) {
+  if (!array_key_exists('redirect_from_reset', $form)) $form['redirect_from_reset'] = array('#type' => 'hidden', '#default_value' => FALSE);
+
+  if ($_SERVER['REDIRECT_STATUS'] == '200' && strstr($_SERVER['HTTP_REFERER'], 'user/reset') !== FALSE) {
+    $form['redirect_from_reset']['#value'] = TRUE;
+  }// Are we coming from the special login link?
+
+  $form['#submit'][] = 'vsite_redirect_reset_submit';
+}
+
+/**
+ * Submit handler used to check the passed reset value, if it is present we will redirect.
+ */
+function vsite_redirect_reset_submit($form, &$form_state) {
+  if (is_array($form_state['values'])
+  && array_key_exists('redirect_from_reset', $form_state['values'])
+  && $form_state['values']['redirect_from_reset']) {
+  	$vsites = vsite_get_vsite_by_owner($form['#user']->uid);
+  	if(count($vsites) == 1 && is_object($vsites[0])){
+  	  drupal_goto( $vsites[0]->get_absolute_url() );
+  	}else{
+  	  drupal_goto('user/'.$form['#user']->uid);
+  	}
+  }
+}

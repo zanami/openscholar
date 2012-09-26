@@ -62,7 +62,8 @@ function os_shields_form($form_state) {
   $c = &$form['container'];
   $curr_default = variable_get('os_shields_shield', '');
 
-  foreach ($shields as $shield) {
+  foreach ($shield_info as $fname => $data) {
+    $shield = $shields['public://os_shields/'.$fname];
     $c[str_replace('.', '__', $shield->filename)] = array(
       '#type' => 'markup',
       '#tree' => TRUE,

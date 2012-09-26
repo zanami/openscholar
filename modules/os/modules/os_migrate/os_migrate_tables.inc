@@ -50,7 +50,7 @@ class VariableTableMigration extends TableCopyMigration {
 
   public function __construct() {
     $this->whitelist = array('mollom_private_key', 'mollom_public_key', 'os_mailchimp_api', 'os_mailchimp_list', 'olark_code',
-      'apachesolr_host', 'apachesolr_path', 'apachesolr_port', 'iqss_rbuild_default_url', 'purl_base_domain', 'site_mail',
+      'apachesolr_host', 'apachesolr_path', 'apachesolr_port', 'iqss_rbuild_default_url', 'site_mail',
       'site_mission', 'site_name', 'site_offline_message',
     );
 
