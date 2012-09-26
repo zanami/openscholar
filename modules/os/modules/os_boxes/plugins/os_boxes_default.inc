@@ -66,6 +66,5 @@ function _os_boxes_default_advanced_handler($element, $form_state) {
     $element['#access'] = false;
   }
 
-  $form_state['complete form']['boxes_adv']['#access'] = false;
   return $element;
 }
