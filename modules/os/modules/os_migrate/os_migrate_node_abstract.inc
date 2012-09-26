@@ -170,9 +170,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       'nid' => t('Node ID'),
       'path' => t('URL Path Alias'),
       'format' => t('Text format.  Usually filtered html.')
-    //      'file_upload' => t('File attachments'), //this may have to move to individual classes
-    //'nr.body'	=> t('Node\'s Content')
-    ;
+    );
 
     //get columns front content_type_$content_type
     $table = 'content_type_' . $content_type;
