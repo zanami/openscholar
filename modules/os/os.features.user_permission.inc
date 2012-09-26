@@ -420,7 +420,9 @@ function os_user_default_permissions() {
   // Exported permission: delete boxes.
   $permissions['delete boxes'] = array(
     'name' => 'delete boxes',
-    'roles' => array(),
+    'roles' => array(
+      0 => 'authenticated user',
+    ),
     'module' => 'boxes',
   );
 
