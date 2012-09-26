@@ -18,7 +18,7 @@
 
 ;----------// Stylesheets
 
-  
+  stylesheets[screen][] = css/ballard.responsive.layout.css
   stylesheets[screen][] = css/ballard.css
 
     

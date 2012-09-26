@@ -17,7 +17,7 @@ os[theme_access] = 'public'
 
 ;----------// Stylesheets
 
-  
+  stylesheets[screen][] = css/collegiate.responsive.layout.css
   stylesheets[screen][] = css/collegiate.css
 
   

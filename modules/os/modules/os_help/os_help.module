@@ -60,7 +60,7 @@ function os_help_help($path, $arg) {
  * Implements hook_form_alter().
  */
 function os_help_form_alter(&$form, $form_state, $form_id) {
-  _os_help_traverse_form($form, $form_id);
+  // _os_help_traverse_form($form, $form_id);
   /* 2012-09-25 this code from OS2 looks broken. commenting out until qa
   if (isset($form['#description'])) {
     $form['#description'] =  _os_help_get_theme_variables('form', $form_id) . ' ' . $form['#description'];
@@ -87,9 +87,10 @@ function _os_help_traverse_form(&$element, $form_id) {
 }
 
 /**
- * Callback;
+ * Form traversal callback; prepends elements with custom help link if found.
  *
  * @see _os_help_traverse_form().
+ * @see os_help_form_alter().
  */
 function _os_help_attach_help_link(&$element, $form_id) {
   /*

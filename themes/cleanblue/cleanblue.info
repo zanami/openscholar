@@ -8,8 +8,10 @@ release = 7.x-3.x
 flavor_name = "Blue"
 plugins[os][flavor] = flavors
 
-
+stylesheets[all][]   = css/cleanblue.responsive.layout.css
 stylesheets[all][]   = css/cleanblue.css
+
+
 ie_stylesheets[screen][lt IE 10][] = css/cleanblue-ie.css
 
 os[theme_type]   = 'vsite'

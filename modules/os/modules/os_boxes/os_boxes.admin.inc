@@ -38,6 +38,8 @@ function os_boxes_edit_widget($box, $source = '') {
  * Implements hook_form_FORM_ID_form_alter() for boxes_box
  */
 function os_boxes_form_boxes_box_form_alter(&$form, &$form_state) {
+  $form['boxes_adv']['#access'] = false;
+
   $form['description']['#title'] = t('Widget Description');
   $form['description']['#description'] = t('A brief description of the widget. Only displayed in the Layout section.');
 

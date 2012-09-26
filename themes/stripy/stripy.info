@@ -17,8 +17,9 @@ os[theme_access] = 'public'
 
 ;----------// Stylesheets
 
-  
+  stylesheets[screen][] = css/stripy.responsive.layout.css
   stylesheets[screen][] = css/stripy.css
+  
   ie_stylesheets[screen][lt IE 10][] = css/stripy-ie.css
 
 

@@ -54,9 +54,6 @@ function citation_distribute_schema() {
  * If cite_distribute is installed, copies out its data.
  */
 function citation_distribute_install(){
-  //install citation_distribute table
-  drupal_install_schema('citation_distribute');
-
   //set default module mode
   variable_set('citation_distribute_module_mode', 'per_submission');
 
@@ -74,17 +71,13 @@ function citation_distribute_install(){
  * Implementation of hook_uninstall()
  */
 function citation_distribute_uninstall(){
-  //remove citation_distribute table
-  drupal_uninstall_schema('citation_distribute');
-
-  //remove autoflag variables
-  foreach( _citation_distribute_plugins() as $plugin ) {
-    variable_del('citation_distribute_' . $plugin['name'] . '_auto_flag', false);
-  }
-
-  //remove system variables
-  foreach( array('module_mode', 'cron_limit') as $var) {
-    variable_del('citation_distribute_' . $var);
+  //delete citation_distribute variables.  since module is disabled, we can't use its functions to figure out what plugins were enabled.
+  $result = db_select('variable', 'v')
+    ->condition('name', 'citation_distribute_%', 'LIKE')
+    ->fields('v', array('name'))
+    ->execute();
+  foreach ($result->fetchCol() as $var) {
+    variable_del($var);
   }
 }
 

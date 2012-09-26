@@ -11,6 +11,7 @@ $plugin = array(
   'parent' => 'citation_distribute_service',
   'title' => t('Google Scholar'),
   'name' => 'googlescholar',
+  'description' => 'Google\'s searchable index of citations',
 );
 
 class citation_distribute_service_googlescholar extends citation_distribute_service {

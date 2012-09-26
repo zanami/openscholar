@@ -262,6 +262,11 @@ ul.pager li.pager-current {
   margin: 4px 2px;
   width: 16px;
 }
+
+.sidebar .ajax-progress .throbber {
+  margin: 4px -17px -11px 2px;
+}
+
 tr .ajax-progress .throbber {
   margin: 0 2px;
 }
@@ -410,12 +415,22 @@ div.contextual-links-wrapper ul.contextual-links {
   border-radius: 0; /* LTR */
 }
 
+ul.contextual-links li {
+ line-height: 12px;
+}
+
 ul.contextual-links li a {
 padding: 0.5em .75em 0.5em 0.75em;
 font-family: helvetica;
 font-size: 11px;
 text-decoration:none !important;
+background-color: #fff;
+  padding-left: 4px;
+  padding-right: 4px;
+  letter-spacing: 0;
+  text-transform:none;
 }
+
 
 ul.contextual-links li a:hover {
 background-color: #52854C !important;

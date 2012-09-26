@@ -97,7 +97,6 @@ class os_boxes_twitterfeed extends os_boxes_default {
       )
     );
 
-    $form += parent::options_form($form_state);
     return $form;
   }
 

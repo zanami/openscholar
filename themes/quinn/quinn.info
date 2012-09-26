@@ -19,8 +19,9 @@ os[theme_access] = 'public'
 
 ;----------// Stylesheets
 
-  
+  stylesheets[screen][] = css/quinn.responsive.layout.css
   stylesheets[screen][] = css/quinn.css
+  
   ie_stylesheets[screen][lt IE 10][] = css/quinn-ie.css
 
 

@@ -16,7 +16,9 @@ os[theme_access] = "private"
 
 ;----------// Stylesheets
 
+  stylesheets[screen][] = css/projects.responsive.layout.css
   stylesheets[screen][] = css/projects-harvard.css
+  
   ie_stylesheets[screen][lt IE 10] = css/projects-harvard-ie.css
 
 

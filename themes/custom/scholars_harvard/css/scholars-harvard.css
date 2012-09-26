@@ -1,5 +1,5 @@
-@import "scholars-harvard.responsive.layout.css"; 
-@import "../../../os_basetheme/css/d6buffer.css";
+/* D6 retro css for older themes */
+#columns {padding:0 10px;}
 
 @import url('http://fonts.googleapis.com/css?family=PT+Sans');
 @import url('http://fonts.googleapis.com/css?family=Radley');

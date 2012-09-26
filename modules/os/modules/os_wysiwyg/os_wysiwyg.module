@@ -126,6 +126,61 @@ function os_wysiwyg_wysiwyg_editor_settings_alter(&$settings, $context){
   // pdw settings
   $settings['pdw_toggle_toolbars'] = '2,3,4';
   $settings['pdw_toggle_on'] = 1;
+
+  _os_wysiwyg_add_public_css($settings, $context);
+}
+
+
+function _os_wysiwyg_add_public_css(&$settings, $context) {
+  ctools_include('themes', 'os');
+  $theme = os_theme_get();
+  $flavor = os_theme_get_flavor();
+
+  $css = _os_wysiwyg_get_theme_css($theme);
+
+  $flavors = os_theme_get_flavors($theme);
+  $flavor = variable_get('os_appearance_' . $theme . '_flavor', 'default');
+  if ($flavor != 'default' && isset($flavors[$flavor])) {
+    $flavor = $flavors[$flavor];
+    if (isset($flavor['css'])) {
+      foreach ($flavor['css'] as $file) {
+        $css[] = $flavor['path'].'/'.$file;
+      }
+    }
+  }
+
+  $settings['content_css'] = implode(',', $css);
+  $settings['body_class'] = "page-node not-front node node-inner content";
+}
+
+/**
+ * Return valid wysiwyg sheets given a theme
+ * @param unknown_type $stylesheets
+ */
+function _os_wysiwyg_get_theme_css($theme){
+  $css = array();
+  $themes = list_themes();
+  if (!isset($themes[$theme])) return $css;
+
+  $theme = $themes[$theme];
+  if (!empty($theme->stylesheets)) {
+    foreach ($theme->stylesheets as $media => $stylesheets) {
+      //Skip print stylesheets
+      if ($media != 'print') {
+        foreach ($stylesheets as $name => $stylesheet) {
+          if (file_exists($stylesheet)) {
+            $css[] = base_path() . $stylesheet;
+          }
+        }
+      }
+    }
+  }
+
+  if (isset($theme->base_theme) && isset($themes[$theme->base_theme])) {
+    $css = array_merge(_os_wysiwyg_get_theme_css($theme->base_theme), $css);
+  }
+
+  return $css;
 }
 
 /**

@@ -16,7 +16,7 @@
 
 ;----------// Stylesheets
 
-  
+  stylesheets[screen][] = css/dunster.responsive.layout.css
   stylesheets[screen][] = css/dunster.css
 
     
