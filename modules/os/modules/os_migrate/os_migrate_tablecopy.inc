@@ -54,9 +54,10 @@ abstract class TableCopyMigration extends OSMigration {
     if (isset($this->required_modules) && count($this->required_modules)) {
       $modules = array_map('module_exists', $this->required_modules);
       if (in_array(FALSE, $modules)) {
-        foreach(array_keys($this->map_schema) as $key) {
-          $query->isNull($key);
-        }
+        //use node because we know it will exist.
+        $query = parent::d6_db_select('node', 'n')
+          ->condition('nid', 0)
+          ->fields('n', array('nid'));
       }
     }
 
