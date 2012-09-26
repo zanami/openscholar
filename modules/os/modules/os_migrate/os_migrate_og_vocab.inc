@@ -20,8 +20,9 @@ class OsOgVocabMigrate extends DynamicMigration {
     $this->dependencies = array('VocabularyOS');
 
     $query = OSMigration::d6_db_select('term_node', 'tn');
-    $query->innerJoin('og_vocab', 'ogv', 'tn.vid = ogv.vid');
-    $query->innerJoin('vocabulary', 'v', 'tn.vid = v.vid');
+    $query->innerJoin('term_data', 'td', 'tn.tid = td.tid');
+    $query->innerJoin('og_vocab', 'ogv', 'td.vid = ogv.vid');
+    $query->innerJoin('vocabulary', 'v', 'td.vid = v.vid');
     $query->innerJoin('node', 'n', 'tn.nid = n.nid');
 
     $query
