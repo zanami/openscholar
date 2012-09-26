@@ -1,29 +1,32 @@
 <?php
+// $Id$
 
+/**
+ * Implements hook_menu().
+ */
 function cp_layout_menu() {
   $items = array();
 
-  $items['cp/build/layout'] =
-  $items['cp/build/layout/%'] = array(
-    'title' => 'Layout',
+  $items['cp/build/layout'] = $items['cp/build/layout/%'] = array(
+    'title' => t('Layout'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cp_layout_full_form', 3),
     'type' => MENU_NORMAL_ITEM,
     'weight' => 10,
     'access callback' => 'spaces_access_admin',
     'file' => 'cp_layout.form.inc',
-    'description' => 'Change the placement of widgets, and the overall layout, of your site.'
+    'description' => t('Change the placement of widgets, and the overall layout, of your site.'),
   );
 
   $items['cp/build/layout/ajax'] = array(
-    'title' => 'Layout AJAX Request',
+    'title' => t('Layout AJAX Request'),
     'page callback' => 'cp_layout_ajax',
     'type' => MENU_CALLBACK,
     'file' => 'cp_layout.form.inc',
   );
 
   $items['cp/build/layout/%ctools_js/select'] = array(
-    'title' => 'Select Layout',
+    'title' => t('Select Layout'),
     'page callback' => 'cp_layout_layout_select_ajax',
     'page arguments' => array(3),
     'type' => MENU_CALLBACK,
@@ -34,13 +37,16 @@ function cp_layout_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function cp_layout_theme() {
-  $path = drupal_get_path('module', 'cp_layout').'/theme';
+  $path = drupal_get_path('module', 'cp_layout') . '/theme';
   $items = array();
   $items['cp_layout_widget'] = array(
     'template' => 'cp_layout-widget',
     'render element' => 'widget',
-    'path' =>  $path,
+    'path' => $path,
   );
 
   $items['cp_layout_unused_widgets'] = array(
@@ -56,6 +62,7 @@ function cp_layout_theme() {
  * Implements hook_preprocess_cp_layout_widget
  *
  * Defines classes and additional variables needed by the cp_layout_widget template
+ *
  * @param unknown_type $variables
  */
 function template_preprocess_cp_layout_widget(&$variables) {
@@ -66,13 +73,13 @@ function template_preprocess_cp_layout_widget(&$variables) {
   $widget = $variables['widget']['#widget'];
   $classes_array = &$variables['classes_array'];
 
-  $variables['bid'] = $widget['module']."-".$widget['delta'];
+  $variables['bid'] = $widget['module'] . "-" . $widget['delta'];
 
   if (!isset($widget['info'])) {
     // This is an error case, but "Untitled" is better than a blank widget
     $variables['widget_title'] = 'Untitled';
 
-    error_log("Widget [{$widget['delta']}] was created without a description.",LOG_NOTICE);
+    error_log("Widget [{$widget['delta']}] was created without a description.", LOG_NOTICE);
   }
   else {
     $variables['widget_title'] = $widget['info'];
@@ -102,62 +109,63 @@ function template_preprocess_cp_layout_widget(&$variables) {
   }
 
   if (isset($widget->icon_path)) {
-  	$style = "style=\"background-image:url('{$w['icon_path']}');\"";
+    $style = "style=\"background-image:url('{$w['icon_path']}');\"";
   }
 
   if (isset($widget['can_edit']) && $widget['can_edit']) {
-    $variables['can_edit'] = true;
-    $variables['edit_path'] = $widget['path'].'/edit/cp-layout';
+    $variables['can_edit'] = TRUE;
+    $variables['edit_path'] = $widget['path'] . '/edit/cp-layout';
   }
   else {
-    $variables['can_edit'] = false;
+    $variables['can_edit'] = FALSE;
   }
 
   if (isset($widget['can_delete']) && $widget['can_delete']) {
-    $variables['can_delete'] = true;
-    $variables['delete_path'] = $widget['path'].'/delete';
+    $variables['can_delete'] = TRUE;
+    $variables['delete_path'] = $widget['path'] . '/delete';
   }
   else {
-    $variables['can_delete'] = false;
+    $variables['can_delete'] = FALSE;
   }
 }
 
 /**
- * Implements hook_preprocess_cp_layout_unused_widgets
+ * Implements hook_preprocess_cp_layout_unused_widgets().
  *
  * Renders the factory boxes as dropdowns.
+ *
  * @param unknown_type $variables
+ *
+ * @todo sort factories by something
  */
 function template_preprocess_cp_layout_unused_widgets(&$variables) {
   $factories = &$variables['factories'];
 
-  // sort factories by something
-  // TODO: Do this
-
   $links = array();
-  foreach ($factories as $f) {
+  foreach ($factories as $factory) {
     $l = array(
       'html' => TRUE,
       'title' => '',
     );
 
-    $href = $f['block_config_path'].'/cp-layout';
-    $title = $f['label'];
+    $href    = $factory['block_config_path'] . '/cp-layout';
+    $title   = $factory['label'];
     $options = array();
-    $html = l($title, $href, $options);
+    $html    = l($title, $href, $options);
 
     $help_opts = array(
       'attributes' => array(
         'class' => 'help',
-        'onclick' => "var w=window.open(this.href, 'advanced_help_window', 'width=500,height=500,scrollbars,resizable'); w.focus(); return false;"
+        'onclick' => "var w=window.open(this.href, 'advanced_help_window', 'width=500,height=500,scrollbars,resizable'); w.focus(); return false;",
       ),
       'query' => array(
         'popup' => 1,
-      )
+      ),
     );
-    $help_exists = true;
-    if ($help_exists) {//TODO: implement $help_exists
-      $html .= ' '.l('?', 'help/os/widgets/'.$f['delta'], $help_opts);  // TODO: This URL is wrong
+    $box_delta = _cp_layout_box_delta($factory);
+    $help_exists = _cp_layout_help_exists($box_delta);
+    if ($help_exists) {
+      $html .= ' ' . l('?', 'help/os_help/' . $box_delta, $help_opts);
     }
     $l['title'] = $html;
     $links[] = $l;
@@ -179,3 +187,29 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
   sort($variables['tags']);
   array_unshift($variables['tags'], 'All');
 }
+
+/**
+ * Returns the box delta of a factory array, or FALSE if none found.
+ *
+ * @param array $factory
+ *
+ * @return string|bool
+ */
+function _cp_layout_box_delta($factory) {
+  if (!isset($factory['block_config_path'])) {
+    return FALSE;
+  }
+  $path_parts = explode('/', $factory['block_config_path']);
+  // Returns the last element of the array, or FALSE if empty.
+  return end($path_parts);
+}
+
+/**
+ * Returns whether the help HTML file exists for box in the os_help module.
+ */
+function _cp_layout_help_exists($box_delta) {
+  $os_help_path = drupal_get_path('module', 'os_help');
+  $filename = $os_help_path . '/help/' . $box_delta . '.html';
+  return file_exists($filename);
+}
+
