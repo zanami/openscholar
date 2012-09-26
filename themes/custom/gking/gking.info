@@ -17,8 +17,9 @@ os[cp_layout_css] = cp-layout-map.css
 
 ;----------// Stylesheets
 
-  
+  stylesheets[screen][] = css/gking.responsive.layout.css
   stylesheets[screen][] = css/gking.css
+  
   ie_stylesheets[screen][lt IE 10][] = gking-ie.css
 
   scripts[] = gking.js

@@ -1,5 +1,5 @@
-@import "scholar-department.responsive.layout.css"; 
-@import "../../../os_basetheme/css/d6buffer.css";
+/* D6 retro css for older themes */
+#columns {padding:0 10px;}
 
 body {
 background: url('../images/bodyBg.png') no-repeat fixed center top #F8F8F8;

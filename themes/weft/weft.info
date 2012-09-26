@@ -18,8 +18,9 @@ os[theme_access] = 'public'
 
 ;----------// Stylesheets
 
-  
+  stylesheets[screen][] = css/weft.responsive.layout.css
   stylesheets[screen][] = css/weft.css
+  
   ie_stylesheets[screen][lt IE 10][] = css/weft-ie.css
   
  scripts[]               = mapswap.js

@@ -17,7 +17,8 @@ os[theme_type]   = 'vsite'
 os[theme_access] = 'public'
 
 ;----------// Stylesheets
-
+    
+    stylesheets[screen][] = css/redhead.responsive.layout.css
     stylesheets[screen][] = css/redhead.css
 
 

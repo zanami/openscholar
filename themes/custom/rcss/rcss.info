@@ -16,7 +16,9 @@ os[theme_access] = "private"
 
 ;----------// Stylesheets
 
+stylesheets[screen][] = css/rcss.responsive.layout.css
 stylesheets[screen][] = css/rcss.css
+
 ie_stylesheets[screen][IE 7] = css/rcss-ie.css
   
 

@@ -17,8 +17,10 @@ os[theme_access] = 'public'
 
 ;----------// Stylesheets
 
-  
+  stylesheets[screen][] = css/eloquent.responsive.layout.css
   stylesheets[screen][] = css/eloquent.css
+  
+  
   ie_stylesheets[screen][lt IE 10][] = css/eloquent-ie.css
 
     

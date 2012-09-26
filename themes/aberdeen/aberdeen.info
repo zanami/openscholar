@@ -17,7 +17,7 @@
 
 ;----------// Stylesheets
 
-  
+  stylesheets[screen][] = css/aberdeen.responsive.layout.css
   stylesheets[screen][] = css/aberdeen.css
   
   scripts[] = aberdeen.js
