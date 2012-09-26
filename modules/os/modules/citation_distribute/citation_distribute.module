@@ -82,6 +82,7 @@ function citation_distribute_form_biblio_node_form_alter(&$form, &$form_state, $
     '#title' => t('Distribute to Academic Repositories'),
     '#group' => 'additional_settings',
     '#attached' => array('js' => array(drupal_get_path('module', 'citation_distribute' ) . '/citation_distribute.js')),
+    '#attributes' => array('class' => array('citation-distribute-form')),
   );
 
   foreach(_citation_distribute_plugins() as $plugin) {
