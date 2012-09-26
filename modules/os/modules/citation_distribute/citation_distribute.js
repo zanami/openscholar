@@ -4,19 +4,34 @@
  * When citation_distribute options change, this script updates the vertical tab to display new settings.
  */
 
-// The following line will prevent a JavaScript error if this file is included and vertical tabs are disabled.
-Drupal.verticalTabs = Drupal.verticalTabs || {};
+(function($) {
+	
 
-Drupal.verticalTabs.citation_distribute_selections = function() {
-  var vals = [];
-  
-  /* Get checked options, add their label text to array */
-  $('fieldset.vertical-tabs-citation_distribute_selections input:checked')
-    .parent()
-    .each( function(){vals.push( $(this).text() )} )
-  
-  if (vals.join(', ') == '') {
-    return Drupal.t('None');
+Drupal.behaviors.citation_distribute_fieldset = {
+  attach: function (context) {
+    $('fieldset.citation-distribute-form', context).drupalSetSummary(function (context) {
+    	
+    	
+    	var vals = [];
+    	$('fieldset.citation-distribute-form input:checked')
+    		.parent()
+    		.children('label')
+    		.each(function() {
+    			vals.push( $.trim($(this).text()) );
+    		})
+    	
+    	
+    		//.parent()
+    		
+    		//.each( function(vals) {vals.push('1'); alert(vals)}(vals) );
+    		
+    	if (vals.length == -1) {
+    		return Drupal.t('None');
+    	} else {
+    		return vals.join(', ');
+    	}
+    });
   }
-  return vals.join(', ');
 }
+
+})(jQuery);

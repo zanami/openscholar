@@ -19,10 +19,10 @@ The conventional location is in a the help directory:
       - images/
         - mymodule_foobar.png
 
-In this example module directory structure, 2 files (mymodule.os_help.ini and
-mymodule.html) are found and appended to OS Help's os_help.template.ini file.
-Additionally, one image (mymodule_foobar.png) is found and added to OS Help's
-/help/images/ directory.
+In this example module directory structure, mymodule.os_help.ini is appended to
+os_help/help/os_help.help.ini, mymodule.html is copied to os_help/help/ one
+image (mymodule_foobar.png) is found and added to OS Help's /help/images/
+directory.
 
 Important: As with AH, you should link to images like:
 
