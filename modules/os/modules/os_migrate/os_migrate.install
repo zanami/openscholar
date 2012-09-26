@@ -94,6 +94,11 @@ function os_migrate_enable() {
 //separate function so we can reregister if needed
 function os_migrate_register_migrations() {
   _registerFlagMigrations();
+
+  foreach (node_type_get_names() as $bundle => $value) {
+    // Register a dynamic migration.
+    Migration::registerMigration('OsOgVocabMigrate', 'OsOgVocabMigrate' . ucfirst($bundle), array('bundle' => $bundle));
+  }
 }
 
 //regsiter flag migrations for list of flags
