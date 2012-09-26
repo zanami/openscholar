@@ -27,7 +27,7 @@ class OsOgVocabMigrate extends DynamicMigration {
     $query
       ->fields('tn')
       ->fields('v', array('multiple', 'required', 'tags'))
-      ->condition('n.type', $bundle)
+      ->condition('n.type', $source_bundle)
       ->orderBy('n.nid');
 
     $source_key = MigrateDestinationNode::getKeySchema();
@@ -43,6 +43,9 @@ class OsOgVocabMigrate extends DynamicMigration {
     $this->destination = new MigrateDestinationNode($bundle);
 
     $this->addFieldMapping('nid', 'nid');
+
+    //Add field mapping for vocabulary relatinships
+    $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)->description('Handled in prepareRow');
   }
 
 

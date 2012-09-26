@@ -686,8 +686,8 @@ function vsite_field_attach_form($entity_type, $entity, &$form, &$form_state, $l
   list($id, , $bundle) = entity_extract_ids($entity_type, $entity);
   $vsite = vsite_get_vsite();
 
-  if ($id || ! $vsite || ! og_is_group_content_type($entity_type, $bundle)) {
-    // Entity is already saved, we can't determine the site, or this isn't group content.
+  if (!$vsite || ! og_is_group_content_type($entity_type, $bundle)) {
+    //We can't determine the site, or this isn't group content.
     return;
   }
 
