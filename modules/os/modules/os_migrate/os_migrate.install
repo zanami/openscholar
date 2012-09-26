@@ -103,6 +103,10 @@ function os_migrate_register_migrations() {
 
 //regsiter flag migrations for list of flags
 function _registerFlagMigrations() {
+  if(!db_table_exists('flags')){
+    return;
+  }
+
   $migrate_flags = array('dash'=>'sword_dash', 'repec'=>'service_repec', 'googlescholar'=>'googlescholar');
 
   foreach ($migrate_flags as $name => $legacy_name) {
