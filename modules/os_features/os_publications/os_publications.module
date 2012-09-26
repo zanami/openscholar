@@ -226,7 +226,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
 
   // generate the year description
   $years = variable_get('biblio_years_text', array(9999 => t('Submitted'), 9998 => t('In Press')));
-  $form['biblio_year']['#description'] = implode(', ', $years) . ', or YYYY';
+  $form['biblio_year']['#description'] = t('Required. Must be one of @years, or YYYY', array('@years' => implode(', ', $years)));
 
   // Change the Notes field's description to include a link to the settings form
   ctools_include('ajax');
