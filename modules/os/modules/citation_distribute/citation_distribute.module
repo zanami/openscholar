@@ -40,10 +40,64 @@ function citation_distribute_menu() {
       }
     }
   }
-  dpm($items);
   return $items;
 }
 
+/**
+ * Implements hook_node_insert().
+ */
+function citation_distribute_node_insert($node) {
+  if ($node->type == 'biblio') {
+    _citation_distribute_node_apply_plugins($node);
+  }
+}
+/**
+ * Implements hook_node_update().
+ */
+function citation_distribute_node_update($node) {
+  if ($node->type == 'biblio') {
+    _citation_distribute_node_apply_plugins($node);
+  }
+}
+
+/**
+ * @function _citation_distribute_node_apply_plugins($node) {
+ *
+ * When a node is inserted or updated, activate the service plugins
+ */
+function _citation_distribute_node_apply_plugins($node) {
+
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function citation_distribute_form_biblio_node_form_alter(&$form, &$form_state, $form_id) {
+  if (!$form['biblio_type']['#default_value']) {
+    return;
+  }
+
+  $form['citation_distribute'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Distribute to Academic Repositories'),
+    '#group' => 'additional_settings',
+    '#attached' => array('js' => array(drupal_get_path('module', 'citation_distribute' ) . '/citation_distribute.js')),
+  );
+
+  foreach(_citation_distribute_plugins() as $plugin) {
+    if (isset($plugin['title'])) {
+      $name = $plugin['name'];
+
+      $form['citation_distribute'][$name] = array(
+        '#type' => 'checkbox',
+        '#title' => $plugin['title'],
+        '#description' => (isset($plugin['description'])) ? $plugin['description'] : '',
+        '#disabled' => FALSE,
+        '#default_value' => _citation_distribute_checked($plugin, $form['nid']['#value']),
+      );
+    }
+  }
+}
 
 /**
  * Implements hook_flag_default_flags
@@ -154,3 +208,34 @@ function _citation_distribute_load_plugin($plugin) {
   return $service;
 }
 
+/**
+ * @function _citation_distribute_checked($plugin, nid)
+ *
+ * Given a plugin definition and a nid, return whether or not form element should be checked.
+ * Takes into account node's current status.  If none is to be found, try auto flag var
+ */
+function _citation_distribute_checked($plugin, $nid) {
+  if ($nid) {
+    $status = db_select('citation_distribute', 'cd')
+      ->condition('nid', $nid)
+      ->condition('plugin', $plugin['name'])
+      ->fields('cd', array('noauto'))
+      ->execute();
+  }
+
+  if ($nid && $status->rowCount()) {
+    //node has CD settings.  use those
+    $noauto = $status->fetchColumn();
+    $return = (!$noauto);
+  } else {
+    //no settings.  use plugin's autoflag preferences
+    $var = $plugin['class'] . '_auto_flag';
+    if ($vsite = vsite_get_vsite()) {
+      $return = $vsite->controllers->variable->get($var);
+    } else {
+      $return = variable_get($var);
+    }
+  }
+
+  return $return;
+}

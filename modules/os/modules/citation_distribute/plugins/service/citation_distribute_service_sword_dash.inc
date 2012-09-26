@@ -10,6 +10,7 @@ $plugin = array(
   'parent' => 'citation_distribute_service_sword',
   'title' => t('DASH'),
   'name' => 'dash',
+  'description' => 'Harvard\'s open access repository',
 );
 
 

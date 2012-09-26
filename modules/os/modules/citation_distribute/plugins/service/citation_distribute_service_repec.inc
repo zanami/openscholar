@@ -11,6 +11,7 @@ $plugin = array(
   'parent' => 'citation_distribute_service',
   'title' => t('RePEc'),
   'name' => 'repec',
+  'description' => 'Research Papers in Economics',
 );
 
 class citation_distribute_service_repec extends citation_distribute_service {
