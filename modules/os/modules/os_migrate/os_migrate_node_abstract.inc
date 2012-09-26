@@ -23,7 +23,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
 
   public function __construct($destination_bundle) {
     $this->bundle = $destination_bundle;
-    $source_content_type = self::get_source_bundle($destination_bundle);
+
+    $this->source_content_type = $source_content_type = self::get_source_bundle($destination_bundle);
 
     parent::__construct(MigrateGroup::getInstance('node', array('inline', 'users')));
     //when extending this class, don't forget to update info file with new filename!
@@ -191,7 +192,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
    *
    * Fetches path from {url_alias}
    */
-  function prepareRow($current_row) {
+  function prepareRow(&$current_row) {
 
     //check that destination vsite exists.  some vsites have been removed, but their content still exists
     $query = db_select('node', 'n')
@@ -250,6 +251,16 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     return parent::prepareRow($current_row);
   }
 
+  /**
+   * @see Migration::postImport()
+   */
+  public function postImport() {
+    parent::postImport();
+
+    //check if they exist first?
+    $this->_registerCommentsMigration();
+  }
+
   //helper functions for common file field
 
   function _has_file_field() {
@@ -289,6 +300,24 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       );
     } else {
       return array();
+    }
+  }
+
+  /**
+   * @function _registerCommentsMigration
+   *
+   * Checks if this content type has any comments.  IF so, registers a migration of them
+   */
+  function _registerCommentsMigration() {
+    $query = parent::d6_db_select('comments', 'c')
+      ->fields('c', array('nid'));
+    $query->join('node', 'n', 'n.nid = c.nid');
+    $query->condition('n.type', $this->source_content_type);
+    $result = $query->execute();
+    $comments = $result->fetchCol();
+
+    if (count($comments)) {
+      Migration::registerMigration('CommentsOSMigration', 'commentsosmigration'.$this->bundle, array('bundle' => $this->bundle));
     }
   }
 

@@ -116,3 +116,20 @@ function _os_classes_delete_children($nid) {
   node_delete_multiple(array_keys($result['node']));
 }
 
+/**
+ * Implements hook_process_HOOK for node.
+ *
+ * Removes EVA field "Related Materials" from Class node teaser.
+ */
+function os_classes_process_node(&$vars) {
+  if ($vars['type'] !== 'class') {
+    return;
+  }
+  if ($vars['view_mode'] !== 'teaser') {
+    return;
+  }
+  // Hides EVA field (attached view) "Related Materials" on /classes.
+  if (isset($vars['content']['os_classes_entity_view_1'])) {
+    unset($vars['content']['os_classes_entity_view_1']);
+  }
+}

@@ -12,7 +12,7 @@
 function os_classes_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-class-body'
+  // Exported field: 'node-class-body'.
   $fields['node-class-body'] = array(
     'field_config' => array(
       'active' => '1',
@@ -35,6 +35,7 @@ function os_classes_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -60,7 +61,7 @@ function os_classes_field_default_fields() {
             'trim_length' => 600,
           ),
           'type' => 'text_summary_or_trimmed',
-          'weight' => 0,
+          'weight' => '3',
         ),
       ),
       'entity_type' => 'node',
@@ -84,7 +85,7 @@ function os_classes_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-class-field_class_link'
+  // Exported field: 'node-class-field_class_link'.
   $fields['node-class-field_class_link'] = array(
     'field_config' => array(
       'active' => '1',
@@ -94,6 +95,7 @@ function os_classes_field_default_fields() {
       'field_name' => 'field_class_link',
       'foreign keys' => array(),
       'indexes' => array(),
+      'locked' => '0',
       'module' => 'link',
       'settings' => array(
         'attributes' => array(
@@ -127,10 +129,11 @@ function os_classes_field_default_fields() {
           'weight' => 3,
         ),
         'teaser' => array(
-          'label' => 'above',
+          'label' => 'hidden',
+          'module' => 'link',
           'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
+          'type' => 'link_default',
+          'weight' => '2',
         ),
       ),
       'entity_type' => 'node',
@@ -167,7 +170,7 @@ function os_classes_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-class-field_offered_year'
+  // Exported field: 'node-class-field_offered_year'.
   $fields['node-class-field_offered_year'] = array(
     'field_config' => array(
       'active' => '1',
@@ -177,6 +180,7 @@ function os_classes_field_default_fields() {
       'field_name' => 'field_offered_year',
       'foreign keys' => array(),
       'indexes' => array(),
+      'locked' => '0',
       'module' => 'date',
       'settings' => array(
         'cache_count' => '4',
@@ -217,10 +221,18 @@ function os_classes_field_default_fields() {
           'weight' => 2,
         ),
         'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
+          'label' => 'inline',
+          'module' => 'date',
+          'settings' => array(
+            'format_type' => 'long',
+            'fromto' => 'both',
+            'multiple_from' => '',
+            'multiple_number' => '',
+            'multiple_to' => '',
+            'show_repeat_rule' => 'show',
+          ),
+          'type' => 'date_default',
+          'weight' => '1',
         ),
       ),
       'entity_type' => 'node',
@@ -253,7 +265,7 @@ function os_classes_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-class-field_semester'
+  // Exported field: 'node-class-field_semester'.
   $fields['node-class-field_semester'] = array(
     'field_config' => array(
       'active' => '1',
@@ -267,6 +279,7 @@ function os_classes_field_default_fields() {
           0 => 'value',
         ),
       ),
+      'locked' => '0',
       'module' => 'list',
       'settings' => array(
         'allowed_values' => array(
@@ -293,10 +306,11 @@ function os_classes_field_default_fields() {
           'weight' => 1,
         ),
         'teaser' => array(
-          'label' => 'above',
+          'label' => 'inline',
+          'module' => 'list',
           'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
+          'type' => 'list_default',
+          'weight' => '0',
         ),
       ),
       'entity_type' => 'node',
@@ -316,7 +330,7 @@ function os_classes_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-class_material-body'
+  // Exported field: 'node-class_material-body'.
   $fields['node-class_material-body'] = array(
     'field_config' => array(
       'active' => '1',
@@ -339,6 +353,7 @@ function os_classes_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -388,7 +403,7 @@ function os_classes_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-class_material-field_class'
+  // Exported field: 'node-class_material-field_class'.
   $fields['node-class_material-field_class'] = array(
     'field_config' => array(
       'active' => '1',
@@ -409,6 +424,7 @@ function os_classes_field_default_fields() {
           0 => 'target_id',
         ),
       ),
+      'locked' => '0',
       'module' => 'entityreference',
       'settings' => array(
         'handler' => 'base',
@@ -497,4 +513,3 @@ function os_classes_field_default_fields() {
 
   return $fields;
 }
-

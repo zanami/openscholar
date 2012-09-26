@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 /**
  * @file os_migrate.admin.inc
- * 
+ *
  * Provides form for OpenScholar migrate settings
  */
 
@@ -20,7 +20,7 @@ function os_migrate_admin() {
   );
 
   $form['#validate'][] = 'os_migrate_admin_validate';
-  
+
   $form['settings_help'] = array(
     '#title' => t('settings.php configuration'),
     '#collapsible' => TRUE,
@@ -32,7 +32,7 @@ in addition to the default connection to your Drupal 7 database, settings.php in
 to the database you specifed.  It will look something like the text below, but with the bold values
 replaced with those applicable to your DB.  </p>
 
-The Migration database setting on this page corresponds to the <strong>database</strong> entry below 
+The Migration database setting on this page corresponds to the <strong>database</strong> entry below
 as specified in your settings.php file.
 
 <pre>
@@ -41,9 +41,9 @@ as specified in your settings.php file.
   'username' => '<strong>db user</strong>',
   'password' => '<strong>db password</strong>',
   'host' => 'localhost',
-  'port' => '', 
+  'port' => '',
   'driver' => 'mysql',
-  'prefix' => '', 
+  'prefix' => '',
 );
 </pre>
 EOF
@@ -56,55 +56,60 @@ EOF
     '#required' => TRUE,
     '#default_value' => variable_get('os_migrate_files', ''),
   );
-  
+
   $form['dev_fieldset'] = array(
     '#title' => t('Development Settings'),
     '#type' => 'fieldset',
     '#collapsed' => FALSE,
     '#collapsible' => TRUE,
   );
-  
+
   $form['dev_fieldset']['os_migrate_email_notification'] = array(
     '#title' => t('Email Notification'),
-    '#description' => t('Creating a user account during migration will send that user an email.  
+    '#description' => t('Creating a user account during migration will send that user an email.
     										When this is checked, user accounts will be created with the email address
     										in the legacy database.  Leave this unchecked during development to munge
     										the email addresses to avoid spamming all the users.'),
     '#type' => 'checkbox',
     '#default_value' => variable_get('os_migrate_email_notification', FALSE),
   );
-  
+
   $form['dev_fieldset']['os_migrate_ignore_dependencies'] = array(
     '#title' => t('Ignore Dependencies'),
     '#description' => t('Migration dependencies will be ignored by default.'),
     '#type' => 'checkbox',
     '#default_value' => variable_get('os_migrate_ignore_dependencies', FALSE),
   );
-  
+
   $form['dev_fieldset']['os_migrate_force_og'] = array(
     '#title' => t('Force Group ID'),
     '#description' => t('Force all content into group.'),
     '#type' => 'textfield',
     '#default_value' => variable_get('os_migrate_force_og', FALSE),
   );
-  
+
   $form['dev_fieldset']['os_migrate_legacy_site'] = array(
-      '#title' => t('Legacy Site'),
-      '#description' => t('(optional) Full URL to site from which content is being migrated.  Nodes that yield errors will attempt to link back to the original content if this setting is provided.'),
-      '#type' => 'textfield',
-      '#default_value' => variable_get('os_migrate_legacy_site', FALSE),
+    '#title' => t('Legacy Site'),
+    '#description' => t('(optional) Full URL to site from which content is being migrated.  Nodes that yield errors will attempt to link back to the original content if this setting is provided.'),
+    '#type' => 'textfield',
+    '#default_value' => variable_get('os_migrate_legacy_site', FALSE),
+  );
+
+  $form['dev_fieldset']['register_dynamic'] = array(
+    '#type' => 'markup',
+    '#markup' => '<strong>Dynamic Migration</strong><br />' . l('Re-run registration of dynamic migrations', 'admin/config/openscholar/os_migrate/register_dynamic'),
   );
   return system_settings_form($form);
 }
 
 /**
  * Validates os_migrate's admin form.
- * Tries to connect to supplied db.  
+ * Tries to connect to supplied db.
  */
 function os_migrate_admin_validate($form, &$form_state) {
   $os_migrate_database = $form_state['values']['os_migrate_database'];
   $os_migrate_files = $form_state['values']['os_migrate_files'];
-  
+
   // try to connect to database to confirm it's set up correctly.
   if (strlen($os_migrate_database)) {
     try {
@@ -114,8 +119,8 @@ function os_migrate_admin_validate($form, &$form_state) {
     } catch (DatabaseConnectionNotDefinedException $e){
       form_set_error('os_migrate_database', t('Unable to connect to specified database.  Check your settings.php configuration.'));
     }
-  }  
-  
+  }
+
   // check that files dir exists
   if (strlen($os_migrate_files)) {
     if (($dh = @opendir($os_migrate_files)) != FALSE) {
@@ -125,4 +130,15 @@ function os_migrate_admin_validate($form, &$form_state) {
       form_set_error('os_migrate_files', t('Unable to open files directory.  Please check that it exists and is writeable by the webserver.'));
     }
   }
+}
+
+/**
+ * @function os_migrate_register_dynamic
+ *
+ * Reruns registration of dynamic migrations from hook_enable.  Useful for dev.
+ */
+function os_migrate_register_dynamic() {
+  require_once drupal_get_path('module', 'os_migrate') . '/os_migrate.install';
+  os_migrate_register_migrations();
+  drupal_goto('admin/config/openscholar/os_migrate');
 }

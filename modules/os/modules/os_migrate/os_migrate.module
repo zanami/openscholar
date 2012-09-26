@@ -33,6 +33,15 @@ function os_migrate_menu() {
     'file' => 'os_migrate.admin.inc',
   );
 
+  $items['admin/config/openscholar/os_migrate/register_dynamic'] = array(
+    'title' => 'Register Dynamic Migrations',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_migrate_register_dynamic'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'os_migrate.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
 

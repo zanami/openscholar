@@ -35,6 +35,8 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('field_site_logo:source_dir')->defaultValue(variable_get('os_migrate_files', ''));
     $this->addFieldMapping('field_site_logo:destination_file', 'field_site_logo:destination_file');
 
+    //field_group_path
+    $this->addSimpleMappings(array('field_group_path', 'field_group_path:title', 'field_group_path:attributes'));
 
     //undo what nodeabstract has done
     $unmap = array_merge(array('body', 'group_nid', 'og_group_ref',),
@@ -147,6 +149,10 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
        $row->field_vsite_logo = null;
      }
 
+     $row->field_group_path = $this->_get_field_group_path($row->nid, $row->value);
+     $row->{'field_group_path:title'} = $row->title;
+     $row->{'field_group_path:attributes'} = array();
+
      return;
    }
 
@@ -158,6 +164,46 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
          'id' => $current_row->nid,
      );
    }
+
+
+   /**
+    * @function _get_field_group_path($nid)
+    * @param (int) $nid
+    *   Vsite id
+    * @return string
+    *   path to this group
+    *
+    * Check domain, group, then local
+    */
+  function _get_field_group_path($nid, $purl) {
+    $vsite_domain = parent::d6_db_select('purl', 'p')
+      ->condition('id', $nid)
+      ->condition('provider', 'vsite_domain')
+      ->fields('p', array('value'))
+      ->execute()
+      ->fetchColumn();
+
+    if ($vsite_domain) {
+      return $vsite_domain;
+    }
+
+    $override = parent::d6_db_select('spaces_overrides', 'so')
+      ->condition('id', $nid)
+      ->condition('so.object_type', 'variable')
+      ->condition('so.object_id', 'vsite_domain_name')
+      ->fields('so', array('value'))
+      ->execute()
+      ->fetchColumn();
+
+    $override = @unserialize($override);
+    if ($override) {
+      return $override . '/' . $purl;
+    }
+
+    $domain = parent::d6_variable_get('purl_base_domain') . '/';
+
+    return $domain . $purl;
+  }
 
   //some vsites have logos, but no coords.  if they're here and hardcoded, use them.
   function _get_missing_coords(&$row) {

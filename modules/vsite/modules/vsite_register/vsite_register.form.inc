@@ -19,13 +19,11 @@ function vsite_register_form($form, &$state) {
     '#required' => TRUE,
     '#field_prefix' => $base_url . '/',
     '#size' => 35,
-    '#description' => t('Minimum of 3 characters, which must be lowercase. Punctuation is not allowed except for hyphens and underscores. <br />Example: a choice of \'jdoe\' would result in the URL: %site.', array(
-      '%site' => $base_url . '/jdoe'
-    )),
-     '#ajax' => array(
-       'callback' => 'vsite_register_ajax_validation',
-       'wrapper' => 'domain-errors',
-     ),
+    '#description' => t('Minimum of 3 characters, which must be lowercase. Punctuation is not allowed except for hyphens and underscores. <br />Example: a choice of \'jdoe\' would result in the URL: %site.', array('%site' => $base_url . '/jdoe')),
+    '#ajax' => array(
+      'callback' => 'vsite_register_ajax_validation',
+      'wrapper' => 'domain-errors',
+    ),
     '#field_suffix' => theme('vsite_register_form_errors', array('name'=>'domain')),
     '#attached' => array('js' => array(drupal_get_path('module', 'vsite_register') . '/vsite_register.js')),
   );
@@ -270,7 +268,8 @@ function vsite_register_form_submit(&$form, &$state) {
 function vsite_register_form_validate(&$form, &$state) {
   //Ajax validation.
   if ($_GET['q'] == 'system/ajax') {
-    if ($state['triggering_element']['#ajax']['callback'] == 'vsite_register_ajax_validation') {
+    if ($state['triggering_element']['#ajax']['callback'] == 'vsite_register_ajax_validation' ||
+        $state['triggering_element']['#ajax']['callback'] == 'iqss_pinserver_register_ajax_validation') {
       //ajax callback will validate just this element and return a message.
       return;
     } else {

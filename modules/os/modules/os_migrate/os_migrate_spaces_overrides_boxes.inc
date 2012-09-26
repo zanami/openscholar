@@ -181,16 +181,19 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     //add each file
     foreach ($legacy_info as $file => $info) {
       $filepath = $src . $file;
-      $fh = fopen($filepath, 'r');
-      if ($saved = file_save_data($fh, $dest.'/'.$file)) {
-        $shield_info[$saved->filename]['hidden'] = $info['hidden'];
-        $shield_info[$saved->filename]['default'] = $info['default'];
-        $shield_info[$saved->filename]['fid'] = $saved->fid;
-        if ($info['default']) {
-          variable_set('os_shields_shield', $saved->filename);
+      if ($fh = fopen($filepath, 'r')) {
+        if ($saved = file_save_data($fh, $dest.'/'.$file)) {
+          $shield_info[$saved->filename]['hidden'] = $info['hidden'];
+          $shield_info[$saved->filename]['default'] = $info['default'];
+          $shield_info[$saved->filename]['fid'] = $saved->fid;
+          if ($info['default']) {
+            variable_set('os_shields_shield', $saved->filename);
+          }
         }
+        fclose($fh);
+      } else {
+        parent::saveMessage(t('Could not open shield file: @file', array('@file'=>$file)), MigrationBase::MESSAGE_NOTICE);
       }
-      fclose($fh);
     }
 
     //and save the settings
