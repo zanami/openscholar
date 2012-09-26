@@ -54,7 +54,6 @@ class VariableTableMigration extends TableCopyMigration {
       'site_mission', 'site_name', 'site_offline_message',
     );
 
-    $this->whitelist = array_merge($this->whitelist, parent::subfields('comment', parent::d6_list_content_types(), '_'));
     $this->whitelist = array_merge($this->whitelist, parent::subfields('citation_distribute', array('dash_password', 'module_mode', 'service_googlescholar_auto_flag', 'service_repec_archive_code', 'service_repec_inst_name', 'service_repec_maintainer_email', 'service_repec_maintainer_name', 'service_repec_provider_homepage', 'service_repec_provider_institution', 'service_repec_title', 'service_repec_archive_path', 'service_repec_archive_url'), '_'));
     $this->whitelist = array_merge($this->whitelist, parent::subfields('iqss_gking', array('alternate_theme_nodes', 'heading_disabled_terms', 'override_child_terms'), '::'));
     $this->whitelist = array_merge($this->whitelist, parent::subfields('pinserver', array('app_name', 'gpg_dir', 'error_log', 'landing_path', 'pin_url'), '_'));
