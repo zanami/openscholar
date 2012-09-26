@@ -8,15 +8,17 @@
 
 class OsOgVocabMigrate extends DynamicMigration {
 
+
   public function __construct(array $arguments) {
     $this->arguments = $arguments;
-    parent::__construct(MigrateGroup::getInstance('taxonomy'));
+    parent::__construct(MigrateGroup::getInstance('taxonomy',array('node')));
     $this->bundle = $bundle = $arguments['bundle'];
 
     $source_bundle = AbstractNodeOSMigration::get_source_bundle($bundle);
 
     $this->description = t('Populate the OG vocabulary field from a remote Drupal 6 source.');
 
+    // @todo add dependency on node migrations
     $this->dependencies = array('VocabularyOS');
 
     $query = OSMigration::d6_db_select('term_node', 'tn');
@@ -47,6 +49,9 @@ class OsOgVocabMigrate extends DynamicMigration {
 
     //Add field mapping for vocabulary relatinships
     $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)->description('Handled in prepareRow');
+
+    //Migrate using the exising nodes in the system
+    $this->systemOfRecord = Migration::DESTINATION;
   }
 
 

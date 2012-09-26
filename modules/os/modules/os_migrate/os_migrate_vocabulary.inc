@@ -22,7 +22,7 @@ class VocabularyOSMigration extends TableCopyMigration {
 
     $table = 'vocabulary';
     $dest_table = 'taxonomy_vocabulary';
-    $group = MigrateGroup::getInstance('taxonomy');
+    $group = MigrateGroup::getInstance('taxonomy',array('node'));
 
     //Create a one-to-one migrate from D6 vocabulary to D7 taxonomy_vocabulary
     parent::__construct($table, $key_schema, $group, $dest_table);
