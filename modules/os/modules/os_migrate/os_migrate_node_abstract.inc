@@ -377,7 +377,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
    * Map bundle names from existing to new
    */
   public static function get_source_bundle($bundle){
-    if (in_array($bundle, self::$source_bundle_map)) {
+    if (array_key_exists($bundle, self::$source_bundle_map)) {
       return self::$source_bundle_map[$bundle];
     }
 
