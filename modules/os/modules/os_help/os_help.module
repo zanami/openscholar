@@ -5,7 +5,6 @@
  * Implements hook_help().
  */
 function os_help_help($path, $arg) {
-  /*
   switch ($path) {
     case 'cp/build':
     case 'cp/build/features':
@@ -53,29 +52,26 @@ function os_help_help($path, $arg) {
     	'topic' => $topic
     ));
   }
-  */
 }
 
 /**
- * Implements hook_form_alter().
+ * Implements hook_form_FORM_ID_form_alter() for spaces_features_form
  */
-function os_help_form_alter(&$form, $form_state, $form_id) {
-  // _os_help_traverse_form($form, $form_id);
-  /* 2012-09-25 this code from OS2 looks broken. commenting out until qa
-  if (isset($form['#description'])) {
-    $form['#description'] =  _os_help_get_theme_variables('form', $form_id) . ' ' . $form['#description'];
-  }
-  else {
-    $form['#description'] = _os_help_get_theme_variables('form', $form_id);
-  }
-  */
+function os_help_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
+  _os_help_traverse_form($form, $form_id);
+}
+
+/**
+ * Implements hook_form_FORM_ID_form_alter() for cp_layout_full_form
+ */
+function os_help_form_cp_layout_full_form_alter(&$form, &$form_state, $form_id) {
+  _os_help_traverse_form($form, $form_id);
 }
 
 /**
  * Recursively traverses a form object as an array and adds help links.
  */
 function _os_help_traverse_form(&$element, $form_id) {
-  /*
   if (is_object($element)) {
     $element = (array)$element;
   }
@@ -83,7 +79,6 @@ function _os_help_traverse_form(&$element, $form_id) {
     _os_help_traverse_form($element[$child], $form_id . ':' . $child);
   }
   _os_help_attach_help_link($element, $form_id);
-  */
 }
 
 /**
@@ -93,10 +88,12 @@ function _os_help_traverse_form(&$element, $form_id) {
  * @see os_help_form_alter().
  */
 function _os_help_attach_help_link(&$element, $form_id) {
-  /*
   // Ignores elements without a type value or with an excluded type.
-  $ignore = array('button', 'image_button', 'submit', 'markup', 'token', 'hidden', 'form', 'value', 'weight');
-  if (!isset($element['#type']) || in_array($element['#type'], $ignore)) {
+  $ignore       = array('button', 'image_button', 'submit', 'markup', 'token', 'hidden', 'form', 'value', 'weight');
+  $is_ignored   = (bool) (!isset($element['#type']) || in_array($element['#type'], $ignore));
+  $except       = array('spaces_features_form');
+  $is_exception = (bool) (in_array($form_id, $except));
+  if ($is_ignored && !$is_exception) {
     return;
   }
 
@@ -112,39 +109,41 @@ function _os_help_attach_help_link(&$element, $form_id) {
     drupal_add_css(drupal_get_path('module', 'os_help') . '/os_help.css');
     $link = preg_replace('/class="(.+?)"/', 'class="\1 os_help-nofloat"', $link);
   }
+  if ($is_exception) {
+    $element['#prefix'] = $link . '<br/>';
+    return;
+  }
   $element['#description'] = isset($element['#description']) ? $link . ' ' . $element['#description'] : $link;
-  */
 }
 
 /**
  * Returns theme variables for a given OS Help topic ID, or FALSE if none found.
  */
 function _os_help_get_theme_variables($id) {
-  /*
   static $theme_variables = array(
-    'spaces_features_form:spaces_features:scholar_announcements' => array('module' => 'os_help', 'topic' => 'Announcement-feature'),
-    'spaces_features_form:spaces_features:scholar_biocv' => array('module' => 'os_help', 'topic' => 'Bio---CV-feature'),
-    'spaces_features_form:spaces_features:scholar_blog' => array('module' => 'os_help', 'topic' => 'Blog-feature'),
-    'spaces_features_form:spaces_features:scholar_book' => array('module' => 'os_help', 'topic' => 'Booklet-feature'),
-    'spaces_features_form:spaces_features:scholar_classes' => array('module' => 'os_help', 'topic' => 'Class-feature'),
-    'spaces_features_form:spaces_features:scholar_pages' => array('module' => 'os_help', 'topic' => 'Pages-feature'),
-    'spaces_features_form:spaces_features:scholar_events' => array('module' => 'os_help', 'topic' => 'Events-feature'),
-    'spaces_features_form:spaces_features:scholar_dvn' => array('module' => 'os_help', 'topic' => 'Dataverse-feature'),
-    'spaces_features_form:spaces_features:scholar_feeds' => array('module' => 'os_help', 'topic' => 'Feed-feature'),
-    'spaces_features_form:spaces_features:scholar_front' => array('module' => 'os_help', 'topic' => 'Front-feature'),
-    'spaces_features_form:spaces_features:scholar_image_gallery' => array('module' => 'os_help', 'topic' => 'Image-Gallery-feature'),
-    'spaces_features_form:spaces_features:scholar_links' => array('module' => 'os_help', 'topic' => 'Links-feature'),
-    'spaces_features_form:spaces_features:scholar_profiles' => array('module' => 'os_help', 'topic' => 'Profiles-feature'),
-    'spaces_features_form:spaces_features:scholar_publications' => array('module' => 'os_help', 'topic' => 'Publications-feature'),
-    'spaces_features_form:spaces_features:scholar_presentations' => array('module' => 'os_help', 'topic' => 'Presentations-feature'),
-    'spaces_features_form:spaces_features:scholar_reader' => array('module' => 'os_help', 'topic' => 'Reader-feature'),
-    'spaces_features_form:spaces_features:scholar_software' => array('module' => 'os_help', 'topic' => 'Software-feature'),
-    'vsite_layout_settings_form:page_type' => array('module' => 'os_help', 'topic' => 'Customizing-Your-Site-Layout'),
+    'spaces_features_form' => array('module' => 'os_help', 'topic' => 'Features'),
+    'spaces_features_form:spaces_features:os_announcements' => array('module' => 'os_help', 'topic' => 'Announcement-feature'),
+    'spaces_features_form:spaces_features:os_biocv' => array('module' => 'os_help', 'topic' => 'Bio---CV-feature'),
+    'spaces_features_form:spaces_features:os_blog' => array('module' => 'os_help', 'topic' => 'Blog-feature'),
+    'spaces_features_form:spaces_features:os_booklets' => array('module' => 'os_help', 'topic' => 'Booklet-feature'),
+    'spaces_features_form:spaces_features:os_classes' => array('module' => 'os_help', 'topic' => 'Class-feature'),
+    'spaces_features_form:spaces_features:os_pages' => array('module' => 'os_help', 'topic' => 'Pages-feature'),
+    'spaces_features_form:spaces_features:os_events' => array('module' => 'os_help', 'topic' => 'Events-feature'),
+    'spaces_features_form:spaces_features:os_dataverse' => array('module' => 'os_help', 'topic' => 'Dataverse-feature'),
+    'spaces_features_form:spaces_features:os_feeds' => array('module' => 'os_help', 'topic' => 'Feed-feature'),
+    'spaces_features_form:spaces_features:os_front' => array('module' => 'os_help', 'topic' => 'Front-feature'),
+    'spaces_features_form:spaces_features:os_image_gallery' => array('module' => 'os_help', 'topic' => 'Image-Gallery-feature'),
+    'spaces_features_form:spaces_features:os_links' => array('module' => 'os_help', 'topic' => 'Links-feature'),
+    'spaces_features_form:spaces_features:os_profiles' => array('module' => 'os_help', 'topic' => 'Profiles-feature'),
+    'spaces_features_form:spaces_features:os_publications' => array('module' => 'os_help', 'topic' => 'Publications-feature'),
+    'spaces_features_form:spaces_features:os_presentations' => array('module' => 'os_help', 'topic' => 'Presentations-feature'),
+    'spaces_features_form:spaces_features:os_reader' => array('module' => 'os_help', 'topic' => 'Reader-feature'),
+    'spaces_features_form:spaces_features:os_software' => array('module' => 'os_help', 'topic' => 'Software-feature'),
+    'cp_layout_full_form:context_selection' => array('module' => 'os_help', 'topic' => 'Customizing-Your-Site-Layout'),
   );
   if (!isset($theme_variables[$id])) {
     return FALSE;
   }
 
   return $theme_variables[$id];
-  */
 }
