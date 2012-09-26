@@ -78,9 +78,6 @@ function pinserver_check_user(){
   // First, parse and validate the PIN token.
   $token_data = pinserver_check_token();
 
-error_log(__FUNCTION__); 
-error_log($token_data['user_id']);
- 
   //Uncomment to fake auth locally
   //unset($token_data['errors']);
 
@@ -90,11 +87,10 @@ error_log($token_data['user_id']);
     drupal_goto("pinserver/error/token/$errors");
     exit();
   }
+
   //if successful pin authentication, place the encrypted harvard uid into a session array
   $_SESSION['pinserver']['huid'] = $token_data['user_id'];
-  //add time value to session array
   $_SESSION['pinserver']['reg_time'] = time();
-  
   
   //hook for dynamic landing path, if no hooks fired, then use static landing path
   $path = module_invoke_all('pinserver_landing_path');
@@ -252,7 +248,7 @@ function pinserver_check_token(){
     2 => array('pipe', 'w') // stderr
   );
 
-   $process = proc_open("gpg --homedir '".variable_get('pinserver_gpg_dir', dirname(__FILE__) . '/.gnupg')."' --verify", $descriptorspec, $pipes);
+  $process = proc_open("gpg --homedir '".variable_get('pinserver_gpg_dir')."' --verify", $descriptorspec, $pipes);
    
   if (!is_resource($process)) {
     $values['errors'][] = 'signature-gpg';
@@ -276,13 +272,16 @@ function pinserver_check_token(){
    * Save errors to file if set in configuration options and file exists.
    * File should be placed below root, recommended only for development/testing.
    */
-  if(variable_get('pinserver_error_log','/tmp/gpgerror') !== ''){
-    $fp = fopen(variable_get('pinserver_error_log','/tmp/gpgerror'), 'w');
-    fwrite($fp, $stderr);
+  if(variable_get('pinserver_error_logging_enabled')) {
+    $fp = fopen(variable_get('pinserver_error_log'), 'w');
+    if(!fwrite($fp, $stderr)) {
+      // Not too big a deal, but mention there was a problem.
+      error_log('Error writing GPG output to ' . variable_get('pinserver_error_log'));
+    }
     fclose($fp);
   }
   
-  if(strlen($stderr) && strstr($stderr,"fatal") && variable_get('pinserver_error_email','') !== ''){
+  if(strlen($stderr) && strstr($stderr,"fatal") && variable_get('pinserver_error_email') !== ''){
     mail(
       variable_get('pinserver_error_email',''),
       mime_header_encode("Pinserver Error"),
@@ -312,14 +311,14 @@ function pinserver_check_token(){
     $values['errors'][] = 'name';
   }
   
-/*  if (variable_get('pinserver_ip_validation', 1) == 1) {
+  if (variable_get('pinserver_ip_validation', 1) == 1) {
     // Verify current user's IP address.
     error_log('IPs: [' . $values['ip'] . '] [' . $_SERVER['REMOTE_ADDR'] . ']');
     if ( $values['ip'] !== $_SERVER['REMOTE_ADDR'] ) {
       $values['errors'][] = 'ip-mismatch';
     }
   }
-*/  
+  
   // Verify time parameter is not longer than 2 minutes old.
   // The PHP abs() function converts integers to absolute values (unsigned).
   // Subtract timestamp value sent by PIN server from the current time (on web server)
@@ -334,44 +333,49 @@ function pinserver_check_token(){
 /**
  * Fucntion to check system settingx
  */
-function pinserver_check_system_settings(){
+function pinserver_check_system_settings() {
   
   $settings = array(
-  'PIN_URL' => variable_get('pinserver_pin_url',''),
-  'PIN_LANDING_PATH' =>  variable_get('pinserver_landing_path',''),
-  'PIN_AUTH_STR' => variable_get('pinserver_auth_str', ''),
-  'GPG_DIR' => variable_get('pinserver_gpg_dir', dirname(__FILE__) . '/.gnupg'),
-  'GPG_BIN' => variable_get('pinserver_gpg_bin','/usr/bin/gpg'),
+    'PIN_URL'          => variable_get('pinserver_pin_url'),
+    'PIN_LANDING_PATH' => variable_get('pinserver_landing_path'),
+    'PIN_AUTH_STR'     => variable_get('pinserver_auth_str'),
+    'GPG_DIR'          => variable_get('pinserver_gpg_dir'),
+    'GPG_BIN'          => variable_get('pinserver_gpg_bin'),
+    'LOGGING'          => variable_get('pinserver_error_logging_enabled'),
   );
 
   $info = array(
-  'value' => true,
-  'message' => '',
+    'value' => true,
+    'message' => '',
   );
  
   $missing_settings = array();
  
   //check to see if all settings are set
-  foreach ($settings as $key => $setting){
+  foreach ($settings as $key => $setting) {
     if (empty($setting)){
       $missing_settings[] = strtolower($key);
     }
   }
-  if (count($missing_settings)){
-    $message = 'ALERT: scholar pinserver is missing system settings: ';
-    foreach($missing_settings as $setting){
+  if (count($missing_settings)) {
+    $message = 'Pinserver is missing required system settings: ';
+    foreach($missing_settings as $setting) {
       $message .= $setting . ' ';
     }
     $info['value'] = false;
     $info['message'] = $message . '. ';
   }
 
-  if (!is_dir(variable_get('pinserver_gpg_dir', dirname(__FILE__) . '/.gnupg'))){
-    $message = 'The system path for gpg_dir directory is invalid or does not exist.';
+  if (!is_dir(variable_get('pinserver_gpg_dir'))) {
     $info['value'] = false;
-    $info['message'] .= $message;
+    $info['message'] .= 'The system path for gpg_dir directory is invalid or does not exist. ';
   }
- 
+
+  if (!is_file(variable_get('pinserver_gpg_bin')) || !is_executable(variable_get('pinserver_gpg_bin'))) {
+    $info['value'] = false;
+    $info['message'] .= 'The gpg_bin file does not exist or is not executable. ';
+  }
+
   return $info;
 }
 
