@@ -32,6 +32,11 @@
 }
 
 
+.node-type-book .field-name-body .field-items {
+     display: inline;
+}
+
+
 /*
  * Field types (Core)
  */
