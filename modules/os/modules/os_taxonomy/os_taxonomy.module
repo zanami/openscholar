@@ -170,7 +170,7 @@ function theme_volcabulary_term_list($variables) {
 
   foreach($items as $tid => $item) {
     // Skip on this if we don't dispaly empty childs term.
-    if (!$options['show_empty_terms'] && !$item['tagged_items'] && !$item['child_number']) {
+    if (!$options['show_empty_terms'] && !$item['tagged_items'] && empty($item['child_number'])) {
       continue;
     }
 
