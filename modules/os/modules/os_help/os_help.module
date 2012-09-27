@@ -17,7 +17,7 @@ function os_help_help($path, $arg) {
     case 'cp/appearance/theme':
       $topic = 'Theme-Selection';
       break;
-    case 'cp/build/menus':
+    case 'cp/build/menu':
       $topic = 'Menus';
       break;
     case 'cp/build/taxonomy':
@@ -49,7 +49,7 @@ function os_help_help($path, $arg) {
   if (isset($topic)) {
     return theme('advanced_help_topic', array(
     	'module' => 'os_help',
-    	'topic' => $topic
+    	'topic' => $topic,
     ));
   }
 }
