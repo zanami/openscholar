@@ -607,7 +607,7 @@ function vsite_attach_fields_to_group($bundle){
         'display' => array(
           'url_cutoff' => '80'
         ),
-        'enable_tokens' => 0,
+        'enable_tokens' => 1,
         'rel_remove' => 'default',
         'title' => 'none',
         'title_maxlength' => '128',
