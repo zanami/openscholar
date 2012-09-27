@@ -60,6 +60,11 @@ function _comment_sources_sources() {
  * Get a list of the currently enabled comment sources
  */
 function comment_sources_enabled_sources() {
+  $enabled_sources = &drupal_static(__FUNCTION__);
+  if(!is_null($enabled_sources)){
+    return $enabled_sources;
+  }
+
   $sources = _comment_sources_sources();
   $enabled_sources = array();
 
@@ -187,7 +192,20 @@ function comment_sources_should_display_comments($node, $source) {
  * Does this comment source have any comments for this node?
  */
 function comment_sources_has_comments($node, $source) {
-  $result = FALSE;
+  $result = &drupal_static(__FUNCTION__,array());
+  if(!isset($result[$source])){
+    $result[$source] = array();
+  }
+
+  if(!isset($node->nid)){
+    return false;
+  }
+
+  if(isset($result[$source][$node->nid])){
+    return $result[$source][$node->nid];
+  }
+
+  $result[$source][$node->nid] = FALSE;
   if ($node && $node->nid) {
     $record = db_select('comment_sources_comments', 'c')
       ->condition('c.nid', $node->nid)
@@ -195,10 +213,10 @@ function comment_sources_has_comments($node, $source) {
       ->fields('c', array('has_comments'))
       ->execute();
     if ($record->rowCount() == 1) {
-      $result = ($record->fetchField(0) == 1);
+      $result[$source][$node->nid] = ($record->fetchField(0) == 1);
     }
   }
-  return $result;
+  return $result[$source][$node->nid];
 }
 
 /**
@@ -420,6 +438,11 @@ function _comment_sources_load_fb_social($variant = '') {
  * Retrieve the Drupal node types comment settings as an array of node types using Drupal core comments
  */
 function _comment_sources_load_comment() {
+  $result = &drupal_static(__FUNCTION__);
+  if(!is_null($result)){
+    return $result;
+  }
+
   $node_types = node_type_get_types();
   $result = array();
   foreach ($node_types as $node_type) {
