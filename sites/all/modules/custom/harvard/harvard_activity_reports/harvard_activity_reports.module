@@ -45,6 +45,19 @@ function harvard_activity_reports_menu() {
 }// end function
 
 /**
+ * Function to count the length of a string, we're using it a few times, so easier to
+ * just call a function
+ */
+
+function harvard_activity_reports_count_hash_string($uid) {
+  if(strlen($uid)!=32){
+	return FALSE;
+  }else{
+	return TRUE;
+  }
+}
+
+/**
  *
  * Funciton to query the iqss_pinserver_register table for a user id and returns the id
  * accepts a hashed HUID
@@ -56,17 +69,22 @@ function harvard_activity_reports_query_user_by_id($id)  {
 	if(harvard_activity_reports_check_module('iqss_pinserver_register')==TRUE) {
 		// make sure it's not empty
 		if($hashID != "") {
-			// query the DB and check if the user exists for this hash
-			$query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE hashID = '%s'"; // setup the query
-			$results = db_query($query, $hashID); // perform the query
-			// make sure there are results
-			if($results->num_rows>0) {
+			// make sure it's 32 characters in length
+			if(harvard_activity_reports_count_hash_string($hashID)==FALSE) {
+			  $uid == FALSE;
+			}else{
+			  // query the DB and check if the user exists for this hash
+			  $query = "SELECT uid, huid FROM {iqss_pinserver_register} WHERE hashID = '%s'"; // setup the query
+			  $results = db_query($query, $hashID); // perform the query
+			  // make sure there are results
+			  if($results->num_rows>0) {
 				$row = db_fetch_object($results); // grab the resulting uid
 				$uid = $row->uid; // push it into a variable
 				$huID = $row->huid;
-			}else {
+			  }else {
 				$uid = FALSE;
-			}//
+			  }//
+			}
 		}else {
 				$uid = FALSE;
 		}//
@@ -230,7 +248,12 @@ function harvard_activity_reports_query_user() {
 						$nid =  harvard_activity_reports_query_vsite_id($uid);
 						// grab their hashedID and insert them into the pin table
 						// now update the iqss_pinserver_registration table to reflect the new hashed id
-						$newHashID = harvard_activity_reports_update_huid_hash($uid, $hashID);
+						// First check to make sure the hashid is the appropriate length
+						if(harvard_activity_reports_count_hash_string($hashID)!=FALSE) {
+						  $newHashID = harvard_activity_reports_update_huid_hash($uid, $hashID);
+						}else{
+						  $nid = FALSE;
+						}
 					}else{
 						$nid = FALSE;
 					}
@@ -565,7 +588,19 @@ function harvard_activity_reports_page() {
 		// call the xml creation function
 		$xmlReturn = harvard_activity_reports_create_xml($biblioDataArray, $huID, $status,$nid);
 	}elseif($nid==FALSE){ // huid not found
-		$status = "unknown";
+		// Check for the ID again, since we're returning false, check to make sure
+		// there isn't an issue with ID being not hashed/etc/ as this should throw an error status
+		if(isset($_GET['id'])) {
+		  // Count the length of the ha
+		  if(harvard_activity_reports_count_hash_string($_GET['id'])==FALSE) {
+		    $status = 'error';
+		  }else {
+		  	$status = 'unknown';
+		  }
+		}else {
+		  // Ok the issue is infact an unknown user
+		  $status = 'unknown';
+		}
 		$huID = harvard_activity_reports_get_url_id();
 		//$biblioDataArray['biblio_error_message'] = "No data found - please try again with a site url";
 		$biblioDataArray = '';
