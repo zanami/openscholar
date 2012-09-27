@@ -2,21 +2,6 @@
 
 include_once(drupal_get_path('module', 'vsite_register') . '/vsite_register.form.inc');
 
-/**
- * Implementation of hook_menu()
- */
-function iqss_pinserver_register_menu(){
-  $items = array();
-
-  $items['iqss-pinserver-register/huid_js'] = array(
-    'title' => 'Create your web site',
-    'page callback' => 'iqss_pinserver_register_huid_js',
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-  );
-  
-  return $items;
-}
 
 /**
  * Implementation of hook_menu_alter()
@@ -108,11 +93,8 @@ function iqss_pinserver_register_submit($form, $state){
 
       db_update('users')
         ->fields(array('login' => $user->login))
-        ->condition('uid', $user->uid, '==')
+        ->condition('uid', $user->uid, '=')
         ->execute();
-
-      // Regenerate the session ID to prevent against session fixation attacks.
-      sess_regenerate();
     }
   }
   else {
@@ -156,57 +138,6 @@ function iqss_pinserver_register_ajax_validation(&$form, &$state) {
   )));
 }
 
-
-/**
- * Implementation of hook_mail_alter()
- */
-function iqss_pinserver_register_mail_alter(&$message){
-
-  if ($message['id'] == 'vsite_register_vsite_register_notify') {
-
-    //altering the contents of the welcome email
-    $params = iqss_pinserver_register_notify($message['user'], $message['vsite']);
-    $message['subject'] = $params['subject'];
-    $message['body'] = $params['body'];
-  }
-}
-
-function iqss_pinserver_register_notify($user, $vsite, $alter = TRUE) {
-  global $language, $base_url;
-
-
-  $params = array();
-  $params['from'] = variable_get('site_mail', ini_get('sendmail_from'));
-
-  $params['subject'] = t("Your Scholars' Web Site has been created", array(
-			'!site_name' => variable_get('site_name', 'OpenScholar')
-  ));
-
-  $scholar_site_url =  url($vsite->purl, array('absolute' => TRUE));
-  $timestamp = time();
-
-  $msg_variables = array(
-    '!username' => $user->name,
-    '!site' => variable_get('site_name', 'OpenScholar'),
-    '!scholar_site_url' => $scholar_site_url,
-    '!login_url' => url('user', array('absolute' => TRUE)),
-    '!reset_url' => url('user/password', array('absolute' => TRUE)),
-    '!uri' => $base_url,
-    '!uri_brief' => preg_replace('!^https?://!', '', $base_url),
-    '!mailto' => $user->mail,
-    '!date' => format_date(time(), 'medium', '', NULL, $message['language']->language),
-    '!scholar_edit_url' => url("user/{$user->uid}/edit", array('absolute' => TRUE)),
-    '!help_about' =>  url('help/vsitehelp/Scholar-Web-Sites-Project-Documentation', array('absolute' => TRUE)),
-    '!help_getting_started' => url( 'help/vsitehelp/Getting-Started', array('absolute' => TRUE)),
-    '!help_features' => url('help/vsitehelp/Features', array('absolute' => TRUE)),
-    '!help_settings' => url('help/vsitehelp/Site-Settings', array('absolute' => TRUE)),
-  );
-
-  $params['body'] = t("Hi !username,\n\nYour new web site has been created! Your web site url is: !scholar_site_url\n\nYour username is: !username\n\nTo begin developing your site, go to your web site. If you are not already logged in, you can log in by clicking on the \"Login\" button.\n\nOnce you are logged in, click on the link titled \"Not sure what to do now? Need help getting started?\" on your site's front page. You'll see some useful links to help you get started. Think of this as a checklist of things to do.\n\nMake note of the menu on the upper right hand side of the screen. Whenever you are logged in and viewing your site, this menu will appear. The \"Control Panel\" link  within this menu will take you to your site's Control Panel where all of your site administration tasks can be accomplished, such as enabling features and selecting your site's theme.\n\nHere are some useful links:\n\nLog into your account: !login_url\nReset your password: !reset_url\nEdit your account information:  !scholar_edit_url\nRead the help documentation: !help_about\n\nWe hope you will enjoy your new web site.\n\nSincerely,\nThe !site Team", $msg_variables);
-
-  return $params;
-}
-
 /**
  * Checks if user has authenticated through the pinserver
  * before rendering the signup form
@@ -214,48 +145,36 @@ function iqss_pinserver_register_notify($user, $vsite, $alter = TRUE) {
 function iqss_pinserver_register_form_access(){
   global $user;
 
-  include_once(drupal_get_path('module', 'vsite_register')) . '/vsite_register.form.inc';
-
-  //system check logic
-  $settings_info = pinserver_check_system_settings();
-  if($settings_info['value'] == false){
-    error_log($settings_info['message']);
-    $support_mail = strlen(variable_get('pinserver_support_contact')) ? variable_get('pinserver_support_contact') : 'scholar_dev@help.hmdc.harvard.edu';
-    drupal_set_message(t("New web sites are not available at this time but should be available shortly.  Please check back within the hour or email us at:  !support_mail", array('!support_mail' => $support_mail)));
-    drupal_goto();
-  }
+//  include_once(drupal_get_path('module', 'vsite_register')) . '/vsite_register.form.inc';
 
   /*** Check what to do before loading vsite_register form ***/
-  //user already owns a site or has create vsite permissions - no need to send to pinserver
-  if(vsite_get_vsite_by_owner($user->uid) || user_access('create vsite content on behalf')) {
-    if (!vsite_vsite_exists_access()){
-      return drupal_goto(_iqss_pinserver_register_get_redirect(vsite_get_vsite_by_owner($user->uid)));  //redirect user away from the form
+
+  // User already owns a site or has create vsite permissions - no need to send to pinserver.
+  if ($vsites = vsite_get_vsite_by_owner($user->uid) || user_access('create vsite content on behalf')) {
+    if (!vsite_vsite_exists_access($vsites)) {
+      return drupal_goto(_iqss_pinserver_register_get_redirect($vsites));  //redirect user away from the form
     }
     else {
       return drupal_get_form('vsite_register_form');
     }
   }
 
-  //maybe user is site owner,  but has not logged in locally or via the pinserver, so send to pinserver
   if (!pinserver_check_status()) {
+    // Maybe user is site owner,  but has not logged in locally or via the pinserver, so send to pinserver.
     return pinserver_redirect();
   }
-
-  //neither use cases above apply and the user has successfully logged in through the pinserver
-  if (pinserver_check_status()) {
+  else {
+    // Neither use cases above apply and the user has successfully logged in through the pinserver.
     if ($uid = iqss_pinserver_register_check_row()) {
-      //user has just logged in via pinsever, determine if user already has a site
+      // User has just logged in via pinsever, determine if user already has a site.
       if($vsites = vsite_get_vsite_by_owner($uid)) {
 
-        global $user;
         $user = user_load(array('uid' => $uid));
 	$user->login = time();
 	db_update('users')
 	  ->fields(array('login' => $user->login))
-	  ->condition('uid', $user->uid, '==')
+	  ->condition('uid', $user->uid, '=')
 	  ->execute();
-	// Regenerate the session ID to prevent against session fixation attacks.
-	sess_regenerate();
       }
     }
     return drupal_get_form('vsite_register_form');
@@ -291,6 +210,7 @@ function iqss_pinserver_register_check_row($huid = NULL){
   if ($id){
     return db_query("SELECT uid FROM {iqss_pinserver_register} WHERE huid = :huid", array(':huid' => $id))->fetchField();
   }
+
   return false;
 }
 
@@ -350,8 +270,6 @@ function _iqss_pinserver_register_huid_field(&$form){
       'wrapper' => 'huid-errors',
     ),
     '#field_suffix' => theme('vsite_register_form_errors', array('name'=>'huid')),
-//    '#prefix' => '<div id="huid-field">',
-//    '#suffix' => '<div id="huid-suffix"></div></div>',
   );
 
 }
@@ -360,23 +278,23 @@ function _iqss_pinserver_register_huid_field(&$form){
  * Private function - Provides redirect path and message for certain regstration form access conditions
  * @param  $vsites array created from vsite_get_vsite_by_owner()
  */
-function _iqss_pinserver_register_get_redirect($vsites = array()){
-  switch (count($vsites)){
+function _iqss_pinserver_register_get_redirect($vsites = array()) {
+  switch (count($vsites)) {
     case 0:
       //This should not happen unless $vsites was not passed properly or is empty array
       error_log(__FUNCTION__ . ' was called with an empty array as the first argument');
       return null;
-      break;
+    break;
 
     case 1:
       global $base_url;
       drupal_set_message(t('You already have a registered web site.' . l(' Go there now.', $vsites[0]->get_absolute_url())));
       return $base_url;
-      break;
+    break;
 
     default:
       drupal_set_message(t('You have already registered the maximum number of web sites.' ));
       return 'user';
-      break;
+    break;
   }
 }
