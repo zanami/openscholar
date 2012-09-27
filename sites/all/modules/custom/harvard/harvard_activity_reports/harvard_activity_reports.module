@@ -418,16 +418,10 @@ function harvard_activity_reports_create_xml($nodeLoad, $huID, $status,$nid) {
     			$currentPub->appendChild($domtree->createElement('linkToArticle',$value['biblio_url']));
     			// biblio citation information
     			$currentPub->appendChild($domtree->createElement('yearOfPublication',$value['biblio_year']));
-    			// $currentPub->appendChild($domtree->createElement('biblio_volume',$value['biblio_volume']));
-    			// $currentPub->appendChild($domtree->createElement('biblio_issue',$value['biblio_issue']));
     		}// end foreach
     		break;
     	case "error":
-    		$xmlRoot->appendChild($domtree->createElement('errorMessage',$xml['biblio_error_message']));
-    		break;
     	case "unknown":
-    		$xmlRoot->appendChild($domtree->createElement('errorMessage',$xml['biblio_error_message']));
-    		break;
     }// end case switch
     $xmlReturn = $domtree->saveXML();
     return $xmlReturn;
