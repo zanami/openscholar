@@ -49,7 +49,11 @@ function _comment_sources_sources() {
     )
   );
   $other_sources = module_invoke_all("comment_sources");
-  return array_merge_recursive($base_sources, $other_sources);
+
+  $sources = array_merge_recursive($base_sources, $other_sources);
+  drupal_alter('comment_sources', $sources);
+
+  return;
 }
 
 /**
@@ -438,9 +442,20 @@ function comment_sources_save($available_sources, $selected_sources) {
     $selections[$value][$key] = $key;
   }
 
+  //Source Settings
+  $source_settings = _comment_sources_sources();
+
   foreach ($available_sources as $key => $value) {
     preg_match('/:(.*$)/', $key, $matches);
-    $function_name = "_comment_sources_save_" . preg_replace('/:.*$/', '', $key);
+    $source = preg_replace('/:.*$/', '', $key);
+
+    //Determine the correct save function
+    if(isset($source_settings[$source]['save_function'])){
+      $function_name = $source_settings[$source]['save_function'];
+    }else{
+      $function_name = "_comment_sources_save_" . $source;
+    }
+
     if (function_exists($function_name)) {
       $params = array(isset($selections[$key]) ? $selections[$key] : array());
       if (count($matches) > 1) { // If we need to add a preset
