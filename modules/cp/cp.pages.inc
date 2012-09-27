@@ -64,13 +64,16 @@ function cp_feature_customize_form($form, $form_state, $feature) {
     $form['#after_build'][] = '_cp_feature_customize_remove_no_form';
   }
 
+  //Store the current feature in the form data
+  $form['#feature'] = $feature;
+
   return $form;
 }
 
 function _cp_feature_customize_remove_no_form($element, $form_state) {
   $keys = array('no_form', 'ok', 'form_build_id', 'form_token', 'form_id');
   $children = element_children($element);
-  $new = array_diff($keys, $children);
+  $new = array_diff($children, $keys);
   if (count($new) != 0) {
     unset($element['no_form'], $element['ok']);
   }

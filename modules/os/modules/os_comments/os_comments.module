@@ -48,3 +48,70 @@ function os_comments_form_cp_feature_customize_form_alter(&$form, &$form_state, 
     $form['#submit'][] = 'comment_sources_save_admin_form';
   }
 }
+
+/**
+ * Implement hook comment_sources alter
+ **/
+function os_comments_comment_sources_alter(&$sources){
+  //Use alternate save functions if we have vsite enabled
+  if(module_exists('vsite')){
+    foreach ($sources as $source => $info){
+      $vsite_save_function = "os_comments_{$source}_save_vsite";
+      if(function_exists($vsite_save_function)){
+        $sources[$source]['save_function'] = $vsite_save_function;
+      }
+    }
+  }
+}
+
+/**
+ * Save functions for sources in multi-tenant
+ */
+
+/**
+ * Save the Disqus node types comment settings
+ */
+function os_comments_disqus_save_vsite($comment_node_types) {
+  $vsite = vsite_get_vsite();
+  if(!$vsite){
+    return false;
+  }
+
+  $vsite->controllers->variable->set('disqus_nodetypes', $comment_node_types);
+}
+
+/**
+ * Save the Facebook node type comments settings
+ */
+function os_comments_fb_social_save_vsite($comment_node_types, $preset_name = '') {
+  $vsite = vsite_get_vsite();
+  if(!$vsite){
+    return false;
+  }
+
+  // @todo SAVE Preset for just vsite
+  if ($preset_name && function_exists('fb_social_preset_load')) {
+    $preset = fb_social_preset_load($preset_name);
+    $preset->settings['node_types']['types'] = $comment_node_types;
+    ctools_export_crud_save($preset->table, $preset);
+  }
+}
+
+/**
+ * Save the Drupal comments node types comment settings
+ * Note: We do not have an option to set the default comment to be 'hidden'
+ */
+function os_comments_comment_save_vsite($comment_node_types) {
+  $vsite = vsite_get_vsite();
+  if(!$vsite){
+    return false;
+  }
+
+  $node_types = node_type_get_types();
+  foreach ($node_types as $node_type) {
+    $vsite->controllers->variable->set(
+	    "comment_" . $node_type->type,
+	    isset($comment_node_types[$node_type->type]) ? COMMENT_NODE_OPEN : COMMENT_NODE_HIDDEN
+    );
+  }
+}
