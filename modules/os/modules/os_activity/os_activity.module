@@ -79,6 +79,9 @@ function os_acitvity_register_message(Message $message = NULL) {
     return;
   }
 
+  // Adding css for the os activity view.
+  drupal_add_css(drupal_get_path('module', 'os_activity') . '/css/os_activity.css');
+
   // We don't use a wrapper for performance reasons.
   $gid = $message->field_group[LANGUAGE_NONE][0]['target_id'];
   if (empty($cache[$gid])) {
