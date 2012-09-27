@@ -68,15 +68,11 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
   // Is this a group node
   if (og_is_group_type($entity_type, $bundle) && isset($entity->purl)) {
     // When a site is first created it does not have a domain provider, use the
-    // path provider that is attached to the entity, we can't use the standard
-    // purl modifier here because the entry has not been made in the table yet
+    // path provider that is attached to the entity, the site-path token will fill-in the base domain
     return array(
       0 => array(
         'title' => '',
-        'url' => url($entity->purl['value'], array(
-          'base_url' => variable_get('purl_base_domain', $base_url),
-          'absolute' => true
-        ))
+        'url' => '[site:url]'.$entity->purl['value']
       )
     );
   }
