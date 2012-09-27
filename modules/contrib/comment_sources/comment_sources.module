@@ -53,7 +53,7 @@ function _comment_sources_sources() {
   $sources = array_merge_recursive($base_sources, $other_sources);
   drupal_alter('comment_sources', $sources);
 
-  return;
+  return $sources;
 }
 
 /**
