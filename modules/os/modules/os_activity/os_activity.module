@@ -32,7 +32,7 @@ function os_activity_node_update($node) {
  * Register a message when it is viewed.
  */
 function os_activity_message_view($message, $view_mode, $langcode) {
-  os_acitvity_register_message($message);
+  os_activity_register_message($message);
 }
 
 /**
@@ -54,7 +54,7 @@ function os_activity_views_pre_render(&$view) {
 
   $messages = message_load_multiple($mids);
   foreach ($messages as $message) {
-    os_acitvity_register_message($message);
+    os_activity_register_message($message);
   }
 }
 
@@ -68,7 +68,7 @@ function os_activity_views_pre_render(&$view) {
  *   If $mid is empty, function will return the registered message
  *   IDS.
  */
-function os_acitvity_register_message(Message $message = NULL) {
+function os_activity_register_message(Message $message = NULL) {
   $cache = &drupal_static(__FUNCTION__, array());
   if (empty($message)) {
     return $cache;
@@ -92,9 +92,16 @@ function os_acitvity_register_message(Message $message = NULL) {
 
 /**
  * Implements hook_exit().
+ *
+ * Save the last viewed message ID on the user's OG-membership.
  */
 function os_activity_exit() {
-  if (!$cache = os_acitvity_register_message()) {
+  global $user;
+  if (!$user->uid) {
+    return;
+  }
+
+  if (!$cache = os_activity_register_message()) {
     return;
   }
   $user_gids = og_get_entity_groups();
@@ -112,6 +119,7 @@ function os_activity_exit() {
     if (!$wrapper->field_message->value() || $mid > $wrapper->field_message->value()) {
       // Save the last message.
       $wrapper->field_message->set($mid);
+      $wrapper->save();
     }
   }
 }
