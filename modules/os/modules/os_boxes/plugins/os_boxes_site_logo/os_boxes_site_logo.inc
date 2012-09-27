@@ -124,44 +124,64 @@ class os_boxes_site_logo extends os_boxes_default {
 
 function os_boxes_site_logo_submit($form, $form_state) {
   $file_data = $form_state['input']['file'];
-  $file = file_load($file_data['fid']);
+  if ($file_data['fid'] != 0) {
+    $file = file_load($file_data['fid']);
 
-  $item = array(
-    'cropbox_x' => $file_data['x'],
-    'cropbox_y' => $file_data['y'],
-    'cropbox_height' => $file_data['height'],
-    'cropbox_width' => $file_data['width'],
-  );
+    $item = array(
+      'cropbox_x' => $file_data['x'],
+      'cropbox_y' => $file_data['y'],
+      'cropbox_height' => $file_data['height'],
+      'cropbox_width' => $file_data['width'],
+    );
 
-  $scale = array(
-    'width' => 180,
-    'height' => 140,
-  );
+    $scale = array(
+      'width' => 180,
+      'height' => 140,
+    );
 
-  // this creates two images
-  // $orig is the original, unmodified image
-  // its saved so we can refer to it later
-  // $file is original uploaded image that is then cropped to fit
-  // it is the file that is displayed in render
-  // it 'contains' the orig file, through the file usage table
-  $orig = _imagefield_crop_file_to_crop($file->fid);
-  if ($orig->fid == $file->fid) {
-    $orig = imagefield_crop_create_copy($file);
-    file_usage_add($orig, 'imagefield_crop', 'file', $file->fid);
+    // this creates two images
+    // $orig is the original, unmodified image
+    // its saved so we can refer to it later
+    // $file is original uploaded image that is then cropped to fit
+    // it is the file that is displayed in render
+    // it 'contains' the orig file, through the file usage table
+    $orig = _imagefield_crop_file_to_crop($file->fid);
+    if ($orig->fid == $file->fid) {
+      $orig = imagefield_crop_create_copy($file);
+      file_usage_add($orig, 'imagefield_crop', 'file', $file->fid);
+    }
+    _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $file);
+    file_save($file);
+    file_usage_add($file, 'os_boxes', 'box', 1);  // prevents errors when trying to reuse the same image
   }
-  _imagefield_crop_resize(drupal_realpath($orig->uri), $item, $scale, $file);
-  file_save($file);
-  file_usage_add($file, 'os_boxes', 'box', 1);  // prevents errors when trying to reuse the same image
+  else {
+    // there's no file. remove the old file, remove file_usage and set sensible defaults for the vsite
+    $file = (object)array(
+      'fid' => 0,
+    );
+
+    $file_data += array(
+      'x' => 0,
+      'y' => 0,
+      'height' => 140,
+      'width' => 180,
+    );
+  }
 
   if (module_exists('vsite') && $space = spaces_get_space()) {
     $node = $space->group;
 
-    $node->field_site_logo[LANGUAGE_NONE][0] = (array)$file + array(
-      'cropbox_x' => $file_data['x'],
-      'cropbox_y' => $file_data['y'],
-      'cropbox_width' => $file_data['width'],
-      'cropbox_height' => $file_data['height'],
-    );
+    if ($file->fid) {
+      $node->field_site_logo[LANGUAGE_NONE][0] = (array)$file + array(
+        'cropbox_x' => $file_data['x'],
+        'cropbox_y' => $file_data['y'],
+        'cropbox_width' => $file_data['width'],
+        'cropbox_height' => $file_data['height'],
+      );
+    }
+    else {
+      $node->field_site_logo = array();
+    }
 
     node_save($node);
   }
