@@ -165,6 +165,12 @@ td {
 	border: 1px solid #DADADA;
     }   
 
+.page-cp-users .view-og-members-admin li {
+	list-style-type:none;
+    } 
+
+
+
 /* CP CONTENT */
 .page-cp-content dt a {
 	font-size:16px;

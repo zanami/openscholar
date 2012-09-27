@@ -145,6 +145,11 @@ h4 a {
     text-decoration: none;
 }
 
+
+.profile h3 {
+    border-bottom: none;
+}
+
 #boxes-box-site_info {
 	line-height:1.2;
 }
@@ -308,6 +313,9 @@ ul ul ul ul {
 	display:inline;
    float:none;
 }
+
+
+.page-user .profile .item-list li {list-style:none !important;}
 
 
 .tweets-pulled-listing ul {

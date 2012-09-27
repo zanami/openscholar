@@ -676,7 +676,7 @@ p.copy a:hover {
   
    
 
-.front #block-os-powered-by a {
+.front #block-os-powered-by span a {
   background: url('../images/powered_by.png') 19px 37px no-repeat #234f6e;
   display:block;
   width: 119px;
