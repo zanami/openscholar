@@ -35,6 +35,7 @@ function os_activity_views_default_views() {
   $handler->display->display_options['pager']['options']['items_per_page'] = '25';
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['total_pages'] = '10';
   $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'fields';
@@ -45,6 +46,11 @@ function os_activity_views_default_views() {
   $handler->display->display_options['empty']['area']['empty'] = FALSE;
   $handler->display->display_options['empty']['area']['content'] = 'No activity yet.';
   $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
+  /* Relationship: Entity Reference: Referenced Entity */
+  $handler->display->display_options['relationships']['field_group_target_id']['id'] = 'field_group_target_id';
+  $handler->display->display_options['relationships']['field_group_target_id']['table'] = 'field_data_field_group';
+  $handler->display->display_options['relationships']['field_group_target_id']['field'] = 'field_group_target_id';
+  $handler->display->display_options['relationships']['field_group_target_id']['label'] = 'Group';
   /* Field: Message: Render message (Get text) */
   $handler->display->display_options['fields']['message_render']['id'] = 'message_render';
   $handler->display->display_options['fields']['message_render']['table'] = 'message';
@@ -65,6 +71,18 @@ function os_activity_views_default_views() {
   $handler->display->display_options['sorts']['timestamp']['table'] = 'message';
   $handler->display->display_options['sorts']['timestamp']['field'] = 'timestamp';
   $handler->display->display_options['sorts']['timestamp']['order'] = 'DESC';
+  /* Contextual filter: Message: Group reference (field_group) */
+  $handler->display->display_options['arguments']['field_group_target_id']['id'] = 'field_group_target_id';
+  $handler->display->display_options['arguments']['field_group_target_id']['table'] = 'field_data_field_group';
+  $handler->display->display_options['arguments']['field_group_target_id']['field'] = 'field_group_target_id';
+  $handler->display->display_options['arguments']['field_group_target_id']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['field_group_target_id']['exception']['value'] = '';
+  $handler->display->display_options['arguments']['field_group_target_id']['default_argument_type'] = 'og_context';
+  $handler->display->display_options['arguments']['field_group_target_id']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['field_group_target_id']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['field_group_target_id']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['field_group_target_id']['validate']['type'] = 'numeric';
+  $handler->display->display_options['arguments']['field_group_target_id']['validate']['fail'] = 'ignore';
   /* Filter criterion: Message: Private message (field_private_message) */
   $handler->display->display_options['filters']['field_private_message_value']['id'] = 'field_private_message_value';
   $handler->display->display_options['filters']['field_private_message_value']['table'] = 'field_data_field_private_message';
