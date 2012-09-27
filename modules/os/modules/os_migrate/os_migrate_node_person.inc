@@ -90,7 +90,22 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
      * to get those image nodes and extract everything needed by file fields.)
      */
 
+    /**
+     * Dirty hack alert!
+     *
+     * gd upscaling has been crashing migrate.  until a better solution is found, we're going to
+     * ignore files above 1mb for profile nodes.
+     */
     if ($current_row->field_person_photo_fid && $data = unserialize($current_row->field_person_photo_data)) {
+      $filesize = parent::d6_db_select('files', 'f')
+        ->condition('fid', $current_row->field_person_photo_fid)
+        ->fields('f', array('filesize'))
+        ->execute()
+        ->fetchCol();
+      if ($filesize >= 1048576) {
+        return;
+      }
+
       $file = parent::get_file_by_fid($current_row->field_person_photo_fid);
       parent::os_migrate_prepare_files(array($file), $current_row, 'field_person_photo');
 

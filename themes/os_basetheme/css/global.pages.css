@@ -306,35 +306,27 @@ ul.links li {
 }
 
 /* BOOKLET ICONS */
-.node-book .links li.book_add_child a {
-    background: url("/sites/all/themes/openscholar/scholar_base/images/addChildpage_plus.png") no-repeat scroll left center transparent;
+.node-book .links li a.book_add_child {
+    background: url("../images/scholarbase-sprite.png") -12px -405px no-repeat;
     color: #3A6A8C;
-    margin-right: 12px;
     padding-left: 15px;
+
 }
 
-.node-book .links li.book_printer a {
-    background: url("/sites/all/themes/openscholar/scholar_base/images/printPage.png") no-repeat scroll left center transparent;
+.node-book .links li a.book_printer {
+    background: url("../images/scholarbase-sprite.png") -12px -419px no-repeat;
     color: #3A6A8C;
-    margin-right: 12px;
-    padding-left: 15px;
-}
-
-.node-book .links li.permalink a {
-    background: url("/sites/all/themes/openscholar/scholar_base/images/perma_link.png") no-repeat scroll left center transparent;
-    color: #3A6A8C;
-    margin-right: 12px;
     padding-left: 15px;
 }
 
 
-/*bookiconsprite.png*/
 
 .feed-icon /* The link to the RSS or Atom feed for the current list of content */ {
 }
 
 
 .more-link /* Aggregator, blog, and forum more link */ {
+	float: right;
 }
 
 

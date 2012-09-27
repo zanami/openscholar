@@ -66,14 +66,20 @@ function pinserver_theme() {
  * Redirect user to PIN login url
  */
 function pinserver_redirect() {
-  $pin_redirect = variable_get('pinserver_pin_url','').'?__authen_application='.variable_get('pinserver_app_name','');
-  drupal_goto($pin_redirect);
+  drupal_goto(variable_get('pinserver_pin_url') . '?__authen_application=' . variable_get('pinserver_app_name'));
 }
 
 /**
  * First function called after user has authenticated via pinserver and returned to site
  */
 function pinserver_check_user(){
+  // Extra-first, verify the pinserver settings.
+  if($error = pinserver_check_system_settings()) {
+    error_log($error);
+    drupal_set_message(t("New web sites are not available at this time but should be available shortly. Please check back within the hour or email us at !support_mail.", array('!support_mail' => '<a href=mailto:' . variable_get('pinserver_support_contact') . '>' . variable_get('pinserver_support_contact') . '</a>')));
+    drupal_goto();
+  }
+
 
   // First, parse and validate the PIN token.
   $token_data = pinserver_check_token();
@@ -85,25 +91,17 @@ function pinserver_check_user(){
   if (is_array($token_data) && isset($token_data['errors']) && count($token_data['errors']) > 0) {
     $errors = implode(',', array_unique($token_data['errors']));
     drupal_goto("pinserver/error/token/$errors");
-    exit();
   }
 
   //if successful pin authentication, place the encrypted harvard uid into a session array
   $_SESSION['pinserver']['huid'] = $token_data['user_id'];
   $_SESSION['pinserver']['reg_time'] = time();
   
-  //hook for dynamic landing path, if no hooks fired, then use static landing path
-  $path = module_invoke_all('pinserver_landing_path');
-  $landing_path = !empty($path) ? end($path) : variable_get('pinserver_landing_path','');
-  
   //invoke hook_pinserver after sucessful pin login and token authentication
   module_invoke_all('pinserver');
     
   //redirect user to landing page that was set in pinserver configuration page
-
-error_log(__FUNCTION__ . ' ' . $landing_path);
-
-  drupal_goto($landing_path);
+  drupal_goto(variable_get('pinserver_landing_path'));
 }
  
 /**
@@ -145,7 +143,7 @@ function pinserver_prepare_pin_v1_token() {
   $values['login_type'] = 'PIN';
   
   //set appropriate good signature string for this type of token
-  $values['good_sig'] = variable_get('pinserver_auth_str', '');
+  $values['good_sig'] = variable_get('pinserver_auth_str');
 
   return $values;
 }
@@ -225,7 +223,6 @@ function pinserver_check_token(){
   }
   else {
     drupal_goto("pinserver/error/token/unrecognized-url");
-    exit();
   }
  
   $pgp_message = "-----BEGIN PGP SIGNED MESSAGE-----"."\n";
@@ -238,8 +235,8 @@ function pinserver_check_token(){
   $pgp_message .= $values['pgp_signature'] ."\n";
   $pgp_message .= "-----END PGP SIGNATURE-----"."\n";
 
-  $stdout = "";
-  $stderr = "";
+  $stdout = '';
+  $stderr = '';
 
   // Use gnupg to verify signature.
   $descriptorspec = array(
@@ -254,7 +251,6 @@ function pinserver_check_token(){
     $values['errors'][] = 'signature-gpg';
     $values = implode(',', array_unique($values['errors']));
     drupal_goto("pinserver/error/token/$values");
-    exit();
   }
 
   fwrite($pipes[0], $pgp_message);
@@ -283,8 +279,8 @@ function pinserver_check_token(){
   
   if(strlen($stderr) && strstr($stderr,"fatal") && variable_get('pinserver_error_email') !== ''){
     mail(
-      variable_get('pinserver_error_email',''),
-      mime_header_encode("Pinserver Error"),
+      variable_get('pinserver_error_email'),
+      mime_header_encode('Pinserver Error'),
       str_replace("\r", '', $stderr)
     );
   }
@@ -292,7 +288,6 @@ function pinserver_check_token(){
   // If good signature statement is not found within gpg output
   // or exit code from process is not 0, then it is a bad signature.
   if (strpos($stderr,  $values['good_sig']) === false || $return_value != 0) {
-    error_log("Good[{$values['good_sig']}] Mine[$stderr]");
     $values['errors'][] = 'signature-match';
   }
 
@@ -307,18 +302,18 @@ function pinserver_check_token(){
   */
 
   // Verify application name.
-  if ($values['app'] != variable_get('pinserver_app_name','')) {
+  if ($values['app'] != variable_get('pinserver_app_name')) {
     $values['errors'][] = 'name';
   }
-  
-  if (variable_get('pinserver_ip_validation', 1) == 1) {
+
+  if (variable_get('pinserver_ip_validation') == 1) {
     // Verify current user's IP address.
-    error_log('IPs: [' . $values['ip'] . '] [' . $_SERVER['REMOTE_ADDR'] . ']');
     if ( $values['ip'] !== $_SERVER['REMOTE_ADDR'] ) {
+      error_log("The pinserver module found an ip-mismatch comparing url IP {$values['ip']} to remote address {$_SERVER['REMOTE_ADDR']} ");
       $values['errors'][] = 'ip-mismatch';
     }
   }
-  
+ 
   // Verify time parameter is not longer than 2 minutes old.
   // The PHP abs() function converts integers to absolute values (unsigned).
   // Subtract timestamp value sent by PIN server from the current time (on web server)
@@ -326,7 +321,6 @@ function pinserver_check_token(){
   if(abs($values['time'] - time()) > 120) {
     $values['errors'][] = 'time-elapsed';
   }
-  //echo "<pre>"; print_r($values); die;
   return $values;
 }
 
@@ -335,48 +329,38 @@ function pinserver_check_token(){
  */
 function pinserver_check_system_settings() {
   
-  $settings = array(
-    'PIN_URL'          => variable_get('pinserver_pin_url'),
-    'PIN_LANDING_PATH' => variable_get('pinserver_landing_path'),
-    'PIN_AUTH_STR'     => variable_get('pinserver_auth_str'),
-    'GPG_DIR'          => variable_get('pinserver_gpg_dir'),
-    'GPG_BIN'          => variable_get('pinserver_gpg_bin'),
-    'LOGGING'          => variable_get('pinserver_error_logging_enabled'),
+  // This is a list of configuration parameters we want to verify.
+  $settings = array('pinserver_pin_url',
+		    'pinserver_landing_path',
+    		    'pinserver_auth_str',
+		    'pinserver_gpg_dir',
+		    'pinserver_gpg_bin',
+		    'pinserver_error_logging_enabled',
   );
 
-  $info = array(
-    'value' => true,
-    'message' => '',
-  );
- 
   $missing_settings = array();
+  $error = FALSE;
  
-  //check to see if all settings are set
-  foreach ($settings as $key => $setting) {
-    if (empty($setting)){
-      $missing_settings[] = strtolower($key);
+  // Check to see if all settings are set.
+  foreach ($settings as $key) {
+    if (variable_get($key) == '') {
+      $missing_settings[] = $key;
     }
   }
+
   if (count($missing_settings)) {
-    $message = 'Pinserver is missing required system settings: ';
-    foreach($missing_settings as $setting) {
-      $message .= $setting . ' ';
-    }
-    $info['value'] = false;
-    $info['message'] = $message . '. ';
+    $error .= 'Pinserver is missing required system settings: ' . implode(' ', $missing_settings) . '. ';
   }
 
   if (!is_dir(variable_get('pinserver_gpg_dir'))) {
-    $info['value'] = false;
-    $info['message'] .= 'The system path for gpg_dir directory is invalid or does not exist. ';
+    $error .= 'The system path for gpg_dir directory is invalid or does not exist. ';
   }
 
   if (!is_file(variable_get('pinserver_gpg_bin')) || !is_executable(variable_get('pinserver_gpg_bin'))) {
-    $info['value'] = false;
-    $info['message'] .= 'The gpg_bin file does not exist or is not executable. ';
+    $error .= 'The gpg_bin file does not exist or is not executable. ';
   }
 
-  return $info;
+  return $error;
 }
 
 /**
@@ -385,6 +369,7 @@ function pinserver_check_system_settings() {
  * @param  string $values - comma separated list of errors encountered
  */
 function pinserver_error($type, $values) {
+
   switch ($type) {
     case 'token':
       //log the errors
@@ -401,14 +386,13 @@ function pinserver_error($type, $values) {
  * @param  array $values - all errors that occured due to a problem with the token or token processing.
  */
 function theme_pinserver_token_error($values = NULL) {
-  $message = '<p>Communication with the Harvard PIN server failed.';
+  $message = '<p>' . t('Communication with the @harvard PIN server failed.', array('@harvard' => 'Harvard'));
   if (in_array('ip-mismatch', $values)) {
-    error_log("The pinserver module found an ip-mismatch comparing url IP {$_GET['__authen_ip']} to remote address {$_SERVER['REMOTE_ADDR']} ");
-    $message .= ' Note: Use of a VPN or tunnel connection may cause problems with PIN authentication.';
+    $message .= t(' Note: Use of a VPN or tunnel connection may cause problems with PIN authentication.');
   }
-  $message .= ' Please '. l('try again', variable_get('pinserver_pin_url','') .'?__authen_application='. variable_get('pinserver_app_name',''));
-  if (valid_email_address(variable_get('pinserver_support_contact',''))) {
-    $message .= ' or ' . l('contact us', 'contact');
+  $message .= t(' Please !try_again', array('!try_again' => l(t('try again'), variable_get('pinserver_pin_url') .'?__authen_application='. variable_get('pinserver_app_name'))));
+  if (valid_email_address(variable_get('pinserver_support_contact'))) {
+    $message .= t(' or !contact_us', array('!contact_us' => '<a href=mailto:' . variable_get('pinserver_support_contact') . '>' . t('contact us') . '</a>'));
   }
   $message .= '.</p>';
   return $message;
