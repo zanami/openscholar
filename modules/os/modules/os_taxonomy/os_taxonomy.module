@@ -141,7 +141,7 @@ function theme_volcabulary_term_list($variables) {
   );
 
   // Displaying the volcabulary term in a simple display using views.
-  if (!$options['bundles'] && !$options['show_empty_terms'] && !$options['show_empty_terms'] && !$options['terms_description']) {
+  if (!$options['bundles'] && !$options['show_empty_terms'] && !$options['terms_description'] && !$options['show_childs']) {
     return views_embed_view('os_taxonomy_vocabulary_term_list', 'vocabulary_list', $variables['vid']);
   }
 
