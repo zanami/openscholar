@@ -36,7 +36,8 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('field_site_logo:destination_file', 'field_site_logo:destination_file');
 
     //field_group_path
-    $this->addSimpleMappings(array('field_group_path', 'field_group_path:title', 'field_group_path:attributes'));
+    $this->addSimpleMappings(array('field_group_path', 'field_group_path:attributes'));
+    $this->addFieldMapping('field_group_path:title')->defaultValue('');
 
     //undo what nodeabstract has done
     $unmap = array_merge(array('body', 'group_nid', 'og_group_ref',),
@@ -150,7 +151,6 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
      }
 
      $row->field_group_path = $this->_get_field_group_path($row->nid, $row->value);
-     $row->{'field_group_path:title'} = $row->title;
      $row->{'field_group_path:attributes'} = array();
 
      return;
@@ -184,7 +184,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
       ->fetchColumn();
 
     if ($vsite_domain) {
-      return $vsite_domain;
+      return 'http://' . $vsite_domain;
     }
 
     $override = parent::d6_db_select('spaces_overrides', 'so')
@@ -197,11 +197,10 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
 
     $override = @unserialize($override);
     if ($override) {
-      return $override . '/' . $purl;
+      return 'http://' . $override . '/' . $purl;
     }
 
-    $domain = parent::d6_variable_get('purl_base_domain') . '/';
-
+    $domain = '[site:url]';
     return $domain . $purl;
   }
 
