@@ -2,11 +2,12 @@ body,
 #footer {
   background:#0c0c0c;
   }
-
+  
 #page,
 #page-wrapper {
   width: 100%;
   background: transparent;
+  box-shadow: none;
   }
 
 @media only screen and (min-width:1025px) {
