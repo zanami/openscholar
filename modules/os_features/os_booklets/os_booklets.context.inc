@@ -50,12 +50,6 @@ function os_booklets_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'book-navigation' => array(
-          'module' => 'book',
-          'delta' => 'navigation',
-          'region' => 'sidebar_second',
-          'weight' => '-10',
-        ),
         'boxes-os_booklets_recent_docs' => array(
           'module' => 'boxes',
           'delta' => 'os_booklets_recent_docs',
