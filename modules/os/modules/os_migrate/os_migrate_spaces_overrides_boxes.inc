@@ -361,6 +361,10 @@ class BoxPorter {
       unset ($box->options['nid']);
     }
 
+    if (!isset($box->options['teaser'])) {
+      $box->options['teaser'] = 'teaser';
+    }
+
     return $box;
   }
 
