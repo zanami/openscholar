@@ -184,7 +184,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
       ->fetchColumn();
 
     if ($vsite_domain) {
-      return $vsite_domain;
+      return 'http://' . $vsite_domain;
     }
 
     $override = parent::d6_db_select('spaces_overrides', 'so')
@@ -197,11 +197,10 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
 
     $override = @unserialize($override);
     if ($override) {
-      return $override . '/' . $purl;
+      return 'http://' . $override . '/' . $purl;
     }
 
     $domain = '[site:url]';
-
     return $domain . $purl;
   }
 
