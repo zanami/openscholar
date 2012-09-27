@@ -238,6 +238,12 @@ class BoxPorter {
 
   public function _update_block_plugin_key($key) {
 
+    //first see if we're dropping this box
+    $unsupported = array('os_boxes_cclicense');
+    if (in_array($key, $unsupported)) {
+      return FALSE;
+    }
+
     $box_map = array(
       'os_modal_tabbed' => 'os_boxes_tabs',
       'os_boxes_modal_sitelogo' => 'os_boxes_sitelogo', //needs pulling from orig vsite
