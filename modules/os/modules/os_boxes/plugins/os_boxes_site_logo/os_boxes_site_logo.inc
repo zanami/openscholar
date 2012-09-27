@@ -50,10 +50,10 @@ class os_boxes_site_logo extends os_boxes_default {
         ),
         '#default_value' => $fid,
         '#dimensions' => array(
-          'x' => $x,
-          'y' => $y,
-          'height' => $height,
-          'width' => $width,
+          'x' => !empty($x)?$x:0,
+          'y' => !empty($y)?$y:0,
+          'height' => !empty($height)?$height:140,
+          'width' => !empty($width)?$width:180,
         ),
         '#attached' => array(
           'css' => array(
