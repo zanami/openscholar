@@ -28,16 +28,6 @@ function os_user_default_permissions() {
     'module' => 'views',
   );
 
-  // Exported permission: access comments.
-  $permissions['access comments'] = array(
-    'name' => 'access comments',
-    'roles' => array(
-      0 => 'anonymous user',
-      1 => 'authenticated user',
-    ),
-    'module' => 'comment',
-  );
-
   // Exported permission: access content.
   $permissions['access content'] = array(
     'name' => 'access content',
@@ -151,18 +141,6 @@ function os_user_default_permissions() {
       0 => 'administrator',
     ),
     'module' => 'system',
-  );
-
-  // Exported permission: administer comments.
-  $permissions['administer comments'] = array(
-    'name' => 'administer comments',
-    'roles' => array(
-      0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
-    ),
-    'module' => 'comment',
   );
 
   // Exported permission: administer content types.
@@ -458,15 +436,6 @@ function os_user_default_permissions() {
     'module' => 'file_entity',
   );
 
-  // Exported permission: edit own comments.
-  $permissions['edit own comments'] = array(
-    'name' => 'edit own comments',
-    'roles' => array(
-      0 => 'authenticated user',
-    ),
-    'module' => 'comment',
-  );
-
   // Exported permission: import media.
   $permissions['import media'] = array(
     'name' => 'import media',
@@ -497,15 +466,6 @@ function os_user_default_permissions() {
     'module' => 'pathauto',
   );
 
-  // Exported permission: post comments.
-  $permissions['post comments'] = array(
-    'name' => 'post comments',
-    'roles' => array(
-      0 => 'authenticated user',
-    ),
-    'module' => 'comment',
-  );
-
   // Exported permission: revert revisions.
   $permissions['revert revisions'] = array(
     'name' => 'revert revisions',
@@ -534,18 +494,6 @@ function os_user_default_permissions() {
       0 => 'administrator',
     ),
     'module' => 'user',
-  );
-
-  // Exported permission: skip comment approval.
-  $permissions['skip comment approval'] = array(
-    'name' => 'skip comment approval',
-    'roles' => array(
-      0 => 'administrator',
-      1 => 'manager',
-      2 => 'vsite admin',
-      3 => 'vsite user',
-    ),
-    'module' => 'comment',
   );
 
   // Exported permission: use advanced search.
