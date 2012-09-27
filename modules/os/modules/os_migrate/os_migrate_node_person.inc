@@ -97,22 +97,26 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
      * ignore files above 1mb for profile nodes.
      */
     if ($current_row->field_person_photo_fid && $data = unserialize($current_row->field_person_photo_data)) {
-      $filesize = parent::d6_db_select('files', 'f')
-        ->condition('fid', $current_row->field_person_photo_fid)
-        ->fields('f', array('filesize'))
-        ->execute()
-        ->fetchCol();
-      if ($filesize >= 1048576) {
-        return;
-      }
 
       $file = parent::get_file_by_fid($current_row->field_person_photo_fid);
       parent::os_migrate_prepare_files(array($file), $current_row, 'field_person_photo');
+      $crop = $data['crop'];
 
+
+      //if the file is too big, swap in its thumbnail and don't crop.
+      if ($file->filesize >= 1048576) {
+        foreach ($current_row->field_person_photo as $delta => $filepath) {
+          $thumbnail = $this->_get_thumbnail($filepath);
+          $current_row->field_person_photo[$delta] = $thumbnail;
+          parent::saveMessage(t('Image too large to scale.  Replacing @file with @thumbnail',
+            array('@file' => $filepath, '@thumbnail' => $thumbnail)), MigrationBase::MESSAGE_NOTICE
+          );
+        }
+        $crop = array_diff_key($crop, array('x', 'y', 'width', 'height'));
+      }
 //      $current_row->{'field_person_photo'} = $file->filepath;
       $current_row->{'field_person_photo:destination_file'} = $file->filepath;
 
-      $crop = $data['crop'];
       $current_row->{'field_person_photo:cropbox_x'} = $crop['x'];
       $current_row->{'field_person_photo:cropbox_y'} = $crop['y'];
       $current_row->{'field_person_photo:cropbox_width'} = $crop['width'];
@@ -124,5 +128,28 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
 
     return parent::prepareRow($current_row); //false -> skip this row
 
+  }
+
+  //try to find a thumbnail to use instead of the full image.
+  function _get_thumbnail($filepath) {
+    $filename = end(explode('/', $filepath)); //file path includes sites/name/files.  need to iterate over these too.
+    $thumbs_dir = array('imagefield_thumbs');
+    $os_migrate_files = variable_get('os_migrate_files');
+
+    foreach($thumbs_dir as $tdir) {
+      $basepath = $os_migrate_files;
+      $subpath = '';
+
+      //can't generalize how much of os_migrate_files path to use as prefix, so test current, then add another chunk.
+      foreach(explode('/', $filepath) as $tok) {
+        $thumbnail = $subpath . '/' . $tdir . '/' . $filename;
+        if (is_readable($basepath . '/' . $thumbnail)) {
+          return $thumbnail;
+        } else {
+          $subpath .= '/' . $tok;
+        }
+      }
+    }
+    return FALSE;
   }
 }
