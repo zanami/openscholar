@@ -107,10 +107,15 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
       if ($file->filesize >= 1048576) {
         foreach ($current_row->field_person_photo as $delta => $filepath) {
           $thumbnail = $this->_get_thumbnail($filepath);
-          $current_row->field_person_photo[$delta] = $thumbnail;
-          parent::saveMessage(t('Image too large to scale.  Replacing @file with @thumbnail',
-            array('@file' => $filepath, '@thumbnail' => $thumbnail)), MigrationBase::MESSAGE_NOTICE
-          );
+          if ($thumbnail) {
+            $current_row->field_person_photo[$delta] = $thumbnail;
+            parent::saveMessage(t('Image too large to scale.  Replacing @file with @thumbnail',
+              array('@file' => $filepath, '@thumbnail' => $thumbnail)), MigrationBase::MESSAGE_NOTICE
+            );
+          } else {
+            $current_row->field_person_photo[$delta] = NULL;
+            parent::saveMessage(t('Image too large to scale.  No replacement found.  @file', array('@file' => $filepath)), MigrationBase::MESSAGE_WARNING);
+          }
         }
         $crop = array_diff_key($crop, array('x', 'y', 'width', 'height'));
       }
@@ -150,6 +155,13 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
         }
       }
     }
-    return FALSE;
+
+    //last ditch effort.  save list of known bad images and their thumbnails.
+    $images = array(
+      'sites/scholar.iq.harvard.edu/files/harvardcentershanghai/files/110303_feature_2_ks_0.jpg' => 'sites/scholar.iq.harvard.edu/files/imagefield_thumbs/110303_feature_2_ks.jpg',
+      'sites/scholar.iq.harvard.edu/files/harvardcentershanghai/files/111805_features_ks_189_0.jpg' => 'sites/scholar.iq.harvard.edu/files/imagefield_thumbs/111805_features_ks_189.jpg',
+    );
+
+    return (isset($images[$filepath])) ? $images[$filepath] : FALSE;
   }
 }
