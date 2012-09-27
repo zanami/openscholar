@@ -141,7 +141,9 @@ function os_activity_exit() {
     $id = array_search($gid, $user_gids['node']);
     $wrapper = entity_metadata_wrapper('og_membership', $og_memberships[$id]);
 
-    if (!$wrapper->field_message->value() || $mid > $wrapper->field_message->value()) {
+    $last_id = $wrapper->field_message->value(array('identifier' => TRUE));
+
+    if (!$last_id || $mid > $last_id) {
       // Save the last message.
       $wrapper->field_message->set($mid);
       $wrapper->save();
