@@ -204,10 +204,10 @@ function cp_layout_full_submit($form, &$form_state){
   // go through our regions and change the blocks to match their new position
   // and weight
   foreach ( $regions as $r => $d ) {
-  $widgets = explode('|', $d['widgets']);
-  $weight = 0;
-  if ($r == 'unused')
-    $r = false;
+    $widgets = explode('|', $d['widgets']);
+    $weight = 0;
+    if ($r == 'unused')
+      $r = false;
     foreach ( $widgets as $w ) {
       if (isset($blocks[$w])) {
         $blocks[$w]['region'] = $r;
