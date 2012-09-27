@@ -197,11 +197,10 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
 
     $override = @unserialize($override);
     if ($override) {
-      return $override . '/' . $purl;
+      return 'http://' . $override . '/' . $purl;
     }
 
     $domain = '[site:url]';
-
     return $domain . $purl;
   }
 
