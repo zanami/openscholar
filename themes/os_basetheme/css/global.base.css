@@ -347,6 +347,10 @@ ul ul ul ul {
   list-style: disc;
 }
 
+.book-menu ul.menu li ul li {
+  list-style: circle;
+}
+
 .book-menu ul.menu li li, 
 #block-book-navigation ul.menu li li,
 .block-boxes-os_boxes_booktoc ul.menu li li {
@@ -362,6 +366,12 @@ ul ul ul ul {
   padding-top: .3em;
   padding-bottom: .1em;
   }
+  
+.sidebar .book-menu ul.menu li a, 
+.sidebar #block-book-navigation ul.menu li a,
+.sidebar .block-boxes-os_boxes_booktoc ul.menu li a {
+  border-bottom: none;
+  }  
 
 .book-menu ul.menu ul a, 
 #block-book-navigation ul.menu ul a,
