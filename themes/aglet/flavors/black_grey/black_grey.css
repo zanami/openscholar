@@ -9,11 +9,12 @@ body,
   background: transparent;
   }
 
+@media only screen and (min-width:1025px) {
 #header-container .gpanel, #menu-bar #block-os-primary-menu, #columns .hg-container, #footer .region-footer {
   width:1000px;
-  
   margin: 0 auto;
   }
+}
 
 #header-container {
   background:url('images/header.png') repeat-x 0 100%;

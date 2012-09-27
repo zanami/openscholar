@@ -1281,7 +1281,7 @@ body.front .block-boxes-os_taxonomy_fbt h2.block-title {
   letter-spacing:0;
   }
 
-body.front .block-boxes-os_taxonomy_fbt div.item-list + ul + li.term-Methods:first-child a, 
+body.front .block-boxes-os_taxonomy_fbt .term-Methods:first-child .termhead:first-child, 
 body.front .block-boxes-os_taxonomy_fbt div.item-list + ul + li.term-Applications:first-child a {
      background: none repeat scroll 0% 0% transparent;
      font-size: 17px;
@@ -1293,9 +1293,7 @@ body.front .block-boxes-os_taxonomy_fbt div.item-list + ul + li.term-Application
 body.front .block-boxes-os_taxonomy_fbt .item-list ul li.term-Methods.last .term-head a:only-of-type,
 body.front .block-boxes-os_taxonomy_fbt .item-list ul li.term-Applications.first .term-head a:only-of-type
  {
-     color: #68EFDE;
-     padding-bottom: 25px;
-     text-decoration:none;
+     
 }
 
 body.front .block-boxes-os_taxonomy_fbt .item-list ul.term-Methods li .term-head a:only-of-type,
@@ -1333,7 +1331,7 @@ body.front .block-boxes-os_taxonomy_fbt .description {
     min-height: 219px;
     padding: 5px 14px;
     border-left: 2px solid #db7002;
-    left:250px;
+    left:260px;
     background: #3b4e4e;
     text-align: left;
     line-height:1.35em;
@@ -1342,139 +1340,31 @@ body.front .block-boxes-os_taxonomy_fbt .description {
     }
     
    /** TOP POSITIONS FOR METHODS DECRIPTION **/
-body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(1) div.description {
-top: -10px; 
+body.front .block-boxes-os_taxonomy_fbt ul.termchild-Methods li:nth-of-type(1) div.description {
+top:75px; 
 }  
 
-body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(2) div.description {
-      top: -35px;
-}  
-@-moz-document url-prefix() { body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(2) div.description {
-      top: -36px;
-} }
 
-body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(3) div.description {
-	  top: -60px;
-} 
-@-moz-document url-prefix() { body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(3) div.description {
-      top: -63px;
-} } 
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(4) div.description {
-      top: -85px;
-} 
- @-moz-document url-prefix() { body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(4) div.description {
-      top: -89px;
-} } 
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(5) div.description {
-      top: -110px;
-} 
-@-moz-document url-prefix() {  body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(5) div.description {
-      top: -115px;
-} } 
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(6) div.description {
-      top: -136px;
-} 
-@-moz-document url-prefix() { body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(6) div.description {
-      top: -141px;
-} } 
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(7) div.description {
-      top: -160px;
-} 
-@-moz-document url-prefix() {  body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(7) div.description {
-      top: -167px;
-} }
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(8) div.description {
-      top: -186px;
-} 
-@-moz-document url-prefix() {  body.front .block-boxes-os_taxonomy_fbt ul.term-Methods li:nth-of-type(8) div.description {
-      top: -193px;
-} }
-  
-  
-  
 body.front .block-boxes-os_taxonomy_fbt li.term-Applications .description {
   border-left:none;
   border-right: 2px solid #db7002;
-   left:-265px;
    text-align:left;
   }
 
 /** TOP POSITIONS FOR APPLICATIONS DECRIPTION **/
-body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(1) div.description {
-top: -10px; 
+body.front .block-boxes-os_taxonomy_fbt ul.termchild-Applications li:nth-of-type(1) div.description {
+top: 75px; 
 }  
 
-body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(2) div.description {
-      top: -35px;
-}  
-@-moz-document url-prefix() { body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(2) div.description {
-      top: -36px;
-} }
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(3) div.description {
-	  top: -60px;
-} 
-@-moz-document url-prefix() { body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(3) div.description {
-      top: -63px;
-} } 
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(4) div.description {
-      top: -85px;
-} 
- @-moz-document url-prefix() { body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(4) div.description {
-      top: -89px;
-} } 
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(5) div.description {
-      top: -110px;
-} 
-@-moz-document url-prefix() {  body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(5) div.description {
-      top: -115px;
-} } 
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(6) div.description {
-      top: -136px;
-} 
-@-moz-document url-prefix() { body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(6) div.description {
-      top: -141px;
-} } 
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(7) div.description {
-      top: -160px;
-} 
-@-moz-document url-prefix() {  body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(7) div.description {
-      top: -167px;
-} }
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(8) div.description {
-      top: -186px;
-} 
-@-moz-document url-prefix() {  body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(8) div.description {
-      top: -193px;
-} }
-
-
-body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(9) div.description {
-     top: -212px;
+body.front .block-boxes-os_taxonomy_fbt ul li:first-of-type a {
+	 background: none repeat scroll 0% 0% transparent;
+     font-size: 17px;
+     font-weight: normal;
+     line-height: 25px;
+     margin-bottom: 25px;
+     color: #68EFDE;
 }
 
-@-moz-document url-prefix("")  {
-  body.front .block-boxes-os_taxonomy_fbt ul.term-Applications li:nth-of-type(9) div.description { top: -219px; }
-}
-
-
-body.front .block-boxes-os_taxonomy_fbt li {
-    position:relative;
-    line-height: normal;
-    margin-bottom:10px;
-    font-size: 13px;
-    font-weight: normal;
-    }
 
 body.front .block-boxes-os_taxonomy_fbt li.term-Methods .term-head a,
 body.front .block-boxes-os_taxonomy_fbt li.term-Methods.last {
@@ -1503,8 +1393,10 @@ body.front .block-boxes-os_taxonomy_fbt li.term-Applications .term-head {
 
   }
 
-body.front .block-boxes-os_taxonomy_fbt li.active  {
-  background: url('../images/line.png?dec11') no-repeat 33px 50% #3b4e4e;
+body.front .block-boxes-os_taxonomy_fbt a.active,
+body.front .block-boxes-os_taxonomy_fbt a.line
+  {
+  background: url('../images/line.png') no-repeat 130px 50% #3b4e4e;
   }
 
 body.front .block-boxes-os_taxonomy_fbt ul li.term-Methods ul li {
@@ -1515,9 +1407,19 @@ body.front #block-iqss_gking-areas_of_research dt.active span {
   background: #3b4e4e;
   }
 
-body.front .block-boxes-os_taxonomy_fbt ul li ul li .term-head  a,
-body.front .block-boxes-os_taxonomy_fbt ul li ul li .term-head a:visited {
+body.front .block-boxes-os_taxonomy_fbt ul li ul.termchild-Methods li .term-head,
+body.front .block-boxes-os_taxonomy_fbt ul li ul.termchild-Applications li .term-head {
+   margin-top:10px;
+  
+  }
+
+body.front .block-boxes-os_taxonomy_fbt ul li ul.termchild-Methods li .term-head a,
+body.front .block-boxes-os_taxonomy_fbt ul li ul.termchild-Applications li .term-head a {
   color: #fff;
+   position:relative;
+    line-height: normal;
+    font-size: 13px;
+    font-weight: normal;
   }
 
 body.front .block-boxes-os_taxonomy_fbt ul li ul li .term-head a:hover
