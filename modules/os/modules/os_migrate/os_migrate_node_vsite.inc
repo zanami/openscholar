@@ -200,7 +200,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
       return $override . '/' . $purl;
     }
 
-    $domain = parent::d6_variable_get('purl_base_domain') . '/';
+    $domain = '[site:url]';
 
     return $domain . $purl;
   }
