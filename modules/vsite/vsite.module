@@ -3,19 +3,6 @@ include_once ('vsite.features.inc');
 include_once ('includes/vsite.inc');
 
 /**
- * Implements hook_init().
- *
- * Set the OG-context() based on Space.
- */
-function vsite_init() {
-  if (!($space = spaces_get_space()) || $space->type != 'og') {
-    return;
-  }
-
-  og_context('node', $space->og);
-}
-
-/**
  * Helper function to return the current vsite
  */
 function vsite_get_vsite($sid = false){
