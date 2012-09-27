@@ -91,7 +91,7 @@ function comment_sources_fb_social($source) {
   if (count($presets) > 0) {
     foreach ($presets as $preset) {
       $enabled_sources[join(":", array('fb_social', $preset->name))] = array(
-        'description' => join(":", array($source['description'], $preset->name)),
+        'description' => $preset->name,
       );
     }
   }
