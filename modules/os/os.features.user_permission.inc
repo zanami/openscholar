@@ -382,7 +382,7 @@ function os_user_default_permissions() {
   $permissions['cancel account'] = array(
     'name' => 'cancel account',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'administrator',
     ),
     'module' => 'user',
   );
@@ -391,7 +391,7 @@ function os_user_default_permissions() {
   $permissions['change own username'] = array(
     'name' => 'change own username',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'administrator',
     ),
     'module' => 'user',
   );
@@ -420,7 +420,9 @@ function os_user_default_permissions() {
   // Exported permission: delete boxes.
   $permissions['delete boxes'] = array(
     'name' => 'delete boxes',
-    'roles' => array(),
+    'roles' => array(
+      0 => 'authenticated user',
+    ),
     'module' => 'boxes',
   );
 

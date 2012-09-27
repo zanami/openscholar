@@ -92,20 +92,16 @@ function os_biocv_process_node(&$vars) {
 }
 
 /**
- * Implements hook_context_load_alter().
+ * Implements hook_spaces_presets_alter
  *
- * Adds Bio Teaser block to os_front context
- */
-function os_biocv_context_load_alter(&$context) {
-  if ($context->name !== 'os_front' || !isset($context->reactions['block'])) {
-    return;
-  }
-
-  $context->reactions['block']['blocks']['boxes-bio_teaser'] = array(
+ * Adds Bio Teaser block to the os_front context for personal sites.
+*/
+function os_biocv_spaces_presets_alter(&$preset) {
+  $preset['os_personal']->value['context']['os_front:reaction:block']['blocks']['boxes-bio_teaser'] = array(
     'module' => 'boxes',
     'delta' => 'bio_teaser',
     'region' => 'content_top',
-    'weight' => '-10',
+    'weight' => '-10'
   );
 }
 

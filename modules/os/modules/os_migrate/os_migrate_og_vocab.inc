@@ -8,26 +8,29 @@
 
 class OsOgVocabMigrate extends DynamicMigration {
 
+
   public function __construct(array $arguments) {
     $this->arguments = $arguments;
-    parent::__construct(MigrateGroup::getInstance('taxonomy'));
+    parent::__construct(MigrateGroup::getInstance('taxonomy',array('node')));
     $this->bundle = $bundle = $arguments['bundle'];
 
     $source_bundle = AbstractNodeOSMigration::get_source_bundle($bundle);
 
     $this->description = t('Populate the OG vocabulary field from a remote Drupal 6 source.');
 
+    // @todo add dependency on node migrations
     $this->dependencies = array('VocabularyOS');
 
     $query = OSMigration::d6_db_select('term_node', 'tn');
-    $query->innerJoin('og_vocab', 'ogv', 'tn.vid = ogv.vid');
-    $query->innerJoin('vocabulary', 'v', 'tn.vid = v.vid');
+    $query->innerJoin('term_data', 'td', 'tn.tid = td.tid');
+    $query->innerJoin('og_vocab', 'ogv', 'td.vid = ogv.vid');
+    $query->innerJoin('vocabulary', 'v', 'td.vid = v.vid');
     $query->innerJoin('node', 'n', 'tn.nid = n.nid');
 
     $query
       ->fields('tn')
       ->fields('v', array('multiple', 'required', 'tags'))
-      ->condition('n.type', $bundle)
+      ->condition('n.type', $source_bundle)
       ->orderBy('n.nid');
 
     $source_key = MigrateDestinationNode::getKeySchema();
@@ -43,6 +46,12 @@ class OsOgVocabMigrate extends DynamicMigration {
     $this->destination = new MigrateDestinationNode($bundle);
 
     $this->addFieldMapping('nid', 'nid');
+
+    //Add field mapping for vocabulary relatinships
+    $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)->description('Handled in prepareRow');
+
+    //Migrate using the exising nodes in the system
+    $this->systemOfRecord = Migration::DESTINATION;
   }
 
 

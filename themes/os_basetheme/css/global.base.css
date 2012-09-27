@@ -294,20 +294,21 @@ ul ul ul ul {
   list-style-type: circle;
 }
 
-.view-os-image-gallery ul,
+.view-os-image-gallery ul li,
 .views-field-media-gallery-media ul {
-clear:right;
+	list-style-type: none;
+    display:inline-block;
+    margin: 10px 10px 0 0;
 }
 
-.view-os-image-gallery ul li,
-.view-gallery-listing ul li,
-.views-field-media-gallery-media ul li,
-.view-os-image-gallery ul li {
-list-style-type: none;	
-display:inline;
-margin: 10px 10px 0 0;
-float: left;
+.view-os-image-gallery ul li.views-row,
+.view-gallery-listing ul,
+.views-field-media-gallery-media ul,
+.view-os-image-gallery ul {
+	display:inline;
+   float:none;
 }
+
 
 .tweets-pulled-listing ul {
 	margin-left:0;

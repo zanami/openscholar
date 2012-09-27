@@ -226,7 +226,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
 
   // generate the year description
   $years = variable_get('biblio_years_text', array(9999 => t('Submitted'), 9998 => t('In Press')));
-  $form['biblio_year']['#description'] = implode(', ', $years) . ', or YYYY';
+  $form['biblio_year']['#description'] = t('Required. Must be one of @years, or YYYY', array('@years' => implode(', ', $years)));
 
   // Change the Notes field's description to include a link to the settings form
   ctools_include('ajax');
@@ -262,6 +262,7 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
 
   // add abstract link
   if (strlen($node->biblio_abst_e)) {
+    $entry['#attached']['js'][] = drupal_get_path('module', 'os') . '/theme/os_toggle.js';
     $html   = &$entry['entry']['#markup'];
     $insert = strrpos($html, '</div>');
     $extra  = l('Abstract', 'node/' . $node->nid, array('attributes' => array('class' => array('biblio-abstract-link', 'toggle'))));
@@ -289,7 +290,8 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
   // add fields
   field_attach_prepare_view('node', array($node->nid => $node), 'teaser');
   $entry += field_attach_view('node', $node, 'teaser');
-  $entry['#attached']['js'][] = drupal_get_path('module', 'os') . '/theme/os_toggle.js';
+  $entry['entry']['#weight'] = 1;
+  $entry['download_links']['#weight'] = 2;
 }
 
 /**

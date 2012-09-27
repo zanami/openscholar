@@ -1,3 +1,4 @@
+
 jQuery(document).ready(function() {
 
     jQuery('.front .region-header-second .block-boxes-os_boxes_html .boxes-box p:last').append('<a class="more" href="#">More</a>');
@@ -22,31 +23,41 @@ jQuery(document).ready(function() {
     
 });
 
-// FRONTPAGE AREAS OF INTEREST BLOCK
+//THE ORGINAL AOR SHOW DESCR
+var areas = jQuery('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li ul li:not(.aor-processed)');
+  if (areas.length) {
+	//Setup the AOR block
+    jQuery('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li ul li:not(.aor-processed)').hover(function() {
+    	jQuery('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li ul li.active').removeClass('active');
+    	jQuery('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li ul li div.description').fadeOut('fast');
+    
+    	jQuery('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content .more').hide();
+    	
+    	jQuery(this).addClass('active');
+    	jQuery(this).find('div.description').fadeIn('fast');
+    });
+
+    jQuery('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li.last ul li:not(.aor-processed)').filter(":first").each(function(index) {
+  	  jQuery(this).hover();
+    });
+    
+    jQuery('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li ul li').addClass('aor-processed');
+  }
+
+
+//DAN'S HOVER TO SHOW AOR DESCR - IT ONLY 1/2 WORKS (LACKS ABILITY TO SHOW DESCRIPTION WHEN MOUSE OFF OF A TERM)
+//jQuery(document).ready(function(){
+//	jQuery("ul.termchild-Methods a, ul.termchild-Applications a").hover(function(){
+//		jQuery(this).removeClass("active");
+//		jQuery(this).toggleClass("line");
+//		jQuery(this).next("div.description").toggle();
+//	return true;
+//	});
+//});
 
 Drupal.behaviors.iqss_gking = function() {
   //Init garys People page
   iqss_gking_research_group_tabify();		
-  
-  var areas = $('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li ul li:not(.aor-processed)');
-  if (areas.length) {
-	//Setup the AOR block
-    $('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li ul li:not(.aor-processed)').hover(function() {
-    	$('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li ul li.active').removeClass('active');
-    	$('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li ul li div.description').fadeOut('fast');
-    
-    	$('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content .more').hide();
-    	
-    	$(this).addClass('active');
-    	$(this).find('div.description').fadeIn('fast');
-    });
-
-    $('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li.last ul li:not(.aor-processed)').filter(":first").each(function(index) {
-  	  $(this).hover();
-    });
-    
-    $('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li ul li').addClass('aor-processed');
-  }
   
   //Scroll to the top of the page when you click the sort links
   iqss_gking_taxonomy_alter_sort_links();
@@ -64,7 +75,7 @@ function iqss_gking_taxonomy_alter_sort_links(){
 function iqss_gking_research_group_tabify(){
   if(!$('body.page-iqss-gking-research-group').length) return;
 
-  $("<ul id='research-group-tablist' class=\"ui-tabs-nav\"></ul>").insertBefore("div#content-main div.taxonomy-term-child:first");
+  $("<ul id='research-group-tablist' class=\"ui-tabs-nav\"></ul>").insertBefore("div#content-column div.taxonomy-term-child:first");
 
   var terms = Drupal.settings.iqss_gking.research_group_terms;
   for (var i=0;i<terms.length;i++)
@@ -76,5 +87,6 @@ function iqss_gking_research_group_tabify(){
 
   $("#content").tabs({ fx: { opacity: 'toggle' }, cache: true, load: function(event, ui) { Drupal.behaviors.CToolsDropdown(); } });
 }
+
 
 
