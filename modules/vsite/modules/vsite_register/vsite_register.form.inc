@@ -148,6 +148,18 @@ function _vsite_register_user_form() {
     '#field_suffix' => theme('vsite_register_form_errors', array('name'=>'name')),
   );
 
+  $form['first_name'] = array(
+    '#type' => 'textfield',
+    '#size' => 35,
+    '#title' => t('First name'),
+  );
+
+  $form['last_name'] = array(
+    '#type' => 'textfield',
+    '#size' => 35,
+    '#title' => t('Last name'),
+  );
+
   $form['mail'] = array(
     '#type' => 'textfield',
     '#size' => 35,
@@ -198,6 +210,8 @@ function vsite_register_form_submit(&$form, &$state) {
     	'pass' => $values['password'],
     	'mail' => $values['mail'],
     	'status' => 1,
+      'field_first_name' => $values['first_name'],
+      'field_last_name' => $values['last_name'],
     );
     $site_owner = os_user_create($user_options);
 

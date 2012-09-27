@@ -34,6 +34,12 @@
  *   The new user account or false if there was an error.
  */
 function os_user_create($user_info) {
+  foreach(array('field_last_name', 'field_first_name') as $field) {
+    if (isset($user_info[$field])) {
+      $user_info[$field] = array(LANGUAGE_NONE=>array(array('value'=>$user_info[$field])));
+    }
+  }
+
   $account = user_save(NULL, $user_info);
 
   if (!$account || !isset($account->uid)){

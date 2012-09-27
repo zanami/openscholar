@@ -7,10 +7,8 @@
  *
  * @return array - returns form for pinserver administrative settings
  */
-function pinserver_config(){
+function pinserver_config() {
   global $base_url;
-
-error_log(DRUPAL_ROOT);
 
   $form['pinserver'] = array(
     '#type' => 'fieldset',
