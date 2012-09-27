@@ -47,6 +47,9 @@ function os_activity_views_pre_render(&$view) {
     return;
   }
 
+  // Adding css for the os activity view.
+  drupal_add_css(drupal_get_path('module', 'os_activity') . '/css/os_activity.css');
+
   $mids = array();
   foreach ($view->result as $item) {
     $mids[$item->mid] = $item->mid;
@@ -78,9 +81,6 @@ function os_acitvity_register_message(Message $message = NULL) {
     // Message is not related to a specific group.
     return;
   }
-
-  // Adding css for the os activity view.
-  drupal_add_css(drupal_get_path('module', 'os_activity') . '/css/os_activity.css');
 
   // We don't use a wrapper for performance reasons.
   $gid = $message->field_group[LANGUAGE_NONE][0]['target_id'];
