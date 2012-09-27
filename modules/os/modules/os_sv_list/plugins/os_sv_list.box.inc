@@ -200,11 +200,16 @@ class os_sv_list_box extends os_boxes_default {
       $nids = $biblio_nids;
     }
 
+    $more_link = FALSE;
+
     if (count($nids)) {
-      $nids = array_slice($nids, 0, $options['number_of_items']);
+      if (count($nids) > $options['number_of_items']) {
+        $nids = array_slice($nids, 0, $options['number_of_items']);
+        $more_link = TRUE;
+      }
+
       $display_func = (method_exists($this, $options['display'])) ? $options['display'] : 'display_title';
       $nodes = node_load_multiple($nids);
-
       $block['content'] = $this->$display_func($nodes);
     }
 
@@ -222,7 +227,7 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // more link
-    if ($options['more']) {
+    if ($options['more'] && $more_link) {
       $block['content'] .= l($options['more_text'], $options['more_link'], array('attributes' => array('class' => array('more-link'))));
     }
 
