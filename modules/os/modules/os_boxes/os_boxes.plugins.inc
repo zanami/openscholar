@@ -140,7 +140,7 @@ function _os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_follow'] = array(
-    'title' => 'Follow Me Widget',
+    'title' => 'Follow Me',
     'description' => 'Displays a list of links to your social media profiles.',
     'tags' => array('Social'),
     'handler' => array(
@@ -176,7 +176,7 @@ function _os_boxes_boxes_plugins() {
   );
 
   $info['os_taxonomy_fbt'] = array(
-    'title' => 'Taxonomy widget',
+    'title' => 'Taxonomy',
     'description' => 'Filter content by category',
     'tags' => array('Content'),
     'handler' => array(

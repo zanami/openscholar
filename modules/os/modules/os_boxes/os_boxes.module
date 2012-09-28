@@ -224,6 +224,10 @@ function os_boxes_get_factories() {
     }
   }
   ksort($items);
+  // move misc to the bottom of the list
+  $misc = $items['Misc'];
+  unset($items['Misc']);
+  $items['Misc'] = $misc;
 
   return $items;
 }
@@ -242,6 +246,12 @@ function os_boxes_get_tags() {
       }
     }
   }
+  ksort($items);
+  // move misc to the bottom of the list
+  $misc = $items['Misc'];
+  unset($items['Misc']);
+  $items['Misc'] = $misc;
+
 
   return $items;
 }

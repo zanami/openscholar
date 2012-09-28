@@ -330,7 +330,7 @@ function os_publications_os_add_new_links_alter(&$links) {
  * Removes some things our users don't need to know about from the import form
  * They don't need to know about batch processing, user id or taxonomy settings
  */
-function os_publications_form_biblio_import_form_alter(&$form, $form_state) {
+function os_publications_form_biblio_import_form_alter(&$form, &$form_state) {
 
   // always use batch processing
   // 99% of our users won't know what this is anyway
@@ -343,6 +343,17 @@ function os_publications_form_biblio_import_form_alter(&$form, $form_state) {
 
   // unset taxonomy settings
   unset($form['import_taxonomy']);
+}
+
+/**
+ * Alters the import batch to redirect to the publication's root
+ * Has to be done this way, since Import batch doesn't get the import form's form_state
+ */
+function os_publications_batch_alter(&$batch) {
+  $base = variable_get('biblio_base', 'biblio');
+  if ($batch['source_url'] == $base.'/import') {
+    $batch['redirect'] = $base;
+  }
 }
 
 // Clear relevant caches when a biblio node is added, changed or deleted

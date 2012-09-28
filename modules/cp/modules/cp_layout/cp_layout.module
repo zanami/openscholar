@@ -195,7 +195,6 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
 
   $variables['factory_html'] = theme('ctools_dropdown', $vars);
 
-  sort($variables['tags']);
   array_unshift($variables['tags'], 'All');
 }
 
