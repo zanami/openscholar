@@ -1,7 +1,7 @@
-diff --git a/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc b/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc
+diff --git a/includes/biblio.pages.inc b/includes/biblio.pages.inc
 index 0e8cc9e..4f9a970 100644
---- a/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc
-+++ b/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc
+--- a/includes/biblio.pages.inc
++++ b/includes/biblio.pages.inc
 @@ -554,7 +554,7 @@ function _biblio_sort_tabs() {
    $sort_links = array();
    $tabs = variable_get('biblio_sort_tabs_style', 0);

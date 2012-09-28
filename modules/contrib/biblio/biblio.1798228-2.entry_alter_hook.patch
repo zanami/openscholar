@@ -6,7 +6,7 @@ index 326a9fb..c326b86 100644
      );
    }
  
-+  drupal_alter('biblio_entry', $entry);
++  drupal_alter('biblio_entry', $entry, $node);
 +
    return $entry;
  }

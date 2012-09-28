@@ -1,7 +1,7 @@
-diff --git a/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc b/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc
+diff --git a/includes/biblio.pages.inc b/includes/biblio.pages.inc
 index ee335c4..ffd0185 100644
---- a/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc
-+++ b/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc
+--- a/includes/biblio.pages.inc
++++ b/includes/biblio.pages.inc
 @@ -313,6 +313,9 @@ function biblio_build_query($arg_list) {
    //add a tag of "node_access" to ensure that only nodes to which the user has access are retrieved
    $query->addTag('node_access');
