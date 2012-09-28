@@ -1,22 +1,25 @@
 <?php
-
 class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
 
-  public function __construct() {
+  public function __construct(){
     $this->source_object = $this->dest_object = 'variable';
     parent::__construct();
   }
 
-  public function query() {
+  public function query(){
     $query = parent::query();
     //$query->condition('object_id', 'spaces_features');
 
-    $blacklist = array('vsite_design_disable_shield', 'vsite_shields_disable_shield');
+
+    $blacklist = array(
+      'vsite_design_disable_shield',
+      'vsite_shields_disable_shield'
+    );
     $query->condition('object_id', $blacklist, 'NOT IN');
     return $query;
   }
 
-  public function prepareRow(&$row) {
+  public function prepareRow(&$row){
     //correct some known unserialized rows
     if ($row->value == '0') {
       $row->value = 'b:0;';
@@ -33,7 +36,9 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     }
     $object_id = $row->object_id;
     if ($this->_discontinued_variable($object_id)) {
-      parent::saveMessage(t('Dropping variable: @var', array('@var' => $object_id)), MigrationBase::MESSAGE_INFORMATIONAL);
+      parent::saveMessage(t('Dropping variable: @var', array(
+        '@var' => $object_id
+      )), MigrationBase::MESSAGE_INFORMATIONAL);
       return FALSE;
     }
 
@@ -46,6 +51,12 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     //scholar_publications variables:
     if (preg_match('/^scholar_publications/', $row->object_id)) {
       $object_id = $this->_update_variables_scholar_publications($row->object_id);
+    }
+
+    //Comments
+    if ($row->object_id == 'facebook_comments_nodetypes') {
+      $fb_preset = "Facebook Comments";
+      $row->object_id = "fb_social_{$fb_preset}_nodetypes";
     }
 
     /*
@@ -67,15 +78,19 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   *
   * Updates flavor variables and names.
   */
-  public function _update_flavors($object_id, $value) {
+  public function _update_flavors($object_id, $value){
     $object_id = preg_replace('/vsite_design_scholar/', 'os_appearance', $object_id);
     $value = preg_replace('/^scholar_/', '', $value);
-    return array($object_id, $value);
+    return array(
+      $object_id,
+      $value
+    );
   }
 
-  public function _update_variables_scholar_publications($object_id) {
+  public function _update_variables_scholar_publications($object_id){
     return preg_replace('/^scholar_/', 'os_', $object_id);
   }
+
   /**
    * pseudo hooks (for lack of a better term)
    *
@@ -88,52 +103,85 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   /**
    * Update the spaces_features variable by fixing the module names.
    */
-  public function _update_variable_spaces_features($object_id, array $value) {
+  public function _update_variable_spaces_features($object_id, array $value){
     $spaces_features = array();
-    foreach ($value as $feature => $enabled) {
+    foreach ( $value as $feature => $enabled ) {
       $spaces_features[$this->_update_module($feature)] = $enabled;
     }
-    return array($object_id, $spaces_features);
+    return array(
+      $object_id,
+      $spaces_features
+    );
   }
 
   /**
    * spaces_preset_og variable
    */
-  public function _update_variable_spaces_preset_og($object_id, $value) {
+  public function _update_variable_spaces_preset_og($object_id, $value){
     $presets = array(
       'scholar' => 'os_personal',
-      'project' => 'os_department',
+      'project' => 'os_department'
     );
 
-    return (isset($presets[$value])) ? array($object_id, $presets[$value]) : FALSE;
+    return (isset($presets[$value])) ? array(
+      $object_id,
+      $presets[$value]
+    ) : FALSE;
   }
 
   //vsite_ga_google_analytics_id => os_ga_google_analytics_id
-  public function _update_variable_vsite_ga_google_analytics_id($object_id, $value) {
-    return array('os_ga_google_analytics_id', $value);
+  public function _update_variable_vsite_ga_google_analytics_id($object_id, $value){
+    return array(
+      'os_ga_google_analytics_id',
+      $value
+    );
   }
 
   //vsite_shields_shield_info => os_shields_shield_info
-  public function _update_variable_vsite_shields_shield_info($object_id, $value) {
-    return array('os_shields_shield_info', $value);
+  public function _update_variable_vsite_shields_shield_info($object_id, $value){
+    return array(
+      'os_shields_shield_info',
+      $value
+    );
   }
 
   // vsite_shields_shield => os_shields_shield
-  public function _update_variable_vsite_shields_shield($object_id, $value) {
-    return array('os_shields_shield', $value);
+  public function _update_variable_vsite_shields_shield($object_id, $value){
+    return array(
+      'os_shields_shield',
+      $value
+    );
   }
 
   // check if a variable is discontinued
-  public function _discontinued_variable($object_id) {
-    $discontinued = array(
-      'vsite_design_disable_shield',
-      'vsite_shields_disable_shield',
-      'vsite_design_maintheme', //Populated directly from og_theme
-      'scholar_front_show_title', //No longer used
-    );
+  public function _discontinued_variable($object_id){
+    static $discontinued;
+
+    if (! isset($discontinued)) {
+      $discontinued = array(
+        'vsite_design_disable_shield',
+        'vsite_shields_disable_shield',
+        'vsite_design_maintheme', //Populated directly from og_theme
+        'scholar_front_show_title' //No longer used
+      );
+
+      foreach ( node_type_get_names() as $bundle => $value ) {
+        $node_type = AbstractNodeOSMigration::get_source_bundle($bundle);
+        $discontinued = array_merge($discontinued, array(
+          "comment_default_order_{$node_type}",
+          "comment_default_mode_{$node_type}",
+          "comment_controls_{$node_type}",
+          "comment_anonymous_{$node_type}",
+          "comment_default_per_page_{$node_type}",
+          "comment_form_location_{$node_type}",
+          "comment_preview_{$node_type}",
+          "comment_subject_field_{$node_type}"
+        ));
+      }
+    }
+
     return in_array($object_id, $discontinued);
   }
-
 }
 
 
