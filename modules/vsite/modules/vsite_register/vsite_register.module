@@ -49,14 +49,14 @@ function vsite_register_block_view($delta = '') {
   switch ($delta) {
     case 'get_your_site_block':
       if (vsite_vsite_exists_access()) {
-        $content = l('Create your site', 'site/register', array());
+        $content = l(t('Create your site'), 'site/register', array());
         
       } elseif ($vsites = vsite_get_vsite_by_owner()) {
         
         if (count($vsites > 1)) {
-          $content = l('Go to your sites', 'user');
+          $content = l(t('Go to your sites'), 'user');
         } else {
-          $content = l('Go to your site', $vsites[0]->og->purl);
+          $content = l(t('Go to your site'), $vsites[0]->og->purl);
         }
       }
       
