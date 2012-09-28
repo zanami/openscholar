@@ -55,6 +55,18 @@ function os_help_help($path, $arg) {
 }
 
 /**
+ * Impements hook_process_HOOK for page.tpl.php.
+ */
+function os_help_process_page(&$vars) {
+  $path = drupal_get_path_alias();
+  $arg = array();
+  $help = (os_help_help($path, $arg));
+  if ($help) {
+    $vars['page']['help'] = $help;
+  }
+}
+
+/**
  * Implements hook_form_FORM_ID_form_alter() for spaces_features_form
  */
 function os_help_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
