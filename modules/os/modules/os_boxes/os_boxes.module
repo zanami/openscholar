@@ -223,6 +223,7 @@ function os_boxes_get_factories() {
       );
     }
   }
+  ksort($items);
 
   return $items;
 }
