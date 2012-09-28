@@ -210,14 +210,24 @@ function _cp_layout_box_delta($factory) {
     return FALSE;
   }
   $path_parts = explode('/', $factory['block_config_path']);
-  // Returns the last element of the array, or FALSE if empty.
-  return end($path_parts);
+  // end() Returns the last element of the array, or FALSE if empty.
+  $box_delta = end($path_parts);
+  // Two contrib boxes provide a config path different from the PHP class name.
+  // Fixes box delta to match PHP class name for these exceptions.
+  if ($box_delta === 'twitter') {
+    $box_delta = 'twitter_pull_box';
+  }
+  if ($box_delta === 'simple') {
+    $box_delta = 'boxes_simple';
+  }
+  return $box_delta;
 }
 
 /**
  * Returns whether the help HTML file exists for box in the os_help module.
  */
 function _cp_layout_help_exists($box_delta) {
+
   $os_help_path = drupal_get_path('module', 'os_help');
   $filename = $os_help_path . '/help/' . $box_delta . '.html';
   return file_exists($filename);
