@@ -210,7 +210,11 @@ function os_boxes_get_factories() {
     $dummy = new stdClass();
     $dummy->plugin_key = $p;
     if (boxes_access('create', $dummy) && isset($info['title']) && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
-      $items["boxes-boxes_add__$p"] = array(
+      $tag = 'Misc';
+      if (!empty($info['tags'])) {
+        $tag = current($info['tags']);
+      }
+      $items[$tag]["boxes-boxes_add__$p"] = array(
         'module' => 'boxes',
         'delta' => "boxes_add__$p",
         'label' => $info['title'],
@@ -219,6 +223,7 @@ function os_boxes_get_factories() {
       );
     }
   }
+  ksort($items);
 
   return $items;
 }
