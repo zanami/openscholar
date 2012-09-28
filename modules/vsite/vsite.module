@@ -3,10 +3,6 @@ include_once ('vsite.features.inc');
 include_once ('includes/vsite.inc');
 
 /**
- * Public Functions
- */
-
-/**
  * Helper function to return the current vsite
  */
 function vsite_get_vsite($sid = false){
@@ -68,11 +64,15 @@ function vsite_group_default_homepage_value($entity_type, $entity, $field, $inst
   // Is this a group node
   if (og_is_group_type($entity_type, $bundle) && isset($entity->purl)) {
     // When a site is first created it does not have a domain provider, use the
-    // path provider that is attached to the entity, the site-path token will fill-in the base domain
+    // path provider that is attached to the entity, we can't use the standard
+    // purl modifier here because the entry has not been made in the table yet
     return array(
       0 => array(
         'title' => '',
-        'url' => '[site:url]'.$entity->purl['value']
+        'url' => url($entity->purl['value'], array(
+          'base_url' => variable_get('purl_base_domain', $base_url),
+          'absolute' => true
+        ))
       )
     );
   }
@@ -154,7 +154,7 @@ function vsite_spaces_registry_alter(&$registry){
  *
  * @return boolean
  */
-function vsite_vsite_exists_access($vsites = array()){
+function vsite_vsite_exists_access($vsites = array()) {
   global $user;
 
   // load user's vsites. anon (uid 0) has no vsites
@@ -163,17 +163,33 @@ function vsite_vsite_exists_access($vsites = array()){
     $vsites = vsite_get_vsite_by_owner($user->uid);
   }
 
-  // if user has permissions to create sites, return true
+  // Does user have permission to create vsites?
   if (! user_access('create vsite content on behalf') && ! user_access('create vsite content')) {
-    // drupal_set_message(t('You do not have permission to create new sites.'),
-    // 'error', FALSE);
+    if(current_path() == 'site/register') {
+      // Set error message when appropriate.
+      global $base_url;
+      drupal_get_messages();  // Clear message queue.
+      drupal_set_message(t('You do not have permission to create new OpenScholar sites. !link',
+        array('!link' => l(t('Return home.'), $base_url))
+      ), 'error');
+    }
+
     return FALSE;
   }
 
-  // user owns one or more sites
-  if (! (count($vsites) < variable_get('os_vsites_per_user', 1) || user_access('create openscholar site on behalf of others'))) {
-    // drupal_set_message(t('You have already created the maximum of %num OS
-    // sites.', array('%num' => count($vsites))), 'error', FALSE);
+  // Can user create more vsites?
+  if (! (count($vsites) < variable_get('os_vsites_per_user') || user_access('create vsite on behalf'))) {
+    if(current_path() == 'site/register') {
+      // Set error message when appropriate.
+      drupal_get_messages();  // Clear message queue.
+      drupal_set_message(t('You have already created the maximum of %num OpenScholar !sites. !link', 
+        array('%num' => count($vsites),
+              '!sites' => count($vsites) > 1 ? 'sites' : 'site',
+              '!link' => l(t('Go to your site' . (count($vsites) > 1 ? 's.' : '.')), count($vsites) > 1 ? 'user' : $vsites[0]->get_absolute_url()),
+        )
+      ), 'error');
+    }
+
     return FALSE;
   }
 
@@ -602,7 +618,7 @@ function vsite_attach_fields_to_group($bundle){
         'display' => array(
           'url_cutoff' => '80'
         ),
-        'enable_tokens' => 1,
+        'enable_tokens' => 0,
         'rel_remove' => 'default',
         'title' => 'none',
         'title_maxlength' => '128',

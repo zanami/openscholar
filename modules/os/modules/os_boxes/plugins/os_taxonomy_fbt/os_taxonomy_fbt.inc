@@ -15,7 +15,6 @@ class os_taxonomy_fbt extends os_boxes_default {
     $options = parent::options_defaults();
 
     $options['vocabulary'] = false;
-    $options['views'] = false;
     $options['bundles'] = array('--all--');
     $options['range'] = 10;
     $options['offset'] = 0;
@@ -66,13 +65,6 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#required' => TRUE,
     );
 
-    $form['views'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Dispaly as a simple view'),
-      '#description' => t('When displaying as a simple view, the vocaulary will ' .
-      'be rendered using views and display a list with number of tagged nodes.'),
-    );
-
     $form['bundles'] = array(
       '#type' => 'select',
       '#title' => t('Bundle types'),
@@ -80,54 +72,36 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#description' => t('The bundles type of the tagged node that will include in the count'),
       '#multiple' => TRUE,
       '#size' => count(self::get_all_bundles()) / 2,
-      '#dependency' => array(
-        'edit-views' => array(0),
-      ),
     );
 
     $form['range'] = array(
       '#type' => 'textfield',
       '#title' => t('Number of terms to display'),
       '#description' => t('Maximum number of terms to display.'),
-      '#dependency' => array(
-        'edit-views' => array(0),
-      ),
     );
 
     $form['offset'] = array(
       '#type' => 'textfield',
       '#title' => t('Offset'),
       '#description' => t("The term location that the query start from."),
-      '#dependency' => array(
-        'edit-views' => array(0),
-      ),
     );
 
     $form['show_empty_terms'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show empty terms'),
       '#description' => t('Should terms be shown that do not have any posts tagged to them.'),
-      '#dependency' => array(
-        'edit-views' => array(0),
-      ),
     );
 
     $form['terms_description'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show term descriptions'),
       '#description' => t('Show the description of the term if avalible under each term.'),
-      '#dependency' => array(
-        'edit-views' => array(0),
-      ),
     );
 
     $form['show_childs'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show child terms'),
       '#description' => t('Controll if to show the childrens with their father term.'),
-      '#dependency' => array(
-        'edit-views' => array(0),
-      ),
     );
 
     $form['add_childs'] = array(
