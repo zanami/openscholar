@@ -104,9 +104,14 @@ border-radius:5px;
 
 /**** MAIN NAV BAR ****/
 
-#menu-bar #block-os-site_search {
-	float:right;
-	margin-bottom:-5px;
+#menu-bar #block-os-site_search,
+#menu-bar .block-os-search-db {
+	   float: right;
+    margin-top: 7px;
+}
+
+#menu-bar #block-os-primary-menu {
+	float:left;
 }
 
 #menu-bar {
