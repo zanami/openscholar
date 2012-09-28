@@ -314,10 +314,8 @@
 }
 
 .page-cp-build-layout #cp-layout-full-form .ctools-dropdown .ctools-dropdown-link-wrapper a {
-	color:#FFF;
-	}
-
-
+  color:#FFF;
+}
 
 html.js #cp-layout-full-form div.ctools-dropdown div.ctools-dropdown-container {
   background:#FFFFFF;
@@ -336,26 +334,28 @@ html.js #cp-layout-full-form div.ctools-dropdown div.ctools-dropdown-container {
 
 .page-cp-build-layout div.ctools-dropdown div.ctools-dropdown-container ul li a {
   color: #293352 !important;
-  float:left;
   display:inline;
   width:90%;
+  float: left;
 }
 
-/*
-html.js div.ctools-dropdown div.ctools-dropdown-container ul li span {
-    background:#ccc;
+html.js .page-cp-build-layout div.ctools-dropdown div.ctools-dropdown-container ul li span {
+  background-color: #FFFFFF;
+  color: #494949;
 }
-*/
+
 .page-cp-build-layout div.ctools-dropdown div.ctools-dropdown-container ul li a.help {
   float:right;
   display:inline;
   width:10%;
-background: url("../../../../../themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 -297px transparent;
-height: 19px;
- text-indent: -999em;
-  
+  background: url("../../../../../themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 -297px transparent;
+  height: 19px;
+  text-indent: -999em;
 }
 
-
-
-
+.page-cp-build-layout div.ctools-dropdown div.ctools-dropdown-container ul li span.group {
+  font-weight: bold;
+  font-size: 1em;
+  text-align: center;
+  padding-bottom: 8px;
+}

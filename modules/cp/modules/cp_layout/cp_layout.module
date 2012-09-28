@@ -142,33 +142,44 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
   $factories = &$variables['factories'];
 
   $links = array();
-  foreach ($factories as $factory) {
-    $l = array(
-      'html' => TRUE,
-      'title' => '',
-    );
-
-    $href    = $factory['block_config_path'] . '/cp-layout';
-    $title   = $factory['label'];
-    $options = array();
-    $html    = l($title, $href, $options);
-
-    $help_opts = array(
+  foreach ($factories as $group => $f) {
+    $links[] = array(
+      'title' => $group,
       'attributes' => array(
-        'class' => 'help',
-        'onclick' => "var w=window.open(this.href, 'advanced_help_window', 'width=500,height=500,scrollbars,resizable'); w.focus(); return false;",
-      ),
-      'query' => array(
-        'popup' => 1,
-      ),
+        'class' => array('group')
+      )
     );
-    $box_delta = _cp_layout_box_delta($factory);
-    $help_exists = _cp_layout_help_exists($box_delta);
-    if ($help_exists) {
-      $html .= ' ' . l('?', 'help/os_help/' . $box_delta, $help_opts);
+    foreach ($f as $factory) {
+      $l = array(
+        'html' => TRUE,
+        'title' => '',
+        'attributes' => array(
+          'class' => array('clearfix')
+        )
+      );
+
+      $href    = $factory['block_config_path'] . '/cp-layout';
+      $title   = $factory['label'];
+      $options = array();
+      $html    = l($title, $href, $options);
+
+      $help_opts = array(
+        'attributes' => array(
+          'class' => 'help',
+          'onclick' => "var w=window.open(this.href, 'advanced_help_window', 'width=500,height=500,scrollbars,resizable'); w.focus(); return false;",
+        ),
+        'query' => array(
+          'popup' => 1,
+        ),
+      );
+      $box_delta = _cp_layout_box_delta($factory);
+      $help_exists = _cp_layout_help_exists($box_delta);
+      if ($help_exists) {
+        $html .= ' ' . l('?', 'help/os_help/' . $box_delta, $help_opts);
+      }
+      $l['title'] = $html;
+      $links[] = $l;
     }
-    $l['title'] = $html;
-    $links[] = $l;
   }
   if (count($links) == 0) {
     $links[] = array(
