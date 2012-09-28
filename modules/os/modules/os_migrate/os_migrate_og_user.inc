@@ -57,11 +57,26 @@ class OgUsersOSMigration extends OSMigration {
  * Destination class implementing migration into an OG Audience field.
  */
 class MigrateDestinationOSUserOGMembership extends MigrateDestinationOGMembership {
+
   /**
    * Provides some OS specific post-processing to handle roles
-   * @param og_membership $entity
+   *
+   * @param $entity
+   *  Object object to build. Prefilled with any fields mapped in the Migration.
+   * @param $row
+   *  Raw source data object - passed through to prepare/complete handlers.
+   * @return array
+   *  Array of key fields of the object that was saved if
+   *  successful. FALSE on failure.
    */
-  public function complete($entity, $row){
+  public function import(stdClass $entity, stdClass $row) {
+
+    //Standard membership create
+    $return = parent::import($entity, $row);
+
+    if ($entity->entity_type != 'user') {
+      return $return;
+    }
 
     $cache = &drupal_static(__FUNCTION__, array());
     if (isset($cache["$entity->group_type:$entity->gid"])) {
@@ -83,6 +98,7 @@ class MigrateDestinationOSUserOGMembership extends MigrateDestinationOGMembershi
       og_role_grant($entity->group_type, $entity->gid, $entity->etid, $rid);
     }
 
+    return $return;
   }
 
   /**
