@@ -37,6 +37,7 @@ dependencies[] = entity
 dependencies[] = token
 dependencies[] = pathauto
 dependencies[] = biblio
+dependencies[] = advanced_help
 
 ; media / files / wysiwyg
 dependencies[] = imagefield_crop
@@ -56,6 +57,7 @@ dependencies[] = views_slideshow_cycle
 
 ; OS
 dependencies[] = os
+dependencies[] = os_help
 dependencies[] = os_files
 dependencies[] = os_boxes
 dependencies[] = os_wysiwyg

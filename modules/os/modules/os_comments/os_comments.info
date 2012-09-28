@@ -18,3 +18,4 @@ features[user_permission][] = edit own comments
 features[user_permission][] = post comments
 features[user_permission][] = skip comment approval
 features[user_permission][] = toggle disqus comments
+features[user_permission][] = view disqus comments

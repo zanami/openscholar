@@ -291,6 +291,7 @@ function comment_sources_form_alter(&$form, $form_state, $form_id) {
     if (isset($node->type)) {
       $default_source = comment_sources_get_source($node->type);
       $default_source = preg_replace('/:.*$/', '', $default_source); // Remove the preset name from fb_social sources
+
       switch ($default_source) {
         case 'comment':
         case '':
@@ -586,12 +587,25 @@ function _comment_sources_recent_comments_fb_social($content_type, $count) {
 }
 
 /**
- * Add javascript for recording comments made in a third-party system
+ * Implements hook_node_view
  */
 function comment_sources_node_view($node, $view_mode) {
+  //Add javascript for recording comments made in a third-party system
   if (!in_array(comment_sources_get_source($node->type), array('comment', ''))) {
     drupal_add_js(array('comment_sources' => array('nid' => $node->nid)), 'setting');
     drupal_add_js(drupal_get_path('module', 'comment_sources') . '/comment_sources.js');
+  }
+}
+
+/**
+  * Implements hook_node_load().
+  * For Disqus nodes, checks to see if the comments should be displayed
+  */
+function comment_sources_node_load($nodes, $types) {
+  foreach ($nodes as &$node) {
+    if (isset($node->disqus)) {
+      $node->disqus['status'] = comment_sources_should_display_comments($node,'disqus');
+    }
   }
 }
 
@@ -667,18 +681,6 @@ function comment_sources_node_insert($node) {
  */
 function comment_sources_node_update($node) {
   comment_sources_node_insert($node);
-}
-
-/**
- * Implements hook_node_load().
- * For Disqus nodes, checks to see if the comments should be displayed
- */
-function comment_sources_node_load($nodes, $types) {
-  foreach ($nodes as &$node) {
-    if (comment_sources_has_comments($node,'disqus') || (comment_sources_get_source($node->type) == 'disqus')) {
-      $node->disqus['status'] = comment_sources_should_display_comments($node,'disqus');
-    }
-  }
 }
 
 /**

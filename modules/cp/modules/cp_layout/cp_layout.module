@@ -172,10 +172,10 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
           'popup' => 1,
         ),
       );
-      $box_delta = _cp_layout_box_delta($factory);
-      $help_exists = _cp_layout_help_exists($box_delta);
+      $box_plugin_key = _cp_layout_box_plugin_key($factory);
+      $help_exists = _cp_layout_help_exists($box_plugin_key);
       if ($help_exists) {
-        $html .= ' ' . l('?', 'help/os_help/' . $box_delta, $help_opts);
+        $html .= ' ' . l('?', 'help/os_help/' . $box_plugin_key, $help_opts);
       }
       $l['title'] = $html;
       $links[] = $l;
@@ -195,30 +195,35 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
 
   $variables['factory_html'] = theme('ctools_dropdown', $vars);
 
-  sort($variables['tags']);
   array_unshift($variables['tags'], 'All');
 }
 
 /**
- * Returns the box delta of a factory array, or FALSE if none found.
+ * Returns the box plugin key of a factory array, or FALSE if none found.
+ *
+ * The last part of the config path is just the plugin key, which is declared
+ * in modules' hook_boxes_plugins().
  *
  * @param array $factory
  *
- * @return string|bool
+ * @return string|bool $box_plugin_key;
  */
-function _cp_layout_box_delta($factory) {
+function _cp_layout_box_plugin_key($factory) {
   if (!isset($factory['block_config_path'])) {
     return FALSE;
   }
   $path_parts = explode('/', $factory['block_config_path']);
-  // Returns the last element of the array, or FALSE if empty.
-  return end($path_parts);
+  // end() Returns the last element of the array, or FALSE if empty.
+  $box_plugin_key = end($path_parts);
+
+  return $box_plugin_key;
 }
 
 /**
  * Returns whether the help HTML file exists for box in the os_help module.
  */
 function _cp_layout_help_exists($box_delta) {
+
   $os_help_path = drupal_get_path('module', 'os_help');
   $filename = $os_help_path . '/help/' . $box_delta . '.html';
   return file_exists($filename);

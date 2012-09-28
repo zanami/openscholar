@@ -137,11 +137,10 @@ function cp_user_create_new_user(){
 function cp_user_form_user_register_form_alter(&$form, &$form_state, $form_id) {
   // The only time we want to alter this form is when the user is in their "cp",
   // other than that the form should not get altered.
-  $path = trim($_GET['q'], '/');         // Get the current normal drupal path.
-  $path = drupal_get_path_alias($path);  // Get its alias.
-  $path = explode('/', $path);           // Break it up.
+  $path = request_path();
+  $path = explode('/', $path);
 
-  if($path[0] == 'cp') {
+  if(in_array('cp', $path)) {
     // Create a hidden field to control our JS
     $form['switch'] = array(
       '#title' => t('switch'),
@@ -152,6 +151,12 @@ function cp_user_form_user_register_form_alter(&$form, &$form_state, $form_id) {
 
 	// Add a secondary submit function that also submits the user add function
     $form['#submit'][] = 'cp_user_user_register_submit';
+    // Remove the 'status' and 'role' elements from the form.
+    $form['account']['status']['#access'] = FALSE;
+    $form['account']['roles']['#access'] = FALSE;
+    // Change the submit button text to let the user know they will also be adding to their site
+    // as well as creating the user, in one step.
+    $form['actions']['submit']['#value'] = 'Create and Add User';
   }
 
 }

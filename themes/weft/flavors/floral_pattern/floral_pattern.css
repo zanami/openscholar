@@ -1,5 +1,5 @@
 #extradiv {
-  background-image: url('../images/fabric-strip-floral-pattern.png');
+  background-image: url('images/fabric-strip-floral-pattern.png');
   }
 
 body {
@@ -7,7 +7,7 @@ body {
   }
 
 #menu-bar {
-  background: url('../images/menu-strip-floral-pattern.png') #8B3015;
+  background: url('images/menu-strip-floral-pattern.png') #8B3015;
   }
 
 a, a:visited {
