@@ -112,4 +112,11 @@ class TermOSMigration extends DynamicMigration {
 
     return TRUE; // FALSE to skip a row.
   }
+
+  /**
+   * Generate the machine name for this class
+   */
+  protected function generateMachineName() {
+    return "TermOSMigrationvocabulary_" . $this->arguments['src_vid'];
+  }
 }

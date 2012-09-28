@@ -69,6 +69,11 @@ class OsOgVocabMigrate extends DynamicMigration {
     $term = taxonomy_term_load($row->tid);
     $bundle = $this->arguments['bundle'];
 
+    if(!$term){
+      throw new MigrateException(t('The specified term %tid could not be loaded for bundle %bundle.',
+        array('%tid' => $row->tid, '%bundle' => $bundle)));
+    }
+
     if (!og_vocab_load_og_vocab($term->vid, 'node', $bundle)) {
       // Create an OG vocab, based on the vocabulary settings.
 
