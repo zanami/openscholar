@@ -82,6 +82,9 @@ function os_help_form_cp_layout_full_form_alter(&$form, &$form_state, $form_id) 
 
 /**
  * Recursively traverses a form object as an array and adds help links.
+ *
+ * @see os_help_form_cp_layout_full_form_alter()
+ * @see os_help_form_spaces_features_form_alter()
  */
 function _os_help_traverse_form(&$element, $form_id) {
   if (is_object($element)) {
@@ -103,9 +106,7 @@ function _os_help_attach_help_link(&$element, $form_id) {
   // Ignores elements without a type value or with an excluded type.
   $ignore       = array('button', 'image_button', 'submit', 'markup', 'token', 'hidden', 'form', 'value', 'weight');
   $is_ignored   = (bool) (!isset($element['#type']) || in_array($element['#type'], $ignore));
-  $except       = array('spaces_features_form');
-  $is_exception = (bool) (in_array($form_id, $except));
-  if ($is_ignored && !$is_exception) {
+  if ($is_ignored) {
     return;
   }
 
@@ -121,19 +122,17 @@ function _os_help_attach_help_link(&$element, $form_id) {
     drupal_add_css(drupal_get_path('module', 'os_help') . '/os_help.css');
     $link = preg_replace('/class="(.+?)"/', 'class="\1 os_help-nofloat"', $link);
   }
-  if ($is_exception) {
-    $element['#prefix'] = $link . '<br/>';
-    return;
-  }
+
   $element['#description'] = isset($element['#description']) ? $link . ' ' . $element['#description'] : $link;
 }
 
 /**
  * Returns theme variables for a given OS Help topic ID, or FALSE if none found.
+ *
+ * @see _os_help_attach_help_link()
  */
 function _os_help_get_theme_variables($id) {
   static $theme_variables = array(
-    'spaces_features_form' => array('module' => 'os_help', 'topic' => 'Features'),
     'spaces_features_form:spaces_features:os_announcements' => array('module' => 'os_help', 'topic' => 'Announcement-feature'),
     'spaces_features_form:spaces_features:os_biocv' => array('module' => 'os_help', 'topic' => 'Bio---CV-feature'),
     'spaces_features_form:spaces_features:os_blog' => array('module' => 'os_help', 'topic' => 'Blog-feature'),
