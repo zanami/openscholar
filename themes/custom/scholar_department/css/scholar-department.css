@@ -264,11 +264,15 @@ h5 span {
 /**** MAIN NAV BAR ****/
 
 
-#block-os-site_search {float:right;
-display:inline;
-clear:right;
- margin: 5px 15px 0 0;
+#menu-bar #block-os-site_search,
+#menu-bar .block-os-search-db {
+	float:right;
+ margin: 9px 0;
     width: 180px;
+}
+
+#menu-bar #block-os-primary-menu {
+	float:left;
 }
 
 #menu-bar {
