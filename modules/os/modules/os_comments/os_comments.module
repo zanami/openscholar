@@ -46,6 +46,7 @@ function os_comments_form_cp_feature_customize_form_alter(&$form, &$form_state, 
     	}
     }
 
+    //Use default comment_sources submit handler
     $form['#submit'][] = 'comment_sources_save_admin_form';
   }
 }
@@ -62,6 +63,26 @@ function os_comments_comment_sources_alter(&$sources){
         $sources[$source]['save_function'] = $vsite_save_function;
       }
     }
+  }
+}
+
+/**
+ * Implement hook fb_social_default_presets_alter
+ *
+ * @param array $presets
+ */
+function os_comments_fb_social_default_presets_alter(&$presets){
+
+  //Only alter multi-tenant presets
+  if(!module_exists('vsite')){
+    return;
+  }
+
+  //Apply custom node types
+  foreach ($presets as $name => $preset) {
+  	if(variable_get("fb_social_{$name}_nodetypes",FALSE) !== FALSE){
+  	  $presets[$name]->settings['node_types']['types'] = variable_get("fb_social_{$name}_nodetypes",FALSE);
+  	}
   }
 }
 
@@ -90,12 +111,8 @@ function os_comments_fb_social_save_vsite($comment_node_types, $preset_name = ''
     return false;
   }
 
-  // @todo SAVE Preset for just vsite
-  if ($preset_name && function_exists('fb_social_preset_load')) {
-    $preset = fb_social_preset_load($preset_name);
-    $preset->settings['node_types']['types'] = $comment_node_types;
-    ctools_export_crud_save($preset->table, $preset);
-  }
+  //Save node types in a variable that will be used to alter the fb_social preset
+  $vsite->controllers->variable->set("fb_social_{$preset_name}_nodetypes", $comment_node_types);
 }
 
 /**

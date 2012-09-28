@@ -96,8 +96,7 @@ function vsite_custom_theme(){
 /**
  * Alter the space presets to add vsite specific information
  *
- * @param
- *          $presets
+ * @param (array) $presets
  */
 function vsite_spaces_presets_alter(&$presets){
   ctools_include('path', 'vsite');

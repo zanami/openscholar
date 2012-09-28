@@ -74,5 +74,15 @@ function os_comments_user_default_permissions() {
     'module' => 'disqus',
   );
 
+  // Exported permission: view disqus comments.
+  $permissions['view disqus comments'] = array(
+    'name' => 'view disqus comments',
+    'roles' => array(
+      0 => 'anonymous user',
+      1 => 'authenticated user',
+    ),
+    'module' => 'disqus',
+  );
+
   return $permissions;
 }
