@@ -7,6 +7,9 @@ include_once(drupal_get_path('module', 'vsite_register') . '/vsite_register.form
  * Implementation of hook_menu_alter()
  */
 function iqss_pinserver_register_menu_alter(&$items){
+
+//error_log(__FUNCTION__);
+
   //alter the page callback function
   $items['site/register']['page callback'] = 'iqss_pinserver_register_form_access';  //change the callback function
   $items['site/register']['module'] = 'iqss_pinserver_register';
@@ -145,16 +148,19 @@ function iqss_pinserver_register_ajax_validation(&$form, &$state) {
 function iqss_pinserver_register_form_access(){
   global $user;
 
-//  include_once(drupal_get_path('module', 'vsite_register')) . '/vsite_register.form.inc';
+$d = debug_backtrace();
+//error_log(__FUNCTION__ . ' ' . $d[1]['function'] . ' ' . $d[2]['function']);
 
   /*** Check what to do before loading vsite_register form ***/
 
   // User already owns a site or has create vsite permissions - no need to send to pinserver.
   if ($vsites = vsite_get_vsite_by_owner($user->uid) || user_access('create vsite content on behalf')) {
     if (!vsite_vsite_exists_access($vsites)) {
+//error_log(__FUNCTION__ . ' vsite_exists_access false!');
       return drupal_goto(_iqss_pinserver_register_get_redirect($vsites));  //redirect user away from the form
     }
     else {
+//error_log(__FUNCTION__ . ' vsite_exists_access TRUE!');
       return drupal_get_form('vsite_register_form');
     }
   }
@@ -168,6 +174,8 @@ function iqss_pinserver_register_form_access(){
     if ($uid = iqss_pinserver_register_check_row()) {
       // User has just logged in via pinsever, determine if user already has a site.
       if($vsites = vsite_get_vsite_by_owner($uid)) {
+
+//error_log('Logged in, vsites: ' . count($vsites));
 
         $user = user_load(array('uid' => $uid));
 	$user->login = time();
