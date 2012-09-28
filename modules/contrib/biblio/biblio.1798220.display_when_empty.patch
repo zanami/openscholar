@@ -1,7 +1,7 @@
-diff --git a/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc b/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc
+diff --git a/includes/biblio.pages.inc b/includes/biblio.pages.inc
 index c00cf78..22f800a 100644
---- a/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc
-+++ b/profiles/openscholar/modules/contrib/biblio/includes/biblio.pages.inc
+--- a/includes/biblio.pages.inc
++++ b/includes/biblio.pages.inc
 @@ -215,9 +215,9 @@ function biblio_page_content($nids = array(), $extras = array()) {
  
    $content['pager']['#markup'] = theme('pager');
