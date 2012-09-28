@@ -319,6 +319,27 @@ ul.links li {
     padding-left: 15px;
 }
 
+/* MEDIA WIDGET ICONS */
+
+.media-widget a {margin-right:10px;}
+
+.media-widget a#edit-select {
+    background: url("../images/scholarbase-sprite.png") 0 -431px no-repeat;
+    color: #3A6A8C;
+    padding-left: 12px;
+   }
+
+.media-widget a.ctools-modal-media-file-edit {
+    background: url("../images/scholarbase-sprite.png") 0 -451px no-repeat;
+    color: #3A6A8C;
+    padding-left: 20px;
+   }
+
+.media-widget a.remove {
+    background: url("../images/scholarbase-sprite.png") 0 -471px no-repeat;
+    color: #3A6A8C;
+    padding-left: 17px;
+   }
 
 
 .feed-icon /* The link to the RSS or Atom feed for the current list of content */ {
