@@ -172,10 +172,10 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
           'popup' => 1,
         ),
       );
-      $box_delta = _cp_layout_box_delta($factory);
-      $help_exists = _cp_layout_help_exists($box_delta);
+      $box_plugin_key = _cp_layout_box_plugin_key($factory);
+      $help_exists = _cp_layout_help_exists($box_plugin_key);
       if ($help_exists) {
-        $html .= ' ' . l('?', 'help/os_help/' . $box_delta, $help_opts);
+        $html .= ' ' . l('?', 'help/os_help/' . $box_plugin_key, $help_opts);
       }
       $l['title'] = $html;
       $links[] = $l;
@@ -199,28 +199,24 @@ function template_preprocess_cp_layout_unused_widgets(&$variables) {
 }
 
 /**
- * Returns the box delta of a factory array, or FALSE if none found.
+ * Returns the box plugin key of a factory array, or FALSE if none found.
+ *
+ * The last part of the config path is just the plugin key, which is declared
+ * in modules' hook_boxes_plugins().
  *
  * @param array $factory
  *
- * @return string|bool
+ * @return string|bool $box_plugin_key;
  */
-function _cp_layout_box_delta($factory) {
+function _cp_layout_box_plugin_key($factory) {
   if (!isset($factory['block_config_path'])) {
     return FALSE;
   }
   $path_parts = explode('/', $factory['block_config_path']);
   // end() Returns the last element of the array, or FALSE if empty.
-  $box_delta = end($path_parts);
-  // Two contrib boxes provide a config path different from the PHP class name.
-  // Fixes box delta to match PHP class name for these exceptions.
-  if ($box_delta === 'twitter') {
-    $box_delta = 'twitter_pull_box';
-  }
-  if ($box_delta === 'simple') {
-    $box_delta = 'boxes_simple';
-  }
-  return $box_delta;
+  $box_plugin_key = end($path_parts);
+
+  return $box_plugin_key;
 }
 
 /**
