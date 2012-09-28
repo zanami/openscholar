@@ -40,6 +40,23 @@ p.copy a.poweredby {
 
 #block-os-primary-menu {margin-left:0;margin-right:0;}
 
+#menu-bar #block-os-site_search,
+#menu-bar .block-os-search-db {
+	   float: right;
+    margin-top: 11px;
+}
+
+#menu-bar .form-item-search-block-form input[type="search"] {
+	background:#505050;
+	color:#FFF;
+	border:1px solid #777;
+	
+}
+
+#menu-bar #block-os-primary-menu {
+	float:left;
+}
+
 /* TYPOGRAPHY*/ 
  
 a, a:visited {color:#293352;text-decoration:none;}
