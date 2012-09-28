@@ -17,6 +17,7 @@ class og_context_plugin_argument_default_group_context extends views_plugin_argu
     if ($group = og_context($this->options['group_type'])) {
       return $group['gid'];
     }
+    return FALSE;
   }
 
   /**
