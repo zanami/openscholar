@@ -1,5 +1,5 @@
 #extradiv {
-  background-image: url('../images/fabric-strip-devil-eye.png');
+  background-image: url('images/fabric-strip-devil-eye.png');
   }
 
 body {
@@ -7,7 +7,7 @@ body {
   }
 
 #menu-bar {
-  background: url('../images/menu-strip-devil-eye.png') #D9523C;
+  background: url('images/menu-strip-devil-eye.png') #D9523C;
   }
 
 a, a:visited {
