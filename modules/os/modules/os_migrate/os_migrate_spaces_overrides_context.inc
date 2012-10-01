@@ -85,7 +85,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     $keep = array('module', 'delta', 'region', 'weight', 'status', 'title', 'plugin', 'label');
     $block = array_intersect_key($block, array_flip($keep));
 
-    if(!in_array($id, array('boxes-scholar_reader-latest_feed_items'))){
+    if(in_array($id, array('boxes-scholar_reader-latest_feed_items'))){
       //Remove depricated blocks
       return FALSE;
     }
