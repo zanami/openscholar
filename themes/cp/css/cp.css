@@ -27,6 +27,10 @@
   overflow: auto;
   padding-bottom: 55px;
   }
+  
+#main-content {
+    padding-top: 0;
+}
 
 a {color:#4E84C4;}
 
@@ -53,37 +57,7 @@ a {color:#4E84C4;}
     padding: 10px 20px 0 15px;
   }  
 
-#block-cp-cp-subnav .block-inner {
-    margin-left: 0;
-    margin-right: 0;
-}
-
-#block-cp-cp-subnav li {
-    list-style: none outside none !important;
-    padding: 0;
-    background: none repeat scroll 0 0 #F2F3F3;
-    }
-    
-#block-cp-cp-subnav li a, #block-cp-cp-subnav li a:visited {
-    border-bottom: 1px solid #BFC6C6;
-    color: #626161;
-    display: block;
-    font-size: 13px;
-    font-weight: bold;
-    padding: 6px 23px;
-}
-
-#block-cp-cp-subnav li a:hover {
-    background: none repeat scroll 0 0 #FFFFFF;
-    text-decoration: none;
-}
-#block-cp-cp-subnav li.active a, #block-cp-cp-subnav li.active-trail a {
-    background: none repeat scroll 0 0 #B8C0C0;
-    border-color: #A4ABAB;
-    color: #000000;
-    text-decoration: none;
-    text-shadow: 0 1px 0 #E6E8EA;
-}  
+ 
 
 #block-os-powered-by {
 	float:left;
@@ -101,8 +75,31 @@ a {color:#4E84C4;}
 
 
 #edit-submit,#edit-preset {
-   
     margin-right: 15px;
+}
+
+a.advanced-help-link {
+    float: right;
+}
+
+
+.advanced-help-link {
+    background: url("../../../themes/os_basetheme/images/scholarbase-sprite.png") no-repeat 0 -150px;
+    display: block;
+    float: left;
+  margin-top: 2px;
+    padding: 0;
+  height: 19px;
+    width: 19px;
+}
+
+.advanced-help-link:hover {
+    background: url("../../../themes/os_basetheme/images/scholarbase-sprite.png") no-repeat 0 -170px;
+}
+
+
+.page-cp-build-features .form-type-select .form-select {
+    float: left;
 }
 
 /** CP TABLE STYLES **/
@@ -136,13 +133,12 @@ td {
 #spaces-features-form .spaces td {height: 50px;} 
 #spaces-features-form .spaces td.label strong {font-size: 1.1em;}    
 #spaces-features-form .spaces .description {font-size:.95em;}  
+#spaces-features-form table.spaces td.label {width: 70%;}
+#spaces-features-form table.spaces td.option {width: 20%;}
 
 .page-cp-content .view-content table {width:100%;}
 .page-cp-content-files .view-content tbody tr.even,
 .page-cp-content-comments .view-content tbody tr.even {background-color: #FFF;}
-
-
-
 
 /* CP/BUILD MENU */ 
 .page-cp-build-menu table thead {
