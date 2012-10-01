@@ -125,7 +125,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'boxes-scholar_announcements_latest' => 'boxes-os_announcements_latest',
       'boxes-scholar_blog-blog_rss' => 'boxes-blog_rss_feed',
       'boxes-scholar_presentations_recent' => 'boxes-os_presentations_recent',
-      'boxes-scholar_reader-feeds_list' => 'views-reader-block'
+      'boxes-scholar_reader-feeds_list' => 'views-reader-block',
+      'boxes-vsite_taxonomy_fltr_cat' => 'boxes-os_taxonomy_fltr_cat',
     );
 
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
@@ -142,7 +143,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'scholar_announcements_latest' => 'os_announcements_latest',
       'scholar_blog-blog_rss' => 'blog_rss_feed',
       'scholar_presentations_recent' => 'os_presentations_recent',
-      'scholar_reader-feeds_list' => 'reader-block'
+      'scholar_reader-feeds_list' => 'reader-block',
+      'vsite_taxonomy_fltr_cat' => 'os_taxonomy_fltr_cat',
     );
 
     return (isset($delta_map[$delta])) ? $delta_map[$delta] : $delta;
