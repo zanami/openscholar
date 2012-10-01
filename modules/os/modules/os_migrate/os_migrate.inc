@@ -395,7 +395,7 @@ abstract class OSMigration extends Migration {
 
     $entity_id = $query->execute()->fetchAssoc();
     if (!$entity_id) {
-      parent::saveMessage(t('Could not update url in node body.  Missing file entity. @nid', array('@nid'=>$row->nid)));
+      parent::saveMessage(t('Could not update url in node body.  Missing file entity. @nid', array('@nid'=>$row->nid)), MigrationBase::MESSAGE_NOTICE);
       return FALSE;
     }
 
