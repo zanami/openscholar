@@ -109,7 +109,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     if ($replacement = $this->_replace_block($id, $block)) {
       return array(
         $id,
-        $repalcement
+        $replacement
       );
     }
 
@@ -152,7 +152,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'boxes-scholar_blog-blog_rss' => 'boxes-blog_rss_feed',
       'boxes-scholar_presentations_recent' => 'boxes-os_presentations_recent',
       'boxes-scholar_reader-feeds_list' => 'views-reader-block',
-      'boxes-vsite_taxonomy_fltr_cat' => 'boxes-os_taxonomy_fltr_cat'
+      'boxes-vsite_taxonomy_fltr_cat' => 'boxes-os_taxonomy_fltr_cat',
+      'boxes-vsite_rss' => 'boxes-os_rss',
     );
 
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
@@ -170,7 +171,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'scholar_blog-blog_rss' => 'blog_rss_feed',
       'scholar_presentations_recent' => 'os_presentations_recent',
       'scholar_reader-feeds_list' => 'reader-block',
-      'vsite_taxonomy_fltr_cat' => 'os_taxonomy_fltr_cat'
+      'vsite_taxonomy_fltr_cat' => 'os_taxonomy_fltr_cat',
+      'vsite_rss' => 'os_rss',
     );
 
     return (isset($delta_map[$delta])) ? $delta_map[$delta] : $delta;
@@ -220,7 +222,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
         'module' => 'views',
         'delta' => 'reader-block',
         'region' => 'sidebar_second',
-        'weight' => '-10'
+        'weight' => '-10',
+        'info' => 'Site RSS Feed'
       )
     );
 

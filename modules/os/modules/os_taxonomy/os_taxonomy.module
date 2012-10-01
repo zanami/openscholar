@@ -294,6 +294,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
  *      - offset: The node location to start from.
  *      - indentation: How much indentation units to apply to the tree.
  *      - indentation_type: The indentation unit type: px/em/%.
+ *      - attributes: Optional HTML attributes to add to the item list output.
  */
 function theme_taxonomy_term_tagged_node($variables) {
   global $language;
@@ -309,6 +310,7 @@ function theme_taxonomy_term_tagged_node($variables) {
     'description' => FALSE,
     'child_element' => TRUE,
     'indentation_type' => 'px',
+    'attributes' => array(),
   );
   $taxonomy_term = $variables['taxonomy_term'];
 
@@ -380,7 +382,7 @@ function theme_taxonomy_term_tagged_node($variables) {
     );
   }
 
-  return theme('item_list', array('type' => 'ul', 'title' => $title, 'items' => $items));
+  return theme('item_list', array('type' => 'ul', 'title' => $title, 'items' => $items, 'attributes' => $options['attributes']));
 }
 
 /**

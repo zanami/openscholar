@@ -25,7 +25,7 @@ Drupal.behaviors.citation_distribute_fieldset = {
     		
     		//.each( function(vals) {vals.push('1'); alert(vals)}(vals) );
     		
-    	if (vals.length == -1) {
+    	if (vals.length < 1) {
     		return Drupal.t('None');
     	} else {
     		return vals.join(', ');
