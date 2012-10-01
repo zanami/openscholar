@@ -9,21 +9,21 @@
 /**
  * Implements hook_init().
  */
-function gking_init() {
+function gary_init() {
   drupal_add_library('system', 'ui.tabs');
 }
 
 /**
  * Implements hook_menu().
  */
-function gking_menu() {
+function gary_menu() {
   $items = array();
 
-  $items['iqss_gking_research_group'] = array(
+  $items['iqss_gary_research_group'] = array(
     'title' => 'Research Group',
-    'page callback' => 'gking_people_page',
+    'page callback' => 'gary_people_page',
     'access arguments' => array('access content'),
-    'file' => 'gking.pages.inc',
+    'file' => 'gary.pages.inc',
     'type' => MENU_CALLBACK,
   );
 
@@ -31,9 +31,9 @@ function gking_menu() {
 }
 
 /**
- * Returns TRUE if the purl of the active vsite is "gking".
+ * Returns TRUE if the purl of the active vsite is "gary".
  */
-function _gking_is_gking() {
+function _gary_is_gary() {
   $vsite = vsite_get_vsite();
   return ($vsite && $vsite->group->purl == 'gking');
 }

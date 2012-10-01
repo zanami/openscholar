@@ -9,7 +9,7 @@
 /**
  * Menu callback; displays all people nodes by term
  */
-function gking_people_page() {
+function gary_people_page() {
   $view_id = 'os_profiles';
   $display = 'page';
 
@@ -18,12 +18,12 @@ function gking_people_page() {
   context_set('context', 'profiles_profiles', $context);
 
   // Displays the default people view if we aren't on Gary's site.
-  if (!_gking_is_gking()) {
+  if (!_gary_is_gary()) {
     return views_page($view_id, $display);
   }
 
   $name = "Research Group";
-  $vocab = _gking_get_vocab_by_name($name);
+  $vocab = _gary_get_vocab_by_name($name);
   if (!$vocab) {
     return views_page($view_id, $display);
   }
@@ -37,17 +37,17 @@ function gking_people_page() {
   if (count($term_tree) === 0) {
     return views_page($view_id, $display);
   }
-  $view_id = 'gking_profiles';
+  $view_id = 'gary_profiles';
   // Displays the People view across jQuery UI tabs; one tab per term.
-  return _gking_filter_view_into_tabs($view_id, $display, $term_tree);
+  return _gary_filter_view_into_tabs($view_id, $display, $term_tree);
 }
 
 /**
  * Returns a view display split by taxonomy term across jQuery UI tabs.
  *
- * @see gking_people_page().
+ * @see gary_people_page().
  */
-function _gking_filter_view_into_tabs($view_id, $display, $term_tree) {
+function _gary_filter_view_into_tabs($view_id, $display, $term_tree) {
   $output = '';
   $processed_terms = array();
 
@@ -65,7 +65,7 @@ function _gking_filter_view_into_tabs($view_id, $display, $term_tree) {
       'options' => array(
         'view_mode' => $view_mode,
         'bundles' => $bundles,
-        'attributes' => array('id' => 'gking-term-' . $term->tid, 'class' => $class),
+        'attributes' => array('id' => 'gary-term-' . $term->tid, 'class' => $class),
       ),
     );
     $output .= theme('taxonomy_term_tagged_node', $variables);
@@ -73,7 +73,7 @@ function _gking_filter_view_into_tabs($view_id, $display, $term_tree) {
     array_push($processed_terms, array('name' => $term->name, 'tid' => $term->tid));
   }
   // Gives javascript file access to the term IDs to create tabs with jQuery UI.
-  drupal_add_js(array('gking' => array('research_group_terms' => $processed_terms)), 'setting');
+  drupal_add_js(array('gary' => array('research_group_terms' => $processed_terms)), 'setting');
   //dpm($output, 'output');
   //dpm($processed_terms, 'terms');
   return $output;
@@ -82,9 +82,9 @@ function _gking_filter_view_into_tabs($view_id, $display, $term_tree) {
 /**
  * Returns the vocab object in this space with the given name, or FALSE if none.
  *
- * @see gking_people_page()
+ * @see gary_people_page()
  */
-function _gking_get_vocab_by_name($name) {
+function _gary_get_vocab_by_name($name) {
   // Includes API function os_get_vocabularies().
   $include = drupal_get_path('module', 'os') . '/includes/taxonomy.inc';
   include_once ($include);
