@@ -128,6 +128,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'scholar_biocv_bio' => 'bio_teaser',
       'scholar_announcements_latest' => 'os_announcements_latest',
       'scholar_blog-blog_rss' => 'blog_rss_feed',
+      'scholar_presentations_recent' => 'os_presentations_recent',
     );
 
     return (isset($delta_map[$delta])) ? $delta_map[$delta] : $delta;

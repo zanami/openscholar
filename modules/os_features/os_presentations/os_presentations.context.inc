@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_presentations.context.inc
@@ -14,8 +11,7 @@ function os_presentations_context_default_contexts() {
   $export = array();
 
   $context = new stdClass();
-  /* Edit this to true to make a default context disabled initially */
-  $context->disabled = FALSE;
+  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
   $context->name = 'presentations_presentations';
   $context->description = 'Adds blocks to OS Presentation pages';
@@ -57,11 +53,12 @@ function os_presentations_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-9',
         ),
-        'views-os_presentations-block' => array(
-          'module' => 'views',
-          'delta' => 'os_presentations-block',
+        'boxes-os_presentations_recent' => array(
+          'module' => 'boxes',
+          'delta' => 'os_presentations_recent',
           'region' => 'sidebar_second',
           'weight' => '-8',
+          'label' => 'Recent Presentations',
         ),
       ),
     ),
@@ -77,4 +74,3 @@ function os_presentations_context_default_contexts() {
 
   return $export;
 }
-

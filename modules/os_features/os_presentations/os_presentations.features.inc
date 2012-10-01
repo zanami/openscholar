@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_presentations.features.inc
@@ -11,6 +8,10 @@
  * Implements hook_ctools_plugin_api().
  */
 function os_presentations_ctools_plugin_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => "1");
+  }
   list($module, $api) = func_get_args();
   if ($module == "context" && $api == "context") {
     return array("version" => "3");
@@ -44,4 +45,3 @@ function os_presentations_node_info() {
   );
   return $items;
 }
-
