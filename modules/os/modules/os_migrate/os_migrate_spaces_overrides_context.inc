@@ -113,6 +113,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     $id_map = array(
       'vsite_menus-features' => 'os-primary-menu',
       'vsite_menus-scholar_secondary_menu' => 'os-secondary-menu',
+      'scholar_book_current_toc' => 'os_booklets_recent_docs',
     );
 
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
