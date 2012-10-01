@@ -104,8 +104,7 @@ class os_boxes_site_logo extends os_boxes_default {
       }
 
       try {
-        if (isset($fid)) {
-          $file = file_load($fid);
+        if (!empty($fid) && $file = file_load($fid)) {
           $output = file_view($file, 'media_original');
           $block['content'] = l(render($output), '<front>', array('html' => true));
         }
