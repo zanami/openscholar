@@ -307,14 +307,14 @@ ul.links li {
 
 /* BOOKLET ICONS */
 .node-book .links li a.book_add_child {
-    background: url("../images/scholarbase-sprite.png") -12px -405px no-repeat;
+    background: url("../images/scholarbase-sprite.png") 0 -492px no-repeat;
     color: #3A6A8C;
     padding-left: 15px;
 
 }
 
 .node-book .links li a.book_printer {
-    background: url("../images/scholarbase-sprite.png") -12px -419px no-repeat;
+    background: url("../images/scholarbase-sprite.png") 0 -507px no-repeat;
     color: #3A6A8C;
     padding-left: 15px;
 }
