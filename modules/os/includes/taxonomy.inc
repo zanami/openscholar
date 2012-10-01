@@ -21,21 +21,20 @@
 /**
  * Return the current vocabularies
  *
- * @return array
- *   An array of all avalible vocabulary objects, indexed by vid
+ * @return array|bool
+ *   An array of all avalible vocabulary objects, indexed by vid, or FALSE.
  */
 function os_get_vocabularies(){
 
-  //Are we in a multi-tenant install
-  if(module_exists('vsite_vocab')){
-
+  // Checks if this is a multi-tenant install
+  if (module_exists('vsite_vocab')) {
     module_load_include('inc', 'vsite_vocab', 'includes/taxonomy');
     return vsite_vocab_get_vocabularies();
   }
 
   return taxonomy_get_vocabularies();
 
-  return false;
+  return FALSE;
 }
 
 
