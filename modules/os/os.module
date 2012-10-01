@@ -948,15 +948,13 @@ function os_admin_paths_alter(&$paths) {
 
 /**
  * Implements hook_node_view_alter().
- * Removing the "Groups Audience" from the public view
+ *
+ * Adds contextual links to the full node view
  */
 function os_node_view_alter(&$build) {
-  global $user;
-  // If you are not logged in, you shouldn't see the group audience
-  if($user->uid == 0) {
-    if(isset($build['og_group_ref'])) {
-  	  $build['og_group_ref']['#access'] = FALSE;
-    }
+  $node = $build['#node'];
+  if (!empty($node->nid)) {
+    $build['#contextual_links']['node'] = array('node', array($node->nid));
   }
 }
 
