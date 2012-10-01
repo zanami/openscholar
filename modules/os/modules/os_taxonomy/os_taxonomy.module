@@ -339,9 +339,9 @@ function theme_taxonomy_term_tagged_node($variables) {
       $tids[] = $tid;
       $tid = implode("+", $tids);
     }
-    $view = views_get_view('os_taxonomy_vocabulary_term_list');
-    $output .= $view->execute('term_list', $taxonomy_term->vid, $tid);
-    // $output .= views_embed_view('os_taxonomy_vocabulary_term_list', 'term_list', $taxonomy_term->vid, $tid, array('view_mode' => $options['view_mode']));
+    //$view = views_get_view('os_taxonomy_vocabulary_term_list');
+    //$output .= $view->execute('term_list', $taxonomy_term->vid, $tid);
+    $output .= views_embed_view('os_taxonomy_vocabulary_term_list', 'term_list', $taxonomy_term->vid, $tid, array('view_mode' => $options['view_mode']));
     return $output;
   }
 
