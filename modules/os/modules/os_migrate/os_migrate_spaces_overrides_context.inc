@@ -113,7 +113,13 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     $id_map = array(
       'vsite_menus-features' => 'os-primary-menu',
       'vsite_menus-scholar_secondary_menu' => 'os-secondary-menu',
-      'scholar_book_current_toc' => 'os_booklets_recent_docs',
+      'boxes-scholar_book_current_toc' => 'boxes-os_booklets_recent_docs',
+      'boxes-scholar_reader-latest_feed_items' => 'views-reader-block',
+      'boxes-scholar_biocv_bio' => 'boxes-bio_teaser',
+      'boxes-scholar_announcements_latest' => 'boxes-os_announcements_latest',
+      'boxes-scholar_blog-blog_rss' => 'boxes-blog_rss_feed',
+      'boxes-scholar_presentations_recent' => 'boxes-os_presentations_recent',
+      'boxes-scholar_reader-latest_feed_items' => 'views-reader-block'
     );
 
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
@@ -125,10 +131,12 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'scholar_secondary_menu' => 'secondary-menu',
       'shield_default' => 'shield',
       'scholar_book_recent_docs' => 'os_booklets_recent_docs',
+      'scholar_book_current_toc' => 'os_booklets_recent_docs',
       'scholar_biocv_bio' => 'bio_teaser',
       'scholar_announcements_latest' => 'os_announcements_latest',
       'scholar_blog-blog_rss' => 'blog_rss_feed',
       'scholar_presentations_recent' => 'os_presentations_recent',
+      'scholar_reader-latest_feed_items' => 'reader-block'
     );
 
     return (isset($delta_map[$delta])) ? $delta_map[$delta] : $delta;
