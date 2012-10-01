@@ -28,6 +28,31 @@ function os_default_box() {
   $box = new stdClass();
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
+  $box->delta = 'os_rss';
+  $box->plugin_key = 'os_boxes_rss';
+  $box->title = '';
+  $box->description = 'Site RSS Feed';
+  $box->options = array(
+    'show_all' => 1,
+    'content' => array(
+      'link' => 0,
+      'announcement' => 0,
+      'media_gallery' => 0,
+      'biblio' => 0,
+      'page' => 0,
+      'event' => 0,
+      'feed' => 0,
+      'blog' => 0,
+      'presentation' => 0,
+      'person' => 0,
+    ),
+    'additional_classes' => '',
+  );
+  $export['os_rss'] = $box;
+
+  $box = new stdClass();
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
   $box->delta = 'os_taxonomy_fltr_cat';
   $box->plugin_key = 'os_taxonomy_fbt';
   $box->title = '';

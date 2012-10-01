@@ -44,7 +44,7 @@ class os_boxes_rss extends os_boxes_default {
         )
     );
 
-    $form += parent::options_form();
+    $form += parent::options_form($form_state);
     return $form;
   }
 

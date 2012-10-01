@@ -28,6 +28,7 @@ features[box][] = os_taxonomy_fltr_cat
 features[box][] = shield
 features[box][] = site_info
 features[box][] = site_logo
+features[box][] = os_rss
 features[context][] = os_cp
 features[context][] = os_front
 features[context][] = os_public

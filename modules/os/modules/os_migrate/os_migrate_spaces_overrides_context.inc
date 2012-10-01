@@ -65,7 +65,9 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
 
       list($new_id, $block) = $this->_update_context_block($id, $block);
       unset($value['blocks'][$id]);
-      $value['blocks'][$new_id] = $block;
+      if(isset($new_id)){
+        $value['blocks'][$new_id] = $block;
+      }
     }
 
     //check the three special cases
@@ -82,7 +84,11 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
 
     $keep = array('module', 'delta', 'region', 'weight', 'status', 'title', 'plugin', 'label');
     $block = array_intersect_key($block, array_flip($keep));
-    //$block['title'] = '';
+
+    if(!in_array($id, array('boxes-scholar_reader-latest_feed_items'))){
+      //Remove depricated blocks
+      return FALSE;
+    }
 
     if (isset($block['region'])) {
       $block['region'] = $this->_update_region($block['region']);
@@ -119,7 +125,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'boxes-scholar_announcements_latest' => 'boxes-os_announcements_latest',
       'boxes-scholar_blog-blog_rss' => 'boxes-blog_rss_feed',
       'boxes-scholar_presentations_recent' => 'boxes-os_presentations_recent',
-      'boxes-scholar_reader-latest_feed_items' => 'views-reader-block'
+      'boxes-scholar_reader-feeds_list' => 'views-reader-block'
     );
 
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
@@ -136,7 +142,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'scholar_announcements_latest' => 'os_announcements_latest',
       'scholar_blog-blog_rss' => 'blog_rss_feed',
       'scholar_presentations_recent' => 'os_presentations_recent',
-      'scholar_reader-latest_feed_items' => 'reader-block'
+      'scholar_reader-feeds_list' => 'reader-block'
     );
 
     return (isset($delta_map[$delta])) ? $delta_map[$delta] : $delta;
