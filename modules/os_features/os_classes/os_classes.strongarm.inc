@@ -229,7 +229,7 @@ function os_classes_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_preview_class';
-  $strongarm->value = '1';
+  $strongarm->value = '0';
   $export['node_preview_class'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -239,7 +239,7 @@ function os_classes_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_preview_class_material';
-  $strongarm->value = '1';
+  $strongarm->value = '0';
   $export['node_preview_class_material'] = $strongarm;
 
   $strongarm = new stdClass();
