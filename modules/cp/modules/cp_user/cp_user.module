@@ -25,17 +25,63 @@ function cp_user_menu(){
     'description' => 'Find and manage site members.',
     'page callback' => 'cp_user_admin',
     'access callback' => 'cp_user_admin_access',
-    'file' => 'cp_user.form.inc',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => 20,
+    //'file' => 'cp_user.form.inc',
+    //'type' => MENU_DEFAULT_LOCAL_TASK,
+    //'weight' => 20,
   );
 
   $items['cp/users/add'] = array(
     'title' => 'Add User to Site',
     'page arguments' => array('add'),
     'access callback' => 'cp_user_admin_access',
-    'type' => MENU_LOCAL_ACTION,
+    'type' => MENU_NORMAL_ITEM,
     'context' => MENU_CONTEXT_PAGE,
+  );
+
+  //
+  $items['cp/users/new_list'] = array(
+    'title' => 'Manage Members',
+    'description' => 'Find and manage site members.',
+    'page arguments' => array('new_list'),
+    'page callback' => 'cp_user_admin',
+    'access callback' => 'cp_user_admin_access',
+    'file' => 'cp_user.pages.inc',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 20,
+  );
+
+  $items['cp/users/new_list/add'] = array(
+    'title' => 'Add User to Site',
+    'page callback' => 'cp_user_add_user',
+    'access callback' => 'cp_user_admin_access',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['cp/users/delete_membership/%user_id'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Group Membership',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_user_remove_membership_confirm', 3),
+    'access callback' => 'cp_user_admin_access',
+    'file' => 'cp_user.pages.inc',
+  );
+
+  $items['cp/users/create_admin/%user_id'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Group Membership',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_user_make_admin_confirm', 3),
+    'access callback' => 'cp_user_admin_access',
+    'file' => 'cp_user.pages.inc',
+  );
+
+  $items['cp/users/remove_admin/%user_id'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Group Membership',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_user_remove_admin_confirm', 3),
+    'access callback' => 'cp_user_admin_access',
+    'file' => 'cp_user.pages.inc',
   );
 
   return $items;
@@ -57,6 +103,9 @@ function cp_user_admin_access() {
 function cp_user_admin($op = 'members') {
   $vsite = spaces_get_space();
   switch ($op) {
+  	case 'new_list':
+      $build = cp_user_user_management_page($vsite->id);
+      break;
     case 'add':
       module_load_include('inc', 'og_ui', 'og_ui.admin');
       $build['user_add'] = drupal_get_form('og_ui_add_users', 'node', $vsite->id);
@@ -103,11 +152,6 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
     '#type' => 'value',
     '#value' => 'og_user_node',
   );
-
-  // Remove the "Last Message" form element that gets hooked into the og_ui_add_users form.
-  if(isset($form['membership_fields']) && isset($form['membership_fields']['field_message'])) {
-  	$form['membership_fields']['field_message']['#access'] = FALSE;
-  }
 }
 
 /**
@@ -178,5 +222,18 @@ function cp_user_user_register_submit($form, &$form_state) {
     $pass_form_state['build_info']['args'] = array('group_type'=>$og_context->group_type,'gid'=>$og_context->id);
 	// Submit the og_ui_add_users form
     drupal_form_submit('og_ui_add_users',$pass_form_state);
+  }
+}
+
+/**
+ * Implements hook_load().
+ */
+function user_id_load($user_id) {
+  $user_load = user_load($user_id);
+  // Return the user_load of the passed user_id, return FALSE if no user exists
+  if(!empty($user_load)) {
+  	return $user_load;
+  }else {
+    return FALSE;
   }
 }
