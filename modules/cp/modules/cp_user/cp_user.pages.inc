@@ -1,13 +1,4 @@
 <?php
-
-/**
- * Funtion to create/add a new user to a site.
- * Form opens in a modal window.
- */
-function cp_user_add_user() {
-  // ToDo - wrap the add user functionality in a ctools modal.
-}
-
 /**
  * Function to sanity check to make sure the user id hasn't been
  * altered to include the site admin or site manager id.
@@ -120,8 +111,8 @@ function cp_user_user_management_page($vsite_id) {
 	  $load['Member']['remove_link'],
     );
   }
-  $add_new_link = l('+ Add a new user','cp/users/add');
-  //$add_new_link = ctools_modal_text_button(t('+ Add a new user to your site'), 'cp/users/add', t('Add a new user to your site'));
+  $add_new_link = l('+ Add a new user','cp/users/new_list/add');
+  //$add_new_link = ctools_modal_text_button(t('+ Add a new user to your site'), 'cp/users/new_list/add', t('Add a new user to your site'));
 
   $output = '<div><ul><li>'.$add_new_link.'</li></ul></div>';
   $output.= theme('table',array('header'=>$header,'rows'=>$rows));

@@ -34,7 +34,6 @@ function cp_user_menu(){
     'title' => 'Add User to Site',
     'page arguments' => array('add'),
     'access callback' => 'cp_user_admin_access',
-    'type' => MENU_NORMAL_ITEM,
     'context' => MENU_CONTEXT_PAGE,
   );
 
@@ -52,8 +51,9 @@ function cp_user_menu(){
 
   $items['cp/users/new_list/add'] = array(
     'title' => 'Add User to Site',
-    'page callback' => 'cp_user_add_user',
+    'page arguments' => array('add'),
     'access callback' => 'cp_user_admin_access',
+    'file' => 'cp_user.pages.inc',
     'type' => MENU_CALLBACK,
   );
 
@@ -92,6 +92,20 @@ function cp_user_menu(){
  */
 function cp_user_admin_access() {
   return user_access('administer users') && spaces_get_space();
+}
+
+/**
+ * Implements hook_admin_paths_alter().
+ */
+function cp_user_admin_paths() {
+  $paths = array(
+	'cp/users/create_admin/*' => TRUE,
+	'cp/users/remove_admin/*' => TRUE,
+	'cp/users/delete_membership/*' => TRUE,
+	'cp/users/new_list/add' => TRUE,
+  );
+
+  return $paths;
 }
 
 /**
@@ -161,16 +175,6 @@ function cp_user_field_access($op, $field, $entity_type, $entity, $account) {
   if ($op == 'edit' &&  $field['field_name'] == OG_MEMBERSHIP_REQUEST_FIELD) {
     return FALSE;
   }
-}
-
-
-/**
- * Add a new user to your site that does not already exist
- *
- * @todo Combine this with add user
- */
-function cp_user_create_new_user(){
-
 }
 
 /**
