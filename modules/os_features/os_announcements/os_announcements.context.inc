@@ -1,6 +1,4 @@
 <?php
-// $Id$
-
 /**
  * @file
  * os_announcements.context.inc
@@ -13,9 +11,7 @@ function os_announcements_context_default_contexts() {
   $export = array();
 
   $context = new stdClass();
-  /* Edit this to true to make a default context disabled initially */
-
-  $context->disabled = FALSE;
+  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
   $context->name = 'announcements_announcements';
   $context->description = 'Context that is active in the announcements section of your site';
@@ -45,7 +41,27 @@ function os_announcements_context_default_contexts() {
       ),
     ),
   );
-  $context->reactions = array();
+  $context->reactions = array(
+    'menu' => 'announcements',
+    'block' => array(
+      'blocks' => array(
+        'boxes-os_announcements_latest' => array(
+          'module' => 'boxes',
+          'delta' => 'os_announcements_latest',
+          'weight' => -21,
+          'region' => 'sidebar_second',
+          'label' => 'Latest Announcements',
+        ),
+        'boxes-os_addthis' => array(
+          'module' => 'boxes',
+          'delta' => 'os_addthis',
+          'label' => 'AddThis Button',
+          'weight' => 50,
+          'region' => 'sidebar_second',
+        ),
+      ),
+    ),
+  );
   $context->condition_mode = 0;
 
   // Translatables
@@ -56,4 +72,3 @@ function os_announcements_context_default_contexts() {
 
   return $export;
 }
-
