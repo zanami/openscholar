@@ -7,6 +7,13 @@
  */
 
 /**
+ * Implements hook_init().
+ */
+function gking_init() {
+  drupal_add_library('system', 'ui.tabs');
+}
+
+/**
  * Implements hook_menu().
  */
 function gking_menu() {
@@ -19,12 +26,7 @@ function gking_menu() {
     'file' => 'gking.pages.inc',
     'type' => MENU_CALLBACK,
   );
-  $items['test_page'] = array(
-    'title' => 'Test page',
-    'page callback' => 'gking_test_page',
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-  );
+
   return $items;
 }
 
@@ -34,9 +36,5 @@ function gking_menu() {
 function _gking_is_gking() {
   $vsite = vsite_get_vsite();
   return ($vsite && $vsite->group->purl == 'gking');
-}
-
-function gking_test_page() {
-  return "HELLO!!";
 }
 

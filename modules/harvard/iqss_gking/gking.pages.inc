@@ -7,13 +7,6 @@
  */
 
 /**
- * Implements hook_init().
- */
-function gking_init() {
-  jquery_ui_add(array('ui.tabs'));
-}
-
-/**
  * Menu callback; displays all people nodes by term
  */
 function gking_people_page() {
@@ -58,25 +51,31 @@ function _gking_filter_view_into_tabs($view_id, $display, $term_tree) {
   $output = '';
   $processed_terms = array();
 
+  $bundles = array('person');
+  $view_mode = 'teaser';
+  $class = 'taxonomy-term-child';
+
   foreach ($term_tree as $term) {
     if (!$term->name) {
       continue;
     }
 
-    // @todo use theme('taxonomy_term_tagged_node', $variables);
-    $args = array($term->tid);
-    $view = views_get_view($view_id);
-    $view->set_display($display);
-
-    $output .= '<div id="gking-term-' . $term->tid . '" class="taxonomy-term-child">';
-    $output .= $view->execute_display($display, $args);
-    $output .= '</div>';
+    $variables = array(
+      'taxonomy_term' => $term->tid,
+      'options' => array(
+        'view_mode' => $view_mode,
+        'bundles' => $bundles,
+        'attributes' => array('id' => 'gking-term-' . $term->tid, 'class' => $class),
+      ),
+    );
+    $output .= theme('taxonomy_term_tagged_node', array('variables' => $variables));
 
     array_push($processed_terms, array('name' => $term->name, 'tid' => $term->tid));
   }
   // Gives javascript file access to the term IDs to create tabs with jQuery UI.
   drupal_add_js(array('gking' => array('research_group_terms' => $processed_terms)), 'setting');
-  dpm($output);
+  //dpm($output, 'output');
+  //dpm($processed_terms, 'terms');
   return $output;
 }
 
