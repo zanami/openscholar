@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_publications.features.inc
@@ -11,6 +8,10 @@
  * Implements hook_ctools_plugin_api().
  */
 function os_publications_ctools_plugin_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => "1");
+  }
   list($module, $api) = func_get_args();
   if ($module == "context" && $api == "context") {
     return array("version" => "3");
@@ -34,7 +35,7 @@ function os_publications_views_api() {
 function os_publications_image_default_styles() {
   $styles = array();
 
-  // Exported image style: book_cover
+  // Exported image style: book_cover.
   $styles['book_cover'] = array(
     'name' => 'book_cover',
     'effects' => array(
@@ -57,7 +58,7 @@ function os_publications_image_default_styles() {
     ),
   );
 
-  // Exported image style: book_cover_thumb
+  // Exported image style: book_cover_thumb.
   $styles['book_cover_thumb'] = array(
     'name' => 'book_cover_thumb',
     'effects' => array(
@@ -82,4 +83,3 @@ function os_publications_image_default_styles() {
 
   return $styles;
 }
-
