@@ -1,0 +1,33 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Customizations for Gary King's website.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function gking_menu() {
+  $items = array();
+
+  $items['iqss_gking_research_group'] = array(
+    'title' => 'Research Group',
+    'page callback' => 'gking_people_page',
+    'access arguments' => array('access content'),
+    'file' => 'gking.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Returns TRUE if the purl of the active vsite is "gking".
+ */
+function _gking_is_gking() {
+  $vsite = vsite_get_vsite();
+  return ($vsite && $vsite->group->purl == 'gking');
+}
+
