@@ -61,14 +61,14 @@ function _gking_filter_view_into_tabs($view_id, $display, $term_tree) {
     }
 
     $variables = array(
-      'taxonomy_term' => $term->tid,
+      'taxonomy_term' => $term,
       'options' => array(
         'view_mode' => $view_mode,
         'bundles' => $bundles,
         'attributes' => array('id' => 'gking-term-' . $term->tid, 'class' => $class),
       ),
     );
-    $output .= theme('taxonomy_term_tagged_node', array('variables' => $variables));
+    $output .= theme('taxonomy_term_tagged_node', $variables);
 
     array_push($processed_terms, array('name' => $term->name, 'tid' => $term->tid));
   }

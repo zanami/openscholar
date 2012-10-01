@@ -30,7 +30,7 @@ function os_taxonomy_theme() {
         'terms_description' => NULL,
       ),
     ),
-    'taxonomy_term_list_row' => array(
+    'taxonomy_term_tagged_node' => array(
       'function' => 'theme_taxonomy_term_tagged_node',
       'variables' => array(
         'options' => array(),
@@ -321,8 +321,7 @@ function theme_taxonomy_term_tagged_node($variables) {
   $title = check_plain($taxonomy_term->name);
   $title .= $options['description'] ? '<br />' . check_plain($taxonomy_term->description) : '';
 
-  // The vocabulary terms are not shown as tree, therefore display it using
-  // views.
+  // Displays vocabulary terms using views, when not shown as tree.
   if (!$options['tree']) {
     $output = $title;
     $tid = $taxonomy_term->tid;
@@ -340,8 +339,9 @@ function theme_taxonomy_term_tagged_node($variables) {
       $tids[] = $tid;
       $tid = implode("+", $tids);
     }
-
-    $output .= views_embed_view('os_taxonomy_vocabulary_term_list', 'term_list', $taxonomy_term->vid, $tid, array('view_mode' => $options['view_mode']));
+    $view = views_get_view('os_taxonomy_vocabulary_term_list');
+    $output .= $view->execute('term_list', $taxonomy_term->vid, $tid);
+    // $output .= views_embed_view('os_taxonomy_vocabulary_term_list', 'term_list', $taxonomy_term->vid, $tid, array('view_mode' => $options['view_mode']));
     return $output;
   }
 
