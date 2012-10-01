@@ -185,7 +185,7 @@ function os_wysiwyg_filter_default_formats() {
     'name' => 'Full HTML',
     'cache' => '1',
     'status' => '1',
-    'weight' => '0',
+    'weight' => '1',
     'filters' => array(
       'filter_autop' => array(
         'weight' => '0',
