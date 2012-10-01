@@ -449,3 +449,23 @@ form table .item-list ul {
 .tabledrag-toggle-weight-wrapper {
   display: none;
 }
+
+/* PUBLICATIONS SETTING FORM IN MODAL */
+.page-publications .column.column-left,
+.page-publications #comment_settings,
+.page-publications .form-actions {
+	float:left;
+	display:inline;
+}
+
+.page-publications .column.column-right {
+	float:right;
+	display:inline;
+	margin-top:-800px;
+}
+
+@-moz-document url-prefix() { 
+  .page-publications .column.column-right {
+	margin-top:-815px;
+ }
+}

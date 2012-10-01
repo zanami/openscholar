@@ -308,7 +308,7 @@
   /*background: url("/sites/all/themes/openscholar/scholar_base/images/scholarbase-sprite.png") no-repeat scroll 3px -380px #A1D4A1 !important;*/
   border-radius: 5px 5px 0 0;
   float: right;
-  margin: 21px -1px 0;
+ margin: 21px -21px 0;
   padding: 1px 8px 0 5px !important;
   background:#52854C;
 }
