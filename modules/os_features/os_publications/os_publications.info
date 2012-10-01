@@ -37,6 +37,7 @@ features[image][] = book_cover
 features[image][] = book_cover_thumb
 features[menu_links][] = primary-menu:publications
 features[node][] = biblio
+features[box][] = os_publications_recent
 features[user_permission][] = access biblio content
 features[user_permission][] = administer biblio
 features[user_permission][] = edit biblio authors
