@@ -19,7 +19,7 @@ function gkplus_init() {
 function gkplus_menu() {
   $items = array();
 
-  $items['iqss_gkplus_research_group'] = array(
+  $items['research-group'] = array(
     'title' => 'Research Group',
     'page callback' => 'gkplus_people_page',
     'access arguments' => array('access content'),

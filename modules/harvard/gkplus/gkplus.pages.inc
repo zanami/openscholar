@@ -74,7 +74,7 @@ function _gkplus_tagged_node_tabs($term_tree, $bundles = array('person'), $view_
       continue;
     }
 
-    $output .= '<a href="gkplus-term-' . $term->tid . '">';
+    $output .= '<a href="#gkplus-term-' . $term->tid . '">';
     $output .= $term->name;
     $output .= '</a>';
   }
@@ -98,11 +98,9 @@ function _gkplus_tagged_node_tabs($term_tree, $bundles = array('person'), $view_
     $output .= '</div>';
     array_push($processed_terms, array('name' => $term->name, 'tid' => $term->tid));
   }
-  // Gives javascript file access to the term IDs to create tabs with jQuery UI.
-  drupal_add_js(array('gkplus' => array('research_group_terms' => $processed_terms)), 'setting');
-  //dpm($output, 'output');
-  //dpm($processed_terms, 'terms');
   $output .= '</div>';
+  // dpm($output, 'output');
+  // dpm($processed_terms, 'terms');
   return $output;
 }
 
