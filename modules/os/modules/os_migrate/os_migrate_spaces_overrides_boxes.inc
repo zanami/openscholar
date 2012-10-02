@@ -339,7 +339,9 @@ class BoxPorter {
       return $box;
     }
 
-    return FALSE;
+    //No silent failure, we don't know how to migrate this box
+    throw new MigrateException(t('The specified box [%box] could not be migrated.',
+        array('%box' => print_r($row,TRUE))));
   }
 
 

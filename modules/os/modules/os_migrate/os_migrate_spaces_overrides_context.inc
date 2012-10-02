@@ -100,7 +100,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     $block = array_intersect_key($block, array_flip($keep));
 
     if (in_array($id, array(
-      'boxes-scholar_reader-latest_feed_items'
+      'boxes-scholar_reader-latest_feed_items',
+      'scholar_front-get_started',
     ))) {
       //Remove depricated blocks
       return FALSE;
