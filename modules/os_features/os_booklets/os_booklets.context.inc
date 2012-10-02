@@ -56,7 +56,7 @@ function os_booklets_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-9',
         ),
-        'boxes-os_booklets_current_toc' => array(
+        'boxes-os_booktoc' => array(
           'module' => 'boxes',
           'delta' => 'os_booktoc',
           'weight' => '-8',
