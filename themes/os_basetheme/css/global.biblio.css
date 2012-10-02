@@ -205,6 +205,12 @@ a.biblio-abstract-link.toggle.expanded {
   font-style: normal;
   font-weight: normal;
   }
+  
+.node a.ctools-dropdown-link, .biblio-entry a.ctools-dropdown-link, h2.title a.ctools-dropdown-link, .block a.ctools-dropdown-link, .view a.ctools-dropdown-link {
+    background: url("../images/scholarbase-sprite.png") no-repeat scroll 0 -94px transparent !important;
+    height: 16px;
+    padding: 1px 0 3px 20px !important;
+}  
 
 ul.biblio-export-buttons,ul.biblio-export-buttons li {
   background: transparent;
@@ -293,13 +299,13 @@ body.node-type-biblio .node-type-biblio .field-field-biblio-image {
   clear:none;
   }
 
-dd.biblio-citation,
+#citation-wrapper,
 body.node-type-biblio .biblio-export {
   display:block;
   border: 1px solid #ccc;
-  border-bottom: none;
   overflow: visible;
   padding:10px;
+  margin-bottom:8px;
   }
 
 dd.biblio-citation {

@@ -323,7 +323,8 @@ ul.links li {
 
 .media-widget a {margin-right:10px;}
 
-.media-widget a#edit-select {
+.media-widget a#edit-select,
+.media-widget a.button.launcher {
     background: url("../images/scholarbase-sprite.png") 0 -431px no-repeat;
     color: #3A6A8C;
     padding-left: 12px;
@@ -356,6 +357,9 @@ ul.links li {
 }
 
 .views-row {margin-bottom:1.5em;}
+
+
+.block-boxes-os_sv_list_box .item-list ul li {margin-bottom:1em;}
 
 /*
  * First sidebar (on left in LTR languages, on right in RTL)
