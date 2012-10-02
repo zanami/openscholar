@@ -826,15 +826,15 @@ body.page-iqss-gking-research-group h3 {
   font-weight:bold;
   }
 
-.node-type-presentation.node-teaser div.filefield-file {
+.node-presentation.node-teaser div.field-type-file {
   display:inline;
   }
 
-.node-type-presentation.node-teaser div.filefield-file {
+.node-presentation.node-teaser div.field-type-file {
   display:inline;
   margin-right: .3em;
   }
-.node-type-presentation.node-teaser div.filefield-file img {
+.node-presentation.node-teaser div.field-type-file img {
   vertical-align:middle;
   }
 
