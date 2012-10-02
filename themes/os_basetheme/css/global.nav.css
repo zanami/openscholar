@@ -478,6 +478,14 @@ html.js div.ctools-dropdown a.ctools-dropdown-text-link {
     text-decoration:none;
 }	
 
+
+html.js div.ctools-dropdown a.ctools-dropdown-text-link {
+    background: none repeat scroll 0 0 transparent;
+    color: #293352;
+    font-size: 13px;
+    padding: 0 0 0 13px;
+    text-decoration: none;
+}
 	
 .ctools-dropdown.section_links {
 	float:right;

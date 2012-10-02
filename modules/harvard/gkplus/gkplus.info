@@ -1,5 +1,4 @@
-name = Gking Customizations
+name = GK+
 description = Customizations for Gary King's website.
 core = 7.x
 package = IQSS
-dependencies[] = jquery_ui

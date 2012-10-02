@@ -182,7 +182,7 @@ function vsite_vsite_exists_access($vsites = array()) {
     if(current_path() == 'site/register') {
       // Set error message when appropriate.
       drupal_get_messages();  // Clear message queue.
-      drupal_set_message(t('You have already created the maximum of %num OpenScholar !sites. !link', 
+      drupal_set_message(t('You have already created the maximum of %num OpenScholar !sites. !link',
         array('%num' => count($vsites),
               '!sites' => count($vsites) > 1 ? 'sites' : 'site',
               '!link' => l(t('Go to your site' . (count($vsites) > 1 ? 's.' : '.')), count($vsites) > 1 ? 'user' : $vsites[0]->get_absolute_url()),
@@ -815,15 +815,17 @@ function vsite_user_view_alter(&$build){
         $css_selector = array(
           'class' => 'plural'
         );
+        $website_title = t('My Websites:');
       }
       else {
         $css_selector = array(
           'class' => 'single'
         );
+        $website_title = t('My Website:');
       }
       $vsites_list .= theme_item_list(array(
         'items' => $owner_sites,
-        'title' => 'My Websites',
+        'title' => $website_title,
         'type' => 'ul',
         'attributes' => $css_selector
       ));
@@ -833,22 +835,24 @@ function vsite_user_view_alter(&$build){
         $css_selector = array(
           'class' => 'plural'
         );
+        $membership_title = t('Websites I am a member of:');
       }
       else {
         $css_selector = array(
           'class' => 'single'
         );
+        $membership_title = t('Website I am a member of:');
       } // end if
       $vsites_list .= theme_item_list(array(
         'items' => $member_sites,
-        'title' => 'Websites I am a member of:',
+        'title' => $membership_title,
         'type' => 'ul',
         'attributes' => $css_selector
       ));
     }
     // Set a new field.
     $build['web_sites'] = array(
-      '#title' => 'Website Membership Summary:',
+      '#title' => t('Website Membership Summary:'),
       '#type' => 'user_profile_item',
       '#markup' => $vsites_list,
       '#weight' => '10'

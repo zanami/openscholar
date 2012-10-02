@@ -17,7 +17,7 @@
   display:none;
 }
 
-.front .region-header-second .block-boxes-os_boxes_bio .node-inner {
+.front .region-header-second .block-boxes-os_boxes_bio .node-content {
   position:absolute;
   overflow:auto;
   bottom: 0;

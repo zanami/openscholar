@@ -34,18 +34,19 @@
       /**
        * Prepares the People page with tabs.
        */
-      if (!$('.page-iqss-gking-research-group').length) {
-        return;
+      if ($('.page-research-group').length) {
+    	/*
+        $("<ul id='research-group-tablist' class=\"ui-tabs-nav\"></ul>")
+          .insertBefore("#content-main .taxonomy-term-child:first");
+        var terms = Drupal.settings.gking.research_group_terms;
+        for (var i = 0; i < terms.length; i++) {
+          var url = "#iqss_gking_term_" + terms[i].tid;
+          $('ul#research-group-tablist')
+            .append("<li class='research_group_tab'><a href='" + url + "'>" + terms[i].name + "</a></li>");
+        }*/
+    	
+        $("#people-tabs").tabs({fx: {opacity: 'toggle'}, cache: true, load: function (event, ui) { Drupal.behaviors.CToolsDropdown(); }});
       }
-      $("<ul id='research-group-tablist' class=\"ui-tabs-nav\"></ul>")
-        .insertBefore("#content-main .taxonomy-term-child:first");
-      var terms = Drupal.settings.gking.research_group_terms;
-      for (var i = 0; i < terms.length; i++) {
-        var url = "#iqss_gking_term_" + terms[i].tid;
-        $('ul#research-group-tablist')
-          .append("<li class='research_group_tab'><a href='" + url + "'>" + terms[i].name + "</a></li>");
-      }
-      $("#content").tabs({fx: {opacity: 'toggle'}, cache: true, load: function (event, ui) { Drupal.behaviors.CToolsDropdown(); }});
       
       /**
        * Prepares the "Areas of Research" front page taxonomy widget.
