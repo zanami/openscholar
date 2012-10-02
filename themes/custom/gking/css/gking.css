@@ -54,7 +54,7 @@ h3, h4 {
   margin: 0;
   }
 
-h2.block-title {
+h3 {
   color: #6e7a7a;
   margin-top:0px;
   }
@@ -147,6 +147,13 @@ h1#page-title,
   padding: 0;
   margin:0;
   }
+
+#content h1.node-title {
+	font-family:arial;
+	font-size:1em;
+	font-weight:bold;
+}
+
 
 .biblio-separator-bar {
   font-size: 1.2em;
@@ -737,14 +744,19 @@ width: 505px;
   color: #000 !important;
   }
 
-html.js div.ctools-dropdown div.ctools-dropdown-container {
-  min-width: 141px;
+.page-node.node-type-biblio div.ctools-dropdown div.ctools-dropdown-container {
+  left: 25px;
+  width: 141px;
   }
 
 html.js .front .region-header-second div.ctools-dropdown div.ctools-dropdown-container {
  top: 0;
  left:-27px;
  }
+ 
+ html.js div.ctools-dropdown div.ctools-dropdown-container ul li a:hover {
+    background:none;
+}
 
 /* Publications Tabs & Research Group Tabs */
 
