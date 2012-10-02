@@ -31,10 +31,24 @@ function gkplus_menu() {
 }
 
 /**
+ * Implements hook_menu_alter().
+ */
+function gkplus_menu_alter(&$items) {
+  if (!_gkplus_check_purl()) {
+    return;
+  }
+
+  if (!isset($items['people'])) {
+    return;
+  }
+  $items_extra = gkplus_menu();
+  $items['people'] = $items_extra['research-group'];
+}
+
+/**
  * Returns TRUE if the purl of the active vsite is "gkplus".
  */
 function _gkplus_check_purl($purl = 'gking') {
   $vsite = vsite_get_vsite();
   return ($vsite && $vsite->group->purl == $purl);
 }
-
