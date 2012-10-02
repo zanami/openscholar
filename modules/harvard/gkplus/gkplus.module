@@ -6,47 +6,25 @@
  * Customizations for Gary King's website.
  */
 
-/**
- * Implements hook_init().
+/*
+ * Implementation of hook_views_pre_build().
+ *
+ * Removes pager from the People page on Gary's website only.
  */
-function gkplus_init() {
-  drupal_add_library('system', 'ui.tabs');
-}
-
-/**
- * Implements hook_menu().
- */
-function gkplus_menu() {
-  $items = array();
-
-  $items['research-group'] = array(
-    'title' => 'Research Group',
-    'page callback' => 'gkplus_people_page',
-    'access arguments' => array('access content'),
-    'file' => 'gkplus.pages.inc',
-    'type' => MENU_CALLBACK,
-  );
-
-  return $items;
-}
-
-/**
- * Implements hook_menu_alter().
- */
-function gkplus_menu_alter(&$items) {
+function gkplus_views_pre_build(&$view) {
   if (!_gkplus_check_purl()) {
     return;
   }
-
-  if (!isset($items['people'])) {
+  if ($view->name !== 'os_profiles') {
     return;
   }
-  $items_extra = gkplus_menu();
-  $items['people'] = $items_extra['research-group'];
+  $pager = $view->display_handler->get_option('pager');
+  $pager['options']['items_per_page'] = 0;
+  $view->display_handler->set_option('pager', $pager);
 }
 
 /**
- * Returns TRUE if the purl of the active vsite is "gkplus".
+ * Returns TRUE if the purl of the current vsite is "gkplus".
  */
 function _gkplus_check_purl($purl = 'gking') {
   $vsite = vsite_get_vsite();
