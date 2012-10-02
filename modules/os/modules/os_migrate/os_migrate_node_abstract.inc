@@ -305,6 +305,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     foreach ($entity->field_upload as $lang => $fields) {
       foreach ($fields as $delta => $upload) {
         if ($row->field_upload_display[$delta] == '0') {
+          file_usage_add(file_load($upload['fid']), 'file', 'node', $entity->nid);
           unset($entity->field_upload[$lang][$delta]);
           $dirty = TRUE;
         }

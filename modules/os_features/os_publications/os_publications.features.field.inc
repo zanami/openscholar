@@ -185,14 +185,12 @@ function os_publications_field_default_fields() {
           ),
           'allowed_types' => array(
             'audio' => 0,
-            'default' => 0,
             'html' => 0,
             'image' => 'image',
-            'video' => 0,
           ),
           'browser_plugins' => array(
             'library' => 0,
-            'media_default--media_browser_1' => 0,
+            'media_default--media_browser_1' => 'media_default--media_browser_1',
             'media_embed' => 0,
             'media_internet' => 0,
             'upload' => 'upload',
