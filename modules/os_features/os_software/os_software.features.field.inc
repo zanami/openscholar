@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_software.features.field.inc
@@ -247,7 +244,7 @@ function os_software_field_default_fields() {
           ),
           'browser_plugins' => array(
             'library' => 0,
-            'media_default--media_browser_1' => 0,
+            'media_default--media_browser_1' => 'media_default--media_browser_1',
             'media_embed' => 0,
             'media_internet' => 0,
             'upload' => 'upload',
@@ -667,4 +664,3 @@ function os_software_field_default_fields() {
 
   return $fields;
 }
-
