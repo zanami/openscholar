@@ -294,7 +294,6 @@ function vsite_field_attach_create_bundle($entity_type, $bundle){
  */
 function vsite_attach_fields_to_group_content($entity_type, $bundle){
   $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-  $og_field['instance']['default_value_function'] = 'vsite_group_audience_field_default_value';
   $og_field['instance']['display'] = array(
     'default' => array(
       'type' => 'hidden'
@@ -302,6 +301,14 @@ function vsite_attach_fields_to_group_content($entity_type, $bundle){
     'teaser' => array(
       'type' => 'hidden'
     )
+  );
+  // Enable Entity reference prepopulate.
+  $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
+    'status' => TRUE,
+    'action' => 'hide',
+    'fallback' => 'none',
+    'skip_perm' => 'administer group',
+    'og_context' => TRUE,
   );
   og_create_field(OG_AUDIENCE_FIELD, $entity_type, $bundle, $og_field);
 }
@@ -670,23 +677,6 @@ function _vsite_purl_init(){
   }
   else {
     unset($conf['theme_link']);
-  }
-}
-
-/**
- * Sets the default value for the group audience fields.
- * This works even if the widget is not shown, e.g. due to restricted field access.
- */
-function vsite_group_audience_field_default_value(){
-  $vsite = spaces_get_space();
-
-  if ($vsite) {
-    // Set the group audience value to automatically be the current active site
-    $default[] = array(
-      'target_id' => $vsite->group->nid
-    );
-
-    return $default;
   }
 }
 
