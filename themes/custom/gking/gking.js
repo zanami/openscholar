@@ -30,23 +30,10 @@
           }
         });
       }
-  
-      /**
-       * Prepares the People page with tabs.
-       */
-      if ($('.page-research-group').length) {
-        $("#people-tabs").tabs({fx: {opacity: 'toggle'}, cache: true, load: function (event, ui) { Drupal.behaviors.CToolsDropdown(); }});
-      }
       
       /**
        * Prepares the "Areas of Research" front page taxonomy widget.
        */
-      // DAN'S HOVER TO SHOW AOR DESCR - IT ONLY 1/2 WORKS (LACKS ABILITY TO SHOW DESCRIPTION WHEN MOUSE OFF OF A TERM)
-//      $("ul.termchild-Methods a, ul.termchild-Applications a").hover(function(){
-//    	$(this).removeClass("active");
-//        $(this).toggleClass("line");
-//        $(this).next("div.description").toggle();
-//      });
       // Original method
       var $sel = '#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content';
       var areas = $($sel + ' ul li ul li:not(.aor-processed)');
