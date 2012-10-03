@@ -157,25 +157,21 @@ function os_files_modules_installed($modules) {
  */
 function _os_files_clean_up_fields() {
   field_delete_field('field_license');
-  if ($title = field_info_field('media_title')) {
-    $descrip = field_info_field('media_description');
+  if ($title = field_info_instance('file', 'media_title', 'image')) {
+    $descrip = field_info_instance('file', 'media_description', 'image');
     $file_types = file_info_file_types();
     foreach ($file_types as $bundle => $info) {
       if (!field_info_instance('file', 'media_title', $bundle)) {
         $title_copy = $title;
-        $title_copy += array(
-          'entity_type' => 'file',
-          'bundle' => $bundle,
-        );
+        $title_copy['entity_type'] = 'file';
+        $title_copy['bundle'] = $bundle;
         field_create_instance($title_copy);
       }
 
       if (!field_info_instance('file', 'media_description', $bundle)) {
         $descrip_copy = $descrip;
-        $descrip_copy += array(
-          'entity_type' => 'file',
-          'bundle' => $bundle,
-        );
+        $descrip_copy['entity_type'] = 'file';
+        $descrip_copy['bundle'] = $bundle;
         field_create_instance($descrip_copy);
       }
     }
