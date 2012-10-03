@@ -12,7 +12,7 @@
         // get the delta of the box and the page, and store them that way
         var page_elem = $(this).find('[data-page]'),
           page = page_elem.attr('data-page'),
-          delta = get_delta(this);
+          delta = page_elem.attr('data-delta');
         
         data[delta] = {};
         data[delta][page] = page_elem.parent().html();
@@ -20,13 +20,13 @@
       
       function click_handler(e) {
         // do nothing if this isn't a pager link
-        if ($(e.target).parents('.pager').length == 0) return;
+        if ($(e.target).parents('.pager').length == 0 || e.target.nodeName != 'A') return;
         e.stopPropagation();
         e.preventDefault();
         
-        // get the requested page from the query args
+        // get the requested page and delta from the query args
         var args = query_args(e.target.href),
-          delta = get_delta(e.currentTarget);
+            delta = args.sv_list_box_delta;
         
         // if there's no page set in the query, assume its the first page
         if (typeof args.page == 'undefined') {

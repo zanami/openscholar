@@ -4,6 +4,11 @@
 /**
  * @file
  * Customizations for Gary King's website.
+ *
+ * @todo implement 'child indent';
+ *   was "override_child" in _iqss_gking_term_page_tree()
+ * @todo implement 'hidden heading';
+ *   was "hidden_term_heading" in _iqss_gking_term_page_tree()
  */
 
 /**
@@ -38,7 +43,7 @@ function gkplus_node_insert($node) {
   if (!_gkplus_check_purl() || $node->type !== 'page' || !$node->nid) {
     return;
   }
-  _gkplus_minitheme_update($node);
+  _gkplus_entity_setting_update($node->nid, 'minitheme_nodes', $node->gkplus_minitheme);
 }
 
 /**
@@ -48,7 +53,7 @@ function gkplus_node_update($node) {
   if (!_gkplus_check_purl() || $node->type !== 'page' || !$node->nid) {
     return;
   }
-  _gkplus_minitheme_update($node);
+  _gkplus_entity_setting_update($node->nid, 'minitheme_nodes', $node->gkplus_minitheme);
 }
 
 /**
@@ -134,6 +139,45 @@ function _gking_empty_terms($terms) {
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter() for taxonomy_form_term.
+ */
+function gkplus_form_taxonomy_form_term_alter(&$form, &$form_state, $form_id) {
+  $form['advanced']['gkplus'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Custom theme settings',
+    '#collapsible' => FALSE,
+    'gkplus_hidden_heading_terms' => array(
+      '#type' => 'checkbox',
+      '#default_value' => _gkplus_entity_setting($form['tid']['#value'], 'hidden_heading_terms'),
+      '#title' => t('Hidden heading'),
+      '#description' => t('Hide this term heading from displaying on taxonomy page'),
+    ),
+    'gkplus_child_indent_terms' => array(
+      '#type' => 'checkbox',
+      '#default_value' => _gkplus_entity_setting($form['tid']['#value'], 'child_indent_terms'),
+      '#title' => t('Child indent'),
+      '#description' => t('Indent this term when displayed as a child term on taxonomy parent term page.'),
+    ),
+  );
+  $form['#submit'][] = 'gkplus_form_taxonomy_form_term_submit';
+}
+
+/**
+ * Form submit callback; triggers term settings updates on term save.
+ *
+ * @see gkplus_form_taxonomy_form_term_alter()
+ */
+function gkplus_form_taxonomy_form_term_submit($form, &$form_state) {
+  if (!$form_state['values']['tid']) {
+    return;
+  }
+  $settings = array('hidden_heading_terms', 'child_indent_terms');
+  foreach ($settings as $setting) {
+    _gkplus_entity_setting_update($form_state['values']['tid'], $setting, $form_state['values']['gkplus_' . $setting]);
+  }
+}
+
+/**
  * Implements hook_form_FORM_ID_alter() for page_node_form.
  */
 function gkplus_form_page_node_form_alter(&$form, &$form_state, $form_id) {
@@ -150,11 +194,11 @@ function gkplus_form_node_form_alter(&$form, &$form_state, $form_id) {
   if (!_gkplus_check_purl()) {
     return;
   }
-
+  $default_value = (isset($form['#node']->nid)) ? _gkplus_entity_setting($form['#node']->nid, 'minitheme_nodes') : 0;
   $form['gkplus'] = array(
     '#type' => 'fieldset',
     '#access' => TRUE,
-    '#title' => t('Theme settings'),
+    '#title' => t('Custom theme settings'),
     '#weight' => 98,
     '#group' => 'additional_settings'
   );
@@ -162,7 +206,7 @@ function gkplus_form_node_form_alter(&$form, &$form_state, $form_id) {
     '#title' => t('Remove branding'),
     '#type' => 'checkbox',
     '#size' => 65,
-    '#default_value' => _gkplus_minitheme($form['#node']->nid),
+    '#default_value' => $default_value,
     '#description' => t('Display this post using a minimalist theme without branding.'),
   );
 }
@@ -177,40 +221,76 @@ function gkplus_preprocess_html(&$vars) {
     return;
   }
   $object = menu_get_object();
-  if ($object->nid && _gkplus_minitheme($object->nid)) {
+  if (!isset($object)) {
+    return;
+  }
+  if ($object->nid && _gkplus_entity_setting($object->nid, 'minitheme_nodes')) {
     $vars['classes_array'][] = "gkplus-minitheme";
   }
 }
 
 /**
- * Returns TRUE if the node is set to use the minitheme display (minimalist).
+ * Implements hook_preprocess_HOOK for taxonomy-term.tpl.php.
+ *
+ * Adds custom class attributes to configured taxonomy term view pages.
  */
-function _gkplus_minitheme($nid) {
-  static $nodes;
-  if (!isset($nodes)) {
-    $nodes = variable_get('gkplus_minitheme_nodes', array());
+function gkplus_preprocess_taxonomy_term(&$vars) {
+  if (!_gkplus_check_purl()) {
+    return;
+  }
+  if (!isset($vars['tid']) || !isset($vars['vid'])) {
+    return;
+  }
+  $vocab = taxonomy_vocabulary_load($vars['vid']);
+  if ($vocab->name !== 'Research Interests') {
+    return;
   }
 
-  return in_array($nid, $nodes);
+  if (_gkplus_entity_setting($vars['tid'], 'hidden_heading_terms')) {
+    $vars['classes_array'][] = 'gkplus-hidden-heading';
+  }
+  if (_gkplus_entity_setting($vars['tid'], 'child_indent_terms')) {
+    $vars['classes_array'][] = 'gkplus-child-indent';
+  }
 }
 
 /**
- * Updates system variable to include/remove the current node ID.
+ * Returns TRUE if the node is set to use the custom setting.
  *
- * @see gkplus_node_insert()
- * @see gkplus_node_presave()
+ * @param int $etid
+ *   The entity ID of the node about to be viewed.
+ * @param string $setting
+ *   The variable name to test this entity for membership of; one of
+ *   "minitheme_nodes", "hidden_heading_terms", or "child_indent_terms".
  */
-function _gkplus_minitheme_update($node) {
-  $variable = 'gkplus_minitheme_nodes';
-  $nodes = variable_get($variable, array());
+function _gkplus_entity_setting($etid, $setting) {
+  $variable_name = 'gkplus_' . $setting;
+  $etids = variable_get($variable_name, array());
+  return in_array($etid, $etids);
+}
 
-  if ($node->gkplus_minitheme && !in_array($node->nid, $nodes)) {
-    $nodes[] = $node->nid;
-    variable_set($variable, $nodes);
+/**
+ * Updates an array of entity IDs to add or remove this entity ID for a setting.
+ *
+ * @param int $etid
+ *   The entity ID, a node or taxonomy term that was just updated.
+ * @param string $option
+ *   The option in question, one of "minitheme_nodes", "hidden_heading_terms",
+ *   or "child_indent_terms".
+ * @param int $value
+ *   The checkbox value, 0 or 1.
+ */
+function _gkplus_entity_setting_update($etid, $setting, $value) {
+  $variable_name = 'gkplus_' . $setting;
+  $etids = variable_get($variable_name, array());
+  // Adds the entity if the value is 1 and the entity is not yet saved as such.
+  if ($value && !in_array($etid, $etids)) {
+    $etids[] = $etid;
+    variable_set($variable_name, $etids);
   }
-
-  else if (!$node->gkplus_minitheme && in_array($node->nid, $nodes)) {
-    unset($nodes[array_search($node->nid, $nodes)]);
-    variable_set($variable, $nodes);
+  // Removes the entity if the value is 0 and the entity is not yet removed.
+  else if (!$value && in_array($etid, $etids)) {
+    unset($etids[array_search($etid, $etids)]);
+    variable_set($variable_name, $etids);
   }
 }
