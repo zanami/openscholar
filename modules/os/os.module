@@ -373,7 +373,7 @@ function os_theme() {
     ),
     'openscholar_login' => array(
       'variables' => array(
-        'link_text' => 'Login',
+        'link_text' => 'Admin Login',
         'attributes' => array(
           'class' => 'footer-login',
         ),
