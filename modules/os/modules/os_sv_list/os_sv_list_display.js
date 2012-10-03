@@ -40,18 +40,30 @@
         }
         // if it doesn't exist, we have to ask the server for it
         else {
-          var s = Drupal.settings;
+          var s = Drupal.settings, 
+            page = decodeURIComponent(args.page).split(',');
+            page = page[args.pager_id];
           $.ajax({
             url: s.basePath + (typeof s.pathPrefix != 'undefined'?s.pathPrefix:'') + 'os_sv_list/page/'+delta,
             data: {
-              page: args.page
+              page: page
             },
             beforeSend: function (xhr, settings) {
               $(e.currentTarget).append('<div class="ajax-progress ajax-progress-throbber"><div class="throbber">&nbsp;</div></div>')
             },
             success: function (commands, status, xhr) {
-              var html = commands[1].data,
-                parent = $(e.currentTarget).find('.boxes-box-content');
+              var html, i,
+              parent = $(e.currentTarget).find('.boxes-box-content');
+              
+              for (i in commands) {
+                if (commands[i].command == 'insert' 
+                  && commands[i].method == null 
+                  && commands[i].selector == null 
+                  && commands[i].data != "") {
+                    html = commands[i].data;
+                    break;
+                }
+              }
               // replace the existing page with the new one
               parent.html(html);
               Drupal.attachBehaviors(parent);

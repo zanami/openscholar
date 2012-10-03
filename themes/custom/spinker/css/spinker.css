@@ -21,6 +21,7 @@ body,
   color: #ddd;
   }
 
+.biblio-title a, .biblio-title-chicago a,
 a, a:visited {
   color:#FFFFFF;
   text-decoration: none;
