@@ -616,6 +616,10 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 
 /**	 QUICK TABS**/
 	
+.block-boxes-os_boxes_tabs .ui-widget-content {
+    background: none;
+}
+	
 .ui-tabs .ui-tabs-panel {
 /* IE10 Consumer Preview */ 
 background-image: -ms-linear-gradient(top, #F5F2F2 0%, #FFFFFF 100%);
