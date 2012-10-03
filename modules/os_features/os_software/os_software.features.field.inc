@@ -216,10 +216,10 @@ function os_software_field_default_fields() {
           ),
           'file_path' => array(
             'options' => array(
-              'pathauto' => 1,
+              'pathauto' => 0,
               'transliterate' => 0,
             ),
-            'value' => '[vsite:site-purl]/',
+            'value' => '',
           ),
           'retroactive_update' => 0,
         ),
@@ -246,7 +246,7 @@ function os_software_field_default_fields() {
             'library' => 0,
             'media_default--media_browser_1' => 'media_default--media_browser_1',
             'media_embed' => 0,
-            'media_internet' => 0,
+            'media_internet' => 'media_internet',
             'upload' => 'upload',
           ),
           'progress_indicator' => 'throbber',
@@ -400,10 +400,10 @@ function os_software_field_default_fields() {
           ),
           'file_path' => array(
             'options' => array(
-              'pathauto' => 1,
+              'pathauto' => 0,
               'transliterate' => 0,
             ),
-            'value' => '[vsite:site-purl]/',
+            'value' => '',
           ),
           'retroactive_update' => 0,
         ),
@@ -412,11 +412,30 @@ function os_software_field_default_fields() {
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'file',
+        'module' => 'media',
         'settings' => array(
+          'allowed_schemes' => array(
+            'embed' => 0,
+            'oembed' => 0,
+            'public' => 'public',
+          ),
+          'allowed_types' => array(
+            'audio' => 0,
+            'default' => 0,
+            'html' => 0,
+            'image' => 'image',
+            'video' => 0,
+          ),
+          'browser_plugins' => array(
+            'library' => 0,
+            'media_default--media_browser_1' => 'media_default--media_browser_1',
+            'media_embed' => 0,
+            'media_internet' => 'media_internet',
+            'upload' => 'upload',
+          ),
           'progress_indicator' => 'throbber',
         ),
-        'type' => 'file_generic',
+        'type' => 'media_generic',
         'weight' => '2',
       ),
     ),
