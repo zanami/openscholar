@@ -64,7 +64,7 @@ abstract class citation_distribute_service_sword extends citation_distribute_ser
 		}
 
 		/* include sword lib */
-		require_once(drupal_get_path('module', 'citation_distribute') .	'/plugins/swordapp-php-library-1.0/packager_mets_swap.php');
+		require_once(drupal_get_path('module', 'citation_distribute') .	'/plugins/service/swordapp-php-library-1.0/packager_mets_swap.php');
 		$zipfile = $nid . '_' . $this->name . '-' . $this->file_out;
 		$packager = new PackagerMetsSwap($this->root_in, $this->subdir_in, $this->root_out, $zipfile);
 
@@ -135,7 +135,7 @@ abstract class citation_distribute_service_sword extends citation_distribute_ser
 
 		/* Add each file as well */
 		foreach($node->files as $file) {
-		  $file = field_file_load($file->fid);
+		  $file = file_load($file->fid);
 	    $metadata['File'][] = array(
 			 'filepath'=>$file['filepath'],
 			 'filemime'=>$file['filemime'],
@@ -143,7 +143,8 @@ abstract class citation_distribute_service_sword extends citation_distribute_ser
 		}
 
 		/* Create and add citation */
-		$citation = 	theme('biblio_style', $node, variable_get('biblio_base', 'biblio'), biblio_get_style());
+		//$citation = 	theme('biblio_style', $node, variable_get('biblio_base', 'biblio'), biblio_get_style());
+		$citation = 	theme('biblio_style', array('node'=>$node, 'style_name'=>biblio_get_style()));
 		$citation = strip_tags($citation);
 	  $citation = preg_replace('/&nbsp;/', ' ', $citation);
 		$metadata['Citation'] = $citation;
@@ -160,7 +161,7 @@ abstract class citation_distribute_service_sword extends citation_distribute_ser
 
 	/* send data to sword service */
 	private function _push($file, $nid) {
-		require_once(drupal_get_path('module', 'citation_distribute') .	'/plugins/swordapp-php-library-1.0/swordappclient.php');
+		require_once(drupal_get_path('module', 'citation_distribute') .	'/plugins/service/swordapp-php-library-1.0/swordappclient.php');
 		$sac = new SWORDAPPClient();
 		$sac_doc = $this->_get_service_doc($sac);
 		$deposit_url = $this->get_deposit_url($sac_doc->sac_workspaces, $nid);
@@ -168,9 +169,9 @@ abstract class citation_distribute_service_sword extends citation_distribute_ser
 		/* attempt a deposit */
 		if ($deposit_url) {
 			try {
-				$deposit = $sac->deposit($deposit_url, $this->username, variable_get($this->password, FALSE), $this->obo, $file, $this->packaging, 'application/zip');
+				$deposit = $sac->deposit($deposit_url, $this->username, $this->password, $this->obo, $file, $this->packaging, 'application/zip');
 			} catch(Exception $e) {
-				drupal_set_message('Deposit error: ' . $deposit, 'error');
+				drupal_set_message('DASH deposit error', 'error');
 				return false;
 			}
 		} else {
@@ -194,13 +195,13 @@ abstract class citation_distribute_service_sword extends citation_distribute_ser
 
 		/* retrieve service document from sword server */
 		$service_url = $this->location . 'sword/servicedocument';
-		$sac_doc = $sac->servicedocument($service_url, $this->username, variable_get($this->password, FALSE), $this->obo);
+		$sac_doc = $sac->servicedocument($service_url, $this->username, $this->password, $this->obo);
 
 	  /* check status of service doc.  fix errors if possible, bail if not */
 		switch($sac_doc->sac_status) {
 			case 401:
 				//auth problems are usually a bad on-behalf-of request.  drop the obo.
-				$sac_doc = $sac->servicedocument($service_url, $dest->username, $dest->password, '');
+				$sac_doc = $sac->servicedocument($service_url, $this->username, $this->password, '');
 				//only break if we're still unauthorized.  otherwise check other cases
 				if ($sac_doc->sac_status == 401) {
 					drupal_set_message('Couldn\'t log in to SWORD server.', 'error');

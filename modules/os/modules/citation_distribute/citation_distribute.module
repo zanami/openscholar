@@ -19,7 +19,7 @@ function citation_distribute_menu() {
     'page arguments' => array('citation_distribute_admin' ),
     'file' => 'citation_distribute.admin.inc',
     'access arguments' => array('administer citation distribute' ),
-  //	'type' => MENU_CALLBACK,
+  	//'type' => MENU_CALLBACK,
   );
   $items['admin/config/openscholar/citation_distribute/citation_distribute'] = $items['admin/config/openscholar/citation_distribute'];
   $items['admin/config/openscholar/citation_distribute/citation_distribute']['type'] = MENU_DEFAULT_LOCAL_TASK;
