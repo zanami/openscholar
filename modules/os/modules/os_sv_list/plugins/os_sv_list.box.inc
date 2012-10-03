@@ -128,7 +128,7 @@ class os_sv_list_box extends os_boxes_default {
     $block = parent::render();
     $efq = $this->get_default_query();
     $options = $this->options;
-    $page_num = (isset($_GET['page'])) ? $_GET['page'] : 0;
+    $page_num = isset($_GET['page']) ? $_GET['page'] : 0;
 
     //exceptions
     switch ($options['content_type']) {
@@ -264,11 +264,13 @@ class os_sv_list_box extends os_boxes_default {
     if ($options['pager']) {
       // theme_pager();
       $parameters = array(
-        'sv_list_box_delta' => $this->delta
+        'sv_list_box_delta' => $this->delta,
+        'pager_id' => $page,
       );
       $pager = theme('views_mini_pager', array(
         'parameters' => $parameters,
         'element' => $page,
+        'quantity' => $options['number_of_items'],
       ));
     }
 
