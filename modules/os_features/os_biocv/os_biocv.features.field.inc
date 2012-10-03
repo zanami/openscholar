@@ -224,10 +224,10 @@ function os_biocv_field_default_fields() {
           ),
           'file_path' => array(
             'options' => array(
-              'pathauto' => 0,
+              'pathauto' => 1,
               'transliterate' => 0,
             ),
-            'value' => '',
+            'value' => '[vsite:site-purl]/',
           ),
           'retroactive_update' => 0,
         ),
