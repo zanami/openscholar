@@ -7,7 +7,7 @@ html, body {
 
   }
 
-
+.biblio-title a, .biblio-title-chicago a,
 a, a:visited {
   text-decoration: none;
   padding: 0 2px 0 2px;
