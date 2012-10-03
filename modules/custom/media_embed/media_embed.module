@@ -103,9 +103,14 @@ function media_embed_add($form, &$form_state = array(), $types = NULL) {
       '#markup' => t('You can add html with iframe, object, embed and script tags from the following sites:').'<br>'.implode(', ', $white),
     );
   }
+  elseif (user_access('access administration pages ')) {
+    $form['whitelist'] = array(
+      '#markup' => t('You may not add html with iframe, object, embed or script tags, because no domains are marked as safe. !link', array('!link' => l('Add safe domains.', 'admin/config/media/media_embed'))),
+    );
+  }
   else {
     $form['whitelist'] = array(
-      '#markup' => t('You may not add html with iframe, object, embed or script tags. Ask your site administrator to remedy this.'),
+      '#markup' => t('You may not add html with iframe, object, embed or script tags, because no sites have been marked as \'safe\'. Ask your site administrator to remedy this.'),
     );
   }
   $form['whitelist']['#weight'] = 4;
@@ -364,4 +369,8 @@ function media_embed_file_formatter_media_embed_view($file, $display, $langcode)
       //return array();
     }
   }
+}
+
+function media_embed_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
+  unset($form['media_title']);
 }
