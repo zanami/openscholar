@@ -6,8 +6,8 @@
  * Customizations for Gary King's website.
  */
 
-/*
- * Implementation of hook_views_pre_build().
+/**
+ * Implements hook_views_pre_build().
  *
  * Removes pager from the People page on Gary's website only.
  */
@@ -38,7 +38,7 @@ function gkplus_node_insert($node) {
   if (!_gkplus_check_purl() || $node->type !== 'page' || !$node->nid) {
     return;
   }
-  _gkplus_minitheme_set($node);
+  _gkplus_minitheme_update($node);
 }
 
 /**
@@ -48,7 +48,7 @@ function gkplus_node_update($node) {
   if (!_gkplus_check_purl() || $node->type !== 'page' || !$node->nid) {
     return;
   }
-  _gkplus_minitheme_set($node);
+  _gkplus_minitheme_update($node);
 }
 
 /**
@@ -88,7 +88,6 @@ function gkplus_node_validate($node, $form, $form_state) {
   if (!_gkplus_check_purl() || $node->type !== 'page' || strlen($node->title) > 0) {
     return;
   }
-  dpm('validating...');
   $vocab_name = "Research Interests";
   if (!_gkplus_node_in_vocab($node, $vocab_name)) {
     form_set_error('title', t("Title is required for pages that are not in the <em>@vocab_name</em> taxonomy", array('@vocab_name' => $vocab_name)));
@@ -145,18 +144,73 @@ function gkplus_form_page_node_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Sets whether the alternate branding should be used
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form.
  */
-function _gkplus_minitheme_set($node) {
-  /*
-  $a_alt_theme_nodes = variable_get('iqss_gking::alternate_theme_nodes', array());
-
-  if ($b_value && !in_array($nid, $a_alt_theme_nodes)) {
-    $a_alt_theme_nodes[] = $nid;
-    variable_set('iqss_gking::alternate_theme_nodes', $a_alt_theme_nodes);
+function gkplus_form_node_form_alter(&$form, &$form_state, $form_id) {
+  if (!_gkplus_check_purl()) {
+    return;
   }
-  elseif (!$b_value && in_array($nid, $a_alt_theme_nodes)) {
-    unset($a_alt_theme_nodes[array_search($nid, $a_alt_theme_nodes)]);
-    variable_set('iqss_gking::alternate_theme_nodes', $a_alt_theme_nodes);
-  }*/
+
+  $form['gkplus'] = array(
+    '#type' => 'fieldset',
+    '#access' => TRUE,
+    '#title' => t('Theme settings'),
+    '#weight' => 98,
+    '#group' => 'additional_settings'
+  );
+  $form['gkplus']['gkplus_minitheme'] = array(
+    '#title' => t('Remove branding'),
+    '#type' => 'checkbox',
+    '#size' => 65,
+    '#default_value' => _gkplus_minitheme($form['#node']->nid),
+    '#description' => t('Display this post using a minimalist theme without branding.'),
+  );
+}
+
+/**
+ * Implements hook_preprocess_HOOK for html.tpl.php.
+ *
+ * Adds the miniteme (gking-alt) class attribute to configured node view pages.
+ */
+function gkplus_preprocess_html(&$vars) {
+  if (!_gkplus_check_purl()) {
+    return;
+  }
+  $object = menu_get_object();
+  if ($object->nid && _gkplus_minitheme($object->nid)) {
+    $vars['classes_array'][] = "gkplus-minitheme";
+  }
+}
+
+/**
+ * Returns TRUE if the node is set to use the minitheme display (minimalist).
+ */
+function _gkplus_minitheme($nid) {
+  static $nodes;
+  if (!isset($nodes)) {
+    $nodes = variable_get('gkplus_minitheme_nodes', array());
+  }
+
+  return in_array($nid, $nodes);
+}
+
+/**
+ * Updates system variable to include/remove the current node ID.
+ *
+ * @see gkplus_node_insert()
+ * @see gkplus_node_presave()
+ */
+function _gkplus_minitheme_update($node) {
+  $variable = 'gkplus_minitheme_nodes';
+  $nodes = variable_get($variable, array());
+
+  if ($node->gkplus_minitheme && !in_array($node->nid, $nodes)) {
+    $nodes[] = $node->nid;
+    variable_set($variable, $nodes);
+  }
+
+  else if (!$node->gkplus_minitheme && in_array($node->nid, $nodes)) {
+    unset($nodes[array_search($node->nid, $nodes)]);
+    variable_set($variable, $nodes);
+  }
 }
