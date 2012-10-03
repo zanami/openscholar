@@ -279,7 +279,7 @@ class os_sv_list_box extends os_boxes_default {
 
     drupal_add_library('system', 'drupal.ajax');
     drupal_add_js(drupal_get_path('module', 'os_sv_list'). '/os_sv_list_display.js');
-    $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'">' . $block['content'] . '</div>' . $pager;
+    $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'">' . $block['content'] . '</div>' . $pager;
     return $block;
   }
 
