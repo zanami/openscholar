@@ -44,8 +44,12 @@ class citation_distribute_service_sword_dash extends citation_distribute_service
 	  if (is_array($a3)) {
 	    $files = $a3['values']['field_upload'];
 	  } elseif (is_int($a3) && $node = node_load($a3)) {
-      $files = $node->field_upload;
-      return TRUE; //field isn't attached yet.  not sure why.
+	    $files = $node->field_upload;
+	    if (empty($files)) {
+	      //during node insert, files may not be availabe.  if so, use staticly cached node object.
+  	    $citation_distribute_node_object = &drupal_static('citation_distribute_node_object');
+  	    $files = $citation_distribute_node_object->field_upload;
+	    }
 	  } else {
 	    //not sure what a3 is anymore, so bail.
 	    return FALSE;

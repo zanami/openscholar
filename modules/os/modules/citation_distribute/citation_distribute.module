@@ -147,6 +147,10 @@ function citation_distribute_node_update($node) {
 function _citation_distribute_node_apply_plugins($node) {
   $distributed = array();
   $autoflags = variable_get('citation_distribute_autoflags', array());
+  $citation_distribute_node_object = &drupal_static('citation_distribute_node_object');
+  if (!isset($citation_distribute_node_object)) {
+    $citation_distribute_node_object = $node;
+  }
 
   foreach( _citation_distribute_plugins() as $plugin ) {
     if (isset($node->{$plugin['name']})) {

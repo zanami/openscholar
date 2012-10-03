@@ -71,12 +71,15 @@ abstract class citation_distribute_service_sword extends citation_distribute_ser
 		/* copy files from drupal to tmp dir */
 		$full_dir = dirname(__FILE__) . '/';
 		$mod_dir  = drupal_get_path('module', 'citation_distribute') . '/plugins';
-		$drupal_root = substr($full_dir, 0, -1*(1 + strlen($mod_dir)));
+
+
+
 		foreach ($metadata['File'] as $delta => $file) {
-			$filename = array_pop( explode('/', $file['filepath']) );
-			$cp = copy($drupal_root . $file['filepath'], $root_dir . '/'. $filename);
+			$filename = end(explode('/', $file['filepath']));
+			$cp = copy(drupal_realpath($file['filepath']), $root_dir . '/'. $filename);
 			$metadata['File'][$delta]['filepath'] = $nid . '/' . $filename ;
 		}
+
 
 		/* add metadata to mets xml */
 		foreach ($metadata as $name => $data) {
@@ -127,24 +130,38 @@ abstract class citation_distribute_service_sword extends citation_distribute_ser
 		);
 
 		/* Add each author to Creator metadata */
-		foreach($node->biblio_contributors as $delta => $cont) {
-			foreach($node->biblio_contributors[$delta] as $contributor) {
-				$metadata['Creator'][] = $contributor['firstname'] . ' ' . $contributor['lastname'];
-			}
+		foreach($node->biblio_contributors as $delta => $contributor) {
+			$metadata['Creator'][] = $contributor['name'];
 		}
 
 		/* Add each file as well */
-		foreach($node->files as $file) {
-		  $file = file_load($file->fid);
-	    $metadata['File'][] = array(
-			 'filepath'=>$file['filepath'],
-			 'filemime'=>$file['filemime'],
-			);
+		$files = $node->field_upload;
+		if (empty($files)) {
+		  $citation_distribute_node_object = &drupal_static('citation_distribute_node_object');
+		  $files = $citation_distribute_node_object->field_upload;
+		}
+		foreach($files as $lang => $lang_files) {
+		  foreach ($lang_files as $file) {
+
+		    //$file = file_load($file->fid);
+		    //file load won't work yet, but data is already in db.
+        $query = db_select('file_managed', 'fm')
+          ->condition('fid', $file['fid'])
+          ->fields('fm', array('filemime', 'uri'));
+        $f = $query->execute()->fetchAssoc();
+
+        if ($f) {
+  	      $metadata['File'][] = array(
+  		  	 'filepath'=>$f['uri'],
+  			   'filemime'=>$f['filemime'],
+  			  );
+        }
+		  }
 		}
 
 		/* Create and add citation */
 		//$citation = 	theme('biblio_style', $node, variable_get('biblio_base', 'biblio'), biblio_get_style());
-		$citation = 	theme('biblio_style', array('node'=>$node, 'style_name'=>biblio_get_style()));
+		$citation = theme('biblio_style', array('node'=>$node, 'style_name'=>biblio_get_style()));
 		$citation = strip_tags($citation);
 	  $citation = preg_replace('/&nbsp;/', ' ', $citation);
 		$metadata['Citation'] = $citation;
