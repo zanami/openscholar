@@ -29,14 +29,6 @@ function gkplus_views_pre_build(&$view) {
 }
 
 /**
- * Returns TRUE if the purl of the current vsite is "gkplus".
- */
-function _gkplus_check_purl($purl = 'gking') {
-  $vsite = vsite_get_vsite();
-  return ($vsite && $vsite->group->purl == $purl);
-}
-
-/**
  * Implements hook_node_insert().
  */
 function gkplus_node_insert($node) {
@@ -178,16 +170,6 @@ function gkplus_form_taxonomy_form_term_submit($form, &$form_state) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter() for page_node_form.
- */
-function gkplus_form_page_node_form_alter(&$form, &$form_state, $form_id) {
-  if (!_gkplus_check_purl()) {
-    return;
-  }
-  $form['title']['#required'] = FALSE;
-}
-
-/**
  * Implements hook_form_BASE_FORM_ID_alter() for node_form.
  */
 function gkplus_form_node_form_alter(&$form, &$form_state, $form_id) {
@@ -212,6 +194,16 @@ function gkplus_form_node_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter() for page_node_form.
+ */
+function gkplus_form_page_node_form_alter(&$form, &$form_state, $form_id) {
+  if (!_gkplus_check_purl()) {
+    return;
+  }
+  $form['title']['#required'] = FALSE;
+}
+
+/**
  * Implements hook_preprocess_HOOK for html.tpl.php.
  *
  * Adds the miniteme (gking-alt) class attribute to configured node view pages.
@@ -227,6 +219,41 @@ function gkplus_preprocess_html(&$vars) {
   if ($object->nid && _gkplus_entity_setting($object->nid, 'minitheme_nodes')) {
     $vars['classes_array'][] = "gkplus-minitheme";
   }
+}
+
+/**
+ * Implements hook_preprocess_HOOK for page.tpl.php.
+ */
+function gkplus_preprocess_page(&$vars) {
+  if (!_gkplus_check_purl()) {
+    return;
+  }
+  if (!isset($vars['page']['content']['system_main']['term_heading']['term']['#term']->tid)) {
+    return;
+  }
+
+  $term = $vars['page']['content']['system_main']['term_heading']['term']['#term'];
+  if (!isset($vars['page']['content']['system_main']['nodes'])) {
+    $vars['page']['content']['system_main']['nodes'] = array();
+  }
+
+  dpm($vars);
+
+  $child_terms = taxonomy_get_tree($term->vid, $term->tid, NULL);
+
+  $title_suffix = '';
+  foreach ($child_terms as $child_term) {
+    $variables = array(
+      'taxonomy_term' => $child_term,
+      'options' => array(
+        'tree' => TRUE,
+        'description' => TRUE,
+        'max_depth' => NULL,
+      ),
+    );
+    $title_suffix .= theme('taxonomy_term_tagged_node', $variables);
+  }
+  $vars['page']['content']['system_main']['nodes']['#suffix'] = $title_suffix;
 }
 
 /**
@@ -258,7 +285,7 @@ function gkplus_preprocess_taxonomy_term(&$vars) {
  * Returns TRUE if the node is set to use the custom setting.
  *
  * @param int $etid
- *   The entity ID of the node about to be viewed.
+ *   The entity ID of the node or term about to be viewed.
  * @param string $setting
  *   The variable name to test this entity for membership of; one of
  *   "minitheme_nodes", "hidden_heading_terms", or "child_indent_terms".
@@ -293,4 +320,12 @@ function _gkplus_entity_setting_update($etid, $setting, $value) {
     unset($etids[array_search($etid, $etids)]);
     variable_set($variable_name, $etids);
   }
+}
+
+/**
+ * Returns TRUE if the purl of the current vsite is "gkplus".
+ */
+function _gkplus_check_purl($purl = 'gking') {
+  $vsite = vsite_get_vsite();
+  return ($vsite && $vsite->group->purl == $purl);
 }

@@ -115,12 +115,7 @@ p.copy {
     color:#106599;
 }
 
-.node, .biblio-entry {
-    clear: both;
-    margin-bottom: 0.1em;
-    padding: 0 0.188em;
-    position: relative;
-}
+
 
 .field-content a {color:#106599;}
 

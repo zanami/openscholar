@@ -65,6 +65,7 @@ dependencies[] = os_search_db
 dependencies[] = os_shields
 dependencies[] = os_comments
 dependencies[] = os_taxonomy
+dependencies[] = os_ga
 
 ; Control Panel
 dependencies[] = cp
