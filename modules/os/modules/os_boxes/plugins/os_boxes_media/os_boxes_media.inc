@@ -51,7 +51,8 @@ class os_boxes_media extends os_boxes_default {
     $block = parent::render();
 
     if ($file = file_load($this->options['fid'])) {
-      $block['content'] = drupal_render(file_view($file));
+      $render = file_view($file, 'media_large');
+      $block['content'] = drupal_render($render);
     }
     else {
       $block['content'] = t('No media given.');
