@@ -152,10 +152,10 @@ function os_pages_field_default_fields() {
           ),
           'file_path' => array(
             'options' => array(
-              'pathauto' => 1,
+              'pathauto' => 0,
               'transliterate' => 0,
             ),
-            'value' => '[vsite:site-purl]/',
+            'value' => '',
           ),
           'retroactive_update' => 0,
         ),
@@ -182,7 +182,7 @@ function os_pages_field_default_fields() {
             'library' => 0,
             'media_default--media_browser_1' => 'media_default--media_browser_1',
             'media_embed' => 0,
-            'media_internet' => 0,
+            'media_internet' => 'media_internet',
             'upload' => 'upload',
           ),
           'progress_indicator' => 'throbber',

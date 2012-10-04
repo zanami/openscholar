@@ -32,6 +32,10 @@ function os_files_download() {
   $args = func_get_args();
 
   if (module_exists('vsite')) {
+
+    // Add the menu entry as an arg.
+    array_unshift($args, 'files');
+
     $prefix = vsite_get_purl();
     if ($prefix) {
       // Add the prefix as an arg.
