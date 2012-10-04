@@ -77,6 +77,15 @@ function os_files_media_browser_params_alter(&$media_params) {
 }
 
 /**
+ * Alters the titles of the Media Browser tabs to more friendly terms
+ */
+function os_files_media_browser_plugins_alter(&$output) {
+  unset($output['library']);
+  $output['upload']['#title'] = t('My Computer');
+  $output['media_default--media_browser_1']['#title'] = t('My Library');
+}
+
+/**
  * Implements hook_stream_wrappers_alter().
  *
  * Used to extend the public stream wrapper.
