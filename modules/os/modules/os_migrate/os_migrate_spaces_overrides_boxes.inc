@@ -4,7 +4,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
 
   public function __construct() {
     $this->source_object = $this->dest_object = 'boxes';
-    $this->dependencies = array('ModalImageNodeOS', 'SpacesOverridesContext', 'PageNodeOS', 'AnnouncementNodeOS', 'BiblioNodeOS'); //images have to be copied before modal boxes can migrate.
+    $this->dependencies = array('ModalImageNodeOS', 'SpacesOverridesContext', 'PageNodeOS', 'AnnouncementNodeOS', 'BiblioNodeOS', 'SpacesOverridesBoxesMedia'); //images have to be copied before modal boxes can migrate.
     parent::__construct();
   }
 
