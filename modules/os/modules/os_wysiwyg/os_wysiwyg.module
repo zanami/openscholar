@@ -199,14 +199,6 @@ function _os_wysiwyg_get_theme_css($theme){
 }
 
 /**
- * Implements hook_media_browser_plugins_alter.
- * Removes the default library from the Media browser. A View has replaced it.
- */
-function os_wysiwyg_media_browser_plugins_alter(&$plugins){
-  unset($plugins['library']);
-}
-
-/**
  * Adds the pdw plugin to the wysiwyg
  */
 function os_wysiwyg_wysiwyg_include_directory($type){
