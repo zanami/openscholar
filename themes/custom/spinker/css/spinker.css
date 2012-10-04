@@ -223,6 +223,10 @@ body.header-main-right .region-header-second {
     text-decoration: none;
     }
 
+ul.primary li a {
+color: #444;
+}
+
 #menu-bar {
   width: auto;
   background: #F26C4F;
@@ -337,4 +341,8 @@ div.messages,
 
 .biblio-separator-bar {
 	color: #ccffcc;
+}
+
+#block-os-powered-by span a, .os-powered-link a.os-poweredby {
+background-position: 0 -27px;
 }
