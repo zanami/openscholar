@@ -557,6 +557,35 @@ class BoxPorter {
     return $box;
   }
 
+  //port os_boxes_oembed.  see: SpacesOverridesBoxesMediaMigration
+  public function _port_box_os_boxes_oembed($box, $id, $key_only) {
+    $key = 'os_boxes_media';
+    if ($key_only) {
+      return $key;
+    }
+
+    //get new fid from legacy delta
+    $query = db_select('spaces_overrides', 'so')
+      ->condition('sourceid3', $box->delta)
+      ->fields('so', array('destid1'))
+      ->isNotNull('destid1')
+      ->execute();
+
+    if ($query->rowCount()) {
+      $fid = $query->fetchColumn();
+      $box->options = array(
+        'fid' => $fid,
+        'width' => $box->options['width'],
+      );
+      $box->key = $key;
+    } else {
+      $this->migration->saveMessage(t('Could not save embed box.  No fid for box: @delta', array('@delta'=>$box->delta)), MigrationBase::MESSAGE_NOTICE);
+    }
+
+    return $box;
+  }
+
+
   //recent docs list can convert to sv list
   public function _port_box_os_boxes_recent_docs($box, $id, $key_only) {
     $key = 'os_sv_list_box';
