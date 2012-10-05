@@ -374,6 +374,10 @@ class BoxPorter {
       $box->options['teaser'] = 'teaser';
     }
 
+    if (!isset($box->options['show_title'])) {
+      $box->options['show_title'] = 0;
+    }
+
     return $box;
   }
 
