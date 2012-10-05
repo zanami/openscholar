@@ -225,6 +225,30 @@ function os_files_media_browser_plugins_alter(&$output) {
   $output['media_default--media_browser_1']['#title'] = t('My Library');
 }
 
+function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file) {
+  $scheme = file_uri_scheme($file->uri);
+  switch ($scheme) {
+    case 'oembed':
+      $temp['media_original'] = $view_modes['media_original'];
+      $view_modes = $temp;
+    break;
+    case 'public':
+      $mime = explode('/', $file->filemime);
+      $type = $mime[0];  // I do this to get the type in case bundles for files are ever expanded out of just mime type
+      if ($type == 'image') {
+        $temp['os_files_large'] = $view_modes['os_files_large'];
+        $temp['os_files_med'] = $view_modes['os_files_med'];
+        $temp['os_files_small'] = $view_modes['os_files_small'];
+        $temp['os_files_link'] = $view_modes['os_files_link'];
+      }
+      else {  // until there is support for the audio or video tags, this is the best we can do for that kind of file.
+        $temp['os_files_link'] = $view_modes['os_files_link'];
+      }
+      $view_modes = $temp;
+    break;
+  }
+}
+
 /**
  * Implements hook_stream_wrappers_alter().
  *
