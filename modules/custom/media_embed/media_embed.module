@@ -230,21 +230,19 @@ function media_embed_file_default_displays() {
   $default_displays = array();
 
   $default_styles = array();
-  foreach(media_type_get_types() as $name => $type) {
     // For default and Large view modes, use the default width and height from
     // hook_file_formatter_info().
-    $default_styles[$name . '__default__media_embed'] = array();
-    $default_styles[$name . '__default__media_embed_thumbnail'] = array();
+  $default_styles['html__default__media_embed'] = array();
+  $default_styles['html__default__media_embed_thumbnail'] = array();
 
-    // For the Preview view mode, match the width and height of the square
-    // thumbnail in media_image_default_styles().
-    $default_styles[$name . '__media_preview__media_embed_thumbnail'] = array('width' => '180', 'height' => '180');
+  // For the Preview view mode, match the width and height of the square
+  // thumbnail in media_image_default_styles().
+  $default_styles['html__media_preview__media_embed_thumbnail'] = array('width' => '180', 'height' => '180');
 
-    // For the Original view mode, set width and height to empty, so that they
-    // use what's returned by the oEmbed response.
-    $default_styles[$name . '__media_original__media_embed'] = array('width' => '', 'height' => '');
-    $default_styles[$name . '__media_original__media_embed_thumbnail'] = array('width' => '', 'height' => '');
-  }
+  // For the Original view mode, set width and height to empty, so that they
+  // use what's returned by the oEmbed response.
+  $default_styles['html__media_original__media_embed'] = array('width' => '', 'height' => '');
+  $default_styles['html__media_original__media_embed_thumbnail'] = array('width' => '', 'height' => '');
 
   foreach ($default_styles as $display_name => $settings) {
     $default_displays[$display_name] = (object) array(
