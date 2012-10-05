@@ -666,6 +666,46 @@ border-top:1px solid #ccc;
 	border-bottom:none;
 }	
 	
-	
+/* JCAROUSEL OVERRIDE STYLES */
+
+
+.jcarousel-skin-default .jcarousel-container-horizontal {
+    width: 80%;
+    padding: 10px;
+    margin: 0;
+}
+
+.jcarousel-container {
+background:#efefef;
+border:1px solid #CCC;
+}
+
+.jcarousel-container .jcarousel-clip-horizontal {
+  width: auto;
+}
+
+
+.jcarousel-container a.jcarousel-next,
+.jcarousel-container a.jcarousel-next:hover {
+ 			background-image: url('../images/jcarou-next-horizontal.png'); 
+ 			background-color:none;
+ 			right: -14px; 
+ 			top: 46px;
+ 			width:22px;
+ 			height:22px;
+ 			background-position: -3px -3px;
+ 			}
+
+.jcarousel-container a.jcarousel-prev,
+.jcarousel-container a.jcarousel-prev:hover {
+			background-image: url('../images/jcarou-prev-horizontal.png');
+			left: -15px; 
+			top: 46px;
+			width:22px;
+			height:22px;
+			background-position: -1px -3px;
+	       }
+
+
 	
 	
