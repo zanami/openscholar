@@ -319,6 +319,20 @@ ul.links li {
     padding-left: 15px;
 }
 
+
+/* ADD CLASS ICON */
+ul.class_material_field_class {
+	list-style:none;
+	margin-left:0;
+    }
+
+ul.class_material_field_class a.class_material_field_class_anchor {
+    background: url("../images/scholarbase-sprite.png") 0 -492px no-repeat;
+    padding-left: 15px;
+
+}
+
+
 /* MEDIA WIDGET ICONS */
 
 .media-widget a {margin-right:10px;}
@@ -349,6 +363,11 @@ ul.links li {
 
 .more-link /* Aggregator, blog, and forum more link */ {
 	float: right;
+}
+
+.block block-os-search-db .block-inner {
+	margin-left: 0;
+    margin-right: 0;
 }
 
 
