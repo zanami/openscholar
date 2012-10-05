@@ -41,6 +41,7 @@ dependencies[] = advanced_help
 
 ; media / files / wysiwyg
 dependencies[] = imagefield_crop
+dependencies[] = jcarousel
 dependencies[] = media
 dependencies[] = oembed
 dependencies[] = file_entity
