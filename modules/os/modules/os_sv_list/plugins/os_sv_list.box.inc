@@ -180,16 +180,11 @@ class os_sv_list_box extends os_boxes_default {
         break;
 
       case 'image':
-        $galleries_query = $this-> get_default_query();
-        $galleries_query->propertyCondition('type', 'media_gallery');
-        $result = $galleries_query->execute();
-        $galleries = (isset($result['node'])) ? $result['node'] : array();
-
-        //querying for files on a node.  new efq.
         $image_query = new EntityFieldQuery();
         $image_query->entityCondition('entity_type', 'file');
-        $image_query->propertyCondition('type', 'image');
-        $image_query->entityCondition('id', $galleries, 'IN');
+        if ($space = spaces_get_space()) {
+          $image_query->entityCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
+        }
 
         $sorts = array(
           'sort_newest' => array('timestamp', 'DESC'),
@@ -203,7 +198,6 @@ class os_sv_list_box extends os_boxes_default {
           $image_query->pager($options['number_of_items']);
           $image_page = $image_query->pager['element'];
         }
-
         break;
     }
 
@@ -261,7 +255,7 @@ class os_sv_list_box extends os_boxes_default {
 
     // pager widget
     $pager = '';
-    if ($options['pager']) {
+    if ($options['pager'] && $block['content']) {
       // theme_pager();
       $parameters = array(
         'sv_list_box_delta' => $this->delta,
@@ -275,14 +269,19 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // more link
-    if ($options['more'] && $more_link) {
+    if ($options['more'] && $more_link && $block['content']) {
       $block['content'] .= l($options['more_text'], $options['more_link'], array('attributes' => array('class' => array('more-link'))));
     }
 
     drupal_add_library('system', 'drupal.ajax');
     drupal_add_js(drupal_get_path('module', 'os_sv_list'). '/os_sv_list_display.js');
-    $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'">' . $block['content'] . '</div>' . $pager;
-    return $block;
+
+    if ($block['content']) {
+      $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'">' . $block['content'] . '</div>' . $pager;
+      return $block;
+    } else {
+      return array();
+    }
   }
 
   // get_default_query_query - humble beginnings of the EFQ
@@ -353,7 +352,7 @@ class os_sv_list_box extends os_boxes_default {
         'path' => $image->uri,
         'attributes' => array(),
       );
-      $html .= theme_image($variables);
+      $html .= theme('image', $variables);
     }
     return $html;
   }
