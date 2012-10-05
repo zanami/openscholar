@@ -89,7 +89,7 @@ p.copy {
   }
 
 
-.region-sidebar-second .views-field-title, .region-sidebar-first .views-field-title {
+.region-sidebar-second .block-boxes-os_sv_list_box li, .region-sidebar-first .block-boxes-os_sv_list_box li {
 	background: url('../images/blueBullet.gif') no-repeat;
 	padding-left:12px;
 	background-position:left top; 
