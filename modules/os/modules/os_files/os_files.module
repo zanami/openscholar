@@ -410,6 +410,11 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
               'height' => $image_info['height'],
             )),
             'html' => TRUE,
+            'attributes' => array(
+              'class' => array(
+                'colorbox'
+              ),
+            ),
           );
         }
         else {
