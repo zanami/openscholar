@@ -567,7 +567,7 @@ function _citation_distribute_unlist_db($plugin, $nid, $batch_command = '') {
   $query = _citation_distribute_get_query($plugin, $nid);
   $type = get_class($query);
   if (strpos($type, 'UpdateQuery') === 0) {
-    $query->fields('cd', array(
+    $query->fields(array(
       'noauto' => 1,
       'batch_command' => $batch_command,
     ));
