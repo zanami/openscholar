@@ -120,13 +120,13 @@ div.messages {
 .os-powered-link,
 #block-os-powered-by {
     float: right;
-    bottom:-45px;
+    bottom:-48px;
     position:relative;
 }
 
 .logged-in .os-powered-link,
 .logged-in #block-os-powered-by {
-    bottom:-26px;
+    bottom:-29px;
 }
 
 logged-in.page-cp #block-os-powered-by {
