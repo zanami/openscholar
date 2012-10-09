@@ -347,6 +347,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'file_destination' => 'file_destination'
       );
 
+      //Set the file destination up for where files should be saved (by purl)
       $file_destination = "files";
       if(isset($current_row->group_nid)){
         $query = self::d6_db_select('purl', 'p')
