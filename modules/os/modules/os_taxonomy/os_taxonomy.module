@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Taxonomy terms API for OpenScholar.
+ * Taxonomy API and custom term page callback for OpenScholar.
  */
 
 
@@ -10,25 +10,25 @@
  * Alter the menu items to use garys code
  *
  * @param array $items
- *
+ */
 function os_taxonomy_menu_alter(&$items) {
-  $items['taxonomy/term/%']['page callback'] = 'os_taxonomy_term_page';
-}*/
+  $items['taxonomy/term/%taxonomy_term']['page callback'] = 'os_taxonomy_term_page';
+}
 
 /**
  * Page callback; overrides system vocabulary term page.
  *
  * @see os_taxonomy_menu_alter()
- *
-function os_taxonomy_term_page($term) {
+ */
+function os_taxonomy_term_page($taxonomy_term) {
   $options = variable_get('os_taxonomy_term_page_options', array());
 
   $variables = array(
-  	'taxonomy_term' => $term,
-  	'options' => $options
+  	'taxonomy_term' => $taxonomy_term,
+  	'options' => $options,
   );
   return theme('os_taxonomy_tagged_nodes', $variables);
-} */
+}
 
 /**
  * Implements hook_theme().
@@ -314,6 +314,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
  */
 function theme_os_taxonomy_tagged_nodes($variables) {
   global $language;
+  $output = '';
 
   $options = $variables['options'] + array(
     'range' => 0,
@@ -327,57 +328,97 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     'child_element' => TRUE,
     'indentation_type' => 'px',
     'attributes' => array(),
+    'template' => 'item_list',
   );
   $taxonomy_term = $variables['taxonomy_term'];
 
-  $data = NULL;
-  $depth = array();
-  $nodes = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
+  if ($options['template'] == 'item_list') {
+    $data = NULL;
+    $depth = array();
+    $nodes = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
 
-  $title = check_plain($taxonomy_term->name);
+    $title = check_plain($taxonomy_term->name);
 
-  if ($options['max_depth'] !== FALSE) {
-    $childrens = taxonomy_get_tree($taxonomy_term->vid, $taxonomy_term->tid, $options['max_depth']);
+    if ($options['max_depth'] !== FALSE) {
+      $children = taxonomy_get_tree($taxonomy_term->vid, $taxonomy_term->tid, $options['max_depth']);
 
-    foreach ($childrens as $children) {
-      $attached_nodes = os_taxonomy_list_attached_nodes($children->tid, $options['bundles'], $options['range'], $options['offset']);
+      foreach ($children as $child) {
+        $attached_nodes = os_taxonomy_list_attached_nodes($child->tid, $options['bundles'], $options['range'], $options['offset']);
 
-      foreach ($attached_nodes as $attached_node) {
-        $nodes[] = $attached_node;
-        if ($options['tree']) {
-          $depth[$attached_node] = count(taxonomy_get_parents_all($children->tid));
+        foreach ($attached_nodes as $attached_node) {
+          $nodes[] = $attached_node;
+          if ($options['tree']) {
+            $depth[$attached_node] = count(taxonomy_get_parents_all($child->tid));
+          }
         }
       }
     }
-  }
 
-  $nodes = node_load_multiple(array_unique($nodes));
-  $items = array();
+    $nodes = node_load_multiple(array_unique($nodes));
+    $items = array();
 
-  if ($options['description']) {
-     $items[] = array('data' => '<span class="term-description">' . $taxonomy_term->description . '</span>');
-  }
-  foreach ($nodes as $node) {
-    $indentation = '';
-    if (isset($depth[$node->nid]) && $options['tree']) {
-      for ($i = 1; $i <= $depth[$node->nid]; $i++) {
-        $indentation += $options['indentation'];
+    if ($options['description']) {
+      $items[] = array('data' => '<span class="term-description">' . $taxonomy_term->description . '</span>');
+      if (!isset($options['attributes']['class'])) {
+        $options['attributes']['class'] = '';
       }
+      $options['attributes']['class'] .= 'has-term-description';
+    }
+    foreach ($nodes as $node) {
+      $indentation = '';
+      if (isset($depth[$node->nid]) && $options['tree']) {
+        for ($i = 1; $i <= $depth[$node->nid]; $i++) {
+          $indentation += $options['indentation'];
+        }
+      }
+
+      $direction = $language->direction ? 'margin-right: ' : 'margin-left: ';
+      $items[] = array(
+        'data' => theme('taxonomy_term_node_render', array(
+          'node' => $node,
+          'direction' => $direction,
+          'indentation' => $indentation,
+          'view_mode' => $options['view_mode'],
+          'indentation_type' => $options['indentation_type'],
+        )),
+      );
     }
 
-    $direction = $language->direction ? 'margin-right: ' : 'margin-left: ';
-    $items[] = array(
-      'data' => theme('taxonomy_term_node_render', array(
-        'node' => $node,
-        'direction' => $direction,
-        'indentation' => $indentation,
-        'view_mode' => $options['view_mode'],
-        'indentation_type' => $options['indentation_type'],
-      )),
-    );
+    $output .= theme('item_list', array('type' => 'ul', 'title' => $title, 'items' => $items, 'attributes' => $options['attributes']));
   }
+  else if ($options['template'] == 'taxonomy_term') {
+    $build = array();
+    $build['term_heading'] = array(
+      '#prefix' => '<div class="term-listing-heading">',
+      '#suffix' => '</div>',
+      'term' => taxonomy_term_view($taxonomy_term, 'full'),
+    );
+    $node_count = os_taxonomy_count_attached_nodes($taxonomy_term->tid, $options['bundles']);
+    if ($node_count) {
+      $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
+      $nodes = node_load_multiple($nids);
+      $build += node_view_multiple($nodes);
+    }
+    else {
+      $build['no_content'] = array(
+        '#prefix' => '<p>',
+        '#markup' => t('There is currently no content classified with this term.'),
+        '#suffix' => '</p>',
+      );
+    }
+    $output .= drupal_render($build);
+    if ($options['max_depth'] !== FALSE && $options['max_depth'] !== 0) {
+      if (is_numeric($options['max_depth'])) {
+        $options['max_depth'] = $options['max_depth'] - 1;
+      }
+      $children = taxonomy_get_tree($taxonomy_term->vid, $taxonomy_term->tid, 1, TRUE);
 
-  return theme('item_list', array('type' => 'ul', 'title' => $title, 'items' => $items, 'attributes' => $options['attributes']));
+      foreach ($children as $child) {
+        $output .= theme('os_taxonomy_tagged_nodes', array('taxonomy_term' => $child, 'options' => $options));
+      }
+    }
+  }
+  return $output;
 }
 
 /**

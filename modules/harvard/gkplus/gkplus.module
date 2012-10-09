@@ -12,6 +12,28 @@
  */
 
 /**
+ * Impements hook_cron().
+ */
+function gkplus_cron() {
+  $options = array(
+    //'range' => 0,
+    //'offset' => 0,
+    'tree' => TRUE,
+    //'max_depth' => NULL,
+    //'indentation' => 10,
+    //'bundles' => array(),
+    //'view_mode' => 'full',
+    'description' => TRUE,
+    //'child_element' => TRUE,
+    //'indentation_type' => 'px',
+    //'attributes' => array(),
+    'template' => 'taxonomy_term',
+  );
+
+  variable_set('os_taxonomy_term_page_options', $options);
+}
+
+/**
  * Implements hook_views_pre_build().
  *
  * Removes pager from the People page on Gary's website only.
