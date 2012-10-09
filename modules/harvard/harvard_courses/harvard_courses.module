@@ -24,3 +24,14 @@ function harvard_courses_feeds_plugins() {
   );
   return $info;
 }
+
+/**
+ * Implements hook_vsite_og_node_type_info().
+ *
+ * Notify vsite module which nodes bundle types are group or a group/content.
+ */
+function harvard_courses_vsite_og_node_type_info() {
+  return array(
+    'harvard_courses' => 'group_content',
+  );
+}
