@@ -2,7 +2,7 @@
 
 /**
  * @file imagefield_crop.inc
- * 
+ *
  * Migration field handler for imagefield_crop
  *
  * @author sagotsky
@@ -16,12 +16,21 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
 
   // Here, we take a simple array of values (for an integer field, it might look like
   // array(35, -23, 85738)
-  public function prepare($entity, array $field_info, array $instance, array $values) {
-    $return = parent::prepare($entity, $field_info, $instance, $values); 
+  public function prepare($entity, array $field_info, array $instance, array $values, $langcode=LANGUAGE_NEGOTIATION_DEFAULT) {
+    //crop the image.
+    if (isset($values[0]) && $values[0] && (int)$values[0] > 0) {
+      $items = array('fid' => $values[0]); //also has cropbox_x and y widht and height
+      $items += array_intersect_key($values['arguments'], array_flip(array('cropbox_x', 'cropbox_y', 'cropbox_width', 'cropbox_height')));
+      $items = array($items);
+      imagefield_crop_field_insert('node', $entity, $field_info, $instance, $langcode, $items);
+      //now what?
+    }
+
+    $return = parent::prepare($entity, $field_info, $instance, $values);
     if (!count($return)) {
       return $return;
     }
-    
+
     $migration = Migration::currentMigration();
     $arguments = (isset($values['arguments']))? $values['arguments']: array();
     unset($values['arguments']);
@@ -42,8 +51,8 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     }
     return $return;
   }
-  
-  
+
+
   /**
    * Implementation of MigrateFileFieldBaseHandler::buildFieldArray().
    */
@@ -58,7 +67,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
         }
       }
     }
-    
+
     return parent::buildFieldArray($field_array, $arguments, $delta);
   }
 
@@ -83,7 +92,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
       'cropbox_height' => t('Height of selected section of image.'),
       'cropbox_width' => t('Width of selected section of image.'),
     );
-    
+
     return $fields;
   }
 }

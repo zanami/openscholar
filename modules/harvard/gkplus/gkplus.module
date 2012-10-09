@@ -12,6 +12,30 @@
  */
 
 /**
+ * Implements hook_init().
+ */
+function gkplus_init() {
+  if (!_gkplus_check_purl()) {
+    return;
+  }
+  drupal_add_css(drupal_get_path('module', 'gkplus') . '/gkplus.css', array('every_page' => TRUE));
+}
+
+/**
+ * Impements hook_cron().
+ */
+function gkplus_cron() {
+  $options = array(
+    'tree' => TRUE,
+    'max_depth' => 2,
+    'description' => TRUE,
+    'template' => 'taxonomy_term',
+  );
+
+  variable_set('os_taxonomy_term_page_options', $options);
+}
+
+/**
  * Implements hook_views_pre_build().
  *
  * Removes pager from the People page on Gary's website only.
@@ -93,6 +117,8 @@ function gkplus_node_validate($node, $form, $form_state) {
 
 /**
  * Node validate callback; only allows nodes with "Research Interests" term(s).
+ *
+ * @see gkplus_node_validate()
  */
 function _gkplus_node_in_vocab($node, $vocab_name) {
   $items = field_get_items('node', $node, 'og_vocabulary');
@@ -117,6 +143,8 @@ function _gkplus_node_in_vocab($node, $vocab_name) {
  * Returns TRUE if no child items of an array have a numeric 'target_id'.
  *
  * In other words, returns FALSE if at least one numeric target_id is found.
+ *
+ * @see _gkplus_node_in_vocab()
  */
 function _gking_empty_terms($terms) {
   if (sizeof($terms) === 0) {
@@ -132,6 +160,8 @@ function _gking_empty_terms($terms) {
 
 /**
  * Implements hook_form_FORM_ID_alter() for taxonomy_form_term.
+ *
+ * @ingroup term_display_options
  */
 function gkplus_form_taxonomy_form_term_alter(&$form, &$form_state, $form_id) {
   $form['advanced']['gkplus'] = array(
@@ -222,62 +252,39 @@ function gkplus_preprocess_html(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_HOOK for page.tpl.php.
- */
-function gkplus_preprocess_page(&$vars) {
-  if (!_gkplus_check_purl()) {
-    return;
-  }
-  if (!isset($vars['page']['content']['system_main']['term_heading']['term']['#term']->tid)) {
-    return;
-  }
-
-  $term = $vars['page']['content']['system_main']['term_heading']['term']['#term'];
-  if (!isset($vars['page']['content']['system_main']['nodes'])) {
-    $vars['page']['content']['system_main']['nodes'] = array();
-  }
-
-  dpm($vars);
-
-  $child_terms = taxonomy_get_tree($term->vid, $term->tid, NULL);
-
-  $title_suffix = '';
-  foreach ($child_terms as $child_term) {
-    $variables = array(
-      'taxonomy_term' => $child_term,
-      'options' => array(
-        'tree' => TRUE,
-        'description' => TRUE,
-        'max_depth' => NULL,
-      ),
-    );
-    $title_suffix .= theme('taxonomy_term_tagged_node', $variables);
-  }
-  $vars['page']['content']['system_main']['nodes']['#suffix'] = $title_suffix;
-}
-
-/**
- * Implements hook_preprocess_HOOK for taxonomy-term.tpl.php.
+ * Implements hook_preprocess_HOOK for theme_os_taxonomy_tagged_nodes().
  *
- * Adds custom class attributes to configured taxonomy term view pages.
+ * @ingroup term_display_options
  */
-function gkplus_preprocess_taxonomy_term(&$vars) {
+function gkplus_preprocess_os_taxonomy_tagged_nodes(&$vars) {
   if (!_gkplus_check_purl()) {
     return;
   }
-  if (!isset($vars['tid']) || !isset($vars['vid'])) {
+  if (!isset($vars['taxonomy_term']->tid) || !isset($vars['taxonomy_term']->vid)) {
     return;
   }
-  $vocab = taxonomy_vocabulary_load($vars['vid']);
+  $vocab = taxonomy_vocabulary_load($vars['taxonomy_term']->vid);
   if ($vocab->name !== 'Research Interests') {
     return;
   }
-
-  if (_gkplus_entity_setting($vars['tid'], 'hidden_heading_terms')) {
-    $vars['classes_array'][] = 'gkplus-hidden-heading';
+  if (!isset($vars['options']['attributes']['class'])) {
+    $vars['options']['attributes']['class'] = array();
   }
-  if (_gkplus_entity_setting($vars['tid'], 'child_indent_terms')) {
-    $vars['classes_array'][] = 'gkplus-child-indent';
+  // Removes gkplus term attributes from options for child terms.
+  else {
+    $original = $vars['options']['attributes']['class'];
+    $remove = array('gkplus-hidden-heading', 'gkplus-child-indent', 'gkplus-no-indent');
+    $vars['options']['attributes']['class'] = array_diff($original, $remove);
+  }
+  if (_gkplus_entity_setting($vars['taxonomy_term']->tid, 'hidden_heading_terms')) {
+
+    $vars['options']['attributes']['class'][] = 'gkplus-hidden-heading';
+  }
+  if (_gkplus_entity_setting($vars['taxonomy_term']->tid, 'child_indent_terms')) {
+    $vars['options']['attributes']['class'][] = 'gkplus-child-indent';
+  }
+  else {
+    $vars['options']['attributes']['class'][] = 'gkplus-no-indent';
   }
 }
 
@@ -289,6 +296,8 @@ function gkplus_preprocess_taxonomy_term(&$vars) {
  * @param string $setting
  *   The variable name to test this entity for membership of; one of
  *   "minitheme_nodes", "hidden_heading_terms", or "child_indent_terms".
+ *
+ * @ingroup term_display_options
  */
 function _gkplus_entity_setting($etid, $setting) {
   $variable_name = 'gkplus_' . $setting;
@@ -306,6 +315,8 @@ function _gkplus_entity_setting($etid, $setting) {
  *   or "child_indent_terms".
  * @param int $value
  *   The checkbox value, 0 or 1.
+ *
+ * @ingroup term_display_options
  */
 function _gkplus_entity_setting_update($etid, $setting, $value) {
   $variable_name = 'gkplus_' . $setting;
