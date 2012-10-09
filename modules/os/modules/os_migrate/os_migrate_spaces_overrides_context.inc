@@ -224,9 +224,9 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'views-reader-block' => array(
         'module' => 'views',
         'delta' => 'reader-block',
-        'region' => 'sidebar_second',
-        'weight' => '-10',
-        'info' => 'Site RSS Feed'
+        'region' => (isset($block['region'])) ? $block['region'] : 'sidebar_second',
+        'weight' => (isset($block['weight'])) ? $block['weight'] : -10,
+        'info' => 'Site RSS Feed',
       )
     );
 
