@@ -20,7 +20,8 @@ function cp_feature_customize($js, $feature_name) {
   );
 
   $output = ctools_modal_form_wrapper('cp_feature_customize_form', $form_state);
-  if ($form_state['submitted']) {
+  // Check to make sure there are no form errors before dismissing this form modal.
+  if ($form_state['submitted'] && form_get_errors() == FALSE) {
     $output[] = ctools_modal_command_dismiss();
   }
   else {

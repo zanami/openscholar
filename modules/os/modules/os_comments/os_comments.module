@@ -45,9 +45,42 @@ function os_comments_form_cp_feature_customize_form_alter(&$form, &$form_state, 
     	  unset($form["comment_settings"][$child]);
     	}
     }
-
+    // Use a secondary validator.
+    $form['#validate'][] = 'os_comments_cp_feature_customize_form_validate';
     //Use default comment_sources submit handler
     $form['#submit'][] = 'comment_sources_save_admin_form';
+  }
+}
+
+/**
+ * Function to add a secondary validate function that informs the user that they
+ * need to set their disqus shortname before they can allow disqus comments.
+ */
+function os_comments_cp_feature_customize_form_validate($form, &$form_state) {
+  // Get the nodes for this feature.
+  $a_info = features_get_features($form['#feature']);
+  $node_types = $a_info->info['features']['node'];
+
+  if (!empty($node_types)) {
+    $vsite = vsite_get_vsite();
+  	foreach ($node_types as $key => $type) {
+      $node_types[$key] = 'comment_sources_' . $type;
+
+      if($form_state['values'][$node_types[$key]] == 'disqus') {
+	    // Check for the disqus variable
+	    if($vsite) {
+		  $disqus = $vsite->controllers->variable->get('disqus_domain', 'space');
+		  $cp_url = $vsite->get_absolute_url()."/cp/settings";
+	    } else {
+          $disqus = variable_get('disqus_domain', '');
+          $cp_url = "/cp/settings";
+        }
+        // If theres no disqus, don't let the form submit.
+	    if(empty($disqus)) {
+	      form_set_error('comment_sources_announcement',t('You have not yet set your disqus shortname, please do so <a href="'.$cp_url.'">here in your Control Panel: Settings</a> before continuing.'));
+	    }
+      }
+    }
   }
 }
 
