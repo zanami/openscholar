@@ -313,8 +313,10 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
  *      - attributes: Optional HTML attributes to add to the item list output.
  */
 function theme_os_taxonomy_tagged_nodes($variables) {
-  global $language;
   $output = '';
+
+  global $language;
+  $direction = $language->direction ? 'margin-right: ' : 'margin-left: ';
 
   $options = $variables['options'] + array(
     'range' => 0,
@@ -329,6 +331,7 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     'indentation_type' => 'px',
     'attributes' => array(),
     'template' => 'item_list',
+    'cur_depth' => 0,
   );
   $taxonomy_term = $variables['taxonomy_term'];
 
@@ -372,7 +375,6 @@ function theme_os_taxonomy_tagged_nodes($variables) {
         }
       }
 
-      $direction = $language->direction ? 'margin-right: ' : 'margin-left: ';
       $items[] = array(
         'data' => theme('taxonomy_term_node_render', array(
           'node' => $node,
@@ -387,7 +389,30 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     $output .= theme('item_list', array('type' => 'ul', 'title' => $title, 'items' => $items, 'attributes' => $options['attributes']));
   }
   else if ($options['template'] == 'taxonomy_term') {
+    if (!isset($options['attributes']['class'])) {
+      $options['attributes']['class'] = array();
+    }
+    if ($options['cur_depth'] == 0) {
+      $options['attributes']['class'][] = 'os-taxonomy-term';
+    }
+    else if ($options['cur_depth'] > 0) {
+      $original = $options['attributes']['class'];
+      $parent_depth = $options['cur_depth'] - 1;
+      $remove = array('depth-' . $parent_depth);
+      $options['attributes']['class'] = array_diff($original, $remove);
+    }
+    $options['attributes']['class'][] = 'depth-' . $options['cur_depth'];
+    $output .= '<div ' . drupal_attributes($options['attributes']) . '>';
+
     $build = array();
+    if ($options['cur_depth'] == 0) {
+      $build['#attached'] = array(
+        'css' => array(
+          'type' => 'file',
+          'data' => drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.css',
+        ),
+      );
+    }
     $build['term_heading'] = array(
       '#prefix' => '<div class="term-listing-heading">',
       '#suffix' => '</div>',
@@ -406,17 +431,20 @@ function theme_os_taxonomy_tagged_nodes($variables) {
         '#suffix' => '</p>',
       );
     }
+
     $output .= drupal_render($build);
     if ($options['max_depth'] !== FALSE && $options['max_depth'] !== 0) {
       if (is_numeric($options['max_depth'])) {
         $options['max_depth'] = $options['max_depth'] - 1;
       }
-      $children = taxonomy_get_tree($taxonomy_term->vid, $taxonomy_term->tid, 1, TRUE);
+      $options['cur_depth'] = $options['cur_depth'] + 1;
 
+      $children = taxonomy_get_tree($taxonomy_term->vid, $taxonomy_term->tid, 1, TRUE);
       foreach ($children as $child) {
         $output .= theme('os_taxonomy_tagged_nodes', array('taxonomy_term' => $child, 'options' => $options));
       }
     }
+    $output .= '</div>';
   }
   return $output;
 }
