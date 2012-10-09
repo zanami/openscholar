@@ -36,27 +36,25 @@ class FeedsRSStoNodesTest extends FeedsWebTestCase {
     $this->createImporterConfiguration('Syndication', 'syndication');
     $this->addMappings('syndication',
       array(
-        array(
+        0 => array(
           'source' => 'title',
           'target' => 'title',
           'unique' => FALSE,
         ),
-        array(
+        1 => array(
           'source' => 'description',
           'target' => 'body',
-          'unique' => FALSE,
         ),
-        array(
+        2 => array(
           'source' => 'timestamp',
           'target' => 'created',
-          'unique' => FALSE,
         ),
-        array(
+        3 => array(
           'source' => 'url',
           'target' => 'url',
           'unique' => TRUE,
         ),
-        array(
+        4 => array(
           'source' => 'guid',
           'target' => 'guid',
           'unique' => TRUE,
@@ -91,11 +89,10 @@ class FeedsRSStoNodesTest extends FeedsWebTestCase {
     $this->assertEqual($count, 10, 'Accurate number of items in database.');
 
     // Assert default input format on first imported feed node.
-/*
-// NEEDS update.
-    $format = db_query_range("SELECT nr.format FROM {feeds_node_item} fi JOIN {node} n ON fi.nid = n.nid JOIN {node_revision} nr ON n.vid = nr.vid", 0, 1)->fetchField();
-    $this->assertEqual($format, filter_fallback_format(), 'Using default Input format.');
-*/
+
+    // NEEDS update.
+    // $format = db_query_range("SELECT nr.format FROM {feeds_node_item} fi JOIN {node} n ON fi.nid = n.nid JOIN {node_revision} nr ON n.vid = nr.vid", 0, 1)->fetchField();
+    // $this->assertEqual($format, filter_fallback_format(), 'Using default Input format.');
 
     // Import again.
     $this->drupalPost("node/$nid/import", array(), 'Import');
@@ -165,11 +162,10 @@ class FeedsRSStoNodesTest extends FeedsWebTestCase {
     $this->assertEqual($count, 10, 'Accurate number of items in database.');
 
     // Assert input format.
-/*
-// NEEDS update.
-    $format = db_query_range("SELECT nr.format FROM {feeds_node_item} fi JOIN {node} n ON fi.nid = n.nid JOIN {node_revision} nr ON n.vid = nr.vid", 0, 1)->fetchField();
-    $this->assertEqual($format, filter_fallback_format() + 1, 'Set non-default Input format.');
-*/
+
+    // NEEDS update.
+    // $format = db_query_range("SELECT nr.format FROM {feeds_node_item} fi JOIN {node} n ON fi.nid = n.nid JOIN {node_revision} nr ON n.vid = nr.vid", 0, 1)->fetchField();
+    // $this->assertEqual($format, filter_fallback_format() + 1, 'Set non-default Input format.');
 
     // Set to update existing, remove authorship of above nodes and import again.
     $this->setSettings('syndication', 'FeedsNodeProcessor', array('update_existing' => 2));
@@ -193,7 +189,7 @@ class FeedsRSStoNodesTest extends FeedsWebTestCase {
     // should now be assigned to feed node author.
     $this->addMappings('syndication',
       array(
-        array(
+        5 => array(
           'source' => 'parent:uid',
           'target' => 'uid',
         ),
@@ -230,27 +226,25 @@ class FeedsRSStoNodesTest extends FeedsWebTestCase {
     $this->drupalPost('admin/structure/feeds/syndication_standalone/settings', $edit, 'Save');
     $this->addMappings('syndication_standalone',
       array(
-        array(
+        0 => array(
           'source' => 'title',
           'target' => 'title',
           'unique' => FALSE,
         ),
-        array(
+        1 => array(
           'source' => 'description',
           'target' => 'body',
-          'unique' => FALSE,
         ),
-        array(
+        2 => array(
           'source' => 'timestamp',
           'target' => 'created',
-          'unique' => FALSE,
         ),
-        array(
+        3 => array(
           'source' => 'url',
           'target' => 'url',
           'unique' => TRUE,
         ),
-        array(
+        4 => array(
           'source' => 'guid',
           'target' => 'guid',
           'unique' => TRUE,

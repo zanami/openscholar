@@ -33,6 +33,7 @@ class FeedsTermProcessor extends FeedsProcessor {
     $term = new stdClass();
     $term->vid = $vocabulary->vid;
     $term->vocabulary_machine_name = $vocabulary->machine_name;
+    $term->format = isset($this->config['input_format']) ? $this->config['input_format'] : filter_fallback_format();
     return $term;
   }
 
@@ -85,7 +86,6 @@ class FeedsTermProcessor extends FeedsProcessor {
   public function configDefaults() {
     return array(
       'vocabulary' => 0,
-      'force_update' => TRUE,
     ) + parent::configDefaults();
   }
 
@@ -104,12 +104,6 @@ class FeedsTermProcessor extends FeedsProcessor {
       '#description' => t('Choose the vocabulary to import into. <strong>CAUTION:</strong> when deleting terms through the "Delete items" tab, Feeds will delete <em>all</em> terms from this vocabulary.'),
       '#options' => $options,
       '#default_value' => $this->config['vocabulary'],
-    );
-    $form['force_update'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Force update'),
-      '#description' => t('Force update of imported terms even if no data change. For import of <strong>term parents</strong> you need to import twice and set this in the second pass.'),
-      '#default_value' => $this->config['force_update'],
     );
     return $form;
   }
@@ -166,22 +160,6 @@ class FeedsTermProcessor extends FeedsProcessor {
         }
         $target_term->weight = $weight;
         break;
-      case 'path_alias':
-        $target_term->path = array();
-
-        // Check for existing aliases.
-        if (!empty($target_term->tid)) {
-          if ($path = path_load('taxonomy/term/' . $target_term->tid)) {
-            $target_term->path = $path;
-          }
-        }
-
-        // Prevent Pathauto (http://drupal.org/project/pathauto) from
-        // overwriting the alias.
-        $target_term->path['pathauto'] = FALSE;
-
-        $target_term->path['alias'] = $value;
-        break;
       default:
         parent::setTargetElement($source, $target_term, $target_element, $value);
         break;
@@ -198,7 +176,7 @@ class FeedsTermProcessor extends FeedsProcessor {
         'name' => t('Term name'),
         'description' => t('Name of the taxonomy term.'),
         'optional_unique' => TRUE,
-       ),
+      ),
       'parent' => array(
         'name' => t('Parent: Term name'),
         'description' => t('The name of the parent taxonomy term.'),
@@ -217,21 +195,15 @@ class FeedsTermProcessor extends FeedsProcessor {
       'description' => array(
         'name' => t('Term description'),
         'description' => t('Description of the taxonomy term.'),
-       ),
+      ),
     );
-
-    // If path is enabled expose path alias.
-    if (module_exists('path')) {
-      $targets['path_alias'] = array(
-        'name' => t('Path alias'),
-        'description' => t('URL path alias for the taxonomy term.'),
-      );
-    }
 
     // Let implementers of hook_feeds_term_processor_targets() add their targets.
     try {
       self::loadMappers();
-      feeds_alter('feeds_processor_targets', $targets, 'taxonomy_term', $this->vocabulary()->machine_name);
+      $entity_type = $this->entityType();
+      $bundle = $this->vocabulary()->machine_name;
+      drupal_alter('feeds_processor_targets', $targets, $entity_type, $bundle);
     }
     catch (Exception $e) {
       // Do nothing.
@@ -254,12 +226,6 @@ class FeedsTermProcessor extends FeedsProcessor {
         if ($tid = db_query("SELECT tid FROM {taxonomy_term_data} WHERE name = :name AND vid = :vid", array(':name' => $value, ':vid' => $vocabulary->vid))->fetchField()) {
           return $tid;
         }
-      } else if($target == 'guid') {
-        $query = db_select('feeds_item')
-          ->fields('feeds_item', array('entity_id'))
-          ->condition('entity_type', 'taxonomy_term');
-        $tid = $query->condition('guid', $value)->execute()->fetchField();
-        return ($tid) ? $tid : 0;
       }
     }
     return 0;
@@ -275,18 +241,5 @@ class FeedsTermProcessor extends FeedsProcessor {
       }
     }
     throw new Exception(t('No vocabulary defined for Taxonomy Term processor.'));
-  }
-
-  /**
-   * Override getHash()
-   *
-   * @return string
-   */
-  protected function getHash($entity_id) {
-    if($this->config['force_update']) {
-      return ''; // dummy to always update
-    } else {
-      return parent::getHash($entity_id);
-    }
   }
 }
