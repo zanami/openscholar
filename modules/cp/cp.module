@@ -227,6 +227,12 @@ function cp_use_cp_theme() {
   return FALSE;
 }
 
+function cp_admin_paths() {
+  return array(
+    'cp/*' => TRUE,
+  );
+}
+
 /**
  * Provide a form-specific alteration instead of the global hook_form_alter().
  *
