@@ -81,8 +81,8 @@
 <?php if ($page['branding_header']): ?>
 <div id="branding_header">
 	<?php print render($page['branding_header']); ?>
-</div>	
-<?php endif; ?>	
+</div>
+<?php endif; ?>
 
 <div id="page" class="container <?php print $classes; ?>">
 	<div id="page-wrapper">
@@ -191,10 +191,10 @@
   <?php endif; ?>
 </div></div><!--page area ends-->
  <div id="extradiv"></div>
- 
+
  <!--FLEXIBLE ADMIN FOOTER FOR USE BY SELECT GROUPS USING OS-->
  <?php if ($page['branding_footer']): ?>
 <div id="branding_footer">
 	<?php print render($page['branding_footer']); ?>
-</div>	
-<?php endif; ?>	
+</div>
+<?php endif; ?>
