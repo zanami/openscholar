@@ -112,6 +112,9 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
 
          //attach logo
          parent::os_migrate_prepare_files(array($file), $row, 'field_site_logo');
+         if (isset($original_file) && $fid = $this->_save_original($original_file, $row)) {
+           $row->field_site_logo = $fid; //attach newly saved file
+         }
          $row->{'field_site_logo:language'} = $row->language;
          //$current_row->field_site_logo = $file->filename;
 
@@ -165,6 +168,37 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
      );
    }
 
+   /**
+    * @function _save_original
+    *
+    *  image crop needs the file its cropping to exist as an entity before the crop can happen
+    *  save the image here.
+    *
+    * @param string $original_file
+    *   path to original image file
+    * @param object $row
+    *   current row
+    * @return int $fid
+    *   file id where $original file is saved
+    */
+   function _save_original($original_file, &$row){
+     $filepath = variable_get('os_migrate_files') . '/' . $original_file;
+     $file = new stdClass();
+     $file->uid = $row->uid;
+     $file->filemime = file_get_mimetype($filepath);
+     $file->uri = $filepath;
+
+
+     if ($file = file_copy($file, 'public://')) {
+       // attach metadata and save
+       $entity = entity_metadata_wrapper('file', $file);
+       $entity->og_group_ref = array($row->nid);
+       $entity->save();
+       return $file->fid;
+     }
+
+     return FALSE;
+   }
 
    /**
     * @function _get_field_group_path($nid)
