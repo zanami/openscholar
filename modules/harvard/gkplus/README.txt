@@ -13,10 +13,11 @@ This module provides a number of miscellaneous customizations:
 * Add checkbox on nodes toggling 'minimal' theme when viewing that node
 * Add checkbox on terms toggling header hidden from anon users, and disabled to auth users
 * Add checkbox on terms toggling whether or not to indent term when displayed as child
+* Overrides existing taxonomy theme function defaults to display grandchild terms
 
 These features forthcoming:
 
 * "nodeorder" link on taxonomy terms using the the nodeorder module for taxonomy, disable for all other users
 * Add the contextual annotation link functionality to his taxonomy terms from the port written by Jeffery
 * Updates files when gary adds a new version to a dump directory
-* Avoid custom taxonomy term list page, do use existing taxonomy theme functions
+
