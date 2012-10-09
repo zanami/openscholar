@@ -1,0 +1,26 @@
+<?php
+/**
+ * @file
+ * Code for the Harvard courses feature.
+ */
+
+include_once 'harvard_courses.features.inc';
+
+/**
+ * Implements hook_feeds_plugins().
+ */
+function harvard_courses_feeds_plugins() {
+  $path = drupal_get_path('module', 'harvard_courses');
+  $info = array();
+  $info['FeedsTokenizedFetcher'] = array(
+    'name'        => t('Token fetcher'),
+    'description' => t('Create a tokenize url for fetching'),
+    'handler' => array(
+      'parent' => 'FeedsFetcher',
+      'class'  => 'FeedsTokenizedFetcher',
+      'file'   => 'harvard_courses_token_fetcher.inc',
+      'path'   => $path,
+    ),
+  );
+  return $info;
+}
