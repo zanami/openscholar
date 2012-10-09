@@ -498,10 +498,7 @@ function os_preprocess_page(&$variables) {
     ),
     'settings' => array(
       'title' => t('Settings'),
-      'href' => 'cp/build/features/nojs/' . $module,
-      'attributes' => array(
-        'class' => array('ctools-use-modal'),
-      )
+      'href' => 'cp/build/features/' . $module,
     ),
     'layout' => array(
       'title' => t('Layout'),

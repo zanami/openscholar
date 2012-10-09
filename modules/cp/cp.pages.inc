@@ -2,8 +2,7 @@
 
 function cp_feature_customize($js, $feature_name) {
   if (!$js) {
-    drupal_goto('features/'. $feature_name);
-    return;
+    return drupal_get_form('cp_feature_customize_form', $feature_name);
   }
 
   ctools_include('modal');
