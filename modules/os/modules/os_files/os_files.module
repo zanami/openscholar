@@ -197,7 +197,7 @@ function os_files_file_default_displays() {
     'image__os_files_small__file_image' => array('image_style' => 'os_files_small'),
   );
 
-  foreach (file_info_file_types()+array('default' => array()) as $type => $info) {
+  foreach (file_type_get_all_types()+array('default' => array()) as $type => $info) {
     $keys["{$type}__os_files_link__os_link"] = array();
   }
 
@@ -414,7 +414,7 @@ function _os_files_clean_up_fields() {
   field_delete_field('field_license');
   if ($title = field_info_instance('file', 'media_title', 'image')) {
     $descrip = field_info_instance('file', 'media_description', 'image');
-    $file_types = file_info_file_types();
+    $file_types = file_type_get_all_types();
     foreach ($file_types as $bundle => $info) {
       if (!field_info_instance('file', 'media_title', $bundle)) {
         $title_copy = $title;
