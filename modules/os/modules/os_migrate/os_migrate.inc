@@ -30,7 +30,7 @@ abstract class OSMigration extends Migration {
     // ->issueNumber(1234) to a mapping.
     $this->issuePattern = 'https://redmine.hmdc.harvard.edu/issues/:id:';
 
-    //$this->restrict_vsites = array('21094', '8921', '6879', '3633', '9015', '2', '1', '8', '10057');
+    //$this->restrict_vsites = array(6879, 6744, 1, 8921);
   }
 
   /**
