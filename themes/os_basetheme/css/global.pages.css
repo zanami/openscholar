@@ -120,11 +120,16 @@ div.messages {
 .os-powered-link,
 #block-os-powered-by {
     float: right;
-    bottom:-26px;
+    bottom:-45px;
     position:relative;
 }
 
-.page-cp #block-os-powered-by {
+.logged-in .os-powered-link,
+.logged-in #block-os-powered-by {
+    bottom:-26px;
+}
+
+logged-in.page-cp #block-os-powered-by {
   
     bottom:0;
    
@@ -135,18 +140,15 @@ div.messages {
     background: url("../images/poweredby.png") no-repeat scroll 0 0 transparent;
     border: medium none !important;
     display: block;
-    height: 26px;
+    height: 15px;
     padding: 0 !important;
     text-decoration: none !important;
     text-indent: -999em;
-    width: 85px;
+    width: 140px;
     margin-top:-25px;
   }
 
-.page-cp #block-os-powered-by span a {
-    background: url("../images/poweredby.png") no-repeat scroll 0 -27px transparent;
-    margin-top:0;
-  }
+
 
 #logo /* Wrapping link for logo */ {
   padding: 10px 0;
@@ -364,12 +366,6 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 .more-link /* Aggregator, blog, and forum more link */ {
 	float: right;
 }
-
-.block block-os-search-db .block-inner {
-	margin-left: 0;
-    margin-right: 0;
-}
-
 
 .search-results /* Search results are an ordered list so we reset the margin */ {
   margin: 0;

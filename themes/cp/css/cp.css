@@ -10,22 +10,6 @@ h1#page-title {
 
 /* GENERAL CP STYLES */
 
-.region-sidebar-first .region-inner {
-	 background: #F2F3F3;
-    position: fixed;
-    bottom: 0;
-    min-height: 200px;
-    position: fixed;
-    top: 0;
-    border-right:1px solid #BFC6C6;
-    width:170px;
-    margin-top:65px;
-  }
- 
-.toolbar-drawer .region-sidebar-first .region-inner {
-	margin-top: 30px;
-  }  
-	
 #content-column {
   overflow: auto;
   padding-bottom: 55px;
@@ -42,9 +26,9 @@ a {color:#4E84C4;}
 }
 
 .region-footer {
-    background: url('../images/top-bottom-bg.png') repeat-x;
+    background: #000;
     color: #FFFFFF;
-    height:40px;
+    height:30px;
     bottom: 0;
     position: fixed;
     width: 100%;
@@ -58,22 +42,23 @@ a {color:#4E84C4;}
   
 .region-footer .region-inner {
     padding: 10px 20px 0 15px;
+    z-index:1;
   }  
 
  
 
 #block-os-powered-by {
-	float:left;
+	float:right;
 	text-align:left;
+	margin-top:14px;
+	height:15px;
 }
 
-#block-os-powered-by a {
-    background: url("../images/footer-logo.png") no-repeat;
-    height: 23px;
-    margin-top: 0;
-    text-indent: -9999px;
-    width: 353px;
-    display: block;
+
+.page-cp #block-os-powered-by a,
+ .page-cp #block-os-powered-by a:hover {
+    background: url("../../../themes/os_basetheme/images/poweredby.png") 0 -42px no-repeat;
+    margin-top: -43px;
 }
 
 
@@ -181,7 +166,7 @@ td {
 .page-cp-appearance #edit-actions {
     /*background: url("/sites/all/modules/openscholar_vsite/vsite_design/theme/images/themePickerSubButtsBg.png") repeat-x scroll 0 0 transparent;*/
     background:#EFEFEF;
-    bottom: 26px;
+    bottom: 16px;
 	position: fixed;
     width: 100%;
     z-index: 10;
