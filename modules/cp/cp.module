@@ -268,7 +268,7 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
     $class = (isset($_GET['open_feature_settings']) && $_GET['open_feature_settings'] == $f_name) ? "modal_click_onload" : "";
 
     //, 'ctools-modal-openscholar-style-default');
-    $link = ctools_modal_text_button('customize', 'cp/build/features/nojs/' . $f_name, 'customize ' . $f_name, $class);
+    $link = ctools_modal_text_button('customize', 'cp/build/features/' . $f_name, 'customize ' . $f_name, $class);
     $form['settings'][$f_name] = array(
       '#type' => 'markup',
       '#markup' => $link,
