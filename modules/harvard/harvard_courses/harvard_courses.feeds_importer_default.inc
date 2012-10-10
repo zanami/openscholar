@@ -18,16 +18,14 @@ function harvard_courses_feeds_importer_default() {
     'name' => 'Course',
     'description' => 'Import courses',
     'fetcher' => array(
-      'plugin_key' => 'FeedsFileFetcher',
-      'config' => array(
-        'allowed_extensions' => 'txt csv tsv xml opml html htm',
-        'direct' => 0,
-      ),
+      'plugin_key' => 'FeedsTokenizedFetcher',
+      'config' => array(),
     ),
     'parser' => array(
       'plugin_key' => 'FeedsXPathParserXML',
       'config' => array(
         'sources' => array(
+          'xpathparser:14' => 'cat_num',
           'xpathparser:0' => 'cat_num',
           'xpathparser:1' => 'description',
           'xpathparser:2' => 'faculty',
@@ -38,12 +36,12 @@ function harvard_courses_feeds_importer_default() {
           'xpathparser:7' => 'prerequisites',
           'xpathparser:8' => 'room',
           'xpathparser:9' => 'term',
-          'xpathparser:10' => 'title',
           'xpathparser:11' => 'building',
           'xpathparser:12' => 'bracketed',
           'xpathparser:13' => 'title',
         ),
         'rawXML' => array(
+          'xpathparser:14' => 0,
           'xpathparser:0' => 0,
           'xpathparser:1' => 0,
           'xpathparser:2' => 0,
@@ -54,7 +52,6 @@ function harvard_courses_feeds_importer_default() {
           'xpathparser:7' => 0,
           'xpathparser:8' => 0,
           'xpathparser:9' => 0,
-          'xpathparser:10' => 0,
           'xpathparser:11' => 0,
           'xpathparser:12' => 0,
           'xpathparser:13' => 0,
@@ -64,6 +61,7 @@ function harvard_courses_feeds_importer_default() {
           'errors' => 0,
           'debug' => array(
             'context' => 0,
+            'xpathparser:14' => 0,
             'xpathparser:0' => 0,
             'xpathparser:1' => 0,
             'xpathparser:2' => 0,
@@ -74,7 +72,6 @@ function harvard_courses_feeds_importer_default() {
             'xpathparser:7' => 0,
             'xpathparser:8' => 0,
             'xpathparser:9' => 0,
-            'xpathparser:10' => 0,
             'xpathparser:11' => 0,
             'xpathparser:12' => 0,
             'xpathparser:13' => 0,
@@ -91,66 +88,71 @@ function harvard_courses_feeds_importer_default() {
         'author' => 0,
         'mappings' => array(
           0 => array(
+            'source' => 'xpathparser:14',
+            'target' => 'guid',
+            'unique' => 1,
+          ),
+          1 => array(
             'source' => 'xpathparser:0',
             'target' => 'field_cat_number',
             'unique' => FALSE,
           ),
-          1 => array(
+          2 => array(
             'source' => 'xpathparser:1',
             'target' => 'field_description',
             'unique' => FALSE,
           ),
-          2 => array(
+          3 => array(
             'source' => 'xpathparser:2',
             'target' => 'field_faculty',
             'unique' => FALSE,
           ),
-          3 => array(
+          4 => array(
             'source' => 'xpathparser:3',
             'target' => 'field_field',
             'unique' => FALSE,
           ),
-          4 => array(
+          5 => array(
             'source' => 'xpathparser:4',
             'target' => 'field_meetings',
             'unique' => FALSE,
           ),
-          5 => array(
+          6 => array(
             'source' => 'xpathparser:5',
             'target' => 'field_notes',
             'unique' => FALSE,
           ),
-          6 => array(
+          7 => array(
             'source' => 'xpathparser:6',
             'target' => 'field_number',
             'unique' => FALSE,
           ),
-          7 => array(
+          8 => array(
             'source' => 'xpathparser:7',
             'target' => 'field_prerequisites',
             'unique' => FALSE,
           ),
-          8 => array(
+          9 => array(
             'source' => 'xpathparser:8',
             'target' => 'field_room',
             'unique' => FALSE,
           ),
-          9 => array(
+          10 => array(
             'source' => 'xpathparser:9',
             'target' => 'field_term',
             'unique' => FALSE,
           ),
-          10 => array(
+          11 => array(
             'source' => 'xpathparser:11',
             'target' => 'field_building',
             'unique' => FALSE,
           ),
-          11 => array(
+          12 => array(
             'source' => 'xpathparser:12',
             'target' => 'field_bracketed',
             'unique' => FALSE,
           ),
-          12 => array(
+          13 => array(
             'source' => 'xpathparser:13',
             'target' => 'title',
             'unique' => 0,
@@ -161,12 +163,12 @@ function harvard_courses_feeds_importer_default() {
         'skip_hash_check' => 0,
       ),
     ),
-    'content_type' => '',
+    'content_type' => 'harvard_api_importer',
     'update' => 0,
-    'import_period' => 1800,
+    'import_period' => '1800',
     'expire_period' => 3600,
-    'import_on_create' => TRUE,
-    'process_in_background' => FALSE,
+    'import_on_create' => 1,
+    'process_in_background' => 0,
   );
   $export['course'] = $feeds_importer;
 

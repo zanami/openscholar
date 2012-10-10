@@ -27,11 +27,46 @@ function harvard_courses_feeds_plugins() {
 
 /**
  * Implements hook_vsite_og_node_type_info().
- *
- * Notify vsite module which nodes bundle types are group or a group/content.
  */
 function harvard_courses_vsite_og_node_type_info() {
+  return;
   return array(
     'harvard_courses' => 'group_content',
   );
+}
+
+/**
+ * Returning vsites nid by the import type.
+ */
+function haravard_courses_sites_nid_by_import_type($import_type, $search_value = array()) {
+  $field = $import_type == 'cat_num' ? 'field_catalog_number' : 'field_department_id';
+  $query = new entityFieldQuery();
+  $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'vsite');
+
+    if ($search_value) {
+      $query->fieldCondition($field, 'value', $search_value, 'IN');
+    }
+    else {
+      $query->fieldCondition($field, 'value', '', '<>');
+    }
+
+  $result = $query->execute();
+  if (empty($result['node'])) {
+    return;
+  }
+
+  return array_keys($result['node']);
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function harvard_courses_node_insert($node) {
+  if ($node->type != 'harvard_course') {
+    return;
+  }
+  $wrapper = entity_metadata_wrapper('node', $node->nid);
+  $vsites_catalog_number = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
 }

@@ -9,7 +9,7 @@
  */
 function harvard_courses_ctools_plugin_api() {
   list($module, $api) = func_get_args();
-  if ($module == "feeds" && $api == "feeds_importer_default") {
+  if ($module == "feeds" && ($api == "feeds_importer_default" || $api == "plugins")) {
     return array("version" => "1");
   }
   list($module, $api) = func_get_args();
@@ -23,6 +23,14 @@ function harvard_courses_ctools_plugin_api() {
  */
 function harvard_courses_node_info() {
   $items = array(
+    'harvard_api_importer' => array(
+      'name' => t('Harvard API importer'),
+      'base' => 'node_content',
+      'description' => '',
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
     'harvard_course' => array(
       'name' => t('Harvard Course'),
       'base' => 'node_content',
