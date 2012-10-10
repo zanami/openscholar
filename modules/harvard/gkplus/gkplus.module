@@ -29,7 +29,6 @@ function gkplus_cron() {
     'tree' => TRUE,
     'max_depth' => 2,
     'description' => TRUE,
-    'template' => 'taxonomy_term',
   );
 
   variable_set('os_taxonomy_term_page_options', $options);
