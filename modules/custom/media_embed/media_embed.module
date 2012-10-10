@@ -198,7 +198,7 @@ function media_embed_file_default_types() {
 function media_embed_file_formatter_info() {
   $formatters['media_embed'] = array(
     'label' => t('Embedded HTML'),
-    'default settings' => array('width' => '560', 'height' => '340'),
+    'default settings' => array(),
     'view callback' => 'media_embed_file_formatter_media_embed_view',
     'settings callback' => 'media_embed_file_formatter_media_embed_settings',
     'file types' => array('html'),
@@ -213,7 +213,7 @@ function media_embed_file_formatter_info() {
  */
 function media_embed_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file) {
   if ($file->type == 'html') {
-    //$view_modes = array('full' => $view_modes['full']);
+    $view_modes = array('default' => $view_modes['default']);
   }
 }
 
@@ -228,19 +228,12 @@ function media_embed_file_default_displays() {
   $default_displays = array();
 
   $default_styles = array();
-    // For default and Large view modes, use the default width and height from
-    // hook_file_formatter_info().
+  // For default
   $default_styles['html__default__media_embed'] = array();
-  $default_styles['html__default__media_embed_thumbnail'] = array();
 
-  // For the Preview view mode, match the width and height of the square
-  // thumbnail in media_image_default_styles().
+  // For the Preview view mode, match the height and width to the media browser's standard
   $default_styles['html__preview__file_field_media_large_icon'] = array('width' => '180', 'height' => '180');
 
-  // For the Original view mode, set width and height to empty, so that they
-  // use what's returned by the oEmbed response.
-  $default_styles['html__full__media_embed'] = array('width' => '', 'height' => '');
-  $default_styles['html__full__media_embed_thumbnail'] = array('width' => '', 'height' => '');
 
   foreach ($default_styles as $display_name => $settings) {
     $default_displays[$display_name] = (object) array(
@@ -277,10 +270,6 @@ function media_embed_file_formatter_media_embed_view($file, $display, $langcode)
       //return array();
     }
   }
-}
-
-function media_embed_file_formatter_media_embed_thumbnail($file, $display, $langcode) {
-
 }
 
 function media_embed_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
