@@ -32,6 +32,7 @@ files[] = os_migrate_node_link.inc
 files[] = os_migrate_node_modal_image.inc
 files[] = os_migrate_node_page.inc
 files[] = os_migrate_node_person.inc
+files[] = os_migrate_node_project.inc
 files[] = os_migrate_node_presentation.inc
 files[] = os_migrate_node_software.inc
 files[] = os_migrate_node_vsite.inc

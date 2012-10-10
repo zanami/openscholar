@@ -17,7 +17,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   public static $source_bundle_map = array(
     'software_project' => 'scholar_software_project',
     'software_release' => 'scholar_software_release',
-    'media_gallery' => 'gallery'
+    'media_gallery' => 'gallery',
+    'project' => 'vsite',
   );
 
   public function __construct($destination_bundle){
@@ -42,7 +43,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       'ImageInlineOS',
       'FileInlineOS',
       'HTMLInlineOS',
-      'VsiteNodeOS'
+      'VsiteNodeOS',
+      'ProjectNodeOS'
     ); //og when that's done
 
 
@@ -227,7 +229,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   function prepareRow(&$current_row){
 
     //check that destination vsite exists.  some vsites have been removed, but their content still exists
-    $query = db_select('node', 'n')->fields('n')->condition('type', 'vsite', '=')->condition('nid', $current_row->group_nid, '=');
+    $query = db_select('node', 'n')->fields('n')->condition('type', array('vsite', 'project'), 'IN')->condition('nid', $current_row->group_nid, '=');
 
     if (! $query->execute()->fetchAssoc()) {
       $os_migrate_legacy_site = variable_get('os_migrate_legacy_site', '');
