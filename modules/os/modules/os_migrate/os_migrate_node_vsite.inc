@@ -52,12 +52,17 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
 
   public function query() {
     $query = parent::d6_db_select('node', 'n')->fields('n', array('nid', 'vid', 'type','language','title','uid','status','created', 'changed','comment','promote','moderate','sticky','tnid','translate'));
-    $query->condition('n.type', 'vsite', '=');
+    $query->condition('n.type', array('vsite', 'project'), 'IN');
 
     $query->join('content_type_vsite', 'ct', 'n.nid = ct.nid');
     $query->fields('ct', parent::subfields('field_vsite',array('address_value', 'logo_fid', 'logo_list', 'logo_data'), '_'));
     //$query->isNotNull('field_vsite_logo_fid'); //uncomment to test logo presence
 
+    //also join the project table if available
+    if (parent::d6_db_table_exists('content_type_project')) {
+      $query->join('content_type_project', 'project', 'project.nid = n.nid');
+      $query->fields('project', parent::subfields('field_project',array('logo_fid', 'logo_list', 'logo_data'), '_'));
+    }
 
     $query->join('purl', 'p', 'n.nid = p.id');
     $query->fields('p', array('value', 'provider'));
@@ -92,6 +97,12 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
   }
 
   function prepareRow($row) {
+    //copy over project field data where applicable
+    foreach(array('logo_fid', 'logo_list', 'logo_data') as $field) {
+      if (isset($row->{"field_project_$field"}) && empty($row->{"field_vsite_$field"})) {
+        $row->{"field_vsite_$field"} = $row->{"field_project_$field"};
+      }
+    }
 
      if (isset($row->field_vsite_logo_fid)) {
        $file = parent::get_file_by_fid($row->field_vsite_logo_fid);
