@@ -6,7 +6,7 @@
  */
 
  abstract class SpacesOverridesTableMigration extends TableCopyMigration {
-  public function __construct() {
+  public function __construct($dep_groups = array()) {
     $key_schema = array(
         'type' => array(
             'type' => 'varchar',
@@ -33,7 +33,7 @@
     $this->table = 'spaces_overrides';
     $this->alias = 's';
 
-    parent::__construct($this->table, $key_schema, MigrateGroup::getInstance('spacesoverrides'), NULL, $this->altCountQuery());
+    parent::__construct($this->table, $key_schema, MigrateGroup::getInstance('spacesoverrides', $dep_groups), NULL, $this->altCountQuery());
   }
 
   public function query() {
