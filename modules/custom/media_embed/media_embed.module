@@ -257,11 +257,10 @@ function media_embed_file_formatter_media_embed_view($file, $display, $langcode)
 
     // Not a WYSIWYG editor instance.
     if (empty($file->override['wysiwyg'])) {
-      field_attach_prepare_view('file', array($file->fid => $file), 'full');
-      entity_prepare_view('file', array($file->fid => $file));
       $file->field_html_code['und'][0]['safe_value'] = $file->field_html_code['und'][0]['value'];
-
-      return field_attach_view('file', $file, 'full');
+      // file attaches fields for us. I just need to return something so we break out here.
+      $render = array('#markup' => '');
+      return $render;
     }
 
     // WYSIWYG will not handle iframes and the like properly.
