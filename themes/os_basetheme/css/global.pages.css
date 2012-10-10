@@ -30,7 +30,7 @@ body {
 /* bigscreen three_col_grail */
 
 #columns {
-    
+    min-height:300px;
 }
 
 
