@@ -955,3 +955,49 @@ function vsite_redirect_reset_submit($form, &$form_state) {
   	}
   }
 }
+
+/**
+ * Implements hook_cp_settings().
+ * Hook into the cp_settings form to add the vsite_privacy form element.
+ */
+function vsite_cp_settings(){
+  $a_settings = array();
+  $space = spaces_get_space();
+  if(!empty($space)) {
+    $node = node_load($space->group->nid);
+
+    $a_settings['vsite_private'] = array(
+      'group' => array(
+        '#id' => 'privacy',
+        '#title' => t('Privacy'),
+        '#weight' => 10,
+      ),
+      'form' => array(
+        '#type' => 'checkbox',
+        '#title' => t('Make your site Private'),
+        '#default_value' => $node->group_access[LANGUAGE_NONE][0]['value'],
+        '#description' => "If private your vsite will only be avalible when you are logged in, regular users will see a message and be giving the choice to login.",
+      ),
+      'submit' => array('vsite_cp_settings_node_submit'),
+    );
+  }
+  return $a_settings;
+}
+
+/**
+ * Function to create a seconday submit function for the cp/settings form.
+ * This function will set the vsite_privacy value for the node.
+ */
+function vsite_cp_settings_node_submit($form, &$form_state) {
+  // Get the current vsite.
+  $space = spaces_get_space();
+  // Node load the vsite.
+  $node = node_load($space->group->nid);
+  // Get the vsite_privacy value.
+  if(isset($form_state['values']['vsite_private']) && module_exists('vsite_access')) {
+  	// Set the new group_access for the node.
+  	$node->group_access[LANGUAGE_NONE][0]['value'] = $form_state['values']['vsite_private'];
+  	// Resave the node.
+  	node_save($node);
+  }
+}

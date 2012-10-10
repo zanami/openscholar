@@ -1,0 +1,28 @@
+.os-taxonomy-term.depth-1.gkplus-no-indent {
+  margin-left: 0px;
+}
+
+.os-taxonomy-term.depth-2.gkplus-no-indent {
+  margin-left: 10px;
+}
+
+.os-taxonomy-term.depth-3.gkplus-no-indent {
+  margin-left: 20px;
+}
+
+
+.os-taxonomy-term-.depth-1.gkplus-child-indent {
+	margin-left: 10px;
+}
+
+.os-taxonomy-term.depth-2.gkplus-child-indent {
+  margin-left: 20px;
+}
+
+.os-taxonomy-term.depth-3.gkplus-child-indent {
+  margin-left: 30px;
+}
+
+.gkplus-hidden-heading h2 {
+	display: none;
+}

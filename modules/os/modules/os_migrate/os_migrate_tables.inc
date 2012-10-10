@@ -53,6 +53,7 @@ class VariableTableMigration extends TableCopyMigration {
       'apachesolr_host', 'apachesolr_path', 'apachesolr_port', 'iqss_rbuild_default_url', 'site_mail',
       'site_mission', 'site_name', 'site_offline_message', 'shorten_bitly_login', 'shorten_bitly_key',
       'iqss_gking::alternate_theme_nodes', 'iqss_gking::override_child_terms', 'iqss_gking::heading_disabled_terms',
+      'embedfilter_host_whitelist',
     );
 
     $this->whitelist = array_merge($this->whitelist, parent::subfields('citation_distribute', array('dash_password', 'module_mode', 'service_googlescholar_auto_flag', 'service_repec_archive_code', 'service_repec_inst_name', 'service_repec_maintainer_email', 'service_repec_maintainer_name', 'service_repec_provider_homepage', 'service_repec_provider_institution', 'service_repec_title', 'service_repec_archive_path', 'service_repec_archive_url'), '_'));

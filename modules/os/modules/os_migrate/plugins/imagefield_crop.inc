@@ -2,7 +2,7 @@
 
 /**
  * @file imagefield_crop.inc
- * 
+ *
  * Migration field handler for imagefield_crop
  *
  * @author sagotsky
@@ -16,12 +16,30 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
 
   // Here, we take a simple array of values (for an integer field, it might look like
   // array(35, -23, 85738)
-  public function prepare($entity, array $field_info, array $instance, array $values) {
-    $return = parent::prepare($entity, $field_info, $instance, $values); 
+  public function prepare($entity, array $field_info, array $instance, array $values, $langcode=NULL) {
+    $gid = (isset($entity->og_group_ref[LANGUAGE_NONE][0]['value'])) ? $entity->og_group_ref[LANGUAGE_NONE][0]['value'] : $entity->nid;
+
+    //crop the image.
+    if ($original = $this->_save_original($values[0], $gid, $entity->uid)) { //no og_group_ref yet....
+      $this->_image_dimensions($values);
+      $items = array('fid' => $original->fid); //also has cropbox_x and y widht and height
+      $items += array_intersect_key($values['arguments'], array_flip(array('cropbox_x', 'cropbox_y', 'cropbox_width', 'cropbox_height')));
+      if (count($items) >= 5) {
+        $items = array($items);
+        imagefield_crop_field_insert('node', $entity, $field_info, $instance, $langcode, $items);
+      }
+
+      //image was cropped.  instead of migrating the whole image, use MigrateFileFid to accept the existing fid.
+      $values[0] = $original->fid;
+      $values['arguments']['file_class'] = 'MigrateFileFid';
+
+    }
+
+    $return = parent::prepare($entity, $field_info, $instance, $values);
     if (!count($return)) {
       return $return;
     }
-    
+
     $migration = Migration::currentMigration();
     $arguments = (isset($values['arguments']))? $values['arguments']: array();
     unset($values['arguments']);
@@ -42,8 +60,8 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     }
     return $return;
   }
-  
-  
+
+
   /**
    * Implementation of MigrateFileFieldBaseHandler::buildFieldArray().
    */
@@ -58,7 +76,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
         }
       }
     }
-    
+
     return parent::buildFieldArray($field_array, $arguments, $delta);
   }
 
@@ -83,8 +101,70 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
       'cropbox_height' => t('Height of selected section of image.'),
       'cropbox_width' => t('Width of selected section of image.'),
     );
-    
+
     return $fields;
+  }
+
+  /**
+   * @function _save_original
+   *
+   *  image crop needs the file its cropping to exist as an entity before the crop can happen
+   *  save the image here.
+   *
+   * @param string $original_file
+   *   path to original image file
+   * @param int gid
+   *   vsite id.
+   * @param int uid
+   *   user id.
+   * @return int $fid
+   *   file id where $original file is saved
+   */
+  function _save_original($original_file, $gid, $uid){
+    $full = $original_file . '.crop_display.jpg';
+    $filepath = variable_get('os_migrate_files') . '/' . $original_file;
+
+    if (!is_readable($filepath)) {
+      return FALSE;
+    }
+
+    $file = new stdClass();
+    $file->uid = $uid;
+    $file->filemime = file_get_mimetype($filepath);
+    $file->uri = $filepath;
+
+    if ($file = file_copy($file, 'public://')) {
+      // attach metadata and save
+      $entity = entity_metadata_wrapper('file', $file);
+      $entity->og_group_ref = array($gid);
+      $entity->save();
+      return $file;
+    }
+
+    return FALSE;
+  }
+
+  //we need cropping values.  if they aren't provided, use the entire image.
+  function _image_dimensions(&$values) {
+    if (!isset($values['arguments']['cropbox_x'])) {
+      $values['arguments']['cropbox_x'] = 0;
+    }
+    if (!isset($values['arguments']['cropbox_y'])) {
+      $values['arguments']['cropbox_y'] = 0;
+    }
+
+    $file = variable_get('os_migrate_files') . '/' . $values[0];
+    if (($dim = getimagesize($file)) == FALSE) {
+      $dim = array(140,180); //use defaults from preset.
+    }
+
+    if (!isset($values['arguments']['cropbox_width'])) {
+      $values['arguments']['cropbox_width'] = $dim[0];
+    }
+    if (!isset($values['arguments']['cropbox_height'])) {
+      $values['arguments']['cropbox_height'] = $dim[1];
+    }
+
   }
 }
 

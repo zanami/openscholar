@@ -101,10 +101,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
        $original_file = $file->filepath . '.crop_display.jpg';
        if (is_readable(variable_get('os_migrate_files', '') . '/' . $original_file) && strlen($row->field_vsite_logo_data)) {
          $file->filepath = $original_file;
-       } else {
-         //only the cropped remains.  don't crop it anymore.
        }
-       //$row->{'field_site_logo:destination_file'} = $file->filepath;
 
        if (!is_readable(variable_get('os_migrate_files', '') . '/' . $file->filepath)) {
          Migration::saveMessage(t('Could not read file @file.  Ignoring it.', array('@file' => $file->filepath)), Migration::MESSAGE_NOTICE);
@@ -113,7 +110,6 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
          //attach logo
          parent::os_migrate_prepare_files(array($file), $row, 'field_site_logo');
          $row->{'field_site_logo:language'} = $row->language;
-         //$current_row->field_site_logo = $file->filename;
 
          if (strlen($row->field_vsite_logo_data) && ($data = unserialize($row->field_vsite_logo_data))) {
            $row->{'field_site_logo:alt'} = isset($data['alt']) ? $data['alt'] : '' ;
@@ -123,26 +119,15 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
            if (isset($data['crop']['x'], $data['crop']['y'])) {
              $row->{'field_site_logo:cropbox_x'} = max((int)$data['crop']['x'], 0); //yes someone has a negative origin in prod.
              $row->{'field_site_logo:cropbox_y'} = max((int)$data['crop']['y'], 0);
-           } else {
-             $row->{'field_site_logo:cropbox_x'} = 0;
-             $row->{'field_site_logo:cropbox_y'} = 0;
            }
 
            if (isset($data['crop']['height'], $data['crop']['width'])) {
              $row->{'field_site_logo:cropbox_height'} = (int)$data['crop']['height'];
              $row->{'field_site_logo:cropbox_width'} = (int)$data['crop']['width'];
-           } else {
-             //assume defaults
-             $row->{'field_site_logo:cropbox_height'} = 140;
-             $row->{'field_site_logo:cropbox_width'} = 180;
            }
          } else {
            if (!$this->_get_missing_coords($row)) {
-             //image provided, but no data.
-             $row->{'field_site_logo:cropbox_height'} = 140;
-             $row->{'field_site_logo:cropbox_width'} = 180;
-             $row->{'field_site_logo:cropbox_x'} = 0;
-             $row->{'field_site_logo:cropbox_y'} = 0;
+//              //image provided, but no data.
            }
          }
        }
@@ -164,6 +149,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
          'id' => $current_row->nid,
      );
    }
+
 
 
    /**
