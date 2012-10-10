@@ -4,8 +4,7 @@
   name        = Control Panel
   description = Control panel theme for OpenScholar.
   core        = 7.x
-  base theme  = os_basetheme
-  release     = 7.x-3.x
+  base theme  = seven
   engine      = phptemplate
   screenshot  = screenshot.png
 

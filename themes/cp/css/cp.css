@@ -3,49 +3,27 @@ h1#page-title {
 	font-size:2em;
 }
 
-#overlay-content #content-column .content-inner {
-    margin-left: 0;
-    margin-right: 260px;
-}
 
 /* GENERAL CP STYLES */
 
-#content-column {
-  overflow: auto;
-  padding-bottom: 55px;
-  }
-  
-#main-content {
-    padding-top: 0;
-}
-
 a {color:#4E84C4;}
 
-.page-cp-build .region-sidebar-first .region-inner {
-	padding-top: 0;
+strong {color:#444;}
+
+h3 {margin:0;}
+
+table {
+font-size: 1em;
 }
 
-.region-footer {
-    background: #000;
-    color: #FFFFFF;
-    height:30px;
-    bottom: 0;
-    position: fixed;
-    width: 100%;
-    z-index: 10;
-    text-align:right;
+input.form-text,
+textarea {
+  font-size:13px;
+  height: auto;
+  padding: 7px;
+  background: url('../../../themes/os_basetheme/images/form-input-bg.gif') repeat-x scroll left top #FFFFFF;
+  border: 1px solid #CDCDCD;
 }
-
-.region-footer a {
-    color: #FFFFFF;
-  }
-  
-.region-footer .region-inner {
-    padding: 10px 20px 0 15px;
-    z-index:1;
-  }  
-
- 
 
 #block-os-powered-by {
 	float:right;
@@ -54,17 +32,12 @@ a {color:#4E84C4;}
 	height:15px;
 }
 
-
 .page-cp #block-os-powered-by a,
  .page-cp #block-os-powered-by a:hover {
     background: url("../../../themes/os_basetheme/images/poweredby.png") 0 -42px no-repeat;
     margin-top: -43px;
 }
 
-
-#edit-submit,#edit-preset {
-    margin-right: 15px;
-}
 
 a.advanced-help-link {
     float: right;
@@ -85,13 +58,129 @@ a.advanced-help-link {
     background: url("../../../themes/os_basetheme/images/scholarbase-sprite.png") no-repeat 0 -170px;
 }
 
-/** CP TABLE STYLES **/
-#edit-menu-table tr,
-#spaces-features-form .spaces tr
- {
-    background-color: #FFF;
+/* CTools MODAL OVERRIDES */
+
+#modalContent {
+  top: 0 !important;
+  color: #666;
+  position: fixed !important;
 }
- 	
+
+div.ctools-modal-content {
+  color: #555;
+  margin: 0;
+  text-align: left;
+  background: #fff;
+  -moz-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+  }
+
+div.ctools-modal-content .modal-title {
+  color: #666;
+  font-size:20px;
+  font-weight: normal;
+  }
+
+#modal-content {
+ padding: 20px 0 20px 25px;
+  }
+
+div.ctools-modal-content {
+  height: 100% !important;
+  border:none;
+  }
+
+div.ctools-modal-content .modal-header {
+  background: #EFEFEF;
+  border-bottom:2px solid #C4C2C2;
+ height:24px;
+ padding:10px;
+  }
+
+div.ctools-modal-content .modal-header a {
+float:right;
+color: transparent;
+background: url('../../../themes/os_basetheme/images/icon-close-window.png') no-repeat;
+width:30px;
+height:30px;
+  }
+
+div.ctools-modal-content .modal-content {
+  padding: 12px 12px 0 12px;
+  overflow: auto;
+  width: 575px;
+  height: 400px;
+  }
+
+#modalContent .spaces-customize-form .buttons input.form-submit {
+  margin-right: 140px;
+  }
+
+div.ctools-modal-content .button-div-wrapper {
+  display: inline;
+  }
+
+div.ctools-modal-content a.close:hover {
+  text-decoration: none;
+}
+
+div.ctools-modal-content a.close img {
+  position: relative;
+  top: 1px;
+  display:none;
+}
+
+div.ctools-modal-content .modal-content .modal-throbber-wrapper {
+  text-align: center;
+}
+
+div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
+  margin-top: 160px;
+}
+
+
+/** OVERLAY MODAL OVERRIDES **/
+	
+#overlay-close, #overlay-close:hover {
+    background: url('../../../themes/os_basetheme/images/icon-close-window.png') no-repeat;
+	width:30px;
+	height:30px;
+	position: relative;
+ 	margin: -28px 10px;   
+}
+	
+#overlay-titlebar {
+    padding: 7px 10px 17px;
+    position: relative;
+    white-space: nowrap;
+    z-index: 100;
+    background: #EFEFEF;
+    border-bottom:2px solid #C4C2C2;
+    height:24px;
+}
+
+#overlay-title {
+    float: left;
+	margin: 0;
+    padding: 0.3em 0;
+    color: #666;
+    font-size:24px;
+    font-weight: normal;
+}
+	
+#overlay-tabs {
+ 	margin: -30px 0 0;
+ 	right: 50px;
+ }	
+ 
+
+/** CP TABLE STYLES **/
+	
+table.spaces td.option, table.spaces td.storage {
+    width: 13%;
+}
+
 #edit-menu-table .section-heading {
 	background: none repeat scroll 0 0 #ECECEC;
     border-bottom: 3px solid #C4C2C2;
@@ -102,26 +191,11 @@ a.advanced-help-link {
     font-weight:bold;
     }
     
-td {
-	color: #666666;
-	}   
-         
 
 #edit-menu-table td:first-child {
     width: 70%;
 }
  
-#spaces-features-form .spaces {width:850px;} 
-#spaces-features-form .spaces tr:hover {background:#F0f0F0;}
-#spaces-features-form .spaces td {height: 50px;} 
-#spaces-features-form .spaces td.label strong {font-size: 1.1em;}    
-#spaces-features-form .spaces .description {font-size:.95em;}  
-#spaces-features-form table.spaces td.label {width: 70%;}
-#spaces-features-form table.spaces td.option {width: 20%;}
-
-.page-cp-content .view-content table {width:100%;}
-.page-cp-content-files .view-content tbody tr.even,
-.page-cp-content-comments .view-content tbody tr.even {background-color: #FFF;}
 
 /* CP/BUILD MENU */ 
 .page-cp-build-menu table thead {
@@ -130,61 +204,13 @@ td {
     
 #edit-menu-table {width:775px;}   
 
- /* CP USERS */
-.page-cp-users .view-filters {
-	padding:8px; 
-	background:#F2F3F3;
-    border: 1px solid #DADADA;
-    }
-    
-.page-cp-users #user-register-form {
-	width:550px;
-	padding:8px;
-	background:#F2F3F3;
-	border: 1px solid #DADADA;
-    }   
 
-.page-cp-users .view-og-members-admin li {
-	list-style-type:none;
-    } 
-
-
-
-/* CP CONTENT */
-.page-cp-content dt a {
-	font-size:16px;
-}
-
-
-.page-cp-content dd {
-    margin: 0 0 1.5em 0;
-}
-
-
-
-/* CP APPEARANCE */
-.page-cp-appearance #edit-actions {
-    /*background: url("/sites/all/modules/openscholar_vsite/vsite_design/theme/images/themePickerSubButtsBg.png") repeat-x scroll 0 0 transparent;*/
-    background:#EFEFEF;
-    bottom: 16px;
-	position: fixed;
-    width: 100%;
-    z-index: 10;
- 	border-top:1px solid #EDEDED;
-    margin-left: -40px;
-    padding: 6px 0 2px 35px;
-}
-
-.page-cp-build #columns,
-.page-cp-appearance #cp-appearance-theme-picker-form,
-.page-cp-appearance h1#page-title {
- 
-   padding-left: 20px;
-}
+#cp-appearance-theme-picker-form select {max-width:90px;overflow:hidden;}
 
 
 /* CP/BUILD LAYOUT */   
-.page-cp-build-layout .content-inner {width:854px;}
+.page-cp-build-layout #content {width:854px;}
+
 
 /* CP FEATURES */
 form#spaces-features-form td.actions a {
