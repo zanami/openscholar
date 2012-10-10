@@ -1246,59 +1246,39 @@ function harvard_courses_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-harvard_course-og_vocabulary'.
-  $fields['node-harvard_course-og_vocabulary'] = array(
+  // Exported field: 'node-vsite-field_catalog_number'.
+  $fields['node-vsite-field_catalog_number'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'og_vocabulary',
-      'foreign keys' => array(
-        'taxonomy_term_data' => array(
-          'columns' => array(
-            'target_id' => 'tid',
-          ),
-          'table' => 'taxonomy_term_data',
-        ),
-      ),
-      'indexes' => array(
-        'target_id' => array(
-          0 => 'target_id',
-        ),
-      ),
+      'field_name' => 'field_catalog_number',
+      'foreign keys' => array(),
+      'indexes' => array(),
       'locked' => '0',
-      'module' => 'entityreference',
-      'settings' => array(
-        'handler' => 'base',
-        'handler_settings' => array(
-          'behaviors' => array(
-            'og_vocab' => array(
-              'status' => TRUE,
-            ),
-            'taxonomy-index' => array(
-              'status' => TRUE,
-            ),
-          ),
-          'target_bundles' => array(),
-        ),
-        'target_type' => 'taxonomy_term',
-      ),
+      'module' => 'number',
+      'settings' => array(),
       'translatable' => '0',
-      'type' => 'entityreference',
+      'type' => 'number_integer',
     ),
     'field_instance' => array(
-      'bundle' => 'harvard_course',
+      'bundle' => 'vsite',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => '',
+      'description' => 'Courses catalog number.',
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'og_vocab',
-          'settings' => array(),
-          'type' => 'og_vocab',
-          'weight' => 1,
+          'module' => 'number',
+          'settings' => array(
+            'decimal_separator' => '.',
+            'prefix_suffix' => TRUE,
+            'scale' => 0,
+            'thousand_separator' => ' ',
+          ),
+          'type' => 'number_integer',
+          'weight' => 9,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1308,17 +1288,90 @@ function harvard_courses_field_default_fields() {
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'og_vocabulary',
-      'label' => 'OG vocabulary',
+      'field_name' => 'field_catalog_number',
+      'label' => 'Catalog number',
       'required' => FALSE,
       'settings' => array(
+        'max' => '',
+        'min' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'text_processing' => 1,
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'module' => 'og_vocab',
+        'module' => 'number',
         'settings' => array(),
-        'type' => 'og_vocab_complex',
-        'weight' => '2',
+        'type' => 'number',
+        'weight' => 37,
+      ),
+    ),
+  );
+
+  // Exported field: 'node-vsite-field_department_id'.
+  $fields['node-vsite-field_department_id'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_department_id',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'vsite',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'Department ID for the course, i.e: COMPSCI.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 8,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_department_id',
+      'label' => 'Department ID',
+      'required' => FALSE,
+      'settings' => array(
+        'text_processing' => 1,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'module' => 'text',
+        'settings' => array(
+          'size' => 60,
+        ),
+        'type' => 'text_textfield',
+        'weight' => 36,
       ),
     ),
   );
@@ -1327,6 +1380,10 @@ function harvard_courses_field_default_fields() {
   // Included for use with string extractors like potx.
   t('Base URL');
   t('Body');
+  t('Catalog number');
+  t('Courses catalog number.');
+  t('Department ID');
+  t('Department ID for the course, i.e: COMPSCI.');
   t('Groups audience');
   t('Import type');
   t('OG vocabulary');

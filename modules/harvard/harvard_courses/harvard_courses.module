@@ -26,13 +26,32 @@ function harvard_courses_feeds_plugins() {
 }
 
 /**
- * Implements hook_vsite_og_node_type_info().
+ * Implements hook_enable().
  */
-function harvard_courses_vsite_og_node_type_info() {
-  return;
-  return array(
-    'harvard_courses' => 'group_content',
-  );
+function harvard_courses_enable() {
+  // TODO: Create this node usging entity metadata wrapper.
+  // Create the node import - courses by department.
+  $node = new stdClass();
+  $node->type = 'harvard_api_importer';
+  node_object_prepare($node);
+  $node->title = 'Department importer';
+  $node->language = LANGUAGE_NONE;
+
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $wrapper->field_import_type->set('department');
+  $node->field_import_type[LANGUAGE_NONE][0]['value'] = 'department';
+  $node->field_base_url[LANGUAGE_NONE][0]['value'] = 'http://harvard.edu';
+  node_save($node);
+
+  // Create the node import - courses by catalog number.
+  $node = new stdClass();
+  $node->type = 'harvard_api_importer';
+  node_object_prepare($node);
+  $node->title = 'Catalog number importer';
+  $node->language = LANGUAGE_NONE;
+  $node->field_import_type[LANGUAGE_NONE][0]['value'] = 'cat_num';
+  $node->field_base_url[LANGUAGE_NONE][0]['value'] = 'http://harvard.edu';
+  node_save($node);
 }
 
 /**
@@ -68,5 +87,11 @@ function harvard_courses_node_insert($node) {
     return;
   }
   $wrapper = entity_metadata_wrapper('node', $node->nid);
-  $vsites_catalog_number = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
+  $vsites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
+
+  foreach ($vsites as $vsite) {
+    og_group('node', $vsite, array('entity_type' => 'node', 'entity' => $node->nid));
+  }
+
+  $node->skip_og_membership = TRUE;
 }
