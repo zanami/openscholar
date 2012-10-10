@@ -382,6 +382,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $this->addFieldMapping('field_upload:destination_file', 'filepath');
       $this->addFieldMapping('field_upload:source_dir')->defaultValue(variable_get('os_migrate_files', FALSE));
       $this->addFieldMapping('field_upload:destination_dir', 'file_destination');
+      $this->addFieldMapping('field_upload:og_group_ref', 'group_nid');
 
       //good defaults
       $this->addUnmigratedDestinations(parent::subfields('field_upload', array(
