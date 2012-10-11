@@ -20,6 +20,15 @@ function gkplus_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items['gking_update_filefield/%'] = array(
+    'title' => 'Update Filefield',
+    'page callback' => 'gkplus_update_filefield_page',
+    'page arguments' => array(1),
+    'access callback' => 'gkplus_access_file',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
 
@@ -62,7 +71,6 @@ function gkplus_nodeorder_form($js = NULL, $tid = NULL) {
 
   $output = ctools_modal_form_wrapper('nodeorder_admin_display_form', $form_state);
 
-  // empty $output signifies success, so we'll use it as our $commands
   if ($form_state['submitted'] && form_get_errors() == FALSE) {
     $output = array();
     $output[] = ctools_ajax_command_reload();
@@ -92,6 +100,8 @@ function gkplus_cron() {
   );
 
   variable_set('os_taxonomy_term_page_options', $options);
+
+  _gkplus_updatefile_cron();
 }
 
 /**
@@ -389,6 +399,97 @@ function gkplus_preprocess_os_taxonomy_tagged_nodes(&$vars) {
   }
 }
 
+
+/**
+ * Page callback; updates a node that has an attached file with the same name.
+ *
+ * @param string $filename
+ * @param bool $return
+ *
+ * @ingroup updatefile
+ */
+function gkplus_update_filefield_page($filename, $return = FALSE) {
+  // Assembles the source filepath like "/sites/default/files/gking/tmpdir/$filename"
+  $temp_path   = _gkplus_temp_path();
+  $source      = $temp_path . $filename;
+  // Assembles the destination like "/sites/default/files/gking/files/$filename"
+  $files_dir   = file_stream_wrapper_get_instance_by_uri('public://')->getDirectoryPath();
+  $destination = $files_dir . '/gking/files/' . $filename;
+
+  // Finds the newest file with this filename (looks for highest FID)
+  $fid = db_select('files', 'f')
+    ->fields('f', array('fid'))
+    ->condition('filepath', $destination, '=')
+    ->range(0, 1)
+    ->orderBy('fid', 'DESC')
+    ->execute()
+    ->fetchField();
+
+  if ($fid === FALSE) {
+    print t("Error: No existing file found at <em>@destination</em>", array('@destination' => $destination));
+    exit();
+  }
+
+  if (file_copy($source, $destination, FILE_EXISTS_REPLACE)) {
+    $filesize = filesize($source);
+    $timestamp = time();
+    db_update('files')
+      ->fields(array('filesize' => $filesize, 'timestamp' => $timestamp))
+      ->condition('fid', $fid, '=')
+      ->execute();
+
+    print t("Successfully updated file: <em>@filename</em>", array('@filename' => $filename));
+    if (!$return) {
+      exit();
+    }
+    return TRUE;
+  }
+
+  print t("Error: Could not copy file: <em>@destination</em>", array('@destination' => $destination));
+  if (!$return) {
+    exit();
+  }
+  return FALSE;
+}
+
+/**
+ * Returns whether a file exists in the temp directory.
+ *
+ * @ingroup updatefile
+ */
+function gkplus_access_file($filename) {
+  $temp_path = _gkplus_temp_path();
+  $filepath = $temp_path . $filename;
+  return file_exists($filepath);
+}
+
+/**
+ * Cron callback; attempts to upload any system file updated since last cron.
+ *
+ * @see gkplus_cron()
+ *
+ * @ingroup updatefile
+ *
+ * @todo make this work, useful in testing.
+ *
+function _gkplus_updatefile_cron() {
+  $last_update = variable_get('gkplus_last_updated_filefields', 0);
+  $temp_path  = _gkplus_temp_path();
+  $handle      = opendir($temp_path);
+  if ($handle) {
+    drupal_set_message("opened directory", "warning");
+    while (($file = readdir($handle)) !== FALSE) {
+      drupal_set_message("found file " . $file, "warning");
+      if (is_file($file) && filectime($temp_path . $file) >= $last_update) {
+        drupal_set_message("found newer version of " . $file, "warning");
+        gkplus_update_filefield_page($file, TRUE);
+      }
+    }
+    closedir($handle);
+  }
+  variable_set('gkplus_last_updated_filefields', time());
+} */
+
 /**
  * Returns TRUE if the node is set to use the custom setting.
  *
@@ -432,6 +533,17 @@ function _gkplus_entity_setting_update($etid, $setting, $value) {
     unset($etids[array_search($etid, $etids)]);
     variable_set($variable_name, $etids);
   }
+}
+
+/**
+ * Returns the directory filepath for the automatic updatefile directory.
+ *
+ * @ingroup updatefile
+ */
+function _gkplus_temp_path() {
+  $temp_dir    = variable_get('gking_script_tmpdir', "/gking/tmpdir/");
+  $files_dir   = file_stream_wrapper_get_instance_by_uri('public://')->getDirectoryPath();
+  $temp_path   = $files_dir . $temp_dir;
 }
 
 /**
