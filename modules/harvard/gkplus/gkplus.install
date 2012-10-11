@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * Implementaton of hook_enable().
+ */
+function gkplus_enable() {
+  // Adjust system weight for module gkplus to be after nodeorder.
+  _gkplus_adjust_module_weight(array('gkplus'), '>', array('nodeorder'));
+
+  // Note: D6 also cared about modules 'vsite_layout' & 'vsite_taxonomy',
+  // but it didn't seem necessary when porting... yet.
+}
+
+/**
+ * Adjusts module weights to ensure greater/lesser weight.
+ *
+ * @param array $update
+ * @param string $condition
+ * @param array $compare
+ */
+function _gkplus_adjust_module_weight($update, $condition, $compare) {
+  if (!$update || !$condition || !$compare) {
+    return;
+  }
+
+  $weight = db_select('system', 's')
+    ->fields('s', array('weight'))
+    ->condition('name', $compare, 'IN')
+    ->range(0, 1)
+    ->orderBy('weight', 'DESC')
+    ->execute()
+    ->fetchField();
+
+  if ($weight === FALSE) {
+    return;
+  }
+
+  switch ($condition) {
+    case '>':
+      $weight = $weight + 1;
+      break;
+    case '<':
+      $weight = $weight - 1;
+      break;
+    default:
+      return;
+  }
+
+  db_update('system')
+    ->fields(array('weight' => $weight))
+    ->condition('name', 'gkplus', '=')
+    ->execute();
+}
