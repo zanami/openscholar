@@ -93,7 +93,6 @@ function _vsite_initilize_group_fields(){
 
   $info = entity_get_info('file');
   foreach ($info['bundles'] as $bundle => $type) {
-    drupal_set_message('Creating og_group_ref for file type '.$bundle.' in install hook.');
     vsite_attach_fields_to_group_content('file', $bundle);
   }
 }
