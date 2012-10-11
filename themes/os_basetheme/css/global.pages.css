@@ -664,6 +664,10 @@ margin-top: 1px;
 border-top:1px solid #ccc;
 	}
 	
+	.ui-tabs .ui-tabs-nav {
+  padding: 0;
+}
+	
 .ui-tabs .ui-tabs-nav li a {
     padding: 0.15em 1em;
   }
