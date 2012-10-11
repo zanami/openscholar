@@ -18,7 +18,7 @@ function citation_distribute_admin() {
   if (count($unconfigured)) {
     $form['citation_distribute_config_message'] = array(
       '#type' => 'markup',
-      '#markup' => '<div class=warning>' . t('The following plugins need to be configured:') . implode(', ', $unconfigured) . '</div>',
+      '#markup' => '<div class="messages warning">' . t('The following plugin(s) need to be configured:') . implode(', ', $unconfigured) . '</div>',
     );
   }
 
