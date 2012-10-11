@@ -521,13 +521,15 @@ function os_preprocess_page(&$variables) {
       ),
     ),
   );
-  $variables['title_suffix']['controls']['add_new'] = array(
-    '#theme' => 'ctools_dropdown',
-    '#links' => $links,
-    '#title' => t('Add New'),
-    '#class' => 'add_new',
-    '#access' => spaces_access_admin(),
-  );
+  if (!empty($links)) {
+    $variables['title_suffix']['controls']['add_new'] = array(
+      '#theme' => 'ctools_dropdown',
+      '#links' => $links,
+      '#title' => t('Add New'),
+      '#class' => 'add_new',
+      '#access' => spaces_access_admin(),
+    );
+  }
   $variables['title_suffix']['controls']['section_links'] = array(
     '#theme' => 'ctools_dropdown',
     '#links' => $section_links,
