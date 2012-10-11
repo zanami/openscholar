@@ -80,17 +80,15 @@ function media_oembed_file_default_displays() {
     // hook_file_formatter_info().
     $default_styles[$name . '__default__media_oembed'] = array();
     $default_styles[$name . '__default__media_oembed_thumbnail'] = array();
-    $default_styles[$name . '__media_large__media_oembed'] = array();
-    $default_styles[$name . '__media_large__media_oembed_thumbnail'] = array();
 
     // For the Preview view mode, match the width and height of the square
     // thumbnail in media_image_default_styles().
-    $default_styles[$name . '__media_preview__media_oembed_thumbnail'] = array('width' => '180', 'height' => '180');
+    $default_styles[$name . '__preview__media_oembed_thumbnail'] = array('width' => '180', 'height' => '180');
 
     // For the Original view mode, set width and height to empty, so that they
     // use what's returned by the oEmbed response.
-    $default_styles[$name . '__media_original__media_oembed'] = array('width' => '', 'height' => '');
-    $default_styles[$name . '__media_original__media_oembed_thumbnail'] = array('width' => '', 'height' => '');
+    $default_styles[$name . '__full__media_oembed'] = array('width' => '', 'height' => '');
+    $default_styles[$name . '__full__media_oembed_thumbnail'] = array('width' => '', 'height' => '');
   }
 
   foreach ($default_styles as $display_name => $settings) {
