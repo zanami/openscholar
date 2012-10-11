@@ -570,7 +570,7 @@ ul.nice-menu li {
 ul.nice-menu a {
     color: #293352;
     text-decoration:none !important;
-    background: none !important;
+    background: none;
 }
 
 ul.nice-menu ul {
