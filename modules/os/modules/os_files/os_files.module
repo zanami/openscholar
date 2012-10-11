@@ -331,20 +331,6 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file) {
 }
 
 /**
- * Implements hook_stream_wrappers_alter().
- *
- * Used to extend the public stream wrapper.
- *
- * @param array $wrappers
- */
-function os_files_stream_wrappers_alter(&$wrappers) {
-  // Use OS Stream Wrapper.
-  if (isset($wrappers['public'])) {
-    $wrappers['public']['class'] = 'OSPublicStreamWrapper';
-  }
-}
-
-/**
  * Implements hook_file_download().
  *
  * Serve public files from a vsite directory.
