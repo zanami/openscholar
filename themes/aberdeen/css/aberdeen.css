@@ -237,6 +237,10 @@ float:right;
 .region-header-third #block-os-secondary-menu li.last {
   border-right:none;
  }
+ 
+.region-header-third ul.nice-menu a {
+    padding: 0;
+}
 
 
 /**** SEARCH BOX ****/
@@ -273,7 +277,7 @@ width:170px;
 
 .views-field-filename {display:none;} /* REMOVE WHEN JON REMOVES FROM CONFIG FORM */
 
-.view-os-image-gallery-slideshow {position:relative;}
+.view-os-image-gallery-slideshow {position:relative;border:none;background:none;margin-top:-20px;}
 
 .views-slideshow-pager-fields {
     display: none;
@@ -281,8 +285,6 @@ width:170px;
 
 
 .views-slideshow-cycle-main-frame {margin:0;position: relative;}
-
-.view-os-image-gallery-slideshow {border:none;background:none;}
 
 .view-os-image-gallery-slideshow .views-field-media-title {
 	z-index: 10;
@@ -293,7 +295,10 @@ width:170px;
     padding: 2px 0 4px 8px;
     position: relative;
     width: 98.75%;
-    color:#FFF;
+}
+
+.view-os-image-gallery-slideshow .views-field-media-title .field-content {
+	color:#FFF;
 }
 
 .view-os-image-gallery-slideshow .views-field-filename a {color:#FFF;}
@@ -306,11 +311,11 @@ width:170px;
 
 
 .views-slideshow-controls-text-previous {float:left;}
-.views-slideshow-controls-text-previous a {background: url('../images/slideShow_forwback_controls.png') 0 -44px no-repeat;float:left;position: absolute;left:0;top:-220px;}
+.views-slideshow-controls-text-previous a {background: url('../images/slideShow_forwback_controls.png') 0 -44px no-repeat;float:left;position: absolute;left:0;top:-240px;}
 
 
 .views-slideshow-controls-text-next {float:right;}
-.views-slideshow-controls-text-next a {background: url('../images/slideShow_forwback_controls.png') 0 0 no-repeat;position: absolute;right:0;top:-220px;}
+.views-slideshow-controls-text-next a {background: url('../images/slideShow_forwback_controls.png') 0 0 no-repeat;position: absolute;right:0;top:-240px;}
 
 
 
