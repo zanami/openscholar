@@ -228,7 +228,9 @@ function vsite_admin_paths_alter(&$paths){
  */
 function vsite_vsite_og_node_type_info(){
   return array(
-    'vsite' => 'group'
+    'personal' => 'group',
+    'project' => 'group',
+    'department' => 'group',
   );
 }
 
@@ -461,97 +463,6 @@ function vsite_attach_fields_to_group($bundle){
         ),
         'type' => 'text_textfield',
         'weight' => '31'
-      )
-    );
-    field_create_instance($instance);
-  }
-
-  if (! field_info_field('field_site_logo')) {
-    // field_site_logo.
-    $field = array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_site_logo',
-      'foreign keys' => array(
-        'fid' => array(
-          'columns' => array(
-            'fid' => 'fid'
-          ),
-          'table' => 'file_managed'
-        )
-      ),
-      'indexes' => array(
-        'fid' => array(
-          0 => 'fid'
-        )
-      ),
-      'module' => 'imagefield_crop',
-      'settings' => array(
-        'default_image' => 0,
-        'uri_scheme' => 'public'
-      ),
-      'translatable' => '0',
-      'type' => 'imagefield_crop'
-    );
-    $field = field_create_field($field);
-  }
-
-  if (! field_info_instance('node', 'field_site_logo', $bundle)) {
-    $instance = array(
-      'bundle' => $bundle,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'image',
-          'settings' => array(
-            'image_link' => '',
-            'image_style' => ''
-          ),
-          'type' => 'image',
-          'weight' => 4
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0
-        )
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_site_logo',
-      'label' => 'Site Logo',
-      'required' => FALSE,
-      'settings' => array(
-        'alt_field' => 0,
-        'file_directory' => '',
-        'file_extensions' => 'png gif jpg jpeg',
-        'max_filesize' => '',
-        'max_resolution' => '',
-        'min_resolution' => '',
-        'title_field' => 0,
-        'user_register_form' => FALSE
-      ),
-      'widget' => array(
-        'module' => 'imagefield_crop',
-        'settings' => array(
-          'collapsible' => 2,
-          'croparea' => '500x500',
-          'custom_ratio' => '',
-          'enforce_minimum' => TRUE,
-          'enforce_ratio' => TRUE,
-          'gif_processing' => 'convert',
-          'preview_image_style' => 'thumbnail',
-          'progress_indicator' => 'throbber',
-          'resolution' => '200x150',
-          'select_maximum_area' => TRUE,
-          'validate_resolution' => 0
-        ),
-        'type' => 'imagefield_crop_widget',
-        'weight' => '33'
       )
     );
     field_create_instance($instance);

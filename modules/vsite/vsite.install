@@ -4,47 +4,51 @@
  * Implementation of hook_install
  */
 function vsite_install(){
+  $node_info = module_invoke_all('vsite_og_node_type_info');
+  $group_bundles = array_keys($node_info, 'group');
+  foreach($group_bundles as $group_bundle) {
 
-  // Add the base vsite roles as OG roles
-  $vsite_roles = array(
-    'member',
-    'non-member',
-    'vsite user',
-    'vsite admin'
-  );
+    // Add the base vsite roles as OG roles
+    $vsite_roles = array(
+      'member',
+      'non-member',
+      'vsite user',
+      'vsite admin'
+    );
 
-  foreach ( $vsite_roles as $name ) {
-    $role = og_role_create($name, 'node', 0, 'vsite');
-    og_role_save($role);
-  }
+    foreach ( $vsite_roles as $name ) {
+      $role = og_role_create($name, 'node', 0, $group_bundle);
+      og_role_save($role);
+    }
 
-  $roles = og_roles($group_type = 'node', $bundle = 'vsite');
-  $manager_roles = array();
-  //Set OG specific roles
-  foreach ( $roles as $rid => $role ) {
-    switch ($role) {
-      case 'vsite admin' :
-        $manager_roles[] = $rid;
-        og_role_grant_permissions($rid, array(
-          'view users outside groups',
-          'update group',
-          'unsubscribe',
-          'manage group space',
-          'approve and deny subscription',
-          'administer group',
-          'add user',
-          'access administration pages'
-        ));
-        break;
-      case 'vsite user' :
-        og_role_grant_permissions($rid, array(
-          'view users outside groups',
-          'unsubscribe'
-        ));
-        break;
-      case 'manager' :
-        $manager_roles[] = $rid;
-        break;
+    $roles = og_roles($group_type = 'node', $bundle = $group_bundle);
+    $manager_roles = array();
+    //Set OG specific roles
+    foreach ( $roles as $rid => $role ) {
+      switch ($role) {
+        case 'vsite admin' :
+          $manager_roles[] = $rid;
+          og_role_grant_permissions($rid, array(
+            'view users outside groups',
+            'update group',
+            'unsubscribe',
+            'manage group space',
+            'approve and deny subscription',
+            'administer group',
+            'add user',
+            'access administration pages'
+          ));
+          break;
+        case 'vsite user' :
+          og_role_grant_permissions($rid, array(
+            'view users outside groups',
+            'unsubscribe'
+          ));
+          break;
+        case 'manager' :
+          $manager_roles[] = $rid;
+          break;
+      }
     }
   }
 

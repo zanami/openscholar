@@ -247,3 +247,12 @@ function user_id_load($user_id) {
   $account = user_load($user_id);
   return $account ? $account : FALSE;
 }
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter();
+ */
+function cp_user_form_cp_settings_form_alter(&$form, &$form_state) {
+  if(isset($form['admin-menu'])) {
+	$form['admin-menu']['#access'] = FALSE;
+  }
+}
