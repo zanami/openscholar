@@ -311,7 +311,7 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file) {
   $scheme = file_uri_scheme($file->uri);
   switch ($scheme) {
     case 'oembed':
-      $temp['media_original'] = $view_modes['media_original'];
+      $temp['default'] = $view_modes['default'];
       $view_modes = $temp;
     break;
     case 'public':
