@@ -28,24 +28,45 @@ function vsite_register_form($form, &$state) {
     '#attached' => array('js' => array(drupal_get_path('module', 'vsite_register') . '/vsite_register.js')),
   );
 
-  /**
-   * @todo This should be conigurable for install / form
-   */
+  $group_types = og_get_all_group_bundle();
+  $default_bundle = variable_get('os_default_group_bundle', 'personal');
+  $bundles = array();
+  foreach ($group_types['node'] as $bundle => $label) {
+  	if(user_access("create {$bundle} content")){
+  	  $bundles[$bundle] = $label;
+  	}
+  }
+  if(!isset($bundles[$default_bundle])){
+    $default_bundle = current($bundles);
+  }
+
   $form['bundle'] = array(
-      '#type' => 'value',
-      '#value' => 'personal',
-    );
+    '#title' => t('Type of site'),
+    '#type' => 'select',
+    '#required' => TRUE,
+    '#options' => $bundles,
+    '#default_value' => $default_bundle,
+  );
+
+  if (count($bundles) <= 1) {
+    $form['bundle']['#type'] = 'value';
+    $form['bundle']['#value'] = $default_bundle;
+  }
 
   //Get enabled presets and load their titles
   $enabled_presets = variable_get('os_enabled_spaces_presets', array());
   $presets = spaces_preset_load();
   foreach($enabled_presets as $key => $value) {
     $enabled_presets[$key] = $presets[$key]->title;
+    //Remove presets that don't go with this bundle
+    if(isset($presets->value['bundles']) && !in_array($default_bundle, $presets->value['bundles'])){
+     unset($enabled_presets[$key]);
+    }
   }
   $default_preset = variable_get('spaces_preset_og', 'os_personal');
 
   $form['preset'] = array(
-    '#title' => t('Type of site'),
+    '#title' => t('Initial Setup'),
     '#type' => 'select',
     '#required' => TRUE,
     '#options' => $enabled_presets,
@@ -54,7 +75,7 @@ function vsite_register_form($form, &$state) {
 
   if (count($enabled_presets) <= 1) {
     $form['preset']['#type'] = 'value';
-    $form['preset']['#value'] = current($enabled_presets);
+    $form['preset']['#value'] = $form['preset']['#default_value'];
   }
 
   $form['vsite_private'] = array(
