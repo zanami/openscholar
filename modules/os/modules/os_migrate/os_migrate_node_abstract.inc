@@ -225,7 +225,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   function prepareRow(&$current_row){
 
     //check that destination vsite exists.  some vsites have been removed, but their content still exists
-    $query = db_select('node', 'n')->fields('n')->condition('type', $this->_d6_vsite_type())->condition('nid', $current_row->group_nid, '=');
+    $query = db_select('node', 'n')->fields('n')->condition('type', $this->_d7_vsite_type())->condition('nid', $current_row->group_nid, '=');
 
     if (! $query->execute()->fetchAssoc()) {
       $os_migrate_legacy_site = variable_get('os_migrate_legacy_site', '');
