@@ -60,26 +60,28 @@ function vsite_register_form($form, &$state) {
     );
   }
 
+  $selected_bundle = isset($state['values']['bundle']) ? $state['values']['bundle'] : $default_bundle;
+
   //Get enabled presets and load their titles
   $enabled_presets = variable_get('os_enabled_spaces_presets', array());
   $presets = spaces_preset_load();
   foreach($enabled_presets as $key => $value) {
     $enabled_presets[$key] = $presets[$key]->title;
     //Remove presets that don't go with this bundle
-    if(isset($presets->value['bundles']) && !in_array($default_bundle, $presets->value['bundles'])){
+    if(isset($presets[$key]->value['bundles']) && !in_array($selected_bundle, $presets[$key]->value['bundles'])){
      unset($enabled_presets[$key]);
     }
   }
   $default_preset = variable_get('spaces_preset_og', 'os_personal');
 
   $form['preset'] = array(
-    '#prefix' => '<div class="preset-wrapper">',
+    '#prefix' => '<div id="preset-wrapper">',
     '#suffix' => '</div>',
     '#title' => t('Initial Setup'),
     '#type' => 'select',
     '#required' => TRUE,
     '#options' => $enabled_presets,
-    '#default_value' => (isset($enabled_presets[$default_preset])) ? $default_preset : current($enabled_presets),
+    '#default_value' => (isset($enabled_presets[$default_preset])) ? $default_preset : current(array_keys($enabled_presets)),
   );
 
   if (count($enabled_presets) <= 1) {
@@ -368,37 +370,8 @@ function vsite_register_ajax_validation(&$form, &$state) {
  */
 function vsite_register_ajax_avalible_presets($form, $form_state) {
 
-  // Get the value of the 'bundle' field.
-  $selected_bundle = isset($form_state['values']['bundle']) ? $form_state['values']['bundle'] : 'personal';
-
-  //Get enabled presets and load their titles
-  $enabled_presets = variable_get('os_enabled_spaces_presets', array());
-  $presets = spaces_preset_load();
-  foreach($enabled_presets as $key => $value) {
-    $enabled_presets[$key] = $presets[$key]->title;
-    //Remove presets that don't go with this bundle
-    if(isset($presets[$key]->value['bundles']) && !in_array($selected_bundle, $presets[$key]->value['bundles'])){
-      unset($enabled_presets[$key]);
-    }
-  }
-  $default_preset = variable_get('spaces_preset_og', 'os_personal');
-
-  $form['preset'] = array(
-    '#prefix' => '<div class="preset-wrapper">',
-    '#suffix' => '</div>',
-    '#title' => t('Initial Setup'),
-    '#type' => 'select',
-    '#required' => TRUE,
-    '#options' => $enabled_presets,
-    '#default_value' => (isset($enabled_presets[$default_preset])) ? $default_preset : current($enabled_presets),
-  );
-
-  if (count($enabled_presets) <= 1) {
-    $form['preset']['#type'] = 'value';
-    $form['preset']['#value'] = $form['preset']['#default_value'];
-  }
-
-  return $form;
+  //Hard work is done in the form build function, just return the item
+  return $form['preset'];
 }
 
 /**

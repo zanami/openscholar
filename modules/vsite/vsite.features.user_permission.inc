@@ -29,9 +29,10 @@ function vsite_user_default_permissions() {
   );
 
 
-  // Exported permission: create department content on behalf.
-  $permissions['create department content on behalf'] = array(
-    'name' => 'create department content on behalf',
+  // Exported permission: create vsite content on behalf.
+  // This covers all group nodes.
+  $permissions['create vsite content on behalf'] = array(
+    'name' => 'create vsite content on behalf',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
@@ -85,17 +86,6 @@ function vsite_user_default_permissions() {
     'module' => 'node',
   );
 
-
-  // Exported permission: create personal content on behalf.
-  $permissions['create personal content on behalf'] = array(
-    'name' => 'create personal content on behalf',
-    'roles' => array(
-      0 => 'administrator',
-      1 => 'manager',
-    ),
-    'module' => 'vsite',
-  );
-
   // Exported permission: delete any personal content.
   $permissions['delete any personal content'] = array(
     'name' => 'delete any personal content',
@@ -142,16 +132,6 @@ function vsite_user_default_permissions() {
     'module' => 'node',
   );
 
-
-  // Exported permission: create project content on behalf.
-  $permissions['create project content on behalf'] = array(
-    'name' => 'create project content on behalf',
-    'roles' => array(
-      0 => 'administrator',
-      1 => 'manager',
-    ),
-    'module' => 'vsite',
-  );
 
   // Exported permission: delete any project content.
   $permissions['delete any project content'] = array(

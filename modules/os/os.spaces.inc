@@ -14,7 +14,7 @@ function os_spaces_presets() {
   $spaces_presets->disabled = FALSE; /* Edit this to true to make a default spaces_presets disabled initially */
   $spaces_presets->api_version = 3;
   $spaces_presets->name = 'os_department';
-  $spaces_presets->title = 'OS Department';
+  $spaces_presets->title = 'Academic Department';
   $spaces_presets->description = '';
   $spaces_presets->space_type = 'og';
   $spaces_presets->value = array(
@@ -42,7 +42,7 @@ function os_spaces_presets() {
   $spaces_presets->disabled = FALSE; /* Edit this to true to make a default spaces_presets disabled initially */
   $spaces_presets->api_version = 3;
   $spaces_presets->name = 'os_department_minimal';
-  $spaces_presets->title = 'OS Department Minimal';
+  $spaces_presets->title = 'Department Minimal';
   $spaces_presets->description = '';
   $spaces_presets->space_type = 'og';
   $spaces_presets->value = array(
