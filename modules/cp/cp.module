@@ -228,7 +228,7 @@ function cp_use_cp_theme() {
 }
 
 function cp_admin_paths() {
-  return array('cp/build/features/*');
+  return array('cp/build/features/*' => TRUE);
 }
 
 /**
