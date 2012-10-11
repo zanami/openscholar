@@ -18,7 +18,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     'software_project' => 'scholar_software_project',
     'software_release' => 'scholar_software_release',
     'media_gallery' => 'gallery',
-    'project' => 'vsite',
+    //'project' => 'vsite',
   );
 
   public function __construct($destination_bundle){
@@ -26,10 +26,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
 
     $this->source_content_type = $source_content_type = self::get_source_bundle($destination_bundle);
 
-    parent::__construct(MigrateGroup::getInstance('node', array(
-      'inline',
-      'users'
-    )));
+    parent::__construct(MigrateGroup::getInstance('node', array('inline','users')));
     //when extending this class, don't forget to update info file with new filename!
 
 
@@ -44,7 +41,6 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       'FileInlineOS',
       'HTMLInlineOS',
       'VsiteNodeOS',
-      'ProjectNodeOS'
     ); //og when that's done
 
 
@@ -432,13 +428,24 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   }
 
   /**
-   * Map bundle names from existing to new
+   * Map bundle names from new to legacy
    */
   public static function get_source_bundle($bundle){
-    if (array_key_exists($bundle, self::$source_bundle_map)) {
+    $og_bundles = og_get_all_group_bundle();
+    if ($bundle == self::_d7_vsite_type()) {
+      return self::_d6_vsite_type();
+    } elseif (array_key_exists($bundle, self::$source_bundle_map)) {
       return self::$source_bundle_map[$bundle];
     }
 
     return $bundle;
+  }
+
+  function _d6_vsite_type() {
+    return parent::d6_variable_get('scholar_content_type', 'vsite');
+  }
+
+  function _d7_vsite_type() {
+    return variable_get('os_migrate_default_group_bundle', variable_get('os_default_group_bundle', 'personal'));
   }
 }

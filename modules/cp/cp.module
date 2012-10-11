@@ -220,11 +220,15 @@ function cp_use_cp_theme() {
   if ((arg(0) == 'cp') ||
     (arg(0) == 'os') ||
     (arg(0) == 'media') ||
-    (arg(0) == 'node' && (arg(1) == 'add' || arg(2) == 'edit' || arg(2) == 'delete'))
+    ((arg(0) == 'node' || arg(0) == 'file') && (arg(1) == 'add' || arg(2) == 'edit' || arg(2) == 'delete'))
   ) {
     return TRUE;
   }
   return FALSE;
+}
+
+function cp_admin_paths() {
+  return array('cp/build/features/*');
 }
 
 /**

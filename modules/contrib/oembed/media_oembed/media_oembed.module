@@ -75,10 +75,10 @@ function media_oembed_file_default_displays() {
   $default_displays = array();
 
   $default_styles = array();
-  foreach(media_type_get_types() as $name => $type) {
+  foreach(file_type_get_enabled_types() as $name => $type) {
     // For default and Large view modes, use the default width and height from
     // hook_file_formatter_info().
-    $default_styles[$name . '__default__media_oembed'] = array();
+    $default_styles[$name . '__default__media_oembed'] = array('wmode' => 'transparent');
     $default_styles[$name . '__default__media_oembed_thumbnail'] = array();
 
     // For the Preview view mode, match the width and height of the square
@@ -87,7 +87,7 @@ function media_oembed_file_default_displays() {
 
     // For the Original view mode, set width and height to empty, so that they
     // use what's returned by the oEmbed response.
-    $default_styles[$name . '__full__media_oembed'] = array('width' => '', 'height' => '');
+    $default_styles[$name . '__full__media_oembed'] = array('width' => '', 'height' => '', 'wmode' => 'transparent');
     $default_styles[$name . '__full__media_oembed_thumbnail'] = array('width' => '', 'height' => '');
   }
 
@@ -115,17 +115,6 @@ function media_oembed_file_default_types_alter(&$types) {
   $types['document']->streams[] = 'oembed';
 }
 
-/*
-function media_oembed_file_type($file) {
-  switch ($file->filemime) {
-    case 'video/oembed':
-      return 'video';
-    case 'image/oembed':
-      return 'image';
-    case 'text/oembed':
-      return 'document';
-  }
-}*/
 
 /**
  * Implements hook_ctools_plugin_api().
@@ -149,10 +138,11 @@ function media_oembed_file_formatter_media_oembed_view($file, $display, $langcod
   if ($scheme == 'oembed') {
     $url = rawurldecode(substr($file->uri, 9));
 
-    // Strict sizing doesn't work reliably.
+    // The oEmbed spec supports maxwidth and maxheight.
+    // Some providers support wmode for flash objects
     $options = array(
-      'width' => isset($file->override['width']) ? $file->override['width'] : $display['settings']['width'],
-      'height' => isset($file->override['height']) ? $file->override['height'] : $display['settings']['height'],
+      'maxwidth' => isset($file->override['width']) ? $file->override['width'] : $display['settings']['width'],
+      'maxheight' => isset($file->override['height']) ? $file->override['height'] : $display['settings']['height'],
       'wmode' => isset($file->override['wmode']) ? $file->override['wmode'] : $display['settings']['wmode'],
     );
     if (empty($options['wmode'])) {

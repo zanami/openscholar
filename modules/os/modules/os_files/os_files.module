@@ -311,12 +311,11 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file) {
   $scheme = file_uri_scheme($file->uri);
   switch ($scheme) {
     case 'oembed':
-      $temp['media_original'] = $view_modes['media_original'];
+      $temp['default'] = $view_modes['default'];
       $view_modes = $temp;
     break;
     case 'public':
-      $mime = explode('/', $file->filemime);
-      $type = $mime[0];  // I do this to get the type in case bundles for files are ever expanded out of just mime type
+      $type = file_get_type($file);
       if ($type == 'image') {
         $temp['os_files_large'] = $view_modes['os_files_large'];
         $temp['os_files_med'] = $view_modes['os_files_med'];

@@ -75,7 +75,7 @@
 
 
 html /* Always apply your global font size the the HTML element, not body or #page */ {
-	font-size: 13px;
+	 font-size: 13px;
   line-height: 1.5; /* Unitless line-heights scale */
   height: 100%;
   overflow-y: scroll;
@@ -90,6 +90,7 @@ body {
   font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   margin: 0;
+ 
 }
 
 h1,h2,h3,h4,h5,h6,
