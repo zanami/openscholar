@@ -32,7 +32,6 @@ class PresentationNodeOSMigration extends AbstractNodeOSMigration {
       ->defaultValue(variable_get('os_migrate_files', FALSE));
     $this->addUnmigratedDestinations(parent::subfields('field_presentation_file', array('file_class', 'language', 'destination_dir', 'file_replace', 'preserve_files')));
 
-
     //$this->dependencies[] = 'StubNodeOS'; // append dependencies.  these classes must be migrated before this class.
 
 

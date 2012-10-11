@@ -47,7 +47,7 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('media_gallery_media:display', 'media_gallery_media_display');
     $this->addFieldMapping('media_gallery_media:language', 'media_gallery_media_language');
 
-    $this->addFieldMapping('media_gallery:og_group_ref', 'group_nid');
+    $this->addFieldMapping('media_gallery_media:og_group_ref', 'group_nid');
 
 
     $this->addUnmigratedDestinations(parent::subfields('media_gallery_media', array('file_class', 'destination_dir', 'destination_file', 'file_replace', 'preserve_files')), t('DNM')); //happy with defaults
@@ -57,7 +57,6 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
       ->defaultValue('lightbox'); //use the lightbox by default.  no previous setting to import.
     $this->addFieldMapping('media_gallery_lightbox_extras')
       ->defaultValue(0); //no title/description in lightbox because no images have them.  no previous setting
-
 
 
   }
