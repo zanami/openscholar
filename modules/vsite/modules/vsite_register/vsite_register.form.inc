@@ -28,6 +28,14 @@ function vsite_register_form($form, &$state) {
     '#attached' => array('js' => array(drupal_get_path('module', 'vsite_register') . '/vsite_register.js')),
   );
 
+  /**
+   * @todo This should be conigurable for install / form
+   */
+  $form['bundle'] = array(
+      '#type' => 'value',
+      '#value' => 'vsite',
+    );
+
   //Get enabled presets and load their titles
   $enabled_presets = variable_get('os_enabled_spaces_presets', array());
   $presets = spaces_preset_load();
@@ -235,7 +243,7 @@ function vsite_register_form_submit(&$form, &$state) {
   }
 
   //create the vsite
-  if ($vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['preset'])) {
+  if ($vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['bundle'], $values['preset'])) {
     //add user to vsite
     module_load_include('inc', 'vsite', 'includes/user');
     vsite_user_add($site_owner);
