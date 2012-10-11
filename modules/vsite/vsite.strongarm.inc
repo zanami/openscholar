@@ -147,7 +147,9 @@ function vsite_strongarm() {
   $strongarm->name = 'os_enabled_spaces_presets';
   $strongarm->value = array(
     'os_department' => 'os_department',
-    'os_personal' => 'os_personal',
+    'os_department_minimal' => 'os_department_minimal',
+    'os_scholar' => 'os_scholar',
+    'os_project' => 'os_project',
   );
   $export['os_enabled_spaces_presets'] = $strongarm;
 
