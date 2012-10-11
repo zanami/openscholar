@@ -197,14 +197,7 @@ function vsite_vsite_exists_access($vsites = array()) {
 }
 
 function vsite_permission(){
- $og_bundles = og_get_all_group_bundle();
- $perms = array();
-
- foreach(array_keys($og_bundles['node']) as $bundle) {
-    $perms["create $bundle content on behalf"] = t('Create @bundle content on behalf of other users', array('@bundle'=>$bundle));
- }
-
- return $perms;
+  return array('create vsite content on behalf' => t('Create vsite content on behalf of other users'));
 }
 
 /**
