@@ -107,7 +107,7 @@ function vsite_remove_entity($entity, $entity_type = 'node', $vsite = false){
  *
  * @return vsite $vsite
  */
-function vsite_create_vsite($name, $domain, $uid, $bundle = 'vsite', $preset = FALSE) {
+function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset = FALSE) {
   $node = new stdClass();
   $node->type = $bundle;
   node_object_prepare($node);

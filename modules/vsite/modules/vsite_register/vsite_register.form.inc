@@ -33,7 +33,7 @@ function vsite_register_form($form, &$state) {
    */
   $form['bundle'] = array(
       '#type' => 'value',
-      '#value' => 'vsite',
+      '#value' => 'personal',
     );
 
   //Get enabled presets and load their titles
