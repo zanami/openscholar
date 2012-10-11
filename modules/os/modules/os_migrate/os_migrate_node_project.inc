@@ -1,6 +1,6 @@
 <?php
 
-class VsiteNodeOSMigration extends AbstractNodeOSMigration {
+class ProjectNodeOSMigration extends AbstractNodeOSMigration {
 
   //Save the image toolkit that is active when the migration starts
   public static $image_toolkit;
@@ -8,11 +8,11 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
   public function __construct() {
 
     // Let AbstractNode handle the source, dest, and map.
-    parent::__construct('vsite'); //current types are vsite, article, and page.  lets start with one of those instead?
+    parent::__construct('vsite');
     //a separate import for projects?
-    $this->description = t('OS vsites');
-    $this->dependencies = preg_grep('/^VsiteNodeOS$/', $this->dependencies, PREG_GREP_INVERT);
+    $this->description = t('OS projects');
     $this->dependencies = preg_grep('/^ProjectNodeOS$/', $this->dependencies, PREG_GREP_INVERT);
+    $this->dependencies = preg_grep('/^VsiteNodeOS$/', $this->dependencies, PREG_GREP_INVERT);
 
     //$this->addSimpleMappings(array('purl'));
 
@@ -20,9 +20,9 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('field_site_description:language', 'og_language')->defaultValue('und');
     $this->addFieldMapping('field_site_description:format')->defaultValue('plain_text');
 
-    $this->addFieldMapping('field_site_address', 'field_vsite_address_value');
-    $this->addFieldMapping('field_site_address:language', 'og_language')->defaultValue('und');
-    $this->addFieldMapping('field_site_address:format')->defaultValue('plain_text');
+ //   $this->addFieldMapping('field_site_address', 'field_project_address_value');
+  //  $this->addFieldMapping('field_site_address:language', 'og_language')->defaultValue('und');
+    //$this->addFieldMapping('field_site_address:format')->defaultValue('plain_text');
 
     $this->addFieldMapping('group_access', 'og_private')->defaultValue(0);
     $this->addFieldMapping('group_group')->defaultValue(1);
@@ -47,21 +47,21 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
       $this->removeFieldMapping($destination_field);
     }
 
-    $this->addUnmigratedSources(array('value', 'provider', 'format', 'field_vsite_address_format'), t('DNM'));
-    $this->addUnmigratedSources(parent::subfields('field_vsite_logo', array('fid','list','data'), '_'), t('DNM'));
+    $this->addUnmigratedSources(array('value', 'provider', 'format'), t('DNM'));
+    $this->addUnmigratedSources(parent::subfields('field_project_logo', array('fid','list','data'), '_'), t('DNM'));
   }
 
   public function query() {
     $query = parent::d6_db_select('node', 'n')->fields('n', array('nid', 'vid', 'type','language','title','uid','status','created', 'changed','comment','promote','moderate','sticky','tnid','translate'));
-    $query->condition('n.type', 'vsite');
+    $query->condition('n.type', 'project');
 
-    $query->join('content_type_vsite', 'ct', 'n.nid = ct.nid');
-    $query->fields('ct', parent::subfields('field_vsite',array('address_value', 'logo_fid', 'logo_list', 'logo_data'), '_'));
-    //$query->isNotNull('field_vsite_logo_fid'); //uncomment to test logo presence
+    $query->join('content_type_project', 'ct', 'n.nid = ct.nid');
+    $query->fields('ct', parent::subfields('field_project',array('logo_fid', 'logo_list', 'logo_data'), '_'));
+    //$query->isNotNull('field_project_logo_fid'); //uncomment to test logo presence
 
     $query->join('purl', 'p', 'n.nid = p.id');
     $query->fields('p', array('value', 'provider'));
-    $query->condition('p.provider', 'spaces_og', '='); //domain sites had an extra entry for vsite_domain.  add those elsewehre later
+    $query->condition('p.provider', 'spaces_og', '='); //domain sites had an extra entry for project_domain.  add those elsewehre later
 
 //     $query->join('og_ancestry', 'oga', 'n.nid = oga.nid'); //node membership
 //     $query->fields('oga', array('group_nid'));
@@ -69,8 +69,8 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $query->join('og', 'og', 'n.nid = og.nid');
     $query->fields('og', parent::subfields('og', array('description', 'language', 'private'), '_'));
 
-    if (isset($this->restrict_vsites)) {
-      $query->condition('n.nid', $this->restrict_vsites, 'IN'); //dancabral, jlepore, jsagotsky, gary
+    if (isset($this->restrict_projects)) {
+      $query->condition('n.nid', $this->restrict_projects, 'IN'); //dancabral, jlepore, jsagotsky, gary
     }
 
 
@@ -92,14 +92,13 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
   }
 
   function prepareRow($row) {
-
-     if (isset($row->field_vsite_logo_fid)) {
-       $file = parent::get_file_by_fid($row->field_vsite_logo_fid);
+     if (isset($row->field_project_logo_fid)) {
+       $file = parent::get_file_by_fid($row->field_project_logo_fid);
        $row->{'field_site_logo:destination_file'} = $file->filepath;
 
        //if we have crop data and the original image still exists, use that instead of the pre-cropped image.
        $original_file = $file->filepath . '.crop_display.jpg';
-       if (is_readable(variable_get('os_migrate_files', '') . '/' . $original_file) && strlen($row->field_vsite_logo_data)) {
+       if (is_readable(variable_get('os_migrate_files', '') . '/' . $original_file) && strlen($row->field_project_logo_data)) {
          $file->filepath = $original_file;
        }
 
@@ -111,7 +110,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
          parent::os_migrate_prepare_files(array($file), $row, 'field_site_logo');
          $row->{'field_site_logo:language'} = $row->language;
 
-         if (strlen($row->field_vsite_logo_data) && ($data = unserialize($row->field_vsite_logo_data))) {
+         if (strlen($row->field_project_logo_data) && ($data = unserialize($row->field_project_logo_data))) {
            $row->{'field_site_logo:alt'} = isset($data['alt']) ? $data['alt'] : '' ;
            $row->{'field_site_logo:title'} = isset($data['title']) ? $data['title'] : '';
 
@@ -132,7 +131,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
          }
        }
      } else {
-       $row->field_vsite_logo = null;
+       $row->field_project_logo = null;
      }
 
      $row->field_group_path = $this->_get_field_group_path($row->nid, $row->value);
@@ -155,7 +154,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
    /**
     * @function _get_field_group_path($nid)
     * @param (int) $nid
-    *   Vsite id
+    *   Project id
     * @return string
     *   path to this group
     *
@@ -190,29 +189,11 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     return $domain . $purl;
   }
 
-  //some vsites have logos, but no coords.  if they're here and hardcoded, use them.
+  //some projects have logos, but no coords.  if they're here and hardcoded, use them.
   function _get_missing_coords(&$row) {
     $known_missing = array(
       //nid => x, y, w, h
-      2 => array(0, 0, 1114, 836),
-      5 => array(0, 0, 789, 592),
-      7 => array(0, 0, 2304, 1728),
-      13 => array(0, 0, 350, 263),
-      17 => array(0, 0, 180, 140),
-      19 => array(0, 0, 251, 188),
-      21 => array(0, 0, 180, 140),
-      25 => array(0, 0, 581, 436),
-      26 => array(0, 0, 312, 243),
-      541 => array(0, 0, 99, 77),
-      619 => array(0, 0, 595, 463),
-      660 => array(0, 0, 140 , 105),
-      1487 => array(0, 0, 175, 128),
-      1791 => array(0, 0, 180, 140),
-      1793 => array(0, 0, 180, 140),
-      1813 => array(0, 0, 180, 140),
-      1815 => array(0, 0, 180, 140),
-      1836 => array(0, 0, 180, 140), //doesn't use the widget.  assuming default.
-      1857 => array(0, 0, 180, 140),
+
     );
 
     if (isset($known_missing[$row->nid])) {

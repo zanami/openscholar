@@ -47,6 +47,9 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('media_gallery_media:display', 'media_gallery_media_display');
     $this->addFieldMapping('media_gallery_media:language', 'media_gallery_media_language');
 
+    $this->addFieldMapping('media_gallery:og_group_ref', 'group_nid');
+
+
     $this->addUnmigratedDestinations(parent::subfields('media_gallery_media', array('file_class', 'destination_dir', 'destination_file', 'file_replace', 'preserve_files')), t('DNM')); //happy with defaults
     $this->addUnmigratedDestinations(array('media_gallery_image_info_where'), t('DNM'));
 

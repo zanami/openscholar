@@ -26,6 +26,7 @@ class PresentationNodeOSMigration extends AbstractNodeOSMigration {
 
     //file
     $this->addFieldMapping('field_presentation_file', 'field_presentation_file');
+    $this->addFieldMapping('field_presentation_file:og_group_ref', 'group_nid');
     $this->addSimpleMappings(parent::subfields('field_presentation_file', array('destination_file', 'description', 'display')));
     $this->addFieldMapping('field_presentation_file:source_dir')
       ->defaultValue(variable_get('os_migrate_files', FALSE));

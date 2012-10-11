@@ -27,6 +27,8 @@ body {
 #header /* Main site header. */ {
 }
 
+#header-container {padding:0 10px;}
+
 /* bigscreen three_col_grail */
 
 #columns {
