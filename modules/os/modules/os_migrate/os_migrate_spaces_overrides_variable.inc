@@ -119,7 +119,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
    */
   public function _update_variable_spaces_preset_og($object_id, $value){
     $presets = array(
-      'scholar' => 'os_personal',
+      'scholar' => 'os_scholar',
       'project' => 'os_department'
     );
 
