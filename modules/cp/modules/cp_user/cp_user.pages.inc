@@ -143,7 +143,8 @@ function cp_user_remove_membership_confirm_submit($form, &$form_state) {
 function cp_user_make_admin_confirm($form_state, $user_load) {
   $space = spaces_get_space();
   // Form sets.
-  $form['gid'] = array('#type' => 'value', '#value' => $gid = $space->group->vid);
+  $form['gid'] = array('#type' => 'value', '#value' => $space->group->vid);
+  $form['group_type'] = array('#type' => 'value', '#value' => $space->group->type);
   $form['account'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->uid);
   $form['username'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->name);
   $form['site_name'] = array('#type' => 'value', '#value' => $space->group->title);
@@ -162,8 +163,12 @@ function cp_user_make_admin_confirm($form_state, $user_load) {
  */
 function cp_user_make_admin_confirm_submit($form, &$form_state) {
   // Get the vsite admin key.
+<<<<<<< HEAD
+  $og_roles = og_roles('node', $form_state['values']['group_type']);
+=======
   $bundle = variable_get('os_default_group_bundle', 'personal');
   $og_roles = og_roles('node', $bundle);
+>>>>>>> fbf28d2a3edc3faf6f3d7fb7995724ed31c411e0
   $key = array_search('vsite admin', $og_roles);
   $vsite_admin_role = $key;
 
@@ -182,6 +187,7 @@ function cp_user_remove_admin_confirm($form_state, $user_load) {
   $space = spaces_get_space();
   // Form sets.
   $form['gid'] = array('#type' => 'value', '#value' => $space->group->vid);
+  $form['group_type'] = array('#type' => 'value', '#value' => $space->group->type);
   $form['account'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->uid);
   $form['username'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->name);
   $form['site_name'] = array('#type' => 'value', '#value' => $space->group->title);
@@ -200,8 +206,12 @@ function cp_user_remove_admin_confirm($form_state, $user_load) {
  */
 function cp_user_remove_admin_confirm_submit($form, &$form_state) {
   // Get the vsite admin key.
+<<<<<<< HEAD
+  $og_roles = og_roles('node', $form_state['values']['group_type']);
+=======
   $bundle = variable_get('os_default_group_bundle', 'personal');
   $og_roles = og_roles('node', $bundle);
+>>>>>>> fbf28d2a3edc3faf6f3d7fb7995724ed31c411e0
   $key = array_search('vsite admin', $og_roles);
   $vsite_admin_role = $key;
 
