@@ -399,7 +399,6 @@ function gkplus_preprocess_os_taxonomy_tagged_nodes(&$vars) {
   }
 }
 
-
 /**
  * Page callback; updates a node that has an attached file with the same name.
  *
@@ -469,8 +468,6 @@ function gkplus_access_file($filename) {
  * @see gkplus_cron()
  *
  * @ingroup updatefile
- *
- * @todo make this work, useful in testing.
  */
 function _gkplus_updatefile_cron() {
   $last_update = variable_get('gkplus_last_updated_filefields', 0);
@@ -479,34 +476,13 @@ function _gkplus_updatefile_cron() {
     while (FALSE !== ($file = readdir($handle))) {
       $filepath = $temp_path . $file;
       drupal_set_message("found file " . $filepath . "\nfilectime: " . filectime($filepath) . "\nlast update: " . $last_update, "warning");
-//      spoodermoon((filectime($filepath) >= $last_update), 'newer');
-//      spoodermoon((is_file($filepath)), 'file');
-//      spoodermoon((strpos($file, '.') === 0), 'found a dot');
-      // is_file($filepath) &&
       if (filectime($filepath) >= $last_update && is_file($filepath) && !(strpos($file, '.') === 0)) {
-        drupal_set_message("found newer version of " . $file, "warning");
         gkplus_update_filefield_page($file, TRUE);
       }
     }
     closedir($handle);
   }
   variable_set('gkplus_last_updated_filefields', time());
-}
-
-/**
- * For debugging only. @todo remove once cron works.
- */
-function _gkplus_log($variable, $label, $mode = 'boolean') {
-  if ($mode === 'boolean') {
-    $value = 'FALSE';
-    if ($variable) {
-      $value = 'TRUE';
-    }
-  }
-  else {
-    $value = $variable;
-  }
-  drupal_set_message('\n' . $label . ': ' . $value, 'warning');
 }
 
 /**
