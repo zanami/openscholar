@@ -326,7 +326,7 @@ function vsite_register_form_validate(&$form, &$state) {
         $state['triggering_element']['#ajax']['callback'] == 'iqss_pinserver_register_ajax_validation') {
       //ajax callback will validate just this element and return a message.
       return;
-    } else {
+    } else if ($state['triggering_element']['#ajax']['callback'] != 'vsite_register_ajax_avalible_presets'){
       //form is done.  maybe this should happen after the validate?  or at least duplicate its efforts.
       return vsite_register_ajax_submit_validation($form, $state);
     }
