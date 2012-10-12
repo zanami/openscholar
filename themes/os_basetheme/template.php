@@ -26,6 +26,17 @@ function os_basetheme_preprocess_html(&$vars) {
  */
 function os_basetheme_preprocess_page(&$vars) {
   //Adds OpenScholar header region awareness to body classes
+  $header = array(
+    'header-left' => $vars['page']['header_second'],
+    'header-main' => $vars['page']['header_first'],
+    'header-right' => $vars['page']['header_third'],
+  );
+  $content = array(
+    'content-top' => $vars['page']['content_top'],
+    'content-left' => $vars['page']['content_first'],
+    'content-right' => $vars['page']['content_second'],
+    'content-bottom' => $vars['page']['content_bottom'],
+  );
  
   foreach (array('header',  'content') as $var) {
     $visible = array_filter($$var, "__os_basetheme_is_empty");
