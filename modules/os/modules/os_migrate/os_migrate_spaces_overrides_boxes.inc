@@ -163,7 +163,27 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     //path to legacy module
     $src = variable_get('os_migrate_files', '');
     $src .= '/' . parent::d6_variable_get('file_directory_path');
-    $src .= '/vsite_shields/';
+
+    //finds the path to vsite_shields
+    function find_vsite_shields_path($base, $path) {
+      if ($path == 'vsite_shields') {
+        return $base . '/' . $path .'/';
+      }
+
+      $new_base = "$base/$path";
+      foreach (scandir($new_base) as $dir) {
+        if (is_dir("$new_base/$dir") && $dir != '.' && $dir !='..' ) {
+          $found = find_vsite_shields_path($new_base, $dir);
+          if ($found) {
+            return $found;
+          }
+        }
+      }
+
+      return FALSE;
+    }
+
+    $src = find_vsite_shields_path($src, '');
 
     //get files or bail out
 //     if (($files = scandir($src)) === FALSE) {
@@ -569,9 +589,9 @@ class BoxPorter {
     }
 
     //get new fid from legacy delta
-    $query = db_select('spaces_overrides', 'so')
+    $query = db_select('migrate_map_spacesoverridesboxesmedia', 'mm')
       ->condition('sourceid3', $box->delta)
-      ->fields('so', array('destid1'))
+      ->fields('mm', array('destid1'))
       ->isNotNull('destid1')
       ->execute();
 
