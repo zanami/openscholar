@@ -134,6 +134,7 @@
   height: 31px;
   position: relative;
   white-space: normal;
+  line-height:14px;
 }
 
 
@@ -381,7 +382,7 @@
 
 #websiteLabelTab { 
   height: 16px;
-  left: 726px;
+  left: 756px;
   position: relative;
   top: 40px;
   width: 99px;
@@ -414,7 +415,7 @@ html.js #cp-layout-full-form div.ctools-dropdown div.ctools-dropdown-container {
   max-height: 670px;
   overflow: auto;
   width: 275px;
-  left:550px;
+  left:580px;
   white-space: nowrap;
 }
 
