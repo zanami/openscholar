@@ -719,7 +719,7 @@ class BoxPorter {
       return $key;
     }
 
-    $box->options += array(
+    $defaults = array(
       'controls' => 'none',
       'slide_counter' => 'none',
       'pager' => 'none',
@@ -727,6 +727,8 @@ class BoxPorter {
       'style' => 'dark',
       'size' => 600,
     );
+
+    $box->options = array_merge($defaults, $box->options);
 
     $box->options['gallery_nid'] = $box->options['gallery'];
     unset($box->options['gallery']);
@@ -738,6 +740,12 @@ class BoxPorter {
 
     return $box;
   }
+
+  //slideshows get the same treatment as galleries.  gain options in form.
+  public function _port_box_os_boxes_slideshow($box, $id, $key_only) {
+    return $this->_port_box_os_boxes_gallery($box, $id, $key_only);
+  }
+
 
   //convert os_boxes_node to custom html.  102 in db
   public function _port_box_os_boxes_node($box, $id,  $key_only) {
