@@ -164,7 +164,8 @@ function cp_user_remove_membership_confirm_submit($form, &$form_state) {
 function cp_user_make_admin_confirm($form_state, $user_load) {
   $space = spaces_get_space();
   // Form sets.
-  $form['gid'] = array('#type' => 'value', '#value' => $gid = $space->group->vid);
+  $form['gid'] = array('#type' => 'value', '#value' => $space->group->vid);
+  $form['group_type'] = array('#type' => 'value', '#value' => $space->group->type);
   $form['account'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->uid);
   $form['username'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->name);
   $form['site_name'] = array('#type' => 'value', '#value' => $space->group->title);
@@ -183,7 +184,7 @@ function cp_user_make_admin_confirm($form_state, $user_load) {
  */
 function cp_user_make_admin_confirm_submit($form, &$form_state) {
   // Get the vsite admin key.
-  $og_roles = og_roles('node', 'vsite');
+  $og_roles = og_roles('node', $form_state['values']['group_type']);
   $key = array_search('vsite admin', $og_roles);
   $vsite_admin_role = $key;
 
@@ -208,6 +209,7 @@ function cp_user_remove_admin_confirm($form_state, $user_load) {
   $space = spaces_get_space();
   // Form sets.
   $form['gid'] = array('#type' => 'value', '#value' => $space->group->vid);
+  $form['group_type'] = array('#type' => 'value', '#value' => $space->group->type);
   $form['account'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->uid);
   $form['username'] = array('#type' => 'value', '#value' => $user_load['build_info']['args'][0]->name);
   $form['site_name'] = array('#type' => 'value', '#value' => $space->group->title);
@@ -226,7 +228,7 @@ function cp_user_remove_admin_confirm($form_state, $user_load) {
  */
 function cp_user_remove_admin_confirm_submit($form, &$form_state) {
   // Get the vsite admin key.
-  $og_roles = og_roles('node', 'vsite');
+  $og_roles = og_roles('node', $form_state['values']['group_type']);
   $key = array_search('vsite admin', $og_roles);
   $vsite_admin_role = $key;
 

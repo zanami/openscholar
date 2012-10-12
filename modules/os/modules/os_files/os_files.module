@@ -120,6 +120,8 @@ function os_files_views_api() {
 
 /**
  * Entry point for vsite aliased file downloads.
+ *
+ * This allows legacy file paths to exsit that are mapped to paths "domain/vsite/files/file1.pdf"
  */
 function os_files_download() {
   $args = func_get_args();
