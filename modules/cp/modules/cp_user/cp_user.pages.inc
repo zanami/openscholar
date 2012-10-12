@@ -163,12 +163,7 @@ function cp_user_make_admin_confirm($form_state, $user_load) {
  */
 function cp_user_make_admin_confirm_submit($form, &$form_state) {
   // Get the vsite admin key.
-<<<<<<< HEAD
   $og_roles = og_roles('node', $form_state['values']['group_type']);
-=======
-  $bundle = variable_get('os_default_group_bundle', 'personal');
-  $og_roles = og_roles('node', $bundle);
->>>>>>> fbf28d2a3edc3faf6f3d7fb7995724ed31c411e0
   $key = array_search('vsite admin', $og_roles);
   $vsite_admin_role = $key;
 
@@ -206,12 +201,7 @@ function cp_user_remove_admin_confirm($form_state, $user_load) {
  */
 function cp_user_remove_admin_confirm_submit($form, &$form_state) {
   // Get the vsite admin key.
-<<<<<<< HEAD
   $og_roles = og_roles('node', $form_state['values']['group_type']);
-=======
-  $bundle = variable_get('os_default_group_bundle', 'personal');
-  $og_roles = og_roles('node', $bundle);
->>>>>>> fbf28d2a3edc3faf6f3d7fb7995724ed31c411e0
   $key = array_search('vsite admin', $og_roles);
   $vsite_admin_role = $key;
 
