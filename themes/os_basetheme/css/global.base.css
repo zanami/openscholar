@@ -125,6 +125,10 @@ section {
 h1 {
 }
 
+h1.node-title {
+	font-size:1.35em;
+}
+
 h2 {
 	font-size:1.3em;
 }
