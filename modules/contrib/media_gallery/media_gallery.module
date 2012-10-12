@@ -223,7 +223,7 @@ function media_gallery_view($node, $view_mode) {
     // site's configuration for the corresponding pseudo-field.
     $node->content['add_media_link'] = array(
       '#type' => 'media',
-      '#title' => t('Add New Image'),
+      '#title' => '',
       '#description' => '',
       '#id' => '',
       '#media_options' => array(
@@ -238,6 +238,7 @@ function media_gallery_view($node, $view_mode) {
     foreach ($info['#process'] as $f) {
       $node->content['add_media_link'] = $f($node->content['add_media_link'], $arr, $arr);
     }
+    $node->content['add_media_link']['select']['#title'] = t('Add New Image');
 
     // Enable the "Add media" link to launch the media browser.
     module_load_include('inc', 'media', 'includes/media.browser');
@@ -863,7 +864,7 @@ function media_gallery_form_alter(&$form, &$form_state, $form_id) {
         }
       }
       // Prepopulate the license field with the correct default.
-      if ($form['field_license'][LANGUAGE_NONE]['#default_value'] == '_none') {
+      if (isset($form['field_license']) && $form['field_license'][LANGUAGE_NONE]['#default_value'] == '_none') {
         $form['field_license'][LANGUAGE_NONE]['#default_value'] = 'none';
       }
       unset($form['field_license'][LANGUAGE_NONE]['#options']['_none']);
