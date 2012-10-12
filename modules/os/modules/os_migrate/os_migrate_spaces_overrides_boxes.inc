@@ -12,11 +12,6 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     $query = parent::query();
     $query->condition('object_id', '', '!=');
 
-
-    //$query->condition('value', '%os_boxes_node%', 'LIKE'); //testing the port function
-    //$query->condition('value', '%os_boxes_modal_image%', 'LIKE'); //testing the port function
- //   $query->condition('value', '%manual%', 'LIKE');
-
     return $query;
   }
 
@@ -722,6 +717,7 @@ class BoxPorter {
     $defaults = array(
       'controls' => 'none',
       'slide_counter' => 'none',
+      'show_image_titles' => 'none',
       'pager' => 'none',
       'effect' => 'fade',
       'style' => 'dark',
