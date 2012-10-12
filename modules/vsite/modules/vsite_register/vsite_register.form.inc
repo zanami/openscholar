@@ -72,7 +72,7 @@ function vsite_register_form($form, &$state) {
      unset($enabled_presets[$key]);
     }
   }
-  $default_preset = variable_get('spaces_preset_og', 'os_personal');
+  $default_preset = variable_get('spaces_preset_og', 'os_scholar');
 
   $form['preset'] = array(
     '#prefix' => '<div id="preset-wrapper">',
