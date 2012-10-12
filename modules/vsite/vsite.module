@@ -163,8 +163,17 @@ function vsite_vsite_exists_access($vsites = array()) {
     $vsites = vsite_get_vsite_by_owner($user->uid);
   }
 
+  $group_bundles = og_get_all_group_bundle();
+  $group_create_access = false;
+  foreach ($group_bundles['node'] as $type => $label){
+    if(user_access('create '.$type.' content')){
+      $group_create_access = true;
+      break;
+    }
+  }
+
   // Does user have permission to create vsites?
-  if (! user_access('create vsite content on behalf') && ! user_access('create vsite content')) {
+  if (! user_access('create vsite content on behalf') && ! $group_create_access) {
     if(current_path() == 'site/register') {
       // Set error message when appropriate.
       global $base_url;
