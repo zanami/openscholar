@@ -61,6 +61,11 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     //boxes in values
     foreach ( $value['blocks'] as $id => $block ) {
 
+      if($id == 'vsite-site_search'){
+        //Update Search Blocks
+        $this->_update_search_blocks($value['blocks'],$block);
+      }
+
       list($new_id, $block) = $this->_update_context_block($id, $block);
       unset($value['blocks'][$id]);
       if (isset($new_id)) {
@@ -102,6 +107,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     if (in_array($id, array(
       'boxes-scholar_reader-latest_feed_items',
       'scholar_front-get_started',
+      //This is added by _update_search_blocks
+      'vsite-site_search',
     ))) {
       //Remove depricated blocks
       return FALSE;
@@ -227,7 +234,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
         'region' => (isset($block['region'])) ? $block['region'] : 'sidebar_second',
         'weight' => (isset($block['weight'])) ? $block['weight'] : -10,
         'info' => 'Site RSS Feed',
-      )
+      ),
     );
 
     if (in_array($id, array_keys($replacements))) {
@@ -235,6 +242,31 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     }
 
     return false;
+  }
+
+  /**
+   * Replace the old search block with new search blocks from each of the search modules
+   *
+   * @param array $blocks
+   * @param array $old_search_block
+   * @return array
+   */
+  function _update_search_blocks(&$blocks, $old_search_block){
+
+    $blocks['os_search_solr-site-search'] = array(
+      'module' => 'os_search_solr',
+      'delta' => 'site-search',
+      'region' => (isset($old_search_block['region'])) ? $old_search_block['region'] : false,
+      'weight' => (isset($old_search_block['weight'])) ? $old_search_block['weight'] : -10,
+    );
+
+    $blocks['os_search_db-site-search'] = array(
+      'module' => 'os_search_db',
+      'delta' => 'site-search',
+      'region' => (isset($old_search_block['region'])) ? $old_search_block['region'] : false,
+      'weight' => (isset($old_search_block['weight'])) ? $old_search_block['weight'] : -10,
+    );
+
   }
 
   /**

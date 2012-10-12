@@ -72,30 +72,6 @@
      return parent::prepareRow($row);
    }
 
-
-
-//   //update a block's array
-//   public function _update_block(array $block) {
-//     if (isset($block['region'])) {
-//       $block['region'] = $this->_update_region($block['region']);
-//     }
-
-//     if (isset($block['module'])) {
-//       $block['module'] = $this->_update_module($block['module']);
-//     }
-
-//     if (isset($block['plugin_key'])) {
-//       if ($key = $this->_update_block_plugin_key($block['plugin_key'])) {
-//         $block['plugin_key'] = $key;
-//       } else {
-//         return FALSE;
-//       }
-//     }
-
-//     //$block['plugin'] almost certainly needs an update    .  plugin_key?
-//     return $block;
-//   }
-
   /**
    * @function _update_module
    *
