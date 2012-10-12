@@ -249,7 +249,7 @@ class BoxPorter {
   }
 
   function _update_format($format = NULL) { //no format -> plain_text
-    return (in_array($format, array(1,2,4,5,6))) ? 'filtered_html' : 'plain_text';
+    return (in_array($format, array(0,1,2,4,5,6))) ? 'filtered_html' : 'plain_text';
   }
 
   public function _update_block_plugin_key($key) {
