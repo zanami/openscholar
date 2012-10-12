@@ -55,7 +55,7 @@ function vsite_install(){
   variable_set('og_group_manager_default_rids_node_vsite', $manager_roles);
 
   //Set the default OG preset to be os_personal
-  variable_set('spaces_preset_og', 'os_personal');
+  variable_set('spaces_preset_og', 'os_scholar');
 
   _vsite_initilize_group_fields();
 }
