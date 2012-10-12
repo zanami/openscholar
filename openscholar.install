@@ -22,7 +22,7 @@ function openscholar_install() {
   'cleanblue',
   'collegiate',
   'commodore',
-  'cp',
+  'cp_theme',
   'dunster',
   'eloquent',
   'nortony',
