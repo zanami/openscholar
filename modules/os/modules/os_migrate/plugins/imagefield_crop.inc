@@ -23,6 +23,10 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
       $gid = (isset($entity->og_group_ref[LANGUAGE_NONE][0]['value'])) ? $entity->og_group_ref[LANGUAGE_NONE][0]['value'] : $entity->nid;
     }
 
+    if (!$values[0]) {
+      return array();
+    }
+
     //crop the image.
     if ($original = $this->_save_original($values[0], $gid, $entity->uid)) { //no og_group_ref yet....
       $this->_image_dimensions($values);
