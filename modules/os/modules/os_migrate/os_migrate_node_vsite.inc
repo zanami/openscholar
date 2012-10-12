@@ -15,11 +15,11 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     //$this->addSimpleMappings(array('purl'));
 
     $this->addFieldMapping('field_site_description', 'og_description');
-    $this->addFieldMapping('field_site_description:language', 'og_language')->defaultValue('und');
+    $this->addFieldMapping('field_site_description:language')->defaultValue('und');
     $this->addFieldMapping('field_site_description:format')->defaultValue('plain_text');
 
     $this->addFieldMapping('field_site_address', 'field_vsite_address_value');
-    $this->addFieldMapping('field_site_address:language', 'og_language')->defaultValue('und');
+    $this->addFieldMapping('field_site_address:language')->defaultValue('und');
     $this->addFieldMapping('field_site_address:format')->defaultValue('plain_text');
 
     $this->addFieldMapping('group_access', 'og_private')->defaultValue(0);
