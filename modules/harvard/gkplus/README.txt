@@ -20,9 +20,13 @@ This module provides a number of miscellaneous customizations:
 
 These features forthcoming:
 
-* Add the contextual annotation link functionality to his taxonomy terms from the port written by Jeffery
 * Updates files when gary adds a new version to a dump directory
 * Miscellaneous blocks
+
+These components have been moved to other modules in SCHOLAR-3-0:
+
+* Adds "Edit annotation" links to node contextual links (by Jeffrey); moved to
+  contextual_annotation module.
 
 # Setup
 

@@ -206,7 +206,9 @@ function vsite_vsite_exists_access($vsites = array()) {
 }
 
 function vsite_permission(){
-  return array('create vsite content on behalf' => t('Create vsite content on behalf of other users'));
+  return array('create vsite content on behalf' => array(
+    'title' => 'create vsite on behalf',
+    'description' => t('Create vsite content on behalf of other users')));
 }
 
 /**

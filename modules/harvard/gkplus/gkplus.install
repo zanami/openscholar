@@ -2,13 +2,21 @@
 
 /**
  * Implementaton of hook_enable().
+ *
+ * @ingroup nodeorder
+ * @ingroup updatefile
  */
 function gkplus_enable() {
   // Adjust system weight for module gkplus to be after nodeorder.
   _gkplus_adjust_module_weight(array('gkplus'), '>', array('nodeorder'));
-
   // Note: D6 also cared about modules 'vsite_layout' & 'vsite_taxonomy',
   // but it didn't seem necessary when porting... yet.
+
+  // Creates the update file directory if it doesn't already exist.
+  $temp_path = _gkplus_temp_path();
+  if (!is_dir($temp_path)) {
+    mkdir($temp_path, 0775);
+  }
 }
 
 /**
