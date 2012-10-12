@@ -170,7 +170,7 @@ function _os_stats() {
 		  	'query' => 'SELECT COUNT(nid) FROM {node} WHERE type IN (:typeVal) ',
 		  	//'query_args' => array(variable_get('scholar_content_type', 'vsite')),
 		    'query_args' => $group_types,
-			'query_args_type' => 'typeVal',
+			'query_args_type' => ':typeVal',
 		  	'weight' => 0
 		);
 		$statsArray['Nodes'] = array(
