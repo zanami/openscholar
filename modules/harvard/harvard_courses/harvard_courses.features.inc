@@ -9,11 +9,7 @@
  */
 function harvard_courses_ctools_plugin_api() {
   list($module, $api) = func_get_args();
-  if ($module == "feeds" && ($api == "feeds_importer_default" || $api == "plugins")) {
-    return array("version" => "1");
-  }
-  list($module, $api) = func_get_args();
-  if ($module == "strongarm" && $api == "strongarm") {
+  if ($module == "feeds" && $api == "feeds_importer_default") {
     return array("version" => "1");
   }
 }

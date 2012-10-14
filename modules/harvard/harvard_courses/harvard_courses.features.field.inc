@@ -1360,15 +1360,16 @@ function harvard_courses_field_default_fields() {
       'entity_type' => 'node',
       'field_name' => 'field_department_id',
       'label' => 'Department ID',
-      'required' => FALSE,
+      'required' => 0,
       'settings' => array(
-        'text_processing' => 1,
+        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
+        'active' => 1,
         'module' => 'text',
         'settings' => array(
-          'size' => 60,
+          'size' => '60',
         ),
         'type' => 'text_textfield',
         'weight' => 36,

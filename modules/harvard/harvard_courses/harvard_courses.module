@@ -38,7 +38,6 @@ function harvard_courses_enable() {
   $node->language = LANGUAGE_NONE;
 
   $wrapper = entity_metadata_wrapper('node', $node);
-  $wrapper->field_import_type->set('department');
   $node->field_import_type[LANGUAGE_NONE][0]['value'] = 'department';
   $node->field_base_url[LANGUAGE_NONE][0]['value'] = 'http://harvard.edu';
   node_save($node);
@@ -56,6 +55,18 @@ function harvard_courses_enable() {
 
 /**
  * Returning vsites nid by the import type.
+ *
+ *  @param $import_type
+ *    What is the method of the import:
+ *      - cat_num: Catalog number
+ *      - department: Department ID
+ *
+ *  @param $search_value
+ *    Array of values to look for in the field of the import method.
+ *    If empty, will return all the nodes the method field is not empty.
+ *
+ *  @return
+ *    List of nids.
  */
 function haravard_courses_sites_nid_by_import_type($import_type, $search_value = array()) {
   $field = $import_type == 'cat_num' ? 'field_catalog_number' : 'field_department_id';
@@ -87,11 +98,93 @@ function harvard_courses_node_insert($node) {
     return;
   }
   $wrapper = entity_metadata_wrapper('node', $node->nid);
-  $vsites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
 
+  // Import by catalog number.
+  $vsites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
+  foreach ($vsites as $vsite) {
+    og_group('node', $vsite, array('entity_type' => 'node', 'entity' => $node->nid));
+  }
+
+  // Import by department ID.
+  $vsites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_field->value()));
   foreach ($vsites as $vsite) {
     og_group('node', $vsite, array('entity_type' => 'node', 'entity' => $node->nid));
   }
 
   $node->skip_og_membership = TRUE;
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function harvard_courses_node_update($node) {
+  if ($node->type != 'vsite' || empty($node->original)) {
+    return;
+  }
+
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $original_node = entity_metadata_wrapper('node', $node->original);
+
+  $fields = array(
+    'cat_num' => array(
+      'vsite' => 'field_catalog_number',
+      'course' => 'field_cat_number',
+    ),
+    'department' => array(
+      'vsite' => 'field_department_id',
+      'course' => 'field_field',
+    ),
+  );
+
+  foreach ($fields as $field) {
+    $removed_items = array_diff($original_node->{$field['vsite']}->value(), $wrapper->{$field['vsite']}->value());
+    $added_items = array_diff($wrapper->{$field['vsite']}->value(), $original_node->{$field['vsite']}->value());
+
+    // Dealing with removed items.
+    if (!empty($removed_items)) {
+      $courses = harvard_courses_related_nodes($field['course'], $removed_items);
+      if (!empty($courses)) {
+        foreach ($courses as $course_id) {
+          og_ungroup('node', $node->nid, 'node', $course_id);
+        }
+      }
+    }
+
+    // Dealing with added items.
+    if (!empty($added_items)) {
+      $courses = harvard_courses_related_nodes($field['course'], $added_items);
+      if (!empty($courses)) {
+        foreach ($courses as $course) {
+          og_group('node', $node->nid, array('entity_type' => 'node', 'entity' => $course));
+        }
+      }
+      $node->skip_og_membership = TRUE;
+    }
+  }
+}
+
+/**
+ * Return courses nids which holds the search values in the field.
+ *
+ *  @param $field
+ *    The name of the field.
+ *  @param $search
+ *    Array of the values to look for in the field.
+ *
+ *  @return
+ *    list of nids.
+ */
+function harvard_courses_related_nodes($field, $search = array()) {
+  $query = new entityFieldQuery();
+  $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'harvard_course')
+    ->fieldCondition($field, 'value', $search, 'IN');
+
+  $result = $query->execute();
+  if (empty($result['node'])) {
+    return;
+  }
+
+  return array_keys($result['node']);
 }

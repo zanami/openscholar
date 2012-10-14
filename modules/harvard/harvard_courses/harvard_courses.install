@@ -3,3 +3,7 @@
  * @file
  * Install file for Harvard courses module.
  */
+
+function harvard_courses_install() {
+  drupal_set_message(t('Please clear you cache for the settings to take place.'));
+}

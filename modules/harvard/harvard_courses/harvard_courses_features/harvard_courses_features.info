@@ -1,0 +1,5 @@
+name = Harvard courses features
+core = 7.x
+package = Harvard courses
+dependencies[] = harvard_courses
+features[feeds_importer][] = course
