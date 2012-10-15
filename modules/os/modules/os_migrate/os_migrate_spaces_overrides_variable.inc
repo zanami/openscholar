@@ -79,7 +79,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   * Updates flavor variables and names.
   */
   public function _update_flavors($object_id, $value){
-    $object_id = preg_replace('/vsite_design_scholar/', 'os_appearance', $object_id);
+    $object_id = preg_replace('/vsite_design/', 'os_appearance', $object_id);
     $value = preg_replace('/^scholar_/', '', $value);
     return array(
       $object_id,
