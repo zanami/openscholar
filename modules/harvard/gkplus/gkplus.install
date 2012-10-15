@@ -78,23 +78,33 @@ function _gkplus_adjust_module_weight($update, $condition, $compare) {
  * @todo get it working
  */
 function _gkplus_classes_widget() {
-//  $plugin_key = 'os_boxes_html';
-//  $values = array(
-//    '' => '',
-//    '' => '',
-//  );
-//
-//  // @see boxes_box_form_submit()
-//  $box = boxes_factory($plugin_key, $values);
-//
-//  if (module_exists('spaces') && $space = spaces_get_space()) {
-//    $space->controllers->boxes->set($box->delta, $box);
-//  }
-//
-//  // @see os_layout_set()
-//  $context_name = 'classes_classes';
-//  $blocks = array(
-//    'gkplus_classes_widget' => NULL,
-//  );
-//  vsite_layout_context_set($context_name, $blocks);
+  $plugin_key = 'os_boxes_html';
+  $content = '<h3>Student Materials</h3>';
+
+  // For migration, copies the content as of 2012-10-15 from gking.harvard.edu.
+  $filepath = drupal_get_path('module', 'gkplus') . '/2012-10-15-student-materials.html';
+  if (file_exists($filepath)) {
+    $content .= file_get_contents($filepath);
+  }
+
+  $values = array(
+    'text' => array(
+      'value' => $content,
+      'format' => filter_default_format(),
+    ),
+  );
+
+  // @see boxes_box_form_submit()
+  $box = boxes_factory($plugin_key, $values);
+
+  if (module_exists('spaces') && $space = spaces_get_space()) {
+    $space->controllers->boxes->set($box->delta, $box);
+  }
+
+  // @see os_layout_set()
+  $context_name = 'classes_classes';
+  $blocks = array(
+    'gkplus_classes_widget' => $box->delta,
+  );
+  vsite_layout_context_set($context_name, $blocks);
 }
