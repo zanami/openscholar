@@ -231,11 +231,13 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'views-reader-block' => array(
         'module' => 'views',
         'delta' => 'reader-block',
-        'region' => (isset($block['region'])) ? $block['region'] : 'sidebar_second',
+        'region' => (isset($block['region'])) ? $block['region'] : false,
         'weight' => (isset($block['weight'])) ? $block['weight'] : -10,
         'info' => 'Site RSS Feed',
       ),
     );
+
+    $block['region'] = $this->_update_region($block['region']);
 
     if (in_array($id, array_keys($replacements))) {
       return $replacements[$id];
@@ -256,14 +258,14 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     $blocks['os_search_solr-site-search'] = array(
       'module' => 'os_search_solr',
       'delta' => 'site-search',
-      'region' => (isset($old_search_block['region'])) ? $old_search_block['region'] : false,
+      'region' => $this->_update_region((isset($old_search_block['region'])) ? $old_search_block['region'] : false),
       'weight' => (isset($old_search_block['weight'])) ? $old_search_block['weight'] : -10,
     );
 
     $blocks['os_search_db-site-search'] = array(
       'module' => 'os_search_db',
       'delta' => 'site-search',
-      'region' => (isset($old_search_block['region'])) ? $old_search_block['region'] : false,
+      'region' => $this->_update_region((isset($old_search_block['region'])) ? $old_search_block['region'] : false),
       'weight' => (isset($old_search_block['weight'])) ? $old_search_block['weight'] : -10,
     );
 
