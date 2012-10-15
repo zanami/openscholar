@@ -27,8 +27,8 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
 
     $this->addFieldMapping('field_site_logo', 'field_site_logo')->defaultValue(NULL);
     $this->addSimpleMappings(parent::subfields('field_site_logo', array('alt', 'title', 'cropbox_x', 'cropbox_y', 'language')));
-    $this->addFieldMapping('field_site_logo:cropbox_width', 'field_site_logo:cropbox_width')->defaultValue(200);
-    $this->addFieldMapping('field_site_logo:cropbox_height', 'field_site_logo:cropbox_height')->defaultValue(150);
+    $this->addFieldMapping('field_site_logo:cropbox_width', 'field_site_logo:cropbox_width');//->defaultValue(200);
+    $this->addFieldMapping('field_site_logo:cropbox_height', 'field_site_logo:cropbox_height');//->defaultValue(150);
 
     $this->addUnmigratedDestinations(parent::subfields('field_site_logo', array('file_class', 'destination_dir', 'file_replace', 'preserve_files')), t('DNM'));
     $this->addFieldMapping('field_site_logo:source_dir')->defaultValue(variable_get('os_migrate_files', ''));

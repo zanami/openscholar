@@ -17,7 +17,10 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
   // Here, we take a simple array of values (for an integer field, it might look like
   // array(35, -23, 85738)
   public function prepare($entity, array $field_info, array $instance, array $values, $langcode=NULL) {
-    if (is_string($entity->og_group_ref)) {
+
+    if (!isset($entity->og_group_ref) && in_array($entity->type, array('personal', 'project', 'department'))) {
+      $gid = $entity->nid;
+    } elseif (is_string($entity->og_group_ref)) {
       $gid = $entity->og_group_ref;
     } elseif (is_array($entity->og_group_ref)) {
       $gid = (isset($entity->og_group_ref[LANGUAGE_NONE][0]['value'])) ? $entity->og_group_ref[LANGUAGE_NONE][0]['value'] : $entity->nid;
