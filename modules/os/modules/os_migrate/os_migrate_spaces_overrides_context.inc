@@ -164,6 +164,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'boxes-vsite_taxonomy_fltr_cat' => 'boxes-os_taxonomy_fltr_cat',
       'boxes-vsite_rss' => 'boxes-os_rss',
       'boxes-scholar_publications_recent' => 'boxes-os_publications_recent',
+      'boxes-scholar_book_recent_docs' => 'boxes-os_booklets_recent_docs',
       'boxes-scholar_book_current_toc' => 'boxes-os_booktoc',
     );
 
