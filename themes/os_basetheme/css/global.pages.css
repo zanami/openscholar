@@ -334,6 +334,12 @@ ul.links li {
     padding-left: 15px;
 }
 
+.node-book .links li span a {
+    background: url("../images/scholarbase-sprite.png") 0 -524px no-repeat;
+    color: #3A6A8C;
+    padding-left: 15px;
+}
+
 
 /* ADD CLASS ICON */
 ul.class_material_field_class {
