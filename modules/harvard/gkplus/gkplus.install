@@ -78,6 +78,10 @@ function _gkplus_adjust_module_weight($update, $condition, $compare) {
  * @todo get it working
  */
 function _gkplus_classes_widget() {
+  if (!module_exists('spaces')) {
+    return;
+  }
+
   $plugin_key = 'os_boxes_html';
   $content = '<h3>Student Materials</h3>';
 
@@ -87,7 +91,9 @@ function _gkplus_classes_widget() {
     $content .= file_get_contents($filepath);
   }
 
+  $delta = os_boxes_create_delta();
   $values = array(
+    'delta' => $delta,
     'text' => array(
       'value' => $content,
       'format' => filter_default_format(),
@@ -97,14 +103,20 @@ function _gkplus_classes_widget() {
   // @see boxes_box_form_submit()
   $box = boxes_factory($plugin_key, $values);
 
-  if (module_exists('spaces') && $space = spaces_get_space()) {
-    $space->controllers->boxes->set($box->delta, $box);
-  }
+  // The gking vsite space id.
+  $sid = 3633;
+  $space = spaces_load($sid);
+  $space->controllers->boxes->set($box->delta, $box);
 
   // @see os_layout_set()
   $context_name = 'classes_classes';
-  $blocks = array(
-    'gkplus_classes_widget' => $box->delta,
-  );
+  $blocks = os_layout_get($context_name);
+  $blocks['boxes-' . $delta] = array(
+    'module' => 'boxes',
+    'delta' => $delta,
+    'region' => 'sidebar_second',
+    'weight' => '-10'
+  )';
+
   vsite_layout_context_set($context_name, $blocks);
 }
