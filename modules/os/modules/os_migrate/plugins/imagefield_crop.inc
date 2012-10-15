@@ -19,7 +19,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
   public function prepare($entity, array $field_info, array $instance, array $values, $langcode=NULL) {
 
     if (!isset($entity->og_group_ref) && in_array($entity->type, array('personal', 'project', 'department'))) {
-      $gid = $entity->nid;
+      $gid = FALSE; //not attaching to a group
     } elseif (is_string($entity->og_group_ref)) {
       $gid = $entity->og_group_ref;
     } elseif (is_array($entity->og_group_ref)) {
@@ -31,7 +31,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     }
 
     //recycle previous thumbnail
-    $action = $this->_get_action($values[0]);
+    $action = $this->_get_action($values);
 
     if ($action == 'recycle') {
       if ($recycled = $this->_recycle($values[0], $gid, $entity->uid)) {
@@ -54,7 +54,10 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
         $values['arguments']['file_class'] = 'MigrateFileFid';
 
       }
-    } //else, just migrate it as an image.  no cropping to do.
+    } else {
+      //just keep the image as is
+      $values[0] = $values[0];
+    }
 
     $return = parent::prepare($entity, $field_info, $instance, $values);
     if (!count($return)) {
@@ -132,10 +135,23 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
    *
    * Figure out if this image will be cropped in d7 or if we can reuse the cropped image from d6.
    */
-  function _get_action($original_file) {
+  function _get_action($values) {
+    $original_file = $values[0];
+
+    //check for recycle
     $thumbnail_filepath = variable_get('os_migrate_files') . '/' . $original_file;
     $full_filepath = $thumbnail_filepath . '.crop_display.jpg';
-    return (is_readable($thumbnail_filepath) && is_readable($full_filepath)) ? 'recycle' : 'crop';
+    if (is_readable($thumbnail_filepath) && is_readable($full_filepath)) {
+      return 'recycle';
+    }
+
+    //next try crop
+    if (isset($values['arguments']['cropbox_x'], $values['arguments']['cropbox_y'], $values['arguments']['cropbox_width'], $values['arguments']['cropbox_height'])) {
+      return 'crop';
+    }
+
+    //just keep the image as is
+    return 'keep';
   }
 
   /**
@@ -153,7 +169,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $full->filemime = file_get_mimetype($full_filepath);
     $full->uri = $full_filepath;
 
-    if ($full = file_copy($full, 'public://')) {
+    if ($full = file_copy($full, 'public://') && $gid) {
       $full_entity = entity_metadata_wrapper('file', $full);
       $full_entity->og_group_ref = array($gid);
       $full_entity->save();
@@ -164,7 +180,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $thumb->filemime = file_get_mimetype($thumb_filepath);
     $thumb->uri = $thumb_filepath;
 
-    if ($thumb = file_copy($thumb, 'public://')) {
+    if ($thumb = file_copy($thumb, 'public://') && $gid) {
       $thumb_entity = entity_metadata_wrapper('file', $thumb);
       $thumb_entity->og_group_ref = array($gid);
       $thumb_entity->save();
@@ -202,7 +218,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $file->filemime = file_get_mimetype($filepath);
     $file->uri = $filepath;
 
-    if ($file = file_copy($file, 'public://')) {
+    if ($file = file_copy($file, 'public://') && $gid) {
       // attach metadata and save
       $entity = entity_metadata_wrapper('file', $file);
       $entity->og_group_ref = array($gid);

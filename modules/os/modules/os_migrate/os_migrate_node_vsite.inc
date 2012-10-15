@@ -39,11 +39,12 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('field_group_path:title')->defaultValue('');
 
     //undo what nodeabstract has done
-    $unmap = array_merge(array('body', 'group_nid', 'og_group_ref',),
+    $unmap = array_merge(array('body', 'group_nid', 'og_group_ref', 'type'),
         parent::subfields('body', array('format', 'language', 'summary')));
     foreach ($unmap as $destination_field) {
       $this->removeFieldMapping($destination_field);
     }
+
 
     $this->addUnmigratedSources(array('value', 'provider', 'format', 'field_vsite_address_format'), t('DNM'));
     $this->addUnmigratedSources(parent::subfields('field_vsite_logo', array('fid','list','data'), '_'), t('DNM'));
