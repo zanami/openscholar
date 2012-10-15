@@ -562,6 +562,7 @@ function vsite_attach_fields_to_group($bundle){
     );
     field_create_instance($instance);
   }
+
 }
 
 /**
