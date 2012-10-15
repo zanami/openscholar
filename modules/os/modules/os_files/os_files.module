@@ -306,7 +306,7 @@ function os_files_media_browser_params_alter(&$media_params) {
  * Alters the titles of the Media Browser tabs to more friendly terms
  */
 function os_files_media_browser_plugins_alter(&$output) {
-  unset($output['library']);
+  unset($output['media_default--media_browser_my_files']);
   $output['upload']['#title'] = t('My Computer');
   $output['media_default--media_browser_1']['#title'] = t('My Library');
 }
