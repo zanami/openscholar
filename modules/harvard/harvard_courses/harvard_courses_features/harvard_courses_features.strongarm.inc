@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * harvard_courses.strongarm.inc
+ * harvard_courses_features.strongarm.inc
  */
 
 /**
  * Implements hook_strongarm().
  */
-function harvard_courses_strongarm() {
+function harvard_courses_features_strongarm() {
   $export = array();
 
   $strongarm = new stdClass();

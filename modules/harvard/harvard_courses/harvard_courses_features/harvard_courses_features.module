@@ -4,16 +4,4 @@
  * harvard_courses_features.features.inc
  */
 
-/**
- * Implements hook_ctools_plugin_api().
- */
-function harvard_courses_features_ctools_plugin_api() {
-  list($module, $api) = func_get_args();
-  if ($module == "feeds" && ($api == "feeds_importer_default" || $api == "plugins")) {
-    return array("version" => "1");
-  }
-  list($module, $api) = func_get_args();
-  if ($module == "strongarm" && $api == "strongarm") {
-    return array("version" => "1");
-  }
-}
+include_once 'harvard_courses_features.features.inc';

@@ -6,4 +6,27 @@
 
 function harvard_courses_install() {
   drupal_set_message(t('Please clear you cache for the settings to take place.'));
+
+  // Apply features exported fields.
+  features_rebuild();
+  field_cache_clear();
+
+  // Create import nodes.
+  $node = new stdClass();
+  $node->type = 'harvard_api_importer';
+  $node->title = 'Department importer';
+  $node->language = LANGUAGE_NONE;
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $wrapper->field_base_url->set('http://harvard.edu');
+  $wrapper->field_import_type->set('department');
+  $wrapper->save();
+
+  $node = new stdClass();
+  $node->type = 'harvard_api_importer';
+  $node->title = 'Department importer';
+  $node->language = LANGUAGE_NONE;
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $wrapper->field_base_url->set('http://harvard.edu');
+  $wrapper->field_import_type->set('cat_num');
+  $wrapper->save();
 }
