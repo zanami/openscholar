@@ -25,7 +25,6 @@ font-family: helvetica,arial,sans-serif;
 
 .sidebar {background:#eef2f2;}
 
-#header-container {padding:0 0 12px 0;}
 
 .content-left.content-right #content-left {
     border-right: 1px dotted #CCCCCC;
@@ -66,6 +65,8 @@ h3,
 h1 a,
 h2 a {color:#666;text-decoration:none;}
 
+h1.node-title a {color:#293352;}
+
 h1#page-title {font-size:1.5em;}
 
 h2.block-title {color:#666;font-size:1.2em;}
@@ -86,8 +87,19 @@ border-radius:5px;
 
 .sidebar ul li {
      margin-bottom: 8px;
-       list-style-image:url('../images/blueBullet.png');
+     list-style-image:url('../images/blueBullet.png');
 }
+
+.sidebar ul li ul li {
+     list-style-image:none;
+}
+
+
+.sidebar .block-boxes-os_taxonomy_fbt ul li ul {
+     margin-left: 0;
+    
+}
+
 
 .sidebar ul li a {
   text-decoration: none;
