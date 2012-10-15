@@ -446,6 +446,11 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   }
 
   function _d7_vsite_type() {
-    return variable_get('os_migrate_default_group_bundle', variable_get('os_default_group_bundle', 'personal'));
+    $override = variable_get('os_migrate_default_group_bundle', variable_get('os_default_group_bundle', 'keep'));
+    if ($override == 'keep') {
+      return variable_get('os_default_group_bundle', 'personal');
+    } else {
+      return $override;
+    }
   }
 }
