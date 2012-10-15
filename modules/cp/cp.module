@@ -62,29 +62,6 @@ function cp_menu() {
     'description' => t('Change settings for apps on your site')
   );
 
-  $items["cp/build/taxonomy"] = array(
-    'title' => 'Taxonomy',
-    'type' => MENU_NORMAL_ITEM,
-    'weight' => 10,
-    //'page callback' => 'cp_taxonomy',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('taxonomy_overview_vocabularies'),
-    'access arguments' => array('administer taxonomy'),
-    'file' => 'taxonomy.admin.inc',
-    'file path' => drupal_get_path('module', 'taxonomy'),
-    'description' => t('Manage your site\'s vocabularies')
-  );
-
-  $items["cp/build/taxonomy/add"] = array(
-    'title' => 'Add vocabulary',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('taxonomy_form_vocabulary'),
-    'access arguments' => array('administer taxonomy'),
-    'type' => MENU_LOCAL_ACTION,
-    'file' => 'taxonomy.admin.inc',
-    'file path' => drupal_get_path('module', 'taxonomy'),
-  );
-
   // feature customize forms
   $features = spaces_features('site');
   foreach ($features as $name => $feature) {
