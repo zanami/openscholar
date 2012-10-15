@@ -79,18 +79,19 @@ function _gkplus_adjust_module_weight($update, $condition, $compare) {
  */
 function _gkplus_classes_widget() {
   $plugin_key = 'os_boxes_html';
-  $title = 'Student Materials';
-  $content = '';
+  $content = '<h3>Student Materials</h3>';
 
   // For migration, copies the content as of 2012-10-15 from gking.harvard.edu.
   $filepath = drupal_get_path('module', 'gkplus') . '/2012-10-15-student-materials.html';
   if (file_exists($filepath)) {
-    $content = file_get_contents($filepath);
+    $content .= file_get_contents($filepath);
   }
 
   $values = array(
-    '' => $title,
-    '' => $content,
+    'text' => array(
+      'value' => $content,
+      'format' => filter_default_format(),
+    ),
   );
 
   // @see boxes_box_form_submit()
@@ -103,7 +104,7 @@ function _gkplus_classes_widget() {
   // @see os_layout_set()
   $context_name = 'classes_classes';
   $blocks = array(
-    'gkplus_classes_widget' => NULL,
+    'gkplus_classes_widget' => $box->delta,
   );
   vsite_layout_context_set($context_name, $blocks);
 }
