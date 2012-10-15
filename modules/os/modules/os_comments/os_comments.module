@@ -7,6 +7,8 @@ include_once ('os_comments.features.inc');
  */
 
 /**
+ * Implements hook_form_FORM_ID_alter() for cp_feature_customize_form.
+ *
  * Check if this is a feature form and add comment settings if the feature
  * provides a node.
  */
@@ -55,13 +57,14 @@ function os_comments_form_cp_feature_customize_form_alter(&$form, &$form_state, 
 }
 
 /**
- * Function to add a secondary validate function that informs the user that they
- * need to set their disqus shortname before they can allow disqus comments.
+ * Validation callback; checks that user has disqus shortname if using discus.
+ *
+ * @see os_comments_form_cp_feature_customize_form_alter()
  */
 function os_comments_cp_feature_customize_form_validate($form, &$form_state) {
   // Get the nodes for this feature.
-  $a_info = features_get_features($form['#feature']);
-  $node_types = $a_info->info['features']['node'];
+  $info = features_get_features($form['#feature']);
+  $node_types = $info->info['features']['node'];
 
   if (!empty($node_types)) {
     $vsite = vsite_get_vsite();
@@ -88,7 +91,7 @@ function os_comments_cp_feature_customize_form_validate($form, &$form_state) {
 
 /**
  * Implement hook comment_sources alter
- **/
+ */
 function os_comments_comment_sources_alter(&$sources){
   //Use alternate save functions if we have vsite enabled
   if(module_exists('vsite')){

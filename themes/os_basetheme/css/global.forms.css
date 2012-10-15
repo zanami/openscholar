@@ -513,40 +513,4 @@ form table .item-list ul {
   display: none;
 }
 
-/* PUBLICATIONS SETTING FORM IN MODAL */
-.os_publications-customize-form #edit-left,
-.os_publications-customize-form #comment_settings {
-	float:left;
-	width:50%;
-}
 
-.os_publications-customize-form .form-actions {
-	clear:both;
-}
-
-.os_publications-customize-form #comment_settings {
-	width:150px;
-}
-
-.os_publications-customize-form #edit-right {
-	float:right;
-	margin-top: -695px;
-	width:50%;
-}
-
-.page-cp .os_publications-customize-form #edit-right {
-	margin-top: -795px;
-	
-}
-
-@-moz-document url-prefix() { 
-.os_publications-customize-form #edit-right {
-	margin-top:-726px;
- }
-}
-
-@-moz-document url-prefix() { 
-.page-cp .os_publications-customize-form #edit-right {
-	margin-top:-810px;
- }
-}
