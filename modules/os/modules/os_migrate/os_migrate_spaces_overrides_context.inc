@@ -123,6 +123,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
 
     if (isset($block['region'])) {
       $block['region'] = $this->_update_region($block['region']);
+    }else{
+      $block['region'] = false;
     }
 
     if (isset($block['module'])) {
