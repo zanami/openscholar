@@ -60,8 +60,17 @@ class os_boxes_media extends os_boxes_default {
     $block = parent::render();
 
     if ($file = file_load($this->options['fid'])) {
-      $file->override['width'] = $this->options['maxwidth'];
-      $render = file_view($file, 'default');
+      if (!empty($this->options['maxwidth'])) {
+        if (isset($file->image_dimensions)) {
+          $ratio = $file->image_dimensions['height'] / $file->image_dimensions['width'];
+          $file->image_dimensions['height'] = $ratio * $this->options['maxwidth'];
+          $file->image_dimensions['width'] = $this->options['maxwidth'];
+        }
+        else {
+          $file->override['width'] = $this->options['maxwidth'];
+        }
+      }
+      $render = file_view($file, 'full');
       $block['content'] = drupal_render($render);
     }
     else {
