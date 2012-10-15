@@ -20,6 +20,14 @@ function gkplus_enable() {
 }
 
 /**
+ * Implements hook_install().
+ */
+function gkplus_install() {
+  // Adds an HTML block to gary's classes context.
+  _gkplus_classes_widget();
+}
+
+/**
  * Adjusts module weights to ensure greater/lesser weight.
  *
  * @param array $update
@@ -31,31 +39,62 @@ function _gkplus_adjust_module_weight($update, $condition, $compare) {
     return;
   }
 
-  $weight = db_select('system', 's')
-    ->fields('s', array('weight'))
-    ->condition('name', $compare, 'IN')
-    ->range(0, 1)
-    ->orderBy('weight', 'DESC')
-    ->execute()
-    ->fetchField();
-
-  if ($weight === FALSE) {
-    return;
-  }
-
+  // Continues only if we are comparing with less than or greater than.
   switch ($condition) {
     case '>':
+      $sort = 'DESC';
       $weight = $weight + 1;
       break;
     case '<':
+      $sort = 'ASC';
       $weight = $weight - 1;
       break;
     default:
       return;
   }
 
+  // Finds the highest weight among the compared modules.
+  $weight = db_select('system', 's')
+    ->fields('s', array('weight'))
+    ->condition('name', $compare, 'IN')
+    ->range(0, 1)
+    ->orderBy('weight', $sort)
+    ->execute()
+    ->fetchField();
+  if ($weight === FALSE) {
+    return;
+  }
+
+  // Updates the given module with the new increased or decreased weight.
   db_update('system')
     ->fields(array('weight' => $weight))
     ->condition('name', 'gkplus', '=')
     ->execute();
+}
+
+/**
+ * Adds an HTML block to gary's classes context.
+ *
+ * @todo get it working
+ */
+function _gkplus_classes_widget() {
+//  $plugin_key = 'os_boxes_html';
+//  $values = array(
+//    '' => '',
+//    '' => '',
+//  );
+//
+//  // @see boxes_box_form_submit()
+//  $box = boxes_factory($plugin_key, $values);
+//
+//  if (module_exists('spaces') && $space = spaces_get_space()) {
+//    $space->controllers->boxes->set($box->delta, $box);
+//  }
+//
+//  // @see os_layout_set()
+//  $context_name = 'classes_classes';
+//  $blocks = array(
+//    'gkplus_classes_widget' => NULL,
+//  );
+//  vsite_layout_context_set($context_name, $blocks);
 }

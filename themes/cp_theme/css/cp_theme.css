@@ -304,4 +304,41 @@ body.page-cp.page-cp-account #messages {
 	margin:-10px -8px;
 	padding:7px;
 }
+
+
+/* PUBLICATIONS SETTING FORM IN MODAL */
+.os_publications-customize-form .column-left,
+.os_publications-customize-form #comment_settings {
+	float:left;
+	width:48%;
+	clear:left;
+}
+
+.os_publications-customize-form .form-actions {
+	clear:both;
+}
+
+.os_publications-customize-form #comment_settings {
+width:30%;
+}
+
+.os_publications-customize-form .column-right {
+	float:right;
+	width:48%;
+	clear:right;
+	margin-top: -1045px;
+}
+ 
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
   

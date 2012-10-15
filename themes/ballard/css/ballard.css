@@ -24,7 +24,7 @@ font-family: helvetica,arial,sans-serif;
    border-bottom: none;
 }
 
-#header-container {padding:12px 0; background:#2f2f2f;}
+#header-container {background:#2f2f2f;}
 .region-header-third {text-align: right;}
 
 #footer {
@@ -38,7 +38,11 @@ p.copy a.poweredby {
     background-position: 0 0;
 }
 
-#block-os-primary-menu {margin-left:0;margin-right:0;}
+#block-os-primary-menu {
+	margin-left:0;
+	margin-right:0;
+	float: left;
+	}
 
 #menu-bar #block-os-site_search,
 #menu-bar .block-os-search-db {
