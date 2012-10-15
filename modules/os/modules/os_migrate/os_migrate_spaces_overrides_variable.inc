@@ -13,7 +13,8 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
 
     $blacklist = array(
       'vsite_design_disable_shield',
-      'vsite_shields_disable_shield'
+      'vsite_shields_disable_shield',
+      'vsite_design_maintheme',
     );
     $query->condition('object_id', $blacklist, 'NOT IN');
     return $query;
@@ -151,6 +152,11 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
       'os_shields_shield',
       $value
     );
+  }
+
+  //"scholar_book_toc_location" is now "os_booklets_toc_position".
+  public function _update_variable_scholar_book_toc_location($object_id, $value) {
+    return array('os_booklets_toc_location', $value);
   }
 
   // check if a variable is discontinued
