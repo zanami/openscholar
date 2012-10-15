@@ -28,6 +28,7 @@
 
 #menu-bar #block-os-primary-menu {
     width: 100%;
+    float: none;
 }
 
 #header-container img {width:100%;}
