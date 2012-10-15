@@ -27,21 +27,31 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
       return array();
     }
 
-    //crop the image.
-    if ($original = $this->_save_original($values[0], $gid, $entity->uid)) { //no og_group_ref yet....
-      $this->_image_dimensions($values);
-      $items = array('fid' => $original->fid); //also has cropbox_x and y widht and height
-      $items += array_intersect_key($values['arguments'], array_flip(array('cropbox_x', 'cropbox_y', 'cropbox_width', 'cropbox_height')));
-      if (count($items) >= 5) {
-        $items = array($items);
-        imagefield_crop_field_insert('node', $entity, $field_info, $instance, $langcode, $items);
+    //recycle previous thumbnail
+    $action = $this->_get_action($values[0]);
+
+    if ($action == 'recycle') {
+      if ($recycled = $this->_recycle($values[0], $gid, $entity->uid)) {
+        $values[0] = $recycled->fid;
+        $values['arguments']['file_class'] = 'MigrateFileFid';
       }
+    } elseif ($action == 'crop') {
+      //crop a new image
+      if ($original = $this->_save_original($values[0], $gid, $entity->uid)) { //no og_group_ref yet....
+        $this->_image_dimensions($values);
+        $items = array('fid' => $original->fid); //also has cropbox_x and y widht and height
+        $items += array_intersect_key($values['arguments'], array_flip(array('cropbox_x', 'cropbox_y', 'cropbox_width', 'cropbox_height')));
+        if (count($items) >= 5) {
+          $items = array($items);
+          imagefield_crop_field_insert('node', $entity, $field_info, $instance, $langcode, $items);
+        }
 
-      //image was cropped.  instead of migrating the whole image, use MigrateFileFid to accept the existing fid.
-      $values[0] = $original->fid;
-      $values['arguments']['file_class'] = 'MigrateFileFid';
+        //image was cropped.  instead of migrating the whole image, use MigrateFileFid to accept the existing fid.
+        $values[0] = $original->fid;
+        $values['arguments']['file_class'] = 'MigrateFileFid';
 
-    }
+      }
+    } //else, just migrate it as an image.  no cropping to do.
 
     $return = parent::prepare($entity, $field_info, $instance, $values);
     if (!count($return)) {
@@ -111,6 +121,54 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     );
 
     return $fields;
+  }
+
+
+  /**
+   * @function _get_action
+   *
+   * Figure out if this image will be cropped in d7 or if we can reuse the cropped image from d6.
+   */
+  function _get_action($original_file) {
+    $thumbnail_filepath = variable_get('os_migrate_files') . '/' . $original_file;
+    $full_filepath = $thumbnail_filepath . '.crop_display.jpg';
+    return (is_readable($thumbnail_filepath) && is_readable($full_filepath)) ? 'recycle' : 'crop';
+  }
+
+  /**
+   * @function _recycle
+   *
+   * Both original and thumbnail images are present.  Save them both, updated
+   * the db, and return the fid
+   */
+  function _recycle($original_file, $gid, $uid) {
+    $thumb_filepath = variable_get('os_migrate_files') . '/' . $original_file;
+    $full_filepath = $thumb_filepath . '.crop_display.jpg';
+
+    $full = new stdClass();
+    $full->uid = $uid;
+    $full->filemime = file_get_mimetype($full_filepath);
+    $full->uri = $full_filepath;
+
+    if ($full = file_copy($full, 'public://')) {
+      $full_entity = entity_metadata_wrapper('file', $full);
+      $full_entity->og_group_ref = array($gid);
+      $full_entity->save();
+    }
+
+    $thumb = new stdClass();
+    $thumb->uid = $uid;
+    $thumb->filemime = file_get_mimetype($thumb_filepath);
+    $thumb->uri = $thumb_filepath;
+
+    if ($thumb = file_copy($thumb, 'public://')) {
+      $thumb_entity = entity_metadata_wrapper('file', $thumb);
+      $thumb_entity->og_group_ref = array($gid);
+      $thumb_entity->save();
+    }
+
+    file_usage_add($full, 'imagefield_crop', 'file', $thumb->fid);
+    return $thumb; //not sure about this.
   }
 
   /**
