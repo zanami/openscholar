@@ -41,6 +41,14 @@ function os_files_menu() {
   return $items;
 }
 
+function os_files_theme_registry_alter(&$reg) {
+  unset($reg['oembed']['template']);
+  $reg['oembed']['function'] = 'theme_os_files_oembed';
+}
+
+function theme_os_files_oembed($vars) {
+  return render($vars['content']);
+}
 
 /**
  * Implements hook_file_insert().
