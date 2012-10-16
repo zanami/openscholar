@@ -17,3 +17,28 @@ function harvard_courses_ctools_plugin_api() {
     return array("version" => "1");
   }
 }
+
+/**
+ * Implements hook_node_info().
+ */
+function harvard_courses_features_node_info() {
+  $items = array(
+    'harvard_api_importer' => array(
+      'name' => t('Harvard API importer'),
+      'base' => 'node_content',
+      'description' => '',
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+    'harvard_course' => array(
+      'name' => t('Harvard Course'),
+      'base' => 'node_content',
+      'description' => t('OpenScholar course import module.'),
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+  );
+  return $items;
+}

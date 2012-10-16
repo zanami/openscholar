@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * harvard_courses_features.features.inc
- */
-
-include_once 'harvard_courses_features.features.inc';
