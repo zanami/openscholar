@@ -8,6 +8,7 @@
  * Implements hook_views_default_views().
  */
 function os_events_views_default_views() {
+
   $export = array();
 
   $view = new view();
@@ -435,7 +436,60 @@ function os_events_views_default_views() {
   $handler->display->display_options['menu']['title'] = 'Upcoming';
   $handler->display->display_options['menu']['weight'] = '40';
   $handler->display->display_options['menu']['context'] = 0;
-  $export['os_events'] = $view;
 
+  /* Display: Previous Page */
+  $handler = $view->new_display('page', 'Previous Page', 'page_5');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Previous Events';
+  $handler->display->display_options['defaults']['pager'] = FALSE;
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = '9';
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'list';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'node';
+  $handler->display->display_options['row_options']['links'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 0;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Spaces: Content in current space */
+  $handler->display->display_options['filters']['current']['id'] = 'current';
+  $handler->display->display_options['filters']['current']['table'] = 'spaces';
+  $handler->display->display_options['filters']['current']['field'] = 'current';
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'event' => 'event',
+  );
+  /* Filter criterion: Date: Date (node) */
+  $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['table'] = 'node';
+  $handler->display->display_options['filters']['date_filter']['field'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['operator'] = '<';
+  $handler->display->display_options['filters']['date_filter']['default_date'] = 'now';
+  $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
+    'field_data_field_date.field_date_value' => 'field_data_field_date.field_date_value',
+  );
+  $handler->display->display_options['path'] = 'calendar/previous';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'Previous';
+  $handler->display->display_options['menu']['weight'] = '55';
+  $handler->display->display_options['menu']['context'] = 0;
+
+  $export['os_events'] = $view;
+ 
   return $export;
 }
