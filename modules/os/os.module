@@ -472,7 +472,7 @@ function os_preprocess_page(&$variables) {
   // set the title of the page to match the menu link title
   ctools_include('menu', 'os');
   $menu_item = os_menu_load_link_path($_GET['q']);
-  drupal_set_title($menu_item['title']);  // TODO: add site name?
+  drupal_set_title($menu_item['title']);
 
   if (overlay_get_mode() == 'child') {
     return;
