@@ -13,11 +13,12 @@
  */
 abstract class AbstractNodeOSMigration extends OSMigration {
 
-  //Map of bundle names that have changed
+  //Map of bundle names that have changed.  d7 bundle => d6 cck type
   public static $source_bundle_map = array(
     'software_project' => 'scholar_software_project',
     'software_release' => 'scholar_software_release',
     'media_gallery' => 'gallery',
+    'news' => 'announcement',
   );
 
   public function __construct($destination_bundle){

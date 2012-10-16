@@ -65,6 +65,8 @@ class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
   }
 
   public function _update_menu_item($menu_item, $gid) {
+
+    $menu_item = $this->_announcement_to_news($menu_item);
     //update name
     $menu_item['menu_name'] = $this->_update_menu_name($menu_item['menu_name']);
     $menu_item['module'] = 'system';
@@ -160,5 +162,23 @@ class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
     }
 
     return $mlid;
+  }
+
+  /**
+   * @function _announcement_to_news
+   * Update link paths to use news instead of announcements
+   */
+  function _announcement_to_news($menu_item) {
+
+    foreach (array('link_path', 'router_path') as $path_item) {
+      if ($menu_item[$path_item] == 'announcements') {
+        $menu_item[$path_item] = 'news';
+      }
+    }
+
+    //don't update path items announcements/foo.  url alias points those to right node.
+
+
+    return $menu_item;
   }
 }

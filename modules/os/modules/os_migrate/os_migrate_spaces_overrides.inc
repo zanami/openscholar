@@ -82,6 +82,7 @@
       'vsite_menus' => 'os',
       'scholar_dvn' => 'os_dataverse',
       'scholar_book' => 'os_booklets',
+      'scholar_announcements' => 'os_news',
     );
 
     if (isset($module_map[$module])) {
