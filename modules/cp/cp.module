@@ -46,6 +46,7 @@ function cp_menu() {
     'file' => 'spaces.admin.inc',
     'file path' => $spaces_path,
     'weight' => 10,
+    'description' => t('The structure of your site')
   );
 
   $items["cp/build/features"] = array(
@@ -58,6 +59,7 @@ function cp_menu() {
     'file' => 'spaces.admin.inc',
     'file path' => $spaces_path,
     'weight' => 10,
+    'description' => t('Change settings for apps on your site')
   );
 
   $items["cp/build/taxonomy"] = array(
@@ -70,6 +72,7 @@ function cp_menu() {
     'access arguments' => array('administer taxonomy'),
     'file' => 'taxonomy.admin.inc',
     'file path' => drupal_get_path('module', 'taxonomy'),
+    'description' => t('Manage your site\'s vocabularies')
   );
 
   $items["cp/build/taxonomy/add"] = array(
@@ -102,6 +105,7 @@ function cp_menu() {
     'type' => MENU_NORMAL_ITEM,
     'access callback' => 'spaces_access_admin',
     'weight' => 30,
+    'description' => t('Change side-wide settings'),
   );
 
   $items['cp/account'] = array(
