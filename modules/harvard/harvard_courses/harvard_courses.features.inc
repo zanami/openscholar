@@ -21,7 +21,7 @@ function harvard_courses_ctools_plugin_api() {
 /**
  * Implements hook_node_info().
  */
-function harvard_courses_features_node_info() {
+function harvard_courses_node_info() {
   $items = array(
     'harvard_api_importer' => array(
       'name' => t('Harvard API importer'),
