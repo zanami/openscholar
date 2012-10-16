@@ -133,9 +133,13 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
              $row->{'field_site_logo:cropbox_height'} = (int)$data['crop']['height'];
              $row->{'field_site_logo:cropbox_width'} = (int)$data['crop']['width'];
            }
+
+           if (!isset($row->{'field_site_logo:cropbox_x'}, $row->{'field_site_logo:cropbox_y'}, $row->{'field_site_logo:cropbox_width'},$row->{'field_site_logo:cropbox_height'}) ) {
+             $this->_crop_full_image($row, $file->filepath);
+           }
          } else {
            if (!$this->_get_missing_coords($row)) {
-//              //image provided, but no data.
+             //image provided, but no data.
            }
          }
        }
@@ -235,5 +239,22 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
       return FALSE;
     }
 
+  }
+
+  /**
+   * @function _crop_full_image
+   *
+   * No cropping data exists.  Use the full image.  This is correct behavior for project logos.
+   */
+  function _crop_full_image(&$row, $filepath) {
+    $filepath = variable_get('os_migrate_files', '') . '/' . $filepath;
+
+    if (($dim = getimagesize($filepath)) == FALSE) {
+      return FALSE;
+    }
+    $row->{'field_site_logo:cropbox_x'} = 0;
+    $row->{'field_site_logo:cropbox_y'} = 0;
+    $row->{'field_site_logo:cropbox_width'} = $dim[0];
+    $row->{'field_site_logo:cropbox_height'} = $dim[1];
   }
 }
