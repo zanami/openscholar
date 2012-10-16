@@ -70,24 +70,27 @@ class OsOgVocabMigrate extends DynamicMigration {
    * Helper function to add the OG-vocab entity.
    */
   private function addOgVocab($row) {
-    $term = taxonomy_term_load($row->tid);
-    $bundle = $this->arguments['bundle'];
+    $terms = explode(',', $row->tid);
+    foreach ($terms as $tid){
+      $term = taxonomy_term_load($tid);
+      $bundle = $this->arguments['bundle'];
 
-    if(!$term){
-      throw new MigrateException(t('The specified term %tid could not be loaded for bundle %bundle.',
-        array('%tid' => $row->tid, '%bundle' => $bundle)));
-    }
+      if(!$term){
+        throw new MigrateException(t('The specified term %tid could not be loaded for bundle %bundle.',
+          array('%tid' => $row->tid, '%bundle' => $bundle)));
+      }
 
-    if (!og_vocab_load_og_vocab($term->vid, 'node', $bundle)) {
-      // Create an OG vocab, based on the vocabulary settings.
+      if (!og_vocab_load_og_vocab($term->vid, 'node', $bundle)) {
+        // Create an OG vocab, based on the vocabulary settings.
 
-      $settings = array(
-        'required' => $row->required,
-        'widget_type' => $row->tags ? 'entityreference_autocomplete_tags' : 'options_select',
-        'cardinality' => $row->multiple,
-      );
-      $og_vocab = og_vocab_create_og_vocab($term->vid, 'node', $bundle, $settings);
-      $og_vocab->save();
+        $settings = array(
+          'required' => $row->required,
+          'widget_type' => $row->tags ? 'entityreference_autocomplete_tags' : 'options_select',
+          'cardinality' => $row->multiple,
+        );
+        $og_vocab = og_vocab_create_og_vocab($term->vid, 'node', $bundle, $settings);
+        $og_vocab->save();
+      }
     }
   }
 
