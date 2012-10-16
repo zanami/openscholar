@@ -26,12 +26,16 @@ class OsOgVocabMigrate extends DynamicMigration {
     $query->innerJoin('og_vocab', 'ogv', 'td.vid = ogv.vid');
     $query->innerJoin('vocabulary', 'v', 'td.vid = v.vid');
     $query->innerJoin('node', 'n', 'tn.nid = n.nid');
+    $query->addExpression("GROUP_CONCAT(DISTINCT tn.tid SEPARATOR ',')",'tid');
 
     $query
-      ->fields('tn')
+      ->fields('tn',array('nid'))
       ->fields('v', array('multiple', 'required', 'tags'))
       ->condition('n.type', $source_bundle)
       ->orderBy('n.nid');
+
+    //Group By Node
+    $query->groupBy('nid');
 
     $source_key = MigrateDestinationNode::getKeySchema();
     // Set the alias, so the query in MigrateSourceSQL::performRewind()
@@ -56,9 +60,9 @@ class OsOgVocabMigrate extends DynamicMigration {
 
 
   public function prepareRow($row) {
-    dpm($row);
+
     $this->addOgVocab($row);
-    $row->{OG_VOCAB_FIELD}[] = $row->tid;
+    $row->{OG_VOCAB_FIELD} = explode(',', $row->tid);
     parent::prepareRow($row);
   }
 
