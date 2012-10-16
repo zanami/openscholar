@@ -827,6 +827,11 @@ function vsite_form_user_profile_form_alter(&$form,&$form_state,&$form_id) {
   }// Are we coming from the special login link?
 
   $form['#submit'][] = 'vsite_redirect_reset_submit';
+
+  // Remove the form element that the 'contact' module hooks in.
+  if(isset($form['contact'])) {
+	$form['contact']['#access'] = FALSE;
+  }
 }
 
 /**
