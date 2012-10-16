@@ -1,0 +1,188 @@
+<?php
+/**
+ * @file
+ * Code for the Harvard courses feature.
+ */
+
+include_once 'harvard_courses.features.inc';
+
+/**
+ * Implements hook_feeds_plugins().
+ */
+function harvard_courses_feeds_plugins() {
+  $path = drupal_get_path('module', 'harvard_courses');
+  $info = array();
+  $info['FeedsTokenizedFetcher'] = array(
+    'name'        => t('Token fetcher'),
+    'description' => t('Create a tokenize url for fetching'),
+    'handler' => array(
+      'parent' => 'FeedsFetcher',
+      'class'  => 'FeedsTokenizedFetcher',
+      'file'   => 'harvard_courses_token_fetcher.inc',
+      'path'   => $path,
+    ),
+  );
+  return $info;
+}
+
+/**
+ * Returning vsites nid by the import type.
+ *
+ *  @param $import_type
+ *    What is the method of the import:
+ *      - cat_num: Catalog number
+ *      - department: Department ID
+ *
+ *  @param $search_value
+ *    Array of values to look for in the field of the import method.
+ *    If empty, will return all the nodes the method field is not empty.
+ *
+ *  @return
+ *    List of nids.
+ */
+function haravard_courses_sites_nid_by_import_type($import_type, $search_value = array()) {
+  $field = $import_type == 'cat_num' ? 'field_catalog_number' : 'field_department_id';
+  $query = new entityFieldQuery();
+  $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'vsite');
+
+    if ($search_value) {
+      $query->fieldCondition($field, 'value', $search_value, 'IN');
+    }
+    else {
+      $query->fieldCondition($field, 'value', '', '<>');
+    }
+
+  $result = $query->execute();
+  if (empty($result['node'])) {
+    return;
+  }
+
+  return array_keys($result['node']);
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function harvard_courses_node_insert($node) {
+  if ($node->type != 'harvard_course') {
+    return;
+  }
+  $wrapper = entity_metadata_wrapper('node', $node->nid);
+
+  // Import by catalog number.
+  $vsites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
+  foreach ($vsites as $vsite) {
+    og_group('node', $vsite, array('entity_type' => 'node', 'entity' => $node->nid));
+  }
+
+  // Import by department ID.
+  $vsites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_field->value()));
+  foreach ($vsites as $vsite) {
+    og_group('node', $vsite, array('entity_type' => 'node', 'entity' => $node->nid));
+  }
+
+  $node->skip_og_membership = TRUE;
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function harvard_courses_node_update($node) {
+  if ($node->type != 'vsite' || empty($node->original)) {
+    return;
+  }
+
+  // Loading into a wrapper the original node and the current node.
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $original_node = entity_metadata_wrapper('node', $node->original);
+
+  // Make a list of the fields we need to check in the viste and in the course
+  // node.
+  $fields = array(
+    'cat_num' => array(
+      'vsite' => 'field_catalog_number',
+      'course' => 'field_cat_number',
+    ),
+    'department' => array(
+      'vsite' => 'field_department_id',
+      'course' => 'field_field',
+    ),
+  );
+
+  foreach ($fields as $field) {
+    $removed_items = array_diff($original_node->{$field['vsite']}->value(), $wrapper->{$field['vsite']}->value());
+    $added_items = array_diff($wrapper->{$field['vsite']}->value(), $original_node->{$field['vsite']}->value());
+
+    // Ungrouping removed courses from the vsite.
+    if (!empty($removed_items)) {
+      $courses = harvard_courses_related_nodes($field['course'], $removed_items);
+      if (!empty($courses)) {
+        foreach ($courses as $course_id) {
+          og_ungroup('node', $node->nid, 'node', $course_id);
+        }
+      }
+    }
+
+    // New course(s) was added to the vsite. IF the course(s) is alredy imported
+    // then group them, if not then in the next import they will be imported.
+    if (!empty($added_items)) {
+      $courses = harvard_courses_related_nodes($field['course'], $added_items);
+      if (!empty($courses)) {
+        foreach ($courses as $course) {
+          og_group('node', $node->nid, array('entity_type' => 'node', 'entity' => $course));
+        }
+      }
+      $node->skip_og_membership = TRUE;
+    }
+  }
+}
+
+/**
+ * Return courses nids which holds the search values in the field.
+ *
+ *  @param $field
+ *    The name of the field.
+ *  @param $search
+ *    Array of the values to look for in the field.
+ *
+ *  @return
+ *    list of nids.
+ */
+function harvard_courses_related_nodes($field, $search = array()) {
+  $query = new entityFieldQuery();
+  $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'harvard_course')
+    ->fieldCondition($field, 'value', $search, 'IN');
+
+  $result = $query->execute();
+  if (empty($result['node'])) {
+    return;
+  }
+
+  return array_keys($result['node']);
+}
+/**
+ * Implements hook_feeds_presave().
+ */
+function harvard_courses_feeds_presave($source, $entity, $item) {
+  $wrapper = entity_metadata_wrapper('node', $entity);
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'harvard_course')
+    ->fieldCondition('field_cat_number', 'value', $wrapper->field_cat_number->value())
+    ->fieldCondition('field_field', 'value', $wrapper->field_field->value())
+    ->execute();
+
+  // Skip on this item, alredy exists.
+  if (!empty($result['node'])) {
+    $param = array(
+      '@name' => $wrapper->label(),
+    );
+    drupal_set_message(t("The node @name wasn't imported because he already exists.", $param));
+    $entity->feeds_item->skip = TRUE;
+  }
+}
