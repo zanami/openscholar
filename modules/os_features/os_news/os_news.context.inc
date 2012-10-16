@@ -54,7 +54,7 @@ function os_news_context_default_contexts() {
           'delta' => 'os_news_latest',
           'weight' => -21,
           'region' => 'sidebar_second',
-          'label' => 'Latest Announcements',
+          'label' => 'Latest News',
         ),
         'boxes-os_addthis' => array(
           'module' => 'boxes',

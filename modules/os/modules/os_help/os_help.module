@@ -133,7 +133,7 @@ function _os_help_attach_help_link(&$element, $form_id) {
  */
 function _os_help_get_theme_variables($id) {
   static $theme_variables = array(
-    'spaces_features_form:spaces_features:os_announcements' => array('module' => 'os_help', 'topic' => 'Announcement-feature'),
+    'spaces_features_form:spaces_features:os_news' => array('module' => 'os_help', 'topic' => 'News-feature'),
     'spaces_features_form:spaces_features:os_biocv' => array('module' => 'os_help', 'topic' => 'Bio---CV-feature'),
     'spaces_features_form:spaces_features:os_blog' => array('module' => 'os_help', 'topic' => 'Blog-feature'),
     'spaces_features_form:spaces_features:os_booklets' => array('module' => 'os_help', 'topic' => 'Booklet-feature'),

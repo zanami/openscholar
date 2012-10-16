@@ -52,6 +52,9 @@ function gkplus_strongarm() {
  * @ingroup nodeorder
  */
 function gkplus_nodeorder_form($js = NULL, $tid = NULL) {
+  if (!_gkplus_check_purl()) {
+    return;
+  }
   // Gracefully degrades if $js is not set.
   if (!$js) {
     return drupal_get_form('nodeorder_admin_display_form', $tid);
@@ -233,6 +236,9 @@ function _gking_empty_terms($terms) {
  * @ingroup term_display_options
  */
 function gkplus_form_taxonomy_form_term_alter(&$form, &$form_state, $form_id) {
+  if (!_gkplus_check_purl()) {
+    return;
+  }
   $form['advanced']['gkplus'] = array(
     '#type' => 'fieldset',
     '#title' => 'Custom theme settings',

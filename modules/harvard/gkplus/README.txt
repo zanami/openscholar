@@ -22,9 +22,8 @@ This module provides a number of miscellaneous customizations:
 * Cron looks for files in sites/default/files/gking/tmpdir, and attempts to copy
   new versions of an existing attachment (automatically updating the filefield).
 
-These features forthcoming:
+This feature has been rejected for migration:
 
-* On install, creates an os_boxes_html widget assigned to classes_classes context
 * Displays term links like Parent (Child) when listed on nodes.
 
 These components have been moved to other modules in SCHOLAR-3-0:

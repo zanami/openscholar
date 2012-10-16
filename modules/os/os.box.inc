@@ -36,7 +36,7 @@ function os_default_box() {
     'show_all' => 1,
     'content' => array(
       'link' => 0,
-      'announcement' => 0,
+      'news' => 0,
       'media_gallery' => 0,
       'biblio' => 0,
       'page' => 0,

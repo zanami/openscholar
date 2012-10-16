@@ -31,7 +31,7 @@ function os_strongarm() {
   $strongarm->value = array(
     'os' => '1',
     'os_pages' => '1',
-    'os_announcements' => '1',
+    'os_news' => '1',
     'os_image_gallery' => '1',
     'os_links' => '1',
     'os_publications' => '1',

@@ -18,7 +18,6 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     'software_project' => 'scholar_software_project',
     'software_release' => 'scholar_software_release',
     'media_gallery' => 'gallery',
-    //'project' => 'vsite',
   );
 
   public function __construct($destination_bundle){

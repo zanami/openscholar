@@ -39,11 +39,12 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('field_group_path:title')->defaultValue('');
 
     //undo what nodeabstract has done
-    $unmap = array_merge(array('body', 'group_nid', 'og_group_ref',),
+    $unmap = array_merge(array('body', 'group_nid', 'og_group_ref', 'type'),
         parent::subfields('body', array('format', 'language', 'summary')));
     foreach ($unmap as $destination_field) {
       $this->removeFieldMapping($destination_field);
     }
+
 
     $this->addUnmigratedSources(array('value', 'provider', 'format', 'field_vsite_address_format'), t('DNM'));
     $this->addUnmigratedSources(parent::subfields('field_vsite_logo', array('fid','list','data'), '_'), t('DNM'));
@@ -132,9 +133,13 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
              $row->{'field_site_logo:cropbox_height'} = (int)$data['crop']['height'];
              $row->{'field_site_logo:cropbox_width'} = (int)$data['crop']['width'];
            }
+
+           if (!isset($row->{'field_site_logo:cropbox_x'}, $row->{'field_site_logo:cropbox_y'}, $row->{'field_site_logo:cropbox_width'},$row->{'field_site_logo:cropbox_height'}) ) {
+             $this->_crop_full_image($row, $file->filepath);
+           }
          } else {
            if (!$this->_get_missing_coords($row)) {
-//              //image provided, but no data.
+             //image provided, but no data.
            }
          }
        }
@@ -234,5 +239,22 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
       return FALSE;
     }
 
+  }
+
+  /**
+   * @function _crop_full_image
+   *
+   * No cropping data exists.  Use the full image.  This is correct behavior for project logos.
+   */
+  function _crop_full_image(&$row, $filepath) {
+    $filepath = variable_get('os_migrate_files', '') . '/' . $filepath;
+
+    if (($dim = getimagesize($filepath)) == FALSE) {
+      return FALSE;
+    }
+    $row->{'field_site_logo:cropbox_x'} = 0;
+    $row->{'field_site_logo:cropbox_y'} = 0;
+    $row->{'field_site_logo:cropbox_width'} = $dim[0];
+    $row->{'field_site_logo:cropbox_height'} = $dim[1];
   }
 }

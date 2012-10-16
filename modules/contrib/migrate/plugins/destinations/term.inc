@@ -239,11 +239,19 @@ class MigrateDestinationTerm extends MigrateDestinationEntity {
       }
     }
 
-    if (isset($term->tid)) {
+    if (isset($term->tid) && $migration->getSystemOfRecord() == Migration::DESTINATION) {
       $updating = TRUE;
     }
     else {
       $updating = FALSE;
+    }
+
+    // SystemOfRecord is source and we are keeping the tid
+    if(!$updating && isset($term->tid)){
+      // We are migrating an existing tid, for 'taxonomy_term_save' to write/update the
+      // record correctly we must pre-populate the taxonomy_term_data table
+      // no need to do any pre-processing (name, vocabulary_machine_name, etc..) taxonomy_term_save will handle this
+      $status = drupal_write_record('taxonomy_term_data', $term);
     }
 
     migrate_instrument_start('taxonomy_term_save');
