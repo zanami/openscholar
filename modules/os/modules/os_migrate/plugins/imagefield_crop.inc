@@ -169,7 +169,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $full->filemime = file_get_mimetype($full_filepath);
     $full->uri = $full_filepath;
 
-    if ($full = file_copy($full, 'public://') && $gid) {
+    if (($full = file_copy($full, 'public://')) && $gid) {
       $full_entity = entity_metadata_wrapper('file', $full);
       $full_entity->og_group_ref = array($gid);
       $full_entity->save();
@@ -180,7 +180,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $thumb->filemime = file_get_mimetype($thumb_filepath);
     $thumb->uri = $thumb_filepath;
 
-    if ($thumb = file_copy($thumb, 'public://') && $gid) {
+    if (($thumb = file_copy($thumb, 'public://')) && $gid) {
       $thumb_entity = entity_metadata_wrapper('file', $thumb);
       $thumb_entity->og_group_ref = array($gid);
       $thumb_entity->save();
