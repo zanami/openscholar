@@ -42,12 +42,6 @@ function os_profiles_process_node(&$vars) {
   $h = ($vars['teaser']) ? '4' : '3';
 
   // Customizes field markup with prefixes and suffixes
-  if (isset($vars['content']['field_professional_title'])) {
-    $title_plain = $vars['content']['field_professional_title'][0]['#markup'];
-    if ($title_plain) {
-      $vars['content']['field_professional_title'][0]['#markup'] = '<h' . $h . '>' . $title_plain . '</h' . $h . '>';
-    }
-  }
   if (isset($vars['content']['field_email'])) {
     $email_plain = $vars['content']['field_email'][0]['#markup'];
     if ($email_plain) {
