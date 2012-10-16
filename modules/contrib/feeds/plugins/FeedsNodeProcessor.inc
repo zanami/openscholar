@@ -55,7 +55,7 @@ class FeedsNodeProcessor extends FeedsProcessor {
     }
     else {
       // We're replacing the existing node. Only save the absolutely necessary.
-      $node = db_query("SELECT created, nid, vid, type FROM {node} WHERE nid = :nid", array(':nid' => $nid))->fetchObject();
+      $node = db_query("SELECT created, nid, vid, type, status FROM {node} WHERE nid = :nid", array(':nid' => $nid))->fetchObject();
       $node->uid = $this->config['author'];
     }
     node_object_prepare($node);
@@ -219,22 +219,6 @@ class FeedsNodeProcessor extends FeedsProcessor {
           $target_node->feeds['suppress_import'] = TRUE;
         }
         break;
-      case 'path_alias':
-        $target_node->path = array();
-
-        // Check for existing aliases.
-        if (!empty($target_node->nid)) {
-          if ($path = path_load('node/' . $target_node->nid)) {
-            $target_node->path = $path;
-          }
-        }
-
-        // Prevent Pathauto (http://drupal.org/project/pathauto) from
-        // overwriting the alias.
-        $target_node->path['pathauto'] = FALSE;
-
-        $target_node->path['alias'] = $value;
-        break;
       case 'user_name':
         if ($user = user_load_by_name($value)) {
           $target_node->uid = $user->uid;
@@ -314,14 +298,6 @@ class FeedsNodeProcessor extends FeedsProcessor {
       );
     }
 
-    // If path is enabled expose path alias.
-    if (module_exists('path')) {
-      $targets['path_alias'] = array(
-        'name' => t('Path alias'),
-        'description' => t('URL path alias of the node.'),
-      );
-    }
-
     // If the target content type is a Feed node, expose its source field.
     if ($id = feeds_get_importer_id($this->config['content_type'])) {
       $name = feeds_importer($id)->config['name'];
@@ -334,7 +310,9 @@ class FeedsNodeProcessor extends FeedsProcessor {
 
     // Let other modules expose mapping targets.
     self::loadMappers();
-    feeds_alter('feeds_processor_targets', $targets, 'node', $this->config['content_type']);
+    $entity_type = $this->entityType();
+    $bundle = $this->config['content_type'];
+    drupal_alter('feeds_processor_targets', $targets, $entity_type, $bundle);
 
     return $targets;
   }
@@ -355,7 +333,7 @@ class FeedsNodeProcessor extends FeedsProcessor {
           $nid = db_query("SELECT nid FROM {node} WHERE nid = :nid", array(':nid' => $value))->fetchField();
           break;
         case 'title':
-          $nid = db_query("SELECT nid FROM {node} WHERE title = :title", array(':title' => $value))->fetchField();
+          $nid = db_query("SELECT nid FROM {node} WHERE title = :title AND type = :type", array(':title' => $value, ':type' => $this->config['content_type']))->fetchField();
           break;
         case 'feeds_source':
           if ($id = feeds_get_importer_id($this->config['content_type'])) {
