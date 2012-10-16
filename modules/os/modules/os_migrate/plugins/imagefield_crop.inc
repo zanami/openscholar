@@ -34,7 +34,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $action = $this->_get_action($values);
 
     if ($action == 'recycle') {
-      if ($recycled = $this->_recycle($values[0], $gid, $entity->uid)) {
+      if ($recycled = $this->_recycle($values, $gid, $entity->uid)) {
         $values[0] = $recycled->fid;
         $values['arguments']['file_class'] = 'MigrateFileFid';
       }
@@ -52,7 +52,6 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
         //image was cropped.  instead of migrating the whole image, use MigrateFileFid to accept the existing fid.
         $values[0] = $original->fid;
         $values['arguments']['file_class'] = 'MigrateFileFid';
-
       }
     } else {
       //just keep the image as is
@@ -160,7 +159,8 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
    * Both original and thumbnail images are present.  Save them both, updated
    * the db, and return the fid
    */
-  function _recycle($original_file, $gid, $uid) {
+  function _recycle(&$values, $gid, $uid) {
+    $original_file = $values[0];
     $thumb_filepath = variable_get('os_migrate_files') . '/' . $original_file;
     $full_filepath = $thumb_filepath . '.crop_display.jpg';
 
@@ -185,6 +185,15 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
       $thumb_entity->og_group_ref = array($gid);
       $thumb_entity->save();
     }
+
+    if (($dim = getimagesize($thumb_filepath)) == FALSE) {
+      return FALSE;
+    }
+    //set size to use full thumb.
+    $values['arguments']['cropbox_x'] = 0;
+    $values['arguments']['cropbox_y'] = 0;
+    $values['arguments']['cropbox_width'] = $dim[0];
+    $values['arguments']['cropbox_height'] = $dim[1];
 
     file_usage_add($full, 'imagefield_crop', 'file', $thumb->fid);
     return $thumb; //not sure about this.
