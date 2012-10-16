@@ -65,6 +65,8 @@ function os_image_gallery_module_implements_alter(&$implementations, $hook) {
 function os_image_gallery_node_view($node, $view_mode) {
   if ($node->type == 'media_gallery') {
     media_gallery_view($node, $view_mode);
+  } else {
+    return $node;
   }
 
   //get fids of images that should be on this page
