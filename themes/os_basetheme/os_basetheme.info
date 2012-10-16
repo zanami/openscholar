@@ -1,4 +1,3 @@
-
 ;----------// Theme Information
 
   name        = OS Base Theme
@@ -12,58 +11,8 @@
 
 ;----------// Stylesheets
 
-  ; Globals CSS, loads all global.[type].css files in /css/
   stylesheets[screen][] = css/globals.css
   
-  ; Print
-  ; Uncomment to load basic print styles.
-  ; stylesheets[print][] = css/print.css
-
-
-  ; Internet Explorer Stylesheets
-  ;
-  ; AT can load stylesheets in conditional comments from the info file.
-  ;
-  ; Syntax: ie_stylesheets[media][condition] = path/to/file (path must be relative to your theme root)
-  ;
-  ; For example if you want to load a stylesheet just for IE7 use the following (note: you need to create "ie7.css" in the /css/ directory):
-  ; ie_stylesheets[screen][IE 7] = css/ie7.css
-  ;
-  ; By default the sub-theme has one IE stylesheet which loads for "less than IE9" but "not IEMobile 7".
-  ; Uncomment the following to use the included IE styleseet:
-
-  ; ie_stylesheets[screen][(lt IE 9)&(!IEMobile 7)] = css/lt-ie9.css
-
-
-  ; Unset Module CSS or other Stylesheets
-  ;
-  ; In your theme settings you can unset many stylesheets using the Unset CSS Extension. If for some
-  ; reason the file you want to unset is not showing, you can explicitly declare it here. Once you have
-  ; finished adding your declarations you must clear the sites cache, then go to your theme settings and
-  ; check the checkbox for the file, then save the theme settings and the file will be unset thereafter.
-  ;
-  ; Follow the syntax:
-  ;
-   unset_css[profiles/openscholar/modules/contrib/biblio/biblio.css] = 1
-  ;
-  ; For example to unset foobar_module.css you might use something like this:
-  ; unset_css[sites/all/modules/foobar_module/foobar_module.css] = 1
-
-
-;----------// Scripts
-
-  ; Internet Explorer Scripts
-  ;
-  ; AT can load scripts in conditional comments from the info file. If you are planning to use a polyfill be sure to check
-  ; the "Settings" tab in theme settings - this includes checkboxes to enable the HTML5 Shiv (on by default), Respond.js and
-  ; boxsizing.htc. See the js folder in at_core to view these scripts.
-  ;
-  ; Syntax: ie_scripts[condition] = path/to/file (path must be relative to your theme root)
-  ;
-  ; For example if you want to load a script just for IE 8 and below use the following as a guide:
-  ; ie_scripts[lte IE 8] = js/my-script.js
-
-
 ;----------// Regions
 
   regions[sidebar_first]     = Sidebar first

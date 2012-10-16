@@ -38,7 +38,7 @@ function os_sv_list_more_link_ajax($form, $state) {
   $content_type = $state['values']['content_type'];
   $content_map = array(
     'all' => '',
-    'announcement' => 'announcements',
+    'news' => 'news',
     'biblio' => 'publications',
     'event' => 'calendar',
     'page' => 'pages',

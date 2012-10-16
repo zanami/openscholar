@@ -176,7 +176,8 @@
 	background: url("images/widgetIcons/software.png") no-repeat scroll 50% 10px transparent;
 }
 
-#edit-layout-unused-widgets #boxes-os_announcements_latest {
+#edit-layout-unused-widgets #boxes-os_announcements_latest,
+#edit-layout-unused-widgets #boxes-os_news_latest {
 	background: url("images/widgetIcons/announcement.png") no-repeat scroll 50% 10px transparent;
 }
 

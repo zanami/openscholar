@@ -23,7 +23,7 @@ function os_spaces_presets() {
       'spaces_features' => array(
         'os' => '1',
         'os_pages' => '1',
-        'os_announcements' => '1',
+        'os_news' => '1',
         'os_events' => '1',
         'os_profiles' => '1',
         'os_links' => '1',
@@ -75,7 +75,7 @@ function os_spaces_presets() {
       'spaces_features' => array(
         'os' => '1',
         'os_pages' => '1',
-        'os_announcements' => '0',
+        'os_news' => '0',
         'os_image_gallery' => '0',
         'os_classes' => '1',
         'os_publications' => '1',
@@ -104,7 +104,7 @@ function os_spaces_presets() {
       'spaces_features' => array(
         'os' => '1',
         'os_pages' => '1',
-        'os_announcements' => '1',
+        'os_news' => '1',
         'os_events' => '1',
         'os_profiles' => '1',
         'os_links' => '1',

@@ -19,8 +19,8 @@ function os_news_default_box() {
   $box->api_version = 1;
   $box->delta       = 'os_news_latest';
   $box->plugin_key  = 'os_sv_list_box';
-  $box->title       = 'Latest Announcements';
-  $box->description = 'Latest Announcements';
+  $box->title       = 'Latest News';
+  $box->description = 'Latest News';
   $box->options     = array(
     'content_type' => 'new',
     'display' => 'display_title',
