@@ -575,6 +575,24 @@ function os_preprocess_page(&$variables) {
   }
 }
 
+function os_form_alter(&$form, $form_state, $form_id) {
+  if (isset($form['#node']) || isset($form['#entity'])) {
+    $form['#after_build'][] = 'os_entity_form_after_build';
+  }
+}
+
+function os_entity_form_after_build($form, $form_state) {
+  $node = isset($form['#node'])?$form['#node']:null;
+  if (!isset($node) && isset($form['#entity'])) {
+     // dummy node
+    $node = (object)array('type' => 'page');
+  }
+  if (isset($node)) {
+    context_node_condition($node, 'form');
+  }
+  return $form;
+}
+
 /**
  * Cleans up some advanced settings and places them in a fieldset.
  */
