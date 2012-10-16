@@ -18,7 +18,7 @@ function os_news_views_default_views() {
   $view->description = '';
   $view->tag         = 'default';
   $view->base_table  = 'node';
-  $view->human_name  = 'OS Announcements';
+  $view->human_name  = 'OS News';
   $view->core        = 7;
   $view->api_version = '3.0';
   /* Edit this to true to make a default view disabled initially */
@@ -27,7 +27,7 @@ function os_news_views_default_views() {
   /* Display: Master */
 
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Announcements';
+  $handler->display->display_options['title'] = 'News';
   $handler->display->display_options['access']['type'] = 'spaces_feature';
   $handler->display->display_options['access']['spaces_feature'] = 'os_news';
   $handler->display->display_options['cache']['type'] = 'none';
@@ -85,7 +85,7 @@ function os_news_views_default_views() {
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'news';
   $handler->display->display_options['menu']['type'] = 'normal';
-  $handler->display->display_options['menu']['title'] = 'Announcements';
+  $handler->display->display_options['menu']['title'] = 'News';
   $handler->display->display_options['menu']['description'] = 'List of news';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'primary-menu';

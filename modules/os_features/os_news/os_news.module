@@ -12,6 +12,8 @@ include_once ('os_news.features.inc');
  * Implements hook_process_hook() for node.
  *
  * Customizes $submitted for new nodes as just "M D, YYYY"
+ *
+ * Moves the photo field before the title for teaser display.
  */
 function os_news_process_node(&$vars) {
   if ($vars['type'] !== 'news') {

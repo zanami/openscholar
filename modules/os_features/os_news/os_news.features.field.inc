@@ -43,7 +43,7 @@ function os_news_field_default_fields() {
       'type' => 'text_with_summary',
     ),
     'field_instance' => array(
-      'bundle' => 'new',
+      'bundle' => 'news',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
@@ -114,7 +114,7 @@ function os_news_field_default_fields() {
       'type' => 'image',
     ),
     'field_instance' => array(
-      'bundle' => 'new',
+      'bundle' => 'news',
       'deleted' => '0',
       'description' => '',
       'display' => array(
@@ -235,7 +235,7 @@ function os_news_field_default_fields() {
       'type' => 'file',
     ),
     'field_instance' => array(
-      'bundle' => 'new',
+      'bundle' => 'news',
       'deleted' => '0',
       'description' => '',
       'display' => array(
