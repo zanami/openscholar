@@ -5,6 +5,7 @@ package = Control Panel
 php = 5.2.4
 dependencies[] = ctools
 dependencies[] = os
+dependencies[] = contact
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:1
 features[user_permission][] = access control panel
