@@ -37,7 +37,8 @@ function os_biocv_menu() {
     'menu_name' => 'primary-menu',
     'type' => MENU_LOCAL_TASK,
   );
-  $items['apps/os_biocv'] = array(
+  // Named like 'features/$feature_name' by features/spaces convention.
+  $items['features/os_biocv'] = array(
     'title' => 'Bio/CV Settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('os_biocv_settings'),

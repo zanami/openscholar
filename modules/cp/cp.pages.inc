@@ -44,13 +44,13 @@ function cp_app_settings($js, $app_name) {
  * @see cp_app_settings()
  */
 function cp_app_settings_form($form, $form_state, $app_name) {
-  $item = menu_get_item('apps/' . $app_name);
+  $item = menu_get_item('features/' . $app_name);
   $form['#attributes'] = array(
     'class' => array(
       $app_name . '-customize-form',
     )
   );
-  if ($item['path'] == 'apps/' . $app_name) {
+  if ($item['path'] == 'features/' . $app_name) {
     $form_id = array_shift($item['page_arguments']);
     if ($file = $item['include_file']) {
       require_once(DRUPAL_ROOT . '/' . $file);
