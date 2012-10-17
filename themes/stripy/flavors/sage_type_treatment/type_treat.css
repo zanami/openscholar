@@ -30,4 +30,4 @@ h1#page-title, body.node-type-page h1#page-title {
 }
 
 
-#menu-bar, #header-container h1, #header-container h2, p, #content-area, h3, .region-sidebar-first, .region-sidebar-second, .region-sidebar-first a, .region-sidebar-second a {font-family: Arial,Verdana,sans-serif;}
+#menu-bar, #top-header-container h1, #top-header-container h2, p, #content-area, h3, .region-sidebar-first, .region-sidebar-second, .region-sidebar-first a, .region-sidebar-second a {font-family: Arial,Verdana,sans-serif;}

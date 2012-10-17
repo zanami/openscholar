@@ -17,7 +17,7 @@
   $page['header_bottom']
   ): ?>
  <header id="header" class="clearfix" role="banner">
-  <div id="header-container">
+  <div id="top-header-container">
   <div class="at-panel gpanel panel-display three-col clearfix">
     <?php print render($page['header_top']); ?>
     <?php print render($page['header_second']); ?>

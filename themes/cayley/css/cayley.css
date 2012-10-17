@@ -87,13 +87,13 @@ p.copy {
 
 
 
-#header-container {
+#top-header-container {
   background: #fff;
   }
 
-body.header-main-right #header-container,
-body.header-left-right #header-container,
-body.header-left-main-right #header-container {
+body.header-main-right #top-header-container,
+body.header-left-right #top-header-container,
+body.header-left-main-right #top-header-container {
   background: transparent;
   }
 
@@ -139,19 +139,19 @@ body.one-sidebar .region-sidebar-first {
 
 /* HEADER ELEMENTS */
 
-#header-container .column {
+#top-header-container .column {
   padding-top: 20px;
   padding-bottom: 20px;
   }
 
-.header-main #header-container-container,
-.header-main-right #header-container-container {
+.header-main #top-header-container-container,
+.header-main-right #top-header-container-container {
   padding-right:250px;
   }
 
-#header-container h1,
-#header-container h2,
-#header-container p {
+#top-header-container h1,
+#top-header-container h2,
+#top-header-container p {
     font-size: 35px;
     line-height: 38px;
     font-weight:normal;
@@ -160,23 +160,23 @@ body.one-sidebar .region-sidebar-first {
     margin: 0;
     }
 
-#header-container h2 {
+#top-header-container h2 {
   font-size: 19px;
   line-height: 19px;
   font-style:normal;
   }
 
-#header-container p {
+#top-header-container p {
   font-size: 15px;
   line-height: 17px;
   }
 
-#header-container h1 a,
-#header-container h1 a:visited {
+#top-header-container h1 a,
+#top-header-container h1 a:visited {
     color:#a3a18c;
     }
 
-#header-container h1 a:hover {
+#top-header-container h1 a:hover {
     color:#282828;
     text-decoration: none;
     }
