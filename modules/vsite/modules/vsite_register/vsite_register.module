@@ -133,4 +133,3 @@ function vsite_register_form_vsite_register_form_alter(&$form, &$form_state) {
   	}
   }
 }
-
