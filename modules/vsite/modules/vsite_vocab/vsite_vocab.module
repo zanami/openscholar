@@ -47,7 +47,7 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
  * Implements hook_field_attach_view_alter().
  */
 function vsite_vocab_field_attach_view_alter(&$output, $context) {
-  if (empty($output[OG_VOCAB_FIELD][0])) {
+  if (empty($output[OG_VOCAB_FIELD][0]['#markup'])) {
     return;
   }
   $original = $output[OG_VOCAB_FIELD][0]['#markup'];
