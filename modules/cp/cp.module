@@ -14,10 +14,14 @@ define('CP_MENU_FULL', 'full');
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Loads an include file based on a $_GET.
 =======
  * @todo description
 >>>>>>> first pass renaming "features" to "apps"
+=======
+ * Loads an include file based on a $_GET.
+>>>>>>> minor docs edit
  *
  * @see cp_init()
  */
@@ -36,10 +40,14 @@ function cp_invoke($hook, $args = array()) {
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Implements hook_init().
 =======
  * Loads an include file based on a $_GET
 >>>>>>> first pass renaming "features" to "apps"
+=======
+ * Implements hook_init().
+>>>>>>> minor docs edit
  */
 function cp_init() {
   cp_invoke('init');
