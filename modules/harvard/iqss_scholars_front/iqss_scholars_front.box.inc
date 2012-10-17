@@ -90,5 +90,28 @@ function iqss_scholars_front_default_box() {
   );
   $export['iqss_scholars_fp_learnmore'] = $box;
 
+  // Floating header for /websites & /learnmore.
+  $box = new stdClass();
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
+  $box->delta = 'iqss_scholars_floating_header';
+  $box->plugin_key = 'simple';
+  $box->title = '';
+  $box->description = 'Floating header markup';
+  $box->options = array(
+    'body' => array(
+      'value' => '<div id="os-reasons_header" class="os-scholar-header">
+        <div class="os-scholar-header-wrap">
+            <h1><a href="/" title="Home" rel="home">Scholars at Harvard</a></h1>
+            <a href="/site/register" class="big-button">Get Your Site Now</a>
+            </div>
+        </div>
+      ',
+      'format' => 'filtered_html',
+    ),
+    'additional_classes' => '',
+  );
+  $export['iqss_scholars_floating_header'] = $box;
+
   return $export;
 }
