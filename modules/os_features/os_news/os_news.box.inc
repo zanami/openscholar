@@ -22,7 +22,7 @@ function os_news_default_box() {
   $box->title       = 'Latest News';
   $box->description = 'Latest News';
   $box->options     = array(
-    'content_type' => 'new',
+    'content_type' => 'news',
     'display' => 'display_title',
     'more' => 1,
     'more_text' => 'More',
