@@ -17,7 +17,7 @@ before_script:
   - cd ~
   - drush dl drupal
   - cd drupal-7.15
-  - mv /home/travis/builds/amitaibu/openscholar ./profiles 
+  - mv /home/travis/builds/openscholar/openscholar ./profiles 
   - cd profiles/openscholar
   - bash scripts/setup
   # Re-add, when we have Make file.
