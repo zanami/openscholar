@@ -13,7 +13,11 @@ define('CP_MENU_MINI', 'mini');
 define('CP_MENU_FULL', 'full');
 
 /**
+<<<<<<< HEAD
  * Loads an include file based on a $_GET.
+=======
+ * @todo description
+>>>>>>> first pass renaming "features" to "apps"
  *
  * @see cp_init()
  */
@@ -31,7 +35,11 @@ function cp_invoke($hook, $args = array()) {
 }
 
 /**
+<<<<<<< HEAD
  * Implements hook_init().
+=======
+ * Loads an include file based on a $_GET
+>>>>>>> first pass renaming "features" to "apps"
  */
 function cp_init() {
   cp_invoke('init');
@@ -68,6 +76,28 @@ function cp_menu() {
     'file path' => $spaces_path,
     'weight' => 10,
     'description' => t('Manage and customize apps on your site')
+  );
+
+  $items["cp/build/taxonomy"] = array(
+    'title' => 'Taxonomy',
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 10,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('taxonomy_overview_vocabularies'),
+    'access arguments' => array('administer taxonomy'),
+    'file' => 'taxonomy.admin.inc',
+    'file path' => drupal_get_path('module', 'taxonomy'),
+    'description' => t('Manage your site\'s vocabularies')
+  );
+
+  $items["cp/build/taxonomy/add"] = array(
+    'title' => 'Add vocabulary',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('taxonomy_form_vocabulary'),
+    'access arguments' => array('administer taxonomy'),
+    'type' => MENU_LOCAL_ACTION,
+    'file' => 'taxonomy.admin.inc',
+    'file path' => drupal_get_path('module', 'taxonomy'),
   );
 
   $items["cp/build/taxonomy"] = array(
@@ -252,7 +282,7 @@ function cp_use_cp_theme() {
  * Implements hook_admin_paths().
  */
 function cp_admin_paths() {
-  return array('cp/build/features/*' => TRUE, 'cp/support'=>TRUE);
+  return array('cp/build/apps/*' => TRUE);
 }
 
 /**
