@@ -133,7 +133,7 @@ function cp_menu() {
   // Provides a customize form for each OS App.
   $apps = spaces_features('site');
   foreach ($apps as $name => $app) {
-    $items['cp/build/apps/' . $name] = array(
+    $items['cp/build/features/' . $name] = array(
       'title callback' => '_cp_app_settings_page_title',
       'title arguments' => array(3),
       'page callback' => 'drupal_get_form',
@@ -290,7 +290,7 @@ function cp_use_cp_theme() {
  * Implements hook_admin_paths().
  */
 function cp_admin_paths() {
-  return array('cp/build/apps/*' => TRUE);
+  return array('cp/build/features/*' => TRUE);
 }
 
 /**
@@ -315,7 +315,7 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
     // Only displays "settings" gear-icon link for enabled & private OS Apps.
     $is_not_disabled = ((int) $form['spaces_features'][$app_name]['#default_value'] !== 0);
     if ($is_not_disabled) {
-      $link = l(t('settings'), 'cp/build/apps/' . $app_name);
+      $link = l(t('settings'), 'cp/build/features/' . $app_name);
       $form['settings'][$app_name] = array(
         '#type' => 'markup',
         '#markup' => $link,

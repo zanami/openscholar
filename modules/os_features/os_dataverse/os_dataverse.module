@@ -22,8 +22,8 @@ function os_dataverse_menu() {
     'access arguments' => array('view', 'os_dataverse'),
     'menu_name' => 'primary-menu',
   );
-
-  $items['apps/os_dataverse'] = array(
+ // Named like 'features/$feature_name' by features/spaces convention.
+  $items['features/os_dataverse'] = array(
     'title' => 'Dataverse Settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('os_dataverse_settings'),
