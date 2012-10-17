@@ -176,6 +176,15 @@ function os_files_entity_info_alter(&$info) {
       'custom settings' => TRUE,
     ),
   );
+
+  $info['file']['bundles']['undefined'] = array(
+    'label' => 'Undefined',
+    'admin' => array(
+      'path' => 'admin/structure/file-types/manage/%file_type',
+      'real path' => 'admin/structure/file-types/manage/undefined',
+      'bundle argument' => 4,
+    ),
+  );
 }
 
 function os_files_image_default_styles() {
