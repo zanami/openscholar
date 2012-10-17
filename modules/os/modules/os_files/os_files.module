@@ -116,6 +116,10 @@ function os_files_clippy($url_file, $options = array()) {
   return $html;
 }
 
+function os_files_form_file_entity_edit_alter(&$form, &$form_state) {
+  $form['replace_upload']['#access'] = false;
+}
+
 /**
  * Implements hook_views_api().
  */
