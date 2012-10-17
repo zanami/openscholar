@@ -564,3 +564,89 @@ function os_files_views_data_alter(&$data) {
     'field' => 'id',
   );
 }
+
+function os_files_file_default_types_alter(&$types) {
+  $types['image']->mimetypes = array_merge($types['image']->mimetypes, array(
+    // *.ico files
+    'image/ico',
+    'application/ico',
+    'application/x-ico',
+    'application/x-win-bitmap',
+    'image/x-win-bitmap',
+    'application/octet-stream'
+  ));
+
+  $types['video']->mimetypes = array_merge($types['video']->mimetypes, array(
+    // *.mov files
+    'video/x-quicktime',
+    'image/mov',
+    'audio/aiff',
+    'audio/x-midi',
+    'audio/x-wav',
+    'video/avi',
+    // *.mp4 files
+    'video/mp4v-es',
+    'audio/mp4',
+    // *.m4v files
+    'video/mp4v-es',
+    // *.mpeg files
+    'video/mpeg',
+    // *.avi files
+    'video/avi',
+    'video/msvideo',
+    'video/xmpg2',
+    'application/x-troff-msvideo',
+    'audio/aiff',
+    'audio/avi',
+    // *.ogg files
+    'application/ogg',
+    'audio/x-ogg',
+    'application/x-ogg',
+    // *.wmv files
+    'video/x-ms-wmv'
+  ));
+
+  $types['audio']->mimetypes = array_merge($types['audio']->mimetypes, array(
+    // *.mp3 files
+    'audio/x-mpeg',
+    'audio/mp3',
+    'audio/x-mp3',
+    'audio/mpeg3',
+    'audio/x-mpeg3',
+    'audio/mpg',
+    'audio/x-mpg',
+    'audio/x-mpegaudio',
+    // *.m4a files
+    'audio/mp4',
+    // *.ogg files  - Ogg's foundation recommends *.ogg only be used for audio
+    'application/ogg',
+    'audio/x-ogg',
+    'application/x-ogg',
+  ));
+
+  $types['document']->mimetypes = array_merge($types['document']->mimetypes, array(
+    // *.doc files
+    'application/vnd.msword',
+    'application/vmd.ms-word',
+    'application/doc',
+    'appl/text',
+    'application/winword',
+    'application/word',
+    'application/x-msw6',
+    'application/x-msword',
+    // *.docx files
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    // *.xlsx files
+    'application.vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    // *.pptx files
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    // *.ppsx files
+    'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+    // *.odt files
+    'application/x-vnd.oasis.opendocument.text',
+    // *.ods files
+    'application/x-vnd.oasis.opendocument.spreadsheet',
+    // *.odp files
+    'application/x-vnd.oasis.opendocument.presentation'
+  ));
+}
