@@ -131,10 +131,10 @@ margin: 8px 0 0 20px;
 }
 
 #content-area .block ul li a {
-  text-decoration: none;
+  text-decoration: underline;
 }
 
-#content-area .block ul li a:hover {text-decoration:underline;}
+#content-area .block ul li a:hover {text-decoration:none;}
 
 .front #content-main .block ul.links {margin: 8px 0 0 0;}
 
