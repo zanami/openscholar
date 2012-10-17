@@ -37,7 +37,7 @@ function os_biocv_menu() {
     'menu_name' => 'primary-menu',
     'type' => MENU_LOCAL_TASK,
   );
-  $items['cp/build/apps/os_biocv'] = array(
+  $items['apps/os_biocv'] = array(
     'title' => 'Bio/CV Settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('os_biocv_settings'),
@@ -294,8 +294,13 @@ function _os_biocv_cv_page_contents() {
 
 /**
  * Returns the filepath for PDF download of given CV node, or FALSE if none.
+ *
+ * @see os_biocv_settings()
  */
 function _os_biocv_get_cv_filepath($node) {
+  if ($node === FALSE) {
+    return FALSE;
+  }
   $field_name = 'field_biocv_pdf_upload';
   $items = field_get_items('node', $node, $field_name);
   if (!isset($items[0]['uri']) || strlen($items[0]['uri']) < 1) {
