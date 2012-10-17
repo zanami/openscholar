@@ -16,6 +16,7 @@ function vsite_vocab_install(){
   $bundles = og_get_all_group_content_bundle();
   if (isset($bundles['node']) && is_array($bundles['node'])) {
     $og_field = og_fields_info(OG_VOCAB_FIELD);
+    $og_field['instance']['display']['default']['label'] = 'hidden';
     $og_field['instance']['display']['default']['settings']['concatenate'] = TRUE;
     foreach ($bundles['node'] as $bundle => $name) {
       // Group content.

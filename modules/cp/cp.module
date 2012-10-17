@@ -108,6 +108,18 @@ function cp_menu() {
     'description' => t('Change side-wide settings'),
   );
 
+  if(module_exists('contact')) {
+    $items['cp/support'] = array(
+      'title' => 'Support',
+      'description' => 'Contact support.',
+      'page callback' => 'cp_site_sitewide_contact',
+      'page arguments' => array('support'),
+      'access callback' => 'spaces_access_admin',
+      'type' => MENU_NORMAL_ITEM,
+      'weight'=> 40,
+    );
+  }
+
   $items['cp/account'] = array(
     'title' => 'Account',
     'title callback' => 'cp_user_title',
@@ -232,7 +244,7 @@ function cp_use_cp_theme() {
 }
 
 function cp_admin_paths() {
-  return array('cp/build/features/*' => TRUE);
+  return array('cp/build/features/*' => TRUE, 'cp/support'=>TRUE);
 }
 
 /**
@@ -324,5 +336,36 @@ function cp_cp_settings() {
   );
 
   return $setting;
+}
+
+/**
+ * Menu callback page for cp/support.
+ */
+function cp_site_sitewide_contact() {
+  module_load_include('inc', 'contact', 'contact.pages');
+  // Check to make sure the site email address are set.
+  $results = db_query('SELECT cid, recipients FROM {contact} WHERE category = :category',array(':category'=>'Website feedback'))->fetchAssoc();
+  if($results['recipients'] == '') {
+    // The recipient email isn't set, set them.
+    $query = db_select('contact', 'c');
+    $query->fields('c', array('cid', 'recipients'));
+    $contact_result = $query->execute();
+    while($contact = $contact_result->fetchAssoc()) {
+      if($contact['recipients'] == '') {
+        // Update the record.
+        db_update('contact') // Table name no longer needs {}
+    	  ->fields(array(
+     		'recipients' => variable_get('site_mail',''),
+  		  ))
+  		->condition('cid', $contact['cid'], '=')
+  	    ->execute();
+      }
+    }
+  }
+  // Return the contact_site_form.
+  $contact_site_form = drupal_get_form('contact_site_form');
+  $output = "<p>Use the form below to send us your comments or report any problems you experienced using your website. We read all feedback carefully and will respond quickly.</p>";
+  $output .= drupal_render($contact_site_form);
+  return $output;
 }
 

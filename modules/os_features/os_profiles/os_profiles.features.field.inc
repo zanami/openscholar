@@ -596,7 +596,7 @@ function os_profiles_field_default_fields() {
   $fields['node-person-field_professional_title'] = array(
     'field_config' => array(
       'active' => '1',
-      'cardinality' => '-1',
+      'cardinality' => '3',
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_professional_title',
@@ -776,7 +776,7 @@ function os_profiles_field_default_fields() {
   $fields['node-person-field_website'] = array(
     'field_config' => array(
       'active' => '1',
-      'cardinality' => '-1',
+      'cardinality' => '3',
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_website',

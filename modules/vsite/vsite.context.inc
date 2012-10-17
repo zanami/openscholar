@@ -122,6 +122,38 @@ function vsite_context_default_contexts() {
   t('OpenScholar');
   $export['os_users'] = $context;
 
+  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
+  $context->api_version = 3;
+  $context->name = 'os_website_listings';
+  $context->description = 'Context that is active on the scholars/websites listings.';
+  $context->tag = 'OpenScholar';
+  $context->conditions = array(
+    'path' => array(
+      'values' => array(
+        'websites' => 'websites',
+      ),
+    ),
+  );
+  $context->reactions = array(
+    'block' => array(
+      'blocks' => array(
+        'boxes-iqss_scholars_floating_header' => array(
+          'module' => 'boxes',
+          'delta' => 'iqss_scholars_floating_header',
+          'region' => 'header_top',
+          'weight' => '-10',
+        ),
+      ),
+    ),
+  );
+  $context->condition_mode = 0;
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Context that is active on the scholars/websites listings.');
+  t('OpenScholar');
+  $export['os_website_listings'] = $context;
+
 
   return $export;
 }

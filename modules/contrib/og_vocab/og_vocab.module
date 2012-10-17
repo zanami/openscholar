@@ -886,7 +886,10 @@ function og_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
   $group = entity_load_single($group_type, $gid);
   list(,, $group_bundle) = entity_extract_ids($group_type, $group);
 
-  $form['machine_name']['#element_validate'][] = 'og_vocab_machine_name_validate';
+  // Validate the machine name when creating a new vocabulary.
+  if (empty($form_state['vocabulary']->vid)) {
+    $form['machine_name']['#element_validate'][] = 'og_vocab_machine_name_validate';
+  }
 
   $form['og_vocab_relation'] = array(
     '#type' => 'value',
