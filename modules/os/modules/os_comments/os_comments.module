@@ -7,12 +7,12 @@ include_once ('os_comments.features.inc');
  */
 
 /**
- * Implements hook_form_FORM_ID_alter() for cp_feature_customize_form.
+ * Implements hook_form_FORM_ID_alter() for cp_app_settings_form.
  *
  * Check if this is a feature form and add comment settings if the feature
  * provides a node.
  */
-function os_comments_form_cp_feature_customize_form_alter(&$form, &$form_state, $form_id) {
+function os_comments_form_cp_app_settings_form_alter(&$form, &$form_state, $form_id) {
 
   // Get the array of node types for this feature.
   $info = features_get_features($form['#feature']);
@@ -29,6 +29,7 @@ function os_comments_form_cp_feature_customize_form_alter(&$form, &$form_state, 
   $form['comment_settings'] = array(
     '#type' => 'fieldset',
     '#id' => "comment_settings",
+    '#title' => t('Comment Settings'),
     '#weight' => 0,
   );
 
@@ -51,7 +52,7 @@ function os_comments_form_cp_feature_customize_form_alter(&$form, &$form_state, 
   	}
   }
   // Uses a secondary validator.
-  $form['#validate'][] = 'os_comments_cp_feature_customize_form_validate';
+  $form['#validate'][] = 'os_comments_cp_app_settings_form_validate';
   // Uses default comment_sources submit handler
   $form['#submit'][] = 'comment_sources_save_admin_form';
 }
@@ -59,9 +60,9 @@ function os_comments_form_cp_feature_customize_form_alter(&$form, &$form_state, 
 /**
  * Validation callback; checks that user has disqus shortname if using discus.
  *
- * @see os_comments_form_cp_feature_customize_form_alter()
+ * @see os_comments_form_cp_app_settings_form_alter()
  */
-function os_comments_cp_feature_customize_form_validate($form, &$form_state) {
+function os_comments_cp_app_settings_form_validate($form, &$form_state) {
   // Get the nodes for this feature.
   $info = features_get_features($form['#feature']);
   $node_types = $info->info['features']['node'];
@@ -90,10 +91,10 @@ function os_comments_cp_feature_customize_form_validate($form, &$form_state) {
 }
 
 /**
- * Implement hook comment_sources alter
+ * Implements hook_comment_sources_alter().
  */
 function os_comments_comment_sources_alter(&$sources){
-  //Use alternate save functions if we have vsite enabled
+  // Uses alternate save functions if we have vsite enabled
   if(module_exists('vsite')){
     foreach ($sources as $source => $info){
       $vsite_save_function = "os_comments_{$source}_save_vsite";
@@ -105,7 +106,7 @@ function os_comments_comment_sources_alter(&$sources){
 }
 
 /**
- * Implement hook fb_social_default_presets_alter
+ * Implements hook_fb_social_default_presets_alter().
  *
  * @param array $presets
  */
@@ -129,7 +130,7 @@ function os_comments_fb_social_default_presets_alter(&$presets){
  */
 
 /**
- * Save the Disqus node types comment settings
+ * Saves the Disqus node types comment settings
  */
 function os_comments_disqus_save_vsite($comment_node_types) {
   $vsite = vsite_get_vsite();
@@ -141,7 +142,7 @@ function os_comments_disqus_save_vsite($comment_node_types) {
 }
 
 /**
- * Save the Facebook node type comments settings
+ * Saves the Facebook node type comments settings
  */
 function os_comments_fb_social_save_vsite($comment_node_types, $preset_name = '') {
   $vsite = vsite_get_vsite();
@@ -155,6 +156,7 @@ function os_comments_fb_social_save_vsite($comment_node_types, $preset_name = ''
 
 /**
  * Save the Drupal comments node types comment settings
+ *
  * Note: We do not have an option to set the default comment to be 'hidden'
  */
 function os_comments_comment_save_vsite($comment_node_types) {
@@ -174,6 +176,7 @@ function os_comments_comment_save_vsite($comment_node_types) {
 
 /**
  * Implements hook_cp_settings().
+ *
  * Hook into the cp/settings form to add the shortname field for disqus.
  */
 function os_comments_cp_settings(){
