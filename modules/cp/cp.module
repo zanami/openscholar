@@ -1,17 +1,24 @@
 <?php
 // $Id$
 
-include_once ('cp.features.inc');
-
 /**
- * Control Panel
+ * @file
+ * Code for OpenScholar Control Panel.
  */
+
+include_once ('cp.features.inc');
 
 define('CP_MENU_OFF', 'off');
 define('CP_MENU_MINI', 'mini');
 define('CP_MENU_FULL', 'full');
+
+/**
+ * @todo description
+ *
+ * @see cp_init()
+ */
 function cp_invoke($hook, $args = array()) {
-  // we're not in a cp mode
+  // Only continues if we get a non-null return value from $_GET['cp'].
   if (!isset($_GET['cp']) || is_null($_GET['cp'])) {
     return;
   }
@@ -24,21 +31,22 @@ function cp_invoke($hook, $args = array()) {
 }
 
 /**
- * Loads an include file based on a get
+ * Loads an include file based on a $_GET
  */
 function cp_init() {
   cp_invoke('init');
 }
 
 /**
- * Implements hook_menu
+ * Implements hook_menu().
  */
 function cp_menu() {
   $items = array();
 
   $spaces_path = drupal_get_path('module', 'spaces');
+
   $items["cp/build"] = array(
-    'title' => 'Site building',
+    'title' => 'Apps',
     'page callback' => 'drupal_get_form',
     'page arguments' => array(
       'spaces_features_form',
@@ -46,11 +54,11 @@ function cp_menu() {
     'file' => 'spaces.admin.inc',
     'file path' => $spaces_path,
     'weight' => 10,
-    'description' => t('The structure of your site')
+    'description' => t('Manage and customize apps on your site')
   );
 
-  $items["cp/build/features"] = array(
-    'title' => 'Features',
+  $items["cp/build/apps"] = array(
+    'title' => 'Apps',
     'page callback' => 'drupal_get_form',
     'page arguments' => array(
       'spaces_features_form',
@@ -59,14 +67,36 @@ function cp_menu() {
     'file' => 'spaces.admin.inc',
     'file path' => $spaces_path,
     'weight' => 10,
-    'description' => t('Change settings for apps on your site')
+    'description' => t('Manage and customize apps on your site')
   );
 
-  // feature customize forms
-  $features = spaces_features('site');
-  foreach ($features as $name => $feature) {
-    $items['cp/build/features/' . $name] = array(
-      'title' => 'Features',
+  $items["cp/build/taxonomy"] = array(
+    'title' => 'Taxonomy',
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 10,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('taxonomy_overview_vocabularies'),
+    'access arguments' => array('administer taxonomy'),
+    'file' => 'taxonomy.admin.inc',
+    'file path' => drupal_get_path('module', 'taxonomy'),
+    'description' => t('Manage your site\'s vocabularies')
+  );
+
+  $items["cp/build/taxonomy/add"] = array(
+    'title' => 'Add vocabulary',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('taxonomy_form_vocabulary'),
+    'access arguments' => array('administer taxonomy'),
+    'type' => MENU_LOCAL_ACTION,
+    'file' => 'taxonomy.admin.inc',
+    'file path' => drupal_get_path('module', 'taxonomy'),
+  );
+
+  // Provides a customize form for each OS App.
+  $apps = spaces_features('site');
+  foreach ($apps as $name => $app) {
+    $items['cp/build/apps/' . $name] = array(
+      'title' => 'Apps',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('cp_feature_customize_form', 3),
       'access callback' => 'spaces_access_admin',
@@ -127,6 +157,9 @@ function cp_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_menu_alter().
+ */
 function cp_menu_alter(&$items) {
   // make them all part of 'cp' menu
   foreach ($items as $path => $item) {
@@ -135,7 +168,7 @@ function cp_menu_alter(&$items) {
         $items[$path]['menu_name'] = 'cp';
       }
 
-      // @todo maybe provide our own permissoin instead ?
+      // @todo maybe provide our own permission instead ?
       if (!array_key_exists('access callback', $item)) $items[$path]['access arguments'] = array(
         'access control panel',
       );
@@ -144,7 +177,9 @@ function cp_menu_alter(&$items) {
 }
 
 /**
- * Change the title of the Account link to have the user's name in it
+ * Title callback for 'cp/account'.
+ *
+ * Changes the title of the Account link to have the user's name in it.
  */
 function cp_user_title() {
   if (user_is_logged_in()) {
@@ -154,7 +189,9 @@ function cp_user_title() {
 }
 
 /**
- * Alter CP user links to return to the current page when finished.
+ * Implements hook_translated_menu_link_alter().
+ *
+ * Alters CP user links to return to the current page when finished.
  */
 function cp_translated_menu_link_alter(&$link) {
   if (strpos($link['link_path'], 'cp/account') !== FALSE) {
@@ -162,17 +199,22 @@ function cp_translated_menu_link_alter(&$link) {
   }
 }
 
+/**
+ * Implements hook_theme().
+ */
 function cp_theme() {
-  $theme = array();
-  $theme['cp-toolbar'] = array(
-    'render element' => 'cp_toolbar',
-    'template' => 'cp-toolbar',
-    'path' => drupal_get_path('module', 'cp') . '/theme',
+  return array(
+  	'cp-toolbar' => array(
+      'render element' => 'cp_toolbar',
+      'template' => 'cp-toolbar',
+      'path' => drupal_get_path('module', 'cp') . '/theme',
+    ),
   );
-
-  return $theme;
 }
 
+/**
+ * Implements hook_permission().
+ */
 function cp_permission() {
   return array(
     'access control panel' => array(
@@ -182,32 +224,17 @@ function cp_permission() {
 }
 
 /**
- * cp/build/taxonomy callback
- */
-function cp_taxonomy() {
-  if (module_exists('vsite')) {
-    $vsite = spaces_get_space();
-    return l("Edit/ADD this Groups Vocabularies", "group/{$vsite->group_type}/{$vsite->id}/admin/taxonomy") . t("(outside CP for now)");
-  }
-
-  return drupal_get_form('taxonomy_overview_vocabularies');
-}
-
-/**
  * Make a decision about the active theme
  */
 function cp_custom_theme() {
-
-  //Turn the CP theme on
+  // Turn the CP theme on
   if (cp_use_cp_theme()) {
     return variable_get('os_cp_theme', 'cp_theme');
   }
 }
 
 /**
- * @function cp_use_cp_theme
- *
- * @return Bool indicating whether or not to use cp theme.
+ * Returns TRUE/FALSE, whether or not to use cp theme.
  */
 function cp_use_cp_theme() {
   if ((arg(0) == 'cp') ||
@@ -220,24 +247,20 @@ function cp_use_cp_theme() {
   return FALSE;
 }
 
+/**
+ * Implements hook_admin_paths().
+ */
 function cp_admin_paths() {
   return array('cp/build/features/*' => TRUE, 'cp/support'=>TRUE);
 }
 
 /**
- * Provide a form-specific alteration instead of the global hook_form_alter().
+ * Implements hook_form_FORM_ID_alter() for spaces_features_form.
  *
- * Alter the features form in the cp to remove un-needed componentes
- *
- * @param
- *          $form
- * @param
- *          $form_state
- * @param
- *          $form_id
+ * Alters the features form in the cp to remove un-needed componentes
  */
 function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
-  // Only make changes if we are in the Openscholar Admin section
+  // Only alters form if we are in the OpenScholar Control Panel context.
   if (!context_isset('context', 'os_cp')) {
     return;
   }
@@ -245,23 +268,25 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
   ctools_include('modal');
   ctools_modal_add_js();
 
-  $spaces_features = variable_get('spaces_features', array());
-
-  foreach (array_keys($form['spaces_features']) as $f_name) {
-    if ($f_name[0] == '#') {
+  foreach (array_keys($form['spaces_features']) as $app_name) {
+    if ($app_name[0] == '#') {
       continue;
     }
 
-    // is this feature customizable ?
-    // by convention feature settings form is at features/feature_name
-    $item = menu_get_item('features/' . $f_name);
-
-    //, 'ctools-modal-openscholar-style-default');
-    $link = l('customize', 'cp/build/features/' . $f_name);
-    $form['settings'][$f_name] = array(
-      '#type' => 'markup',
-      '#markup' => $link,
-    );
+    // Only displays "settings" gear-icon link for enabled & private OS Apps.
+    $is_not_disabled = ((int) $form['spaces_features'][$app_name]['#default_value'] !== 0);
+    if ($is_not_disabled) {
+      $link = l(t('settings'), 'cp/build/apps/' . $app_name);
+      $form['settings'][$app_name] = array(
+        '#type' => 'markup',
+        '#markup' => $link,
+      );
+    }
+    else {
+      if (isset($form['settings'][$app_name]['#markup'])) {
+        $form['settings'][$app_name]['#markup'] = '';
+      }
+    }
   }
 
   if (isset($form['site_frontpage'])) {
@@ -283,7 +308,10 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
 
 /**
  * Gets all the settings a module could define for a site
- * but there aren't enough of to have its own page.
+ *
+ * There aren't enough of to have its own page.
+ *
+ * @see cp_settings_form()
  */
 function cp_get_setting_forms() {
   $settings = module_invoke_all('cp_settings');
@@ -293,7 +321,8 @@ function cp_get_setting_forms() {
 }
 
 /**
- * Implementation of hook_cp_settings.
+ * Implements hook_cp_settings().
+ *
  * Allows user to switch between full and mini cp menus on the front view
  */
 function cp_cp_settings() {

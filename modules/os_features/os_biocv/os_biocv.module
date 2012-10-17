@@ -37,7 +37,7 @@ function os_biocv_menu() {
     'menu_name' => 'primary-menu',
     'type' => MENU_LOCAL_TASK,
   );
-  $items['cp/build/features/os_biocv'] = array(
+  $items['cp/build/apps/os_biocv'] = array(
     'title' => 'Bio/CV Settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('os_biocv_settings'),
@@ -53,7 +53,7 @@ function os_biocv_menu() {
  * Implements hook_form_FORM_ID_form_alter() for cv_node_form
  */
 function os_biocv_form_cv_node_form_alter(&$form, &$form_state, $form_id) {
-  $settings_link = l(t('Bio feature settings'), 'features/os_biocv');
+  $settings_link = l(t('Bio/CV settings'), 'features/os_biocv');
 }
 
 /**
