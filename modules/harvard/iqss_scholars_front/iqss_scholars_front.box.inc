@@ -103,7 +103,7 @@ function iqss_scholars_front_default_box() {
       'value' => '<div id="os-reasons_header" class="os-scholar-header">
         <div class="os-scholar-header-wrap">
             <h1><a href="/" title="Home" rel="home">Scholars at Harvard</a></h1>
-            <a href="/site/register" class="big-button">Get Your Site Now</a>
+            <a href="/site/register" class="os-big-button">Get Your Site Now</a>
             </div>
         </div>
       ',
