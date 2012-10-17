@@ -487,7 +487,7 @@ function os_preprocess_page(&$variables) {
   $module = 'os_front';
 
   foreach ( $types as $type => $name ) {
-    $printed = $is_front;
+    $printed = false;
     foreach ( $active as $a ) {
       if (isset($a->conditions['node']['values']) && $a->conditions['node']['options']['node_form'] == 0) {
         if (in_array($type, $a->conditions['node']['values'])) {
@@ -530,13 +530,27 @@ function os_preprocess_page(&$variables) {
       ),
     ),
   );
-  if (!empty($links)) {
+  if (count($links) > 1) {
     $variables['title_suffix']['controls']['add_new'] = array(
       '#theme' => 'ctools_dropdown',
       '#links' => $links,
       '#title' => t('Add New'),
       '#class' => 'add_new',
       '#access' => spaces_access_admin(),
+    );
+  }
+  elseif (count($links) == 1) {
+    $link = current($links);
+    $variables['title_suffix']['controls']['add_new'] = array(
+      '#theme' => 'link',
+      '#text' => t('Add New !type', array('!type' => $link['title'])),
+      '#path' => $link['href'],
+      '#options' => array(
+        'attributes' => array(
+          'class' => array('add_new'),
+        ),
+        'html' => FALSE,
+      ),
     );
   }
   $variables['title_suffix']['controls']['section_links'] = array(
