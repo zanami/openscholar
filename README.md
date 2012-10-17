@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/openscholar/openscholar.png)](http://travis-ci.org/openscholar/openscholar)
+
 ## OpenScholar: web site-creation package
 * full-featured
 * open-source
