@@ -13,7 +13,7 @@ define('CP_MENU_MINI', 'mini');
 define('CP_MENU_FULL', 'full');
 
 /**
- * @todo description
+ * Loads an include file based on a $_GET.
  *
  * @see cp_init()
  */
@@ -31,7 +31,7 @@ function cp_invoke($hook, $args = array()) {
 }
 
 /**
- * Loads an include file based on a $_GET
+ * Implements hook_init().
  */
 function cp_init() {
   cp_invoke('init');
