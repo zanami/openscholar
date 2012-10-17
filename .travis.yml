@@ -1,0 +1,33 @@
+language: php
+
+php:
+  - 5.3
+
+mysql:
+  database: drupal
+  username: root
+  encoding: utf8
+  
+before_script:
+  - "mysql -e 'create database drupal;'"
+  - pear channel-discover pear.drush.org
+  - pear install drush/drush
+  - phpenv rehash
+  # Remove when we have a make file.
+  - cd ~
+  - drush dl drupal
+  - cd drupal-7.15
+  - mv /home/travis/builds/amitaibu/openscholar ./profiles 
+  - cd profiles/openscholar
+  - bash scripts/setup
+  # Re-add, when we have Make file.
+  # - bash scripts/build
+  - drush si openscholar --db-url=mysql://root:@127.0.0.1/drupal --account-pass=admin --yes
+  # Install a multi-tanent, developemnt site.
+  - drush si openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite --yes
+  - drush cc all --yes
+  # Prepare the dummy test.
+  - chmod +x ./scripts/test.sh
+
+# Dummy script to return "exit 0", until Behat is in place.
+script: ./scripts/test.sh
