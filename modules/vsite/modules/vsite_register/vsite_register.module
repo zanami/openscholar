@@ -16,7 +16,7 @@ function vsite_register_menu() {
     'access callback' => 'vsite_vsite_exists_access',
     'file' => 'vsite_register.form.inc',
   );
-  
+
   $items['admin/config/openscholar/vsite_register'] = array(
     'title' => 'Vsite Registration',
     'page callback' => 'drupal_get_form',
@@ -25,7 +25,7 @@ function vsite_register_menu() {
     'access arguments' => array('access administration pages'),
     //'type' => MENU_LOCAL_TASK,
   );
-  
+
   return $items;
 }
 
@@ -45,37 +45,37 @@ function vsite_register_block_info() {
 function vsite_register_block_view($delta = '') {
   $block = array();
   ctools_include('vsite','vsite');
-  
+
   switch ($delta) {
     case 'get_your_site_block':
       if (vsite_vsite_exists_access()) {
         $content = l(t('Create your site'), 'site/register', array());
-        
+
       } elseif ($vsites = vsite_get_vsite_by_owner()) {
-        
+
         if (count($vsites > 1)) {
           $content = l(t('Go to your sites'), 'user');
         } else {
           $content = l(t('Go to your site'), $vsites[0]->og->purl);
         }
       }
-      
+
     break;
   }
-  
+
   if (isset($content)) {
     $block['content'] = array(
     	'content' => array('#markup' => $content),
     );
   }
-  
+
   return $block;
 }
 
 
 /**
  * Implements hook_theme
- * 
+ *
  * Provides theming for form errors
  */
 function vsite_register_theme() {
@@ -104,11 +104,11 @@ function vsite_register_message($form, $domain){
 
   $message  = '<div id="success-message" class="status">';
   $message .= '<p>Success! ' . ucfirst($word_replace) . ' new site has been created.</p>';
-  
+
   if (in_array('anonymous user', $user -> roles)){
     $message .= '<p>Check your email account for further details on how to login in to start adding features and content.</p>';
   }
-  
+
   $message .= '<p>The url of ' . $word_replace . ' site is ' . $base_url . '/' . $domain . ' ' . l(t("Go there now"), $base_url . '/' . $domain) . '</p>';
   $message .= '</div>';
 
@@ -120,3 +120,17 @@ function vsite_register_message($form, $domain){
 function _vsite_register_form_error(){
   return ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
 }
+
+/**
+ * Implements hook_fork_BASE_FORM_ID_alter()
+ * Alter the vsite_register_form to remove the notify element
+ * if the user is not logged in.
+ */
+function vsite_register_form_vsite_register_form_alter(&$form, &$form_state) {
+  if(!user_is_logged_in()) {
+  	if(isset($form['notify'])) {
+  		$form['notify']['#access'] = FALSE;
+  	}
+  }
+}
+
