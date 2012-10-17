@@ -13,15 +13,7 @@ define('CP_MENU_MINI', 'mini');
 define('CP_MENU_FULL', 'full');
 
 /**
-<<<<<<< HEAD
-<<<<<<< HEAD
  * Loads an include file based on a $_GET.
-=======
- * @todo description
->>>>>>> first pass renaming "features" to "apps"
-=======
- * Loads an include file based on a $_GET.
->>>>>>> minor docs edit
  *
  * @see cp_init()
  */
@@ -39,15 +31,7 @@ function cp_invoke($hook, $args = array()) {
 }
 
 /**
-<<<<<<< HEAD
-<<<<<<< HEAD
  * Implements hook_init().
-=======
- * Loads an include file based on a $_GET
->>>>>>> first pass renaming "features" to "apps"
-=======
- * Implements hook_init().
->>>>>>> minor docs edit
  */
 function cp_init() {
   cp_invoke('init');
@@ -417,10 +401,10 @@ function cp_site_sitewide_contact() {
 /**
  * Returns the page title for OS App Settings form pages.
  */
- function _cp_app_settings_page_title($feature_name) {
-   $feature = feature_load($feature_name);
-   $feature_title = features_get_feature_title($feature);
+function _cp_app_settings_page_title($feature_name) {
+  $feature = feature_load($feature_name);
+  $feature_title = features_get_feature_title($feature);
 
-   $title = t('@app Settings', array('@app' => $feature_title));
-   return $title;
- }
+  $title = t('@app Settings', array('@app' => $feature_title));
+  return $title;
+}
