@@ -543,7 +543,7 @@ function os_preprocess_page(&$variables) {
     $link = current($links);
     $variables['title_suffix']['controls']['add_new'] = array(
       '#theme' => 'link',
-      '#text' => t('Add New !type', array('!type' => $link['title'])),
+      '#text' => t('Add !type', array('!type' => $link['title'])),
       '#path' => $link['href'],
       '#options' => array(
         'attributes' => array(
