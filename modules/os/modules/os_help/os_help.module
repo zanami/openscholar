@@ -7,8 +7,8 @@
 function os_help_help($path, $arg) {
   switch ($path) {
     case 'cp/build':
-    case 'cp/build/features':
-      $topic = 'Features';
+    case 'cp/build/apps':
+      $topic = 'Apps';
       break;
     case 'cp/build/layout':
       $topic = 'Customizing-Your-Site-Layout';
@@ -133,23 +133,23 @@ function _os_help_attach_help_link(&$element, $form_id) {
  */
 function _os_help_get_theme_variables($id) {
   static $theme_variables = array(
-    'spaces_features_form:spaces_features:os_news' => array('module' => 'os_help', 'topic' => 'News-feature'),
-    'spaces_features_form:spaces_features:os_biocv' => array('module' => 'os_help', 'topic' => 'Bio---CV-feature'),
-    'spaces_features_form:spaces_features:os_blog' => array('module' => 'os_help', 'topic' => 'Blog-feature'),
-    'spaces_features_form:spaces_features:os_booklets' => array('module' => 'os_help', 'topic' => 'Booklet-feature'),
-    'spaces_features_form:spaces_features:os_classes' => array('module' => 'os_help', 'topic' => 'Class-feature'),
-    'spaces_features_form:spaces_features:os_pages' => array('module' => 'os_help', 'topic' => 'Pages-feature'),
-    'spaces_features_form:spaces_features:os_events' => array('module' => 'os_help', 'topic' => 'Events-feature'),
-    'spaces_features_form:spaces_features:os_dataverse' => array('module' => 'os_help', 'topic' => 'Dataverse-feature'),
-    'spaces_features_form:spaces_features:os_feeds' => array('module' => 'os_help', 'topic' => 'Feed-feature'),
-    'spaces_features_form:spaces_features:os_front' => array('module' => 'os_help', 'topic' => 'Front-feature'),
-    'spaces_features_form:spaces_features:os_image_gallery' => array('module' => 'os_help', 'topic' => 'Image-Gallery-feature'),
-    'spaces_features_form:spaces_features:os_links' => array('module' => 'os_help', 'topic' => 'Links-feature'),
-    'spaces_features_form:spaces_features:os_profiles' => array('module' => 'os_help', 'topic' => 'Profiles-feature'),
-    'spaces_features_form:spaces_features:os_publications' => array('module' => 'os_help', 'topic' => 'Publications-feature'),
-    'spaces_features_form:spaces_features:os_presentations' => array('module' => 'os_help', 'topic' => 'Presentations-feature'),
-    'spaces_features_form:spaces_features:os_reader' => array('module' => 'os_help', 'topic' => 'Reader-feature'),
-    'spaces_features_form:spaces_features:os_software' => array('module' => 'os_help', 'topic' => 'Software-feature'),
+    'spaces_features_form:spaces_features:os_news' => array('module' => 'os_help', 'topic' => 'News-app'),
+    'spaces_features_form:spaces_features:os_biocv' => array('module' => 'os_help', 'topic' => 'Bio---CV-app'),
+    'spaces_features_form:spaces_features:os_blog' => array('module' => 'os_help', 'topic' => 'Blog-app'),
+    'spaces_features_form:spaces_features:os_booklets' => array('module' => 'os_help', 'topic' => 'Booklet-app'),
+    'spaces_features_form:spaces_features:os_classes' => array('module' => 'os_help', 'topic' => 'Class-app'),
+    'spaces_features_form:spaces_features:os_pages' => array('module' => 'os_help', 'topic' => 'Pages-app'),
+    'spaces_features_form:spaces_features:os_events' => array('module' => 'os_help', 'topic' => 'Events-app'),
+    'spaces_features_form:spaces_features:os_dataverse' => array('module' => 'os_help', 'topic' => 'Dataverse-app'),
+    'spaces_features_form:spaces_features:os_feeds' => array('module' => 'os_help', 'topic' => 'Feed-app'),
+    'spaces_features_form:spaces_features:os_front' => array('module' => 'os_help', 'topic' => 'Front-app'),
+    'spaces_features_form:spaces_features:os_image_gallery' => array('module' => 'os_help', 'topic' => 'Image-Gallery-app'),
+    'spaces_features_form:spaces_features:os_links' => array('module' => 'os_help', 'topic' => 'Links-app'),
+    'spaces_features_form:spaces_features:os_profiles' => array('module' => 'os_help', 'topic' => 'Profiles-app'),
+    'spaces_features_form:spaces_features:os_publications' => array('module' => 'os_help', 'topic' => 'Publications-app'),
+    'spaces_features_form:spaces_features:os_presentations' => array('module' => 'os_help', 'topic' => 'Presentations-app'),
+    'spaces_features_form:spaces_features:os_reader' => array('module' => 'os_help', 'topic' => 'Reader-app'),
+    'spaces_features_form:spaces_features:os_software' => array('module' => 'os_help', 'topic' => 'Software-app'),
     'cp_layout_full_form:context_selection' => array('module' => 'os_help', 'topic' => 'Customizing-Your-Site-Layout'),
   );
   if (!isset($theme_variables[$id])) {

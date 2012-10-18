@@ -20,9 +20,11 @@ class os_taxonomy_fbt extends os_boxes_default {
     $options['offset'] = 0;
     $options['show_empty_terms'] = false;
     $options['terms_description'] = false;
+    $options['show_count'] = true;
     $options['show_childs'] = true;
     $options['add_childs'] = false;
     $options['depth'] = 0;
+    $options['behavior'] = 'contextual';
 
     return $options;
   }
@@ -104,15 +106,6 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#description' => t('Controll if to show the childrens with their father term.'),
     );
 
-    $form['add_childs'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Add childs to the count'),
-      '#description' => t('Define if we add the childs tagged node number to the count.'),
-      '#dependency' => array(
-        'edit-show-childs' => array(1),
-      ),
-    );
-
     $form['depth'] = array(
       '#type' => 'select',
       '#title' => ('Taxonomy tree depth.'),
@@ -130,6 +123,32 @@ class os_taxonomy_fbt extends os_boxes_default {
       ),
     );
 
+    $form['show_count'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show number of posts'),
+      '#description' => t('Show number of posts tagged to a term next to the term.'),
+    );
+
+    $form['add_childs'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Add tagged children to the count'),
+      '#description' => t('Should posts tagged to childeren of a term be added to the count.'),
+      '#dependency' => array(
+        'edit-show-count' => array(1),
+      ),
+    );
+
+    $form['advanced']['behavior'] = array(
+      '#type' => 'select',
+      '#title' => t('Behavior'),
+      '#options' => array(
+        'contextual' => "Filter the posts on the current page by a term",
+        'global' => "Show to all posts tagged with the term"
+      ),
+      '#default_value' => $this->options['behavior'],
+      '#description' => t('What should happen when you click a term, should it filter the current results if applicable or always link to all posts tagged with the term.')
+    );
+
     return $form;
   }
 
@@ -142,15 +161,17 @@ class os_taxonomy_fbt extends os_boxes_default {
       return;
     }
 
-    // Reset the keys.
-    foreach (array_keys($this->form_elements()) as $setting) {
-      $this->options['settings'][$setting] = !empty($this->options['settings'][$setting]) ? $this->options['settings'][$setting] : NULL;
-    }
-
     $block = parent::render();
     // For now - display the first vocabulary terms.
     if (isset($this->options['bundles']['--all--'])) {
       $this->options['bundles'] = array();
+
+      ctools_include('layout', 'os');
+      if($this->options['behavior'] == 'contextual' && ($feature = os_get_active_feature())){
+        if (isset($feature->info['features']['node'])) {
+          $this->options['bundles'] = $feature->info['features']['node'];
+        }
+      }
     }
 
     $block['content'] = theme('os_taxonomy_vocabulary_item_list', array(

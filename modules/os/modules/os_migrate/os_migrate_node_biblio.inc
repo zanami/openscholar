@@ -23,7 +23,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     $this->addUnmigratedSources(array('field_biblio_image_fid', 'field_biblio_image_list', 'field_biblio_image_data'), t('DNM'));
 
     $this->addSimpleMappings(array('field_biblio_image', 'field_biblio_image:alt', 'field_biblio_image:title'));
-
+    $this->addFieldMapping('field_biblio_image:og_group_ref', 'group_nid');
 
   }
 

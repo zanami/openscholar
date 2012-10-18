@@ -24,7 +24,7 @@ font-family: helvetica,arial,sans-serif;
    border-bottom: none;
 }
 
-#header-container {background:#2f2f2f;}
+#top-header-container {background:#2f2f2f;}
 .region-header-third {text-align: right;}
 
 #footer {
@@ -77,7 +77,7 @@ a:hover {text-decoration:underline;}
 #main-content li a {text-decoration:underline;}
 
 
-#header-container a {color:#FFF;}
+#top-header-container a {color:#FFF;}
 
 .more-link a, 
 .node_read_more a {

@@ -23,7 +23,7 @@ a:hover {
   color:#13a3eb;
   }
 
-h1, h2, h3, .region-sidebar-first a, #header-container {
+h1, h2, h3, .region-sidebar-first a, #top-header-container {
   font-family: georgia, serif;
   font-weight: normal;
   }
@@ -46,7 +46,7 @@ h2.block-title {
 
 
 body.sidebar-first #columns .hg-container,
-body.header-left-main #header-container {
+body.header-left-main #top-header-container {
   padding-right: 20px;
   }
 
@@ -75,27 +75,27 @@ body.two-sidebars #footer p.copy {
   border-bottom:1px solid #E6EAED;
   }
 
-#header-container h1 {
+#top-header-container h1 {
   font-size: 2em;
   line-height:1em;
   font-style: normal;
   }
 
-#header-container h2 {
+#top-header-container h2 {
   font-size: 1.5em;
   line-height:1.3em;
   }
 
-#header-container h1 a, #header-container h1 a:visited {
+#top-header-container h1 a, #top-header-container h1 a:visited {
   color:#282828;
   font-style: normal;
   }
 
-#header-container p {
+#top-header-container p {
   border-top: 1px solid #D8D6D6;
   }
 
-body.navbar #header-container p {
+body.navbar #top-header-container p {
   border: none;
   }
 

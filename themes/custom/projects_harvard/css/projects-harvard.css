@@ -73,12 +73,12 @@ a, a:visited {
 
 /* HEADER ELEMENTS */
 
-#header-container {
+#top-header-container {
     height: 110px;
     }
 
   
-#header-container h1 {
+#top-header-container h1 {
   width: 233px;
   height: 76px;
   margin-left: 0px;
@@ -86,22 +86,22 @@ a, a:visited {
   }
 
 
-#header-container h1 a,
-#header-container h1 a:visited {
+#top-header-container h1 a,
+#top-header-container h1 a:visited {
   display:block;
   width: 231px;
   height: 76px;
   }
 
-#header-container h1 a,
-#header-container h1 a:visited {
+#top-header-container h1 a,
+#top-header-container h1 a:visited {
   display:block;
   width: 231px;
   height: 76px;
   }
 
-#header-container h1 a,
-#header-container h1 a:visited {
+#top-header-container h1 a,
+#top-header-container h1 a:visited {
     color:#282828;
     }
 

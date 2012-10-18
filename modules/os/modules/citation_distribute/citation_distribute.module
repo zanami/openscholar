@@ -236,11 +236,14 @@ function citation_distribute_flag($event, $flag, $nid, $account) {
         $batch_cmd = '';
       } else {
         $batch_cmd = 'distribute';                      //assume batch mode
+        $dist = TRUE;
       }
-      _citation_distribute_update_db($plugin['name'], $nid, $batch_cmd);
-      $msg = t('Submitted citation to @title', array('@title'=>$plugin['title']));
-      drupal_set_message($msg);
 
+      if ($dist) {
+        _citation_distribute_update_db($plugin['name'], $nid, $batch_cmd);
+        $msg = t('Submitted citation to @title', array('@title'=>$plugin['title']));
+        drupal_set_message($msg);
+      }
 
       break;
 
@@ -321,12 +324,12 @@ function citation_distribute_form_os_publications_settings_alter(&$form, &$form_
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() for cp_app_settings.
  *
  * When publications settings is loaded in a modal, it gets a different form id.  In that case we should
  * still use the form alter to add CD autoflags.
  */
-function citation_distribute_form_cp_feature_customize_form_alter(&$form, &$state, $id) {
+function citation_distribute_form_cp_app_settings_form_alter(&$form, &$state, $id) {
   if ($form['#feature'] == 'os_publications') {
     citation_distribute_form_os_publications_settings_alter($form, $state, $id);
   }

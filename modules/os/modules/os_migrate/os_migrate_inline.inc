@@ -159,23 +159,63 @@ class EmbedInlineOSMigration extends OSMigration {
   public function query() {
     $query = parent::d6_db_select('content_field_os_inline_oembed', 'cf')
       ->fields('cf', array('field_os_inline_oembed_url', 'vid', 'delta'))
-      ->isNotNull('field_os_inline_oembed_url')
-      ->groupBy('field_os_inline_oembed_url');
+      ->isNotNull('field_os_inline_oembed_url');
+      //->groupBy('field_os_inline_oembed_url');
+    $query->distinct();
+
     $query->leftJoin('node', 'n', 'cf.nid = n.nid');
     $query->fields('n', array('uid', 'created', 'nid'));
     return $query;
   }
 
   public function prepareRow($row) {
-    $row->uri = preg_replace('/https?:\/\//', 'oembed://', $row->field_os_inline_oembed_url);//$row->field_os_inline_oembed_url;
-    $row->filename = basename($row->uri); //or fetch this from media's name getting funcs.  slow as hell?
+    //$row->uri = $row->field_os_inline_oembed_url;
+    //$row->uri = preg_replace('/https?:\/\//', 'oembed://', $row->field_os_inline_oembed_url);//$row->field_os_inline_oembed_url;
+
+    $row->uri = 'oembed://' . $row->field_os_inline_oembed_url;
+    $row->filename = md5($row->uri); //or fetch this from media's name getting funcs.  slow as hell?
+
   }
 
   //destination forces public:// URI.  switch it back.  uri is also truncated to basename.  lets not make all youtube links the same, kthxbai
   public function prepare($entity, $row) {
-    $entity->uri = $row->uri;//preg_replace('/https?:\/\//', 'oembed://', $row->field_os_inline_oembed_url);
+    //$entity->uri = $row->uri;//preg_replace('/https?:\/\//', 'oembed://', $row->field_os_inline_oembed_url);
+//     $entity->filename = md5($row->uri);
+//     $entity->uri = 'embed://' . $entity->filename;
+//     $entity->field_html_code = array(LANGUAGE_NONE=>array(array(
+//       'value' => '<iframe src="' . $row->field_os_inline_oembed_url . '">',
+//     )));
 
+    if (($type = $this->_url_to_type($row->field_os_inline_oembed_url)) == FALSE) {
+      $file = new stdClass();
+      $file->uri = 'oembed://' . check_url($row->field_os_inline_oembed_url);
+      $mime = file_get_mimetype($file->uri);
+      $file->filemime = $mime;
+      $type = file_get_type($file);
+    }
+    $entity->type = ($type) ? $type : 'text/oembed';
   }
+
+  //correct the fields that wouldn't attach in prepare
+   public function complete($entity, $row) {
+
+     //$entity->filemime = 'html/embed';
+//     $entity->uri = str_replace('public://', 'embed://', $entity->uri);
+//$entity->uri = $entity->value;
+$entity->uri = 'oembed://' . check_plain($row->field_os_inline_oembed_url);
+     file_save($entity);
+   }
+
+   function _url_to_type($url) {
+     list(,,$domain) = explode('/', $url);
+     $urls = array(
+       'youtube.com' => 'video',
+       'youtu.be' => 'video',
+       'soundcloud.com' => 'video',
+     );
+
+     return (isset($urls[$domain])) ? $urls[$domain] : FALSE;
+   }
 }
 
 //import from node bodies too.

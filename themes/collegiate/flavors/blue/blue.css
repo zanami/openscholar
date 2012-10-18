@@ -52,7 +52,7 @@ body.front #content-bottom ul li.views-row
 
 /* LAYOUT ELEMENTS */
 
-#header-container {
+#top-header-container {
 	 background: url('images/headerBg.png') repeat-x;
 	 background-color: #013E73;
  }

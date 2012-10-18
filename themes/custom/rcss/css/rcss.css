@@ -26,11 +26,11 @@ h4 {
 /*LAYOUT ITEMS */
 
 
-#header-container, #block-os-primary-menu, #columns, #footer {
+#top-header-container, #block-os-primary-menu, #columns, #footer {
   margin: 0 auto;
   }
 
-#header-container .gpanel {
+#top-header-container .gpanel {
   margin-top: 16px;
   height: 88px;
   }
@@ -72,20 +72,20 @@ div.links {
 
 /* HEADER ITEMS */
 
-#header-container .column {
+#top-header-container .column {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   }
 
- #header-container h1 {
+ #top-header-container h1 {
   width: 272px;
   height: 66px;
   text-indent: -999em;
   background: url('../images/logo.png') no-repeat transparent;
   }
 
-#header-container h1 a,
-#header-container h1 a:visited {
+#top-header-container h1 a,
+#top-header-container h1 a:visited {
   width: 272px;
   height: 66px;
   display:block;

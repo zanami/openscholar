@@ -69,7 +69,7 @@ function os_news_image_default_styles() {
 function os_news_node_info() {
   $items = array(
     'news' => array(
-      'name' => t('News item'),
+      'name' => t('News'),
       'base' => 'node_content',
       'description' => '',
       'has_title' => '1',

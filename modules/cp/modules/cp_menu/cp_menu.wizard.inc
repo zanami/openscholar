@@ -92,13 +92,13 @@ function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
   ctools_include('wizard');
   $form = ctools_wizard_multistep_form($form_info, $step, $form_state);
   $output = drupal_render($form);
-//   if ($js) {
-//   	ctools_include('ajax');
-//   	ctools_include('modal');
-//   	ctools_modal_render(t('Add menu item'), $output);
-//   } else {
+   if ($js) {
+  	ctools_include('ajax');
+  	ctools_include('modal');
+  	ctools_modal_render(t('Add menu item'), $output);
+  } else {
   	return $output;
-  //}
+  }
 }
 
 
@@ -387,7 +387,18 @@ function cp_menu_wizard_cancel(&$form_state) {
 	$cached = cp_menu_cache_get($form_state['object_id']);
   cp_menu_cache_clear($form_state['object_id']);
 
-  overlay_commands_add(overlay_command_dismiss());
+  if ($form_state['ajax'] || $cached['js']) {
+    ctools_include('modal');
+    ctools_include('ajax');
+
+    $commands = array();
+    $commands[] = ctools_modal_command_dismiss();
+    print ajax_render($commands);
+    exit;
+  } else {
+    overlay_commands_add(overlay_command_dismiss());
+  }
+
 }
 
 /**
@@ -399,7 +410,17 @@ function cp_menu_wizard_finish(&$form_state) {
   //new node page
   if ($values['type'] == 'page' && $values['new_or_select'] == 'new') {
     cp_menu_cache_set($form_state['object_id'], $values);
-  	drupal_goto('node/add/' . $values['new_node_type']);
+    if ($form_state['ajax'] || $values['js']) {
+      ctools_include('modal');
+      ctools_include('ajax');
+      $commands = array();
+
+      $commands[] = ctools_ajax_command_redirect('node/add/' . $values['new_node_type']);
+      print ajax_render($commands);
+      exit;
+    } else {
+  	  drupal_goto('node/add/' . $values['new_node_type']);
+    }
   }
 
   //Build the link from the collected data
@@ -433,14 +454,25 @@ function cp_menu_wizard_finish(&$form_state) {
 
   //then save to vsite or whole site
   ctools_include('menu','os');
+
   $item = array('link_path' => $url, 'menu_name' => $menu_name, 'link_title' => $values['title'],'options' => $options);
   $mlid = os_menu_link_save($item);
   cp_menu_cache_clear($form_state['object_id']);
 
   //ctools_ajax_command_reload();
-  overlay_commands_add(overlay_command_dismiss());
-  overlay_close_dialog();
+  if ($form_state['ajax'] || $values['js']) {
+    ctools_include('modal');
+    ctools_include('ajax');
 
+    $commands = array();
+    $commands[] = ctools_modal_command_dismiss();
+    $commands[] = ctools_ajax_command_reload();
+    print ajax_render($commands);
+    exit;
+  } else {
+    overlay_commands_add(overlay_command_dismiss());
+    overlay_close_dialog();
+  }
 
 }
 

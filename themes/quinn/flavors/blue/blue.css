@@ -14,11 +14,11 @@ h1#page-title {
 .region-sidebar-first a:visited,
 .region-sidebar-second a,
 .region-sidebar-second a:visited,
-#header-container a,
-#header-container a:visited,
-#header-container,
-#header-container h1 a,
-#header-container h1 a:visited{
+#top-header-container a,
+#top-header-container a:visited,
+#top-header-container,
+#top-header-container h1 a,
+#top-header-container h1 a:visited{
   color: #fff;
   -moz-text-shadow: 0 1px 1px #000;
   -webkit-text-shadow: 0 0 1px #000;
@@ -28,7 +28,7 @@ h1#page-title {
 
 .region-sidebar-first a:hover,
 .region-sidebar-second a:hover,
-#header-container h1 a:hover {
+#top-header-container h1 a:hover {
   background: #EEF788;
   color: #333;
   -moz-text-shadow: none;
