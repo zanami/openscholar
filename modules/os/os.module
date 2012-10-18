@@ -409,12 +409,19 @@ function os_module_implements_alter(&$implementations, $hook) {
   }
 }
 
+function os_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if (strpos($root_path, 'node/%') !== FALSE) {
+    // remove node-specific tasks
+    $data['tabs'] = array();
+  }
+}
+
 /**
  * Removes contextual links class from html.
  */
 function os_preprocess_html(&$variables) {
   $variables['classes_array'] = array_diff($variables['classes_array'], array(
-    'contextual-links-region',
+    //'contextual-links-region',
   ));
 }
 
