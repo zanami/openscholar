@@ -14,7 +14,7 @@ body {
 	margin:0 auto;
 	}
 
-#header-container {
+#top-header-container {
 	height: 171px;
 	border-bottom: 1px solid #B3C4C2;
 	}
@@ -188,8 +188,8 @@ div.biblio-authors {
 /* LAYOUT */
 
 
-#header-container .block-inner,
-#header-container .region-inner {
+#top-header-container .block-inner,
+#top-header-container .region-inner {
 margin-left: 0;
 margin-right: 0;
 padding-top: 0;

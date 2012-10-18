@@ -437,6 +437,22 @@ abstract class OSMigration extends Migration {
       }
     }
 
+    //html didn't work.  try media tags.
+    if ($update == FALSE) {
+      $divs = $dom->getElementsByTagName('div');
+      for ($i=0, $len=$divs->length; $i<$len && !$update; $i++ ) {
+        $div = $divs->item($i);
+        if (preg_match('/^\[wysiwyg_field.*?\]$/', $div->nodeValue)) {
+          if ($tag = $this->_os_migrate_inline_port_tag($div->nodeValue, $entity->fid, $row->vid)) {
+            $text = $dom->createTextNode($tag);
+            $div->parentNode->replaceChild($text, $div);
+            $update = TRUE;
+          }
+        }
+      }
+    }
+
+    //save changes
     if ($update) {
       $row->body = $this->_os_migrate_update_body_clean($dom->saveHTML());
     }
@@ -474,7 +490,7 @@ abstract class OSMigration extends Migration {
             $update = TRUE;
             $tag = $this->_os_migrate_inline_tag('iframe', $data['destid1'], $iframe);
             $text = $dom->createTextNode($tag);
-            $iframe->parentNode->replaceChild($text, $iframe);
+        //    $iframe->parentNode->replaceChild($text, $iframe);
           }
         }
       }
@@ -535,8 +551,8 @@ abstract class OSMigration extends Migration {
       ->condition('sourceid1', $fid, '=')
       ->isNotNull(('destid1'));
     $entity_id = $query->execute()->fetchAssoc();
-    if (! ($entity_id && $entity = file_load($entity_id['destid1']))) {
-      self::saveMessage(t('Migration error on source file %fid.  Could not find file in migration tables.  Continuing without file.  Check Inline migrations.', array('%fid'=>$fid)), MigrationBase::MESSAGE_WARNING);
+    if (! ($entity_id && ($entity = file_load($entity_id['destid1'])))) {
+      self::saveMessage(t('Migration error on source file %fid.  Could not find image file in migration tables.  Continuing without file.  Check Inline migrations.', array('%fid'=>$fid)), MigrationBase::MESSAGE_WARNING);
       return;
     }
 
@@ -601,7 +617,7 @@ abstract class OSMigration extends Migration {
   function _os_migrate_inline_tag($type, $fid, &$dom_object) {
     $tag = array(
       'type' => 'media',
-      'view_mode' => 'media_original',
+      'view_mode' => 'default',
       'fid' => $fid,
       'attributes' => array(
         'class' => 'media-image',
@@ -628,6 +644,7 @@ abstract class OSMigration extends Migration {
           parent::saveMessage(t('No image cache size for class: @class, assuming original.', array('@class' => $class)), MigrationBase::MESSAGE_INFORMATIONAL);
         }
         $attributes = array('width'=>'width', 'height'=>'height');
+        //$tag['view_mode'] = 'media_original';
       break;
 
       case 'file':
@@ -643,6 +660,56 @@ abstract class OSMigration extends Migration {
     }
 
     $tag['attributes'] += $this->_os_migrate_get_attributes($attributes, $dom_object);
+    return ' [[' . drupal_json_encode($tag) . ']] ';
+  }
+
+  /**
+   * @function _os_migrate_inline_port_tag()
+   *
+   * Updates a d6 media tag for d7.
+   *
+   * @param str $tag
+   *   Text of tag.
+   * @param int $fid
+   *   ID of migrated file
+   * @param int $nid
+   *   Node id
+   *
+   * @return string
+   *   Media 7.x tag
+   */
+  function _os_migrate_inline_port_tag($tag, $fid, $vid) {
+    //make an array of the tag.
+    $tag = trim($tag, '[]');
+    $info = array();
+    foreach (explode(' ', $tag) as $pair) {
+      $pair = explode('=', $pair);
+      $info[$pair[0]] = (isset($pair[1])) ? trim($pair[1], '"') : NULL;
+    }
+
+    //check that this tag matches the embedded file being attached to it
+    $result = db_select('migrate_map_embedinlineos', 'mm')
+      ->condition('sourceid1', $vid)
+      ->condition('sourceid2', $info['wf_deltas'])
+      ->condition('destid1', $fid)
+      ->fields('mm', array('destid1'))
+      ->execute();
+    if (!$result->rowCount()) {
+      return FALSE;
+    }
+
+    //right file, build the tag
+    $tag = array(
+      'type' => 'media',
+      'view_mode' => 'default',
+      'fid' => $fid,
+      'attributes' => array(
+        'class' => 'media-image',
+        //'typeof' => 'foaf:Image',
+        //no idea where width and height are coming from
+      ),
+    );
+
     return ' [[' . drupal_json_encode($tag) . ']] ';
   }
 

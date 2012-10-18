@@ -6,7 +6,7 @@
 
 
 body,
-#header-container, 
+#top-header-container, 
 #footer,
 #page {
   background: #2f341f;
@@ -140,12 +140,12 @@ p.copy a.poweredby {
   left: -169px;
   }
 
-#header-container {
+#top-header-container {
   padding-bottom:5px;
   }
 
-body.header-main #header-container,
-body.header-main-right #header-container {
+body.header-main #top-header-container,
+body.header-main-right #top-header-container {
   padding-right:298px;
   }
 
@@ -159,7 +159,7 @@ body.header-main-right .region-header-second {
   vertical-align:middle;
   }
 
-#header-container h1, #header-container h2, #header-container p {
+#top-header-container h1, #top-header-container h2, #top-header-container p {
     font-size: 23px;
     line-height: 28px;
     font-weight:normal;
@@ -168,28 +168,28 @@ body.header-main-right .region-header-second {
     margin: 0;
     }
     
-    #header-container h1 {
+    #top-header-container h1 {
 
     text-transform:uppercase;
     }
 
-#header-container h2 {
+#top-header-container h2 {
   font-size: 16px;
   line-height: 18px;
   font-style:normal;
   }
 
-#header-container p {
+#top-header-container p {
   font-size: 11px;
   line-height: 18px;
   margin-bottom: 5px;
   }
 
-#header-container h1 a, #header-container h1 a:visited {
+#top-header-container h1 a, #top-header-container h1 a:visited {
     color:#a3a18c;
     }
 
-#header-container h1 a:hover {
+#top-header-container h1 a:hover {
     color:#f8f7bd;
     text-decoration: none;
     }

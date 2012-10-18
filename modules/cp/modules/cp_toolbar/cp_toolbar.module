@@ -97,7 +97,9 @@ function cp_toolbar_view() {
   $links = array(
     'help' => array(
       'title' => t('Help'),
-      'href' => 'admin/help',
+      // 'href' => 'admin/help',
+      'href' => 'help/os_help/User-Documentation',
+ 	  // 'query' => array('popup'=>'1'),
       'html' => TRUE,
       'description' => t('Get help on various topics'),
     ),
@@ -174,6 +176,19 @@ function cp_toolbar_view() {
         //'data-drawer' => 'people-drawer',
       )
     );
+  }
+  // Make sure the contact module is enabled
+  // before adding in the link for cp/support.
+  if(module_exists('contact')) {
+    $l = menu_get_item('cp/support');
+    if ($l['access']) {
+      $links['support'] = $l + array(
+        '#paths' => array(),
+        'attributes' => array(
+          'title' => t('Support'),
+        )
+      );
+    }
   }
   if (user_access('access toolbar')) {
     $links['admin'] = array(

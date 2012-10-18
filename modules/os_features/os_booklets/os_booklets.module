@@ -14,7 +14,7 @@ include_once 'os_booklets.features.inc';
  */
 function os_booklets_menu() {
   $items = array();
-
+  // Named like 'features/$feature_name' by features/spaces convention.
   $items['features/os_booklets'] = array(
     'title' => 'Booklets Settings',
     'page callback' => 'drupal_get_form',

@@ -34,7 +34,7 @@ a:hover {
   background: transparent;
   }
 
-h1, h2, h3, .region-sidebar-second a, #menu-bar, #header-container {
+h1, h2, h3, .region-sidebar-second a, #menu-bar, #top-header-container {
   font-weight: bold;
   }
 
@@ -132,31 +132,31 @@ h2.block-title {
 
 
 
-#header-container h1 {
+#top-header-container h1 {
     font-size: 2em;
     }
 
-#header-container h3,
-#header-container a,
-#header-container a:visited,
-#header-container {
+#top-header-container h3,
+#top-header-container a,
+#top-header-container a:visited,
+#top-header-container {
   color:#888;
   }
 
-#header-container h1 a,
-#header-container h1 a:visited {
+#top-header-container h1 a,
+#top-header-container h1 a:visited {
     text-decoration: none;
     padding: 0 4px;
     margin-left: -4px;
     color:#666;
     }
 
-#header-container h2 {
+#top-header-container h2 {
     font-size: 1.2em;
     margin-top:0;
     }
 
-#header-container a, #header-container a:visited {
+#top-header-container a, #top-header-container a:visited {
     text-decoration: none;
     }
 

@@ -6,7 +6,7 @@ body {
   background: rgba(255, 255, 255, 0.4)
   }
 
-#header-container h1 a, #header-container h1 a:visited, #header-container h2, #header-container p, #header-container p a, #header-container p a:visited  {
+#top-header-container h1 a, #top-header-container h1 a:visited, #top-header-container h2, #top-header-container p, #top-header-container p a, #top-header-container p a:visited  {
   color: #678898;
   }
 

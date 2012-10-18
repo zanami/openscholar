@@ -57,6 +57,15 @@ EOF
     '#default_value' => variable_get('os_migrate_files', ''),
   );
 
+
+  $oembedembedly_api_key = variable_get('oembedembedly_api_key', FALSE);
+  if (!$oembedembedly_api_key) {
+    $form['embed_key'] = array(
+      '#type' => 'markup',
+      '#markup' => '<div class="warning messages">Warning.  You have not set an embedly key.  Please configure embedly with an API key if you have many inline embeds to migrate.</div>',
+    );
+  }
+
   $form['dev_fieldset'] = array(
     '#title' => t('Development Settings'),
     '#type' => 'fieldset',
@@ -115,6 +124,7 @@ EOF
     '#type' => 'textfield',
     '#description' => t('OpenScholar migration includes a few edge case scenarios where a certain vsite gets special treatment.  To prevent this from interfering with the general case, the special treatment only happens when the legacy database has a certain base domain.  This setting overrides that domain.  Useful when you\'re trying to test migration of http://prod.com, but are doing so from http://dev.local.'),
   );
+
   return system_settings_form($form);
 }
 

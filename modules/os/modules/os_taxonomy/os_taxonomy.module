@@ -128,6 +128,7 @@ function theme_os_taxonomy_term_item($variables) {
  *        to show.
  *      - bundles: The bundles type of the tagged node that will include in the
  *        count.
+ *      - show_count: Show the number of tagged nodes next to the term
  *      - add_childs: Define if we add the childs tagged node number to the
  *        count.
  *      - show_empty_terms: Show empty terms in the terms list.
@@ -144,6 +145,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     'offset' => 0,
     'depth' => NULL,
     'bundles' => array(),
+    'show_count' => TRUE,
     'add_childs' => FALSE,
     'show_childs' => TRUE,
     'tid_active_class' => 0,
@@ -187,8 +189,11 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     }
 
     // The attached number to the term name.
-    $number = $item['tagged_items'];
-    $number += $options['add_childs'] && isset($item['child_number']) ? $item['child_number'] : 0;
+    $number = null;
+    if($options['show_count']){
+      $number = $item['tagged_items'];
+      $number += $options['add_childs'] && isset($item['child_number']) ? $item['child_number'] : 0;
+    }
 
     // Check if we need to disable the link to the term base on the child number.
     $link_options = empty($item['class']) ? array() : array('attributes' => array('class' => $item['class']));
@@ -266,8 +271,11 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
       $child_content = os_taxonomy_build_child_item($item['childs'], $item, $options);
     }
 
-    $number = $item['tagged_items'];
-    $number += $options['add_childs'] && isset($item['child_number']) ? $item['child_number'] : 0;
+    $number = null;
+    if($options['show_count']){
+      $number = $item['tagged_items'];
+      $number += $options['add_childs'] && isset($item['child_number']) ? $item['child_number'] : 0;
+    }
     $content .= theme('os_taxonomy_term_item', array(
       'number' => $number,
       'name' => $item['term_name'],
