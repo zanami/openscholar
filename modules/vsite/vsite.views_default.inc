@@ -72,6 +72,13 @@ function vsite_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
+  /* Field: Content: Site Description */
+  $handler->display->display_options['fields']['field_site_description']['id'] = 'field_site_description';
+  $handler->display->display_options['fields']['field_site_description']['table'] = 'field_data_field_site_description';
+  $handler->display->display_options['fields']['field_site_description']['field'] = 'field_site_description';
+  $handler->display->display_options['fields']['field_site_description']['label'] = '';
+  $handler->display->display_options['fields']['field_site_description']['element_label_colon'] = FALSE;
+  $handler->display->display_options['path'] = 'websites';
   /* Sort criterion: Content: Sticky */
   $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['table'] = 'node';
