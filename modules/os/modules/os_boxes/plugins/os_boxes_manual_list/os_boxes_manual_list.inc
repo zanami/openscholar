@@ -16,18 +16,17 @@ class os_boxes_manual_list extends os_boxes_default {
       drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_manual_list/os_boxes_manual_list.js'
     );
 
+    include_once (drupal_get_path('module', 'vsite') . '/includes/nodeautocomplete.inc');
     $form['add'] = array(
       '#type' => 'fieldset',
       '#title' => t('Add New Post'),
-      'node_to_add' => array(
-        '#type' => 'textfield',
-        '#description' => t('Start entering the title of a post and matching posts will appear.'),
-        '#autocomplete_path' => 'ctools/autocomplete/node',
-      	'#field_suffix' => '<input type="button" class="add_new" value="Add" />'
-      ),
-      //'node_to_add' => vsite_node_autocomplete_element() + array('#field_suffix' => '<input type="button" class="add_new" value="Add" />'),
-    );
-
+//      'node_to_add' => array(
+//        '#type' => 'textfield',
+//        '#description' => t('Start entering the title of a post and matching posts will appear.'),
+//        '#autocomplete_path' => 'ctools/autocomplete/node',
+//      	'#field_suffix' => '<input type="button" class="add_new" value="Add" />'
+//      ),
+      'node_to_add' => vsite_node_autocomplete_element() + array('#field_suffix' => '<input type="button" class="add_new" value="Add" />'),
     );
 
     // build a normal form

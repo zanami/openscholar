@@ -156,15 +156,14 @@ function cp_menu_title($form, &$form_state) {
       $form['new_or_select'] = array(
         '#type' => 'radios',
         '#title' => t('Destination'),
-        '#options' => array('new'=>t('New Page'), 'select'=>t('Choose Existing')),
+        '#options' => array('new'=>t('New page'), 'select'=>t('Choose existing')),
         '#description' => t('Choose a page you have already created or make a new page as the destination for your link'),
         '#required' => TRUE,
       );
 
-      $form['node'] = array(
-        '#type' => 'textfield',
+      include_once (drupal_get_path('module', 'vsite') . '/includes/nodeautocomplete.inc');
+      $autocomplete_element = array(
         '#title' => t('Page'),
-        '#autocomplete_path' => 'ctools/autocomplete/node', //does not limit by vsite or user.  waiting for d7's version of vsite_node_autocomplete
         '#description' => t('Select an existing page.'),
         '#states' => array(
           'visible' => array(
@@ -172,6 +171,7 @@ function cp_menu_title($form, &$form_state) {
           ),
         ),
       );
+      $form['node'] = vsite_node_autocomplete_element($autocomplete_element);
 
       $form['new_node_type'] = array(
         '#type' => 'select',
