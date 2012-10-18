@@ -32,17 +32,45 @@ function os_files_private_file_list() {
  *
  * Set the URI schema to private when adding a new file via file/add.
  *
- * @see media_add_upload_submit()
+ * @see file_entity_add_upload()
  */
-function os_files_private_form_media_add_upload_alter(&$form, &$form_state) {
+function os_files_private_form_file_entity_add_upload_alter(&$form, $form_state) {
   $item = menu_get_item();
-  if ($item['path'] != 'file/add') {
+  if ($item['path'] != 'file/add' || !spaces_get_space()) {
     return;
   }
-  $form_state['build_info']['args'][0]['uri_scheme'] = 'private';
 
-  $form['#submit'][] = 'os_files_private_redirect_after_upload';
+  if (!variable_get('file_private_path', FALSE)) {
+    // Private file system was not defined.
+    return;
+  }
+
+  $form['upload']['#upload_location'] = 'private://';
+  $form['#submit'][] = 'os_files_private_form_file_entity_add_upload_submit';
 }
+
+/**
+ * Submit handler; Redirect to "file-list" after file upload.
+ *
+ * @see file_entity_add_upload_submit()
+ */
+function os_files_private_form_file_entity_add_upload_submit($form, &$form_state) {
+  $file = file_load($form_state['values']['upload']);
+
+  // Redirect to the file edit page after submission.
+  if (file_entity_access('edit')) {
+    $destination = array('destination' => 'file-list');
+    if (isset($_GET['destination'])) {
+      $destination = drupal_get_destination();
+      unset($_GET['destination']);
+    }
+    $form_state['redirect'] = array('file/' . $file->fid . '/edit', array('query' => $destination));
+  }
+  else {
+    $form_state['redirect'] = 'admin/content/file';
+  }
+}
+
 
 /**
  * Implements hook_os_add_new_links_alter().
@@ -61,15 +89,6 @@ function os_files_private_os_add_new_links_alter(&$links) {
     'href' => 'file/add',
     'html' => TRUE,
   );
-}
-
-/**
- * Submit handler - the module media has it's own redirect path in his submit
- * handler. This submit handler will be called after the media module handler
- * and change the redirect path.
- */
-function os_files_private_redirect_after_upload($form, &$form_state) {
-  $form_state['redirect'] = 'file-list';
 }
 
 /**
@@ -94,24 +113,20 @@ function os_files_private_file_download($uri) {
   $path = file_uri_target($uri);
   $scheme = file_uri_scheme($uri);
 
-  if ($scheme != 'public' || !module_exists('vsite')) {
-    return NULL;
-  }
-
   if ($files = file_load_multiple(array(), array('uri' => $uri))) {
-    foreach ($files as $file) {
-      $wrapper = entity_metadata_wrapper('file', $file);
-      if (!isset($wrapper->{OG_AUDIENCE_FIELD}) || !$gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE))) {
-        continue;
-      }
-
-      if (!og_is_member('node', $gid[0])) {
-        if (function_exists('pinserver_check_status') && !pinserver_check_status()) {
-          // Maybe user is site owner,  but has not logged in locally or via the pinserver, so send to pinserver.
-          return pinserver_redirect();
-        }
-        return -1;
-      }
+    $file = reset($files);
+    $wrapper = entity_metadata_wrapper('file', $file);
+    if (!isset($wrapper->{OG_AUDIENCE_FIELD}) || !$gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE))) {
+      continue;
     }
+
+    if (!og_is_member('node', $gid[0])) {
+      if (function_exists('pinserver_check_status') && !pinserver_check_status()) {
+        // Maybe user is site owner,  but has not logged in locally or via the pinserver, so send to pinserver.
+        return pinserver_redirect();
+      }
+      return -1;
+    }
+    return array('Content-Type' => $file->filemime);
   }
 }
