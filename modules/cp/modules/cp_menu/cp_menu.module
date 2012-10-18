@@ -150,7 +150,7 @@ function cp_menu_contextual_links_view_alter(&$element, $items) {
 	        $menu = $link[1];
 
 	        if (in_array($menu, $menus)) {
-	          $fragment = 'cp/menu/ajax/new/';
+	          $fragment = 'cp/menu/nojs/new/';
 	          if ($space = spaces_get_space()) {
 	            $fragment = $space->group->purl . '/' . $fragment;
 	          }
