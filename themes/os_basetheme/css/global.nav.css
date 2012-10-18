@@ -452,7 +452,7 @@ color: #FFF !important;
     position: absolute;
     right: 0;
     top: 0;
-    width: 130px;
+    width: auto;
     z-index: 500;
 }
 
@@ -468,22 +468,23 @@ color: #FFF !important;
 }
 
 
-.ctools-dropdown.add_new {
+.contextual-controls-wrapper .add_new {
 	float:left;
 	display:inline;
 	 background: url("../images/scholarbase-sprite.png") no-repeat scroll 3px -380px #A1D4A1 !important;
     border-radius: 5px 5px 5px 5px;
     float: left;
-    margin: 0 10px 0 0;
-    padding: 3px 8px 1px 11px !important;
+     margin: 0 22px 0 0;
+    padding: 3px 8px 1px 22px !important;
+    text-decoration:none !important;
 	}
 
 html.js div.ctools-dropdown a.ctools-dropdown-text-link {
     background: none;
     padding:0 0 0 13px;
     font-size:13px;
-    color: #293352;
-    text-decoration:none;
+    color: #293352 !important;
+    text-decoration:none !important;
 }	
 
 
@@ -531,9 +532,9 @@ background: none repeat scroll 0 0 #FFFFFF !important;
 }
 
 html.js div.ctools-dropdown div.ctools-dropdown-container ul li a {
-    color: #293352;
+    color: #293352 !important;
     padding: 0 0 2px 5px;
-    text-decoration: none;
+    text-decoration:none !important;
     font-weight:normal;
     font-size:13px;
     font-style:normal;
