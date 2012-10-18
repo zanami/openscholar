@@ -26,6 +26,12 @@ function os_links_context_default_contexts() {
         'links' => 'links',
       ),
     ),
+    'path' => array(
+      'values' => array(
+        'links' => 'links',
+        'links/*' => 'links/*',
+      ),
+    ),
     'node' => array(
       'values' => array(
         'link' => 'link',

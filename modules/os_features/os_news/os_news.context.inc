@@ -37,6 +37,7 @@ function os_news_context_default_contexts() {
     'path' => array(
       'values' => array(
         '/news' => '/news',
+        '/news/*' => '/news/*',
       ),
     ),
     'views' => array(

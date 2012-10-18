@@ -22,7 +22,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
 
     $this->addUnmigratedSources(array('field_biblio_image_fid', 'field_biblio_image_list', 'field_biblio_image_data'), t('DNM'));
 
-    $this->addSimpleMappings(array('field_biblio_image', 'field_biblio_image:alt', 'field_biblio_image:title'));
+    $this->addSimpleMappings(array('field_biblio_image', 'field_biblio_image:alt', 'field_biblio_image:title', 'field_biblio_extra', 'field_biblio_extra:label', 'field_biblio_extra:value'));
     $this->addFieldMapping('field_biblio_image:og_group_ref', 'group_nid');
 
   }
@@ -79,6 +79,22 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
 		    $current_row->{'field_biblio_image:alt'} = isset($data['alt']) ? $data['alt'] : '';
 		    $current_row->{'field_biblio_image:title'} = isset($data['title']) ? $data['title'] : '';
 		  }
+		}
+
+		//get extra fields
+		$dyntext = parent::d6_db_select('content_field_biblio_extra', 'ex')
+		  ->condition('vid', $current_row->vid)
+		  ->orderBy('delta')
+		  ->fields('ex', array('field_biblio_extra_label', 'field_biblio_extra_value'))
+		  ->execute();
+
+		$current_row->field_biblio_extra = array();
+		$current_row->{'field_biblio_extra:label'} = array();
+		$current_row->{'field_biblio_extra:label'} = array();
+		while ($extra = $dyntext->fetchObject()) {
+      $current_row->field_biblio_extra[] = $extra->field_biblio_extra_value;
+      $current_row->{'field_biblio_extra:label'}[]  =  $extra->field_biblio_extra_label;
+      $current_row->{'field_biblio_extra:value'}[] =  $extra->field_biblio_extra_value;
 		}
 
 		return parent::prepareRow($current_row); //false -> skip this row
