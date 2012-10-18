@@ -482,6 +482,7 @@ function vsite_attach_fields_to_group($bundle) {
       'field_name' => 'field_group_path',
       'foreign keys' => array(),
       'indexes' => array(),
+      'locked' => '0',
       'module' => 'link',
       'settings' => array(
         'attributes' => array(

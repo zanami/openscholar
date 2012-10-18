@@ -79,8 +79,7 @@ a:hover {text-decoration:underline;}
 
 #header-container a {color:#FFF;}
 
-.more-link a, 
-.node_read_more a {
+ a.more-link {
 padding-right:13px;
 color:#293352;
 background: url('../images/moreArrow.png') center right no-repeat;
@@ -155,7 +154,7 @@ margin: 8px 0 0 20px;
 }
 
 #columns .block ul li a {
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 #columns .block ul li a:hover {text-decoration:underline;}
@@ -342,7 +341,6 @@ float:right;
 #block-vsite-site_search {
 width:170px;
 }
-
 
 
 /* SLIDESHOW */

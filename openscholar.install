@@ -32,6 +32,7 @@ function openscholar_install() {
   'stripy',
   'weft',
   'os_basetheme',
+  'os_default',
   'fairbanks_center',
   'gking',
   'openscholar_theme',
@@ -47,7 +48,7 @@ function openscholar_install() {
   theme_disable(array('bartik'));
 
   // set the default theme.
-  variable_set('theme_default', 'os_basetheme');
+  variable_set('theme_default', 'os_default');
 
   variable_set('admin_theme', 'seven');
   variable_set('node_admin_theme', '1');
