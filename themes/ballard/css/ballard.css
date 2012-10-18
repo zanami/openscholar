@@ -24,7 +24,7 @@ font-family: helvetica,arial,sans-serif;
    border-bottom: none;
 }
 
-#header-container {background:#2f2f2f;}
+#header-container {background:#2f2f2f; padding: 10px;}
 .region-header-third {text-align: right;}
 
 #footer {
