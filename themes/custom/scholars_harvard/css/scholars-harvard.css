@@ -266,7 +266,7 @@ background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
 
 /*header*/
 
-#top-header-container #block-boxes-iqss-scholars-fp-logoblock {
+#header-container #block-boxes-iqss-scholars-fp-logoblock {
   width: 231px;
   height: 76px;
   background: url(../images/logo.png) no-repeat;
@@ -283,16 +283,16 @@ background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
   height: 76px;
   }
 
-#top-header-container h1,
-#top-header-container h2,
-#top-header-container ul,
-#top-header-container li
-#top-header-container #search,
+#header-container h1,
+#header-container h2,
+#header-container ul,
+#header-container li
+#header-container #search,
 #reasons-home {
   float: left;
   }
 
-#top-header-container h1 {
+#header-container h1 {
   color: #FFFFFF;
     font: 15px 'Radley','Times New Roman',serif;
     margin-bottom: 0;
@@ -300,20 +300,20 @@ background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
     margin-top: 20px;
   }
 
-.section-site #top-header-container h1 {
+.section-site #header-container h1 {
   margin-left: 30px;
   margin-bottom: 5px;
   }
 
-#top-header-container h1 a,
-#top-header-container h1 a:visited {
+#header-container h1 a,
+#header-container h1 a:visited {
   display:block;
   width: 183px;
   height:56px;
   }
 
 
-#top-header-container h2 {
+#header-container h2 {
   font: 15px/normal 'PT Sans',arial,serif;
   font-weight: normal;
   color: #FEF1AB;

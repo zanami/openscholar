@@ -1,4 +1,4 @@
-body, #container, #top-header-container,  #footer {
+body, #container, #header-container,  #footer {
   background-color: #44514f;
   }
   
@@ -14,7 +14,7 @@ body, #container, #top-header-container,  #footer {
     width: 910px;
 }
 
-.front #top-header-container,
+.front #header-container,
 .front #menu-bar {
   margin-left: 25px;
   }

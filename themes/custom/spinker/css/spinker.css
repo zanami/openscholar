@@ -8,7 +8,7 @@
   }
 
 body,
-#top-header-container, 
+#header-container, 
 #footer,
 #page {
   background: #000000;
@@ -168,12 +168,12 @@ p.copy a.poweredby {
   left: -169px;
   }
 
-#top-header-container {
+#header-container {
   padding-bottom:5px;
   }
 
-body.header-main #top-header-container,
-body.header-main-right #top-header-container {
+body.header-main #header-container,
+body.header-main-right #header-container {
   padding-right:298px;
   }
 
@@ -187,7 +187,7 @@ body.header-main-right .region-header-second {
   vertical-align:middle;
   }
 
-#top-header-container h1, #top-header-container h2, #top-header-container p {
+#header-container h1, #header-container h2, #header-container p {
     font-size: 23px;
     line-height: 28px;
     font-weight:normal;
@@ -195,30 +195,30 @@ body.header-main-right .region-header-second {
     margin: 0;
     }
     
-#top-header-container h1 {
+#header-container h1 {
 	text-transform: uppercase;
   font-size: 2em;
   margin-bottom: 5px;
   font-style:normal;
 }
 
-#top-header-container h2 {
+#header-container h2 {
   font-size: 1em;
   line-height: 18px;
   font-style:normal;
   }
 
-#top-header-container p {
+#header-container p {
   font-size: 13px;
   line-height: 18px;
   margin-bottom: 5px;
   text-transform: uppercase;
   }
 
-#top-header-container a, #top-header-container a:visited {
+#header-container a, #header-container a:visited {
 	color: #087af8;
 }
-#top-header-container a:hover {
+#header-container a:hover {
     color:#00ff00;
     text-decoration: none;
     }

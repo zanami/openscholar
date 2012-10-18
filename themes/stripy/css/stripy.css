@@ -41,7 +41,7 @@ h2,
 h3,
 .region-sidebar-second a,
 #menu-bar,
-#top-header-container, 
+#header-container, 
 .region-sidebar-second,
 .region-sidebar-first {
   font-weight: normal;
@@ -71,7 +71,7 @@ h1#page-title {font-size:1.3em;}
 
 
 body.sidebar-first #columns .hg-container,
-body.header-left-main #top-header-container .hg-container {
+body.header-left-main #header-container .hg-container {
   padding-right: 20px;
   }
 
@@ -96,25 +96,25 @@ body.two-sidebars .region-sidebar-first {
 
 
 
-#top-header-container h1 {
+#header-container h1 {
     font-size: 31px;
     line-height: 1em;
     }
 
-#top-header-container h1, #top-header-container h2, #top-header-container h3, #top-header-container a, #top-header-container a:visited, #top-header-container h1 a, #top-header-container h1 a:visited {
+#header-container h1, #header-container h2, #header-container h3, #header-container a, #header-container a:visited, #header-container h1 a, #header-container h1 a:visited {
     color:#282828;
     }
 
-#top-header-container h1 a, #top-header-container h1 a:visited {
+#header-container h1 a, #header-container h1 a:visited {
     text-decoration: none;
     }
 
-#top-header-container h2 {
+#header-container h2 {
     font-size: 1.5em;
     line-height: 1em;
     }
 
-#top-header-container a, #top-header-container a:visited {
+#header-container a, #header-container a:visited {
     text-decoration: none;
     }
 

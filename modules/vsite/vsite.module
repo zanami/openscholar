@@ -482,6 +482,7 @@ function vsite_attach_fields_to_group($bundle) {
       'field_name' => 'field_group_path',
       'foreign keys' => array(),
       'indexes' => array(),
+      'locked' => '0',
       'module' => 'link',
       'settings' => array(
         'attributes' => array(
@@ -955,6 +956,18 @@ function vsite_menu() {
     'page arguments' => array(1),
     'type' => MENU_CALLBACK,
     'access callback' => 'vsite_site_contact_access',
+  );
+
+  // Node autocomplete callback that filters only nodes in the current space.
+  $items['vsite/autocomplete/node'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Vsite Autocomplete Node',
+    'page callback' => 'vsite_node_autocomplete_callback',
+    'file' => 'nodeautocomplete.inc',
+    'access arguments' => array(
+      'access content'
+    ),
+    'file path' => drupal_get_path('module', 'vsite') . '/includes'
   );
 
   return $items;

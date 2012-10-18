@@ -221,9 +221,9 @@ h5 span {
 	
 }
 
-#top-header-container h1 {font-family:georgia, arial;color:#e17c29;margin-top:15px;}
-#top-header-container h1 a {color:#e17c29;font-size:33px;}
-#top-header-container h2 {color:#666666;}
+#header-container h1 {font-family:georgia, arial;color:#e17c29;margin-top:15px;}
+#header-container h1 a {color:#e17c29;font-size:33px;}
+#header-container h2 {color:#666666;}
 
 #content .node-type-person ul.inline {
     color: #293352;
