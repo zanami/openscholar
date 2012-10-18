@@ -28,9 +28,6 @@
  * os_layout_block_delete
  * Given a bid remove all instances of that block from the layout system.
  *
- * os_get_active_feature
- * Return the active feature.
- *
  */
 
 /**
@@ -593,33 +590,6 @@ function _os_layout_sanitize_blocks(&$blocks) {
       $blocks[$bid] = array_intersect_key($block, $block_schema['block']['fields']);
     }
   }
-}
-
-/**
- * Return the current active feature based on active contexts
- */
-function os_get_active_feature(){
-  static $active_feature;
-
-  if(!isset($active_feature)){
-    $features = spaces_features('og');
-    $contexts = context_active_contexts();
-    if(!empty($contexts) && is_array($contexts)){
-      foreach ($features as $feature) {
-        $info = $feature->info['features'];
-        if (isset($info['context'])) {
-          foreach ($info['context'] as $ctx) {
-            if(array_key_exists($ctx, $contexts)){
-              $active_feature = $feature;
-              break(2);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  return $active_feature;
 }
 
 /**

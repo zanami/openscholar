@@ -13,6 +13,13 @@
  */
 function os_taxonomy_menu_alter(&$items) {
   $items['taxonomy/term/%taxonomy_term']['page callback'] = 'os_taxonomy_term_page';
+
+  foreach (spaces_features('og') as $s_feature => $a_info) {
+    $path = os_get_feature_path($s_feature);
+    if($path){
+      $items[$path.'/taxonomy/term/%taxonomy_term'] = $items['taxonomy/term/%taxonomy_term'];
+    }
+  }
 }
 
 /**
@@ -27,6 +34,11 @@ function os_taxonomy_term_page($taxonomy_term) {
   	'taxonomy_term' => $taxonomy_term,
   	'options' => $options,
   );
+
+  if(($feature = os_get_active_feature()) && isset($feature->info['features']['node'])){
+    $variables['options']['bundles'] = $feature->info['features']['node'];
+  }
+
   return theme('os_taxonomy_tagged_nodes', $variables);
 }
 
@@ -175,6 +187,23 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   $terms = taxonomy_term_load_multiple(array_keys($result['taxonomy_term']));
   $items = os_taxonomy_build_term_items($terms, $options);
 
+  $path_prefix = '';
+  if(count($options['bundles'])){
+    $map = features_get_component_map('node');
+    foreach ($options['bundles'] as $bundle){
+      if(isset($feature) && isset($map[$bundle]) && count($map[$bundle]) && $feature != current($map[$bundle])){
+        unset($feature);
+        break;
+      }elseif (isset($map[$bundle]) && count($map[$bundle])){
+        $feature = current($map[$bundle]);
+      }
+    }
+    $path_prefix = isset($feature)?strval(os_get_feature_path($feature)):'';
+    if(strlen($path_prefix)){
+      $path_prefix = $path_prefix."/";
+    }
+  }
+
   $data = $options['bundles'] = array();
 
   foreach($items as $tid => $item) {
@@ -205,7 +234,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         'number' => $number,
         'name' => $item['term_name'],
         'link_options' => $link_options,
-        'url_path' => $item['url']['path'],
+        'url_path' => $path_prefix.$item['url']['path'],
         'description' => $item['description'],
         'link_to_empty_terms' => $options['link_to_empty_terms'],
         'terms_description' => $options['terms_description'],

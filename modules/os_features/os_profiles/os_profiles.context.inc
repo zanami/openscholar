@@ -37,6 +37,7 @@ function os_profiles_context_default_contexts() {
     'path' => array(
       'values' => array(
         'people' => 'people',
+        'people/*' => 'people/*',
       ),
     ),
     'views' => array(
