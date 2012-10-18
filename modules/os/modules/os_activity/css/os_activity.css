@@ -3,5 +3,7 @@
 }
 
 .views-field-timestamp {
-  color: #A4A3A3;
+  float: left; /* LTR */
+  margin-right: 5px;
+  font-style: italic;
 }
