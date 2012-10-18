@@ -1,4 +1,13 @@
-@media only screen and (min-width:320px) and (max-width:800px) {
+@media only screen and (min-width: 320px) and (max-width:600px) {
+/* Styles */
+	
+body {
+	font-size:2em;
+}	
+	
+#header-container {
+	height:100px;
+}	 
 	
 #menu-bar {
     background: none;
@@ -31,10 +40,19 @@
     float: none;
 }
 
+
+.region-header-third #block-os-secondary-menu ul {
+    float: left;
+}
+
+.region-header-third #block-os-secondary-menu li a {
+    border-right: none !important;
+}
+
+.view-os-image-gallery-slideshow img,
 #header-container img {width:100%;}
 
-.block-boxes-os_shields_box,
-.block-boxes-os_boxes_site_logo {
+.block-boxes-os_shields_box{
 	display:none;
 }
 
