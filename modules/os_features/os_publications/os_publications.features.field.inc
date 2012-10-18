@@ -13,8 +13,8 @@
 function os_publications_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-announcement-field_biblio_extra'.
-  $fields['node-announcement-field_biblio_extra'] = array(
+  // Exported field: 'node-biblio-field_biblio_extra'.
+  $fields['node-biblio-field_biblio_extra'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
