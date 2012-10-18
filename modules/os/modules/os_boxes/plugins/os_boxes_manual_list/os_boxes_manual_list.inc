@@ -25,6 +25,9 @@ class os_boxes_manual_list extends os_boxes_default {
         '#autocomplete_path' => 'ctools/autocomplete/node',
       	'#field_suffix' => '<input type="button" class="add_new" value="Add" />'
       ),
+      //'node_to_add' => vsite_node_autocomplete_element() + array('#field_suffix' => '<input type="button" class="add_new" value="Add" />'),
+    );
+
     );
 
     // build a normal form

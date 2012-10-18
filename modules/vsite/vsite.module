@@ -957,6 +957,18 @@ function vsite_menu() {
     'access callback' => 'vsite_site_contact_access',
   );
 
+  // Node autocomplete callback that filters only nodes in the current space.
+  $items['vsite/node/autocomplete'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Node Autocomplete',
+    'page callback' => 'vsite_node_autocomplete_callback',
+    'file' => 'nodeautocomplete.inc',
+    'access arguments' => array(
+      'access content'
+    ),
+    'file path' => drupal_get_path('module', 'vsite') . '/includes'
+  );
+
   return $items;
 }
 

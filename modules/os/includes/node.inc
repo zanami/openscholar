@@ -11,20 +11,27 @@
  * Prepares an EntityFieldQuery with any necessary vsite-sensitive conditions.
  */
 class OSNodeFieldQuery extends EntityFieldQuery {
-  public function __construct($type = NULL) {
+  public function __construct($node_types = NULL) {
+
     // Limits only to published nodes.
     $this
       ->entityCondition('entity_type', 'node')
       ->propertyCondition('status', 1);
 
-    if (isset($type) && strlen($type) > 0) {
-      $this->propertyCondition('type', $type);
+    // Optionally adds node type condition.
+    if (isset($node_types)) {
+      if (is_string($node_types) && strlen($node_types) > 0) {
+        $node_types = array($node_types);
+      }
+      if (is_array($node_types)) {
+        $this->propertyCondition('type', $node_types, 'IN');
+      }
     }
 
+    // Only continues to filter by current space if we can load the vsite.
     if (!module_exists('vsite')) {
       return;
     }
-
     $space = spaces_get_space();
     if (!is_object($space) || !is_numeric($space->id)) {
       return;
