@@ -51,6 +51,15 @@ function cp_menu_menu() {
     'file' => 'cp_menu.form.inc',
   );
 
+  $items['cp/build/menu/%ctools_js/remove/%'] = array(
+    'title' => 'Remove Menu',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'cp_menu_remove_menu',
+    'page arguments' => array(3, 5),
+    'access callback' => 'spaces_access_admin',
+    'file' => 'cp_menu.form.inc',
+  );
+
   return $items;
 }
 
