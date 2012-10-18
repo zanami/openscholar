@@ -267,7 +267,7 @@ function os_layout_set_multiple($contexts, $blocks) {
               break;
             default :
               // Nothing to do.
-              $changed = FALSE;
+              $changed = TRUE;
               break;
           }
         }
