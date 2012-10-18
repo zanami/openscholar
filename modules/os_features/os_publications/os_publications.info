@@ -16,6 +16,7 @@ dependencies[] = biblio_xml
 dependencies[] = boxes
 dependencies[] = context
 dependencies[] = ctools
+dependencies[] = dyntextfield
 dependencies[] = features
 dependencies[] = filefield_paths
 dependencies[] = image
