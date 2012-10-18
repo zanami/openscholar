@@ -14,10 +14,13 @@
 function os_taxonomy_menu_alter(&$items) {
   $items['taxonomy/term/%taxonomy_term']['page callback'] = 'os_taxonomy_term_page';
 
+  // Mirror the taxonomy menu entry for each feature.
+  $offset = $items['taxonomy/term/%taxonomy_term']['page arguments'][0];
   foreach (spaces_features('og') as $s_feature => $a_info) {
     $path = os_get_feature_path($s_feature);
     if($path){
       $items[$path.'/taxonomy/term/%taxonomy_term'] = $items['taxonomy/term/%taxonomy_term'];
+      $items[$path.'/taxonomy/term/%taxonomy_term']['page arguments'][0] = $items[$path.'/taxonomy/term/%taxonomy_term']['title arguments'][0] = count(explode("/", $path)) + $offset;
     }
   }
 }
