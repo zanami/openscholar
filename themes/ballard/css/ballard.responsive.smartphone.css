@@ -40,6 +40,9 @@ body {
     float: none;
 }
 
+<<<<<<< HEAD
+#header-container img {width:100%;}
+=======
 
 
 .region-header-third #block-os-secondary-menu ul {
@@ -52,6 +55,7 @@ body {
 
 
 #top-header-container img {width:100%;}
+>>>>>>> 8bec86e02eee00a1b720dfd66e90b85ddb7b910c
 
 
 .block-boxes-os_shields_box{

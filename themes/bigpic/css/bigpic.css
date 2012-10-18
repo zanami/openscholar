@@ -18,31 +18,31 @@ a:hover {
   color: #000;
   }
 
-#top-header-container h1 a,
-#top-header-container h1 a:visited,
-#top-header-container h2, #top-header-container p,
-#top-header-container p a,
-#top-header-container p a:visited {
+#header-container h1 a,
+#header-container h1 a:visited,
+#header-container h2, #header-container p,
+#header-container p a,
+#header-container p a:visited {
   color: #fff;
   font-weight: normal;
   }
 
-#top-header-container h1 {
+#header-container h1 {
   font-size: 23px;
   margin: 0;
   }
 
-#top-header-container h2 {
+#header-container h2 {
   font-size: 17px;
   margin: 0;
   }
 
-#top-header-container p {
+#header-container p {
   font-size: 13px;
   margin:0;
   }
 
-#top-header-container #block-os-primary-menu  {
+#header-container #block-os-primary-menu  {
   margin-top: 10px;
   text-align:right;
   }
@@ -75,7 +75,7 @@ a:hover {
   
   }
 
-#top-header-container {
+#header-container {
   padding-bottom: 9px;
   
   }
@@ -120,11 +120,11 @@ a:hover {
 
 .region-header-first,
 .region-header-third,
-#top-header-container #boxes-box-site_logo {
+#header-container #boxes-box-site_logo {
   width:80px;
   }
 
-#top-header-container #scholar-shield {
+#header-container #scholar-shield {
   width: 55px;
   }
 

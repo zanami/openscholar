@@ -14,7 +14,7 @@ a:hover {
     text-decoration: underline;
     }
 
-h2, h3, #top-header-container {
+h2, h3, #header-container {
     color:#484b63;
     font-weight: normal;
     }
@@ -26,28 +26,28 @@ h2, h3, #top-header-container {
 /* HEADER ELEMENTS */
 
 
-#top-header-container h2 {
+#header-container h2 {
 
   color: #444;
   text-shadow: none;
   }
 
-#top-header-container a,
-#top-header-container a:visited,
-#top-header-container p {
+#header-container a,
+#header-container a:visited,
+#header-container p {
     text-decoration: none;
     color: #444;
     text-shadow: none;
     }
     
-#top-header-container h1 a,
-#top-header-container h1 a:visited {
+#header-container h1 a,
+#header-container h1 a:visited {
 	font-size: 32px;
     text-decoration: none;
     color: #00552F;
     text-shadow: none;
     }
-#top-header-container a:hover {	
+#header-container a:hover {	
     color:#00552F;
     }
 
@@ -81,7 +81,7 @@ color: #6D1102;
 }
 
 /* GORDON */
-.front #top-header-container {
+.front #header-container {
     padding-bottom: 0;
     height:415px;
 }
