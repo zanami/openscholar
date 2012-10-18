@@ -144,10 +144,24 @@ function views_ui_menu() {
   ) + $base;
 
   // A page in the Reports section to show usage of fields in all views
-  $items['admin/reports/views-fields'] = array(
-    'title' => 'Fields used in views',
+  $items['admin/reports/fields/list'] = array(
+    'title' => 'List',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/reports/fields/views-fields'] = array(
+    'title' => 'Used in views',
     'description' => 'Overview of fields used in all views.',
     'page callback' => 'views_ui_field_list',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 0,
+  ) + $base;
+
+  // A page in the Reports section to show usage of plugins in all views.
+  $items['admin/reports/views-plugins'] = array(
+    'title' => 'Views plugins',
+    'description' => 'Overview of plugins used in all views.',
+    'page callback' => 'views_ui_plugin_list',
   ) + $base;
 
   return $items;
@@ -193,6 +207,12 @@ function views_ui_theme() {
     'views_ui_view_info' => array(
       'variables' => array('view' => NULL, 'base' => NULL),
       'file' => "includes/admin.inc",
+    ),
+
+    // Group of filters.
+    'views_ui_build_group_filter_form' => array(
+      'render element' => 'form',
+      'file' => 'includes/admin.inc',
     ),
 
     // tab themes
