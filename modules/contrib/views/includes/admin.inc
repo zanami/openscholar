@@ -714,9 +714,7 @@ function views_ui_add_form_save_submit($form, &$form_state) {
     $form_state['redirect'] = 'admin/structure/views';
   }
   $view->save();
-  menu_rebuild();
-  cache_clear_all('*', 'cache_views', TRUE);
-  cache_clear_all();
+
   $form_state['redirect'] = 'admin/structure/views';
   if (!empty($view->display['page'])) {
     $display = $view->display['page'];
@@ -1462,7 +1460,7 @@ function views_ui_edit_form_submit_delay_destination($form, &$form_state) {
  * having them as secondary local tasks isn't desired. The caller is responsible
  * for setting the active tab's #active property to TRUE.
  *
- * @param $view
+ * @param view $view
  *    The view which will be edited.
  * @param $display_id
  *    The display_id which is edited on the current request.
@@ -1483,7 +1481,7 @@ function views_ui_edit_page_display_tabs($view, $display_id = NULL) {
     if (!empty($display->deleted)) {
       $tabs[$id]['#link']['localized_options']['attributes']['class'][] = 'views-display-deleted-link';
     }
-    if (empty($display->options['enabled'])) {
+    if (isset($display->display_options['enabled']) && !$display->display_options['enabled']) {
       $tabs[$id]['#link']['localized_options']['attributes']['class'][] = 'views-display-disabled-link';
     }
   }
@@ -1491,6 +1489,18 @@ function views_ui_edit_page_display_tabs($view, $display_id = NULL) {
   // If the default display isn't supposed to be shown, don't display its tab, unless it's the only display.
   if ((!views_ui_show_default_display($view) && $display_id != 'default') && count($tabs) > 1) {
     $tabs['default']['#access'] = FALSE;
+  }
+
+  // Mark the display tab as red to show validation errors.
+  $view->validate();
+  foreach ($view->display as $id => $display) {
+    if (!empty($view->display_errors[$id])) {
+      // Always show the tab.
+      $tabs[$id]['#access'] = TRUE;
+      // Add a class to mark the error and a title to make a hover tip.
+      $tabs[$id]['#link']['localized_options']['attributes']['class'][] = 'error';
+      $tabs[$id]['#link']['localized_options']['attributes']['title'] = t('This display has one or more validation errors; please review it.');
+    }
   }
 
   return $tabs;
@@ -2154,15 +2164,6 @@ function views_ui_edit_view_form_submit($form, &$form_state) {
 
   $form_state['view']->save();
   drupal_set_message(t('The view %name has been saved.', array('%name' => $form_state['view']->get_human_name())));
-
-  // Make sure menu items get rebuilt as neces
-  menu_rebuild();
-
-  // Clear the views cache.
-  cache_clear_all('*', 'cache_views');
-
-  // Clear the page cache.
-  cache_clear_all();
 
   // Remove this view from cache so we can edit it properly.
   ctools_object_cache_clear('view', $form_state['view']->name);
@@ -3187,11 +3188,13 @@ function theme_views_ui_reorder_displays_form($vars) {
   drupal_add_tabledrag('reorder-displays', 'order', 'sibling', 'weight');
 
   $output = drupal_render($form['override']);
+  $output .= '<div class="scroll">';
   $output .= theme('table',
     array('header' => $header,
     'rows' => $rows,
     'attributes' => array('id' => 'reorder-displays'),
   ));
+  $output .= '</div>';
   $output .= drupal_render_children($form);
 
   return $output;
@@ -3508,10 +3511,12 @@ function theme_views_ui_expose_filter_form($variables) {
 
   $output = drupal_render($form['form_description']);
   $output .= drupal_render($form['expose_button']);
+  $output .= drupal_render($form['group_button']);
   if (isset($form['required'])) {
     $output .= drupal_render($form['required']);
   }
   $output .= drupal_render($form['label']);
+  $output .= drupal_render($form['description']);
 
   $output .= drupal_render($form['operator']);
   $output .= drupal_render($form['value']);
@@ -3536,6 +3541,78 @@ function theme_views_ui_expose_filter_form($variables) {
 
   return $output;
 }
+
+ /**
+ * Theme the build group filter form.
+ */
+function theme_views_ui_build_group_filter_form($variables) {
+  $form = $variables['form'];
+  $more = drupal_render($form['more']);
+
+  $output = drupal_render($form['form_description']);
+  $output .= drupal_render($form['expose_button']);
+  $output .= drupal_render($form['group_button']);
+  if (isset($form['required'])) {
+    $output .= drupal_render($form['required']);
+  }
+
+  $output .= drupal_render($form['operator']);
+  $output .= drupal_render($form['value']);
+
+  $output .= '<div class="views-left-40">';
+  $output .= drupal_render($form['optional']);
+  $output .= drupal_render($form['remember']);
+  $output .= '</div>';
+
+  $output .= '<div class="views-right-60">';
+  $output .= drupal_render($form['widget']);
+  $output .= drupal_render($form['label']);
+  $output .= drupal_render($form['description']);
+  $output .= '</div>';
+
+
+  $header = array(
+    t('Default'),
+    t('Weight'),
+    t('Label'),
+    t('Operator'),
+    t('Value'),
+    t('Operations'),
+  );
+
+  $form['default_group'] = form_process_radios($form['default_group']);
+  $form['default_group_multiple'] = form_process_checkboxes($form['default_group_multiple']);
+  $form['default_group']['All']['#title'] = '';
+
+  drupal_render($form['default_group_multiple']['All']); // Don't render
+  $rows[] = array(
+    drupal_render($form['default_group']['All']),
+    '',
+    array(
+      'data' => variable_get('views_exposed_filter_any_label', 'new_any') == 'old_any' ? t('&lt;Any&gt;') : t('- Any -'),
+      'colspan' => 4,
+      'class' => array('class' => 'any-default-radios-row'),
+    ),
+  );
+
+  foreach (element_children($form['group_items']) as $group_id) {
+    $form['group_items'][$group_id]['value']['#title'] = '';
+    $data = array(
+      'default' => drupal_render($form['default_group'][$group_id]) . drupal_render($form['default_group_multiple'][$group_id]),
+      'weight' => drupal_render($form['group_items'][$group_id]['weight']),
+      'title' => drupal_render($form['group_items'][$group_id]['title']),
+      'operator' => drupal_render($form['group_items'][$group_id]['operator']),
+      'value' => drupal_render($form['group_items'][$group_id]['value']),
+      'remove' => drupal_render($form['group_items'][$group_id]['remove']) . l('<span>' . t('Remove') . '</span>', 'javascript:void()', array('attributes' => array('id' => 'views-remove-link-' . $group_id, 'class' => array('views-hidden', 'views-button-remove', 'views-groups-remove-link', 'views-remove-link'), 'alt' => t('Remove this item'), 'title' => t('Remove this item')), 'html' => true)),
+    );
+    $rows[] = array('data' => $data, 'id' => 'views-row-' . $group_id, 'class' => array('draggable'));
+  }
+  $table = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('class' => array('views-filter-groups'), 'id' => 'views-filter-groups'))) . drupal_render($form['add_group']);
+  drupal_add_tabledrag('views-filter-groups', 'order', 'sibling', 'weight');
+  $render_form = drupal_render_children($form);
+  return $output . $render_form . $table . $more;
+}
+
 
 /**
  * Submit handler for rearranging form
@@ -4146,6 +4223,45 @@ function views_ui_add_item_form_submit($form, &$form_state) {
   views_ui_cache_set($form_state['view']);
 }
 
+/**
+ * Override handler for views_ui_edit_display_form
+ */
+function views_ui_config_item_form_build_group($form, &$form_state) {
+  $item = &$form_state['handler']->options;
+  // flip. If the filter was a group, set back to a standard filter.
+  $item['is_grouped'] = empty($item['is_grouped']);
+
+  // If necessary, set new defaults:
+  if ($item['is_grouped']) {
+    $form_state['handler']->build_group_options();
+  }
+
+  $form_state['view']->set_item($form_state['display_id'], $form_state['type'], $form_state['id'], $item);
+
+  views_ui_add_form_to_stack($form_state['form_key'], $form_state['view'], $form_state['display_id'], array($form_state['type'], $form_state['id']), TRUE, TRUE);
+
+  views_ui_cache_set($form_state['view']);
+  $form_state['rerender'] = TRUE;
+  $form_state['rebuild'] = TRUE;
+  $form_state['force_build_group_options'] = TRUE;
+}
+
+/**
+ * Add a new group to the exposed filter groups.
+ */
+function views_ui_config_item_form_add_group($form, &$form_state) {
+  $item =& $form_state['handler']->options;
+
+  // Add a new row.
+  $item['group_info']['group_items'][] = array();
+
+  $form_state['view']->set_item($form_state['display_id'], $form_state['type'], $form_state['id'], $item);
+
+  views_ui_cache_set($form_state['view']);
+  $form_state['rerender'] = TRUE;
+  $form_state['rebuild'] = TRUE;
+  $form_state['force_build_group_options'] = TRUE;
+}
 
 /**
  * Form to config_item items in the views UI.
@@ -5319,4 +5435,27 @@ function views_ui_field_list() {
   );
 
   return $output;
+}
+
+/**
+ * Lists all plugins and what enabled Views use them.
+ */
+function views_ui_plugin_list() {
+  $rows = views_plugin_list();
+  foreach ($rows as &$row) {
+    // Link each view name to the view itself.
+    foreach ($row['views'] as $row_name => $view) {
+      $row['views'][$row_name] = l($view, "admin/structure/views/view/$view");
+    }
+    $row['views'] = implode(', ', $row['views']);
+  }
+
+  // Sort rows by field name.
+  ksort($rows);
+  return array(
+    '#theme' => 'table',
+    '#header' => array(t('Type'), t('Name'), t('Provided by'), t('Used in')),
+    '#rows' => $rows,
+    '#empty' => t('There are no enabled views.'),
+  );
 }

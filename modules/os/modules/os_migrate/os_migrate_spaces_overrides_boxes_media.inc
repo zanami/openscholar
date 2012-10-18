@@ -42,7 +42,7 @@ class SpacesOverridesBoxesMediaMigration extends OSMigration {
     $this->map = new MigrateSQLMap($this->machineName, $key_schema, MigrateDestinationMedia::getKeySchema());
 
     $this->addFieldMapping('og_group_ref', 'id');
-    foreach ( array('field_html_title','field_html_code','media_title','media_description') as $field ) {
+    foreach ( array('field_html_code','media_title','media_description') as $field ) {
       $this->addUnmigratedDestinations(array($field,"$field:format","$field:language"), t('DNM')); // these are forged in prepareRow
     }
 

@@ -30,23 +30,11 @@ function node_views_data() {
   );
   $data['node']['table']['entity type'] = 'node';
 
-
-  // For other base tables, explain how we join
-  $data['node']['table']['join'] = array(
-    // this explains how the 'node' table (named in the line above)
-    // links toward the node_revision table.
+  $data['node']['table']['default_relationship'] = array(
     'node_revision' => array(
-      'handler' => 'views_join', // this is actually optional
-      'left_table' => 'node_revision', // Because this is a direct link it could be left out.
-      'left_field' => 'nid',
-      'field' => 'nid',
-      // also supported:
-      // 'type' => 'INNER',
-      // 'extra' => array(array('field' => 'fieldname', 'value' => 'value', 'operator' => '='))
-      //   Unfortunately, you can't specify other tables here, but you can construct
-      //   alternative joins in the handlers that can do that.
-      // 'table' => 'the actual name of this table in the database',
-     ),
+      'table' => 'node_revision',
+      'field' => 'vid',
+    ),
   );
 
   // ----------------------------------------------------------------
@@ -234,6 +222,8 @@ function node_views_data() {
   // Define some fields based upon views_handler_field_entity in the entity
   // table so they can be re-used with other query backends.
   // @see views_handler_field_entity
+
+  $data['views_entity_node']['table']['group'] = t('Content');
 
   $data['node']['view_node']['moved to'] = array('views_entity_node', 'view_node');
   $data['views_entity_node']['view_node'] = array(
@@ -442,6 +432,13 @@ function node_views_data() {
     // Directly links to node table.
     'node' => array(
       'left_field' => 'vid',
+      'field' => 'vid',
+    ),
+  );
+
+  $data['node_revision']['table']['default_relationship'] = array(
+    'node' => array(
+      'table' => 'node',
       'field' => 'vid',
     ),
   );
