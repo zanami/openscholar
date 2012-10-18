@@ -16,20 +16,20 @@ a:visited {
   color:#A45614;
   }
 
-#top-header-container h1 a {
+#header-container h1 a {
 		font-size:1.3em;
 }
 
-#top-header-container h2, #top-header-container p  {
+#header-container h2, #header-container p  {
 		color:#555;
 }
 
 
-#top-header-container a,
-#top-header-container a:visited,
-#top-header-container,
-#top-header-container h1 a,
-#top-header-container h1 a:visited{
+#header-container a,
+#header-container a:visited,
+#header-container,
+#header-container h1 a,
+#header-container h1 a:visited{
   color: #006432;
 
   }
@@ -54,7 +54,7 @@ a:visited {
 
 .region-sidebar-first a:hover,
 .region-sidebar-second a:hover,
-#top-header-container h1 a:hover {
+#header-container h1 a:hover {
   background: #A45614;
   color: #FFF;
   -moz-text-shadow: none;
