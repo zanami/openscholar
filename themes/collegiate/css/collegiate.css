@@ -164,7 +164,7 @@ background: #fff;
 
 #columns {margin-top:18px;}
 
-#top-header-container {
+#header-container {
   background: url('../images/headerBg.png') repeat-x;
   min-height:153px;
   background-size: cover;
@@ -172,7 +172,7 @@ background: #fff;
  }
  
 
-body.navbar-off #top-header-container {
+body.navbar-off #header-container {
 	border-bottom:5px solid #BABABA;
 }
 
@@ -234,17 +234,17 @@ body.one-sidebar .region-sidebar-first {
 
 /* HEADER ELEMENTS */
 
-#top-header-container .column {
+#header-container .column {
   padding-top: 15px;
 } 
 /*
-.header-main #top-header-container,
-.header-main-right #top-header-container {
+.header-main #header-container,
+.header-main-right #header-container {
   padding-right:250px;
   }
 */
-#top-header-container h1,
-#top-header-container h2 {
+#header-container h1,
+#header-container h2 {
     font-size: 3em;
     font-weight:normal;
     color:#FFF;
@@ -253,14 +253,14 @@ body.one-sidebar .region-sidebar-first {
      text-shadow: 0 1px 1px #555555;
     }
 
-#top-header-container h2 {
+#header-container h2 {
   font-size: 1.9em;
  /*height: 58px;
  background:url('../images/siteInfoh2Bg.png') no-repeat;*/
 
   }
 
-#top-header-container p, #top-header-container p a {
+#header-container p, #header-container p a {
     color: #DDDDDD;
     font-family: arial;
     font-size: 12px;
@@ -268,12 +268,12 @@ body.one-sidebar .region-sidebar-first {
     margin-left: 10px;
 }
 
-#top-header-container h1 a,
-#top-header-container h1 a:visited {
+#header-container h1 a,
+#header-container h1 a:visited {
     color:#FFF;
     }
 
-#top-header-container h1 a:hover {
+#header-container h1 a:hover {
     color:#DDD;
     text-decoration: none;
     }

@@ -1,4 +1,4 @@
-#top-header-container .gpanel {
+#header-container .gpanel {
   background: #9a2e27;
   }
 
@@ -6,12 +6,12 @@
   background: #8a2608;
   }
 
-#top-header-container a,
-#top-header-container a:visited,
-#top-header-container h1 a,
-#top-header-container h1 a:visited,
-#top-header-container h2,
-#top-header-container p {
+#header-container a,
+#header-container a:visited,
+#header-container h1 a,
+#header-container h1 a:visited,
+#header-container h2,
+#header-container p {
   color: #fff;
   }
 

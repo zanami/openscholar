@@ -63,17 +63,17 @@ a:hover {
      text-decoration: underline;
 }
 
-#top-header-container h1 {
+#header-container h1 {
      color: #545454;
      font-family: georgia,arial;
 }
 
-#top-header-container h1 a {
+#header-container h1 a {
      color: #545454;
      font-size: 1.55em;
 }
 
-#top-header-container h2 {
+#header-container h2 {
      color: #666666;
 }
 

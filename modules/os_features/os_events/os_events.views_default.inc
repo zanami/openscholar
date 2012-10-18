@@ -540,9 +540,9 @@ function os_events_views_default_views() {
   $handler->display->display_options['menu']['context'] = 0;
 
   /* Display: Previous Page */
-  $handler = $view->new_display('page', 'Previous Page', 'page_5');
+  $handler = $view->new_display('page', 'Past Events Page', 'page_5');
   $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Previous Events';
+  $handler->display->display_options['title'] = 'Past Events';
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
@@ -555,16 +555,16 @@ function os_events_views_default_views() {
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
   $handler->display->display_options['row_plugin'] = 'node';
   $handler->display->display_options['row_options']['links'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['defaults']['sorts'] = FALSE;
   $handler->display->display_options['sorts']['field_date_value']['id'] = 'field_date_value';
   $handler->display->display_options['sorts']['field_date_value']['table'] = 'field_data_field_date';
   $handler->display->display_options['sorts']['field_date_value']['field'] = 'field_date_value';
   $handler->display->display_options['sorts']['field_date_value']['order'] = 'DESC';
-  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  /* Filter criterion: Content: Published */
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -591,9 +591,9 @@ function os_events_views_default_views() {
   $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
     'field_data_field_date.field_date_value' => 'field_data_field_date.field_date_value',
   );
-  $handler->display->display_options['path'] = 'calendar/previous';
+  $handler->display->display_options['path'] = 'calendar/past_events';
   $handler->display->display_options['menu']['type'] = 'tab';
-  $handler->display->display_options['menu']['title'] = 'Previous';
+  $handler->display->display_options['menu']['title'] = 'Past Events';
   $handler->display->display_options['menu']['weight'] = '55';
   $handler->display->display_options['menu']['context'] = 0;
 
