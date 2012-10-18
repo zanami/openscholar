@@ -169,7 +169,6 @@ function os_events_views_default_views() {
   $handler->display->display_options['style_options']['multiday_theme'] = '1';
   $handler->display->display_options['style_options']['theme_style'] = '1';
   $handler->display->display_options['style_options']['max_items'] = '0';
-  $handler->display->display_options['style_options']['groupby_times'] = 'hour';
   $handler->display->display_options['style_options']['multiday_hidden'] = array(
     'title' => 'title',
     'rendered_entity' => 'rendered_entity',
@@ -212,7 +211,6 @@ function os_events_views_default_views() {
   $handler->display->display_options['style_options']['multiday_theme'] = '1';
   $handler->display->display_options['style_options']['theme_style'] = '1';
   $handler->display->display_options['style_options']['max_items'] = '0';
-  $handler->display->display_options['style_options']['groupby_times'] = 'hour';
   $handler->display->display_options['style_options']['multiday_hidden'] = array(
     'title' => 'title',
     'rendered_entity' => 'rendered_entity',
@@ -556,12 +554,15 @@ function os_events_views_default_views() {
   $handler->display->display_options['row_plugin'] = 'node';
   $handler->display->display_options['row_options']['links'] = FALSE;
   $handler->display->display_options['defaults']['row_options'] = FALSE;
+<<<<<<< HEAD
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['defaults']['sorts'] = FALSE;
   $handler->display->display_options['sorts']['field_date_value']['id'] = 'field_date_value';
   $handler->display->display_options['sorts']['field_date_value']['table'] = 'field_data_field_date';
   $handler->display->display_options['sorts']['field_date_value']['field'] = 'field_date_value';
   $handler->display->display_options['sorts']['field_date_value']['order'] = 'DESC';
+=======
+>>>>>>> parent of e2e5857... Reversed sort order on Previous Events; changed all themes' div IDs from 'header-container' to 'top-header-container' to eliminate conflict with Colorbox and fix calendar Month view. #24
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Content: Published */
