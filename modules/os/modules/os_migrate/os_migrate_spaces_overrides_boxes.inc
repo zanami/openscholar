@@ -419,7 +419,7 @@ class BoxPorter {
     }
 
     //No silent failure, we don't know how to migrate this box
-    parent::saveMessage(t('Ignoring deprecated box: @key', array('@key'=>$box->plugin_key)), MigrationBase::MESSAGE_WARNING);
+    $this->migration->saveMessage(t('Ignoring deprecated box: @key', array('@key'=>$box->plugin_key)), MigrationBase::MESSAGE_WARNING);
   }
 
 
