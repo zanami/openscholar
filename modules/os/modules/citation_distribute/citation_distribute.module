@@ -236,11 +236,14 @@ function citation_distribute_flag($event, $flag, $nid, $account) {
         $batch_cmd = '';
       } else {
         $batch_cmd = 'distribute';                      //assume batch mode
+        $dist = TRUE;
       }
-      _citation_distribute_update_db($plugin['name'], $nid, $batch_cmd);
-      $msg = t('Submitted citation to @title', array('@title'=>$plugin['title']));
-      drupal_set_message($msg);
 
+      if ($dist) {
+        _citation_distribute_update_db($plugin['name'], $nid, $batch_cmd);
+        $msg = t('Submitted citation to @title', array('@title'=>$plugin['title']));
+        drupal_set_message($msg);
+      }
 
       break;
 
