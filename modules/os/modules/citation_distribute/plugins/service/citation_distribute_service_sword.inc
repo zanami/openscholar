@@ -73,13 +73,15 @@ abstract class citation_distribute_service_sword extends citation_distribute_ser
 		$mod_dir  = drupal_get_path('module', 'citation_distribute') . '/plugins';
 
 
-
-		foreach ($metadata['File'] as $delta => $file) {
-			$filename = end(explode('/', $file['filepath']));
-			$cp = copy(drupal_realpath($file['filepath']), $root_dir . '/'. $filename);
-			$metadata['File'][$delta]['filepath'] = $nid . '/' . $filename ;
-		}
-
+    if (isset($metadata['File'])) {
+  		foreach ($metadata['File'] as $delta => $file) {
+  			$filename = end(explode('/', $file['filepath']));
+  			$cp = copy(drupal_realpath($file['filepath']), $root_dir . '/'. $filename);
+  			$metadata['File'][$delta]['filepath'] = $nid . '/' . $filename ;
+  		}
+    } else {
+      return FALSE; //no file
+    }
 
 		/* add metadata to mets xml */
 		foreach ($metadata as $name => $data) {
