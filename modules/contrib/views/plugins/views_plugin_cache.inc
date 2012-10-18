@@ -235,7 +235,7 @@ class views_plugin_cache extends views_plugin {
     }
     if (!empty($this->storage['js'])) {
       foreach ($this->storage['js'] as $key => $args) {
-        if ($key != 'settings') {
+        if ($key !== 'settings') {
           drupal_add_js($args['data'], $args);
         }
         else {
@@ -267,7 +267,7 @@ class views_plugin_cache extends views_plugin {
         if ($build_info[$index] instanceof SelectQueryInterface) {
           $query = clone $build_info[$index];
           $query->preExecute();
-          $build_info[$index] = (string)$query;
+          $build_info[$index] = (string) $query;
         }
       }
       $key_data = array(

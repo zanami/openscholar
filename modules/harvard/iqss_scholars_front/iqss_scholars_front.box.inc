@@ -90,14 +90,14 @@ function iqss_scholars_front_default_box() {
   );
   $export['iqss_scholars_fp_learnmore'] = $box;
 
-  // Floating header for /websites & /learnmore.
+  // Fixed position header for /websites & /learnmore.
   $box = new stdClass();
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
-  $box->delta = 'iqss_scholars_floating_header';
+  $box->delta = 'iqss_scholars_fixed_header';
   $box->plugin_key = 'simple';
   $box->title = '';
-  $box->description = 'Floating header markup';
+  $box->description = 'Scholars fixed-position header.';
   $box->options = array(
     'body' => array(
       'value' => '<div id="os-reasons_header" class="os-scholar-header">
@@ -111,7 +111,103 @@ function iqss_scholars_front_default_box() {
     ),
     'additional_classes' => '',
   );
-  $export['iqss_scholars_floating_header'] = $box;
+  $export['iqss_scholars_fixed_header'] = $box;
+
+  // Learn more toggle info.
+  $box = new stdClass();
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
+  $box->delta = 'iqss_scholars_learnmore_toggle';
+  $box->plugin_key = 'simple';
+  $box->title = '';
+  $box->description = 'Scholars Learn More Toggle Page';
+  $box->options = array(
+    'body' => array(
+      'value' => '<div id="os-reasons" class="os-page">
+       <div id="os-reasons_header" class="os-scholar-header">
+        <div class="os-scholar-header-wrap">
+            <h1><a href="/" title="Home" rel="home">Scholars at Harvard</a></h1>
+            <a href="/site/register" class="os-big-button">Get Your Site Now</a>
+            </div>
+        </div>
+    <a class="os-columns-home" href="#">Home</a>
+    <ul id="os-features" class="os-wrap os-dark os-clearfix">
+        <li id="os-feature-academic-content">
+          <h3>Create Anything Related to an Academic Site</h3>
+          <p>CV, bio, publications, blogs, announcements, links, events, image galleries, class materials, presentations. Easy as using a word processor.</p>
+        </li>
+        <li id="os-feature-biblio">
+          <h3>Get Cited More</h3>
+          <p>Automatically have your publications submitted to indices such as RePEc, Computer Science Repository, and Google Scholar.</p>
+        </li>
+        <li id="os-no-tech">
+          <h3>No Technical Knowledge Needed</h3>
+          <p>The user-friendly interface for adding and editing content requires no technical knowledge, special software, or HTML. You can edit your site from any computer with an internet connection.</p>
+        </li>
+		<li id="os-feature-look-feel">
+          <h3>Control the Look and Feel of Your Site</h3>
+          <p>Move useful widgets in and out of your site; change menus and the overall look of your site in seconds.</p>
+        </li>
+        <li id="os-categorize">
+          <h3>Category Tagging</h3>
+          <p>Organize content and enable visitors to find pages quickly with category tagging. The tools for multi-level category tagging come standard.</p>
+        </li>
+        <li id="os-pluggable-features">
+          <h3>Pluggable Features</h3>
+          <p>Out-of-the-box-ready, content "features," which provide sections of your site. <strong>Features</strong> can also be set to "private," thus viewable to only members of the site.</p>
+        </li>
+        <li id="os-feature-collaborate">
+          <h3>Collaborate with Your Colleagues</h3>
+          <p>Allow commentary on your work by whomever you select. Keep track of colleagues\' work.</p>
+        </li>
+        <li id="os-custom-domains">
+          <h3>Custom Domains</h3>
+          <p>Use your custom domain for your website. Departments and institutes can use their domain for all sites of affiliated scholars.</p>
+        </li>
+        <li id="os-smart-publishing">
+          <h3>Smart Publishing</h3>
+          <p>The built-in content forms and WYSIWYG editor makes it simple to publish. You can begin writing content from almost anywhere on your site.</p>
+        </li>
+        <li id="os-feature-events">
+          <h3>Manage Your Events</h3>
+          <p>Build calendars easily. Highlight upcoming events.</p>
+        </li>
+        <li id="os-content-aggregation">
+          <h3>Content Aggregation</h3>
+          <p>Keep the web site fresh by pulling in content from relevant sources using RSS. <strong>Scholars at Harvard</strong> provides built-in tools for RSS feeds making feeds easy to set up.</p>
+        </li>
+        <li id="os-word-out">
+          <h3>Get the Word Out</h3>
+          <p>Create project announcements, resources, links, RSS feeds.</p>
+        </li>
+        <li id="os-semantic-urls">
+          <h3>Semantic URLs</h3>
+          <p>Increase visibility and optimize the availability of your site\'s pages in search engines, such as <em>Google</em> and <em>Yahoo!</em> with semantic URLs.</p><p>All pages are given URLs which correspond to the page\'s <strong>title</strong>. No need to suffer with nonsensical web addresses such as: "hdc.do?keyword=something&tabgroupid=icb.tabgroup50611". </p>
+        </li>
+        <li id="os-layout-tool">
+          <h3>Interactive Layout Tool</h3>
+          <p>Design page layouts using a visual "drag-and-drop" blueprint of the site. The Layout Tool provides an easy (and fun!) way to arrange the content presentation on any site. You can design site-wide default layouts or create unique layouts for different sections of your site.</p>
+        </li>
+        <li id="os-sharing">
+          <h3>Share with Others</h3>
+          <p>Allow sharing of your content on other social networks such as <strong>Facebook</strong> and <strong>Twitter</strong>.</p>
+        </li>
+        <li id="os-analytics">
+          <h3>Analytics</h3>
+          <p>Just provide your Google Analytics ID, and data from your <strong>Scholars at Harvard</strong> site will be sent to your Goggle analytics account automatically.</p>
+        </li>
+      </ul>
+  <ul id="os-more-info" class="os-wrap os-clearfix">
+    <li class="os-docs"><span><strong>Scholars at Harvard</strong> includes complete <strong>documentation</strong>.  <a href="http://scholar.havard.edu/help/os_help/User-Documentation" target="_blank">Go there now</a></span></li>
+    <li class="os-link"><span><strong>Scholars at Harvard</strong> is built on <strong>OpenScholar</strong>, an open-source web-creation tool developed right here at Harvard. <a href="http://openscholar.harvard.edu" target="_blank">Learn More</a></span></li>
+  </ul>
+  </div>
+      ',
+      'format' => 'filtered_html',
+    ),
+    'additional_classes' => '',
+  );
+  $export['iqss_scholars_learnmore_toggle'] = $box;
 
   return $export;
 }
