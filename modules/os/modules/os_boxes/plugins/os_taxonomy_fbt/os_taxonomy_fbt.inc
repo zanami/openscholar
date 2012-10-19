@@ -55,9 +55,6 @@ class os_taxonomy_fbt extends os_boxes_default {
    */
   public function form_elements() {
     $form = array();
-    $bundles = array(
-      '--all--' => t('All'),
-    ) + self::get_all_bundles();
 
     $form['vocabulary'] = array(
       '#type' => 'select',
@@ -67,13 +64,28 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#required' => TRUE,
     );
 
+    $form['behavior'] = array(
+      '#type' => 'select',
+      '#title' => t('Post types'),
+      '#options' => array(
+        'contextual' => t("Determine for me"),
+        '--all--' => t('All posts'),
+        'select' => t('Select post types'),
+      ),
+      '#default_value' => $this->options['behavior'],
+      '#description' => t('The post types that will included in the count'),
+    );
+
     $form['bundles'] = array(
       '#type' => 'select',
-      '#title' => t('Bundle types'),
-      '#options' => $bundles,
-      '#description' => t('The bundles type of the tagged node that will include in the count'),
+      '#title' => t('Select Post types'),
+      '#options' => self::get_all_bundles(),
+      '#description' => t('The post types that will be included in the count'),
       '#multiple' => TRUE,
       '#size' => count(self::get_all_bundles()) / 2,
+      '#dependency' => array(
+        'edit-behavior' => array('select'),
+      ),
     );
 
     $form['range'] = array(
@@ -109,7 +121,7 @@ class os_taxonomy_fbt extends os_boxes_default {
     $form['depth'] = array(
       '#type' => 'select',
       '#title' => ('Taxonomy tree depth.'),
-      '#description' => t('The maximum term level in the tree to count the tagged nodes.'),
+      '#description' => t('The maximum term level in the tree to count the tagged posts.'),
       '#options' => array(
         0 => t("Show all childeren"),
         1 => t("Show only first level"),
@@ -138,17 +150,6 @@ class os_taxonomy_fbt extends os_boxes_default {
       ),
     );
 
-    $form['advanced']['behavior'] = array(
-      '#type' => 'select',
-      '#title' => t('Behavior'),
-      '#options' => array(
-        'contextual' => "Filter the posts on the current page by a term",
-        'global' => "Show to all posts tagged with the term"
-      ),
-      '#default_value' => $this->options['behavior'],
-      '#description' => t('What should happen when you click a term, should it filter the current results if applicable or always link to all posts tagged with the term.')
-    );
-
     return $form;
   }
 
@@ -163,16 +164,17 @@ class os_taxonomy_fbt extends os_boxes_default {
 
     $block = parent::render();
     // For now - display the first vocabulary terms.
-    if (isset($this->options['bundles']['--all--'])) {
+    if ($this->options['behavior'] == '--all--') {
       $this->options['bundles'] = array();
+    }
 
-      ctools_include('layout', 'os');
-      if($this->options['behavior'] == 'contextual' && ($feature = os_get_active_feature())){
-        if (isset($feature->info['features']['node'])) {
-          $this->options['bundles'] = $feature->info['features']['node'];
-        }
+    ctools_include('layout', 'os');
+    if($this->options['behavior'] == 'contextual' && ($feature = os_get_active_feature())){
+      if (isset($feature->info['features']['node'])) {
+        $this->options['bundles'] = $feature->info['features']['node'];
       }
     }
+
 
     $block['content'] = theme('os_taxonomy_vocabulary_item_list', array(
       'vid' => $this->options['vocabulary'],
