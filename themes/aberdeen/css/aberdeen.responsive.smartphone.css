@@ -32,10 +32,14 @@
     margin:0;
 }
 
+.region-header-third {
+	height:60px;
+}
+
+.view-os-image-gallery-slideshow img,
 #header-container img {width:100%;}
 
-.block-boxes-os_shields_box,
-.block-boxes-os_boxes_site_logo {
+.block-boxes-os_shields_box {
 	display:none;
 }
 

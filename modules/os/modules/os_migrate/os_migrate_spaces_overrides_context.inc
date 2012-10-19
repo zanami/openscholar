@@ -201,7 +201,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'vsite-section-cp' => 'os_cp',
       //'vsite-section-public' => 'os_public', //not used in overrides
       'openscholar-feature-image_gallery' => 'gallery_gallery',
-      'openscholar-feature-book' => 'booklet_booklet',
+      'openscholar-feature-book' => 'booklets_booklets',
       'openscholar-feature-front' => 'os_front',
       'openscholar-feature-none' => 'os_public', //all sections
       'openscholar-feature-dvn' => 'dataverse_dataverse',
@@ -212,6 +212,10 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     //update the context name
     if (isset($contexts[$context])) {
       $context = $contexts[$context];
+
+      if($context === FALSE){
+        return $context;
+      }
     }
     else {
       $context = preg_replace('/openscholar-feature-(\w+)/', '$1_$1', $context); //err?

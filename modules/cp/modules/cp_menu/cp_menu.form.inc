@@ -168,7 +168,7 @@ function theme_cp_menu_table($variables){
     $rows[] = array(
       'data' => array(
         array(
-          'data' => $menus[$d] . drupal_render($table_data[$d]['menu-name']),
+          'data' => $menus[$d] . drupal_render($table_data[$d]['menu-name']).' '.ctools_modal_text_button('<sub>Remove</sub>', 'cp/build/menu/nojs/remove/'.$d, 'Remove'),
           'colspan' => 2,
         ),
         array(
@@ -358,6 +358,60 @@ function cp_menu_edit_submit($form, &$form_state) {
   }
 
   drupal_set_message(t('Your menu has been saved.'));
+}
+
+function cp_menu_remove_menu($ajax, $menu) {
+  if (!$ajax) {
+    return drupal_get_form('cp_menu_remove_confim', $menu);
+  }
+
+  ctools_include('modal');
+  $form_state = array(
+    'ajax' => true,
+    'menu' => $menu,
+  );
+
+  $output = ctools_modal_form_wrapper('cp_menu_remove_confirm', $form_state);
+  if ($form_state['executed']) {
+    if (isset($form_state['values']['op'])) {
+      if ($form_state['values']['op'] == t('Confirm')) {
+        ctools_include('ajax');
+        $output[] = ctools_ajax_command_reload();
+      }
+      else {
+        $output[] = ctools_modal_command_dismiss();
+      }
+    }
+  }
+  echo ajax_render($output);
+  exit;
+}
+
+function cp_menu_remove_confirm($form, &$form_state) {
+  $menu = $form_state['menu'];
+  $form = confirm_form($form, t('Are you sure you want to remove the menu: @menu?', array('@menu' => $menu)));
+
+  $form['actions']['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+  );
+
+  $form['menu'] = array(
+    '#type' => 'value',
+    '#value' => $menu,
+  );
+
+  return $form;
+}
+
+function cp_menu_remove_confirm_submit($form, $form_state) {
+  if ($form_state['values']['op'] == t('Confirm')) {
+    $menu = $form_state['values']['menu'];
+
+    ctools_include('menu', 'os');
+    os_menu_del($menu);
+    drupal_set_message(t('The @menu menu has been deleted.', array('@menu' => @menu)));
+  }
 }
 
 /**

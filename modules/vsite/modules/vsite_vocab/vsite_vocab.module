@@ -172,6 +172,27 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
 }
 
 /**
+ * Implements hook_form_alter().
+ *
+ * Using the hook_form_alter and not hook_form_FORM_ID_alter due to the
+ * invokes order of the hooks.
+ */
+function vsite_vocab_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id != 'taxonomy_form_vocabulary' || !$context = og_vocab_is_group_admin_context()) {
+    return;
+  }
+  $form['#submit'][] = 'og_vocab_redirect_to_group_vocabularies';
+}
+
+/**
+ * After deleting the group vocabulary, redirect to the taxonomy group admin
+ * page.
+ */
+function og_vocab_redirect_to_group_vocabularies($form, &$form_state) {
+  $form_state['redirect'] = 'cp/build/taxonomy/';
+}
+
+/**
  * Validate handler; Set the machine name of the vocabulary.
  */
 function vsite_vocab_form_taxonomy_form_vocabulary_validate($element, &$form_state) {

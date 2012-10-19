@@ -37,6 +37,7 @@ function os_announcements_context_default_contexts() {
     'path' => array(
       'values' => array(
         '/announcements' => '/announcements',
+        '/announcements/*' => '/announcements/*',
       ),
     ),
     'views' => array(

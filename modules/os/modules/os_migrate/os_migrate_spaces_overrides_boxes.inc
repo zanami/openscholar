@@ -29,6 +29,11 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
       return FALSE;
     }
 
+    //ignore boxes we know we aren't supporting anymore.
+    if (in_array($value->plugin_key, array('os_boxes_cclicense'))) {
+      parent::saveMessage(t('Ignoring deprecated box: @key', array('@key'=>$value->plugin_key)), MigrationBase::MESSAGE_NOTICE);
+      return FALSE;
+    }
 
     if ($box = $this->_update_box($value, $row->id)) {
       $value = $box;
@@ -414,8 +419,7 @@ class BoxPorter {
     }
 
     //No silent failure, we don't know how to migrate this box
-    throw new MigrateException(t('The specified box [%box] could not be migrated.',
-        array('%box' => print_r($box,TRUE))));
+    $this->migration->saveMessage(t('Ignoring deprecated box: @key', array('@key'=>$box->plugin_key)), MigrationBase::MESSAGE_WARNING);
   }
 
 
@@ -734,6 +738,10 @@ class BoxPorter {
       $box->options['twitter_username'] = substr($box->options['twitter_username'], 1);
     } else {
       $box->options['twitter_type'] = 'search';
+    }
+
+    if (!isset($box->options['num_items'])) {
+      $box->options['num_items'] = 5;
     }
 
     return $box;

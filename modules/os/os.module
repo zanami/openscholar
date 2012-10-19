@@ -5,6 +5,7 @@
  * Openscholar module file.
  */
 include_once ('os.features.inc');
+include_once ('includes/os.inc');
 
 /**
  * Implementation of hook_menu().
@@ -90,64 +91,6 @@ function os_menu_alter(&$items) {
     $items['user']['file'] = 'os.pages.inc';
     $items['user']['file path'] = drupal_get_path('module', 'os');
   }
-}
-
-/**
- * Return the avalible bundles based on the privacy
- *
- * @param $privacy
- *  Can be array:
- *    - 0: disabled
- *    - 2: private
- *    - 1: public
- *  TRUE returns all
- *
- * @param $space_type
- * @param $reset
- *   (reset features cache)
- *
- * @return
- *  Array keyed with the bundle ID and the bundle name as value.
- */
-function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = FALSE) {
-  $ret_all = FALSE;
-  if (is_bool($privacy) && $privacy) {
-    $ret_all = TRUE;
-  }
-  elseif (!is_array($privacy)) {
-    $privacy = array($privacy);
-  }
-
-  $bundles = array();
-
-  // Reset static feature list.
-  $features = spaces_features($space_type, $reset);
-  $site_features = variable_get('spaces_features', array());
-
-  foreach ($features as $name => $feature) {
-    $info = $feature->info['features'];
-    if (!isset($info['node'])) continue;
-    if (!$ret_all && (!isset($site_features[$name]) || !in_array($site_features[$name], $privacy))) continue;
-
-    // Get bundle name, we call the node_info hook directly since
-    // this is called during bootstrap
-    module_load_include('features.inc', $name);
-    $node_info_hook = $name . '_node_info';
-    if (function_exists($node_info_hook)) {
-      $node_info = $node_info_hook();
-    }
-
-    foreach ($info['node'] as $nodetype) {
-      if (isset($node_info[$nodetype]['name'])) {
-        $bundles[$nodetype] = $node_info[$nodetype]['name'];
-      }
-      else {
-        $bundles[$nodetype] = $feature->info['name'];
-      }
-    }
-  }
-
-  return $bundles;
 }
 
 /**
@@ -409,13 +352,11 @@ function os_module_implements_alter(&$implementations, $hook) {
   }
 }
 
-/**
- * Removes contextual links class from html.
- */
-function os_preprocess_html(&$variables) {
-  $variables['classes_array'] = array_diff($variables['classes_array'], array(
-    'contextual-links-region',
-  ));
+function os_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if (strpos($root_path, 'node/%') !== FALSE) {
+    // remove node-specific tasks
+    $data['tabs'] = array();
+  }
 }
 
 /**

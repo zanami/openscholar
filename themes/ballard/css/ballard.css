@@ -24,7 +24,7 @@ font-family: helvetica,arial,sans-serif;
    border-bottom: none;
 }
 
-#header-container {background:#2f2f2f;}
+#header-container {background:#2f2f2f; padding: 10px;}
 .region-header-third {text-align: right;}
 
 #footer {
@@ -72,9 +72,6 @@ font-family: helvetica,arial,sans-serif;
 .biblio-title-chicago a,
 a, a:visited {color:#293352;text-decoration:none;}
 a:hover {text-decoration:underline;}
-
-#main-content a,
-#main-content li a {text-decoration:underline;}
 
 
 #header-container a {color:#FFF;}
@@ -311,7 +308,7 @@ float:right;
 }
 
 /* BOOKLET NAV  */ 
-.sidebar .block-boxes-os_boxes_booktoc ul ul {
+.sidebar .block-boxes-os_boxes_booktoc ul.menu ul {
     margin: 0px 0 0 18px;
 }
 
@@ -324,9 +321,19 @@ float:right;
 }
 
 .sidebar .block-boxes-os_boxes_booktoc ul ul ul li {
-    list-style-type: disc;
+    list-style-type: circle;
+    list-style-image: none;
 }
 
+.sidebar .block-boxes-os_boxes_booktoc ul ul ul ul li {
+    list-style-type: disc;
+    list-style-image: none;
+}
+
+.sidebar .block-boxes-os_boxes_booktoc ul ul ul ul ul li {
+    list-style-image: none;
+    list-style-type: square;
+}
 
 .sidebar .block-boxes-os_boxes_booktoc a.active {
     color:#293352;
@@ -335,6 +342,16 @@ float:right;
 .sidebar .block-boxes-os_boxes_booktoc ul ul li a {
     padding-left:0;
 }
+
+.book-menu ul.menu ul ul ul a, 
+#block-book-navigation ul.menu ul ul ul a, 
+.block-boxes-os_boxes_booktoc ul.menu ul ul ul a,
+.book-menu ul.menu ul ul ul ul a, 
+#block-book-navigation ul.menu ul ul ul ul a, 
+.block-boxes-os_boxes_booktoc ul.menu ul ul ul ul a  {
+    padding: 0;
+}
+
 
 /**** SEARCH BOX ****/
 
