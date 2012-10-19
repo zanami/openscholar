@@ -740,6 +740,10 @@ class BoxPorter {
       $box->options['twitter_type'] = 'search';
     }
 
+    if (!isset($box->options['num_items'])) {
+      $box->options['num_items'] = 5;
+    }
+
     return $box;
   }
 

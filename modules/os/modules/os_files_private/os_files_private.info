@@ -1,4 +1,5 @@
-name = OpenScholar files private
-description = Managing private files for vsites.
+name = OpenScholar: Files Private
+description = OpenScholar file handling for private files.
 core = 7.x
-version = 7.x-1.0
+package = OpenScholar
+
