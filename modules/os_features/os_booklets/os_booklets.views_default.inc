@@ -110,40 +110,6 @@ function os_booklets_views_default_views() {
   $handler->display->display_options['row_plugin'] = 'fields';
   $handler->display->display_options['defaults']['row_options'] = FALSE;
 
-  /* Display: Documents Page */
-
-  $handler = $view->new_display('page', 'Documents Page', 'page_1');
-  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
-  $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Content: Published */
-
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'node';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = 1;
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-  /* Filter criterion: Content: Type */
-
-  $handler->display->display_options['filters']['type']['id'] = 'type';
-  $handler->display->display_options['filters']['type']['table'] = 'node';
-  $handler->display->display_options['filters']['type']['field'] = 'type';
-  $handler->display->display_options['filters']['type']['value'] = array(
-    'book' => 'book',
-  );
-  /* Filter criterion: Book: Depth */
-
-  $handler->display->display_options['filters']['depth']['id'] = 'depth';
-  $handler->display->display_options['filters']['depth']['table'] = 'book_menu_links';
-  $handler->display->display_options['filters']['depth']['field'] = 'depth';
-  $handler->display->display_options['filters']['depth']['operator'] = '>';
-  $handler->display->display_options['filters']['depth']['value']['value'] = '0';
-  $handler->display->display_options['path'] = 'documents/2';
-  $handler->display->display_options['menu']['type'] = 'normal';
-  $handler->display->display_options['menu']['title'] = 'Documents';
-  $handler->display->display_options['menu']['weight'] = '0';
-  $handler->display->display_options['menu']['name'] = 'primary-menu';
-  $handler->display->display_options['menu']['context'] = 0;
   $export['os_booklets'] = $view;
 
   return $export;
