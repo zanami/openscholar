@@ -36,11 +36,22 @@
 	height:60px;
 }
 
+.region-header-third #block-os-secondary-menu ul {
+    float: left;
+}
+
+.region-header-third #block-os-secondary-menu li a {
+    border-right: none !important;
+}
+
+
 .view-os-image-gallery-slideshow img,
 #header-container img {width:100%;}
 
 .block-boxes-os_shields_box {
 	display:none;
 }
+
+#header-container {height:110px;}
 
 }

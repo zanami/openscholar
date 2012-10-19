@@ -90,6 +90,7 @@ function _cp_app_settings_remove_no_form($element, $form_state) {
   $new = array_diff($children, $keys);
   if (count($new) != 0) {
     unset($element['no_form'], $element['ok']);
+    $element = system_settings_form($element);
   }
 
   return $element;
