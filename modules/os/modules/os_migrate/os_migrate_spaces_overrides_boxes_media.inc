@@ -105,7 +105,7 @@ class SpacesOverridesBoxesMediaMigration extends OSMigration {
       // attach metadata and save
       $obj = entity_metadata_wrapper('file', $file);
       $obj->field_html_code = $object->options[$selection];
-      $obj->field_html_title = $object->title;
+      //$obj->field_html_title = $object->title;
       $obj->save();
     }
 

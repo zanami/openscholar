@@ -43,12 +43,6 @@ function vsite_context_default_contexts() {
           'region' => 'header_third',
           'weight' => '-10',
         ),
-        'views-os_websites-block' => array(
-          'module' => 'views',
-          'delta' => 'os_websites-block',
-          'region' => 'sidebar_first',
-          'weight' => '-9',
-        ),
         'vsite_register-get_your_site_block' => array(
           'module' => 'vsite_register',
           'delta' => 'get_your_site_block',
