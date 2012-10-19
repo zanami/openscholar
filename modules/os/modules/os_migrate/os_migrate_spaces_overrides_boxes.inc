@@ -583,7 +583,7 @@ class BoxPorter {
     return $box;
   }
 
-  //attach a style option
+  //manual list should attach a style option
   public function _port_box_os_boxes_manual_list($box, $id, $key_only) {
     if ($key_only) {
       return $id;
@@ -719,6 +719,24 @@ class BoxPorter {
     $options['sort_by'] = $this->_sv_list_box_sort($options['sort_by']);
     $options['number_of_items'] = min(20, $options['number_of_items']); //new box only goes up to 20.
     $box->options = $options;
+
+    return $box;
+  }
+
+  //update tabs
+  public function _port_box_os_modal_tabbed($box, $id, $key_only) {
+    $id = 'os_boxes_tabs';
+    if ($key_only) {
+      return $id;
+    }
+
+    $qt_obj = $box->options['qt_obj'];
+    $box->options = array(
+      'additional_classes' => '',
+      'tabs' => $qt_obj['tabs'],
+    );
+    //update names of tabs?
+    $box->plugin_key = $id;
 
     return $box;
   }
