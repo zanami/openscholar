@@ -438,7 +438,7 @@ function os_preprocess_page(&$variables) {
         }
       }
     }
-    if ($printed && spaces_access_admin_perms(array('create '.$type.' content'))) {
+    if ($printed && spaces_access_admin() && node_access('create', $type)) {
       $links[$type] = array(
         'href' => 'node/add/' . str_replace('_', '-', $type),
         'title' => ucwords(str_replace('_', ' ', $type)),

@@ -50,10 +50,12 @@ function iqss_projects_front_context_default_contexts_alter(&$contexts){
       unset($fp_blocks['vsite_register-get_your_site_block']);
     }
 
-    if(isset($fp_blocks['views-os_websites-block'])){
-      //Move the websites grid to the content_top region
-      $fp_blocks['views-os_websites-block']['region'] = 'content_bottom';
-    }
+    $fp_blocks['views-os_websites-block'] = array(
+      'module' => 'views',
+      'delta' => 'os_websites-block',
+      'region' => 'content_bottom',
+      'weight' => '-9',
+    );
   }
 }// end function
 

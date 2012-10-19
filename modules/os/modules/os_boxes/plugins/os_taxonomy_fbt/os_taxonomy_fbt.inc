@@ -119,7 +119,7 @@ class os_taxonomy_fbt extends os_boxes_default {
       ),
       '#process' => array('ctools_dependent_process'),
       '#dependency' => array(
-        'edit-add-childs' => array(1),
+        'edit-show-childs' => array(1),
       ),
     );
 
@@ -192,7 +192,9 @@ class os_taxonomy_fbt extends os_boxes_default {
    * Get all the volcabularies id using the taxonomy terms.
    */
   private function get_all_volcabularies() {
-    $taxonomy_vocabularies = taxonomy_get_vocabularies();
+
+    ctools_include('taxonomy', 'os');
+    $taxonomy_vocabularies = os_get_vocabularies();
     $vocabularies = array();
 
     foreach ($taxonomy_vocabularies as $taxonomy_vocabulary) {
