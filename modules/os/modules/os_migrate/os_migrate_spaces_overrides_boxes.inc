@@ -66,6 +66,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
   public function postImport() {
     parent::postImport();
 
+//     $this->_fix_os_taxonomy_fbt();
 
     if (parent::is_domain('http://scholar.harvard.edu')) {
       $gking_html =<<<EOF
@@ -295,6 +296,50 @@ EOF;
     variable_del('os_shields_shield_info');
     variable_del('os_shields_shield');
   }
+
+  /**
+   * @function _fix_os_taxonomy_fbt
+   *
+   * The os_taxonomy_fbt widget no longer supports selecting multiple taxonomies.
+   * Widgets with multiple taxonomies selected should be split into several widgets
+   */
+//   function _fix_os_taxonomy_fbt() {
+//     //get the boxes that need updating
+//     $result = db_select('spaces_overrides', 'so')
+//       ->condition('type', 'og')
+//       ->condition('object_type', 'boxes')
+//       ->condition('value', '%original_box_vocabs%', 'LIKE')
+//       ->fields('so')
+//       ->execute();
+
+//     //for each vid in a box, create a new box for that vid
+//     while ($row = $result->fetchObject()) {
+//       $value = unserialize($row->value);
+//       $vocabs = $value->options['original_box_vocab'];
+//       foreach($vocabs as $vid) {
+//         $new_value = $value;
+//         unset($new_value->options['original_box_vocab']);
+//         $new_value->options['vocabulary'] = $vid;
+
+//         db_insert('spaces_overrides')->fields(array(
+//           'type' => $row->type,
+//           'id' => $row->id,
+//           'object_type' => $row->object_type,
+//           'object_id' => $row->object_id,
+//           'value' => serialize($new_value),
+//         ))->execute();
+//       }
+
+//       //and delete the original box
+//       db_delete('spaces_overrides')
+//         ->condition('type', $row->type)
+//         ->condition('id', $row->id)
+//         ->condition('object_type', $row->object_type)
+//         ->condition('object_id', $row->id)
+//         ->condition('value', $row->value)
+//         ->execute();
+//     }
+//   }
 }
 
 /**
@@ -583,7 +628,7 @@ class BoxPorter {
     return $box;
   }
 
-  //attach a style option
+  //manual list should attach a style option
   public function _port_box_os_boxes_manual_list($box, $id, $key_only) {
     if ($key_only) {
       return $id;
@@ -723,6 +768,43 @@ class BoxPorter {
     return $box;
   }
 
+  //update tabs
+  public function _port_box_os_modal_tabbed($box, $id, $key_only) {
+    $id = 'os_boxes_tabs';
+    if ($key_only) {
+      return $id;
+    }
+
+    $qt_obj = $box->options['qt_obj'];
+    $box->options = array(
+      'additional_classes' => '',
+      'tabs' => $qt_obj['tabs'],
+    );
+    //update names of tabs?
+    $box->plugin_key = $id;
+
+    return $box;
+  }
+
+  //update tabs
+//   public function _port_box_vsite_taxonomy_fbt($box, $id, $key_only) {
+//     $id = 'os_taxonomy_fbt';
+//     if ($key_only) {
+//       return $id;
+//     }
+
+//     $vocab = array_filter($box->options['vocabulary']);
+//     if (count($vocab)>1) {
+//       //this needs fixing after migrate.  box no longer supports more than 1 vocab.
+//       $box->options['original_box_vocabs'] = $vocab;
+//     }
+//     $box->options['vocabulary'] = current($vocab);
+//     //update names of tabs?
+//     $box->plugin_key = $id;
+
+//     return $box;
+//   }
+
   //twitter prefix is separated into own variable
   public function _port_box_os_boxes_twitterfeed($box, $id, $key_only) {
     if ($key_only) {
@@ -781,9 +863,9 @@ class BoxPorter {
     }
 
     $defaults = array(
-      'controls' => 'none',
+      'controls' => 'bottom',
       'slide_counter' => 'none',
-      'show_image_titles' => 'none',
+      'show_image_titles' => 'top',
       'pager' => 'none',
       'effect' => 'fade',
       'style' => 'dark',

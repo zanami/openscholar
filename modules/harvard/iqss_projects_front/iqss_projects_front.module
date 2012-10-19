@@ -56,6 +56,14 @@ function iqss_projects_front_context_default_contexts_alter(&$contexts){
       'region' => 'content_bottom',
       'weight' => '-9',
     );
+
+    $fp_blocks['views-os_activity-block_1'] = array(
+      'module' => 'views',
+      'delta' => 'os_activity-block_1',
+      'region' => 'footer',
+      'weight' => '-30',
+    );
+
   }
 }// end function
 

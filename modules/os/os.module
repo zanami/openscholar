@@ -457,6 +457,7 @@ function os_preprocess_page(&$variables) {
     'layout' => array(
       'title' => t('Layout'),
       'href' => 'cp/build/layout/' . $context,
+      'query' => drupal_get_destination(),
     ),
   );
 

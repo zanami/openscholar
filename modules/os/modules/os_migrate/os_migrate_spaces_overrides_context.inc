@@ -197,6 +197,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     $contexts = array(
       'openscholar-section-sitewide' => FALSE, //no obvious mapping.  nothing in db
       'openscholar-feature-pages' => FALSE, //Discontinued
+      'openscholar-feature-taxonomy' => FALSE, //Discontinued
+      'openscholar-feature-search' => FALSE, //Discontinued
       'openscholar-section-sitewide_front' => 'os_sitewide_front',
       'vsite-section-cp' => 'os_cp',
       //'vsite-section-public' => 'os_public', //not used in overrides
@@ -205,6 +207,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'openscholar-feature-front' => 'os_front',
       'openscholar-feature-none' => 'os_public', //all sections
       'openscholar-feature-dvn' => 'dataverse_dataverse',
+      'openscholar-feature-announcements' => 'news_news',
     );
 
     list($context, $action, $type, $theme) = explode(':', $object_id);

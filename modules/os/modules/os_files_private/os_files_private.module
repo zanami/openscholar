@@ -113,17 +113,19 @@ function os_files_private_file_download($uri) {
   $path = file_uri_target($uri);
   $scheme = file_uri_scheme($uri);
 
-  if ($files = file_load_multiple(array(), array('uri' => $uri))) {
+ if ($files = file_load_multiple(array(), array('uri' => $uri))) {
     $file = reset($files);
     $wrapper = entity_metadata_wrapper('file', $file);
+
     if (!isset($wrapper->{OG_AUDIENCE_FIELD}) || !$gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE))) {
-      continue;
+      // What is this supposed to be doing? You can't continue from an if().
+      //continue;
     }
 
     if (!og_is_member('node', $gid[0])) {
-      if (function_exists('pinserver_check_status') && !pinserver_check_status()) {
-        // Maybe user is site owner,  but has not logged in locally or via the pinserver, so send to pinserver.
-        return pinserver_redirect();
+      if ($user->uid == 0 && function_exists('pinserver_check_status') && !pinserver_check_status()) {
+        // User is not logged in locally or via the pinserver, so send to pinserver.
+        return pinserver_redirect(array('redirect_uri' => $_SERVER['REQUEST_URI']));
       }
       return -1;
     }
