@@ -1,5 +1,5 @@
 name = OpenScholar
-description = Install Openscholar
+description = Install OpenScholar
 core = 7.15
 files[] = openscholar.profile
 files[] = openscholar.install

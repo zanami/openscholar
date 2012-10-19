@@ -86,7 +86,7 @@ function theme_os_taxonomy_term_item($variables) {
   $item_content = "<div class='term-head'>" . $name . $number;
 
   if ($variables['terms_description'] && !empty($variables['description'])) {
-    $item_content .= '<div class="description">  - ' . check_plain($variables['description']) . '</div>';
+    $item_content .= '<div class="description"> - ' . check_plain($variables['description']) . '</div>';
   }
 
   $item_content .= "</div>";
