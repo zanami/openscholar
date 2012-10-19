@@ -1,11 +1,6 @@
 @media only screen and (min-width: 320px) and (max-width:600px) {
 /* Styles */
-	
-
-.region-header-third {
-	background:#F7F7F7;
-	height:60px;
-}	 
+	 
 	
 #menu-bar {
     background: none;
@@ -41,11 +36,15 @@
 .view-os-image-gallery-slideshow img,
 #header-container img {width:100%;}
 
-.region-header-third #block-os-secondary-menu ul {
+#block-os-secondary-menu ul {
     float: left;
 }
 
-.region-header-third #block-os-secondary-menu li a {
+#block-os-secondary-menu ul li {
+    list-style-image: none;
+}
+
+#block-os-secondary-menu li a {
     border-right: none !important;
 }
 
