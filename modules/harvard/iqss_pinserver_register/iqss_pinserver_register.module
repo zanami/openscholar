@@ -143,30 +143,33 @@ function iqss_pinserver_register_ajax_validation(&$form, &$state) {
  * Checks if user has authenticated through the pinserver
  * before rendering the signup form
  */
-function iqss_pinserver_register_form_access(){
+function iqss_pinserver_register_form_access() {
   global $user;
 
   /*** Check what to do before loading vsite_register form ***/
 
-  // User already owns a site or has create vsite permissions - no need to send to pinserver.
   if ($vsites = vsite_get_vsite_by_owner($user->uid) || user_access('create vsite content on behalf')) {
+    // User already owns a site or has create vsite permissions - no need to send to pinserver.
     if (!vsite_vsite_exists_access($vsites)) {
-      return drupal_goto(_iqss_pinserver_register_get_redirect($vsites));  // Redirect user to existing vsite(s).
+     // Redirect user to existing vsite(s).
+     return drupal_goto(_iqss_pinserver_register_get_redirect($vsites));
     }
     else {
+      // Create new local account.
       return drupal_get_form('vsite_register_form');
     }
   }
 
   if (!pinserver_check_status()) {
-    // Maybe user is site owner,  but has not logged in locally or via the pinserver, so send to pinserver.
+    // User has not logged in locally or via the pinserver, so send to pinserver.
     return pinserver_redirect();
   }
   else {
     // Neither use cases above apply and the user has successfully logged in through the pinserver.
     if ($uid = iqss_pinserver_register_check_row()) {
-      // User has just logged in via pinsever, determine if user already has a site.
-      if($vsites = vsite_get_vsite_by_owner($uid)) {
+      // Determine if user already has a local account.
+      if ($vsites = vsite_get_vsite_by_owner($uid)) {
+        // Has local account; log them in.
         $user = user_load(array('uid' => $uid));
 	$user->login = time();
 	db_update('users')
@@ -174,11 +177,18 @@ function iqss_pinserver_register_form_access(){
 	  ->condition('uid', $user->uid, '=')
 	  ->execute();
 
+        if (isset($_GET['redirect'])) {
+          // User has requested a private file and needs to be redirected elsewhere.
+          return drupal_goto(preg_replace('|^/|', '', $_GET['redirect']));  // Strip leading '/' because drupal_goto adds one.
+        }
+
         if (!vsite_vsite_exists_access($vsites)) {
-          return drupal_goto(_iqss_pinserver_register_get_redirect($vsites));  // Redirect user to existing vsite(s).
+          // Redirect user to existing vsite(s).
+          return drupal_goto(_iqss_pinserver_register_get_redirect($vsites));
         }
       }
     }
+    // Create new local account.
     return drupal_get_form('vsite_register_form');
   }
 }
