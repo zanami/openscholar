@@ -14,11 +14,14 @@ function os_publications_overview() {
 
   $ckey = _os_publications_cache_key($args);
   if ($cache = cache_get($ckey, 'cache_biblio_lists')) {
-    //    return $cache->data;
+    //return $cache->data;
   }
 
   module_load_include('inc', 'biblio', 'includes/biblio.pages');
   $output = call_user_func_array('biblio_page', $args);
+
+  // remove the filter status message
+  unset($output['biblio_page']['header']['filter_status']);
 
   // handle caching
   cache_set($ckey, $output, 'cache_biblio_lists');
