@@ -13,7 +13,7 @@ function os_files_private_requirements($phase) {
   $description = t('The private files directory is defined properly.');
 
   if (!$private_directory = variable_get('file_private_path')) {
-    $status = REQUIREMENT_ERROR;
+    $status = REQUIREMENT_WARNING;
     $description = t('The private files directory is undefined.');
   }
 
