@@ -24,7 +24,7 @@ function os_biocv_default_box() {
   $box->options     = array(
     'additional_classes' => '',
     'show_title'     => 0,
-    'teaser'         => 'teaser',
+    'teaser'         => 'full',
   );
   $export['bio_teaser'] = $box;
 

@@ -159,6 +159,11 @@ function theme_cp_menu_table($variables){
   );
   uasort($table_data, 'element_sort');
 
+  $revert = array(
+    'primary-menu',
+    'secondary-menu',
+  );
+
   $rows = array();
   foreach ( element_children($table_data) as $d ) {
     $extra_classes = array();
@@ -168,7 +173,7 @@ function theme_cp_menu_table($variables){
     $rows[] = array(
       'data' => array(
         array(
-          'data' => $menus[$d] . drupal_render($table_data[$d]['menu-name']).' '.ctools_modal_text_button('<sub>Remove</sub>', 'cp/build/menu/nojs/remove/'.$d, 'Remove'),
+          'data' => $menus[$d] . drupal_render($table_data[$d]['menu-name']).' '.ctools_modal_text_button('<sub>'.(in_array($d,$revert)?'Reset':'Remove').'</sub>', 'cp/build/menu/nojs/remove/'.$d, 'Remove'),
           'colspan' => 2,
         ),
         array(
@@ -408,9 +413,21 @@ function cp_menu_remove_confirm_submit($form, $form_state) {
   if ($form_state['values']['op'] == t('Confirm')) {
     $menu = $form_state['values']['menu'];
 
+    $revert = array(
+      'primary-menu',
+      'secondary-menu',
+    );
+
     ctools_include('menu', 'os');
-    os_menu_del($menu);
-    drupal_set_message(t('The @menu menu has been deleted.', array('@menu' => @menu)));
+    if (in_array($menu, $revert)) {
+      os_menu_revert($menu);
+      drupal_set_message(t('The @menu menu has been reset to defaults.', array('@menu' => $menu)));
+    }
+    else {
+      os_menu_del($menu);
+      drupal_set_message(t('The @menu menu has been deleted.', array('@menu' => $menu)));
+    }
+
   }
 }
 

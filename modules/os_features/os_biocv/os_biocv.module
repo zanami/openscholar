@@ -27,14 +27,16 @@ function os_biocv_menu() {
     'title' => 'Biography',
     'page callback' => '_os_biocv_bio_page_contents',
     'access callback' => '_os_biocv_show_local_tasks',
-    'menu_name' => 'primary-menu',
+    // Add to features menu. If added to "primary-menu", it appears in CP.
+    'menu_name' => 'features',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['biocv/cv'] = array(
     'title' => 'Curriculum Vitae',
     'page callback' => '_os_biocv_cv_page_contents',
     'access callback' => '_os_biocv_show_local_tasks',
-    'menu_name' => 'primary-menu',
+    // Add to features menu. If added to "primary-menu", it appears in CP.
+    'menu_name' => 'features',
     'type' => MENU_LOCAL_TASK,
   );
   // Named like 'features/$feature_name' by features/spaces convention.
