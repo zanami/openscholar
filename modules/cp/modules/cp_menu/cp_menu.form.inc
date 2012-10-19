@@ -410,7 +410,7 @@ function cp_menu_remove_confirm_submit($form, $form_state) {
 
     ctools_include('menu', 'os');
     os_menu_del($menu);
-    drupal_set_message(t('The @menu menu has been deleted.', array('@menu' => @menu)));
+    drupal_set_message(t('The @menu menu has been deleted.', array('@menu' => $menu)));
   }
 }
 
