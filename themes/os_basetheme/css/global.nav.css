@@ -527,9 +527,13 @@ background: none repeat scroll 0 0 #FFFFFF !important;
     margin: 0 1px 0 0;
     opacity: 0.93;
     padding: 5px 0;
-    right: 45px;
     width: auto;
 }
+
+html.js div.ctools-dropdown.add_new div.ctools-dropdown-container {
+right: 38px;
+}
+
 
 html.js div.ctools-dropdown div.ctools-dropdown-container ul li a {
     color: #293352 !important;

@@ -166,6 +166,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'boxes-scholar_publications_recent' => 'boxes-os_publications_recent',
       'boxes-scholar_book_recent_docs' => 'boxes-os_booklets_recent_docs',
       'boxes-scholar_book_current_toc' => 'boxes-os_booktoc',
+      'views-scholar_software_releases-block_3' => 'views-os_software_releases-block_1'
     );
 
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
@@ -186,6 +187,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'vsite_rss' => 'os_rss',
       'scholar_publications_recent' => 'os_publications_recent',
       'scholar_book_current_toc' => 'os_booktoc',
+      'scholar_software_releases-block_3' => 'os_software_releases-block_1'
     );
 
     return (isset($delta_map[$delta])) ? $delta_map[$delta] : $delta;
@@ -197,6 +199,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     $contexts = array(
       'openscholar-section-sitewide' => FALSE, //no obvious mapping.  nothing in db
       'openscholar-feature-pages' => FALSE, //Discontinued
+      'openscholar-feature-taxonomy' => FALSE, //Discontinued
+      'openscholar-feature-search' => FALSE, //Discontinued
       'openscholar-section-sitewide_front' => 'os_sitewide_front',
       'vsite-section-cp' => 'os_cp',
       //'vsite-section-public' => 'os_public', //not used in overrides

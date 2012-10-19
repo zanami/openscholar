@@ -47,6 +47,7 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
       ));
       $form['menus'][$m][$l['mlid']] = array(
         'title' => array(
+          '#type' => 'item',
           '#markup' => $l['link_title'],
           '#description' => l($url, $url)
         ),
