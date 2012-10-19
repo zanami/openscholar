@@ -44,6 +44,13 @@
     border-right: none !important;
 }
 
+#menu-bar ul.nice-menu li a:hover, 
+#menu-bar ul.nice-menu li a.active, 
+#menu-bar ul.nice-menu li.active-trail a, 
+#menu-bar ul.nice-menu ul li a  {
+    border-radius: 0;
+}
+
 
 .view-os-image-gallery-slideshow img,
 #header-container img {width:100%;}
