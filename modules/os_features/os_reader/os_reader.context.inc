@@ -1,6 +1,4 @@
 <?php
-// $Id$
-
 /**
  * @file
  * os_reader.context.inc
@@ -13,9 +11,7 @@ function os_reader_context_default_contexts() {
   $export = array();
 
   $context = new stdClass();
-  /* Edit this to true to make a default context disabled initially */
-
-  $context->disabled = FALSE;
+  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
   $context->name = 'reader_reader';
   $context->description = '';
@@ -44,9 +40,9 @@ function os_reader_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'views-reader-block' => array(
-          'module' => 'views',
-          'delta' => 'reader-block',
+        'boxes-os_addthis' => array(
+          'module' => 'boxes',
+          'delta' => 'os_addthis',
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),
@@ -56,9 +52,9 @@ function os_reader_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),
-        'boxes-os_addthis' => array(
+        'boxes-boxes-os_boxes_feedreader' => array(
           'module' => 'boxes',
-          'delta' => 'os_addthis',
+          'delta' => 'boxes-os_boxes_feedreader',
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),
@@ -74,4 +70,3 @@ function os_reader_context_default_contexts() {
 
   return $export;
 }
-
