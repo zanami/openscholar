@@ -63,7 +63,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $this->addFieldMapping('revision_uid', 'nr_uid');
 
     $this->addFieldMapping('body', 'body');
-    $this->addFieldMapping('body:format', 'format');
+    $this->addFieldMapping('body:format', 'format')->defaultValue('filtered_html');
     $this->addFieldMapping('body:language', 'language')->defaultValue('und');
     $this->addFieldMapping('body:summary', 'teaser');
 
@@ -120,7 +120,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       'teaser'
     ));
 
-    $query->join('filter_formats', 'ff', 'nr.format = ff.format');
+    $query->leftjoin('filter_formats', 'ff', 'nr.format = ff.format');
     $query->addField('ff', 'name', 'format_name');
     $query->orderBy('n.changed');
 
