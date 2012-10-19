@@ -51,10 +51,13 @@ function iqss_scholars_front_context_default_contexts_alter(&$contexts){
       'region' => 'footer',
     );
 
-    if(isset($fp_blocks['views-os_websites-block'])){
-      //Move the websites grid to the content_bottom region
-      $fp_blocks['views-os_websites-block']['region'] = 'content_bottom';
-    }
+    $fp_blocks['views-os_websites-block'] = array(
+      'module' => 'views',
+      'delta' => 'os_websites-block',
+      'region' => 'content_bottom',
+      'weight' => '-9',
+    );
+
   }
 
   // Add extra boxes to the os_sitewide context
