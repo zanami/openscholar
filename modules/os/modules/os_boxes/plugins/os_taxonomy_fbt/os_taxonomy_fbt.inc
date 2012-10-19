@@ -119,7 +119,7 @@ class os_taxonomy_fbt extends os_boxes_default {
       ),
       '#process' => array('ctools_dependent_process'),
       '#dependency' => array(
-        'edit-add-childs' => array(1),
+        'edit-show-childs' => array(1),
       ),
     );
 
