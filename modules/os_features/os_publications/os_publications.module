@@ -137,8 +137,10 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   }
   $tid = !empty($form_state['biblio_type']) ? $form_state['biblio_type'] : (isset($form_state['node']->biblio_type) ? $form_state['node']->biblio_type : 0);
 
-  // hide the biblio_image field
+  // Hides the "Book Cover" biblio_image field.
   $form['field_biblio_image']['#access'] = FALSE;
+  // Hides the "Extra Fields" (dyntextfield) field until a type is selected.
+  $form['field_biblio_extra']['#access'] = FALSE;
 
   // hide look up and pasting fields
   if (isset($form['biblio_doi_lookup'])) {
@@ -156,23 +158,23 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
 
   ksort($form['biblio_type']['#options']);
 
-  // do things based on what pub type we have selected
+  // Alters form based on what publication type is selected.
   switch ($tid) {
     case 0:
       // no pub type
       // we're on the first step of a biblio form. bail out.
       $form['biblio_type']['#weight'] = -1000;
-
-      // Hides the "Extra Fields" (dyntextfield) field until a type is selected.
-      $form['field_biblio_extra']['#access'] = FALSE;
       return;
 
     case 100:
-      // book type
+      // Shows Image field only for "Book" publication type.
       $form['field_biblio_image']['#access'] = TRUE;
+    default:
+      // Shows the Extra Fields for any selected publication type.
+      $form['field_biblio_extra']['#access'] = TRUE;
   }
 
-  // move fields out of the vertical tabs
+  // Moves fields out of the vertical tabs
   // I like how the form looks with the tabs in. Much cleaner.
   // So I'm keeping them.
   $form['biblio_authors'] = $form['biblio_tabs']['biblio_authors'];
