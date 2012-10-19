@@ -73,7 +73,7 @@ class os_taxonomy_fbt extends os_boxes_default {
         'select' => t('Select post types'),
       ),
       '#default_value' => $this->options['behavior'],
-      '#description' => t('The post types that will included in the count'),
+      '#description' => t('The post types that will included in the count. Determine for me will filter the content on the "current page".'),
     );
 
     $form['bundles'] = array(
