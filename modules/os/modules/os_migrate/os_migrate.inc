@@ -490,7 +490,7 @@ abstract class OSMigration extends Migration {
             $update = TRUE;
             $tag = $this->_os_migrate_inline_tag('iframe', $data['destid1'], $iframe);
             $text = $dom->createTextNode($tag);
-        //    $iframe->parentNode->replaceChild($text, $iframe);
+            $iframe->parentNode->replaceChild($text, $iframe);
           }
         }
       }
@@ -653,8 +653,9 @@ abstract class OSMigration extends Migration {
       case 'url':
       break;
 
+      //<p>[[{"type":"media","view_mode":"default","fid":"1234","attributes":{"class":"file-icon media-image"}}]]</p>
       case 'iframe':
-        $attributes = array('width'=>'width', 'height'=>'height');
+//        $attributes = array('width'=>'width', 'height'=>'height');
         //style attr?  keep or ditch
       break;
     }
