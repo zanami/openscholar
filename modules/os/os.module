@@ -290,6 +290,9 @@ function os_os_widget() {
   return $blocks;
 }
 
+/**
+ * Implements hook_os_widget_alter().
+ */
 function os_os_widget_alter(&$widget) {
   if ($widget['module'] == 'os') {
     $widget += array(
@@ -352,6 +355,9 @@ function os_module_implements_alter(&$implementations, $hook) {
   }
 }
 
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
 function os_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   if (strpos($root_path, 'node/%') !== FALSE) {
     // remove node-specific tasks
@@ -402,9 +408,9 @@ function os_process_node(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_page().
+ * Implements hook_preprocess_HOOK() for page.tpl.php.
  */
-function os_preprocess_page(&$variables) {
+function os_preprocess_page(&$vars) {
   $types = os_get_bundles();
 
   $links = array();
@@ -464,7 +470,7 @@ function os_preprocess_page(&$variables) {
   drupal_alter('os_add_new_links', $links);
 
   ksort($links);
-  $variables['title_suffix']['controls'] = array(
+  $vars['title_suffix']['controls'] = array(
     '#type' => 'container',
     '#attributes' => array(
       'class' => array(
@@ -473,7 +479,7 @@ function os_preprocess_page(&$variables) {
     ),
   );
   if (count($links) > 1) {
-    $variables['title_suffix']['controls']['add_new'] = array(
+    $vars['title_suffix']['controls']['add_new'] = array(
       '#theme' => 'ctools_dropdown',
       '#links' => $links,
       '#title' => t('Add New'),
@@ -483,7 +489,7 @@ function os_preprocess_page(&$variables) {
   }
   elseif (count($links) == 1) {
     $link = current($links);
-    $variables['title_suffix']['controls']['add_new'] = array(
+    $vars['title_suffix']['controls']['add_new'] = array(
       '#theme' => 'link',
       '#text' => t('Add !type', array('!type' => $link['title'])),
       '#path' => $link['href'],
@@ -495,7 +501,7 @@ function os_preprocess_page(&$variables) {
       ),
     );
   }
-  $variables['title_suffix']['controls']['section_links'] = array(
+  $vars['title_suffix']['controls']['section_links'] = array(
     '#theme' => 'ctools_dropdown',
     '#links' => $section_links,
     '#title' => 'Links',
@@ -540,12 +546,20 @@ function os_preprocess_page(&$variables) {
   }
 }
 
+/**
+ * Implements hook_form_alter().
+ */
 function os_form_alter(&$form, $form_state, $form_id) {
   if (isset($form['#node']) || isset($form['#entity'])) {
     $form['#after_build'][] = 'os_entity_form_after_build';
   }
 }
 
+/**
+ * After build callback; added to every form.
+ * 
+ * @see os_form_alter()
+ */
 function os_entity_form_after_build($form, $form_state) {
   $node = isset($form['#node'])?$form['#node']:null;
   if (!isset($node) && isset($form['#entity'])) {
@@ -567,7 +581,7 @@ function os_form_node_form_alter(&$form, $form_state) {
 }
 
 /**
- * Menu call back.
+ * Page argument; passed to drupal_get_form in os_menu().
  */
 function os_settings_form($form_state) {
   $form = array();
@@ -736,6 +750,7 @@ MESSAGE;
  *
  * This is a ctools plugins hook.
  */
+ */
 function os_context_plugins() {
   $plugins = array();
 
@@ -763,6 +778,7 @@ function os_context_plugins() {
 /**
  * Implements hook_context_registry().
  */
+ */
 function os_context_registry() {
   $registry = array();
 
@@ -780,6 +796,7 @@ function os_context_registry() {
 /**
  * Implements hook_context_registry_alter().
  */
+ */
 function os_context_registry_alter(&$registry) {
   // Alter the registry to use OpenScholar's block reaction plugin which extends
   // the standard
@@ -789,7 +806,9 @@ function os_context_registry_alter(&$registry) {
 }
 
 /**
- * Helper function for adding conditional css. Takes a browser css condition,
+ * Helper function for adding conditional css.
+ * 
+ * Takes a browser css condition,
  * returns array to pass to drupal_add_css's $options['browser']
  * http://api.drupal.org/api/drupal/includes%21common.inc/function/drupal_pre_render_conditional_comments/7
  *
@@ -979,7 +998,8 @@ function os_permission() {
 }
 
 /**
- * Given a box and a set of contexts, return the region the box is in
+ * Given a box and a set of contexts, return the region the box is in.
+ * 
  * This function will be called multiple times per page, so we get all the
  * regions at once and cache them in a static var.
  */

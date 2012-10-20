@@ -194,10 +194,10 @@ class rbuild_handler implements os_software_handler {
   /**
    * Creates URL path.
    *
-   * @param string $s_url
-   * @param string $s_app_key
+   * @param string $url
+   * @param string $short_name
    *
-   * @return string
+   * @return string $path
    */
   private function create_url($url, $short_name = FALSE) {
     $path = rtrim($url, '/ ') . '/PACKAGES';
