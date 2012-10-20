@@ -8,7 +8,7 @@ include_once ('os.features.inc');
 include_once ('includes/os.inc');
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function os_menu() {
   $items = array();
@@ -83,7 +83,7 @@ function os_menu() {
 }
 
 /**
- * Implementation of hook menu_alter().
+ * Implements hook_menu_alter().
  */
 function os_menu_alter(&$items) {
   if (isset($items['user'])) {
@@ -732,7 +732,7 @@ MESSAGE;
 }
 
 /**
- * Implementation of hook_context_plugins().
+ * Implements hook_context_plugins().
  *
  * This is a ctools plugins hook.
  */
@@ -761,7 +761,7 @@ function os_context_plugins() {
 }
 
 /**
- * Implementation of hook_context_registry().
+ * Implements hook_context_registry().
  */
 function os_context_registry() {
   $registry = array();
@@ -778,7 +778,7 @@ function os_context_registry() {
 }
 
 /**
- * Implementation of hook_context_registry_alter().
+ * Implements hook_context_registry_alter().
  */
 function os_context_registry_alter(&$registry) {
   // Alter the registry to use OpenScholar's block reaction plugin which extends
@@ -955,7 +955,8 @@ function os_node_view_alter(&$build) {
 }
 
 /**
- * Implementation of hook_permission()
+ * Implements hook_permission().
+ * 
  * Defines permissions for all the regions of the default theme
  */
 function os_permission() {
