@@ -122,7 +122,7 @@ function os_publications_export($format = "tagged", $nid = NULL, $popup = FALSE)
 }
 
 function os_publications_settings() {
-  $s_style = biblio_get_style();
+  $style_name = biblio_get_style();
 
   $form['left'] = array(
     '#type' => 'container',
@@ -179,9 +179,6 @@ function os_publications_settings() {
        $form['citation_distribute_autoflags']['#options'] += array($plugin['handler']['class'] => $plugin['title']);
      }
    }*/
-
-
-
 
   $form['right']['os_publications_note_in_teaser'] = array(
     '#type' => 'checkbox',
@@ -247,8 +244,6 @@ function os_publications_settings() {
     '#description' => t('When this is checked, a shortened URL will be included in the citation.'),
     '#default_value' => variable_get('os_publications_shorten_citations'),
   );
-
-
 
   return system_settings_form($form);
 }

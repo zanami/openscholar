@@ -11,20 +11,19 @@
 function dyntextfield_menu() {
   $items = array(
     'dyntextfield/autocomplete' => array(
-      'title'             => 'Dynamic Keys Lookup',
-      'page callback'     => 'dyntextfield_autocomplete',
-      'access arguments'  => array('access content'),
-      'type'              => MENU_CALLBACK,
+      'title' => 'Dynamic Keys Lookup',
+      'page callback' => 'dyntextfield_autocomplete',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
     ),
   );
 
   return $items;
 }
 
-
 /**
-* Implements hook_field_info().
-*/
+ * Implements hook_field_info().
+ */
 function dyntextfield_field_info() {
   return array(
     'dyntextfield' => array(
@@ -37,21 +36,20 @@ function dyntextfield_field_info() {
 }
 
 /**
-* Custom validation of settings values.
-*
-* Create callbacks like this to do settings validation.
-*/
+ * Custom validation of settings values.
+ *
+ * Create callbacks like this to do settings validation.
+ */
 function _dyntextfield_length_validate($element, &$form_state) {
   $value = $form_state['values']['max_length'];
-  if ($value && !is_numeric($value)|| $value < 1 || $value > 255) {
+  if ($value && !is_numeric($value) || $value < 1 || $value > 255) {
     form_set_error('max_length', t('"Max length" must be a number between 1 and 255.'));
   }
 }
 
-
 /**
-* Implements hook_field_is_empty().
-*/
+ * Implements hook_field_is_empty().
+ */
 function dyntextfield_field_is_empty($item, $field) {
   if (!empty($item['dyntext_fieldset'])) {
     return empty($item['dyntext_fieldset']['label']);
@@ -80,11 +78,7 @@ function dyntextfield_autocomplete($field_name, $text) {
   $table_name = _field_sql_storage_tablename($field);
   $column_name = $field_name . '_label';
 
-  $result = db_select($table_name, 'f')
-    ->fields('f', array($column_name))
-    ->condition($column_name, '%' . db_like($text) . '%', 'LIKE')
-    ->orderBy($column_name)
-    ->execute();
+  $result = db_select($table_name, 'f')->fields('f', array($column_name))->condition($column_name, '%' . db_like($text) . '%', 'LIKE')->orderBy($column_name)->execute();
 
   foreach ($result as $row) {
     $matches[$row->$column_name] = check_plain($row->$column_name);
@@ -94,8 +88,8 @@ function dyntextfield_autocomplete($field_name, $text) {
 }
 
 /**
-* Implementation of hook_field_formatter_info().
-*/
+ * Implementation of hook_field_formatter_info().
+ */
 function dyntextfield_field_formatter_info() {
   return array(
     'dyntextfield_default' => array(
@@ -117,7 +111,7 @@ function dyntextfield_field_formatter_view($entity_type, $entity, $field, $insta
   switch ($display['type']) {
     case 'dyntextfield_default':
       foreach ($items as $delta => $item) {
-        $element[$delta] = array('#markup' => '<span class="dyntext_label field-label">' . check_plain($item['label']) . ':</span>&nbsp;<span class="dyntext_value">' .  check_plain($item['value']) . '</span>');
+        $element[$delta] = array('#markup' => '<span class="dyntext_label field-label">' . check_plain($item['label']) . ':</span>&nbsp;<span class="dyntext_value">' . check_plain($item['value']) . '</span>');
       }
       break;
 
@@ -137,13 +131,14 @@ function theme_dyntextfield_form_table(&$form) {
 
   $content = '<table><tr>';
   foreach ($form as $key => $value) {
-    if(substr($key,0,1) == '#') continue;
-    $content .= '<td>'.drupal_render($form[$key]).'</td>';
+    if (substr($key, 0, 1) == '#') {
+      continue;
+    }
+    $content .= '<td>' . drupal_render($form[$key]) . '</td>';
   }
   $content .= '</tr></table>';
 
   return $content;
-
 }
 
 /**
@@ -191,7 +186,7 @@ function dyntextfield_field_widget_form(&$form, &$form_state, $field, $instance,
     '#title' => t('Key'),
     '#type' => 'textfield',
     '#default_value' => isset($items[$delta]['label']) ? $items[$delta]['label'] : NULL,
-    '#autocomplete_path' => 'dyntextfield/autocomplete/'. $field['field_name'],
+    '#autocomplete_path' => 'dyntextfield/autocomplete/' . $field['field_name'],
     '#size' => $instance['widget']['settings']['size'],
     '#maxlength' => 255,
   );
@@ -219,13 +214,14 @@ function dyntextfield_form_biblio_node_form_alter(&$form, $form_state) {
   // this next bit is to remove all the dyntextfield form elements when
   // pub type is not selected on a biblio form
   if (!isset($form_state['values']['biblio_type']) &&
-      empty($form_state['post']['biblio_type']) &&
-      empty($form_state['submitted']) &&
-      empty($form['vid']['#value'])) {
+    empty($form_state['post']['biblio_type']) &&
+    empty($form_state['submitted']) &&
+    empty($form['vid']['#value'])
+  ) {
 
     foreach (element_children($form) as $form_element) {
       $widgets = element_children($form[$form_element]);
-      if (count($widgets) && is_array($form[$form_element][current($widgets)]) && array_key_exists('dyntext_fieldset',$form[$form_element][current($widgets)])){
+      if (count($widgets) && is_array($form[$form_element][current($widgets)]) && array_key_exists('dyntext_fieldset', $form[$form_element][current($widgets)])) {
         $form[$form_element] = NULL;
       }
     }
@@ -240,19 +236,24 @@ function dyntextfield_form_biblio_node_form_alter(&$form, $form_state) {
  * @param $pub object publication
  * @param $bibtex string
  */
-function dyntextfield_biblio_bibtex_export_post($pub, &$bibtex){
+function dyntextfield_biblio_bibtex_export_post($pub, &$bibtex) {
 
   $node = node_load($pub->nid);
-  $result = db_query("SELECT field_name  FROM `content_node_field_instance` WHERE `type_name` = '%s' AND `widget_type` = 'dyntextfield_widget' ",$pub->type);
+  $result = db_query("SELECT field_name  FROM `content_node_field_instance` WHERE `type_name` = '%s' AND `widget_type` = 'dyntextfield_widget' ", $pub->type);
 
   $i = 0;
-  while($a_field = db_fetch_array($result)){
-    $s_field_name = $a_field['field_name'];
-    if(isset($node->$s_field_name) && is_array($node->$s_field_name)){
-      foreach ($node->$s_field_name as $field){
-        if(strlen($field['value'])) $bibtex .= _bibtex_format_entry('biblio_extra'.++$i, "{$field['label']}: {$field['value']}");
+  // @todo use field api to access (and set) these values.
+  while ($field_info = db_fetch_array($result)) {
+    $field_name = $field_info['field_name'];
+    
+    // Adds these fields to the biblio export
+    if (isset($node->$field_name) && is_array($node->$field_name)) {
+      foreach ($node->$field_name as $field) {
+        if (strlen($field['value'])) {
+          $bibtex .= _bibtex_format_entry('biblio_extra' . ++$i, "{$field['label']}: {$field['value']}");
+        }
       }
-    }//Add these fields to the biblio export
+    }
   }
 }
 
@@ -262,19 +263,22 @@ function dyntextfield_biblio_bibtex_export_post($pub, &$bibtex){
  * @param $entry array settings
  * @param $node array
  */
-function dyntextfield_biblio_bibtex_import($entry, &$node){
+function dyntextfield_biblio_bibtex_import($entry, &$node) {
 
-  $result = db_query("SELECT field_name  FROM `content_node_field_instance` WHERE `type_name` = 'biblio' AND `widget_type` = 'dyntextfield_widget' ");
-  $a_field = db_fetch_array($result);
+  $query = db_query("SELECT field_name  FROM `content_node_field_instance` WHERE `type_name` = 'biblio' AND `widget_type` = 'dyntextfield_widget' ");
+  $result = db_fetch_array($query);
 
   $i = 0;
-  if($a_field){
-    $s_field_name = $a_field['field_name'];
-    $node[$s_field_name] = array();
-    while(array_key_exists("biblio_extra".++$i,$entry)){
-      list($s_key,$s_value) = split(":",$entry["biblio_extra".$i],2);
-      if(!strlen(trim($s_value))) $s_value = $s_key;
-      $node[$s_field_name][] = array('dyntext_fieldset' => array('label' => trim($s_key),'value' => trim($s_value)));
+  if ($result) {
+    $field_name = $result['field_name'];
+    $node[$field_name] = array();
+    while (array_key_exists("biblio_extra" . ++$i, $entry)) {
+      list($key, $value) = split(":", $entry["biblio_extra" . $i], 2);
+      if (!strlen(trim($value))) {
+        $value = $key;
+      }
+      $node[$field_name][] = array('dyntext_fieldset' => array('label' => trim($key), 'value' => trim($value)));
     }
   }
 }
+

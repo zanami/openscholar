@@ -31,9 +31,9 @@
  */
 
 /**
- * Return the public non-admin contexts that are avalible in a site.
+ * Returns the public non-admin contexts that are avalible in a site.
  *
- * @param $privacy
+ * @param array $privacy
  *  0: disabled
  *  1: public
  *  2: private
@@ -442,17 +442,17 @@ function os_layout_block_exists($block){
 }
 
 /**
- * Return a context ranking.
+ * Returns a context ranking.
  *
  * @todo Add weight to context table.
  */
-function _os_context_get_rank($context) {
+function _os_context_get_rank($context_name) {
   $context_rank = &drupal_static(__FUNCTION__, array());
 
-  if (!isset($context_rank[$context])) {
-    $o_context = context_load($context);
-    if (isset($o_context->weight)) {
-      $context_rank[$context] = $o_context->weight;
+  if (!isset($context_rank[$context_name])) {
+    $context = context_load($context_name);
+    if (isset($context->weight)) {
+      $context_rank[$context_name] = $context->weight;
     }
     else {
       // Global Special Contexts.
@@ -460,23 +460,23 @@ function _os_context_get_rank($context) {
         'os_public',
         'os_cp',
       );
-      if (in_array($context, $array)) {
-        $context_rank[$context] = 1;
-        return $context_rank[$context];
+      if (in_array($context_name, $array)) {
+        $context_rank[$context_name] = 1;
+        return $context_rank[$context_name];
       }
 
       $map = features_get_component_map('context');
-      if (array_key_exists($context, $map)) {
+      if (array_key_exists($context_name, $map)) {
         // Feature context.
-        $context_rank[$context] = 2;
+        $context_rank[$context_name] = 2;
       }
       else {
         // Page or other non-feature context.
-        $context_rank[$context] = 3;
+        $context_rank[$context_name] = 3;
       }
     }
   }
-  return $context_rank[$context];
+  return $context_rank[$context_name];
 }
 
 /**

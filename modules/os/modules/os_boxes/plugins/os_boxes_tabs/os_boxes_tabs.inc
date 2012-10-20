@@ -1,9 +1,17 @@
 <?php
 
+/**
+ * @file
+ * Provides class for os_boxes_tabs.
+ */
+
+/**
+ * Provides class for os_boxes_tabs.
+ */
 class os_boxes_tabs extends os_boxes_default {
 
   /**
-   * Implementation of boxes_content::options_defaults().
+   * Implements boxes_content::options_defaults().
    */
   public function options_defaults() {
     $options = parent::options_defaults();
@@ -12,7 +20,7 @@ class os_boxes_tabs extends os_boxes_default {
   }
 
   /**
-   * Implementation of boxes_content::options_form().
+   * Implements boxes_content::options_form().
    */
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
@@ -22,10 +30,10 @@ class os_boxes_tabs extends os_boxes_default {
         array('system', 'ui.tabs'),
       ),
       'js' => array(
-        drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_tabs/os_boxes_tabs_form.js',
+        drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_tabs/os_boxes_tabs_form.js',
       ),
       'css' => array(
-        drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_tabs/os_boxes_tabs.css',
+        drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_tabs/os_boxes_tabs.css',
       ),
     );
 
@@ -36,7 +44,8 @@ class os_boxes_tabs extends os_boxes_default {
     ctools_include('layout', 'os');
     foreach ($widgets as $wgt => $info) {
       if (isset($info['info'])) {
-        $options[$wgt] = $info['info'];  // not everything we get back from hook_os_widget has an info field.
+        // not everything we get back from hook_os_widget has an info field.
+        $options[$wgt] = $info['info'];
       }
     }
 
@@ -53,7 +62,8 @@ class os_boxes_tabs extends os_boxes_default {
     $new_tab = array(
       'type' => 'block',
       'title' => 'New Tab',
-      'weight' => '200000 new',  // special case
+      // special case
+      'weight' => '200000 new',
       'delta' => 'os_boxes_tabs-remove',
       'bid' => '__blank__',
     );
@@ -68,7 +78,7 @@ class os_boxes_tabs extends os_boxes_default {
       '#description' => t('Drag the tabs to reorder them. Whichever tab is on the left will be the open tab when a user visits the page.'),
     );
     foreach ($tabs_data as $k => $t) {
-      $id = 'tab-'.$k;
+      $id = 'tab-' . $k;
       $links[$t['weight']] = array(
         'href' => '',
         'fragment' => $id,
@@ -92,12 +102,14 @@ class os_boxes_tabs extends os_boxes_default {
           '#title' => t('Title of the Tab'),
           '#type' => 'textfield',
           '#default_value' => $t['title'],
-          '#attributes' => array('class' => array('tab-title')), // for js
+          // for js
+          '#attributes' => array('class' => array('tab-title')),
         ),
         'weight' => array(
           '#type' => 'hidden',
           '#default_value' => $t['weight'],
-          '#attributes' => array('class' => array('tab-weight')),  // for js
+          // for js
+          '#attributes' => array('class' => array('tab-weight')),
         ),
         'type' => array(
           '#type' => 'value',
@@ -131,7 +143,7 @@ class os_boxes_tabs extends os_boxes_default {
   }
 
   /**
-   * Implementation of render().
+   * Implements render().
    */
   public function render() {
     $block = parent::render();
@@ -148,20 +160,20 @@ class os_boxes_tabs extends os_boxes_default {
           array('system', 'ui.tabs'),
         ),
         'js' => array(
-          drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_tabs/os_boxes_tabs_display.js',
-        )
-      )
+          drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_tabs/os_boxes_tabs_display.js',
+        ),
+      ),
     );
     module_load_include('module', 'block', 'block');
-    foreach ($this->options['tabs'] as $k => &$t) {
-      if ($b = $blocks[$t['bid']]) {
-        if ($block_arr = _block_render_blocks(array($b))) {
-          if (!empty($block_arr["{$b->module}_{$b->delta}"]->content)) {
-            $b_obj = &$block_arr[$b->module.'_'.$b->delta];
-            $b_obj->region = $this->delta;
+    foreach ($this->options['tabs'] as $k => & $tab) {
+      if ($block_tab = $blocks[$tab['bid']]) {
+        if ($block_arr = _block_render_blocks(array($block_tab))) {
+          if (!empty($block_arr["{$block_tab->module}_{$block_tab->delta}"]->content)) {
+            $block_obj = &$block_arr[$block_tab->module . '_' . $block_tab->delta];
+            $block_obj->region = $this->delta;
 
             $render['links']['#links'][] = array(
-              'title' => $t['title'],
+              'title' => $tab['title'],
               'href' => '',
               'fragment' => $k,
               'external' => TRUE,
@@ -169,10 +181,10 @@ class os_boxes_tabs extends os_boxes_default {
 
             $build = _block_get_renderable_array($block_arr);
             $build['#attributes']['id'] = '';
-            $render[$t['bid']] = array(
+            $render[$tab['bid']] = array(
               '#type' => 'container',
               '#attributes' => array('id' => $k),
-              $t['bid'] => $build,
+              $tab['bid'] => $build,
             );
           }
         }
@@ -185,6 +197,8 @@ class os_boxes_tabs extends os_boxes_default {
 }
 
 /**
+ * Includes new (dynamically added) tabs in form processing.
+ *
  * After submission, the form has no idea how many tabs were added through js
  * I find out here and add new form elements for each new one.
  * This form element is placed before tabs so that the new elements go
@@ -192,8 +206,8 @@ class os_boxes_tabs extends os_boxes_default {
  * Removing a tab and adding a new one should handle the same as editting an existing
  */
 function os_modal_tabbed_add_new_tabs(&$element, &$form_state, &$form) {
-  for ($i=$element['#default_value']; $i < $element['#value']; $i++) {
-    $new_tab = 'tab-'.$i;
+  for ($i = $element['#default_value']; $i < $element['#value']; $i++) {
+    $new_tab = 'tab-' . $i;
     $form['options']['tabs'][$new_tab] = array(
       '#attributes' => array('id' => $i),
       '#parents' => array('tabs', $new_tab),
@@ -201,7 +215,7 @@ function os_modal_tabbed_add_new_tabs(&$element, &$form_state, &$form) {
       '#tree' => TRUE,
     );
     $form['options']['tabs'][$new_tab] += $form['options']['tabs']['tab-new'];
-    foreach ($form['options']['tabs'][$new_tab] as $key => &$child) {
+    foreach ($form['options']['tabs'][$new_tab] as $key => & $child) {
       if (strpos($key, '#') !== 0) {
         unset($child['#parents']);
         unset($child['#name']);
@@ -212,7 +226,7 @@ function os_modal_tabbed_add_new_tabs(&$element, &$form_state, &$form) {
   }
   unset($form_state['values']['tabs']['tab-new']);
 
-  // remove nids that aren't in the post
+  // Removes nids that aren't in the post
   if (is_array($form_state['values'])) {
     foreach ($form_state['values']['tabs'] as $k => $v) {
       if (!isset($form_state['input']['tabs'][$k]) || !isset($form_state['input']['tabs'][$k]['bid']) || $form_state['input']['tabs'][$k]['bid'] == 'os_boxes_tabs-remove') {
@@ -222,3 +236,4 @@ function os_modal_tabbed_add_new_tabs(&$element, &$form_state, &$form) {
   }
   return $element;
 }
+

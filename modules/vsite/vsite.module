@@ -29,9 +29,9 @@ function vsite_get_vsite($sid = FALSE) {
 }
 
 /**
- * Returns the current purl prefix
+ * Returns the current purl prefix, or empty string if none found.
  *
- * @param vsite $vsite
+ * @param object $vsite
  */
 function vsite_get_purl($vsite = FALSE) {
   if (!$vsite) {
@@ -42,9 +42,9 @@ function vsite_get_purl($vsite = FALSE) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form.
  *
- * Hide the comment settings form from the VSites.
+ * Hides the comment settings form from the VSites.
  */
 function vsite_form_node_form_alter(&$form, &$form_state, $form_id) {
   if (og_is_group_type('node', $form['#bundle'])) {
@@ -55,6 +55,8 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id) {
 
 /**
  * Returns the default value for the homepage path.
+ * 
+ * @return array
  */
 function vsite_group_default_homepage_value($entity_type, $entity, $field, $instance, $langcode) {
   global $base_url;
@@ -109,7 +111,7 @@ function vsite_spaces_presets_alter(&$presets) {
 }
 
 /**
- * Implements of hook_spaces_plugins().
+ * Implements hook_spaces_plugins().
  */
 function vsite_spaces_plugins() {
   $plugins = array();
@@ -749,72 +751,71 @@ function vsite_user_view_alter(&$build) {
 }
 
 /**
- * Implement hook_mail_alter().
- * Function to alter some of the emails that are sent out
- * to users based on certain actions.
+ * Implements hook_mail_alter().
+ * 
+ * Alters system emails to users based on certain actions.
  */
 function vsite_mail_alter(&$message) {
   global $base_url;
 
   switch ($message['id']) {
     // Account created during "Create this OS Site on behalf of another user".
-
     case 'user_register_no_approval_required':
-      // Get the user id we just created.
-      $n_new_user = $message['params']['account']->uid;
-      // Load the user.
-      $o_user = user_load($n_new_user);
+      // Gets the user id we just created.
+      $uid = $message['params']['account']->uid;
+      // Loads the user.
+      $user = user_load($uid);
       // Grab their first name, if it doesnt exist, use their user name.
-      if (!empty($o_user->field_first_name['und'][0]['value'])) {
-        $first_name = $o_user->field_first_name['und'][0]['value'];
+      if (!empty($user->field_first_name['und'][0]['value'])) {
+        $first_name = $user->field_first_name['und'][0]['value'];
       }
       else {
-        $first_name = $o_user->name;
+        $first_name = $user->name;
       }
       // Alter the subject.
       $message['subject'] = t('An OpenScholar account has been created for you at !site_name', array(
           '!site_name' => variable_get('site_name', 'OpenScholar'),
         ));
-      $a_msg_variables = array(
+      $replacements = array(
         '!site' => variable_get('site_name', 'OpenScholar'),
-        '!login_url' => user_pass_reset_url($o_user),
-        '!mailto' => $o_user->mail,
+        '!login_url' => user_pass_reset_url($user),
+        '!mailto' => $user->mail,
         '!firstname' => $first_name,
-        '!username' => $o_user->name,
+        '!username' => $user->name,
         '!futurelogin' => $base_url . '/user/',
       );
 
       // Alter the body message.
-      $message['body'][0] = t("Dear !firstname,\n\nYour account at the !site website has been created for you. You may now log in by either clicking through on the following link or pasting it into your browser:\n\n !login_url\n\n(Note: This login can be used only once.)\n\nYour username is: !username \n\nAfter setting your password with the included link, you will be able to log in at !futurelogin in the future.\n\nSincerely,\nThe !site Team", $a_msg_variables);
+      $message['body'][0] = t("Dear !firstname,\n\nYour account at the !site website has been created for you. You may now log in by either clicking through on the following link or pasting it into your browser:\n\n !login_url\n\n(Note: This login can be used only once.)\n\nYour username is: !username \n\nAfter setting your password with the included link, you will be able to log in at !futurelogin in the future.\n\nSincerely,\nThe !site Team", $replacements);
       break;
+      
     // Account created by admin in the admin/people panel.
-
     case 'user_register_admin_created':
       // Get the user id we just created.
-      $n_new_user = $message['params']['account']->uid;
+      $uid = $message['params']['account']->uid;
       // Load the user data.
-      $o_user = user_load($n_new_user);
+      $user = user_load($uid);
       // Grab their first name, if it doesnt exist, use their user name.
-      if (!empty($o_user->field_first_name['und'][0]['value'])) {
-        $first_name = $o_user->field_first_name['und'][0]['value'];
+      if (!empty($user->field_first_name['und'][0]['value'])) {
+        $first_name = $user->field_first_name['und'][0]['value'];
       }
       else {
-        $first_name = $o_user->name;
+        $first_name = $user->name;
       }
       // Alter the email subject.
       $message['subject'] = t('An OpenScholar account has been created for you at !site_name', array(
           '!site_name' => variable_get('site_name', 'OpenScholar'),
         ));
-      $a_msg_variables = array(
+      $replacements = array(
         '!site' => variable_get('site_name', 'OpenScholar'),
-        '!login_url' => user_pass_reset_url($o_user),
-        '!mailto' => $o_user->mail,
+        '!login_url' => user_pass_reset_url($user),
+        '!mailto' => $user->mail,
         '!firstname' => $first_name,
-        '!username' => $o_user->name,
+        '!username' => $user->name,
         '!futurelogin' => $base_url . '/user/',
       );
       // Alter the message body.
-      $message['body'][0] = t("Dear !firstname,\n\nA site owner at the !site website has created an account for you. You may now log in by either clicking through on the following link or pasting it into your browser:\n\n !login_url\n\n(Note: This login can be used only once.)\n\nYour username is: !username \n\nAfter setting your password with the included link, you will be able to log in at !futurelogin in the future.\n\nSincerely,\nThe !site Team", $a_msg_variables);
+      $message['body'][0] = t("Dear !firstname,\n\nA site owner at the !site website has created an account for you. You may now log in by either clicking through on the following link or pasting it into your browser:\n\n !login_url\n\n(Note: This login can be used only once.)\n\nYour username is: !username \n\nAfter setting your password with the included link, you will be able to log in at !futurelogin in the future.\n\nSincerely,\nThe !site Team", $replacements);
       break;
   }
 }
