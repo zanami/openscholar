@@ -72,7 +72,7 @@ strong {
 
 .region-sidebar-second h2.block-title,
 .region-sidebar-first h2.block-title,
-#top-header-container-right li {
+#header-container-right li {
 	font-family:'Arvo', arial, serif;
 	}
 
@@ -139,7 +139,7 @@ padding-bottom: 2000px;
 
 /* HEADER ELEMENTS */
 
-#top-header-container {
+#header-container {
 	/* IE10 Consumer Preview */ 
 background-image: -ms-linear-gradient(bottom, #DCD9DB 0%, #FFFFFF 100%);
 /* Mozilla Firefox */ 
@@ -156,9 +156,9 @@ background-image: linear-gradient(to top, #DCD9DB 0%, #FFFFFF 100%);
 
 
 
-#top-header-container h1,
-#top-header-container h2,
-#top-header-container p {
+#header-container h1,
+#header-container h2,
+#header-container p {
 	color:#3A6F8F;
 	font-size:13px;
 	font-weight:normal;
@@ -167,15 +167,15 @@ background-image: linear-gradient(to top, #DCD9DB 0%, #FFFFFF 100%);
 	}
 
 
-#top-header-container h1 a, 
-#top-header-container h1 a:visited {
+#header-container h1 a, 
+#header-container h1 a:visited {
 	color:#446677;
 	font-family:arial;
 	font-size:2.4em;
 	letter-spacing:-1.3px;
   }
 
-#top-header-container h1 a:hover {
+#header-container h1 a:hover {
 	color:#3A6F8F;
 	text-decoration: none;
 	}
@@ -262,11 +262,11 @@ background-image: linear-gradient(to top, #DCD9DB 0%, #FFFFFF 100%);
 	vertical-align:top;
 	}
 
-#top-header-container-right ul.menu {
+#header-container-right ul.menu {
 	font-size:12px;
   }
 
-#top-header-container-right ul.menu a:hover{
+#header-container-right ul.menu a:hover{
   background-color:#9FB4C4;
 	text-decoration:none;
 	color:#fff;
@@ -328,12 +328,12 @@ background-image: linear-gradient(to top, #DCD9DB 0%, #FFFFFF 100%);
 	border-bottom:none !important;
 	}
 
-#top-header-container-right ul {
+#header-container-right ul {
   margin-top:7px;
   }
 
-#top-header-container-right li a,
-#top-header-container-right li a:visited {
+#header-container-right li a,
+#header-container-right li a:visited {
 	padding: 3px 15px;
 	font-size: 13px;
 	line-height: normal;
@@ -379,7 +379,7 @@ body.page-home #content-column h2.block-title{
 	display:none !important;}
 
 
-body.header-left-right #top-header-container-right {
+body.header-left-right #header-container-right {
   width:210px !important;
 	}
 

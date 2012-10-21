@@ -296,7 +296,31 @@ class HTMLInlineOSMigration extends OSMigration {
     //$row->path;
   }
 
-  public function prepare($entity, $row) {
-    $entity->uri = $row->uri;
+  public function prepare(&$entity, $row) {
+//    $entity->uri = $row->uri;
+    //$entity->value = 'embed://' . md5($row->uri);
+    //$entity->value = $entity->uri;
+
+    //treat iframe as embedded html code
+    if (strpos($row->html, 'iframe')) {
+      $entity->type = 'html';
+      //uri embed://
+      $entity->uri = 'embed://' . md5($row->uri);
+      $entity->filemime = 'html/embed';
+      $entity->field_html_title = array(LANGUAGE_NONE=>array(array('value'=>'')));
+      $entity->field_html_code = array(LANGUAGE_NONE=>array(array(
+        'value'=>$row->html,
+        'format' => 'filtered_html',
+        )));
+    }
   }
+
+  public function complete(&$entity, $row) {
+    //change uri for iframes
+    if (strpos($row->html, 'iframe')) {
+      $entity->uri = 'embed://' . md5($row->uri);
+      file_save($entity);
+    }
+  }
+
 }

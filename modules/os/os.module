@@ -5,9 +5,10 @@
  * Openscholar module file.
  */
 include_once ('os.features.inc');
+include_once ('includes/os.inc');
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function os_menu() {
   $items = array();
@@ -82,7 +83,7 @@ function os_menu() {
 }
 
 /**
- * Implementation of hook menu_alter().
+ * Implements hook_menu_alter().
  */
 function os_menu_alter(&$items) {
   if (isset($items['user'])) {
@@ -90,64 +91,6 @@ function os_menu_alter(&$items) {
     $items['user']['file'] = 'os.pages.inc';
     $items['user']['file path'] = drupal_get_path('module', 'os');
   }
-}
-
-/**
- * Return the avalible bundles based on the privacy
- *
- * @param $privacy
- *  Can be array:
- *    - 0: disabled
- *    - 2: private
- *    - 1: public
- *  TRUE returns all
- *
- * @param $space_type
- * @param $reset
- *   (reset features cache)
- *
- * @return
- *  Array keyed with the bundle ID and the bundle name as value.
- */
-function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = FALSE) {
-  $ret_all = FALSE;
-  if (is_bool($privacy) && $privacy) {
-    $ret_all = TRUE;
-  }
-  elseif (!is_array($privacy)) {
-    $privacy = array($privacy);
-  }
-
-  $bundles = array();
-
-  // Reset static feature list.
-  $features = spaces_features($space_type, $reset);
-  $site_features = variable_get('spaces_features', array());
-
-  foreach ($features as $name => $feature) {
-    $info = $feature->info['features'];
-    if (!isset($info['node'])) continue;
-    if (!$ret_all && (!isset($site_features[$name]) || !in_array($site_features[$name], $privacy))) continue;
-
-    // Get bundle name, we call the node_info hook directly since
-    // this is called during bootstrap
-    module_load_include('features.inc', $name);
-    $node_info_hook = $name . '_node_info';
-    if (function_exists($node_info_hook)) {
-      $node_info = $node_info_hook();
-    }
-
-    foreach ($info['node'] as $nodetype) {
-      if (isset($node_info[$nodetype]['name'])) {
-        $bundles[$nodetype] = $node_info[$nodetype]['name'];
-      }
-      else {
-        $bundles[$nodetype] = $feature->info['name'];
-      }
-    }
-  }
-
-  return $bundles;
 }
 
 /**
@@ -347,6 +290,9 @@ function os_os_widget() {
   return $blocks;
 }
 
+/**
+ * Implements hook_os_widget_alter().
+ */
 function os_os_widget_alter(&$widget) {
   if ($widget['module'] == 'os') {
     $widget += array(
@@ -410,12 +356,13 @@ function os_module_implements_alter(&$implementations, $hook) {
 }
 
 /**
- * Removes contextual links class from html.
+ * Implements hook_menu_local_tasks_alter().
  */
-function os_preprocess_html(&$variables) {
-  $variables['classes_array'] = array_diff($variables['classes_array'], array(
-    'contextual-links-region',
-  ));
+function os_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if (strpos($root_path, 'node/%') !== FALSE) {
+    // remove node-specific tasks
+    $data['tabs'] = array();
+  }
 }
 
 /**
@@ -461,9 +408,9 @@ function os_process_node(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_page().
+ * Implements hook_preprocess_HOOK() for page.tpl.php.
  */
-function os_preprocess_page(&$variables) {
+function os_preprocess_page(&$vars) {
   $types = os_get_bundles();
 
   $links = array();
@@ -497,7 +444,7 @@ function os_preprocess_page(&$variables) {
         }
       }
     }
-    if ($printed) {
+    if ($printed && spaces_access_admin() && node_access('create', $type)) {
       $links[$type] = array(
         'href' => 'node/add/' . str_replace('_', '-', $type),
         'title' => ucwords(str_replace('_', ' ', $type)),
@@ -516,13 +463,14 @@ function os_preprocess_page(&$variables) {
     'layout' => array(
       'title' => t('Layout'),
       'href' => 'cp/build/layout/' . $context,
+      'query' => drupal_get_destination(),
     ),
   );
 
   drupal_alter('os_add_new_links', $links);
 
   ksort($links);
-  $variables['title_suffix']['controls'] = array(
+  $vars['title_suffix']['controls'] = array(
     '#type' => 'container',
     '#attributes' => array(
       'class' => array(
@@ -531,7 +479,7 @@ function os_preprocess_page(&$variables) {
     ),
   );
   if (count($links) > 1) {
-    $variables['title_suffix']['controls']['add_new'] = array(
+    $vars['title_suffix']['controls']['add_new'] = array(
       '#theme' => 'ctools_dropdown',
       '#links' => $links,
       '#title' => t('Add New'),
@@ -541,7 +489,7 @@ function os_preprocess_page(&$variables) {
   }
   elseif (count($links) == 1) {
     $link = current($links);
-    $variables['title_suffix']['controls']['add_new'] = array(
+    $vars['title_suffix']['controls']['add_new'] = array(
       '#theme' => 'link',
       '#text' => t('Add !type', array('!type' => $link['title'])),
       '#path' => $link['href'],
@@ -553,7 +501,7 @@ function os_preprocess_page(&$variables) {
       ),
     );
   }
-  $variables['title_suffix']['controls']['section_links'] = array(
+  $vars['title_suffix']['controls']['section_links'] = array(
     '#theme' => 'ctools_dropdown',
     '#links' => $section_links,
     '#title' => 'Links',
@@ -598,12 +546,20 @@ function os_preprocess_page(&$variables) {
   }
 }
 
+/**
+ * Implements hook_form_alter().
+ */
 function os_form_alter(&$form, $form_state, $form_id) {
   if (isset($form['#node']) || isset($form['#entity'])) {
     $form['#after_build'][] = 'os_entity_form_after_build';
   }
 }
 
+/**
+ * After build callback; added to every form.
+ * 
+ * @see os_form_alter()
+ */
 function os_entity_form_after_build($form, $form_state) {
   $node = isset($form['#node'])?$form['#node']:null;
   if (!isset($node) && isset($form['#entity'])) {
@@ -625,7 +581,7 @@ function os_form_node_form_alter(&$form, $form_state) {
 }
 
 /**
- * Menu call back.
+ * Page argument; passed to drupal_get_form in os_menu().
  */
 function os_settings_form($form_state) {
   $form = array();
@@ -790,7 +746,7 @@ MESSAGE;
 }
 
 /**
- * Implementation of hook_context_plugins().
+ * Implements hook_context_plugins().
  *
  * This is a ctools plugins hook.
  */
@@ -819,7 +775,7 @@ function os_context_plugins() {
 }
 
 /**
- * Implementation of hook_context_registry().
+ * Implements hook_context_registry().
  */
 function os_context_registry() {
   $registry = array();
@@ -836,7 +792,7 @@ function os_context_registry() {
 }
 
 /**
- * Implementation of hook_context_registry_alter().
+ * Implements hook_context_registry_alter().
  */
 function os_context_registry_alter(&$registry) {
   // Alter the registry to use OpenScholar's block reaction plugin which extends
@@ -847,7 +803,9 @@ function os_context_registry_alter(&$registry) {
 }
 
 /**
- * Helper function for adding conditional css. Takes a browser css condition,
+ * Helper function for adding conditional css.
+ * 
+ * Takes a browser css condition,
  * returns array to pass to drupal_add_css's $options['browser']
  * http://api.drupal.org/api/drupal/includes%21common.inc/function/drupal_pre_render_conditional_comments/7
  *
@@ -1013,7 +971,8 @@ function os_node_view_alter(&$build) {
 }
 
 /**
- * Implementation of hook_permission()
+ * Implements hook_permission().
+ * 
  * Defines permissions for all the regions of the default theme
  */
 function os_permission() {
@@ -1036,7 +995,8 @@ function os_permission() {
 }
 
 /**
- * Given a box and a set of contexts, return the region the box is in
+ * Given a box and a set of contexts, return the region the box is in.
+ * 
  * This function will be called multiple times per page, so we get all the
  * regions at once and cache them in a static var.
  */

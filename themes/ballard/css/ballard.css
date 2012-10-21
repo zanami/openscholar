@@ -24,7 +24,7 @@ font-family: helvetica,arial,sans-serif;
    border-bottom: none;
 }
 
-#top-header-container {background:#2f2f2f;}
+#header-container {background:#2f2f2f; padding: 10px;}
 .region-header-third {text-align: right;}
 
 #footer {
@@ -73,14 +73,10 @@ font-family: helvetica,arial,sans-serif;
 a, a:visited {color:#293352;text-decoration:none;}
 a:hover {text-decoration:underline;}
 
-#main-content a,
-#main-content li a {text-decoration:underline;}
 
+#header-container a {color:#FFF;}
 
-#top-header-container a {color:#FFF;}
-
-.more-link a, 
-.node_read_more a {
+ a.more-link {
 padding-right:13px;
 color:#293352;
 background: url('../images/moreArrow.png') center right no-repeat;
@@ -155,7 +151,7 @@ margin: 8px 0 0 20px;
 }
 
 #columns .block ul li a {
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 #columns .block ul li a:hover {text-decoration:underline;}
@@ -312,7 +308,7 @@ float:right;
 }
 
 /* BOOKLET NAV  */ 
-.sidebar .block-boxes-os_boxes_booktoc ul ul {
+.sidebar .block-boxes-os_boxes_booktoc ul.menu ul {
     margin: 0px 0 0 18px;
 }
 
@@ -325,9 +321,19 @@ float:right;
 }
 
 .sidebar .block-boxes-os_boxes_booktoc ul ul ul li {
-    list-style-type: disc;
+    list-style-type: circle;
+    list-style-image: none;
 }
 
+.sidebar .block-boxes-os_boxes_booktoc ul ul ul ul li {
+    list-style-type: disc;
+    list-style-image: none;
+}
+
+.sidebar .block-boxes-os_boxes_booktoc ul ul ul ul ul li {
+    list-style-image: none;
+    list-style-type: square;
+}
 
 .sidebar .block-boxes-os_boxes_booktoc a.active {
     color:#293352;
@@ -337,12 +343,21 @@ float:right;
     padding-left:0;
 }
 
+.book-menu ul.menu ul ul ul a, 
+#block-book-navigation ul.menu ul ul ul a, 
+.block-boxes-os_boxes_booktoc ul.menu ul ul ul a,
+.book-menu ul.menu ul ul ul ul a, 
+#block-book-navigation ul.menu ul ul ul ul a, 
+.block-boxes-os_boxes_booktoc ul.menu ul ul ul ul a  {
+    padding: 0;
+}
+
+
 /**** SEARCH BOX ****/
 
 #block-vsite-site_search {
 width:170px;
 }
-
 
 
 /* SLIDESHOW */

@@ -8,7 +8,7 @@ dependencies[] = migrate_extras
 dependencies[] = migrate_ui
 dependencies[] = os_links
 dependencies[] = os_books
-dependencies[] = os_announcements
+dependencies[] = os_news
 dependencies[] = date_migrate
 
 files[] = os_migrate.admin.inc

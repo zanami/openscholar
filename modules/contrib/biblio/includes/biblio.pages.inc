@@ -136,7 +136,7 @@ function biblio_page_header($filter = array()) {
   if (user_access('show sort links') && $pager_total_items[0]) {
     $header += array(
       'sort_links' => array(
-        '#markup' => _biblio_sort_tabs(),
+        '#theme' => 'biblio_sort_tabs',
       ),
     );
   }
@@ -556,89 +556,6 @@ function biblio_build_query($arg_list) {
 
   return array($nids, $extras, $rss_info);
 
-}
-
-function _biblio_sort_tabs() {
-  global $base_path;
-  $content = '';
-  $sort_links = array();
-  $tabs = variable_get('biblio_sort_tabs_style', 0);
-  $uri = drupal_parse_url(request_uri());
-  $uri['path'] = $_GET['q'];
-  if (substr($uri['path'], 0, 1) == '/') $uri['path'] = substr($uri['path'], 1);
-
-  $default = array(
-    'author' => 'asc',
-    'title' => 'asc',
-    'type' => 'asc',
-    'year' => 'desc',
-    'keyword' => 'asc',
-  );
-
-  if (isset($uri['query']['s'])) {
-    $sort = $uri['query']['s'];
-  }
-  else {
-    $sort = variable_get('biblio_sort', 'year');
-  }
-  if (isset($uri['query']['o'])) {
-    $order = ($uri['query']['o'] == 'desc' ||$uri['query']['o'] == 'DESC') ? 'asc' : 'desc';
-  }
-  else {
-    $order = strtolower(variable_get('biblio_order', 'desc'));
-    $order = ($order == 'desc' || $order == 'DESC') ? 'asc' : 'desc';
-  }
-
-  $path = drupal_get_path('module', 'biblio');
-  $order_arrow = ($order == 'asc') ? '<img src ="' . $base_path . $path . '/misc/arrow-asc.png" alt =" (Desc)" />'
-                                   : '<img src ="' . $base_path . $path . '/misc/arrow-desc.png" alt = " (Asc)" />';
-  $sort_links =  variable_get('biblio_sort_tabs', array('author' => 'author', 'title' => 'title', 'type' => 'type', 'year' => 'year', 'keyword' => 'keyword'));
-  ksort($sort_links);
-  $content .= $tabs ? '<ul class="tabs secondary ">' : '';
-
-  foreach ($sort_links as $key => $title) {
-    $uri['attributes'] = array("title" => t("Click a second time to reverse the sort order"));
-    $uri['html'] = TRUE;
-    $uri['text'] = t(ucfirst($title));
-    if ($key === $title && $title == $sort) {
-      $uri['query']['s'] = $title;
-      $uri['query']['o'] = $order;
-      $uri['attributes']['class'][] = "active";
-      $uri['active'] = TRUE;
-      $uri['pfx'] = ' [ ';
-      $uri['sfx'] = '] ';
-      $uri['arrow'] = $order_arrow;
-      $content .= _biblio_sort_tab($uri, $tabs);
-
-    }
-    elseif ($key === $title ) {
-      $uri['query']['s'] = $title;
-      $uri['query']['o'] = $default[$title];
-      $uri['active'] = FALSE;
-      $uri['pfx'] = ' ';
-      $uri['sfx'] = ' ';
-      $uri['arrow'] = '';
-      $content .= _biblio_sort_tab($uri, $tabs);
-    }
-
-  }
-  if (!$tabs) $content = t('Sort by') . ': ' . $content;
-  $content .= $tabs ? '</ul>':'';
-
-  return $content;
-}
-
-function _biblio_sort_tab($tab, $tabs = FALSE) {
-  if ($tabs) {
-    $text  = '<span class="a"><span class="b">' . $tab['text'] . $tab['arrow'] . '</span></span>';
-    $class = (isset($tab['attributes']['class'])) ? 'class="active"' : '';
-    $link  = l($text, $tab['path'], $tab);
-    return "<li $class >" . str_replace('class="active"', $class, $link) . '</li>';
-  }
-  else {
-    return $tab['pfx'] . l($tab['text'], $tab['path'], $tab) . $tab['arrow'] . $tab['sfx'];
-  }
-  return;
 }
 
 function _biblio_filter_info_line($args = array()) {

@@ -142,9 +142,9 @@ background: #fff;
 
 
 
-#top-header-container {
+#header-container {
   background: #f7f7f9;
-  min-height: 160px;
+  min-height: 150px;
   }
 
 body.no-sidebars #columns .hg-container,
@@ -181,15 +181,15 @@ margin: 8px -15px 0 10px;
 
 /* HEADER ELEMENTS */
 
-#top-header-container .column {
+#header-container .column {
   padding-top: 15px;
 
   }
 
 
-#top-header-container h1,
-#top-header-container h2,
-#top-header-container p {
+#header-container h1,
+#header-container h2,
+#header-container p {
     font-size: 35px;
     line-height: 38px;
     font-weight:normal;
@@ -198,23 +198,23 @@ margin: 8px -15px 0 10px;
     margin: 0;
     }
 
-#top-header-container h2 {
+#header-container h2 {
   font-size: 19px;
   line-height: 19px;
   font-style:normal;
   }
 
-#top-header-container p {
+#header-container p {
   font-size: 15px;
   line-height: 17px;
   }
 
-#top-header-container h1 a,
-#top-header-container h1 a:visited {
+#header-container h1 a,
+#header-container h1 a:visited {
     color:#991122;
     }
 
-#top-header-container h1 a:hover {
+#header-container h1 a:hover {
     color:#106599;
     text-decoration: none;
     }

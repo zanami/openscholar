@@ -157,7 +157,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'vsite_menus-scholar_secondary_menu' => 'os-secondary-menu',
       'boxes-scholar_reader-latest_feed_items' => 'views-reader-block',
       'boxes-scholar_biocv_bio' => 'boxes-bio_teaser',
-      'boxes-scholar_announcements_latest' => 'boxes-os_announcements_latest',
+      'boxes-scholar_announcements_latest' => 'boxes-os_news_latest',
       'boxes-scholar_blog-blog_rss' => 'boxes-blog_rss_feed',
       'boxes-scholar_presentations_recent' => 'boxes-os_presentations_recent',
       'boxes-scholar_reader-feeds_list' => 'views-reader-block',
@@ -166,6 +166,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'boxes-scholar_publications_recent' => 'boxes-os_publications_recent',
       'boxes-scholar_book_recent_docs' => 'boxes-os_booklets_recent_docs',
       'boxes-scholar_book_current_toc' => 'boxes-os_booktoc',
+      'views-scholar_software_releases-block_3' => 'views-os_software_releases-block_1'
     );
 
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
@@ -178,7 +179,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'shield_default' => 'shield',
       'scholar_book_recent_docs' => 'os_booklets_recent_docs',
       'scholar_biocv_bio' => 'bio_teaser',
-      'scholar_announcements_latest' => 'os_announcements_latest',
+      'scholar_announcements_latest' => 'os_news_latest',
       'scholar_blog-blog_rss' => 'blog_rss_feed',
       'scholar_presentations_recent' => 'os_presentations_recent',
       'scholar_reader-feeds_list' => 'reader-block',
@@ -186,6 +187,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'vsite_rss' => 'os_rss',
       'scholar_publications_recent' => 'os_publications_recent',
       'scholar_book_current_toc' => 'os_booktoc',
+      'scholar_software_releases-block_3' => 'os_software_releases-block_1'
     );
 
     return (isset($delta_map[$delta])) ? $delta_map[$delta] : $delta;
@@ -197,14 +199,17 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     $contexts = array(
       'openscholar-section-sitewide' => FALSE, //no obvious mapping.  nothing in db
       'openscholar-feature-pages' => FALSE, //Discontinued
+      'openscholar-feature-taxonomy' => FALSE, //Discontinued
+      'openscholar-feature-search' => FALSE, //Discontinued
       'openscholar-section-sitewide_front' => 'os_sitewide_front',
       'vsite-section-cp' => 'os_cp',
       //'vsite-section-public' => 'os_public', //not used in overrides
       'openscholar-feature-image_gallery' => 'gallery_gallery',
-      'openscholar-feature-book' => 'booklet_booklet',
+      'openscholar-feature-book' => 'booklets_booklets',
       'openscholar-feature-front' => 'os_front',
       'openscholar-feature-none' => 'os_public', //all sections
       'openscholar-feature-dvn' => 'dataverse_dataverse',
+      'openscholar-feature-announcements' => 'news_news',
     );
 
     list($context, $action, $type, $theme) = explode(':', $object_id);
@@ -212,6 +217,10 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     //update the context name
     if (isset($contexts[$context])) {
       $context = $contexts[$context];
+
+      if($context === FALSE){
+        return $context;
+      }
     }
     else {
       $context = preg_replace('/openscholar-feature-(\w+)/', '$1_$1', $context); //err?

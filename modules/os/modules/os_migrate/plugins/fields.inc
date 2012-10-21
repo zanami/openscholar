@@ -118,3 +118,53 @@ class OSMigrateImageFieldHandler extends MigrateFileFieldBaseHandler {
     return $field_array;
   }
 }
+
+/**
+ * Handle for file fields.
+ */
+class OSMigrateDyntextFieldHandler extends MigrateFieldHandler {
+  public function __construct() {
+    $this->registerTypes(array('dyntextfield'));
+  }
+
+  /**
+   * Implementation of MigrateFieldHandler::fields().
+   * Note that file and image fields support slightly different field lists.
+   *
+   * @param $type
+   *  The file field type - 'file' or 'image'
+   * @param $parent_field
+   *  Name of the parent field.
+   * @param Migration $migration
+   *  The migration context for the parent field. We can look at the mappings
+   *  and determine which subfields are relevant.
+   * @return array
+   */
+  public function fields($type, $parent_field, $migration = NULL) {
+    //$fields = parent::fields($type, $parent_field, $migration);
+    $fields = array(
+      'label' => t('Subfield: label'),
+      'value' => t('Subfield: value'),
+    );
+    return $fields;
+  }
+
+  public function prepare($entity, array $field_info, array $instance, array $values) {
+    $migration = Migration::currentMigration();
+    $arguments = (isset($values['arguments']))? $values['arguments']: array();
+    unset($values['arguments']);
+    // In Drupal 7, field values are indexed by language, which can be specified
+    // at various levels - this member implemented in MigrateFieldHandler works
+    // out which language to use, applying appropriate defaults
+    $language = $this->getFieldLanguage($entity, $field_info, $arguments);
+    // Setup the standard Field API array for saving.
+
+    for ($delta = 0; $delta < count($values) ; $delta++) {
+      $return[$language][$delta]['value'] = $arguments['value'][$delta];
+      $return[$language][$delta]['label'] = $arguments['label'][$delta];
+    }
+
+    return (isset($return)) ? $return : NULL;
+  }
+
+}

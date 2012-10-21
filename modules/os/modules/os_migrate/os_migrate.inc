@@ -30,7 +30,7 @@ abstract class OSMigration extends Migration {
     // ->issueNumber(1234) to a mapping.
     $this->issuePattern = 'https://redmine.hmdc.harvard.edu/issues/:id:';
 
-   // $this->restrict_vsites = array(176);
+    //$this->restrict_vsites = array(3633);
   }
 
   /**
@@ -321,7 +321,7 @@ abstract class OSMigration extends Migration {
      * Gets all the inline files associated with a nid.  Also checks if node bodies
      * contain inline objects that may not be in inline table
      **/
-    function os_migrate_list_inline_files($nid) {
+    function os_migrate_list_inline_files($vid) {
       $files = array();
 
       //map of tables/fields which contain references to inline media
@@ -334,8 +334,8 @@ abstract class OSMigration extends Migration {
       //query each table individually.  one big query consumes too much memory.
       foreach($table_fields as $table => $field) {
         $query = $this->d6_db_select('node', 'n')
-          ->condition('n.nid', $nid, '=');
-        $query->join($table, 't', 'n.nid = t.nid');
+          ->condition('n.vid', $vid, '=');
+        $query->join($table, 't', 'n.vid = t.vid');
         $query->fields('t', array($field));
         $query->isNotNull($field);
 
@@ -347,8 +347,8 @@ abstract class OSMigration extends Migration {
       //and check the node bodies (done separately since condition is more complicated
 
       $query = $this->d6_db_select('node', 'n')
-        ->condition('n.nid', $nid, '=');
-      $query->join('node_revisions', 'nr', 'n.nid = nr.nid');
+        ->condition('n.vid', $vid, '=');
+      $query->join('node_revisions', 'nr', 'n.vid = nr.vid');
       $query->fields('nr', array('body'));
       $query->condition(db_or()
         ->condition('nr.body', '%<iframe%', 'LIKE')
@@ -425,17 +425,17 @@ abstract class OSMigration extends Migration {
     //check all a tags.  we'll have to replace parent though since its a space for the oembed
     $anchors = $dom->getElementsByTagName('a');
     $update = FALSE;
-    for ($i=0, $len=$anchors->length; $i<$len; $i++) {
-      $a = $anchors->item($i);
-      if (isset($a) && ($a->getAttribute('href') == $url)) {
-        $tag = $this->_os_migrate_inline_tag('url', $entity->fid, $a);
-        $text = $dom->createTextNode($tag);
-        $span = $a->parentNode;
-        $span->parentNode->replaceChild($text, $span);
+//     for ($i=0, $len=$anchors->length; $i<$len; $i++) {
+//       $a = $anchors->item($i);
+//       if (isset($a) && ($a->getAttribute('href') == $url)) {
+//         $tag = $this->_os_migrate_inline_tag('url', $entity->fid, $a);
+//         $text = $dom->createTextNode($tag);
+//         $span = $a->parentNode;
+//         $span->parentNode->replaceChild($text, $span);
 
-        $update = TRUE;
-      }
-    }
+//         $update = TRUE;
+//       }
+//     }
 
     //html didn't work.  try media tags.
     if ($update == FALSE) {
@@ -490,7 +490,7 @@ abstract class OSMigration extends Migration {
             $update = TRUE;
             $tag = $this->_os_migrate_inline_tag('iframe', $data['destid1'], $iframe);
             $text = $dom->createTextNode($tag);
-        //    $iframe->parentNode->replaceChild($text, $iframe);
+            $iframe->parentNode->replaceChild($text, $iframe);
           }
         }
       }
@@ -591,7 +591,7 @@ abstract class OSMigration extends Migration {
    * Check node row for inline embeds.  If any exist update body to use new file entities.
    **/
   function os_migrate_inline_update(&$current_row) {
-    $files = $this->os_migrate_list_inline_files($current_row->nid);
+    $files = $this->os_migrate_list_inline_files($current_row->vid);
     if (!count($files)) {
       return;
     }
@@ -653,8 +653,9 @@ abstract class OSMigration extends Migration {
       case 'url':
       break;
 
+      //<p>[[{"type":"media","view_mode":"default","fid":"1234","attributes":{"class":"file-icon media-image"}}]]</p>
       case 'iframe':
-        $attributes = array('width'=>'width', 'height'=>'height');
+//        $attributes = array('width'=>'width', 'height'=>'height');
         //style attr?  keep or ditch
       break;
     }
@@ -732,7 +733,7 @@ abstract class OSMigration extends Migration {
     $body = preg_replace('/<!DOCTYPE.*?>/', '', $body); //remove doctype
     $body = preg_replace('/.*\<body\>/m', '', $body); //remove html, body
     $body = preg_replace('/<\/body>.*/m', '', $body); //remove closing tags
-    return $body;
+    return trim($body);
   }
 
   //remove public:// or whatever :// appears before uri

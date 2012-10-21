@@ -99,6 +99,12 @@ class VariableTableMigration extends TableCopyMigration {
       return FALSE;
     }
 
+    //update whitelist
+    if ($row->name == 'embedfilter_host_whitelist') {
+      $row->name = 'media_embed_whitelist';
+      $row->value = serialize(explode("\r\n", unserialize($row->value)));
+    }
+
     //rename variables
     $rename = array(
       'iqss_gking::alternate_theme_nodes'  => 'gkplus_minitheme_nodes',

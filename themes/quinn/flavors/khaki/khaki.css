@@ -6,17 +6,17 @@ html,body {
 .region-sidebar-first a:visited,
 .region-sidebar-second a,
 .region-sidebar-second a:visited,
-#top-header-container a,
-#top-header-container a:visited,
-#top-header-container,
-#top-header-container h1 a,
-#top-header-container h1 a:visited {
+#header-container a,
+#header-container a:visited,
+#header-container,
+#header-container h1 a,
+#header-container h1 a:visited {
   color: #666;
   }
 
 .region-sidebar-first a:hover,
 .region-sidebar-second a:hover,
-#top-header-container h1 a:hover {
+#header-container h1 a:hover {
   background: #A56565;
   color: #fff;
   }

@@ -43,12 +43,6 @@ function vsite_context_default_contexts() {
           'region' => 'header_third',
           'weight' => '-10',
         ),
-        'views-os_websites-block' => array(
-          'module' => 'views',
-          'delta' => 'os_websites-block',
-          'region' => 'sidebar_first',
-          'weight' => '-9',
-        ),
         'vsite_register-get_your_site_block' => array(
           'module' => 'vsite_register',
           'delta' => 'get_your_site_block',
@@ -66,12 +60,6 @@ function vsite_context_default_contexts() {
           'delta' => 'login',
           'region' => 'footer',
           'weight' => '-10',
-        ),
-        'views-os_activity-block_1' => array(
-          'module' => 'views',
-          'delta' => 'os_activity-block_1',
-          'region' => 'footer',
-          'weight' => '-30',
         ),
       ),
     ),
@@ -124,35 +112,28 @@ function vsite_context_default_contexts() {
 
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
-  $context->name = 'os_website_listings';
-  $context->description = 'Context that is active on the scholars/websites listings.';
+  $context->name = 'os_sitewide';
+  $context->description = 'Context that is active on all non-vsite pages except the frontpage.';
   $context->tag = 'OpenScholar';
   $context->conditions = array(
     'path' => array(
       'values' => array(
-        'websites' => 'websites',
+        '~<front>' => '~<front>',
+      ),
+    ),
+    'os_site' => array(
+      'values' => array(
+        0 => '0',
       ),
     ),
   );
-  $context->reactions = array(
-    'block' => array(
-      'blocks' => array(
-        'boxes-iqss_scholars_floating_header' => array(
-          'module' => 'boxes',
-          'delta' => 'iqss_scholars_floating_header',
-          'region' => 'header_top',
-          'weight' => '-10',
-        ),
-      ),
-    ),
-  );
-  $context->condition_mode = 0;
+  $context->condition_mode = 1;
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('Context that is active on the scholars/websites listings.');
+  t('Context that is active on all non-vsite pages except the frontpage.');
   t('OpenScholar');
-  $export['os_website_listings'] = $context;
+  $export['os_sitewide'] = $context;
 
 
   return $export;

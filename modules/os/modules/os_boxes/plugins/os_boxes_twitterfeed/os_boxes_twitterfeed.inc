@@ -8,25 +8,26 @@
 class os_boxes_twitterfeed extends os_boxes_default {
 
   /**
-   * Implementation of boxes_content::options_defaults().
+   * Implements boxes_content::options_defaults().
    */
-  public function options_defaults(){
+  public function options_defaults() {
     $options = parent::options_defaults();
 
-    // the default value for the form
+    // Provides default values for the widget (box) settings form.
     $options['twitter_username'] = '';
     $options['num_items'] = 5;
     $options['followme_link'] = 0;
     $options['followme_text'] = t("Follow me on twitter");
     $options['followme_url'] = '';
     $options['twitter_type'] = 'Username';
+
     return $options;
   }
 
   /**
-   * Implementation of boxes_content::options_form().
+   * Implements boxes_content::options_form().
    */
-  public function options_form(&$form_state){
+  public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
 
     $form['twitter_type'] = array(
@@ -101,9 +102,9 @@ class os_boxes_twitterfeed extends os_boxes_default {
   }
 
   /**
-   * Implementation of boxes_content::render().
+   * Implements boxes_content::render().
    */
-  public function render(){
+  public function render() {
     $block = parent::render();
 
     $twitkey = $this->options['twitter_username'];
@@ -113,11 +114,11 @@ class os_boxes_twitterfeed extends os_boxes_default {
     if ($twitkey[0] != '@' || $twitkey[0] != '#') {
       switch($this->options['twitter_type']) {
         case 'user':
-          $twitkey = '@'.$twitkey;
+          $twitkey = '@' . $twitkey;
           break;
 
         case 'hashtag':
-          $twitkey = '#'.$twitkey;
+          $twitkey = '#' . $twitkey;
           break;
       }
     }
@@ -127,7 +128,7 @@ class os_boxes_twitterfeed extends os_boxes_default {
       $output = twitter_pull_render($twitkey, $title = NULL, $num_items);
     }
 
-    // include a followme link
+    // Appends a followme link
     if ($this->options['followme_link']) {
       $output .= '<div class="twitter-followme">' . l($this->options['followme_text'], $this->options['followme_url']) . '</div>';
     }
@@ -137,21 +138,16 @@ class os_boxes_twitterfeed extends os_boxes_default {
   }
 
   /**
-   * Return the cache parameters for this box
+   * Provides no cache for this box.
+   *
+   * Since twitter_pull has it's own caching, the impact of caching here is low.
+   *
+   * Also, running through the theme function changes the last updated times.
+   *
+   * Caching should be added back if we use other services here.
    */
-  public function cache_info(){
-
-    // Do not cache twitter_pull has is't own caching so the impact is low and running through the theme function will change the last updated times
-    // Caching should be added back if we use other services here
+  public function cache_info() {
     return array();
-
-  //  	//Clear any time the site is saved
-  //    $cache_key = array(
-  //      'os_og' => array('current' => 'current'),
-  //    );
-  //
-  //    //Only cache twitter feeds for 15 minutes (max_lifespan)
-  //    return array('type' => BLOCK_CACHE_CONTENT_CACHE, 'keys' => $cache_key, 'max_lifespan' => 900);
   }
 
 }
