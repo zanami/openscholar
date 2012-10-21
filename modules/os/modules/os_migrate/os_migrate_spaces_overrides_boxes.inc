@@ -261,7 +261,7 @@ EOF;
     //add each file
     foreach ($legacy_info as $file => $info) {
       $filepath = $src . $file;
-      if ($fh = fopen($filepath, 'r')) {
+      if ($fh = @fopen($filepath, 'r')) {
         if ($saved = file_save_data($fh, $dest.'/'.$file)) {
           $shield_info[$saved->filename]['hidden'] = $info['hidden'];
           $shield_info[$saved->filename]['default'] = $info['default'];
@@ -949,6 +949,7 @@ class BoxPorter {
       $box->options = array('text'=>array(
         'value' => $body,
         'format' => $this->_update_format($node->format),
+        'show_title' => $show_title,
       ));
 
       return $box;
