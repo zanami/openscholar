@@ -750,7 +750,6 @@ MESSAGE;
  *
  * This is a ctools plugins hook.
  */
- */
 function os_context_plugins() {
   $plugins = array();
 
@@ -778,7 +777,6 @@ function os_context_plugins() {
 /**
  * Implements hook_context_registry().
  */
- */
 function os_context_registry() {
   $registry = array();
 
@@ -795,7 +793,6 @@ function os_context_registry() {
 
 /**
  * Implements hook_context_registry_alter().
- */
  */
 function os_context_registry_alter(&$registry) {
   // Alter the registry to use OpenScholar's block reaction plugin which extends
