@@ -436,9 +436,6 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     );
   }
 
-  if ($options['cur_depth'] == 2) {
-    dpm(render(taxonomy_term_view($taxonomy_term, 'full')));
-  }
   // Renders the term listing heading and description.
   // @see taxonomy.pages.inc
   $build['term_heading'] = array(
