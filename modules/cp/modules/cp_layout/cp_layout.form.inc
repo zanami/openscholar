@@ -258,8 +258,11 @@ function cp_layout_layout_select($form, $form_state){
   $form['layout'] = array(
     '#type' => 'radios',
     '#options' => array_combine($options, $options),
-    '#default_value' => at_get_setting('bigscreen_layout', $theme_name)
+    '#default_value' => at_get_setting('bigscreen_layout', $theme_name),
+    '#description' => t('Click a layout to select which you would like your site to use. This selection will not affect the header of your site,
+    only the area below it.'),
   );
+  $form['#attached']['css'] = array(drupal_get_path('module', 'cp_layout').'/theme/cp_layout_select.css');
 
   $form['actions'] = array(
     '#type' => 'actions',
