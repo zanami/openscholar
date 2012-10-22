@@ -209,7 +209,16 @@ function vsite_vocab_field_attach_view_alter(&$output, $context) {
     return;
   }
   $original = $output[OG_VOCAB_FIELD][0]['#markup'];
-  $output[OG_VOCAB_FIELD][0]['#markup'] = t('In !terms', array('!terms' => $original));
+
+  if (count($output[OG_VOCAB_FIELD]['#items']) > 3) {
+    // Show links collapsed.
+    $output[OG_VOCAB_FIELD][0]['#markup'] = '<a href="#" class="toggle" >' . t('in terms') . '</a><div class="slider">'. $original .'</div>';
+
+    $output['#attached']['js'][] = drupal_get_path('module', 'os').'/theme/os_toggle.js';
+  }
+  else {
+    $output[OG_VOCAB_FIELD][0]['#markup'] = t('In !terms', array('!terms' => $original));
+  }
 }
 
 /**
