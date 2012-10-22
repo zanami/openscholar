@@ -79,10 +79,10 @@ class os_taxonomy_fbt extends os_boxes_default {
     $form['bundles'] = array(
       '#type' => 'select',
       '#title' => t('Select Post types'),
-      '#options' => self::get_all_bundles(),
+      '#options' => os_get_bundles(array(1,2)),
       '#description' => t('The post types that will be included in the count'),
       '#multiple' => TRUE,
-      '#size' => count(self::get_all_bundles()) / 2,
+      '#size' => count(os_get_bundles(array(1,2))) / 2,
       '#dependency' => array(
         'edit-behavior' => array('select'),
       ),
@@ -204,20 +204,5 @@ class os_taxonomy_fbt extends os_boxes_default {
     }
 
     return $vocabularies;
-  }
-
-  /**
-   * Return a list of node bundles.
-   */
-  private function get_all_bundles() {
-    $entity = entity_get_info('node');
-
-    $bundles = array();
-
-    foreach ($entity['bundles'] as $machine_name => $bundle) {
-      $bundles[$machine_name] = $bundle['label'];
-    }
-
-    return $bundles;
   }
 }
