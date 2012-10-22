@@ -438,17 +438,6 @@ dd {
   margin: 0 0 1.5em 40px;
 }
 
-/** TABLES **/
-	
-tbody {
-border-top: none;
-}	
-	
-th, td {
-    color: #4A4A4A;
-    padding: 0.6em;
-    vertical-align: top;
-}	
 
 
 /**
@@ -560,3 +549,20 @@ header[role=banner],
 .element-hidden {
   display: none;
 }
+
+/** TABLES **/
+	
+tbody {
+border-top: none;
+}	
+	
+th, td {
+    color: #4A4A4A;
+    padding: 0.6em;
+    vertical-align: top;
+}
+
+td img {
+     max-width: none !important;
+}
+
