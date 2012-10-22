@@ -431,6 +431,9 @@ function cp_menu_wizard_finish(&$form_state) {
 
     case 'page':
       $nid = (int)array_pop(explode(' ', $values['node']));
+      if (!$nid && isset($form_state['vsite_autocomplete_nid'])) {
+        $nid = $form_state['vsite_autocomplete_nid'];
+      }
       $url = 'node/'.$nid;
       break;
 
