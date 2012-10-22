@@ -181,15 +181,15 @@ function vsite_vocab_form_alter(&$form, $form_state, $form_id) {
   if ($form_id != 'taxonomy_form_vocabulary' || !$context = og_vocab_is_group_admin_context()) {
     return;
   }
-  $form['#submit'][] = 'og_vocab_redirect_to_group_vocabularies';
+  $form['#submit'][] = 'vsite_vocab_redirect_to_group_vocabularies';
 }
 
 /**
  * After deleting the group vocabulary, redirect to the taxonomy group admin
  * page.
  */
-function og_vocab_redirect_to_group_vocabularies($form, &$form_state) {
-  $form_state['redirect'] = 'cp/build/taxonomy/';
+function vsite_vocab_redirect_to_group_vocabularies($form, &$form_state) {
+  $form_state['redirect'] = 'cp/build/taxonomy';
 }
 
 /**
