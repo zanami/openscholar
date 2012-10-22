@@ -1,4 +1,6 @@
 <?php
+// $Id$
+
 
 /**
  * @author rbran100
@@ -9,20 +11,20 @@
 class os_taxonomy_fbt extends os_boxes_default {
 
   /**
-   * Implementation of boxes_content::options_defaults().
+   * Implements boxes_content::options_defaults().
    */
   public function options_defaults() {
     $options = parent::options_defaults();
 
-    $options['vocabulary'] = false;
+    $options['vocabulary'] = FALSE;
     $options['bundles'] = array('--all--');
     $options['range'] = 10;
     $options['offset'] = 0;
-    $options['show_empty_terms'] = false;
-    $options['terms_description'] = false;
-    $options['show_count'] = true;
-    $options['show_childs'] = true;
-    $options['add_childs'] = false;
+    $options['show_empty_terms'] = FALSE;
+    $options['show_term_descriptions'] = FALSE;
+    $options['show_count'] = TRUE;
+    $options['show_childs'] = TRUE;
+    $options['add_childs'] = FALSE;
     $options['depth'] = 0;
     $options['behavior'] = 'contextual';
 
@@ -30,7 +32,7 @@ class os_taxonomy_fbt extends os_boxes_default {
   }
 
   /**
-   * Implementation of boxes_content::options_form().
+   * Implements boxes_content::options_form().
    */
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
@@ -154,7 +156,7 @@ class os_taxonomy_fbt extends os_boxes_default {
   }
 
   /**
-   * Implementation of boxes_content::render().
+   * Implements boxes_content::render().
    */
   public function render() {
     if (empty($this->options['vocabulary'])) {
@@ -177,9 +179,9 @@ class os_taxonomy_fbt extends os_boxes_default {
 
 
     $block['content'] = theme('os_taxonomy_vocabulary_item_list', array(
-      'vid' => $this->options['vocabulary'],
-      'options' => $this->options,
-    ));
+        'vid' => $this->options['vocabulary'],
+        'options' => $this->options,
+      ));
 
     return $block;
   }
@@ -187,8 +189,7 @@ class os_taxonomy_fbt extends os_boxes_default {
   /**
    * Return the cache parameters for this box.
    */
-  public function cache_info() {
-  }
+  public function cache_info() {}
 
   /**
    * Get all the volcabularies id using the taxonomy terms.
@@ -221,3 +222,4 @@ class os_taxonomy_fbt extends os_boxes_default {
     return $bundles;
   }
 }
+
