@@ -8,7 +8,7 @@
 
 /**
  * Implements hook_menu_alter().
- * 
+ *
  * Overrides default taxonomy pages, accounts for features.
  *
  * @param array $items
@@ -399,6 +399,9 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     );
   }
 
+  if ($options['cur_depth'] == 2) {
+    dpm(render(taxonomy_term_view($taxonomy_term, 'full')));
+  }
   // Renders the term listing heading and description.
   // @see taxonomy.pages.inc
   $build['term_heading'] = array(
@@ -407,6 +410,10 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     'term' => taxonomy_term_view($taxonomy_term, 'full'),
   );
 
+  // Checks whether there are child terms to display below this one.
+  $children = taxonomy_get_tree($taxonomy_term->vid, $taxonomy_term->tid, 1, TRUE);
+  $has_children_to_display = (!empty($children) && (is_null($options['max_depth']) || (is_numeric($options['max_depth']) && $options['max_depth'] > $options['cur_depth'])));
+
   // Attaches list of nodes in this term, or empty message if term is root term.
   $node_count = os_taxonomy_count_attached_nodes($taxonomy_term->tid, $options['bundles']);
   if ($node_count) {
@@ -414,7 +421,7 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     $nodes = node_load_multiple($nids);
     $build += node_view_multiple($nodes);
   }
-  else if ((int) $options['cur_depth'] === 0) {
+  else if ((int) $options['cur_depth'] === 0 && !$has_children_to_display) {
     $build['no_content'] = array(
       '#prefix' => '<p>',
       '#markup' => t('There is currently no content classified with this term.'),
@@ -430,7 +437,6 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     }
     $options['cur_depth'] = $options['cur_depth'] + 1;
 
-    $children = taxonomy_get_tree($taxonomy_term->vid, $taxonomy_term->tid, 1, TRUE);
     foreach ($children as $child) {
       $output .= theme('os_taxonomy_tagged_nodes', array('taxonomy_term' => $child, 'options' => $options));
     }
