@@ -381,8 +381,16 @@ abstract class OSMigration extends Migration {
       return;
     }
 
+
+    //get original name, for matching the url.  if files table isn't cleared between migrations, aliases can pile up and block name matching
+    $d6name = self::d6_db_select('files', 'f')
+      ->condition('fid', $fid)
+      ->fields('f', array('filename'))
+      ->execute()
+      ->fetchField();
+
     $entity = file_load($file['destid1']);
-    $uri = $this->_uri_trim($entity->uri);
+    $uri = ($d6name) ? $d6name : $this->_uri_trim($entity->uri);
 
     $dom = filter_dom_load($row->body);
     $links = $dom->getElementsByTagName('a');

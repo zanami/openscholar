@@ -416,7 +416,8 @@ function cp_menu_wizard_finish(&$form_state) {
       exit;
     }
     else {
-      drupal_goto('node/add/' . $values['new_node_type']);
+      $node_type = ($values['new_node_type'] != 'media_gallery') ? $values['new_node_type'] : 'media-gallery';
+      drupal_goto('node/add/' . $node_type);
     }
   }
 
