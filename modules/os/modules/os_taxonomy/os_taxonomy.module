@@ -98,15 +98,16 @@ function os_taxonomy_theme() {
 function theme_os_taxonomy_term_item($variables) {
   $number = !$variables['number'] ? '' : ' <span class="count">(' . $variables['number'] . ')</span>';
   $name = check_plain($variables['name']);
+  $item_wrapper = !empty($variables['childs']) ? "<div class='term-head'>" : '';
 
   $name = !$number && !$variables['link_to_empty_terms'] ? $name : l($name, $variables['url_path'], $variables['link_options']);
-  $item_content = "<div class='term-head'>" . $name . $number;
+  $item_content = $item_wrapper . $name . $number;
 
   if ($variables['terms_description'] && !empty($variables['description'])) {
     $item_content .= '<div class="description"> - ' . check_plain($variables['description']) . '</div>';
   }
 
-  $item_content .= "</div>";
+  $item_content .= !empty($variables['childs']) ? "</div>" : '';
 
   if (!empty($variables['childs'])) {
     $item_content .= $variables['childs'];
