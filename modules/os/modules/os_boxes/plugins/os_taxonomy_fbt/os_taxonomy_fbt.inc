@@ -169,7 +169,7 @@ class os_taxonomy_fbt extends os_boxes_default {
     }
 
     ctools_include('layout', 'os');
-    if($this->options['behavior'] == 'contextual' && ($feature = os_get_active_feature())){
+    if ($this->options['behavior'] == 'contextual' && ($feature = os_get_active_feature())) {
       if (isset($feature->info['features']['node'])) {
         $this->options['bundles'] = $feature->info['features']['node'];
       }
