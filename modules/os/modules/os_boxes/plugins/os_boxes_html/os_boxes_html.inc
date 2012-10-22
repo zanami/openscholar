@@ -44,10 +44,12 @@ class os_boxes_html extends os_boxes_default {
   public function render() {
     $block = parent::render();
     // Check to make sure user wants to show the title.
-    $show_title = $this->options['show_title'];
-    if($show_title == 0) {
-      $block['title'] = '';
-      $block['subject'] = '';
+    if(isset($this->options['show_title'])) {
+      $show_title = $this->options['show_title'];
+      if($show_title == 0) {
+        $block['title'] = '';
+        $block['subject'] = '';
+      }
     }
     $block['content'] = check_markup($this->options['text']['value'], $this->options['text']['format']);
 
