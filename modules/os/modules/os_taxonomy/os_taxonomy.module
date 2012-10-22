@@ -8,7 +8,7 @@
 
 /**
  * Implements hook_menu_alter().
- * 
+ *
  * Overrides default taxonomy pages, accounts for features.
  *
  * @param array $items
@@ -193,25 +193,26 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   $items = os_taxonomy_build_term_items($terms, $options);
 
   $path_prefix = '';
-  if(count($options['bundles'])){
+  if (count($options['bundles'])) {
     $map = features_get_component_map('node');
     foreach ($options['bundles'] as $bundle){
-      if(isset($feature) && isset($map[$bundle]) && count($map[$bundle]) && $feature != current($map[$bundle])){
+      if (isset($feature) && isset($map[$bundle]) && count($map[$bundle]) && $feature != current($map[$bundle])) {
         unset($feature);
         break;
-      }elseif (isset($map[$bundle]) && count($map[$bundle])){
+      }
+      elseif (isset($map[$bundle]) && count($map[$bundle])) {
         $feature = current($map[$bundle]);
       }
     }
-    $path_prefix = isset($feature)?strval(os_get_feature_path($feature)):'';
-    if(strlen($path_prefix)){
+    $path_prefix = isset($feature) ? strval(os_get_feature_path($feature)) : '';
+    if (strlen($path_prefix)) {
       $path_prefix = $path_prefix."/";
     }
   }
 
   $data = $options['bundles'] = array();
 
-  foreach($items as $tid => $item) {
+  foreach ($items as $tid => $item) {
     // Skip on this if we don't dispaly empty childs term.
     if (!$options['show_empty_terms'] && !$item['tagged_items'] && empty($item['child_number'])) {
       continue;
@@ -224,14 +225,13 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
     // The attached number to the term name.
     $number = null;
-    if($options['show_count']){
+    if ($options['show_count']) {
       $number = $item['tagged_items'];
       $number += $options['add_childs'] && isset($item['child_number']) ? $item['child_number'] : 0;
     }
 
     // Check if we need to disable the link to the term base on the child number.
     $link_options = empty($item['class']) ? array() : array('attributes' => array('class' => $item['class']));
-
     $child_content = !empty($item['childs']) ? os_taxonomy_build_child_item($item['childs'], $item, $options) : '';
 
     $data[$tid] = array(
@@ -275,15 +275,52 @@ function os_taxonomy_build_term_items($terms, $options) {
     // Add the number of tagged nodes to the childrens when needed.
     if ($options['show_childs']) {
       $depth = !isset($options['depth']) == 0 ? NULL : $options['depth'];
-      $tree = taxonomy_get_tree($term->vid, $term->tid, $depth, TRUE);
+      $childrens = os_taxonomy_get_term_childrens($term->tid, $term->vid, $options);
       if ($options['add_childs']) {
-        $items[$tid]['child_number'] = os_taxonomy_count_term_tagged_items($tree, $options['bundles']);
+        $items[$tid]['child_number'] = os_taxonomy_count_term_tagged_items($childrens, $options['bundles']);
       }
-      $items[$tid]['childs'] = os_taxonomy_build_term_items($tree, $options);
+      $items[$tid]['childs'] = os_taxonomy_build_term_items($childrens, $options);
     }
   }
 
   return $items;
+}
+
+/**
+ * Loading the taxonomy term childrens and remove all the childrens that their
+ * depth in the vocabulary is bigger than the require nested level defined in
+ * the box settings.
+ * Because we are using recursive function for rendering the terms children with
+ * the theme function, we can remove deeper terms and then they won't be
+ * rendered with the theme function.
+ *
+ *  @param $tid
+ *    The term ID.
+ *  @param $vid
+ *    Vocabulary ID of the term.
+ *  @param $options
+ *    Settings variable of the theme function.
+ *
+ *  @return
+ *    Taxonomy terms childrens ready to be rendered by the theme function.
+ */
+function os_taxonomy_get_term_childrens($tid, $vid, $options) {
+  $tree = &drupal_static(__FUNCTION__, array());
+  if (!$tree) {
+    $vocabulary = taxonomy_get_tree($options['vocabulary']);
+    foreach ($vocabulary as $term) {
+      $tree[$term->tid] = $term->depth;
+    }  }
+
+  $childrens = taxonomy_get_children($tid, $vid);
+
+  foreach ($childrens as $children) {
+    if ($options['depth'] < $tree[$children->tid]) {
+      unset($childrens[$children->tid]);
+    }
+  }
+
+  return $childrens;
 }
 
 /**
@@ -306,7 +343,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
     }
 
     $number = null;
-    if($options['show_count']){
+    if ($options['show_count']) {
       $number = $item['tagged_items'];
       $number += $options['add_childs'] && isset($item['child_number']) ? $item['child_number'] : 0;
     }

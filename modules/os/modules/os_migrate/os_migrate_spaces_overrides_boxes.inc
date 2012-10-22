@@ -919,7 +919,7 @@ class BoxPorter {
       $build = node_view($node, $teaser);
       unset($build['#contextual_links']); //don't hardcode the admin links into the html box...
       $body = drupal_render($build);
-      $node->format = 1; //make sure to use filtered html later
+      //$format = 1; //make sure to use filtered html later
     } else {
       //if they haven't migrated, fetch the old node's body
       $query = $this->migration->d6_db_select('node', 'n')
@@ -948,7 +948,7 @@ class BoxPorter {
       $box->plugin_key = 'os_boxes_html';
       $box->options = array('text'=>array(
         'value' => $body,
-        'format' => $this->_update_format($node->format),
+        'format' => 'filtered_html', //$this->_update_format($node->format),
         'show_title' => $show_title,
       ));
 
