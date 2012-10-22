@@ -75,17 +75,6 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
     return;
   }
 
-  // Get enabled bundles.
-  $bundles = array_keys(os_get_bundles(array(1,2)));
-
-  // Remove bundle configuration for bundles not enabled in this site.
-  foreach (element_children($form['og_vocab']) as $child) {
-    list($bundle_type, $bundle) = explode(":", $child, 2);
-    if (!in_array($bundle, $bundles)) {
-      unset($form['og_vocab'][$child]);
-    }
-  }
-
   // Hiding elements in the form.
   ctools_include('dependent');
   $form['og_vocab']['#access'] = FALSE;
@@ -104,11 +93,13 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
   // Add description for the name.
   $form['name']['#description'] = t('The vocabulary name. E.g. "Area of intrest"');
 
+  // Get enabled bundles.
+  $bundles = os_get_bundles(array(1,2));
+
   // Loop through all of the content types and build their checkboxe's.
   $form['bundles'] = array();
   $default_bundles = array();
-  $group_content = og_get_all_group_content_bundle();
-  foreach ($group_content['node'] as $bundle => $bundle_label) {
+  foreach ($bundles as $bundle => $bundle_label) {
     $vid = !empty($form['vid']['#value']) ? $form['vid']['#value'] : 0;
     $og_vocab = og_vocab_load_og_vocab($vid, 'node', $bundle, TRUE);
     $options[$bundle] = check_plain($bundle_label);
@@ -243,10 +234,10 @@ function vsite_vocab_og_vocab_is_admin_context() {
  */
 function vsite_vocab_form_taxonomy_form_vocabulary_submit(&$form, &$form_state) {
   $vid = empty($form_state['vocabulary']->vid) ? 0 : $form_state['vocabulary']->vid;
-  $group_content = og_get_all_group_content_bundle();
+  $bundles = os_get_bundles(array(1,2));
   $values = $form_state['values'];
 
-  foreach ($group_content['node'] as $bundle => $bundle_label) {
+  foreach ($bundles as $bundle => $bundle_label) {
     $og_vocab = og_vocab_load_og_vocab($vid, 'node', $bundle);
 
     if (empty($og_vocab)) {
