@@ -556,15 +556,16 @@ abstract class OSMigration extends Migration {
       return;
     }
 
+    //get original name, for matching the url.  if files table isn't cleared between migrations, aliases can pile up and block name matching
+    $d6name = self::d6_db_select('files', 'f')
+      ->condition('fid', $fid)
+      ->fields('f', array('filename'))
+      ->execute()
+      ->fetchField();
+
     //replace this with generic function.  does the one I wrote make sense?  wtf is this one doing?
     //were we stripping just the purl for the site?
-    $uri = self::_uri_trim($entity->uri);/*
-    $uri = str_replace('public://', '', $entity->uri);
-    if (strpos($uri, '/') !== FALSE) {
-      $a = explode('/', $uri);
-      $a = array_slice($a, 2);
-      $uri = implode('/', $a);
-    }*/
+    $uri = (isset($d6name) && $d6name) ? $d6name : self::_uri_trim($entity->uri);
 
     $dom = filter_dom_load($row->body);
     $images = $dom->getElementsByTagName('img');
@@ -572,7 +573,8 @@ abstract class OSMigration extends Migration {
     for ($i=0, $len=$images->length; $i < $len; $i++) {
       $img = $images->item($i);
       if (isset($img) && strpos($img->getAttribute('src'), $uri)) {
-        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img);
+        $attributes = $this->_get_image_attributes($img);
+        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $attributes);
         $text = $dom->createTextNode($tag);
         $img->parentNode->replaceChild($text, $img);
         $update = TRUE;
@@ -614,7 +616,7 @@ abstract class OSMigration extends Migration {
 
   //prepare the inline tag
   //generic for now.
-  function _os_migrate_inline_tag($type, $fid, &$dom_object) {
+  function _os_migrate_inline_tag($type, $fid, &$dom_object, $style = array()) {
     $tag = array(
       'type' => 'media',
       'view_mode' => 'default',
@@ -661,6 +663,9 @@ abstract class OSMigration extends Migration {
     }
 
     $tag['attributes'] += $this->_os_migrate_get_attributes($attributes, $dom_object);
+    if ($style) {
+      $tag['attributes']['style'] = implode('; ', $style);
+    }
     return ' [[' . drupal_json_encode($tag) . ']] ';
   }
 
@@ -712,6 +717,26 @@ abstract class OSMigration extends Migration {
     );
 
     return ' [[' . drupal_json_encode($tag) . ']] ';
+  }
+
+  //get list of image attributes to pass to media tag.
+  function _get_image_attributes($elem) {
+    $styles = $elem->getAttribute('style');
+    $styles = explode(';', $styles);
+    $css = array();
+    foreach (array_filter($styles) as $style) {
+      $t = explode(':', $style);
+      $css[trim($t[0])] = trim($t[1]);
+    }
+
+    //just getting floats for now.  that may change later.
+    $css = array_intersect_key($css, array_flip(array('float')));
+
+    $return = array();
+    foreach ($css as $prop => $val) {
+      $return[] = $prop .': '. $val;
+    }
+    return $return;
   }
 
   /**
