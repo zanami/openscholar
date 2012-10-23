@@ -9,7 +9,6 @@ class os_boxes_html extends os_boxes_default {
       'format' => filter_default_format(),
     );
     $options['format'] = 1;
-    $options['show_title'] = 1;
 
     return $options;
   }
@@ -24,11 +23,6 @@ class os_boxes_html extends os_boxes_default {
       '#title' => t('Content'),
       '#description' => t('You can put almost anything into here to place it in a widget. Text, HTML, Images, Video, whatever works in the editor.')
     );
-	$form['show_title'] = array(
-	  '#type' => 'checkbox',
-      '#title' => t('Display the widget title'),
-      '#default_value' => $this->options['show_title'],
-	);
     return $form;
   }
 
@@ -43,14 +37,7 @@ class os_boxes_html extends os_boxes_default {
 
   public function render() {
     $block = parent::render();
-    // Check to make sure user wants to show the title.
-    if(isset($this->options['show_title'])) {
-      $show_title = $this->options['show_title'];
-      if($show_title == 0) {
-        $block['title'] = '';
-        $block['subject'] = '';
-      }
-    }
+
     $block['content'] = check_markup($this->options['text']['value'], $this->options['text']['format']);
 
     return $block;

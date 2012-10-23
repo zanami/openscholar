@@ -23,6 +23,7 @@ class FileInlineOSMigration extends OSMigration {
 
     $this->addFieldMapping('timestamp', 'timestamp');
     //$this->addFieldMapping('path');
+
     $this->addFieldMapping('destination_dir', 'destination_dir');
     $this->addFieldMapping('source_dir')->defaultValue(
       variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
