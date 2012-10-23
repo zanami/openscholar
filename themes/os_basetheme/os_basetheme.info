@@ -13,6 +13,8 @@
 
   stylesheets[screen][] = css/globals.css
   
+  scripts[] = js/os_base.js
+  
 ;----------// Regions
 
   regions[sidebar_first]     = Sidebar first
