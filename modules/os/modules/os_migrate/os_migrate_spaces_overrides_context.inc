@@ -74,7 +74,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     }
 
     //"All" context should always include login button and powered-by
-    if($object_id == 'os_public'){
+    if($object_id == 'os_public:reaction:block'){
 
       $value['blocks']['os-powered-by'] = array(
         'module' => 'os',
