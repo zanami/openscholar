@@ -106,10 +106,15 @@ function os_wysiwyg_node_delete($node) {
  */
 function os_wysiwyg_media_token_to_markup_alter(&$element, $tag_info, $settings) {
   unset($element['content']['#prefix'], $element['content']['#suffix']);
-  $element['content']['file']['#attributes'] = array(
-    'height' => $settings['height'],
-    'width' => $settings['width'],
-  );
+
+  $element['content']['file']['#attributes'] = array();
+  if (isset($settings['width'])) {
+    $element['content']['file']['#attributes']['width'] = $settings['width'];
+  }
+  if (isset($settings['height'])) {
+    $element['content']['file']['#attributes']['height'] = $settings['height'];
+  }
+
   $container_settings = array();
   foreach ($settings['attributes'] as $attr => $val) {
     if ($attr != 'class' && $attr != 'height' && $attr != 'width') {
