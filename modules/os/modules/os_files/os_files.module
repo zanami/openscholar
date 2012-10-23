@@ -286,6 +286,7 @@ function os_files_file_formatter_file_link($file, $display, $langcode) {
       'link' => array(
         '#theme' => 'link',
         '#href' => $path,
+        '#path' => $path,
         '#text' => $title,
         '#options' => array(
           'html' => false,
