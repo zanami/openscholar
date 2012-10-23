@@ -273,10 +273,8 @@ function os_files_file_formatter_info() {
 function os_files_file_formatter_file_link($file, $display, $langcode) {
   $title = field_get_items('file', $file, 'media_title', $langcode);
   $title = isset($title[0])?$title[0]['value']:file_create_url($file->uri);
-  dpm($display['settings']);
 
   $path = $display['settings']['download']?file_create_url($file->uri):file_entity_uri($file);
-  dpm($path);
 
   if (empty($file->override['wysiwyg'])) {
     return array(
