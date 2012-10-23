@@ -111,7 +111,6 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     //$query->condition('n.nid', '6811', '='); //prod node with inline files
     //$query->condition('n.nid', '13701', '='); //prod node with multiple images
 
-
     $query->join('node_revisions', 'nr', 'n.vid = nr.vid');
     $query->fields('nr', array(
       'body',
@@ -346,7 +345,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'filepath' => 'filepath',
         //'file_destination' => 'file_destination',
         'filename' => 'filename',
-        'field_upload' => 'field_upload',
+        //'field_upload' => 'field_upload',
       );
 
       //need filepath, filename
@@ -371,14 +370,20 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         $filepath = str_replace($file_directory_path, '', $filepath);
         $file = explode('/', trim($filepath, '/'));
 
-        $file_row->field_upload = $filepath;
         $file_row->filename = array_pop($file);
         $file_row->filepath = 'public://' . implode('/', $file);
+        $file_row->field_upload_replace = $filepath;// . '/' . $file_row->filename;
         //$file_row->file_destination = $file_destination;
         $files[] = $file_row;
       }
 
       parent::os_migrate_prepare_files($files, $row, 'field_upload', $fields);
+      //field upload is set up wrong, but it's too late to fix the general function.
+      if (isset($row->field_upload)) {
+        foreach (array_keys($row->field_upload) as $delta) {
+          $row->field_upload[$delta] = $files[$delta]->field_upload_replace;
+        }
+      }
     }
   }
 
