@@ -32,6 +32,10 @@
      display: inline;
 }
 
+.node-type-class .field-items {
+     display: inline-block;
+	  	}
+
 
 /*
  * Field types (Core)
