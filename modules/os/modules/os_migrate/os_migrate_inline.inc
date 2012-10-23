@@ -24,7 +24,7 @@ class FileInlineOSMigration extends OSMigration {
 
     $this->addFieldMapping('timestamp', 'timestamp');
     //$this->addFieldMapping('path');
-    //$this->addFieldMapping('destination_dir');
+    //$this->addFieldMapping('destination_dir','destination_dir')->description('Handled in prepareRow');
     //$this->addFieldMapping('source_dir')->defaultValue(variable_get('os_migrate_files'));
 
     $this->addUnmigratedDestinations(array('file_replace', 'preserve_files', 'path', 'destination_dir', 'source_dir'), t('DNM'));
