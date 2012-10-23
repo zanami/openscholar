@@ -139,7 +139,7 @@ function os_files_download() {
   $args = func_get_args();
   $scheme = 'public';
 
-  if (module_exists('vsite')) {
+  if (module_exists('vsite') && !file_exists($scheme . '://' . implode('/', $args))) {
 
     // Add the menu entry as an arg.
     array_unshift($args, 'files');
