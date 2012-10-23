@@ -344,7 +344,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'description' => 'description',
         'display' => 'list',
         'filepath' => 'filepath',
-        'file_destination' => 'file_destination',
+        //'file_destination' => 'file_destination',
+        'filename' => 'filename',
         'field_upload' => 'field_upload',
       );
 
@@ -372,7 +373,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
 
         $file_row->field_upload = $filepath;
         $file_row->filename = array_pop($file);
-        $file_row->filepath = implode('/', $file);
+        $file_row->filepath = 'public://' . implode('/', $file);
         //$file_row->file_destination = $file_destination;
         $files[] = $file_row;
       }
@@ -390,7 +391,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'display'
       )));
       $this->addFieldMapping('field_upload:destination_file', 'filename');
-      $this->addFieldMapping('field_upload:source_dir')->defaultValue(variable_get('os_migrate_files', FALSE));
+      $this->addFieldMapping('field_upload:source_dir') //->defaultValue(variable_get('os_migrate_files', FALSE));
+        ->defaultValue(variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
       $this->addFieldMapping('field_upload:destination_dir', 'filepath');
       $this->addFieldMapping('field_upload:og_group_ref', 'group_nid');
 
