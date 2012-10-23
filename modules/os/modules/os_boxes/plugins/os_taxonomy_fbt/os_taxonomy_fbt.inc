@@ -177,6 +177,7 @@ class os_taxonomy_fbt extends os_boxes_default {
       }
     }
 
+    $this->options['vocabulary'] = is_array($this->options['vocabulary'])?current($this->options['vocabulary']):$this->options['vocabulary'];
 
     $block['content'] = theme('os_taxonomy_vocabulary_item_list', array(
         'vid' => $this->options['vocabulary'],
