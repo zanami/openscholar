@@ -206,6 +206,26 @@ abstract class OSMigration extends Migration {
   }
 
   /**
+   * @function _migrate_filename
+   *
+   * @param string $filepath
+   *   path to d6 file
+   * @return array
+   *   returns file's d7 path, name
+   */
+  function _migrate_filename($filepath) {
+    $dir = variable_get('os_migrate_files');
+
+    $file_directory_path = self::d6_variable_get('file_directory_path', 'sites/default/files');
+    $filepath = str_replace($file_directory_path, '', $filepath);
+    $file = explode('/', trim($filepath, '/'));
+    $filename = array_pop($file);
+    $destination_dir = implode('/', $file);
+
+    return array($destination_dir, $filename);
+  }
+
+  /**
    * @function subfields
    *
    * Shortcut for getting an array of field:sub1, field:sub2, etc without typing field over and over.

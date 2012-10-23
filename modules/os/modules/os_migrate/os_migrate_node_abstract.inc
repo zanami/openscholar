@@ -408,7 +408,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'field_upload:description' => t('Uploaded file\'s desctription'),
         'field_upload:display' => t('Include uploaded file in listing'),
         'field_upload:language' => t('Uploaded file\'s langauge'),
-        'filepath' => t('Full path to file')
+        'filepath' => t('Full path to file'),
+        'filename' => t('Name of file'),
       );
     }
     else {

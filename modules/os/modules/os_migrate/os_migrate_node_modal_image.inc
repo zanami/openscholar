@@ -26,12 +26,17 @@ class ModalImageNodeOSMigration extends OSMigration {
       MigrateDestinationMedia::getKeySchema()
     );
 
-    $this->addSimpleMappings(array('uid', 'timestamp', 'path'));
-    $this->addUnmigratedDestinations(array('destination_dir', 'destination_file', 'file_replace', 'preserve_files'), t('DNM')); //good defaults
-    $this->addUnmigratedSources(array('group_nid', 'filename'), t('DNM')); //group nid is in prepare.  filename is in the full path
+
+
+    $this->addFieldMapping('source_dir')->defaultValue(
+      variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
+
+    $this->addSimpleMappings(array('uid', 'timestamp', 'path', 'filename', 'destination_dir'));
+    $this->addUnmigratedDestinations(array('destination_file', 'file_replace', 'preserve_files'), t('DNM')); //good defaults
+    $this->addUnmigratedSources(array('group_nid'), t('DNM')); //group nid is in prepare.  filename is in the full path
 
     $this->addFieldMapping('value', 'filepath');
-    $this->addFieldMapping('source_dir')->defaultValue(variable_get('os_migrate_files', FALSE)); //adequate or does 2.4 need full path?
+    //$this->addFieldMapping('source_dir')->defaultValue(variable_get('os_migrate_files', FALSE)); //adequate or does 2.4 need full path?
 
   }
 
@@ -92,6 +97,12 @@ class ModalImageNodeOSMigration extends OSMigration {
       ->condition('ua.src', 'node/'.$current_row->nid, '=');
     $results = $query->execute()->fetchAssoc();
     $current_row->path = $results['dst'];
+
+    if (list($path, $name) = $this->_migrate_filename($current_row->filepath)) {
+      $current_row->filename = $name;
+      $current_row->destination_dir = 'public://' . $path;
+      $current_row->filepath = $path . '/' . $name;
+    }
   }
 
 
