@@ -73,7 +73,7 @@ function boxes_delete_form_submit($form, &$form_state) {
  */
 function theme_boxes_box($variables) {
   $block = $variables['block'];
-  
+
   $empty = '';
   //show something if the block is empty but the user has rights to edit it
   if (empty($block['title']) && empty($block['content']) && boxes_access_edit()) {
@@ -82,6 +82,9 @@ function theme_boxes_box($variables) {
     $empty = ' box-empty';
   }
 
+  if (!isset($block['delta'])) {
+    dpm($block);
+  };
   $output = "<div id='boxes-box-" . $block['delta'] . "' class='boxes-box" . (!empty($block['editing']) ? ' boxes-box-editing' : '') . $empty . "'>";
   $output .= '<div class="boxes-box-content">' . $block['content'] . '</div>';
   if (!empty($block['controls'])) {
