@@ -176,8 +176,6 @@ border-radius:5px;
 #menu-bar .block-os-search-db {
 	   float: right;
        margin-top: 9px;
-       display:inline;
-       clear:right;
        width: 180px;
 }
 
@@ -212,6 +210,7 @@ top:3.1em;
   margin-right:5px;
   margin-top:2px;
   background: none;
+   float:left;
   }
 
 #menu-bar ul.nice-menu ul li {
