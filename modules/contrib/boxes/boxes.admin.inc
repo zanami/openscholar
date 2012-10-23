@@ -82,9 +82,6 @@ function theme_boxes_box($variables) {
     $empty = ' box-empty';
   }
 
-  if (!isset($block['delta'])) {
-    dpm($block);
-  };
   $output = "<div id='boxes-box-" . $block['delta'] . "' class='boxes-box" . (!empty($block['editing']) ? ' boxes-box-editing' : '') . $empty . "'>";
   $output .= '<div class="boxes-box-content">' . $block['content'] . '</div>';
   if (!empty($block['controls'])) {
