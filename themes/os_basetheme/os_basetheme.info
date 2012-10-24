@@ -14,8 +14,8 @@
   stylesheets[screen][] = css/globals.css
   
   
-  ;scripts[] = js/os_base.js
-ie_scripts[lt IE 9][] = js/os_base.js
+  scripts[] = js/os_base.js
+;ie_scripts[lt IE 9][] = js/os_base.js
   
 ;----------// Regions
 
