@@ -752,6 +752,11 @@ class BoxPorter {
       list(,$ct) = explode(':', $ct);
     }
 
+    //content type was updated
+    if ($ct == 'announcement') {
+      $ct = 'news';
+    }
+
     $defaults = array(
       'content_type' =>     'all',
       'display' =>          'display_title',
