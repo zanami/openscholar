@@ -176,7 +176,8 @@ border-radius:5px;
 /**** MAIN NAV BAR ****/
 
 #menu-bar #block-os-site_search,
-#menu-bar .block-os-search-db {
+#menu-bar .block-os-search-db,
+#menu-bar .block-os-search-solr {
 	   float: right;
        margin-top: 9px;
        width: 180px;
