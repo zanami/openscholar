@@ -9,7 +9,7 @@ class OsMigrateBiologyTaxonomyTerm extends OsMigrate {
    * Map the field and properties to the CSV header.
    */
   public $csvColumns = array(
-    array('id', 'Unique ID'),
+    array('id', 'ID'),
     array('name', 'Name'),
   );
 
@@ -89,7 +89,7 @@ class OsMigrateBioagrphyNode extends OsMigrate {
   public $bundle = 'bio';
 
   public $csvColumns = array(
-    array('id', 'Unique ID'),
+    array('id', 'ID'),
     array('title', 'Title'),
     array('body', 'Body'),
     array(OG_AUDIENCE_FIELD, 'Site'),
@@ -106,4 +106,30 @@ class OsMigrateBioagrphyNode extends OsMigrate {
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration('OsMigratePersonalNode');
   }
+}
+
+
+/**
+ * Migrate OG-vocabs.
+ */
+class OsMigrateOgVocab extends OsMigrate {
+
+  /**
+   * Map the field and properties to the CSV header.
+   */
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('name', 'Name'),
+  );
+
+  public $entityType = 'og_vocab';
+  public $bundle = 'og_vocab';
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+    'OsMigrateBiologyTaxonomyTerm',
+    'OsMigrateMathTaxonomyTerm',
+    'OsMigrateScienceTaxonomyTerm',
+  );
+
 }
