@@ -159,12 +159,12 @@ class os_taxonomy_fbt extends os_boxes_default {
    * Implements boxes_content::render().
    */
   public function render() {
+    $block = parent::render();
     if (empty($this->options['vocabulary'])) {
       // There are no vocabularies defined in the VSite.
-      return;
-    }
 
-    $block = parent::render();
+      return $block;
+    }
     // For now - display the first vocabulary terms.
     if ($this->options['behavior'] == '--all--') {
       $this->options['bundles'] = array();
@@ -177,6 +177,7 @@ class os_taxonomy_fbt extends os_boxes_default {
       }
     }
 
+    $this->options['vocabulary'] = is_array($this->options['vocabulary'])?current($this->options['vocabulary']):$this->options['vocabulary'];
 
     $block['content'] = theme('os_taxonomy_vocabulary_item_list', array(
         'vid' => $this->options['vocabulary'],

@@ -163,7 +163,7 @@ abstract class OSMigration extends Migration {
     }
   }
 
-  //attaches results to row, minding the subfields (field => col)
+  //attaches results to row, minding the subfields (d7 field => d6 col)
   function os_migrate_prepare_files($files, &$row, $field_name, $subfields = array()) {
     //turn db statement into array of objects if that's what we're starting with.
     if (!is_array($files) && get_class($files) == 'DatabaseStatementBase') {
@@ -203,6 +203,26 @@ abstract class OSMigration extends Migration {
       ->condition('fid', $fid, '=')
       ->execute();
     return $result->fetchObject();
+  }
+
+  /**
+   * @function _migrate_filename
+   *
+   * @param string $filepath
+   *   path to d6 file
+   * @return array
+   *   returns file's d7 path, name
+   */
+  function _migrate_filename($filepath) {
+    $dir = variable_get('os_migrate_files');
+
+    $file_directory_path = self::d6_variable_get('file_directory_path', 'sites/default/files');
+    $filepath = str_replace($file_directory_path, '', $filepath);
+    $file = explode('/', trim($filepath, '/'));
+    $filename = array_pop($file);
+    $destination_dir = implode('/', $file);
+
+    return array($destination_dir, $filename);
   }
 
   /**
@@ -254,9 +274,14 @@ abstract class OSMigration extends Migration {
     if (!isset($variable_cache[$var])) {
       $query = self::d6_db_select('variable', 'v')
         ->fields('v', array('value'))
-        ->condition('v.name', $var, '=');
-      $value = unserialize($query->execute()->fetchField());
-      $variable_cache[$var] = (isset($value)) ? $value : $default;
+        ->condition('v.name', $var, '=')
+        ->execute();
+      if ($query->rowCount()) {
+        $value = unserialize($query->fetchField());
+        $variable_cache[$var] = $value;
+      } else {
+        $variable_cache[$var] = $default;
+      }
     }
 
     return $variable_cache[$var];
@@ -582,6 +607,9 @@ abstract class OSMigration extends Migration {
       $img = $images->item($i);
       if (isset($img) && strpos($img->getAttribute('src'), $uri)) {
         $attributes = $this->_get_image_attributes($img);
+        $parent_attributes = $this->_get_image_attributes($img->parentNode);
+        $attributes = array_merge($parent_attributes, $attributes);
+
         $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $attributes);
         $text = $dom->createTextNode($tag);
         $img->parentNode->replaceChild($text, $img);
@@ -727,7 +755,13 @@ abstract class OSMigration extends Migration {
     return ' [[' . drupal_json_encode($tag) . ']] ';
   }
 
-  //get list of image attributes to pass to media tag.
+  /**
+   * @fucntion _get_image_attributes
+   *
+   * Inline image tags take css to apply to the images upon rendering.  This function
+   * extracts the desired css elements from a dom element and returns an array
+   * of strings.
+   */
   function _get_image_attributes($elem) {
     $styles = $elem->getAttribute('style');
     $styles = explode(';', $styles);
@@ -738,12 +772,18 @@ abstract class OSMigration extends Migration {
     }
 
     //just getting floats for now.  that may change later.
-    $css = array_intersect_key($css, array_flip(array('float')));
+    $css = array_intersect_key($css, array_flip(array('float', 'text-align')));
 
     $return = array();
     foreach ($css as $prop => $val) {
+//       if ($prop == 'text-align' && $val = 'center') {
+//         $prop = 'margin';
+//         $val = '0 auto';
+//         $return[] = 'display: block';
+//       }
       $return[] = $prop .': '. $val;
     }
+
     return $return;
   }
 
