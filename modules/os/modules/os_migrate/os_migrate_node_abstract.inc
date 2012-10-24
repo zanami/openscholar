@@ -65,7 +65,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $this->addFieldMapping('body', 'body');
     $this->addFieldMapping('body:format', 'format')->defaultValue('filtered_html');
     $this->addFieldMapping('body:language', 'language')->defaultValue('und');
-    $this->addFieldMapping('body:summary', 'teaser');
+  //  $this->addFieldMapping('body:summary', 'teaser');
 
     $this->addFieldMapping('log', 'log'); //from nr
     $this->addFieldMapping('revision')->defaultValue(TRUE); //create a new revision.  vid is automatically migrated
@@ -87,6 +87,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       ), t('DNM'));
     }
 
+    $this->addUnmigratedDestinations(array('body:summary'), t('DNM'));
     /* Unmapped source fields.  Mark them as Do Not Map, so the UI knows they're intentionally ignored */
     $this->addUnmigratedSources(array(
       'moderate',
@@ -116,7 +117,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       'body',
       'uid',
       'log',
-      'teaser'
+      //'teaser'
     ));
 
     $query->leftjoin('filter_formats', 'ff', 'nr.format = ff.format');
