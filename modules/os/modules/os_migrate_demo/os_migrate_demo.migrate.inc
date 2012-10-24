@@ -1,9 +1,60 @@
 <?php
 
 /**
- * Migrating sites.
+ * Migrate "Biology" terms.
  */
-class OsMigratePersonal extends OsMigrate {
+class OsMigrateBiologyTaxonomyTerm extends OsMigrate {
+
+  /**
+   * Map the field and properties to the CSV header.
+   */
+  public $csvColumns = array(
+    array('id', 'Unique ID'),
+    array('name', 'Name'),
+  );
+
+  public $entityType = 'taxonomy_term';
+  public $bundle = 'biology';
+}
+
+/**
+ * Migrate "Math" terms.
+ */
+class OsMigrateMathTaxonomyTerm extends OsMigrate {
+
+  /**
+   * Map the field and properties to the CSV header.
+   */
+  public $csvColumns = array(
+    array('id', 'Unique ID'),
+    array('name', 'Name'),
+  );
+
+  public $entityType = 'taxonomy_term';
+  public $bundle = 'math';
+}
+
+/**
+ * Migrate "Science" terms.
+ */
+class OsMigrateScienceTaxonomyTerm extends OsMigrate {
+
+  /**
+   * Map the field and properties to the CSV header.
+   */
+  public $csvColumns = array(
+    array('id', 'Unique ID'),
+    array('name', 'Name'),
+  );
+
+  public $entityType = 'taxonomy_term';
+  public $bundle = 'science';
+}
+
+/**
+ * Migrate "Personal" node.
+ */
+class OsMigratePersonalNode extends OsMigrate {
   public $entityType = 'node';
   public $bundle = 'personal';
 
@@ -31,9 +82,9 @@ class OsMigratePersonal extends OsMigrate {
 }
 
 /**
- * Importing biography for the site owner.
+ * Migrate "Biography" node.
  */
-class OsMigrateBioagrphy extends OsMigrate {
+class OsMigrateBioagrphyNode extends OsMigrate {
   public $entityType = 'node';
   public $bundle = 'bio';
 
@@ -44,11 +95,15 @@ class OsMigrateBioagrphy extends OsMigrate {
     array(OG_AUDIENCE_FIELD, 'Site'),
   );
 
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
   public function __construct() {
     parent::__construct();
-    $this->dependencies = array('OsMigratePersonal');
+
     $this->addFieldMapping('Body', 'body');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
-      ->sourceMigration('OsMigratePersonal');
+      ->sourceMigration('OsMigratePersonalNode');
   }
 }
