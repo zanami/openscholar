@@ -169,6 +169,9 @@ border-radius:5px;
     bottom: -1px;
 }
 
+.feed_item {margin-bottom:8px;}
+.feed_item a {text-decoration:underline;}
+.feed_item span {font-style:italic;margin-right:4px;}
 
 /**** MAIN NAV BAR ****/
 

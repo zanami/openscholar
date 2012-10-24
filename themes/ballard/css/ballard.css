@@ -45,6 +45,7 @@ font-family: helvetica,arial,sans-serif;
 #menu-bar .block-os-search-db {
 	   float: right;
        margin-top: 14px;
+       width:180px;
 }
 
 #menu-bar #search-block-form .container-inline .form-item .form-text {
@@ -391,7 +392,7 @@ height:20px;
 border:none;
 border-top:none;
 width: 99%;
-z-index: 5;
+z-index: 10;
  color: #444;
 margin-top:-23px;
 position: relative;
