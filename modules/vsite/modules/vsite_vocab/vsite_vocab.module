@@ -64,7 +64,7 @@ function vsite_vocab_field_create_instance($instance) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() for taxonomy_form_vocabulary.
  *
  * 1) Limit avalible bundles to just Publc/Private bundles in OS.
  *
@@ -91,7 +91,7 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
   $cardinality = FIELD_CARDINALITY_UNLIMITED;
 
   // Add description for the name.
-  $form['name']['#description'] = t('The vocabulary name. E.g. "Area of intrest"');
+  $form['name']['#description'] = t('The vocabulary name. E.g. "Research interests"');
 
   // Get enabled bundles.
   $bundles = os_get_bundles(array(1,2));
