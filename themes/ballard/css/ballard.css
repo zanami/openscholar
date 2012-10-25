@@ -45,6 +45,7 @@ font-family: helvetica,arial,sans-serif;
 #menu-bar .block-os-search-db {
 	   float: right;
        margin-top: 14px;
+       width:180px;
 }
 
 #menu-bar #search-block-form .container-inline .form-item .form-text {
@@ -186,7 +187,7 @@ color: #F3F3F1;
 margin:0;
 }
 
-#menu-bar ul li { display: inline; }
+#menu-bar ul li { display: inline;  }
 
 #menu-bar ul li a
 {
@@ -205,7 +206,9 @@ background: url('../images/mainNavBg.png') 0 -53px #333333 repeat-x;
 color: #F3F3F1;
 }
 
-#menu-bar #block-search-form {
+#menu-bar #block-search-form,
+#menu-bar .block-os-search-solr
+ {
 	float: right;
     height: 35px;
     padding-top: 13px;
@@ -389,7 +392,7 @@ height:20px;
 border:none;
 border-top:none;
 width: 99%;
-z-index: 5;
+z-index: 10;
  color: #444;
 margin-top:-23px;
 position: relative;
@@ -413,8 +416,9 @@ position: relative;
 
 
 .view-os-image-gallery-slideshow .views-field-media-title {
- margin-top:-5px;
- position: relative;
+ margin-top:-2px;
+ position:static;
+ bottom:0;
  float:left;
  display:inline;
  color: #444;
