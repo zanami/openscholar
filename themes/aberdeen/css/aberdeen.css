@@ -360,7 +360,8 @@ float:right;
     font-weight: bold;
     height: 20px;
     padding: 2px 0 4px 8px;
-    position: relative;
+    position:static;
+    bottom:0;
     width: 98.75%;
 }
 

@@ -416,8 +416,9 @@ position: relative;
 
 
 .view-os-image-gallery-slideshow .views-field-media-title {
- margin-top:-5px;
- position: relative;
+ margin-top:-2px;
+ position:static;
+ bottom:0;
  float:left;
  display:inline;
  color: #444;
