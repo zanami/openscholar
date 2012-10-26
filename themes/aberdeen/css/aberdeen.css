@@ -375,7 +375,7 @@ float:right;
 .views-slideshow-slide-counter {float:right;display:inline;clear:none;}
 .views-slideshow-controls-text {float:left;display:inline;clear:none;}
 
-.views-slideshow-controls-text a {text-indent: -9999px;white-space: nowrap;overflow:hidden;float:left;margin-right: 0;padding:15px 9px;}
+.views-slideshow-controls-text a {text-indent: -9999px;white-space: nowrap;overflow:hidden;float:left;margin-right: 0;padding:15px 9px 13px;}
 
 
 .views-slideshow-controls-text-previous {float:left;}

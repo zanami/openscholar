@@ -195,7 +195,6 @@ padding: 1.2em 1.6em;
 background: url('../images/mainNavBg.png') #333333 repeat-x;
 color: #F3F3F1;
 text-decoration: none;
-float: left;
 border-right:1px solid #5d5d5f;
 }
 
@@ -264,7 +263,7 @@ margin: 8px 0 0 0;
 #menu-bar ul.nice-menu ul li a {
 	color:#FFF;
 	background:#353535;
-    padding: .8em 1.4em;
+    padding: 0.8em 0.5em 0.8em 1.6em;
 	border: none;
 }
 
