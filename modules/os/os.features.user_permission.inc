@@ -365,6 +365,15 @@ function os_user_default_permissions() {
     'module' => 'user',
   );
 
+  // Exported permission: create boxes.
+  $permissions['create boxes'] = array(
+    'name' => 'create boxes',
+    'roles' => array(
+      0 => 'authenticated user',
+    ),
+    'module' => 'boxes',
+  );
+
   // Exported permission: create url aliases.
   $permissions['create url aliases'] = array(
     'name' => 'create url aliases',
@@ -375,6 +384,15 @@ function os_user_default_permissions() {
       3 => 'vsite user',
     ),
     'module' => 'path',
+  );
+
+  // Exported permission: delete boxes.
+  $permissions['delete boxes'] = array(
+    'name' => 'delete boxes',
+    'roles' => array(
+      0 => 'authenticated user',
+    ),
+    'module' => 'boxes',
   );
 
   // Exported permission: delete revisions.
