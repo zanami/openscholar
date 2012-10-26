@@ -136,8 +136,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $query->fields('ct');
     }
 
-    if (isset($this->restrict_vsites)) {
-      $query->condition('og.group_nid', $this->restrict_vsites, 'IN'); //dancabral, jlepore, jsagotsky, gary
+    if ($restrict = OSMigration::restrict_vsites()) {
+      $query->condition('og.group_nid', $restrict, 'IN'); //dancabral, jlepore, jsagotsky, gary
     }
 
     return $query;
