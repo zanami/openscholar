@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function os_migrate_demo_install() {
+  $vocab_info = array(
+    'biology' => 'Biology',
+    'sciene' => 'Science',
+    'math' => 'Math',
+  );
+
+  foreach ($vocab_info as $machine_name => $name) {
+    $vocabulary = (object) array(
+      'machine_name' => $machine_name,
+      'name' => $name,
+      'description' => '',
+      'help' => '',
+    );
+    taxonomy_vocabulary_save($vocabulary);
+  }
+}
