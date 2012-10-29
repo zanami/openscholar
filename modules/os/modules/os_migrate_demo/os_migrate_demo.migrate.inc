@@ -82,7 +82,7 @@ class OsMigratePersonalNode extends OsMigrate {
 
   public function complete($entity) {
     $this->nid = $entity->nid;
-    $this->featureUpdate(array_keys(spaces_features()), $status);
+    $this->featureUpdate(array_keys(spaces_features()), 1);
   }
 }
 
