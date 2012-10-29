@@ -392,6 +392,7 @@ class OsMigratePeopleNode extends OsMigrate {
     array('address', 'Address'),
     array('email', 'E-mail'),
     array('websites', 'Websites'),
+    array('body', 'Body'),
     array(OG_AUDIENCE_FIELD, 'Site'),
   );
 
@@ -407,12 +408,15 @@ class OsMigratePeopleNode extends OsMigrate {
     $this->addFieldMapping('field_phone', 'phone');
     $this->addFieldMapping('field_email', 'email');
     $this->addFieldMapping('field_address', 'address');
+    $this->addFieldMapping('body', 'body');
     $this->addFieldMapping('field_professional_title', 'professional_titles')->separator(';');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration('OsMigratePersonalNode');
   }
 
   public function prepare($entity, $row) {
+    // Insertint the first name - title - into the first name field.
+    $entity->field_first_name[LANGUAGE_NONE][0]['value'] = $entity->title;
 
     // Handeling websites.
     if (!empty($row->websites)) {
