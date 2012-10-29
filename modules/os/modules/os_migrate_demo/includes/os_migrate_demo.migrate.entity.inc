@@ -44,4 +44,24 @@ abstract class OsMigrate extends Migration {
   function prepareRow($row) {
     $row->uid = 1;
   }
+
+  /**
+   * Enabling/disabling feature after importing content.
+   *
+   *  @param $features
+   *    Array of features to enable.
+   *  @param $status
+   *    Available values:
+   *      1 - Enable the feature
+   *      0 - Disable the feature.
+   */
+  public function featureUpdate($features, $status) {
+    $space = spaces_load('og', $this->nid);
+    $preset = $space->controllers->variable->get('spaces_preset_' . $space->type);
+    $preset = spaces_preset_load($preset, $space->type);
+    foreach ($features as $feature) {
+      $preset->value['variable']['spaces_features'][$feature] = $status;
+    }
+    spaces_preset_save($preset);
+  }
 }
