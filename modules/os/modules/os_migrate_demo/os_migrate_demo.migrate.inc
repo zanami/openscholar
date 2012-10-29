@@ -311,6 +311,7 @@ class OsMigrateEventsNode extends OsMigrate {
     parent::__construct();
 
     $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping('field_date', 'timestamp');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration('OsMigratePersonalNode');
   }
