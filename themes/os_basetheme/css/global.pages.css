@@ -665,6 +665,11 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
     background: none;
 }
 	
+.block-boxes-os_boxes_tabs .ui-widget {
+    font-family: inherit !important;
+    font-size: inherit !important;
+}
+	
 .ui-tabs .ui-tabs-panel {
 /* IE10 Consumer Preview */ 
 background-image: -ms-linear-gradient(top, #F5F2F2 0%, #FFFFFF 100%);
@@ -688,6 +693,7 @@ border-top:1px solid #ccc;
 	
 .ui-tabs .ui-tabs-nav li a {
     padding: 0.15em 1em;
+     text-decoration: none !important;
   }
 
 .page-cp #tabs,
