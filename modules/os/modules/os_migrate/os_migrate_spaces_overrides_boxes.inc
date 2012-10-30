@@ -341,10 +341,42 @@ EOF;
          ->condition('object_type', $row->object_type)
          ->condition('object_id', $row->object_id)
          ->execute();
+       
+       //Update the contexts
+       if(count($boxes)){
+         $ct_result = db_select('spaces_overrides', 'so')
+           ->condition('type', 'og')
+           ->condition('id', $row->id)
+           ->condition('object_type', 'context')
+           ->condition('value', '%"boxes-'.$row->object_id.'"%', 'LIKE')
+           ->fields('so')
+           ->execute();
+
+         while ($context = $ct_result->fetchObject()) {
+         	$value = unserialize($context->value);
+           	if(isset($value['blocks']['boxes-'.$row->object_id])){
+           	  $old_box = $value['blocks']['boxes-'.$row->object_id];
+           	  unset($value['blocks']['boxes-'.$row->object_id]);
+           	  foreach ($boxes as $id => $v) {
+           	  	$old_box['delta'] = $id;
+           	  	$value['blocks']['boxes-'.$id] = $old_box;
+           	  }
+           	  db_update('spaces_overrides')
+           	    ->fields(array(
+                 'value' => serialize($value),
+                ))
+		        ->condition('type', 'og')
+		        ->condition('id', $context->id)
+		        ->condition('object_type', 'context')
+		        ->condition('object_id', $context->object_id)
+		        ->execute();
+           	}
+         }
+       }
      }
    }
    
-   public static function split_fbt_box($obejct_id, $box, $plugin_only = false){
+   private static function split_fbt_box($obejct_id, $box, $plugin_only = false){
      $return = array();
    	 $box = unserialize($box);
    	 $vocabs = array_filter($box->options['vocabulary']);
