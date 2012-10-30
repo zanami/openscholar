@@ -307,11 +307,23 @@ function _os_boxes_site_logo_process($element, $form_state, $form) {
 function _os_boxes_site_logo_preview_process($element, $form_state, $form) {
   $element = @imagefield_crop_widget_preview_process($element, $form_state, $form);
 
-  $element['#attached']['js'][0]['data']['imagefield_crop']['edit-file']['preview']['width'] = 180;
-  $element['#attached']['js'][0]['data']['imagefield_crop']['edit-file']['preview']['height'] = 140;
+  $scale = null;
+  if (module_exists('vsite') && $vsite = spaces_get_space()) {
+    $instance = field_info_instance('node', 'field_site_logo', $vsite->group->type);
+    if ($instance['widget']['settings']['resolution']) {
+      $scale = explode('x', $instance['widget']['settings']['resolution']);
+      $scale = array(
+        'width' => $scale[0],
+        'height' => $scale[1],
+      );
+    }
+  }
 
-  $element['#imagefield_crop']['#width'] = 180;
-  $element['#imagefield_crop']['#height'] = 140;
+  $element['#attached']['js'][0]['data']['imagefield_crop']['edit-file']['preview']['width'] = isset($scale)?$scale['width']:0;
+  $element['#attached']['js'][0]['data']['imagefield_crop']['edit-file']['preview']['height'] = isset($scale)?$scale['height']:0;
+
+  $element['#imagefield_crop']['#width'] = isset($scale)?$scale['width']:0;
+  $element['#imagefield_crop']['#height'] = isset($scale)?$scale['height']:0;
 
   return $element;
 }
