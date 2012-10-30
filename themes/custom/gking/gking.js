@@ -14,8 +14,8 @@
         container.toggle();
       
         // Adds necessary more/close links to show/hide bio node content.
-        $('.front .region-header-second .block-boxes-os_boxes_html .boxes-box-content p:last')
-          .append('<a class="more" href="#">More</a>');
+        $('<a class="more" href="#">More</a>')
+          .appendTo('.front .region-header-second .block-boxes-os_boxes_html .boxes-box-content');
         container.find('.node')
           .prepend('<a class="more" href="#">CLOSE X</a>');
         container.find('.node .node-content')
