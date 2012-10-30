@@ -26,6 +26,14 @@ function openscholar_install_tasks($install_state) {
     'run' => variable_get('os_profile_type', FALSE == 'vsite' || variable_get('os_profile_flavor', FALSE) == 'development') ? INSTALL_TASK_RUN_IF_NOT_COMPLETED : INSTALL_TASK_SKIP
   );
 
+  // Migrating content if needed.
+  $tasks['openscholar_migrate_content'] = array(
+    'display_name' => t('Importing content'),
+    'type' => 'batch',
+    'display' => variable_get('os_dummy_content') && variable_get('os_profile_flavor', FALSE) == 'development',
+    'run' => variable_get('os_dummy_content') && variable_get('os_profile_flavor', FALSE) == 'development' ? INSTALL_TASK_RUN_IF_REACHED : INSTALL_TASK_SKIP,
+  );
+
   return $tasks;
 }
 
@@ -148,6 +156,32 @@ function openscholar_vsite_modules_batch(&$install_state){
   }
 
   return _opnescholar_module_batch($modules);
+}
+
+/**
+ * Migrating content from csv.
+ */
+function openscholar_migrate_content() {
+  $migrations = migrate_migrations();
+  foreach ($migrations as $machine_name => $migration) {
+    $operations[] = array('_openscholar_migrate_content', array($machine_name, t('Importing content.')));
+  }
+
+  $batch = array(
+    'title' => t('Importing content'),
+    'operations' => $operations,
+  );
+
+  return $batch;
+}
+
+/**
+ * Batch callback function - migrating the content from csv files.
+ */
+function _openscholar_migrate_content($class, $type, &$context) {
+  $context['message'] = t('Importing @class', array('@class' => $class));
+  $migration =  Migration::getInstance($class);
+  $migration->processImport();
 }
 
 /**
