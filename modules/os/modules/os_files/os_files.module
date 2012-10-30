@@ -278,7 +278,6 @@ function os_files_file_formatter_file_link($file, $display, $langcode) {
 
   if (empty($file->override['wysiwyg'])) {
     return array(
-      '#type' => 'container',
       'icon' => array(
         '#theme' => 'file_icon',
         '#file' => $file,
@@ -300,6 +299,15 @@ function os_files_file_formatter_file_link($file, $display, $langcode) {
   }
 }
 
+function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings) {
+  if (isset($tag_info['render_fid']) && $element['content']['file']['#view_mode'] == 'os_files_link') {
+    $file = &$element['content']['file'];
+    unset($file['icon']);
+    $image = file_load($tag_info['render_fid']);
+    $file['link']['#text'] = theme('image_style', array('path' => $image->uri, 'style_name' => 'os_files_medium'));
+    $file['link']['#options']['html'] = true;
+  }
+}
 
 /**
  * File Settings.

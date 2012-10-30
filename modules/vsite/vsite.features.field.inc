@@ -778,7 +778,7 @@ function vsite_field_default_fields() {
           'gif_processing' => 'convert',
           'preview_image_style' => 'thumbnail',
           'progress_indicator' => 'throbber',
-          'resolution' => '200x150',
+          'resolution' => '180x140',
           'select_maximum_area' => TRUE,
           'validate_resolution' => 0,
         ),

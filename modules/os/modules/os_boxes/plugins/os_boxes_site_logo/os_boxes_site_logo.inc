@@ -31,6 +31,7 @@ class os_boxes_site_logo extends os_boxes_default {
       $y = $this->options['y'];
       $height = $this->options['height'];
       $width = $this->options['width'];
+      $ratio = 0;
       if (module_exists('vsite') && $vsite = spaces_get_space()) {
         $file = field_get_items('node', $vsite->group, 'field_site_logo');
         $file = $file[0];
@@ -39,6 +40,12 @@ class os_boxes_site_logo extends os_boxes_default {
         $y = $file['cropbox_y'];
         $height = $file['cropbox_height'];
         $width = $file['cropbox_width'];
+
+        $instance = field_info_instance('node', 'field_site_logo', $vsite->group->type);
+        if ($instance['widget']['settings']['resolution']) {
+          $ratio = explode('x', $instance['widget']['settings']['resolution']);
+          $ratio = $ratio[0]/$ratio[1];
+        }
       }
 
       $form['file'] = array(
@@ -54,6 +61,7 @@ class os_boxes_site_logo extends os_boxes_default {
           'y' => !empty($y)?$y:0,
           'height' => !empty($height)?$height:140,
           'width' => !empty($width)?$width:180,
+          'ratio' => $ratio
         ),
         '#attached' => array(
           'css' => array(
@@ -135,10 +143,17 @@ function os_boxes_site_logo_submit($form, $form_state) {
       'cropbox_width' => $file_data['width'],
     );
 
-    $scale = array(
-      'width' => 180,
-      'height' => 140,
-    );
+    $scale = null;
+    if (module_exists('vsite') && $vsite = spaces_get_space()) {
+      $instance = field_info_instance('node', 'field_site_logo', $vsite->group->type);
+      if ($instance['widget']['settings']['resolution']) {
+        $scale = explode('x', $instance['widget']['settings']['resolution']);
+        $scale = array(
+          'width' => $scale[0],
+          'height' => $scale[1],
+        );
+      }
+    }
 
     // this creates two images
     // $orig is the original, unmodified image
@@ -226,7 +241,7 @@ function _os_boxes_site_logo_process($element, $form_state, $form) {
     $settings = array(
       $element['#id'] => array(
         'box' => array(
-          'ratio' => 180/140,
+          'ratio' => $element['#dimensions']['ratio'],
           'box_width' => 400,
           'box_height' => 400,
         ),
@@ -292,11 +307,23 @@ function _os_boxes_site_logo_process($element, $form_state, $form) {
 function _os_boxes_site_logo_preview_process($element, $form_state, $form) {
   $element = @imagefield_crop_widget_preview_process($element, $form_state, $form);
 
-  $element['#attached']['js'][0]['data']['imagefield_crop']['edit-file']['preview']['width'] = 180;
-  $element['#attached']['js'][0]['data']['imagefield_crop']['edit-file']['preview']['height'] = 140;
+  $scale = null;
+  if (module_exists('vsite') && $vsite = spaces_get_space()) {
+    $instance = field_info_instance('node', 'field_site_logo', $vsite->group->type);
+    if ($instance['widget']['settings']['resolution']) {
+      $scale = explode('x', $instance['widget']['settings']['resolution']);
+      $scale = array(
+        'width' => $scale[0],
+        'height' => $scale[1],
+      );
+    }
+  }
 
-  $element['#imagefield_crop']['#width'] = 180;
-  $element['#imagefield_crop']['#height'] = 140;
+  $element['#attached']['js'][0]['data']['imagefield_crop']['edit-file']['preview']['width'] = isset($scale)?$scale['width']:0;
+  $element['#attached']['js'][0]['data']['imagefield_crop']['edit-file']['preview']['height'] = isset($scale)?$scale['height']:0;
+
+  $element['#imagefield_crop']['#width'] = isset($scale)?$scale['width']:0;
+  $element['#imagefield_crop']['#height'] = isset($scale)?$scale['height']:0;
 
   return $element;
 }
