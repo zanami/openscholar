@@ -143,12 +143,17 @@ function os_boxes_site_logo_submit($form, $form_state) {
       'cropbox_width' => $file_data['width'],
     );
 
-    dpm($file_data);
-
-    $scale = array(
-      'width' => 180,
-      'height' => 140,
-    );
+    $scale = null;
+    if (module_exists('vsite') && $vsite = spaces_get_space()) {
+      $instance = field_info_instance('node', 'field_site_logo', $vsite->group->type);
+      if ($instance['widget']['settings']['resolution']) {
+        $scale = explode('x', $instance['widget']['settings']['resolution']);
+        $scale = array(
+          'width' => $scale[0],
+          'height' => $scale[1],
+        );
+      }
+    }
 
     // this creates two images
     // $orig is the original, unmodified image
