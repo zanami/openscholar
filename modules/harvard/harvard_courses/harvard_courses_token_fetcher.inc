@@ -8,7 +8,7 @@
 /**
  * Base class for the token fetcher.
  */
-class HarwardFetcher extends FeedsFetcher {
+class FeedsTokenizedFetcher extends FeedsFetcher {
 
   public function fetch(FeedsSource $source) {
     $wrapper = entity_metadata_wrapper('node', $source->feed_nid);
@@ -19,7 +19,7 @@ class HarwardFetcher extends FeedsFetcher {
       return FALSE;
     }
 
-    // Define the query parameter and the field that holds the query values.
+    // Define the query paramater and the filed that holds the query values.
     if ($wrapper->field_import_type->value() == 'cat_num') {
       $field = 'field_catalog_number';
       $url_param = 'cat_num';
@@ -29,7 +29,7 @@ class HarwardFetcher extends FeedsFetcher {
       $url_param = 'field';
     }
 
-    // Loop over the nodes and build the query parameter value.
+    // Loop over the nodes and build the query paramter value.
     $param_values = array();
     foreach ($nids as $nid) {
       $import_wrapper = entity_metadata_wrapper('node', $nid);
