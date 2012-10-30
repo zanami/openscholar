@@ -31,6 +31,7 @@ class os_boxes_site_logo extends os_boxes_default {
       $y = $this->options['y'];
       $height = $this->options['height'];
       $width = $this->options['width'];
+      $ratio = 0;
       if (module_exists('vsite') && $vsite = spaces_get_space()) {
         $file = field_get_items('node', $vsite->group, 'field_site_logo');
         $file = $file[0];
@@ -39,6 +40,12 @@ class os_boxes_site_logo extends os_boxes_default {
         $y = $file['cropbox_y'];
         $height = $file['cropbox_height'];
         $width = $file['cropbox_width'];
+
+        $instance = field_info_instance('node', 'field_site_logo', $vsite->group->type);
+        if ($instance['widget']['settings']['resolution']) {
+          $ratio = explode('x', $instance['widget']['settings']['resolution']);
+          $ratio = $ratio[0]/$ratio[1];
+        }
       }
 
       $form['file'] = array(
@@ -54,6 +61,7 @@ class os_boxes_site_logo extends os_boxes_default {
           'y' => !empty($y)?$y:0,
           'height' => !empty($height)?$height:140,
           'width' => !empty($width)?$width:180,
+          'ratio' => $ratio
         ),
         '#attached' => array(
           'css' => array(
@@ -134,6 +142,8 @@ function os_boxes_site_logo_submit($form, $form_state) {
       'cropbox_height' => $file_data['height'],
       'cropbox_width' => $file_data['width'],
     );
+
+    dpm($file_data);
 
     $scale = array(
       'width' => 180,
@@ -226,7 +236,7 @@ function _os_boxes_site_logo_process($element, $form_state, $form) {
     $settings = array(
       $element['#id'] => array(
         'box' => array(
-          'ratio' => 180/140,
+          'ratio' => $element['#dimensions']['ratio'],
           'box_width' => 400,
           'box_height' => 400,
         ),
