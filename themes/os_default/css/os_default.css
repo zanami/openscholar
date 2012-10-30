@@ -29,6 +29,7 @@ font-family: helvetica,arial,sans-serif;
     text-align: center;
     background:#333;
     padding: 15px 20px;
+    min-height:20px;
 }
 
 
