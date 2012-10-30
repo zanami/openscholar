@@ -51,6 +51,18 @@ function openscholar_flavor_form($form, &$form_state) {
     '#default_value' => 'development'
   );
 
+  $form['dummy_content'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Add dummy content'),
+    '#description' => t('If checked, dummy content will be added to your openscholar site.'),
+    '#states' => array(
+      // Only show this field when the 'toggle_me' checkbox is enabled.
+      'visible' => array(
+        ':input[name="os_profile_flavor"]' => array('value' => 'development'),
+      ),
+    ),
+  );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Next'),
@@ -91,6 +103,11 @@ function openscholar_install_type($form, &$form_state) {
 function openscholar_flavor_form_submit($form, &$form_state) {
   //Save the chosen flavor
   variable_set('os_profile_flavor', $form_state['input']['os_profile_flavor']);
+
+  // Define dummy content migration.
+  if ($form_state['input']['dummy_content']) {
+    variable_set('os_dummy_content', TRUE);
+  }
 }
 
 
@@ -123,6 +140,10 @@ function openscholar_vsite_modules_batch(&$install_state){
     $info = drupal_parse_info_format($data);
     if(is_array($info['dependencies'])){
       $modules = array_merge($modules,$info['dependencies']);
+    }
+
+    if (variable_get('os_dummy_content', FALSE)) {
+      $modules[] = 'os_migrate_demo';
     }
   }
 
@@ -238,6 +259,9 @@ function openscholar_install_finished(&$install_state) {
 
   // Cache a fully-built schema.
   drupal_get_schema(NULL, TRUE);
+
+  // Remove the variable we used during the installation.
+  variable_del('os_dummy_content');
 
   // Run cron to populate update status tables (if available) so that users
   // will be warned if they've installed an out of date Drupal version.
