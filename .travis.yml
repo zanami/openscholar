@@ -29,7 +29,8 @@ before_script:
   - drush cc all --yes
   
   # Create a behat configuration file.
-  - cp behat/behat.local.yml.travis behat/behat.local.yml
+  - cd behat
+  - cp behat.local.yml.travis behat.local.yml
   
   # Create Drush alias.
   - cp aliases.drushrc.php ~/.drush/
