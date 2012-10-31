@@ -621,52 +621,6 @@ class BoxPorter {
     }
   }
 
-  // public function _port_box_os_boxes_modal_siteinfo($box, $key_only) {
-  // $key = 'os_boxes_site_info';
-  // if ($key_only) {
-  // return $key;
-  // }
-
-
-  // //title
-  // $query = parent::d6_db_select('node', 'n')
-  // ->condition('type', 'vsite')
-  // ->condition('nid', $nid)
-  // ->fields('n', array('title'));
-
-  // //address
-  // $query->join('content_type_vsite', 'ct', 'n.nid = ct.nid');
-  // $query->fields('ct', array('field_vsite_address_value', 'field_vsite_address_format'));
-
-  // //description
-  // $query->join('og', 'og', 'n.nid = og.nid');
-  // $query->fields('og', array('og_description'));
-
-  // if ($result = $query->execute()->fetchAssoc()) {
-  // $box->plugin_key = $key;
-
-  // $box->options = array(
-  // 'site_title' => $result['title'],
-  // 'descrip' => $result['og_descrioption'],
-  // 'address1' => $result['field_vsite_address_value'],
-  // );
-
-  // return $box;
-  // } else {
-  // return FALSE;
-  // }
-
-
-  // }
-
-  // public function _port_box_os_boxes_curr_toc($box, $key_only) {
-  // $key = 'os_boxes_booktoc';
-  // if ($key_only) {
-  // return $key;
-  // }
-
-  // }
-
   //port html box.  original was os_modal_wysiwyg
   public function _port_box_os_boxes_simple($box, $id, $key_only) {
     $key = 'os_boxes_html';
