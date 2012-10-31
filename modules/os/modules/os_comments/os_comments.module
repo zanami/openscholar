@@ -183,9 +183,9 @@ function os_comments_cp_settings(){
   $a_settings = array();
   // Check to make sure disqus is enabled.
   if(module_exists('disqus')) {
-    $vsite = vsite_get_vsite();
-    if($vsite) {
-      $disqus_shortname = $vsite->controllers->variable->get('disqus_domain', 'space');
+    $space = spaces_get_space();
+    if($space) {
+      $disqus_shortname = $space->controllers->variable->get('disqus_domain', 'space');
     } else {
       $disqus_shortname = variable_get('disqus_domain', '');
     }
