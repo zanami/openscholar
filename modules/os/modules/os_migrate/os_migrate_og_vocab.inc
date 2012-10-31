@@ -86,7 +86,7 @@ class OsOgVocabMigrate extends DynamicMigration {
         $settings = array(
           'required' => $row->required,
           'widget_type' => $row->tags ? 'entityreference_autocomplete_tags' : 'options_select',
-          'cardinality' => $row->multiple,
+          'cardinality' => $row->multiple || $row->tags ? FIELD_CARDINALITY_UNLIMITED : 1,
         );
         $og_vocab = og_vocab_create_og_vocab($term->vid, 'node', $bundle, $settings);
         $og_vocab->save();
