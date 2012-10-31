@@ -1,7 +1,7 @@
 language: php
 
 php:
-  - 5.3
+  - 5.4
 
 mysql:
   database: drupal
@@ -24,10 +24,19 @@ before_script:
   # - bash scripts/build
   - drush si openscholar --db-url=mysql://root:@127.0.0.1/drupal --account-pass=admin --yes
   # Install a multi-tanent, developemnt site.
-  - drush si openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite --yes
+  - drush si -y openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal --uri=http://127.0.0.1 openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite
+  - drush vset purl_base_domain http://127.0.0.1  
   - drush cc all --yes
-  # Prepare the dummy test.
-  - chmod +x ./scripts/test.sh
+  
+  # Create a behat configuration file.
+  - cp behat/behat.local.yml.travis behat/behat.local.yml
+  
+  # Create Drush alias.
+  - cp aliases.drushrc.php ~/.drush/
+  - composer install  
+
 
 # Dummy script to return "exit 0", until Behat is in place.
-script: ./scripts/test.sh
+script: 
+    - sudo drush @openscholar runserver --server=builtin 80 &
+    - ./bin/behat
