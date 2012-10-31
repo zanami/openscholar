@@ -70,3 +70,8 @@ function os_blog_os_widget() {
   return $items;
 }
 
+function os_blog_os_widget_alter(&$widget) {
+  if ($widget['delta'] == 'os_blog-block') {
+    $widget['info'] = 'Blog Archive';
+  }
+}
