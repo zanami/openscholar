@@ -198,7 +198,7 @@ class os_sv_list_box extends os_boxes_default {
 
         $query->join('biblio', 'b', 'n.vid = b.vid');
 
-        if (!$options['biblio_show_all'] && isset($options['biblio_whitelist'])) {
+        if (isset($options['biblio_show_all']) && !$options['biblio_show_all'] && isset($options['biblio_whitelist'])) {
           $bib_types = array_filter($options['biblio_whitelist']);
           $query->condition('biblio_type', array_values($bib_types), 'IN');
         }
