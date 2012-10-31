@@ -9,3 +9,13 @@
 .os-taxonomy-term.depth-3 {
   margin-left: 30px;
 }
+
+#os-taxonomy-select-list .terms-list {
+  float: left;
+  min-width: 110px !important;
+  margin-right: 5px;
+}
+
+#os-taxonomy-select-list #edit-submit {
+  padding: 5px;
+}
