@@ -220,60 +220,43 @@ margin: 8px -15px 0 10px;
     }
 
 /* MAIN NAVBAR */
-
 #menu-bar {
   background: #FFF;
+  padding:0 10px 0 0;
   border-bottom: 5px solid #d5d3d4;
-  }
-
-#menu-bar #block-os-primary-menu {
-  background:#FFF;
-  }
-
-#menu-bar li {
-  float:left;
-  padding-right: 1px;
-  background:none;
-  }
-
-#menu-bar li a
- {
-  line-height: 25px;
-  text-transform:uppercase;
-  color: #544f4f;
-  font-weight:normal;
-  font-size: 12px;
-  padding: 2px 15px 1px;
-  border-bottom:2px solid #106599;
- margin-right:3px;
- }
- 
-
-
-#menu-bar li a:hover,
-#menu-bar li.active-trail a {
-  background: url('../images/mainNavHover.png') repeat-x;
-   border-bottom:none;
-  color: #FFF;
-  text-decoration: none;
- padding: 2px 15px 1px;
 }
 
-@-moz-document url-prefix() {
-#menu-bar li a:hover,
-#menu-bar li.active-trail a {
-        padding: 2px 15px;
-    }
+#menu-bar ul
+{
+padding: 0;
+color: #FFF;
+margin:0;
 }
 
-#menu-bar li a.active,
-#menu-bar li.active-trail a {
-  background: #D4D4D5;
-  color: #000;
-  text-decoration: none;
-   border-bottom:none;
-   padding: 3px 15px 2px;
+#menu-bar ul li { display: inline;  }
+
+#menu-bar ul li a
+{
+padding: .5em 1.6em;
+background:#FFF;
+color: #444;
+text-decoration: none;
+text-transform:uppercase;
+font-size: 12px;
+margin-right:3px;
 }
+
+#menu-bar ul li a:hover {
+background:#106599;
+color: #FFF;
+}
+
+
+#menu-bar ul li a.active {
+background:#D4D4D5;
+color: #333;
+}
+
 
   /** NICE MENUS **/
 ul.nice-menu,

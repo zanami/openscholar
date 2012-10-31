@@ -66,18 +66,39 @@ class os_sv_list_box extends os_boxes_default {
       '#states' => $biblio_visible_states,
     );
 
-
+    // Load the available bundles.
+    $invisible_bundles = os_get_bundles(1);
+    // Unset biblio from the bundle.
+    if(array_key_exists('biblio', $invisible_bundles)) {
+      unset($invisible_bundles['biblio']);
+    }
+    $invisible_array = array();
+    // Loop the bundles and setup the 'invisible' element state.
+	foreach($invisible_bundles as $key=>$value) {
+      $invisible_array[] = array(':input[name="content_type"]' => array('value' => $key));
+	}
+	// Create the variable for the state.
+    $biblio_visible_states_checkbox = array(
+      'visible' => array(
+        ':input[name="biblio_show_all"]' => array(
+          'checked' => FALSE
+        ),
+      ),
+      'invisible' => $invisible_array,
+    );
 
     $form['biblio_whitelist'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Select publication types to display'),
       '#default_value' => $this->options['biblio_whitelist'],
       '#options' => $this->_biblio_types(),
-      '#states' => $biblio_visible_states,
+      '#states' => $biblio_visible_states_checkbox,
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'os_boxes').'/misc/selectAll.js',
+        ),
+      ),
     );
-    //this doesn't quite work.  it needs extra clicks.  for now just working on making the option work.  form can be fixed later.
-    $form['biblio_whitelist']['#states']['visible'] += array(':input[name="biblio_show_all"]' => array('checked' => FALSE));
-    //$form['biblio_whitelist']['#states']['invisible'][':input[name="biblio_show_all"]'] = array('checked' => TRUE);
 
     $form['display'] = array(
       '#type' => 'select',

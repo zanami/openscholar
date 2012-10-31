@@ -212,24 +212,27 @@ class EntityReference_SelectionHandler_Generic implements EntityReference_Select
         // Error if there are no entities available for a required field.
         form_error($element, t('There are no entities matching "%value"', array('%value' => $input)));
       }
-      elseif (count($entities) > 5) {
-        // Error if there are more than 5 matching entities.
-        form_error($element, t('Many entities are called %value. Specify the one you want by appending the id in parentheses, like "@value (@id)"', array(
-          '%value' => $input,
-          '@value' => $input,
-          '@id' => key($entities),
-        )));
-      }
-      elseif (count($entities) > 1) {
-        // More helpful error if there are only a few matching entities.
-        $multiples = array();
-        foreach ($entities as $id => $name) {
-          $multiples[] = $name . ' (' . $id . ')';
+      if ($this->instance['widget']['settings']['show_identifier']) {
+        if (count($entities) > 5) {
+          // Error if there are more than 5 matching entities.
+          form_error($element, t('Many entities are called %value. Specify the one you want by appending the id in parentheses, like "@value (@id)"', array(
+            '%value' => $input,
+            '@value' => $input,
+            '@id' => key($entities),
+          )));
         }
-        form_error($element, t('Multiple entities match this reference; "%multiple"', array('%multiple' => implode('", "', $multiples))));
+        elseif (count($entities) > 1) {
+          // More helpful error if there are only a few matching entities.
+          $multiples = array();
+          foreach ($entities as $id => $name) {
+            $multiples[] = $name . ' (' . $id . ')';
+          }
+          form_error($element, t('Multiple entities match this reference; "%multiple"', array('%multiple' => implode('", "', $multiples))));
+        }
       }
       else {
-        // Take the one and only matching entity.
+        // Take the one and only matching entity, or the first one in case
+        // "Show-identifier" is disabled.
         return key($entities);
       }
   }
@@ -485,5 +488,51 @@ class EntityReference_SelectionHandler_Generic_taxonomy_term extends EntityRefer
         break;
       }
     }
+  }
+
+  /**
+   * Implements EntityReferenceHandler::getReferencableEntities().
+   */
+  public function getReferencableEntities($match = NULL, $match_operator = 'CONTAINS', $limit = 0) {
+    $options = array();
+    $entity_type = $this->field['settings']['target_type'];
+
+    if ($this->instance['widget']['type'] == 'options_select' && !$match &&!$limit) {
+      // We imitate core by calling taxonomy_get_tree().
+      $entity_info = entity_get_info('taxonomy_term');
+      $bundles = !empty($this->field['settings']['handler_settings']['target_bundles']) ? $this->field['settings']['handler_settings']['target_bundles'] : array_keys($entity_info['bundles']);
+
+      foreach ($bundles as $bundle) {
+        if ($vocabulary = taxonomy_vocabulary_machine_name_load($bundle)) {
+          if ($terms = taxonomy_get_tree($vocabulary->vid, 0)) {
+            foreach ($terms as $term) {
+              $options[$vocabulary->name][$term->tid] = str_repeat('-', $term->depth) . $term->name;
+            }
+          }
+        }
+      }
+
+      if (count($bundles) == 1) {
+        $key = key($options);
+        $options = $options[$key];
+      }
+      return $options;
+    }
+
+    $query = $this->buildEntityFieldQuery($match, $match_operator);
+    if ($limit > 0) {
+      $query->range(0, $limit);
+    }
+
+    $results = $query->execute();
+
+    if (!empty($results[$entity_type])) {
+      $entities = entity_load($entity_type, array_keys($results[$entity_type]));
+      foreach ($entities as $entity_id => $entity) {
+        $options[$entity_id] = check_plain($this->getLabel($entity));
+      }
+    }
+
+    return $options;
   }
 }
