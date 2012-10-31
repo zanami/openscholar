@@ -34,6 +34,10 @@ h1, h2, #menu-bar li, #footer {
 	font-family: 'ExpresswayRegular', sans-serif;
 	font-size-adjust: 0.53;
   }
+  
+.clear {
+    clear: both;
+}
 
 p {
   margin: 0 0 1.5em 0;
@@ -276,6 +280,8 @@ div.tweets-pulled-listing div.tweet-divider {
 .item-list ul.pager li a:visited {
   color:#005C9C;
     }
+
+a.biblio-abstract-link.toggle {font-weight:bold;}
 
 
 .page-iqss-gking-research-group #content div.node-type-person ul li {
@@ -860,7 +866,7 @@ background-image: none;
 }
 
 .ui-tabs .ui-tabs-nav {
-     margin-top: -60px;
+     margin-top: -57px;
 }
 
 .ui-tabs .ui-tabs-nav ul {
@@ -953,6 +959,10 @@ border:none;
    float: right;
   }
 
+#footer #block-os-powered-by span a {
+ 	 margin-top: -45px;
+  }
+
 #footer #block-os-login {
     bottom: -5px;
 
@@ -1030,7 +1040,7 @@ border:none;
 
 
 #footer .block-boxes-os_boxes_addthis {
-	margin-top:7px;
+	margin: 7px 0 0 30px;
 }
 
 
@@ -1077,12 +1087,12 @@ margin-top:5px;
   background: #79929c;
   color: #fff !important;
   min-width: 65px;
-  height: 18px;
+  height: 24px;
   text-indent:0;
   text-transform: uppercase;
   -moz-border-radius:0;
   -webkit-border-radius: 0;
-  margin: 0 !important;
+  margin-left: 0 !important;
   text-shadow: none;
   }
 
@@ -1348,7 +1358,7 @@ body.front .block-boxes-os_taxonomy_fbt .description {
     margin-top: 5px;
     }
     
-   /** TOP POSITIONS FOR METHODS DECRIPTION **/
+/** TOP POSITIONS FOR METHODS DECRIPTION **/
 body.front .block-boxes-os_taxonomy_fbt ul.termchild-Methods li:nth-of-type(1) div.description {
 top:75px; 
 }  
@@ -1462,3 +1472,12 @@ body.front #block-iqss_gking-areas_of_research dt.active span a  {
 table#ordernodes {
   width:90%;
   }
+
+
+/* REMOVE BEFORE CHECING IN */
+.front .region-header-second h2.block-title {display:none;}
+
+
+
+
+
