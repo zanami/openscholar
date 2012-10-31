@@ -891,8 +891,8 @@ class BoxPorter {
      //Tree
      $options['show_tree'] = 1;
      $options['tree_max_depth'] = 0;
-     //Box is split in post processing
-     //$box->options['vocabulary']
+
+     //Box is split in post processing $box->options['vocabulary']
 
      //New default and name
      $box->options['range'] = isset($box->options['number_of_items'])?$box->options['number_of_items']:false;
