@@ -239,6 +239,11 @@ ol {
   padding: 0;
 }
 
+.page-help .item-list ul,
+.page-help .item-list ol {
+margin: 0 0 1.5em 17px;
+}
+
 .item-list ul li {
   margin: 0;
   padding: 0;
@@ -327,6 +332,9 @@ ul ul ul ul {
 	font-weight:bold;
 	}
 
+.view-os-events {
+	margin-bottom:15px;
+	}
 
 .page-user .profile .item-list li {list-style:none !important;}
 

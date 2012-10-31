@@ -120,7 +120,7 @@ class OgVocab extends Entity {
     // Set the widget's module.
     $widget_info = field_info_widget_types($widget_type);
     $mocked_instance['widget']['module'] = $widget_info['module'];
-    $mocked_instance['widget']['settings'] = $widget_info['settings'];
+    $mocked_instance['widget']['settings'] = drupal_array_merge_deep($widget_info['settings'], $instance['widget']['settings']);
 
     // Set widget's auto complete path if needed.
     if (in_array($this->settings['widget_type'], array('entityreference_autocomplete', 'entityreference_autocomplete_tags'))) {
