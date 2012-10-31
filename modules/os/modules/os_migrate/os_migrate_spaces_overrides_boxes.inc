@@ -72,7 +72,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
   public function postImport() {
     parent::postImport();
 
-//     $this->_fix_os_taxonomy_fbt();
+     $this->_fix_os_taxonomy_fbt();
 
     if (parent::is_domain('http://scholar.harvard.edu')) {
       $gking_html =<<<EOF
@@ -309,43 +309,97 @@ EOF;
    * The os_taxonomy_fbt widget no longer supports selecting multiple taxonomies.
    * Widgets with multiple taxonomies selected should be split into several widgets
    */
-//   function _fix_os_taxonomy_fbt() {
-//     //get the boxes that need updating
-//     $result = db_select('spaces_overrides', 'so')
-//       ->condition('type', 'og')
-//       ->condition('object_type', 'boxes')
-//       ->condition('value', '%original_box_vocabs%', 'LIKE')
-//       ->fields('so')
-//       ->execute();
+   function _fix_os_taxonomy_fbt() {
+     //get the boxes that need updating
+     $result = db_select('spaces_overrides', 'so')
+       ->condition('type', 'og')
+       ->condition('object_type', 'boxes')
+       ->condition('value', '%s:10:"plugin_key";s:15:"os_taxonomy_fbt"%', 'LIKE')
+       ->fields('so')
+       ->execute();
 
-//     //for each vid in a box, create a new box for that vid
-//     while ($row = $result->fetchObject()) {
-//       $value = unserialize($row->value);
-//       $vocabs = $value->options['original_box_vocab'];
-//       foreach($vocabs as $vid) {
-//         $new_value = $value;
-//         unset($new_value->options['original_box_vocab']);
-//         $new_value->options['vocabulary'] = $vid;
+     //for each vid in a box, create a new box for that vid
+     while ($row = $result->fetchObject()) {
+       $value = unserialize($row->value);
+       $boxes = self::split_fbt_box($rom->object_id, $value);
+       
+       foreach($boxes as $object_id => $box) {
+         
+       	 db_insert('spaces_overrides')->fields(array(
+           'type' => $row->type,
+           'id' => $row->id,
+           'object_type' => $row->object_type,
+           'object_id' => $object_id,
+           'value' => serialize($box),
+         ))->execute();
+       }
 
-//         db_insert('spaces_overrides')->fields(array(
-//           'type' => $row->type,
-//           'id' => $row->id,
-//           'object_type' => $row->object_type,
-//           'object_id' => $row->object_id,
-//           'value' => serialize($new_value),
-//         ))->execute();
-//       }
+       //and delete the original box
+       db_delete('spaces_overrides')
+         ->condition('type', $row->type)
+         ->condition('id', $row->id)
+         ->condition('object_type', $row->object_type)
+         ->condition('object_id', $row->object_id)
+         ->execute();
+       
+       //Update the contexts
+       if(count($boxes)){
+         $ct_result = db_select('spaces_overrides', 'so')
+           ->condition('type', 'og')
+           ->condition('id', $row->id)
+           ->condition('object_type', 'context')
+           ->condition('value', '%"boxes-'.$row->object_id.'"%', 'LIKE')
+           ->fields('so')
+           ->execute();
 
-//       //and delete the original box
-//       db_delete('spaces_overrides')
-//         ->condition('type', $row->type)
-//         ->condition('id', $row->id)
-//         ->condition('object_type', $row->object_type)
-//         ->condition('object_id', $row->id)
-//         ->condition('value', $row->value)
-//         ->execute();
-//     }
-//   }
+         while ($context = $ct_result->fetchObject()) {
+         	$value = unserialize($context->value);
+           	if(isset($value['blocks']['boxes-'.$row->object_id])){
+           	  $old_box = $value['blocks']['boxes-'.$row->object_id];
+           	  unset($value['blocks']['boxes-'.$row->object_id]);
+           	  foreach ($boxes as $id => $v) {
+           	  	$old_box['delta'] = $id;
+           	  	$value['blocks']['boxes-'.$id] = $old_box;
+           	  }
+           	  db_update('spaces_overrides')
+           	    ->fields(array(
+                 'value' => serialize($value),
+                ))
+		        ->condition('type', 'og')
+		        ->condition('id', $context->id)
+		        ->condition('object_type', 'context')
+		        ->condition('object_id', $context->object_id)
+		        ->execute();
+           	}
+         }
+       }
+     }
+   }
+   
+   private static function split_fbt_box($obejct_id, $box, $plugin_only = false){
+     $return = array();
+   	 $box = unserialize($box);
+   	 $vocabs = array_filter($box->options['vocabulary']);
+   	 $show_name = $box->options['show_vocabulary_name'];
+   	 unset($box->options['vocabulary']);
+   	 unset($box->options['show_vocabulary_name']);
+   	 
+     foreach ($vocabs as $vocab) {
+     	$id = $object_id."_fbt_".$vocab;
+     	$box->delta = $id;
+     	//Load the vocab and use it's name for the box if they have that setting checked
+     	if($show_name && !$plugin_only){
+     	  $v = taxonomy_vocabulary_load($vocab);
+     	  $box->title = $v->name;
+     	}else{
+          $box->title = '';
+     	}
+     	$box->options['vocabulary'] = $vocab;
+     	$return[$id] = $box;
+     }
+     
+     return $return;
+   }
 }
 
 /**
@@ -827,24 +881,31 @@ class BoxPorter {
     return $box;
   }
 
-  //update tabs
-//   public function _port_box_vsite_taxonomy_fbt($box, $id, $key_only) {
-//     $id = 'os_taxonomy_fbt';
-//     if ($key_only) {
-//       return $id;
-//     }
+  //update fbt box
+   public function _port_box_vsite_taxonomy_fbt($box, $id, $key_only) {
+     $id = 'os_taxonomy_fbt';
+     if ($key_only) {
+       return $id;
+     }
 
-//     $vocab = array_filter($box->options['vocabulary']);
-//     if (count($vocab)>1) {
-//       //this needs fixing after migrate.  box no longer supports more than 1 vocab.
-//       $box->options['original_box_vocabs'] = $vocab;
-//     }
-//     $box->options['vocabulary'] = current($vocab);
-//     //update names of tabs?
-//     $box->plugin_key = $id;
+     //Box is split in post processing
+     //$box->options['vocabulary']
+     
+     //New default and name
+     $box->options['range'] = isset($box->options['number_of_items'])?$box->options['number_of_items']:false;
+     
+     //New Default
+     if(!isset($box->options['behavior']) || $box->options['behavior'] != 'contextual'){
+     	$box->options['behavior'] = '--all--';
+     }
+     
+     $box->plugin_key = $id;
 
-//     return $box;
-//   }
+     //Remove old options
+     unset($box->options['number_of_items']);
+     
+     return $box;
+   }
 
   //twitter prefix is separated into own variable
   public function _port_box_os_boxes_twitterfeed($box, $id, $key_only) {
