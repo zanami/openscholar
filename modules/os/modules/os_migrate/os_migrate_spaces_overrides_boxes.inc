@@ -380,7 +380,7 @@ class BoxPorter {
       'os_boxes_modal_siteinfo' => 'os_boxes_siteinfo', //needs pulling from orig vsite
       'vsite_taxonomy_fbt' => 'os_taxonomy_fbt',
       'os_boxes_curr_toc' => 'os_boxes_booktoc', //needs an option added
-      'os_boxes_pub_typ_list' => 'os_boxes_pub_type',
+      //'os_boxes_pub_typ_list' => 'os_boxes_pub_type',
     );
 
 
@@ -613,7 +613,7 @@ class BoxPorter {
 
   // }
 
-  //port html box
+  //port html box.  original was os_modal_wysiwyg
   public function _port_box_os_boxes_simple($box, $id, $key_only) {
     $key = 'os_boxes_html';
     if ($key_only) {
@@ -626,7 +626,7 @@ class BoxPorter {
     unset($box->options['body'], $box->options['format']);
 
     $box->options = array('text' => array(
-      'value' => $body,
+      'value' => check_markup($body, $format),
       'format' => $format,
     ));
     $box->plugin_key = $key;
@@ -727,6 +727,36 @@ class BoxPorter {
 
     $box->options['filter'] = 'book';
     return $this->_port_box_os_boxes_sv_list($box, $id, $key_only);
+  }
+
+  //port recent pubs to sv list
+  public function _port_box_os_boxes_pub_typ_list($box, $id, $key_only) {
+    $key = 'os_sv_list_box';
+    if ($key_only) {
+      return $key;
+    }
+
+    $box->plugin_key = $key;
+
+    //update settings.  mapping is straightforward but names have changed.
+    $box->options['content_type'] = 'biblio';
+
+    $box->options['pager'] = $box->options['use_pager'];
+    unset($box->options['use_pager']);
+
+    $box->options['sort_by'] = 'sort_newest';
+
+    $styles = array('titles' => 'display_title', 'teasers' => 'display_teaser');
+    $box->options['display'] = (isset($styles[$box->options['style']])) ? $styles[$box->options['style']] : 'display_title';
+    unset($box->options['style']);
+
+    $box->options['biblio_show_all'] = $box->options['show_all_types'];
+    unset($box->options['show_all_types']);
+
+    $box->options['biblio_whitelist'] = $box->options['pub_types'];
+    unset($box->options['pub_types']);
+
+    return $box;
   }
 
   //present list should be converted to sv list
