@@ -8,10 +8,7 @@ function cp_layout_full_form($form, $form_state, $ctx){
   ctools_include('layout', 'os');
 
   // Temporary: To be replaced by API function later
-  $contexts = os_layout_get_contexts(array(
-    1,
-    2
-  ));
+  $contexts = os_layout_get_contexts(array(1, 2));
   $ctx = $ctx ? $ctx : 'os_front';
 
   $form['context_selection'] = array(
@@ -42,10 +39,7 @@ function cp_layout_full_form($form, $form_state, $ctx){
   if ($ctx == 'os_front') {
     $use_content_regions = true;
   }
-  $blocks = os_layout_get_multiple(array(
-    'os_public',
-    $ctx
-  ), true, true);
+  $blocks = os_layout_get_multiple(array('os_public', $ctx), true, true);
 
   $form['context'] = array(
     '#type' => 'value',
