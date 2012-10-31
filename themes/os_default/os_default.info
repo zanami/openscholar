@@ -11,10 +11,17 @@
 
 ;----------// OpenScholar
 
+<<<<<<< HEAD
 	os[theme_type]   = 'vsite'
     os[theme_access] = 'public'
     
     
+=======
+  os[theme_type]   = 'vsite'
+  os[theme_access] = 'public'
+
+
+>>>>>>> origin/700
  ;----------// Stylesheets
 
   
