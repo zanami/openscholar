@@ -20,7 +20,6 @@ class os_sv_list_box extends os_boxes_default {
 
       'biblio_show_all' => TRUE,
       'biblio_whitelist' => array('all'=>'all'),
-      'biblio_show_counts' => TRUE,
     );
 
     return $options;
