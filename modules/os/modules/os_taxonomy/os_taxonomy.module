@@ -97,8 +97,9 @@ function os_taxonomy_theme() {
  */
 function theme_os_taxonomy_term_item($variables) {
   $number = !$variables['number'] ? '' : ' <span class="count">(' . $variables['number'] . ')</span>';
+
   // Name of parent term.
-  $name = check_plain($variables['name']);
+  $name = $variables['name'];
   $item_wrapper = !empty($variables['childs']) ? "<div class='term-head'>" : '';
 
   $name = !$number && !$variables['link_to_empty_terms'] ? $name : l($name, $variables['url_path'], $variables['link_options']);

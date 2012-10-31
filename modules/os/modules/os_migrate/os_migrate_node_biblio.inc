@@ -18,15 +18,16 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
 
 
     //$this->addUnmigratedDestinations($fields)
-    $this->addUnmigratedDestinations(parent::subfields('field_biblio_image', array('file_class', 'language', 'file_replace', 'preserve_files',)), t('DNM'));
+//     $this->addUnmigratedDestinations(parent::subfields('field_biblio_image', array('file_class', 'language', 'file_replace', 'preserve_files',)), t('DNM'));
 
-    $this->addFieldMapping('field_biblio_image:source_dir')->defaultValue(
-      variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
-    $this->addFieldMapping('field_biblio_image:destination_dir');
+//     $this->addFieldMapping('field_biblio_image:source_dir')->defaultValue(
+//       variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
+//     $this->addFieldMapping('field_biblio_image:destination_dir');
 
-    $this->addUnmigratedSources(array('field_biblio_image_fid', 'field_biblio_image_list', 'field_biblio_image_data'), t('DNM'));
+//     $this->addUnmigratedSources(array('field_biblio_image_fid', 'field_biblio_image_list', 'field_biblio_image_data'), t('DNM'));
 
-    $this->addSimpleMappings(array('field_biblio_image', 'field_biblio_image:alt', 'field_biblio_image:title', 'field_biblio_image:destination_file', 'field_biblio_extra', 'field_biblio_extra:label', 'field_biblio_extra:value'));
+//    $this->addSimpleMappings(array('field_biblio_image', 'field_biblio_image:alt', 'field_biblio_image:title', 'field_biblio_image:destination_file', 'field_biblio_extra', 'field_biblio_extra:label', 'field_biblio_extra:value'));
+    $this->addSimpleMappings(array('field_biblio_extra', 'field_biblio_extra:label', 'field_biblio_extra:value'));
     $this->addFieldMapping('field_biblio_image:og_group_ref', 'group_nid');
 
   }
