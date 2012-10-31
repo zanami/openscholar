@@ -322,9 +322,9 @@ EOF;
      while ($row = $result->fetchObject()) {
        $value = unserialize($row->value);
        $boxes = self::split_fbt_box($rom->object_id, $value);
-       
+
        foreach($boxes as $object_id => $box) {
-         
+
        	 db_insert('spaces_overrides')->fields(array(
            'type' => $row->type,
            'id' => $row->id,
@@ -341,7 +341,7 @@ EOF;
          ->condition('object_type', $row->object_type)
          ->condition('object_id', $row->object_id)
          ->execute();
-       
+
        //Update the contexts
        if(count($boxes)){
          $ct_result = db_select('spaces_overrides', 'so')
@@ -375,7 +375,7 @@ EOF;
        }
      }
    }
-   
+
    private static function split_fbt_box($obejct_id, $box, $plugin_only = false){
      $return = array();
    	 $box = unserialize($box);
@@ -383,7 +383,7 @@ EOF;
    	 $show_name = $box->options['show_vocabulary_name'];
    	 unset($box->options['vocabulary']);
    	 unset($box->options['show_vocabulary_name']);
-   	 
+
      foreach ($vocabs as $vocab) {
      	$id = $object_id."_fbt_".$vocab;
      	$box->delta = $id;
@@ -397,7 +397,7 @@ EOF;
      	$box->options['vocabulary'] = $vocab;
      	$return[$id] = $box;
      }
-     
+
      return $return;
    }
 }
@@ -888,22 +888,29 @@ class BoxPorter {
        return $id;
      }
 
+     //Tree
+     $options['show_tree'] = 1;
+     $options['tree_max_depth'] = 0;
      //Box is split in post processing
      //$box->options['vocabulary']
-     
+
      //New default and name
      $box->options['range'] = isset($box->options['number_of_items'])?$box->options['number_of_items']:false;
-     
+     $box->options['depth'] = isset($box->options['tree_max_depth'])?$box->options['tree_max_depth']:0;
+     $box->options['show_childs'] = isset($box->options['show_tree'])?$box->options['show_tree']:false;
+
      //New Default
      if(!isset($box->options['behavior']) || $box->options['behavior'] != 'contextual'){
      	$box->options['behavior'] = '--all--';
      }
-     
+
      $box->plugin_key = $id;
 
      //Remove old options
      unset($box->options['number_of_items']);
-     
+     unset($box->options['show_tree']);
+     unset($box->options['tree_max_depth']);
+
      return $box;
    }
 
