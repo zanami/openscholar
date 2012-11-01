@@ -1063,6 +1063,7 @@ function os_js_alter(&$javascript) {
  */
 function _os_get_install_status() {
   $output = '';
+  if (!user_access('administer site configuration')) return $output;
 
   // get the current branch
   try {
