@@ -384,18 +384,24 @@ function gkplus_preprocess_os_taxonomy_tagged_nodes(&$vars) {
   if ($vocab->name !== 'Research Interests') {
     return;
   }
+
+  // Prepares fresh set of classes for this term heading.
   if (!isset($vars['options']['attributes']['class'])) {
     $vars['options']['attributes']['class'] = array();
   }
-  // Removes gkplus term attributes from options for child terms.
+  // Removes gkplus term attributes from parent options for child terms.
   else {
     $original = $vars['options']['attributes']['class'];
     $remove = array('gkplus-hidden-heading', 'gkplus-child-indent', 'gkplus-no-indent');
     $vars['options']['attributes']['class'] = array_diff($original, $remove);
   }
-  if (_gkplus_entity_setting($vars['taxonomy_term']->tid, 'hidden_heading_terms')) {
 
+  // Adds custom display options assigned to this term.
+  if (_gkplus_entity_setting($vars['taxonomy_term']->tid, 'hidden_heading_terms')) {
     $vars['options']['attributes']['class'][] = 'gkplus-hidden-heading';
+  }
+  else {
+    $vars['options']['attributes']['class'][] = 'gkplus-show-heading';
   }
   if (_gkplus_entity_setting($vars['taxonomy_term']->tid, 'child_indent_terms')) {
     $vars['options']['attributes']['class'][] = 'gkplus-child-indent';
@@ -481,7 +487,7 @@ function _gkplus_updatefile_cron() {
   if ($handle = opendir($temp_path)) {
     while (FALSE !== ($file = readdir($handle))) {
       $filepath = $temp_path . $file;
-      drupal_set_message("found file " . $filepath . "\nfilectime: " . filectime($filepath) . "\nlast update: " . $last_update, "warning");
+      // drupal_set_message("found file " . $filepath . "\nfilectime: " . filectime($filepath) . "\nlast update: " . $last_update, "warning");
       if (filectime($filepath) >= $last_update && is_file($filepath) && !(strpos($file, '.') === 0)) {
         gkplus_update_filefield_page($file, TRUE);
       }

@@ -438,11 +438,10 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   }
 
   // Renders the term listing heading and description.
-  // @see taxonomy.pages.inc
   $build['term_heading'] = array(
     '#prefix' => '<div class="term-listing-heading">',
     '#suffix' => '</div>',
-    'term' => taxonomy_term_view($taxonomy_term, 'full'),
+    'term' => os_taxonomy_term_view($taxonomy_term, 'full', $options['description']),
   );
 
   // Checks whether there are child terms to display below this one.
@@ -592,4 +591,59 @@ function os_taxonomy_list_attached_nodes($tid, $node_bundles = array(), $range =
 
   $nids = array_keys($nodes);
   return $nids;
+}
+
+/**
+ * Generate an array for rendering the given term.
+ *
+ * @param $term
+ *   A term object.
+ * @param $view_mode
+ *   View mode, e.g. 'full', 'teaser'...
+ * @param $langcode
+ *   (optional) A language code to use for rendering. Defaults to the global
+ *   content language of the current request.
+ *
+ * @return
+ *   An array as expected by drupal_render().
+ *
+ * @see taxonomy_term_view()
+ */
+function os_taxonomy_term_view($term, $view_mode = 'full', $description = FALSE, $langcode = NULL) {
+  if (!isset($langcode)) {
+    $langcode = $GLOBALS['language_content']->language;
+  }
+
+  field_attach_prepare_view('taxonomy_term', array($term->tid => $term), $view_mode, $langcode);
+  entity_prepare_view('taxonomy_term', array($term->tid => $term), $langcode);
+
+  $build = array(
+    '#theme' => 'taxonomy_term',
+    '#term' => $term,
+    '#view_mode' => $view_mode,
+    '#language' => $langcode,
+  );
+
+  $build += field_attach_view('taxonomy_term', $term, $view_mode, $langcode);
+
+  // Allows html tags in term descriptions.
+  $term->format = 'filtered_html';
+
+  // Add term description if the term has one.
+  if ($description && !empty($term->description)) {
+    $build['description'] = array(
+      '#markup' => check_markup($term->description, $term->format, '', TRUE),
+      '#weight' => 0,
+      '#prefix' => '<div class="taxonomy-term-description">',
+      '#suffix' => '</div>',
+    );
+  }
+
+  $build['#attached']['css'][] = drupal_get_path('module', 'taxonomy') . '/taxonomy.css';
+
+  // Allow modules to modify the structured term.
+  $type = 'taxonomy_term';
+  drupal_alter(array('taxonomy_term_view', 'entity_view'), $build, $type);
+
+  return $build;
 }
