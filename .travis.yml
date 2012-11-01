@@ -20,6 +20,7 @@ before_script:
   - mv /home/travis/builds/openscholar/openscholar ./profiles 
   - cd profiles/openscholar
   - bash scripts/setup
+  
   # Re-add, when we have Make file.
   # - bash scripts/build
   - drush si openscholar --db-url=mysql://root:@127.0.0.1/drupal --account-pass=admin --yes
