@@ -8,3 +8,8 @@
 
 # Dont's track coder module backups
 *.coder.orig
+
+#behat
+behat/vendor
+behat/bin
+behat.local.yml
