@@ -246,14 +246,14 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     $legacy_file = $source_dir . '/' . $source_file;
     if ($fh = @fopen($legacy_file, 'r')) {
       if ($saved = file_save_data($fh, $dest)) {
-        $saved->og_group_ref = array(LANGUAGE_NONE => array(array('target_id' => $row->group_nid)));
+        $saved->og_group_ref = array($row->language => array(array('target_id' => $row->group_nid)));
         $saved->uid = $row->uid;
         $saved->width = $saved->image_dimensions['width'];
         $saved->height = $saved->image_dimensions['height'];
 
         $saved = file_save($saved);
         file_usage_add($saved, 'file', 'file', $row->nid);
-        $return[LANGUAGE_NONE] = array((array)$saved);
+        $return[$row->language] = array((array)$saved);
       } else {
         parent::saveMessage(t('Could not save book cover to: @dest', array('@dest' => $dest)), MigrationBase::MESSAGE_WARNING);
       }
