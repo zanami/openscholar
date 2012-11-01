@@ -61,6 +61,12 @@ function vsite_context_default_contexts() {
           'region' => 'footer',
           'weight' => '-10',
         ),
+        'os-install_status' => array(
+          'module' => 'os',
+          'delta' => 'install_status',
+          'region' => 'footer',
+          'weight' => '10',
+        ),
       ),
     ),
   );

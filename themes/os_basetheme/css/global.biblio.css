@@ -270,6 +270,19 @@ body.node-type-biblio .node-type-biblio .field-field-biblio-image {
   border: none !important;
   border-spacing: 0;
   }
+  
+.os-files-other-list tr {
+	border:1px solid #ccc;
+	background:#FFF;
+} 
+.os-files-other-list tr:hover {
+	background:#EEE;
+}
+
+
+.os-files-other-list tr td {
+	padding:3px 6px;
+} 
 
 .node-teaser.node-type-biblio .itu-attachment-list td {
   padding: 0 .4em;
