@@ -116,6 +116,14 @@ function os_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
+  if (variable_get('os_profile_flavor', 'production')) {
+    $blocks['install_status'] = array(
+      'info' => t('Install Status'),
+      'weight' => '10',
+      'cache' => DRUPAL_NO_CACHE,
+    );
+  }
+
   // System-defined menu blocks.
   foreach (os_get_menus() as $menu_name => $title) {
     $blocks[$menu_name]['info'] = t($title);
@@ -152,6 +160,11 @@ function os_block_view($delta = '') {
         $block['content'] = theme('openscholar_get_started');
       }
       return $block;
+    case 'install_status':
+      $block['subject'] = NULL;
+      $block['content'] = _os_get_install_status();
+      return $block;
+    break;
 
     default:
       // All os menu blocks.
@@ -1043,4 +1056,44 @@ function os_js_alter(&$javascript) {
       $javascript[$file] = drupal_js_defaults($file);
     }
   }
+}
+
+/**
+ * Collects information about the install and codebase of the site
+ */
+function _os_get_install_status() {
+  $output = '';
+
+  // get the current branch
+  chdir('profiles/openscholar');
+  $str = file('.git/HEAD');
+  $str = $str[0];
+  $str = explode('/', $str);
+  $branch = $str[2];
+
+  // get the last update time
+  $str = file('.git/logs/HEAD');
+  $str = array_reverse($str);
+  foreach ($str as $s) {
+    if ($s) {
+      break;
+    }
+  }
+  $str = $s;
+  $pattern = '| ([\d]*) |';
+  $matches = array();
+  preg_match($pattern, $str, $matches);
+  $update = trim($matches[0]);
+  chdir('../../');
+
+  // get the install time
+  $install = variable_get('install_time', 0);
+
+  $date = 'D d M, g:i a';
+  $output = '<strong>Current Branch:</strong> '.$branch.'<br>';
+  $output .= '<strong>Code Updated On:</strong> '.date($date, $update).'<br>';
+  $output .= '<strong>Site Installed On:</strong> '.date($date, $install).'<br>';
+  $output = '<p>'.$output.'</p>';
+
+  return $output;
 }
