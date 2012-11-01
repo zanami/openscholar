@@ -1066,10 +1066,9 @@ function _os_get_install_status() {
 
   // get the current branch
   try {
-    chdir('profiles/openscholar');
-    $str = @file('.git/HEAD');
+    $str = @file('profiles/openscholar/.git/HEAD');
     if (!$str) {
-      $str = @file('git/HEAD');
+      $str = @file('profiles/openscholar/git/HEAD');
     }
     if ($str) {
       $str = $str[0];
@@ -1078,9 +1077,9 @@ function _os_get_install_status() {
     }
 
     // get the last update time
-    $str = @file('.git/logs/HEAD');
+    $str = @file('profiles/openscholar/.git/logs/HEAD');
     if (!$str) {
-      $str = @file('git/logs/HEAD');
+      $str = @file('profiles/openscholar/git/logs/HEAD');
     }
     if ($str) {
       $str = array_reverse($str);
@@ -1095,7 +1094,6 @@ function _os_get_install_status() {
       preg_match($pattern, $str, $matches);
       $update = trim($matches[0]);
     }
-    chdir('../../');
   }
   catch (Exception $e) {
     dpm($e);
