@@ -32,6 +32,8 @@
    	    $('#os_sv_list_biblio_show_all').show('slow',function(){
    	      if(show_all_checked == false) {
    	    	$('#os_sv_list_biblio_whitelist').show();
+   	      }else {
+   	    	$('#os_sv_list_biblio_whitelist').hide();  
    	      }
    	    });
    	  }else {
