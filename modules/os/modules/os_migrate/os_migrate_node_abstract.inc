@@ -345,7 +345,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'display' => 'list',
         'filepath' => 'filepath',
         //'file_destination' => 'file_destination',
-        'filename' => 'filename',
+        //'filename' => 'filename',
+        'filename' => 'description',
         //'field_upload' => 'field_upload',
       );
 
