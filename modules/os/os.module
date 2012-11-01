@@ -116,7 +116,7 @@ function os_block_info() {
     'cache' => DRUPAL_NO_CACHE,
   );
 
-  if (variable_get('os_profile_flavor', 'production') == 'development') {
+  if (variable_get('os_profile_flavor', 'production') == 'development' && user_access('administer site configuration')) {
     $blocks['install_status'] = array(
       'info' => t('Install Status'),
       'weight' => '10',
@@ -1066,32 +1066,38 @@ function _os_get_install_status() {
 
   // get the current branch
   chdir('profiles/openscholar');
-  $str = file('.git/HEAD');
-  $str = $str[0];
-  $str = explode('/', $str);
-  $branch = $str[2];
+  if ($str = @file('.git/HEAD')) {
+    $str = $str[0];
+    $str = explode('/', $str);
+    $branch = $str[2];
+  }
 
   // get the last update time
-  $str = file('.git/logs/HEAD');
-  $str = array_reverse($str);
-  foreach ($str as $s) {
-    if ($s) {
-      break;
+  if ($str = @file('.git/logs/HEAD')) {
+    $str = array_reverse($str);
+    foreach ($str as $s) {
+      if ($s) {
+        break;
+      }
     }
+    $str = $s;
+    $pattern = '| ([\d]*) |';
+    $matches = array();
+    preg_match($pattern, $str, $matches);
+    $update = trim($matches[0]);
   }
-  $str = $s;
-  $pattern = '| ([\d]*) |';
-  $matches = array();
-  preg_match($pattern, $str, $matches);
-  $update = trim($matches[0]);
   chdir('../../');
 
   // get the install time
   $install = variable_get('install_time', 0);
 
   $date = 'D d M, g:i a';
-  $output = '<strong>Current Branch:</strong> '.$branch.'<br>';
-  $output .= '<strong>Code Updated On:</strong> '.date($date, $update).'<br>';
+  if (isset($branch)) {
+    $output .= '<strong>Current Branch:</strong> '.$branch.'<br>';
+  }
+  if (isset($update)) {
+    $output .= '<strong>Code Updated On:</strong> '.date($date, $update).'<br>';
+  }
   $output .= '<strong>Site Installed On:</strong> '.date($date, $install).'<br>';
   $output = '<p>'.$output.'</p>';
 
