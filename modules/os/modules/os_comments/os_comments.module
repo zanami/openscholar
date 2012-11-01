@@ -48,7 +48,7 @@ function os_comments_form_cp_app_settings_form_alter(&$form, &$form_state, $form
 
   foreach (element_children($form["comment_settings"]) as $child) {
   	if (strpos($child, 'comment_sources_') === 0 && !in_array($child, $node_types)) {
-  	  unset($form["comment_settings"][$child]);
+  	  $form["comment_settings"][$child]['#access'] = false;
   	}
   }
   // Uses a secondary validator.
@@ -183,9 +183,9 @@ function os_comments_cp_settings(){
   $a_settings = array();
   // Check to make sure disqus is enabled.
   if(module_exists('disqus')) {
-    $vsite = vsite_get_vsite();
-    if($vsite) {
-      $disqus_shortname = $vsite->controllers->variable->get('disqus_domain', 'space');
+    $space = spaces_get_space();
+    if($space) {
+      $disqus_shortname = $space->controllers->variable->get('disqus_domain', 'space');
     } else {
       $disqus_shortname = variable_get('disqus_domain', '');
     }

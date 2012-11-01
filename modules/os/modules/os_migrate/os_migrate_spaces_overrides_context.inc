@@ -124,8 +124,10 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     if (in_array($id, array(
       'boxes-scholar_reader-latest_feed_items',
       'scholar_front-get_started',
+      'views-scholar_software_releases-block_1', //only on software pages, replaced with EVQ
       //This is added by _update_search_blocks
       'vsite-site_search',
+      'scholar_publications-co_authors', //replaced with a box
     ))) {
       //Remove depricated blocks
       return FALSE;
@@ -183,7 +185,10 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'boxes-scholar_publications_recent' => 'boxes-os_publications_recent',
       'boxes-scholar_book_recent_docs' => 'boxes-os_booklets_recent_docs',
       'boxes-scholar_book_current_toc' => 'boxes-os_booktoc',
-      'views-scholar_software_releases-block_3' => 'views-os_software_releases-block_1'
+      'views-scholar_software_releases-block_3' => 'views-os_software_releases-block_1',
+      'scholar_software_releases-block_3' => 'views-os_software_releases-block_1',
+      'scholar_events-mini' => 'views-os_events-block_1',
+      'views-scholar_events_upcoming-block_1' => 'views-os_events-block_2'
     );
 
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
@@ -204,7 +209,8 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'vsite_rss' => 'os_rss',
       'scholar_publications_recent' => 'os_publications_recent',
       'scholar_book_current_toc' => 'os_booktoc',
-      'scholar_software_releases-block_3' => 'os_software_releases-block_1'
+      'scholar_software_releases-block_3' => 'os_software_releases-block_1',
+      'scholar_events_upcoming-block_1' => 'os_events-block_2'
     );
 
     return (isset($delta_map[$delta])) ? $delta_map[$delta] : $delta;
@@ -266,6 +272,13 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
         'region' => (isset($block['region'])) ? $block['region'] : false,
         'weight' => (isset($block['weight'])) ? $block['weight'] : -10,
         'info' => 'Site RSS Feed',
+      ),
+      'views-os_events-block_1' => array(
+        'module' => 'views',
+        'delta' => 'os_events-block_1',
+        'region' => (isset($block['region'])) ? $block['region'] : false,
+        'weight' => (isset($block['weight'])) ? $block['weight'] : -10,
+        'info' => 'Mini Calendar',
       ),
     );
 
