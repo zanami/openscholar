@@ -78,6 +78,7 @@ class OsOgVocabMigrate extends DynamicMigration {
       if(!$term){
         parent::saveMessage(t('The specified term %tid could not be loaded for bundle %bundle.',
           array('%tid' => $tid, '%bundle' => $bundle)), MigrationBase::MESSAGE_WARNING);
+        return;
       }
 
       if (!og_vocab_load_og_vocab($term->vid, 'node', $bundle)) {
