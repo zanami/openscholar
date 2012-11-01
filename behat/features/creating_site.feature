@@ -2,7 +2,7 @@ Feature:
   Verifying a OpenScholar site creation process.
 
 @api
-Scenario: Testing the cretion of a site in OpenScholar
+Scenario: Testing the creation of a site in OpenScholar
     Given I am logged in as a user with the "administrator" role
     And I visit "/site/register"
     When I fill in "domain" with "foo"
