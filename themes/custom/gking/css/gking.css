@@ -240,7 +240,7 @@ a.more {
 #node-3793 a.more {
   color: #5c7677;
   float:right;
-  padding: 11px 38px 10px 0;
+  padding: 26px 38px 10px 0;
   }
 
 .block .item-list .pager,
@@ -937,7 +937,7 @@ border:none;
     right: 0;
     background: #FFF;
     padding: 0 15px;
-    z-index:1;
+    z-index:2;
     border-top:1px solid #ccc;
     }
 
