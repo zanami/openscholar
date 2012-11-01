@@ -1065,33 +1065,47 @@ function _os_get_install_status() {
   $output = '';
 
   // get the current branch
-  chdir('profiles/openscholar');
-  if ($str = @file('.git/HEAD')) {
-    $str = $str[0];
-    $str = explode('/', $str);
-    $branch = $str[2];
-  }
-
-  // get the last update time
-  if ($str = @file('.git/logs/HEAD')) {
-    $str = array_reverse($str);
-    foreach ($str as $s) {
-      if ($s) {
-        break;
-      }
+  try {
+    chdir('profiles/openscholar');
+    $str = @file('.git/HEAD');
+    if (!$str) {
+      $str = @file('git/HEAD');
     }
-    $str = $s;
-    $pattern = '| ([\d]*) |';
-    $matches = array();
-    preg_match($pattern, $str, $matches);
-    $update = trim($matches[0]);
+    if ($str) {
+      $str = $str[0];
+      $str = explode('/', $str);
+      $branch = $str[2];
+    }
+
+    // get the last update time
+    $str = @file('.git/logs/HEAD');
+    if (!$str) {
+      $str = @file('git/logs/HEAD');
+    }
+    if ($str) {
+      $str = array_reverse($str);
+      foreach ($str as $s) {
+        if ($s) {
+          break;
+        }
+      }
+      $str = $s;
+      $pattern = '| ([\d]*) |';
+      $matches = array();
+      preg_match($pattern, $str, $matches);
+      $update = trim($matches[0]);
+    }
+    chdir('../../');
   }
-  chdir('../../');
+  catch (Exception $e) {
+    dpm($e);
+  }
 
   // get the install time
   $install = variable_get('install_time', 0);
 
   $date = 'D d M, g:i a';
+  $output .= '<strong>Drupal Version:</strong> '.VERSION.'<br>';
   if (isset($branch)) {
     $output .= '<strong>Current Branch:</strong> '.$branch.'<br>';
   }
