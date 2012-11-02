@@ -23,7 +23,7 @@ a:hover {
     text-decoration: underline;
     }
 
-h2, h3, h4 {
+h1, h2, h3, h4 {
   margin-bottom: 0;
   margin-top: 1em;
   font-weight:normal;
@@ -33,6 +33,7 @@ h2, h3, h4 {
 h1#page-title {
   margin-top: 0;
   margin-bottom: 1em;
+   font-size: 1.5em;
   }
 
 .links li {
