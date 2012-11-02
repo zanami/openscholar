@@ -11,6 +11,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     //a separate import for projects?
     $this->description = t('OS vsites');
     $this->dependencies = preg_grep('/^VsiteNodeOS$/', $this->dependencies, PREG_GREP_INVERT);
+    $this->dependencies[] = 'PurlVsiteDomainTable';
 
     //$this->addSimpleMappings(array('purl'));
 

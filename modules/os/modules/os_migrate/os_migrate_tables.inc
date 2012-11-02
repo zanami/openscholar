@@ -249,3 +249,25 @@ class UsageLogTableMigration extends TableCopyMigration {
 
 }
 
+class PurlVsiteDomainTableMigration extends TableCopyMigration {
+
+  public function __construct() {
+    $key_schema = array(
+      'value' => array(
+        'type' => 'varchar',  //used to be datetime.
+        'length' => 255,
+        'not null' => TRUE,
+      )
+    );
+
+    $table = 'purl';
+    parent::__construct($table, $key_schema);
+
+  }
+
+  public function query() {
+    $query = parent::query();
+    $query->condition('provider', 'vsite_domain');
+    return $query;
+  }
+}
