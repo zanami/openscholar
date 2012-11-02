@@ -234,7 +234,7 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
     $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
     if (isset($form['os_menu'])) {
 	    $form['os_menu']['enabled']['#default_value'] = 1;
-	    $form['os_menu']['link']['parent']['#default_value']; $menu . ':0'; //position shouldn't matter since we're overriding it later anyway
+	    $form['os_menu']['link']['parent']['#default_value'] = $menu;
 	    $form['os_menu']['link']['link_title']['#default_value'] = isset($title) ? $title : '' ;
 	    $form['os_menu']['link']['description']['#default_value'] = isset($cache['tooltip']) ? check_plain($cache['tooltip']) : '';
     }
@@ -242,7 +242,7 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
     if (isset($cache['new_window']) && $cache['new_window']) {
       $form['os_menu']['link']['new_window']['#default_value'] = 1;
     }
-
+    dpm($form);
     cp_menu_cache_clear('cp_menu');
   }
 }
