@@ -152,7 +152,9 @@ background-image: linear-gradient(to top, #DCD9DB 0%, #FFFFFF 100%);
 	margin: 0 auto;
 	}
 
-
+.lt-ie9 #header-container {
+background:#EDEDED;
+}
 
 #header-container h1,
 #header-container h2,

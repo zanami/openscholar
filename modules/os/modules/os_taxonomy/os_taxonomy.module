@@ -275,7 +275,6 @@ function os_taxonomy_build_term_items($terms, $options) {
 
     // Add the number of tagged nodes to the childrens when needed.
     if ($options['show_childs']) {
-      $depth = !isset($options['depth']) == 0 ? NULL : $options['depth'];
       $childrens = os_taxonomy_get_term_childrens($term->tid, $term->vid, $options);
       if ($options['add_childs']) {
         $items[$tid]['child_number'] = os_taxonomy_count_term_tagged_items($childrens, $options['bundles']);
@@ -316,7 +315,7 @@ function os_taxonomy_get_term_childrens($tid, $vid, $options) {
   $childrens = taxonomy_get_children($tid, $vid);
 
   foreach ($childrens as $children) {
-    if ($options['depth'] < $tree[$children->tid]) {
+    if ($options['depth'] != -1 && $options['depth'] < $tree[$children->tid]) {
       unset($childrens[$children->tid]);
     }
   }
