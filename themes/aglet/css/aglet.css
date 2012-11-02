@@ -52,12 +52,19 @@ p.copy {
    -webkit-box-shadow: 0 10px 10px 3px #222222;
    box-shadow: 0 10px 10px 3px #222222;
   background:#FFF;
-  }
-/*
-#page-wrapper {
-  background:url('../images/footer.png') no-repeat 0 100% transparent;
-}*/
+ }
+  
+  
+.lt-ie9  #page {
+   margin-left: -5px;
+   margin-top: -5px;
+   zoom: 1;
+   filter: progid:DXImageTransform.Microsoft.Shadow(Color=#222222, Strength=5, Direction=0),
+         progid:DXImageTransform.Microsoft.Shadow(Color=#222222, Strength=5, Direction=90),
+         progid:DXImageTransform.Microsoft.Shadow(Color=#222222, Strength=5, Direction=180),
+         progid:DXImageTransform.Microsoft.Shadow(Color=#222222, Strength=5, Direction=270);
 
+  }
 .wrap {
   margin:0 48px;
   }
@@ -92,6 +99,8 @@ p.copy {
 margin-bottom: -2000px;
 padding-bottom: 2000px;
 }
+
+.sidebar {min-height:270px;}
 
 .region-sidebar-first {
   padding-top:30px;
