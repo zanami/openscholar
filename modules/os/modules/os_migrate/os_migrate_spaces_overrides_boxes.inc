@@ -376,9 +376,8 @@ EOF;
      }
    }
 
-   private static function split_fbt_box($obejct_id, $box, $plugin_only = false){
+   private static function split_fbt_box($object_id, $box, $plugin_only = false){
      $return = array();
-   	 $box = unserialize($box);
    	 $vocabs = array_filter($box->options['vocabulary']);
    	 $show_name = $box->options['show_vocabulary_name'];
    	 unset($box->options['vocabulary']);

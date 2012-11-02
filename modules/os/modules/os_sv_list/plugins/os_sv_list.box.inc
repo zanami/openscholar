@@ -48,6 +48,7 @@ class os_sv_list_box extends os_boxes_default {
       '#title' => 'Content Type',
       '#default_value' => $this->options['content_type'],
       '#options' => $content_types,
+      '#id' => 'os_sv_list_content_type',
       '#ajax' => array(
         'callback' => 'os_sv_list_more_link_ajax',
         //'wrapper' => 'more_link_div',
@@ -55,36 +56,20 @@ class os_sv_list_box extends os_boxes_default {
         'method' => 'replace',
         'effect' => 'none',
       ),
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'os_sv_list').'/os_sv_list.js',
+        ),
+      ),
     );
-
-    $biblio_visible_states = array('visible' => array(':input[name="content_type"]' => array('value' => 'biblio')));
 
     $form['biblio_show_all'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show all publication types'),
       '#default_value' => $this->options['biblio_show_all'],
-      '#states' => $biblio_visible_states,
-    );
-
-    // Load the available bundles.
-    $invisible_bundles = os_get_bundles(1);
-    // Unset biblio from the bundle.
-    if(array_key_exists('biblio', $invisible_bundles)) {
-      unset($invisible_bundles['biblio']);
-    }
-    $invisible_array = array();
-    // Loop the bundles and setup the 'invisible' element state.
-	foreach($invisible_bundles as $key=>$value) {
-      $invisible_array[] = array(':input[name="content_type"]' => array('value' => $key));
-	}
-	// Create the variable for the state.
-    $biblio_visible_states_checkbox = array(
-      'visible' => array(
-        ':input[name="biblio_show_all"]' => array(
-          'checked' => FALSE
-        ),
-      ),
-      'invisible' => $invisible_array,
+      '#id' => 'biblio_show_all_check',
+      '#prefix' => '<div id="os_sv_list_biblio_show_all">',
+      '#suffix' => '</div>',
     );
 
     $form['biblio_whitelist'] = array(
@@ -92,7 +77,8 @@ class os_sv_list_box extends os_boxes_default {
       '#title' => t('Select publication types to display'),
       '#default_value' => $this->options['biblio_whitelist'],
       '#options' => $this->_biblio_types(),
-      '#states' => $biblio_visible_states_checkbox,
+      '#prefix' => '<div id="os_sv_list_biblio_whitelist">',
+      '#suffix' => '</div>',
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'os_boxes').'/misc/selectAll.js',

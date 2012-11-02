@@ -104,6 +104,10 @@ function gkplus_cron() {
 
   variable_set('os_taxonomy_term_page_options', $options);
 
+  // Adjust system weight for module gkplus to be after nodeorder.
+  _gkplus_adjust_module_weight(array('gkplus'), '>', array('nodeorder'));
+
+  // Checks for new files to update filefields.
   _gkplus_updatefile_cron();
 }
 
@@ -384,18 +388,24 @@ function gkplus_preprocess_os_taxonomy_tagged_nodes(&$vars) {
   if ($vocab->name !== 'Research Interests') {
     return;
   }
+
+  // Prepares fresh set of classes for this term heading.
   if (!isset($vars['options']['attributes']['class'])) {
     $vars['options']['attributes']['class'] = array();
   }
-  // Removes gkplus term attributes from options for child terms.
+  // Removes gkplus term attributes from parent options for child terms.
   else {
     $original = $vars['options']['attributes']['class'];
     $remove = array('gkplus-hidden-heading', 'gkplus-child-indent', 'gkplus-no-indent');
     $vars['options']['attributes']['class'] = array_diff($original, $remove);
   }
-  if (_gkplus_entity_setting($vars['taxonomy_term']->tid, 'hidden_heading_terms')) {
 
+  // Adds custom display options assigned to this term.
+  if (_gkplus_entity_setting($vars['taxonomy_term']->tid, 'hidden_heading_terms')) {
     $vars['options']['attributes']['class'][] = 'gkplus-hidden-heading';
+  }
+  else {
+    $vars['options']['attributes']['class'][] = 'gkplus-show-heading';
   }
   if (_gkplus_entity_setting($vars['taxonomy_term']->tid, 'child_indent_terms')) {
     $vars['options']['attributes']['class'][] = 'gkplus-child-indent';
@@ -481,7 +491,7 @@ function _gkplus_updatefile_cron() {
   if ($handle = opendir($temp_path)) {
     while (FALSE !== ($file = readdir($handle))) {
       $filepath = $temp_path . $file;
-      drupal_set_message("found file " . $filepath . "\nfilectime: " . filectime($filepath) . "\nlast update: " . $last_update, "warning");
+      // drupal_set_message("found file " . $filepath . "\nfilectime: " . filectime($filepath) . "\nlast update: " . $last_update, "warning");
       if (filectime($filepath) >= $last_update && is_file($filepath) && !(strpos($file, '.') === 0)) {
         gkplus_update_filefield_page($file, TRUE);
       }
@@ -555,4 +565,61 @@ function _gkplus_temp_path() {
 function _gkplus_check_purl($purl = 'gking') {
   $vsite = vsite_get_vsite();
   return ($vsite && $vsite->group->purl == $purl);
+}
+
+/**
+ * Adjusts module weights to ensure greater/lesser weight.
+ *
+ * @param array $update
+ * @param string $condition
+ * @param array $compare
+ *
+ * @see gkplus_cron()
+ */
+function _gkplus_adjust_module_weight($update, $condition, $compare) {
+  if (!$update || !$condition || !$compare) {
+    return;
+  }
+
+  // Continues only if we are comparing with less than or greater than.
+  switch ($condition) {
+    case '>':
+      $sort = 'DESC';
+      break;
+    case '<':
+      $sort = 'ASC';
+      break;
+    default:
+      return;
+  }
+
+  // Finds the highest weight among the compared modules.
+  $weight = db_select('system', 's')
+    ->fields('s', array('weight'))
+    ->condition('name', $compare, 'IN')
+    ->range(0, 1)
+    ->orderBy('weight', $sort)
+    ->execute()
+    ->fetchField();
+  if ($weight === FALSE) {
+    return;
+  }
+
+  // Continues only if we are comparing with less than or greater than.
+  switch ($condition) {
+    case '>':
+      $weight = $weight + 1;
+      break;
+    case '<':
+      $weight = $weight - 1;
+      break;
+    default:
+      return;
+  }
+
+  // Updates the given module with the new increased or decreased weight.
+  db_update('system')
+    ->fields(array('weight' => $weight))
+    ->condition('name', 'gkplus', '=')
+    ->execute();
 }
