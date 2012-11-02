@@ -170,11 +170,11 @@ dl.bibliomultiselect .form-item {
   }
 
 a.biblio-abstract-link {
-  text-align: left;
   text-decoration: none;
   font-style: normal;
   font-weight: normal;
-  margin-left:8px;
+  margin:0 8px;
+ display:inline;
   }
   
   
@@ -257,8 +257,17 @@ ul.biblio-export-buttons,ul.biblio-export-buttons li {
 body.node-type-biblio .node-type-biblio .field-field-biblio-image {
   padding-top:.6em;
   }
+  
+.field-name-field-biblio-image {
+	float: left;
+    margin: 0 1.5em 0.5em 0;
+}
 
 /* ATTACHMENTS*/
+
+.node-biblio.node-teaser .field-name-field-upload {
+    display: inline-block;
+}
 
 .node-type-biblio .itu-attachments {
   display:inline-block;

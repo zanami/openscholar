@@ -104,6 +104,10 @@ function gkplus_cron() {
 
   variable_set('os_taxonomy_term_page_options', $options);
 
+  // Adjust system weight for module gkplus to be after nodeorder.
+  _gkplus_adjust_module_weight(array('gkplus'), '>', array('nodeorder'));
+
+  // Checks for new files to update filefields.
   _gkplus_updatefile_cron();
 }
 
@@ -561,4 +565,61 @@ function _gkplus_temp_path() {
 function _gkplus_check_purl($purl = 'gking') {
   $vsite = vsite_get_vsite();
   return ($vsite && $vsite->group->purl == $purl);
+}
+
+/**
+ * Adjusts module weights to ensure greater/lesser weight.
+ *
+ * @param array $update
+ * @param string $condition
+ * @param array $compare
+ *
+ * @see gkplus_cron()
+ */
+function _gkplus_adjust_module_weight($update, $condition, $compare) {
+  if (!$update || !$condition || !$compare) {
+    return;
+  }
+
+  // Continues only if we are comparing with less than or greater than.
+  switch ($condition) {
+    case '>':
+      $sort = 'DESC';
+      break;
+    case '<':
+      $sort = 'ASC';
+      break;
+    default:
+      return;
+  }
+
+  // Finds the highest weight among the compared modules.
+  $weight = db_select('system', 's')
+    ->fields('s', array('weight'))
+    ->condition('name', $compare, 'IN')
+    ->range(0, 1)
+    ->orderBy('weight', $sort)
+    ->execute()
+    ->fetchField();
+  if ($weight === FALSE) {
+    return;
+  }
+
+  // Continues only if we are comparing with less than or greater than.
+  switch ($condition) {
+    case '>':
+      $weight = $weight + 1;
+      break;
+    case '<':
+      $weight = $weight - 1;
+      break;
+    default:
+      return;
+  }
+
+  // Updates the given module with the new increased or decreased weight.
+  db_update('system')
+    ->fields(array('weight' => $weight))
+    ->condition('name', 'gkplus', '=')
+    ->execute();
 }
