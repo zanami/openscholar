@@ -242,7 +242,7 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
     if (isset($cache['new_window']) && $cache['new_window']) {
       $form['os_menu']['link']['new_window']['#default_value'] = 1;
     }
-    dpm($form);
+
     cp_menu_cache_clear('cp_menu');
   }
 }
