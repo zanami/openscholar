@@ -321,7 +321,7 @@ EOF;
      //for each vid in a box, create a new box for that vid
      while ($row = $result->fetchObject()) {
        $value = unserialize($row->value);
-       $boxes = self::split_fbt_box($rom->object_id, $value);
+       $boxes = self::split_fbt_box($row->object_id, $value);
 
        foreach($boxes as $object_id => $box) {
 
