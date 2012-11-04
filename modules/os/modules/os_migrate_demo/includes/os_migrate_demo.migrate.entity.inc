@@ -56,12 +56,23 @@ abstract class OsMigrate extends Migration {
    *      0 - Disable the feature.
    */
   public function featureUpdate($features, $status) {
-    $space = spaces_load('og', $this->nid);
-    $preset = $space->controllers->variable->get('spaces_preset_' . $space->type);
-    $preset = spaces_preset_load($preset, $space->type);
-    foreach ($features as $feature) {
-      $preset->value['variable']['spaces_features'][$feature] = $status;
+    // This function need to run differently when usign drush.
+    if (drupal_is_cli()) {
+      $features = variable_get('spaces_features');
+      $features_to_save = array();
+      foreach ($features as $feature) {
+        $features_to_save[$feature] = 1;
+      }
+      variable_set('spaces_features', $features_to_save);
     }
-    spaces_preset_save($preset);
+    else {
+      $space = spaces_load('og', $this->nid);
+      $preset = $space->controllers->variable->get('spaces_preset_' . $space->type);
+      $preset = spaces_preset_load($preset, $space->type);
+      foreach ($features as $feature) {
+        $preset->value['variable']['spaces_features'][$feature] = $status;
+      }
+      spaces_preset_save($preset);
+    }
   }
 }
