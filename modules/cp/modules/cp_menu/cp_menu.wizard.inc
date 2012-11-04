@@ -175,11 +175,26 @@ function cp_menu_title($form, &$form_state) {
       );
       $form['node'] = vsite_node_autocomplete_element($autocomplete_element);
 
+      // Load the bundles.
+      $content_types = os_get_bundles();
+      $content_types_list = array();
+      // Remove the "link" content type from the bundles array.
+	  if(array_key_exists('link', $content_types)) {
+	  	unset($content_types['link']);
+	  }
+	  // Sort content types alphabetically.
+	  asort($content_types);
+	  // String replace for os_get_bundles, underscores should be hyphens.
+	  foreach($content_types as $key => $value) {
+	  	$url_str = str_replace('_', '-', $key);
+	  	$content_types_list[$url_str] = $value;
+	  }
+
       $form['new_node_type'] = array(
         '#type' => 'select',
         '#title' => t('Create new'),
         '#description' => t('Create a new page.'),
-        '#options' => os_get_bundles(),
+        '#options' => $content_types_list,
         '#states' => array(
           'visible' => array(
             ':input[name="new_or_select"]' => array('value' => 'new'),

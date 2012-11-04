@@ -18,6 +18,7 @@ class os_taxonomy_fbt extends os_boxes_default {
 
     $options['vocabulary'] = FALSE;
     $options['bundles'] = array('--all--');
+    $options['widget_type'] = 'list';
     $options['range'] = 10;
     $options['offset'] = 0;
     $options['show_empty_terms'] = FALSE;
@@ -64,6 +65,17 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#title' => t('Vocabularies'),
       '#options' => self::get_all_volcabularies(),
       '#required' => TRUE,
+    );
+
+    $form['widget_type'] = array(
+      '#type' => 'select',
+      '#title' => t('Widget type'),
+      '#description' => t('Select how to display the terms - in a select list or in html format'),
+      '#options' => array(
+        'list' => t('List'),
+        'select' => t('Select list'),
+      ),
+      '#default_value' => $this->options['widget_type'] ? $this->options['widget_type'] : 'list',
     );
 
     $form['behavior'] = array(
