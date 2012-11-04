@@ -379,7 +379,7 @@ EOF;
    private static function split_fbt_box($object_id, $box, $plugin_only = false){
      $return = array();
    	 $vocabs = (is_array($box->options['vocabulary'])) ? array_filter($box->options['vocabulary']) : array($box->options['vocabulary']);
-   	 $show_name = $box->options['show_vocabulary_name'];
+   	 $show_name = (isset($box->options['show_vocabulary_name'])) ? $box->options['show_vocabulary_name'] : 1;
    	 unset($box->options['vocabulary']);
    	 unset($box->options['show_vocabulary_name']);
 
