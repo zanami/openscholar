@@ -24,15 +24,15 @@ Scenario: Testing the Classes feature
     Given I am logged in as a user with the "authenticated user" role
     And I visit "john"
     When I click "Classes"
-    And I should see "All about entities and how to use entity metadata wrapper."
-    And I should see the link "Drupal entities"
+    And I should see "John F. Kennedy"
+    And I should see the link "Wikipedia page on JFK"
     And I should see the page title "John"
-    When I click "Drupal entities"
-    And I should see the link "An Introduction to Entities"
-    When I click "Drupal entities class material"
-    Then I should see "Entity field query"
-    And I should see "Entity field query VS. DB select"
-    And I should see "Entity metadata wrapper"
+    When I click "John F. Kennedy"
+    And I should see the link "Who was JFK?"
+    When I click "Who was JFK?"
+    Then I should see "JFK's childhood"
+    And I should see "JFK as president"
+    And I should see "After JFK's death, and how it changed USA?"
 
 @api
 Scenario: Testing the People feature
