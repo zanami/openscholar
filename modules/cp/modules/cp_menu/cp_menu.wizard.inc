@@ -115,6 +115,7 @@ function cp_menu_type($form, &$form_state) {
   $form_state['title'] = t('Link Type');
 
   $form['type'] = array(
+    '#title' => 'Link Type',
     '#type' => 'radios',
     '#options' => array('page' => 'Page', 'url' => 'URL'),
     '#description' => t('Type of content to link to.'),
@@ -149,6 +150,7 @@ function cp_menu_title($form, &$form_state) {
         '#type' => 'textfield',
         '#title' => t('URL'),
         '#required' => TRUE,
+        '#description' => t('The address of the link. Starts with: http://'),
       );
 
       $form['#validate'][] = 'cp_menu_url_validate';
@@ -177,15 +179,24 @@ function cp_menu_title($form, &$form_state) {
 
       // Load the bundles.
       $content_types = os_get_bundles();
+      $content_types_list = array();
       // Remove the "link" content type from the bundles array.
 	  if(array_key_exists('link', $content_types)) {
 	  	unset($content_types['link']);
 	  }
+	  // Sort content types alphabetically.
+	  asort($content_types);
+	  // String replace for os_get_bundles, underscores should be hyphens.
+	  foreach($content_types as $key => $value) {
+	  	$url_str = str_replace('_', '-', $key);
+	  	$content_types_list[$url_str] = $value;
+	  }
+
       $form['new_node_type'] = array(
         '#type' => 'select',
         '#title' => t('Create new'),
         '#description' => t('Create a new page.'),
-        '#options' => $content_types,
+        '#options' => $content_types_list,
         '#states' => array(
           'visible' => array(
             ':input[name="new_or_select"]' => array('value' => 'new'),
