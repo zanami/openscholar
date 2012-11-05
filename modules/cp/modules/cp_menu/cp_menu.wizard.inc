@@ -115,6 +115,7 @@ function cp_menu_type($form, &$form_state) {
   $form_state['title'] = t('Link Type');
 
   $form['type'] = array(
+    '#title' => 'Link Type',
     '#type' => 'radios',
     '#options' => array('page' => 'Page', 'url' => 'URL'),
     '#description' => t('Type of content to link to.'),
@@ -149,6 +150,7 @@ function cp_menu_title($form, &$form_state) {
         '#type' => 'textfield',
         '#title' => t('URL'),
         '#required' => TRUE,
+        '#description' => t('The address of the link. Starts with: http://'),
       );
 
       $form['#validate'][] = 'cp_menu_url_validate';
