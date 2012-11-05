@@ -232,6 +232,11 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
   	  $form['title']['#default_value'] = $title;
     }
 
+    // Special case for person since person has no form title field.
+    if(isset($cache['title']) && $form_id == 'person_node_form') {
+      $title = check_plain($cache['title']);
+    }
+
     $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
     if (isset($form['os_menu'])) {
 	    $form['os_menu']['enabled']['#default_value'] = 1;
