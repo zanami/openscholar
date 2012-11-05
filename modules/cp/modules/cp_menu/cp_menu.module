@@ -224,11 +224,17 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
   //menu wizard - insert settings from wizard
   require_once(drupal_get_path('module', 'cp_menu') . '/cp_menu.wizard.inc');
   $cache = cp_menu_cache_get('cp_menu');
+
   if (count($cache)) {
 
     if (isset($cache['title']) && isset($form['title'])) {
-	    $title = check_plain($cache['title']);
+	  $title = check_plain($cache['title']);
   	  $form['title']['#default_value'] = $title;
+    }
+
+    // Special case for person since person has no form title field.
+    if(isset($cache['title']) && $form_id == 'person_node_form') {
+      $title = check_plain($cache['title']);
     }
 
     $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
@@ -243,7 +249,16 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
       $form['os_menu']['link']['new_window']['#default_value'] = 1;
     }
 
-    cp_menu_cache_clear('cp_menu');
+    // Cache shouldn't be deleted on the first pass of adding a new biblio.
+    if(isset($cache['new_node_type']) && $cache['new_node_type'] == 'biblio') {
+      // Check for the form state input - biblio type, this will be present if we are past
+      // the Publication Type select form.
+      if(isset($form_state['input']['biblio_type'])) {
+      	cp_menu_cache_clear('cp_menu');
+      }
+    }else {
+      cp_menu_cache_clear('cp_menu');
+    }
   }
 }
 
