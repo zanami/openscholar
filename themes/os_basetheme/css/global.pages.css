@@ -386,8 +386,8 @@ ul.class_material_field_class a.class_material_field_class_anchor {
    }
 
 
-.feed-icon /* The link to the RSS or Atom feed for the current list of content */ {
-}
+.feed_item {margin-bottom:8px;}
+.feed_item span {font-style:italic;margin-right:4px;}
 
 
 .more-link /* Aggregator, blog, and forum more link */ {
@@ -698,6 +698,7 @@ background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, 
 background-image: -webkit-linear-gradient(top, #F5F2F2 0%, #FFFFFF 100%);
 /* W3C Markup, IE10 Release Preview */ 
 background-image: linear-gradient(to bottom, #F5F2F2 0%, #FFFFFF 100%);
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#E0F6F2F2,endColorstr=#E0FFFFFF)"; /* IE8 */
 padding:10px;
 -moz-margin-top: 0px;
 margin-top: 1px;

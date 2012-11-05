@@ -57,9 +57,14 @@ class VocabularyOSMigration extends TableCopyMigration {
   public function postImport() {
 
     //register newly imported vocabs as term migrations.
-    $result = db_select('migrate_map_vocabularyos', 'm')
-      ->fields('m', array('destid1'))
-      ->execute();
+//     $result = db_select('migrate_map_vocabularyos', 'm')
+//       ->fields('m', array('destid1'))
+//       ->execute();
+    //Only register migrations for vocabs with terms
+    $result = Database::getConnection('default', variable_get('os_migrate_database', ''))->select('term_data', 'td')->fields('td', array(
+      'vid',
+    ))->distinct()->execute();
+
     $vids = $result->fetchCol();
 
     foreach ($vids as $vid) {
@@ -73,6 +78,12 @@ class VocabularyOSMigration extends TableCopyMigration {
     $result = db_select('migrate_map_vocabularyos', 'm')
       ->fields('m', array('destid1'))
       ->execute();
+
+    //Only register migrations for vocabs with terms
+//     $result = Database::getConnection('default', variable_get('os_migrate_database', ''))->select('term_data', 'td')->fields('td', array(
+//       'vid',
+//     ))->distinct()->execute();
+
     $vids = $result->fetchCol();
 
     variable_set('os_migrate_prerollback_vocabulary', serialize($vids));
@@ -88,6 +99,7 @@ class VocabularyOSMigration extends TableCopyMigration {
 
     $deleted_vids = array_diff($old_vids, $remaining_vids);
 
+    //
     foreach ($deleted_vids as $vid) {
       Migration::deregisterMigration($this->_TermOSMachineName($vid));
     }

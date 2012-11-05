@@ -321,7 +321,7 @@ EOF;
      //for each vid in a box, create a new box for that vid
      while ($row = $result->fetchObject()) {
        $value = unserialize($row->value);
-       $boxes = self::split_fbt_box($rom->object_id, $value);
+       $boxes = self::split_fbt_box($row->object_id, $value);
 
        foreach($boxes as $object_id => $box) {
 
@@ -378,8 +378,8 @@ EOF;
 
    private static function split_fbt_box($object_id, $box, $plugin_only = false){
      $return = array();
-   	 $vocabs = array_filter($box->options['vocabulary']);
-   	 $show_name = $box->options['show_vocabulary_name'];
+   	 $vocabs = (is_array($box->options['vocabulary'])) ? array_filter($box->options['vocabulary']) : array($box->options['vocabulary']);
+   	 $show_name = (isset($box->options['show_vocabulary_name'])) ? $box->options['show_vocabulary_name'] : 1;
    	 unset($box->options['vocabulary']);
    	 unset($box->options['show_vocabulary_name']);
 
