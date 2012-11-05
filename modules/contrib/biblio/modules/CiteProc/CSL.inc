@@ -955,7 +955,7 @@ class csl_date extends csl_format {
 
 class csl_date_part extends csl_format {
 
-  function render($date, $mode) {
+  function render($date, $mode = NULL) {
     $text = '';
 
     switch ($this->name) {
