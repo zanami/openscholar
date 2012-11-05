@@ -14,6 +14,7 @@ Scenario: Testing the News feature
     Given I am logged in as a user with the "authenticated user" role
     And I visit "john"
     When I click "News"
+    And I should see the page title "John"
     And I should see the link "I opened a new personal"
     When I click "I opened a new personal"
     And I should see "This is a new site generated via the vsite options in open scholar."
@@ -25,6 +26,7 @@ Scenario: Testing the Classes feature
     When I click "Classes"
     And I should see "All about entities and how to use entity metadata wrapper."
     And I should see the link "Drupal entities"
+    And I should see the page title "John"
     When I click "Drupal entities"
     And I should see the link "An Introduction to Entities"
     When I click "Drupal entities class material"
@@ -38,3 +40,5 @@ Scenario: Testing the People feature
     And I visit "john"
     When I click "People"
     And I should see the link "John Fitzgerald Kennedy"
+    When I click "John Fitzgerald Kennedy"
+    Then I should see the page title "John"

@@ -22,10 +22,6 @@ class FeatureContext extends DrupalContext {
    * @Given /^I am on a "([^"]*)" page titled "([^"]*)"(?:, in the tab "([^"]*)"|)$/
    */
   public function iAmOnAPageTitled($page_type, $title, $subpage = NULL) {
-    if (!in_array($page_type, array('bio'))) {
-      throw new \Exception("Unknown page type '$page_type'.");
-    }
-
     $table = 'node';
     $id = 'nid';
     $path = "$page_type/%";
@@ -51,4 +47,13 @@ class FeatureContext extends DrupalContext {
 
     return new Given("I am at \"node/$id\"");
   }
+
+  /**
+   * @Then /^I should see the page title "([^"]*)"$/
+   */
+  public function iShouldSeeThePageTitle($heading) {
+    parent::iShouldSeeTheHeading($heading);
+    // TODO: Check if the page title is displaid with css property or attribute.
+  }
+
 }
