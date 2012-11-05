@@ -56,4 +56,61 @@ class FeatureContext extends DrupalContext {
     // TODO: Check if the page title is displaid with css property or attribute.
   }
 
+  /**
+   * @Given /^I should see the application table with the following <contents>:$/
+   */
+  public function iShouldSeeTheApplicationTableWithTheFollowingContents(TableNode $table) {
+    $page = $this->getSession()->getPage();
+    $table_element = $page->find('css', 'table.spaces');
+    $table_rows = $table->getRows();
+
+    if (!$table_element) {
+      throw new Exception("A table with the class $class wasn't found");
+    }
+
+    $labels = $table_element->findAll('css', 'tbody tr td.label strong');
+    $statuses = $table_element->findAll('xpath', '//tbody//tr//td[@class="option"]//select//option[@selected="selected"]');
+
+    if (!$this->compareApplicationRows($labels, $table_rows, 0) || !$this->compareApplicationRows($statuses, $table_rows, 1)) {
+      throw new Exception('The given application list is not equal to the current application list.');
+    }
+  }
+
+  /**
+   * Comparing the rows of the applications table and the table given in the
+   * scenario.
+   */
+  public function compareApplicationRows($elements, $table_rows, $table_row_key) {
+    foreach ($elements as $i => $element) {
+      if (self::getText($element->getHtml()) != $table_rows[$i][$table_row_key]) {
+        return FALSE;
+      }
+    }
+    return TRUE;
+  }
+
+  /**
+   * TODO: This method should be in a class extending BrowserKitDriver.
+   *
+   * Strip HTML but insert spaces between elements. Taken from the comments on:
+   * http://php.net/manual/en/function.strip-tags.php
+   *
+   * @param $html
+   *   Plain HTML.
+   *
+   * @return
+   *   Stripped contents of the HTML.
+   */
+  private static function getText($html) {
+     // Remove HTML tags.
+    $html = preg_replace ('/<[^>]*>/', ' ', $html);
+
+    // Remove control characters.
+    $html = str_replace("\r", '', $html);
+    $html = str_replace("\n", ' ', $html);
+    $html = str_replace("\t", ' ', $html);
+
+    // Remove multiple spaces.
+    return trim(preg_replace('/ {2,}/', ' ', $html));
+  }
 }

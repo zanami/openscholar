@@ -52,3 +52,26 @@ Scenario: Testing the Publication feature
     When I click "The Little Prince"
     Then I should see the page title "John"
     And I should see "Anon. The Little Prince. United States; 1943."
+
+@api
+Scenario: Check that all of the apps is turned on
+  Given I am logged in as a user with the "administrator" role
+  And I visit "john"
+  When I click "Build"
+  Then I should see the page title "Apps"
+  And I should see the application table with the following <contents>:
+    | Bio/CV        | Public |
+    | Blog          | Public |
+    | Booklets      | Public |
+    | Classes       | Public |
+    | Dataverse     | Public |
+    | Events        | Public |
+    | Image Gallery | Public |
+    | Links         | Public |
+    | News          | Public |
+    | Basic Pages   | Public |
+    | Presentations | Public |
+    | Profiles      | Public |
+    | Publications  | Public |
+    | Reader        | Public |
+    | Software      | Public |
