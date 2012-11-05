@@ -793,7 +793,8 @@ class csl_names extends csl_format {
     }
   }
 
-  function render($data, $mode) {
+  // Hack for fixing the function signature.
+  function render($data, $mode = NULL) {
     $matches = 0;
     $variable_parts = array();
     if (!isset($this->delimiter)) {
