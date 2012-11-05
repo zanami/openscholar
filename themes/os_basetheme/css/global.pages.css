@@ -386,8 +386,8 @@ ul.class_material_field_class a.class_material_field_class_anchor {
    }
 
 
-.feed-icon /* The link to the RSS or Atom feed for the current list of content */ {
-}
+.feed_item {margin-bottom:8px;}
+.feed_item span {font-style:italic;margin-right:4px;}
 
 
 .more-link /* Aggregator, blog, and forum more link */ {
