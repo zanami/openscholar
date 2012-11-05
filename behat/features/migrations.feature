@@ -42,3 +42,13 @@ Scenario: Testing the People feature
     And I should see the link "John Fitzgerald Kennedy"
     When I click "John Fitzgerald Kennedy"
     Then I should see the page title "John"
+
+@api
+Scenario: Testing the Publication feature
+    Given I am logged in as a user with the "authenticated user" role
+    And I visit "john"
+    When I click "Publications"
+    And I should see the link "The Little Prince"
+    When I click "The Little Prince"
+    Then I should see the page title "John"
+    And I should see "Anon. The Little Prince. United States; 1943."
