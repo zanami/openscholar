@@ -43,9 +43,6 @@ ini_set('session.cookie_lifetime', 2000000);
   'prefix' => '',
 );
 
-// Use Devel to redirect SMTP to file.
-\$conf['mail_system'] = array('default-system' => 'DevelMailLog');
-
 EOF
 
 echo "Setup finished. Please run the build script."
