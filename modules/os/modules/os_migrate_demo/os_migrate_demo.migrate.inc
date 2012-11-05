@@ -102,7 +102,7 @@ class OsMigrateBioagrphyNode extends OsMigrate {
   public function __construct() {
     parent::__construct();
 
-    $this->addFieldMapping('Body', 'body');
+    $this->addFieldMapping('body', 'body');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration('OsMigratePersonalNode');
   }
@@ -134,11 +134,11 @@ class OsMigratePublicationNode extends OsMigrate {
   public function __construct() {
     parent::__construct();
 
-    $this->addFieldMapping('Publisher', 'biblio_place_published');
-    $this->addFieldMapping('Year', 'biblio_year');
+    $this->addFieldMapping('biblio_place_published', 'biblio_place_published');
+    $this->addFieldMapping('biblio_year', 'biblio_year');
     $this->addFieldMapping('Publish location', 'biblio_place_published');
-    $this->addFieldMapping('Biblio type name', 'biblio_type_name');
-    $this->addFieldMapping('Biblio type', 'biblio_type');
+    $this->addFieldMapping('biblio_type_name', 'biblio_type_name');
+    $this->addFieldMapping('biblio_type', 'biblio_type');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration('OsMigratePersonalNode');
   }
