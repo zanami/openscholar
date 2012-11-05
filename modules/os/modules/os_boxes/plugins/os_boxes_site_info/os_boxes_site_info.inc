@@ -18,8 +18,30 @@ class os_boxes_site_info extends os_boxes_default {
   function box_form(&$form_state) {
     $form = parent::options_form($form_state);
 
+    $form['site_title'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Title'),
+      '#default_value' => $this->options['site_title'],
+      '#size' => 60,
+    );
+
     if (module_exists('vsite') && $vsite = spaces_get_space()) {
       $group = $vsite->group;
+      $temp = array();
+      field_attach_form('node', $group, $temp, $form_state);
+      $children = element_children($temp);
+      $props = array_diff(array_keys($temp), $children);
+
+      foreach ($props as $p) {
+        $form[$p] = $temp[$p];
+      }
+
+      foreach ($form['#group_children'] as $c => $v) {
+        if ($v == 'group_site_info') {
+          $form[$c] = $temp[$c];
+        }
+      }
+      /*
       $addr = field_get_items('node', $group, 'field_site_address');
       if (isset($addr[0])) {
         $addr = explode('<br>', $addr[0]['value']);
@@ -34,47 +56,45 @@ class os_boxes_site_info extends os_boxes_default {
         'address1' => $addr[0],
         'address2' => $addr[1],
       ));
+      */
     }
-    $form['site_title'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Title'),
-      '#default_value' => $this->options['site_title'],
-      '#size' => 60,
-    );
+//
+//    $form['descrip'] = array(
+//      '#type' => 'textfield',
+//      '#title' => t('Description'),
+//      '#default_value' => $this->options['descrip'],
+//      '#description' => t('A brief description of your web site.'),
+//      '#size' => 60,
+//    );
+//
+//    $form['address1'] = array(
+//      '#type' => 'textfield',
+//      '#title' => t('Address Line 1'),
+//      '#default_value' => $this->options['address1'],
+//      '#size' => 30,
+//      '#description' => t('Ex. 31 Harvard Ave.'),
+//    );
+//
+//    $form['address2'] = array(
+//      '#type' => 'textfield',
+//      '#title' => t('Address Line 2'),
+//      '#default_value' => $this->options['address2'],
+//      '#size' => 30,
+//      '#description' => t('Ex. Cambridge, MA 02138'),
+//    );
 
-    $form['descrip'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Description'),
-      '#default_value' => $this->options['descrip'],
-      '#description' => t('A brief description of your web site.'),
-      '#size' => 60,
-    );
-
-    $form['address1'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Address Line 1'),
-      '#default_value' => $this->options['address1'],
-      '#size' => 30,
-      '#description' => t('Ex. 31 Harvard Ave.'),
-    );
-
-    $form['address2'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Address Line 2'),
-      '#default_value' => $this->options['address2'],
-      '#size' => 30,
-      '#description' => t('Ex. Cambridge, MA 02138'),
-    );
-
-    $form['submit'] = array(
-      '#type' => 'submit',
-      '#value' => t('Save'),
-      '#submit' => array('os_boxes_site_info_submit'),
-    );
-    $form['cancel'] = array(
-      '#type' => 'submit',
-      '#value' => t('Cancel'),
-      '#limit_validation_errors' => array(),
+    $form['actions'] = array(
+      'submit' => array(
+        '#type' => 'submit',
+        '#value' => t('Save'),
+        '#submit' => array('os_boxes_site_info_submit'),
+      ),
+      'cancel' => array(
+        '#type' => 'submit',
+        '#value' => t('Cancel'),
+        '#limit_validation_errors' => array(),
+      ),
+      '#weight' => 100
     );
 
     return $form;
@@ -115,14 +135,11 @@ function os_boxes_site_info_submit($form, &$form_state) {
     $node = $space->group;
     $node->title = $form_state['values']['site_title'];
 
-    $node->field_site_description[LANGUAGE_NONE][0] = array(
-      'value' => $form_state['values']['descrip'],
-      'format' => NULL,
-    );
-    $node->field_site_address[LANGUAGE_NONE][0] = array(
-      'value' => $form_state['values']['address1'].'<br>'.$form_state['values']['address2'],
-      'format' => NULL,
-    );
+    foreach ($form['#group_children'] as $c => $g) {
+      if ($g == 'group_site_info') {
+        $node->{$c} = $form_state['values'][$c];
+      }
+    }
     node_save($node);
   }
   else {
