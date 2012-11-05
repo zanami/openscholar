@@ -3,53 +3,44 @@
 /**
  * Migrate "Biology" terms.
  */
-// class OsMigrateBiologyTaxonomyTerm extends OsMigrate {
-//
-  // /**
-   // * Map the field and properties to the CSV header.
-   // */
-  // public $csvColumns = array(
-    // array('id', 'ID'),
-    // array('name', 'Name'),
-  // );
-//
-  // public $entityType = 'taxonomy_term';
-  // public $bundle = 'biology';
-// }
+class OsMigrateBiologyTaxonomyTerm extends OsMigrate {
+
+   public $csvColumns = array(
+     array('id', 'ID'),
+     array('name', 'Name'),
+   );
+
+   public $entityType = 'taxonomy_term';
+   public $bundle = 'biology';
+ }
 
 /**
  * Migrate "Math" terms.
  */
-// class OsMigrateMathTaxonomyTerm extends OsMigrate {
-//
-  // /**
-   // * Map the field and properties to the CSV header.
-   // */
-  // public $csvColumns = array(
-    // array('id', 'Unique ID'),
-    // array('name', 'Name'),
-  // );
-//
-  // public $entityType = 'taxonomy_term';
-  // public $bundle = 'math';
-// }
+ class OsMigrateMathTaxonomyTerm extends OsMigrate {
+
+   public $csvColumns = array(
+     array('id', 'ID'),
+     array('name', 'Name'),
+   );
+
+   public $entityType = 'taxonomy_term';
+   public $bundle = 'math';
+ }
 
 /**
  * Migrate "Science" terms.
  */
-// class OsMigrateScienceTaxonomyTerm extends OsMigrate {
-//
-  // /**
-   // * Map the field and properties to the CSV header.
-   // */
-  // public $csvColumns = array(
-    // array('id', 'Unique ID'),
-    // array('name', 'Name'),
-  // );
-//
-  // public $entityType = 'taxonomy_term';
-  // public $bundle = 'science';
-// }
+ class OsMigrateScienceTaxonomyTerm extends OsMigrate {
+
+   public $csvColumns = array(
+     array('id', 'ID'),
+     array('name', 'Name'),
+   );
+
+   public $entityType = 'taxonomy_term';
+   public $bundle = 'science';
+ }
 
 /**
  * Migrate "Personal" node.
