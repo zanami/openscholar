@@ -79,11 +79,6 @@ class OsMigratePersonalNode extends OsMigrate {
     $value = $entity->field_site_address[LANGUAGE_NONE][0]['value'];
     $entity->field_site_address[LANGUAGE_NONE][0]['value'] = variable_get('purl_base_domain') . '/' . $value;
   }
-
-  public function complete($entity) {
-    $this->nid = $entity->nid;
-    $this->featureUpdate(array_keys(spaces_features()), 1);
-  }
 }
 
 /**
