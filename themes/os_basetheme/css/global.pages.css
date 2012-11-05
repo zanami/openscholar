@@ -353,6 +353,14 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 
 }
 
+/* BLOG COMMENT ICON */
+.links li a.os-blog-add-comment {
+    background: url("../images/scholarbase-sprite.png") 0 -539px no-repeat;
+    color: #3A6A8C;
+    padding-left: 15px;
+
+}
+
 
 /* MEDIA WIDGET ICONS */
 
@@ -637,6 +645,15 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
   border: 1px solid #C0C5CC;
   padding: 1em;
 }
+
+.field-name-og-vocabulary a.toggle {
+	background:url('../images/scholarbase-sprite.png') -12px -197px no-repeat;
+	padding: 1px 0 3px 14px
+}
+
+.field-name-og-vocabulary .slider a {text-decoration:underline !important;}
+
+
 .not-logged-in.page-user #columns {
 	width:540px;
 	border-radius:5px;
@@ -665,6 +682,11 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
     background: none;
 }
 	
+.block-boxes-os_boxes_tabs .ui-widget {
+    font-family: inherit !important;
+    font-size: inherit !important;
+}
+	
 .ui-tabs .ui-tabs-panel {
 /* IE10 Consumer Preview */ 
 background-image: -ms-linear-gradient(top, #F5F2F2 0%, #FFFFFF 100%);
@@ -688,6 +710,7 @@ border-top:1px solid #ccc;
 	
 .ui-tabs .ui-tabs-nav li a {
     padding: 0.15em 1em;
+     text-decoration: none !important;
   }
 
 .page-cp #tabs,

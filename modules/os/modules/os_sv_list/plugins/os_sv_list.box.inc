@@ -16,7 +16,10 @@ class os_sv_list_box extends os_boxes_default {
 
       'pager' => FALSE,
       'number_of_items' => 5,
-      'sort_by' => 'sort_newest'
+      'sort_by' => 'sort_newest',
+
+      'biblio_show_all' => TRUE,
+      'biblio_whitelist' => array('all'=>'all'),
     );
 
     return $options;
@@ -53,6 +56,28 @@ class os_sv_list_box extends os_boxes_default {
         'effect' => 'none',
       ),
     );
+
+    $biblio_visible_states = array('visible' => array(':input[name="content_type"]' => array('value' => 'biblio')));
+
+    $form['biblio_show_all'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show all publication types'),
+      '#default_value' => $this->options['biblio_show_all'],
+      '#states' => $biblio_visible_states,
+    );
+
+
+
+    $form['biblio_whitelist'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Select publication types to display'),
+      '#default_value' => $this->options['biblio_whitelist'],
+      '#options' => $this->_biblio_types(),
+      '#states' => $biblio_visible_states,
+    );
+    //this doesn't quite work.  it needs extra clicks.  for now just working on making the option work.  form can be fixed later.
+    $form['biblio_whitelist']['#states']['visible'] += array(':input[name="biblio_show_all"]' => array('checked' => FALSE));
+    //$form['biblio_whitelist']['#states']['invisible'][':input[name="biblio_show_all"]'] = array('checked' => TRUE);
 
     $form['display'] = array(
       '#type' => 'select',
@@ -172,6 +197,12 @@ class os_sv_list_box extends os_boxes_default {
         }
 
         $query->join('biblio', 'b', 'n.vid = b.vid');
+
+        if (!$options['biblio_show_all'] && isset($options['biblio_whitelist'])) {
+          $bib_types = array_filter($options['biblio_whitelist']);
+          $query->condition('biblio_type', array_values($bib_types), 'IN');
+        }
+
         $query->orderBy('biblio_year', 'DESC');
         $query->range($page_num*$items, $items);
         $query->fields('n', array('nid'));
@@ -356,6 +387,20 @@ class os_sv_list_box extends os_boxes_default {
       $html .= theme('image', $variables);
     }
     return $html;
+  }
+
+  function _biblio_types() {
+    $rows = db_select('biblio_types', 'bt')
+      ->fields('bt', array('tid', 'name'))
+      ->condition('tid', 0, '>')
+      ->condition('visible', 1)
+      ->execute();
+    $options = array('all' => 'Select All');
+    foreach ($rows as $r) {
+      $options[$r->tid] = $r->name;
+    }
+
+    return $options;
   }
 
 }

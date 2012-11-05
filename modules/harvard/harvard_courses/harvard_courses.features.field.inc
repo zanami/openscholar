@@ -10,6 +10,137 @@
 function harvard_courses_field_default_fields() {
   $fields = array();
 
+  // Exported field: 'node-department-field_catalog_number'.
+  $fields['node-department-field_catalog_number'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_catalog_number',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'number',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'number_integer',
+    ),
+    'field_instance' => array(
+      'bundle' => 'department',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'Courses catalog number.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'number',
+          'settings' => array(
+            'decimal_separator' => '.',
+            'prefix_suffix' => TRUE,
+            'scale' => 0,
+            'thousand_separator' => ' ',
+          ),
+          'type' => 'number_integer',
+          'weight' => 9,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_catalog_number',
+      'label' => 'Catalog number',
+      'required' => FALSE,
+      'settings' => array(
+        'max' => '',
+        'min' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'text_processing' => 1,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'module' => 'number',
+        'settings' => array(),
+        'type' => 'number',
+        'weight' => 37,
+      ),
+    ),
+  );
+
+  // Exported field: 'node-department-field_department_id'.
+  $fields['node-department-field_department_id'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_department_id',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'department',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'Department ID for the course, i.e: COMPSCI.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 8,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_department_id',
+      'label' => 'Department ID',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => 36,
+      ),
+    ),
+  );
+
   // Exported field: 'node-harvard_api_importer-body'.
   $fields['node-harvard_api_importer-body'] = array(
     'field_config' => array(
@@ -1246,8 +1377,8 @@ function harvard_courses_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-vsite-field_catalog_number'.
-  $fields['node-vsite-field_catalog_number'] = array(
+  // Exported field: 'node-personal-field_catalog_number'.
+  $fields['node-personal-field_catalog_number'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
@@ -1263,7 +1394,7 @@ function harvard_courses_field_default_fields() {
       'type' => 'number_integer',
     ),
     'field_instance' => array(
-      'bundle' => 'vsite',
+      'bundle' => 'personal',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => 'Courses catalog number.',
@@ -1278,7 +1409,7 @@ function harvard_courses_field_default_fields() {
             'thousand_separator' => ' ',
           ),
           'type' => 'number_integer',
-          'weight' => 9,
+          'weight' => 7,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1290,26 +1421,26 @@ function harvard_courses_field_default_fields() {
       'entity_type' => 'node',
       'field_name' => 'field_catalog_number',
       'label' => 'Catalog number',
-      'required' => FALSE,
+      'required' => 0,
       'settings' => array(
         'max' => '',
         'min' => '',
         'prefix' => '',
         'suffix' => '',
-        'text_processing' => 1,
         'user_register_form' => FALSE,
       ),
       'widget' => array(
+        'active' => 0,
         'module' => 'number',
         'settings' => array(),
         'type' => 'number',
-        'weight' => 37,
+        'weight' => '37',
       ),
     ),
   );
 
-  // Exported field: 'node-vsite-field_department_id'.
-  $fields['node-vsite-field_department_id'] = array(
+  // Exported field: 'node-personal-field_department_id'.
+  $fields['node-personal-field_department_id'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
@@ -1338,7 +1469,7 @@ function harvard_courses_field_default_fields() {
       'type' => 'text',
     ),
     'field_instance' => array(
-      'bundle' => 'vsite',
+      'bundle' => 'personal',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => 'Department ID for the course, i.e: COMPSCI.',
@@ -1348,7 +1479,7 @@ function harvard_courses_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 8,
+          'weight' => 6,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1372,7 +1503,138 @@ function harvard_courses_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => 36,
+        'weight' => '35',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-project-field_catalog_number'.
+  $fields['node-project-field_catalog_number'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_catalog_number',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'number',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'number_integer',
+    ),
+    'field_instance' => array(
+      'bundle' => 'project',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'Courses catalog number.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'number',
+          'settings' => array(
+            'decimal_separator' => '.',
+            'prefix_suffix' => TRUE,
+            'scale' => 0,
+            'thousand_separator' => ' ',
+          ),
+          'type' => 'number_integer',
+          'weight' => 8,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_catalog_number',
+      'label' => 'Catalog number',
+      'required' => 0,
+      'settings' => array(
+        'max' => '',
+        'min' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'number',
+        'settings' => array(),
+        'type' => 'number',
+        'weight' => '37',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-project-field_department_id'.
+  $fields['node-project-field_department_id'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_department_id',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'project',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'Department ID for the course, i.e: COMPSCI.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 7,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_department_id',
+      'label' => 'Department ID',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '35',
       ),
     ),
   );

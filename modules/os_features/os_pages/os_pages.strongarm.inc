@@ -117,7 +117,7 @@ function os_pages_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'pathauto_node_page_pattern';
-  $strongarm->value = 'pages/[node:title]';
+  $strongarm->value = '[node:title]';
   $export['pathauto_node_page_pattern'] = $strongarm;
 
   return $export;

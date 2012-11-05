@@ -591,7 +591,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['path'] = 'cp/content/content';
   $handler->display->display_options['menu']['type'] = 'normal';
-  $handler->display->display_options['menu']['title'] = 'Manage Content';
+  $handler->display->display_options['menu']['title'] = 'Posts';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'cp';
   $handler->display->display_options['menu']['context'] = 0;
@@ -689,10 +689,29 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['relationship'] = 'file_to_node';
+  $handler->display->display_options['fields']['title']['label'] = 'Used in';
   $handler->display->display_options['fields']['title']['spaces'] = array(
     'type' => 'spaces_og',
     'frontpage' => 0,
   );
+  /* Field: File: File ID */
+  $handler->display->display_options['fields']['fid_1']['id'] = 'fid_1';
+  $handler->display->display_options['fields']['fid_1']['table'] = 'file_managed';
+  $handler->display->display_options['fields']['fid_1']['field'] = 'fid';
+  $handler->display->display_options['fields']['fid_1']['label'] = 'Edit';
+  $handler->display->display_options['fields']['fid_1']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['fid_1']['alter']['text'] = 'Edit';
+  $handler->display->display_options['fields']['fid_1']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['fid_1']['alter']['path'] = 'file/[fid]/edit';
+  /* Field: File: File ID */
+  $handler->display->display_options['fields']['fid_2']['id'] = 'fid_2';
+  $handler->display->display_options['fields']['fid_2']['table'] = 'file_managed';
+  $handler->display->display_options['fields']['fid_2']['field'] = 'fid';
+  $handler->display->display_options['fields']['fid_2']['label'] = 'Delete';
+  $handler->display->display_options['fields']['fid_2']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['fid_2']['alter']['text'] = 'Delete';
+  $handler->display->display_options['fields']['fid_2']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['fid_2']['alter']['path'] = 'file/[fid]/delete';
   /* Sort criterion: File: Upload date */
   $handler->display->display_options['sorts']['timestamp']['id'] = 'timestamp';
   $handler->display->display_options['sorts']['timestamp']['table'] = 'file_managed';
