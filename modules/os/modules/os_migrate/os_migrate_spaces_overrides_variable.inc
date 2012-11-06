@@ -170,7 +170,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
 
   //"scholar_book_toc_location" is now "os_booklets_toc_position".
   public function _update_variable_scholar_book_toc_location($object_id, $value) {
-    return array('os_booklets_toc_location', $value);
+    return array('os_booklets_toc_position', $value);
   }
 
   // check if a variable is discontinued
