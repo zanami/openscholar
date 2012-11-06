@@ -136,6 +136,11 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
     if ((empty($current_row->field_person_website_title) || !$current_row->field_person_website_title) && ($current_row->field_person_website_url)){
       $current_row->field_person_website_title = t('Website');
     }
+
+    //title should be in an array since there can be multiple
+    if (isset($current_row->field_person_title_value)) {
+      $current_row->field_person_title_value = array($current_row->field_person_title_value);
+    }
     return parent::prepareRow($current_row); //false -> skip this row
 
   }
