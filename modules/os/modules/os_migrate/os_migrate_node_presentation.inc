@@ -25,15 +25,19 @@ class PresentationNodeOSMigration extends AbstractNodeOSMigration {
     $this->addUnmigratedDestinations(parent::subfields('field_presentation_date', array('timezone', 'rrule', 'from')), t('DNM'));
 
     //file
-    $this->addFieldMapping('field_presentation_file', 'field_presentation_file');
+    $this->addFieldMapping('field_presentation_file', 'field_presentation_file')->defaultValue(NULL);
+    $this->addSimpleMappings(parent::subfields('field_presentation_file', array('language','description','display')));
+    $this->addFieldMapping('field_presentation_file:destination_file', 'filename');
+    $this->addFieldMapping('field_presentation_file:source_dir') //->defaultValue(variable_get('os_migrate_files', FALSE));
+      ->defaultValue(variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/d
+efault/files'));
+    $this->addFieldMapping('field_presentation_file:destination_dir', 'filepath');
     $this->addFieldMapping('field_presentation_file:og_group_ref', 'group_nid');
-    $this->addSimpleMappings(parent::subfields('field_presentation_file', array('destination_file', 'description', 'display')));
-    $this->addFieldMapping('field_presentation_file:source_dir')
-      ->defaultValue(variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
-    $this->addFieldMapping('field_presentation_file:destination_dir');
-    $this->addUnmigratedDestinations(parent::subfields('field_presentation_file', array('file_class', 'language', 'file_replace', 'preserve_files')));
 
-    //$this->dependencies[] = 'StubNodeOS'; // append dependencies.  these classes must be migrated before this class.
+    //good defaults
+    $this->addUnmigratedDestinations(parent::subfields('field_presentation_file', array('file_class','file_replace','preserve_files')));
+
+
 
 
 
@@ -61,44 +65,60 @@ class PresentationNodeOSMigration extends AbstractNodeOSMigration {
     return $fields;
   }
 
-  public function prepareRow(&$current_row) {
+  public function prepareRow(&$row) {
+    $file_directory_path = parent::d6_variable_get('file_directory_path', 'sites/default/files');
+    //$files_query = parent::os_migrate_node_get_files_query($row->vid);
+    $files_query = self::d6_db_select('content_field_presentation_file', 'ct')
+      ->fields('ct', array('field_presentation_file_fid', 'vid', 'field_presentation_file_data', 'field_presentation_file_list'))
 
-    /**
-     * This method is called while looping over the results of the query provided earlier.
-     *
-     * This is your chance to munge data.  (See Abstract's filter formats).
-     *
-     * This is also your chance to query additional tables that didn't make sense to join earlier
-     * (for example, see gallery.  d6's gallery had references to image nodes.  d7's gallery uses
-     * file fields for images.  While looping over d6 gallery nodes, prepareRow uses additional queries
-     * to get those image nodes and extract everything needed by file fields.)
-     */
+      ->condition('ct.vid', $row->vid, '=');
+    $files_query->join('files', 'f', 'ct.field_presentation_file_fid = f.fid');
+    $files_query->addField('f', 'filepath');
+    $files_query->addField('f', 'timestamp');
+ //   $files_query->orderBy('ct.fid', 'ASC');
 
-    //need to get files from content_field_presentation_file
-    $query = $this->_presentation_files_query($current_row->nid);
-    $fields = array('filepath' => 'destination_file', 'data'=>'description', 'list' => 'display');
-    parent::os_migrate_prepare_files($query->execute(), $current_row, 'field_presentation_file', $fields);
+    $fields = array(
+      'description' => 'field_presentation_file_data',
+      'display' => 'field_presentation_file_list',
+      'filepath' => 'filepath',
+      'filename' => 'filename',
+    );
+    $query = $files_query->execute();
+    $files = array();
+    while ($file_row = $query->fetchObject()) {
+      $filepath = $file_row->filepath;
+      $filepath = str_replace($file_directory_path, '', $filepath);
+      $file = explode('/', trim($filepath, '/'));
 
-    //multiple files!
-//     if (list($path, $name) = $this->_migrate_filename($current_row->{'field_presentation_file:filepath'})) {
-//       $current_row->{'field_presentation_file:filename'} = $name;
-//       $current_row->{'field_presentation_file:destination_dir'} = 'public://' . $path;
-//       $current_row->{'field_presentation_file'} = $path . '/' . $name;
-//     }
+      $file_row->filename = array_pop($file);
+      $file_row->filepath = 'public://' . implode('/', $file);
+      $file_row->field_upload_replace = $filepath;// . '/' . $file_row->filename;
+      //$file_row->file_destination = $file_destination;
+      $files[] = $file_row;
+    }
 
-    return parent::prepareRow($current_row); //false -> skip this row
-
+    parent::os_migrate_prepare_files($files, $row, 'field_presentation_file', $fields);
+    //field upload is set up wrong, but it's too late to fix the general function.
+    if (isset($row->field_presentation_file)) {
+      foreach (array_keys($row->field_presentation_file) as $delta) {
+        $row->field_presentation_file[$delta] = $files[$delta]->field_upload_replace;
+      }
+    }
   }
 
-  //returns a query to fetch presentation files from legacy db
-  function _presentation_files_query($nid) {
-    $query = parent::d6_db_select('content_field_presentation_file', 'ct')
-      ->condition('nid', $nid)
-      ->fields('ct');
-
-    $query->join('files', 'f', 'f.fid = ct.field_presentation_file_fid');
-    $query->fields('f', array('filepath'));
-
-    return $query;
+  public function complete(&$entity, $row) {
+    foreach ($entity->field_presentation_file as $LANG => $files) {
+      foreach ($files as $delta => $file) {
+        if ($f = file_load($file['fid'])) {
+          if (isset($row->field_presentation_file_description[$delta]) && $data = @unserialize($row->field_presentation_file_description[$delta])) {
+            if (isset($data['description']) && strlen($data['description'])) {
+              $f->filename = $data['description'];
+              file_save($f);
+            }
+          }
+        }
+      }
+    }
   }
+
 }

@@ -247,7 +247,7 @@ class MigrateDestinationTerm extends MigrateDestinationEntity {
     }
 
     // SystemOfRecord is source and we are keeping the tid
-    if(!$updating && isset($term->tid)){
+    if(!$updating && !empty($term->tid) && !taxonomy_term_load($term->tid)){
       // We are migrating an existing tid, for 'taxonomy_term_save' to write/update the
       // record correctly we must pre-populate the taxonomy_term_data table
       // no need to do any pre-processing (name, vocabulary_machine_name, etc..) taxonomy_term_save will handle this
