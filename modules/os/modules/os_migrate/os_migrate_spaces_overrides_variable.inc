@@ -137,6 +137,13 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     ) : FALSE;
   }
 
+  /**
+   * variable: scholar_dvn_dvn_alias -> os_dataverse_dvn_alias
+   */
+  public function _update_variable_scholar_dvn_dvn_alias($object_id, $value){
+    return array('os_dataverse_dvn_alias', $value);
+  }
+
   //vsite_ga_google_analytics_id => os_ga_google_analytics_id
   public function _update_variable_vsite_ga_google_analytics_id($object_id, $value){
     return array(
