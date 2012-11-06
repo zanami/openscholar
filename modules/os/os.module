@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * Openscholar module file.
@@ -431,12 +430,12 @@ function os_preprocess_page(&$vars) {
 
   $links = array();
   $active = context_active_contexts();
-  // Do nothing if we aren't in the cp.
+  // Does nothing if we aren't in the CP.
   if (!isset($active['os_public']) || arg(0) == 'os') {
     return;
   }
 
-  // set the title of the page to match the menu link title
+  // Sets page title to match the menu link title
   ctools_include('menu', 'os');
   $menu_item = os_menu_load_link_path($_GET['q']);
   drupal_set_title($menu_item['title']);
@@ -525,7 +524,7 @@ function os_preprocess_page(&$vars) {
     '#access' => spaces_access_admin(),
   );
 
-  // Append flavor css
+  // Appends flavor css
   ctools_include('themes', 'os');
   if ($flavor = current(os_theme_get_flavor())) {
 
@@ -555,7 +554,7 @@ function os_preprocess_page(&$vars) {
             drupal_add_css($flavor['path'] . '/' . $file, $options);
           }
         }
-        // will this be supported?
+        // @todo will this be supported?
         // http://drupal.org/node/522006
       }
     }
@@ -589,6 +588,8 @@ function os_entity_form_after_build($form, $form_state) {
 }
 
 /**
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form.
+ *
  * Cleans up some advanced settings and places them in a fieldset.
  */
 function os_form_node_form_alter(&$form, $form_state) {
