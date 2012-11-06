@@ -1,15 +1,12 @@
 <?php
 
-class os_boxes_site_info extends os_boxes_default {
+class os_boxes_field_group extends os_boxes_default {
 
   function options_defaults() {
     $options = parent::options_defaults();
 
     $options += array(
-      'site_title' => 'Your Name',
-      'descrip' => 'Hover over here, and then click the gear to change me.',
-      'address1' => '13 Somewhere Dr.',
-      'address2' => 'That Town, USA',
+      'field_group' => '',
     );
 
     return $options;
@@ -17,13 +14,6 @@ class os_boxes_site_info extends os_boxes_default {
 
   function box_form(&$form_state) {
     $form = parent::options_form($form_state);
-
-    $form['site_title'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Title'),
-      '#default_value' => $this->options['site_title'],
-      '#size' => 60,
-    );
 
     if (module_exists('vsite') && $vsite = spaces_get_space()) {
       $group = $vsite->group;
@@ -37,51 +27,11 @@ class os_boxes_site_info extends os_boxes_default {
       }
 
       foreach ($form['#group_children'] as $c => $v) {
-        if ($v == 'group_site_info') {
+        if ($v == $this->options['field_group']) {
           $form[$c] = $temp[$c];
         }
       }
-      /*
-      $addr = field_get_items('node', $group, 'field_site_address');
-      if (isset($addr[0])) {
-        $addr = explode('<br>', $addr[0]['value']);
-      }
-      else {
-        $addr = array('', '');
-      }
-      $descrip = field_get_items('node', $group, 'field_site_description');
-      $this->options = array_merge($this->options, array(
-        'site_title' => $group->title,
-        'descrip' => isset($descrip[0])?$descrip[0]['value']:'',
-        'address1' => $addr[0],
-        'address2' => $addr[1],
-      ));
-      */
     }
-//
-//    $form['descrip'] = array(
-//      '#type' => 'textfield',
-//      '#title' => t('Description'),
-//      '#default_value' => $this->options['descrip'],
-//      '#description' => t('A brief description of your web site.'),
-//      '#size' => 60,
-//    );
-//
-//    $form['address1'] = array(
-//      '#type' => 'textfield',
-//      '#title' => t('Address Line 1'),
-//      '#default_value' => $this->options['address1'],
-//      '#size' => 30,
-//      '#description' => t('Ex. 31 Harvard Ave.'),
-//    );
-//
-//    $form['address2'] = array(
-//      '#type' => 'textfield',
-//      '#title' => t('Address Line 2'),
-//      '#default_value' => $this->options['address2'],
-//      '#size' => 30,
-//      '#description' => t('Ex. Cambridge, MA 02138'),
-//    );
 
     $form['actions'] = array(
       'submit' => array(
@@ -108,19 +58,10 @@ class os_boxes_site_info extends os_boxes_default {
       $group = $vsite->group;
       $content = array(
         '#view_mode' => 'full',
-        'title' => array(
-          '#prefix' => '<h1>',
-          '#suffix' => '</h1>',
-          '#markup' => check_plain($group->title),
-          '#weight' => 0,
-        ),
-        'contact' => array(
-          '#markup' => l('(email)', 'contact_owner'),
-          '#weight' => 100,
-        )
       );
       field_attach_prepare_view('node', array($group->nid => $group), 'full');
       $temp = field_attach_view('node', $group, 'full');
+      dpm($temp);
 
       $children = element_children($temp);
       $props = array_diff(array_keys($temp), $children);
@@ -130,7 +71,7 @@ class os_boxes_site_info extends os_boxes_default {
       }
 
       foreach ($content['#group_children'] as $c => $v) {
-        if ($v == 'group_site_info') {
+        if ($v == $this->options['field_group'] && isset($temp[$c])) {
           $content[$c] = $temp[$c];
         }
       }
@@ -157,7 +98,7 @@ function os_boxes_site_info_submit($form, &$form_state) {
     $node->title = $form_state['values']['site_title'];
 
     foreach ($form['#group_children'] as $c => $g) {
-      if ($g == 'group_site_info') {
+      if ($g == $box->options['field_group']) {
         $node->{$c} = $form_state['values'][$c];
       }
     }
