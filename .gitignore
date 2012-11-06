@@ -8,3 +8,6 @@
 
 # Dont's track coder module backups
 *.coder.orig
+
+modules/contrib
+themes/contrib

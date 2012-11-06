@@ -1,9 +1,6 @@
 name = OpenScholar
 description = Install OpenScholar
 core = 7.15
-files[] = openscholar.profile
-files[] = openscholar.install
-files[] = tests/openscholar.test
 
 ; Core
 dependencies[] = color
@@ -43,6 +40,7 @@ dependencies[] = advanced_help
 dependencies[] = imagefield_crop
 dependencies[] = jcarousel
 dependencies[] = media
+dependencies[] = mediafield
 dependencies[] = oembed
 dependencies[] = file_entity
 dependencies[] = wysiwyg
@@ -98,10 +96,9 @@ dependencies[] = os_biocv
 
 ; other
 dependencies[] = diff
+dependencies[] = field_group
 dependencies[] = twitter_pull
 dependencies[] = nice_menus
 dependencies[] = shorten
 
-files[] = openscholar.profile
-
-
+files[] = tests/openscholar.test
