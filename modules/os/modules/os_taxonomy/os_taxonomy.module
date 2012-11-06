@@ -157,29 +157,38 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   );
   $vocabulary = taxonomy_vocabulary_load($variables['vid']);
 
-  $query = new entityFieldQuery();
-  // Bring the list of terms ordered by name, and suporting range and offeset.
-  $query
-    ->entityCondition('entity_type', 'taxonomy_term')
-    ->propertyCondition('vid', $variables['vid'])
-    ->propertyOrderBy('name');
-
   // Return a selective part of the list.
   // TODO: Is not supported  when hiding children, in this case hidden child
   // will also be counted but not displayed.
+  $query = db_select('taxonomy_term_data', 'term');
+
+  $query
+    ->fields('term', array('tid'))
+    ->condition('term.vid', $options['vocabulary'])
+    ->orderBy('weight');
+
+  // Showing specific number of terms from the first hierarchy.
   if (!empty($options['range'])) {
-    $query->range($options['offset'], $options['offset'] + $options['range']);
+    $query->join('taxonomy_term_hierarchy', 'term_hierarchy', 'term_hierarchy.tid = term.tid');
+    $query
+      ->condition('term_hierarchy.parent', 0)
+      ->range($options['offset'], $options['offset'] + $options['range']);
   }
 
   $result = $query->execute();
 
+  $tids = array();
+  while ($row = $result->fetchAssoc()) {
+    $tids[$row['tid']] = $row['tid'];
+  }
+
   // No result - quit.
-  if (empty($result['taxonomy_term'])) {
+  if (empty($tids)) {
     return;
   }
 
   // Load all terms.
-  $terms = taxonomy_term_load_multiple(array_keys($result['taxonomy_term']));
+  $terms = taxonomy_term_load_multiple($tids);
   // Arrange term in an array with information about inner tree.
   $items = os_taxonomy_build_term_items($terms, $options);
   $path_prefix = '';
@@ -244,6 +253,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
           'show_term_descriptions' => $options['show_term_descriptions'],
           'childs' => $child_content,
         )),
+        'class' => array('term-' . drupal_html_class($item['term_name'])),
       );
     }
   }
@@ -406,7 +416,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
         'show_term_descriptions' => $options['show_term_descriptions'],
         'childs' => $child_content,
       )),
-      'class' => array('term-' . check_plain($item['term_name'])),
+      'class' => array('term-' . drupal_html_class($item['term_name'])),
     );
   }
 
@@ -414,7 +424,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
     'type' => 'ul',
     'items' => $content,
     'attributes' => array(
-       'class' => array('termchild-' . check_plain($parent['term_name'])),
+       'class' => array('termchild-' . drupal_html_class($parent['term_name'])),
      ),
   );
   return theme('item_list', $params);
