@@ -161,9 +161,12 @@ class os_taxonomy_fbt extends os_boxes_default {
   public function render() {
     $block = parent::render();
     if (empty($this->options['vocabulary'])) {
-      // There are no vocabularies defined in the VSite.
+      $this->options['vocabulary'] = current(array_keys(self::get_all_volcabularies()));
 
-      return $block;
+      if(empty($this->options['vocabulary'])){
+        // There are no vocabularies defined in the VSite.
+        return $block;
+      }
     }
     // For now - display the first vocabulary terms.
     if ($this->options['behavior'] == '--all--') {
