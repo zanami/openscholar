@@ -431,7 +431,10 @@ abstract class OSMigration extends Migration {
       ->execute()
       ->fetchField();
 
-    $entity = file_load($file['destid1']);
+    if (($entity = file_load($file['destid1'])) == FALSE) {
+      self::saveMessage(t('Error loading file: @fid', array('@fid'=>$file['destid1'])));
+      return FALSE;
+    }
     $uri = ($d6name) ? $d6name : $this->_uri_trim($entity->uri);
 
     $dom = filter_dom_load($row->body);
@@ -623,11 +626,18 @@ abstract class OSMigration extends Migration {
     for ($i=0, $len=$images->length; $i < $len; $i++) {
       $img = $images->item($i);
       if (isset($img) && strpos($img->getAttribute('src'), $uri)) {
-        $attributes = $this->_get_image_attributes($img);
-        $parent_attributes = $this->_get_image_attributes($img->parentNode);
-        $attributes = array_merge($parent_attributes, $attributes);
+        $class = $img->getAttribute('class');
 
-        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $attributes);
+        $imagecache_dims = array();
+        if (preg_match('/^imagecache/', $class)) {
+          $imagecache_dims = $this->_get_inline_imagecache_dimensions($img->getAttribute('src'));
+        }
+
+        $style = $this->_get_image_attributes($img);
+        $parent_style = $this->_get_image_attributes($img->parentNode);
+        $style = array_merge($parent_style, $style);
+
+        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $style, $imagecache_dims);
         $text = $dom->createTextNode($tag);
         $img->parentNode->replaceChild($text, $img);
         $update = TRUE;
@@ -669,7 +679,7 @@ abstract class OSMigration extends Migration {
 
   //prepare the inline tag
   //generic for now.
-  function _os_migrate_inline_tag($type, $fid, &$dom_object, $style = array()) {
+  function _os_migrate_inline_tag($type, $fid, &$dom_object, $style = array(), $attributes=array()) {
     $tag = array(
       'type' => 'media',
       'view_mode' => 'default',
@@ -686,7 +696,7 @@ abstract class OSMigration extends Migration {
       '' => 'os_files_large',
     );
 
-    $attributes = array();
+
 
     switch ($type) {
       case 'image':
@@ -698,7 +708,8 @@ abstract class OSMigration extends Migration {
           $tag['view_mode'] = 'os_files_large';
           parent::saveMessage(t('No image cache size for class: @class, assuming original.', array('@class' => $class)), MigrationBase::MESSAGE_INFORMATIONAL);
         }
-        $attributes = array('width'=>'width', 'height'=>'height');
+
+        $attributes = (empty($attributes)) ? array('width'=>'width', 'height'=>'height') : $attributes;
         //$tag['view_mode'] = 'media_original';
       break;
 
@@ -805,6 +816,35 @@ abstract class OSMigration extends Migration {
   }
 
   /**
+   * @function _get_inline_imagecache_dimensions($uri)
+   *
+   * Some inline images don't have their dimensions stored anywhere, but leave a cropped
+   * file in an imagecache folder.  In that case, return the [width, height] of the
+   * image.
+   *
+   * ex URI: http://scholar.harvard.edu/swallow/sites/scholar.iq.harvard.edu/files/imagecache/inline_default/swallow/files/polar-bear-wild-animals-2614076-1024-768.jpg
+   */
+  function _get_inline_imagecache_dimensions($uri) {
+//    $domain = variable_get('os_migrate_use_domain', self::d6_variable_get('purl_base_domain', FALSE));
+
+    $files_path = variable_get('os_migrate_files');
+    $drupal_files = self::d6_variable_get('file_directory_path', 'sites/default/files');
+  //  $file = preg_replace('/.*\/files/U', '', $uri);
+    $pattern = '/.*' . str_replace('/', '\/', $drupal_files) .'/';
+    $file = preg_replace($pattern, '', $uri);
+
+    $filepath = "${files_path}/${drupal_files}/${file}";
+
+    if (is_readable($filepath) && ($dims = getimagesize($filepath))) {
+      return array('width'=>$dims[0], 'height'=>$dims[1]);
+    } else {
+      self::saveMessage(t('Could not find dimensions for image: %uri', array('%uri'=>$uri)), MigrationBase::MESSAGE_INFORMATIONAL);
+      return FALSE;
+    }
+
+
+  }
+  /**
    * get attributes from dom element
    * attr array maps old (d6) to new d7 attribute, just in case things change due to new schema
    **/
@@ -813,6 +853,9 @@ abstract class OSMigration extends Migration {
     foreach ($attr as  $old => $new) {
       if ($value = $dom->getAttribute($old)) {
         $return[$new] = $value;
+      } elseif($old) {
+        //just use the old value instead of fetching it from the dom
+        $return[$old] = $new;
       }
     }
     return $return;
