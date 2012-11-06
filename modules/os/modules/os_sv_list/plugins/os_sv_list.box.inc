@@ -48,6 +48,7 @@ class os_sv_list_box extends os_boxes_default {
       '#title' => 'Content Type',
       '#default_value' => $this->options['content_type'],
       '#options' => $content_types,
+      '#id' => 'os_sv_list_content_type',
       '#ajax' => array(
         'callback' => 'os_sv_list_more_link_ajax',
         //'wrapper' => 'more_link_div',
@@ -55,29 +56,35 @@ class os_sv_list_box extends os_boxes_default {
         'method' => 'replace',
         'effect' => 'none',
       ),
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'os_sv_list').'/os_sv_list.js',
+        ),
+      ),
     );
-
-    $biblio_visible_states = array('visible' => array(':input[name="content_type"]' => array('value' => 'biblio')));
 
     $form['biblio_show_all'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show all publication types'),
       '#default_value' => $this->options['biblio_show_all'],
-      '#states' => $biblio_visible_states,
+      '#id' => 'biblio_show_all_check',
+      '#prefix' => '<div id="os_sv_list_biblio_show_all">',
+      '#suffix' => '</div>',
     );
-
-
 
     $form['biblio_whitelist'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Select publication types to display'),
       '#default_value' => $this->options['biblio_whitelist'],
       '#options' => $this->_biblio_types(),
-      '#states' => $biblio_visible_states,
+      '#prefix' => '<div id="os_sv_list_biblio_whitelist">',
+      '#suffix' => '</div>',
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'os_boxes').'/misc/selectAll.js',
+        ),
+      ),
     );
-    //this doesn't quite work.  it needs extra clicks.  for now just working on making the option work.  form can be fixed later.
-    $form['biblio_whitelist']['#states']['visible'] += array(':input[name="biblio_show_all"]' => array('checked' => FALSE));
-    //$form['biblio_whitelist']['#states']['invisible'][':input[name="biblio_show_all"]'] = array('checked' => TRUE);
 
     $form['display'] = array(
       '#type' => 'select',
@@ -198,7 +205,7 @@ class os_sv_list_box extends os_boxes_default {
 
         $query->join('biblio', 'b', 'n.vid = b.vid');
 
-        if (!$options['biblio_show_all'] && isset($options['biblio_whitelist'])) {
+        if (isset($options['biblio_show_all']) && !$options['biblio_show_all'] && isset($options['biblio_whitelist'])) {
           $bib_types = array_filter($options['biblio_whitelist']);
           $query->condition('biblio_type', array_values($bib_types), 'IN');
         }

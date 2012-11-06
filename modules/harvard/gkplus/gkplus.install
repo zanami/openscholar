@@ -7,59 +7,9 @@
  * @ingroup updatefile
  */
 function gkplus_enable() {
-  // Adjust system weight for module gkplus to be after nodeorder.
-  _gkplus_adjust_module_weight(array('gkplus'), '>', array('nodeorder'));
-  // Note: D6 also cared about modules 'vsite_layout' & 'vsite_taxonomy',
-  // but it didn't seem necessary when porting... yet.
-
   // Creates the update file directory if it doesn't already exist.
   $temp_path = _gkplus_temp_path();
   if (!is_dir($temp_path)) {
     mkdir($temp_path, 0775);
   }
-}
-
-/**
- * Adjusts module weights to ensure greater/lesser weight.
- *
- * @param array $update
- * @param string $condition
- * @param array $compare
- */
-function _gkplus_adjust_module_weight($update, $condition, $compare) {
-  if (!$update || !$condition || !$compare) {
-    return;
-  }
-
-  // Continues only if we are comparing with less than or greater than.
-  switch ($condition) {
-    case '>':
-      $sort = 'DESC';
-      $weight = $weight + 1;
-      break;
-    case '<':
-      $sort = 'ASC';
-      $weight = $weight - 1;
-      break;
-    default:
-      return;
-  }
-
-  // Finds the highest weight among the compared modules.
-  $weight = db_select('system', 's')
-    ->fields('s', array('weight'))
-    ->condition('name', $compare, 'IN')
-    ->range(0, 1)
-    ->orderBy('weight', $sort)
-    ->execute()
-    ->fetchField();
-  if ($weight === FALSE) {
-    return;
-  }
-
-  // Updates the given module with the new increased or decreased weight.
-  db_update('system')
-    ->fields(array('weight' => $weight))
-    ->condition('name', 'gkplus', '=')
-    ->execute();
 }

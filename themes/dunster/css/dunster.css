@@ -23,7 +23,6 @@ a:hover {
 
 h2, h3, h4 {
 	margin-bottom: 0;
-	margin-top: 1em;
 	font-weight:normal;
 	font-family:'Arvo', arial, serif;
 	}
@@ -35,9 +34,8 @@ h2, h3, h4 {
 
 h1#page-title {
 	margin-top: 0;
-	margin-bottom: 1em;
-	color:#BB0000;
-	display:none;
+	color:#4F5047;
+	font-size:1.5em;
 	}
 
 .links li {
@@ -62,9 +60,7 @@ strong {
   font-size: .9em;
   }
 
-.two-sidebars #content-column .content-inner {
-  border-left:1px dashed #ccc;
-  }
+
 
 .region-sidebar-second {
   background:#dce7ef;
@@ -118,7 +114,9 @@ margin-bottom: -2000px;
 padding-bottom: 2000px;
 }
 
-
+.region-sidebar-first  {
+border-right:1px dashed #ccc;
+}
 
 /* SIDEBAR ELEMENTS */
 
@@ -154,7 +152,9 @@ background-image: linear-gradient(to top, #DCD9DB 0%, #FFFFFF 100%);
 	margin: 0 auto;
 	}
 
-
+.lt-ie9 #header-container {
+background:#EDEDED;
+}
 
 #header-container h1,
 #header-container h2,
