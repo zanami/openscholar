@@ -48,7 +48,7 @@ function os_comments_form_cp_app_settings_form_alter(&$form, &$form_state, $form
 
   foreach (element_children($form["comment_settings"]) as $child) {
   	if (strpos($child, 'comment_sources_') === 0 && !in_array($child, $node_types)) {
-  	  unset($form["comment_settings"][$child]);
+  	  $form["comment_settings"][$child]['#access'] = FALSE;
   	}
   }
   // Uses a secondary validator.
