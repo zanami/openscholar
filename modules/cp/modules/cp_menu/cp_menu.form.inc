@@ -178,7 +178,8 @@ function theme_cp_menu_table($variables){
           'colspan' => 2,
         ),
         array(
-          'data' => ctools_modal_text_button('Add New Link', 'cp/menu/nojs/new/'.$d, 'Add New Link'),
+          //'data' => ctools_modal_text_button('Add New Link', 'cp/menu/nojs/new/'.$d, 'Add New Link'),
+          'data' => l('Add New Link','cp/menu/nojs/new/'.$d,array('attributes' => array('title' => 'Add a new menu item.'))),
         ),
         array(
           'data' => '',
