@@ -103,25 +103,46 @@ class os_boxes_site_info extends os_boxes_default {
   function render() {
     $block = parent::render();
 
+    $output = '';
     if (module_exists('vsite') && $vsite = spaces_get_space()) {
       $group = $vsite->group;
-      $addr = field_get_items('node', $group, 'field_site_address');
-      $addr = explode('<br>', $addr[0]['value']);
-      $descrip = field_get_items('node', $group, 'field_site_description');
-      $this->options = array_merge($this->options, array(
-        'site_title' => $group->title,
-        'descrip' => $descrip[0]['value'],
-        'address1' => (isset($addr[0])) ? $addr[0] : '',
-        'address2' => (isset($addr[1])) ? $addr[1] : '',
-      ));
+      $content = array(
+        '#view_mode' => 'full',
+        'title' => array(
+          '#prefix' => '<h1>',
+          '#suffix' => '</h1>',
+          '#markup' => check_plain($group->title),
+          '#weight' => 0,
+        ),
+        'contact' => array(
+          '#markup' => l('(email)', 'contact_owner'),
+          '#weight' => 100,
+        )
+      );
+      field_attach_prepare_view('node', array($group->nid => $group), 'full');
+      $temp = field_attach_view('node', $group, 'full');
+
+      $children = element_children($temp);
+      $props = array_diff(array_keys($temp), $children);
+
+      foreach ($props as $p) {
+        $content[$p] = $temp[$p];
+      }
+
+      foreach ($content['#group_children'] as $c => $v) {
+        if ($v == 'group_site_info') {
+          $content[$c] = $temp[$c];
+        }
+      }
+
+      $output = render($content);
     }
-
-    $output = '';
-
-    $output = '<h1>'.l($this->options['site_title'], '<front>').'</h1>
-    <h2>'.check_plain($this->options['descrip']).'</h2>
-    <p>'.check_plain($this->options['address1']).'<br>'.check_plain($this->options['address2']).'
-    '.l('(email)', 'contact_owner').'</p>';
+    else {
+      $output = '<h1>'.l($this->options['site_title'], '<front>').'</h1>
+      <h2>'.check_plain($this->options['descrip']).'</h2>
+      <p>'.check_plain($this->options['address1']).'<br>'.check_plain($this->options['address2']).'
+      '.l('(email)', 'contact_owner').'</p>';
+    }
 
     $block['content'] = $output;
     return $block;
