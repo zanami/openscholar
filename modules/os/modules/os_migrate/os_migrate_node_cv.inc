@@ -76,11 +76,8 @@ class CVNodeOSMigration extends AbstractNodeOSMigration {
      * to get those image nodes and extract everything needed by file fields.)
      */
     $file = parent::get_file_by_fid($current_row->field_cv_attach_fid);
-//     $fields = array('description' => 'description', 'list' => 'display', 'filepath' => 'destination_file');
-//     if ($files) {
-//       parent::os_migrate_prepare_files(array($files), $current_row, 'cv_attach', $fields);
-//     }
 
+    //there are two possible locations for cv files in the db.  check both of them.  verified by hand that their data doesn't conflict
     $alt_file = parent::get_file_by_fid($current_row->field_cv_attached_fid);
     $dir = variable_get('os_migrate_files', '') . '/';
     if ($file && parent::legacy_file_exists($dir . $file->filepath)) {
@@ -96,13 +93,6 @@ class CVNodeOSMigration extends AbstractNodeOSMigration {
         $current_row->{'field_biocv_pdf_upload'} = $path . '/' . $name;
       }
     }
-
-    //use description as file title
-///     if ($data = unserialize($file->description)) {
-//       if (isset($data['description']) && strlen($data['description'])) {
-//         $current_row->{'field_biocv_pdf_upload:destination_file'} = $data['description'];
-//       }
-//     }
 
     return parent::prepareRow($current_row); //false -> skip this row
 
