@@ -315,6 +315,7 @@ EOF;
        ->condition('type', 'og')
        ->condition('object_type', 'boxes')
        ->condition('value', '%s:10:"plugin_key";s:15:"os_taxonomy_fbt"%', 'LIKE')
+       ->condition('value', '%s:10:"vocabulary";a:%', 'LIKE')
        ->fields('so')
        ->execute();
 

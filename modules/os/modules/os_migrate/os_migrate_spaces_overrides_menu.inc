@@ -122,46 +122,17 @@ class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
       return $result->fetchField();
     }
 
-
-
-//     $mlid = db_query_range("SELECT mlid FROM {menu_links} WHERE link_path = :path AND module = 'menu' AND menu_name IN (:type_menus) ORDER BY mlid ASC", 0, 1, array(
-//         ':path' => $path,
-//         ':type_menus' => array_keys($os_menus)
-//     ))->fetchField();
-
-    $result = db_select('spaces_overrides', 's')
-      ->fields('s', array('value'))
-      ->condition('id', $gid, '=')
-      ->condition('object_type', 'variable', '=')
-      ->condition('object_id', 'vsite_menu_mlid_increment', '=')
-      ->execute();
-
-    $update = FALSE;
-    if ($result->rowCount()) {
-      $update = TRUE;
-      $mlid = unserialize($result->fetchField());
-    } elseif (module_exists('vsite_menu')) {
-      $mlid = VSITE_MENU_CUSTOM_MLID;
+    if (module_exists('vsite_menu')) {
+      $def_mlid = VSITE_MENU_CUSTOM_MLID;
     } else {
-      $mlid = 1000;
+      $def_mlid = 1000;
     }
 
-    $mlid++;
+    $mlid = variable_get('vsite_menu_mlid_increment',$def_mlid);
 
-    //drupal_write_record('spaces_overrides', $record, array('id', 'object_type', 'object_id', 'type'));
-    $record = array('value' => serialize($mlid), 'id' => $gid, 'object_type' => 'variable', 'object_id' => 'vsite_menu_mlid_increment', 'type' => 'og');
-
-    if ($update) {
-      $updated = db_update('spaces_overrides')
-        ->fields($record)
-        ->condition('id', $gid, '=')
-        ->condition('object_type', 'variable', '=' )
-        ->condition('object_id','vsite_menu_mlid_increment', '=')
-        ->condition('type', 'og', '=')
-        ->execute();
-    } else {
-      db_insert('spaces_overrides')->fields($record)->execute();
-    }
+	  // Increment the mlid site-wide, this only needs to
+	  // be distinct per menu, but no need to keep the var for each site
+	  variable_set('vsite_menu_mlid_increment',($mlid + 1));
 
     return $mlid;
   }
