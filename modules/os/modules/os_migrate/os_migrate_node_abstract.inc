@@ -346,7 +346,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'filepath' => 'filepath',
         //'file_destination' => 'file_destination',
         //'filename' => 'filename',
-        'filename' => 'description',
+        'filename' => 'filename',
         //'field_upload' => 'field_upload',
       );
 
@@ -384,6 +384,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       if (isset($row->field_upload)) {
         foreach (array_keys($row->field_upload) as $delta) {
           $row->field_upload[$delta] = $files[$delta]->field_upload_replace;
+          //use description as file name
+          if (strlen($row->field_upload_description[$delta])) {
+            $row->field_upload_filename[$delta] = $row->field_upload_description[$delta];
+          }
         }
       }
     }
