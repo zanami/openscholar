@@ -861,7 +861,7 @@ class BoxPorter {
 
      //New default and name
      $box->options['range'] = isset($box->options['number_of_items'])?$box->options['number_of_items']:false;
-     $box->options['depth'] = isset($box->options['tree_max_depth'])?$box->options['tree_max_depth']:0;
+     $box->options['depth'] = isset($box->options['tree_max_depth'])?($box->options['tree_max_depth'] - 1):0;
      $box->options['show_childs'] = isset($box->options['show_tree'])?$box->options['show_tree']:false;
 
      //New Default
