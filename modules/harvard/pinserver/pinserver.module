@@ -35,6 +35,13 @@ function pinserver_menu() {
     'file path' => $path,
   );
 
+  $items['pinserver/forbidden'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => t('Forbidden'),
+    'page callback' => 'pinserver_forbidden_page',
+    'access callback' => TRUE,
+  );
+
   return $items;
 }
 
@@ -434,3 +441,10 @@ function theme_pinserver_token_error($values = NULL) {
   return $message;
 }
 
+/**
+ * Menu callback for 'pinserver/forbidden'; displays 403 Forbidden error message.
+ */
+function pinserver_forbidden_page() {
+  drupal_access_denied();
+  die();
+}

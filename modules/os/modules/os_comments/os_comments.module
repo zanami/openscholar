@@ -163,7 +163,7 @@ function os_comments_fb_social_save_vsite($comment_node_types, $preset_name = ''
  * Note: We do not have an option to set the default comment to be 'hidden'
  *
  * @param array $comment_node_types
- *   Array containing all apps with Drupal comments enabled, including the
+ *   Array containing all node types with Drupal comments enabled, including the
  *   newly added type to enable comments on if the user is enabling Drupal
  *   comments for a type.
  */
