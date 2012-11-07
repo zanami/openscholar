@@ -406,6 +406,15 @@ ul.action-links li {
 
 
 /** CONTEXTUAL DROPDOWN LINKS **/
+div.contextual-links-wrapper {
+z-index: 500;
+}	
+	
+a.contextual-links-trigger {
+  padding: 0 2px !important;
+
+}	
+	
 div.contextual-links-wrapper ul.contextual-links {
   -moz-border-radius: 0; /* LTR */
   -webkit-border-bottom-left-radius: 0;

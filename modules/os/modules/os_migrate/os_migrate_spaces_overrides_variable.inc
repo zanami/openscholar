@@ -137,6 +137,13 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     ) : FALSE;
   }
 
+  /**
+   * variable: scholar_dvn_dvn_alias -> os_dataverse_dvn_alias
+   */
+  public function _update_variable_scholar_dvn_dvn_alias($object_id, $value){
+    return array('os_dataverse_dvn_alias', $value);
+  }
+
   //vsite_ga_google_analytics_id => os_ga_google_analytics_id
   public function _update_variable_vsite_ga_google_analytics_id($object_id, $value){
     return array(
@@ -163,7 +170,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
 
   //"scholar_book_toc_location" is now "os_booklets_toc_position".
   public function _update_variable_scholar_book_toc_location($object_id, $value) {
-    return array('os_booklets_toc_location', $value);
+    return array('os_booklets_toc_position', $value);
   }
 
   // check if a variable is discontinued

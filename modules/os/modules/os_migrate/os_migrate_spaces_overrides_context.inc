@@ -107,7 +107,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
 
   //updates only the relevant portions of a block for this context
   public function _update_context_block($id, $block){
-    $id = $this->_update_context_block_id($id);
+    $id = self::update_context_block_id($id);
 
     $keep = array(
       'module',
@@ -170,7 +170,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     );
   }
 
-  function _update_context_block_id($id){
+  public static function update_context_block_id($id){
     $id_map = array(
       'vsite_menus-features' => 'os-primary-menu',
       'vsite_menus-scholar_secondary_menu' => 'os-secondary-menu',
