@@ -826,11 +826,11 @@ class BoxPorter {
 
     $qt_obj = $box->options['qt_obj'];
     $new_tabs = array();
-    foreach ($qt_obj['tabs'] as $id => $box) {
+    foreach ($qt_obj['tabs'] as $id => $oldbox) {
       $new_tabs['tab-'.$id] = array(
-        'bid' => SpacesOverridesContextMigration::update_context_block_id($box['bid']),
-        'weight' => (isset($box['weight'])?$box['weight']:0),
-        'title' => (isset($box['title'])?$box['title']:""),
+        'bid' => SpacesOverridesContextMigration::update_context_block_id($oldbox['bid']),
+        'weight' => (isset($oldbox['weight'])?$oldbox['weight']:0),
+        'title' => (isset($oldbox['title'])?$oldbox['title']:""),
       );
     }
 
