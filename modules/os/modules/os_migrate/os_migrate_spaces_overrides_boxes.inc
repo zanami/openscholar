@@ -806,7 +806,7 @@ class BoxPorter {
       'sort_by' =>          'sort_newest',
     );
 
-    $options = array_merge($box->options, $defaults);
+    $options = array_merge($defaults, $box->options);
 
     $options['content_type'] = $ct;
     $options['display'] = $this->_sv_list_box_style($options['display']);
