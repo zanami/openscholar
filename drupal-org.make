@@ -6,10 +6,10 @@ projects[addressfield][subdir] = "contrib"
 projects[addressfield][version] = 1.x-dev
 
 projects[advanced_help][subdir] = "contrib"
-projects[advanced_help][version] = 1.x-dev
+projects[advanced_help][version] = 1.0
 
 projects[apachesolr][subdir] = "contrib"
-projects[apachesolr][version] = 1.x-dev
+projects[apachesolr][version] = 1.1
 
 projects[apachesolr_attachments][subdir] = "contrib"
 projects[apachesolr_attachments][version] = 1.x-dev
@@ -19,10 +19,10 @@ projects[apachesolr_og][version] = 1.x-dev
 
 ;projects[biblio][patch][] = "http://drupal.org/files/biblio-md5_hash-1722772-1.patch"
 projects[biblio][subdir] = "biblio"
-projects[biblio][version] = 1.x-dev
+projects[biblio][version] = 1.0-rc4
 
 projects[boxes][subdir] = "contrib"
-projects[boxes][version] = 1.0
+projects[boxes][version] = 2.x-dev
 
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.x-dev
@@ -36,7 +36,7 @@ projects[comment_sources][subdir] = "contrib"
 projects[comment_sources][type] = module
 
 projects[context][subdir] = "contrib"
-projects[context][version] = 3.x-dev
+projects[context][version] = 3.0-beta4
 
 projects[contextual_annotation][subdir] = "contrib"
 projects[contextual_annotation][type] = module
@@ -46,14 +46,14 @@ projects[contextual_annotation][download][url] =  "http://git.drupal.org/project
 projects[ctools][patch][] = "http://drupal.org/files/1707810-ctools-fields-mock-field-7.patch"
 projects[ctools][patch][] = "http://drupal.org/files/ctools-plugin_extension-1623044-1.patch"
 projects[ctools][subdir] = "contrib"
-projects[ctools][version] = 1.x-dev
+projects[ctools][version] = 1.2
 
 projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.patch"
 projects[date][subdir] = "contrib"
-projects[date][version] = 2.x-dev
+projects[date][version] = 2.6
 
 projects[devel][subdir] = "contrib"
-projects[devel][version] = 1.x-dev
+projects[devel][version] = 1.3
 
 projects[diff][subdir] = "contrib"
 projects[diff][version] = 3.0-alpha1
@@ -65,12 +65,12 @@ projects[disqus][version] = 1.9
 ;projects[dyntextfield][version] = 1.0-rc3
 
 projects[entity][subdir] = "contrib"
-projects[entity][version] = 1.x-dev
+projects[entity][version] = 1.0-rc3
 
 ;projects[entityreference][patch][] = "http://drupal.org/files/1580348-universal-formatters.patch"
 ;projects[entityreference][patch][] = "http://drupal.org/files/1608358-selectionhandler-views-broken.patch"
 projects[entityreference][subdir] = "contrib"
-projects[entityreference][version] = 1.x-dev
+projects[entityreference][version] = 1.0-rc5
 
 projects[entityreference_prepopulate][subdir] = "contrib"
 projects[entityreference_prepopulate][version] = 1.x-dev
@@ -102,7 +102,7 @@ projects[fences][subdir] = "contrib"
 projects[fences][version] = "1.0"
 
 projects[file_entity][subdir] = "contrib"
-projects[file_entity][version] = 2.x-dev
+projects[file_entity][version] = 2.0-unstable6
 
 projects[filefield_paths][subdir] = "contrib"
 projects[filefield_paths][version] = 1.0-beta3
@@ -138,10 +138,10 @@ projects[link][version] = 1.x-dev
 projects[mailsystem][subdir] = "contrib"
 projects[mailsystem][version] = 2.34
 
-projects[media][patch][] = "http://drupal.org/files/issues/1121808-media-resuse-files-by-uri.patch"
-projects[media][patch][] = "http://drupal.org/files/media-7.x-2.x-fix-class-array.patch"
+;projects[media][patch][] = "http://drupal.org/files/issues/1121808-media-resuse-files-by-uri.patch"
+;projects[media][patch][] = "http://drupal.org/files/media-7.x-2.x-fix-class-array.patch"
 projects[media][subdir] = "contrib"
-projects[media][version] = 1.2
+projects[media][version] = 2.0-unstable6
 
 projects[media_gallery][subdir] = "contrib"
 projects[media_gallery][version] = 1.x-dev
