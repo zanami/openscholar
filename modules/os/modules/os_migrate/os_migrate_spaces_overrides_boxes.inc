@@ -49,7 +49,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     }
 
     if (!$this->_box_key_exists($box->plugin_key)) {
-      parent::saveMessage(t('Box @key does not exist in destination.  Ignoring box.', array('@key'=>$box->plugin_key)), MigrationBase::MESSAGE_WARNING);
+      parent::saveMessage(t('Box @key does not exist in destination.  Ignoring box. [@box]', array('@key'=>$box->plugin_key, '@box' => print_r($box,true))), MigrationBase::MESSAGE_WARNING);
       return FALSE;
     }
 
