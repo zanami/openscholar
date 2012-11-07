@@ -371,6 +371,8 @@ EOF;
 		        ->condition('object_type', 'context')
 		        ->condition('object_id', $context->object_id)
 		        ->execute();
+           	}else{
+           	  parent::saveMessage("Unable to find box ['.'boxes-'.$row->object_id.'] in context [".print_r($context,true)."]");
            	}
          }
        }
