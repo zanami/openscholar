@@ -820,10 +820,10 @@ class BoxPorter {
   }
 
   //update tabs
-  public function _port_box_os_modal_tabbed($box, $id, $key_only) {
-    $id = 'os_boxes_tabs';
+  public function _port_box_os_modal_tabbed($box, $plugin_key, $key_only) {
+    $plugin_key = 'os_boxes_tabs';
     if ($key_only) {
-      return $id;
+      return $plugin_key;
     }
 
     $qt_obj = $box->options['qt_obj'];
@@ -841,7 +841,7 @@ class BoxPorter {
       'tabs' => $new_tabs,
     );
 
-    $box->plugin_key = $id;
+    $box->plugin_key = $plugin_key;
 
     return $box;
   }
