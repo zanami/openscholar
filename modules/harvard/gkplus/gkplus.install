@@ -1,15 +1,28 @@
 <?php
 
 /**
- * Implementaton of hook_enable().
+ * Implements hook_enable().
+ *
+ * Creates the update file directory if it doesn't already exist.
  *
  * @ingroup nodeorder
  * @ingroup updatefile
  */
 function gkplus_enable() {
-  // Creates the update file directory if it doesn't already exist.
   $temp_path = _gkplus_temp_path();
-  if (!is_dir($temp_path)) {
-    mkdir($temp_path, 0775);
+  $check_path = '';
+  $path_parts = explode('/', $temp_path);
+
+  // Loops over parent directories to ensure entire path exists.
+  foreach ($path_parts as $path_part) {
+    if (strlen(trim($path_part)) <= 0) {
+      continue;
+    }
+    $check_path = $check_path . $path_part . '/';
+    if (is_dir($check_path)) {
+      continue;
+    }
+
+    mkdir($check_path, 0775);
   }
 }
