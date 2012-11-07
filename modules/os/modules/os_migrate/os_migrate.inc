@@ -472,7 +472,7 @@ abstract class OSMigration extends Migration {
 
     $query = db_select('migrate_map_embedinlineos', 'm')
       ->fields('m', array('destid1'))
-      ->condition('delta', $delta)
+      ->condition('sourceid2', $delta)
       ->condition('sourceid1', $row->vid, '=');
 
     $entity_id = $query->execute()->fetchAssoc(); //only the one?
@@ -504,7 +504,7 @@ abstract class OSMigration extends Migration {
       $divs = $dom->getElementsByTagName('div');
       for ($i=0, $len=$divs->length; $i<$len && !$update; $i++ ) {
         $div = $divs->item($i);
-        if (preg_match('/^\[wysiwyg_field.*?\]$/', $div->nodeValue)) {
+        if (preg_match('/^\[wysiwyg_field.*?\]/', trim($div->nodeValue))) {
           if ($tag = $this->_os_migrate_inline_port_tag($div->nodeValue, $entity->fid, $row->vid)) {
             $text = $dom->createTextNode($tag);
             $div->parentNode->replaceChild($text, $div);
