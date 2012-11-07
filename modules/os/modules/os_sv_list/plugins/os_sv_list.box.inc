@@ -201,6 +201,8 @@ class os_sv_list_box extends os_boxes_default {
         if (module_exists('vsite') && $space = spaces_get_space()) {
           $query->join('og_membership', 'og', 'og.etid = n.nid');
           $query->condition('og.gid', $space->id);
+          $query->condition('og.entity_type', 'node');
+          $query->condition('og.group_type', 'node');
         }
 
         $query->join('biblio', 'b', 'n.vid = b.vid');
