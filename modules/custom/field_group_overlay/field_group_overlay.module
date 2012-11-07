@@ -110,8 +110,8 @@ function field_group_overlay_build_group($entity_type, $entity, $group_name) {
   $content = array(
     '#view_mode' => 'full',
   );
-  list(, $id, $bundle) = entity_extract_ids($entity_type, $entity);
-  field_attach_prepare_view($entity_type, array($entity->{$id} => $entity), 'full');
+  list(,$id,) = entity_extract_ids($entity_type, $entity);
+  field_attach_prepare_view($entity_type, array($id => $entity), 'full');
   $temp = field_attach_view($entity_type, $entity, 'full');
 
   $children = element_children($temp);
