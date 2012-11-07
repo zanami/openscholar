@@ -243,6 +243,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         'show_term_descriptions' => $options['show_term_descriptions'],
         'childs' => $child_content,
       )),
+      'class' => array('term-' . drupal_html_class($item['term_name'])),
     );
   }
   return theme('item_list', array('type' => 'ul', 'items' => $data));
