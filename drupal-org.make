@@ -48,9 +48,9 @@ projects[ctools][patch][] = "http://drupal.org/files/ctools-plugin_extension-162
 projects[ctools][subdir] = "contrib"
 projects[ctools][version] = 1.2
 
-projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.patch"
-projects[date][subdir] = "contrib"
-projects[date][version] = 2.6
+;projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.patch"
+;projects[date][subdir] = "contrib"
+;projects[date][version] = 2.6
 
 projects[devel][subdir] = "contrib"
 projects[devel][version] = 1.3
@@ -226,9 +226,9 @@ projects[search_api][version] = 1.2
 projects[search_api_db][subdir] = "contrib"
 projects[search_api_db][version] = 1.x-dev
 
-projects[spaces][patch][] = "http://drupal.org/files/spaces_ui-show_disabled-1662918-1.patch"
-projects[spaces][subdir] = "contrib"
-projects[spaces][version] = 3.x-dev
+;projects[spaces][patch][] = "http://drupal.org/files/spaces_ui-show_disabled-1662918-1.patch"
+;projects[spaces][subdir] = "contrib"
+;projects[spaces][version] = 3.x-dev
 ;projects[spaces][patch][] = "http://drupal.org/files/1470434-19-og-7_2x.patch"
 
 projects[stringoverrides][version] = 1.8
