@@ -19,15 +19,17 @@ class SoftwareProjectNodeOSMigration extends AbstractNodeOSMigration {
     //method
     $this->addFieldMapping('field_software_method', 'field_scholar_software_method_value');
 
-    //rbuild shortname
-    $this->addFieldMapping('field_rbuild_short_name', 'field_scholar_software_name_value');
-    $this->addFieldMapping('field_rbuild_short_name:format')->defaultValue('plain_text');
-    $this->addFieldMapping('field_rbuild_short_name:language', 'language');
+    if(module_exists('rbuild')){
+	    //rbuild shortname
+	    $this->addFieldMapping('field_rbuild_short_name', 'field_scholar_software_name_value');
+	    $this->addFieldMapping('field_rbuild_short_name:format')->defaultValue('plain_text');
+	    $this->addFieldMapping('field_rbuild_short_name:language', 'language');
 
-    //repo
-    $this->addFieldMapping('field_software_repo', 'field_scholar_software_repo_value');
-    $this->addFieldMapping('field_software_repo:format')->defaultValue('plain_text');
-    $this->addFieldMapping('field_software_repo:language', 'language');
+	    //rbuild repo
+	    $this->addFieldMapping('field_software_repo', 'field_scholar_software_repo_value');
+	    $this->addFieldMapping('field_software_repo:format')->defaultValue('plain_text');
+	    $this->addFieldMapping('field_software_repo:language', 'language');
+    }
 
 
   }
