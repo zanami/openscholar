@@ -158,22 +158,23 @@ function os_comments_fb_social_save_vsite($comment_node_types, $preset_name = ''
 }
 
 /**
- * Saves the Drupal comments node types comment settings
+ * Saves settings for this node type to "Drupal comments" for this vsite.
  *
  * Note: We do not have an option to set the default comment to be 'hidden'
+ *
+ * @param array $node_types
  */
-function os_comments_comment_save_vsite($comment_node_types) {
+function os_comments_comment_save_vsite($node_types) {
   $vsite = vsite_get_vsite();
   if (!$vsite) {
     return FALSE;
   }
 
-  $node_types = node_type_get_types();
+  $variable_value = COMMENT_NODE_OPEN;
+
   foreach ($node_types as $node_type) {
-    $vsite->controllers->variable->set(
-      "comment_" . $node_type->type,
-      isset($comment_node_types[$node_type->type]) ? COMMENT_NODE_OPEN : COMMENT_NODE_HIDDEN
-    );
+    $variable_name = "comment_$node_type";
+    $vsite->controllers->variable->set($variable_name, $variable_value);
   }
 }
 
