@@ -825,11 +825,20 @@ class BoxPorter {
     }
 
     $qt_obj = $box->options['qt_obj'];
+    $new_tabs = array();
+    foreach ($qt_obj['tabs'] as $id => $box) {
+      $new_tabs['tab-'.$id] = array(
+        'bid' => SpacesOverridesContextMigration::update_context_block_id($box['bid']),
+        'weight' => (isset($box['weight'])?$box['weight']:0),
+        'title' => (isset($box['title'])?$box['title']:""),
+      );
+    }
+
     $box->options = array(
       'additional_classes' => '',
-      'tabs' => $qt_obj['tabs'],
+      'tabs' => $new_tabs,
     );
-    //update names of tabs?
+
     $box->plugin_key = $id;
 
     return $box;

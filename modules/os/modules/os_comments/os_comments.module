@@ -49,9 +49,10 @@ function os_comments_form_cp_app_settings_form_alter(&$form, &$form_state, $form
   unset($form["comment_settings"]['actions']);
 
   foreach (element_children($form["comment_settings"]) as $child) {
-    if (strpos($child, 'comment_sources_') === 0 && !in_array($child, $node_types)) {
-      unset($form["comment_settings"][$child]);
-    }
+
+  	if (strpos($child, 'comment_sources_') === 0 && !in_array($child, $node_types)) {
+  	  $form["comment_settings"][$child]['#access'] = FALSE;
+  	}
   }
   // Uses a secondary validator.
   $form['#validate'][] = 'os_comments_cp_app_settings_form_validate';
@@ -224,4 +225,3 @@ function os_comments_cp_settings() {
 
   return $settings;
 }
-

@@ -1259,3 +1259,29 @@ function vsite_mollom_form_info($form_id) {
     }
   }
 }
+
+/**
+ * Implements hook_preprocess_html().
+ * Set the head_title to the vsite name rather than the site_name, if in a vsite.
+ */
+function vsite_preprocess_html(&$vars) {
+  $spaces = spaces_get_space();
+  if(isset($spaces)) {
+  	$vsite_title = isset($spaces->group->title) ? $spaces->group->title : variable_get('site_name');
+
+    // Check for the frontpage.
+    if(drupal_is_front_page()) {
+  	  $head_title = array(
+  	    $vsite_title
+  	  );
+    }else {
+  	  $head_title = array(
+  	    strip_tags(drupal_get_title()),
+  	    $vsite_title
+  	  );
+    }
+
+    // Set the new page 'head' title.
+    $vars['head_title'] = implode(' | ', $head_title);
+  }
+}
