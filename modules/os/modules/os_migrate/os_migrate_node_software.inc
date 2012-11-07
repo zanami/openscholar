@@ -66,6 +66,11 @@ class SoftwareProjectNodeOSMigration extends AbstractNodeOSMigration {
      * to get those image nodes and extract everything needed by file fields.)
      */
 
+    // @todo verify correct
+    if ($current_row->field_software_method_value == 'rbuild') {
+      $current_row->field_software_method_value = 'rbuild repository';
+    }
+
     return parent::prepareRow($current_row); //false -> skip this row
 
   }
