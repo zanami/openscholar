@@ -432,7 +432,7 @@ abstract class OSMigration extends Migration {
       ->fetchField();
 
     if (($entity = file_load($file['destid1'])) == FALSE) {
-      self::saveMessage(t('Error loading file: @fid', array('@fid'=>$file['destid1'])));
+      self::saveMessage(t('Error loading file: @fid', array('@fid'=>$file['destid1'])), MigrationBase::MESSAGE_WARNING);
       return FALSE;
     }
     $uri = ($d6name) ? $d6name : $this->_uri_trim($entity->uri);
@@ -500,7 +500,7 @@ abstract class OSMigration extends Migration {
 //     }
 
     //html didn't work.  try media tags.
-    if ($update == FALSE) {
+    if ($update == FALSE && isset($entity->fid)) {
       $divs = $dom->getElementsByTagName('div');
       for ($i=0, $len=$divs->length; $i<$len && !$update; $i++ ) {
         $div = $divs->item($i);
@@ -646,7 +646,12 @@ abstract class OSMigration extends Migration {
         $parent_style = $this->_get_image_attributes($img->parentNode);
         $style = array_merge($parent_style, $style);
 
-        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $style, $imagecache_dims);
+        if ($imagecache_dims) {
+          $style[] = 'width: ' . $imagecache_dims['width'];
+          $style[] = 'height: ' . $imagecache_dims['height'];
+        }
+
+        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $style);
         $text = $dom->createTextNode($tag);
         $img->parentNode->replaceChild($text, $img);
         $update = TRUE;
