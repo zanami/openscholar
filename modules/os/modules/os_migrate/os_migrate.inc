@@ -462,11 +462,20 @@ abstract class OSMigration extends Migration {
    * refer to the new file entity
    **/
   function os_migrate_update_body_url(&$row, $url) {
+    //get this url's delta.
+    $delta = self::d6_db_select('content_field_os_inline_oembed', 'cf')
+      ->condition('field_os_inline_oembed_url', $url)
+      ->condition('vid', $row->vid)
+      ->fields('cf', array('delta'))
+      ->execute()
+      ->fetchColumn();
+
     $query = db_select('migrate_map_embedinlineos', 'm')
       ->fields('m', array('destid1'))
+      ->condition('delta', $delta)
       ->condition('sourceid1', $row->vid, '=');
 
-    $entity_id = $query->execute()->fetchAssoc();
+    $entity_id = $query->execute()->fetchAssoc(); //only the one?
     if (!$entity_id) {
       parent::saveMessage(t('Could not update url in node body.  Missing file entity. @nid', array('@nid'=>$row->nid)), MigrationBase::MESSAGE_NOTICE);
       return FALSE;
