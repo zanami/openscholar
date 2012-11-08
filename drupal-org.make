@@ -17,7 +17,7 @@ projects[apachesolr_attachments][version] = 1.x-dev
 projects[apachesolr_og][subdir] = "contrib"
 projects[apachesolr_og][version] = 1.x-dev
 
-;projects[biblio][patch][] = "http://drupal.org/files/biblio-md5_hash-1722772-1.patch"
+; projects[biblio][patch][] = "http://drupal.org/files/biblio-md5_hash-1722772-1.patch"
 projects[biblio][subdir] = "biblio"
 projects[biblio][version] = 1.0-rc4
 
@@ -61,8 +61,8 @@ projects[diff][version] = 3.0-alpha1
 projects[disqus][subdir] = "contrib"
 projects[disqus][version] = 1.9
 
-;projects[dyntextfield][subdir] = "contrib"
-;projects[dyntextfield][version] = 1.0-rc3
+; projects[dyntextfield][subdir] = "contrib"
+; projects[dyntextfield][version] = 1.0-rc3
 
 projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0-rc3
@@ -83,7 +83,7 @@ projects[facetapi][version] = 1.x-dev
 projects[fb_social][subdir] = "contrib"
 projects[fb_social][version] = 2.0-beta4
 
-;projects[features][patch][] = "http://drupal.org/files/1572578-part-one.patch"
+; projects[features][patch][] = "http://drupal.org/files/1572578-part-one.patch"
 projects[features][patch][] = "http://drupal.org/files/1597186-1-features-do-not-cache-includes.patch"
 projects[features][patch][] = "http://drupal.org/files/1669720-fix-features-flush-cache.patch"
 projects[features][patch][] = "http://drupal.org/files/927566-multiple-link_path.patch"
@@ -137,15 +137,15 @@ projects[link][version] = 1.x-dev
 projects[mailsystem][subdir] = "contrib"
 projects[mailsystem][version] = 2.34
 
-;projects[media][patch][] = "http://drupal.org/files/issues/1121808-media-resuse-files-by-uri.patch"
-;projects[media][patch][] = "http://drupal.org/files/media-7.x-2.x-fix-class-array.patch"
 projects[media][subdir] = "contrib"
-projects[media][version] = 2.0-unstable6
+projects[media][version] = 2.x-dev
+; projects[media][patch][] = "http://drupal.org/files/issues/1121808-media-resuse-files-by-uri.patch"
+; projects[media][patch][] = "http://drupal.org/files/media-7.x-2.x-fix-class-array.patch"
 
 projects[media_gallery][subdir] = "contrib"
 projects[media_gallery][version] = 1.x-dev
-;projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-remove_taxonomy_shenanigans-1686498-3.patch"
-;projects[media_gallery][patch][] = "http://drupal.org/files/patch_46_against_latest_dev-1244204.patch"
+; projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-remove_taxonomy_shenanigans-1686498-3.patch"
+; projects[media_gallery][patch][] = "http://drupal.org/files/patch_46_against_latest_dev-1244204.patch"
 
 projects[message][subdir] = "contrib"
 projects[message][version] = 1.5
@@ -210,7 +210,7 @@ projects[pathauto][version] = 1.2
 
 projects[purl][subdir] = "contrib"
 projects[purl][version] = 1.x-dev
-;projects[purl][patch][] = "http://drupal.org/files/init_sequence_1.patch"
+; projects[purl][patch][] = "http://drupal.org/files/init_sequence_1.patch"
 
 projects[respondjs][version] = 1.1
 projects[respondjs][subdir] = "contrib"
@@ -226,8 +226,8 @@ projects[search_api_db][version] = 1.x-dev
 
 projects[spaces][subdir] = "contrib"
 projects[spaces][version] = 3.x-dev
-projects[spaces][patch][] = "http://drupal.org/files/1470434-19-og-7_2x.patch"
-projects[spaces][patch][] = "http://drupal.org/files/spaces_ui-show_disabled-1662918-1.patch"
+; projects[spaces][patch][] = "http://drupal.org/files/1470434-19-og-7_2x.patch"
+; projects[spaces][patch][] = "http://drupal.org/files/spaces_ui-show_disabled-1662918-1.patch"
 
 projects[stringoverrides][version] = 1.8
 projects[stringoverrides][subdir] = "contrib"
@@ -235,8 +235,8 @@ projects[stringoverrides][subdir] = "contrib"
 projects[strongarm][subdir] = "contrib"
 projects[strongarm][version] = 2.0
 
-;projects[title][subdir] = "contrib"
-;projects[title][version] = "1.x-dev"
+; projects[title][subdir] = "contrib"
+; projects[title][version] = "1.x-dev"
 
 projects[token][subdir] = "contrib"
 projects[token][version] = 1.2
