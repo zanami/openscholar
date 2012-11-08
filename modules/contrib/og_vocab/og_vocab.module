@@ -382,8 +382,15 @@ function _og_vocab_autocomplete_tags_validate($element, &$form_state, $form) {
     foreach ($entities as $entity) {
       // Indicate if a value was found, or we need to create a new one.
       $found = FALSE;
-      // Take "label (entity id)', match the id from parenthesis.
-      if (preg_match("/.+\((\d+)\)/", $entity, $matches)) {
+      if ($tid = _og_vocab_term_exists_in_vocab($entity, $element['#vid'])) {
+        // The term name already exists in the vocabulary.
+        $value[] = array(
+          'target_id' => $tid,
+        );
+        $found = TRUE;
+      }
+      elseif (preg_match("/.+\((\d+)\)/", $entity, $matches)) {
+        // Take "label (entity id)', match the id from parenthesis.
         $value[] = array(
           'target_id' => $matches[1],
         );
@@ -414,6 +421,33 @@ function _og_vocab_autocomplete_tags_validate($element, &$form_state, $form) {
   }
 
   form_set_value($element, $value, $form_state);
+}
+
+/**
+ * Check if the term already exists in the vocabulary.
+ *
+ *  @param $name
+ *    The term name.
+ *  @param $vid
+ *    The vocabulary ID.
+ *
+ *  @return
+ *    The term ID.
+ */
+function _og_vocab_term_exists_in_vocab($name, $vid) {
+  $query = new entityFieldQuery();
+
+  $query = new EntityFieldQuery();
+  $result = $query->entityCondition('entity_type', 'taxonomy_term')
+    ->propertyCondition('vid', $vid)
+    ->propertyCondition('name', $name)
+    ->execute();
+
+  if (empty($result['taxonomy_term'])) {
+    return;
+  }
+
+  return reset(array_keys($result['taxonomy_term']));
 }
 
 /**
