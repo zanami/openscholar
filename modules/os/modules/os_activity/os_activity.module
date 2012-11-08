@@ -57,6 +57,7 @@ function os_activity_node_update($node) {
     ->entityCondition('entity_type', 'message')
     ->propertyCondition('type', 'os_edit_node')
     ->propertyCondition('timestamp', $time_ago, '>=')
+    ->fieldCondition('field_node_reference', 'target_id', $node->nid)
     ->count()
     ->execute();
 
