@@ -101,6 +101,14 @@ h1#page-title {
      text-align: center;
 }
 
+.front .gpanel.content h2.block-title {
+     border-bottom: 1px solid #CCCCCC;
+     font-size: 1.4em;
+     margin-bottom: 10px;
+     padding-bottom: 8px;
+
+}
+
 h4 {
      font-size: 1.35em;
      margin: 0.15em 0;
@@ -245,8 +253,9 @@ ul.nice-menu ul {
     list-style-type: square;
 }
 
+.block-boxes-os_boxes_html ul li,
 .sidebar .block-boxes-os_boxes_booktoc ul ul li {
-    list-style-image: disc;
+    list-style-type: disc;
 }
 
 .sidebar .block-boxes-os_boxes_booktoc ul ul ul li {
