@@ -43,14 +43,14 @@ projects[contextual_annotation][type] = module
 projects[contextual_annotation][download][type] = git
 projects[contextual_annotation][download][url] =  "http://git.drupal.org/project/contextual_annotation.git"
 
-projects[ctools][patch][] = "http://drupal.org/files/1707810-ctools-fields-mock-field-7.patch"
-projects[ctools][patch][] = "http://drupal.org/files/ctools-plugin_extension-1623044-1.patch"
 projects[ctools][subdir] = "contrib"
 projects[ctools][version] = 1.2
+projects[ctools][patch][] = "http://drupal.org/files/1707810-ctools-fields-mock-field-7.patch"
+projects[ctools][patch][] = "http://drupal.org/files/ctools-plugin_extension-1623044-1.patch"
 
-;projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.patch"
-;projects[date][subdir] = "contrib"
-;projects[date][version] = 2.6
+projects[date][subdir] = "contrib"
+projects[date][version] = 2.6
+projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.patch"
 
 projects[devel][subdir] = "contrib"
 projects[devel][version] = 1.3
@@ -67,10 +67,9 @@ projects[disqus][version] = 1.9
 projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0-rc3
 
-;projects[entityreference][patch][] = "http://drupal.org/files/1580348-universal-formatters.patch"
-;projects[entityreference][patch][] = "http://drupal.org/files/1608358-selectionhandler-views-broken.patch"
 projects[entityreference][subdir] = "contrib"
-projects[entityreference][version] = 1.0-rc5
+projects[entityreference][version] = 1.x-dev
+projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-id-option-9.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
 projects[entityreference_prepopulate][version] = 1.x-dev
@@ -187,7 +186,6 @@ projects[oembed][version] = 0.1-beta3
 
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.x-dev
-;projects[og][patch][] = "http://drupal.org/files/1730678-complex-widget-6.patch"
 
 projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
@@ -226,10 +224,10 @@ projects[search_api][version] = 1.2
 projects[search_api_db][subdir] = "contrib"
 projects[search_api_db][version] = 1.x-dev
 
-;projects[spaces][patch][] = "http://drupal.org/files/spaces_ui-show_disabled-1662918-1.patch"
-;projects[spaces][subdir] = "contrib"
-;projects[spaces][version] = 3.x-dev
-;projects[spaces][patch][] = "http://drupal.org/files/1470434-19-og-7_2x.patch"
+projects[spaces][subdir] = "contrib"
+projects[spaces][version] = 3.x-dev
+projects[spaces][patch][] = "http://drupal.org/files/1470434-19-og-7_2x.patch"
+projects[spaces][patch][] = "http://drupal.org/files/spaces_ui-show_disabled-1662918-1.patch"
 
 projects[stringoverrides][version] = 1.8
 projects[stringoverrides][subdir] = "contrib"
