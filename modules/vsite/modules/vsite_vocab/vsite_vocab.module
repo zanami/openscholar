@@ -169,7 +169,7 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
  * invokes order of the hooks.
  */
 function vsite_vocab_form_alter(&$form, $form_state, $form_id) {
-  if ($form_id != 'taxonomy_form_vocabulary' || !$context = og_vocab_is_group_admin_context()) {
+  if (!in_array($form_id, array('taxonomy_form_vocabulary', 'taxonomy_overview_terms')) || !$context = og_vocab_is_group_admin_context()) {
     return;
   }
   $form['#submit'][] = 'vsite_vocab_redirect_to_group_vocabularies';
@@ -181,6 +181,12 @@ function vsite_vocab_form_alter(&$form, $form_state, $form_id) {
  */
 function vsite_vocab_redirect_to_group_vocabularies($form, &$form_state) {
   $form_state['redirect'] = 'cp/build/taxonomy';
+
+  if ($form['#form_id'] == 'taxonomy_overview_terms' && !empty($form_state['confirm_reset_alphabetical']) && !empty($form_state['complete form']['machine_name']['#value'])) {
+    // Redirect back to the terms overview, after "Reset alphabetical"
+    // was submitted.
+    $form_state['redirect'] .= '/' . $form_state['complete form']['machine_name']['#value'] . '/list';
+  }
 }
 
 /**
