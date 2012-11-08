@@ -49,7 +49,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     }
 
     if (!$this->_box_key_exists($box->plugin_key)) {
-      parent::saveMessage(t('Box @key does not exist in destination.  Ignoring box.', array('@key'=>$box->plugin_key)), MigrationBase::MESSAGE_WARNING);
+      parent::saveMessage(t('Box @key does not exist in destination.  Ignoring box. [@box]', array('@key'=>$box->plugin_key, '@box' => print_r($box,true))), MigrationBase::MESSAGE_WARNING);
       return FALSE;
     }
 
@@ -371,6 +371,8 @@ EOF;
 		        ->condition('object_type', 'context')
 		        ->condition('object_id', $context->object_id)
 		        ->execute();
+           	}else{
+           	  parent::saveMessage("Unable to find box ['.'boxes-'.$row->object_id.'] in context [".print_r($context,true)."]");
            	}
          }
        }
@@ -821,10 +823,10 @@ class BoxPorter {
   }
 
   //update tabs
-  public function _port_box_os_modal_tabbed($box, $id, $key_only) {
-    $id = 'os_boxes_tabs';
+  public function _port_box_os_modal_tabbed($box, $plugin_key, $key_only) {
+    $plugin_key = 'os_boxes_tabs';
     if ($key_only) {
-      return $id;
+      return $plugin_key;
     }
 
     $qt_obj = $box->options['qt_obj'];
@@ -842,7 +844,7 @@ class BoxPorter {
       'tabs' => $new_tabs,
     );
 
-    $box->plugin_key = $id;
+    $box->plugin_key = $plugin_key;
 
     return $box;
   }
@@ -862,7 +864,7 @@ class BoxPorter {
 
      //New default and name
      $box->options['range'] = isset($box->options['number_of_items'])?$box->options['number_of_items']:false;
-     $box->options['depth'] = isset($box->options['tree_max_depth'])?$box->options['tree_max_depth']:0;
+     $box->options['depth'] = isset($box->options['tree_max_depth'])?($box->options['tree_max_depth'] - 1):0;
      $box->options['show_childs'] = isset($box->options['show_tree'])?$box->options['show_tree']:false;
 
      //New Default
