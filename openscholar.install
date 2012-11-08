@@ -78,4 +78,29 @@ function openscholar_install() {
   );
   $full_html_format = (object) $full_html_format;
   filter_format_save($full_html_format);*/
+
+  // Exported permission: edit boxes.
+  $permissions['edit boxes'] = array(
+    'administrator',
+    'manager',
+    'vsite admin',
+  );
+
+  // Exported permission: delete boxes.
+  $permissions['delete boxes'] = array(
+    'authenticated user',
+  );
+
+  // Exported permission: create boxes.
+  $permissions['create boxes'] = array(
+    'authenticated user',
+  );
+
+  // Enable default permissions for system roles.
+  foreach ($permissions as $permission => $roles) {
+    foreach ($roles as $role) {
+      $rid = user_role_load_by_name($role)->rid;
+      user_role_grant_permissions($rid, array($permission));
+    }
+  }
 }

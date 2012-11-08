@@ -8,4 +8,4 @@ dependencies[] = context
 dependencies[] = features
 features[features_api][] = api:1
 features[user_permission][] = administer boxes
-features[user_permission][] = edit boxes
+;features[user_permission][] = edit boxes
