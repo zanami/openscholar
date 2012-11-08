@@ -59,6 +59,18 @@ class osTasksNodeVocab extends osTask {
     $vocabulary = new stdClass();
     $vocabulary->name = "Phones vocabulary";
     $vocabulary->machine_name = "phones_vocabulary";
+
+    if (taxonomy_vocabulary_machine_name_load($vocabulary->machine_name)) {
+      // Start iterating over machine names until we hit one that doesn't
+      // exist yet.
+      $i = 1;
+      while (taxonomy_vocabulary_machine_name_load($vocabulary->machine_name)) {
+        $vocabulary->machine_name = substr($vocabulary->machine_name, 0, 32 - strlen($i)) . $i;
+        ++$i;
+      }
+    }
+
+    // Creating the vocabulary.
     taxonomy_vocabulary_save($vocabulary);
 
     // Relate vocabulary to group.
@@ -68,7 +80,7 @@ class osTasksNodeVocab extends osTask {
     $og_vocab = og_vocab_create_og_vocab($vocabulary->vid, 'node', 'page');
     $og_vocab->save();
 
-    // Creating terms for the vocbaulary.
+    // Creating terms for the vocabulary.
     $phones = array(
       'iPhone 5',
       'Samsung Galaxy S III',
