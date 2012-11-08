@@ -102,6 +102,5 @@ dependencies[] = twitter_pull
 dependencies[] = nice_menus
 dependencies[] = shorten
 
-files[] = openscholar.profile
 
 
