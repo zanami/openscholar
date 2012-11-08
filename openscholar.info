@@ -1,9 +1,6 @@
 name = OpenScholar
 description = Install OpenScholar
 core = 7.15
-files[] = openscholar.profile
-files[] = openscholar.install
-files[] = tests/openscholar.test
 
 ; Core
 dependencies[] = color
@@ -102,5 +99,4 @@ dependencies[] = twitter_pull
 dependencies[] = nice_menus
 dependencies[] = shorten
 
-
-
+files[] = tests/openscholar.test
