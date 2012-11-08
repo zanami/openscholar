@@ -5,7 +5,7 @@
   var data = {};
   Drupal.behaviors.os_sv_list = {
     attach: function (ctx) {
-      
+    	
       // add a click handler
       $(ctx).find('.block-boxes-os_sv_list_box', ctx).click(click_handler).each(function () {
         // save the current page to our cache

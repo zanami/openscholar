@@ -30,6 +30,8 @@ class os_sv_list_box extends os_boxes_default {
    */
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
+    $defaults = $this->options_defaults();
+    drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting');
 
     $content_types = array(
       'all' => t('All')
@@ -66,7 +68,7 @@ class os_sv_list_box extends os_boxes_default {
     $form['biblio_show_all'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show all publication types'),
-      '#default_value' => $this->options['biblio_show_all'],
+      '#default_value' => isset($this->options['biblio_show_all']) ? $this->options['biblio_show_all'] : $defaults['biblio_show_all'],
       '#id' => 'biblio_show_all_check',
       '#prefix' => '<div id="os_sv_list_biblio_show_all">',
       '#suffix' => '</div>',
@@ -75,7 +77,7 @@ class os_sv_list_box extends os_boxes_default {
     $form['biblio_whitelist'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Select publication types to display'),
-      '#default_value' => $this->options['biblio_whitelist'],
+      '#default_value' => isset($this->options['biblio_whitelist']) ? $this->options['biblio_whitelist'] : $defaults['biblio_whitelist'],
       '#options' => $this->_biblio_types(),
       '#prefix' => '<div id="os_sv_list_biblio_whitelist">',
       '#suffix' => '</div>',
@@ -102,9 +104,15 @@ class os_sv_list_box extends os_boxes_default {
       '#title' => 'Sorting',
       '#default_value' => $this->options['sort_by'],
       '#options' => array(
-        'sort_newest' => t('Newest'),
-        'sort_oldest' => t('Oldest'),
-        'sort_alpha' => t('Alphabetical')
+        //content type sensitive sorts
+        'sort_event' => t('Event Date'),
+        'sort_presentation' => t('Recently Presented'),
+        'sort_biblio' => t('Year of Publication'),
+
+        //standard sorts
+        'sort_newest' => t('Newest Post'),
+        'sort_oldest' => t('Oldest Post'),
+        'sort_alpha' => t('Alphabetical'),
       )
     );
 
@@ -164,18 +172,6 @@ class os_sv_list_box extends os_boxes_default {
 
     //exceptions
     switch ($options['content_type']) {
-      case 'event':
-        if ($options['sort_by'] == 'sort_newest') {
-          $options['sort_by'] = 'sort_event';
-        }
-        break;
-
-      case 'presentation':
-        if ($options['sort_by'] == 'sort_newest') {
-          $options['sort_by'] = 'sort_presentation';
-        }
-        break;
-
       case 'book':
         //limit book depth to 1.  not a field, so use a regular query
         $query = db_select('menu_links', 'ml')
@@ -212,7 +208,13 @@ class os_sv_list_box extends os_boxes_default {
           $query->condition('biblio_type', array_values($bib_types), 'IN');
         }
 
-        $query->orderBy('biblio_year', 'DESC');
+        switch($options['sort_by']) {
+          case 'sort_biblio': $query->orderBy('biblio_year', 'DESC'); break;
+          case 'sort_newest': $query->orderBy('n.created', 'DESC'); break;
+          case 'sort_oldest': $query->orderBy('n.created', 'ASC'); break;
+          case 'sort_alpha':  $query->orderBy('n.title', 'ASC'); break;
+        }
+
         $query->range($page_num*$items, $items);
         $query->fields('n', array('nid'));
 
