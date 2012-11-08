@@ -134,10 +134,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     }
 
     if ($replacement = $this->_replace_block($id, $block)) {
-      return array(
-        $id,
-        $replacement
-      );
+      return array($id, $replacement);
     }
 
     if (isset($block['region'])) {
@@ -187,7 +184,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'boxes-scholar_book_current_toc' => 'boxes-os_booktoc',
       'views-scholar_software_releases-block_3' => 'views-os_software_releases-block_1',
       'scholar_software_releases-block_3' => 'views-os_software_releases-block_1',
-      'scholar_events-mini' => 'views-os_events-block_1',
+    //  'scholar_events-mini' => 'views-os_events-block_1',
       'views-scholar_events_upcoming-block_1' => 'views-os_events-block_2'
     );
 
@@ -269,20 +266,21 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'views-reader-block' => array(
         'module' => 'views',
         'delta' => 'reader-block',
-        'region' => (isset($block['region'])) ? $block['region'] : false,
+        'region' => (isset($block['region'])) ? $this->_update_region($block['region']) : false,
         'weight' => (isset($block['weight'])) ? $block['weight'] : -10,
         'info' => 'Site RSS Feed',
       ),
       'views-os_events-block_1' => array(
         'module' => 'views',
         'delta' => 'os_events-block_1',
-        'region' => (isset($block['region'])) ? $block['region'] : false,
+        'region' => (isset($block['region'])) ? $this->_update_region($block['region']) : false,
         'weight' => (isset($block['weight'])) ? $block['weight'] : -10,
         'info' => 'Mini Calendar',
       ),
     );
 
-    $block['region'] = $this->_update_region($block['region']);
+    $replacements['scholar_events-mini'] = $replacements['views-os_events-block_1'];
+
 
     if (in_array($id, array_keys($replacements))) {
       return $replacements[$id];
