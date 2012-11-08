@@ -137,13 +137,18 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     //parent::os_migrate_prepare_files_v24($result, $current_row, 'media_gallery_media', $fields);
     parent::os_migrate_prepare_files($result, $current_row, 'media_gallery_media', $fields);
 
-    foreach($current_row->media_gallery_media as $delta => $filepath) {
-      if (list($path, $name) = $this->_migrate_filename($filepath)) {
-        $current_row->{'media_gallery_media:filename'}[$delta] = $name;
-        $current_row->{'media_gallery_media:destination_dir'}[$delta] = 'public://' . $path;
-        $current_row->{'media_gallery_media'}[$delta] = $path . '/' . $name;
+    if (isset($current_row->media_gallery_media)) {
+      foreach($current_row->media_gallery_media as $delta => $filepath) {
+        if (list($path, $name) = $this->_migrate_filename($filepath)) {
+          $current_row->{'media_gallery_media:filename'}[$delta] = $name;
+          $current_row->{'media_gallery_media:destination_dir'}[$delta] = 'public://' . $path;
+          $current_row->{'media_gallery_media'}[$delta] = $path . '/' . $name;
+        }
       }
+    } else {
+      parent::saveMessage(t('Gallery has no media to migrate: @nid', array('@nid'=>$current_row->nid)), MigrationBase::MESSAGE_WARNING);
     }
+
     //description may be serialized array
     if (isset($current_row->media_gallery_media_description) && is_string($current_row->media_gallery_media_description)) {
       if ($desc = @unserialize($current_row->media_description)) {

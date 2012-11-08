@@ -310,6 +310,10 @@ ul ul ul ul {
   list-style-type: circle;
 }
 
+.view-os-image-gallery {
+	margin-bottom:15px;
+}
+
 .view-os-image-gallery ul li,
 .views-field-media-gallery-media ul {
 	list-style-type: none;

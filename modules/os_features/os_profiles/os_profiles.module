@@ -14,6 +14,7 @@ include_once 'os_profiles.features.inc';
  * Enter description here...
  */
 function os_profiles_process_node(&$vars) {
+
   if ($vars['type'] !== 'person') {
     return;
   }
@@ -50,6 +51,15 @@ function os_profiles_process_node(&$vars) {
     if ($phone_plain) {
       $vars['content']['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
     }
+  }
+
+  // Move the taxonomy to under the title/affiliation as it was in d6.
+  if(isset($vars['content']['og_vocabulary'])) {
+  	$vars['content']['og_vocabulary']['#weight'] = 2;
+  	// Append a <p></p> onto the end of vocab to give it spacing.
+  	if(isset($vars['content']['og_vocabulary'][0]['#markup'])) {
+  	  $vars['content']['og_vocabulary'][0]['#markup'] .= '<p></p>';
+  	}
   }
 }
 
@@ -95,4 +105,3 @@ function _os_profiles_person_node_title($node) {
   $title = implode(' ', $values);
   return $title;
 }
-

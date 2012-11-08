@@ -161,6 +161,10 @@ function os_files_download() {
 
 function os_files_entity_info_alter(&$info) {
   $info['file']['view modes'] += array(
+    'os_files_xlarge' => array(
+      'label' => t('Large Image (800px)'),
+      'custom settings' => TRUE,
+    ),
     'os_files_large' => array(
       'label' => t('Large Image (600px)'),
       'custom settings' => TRUE,
@@ -191,6 +195,14 @@ function os_files_entity_info_alter(&$info) {
 
 function os_files_image_default_styles() {
   $styles = array(
+    'os_files_xlarge' => array(
+      'effects' => array(
+        array(
+          'name' => 'image_scale',
+          'data' => array('width' => 800, 'height' => 800, 'upscale' => 0)
+        )
+      ),
+    ),
     'os_files_large' => array(
       'effects' => array(
         array(
@@ -222,6 +234,7 @@ function os_files_image_default_styles() {
 
 function os_files_file_default_displays() {
   $keys = array(
+    'image__os_files_xlarge__file_image' => array('image_style' => 'os_files_xlarge'),
     'image__os_files_large__file_image' => array('image_style' => 'os_files_large'),
     'image__os_files_med__file_image' => array('image_style' => 'os_files_medium'),
     'image__os_files_small__file_image' => array('image_style' => 'os_files_small'),
@@ -353,6 +366,7 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file) {
     case 'public':
       $type = file_get_type($file);
       if ($type == 'image') {
+        $temp['os_files_xlarge'] = $view_modes['os_files_xlarge'];
         $temp['os_files_large'] = $view_modes['os_files_large'];
         $temp['os_files_med'] = $view_modes['os_files_med'];
         $temp['os_files_small'] = $view_modes['os_files_small'];

@@ -283,8 +283,9 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
     $html   = &$entry['teaser']['#markup'];
     $insert = strrpos($html, '</div>');
     $extra  = l('Abstract', 'node/' . $node->nid, array('attributes' => array('class' => array('biblio-abstract-link', 'toggle'))));
-    $render = array(
+    $entry['abstract_slider'] = array(
       '#type' => 'container',
+      '#weight' => 3,
       '#attributes' => array(
         'class' => array(
           'biblio-abstract-display',
@@ -295,7 +296,6 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
         '#markup' => check_markup($node->biblio_abst_e, filter_default_format()),
       ),
     );
-    $extra .= render($render);
     if ($insert === FALSE) {
       $html .= $extra;
     }

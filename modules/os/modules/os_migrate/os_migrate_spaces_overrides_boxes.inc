@@ -315,16 +315,17 @@ EOF;
        ->condition('type', 'og')
        ->condition('object_type', 'boxes')
        ->condition('value', '%s:10:"plugin_key";s:15:"os_taxonomy_fbt"%', 'LIKE')
+       ->condition('value', '%s:10:"vocabulary";a:%', 'LIKE')
        ->fields('so')
        ->execute();
 
      //for each vid in a box, create a new box for that vid
      while ($row = $result->fetchObject()) {
        $value = unserialize($row->value);
-       $boxes = self::split_fbt_box($rom->object_id, $value);
-       
+       $boxes = self::split_fbt_box($row->object_id, $value);
+
        foreach($boxes as $object_id => $box) {
-         
+
        	 db_insert('spaces_overrides')->fields(array(
            'type' => $row->type,
            'id' => $row->id,
@@ -341,7 +342,7 @@ EOF;
          ->condition('object_type', $row->object_type)
          ->condition('object_id', $row->object_id)
          ->execute();
-       
+
        //Update the contexts
        if(count($boxes)){
          $ct_result = db_select('spaces_overrides', 'so')
@@ -375,15 +376,14 @@ EOF;
        }
      }
    }
-   
-   private static function split_fbt_box($obejct_id, $box, $plugin_only = false){
+
+   private static function split_fbt_box($object_id, $box, $plugin_only = false){
      $return = array();
-   	 $box = unserialize($box);
-   	 $vocabs = array_filter($box->options['vocabulary']);
-   	 $show_name = $box->options['show_vocabulary_name'];
+   	 $vocabs = (is_array($box->options['vocabulary'])) ? array_filter($box->options['vocabulary']) : array($box->options['vocabulary']);
+   	 $show_name = (isset($box->options['show_vocabulary_name'])) ? $box->options['show_vocabulary_name'] : 1;
    	 unset($box->options['vocabulary']);
    	 unset($box->options['show_vocabulary_name']);
-   	 
+
      foreach ($vocabs as $vocab) {
      	$id = $object_id."_fbt_".$vocab;
      	$box->delta = $id;
@@ -397,7 +397,7 @@ EOF;
      	$box->options['vocabulary'] = $vocab;
      	$return[$id] = $box;
      }
-     
+
      return $return;
    }
 }
@@ -621,52 +621,6 @@ class BoxPorter {
     }
   }
 
-  // public function _port_box_os_boxes_modal_siteinfo($box, $key_only) {
-  // $key = 'os_boxes_site_info';
-  // if ($key_only) {
-  // return $key;
-  // }
-
-
-  // //title
-  // $query = parent::d6_db_select('node', 'n')
-  // ->condition('type', 'vsite')
-  // ->condition('nid', $nid)
-  // ->fields('n', array('title'));
-
-  // //address
-  // $query->join('content_type_vsite', 'ct', 'n.nid = ct.nid');
-  // $query->fields('ct', array('field_vsite_address_value', 'field_vsite_address_format'));
-
-  // //description
-  // $query->join('og', 'og', 'n.nid = og.nid');
-  // $query->fields('og', array('og_description'));
-
-  // if ($result = $query->execute()->fetchAssoc()) {
-  // $box->plugin_key = $key;
-
-  // $box->options = array(
-  // 'site_title' => $result['title'],
-  // 'descrip' => $result['og_descrioption'],
-  // 'address1' => $result['field_vsite_address_value'],
-  // );
-
-  // return $box;
-  // } else {
-  // return FALSE;
-  // }
-
-
-  // }
-
-  // public function _port_box_os_boxes_curr_toc($box, $key_only) {
-  // $key = 'os_boxes_booktoc';
-  // if ($key_only) {
-  // return $key;
-  // }
-
-  // }
-
   //port html box.  original was os_modal_wysiwyg
   public function _port_box_os_boxes_simple($box, $id, $key_only) {
     $key = 'os_boxes_html';
@@ -871,11 +825,20 @@ class BoxPorter {
     }
 
     $qt_obj = $box->options['qt_obj'];
+    $new_tabs = array();
+    foreach ($qt_obj['tabs'] as $id => $box) {
+      $new_tabs['tab-'.$id] = array(
+        'bid' => SpacesOverridesContextMigration::update_context_block_id($box['bid']),
+        'weight' => (isset($box['weight'])?$box['weight']:0),
+        'title' => (isset($box['title'])?$box['title']:""),
+      );
+    }
+
     $box->options = array(
       'additional_classes' => '',
-      'tabs' => $qt_obj['tabs'],
+      'tabs' => $new_tabs,
     );
-    //update names of tabs?
+
     $box->plugin_key = $id;
 
     return $box;
@@ -888,22 +851,29 @@ class BoxPorter {
        return $id;
      }
 
-     //Box is split in post processing
-     //$box->options['vocabulary']
-     
+     //Tree
+     $options['show_tree'] = 1;
+     $options['tree_max_depth'] = 0;
+
+     //Box is split in post processing $box->options['vocabulary']
+
      //New default and name
      $box->options['range'] = isset($box->options['number_of_items'])?$box->options['number_of_items']:false;
-     
+     $box->options['depth'] = isset($box->options['tree_max_depth'])?$box->options['tree_max_depth']:0;
+     $box->options['show_childs'] = isset($box->options['show_tree'])?$box->options['show_tree']:false;
+
      //New Default
      if(!isset($box->options['behavior']) || $box->options['behavior'] != 'contextual'){
      	$box->options['behavior'] = '--all--';
      }
-     
+
      $box->plugin_key = $id;
 
      //Remove old options
      unset($box->options['number_of_items']);
-     
+     unset($box->options['show_tree']);
+     unset($box->options['tree_max_depth']);
+
      return $box;
    }
 
