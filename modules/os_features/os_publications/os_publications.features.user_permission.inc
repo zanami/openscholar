@@ -116,6 +116,60 @@ function os_publications_user_default_permissions() {
     'module' => 'biblio',
   );
 
+    // Exported permission: create biblio content.
+  $permissions['create biblio content'] = array(
+    'name' => 'create biblio content',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: delete any biblio content.
+  $permissions['delete any biblio content'] = array(
+    'name' => 'delete any biblio content',
+    'roles' => array(
+      0 => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: delete own biblio content.
+  $permissions['delete own biblio content'] = array(
+    'name' => 'delete own biblio content',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: edit any biblio content.
+  $permissions['edit any biblio content'] = array(
+    'name' => 'edit any biblio content',
+    'roles' => array(
+      0 => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: edit own biblio content.
+  $permissions['edit own biblio content'] = array(
+    'name' => 'edit own biblio content',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'manager',
+      2 => 'vsite admin',
+      3 => 'vsite user',
+    ),
+    'module' => 'node',
+  );
+
   return $permissions;
 }
 

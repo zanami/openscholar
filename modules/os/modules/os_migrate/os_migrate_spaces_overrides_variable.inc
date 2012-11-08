@@ -80,7 +80,14 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   * Updates flavor variables and names.
   */
   public function _update_flavors($object_id, $value){
-    $object_id = preg_replace('/vsite_design/', 'os_appearance', $object_id);
+    $replaced = 0;
+    $object_id = preg_replace('/vsite_design_scholar/', 'os_appearance', $object_id, 1, $replaced);
+
+    //Some themes start with vsite_design instead of vsite_design_scholar, handle those as well.
+    if(!$replaced){
+      $object_id = preg_replace('/vsite_design/', 'os_appearance', $object_id, 1);
+    }
+
     $value = preg_replace('/^scholar_/', '', $value);
     return array(
       $object_id,
@@ -130,6 +137,13 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     ) : FALSE;
   }
 
+  /**
+   * variable: scholar_dvn_dvn_alias -> os_dataverse_dvn_alias
+   */
+  public function _update_variable_scholar_dvn_dvn_alias($object_id, $value){
+    return array('os_dataverse_dvn_alias', $value);
+  }
+
   //vsite_ga_google_analytics_id => os_ga_google_analytics_id
   public function _update_variable_vsite_ga_google_analytics_id($object_id, $value){
     return array(
@@ -156,7 +170,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
 
   //"scholar_book_toc_location" is now "os_booklets_toc_position".
   public function _update_variable_scholar_book_toc_location($object_id, $value) {
-    return array('os_booklets_toc_location', $value);
+    return array('os_booklets_toc_position', $value);
   }
 
   // check if a variable is discontinued

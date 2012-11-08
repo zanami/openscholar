@@ -1254,3 +1254,20 @@ function vsite_mollom_form_info($form_id) {
     }
   }
 }
+
+/**
+ * Implements hook_field_attach_form().
+ *
+ * Hide group-audience fields. We don't use hook_field_access() as
+ * OgBehaviorHandler::OgMembershipCrud() is checking for field-access,
+ * which will result with not creating the OG-memberships.
+ */
+function vsite_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
+  if ($entity_type != 'node' || !og_is_group_content_type($entity_type, $entity->type)) {
+    return;
+  }
+
+  foreach (array_keys(og_get_group_audience_fields($entity_type, $entity->type)) as $field_name) {
+    $form[$field_name]['#access'] = FALSE;
+  }
+}

@@ -18,17 +18,19 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
 
 
     //$this->addUnmigratedDestinations($fields)
-//     $this->addUnmigratedDestinations(parent::subfields('field_biblio_image', array('file_class', 'language', 'file_replace', 'preserve_files',)), t('DNM'));
 
+    //book cover image
+//     $this->addUnmigratedDestinations(parent::subfields('field_biblio_image', array('file_class', 'language', 'file_replace', 'preserve_files',)), t('DNM'));
 //     $this->addFieldMapping('field_biblio_image:source_dir')->defaultValue(
 //       variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
 //     $this->addFieldMapping('field_biblio_image:destination_dir');
+//     $this->addFieldMapping('field_biblio_image:og_group_ref', 'group_nid');
+// //    $this->addUnmigratedSources(array('field_biblio_image_fid', 'field_biblio_image_list', 'field_biblio_image_data'), t('DNM'));
+//     $this->addSimpleMappings(array('field_biblio_image', 'field_biblio_image:alt', 'field_biblio_image:title', 'field_biblio_image:destination_file'));
 
-//     $this->addUnmigratedSources(array('field_biblio_image_fid', 'field_biblio_image_list', 'field_biblio_image_data'), t('DNM'));
-
-//    $this->addSimpleMappings(array('field_biblio_image', 'field_biblio_image:alt', 'field_biblio_image:title', 'field_biblio_image:destination_file', 'field_biblio_extra', 'field_biblio_extra:label', 'field_biblio_extra:value'));
+    //extra dynfield
     $this->addSimpleMappings(array('field_biblio_extra', 'field_biblio_extra:label', 'field_biblio_extra:value'));
-    $this->addFieldMapping('field_biblio_image:og_group_ref', 'group_nid');
+
 
   }
 
@@ -129,6 +131,10 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
       }
     }
 
+    if ($row->field_biblio_image_fid) {
+      $entity->field_biblio_image = $this->_prepare_biblio_image($row);
+    }
+
     $entity->biblio_contributors = $this->_prepare_biblio_contributors($row->vid, $row->nid);
     // $entity->biblio_keywords = $this->_prepare_biblio_keywords($row->vid); //not supporting keywords.
     //$entity->vid = $row->vid;
@@ -227,4 +233,34 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     return $keywords;
   }
 
+  //prepares book cover image
+  function _prepare_biblio_image($row) {
+    $return = array();
+
+    $dest_file = $row->{'field_biblio_image:destination_file'};
+    $dest_dir = $row->{'field_biblio_image:destination_dir'};
+    $source_file = $row->{'field_biblio_image'};
+    $source_dir = variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files');
+
+    $dest = $dest_dir . '/' . $dest_file;
+    $legacy_file = $source_dir . '/' . $source_file;
+    if ($fh = @fopen($legacy_file, 'r')) {
+      if ($saved = file_save_data($fh, $dest)) {
+        $saved->og_group_ref = array($row->language => array(array('target_id' => $row->group_nid)));
+        $saved->uid = $row->uid;
+        $saved->width = $saved->image_dimensions['width'];
+        $saved->height = $saved->image_dimensions['height'];
+
+        $saved = file_save($saved);
+        file_usage_add($saved, 'file', 'file', $row->nid);
+        $return[$row->language] = array((array)$saved);
+      } else {
+        parent::saveMessage(t('Could not save book cover to: @dest', array('@dest' => $dest)), MigrationBase::MESSAGE_WARNING);
+      }
+    } else {
+      parent::saveMessage(t('Could not copy book cover from: @file', array('@file' => $legacy_file)), MigrationBase::MESSAGE_WARNING);
+    }
+
+    return $return;
+  }
 }

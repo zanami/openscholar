@@ -100,6 +100,9 @@ projects[fences][patch][] = "http://drupal.org/files/undefined-index-1561244-7.p
 projects[fences][subdir] = "contrib"
 projects[fences][version] = "1.0"
 
+projects[field_group][subdir] = "contrib"
+projects[field_group][version] = 2.x-dev
+
 projects[file_entity][subdir] = "contrib"
 projects[file_entity][version] = 2.0-unstable6
 
