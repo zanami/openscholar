@@ -724,7 +724,7 @@ class BoxPorter {
         'fid' => $fid,
         'width' => $box->options['width'],
       );
-      $box->key = $key;
+      $box->plugin_key = $key;
     } else {
       $this->migration->saveMessage(t('Could not save embed box.  No fid for box: @delta', array('@delta'=>$box->delta)), MigrationBase::MESSAGE_NOTICE);
     }
