@@ -1,0 +1,4 @@
+- Tag style auto complete generate new term when not selected
+  http://drupal.org/node/1835236#comment-6707436
+  http://drupal.org/files/og_vocab_tag_style_generate_new_term_when_not_selected_1835236_1.patch
+
