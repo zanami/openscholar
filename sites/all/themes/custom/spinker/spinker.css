@@ -13,6 +13,10 @@ body,
   font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 12px;
   }
+  
+body#tinymce {
+    background: #000000 !important;
+}  
 
 .sidebar {
   color: #ddd;
