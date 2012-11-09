@@ -108,8 +108,6 @@ h2.block-title {
   -moz-box-shadow: 0 3px 1em #ccc;
   -webkit-box-shadow: 0 3px 1em #ccc;
   box-shadow: 0 3px 1em #ccc;
-  filter:
-  -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#aaaaaa')";
   padding: 20px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
