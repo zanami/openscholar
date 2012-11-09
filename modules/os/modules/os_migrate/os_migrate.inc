@@ -651,7 +651,7 @@ abstract class OSMigration extends Migration {
           $style[] = 'height: ' . $imagecache_dims['height'];
         }
 
-        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $style);
+        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $style, $imagecache_dims);
         $text = $dom->createTextNode($tag);
         $img->parentNode->replaceChild($text, $img);
         $update = TRUE;
@@ -723,7 +723,7 @@ abstract class OSMigration extends Migration {
           parent::saveMessage(t('No image cache size for class: @class, assuming original.', array('@class' => $class)), MigrationBase::MESSAGE_INFORMATIONAL);
         }
 
-        $attributes = (empty($attributes)) ? array('width'=>'width', 'height'=>'height') : $attributes;
+        $attributes = (empty($attributes)) ? array('width'=>NULL, 'height'=>NULL) : $attributes;
         //$tag['view_mode'] = 'media_original';
       break;
 
@@ -864,13 +864,11 @@ abstract class OSMigration extends Migration {
    **/
   function _os_migrate_get_attributes(array $attr, DOMElement $dom) {
     $return = array();
-    foreach ($attr as  $old => $new) {
-      if ($value = $dom->getAttribute($old)) {
-        $return[$new] = $value;
-      } elseif($old) {
-        //just use the old value instead of fetching it from the dom
-        $return[$old] = $new;
+    foreach ($attr as  $attr => $value) {
+      if (empty($value)) {
+        $value = $dom->getAttribute($attr);
       }
+      $return[$attr] = $value;
     }
     return $return;
   }

@@ -819,6 +819,9 @@ class BoxPorter {
     $options['display'] = $this->_sv_list_box_style($options['display']);
     $options['sort_by'] = $this->_sv_list_box_sort($options['sort_by']);
     $options['number_of_items'] = min(20, $options['number_of_items']); //new box only goes up to 20.
+
+    $options['biblio_show_all'] = TRUE;
+    $options['biblio_whitelist'] = array();
     $box->options = $options;
 
     return $box;

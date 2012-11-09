@@ -398,6 +398,10 @@ ul.class_material_field_class a.class_material_field_class_anchor {
   margin-left:0;
 }
 
+.search-results .search-snippet-info {
+    padding-left: 0;
+}
+
 .views-row {margin-bottom:1.5em;}
 
 
