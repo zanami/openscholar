@@ -25,6 +25,10 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
   }
 
   public function prepareRow(&$row){
+    if(variable_get('os_migrate_contexts_altered', FALSE)){
+      return FALSE;
+    }
+
     $value = unserialize($row->value);
     $object_id = $row->object_id;
 
@@ -477,6 +481,11 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
         $value['blocks'] += $add_blocks[$nid];
       }
     }
+  }
+
+  //after importing contexts boxes must be re-updated
+  public function postImport() {
+
   }
 }
 

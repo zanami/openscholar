@@ -201,6 +201,8 @@ EOF;
     parent::postRollback();
 
     $this->_remove_shield_files();
+
+    variable_set('os_migrate_contexts_altered', FALSE);
   }
 
   function _update_box($box, $id) {
@@ -310,6 +312,9 @@ EOF;
    * Widgets with multiple taxonomies selected should be split into several widgets
    */
    function _fix_os_taxonomy_fbt() {
+     //We are altering the contexts, keep the context migration from overwriting our changes
+     variable_set('os_migrate_contexts_altered', TRUE);
+
      //get the boxes that need updating
      $result = db_select('spaces_overrides', 'so')
        ->condition('type', 'og')
@@ -325,7 +330,7 @@ EOF;
        $boxes = self::split_fbt_box($row->object_id, $value);
 
        foreach($boxes as $object_id => $box) {
-
+	       //Create new split box
        	 db_insert('spaces_overrides')->fields(array(
            'type' => $row->type,
            'id' => $row->id,
