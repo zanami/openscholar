@@ -52,6 +52,10 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
         //image was cropped.  instead of migrating the whole image, use MigrateFileFid to accept the existing fid.
         $values[0] = $original->fid;
         $values['arguments']['file_class'] = 'MigrateFileFid';
+      } else {
+        //could not copy original.  abandon it.
+        Migration::displayMessage(t('Could not copy image: @img', array('@img'=>$values[0])), MigrationBase::MESSAGE_WARNING);
+        unset($values[0], $values['arguments']);
       }
     } else {
       //just keep the image as is
