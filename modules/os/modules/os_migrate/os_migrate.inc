@@ -482,6 +482,11 @@ abstract class OSMigration extends Migration {
     }
 
     $entity = file_load($entity_id['destid1']);
+    if (!$entity) {
+      parent::saveMessage(t('Could not load migrate inline file: @fid', array('@fid'=>$entity_id['destid1'])), MigrationBase::MESSAGE_NOTICE);
+      return FALSE;
+    }
+
 
     $dom = filter_dom_load($row->body);
     //check all a tags.  we'll have to replace parent though since its a space for the oembed
