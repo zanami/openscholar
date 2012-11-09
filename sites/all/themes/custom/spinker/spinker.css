@@ -14,7 +14,7 @@ body,
   font-size: 12px;
   }
   
-body#tinymce {
+body#tinymce.mceContentBody {
     background: #000000 !important;
 }  
 
