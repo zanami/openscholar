@@ -137,48 +137,6 @@ abstract class OSMigration extends Migration {
    *
    * @return array
    */
-  // obsolete!  kept for reference
-//   function os_migrate_prepare_files($result) {
-//     $output = array();
-//     foreach ($result as $row) {
-//       $file = array(
-//         'path' => variable_get('os_migrate_files', FALSE) . '/' . $row->filepath,
-//         'description' => $row->description,
-//         'display' => $row->list,
-//         'timestamp' => $row->timestamp,
-//         'title' => $row->title
-//       );
-//       $output[] = drupal_json_encode($file);
-//     }
-//     return $output;
-//   }
-
-  //update for previous function for v2.4 api.  instead of json, we use row->field:subfield.
-  //we could provide db aliases and map to those, except that some fields (ie image galleries) have multiple values
-  function os_migrate_prepare_files_v24($results, &$row, $field_name, $extra_fields = array()) {
-    //or should we fetch row here?
-    //$fields = array('alt', 'title') + $extra_fields; //assoc array for src/dst?
-
-    //d6 col -> d7 field
-    $fields = array('filepath' => '') + $extra_fields;
-
-    foreach ($results as $result) {
-          //also need a blank field for file itself.
-      foreach ($fields as $col => $field) {
-        $delta = (strlen($field)) ? "${field_name}_${field}" : $field_name;
-
-        if (!isset($row->$delta)) {
-          $row->$delta = array();
-        }
-
-   //     if (isset($result->$col)) {
-          @array_push($row->$delta, $result->{$col}); //yes, pushing null when there's no result is correct.  it's a placeholder
-     //   } else {
-       //   array_push($row->$delta, NULL); //placeholder
-       // }
-      }
-    }
-  }
 
   //attaches results to row, minding the subfields (d7 field => d6 col)
   function os_migrate_prepare_files($files, &$row, $field_name, $subfields = array()) {
