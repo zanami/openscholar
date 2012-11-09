@@ -236,6 +236,16 @@ ul.nice-menu-left li.menuparent:hover, ul.nice-menu-left li li.menuparent:hover 
   -moz-box-shadow: 2px 0 2em #262d2c;
   -webkit-box-shadow: 2px 0 2em #262d2c;
   box-shadow: 2px 0 2em #262d2c;
+  zoom: 1;
+  filter:
+  progid:DXImageTransform.Microsoft.Shadow(color=#333333,direction=0,strength=5),
+  progid:DXImageTransform.Microsoft.Shadow(color=#333333,direction=45,strength=2),
+  progid:DXImageTransform.Microsoft.Shadow(color=#333333,direction=90,strength=5),
+  progid:DXImageTransform.Microsoft.Shadow(color=#333333,direction=135,strength=5),
+  progid:DXImageTransform.Microsoft.Shadow(color=#333333,direction=180,strength=10),
+  progid:DXImageTransform.Microsoft.Shadow(color=#333333,direction=225,strength=5),
+  progid:DXImageTransform.Microsoft.Shadow(color=#333333,direction=270,strength=5),
+  progid:DXImageTransform.Microsoft.Shadow(color=#333333,direction=315,strength=2);
   }
 
 #columns .wrap {
