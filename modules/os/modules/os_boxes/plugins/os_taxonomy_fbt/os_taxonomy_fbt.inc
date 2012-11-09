@@ -108,7 +108,7 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#description' => t('Should terms be shown that do not have any posts tagged to them.'),
     );
 
-    $form['show_term_description'] = array(
+    $form['show_term_descriptions'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show term descriptions'),
       '#description' => t('Show the description of the term if avalible under each term.'),
