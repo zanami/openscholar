@@ -181,12 +181,12 @@ class os_taxonomy_fbt extends os_boxes_default {
       }
     }
     // For now - display the first vocabulary terms.
-    if ($this->options['behavior'] == '--all--') {
+    if (empty($this->options['behavior']) || $this->options['behavior'] == '--all--') {
       $this->options['bundles'] = array();
     }
 
     ctools_include('layout', 'os');
-    if ($this->options['behavior'] == 'contextual' && ($feature = os_get_active_feature())) {
+    if (!empty($this->options['behavior']) && $this->options['behavior'] == 'contextual' && ($feature = os_get_active_feature())) {
       if (isset($feature->info['features']['node'])) {
         $this->options['bundles'] = $feature->info['features']['node'];
       }

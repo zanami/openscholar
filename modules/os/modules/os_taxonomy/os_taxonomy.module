@@ -227,7 +227,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       $number += $options['add_childs'] && isset($item['child_number']) ? $item['child_number'] : 0;
     }
 
-    if ($options['widget_type'] == 'select') {
+    if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
       $term_name = $item['term_name'];
       $term_name .= $number ? ' (' . $number . ')' : '';
       $data[$tid] = $term_name;
@@ -258,7 +258,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     }
   }
 
-  if ($options['widget_type'] == 'select') {
+  if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
     return render(drupal_get_form('os_taxonomy_select_list', $data, $path_prefix));
   }
   else {
@@ -278,17 +278,21 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
  *    The variable of the form.
  */
 function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
+  $menu = menu_get_item();
   $form_state['path'] = $path;
 
   $form['#attached']['css'][] = drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.css';
   $form['terms'] = array(
     '#type' => 'select',
-    '#options' => $terms_list,
+    '#options' => array('--none--' => t('Select a term')) + $terms_list,
     '#attributes' => array(
       'class' => array('terms-list'),
     ),
   );
 
+  if (count($menu['map']) > 1 && $menu['map'][1] == 'taxonomy' && $menu['map'][2] == 'term') {
+    $form['terms']['#default_value'] = $menu['map'][3]->tid;
+  }
   $form['actions'] = array(
     '#type' => 'actions',
     'submit' => array(
@@ -305,6 +309,15 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
  */
 function os_taxonomy_select_list_submit($form, &$form_state) {
   $form_state['redirect'] = $form_state['path'] . 'taxonomy/term/' . $form_state['values']['terms'];
+}
+
+/**
+ * Submit handler - verify that the user select a term.
+ */
+function os_taxonomy_select_list_validate($form, &$form_state) {
+  if ($form_state['values']['terms'] == '--none--') {
+    form_set_error('terms', t('Please select a term.'));
+  }
 }
 
 /**
