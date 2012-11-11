@@ -22,7 +22,7 @@ projects[biblio][subdir] = "biblio"
 projects[biblio][version] = 1.0-rc4
 
 projects[boxes][subdir] = "contrib"
-projects[boxes][version] = 1.0
+projects[boxes][version] = 2.x-dev
 
 projects[calendar][subdir] = "contrib"
 projects[calendar][version] = 3.x-dev
