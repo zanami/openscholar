@@ -101,8 +101,7 @@ projects[fences][subdir] = "contrib"
 projects[fences][version] = "1.0"
 
 projects[file_entity][subdir] = "contrib"
-projects[file_entity][version] = 2.0-unstable6
-
+projects[file_entity][version] = 2.x-dev
 projects[filefield_paths][subdir] = "contrib"
 projects[filefield_paths][version] = 1.0-beta3
 
@@ -144,8 +143,9 @@ projects[media][version] = 2.x-dev
 
 projects[media_gallery][subdir] = "contrib"
 projects[media_gallery][version] = 1.x-dev
-; projects[media_gallery][patch][] = "http://drupal.org/files/media_gallery-remove_taxonomy_shenanigans-1686498-3.patch"
-; projects[media_gallery][patch][] = "http://drupal.org/files/patch_46_against_latest_dev-1244204.patch"
+; Unable to apply patch 1333674, not sure it;s still required.
+;projects[media_gallery][patch][] = "http://drupal.org/files/1333674-conflicts-20.patch"
+projects[media_gallery][patch][] = "http://drupal.org/files/support_media_2.x-1244204-104.patch"
 
 projects[message][subdir] = "contrib"
 projects[message][version] = 1.5
