@@ -21,5 +21,6 @@ Feature:
     And I click "Edit"
     And I fill in "title" with "John doe biography - edited"
     Then I press "Save"
-    When I visit "/activity"
+    When I clear the cache
+    And I visit "/activity"
     Then I should see "John doe biography - edited"

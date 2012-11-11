@@ -285,7 +285,7 @@ class OsMigrateEventsNode extends OsMigrate {
     array('id', 'ID'),
     array('title', 'Title'),
     array('body', 'Body'),
-    array('timestamp', 'Timestamp'),
+    array('field_date', 'Timestamp'),
     array(OG_AUDIENCE_FIELD, 'Site'),
   );
 
@@ -297,14 +297,23 @@ class OsMigrateEventsNode extends OsMigrate {
     parent::__construct();
 
     $this->addFieldMapping('body', 'body');
-    $this->addFieldMapping('field_date', 'timestamp');
+    $this->addFieldMapping('field_date', 'field_date');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration('OsMigratePersonalNode');
   }
 
   public function prepare($entity, $row) {
-    // Handling the date field with the exported timestamps in the csv.
-    $timesatamps = explode(";", $row->timestamp);
+    $date = explode(';', $row->field_date);
+
+    $entity->field_date[LANGUAGE_NONE][0] = array(
+       'value' => $date[0],
+       'date_type' => 'datetime',
+    );
+
+    // Adding the end date of the event.
+    if (isset($date[1])) {
+      $entity->field_date[LANGUAGE_NONE][0]['value1'] = $date[1];
+    }
   }
 }
 

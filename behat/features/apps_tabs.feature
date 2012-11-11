@@ -42,3 +42,10 @@ Feature:
     When I click "Publications"
     And I click "The Little Prince"
     Then I should see "Anon. The Little Prince. United States; 1943."
+
+  @api
+  Scenario: Test the Calendar tab
+    Given I am logged in as a user with the "authenticated user" role
+    And I visit "john"
+    When I click "Calendar"
+    Then I should see "John F. Kennedy birthday"

@@ -64,6 +64,14 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @When /^I clear the cache$/
+   */
+  public function iClearTheCache() {
+    $this->getDriver()->drush('cc all');
+  }
+
+
+  /**
    * @Given /^I print page$/
    */
   public function iPrintPage() {
