@@ -434,24 +434,44 @@ class OsMigratePeopleNode extends OsMigrate {
 /**
  * Migrate OG-vocabs.
  */
-// class OsMigrateOgVocab extends OsMigrate {
-//
-  // /**
-   // * Map the field and properties to the CSV header.
-   // */
-  // public $csvColumns = array(
-    // array('id', 'ID'),
-    // array('name', 'Name'),
-  // );
-//
-  // public $entityType = 'og_vocab';
-  // public $bundle = 'og_vocab';
-//
-  // public $dependencies = array(
-    // 'OsMigratePersonalNode',
-    // 'OsMigrateBiologyTaxonomyTerm',
-    // 'OsMigrateMathTaxonomyTerm',
-    // 'OsMigrateScienceTaxonomyTerm',
-  // );
-//
-// }
+class OsMigrateOgVocab extends OsMigrate {
+
+  /**
+   * Map the field and properties to the CSV header.
+   */
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('name', 'Name'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+  );
+
+  public $entityType = 'og_vocab';
+  public $bundle = 'authors';
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+  }
+
+  function prepare($entity, $row) {
+    if (!$vocabulary = taxonomy_vocabulary_machine_name_load("authors_" . $entity->{OG_AUDIENCE_FIELD}['destid1'])) {
+      $vocabulary = new stdClass();
+      $vocabulary->name = "Authors";
+      $vocabulary->machine_name = "authors_" . $entity->{OG_AUDIENCE_FIELD}['destid1'];
+      taxonomy_vocabulary_save($vocabulary);
+
+      // Relate vocabulary to group.
+      og_vocab_relation_save($vocabulary->vid, 'node', $entity->{OG_AUDIENCE_FIELD}['destid1']);
+
+      // Create OG-vocabulary entity.
+      $og_vocab = og_vocab_create_og_vocab($vocabulary->vid, 'node', 'blog');
+      $og_vocab->save();
+    }
+    $entity->vid = $vocabulary->vid;
+  }
+}

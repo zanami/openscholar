@@ -11,7 +11,7 @@ abstract class OsMigrate extends Migration {
     parent::__construct();
 
     // Make sure we can use it for node and term only.
-    if (!in_array($this->entityType, array('node', 'taxonomy_term'))) {
+    if (!in_array($this->entityType, array('node', 'taxonomy_term', 'og_vocab'))) {
       throw new Exception('OsMigrate supports only nodes and terms.');
     }
 
@@ -21,7 +21,7 @@ abstract class OsMigrate extends Migration {
       $this->addFieldMapping('title', 'title');
       $class_name = 'MigrateDestinationNode';
     }
-    elseif ($this->entityType == 'taxonomy_term') {
+    elseif (in_array($this->entityType, array('taxonomy_term', 'og_vocab'))) {
       $this->addFieldMapping('name', 'name');
       $class_name = 'MigrateDestinationTerm';
     }
