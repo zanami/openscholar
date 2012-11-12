@@ -37,7 +37,7 @@ class FileInlineOSMigration extends OSMigration {
 
   public function query() {
     $query = parent::d6_db_select('content_field_os_inline_files', 'cf')
-      ->fields('cf', array('field_os_inline_files_fid', 'nid', 'vid'))
+      ->fields('cf', array('field_os_inline_files_fid', 'nid', 'vid', 'field_os_inline_files_data'))
       ->isNotNull('field_os_inline_files_fid');
     $query->join('files', 'f', 'f.fid = cf.field_os_inline_files_fid');
     $query->fields('f', array('uid', 'filename', 'timestamp',  'filepath', 'fid'));
@@ -67,6 +67,14 @@ class FileInlineOSMigration extends OSMigration {
       return FALSE;
     }
 
+  }
+
+  public function prepare(&$file, $row) {
+    if ($row->field_os_inline_files_data && ($data = unserialize($row->field_os_inline_files_data))) {
+      if (isset($data['description']) && strlen($data['description'])) {
+        $file->filename = $data['description'];
+      }
+    }
   }
 
   //called immediately after entity is saved
@@ -120,7 +128,7 @@ class ImageInlineOSMigration extends OSMigration {
   public function query() {
 
     $query = parent::d6_db_select('content_field_os_inline_image', 'cf')
-      ->fields('cf', array('field_os_inline_image_fid', 'nid', 'vid'  ))
+      ->fields('cf', array('field_os_inline_image_fid', 'nid', 'vid', 'field_os_inline_image_data'  ))
       ->isNotNull('field_os_inline_image_fid')
       ->distinct();
     $query->join('files', 'f', 'f.fid = cf.field_os_inline_image_fid');
@@ -147,6 +155,14 @@ class ImageInlineOSMigration extends OSMigration {
     if (!parent::legacy_file_exists($legacy_uri)) {
       parent::saveMessage(t('Image Migration Error.  File not found: %uri', array('%uri'=>$row->uri)), MigrationBase::MESSAGE_WARNING);
       return FALSE;
+    }
+  }
+
+  public function prepare(&$file, $row) {
+    if ($row->field_os_inline_image_data && ($data = unserialize($row->field_os_inline_image_data))) {
+      if (isset($data['description']) && strlen($data['description'])) {
+        $file->filename = $data['description'];
+      }
     }
   }
 }

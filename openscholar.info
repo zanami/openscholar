@@ -96,6 +96,7 @@ dependencies[] = os_biocv
 
 ; other
 dependencies[] = diff
+dependencies[] = field_group
 dependencies[] = twitter_pull
 dependencies[] = nice_menus
 dependencies[] = shorten
