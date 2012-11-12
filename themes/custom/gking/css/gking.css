@@ -1349,7 +1349,8 @@ body.front .block-boxes-os_taxonomy_fbt .item-list ul li.term-applications  {
 body.front .block-boxes-os_taxonomy_fbt .item-list ul li.term-methods {
     text-align: right;
     float: left;
-    width:230px;
+    width:285px;
+    padding-right: 31px;
     }
 
 body.front .block-boxes-os_taxonomy_fbt ul li.term-applications {
@@ -1357,6 +1358,7 @@ body.front .block-boxes-os_taxonomy_fbt ul li.term-applications {
     width: 290px;
     }
 
+/* DESCRIPTIONS */
 body.front .block-boxes-os_taxonomy_fbt .description {
     position:absolute;
     display:none;
@@ -1364,7 +1366,8 @@ body.front .block-boxes-os_taxonomy_fbt .description {
     min-height: 219px;
     padding: 5px 14px;
     border-left: 2px solid #db7002;
-    left:230px;
+    left:260px;
+    top:-10px;
     background: #3b4e4e;
     text-align: left;
     line-height:1.35em;
@@ -1372,7 +1375,43 @@ body.front .block-boxes-os_taxonomy_fbt .description {
     margin-top: 5px;
     }
     
- 
+body.front .block-boxes-os_taxonomy_fbt ul.termchild-applications .description {
+    border-right: 2px solid #db7002;
+    border-left: none;
+    left:-230px;
+    }
+  
+body.front .block-boxes-os_taxonomy_fbt li.term-event-counts-and-durations .description,
+body.front .block-boxes-os_taxonomy_fbt li.term-incumbency-advantage .description {
+top:-37px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-ecological-inference .description,  
+body.front .block-boxes-os_taxonomy_fbt li.term-mexican-health-care-evaluation .description {
+top:-64px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-missing-data .description,
+body.front .block-boxes-os_taxonomy_fbt li.term-presidency-research-voting-behavior .description {
+top:-91px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-qualitative-research .description,
+body.front .block-boxes-os_taxonomy_fbt li.term-informatics-and-data-sharing .description {
+top:-118px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-rare-events .description, 
+body.front .block-boxes-os_taxonomy_fbt li.term-international-conflict .description {
+top:-145px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-survey-research .description, 
+body.front .block-boxes-os_taxonomy_fbt li.term-legislative-redistricting .description {
+top:-172px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-unifying-statistical-analysis .description, 
+body.front .block-boxes-os_taxonomy_fbt li.term-mortality-studies .description {
+top:-199px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-teaching-and-administration .description {
+top:-226px;    
+  }   
 
 body.front .block-boxes-os_taxonomy_fbt li {
     position:relative;
@@ -1395,6 +1434,18 @@ body.front .block-boxes-os_taxonomy_fbt .item-list ul.termchild-applications a {
   
 }
 
+body.front .block-boxes-os_taxonomy_fbt .item-list li.term-methods a {
+     right: 0; 
+     padding-right: 58px;
+  
+}
+
+body.front .block-boxes-os_taxonomy_fbt .item-list ul.termchild-methods a {
+     right: 0; 
+     padding-right: 59px;
+  
+}
+
 
 body.front ul.term-methods,
 body.front ul.term-applications
@@ -1410,11 +1461,11 @@ body.front .block-boxes-os_taxonomy_fbt li.term-applications .term-head {
   }
 
 body.front .block-boxes-os_taxonomy_fbt li.active  {
-  background: url('images/line.png?dec11') no-repeat 33px 50% #3b4e4e;
+  background: url('../images/line.png') no-repeat 24px 60% #3b4e4e;
   }
 
-body.front .block-boxes-os_taxonomy_fbt ul li.term-methods ul li {
-  background-position: center right;
+body.front .block-boxes-os_taxonomy_fbt ul.termchild-methods li.active {
+   background: url('../images/line.png') no-repeat 240px 60% #3b4e4e;
   }
 
 body.front #block-iqss_gking-areas_of_research dt.active span {
@@ -1432,150 +1483,7 @@ body.front .block-boxes-os_taxonomy_fbt ul li ul li .term-head a:hover
   color:#db7002;
   }  
   
-  
-/*
-body.front .block-boxes-os_taxonomy_fbt li.term-applications .term-head a, 
-body.front .block-boxes-os_taxonomy_fbt li.term-methods .term-head a {
-     background: none repeat scroll 0% 0% transparent;
-     font-size: 17px;
-     font-weight: normal;
-     line-height: 25px;
-     margin-bottom: 25px;
-}
 
-body.front .block-boxes-os_taxonomy_fbt ul.termchild-methods li a,
-body.front .block-boxes-os_taxonomy_fbt ul.termchild-applications li a {
-    color: #ffffff;
-}
-
-body.front .block-boxes-os_taxonomy_fbt .item-list ul.term-Methods li.active .term-head a:only-of-type,
-body.front .block-boxes-os_taxonomy_fbt .item-list ul.term-Applications li.active .term-head a:only-of-type 
- {
-    color: #db7002;
-}
-
-
-body.front .block-boxes-os_taxonomy_fbt .item-list ul li.term-methods,
-body.front .block-boxes-os_taxonomy_fbt .item-list ul li.term-applications  {
-  margin-top: 0;
-  }
-
-body.front .block-boxes-os_taxonomy_fbt li.term-methods {
-    text-align: right;
-    width:262px;
-    }
-
-body.front .block-boxes-os_taxonomy_fbt li.term-applications {
-    float: right;
-    width: 263px;
-    }
-
-body.front .block-boxes-os_taxonomy_fbt .description {
-    position:absolute;
-    display:none;
-    width:224px;
-    min-height: 219px;
-    padding: 5px 14px;
-    border-left: 2px solid #db7002;
-    left:260px;
-    background: #3b4e4e;
-    text-align: left;
-    line-height:1.35em;
-    font-size:13px;
-    margin-top: 5px;
-    }
-    
-/** TOP POSITIONS FOR METHODS DECRIPTION 
-body.front .block-boxes-os_taxonomy_fbt ul.termchild-Methods li:nth-of-type(1) div.description {
-top:75px; 
-}  
-
-
-body.front .block-boxes-os_taxonomy_fbt li.term-Applications .description {
-  border-left:none;
-  border-right: 2px solid #db7002;
-   text-align:left;
-  }
-
-/** TOP POSITIONS FOR APPLICATIONS DECRIPTION 
-body.front .block-boxes-os_taxonomy_fbt ul.termchild-Applications li:nth-of-type(1) div.description {
-top: 75px; 
-}  
-
-body.front .block-boxes-os_taxonomy_fbt ul li:first-of-type a {
-	 background: none repeat scroll 0% 0% transparent;
-     font-size: 17px;
-     font-weight: normal;
-     line-height: 25px;
-     margin-bottom: 25px;
-     color: #68EFDE;
-}
-
-
-body.front .block-boxes-os_taxonomy_fbt li.term-Methods .term-head a,
-body.front .block-boxes-os_taxonomy_fbt li.term-Methods.last {
-  padding-right: 31px;
-  }
-
-
-body.front .block-boxes-os_taxonomy_fbt li.term-Applications .term-head a,
-body.front .block-boxes-os_taxonomy_fbt li.term-Applications.last {
-     padding-left: 31px;
-  
-}
-
-
-body.front ul.term-Methods,
-body.front ul.term-Applications
- {
-    margin-top: 15px;
-     position:relative;
-}
-
-body.front .block-boxes-os_taxonomy_fbt li.term-Applications .term-head {
-  display:block;
-  padding-left:0.5em;
-
-  }
-
-body.front .block-boxes-os_taxonomy_fbt li.active
-  {
-  background: url('../images/line.png') no-repeat 120px 50% #3b4e4e;
-  }
-
-body.front .block-boxes-os_taxonomy_fbt ul li.term-Methods ul li {
-  background-position: center right;
-  }
-  
-body.front .block-boxes-os_taxonomy_fbt ul li.term-Applications ul li {
-  background-position: center left;
-  }  
-
-body.front #block-iqss_gking-areas_of_research dt.active span {
-  background: #3b4e4e;
-  }
-
-body.front .block-boxes-os_taxonomy_fbt ul li ul.termchild-Methods li .term-head,
-body.front .block-boxes-os_taxonomy_fbt ul li ul.termchild-Applications li .term-head {
-   margin-top:10px;
-  
-  }
-
-body.front .block-boxes-os_taxonomy_fbt ul li ul.termchild-Methods li .term-head a,
-body.front .block-boxes-os_taxonomy_fbt ul li ul.termchild-Applications li .term-head a {
-  color: #fff;
-   position:relative;
-    line-height: normal;
-    font-size: 13px;
-    font-weight: normal;
-  }
-
-body.front .block-boxes-os_taxonomy_fbt ul li ul li .term-head a:hover
- {
-  text-decoration: none;
-  color:#db7002;
-  }
-*/
 body.front #block-iqss_gking-areas_of_research dt.active span a  {
   color:#e87702;
   }
@@ -1602,7 +1510,7 @@ table#ordernodes {
 
 
 /* REMOVE BEFORE CHECING IN */
-.front .region-header-second h2.block-title {display:none;}
+.front .region-header-second h2.block-title, #messages {display:none;}
 
 
 
