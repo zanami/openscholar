@@ -49,3 +49,10 @@ Feature:
     And I visit "john"
     When I click "Calendar"
     Then I should see "John F. Kennedy birthday"
+
+  @api
+  Scenario: Test the Blog tab
+    Given I am logged in as a user with the "authenticated user" role
+    And I visit "john"
+    When I click "Blog"
+    Then I should see "First blog"
