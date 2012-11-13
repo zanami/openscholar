@@ -100,4 +100,61 @@ class FeatureContext extends DrupalContext {
       }
     }
   }
+
+  /**
+   * @Given /^I sleep for "([^"]*)"$/
+   */
+  public function iSleepFor($seconds) {
+    sleep($seconds);
+  }
+
+  /**
+   * @When /^I click "([^"]*)" with the class "([^"]*)"$/
+   */
+  public function iClickWithTheClass($linkText, $LinkClass) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//a[contains(@class, '{$LinkClass}') and .='{$linkText}']");
+
+    if (!$element) {
+      throw new Exception(sprintf("A link with the text %s and the class %s wasn't found", $LinkClass, $LinkClass));
+    }
+
+    $element->click();
+  }
+
+  /**
+   * @Given /^I drag’n’drop "([^"]*)" to "([^"]*)"$/
+   */
+  public function iDragNDropTo($element, $destination) {
+    $selenium = $this->getMink()->getSession()->getDriver();
+    $selenium->evaluateScript("jQuery('#{$element}').detach().prependTo('#{$destination}');");
+  }
+
+  /**
+   * @Given /^I login as "([^"]*)"$/
+   */
+  public function iLoginAs($userArguments) {
+    $userArguments = explode('/', $userArguments);
+    $page = $this->getSession()->getPage();
+
+    $page->find('xpath', '//a[.="Admin Login"]')->click();
+
+    $page->fillField('name', $userArguments[0]);
+    $page->fillField('pass', $userArguments[1]);
+
+    $page->findButton('edit-submit')->click();
+  }
+
+  /**
+   * @Given /^I verify the element "([^"]*)" under "([^"]*)"$/
+   */
+  public function iVerifyTheElementUnder($element, $container) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//div[contains(@id, '{$container}')]//div[contains(@id, '{$element}')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The element with %s wasn't found in %s", $element, $container));
+    }
+  }
+
 }
