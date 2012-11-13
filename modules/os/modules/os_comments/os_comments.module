@@ -197,7 +197,7 @@ function os_comments_cp_settings() {
   $settings = array();
 
   // Returns empty array if Disqus module is not enabled.
-  if (module_exists('disqus')) {
+  if (!module_exists('disqus')) {
     return $settings;
   }
 
