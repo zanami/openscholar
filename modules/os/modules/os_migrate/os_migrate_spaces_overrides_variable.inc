@@ -187,6 +187,13 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     return array('os_dataverse_dvn_alias', $value);
   }
 
+  /**
+   * variable: scholar_biocv_use_pdf_as_cv -> os_biocv_use_pdf_as_cv
+   */
+  public function _update_variable_scholar_biocv_use_pdf_as_cv($object_id, $value){
+    return array('os_biocv_use_pdf_as_cv', $value);
+  }
+
   //vsite_ga_google_analytics_id => os_ga_google_analytics_id
   public function _update_variable_vsite_ga_google_analytics_id($object_id, $value){
     return array(
