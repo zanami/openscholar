@@ -1391,26 +1391,26 @@ top:-64px;
 }
 body.front .block-boxes-os_taxonomy_fbt li.term-missing-data .description,
 body.front .block-boxes-os_taxonomy_fbt li.term-presidency-research-voting-behavior .description {
-top:-91px;
+top:-90px;
 }
 body.front .block-boxes-os_taxonomy_fbt li.term-qualitative-research .description,
 body.front .block-boxes-os_taxonomy_fbt li.term-informatics-and-data-sharing .description {
-top:-118px;
+top:-116px;
 }
 body.front .block-boxes-os_taxonomy_fbt li.term-rare-events .description, 
 body.front .block-boxes-os_taxonomy_fbt li.term-international-conflict .description {
-top:-145px;
+top:-143px;
 }
 body.front .block-boxes-os_taxonomy_fbt li.term-survey-research .description, 
 body.front .block-boxes-os_taxonomy_fbt li.term-legislative-redistricting .description {
-top:-172px;
+top:-169px;
 }
 body.front .block-boxes-os_taxonomy_fbt li.term-unifying-statistical-analysis .description, 
 body.front .block-boxes-os_taxonomy_fbt li.term-mortality-studies .description {
-top:-199px;
+top:-195px;
 }
 body.front .block-boxes-os_taxonomy_fbt li.term-teaching-and-administration .description {
-top:-226px;    
+top:-222px;    
   }   
 
 body.front .block-boxes-os_taxonomy_fbt li {
@@ -1465,7 +1465,7 @@ body.front .block-boxes-os_taxonomy_fbt li.active  {
   }
 
 body.front .block-boxes-os_taxonomy_fbt ul.termchild-methods li.active {
-   background: url('../images/line.png') no-repeat 240px 60% #3b4e4e;
+   background: url('../images/line.png') no-repeat 239px 60% #3b4e4e;
   }
 
 body.front #block-iqss_gking-areas_of_research dt.active span {
