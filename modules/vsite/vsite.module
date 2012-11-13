@@ -137,6 +137,97 @@ function vsite_spaces_registry_alter(&$registry) {
 }
 
 /**
+ * Add blocks for the current spaces' field groups so context knows about them
+ * We do it this way so we don't clog up context with thousands of blocks that are
+ * only active in a single space each
+ */
+function vsite_context_block_info_alter(&$block_info) {
+  if (module_exists('field_group')) {
+    $space = spaces_get_space();
+    $node = $space->group;
+
+    $groups = field_group_info_groups('node', $node->type, 'default');
+
+    foreach ($groups as $g => $obj) {
+      $delta = 'fg:node:'.$node->nid.':'.$g;
+      if (!isset($block_info['vsite-'.$delta])) {
+        $block_info['vsite-'.$delta] = (object)array(
+          'bid' => 'vsite-'.$delta,
+          'info' => $obj->label,
+          'module' => 'vsite',
+          'delta' => $delta,
+          'region' => false,
+          'weight' => '0',
+        );
+      }
+    }
+  }
+}
+
+function vsite_block_view($delta) {
+  list($check, $type, $id, $group_name) = explode(':', $delta);
+  if ($check != 'fg' || !module_exists('field_group_overlay')) {
+    return array('content' => array());
+  }
+
+  return array(
+    'content' => field_group_overlay_build_group($type, node_load($id), $group_name),
+  );
+}
+
+function vsite_os_widget() {
+  $arr = array();
+  $widgets = array();
+  vsite_context_block_info_alter($arr);
+  $space = spaces_get_space();
+  $node = $space->group;
+  $groups = null;
+
+  foreach ($arr as $bid => $block) {
+    list(,$entity_type,$id,$group_name) = explode(':', $block->delta);
+    if (!isset($groups)) {
+      $groups = field_group_info_groups($entity_type, $node->type, 'default');
+    }
+    $widgets[$bid] = array(
+      'module' => 'vsite',
+      'delta' => $block->delta,
+      'info' => $groups[$group_name]->label,
+      'cache' => DRUPAL_NO_CACHE,
+    );
+  }
+
+  return $widgets;
+}
+
+function vsite_os_widget_alter(&$widget) {
+  static $groups = null;
+  if ($widget['module'] == 'vsite') {
+    list (,$entity_type, $id, $group_name) = explode(':', $widget['delta']);
+    if (!isset($groups)) {
+      $node = node_load($id);
+      $groups = field_group_info_groups($entity_type, $node->type, 'default');
+    }
+    $widget['info'] = $groups[$group_name]->label;
+    $widget['can_edit'] = true;
+    $widget['path'] = 'field-group/'.$entity_type.'/'.$id.'/'.$group_name;
+  }
+}
+
+function vsite_menu_contextual_links_alter(&$links, $parent) {
+  static $run_once = false;
+  if (!$run_once) {
+    dpm(func_get_args());
+    $run_once = true;
+  }
+  if (isset($links['widget-remove']) && $parent['original_map'][2] == 'vsite') {
+    $params = explode(':',$parent['original_map'][3]);
+    $l = array(
+      'href' => 'field-group/node/'
+    );
+  }
+}
+
+/**
  * Returns whether current user may create additional vsites.
  *
  * Handles access rules for when site owner is attempting to create a another
