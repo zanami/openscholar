@@ -240,7 +240,7 @@ a.more {
 #node-3793 a.more {
   color: #5c7677;
   float:right;
-  padding: 26px 38px 10px 0;
+  padding: 27px 38px 10px 0;
   }
 
 .block .item-list .pager,
@@ -966,6 +966,10 @@ border:none;
  	 margin-top: -45px;
   }
 
+.logged-in #footer #block-os-powered-by span a {
+ 	 margin-top: -28px;
+  }
+
 #footer #block-os-login {
     bottom: -5px;
 
@@ -1378,9 +1382,43 @@ body.front .block-boxes-os_taxonomy_fbt .description {
 body.front .block-boxes-os_taxonomy_fbt ul.termchild-applications .description {
     border-right: 2px solid #db7002;
     border-left: none;
-    left:-230px;
+    left:-227px;
     }
+
+body.front .block-boxes-os_taxonomy_fbt li.term-event-counts-and-durations .description,
+body.front .block-boxes-os_taxonomy_fbt li.term-incumbency-advantage .description {
+top:-36px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-ecological-inference .description,  
+body.front .block-boxes-os_taxonomy_fbt li.term-mexican-health-care-evaluation .description {
+top:-61px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-missing-data .description,
+body.front .block-boxes-os_taxonomy_fbt li.term-presidency-research-voting-behavior .description {
+top:-86px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-qualitative-research .description,
+body.front .block-boxes-os_taxonomy_fbt li.term-informatics-and-data-sharing .description {
+top:-111px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-rare-events .description, 
+body.front .block-boxes-os_taxonomy_fbt li.term-international-conflict .description {
+top:-136px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-survey-research .description, 
+body.front .block-boxes-os_taxonomy_fbt li.term-legislative-redistricting .description {
+top:-161px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-unifying-statistical-analysis .description, 
+body.front .block-boxes-os_taxonomy_fbt li.term-mortality-studies .description {
+top:-186px;
+}
+body.front .block-boxes-os_taxonomy_fbt li.term-teaching-and-administration .description {
+top:-211px;    
+  } 
   
+/* FIREFOX OVERRIDES FOR AOR DESCR */ 
+ @-moz-document url-prefix() {  
 body.front .block-boxes-os_taxonomy_fbt li.term-event-counts-and-durations .description,
 body.front .block-boxes-os_taxonomy_fbt li.term-incumbency-advantage .description {
 top:-37px;
@@ -1411,7 +1449,8 @@ top:-195px;
 }
 body.front .block-boxes-os_taxonomy_fbt li.term-teaching-and-administration .description {
 top:-222px;    
-  }   
+  } 
+ }  
 
 body.front .block-boxes-os_taxonomy_fbt li {
     position:relative;
