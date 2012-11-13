@@ -17,6 +17,20 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
       'vsite_design_maintheme',
     );
     $query->condition('object_id', $blacklist, 'NOT IN');
+
+    //black list for similar matches instead of exact.
+    $like_blacklist = array(
+      'vsite_comments_comment_type_%',
+      'comment_default_%',
+      'comment_anonymous_%',
+      'comment_form_%',
+      'comment_preview_%',
+      'comment_subject_%',
+      'comment_controls_%',
+    );
+    foreach ($like_blacklist as $not_like) {
+      $query->condition('object_id', $not_like, 'NOT LIKE');
+    }
     return $query;
   }
 
@@ -54,11 +68,16 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
       $object_id = $this->_update_variables_scholar_publications($row->object_id);
     }
 
-    //Comments
-    if ($row->object_id == 'facebook_comments_nodetypes') {
-      $fb_preset = "Facebook Comments";
-      $row->object_id = "fb_social_{$fb_preset}_nodetypes";
+    //comment by content type
+    if (strpos($object_id, 'comment_') === 0 ) {
+      list($object_id, $value) = $this->_update_variables_comment_content($row->id, $object_id, $value);
     }
+
+    //FB Comments
+//     if ($row->object_id == 'facebook_comments_nodetypes') {
+//       $fb_preset = "Facebook Comments";
+//       $row->object_id = "fb_social_{$fb_preset}_nodetypes";
+//     }
 
     /*
      * pseudo-hook:  $this->_update_TYPE_ID($object_id, $value);
@@ -93,6 +112,30 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
       $object_id,
       $value
     );
+  }
+
+  //we're keeping the comment_$type variable, but using vsite_comment_vsite_comment_$type's value.
+  function _update_variables_comment_content($id, $object_id, $value) {
+    $content_type = str_replace('comment_', '', $object_id);
+    $old_var = str_replace('comment_', 'vsite_comments_comment_type_', $object_id);
+    $result = parent::d6_db_select('spaces_overrides', 'so')
+      ->condition('id', $id)
+      ->condition('object_type', 'variable')
+      ->condition('object_id', $old_var)
+      ->fields('so', array('value'))
+      ->execute();
+
+    if ($result->rowCount()) {
+      $value = unserialize($result->fetchColumn());
+      $value = ($value == 'drupal') ? 2 : 0; //unless we're using drupal, comment_sources will take over
+    }
+
+    $bundles = array_flip(AbstractNodeOSMigration::$source_bundle_map);
+    if (isset($bundles[$content_type])) {
+      $object_id = 'comment_' . $bundles[$content_type];
+    }
+
+    return array($object_id, $value);
   }
 
   public function _update_variables_scholar_publications($object_id){
@@ -173,6 +216,26 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     return array('os_booklets_toc_position', $value);
   }
 
+  //facebook nodetypes
+  public function _update_variable_facebook_comments_nodetypes($object_id, $values) {
+    return array('fb_social_Facebook Comments_nodetypes', $this->_update_comment_nodetypes($values));
+  }
+
+  //disqus nodetypes
+  public function _update_variable_disqus_nodetypes($object_id, $values) {
+    return array('disqus_nodetypes', $this->_update_comment_nodetypes($values));
+  }
+
+  // the *_nodetypes variables used by comment sources need updating.  instead of key => bool, they're key => key.
+  public function _update_comment_nodetypes($values) {
+    $values = array_filter($values);
+    foreach($values as $key => $value) {
+      $key = AbstractNodeOSMigration::get_source_bundle($key);
+      $values[$key] = $key;
+    }
+    return $values;
+  }
+
   // check if a variable is discontinued
   public function _discontinued_variable($object_id){
     static $discontinued;
@@ -202,6 +265,8 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
 
     return in_array($object_id, $discontinued);
   }
+
+
 }
 
 
