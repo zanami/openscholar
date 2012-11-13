@@ -57,6 +57,7 @@ function vsite_field_group_info() {
     'children' => array(
       0 => 'field_site_address',
       1 => 'field_site_description',
+      2 => 'title',
     ),
     'format_type' => 'div',
     'format_settings' => array(
