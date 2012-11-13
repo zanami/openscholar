@@ -279,7 +279,7 @@ class os_sv_list_box extends os_boxes_default {
     $more_link = FALSE;
 
     if (count($nids)) {
-      if (count($nids) > $options['number_of_items']) {
+      if (count($nids) >= $options['number_of_items']) {
         $nids = array_slice($nids, 0, $options['number_of_items']);
         $more_link = TRUE;
       }
