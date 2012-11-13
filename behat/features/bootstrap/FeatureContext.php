@@ -79,4 +79,25 @@ class FeatureContext extends DrupalContext {
     $body = $page->find('css', 'body');
     print_r($body->getHtml());
   }
+
+  /**
+   * @Then /^I should get:$/
+   */
+  public function iShouldGet(PyStringNode $string) {
+    throw new PendingException();
+  }
+
+  /**
+   * @Then /^I should see the images:$/
+   */
+  public function iShouldSeeTheImages(TableNode $table) {
+    $page = $this->getSession()->getPage();
+    $table_rows = $table->getRows();
+    foreach ($table_rows as $rows) {
+      $image = $page->find('xpath', "//img[contains(@src, '{$rows[0]}')]");
+      if (!$image) {
+        throw new Exception(sprintf('The image "%s" wasn\'t found in the page.', $rows[0]));
+      }
+    }
+  }
 }

@@ -56,3 +56,41 @@ Feature:
     And I visit "john"
     When I click "Blog"
     Then I should see "First blog"
+
+  @api
+  Scenario: Test the Persentation tab
+    Given I am logged in as a user with the "authenticated user" role
+    And I visit "john"
+    When I click "Presentations"
+    Then I should see "JFK's biography"
+
+  @api
+  Scenario: Test the Links tab
+    Given I am logged in as a user with the "authenticated user" role
+    And I visit "john"
+    When I click "Links"
+    Then I should see "JFK wikipedia page"
+
+  @api
+  Scenario: Test the Documents tab
+    Given I am logged in as a user with the "authenticated user" role
+    And I visit "john"
+    When I click "Documents"
+    Then I should see "All about nodes"
+
+  @api
+  Scenario: Test the Reader tab
+    Given I am logged in as a user with the "authenticated user" role
+    And I visit "john"
+    When I click "Reader"
+    Then I should see "Engadget rss"
+
+  @api
+  Scenario: Test the Galleries tab
+    Given I am logged in as a user with the "authenticated user" role
+    And I visit "john"
+    When I click "Galleries"
+    Then I should see the images:
+      | slideshow1.jpg |
+      | slideshow2.jpg |
+      | slideshow3.jpg |
