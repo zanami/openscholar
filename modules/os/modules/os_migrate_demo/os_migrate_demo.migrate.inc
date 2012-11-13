@@ -370,6 +370,13 @@ class OsMigrateBookNode extends OsMigrate {
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration('OsMigratePersonalNode');
   }
+
+  public function prepare($entity, $row) {
+    // Let know the book module that this is a new book.
+    $entity->book = array(
+      'bid' => 'new',
+    );
+  }
 }
 
 /**
@@ -430,7 +437,6 @@ class OsMigratePeopleNode extends OsMigrate {
   }
 }
 
-// TODO: OG vocab migration class have problem. Need to fix it.
 /**
  * Migrate OG-vocabs.
  */
@@ -503,10 +509,11 @@ class OsMigrateLinkNode extends OsMigrate {
       ->sourceMigration('OsMigratePersonalNode');
   }
 
-  function prepare($entity, $row) {
+  public function prepare($entity, $row) {
     $entity->field_links_link[LANGUAGE_NONE][0]['url'] = $row->link;
   }
 }
+
 /**
  * Migrate presentation.
  */
@@ -537,10 +544,78 @@ class OsMigratePresntationsNode extends OsMigrate {
       ->sourceMigration('OsMigratePersonalNode');
   }
 
-  function prepare($entity, $row) {
+  public function prepare($entity, $row) {
     $entity->field_presentation_date[LANGUAGE_NONE][0] = array(
       'value' => $row->date,
       'date_type' => 'datetime',
     );
+  }
+}
+
+/**
+ * Migrate rss feeds.
+ */
+class OsMigrateFeedsNode extends OsMigrate {
+  public $entityType = 'node';
+  public $bundle = 'feed';
+
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('title', 'Title'),
+    array('body', 'Body'),
+    array('address', 'Address'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+  );
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+
+    $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping('address', 'field_url');
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+  }
+
+  public function prepare($entity, $row) {
+    $entity->field_url[LANGUAGE_NONE][0]['url'] = $row->address;
+  }
+}
+
+/**
+ * Migrate gallery feeds.
+ */
+class OsMigrateGalleryNode extends OsMigrate {
+  public $entityType = 'node';
+  public $bundle = 'media_gallery';
+
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('title', 'Title'),
+    array('body', 'Body'),
+    array('images', 'Images'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+  );
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+
+    // $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+
+    $this->addFieldMapping('media_gallery_media', 'images')
+      ->separator(';');
+    $this->addFieldMapping('media_gallery_media:file_replace')
+      ->defaultValue(FILE_EXISTS_REPLACE);
+    $this->addFieldMapping('media_gallery_media:source_dir')
+      ->defaultValue(drupal_get_path('module', 'os_migrate_demo') . '/images');
   }
 }
