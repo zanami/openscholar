@@ -28,7 +28,7 @@ function os_image_gallery_default_box() {
     'more_text' => 'More',
     'more_link' => 'galleries',
     'pager' => 0,
-    'number_of_items' => '5',
+    'number_of_items' => '6',
     'sort_by' => 'sort_newest',
 
     'biblio_show_all' => TRUE,
