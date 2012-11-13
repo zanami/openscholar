@@ -17,6 +17,8 @@ font-family: helvetica,arial,sans-serif;
   box-shadow: 0 2px 1em #777;
 } 
 
+.lt-ie9 #page { border: 1px solid #DDD;}
+
 #columns {background:#FFF;padding:5px 10px;}
 
 
@@ -297,12 +299,9 @@ float:right;
 /* SECONDARY NAV WHEN IN A SIDEBAR  */ 
 
 .sidebar #block-os-secondary-menu ul {
-	margin: 8px 0 0 15px;
+	margin: 8px 0 0 0px;
 	}
 
-.sidebar #block-os-secondary-menu ul li {
-	list-style-type:square;
-	}
 
 .sidebar #block-os-secondary-menu ul li a {
   font-weight:bold;
