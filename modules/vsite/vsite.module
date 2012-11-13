@@ -214,16 +214,14 @@ function vsite_os_widget_alter(&$widget) {
 }
 
 function vsite_menu_contextual_links_alter(&$links, $parent) {
-  static $run_once = false;
-  if (!$run_once) {
-    dpm(func_get_args());
-    $run_once = true;
-  }
   if (isset($links['widget-remove']) && $parent['original_map'][2] == 'vsite') {
-    $params = explode(':',$parent['original_map'][3]);
+    list(,$entity_type,$id,$group) = explode(':',$parent['original_map'][3]);
     $l = array(
-      'href' => 'field-group/node/'
+      'href' => 'field-group/'.$entity_type.'/'.$id.'/'.$group,
+      'title' => 'Edit Widget',
+      'localized_options' => array(),
     );
+    $links = array_merge(array('widget-edit' => $l), $links);
   }
 }
 
