@@ -142,8 +142,7 @@ function vsite_spaces_registry_alter(&$registry) {
  * only active in a single space each
  */
 function vsite_context_block_info_alter(&$block_info) {
-  if (module_exists('field_group')) {
-    $space = spaces_get_space();
+  if (module_exists('field_group') && $space = spaces_get_space()) {
     $node = $space->group;
 
     $groups = field_group_info_groups('node', $node->type, 'default');
