@@ -51,11 +51,6 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id) {
     $form['comment_settings']['#access'] = FALSE;
     $form['comment_settings']['comment']['#default_value'] = 1;
   }
-
-  //Force this field hidden for non User 1 and force to currect group, TMP Fix #740
-  if(og_is_group_content_type('node', $form['#bundle']) && isset($form['og_group_ref']) && !user_access('administer og permissions')){
-    $form['og_group_ref']['#access'] = false;
-  }
 }
 
 /**
@@ -1283,5 +1278,22 @@ function vsite_preprocess_html(&$vars) {
 
     // Set the new page 'head' title.
     $vars['head_title'] = implode(' | ', $head_title);
+  }
+}
+
+/*
+ * Implements hook_field_attach_form().
+ *
+ * Hide group-audience fields. We don't use hook_field_access() as
+ * OgBehaviorHandler::OgMembershipCrud() is checking for field-access,
+ * which will result with not creating the OG-memberships.
+ */
+function vsite_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
+  if ($entity_type != 'node' || !og_is_group_content_type($entity_type, $entity->type)) {
+    return;
+  }
+
+  foreach (array_keys(og_get_group_audience_fields($entity_type, $entity->type)) as $field_name) {
+    $form[$field_name]['#access'] = FALSE;
   }
 }
