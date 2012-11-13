@@ -16,7 +16,7 @@ class OgVocabMenuAccessTestCase extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('og_vocab', 'og_ui');
+    parent::setUp('og_vocab');
 
     // Add OG group field sto article node.
     og_create_field(OG_GROUP_FIELD, 'node', 'article');
@@ -367,114 +367,6 @@ class OgVocabMigrateTestCase extends UpgradePathTestCase {
     // of the vocabularies is not assigned to any content-type.
     $this->assertEqual(count(entity_load('og_vocab')), 5, 'All expected OG vocabs were created.');
   }
-}
 
-class OgVocabApiTestCase extends DrupalWebTestCase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG vocabulary API',
-      'description' => 'Check various API functions.',
-      'group' => 'Organic groups vocabulary',
-    );
-  }
-
-
-  function setUp() {
-    parent::setUp('og_vocab');
-
-    // Create a group.
-    $type = $this->drupalCreateContentType();
-    og_create_field(OG_GROUP_FIELD, 'node', $type->type);
-
-    $this->user1 = $this->drupalCreateUser();
-    $this->user2 = $this->drupalCreateUser();
-
-    $settings = array();
-    $settings['type'] = $type->type;
-    $settings['uid'] = $this->user1->uid;
-    $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
-    $node = $this->drupalCreateNode($settings);
-    $this->gid = $node->nid;
-
-    // Create group-content type.
-    $type = $this->drupalCreateContentType();
-    $this->type = $type;
-
-    // Create a terms vocabulary.
-    $vocabulary = new stdClass();
-    $vocabulary->name = 'Terms';
-    $vocabulary->machine_name = 'terms';
-    taxonomy_vocabulary_save($vocabulary);
-    $this->vid = $vocabulary->vid;
-
-    // Relate vocabulary to group.
-    og_vocab_relation_save($vocabulary->vid, 'node', $node->nid);
-  }
-
-  /**
-   * Test creating of OG vocabuylary field when OG-vocab is saved.
-   */
-  function testAutoCreateField() {
-    $type = $this->type;
-    $this->assertFalse(field_info_instance('node', OG_VOCAB_FIELD, $type->type), 'OG-vocabulary does not exist.');
-
-    // Create a new OG-vocab.
-    $og_vocab = og_vocab_create_og_vocab($this->vid, 'node', $type->type);
-    $og_vocab->save();
-    $this->assertTrue(field_info_instance('node', OG_VOCAB_FIELD, $type->type), 'OG-vocabulary was created.');
-  }
-
-  /**
-   * Test the entity_label() and entity_uri() callbacks.
-   */
-  function testLabelUrlCallbacks() {
-    global $user;
-    $admin1 = $this->drupalCreateUser(array('administer taxonomy'));
-
-    $type = $this->type;
-    $vocab = taxonomy_vocabulary_load($this->vid);
-    $group = node_load($this->gid);
-
-    $og_vocab = og_vocab_create_og_vocab($this->vid, 'node', $type->type);
-    $og_vocab->save();
-
-    $this->drupalLogin($admin1);
-    $label = entity_label('og_vocab', $og_vocab);
-
-    $params = array(
-      '@id' => $og_vocab->id,
-      '@bundle' => $type->name,
-      '@name' => $vocab->name,
-    );
-    $expected_label =  t('@bundle bundle in @name vocabulary (OG Vocabulary ID @id)', $params);
-    $this->assertEqual($label, $expected_label, 'Correct label for admin user.');
-
-    $uri = entity_uri('og_vocab', $og_vocab);
-    $this->assertEqual($uri['path'], 'admin/structure/taxonomy/terms/edit', 'Correct URL for admin user.');
-
-    // Assert the fragment.
-    $this->assertEqual($uri['options']['fragment'], 'og-vocab-node-' . $type->type, 'Correct URL fragment.');
-
-    $this->drupalLogin($this->user2);
-    // This is needed as otherwise og_user_access() fails.
-    $user = $this->user2;
-
-    $label = entity_label('og_vocab', $og_vocab);
-    $expected_label =  t('OG Vocabulary ID @id', array('@id' => $og_vocab->id));
-    $this->assertEqual($label, $expected_label, 'Correct label for authenticated user.');
-
-    $uri = entity_uri('og_vocab', $og_vocab);
-    $this->assertTrue(empty($uri['path']), 'User has no access to the URL.');
-
-    // Set group permissions.
-    $roles = array_flip(og_roles('node', $group->type));
-    og_role_change_permissions($roles[OG_AUTHENTICATED_ROLE], array('administer taxonomy' => 1));
-
-    // Add user to group.
-    og_group('node', $this->gid, array('entity' => $this->user2));
-    $uri = entity_uri('og_vocab', $og_vocab);
-    $this->assertEqual($uri['path'], "group/node/{$this->gid}/admin/taxonomy/{$vocab->machine_name}/edit", 'Correct URL for authenticated user that is a group member.');
-  }
 }
 

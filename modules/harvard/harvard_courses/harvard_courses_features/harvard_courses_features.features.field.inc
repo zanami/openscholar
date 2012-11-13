@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * harvard_courses.features.field.inc
+ * harvard_courses_features.features.field.inc
  */
 
 /**
  * Implements hook_field_default_fields().
  */
-function harvard_courses_field_default_fields() {
+function harvard_courses_features_field_default_fields() {
   $fields = array();
 
   // Exported field: 'node-harvard_api_importer-body'.

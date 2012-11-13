@@ -110,17 +110,3 @@ function iqss_scholars_front_strongarm() {
 
   	return $export;
 }
-
-/**
- * Implements hook_os_widget_alter().
- * Set the iqss_scholars_front widgets to hidden so they
- * do not show up in cp/layout.
- */
-function iqss_scholars_front_os_widget_alter(&$widget) {
-  $front_widgets_array = array('iqss_scholars_fp_headertext','iqss_scholars_fp_infoblock','iqss_scholars_fp_logoblock','iqss_scholars_fp_learnmore','iqss_scholars_fixed_header','iqss_scholars_learnmore_toggle');
-  foreach($front_widgets_array as $front_widget) {
-    if($widget['delta'] == $front_widget){
-	  $widget += array('hidden' => TRUE);
-    }
-  }
-}

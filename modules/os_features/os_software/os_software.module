@@ -213,12 +213,6 @@ function os_software_os_widget() {
   return $items;
 }
 
-function os_software_os_widget_alter(&$widget) {
-  if ($widget['delta'] == 'os_software_releases-block_1') {
-    $widget['info'] = 'Recent Software Releases';
-  }
-}
-
 /**
  * Provides default packaging method field option for Software Package nodes
  */

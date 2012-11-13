@@ -11,12 +11,13 @@
 
 ;----------// OpenScholar
 
-  os[theme_type]   = 'vsite'
-  os[theme_access] = 'public'
-
+	os[theme_type]   = 'vsite'
+    os[theme_access] = 'public'
+    
+    
  ;----------// Stylesheets
 
-
+  
   stylesheets[screen][] = css/os_default.css
   stylesheets[screen][] = css/os_default.responsive.layout.css
 
@@ -78,7 +79,7 @@
 
 
 
-
+  
 
 
 
