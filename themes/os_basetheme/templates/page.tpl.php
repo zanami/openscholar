@@ -38,7 +38,7 @@
 	<div class="hg-container">
     <div id="content-column" role="main">
       <div class="content-inner">
-      	<?php if ($is_front || $use_content_regions): ?>
+      	<?php if ($is_front): ?>
           <?php print render($title_suffix); ?>
 <?php if (
   $page['content_top'] ||
@@ -56,7 +56,7 @@
   <?php endif; ?>
 
 
-   	<?php if (!$is_front && !$use_content_regions): ?>
+   	<?php if (!$is_front): ?>
       	 <<?php print $tag; ?> id="main-content">
 
           <?php print render($title_prefix); ?>

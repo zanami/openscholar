@@ -8,7 +8,10 @@ function cp_layout_full_form($form, $form_state, $ctx){
   ctools_include('layout', 'os');
 
   // Temporary: To be replaced by API function later
-  $contexts = os_layout_get_contexts(array(1, 2));
+  $contexts = os_layout_get_contexts(array(
+    1,
+    2
+  ));
   $ctx = $ctx ? $ctx : 'os_front';
 
   $form['context_selection'] = array(
@@ -35,7 +38,14 @@ function cp_layout_full_form($form, $form_state, $ctx){
     $layout_css = drupal_get_path('module', 'cp_layout') . '/theme/layouts/' . at_get_setting('bigscreen_layout', os_theme_get()) . '.css';
   }
 
-  $blocks = os_layout_get_multiple(array('os_public', $ctx), true, true);
+  $use_content_regions = false;
+  if ($ctx == 'os_front') {
+    $use_content_regions = true;
+  }
+  $blocks = os_layout_get_multiple(array(
+    'os_public',
+    $ctx
+  ), true, true);
 
   $form['context'] = array(
     '#type' => 'value',
@@ -90,6 +100,14 @@ function cp_layout_full_form($form, $form_state, $ctx){
     )
   );
 
+  if ($use_content_regions) {
+    $form['layout']['#attributes'] = array(
+      'class' => array(
+        'content-regions'
+      )
+    );
+  }
+
   foreach ( $regions as $r ) {
     $form['layout'][$r] = array(
       '#type' => 'container',
@@ -108,7 +126,6 @@ function cp_layout_full_form($form, $form_state, $ctx){
     );
   }
 
-  $use_content_regions = false;
   foreach ( $blocks as $bid => $b ) {
     if ($b['region'] == - 1 || $b['region'] === FALSE) {
       $form['unused'][$bid] = array(
@@ -117,27 +134,12 @@ function cp_layout_full_form($form, $form_state, $ctx){
       );
     }
     elseif (isset($form['layout'][$b['region']])) {
-      if (strpos($b['region'], 'content_') !== FALSE) {
-        $use_content_regions = true;
-      }
       $form['layout'][$b['region']][$bid] = array(
         '#theme' => 'cp_layout_widget',
         '#widget' => $b,
         '#weight' => $b['weight']
       );
     }
-  }
-
-  if ($ctx == 'os_front') {
-    $use_content_regions = true;
-  }
-
-  if ($use_content_regions) {
-    $form['layout']['#attributes'] = array(
-      'class' => array(
-        'content-regions'
-      )
-    );
   }
 
   $form['actions'] = array(

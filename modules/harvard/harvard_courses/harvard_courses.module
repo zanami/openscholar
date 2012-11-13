@@ -12,12 +12,12 @@ include_once 'harvard_courses.features.inc';
 function harvard_courses_feeds_plugins() {
   $path = drupal_get_path('module', 'harvard_courses');
   $info = array();
-  $info['HarwardFetcher'] = array(
-    'name'        => t('Harward API fetcher'),
-    'description' => t('Create url for fetching info from Harward API.'),
+  $info['FeedsTokenizedFetcher'] = array(
+    'name'        => t('Token fetcher'),
+    'description' => t('Create a tokenize url for fetching'),
     'handler' => array(
       'parent' => 'FeedsFetcher',
-      'class'  => 'HarwardFetcher',
+      'class'  => 'FeedsTokenizedFetcher',
       'file'   => 'harvard_courses_token_fetcher.inc',
       'path'   => $path,
     ),
@@ -26,7 +26,7 @@ function harvard_courses_feeds_plugins() {
 }
 
 /**
- * Returning groups (Department. Project or personal) nid by the import type.
+ * Returning vsites nid by the import type.
  *
  *  @param $import_type
  *    What is the method of the import:
@@ -45,7 +45,7 @@ function haravard_courses_sites_nid_by_import_type($import_type, $search_value =
   $query = new entityFieldQuery();
   $query
     ->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', array('department', 'project', 'personal'), 'IN');
+    ->propertyCondition('type', 'vsite');
 
     if ($search_value) {
       $query->fieldCondition($field, 'value', $search_value, 'IN');
@@ -72,15 +72,15 @@ function harvard_courses_node_insert($node) {
   $wrapper = entity_metadata_wrapper('node', $node->nid);
 
   // Import by catalog number.
-  $sites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
-  foreach ($sites as $site) {
-    og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+  $vsites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
+  foreach ($vsites as $vsite) {
+    og_group('node', $vsite, array('entity_type' => 'node', 'entity' => $node->nid));
   }
 
   // Import by department ID.
-  $sites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_field->value()));
-  foreach ($sites as $site) {
-    og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+  $vsites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_field->value()));
+  foreach ($vsites as $vsite) {
+    og_group('node', $vsite, array('entity_type' => 'node', 'entity' => $node->nid));
   }
 
   $node->skip_og_membership = TRUE;
@@ -90,7 +90,7 @@ function harvard_courses_node_insert($node) {
  * Implements hook_node_update().
  */
 function harvard_courses_node_update($node) {
-  if (!in_array($node->type, array('project', 'department', 'personal')) || empty($node->original)) {
+  if ($node->type != 'vsite' || empty($node->original)) {
     return;
   }
 
@@ -102,20 +102,20 @@ function harvard_courses_node_update($node) {
   // node.
   $fields = array(
     'cat_num' => array(
-      'field_name' => 'field_catalog_number',
+      'vsite' => 'field_catalog_number',
       'course' => 'field_cat_number',
     ),
     'department' => array(
-      'field_name' => 'field_department_id',
+      'vsite' => 'field_department_id',
       'course' => 'field_field',
     ),
   );
 
   foreach ($fields as $field) {
-    $removed_items = array_diff($original_node->{$field['field_name']}->value(), $wrapper->{$field['field_name']}->value());
-    $added_items = array_diff($wrapper->{$field['field_name']}->value(), $original_node->{$field['field_name']}->value());
+    $removed_items = array_diff($original_node->{$field['vsite']}->value(), $wrapper->{$field['vsite']}->value());
+    $added_items = array_diff($wrapper->{$field['vsite']}->value(), $original_node->{$field['vsite']}->value());
 
-    // Un-grouping removed courses from the group.
+    // Ungrouping removed courses from the vsite.
     if (!empty($removed_items)) {
       $courses = harvard_courses_related_nodes($field['course'], $removed_items);
       if (!empty($courses)) {
@@ -125,7 +125,7 @@ function harvard_courses_node_update($node) {
       }
     }
 
-    // New course(s) was added to the group. IF the course(s) is already imported
+    // New course(s) was added to the vsite. IF the course(s) is alredy imported
     // then group them, if not then in the next import they will be imported.
     if (!empty($added_items)) {
       $courses = harvard_courses_related_nodes($field['course'], $added_items);

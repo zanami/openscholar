@@ -346,7 +346,7 @@ function citation_distribute_flag_default_flags() {
         'content_type' => 'node',
         'name' => $plugin['name'],
         'title' => 'title:' . $plugin['title'],
-        'roles' => array('flag'=>array('vsite admin'),'unflag'=>array('vsite admin')), //vsite admin
+        'roles' => array('flag'=>array(4),'unflag'=>array(4)), //vsite admin
         'global' => 0,
         'types' => array ('biblio' ),
         'flag_short' => 'Send to ' . $plugin['title'],
@@ -383,12 +383,6 @@ function citation_distribute_flag_default_flags() {
 
 }
 
-function citation_distribute_flag_access($flag, $content_id, $action, $account) {
-  if ($flag->module == 'citation_distribute' && ($roles = $flag->roles[$action])) {
-    $access = array_intersect($roles, $account->roles);
-    return (bool)count($access);
-  }
-}
 /**
  * Implements hook_ctools_plugin_api().
  */

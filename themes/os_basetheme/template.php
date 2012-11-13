@@ -37,7 +37,7 @@ function os_basetheme_preprocess_page(&$vars) {
     'content-right' => $vars['page']['content_second'],
     'content-bottom' => $vars['page']['content_bottom'],
   );
-
+ 
   foreach (array('header',  'content') as $var) {
     $visible = array_filter($$var, "__os_basetheme_is_empty");
     if (count($visible)) {
@@ -51,10 +51,6 @@ function os_basetheme_preprocess_page(&$vars) {
   if (module_exists('overlay') && overlay_get_mode() == 'child') {
     // overlay does this, but adaptive theme renders them in a different way that overlay doesn't expect
     $vars['primary_local_tasks'] = $vars['title'] = false;
-  }
-
-  if (!isset($vars['use_content_regions'])) {
-    $vars['use_content_regions'] = false;
   }
 }
 

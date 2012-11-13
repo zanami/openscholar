@@ -98,7 +98,6 @@ function os_taxonomy_theme() {
 function theme_os_taxonomy_term_item($variables) {
   $number = !$variables['number'] ? '' : ' <span class="count">(' . $variables['number'] . ')</span>';
 
-  // Name of parent term.
   $name = $variables['name'];
   $item_wrapper = !empty($variables['childs']) ? "<div class='term-head'>" : '';
 
@@ -138,8 +137,6 @@ function theme_os_taxonomy_term_item($variables) {
  *      - show_childs: Control if to show the childrens with their parent term.
  *        Also, the number of the tagged nodes to the childs term will not be
  *        added to the tagged node number of the father term.
- *      - widget_type: How to render the term list, in a HTML format or in a
- *        select list.
  */
 function theme_os_taxonomy_vocabulary_item_list($variables) {
   $options = $variables['options'] + array(
@@ -220,6 +217,10 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       continue;
     }
 
+    // Don't process terms that are in not in level 0.
+    if ($item['is_child']) {
+      continue;
+    }
     // The attached number to the term name.
     $number = null;
     if ($options['show_count']) {
@@ -227,84 +228,25 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       $number += $options['add_childs'] && isset($item['child_number']) ? $item['child_number'] : 0;
     }
 
-    if ($options['widget_type'] == 'select') {
-      $term_name = $item['term_name'];
-      $term_name .= $number ? ' (' . $number . ')' : '';
-      $data[$tid] = $term_name;
-    }
-    else {
-      // Don't process terms that are in not in level 0.
-      if ($item['is_child']) {
-        continue;
-      }
-
-      // Check if we need to disable the link to the term base on the child number.
-      $link_options = empty($item['class']) ? array() : array('attributes' => array('class' => $item['class']));
-      $child_content = !empty($item['childs']) ? os_taxonomy_build_child_item($item['childs'], $item, $options) : '';
-      // Data contain data for term children.
-      $data[$tid] = array(
-        'data' => theme('os_taxonomy_term_item', array(
-          'number' => $number,
-          'name' => $item['term_name'],
-          'link_options' => $link_options,
-          'url_path' => $path_prefix.$item['url']['path'],
-          'description' => $item['description'],
-          'link_to_empty_terms' => $options['link_to_empty_terms'],
-          'show_term_descriptions' => $options['show_term_descriptions'],
-          'childs' => $child_content,
-        )),
-        'class' => array('term-' . drupal_html_class($item['term_name'])),
-      );
-    }
+    // Check if we need to disable the link to the term base on the child number.
+    $link_options = empty($item['class']) ? array() : array('attributes' => array('class' => $item['class']));
+    $child_content = !empty($item['childs']) ? os_taxonomy_build_child_item($item['childs'], $item, $options) : '';
+    // Data contain data for term children.
+    $data[$tid] = array(
+      'data' => theme('os_taxonomy_term_item', array(
+        'number' => $number,
+        'name' => $item['term_name'],
+        'link_options' => $link_options,
+        'url_path' => $path_prefix.$item['url']['path'],
+        'description' => $item['description'],
+        'link_to_empty_terms' => $options['link_to_empty_terms'],
+        'show_term_descriptions' => $options['show_term_descriptions'],
+        'childs' => $child_content,
+      )),
+      'class' => array('term-' . drupal_html_class($item['term_name'])),
+    );
   }
-
-  if ($options['widget_type'] == 'select') {
-    return render(drupal_get_form('os_taxonomy_select_list', $data, $path_prefix));
-  }
-  else {
-    return theme('item_list', array('type' => 'ul', 'items' => $data));
-  }
-}
-
-/**
- * Disaply a custom form with a term lists.
- *
- *  @param $term_list
- *    Array contain the term list from the vocabulary.
- *  @param $path
- *    The path of the feature.
- *
- *  @return $form
- *    The variable of the form.
- */
-function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
-  $form_state['path'] = $path;
-
-  $form['#attached']['css'][] = drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.css';
-  $form['terms'] = array(
-    '#type' => 'select',
-    '#options' => $terms_list,
-    '#attributes' => array(
-      'class' => array('terms-list'),
-    ),
-  );
-
-  $form['actions'] = array(
-    '#type' => 'actions',
-    'submit' => array(
-      '#type' => 'submit',
-      '#value' => t('Go'),
-    ),
-  );
-
-  return $form;
-}
-
-/**
- * Submit handler - redirect the user to the taxonomy page.
- */
-function os_taxonomy_select_list_submit($form, &$form_state) {
-  $form_state['redirect'] = $form_state['path'] . 'taxonomy/term/' . $form_state['values']['terms'];
+  return theme('item_list', array('type' => 'ul', 'items' => $data));
 }
 
 /**
