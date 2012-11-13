@@ -820,6 +820,10 @@ class BoxPorter {
     $options['sort_by'] = $this->_sv_list_box_sort($options['sort_by']);
     $options['number_of_items'] = min(20, $options['number_of_items']); //new box only goes up to 20.
 
+    //biblio stuff
+    if ($ct == 'biblio' && $options['sort_by'] == 'sort_newest') {
+      $options['sort_by'] = 'sort_biblio';
+    }
     $options['biblio_show_all'] = TRUE;
     $options['biblio_whitelist'] = array();
     $box->options = $options;

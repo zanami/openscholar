@@ -30,6 +30,7 @@ html, body {
      width: 948px;
 }
 
+.lt-ie9 #columns { border: 1px solid #DDD;}
 
 .region-header-third {
      padding-right: 0;

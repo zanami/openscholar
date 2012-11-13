@@ -15,7 +15,7 @@ class os_sv_list_box extends os_boxes_default {
       'more_link' => '', // what's a good default?
 
       'pager' => FALSE,
-      'number_of_items' => 5,
+      'number_of_items' => 6,
       'sort_by' => 'sort_newest',
 
       'biblio_show_all' => TRUE,
@@ -279,7 +279,7 @@ class os_sv_list_box extends os_boxes_default {
     $more_link = FALSE;
 
     if (count($nids)) {
-      if (count($nids) > $options['number_of_items']) {
+      if (count($nids) >= $options['number_of_items']) {
         $nids = array_slice($nids, 0, $options['number_of_items']);
         $more_link = TRUE;
       }
