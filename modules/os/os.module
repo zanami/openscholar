@@ -563,7 +563,7 @@ function os_preprocess_page(&$vars) {
  * Implements hook_form_alter().
  */
 function os_form_alter(&$form, $form_state, $form_id) {
-  if (isset($form['#node']) || isset($form['#entity'])) {
+  if (isset($form['#entity_type']) && $form['#entity_type'] != 'comment' && (isset($form['#node']) || isset($form['#entity']))) {
     $form['#after_build'][] = 'os_entity_form_after_build';
   }
 }
@@ -575,7 +575,7 @@ function os_form_alter(&$form, $form_state, $form_id) {
  */
 function os_entity_form_after_build($form, $form_state) {
   $node = isset($form['#node'])?$form['#node']:null;
-  if (!isset($node) && isset($form['#entity'])) {
+  if (!isset($node) && isset($form['#entity']) && !isset($form['#entity']->comment)) {
      // dummy node
     $node = (object)array('type' => 'page');
   }
