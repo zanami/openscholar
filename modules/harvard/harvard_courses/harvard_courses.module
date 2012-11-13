@@ -186,3 +186,100 @@ function harvard_courses_feeds_presave($source, $entity, $item) {
     $entity->feeds_item->skip = TRUE;
   }
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
+  if ($form['#feature'] != 'harvard_courses' || !$space = spaces_get_space()) {
+    return;
+  }
+  $attached_data = array();
+
+  field_attach_form('node', $space->og, $attached_data, $form_state);
+
+  // Adding to the original form the fields.
+  $form['field_department_id'] = $attached_data['field_department_id'];
+  $form['field_catalog_number'] = $attached_data['field_catalog_number'];
+  $form['#entity'] = $attached_data['#entity'];
+
+  // Remove comments and adding a custom submit handler.
+  $form['#after_build'][] = 'harvard_courses_form_cp_app_settings_form_after_build';
+  $form['#submit'][] = 'harvard_courses_feature_submit';
+}
+
+/**
+ * After build function for removing the comment settings area.
+ */
+function harvard_courses_form_cp_app_settings_form_after_build($form, &$form_state) {
+  $form_state['redirect'] = 'cp/build/features';
+  $form['comment_settings']['#access'] = FALSE;
+
+  // We don't need to handle with comments in this module.
+  $key = array_search('comment_sources_save_admin_form', $form['#submit']);
+  unset($form['#submit'][$key]);
+  return $form;
+}
+
+/**
+ * Get the value of multiple fields. Because there is a "Add more" button, we
+ * can't go over him in the loop.
+ *
+ *  @param $field_name
+ *    The field name.
+ *  @param $form_state
+ *    The form state value.
+ *
+ *  @return
+ *    Array containing the value of the field.
+ */
+function _harvard_courses_get_field_value($field_name, $form_state) {
+  $return = '';
+
+  foreach ($form_state['values'][$field_name][LANGUAGE_NONE] as $key => $value) {
+    if (is_int($key)) {
+      $item_value = $form_state['values'][$field_name][LANGUAGE_NONE][$key]['value'];
+
+      if (!empty($item_value)) {
+        $return[] = $item_value;
+      }
+    }
+  }
+
+  return $return;
+}
+
+/**
+ * Submit handler - Save the value of department ID, and catalog number.
+ */
+function harvard_courses_feature_submit($form, $form_state) {
+  $department_id = _harvard_courses_get_field_value('field_department_id', $form_state);
+  $catalog_number = _harvard_courses_get_field_value('field_catalog_number', $form_state);
+
+  $wrapper = entity_metadata_wrapper('node', $form['#entity']);
+  $wrapper->field_department_id->set($department_id);
+  $wrapper->field_catalog_number->set($catalog_number);
+  $wrapper->save();
+}
+
+/**
+ * Implements hook_field_access().
+ */
+function harvard_courses_field_access($op, $field, $entity_type, $entity, $account) {
+  if (!in_array($field['field_name'], array('field_department_id', 'field_catalog_number'))) {
+    return;
+  }
+
+  $spaces_features = variable_get('spaces_features', array());
+  if (!$spaces_features['harvard_courses']) {
+    return FALSE;
+  }
+
+  // The fields cannot be shown when attaching them to the node.
+  if (menu_get_object()) {
+    return FALSE;
+  }
+
+  // Don't show the fields in view mode.
+  return $op != 'view' ? TRUE : FALSE;
+}
