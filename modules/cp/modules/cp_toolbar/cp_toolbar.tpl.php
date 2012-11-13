@@ -36,7 +36,8 @@
 
   <div id="toolbar-drawer-anchor">
     <div id="toolbar-drawer-slider">
-      <div class="<?php echo $toolbar['toolbar_drawer']['toolbar_drawer_classes']; ?>">
+      <div class="<?php print $toolbar['toolbar_drawer']['toolbar_drawer_classes']; ?>">
+        <?php unset($toolbar['toolbar_drawer']['toolbar_drawer_classes']); ?>
         <?php print render($toolbar['toolbar_drawer']); ?>
       </div>
 

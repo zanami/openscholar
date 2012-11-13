@@ -99,7 +99,7 @@ function cp_toolbar_view() {
       'title' => t('Help'),
       // 'href' => 'admin/help',
       'href' => 'help/os_help/User-Documentation',
- 	  // 'query' => array('popup'=>'1'),
+     // 'query' => array('popup'=>'1'),
       'html' => TRUE,
       'description' => t('Get help on various topics'),
     ),
@@ -345,7 +345,7 @@ function cp_toolbar_fill_drawer() {
     '#access' => user_access('access toolbar'),
     '#attributes' => array('id' => 'admin-drawer'),
     '#paths' => array(
-     	'admin'
+       'admin'
     ),
   );
 
