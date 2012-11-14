@@ -167,7 +167,6 @@ function vsite_views_default_views() {
   $handler->display->display_options['sorts']['random']['id'] = 'random';
   $handler->display->display_options['sorts']['random']['table'] = 'views';
   $handler->display->display_options['sorts']['random']['field'] = 'random';
-
   $export['os_websites'] = $view;
 
   return $export;
