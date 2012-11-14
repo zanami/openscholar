@@ -207,16 +207,8 @@ function os_layout_set($context_name, $blocks) {
   _os_layout_sanitize_blocks($blocks);
 
   $context = context_load($context_name);
-  $to_save = false;
-  if (!is_object($context)) {
-    $context = os_layout_custom_context($context_name);
-    $to_save = true;
-  }
   if (module_exists('vsite_layout')) {
     // Writes the context to the overrides table.
-    if ($to_save) {
-      context_save($context);
-    }
     vsite_layout_context_set($context_name, $blocks);
   }
   else {

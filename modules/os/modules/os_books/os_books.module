@@ -196,7 +196,7 @@ function os_books_preprocess_page(&$page) {
   }
 }
 
-function os_books_os_custom_context($name) {
+function os_books_context_custom($name) {
   if (strpos($name, 'os_books-book') !== FALSE) {
     $nid = str_replace('os_books-book-', '', $name);
     $ctx = (object)array(

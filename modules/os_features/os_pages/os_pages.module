@@ -53,7 +53,7 @@ function os_pages_os_widget() {
 /**
  * Define contexts for the page nodes
  */
-function os_pages_os_custom_context($name) {
+function os_pages_context_custom($name) {
   if (strpos($name, 'os_pages-page-') !== FALSE) {
     $nid = str_replace('os_pages-page-', '', $name);
     $context = (object)array(

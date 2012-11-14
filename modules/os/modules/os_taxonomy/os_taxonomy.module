@@ -718,7 +718,7 @@ function os_taxonomy_term_view($term, $view_mode = 'full', $description = FALSE,
   return $build;
 }
 
-function os_taxonomy_os_custom_context($context_name) {
+function os_taxonomy_context_custom($context_name) {
   if (strpos($context_name, 'os_taxonomy-term-') !== FALSE) {
     $ctx = (object)array(
       'disabled' => FALSE,
