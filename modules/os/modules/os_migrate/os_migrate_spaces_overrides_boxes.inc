@@ -388,21 +388,22 @@ EOF;
      $return = array();
    	 $vocabs = (is_array($box->options['vocabulary'])) ? array_filter($box->options['vocabulary']) : array($box->options['vocabulary']);
    	 $show_name = (isset($box->options['show_vocabulary_name'])) ? $box->options['show_vocabulary_name'] : 1;
+   	 $title = $box->title;
    	 unset($box->options['vocabulary']);
    	 unset($box->options['show_vocabulary_name']);
 
      foreach ($vocabs as $vocab) {
-     	$id = $object_id."_fbt_".$vocab;
-     	$box->delta = $id;
-     	//Load the vocab and use it's name for the box if they have that setting checked
-     	if($show_name && !$plugin_only){
-     	  $v = taxonomy_vocabulary_load($vocab);
-     	  $box->title = $v->name;
-     	}else{
-          $box->title = '';
-     	}
-     	$box->options['vocabulary'] = $vocab;
-     	$return[$id] = $box;
+     	 $id = $object_id."_fbt_".$vocab;
+     	 $box->delta = $id;
+     	 //Load the vocab and use its name for the box if they have that setting checked
+     	 if ($show_name && !$plugin_only && count($vocabs)>1){
+     	   $v = taxonomy_vocabulary_load($vocab);
+     	   $box->title = $v->name;
+     	 } else {
+         $box->title = $title;
+     	 }
+     	 $box->options['vocabulary'] = $vocab;
+     	 $return[$id] = $box;
      }
 
      return $return;
