@@ -27,6 +27,8 @@ before_script:
   # Install a multi-tanent, developemnt site.
   - drush si openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite openscholar_flavor_form.dummy_content=TRUE --yes
   - drush vset purl_base_domain http://127.0.0.1
+  # Disable Watchdog messages in console.
+  - drush dis dblog -y
   - drush cc all --yes
 
   # Create a behat configuration file.
