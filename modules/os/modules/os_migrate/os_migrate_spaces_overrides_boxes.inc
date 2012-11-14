@@ -814,8 +814,9 @@ class BoxPorter {
     }
 
     //content type was updated
-    if ($ct == 'announcement') {
-      $ct = 'news';
+    $bundles = array_flip(AbstractNodeOSMigration::$source_bundle_map);
+    if (isset($bundles[$ct])) {
+      $ct = $bundles[$ct];
     }
 
     $defaults = array(
