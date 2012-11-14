@@ -1083,11 +1083,11 @@ a.os-columns-home:hover {
 
 /* CSS fixes for activity box, stats block, login box and powered by box */
 #block-os-powered-by span a, .os-powered-link a.os-poweredby {
-  margin-top: -80px;'
+  margin-top: -80px;
 }
 
 .logged-in #block-os-powered-by span a, .os-powered-link a.os-poweredby {
-  margin-top: -35px;
+  margin-top: -131px;
 }
 
 .front #footer {
@@ -1115,7 +1115,7 @@ a.os-columns-home:hover {
 }
 
 .block-os-stats dl {
-  margin: -115px 0px 12px 18px;
+  margin: -113px 0px 12px 18px;
 }
 
 .logged-in .block-os-stats dl {

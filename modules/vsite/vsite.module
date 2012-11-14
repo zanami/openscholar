@@ -51,11 +51,6 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id) {
     $form['comment_settings']['#access'] = FALSE;
     $form['comment_settings']['comment']['#default_value'] = 1;
   }
-
-  //Force this field hidden for non User 1 and force to currect group, TMP Fix #740
-  if(og_is_group_content_type('node', $form['#bundle']) && isset($form['og_group_ref']) && !user_access('administer og permissions')){
-    $form['og_group_ref']['#access'] = false;
-  }
 }
 
 /**
