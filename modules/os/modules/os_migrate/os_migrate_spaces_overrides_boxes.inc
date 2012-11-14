@@ -783,7 +783,22 @@ class BoxPorter {
     }
 
     $box->options['filter'] = 'presentation';
-    return $this->_port_box_os_boxes_sv_list($box, $id, $key_only);
+    $box = $this->_port_box_os_boxes_sv_list($box, $id, $key_only);
+
+    //if this vsite uses presentation date, update sorting to use it.
+    $query = OSMigration::d6_db_select('og_ancestry', 'og')
+      ->condition('og.group_nid', $id);
+    $query->join('content_type_presentation', 'ct', 'ct.nid = og.nid');
+    $query->fields('ct', array('field_presentation_date_value'));
+    $values = $query->execute()->fetchCol();
+
+    //do all the presentations have a date?
+    $filtered = array_filter($values);
+    if ($filtered && count($values) == count($filtered)) {
+      $box->options['sort_by'] = 'sort_presentation';
+    }
+
+    return $box;
   }
 
   public function _port_box_os_boxes_sv_list($box, $id, $key_only) {
