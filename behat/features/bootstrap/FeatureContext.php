@@ -157,4 +157,26 @@ class FeatureContext extends DrupalContext {
     }
   }
 
+  /**
+   * @Given /^I fill "([^"]*)" with "([^"]*)"$/
+   */
+  public function iFillWith($input, $text) {
+    $page = $this->getSession()->getPage();
+    if ($text == 'random text') {
+      $text = $this->randomString();
+    }
+
+    $page->fillField($input, $text);
+  }
+
+  public function randomString($length = 8) {
+    $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o',
+    'p','q','r','s','t','u','v','q','x','y','z');
+
+    $str = '';
+    for ($i = 0; $i < $length; $i++) {
+      $str .= $letters[mt_rand(1, 26)];
+    }
+    return $str;
+  }
 }
