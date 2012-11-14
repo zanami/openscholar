@@ -91,7 +91,7 @@ class SoftwareReleaseNodeOSMigration extends AbstractNodeOSMigration {
     $this->dependencies[] = 'SoftwareProjectNodeOS';
 
     //project entity
-    $this->addFieldMapping('og_vocabulary', 'field_scholar_software_project_nid');
+    $this->addFieldMapping('field_software_project', 'field_scholar_software_project_nid');
 
     //recommended
     $this->addFieldMapping('field_software_recommended', 'field_scholar_software_recommend_value');
