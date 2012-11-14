@@ -238,11 +238,13 @@ EOF;
       }
 
       $new_base = "$base/$path";
-      foreach (scandir($new_base) as $dir) {
-        if (is_dir("$new_base/$dir") && $dir != '.' && $dir !='..' ) {
-          $found = find_vsite_shields_path($new_base, $dir);
-          if ($found) {
-            return $found;
+      if (is_readable($new_base)) {
+        foreach (scandir($new_base) as $dir) {
+          if (is_dir("$new_base/$dir") && $dir != '.' && $dir !='..' ) {
+            $found = find_vsite_shields_path($new_base, $dir);
+            if ($found) {
+              return $found;
+            }
           }
         }
       }
