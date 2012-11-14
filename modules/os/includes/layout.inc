@@ -107,8 +107,11 @@ function os_layout_get($context_name, $load_meta = FALSE, $unused_blocks = FALSE
   if (! is_object($context) || ! isset($context->reactions['block'])) {
     // This was an invalid context.
     $context = os_layout_custom_context($context_name);
-    if (!is_object($context) || !isset($context->reactions['block'])) {
+    if (!is_object($context)) {
       return FALSE;
+    }
+    elseif (!isset($context->reactions['block'])) {
+      return array();
     }
   }
 
