@@ -10,11 +10,22 @@
 include_once 'os_presentations.features.inc';
 
 /**
- * Implements hook_vsite_og_node_type_info().
+ * Implements hook_vsite_app_info().
  */
-function os_presentations_vsite_og_node_type_info() {
-  return array(
-    'presentation' => 'group content',
-  );
-}
+function os_presentations_vsite_app_info() {
+  $info = array();
 
+  // Exported app info for Presentations.
+  $info['os_presentations'] = array(
+    'group content' => array(
+      'presentation' => array(
+        'singular' => t('presentation'),
+        'plural' => t('presentations'),
+      ),
+    ),
+    'main path' => 'presentations',
+    'settings path' => 'cp/build/features/os_presentations',
+  );
+
+  return $info;
+}

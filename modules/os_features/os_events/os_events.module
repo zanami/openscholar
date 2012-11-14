@@ -43,11 +43,22 @@ function os_events_os_widget_alter(&$widget) {
 }
 
 /**
- * Implements hook_vsite_og_node_type_info().
+ * Implements hook_vsite_app_info().
  */
-function os_events_vsite_og_node_type_info() {
-  return array(
-    'event' => 'group content',
-  );
-}
+function os_events_vsite_app_info() {
+  $info = array();
 
+  // Exported app info for Events.
+  $info['os_events'] = array(
+    'group content' => array(
+      'event' => array(
+        'singular' => t('event'),
+        'plural' => t('events'),
+      ),
+    ),
+    'main path' => 'calendar',
+    'settings path' => 'cp/build/features/os_events',
+  );
+
+  return $info;
+}

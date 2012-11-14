@@ -20,12 +20,24 @@ function os_image_gallery_contextual_links_view_alter(&$element, $items) {
 }
 
 /**
- * Implements hook_vsite_og_node_type_info().
+ * Implements hook_vsite_app_info().
  */
-function os_image_gallery_vsite_og_node_type_info() {
-  return array(
-    'media_gallery' => 'group content',
+function os_image_gallery_vsite_app_info() {
+  $info = array();
+
+  // Exported app info for Image Gallery.
+  $info['os_image_gallery'] = array(
+    'group content' => array(
+      'media_gallery' => array(
+        'singular' => t('gallery'),
+        'plural' => t('galleries'),
+      ),
+    ),
+    'main path' => 'galleries',
+    'settings path' => 'cp/build/features/os_image_gallery',
   );
+
+  return $info;
 }
 
 /**

@@ -38,9 +38,6 @@ function os_booklets_menu_alter(&$items) {
   }
 }
 
-
-
-
 /**
  * Implements hook_node_view().
  */
@@ -64,12 +61,24 @@ function os_booklets_node_view($node, $view_mode, $langcode) {
 }
 
 /**
- * Implements hook_vsite_og_node_type_info().
+ * Implements hook_vsite_app_info().
  */
-function os_booklets_vsite_og_node_type_info() {
-  return array(
-    'book' => 'group content',
+function os_booklets_vsite_app_info() {
+  $info = array();
+
+  // Exported app info for Booklets.
+  $info['os_booklets'] = array(
+    'group content' => array(
+      'book' => array(
+        'singular' => t('booklet page'),
+        'plural' => t('booklet pages'),
+      ),
+    ),
+    'main path' => 'documents',
+    'settings path' => 'cp/build/features/os_booklets',
   );
+
+  return $info;
 }
 
 /**
