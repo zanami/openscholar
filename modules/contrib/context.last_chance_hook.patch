@@ -1,7 +1,7 @@
-diff --git a/modules/contrib/context/context.module b/modules/contrib/context/context.module
+diff --git a/context.module b/context.module
 index a3beee2..aca34ca 100644
---- a/modules/contrib/context/context.module
-+++ b/modules/contrib/context/context.module
+--- a/context.module
++++ bcontext.module
 @@ -228,6 +228,19 @@ function context_load($name = NULL, $reset = FALSE) {
      }
    }
