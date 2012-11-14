@@ -39,9 +39,15 @@ function os_taxonomy_term_page($taxonomy_term) {
     'taxonomy_term' => $taxonomy_term,
     'options' => $options,
   );
+  $context_name = 'os_taxonomy-term-'.$taxonomy_term->tid;
 
   if(($feature = os_get_active_feature()) && isset($feature->info['features']['node'])){
     $variables['options']['bundles'] = $feature->info['features']['node'];
+    $context_name .= '-'.$feature->name;
+  }
+
+  if ($ctx = context_load($context_name)) {
+    context_set('context', $ctx->name, $ctx);
   }
 
   return theme('os_taxonomy_tagged_nodes', $variables);
@@ -710,4 +716,38 @@ function os_taxonomy_term_view($term, $view_mode = 'full', $description = FALSE,
   drupal_alter(array('taxonomy_term_view', 'entity_view'), $build, $type);
 
   return $build;
+}
+
+function os_taxonomy_os_custom_context($context_name) {
+  if (strpos($context_name, 'os_taxonomy-term-') !== FALSE) {
+    $ctx = (object)array(
+      'disabled' => FALSE,
+      'api_version' => 3,
+      'name' => $context_name,
+      'description' => 'Context active in a given book.',
+      'tag' => 'OpenScholar',
+      'conditions' => array(),
+      'reactions' => array(),
+      'condition_mode' => 0,
+      'weight' => 5,
+    );
+
+    return $ctx;
+  }
+}
+
+function os_taxonomy_preprocess_page(&$page) {
+  $term = menu_get_object('taxonomy_term', 2);
+  if (!$term) {
+    $term = menu_get_object('taxonomy_term', 3);
+  }
+  if ($term) {
+    $context_name = 'os_taxonomy-term-'.$term->tid;
+
+    if(($feature = os_get_active_feature()) && isset($feature->info['features']['node'])){
+      $context_name .= '-'.$feature->name;
+    }
+
+    $page['title_suffix']['controls']['section_links']['#links']['layout']['href'] = 'cp/build/layout/'.$context_name;
+  }
 }
