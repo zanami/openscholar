@@ -75,6 +75,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
      $this->_fix_os_taxonomy_fbt();
 
     if (parent::is_domain('http://scholar.harvard.edu')) {
+      //#560
       $gking_html =<<<EOF
    <div class="node-inner">
 <div class="os-links"></div>

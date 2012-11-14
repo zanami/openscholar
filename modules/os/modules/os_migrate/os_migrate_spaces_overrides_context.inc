@@ -95,11 +95,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     }
 
     //check the three special cases
-    if (in_array($nid, array(
-      1,
-      8,
-      10057
-    ))) {
+    if (in_array($nid, array(1,8,10057,3633))) {
       $this->_update_context_edge_cases($object_id, $value, $nid);
     }
 
@@ -332,157 +328,256 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
    */
   function _update_context_edge_cases($object_id, &$value, $nid){
     if (parent::is_domain('http://scholar.harvard.edu')) {
-      if ($object_id == 'classes_classes:reaction:block') {
-        if ($nid == '3633') {
-          $value['blocks'][] = array('gking_student_materials_html' => array(
-            'module' => 'boxes',
-            'delta' => 'gking_student_materials_html',
-            'weight' => 0,
-            'region' => 'sidebar_second',
-            'label' => '',
-            'info' => 'gking_student_materials_html',
-          ));
-        }
-      }
+      $this->_update_context_scholar_gking($object_id, $value, $nid);
+      $this->_update_context_scholar_rbates($object_id, $value, $nid);
+      $this->_update_context_scholar_agordon($object_id, $value, $nid);
+      $this->_update_context_scholar_kshepsle($object_id, $value, $nid);
+    }
+  }
 
-      if ($object_id == 'os_front:reaction:block') {
-        //only keep these blocks in the context
-        $whitelist = array(
-          'boxes-site_info',
-          'boxes-site_logo',
-          'os-primary-menu',
-          'boxes-shield',
-          'boxes-shield_default',
-          'os-secondary-menu'
-        );
 
-        //null out the region of these blcoks
-        $null_region_list = array(
-          //kshepsle
-          '1' => array(),
-          //rbates
-          '8' => array(
-            'os-primary-menu'
-          ),
-          //agordon.net
-          '10057' => array(
-            'os-primary-menu',
-            'boxes-site_info',
-            'boxes-site_logo',
-            'os-secondary-menu',
-            'boxes-shield_default'
-          )
-        );
 
-        //if blocks above aren't overridden, here they are to include.
-        $preset_boxes = array(
-          'boxes-site_logo' => array(
-            'module' => 'boxes',
-            'delta' => 'site_logo',
-            'region' => FALSE,
-            'weight' => 0,
-            'status' => 0,
-            'title' => ''
-          ),
-          'boxes-shield' => array(
-            'module' => 'boxes',
-            'delta' => 'shield',
-            'region' => FALSE,
-            'weight' => 0,
-            'status' => 0,
-            'title' => ''
-          ),
-          'boxes-site_info' => array(
-            'module' => 'boxes',
-            'delta' => 'site_info',
-            'region' => FALSE,
-            'weight' => 0,
-            'status' => 0,
-            'title' => ''
-          ),
-          'os-primary-menu' => array(
-            'module' => 'os',
-            'delta' => 'primary-menu',
-            'region' => FALSE,
-            'weight' => 0,
-            'status' => 0,
-            'title' => ''
-          ),
-          'os-secondary-menu' => array(
-            'module' => 'os',
-            'delta' => 'secondary-menu',
-            'region' => FALSE,
-            'weight' => 0,
-            'status' => 0,
-            'title' => ''
-          )
-        );
+//       if ($object_id == 'os_front:reaction:block') {
+//         //only keep these blocks in the context
+//         $whitelist = array(
+//           'boxes-site_info',
+//           'boxes-site_logo',
+//           'os-primary-menu',
+//           'boxes-shield',
+//           'boxes-shield_default',
+//           'os-secondary-menu'
+//         );
+
+//         //null out the region of these blcoks
+//         $null_region_list = array(
+//           //kshepsle
+//           '1' => array(),
+//           //rbates
+//           '8' => array(
+//             'os-primary-menu'
+//           ),
+//           //agordon.net
+//           '10057' => array(
+//             'os-primary-menu',
+//             'boxes-site_info',
+//             'boxes-site_logo',
+//             'os-secondary-menu',
+//             'boxes-shield_default'
+//           )
+//         );
+
+
 
         //add these blocks to context
-        $add_blocks = array(
-          '1' => array(
-            'kshepsle_custom_box' => array(
-              'module' => 'boxes',
-              'delta' => 'kshepsle_custom_box',
-              'weight' => 0,
-              'region' => 'content_top',
-              'label' => '',
-              'info' => 'kshepsle_custom_box'
-            )
-          ),
+   //     $add_blocks = array(
+//           '1' => array(
+//             'kshepsle_custom_box' => array(
+//               'module' => 'boxes',
+//               'delta' => 'kshepsle_custom_box',
+//               'weight' => 0,
+//               'region' => 'content_top',
+//               'label' => '',
+//               'info' => 'kshepsle_custom_box'
+//             )
+//           ),
 
-          '8' => array(
-            'rbates_custom_box' => array(
-              'module' => 'boxes',
-              'delta' => 'rbates_custom_box',
-              'weight' => 0,
-              'region' => 'content_top',
-              'label' => '',
-              'info' => 'rbates_custom_box'
-            )
-          ),
+//           '8' => array(
+//             'rbates_custom_box' => array(
+//               'module' => 'boxes',
+//               'delta' => 'rbates_custom_box',
+//               'weight' => 0,
+//               'region' => 'content_top',
+//               'label' => '',
+//               'info' => 'rbates_custom_box'
+//             )
+//           ),
 
-          '10057' => array(
-            'agordon_custom_header_box' => array(
-              'module' => 'boxes',
-              'delta' => 'agordon_custom_header_box',
-              'weight' => 0,
-              'region' => 'header_second',
-              'label' => '',
-              'info' => 'agordon_custom_header_box'
-            ),
-            'agordon_custom_menu_box' => array(
-              'module' => 'boxes',
-              'delta' => 'agordon_custom_menu_box',
-              'weight' => 0,
-              'region' => 'menu_bar',
-              'label' => '',
-              'info' => 'agordon_custom_menu_box'
-            )
-          )
-        )
-        ;
+//           '10057' => array(
+//             'agordon_custom_header_box' => array(
+//               'module' => 'boxes',
+//               'delta' => 'agordon_custom_header_box',
+//               'weight' => 0,
+//               'region' => 'header_second',
+//               'label' => '',
+//               'info' => 'agordon_custom_header_box'
+//             ),
+//             'agordon_custom_menu_box' => array(
+//               'module' => 'boxes',
+//               'delta' => 'agordon_custom_menu_box',
+//               'weight' => 0,
+//               'region' => 'menu_bar',
+//               'label' => '',
+//               'info' => 'agordon_custom_menu_box'
+//             )
+//           )
+//         )
+//         ;
 
         //gordon, bates need menus explicitly removed from the context.  they're appearing by default.
 
 
-        //filter out unwanted blocks
-        $value['blocks'] = array_intersect_key($value['blocks'], array_flip($whitelist));
+//         //filter out unwanted blocks
+//         $value['blocks'] = array_intersect_key($value['blocks'], array_flip($whitelist));
 
-        //hide regions by annulling their regions.
-        foreach ( $null_region_list[$nid] as $block ) {
-          if (isset($value['blocks'][$block])) {
-            $value['blocks'][$block]['region'] = FALSE;
-          }
-          else {
-            $values['blocks'][$block] = $preset_boxes[$block];
-          }
-        }
+//         //hide regions by annulling their regions.
+//         if (isset($null_region_list[$nid])) {
+//           foreach ( $null_region_list[$nid] as $block ) {
+//             if (isset($value['blocks'][$block])) {
+//               $value['blocks'][$block]['region'] = FALSE;
+//             }
+//             else {
+//               $values['blocks'][$block] = $preset_boxes[$block];
+//             }
+//           }
+//         }
 
-        //add the custom ones.
-        $value['blocks'] += $add_blocks[$nid];
+//         //add the custom ones.
+//         if (isset($add_blocks[$nid])) {
+//           $value['blocks'] += $add_blocks[$nid];
+//         }
+//       }
+//     }
+//   }
+
+  public function _update_context_scholar_gking($object_id, &$value, $nid) {
+    if ($nid == '3633') {
+
+      if ($object_id == 'classes_classes:reaction:block') {  // #560
+        $value['blocks']['gking_student_materials_html'] = array(
+          'module' => 'boxes',
+          'delta' => 'gking_student_materials_html',
+          'weight' => 0,
+          'region' => 'sidebar_second',
+          'label' => '',
+          'info' => 'gking_student_materials_html',
+          'plugin' => 'os_boxes_html',
+        );
       }
     }
+  }
+
+  public function _update_context_scholar_rbates($object_id, &$value, $nid) {
+    if ($nid == '8'  && $object_id == 'os_front:reaction:block') {
+      $whitelist = array('boxes-site_info','boxes-site_logo','os-primary-menu','boxes-shield','boxes-shield_default','os-secondary-menu');
+      $this->_update_context_regions($value, $whitelist, array('os-primary-menu', 'boxes-bio_teaser',  'os_search_solr-site-search', 'os_search_db-site-search', 'boxes-og-8-4ba01dc3'));
+
+      $value['blocks']['rbates_custom_box'] = array(
+        'module' => 'boxes',
+        'delta' => 'rbates_custom_box',
+        'weight' => 0,
+        'region' => 'content_top',
+        'label' => '',
+        'info' => 'rbates_custom_box',
+      );
+    }
+  }
+
+  public function _update_context_scholar_agordon($object_id, &$value, $nid) {
+    if ($nid == '10057' && $object_id == 'os_front:reaction:block') {
+      $whitelist = array('boxes-site_info','boxes-site_logo','os-primary-menu','boxes-shield','boxes-shield_default','os-secondary-menu');
+      $hide = array('os-primary-menu','boxes-site_info','boxes-site_logo','os-secondary-menu','boxes-shield_default', 'boxes-bio_teaser', 'os_search_solr-site-search', 'os_search_db-site-search');
+      $this->_update_context_regions($value, $whitelist, $hide);
+
+      $value['blocks']['agordon_custom_header_box'] = array(
+        'module' => 'boxes',
+        'delta' => 'agordon_custom_header_box',
+        'weight' => 0,
+        'region' => 'header_second',
+        'label' => '',
+        'info' => 'agordon_custom_header_box'
+      );
+      $value['blocks']['agordon_custom_menu_box'] = array(
+        'module' => 'boxes',
+        'delta' => 'agordon_custom_menu_box',
+        'weight' => 0,
+        'region' => 'menu_bar',
+        'label' => '',
+        'info' => 'agordon_custom_menu_box'
+      );
+
+    }
+  }
+
+  public function _update_context_scholar_kshepsle($object_id, &$value, $nid) {
+    if ($nid == '1' && $object_id == 'os_front:reaction:block') {
+      $whitelist = array('boxes-site_info','boxes-site_logo','os-primary-menu','boxes-shield','boxes-shield_default','os-secondary-menu');
+      $this->_update_context_regions($value, $whitelist, array( 'os_search_solr-site-search', 'os_search_db-site-search', 'boxes-og-1-a306a4a3'));
+
+      $value['blocks']['kshepsle_custom_box'] = array(
+        'module' => 'boxes',
+        'delta' => 'kshepsle_custom_box',
+        'weight' => 0,
+        'region' => 'content_top',
+        'label' => '',
+        'info' => 'kshepsle_custom_box'
+      );
+
+    }
+  }
+
+  /**
+   * @function _update_context_regions
+   *
+   * Custom themes used to have their own sets of regions.
+   *
+   * $keep - array of box ids to preserve.
+   * $hide - array of box ids to move to region=FALSE.  These are likely the default boxes from the context.
+   */
+  public function _update_context_regions(&$context, $keep = array(), $hide = array()) {
+    //if blocks above aren't overridden, here they are to include.
+    $preset_boxes = array(
+      'boxes-site_logo' => array(
+        'module' => 'boxes',
+        'delta' => 'site_logo',
+        'region' => FALSE,
+        'weight' => 0,
+        'status' => 0,
+        'title' => ''
+      ),
+      'boxes-shield' => array(
+        'module' => 'boxes',
+        'delta' => 'shield',
+        'region' => FALSE,
+        'weight' => 0,
+        'status' => 0,
+        'title' => ''
+      ),
+      'boxes-site_info' => array(
+        'module' => 'boxes',
+        'delta' => 'site_info',
+        'region' => FALSE,
+        'weight' => 0,
+        'status' => 0,
+        'title' => ''
+      ),
+      'os-primary-menu' => array(
+        'module' => 'os',
+        'delta' => 'primary-menu',
+        'region' => FALSE,
+        'weight' => 0,
+        'status' => 0,
+        'title' => ''
+      ),
+      'os-secondary-menu' => array(
+        'module' => 'os',
+        'delta' => 'secondary-menu',
+        'region' => FALSE,
+        'weight' => 0,
+        'status' => 0,
+        'title' => ''
+      )
+    );
+
+    $value['blocks'] = array_intersect_key($context['blocks'], array_flip($keep));
+    foreach ( $hide as $block ) {
+      if (isset($context['blocks'][$block])) {
+        $context['blocks'][$block]['region'] = FALSE;
+      }
+      else {
+        $contexts['blocks'][$block] = $preset_boxes[$block];
+      }
+    }
+
   }
 
   //after importing contexts boxes must be re-updated
