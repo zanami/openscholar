@@ -9,11 +9,50 @@ require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext {
 
-  // Variable to pass into the last xpath expression.
+  // Variable to pass into the last xPath expression.
   private $xpath = '';
 
   // The random text generated during the scenario.
   private $randomText;
+
+  // variable with the time out in seconds.
+  private $timeout = 30;
+
+  /**
+   * Initializes context.
+   *
+   * Every scenario gets its own context object.
+   *
+   * @param array $parameters.
+   *   Context parameters (set them up through behat.yml or behat.local.yml).
+   */
+  public function __construct(array $parameters) {
+    if (isset($parameters['drupal_users'])) {
+      $this->drupal_users = $parameters['drupal_users'];
+    }
+  }
+
+  /**
+   * Authenticates a user with password from configuration.
+   *
+   * @Given /^I am logged in as "([^"]*)"$/
+   */
+  public function iAmLoggedInAs($username) {
+    try {
+      $password = $this->drupal_users[$username];
+    } catch (Exception $e) {
+      throw new Exception("Password not found for '$username'.");
+    }
+
+    // Log in.
+    // Go to the user page.
+    $element = $this->getSession()->getPage();
+    $this->getSession()->visit($this->locatePath('/user'));
+    $element->fillField('Username', $username);
+    $element->fillField('Password', $password);
+    $submit = $element->findButton('Log in');
+    $submit->click();
+  }
 
   /**
    * @Given /^I am on a "([^"]*)" page titled "([^"]*)"(?:, in the tab "([^"]*)"|)$/
@@ -107,6 +146,8 @@ class FeatureContext extends DrupalContext {
     }
   }
 
+  // Selenium area.
+
   /**
    * @Given /^I sleep for "([^"]*)"$/
    */
@@ -118,14 +159,7 @@ class FeatureContext extends DrupalContext {
    * @When /^I click "([^"]*)" with the class "([^"]*)"$/
    */
   public function iClickWithTheClass($linkText, $LinkClass) {
-    $page = $this->getSession()->getPage();
-    $element = $page->find('xpath', "//a[contains(@class, '{$LinkClass}') and .='{$linkText}']");
-
-    if (!$element) {
-      throw new Exception(sprintf("A link with the text %s and the class %s wasn't found", $LinkClass, $LinkClass));
-    }
-
-    $element->click();
+    $this->findAnyElement($linkText, $LinkClass)->click();
   }
 
   /**
@@ -134,21 +168,6 @@ class FeatureContext extends DrupalContext {
   public function iDragDropTo($element, $destination) {
     $selenium = $this->getSession()->getDriver();
     $selenium->evaluateScript("jQuery('#{$element}').detach().prependTo('#{$destination}');");
-  }
-
-  /**
-   * @Given /^I login as "([^"]*)"$/
-   */
-  public function iLoginAs($userArguments) {
-    $userArguments = explode('/', $userArguments);
-    $page = $this->getSession()->getPage();
-
-    $page->find('xpath', '//a[.="Admin Login"]')->click();
-
-    $page->fillField('name', $userArguments[0]);
-    $page->fillField('pass', $userArguments[1]);
-
-    $page->findButton('edit-submit')->click();
   }
 
   /**
@@ -202,7 +221,7 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I Wait for the text "([^"]*)"$/
+   * @Given /^I wait for the text "([^"]*)"$/
    */
   public function iWaitForTheText($message) {
     $page = $this->getSession()->getPage();
@@ -210,9 +229,8 @@ class FeatureContext extends DrupalContext {
       $message = $this->randomText;
     }
 
-    $timeout = 30;
     $i = 0;
-    while ($i <= $timeout) {
+    while ($i <= $this->timeout) {
       if ($page->find('xpath', "//*[contains(.,'{$message}')]")) {
         return;
       }
