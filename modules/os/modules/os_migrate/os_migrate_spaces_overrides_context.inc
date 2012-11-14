@@ -191,6 +191,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     //  'scholar_events-mini' => 'views-os_events-block_1',
       'views-scholar_events_upcoming-block_1' => 'views-os_events-block_2',
       'boxes-image_gallery_recent_images' => 'boxes-os_image_gallery_latest',
+      'views-scholar_presentations-block_1' => 'boxes-os_presentations_recent',
     );
 
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
@@ -212,7 +213,9 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'scholar_publications_recent' => 'os_publications_recent',
       'scholar_book_current_toc' => 'os_booktoc',
       'scholar_software_releases-block_3' => 'os_software_releases-block_1',
-      'scholar_events_upcoming-block_1' => 'os_events-block_2'
+      'scholar_events_upcoming-block_1' => 'os_events-block_2',
+      'image_gallery_recent_images' => 'os_image_gallery_latest',
+      'scholar_presentations-block_1' => 'os_presentations_recent',
     );
 
     return (isset($delta_map[$delta])) ? $delta_map[$delta] : $delta;
