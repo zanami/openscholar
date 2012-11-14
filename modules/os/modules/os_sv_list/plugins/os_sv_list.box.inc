@@ -166,115 +166,11 @@ class os_sv_list_box extends os_boxes_default {
    */
   public function render() {
     $block = parent::render();
-    $efq = $this->get_default_query();
     $options = $this->options;
     $page_num = isset($_GET['page']) ? $_GET['page'] : 0;
+    $page = 0;
 
-    //exceptions
-    switch ($options['content_type']) {
-      case 'book':
-        //limit book depth to 1.  not a field, so use a regular query
-        $query = db_select('menu_links', 'ml')
-          ->condition('module', 'book')
-          ->condition('depth', 1);
-        $query->addField('ml', 'link_path');
-        $book_nids = $query->execute()->fetchCol();
-        $book_nids = preg_replace('/node\//', '', $book_nids);
-        $book_nids = array_values($book_nids);
-
-        if (count($book_nids)) {
-          $efq->propertyCondition('nid', $book_nids, 'IN');
-        }
-        break;
-
-      case 'biblio':
-        $page = 0; //add pager properly later
-        $items = $options['number_of_items'];
-        $query = db_select('node', 'n')
-          ->condition('n.type', 'biblio')
-          ->condition('n.status', 1);
-
-        if (module_exists('vsite') && $space = spaces_get_space()) {
-          $query->join('og_membership', 'og', 'og.etid = n.nid');
-          $query->condition('og.gid', $space->id);
-          $query->condition('og.entity_type', 'node');
-          $query->condition('og.group_type', 'node');
-        }
-
-        $query->join('biblio', 'b', 'n.vid = b.vid');
-
-        if (isset($options['biblio_show_all']) && !$options['biblio_show_all'] && isset($options['biblio_whitelist'])) {
-          $bib_types = array_filter($options['biblio_whitelist']);
-          $query->condition('biblio_type', array_values($bib_types), 'IN');
-        }
-
-        switch($options['sort_by']) {
-          case 'sort_biblio': $query->orderBy('biblio_year', 'DESC'); break;
-          case 'sort_newest': $query->orderBy('n.created', 'DESC'); break;
-          case 'sort_oldest': $query->orderBy('n.created', 'ASC'); break;
-          case 'sort_alpha':  $query->orderBy('n.title', 'ASC'); break;
-        }
-
-        $query->range($page_num*$items, $items);
-        $query->fields('n', array('nid'));
-
-        $biblio_nids = $query->execute()->fetchCol();
-        break;
-
-      case 'image':
-        $image_query = new EntityFieldQuery();
-        $image_query->entityCondition('entity_type', 'file');
-        if ($space = spaces_get_space()) {
-          $image_query->entityCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
-        }
-
-        $sorts = array(
-          'sort_newest' => array('timestamp', 'DESC'),
-          'sort_oldest' => array('timestamp', 'ASC'),
-          'sort_alpha' => array('filename', 'ASC'),
-        );
-        $sort = (isset($sorts[$options['sort_by']])) ? $sorts[$options['sort_by']] : $sorts['sort_newest'];
-        $image_query->propertyOrderBy($sort[0], $sort[1]);
-
-        if ($options['pager']) {
-          $image_query->pager($options['number_of_items']);
-          $image_page = $image_query->pager['element'];
-        }
-        break;
-    }
-
-    // content type
-    if ($options['content_type'] != 'all') {
-      $efq->propertyCondition('type', $options['content_type']);
-    }
-
-    // pager for efq
-    if ($options['pager']) {
-      $efq->pager($options['number_of_items']);
-      $page = $efq->pager['element'];
-    }
-
-    // sort
-    $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
-    $this->$sort_func($efq);
-
-    // display
-    switch ($options['content_type']) {
-      case 'biblio':
-        $nids = $biblio_nids;
-        break;
-
-      case 'image':
-        $result = $image_query->execute();
-        $nids = isset($result['file']) ? array_keys($result['file']) : array();
-        $page = (isset($image_page)) ? $image_page : NULL;
-        break;
-
-      default:
-        $result = $efq->execute();
-        $nids = isset($result['node']) ? array_keys($result['node']) : array();
-        break;
-    }
+    $nids = $this->get_nids($page_num, $page);
 
     $more_link = FALSE;
 
@@ -341,6 +237,133 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     return $efq;
+  }
+
+  /**
+   * Queries the DB for all nids in the box
+   *
+   * @param int $page_num
+   *   Specifies a page.  FALSE to get all nids.
+   * @return multitype:
+   */
+  public function get_nids($page_num = FALSE, &$page = NULL) {
+    $efq = $this->get_default_query();
+    $options = $this->options;
+
+    //exceptions
+    switch ($options['content_type']) {
+      case 'book':
+        //limit book depth to 1.  not a field, so use a regular query
+        $query = db_select('menu_links', 'ml')
+        ->condition('module', 'book')
+        ->condition('depth', 1);
+        $query->addField('ml', 'link_path');
+        $book_nids = $query->execute()->fetchCol();
+        $book_nids = preg_replace('/node\//', '', $book_nids);
+        $book_nids = array_values($book_nids);
+
+        if (count($book_nids)) {
+          $efq->propertyCondition('nid', $book_nids, 'IN');
+        }
+        break;
+
+      case 'biblio':
+        $page = 0; //add pager properly later
+        $items = $options['number_of_items'];
+        $query = db_select('node', 'n')
+        ->condition('n.type', 'biblio')
+        ->condition('n.status', 1);
+
+        if (module_exists('vsite') && $space = spaces_get_space()) {
+          $query->join('og_membership', 'og', 'og.etid = n.nid');
+          $query->condition('og.gid', $space->id);
+          $query->condition('og.entity_type', 'node');
+          $query->condition('og.group_type', 'node');
+        }
+
+        $query->join('biblio', 'b', 'n.vid = b.vid');
+
+        if (isset($options['biblio_show_all']) && !$options['biblio_show_all'] && isset($options['biblio_whitelist'])) {
+          $bib_types = array_filter($options['biblio_whitelist']);
+          $query->condition('biblio_type', array_values($bib_types), 'IN');
+        }
+
+        switch($options['sort_by']) {
+          case 'sort_biblio': $query->orderBy('biblio_year', 'DESC'); break;
+          case 'sort_newest': $query->orderBy('n.created', 'DESC'); break;
+          case 'sort_oldest': $query->orderBy('n.created', 'ASC'); break;
+          case 'sort_alpha':  $query->orderBy('n.title', 'ASC'); break;
+        }
+
+        if ($page_num) {
+          $query->range($page_num*$items, $items);
+        }
+        $query->fields('n', array('nid'));
+
+        $biblio_nids = $query->execute()->fetchCol();
+        break;
+
+      case 'image':
+        $image_query = new EntityFieldQuery();
+        $image_query->entityCondition('entity_type', 'file');
+        if ($space = spaces_get_space()) {
+          $image_query->entityCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
+        }
+
+        $sorts = array(
+          'sort_newest' => array('timestamp', 'DESC'),
+          'sort_oldest' => array('timestamp', 'ASC'),
+          'sort_alpha' => array('filename', 'ASC'),
+        );
+        $sort = (isset($sorts[$options['sort_by']])) ? $sorts[$options['sort_by']] : $sorts['sort_newest'];
+        $image_query->propertyOrderBy($sort[0], $sort[1]);
+
+        if ($options['pager']) {
+          $image_query->pager($options['number_of_items']);
+          $image_page = $image_query->pager['element'];
+        }
+        break;
+    }
+
+    // content type
+    if ($options['content_type'] != 'all') {
+      $efq->propertyCondition('type', $options['content_type']);
+    }
+
+    // pager for efq
+    if ($options['pager'] && $options['content_type'] != 'biblio' && is_int($page)) {
+      $efq->pager($options['number_of_items']);
+      $page = $efq->pager['element'];
+    } elseif ($options['pager'] && $options['content_type'] == 'biblio' && empty($page_num)) {
+      //init the pager since we don't have efq doing that for us.
+      $total = count($biblio_nids);
+      $limit = $options['number_of_items'];
+      pager_default_initialize($total, $limit, $page);
+    }
+
+    // sort
+    $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
+    $this->$sort_func($efq);
+
+    // display
+    switch ($options['content_type']) {
+      case 'biblio':
+        $nids = $biblio_nids;
+        break;
+
+      case 'image':
+        $result = $image_query->execute();
+        $nids = isset($result['file']) ? array_keys($result['file']) : array();
+        $page = (isset($image_page)) ? $image_page : NULL;
+        break;
+
+      default:
+        $result = $efq->execute();
+        $nids = isset($result['node']) ? array_keys($result['node']) : array();
+        break;
+    }
+
+    return $nids;
   }
 
 
