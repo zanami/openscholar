@@ -9,6 +9,12 @@ require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext {
 
+  // Variable to pass into the last xpath expression.
+  private $xpath = '';
+
+  // The random text generated during the scenario.
+  private $randomText;
+
   /**
    * @Given /^I am on a "([^"]*)" page titled "([^"]*)"(?:, in the tab "([^"]*)"|)$/
    */
@@ -123,10 +129,10 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I drag’n’drop "([^"]*)" to "([^"]*)"$/
+   * @Given /^I drag&drop "([^"]*)" to "([^"]*)"$/
    */
-  public function iDragNDropTo($element, $destination) {
-    $selenium = $this->getMink()->getSession()->getDriver();
+  public function iDragDropTo($element, $destination) {
+    $selenium = $this->getSession()->getDriver();
     $selenium->evaluateScript("jQuery('#{$element}').detach().prependTo('#{$destination}');");
   }
 
@@ -150,7 +156,7 @@ class FeatureContext extends DrupalContext {
    */
   public function iVerifyTheElementUnder($element, $container) {
     $page = $this->getSession()->getPage();
-    $element = $page->find('xpath', "//div[contains(@id, '{$container}')]//div[contains(@id, '{$element}')]");
+    $element = $page->find('xpath', "//*[contains(@id, '{$container}')]//div[contains(@id, '{$element}')]");
 
     if (!$element) {
       throw new Exception(sprintf("The element with %s wasn't found in %s", $element, $container));
@@ -163,7 +169,7 @@ class FeatureContext extends DrupalContext {
   public function iFillWith($input, $text) {
     $page = $this->getSession()->getPage();
     if ($text == 'random text') {
-      $text = $this->randomString();
+      $this->randomText = $text = $this->randomString();
     }
 
     $page->fillField($input, $text);
@@ -175,8 +181,77 @@ class FeatureContext extends DrupalContext {
 
     $str = '';
     for ($i = 0; $i < $length; $i++) {
-      $str .= $letters[mt_rand(1, 26)];
+      $str .= $letters[rand(0, 25)];
     }
     return $str;
+  }
+
+  /**
+   * @Given /^I hover over "([^"]*)" with the class "([^"]*)"$/
+   */
+  public function iHoverOverWithTheClass($element, $container) {
+    $selenium = $this->getSession()->getDriver();
+    $page = $this->getSession()->getPage();
+    $element = $this->findAnyElement($element, $container);
+
+    if (!$element) {
+      throw new Exception(sprintf("The element with %s wasn't found in %s", $element, $container));
+    }
+
+    $selenium->mouseOver($this->xpath);
+  }
+
+  /**
+   * @Given /^I Wait for the text "([^"]*)"$/
+   */
+  public function iWaitForTheText($message) {
+    $page = $this->getSession()->getPage();
+    if ($message == 'random text') {
+      $message = $this->randomText;
+    }
+
+    $timeout = 30;
+    $i = 0;
+    while ($i <= $timeout) {
+      if ($page->find('xpath', "//*[contains(.,'{$message}')]")) {
+        return;
+      }
+      sleep(1);
+      $i++;
+    }
+
+    throw new Exception(sprintf("The message '%s' wasn't found on the screen", $message));
+  }
+
+  /**
+   * Find any element that contain the text and has the css class or id
+   * selector.
+   */
+  private function findAnyElement($text, $container) {
+    $page = $this->getSession()->getPage();
+    $attributes = array(
+      'id',
+      'class',
+    );
+
+    // Find the element wrapped under an element with the class.
+    foreach ($attributes as $attribute) {
+      $this->xpath = "//*[contains(@$attribute, '{$container}')]/*[contains(., '{$text}')]";
+      $element = $page->find('xpath', $this->xpath);
+      if ($element) {
+        return $element;
+      }
+    }
+
+    // Find the element with the class.
+    foreach ($attributes as $attribute) {
+      $this->xpath = "//*[contains(@$attribute, '{$container}') and contains(., '{$text}')]";
+      $element = $page->find('xpath', $this->xpath);
+      if ($element) {
+        return $element;
+      }
+    }
+
+    throw new Exception(sprintf("An element containing the text %s with the class %s wasn't found", $text, $container));
   }
 }
