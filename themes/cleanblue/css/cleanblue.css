@@ -4,13 +4,13 @@
 
 body  {
   color:#37352B;
-  background: url('../images/bodyBg.png') repeat-x scroll 0 170px #F7F7F9;
+  background: url('../images/bodyBg.png') repeat-x scroll 0 160px #F7F7F9;
  }   
  
 
 
   body.logged-in {
- 	background: url("../images/bodyBg.png") repeat-x scroll 0 215px #F7F7F9;
+ 	background: url("../images/bodyBg.png") repeat-x scroll 0 205px #F7F7F9;
  	}
   
 
