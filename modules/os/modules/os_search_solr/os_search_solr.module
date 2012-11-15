@@ -65,10 +65,3 @@ function os_search_solr_apachesolr_query_alter($query) {
     $query->addFilter("sm_og_group_ref", $vsite->group_type.":".$vsite->id);
   }
 }
-
-/**
- * Implements hook_block_view_alter().
- */
-function os_search_solr_block_view_alter(&$data, $block) {
-	dpm($block);
-}
