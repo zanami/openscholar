@@ -97,6 +97,24 @@ function os_pages_node_view($node) {
   }
 }
 
+function os_pages_form_node_form_alter(&$form, $form_state) {
+  if ($form['#node']->type != 'page') return;
+
+  $form['link_path'] = array(
+    '#type' => 'machine_name',
+    '#field_prefix' => url('', array()),
+    '#weight' => -4,
+    '#machine_name' => array(
+      'exists' => 'os_pages_link_path_exist',
+      'source' => array('title'),
+      'label' => t('Path to this post'),
+      'replace_pattern' => '[^a-z0-9/-]+',
+      'replace' => '-',
+    ),
+    '#disabled' => isset($form['#node']->nid)?true:false,
+  );
+}
+
 /**
  * Implements hook_preprocess_page
  *
