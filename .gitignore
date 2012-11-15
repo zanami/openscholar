@@ -12,3 +12,7 @@
 modules/contrib
 themes/contrib
 www
+openscholar/behat/bin
+openscholar/behat/vendor
+openscholar/behat/composer.lock
+openscholar/behat/composer.phar
