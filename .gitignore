@@ -9,9 +9,15 @@
 # Dont's track coder module backups
 *.coder.orig
 
-#behat
-behat/vendor
-behat/bin
-behat.local.yml
-composer.lock
-composer.phar
+sites-backup
+www
+www-build
+openscholar/modules/contrib
+openscholar/themes/contrib
+
+
+
+openscholar/behat/bin
+openscholar/behat/vendor
+openscholar/behat/composer.lock
+openscholar/behat/composer.phar
