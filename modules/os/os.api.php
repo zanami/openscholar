@@ -136,7 +136,9 @@ function hook_os_add_new_links_alter(&$links) {
 function hook_os_app_info() {
   // Removes this app from Department and Project sites' Available Apps page.
   return array(
-    'restricted site types' => array('department', 'project'),
+    'my_app' => array(
+      'restricted site types' => array('department', 'project'),
+    ),
   );
 }
 
