@@ -25,7 +25,7 @@ class CommentsOSMigration extends DynamicMigration {
       ->select('comments', 'c')
       ->fields('c');
     $query->join('node', 'n', 'c.nid = n.nid');
-    $query->condition('n.type', $this->arguments['bundle']);
+    $query->condition('n.type', AbstractNodeOSMigration::get_source_bundle($this->arguments['bundle']));
     $query->fields('n', array('language'));
 
     //The primary key in the D6 database
