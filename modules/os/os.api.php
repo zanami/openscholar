@@ -127,3 +127,27 @@ function hook_os_add_new_links_alter(&$links) {
     );
   }
 }
+
+/**
+ * Implements hook_os_app_info().
+ *
+ * Tells os module to remove apps from "Available Apps" for some site types.
+ */
+function hook_os_app_info() {
+  // Removes this app from Department and Project sites' Available Apps page.
+  return array(
+    'restricted site types' => array('department', 'project'),
+  );
+}
+
+/**
+ * Implements hook_os_app_info_alter().
+ *
+ * Makes changes to os_app_info.
+ */
+function hook_os_app_info_alter(&$info) {
+  // Ensures my_app displays as an "Available App" on Project sites.
+  if (isset($info['my_app']['restricted site types']['project'])) {
+    unset($info['my_app']['restricted site types']['project']);
+  }
+}
