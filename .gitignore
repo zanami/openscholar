@@ -9,9 +9,13 @@
 # Dont's track coder module backups
 *.coder.orig
 
+sites-backup
 www
+www-build
 openscholar/modules/contrib
 openscholar/themes/contrib
+
+
 
 openscholar/behat/bin
 openscholar/behat/vendor
