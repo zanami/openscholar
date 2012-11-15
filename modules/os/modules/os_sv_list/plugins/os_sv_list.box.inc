@@ -307,7 +307,7 @@ class os_sv_list_box extends os_boxes_default {
         $image_query = new EntityFieldQuery();
         $image_query->entityCondition('entity_type', 'file');
         if ($space = spaces_get_space()) {
-          $image_query->entityCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
+          $image_query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
         }
 
         $sorts = array(
