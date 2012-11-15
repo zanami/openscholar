@@ -231,15 +231,15 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $file->filemime = file_get_mimetype($filepath);
     $file->uri = $filepath;
 
-    if ($file = file_copy($file, 'public://') && $gid) {
+    $file = file_copy($file, 'public://');
+    if ($file && $gid) {
       // attach metadata and save
       $entity = entity_metadata_wrapper('file', $file);
       $entity->og_group_ref = array($gid);
       $entity->save();
-      return $file;
     }
 
-    return FALSE;
+    return $file;
   }
 
   //we need cropping values.  if they aren't provided, use the entire image.

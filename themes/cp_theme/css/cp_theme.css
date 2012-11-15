@@ -335,8 +335,31 @@ width:30%;
 	
 	
 	
+/**	 QUICK TAB CREATION **/	
 	
+.page-os-widget #tabs {
+    background:  #F1F1F1;
+    border: 1px solid #CCCCCC;
+    padding-left:10px;
+}	
 	
+.page-os-widget #tabs .panel,
+.page-os-widget #tabs fieldset .fieldset-wrapper {
+  padding: 0;
+} 
+
+.page-os-widget .ui-state-disabled, .ui-widget-content .ui-state-disabled {
+    opacity: 1;
+}	
+
+.page-os-widget .ui-tabs .ui-tabs-nav li a {
+    border-radius: 10px 10px 0 0;
+    -webkit-border-radius: 10px 10px 0 0;
+    -moz-border-radius: 10px 10px 0 0;
+    padding: 0;
+} 	
+	
+
 	
 	
 	
