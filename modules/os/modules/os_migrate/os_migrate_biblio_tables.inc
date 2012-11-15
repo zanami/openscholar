@@ -83,6 +83,17 @@ class BiblioFieldTypeTableMigration extends TableCopyMigration {
 
     parent::__construct($table, $key_schema);
   }
+
+  public function prepareRow(&$row) {
+    $vtab = db_select('biblio_field_type', 'bft')
+      ->condition('tid', 1)
+      ->condition('fid', $row->fid)
+      ->fields('bft', array('vtab'))
+      ->execute()
+      ->fetchField();
+
+    $row->vtab = (is_int($vtab)) ? $vtab : 0;
+  }
 }
 
 class BiblioFieldTypeDataTableMigration extends TableCopyMigration {
