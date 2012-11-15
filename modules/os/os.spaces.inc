@@ -28,6 +28,9 @@ function os_spaces_presets() {
         'os_profiles' => '1',
         'os_links' => '1',
       ),
+      'spaces_features_restricted' => array(
+        'os_biocv',
+      ),
       'site_frontpage' => 'home',
       'theme_default' => 'ballard',
     ),
@@ -52,6 +55,9 @@ function os_spaces_presets() {
         'os' => '1',
         'os_pages' => '1',
       ),
+      'spaces_features_restricted' => array(
+        'os_biocv',
+      ),
       'site_frontpage' => 'home',
       'theme_default' => 'ballard',
     ),
@@ -75,8 +81,6 @@ function os_spaces_presets() {
       'spaces_features' => array(
         'os' => '1',
         'os_pages' => '1',
-        'os_news' => '0',
-        'os_image_gallery' => '0',
         'os_classes' => '1',
         'os_publications' => '1',
         'os_biocv' => 1,
@@ -108,6 +112,9 @@ function os_spaces_presets() {
         'os_events' => '1',
         'os_profiles' => '1',
         'os_links' => '1',
+      ),
+      'spaces_features_restricted' => array(
+        'os_biocv',
       ),
       'site_frontpage' => 'home',
       'theme_default' => 'cleanblue',
