@@ -107,7 +107,6 @@ function os_pages_preprocess_page(&$page) {
   $node = menu_get_object('node');
 
   if ($node && isset($node->nid) && $node->type == 'page') {
-    $page['title_suffix']['controls']['section_links']['#links']['layout']['href'] = 'cp/build/layout/os_pages-page-'.$node->nid;
     if (context_isset('context', 'os_pages-page-'.$node->nid)) {
       $page['use_content_regions'] = true;
     }

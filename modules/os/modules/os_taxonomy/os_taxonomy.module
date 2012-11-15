@@ -735,19 +735,3 @@ function os_taxonomy_context_custom($context_name) {
     return $ctx;
   }
 }
-
-function os_taxonomy_preprocess_page(&$page) {
-  $term = menu_get_object('taxonomy_term', 2);
-  if (!$term) {
-    $term = menu_get_object('taxonomy_term', 3);
-  }
-  if ($term) {
-    $context_name = 'os_taxonomy-term-'.$term->tid;
-
-    if(($feature = os_get_active_feature()) && isset($feature->info['features']['node'])){
-      $context_name .= '-'.$feature->name;
-    }
-
-    $page['title_suffix']['controls']['section_links']['#links']['layout']['href'] = 'cp/build/layout/'.$context_name;
-  }
-}

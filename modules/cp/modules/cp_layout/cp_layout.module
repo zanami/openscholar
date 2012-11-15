@@ -7,10 +7,10 @@
 function cp_layout_menu() {
   $items = array();
 
-  $items['cp/build/layout'] = $items['cp/build/layout/%'] = array(
+  $items['cp/build/layout'] = array(
     'title' => t('Layout'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('cp_layout_full_form', 3),
+    'page arguments' => array('cp_layout_full_form'),
     'type' => MENU_NORMAL_ITEM,
     'weight' => 10,
     'access callback' => 'spaces_access_admin',

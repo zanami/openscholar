@@ -193,14 +193,6 @@ function os_books_node_view($node, $view_mode) {
   }
 }
 
-function os_books_preprocess_page(&$page) {
-  $node = menu_get_object('node');
-
-  if ($node && isset($node->nid) && isset($node->book)) {
-    $page['title_suffix']['controls']['section_links']['#links']['layout']['href'] = 'cp/build/layout/os_books-book-'.$node->nid;
-  }
-}
-
 function os_books_context_custom($name) {
   if (strpos($name, 'os_books-book') !== FALSE) {
     $nid = str_replace('os_books-book-', '', $name);
