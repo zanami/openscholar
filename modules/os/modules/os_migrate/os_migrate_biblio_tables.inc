@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file 
+ * @file
  * Implements TableCopyMigration for each of the biblio tables we're copying.
  */
 
@@ -48,3 +48,56 @@ class BiblioContributorTypeDataTableMigration extends TableCopyMigration {
     parent::__construct($table, $key_schema);
   }
 }
+
+class BiblioTypesTableMigration extends TableCopyMigration {
+  public function __construct() {
+    $key_schema = array(
+      'tid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    );
+
+    $table = 'biblio_types';
+
+    parent::__construct($table, $key_schema);
+  }
+}
+
+class BiblioFieldTypeTableMigration extends TableCopyMigration {
+  public function __construct() {
+    $key_schema = array(
+      'tid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'fid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+    );
+
+    $table = 'biblio_field_type';
+
+    parent::__construct($table, $key_schema);
+  }
+}
+
+class BiblioFieldTypeDataTableMigration extends TableCopyMigration {
+  public function __construct() {
+    $key_schema = array(
+      'ftdid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+    );
+
+    $table = 'biblio_field_type_data';
+
+    parent::__construct($table, $key_schema);
+  }
+}
+
