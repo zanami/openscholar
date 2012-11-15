@@ -30,14 +30,9 @@ cd $ROOT
   # Build core.
   $DRUSH make openscholar/drupal-org-core.make $BUILD_ROOT/www-build
 
-  # Save the sites/default directory if it exists.
+  # Check if sites/default exists, which means it is an existing installation.
   if [ -d $BUILD_ROOT/www/sites/default ]; then
     cp -rp $BUILD_ROOT/www/sites/default sites-backup
-  else
-    # Needed for development builds.
-    mkdir -p $BUILD_ROOT/www/sites/default
-    # This will become sites/default anyway.
-    mkdir sites-backup
   fi
 
   # Restore the sites directory.

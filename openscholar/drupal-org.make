@@ -266,15 +266,15 @@ projects[wysiwyg_filter][version] = 1.6-rc2
 
 ; Libraries.
 libraries[clippy][type] = "libraries"
-libraries[clippy][download][type] = "git"
-libraries[clippy][download][url] = "http://github.com/mojombo/clippy"
+libraries[clippy][download][type] = "file"
+libraries[clippy][download][url] = "https://github.com/mojombo/clippy/archive/master.tar.gz"
 
 libraries[colorbox][type] = "libraries"
-libraries[colorbox][download][type] = "git"
-libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox.git"
+libraries[colorbox][download][type] = "file"
+libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/master.tar.gz"
 
 libraries[jquery.cycle][type] = "libraries"
-libraries[jquery.cycle][download][type] = "git"
-libraries[jquery.cycle][download][url] = "https://github.com/malsup/cycle.git"
+libraries[jquery.cycle][download][type] = "file"
+libraries[jquery.cycle][download][url] = "https://github.com/downloads/malsup/cycle/jquery.cycle.all.2.88.js"
 
 ; TODO: Add Colorbox for media-gallery

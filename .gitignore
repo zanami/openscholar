@@ -9,9 +9,10 @@
 # Dont's track coder module backups
 *.coder.orig
 
-modules/contrib
-themes/contrib
 www
+openscholar/modules/contrib
+openscholar/themes/contrib
+
 openscholar/behat/bin
 openscholar/behat/vendor
 openscholar/behat/composer.lock
