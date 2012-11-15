@@ -318,54 +318,34 @@ function vsite_admin_paths_alter(&$paths) {
 }
 
 /**
- * Implements hook_vsite_app_info().
+ * Implements hook_vsite_og_node_type_info().
  */
-function vsite_vsite_app_info() {
-  $info = array();
-
-  // Exported app info for Vsite.
-  $info['vsite'] = array(
-    'group' => array(
-    	'personal' => array(
-    	  'singular' => t('personal site'),
-    	  'plural' => t('personal sites'),
-    	),
-    	'project' => array(
-    	  'singular' => t('project site'),
-    	  'plural' => t('project sites'),
-    	),
-    	'department' => array(
-    	  'singular' => t('department site'),
-    	  'plural' => t('department sites'),
-    	),
-    ),
+function vsite_vsite_og_node_type_info() {
+  return array(
+    'personal' => 'group',
+    'project' => 'group',
+    'department' => 'group',
   );
-
-  return $info;
 }
 
 /**
- * Returns if bundle is a group or is group content, or FALSE if neither.
+ * Returns whether bundle is a group or is group content.
  *
- *  @param string $bundle
+ *  @param $bundle
  *    The node type bundle.
  *
- *  @return string|bool
- *    Either "group" or "group content", or FALSE if bundle is not found at
- *    all.
+ *  @return
+ *    group/group content. If $bundle is empty, all the node types info will be
+ *    returned.
  */
 function vsite_get_type_from_bundle($bundle = NULL) {
-  $group_content_bundles = vsite_get_app_info('ALL', 'group content');
-  if (array_key_exists($bundle, $group_content_bundles)) {
-    return 'group content';
+  $info = module_invoke_all('vsite_og_node_type_info');
+
+  if (empty($bundle)) {
+    return $info;
   }
 
-  $group_bundles = vsite_get_app_info('ALL', 'group');
-  if (array_key_exists($bundle, $group_content_bundles)) {
-    return 'group';
-  }
-
-  return FALSE;
+  return isset($info[$bundle]) ? $info[$bundle] : FALSE;
 }
 
 /**
@@ -374,10 +354,7 @@ function vsite_get_type_from_bundle($bundle = NULL) {
  * When creating a new node bundle check if the bundle is defined as a group or
  * group content and attach the right fields.
  *
- * @param string $entity_type
- *   The entity type to attach to. One of "file" or "node".
- * @param string $bundle
- *   The node type to attach to, if $entity_type is "node".
+ * @see hook_vsite_og_node_type_info().
  */
 function vsite_field_attach_create_bundle($entity_type, $bundle) {
   switch ($entity_type) {
@@ -387,8 +364,7 @@ function vsite_field_attach_create_bundle($entity_type, $bundle) {
       break;
 
     case 'node':
-      $type = vsite_get_type_from_bundle($bundle);
-      if (!$type) {
+      if (!$type = vsite_get_type_from_bundle($bundle)) {
         return;
       }
 
@@ -396,6 +372,7 @@ function vsite_field_attach_create_bundle($entity_type, $bundle) {
         vsite_attach_fields_to_group($bundle);
       }
       else {
+        // Group content.
         vsite_attach_fields_to_group_content('node', $bundle);
       }
       break;
@@ -1238,48 +1215,4 @@ function vsite_field_attach_form($entity_type, $entity, &$form, &$form_state, $l
   foreach (array_keys(og_get_group_audience_fields($entity_type, $entity->type)) as $field_name) {
     $form[$field_name]['#access'] = FALSE;
   }
-}
-
-/**
- * Returns app information from hook_vsite_app_info, with options.
- *
- * Returns just the $option array values, if $option is specified
- *
- * For example, if $option is set to 'group content', then the return value
- * will be an array of all group content node types provided by the specified
- * module(s).
- *
- * @param string $module
- *   Optionally restrict to just one module's hook implementation.
- * @param string $option
- *   Optional. If set, return just an array containing values from the
- *   specified array key.
- *
- * @return array
- *   If no option is set, the return value will be the same output as a
- *   standard invocation of module_invoke or module_invoke_all. If an option is
- *   specified, then the return value will be an aggregated array of values
- *   from each module.
- */
-function vsite_get_app_info($module = 'ALL', $option = NULL) {
-  // Invokes the vsite_app_info() hook for all info
-  if ($module !== 'ALL') {
-    $app_info = module_invoke($module, 'vsite_app_info');
-  }
-  else {
-    $app_info = module_invoke_all('vsite_app_info');
-  }
-  if ($option === NULL) {
-    return $app_info;
-  }
-
-  // Optionally prunes array to just requested $option array key.
-  $info = array();
-  foreach ($app_info as $app) {
-    if (isset($app[$option]) && is_array($app[$option])) {
-      $info += $app[$option];
-    }
-  }
-
-  return $info;
 }

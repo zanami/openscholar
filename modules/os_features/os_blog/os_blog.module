@@ -59,24 +59,12 @@ function os_blog_process_node(&$vars) {
 }
 
 /**
- * Implements hook_vsite_app_info().
+ * Implements hook_vsite_og_node_type_info().
  */
-function os_blog_vsite_app_info() {
-  $info = array();
-
-  // Exported app info for Blog.
-  $info['os_blog'] = array(
-    'group content' => array(
-      'blog' => array(
-        'singular' => t('blog entry'),
-        'plural' => t('blog entries'),
-      ),
-    ),
-    'main path' => 'blog',
-    'settings path' => 'cp/build/features/os_blog',
+function os_blog_vsite_og_node_type_info() {
+  return array(
+    'blog' => 'group content',
   );
-
-  return $info;
 }
 
 /**

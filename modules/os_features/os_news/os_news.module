@@ -49,23 +49,11 @@ function os_news_process_node(&$vars) {
 }
 
 /**
- * Implements hook_vsite_app_info().
+ * Implements hook_vsite_og_node_type_info().
  */
-function os_news_vsite_app_info() {
-  $info = array();
-
-  // Exported app info for News.
-  $info['os_news'] = array(
-    'group content' => array(
-      'news' => array(
-        'singular' => t('news item'),
-        'plural' => t('news items'),
-      ),
-    ),
-    'main path' => 'news',
-    'settings path' => 'cp/build/features/os_news',
+function os_news_vsite_og_node_type_info() {
+  return array(
+    'news' => 'group content',
   );
-
-  return $info;
 }
 

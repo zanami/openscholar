@@ -1,54 +1,51 @@
 <?php
-// $Id$
-
 
 /**
- * Implements hook_install().
+ * Implementation of hook_install
  */
-function vsite_install() {
-  $group_bundles = vsite_get_app_info('ALL', 'group');
-  foreach ($group_bundles as $group_bundle) {
+function vsite_install(){
+  $node_info = module_invoke_all('vsite_og_node_type_info');
+  $group_bundles = array_keys($node_info, 'group');
+  foreach($group_bundles as $group_bundle) {
 
-    // Adds the base vsite roles as OG roles
+    // Add the base vsite roles as OG roles
     $vsite_roles = array(
       'member',
       'non-member',
       'vsite user',
-      'vsite admin',
+      'vsite admin'
     );
 
-    foreach ($vsite_roles as $name) {
+    foreach ( $vsite_roles as $name ) {
       $role = og_role_create($name, 'node', 0, $group_bundle);
       og_role_save($role);
     }
 
     $roles = og_roles($group_type = 'node', $bundle = $group_bundle);
     $manager_roles = array();
-    // Sets OG specific roles
-    foreach ($roles as $rid => $role) {
+    //Set OG specific roles
+    foreach ( $roles as $rid => $role ) {
       switch ($role) {
-        case 'vsite admin':
+        case 'vsite admin' :
           $manager_roles[] = $rid;
           og_role_grant_permissions($rid, array(
-              'view users outside groups',
-              'update group',
-              'unsubscribe',
-              'manage group space',
-              'approve and deny subscription',
-              'administer group',
-              'add user',
-              'access administration pages',
-            ));
+            'view users outside groups',
+            'update group',
+            'unsubscribe',
+            'manage group space',
+            'approve and deny subscription',
+            'administer group',
+            'add user',
+            'access administration pages'
+          ));
           break;
-
-        case 'vsite user':
+        case 'vsite user' :
           og_role_grant_permissions($rid, array(
-              'view users outside groups',
-              'unsubscribe',
-            ));
+            'view users outside groups',
+            'unsubscribe'
+          ));
           break;
-
-        case 'manager':
+        case 'manager' :
           $manager_roles[] = $rid;
           break;
       }
@@ -57,50 +54,45 @@ function vsite_install() {
 
   variable_set('og_group_manager_default_rids_node_vsite', $manager_roles);
 
-  // Sets the default OG preset to be os_personal
+  //Set the default OG preset to be os_personal
   variable_set('spaces_preset_og', 'os_scholar');
 
   _vsite_initilize_group_fields();
 }
 
 /**
- * Adds default group and group content fields to vsite node types and files.
+ * Add the default group and group content fields to existing content that
+ * implements hook_vsite_og_node_type_info.
  */
-function _vsite_initilize_group_fields() {
-  // Gets installed nodes
+function _vsite_initilize_group_fields(){
+
+  $bundles = vsite_get_type_from_bundle();
+
+  //Get installed nodes
   $info = entity_get_info('node');
 
-  // Excludes nodes managed by this module,
-  // these are the only nodes that will not require action
-  if (function_exists('vsite_node_info')) {
-    $info['bundles'] = array_diff_key($info['bundles'], vsite_node_info());
+  //Exclude nodes managed by this module, these are the only nodes that will not require action
+  if(function_exists('vsite_node_info')){
+  	$info['bundles'] = array_diff_key($info['bundles'], vsite_node_info());
   }
 
-  // Attaches fields to groups.
-  $group_bundles = vsite_get_app_info('ALL', 'group');
-  foreach ($group_bundles as $bundle => $bundle_info) {
-    // Skips if this bundle has not been created
-    if (!isset($info['bundles'][$bundle])) {
+  foreach ( $bundles as $bundle => $type ) {
+    if(!isset($info['bundles'][$bundle])){
+      //This bundle has not been created
       continue;
     }
-    vsite_attach_fields_to_group($bundle);
-  }
 
-  // Attaches fields to group content.
-  $group_content_bundles = vsite_get_app_info('ALL', 'group content');
-  foreach ($group_content_bundle as $bundle => $bundle_info) {
-    // Skips if this bundle has not been created
-    if (!isset($info['bundles'][$bundle])) {
-      continue;
+    if ($type == 'group') {
+      vsite_attach_fields_to_group($bundle);
     }
-    vsite_attach_fields_to_group_content('node', $bundle);
+    else {
+      // Group content.
+      vsite_attach_fields_to_group_content('node', $bundle);
+    }
   }
 
-  // Attaches fields to file bundles.
   $info = entity_get_info('file');
-  $info['bundles'] += array('undefined' => '');
-  foreach ($info['bundles'] as $bundle => $bundle_info) {
+  foreach ($info['bundles']+array('undefined' => '') as $bundle => $type) {
     vsite_attach_fields_to_group_content('file', $bundle);
   }
 }
-

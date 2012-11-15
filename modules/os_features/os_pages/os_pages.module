@@ -4,24 +4,12 @@
 include_once ('os_pages.features.inc');
 
 /**
- * Implements hook_vsite_app_info().
+ * Implements hook_vsite_og_node_type_info().
  */
-function os_pages_vsite_app_info() {
-  $info = array();
-
-  // Exported app info for Basic pages.
-  $info['os_pages'] = array(
-    'group content' => array(
-      'page' => array(
-        'singular' => t('basic page'),
-        'plural' => t('basic pages'),
-      ),
-    ),
-    'main path' => 'cp/build/menu',
-    'settings path' => 'cp/build/features/os_pages',
+function os_pages_vsite_og_node_type_info() {
+  return array(
+    'page' => 'group content',
   );
-
-  return $info;
 }
 
 function os_pages_block_info() {

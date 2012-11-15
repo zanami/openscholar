@@ -102,17 +102,3 @@ function _os_dataverse_alias_validate($element, &$form_state) {
   }
 }
 
-/**
- * Implements hook_vsite_app_info().
- */
-function os_dataverse_vsite_app_info() {
-  $info = array();
-
-  // Exported app info for Dataverse.
-  $info['os_dataverse'] = array(
-    'main path' => 'dataverse',
-    'settings path' => 'cp/build/features/os_dataverse',
-  );
-
-  return $info;
-}

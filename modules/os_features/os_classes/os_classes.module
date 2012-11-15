@@ -79,28 +79,13 @@ function os_classes_node_delete($node) {
 }
 
 /**
- * Implements hook_vsite_app_info().
+ * Implements hook_vsite_og_node_type_info().
  */
-function os_classes_vsite_app_info() {
-  $info = array();
-
-  // Exported app info for Classes.
-  $info['os_classes'] = array(
-    'group content' => array(
-      'class' => array(
-        'singular' => t('class'),
-        'plural' => t('classes'),
-      ),
-      'class_material' => array(
-        'singular' => t('class material'),
-        'plural' => t('class materials'),
-      ),
-    ),
-    'main path' => 'classes',
-    'settings path' => 'cp/build/features/os_classes',
+function os_classes_vsite_og_node_type_info() {
+  return array(
+    'class' => 'group content',
+    'class_material' => 'group content',
   );
-
-  return $info;
 }
 
 /**

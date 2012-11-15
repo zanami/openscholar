@@ -4,22 +4,11 @@
 include_once 'os_reader.features.inc';
 
 /**
- * Implements hook_vsite_app_info().
+ * Implements hook_vsite_og_node_type_info().
  */
-function os_reader_vsite_app_info() {
-  $info = array();
-
-  // Exported app info for Profiles.
-  $info['os_reader'] = array(
-    'group content' => array(
-      'feed' => array(
-        'singular' => t('feed'),
-        'plural' => t('feeds'),
-      ),
-    ),
-    'main path' => 'feeds',
-    'settings path' => 'cp/build/features/os_feeds',
+function os_reader_vsite_og_node_type_info() {
+  return array(
+    'feed' => 'group content',
   );
-
-  return $info;
 }
+

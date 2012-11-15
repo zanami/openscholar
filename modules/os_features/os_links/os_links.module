@@ -37,23 +37,11 @@ function os_links_os_add_new_links_alter(&$links) {
 }
 
 /**
- * Implements hook_vsite_app_info().
+ * Implements hook_vsite_og_node_type_info().
  */
-function os_links_vsite_app_info() {
-  $info = array();
-
-  // Exported app info for Links.
-  $info['os_links'] = array(
-    'group content' => array(
-      'link' => array(
-        'singular' => t('link'),
-        'plural' => t('links'),
-      ),
-    ),
-    'main path' => 'links',
-    'settings path' => 'cp/build/features/os_links',
+function os_links_vsite_og_node_type_info() {
+  return array(
+    'link' => 'group content',
   );
-
-  return $info;
 }
 
