@@ -45,34 +45,34 @@ p.copy a.poweredby {
   margin-top: 70px;
   }
 
-.section-websites .view-openscholar-sites td {
+.page-websites .view-os-websites td {
   width: 25%;
   padding-bottom: 35px;
   }
 
-.section-websites .view-openscholar-sites td {
+.page-websites .view-os-websites td {
   height: 100px;
   font-size: 11px;
   line-height: 13px;
   }
 
-.section-websites .view-openscholar-sites img {
+.page-websitess .view-os-websites img {
   border: 1px solid #8b8b8b;
   float: left;
   margin:0 10px 5px 0;
   }
 
-.section-websites .view-openscholar-sites .views-field-title a {
+.page-websites .view-os-websites .views-field-title a {
   font-weight: bold;
   }
 
-.section-websites #columns #views-exposed-form-openscholar-sites-page-1 {
+.page-websites #columns #views-exposed-form-openscholar-sites-page-1 {
   padding: 3px 20px;
   background: #ddecf0;
   margin: 0 -10px 13px -10px;
   }
 
-.section-websites #columns .views-admin-links {
+.page-websites #columns .views-admin-links {
   position:absolute;
   right: 10px;
   top: 40px;
@@ -1149,8 +1149,16 @@ border-right:1px solid #E8E9EB;
   margin-top: 45px;
 }
   /* Websites */
-  form #views-exposed-form-os-websites-page {
+.form #views-exposed-form-os-websites-page {
     padding: 3px 20px;
     background: none repeat scroll 0% 0% rgb(221, 236, 240);
     margin: 0px -10px 13px;	
   }
+  
+.form #views-exposed-form-os-websites-page .views-exposed-form .views-exposed-widget .form-submit {
+    margin-top: 1em;
+}
+
+
+
+
