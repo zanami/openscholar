@@ -277,4 +277,6 @@ libraries[jquery.cycle][type] = "libraries"
 libraries[jquery.cycle][download][type] = "file"
 libraries[jquery.cycle][download][url] = "https://github.com/downloads/malsup/cycle/jquery.cycle.all.2.88.js"
 
-; TODO: Add Colorbox for media-gallery
+libraries[tinymce][type] = "libraries"
+libraries[tinymce][download][type] = "file"
+libraries[tinymce][download][url] = "http://github.com/downloads/tinymce/tinymce/tinymce_3.5.7.zip"
