@@ -29,7 +29,7 @@ before_script:
   - drush vset purl_base_domain http://127.0.0.1
   - drush cc all --yes
 
-  # Create a behat configuration file.
+  # Copy Behat configuration file.
   - cd behat
   - cp behat.local.yml.travis behat.local.yml
 
