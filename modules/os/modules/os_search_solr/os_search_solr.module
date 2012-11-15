@@ -1,17 +1,17 @@
-<?php 
+<?php
 
 /**
  * Implements hook_block_info().
  */
 function os_search_solr_block_info(){
   $blocks = array();
-  
+
   $blocks['site-search'] = array(
       'info' => t('Site Search'),
       'weight' => '10',
       //'cache' => DRUPAL_CACHE_CUSTOM
   );
-  
+
   return $blocks;
 }
 
@@ -55,7 +55,7 @@ function os_search_solr_os_widget(){
 
 /**
  * Alter the query after it's prepared and cached.
- * 
+ *
  * @param object $query
  *   An object implementing DrupalSolrQueryInterface. No need for &.
  */
@@ -66,5 +66,9 @@ function os_search_solr_apachesolr_query_alter($query) {
   }
 }
 
-
-
+/**
+ * Implements hook_block_view_alter().
+ */
+function os_search_solr_block_view_alter(&$data, $block) {
+	dpm($block);
+}
