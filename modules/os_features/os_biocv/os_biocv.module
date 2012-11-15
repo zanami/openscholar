@@ -11,18 +11,6 @@
 include_once 'os_biocv.features.inc';
 
 /**
- * Implements hook_os_app_info().
- */
-function os_biocv_os_app_info() {
-  // Removes this app from Department and Project sites' Available Apps page.
-  return array(
-    'os_biocv' => array(
-      'restricted site types' => array('department', 'project'),
-    ),
-  );
-}
-
-/**
  * Implements hook_menu().
  */
 function os_biocv_menu() {

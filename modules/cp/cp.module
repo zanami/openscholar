@@ -291,9 +291,18 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
   ctools_include('modal');
   ctools_modal_add_js();
 
-  $app_info = os_app_info();
   $vsite = spaces_get_space();
-  $site_type = $vsite ? $vsite->group->type : FALSE;
+  if ($vsite) {
+    if (isset($vsite->controllers->variable->values['preset']['spaces_features_restricted'])) {
+      $spaces_features_restricted = $vsite->controllers->variable->values['preset']['spaces_features_restricted'];
+    }
+    else {
+      $spaces_features_restricted = FALSE;
+    }
+  }
+  else {
+    $spaces_features_restricted = FALSE;
+  }
 
   foreach (array_keys($form['spaces_features']) as $app_name) {
     // Skips render array markup.
@@ -302,10 +311,7 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
     }
 
     // Removes apps that are restricted for this site type.
-    if ($site_type
-        && isset($app_info[$app_name])
-        && isset($app_info[$app_name]['restricted site types'])
-        && in_array($site_type, $app_info[$app_name]['restricted site types'])) {
+    if ($spaces_features_restricted && in_array($app_name, $spaces_features_restricted)) {
       unset($form['spaces_features'][$app_name]);
       continue;
     }
