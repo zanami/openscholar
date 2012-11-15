@@ -30,6 +30,7 @@ font-family: helvetica, arial, serif;
   
 .page-user #content-column h1#page-title {
   margin-top:-20px;
+   font-size: 1.5em;
   }
 
 #footer {
@@ -66,11 +67,11 @@ p.copy a.poweredby {
   font-weight: bold;
   }
 
-.page-websites #columns #views-exposed-form-openscholar-sites-page-1 {
-  padding: 3px 20px;
-  background: #ddecf0;
-  margin: 0 -10px 13px -10px;
-  }
+.page-websites #columns #views-exposed-form-os-websites-page {
+    background: none repeat scroll 0 0 #DDECF0;
+    margin: -5px -15px 13px;
+    padding: 3px 20px;
+}
 
 .page-websites #columns .views-admin-links {
   position:absolute;
@@ -1149,16 +1150,9 @@ border-right:1px solid #E8E9EB;
   margin-top: 45px;
 }
   /* Websites */
-.form #views-exposed-form-os-websites-page {
-    padding: 3px 20px;
-    background: none repeat scroll 0% 0% rgb(221, 236, 240);
-    margin: 0px -10px 13px;	
-  }
-  
-.form #views-exposed-form-os-websites-page .views-exposed-form .views-exposed-widget .form-submit {
-    margin-top: 1em;
+
+#views-exposed-form-os-websites-page .views-exposed-form .views-exposed-widget .form-submit {
+    margin-top: .8em;
 }
-
-
 
 
