@@ -20,7 +20,7 @@ function os_pages_ctools_plugin_api() {
 function os_pages_node_info() {
   $items = array(
     'page' => array(
-      'name' => t('Basic page'),
+      'name' => t('Page'),
       'base' => 'node_content',
       'description' => t('Use <em>basic pages</em> for your static content, such as an \'About us\' page.'),
       'has_title' => '1',
