@@ -1,0 +1,26 @@
+description = "Provides integration between Spaces and OG."
+name = "Spaces OG"
+project = "spaces"
+package = "Spaces"
+version = "7.x-3.x-dev"
+core = 7.x
+
+dependencies[] = "og"
+dependencies[] = "og_views"
+dependencies[] = "spaces"
+dependencies[] = "purl"
+
+files[] = spaces_og.module
+files[] = spaces_og.pages.inc
+files[] = plugins/space_og.inc
+files[] = tests/spaces_og.test
+files[] = views/spaces_og.views.inc
+files[] = views/spaces_og_handler_field_og_group_nids.inc
+files[] = views/spaces_og_plugin_argument_validate_useringroups.inc
+
+; Information added by drupal.org packaging script on 2012-08-12
+version = "7.x-3.0-alpha1+9-dev"
+core = "7.x"
+project = "spaces"
+datestamp = "1344775576"
+

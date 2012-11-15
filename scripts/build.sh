@@ -1,120 +1,58 @@
 #!/bin/bash
-set -e
+set -xe
 
-#
-# Build the distribution using the same process used on Drupal.org
-#
-# Usage: scripts/build.sh [-y] <destination> from the profile main directory.
-#
+# Drush executable.
+[[ $DRUSH && ${DRUSH-x} ]] || DRUSH=drush
 
-confirm () {
-  read -r -p "${1:-Are you sure? [Y/n]} " response
-  case $response in
-    [yY][eE][sS]|[yY])
-      true
-      ;;
-    *)
-      false
-      ;;
-  esac
-}
+# Build base.
+[[ $BUILD_ROOT && ${BUILD_ROOT-x} ]] || BUILD_ROOT="."
 
-# Figure out directory real path.
-realpath () {
-  TARGET_FILE=$1
+# Move to the top directory.
+ROOT=$(git rev-parse --show-toplevel)
+cd $ROOT
 
-  cd `dirname $TARGET_FILE`
-  TARGET_FILE=`basename $TARGET_FILE`
-
-  while [ -L "$TARGET_FILE" ]
-  do
-    TARGET_FILE=`readlink $TARGET_FILE`
-    cd `dirname $TARGET_FILE`
-    TARGET_FILE=`basename $TARGET_FILE`
+# Chores.
+(
+  for DIR in $BUILD_ROOT/www-build sites-backup openscholar/1 openscholar/modules/contrib openscholar/themes/contrib openscholar/libraries; do
+    rm -Rf $DIR
   done
+)
 
-  PHYS_DIR=`pwd -P`
-  RESULT=$PHYS_DIR/$TARGET_FILE
-  echo $RESULT
-}
+# Build the profile itself.
+(
+  cd openscholar
+  $DRUSH make --no-core --contrib-destination drupal-org.make .
+  cd ..
+)
 
-usage() {
-  echo "Usage: build.sh [-y] <DESTINATION_PATH>" >&2
-  echo "Use -y to skip deletion confirmation" >&2
-  exit 1
-}
+# Build core and move the profile in place.
+(
+  # Build core.
+  $DRUSH make openscholar/drupal-org-core.make $BUILD_ROOT/www-build
 
-DESTINATION=$1
-ASK=true
-
-while getopts ":y" opt; do
-  case $opt in
-    y)
-      DESTINATION=$2
-      ASK=false
-      ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      usage
-      ;;
-  esac
-done
-
-if [ "x$DESTINATION" == "x" ]; then
-  usage
-fi
-
-if [ ! -f drupal-org.make ]; then
-  echo "[error] Run this script from the distribution base path."
-  exit 1
-fi
-
-DESTINATION=$(realpath $DESTINATION)
-
-case $OSTYPE in
-  darwin*)
-    TEMP_BUILD=`mktemp -d -t tmpdir`
-    ;;
-  *)
-    TEMP_BUILD=`mktemp -d`
-    ;;
-esac
-# Drush make expects destination to be empty.
-rmdir $TEMP_BUILD
-
-if [ -d $DESTINATION ]; then
-  echo "Removing existing destination: $DESTINATION"
-  if $ASK; then
-    confirm && chmod -R 777 $DESTINATION && rm -rf $DESTINATION
-    if [ -d $DESTINATION ]; then
-      echo "Aborted."
-      exit 1
-    fi
+  # Save the sites/default directory if it exists.
+  if [ -d $BUILD_ROOT/www/sites/default ]; then
+    cp -rp $BUILD_ROOT/www/sites/default sites-backup
   else
-    chmod -R 777 $DESTINATION && rm -rf $DESTINATION
+    # Needed for development builds.
+    mkdir -p $BUILD_ROOT/www/sites/default
+    # This will become sites/default anyway.
+    mkdir sites-backup
   fi
-  echo "done"
-fi
 
-# Build the profile.
-echo "Building the profile..."
-drush make --no-core --contrib-destination drupal-org.make tmp
+  # Restore the sites directory.
+  if [ -d sites-backup ]; then
+    rm -Rf $BUILD_ROOT/www-build/sites/default
+    mv sites-backup/ $BUILD_ROOT/www-build/sites/default
+  fi
 
-# Build a drupal-org-core.make file if it doesn't exist.
-if [ ! -f drupal-org-core.make ]; then
-  cat >> drupal-org-core.make <<EOF
-api = 2
-core = 7.x
-projects[drupal] = 7
-EOF
-fi
+  # Move the profile in place.
+  ln -s ../../openscholar $BUILD_ROOT/www-build/profiles/openscholar
 
-# Build the distribution and copy the profile in place.
-echo "Building the distribution..."
-drush make drupal-org-core.make $TEMP_BUILD
-echo -n "Moving to destination... "
-cp -r tmp $TEMP_BUILD/profiles/openscholar
-rm -rf tmp
-cp -r . $TEMP_BUILD/profiles/openscholar
-mv $TEMP_BUILD $DESTINATION
-echo "done"
+  # Fix permisions before deleting.
+  chmod -R +w $BUILD_ROOT/www/sites/* || true
+  rm -Rf $BUILD_ROOT/www || true
+
+  # Restore updated site.
+  mv $BUILD_ROOT/www-build $BUILD_ROOT/www
+)

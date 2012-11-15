@@ -1,0 +1,135 @@
+<?php
+
+/**
+ * @file
+ * Embed.ly support for oEmbed.module
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function oembedembedly_menu() {
+  $items = array();
+
+  $items['admin/config/media/oembed/provider/embedly'] = array(
+    'title'            => 'Embed.ly',
+    'description'      => 'Settings for the Embed.ly provider.',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('oembedembedly_admin'),
+    'file'             => 'oembedembedly.admin.inc',
+    'type'             => MENU_LOCAL_TASK,
+    'access arguments' => array('administer oembed'),
+  );
+
+  return $items;
+}
+
+/**
+ * Calls and caches embed.ly services api.
+ */
+function oembedembedly_providers() {
+
+  $cache = cache_get('oembedly');
+
+  if ($cache && isset($cache->data)) {
+    $providers = $cache->data;
+  }
+  else {
+    $response = drupal_http_request('http://api.embed.ly/1/services');
+
+    if ($response->code == 200) {
+      $json = json_decode($response->data);
+      $providers = array();
+      foreach ($json as $provider) {
+        $providers[$provider->name] = $provider;
+      }
+    }
+    else {
+      $providers = FALSE;
+    }
+
+    cache_set('oembedly', $providers, 'cache', REQUEST_TIME + 3600 * ($providers ? 24 : 6));
+
+    if (variable_get('oembedembedly_default', TRUE)) {
+      oembedcore_providers_reset();
+    }
+  }
+  return $providers;
+}
+
+/**
+ * Helper function to populate defaults for all providers.
+ */
+function oembedembedly_default_selected() {
+  $providers = oembedembedly_providers();
+  $default = variable_get('oembedembedly_default', TRUE);
+  $defaults = array_combine(array_keys($providers), array_fill(0, count($providers), $default));
+  return array_merge($defaults, variable_get('oembedembedly_providers', array()));
+}
+
+/**
+ * Implements hook_default_oembed_provider_alter().
+ */
+function oembedembedly_default_oembed_provider_alter(&$providers) {
+  $provider = $providers['embedly'];
+  $schemes = array_filter(preg_split("/(\r\n?|\n)/", $provider->scheme));
+  $json = oembedembedly_providers();
+  if (is_array($json)) {
+    $selections = oembedembedly_default_selected();
+
+    foreach ($json as $provider_name => $info) {
+      if ($selections[$provider_name]) {
+        $schemes = array_merge($schemes, $info->regex);
+      }
+    }
+    $schemes = array_merge($schemes, array_filter(preg_split("/(\r\n?|\n)/", variable_get('oembedembedly_schemes', ''))));
+  }
+  $provider->scheme = implode("\n", $schemes);
+}
+
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function oembedembedly_ctools_plugin_api($module, $api) {
+  if ($module == 'oembedcore' && $api == 'oembed_provider') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implement hook_oembed_request_alter().
+ */
+function oembedembedly_oembed_request_alter(&$attributes, &$provider, $url) {
+  if ($provider['name'] == 'embedly') {
+    $attributes['key'] = variable_get('oembedembedly_api_key', NULL);
+
+    $json = oembedembedly_providers();
+    if (is_array($json)) {
+      $matches = array();
+      foreach ($json as $provider_name => $info) {
+        $patterns = array();
+        foreach ($info->regex as $regex) {
+          $patterns[] = str_replace('\*', '.*', preg_quote($regex, '#'));
+        }
+        $regex_pattern = '#'. implode('|', $patterns) .'#i';
+        if (preg_match($regex_pattern, $url, $matches)) {
+          $provider['subtype'] = $provider_name;
+          break;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implement hook_form_FORMID_alter().
+ *
+ * Prevent edits to the scheme field for embed.ly provider.
+ */
+function oembedembedly_form_ctools_export_ui_edit_item_form_alter(&$form, &$form_state) {
+  if ($form_state['plugin']['schema'] == 'oembedcore_provider' && $form_state['item']->name == 'embedly') {
+    $form['scheme']['#disabled'] = TRUE;
+    $form['scheme']['#description'] = t('To edit the embed.ly schemes, visit <a href="@href">the embed.ly settings.</a>', array('@href' => url('admin/config/media/oembed/provider/embedly')));
+  }
+}

@@ -1,0 +1,11 @@
+name =  Dynamic Text Field
+description = A text field that has Key & Value fields.
+dependencies[] = field
+core = 7.x
+
+
+; Information added by drush on 2012-11-15
+version = "unknown"
+project = "dyntextfield"
+datestamp = "1352974956"
+

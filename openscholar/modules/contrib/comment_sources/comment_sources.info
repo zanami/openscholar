@@ -1,0 +1,14 @@
+name = "Comment Sources"
+description = "Select among different commenting options"
+core = 7.x
+
+files[] = comment_sources.test
+
+configure = admin/config/services/comment_sources
+
+
+; Information added by drush on 2012-11-15
+version = "unknown"
+project = "comment_sources"
+datestamp = "1352974957"
+
