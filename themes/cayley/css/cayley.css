@@ -176,6 +176,7 @@ body.one-sidebar .region-sidebar-first {
 #header-container h1 a,
 #header-container h1 a:visited {
     color:#a3a18c;
+    font-style: normal;
     }
 
 #header-container h1 a:hover {
