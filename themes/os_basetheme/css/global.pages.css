@@ -405,7 +405,8 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 .views-row {margin-bottom:1.5em;}
 
 
-.block-boxes-os_sv_list_box .item-list ul li {margin-bottom:1em;}
+.block-boxes-os_sv_list_box .item-list ul li,
+.block-boxes block-boxes-os_boxes_manual_list  ul li {margin-bottom:1em;}
 
 /*
  * First sidebar (on left in LTR languages, on right in RTL)
