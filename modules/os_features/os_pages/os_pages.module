@@ -100,6 +100,10 @@ function os_pages_node_view($node) {
 function os_pages_form_node_form_alter(&$form, $form_state) {
   if ($form['#node']->type != 'page') return;
 
+  if (isset($_GET['parent_node'])) {
+    $form['#book_parent_node'] = $_GET['parent_node'];
+  }
+
   /*$ignore_words = array();
   if (module_exists('pathauto')) {
     $ignore_words = variable_get('pathauto_ignore_words', PATHAUTO_IGNORE_WORDS);
@@ -121,6 +125,22 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
   );*/
 }
 
+function os_pages_node_submit(&$node, $form, &$form_state) {
+  if (isset($form['#book_parent_node'])) {
+    // create a book out of our parent node
+    $parent = $form['#book_parent_node'];
+    $parent = node_load($parent);
+    $parent->book['bid'] = 'new';
+    book_node_update($parent);
+
+    // $node->book has already been added to the node.
+    // nothing is done if these fields are empty
+    $node->book['bid'] = $parent->nid;
+    $node->book['plid'] = $parent->book['mlid'];
+    $node->book['menu_name'] = $parent->book['menu_name'];
+  }
+}
+
 /**
  * Implements hook_preprocess_page
  *
@@ -133,6 +153,24 @@ function os_pages_preprocess_page(&$page) {
   if ($node && isset($node->nid) && $node->type == 'page') {
     if (context_isset('context', 'os_pages-page-'.$node->nid)) {
       $page['use_content_regions'] = true;
+    }
+  }
+}
+
+function os_pages_strongarm_alter(&$vars) {
+  $vars['book_allowed_types']->value[] = 'page';
+}
+
+function os_pages_os_add_new_links_alter(&$links) {
+  $node = menu_get_object();
+
+  if (node_is_page($node)) {
+    if ((user_access('add content to books') || user_access('administer book outlines')) && node_access('create', 'page') && $node->status == 1 && (!isset($node->book['depth']) || $node->book['depth'] < MENU_MAX_DEPTH)) {
+      $links['book_add_child'] = array(
+        'title' => t('Subpage'),
+        'href' => 'node/add/page',
+        'query' => isset($node->book['mlid'])?array('parent' => $node->book['mlid']):array('parent_node' => $node->nid),
+      );
     }
   }
 }
