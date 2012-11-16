@@ -100,18 +100,24 @@ function os_pages_node_view($node) {
 function os_pages_form_node_form_alter(&$form, $form_state) {
   if ($form['#node']->type != 'page') return;
 
-  $form['link_path'] = array(
+  /*$ignore_words = array();
+  if (module_exists('pathauto')) {
+    $ignore_words = variable_get('pathauto_ignore_words', PATHAUTO_IGNORE_WORDS);
+    $ignore_words = explode(', ', $ignore_words);
+    $ignore_words[] = '--';
+  }
+  $form['page_path'] = array(
     '#type' => 'machine_name',
-    '#field_prefix' => url('', array()),
+    '#field_prefix' => url('', array()).'/',
     '#weight' => -4,
     '#machine_name' => array(
-      'exists' => 'os_pages_link_path_exist',
+      'exists' => 'os_pages_page_path_exist',
       'source' => array('title'),
       'label' => t('Path to this post'),
-      'replace_pattern' => '[^a-z0-9/-]+',
+      'replace_pattern' => '[^a-z0-9/-]+'.(count($ignore_words)?'|(^('.implode(' |',$ignore_words).' ))+':''),
       'replace' => '-',
     ),
-    '#disabled' => isset($form['#node']->nid)?true:false,
+    '#disabled' => isset($form['#node']->nid)?true:false,*/
   );
 }
 
