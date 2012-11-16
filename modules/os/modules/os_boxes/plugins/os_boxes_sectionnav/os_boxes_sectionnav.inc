@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * The class for "Book Table of Contents" widgets.
+ */
+class os_boxes_sectionnav extends os_boxes_default {
+  /**
+   * Implementation of boxes_content::options_defaults().
+   */
+  public function options_defaults() {
+    $options = parent::options_defaults();
+
+    return $options;
+  }
+
+  /**
+   * Implementation of boxes_content::options_form().
+   */
+  public function options_form(&$form_state) {
+    $form = parent::options_form($form_state);
+
+    return $form;
+  }
+
+  /**
+   * Implementation of boxes_content::render().
+   */
+  public function render() {
+    $block = parent::render();
+
+    if ($node = menu_get_object()) {
+      // only pages can have section nav
+      if ($node->type == 'page' && isset($node->book['bid'])) {
+        $book_nid = $node->book['bid'];
+        $block = os_books_build_toc($book_nid) + $block;
+      }
+    }
+
+    return $block;
+  }
+}
