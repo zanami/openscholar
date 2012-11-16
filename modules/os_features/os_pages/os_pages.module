@@ -3,6 +3,32 @@
 
 include_once ('os_pages.features.inc');
 
+function os_pages_menu() {
+  $items = array();
+
+  $items['os/pages/%node'] =
+  $items['os/pages/%node/outline'] = array(
+    'title' => 'Section Outline',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('book_admin_edit', 2),
+    'access callback' => '_book_outline_access',
+    'access arguments' => array(2),
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_INLINE,
+    'weight' => 2,
+    'file' => 'book.admin.inc',
+    'file path' => drupal_get_path('module', 'book'),
+  );
+
+  return $items;
+}
+
+function os_pages_admin_paths() {
+  return array(
+    'os/pages/*' => 'os/pages/*',
+  );
+}
+
 /**
  * Implements hook_vsite_og_node_type_info().
  */
@@ -35,6 +61,16 @@ function os_pages_block_view($delta) {
   }
 
   return $block;
+}
+
+function os_pages_block_view_alter(&$render, $block) {
+  if ($block->delta == 'os_pages_section_nav' && !empty($render['content'])) {
+    $node = menu_get_object();
+    $render['content']['#contextual_links']['section'] = array(
+      'os/pages',
+      array($node->book['bid']),
+    );
+  }
 }
 
 function os_pages_os_widget() {
