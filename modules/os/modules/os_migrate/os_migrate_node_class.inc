@@ -34,6 +34,11 @@ class ClassNodeOSMigration extends AbstractNodeOSMigration {
       $current_row->field_class_year_timezone = variable_get('date_default_timezone', date_default_timezone_get());
     }
 
+    if(isset($current_row->field_class_year_value)){
+      //Expects UTC will be converted to Local Time Zone in date.migrate.inc
+      $current_row->field_class_year_value = MigrationBase::timestamp($current_row->field_class_year_value) + 86400;
+    }
+
     return parent::prepareRow($current_row); //false -> skip this row
 
   }
