@@ -65,3 +65,33 @@ function os_search_solr_apachesolr_query_alter($query) {
     $query->addFilter("sm_og_group_ref", $vsite->group_type.":".$vsite->id);
   }
 }
+
+/**
+ * Implements hook_block_view_alter().
+ * Alter the titles of the Solr blocks.
+ */
+function os_search_solr_block_view_alter(&$data,$block) {
+  if (module_exists('facetapi')) {
+    // Gets delta map
+    $map = facetapi_get_delta_map();
+    if(isset($map) && is_array($map)) {
+
+      // Alter the title for Filter by Post Type.
+      $string_bundle = facetapi_build_delta('apachesolr@acquia_search_server_1', 'block', 'bundle');
+      $delta_bundle = array_search($string_bundle, $map);
+
+      if($block->module == 'facetapi' && $block->delta == $delta_bundle) {
+      	$data['subject'] = 'Filter by Post Type';
+      }
+
+      // Alter the title for Filter by Site.
+      $string_og = facetapi_build_delta('apachesolr@acquia_search_server_1', 'block', 'sm_og_group_ref');
+      $delta_og = array_search($string_og, $map);
+
+      if($block->module == 'facetapi' && $block->delta == $delta_og) {
+      	$data['subject'] = 'Filter By Site';
+      }
+
+    }
+  }
+}

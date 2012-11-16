@@ -70,7 +70,7 @@ class SoftwareProjectNodeOSMigration extends AbstractNodeOSMigration {
 
     // @todo verify correct
     if ($current_row->field_scholar_software_method_value == 'rbuild') {
-      $current_row->field_scholar_software_method_value = 'rbuild repository';
+      $current_row->field_scholar_software_method_value = 'Rbuild repository';
     }
 
     return parent::prepareRow($current_row); //false -> skip this row

@@ -1069,6 +1069,8 @@ class BoxPorter {
       }
     }
 
+    $body = $this->_port_box_os_boxes_node_jcarousel_fix($nid, $body);
+
     if ($body) {
       $box->plugin_key = 'os_boxes_html';
       $box->options = array('text'=>array(
@@ -1082,4 +1084,35 @@ class BoxPorter {
       return FALSE;
     }
   }
+
+  // nodes with several attached images aren't processed by jcarousel upon migration.  fix them here.
+  function _port_box_os_boxes_node_jcarousel_fix($nid, $body) {
+//     $files = OSMigration::d6_db_select('upload', 'u')
+//       ->condition('nid', $nid)
+//       ->fields('u', array('fid'))
+//       ->execute();
+//     if ($files && $files->rowCount() > 1) {
+//       $body;
+//     }
+
+    if (strpos($body, 'class="os-files-image-list jcarousel-skin-default"')) {
+      //prepend divs
+      $pattern = '<ul class="os-files-image-list jcarousel-skin-default">';  // /m for multiline matching
+      $replacement = '<div class=" jcarousel-skin-default">
+<div class="jcarousel-container jcarousel-container-horizontal">
+<ul class="os-files-image-list">';
+      $body = preg_replace("/$pattern/m", $replacement, $body);
+
+      //append divs
+      $body = preg_replace('/<\/ul><table class="os-files-other-list">/', '</ul></div></div><table class="os-files-other-list">', $body);
+
+      //inline display
+      $body = preg_replace('/<li><a class="colorbox" /', '<li style="display: inline;"><a ', $body);
+      $body = preg_replace('/<li class=".* ?"><a /', '<li style="display: inline;"><a ', $body); //not color box but a number...
+    }
+
+    //also change filter to full?
+    return $body;
+  }
+
 }
