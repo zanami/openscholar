@@ -687,6 +687,23 @@ class BoxPorter {
     return $box;
   }
 
+  public function _port_box_os_boxes_rss($box, $id, $key_only) {
+    $key = 'os_boxes_rss';
+    if ($key_only) {
+      return $key;
+    }
+
+    if ($box->options['content'] == 'all') {
+      $box->options['content'] = array();
+      $box->options['show_all'] = TRUE;
+    } else {
+      $box->options['content'] = array($box->options['content'] => $box->options['content']);
+      $box->options['show_all'] = FALSE;
+    }
+
+    return $box;
+  }
+
   //wrap other shield funciton.  apparently shield boxes had differeing names
   public function _port_box_os_boxes_shields($box, $id, $key_only) {
     $key = 'os_shields_box';
