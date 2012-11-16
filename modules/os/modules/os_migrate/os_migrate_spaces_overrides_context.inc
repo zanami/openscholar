@@ -453,6 +453,17 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
           'plugin' => 'os_boxes_html',
         );
       }
+      if ($object_id == 'profiles_profiles:reaction:block') {  // #8
+        $value['blocks']['gking_people_fbt'] = array(
+          'module' => 'boxes',
+          'delta' => 'gking_people_fbt',
+          'weight' => 0,
+          'region' => 'sidebar_second',
+          'label' => '',
+          'info' => 'Filter by People',
+          'plugin' => 'os_boxes_html',
+        );
+      }
     }
   }
 
