@@ -104,7 +104,7 @@ function _gkplus_term_check_redirect($term) {
       return;
     }
     // Otherwise, redirects to original term's parent term.
-    drupal_goto('taxonomy/term/'. current($child->parents));
+   // drupal_goto('taxonomy/term/'. current($child->parents));
   }
 }
 
