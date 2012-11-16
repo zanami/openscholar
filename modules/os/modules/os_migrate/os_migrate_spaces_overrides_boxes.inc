@@ -74,7 +74,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
 
      $this->_fix_os_taxonomy_fbt();
 
-    if (parent::is_domain('http://scholar.harvard.edu')) {
+    if (parent::is_domain('http://scholar.harvard.edu') && !variable_get('created_custom_scholarharvard boxes',FALSE)) {
       //#560
       $gking_html =<<<EOF
    <div class="node-inner">
@@ -184,12 +184,33 @@ EOF;
         }
       }
 
+      $new_box = array(
+        'changed' => NULL,
+        'delta' => 'gking_people_fbt',
+        'title' => '',
+        'description' => 'Filter by People',
+        'additional_classes' => '',
+        'plugin_key' => 'os_taxonomy_fbt',
+        'options' => array('visibility' => 'feature', 'vocabulary' => 175),
+        'info' => 'gking_people_fbt',
+      );
+
+      //Gking Taxonomy
+      $new_boxes[] = array(
+        'type' => 'og',
+        'id' => 3633,
+        'object_type' => 'boxes',
+        'object_id' => 'gking_people_fbt',
+        'value' => serialize((object) $new_box),
+      );
+
       $insert = db_insert('spaces_overrides')
         ->fields(array_keys($new_boxes[0]));
       foreach($new_boxes as $box) {
         $insert->values($box);
       }
       $insert->execute();
+      variable_set('created_custom_scholarharvard boxes',TRUE);
     }
 
 

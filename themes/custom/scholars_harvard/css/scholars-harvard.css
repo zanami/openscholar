@@ -877,6 +877,11 @@ p.copy a:hover {
   width: 100%;
 }
 
+.logged-in .os-scholar-header {
+  top: 30px;
+}
+
+
 .os-scholar-header-wrap {
   background: transparent;
   min-height: 0;
@@ -1089,7 +1094,7 @@ border-right:1px solid #E8E9EB;
 
 /* CSS fixes for activity box, stats block, login box and powered by box */
 #block-os-powered-by span a, .os-powered-link a.os-poweredby {
-  margin-top: -80px;'
+  margin-top: -50px;
 }
 
 .logged-in #block-os-powered-by span a, .os-powered-link a.os-poweredby {
