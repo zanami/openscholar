@@ -184,7 +184,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'boxes-scholar_book_current_toc' => 'boxes-os_booktoc',
       'views-scholar_software_releases-block_3' => 'views-os_software_releases-block_1',
       'scholar_software_releases-block_3' => 'views-os_software_releases-block_1',
-    //  'scholar_events-mini' => 'views-os_events-block_1',
+      'scholar_events-mini' => 'views-os_events-block_1',
       'views-scholar_events_upcoming-block_1' => 'views-os_events-block_2',
       'boxes-image_gallery_recent_images' => 'boxes-os_image_gallery_latest',
       'views-scholar_presentations-block_1' => 'boxes-os_presentations_recent',
