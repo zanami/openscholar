@@ -32,11 +32,14 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
 
     //recycle previous thumbnail
     $action = $this->_get_action($values);
+    //MigrationBase::displayMessage(t('Logo for @id processed by @action', array('@id'=>$entity->og_group_ref,'@action'=>$action)));
 
     if ($action == 'recycle') {
       if ($recycled = $this->_recycle($values, $gid, $entity->uid)) {
         $values[0] = $recycled->fid;
         $values['arguments']['file_class'] = 'MigrateFileFid';
+      } else {
+        Migration::displayMessage(t('Error reusing cropped vsite logo: @file', array('@file'=>$values['thumb_filepath'])));
       }
     } elseif ($action == 'crop') {
       //crop a new image
@@ -173,7 +176,8 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $full->filemime = file_get_mimetype($full_filepath);
     $full->uri = $full_filepath;
 
-    if (($full = file_copy($full, 'public://')) && $gid) {
+    $full = file_copy($full, 'public://');
+    if ($full && $gid) {
       $full_entity = entity_metadata_wrapper('file', $full);
       $full_entity->og_group_ref = array($gid);
       $full_entity->save();
@@ -184,13 +188,15 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $thumb->filemime = file_get_mimetype($thumb_filepath);
     $thumb->uri = $thumb_filepath;
 
-    if (($thumb = file_copy($thumb, 'public://')) && $gid) {
+    $thumb = file_copy($thumb, 'public://');
+    if ($thumb && $gid) {
       $thumb_entity = entity_metadata_wrapper('file', $thumb);
       $thumb_entity->og_group_ref = array($gid);
       $thumb_entity->save();
     }
 
     if (($dim = getimagesize($thumb_filepath)) == FALSE) {
+      $values['thumb_filepath'] = $thumb_filepath;
       return FALSE;
     }
     //set size to use full thumb.
@@ -200,7 +206,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $values['arguments']['cropbox_height'] = $dim[1];
 
     file_usage_add($full, 'imagefield_crop', 'file', $thumb->fid);
-    return $thumb; //not sure about this.
+    return $thumb;
   }
 
   /**
