@@ -104,7 +104,7 @@ function _gkplus_term_check_redirect($term) {
       return;
     }
     // Otherwise, redirects to original term's parent term.
-    drupal_goto('taxonomy/term/'. current($child->parents));
+   // drupal_goto('taxonomy/term/'. current($child->parents));
   }
 }
 
@@ -563,6 +563,10 @@ function gkplus_access_file($filename) {
  * @ingroup updatefile
  */
 function _gkplus_updatefile_cron() {
+  // Creates the update file directory if it doesn't already exist.
+  _gkplus_verify_tmpdir();
+
+  // Updates file fields if a newer version of an existing file is found.
   $last_update = variable_get('gkplus_last_updated_filefields', 0);
   $temp_path  = _gkplus_temp_path();
   if ($handle = opendir($temp_path)) {
@@ -575,7 +579,35 @@ function _gkplus_updatefile_cron() {
     }
     closedir($handle);
   }
+
+  // Records time of this cron run to compare against next time.
   variable_set('gkplus_last_updated_filefields', time());
+}
+
+/**
+ * Creates the update file directory if it doesn't already exist.
+ *
+ * @see _gkplus_updatefile_cron()
+ *
+ * @ingroup updatefile
+ */
+function _gkplus_verify_tmpdir() {
+  $temp_path = _gkplus_temp_path();
+  $check_path = '';
+  $path_parts = explode('/', $temp_path);
+
+  // Loops over parent directories to ensure entire path exists.
+  foreach ($path_parts as $path_part) {
+    if (strlen(trim($path_part)) <= 0) {
+      continue;
+    }
+    $check_path = $check_path . $path_part . '/';
+    if (is_dir($check_path)) {
+      continue;
+    }
+
+    mkdir($check_path, 0775);
+  }
 }
 
 /**
