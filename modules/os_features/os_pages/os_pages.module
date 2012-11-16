@@ -117,8 +117,8 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
       'replace_pattern' => '[^a-z0-9/-]+'.(count($ignore_words)?'|(^('.implode(' |',$ignore_words).' ))+':''),
       'replace' => '-',
     ),
-    '#disabled' => isset($form['#node']->nid)?true:false,*/
-  );
+    '#disabled' => isset($form['#node']->nid)?true:false,
+  );*/
 }
 
 /**
