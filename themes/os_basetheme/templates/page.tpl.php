@@ -38,6 +38,7 @@
 	<div class="hg-container">
     <div id="content-column" role="main">
       <div class="content-inner">
+      <?php if ($breadcrumb): print $breadcrumb; endif; ?>
       	<?php if ($is_front || $use_content_regions): ?>
           <?php print render($title_suffix); ?>
 <?php if (
