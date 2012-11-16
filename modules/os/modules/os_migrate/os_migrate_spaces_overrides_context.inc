@@ -443,27 +443,34 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     if ($nid == '3633') {
 
       if ($object_id == 'classes_classes:reaction:block') {  // #560
-        $value['blocks']['gking_student_materials_html'] = array(
+        $value['blocks']['boxes-gking_student_materials_html'] = array(
           'module' => 'boxes',
           'delta' => 'gking_student_materials_html',
           'weight' => 0,
           'region' => 'sidebar_second',
           'label' => '',
           'info' => 'gking_student_materials_html',
-          'plugin' => 'os_boxes_html',
         );
       }
       if ($object_id == 'profiles_profiles:reaction:block') {  // #8
-        $value['blocks']['gking_people_fbt'] = array(
+        $value['blocks']['boxes-gking_people_fbt'] = array(
           'module' => 'boxes',
           'delta' => 'gking_people_fbt',
           'weight' => 0,
           'region' => 'sidebar_second',
           'label' => '',
           'info' => 'Filter by People',
-          'plugin' => 'os_boxes_html',
         );
       }
+
+      $value['blocks']['boxes-og-3633-641a88b_fbt_174'] = array(
+        'module' => 'boxes',
+        'delta' => 'og-3633-641a88b_fbt_174',
+        'weight' => 0,
+        'region' => ($object_id == 'os_public:reaction:block')?'sidebar_second':false,
+        'label' => '',
+        'info' => 'Areas of Research (sidebar)',
+      );
     }
   }
 
