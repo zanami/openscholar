@@ -4,8 +4,6 @@ body {
   }
 
 
-
-
 a, a:visited {
     color:#6D1102;
     }
@@ -75,6 +73,10 @@ h2, h3, #header-container {
   -webkit-box-shadow: 1px 0 1em #777777;
   box-shadow: 1px 0 1em #777777;
   }
+  
+.front #columns {
+ display:none;
+  } 
   
 ul.menu li a:link, ul.menu li a:visited {
 color: #6D1102;

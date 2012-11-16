@@ -60,7 +60,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     //flavor variables get new names
     if (preg_match('/_flavor$/', $row->object_id)) {
       //$this->_update_flavors($row);
-      list($object_id, $value) = $this->_update_flavors($object_id, $value);
+      list($object_id, $value) = $this->_update_flavors($object_id, $value, $row->id);
     }
 
     //scholar_publications variables:
@@ -98,13 +98,29 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   *
   * Updates flavor variables and names.
   */
-  public function _update_flavors($object_id, $value){
+  public function _update_flavors($object_id, $value, $vsite){
     $replaced = 0;
     $object_id = preg_replace('/vsite_design_scholar/', 'os_appearance', $object_id, 1, $replaced);
 
     //Some themes start with vsite_design instead of vsite_design_scholar, handle those as well.
     if(!$replaced){
       $object_id = preg_replace('/vsite_design/', 'os_appearance', $object_id, 1);
+    }
+
+    //set the flavor manually for a few special cases
+    if (parent::is_domain('http://scholar.harvard.edu')) {
+      //agordon
+      if ($vsite == 10057 && $object_id == 'os_appearance_eloquent_flavor') {
+        $value = 'eloquent_sand_modfront';
+      }
+      //kshepsle
+      if ($vsite == 1 && $object_id == 'os_appearance_eloquent_flavor') {
+        $value = 'eloquent_green_modfront';
+      }
+      //rbates
+      if ($vsite == 8 && $object_id == 'os_appearance_weft_flavor') {
+        $value = 'w_african_nostrip';
+      }
     }
 
     $value = preg_replace('/^scholar_/', '', $value);
