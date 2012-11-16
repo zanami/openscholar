@@ -1,6 +1,6 @@
 <?php
 
-function cp_layout_full_form($form, $form_state, $ctx){
+function cp_layout_full_form($form, $form_state){
   $form = array();
   ctools_include('ajax');
   ctools_include('modal');
@@ -130,7 +130,7 @@ function cp_layout_full_form($form, $form_state, $ctx){
     }
   }
 
-  if ($ctx == 'os_front') {
+  if (in_array('os_front', $ctxs)) {
     $use_content_regions = true;
   }
 
