@@ -64,15 +64,12 @@ a:hover {
      text-decoration: underline;
 }
 
-#header-container h1 {
+#header-container #boxes-box-site_info h1 a {
      color: #545454;
      font-family: georgia,arial;
-}
-
-#header-container h1 a {
-     color: #545454;
      font-size: 1.55em;
 }
+
 
 #header-container h2 {
      color: #666666;
