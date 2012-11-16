@@ -85,12 +85,6 @@ a:hover {
   
   }
 
-#menu-bar {
-  width: 414px;
-  padding: 0 0 0 0;
-  min-height: 71px;
-  }
-
 #columns {
   clear:both;
   padding: 9px 0 0;
@@ -138,7 +132,8 @@ a:hover {
   width: 390px;
   float: right;
   clear: none;
-
+  padding: 0 0 0 0;
+  min-height: 71px;
   }
 
 #menu-bar {
