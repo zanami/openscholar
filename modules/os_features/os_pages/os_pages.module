@@ -72,6 +72,12 @@ function os_pages_context_custom($name) {
               'region' => 'content_top',
               'weight' => '-10',
             ),
+            'boxes-os_pages_section_nav' => array(
+              'module' => 'boxes',
+              'delta' => 'os_pages_section_nav',
+              'region' => 'sidebar_second',
+              'weight' => '-10',
+            ),
           )
         )
       ),

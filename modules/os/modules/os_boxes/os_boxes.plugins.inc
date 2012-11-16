@@ -212,28 +212,41 @@ function _os_boxes_boxes_plugins() {
   );
 
   $info['os_boxes_rss'] = array(
-      'title' => 'RSS feed',
-      'description' => 'A feed of your posts allowing visitors to follow you.',
-      'tags' => array('Social'),
-      'handler' => array(
-          'class' => 'os_boxes_rss',
-          'file' => 'os_boxes_rss.inc',
-          'path' => $path . '/os_boxes_rss',
-          'parent' => 'os_boxes_default',
-      ),
+    'title' => 'RSS feed',
+    'description' => 'A feed of your posts allowing visitors to follow you.',
+    'tags' => array('Social'),
+    'handler' => array(
+      'class' => 'os_boxes_rss',
+      'file' => 'os_boxes_rss.inc',
+      'path' => $path . '/os_boxes_rss',
+      'parent' => 'os_boxes_default',
+    ),
   );
 
   $info['os_boxes_feedreader'] = array(
-      'title' => 'Feed Reader',
-	    'description' => 'List of feed items',
-	    'tags' => array('Content','Social'),
-	    'module dependencies' => array("os_reader"),
-	    'handler' => array(
-	      'class' => 'os_boxes_feedreader',
-	      'file' => 'os_boxes_feedreader.inc',
-	      'path' => $path  . '/os_boxes_feedreader',
-	      'parent' => 'os_boxes_default',
-	    ),
+    'title' => 'Feed Reader',
+    'description' => 'List of feed items',
+    'tags' => array('Content','Social'),
+    'module dependencies' => array("os_reader"),
+    'handler' => array(
+      'class' => 'os_boxes_feedreader',
+      'file' => 'os_boxes_feedreader.inc',
+      'path' => $path  . '/os_boxes_feedreader',
+      'parent' => 'os_boxes_default',
+    ),
+  );
+
+  $info['os_boxes_sectionnav'] = array(
+    'title' => 'Section Nav',
+    'description' => 'The navigation for a section',
+    'tags' => array('Misc'),
+    'handler' => array(
+      'class' => 'os_boxes_sectionnav',
+      'file' => 'os_boxes_sectionnav.inc',
+      'path' => $path  . '/os_boxes_sectionnav',
+      'parent' => 'os_boxes_default',
+    ),
+    'factory' => false,
   );
 
   return $info;
