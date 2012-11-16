@@ -4,4 +4,8 @@
 }
 
 
-.lt-ie9  #header-container {width:540px;display:inline;clear:none;float: left;}
+#header-container {width:540px;display:inline;clear:none;float: left;}
+
+.view .date-nav-wrapper .date-heading h3 {
+    font-size: 1em;
+}
