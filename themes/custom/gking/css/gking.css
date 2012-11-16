@@ -354,6 +354,9 @@ body.front .block-boxes-os_taxonomy_fbt div.description  {
   text-decoration: none;
   }
 
+.sidebar .block-boxes-os_taxonomy_fbt ul ul {
+    margin-left: 0;
+}
 
 .region-sidebar-second .block-boxes-os_taxonomy_fbt dd {
   display:none;
