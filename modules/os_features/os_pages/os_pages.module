@@ -136,6 +136,12 @@ function os_pages_node_view($node) {
     if ($ctx) {
       context_set('context', $ctx->name, $ctx);
     }
+
+    if ($node->book['bid'] && $ctx = context_load('os_books-book-'.$node->book['bid'])) {
+      context_set('context', $ctx->name, $ctx);
+    }
+
+    unset($node->content['book_navigation']);
   }
 }
 
