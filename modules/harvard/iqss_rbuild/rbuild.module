@@ -189,7 +189,11 @@ function rbuild_fetch_releases($project_node) {
     return;
   }
 
-  $found_new_releases = $handler->fetch_releases($project_node);
+  // Don't try and get new releases if headers have been sent
+  // This means that a batch is not possible anyway
+  if (!headers_sent()) {
+    $found_new_releases = $handler->fetch_releases($project_node);
+  }
 }
 
 /**
