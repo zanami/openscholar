@@ -129,10 +129,7 @@ border-left: 1px solid #919191;
   padding-bottom: 30px;
   }
   
-
-/*
-  Instead of the [sidebar, main-content, sidebar] layout we can easily change the layout to [main-content, sidebar, sidebar] thusly.
-*/
+  #header-container #boxes-box-site_logo img {width:157px;}
 
 
 #header-container {
