@@ -1069,13 +1069,13 @@ class BoxPorter {
       }
     }
 
-    $body = $this->_port_box_os_boxes_node_jcarousel_fix($nid, $body);
+    list ($body, $jc_fixed) = $this->_port_box_os_boxes_node_jcarousel_fix($nid, $body);
 
     if ($body) {
       $box->plugin_key = 'os_boxes_html';
       $box->options = array('text'=>array(
         'value' => $body,
-        'format' => 'filtered_html',
+        'format' => ($jc_fixed) ? 'full_html' : 'filtered_html',
       ));
 
       return $box;
@@ -1087,15 +1087,10 @@ class BoxPorter {
 
   // nodes with several attached images aren't processed by jcarousel upon migration.  fix them here.
   function _port_box_os_boxes_node_jcarousel_fix($nid, $body) {
-//     $files = OSMigration::d6_db_select('upload', 'u')
-//       ->condition('nid', $nid)
-//       ->fields('u', array('fid'))
-//       ->execute();
-//     if ($files && $files->rowCount() > 1) {
-//       $body;
-//     }
+    $fixed = FALSE;
 
     if (strpos($body, 'class="os-files-image-list jcarousel-skin-default"')) {
+      $fixed = TRUE;
       //prepend divs
       $pattern = '<ul class="os-files-image-list jcarousel-skin-default">';  // /m for multiline matching
       $replacement = '<div class=" jcarousel-skin-default">
@@ -1108,11 +1103,11 @@ class BoxPorter {
 
       //inline display
       $body = preg_replace('/<li><a class="colorbox" /', '<li style="display: inline;"><a ', $body);
-      $body = preg_replace('/<li class=".* ?"><a /', '<li style="display: inline;"><a ', $body); //not color box but a number...
+      $body = preg_replace('/<li class=".*?"><a /', '<li style="display: inline;"><a ', $body); //not color box but a number...
     }
 
     //also change filter to full?
-    return $body;
+    return array($body, $fixed);
   }
 
 }
