@@ -37,6 +37,8 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
 
     //Update default box delta for fltr-cat
     if( $row->id == 'vsite_taxonomy_fltr_cat'){
+      //Depricated
+      return false;
       $row->id = 'os_taxonomy_fltr_cat';
       $value->delta = 'os_taxonomy_fltr_cat';
     }

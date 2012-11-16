@@ -24,7 +24,6 @@ dependencies[] = transliteration
 dependencies[] = views
 dependencies[] = views_content
 features[box][] = os_addthis
-features[box][] = os_taxonomy_fltr_cat
 features[box][] = shield
 features[box][] = site_info
 features[box][] = site_logo
