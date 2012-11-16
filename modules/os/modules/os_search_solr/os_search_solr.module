@@ -77,7 +77,7 @@ function os_search_solr_block_view_alter(&$data,$block) {
     if(isset($map) && is_array($map)) {
 
       // Alter the title for Filter by Post Type.
-      $string_bundle = facetapi_build_delta('apachesolr@solr', 'block', 'bundle');
+      $string_bundle = facetapi_build_delta('apachesolr@acquia_search_server_1', 'block', 'bundle');
       $delta_bundle = array_search($string_bundle, $map);
 
       if($block->module == 'facetapi' && $block->delta == $delta_bundle) {
@@ -85,7 +85,7 @@ function os_search_solr_block_view_alter(&$data,$block) {
       }
 
       // Alter the title for Filter by Site.
-      $string_og = facetapi_build_delta('apachesolr@solr', 'block', 'sm_og_group_ref');
+      $string_og = facetapi_build_delta('apachesolr@acquia_search_server_1', 'block', 'sm_og_group_ref');
       $delta_og = array_search($string_og, $map);
 
       if($block->module == 'facetapi' && $block->delta == $delta_og) {
