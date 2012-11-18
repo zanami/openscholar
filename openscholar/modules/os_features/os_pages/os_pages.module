@@ -1,0 +1,115 @@
+<?php
+// $Id$
+
+include_once ('os_pages.features.inc');
+
+/**
+ * Implements hook_vsite_og_node_type_info().
+ */
+function os_pages_vsite_og_node_type_info() {
+  return array(
+    'page' => 'group content',
+  );
+}
+
+function os_pages_block_info() {
+  $blocks = array();
+
+  $blocks['main_content'] = array(
+    'info' => t('Page Content'),
+    'weight' => '-10',
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+function os_pages_block_view($delta) {
+  $block = array();
+
+  switch ($delta) {
+    case 'main_content':
+      $block['subject'] = drupal_get_title();
+      $block['content'] = drupal_set_page_content();
+      break;
+  }
+
+  return $block;
+}
+
+function os_pages_os_widget() {
+  $widgets = array();
+
+  $widgets['os_pages-main_content'] = array(
+    'module' => 'os_pages',
+    'delta' => 'main_content',
+    'title' => '',
+    'info' => 'Page Content',
+  );
+
+  return $widgets;
+}
+
+/**
+ * Define contexts for the page nodes
+ */
+function os_pages_context_custom($name) {
+  if (strpos($name, 'os_pages-page-') !== FALSE) {
+    $nid = str_replace('os_pages-page-', '', $name);
+    $context = (object)array(
+      'disabled' => FALSE,
+      'api_version' => 3,
+      'name' => 'os_pages-page-'.$nid,
+      'description' => 'Context active on a single page.',
+      'tag' => 'OpenScholar',
+      'conditions' => array(),
+      'reactions' => array(
+        'block' => array(
+          'blocks' => array(
+            'os_pages-main_content' => array(
+              'module' => 'os_pages',
+              'delta' => 'main_content',
+              'region' => 'content_top',
+              'weight' => '-10',
+            ),
+          )
+        )
+      ),
+      'condition_mode' => 0,
+    );
+    return $context;
+  }
+}
+
+/**
+ * Implements hook_node_view.
+ *
+ * By manually triggering the context, we can circumvent the condition process entirely.
+ * Context won't have to chug through all the contexts to process them, since none of them
+ * will have reactions.
+ */
+function os_pages_node_view($node) {
+  if ($node->type == 'page') {
+    $ctx = context_load('os_pages-page-'.$node->nid);
+    if ($ctx) {
+      context_set('context', $ctx->name, $ctx);
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_page
+ *
+ * If we're on a page node, change the Layout link to point to the right context.
+ * Also, if the context is active (i.e. it exists), tell the template to use the content regions
+ */
+function os_pages_preprocess_page(&$page) {
+  $node = menu_get_object('node');
+
+  if ($node && isset($node->nid) && $node->type == 'page') {
+    $page['title_suffix']['controls']['section_links']['#links']['layout']['href'] = 'cp/build/layout/os_pages-page-'.$node->nid;
+    if (context_isset('context', 'os_pages-page-'.$node->nid)) {
+      $page['use_content_regions'] = true;
+    }
+  }
+}

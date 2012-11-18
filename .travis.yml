@@ -1,7 +1,7 @@
 language: php
 
 php:
-  - 5.4
+  - 5.3
 
 mysql:
   database: drupal
@@ -9,36 +9,30 @@ mysql:
   encoding: utf8
 
 before_script:
+  # Install apache
+  - sudo apt-get install apache2
+  - sudo a2enmod actions
+  - sudo a2enmod rewrite
+  - echo "export PATH=/home/vagrant/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
+  - echo "$(curl -fsSL https://raw.github.com/gist/16d751c979fdeb5a14e3/gistfile1.txt)" | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
+  - echo "$(curl -fsSL https://raw.github.com/gist/2eb301570ed4a1f4c33d/gistfile1.txt)" | sed -e "s,PATH,`pwd`/www,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
+  - sudo service apache2 restart
   - "mysql -e 'create database drupal;'"
   - pear channel-discover pear.drush.org
   - pear install drush/drush
   - phpenv rehash
-  # Remove when we have a make file.
-  - cd ~
-  - drush dl drupal
-  - mv drupal-7.17 drupal
-  - cd drupal
-  - mv /home/travis/builds/openscholar/openscholar ./profiles
-  - cd profiles/openscholar
   - bash scripts/setup
-  # Re-add, when we have Make file.
-  # - bash scripts/build
-  - drush si openscholar --db-url=mysql://root:@127.0.0.1/drupal --account-pass=admin --yes
+  - bash scripts/build.sh
   # Install a multi-tanent, developemnt site.
+  - cd www
   - drush si openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite openscholar_flavor_form.dummy_content=TRUE --yes
   - drush vset purl_base_domain http://127.0.0.1
-  - drush cc all --yes
 
-  # Create a behat configuration file.
-  - cd behat
+  # Copy Behat configuration file.
+  - cd profiles/openscholar/behat
   - cp behat.local.yml.travis behat.local.yml
-
-  # Create Drush alias.
-  - cp aliases.drushrc.php ~/.drush/
   - composer install
 
-
-# Dummy script to return "exit 0", until Behat is in place.
 script:
     # Enable xvfb
     - export DISPLAY=:99.0
