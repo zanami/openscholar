@@ -43,6 +43,10 @@ projects[date][patch][] = "http://drupal.org/files/date-migrate_v24-1715700-1.pa
 projects[devel][subdir] = "contrib"
 projects[devel][version] = 1.3
 
+projects[deploy][subdir] = "contrib"
+projects[deploy][version] = 2.x-dev
+projects[deploy][patch][] = "http://drupal.org/files/entity_label_support_fix.patch"
+
 projects[diff][subdir] = "contrib"
 projects[diff][version] = 3.0-alpha1
 
@@ -61,9 +65,14 @@ projects[entityreference][subdir] = "contrib"
 projects[entityreference][version] = 1.x-dev
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-id-option-9.patch"
 projects[entityreference][revision] = "5b1c289"
+; Patch for og_deploy.
+projects[entity_dependency][patch][] = "http://drupal.org/files/entity-dependency-entityreference-1545278-2.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
 projects[entityreference_prepopulate][version] = 1.1
+
+projects[entity_dependency][subdir] = "contrib"
+projects[entity_dependency][version] = 1.x-dev
 
 projects[eva][subdir] = "contrib"
 projects[eva][version] = 1.x-dev
@@ -122,7 +131,7 @@ projects[job_scheduler][subdir] = "contrib"
 projects[job_scheduler][version] = 2.0-alpha3
 
 projects[libraries][subdir] = "contrib"
-projects[libraries][version] = 1.0
+projects[libraries][version] = 2.0
 
 projects[link][patch][] = "http://drupal.org/files/link-MigrateLinkFieldHandler-1010850-54.patch"
 projects[link][subdir] = "contrib"
@@ -186,12 +195,20 @@ projects[oembed][revision] = "baefb69"
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.0-beta2
 
+
+projects[og_deploy][download][type] = git
+projects[og_deploy][download][url] = "http://git.drupal.org/sandbox/amitaibu/1823076.git"
+projects[og_deploy][download][branch] = 7.x-1.x
+projects[og_deploy][subdir] = "contrib"
+projects[og_deploy][type] = module
+
 projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
 
 projects[og_vocab][subdir] = "contrib"
 projects[og_vocab][version] = 1.x-dev
-projects[og_vocab][revision] = "8cf5d77"
+projects[og_vocab][revision] = "01f65a6"
+projects[og_vocab][patch][] = "http://drupal.org/files/og_vocab_uuid_support-7.patch"
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
@@ -225,6 +242,9 @@ projects[search_api][version] = 1.2
 projects[search_api_db][subdir] = "contrib"
 projects[search_api_db][version] = 1.0-beta4
 
+projects[services][subdir] = "contrib"
+projects[services][version] = 3.x-dev
+
 projects[spaces][subdir] = "contrib"
 projects[spaces][version] = 3.x-dev
 projects[spaces][revision] = "eac3a7e"
@@ -245,6 +265,12 @@ projects[transliteration][version] = 3.1
 
 projects[twitter_pull][subdir] = "contrib"
 projects[twitter_pull][version] = 1.0-rc2
+
+projects[uuid][subdir] = "contrib"
+projects[uuid][version] = 1.x-dev
+; Patches for og_deploy
+projects[uuid][patch][] = "http://drupal.org/files/uuid-file_entity_fail_deployment-1694972-6.patch"
+projects[uuid][patch][] = "http://drupal.org/files/uuid_validate_error.patch"
 
 projects[variable][subdir] = "contrib"
 projects[variable][version] = "2.1"
@@ -280,3 +306,8 @@ libraries[jquery.cycle][download][url] = "https://github.com/downloads/malsup/cy
 libraries[tinymce][type] = "libraries"
 libraries[tinymce][download][type] = "file"
 libraries[tinymce][download][url] = "http://github.com/downloads/tinymce/tinymce/tinymce_3.5.7.zip"
+
+libraries[spyc][type] = "libraries"
+libraries[spyc][download][type] = "file"
+libraries[spyc][download][url] = "http://spyc.googlecode.com/files/spyc-0.5.zip"
+
