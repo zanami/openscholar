@@ -13,14 +13,15 @@ Feature:
     When I visit "/activity"
     And I should see "Dummy blog entry"
 
-  @api
-  Scenario: Check activity stream after editing a node
-    Given I am logged in as a user with the "administrator" role
-    And I visit "john"
-    When I am on a "bio" page titled "John doe biography"
-    And I click "Edit"
-    And I fill in "title" with "John doe biography - edited"
-    Then I press "Save"
-    When I clear the cache
-    And I visit "/activity"
-    Then I should see "John doe biography - edited"
+  # Comment out for now.
+  # @api
+  # Scenario: Check activity stream after editing a node
+    # Given I am logged in as a user with the "administrator" role
+    # And I visit "john"
+    # When I am on a "bio" page titled "John doe biography"
+    # And I click "Edit"
+    # And I fill in "title" with "John doe biography - edited"
+    # Then I press "Save"
+    # When I clear the cache
+    # And I visit "/activity"
+    # Then I should see "John doe biography - edited"

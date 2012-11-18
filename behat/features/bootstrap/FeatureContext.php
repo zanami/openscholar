@@ -159,7 +159,7 @@ class FeatureContext extends DrupalContext {
    * @When /^I click "([^"]*)" with the class "([^"]*)"$/
    */
   public function iClickWithTheClass($linkText, $LinkClass) {
-    $this->findAnyElement($linkText, $LinkClass)->click();
+    $this->findAnyElement($linkText, $LinkClass, '/a')->click();
   }
 
   /**
@@ -221,9 +221,9 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I wait for the text "([^"]*)"$/
+   * @Then /^I should wait and see "([^"]*)"$/
    */
-  public function iWaitForTheText($message) {
+  public function iShouldWaitAndSee($message) {
     $page = $this->getSession()->getPage();
     if ($message == 'random text') {
       $message = $this->randomText;
@@ -245,7 +245,7 @@ class FeatureContext extends DrupalContext {
    * Find any element that contain the text and has the css class or id
    * selector.
    */
-  private function findAnyElement($text, $container) {
+  private function findAnyElement($text, $container, $childElement = '*') {
     $page = $this->getSession()->getPage();
     $attributes = array(
       'id',
@@ -254,7 +254,7 @@ class FeatureContext extends DrupalContext {
 
     // Find the element wrapped under an element with the class.
     foreach ($attributes as $attribute) {
-      $this->xpath = "//*[contains(@$attribute, '{$container}')]/*[contains(., '{$text}')]";
+      $this->xpath = "//*[contains(@$attribute, '{$container}')]/{$childElement}[contains(., '{$text}')]";
       $element = $page->find('xpath', $this->xpath);
       if ($element) {
         return $element;
