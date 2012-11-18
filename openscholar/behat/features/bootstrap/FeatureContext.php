@@ -10,14 +10,6 @@ require 'vendor/autoload.php';
 class FeatureContext extends DrupalContext {
 
   /**
-   * @Then /^I should print page$/
-   */
-  public function iShouldPrintPage() {
-    $page = $this->getSession()->getPage()->getContent();
-    print_r($page);
-  }
-
-  /**
    * @Given /^I am on a "([^"]*)" page titled "([^"]*)"(?:, in the tab "([^"]*)"|)$/
    */
   public function iAmOnAPageTitled($page_type, $title, $subpage = NULL) {
@@ -72,11 +64,10 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I print page$/
+   * @Then /^I should print page$/
    */
-  public function iPrintPage() {
-    $page = $this->getSession()->getPage();
-    $body = $page->find('css', 'body');
-    print_r($body->getHtml());
+  public function iShouldPrintPage() {
+    $page = $this->getSession()->getPage()->getContent();
+    print_r($page);
   }
 }
