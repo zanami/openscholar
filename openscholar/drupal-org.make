@@ -195,12 +195,6 @@ projects[og_vocab][revision] = "8cf5d77"
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
 
-projects[panelizer][subdir] = "contrib"
-projects[panelizer][version] = 3.0-rc1
-
-projects[panels][subdir] = "contrib"
-projects[panels][version] = 3.3
-
 projects[password_hustle][subdir] = "contrib"
 projects[password_hustle][version] = 1.0
 
