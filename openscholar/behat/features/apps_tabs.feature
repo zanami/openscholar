@@ -2,6 +2,11 @@ Feature:
   Testing tabs of all the enabled Apps appear, and there is content in
   them.
 
+  @api @debug
+  Scenario: Debug
+    Given I visit "/"
+    Then I should print page
+
   @api
   Scenario: Test the Bio tab
     Given I am logged in as a user with the "authenticated user" role

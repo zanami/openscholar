@@ -33,4 +33,4 @@ before_script:
 
 # Dummy script to return "exit 0", until Behat is in place.
 script:
-    - ./bin/behat
+    - ./bin/behat --tags="debug"
