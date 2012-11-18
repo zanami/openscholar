@@ -28,5 +28,5 @@ before_script:
 
 # Dummy script to return "exit 0", until Behat is in place.
 script:
-    - sudo drush @self runserver --server=builtin 80 &
+    - sudo drush runserver --server=builtin 80 &
     - ./bin/behat
