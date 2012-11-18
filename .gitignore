@@ -18,6 +18,7 @@ openscholar/themes/contrib
 openscholar/libraries
 
 # Behat
+behat.local.yml
 openscholar/behat/bin
 openscholar/behat/vendor
 openscholar/behat/composer.lock

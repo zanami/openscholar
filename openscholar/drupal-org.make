@@ -62,9 +62,8 @@ projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0-rc3
 
 projects[entityreference][subdir] = "contrib"
-projects[entityreference][version] = 1.x-dev
+projects[entityreference][version] = 1.0
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-id-option-9.patch"
-projects[entityreference][revision] = "5b1c289"
 ; Patch for og_deploy.
 projects[entity_dependency][patch][] = "http://drupal.org/files/entity-dependency-entityreference-1545278-2.patch"
 
@@ -193,7 +192,7 @@ projects[oembed][version] = 0.x-dev
 projects[oembed][revision] = "baefb69"
 
 projects[og][subdir] = "contrib"
-projects[og][version] = 2.0-beta2
+projects[og][version] = 2.0-beta3
 
 
 projects[og_deploy][download][type] = git
@@ -212,12 +211,6 @@ projects[og_vocab][patch][] = "http://drupal.org/files/og_vocab_uuid_support-7.p
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
-
-projects[panelizer][subdir] = "contrib"
-projects[panelizer][version] = 3.0-rc1
-
-projects[panels][subdir] = "contrib"
-projects[panels][version] = 3.3
 
 projects[password_hustle][subdir] = "contrib"
 projects[password_hustle][version] = 1.0

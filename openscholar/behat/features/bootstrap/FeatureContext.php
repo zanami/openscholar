@@ -64,11 +64,10 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @Given /^I print page$/
+   * @Then /^I should print page$/
    */
-  public function iPrintPage() {
-    $page = $this->getSession()->getPage();
-    $body = $page->find('css', 'body');
-    print_r($body->getHtml());
+  public function iShouldPrintPage() {
+    $page = $this->getSession()->getPage()->getContent();
+    print_r($page);
   }
 }
