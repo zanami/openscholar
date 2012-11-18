@@ -58,9 +58,8 @@ projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0-rc3
 
 projects[entityreference][subdir] = "contrib"
-projects[entityreference][version] = 1.x-dev
+projects[entityreference][version] = 1.0
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-id-option-9.patch"
-projects[entityreference][revision] = "5b1c289"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
 projects[entityreference_prepopulate][version] = 1.1
@@ -184,7 +183,7 @@ projects[oembed][version] = 0.x-dev
 projects[oembed][revision] = "baefb69"
 
 projects[og][subdir] = "contrib"
-projects[og][version] = 2.0-beta2
+projects[og][version] = 2.0-beta3
 
 projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
