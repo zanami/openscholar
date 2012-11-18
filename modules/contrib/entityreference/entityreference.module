@@ -771,7 +771,21 @@ function entityreference_field_widget_settings_form($field, $instance) {
  * Implements hook_options_list().
  */
 function entityreference_options_list($field, $instance = NULL, $entity_type = NULL, $entity = NULL) {
-  return entityreference_get_selection_handler($field, $instance, $entity_type, $entity)->getReferencableEntities();
+  if (!$options = entityreference_get_selection_handler($field, $instance, $entity_type, $entity)->getReferencableEntities()) {
+    return array();
+  }
+
+  // Rebuild the array, by changing the bundle key into the bundle label.
+  $target_type = $field['settings']['target_type'];
+  $entity_info = entity_get_info($target_type);
+
+  $return = array();
+  foreach ($options as $bundle => $entity_ids) {
+    $bundle_label = check_plain($entity_info['bundles'][$bundle]['label']);
+    $return[$bundle_label] = $entity_ids;
+  }
+
+  return count($return) == 1 ? reset($return) : $return;
 }
 
 /**
@@ -881,6 +895,8 @@ function _entityreference_autocomplete_validate($element, &$form_state, $form) {
     else {
       // Try to get a match from the input string when the user didn't use the
       // autocomplete but filled in a value manually.
+      $field = field_info_field($element['#field_name']);
+      $handler = entityreference_get_selection_handler($field);
       $field_name = $element['#field_name'];
       $field = field_info_field($field_name);
       $instance = field_info_instance($element['#entity_type'], $field_name, $element['#bundle']);
@@ -971,6 +987,31 @@ function entityreference_autocomplete_access_callback($type, $field_name, $entit
 function entityreference_autocomplete_callback($type, $field_name, $entity_type, $bundle_name, $entity_id = '', $string = '') {
   $field = field_info_field($field_name);
   $instance = field_info_instance($entity_type, $field_name, $bundle_name);
+
+  return entityreference_autocomplete_callback_get_matches($type, $field, $instance, $entity_type, $entity_id, $string);
+}
+
+/**
+ * Return JSON based on given field, instance and string.
+ *
+ * This function can be used by other modules that wish to pass a mocked
+ * definition of the field on instance.
+ *
+ * @param $type
+ *   The widget type (i.e. 'single' or 'tags').
+ * @param $field
+ *   The field array defintion.
+ * @param $instance
+ *   The instance array defintion.
+ * @param $entity_type
+ *   The entity type.
+ * @param $entity_id
+ *   Optional; The entity ID the entity-reference field is attached to.
+ *   Defaults to ''.
+ * @param $string
+ *   The label of the entity to query by.
+ */
+function entityreference_autocomplete_callback_get_matches($type, $field, $instance, $entity_type, $entity_id = '', $string = '') {
   $matches = array();
 
   $entity = NULL;
@@ -980,6 +1021,7 @@ function entityreference_autocomplete_callback($type, $field_name, $entity_type,
       return MENU_ACCESS_DENIED;
     }
   }
+
   $handler = entityreference_get_selection_handler($field, $instance, $entity_type, $entity);
 
   if ($type == 'tags') {
@@ -1001,16 +1043,17 @@ function entityreference_autocomplete_callback($type, $field_name, $entity_type,
     $entity_labels = $handler->getReferencableEntities($tag_last, $instance['widget']['settings']['match_operator'], 10);
 
     // Loop through the products and convert them into autocomplete output.
-    $show_identifier = $instance['widget']['settings']['show_identifier'];
-    foreach ($entity_labels as $entity_id => $label) {
-      $key = $show_identifier ? "$label ($entity_id)" : $label;
-      // Strip things like starting/trailing white spaces, line breaks and tags.
-      $key = preg_replace('/\s\s+/', ' ', str_replace("\n", '', trim(decode_entities(strip_tags($key)))));
-      // Names containing commas or quotes must be wrapped in quotes.
-      if (strpos($key, ',') !== FALSE || strpos($key, '"') !== FALSE) {
-        $key = '"' . str_replace('"', '""', $key) . '"';
+    foreach ($entity_labels as $values) {
+      foreach ($values as $entity_id => $label) {
+        $key = "$label ($entity_id)";
+        // Strip things like starting/trailing white spaces, line breaks and tags.
+        $key = preg_replace('/\s\s+/', ' ', str_replace("\n", '', trim(decode_entities(strip_tags($key)))));
+        // Names containing commas or quotes must be wrapped in quotes.
+        if (strpos($key, ',') !== FALSE || strpos($key, '"') !== FALSE) {
+          $key = '"' . str_replace('"', '""', $key) . '"';
+        }
+        $matches[$prefix . $key] = '<div class="reference-autocomplete">' . $label . '</div>';
       }
-      $matches[$prefix . $key] = '<div class="reference-autocomplete">' . $label . '</div>';
     }
   }
 
