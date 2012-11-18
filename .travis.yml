@@ -33,7 +33,5 @@ before_script:
   - cp behat.local.yml.travis behat.local.yml
   - composer install
 
-
-# Dummy script to return "exit 0", until Behat is in place.
 script:
-    - ./bin/behat --tags="debug"
+    - ./bin/behat
