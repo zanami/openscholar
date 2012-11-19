@@ -9,13 +9,14 @@
 # Dont's track coder module backups
 *.coder.orig
 
-# Make-file realted
+# Make-file related
 sites-backup
 www
 www-build
 openscholar/modules/contrib
 openscholar/themes/contrib
 openscholar/libraries
+openscholar/1
 
 # Behat
 behat.local.yml
