@@ -95,3 +95,8 @@ Feature:
       | slideshow1.jpg |
       | slideshow2.jpg |
       | slideshow3.jpg |
+
+  @api @debug
+  Scenario: Test the Galleries tab
+    Given I visit "/"
+    Then I should print page
