@@ -123,6 +123,7 @@ h1#page-title {font-size:1.72em;margin-bottom:.7em;}
 h3.block-title {color:#666;font-size:1.2em;}
 h3.block-title a {color:#293352;}
 
+.sidebar .block-boxes-os_boxes_sectionnav ul li a,
 .sidebar h2.block-title {
 color:#666;
 background: url('../images/h3bg.png');
@@ -354,64 +355,42 @@ float:right;
     padding: 0;
 }
 
-/**** SECTION NAV ****/
-
-
-
-#boxes-box-os_pages_section_nav ul li {list-style-type:none;list-style-image:none;}
-
-
-#boxes-box-os_pages_section_nav li.expanded, #boxes-box-os_pages_section_nav li.collapsed, #boxes-box-os_pages_section_nav li.leaf {
+/**** SECTION NAV */
+.sidebar .block.block-boxes-os_boxes_sectionnav ul {
     margin: 0;
-    padding: 0;
 }
 
-.sidebar #boxes-box-os_pages_section_nav ul li {
-    background: none repeat scroll 0 0 #444;
+.block-boxes-os_boxes_sectionnav {
+    background:none !important;
 }
-.sidebar #boxes-box-os_pages_section_nav ul li a {
-    color: #FFFFFF;
-    display: block;
 
-    font-weight: normal;
+.sidebar .block-boxes-os_boxes_sectionnav ul li {list-style-image:none; list-style: none; margin: 0; padding: 0; } 
 
-    text-decoration: none;
-
-}
-.sidebar #boxes-box-os_pages_section_nav ul li a.active {
-    font-style: normal;
-}
-.sidebar #boxes-box-os_pages_section_nav ul li ul.menu li {
-   background: #CCC;
-    list-style: none outside none;
+.sidebar .block-boxes-os_boxes_sectionnav ul li a {
+   text-decoration: none !important;
     margin: 0;
-    text-align: left;
-}
-.sidebar #boxes-box-os_pages_section_nav ul li ul.menu li a {
-    color: #293352;
-    display: block;
-
-    text-decoration: none;
-    text-transform: none;
+   border-left: 1px solid #D6D6D6;
 }
 
-.sidebar #boxes-box-os_pages_section_nav ul ul ul li a {
- padding-left:10px;
-}
+.sidebar .block-boxes-os_boxes_sectionnav ul li a {color:#293352;}
+.sidebar .block-boxes-os_boxes_sectionnav ul li li a { height: 32px;margin: 0; background: none; height: 24px; text-decoration: none !important; } 
 
 
+.sidebar .block-boxes-os_boxes_sectionnav ul li a:link, 
+.sidebar .block-boxes-os_boxes_sectionnav ul li a:visited { color: #293352; display: block; padding: 7px 0 0 10px; } 
 
-.sidebar #boxes-box-os_pages_section_nav ul li ul.menu li a.active, .sidebar #boxes-box-os_pages_section_nav ul li ul.menu li a.active:hover {
-    color: #FFFFFF;
-    font-style: normal;
-    font-weight: normal;
-}
-.sidebar #boxes-box-os_pages_section_nav ul li ul.menu li a:hover {
-    background: #CCC;
-    text-decoration:underline;
-    font-style: normal;
-    font-weight: normal;
-}
+.sidebar .block-boxes-os_boxes_sectionnav ul li a:hover, 
+.sidebar .block-boxes-os_boxes_sectionnav ul li a.active {background: #EFEFEF;}
+
+
+.sidebar .block-boxes-os_boxes_sectionnav ul ul ul li a:link,
+.sidebar .block-boxes-os_boxes_sectionnav ul ul ul li a:hover {padding: 7px 0 0 18px; color: #293352;background:url('../images/subNavBullet.png') 10px center no-repeat;}
+
+.sidebar .block-boxes-os_boxes_sectionnav ul ul ul li a:hover,
+.sidebar .block-boxes-os_boxes_sectionnav ul ul ul li a.active {background:url('../images/subNavBullet.png') 10px center no-repeat #EFEFEF;padding:7px 0 0 18px;}
+
+.sidebar .block-boxes-os_boxes_sectionnav ul li li a {font-size:.98em;} 
+
 
 /**** SEARCH BOX ****/
 
