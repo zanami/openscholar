@@ -26,7 +26,7 @@ class HarwardFetcher extends FeedsFetcher {
     }
     else {
       $field = 'field_department_id';
-      $url_param = 'field';
+      $url_param = 'fq_dept_area_category=dept_area_category:';
     }
 
     // Loop over the nodes and build the query parameter value.
@@ -34,20 +34,22 @@ class HarwardFetcher extends FeedsFetcher {
     foreach ($nids as $nid) {
       $import_wrapper = entity_metadata_wrapper('node', $nid);
       foreach ($import_wrapper->{$field}->value() as $import_values) {
-        $param_values[] = is_array($import_values) ? $import_values['value'] : $import_values;
-      }
-    }
+        $url_value = is_array($import_values) ? $import_values['value'] : $import_values;
 
-    // Build the url for import and verify for response code 200 from the url.
-    $url = $wrapper->field_base_url->value() . '?' . $url_param . '=' . implode($param_values, ',');
-    $result = drupal_http_request($url);
-    if ($result->code == 200) {
-      return new FeedsFetcherResult($result->data);
-    }
-    else {
-      // oops... error!
-      drupal_set_message(t('Unable to get feeds from : ' . $url));
-      return FALSE;
+        // Build the URL for import and verify for response code 200 from the
+        // URL.
+        $url = $wrapper->field_base_url->value() . '?' . $url_param . '"' . $url_value . '"';
+        $result = drupal_http_request($url);
+        dpm($result);
+        if ($result->code == 200) {
+          return new FeedsFetcherResult($result->data);
+        }
+        else {
+          // oops... error!
+          drupal_set_message(t('Unable to get feeds from : ' . $url));
+          return FALSE;
+        }
+      }
     }
   }
 }

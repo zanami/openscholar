@@ -17,7 +17,7 @@ function harvard_courses_install() {
   $node->title = 'Department importer';
   $node->language = LANGUAGE_NONE;
   $wrapper = entity_metadata_wrapper('node', $node);
-  $wrapper->field_base_url->set('http://harvard.edu');
+  $wrapper->field_base_url->set('http://services.isites.harvard.edu/course_catalog/api/v1/search');
   $wrapper->field_import_type->set('department');
   $wrapper->author->set(1);
   $wrapper->save();
@@ -27,8 +27,13 @@ function harvard_courses_install() {
   $node->title = 'Catalog importer';
   $node->language = LANGUAGE_NONE;
   $wrapper = entity_metadata_wrapper('node', $node);
-  $wrapper->field_base_url->set('http://harvard.edu');
+  $wrapper->field_base_url->set('http://services.isites.harvard.edu/course_catalog/api/v1/search');
   $wrapper->field_import_type->set('cat_num');
   $wrapper->author->set(1);
   $wrapper->save();
+
+  // Enable the harvard courses feature.
+  $preset = spaces_preset_load('os_scholar', 'og');
+  $preset->value['variable']['spaces_features']['harvard_courses'] = 1;
+  spaces_preset_save($preset);
 }
