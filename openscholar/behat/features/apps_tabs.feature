@@ -90,6 +90,7 @@ Feature:
     Given I am logged in as a user with the "authenticated user" role
     And I visit "john"
     When I click "Galleries"
+    And I click "Kittens gallery"
     Then I should see the images:
       | slideshow1.jpg |
       | slideshow2.jpg |
