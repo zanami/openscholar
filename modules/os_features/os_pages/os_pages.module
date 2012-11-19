@@ -212,6 +212,19 @@ function os_pages_preprocess_page(&$page) {
     if (context_isset('context', 'os_pages-page-'.$node->nid)) {
       $page['use_content_regions'] = true;
     }
+
+    $links = &$page['title_suffix']['controls']['section_links']['#links'];
+    $section = array_diff(array_keys(context_active_contexts()), array('os_pages-page-'.$node->nid));
+    array_splice($links, 1, 0, array(
+      array(
+        'title' => t('Layout'),
+        'href' => 'cp/build/layout/' . implode('/', $section),
+        'query' => drupal_get_destination(),
+      ),
+      array(
+        'title' => t('This Page'),
+      )
+    ));
   }
 }
 
