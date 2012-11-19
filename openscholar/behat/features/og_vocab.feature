@@ -1,7 +1,7 @@
 Feature:
   Testing the migrate of OG Vocabulary.
 
-  @api
+  @api @wip
   Scenario: Test OG Vocabulary migration
     Given I am logged in as a user with the "authenticated user" role
     And I visit "john"
