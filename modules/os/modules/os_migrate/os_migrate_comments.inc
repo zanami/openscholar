@@ -67,6 +67,13 @@ class CommentsOSMigration extends DynamicMigration {
       return false;
     }
 
+    //update format id to string
+    if ($current_row->format == 0) {
+      $current_row->format = 'plain_text';
+    } else {
+      $current_row->format = 'filtered_html';
+    }
+
     //get the path
     $result = Database::getConnection('default', variable_get('os_migrate_database', ''))
       ->select('url_alias', 'ua')
