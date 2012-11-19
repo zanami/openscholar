@@ -98,5 +98,5 @@ Feature:
 
   @api @debug
   Scenario: Test the Galleries tab
-    Given I visit "/"
+    Given I visit "/user"
     Then I should print page
