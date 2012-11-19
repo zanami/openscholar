@@ -106,6 +106,7 @@ function os_pages_context_custom($name) {
       'name' => 'os_pages-page-'.$nid,
       'description' => 'Context active on a single page.',
       'tag' => 'OpenScholar',
+      'weight' => 10,
       'conditions' => array(),
       'reactions' => array(
         'block' => array(
