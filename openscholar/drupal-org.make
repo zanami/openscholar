@@ -145,7 +145,7 @@ projects[media_gallery][revision] = "2fcf98e"
 projects[media_gallery][patch][] = "http://drupal.org/files/support_media_2.x-1244204-104.patch"
 
 projects[message][subdir] = "contrib"
-projects[message][version] = 1.5
+projects[message][version] = 1.6
 
 projects[message_notify][subdir] = "contrib"
 projects[message_notify][version] = 2.2
