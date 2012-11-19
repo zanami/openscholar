@@ -73,6 +73,14 @@ function os_pages_block_view_alter(&$render, $block) {
   }
 }
 
+function os_pages_preprocess_block(&$vars) {
+  $block = $vars['block'];
+
+  if ($block->delta == 'os_pages_section_nav') {
+    $vars['classes_array'][] = 'section-nav';
+  }
+}
+
 function os_pages_os_widget() {
   $widgets = array();
 
