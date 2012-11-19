@@ -142,7 +142,7 @@ projects[media_gallery][version] = 1.x-dev
 projects[media_gallery][revision] = "2fcf98e"
 ; Unable to apply patch 1333674, not sure it;s still required.
 ;projects[media_gallery][patch][] = "http://drupal.org/files/1333674-conflicts-20.patch"
-projects[media_gallery][patch][] = "http://drupal.org/files/support_media_2.x-1244204-104.patch"
+projects[media_gallery][patch][] = "http://drupal.org/files/support_media_2.x-1244204-113.patch"
 
 projects[message][subdir] = "contrib"
 projects[message][version] = 1.6
