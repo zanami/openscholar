@@ -1,6 +1,6 @@
 Feature: Testing OpenScholar calendar page.
 
-  @javascript
+  @javascript @wip
   Scenario: Test the popup for the events in the calendar.
     Given I am logged in as "admin"
     When I visit "/john"

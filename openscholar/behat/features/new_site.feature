@@ -1,6 +1,6 @@
 Feature: Testing OpenScholar layout.
 
-  @javascript
+  @javascript @wip
   Scenario: Test the creation of a new site.
     Given I am logged in as "admin"
     When I visit "/"
