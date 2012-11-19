@@ -187,7 +187,7 @@ EOF;
       $new_box = array(
         'changed' => NULL,
         'delta' => 'gking_people_fbt',
-        'title' => '',
+        'title' => 'By Type',
         'description' => 'Filter by People',
         'additional_classes' => '',
         'plugin_key' => 'os_taxonomy_fbt',
