@@ -166,12 +166,11 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
       $form['biblio_type']['#weight'] = -1000;
       return;
 
-    case 100:
-      // Shows Image field only for "Book" publication type.
-      $form['field_biblio_image']['#access'] = TRUE;
     default:
       // Shows the Extra Fields for any selected publication type.
       $form['field_biblio_extra']['#access'] = TRUE;
+      // Show cover image upload field for any selected publication type.
+      $form['field_biblio_image']['#access'] = TRUE;
   }
 
   // Moves fields out of the vertical tabs

@@ -125,7 +125,7 @@ function os_publications_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_biblio_image',
-      'label' => 'Book Cover',
+      'label' => 'Publication Image',
       'required' => FALSE,
       'settings' => array(
         'alt_field' => 0,
