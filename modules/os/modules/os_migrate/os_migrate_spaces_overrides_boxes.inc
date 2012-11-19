@@ -1129,22 +1129,39 @@ class BoxPorter {
 
     if (strpos($body, 'class="os-files-image-list jcarousel-skin-default"')) {
       $fixed = TRUE;
-      //prepend divs
-      $pattern = '<ul class="os-files-image-list jcarousel-skin-default">';  // /m for multiline matching
-      $replacement = '<div class=" jcarousel-skin-default">
-<div class="jcarousel-container jcarousel-container-horizontal">
-<ul class="os-files-image-list">';
-      $body = preg_replace("/$pattern/m", $replacement, $body);
 
-      //append divs
-      $body = preg_replace('/<\/ul><table class="os-files-other-list">/', '</ul></div></div><table class="os-files-other-list">', $body);
+      $dom = filter_dom_load($body);
+      $dom->formatOutput = TRUE;
+      $uls = $dom->getElementsByTagName('ul');
+      for ($i=0,$len=$uls->length; $i<$len; $i++) {
+        $ul = $uls->item($i);
+        if ($ul->getAttribute('class') == "os-files-image-list jcarousel-skin-default") {
 
-      //inline display
-      $body = preg_replace('/<li><a class="colorbox" /', '<li style="display: inline;"><a ', $body);
-      $body = preg_replace('/<li class=".*?"><a /', '<li style="display: inline;"><a ', $body); //not color box but a number...
+          //set each li's style display
+          $lis = $ul->getElementsByTagName('li');
+          for ($j=0,$len2=$lis->length; $j<$len2; $j++) {
+            $li = $lis->item($j);
+            $li->setAttribute('style', 'display:inline;');
+          }
+
+          $div = $dom->createElement('div');
+          $div->setAttribute('class', 'jcarousel-skin-default');
+          $child_div = $dom->createElement('div');
+          $child_div->setAttribute('class', 'jcarousel-container jcarousel-container-horizontal');
+          $div->appendChild($child_div);
+
+          $ul = $ul->parentNode->replaceChild($div, $ul);
+          $child_div->appendChild($ul);
+        }
+      }
+
+      $body = trim($dom->saveHTML());
+      $body = preg_replace('/<!DOCTYPE.*?>/', '', $body); //remove doctype
+      $body = preg_replace('/.*\<body\>/m', '', $body); //remove html, body
+      $body = preg_replace('/<\/body>.*/m', '', $body); //remove closing tags
+      $body = trim($body);
     }
 
-    //also change filter to full?
     return array($body, $fixed);
   }
 
