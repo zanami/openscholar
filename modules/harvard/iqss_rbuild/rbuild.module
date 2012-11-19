@@ -45,6 +45,34 @@ function rbuild_form_software_project_node_form_alter(&$form, &$form_state, $for
 }
 
 /**
+ * Implements hook_cron_queue_info().
+ */
+function rbuild_cron_queue_info() {
+  $queue = array();
+
+  $queue['rbuild_queue'] = array(
+    'worker callback' => '_rbuild_queue_worker',
+  );
+
+  return $queue;
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Invokes hook to automatically create release content (i.e. Rbuild)
+ */
+function rbuild_cron() {
+  $rbuild_project_nodes = _rbuild_query_all_rbuild_project_nodes();
+  $queue = DrupalQueue::get('rbuild_queue');
+  // $queue = drupal_queue_get('rbuild_queue');
+  $queue->createQueue();
+  foreach ($rbuild_project_nodes as $project_node) {
+    $queue->createItem($project_node);
+  }
+}
+
+/**
  * Implements hook_menu().
  */
 function rbuild_menu() {
@@ -152,27 +180,11 @@ function rbuild_os_packaging_method_option() {
 }
 
 /**
- * Implements hook_os_software_process_remote_release().
+ * Checks for new rBuild releases.
  */
-function rbuild_os_software_process_remote_release() {
-  // Checks for new releases every 20 minutes, invoked by cron.
-  $default_interval = 20 * 60;
-  $interval         = variable_get('rbuild_cron_update_interval', $default_interval);
-  $last_run         = variable_get('rbuild_cron_last_run', 0);
-  $now              = time();
-  $time_to_check    = (bool)(($last_run) < $now);
-
-  variable_set('rbuild_cron_last_run', $now);
-
-  if (!$time_to_check) {
-    return;
-  }
-
-  $rbuild_project_nodes = _rbuild_query_all_rbuild_project_nodes();
-  foreach ($rbuild_project_nodes as $project_node) {
-    // Imports any new files and creates Software Release nodes
-    rbuild_fetch_releases($project_node);
-  }
+function _rbuild_queue_worker($project_node) {
+  // Imports any new files and creates Software Release nodes
+  rbuild_fetch_releases($project_node);
 }
 
 /**
@@ -376,7 +388,12 @@ function _rbuild_get_file_headers($url) {
 function _rbuild_query_all_rbuild_project_nodes() {
   $query = new EntityFieldQuery();
 
-  $query->entityCondition('entity_type', 'node')->propertyCondition('type', 'software_project')->propertyCondition('status', 1)->fieldCondition('field_software_method', 'value', 'Rbuild repository')->fieldCondition('field_software_repo', 'value', '', '!=')->addMetaData('account', user_load(1));
+  $query->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'software_project')
+    ->propertyCondition('status', 1)
+    ->fieldCondition('field_software_method', 'value', 'Rbuild repository')
+    ->fieldCondition('field_software_repo', 'value', '', '!=')
+    ->addMetaData('account', user_load(1));
 
   $result = $query->execute();
   $project_nodes = _rbuild_query_load_nodes($result);

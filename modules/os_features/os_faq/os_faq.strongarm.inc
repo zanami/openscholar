@@ -54,7 +54,7 @@ function os_faq_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_faq';
-  $strongarm->value = 1;
+  $strongarm->value = '0';
   $export['comment_faq'] = $strongarm;
 
   $strongarm = new stdClass();

@@ -337,7 +337,8 @@ body.front .block-boxes-os_taxonomy_fbt div.description  {
 .region-sidebar-second .block-boxes-os_taxonomy_fbt ul.termchild-applications a:visited,
 .region-sidebar-second .block-boxes-os_taxonomy_fbt ul.termchild-methods a,
 .region-sidebar-second .block-boxes-os_taxonomy_fbt ul.termchild-methods a:visited
- {
+#boxes-box-gking_people_fbt ul li a,
+#boxes-box-gking_people_fbt ul li a:visited {
   color: #fff;
   font-weight:bold;
   }
