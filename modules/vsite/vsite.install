@@ -108,11 +108,10 @@ function _vsite_initilize_group_fields() {
  * Replace site info blocks with the new field_group block
  */
 function vsite_update_7001(&$ctx) {
- // module_enable(array('field_group_overlay'));
-  //registry_rebuild();  // box was removed
+  module_enable(array('field_group_overlay'));
+  registry_rebuild();  // box was removed
 
   $nodes = db_select('node', 'n')->fields('n', array('nid'))->condition('type', 'personal')->execute();
-  $messages = array();
 
   foreach ($nodes as $r) {
     $override = db_select('spaces_overrides', 'so')
@@ -141,9 +140,7 @@ function vsite_update_7001(&$ctx) {
         ->condition('id', $r->nid)
         ->condition('object_id', $over->object_id)
         ->execute();
-        $messages[] = $over->object_id.': site_info replaced with '.$delta;
       }
     }
   }
-  return implode("<br>\r\n", $messages);
 }
