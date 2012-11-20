@@ -2,13 +2,27 @@
 core = 7.x
 api = 2
 
+projects[admin_menu][subdir] = "contrib"
+projects[admin_menu][version] = 3.0-rc1
+
 projects[advanced_help][subdir] = "contrib"
 projects[advanced_help][version] = 1.0
 
+projects[apachesolr][subdir] = "contrib"
+projects[apachesolr][version] = 1.1
+
+projects[apachesolr_attachments][subdir] = "contrib"
+projects[apachesolr_attachments][version] = 1.2
+
+projects[apachesolr_og][subdir] = "contrib"
+projects[apachesolr_og][version] = 1.0
+
+; @todo: Biblio patches need to be applied
 ; projects[biblio][patch][] = "http://drupal.org/files/biblio-md5_hash-1722772-1.patch"
-; projects[biblio][subdir] = "biblio"
+; projects[biblio][subdir] = "contrib"
 ; projects[biblio][version] = 1.0-rc4
 
+; @todo: Boxes patches need to be applied
 ; projects[boxes][subdir] = "contrib"
 ; projects[boxes][version] = 1.0
 
@@ -25,6 +39,7 @@ projects[comment_sources][type] = module
 
 projects[context][subdir] = "contrib"
 projects[context][version] = 3.0-beta4
+projects[context][patch][] = "http://drupal.org/files/os-custom-beta4.patch"
 
 projects[contextual_annotation][subdir] = "contrib"
 projects[contextual_annotation][type] = module
@@ -64,14 +79,13 @@ projects[entity][version] = 1.0-rc3
 projects[entityreference][subdir] = "contrib"
 projects[entityreference][version] = 1.0
 projects[entityreference][patch][] = "http://drupal.org/files/1802916-er-show-id-option-9.patch"
-; Patch for og_deploy.
-projects[entity_dependency][patch][] = "http://drupal.org/files/entity-dependency-entityreference-1545278-2.patch"
 
 projects[entityreference_prepopulate][subdir] = "contrib"
 projects[entityreference_prepopulate][version] = 1.1
 
 projects[entity_dependency][subdir] = "contrib"
 projects[entity_dependency][version] = 1.x-dev
+projects[entity_dependency][patch][] = "http://drupal.org/files/entity-dependency-entityreference-1545278-2.patch"
 
 projects[eva][subdir] = "contrib"
 projects[eva][version] = 1.x-dev
@@ -83,10 +97,6 @@ projects[facetapi][version] = 1.2
 projects[fb_social][subdir] = "contrib"
 projects[fb_social][version] = 2.0-beta4
 
-;projects[features][patch][] = "http://drupal.org/files/1572578-part-one.patch"
-;projects[features][patch][] = "http://drupal.org/files/1597186-1-features-do-not-cache-includes.patch"
-;projects[features][patch][] = "http://drupal.org/files/1669720-fix-features-flush-cache.patch"
-;projects[features][patch][] = "http://drupal.org/files/927566-multiple-link_path.patch"
 projects[features][subdir] = "contrib"
 projects[features][version] = 2.x-dev
 projects[features][revision] = "c0b054d"
@@ -96,10 +106,6 @@ projects[feeds][version] = 2.0-alpha5
 
 projects[feeds_xpathparser][subdir] = "contrib"
 projects[feeds_xpathparser][version] = 1.0-beta3
-
-projects[fences][patch][] = "http://drupal.org/files/undefined-index-1561244-7.patch"
-projects[fences][subdir] = "contrib"
-projects[fences][version] = "1.0"
 
 projects[field_group][subdir] = "contrib"
 projects[field_group][version] = 1.1
@@ -116,9 +122,6 @@ projects[flag][version] = 2.0
 
 projects[google_feedapi][subdir] = "contrib"
 projects[google_feedapi][version] = 1.0-beta1
-
-projects[i18n][subdir] = "contrib"
-projects[i18n][version] = 1.7
 
 projects[imagefield_crop][subdir] = "contrib"
 projects[imagefield_crop][version] = 2.0
@@ -137,9 +140,6 @@ projects[link][subdir] = "contrib"
 projects[link][version] = 1.x-dev
 projects[link][revision] = "799bca2"
 
-projects[mailsystem][subdir] = "contrib"
-projects[mailsystem][version] = 2.34
-
 projects[media][subdir] = "contrib"
 projects[media][version] = 2.x-dev
 projects[media][revision] = "c49692b"
@@ -155,14 +155,6 @@ projects[media_gallery][patch][] = "http://drupal.org/files/support_media_2.x-12
 
 projects[message][subdir] = "contrib"
 projects[message][version] = 1.6
-
-projects[message_notify][subdir] = "contrib"
-projects[message_notify][version] = 2.2
-
-projects[mimemail][patch][] = "http://drupal.org/files/compress_install_missing_value.patch"
-projects[mimemail][patch][] = "http://drupal.org/files/rules-1585546-1-moving_rules_actions.patch"
-projects[mimemail][subdir] = "contrib"
-projects[mimemail][version] = 1.0-alpha1
 
 projects[module_filter][subdir] = "contrib"
 projects[module_filter][version] = 1.7
@@ -194,12 +186,17 @@ projects[oembed][revision] = "baefb69"
 projects[og][subdir] = "contrib"
 projects[og][version] = 2.0-beta3
 
-
 projects[og_deploy][download][type] = git
 projects[og_deploy][download][url] = "http://git.drupal.org/sandbox/amitaibu/1823076.git"
 projects[og_deploy][download][branch] = 7.x-1.x
 projects[og_deploy][subdir] = "contrib"
 projects[og_deploy][type] = module
+
+projects[og_tasks][subdir] = "contrib"
+projects[og_tasks][version] = 1.0
+projects[og_tasks][download][type] = git
+projects[og_tasks][download][url] = "http://git.drupal.org/project/og_tasks.git"
+projects[og_tasks][patch][] = "http://drupal.org/files/port_code_to_og7.x-2_1834076_3.patch"
 
 projects[og_views][subdir] = "contrib"
 projects[og_views][version] = 1.0
@@ -223,17 +220,11 @@ projects[purl][version] = "1.x-dev"
 projects[purl][patch][] = "http://drupal.org/files/1473502-purl-init-2.patch"
 projects[purl][branch][] = "7.x-1.x"
 
-projects[respondjs][version] = 1.1
 projects[respondjs][subdir] = "contrib"
+projects[respondjs][version] = 1.1
 
-projects[shorten][version] = 1.2
 projects[shorten][subdir] = "contrib"
-
-projects[search_api][subdir] = "contrib"
-projects[search_api][version] = 1.2
-
-projects[search_api_db][subdir] = "contrib"
-projects[search_api_db][version] = 1.0-beta4
+projects[shorten][version] = 1.2
 
 projects[services][subdir] = "contrib"
 projects[services][version] = 3.x-dev
@@ -264,9 +255,6 @@ projects[uuid][version] = 1.x-dev
 ; Patches for og_deploy
 projects[uuid][patch][] = "http://drupal.org/files/uuid-file_entity_fail_deployment-1694972-6.patch"
 projects[uuid][patch][] = "http://drupal.org/files/uuid_validate_error.patch"
-
-projects[variable][subdir] = "contrib"
-projects[variable][version] = "2.1"
 
 projects[views][subdir] = "contrib"
 projects[views][version] = 3.5
@@ -304,3 +292,10 @@ libraries[spyc][type] = "libraries"
 libraries[spyc][download][type] = "file"
 libraries[spyc][download][url] = "http://spyc.googlecode.com/files/spyc-0.5.zip"
 
+libraries[spyc][type] = "libraries"
+libraries[spyc][download][type] = "file"
+libraries[spyc][download][url] = "http://spyc.googlecode.com/files/spyc-0.5.zip"
+
+libraries[respondjs][type] = "libraries"
+libraries[respondjs][download][type] = "file"
+libraries[respondjs][download][url] = "https://github.com/scottjehl/Respond/archive/master.tar.gz"
