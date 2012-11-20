@@ -185,7 +185,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     }
 
     //vsite_design_landscape_logo, with one less 'file/'
-    $thumb = str_replace($file_directory_path, $file_directory_path . 'imagecache/vsite_design_landscape_logo/', $full);
+    $thumb = str_replace($file_directory_path, $file_directory_path . '/imagecache/vsite_design_landscape_logo/', $full);
 
     MigrationBase::displayMessage(t('No file/thumb pair: @thumb @full', array('@thumb'=>$thumb,'@full'=>$full)));
     return FALSE;
