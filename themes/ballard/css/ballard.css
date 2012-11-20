@@ -372,24 +372,24 @@ float:right;
    border-left: 1px solid #D6D6D6;
 }
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li a {color:#293352;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li li a { height: 32px;margin: 0; background: none; height: 24px; text-decoration: none !important; } 
 
+.sidebar .block-boxes-os_boxes_sectionnav ul li li a {font-size:.98em; color:#293352;height: 32px;margin: 0; background: none; height: 24px; text-decoration: none !important; } 
 
 .sidebar .block-boxes-os_boxes_sectionnav ul li a:link, 
-.sidebar .block-boxes-os_boxes_sectionnav ul li a:visited { color: #293352; display: block; padding: 7px 0 0 10px; } 
+.sidebar .block-boxes-os_boxes_sectionnav ul li a:visited { color: #293352; display: block; padding: 7px 0 0 16px; } 
+.sidebar .block-boxes-os_boxes_sectionnav ul li a:hover {background: #EFEFEF;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li a:hover, 
-.sidebar .block-boxes-os_boxes_sectionnav ul li a.active {background: #EFEFEF;}
+.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded a {background:url('../images/subNavBullet.png') 5px center no-repeat;}
+.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded a:hover {background:url('../images/subNavBullet.png') 5px center no-repeat #EFEFEF;}
+.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded a.active {background:url('../images/subNavBullet.png') 5px center no-repeat #D6D6D6;}
 
+.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li a:link {background:none;padding: 7px 0 0 26px; color: #293352;}
+.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li a:hover {background:#EFEFEF;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul ul ul li a:link,
-.sidebar .block-boxes-os_boxes_sectionnav ul ul ul li a:hover {padding: 7px 0 0 18px; color: #293352;background:url('../images/subNavBullet.png') 10px center no-repeat;}
-
-.sidebar .block-boxes-os_boxes_sectionnav ul ul ul li a:hover,
-.sidebar .block-boxes-os_boxes_sectionnav ul ul ul li a.active {background:url('../images/subNavBullet.png') 10px center no-repeat #EFEFEF;padding:7px 0 0 18px;}
-
-.sidebar .block-boxes-os_boxes_sectionnav ul li li a {font-size:.98em;} 
+.sidebar .block-boxes-os_boxes_sectionnav ul li a.active,
+.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li a.active {
+   background:#D6D6D6;
+}
 
 
 /**** SEARCH BOX ****/
