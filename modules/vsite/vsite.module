@@ -10,6 +10,8 @@
 include_once ('vsite.features.inc');
 include_once ('includes/vsite.inc');
 
+//module_load_include('inc', 'spaces', 'spaces.overrides');
+
 /**
  * Returns the current vsite (space).
  */

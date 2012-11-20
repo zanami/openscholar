@@ -103,3 +103,33 @@ function _vsite_initilize_group_fields() {
   }
 }
 
+/**
+ * Enables field_group_overlay
+ * Replace site info blocks with the new field_group block
+ */
+function vsite_update_7001(&$ctx) {
+  module_enable('field_group_overlay');
+
+  $nodes = db_select('node', 'n')->fields('n', array('nid'))->where('type', 'personal');
+
+  foreach ($nodes as $r) {
+    $override = db_select('spaces_override', 'so')
+                ->fields('so', array('object_id', 'value'))
+                ->where('id', $r->nid)
+                ->where('object_type', 'context')
+                ->where('object_id', '%reaction:block', 'LIKE')
+                ->execute();
+    foreach ($override as $over) {
+      $blocks = unserialize($over->value);
+      if (isset($blocks['boxes-site_info'])) {
+        $delta = 'fg:node:'.$r->nid.':group_site_info';
+        $blocks['vsite-'.$delta] = array(
+          'module' => 'vsite',
+          'delta' => $delta,
+          'weight' => $blocks['boxes-site_info']['weight'],
+          'region' => $blocks['boxes-site_info']['region'],
+        );
+      }
+    }
+  }
+}
