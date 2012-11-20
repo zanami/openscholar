@@ -304,7 +304,8 @@ function vsite_vsite_exists_access($vsites = array()) {
   }
 
   // Can user create more vsites?
-  if (!(count($vsites) < variable_get('os_vsites_per_user') || user_access('create vsite content on behalf'))) {
+  if (count($vsites) >= variable_get('os_vsites_per_user') && !user_access('create vsite content on behalf')) {
+    // No, they can't!
     if (current_path() == 'site/register') {
       // Set error message when appropriate.
       // Clear message queue.
