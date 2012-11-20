@@ -295,17 +295,24 @@ abstract class AbstractNodeOSMigration extends OSMigration {
    * their connection to the node, leaving the file in the filesystem.
    */
   public function complete($entity, $row) {
-    if (!isset($row->field_upload_display) || empty($row->field_upload_display)) {
+    if (!isset($row->field_upload) || empty($row->field_upload)) {
       return;
     }
 
     $dirty = FALSE;
     foreach ($entity->field_upload as $lang => $fields) {
       foreach ($fields as $delta => $upload) {
+        //update display
         if ($row->field_upload_display[$delta] == '0') {
           file_usage_add(file_load($upload['fid']), 'file', 'node', $entity->nid);
           unset($entity->field_upload[$lang][$delta]);
           $dirty = TRUE;
+        }
+
+        //update title
+        if ($row->field_upload_description[$delta] && ($file = file_load($upload['fid']))) {
+          $file->filename = $row->field_upload_description[$delta];
+          file_save($file);
         }
       }
     }
@@ -346,24 +353,9 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'filepath' => 'filepath',
         //'file_destination' => 'file_destination',
         //'filename' => 'filename',
-        'filename' => 'description',
+        'filename' => 'filename',
         //'field_upload' => 'field_upload',
       );
-
-      //need filepath, filename
-
-      //Set the file destination up for where files should be saved (by purl)
-//       $file_destination = "files";
-//       if(isset($current_row->group_nid)){
-//         $query = self::d6_db_select('purl', 'p')
-//           ->fields('p', array('value'))
-//           ->condition('p.id', $current_row->group_nid, '=')
-//           ->condition('p.provider', 'spaces_og', '=');
-//         $purl = $query->execute()->fetchField();
-//         if($purl){
-//           $file_destination = "{$purl}/files";
-//         }
-//       }
 
       $query = $files_query->execute();
       $files = array();
@@ -384,6 +376,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       if (isset($row->field_upload)) {
         foreach (array_keys($row->field_upload) as $delta) {
           $row->field_upload[$delta] = $files[$delta]->field_upload_replace;
+          //use description as file name
+          if (strlen($row->field_upload_description[$delta])) {
+            $row->field_upload_filename[$delta] = $row->field_upload_description[$delta];
+          }
         }
       }
     }

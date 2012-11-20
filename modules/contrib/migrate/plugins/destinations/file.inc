@@ -122,6 +122,9 @@ abstract class MigrateFile implements MigrateFileInterface {
     if (isset($arguments['preserve_files'])) {
       $this->preserveFiles = $arguments['preserve_files'];
     }
+    if (isset($arguments[OG_AUDIENCE_FIELD])) {
+      $this->og_audience_field = $arguments[OG_AUDIENCE_FIELD];
+    }
     if ($default_file) {
       $this->defaultFile = $default_file;
     }
@@ -179,6 +182,9 @@ abstract class MigrateFile implements MigrateFileInterface {
         $file->fid = $existing->fid;
         $file->filename = $existing->filename;
       }
+    }
+    if (!isset($file->{OG_AUDIENCE_FIELD}) && isset($this->og_audience_field)) {
+      $file->{OG_AUDIENCE_FIELD} = array('und' => array(array('target_id' => $this->og_audience_field)));
     }
     return $file;
   }

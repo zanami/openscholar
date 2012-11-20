@@ -33,6 +33,82 @@ function gkplus_menu() {
 }
 
 /**
+ * Implements hook_menu_alter().
+ */
+function gkplus_menu_alter(&$items) {
+  // Alters default taxonomy term page access callback to possibly redirect.
+  if (isset($items['taxonomy/term/%taxonomy_term'])) {
+    $items['taxonomy/term/%taxonomy_term']['access callback'] = 'gkplus_term_access';
+    $items['taxonomy/term/%taxonomy_term']['access arguments'] = array(2);
+  }
+}
+
+/**
+ * Access callback for "taxonomy/term/%"; redirects child-less low-level terms.
+ *
+ * @return bool
+ *   TRUE or FALSE based on permission-- but if this is a term we want to
+ *   redirect from, then we will drupal_goto() before we ever return TRUE.
+ */
+function gkplus_term_access($term) {
+  if (!user_access('access content')) {
+    return FALSE;
+  }
+
+  // Checks for possible redirects on gking site only.
+  if (_gkplus_check_purl()) {
+    _gkplus_term_check_redirect($term);
+  }
+
+  return TRUE;
+}
+
+/**
+ * Redirects user to top-level parent for specific vocabulary.
+ *
+ * The following conditions must ALL be met for a redirect to occur:
+ *  - Requested term is on gking's site (checked before being called).
+ *  - Requested term is in a vocab named "Research Interests"
+ *  - Requested term has NO child terms
+ *  - Requested term had depth 2 or more.
+ *
+ * If all the conditions are met, then the user is redirected to the requested
+ * term's immediate parent term page instead.
+ *
+ * This check might appear recursive, but it actually can't run more than once
+ * on a pageload, since we only ever redirect to a parent term, and we explicitly
+ * display a term with any children.
+ */
+function _gkplus_term_check_redirect($term) {
+  // Displays original term if from a normal vocabulary.
+  $vocab = taxonomy_vocabulary_load($term->vid);
+  if ($vocab->name !== 'Research Interests') {
+    return;
+  }
+
+  // Displays original term if it has any children.
+  $term_children = taxonomy_get_tree($vocab->vid, $term->tid, NULL, TRUE);
+  if (count($term_children)) {
+    return;
+  }
+
+  // Checks original term for depth.
+  $all_children = taxonomy_get_tree($vocab->vid);
+  foreach ($all_children as $child) {
+    if ($child->tid !== $term->tid) {
+      continue;
+    }
+
+    // Displays original term if depth less than or equal to 1.
+    if ($child->depth <= 1) {
+      return;
+    }
+    // Otherwise, redirects to original term's parent term.
+    drupal_goto('taxonomy/term/'. current($child->parents));
+  }
+}
+
+/**
  * Implements hook_strongarm().
  *
  * @ingroup nodeorder
@@ -356,6 +432,7 @@ function gkplus_preprocess_taxonomy_term(&$vars) {
   if (!_gkplus_check_purl()) {
     return;
   }
+
   $tid = $vars['term']->tid;
   if (os_taxonomy_count_attached_nodes($tid) < 2) {
     return;
@@ -486,6 +563,10 @@ function gkplus_access_file($filename) {
  * @ingroup updatefile
  */
 function _gkplus_updatefile_cron() {
+  // Creates the update file directory if it doesn't already exist.
+  _gkplus_verify_tmpdir();
+
+  // Updates file fields if a newer version of an existing file is found.
   $last_update = variable_get('gkplus_last_updated_filefields', 0);
   $temp_path  = _gkplus_temp_path();
   if ($handle = opendir($temp_path)) {
@@ -498,7 +579,35 @@ function _gkplus_updatefile_cron() {
     }
     closedir($handle);
   }
+
+  // Records time of this cron run to compare against next time.
   variable_set('gkplus_last_updated_filefields', time());
+}
+
+/**
+ * Creates the update file directory if it doesn't already exist.
+ *
+ * @see _gkplus_updatefile_cron()
+ *
+ * @ingroup updatefile
+ */
+function _gkplus_verify_tmpdir() {
+  $temp_path = _gkplus_temp_path();
+  $check_path = '';
+  $path_parts = explode('/', $temp_path);
+
+  // Loops over parent directories to ensure entire path exists.
+  foreach ($path_parts as $path_part) {
+    if (strlen(trim($path_part)) <= 0) {
+      continue;
+    }
+    $check_path = $check_path . $path_part . '/';
+    if (is_dir($check_path)) {
+      continue;
+    }
+
+    mkdir($check_path, 0775);
+  }
 }
 
 /**

@@ -17,7 +17,6 @@ function os_events_os_widget() {
     'delta' => 'os_events-block_1',
     'region' => 'sidebar_second',
     'weight' => '-10',
-    'info' => 'Mini Calendar'
   );
 
   //List of upcoming events
@@ -29,17 +28,6 @@ function os_events_os_widget() {
   );
 
   return $items;
-}
-
-function os_events_os_widget_alter(&$widget) {
-  switch ($widget['delta']) {
-    case 'os_events-block_1':
-      $widget['info'] = 'Mini Calendar';
-    break;
-    case 'os_events-block_2':
-      $widget['info'] = 'Recent Events';
-    break;
-  }
 }
 
 /**

@@ -249,17 +249,5 @@ function _os_boxes_boxes_plugins() {
     'factory' => false,
   );
 
-  $info['os_boxes_breadcrumbs'] = array(
-    'title' => 'Breadcrumbs',
-    'description' => 'Breadcrumbs for your site.',
-    'tags' => array('Misc'),
-    'handler' => array(
-      'class' => 'os_boxes_breadcrumbs',
-      'file' => 'os_boxes_breadcrumbs.inc',
-      'path' => $path.'/os_boxes_breadcrumbs',
-      'parent' => 'os_boxes_default',
-    ),
-  );
-
   return $info;
 }

@@ -282,11 +282,13 @@ function theme_os_publications_sort_tabs($vars) {
   $title = '';
 
   foreach ($links as &$l) {
-    if ($l['active']) {
-      $title = $l['text'];
+    if (isset($l['arrow'])) {
+      if ($l['active']) {
+        $title = $l['text'];
+      }
+      $l['title'] = $l['text'] . $l['arrow'];
+      $l['href'] = $l['path'];
     }
-    $l['title'] = $l['text'] . $l['arrow'];
-    $l['href'] = $l['path'];
   }
 
   // this arrow points down for some reason, despite being named 'asc'

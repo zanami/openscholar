@@ -61,29 +61,6 @@ function os_layout_get_contexts($privacy = array(1, 2)) {
   return $os_contexts;
 }
 
-function os_layout_custom_context($context_name) {
-  static $contexts = array();
-
-  if (!isset($contexts[$context_name])) {
-    foreach (module_implements('os_custom_context') as $module) {
-      $function = $module.'_os_custom_context';
-      if (function_exists($function)) {
-        $context = $function($context_name);
-        if (is_object($context)) {
-          $contexts[$context_name] = $context;
-          break;
-        }
-      }
-    }
-  }
-  if (isset($contexts[$context_name])) {
-    return $contexts[$context_name];
-  }
-  else {
-    return FALSE;
-  }
-}
-
 /**
  * Returns the blocks for a individual context
  *
@@ -106,6 +83,7 @@ function os_layout_get($context_name, $load_meta = FALSE, $unused_blocks = FALSE
 
   if (! is_object($context) || ! isset($context->reactions['block'])) {
     // This was an invalid context.
+
     $context = os_layout_custom_context($context_name);
     if (!is_object($context)) {
       return FALSE;
@@ -207,11 +185,13 @@ function os_layout_set($context_name, $blocks) {
   _os_layout_sanitize_blocks($blocks);
 
   $context = context_load($context_name);
+
   if (module_exists('vsite_layout')) {
     // Writes the context to the overrides table.
     vsite_layout_context_set($context_name, $blocks);
   }
   else {
+    $context = context_load($context_name);
     $context->reactions['block']['blocks'] = $blocks;
     // write the context to the database.
     context_save($context);

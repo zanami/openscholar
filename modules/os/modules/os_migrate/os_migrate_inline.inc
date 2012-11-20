@@ -239,11 +239,11 @@ class EmbedInlineOSMigration extends OSMigration {
 
   //correct the fields that wouldn't attach in prepare
    public function complete($entity, $row) {
-
-     //$entity->filemime = 'html/embed';
-//     $entity->uri = str_replace('public://', 'embed://', $entity->uri);
-//$entity->uri = $entity->value;
-$entity->uri = 'oembed://' . check_plain($row->field_os_inline_oembed_url);
+     $entity->uri = 'oembed://' . check_plain($row->field_os_inline_oembed_url);
+     $entity->filename = check_plain($row->field_os_inline_oembed_url);
+     if (strlen($entity->filename) >= 255) {
+       $entity->filename = substr($entity->filename, 0, 254);
+     }
      file_save($entity);
    }
 

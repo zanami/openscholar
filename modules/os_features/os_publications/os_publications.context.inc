@@ -40,18 +40,11 @@ function os_publications_context_default_contexts() {
     'menu' => 'publications',
     'block' => array(
       'blocks' => array(
-        'boxes-os_taxonomy_fltr_cat' => array(
-          'module' => 'boxes',
-          'delta' => 'os_taxonomy_fltr_cat',
-          'label' => 'Filter By Category',
-          'weight' => 20,
-          'region' => 'right',
-        ),
         'boxes-os_publications_recent' => array(
           'module' => 'boxes',
           'delta' => 'os_publications_recent',
           'weight' => 21,
-          'region' => 'right',
+          'region' => 'sidebar_second',
           'label' => 'Recent publications',
         ),
         'boxes-os_addthis' => array(
@@ -59,7 +52,7 @@ function os_publications_context_default_contexts() {
           'delta' => 'os_addthis',
           'label' => 'AddThis Button',
           'weight' => 22,
-          'region' => 'right',
+          'region' => 'sidebar_second',
         ),
       ),
     ),
