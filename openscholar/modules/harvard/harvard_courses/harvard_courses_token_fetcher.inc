@@ -39,7 +39,7 @@ class HarwardFetcher extends FeedsFetcher {
     }
 
     // Build the URL for import and verify for response code 200 from the URL.
-    $url = $wrapper->field_base_url->value() . '?' . $url_param . '"' . implode(" OR ", $import_value) . '"';
+    $url = $wrapper->field_base_url->value() . '?' . $url_param . '"' . implode('" OR "', $import_value) . '"&';
     $result = drupal_http_request($url);
     if ($result->code == 200) {
       return new FeedsFetcherResult($result->data);
