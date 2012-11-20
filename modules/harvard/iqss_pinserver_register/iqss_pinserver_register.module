@@ -8,8 +8,6 @@ include_once (drupal_get_path('module', 'vsite_register') . '/vsite_register.for
  */
 function iqss_pinserver_register_menu_alter(&$items) {
 
-error_log(__FUNCTION__);
-
   // Alters page callback
   $items['site/register']['page callback'] = 'iqss_pinserver_vsite_register_form_page';
   $items['site/register']['module'] = 'iqss_pinserver_register';
