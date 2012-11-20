@@ -152,17 +152,53 @@ function vsite_context_block_info_alter(&$block_info) {
     foreach ($groups as $g => $obj) {
       $delta = 'fg:node:'.$node->nid.':'.$g;
       if (!isset($block_info['vsite-'.$delta])) {
-        $block_info['vsite-'.$delta] = (object)array(
+        $block_info['vsite-'.$delta] = (object)(array(
           'bid' => 'vsite-'.$delta,
           'info' => $obj->label,
           'module' => 'vsite',
           'delta' => $delta,
-          'region' => false,
-          'weight' => '0',
-        );
+        )+_vsite_default_group_position($node->type, $g));
       }
     }
   }
+}
+
+function vsite_context_load_alter(&$context) {
+  if ($context->name == 'os_public' && isset($context->reactions['block']['blocks'])) {
+    $blocks = &$context->reactions['block']['blocks'];
+
+    if ($space = spaces_get_space()) {
+      $node = $space->group;
+
+      $groups = field_group_info_groups('node', $node->type, 'default');
+
+      foreach ($groups as $g => $obj) {
+        $delta = 'fg:node:'.$node->nid.':'.$g;
+        if (!isset($blocks['vsite-'.$delta])) {
+          $blocks['vsite-'.$delta] = (array(
+            'bid' => 'vsite-'.$delta,
+            'info' => $obj->label,
+            'module' => 'vsite',
+            'delta' => $delta
+          ) + _vsite_default_group_position($node->type, $g));
+        }
+      }
+    }
+  }
+}
+
+function _vsite_default_group_position($type, $group_name) {
+  static $groups = array(
+    'personal-group_site_info' => array(
+      'region' => 'header_second',
+      'weight' => '0',
+    )
+  );
+
+  if (isset($groups[$type.'-'.$group_name])) {
+    return $groups[$type.'-'.$group_name];
+  }
+  return false;
 }
 
 function vsite_block_view($delta) {
