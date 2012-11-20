@@ -125,17 +125,3 @@ function iqss_projects_front_jcarousel_skin_info() {
   );
   return $skins;
 }
-
-/**
- * Implements hook_os_widget_alter().
- * Set the iqss_projects_front widgets to hidden so they
- * do not show up in cp/layout.
- */
-function iqss_projects_front_os_widget_alter(&$widget) {
-  $front_widgets_array = array('iqss_projects_fp_features','iqss_projects_fp_infoblock','iqss_projects_fp_navblock','iqss_projects_fp_logoblock');
-  foreach($front_widgets_array as $front_widget) {
-    if($widget['delta'] == $front_widget){
-	  $widget += array('hidden' => TRUE);
-    }
-  }
-}

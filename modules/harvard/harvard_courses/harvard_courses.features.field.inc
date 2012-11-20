@@ -1734,8 +1734,8 @@ function harvard_courses_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-personal-field_catalog_number'.
-  $fields['node-personal-field_catalog_number'] = array(
+  // Exported field: 'node-vsite-field_catalog_number'.
+  $fields['node-vsite-field_catalog_number'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
@@ -1764,7 +1764,7 @@ function harvard_courses_field_default_fields() {
       'type' => 'text',
     ),
     'field_instance' => array(
-      'bundle' => 'personal',
+      'bundle' => 'vsite',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
@@ -1789,7 +1789,7 @@ function harvard_courses_field_default_fields() {
       'entity_type' => 'node',
       'field_name' => 'field_catalog_number',
       'label' => 'Catalog number',
-      'required' => 0,
+      'required' => FALSE,
       'settings' => array(
         'text_processing' => '0',
         'user_register_form' => FALSE,
@@ -1806,8 +1806,8 @@ function harvard_courses_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-personal-field_department_id'.
-  $fields['node-personal-field_department_id'] = array(
+  // Exported field: 'node-vsite-field_department_id'.
+  $fields['node-vsite-field_department_id'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
@@ -1836,7 +1836,7 @@ function harvard_courses_field_default_fields() {
       'type' => 'text',
     ),
     'field_instance' => array(
-      'bundle' => 'personal',
+      'bundle' => 'vsite',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => 'Department ID for the course, i.e: COMPSCI.',
@@ -2017,7 +2017,7 @@ function harvard_courses_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '35',
+        'weight' => 36,
       ),
     ),
   );

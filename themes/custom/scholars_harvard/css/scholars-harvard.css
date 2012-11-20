@@ -30,6 +30,7 @@ font-family: helvetica, arial, serif;
   
 .page-user #content-column h1#page-title {
   margin-top:-20px;
+   font-size: 1.5em;
   }
 
 #footer {
@@ -45,34 +46,34 @@ p.copy a.poweredby {
   margin-top: 70px;
   }
 
-.section-websites .view-openscholar-sites td {
+.page-websites .view-os-websites td {
   width: 25%;
   padding-bottom: 35px;
   }
 
-.section-websites .view-openscholar-sites td {
+.page-websites .view-os-websites td {
   height: 100px;
   font-size: 11px;
   line-height: 13px;
   }
 
-.section-websites .view-openscholar-sites img {
+.page-websitess .view-os-websites img {
   border: 1px solid #8b8b8b;
   float: left;
   margin:0 10px 5px 0;
   }
 
-.section-websites .view-openscholar-sites .views-field-title a {
+.page-websites .view-os-websites .views-field-title a {
   font-weight: bold;
   }
 
-.section-websites #columns #views-exposed-form-openscholar-sites-page-1 {
-  padding: 3px 20px;
-  background: #ddecf0;
-  margin: 0 -10px 13px -10px;
-  }
+.page-websites #columns #views-exposed-form-os-websites-page {
+    background: none repeat scroll 0 0 #DDECF0;
+    margin: -5px -15px 13px;
+    padding: 3px 20px;
+}
 
-.section-websites #columns .views-admin-links {
+.page-websites #columns .views-admin-links {
   position:absolute;
   right: 10px;
   top: 40px;
@@ -671,7 +672,7 @@ p.copy a:hover {
   }
  
  .front.logged-in #footer #block-os-powered-by {
-  top: -85px;
+  top: -181px;
   } 
   
    
@@ -876,6 +877,11 @@ p.copy a:hover {
   width: 100%;
 }
 
+.logged-in .os-scholar-header {
+  top: 30px;
+}
+
+
 .os-scholar-header-wrap {
   background: transparent;
   min-height: 0;
@@ -942,7 +948,7 @@ a.os-columns-home:hover {
 }
 
 .os-features {
-  padding-top: 56px;
+  padding-top: 80px;
   background: white;
   margin-left:0;
 }
@@ -1042,11 +1048,16 @@ a.os-columns-home:hover {
 
 .os-more-info li {
   float: left;
-  width: 50%;
+  width: 49.95%;
   height: 100%;
   /*border-right: 1px solid #CCC;*/
   background: #fff;
 }
+
+.os-more-info li.os-docs {
+border-right:1px solid #E8E9EB;
+}
+
 
 .os-more-info li span {
   display: block;
@@ -1083,7 +1094,7 @@ a.os-columns-home:hover {
 
 /* CSS fixes for activity box, stats block, login box and powered by box */
 #block-os-powered-by span a, .os-powered-link a.os-poweredby {
-  margin-top: -80px;'
+  margin-top: -50px;
 }
 
 .logged-in #block-os-powered-by span a, .os-powered-link a.os-poweredby {
@@ -1102,7 +1113,7 @@ a.os-columns-home:hover {
   height: 59px;
   padding: 9px 18px;
   width: 944px;
-  font: 13px/1.5em 'helvetica neue', helvetica, arial, sans-serif;'
+  font: 13px/1.5em 'helvetica neue', helvetica, arial, sans-serif;
 }
 
 #block-views-os-activity-block-1 a,
@@ -1115,7 +1126,7 @@ a.os-columns-home:hover {
 }
 
 .block-os-stats dl {
-  margin: -115px 0px 12px 18px;
+  margin: -112px 0px 12px 18px;
 }
 
 .logged-in .block-os-stats dl {
@@ -1144,8 +1155,9 @@ a.os-columns-home:hover {
   margin-top: 45px;
 }
   /* Websites */
-  form #views-exposed-form-os-websites-page {
-    padding: 3px 20px;
-    background: none repeat scroll 0% 0% rgb(221, 236, 240);
-    margin: 0px -10px 13px;	
-  }
+
+#views-exposed-form-os-websites-page .views-exposed-form .views-exposed-widget .form-submit {
+    margin-top: .8em;
+}
+
+

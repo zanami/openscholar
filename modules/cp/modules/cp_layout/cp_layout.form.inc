@@ -92,6 +92,14 @@ function cp_layout_full_form($form, $form_state){
     )
   );
 
+  if ($use_content_regions) {
+    $form['layout']['#attributes'] = array(
+      'class' => array(
+        'content-regions'
+      )
+    );
+  }
+
   foreach ( $regions as $r ) {
     $form['layout'][$r] = array(
       '#type' => 'container',
@@ -110,7 +118,6 @@ function cp_layout_full_form($form, $form_state){
     );
   }
 
-  $use_content_regions = false;
   foreach ( $blocks as $bid => $b ) {
     if ($b['region'] == - 1 || $b['region'] === FALSE) {
       $form['unused'][$bid] = array(
@@ -119,9 +126,6 @@ function cp_layout_full_form($form, $form_state){
       );
     }
     elseif (isset($form['layout'][$b['region']])) {
-      if (strpos($b['region'], 'content_') !== FALSE) {
-        $use_content_regions = true;
-      }
       $form['layout'][$b['region']][$bid] = array(
         '#theme' => 'cp_layout_widget',
         '#widget' => $b,

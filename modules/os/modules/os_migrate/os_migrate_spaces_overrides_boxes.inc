@@ -49,7 +49,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
     }
 
     if (!$this->_box_key_exists($box->plugin_key)) {
-      parent::saveMessage(t('Box @key does not exist in destination.  Ignoring box.', array('@key'=>$box->plugin_key)), MigrationBase::MESSAGE_WARNING);
+      parent::saveMessage(t('Box @key does not exist in destination.  Ignoring box. [@box]', array('@key'=>$box->plugin_key, '@box' => print_r($box,true))), MigrationBase::MESSAGE_WARNING);
       return FALSE;
     }
 
@@ -74,7 +74,8 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
 
      $this->_fix_os_taxonomy_fbt();
 
-    if (parent::is_domain('http://scholar.harvard.edu')) {
+    if (parent::is_domain('http://scholar.harvard.edu') && !variable_get('created_custom_scholarharvard boxes',FALSE)) {
+      //#560
       $gking_html =<<<EOF
    <div class="node-inner">
 <div class="os-links"></div>
@@ -183,12 +184,33 @@ EOF;
         }
       }
 
+      $new_box = array(
+        'changed' => NULL,
+        'delta' => 'gking_people_fbt',
+        'title' => 'By Type',
+        'description' => 'Filter by People',
+        'additional_classes' => '',
+        'plugin_key' => 'os_taxonomy_fbt',
+        'options' => array('visibility' => 'feature', 'vocabulary' => 175),
+        'info' => 'gking_people_fbt',
+      );
+
+      //Gking Taxonomy
+      $new_boxes[] = array(
+        'type' => 'og',
+        'id' => 3633,
+        'object_type' => 'boxes',
+        'object_id' => 'gking_people_fbt',
+        'value' => serialize((object) $new_box),
+      );
+
       $insert = db_insert('spaces_overrides')
         ->fields(array_keys($new_boxes[0]));
       foreach($new_boxes as $box) {
         $insert->values($box);
       }
       $insert->execute();
+      variable_set('created_custom_scholarharvard boxes',TRUE);
     }
 
 
@@ -201,6 +223,8 @@ EOF;
     parent::postRollback();
 
     $this->_remove_shield_files();
+
+    variable_set('os_migrate_contexts_altered', FALSE);
   }
 
   function _update_box($box, $id) {
@@ -236,11 +260,13 @@ EOF;
       }
 
       $new_base = "$base/$path";
-      foreach (scandir($new_base) as $dir) {
-        if (is_dir("$new_base/$dir") && $dir != '.' && $dir !='..' ) {
-          $found = find_vsite_shields_path($new_base, $dir);
-          if ($found) {
-            return $found;
+      if (is_readable($new_base)) {
+        foreach (scandir($new_base) as $dir) {
+          if (is_dir("$new_base/$dir") && $dir != '.' && $dir !='..' ) {
+            $found = find_vsite_shields_path($new_base, $dir);
+            if ($found) {
+              return $found;
+            }
           }
         }
       }
@@ -310,6 +336,9 @@ EOF;
    * Widgets with multiple taxonomies selected should be split into several widgets
    */
    function _fix_os_taxonomy_fbt() {
+     //We are altering the contexts, keep the context migration from overwriting our changes
+     variable_set('os_migrate_contexts_altered', TRUE);
+
      //get the boxes that need updating
      $result = db_select('spaces_overrides', 'so')
        ->condition('type', 'og')
@@ -325,7 +354,7 @@ EOF;
        $boxes = self::split_fbt_box($row->object_id, $value);
 
        foreach($boxes as $object_id => $box) {
-
+	       //Create new split box
        	 db_insert('spaces_overrides')->fields(array(
            'type' => $row->type,
            'id' => $row->id,
@@ -371,6 +400,8 @@ EOF;
 		        ->condition('object_type', 'context')
 		        ->condition('object_id', $context->object_id)
 		        ->execute();
+           	}else{
+           	  parent::saveMessage("Unable to find box ['.'boxes-'.$row->object_id.'] in context [".print_r($context,true)."]");
            	}
          }
        }
@@ -381,21 +412,22 @@ EOF;
      $return = array();
    	 $vocabs = (is_array($box->options['vocabulary'])) ? array_filter($box->options['vocabulary']) : array($box->options['vocabulary']);
    	 $show_name = (isset($box->options['show_vocabulary_name'])) ? $box->options['show_vocabulary_name'] : 1;
+   	 $title = $box->title;
    	 unset($box->options['vocabulary']);
    	 unset($box->options['show_vocabulary_name']);
 
      foreach ($vocabs as $vocab) {
-     	$id = $object_id."_fbt_".$vocab;
-     	$box->delta = $id;
-     	//Load the vocab and use it's name for the box if they have that setting checked
-     	if($show_name && !$plugin_only){
-     	  $v = taxonomy_vocabulary_load($vocab);
-     	  $box->title = $v->name;
-     	}else{
-          $box->title = '';
-     	}
-     	$box->options['vocabulary'] = $vocab;
-     	$return[$id] = $box;
+     	 $id = $object_id."_fbt_".$vocab;
+     	 $box->delta = $id;
+     	 //Load the vocab and use its name for the box if they have that setting checked
+     	 if ($show_name && !$plugin_only && count($vocabs)>1){
+     	   $v = taxonomy_vocabulary_load($vocab);
+     	   $box->title = $v->name;
+     	 } else {
+         $box->title = $title;
+     	 }
+     	 $box->options['vocabulary'] = $vocab;
+     	 $return[$id] = $box;
      }
 
      return $return;
@@ -655,6 +687,23 @@ class BoxPorter {
     return $box;
   }
 
+  public function _port_box_os_boxes_rss($box, $id, $key_only) {
+    $key = 'os_boxes_rss';
+    if ($key_only) {
+      return $key;
+    }
+
+    if ($box->options['content'] == 'all') {
+      $box->options['content'] = array();
+      $box->options['show_all'] = TRUE;
+    } else {
+      $box->options['content'] = array($box->options['content'] => $box->options['content']);
+      $box->options['show_all'] = FALSE;
+    }
+
+    return $box;
+  }
+
   //wrap other shield funciton.  apparently shield boxes had differeing names
   public function _port_box_os_boxes_shields($box, $id, $key_only) {
     $key = 'os_shields_box';
@@ -717,7 +766,7 @@ class BoxPorter {
         'fid' => $fid,
         'width' => $box->options['width'],
       );
-      $box->key = $key;
+      $box->plugin_key = $key;
     } else {
       $this->migration->saveMessage(t('Could not save embed box.  No fid for box: @delta', array('@delta'=>$box->delta)), MigrationBase::MESSAGE_NOTICE);
     }
@@ -775,7 +824,22 @@ class BoxPorter {
     }
 
     $box->options['filter'] = 'presentation';
-    return $this->_port_box_os_boxes_sv_list($box, $id, $key_only);
+    $box = $this->_port_box_os_boxes_sv_list($box, $id, $key_only);
+
+    //if this vsite uses presentation date, update sorting to use it.
+    $query = OSMigration::d6_db_select('og_ancestry', 'og')
+      ->condition('og.group_nid', $id);
+    $query->join('content_type_presentation', 'ct', 'ct.nid = og.nid');
+    $query->fields('ct', array('field_presentation_date_value'));
+    $values = $query->execute()->fetchCol();
+
+    //do all the presentations have a date?
+    $filtered = array_filter($values);
+    if ($filtered && count($values) == count($filtered)) {
+      $box->options['sort_by'] = 'sort_presentation';
+    }
+
+    return $box;
   }
 
   public function _port_box_os_boxes_sv_list($box, $id, $key_only) {
@@ -791,8 +855,9 @@ class BoxPorter {
     }
 
     //content type was updated
-    if ($ct == 'announcement') {
-      $ct = 'news';
+    $bundles = array_flip(AbstractNodeOSMigration::$source_bundle_map);
+    if (isset($bundles[$ct])) {
+      $ct = $bundles[$ct];
     }
 
     $defaults = array(
@@ -806,31 +871,38 @@ class BoxPorter {
       'sort_by' =>          'sort_newest',
     );
 
-    $options = array_merge($box->options, $defaults);
+    $options = array_merge($defaults, $box->options);
 
     $options['content_type'] = $ct;
     $options['display'] = $this->_sv_list_box_style($options['display']);
     $options['sort_by'] = $this->_sv_list_box_sort($options['sort_by']);
     $options['number_of_items'] = min(20, $options['number_of_items']); //new box only goes up to 20.
+
+    //biblio stuff
+    if ($ct == 'biblio' && $options['sort_by'] == 'sort_newest') {
+      $options['sort_by'] = 'sort_biblio';
+    }
+    $options['biblio_show_all'] = TRUE;
+    $options['biblio_whitelist'] = array();
     $box->options = $options;
 
     return $box;
   }
 
   //update tabs
-  public function _port_box_os_modal_tabbed($box, $id, $key_only) {
-    $id = 'os_boxes_tabs';
+  public function _port_box_os_modal_tabbed($box, $plugin_key, $key_only) {
+    $plugin_key = 'os_boxes_tabs';
     if ($key_only) {
-      return $id;
+      return $plugin_key;
     }
 
     $qt_obj = $box->options['qt_obj'];
     $new_tabs = array();
-    foreach ($qt_obj['tabs'] as $id => $box) {
+    foreach ($qt_obj['tabs'] as $id => $oldbox) {
       $new_tabs['tab-'.$id] = array(
-        'bid' => SpacesOverridesContextMigration::update_context_block_id($box['bid']),
-        'weight' => (isset($box['weight'])?$box['weight']:0),
-        'title' => (isset($box['title'])?$box['title']:""),
+        'bid' => SpacesOverridesContextMigration::update_context_block_id($oldbox['bid']),
+        'weight' => (isset($oldbox['weight'])?$oldbox['weight']:0),
+        'title' => (isset($oldbox['title'])?$oldbox['title']:""),
       );
     }
 
@@ -839,7 +911,7 @@ class BoxPorter {
       'tabs' => $new_tabs,
     );
 
-    $box->plugin_key = $id;
+    $box->plugin_key = $plugin_key;
 
     return $box;
   }
@@ -859,7 +931,7 @@ class BoxPorter {
 
      //New default and name
      $box->options['range'] = isset($box->options['number_of_items'])?$box->options['number_of_items']:false;
-     $box->options['depth'] = isset($box->options['tree_max_depth'])?$box->options['tree_max_depth']:0;
+     $box->options['depth'] = isset($box->options['tree_max_depth'])?($box->options['tree_max_depth'] - 1):0;
      $box->options['show_childs'] = isset($box->options['show_tree'])?$box->options['show_tree']:false;
 
      //New Default
@@ -1035,11 +1107,13 @@ class BoxPorter {
       }
     }
 
+    list ($body, $jc_fixed) = $this->_port_box_os_boxes_node_jcarousel_fix($nid, $body);
+
     if ($body) {
       $box->plugin_key = 'os_boxes_html';
       $box->options = array('text'=>array(
         'value' => $body,
-        'format' => 'filtered_html',
+        'format' => ($jc_fixed) ? 'full_html' : 'filtered_html',
       ));
 
       return $box;
@@ -1048,4 +1122,47 @@ class BoxPorter {
       return FALSE;
     }
   }
+
+  // nodes with several attached images aren't processed by jcarousel upon migration.  fix them here.
+  function _port_box_os_boxes_node_jcarousel_fix($nid, $body) {
+    $fixed = FALSE;
+
+    if (strpos($body, 'class="os-files-image-list jcarousel-skin-default"')) {
+      $fixed = TRUE;
+
+      $dom = filter_dom_load($body);
+      $dom->formatOutput = TRUE;
+      $uls = $dom->getElementsByTagName('ul');
+      for ($i=0,$len=$uls->length; $i<$len; $i++) {
+        $ul = $uls->item($i);
+        if ($ul->getAttribute('class') == "os-files-image-list jcarousel-skin-default") {
+
+          //set each li's style display
+          $lis = $ul->getElementsByTagName('li');
+          for ($j=0,$len2=$lis->length; $j<$len2; $j++) {
+            $li = $lis->item($j);
+            $li->setAttribute('style', 'display:inline;');
+          }
+
+          $div = $dom->createElement('div');
+          $div->setAttribute('class', 'jcarousel-skin-default');
+          $child_div = $dom->createElement('div');
+          $child_div->setAttribute('class', 'jcarousel-container jcarousel-container-horizontal');
+          $div->appendChild($child_div);
+
+          $ul = $ul->parentNode->replaceChild($div, $ul);
+          $child_div->appendChild($ul);
+        }
+      }
+
+      $body = trim($dom->saveHTML());
+      $body = preg_replace('/<!DOCTYPE.*?>/', '', $body); //remove doctype
+      $body = preg_replace('/.*\<body\>/m', '', $body); //remove html, body
+      $body = preg_replace('/<\/body>.*/m', '', $body); //remove closing tags
+      $body = trim($body);
+    }
+
+    return array($body, $fixed);
+  }
+
 }

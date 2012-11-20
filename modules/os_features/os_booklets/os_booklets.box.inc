@@ -28,7 +28,7 @@ function os_booklets_default_box() {
     'more_text' => 'More',
     'more_link' => 'documents',
     'pager' => 0,
-    'number_of_items' => '5',
+    'number_of_items' => '6',
     'sort_by' => 'sort_newest',
   );
   $export['os_booklets_recent_docs'] = $box;

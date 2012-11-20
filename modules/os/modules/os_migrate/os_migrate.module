@@ -69,3 +69,32 @@ function os_migrate_modules_enabled($modules) {
   }
 }
 
+/**
+ * Implements hook_mail().
+ *
+ * Prevent migrate from sending out system mail during user migration.
+ */
+function os_migrate_mail_alter(&$msg) {
+  $migrating = variable_get('os_migrate_migrating_users', FALSE);
+  $suppress = variable_get('os_migrate_suppress_email', TRUE);
+  if (($msg['id'] == 'vsite_register_vsite_register_notify') && $migrating && $suppress) {
+    $msg['send'] = FALSE;
+  }
+
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ *
+ * Prevent mailchimp from subscribing users during migration.  They're already subscribed.
+ */
+function os_migrate_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'user_insert') {
+    $migrating = variable_get('os_migrate_migrating_users', FALSE);
+    $suppress = variable_get('os_migrate_suppress_email', TRUE);
+    if (isset($implementations['os_mailchimp']) && $migrating && $suppress) {
+      unset($implementations['os_mailchimp']);
+    }
+
+  }
+}

@@ -59,7 +59,7 @@
         });
         
         // Initializes first hover event.
-        $($sel + ' ul li.last ul li:not(.aor-processed)')
+        $($sel + '.termchild-methods li:not(.aor-processed)')
           .filter(":first")
           .each(function (index) {
             $(this).hover();

@@ -12,6 +12,7 @@ dependencies[] = file
 dependencies[] = media_gallery
 dependencies[] = os
 dependencies[] = strongarm
+features[box][] = os_image_gallery_latest
 features[context][] = gallery_gallery
 features[ctools][] = context:context:3
 features[ctools][] = strongarm:strongarm:1

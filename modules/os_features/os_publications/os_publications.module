@@ -263,7 +263,6 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
  * Is given a render array representing the biblio node ready for rendering in the list view
  *
  * Adds any fields that may have been added to the node type
- * Adds the Abstract link to the teaser
  *
  * @param unknown_type $entry
  */
@@ -274,9 +273,9 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
   $entry['teaser']['#weight'] = 1;
   $entry['#attached']['css'][] = drupal_get_path('module', 'os_publications').'/misc/os_publications.css';
   unset($entry['links']['node'], $entry['links']['biblio_google_scholar']);
+}
 
-  // add abstract link
-
+function _os_publications_attach_abstract(&$entry, $node) {
   if (strlen($node->biblio_abst_e)) {
     $entry['#attached']['js'][] = drupal_get_path('module', 'os') . '/theme/os_toggle.js';
     $html   = &$entry['teaser']['#markup'];
@@ -315,10 +314,12 @@ function os_publications_preprocess_node(&$vars) {
 
 /**
  * Removes the export links from the full view of the node
+ * Adds 'Abstract' link to toggle a sliding box with the full abstract
  */
 function os_publications_node_view_alter(&$build, $type) {
   if ($type == 'node' && $build['#bundle'] == 'biblio') {
     if ($build['#view_mode'] == 'teaser') {
+      _os_publications_attach_abstract($build, $build['#node']);
       $build['teaser']['#weight'] = 1;
       $build['links']['#access'] = FALSE;
     }

@@ -100,9 +100,10 @@ p.copy {
 	-moz-box-shadow: 0 0 10px #555555;
 	-webkit-box-shadow: 0 0 10px #555555;
 	box-shadow: 0 0 10px #555555;
-  
     background: #fff;
 }
+
+.lt-ie9 #page {border: 1px solid #DDD;}
 
 #columns {
 	overflow:hidden;

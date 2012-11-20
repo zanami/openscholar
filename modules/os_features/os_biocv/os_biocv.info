@@ -20,6 +20,7 @@ features[ctools][] = context:context:3
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:1
 features[field][] = node-bio-body
+features[field][] = node-bio-field_upload
 features[field][] = node-cv-body
 features[field][] = node-cv-field_biocv_pdf_upload
 features[node][] = bio

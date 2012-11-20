@@ -1,6 +1,7 @@
 
 #toolbar {
   background: #282828;
+  height: 30px;
 }
 
 #toolbar .toolbar-left > ul {

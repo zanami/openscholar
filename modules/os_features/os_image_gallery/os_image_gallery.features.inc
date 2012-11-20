@@ -18,6 +18,9 @@ function os_image_gallery_ctools_plugin_api() {
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => "1");
+  }
 }
 
 /**

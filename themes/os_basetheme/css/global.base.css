@@ -319,14 +319,6 @@ ul ul ul ul {
 	list-style-type: none;
 
 }
-/*
-.view-os-image-gallery ul li.views-row,
-.view-gallery-listing ul,
-.views-field-media-gallery-media ul,
-.view-os-image-gallery ul {
-	display:inline;
-   float:none;
-}*/
 
 .view-id-os_image_gallery li.views-row {
 	margin-bottom:15px;
@@ -345,6 +337,20 @@ ul ul ul ul {
 
 .tweets-pulled-listing ul {
 	margin-left:0;
+}
+
+.sidebar .block-boxes-os_taxonomy_fbt ul ul {margin-left:10px;}
+
+/* CALENDAR - UPCOMING LI'S */
+
+.view-os-events ul li {list-style-type:none;border-bottom: 1px solid #D9D9D9;}
+
+.view-os-events ul li .node {
+    margin:20px 0 0 0;
+}
+
+.view-os-events .field-items{
+    display: inline-block;
 }
 
 /* BOOK NAVS */
