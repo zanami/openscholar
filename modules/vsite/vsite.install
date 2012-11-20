@@ -108,28 +108,42 @@ function _vsite_initilize_group_fields() {
  * Replace site info blocks with the new field_group block
  */
 function vsite_update_7001(&$ctx) {
-  module_enable('field_group_overlay');
+ // module_enable(array('field_group_overlay'));
+  //registry_rebuild();  // box was removed
 
-  $nodes = db_select('node', 'n')->fields('n', array('nid'))->where('type', 'personal');
+  $nodes = db_select('node', 'n')->fields('n', array('nid'))->condition('type', 'personal')->execute();
+  $messages = array();
 
   foreach ($nodes as $r) {
-    $override = db_select('spaces_override', 'so')
+    $override = db_select('spaces_overrides', 'so')
                 ->fields('so', array('object_id', 'value'))
-                ->where('id', $r->nid)
-                ->where('object_type', 'context')
-                ->where('object_id', '%reaction:block', 'LIKE')
+                ->condition('id', $r->nid)
+                ->condition('object_type', 'context')
+                ->condition('object_id', '%reaction:block', 'LIKE')
                 ->execute();
     foreach ($override as $over) {
+      $changed = false;
       $blocks = unserialize($over->value);
-      if (isset($blocks['boxes-site_info'])) {
+      if (isset($blocks['blocks']['boxes-site_info'])) {
+        $changed = true;
         $delta = 'fg:node:'.$r->nid.':group_site_info';
-        $blocks['vsite-'.$delta] = array(
+        $blocks['blocks']['vsite-'.$delta] = array(
           'module' => 'vsite',
           'delta' => $delta,
-          'weight' => $blocks['boxes-site_info']['weight'],
-          'region' => $blocks['boxes-site_info']['region'],
+          'weight' => $blocks['blocks']['boxes-site_info']['weight'],
+          'region' => $blocks['blocks']['boxes-site_info']['region'],
         );
+        unset($blocks['blocks']['boxes-site_info']);
+
+        db_update('spaces_overrides')
+        ->fields(array('value' => serialize($blocks)))
+        ->condition('object_type', 'context')
+        ->condition('id', $r->nid)
+        ->condition('object_id', $over->object_id)
+        ->execute();
+        $messages[] = $over->object_id.': site_info replaced with '.$delta;
       }
     }
   }
+  return implode("<br>\r\n", $messages);
 }
