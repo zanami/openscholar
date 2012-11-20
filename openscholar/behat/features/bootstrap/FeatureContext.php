@@ -120,8 +120,19 @@ class FeatureContext extends DrupalContext {
    * @Then /^I should print page$/
    */
   public function iShouldPrintPage() {
-    $page = $this->getSession()->getPage()->getContent();
-    print_r($page);
+    $this->getSession()->visit($this->locatePath('/user'));
+    $element = $this->getSession()->getPage();
+    $element->fillField($this->getDrupalText('username_field'), 'admin');
+    $element->fillField($this->getDrupalText('password_field'), 'admin');
+    $submit = $element->findButton($this->getDrupalText('log_in'));
+    if (empty($submit)) {
+      throw new \Exception('No submit button at ' . $this->getSession()->getCurrentUrl());
+    }
+
+    // Log in.
+    $submit->click();
+    $element = $this->getSession()->getPage();
+    print_r($element->getContent());
   }
 
   /**
