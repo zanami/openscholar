@@ -503,7 +503,7 @@ margin:27px 327px 0 0; } }
 
 .view-id-os_websites li.views-row {
   width: 161px;
-  height: 164px;
+  height: 166px;
   margin: 0;
   border: 3px solid #3c4452;
   border-top: none;
@@ -513,12 +513,12 @@ margin:27px 327px 0 0; } }
   position:relative;
   list-style: none;
   }
-
+/*
 .view-id-os_websites li.views-row img {
   width: 161px;
   height: 125px;
   }
-
+*/
 .view-id-os_websites li.views-row a {
   display:block;
   color: #fff;
