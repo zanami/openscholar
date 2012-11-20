@@ -19,7 +19,7 @@ projects[apachesolr_og][version] = 1.0
 
 ; @todo: Biblio patches need to be applied
 ; projects[biblio][patch][] = "http://drupal.org/files/biblio-md5_hash-1722772-1.patch"
-; projects[biblio][subdir] = "biblio"
+; projects[biblio][subdir] = "contrib"
 ; projects[biblio][version] = 1.0-rc4
 
 ; @todo: Boxes patches need to be applied
@@ -39,6 +39,7 @@ projects[comment_sources][type] = module
 
 projects[context][subdir] = "contrib"
 projects[context][version] = 3.0-beta4
+projects[context][patch][] = "http://drupal.org/files/os-custom-beta4.patch"
 
 projects[contextual_annotation][subdir] = "contrib"
 projects[contextual_annotation][type] = module
