@@ -73,17 +73,24 @@ function harvard_courses_node_insert($node) {
 
   // Import by catalog number.
   $sites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
-  foreach ($sites as $site) {
-    og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+  if (!empty($sites)) {
+    foreach ($sites as $site) {
+      og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+    }
   }
 
   // Import by department ID.
   $sites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_field->value()));
-  foreach ($sites as $site) {
-    og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+  if (!empty($sites)) {
+    foreach ($sites as $site) {
+      og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+    }
   }
 
   $node->skip_og_membership = TRUE;
+
+  // Change description field format to full html.
+  $node->field_description[LANGUAGE_NONE][0]['format'] = 'full_html';
 }
 
 /**
@@ -125,8 +132,9 @@ function harvard_courses_node_update($node) {
       }
     }
 
-    // New course(s) was added to the group. IF the course(s) is already imported
-    // then group them, if not then in the next import they will be imported.
+    // New course(s) was added to the group. IF the course(s) is already
+    // imported then group them, if not then in the next import they will be
+    // imported.
     if (!empty($added_items)) {
       $courses = harvard_courses_related_nodes($field['course'], $added_items);
       if (!empty($courses)) {
@@ -257,8 +265,10 @@ function harvard_courses_feature_submit($form, $form_state) {
   $catalog_number = _harvard_courses_get_field_value('field_catalog_number', $form_state);
 
   $wrapper = entity_metadata_wrapper('node', $form['#entity']);
-  $wrapper->field_department_id->set($department_id);
-  $wrapper->field_catalog_number->set($catalog_number);
+
+  empty($department_id) ? $wrapper->field_department_id->set(NULL) : $wrapper->field_department_id->set($department_id);
+  empty($catalog_number) ? $wrapper->field_catalog_number->set(NULL) : $wrapper->field_catalog_number->set($catalog_number);
+
   $wrapper->save();
 }
 
