@@ -32,29 +32,14 @@ class HarwardFetcher extends FeedsFetcher {
     // Loop over the nodes and build the query parameter value.
     $param_values = array();
     foreach ($nids as $nid) {
-      if ($field == 'field_catalog_number') {
-        $import_wrapper = entity_metadata_wrapper('node', $nid);
-        foreach ($import_wrapper->{$field}->value() as $import_values) {
-          $import_value[] = $import_values;
-        }
-      }
-      else {
-        // @TODO: importing by department id.
+      $import_wrapper = entity_metadata_wrapper('node', $nid);
+      foreach ($import_wrapper->{$field}->value() as $import_values) {
+        $import_value[] = $import_values;
       }
     }
 
-    // When importing a field catalog number we can use the OR operator.
-    if ($field == 'field_catalog_number') {
-      $url = $wrapper->field_base_url->value() . '?' . $url_param . '"' . implode(" OR ", $import_value) . '"';
-      return $this->importFromUrl($url);
-    }
-  }
-
-  /**
-   * Private function for import from a given URL.
-   */
-  private function importFromUrl($url) {
     // Build the URL for import and verify for response code 200 from the URL.
+    $url = $wrapper->field_base_url->value() . '?' . $url_param . '"' . implode(" OR ", $import_value) . '"';
     $result = drupal_http_request($url);
     if ($result->code == 200) {
       return new FeedsFetcherResult($result->data);
