@@ -21,7 +21,7 @@ class HarwardFetcher extends FeedsFetcher {
       return FALSE;
     }
 
-    // Define the query paramater and the filed that holds the query values.
+    // Define the query parameter and the field that holds the query values.
     if ($wrapper->field_import_type->value() == 'cat_num') {
       $field = 'field_catalog_number';
       $this->url_param = 'q=';
@@ -31,7 +31,7 @@ class HarwardFetcher extends FeedsFetcher {
       $this->url_param = 'fq_dept_area_category=dept_area_category:';
     }
 
-    // Loop over the nodes and build the query paramter value.
+    // Loop over the nodes and build the query parameter value.
     $param_values = array();
     foreach ($nids as $nid) {
       $import_wrapper = entity_metadata_wrapper('node', $nid);

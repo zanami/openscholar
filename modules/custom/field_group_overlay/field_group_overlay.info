@@ -1,0 +1,5 @@
+name = "Field Group Overlay"
+core = "7.x"
+description = "Allow a field group to be edited from an overlay."
+dependencies[] = field_group
+dependencies[] = overlay

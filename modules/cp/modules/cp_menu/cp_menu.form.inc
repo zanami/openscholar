@@ -178,7 +178,8 @@ function theme_cp_menu_table($variables){
           'colspan' => 2,
         ),
         array(
-          'data' => ctools_modal_text_button('Add New Link', 'cp/menu/nojs/new/'.$d, 'Add New Link'),
+          //'data' => ctools_modal_text_button('Add New Link', 'cp/menu/nojs/new/'.$d, 'Add New Link'),
+          'data' => l('Add New Link','cp/menu/nojs/new/'.$d,array('attributes' => array('title' => 'Add a new menu item.'))),
         ),
         array(
           'data' => '',
@@ -324,7 +325,7 @@ function cp_menu_edit_form($form, $form_state, $type = 'add', $menu_name = false
     '#title' => t('Menu name'),
     '#default_value' => $menu_name,
     '#maxlength' => MENU_MAX_MENU_NAME_LENGTH_UI,
-    '#description' => t('A unique name to construct the URL for the menu. It must only contain lowercase letters, numbers and hyphens.'),
+    '#description' => t('A unique name to construct the URL for the menu. It must only contain lowercase letters, numbers and underscores.'),
     '#machine_name' => array('exists' => 'cp_menu_menu_exists'),
     // A menu's machine name cannot be changed.
     '#disabled' => !empty($menu_name),

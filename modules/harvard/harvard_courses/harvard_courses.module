@@ -12,12 +12,12 @@ include_once 'harvard_courses.features.inc';
 function harvard_courses_feeds_plugins() {
   $path = drupal_get_path('module', 'harvard_courses');
   $info = array();
-  $info['FeedsTokenizedFetcher'] = array(
-    'name'        => t('Token fetcher'),
-    'description' => t('Create a tokenize url for fetching'),
+  $info['HarwardFetcher'] = array(
+    'name'        => t('Harward API fetcher'),
+    'description' => t('Create url for fetching info from Harward API.'),
     'handler' => array(
       'parent' => 'FeedsFetcher',
-      'class'  => 'FeedsTokenizedFetcher',
+      'class'  => 'HarwardFetcher',
       'file'   => 'harvard_courses_token_fetcher.inc',
       'path'   => $path,
     ),
@@ -26,7 +26,7 @@ function harvard_courses_feeds_plugins() {
 }
 
 /**
- * Returning vsites nid by the import type.
+ * Returning groups (Department. Project or personal) nid by the import type.
  *
  *  @param $import_type
  *    What is the method of the import:
@@ -45,7 +45,7 @@ function haravard_courses_sites_nid_by_import_type($import_type, $search_value =
   $query = new entityFieldQuery();
   $query
     ->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', 'vsite');
+    ->propertyCondition('type', array('department', 'project', 'personal'), 'IN');
 
     if ($search_value) {
       $query->fieldCondition($field, 'value', $search_value, 'IN');
@@ -97,7 +97,7 @@ function harvard_courses_node_insert($node) {
  * Implements hook_node_update().
  */
 function harvard_courses_node_update($node) {
-  if ($node->type != 'vsite' || empty($node->original)) {
+  if (!in_array($node->type, array('project', 'department', 'personal')) || empty($node->original)) {
     return;
   }
 
@@ -109,20 +109,20 @@ function harvard_courses_node_update($node) {
   // node.
   $fields = array(
     'cat_num' => array(
-      'vsite' => 'field_catalog_number',
+      'field_name' => 'field_catalog_number',
       'course' => 'field_cat_number',
     ),
     'department' => array(
-      'vsite' => 'field_department_id',
+      'field_name' => 'field_department_id',
       'course' => 'field_field',
     ),
   );
 
   foreach ($fields as $field) {
-    $removed_items = array_diff($original_node->{$field['vsite']}->value(), $wrapper->{$field['vsite']}->value());
-    $added_items = array_diff($wrapper->{$field['vsite']}->value(), $original_node->{$field['vsite']}->value());
+    $removed_items = array_diff($original_node->{$field['field_name']}->value(), $wrapper->{$field['field_name']}->value());
+    $added_items = array_diff($wrapper->{$field['field_name']}->value(), $original_node->{$field['field_name']}->value());
 
-    // Ungrouping removed courses from the vsite.
+    // Un-grouping removed courses from the group.
     if (!empty($removed_items)) {
       $courses = harvard_courses_related_nodes($field['course'], $removed_items);
       if (!empty($courses)) {

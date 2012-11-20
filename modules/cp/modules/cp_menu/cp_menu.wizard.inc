@@ -115,6 +115,7 @@ function cp_menu_type($form, &$form_state) {
   $form_state['title'] = t('Link Type');
 
   $form['type'] = array(
+    '#title' => 'Link Type',
     '#type' => 'radios',
     '#options' => array('page' => 'Page', 'url' => 'URL'),
     '#description' => t('Type of content to link to.'),
@@ -149,6 +150,7 @@ function cp_menu_title($form, &$form_state) {
         '#type' => 'textfield',
         '#title' => t('URL'),
         '#required' => TRUE,
+        '#description' => t('The address of the link. Starts with: http://'),
       );
 
       $form['#validate'][] = 'cp_menu_url_validate';
@@ -207,7 +209,7 @@ function cp_menu_title($form, &$form_state) {
         '#type' => 'select',
         '#title' => t('Create new'),
         '#description' => t('Create a new page.'),
-        '#options' => os_get_bundles(),
+        '#options' => $content_types_list,
         '#states' => array(
           'visible' => array(
             ':input[name="new_or_select"]' => array('value' => 'new'),

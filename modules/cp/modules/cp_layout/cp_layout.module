@@ -69,7 +69,6 @@ function template_preprocess_cp_layout_widget(&$variables) {
   // used in template
   ctools_include('ajax');
   ctools_include('modal');
-
   $widget = $variables['widget']['#widget'];
   $classes_array = &$variables['classes_array'];
 
@@ -87,7 +86,7 @@ function template_preprocess_cp_layout_widget(&$variables) {
 
   $classes_array[] = "cp-layout-item";
 
-  if (isset($widget['hidden']) && $widget->hidden) {
+  if (isset($widget['hidden']) && $widget['hidden']) {
     $classes_array[] = 'disabled';
   }
 
@@ -108,8 +107,8 @@ function template_preprocess_cp_layout_widget(&$variables) {
     $classes_array[] = 'Misc';
   }
 
-  if (isset($widget->icon_path)) {
-    $style = "style=\"background-image:url('{$w['icon_path']}');\"";
+  if (isset($widget['icon_path'])) {
+    $style = "style=\"background-image:url('{$widget['icon_path']}');\"";
   }
 
   if (isset($widget['can_edit']) && $widget['can_edit']) {
