@@ -32,8 +32,7 @@ class os_boxes_sectionnav extends os_boxes_default {
     if ($node = menu_get_object()) {
       // only pages can have section nav
       if ($node->type == 'page' && isset($node->book['bid'])) {
-        $book_nid = $node->book['bid'];
-        $block = os_books_build_toc($book_nid) + $block;
+        $block = os_books_build_toc($node) + $block;
       }
     }
 
