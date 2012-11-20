@@ -3,8 +3,7 @@ Feature:
 
   @api @wip
   Scenario: Test OG Vocabulary migration
-    Given I am logged in as a user with the "authenticated user" role
-    And I visit "john"
+    Given I visit "john"
     When I click "Blog"
     Then I should see "Antoine de Saint-Exupéry"
     And I should see "Douglas Noël Adams"
