@@ -32,7 +32,9 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
 
     //recycle previous thumbnail
     $action = $this->_get_action($values);
-    //MigrationBase::displayMessage(t('Logo for @id processed by @action', array('@id'=>$entity->og_group_ref,'@action'=>$action)));
+    MigrationBase::displayMessage(t('Logo for @id processed by @action: @file',
+      array('@id'=>$entity->nid,'@action'=>$action,'@file'=>$values[0])),
+      MigrationBase::MESSAGE_INFORMATIONAL);
 
     if ($action == 'recycle') {
       if ($recycled = $this->_recycle($values, $gid, $entity->uid)) {
