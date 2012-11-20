@@ -70,6 +70,9 @@ function os_books_build_tree($node, $flatten = FALSE) {
  * @param object|int $node
  *   Either a nid or a full node object.
  *
+ * @param string $style
+ *   Either 'full', 'partial'
+ *
  * @param bool $separate
  *   True if the function should split the top level and second level into
  *   separate.
@@ -77,7 +80,7 @@ function os_books_build_tree($node, $flatten = FALSE) {
  * @return array|NULL $block
  *   Returns NULL if node cannot be loaded or $node->book is not set.
  */
-function os_books_build_toc($node, $separate = FALSE) {
+function os_books_build_toc($node, $style = 'partial', $separate = FALSE) {
   $block = array();
 
   if (is_numeric($node)) {
@@ -85,7 +88,16 @@ function os_books_build_toc($node, $separate = FALSE) {
   }
 
   if (is_object($node) && isset($node->book)) {
-    $menu_tree = menu_tree_all_data($node->book['menu_name']);
+    $menu_tree = array();
+    switch ($style) {
+      case 'full':
+        $menu_tree = menu_tree_all_data($node->book['menu_name']);
+        break;
+      case 'partial':
+        $menu_tree = menu_tree_all_data($node->book['menu_name'], $node->book);
+        break;
+    }
+
     if ($separate) {
       $top = current($menu_tree);
       $block['subject'] = theme('book_title_link', array('link' => $top['link']));
