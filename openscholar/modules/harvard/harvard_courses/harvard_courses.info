@@ -42,7 +42,6 @@ features[field][] = node-harvard_course-field_prerequisites
 features[field][] = node-harvard_course-field_term
 features[field][] = node-harvard_course-field_title
 features[field][] = node-harvard_course-og_group_ref
-features[field][] = node-harvard_course-og_vocabulary
 features[field][] = node-personal-field_catalog_number
 features[field][] = node-personal-field_department_id
 features[field][] = node-project-field_catalog_number
