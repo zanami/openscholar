@@ -146,7 +146,7 @@ function os_pages_node_view($node) {
       context_set('context', $ctx->name, $ctx);
     }
 
-    if ($node->book['bid'] && $ctx = context_load('os_books-book-'.$node->book['bid'])) {
+    if (isset($node->book['bid']) && $ctx = context_load('os_books-book-'.$node->book['bid'])) {
       context_set('context', $ctx->name, $ctx);
     }
 
@@ -227,10 +227,6 @@ function os_pages_preprocess_page(&$page) {
       )
     ));
   }
-}
-
-function os_pages_strongarm_alter(&$vars) {
-  $vars['book_allowed_types']->value[] = 'page';
 }
 
 function os_pages_os_add_new_links_alter(&$links) {
