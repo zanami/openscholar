@@ -19,7 +19,7 @@ before_script:
   - sudo service apache2 restart
   - "mysql -e 'create database drupal;'"
   - pear channel-discover pear.drush.org
-  - pear install drush/drush
+  - pear install drush/drush-5.7.0
   - phpenv rehash
   - bash scripts/setup
   - bash scripts/build.sh
