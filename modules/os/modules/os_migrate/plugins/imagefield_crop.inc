@@ -144,12 +144,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
    * Figure out if this image will be cropped in d7 or if we can reuse the cropped image from d6.
    */
   function _get_action($values) {
-    $original_file = $values[0];
-
-    //check for recycle
-    $thumbnail_filepath = variable_get('os_migrate_files') . '/' . $original_file;
-    $full_filepath = $thumbnail_filepath . '.crop_display.jpg';
-    if (is_readable($thumbnail_filepath) && is_readable($full_filepath)) {
+    if ($this->_get_thumb_and_full($values[0])) {
       return 'recycle';
     }
 
@@ -163,15 +158,43 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
   }
 
   /**
+   * @function _get_thumb_and_full
+   *
+   * Given a file path, returns paths to thumbnail and full image
+   *
+   * Two (known) cases for full/thumb pair.
+   * 1. D6 {files} filename is the thumbnail.  Appending '.crop_display.jpg' yields the full image.
+   * 2. D6 {files} filename is the full image.  Inserting path to imagecache in the filepath leads to the thumbnail.
+   */
+  function _get_thumb_and_full($original) {
+    $root = variable_get('os_migrate_files') . '/';
+
+    //.crop_display.jpg
+    $thumb = $root . $original;
+    $full = $thumb . '.crop_display.jpg';
+    if (is_readable($thumb) && is_readable($full)) {
+      return array($thumb, $full);
+    }
+
+    //vsite_design_landscape_logo
+    $full = $root . $original;
+    $file_directory_path = OSMigration::d6_variable_get('file_directory_path', 'sites/default/files');
+    $thumb = str_replace($file_directory_path, $file_directory_path . '/files/imagecache/vsite_design_landscape_logo/', $full);
+    if (is_readable($thumb) && is_readable($full)) {
+      return array($thumb, $full);
+    }
+
+    return FALSE;
+  }
+
+  /**
    * @function _recycle
    *
    * Both original and thumbnail images are present.  Save them both, updated
    * the db, and return the fid
    */
   function _recycle(&$values, $gid, $uid) {
-    $original_file = $values[0];
-    $thumb_filepath = variable_get('os_migrate_files') . '/' . $original_file;
-    $full_filepath = $thumb_filepath . '.crop_display.jpg';
+    list($thumb_filepath, $full_filepath) = $this->_get_thumb_and_full($values[0]);
 
     $full = new stdClass();
     $full->uid = $uid;
