@@ -1107,13 +1107,14 @@ class BoxPorter {
       }
     }
 
-    list ($body, $jc_fixed) = $this->_port_box_os_boxes_node_jcarousel_fix($nid, $body);
+    list($body, $jc_fix) = $this->_port_box_os_boxes_node_jcarousel_fix($nid, $body);
+    list($body, $biblio_fix) = $this->_port_box_os_boxes_node_biblio_fix($nid, $body);
 
     if ($body) {
       $box->plugin_key = 'os_boxes_html';
       $box->options = array('text'=>array(
         'value' => $body,
-        'format' => ($jc_fixed) ? 'full_html' : 'filtered_html',
+        'format' => ($biblio_fix || $jc_fix) ? 'full_html' : 'filtered_html',
       ));
 
       return $box;
@@ -1165,4 +1166,20 @@ class BoxPorter {
     return array($body, $fixed);
   }
 
+  //biblio nodes get extra html that should be hidden by javascript.  remove it here instead.
+  function _port_box_os_boxes_node_biblio_fix($nid, $body) {
+    $fixed = FALSE;
+    $type = db_select('node', 'n')
+      ->condition('nid', $nid)
+      ->fields('n', array('type'))
+      ->execute()
+      ->fetchField();
+
+    if ($type == 'biblio') {
+      //instead of changing html, tell box to use full html.  now the citaiton renders as intended, consistent with the rest of biblio
+      $fixed = TRUE;
+    }
+
+    return array($body, $fixed);
+  }
 }
