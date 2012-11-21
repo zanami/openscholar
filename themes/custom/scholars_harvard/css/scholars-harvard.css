@@ -46,6 +46,10 @@ p.copy a.poweredby {
   margin-top: 70px;
   }
 
+.page-websites .view-os-websites table {
+  width: 100%;
+  }
+
 .page-websites .view-os-websites td {
 	width: 25%;
   padding-bottom: 35px;
@@ -129,7 +133,7 @@ background: none repeat scroll 0 0 #EDEEF1;
 .os-featuredSites {
     float: left;
     height: 19px;
-     margin: 26px 327px 0 0;
+     margin: 17px 327px 0 0;
     width: 162px;
 }
 
@@ -603,7 +607,7 @@ height: 33px;
 #footer {
   float:left;
   width: 100%;
-  margin-bottom:30px;
+  margin-bottom:50px;
   }
   
   
@@ -928,7 +932,7 @@ a.os-columns-home {
   position: fixed;
   right:0;
   top: 20%;
-  width: 40px;
+  width: 43px;
   color: #fff;
   background: #49a4ff;
   padding: 31px 19px;
