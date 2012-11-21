@@ -442,9 +442,13 @@ function _os_publications_clear_cache($node) {
  * Ensures the space is set on imported biblio nodes
  */
 function _os_publications_handle_import($node) {
-  if ($node->type == 'biblio' && isset($node->nid) && module_exists('vsite') && (!isset($node->og_group_ref) || !count(field_get_items('node', $node, OG_AUDIENCE_FIELD, $node->language))) && $space = spaces_get_space()) {
-    module_load_include('inc', 'vsite', 'includes/vsite');
-    vsite_add_entity($node);
+  if ($node->type == 'biblio' && isset($node->nid) && module_exists('vsite') && !isset($node->og_group_ref) && $space = spaces_get_space()) {
+    $groups = field_get_items('node', $node, OG_AUDIENCE_FIELD, $node->language);
+    //If this node is in no groups add it to the active group
+    if(empty($groups)){
+      module_load_include('inc', 'vsite', 'includes/vsite');
+      vsite_add_entity($node);
+    }
   }
 }
 
