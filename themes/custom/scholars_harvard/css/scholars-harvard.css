@@ -1175,9 +1175,9 @@ border-right:1px solid #E8E9EB;
 .views-field-field-site-description div.field-content {
   position:absolute;
   bottom:5px;
-  left: 8px;
+  left: 9px;
   right:0;
-  /*height: 33px;*/
+  line-height: 11px;
   min-height: 20px;
   color: #fff;
   overflow:hidden;
