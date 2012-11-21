@@ -1137,6 +1137,10 @@ border-right:1px solid #E8E9EB;
   bottom: 55px;
 }
 
+.page-websites #block-os-login {
+  bottom: 100px;
+}
+
 .front #footer {
   background: #436B85;
 }
