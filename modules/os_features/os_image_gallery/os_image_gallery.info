@@ -1,5 +1,5 @@
-name = Image Gallery
-description = Gallery container for images
+name = Media Gallery
+description = Gallery for uploaded media files
 core = 7.x
 package = Features
 php = 5.2.4
