@@ -668,7 +668,7 @@ p.copy a:hover {
 .front #footer #block-os-powered-by {
   float:right;
   position:relative;
-  top: -115px;
+  top: -146px;
   }
  
  .front.logged-in #footer #block-os-powered-by {
@@ -1158,6 +1158,12 @@ border-right:1px solid #E8E9EB;
 .view-id-os_websites {
   margin-top: 45px;
 }
+
+
+.region-content-bottom .view-id-os_websites {
+  margin-top: 0;
+}
+
   /* Websites */
 
 #views-exposed-form-os-websites-page .views-exposed-form .views-exposed-widget .form-submit {
@@ -1169,7 +1175,7 @@ border-right:1px solid #E8E9EB;
 .views-field-field-site-description div.field-content {
   position:absolute;
   bottom:5px;
-  left: 0;
+  left: 8px;
   right:0;
   /*height: 33px;*/
   min-height: 20px;
