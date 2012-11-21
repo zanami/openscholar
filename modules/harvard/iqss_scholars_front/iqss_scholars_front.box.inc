@@ -19,7 +19,7 @@ function iqss_scholars_front_default_box() {
   $box->description = 'Front page header text';
   $box->options = array(
     'body' => array(
-      'value' => '<div class="os-topheadings">Personal Websites Exclusively for Harvard Scholars<br> <a href="xx">Not a Harvard Scholar? Find out how to create a similar site at your institution.</a></div>',
+      'value' => '<div class="os-topheadings">Personal Websites Exclusively for Harvard Scholars<br> <a href="http://openscholar.harvard.edu/">Not a Harvard Scholar? Find out how to create a similar site at your institution.</a></div>',
       'format' => 'filtered_html',
     ),
     'additional_classes' => '',
