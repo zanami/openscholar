@@ -51,7 +51,7 @@ function vsite_register_block_view($delta = '') {
       if (vsite_vsite_exists_access()) {
         $content = l(t('Create your site'), 'site/register', array());
 
-      } elseif ($vsites = vsite_get_vsite_by_owner()) {
+      } elseif ($vsites = vsite_get_vsite_by_owner() && user_is_logged_in()) {
 
         if (count($vsites > 1)) {
           $content = l(t('Go to your sites'), 'user');
