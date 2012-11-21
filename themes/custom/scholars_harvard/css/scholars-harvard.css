@@ -251,8 +251,8 @@ overflow: hidden;
 background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
   }
   
-.logged-in body {
-  background: url('../images/body-bg.jpg') repeat-x fixed 25px 100% #698da2;
+.logged-in body.front {
+  background: url('../images/startpage-bg.png') repeat-x fixed 25px 100% #698da2;
   }
 
 #reasons {
