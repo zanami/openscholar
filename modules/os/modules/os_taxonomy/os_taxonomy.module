@@ -479,6 +479,10 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     $options['cur_depth'] = $options['cur_depth'] + 1;
 
     foreach ($children as $child) {
+      if (empty($child->description)) {
+        // @todo add $content_attributes to apply display: none to empty content.
+        $child->description = " ";
+      }
       $output .= theme('os_taxonomy_tagged_nodes', array('taxonomy_term' => $child, 'options' => $options));
     }
   }
