@@ -99,7 +99,7 @@ class os_boxes_site_info extends os_boxes_default {
     $output = '';
 
     $output = '<h1>'.l($this->options['site_title'], '<front>').'</h1>
-    <h2>'.check_plain($this->options['descrip']).'</h2>
+    <h2>'.$this->options['descrip'].'</h2>
     <p>'.$this->options['address1'].'<br>'.$this->options['address2'].'
     '.l('(email)', 'contact_owner').'</p>';
 
