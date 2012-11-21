@@ -1164,4 +1164,18 @@ border-right:1px solid #E8E9EB;
     margin-top: .8em;
 }
 
+/* Added 11/21 to correct site description issue. */
+
+.views-field-field-site-description div.field-content {
+  position:absolute;
+  bottom:5px;
+  left: 0;
+  right:0;
+  /*height: 33px;*/
+  min-height: 20px;
+  color: #fff;
+  overflow:hidden;
+  font-size: 10px;
+  display: block;
+}
 
