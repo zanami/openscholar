@@ -46,6 +46,10 @@ p.copy a.poweredby {
   margin-top: 70px;
   }
 
+.page-websites .view-os-websites table {
+  width: 100%;
+  }
+
 .page-websites .view-os-websites td {
 	width: 25%;
   padding-bottom: 35px;
@@ -129,7 +133,7 @@ background: none repeat scroll 0 0 #EDEEF1;
 .os-featuredSites {
     float: left;
     height: 19px;
-     margin: 26px 327px 0 0;
+     margin: 17px 327px 0 0;
     width: 162px;
 }
 
@@ -603,7 +607,7 @@ height: 33px;
 #footer {
   float:left;
   width: 100%;
-  margin-bottom:30px;
+  margin-bottom:50px;
   }
   
   
@@ -668,7 +672,7 @@ p.copy a:hover {
 .front #footer #block-os-powered-by {
   float:right;
   position:relative;
-  top: -115px;
+  top: -146px;
   }
  
  .front.logged-in #footer #block-os-powered-by {
@@ -928,7 +932,7 @@ a.os-columns-home {
   position: fixed;
   right:0;
   top: 20%;
-  width: 40px;
+  width: 43px;
   color: #fff;
   background: #49a4ff;
   padding: 31px 19px;
@@ -1158,6 +1162,12 @@ border-right:1px solid #E8E9EB;
 .view-id-os_websites {
   margin-top: 45px;
 }
+
+
+.region-content-bottom .view-id-os_websites {
+  margin-top: 0;
+}
+
   /* Websites */
 
 #views-exposed-form-os-websites-page .views-exposed-form .views-exposed-widget .form-submit {
@@ -1169,9 +1179,9 @@ border-right:1px solid #E8E9EB;
 .views-field-field-site-description div.field-content {
   position:absolute;
   bottom:5px;
-  left: 0;
+  left: 9px;
   right:0;
-  /*height: 33px;*/
+  line-height: 11px;
   min-height: 20px;
   color: #fff;
   overflow:hidden;

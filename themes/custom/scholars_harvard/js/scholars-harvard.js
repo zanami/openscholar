@@ -46,7 +46,7 @@
 		var nameheight = $(this).children('div.views-field-title').children('span.field-content').height();
 		
 		$(this).hover(function(){
-	      if(captionheight != 20) {
+	      if(captionheight > 25) {
 	        $(this).children('div.views-field-field-site-description').children('div.field-content').animate({
 			  height: captionheight + 'px'
 			});
