@@ -133,9 +133,9 @@ function os_image_gallery_image_default_styles() {
 function os_image_gallery_node_info() {
   $items = array(
     'media_gallery' => array(
-      'name' => t('Image Gallery'),
+      'name' => t('Media Gallery'),
       'base' => 'node_content',
-      'description' => t('A set of images'),
+      'description' => t('A group of images, video, or other media'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',
