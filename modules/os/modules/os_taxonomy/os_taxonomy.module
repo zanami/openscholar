@@ -459,7 +459,6 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   if ($node_count) {
     $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
     $nodes = node_load_multiple($nids);
-    array_walk($nodes, create_function('&$n', '$n->contextual_annotation_key = "tid-'.$taxonomy_term->tid.'";'));
     $build += node_view_multiple($nodes);
   }
   else if ((int) $options['cur_depth'] === 0 && !$has_children_to_display) {
