@@ -376,6 +376,11 @@ body.front .block-boxes-os_taxonomy_fbt div.description  {
    {
   font-weight: bold;
   }
+  
+   .region-sidebar-second .block-boxes-os_taxonomy_fbt #boxes-box-gking_people_fbt ul li a,
+   .region-sidebar-second .block-boxes-os_taxonomy_fbt #boxes-box-gking_people_fbt ul li .count {
+ color:#FFF;
+  }
 
 
 /* Secondary Menu */
