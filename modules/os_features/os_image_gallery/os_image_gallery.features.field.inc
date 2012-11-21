@@ -42,7 +42,7 @@ function os_image_gallery_field_default_fields() {
         ),
       ),
       'deleted' => '0',
-      'description' => 'Display a "download original image" link',
+      'description' => 'Display a "download original file" link',
       'display' => array(
         'default' => array(
           'label' => 'hidden',
@@ -71,7 +71,7 @@ function os_image_gallery_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'media_gallery_allow_download',
-      'label' => 'Allow downloading of the original image',
+      'label' => 'Allow downloading of the original file',
       'required' => FALSE,
       'settings' => array(
         'user_register_form' => FALSE,
@@ -852,10 +852,10 @@ function os_image_gallery_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('Allow downloading of the original image');
+  t('Allow downloading of the original file');
   t('Create a block of most recently added media');
   t('Description');
-  t('Display a "download original image" link');
+  t('Display a "download original file" link');
   t('Gallery format');
   t('Gallery media');
   t('Lightbox title and description');
