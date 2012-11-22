@@ -38,6 +38,7 @@ dependencies[] = token
 dependencies[] = pathauto
 dependencies[] = biblio
 dependencies[] = advanced_help
+dependencies[] = module_filter
 
 ; media / files / wysiwyg
 dependencies[] = imagefield_crop

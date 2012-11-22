@@ -36,4 +36,8 @@ function harvard_courses_install() {
   $preset = spaces_preset_load('os_scholar', 'og');
   $preset->value['variable']['spaces_features']['harvard_courses'] = 1;
   spaces_preset_save($preset);
+
+  $spaces_features = variable_get('spaces_features', array());
+  $spaces_features['harvard_courses'] = 1;
+  variable_set('spaces_features', $spaces_features);
 }

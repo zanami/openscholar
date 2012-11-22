@@ -13,7 +13,9 @@ missing fetcher.
 
 On each Group site (deparment, personal or project) 2 new fields are added,
 those field enable to add catalog number or deparment id used for querying the
-courses API.
+courses API. Those fields are editable in the harvard courses app settings -
+SITE_NAME/cp/build/features/harvard_courses.
+
 On cron feeds module regroup all the deparment ids and catalog numbers from all
 sites and import all those courses and add them as group content.
 Each course is generated a single time and is updated automatically when the
