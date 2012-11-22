@@ -22,5 +22,4 @@ openscholar/1
 behat.local.yml
 openscholar/behat/bin
 openscholar/behat/vendor
-openscholar/behat/composer.lock
 openscholar/behat/composer.phar
