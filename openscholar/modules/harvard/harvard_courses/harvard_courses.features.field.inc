@@ -441,7 +441,7 @@ function harvard_courses_field_default_fields() {
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
-        'weight' => '3',
+        'weight' => '2',
       ),
     ),
   );
@@ -511,7 +511,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '7',
+        'weight' => '4',
       ),
     ),
   );
@@ -581,7 +581,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '16',
+        'weight' => '14',
       ),
     ),
   );
@@ -651,7 +651,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '16',
+        'weight' => '13',
       ),
     ),
   );
@@ -723,7 +723,7 @@ function harvard_courses_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '23',
+        'weight' => '20',
       ),
     ),
   );
@@ -793,7 +793,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '19',
+        'weight' => '17',
       ),
     ),
   );
@@ -863,7 +863,79 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '17',
+        'weight' => '15',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-harvard_course-field_department_id'.
+  $fields['node-harvard_course-field_department_id'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_department_id',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'harvard_course',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(
+            'diff_custom' => 0,
+            'diff_custom_settings' => array(),
+          ),
+          'type' => 'text_default',
+          'weight' => 25,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_department_id',
+      'label' => 'Department ID',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '19',
       ),
     ),
   );
@@ -933,7 +1005,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '13',
+        'weight' => '9',
       ),
     ),
   );
@@ -1003,7 +1075,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '18',
+        'weight' => '16',
       ),
     ),
   );
@@ -1073,7 +1145,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '11',
+        'weight' => '7',
       ),
     ),
   );
@@ -1143,77 +1215,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '15',
-      ),
-    ),
-  );
-
-  // Exported field: 'node-harvard_course-field_field'.
-  $fields['node-harvard_course-field_field'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_field',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'text',
-      'settings' => array(),
-      'translatable' => '0',
-      'type' => 'text_long',
-    ),
-    'field_instance' => array(
-      'bundle' => 'harvard_course',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
-          'type' => 'text_default',
-          'weight' => 22,
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_field',
-      'label' => 'field',
-      'required' => 0,
-      'settings' => array(
-        'text_processing' => '0',
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'rows' => '5',
-        ),
-        'type' => 'text_textarea',
-        'weight' => '22',
+        'weight' => '11',
       ),
     ),
   );
@@ -1283,7 +1285,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '15',
+        'weight' => '12',
       ),
     ),
   );
@@ -1353,7 +1355,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '14',
+        'weight' => '10',
       ),
     ),
   );
@@ -1417,7 +1419,7 @@ function harvard_courses_field_default_fields() {
         'module' => 'number',
         'settings' => array(),
         'type' => 'number',
-        'weight' => '9',
+        'weight' => '5',
       ),
     ),
   );
@@ -1487,7 +1489,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '12',
+        'weight' => '8',
       ),
     ),
   );
@@ -1557,7 +1559,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '6',
+        'weight' => '3',
       ),
     ),
   );
@@ -1627,7 +1629,7 @@ function harvard_courses_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '10',
+        'weight' => '6',
       ),
     ),
   );
@@ -1734,6 +1736,87 @@ function harvard_courses_field_default_fields() {
     ),
   );
 
+  // Exported field: 'node-harvard_course-og_vocabulary'.
+  $fields['node-harvard_course-og_vocabulary'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'og_vocabulary',
+      'foreign keys' => array(
+        'taxonomy_term_data' => array(
+          'columns' => array(
+            'target_id' => 'tid',
+          ),
+          'table' => 'taxonomy_term_data',
+        ),
+      ),
+      'indexes' => array(
+        'target_id' => array(
+          0 => 'target_id',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'entityreference',
+      'settings' => array(
+        'handler' => 'base',
+        'handler_settings' => array(
+          'behaviors' => array(
+            'og_vocab' => array(
+              'status' => TRUE,
+            ),
+            'taxonomy-index' => array(
+              'status' => TRUE,
+            ),
+          ),
+          'target_bundles' => array(),
+        ),
+        'target_type' => 'taxonomy_term',
+      ),
+      'translatable' => '0',
+      'type' => 'entityreference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'harvard_course',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'og_vocab',
+          'settings' => array(
+            'concatenate' => TRUE,
+            'diff_custom' => 0,
+            'diff_custom_settings' => array(),
+          ),
+          'type' => 'og_vocab',
+          'weight' => 24,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'og_vocabulary',
+      'label' => 'OG vocabulary',
+      'required' => FALSE,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'module' => 'og_vocab',
+        'settings' => array(),
+        'type' => 'og_vocab_complex',
+        'weight' => '21',
+      ),
+    ),
+  );
+
   // Exported field: 'node-personal-field_catalog_number'.
   $fields['node-personal-field_catalog_number'] = array(
     'field_config' => array(
@@ -1801,7 +1884,7 @@ function harvard_courses_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '36',
+        'weight' => '7',
       ),
     ),
   );
@@ -1873,7 +1956,7 @@ function harvard_courses_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '35',
+        'weight' => '6',
       ),
     ),
   );
@@ -2042,7 +2125,6 @@ function harvard_courses_field_default_fields() {
   t('cat_number');
   t('description');
   t('faculty');
-  t('field');
   t('meetings');
   t('notes');
   t('number');

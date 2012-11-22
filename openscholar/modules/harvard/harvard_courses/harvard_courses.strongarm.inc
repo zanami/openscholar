@@ -22,7 +22,7 @@ function harvard_courses_strongarm() {
           'weight' => '0',
         ),
         'path' => array(
-          'weight' => '21',
+          'weight' => '18',
         ),
       ),
       'display' => array(),
