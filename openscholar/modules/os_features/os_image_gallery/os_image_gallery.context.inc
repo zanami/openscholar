@@ -38,6 +38,7 @@ function os_image_gallery_context_default_contexts() {
       'values' => array(
         'galleries' => 'galleries',
         'galleries/*' => 'galleries/*',
+        'gallery-collections/galleries' => 'gallery-collections/galleries',
       ),
     ),
     'views' => array(
