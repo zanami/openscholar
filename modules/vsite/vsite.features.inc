@@ -13,6 +13,10 @@ function vsite_ctools_plugin_api() {
     return array("version" => "3");
   }
   list($module, $api) = func_get_args();
+  if ($module == "field_group" && $api == "field_group") {
+    return array("version" => "1");
+  }
+  list($module, $api) = func_get_args();
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
@@ -30,10 +34,26 @@ function vsite_views_api() {
  */
 function vsite_node_info() {
   $items = array(
-    'vsite' => array(
-      'name' => t('OS Site'),
+    'department' => array(
+      'name' => t('Department Site'),
       'base' => 'node_content',
-      'description' => t('A OpenScholar site that will hold content and have members.'),
+      'description' => t('An OpenScholar site for a larger organization that may contain sub-sites.'),
+      'has_title' => '1',
+      'title_label' => t('Site Name'),
+      'help' => '',
+    ),
+    'personal' => array(
+      'name' => t('Personal Site'),
+      'base' => 'node_content',
+      'description' => t('An OpenScholar site for personal and academic profiles.'),
+      'has_title' => '1',
+      'title_label' => t('Site Name'),
+      'help' => '',
+    ),
+    'project' => array(
+      'name' => t('Project Site'),
+      'base' => 'node_content',
+      'description' => t('An OpenScholar site for projects.'),
       'has_title' => '1',
       'title_label' => t('Site Name'),
       'help' => '',

@@ -31,9 +31,9 @@
  */
 
 /**
- * Return the public non-admin contexts that are avalible in a site.
+ * Returns the public non-admin contexts that are avalible in a site.
  *
- * @param $privacy
+ * @param array $privacy
  *  0: disabled
  *  1: public
  *  2: private
@@ -64,7 +64,7 @@ function os_layout_get_contexts($privacy = array(1, 2)) {
 /**
  * Returns the blocks for a individual context
  *
- * @param $context
+ * @param $context_name
  *  The identifier string for a context.
  *
  * @param $load_meta
@@ -76,18 +76,25 @@ function os_layout_get_contexts($privacy = array(1, 2)) {
  * @return
  *  List of blocks.
  */
-function os_layout_get($context, $load_meta = FALSE, $unused_blocks = FALSE) {
+function os_layout_get($context_name, $load_meta = FALSE, $unused_blocks = FALSE) {
    // context load alters the context (for vsites) so no need to do anything
    // extra.
-  $o_context = context_load($context);
+  $context = context_load($context_name);
 
-  if (! is_object($o_context) || ! isset($o_context->reactions['block'])) {
+  if (! is_object($context) || ! isset($context->reactions['block'])) {
     // This was an invalid context.
-    return FALSE;
+
+    $context = os_layout_custom_context($context_name);
+    if (!is_object($context)) {
+      return FALSE;
+    }
+    elseif (!isset($context->reactions['block'])) {
+      return array();
+    }
   }
 
-  if (array_key_exists('blocks', $o_context->reactions['block'])) {
-    $block_settings = $o_context->reactions['block']['blocks'];
+  if (array_key_exists('blocks', $context->reactions['block'])) {
+    $block_settings = $context->reactions['block']['blocks'];
   }
   else {
     // No blocks set yet for this context.
@@ -171,20 +178,23 @@ function os_layout_get_multiple($contexts, $load_meta = FALSE, $unused_blocks = 
 /**
  * Saves an array blocks for a individual context.
  *
- * @param $context
- * @param $blocks
+ * @param string $context_name
+ * @param array $blocks
  */
-function os_layout_set($context, $blocks) {
+function os_layout_set($context_name, $blocks) {
   _os_layout_sanitize_blocks($blocks);
+
+  $context = context_load($context_name);
+
   if (module_exists('vsite_layout')) {
-    // Write the context to the overrides table.
-    vsite_layout_context_set($context, $blocks);
+    // Writes the context to the overrides table.
+    vsite_layout_context_set($context_name, $blocks);
   }
   else {
-    $o_context = context_load($context);
-    $o_context->reactions['block']['blocks'] = $blocks;
+    $context = context_load($context_name);
+    $context->reactions['block']['blocks'] = $blocks;
     // write the context to the database.
-    context_save($o_context);
+    context_save($context);
   }
 }
 
@@ -264,7 +274,7 @@ function os_layout_set_multiple($contexts, $blocks) {
               break;
             default :
               // Nothing to do.
-              $changed = FALSE;
+              $changed = TRUE;
               break;
           }
         }
@@ -442,17 +452,17 @@ function os_layout_block_exists($block){
 }
 
 /**
- * Return a context ranking.
+ * Returns a context ranking.
  *
  * @todo Add weight to context table.
  */
-function _os_context_get_rank($context) {
+function _os_context_get_rank($context_name) {
   $context_rank = &drupal_static(__FUNCTION__, array());
 
-  if (!isset($context_rank[$context])) {
-    $o_context = context_load($context);
-    if (isset($o_context->weight)) {
-      $context_rank[$context] = $o_context->weight;
+  if (!isset($context_rank[$context_name])) {
+    $context = context_load($context_name);
+    if (isset($context->weight)) {
+      $context_rank[$context_name] = $context->weight;
     }
     else {
       // Global Special Contexts.
@@ -460,23 +470,23 @@ function _os_context_get_rank($context) {
         'os_public',
         'os_cp',
       );
-      if (in_array($context, $array)) {
-        $context_rank[$context] = 1;
-        return $context_rank[$context];
+      if (in_array($context_name, $array)) {
+        $context_rank[$context_name] = 1;
+        return $context_rank[$context_name];
       }
 
       $map = features_get_component_map('context');
-      if (array_key_exists($context, $map)) {
+      if (array_key_exists($context_name, $map)) {
         // Feature context.
-        $context_rank[$context] = 2;
+        $context_rank[$context_name] = 2;
       }
       else {
         // Page or other non-feature context.
-        $context_rank[$context] = 3;
+        $context_rank[$context_name] = 3;
       }
     }
   }
-  return $context_rank[$context];
+  return $context_rank[$context_name];
 }
 
 /**

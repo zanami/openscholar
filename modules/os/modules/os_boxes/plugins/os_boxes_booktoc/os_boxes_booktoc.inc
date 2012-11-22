@@ -12,6 +12,7 @@ class os_boxes_booktoc extends os_boxes_default {
     $options = parent::options_defaults();
 
     $options['book_nid'] = 0;
+    $options['toc_type'] = 'partial';
     return $options;
   }
 
@@ -44,6 +45,16 @@ class os_boxes_booktoc extends os_boxes_default {
       '#default_value' => $this->options['book_nid'],
     );
 
+    $form['toc_type'] = array(
+      '#type' => 'select',
+      '#title' => t('Render Table of Contents as'),
+      '#options' => array(
+        'full' => 'Full Table of Contents',
+        'partial' => 'Path to current post and its children',
+      ),
+      '#default_value' => $this->options['toc_type'],
+    );
+
     return $form;
   }
 
@@ -53,20 +64,32 @@ class os_boxes_booktoc extends os_boxes_default {
   public function render() {
     $block = parent::render();
 
+    // Checks for the table of contents display position setting configured
+    // in os_booklets; defaults to show widget, but may optionally hide this
+    // widget and instead display table of contents in node page content.
+    // @see os_booklets_settings()
+    // @see os_booklets_node_view()
+    $toc_position = variable_get('os_booklets_toc_position');
+    if ((int) $toc_position === 1) {
+      $block['title'] = '';
+      $block['subject'] = '';
+      return $block;
+    }
+
     $book_nid = $this->options['book_nid'];
     if ($book_nid < 0) {
       // the toc of the book on the current page
       $node = menu_get_object();
-  	  if(isset($node->book['bid']) && book_type_is_allowed($node->type)) {
-  	    $book_nid = $node->book['bid'];
-  	  }
-  	  else {
-  	    $block['title'] = $block['subject'] = '';
-  	    return $block;
-  	  }
+      if (isset($node->book['bid']) && book_type_is_allowed($node->type)) {
+        $book_nid = $node->book['bid'];
+      }
+      else {
+        $block['title'] = $block['subject'] = '';
+        return $block;
+      }
     }
 
-    $block = os_books_build_toc($book_nid) + $block;
+    $block = os_books_build_toc($node, $this->options['toc_type']) + $block;
 
     return $block;
   }
@@ -74,7 +97,7 @@ class os_boxes_booktoc extends os_boxes_default {
   /**
    * Return the cache parameters for this box
    */
-  public function cache_info(){
+  public function cache_info() {
 
     //Clear when book,class,class_material nodes are saved
     $cache_key = array(

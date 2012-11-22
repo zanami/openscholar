@@ -3,6 +3,32 @@
 
 include_once ('os_pages.features.inc');
 
+function os_pages_menu() {
+  $items = array();
+
+  $items['os/pages/%node'] =
+  $items['os/pages/%node/outline'] = array(
+    'title' => 'Section Outline',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('book_admin_edit', 2),
+    'access callback' => '_book_outline_access',
+    'access arguments' => array(2),
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_INLINE,
+    'weight' => 2,
+    'file' => 'book.admin.inc',
+    'file path' => drupal_get_path('module', 'book'),
+  );
+
+  return $items;
+}
+
+function os_pages_admin_paths() {
+  return array(
+    'os/pages/*' => 'os/pages/*',
+  );
+}
+
 /**
  * Implements hook_vsite_og_node_type_info().
  */
@@ -12,3 +38,207 @@ function os_pages_vsite_og_node_type_info() {
   );
 }
 
+function os_pages_block_info() {
+  $blocks = array();
+
+  $blocks['main_content'] = array(
+    'info' => t('Page Content'),
+    'weight' => '-10',
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+function os_pages_block_view($delta) {
+  $block = array();
+
+  switch ($delta) {
+    case 'main_content':
+      $block['subject'] = drupal_get_title();
+      $block['content'] = drupal_set_page_content();
+      break;
+  }
+
+  return $block;
+}
+
+function os_pages_block_view_alter(&$render, $block) {
+  if ($block->delta == 'os_pages_section_nav' && !empty($render['content'])) {
+    $node = menu_get_object();
+    $render['content']['#contextual_links']['section'] = array(
+      'os/pages',
+      array($node->book['bid']),
+    );
+  }
+}
+
+function os_pages_preprocess_block(&$vars) {
+  $block = $vars['block'];
+
+  if ($block->delta == 'os_pages_section_nav') {
+    $vars['classes_array'][] = 'section-nav';
+  }
+}
+
+function os_pages_os_widget() {
+  $widgets = array();
+
+  $widgets['os_pages-main_content'] = array(
+    'module' => 'os_pages',
+    'delta' => 'main_content',
+    'title' => '',
+    'info' => 'Page Content',
+  );
+
+  return $widgets;
+}
+
+/**
+ * Define contexts for the page nodes
+ */
+function os_pages_context_custom($name) {
+  if (strpos($name, 'os_pages-page-') !== FALSE) {
+    $nid = str_replace('os_pages-page-', '', $name);
+    $context = (object)array(
+      'disabled' => FALSE,
+      'api_version' => 3,
+      'name' => 'os_pages-page-'.$nid,
+      'description' => 'Context active on a single page.',
+      'tag' => 'OpenScholar',
+      'weight' => 10,
+      'conditions' => array(),
+      'reactions' => array(
+        'block' => array(
+          'blocks' => array(
+            'os_pages-main_content' => array(
+              'module' => 'os_pages',
+              'delta' => 'main_content',
+              'region' => 'content_top',
+              'weight' => '-10',
+            ),
+            'boxes-os_pages_section_nav' => array(
+              'module' => 'boxes',
+              'delta' => 'os_pages_section_nav',
+              'region' => 'sidebar_second',
+              'weight' => '-10',
+            ),
+          )
+        )
+      ),
+      'condition_mode' => 0,
+    );
+    return $context;
+  }
+}
+
+/**
+ * Implements hook_node_view.
+ *
+ * By manually triggering the context, we can circumvent the condition process entirely.
+ * Context won't have to chug through all the contexts to process them, since none of them
+ * will have reactions.
+ */
+function os_pages_node_view($node) {
+  if ($node->type == 'page') {
+    $ctx = context_load('os_pages-page-'.$node->nid);
+    if ($ctx) {
+      context_set('context', $ctx->name, $ctx);
+    }
+
+    if (isset($node->book['bid']) && $ctx = context_load('os_books-book-'.$node->book['bid'])) {
+      context_set('context', $ctx->name, $ctx);
+    }
+
+    unset($node->content['book_navigation']);
+
+    unset($node->content['links']['book']);
+  }
+}
+
+function os_pages_form_node_form_alter(&$form, $form_state) {
+  if ($form['#node']->type != 'page') return;
+
+  if (isset($_GET['parent_node'])) {
+    $form['#book_parent_node'] = $_GET['parent_node'];
+  }
+
+  /*$ignore_words = array();
+  if (module_exists('pathauto')) {
+    $ignore_words = variable_get('pathauto_ignore_words', PATHAUTO_IGNORE_WORDS);
+    $ignore_words = explode(', ', $ignore_words);
+    $ignore_words[] = '--';
+  }
+  $form['page_path'] = array(
+    '#type' => 'machine_name',
+    '#field_prefix' => url('', array()).'/',
+    '#weight' => -4,
+    '#machine_name' => array(
+      'exists' => 'os_pages_page_path_exist',
+      'source' => array('title'),
+      'label' => t('Path to this post'),
+      'replace_pattern' => '[^a-z0-9/-]+'.(count($ignore_words)?'|(^('.implode(' |',$ignore_words).' ))+':''),
+      'replace' => '-',
+    ),
+    '#disabled' => isset($form['#node']->nid)?true:false,
+  );*/
+}
+
+function os_pages_node_submit(&$node, $form, &$form_state) {
+  if (isset($form['#book_parent_node'])) {
+    // create a book out of our parent node
+    $parent = $form['#book_parent_node'];
+    $parent = node_load($parent);
+    $parent->book['bid'] = 'new';
+    book_node_update($parent);
+
+    // $node->book has already been added to the node.
+    // nothing is done if these fields are empty
+    $node->book['bid'] = $parent->nid;
+    $node->book['plid'] = $parent->book['mlid'];
+    $node->book['menu_name'] = $parent->book['menu_name'];
+  }
+}
+
+/**
+ * Implements hook_preprocess_page
+ *
+ * If we're on a page node, change the Layout link to point to the right context.
+ * Also, if the context is active (i.e. it exists), tell the template to use the content regions
+ */
+function os_pages_preprocess_page(&$page) {
+  $node = menu_get_object('node');
+
+  if ($node && isset($node->nid) && $node->type == 'page') {
+    if (context_isset('context', 'os_pages-page-'.$node->nid)) {
+      $page['use_content_regions'] = true;
+    }
+
+    $links = &$page['title_suffix']['controls']['section_links']['#links'];
+    $section = array_diff(array_keys(context_active_contexts()), array('os_pages-page-'.$node->nid));
+    array_splice($links, 1, 0, array(
+      array(
+        'title' => t('Layout'),
+        'href' => 'cp/build/layout/' . implode('/', $section),
+        'query' => drupal_get_destination(),
+      ),
+      array(
+        'title' => t('This Page'),
+      )
+    ));
+  }
+}
+
+function os_pages_os_add_new_links_alter(&$links) {
+  $node = menu_get_object();
+
+  if (node_is_page($node) && $node->type == 'page') {
+    if ((user_access('add content to books') || user_access('administer book outlines')) && node_access('create', 'page') && $node->status == 1 && (!isset($node->book['depth']) || $node->book['depth'] < MENU_MAX_DEPTH)) {
+      $links['book_add_child'] = array(
+        'title' => t('Subpage'),
+        'href' => 'node/add/page',
+        'query' => isset($node->book['mlid'])?array('parent' => $node->book['mlid']):array('parent_node' => $node->nid),
+      );
+    }
+  }
+}

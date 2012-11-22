@@ -415,13 +415,14 @@ function og_vocab_autocomplete_callback($type, OgVocab $og_vocab, $entity_id = '
     $tag_last = $string;
   }
 
-  if (!empty($tag_last)) {
+  if (isset($tag_last)) {
     // Get an array of matching entities.
     $entity_labels = $handler->getReferencableEntities($tag_last, $instance['widget']['settings']['match_operator'], 10);
 
     // Loop through the products and convert them into autocomplete output.
+    $show_identifier = $instance['widget']['settings']['show_identifier'];
     foreach ($entity_labels as $entity_id => $label) {
-      $key = "$label ($entity_id)";
+      $key = $show_identifier ? "$label ($entity_id)" : $label;
       // Strip things like starting/trailing white spaces, line breaks and tags.
       $key = preg_replace('/\s\s+/', ' ', str_replace("\n", '', trim(decode_entities(strip_tags($key)))));
       // Names containing commas or quotes must be wrapped in quotes.
@@ -443,8 +444,41 @@ function og_vocab_field_formatter_info() {
     'og_vocab' => array(
       'label' => t('OG vocabulary'),
       'field types' => array('entityreference'),
+      'settings' => array(
+        'concatenate' => FALSE,
+      ),
     ),
   );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function og_vocab_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $element['concatenate'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Concatenate'),
+    '#description' => t('Show concatenated terms, separeated by comma. If disalbed, show list of terms, grouped by vocabulary.'),
+    '#default_value' => $settings['concatenate'],
+  );
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function og_vocab_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = array();
+
+  $summary[] = $settings['concatenate'] ? t('Show concatenated terms') : t('Show list of terms, grouped by vocabulary');
+  return implode('<br />', $summary);
 }
 
 /**
@@ -471,7 +505,20 @@ function og_vocab_field_formatter_view($entity_type, $entity, $field, $instance,
 
   $terms = taxonomy_term_load_multiple($tids);
 
-  // Iterate over each term and group by vocabylary.
+  $settings = $display['settings'];
+
+  if ($settings['concatenate']) {
+    $values = array();
+    foreach ($terms as $term) {
+      $url = entity_uri('taxonomy_term', $term);
+      $values[] = l($term->name, $url['path']);
+    }
+
+    $element[0] = array('#markup' => implode(', ', $values));
+    return $element;
+  }
+
+  // Iterate over each term and group by vocabulary.
   $data = array();
   foreach ($terms as $term) {
     if (empty($data['vocabylary'][$term->vid])) {
@@ -482,11 +529,14 @@ function og_vocab_field_formatter_view($entity_type, $entity, $field, $instance,
     $data['term'][$term->vid][] = l($term->name, $url['path']);
   }
 
+  if (!$data) {
+    return;
+  }
+
   $element = array();
   foreach ($data['term'] as $vid => $values) {
     $element[0][$vid] = array('#theme' => 'item_list', '#items' => $values, '#title' => $data['vocabylary'][$vid]);
   }
-
 
   return $element;
 }
@@ -841,7 +891,10 @@ function og_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
   $group = entity_load_single($group_type, $gid);
   list(,, $group_bundle) = entity_extract_ids($group_type, $group);
 
-  $form['machine_name']['#element_validate'][] = 'og_vocab_machine_name_validate';
+  // Validate the machine name when creating a new vocabulary.
+  if (empty($form_state['vocabulary']->vid)) {
+    $form['machine_name']['#element_validate'][] = 'og_vocab_machine_name_validate';
+  }
 
   $form['og_vocab_relation'] = array(
     '#type' => 'value',
@@ -947,6 +1000,30 @@ function og_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
     }
   }
   $form['#submit'][] = 'og_vocab_form_taxonomy_form_vocabulary_submit';
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Using the hook_form_alter and not hook_form_FORM_ID_alter due to the
+ * invokes order of the hooks.
+ */
+function og_vocab_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id != 'taxonomy_form_vocabulary' || !$context = og_vocab_is_group_admin_context()) {
+    return;
+  }
+  $form['#submit'][] = 'og_vocab_redirect_to_group_vocabularies';
+}
+
+/**
+ * After deleting the group vocabulary, redirect to the taxonomy group admin
+ * page.
+ */
+function og_vocab_redirect_to_group_vocabularies($form, &$form_state) {
+  if (!$context = og_vocab_is_group_admin_context()) {
+    return;
+  }
+  $form_state['redirect'] = 'group/' . $context['group_type'] .'/' . $context['gid'] . '/admin/taxonomy';
 }
 
 /**

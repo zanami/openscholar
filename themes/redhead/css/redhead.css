@@ -18,10 +18,14 @@ body {
     margin-top: 20px;
     }    
 
-.biblio-title a, .biblio-title-chicago a,
+
 a, a:visited {
     color:#8A281B;
     }
+    
+.biblio-title a, .biblio-title-chicago a {
+    color:#8A281B !important;
+    }    
 
 a:hover {
     color:#8A281B;
@@ -82,8 +86,8 @@ body.header-left-main #header-container {
   padding-right: 20px;
   }
 
-.region-sidebar-second {
-  /*  border-left: 1px solid #ccc;*/
+.region-sidebar-second .region-inner {
+ border-left: 1px solid #ccc;
     }
 
 #footer {
@@ -186,6 +190,10 @@ body.header-left-main #header-container {
 	color: #8A281B;
     font-size:1.1em;
 	}
+	
+.sidebar ul.nice-menu a:hover {
+	text-decoration:underline !important;
+	}	
 
 .sidebar ul.nice-menu ul {
 	margin-top:-38px;

@@ -693,6 +693,7 @@ function entityreference_field_widget_info() {
       // the two widgets, and the Field API doesn't update default
       // settings when the widget changes.
       'path' => '',
+      'show_identifier' => TRUE,
     ),
   );
 
@@ -707,6 +708,7 @@ function entityreference_field_widget_info() {
       // the two widgets, and the Field API doesn't update default
       // settings when the widget changes.
       'path' => '',
+      'show_identifier' => TRUE,
     ),
     'behaviors' => array(
       'multiple values' => FIELD_BEHAVIOR_CUSTOM,
@@ -752,6 +754,13 @@ function entityreference_field_widget_settings_form($field, $instance) {
       '#default_value' => $settings['size'],
       '#element_validate' => array('_element_validate_integer_positive'),
       '#required' => TRUE,
+    );
+
+    $form['show_identifier'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show entity ID'),
+      '#description' => t('Show the entity ID next to the label e.g. "node-label (1)". Note that in case you use an autocomplete widget and have entities with a duplicate label, and this option is disabled, the first entity will be used.'),
+      '#default_value' => $settings['show_identifier'],
     );
   }
 
@@ -805,9 +814,10 @@ function entityreference_field_widget_form(&$form, &$form_state, $field, $instan
     // Load those entities and loop through them to extract their labels.
     $entities = entity_load($field['settings']['target_type'], $entity_ids);
 
+    $show_identifier = $instance['widget']['settings']['show_identifier'];
     foreach ($entities as $entity_id => $entity_item) {
       $label = $handler->getLabel($entity_item);
-      $key = "$label ($entity_id)";
+      $key = $show_identifier ? "$label ($entity_id)" : $label;
       // Labels containing commas or quotes must be wrapped in quotes.
       if (strpos($key, ',') !== FALSE || strpos($key, '"') !== FALSE) {
         $key = '"' . str_replace('"', '""', $key) . '"';
@@ -871,8 +881,10 @@ function _entityreference_autocomplete_validate($element, &$form_state, $form) {
     else {
       // Try to get a match from the input string when the user didn't use the
       // autocomplete but filled in a value manually.
-      $field = field_info_field($element['#field_name']);
-      $handler = entityreference_get_selection_handler($field);
+      $field_name = $element['#field_name'];
+      $field = field_info_field($field_name);
+      $instance = field_info_instance($element['#entity_type'], $field_name, $element['#bundle']);
+      $handler = entityreference_get_selection_handler($field, $instance);
       $value = $handler->validateAutocompleteInput($element['#value'], $element, $form_state, $form);
     }
   }
@@ -989,8 +1001,9 @@ function entityreference_autocomplete_callback($type, $field_name, $entity_type,
     $entity_labels = $handler->getReferencableEntities($tag_last, $instance['widget']['settings']['match_operator'], 10);
 
     // Loop through the products and convert them into autocomplete output.
+    $show_identifier = $instance['widget']['settings']['show_identifier'];
     foreach ($entity_labels as $entity_id => $label) {
-      $key = "$label ($entity_id)";
+      $key = $show_identifier ? "$label ($entity_id)" : $label;
       // Strip things like starting/trailing white spaces, line breaks and tags.
       $key = preg_replace('/\s\s+/', ' ', str_replace("\n", '', trim(decode_entities(strip_tags($key)))));
       // Names containing commas or quotes must be wrapped in quotes.
@@ -1126,12 +1139,14 @@ function entityreference_field_formatter_prepare_view($entity_type, $entities, $
     $rekey = FALSE;
 
     foreach ($items[$id] as $delta => $item) {
-      // Check whether the referenced entity could be loaded and that the user has access to it.
-      if (isset($target_entities[$item['target_id']]) && entity_access('view', $field['settings']['target_type'], $target_entities[$item['target_id']])) {
+      // Check whether the referenced entity could be loaded.
+      if (isset($target_entities[$item['target_id']])) {
         // Replace the instance value with the term data.
         $items[$id][$delta]['entity'] = $target_entities[$item['target_id']];
+        // Check whether the user has access to the referenced entity.
+        $items[$id][$delta]['access'] = entity_access('view', $field['settings']['target_type'], $target_entities[$item['target_id']]);
       }
-      // Otherwise, unset the instance value, since the entity does not exists or should not be accessible.
+      // Otherwise, unset the instance value, since the entity does not exist.
       else {
         unset($items[$id][$delta]);
         $rekey = TRUE;
@@ -1151,6 +1166,13 @@ function entityreference_field_formatter_prepare_view($entity_type, $entities, $
 function entityreference_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $result = array();
   $settings = $display['settings'];
+
+  // Rebuild the items list to contain only those with access.
+  foreach ($items as $key => $item) {
+    if (empty($item['access'])) {
+      unset($items[$key]);
+    }
+  }
 
   switch ($display['type']) {
     case 'entityreference_label':

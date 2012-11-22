@@ -411,9 +411,12 @@ class views_plugin_display extends views_plugin {
       'css_class' => array('css_class'),
       'use_ajax' => array('use_ajax'),
       'hide_attachment_summary' => array('hide_attachment_summary'),
+      'hide_admin_links' => array('hide_admin_links'),
       'group_by' => array('group_by'),
       'query' => array('query'),
       'use_more' => array('use_more', 'use_more_always', 'use_more_text'),
+      'use_more_always' => array('use_more', 'use_more_always', 'use_more_text'),
+      'use_more_text' => array('use_more', 'use_more_always', 'use_more_text'),
       'link_display' => array('link_display', 'link_url'),
 
       // Force these to cascade properly.
@@ -473,6 +476,7 @@ class views_plugin_display extends views_plugin {
           'display_description' => FALSE,
           'use_ajax' => TRUE,
           'hide_attachment_summary' => TRUE,
+          'hide_admin_links' => FALSE,
           'pager' => TRUE,
           'pager_options' => TRUE,
           'use_more' => TRUE,
@@ -532,6 +536,10 @@ class views_plugin_display extends views_plugin {
         'default' => FALSE,
         'bool' => TRUE,
       ),
+      'hide_admin_links' => array(
+        'default' => FALSE,
+        'bool' => TRUE,
+      ),
       // This is legacy code:
       // Items_per/offset/use_pager is moved to the pager plugin
       // but the automatic update path needs this items defined, so don't remove it.
@@ -552,7 +560,8 @@ class views_plugin_display extends views_plugin {
       ),
       'use_more_always' => array(
         'default' => FALSE,
-        'bool' => FALSE,
+        'bool' => TRUE,
+        'export' => 'export_option_always',
       ),
       'use_more_text' => array(
         'default' => 'more',
@@ -965,9 +974,19 @@ class views_plugin_display extends views_plugin {
 
   /**
    * Retrieve a list of fields for the current display with the
-   *  relationship associated if it exists.
+   * relationship associated if it exists.
+   *
+   * @param $groupable_only
+   *  Return only an array of field labels from handler that return TRUE
+   *  from use_string_group_by method.
    */
   function get_field_labels() {
+    // Use func_get_arg so the function signature isn't amended
+    // but we can still pass TRUE into the function to filter
+    // by groupable handlers.
+    $args = func_get_args();
+    $groupable_only = isset($args[0]) ? $args[0] : FALSE;
+
     $options = array();
     foreach ($this->get_handlers('relationship') as $relationship => $handler) {
       if ($label = $handler->label()) {
@@ -979,6 +998,10 @@ class views_plugin_display extends views_plugin {
     }
 
     foreach ($this->get_handlers('field') as $id => $handler) {
+      if ($groupable_only && !$handler->use_string_group_by()) {
+        // Continue to next handler if it's not groupable.
+        continue;
+      }
       if ($label = $handler->label()) {
         $options[$id] = $label;
       }
@@ -1195,6 +1218,14 @@ class views_plugin_display extends views_plugin {
         'title' => t('Hide attachments in summary'),
         'value' => $this->get_option('hide_attachment_summary') ? t('Yes') : t('No'),
         'desc' => t('Change whether or not to display attachments when displaying a contextual filter summary.'),
+      );
+    }
+    if (!isset($this->definition['contextual links locations']) || !empty($this->definition['contextual links locations'])) {
+      $options['hide_admin_links'] = array(
+        'category' => 'other',
+        'title' => t('Hide contextual links'),
+        'value' => $this->get_option('hide_admin_links') ? t('Yes') : t('No'),
+        'desc' => t('Change whether or not to display contextual links for this view.'),
       );
     }
 
@@ -1464,12 +1495,20 @@ class views_plugin_display extends views_plugin {
           '#default_value' => $this->get_option('hide_attachment_summary') ? 1 : 0,
         );
         break;
+      case 'hide_admin_links':
+        $form['#title'] .= t('Hide contextual links on this view.');
+        $form['hide_admin_links'] = array(
+          '#type' => 'radios',
+          '#options' => array(1 => t('Yes'), 0 => t('No')),
+          '#default_value' => $this->get_option('hide_admin_links') ? 1 : 0,
+        );
+      break;
       case 'use_more':
         $form['#title'] .= t('Add a more link to the bottom of the display.');
         $form['use_more'] = array(
           '#type' => 'checkbox',
           '#title' => t('Create more link'),
-          '#description' => t("This will add a more link to the bottom of this view, which will link to the page view. If you have more than one page view, the link will point to the display specified in 'Link display' above. You can override the url at the link display setting."),
+          '#description' => t("This will add a more link to the bottom of this view, which will link to the page view. If you have more than one page view, the link will point to the display specified in 'Link display' section under advanced. You can override the url at the link display setting."),
           '#default_value' => $this->get_option('use_more'),
         );
         $form['use_more_always'] = array(
@@ -2313,6 +2352,7 @@ class views_plugin_display extends views_plugin {
         break;
       case 'use_ajax':
       case 'hide_attachment_summary':
+      case 'hide_admin_links':
         $this->set_option($section, (bool)$form_state['values'][$section]);
         break;
       case 'use_more':
@@ -2612,6 +2652,10 @@ class views_plugin_display extends views_plugin {
     foreach ($this->extender as $extender) {
       $extender->pre_execute();
     }
+
+    if ($this->get_option('hide_admin_links')) {
+      $this->view->hide_admin_links = TRUE;
+    }
   }
 
   /**
@@ -2708,8 +2752,15 @@ class views_plugin_display extends views_plugin {
     foreach (views_object_types() as $type => $info) {
       foreach ($this->get_handlers($type) as $key => $handler) {
         if ($handler->can_expose() && $handler->is_exposed()) {
-          if ($id != $key && $identifier == $handler->options['expose']['identifier']) {
-            return FALSE;
+          if ($handler->is_a_group()) {
+            if ($id != $key && $identifier == $handler->options['group_info']['identifier']) {
+              return FALSE;
+            }
+          }
+          else {
+            if ($id != $key && $identifier == $handler->options['expose']['identifier']) {
+              return FALSE;
+            }
           }
         }
       }

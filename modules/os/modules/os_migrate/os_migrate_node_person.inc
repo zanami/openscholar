@@ -36,7 +36,7 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
 
     //website
     $this->addFieldMapping('field_website', 'field_person_website_url');
-    $this->addFieldMapping('field_website:title', 'field_person_website_title');
+    $this->addFieldMapping('field_website:title', 'field_person_website_title')->defaultValue(NULL);
     $this->addFieldMapping('field_website:attributes', 'field_person_website_attributes');
 
 
@@ -44,7 +44,7 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('field_person_photo', 'field_person_photo')
       ->defaultValue(NULL);
     $this->addSimpleMappings(parent::subfields('field_person_photo', array('destination_file', 'cropbox_x', 'cropbox_y', 'cropbox_height' ,'cropbox_width', 'alt', 'title')));
-    $this->addFieldMapping('field_person_photo:source_dir')
+    $this->addFieldMapping('field_person_photo:source_dir', 'field_person_photo:source_dir')
       ->defaultValue(variable_get('os_migrate_files', NULL));
     $this->addUnmigratedDestinations(parent::subfields('field_person_photo', array('file_class', 'language', 'destination_dir', 'file_replace', 'preserve_files')));
 
@@ -129,8 +129,18 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
 
       $current_row->{'field_person_photo:cropbox_alt'} = $data['alt'];
       $current_row->{'field_person_photo:cropbox_title'} = $data['title'];
+    } else {
+      $current_row->{'field_person_photo:source_dir'} = NULL;
     }
 
+    if ((empty($current_row->field_person_website_title) || !$current_row->field_person_website_title) && ($current_row->field_person_website_url)){
+      $current_row->field_person_website_title = t('Website');
+    }
+
+    //title should be in an array since there can be multiple
+    if (isset($current_row->field_person_title_value)) {
+      $current_row->field_person_title_value = array($current_row->field_person_title_value);
+    }
     return parent::prepareRow($current_row); //false -> skip this row
 
   }

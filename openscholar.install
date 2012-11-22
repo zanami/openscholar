@@ -22,7 +22,7 @@ function openscholar_install() {
   'cleanblue',
   'collegiate',
   'commodore',
-  'cp',
+  'cp_theme',
   'dunster',
   'eloquent',
   'nortony',
@@ -32,6 +32,7 @@ function openscholar_install() {
   'stripy',
   'weft',
   'os_basetheme',
+  'os_default',
   'fairbanks_center',
   'gking',
   'openscholar_theme',
@@ -47,13 +48,13 @@ function openscholar_install() {
   theme_disable(array('bartik'));
 
   // set the default theme.
-  variable_set('theme_default', 'os_basetheme');
+  variable_set('theme_default', 'os_default');
 
   variable_set('admin_theme', 'seven');
   variable_set('node_admin_theme', '1');
 
   // Add the full html format.
-  $full_html_format = array(
+  /*$full_html_format = array(
     'format' => 'full_html',
     'name' => 'Full HTML',
     'weight' => 1,
@@ -76,5 +77,5 @@ function openscholar_install() {
     ),
   );
   $full_html_format = (object) $full_html_format;
-  filter_format_save($full_html_format);
+  filter_format_save($full_html_format);*/
 }

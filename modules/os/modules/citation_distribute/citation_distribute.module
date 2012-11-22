@@ -27,7 +27,7 @@ function citation_distribute_menu() {
 
   /* add a menu link for each plugin that implements admin_menu() */
   foreach (_citation_distribute_plugins() as $plugin) {
-    if ($plugin['title'] && $service = _citation_distribute_load_plugin($plugin)) {
+    if (isset($plugin['title']) && $service = _citation_distribute_load_plugin($plugin)) {
       if (method_exists($service, 'admin_form')) {
         $items['admin/config/openscholar/citation_distribute/'.$plugin['name']] = array(
           'title' => t('Configure ' . $plugin['title']),
@@ -236,11 +236,14 @@ function citation_distribute_flag($event, $flag, $nid, $account) {
         $batch_cmd = '';
       } else {
         $batch_cmd = 'distribute';                      //assume batch mode
+        $dist = TRUE;
       }
-      _citation_distribute_update_db($plugin['name'], $nid, $batch_cmd);
-      $msg = t('Submitted citation to @title', array('@title'=>$plugin['title']));
-      drupal_set_message($msg);
 
+      if ($dist) {
+        _citation_distribute_update_db($plugin['name'], $nid, $batch_cmd);
+        $msg = t('Submitted citation to @title', array('@title'=>$plugin['title']));
+        drupal_set_message($msg);
+      }
 
       break;
 
@@ -253,6 +256,7 @@ function citation_distribute_flag($event, $flag, $nid, $account) {
             $removed = $service->remove($nid);
           }
         }
+        $batch_cmd = NULL;
       } else {
         $batch_cmd = 'remove'; //schedule a removal at next cron run
       }
@@ -281,7 +285,7 @@ function citation_distribute_form_biblio_node_form_alter(&$form, &$form_state, $
   );
 
   foreach(_citation_distribute_plugins() as $plugin) {
-    if (isset($plugin['title'])) {
+    if (isset($plugin['title']) && _citation_distribute_is_service_configured($plugin)) {
       $name = $plugin['name'];
 
       $form['citation_distribute'][$name] = array(
@@ -314,19 +318,19 @@ function citation_distribute_form_os_publications_settings_alter(&$form, &$form_
    );
 
   foreach (_citation_distribute_plugins() as $plugin) {
-    if (isset($plugin['title'])) {
+    if (isset($plugin['title']) && _citation_distribute_is_service_configured($plugin)) {
       $form['right']['citation_distribute_autoflags']['#options'][$plugin['class']] = $plugin['title'];
     }
   }
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() for cp_app_settings.
  *
  * When publications settings is loaded in a modal, it gets a different form id.  In that case we should
  * still use the form alter to add CD autoflags.
  */
-function citation_distribute_form_cp_feature_customize_form_alter(&$form, &$state, $id) {
+function citation_distribute_form_cp_app_settings_form_alter(&$form, &$state, $id) {
   if ($form['#feature'] == 'os_publications') {
     citation_distribute_form_os_publications_settings_alter($form, $state, $id);
   }
@@ -337,12 +341,12 @@ function citation_distribute_form_cp_feature_customize_form_alter(&$form, &$stat
  */
 function citation_distribute_flag_default_flags() {
   foreach (_citation_distribute_plugins() as $plugin) {
-    if ($plugin['title']) {
+    if (isset($plugin['title'])) {
       $flags[] = array (
         'content_type' => 'node',
         'name' => $plugin['name'],
         'title' => 'title:' . $plugin['title'],
-        'roles' => array('flag'=>array(4),'unflag'=>array(4)), //vsite admin
+        'roles' => array('flag'=>array('vsite admin'),'unflag'=>array('vsite admin')), //vsite admin
         'global' => 0,
         'types' => array ('biblio' ),
         'flag_short' => 'Send to ' . $plugin['title'],
@@ -377,6 +381,13 @@ function citation_distribute_flag_default_flags() {
   }
   return $flags;
 
+}
+
+function citation_distribute_flag_access($flag, $content_id, $action, $account) {
+  if ($flag->module == 'citation_distribute' && ($roles = $flag->roles[$action])) {
+    $access = array_intersect($roles, $account->roles);
+    return (bool)count($access);
+  }
 }
 
 /**
@@ -541,7 +552,27 @@ function _citation_distribute_distribute($nid, $plugin) {
   return $out;
 }
 
+/**
+ * @function _citation_distribute_is_service_configured
+ *
+ * Some plugins have variables that need to be set in order for the plugin to work.  If they're not set,
+ * the user shouldn't see the plugin.  This checks if they're set.
+ *
+ * To make this work, service classes should have construct set their properties to variable_get()'s
+ * output.
+ */
+function _citation_distribute_is_service_configured($plugin) {
+  $service = _citation_distribute_load_plugin($plugin);
 
+  $properties = get_object_vars($service);
+  foreach ($properties as $prop) {
+    if ($prop === NULL) {
+      return FALSE;
+    }
+  }
+
+  return TRUE;
+}
 
 /**
  * @function _citation_distribute_unlist_db

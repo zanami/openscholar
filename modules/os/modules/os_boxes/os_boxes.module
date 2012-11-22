@@ -270,12 +270,26 @@ function os_boxes_admin_paths() {
 }
 
 /**
+ * Implements hook_block_view_alter
+ *
+ * Don't display anything for boxes that have no content
+ * By default, boxes
+ */
+function os_boxes_block_view_alter(&$array, &$block) {
+  if ($block->module == 'boxes' && strpos($array['content']['#markup'], 'box-empty') !== FALSE) {
+    $array['content'] = '';
+  }
+}
+
+/**
  * Implements hook_preprocess_HOOK() for boxes_box.
  *
  * Removes default boxes controls; we use our own.
  */
 function os_boxes_preprocess_boxes_box(&$variables) {
-  unset($variables['block']['controls']);
+  if(isset($variables['block']) && isset($variables['block']['controls'])){
+    unset($variables['block']['controls']);
+  }
 }
 
 /**

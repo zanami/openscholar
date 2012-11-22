@@ -1,26 +1,30 @@
 <?php
 
-function cp_feature_customize($js, $feature_name) {
+/**
+ * Form argument for menu item '/cp/build/apps/$app_name'.
+ */
+function cp_app_settings($js, $app_name) {
+
   if (!$js) {
-    drupal_goto('features/'. $feature_name);
-    return;
+    return drupal_get_form('cp_app_settings_form', $app_name);
   }
 
   ctools_include('modal');
   ctools_include('ajax');
-  $feature = feature_load($feature_name);
-  $feature_title = features_get_feature_title($feature);
+  $app = feature_load($app_name);
+  $app_title = features_get_feature_title($app);
 
   $form_state = array(
-    'title' => $feature_title,
+    'title' => $app_title,
     'ajax' => TRUE,
     'build_info' => array(
-      'args' => array($feature_name),
+      'args' => array($app_name),
     ),
   );
 
-  $output = ctools_modal_form_wrapper('cp_feature_customize_form', $form_state);
-  if ($form_state['submitted']) {
+  $output = ctools_modal_form_wrapper('cp_app_settings_form', $form_state, $app_name, $app_title);
+  // Check to make sure there are no form errors before dismissing this form modal.
+  if ($form_state['submitted'] && form_get_errors() == FALSE) {
     $output[] = ctools_modal_command_dismiss();
   }
   else {
@@ -33,21 +37,23 @@ function cp_feature_customize($js, $feature_name) {
 }
 
 /**
- * Wrapper form function
- * Feature customization pages all pass through here
- * Any modules that want to alter all of them can do so by altering this form
+ * Form wrapper for all OS App settings pages.
+ *
+ * Any modules that want to alter all settings forms should alter this form.
+ *
+ * @see cp_app_settings()
  */
-function cp_feature_customize_form($form, $form_state, $feature) {
-  $item = menu_get_item('features/'. $feature);
+function cp_app_settings_form($form, $form_state, $app_name) {
+  $item = menu_get_item('features/' . $app_name);
   $form['#attributes'] = array(
     'class' => array(
-      $feature.'-customize-form',
+      $app_name . '-customize-form',
     )
   );
-  if ($item['path'] == 'features/'.$feature) {
+  if ($item['path'] == 'features/' . $app_name) {
     $form_id = array_shift($item['page_arguments']);
     if ($file = $item['include_file']) {
-      require_once(DRUPAL_ROOT . '/' .$file);
+      require_once(DRUPAL_ROOT . '/' . $file);
     }
 
     if (count($item['page_arguments'])) {
@@ -59,28 +65,32 @@ function cp_feature_customize_form($form, $form_state, $feature) {
   else {
     $form['no_form'] = array(
       '#prefix' => '<p>',
-      '#markup' => t('This feature has no settings.'),
+      '#markup' => t('This App has no settings.'),
       '#suffix' => '</p>',
     );
     $form['ok'] = array(
       '#type' => 'submit',
       '#value' => t('Ok'),
     );
-    $form['#after_build'][] = '_cp_feature_customize_remove_no_form';
+    $form['#after_build'][] = '_cp_app_settings_remove_no_form';
   }
 
-  //Store the current feature in the form data
-  $form['#feature'] = $feature;
+  // Stores the current feature in the form data
+  $form['#feature'] = $app_name;
 
   return $form;
 }
 
-function _cp_feature_customize_remove_no_form($element, $form_state) {
+/**
+ * @todo Function description
+ */
+function _cp_app_settings_remove_no_form($element, $form_state) {
   $keys = array('no_form', 'ok', 'form_build_id', 'form_token', 'form_id');
   $children = element_children($element);
   $new = array_diff($children, $keys);
   if (count($new) != 0) {
     unset($element['no_form'], $element['ok']);
+    $element = system_settings_form($element);
   }
 
   return $element;

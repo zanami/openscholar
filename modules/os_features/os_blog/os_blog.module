@@ -17,10 +17,27 @@ function os_blog_process_node(&$vars) {
   if ($vars['type'] !== 'blog') {
     return;
   }
-  // Build the submitted variable used by default in node templates
+  // Builds the submitted variable used by default in node templates
   $pubdate = format_date($vars['created'], 'custom', 'F j, Y');
   // Publication date, formatted with time element
   $vars['submitted'] = '<time datetime="' . $vars['datetime'] . '" pubdate="pubdate">' . $pubdate . '</time>';
+
+  // Adds class 'os-log-add-comment' for custom icon on comment link.
+  if (isset($vars['content']['links']['comment']['#links']['comment-add'])) {
+    if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes'])) {
+      if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
+        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] .= ' os-blog-add-comment';
+      }
+      else {
+        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] = 'os-blog-add-comment';
+      }
+    }
+    else {
+      $vars['content']['links']['comment']['#links']['comment-add']['attributes'] = array(
+        'class' => 'os-blog-add-comment',
+      );
+    }
+  }
 }
 
 /**

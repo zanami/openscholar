@@ -12,12 +12,12 @@ include_once 'harvard_courses.features.inc';
 function harvard_courses_feeds_plugins() {
   $path = drupal_get_path('module', 'harvard_courses');
   $info = array();
-  $info['FeedsTokenizedFetcher'] = array(
-    'name'        => t('Token fetcher'),
-    'description' => t('Create a tokenize url for fetching'),
+  $info['HarwardFetcher'] = array(
+    'name'        => t('Harward API fetcher'),
+    'description' => t('Create url for fetching info from Harward API.'),
     'handler' => array(
       'parent' => 'FeedsFetcher',
-      'class'  => 'FeedsTokenizedFetcher',
+      'class'  => 'HarwardFetcher',
       'file'   => 'harvard_courses_token_fetcher.inc',
       'path'   => $path,
     ),
@@ -26,7 +26,7 @@ function harvard_courses_feeds_plugins() {
 }
 
 /**
- * Returning vsites nid by the import type.
+ * Returning groups (Department. Project or personal) nid by the import type.
  *
  *  @param $import_type
  *    What is the method of the import:
@@ -45,7 +45,7 @@ function haravard_courses_sites_nid_by_import_type($import_type, $search_value =
   $query = new entityFieldQuery();
   $query
     ->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', 'vsite');
+    ->propertyCondition('type', array('department', 'project', 'personal'), 'IN');
 
     if ($search_value) {
       $query->fieldCondition($field, 'value', $search_value, 'IN');
@@ -72,25 +72,32 @@ function harvard_courses_node_insert($node) {
   $wrapper = entity_metadata_wrapper('node', $node->nid);
 
   // Import by catalog number.
-  $vsites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
-  foreach ($vsites as $vsite) {
-    og_group('node', $vsite, array('entity_type' => 'node', 'entity' => $node->nid));
+  $sites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
+  if (!empty($sites)) {
+    foreach ($sites as $site) {
+      og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+    }
   }
 
   // Import by department ID.
-  $vsites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_field->value()));
-  foreach ($vsites as $vsite) {
-    og_group('node', $vsite, array('entity_type' => 'node', 'entity' => $node->nid));
+  $sites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_department_id->value()));
+  if (!empty($sites)) {
+    foreach ($sites as $site) {
+      og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+    }
   }
 
   $node->skip_og_membership = TRUE;
+
+  // Change description field format to full html.
+  $node->field_description[LANGUAGE_NONE][0]['format'] = 'full_html';
 }
 
 /**
  * Implements hook_node_update().
  */
 function harvard_courses_node_update($node) {
-  if ($node->type != 'vsite' || empty($node->original)) {
+  if (!in_array($node->type, array('project', 'department', 'personal')) || empty($node->original)) {
     return;
   }
 
@@ -102,20 +109,20 @@ function harvard_courses_node_update($node) {
   // node.
   $fields = array(
     'cat_num' => array(
-      'vsite' => 'field_catalog_number',
+      'field_name' => 'field_catalog_number',
       'course' => 'field_cat_number',
     ),
     'department' => array(
-      'vsite' => 'field_department_id',
-      'course' => 'field_field',
+      'field_name' => 'field_department_id',
+      'course' => 'field_department_id',
     ),
   );
 
   foreach ($fields as $field) {
-    $removed_items = array_diff($original_node->{$field['vsite']}->value(), $wrapper->{$field['vsite']}->value());
-    $added_items = array_diff($wrapper->{$field['vsite']}->value(), $original_node->{$field['vsite']}->value());
+    $removed_items = array_diff($original_node->{$field['field_name']}->value(), $wrapper->{$field['field_name']}->value());
+    $added_items = array_diff($wrapper->{$field['field_name']}->value(), $original_node->{$field['field_name']}->value());
 
-    // Ungrouping removed courses from the vsite.
+    // Un-grouping removed courses from the group.
     if (!empty($removed_items)) {
       $courses = harvard_courses_related_nodes($field['course'], $removed_items);
       if (!empty($courses)) {
@@ -125,8 +132,9 @@ function harvard_courses_node_update($node) {
       }
     }
 
-    // New course(s) was added to the vsite. IF the course(s) is alredy imported
-    // then group them, if not then in the next import they will be imported.
+    // New course(s) was added to the group. IF the course(s) is already
+    // imported then group them, if not then in the next import they will be
+    // imported.
     if (!empty($added_items)) {
       $courses = harvard_courses_related_nodes($field['course'], $added_items);
       if (!empty($courses)) {
@@ -174,7 +182,7 @@ function harvard_courses_feeds_presave($source, $entity, $item) {
     ->entityCondition('entity_type', 'node')
     ->propertyCondition('type', 'harvard_course')
     ->fieldCondition('field_cat_number', 'value', $wrapper->field_cat_number->value())
-    ->fieldCondition('field_field', 'value', $wrapper->field_field->value())
+    ->fieldCondition('field_department_id', 'value', $wrapper->field_department_id->value())
     ->execute();
 
   // Skip on this item, alredy exists.
@@ -185,4 +193,103 @@ function harvard_courses_feeds_presave($source, $entity, $item) {
     drupal_set_message(t("The node @name wasn't imported because he already exists.", $param));
     $entity->feeds_item->skip = TRUE;
   }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
+  if ($form['#feature'] != 'harvard_courses' || !$space = spaces_get_space()) {
+    return;
+  }
+  $attached_data = array();
+
+  field_attach_form('node', $space->og, $attached_data, $form_state);
+
+  // Adding to the original form the fields.
+  $form['field_department_id'] = $attached_data['field_department_id'];
+  $form['field_catalog_number'] = $attached_data['field_catalog_number'];
+  $form['#entity'] = $attached_data['#entity'];
+
+  // Remove comments and adding a custom submit handler.
+  $form['#after_build'][] = 'harvard_courses_form_cp_app_settings_form_after_build';
+  $form['#submit'][] = 'harvard_courses_feature_submit';
+}
+
+/**
+ * After build function for removing the comment settings area.
+ */
+function harvard_courses_form_cp_app_settings_form_after_build($form, &$form_state) {
+  $form_state['redirect'] = 'cp/build/features';
+  $form['comment_settings']['#access'] = FALSE;
+
+  // We don't need to handle with comments in this module.
+  $key = array_search('comment_sources_save_admin_form', $form['#submit']);
+  unset($form['#submit'][$key]);
+  return $form;
+}
+
+/**
+ * Get the value of multiple fields. Because there is a "Add more" button, we
+ * can't go over him in the loop.
+ *
+ *  @param $field_name
+ *    The field name.
+ *  @param $form_state
+ *    The form state value.
+ *
+ *  @return
+ *    Array containing the value of the field.
+ */
+function _harvard_courses_get_field_value($field_name, $form_state) {
+  $return = '';
+
+  foreach ($form_state['values'][$field_name][LANGUAGE_NONE] as $key => $value) {
+    if (is_int($key)) {
+      $item_value = $form_state['values'][$field_name][LANGUAGE_NONE][$key]['value'];
+
+      if (!empty($item_value)) {
+        $return[] = $item_value;
+      }
+    }
+  }
+
+  return $return;
+}
+
+/**
+ * Submit handler - Save the value of department ID, and catalog number.
+ */
+function harvard_courses_feature_submit($form, $form_state) {
+  $department_id = _harvard_courses_get_field_value('field_department_id', $form_state);
+  $catalog_number = _harvard_courses_get_field_value('field_catalog_number', $form_state);
+
+  $wrapper = entity_metadata_wrapper('node', $form['#entity']);
+
+  empty($department_id) ? $wrapper->field_department_id->set(NULL) : $wrapper->field_department_id->set($department_id);
+  empty($catalog_number) ? $wrapper->field_catalog_number->set(NULL) : $wrapper->field_catalog_number->set($catalog_number);
+
+  $wrapper->save();
+}
+
+/**
+ * Implements hook_field_access().
+ */
+function harvard_courses_field_access($op, $field, $entity_type, $entity, $account) {
+  if (!in_array($field['field_name'], array('field_department_id', 'field_catalog_number'))) {
+    return;
+  }
+
+  $spaces_features = variable_get('spaces_features', array());
+  if (!$spaces_features['harvard_courses']) {
+    return FALSE;
+  }
+
+  // The fields cannot be shown when attaching them to the node.
+  if (menu_get_object()) {
+    return FALSE;
+  }
+
+  // Don't show the fields in view mode.
+  return $op != 'view' ? TRUE : FALSE;
 }

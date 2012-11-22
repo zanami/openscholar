@@ -16,7 +16,7 @@ function cp_toolbar_theme_registry_alter(&$theme_registry) {
 function cp_page_alter(&$page) {
   if (isset($page['page_top']['toolbar'])) {
     $page['page_top']['toolbar']['#pre_render'] = array('cp_toolbar_pre_render');
-    $page['page_top']['toolbar']['#access'] = $page['page_top']['toolbar']['#access'] || spaces_access_admin();
+    $page['page_top']['toolbar']['#access'] = $page['page_top']['toolbar']['#access'] || user_is_logged_in();
   }
 }
 
@@ -97,7 +97,9 @@ function cp_toolbar_view() {
   $links = array(
     'help' => array(
       'title' => t('Help'),
-      'href' => 'admin/help',
+      // 'href' => 'admin/help',
+      'href' => 'help/os_help/User-Documentation',
+     // 'query' => array('popup'=>'1'),
       'html' => TRUE,
       'description' => t('Get help on various topics'),
     ),
@@ -124,50 +126,70 @@ function cp_toolbar_view() {
     '#attributes' => array('id' => 'toolbar-home'),
   );
 
-  $links = array(
-    'content' => array(
-      'title' => t('Content'),
-      'href' => 'cp/content',
-      'html' => TRUE,
-      'attributes' => array('alt' => t('Content'), 'data-drawer' => 'content-drawer'),
-      '#paths' => array(
-        'node/add',
-      ),
-      'description' => t('Content is what is on your site'),
-    ),
-    'site' => array(
-      'title' => t('Build'),
-      'href' => 'cp/build',
-      'html' => TRUE,
-      'attributes' => array('alt' => t('Site'), 'data-drawer' => 'site-drawer'),
+  $links = array();
+  $l = menu_get_item('cp/content');
+  if ($l['access']) {
+    $links['content'] = $l + array(
+      '#paths' => array('node/add'),
+      'attributes' => array(
+        'title' => t('Content'),
+        'data-drawer' => 'content-drawer',
+      )
+    );
+  }
+  $l = menu_get_item('cp/build');
+  if ($l['access']) {
+    $l['title'] = t('Build');
+    $links['site'] = $l + array(
       '#paths' => array(),
-      'description' => t('Build is the structure of your site'),
-    ),
-    'appearance' => array(
-      'title' => t('Appearance'),
-      'href' => 'cp/appearance',
-      'html' => TRUE,
-      'attributes' => array('alt' => t('Appearance'), 'id' => 'toolbar-link-admin-appearance'),
+      'attributes' => array(
+        'title' => t('Build'),
+        'data-drawer' => 'site-drawer',
+      )
+    );
+  }
+  $l = menu_get_item('cp/appearance');
+  if ($l['access']) {
+    $links['appearance'] = $l + array(
       '#paths' => array(),
-      'description' => t('Change the style of your site'),
-    ),
-    'settings' => array(
-      'title' => t('Settings'),
-      'href' => 'cp/settings',
-      'html' => TRUE,
-      'attributes' => array('alt' => t('Settings')),
+      'attributes' => array(
+        'title' => t('Appearance'),
+      )
+    );
+  }
+  $l = menu_get_item('cp/settings');
+  if ($l['access']) {
+    $links['settings'] = $l + array(
       '#paths' => array(),
-      'description' => t('Change site-wide settings'),
-    ),
-    'people' => array(
-      'title' => t('People'),
-      'href' => 'cp/users',
-      'html' => TRUE,
-      'attributes' => array('alt' => t('People'), 'data-drawer' => 'people-drawer'),
+      'attributes' => array(
+        'title' => t('Settings'),
+      )
+    );
+  }
+  $l = menu_get_item('cp/users');
+  if ($l['access']) {
+    $l['title'] = t('People');
+    $links['people'] = $l + array(
       '#paths' => array(),
-      'description' => t('People are your users'),
-    ),
-  );
+      'attributes' => array(
+        'title' => t('People'),
+        //'data-drawer' => 'people-drawer',
+      )
+    );
+  }
+  // Make sure the contact module is enabled
+  // before adding in the link for cp/support.
+  if(module_exists('contact')) {
+    $l = menu_get_item('cp/support');
+    if ($l['access']) {
+      $links['support'] = $l + array(
+        '#paths' => array(),
+        'attributes' => array(
+          'title' => t('Support'),
+        )
+      );
+    }
+  }
   if (user_access('access toolbar')) {
     $links['admin'] = array(
       'title' => t('Admin'),
@@ -226,7 +248,7 @@ function cp_toolbar_fill_drawer() {
   foreach ($bundles as $type => $name) {
     $url_str = str_replace('_', '-', $type);
     foreach ($content as $link) {
-      if ($link['link_path'] == 'node/add/'.$url_str) {
+      if ($link['access'] && $link['link_path'] == 'node/add/'.$url_str) {
         $links[] = $link;
       }
     }
@@ -239,19 +261,30 @@ function cp_toolbar_fill_drawer() {
     ),
   );
 
+  $links = array();
+  $l = menu_get_item('cp/content/content');
+  if ($l['access']){
+    $links['content'] = $l;
+  }
+  $l = menu_get_item('cp/content/files');
+  if ($l['access']){
+    $links['files'] = $l;
+  }
+  $l = menu_get_item('cp/content/comments');
+  if ($l['access']){
+    $links['comments'] = $l;
+  }
+
   $drawer['content-drawer']['list'] = array(
     '#theme' => 'links',
-    '#links' => array(
-      'content' => menu_get_item('cp/content/content'),
-      'files' => menu_get_item('cp/content/files'),
-      'comments' => menu_get_item('cp/content/comments'),
-    ),
+    '#links' => $links,
     '#attributes' => array(
       'class' => 'toolbar-list',
     ),
   );
 
   // people links
+  /*
   $drawer['people-drawer'] = array(
     '#theme' => 'cp_toolbar_drawer_section',
     '#attributes' => array('id' => 'people-drawer'),
@@ -260,25 +293,18 @@ function cp_toolbar_fill_drawer() {
     ),
   );
 
-  $drawer['people-drawer']['add'] = array(
-    '#theme' => 'links',
-    '#links' => array(
-      'users' => menu_get_item('cp/users/add'),
-    ),
-    '#attributes' => array(
-      'class' => 'toolbar-add',
-    ),
-  );
-
+  $links = array();
+  $l = menu_get_item('cp/users');
+  if ($l['access']) {
+    $links['list'] = $l;
+  }
   $drawer['people-drawer']['list'] = array(
     '#theme' => 'links',
-    '#links' => array(
-      'list' => menu_get_item('cp/users'),
-    ),
+    '#links' => $links,
     '#attributes' => array(
       'class' => 'toolbar-list',
     ),
-  );
+  );*/
 
   $drawer['site-drawer'] = array(
     '#theme' => 'cp_toolbar_drawer_section',
@@ -288,14 +314,27 @@ function cp_toolbar_fill_drawer() {
     ),
   );
 
+  $links = array();
+  $l = menu_get_item('cp/build/features');
+  if ($l['access']) {
+    $links['features'] = $l;
+  }
+  $l = menu_get_item('cp/build/layout');
+  if ($l['access']) {
+    $links['layout'] = $l;
+  }
+  $l = menu_get_item('cp/build/menu');
+  if ($l['access']) {
+    $links['menu'] = $l;
+  }
+  $l = menu_get_item('cp/build/taxonomy');
+  if ($l['access']) {
+    $links['taxonomy'] = $l;
+  }
+
   $drawer['site-drawer']['manage'] = array(
     '#theme' => 'links',
-    '#links' => array(
-      'features' => menu_get_item('cp/build/features'),
-      'layout' => menu_get_item('cp/build/layout'),
-      'menu' => menu_get_item('cp/build/menu'),
-      'taxonomy' => menu_get_item('cp/build/taxonomy'),
-    ),
+    '#links' => $links,
     '#attributes' => array(
       'class' => 'toolbar-gear',
     ),
@@ -306,7 +345,7 @@ function cp_toolbar_fill_drawer() {
     '#access' => user_access('access toolbar'),
     '#attributes' => array('id' => 'admin-drawer'),
     '#paths' => array(
-     	'admin'
+       'admin'
     ),
   );
 

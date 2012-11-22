@@ -6,7 +6,7 @@
  */
 
  abstract class SpacesOverridesTableMigration extends TableCopyMigration {
-  public function __construct() {
+  public function __construct($dep_groups = array()) {
     $key_schema = array(
         'type' => array(
             'type' => 'varchar',
@@ -33,7 +33,7 @@
     $this->table = 'spaces_overrides';
     $this->alias = 's';
 
-    parent::__construct($this->table, $key_schema, MigrateGroup::getInstance('spacesoverrides'), NULL, $this->altCountQuery());
+    parent::__construct($this->table, $key_schema, MigrateGroup::getInstance('spacesoverrides', $dep_groups), NULL, $this->altCountQuery());
   }
 
   public function query() {
@@ -42,13 +42,9 @@
     $query->isNotNull('value');
     $query->distinct();
 
-    //$query->condition('id', '8921'); //jlepore
-   // $query->condition('id', '10061'); //charlesmaier
-    if (isset($this->restrict_vsites)) {
-      $query->condition('id', $this->restrict_vsites, 'IN'); //dancabral, jlepore, jsagotsky, gary
+    if ($restrict = OSMigration::restrict_vsites()) {
+      $query->condition('id', $restrict, 'IN');
     }
-
-    //check that vsite exists?
 
     return $query;
   }
@@ -72,30 +68,6 @@
      return parent::prepareRow($row);
    }
 
-
-
-//   //update a block's array
-//   public function _update_block(array $block) {
-//     if (isset($block['region'])) {
-//       $block['region'] = $this->_update_region($block['region']);
-//     }
-
-//     if (isset($block['module'])) {
-//       $block['module'] = $this->_update_module($block['module']);
-//     }
-
-//     if (isset($block['plugin_key'])) {
-//       if ($key = $this->_update_block_plugin_key($block['plugin_key'])) {
-//         $block['plugin_key'] = $key;
-//       } else {
-//         return FALSE;
-//       }
-//     }
-
-//     //$block['plugin'] almost certainly needs an update    .  plugin_key?
-//     return $block;
-//   }
-
   /**
    * @function _update_module
    *
@@ -106,6 +78,7 @@
       'vsite_menus' => 'os',
       'scholar_dvn' => 'os_dataverse',
       'scholar_book' => 'os_booklets',
+      'scholar_announcements' => 'os_news',
     );
 
     if (isset($module_map[$module])) {

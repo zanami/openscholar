@@ -21,3 +21,7 @@
 .page-node.node-type-person header h1 {
   display: none;
 }
+
+.node-person .field-name-field-professional-title {
+	font-weight: bold;
+}

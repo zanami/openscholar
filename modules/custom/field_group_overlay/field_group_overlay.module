@@ -1,0 +1,131 @@
+<?php
+
+function field_group_overlay_menu() {
+  $items = array();
+
+  $items['field-group/%/%field_group_overlay/%'] = array(
+    'title' => 'Edit Field Group',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('field_group_overlay_edit_form', 2, 3),
+    'access callback' => 'field_group_overlay_entity_access',
+    'access arguments' => array(1, 2, 3),
+  );
+
+  return $items;
+}
+
+/**
+ * Loads an entity from 2 path arguments
+ */
+function field_group_overlay_load($eid) {
+  $entity_type = arg(1);
+  if ($entities = entity_load($entity_type, array($eid))) {
+    return $entities[$eid];
+  }
+}
+
+function field_group_overlay_entity_access($entity_type, $entity, $group_name) {
+  list(, , $type) = entity_extract_ids($entity_type, $entity);
+  $groups = field_group_info_groups($entity_type, $type, 'default');
+
+  if (isset($groups[$group_name]) && entity_access('update', $entity_type, $entity)) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function field_group_overlay_admin_paths() {
+  return array(
+    'field-group/*' => TRUE,
+  );
+}
+
+function field_group_overlay_edit_form($form, $form_state, $entity, $group_name) {
+  $entity_type = arg(1);
+  $temp = array();
+  field_attach_form($entity_type, $entity, $temp, $form_state);
+
+  $children = element_children($temp);
+  $props = array_diff(array_keys($temp), $children);
+
+  // assign all # properties to the form
+  foreach ($props as $p) {
+    $form[$p] = $temp[$p];
+  }
+
+  // some vars for our use later
+  $form['#entity_type'] = $entity_type;
+  $form['#entity'] = $entity;
+  $form['#group_name'] = $group_name;
+
+  // we can't get here unless the field_group exists for this node type
+  // therefore, its safe to read this parameter without checking it first
+  foreach ($form['#group_children'] as $c => $v) {
+    if (isset($temp[$c]) && $v == $group_name) {
+      $form[$c] = $temp[$c];
+      $key = array_search($c, $children);
+    }
+  }
+
+  $form['actions'] = array(
+    'save' => array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+      '#submit' => array('field_group_overlay_edit_form_save'),
+    ),
+    'cancel' => (overlay_get_mode() != 'child')?array():array(  // only display a cancel button if we're in the overlay
+      '#type' => 'submit',
+      '#value' => t('Cancel'),
+      '#limit_validation_errors' => array(),
+    ),
+    '#weight' => 100,
+  );
+
+  $form['#submit'][] = 'field_group_overlay_edit_form_submit';
+
+  return $form;
+}
+
+function field_group_overlay_edit_form_save($form, $form_state) {
+  $entity_type = $form['#entity_type'];
+  $entity = $form['#entity'];
+  $group_name = $form['#group_name'];
+
+  foreach ($form['#group_children'] as $c => $g) {
+    if (isset($form_state['values'][$c]) && $g == $group_name) {
+      $entity->{$c} = $form_state['values'][$c];
+    }
+  }
+  entity_save($entity_type, $entity);
+}
+
+function field_group_overlay_edit_form_submit($form, $form_state) {
+  overlay_close_dialog();
+}
+
+function field_group_overlay_build_group($entity_type, $entity, $group_name) {
+  $content = array(
+    '#view_mode' => 'full',
+  );
+  list(,$id,) = entity_extract_ids($entity_type, $entity);
+  field_attach_prepare_view($entity_type, array($id => $entity), 'full');
+  $temp = field_attach_view($entity_type, $entity, 'full');
+
+  $children = element_children($temp);
+  $props = array_diff(array_keys($temp), $children);
+
+  foreach ($props as $p) {
+    $content[$p] = $temp[$p];
+  }
+
+  foreach ($content['#group_children'] as $c => $v) {
+    if ($v == $group_name && isset($temp[$c])) {
+      $content[$c] = $temp[$c];
+    }
+  }
+
+  return $content;
+}

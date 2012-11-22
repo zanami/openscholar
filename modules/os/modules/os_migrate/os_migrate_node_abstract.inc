@@ -13,11 +13,12 @@
  */
 abstract class AbstractNodeOSMigration extends OSMigration {
 
-  //Map of bundle names that have changed
+  //Map of bundle names that have changed.  d7 bundle => d6 cck type
   public static $source_bundle_map = array(
     'software_project' => 'scholar_software_project',
     'software_release' => 'scholar_software_release',
-    'media_gallery' => 'gallery'
+    'media_gallery' => 'gallery',
+    'news' => 'announcement',
   );
 
   public function __construct($destination_bundle){
@@ -25,10 +26,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
 
     $this->source_content_type = $source_content_type = self::get_source_bundle($destination_bundle);
 
-    parent::__construct(MigrateGroup::getInstance('node', array(
-      'inline',
-      'users'
-    )));
+    parent::__construct(MigrateGroup::getInstance('node', array('inline','users')));
     //when extending this class, don't forget to update info file with new filename!
 
 
@@ -42,7 +40,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       'ImageInlineOS',
       'FileInlineOS',
       'HTMLInlineOS',
-      'VsiteNodeOS'
+      'VsiteNodeOS',
     ); //og when that's done
 
 
@@ -65,9 +63,9 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $this->addFieldMapping('revision_uid', 'nr_uid');
 
     $this->addFieldMapping('body', 'body');
-    $this->addFieldMapping('body:format', 'format');
+    $this->addFieldMapping('body:format', 'format')->defaultValue('filtered_html');
     $this->addFieldMapping('body:language', 'language')->defaultValue('und');
-    $this->addFieldMapping('body:summary', 'teaser');
+  //  $this->addFieldMapping('body:summary', 'teaser');
 
     $this->addFieldMapping('log', 'log'); //from nr
     $this->addFieldMapping('revision')->defaultValue(TRUE); //create a new revision.  vid is automatically migrated
@@ -89,6 +87,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       ), t('DNM'));
     }
 
+    $this->addUnmigratedDestinations(array('body:summary'), t('DNM'));
     /* Unmapped source fields.  Mark them as Do Not Map, so the UI knows they're intentionally ignored */
     $this->addUnmigratedSources(array(
       'moderate',
@@ -113,16 +112,15 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     //$query->condition('n.nid', '6811', '='); //prod node with inline files
     //$query->condition('n.nid', '13701', '='); //prod node with multiple images
 
-
     $query->join('node_revisions', 'nr', 'n.vid = nr.vid');
     $query->fields('nr', array(
       'body',
       'uid',
       'log',
-      'teaser'
+      //'teaser'
     ));
 
-    $query->join('filter_formats', 'ff', 'nr.format = ff.format');
+    $query->leftjoin('filter_formats', 'ff', 'nr.format = ff.format');
     $query->addField('ff', 'name', 'format_name');
     $query->orderBy('n.changed');
 
@@ -138,8 +136,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       $query->fields('ct');
     }
 
-    if (isset($this->restrict_vsites)) {
-      $query->condition('og.group_nid', $this->restrict_vsites, 'IN'); //dancabral, jlepore, jsagotsky, gary
+    if ($restrict = OSMigration::restrict_vsites()) {
+      $query->condition('og.group_nid', $restrict, 'IN'); //dancabral, jlepore, jsagotsky, gary
     }
 
     return $query;
@@ -227,7 +225,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   function prepareRow(&$current_row){
 
     //check that destination vsite exists.  some vsites have been removed, but their content still exists
-    $query = db_select('node', 'n')->fields('n')->condition('type', 'vsite', '=')->condition('nid', $current_row->group_nid, '=');
+    $query = db_select('node', 'n')->fields('n')->condition('type', $this->_d7_vsite_type())->condition('nid', $current_row->group_nid, '=');
 
     if (! $query->execute()->fetchAssoc()) {
       $os_migrate_legacy_site = variable_get('os_migrate_legacy_site', '');
@@ -297,17 +295,24 @@ abstract class AbstractNodeOSMigration extends OSMigration {
    * their connection to the node, leaving the file in the filesystem.
    */
   public function complete($entity, $row) {
-    if (!isset($row->field_upload_display) || empty($row->field_upload_display)) {
+    if (!isset($row->field_upload) || empty($row->field_upload)) {
       return;
     }
 
     $dirty = FALSE;
     foreach ($entity->field_upload as $lang => $fields) {
       foreach ($fields as $delta => $upload) {
+        //update display
         if ($row->field_upload_display[$delta] == '0') {
           file_usage_add(file_load($upload['fid']), 'file', 'node', $entity->nid);
           unset($entity->field_upload[$lang][$delta]);
           $dirty = TRUE;
+        }
+
+        //update title
+        if ($row->field_upload_description[$delta] && ($file = file_load($upload['fid']))) {
+          $file->filename = $row->field_upload_description[$delta];
+          file_save($file);
         }
       }
     }
@@ -338,35 +343,45 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   }
 
   function _prepare_file_field(&$row){
+    $file_directory_path = parent::d6_variable_get('file_directory_path', 'sites/default/files');
+
     if ($this->_has_file_field()) {
       $files_query = parent::os_migrate_node_get_files_query($row->vid);
       $fields = array(
         'description' => 'description',
         'display' => 'list',
-        'filepath' => 'field_upload',
-        'file_destination' => 'file_destination'
+        'filepath' => 'filepath',
+        //'file_destination' => 'file_destination',
+        //'filename' => 'filename',
+        'filename' => 'filename',
+        //'field_upload' => 'field_upload',
       );
-
-      $file_destination = "files";
-      if(isset($current_row->group_nid)){
-        $query = self::d6_db_select('purl', 'p')
-          ->fields('p', array('value'))
-          ->condition('p.id', $current_row->group_nid, '=')
-          ->condition('p.provider', 'spaces_og', '=');
-        $purl = $query->execute()->fetchField();
-        if($purl){
-          $file_destination = "{$purl}/files";
-        }
-      }
 
       $query = $files_query->execute();
       $files = array();
       while ($file_row = $query->fetchObject()) {
-        $file_row->file_destination = $file_destination;
+        $filepath = $file_row->filepath;
+        $filepath = str_replace($file_directory_path, '', $filepath);
+        $file = explode('/', trim($filepath, '/'));
+
+        $file_row->filename = array_pop($file);
+        $file_row->filepath = 'public://' . implode('/', $file);
+        $file_row->field_upload_replace = $filepath;// . '/' . $file_row->filename;
+        //$file_row->file_destination = $file_destination;
         $files[] = $file_row;
       }
 
       parent::os_migrate_prepare_files($files, $row, 'field_upload', $fields);
+      //field upload is set up wrong, but it's too late to fix the general function.
+      if (isset($row->field_upload)) {
+        foreach (array_keys($row->field_upload) as $delta) {
+          $row->field_upload[$delta] = $files[$delta]->field_upload_replace;
+          //use description as file name
+          if (strlen($row->field_upload_description[$delta])) {
+            $row->field_upload_filename[$delta] = $row->field_upload_description[$delta];
+          }
+        }
+      }
     }
   }
 
@@ -378,16 +393,14 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'description',
         'display'
       )));
-      $this->addFieldMapping('field_upload:destination_file', 'filepath');
-      $this->addFieldMapping('field_upload:source_dir')->defaultValue(variable_get('os_migrate_files', FALSE));
-      $this->addFieldMapping('field_upload:destination_dir', 'file_destination');
+      $this->addFieldMapping('field_upload:destination_file', 'filename');
+      $this->addFieldMapping('field_upload:source_dir') //->defaultValue(variable_get('os_migrate_files', FALSE));
+        ->defaultValue(variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
+      $this->addFieldMapping('field_upload:destination_dir', 'filepath');
+      $this->addFieldMapping('field_upload:og_group_ref', 'group_nid');
 
       //good defaults
-      $this->addUnmigratedDestinations(parent::subfields('field_upload', array(
-        'file_class',
-        'file_replace',
-        'preserve_files'
-      )));
+      $this->addUnmigratedDestinations(parent::subfields('field_upload', array('file_class','file_replace','preserve_files')));
     }
   }
 
@@ -398,7 +411,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'field_upload:description' => t('Uploaded file\'s desctription'),
         'field_upload:display' => t('Include uploaded file in listing'),
         'field_upload:language' => t('Uploaded file\'s langauge'),
-        'filepath' => t('Full path to file')
+        'filepath' => t('Full path to file'),
+        'filename' => t('Name of file'),
       );
     }
     else {
@@ -428,13 +442,29 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   }
 
   /**
-   * Map bundle names from existing to new
+   * Map bundle names from new to legacy
    */
   public static function get_source_bundle($bundle){
-    if (array_key_exists($bundle, self::$source_bundle_map)) {
+    $og_bundles = og_get_all_group_bundle();
+    if ($bundle == self::_d7_vsite_type()) {
+      return self::_d6_vsite_type();
+    } elseif (array_key_exists($bundle, self::$source_bundle_map)) {
       return self::$source_bundle_map[$bundle];
     }
 
     return $bundle;
+  }
+
+  function _d6_vsite_type() {
+    return parent::d6_variable_get('scholar_content_type', 'vsite');
+  }
+
+  function _d7_vsite_type() {
+    $override = variable_get('os_migrate_default_group_bundle', variable_get('os_default_group_bundle', 'keep'));
+    if ($override == 'keep') {
+      return variable_get('os_default_group_bundle', 'personal');
+    } else {
+      return $override;
+    }
   }
 }

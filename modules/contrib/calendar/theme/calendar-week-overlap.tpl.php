@@ -31,7 +31,7 @@ foreach ($day_names as $key => $value) {
 ?>
 
 <div class="calendar-calendar"><div class="week-view">
-  <div id="header-container">
+  <div id="calendar-header-container">
   <table class="full">
   <tbody>
     <tr class="holder"><td class="calendar-time-holder"></td><td class="calendar-day-holder"></td><td class="calendar-day-holder"></td><td class="calendar-day-holder"></td><td class="calendar-day-holder"></td><td class="calendar-day-holder"></td><td class="calendar-day-holder"></td><td class="calendar-day-holder"></td><td class="calendar-day-holder margin-right"></td></tr>

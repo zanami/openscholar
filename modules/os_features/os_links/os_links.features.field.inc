@@ -56,7 +56,7 @@ function os_links_field_default_fields() {
           'label' => 'hidden',
           'module' => 'text',
           'settings' => array(
-            'trim_length' => 100,
+            'trim_length' => 300,
           ),
           'type' => 'text_summary_or_trimmed',
           'weight' => '0',
@@ -252,21 +252,20 @@ function os_links_field_default_fields() {
         'module' => 'media',
         'settings' => array(
           'allowed_schemes' => array(
-            'embed' => 0,
-            'oembed' => 0,
+            'embed' => 'embed',
+            'oembed' => 'oembed',
             'public' => 'public',
           ),
           'allowed_types' => array(
-            'audio' => 0,
-            'default' => 0,
-            'html' => 0,
+            'audio' => 'audio',
+            'default' => 'default',
+            'html' => 'html',
             'image' => 'image',
-            'video' => 0,
+            'video' => 'video',
           ),
           'browser_plugins' => array(
-            'library' => 0,
             'media_default--media_browser_1' => 'media_default--media_browser_1',
-            'media_embed' => 0,
+            'media_default--media_browser_my_files' => 0,
             'media_internet' => 'media_internet',
             'upload' => 'upload',
           ),

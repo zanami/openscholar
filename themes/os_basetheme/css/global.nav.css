@@ -406,6 +406,15 @@ ul.action-links li {
 
 
 /** CONTEXTUAL DROPDOWN LINKS **/
+div.contextual-links-wrapper {
+z-index: 500;
+}	
+	
+a.contextual-links-trigger {
+  padding: 0 2px !important;
+
+}	
+	
 div.contextual-links-wrapper ul.contextual-links {
   -moz-border-radius: 0; /* LTR */
   -webkit-border-bottom-left-radius: 0;
@@ -452,7 +461,7 @@ color: #FFF !important;
     position: absolute;
     right: 0;
     top: 0;
-    width: 130px;
+    width: auto;
     z-index: 500;
 }
 
@@ -468,22 +477,30 @@ color: #FFF !important;
 }
 
 
-.ctools-dropdown.add_new {
+.contextual-controls-wrapper .add_new {
 	float:left;
 	display:inline;
 	 background: url("../images/scholarbase-sprite.png") no-repeat scroll 3px -380px #A1D4A1 !important;
     border-radius: 5px 5px 5px 5px;
     float: left;
-    margin: 0 10px 0 0;
-    padding: 3px 8px 1px 11px !important;
+     margin: 0 22px 0 0;
+    padding: 3px 8px 1px 22px !important;
+    text-decoration:none !important;
 	}
+
+/**
+ * Fixes case where the contextual link gear will cover the 'next month' button on a calendar.
+ */
+#block-views-os-events-block-1 .contextual-links-wrapper {
+  right: 35px;
+}
 
 html.js div.ctools-dropdown a.ctools-dropdown-text-link {
     background: none;
     padding:0 0 0 13px;
     font-size:13px;
-    color: #293352;
-    text-decoration:none;
+    color: #293352 !important;
+    text-decoration:none !important;
 }	
 
 
@@ -526,14 +543,18 @@ background: none repeat scroll 0 0 #FFFFFF !important;
     margin: 0 1px 0 0;
     opacity: 0.93;
     padding: 5px 0;
-    right: 45px;
     width: auto;
 }
 
+html.js div.ctools-dropdown.add_new div.ctools-dropdown-container {
+right: 38px;
+}
+
+
 html.js div.ctools-dropdown div.ctools-dropdown-container ul li a {
-    color: #293352;
+    color: #293352 !important;
     padding: 0 0 2px 5px;
-    text-decoration: none;
+    text-decoration:none !important;
     font-weight:normal;
     font-size:13px;
     font-style:normal;
@@ -561,15 +582,15 @@ ul.nice-menu {
 
 
 ul.nice-menu li {
- border:none;
- background-color: none;
- background: none;
+ border:none !important;
+ background-color: none !important;
+ background: none !important;
 }
 
 
 ul.nice-menu a {
     color: #293352;
-    text-decoration:none;
+    text-decoration:none !important;
     background: none;
 }
 
@@ -586,7 +607,7 @@ ul.nice-menu ul li {
 
 
 ul.nice-menu ul li a {
-    border:none;
+    border:none !important;
 }
 
 
@@ -596,7 +617,7 @@ ul.nice-menu-left ul a {
 }
 
 .sidebar ul.nice-menu ul {
-    border-top: none;
+    border-top: none !important;
 }
 
 .sidebar ul.nice-menu ul li,
@@ -606,14 +627,14 @@ ul.nice-menu-left ul a {
 
 .sidebar ul.nice-menu {
     width:100%;
-   border-top: none;
+   border-top: none !important;
 }
 
 ul.nice-menu-left li.menuparent,
 ul.nice-menu-right li.menuparent,
 ul.nice-menu-left li.menuparent:hover,
 ul.nice-menu-right li.menuparent:hover {
-    background:none;
+    background:none !important;
 }
 
 ul.nice-menu-right, ul.nice-menu-left, 
@@ -627,16 +648,16 @@ ul.nice-menu-right li, ul.nice-menu-left li {
 
 ul.nice-menu-down {
   float: left; /* LTR */
-  border: 0;
+  border: 0 !important;
   z-index: 400;
 }
 
 ul.nice-menu-down li {
-  border-top: none;
+  border-top: none !important;
 }
 
 ul.nice-menu-down li li {
-  border-top: 0;
+  border-top: 0 !important;
 }
 
 ul.nice-menu-down ul {
@@ -657,126 +678,17 @@ ul.nice-menu-down .menuparent a {
 }
 
 ul.nice-menu-down li.menuparent {
-  background: none; /* LTR */
+  background: none !important; /* LTR */
 }
 
 ul.nice-menu-down li.menuparent:hover {
-  background: none; /* LTR */
+  background: none !important; /* LTR */
 }
 
 ul.nice-menu-down li li.menuparent {
-  background: none; /* LTR */
+  background: none !important; /* LTR */
 }
 
 ul.nice-menu-down li li.menuparent:hover {
-  background: none; /* LTR */
-}
-
-/* CP MINI MENU */
-
-#block-cp-cp-minimenu {
-	padding:0 0 3px 6px !important;
-	position: fixed;
-	top: 0;
-	right: 0;
-	background:#EFEFEF;
-	border-left:1px solid #CCC;
-	border-bottom:1px solid #CCC;
-	border-radius:0 0 0 6px;
-	-moz-border-radius:0 0 0 6px;
-}
-
-
-.not-logged-in #block-cp-cp-minimenu {
-    padding:0 !important;
-   
-}
-
-.toolbar #block-cp-cp-minimenu {
-top: 30px;
-	}
-	
-.toolbar-drawer #block-cp-cp-minimenu {
-top: 66px;
-	}
-
-
-#block-cp-cp-minimenu ul li.menu-path-cp-content {
-	background-position: -1px -62px ;
-   }
-   
-#block-cp-cp-minimenu ul li.menu-path-cp-settings {
-	background-position: 3px -41px ;
-   }
-   
-#block-cp-cp-minimenu ul li.menu-path-cp-build {
-	background-position: 0 3px ;
-   }
-   
-#block-cp-cp-minimenu ul li.menu-path-cp-appearance {
-	background-position: 2px -19px ;
-   }
-   
-#block-cp-cp-minimenu ul li.menu-path-cp-users {
-	background-position: 2px -85px ;
-   } 
-   
-#block-cp-cp-minimenu ul li.menu-path-cp-account {
-	background-position: 2px -130px ;
-   }   
-   
-.not-logged-in #block-cp-cp-minimenu ul li.menu-path-cp-account {
-	background: none;
-   }             
-      
-#block-cp-cp-minimenu ul li a {
-	font-family:helvetica;
-	font-style: normal;
-    height: 15px;
-    padding-left: 23px !important;
-    padding-top: 5px !important;
-    font-weight:normal;
-    color:#293352;
-    font-size:13px;
-    text-transform:none;
-}
-
-.not-logged-in #block-cp-cp-minimenu ul li a {
- 	padding-left: 0 !important;
-   
-}
-
-#block-cp-cp-minimenu ul li a:visited,
-#block-cp-cp-minimenu ul li a:hover
- {
-    color:#293352;
-}
-
-#block-cp-cp-minimenu ul li ul {
-	border-top:none;
-	border-left:1px solid #CCC;
-	border-right:1px solid #CCC;
-	border-bottom:1px solid #CCC;
-	margin:-11px 0 0 18px;
-    top: 38px;
-}
-
-#block-cp-cp-minimenu ul li ul li {
-	border:none;
-}
-
-#block-cp-cp-minimenu ul li ul li a {
-	background: #EFEFEF;
-	padding-left: 4px !important;
-	font-weight: normal;
-}
-
-#block-cp-cp-minimenu h2 {
-    display:none;
-}
-
-#block-cp-cp-minimenu ul li.menu-path-user a {
-	font-weight:bold;
-	background:#EFEFEF;
-	padding-left: 5px !important;
+  background: none !important; /* LTR */
 }

@@ -301,7 +301,7 @@ padding:0px;
   color: #FFF;
   font-weight:normal;
   font-size: 14px;
-  padding: 16px 15px 10px;
+  padding: 14px 15px 12px;
    background: #555;
    border-right:1px solid #000;
  text-shadow: #222 0px 2px 0px;
@@ -418,13 +418,11 @@ ul.nice-menu {
 /** SECONDARY NAV IN SIDEBARS **/
    .sidebar #block-os-secondary-menu .content  ul.menu {
 	width: 100%;
-	margin-left:8px;
+
 }
 
 .sidebar #block-os-secondary-menu .content  ul.menu li  {
-  list-style: square;
-  text-align: left;
-  margin: 0;
+  margin-bottom: 8px;
 }
 
 .sidebar #block-os-secondary-menu .content  ul.menu li a {

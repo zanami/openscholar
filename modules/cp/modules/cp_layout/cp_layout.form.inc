@@ -1,24 +1,23 @@
 <?php
 
-function cp_layout_full_form($form, $form_state, $ctx){
+function cp_layout_full_form($form, $form_state){
   $form = array();
   ctools_include('ajax');
   ctools_include('modal');
   ctools_modal_add_js();
   ctools_include('layout', 'os');
 
+  $ctxs = array_slice(func_get_args(), 2);
+
   // Temporary: To be replaced by API function later
-  $contexts = os_layout_get_contexts(array(
-    1,
-    2
-  ));
-  $ctx = $ctx ? $ctx : 'os_front';
+  $contexts = os_layout_get_contexts(array(1, 2));
+  $ctxs = $ctxs ? $ctxs : array('os_front', 'os_public');
 
   $form['context_selection'] = array(
     '#type' => 'select',
     '#title' => t('Site Section'),
     '#options' => $contexts,
-    '#default_value' => $ctx,
+    '#default_value' => reset($ctxs),
     '#multiple' => false
   );
 
@@ -33,21 +32,16 @@ function cp_layout_full_form($form, $form_state, $ctx){
       '#type' => 'markup',
       '#markup' => ctools_modal_text_button(t('Change Layout'), 'cp/build/layout/nojs/select', t('Change your layout'), 'cp-layout-change')
     );
+
+    include_once(drupal_get_path('theme', 'adaptivetheme') . '/inc/get.inc');
     $layout_css = drupal_get_path('module', 'cp_layout') . '/theme/layouts/' . at_get_setting('bigscreen_layout', os_theme_get()) . '.css';
   }
 
-  $use_content_regions = false;
-  if ($ctx == 'os_front') {
-    $use_content_regions = true;
-  }
-  $blocks = os_layout_get_multiple(array(
-    'os_public',
-    $ctx
-  ), true, true);
+  $blocks = os_layout_get_multiple($ctxs, true, true);
 
   $form['context'] = array(
     '#type' => 'value',
-    '#value' => $ctx
+    '#value' => $ctxs
   );
 
   $regions = array(
@@ -98,14 +92,6 @@ function cp_layout_full_form($form, $form_state, $ctx){
     )
   );
 
-  if ($use_content_regions) {
-    $form['layout']['#attributes'] = array(
-      'class' => array(
-        'content-regions'
-      )
-    );
-  }
-
   foreach ( $regions as $r ) {
     $form['layout'][$r] = array(
       '#type' => 'container',
@@ -124,6 +110,7 @@ function cp_layout_full_form($form, $form_state, $ctx){
     );
   }
 
+  $use_content_regions = false;
   foreach ( $blocks as $bid => $b ) {
     if ($b['region'] == - 1 || $b['region'] === FALSE) {
       $form['unused'][$bid] = array(
@@ -132,12 +119,27 @@ function cp_layout_full_form($form, $form_state, $ctx){
       );
     }
     elseif (isset($form['layout'][$b['region']])) {
+      if (strpos($b['region'], 'content_') !== FALSE) {
+        $use_content_regions = true;
+      }
       $form['layout'][$b['region']][$bid] = array(
         '#theme' => 'cp_layout_widget',
         '#widget' => $b,
         '#weight' => $b['weight']
       );
     }
+  }
+
+  if (in_array('os_front', $ctxs)) {
+    $use_content_regions = true;
+  }
+
+  if ($use_content_regions) {
+    $form['layout']['#attributes'] = array(
+      'class' => array(
+        'content-regions'
+      )
+    );
   }
 
   $form['actions'] = array(
@@ -195,10 +197,7 @@ function cp_layout_full_submit($form, &$form_state){
 
   // Standard form submit, save off the settings
   $regions = $form_state['values']['layout'];
-  $ctxs = array(
-    'os_public',
-    $form_state['values']['context']
-  );
+  $ctxs = $form_state['values']['context'];
   $blocks = os_layout_get_multiple($ctxs, false, true);
 
   // go through our regions and change the blocks to match their new position
@@ -224,24 +223,24 @@ function cp_layout_full_submit($form, &$form_state){
  */
 function cp_layout_layout_select_ajax($ajax){
   if ($ajax) {
-  ctools_include('modal');
-  $form_state = array(
-    'ajax' => true
-  );
+    ctools_include('modal');
+    $form_state = array(
+      'ajax' => true
+    );
 
-  $output = ctools_modal_form_wrapper('cp_layout_layout_select', $form_state);
-  if ($form_state['executed']) {
-    $output[] = ctools_modal_command_dismiss();
-    if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Save')) {
-    ctools_include('ajax');
-    $output[] = ctools_ajax_command_reload();
+    $output = ctools_modal_form_wrapper('cp_layout_layout_select', $form_state);
+    if ($form_state['executed']) {
+      $output[] = ctools_modal_command_dismiss();
+      if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Save')) {
+      ctools_include('ajax');
+      $output[] = ctools_ajax_command_reload();
+      }
     }
-  }
-  echo ajax_render($output);
-  exit();
+    echo ajax_render($output);
+    exit();
   }
   else {
-  return drupal_get_form('cp_layout_layout_select');
+    return drupal_get_form('cp_layout_layout_select');
   }
 }
 
@@ -256,8 +255,11 @@ function cp_layout_layout_select($form, $form_state){
   $form['layout'] = array(
     '#type' => 'radios',
     '#options' => array_combine($options, $options),
-    '#default_value' => at_get_setting('bigscreen_layout', $theme_name)
+    '#default_value' => at_get_setting('bigscreen_layout', $theme_name),
+    '#description' => t('Click a layout to select which you would like your site to use. This selection will not affect the header of your site,
+    only the area below it.'),
   );
+  $form['#attached']['css'] = array(drupal_get_path('module', 'cp_layout').'/theme/cp_layout_select.css');
 
   $form['actions'] = array(
     '#type' => 'actions',
@@ -386,6 +388,19 @@ function cp_layout_select_submit($form, $form_state){
 }
 
 function _cp_layout_get_layout_options($theme_name){
+  require_once drupal_get_path('theme', 'adaptivetheme').'/inc/get.inc';
+  require_once drupal_get_path('theme', 'adaptivetheme').'/inc/plugins.inc';
+
+  // hack so at gets options for our theme
+  global $theme_key;
+  $theme_key_orig = $theme_key;
+  $theme_key = $theme_name;
+
+  // hack to make sure it doesn't get options for cp theme
+  cache_clear_all('at_page_layouts_data_structure', 'cache');
+
   $layouts = responsive_page_layouts_device_group_options($theme_name);
+  $theme_key = $theme_key_orig;
+
   return $layouts['bigscreen'];
 }

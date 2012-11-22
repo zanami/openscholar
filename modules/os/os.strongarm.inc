@@ -20,6 +20,13 @@ function os_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'pathauto_node_pattern';
+  $strongarm->value = '';
+  $export['pathauto_node_pattern'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'site_404';
   $strongarm->value = 'page_not_found';
   $export['site_404'] = $strongarm;
@@ -31,7 +38,7 @@ function os_strongarm() {
   $strongarm->value = array(
     'os' => '1',
     'os_pages' => '1',
-    'os_announcements' => '1',
+    'os_news' => '1',
     'os_image_gallery' => '1',
     'os_links' => '1',
     'os_publications' => '1',

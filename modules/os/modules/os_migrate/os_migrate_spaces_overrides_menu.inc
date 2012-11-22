@@ -6,7 +6,7 @@ class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
     $this->dependencies = array('SpacesOverridesVariable'); //preset needs to be migrated before menus will work
     $this->source_object ='vsite_menu';
     $this->dest_object = 'menus';
-    parent::__construct();
+    parent::__construct(array('term', 'taxonomy'));
   }
 
   public function query() {
@@ -65,6 +65,10 @@ class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
   }
 
   public function _update_menu_item($menu_item, $gid) {
+
+    $menu_item = $this->_announcement_to_news($menu_item);
+    $menu_item = $this->_images_to_galleries($menu_item);
+
     //update name
     $menu_item['menu_name'] = $this->_update_menu_name($menu_item['menu_name']);
     $menu_item['module'] = 'system';
@@ -118,47 +122,49 @@ class SpacesOverridesMenuMigration extends SpacesOverridesTableMigration {
       return $result->fetchField();
     }
 
-
-
-//     $mlid = db_query_range("SELECT mlid FROM {menu_links} WHERE link_path = :path AND module = 'menu' AND menu_name IN (:type_menus) ORDER BY mlid ASC", 0, 1, array(
-//         ':path' => $path,
-//         ':type_menus' => array_keys($os_menus)
-//     ))->fetchField();
-
-    $result = db_select('spaces_overrides', 's')
-      ->fields('s', array('value'))
-      ->condition('id', $gid, '=')
-      ->condition('object_type', 'variable', '=')
-      ->condition('object_id', 'vsite_menu_mlid_increment', '=')
-      ->execute();
-
-    $update = FALSE;
-    if ($result->rowCount()) {
-      $update = TRUE;
-      $mlid = unserialize($result->fetchField());
-    } elseif (module_exists('vsite_menu')) {
-      $mlid = VSITE_MENU_CUSTOM_MLID;
+    if (module_exists('vsite_menu')) {
+      $def_mlid = VSITE_MENU_CUSTOM_MLID;
     } else {
-      $mlid = 1000;
+      $def_mlid = 1000;
     }
 
-    $mlid++;
+    $mlid = variable_get('vsite_menu_mlid_increment',$def_mlid);
 
-    //drupal_write_record('spaces_overrides', $record, array('id', 'object_type', 'object_id', 'type'));
-    $record = array('value' => serialize($mlid), 'id' => $gid, 'object_type' => 'variable', 'object_id' => 'vsite_menu_mlid_increment', 'type' => 'og');
-
-    if ($update) {
-      $updated = db_update('spaces_overrides')
-        ->fields($record)
-        ->condition('id', $gid, '=')
-        ->condition('object_type', 'variable', '=' )
-        ->condition('object_id','vsite_menu_mlid_increment', '=')
-        ->condition('type', 'og', '=')
-        ->execute();
-    } else {
-      db_insert('spaces_overrides')->fields($record)->execute();
-    }
+	  // Increment the mlid site-wide, this only needs to
+	  // be distinct per menu, but no need to keep the var for each site
+	  variable_set('vsite_menu_mlid_increment',($mlid + 1));
 
     return $mlid;
+  }
+
+  /**
+   * @function _announcement_to_news
+   * Update link paths to use news instead of announcements
+   */
+  function _announcement_to_news($menu_item) {
+
+    foreach (array('link_path', 'router_path') as $path_item) {
+      if ($menu_item[$path_item] == 'announcements') {
+        $menu_item[$path_item] = 'news';
+      }
+    }
+
+    //don't update path items announcements/foo.  url alias points those to right node.
+
+
+    return $menu_item;
+  }
+
+  /**
+   * @function _images_to_galleries
+   */
+  function _images_to_galleries($menu_item) {
+
+    foreach (array('link_path', 'router_path') as $path_item) {
+      if ($menu_item[$path_item] == 'images') {
+        $menu_item[$path_item] = 'galleries';
+      }
+    }
+    return $menu_item;
   }
 }

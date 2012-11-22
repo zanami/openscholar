@@ -13,6 +13,61 @@
 function os_publications_field_default_fields() {
   $fields = array();
 
+  // Exported field: 'node-biblio-field_biblio_extra'.
+  $fields['node-biblio-field_biblio_extra'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_biblio_extra',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'dyntextfield',
+      'settings' => array(
+        'size' => '60',
+      ),
+      'translatable' => '0',
+      'type' => 'dyntextfield',
+    ),
+    'field_instance' => array(
+      'bundle' => 'biblio',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'You may use these fields to add extra information about your publication that may not be common to publications if this type. For example, key "Publication Global ID" and value "http://hdl.handle.net/1902.1".',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'dyntextfield',
+          'settings' => array(),
+          'type' => 'dyntextfield_default',
+          'weight' => 4,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_biblio_extra',
+      'label' => 'Extra Fields',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'dyntextfield',
+        'settings' => array(),
+        'type' => 'dyntextfield_widget',
+        'weight' => '34',
+      ),
+    ),
+  );
+
   // Exported field: 'node-biblio-field_biblio_image'
   $fields['node-biblio-field_biblio_image'] = array(
     'field_config' => array(
@@ -70,7 +125,7 @@ function os_publications_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_biblio_image',
-      'label' => 'Book Cover',
+      'label' => 'Publication Image',
       'required' => FALSE,
       'settings' => array(
         'alt_field' => 0,
@@ -179,19 +234,20 @@ function os_publications_field_default_fields() {
         'module' => 'media',
         'settings' => array(
           'allowed_schemes' => array(
-            'embed' => 0,
-            'oembed' => 0,
+            'embed' => 'embed',
+            'oembed' => 'oembed',
             'public' => 'public',
           ),
           'allowed_types' => array(
-            'audio' => 0,
-            'html' => 0,
+            'audio' => 'audio',
+            'default' => 'default',
+            'html' => 'html',
             'image' => 'image',
+            'video' => 'video',
           ),
           'browser_plugins' => array(
-            'library' => 0,
             'media_default--media_browser_1' => 'media_default--media_browser_1',
-            'media_embed' => 0,
+            'media_default--media_browser_my_files' => 0,
             'media_internet' => 'media_internet',
             'upload' => 'upload',
           ),
@@ -207,6 +263,8 @@ function os_publications_field_default_fields() {
   // Included for use with string extractors like potx.
   t('Book Cover');
   t('upload');
+  t('Extra Fields');
+  t('You may use these fields to add extra information about your publication that may not be common to publications if this type. For example, key "Publication Global ID" and value "http://hdl.handle.net/1902.1".');
 
   return $fields;
 }

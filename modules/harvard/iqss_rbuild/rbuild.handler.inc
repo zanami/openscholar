@@ -125,7 +125,6 @@ class rbuild_handler implements os_software_handler {
       return FALSE;
     }
 
-    // array
     $releases = $this->find_all_release_files();
 
     if (sizeof($releases) === 0) {
@@ -168,8 +167,17 @@ class rbuild_handler implements os_software_handler {
     $project_path = 'node/' . $project_node->nid;
     // like "software/title"
     $project_path = drupal_lookup_path('alias', $project_path);
-
     batch_set($batch);
+
+    // Processes batch without redirect if this is being run by cron.
+    global $user;
+    if ((int) $user->uid === 0 || strpos(request_uri(), '/admin/config/system/cron') === 0) {
+      $batch =& batch_get();
+      $batch['progressive'] = FALSE;
+      batch_process();
+      return TRUE;
+    }
+
     batch_process($project_path);
     return TRUE;
   }
@@ -194,10 +202,10 @@ class rbuild_handler implements os_software_handler {
   /**
    * Creates URL path.
    *
-   * @param string $s_url
-   * @param string $s_app_key
+   * @param string $url
+   * @param string $short_name
    *
-   * @return string
+   * @return string $path
    */
   private function create_url($url, $short_name = FALSE) {
     $path = rtrim($url, '/ ') . '/PACKAGES';

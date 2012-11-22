@@ -54,7 +54,7 @@ function os_profiles_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_person';
-  $strongarm->value = '1';
+  $strongarm->value = '0';
   $export['comment_person'] = $strongarm;
 
   $strongarm = new stdClass();

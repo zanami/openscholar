@@ -1,7 +1,7 @@
 <?php
 
 function media_embed_install() {
-  // add the new media type
+  // legacy:
   $type = new stdClass();
   $type->name = 'html';
   $type->label = "Embedded HTML";
@@ -21,20 +21,15 @@ function media_embed_install() {
       'field_name' => 'field_html_code',
       'type' => 'text_long',
     ));
-
-    field_create_field(array(
-      'field_name' => 'field_html_title',
-      'type' => 'text',
-    ));
   }
   catch (FieldException $fe) {
     // the fields already exist
   }
 
   field_create_instance(array(
-    'field_name' => 'field_html_title',
+    'field_name' => 'field_html_code',
     'entity_type' => 'file',
-    'label' => 'Title',
+    'label' => 'Code',
     'bundle' => 'html',
     'required' => TRUE,
     'display' => array(
@@ -44,25 +39,12 @@ function media_embed_install() {
     )
   ));
 
-  field_create_instance(array(
-    'field_name'  => 'field_html_code',
-    'entity_type' => 'file',
-    'label' => 'Embed Code',
-    'bundle' => 'html',
-    'required' => TRUE,
-    'display' => array(
-      'default' => array(
-        'label' => 'hidden',
-      ),
-    ),
-  ));
-
   field_bundle_settings('file', 'html', array(
     'extra_fields' => array(
       'display' => array(
       	'file' => array(
           'default' => array(
-            'visible' => FALSE,
+            'visible' => TRUE,
             'weight' => 0,
           ),
       	),
@@ -78,20 +60,4 @@ function media_embed_uninstall() {
   catch (Exception $e) {
 
   }
-  /*try {
-    field_delete_instance(array(
-      'field_name' => 'field_html_code',
-      'entity_type' => 'file',
-      'bundle' => 'html',
-    ));
-
-    field_delete_instance(array(
-      'field_name' => 'field_html_title',
-      'entity_type' => 'file',
-      'bundle' => 'html',
-    ));
-  }
-  catch (Exception $e) {
-
-  }*/
 }

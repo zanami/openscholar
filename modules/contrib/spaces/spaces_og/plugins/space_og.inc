@@ -141,7 +141,7 @@ class space_og extends space_type_purl {
   /**
    * Implementation of space->router().
    */
-  function router($op, $object = NULL, $is_active = TRUE){
+  function router($op, $object = NULL) {
     global $user;
     switch ($op) {
       case 'init' :

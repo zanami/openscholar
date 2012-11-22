@@ -37,12 +37,19 @@ function _os_is_os_theme($theme) {
      && !empty($theme->status));
 }
 
-function _os_get_theme_type($set_type = false) {
-  static $s_theme_type;
+/**
+ * Returns the theme type, optionally reseting to the passed value.
+ * 
+ * @param string|bool $set_type
+ * 
+ * @return string $theme_type
+ */
+function _os_get_theme_type($set_type = FALSE) {
+  static $theme_type;
   if ($set_type) {
-    $s_theme_type = $set_type;
+    $theme_type = $set_type;
   }
-  return $s_theme_type;
+  return $theme_type;
 }
 
 /**

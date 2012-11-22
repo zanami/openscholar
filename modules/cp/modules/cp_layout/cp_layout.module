@@ -7,10 +7,10 @@
 function cp_layout_menu() {
   $items = array();
 
-  $items['cp/build/layout'] = $items['cp/build/layout/%'] = array(
+  $items['cp/build/layout'] = array(
     'title' => t('Layout'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('cp_layout_full_form', 3),
+    'page arguments' => array('cp_layout_full_form'),
     'type' => MENU_NORMAL_ITEM,
     'weight' => 10,
     'access callback' => 'spaces_access_admin',
@@ -69,7 +69,6 @@ function template_preprocess_cp_layout_widget(&$variables) {
   // used in template
   ctools_include('ajax');
   ctools_include('modal');
-
   $widget = $variables['widget']['#widget'];
   $classes_array = &$variables['classes_array'];
 
@@ -87,7 +86,7 @@ function template_preprocess_cp_layout_widget(&$variables) {
 
   $classes_array[] = "cp-layout-item";
 
-  if (isset($widget['hidden']) && $widget->hidden) {
+  if (isset($widget['hidden']) && $widget['hidden']) {
     $classes_array[] = 'disabled';
   }
 
@@ -108,8 +107,8 @@ function template_preprocess_cp_layout_widget(&$variables) {
     $classes_array[] = 'Misc';
   }
 
-  if (isset($widget->icon_path)) {
-    $style = "style=\"background-image:url('{$w['icon_path']}');\"";
+  if (isset($widget['icon_path'])) {
+    $style = "style=\"background-image:url('{$widget['icon_path']}');\"";
   }
 
   if (isset($widget['can_edit']) && $widget['can_edit']) {

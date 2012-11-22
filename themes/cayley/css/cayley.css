@@ -23,7 +23,7 @@ a:hover {
     text-decoration: underline;
     }
 
-h2, h3, h4 {
+h1, h2, h3, h4 {
   margin-bottom: 0;
   margin-top: 1em;
   font-weight:normal;
@@ -33,6 +33,7 @@ h2, h3, h4 {
 h1#page-title {
   margin-top: 0;
   margin-bottom: 1em;
+   font-size: 1.5em;
   }
 
 .links li {
@@ -76,9 +77,10 @@ p.copy {
   -moz-box-shadow: 0 0 30px #555;
   -webkit-box-shadow: 0 0 30px #555;
   box-shadow: 0 0 30px #555;
+ 
   }
   
-
+.lt-ie9 #page { border: 1px solid #DDD;}
 
 .sidebar {
   font-size: 13px;
@@ -174,6 +176,7 @@ body.one-sidebar .region-sidebar-first {
 #header-container h1 a,
 #header-container h1 a:visited {
     color:#a3a18c;
+    font-style: normal;
     }
 
 #header-container h1 a:hover {

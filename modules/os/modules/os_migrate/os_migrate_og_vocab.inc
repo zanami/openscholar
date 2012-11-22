@@ -26,12 +26,16 @@ class OsOgVocabMigrate extends DynamicMigration {
     $query->innerJoin('og_vocab', 'ogv', 'td.vid = ogv.vid');
     $query->innerJoin('vocabulary', 'v', 'td.vid = v.vid');
     $query->innerJoin('node', 'n', 'tn.nid = n.nid');
+    $query->addExpression("GROUP_CONCAT(DISTINCT tn.tid SEPARATOR ',')",'tid');
 
     $query
-      ->fields('tn')
+      ->fields('tn',array('nid'))
       ->fields('v', array('multiple', 'required', 'tags'))
       ->condition('n.type', $source_bundle)
       ->orderBy('n.nid');
+
+    //Group By Node
+    $query->groupBy('nid');
 
     $source_key = MigrateDestinationNode::getKeySchema();
     // Set the alias, so the query in MigrateSourceSQL::performRewind()
@@ -56,9 +60,9 @@ class OsOgVocabMigrate extends DynamicMigration {
 
 
   public function prepareRow($row) {
-    dpm($row);
+
     $this->addOgVocab($row);
-    $row->{OG_VOCAB_FIELD}[] = $row->tid;
+    $row->{OG_VOCAB_FIELD} = explode(',', $row->tid);
     parent::prepareRow($row);
   }
 
@@ -66,24 +70,28 @@ class OsOgVocabMigrate extends DynamicMigration {
    * Helper function to add the OG-vocab entity.
    */
   private function addOgVocab($row) {
-    $term = taxonomy_term_load($row->tid);
-    $bundle = $this->arguments['bundle'];
+    $terms = explode(',', $row->tid);
+    foreach ($terms as $tid){
+      $term = taxonomy_term_load($tid);
+      $bundle = $this->arguments['bundle'];
 
-    if(!$term){
-      throw new MigrateException(t('The specified term %tid could not be loaded for bundle %bundle.',
-        array('%tid' => $row->tid, '%bundle' => $bundle)));
-    }
+      if(!$term){
+        parent::saveMessage(t('The specified term %tid could not be loaded for bundle %bundle.',
+          array('%tid' => $tid, '%bundle' => $bundle)), MigrationBase::MESSAGE_WARNING);
+        return;
+      }
 
-    if (!og_vocab_load_og_vocab($term->vid, 'node', $bundle)) {
-      // Create an OG vocab, based on the vocabulary settings.
+      if (!og_vocab_load_og_vocab($term->vid, 'node', $bundle)) {
+        // Create an OG vocab, based on the vocabulary settings.
 
-      $settings = array(
-        'required' => $row->required,
-        'widget_type' => $row->tags ? 'entityreference_autocomplete_tags' : 'options_select',
-        'cardinality' => $row->multiple,
-      );
-      $og_vocab = og_vocab_create_og_vocab($term->vid, 'node', $bundle, $settings);
-      $og_vocab->save();
+        $settings = array(
+          'required' => $row->required,
+          'widget_type' => $row->tags ? 'entityreference_autocomplete_tags' : 'options_select',
+          'cardinality' => $row->multiple || $row->tags ? FIELD_CARDINALITY_UNLIMITED : 1,
+        );
+        $og_vocab = og_vocab_create_og_vocab($term->vid, 'node', $bundle, $settings);
+        $og_vocab->save();
+      }
     }
   }
 

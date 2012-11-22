@@ -36,6 +36,7 @@ function theme_os_publications_tabular(&$vars) {
     'biblio_publisher',
     'biblio_volume',
     'biblio_issue',
+    'biblio_edition',
     'biblio_year',
     'biblio_place_published',
     'biblio_type_name',
@@ -271,3 +272,25 @@ function theme_os_publications_download_links($variables) {
   return $files;
 }
 
+/**
+ * Replacement for biblio's sorting tabs
+ *
+ * Puts them in a ctools dropdown.
+ */
+function theme_os_publications_sort_tabs($vars) {
+  $links = $vars['links'];
+  $title = '';
+
+  foreach ($links as &$l) {
+    if (isset($l['arrow'])) {
+      if ($l['active']) {
+        $title = $l['text'];
+      }
+      $l['title'] = $l['text'] . $l['arrow'];
+      $l['href'] = $l['path'];
+    }
+  }
+
+  // this arrow points down for some reason, despite being named 'asc'
+  return theme('ctools_dropdown', array('title' => 'Sort '.theme('image', array('path' => drupal_get_path('module', 'biblio').'/misc/arrow-asc.png')), 'links' => $links, 'image' => TRUE));
+}

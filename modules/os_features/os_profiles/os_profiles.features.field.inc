@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_profiles.features.field.inc
@@ -593,7 +596,7 @@ function os_profiles_field_default_fields() {
   $fields['node-person-field_professional_title'] = array(
     'field_config' => array(
       'active' => '1',
-      'cardinality' => '1',
+      'cardinality' => '3',
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_professional_title',
@@ -622,7 +625,7 @@ function os_profiles_field_default_fields() {
       'bundle' => 'person',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => '',
+      'description' => 'e.g. Assistant Professor at Harvard University Faculty of Arts and Sciences',
       'display' => array(
         'default' => array(
           'label' => 'hidden',
@@ -641,7 +644,7 @@ function os_profiles_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_professional_title',
-      'label' => 'Professional Title/Affiliation',
+      'label' => 'Professional Titles/Affiliations',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
@@ -743,21 +746,20 @@ function os_profiles_field_default_fields() {
         'module' => 'media',
         'settings' => array(
           'allowed_schemes' => array(
-            'embed' => 0,
-            'oembed' => 0,
+            'embed' => 'embed',
+            'oembed' => 'oembed',
             'public' => 'public',
           ),
           'allowed_types' => array(
-            'audio' => 0,
-            'default' => 0,
-            'html' => 0,
+            'audio' => 'audio',
+            'default' => 'default',
+            'html' => 'html',
             'image' => 'image',
-            'video' => 0,
+            'video' => 'video',
           ),
           'browser_plugins' => array(
-            'library' => 0,
             'media_default--media_browser_1' => 'media_default--media_browser_1',
-            'media_embed' => 0,
+            'media_default--media_browser_my_files' => 0,
             'media_internet' => 'media_internet',
             'upload' => 'upload',
           ),
@@ -773,7 +775,7 @@ function os_profiles_field_default_fields() {
   $fields['node-person-field_website'] = array(
     'field_config' => array(
       'active' => '1',
-      'cardinality' => '1',
+      'cardinality' => '3',
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_website',
@@ -822,7 +824,7 @@ function os_profiles_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_website',
-      'label' => 'Website',
+      'label' => 'Websites',
       'required' => 0,
       'settings' => array(
         'attributes' => array(
@@ -837,9 +839,9 @@ function os_profiles_field_default_fields() {
         ),
         'enable_tokens' => 1,
         'rel_remove' => 'default',
-        'title' => 'value',
+        'title' => 'optional',
         'title_maxlength' => '128',
-        'title_value' => '(Website)',
+        'title_value' => '',
         'url' => 0,
         'user_register_form' => FALSE,
         'validate_url' => 1,
@@ -864,9 +866,11 @@ function os_profiles_field_default_fields() {
   t('Middle Name or Initial');
   t('Phone');
   t('Photo');
-  t('Professional Title/Affiliation');
+  t('Professional Titles/Affiliations');
   t('Short bio');
-  t('Website');
+  t('Websites');
+  t('e.g. Assistant Professor at Harvard University Faculty of Arts and Sciences');
 
   return $fields;
 }
+

@@ -110,7 +110,7 @@
   overflow-x: auto;
   white-space: nowrap;
   border:1px solid #C0C7C7;
-  min-height: 113px;
+  min-height: 135px;
 
 }
 
@@ -134,7 +134,94 @@
   height: 31px;
   position: relative;
   white-space: normal;
+  line-height:14px;
 }
+
+
+#edit-layout-unused-widgets .os_boxes_addthis {
+	background: url("images/widgetIcons/addThis.png") no-repeat scroll 50% 10px transparent;
+}
+
+
+#edit-layout-unused-widgets .os_boxes_bio {
+	background: url("images/widgetIcons/bio.png") no-repeat scroll 50% 10px transparent;
+}
+
+
+#edit-layout-unused-widgets .os_boxes_rss,
+#edit-layout-unused-widgets .os_boxes_feedreader {
+	background: url("images/widgetIcons/rss.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets #boxes-os_booklets_recent_docs,
+#edit-layout-unused-widgets .os_boxes_booktoc,
+#edit-layout-unused-widgets #views-os_booklets-block {
+	background: url("images/widgetIcons/book.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets .os_boxes_slideshow {
+	background: url("images/widgetIcons/slideshow.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets .os_boxes_html {
+	background: url("images/widgetIcons/text.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets #views-os_events-block_1,
+#edit-layout-unused-widgets #views-os_events-block_2 {
+	background: url("images/widgetIcons/calendar.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets #views-os_software_releases-block_1 {
+	background: url("images/widgetIcons/software.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets #boxes-os_news_latest {
+	background: url("images/widgetIcons/announcement.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets #boxes-os_presentations_recent {
+	background: url("images/widgetIcons/presentation.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets #boxes-os_publications_recent,
+#edit-layout-unused-widgets .os_boxes_pub_ca,
+#edit-layout-unused-widgets .os_boxes_pub_year {
+	background: url("images/widgetIcons/publications.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets .os_boxes_media {
+	background: url("images/widgetIcons/camera.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets .os_taxonomy_fbt {
+	background: url("images/widgetIcons/addThis.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets #views-os_blog-block {
+	background: url("images/widgetIcons/post.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets .fb_social_activityf,
+#edit-layout-unused-widgets .fb_social_recommend,
+#edit-layout-unused-widgets .fb_social_comments,
+#edit-layout-unused-widgets .fb_social_livestream,
+#edit-layout-unused-widgets .fb_social_facepile,
+#edit-layout-unused-widgets .fb_social_send,
+#edit-layout-unused-widgets .fb_social_likebox,
+#edit-layout-unused-widgets .fb_social_like {
+	background: url("images/widgetIcons/facebook.png") no-repeat scroll 50% 10px transparent;
+}
+
+
+#edit-layout-unused-widgets .os_boxes_twitterfeed {
+	background: url("images/widgetIcons/twitter.png") no-repeat scroll 50% 10px transparent;
+}
+
+#edit-layout-unused-widgets .os_taxonomy_fbt {
+	background: url("images/widgetIcons/taxo.png") no-repeat scroll 50% 10px transparent;
+}
+
 
 #edit-layout-unused-widgets .cp-layout-widget.hidden {
   display: none !important;
@@ -174,7 +261,7 @@
 }
 
 #edit-layout .ui-sortable .close-this {
-  background: url("../../../../../themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 0 transparent;
+  background: url("../../../../../themes/cp_theme/images/scholarbase-sprite.png") no-repeat scroll 0 0 transparent;
   height: 12px;
   text-indent: -999em;
   width: 12px;
@@ -207,7 +294,7 @@
 
 /* WIDGET STYLES IN UNUSED WIDGET BOX */
 .widget-container a.delete {
-  background: url("../../../../../themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 -226px transparent;
+  background: url("../../../../../themes/cp_theme/images/scholarbase-sprite.png") no-repeat scroll 0 -226px transparent;
   display: block;
   height: 11px;
   left: 82px;
@@ -218,7 +305,7 @@
 }
 
 .widget-container a.delete:hover {
-  background: url("../../../../../themes/cp/images/scholarbase-sprite.png") no-repeat scroll -14px -241px transparent;
+  background: url("../../../../../themes/cp_theme/images/scholarbase-sprite.png") no-repeat scroll -14px -241px transparent;
   display: block;
   height: 11px;
   text-indent: -999em;
@@ -295,7 +382,7 @@
 
 #websiteLabelTab { 
   height: 16px;
-  left: 726px;
+  left: 756px;
   position: relative;
   top: 40px;
   width: 99px;
@@ -328,7 +415,7 @@ html.js #cp-layout-full-form div.ctools-dropdown div.ctools-dropdown-container {
   max-height: 670px;
   overflow: auto;
   width: 275px;
-  left:550px;
+  left:580px;
   white-space: nowrap;
 }
 
@@ -348,7 +435,7 @@ html.js .page-cp-build-layout div.ctools-dropdown div.ctools-dropdown-container 
   float:right;
   display:inline;
   width:10%;
-  background: url("../../../../../themes/cp/images/scholarbase-sprite.png") no-repeat scroll 0 -297px transparent;
+  background: url("../../../../../themes/cp_theme/images/scholarbase-sprite.png") no-repeat scroll 0 -297px transparent;
   height: 19px;
   text-indent: -999em;
 }

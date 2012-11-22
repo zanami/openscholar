@@ -39,19 +39,6 @@ function os_biocv_context_default_contexts() {
       ),
     ),
   );
-  $context->reactions = array(
-    'block' => array(
-      'blocks' => array(
-        'boxes-os_taxonomy_fltr_cat' => array(
-          'module' => 'boxes',
-          'delta' => 'os_taxonomy_fltr_cat',
-          'region' => 'sidebar_second',
-          'weight' => '-10',
-        ),
-      ),
-    ),
-  );
-  $context->condition_mode = 0;
 
   // Translatables
   // Included for use with string extractors like potx.

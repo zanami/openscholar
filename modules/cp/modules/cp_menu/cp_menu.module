@@ -51,7 +51,26 @@ function cp_menu_menu() {
     'file' => 'cp_menu.form.inc',
   );
 
+  $items['cp/build/menu/%ctools_js/remove/%'] = array(
+    'title' => 'Remove Menu',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'cp_menu_remove_menu',
+    'page arguments' => array(3, 5),
+    'access callback' => 'spaces_access_admin',
+    'file' => 'cp_menu.form.inc',
+  );
+
   return $items;
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function cp_menu_admin_paths() {
+  $paths = array(
+    'cp/menu/*' => TRUE,
+  );
+  return $paths;
 }
 
 function cp_menu_theme() {
@@ -140,12 +159,12 @@ function cp_menu_contextual_links_view_alter(&$element, $items) {
 	        $menu = $link[1];
 
 	        if (in_array($menu, $menus)) {
-	          $fragment = 'cp/menu/ajax/new/';
+	          $fragment = 'cp/menu/nojs/new/';
 	          if ($space = spaces_get_space()) {
 	            $fragment = $space->group->purl . '/' . $fragment;
 	          }
-	          ctools_include('modal');
-	          ctools_modal_add_js();
+	          //ctools_include('modal');
+	          //ctools_modal_add_js();
 	          $element['#links']['menu-add'] = array('title' => t('Add menu item'), 'href' => $fragment . $menu, 'attributes' => array('class' => array('ctools-use-modal')));
 	        }
 	      }
@@ -205,17 +224,22 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
   //menu wizard - insert settings from wizard
   require_once(drupal_get_path('module', 'cp_menu') . '/cp_menu.wizard.inc');
   $cache = cp_menu_cache_get('cp_menu');
+
   if (count($cache)) {
 
-    if (isset($cache['title']) && isset($form['title'])) {
-	    $title = check_plain($cache['title']);
-  	  $form['title']['#default_value'] = $title;
+  	// Set the title from the cache title and set the form title to the cache title if it exists.
+    if (isset($cache['title'])) {
+	  $title = check_plain($cache['title']);
+	  // Check for the form title
+	  if(isset($form['title'])) {
+  	    $form['title']['#default_value'] = $title;
+	  }
     }
 
     $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';
     if (isset($form['os_menu'])) {
 	    $form['os_menu']['enabled']['#default_value'] = 1;
-	    $form['os_menu']['link']['parent']['#default_value']; $menu . ':0'; //position shouldn't matter since we're overriding it later anyway
+	    $form['os_menu']['link']['parent']['#default_value'] = $menu;
 	    $form['os_menu']['link']['link_title']['#default_value'] = isset($title) ? $title : '' ;
 	    $form['os_menu']['link']['description']['#default_value'] = isset($cache['tooltip']) ? check_plain($cache['tooltip']) : '';
     }
@@ -224,7 +248,16 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
       $form['os_menu']['link']['new_window']['#default_value'] = 1;
     }
 
-    cp_menu_cache_clear('cp_menu');
+    // Cache shouldn't be deleted on the first pass of adding a new biblio.
+    if(isset($cache['new_node_type']) && $cache['new_node_type'] == 'biblio') {
+      // Check for the form state input - biblio type, this will be present if we are past
+      // the Publication Type select form.
+      if(isset($form_state['input']['biblio_type'])) {
+      	cp_menu_cache_clear('cp_menu');
+      }
+    }else {
+      cp_menu_cache_clear('cp_menu');
+    }
   }
 }
 

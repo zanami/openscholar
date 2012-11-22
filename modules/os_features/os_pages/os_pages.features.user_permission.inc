@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_pages.features.user_permission.inc
@@ -74,4 +71,3 @@ function os_pages_user_default_permissions() {
 
   return $permissions;
 }
-

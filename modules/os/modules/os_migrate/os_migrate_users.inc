@@ -71,13 +71,7 @@ class UsersOSMigration extends OSMigration {
     $this->addSimpleMappings(array('uid','pass', 'name', 'created', 'access', 'login', 'status', 'init', 'theme',
                                    'signature', 'signature_format', 'language'));
 
-    //hide email during development
-    if (!variable_get('os_migrate_email_notification', FALSE)) {
-      $this->addSimpleMappings(array('mail'));
-    } else {
-      $this->addUnmigratedSources(array('mail'), t('DNM'));
-    }
-
+    $this->addSimpleMappings(array('mail'));
 
     /* addFieldMapping lets you map one row to another or perform additional functions like setting a default */
     $this->addFieldMapping('timezone', 'timezone_name')->issueNumber(1791); //example issueNumber for linking to redmine
@@ -173,6 +167,16 @@ class UsersOSMigration extends OSMigration {
 
     $results = $query->execute()->fetchAssoc();
     return (count($results)) ? array($results['vsite_users_first_name_value'], $results['vsite_users_last_name_value']) : array(FALSE, FALSE);
+  }
+
+  /**
+   * Flag indicating user migration is in progress
+   */
+  public function preImport() {
+    variable_set('os_migrate_migrating_users', TRUE);
+  }
+  public function postImport() {
+    variable_del('os_migrate_migrating_users');
   }
 
 }

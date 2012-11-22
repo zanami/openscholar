@@ -3,7 +3,7 @@ class SpacesOverridesBoxesMediaMigration extends OSMigration {
   private $migrated_files = array(); //during rollback, stash the files this box has created here.
 
   public function __construct() {
-    parent::__construct();
+    parent::__construct(MigrateGroup::getInstance('spacesoverrides'));
 
     // spaces overrides has no primary key, so use these
     $key_schema = array(
@@ -32,8 +32,6 @@ class SpacesOverridesBoxesMediaMigration extends OSMigration {
 
     // dpm(field_info_bundles('file'));
 
-    // $this->destination = new MigrateDestinationMedia('html',
-    // 'MigrateFileBlob');
     $this->destination = new MigrateDestinationMedia('html', 'MigrateFileFid');
     $this->description = t('oEmbed URL -> media migration class.');
     $this->source = new MigrateSourceSQL($this->query(), $fields, null, array(
@@ -42,7 +40,7 @@ class SpacesOverridesBoxesMediaMigration extends OSMigration {
     $this->map = new MigrateSQLMap($this->machineName, $key_schema, MigrateDestinationMedia::getKeySchema());
 
     $this->addFieldMapping('og_group_ref', 'id');
-    foreach ( array('field_html_title','field_html_code','media_title','media_description') as $field ) {
+    foreach ( array('field_html_code','media_title','media_description') as $field ) {
       $this->addUnmigratedDestinations(array($field,"$field:format","$field:language"), t('DNM')); // these are forged in prepareRow
     }
 
@@ -51,11 +49,8 @@ class SpacesOverridesBoxesMediaMigration extends OSMigration {
   }
   public function query() {
     $query = parent::d6_db_select('spaces_overrides', 'so')->condition('object_type', 'boxes')->condition('value', '%os_boxes_oembed%', 'LIKE')->fields('so');
-    $query->join('og_uid', 'og_uid', 'og_uid.nid = so.id');
-    $query->fields('og_uid', array(
-      'uid'
-    ));
-    $query->condition('og_uid.is_admin', 1);
+    $query->join('node', 'n', 'n.nid = so.id');
+    $query->fields('n', array('uid'));
     return $query;
   }
   public function prepareRow(&$row) {
@@ -108,7 +103,7 @@ class SpacesOverridesBoxesMediaMigration extends OSMigration {
       // attach metadata and save
       $obj = entity_metadata_wrapper('file', $file);
       $obj->field_html_code = $object->options[$selection];
-      $obj->field_html_title = $object->title;
+      //$obj->field_html_title = $object->title;
       $obj->save();
     }
 

@@ -57,6 +57,15 @@ EOF
     '#default_value' => variable_get('os_migrate_files', ''),
   );
 
+
+  $oembedembedly_api_key = variable_get('oembedembedly_api_key', FALSE);
+  if (!$oembedembedly_api_key) {
+    $form['embed_key'] = array(
+      '#type' => 'markup',
+      '#markup' => '<div class="warning messages">Warning.  You have not set an embedly key.  Please configure embedly with an API key if you have many inline embeds to migrate.</div>',
+    );
+  }
+
   $form['dev_fieldset'] = array(
     '#title' => t('Development Settings'),
     '#type' => 'fieldset',
@@ -64,14 +73,20 @@ EOF
     '#collapsible' => TRUE,
   );
 
-  $form['dev_fieldset']['os_migrate_email_notification'] = array(
-    '#title' => t('Email Notification'),
-    '#description' => t('Creating a user account during migration will send that user an email.
-    										When this is checked, user accounts will be created with the email address
-    										in the legacy database.  Leave this unchecked during development to munge
-    										the email addresses to avoid spamming all the users.'),
+  $form['dev_fieldset']['os_migrate_suppress_email'] = array(
+    '#title' => t('Email Suppression'),
+    '#description' => t('Creating a user account during migration will send that user an email.  Leaving this checked will suppress emails during user migration.  It will also block OpenScholar\'s Mailchimp subscription.'),
     '#type' => 'checkbox',
-    '#default_value' => variable_get('os_migrate_email_notification', FALSE),
+    '#default_value' => variable_get('os_migrate_suppress_email', TRUE),
+  );
+
+  $og_bundles = og_get_all_group_bundle();
+  $form['dev_fieldset']['os_migrate_default_group_bundle'] = array(
+    '#title' => t('Group Bundle'),
+    '#type' => 'select',
+    '#description' => t('Vsite content types have changed.  This option selects which content type your vsites will migrate into.  By default, vsites will become personal and projects will remain projects.'),
+    '#options' => array('keep' => t('Keep original type')) + $og_bundles['node'],
+    '#default_value' => variable_get('os_migrate_default_group_bundle', 'keep'),
   );
 
   $form['dev_fieldset']['os_migrate_ignore_dependencies'] = array(
@@ -106,6 +121,14 @@ EOF
     '#type' => 'textfield',
     '#description' => t('OpenScholar migration includes a few edge case scenarios where a certain vsite gets special treatment.  To prevent this from interfering with the general case, the special treatment only happens when the legacy database has a certain base domain.  This setting overrides that domain.  Useful when you\'re trying to test migration of http://prod.com, but are doing so from http://dev.local.'),
   );
+
+  $form['dev_fieldset']['os_migrate_restrict_vsites'] = array(
+    '#title' => t('Restrict vsites'),
+    '#default_value' => variable_get('os_migrate_restrict_vsites', ''),
+    '#type' => 'textfield',
+    '#description' => t('Limit migration to content from a specific vsite or comma separated list of vsites by id.  (ex: 1,3,10,100)'),
+  );
+
   return system_settings_form($form);
 }
 

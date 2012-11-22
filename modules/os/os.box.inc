@@ -36,7 +36,7 @@ function os_default_box() {
     'show_all' => 1,
     'content' => array(
       'link' => 0,
-      'announcement' => 0,
+      'news' => 0,
       'media_gallery' => 0,
       'biblio' => 0,
       'page' => 0,
@@ -49,19 +49,6 @@ function os_default_box() {
     'additional_classes' => '',
   );
   $export['os_rss'] = $box;
-
-  $box = new stdClass();
-  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
-  $box->api_version = 1;
-  $box->delta = 'os_taxonomy_fltr_cat';
-  $box->plugin_key = 'os_taxonomy_fbt';
-  $box->title = '';
-  $box->description = 'Filter by Category';
-  $box->options = array(
-    'visibility' => 'feature',
-    'additional_classes' => '',
-  );
-  $export['os_taxonomy_fltr_cat'] = $box;
 
   $box = new stdClass();
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */

@@ -27,17 +27,20 @@ function os_biocv_menu() {
     'title' => 'Biography',
     'page callback' => '_os_biocv_bio_page_contents',
     'access callback' => '_os_biocv_show_local_tasks',
-    'menu_name' => 'primary-menu',
+    // Add to features menu. If added to "primary-menu", it appears in CP.
+    'menu_name' => 'features',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['biocv/cv'] = array(
     'title' => 'Curriculum Vitae',
     'page callback' => '_os_biocv_cv_page_contents',
     'access callback' => '_os_biocv_show_local_tasks',
-    'menu_name' => 'primary-menu',
+    // Add to features menu. If added to "primary-menu", it appears in CP.
+    'menu_name' => 'features',
     'type' => MENU_LOCAL_TASK,
   );
-  $items['cp/build/features/os_biocv'] = array(
+  // Named like 'features/$feature_name' by features/spaces convention.
+  $items['features/os_biocv'] = array(
     'title' => 'Bio/CV Settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('os_biocv_settings'),
@@ -53,7 +56,7 @@ function os_biocv_menu() {
  * Implements hook_form_FORM_ID_form_alter() for cv_node_form
  */
 function os_biocv_form_cv_node_form_alter(&$form, &$form_state, $form_id) {
-  $settings_link = l(t('Bio feature settings'), 'features/os_biocv');
+  $settings_link = l(t('Bio/CV settings'), 'features/os_biocv');
 }
 
 /**
@@ -89,20 +92,6 @@ function os_biocv_process_node(&$vars) {
   // Build the submitted variable used by default in node templates
   $last_updated = format_date($vars['changed'], 'custom', 'F j, Y');
   $vars['title_suffix'] = '<p class="submitted">' . t('(Last updated: @time)', array('@time' => $last_updated)) . '</p>';
-}
-
-/**
- * Implements hook_spaces_presets_alter
- *
- * Adds Bio Teaser block to the os_front context for personal sites.
-*/
-function os_biocv_spaces_presets_alter(&$preset) {
-  $preset['os_personal']->value['context']['os_front:reaction:block']['blocks']['boxes-bio_teaser'] = array(
-    'module' => 'boxes',
-    'delta' => 'bio_teaser',
-    'region' => 'content_top',
-    'weight' => '-10'
-  );
 }
 
 /**
@@ -308,8 +297,13 @@ function _os_biocv_cv_page_contents() {
 
 /**
  * Returns the filepath for PDF download of given CV node, or FALSE if none.
+ *
+ * @see os_biocv_settings()
  */
 function _os_biocv_get_cv_filepath($node) {
+  if ($node === FALSE) {
+    return FALSE;
+  }
   $field_name = 'field_biocv_pdf_upload';
   $items = field_get_items('node', $node, $field_name);
   if (!isset($items[0]['uri']) || strlen($items[0]['uri']) < 1) {

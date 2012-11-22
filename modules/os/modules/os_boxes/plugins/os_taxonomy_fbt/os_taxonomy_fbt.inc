@@ -1,4 +1,6 @@
 <?php
+// $Id$
+
 
 /**
  * @author rbran100
@@ -9,26 +11,29 @@
 class os_taxonomy_fbt extends os_boxes_default {
 
   /**
-   * Implementation of boxes_content::options_defaults().
+   * Implements boxes_content::options_defaults().
    */
   public function options_defaults() {
     $options = parent::options_defaults();
 
-    $options['vocabulary'] = false;
+    $options['vocabulary'] = FALSE;
     $options['bundles'] = array('--all--');
+    $options['widget_type'] = 'list';
     $options['range'] = 10;
     $options['offset'] = 0;
-    $options['show_empty_terms'] = false;
-    $options['terms_description'] = false;
-    $options['show_childs'] = true;
-    $options['add_childs'] = false;
+    $options['show_empty_terms'] = FALSE;
+    $options['show_term_descriptions'] = FALSE;
+    $options['show_count'] = TRUE;
+    $options['show_childs'] = TRUE;
+    $options['add_childs'] = FALSE;
     $options['depth'] = 0;
+    $options['behavior'] = 'contextual';
 
     return $options;
   }
 
   /**
-   * Implementation of boxes_content::options_form().
+   * Implements boxes_content::options_form().
    */
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
@@ -53,9 +58,6 @@ class os_taxonomy_fbt extends os_boxes_default {
    */
   public function form_elements() {
     $form = array();
-    $bundles = array(
-      '--all--' => t('All'),
-    ) + self::get_all_bundles();
 
     $form['vocabulary'] = array(
       '#type' => 'select',
@@ -65,13 +67,39 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#required' => TRUE,
     );
 
+    $form['widget_type'] = array(
+      '#type' => 'select',
+      '#title' => t('Widget type'),
+      '#description' => t('Select how to display the terms - in a select list or in html format'),
+      '#options' => array(
+        'list' => t('List'),
+        'select' => t('Select list'),
+      ),
+      '#default_value' => $this->options['widget_type'] ? $this->options['widget_type'] : 'list',
+    );
+
+    $form['behavior'] = array(
+      '#type' => 'select',
+      '#title' => t('Post types'),
+      '#options' => array(
+        'contextual' => t("Determine for me"),
+        '--all--' => t('All posts'),
+        'select' => t('Select post types'),
+      ),
+      '#default_value' => $this->options['behavior'],
+      '#description' => t('The post types that will included in the count. Determine for me will filter the content on the "current page".'),
+    );
+
     $form['bundles'] = array(
       '#type' => 'select',
-      '#title' => t('Bundle types'),
-      '#options' => $bundles,
-      '#description' => t('The bundles type of the tagged node that will include in the count'),
+      '#title' => t('Select Post types'),
+      '#options' => os_get_bundles(array(1,2)),
+      '#description' => t('The post types that will be included in the count'),
       '#multiple' => TRUE,
-      '#size' => count(self::get_all_bundles()) / 2,
+      '#size' => count(os_get_bundles(array(1,2))) / 2,
+      '#dependency' => array(
+        'edit-behavior' => array('select'),
+      ),
     );
 
     $form['range'] = array(
@@ -92,7 +120,7 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#description' => t('Should terms be shown that do not have any posts tagged to them.'),
     );
 
-    $form['terms_description'] = array(
+    $form['show_term_descriptions'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show term descriptions'),
       '#description' => t('Show the description of the term if avalible under each term.'),
@@ -104,29 +132,35 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#description' => t('Controll if to show the childrens with their father term.'),
     );
 
-    $form['add_childs'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Add childs to the count'),
-      '#description' => t('Define if we add the childs tagged node number to the count.'),
+    $form['depth'] = array(
+      '#type' => 'select',
+      '#title' => ('Taxonomy tree depth.'),
+      '#description' => t('The maximum term level in the tree to count the tagged posts.'),
+      '#options' => array(
+        -1 => t("Show all childeren"),
+        0 => t("Show only first level"),
+        1 => t("2nd Level"),
+        2 => t("3rd Level"),
+        3 => t("4th Level"),
+      ),
+      '#process' => array('ctools_dependent_process'),
       '#dependency' => array(
         'edit-show-childs' => array(1),
       ),
     );
 
-    $form['depth'] = array(
-      '#type' => 'select',
-      '#title' => ('Taxonomy tree depth.'),
-      '#description' => t('The maximum term level in the tree to count the tagged nodes.'),
-      '#options' => array(
-        0 => t("Show all childeren"),
-        1 => t("Show only first level"),
-        2 => t("2nd Level"),
-        3 => t("3rd Level"),
-        4 => t("4th Level"),
-      ),
-      '#process' => array('ctools_dependent_process'),
+    $form['show_count'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show number of posts'),
+      '#description' => t('Show number of posts tagged to a term next to the term.'),
+    );
+
+    $form['add_childs'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Add tagged children to the count'),
+      '#description' => t('Should posts tagged to childeren of a term be added to the count.'),
       '#dependency' => array(
-        'edit-add-childs' => array(1),
+        'edit-show-count' => array(1),
       ),
     );
 
@@ -134,24 +168,39 @@ class os_taxonomy_fbt extends os_boxes_default {
   }
 
   /**
-   * Implementation of boxes_content::render().
+   * Implements boxes_content::render().
    */
   public function render() {
-    // Reset the keys.
-    foreach (array_keys($this->form_elements()) as $setting) {
-      $this->options['settings'][$setting] = !empty($this->options['settings'][$setting]) ? $this->options['settings'][$setting] : NULL;
-    }
-
     $block = parent::render();
+    if (empty($this->options['vocabulary'])) {
+      $this->options['vocabulary'] = current(array_keys(self::get_all_volcabularies()));
+
+      if(empty($this->options['vocabulary'])){
+        // There are no vocabularies defined in the VSite.
+        return $block;
+      }
+    }
     // For now - display the first vocabulary terms.
-    if (isset($this->options['bundles']['--all--'])) {
+    if ($this->options['behavior'] == '--all--') {
       $this->options['bundles'] = array();
     }
 
+    ctools_include('layout', 'os');
+    if ($this->options['behavior'] == 'contextual' && ($feature = os_get_active_feature())) {
+      if (isset($feature->info['features']['node'])) {
+        $this->options['bundles'] = $feature->info['features']['node'];
+      }
+    }
+
+    if (is_array($this->options['vocabulary'])) {
+      $t = array_filter($this->options['vocabulary']);
+      $this->options['vocabulary'] = current($t);
+    }
+
     $block['content'] = theme('os_taxonomy_vocabulary_item_list', array(
-      'vid' => $this->options['vocabulary'],
-      'options' => $this->options,
-    ));
+        'vid' => $this->options['vocabulary'],
+        'options' => $this->options,
+      ));
 
     return $block;
   }
@@ -159,14 +208,15 @@ class os_taxonomy_fbt extends os_boxes_default {
   /**
    * Return the cache parameters for this box.
    */
-  public function cache_info() {
-  }
+  public function cache_info() {}
 
   /**
    * Get all the volcabularies id using the taxonomy terms.
    */
   private function get_all_volcabularies() {
-    $taxonomy_vocabularies = taxonomy_get_vocabularies();
+
+    ctools_include('taxonomy', 'os');
+    $taxonomy_vocabularies = os_get_vocabularies();
     $vocabularies = array();
 
     foreach ($taxonomy_vocabularies as $taxonomy_vocabulary) {
@@ -175,19 +225,5 @@ class os_taxonomy_fbt extends os_boxes_default {
 
     return $vocabularies;
   }
-
-  /**
-   * Return a list of node bundles.
-   */
-  private function get_all_bundles() {
-    $entity = entity_get_info('node');
-
-    $bundles = array();
-
-    foreach ($entity['bundles'] as $machine_name => $bundle) {
-      $bundles[$machine_name] = $bundle['label'];
-    }
-
-    return $bundles;
-  }
 }
+

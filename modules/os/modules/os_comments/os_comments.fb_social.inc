@@ -19,7 +19,6 @@ function os_comments_fb_social_default_presets() {
   $fb_social_preset->settings = array(
     'node_types' => array(
       'types' => array(
-        'announcement' => 0,
         'page' => 0,
         'biblio' => 0,
         'blog' => 0,
@@ -27,8 +26,8 @@ function os_comments_fb_social_default_presets() {
         'event' => 0,
         'feed' => 0,
         'media_gallery' => 0,
+        'news' => 0,
         'link' => 0,
-        'vsite' => 0,
         'software_project' => 0,
         'software_release' => 0,
       ),

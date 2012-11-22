@@ -18,7 +18,7 @@ class os_boxes_bio extends os_boxes_default {
    */
   public function options_defaults() {
     $options = parent::options_defaults();
-    $options['teaser'] = 'teaser';
+    $options['teaser'] = 'full';
     $options['show_title'] = 0;
     return $options;
   }

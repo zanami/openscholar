@@ -53,6 +53,7 @@ class VariableTableMigration extends TableCopyMigration {
       'apachesolr_host', 'apachesolr_path', 'apachesolr_port', 'iqss_rbuild_default_url', 'site_mail',
       'site_mission', 'site_name', 'site_offline_message', 'shorten_bitly_login', 'shorten_bitly_key',
       'iqss_gking::alternate_theme_nodes', 'iqss_gking::override_child_terms', 'iqss_gking::heading_disabled_terms',
+      'embedfilter_host_whitelist', 'os_wysiwyg_fields_api_key',
     );
 
     $this->whitelist = array_merge($this->whitelist, parent::subfields('citation_distribute', array('dash_password', 'module_mode', 'service_googlescholar_auto_flag', 'service_repec_archive_code', 'service_repec_inst_name', 'service_repec_maintainer_email', 'service_repec_maintainer_name', 'service_repec_provider_homepage', 'service_repec_provider_institution', 'service_repec_title', 'service_repec_archive_path', 'service_repec_archive_url'), '_'));
@@ -98,11 +99,18 @@ class VariableTableMigration extends TableCopyMigration {
       return FALSE;
     }
 
+    //update whitelist
+    if ($row->name == 'embedfilter_host_whitelist') {
+      $row->name = 'media_embed_whitelist';
+      $row->value = serialize(explode("\r\n", unserialize($row->value)));
+    }
+
     //rename variables
     $rename = array(
       'iqss_gking::alternate_theme_nodes'  => 'gkplus_minitheme_nodes',
       'iqss_gking::override_child_terms'   => 'gkplus_child_indent_terms',
       'iqss_gking::heading_disabled_terms' => 'gkplus_hidden_heading_terms',
+      'os_wysiwyg_fields_api_key' => 'oembedembedly_api_key',
     );
 
     if (isset($rename[$row->name])) {
@@ -173,6 +181,32 @@ class UrlAliasTableMigration extends TableCopyMigration {
   }
 }
 
+class ContextualAnnotationsTableMigration extends TableCopyMigration {
+
+  public function __construct() {
+    $this->required_modules = array('contextual_annotation');
+    $key_schema = array(
+      'annotation_key' => array(
+        'type' => 'varchar',
+        'length' => 127,
+        'not null' => TRUE,
+      ),
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    );
+
+    $table = 'contextual_annotation';
+    parent::__construct($table, $key_schema);
+  }
+
+  public function prepareRow(&$row) {
+    unset($row->annotation_type);
+  }
+}
+
 class UsageLogTableMigration extends TableCopyMigration {
   public function __construct() {
     $this->required_modules = array('openscholar_log_usage');
@@ -215,3 +249,25 @@ class UsageLogTableMigration extends TableCopyMigration {
 
 }
 
+class PurlVsiteDomainTableMigration extends TableCopyMigration {
+
+  public function __construct() {
+    $key_schema = array(
+      'value' => array(
+        'type' => 'varchar',  //used to be datetime.
+        'length' => 255,
+        'not null' => TRUE,
+      )
+    );
+
+    $table = 'purl';
+    parent::__construct($table, $key_schema);
+
+  }
+
+  public function query() {
+    $query = parent::query();
+    $query->condition('provider', 'vsite_domain');
+    return $query;
+  }
+}

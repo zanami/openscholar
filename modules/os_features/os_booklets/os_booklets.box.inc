@@ -28,7 +28,7 @@ function os_booklets_default_box() {
     'more_text' => 'More',
     'more_link' => 'documents',
     'pager' => 0,
-    'number_of_items' => '5',
+    'number_of_items' => '6',
     'sort_by' => 'sort_newest',
   );
   $export['os_booklets_recent_docs'] = $box;
@@ -38,7 +38,7 @@ function os_booklets_default_box() {
   $box->api_version = 1;
   $box->delta = 'os_booktoc';
   $box->plugin_key = 'os_boxes_booktoc';
-  $box->title = 'Table of Contents';
+  $box->title = '';
   $box->description = 'Active Book\'s TOC';
   $box->options = array(
     'visibility' => 'feature',

@@ -1,4 +1,6 @@
 <?php
+// $Id$
+
 
 /**
  * @file cp_menu.wizard.inc
@@ -6,16 +8,17 @@
  * Include file for cp_menu link maker forms and for helper functions that only assist the wizard
  **/
 
-
 /**
  * Multi-step form wizard for adding links to menu.
+ *
  * @param unknown_type $js
  * @param unknown_type $step
  */
 function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
-  //can we collect the original menu?  should that be part of the menu link so the result can be added back in?
+  // can we collect the original menu?
+  // should that be part of the menu link so the result can be added back in?
 
-  //get cached results
+  // Gets cached results
   $object_id = 'cp_menu';
   if (empty($step) || $step == 'new') {
     $step = 'type';
@@ -24,22 +27,21 @@ function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
   $object = cp_menu_cache_get($object_id);
   $object['js'] = ($js != 'nojs');
 
-  //check if step is a menu?  if so, stash it and clear it.
-  ctools_include('menu','os');
+  // Checks whether step is a menu?  if so, stash it and clear it.
+  ctools_include('menu', 'os');
   if (in_array($menu, array_flip(os_get_menus()))) {
     $object['menu'] = $menu;
     cp_menu_cache_set($object_id, $object);
   }
 
-  //forge a form state
+  // Initializes a form_state
   $form_state = array(
     'ajax' => $js,
     'object_id' => $object_id,
-    'object' => &$object,
+    'object' => & $object,
   );
 
-  //prep multistep form info
-
+  // Prepares multistep form info
   $form_info = array(
     'id' => 'cp_menu_form',
     'path' => 'cp/menu/' . ($js ? 'ajax' : 'nojs') . '/%step',
@@ -51,98 +53,104 @@ function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
     'cancel callback' => 'cp_menu_wizard_cancel',
     'forms' => array(
       'type' => array(
-      	'form id' => 'cp_menu_type',
-        'title'   => t('Link Type'),
+        'form id' => 'cp_menu_type',
+        'title' => t('Link Type'),
       ),
     ),
   );
 
-  //add type dependent pages based on type form's results
+  // Add type dependent pages based on type form's results
   if (isset($_POST['type'])) {
     $type = $_POST['type'];
     $object['type'] = $type;
     cp_menu_cache_set($object_id, $object);
-  } elseif (isset($object['type'])) {
+  }
+  elseif (isset($object['type'])) {
     $type = $object['type'];
-  } else {
+  }
+  else {
     $type = NULL;
   }
 
-  //new node gets continue instead of finish because node creation is another step, albeit outside of wizard
+  // Sets new node finish text to "continue" instead of "finish",
+  // because node creation is another step, albeit outside of wizard
   if (isset($object['type']) && $object['type'] == 'page') {
     $form_info['finish text'] = t('Continue');
   }
 
-
   if ($type == 'list') {
-    $form_info['forms']['list_type'] = array('form id' => 'cp_menu_list_type', 'title'=>t('Type of List'));
+    $form_info['forms']['list_type'] = array('form id' => 'cp_menu_list_type', 'title' => t('Type of List'));
 
     $list_type = (isset($object['list_type'])) ? $object['list_type'] : $_POST['list_type'];
     if ($list_type == 'taxonomy') {
-      $form_info['forms']['term'] = array('form id' => 'cp_menu_list_term', 'title'=>t('Taxonomy Terms'));
-    } elseif ($list_type == 'publications') {
-      $form_info; //pubs.
+      $form_info['forms']['term'] = array('form id' => 'cp_menu_list_term', 'title' => t('Taxonomy Terms'));
+    }
+    elseif ($list_type == 'publications') {
+      // pubs.
+      $form_info;
     }
   }
 
-  //add final page after type sensitive pages have been included
-  $form_info['forms']['title'] = array('form id' => 'cp_menu_title', 'title'=>t('Link Title'));
+  // Adds final page after type sensitive pages have been included
+  $form_info['forms']['title'] = array('form id' => 'cp_menu_title', 'title' => t('Link Title'));
 
-  //build and render the form
+  // Builds and renders the form.
   ctools_include('wizard');
   $form = ctools_wizard_multistep_form($form_info, $step, $form_state);
   $output = drupal_render($form);
   if ($js) {
-  	ctools_include('ajax');
-  	ctools_include('modal');
-  	ctools_modal_render(t('Add menu item'), $output);
-  } else {
-  	return $output;
+    ctools_include('ajax');
+    ctools_include('modal');
+    ctools_modal_render(t('Add menu item'), $output);
+  }
+  else {
+    return $output;
   }
 }
 
-
 /**
- * @function cp_menu_type
- *
- * Multistep form page for collecting the type of a link where type is page, url, or list.
+ * Multistep form page; presents radio options page and url.
  */
-function cp_menu_type($form, &$formstate) {
+function cp_menu_type($form, &$form_state) {
   $form_state['title'] = t('Link Type');
 
   $form['type'] = array(
+    '#title' => 'Link Type',
     '#type' => 'radios',
-    '#options' => array('page'=>'Page', 'url'=>'URL'),//, 'list'=>'List'),
+    '#options' => array('page' => 'Page', 'url' => 'URL'),
     '#description' => t('Type of content to link to.'),
-  	'#required' => TRUE,
+    '#required' => TRUE,
   );
+
+  if (isset($form_state['object']) && isset($form_state['object']['type'])) {
+    $form['type']['#default_value'] = $form_state['object']['type'];
+  }
 
   return $form;
 }
 
 /**
- * @function cp_menu_title
- *
- * Multistep form page for setting the title and advanced options of a link.
+ * Multistep form page; presents title and advanced options for a URL link.
  */
 function cp_menu_title($form, &$form_state) {
   $form_state['title'] = t('Title');
 
-  //can this be prepopulated if we're coming from an existing node?
+  // Can this be prepopulated if we're coming from an existing node?
   $form['title'] = array(
     '#title' => t('Title'),
     '#type' => 'textfield',
     '#description' => t('Name your link.'),
-  	'#required' => TRUE,
+    '#required' => TRUE,
   );
 
-  //add type dependent fields
-  switch($form_state['object']['type']) {
+  // Adds type dependent fields
+  switch ($form_state['object']['type']) {
     case 'url':
       $form['url'] = array(
         '#type' => 'textfield',
         '#title' => t('URL'),
         '#required' => TRUE,
+        '#description' => t('The address of the link. Starts with: http://'),
       );
 
       $form['#validate'][] = 'cp_menu_url_validate';
@@ -152,15 +160,14 @@ function cp_menu_title($form, &$form_state) {
       $form['new_or_select'] = array(
         '#type' => 'radios',
         '#title' => t('Destination'),
-        '#options' => array('new'=>t('New Page'), 'select'=>t('Choose Existing')),
+        '#options' => array('new' => t('New page'), 'select' => t('Choose existing')),
         '#description' => t('Choose a page you have already created or make a new page as the destination for your link'),
         '#required' => TRUE,
       );
 
-      $form['node'] = array(
-        '#type' => 'textfield',
+      include_once (drupal_get_path('module', 'vsite') . '/includes/nodeautocomplete.inc');
+      $autocomplete_element = array(
         '#title' => t('Page'),
-        '#autocomplete_path' => 'ctools/autocomplete/node', //does not limit by vsite or user.  waiting for d7's version of vsite_node_autocomplete
         '#description' => t('Select an existing page.'),
         '#states' => array(
           'visible' => array(
@@ -168,52 +175,76 @@ function cp_menu_title($form, &$form_state) {
           ),
         ),
       );
+      $form['node'] = vsite_node_autocomplete_element($autocomplete_element);
+
+      // Load the bundles.
+      $content_types = os_get_bundles();
+      $content_types_list = array();
+      if(module_exists('os_biocv')) {
+        // Check for an already created bio.
+        $bio_check = _os_biocv_bio_exists();
+        // Check for an already created cv.
+        $cv_check = _os_biocv_cv_exists();
+        // Remove bio || cv if they're already created.
+        if($bio_check && array_key_exists('bio', $content_types)) {
+      	  unset($content_types['bio']);
+        }
+        if($cv_check && array_key_exists('cv', $content_types)) {
+      	  unset($content_types['cv']);
+        }
+      }
+      // Remove the "link" content type from the bundles array.
+	  if(array_key_exists('link', $content_types)) {
+	  	unset($content_types['link']);
+	  }
+	  // Sort content types alphabetically.
+	  asort($content_types);
+	  // String replace for os_get_bundles, underscores should be hyphens.
+	  foreach($content_types as $key => $value) {
+	  	$url_str = str_replace('_', '-', $key);
+	  	$content_types_list[$url_str] = $value;
+	  }
 
       $form['new_node_type'] = array(
         '#type' => 'select',
         '#title' => t('Create new'),
         '#description' => t('Create a new page.'),
-        '#options' => os_get_bundles(),
+        '#options' => $content_types_list,
         '#states' => array(
           'visible' => array(
             ':input[name="new_or_select"]' => array('value' => 'new'),
           ),
         ),
       );
-
       break;
   }
 
 
-  //should we support other attributes here as well?  still undecided if new window should exist
+  // Should we support other attributes here as well?
+  // Still undecided if new window should exist
   $form['advanced'] = array(
     '#type' => 'fieldset',
     '#title' => t('Advanced Options'),
     '#collapsed' => TRUE,
-  	'#collapsible' => TRUE,
-
+    '#collapsible' => TRUE,
     'new_window' => array(
       '#type' => 'checkbox',
       '#title' => t('New Window'),
       '#description' => t('Open link in new tab or window'),
       '#default' => FALSE,
     ),
-
     'tooltip' => array(
       '#type' => 'textfield',
       '#title' => t('Tooltip'),
       '#description' => t('Text displayed when mouse hovers over link'),
-    )
+    ),
   );
 
   return $form;
 }
 
-
 /**
- * @function cp_menu_url_validate
- *
- * Validation for cp_menu_url.  Checks that URl exists.
+ * Validation callback for cp_menu_url; Checks that URL exists.
  */
 function cp_menu_url_validate(&$form, &$state) {
   if ($state['values']['url'] == '<front>') {
@@ -227,8 +258,9 @@ function cp_menu_url_validate(&$form, &$state) {
     $header = @get_headers($url);
 
     if (!$header) {
-      form_set_error('url', t('Could not connect to url: %url', array('%url'=>'$url')));
-    } else {
+      form_set_error('url', t('Could not connect to url: %url', array('%url' => '$url')));
+    }
+    else {
       $http = explode(' ', $header[0]);
       $http_code = $http[1];
 
@@ -236,16 +268,16 @@ function cp_menu_url_validate(&$form, &$state) {
         form_set_error('url', t('URL Returned Error: %error', array('%error' => $header[0])));
       }
     }
-
-  } elseif (!$menu) {
-      form_set_error('url', t('Path does not exist'));
+  }
+  elseif (!$menu) {
+    form_set_error('url', t('Path does not exist'));
   }
 }
 
 /**
- * @function cp_menu_list_type
+ * Multistep form page; presents options for type of list to link to.
  *
- * Multistep form page for gathering further information about the type of list to link to.
+ * @todo is this used?
  */
 function cp_menu_list_type($form, &$formstate) {
   $form_state['title'] = t('Type of List');
@@ -253,7 +285,7 @@ function cp_menu_list_type($form, &$formstate) {
   $form['list_type'] = array(
     '#title' => t('Type of List'),
     '#type' => 'radios',
-    '#options' => array('publications'=>'Publications', 'taxonomy'=>'Taxonomy'),
+    '#options' => array('publications' => 'Publications', 'taxonomy' => 'Taxonomy'),
     '#description' => t('Type of content to link to.'),
     '#required' => TRUE,
   );
@@ -261,15 +293,15 @@ function cp_menu_list_type($form, &$formstate) {
   $form['publications_type'] = array(
     '#type' => 'radios',
     '#title' => 'Publications by ...',
-    '#options' => array('year'=>'Year', 'type'=>'Type', 'co'=>'Co-author'),
+    '#options' => array('year' => 'Year', 'type' => 'Type', 'co' => 'Co-author'),
     '#states' => array(
       'visible' => array(
         ':input[name="list_type"]' => array('value' => 'publications'),
       ),
-    )
+    ),
   );
 
-  //is there a vsite aware version of this?
+  // Is there a vsite aware version of this?
   $options = array();
   foreach (taxonomy_get_vocabularies() as $vid => $vocab) {
     $options[$vocab->vid] = $vocab->name;
@@ -284,9 +316,10 @@ function cp_menu_list_type($form, &$formstate) {
         'visible' => array(
           ':input[name="list_type"]' => array('value' => 'taxonomy'),
         ),
-      )
+      ),
     );
-  } else {
+  }
+  else {
     $form['taxonomy_not_found'] = array(
       '#type' => 'item',
       '#title' => 'No vocabularies found.  Please create a vocabulary or choose another type of list.',
@@ -294,7 +327,7 @@ function cp_menu_list_type($form, &$formstate) {
         'visible' => array(
           ':input[name="list_type"]' => array('value' => 'taxonomy'),
         ),
-      )
+      ),
     );
   }
 
@@ -302,10 +335,11 @@ function cp_menu_list_type($form, &$formstate) {
 }
 
 /**
- * @function cp_menu_list_type_validate
+ * Validation callback for cp_menu_list_type.
  *
- * Validation for cp_menu_list_type.  Publication lists need a type (year, co-auth, etc) and taxonomy lists need a vocabulary.
- * FAPI #states weren't quite up to the task of imposing conditional requirements.
+ * Publication lists need a type (year, co-auth, etc) and taxonomy lists need a
+ * vocabulary. FAPI #states weren't quite up to the task of imposing conditional
+ * requirements.
  */
 function cp_menu_list_type_validate(&$form, &$formstate) {
   if ($formstate['values']['list_type'] == 'publications' && strlen($formstate['values']['publications_type']) == 0) {
@@ -317,9 +351,9 @@ function cp_menu_list_type_validate(&$form, &$formstate) {
 }
 
 /**
- * @function cp_menu_list_term
+ * Multistep form page; presents available terms to display in a vocab list.
  *
- * Multistep form page for choosing the term to display in a vocabulary list.
+ * @todo is this used?
  */
 function cp_menu_list_term($form, &$formstate) {
   $vid = $formstate['object']['vocabulary'];
@@ -339,18 +373,17 @@ function cp_menu_list_term($form, &$formstate) {
   return $form;
 }
 
-
 /**
-* CP menu cache storage
-*/
+ * CP menu cache storage
+ */
 function cp_menu_cache_set($id, $object) {
   ctools_include('object-cache');
   ctools_object_cache_set('cp_menu', $id, $object);
 }
 
 /**
-* CP menu cache retrieval
-*/
+ * CP menu cache retrieval
+ */
 function cp_menu_cache_get($id) {
   ctools_include('object-cache');
   $object = ctools_object_cache_get('cp_menu', $id);
@@ -358,74 +391,76 @@ function cp_menu_cache_get($id) {
 }
 
 /**
-* Clear the wizard cache.
-*/
+ * Clear the wizard cache.
+ */
 function cp_menu_cache_clear($id) {
   ctools_include('object-cache');
   ctools_object_cache_clear('cp_menu', $id);
 }
 
-
-
-
 /**
-* Advance the cp menu wizard to the next page.  Concatenate cached and submitted values
-*/
+ * Advance the cp menu wizard to the next page.  Concatenate cached and submitted values
+ */
 function cp_menu_wizard_next(&$form_state) {
   $form_state['object'] += $form_state['values'];
   cp_menu_cache_set($form_state['object_id'], $form_state['object']);
 }
 
 /**
-* CP menu wizard cancelled.
-*/
+ * CP menu wizard cancelled.
+ */
 function cp_menu_wizard_cancel(&$form_state) {
-	$cached = cp_menu_cache_get($form_state['object_id']);
+  $cached = cp_menu_cache_get($form_state['object_id']);
   cp_menu_cache_clear($form_state['object_id']);
 
-  if ($cached['js'] || $form_state['ajax']) {
-  	ctools_include('ajax');
-  	ctools_include('modal');
-  	$commands = array();
-  	$commands[] = ctools_modal_command_dismiss();
-  	print ajax_render($commands);
-  	exit;
+  if ($form_state['ajax'] || $cached['js']) {
+    ctools_include('modal');
+    ctools_include('ajax');
 
-  } else {
-  	drupal_goto('<front>');
+    $commands = array();
+    $commands[] = ctools_modal_command_dismiss();
+    print ajax_render($commands);
+    exit;
+  }
+  else {
+    overlay_commands_add(overlay_command_dismiss());
   }
 }
 
 /**
-* CP menu wizard has completed.  Add results to a menu.
-*/
+ * CP menu wizard has completed.  Add results to a menu.
+ */
 function cp_menu_wizard_finish(&$form_state) {
   $values = cp_menu_cache_get($form_state['object_id']) + $form_state['values'];
 
-  //new node page
+  // Provides node add form
   if ($values['type'] == 'page' && $values['new_or_select'] == 'new') {
     cp_menu_cache_set($form_state['object_id'], $values);
+    if ($form_state['ajax'] || $values['js']) {
+      ctools_include('modal');
+      ctools_include('ajax');
+      $commands = array();
 
-    if ($form_state['ajax']) {
-    	ctools_include('ajax');
-    	ctools_include('modal');
-    	$commands = array();
-    	$commands[] = ctools_ajax_command_redirect('node/add/' . $values['new_node_type']);
-    	print ajax_render($commands);
-    	exit;
-    } else {
-    	drupal_goto('node/add/' . $values['new_node_type']);
+      $commands[] = ctools_ajax_command_redirect('node/add/' . $values['new_node_type']);
+      print ajax_render($commands);
+      exit;
+    }
+    else {
+      $node_type = ($values['new_node_type'] != 'media_gallery') ? $values['new_node_type'] : 'media-gallery';
+      drupal_goto('node/add/' . $node_type);
     }
   }
 
-  //Build the link from the collected data
+  // Builds the link from the collected data
   switch ($values['type']) {
     case 'url':
       $url = check_url($values['url']);
       break;
 
     case 'page':
-      $nid = (int)array_pop(explode(' ', $values['node']));
+      if (isset($form_state['vsite_autocomplete_nid'])) {
+        $nid = $form_state['vsite_autocomplete_nid'];
+      }
       $url = 'node/'.$nid;
       break;
 
@@ -447,22 +482,27 @@ function cp_menu_wizard_finish(&$form_state) {
     $options['description'] = $values['tooltip'];
   }
 
-  //then save to vsite or whole site
-  ctools_include('menu','os');
-  $item = array('link_path' => $url, 'menu_name' => $menu_name, 'link_title' => $values['title'],'options' => $options);
+  // Saves to vsite or whole site
+  ctools_include('menu', 'os');
+
+  $item = array('link_path' => $url, 'menu_name' => $menu_name, 'link_title' => $values['title'], 'options' => $options);
   $mlid = os_menu_link_save($item);
   cp_menu_cache_clear($form_state['object_id']);
-  if ($form_state['ajax']) {
-  	ctools_include('ajax');
-  	ctools_include('modal');
-  	$commands = array();
-  	$commands[] = ctools_modal_command_dismiss();
-  	$commands[] = ctools_ajax_command_reload();
-  	print ajax_render($commands);
-  	exit;
 
-  } else {
-  	drupal_goto('<front>');
+  //ctools_ajax_command_reload();
+  if ($form_state['ajax'] || $values['js']) {
+    ctools_include('modal');
+    ctools_include('ajax');
+
+    $commands   = array();
+    $commands[] = ctools_modal_command_dismiss();
+    $commands[] = ctools_ajax_command_reload();
+    print ajax_render($commands);
+    exit;
+  }
+  else {
+    overlay_commands_add(overlay_command_dismiss());
+    overlay_close_dialog();
   }
 }
 

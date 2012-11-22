@@ -27,15 +27,17 @@
 }
 
 
-.field-items {
-     display: inline-block;
-}
-
 
 .node-type-book .field-name-body .field-items {
      display: inline;
 }
 
+.node-type-class .field-items {
+     display: inline-block;
+	  	}
+	  	
+	  	
+.field-type-file .field-item {display:inline;}
 
 /*
  * Field types (Core)

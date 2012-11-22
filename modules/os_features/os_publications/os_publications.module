@@ -117,6 +117,12 @@ function os_publications_theme_registry_alter(&$reg) {
   //Override publications by year box so biblio years display submitted/inpress/etc
   $reg['views_view_summary__publication_years__block'] = $reg['views_view_summary'];
   $reg['views_view_summary__publication_years__block']['preprocess functions'][] = 'theme_os_publications_biblio_year_row';
+
+  $reg['biblio_sort_tabs'] = array_merge($reg['biblio_sort_tabs'], array(
+    'file' => 'os_publications.theme.inc',
+    'theme path' => drupal_get_path('module', 'os_publications'),
+    'function' => 'theme_os_publications_sort_tabs',
+  ));
 }
 
 /**
@@ -131,8 +137,10 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   }
   $tid = !empty($form_state['biblio_type']) ? $form_state['biblio_type'] : (isset($form_state['node']->biblio_type) ? $form_state['node']->biblio_type : 0);
 
-  // hide the biblio_image field
+  // Hides the "Book Cover" biblio_image field.
   $form['field_biblio_image']['#access'] = FALSE;
+  // Hides the "Extra Fields" (dyntextfield) field until a type is selected.
+  $form['field_biblio_extra']['#access'] = FALSE;
 
   // hide look up and pasting fields
   if (isset($form['biblio_doi_lookup'])) {
@@ -150,21 +158,22 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
 
   ksort($form['biblio_type']['#options']);
 
-  // do things based on what pub type we have selected
+  // Alters form based on what publication type is selected.
   switch ($tid) {
     case 0:
       // no pub type
       // we're on the first step of a biblio form. bail out.
       $form['biblio_type']['#weight'] = -1000;
-
       return;
 
-    case 100:
-      // book type
+    default:
+      // Shows the Extra Fields for any selected publication type.
+      $form['field_biblio_extra']['#access'] = TRUE;
+      // Show cover image upload field for any selected publication type.
       $form['field_biblio_image']['#access'] = TRUE;
   }
 
-  // move fields out of the vertical tabs
+  // Moves fields out of the vertical tabs
   // I like how the form looks with the tabs in. Much cleaner.
   // So I'm keeping them.
   $form['biblio_authors'] = $form['biblio_tabs']['biblio_authors'];
@@ -185,6 +194,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   }
   unset($form['biblio_tabs']['biblio_authors']);
 
+  $form['body'][LANGUAGE_NONE][0]['summary']['#access'] = false;
   $form['biblio_tabs']['biblio_full_text']['body'] = $form['body'];
   unset($form['body']);
 
@@ -253,7 +263,6 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
  * Is given a render array representing the biblio node ready for rendering in the list view
  *
  * Adds any fields that may have been added to the node type
- * Adds the Abstract link to the teaser
  *
  * @param unknown_type $entry
  */
@@ -264,16 +273,17 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
   $entry['teaser']['#weight'] = 1;
   $entry['#attached']['css'][] = drupal_get_path('module', 'os_publications').'/misc/os_publications.css';
   unset($entry['links']['node'], $entry['links']['biblio_google_scholar']);
+}
 
-  // add abstract link
-
+function _os_publications_attach_abstract(&$entry, $node) {
   if (strlen($node->biblio_abst_e)) {
     $entry['#attached']['js'][] = drupal_get_path('module', 'os') . '/theme/os_toggle.js';
     $html   = &$entry['teaser']['#markup'];
     $insert = strrpos($html, '</div>');
     $extra  = l('Abstract', 'node/' . $node->nid, array('attributes' => array('class' => array('biblio-abstract-link', 'toggle'))));
-    $render = array(
+    $entry['abstract_slider'] = array(
       '#type' => 'container',
+      '#weight' => 3,
       '#attributes' => array(
         'class' => array(
           'biblio-abstract-display',
@@ -284,7 +294,6 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
         '#markup' => check_markup($node->biblio_abst_e, filter_default_format()),
       ),
     );
-    $extra .= render($render);
     if ($insert === FALSE) {
       $html .= $extra;
     }
@@ -305,15 +314,23 @@ function os_publications_preprocess_node(&$vars) {
 
 /**
  * Removes the export links from the full view of the node
+ * Adds 'Abstract' link to toggle a sliding box with the full abstract
  */
 function os_publications_node_view_alter(&$build, $type) {
   if ($type == 'node' && $build['#bundle'] == 'biblio') {
-    $links = &$build['links'];
-    foreach ($links as $k => $l) {
-      if (is_array($l) && isset($l['#links'])) {
-        foreach ($l['#links'] as $id => $arr) {
-          if (strpos($arr['href'], 'export') !== FALSE) {
-            unset($links[$k]['#links'][$id]);
+    if ($build['#view_mode'] == 'teaser') {
+      _os_publications_attach_abstract($build, $build['#node']);
+      $build['teaser']['#weight'] = 1;
+      $build['links']['#access'] = FALSE;
+    }
+    else {
+      $links = &$build['links'];
+      foreach ($links as $k => $l) {
+        if (is_array($l) && isset($l['#links'])) {
+          foreach ($l['#links'] as $id => $arr) {
+            if (strpos($arr['href'], 'export') !== FALSE) {
+              unset($links[$k]['#links'][$id]);
+            }
           }
         }
       }
@@ -424,7 +441,7 @@ function _os_publications_clear_cache($node) {
  * Ensures the space is set on imported biblio nodes
  */
 function _os_publications_handle_import($node) {
-  if ($node->type == 'biblio' && isset($node->nid) && !isset($node->og_group_ref) && module_exists('vsite') && $space = spaces_get_space()) {
+  if ($node->type == 'biblio' && isset($node->nid) && (!isset($node->og_group_ref) || !count($node->og_group_ref[$node->language])) && module_exists('vsite') && $space = spaces_get_space()) {
     module_load_include('inc', 'vsite', 'includes/vsite');
     vsite_add_entity($node);
   }

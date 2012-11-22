@@ -12,7 +12,6 @@
  * add classes to the body of a page
  */
 function os_basetheme_preprocess_html(&$vars) {
-  if ($GLOBALS['theme'] == 'cp_theme') return;
 
   if (isset($vars['page']['menu_bar'])) {
     $vars['classes_array'][] = 'navbar-on';
@@ -27,7 +26,6 @@ function os_basetheme_preprocess_html(&$vars) {
  */
 function os_basetheme_preprocess_page(&$vars) {
   //Adds OpenScholar header region awareness to body classes
-  if ($GLOBALS['theme'] == 'cp_theme') return;
   $header = array(
     'header-left' => $vars['page']['header_second'],
     'header-main' => $vars['page']['header_first'],
@@ -53,6 +51,10 @@ function os_basetheme_preprocess_page(&$vars) {
   if (module_exists('overlay') && overlay_get_mode() == 'child') {
     // overlay does this, but adaptive theme renders them in a different way that overlay doesn't expect
     $vars['primary_local_tasks'] = $vars['title'] = false;
+  }
+
+  if (!isset($vars['use_content_regions'])) {
+    $vars['use_content_regions'] = false;
   }
 }
 

@@ -508,9 +508,9 @@ function _vsite_menu_get_mlid(){
  * Helper function to sort by weight
  */
 function _vsite_menu_sort_weight($a, $b){
-  $a_weight = $a['weight'] ? $a['weight'] : 0;
-  $b_weight = $b['weight'] ? $b['weight'] : 0;
-  return $a_weight - $b_weight;
+  $weight_a = $a['weight'] ? $a['weight'] : 0;
+  $weight_b = $b['weight'] ? $b['weight'] : 0;
+  return $weight_a - $weight_b;
 }
 
 /**

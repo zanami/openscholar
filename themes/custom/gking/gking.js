@@ -14,8 +14,8 @@
         container.toggle();
       
         // Adds necessary more/close links to show/hide bio node content.
-        $('.front .region-header-second .block-boxes-os_boxes_html .boxes-box-content p:last')
-          .append('<a class="more" href="#">More</a>');
+        $('<a class="more" href="#">More</a>')
+          .appendTo('.front .region-header-second .block-boxes-os_boxes_html .boxes-box-content');
         container.find('.node')
           .prepend('<a class="more" href="#">CLOSE X</a>');
         container.find('.node .node-content')
@@ -34,29 +34,39 @@
       /**
        * Prepares the "Areas of Research" front page taxonomy widget.
        */
-      // Original method
       var $sel = '#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content';
       var areas = $($sel + ' ul li ul li:not(.aor-processed)');
+      
+      // Stand back! Complex jQuery effects ahead!
       if (areas.length) {
-        // Setup the AOR block
+    	  
+    	// Updates the displayed taxonomy term item on hover event
         $($sel + ' ul li ul li:not(.aor-processed)').hover(function () {
+          // Removes active class from previous item
           $($sel + ' ul li ul li.active')
             .removeClass('active');
+          // Hides the previous item's description
           $($sel + ' ul li ul li div.description')
             .fadeOut('fast');
+          // Hides the previous item's more link
           $($sel + ' .more')
             .hide();
+          // Adds active class to new item, shows description with fadeIn.
           $(this)
             .addClass('active')
             .find('div.description')
             .fadeIn('fast');
         });
-        $($sel + ' ul li.last ul li:not(.aor-processed)')
+        
+        // Initializes first hover event.
+        $($sel + '.termchild-methods li:not(.aor-processed)')
           .filter(":first")
           .each(function (index) {
             $(this).hover();
         });
-        $('#content-column .block-boxes-os_taxonomy_fbt .boxes-box-content ul li ul li')
+        
+        // Marks all items as processed, so this only runs once per pageload.
+        $($sel + ' ul li ul li')
           .addClass('aor-processed');
       }
       

@@ -26,15 +26,15 @@ class citation_distribute_service_repec extends citation_distribute_service {
   public function __construct() {
   	parent::__construct();
 
-  	$this->title = variable_get('citation_distribute_service_repec_title', '');
-  	$this->inst_name = variable_get('citation_distribute_service_repec_inst_name', '');
-  	$this->archive_code = variable_get('citation_distribute_service_repec_archive_code', '');
-  	$this->maintainer_name = variable_get('citation_distribute_service_repec_maintainer_name', '');
-  	$this->maintainer_email = variable_get('citation_distribute_service_repec_maintainer_email', '');
-  	$this->archive_path = variable_get('citation_distribute_service_repec_archive_path', '');
-  	$this->archive_url = variable_get('citation_distribute_service_repec_archive_url', '');
-  	$this->provider_institution = variable_get('citation_distribute_service_repec_provider_institution', '');
-  	$this->provider_homepage = variable_get('citation_distribute_service_repec_provider_homepage', '');
+  	$this->title = variable_get('citation_distribute_service_repec_title', 'RePEc');
+  	$this->inst_name = variable_get('citation_distribute_service_repec_inst_name');
+  	$this->archive_code = variable_get('citation_distribute_service_repec_archive_code');
+  	$this->maintainer_name = variable_get('citation_distribute_service_repec_maintainer_name');
+  	$this->maintainer_email = variable_get('citation_distribute_service_repec_maintainer_email');
+  	$this->archive_path = variable_get('citation_distribute_service_repec_archive_path');
+  	$this->archive_url = variable_get('citation_distribute_service_repec_archive_url');
+  	$this->provider_institution = variable_get('citation_distribute_service_repec_provider_institution');
+  	$this->provider_homepage = variable_get('citation_distribute_service_repec_provider_homepage');
   }
 
 	/**
@@ -283,7 +283,8 @@ class citation_distribute_service_repec extends citation_distribute_service {
 		//$type = db_result(db_query('SELECT name FROM {biblio_types} WHERE tid = %d ', $tid));
 		$type = db_select('biblio_types', 'bt')->condition('tid', $tid)->fields('bt', array('name'))->execute()->fetchColumn();
 		if ($this->_map_biblio_type($type) != 'wpaper') {
-			form_set_error('biblio_type', 'The Publication Type of submissions to ' . $this->title . ' must be working paper.');
+		  $wpaper = array('Conference Paper', 'Conference Proceedings','Thesis','Report','Hearing','Case','Bill','Statute', 'Patent','Personal','Map','Chart','Unpublished','Database','Government Report','Classical','Legal Ruling','Miscellaneous','Miscellaneous Section','Working Paper',);
+			form_set_error('biblio_type', t('The Publication Type of submissions to @title must be one of the following: @types', array('@title' => $this->title, '@types' => implode(', ', $wpaper))));
 			$return = false;
 		}
 

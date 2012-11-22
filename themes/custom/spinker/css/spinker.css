@@ -306,10 +306,13 @@ ul.nice-menu-down li.menuparent:hover {
   display:block;
   }
   
-.search-form .container-inline .form-item .form-text {
- 	background: #000000;
+
+#search-block-form .container-inline .form-item .form-text {
+ background: #000000;
   color: #ccffcc;
 }
+
+
 
 td {
 	color: inherit;

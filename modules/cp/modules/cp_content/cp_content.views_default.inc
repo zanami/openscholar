@@ -23,6 +23,7 @@ function cp_content_views_default_views() {
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Comments';
+  $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
@@ -89,6 +90,7 @@ function cp_content_views_default_views() {
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['path'] = 'cp/content/comments';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Comments';
@@ -98,14 +100,19 @@ function cp_content_views_default_views() {
 
   /* Display: Approval Queue */
   $handler = $view->new_display('page', 'Approval Queue', 'page_1');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: Bulk operations: Comment */
   $handler->display->display_options['fields']['views_bulk_operations']['id'] = 'views_bulk_operations';
   $handler->display->display_options['fields']['views_bulk_operations']['table'] = 'comment';
   $handler->display->display_options['fields']['views_bulk_operations']['field'] = 'views_bulk_operations';
   $handler->display->display_options['fields']['views_bulk_operations']['relationship'] = 'cid';
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['entity_load_capacity'] = '10';
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['operations'] = array(
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['display_type'] = '0';
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['enable_select_all_pages'] = 1;
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['force_single'] = 1;
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['display_result'] = 1;
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['entity_load_capacity'] = '10';
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_operations'] = array(
     'action::views_bulk_operations_delete_item' => array(
       'selected' => 1,
       'use_queue' => 0,
@@ -192,11 +199,6 @@ function cp_content_views_default_views() {
       'label' => '',
     ),
   );
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['enable_select_all_pages'] = 1;
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['display_type'] = '0';
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['display_result'] = 1;
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['merge_single_action'] = 0;
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['force_single'] = 1;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -252,6 +254,7 @@ function cp_content_views_default_views() {
 
   /* Display: Published Comments */
   $handler = $view->new_display('page', 'Published Comments', 'page_2');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['path'] = 'cp/content/comments/all';
   $handler->display->display_options['menu']['type'] = 'default tab';
   $handler->display->display_options['menu']['title'] = 'Published Comments';
@@ -273,6 +276,7 @@ function cp_content_views_default_views() {
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Content';
+  $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['access']['perm'] = 'access content overview';
   $handler->display->display_options['cache']['type'] = 'none';
@@ -355,8 +359,12 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['views_bulk_operations']['field'] = 'views_bulk_operations';
   $handler->display->display_options['fields']['views_bulk_operations']['label'] = '';
   $handler->display->display_options['fields']['views_bulk_operations']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['entity_load_capacity'] = '10';
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['operations'] = array(
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['display_type'] = '0';
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['enable_select_all_pages'] = 1;
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['force_single'] = 0;
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['display_result'] = 1;
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['entity_load_capacity'] = '10';
+  $handler->display->display_options['fields']['views_bulk_operations']['vbo_operations'] = array(
     'action::node_assign_owner_action' => array(
       'selected' => 0,
       'use_queue' => 0,
@@ -422,7 +430,7 @@ function cp_content_views_default_views() {
       ),
     ),
     'action::node_promote_action' => array(
-      'selected' => 1,
+      'selected' => 0,
       'use_queue' => 0,
       'skip_confirmation' => 0,
       'override_label' => 0,
@@ -443,7 +451,7 @@ function cp_content_views_default_views() {
       'label' => '',
     ),
     'action::node_unpromote_action' => array(
-      'selected' => 1,
+      'selected' => 0,
       'use_queue' => 0,
       'skip_confirmation' => 0,
       'override_label' => 0,
@@ -477,12 +485,14 @@ function cp_content_views_default_views() {
       'override_label' => 0,
       'label' => '',
     ),
+    'action::pathauto_node_update_action' => array(
+      'selected' => 0,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
   );
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['enable_select_all_pages'] = 1;
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['display_type'] = '0';
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['display_result'] = 1;
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['merge_single_action'] = 0;
-  $handler->display->display_options['fields']['views_bulk_operations']['vbo']['force_single'] = 0;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -564,6 +574,7 @@ function cp_content_views_default_views() {
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['path'] = 'cp/content';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Content';
@@ -577,9 +588,10 @@ function cp_content_views_default_views() {
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['path'] = 'cp/content/content';
   $handler->display->display_options['menu']['type'] = 'normal';
-  $handler->display->display_options['menu']['title'] = 'Manage Content';
+  $handler->display->display_options['menu']['title'] = 'Posts';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'cp';
   $handler->display->display_options['menu']['context'] = 0;
@@ -599,6 +611,7 @@ function cp_content_views_default_views() {
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Files';
+  $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'role';
   $handler->display->display_options['access']['role'] = array(
     5 => '5',
@@ -626,17 +639,25 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['filename']['table'] = 'file_managed';
   $handler->display->display_options['fields']['filename']['field'] = 'filename';
   $handler->display->display_options['fields']['filename']['label'] = '';
+  $handler->display->display_options['fields']['filename']['exclude'] = TRUE;
   $handler->display->display_options['fields']['filename']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['filename']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['filename']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['filename']['link_to_file'] = TRUE;
-  /* Field: File: Path */
-  $handler->display->display_options['fields']['uri']['id'] = 'uri';
-  $handler->display->display_options['fields']['uri']['table'] = 'file_managed';
-  $handler->display->display_options['fields']['uri']['field'] = 'uri';
-  $handler->display->display_options['fields']['uri']['label'] = 'Download';
-  $handler->display->display_options['fields']['uri']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['uri']['link_to_file'] = TRUE;
-  $handler->display->display_options['fields']['uri']['file_download_path'] = TRUE;
+  /* Field: File: Copy link */
+  $handler->display->display_options['fields']['os_files_copy_link_1']['id'] = 'os_files_copy_link_1';
+  $handler->display->display_options['fields']['os_files_copy_link_1']['table'] = 'file_managed';
+  $handler->display->display_options['fields']['os_files_copy_link_1']['field'] = 'os_files_copy_link';
+  $handler->display->display_options['fields']['os_files_copy_link_1']['label'] = '';
+  $handler->display->display_options['fields']['os_files_copy_link_1']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['os_files_copy_link_1']['element_label_colon'] = FALSE;
+  /* Field: Global: Custom text */
+  $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
+  $handler->display->display_options['fields']['nothing']['table'] = 'views';
+  $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
+  $handler->display->display_options['fields']['nothing']['label'] = '';
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = '[filename] [os_files_copy_link_1]';
+  $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
   /* Field: File: Mime type */
   $handler->display->display_options['fields']['filemime']['id'] = 'filemime';
   $handler->display->display_options['fields']['filemime']['table'] = 'file_managed';
@@ -668,10 +689,29 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['relationship'] = 'file_to_node';
+  $handler->display->display_options['fields']['title']['label'] = 'Used in';
   $handler->display->display_options['fields']['title']['spaces'] = array(
     'type' => 'spaces_og',
     'frontpage' => 0,
   );
+  /* Field: File: File ID */
+  $handler->display->display_options['fields']['fid_1']['id'] = 'fid_1';
+  $handler->display->display_options['fields']['fid_1']['table'] = 'file_managed';
+  $handler->display->display_options['fields']['fid_1']['field'] = 'fid';
+  $handler->display->display_options['fields']['fid_1']['label'] = 'Edit';
+  $handler->display->display_options['fields']['fid_1']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['fid_1']['alter']['text'] = 'Edit';
+  $handler->display->display_options['fields']['fid_1']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['fid_1']['alter']['path'] = 'file/[fid]/edit';
+  /* Field: File: File ID */
+  $handler->display->display_options['fields']['fid_2']['id'] = 'fid_2';
+  $handler->display->display_options['fields']['fid_2']['table'] = 'file_managed';
+  $handler->display->display_options['fields']['fid_2']['field'] = 'fid';
+  $handler->display->display_options['fields']['fid_2']['label'] = 'Delete';
+  $handler->display->display_options['fields']['fid_2']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['fid_2']['alter']['text'] = 'Delete';
+  $handler->display->display_options['fields']['fid_2']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['fid_2']['alter']['path'] = 'file/[fid]/delete';
   /* Sort criterion: File: Upload date */
   $handler->display->display_options['sorts']['timestamp']['id'] = 'timestamp';
   $handler->display->display_options['sorts']['timestamp']['table'] = 'file_managed';
@@ -709,6 +749,7 @@ function cp_content_views_default_views() {
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['path'] = 'cp/content/files';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Files';
