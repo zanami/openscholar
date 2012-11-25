@@ -9,6 +9,45 @@ require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext {
 
+  // Variable to pass into the last xPath expression.
+  private $xpath = '';
+
+  /**
+   * Initializes context.
+   *
+   * Every scenario gets its own context object.
+   *
+   * @param array $parameters.
+   *   Context parameters (set them up through behat.yml or behat.local.yml).
+   */
+  public function __construct(array $parameters) {
+    if (isset($parameters['drupal_users'])) {
+      $this->drupal_users = $parameters['drupal_users'];
+    }
+  }
+
+  /**
+   * Authenticates a user with password from configuration.
+   *
+   * @Given /^I am logged in as "([^"]*)"$/
+   */
+  public function iAmLoggedInAs($username) {
+    try {
+      $password = $this->drupal_users[$username];
+    } catch (Exception $e) {
+      throw new Exception("Password not found for '$username'.");
+    }
+
+    // Log in.
+    // Go to the user page.
+    $element = $this->getSession()->getPage();
+    $this->getSession()->visit($this->locatePath('/user'));
+    $element->fillField('Username', $username);
+    $element->fillField('Password', $password);
+    $submit = $element->findButton('Log in');
+    $submit->click();
+  }
+
   /**
    * @Given /^I am on a "([^"]*)" page titled "([^"]*)"(?:, in the tab "([^"]*)"|)$/
    */
@@ -64,10 +103,102 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @When /^I clear the cache$/
+   */
+  public function iClearTheCache() {
+    $this->getDriver()->drush('cc all');
+  }
+
+
+  /**
    * @Then /^I should print page$/
    */
   public function iShouldPrintPage() {
-    $page = $this->getSession()->getPage()->getContent();
-    print_r($page);
+    $this->getSession()->visit($this->locatePath('/user'));
+    $element = $this->getSession()->getPage();
+    $element->fillField($this->getDrupalText('username_field'), 'admin');
+    $element->fillField($this->getDrupalText('password_field'), 'admin');
+    $submit = $element->findButton($this->getDrupalText('log_in'));
+    if (empty($submit)) {
+      throw new \Exception('No submit button at ' . $this->getSession()->getCurrentUrl());
+    }
+
+    // Log in.
+    $submit->click();
+    $element = $this->getSession()->getPage();
+    print_r($element->getContent());
+  }
+
+  /**
+   * @Then /^I should get:$/
+   */
+  public function iShouldGet(PyStringNode $string) {
+    throw new PendingException();
+  }
+
+  /**
+   * @Then /^I should see the images:$/
+   */
+  public function iShouldSeeTheImages(TableNode $table) {
+    $page = $this->getSession()->getPage();
+    $table_rows = $table->getRows();
+    foreach ($table_rows as $rows) {
+      $image = $page->find('xpath', "//img[contains(@src, '{$rows[0]}')]");
+      if (!$image) {
+        throw new Exception(sprintf('The image "%s" wasn\'t found in the page.', $rows[0]));
+      }
+    }
+  }
+
+  /**
+   * @Given /^I drag&drop "([^"]*)" to "([^"]*)"$/
+   */
+  public function iDragDropTo($element, $destination) {
+    $selenium = $this->getSession()->getDriver();
+    $selenium->evaluateScript("jQuery('#{$element}').detach().prependTo('#{$destination}');");
+  }
+
+  /**
+   * @Given /^I verify the element "([^"]*)" under "([^"]*)"$/
+   */
+  public function iVerifyTheElementUnder($element, $container) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//*[contains(@id, '{$container}')]//div[contains(@id, '{$element}')]");
+
+    if (!$element) {
+      throw new Exception(sprintf("The element with %s wasn't found in %s", $element, $container));
+    }
+  }
+
+  /**
+   * Find any element that contain the text and has the css class or id
+   * selector.
+   */
+  private function findAnyElement($text, $container, $childElement = '*') {
+    $page = $this->getSession()->getPage();
+    $attributes = array(
+      'id',
+      'class',
+    );
+
+    // Find the element wrapped under an element with the class.
+    foreach ($attributes as $attribute) {
+      $this->xpath = "//*[contains(@$attribute, '{$container}')]/{$childElement}[contains(., '{$text}')]";
+      $element = $page->find('xpath', $this->xpath);
+      if ($element) {
+        return $element;
+      }
+    }
+
+    // Find the element with the class.
+    foreach ($attributes as $attribute) {
+      $this->xpath = "//*[contains(@$attribute, '{$container}') and contains(., '{$text}')]";
+      $element = $page->find('xpath', $this->xpath);
+      if ($element) {
+        return $element;
+      }
+    }
+
+    throw new Exception(sprintf("An element containing the text %s with the class %s wasn't found", $text, $container));
   }
 }
