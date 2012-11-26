@@ -318,6 +318,6 @@ function contextual_annotation_get_key() {
   }
 
   $key = $router_item['page_arguments'][0]->tid;
-  return "tid-$term->tid";
+  return "tid-{$key}";
 }
 
