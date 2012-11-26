@@ -197,7 +197,6 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   $terms = taxonomy_term_load_multiple($tids);
   // Arrange term in an array with information about inner tree.
   $items = os_taxonomy_build_term_items($terms, $options);
-  $path_prefix = '';
 
   // If there is more than 0 bundles using this vocabulary.
   if (count($options['bundles'])) {
@@ -210,10 +209,6 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       elseif (isset($map[$bundle]) && count($map[$bundle])) {
         $feature = current($map[$bundle]);
       }
-    }
-    $path_prefix = isset($feature) ? strval(os_get_feature_path($feature)) : '';
-    if (strlen($path_prefix)) {
-      $path_prefix = $path_prefix . "/";
     }
   }
 
@@ -253,7 +248,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
           'number' => $number,
           'name' => $item['term_name'],
           'link_options' => $link_options,
-          'url_path' => $path_prefix.$item['url']['path'],
+          'url_path' => $item['url']['path'],
           'description' => $item['description'],
           'link_to_empty_terms' => $options['link_to_empty_terms'],
           'show_term_descriptions' => $options['show_term_descriptions'],
@@ -265,7 +260,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   }
 
   if ($options['widget_type'] == 'select') {
-    return render(drupal_get_form('os_taxonomy_select_list', $data, $path_prefix));
+    return render(drupal_get_form('os_taxonomy_select_list', $data));
   }
   else {
     return theme('item_list', array('type' => 'ul', 'items' => $data));
@@ -277,13 +272,11 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
  *
  *  @param $term_list
  *    Array contain the term list from the vocabulary.
- *  @param $path
- *    The path of the feature.
  *
  *  @return $form
  *    The variable of the form.
  */
-function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
+function os_taxonomy_select_list($form, $form_state, $terms_list) {
   $form_state['path'] = $path;
 
   $form['#attached']['css'][] = drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.css';
@@ -310,7 +303,7 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
  * Submit handler - redirect the user to the taxonomy page.
  */
 function os_taxonomy_select_list_submit($form, &$form_state) {
-  $form_state['redirect'] = $form_state['path'] . 'taxonomy/term/' . $form_state['values']['terms'];
+  $form_state['redirect'] = 'taxonomy/term/' . $form_state['values']['terms'];
 }
 
 /**
