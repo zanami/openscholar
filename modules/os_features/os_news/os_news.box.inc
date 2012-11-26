@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * os_news.box.inc
@@ -15,6 +14,7 @@ function os_news_default_box() {
 
   $box = new stdClass();
   /* Edit this to true to make a default box disabled initially */
+
   $box->disabled    = FALSE;
   $box->api_version = 1;
   $box->delta       = 'os_news_latest';
