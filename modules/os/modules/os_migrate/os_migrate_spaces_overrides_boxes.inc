@@ -156,6 +156,8 @@ EOF;
           'gking_student_materials_html' => array(
             'body' => $gking_html,
             'region' => 'sidebar_second',
+            'title' => 'Student Materials',
+            'description' => 'Student Materials',
           ),
         ),
       );
@@ -166,8 +168,8 @@ EOF;
           $new_box = array(
             'changed' => NULL,
             'delta' => $id,
-            'title' => '',
-            'description' => $id,
+            'title' => isset($box['title']) ? $box['title'] : '',
+            'description' => isset($box['description']) ? $box['description'] : $id,
             'additional_classes' => '',
             'plugin_key' => 'os_boxes_html',
             'options' => array('text' => array('value'=>$box['body'], 'format'=>'filtered_html')),
