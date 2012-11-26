@@ -285,7 +285,7 @@ class OsMigrateEventsNode extends OsMigrate {
     array('id', 'ID'),
     array('title', 'Title'),
     array('body', 'Body'),
-    array('timestamp', 'Timestamp'),
+    array('field_date', 'Timestamp'),
     array(OG_AUDIENCE_FIELD, 'Site'),
   );
 
@@ -297,44 +297,53 @@ class OsMigrateEventsNode extends OsMigrate {
     parent::__construct();
 
     $this->addFieldMapping('body', 'body');
-    $this->addFieldMapping('field_date', 'timestamp');
+    $this->addFieldMapping('field_date', 'field_date');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration('OsMigratePersonalNode');
   }
 
   public function prepare($entity, $row) {
-    // Handling the date field with the exported timestamps in the csv.
-    $timesatamps = explode(";", $row->timestamp);
+    $date = explode(';', $row->field_date);
+
+    $entity->field_date[LANGUAGE_NONE][0] = array(
+       'value' => $date[0],
+       'date_type' => 'datetime',
+    );
+
+    // Adding the end date of the event.
+    if (isset($date[1])) {
+      $entity->field_date[LANGUAGE_NONE][0]['value1'] = $date[1];
+    }
   }
 }
 
 // TODO: Fix migration of the blog.
-// /**
- // * Migrate Blog.
- // */
-// class OsMigrateBlogNode extends OsMigrate {
-  // public $entityType = 'node';
-  // public $bundle = 'blog';
-//
-  // public $csvColumns = array(
-    // array('id', 'ID'),
-    // array('title', 'Title'),
-    // array('body', 'Body'),
-    // array(OG_AUDIENCE_FIELD, 'Site'),
-  // );
-//
-  // public $dependencies = array(
-    // 'OsMigratePersonalNode',
-  // );
-//
-  // public function __construct() {
-    // parent::__construct();
-//
-    // $this->addFieldMapping('body', 'body');
-    // $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
-      // ->sourceMigration('OsMigratePersonalNode');
-  // }
-// }
+/**
+ * Migrate Blog.
+ */
+class OsMigrateBlogNode extends OsMigrate {
+  public $entityType = 'node';
+  public $bundle = 'blog';
+
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('title', 'Title'),
+    array('body', 'Body'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+  );
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+
+    $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+  }
+}
 
 /**
  * Migrate documents.
@@ -360,6 +369,13 @@ class OsMigrateBookNode extends OsMigrate {
     $this->addFieldMapping('body', 'body');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration('OsMigratePersonalNode');
+  }
+
+  public function prepare($entity, $row) {
+    // Let know the book module that this is a new book.
+    $entity->book = array(
+      'bid' => 'new',
+    );
   }
 }
 
@@ -421,28 +437,185 @@ class OsMigratePeopleNode extends OsMigrate {
   }
 }
 
-// TODO: OG vocab migration class have problem. Need to fix it.
 /**
  * Migrate OG-vocabs.
  */
-// class OsMigrateOgVocab extends OsMigrate {
-//
-  // /**
-   // * Map the field and properties to the CSV header.
-   // */
-  // public $csvColumns = array(
-    // array('id', 'ID'),
-    // array('name', 'Name'),
-  // );
-//
-  // public $entityType = 'og_vocab';
-  // public $bundle = 'og_vocab';
-//
-  // public $dependencies = array(
-    // 'OsMigratePersonalNode',
-    // 'OsMigrateBiologyTaxonomyTerm',
-    // 'OsMigrateMathTaxonomyTerm',
-    // 'OsMigrateScienceTaxonomyTerm',
-  // );
-//
-// }
+class OsMigrateOgVocab extends OsMigrate {
+
+  /**
+   * Map the field and properties to the CSV header.
+   */
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('name', 'Name'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+  );
+
+  public $entityType = 'og_vocab';
+  public $bundle = 'authors';
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+  }
+
+  function prepare($entity, $row) {
+    if (!$vocabulary = taxonomy_vocabulary_machine_name_load("authors_" . $entity->{OG_AUDIENCE_FIELD}['destid1'])) {
+      $vocabulary = new stdClass();
+      $vocabulary->name = "Authors";
+      $vocabulary->machine_name = "authors_" . $entity->{OG_AUDIENCE_FIELD}['destid1'];
+      taxonomy_vocabulary_save($vocabulary);
+
+      // Relate vocabulary to group.
+      og_vocab_relation_save($vocabulary->vid, 'node', $entity->{OG_AUDIENCE_FIELD}['destid1']);
+
+      // Create OG-vocabulary entity.
+      $og_vocab = og_vocab_create_og_vocab($vocabulary->vid, 'node', 'blog');
+      $og_vocab->save();
+    }
+    $entity->vid = $vocabulary->vid;
+  }
+}
+
+/**
+ * Migrate Link.
+ */
+class OsMigrateLinkNode extends OsMigrate {
+  public $entityType = 'node';
+  public $bundle = 'link';
+
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('title', 'Title'),
+    array('body', 'Body'),
+    array('link', 'Link'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+  );
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+
+    $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+  }
+
+  public function prepare($entity, $row) {
+    $entity->field_links_link[LANGUAGE_NONE][0]['url'] = $row->link;
+  }
+}
+
+/**
+ * Migrate presentation.
+ */
+class OsMigratePresntationsNode extends OsMigrate {
+  public $entityType = 'node';
+  public $bundle = 'presentation';
+
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('title', 'Title'),
+    array('body', 'Body'),
+    array('date', 'Date'),
+    array('location', 'Locations'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+  );
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+
+    $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping('field_presentation_location', 'location');
+    $this->addFieldMapping('field_presentation_date', 'date');
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+  }
+
+  public function prepare($entity, $row) {
+    $entity->field_presentation_date[LANGUAGE_NONE][0] = array(
+      'value' => $row->date,
+      'date_type' => 'datetime',
+    );
+  }
+}
+
+/**
+ * Migrate rss feeds.
+ */
+class OsMigrateFeedsNode extends OsMigrate {
+  public $entityType = 'node';
+  public $bundle = 'feed';
+
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('title', 'Title'),
+    array('body', 'Body'),
+    array('address', 'Address'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+  );
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+
+    $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping('address', 'field_url');
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+  }
+
+  public function prepare($entity, $row) {
+    $entity->field_url[LANGUAGE_NONE][0]['url'] = $row->address;
+  }
+}
+
+/**
+ * Migrate gallery feeds.
+ */
+class OsMigrateGalleryNode extends OsMigrate {
+  public $entityType = 'node';
+  public $bundle = 'media_gallery';
+
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('title', 'Title'),
+    array('body', 'Body'),
+    array('images', 'Images'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+  );
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+
+    // $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+
+    $this->addFieldMapping('media_gallery_media', 'images')
+      ->separator(';');
+    $this->addFieldMapping('media_gallery_media:file_replace')
+      ->defaultValue(FILE_EXISTS_REPLACE);
+    $this->addFieldMapping('media_gallery_media:source_dir')
+      ->defaultValue(drupal_get_path('module', 'os_migrate_demo') . '/images');
+  }
+}
