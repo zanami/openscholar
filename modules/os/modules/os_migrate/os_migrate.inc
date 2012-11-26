@@ -605,6 +605,11 @@ abstract class OSMigration extends Migration {
           $imagecache_dims = $this->_get_inline_imagecache_dimensions($img->getAttribute('src'));
         }
 
+        if (($width = $img->getAttribute('width')) && $height = $img->getAttribute('height')) {
+          $imagecache_dims['width'] = $width;
+          $imagecache_dims['height'] = $height;
+        }
+
         $style = $this->_get_image_attributes($img);
         $parent_style = $this->_get_image_attributes($img->parentNode);
         $style = array_merge($parent_style, $style);
