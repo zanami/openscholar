@@ -53,6 +53,12 @@ dependencies[] = media_oembed
 ; media custom
 dependencies[] = media_embed
 
+; performance
+dependencies[] = entitycache
+
+; web services
+dependencies[] = restws
+
 ; boxes
 dependencies[] = views_slideshow_cycle
 
