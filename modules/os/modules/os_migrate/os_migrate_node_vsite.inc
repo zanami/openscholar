@@ -147,6 +147,16 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
        $row->$field_vsite_logo = null;
      }
 
+     //update featured site flag to sticky
+     if ($flag_id = parent::d6_db_select('flags')->condition('name', 'featured_web_sites')->fields('flags', array('fid'))->execute()->fetchField()) {
+       $flag_query = parent::d6_db_select('flag_content', 'fc')
+         ->condition('fc.fid', $flag_id)
+         ->condition('content_id', $row->nid)
+         ->fields('fc', array('fid'))
+         ->execute();
+       $row->sticky = (bool) $flag_query->rowCount();
+     }
+
      $row->field_group_path = $this->_get_field_group_path($row->nid, $row->value);
      $row->{'field_group_path:attributes'} = array();
 
