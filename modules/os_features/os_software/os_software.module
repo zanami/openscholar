@@ -137,7 +137,7 @@ function os_software_process_node(&$vars) {
       $vars['content']['os_software_releases_entity_view_1']['#weight'] = $weight + 1;
     }
   }
-  else if ($vars['view_mode'] === 'teaser') {
+  elseif ($vars['view_mode'] === 'teaser') {
     // Hides EVA fields "Recommended Release" and "Recent Releases" on /software.
     if (isset($vars['content']['os_software_releases_entity_view_1'])) {
       unset($vars['content']['os_software_releases_entity_view_1']);

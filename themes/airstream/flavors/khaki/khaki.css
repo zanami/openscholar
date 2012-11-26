@@ -27,7 +27,7 @@ a:hover {
 .region-sidebar-first a:visited,
 .region-sidebar-first #block-vsite_menus-features li a,
 .region-sidebar-first #block-vsite_menus-features li a:visited {
-  color: #282828;
+  color: #282828 !important;
   }
 
   #menu-bar {
@@ -49,6 +49,12 @@ a:hover {
 .region-sidebar-first #block-vsite_menus-features li a {
   border-color: #A08723;
   }
+  
+  
+  #menu-bar ul.nice-menu li a, #menu-bar ul.nice-menu li a:visited {
+    color: #282828;
+  
+}
 
 /*Navbar Specific */
 

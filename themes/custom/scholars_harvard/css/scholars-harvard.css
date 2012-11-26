@@ -1187,7 +1187,7 @@ border-right:1px solid #E8E9EB;
 
 /* Added 11/21 to correct site description issue. */
 
-.views-field-field-site-description div.field-content {
+#block-views-os-websites-block .views-field-field-site-description div.field-content {
   position:absolute;
   bottom:5px;
   left: 9px;
