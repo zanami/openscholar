@@ -95,7 +95,7 @@ h4 {
 h1#page-title,
 .block h2.block-title,
 #pub_type_tabs h2.block-title,
-.taxonomy-term-child h3.taxonomy-heading,
+.page-taxonomy-term .term-listing-heading h2 a,
 #block-os-secondary-menu li {
   padding: 13px 16px 16px 16px;
   background: #fcfcfc;
@@ -121,13 +121,28 @@ h1#page-title,
   font-weight: normal;
   }
 
-.taxonomy-term-child h3.taxonomy-heading {
-  color: #CC6733;
-  font-size: 1.4em;
-  background: #fff;
-  padding-bottom: .1em;
-  padding-top: 0;
+.page-taxonomy-term .term-listing-heading h2 a,
+.page-taxonomy-term .term-listing-heading h2 a:hover {
+    background:#FFFFFF;
+    color: #CC6733;
+    font-family: 'helvetica neue';
+    font-size: 0.8em;
+    font-weight: bold;
+    padding-bottom: 0.1em;
+    padding-top: 0;
+    text-decoration:none;
+      border-bottom:none;
+      margin-left: 1px;
   }
+  
+  
+.page-taxonomy-term .os-taxonomy-term .term-listing-heading {
+    border-bottom: 1px solid #E5E5E5;
+    height: 30px;
+    margin: 0 -15px 12px;
+}
+
+
 
 .taxonomy-term-child .taxonomy-term-child h3.taxonomy-heading {
   padding: 0;
@@ -137,6 +152,11 @@ h1#page-title,
   margin-top: .5em;
   font-size: 1.2em;
   }
+  
+.page-taxonomy-term .os-taxonomy-term .node-teaser,
+.page-taxonomy-term .os-taxonomy-term .content {
+	padding-left: 2em;
+}
 
 .block h2.block-title {
   font-size: 1.3em;
@@ -845,10 +865,11 @@ body.page-iqss-gking-research-group h3 {
   display:inline;
   }
 
-.node-presentation.node-teaser div.field-type-file {
-  display:inline;
-  margin-right: .3em;
-  }
+.node-presentation.node-teaser div.field-type-file,
+.node-presentation.node-teaser .date-display-single {
+  display:inline-block;
+}
+
 .node-presentation.node-teaser div.field-type-file img {
   vertical-align:middle;
   }
@@ -874,7 +895,8 @@ background-image: none;
 }
 	
 .ui-tabs .ui-tabs-nav {
-    margin-left: 330px;
+   /* margin-left: 330px;*/
+     margin-left: 378px;
 }
 
 .ui-tabs .ui-tabs-nav {
@@ -938,6 +960,10 @@ border:none;
 .block-boxes-os_boxes_tabs .ui-tabs { margin-bottom: 16px;}
 
 .block-boxes-os_boxes_tabs h2.block-title {font-size: 21px;background: none;color:#FFF;border-bottom: none;}
+
+.ui-tabs .node-presentation a {
+	color: #336599;
+}
 
 /* FOOTER */
 

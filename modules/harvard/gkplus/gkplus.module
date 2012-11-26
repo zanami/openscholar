@@ -437,7 +437,9 @@ function gkplus_preprocess_taxonomy_term(&$vars) {
   if (os_taxonomy_count_attached_nodes($tid) < 2) {
     return;
   }
-  if (!(module_exists('nodeorder') || !spaces_access_admin())) {
+
+  global $user;
+  if (!module_exists('nodeorder') || !spaces_access_admin()) {
     return;
   }
 
