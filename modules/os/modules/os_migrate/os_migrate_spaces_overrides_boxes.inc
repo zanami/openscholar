@@ -803,7 +803,7 @@ class BoxPorter {
     $box->options['pager'] = $box->options['use_pager'];
     unset($box->options['use_pager']);
 
-    $box->options['sort_by'] = 'sort_newest';
+    $box->options['sort_by'] = 'sort_biblio';
 
     $styles = array('titles' => 'display_title', 'teasers' => 'display_teaser');
     $box->options['display'] = (isset($styles[$box->options['style']])) ? $styles[$box->options['style']] : 'display_title';
