@@ -353,6 +353,7 @@ abstract class OSMigration extends Migration {
       $query->condition(db_or()
         ->condition('nr.body', '%<iframe%', 'LIKE')
         ->condition('nr.body', '%<object%', 'LIKE')
+        ->condition('nr.body', '%<embed%', 'LIKE')
       );
 
       foreach ($query->execute() as $row) {
@@ -499,6 +500,7 @@ abstract class OSMigration extends Migration {
 
     $data = $query->execute()->fetchAssoc();
     $update = FALSE;
+    $dom = filter_dom_load($row->body);
 
     //lets try iframes first
     $target_dom = filter_dom_load($data['html']);
@@ -506,7 +508,6 @@ abstract class OSMigration extends Migration {
     if ($target_iframes->length) {
       $target_src = $target_iframes->item(0)->getAttribute('src');
 
-      $dom = filter_dom_load($row->body);
       $iframes = $dom->getElementsByTagName('iframe');
       for ($i=0,$len=$iframes->length; $i<$len; $i++) {
         $iframe = $iframes->item($i);
@@ -531,7 +532,6 @@ abstract class OSMigration extends Migration {
         $target_embed_src = $target_embed->item(0)->getAttribute('src');
       }
 
-      $dom = filter_dom_load($row->body);
       $objects = $dom->getElementsByTagName('object');
       for ($i=0,$len=$objects->length; $i<$len; $i++) {
         $object = $objects->item($i);
@@ -556,6 +556,27 @@ abstract class OSMigration extends Migration {
         }
       }
     }
+
+    $target_embeds = $target_dom->getElementsByTagName('embed');
+    $embeds = $dom->getElementsByTagName('embed');
+
+    for ($i=0,$len=$embeds->length; $i<$len; $i++) {
+      $embed = $embeds->item($i);
+      if ($embed && ($embed_src = $embed->getAttribute('src'))) {
+
+        for ($j=0,$len=$target_embeds->length; $i<$len; $i++) {
+          $target_embed = $target_embeds->item($j);
+          if ($target_embed && ($embed_src = $target_embed->getAttribute('src'))) {
+            $tag = $this->_os_migrate_inline_tag('embed', $data['destid1'], $embed);
+            $text = $dom->createTextNode($tag);
+            $embed->parentNode->replaceChild($text, $embed);
+            $update = TRUE;
+            break;
+          }
+        }
+      }
+    }
+
 
     if ($update) {
       $row->body = $this->_os_migrate_update_body_clean($dom->saveHTML());
