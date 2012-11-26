@@ -11,6 +11,12 @@ body {
   margin: 30px auto;
   }
 
+
+.front #content-column .content-inner {
+   padding-top: 20px;
+}
+
+
 .wrap {
   padding: 0 30px
   }
