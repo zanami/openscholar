@@ -95,7 +95,7 @@ h4 {
 h1#page-title,
 .block h2.block-title,
 #pub_type_tabs h2.block-title,
-.page-taxonomy-term .term-listing-heading h2 a,
+.page-taxonomy-term .term-listing-heading h2,
 #block-os-secondary-menu li {
   padding: 13px 16px 16px 16px;
   background: #fcfcfc;
@@ -105,6 +105,16 @@ h1#page-title,
   text-indent:-1px;
   margin: 0 -16px 0.5em;
   }
+  
+
+.page-taxonomy-term .term-listing-heading h2 {
+  padding: 0 16px 3px 16px;
+
+  }
+    
+.page-taxonomy-term .gkplus-show-heading > .term-listing-heading h2 {
+    display: block;
+}   
   
 .not-front #content-top h1#page-title {
   margin-left: 0;
@@ -121,6 +131,8 @@ h1#page-title,
   font-weight: normal;
   }
 
+
+
 .page-taxonomy-term .term-listing-heading h2 a,
 .page-taxonomy-term .term-listing-heading h2 a:hover {
     background:#FFFFFF;
@@ -131,17 +143,10 @@ h1#page-title,
     padding-bottom: 0.1em;
     padding-top: 0;
     text-decoration:none;
-      border-bottom:none;
       margin-left: 1px;
   }
   
-  
-.page-taxonomy-term .os-taxonomy-term .term-listing-heading {
-    border-bottom: 1px solid #E5E5E5;
-    height: 30px;
-    margin: 0 -15px 12px;
-}
-
+ 
 
 
 .taxonomy-term-child .taxonomy-term-child h3.taxonomy-heading {
@@ -153,8 +158,7 @@ h1#page-title,
   font-size: 1.2em;
   }
   
-.page-taxonomy-term .os-taxonomy-term .node-teaser,
-.page-taxonomy-term .os-taxonomy-term .content {
+.page-taxonomy-term .os-taxonomy-term .node-teaser {
 	padding-left: 2em;
 }
 
