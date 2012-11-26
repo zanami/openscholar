@@ -73,6 +73,11 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
       list($object_id, $value) = $this->_update_variables_comment_content($row->id, $object_id, $value);
     }
 
+    //Biblio Citation Style
+    if ($object_id == 'biblio_style') {
+      list($object_id, $value) = $this->_update_variable_biblio_style($row->id, $object_id, $value);
+    }
+
     //FB Comments
 //     if ($row->object_id == 'facebook_comments_nodetypes') {
 //       $fb_preset = "Facebook Comments";
@@ -128,6 +133,29 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
       $object_id,
       $value
     );
+  }
+
+  function _update_variable_biblio_style($sid, $object_id, $value) {
+
+    if(module_exists('biblio_citeproc')){
+      $object_id = "biblio_citeproc_style";
+
+      $citeproc_map = array(
+        "cse" => "cse.csl",
+				"chicago" => "chicago-author-date.csl",// There are three to choose from??? chicago-author-date.csl  chicago-fullnote-bibliography.csl  chicago-note-bibliography.csl
+				"apa" => "apa.csl",
+				"ama" => "ama.csl",
+				"mla" => "mla.csl",
+				"ieee" => "ieee.csl",
+				"vancouver" => "vancouver.csl",
+      );
+      //"classic" Not sure what 'classic' stye should migrate to
+
+      $value = isset($citeproc_map[$value])? $citeproc_map[$value]:"cse.csl";
+
+    }
+
+    return array($object_id, $value);
   }
 
   //we're keeping the comment_$type variable, but using vsite_comment_vsite_comment_$type's value.
