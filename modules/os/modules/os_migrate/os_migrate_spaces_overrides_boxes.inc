@@ -74,7 +74,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
 
      $this->_fix_os_taxonomy_fbt();
 
-    if (parent::is_domain('http://scholar.harvard.edu') && !variable_get('created_custom_scholarharvard boxes',FALSE)) {
+    if (parent::is_domain('http://scholar.harvard.edu') && !variable_get('os_migrate_created_scholarharvard_boxes',FALSE)) {
       //#560
       $gking_html =<<<EOF
    <div class="node-inner">
@@ -212,7 +212,7 @@ EOF;
         $insert->values($box);
       }
       $insert->execute();
-      variable_set('created_custom_scholarharvard boxes',TRUE);
+      variable_set('os_migrate_created_scholarharvard_boxes',TRUE);
     }
 
 

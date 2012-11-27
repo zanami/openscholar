@@ -341,6 +341,11 @@ ul ul ul ul {
 
 .sidebar .block-boxes-os_taxonomy_fbt ul ul {margin-left:10px;}
 
+.boxes-box ul.featured-links li {
+    margin-bottom: 15px;
+}
+
+
 /* CALENDAR - UPCOMING LI'S */
 
 .view-os-events ul li {list-style-type:none;border-bottom: 1px solid #D9D9D9;}

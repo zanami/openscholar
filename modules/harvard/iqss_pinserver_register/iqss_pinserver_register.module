@@ -10,6 +10,7 @@ function iqss_pinserver_register_menu_alter(&$items) {
 
   // Alters page callback
   $items['site/register']['page callback'] = 'iqss_pinserver_vsite_register_form_page';
+  $items['site/register']['access callback'] = '_iqss_pinserver_register_site_register_access';
   $items['site/register']['module'] = 'iqss_pinserver_register';
 
   // Removes page arguments and file values.
@@ -147,19 +148,22 @@ function iqss_pinserver_vsite_register_form_page() {
 
   // Bypasses pinserver if user already owns a site or may create on behalf.
   if ($vsites = vsite_get_vsite_by_owner($user->uid) || user_access('create vsite content on behalf')) {
-    // Redirects user to any existing vsite(s).
-    if (!vsite_vsite_exists_access($vsites)) {
-      return drupal_goto(_iqss_pinserver_register_get_redirect($vsites));
-    }
-    // Otherwise provides form to create a new vsite.
-    else {
+
+    // Provides the site register form if user may create additional vsites.
+    if (_vsite_user_access_create_vsite($vsites)) {
       return drupal_get_form('vsite_register_form');
     }
+
+    // Otherwise redirects user to any existing vsite(s).
+    drupal_goto(_iqss_pinserver_register_get_redirect($vsites));
+    return;
   }
 
   // Sends user to pinserver if not logged-in locally or via the pinserver
   if (!pinserver_check_status()) {
-    return pinserver_redirect();
+    // Calls drupal_goto()
+    pinserver_redirect();
+    return;
   }
 
   // Redirects pinserver-logged-in user if they don't own a vsite.
@@ -170,7 +174,10 @@ function iqss_pinserver_vsite_register_form_page() {
   }
 
   // Otherwise, redirects pinserver-logged-in user as appropriate.
-  return iqss_pinserver_login_redirect($uid, $vsite);
+  // May redirect to a private file, or defaults to /user.
+
+  // Calls drupal_goto().
+  iqss_pinserver_login_redirect($uid, $vsite);
 }
 
 /**
@@ -187,7 +194,7 @@ function iqss_pinserver_login_redirect($uid, $vsite) {
     drupal_goto(preg_replace('|^/|', '', $_GET['redirect']));
   }
 
-  if (!vsite_vsite_exists_access($vsite)) {
+  if (!_vsite_user_access_create_vsite($vsite)) {
     // Redirects user to existing vsite(s).
     drupal_goto(_iqss_pinserver_register_get_redirect($vsite));
   }
@@ -263,7 +270,7 @@ function iqss_pinserver_register_pinserver_landing_path() {
   global $user;
   $vsites = vsite_get_vsite_by_owner($user->uid);
 
-  if (!vsite_vsite_exists_access($vsites)) {
+  if (!_vsite_user_access_create_vsite($vsites)) {
     $path = (!$vsites || (count($vsites) > 1) ? 'user' : $vsites[0]->get_absolute_url());
   }
   else {
@@ -323,3 +330,13 @@ function _iqss_pinserver_register_get_redirect($vsites = array()) {
   return NULL;
 }
 
+/**
+ * Access callback; override for menu item "site/register".
+ *
+ * Returns TRUE to handle redirects and permissions in page callback.
+ *
+ * @see iqss_pinserver_register_menu_alter()
+ */
+function _iqss_pinserver_register_site_register_access() {
+  return TRUE;
+}
