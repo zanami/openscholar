@@ -31,6 +31,22 @@ class BiblioContributorTypeTableMigration extends TableCopyMigration {
   }
 }
 
+class BiblioContributorDataTableMigration extends TableCopyMigration {
+  public function __construct() {
+
+    $key_schema = array(
+      'cid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    );
+
+    $table = 'biblio_contributor_data';
+
+    parent::__construct($table, $key_schema);
+  }
+}
 
 class BiblioContributorTypeDataTableMigration extends TableCopyMigration {
   public function __construct() {

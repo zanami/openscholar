@@ -110,3 +110,34 @@ function iqss_scholars_front_strongarm() {
 
   	return $export;
 }
+
+/**
+ * Implements hook_image_default_styles().
+ */
+function iqss_scholars_front_image_default_styles() {
+  $styles = array();
+
+  // Exported image style: iqss_scholars_front_websites_180_x_140.
+  $styles['iqss_scholars_front_websites_180_x_140'] = array(
+    'name' => 'iqss_scholars_front_websites_180_x_140',
+    'effects' => array(
+      1 => array(
+        'label' => 'Scale and crop',
+        'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
+        'effect callback' => 'image_scale_and_crop_effect',
+        'dimensions callback' => 'image_resize_dimensions',
+        'form callback' => 'image_resize_form',
+        'summary theme' => 'image_resize_summary',
+        'module' => 'image',
+        'name' => 'image_scale_and_crop',
+        'data' => array(
+          'width' => '180',
+          'height' => '140',
+        ),
+        'weight' => '1',
+      ),
+    ),
+  );
+
+  return $styles;
+}
