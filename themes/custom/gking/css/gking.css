@@ -74,9 +74,9 @@ h3.cv-direct-download {
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;
   border-radius: 20px;
-  float: left;
   margin: 0 0 15px 0;
   color: #fff;
+  width: 110px;
   }
 
 h3.cv-direct-download a,
@@ -166,7 +166,7 @@ h1#page-title,
   font-size: 1.3em;
   }
   
- .node-type-scholar_software_project h2.block-title {
+ .node-software-project h1.node-title {
  	font-size: 1.2em;
  	}
 
