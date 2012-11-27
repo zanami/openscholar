@@ -900,7 +900,7 @@ background-image: none;
 	
 .ui-tabs .ui-tabs-nav {
 
-     margin-left: 378px;
+     margin-left: 330px;
 }
 
 .ui-tabs .ui-tabs-nav {
@@ -1561,6 +1561,13 @@ body.front .block-boxes-os_taxonomy_fbt ul li ul li .term-head a:hover
   color:#db7002;
   }  
   
+#boxes-box-gking_student_materials_html ul li {
+    list-style: disc;
+  }
+
+#boxes-box-gking_student_materials_html ul li li {
+    list-style: circle;
+  }  
 
 body.front #block-iqss_gking-areas_of_research dt.active span a  {
   color:#e87702;
