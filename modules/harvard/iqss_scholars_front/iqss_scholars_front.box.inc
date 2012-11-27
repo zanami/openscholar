@@ -37,7 +37,7 @@ function iqss_scholars_front_default_box() {
     'body' => array(
       'value' => '<div class="os-leftcol"><strong>Scholars at Harvard</strong> offers you the next generation scholarly web site. With it, you can easily create and manage a highly dynamic, powerful, and customizable site, with an easy-to-use interface and a look and feel that is uniquely yours.
 <ul>
-<li><a href="sites/all/themes/custom/scholars_harvard/Info-sheet-Scholars-at-Harvard-H-2011.03.17.pdf">Fact Sheet (PDF)</a></li>
+<li><a href="profiles/openscholar/themes/custom/scholars_harvard/Info-sheet-Scholars-at-Harvard-H-2011.03.17.pdf">Fact Sheet (PDF)</a></li>
 <li><a href="http://player.vimeo.com/video/9887585?title=0&amp;byline=0&amp;portrait=0">Video Intro</a></li>
 </ul>
 </div>
