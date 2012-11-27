@@ -586,8 +586,8 @@ class BoxPorter {
       unset ($box->options['nid']);
     }
 
-    if (!isset($box->options['teaser'])) {
-      $box->options['teaser'] = 'full';
+    if (!isset($box->options['teaser']) || !in_array($box->options['teaser'], array('teaser','full'))) {
+      $box->options['teaser'] = 'teaser'; //does options['teaser'] even exist on this box in 6?
     }
 
     if (!isset($box->options['show_title'])) {
