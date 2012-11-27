@@ -243,9 +243,15 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     $source_dir = variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files');
 
     $dest = $dest_dir . '/' . $dest_file;
+    $dirname = drupal_dirname($dest);
+    if (!is_dir($dirname)) {
+      $has_dir = @drupal_mkdir($dirname, NULL, TRUE);
+    } else {
+      $has_dir = TRUE;
+    }
 
     $legacy_file = $source_dir . '/' . $source_file;
-    if ($fh = @fopen($legacy_file, 'r')) {
+    if ($has_dir && ($fh = @fopen($legacy_file, 'r'))) {
       if ($saved = file_save_data($fh, $dest, FILE_EXISTS_RENAME)) {
         $saved->og_group_ref = array($row->language => array(array('target_id' => $row->group_nid)));
         $saved->uid = $row->uid;
