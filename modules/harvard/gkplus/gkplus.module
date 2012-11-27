@@ -176,6 +176,7 @@ function gkplus_cron() {
     'tree' => TRUE,
     'max_depth' => 3,
     'description' => TRUE,
+    'nodeorder' => TRUE,
   );
 
   variable_set('os_taxonomy_term_page_options', $options);
