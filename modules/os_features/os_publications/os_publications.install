@@ -46,7 +46,7 @@ function os_publications_install() {
       $csl = db_query('SELECT csl FROM {biblio_citeproc_styles} WHERE filename = :id', array(':id' => $name))->fetchObject();
       if (isset($csl->csl)) {
         $csl_file_contents = $csl->csl;
-        if(str_replace('<bibliography hanging-indent="true"', '<bibliography hanging-indent="false"', $csl_file_contents)){
+        if($csl_file_contents = str_replace('<bibliography hanging-indent="true"', '<bibliography hanging-indent="false"', $csl_file_contents) && ($csl_file_contents != $csl->csl)){
           biblio_citeproc_install_style($name, $csl_file_contents);
         }
       }
@@ -154,12 +154,12 @@ function os_publications_update_7002(){
       $csl = db_query('SELECT csl FROM {biblio_citeproc_styles} WHERE filename = :id', array(':id' => $name))->fetchObject();
       if (isset($csl->csl)) {
         $csl_file_contents = $csl->csl;
-        if(str_replace('<bibliography hanging-indent="true"', '<bibliography hanging-indent="false"', $csl_file_contents)){
+        if($csl_file_contents = str_replace('<bibliography hanging-indent="true"', '<bibliography hanging-indent="false"', $csl_file_contents) && ($csl_file_contents != $csl->csl)){
           biblio_citeproc_install_style($name, $csl_file_contents);
         }
       }
     }
   }
 
-  return t('Removed linke indents from biblio_citeproc citations.');
+  return t('Removed inline indents from biblio_citeproc citations.');
 }
