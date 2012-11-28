@@ -79,6 +79,22 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
       $query->condition('ogm.entity_type', 'node');
       $query->condition('ogm.gid', $space->id);
     }
+    // Check the sort order for biblio.
+    // If we're sorting by year, we want to sort by date as well to replicate d6 sorting.
+    if($space->controllers->variable->get('biblio_sort','space') == 'year') {
+      // Get their sort order.
+      $biblio_year_sort = $space->controllers->variable->get('biblio_order','space');
+      $order = &$query->getOrderBy();
+      // Don't wipe the non-default sort order, this will let users still toggle asc/desc sorting by year.
+      if(array_key_exists('biblio_year', $order) && $order['biblio_year'] != $biblio_year_sort) {
+		$biblio_year_sort = $order['biblio_year'];
+      }
+      // Rebuild the array.
+      $order = array();
+      $order['biblio_year'] = isset($biblio_year_sort) ? $biblio_year_sort : 'DESC';
+      $order['biblio_date'] = 'DESC';
+      $order['biblio_sort_title'] = 'ASC';
+    }
   }
 }
 
