@@ -341,8 +341,14 @@ ul ul ul ul {
 
 .sidebar .block-boxes-os_taxonomy_fbt ul ul {margin-left:10px;}
 
+.boxes-box ul.featured-links ul {
+ 
+    margin-left: 0;
+}
+
 .boxes-box ul.featured-links li {
     margin-bottom: 15px;
+
 }
 
 

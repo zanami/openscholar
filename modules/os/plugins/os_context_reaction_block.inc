@@ -15,7 +15,7 @@ class os_context_reaction_block extends context_reaction_block {
     module_load_include('module', 'block', 'block');
     ctools_include('layout', 'os');
 
-    $context_blocks = &drupal_static('context_reaction_block_list');;
+    $context_blocks = &drupal_static('context_reaction_block_list');
     $contexts = context_active_contexts();
 
     if (!isset($context_blocks)) {

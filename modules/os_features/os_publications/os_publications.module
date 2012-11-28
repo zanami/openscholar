@@ -277,6 +277,26 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
   unset($entry['links']['node'], $entry['links']['biblio_google_scholar']);
 }
 
+/**
+ * Function to create the biblio notes.
+ */
+function _os_publications_attach_notes(&$entry, $node) {
+  if(isset($node->biblio_notes)) {
+    $entry['biblio_notes'] = array(
+      '#type' => 'container',
+      '#weight' => 4,
+      '#attributes' => array(
+        'class' => array(
+          'biblio-note',
+        ),
+      ),
+      'notes' => array(
+        '#markup' => check_markup($node->biblio_notes, filter_default_format()),
+      ),
+    );
+  }
+}
+
 function _os_publications_attach_abstract(&$entry, $node) {
   if (strlen($node->biblio_abst_e)) {
     $entry['#attached']['js'][] = drupal_get_path('module', 'os') . '/theme/os_toggle.js';
@@ -319,9 +339,13 @@ function os_publications_preprocess_node(&$vars) {
  * Adds 'Abstract' link to toggle a sliding box with the full abstract
  */
 function os_publications_node_view_alter(&$build, $type) {
+  $spaces = spaces_get_space();
   if ($type == 'node' && $build['#bundle'] == 'biblio') {
     if ($build['#view_mode'] == 'teaser') {
       _os_publications_attach_abstract($build, $build['#node']);
+      if(isset($spaces) && $spaces->controllers->variable->get('os_publications_note_in_teaser', 'space') == TRUE) {
+        _os_publications_attach_notes($build, $build['#node']);
+      }
       $build['teaser']['#weight'] = 1;
       $build['links']['#access'] = FALSE;
     }
@@ -464,4 +488,3 @@ function theme_os_publications_biblio_year_row(&$vars) {
     $vars['rows'][$delta]->link = _biblio_text_year($row->link);
   }
 }
-
