@@ -611,7 +611,6 @@ function os_files_file_default_types_alter(&$types) {
     'application/x-ico',
     'application/x-win-bitmap',
     'image/x-win-bitmap',
-    'application/octet-stream'
   ));
 
   $types['video']->mimetypes = array_merge($types['video']->mimetypes, array(
@@ -685,6 +684,7 @@ function os_files_file_default_types_alter(&$types) {
     // *.ods files
     'application/x-vnd.oasis.opendocument.spreadsheet',
     // *.odp files
-    'application/x-vnd.oasis.opendocument.presentation'
+    'application/x-vnd.oasis.opendocument.presentation',
+    'application/octet-stream'
   ));
 }
