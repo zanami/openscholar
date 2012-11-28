@@ -280,15 +280,22 @@ function theme_os_publications_download_links($variables) {
 function theme_os_publications_sort_tabs($vars) {
   $links = $vars['links'];
   $title = '';
+  $sort_boolean = FALSE;
 
   foreach ($links as &$l) {
     if (isset($l['arrow'])) {
       if ($l['active']) {
         $title = $l['text'];
       }
+      $sort_boolean = TRUE;
       $l['title'] = $l['text'] . $l['arrow'];
       $l['href'] = $l['path'];
     }
+  }
+
+  // Make sure there was at least one sorting option selected.
+  if($sort_boolean == FALSE) {
+  	return;
   }
 
   // this arrow points down for some reason, despite being named 'asc'
