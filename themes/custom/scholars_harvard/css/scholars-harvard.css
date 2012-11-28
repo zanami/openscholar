@@ -252,7 +252,7 @@ background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
   }
   
  body.front.logged-in {
-  background: url('../images/startpage-bg.png') repeat-x fixed 50% 35px #698da2;
+  background: url('../images/startpage-bg.png') no-repeat 50% 35px #698da2;
   }
 
 #reasons {
@@ -896,6 +896,14 @@ p.copy a:hover {
   top: 30px;
 }
 
+.page-site-register .os-scholar-header {
+ display:none;
+}
+
+.page-site-register #main-content {
+    padding: 0 0 20px;
+}
+
 
 .os-scholar-header-wrap {
   background: transparent;
@@ -1129,6 +1137,7 @@ border-right:1px solid #E8E9EB;
   padding: 9px 18px;
   width: 944px;
   font: 13px/1.5em 'helvetica neue', helvetica, arial, sans-serif;
+  overflow: hidden;
 }
 
 #block-views-os-activity-block-1 a,
