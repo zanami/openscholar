@@ -405,13 +405,9 @@ function harvard_courses_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'hidden',
-          'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
-          'type' => 'text_default',
-          'weight' => 2,
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '18',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -480,14 +476,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 5,
+          'weight' => '8',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -550,14 +543,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 14,
+          'weight' => '5',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -620,14 +610,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 18,
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -692,14 +679,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'inline',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 23,
+          'weight' => '1',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -762,14 +746,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 21,
+          'weight' => '14',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -832,14 +813,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 19,
+          'weight' => '12',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -904,14 +882,12 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
           'weight' => 25,
+          'weight' => '6',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -974,14 +950,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 10,
+          'weight' => '13',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1044,14 +1017,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 20,
+          'weight' => '9',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1114,14 +1084,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 9,
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1184,14 +1151,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 17,
+          'weight' => '15',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1254,14 +1218,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 13,
+          'weight' => '4',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1324,14 +1285,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 12,
+          'weight' => '11',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1383,18 +1341,10 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
-          'module' => 'number',
-          'settings' => array(
-            'decimal_separator' => '.',
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-            'prefix_suffix' => TRUE,
-            'scale' => 0,
-            'thousand_separator' => ' ',
-          ),
-          'type' => 'number_integer',
-          'weight' => 7,
+          'label' => 'inline',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '16',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1458,14 +1408,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 11,
+          'weight' => '10',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1528,14 +1475,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 4,
+          'weight' => '7',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1598,14 +1542,11 @@ function harvard_courses_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
+          'settings' => array(),
           'type' => 'text_default',
-          'weight' => 8,
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1682,13 +1623,9 @@ function harvard_courses_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'og_ui',
-          'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
-          ),
-          'type' => 'og_list_default',
-          'weight' => 0,
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '17',
         ),
         'teaser' => array(
           'label' => 'above',
