@@ -80,7 +80,7 @@ function harvard_courses_node_insert($node) {
   }
 
   // Import by department ID.
-  $sites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_field->value()));
+  $sites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_department_id->value()));
   if (!empty($sites)) {
     foreach ($sites as $site) {
       og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
@@ -114,7 +114,7 @@ function harvard_courses_node_update($node) {
     ),
     'department' => array(
       'field_name' => 'field_department_id',
-      'course' => 'field_field',
+      'course' => 'field_department_id',
     ),
   );
 
@@ -182,7 +182,7 @@ function harvard_courses_feeds_presave($source, $entity, $item) {
     ->entityCondition('entity_type', 'node')
     ->propertyCondition('type', 'harvard_course')
     ->fieldCondition('field_cat_number', 'value', $wrapper->field_cat_number->value())
-    ->fieldCondition('field_field', 'value', $wrapper->field_field->value())
+    ->fieldCondition('field_department_id', 'value', $wrapper->field_department_id->value())
     ->execute();
 
   // Skip on this item, alredy exists.
