@@ -634,6 +634,23 @@ function os_software_views_default_views() {
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
+  /* Filter criterion: Content: Published */
+
+  $handler->display->display_options['filters']['status_1']['id'] = 'status_1';
+  $handler->display->display_options['filters']['status_1']['table'] = 'node';
+  $handler->display->display_options['filters']['status_1']['field'] = 'status';
+  $handler->display->display_options['filters']['status_1']['relationship'] = 'reverse_field_software_project_node';
+  $handler->display->display_options['filters']['status_1']['value'] = '1';
+  /* Filter criterion: Content: Recommended (field_software_recommended) */
+
+  $handler->display->display_options['filters']['field_software_recommended_value']['id'] = 'field_software_recommended_value';
+  $handler->display->display_options['filters']['field_software_recommended_value']['table'] = 'field_data_field_software_recommended';
+  $handler->display->display_options['filters']['field_software_recommended_value']['field'] = 'field_software_recommended_value';
+  $handler->display->display_options['filters']['field_software_recommended_value']['relationship'] = 'reverse_field_software_project_node';
+  $handler->display->display_options['filters']['field_software_recommended_value']['value'] = array(
+    1 => '1',
+  );
+  $handler->display->display_options['filters']['field_software_recommended_value']['reduce_duplicates'] = TRUE;
   $export['os_software_releases'] = $view;
 
   return $export;
