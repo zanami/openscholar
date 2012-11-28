@@ -190,7 +190,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
   }
 
-  function _update_context_delta($delta){
+  static public function _update_context_delta($delta){
     $delta_map = array(
       'features' => 'primary-menu',
       'scholar_secondary_menu' => 'secondary-menu',

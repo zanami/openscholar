@@ -35,10 +35,10 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
       return FALSE;
     }
 
-    //Update default box delta for fltr-cat
-    if( $row->id == 'vsite_taxonomy_fltr_cat'){
-      $row->id = 'os_taxonomy_fltr_cat';
-      $value->delta = 'os_taxonomy_fltr_cat';
+    //update default box deltas and ids
+    if ($delta = SpacesOverridesContextMigration::_update_context_delta($row->object_id)) {
+      //$row->object_id = $delta;
+      $row->object_id = $value->delta = $delta;
     }
 
     if ($box = $this->_update_box($value, $row->id)) {
@@ -775,7 +775,6 @@ class BoxPorter {
 
     return $box;
   }
-
 
   //recent docs list can convert to sv list
   public function _port_box_os_boxes_recent_docs($box, $id, $key_only) {

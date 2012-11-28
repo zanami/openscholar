@@ -413,6 +413,7 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     'indentation_type' => 'px',
     'attributes' => array(),
     'cur_depth' => 0,
+    'nodeorder' => FALSE,
   );
   $taxonomy_term = $variables['taxonomy_term'];
 
@@ -458,6 +459,13 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   $node_count = os_taxonomy_count_attached_nodes($taxonomy_term->tid, $options['bundles']);
   if ($node_count) {
     $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
+
+//    if ($options['nodeorder'] === FALSE) {
+//      $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
+//    }
+//    else {
+//      $nids = array_keys(nodeorder_select_nodes(array($taxonomy_term->tid), 'or', 0, FALSE, 'n.sticky DESC, n.created DESC', 0));
+//    }
     $nodes = node_load_multiple($nids);
     array_walk($nodes, create_function('&$n', '$n->contextual_annotation_key = "tid-'.$taxonomy_term->tid.'";'));
     $build += node_view_multiple($nodes);
@@ -537,11 +545,13 @@ function os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles = arr
     ->fields('t');
 
   $query->join('node', 'n', 't.nid = n.nid');
-  $query->orderBy('n.nid', 'DESC');
+
   $query->orderBy('n.sticky', 'DESC');
   if (module_exists('nodeorder')) {
-    $query->orderBy('weight', 'DESC');
+    $query->orderBy('t.weight', 'DESC');
   }
+  $query->orderBy('n.created', 'DESC');
+
   if (!empty($node_bundles)) {
     $query->condition('n.type', $node_bundles, 'IN');
   }

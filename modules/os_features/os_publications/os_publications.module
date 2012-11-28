@@ -291,7 +291,7 @@ function _os_publications_attach_notes(&$entry, $node) {
         ),
       ),
       'notes' => array(
-        '#markup' => check_markup($node->biblio_notes, $node->biblio_formats['biblio_notes']),
+        '#markup' => check_markup($node->biblio_notes, filter_default_format()),
       ),
     );
   }
