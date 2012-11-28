@@ -58,7 +58,7 @@ class SpecialTablesOSMigration extends OSMigration {
 
         //put content into our temp table.
         foreach ($embeds as $embed) {
-          drupal_write_record('os_migrate_body_inline_objects', &$embed);
+          drupal_write_record('os_migrate_body_inline_objects', $embed);
         }
         break;
 
