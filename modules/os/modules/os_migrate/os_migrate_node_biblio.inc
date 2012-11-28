@@ -200,7 +200,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
       ->fields('bc', array('nid', 'vid', 'auth_type', 'auth_category', 'rank'))
       ->condition('bc.vid', $vid, '=');
     $query->join('biblio_contributor_data', 'bc_data', 'bc.cid = bc_data.cid');
-    $query->fields('bc_data', array('name', 'lastname'));
+    $query->fields('bc_data', array('name', 'lastname', 'firstname', 'initials', 'prefix', 'suffix', 'md5', 'cid'));
     $result = $query->execute();
 
     while ($r = $result->fetchAssoc()) {
@@ -208,7 +208,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
       if ($r['auth_type'] == 2) {
         $r['auth_type'] = 14;
       }
-      $r['cid'] = NULL;
+      //$r['cid'] = NULL;
       $contributors[] = $r;
     }
 
