@@ -252,7 +252,7 @@ background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
   }
   
  body.front.logged-in {
-  background: url('../images/startpage-bg.png') repeat-x fixed 25px 100% #698da2;
+  background: url('../images/startpage-bg.png') repeat-x fixed 50% 35px #698da2;
   }
 
 #reasons {
