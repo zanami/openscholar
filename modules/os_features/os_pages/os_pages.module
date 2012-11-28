@@ -184,6 +184,22 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
   );*/
 }
 
+function os_pages_form_book_admin_edit_alter(&$form, $form_state) {
+  if ($form['#node']->type == 'page') {
+    $form['save']['#value'] = t('Save Section Outline');
+  }
+}
+
+function os_pages_preprocess_table(&$vars) {
+  $node = menu_get_object('node', 2);
+  if (isset($vars['attributes']['id']) && $vars['attributes']['id'] == 'book-outline' && $node) {
+    $vars['header'] = array_slice($vars['header'], 0, 3);
+    foreach ($vars['rows'] as $k => $r) {
+      $vars['rows'][$k]['data'] = array_slice($r['data'], 0, 3);
+    }
+  }
+}
+
 function os_pages_node_submit(&$node, $form, &$form_state) {
   if (isset($form['#book_parent_node'])) {
     // create a book out of our parent node
