@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_faq.features.inc
@@ -8,6 +11,10 @@
  * Implements hook_ctools_plugin_api().
  */
 function os_faq_ctools_plugin_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => "1");
+  }
   list($module, $api) = func_get_args();
   if ($module == "context" && $api == "context") {
     return array("version" => "3");
@@ -33,7 +40,7 @@ function os_faq_node_info() {
     'faq' => array(
       'name' => t('FAQ'),
       'base' => 'node_content',
-      'description' => 'A frequently asked question with an answer.',
+      'description' => t('A frequently asked question with an answer.'),
       'has_title' => '1',
       'title_label' => t('Question'),
       'help' => '',
@@ -41,3 +48,4 @@ function os_faq_node_info() {
   );
   return $items;
 }
+
