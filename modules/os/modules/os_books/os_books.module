@@ -246,7 +246,7 @@ function _os_books_get_cache($root, $bid = 0) {
 }
 
 function _os_books_clear_cache($node) {
-  if (isset($node->book)) {
+  if (isset($node->book) && isset($node->book['bid'])) {
     $cache_key = _os_books_get_book_cache_wildcard($node->book['bid']);
     cache_clear_all($cache_key, OS_BOOKS_CACHE, TRUE);
   }
