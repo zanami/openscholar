@@ -27,7 +27,7 @@
   padding-right:25px;
 }
 
-.front .logged-in .region-header-second .block-boxes-os_boxes_bio .node-content {
+.front.logged-in .region-header-second .block-boxes-os_boxes_bio .node-content {
   bottom: -560px;
 }  
    
