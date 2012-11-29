@@ -694,7 +694,7 @@ function harvard_courses_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_cat_number',
-      'label' => 'cat_number',
+      'label' => 'Catalog number',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
@@ -886,7 +886,6 @@ function harvard_courses_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 25,
           'weight' => '6',
         ),
         'teaser' => array(
@@ -2059,7 +2058,6 @@ function harvard_courses_field_default_fields() {
   t('OG vocabulary');
   t('bracketed');
   t('building');
-  t('cat_number');
   t('description');
   t('faculty');
   t('meetings');

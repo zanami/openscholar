@@ -42,6 +42,86 @@ function harvard_courses_menu() {
 }
 
 /**
+ * Implements hook_os_widget().
+ */
+function harvard_courses_os_widget() {
+  $widgets = array();
+
+  $widgets['harvard_courses-courses_filter'] = array(
+    'module' => 'havard_courses',
+    'delta' => 'courses_filter',
+    'title' => '',
+    'info' => t('Harvard courses filter'),
+  );
+
+  return $widgets;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function harvard_courses_block_info() {
+  $blocks = array();
+
+  $blocks['courses_filter'] = array(
+    'info' => t('Harvard courses filter'),
+    'weight' => '-10',
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implement hook_block_view().
+ */
+function  harvard_courses_block_view($delta) {
+  $block = array();
+
+  switch ($delta) {
+    case 'courses_filter':
+      $block['content'] = harvard_courses_courses_filter();
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Return links for filter the harvard courses.
+ */
+function harvard_courses_courses_filter() {
+  if (!$space = spaces_get_space()) {
+    return $block;
+  }
+
+  $query = db_select('og_membership', 'ogm');
+  $query->join('node', 'n', 'n.nid = ogm.etid');
+  $results = $query
+    ->fields('n')
+    ->condition('ogm.gid', $space->id)
+    ->condition('n.type', 'harvard_course')
+    ->execute()
+    ->fetchAllKeyed();
+
+  if (empty($results)) {
+    return;
+  }
+
+  $nodes = node_load_multiple(array_keys($results));
+  $semester = array();
+  foreach ($nodes as $node) {
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $text = $wrapper->field_calendar_period->value();
+    $query_params = array(
+      'calendar_period' => check_plain($text),
+    );
+    $semester[$text] = l($text, 'courses', array('query' => $query_params));
+  }
+
+  return theme('item_list', array('title' => t('Filter by semester'), 'items' => $semester));
+}
+
+/**
  * Callback function for refresh the courses.
  */
 function harvard_courses_refresh_coureses() {
@@ -101,39 +181,6 @@ function harvard_courses_os_add_new_links_alter(&$links) {
 }
 
 /**
- * Implements hook_boxes_plugins().
- */
-function harvard_courses_boxes_plugins() {
-  $info = array();
-
-  $info['harvard_courses_filter'] = array(
-    'title' => t('Harvard courses filter'),
-    'description' => t('Dispaly the harvard courses of your site.'),
-    'tags' => array('Harvard'),
-    'handler' => array(
-      'class' => 'harvard_courses_filter',
-      'file' => 'harvard_courses_filter.inc',
-      'path' => drupal_get_path('module', 'harvard_courses') . '/plugins/harvard_courses_filter',
-      'parent' => 'os_boxes_default',
-    ),
-  );
-
-  $info['harvard_courses'] = array(
-    'title' => t('Harvard courses'),
-    'description' => t('Dispaly the harvard courses for the site.'),
-    'tags' => array('Harvard'),
-    'handler' => array(
-      'class' => 'harvard_courses',
-      'file' => 'harvard_courses.inc',
-      'path' => drupal_get_path('module', 'harvard_courses') . '/plugins/harvard_courses',
-      'parent' => 'os_boxes_default',
-    ),
-  );
-
-  return $info;
-}
-
-/**
  * Implements hook_permission().
  */
 function harvard_courses_permission() {
@@ -144,12 +191,6 @@ function harvard_courses_permission() {
     ),
   );
 }
-
-/**
- * Display the courses for the user.
- */
-function harvard_courses_courses() {
-  return '';}
 
 /**
  * Returning groups (Department. Project or personal) nid by the import type.

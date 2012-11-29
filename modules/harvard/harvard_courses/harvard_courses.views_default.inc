@@ -52,18 +52,6 @@ function harvard_courses_views_default_views() {
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  /* Contextual filter: Content: Calendar period (field_calendar_period) */
-  $handler->display->display_options['arguments']['field_calendar_period_value']['id'] = 'field_calendar_period_value';
-  $handler->display->display_options['arguments']['field_calendar_period_value']['table'] = 'field_data_field_calendar_period';
-  $handler->display->display_options['arguments']['field_calendar_period_value']['field'] = 'field_calendar_period_value';
-  $handler->display->display_options['arguments']['field_calendar_period_value']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['field_calendar_period_value']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['field_calendar_period_value']['default_argument_options']['argument'] = 'all';
-  $handler->display->display_options['arguments']['field_calendar_period_value']['default_argument_skip_url'] = TRUE;
-  $handler->display->display_options['arguments']['field_calendar_period_value']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['field_calendar_period_value']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['field_calendar_period_value']['summary_options']['items_per_page'] = '25';
-  $handler->display->display_options['arguments']['field_calendar_period_value']['limit'] = '0';
   /* Contextual filter: OG membership: Group ID */
   $handler->display->display_options['arguments']['gid']['id'] = 'gid';
   $handler->display->display_options['arguments']['gid']['table'] = 'og_membership';
@@ -88,10 +76,36 @@ function harvard_courses_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'harvard_course' => 'harvard_course',
   );
+  /* Filter criterion: Content: Calendar period (field_calendar_period) */
+  $handler->display->display_options['filters']['field_calendar_period_value']['id'] = 'field_calendar_period_value';
+  $handler->display->display_options['filters']['field_calendar_period_value']['table'] = 'field_data_field_calendar_period';
+  $handler->display->display_options['filters']['field_calendar_period_value']['field'] = 'field_calendar_period_value';
+  $handler->display->display_options['filters']['field_calendar_period_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_calendar_period_value']['expose']['operator_id'] = 'field_calendar_period_value_op';
+  $handler->display->display_options['filters']['field_calendar_period_value']['expose']['label'] = 'Calendar period (field_calendar_period)';
+  $handler->display->display_options['filters']['field_calendar_period_value']['expose']['operator'] = 'field_calendar_period_value_op';
+  $handler->display->display_options['filters']['field_calendar_period_value']['expose']['identifier'] = 'calendar_period';
+  $handler->display->display_options['filters']['field_calendar_period_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+  );
+  $handler->display->display_options['filters']['field_calendar_period_value']['group_info']['label'] = 'Calendar period (field_calendar_period)';
+  $handler->display->display_options['filters']['field_calendar_period_value']['group_info']['identifier'] = 'field_calendar_period_value';
+  $handler->display->display_options['filters']['field_calendar_period_value']['group_info']['remember'] = FALSE;
+  $handler->display->display_options['filters']['field_calendar_period_value']['group_info']['group_items'] = array(
+    1 => array(),
+    2 => array(),
+    3 => array(),
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+  $handler->display->display_options['exposed_block'] = TRUE;
   $handler->display->display_options['path'] = 'courses';
   $export['harvard_courses'] = $view;
 
