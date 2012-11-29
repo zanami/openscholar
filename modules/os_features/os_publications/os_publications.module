@@ -341,6 +341,9 @@ function _os_publications_attach_abstract(&$entry, $node) {
   }
 }
 
+/**
+ * Implements hook_preprocess_node().
+ */
 function os_publications_preprocess_node(&$vars) {
   if ($vars['type'] == 'biblio') {
     $vars['display_submitted'] = false;
@@ -364,6 +367,21 @@ function os_publications_node_view_alter(&$build, $type) {
       }
       $build['teaser']['#weight'] = 1;
       $build['links']['#access'] = FALSE;
+
+      // Alter the teaser to remove the external URL as the URL title and
+      // replace it with either the biblio_url_title or "website".
+      if(isset($build['teaser']['#markup'])) {
+      	$teaser_markup = $build['teaser']['#markup'];
+      	if(isset($build['#node']->biblio_url)) {
+		  $biblio_url = $build['#node']->biblio_url;
+		  $biblio_check_url = l($biblio_url,$biblio_url);
+		  $biblio_url_title = !empty($build['#node']->biblio_url_title) ? $build['#node']->biblio_url_title : 'Website';
+		  $new_biblio_url = l($biblio_url_title,$biblio_url);
+		  $new_teaser_markup = str_replace($biblio_check_url, $new_biblio_url, $teaser_markup);
+		  $build['teaser']['#markup'] = $new_teaser_markup;
+      	}
+      }
+
     }
     else {
       $links = &$build['links'];
