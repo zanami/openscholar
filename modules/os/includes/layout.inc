@@ -566,8 +566,13 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout) {
     if (!isset($old_regions[$r])) {
       $old_regions[$r] = array();
     }
+
     $parent_keys = array_keys($old_regions[$r]);
+    // the parent keys that exist in the child
     $only_parent_keys = array_intersect($new_keys, $parent_keys);
+    // the order in the parent of keys that only exist in child
+    $active_parents = array_intersect($only_parent_keys, $parent_keys);
+
     dpm($r);
     dpm($only_parent_keys);
     dpm($parent_keys);
@@ -577,30 +582,11 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout) {
       // none of the parent blocks are in the child
       // bulldoze is fine
     }
-    elseif ($only_parent_keys == $parent_keys) {
+    elseif ($only_parent_keys == $active_parents) {
       // parent blocks are in the same order.
       // update their weights to match the parents
       // then put the new blocks in between them
       $bulldoze = false;
-    }
-    else {
-      // they aren't in the same order
-      // check that we aren't just missing one off the end
-      $parents2 = $parent_keys;
-      do {
-        array_pop($parents2);
-      } while (!empty($parents2) && $only_parent_keys != $parents2);
-      if (!empty($parents2)) {
-        $bulldoze = false;
-      }
-      // now check that we aren't just missing one off the front
-      $parents2 = $parent_keys;
-      do {
-        array_shift($parents2);
-      } while (!empty($parents2) && $only_parent_keys != $parents2);
-      if (!empty($parents2)) {
-        $bulldoze = false;
-      }
     }
     dvm($bulldoze);
 
