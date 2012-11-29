@@ -628,6 +628,12 @@ function nodeorder_can_be_ordered($node) {
   // Caches the value permanently for easy reuse.
   cache_set($cid, $can_be_ordered, 'cache');
 
+  if (module_exists('og_vocab') && !empty($group_cids)) {
+    foreach ($group_cids as $group_cid) {
+      cache_set($group_cid, $can_be_ordered, 'cache');
+    }
+  }
+
   return $can_be_ordered;
 }
 
