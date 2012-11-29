@@ -6,13 +6,6 @@
 function os_sv_list_menu() {
   $items = array();
 
-  $items['os_sv_list_more_link_ajax'] = array(
-    'type' => MENU_CALLBACK,
-    'page callback' => 'os_sv_list_more_link_ajax',
-    'page arguments' => array(1),
-    'access callback' => TRUE
-  );
-
   $items['os_sv_list/page/%os_boxes'] = array(
     'title' => 'Pager',
     'page callback' => 'os_sv_list_pager_callback',
@@ -23,56 +16,6 @@ function os_sv_list_menu() {
   );
 
   return $items;
-}
-
-/**
- * @function os_sv_list_more_link_ajax
- *
- * Ajax callback for the more link.  Triggers when content type is changed.
- * Returns a new link for that content type, provided the existing link is
- * a default.  ie when content type is "publications", that can change.  If
- * the user wrote in "writing" and changes the content type from biblio to
- * page, "writing" won't get swapped out.
- */
-function os_sv_list_more_link_ajax($form, $state) {
-  $content_type = $state['values']['content_type'];
-  $content_map = array(
-    'all' => '',
-    'news' => 'news',
-    'biblio' => 'publications',
-    'event' => 'calendar',
-    'page' => 'pages',
-    'data' => 'data',
-    'blog' => 'blog',
-    'book' => 'documents',
-    'feed' => 'reader',
-    'media_gallery' => 'galleries',
-    'link' => 'links',
-    'presentation' => 'presentations',
-    'software_project' => 'software',
-    'software_release' => 'software',
-    'person' => 'people',
-  );
-
-  $current = $state['values']['more_link'];
-
-  //only change a value that the user didn't set.
-  if (in_array($current, $content_map)) {
-    $link = (isset($content_map[$content_type])) ? $content_map[$content_type] : '';
-  } else {
-    $link = $current;
-  }
-
-  $form['options']['more_link']['#value'] = $link;
-
-  //just return the input element.  states has modified this element's parent to show/hide.
-  //ajax call won't retrigger states check, so just replace the input itself to preserve visiblity
-  $built = drupal_render($form['options']['more_link']);
-  $built = explode("\n", $built);
-  $built = preg_grep('/input/', $built);
-  $input = current($built);
-
-  return $input;
 }
 
 function os_sv_list_pager_callback($box) {
@@ -126,4 +69,37 @@ function os_sv_list_boxes_plugins() {
   );
 
   return $plugins;
+}
+
+/**
+ * Get Vocabularies by content type.
+ *
+ *  @param $bundle
+ *    The bundle that the og vocab are related to.
+ *
+ *  @return
+ *    Array keyed with vocabulary id and valued with the vocabulary name.
+ */
+function os_sv_list_get_content_type_vocabs($bundle) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'og_vocab')
+    ->propertyCondition('entity_type', 'node');
+
+  if ($bundle != 'all') {
+    $query->propertyCondition('bundle', $bundle);
+  }
+
+  $result = $query->execute();
+
+  if (empty($result['og_vocab'])) {
+    return array();
+  }
+
+  foreach (array_keys($result['og_vocab']) as $vid) {
+    $og_vocab = entity_load_single('og_vocab', $vid);
+    $vocabulary = taxonomy_vocabulary_load($og_vocab->vid);
+    $options[$vocabulary->vid] = $vocabulary->name;
+  }
+
+  return $options;
 }

@@ -17,6 +17,7 @@ class os_sv_list_box extends os_boxes_default {
       'pager' => FALSE,
       'number_of_items' => 6,
       'sort_by' => 'sort_newest',
+      'vocabs' => array(),
 
       'biblio_show_all' => TRUE,
       'biblio_whitelist' => array('all'=>'all'),
@@ -33,30 +34,25 @@ class os_sv_list_box extends os_boxes_default {
     $defaults = $this->options_defaults();
     drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting');
 
-    $content_types = array(
-      'all' => t('All')
-    ) + os_get_bundles(1);
+    $content_types = os_get_bundles(1);
 
     if (isset($content_types['media_gallery'])) {
       $content_types['image'] = t('Images');
     }
 
-    $form['#submit'] = array(
-      'os_sv_list_form_submit'
-    );
+    $form['#submit'] = array('os_sv_list_form_submit');
+
+    $content_types_value = !empty($form_state['values']['content_type']) ? $form_state['values']['content_type'] : $this->options['content_type'];
 
     $form['content_type'] = array(
       '#type' => 'select',
-      '#title' => 'Content Type',
-      '#default_value' => $this->options['content_type'],
+      '#title' => t('Content Type'),
+      '#default_value' => $content_types_value,
       '#options' => $content_types,
       '#id' => 'os_sv_list_content_type',
       '#ajax' => array(
-        'callback' => 'os_sv_list_more_link_ajax',
-        //'wrapper' => 'more_link_div',
-        'wrapper' => 'edit-more-link',
-        'method' => 'replace',
-        'effect' => 'none',
+        'callback' => 'os_sv_list_query_details_ajax',
+        'wrapper' => 'query-details',
       ),
       '#attached' => array(
         'js' => array(
@@ -116,26 +112,75 @@ class os_sv_list_box extends os_boxes_default {
       )
     );
 
-    $form['more'] = array(
+    $form['query_details'] = array(
+      '#prefix' => '<div id="query-details">',
+      '#suffix' => '</div>',
+      '#parents' => array('query_details'),
+    );
+
+    if ($vocabs = os_sv_list_get_content_type_vocabs($content_types_value)) {
+      // Make the vocabulary selection optional.
+      $vocabs = array(0 => t('- Select -')) + $vocabs;
+    }
+    $default_value = !empty($form_state['values']['vocabs']) ? $form_state['values']['vocabs'] : $this->options['vocabs'];
+
+    $form['query_details']['vocabs'] = array(
+      '#type' => 'select',
+      '#title' => t('Vocabulary'),
+      '#description' => t('Select a vocabulary to filter content by tagged items.'),
+      '#options' => $vocabs,
+      '#default_value' => $default_value,
+      '#access' => $vocabs,
+    );
+
+    $form['query_details']['more'] = array(
       '#title' => 'Show "more" link',
       '#type' => 'checkbox',
-      '#default_value' => $this->options['more']
+      '#default_value' => $this->options['more'],
     );
 
-    $form['more_link'] = array(
-      '#title' => 'URL for the more link',
+    $content_map = array(
+      'all' => '',
+      'news' => 'news',
+      'biblio' => 'publications',
+      'event' => 'calendar',
+      'page' => 'pages',
+      'data' => 'data',
+      'blog' => 'blog',
+      'book' => 'documents',
+      'feed' => 'reader',
+      'media_gallery' => 'galleries',
+      'link' => 'links',
+      'presentation' => 'presentations',
+      'software_project' => 'software',
+      'software_release' => 'software',
+      'person' => 'people',
+    );
+
+    if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
+      $default_value = $content_map[$content_types_value];
+    }
+    else {
+      $default_value = $this->options['more_link'];
+    }
+
+    if (!empty($form_state['values']['more_link'])) {
+      // Unset the values from the text field, as otherwise FAPI will add
+      // it to the #value of the form-element.
+      // @see http://drupal.org/node/1024962#comment-4021826
+      unset($form_state['input']['more_link']);
+    }
+
+    $form['query_details']['more_link'] = array(
+      '#title' => t('URL for the more link'),
       '#type' => 'textfield',
-      '#default_value' => $this->options['more_link'],
+      '#default_value' => $default_value,
       '#states' => array(
         'visible' => array('input[name=more]' => array('checked' => TRUE)),
-        'invisible'  => array('input[name=more]' => array('checked' => FALSE))
-
       ),
-      '#prefix' => '<div id="more_link_div">',
-      '#suffix' => '</div>',
     );
 
-    $form['more_text'] = array(
+    $form['query_details']['more_text'] = array(
       '#title' => 'Label of the more link (default: "more")',
       '#type' => 'textfield',
       '#default_value' => $this->options['more_text'],
@@ -157,8 +202,6 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['number_of_items']
     );
 
-//    $form = $this->form_content_types($form, $content_types);
-
     return $form;
   }
   /**
@@ -170,8 +213,8 @@ class os_sv_list_box extends os_boxes_default {
     $page_num = isset($_GET['page']) ? $_GET['page'] : 0;
     $page = 0;
 
-    $nids = $this->get_nids($page_num, $page);
 
+    $nids = $this->get_nids($page_num, $page);
     $more_link = FALSE;
 
     if (count($nids)) {
@@ -221,6 +264,7 @@ class os_sv_list_box extends os_boxes_default {
       $block['title'] = $block['subject'] = '';
       return $block;
     }
+
   }
 
   // get_default_query_query - humble beginnings of the EFQ
@@ -239,7 +283,7 @@ class os_sv_list_box extends os_boxes_default {
     return $efq;
   }
 
-  /**
+   /**
    * Queries the DB for all nids in the box
    *
    * @param int $page_num
@@ -249,6 +293,8 @@ class os_sv_list_box extends os_boxes_default {
   public function get_nids($page_num = FALSE, &$page = NULL) {
     $efq = $this->get_default_query();
     $options = $this->options;
+
+    $tagged_nodes = $this->tagged_nodes();
 
     //exceptions
     switch ($options['content_type']) {
@@ -300,6 +346,10 @@ class os_sv_list_box extends os_boxes_default {
         }
         $query->fields('n', array('nid'));
 
+        if ($tagged_nodes) {
+          $query->condition('n.nid', $tagged_nodes, 'IN');
+        }
+
         $biblio_nids = $query->execute()->fetchCol();
         break;
 
@@ -334,7 +384,8 @@ class os_sv_list_box extends os_boxes_default {
     if ($options['pager'] && $options['content_type'] != 'biblio' && is_int($page)) {
       $efq->pager($options['number_of_items']);
       $page = $efq->pager['element'];
-    } elseif ($options['pager'] && $options['content_type'] == 'biblio' && empty($page_num)) {
+    }
+    elseif ($options['pager'] && $options['content_type'] == 'biblio' && empty($page_num)) {
       //init the pager since we don't have efq doing that for us.
       $total = count($biblio_nids);
       $limit = $options['number_of_items'];
@@ -358,6 +409,9 @@ class os_sv_list_box extends os_boxes_default {
         break;
 
       default:
+        if ($tagged_nodes) {
+          $efq->propertyCondition('nid', $tagged_nodes, 'IN');
+        }
         $result = $efq->execute();
         $nids = isset($result['node']) ? array_keys($result['node']) : array();
         break;
@@ -366,6 +420,40 @@ class os_sv_list_box extends os_boxes_default {
     return $nids;
   }
 
+  /**
+   * Return the nodes attached to terms of the selected vocabulary.
+   */
+  public function tagged_nodes() {
+    if (empty($this->options['vocabs'])) {
+      return;
+    }
+
+    // Load the taxonomy terms of the vocabulary.
+    if (!$vocabulary = taxonomy_get_tree($this->options['vocabs'])) {
+      return;
+    }
+
+    // Collect all the taxonomy term ID.
+    $tids = array();
+    foreach ($vocabulary as $terms) {
+      $tids[] = $terms->tid;
+    }
+
+    $query = db_select('taxonomy_index', 't');
+    $query->join('node', 'n', 'n.nid = t.nid');
+    $result = $query
+      ->condition('t.tid', $tids, 'IN')
+      ->condition('n.type', $this->options['content_type'])
+      ->fields('t')
+      ->execute();
+
+    $nids = array();
+    foreach ($result as $row) {
+      $nids[] = $row->nid;
+    }
+
+    return $nids;
+  }
 
   /**
    * sorting functions
@@ -436,5 +524,14 @@ class os_sv_list_box extends os_boxes_default {
 
     return $options;
   }
+}
 
+/**
+ * AJAX callback to add query details (e.g. the vocabulary to use).
+ *
+ * Since the controlling logic for populating the form is in the form builder
+ * function, all we do here is select the element and return it to be updated.
+ */
+function os_sv_list_query_details_ajax($form, &$form_state) {
+  return $form['options']['query_details'];
 }
