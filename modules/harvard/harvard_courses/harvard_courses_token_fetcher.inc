@@ -18,7 +18,7 @@ class HarwardFetcher extends FeedsFetcher {
 
     if (empty($nids)) {
       drupal_set_message(t('There were no sites for this import.'));
-      return FALSE;
+      return new FeedsFetcherResult('<courses></courses>');
     }
 
     // Define the query parameter and the field that holds the query values.
@@ -51,7 +51,7 @@ class HarwardFetcher extends FeedsFetcher {
     if ($result->code != 200) {
       // oops... error!
       drupal_set_message(t('Unable to get feeds from : ' . $this->buildUrl($import_value, $rows, $start)));
-      return FALSE;
+      return new FeedsFetcherResult('<courses></courses>');
     }
 
     $found = $matches[1][0];
