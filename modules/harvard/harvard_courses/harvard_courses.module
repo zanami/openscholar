@@ -344,23 +344,23 @@ function harvard_courses_related_nodes($field, $search = array()) {
  * Implements hook_feeds_presave().
  */
 function harvard_courses_feeds_presave($source, $entity, $item) {
-  $wrapper = entity_metadata_wrapper('node', $entity);
-  $query = new entityFieldQuery();
-  $result = $query
-    ->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', 'harvard_course')
-    ->fieldCondition('field_cat_number', 'value', $wrapper->field_cat_number->value())
-    ->fieldCondition('field_department_id', 'value', $wrapper->field_department_id->value())
-    ->execute();
-
-  // Skip on this item, alredy exists.
-  if (!empty($result['node'])) {
-    $param = array(
-      '@name' => $wrapper->label(),
-    );
-    drupal_set_message(t("The node @name wasn't imported because he already exists.", $param));
-    $entity->feeds_item->skip = TRUE;
-  }
+  // $wrapper = entity_metadata_wrapper('node', $entity);
+  // $query = new entityFieldQuery();
+  // $result = $query
+    // ->entityCondition('entity_type', 'node')
+    // ->propertyCondition('type', 'harvard_course')
+    // ->fieldCondition('field_cat_number', 'value', $wrapper->field_cat_number->value())
+    // ->fieldCondition('field_department_id', 'value', $wrapper->field_department_id->value())
+    // ->execute();
+// 
+  // // Skip on this item, alredy exists.
+  // if (!empty($result['node'])) {
+    // $param = array(
+      // '@name' => $wrapper->label(),
+    // );
+    // drupal_set_message(t("The node @name wasn't imported because he already exists.", $param));
+    // $entity->feeds_item->skip = TRUE;
+  // }
 }
 
 /**
