@@ -558,10 +558,15 @@ function nodeorder_move_in_category($direction, $nid, $tid) {
 }
 
 /**
- * Returns TRUE if the node has terms in any orderable vocabulary...
+ * Returns TRUE if the node has terms in any orderable vocabulary.
  */
 function nodeorder_can_be_ordered($node) {
   $cid = 'nodeorder:can_be_ordered:' . $node->type;
+
+  // Integrates with og_vocab module; caches on a per-group basis.
+  if (module_exists('og_vocab')) {
+    $cid .= ':og_group_id_' . $node->nid;
+  }
 
   if (($cache = cache_get($cid)) && !empty($cache->data)) {
     return $cache->data;
@@ -572,7 +577,7 @@ function nodeorder_can_be_ordered($node) {
     $fields = field_info_fields();
     $nodeorder_vocabularies = array();
     foreach ($fields as $field_name => $field) {
-      // Integrates with og_vocab module, which stores term fields as entityreference.
+      // Integrates with og_vocab module; gets term data as entityreference.
       if (module_exists('og_vocab')
       && $field['field_name'] == OG_VOCAB_FIELD
       && !empty($field['bundles']['node'])
@@ -610,7 +615,7 @@ function nodeorder_can_be_ordered($node) {
       }
     }
 
-    //permanently cache the value for easy reuse
+    // Caches the value permanently for easy reuse.
     cache_set($cid, $can_be_ordered, 'cache');
 
     return $can_be_ordered;
