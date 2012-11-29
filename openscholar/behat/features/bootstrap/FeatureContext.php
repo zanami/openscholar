@@ -4,6 +4,7 @@ use Drupal\DrupalExtension\Context\DrupalContext;
 use Behat\Behat\Context\Step\Given;
 use Behat\Gherkin\Node\TableNode;
 use Guzzle\Service\Client;
+use Behat\Behat\Context\Step;
 
 require 'vendor/autoload.php';
 
@@ -201,4 +202,18 @@ class FeatureContext extends DrupalContext {
 
     throw new Exception(sprintf("An element containing the text %s with the class %s wasn't found", $text, $container));
   }
+
+  /**
+   * @Given /^I create a new publication$/
+   */
+  public function iCreateANewPublication() {
+    return array(
+      new Step\When('I visit "john/node/add/biblio"'),
+      new Step\When('I select "Book" from "Publication Type"'),
+      new Step\When('I press "edit-biblio-next"'),
+      new Step\When('I fill in "Title" with "'. time() . '"'),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
 }
