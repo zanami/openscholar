@@ -40,7 +40,10 @@ function os_breadcrumbs_build_breadcrumbs() {
       	$links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
     	break;
       case 'class_material':
-      	$links = _os_breadcrumbs_build_classmaterial_breadcrumb($menu_active_trail);
+      	$links = _os_breadcrumbs_build_materials_breadcrumb($menu_active_trail);
+      	break;
+      case 'software_release':
+      	$links = _os_breadcrumbs_build_materials_breadcrumb($menu_active_trail);
       	break;
       default:
     	$links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
@@ -98,13 +101,16 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
     'person' => 'people',
     'biblio' => 'publications',
     'class' => 'classes',
+    'link' => 'links',
     'software_project' => 'software',
+    'media_gallery' => 'galleries',
+    'event' => 'calendar',
   );
   $links = array();
   $last_item = end($menu_active_trail);
   foreach($menu_active_trail as $key => $menu) {
     if($key == (count($menu_active_trail)) - 1) {
-      $links[] = t($menu['title']);
+      $links[] = t(ucfirst($menu['title']));
     }else {
       $links[] = l(ucfirst($menu['title']), $menu['href']);
     }
@@ -114,7 +120,11 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
   // So it reads home > publications > my publications
   // rather than home > my publications.
   if(strpos($last_item['href'],'node/') === 0) {
-  	$nid = $last_item['original_map'][1];
+  	if(isset($last_item['original_map'][1])) {
+  	  $nid = $last_item['original_map'][1];
+  	}else {
+  	  return;
+  	}
   	$node_load = node_load($nid);
   	$home_link = array_shift($links);
   	if(array_key_exists($node_load->type,$content_type)) {
@@ -184,8 +194,10 @@ function _os_breadcrumbs_build_taxonomy_breadcrumb($menu_items) {
   // Load the vocabulary path.
   $vocab_path = $vocabulary->machine_name;
   // Create the vocab link.
+
   // UPDATE VOCAB FOR NOW IS NOT A LINK.  IT LINKS TO A DEAD PAGE.
   // ADD BACK TO A LINK WHEN VIEW IS CREATED FOR VOCABS.
+
   //$links[] = l(ucfirst($vocab_name),$vocab_path);
   $links[] = t(ucfirst($vocab_name));
   $terms_ordered = array_reverse($term_hierarchy);
@@ -218,37 +230,83 @@ function _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail) {
 }
 
 /**
- * Function to build breadcrumbs for the class material content type.
+ * Function to build breadcrumbs for the class material/software release content type.
  * @param $menu_active_trail
  *  Variable based off menu_active_trail().
  */
-function _os_breadcrumbs_build_classmaterial_breadcrumb($menu_active_trail) {
+function _os_breadcrumbs_build_materials_breadcrumb($menu_active_trail) {
+  $content_type = array(
+    'person' => 'people',
+    'biblio' => 'publications',
+    'class' => 'classes',
+    'link' => 'links',
+    'software_project' => 'software',
+    'software_release' => 'software release',
+    'media_gallery' => 'galleries',
+    'class_material' => 'class material',
+  );
+  $node_field = '';
   $links = array();
   // Load the last item of the menu item.
   $last_item = end($menu_active_trail);
   // The href holds the node/node_id.
   $node_href = explode('/',$last_item['href']);
   // Get the node id and load the node from it.
-  $node_load = node_load(end($node_href));
-  if(isset($node_load)) {
+  $node = node_load(end($node_href));
+  if(isset($node)) {
     // Build the home link.
     $links[] = l(t('Home'),'<front>');
+    // Both software release and class material need to retain their parent content type.
+    if($node->type == 'class_material') {
+      $node_field_type = $node->field_class['und'][0]['entity'];
+    }
+    if($node->type == 'software_release') {
+      $node_field_type = $node->field_software_project['und'][0]['entity'];
+    }
     // Get the parent content type and class.
-    if(isset($node_load->field_class['und'][0]['entity'])) {
+    if(isset($node_field_type)) {
       // Parent type.
-      $parent_type = $node_load->field_class['und'][0]['entity']->type;
+      $parent_type = array_key_exists($node_field_type->type, $content_type) ? $content_type[$node_field_type->type] : $node_field_type->type;
       $links[] = l(ucfirst($parent_type),$parent_type);
       // Parent class.
-      $parent_class = $node_load->field_class['und'][0]['entity']->title;
-      $parent_class_node = $node_load->field_class['und'][0]['entity']->nid;
+      $parent_class = $node_field_type->title;
+      $parent_class_node = $node_field_type->nid;
       $links[] = l(ucfirst($parent_class),'node/'.$parent_class_node);
     }
+    // Breadcrumb title.
+    $materials_title = array_key_exists($node->type, $content_type) ? $content_type[$node->type] : $node->type;
+
     // Create the class material breadcrumb now.
-    $links[] = l(ucfirst($node_load->type),'node/'.$node_load->nid);
-    $links[] = ucfirst($node_load->title);
+
+    // UPDATE class material/software release FOR NOW IS NOT A LINK.  IT LINKS TO A DEAD PAGE.
+    // ADD BACK TO A LINK WHEN/IF VIEW IS CREATED FOR THIS.
+
+    //$links[] = l(ucwords($materials_title),'node/'.$node->nid);
+    $links[] = t(ucwords($materials_title));
+    $links[] = ucfirst($node->title);
 
   }
   return $links;
+}
+
+/**
+ * Helper function for another module to use breadcrumbs.
+ * Accepts a menu_active_trail and returns the rendered breadcrumb HTML.
+ * @param $menu_active_trail
+ *  array returned from the function menu_get_active_trail from drupals menu api
+ * @return
+ *  string of html breadcrumbs.
+ */
+function os_breadcrumbs_get_breadcrumbs($menu_active_trail) {
+  if(!isset($menu_active_trail)) {
+  	$menu_active_trail = menu_get_active_trail();
+  }
+  $links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
+  if(isset($links)) {
+    return os_breadcrumbs_setup_breadcrumbs($links);
+  }else {
+  	return;
+  }
 }
 
 /**
@@ -260,18 +318,18 @@ function os_breadcrumbs_preprocess_page(&$variables) {
   if(context_isset('context', 'os_public')) {
     $space = spaces_get_space();
     if(isset($space)) {
-  	  $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_frontpage', 'space');
+  	  $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
     }else {
-  	  $breadcrumb_show = variable_get('os_breadcrumbs_show_frontpage',0);
+  	  $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',0);
     }
   	$links = os_breadcrumbs_build_breadcrumbs();
   	$breadcrumbs = os_breadcrumbs_setup_breadcrumbs($links);
 	if(isset($breadcrumbs)) {
 	  // Check for users wanting to show their breadcrumbs on their frontpage.
-	  if(drupal_is_front_page() && empty($breadcrumb_show)) {
-	    $variables['breadcrumb'] = '';
-	  }else {
+	  if(!drupal_is_front_page() && $breadcrumb_show == 0) {
 	    $variables['breadcrumb'] = $breadcrumbs;
+	  }else {
+	    $variables['breadcrumb'] = '';
 	  }
 	}
   }
@@ -290,25 +348,26 @@ function os_breadcrumbs_cp_settings() {
   );
   $form = array();
   $space = spaces_get_space();
-  $breadcrumb_show = variable_get('os_breadcrumbs_show_frontpage',0);
+  $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',0);
   $breadcrumb_divider = variable_get('os_breadcrumbs_breadcrumb_divider',0);
 
   if (!empty($space)) {
     // Get the vsite_users_contact_form_anonymous varible
-    $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_frontpage', 'space');
+    $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
     $breadcrumb_divider = $space->controllers->variable->get('os_breadcrumbs_breadcrumb_divider', 'space');
   }
-  $form['os_breadcrumbs_show_frontpage'] = array(
+  $form['os_breadcrumbs_show_breadcrumbs'] = array(
     'group' => array(
       '#id' => 'breadcrumbs',
       '#title' => t('Breadcrumbs'),
       '#weight' => 50,
     ),
     'form' => array(
-      '#type' => 'checkbox',
-   	  '#title' => t('Show on your frontpage'),
+      '#type' => 'radios',
+   	  '#title' => t('Show breadcrumbs on your site?'),
+      '#options' => array(t('Yes'),t('No')),
       '#default_value' => isset($breadcrumb_show) ? $breadcrumb_show : 0,
-      '#description' => t('This will allow breadcrumbs to be displayed on your sites frontpage.  Since it is your frontpage, only "Home" will show.'),
+      '#description' => t('This will allow breadcrumbs to be displayed on your site.'),
     ),
   );
 
