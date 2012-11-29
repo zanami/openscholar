@@ -240,18 +240,22 @@ function harvard_courses_node_insert($node) {
   $wrapper = entity_metadata_wrapper('node', $node->nid);
 
   // Import by catalog number.
-  $sites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
-  if (!empty($sites)) {
-    foreach ($sites as $site) {
-      og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+  if ($wrapper->field_cat_number->value()) {
+    $sites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
+    if (!empty($sites)) {
+      foreach ($sites as $site) {
+        og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+      }
     }
   }
 
   // Import by department ID.
-  $sites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_department_id->value()));
-  if (!empty($sites)) {
-    foreach ($sites as $site) {
-      og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+  if ($wrapper->field_department_id->value()) {
+    $sites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_department_id->value()));
+    if (!empty($sites)) {
+      foreach ($sites as $site) {
+        og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+      }
     }
   }
 
@@ -340,28 +344,7 @@ function harvard_courses_related_nodes($field, $search = array()) {
 
   return array_keys($result['node']);
 }
-/**
- * Implements hook_feeds_presave().
- */
-function harvard_courses_feeds_presave($source, $entity, $item) {
-  // $wrapper = entity_metadata_wrapper('node', $entity);
-  // $query = new entityFieldQuery();
-  // $result = $query
-    // ->entityCondition('entity_type', 'node')
-    // ->propertyCondition('type', 'harvard_course')
-    // ->fieldCondition('field_cat_number', 'value', $wrapper->field_cat_number->value())
-    // ->fieldCondition('field_department_id', 'value', $wrapper->field_department_id->value())
-    // ->execute();
-// 
-  // // Skip on this item, alredy exists.
-  // if (!empty($result['node'])) {
-    // $param = array(
-      // '@name' => $wrapper->label(),
-    // );
-    // drupal_set_message(t("The node @name wasn't imported because he already exists.", $param));
-    // $entity->feeds_item->skip = TRUE;
-  // }
-}
+
 
 /**
  * Implements hook_form_FORM_ID_alter().
