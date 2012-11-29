@@ -57,7 +57,7 @@
   <?php endif; ?>
 
 
-   	<?php if (!$is_front): ?>
+   	<?php if (!$is_front && !$use_content_regions): ?>
       	 <<?php print $tag; ?> id="main-content">
 
           <?php print render($title_prefix); ?>

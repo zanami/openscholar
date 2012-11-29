@@ -345,7 +345,6 @@ function harvard_courses_related_nodes($field, $search = array()) {
   return array_keys($result['node']);
 }
 
-
 /**
  * Implements hook_form_FORM_ID_alter().
  */
