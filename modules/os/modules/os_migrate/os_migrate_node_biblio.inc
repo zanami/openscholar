@@ -198,6 +198,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     $contributors = array();
     $query = parent::d6_db_select('biblio_contributor', 'bc')
       ->fields('bc', array('nid', 'vid', 'auth_type', 'auth_category', 'rank'))
+      ->orderBy('bc.rank', 'ASC')
       ->condition('bc.vid', $vid, '=');
     $query->join('biblio_contributor_data', 'bc_data', 'bc.cid = bc_data.cid');
     $query->fields('bc_data', array('name', 'lastname', 'firstname', 'initials', 'prefix', 'suffix', 'md5', 'cid'));
