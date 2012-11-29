@@ -996,12 +996,3 @@ function nodeorder_help($path, $arg) {
       return $output;
   }
 }
-
-function nodeorder_node_view($node, $view_mode, $langcode) {
-  if (nodeorder_can_be_ordered($node)) {
-    drupal_set_message('TRUE');
-  }
-  else {
-    drupal_set_message('FALSE');
-  }
-}
