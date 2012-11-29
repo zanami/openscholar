@@ -42,6 +42,8 @@ function harvard_courses_feeds_importer_default() {
           'xpathparser:18' => 'exam_group',
           'xpathparser:19' => 'faculty_description',
           'xpathparser:20' => 'department',
+          'xpathparser:21' => 'credits',
+          'xpathparser:22' => 'section_number',
         ),
         'rawXML' => array(
           'xpathparser:14' => 0,
@@ -61,6 +63,8 @@ function harvard_courses_feeds_importer_default() {
           'xpathparser:18' => 0,
           'xpathparser:19' => 0,
           'xpathparser:20' => 0,
+          'xpathparser:21' => 0,
+          'xpathparser:22' => 0,
         ),
         'context' => '//courses/course',
         'exp' => array(
@@ -84,6 +88,8 @@ function harvard_courses_feeds_importer_default() {
             'xpathparser:18' => 0,
             'xpathparser:19' => 0,
             'xpathparser:20' => 0,
+            'xpathparser:21' => 0,
+            'xpathparser:22' => 0,
           ),
         ),
         'allow_override' => 0,
@@ -179,6 +185,16 @@ function harvard_courses_feeds_importer_default() {
           16 => array(
             'source' => 'xpathparser:20',
             'target' => 'field_department_id',
+            'unique' => FALSE,
+          ),
+          17 => array(
+            'source' => 'xpathparser:21',
+            'target' => 'field_credits',
+            'unique' => FALSE,
+          ),
+          18 => array(
+            'source' => 'xpathparser:22',
+            'target' => 'field_section_number',
             'unique' => FALSE,
           ),
         ),
