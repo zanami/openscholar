@@ -1,6 +1,7 @@
 <?php
 // $Id$
 
+
 /**
  * @file
  * os_software.strongarm.inc
@@ -14,7 +15,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_anonymous_software_project';
@@ -23,7 +23,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_anonymous_software_release';
@@ -32,7 +31,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_software_project';
@@ -41,7 +39,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_software_release';
@@ -50,7 +47,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_per_page_software_project';
@@ -59,7 +55,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_per_page_software_release';
@@ -68,7 +63,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_form_location_software_project';
@@ -77,7 +71,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_form_location_software_release';
@@ -86,7 +79,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_preview_software_project';
@@ -95,7 +87,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_preview_software_release';
@@ -104,7 +95,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_software_project';
@@ -113,7 +103,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_software_release';
@@ -122,7 +111,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_subject_field_software_project';
@@ -131,7 +119,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_subject_field_software_release';
@@ -140,7 +127,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'menu_options_software_project';
@@ -151,7 +137,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'menu_options_software_release';
@@ -162,7 +147,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'menu_parent_software_project';
@@ -171,7 +155,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'menu_parent_software_release';
@@ -180,7 +163,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_options_software_project';
@@ -191,7 +173,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_options_software_release';
@@ -203,7 +184,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_preview_software_project';
@@ -212,7 +192,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_preview_software_release';
@@ -221,7 +200,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_submitted_software_project';
@@ -230,7 +208,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_submitted_software_release';
@@ -239,7 +216,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'pathauto_node_software_project_pattern';
@@ -248,7 +224,6 @@ function os_software_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'pathauto_node_software_release_pattern';
