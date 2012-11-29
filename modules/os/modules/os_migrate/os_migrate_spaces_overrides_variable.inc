@@ -254,6 +254,21 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     );
   }
 
+  //no_year_text to new biblio variable
+  public function _update_variable_biblio_no_year_text($object_id, $value){
+
+    $a_year_text = variable_get('biblio_years_text', array(9999 => t('Submitted'), 9998 => t('In Press')));
+
+    if(strlen($value)){
+      $a_year_text[9999] = $value;
+    }
+
+    return array(
+      'biblio_years_text',
+      $a_year_text
+    );
+  }
+
   // vsite_shields_shield => os_shields_shield
   public function _update_variable_vsite_shields_shield($object_id, $value){
     return array(
