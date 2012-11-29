@@ -26,9 +26,9 @@ function harvard_courses_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'boxes-harvard_courses_filter' => array(
-          'module' => 'boxes',
-          'delta' => 'harvard_courses_filter',
+        'harvard_courses-courses_filter' => array(
+          'module' => 'harvard_courses',
+          'delta' => 'courses_filter',
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),
