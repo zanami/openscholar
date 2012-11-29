@@ -622,7 +622,7 @@ class BoxPorter {
 
       $image_vars = array(
         'path' => $file->uri,
-        //'width',
+        'width' => $image_info['field_modal_image_size_value'],
         //'height',
         'alt' => $box->description,
         'title' => $box->title,

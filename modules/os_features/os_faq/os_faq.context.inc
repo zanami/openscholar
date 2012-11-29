@@ -1,6 +1,7 @@
 <?php
 // $Id$
 
+
 /**
  * @file
  * os_faq.context.inc
@@ -14,7 +15,6 @@ function os_faq_context_default_contexts() {
 
   $context = new stdClass();
   /* Edit this to true to make a default context disabled initially */
-
   $context->disabled = FALSE;
   $context->api_version = 3;
   $context->name = 'faq_faq';
@@ -51,7 +51,7 @@ function os_faq_context_default_contexts() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('FAQ Site Sectionk');
+  t('FAQ Site Section');
   t('OS features');
   $export['faq_faq'] = $context;
 

@@ -100,6 +100,13 @@ class BiblioFieldTypeTableMigration extends TableCopyMigration {
     parent::__construct($table, $key_schema);
   }
 
+  public function query() {
+    $query = parent::query();
+    //only migrate new types.  those provided by os_publications shouldn't re-migrate
+    $query->condition('tid', 1000, '>=');
+    return $query;
+  }
+
   public function prepareRow(&$row) {
     $vtab = db_select('biblio_field_type', 'bft')
       ->condition('tid', 1)
