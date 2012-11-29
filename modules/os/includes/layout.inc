@@ -229,6 +229,9 @@ function os_layout_revert($context) {
 function os_layout_set_multiple($contexts, $blocks) {
   usort($contexts, '_os_context_sort_by_hierarchy');
   uasort($blocks, 'os_layout_block_sort');
+  $parents = $contexts;
+  $active_context = array_pop($parents);
+  $parent_blocks = os_layout_get_multiple($parents);
 
   $removed_blocks = array();
 
@@ -240,6 +243,38 @@ function os_layout_set_multiple($contexts, $blocks) {
       'weight'
   );
 
+  // try to make blocks the same as in parent contexts
+  _os_layout_adjust_relative_weight($blocks, $parent_blocks);
+
+  $child_blocks = array();
+  foreach ($blocks as $bid => $b) {
+    // if the block exists in a parent, check for overrides
+    if (isset($parent_blocks[$bid])) {
+      dpm($bid.': weight: old: '.$parent_blocks[$bid]['weight'].' new: '.$blocks[$bid]['weight']);
+      $changed = false;
+      foreach ($block_fields as $field) {
+        // one of the block's fields has been changed.
+        if ($parent_blocks[$bid][$field] != $blocks[$bid][$field]) {
+          $changed = true;
+        }
+      }
+      // if something changed, it needs to be saved in the child context
+      if ($changed) {
+        $child_blocks[$bid] = $b;
+      }
+    }
+    // if the block doesn't exist in the parent, but is still in a region.
+    elseif ($b['region']) {
+      $child_blocks[$bid] = $b;
+    }
+  }
+
+  // we never edit parent contexts.
+  // To edit them, load the layout form with your target context as the child.
+  os_layout_set($active_context, $child_blocks);
+
+  return;
+/*
   $context_settings = array();
   // Resolve dependencies and alter the contexts accordingly.
   foreach ( $contexts as $index => $context ) {
@@ -320,7 +355,7 @@ function os_layout_set_multiple($contexts, $blocks) {
   // Commit the context settings
   foreach ($context_settings as $context => $layout_blocks) {
     os_layout_set($context, $layout_blocks);
-  }
+  }*/
 }
 
 /**
@@ -506,7 +541,9 @@ function _os_context_sort_by_hierarchy($context1, $context2) {
 }
 
 /**
- * Adjust the weights of blocks in multiple contexts.
+ * Adjust the weights of blocks such that a parent's weights aren't changed unless they have to be.
+ *
+ * Considers parent block weights immutable, and changes the weights of other blocks to fit them
  *
  * @param $block_settings
  *  New block settings (already sorted).
@@ -517,11 +554,111 @@ function _os_context_sort_by_hierarchy($context1, $context2) {
  * @param $bid
  *  The block in question with the changed weight.
  */
-function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout, $bid) {
+function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout) {
+
+  $block_regions = _os_layout_expand_blocks($block_settings);
+  $old_regions = _os_layout_expand_blocks($previous_layout);
+
+  foreach ($block_regions as $r => &$blocks) {
+    // determine if the parent blocks are in the same order in the parent and new
+    $new_keys = array_keys($blocks);
+    // ensure old_regions has the region
+    if (!isset($old_regions[$r])) {
+      $old_regions[$r] = array();
+    }
+    $parent_keys = array_keys($old_regions[$r]);
+    $only_parent_keys = array_intersect($new_keys, $parent_keys);
+    dpm($r);
+    dpm($only_parent_keys);
+    dpm($parent_keys);
+
+    $bulldoze = true;
+    if (empty($only_parent_keys)) {
+      // none of the parent blocks are in the child
+      // bulldoze is fine
+    }
+    elseif ($only_parent_keys == $parent_keys) {
+      // parent blocks are in the same order.
+      // update their weights to match the parents
+      // then put the new blocks in between them
+      $bulldoze = false;
+    }
+    else {
+      // they aren't in the same order
+      // check that we aren't just missing one off the end
+      $parents2 = $parent_keys;
+      do {
+        array_pop($parents2);
+      } while (!empty($parents2) && $only_parent_keys != $parents2);
+      if (!empty($parents2)) {
+        $bulldoze = false;
+      }
+      // now check that we aren't just missing one off the front
+      $parents2 = $parent_keys;
+      do {
+        array_shift($parents2);
+      } while (!empty($parents2) && $only_parent_keys != $parents2);
+      if (!empty($parents2)) {
+        $bulldoze = false;
+      }
+    }
+    dvm($bulldoze);
+
+    // we can't just bulldoze the weights
+    if (!$bulldoze) {
+      $min_weight = 'undefined';
+      $between = array();
+      foreach ($blocks as $bid => &$b) {
+        if (in_array($bid, $parent_keys)) {
+          // set the weights of blocks in the parent
+          // these are fixed in stone as far as we're concerned
+          $b['weight'] = $old_regions[$r][$bid]['weight'];
+          $block_settings[$bid]['weight'] = $b['weight'];
+          // go back through the children ahead of this one and set their weights
+          $count = count($between);
+          if ($count) {
+            // handle case where children are before any parent
+            if ($min_weight == 'undefined') {
+              $min_weight = $b['weight'] - $count;
+            }
+            // get the range we have to work with
+            $range = $b['weight'] - $min_weight;
+            // get the difference between children weights based on the number of children
+            $delta = $range/($count + 1);
+            // set the weights for the children
+            foreach ($between as $pos => $b_id) {
+              $block_settings[$b_id]['weight'] = $min_weight + ($pos+1)*$delta;
+            }
+          }
+
+          $min_weight = $b['weight'];
+          $between = array();
+        }
+        else {
+          // put together a list of all children
+          $between[] = $bid;
+        }
+      }
+      // handle case where children are after all parents
+      $count = count($between);
+      if ($count) {
+        $range = $min_weight + $count;
+        $delta = $range/($count + 1);
+        foreach ($between as $pos => $b_id) {
+          $block_settings[$b_id]['weight'] = $min_weight + ($pos+1)*$delta;
+        }
+      }
+    } // end no bulldoze processing
+    // if its ok to bulldoze, we can use the integer values that are already in place
+    // nothing needs to be done
+
+  }
+
+  return;
 
   // Has the relative order changed.
   if (array_keys(array_intersect_key($block_settings, $previous_layout)) != array_keys(array_intersect_key($previous_layout, $block_settings))) {
-    return;
+    //return;
   }
 
   // Loop through the old array.
@@ -580,6 +717,21 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout, $
   foreach ($impacted_blocks as $key => $impacted_bid) {
     $block_settings[$impacted_bid]['weight'] = $w_old + ($increment * ($key + 1));
   }
+}
+
+function _os_layout_expand_blocks($blocks) {
+  $regions = array();
+  foreach ($blocks as $bid => $b) {
+    if ($b['region']) {
+      $regions[$b['region']][$bid] = $b;
+    }
+  }
+
+  foreach ($regions as $r => $bs) {
+    uasort($regions[$r], 'os_layout_block_sort');
+  }
+
+  return $regions;
 }
 
 /**
