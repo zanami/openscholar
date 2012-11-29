@@ -822,19 +822,6 @@ function nodeorder_node_update($node) {
     // $tids = nodeorder_orderable_tids($node);
     // if (count($tids) > 0) {
 
-    if (TRUE) {
-      $sql = "UPDATE {taxonomy_index} SET weight = %d WHERE tid = %d AND nid = %d";
-
-      foreach ($tids as $i => $tid) {
-        db_lock_table('taxonomy_term_node');
-        $weights = nodeorder_get_term_min_max($tid, FALSE); // get the cached weights
-        // TODO Please convert this statement to the D7 database API syntax.
-        db_query($sql, $weights["max"] + 1, $tid, $node->nid);
-        nodeorder_get_term_min_max($tid, TRUE); // reinitialize the cache
-        db_unlock_tables();
-      }
-    }
-
     // New nodes won't have any saved weight values so this array will be empty...
     if ($node->nodeorder) {
       // Restore any saved weight values...
