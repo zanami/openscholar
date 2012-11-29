@@ -503,6 +503,7 @@ class BoxPorter {
       'teaser' => 'display_teaser',
       'titles' => 'display_title',
       'title' => 'display_title',
+      'full' => 'display_body',
       );
 
     return (isset($style_map[$style])) ? $style_map[$style] : 'display_teaser';
@@ -876,6 +877,11 @@ class BoxPorter {
 
     $options['content_type'] = $ct;
     $options['display'] = $this->_sv_list_box_style($options['display']);
+    //some boxes used style instead of display.
+    if (isset($box->options['style']) && !isset($box->options['display'])) {
+      $options['display'] = $this->_sv_list_box_style($box->options['style']);
+    }
+
     $options['sort_by'] = $this->_sv_list_box_sort($options['sort_by']);
     $options['number_of_items'] = min(20, $options['number_of_items']); //new box only goes up to 20.
 

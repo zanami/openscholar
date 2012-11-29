@@ -220,6 +220,14 @@ blockquote p {
   margin: 0;
 }
 
+blockquote {
+border-left: 2px solid #807E6D;
+    color: #807E6D;
+    font-style: italic;
+    margin: 1em 3em;
+    padding-left: 1em;
+   }
+
 strong,
 dfn,
 caption,
