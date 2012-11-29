@@ -17,6 +17,14 @@ function harvard_courses_context_default_contexts() {
   $context->description = '';
   $context->tag = 'Harvard';
   $context->conditions = array(
+    'node' => array(
+      'values' => array(
+        'harvard_course' => 'harvard_course',
+      ),
+      'options' => array(
+        'node_form' => '1',
+      ),
+    ),
     'path' => array(
       'values' => array(
         'courses' => 'courses',

@@ -40,4 +40,16 @@ function harvard_courses_install() {
   $spaces_features = variable_get('spaces_features', array());
   $spaces_features['harvard_courses'] = 1;
   variable_set('spaces_features', $spaces_features);
+
+  // Change the weight of the module so we can change the OS add new link menu.
+  $weight = db_select('system', 's')
+    ->fields('s', array('weight'))
+    ->condition('name', 'os')
+    ->execute()
+    ->fetchField();
+
+  db_update('system')
+    ->fields(array('weight' => $weight +1))
+    ->condition('name', 'harvard_courses')
+    ->execute();
 }
