@@ -111,15 +111,16 @@ function harvard_courses_courses_filter() {
   $semester = array();
   foreach ($nodes as $node) {
     $wrapper = entity_metadata_wrapper('node', $node);
-    $text = $wrapper->field_calendar_period->value();
+    $text = check_plain($wrapper->field_term->value());
     $query_params = array(
-      'calendar_period' => check_plain($text),
+      'term' => $text,
     );
     $semester[$text] = l($text, 'courses', array('query' => $query_params));
   }
 
   return theme('item_list', array('title' => t('Filter by semester'), 'items' => $semester));
 }
+
 
 /**
  * Callback function for refresh the courses.
@@ -168,7 +169,7 @@ function harvard_courses_refresh_coureses_execute($nid) {
 }
 
 /**
- * Adds a page contextual link for importing biblio nodes.
+ * Implements hook_os_add_new_links_alter().
  */
 function harvard_courses_os_add_new_links_alter(&$links) {
   $menu = menu_get_item();

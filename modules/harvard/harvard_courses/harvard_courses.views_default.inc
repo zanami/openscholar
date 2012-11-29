@@ -76,30 +76,22 @@ function harvard_courses_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'harvard_course' => 'harvard_course',
   );
-  /* Filter criterion: Content: Calendar period (field_calendar_period) */
-  $handler->display->display_options['filters']['field_calendar_period_value']['id'] = 'field_calendar_period_value';
-  $handler->display->display_options['filters']['field_calendar_period_value']['table'] = 'field_data_field_calendar_period';
-  $handler->display->display_options['filters']['field_calendar_period_value']['field'] = 'field_calendar_period_value';
-  $handler->display->display_options['filters']['field_calendar_period_value']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['field_calendar_period_value']['expose']['operator_id'] = 'field_calendar_period_value_op';
-  $handler->display->display_options['filters']['field_calendar_period_value']['expose']['label'] = 'Calendar period (field_calendar_period)';
-  $handler->display->display_options['filters']['field_calendar_period_value']['expose']['operator'] = 'field_calendar_period_value_op';
-  $handler->display->display_options['filters']['field_calendar_period_value']['expose']['identifier'] = 'calendar_period';
-  $handler->display->display_options['filters']['field_calendar_period_value']['expose']['remember_roles'] = array(
+  /* Filter criterion: Content: term (field_term) */
+  $handler->display->display_options['filters']['field_term_value']['id'] = 'field_term_value';
+  $handler->display->display_options['filters']['field_term_value']['table'] = 'field_data_field_term';
+  $handler->display->display_options['filters']['field_term_value']['field'] = 'field_term_value';
+  $handler->display->display_options['filters']['field_term_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_term_value']['expose']['operator_id'] = 'field_term_value_op';
+  $handler->display->display_options['filters']['field_term_value']['expose']['label'] = 'term (field_term)';
+  $handler->display->display_options['filters']['field_term_value']['expose']['operator'] = 'field_term_value_op';
+  $handler->display->display_options['filters']['field_term_value']['expose']['identifier'] = 'term';
+  $handler->display->display_options['filters']['field_term_value']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,
     3 => 0,
     4 => 0,
     5 => 0,
     6 => 0,
-  );
-  $handler->display->display_options['filters']['field_calendar_period_value']['group_info']['label'] = 'Calendar period (field_calendar_period)';
-  $handler->display->display_options['filters']['field_calendar_period_value']['group_info']['identifier'] = 'field_calendar_period_value';
-  $handler->display->display_options['filters']['field_calendar_period_value']['group_info']['remember'] = FALSE;
-  $handler->display->display_options['filters']['field_calendar_period_value']['group_info']['group_items'] = array(
-    1 => array(),
-    2 => array(),
-    3 => array(),
   );
 
   /* Display: Page */
