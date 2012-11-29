@@ -572,7 +572,9 @@ function nodeorder_can_be_ordered($node) {
     $fields = field_info_fields();
     $nodeorder_vocabularies = array();
     foreach ($fields as $field_name => $field) {
-      if ($field['field_name'] == OG_VOCAB_FIELD
+      // Integrates with og_vocab module, which stores term fields as entityreference.
+      if (module_exists('og_vocab')
+      && $field['field_name'] == OG_VOCAB_FIELD
       && !empty($field['bundles']['node'])
       && in_array($node->type, $field['bundles']['node'])) {
 
