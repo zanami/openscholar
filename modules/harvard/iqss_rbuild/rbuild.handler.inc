@@ -135,7 +135,7 @@ class rbuild_handler implements os_software_handler {
     $package = $this->get_package();
 
     $operations = array();
-    foreach ($releases as $version => $filename) {
+    foreach ($releases as $version => $info) {
       // Creates new Software Release node
       $node_exists = _rbuild_query_release_node_exists($project_node->nid, $version);
       if ($node_exists) {
@@ -145,7 +145,7 @@ class rbuild_handler implements os_software_handler {
       // Adds this node to the operations queue only if it doesn't exist yet.
       $operations[] = array(
         '_rbuild_add_release_node',
-        array($project_node, $version, $filename, $package, $this->url),
+        array($project_node, $version, $info['filename'], $package, $this->url, $info['created']),
       );
       // Orders operations to import oldest releases first
       $operations = array_reverse($operations);
@@ -287,16 +287,32 @@ class rbuild_handler implements os_software_handler {
     }
 
     // Finds all links to gzip files matching this project's short name
-    $matches = array();
+    $filename_matches = array();
     // Matches all links with this project's shortname in the href value
-    $pattern = '/(a href\=")(' . $this->short_name . '([\._-\d]*)\.tar\.gz)(")/i';
-    preg_match_all($pattern, $index_file_data, $matches);
+    $filename_pattern = '/(a href\=")(' . $this->short_name . '([\._-\d]*)\.tar\.gz)(")/i';
+    preg_match_all($filename_pattern, $index_file_data, $filename_matches);
 
     // Extracts the parts we want: unique versions and package filenames.
-    $filenames = $matches[2];
-    $versions = $matches[3];
+    $filenames = $filename_matches[2];
+    $versions = $filename_matches[3];
+
+    $datestr_matches = array();
+    // Matches a datetime string formatted like "14-Jul-2006 14:49"
+    $datestr_pattern = '/(' . $this->short_name . '([\._-\d]*)\.tar\.gz)(").*>0?(\d+?-\w+-\d{4}\s+\d+:\d{2})/i';
+    preg_match_all($datestr_pattern, $index_file_data, $datestr_matches);
+
+    // Extracts the parts we want: unique versions and package filenames.
+    $datestrs = $datestr_matches[4];
+
+    $i = 0;
     foreach ($filenames as $index => $filename) {
-      $releases[trim($versions[$index], '_')] = $filename;
+      $datestr = $datestrs[$i];
+      $created = $this->format_created_date($datestr);
+      $releases[trim($versions[$index], '_')] = array(
+        'filename' => $filename,
+        'created' => $created,
+      );
+      $i++;
     }
     // Empty array()
     if (count($releases) === 0) {
@@ -311,6 +327,42 @@ class rbuild_handler implements os_software_handler {
     }
 
     return $releases;
+  }
+
+  /**
+   *
+   * @param string $datestr
+   *   A datetime string formatted like "14-Jul-2006 14:49"
+   * @return int|bool $time
+   *   A created timestamp as expected by a drupal node object, or FALSE.
+   */
+  private function format_created_date($datestr) {
+    // An array like array("14", "Jul", "2006 14:49").
+    $date_parts_1 = explode('-', $datestr);
+    // A string like "2006 14:49".
+    $remainder = array_pop($date_parts_1);
+    // An array like array("2006", "14:49").
+    $date_parts_2 = explode(' ', $remainder);
+    // An array like array("14", "Jul", "2006" "14:49").
+    $date_parts = array_merge($date_parts_1, $date_parts_2);
+
+    // Uses Common Log Format
+    // A string like "14/Jul/2006:14:49:00 -0400"
+    // @see http://www.php.net/manual/en/datetime.formats.compound.php
+    $log_format_parts = array(
+      array_shift($date_parts),
+      '/',
+      array_shift($date_parts),
+      '/',
+      array_shift($date_parts),
+      ':',
+      array_shift($date_parts),
+      ':00 -0400',
+    );
+
+    $log_format = implode('', $log_format_parts);
+    $time = strtotime($log_format);
+    return $time;
   }
 }
 

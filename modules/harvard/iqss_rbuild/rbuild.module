@@ -221,13 +221,13 @@ function rbuild_fetch_releases($project_node) {
  * @param string $url
  * @param array $context
  */
-function _rbuild_add_release_node_wrapper($project_node, $version, $filename, $package, $url, &$context = array()) {
+function _rbuild_add_release_node_wrapper($project_node, $version, $filename, $package, $url, $created = NULL, &$context = array()) {
   $node_exists = _rbuild_query_release_node_exists($project_node->nid, $version);
   if ($node_exists) {
     return FALSE;
   }
 
-  _rbuild_add_release_node($project_node, $version, $filename, $package, $url, &$context);
+  _rbuild_add_release_node($project_node, $version, $filename, $package, $url, $created, &$context);
   return TRUE;
 }
 
@@ -244,7 +244,7 @@ function _rbuild_add_release_node_wrapper($project_node, $version, $filename, $p
  * @param string $url
  * @param array $context
  */
-function _rbuild_add_release_node($project_node, $version, $filename, $package, $url, &$context = array()) {
+function _rbuild_add_release_node($project_node, $version, $filename, $package, $url, $created = NULL, &$context = array()) {
   $start_time = time();
   $default_language = 'und';
 
@@ -274,8 +274,8 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
   // Sets field values using entity_metadata_wrapper
   $wrapper = entity_metadata_wrapper('node', $node);
 
-  if ($file->timestamp < $start_time) {
-    $wrapper->created->set($file->timestamp);
+  if ($created && $created < $start_time) {
+    $wrapper->created->set($created);
   }
 
   $wrapper->field_software_project->set($project_node->nid);
