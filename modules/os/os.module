@@ -478,6 +478,8 @@ function os_preprocess_page(&$vars) {
   $context  = 'os_front';
   $module   = 'os_front';
 
+  $_node_types = _node_types_build();
+
   foreach ($types as $type => $name) {
     $printed = FALSE;
     foreach ($active as $a) {
@@ -492,7 +494,7 @@ function os_preprocess_page(&$vars) {
     if ($printed && spaces_access_admin() && node_access('create', $type)) {
       $links[$type] = array(
         'href' => 'node/add/' . str_replace('_', '-', $type),
-        'title' => _os_get_node_type_name($type),
+        'title' => $_node_types->names[$type],
       );
     }
   }
@@ -1195,18 +1197,4 @@ function os_app_info($app_name = NULL) {
   }
 
   return empty($app_name) ? $info : $info[$app_name];
-}
-
-/**
- * Returns the human readable name of a node type from the machine name.
- */
-function _os_get_node_type_name($type) {
-  $query = db_select('node_type', 'n');
-
-  $query->fields('n', array('name'))
-    ->condition('type', $type)
-    ->range(0,1);
-
-  $result = $query->execute()->fetchAssoc();
-  return $result['name'];
 }
