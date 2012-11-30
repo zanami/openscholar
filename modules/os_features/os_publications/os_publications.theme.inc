@@ -68,8 +68,12 @@ function theme_os_publications_tabular(&$vars) {
 
     switch ($f['name']) {
       case 'biblio_url':
-        // no need to check plain. l does it for us
-        $data = '<p>' . l(!empty($node->biblio_url_title) ? $node->biblio_url_title : 'Website', $value) . '</p>';
+      	if(empty($node->biblio_url)) {
+      	  $data = '<p></p>';
+      	}else {
+          // no need to check plain. l does it for us
+          $data = '<p>' . l(!empty($node->biblio_url_title) ? $node->biblio_url_title : 'Website', $value) . '</p>';
+      	}
         $display_title = FALSE;
         break;
 
