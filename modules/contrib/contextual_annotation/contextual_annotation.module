@@ -15,7 +15,13 @@ function contextual_annotation_node_view($node, $view_mode, $langcode) {
   if ($view_mode !== 'teaser') {
     return;
   }
-  $key = contextual_annotation_get_key();
+
+  if(isset($node->contextual_annotation_key)){
+    $key = $node->contextual_annotation_key;
+  }else{
+    $key = contextual_annotation_get_key();
+  }
+
   if (!$key) {
     return;
   }
@@ -47,7 +53,11 @@ function contextual_annotation_node_delete($node) {
 function contextual_annotation_node_view_alter(&$build) {
   $node      = $build['#node'];
   $view_mode = $build['#view_mode'];
-  $key       = contextual_annotation_get_key();
+  if(isset($node->contextual_annotation_key)){
+    $key = $node->contextual_annotation_key;
+  }else{
+    $key = contextual_annotation_get_key();
+  }
 
   if (!empty($node->nid) && $view_mode == 'teaser' && $key) {
     $build['#contextual_links']['contextual_annotation'] = array('contextual_annotation/nojs/annotate', array($key, $node->nid));
@@ -308,6 +318,6 @@ function contextual_annotation_get_key() {
   }
 
   $key = $router_item['page_arguments'][0]->tid;
-  return "tid-" . $key;
+  return "tid-{$key}";
 }
 

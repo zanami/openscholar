@@ -15,7 +15,7 @@ function os_image_gallery_views_default_views() {
   $view->description = '';
   $view->tag = 'default';
   $view->base_table = 'node';
-  $view->human_name = 'OS Image Gallery';
+  $view->human_name = 'OS Media Gallery';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -127,7 +127,7 @@ function os_image_gallery_views_default_views() {
   $view->description = '';
   $view->tag = 'default';
   $view->base_table = 'file_managed';
-  $view->human_name = 'OS Image Gallery Slideshow';
+  $view->human_name = 'OS Media Slideshow';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */

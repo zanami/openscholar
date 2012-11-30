@@ -317,8 +317,8 @@ class os_sv_list_box extends os_boxes_default {
         $page = 0; //add pager properly later
         $items = $options['number_of_items'];
         $query = db_select('node', 'n')
-        ->condition('n.type', 'biblio')
-        ->condition('n.status', 1);
+          ->condition('n.type', 'biblio')
+          ->condition('n.status', 1);
 
         if (module_exists('vsite') && $space = spaces_get_space()) {
           $query->join('og_membership', 'og', 'og.etid = n.nid');
@@ -335,7 +335,7 @@ class os_sv_list_box extends os_boxes_default {
         }
 
         switch($options['sort_by']) {
-          case 'sort_biblio': $query->orderBy('biblio_year', 'DESC'); break;
+          case 'sort_biblio': $query->orderBy('biblio_year', 'DESC'); $query->orderBy('n.created', 'DESC'); break;
           case 'sort_newest': $query->orderBy('n.created', 'DESC'); break;
           case 'sort_oldest': $query->orderBy('n.created', 'ASC'); break;
           case 'sort_alpha':  $query->orderBy('n.title', 'ASC'); break;

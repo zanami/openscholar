@@ -1,4 +1,7 @@
 <?php
+// $Id$
+
+
 /**
  * @file
  * os_faq.features.field.inc
@@ -195,9 +198,9 @@ function os_faq_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('Attach Files');
   t('Answer');
-  t('URL (Web address)');
+  t('Attach Files');
 
   return $fields;
 }
+

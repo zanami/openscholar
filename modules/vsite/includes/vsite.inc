@@ -132,6 +132,10 @@ function vsite_get_vsite_by_owner($uid = NULL) {
     $uid = $user->uid;
   }
 
+  if(empty($uid)) {
+  	return array();
+  }
+
   $group_bundles = og_get_all_group_bundle();
   if (empty($group_bundles['node'])){
     //can't determine group content types

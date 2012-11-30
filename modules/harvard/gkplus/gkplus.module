@@ -56,7 +56,7 @@ function gkplus_term_access($term) {
   }
 
   // Checks for possible redirects on gking site only.
-  if (_gkplus_check_purl()) {
+  if (_gkplus_check_purl() && arg(3) !== 'edit') {
     _gkplus_term_check_redirect($term);
   }
 
@@ -176,6 +176,7 @@ function gkplus_cron() {
     'tree' => TRUE,
     'max_depth' => 3,
     'description' => TRUE,
+    'nodeorder' => TRUE,
   );
 
   variable_set('os_taxonomy_term_page_options', $options);
@@ -437,7 +438,9 @@ function gkplus_preprocess_taxonomy_term(&$vars) {
   if (os_taxonomy_count_attached_nodes($tid) < 2) {
     return;
   }
-  if (!(module_exists('nodeorder') || !spaces_access_admin())) {
+
+  global $user;
+  if (!module_exists('nodeorder') || !spaces_access_admin()) {
     return;
   }
 
@@ -473,7 +476,7 @@ function gkplus_preprocess_os_taxonomy_tagged_nodes(&$vars) {
   // Removes gkplus term attributes from parent options for child terms.
   else {
     $original = $vars['options']['attributes']['class'];
-    $remove = array('gkplus-hidden-heading', 'gkplus-child-indent', 'gkplus-no-indent');
+    $remove = array('gkplus-hidden-heading', 'gkplus-show-heading', 'gkplus-child-indent', 'gkplus-no-indent');
     $vars['options']['attributes']['class'] = array_diff($original, $remove);
   }
 

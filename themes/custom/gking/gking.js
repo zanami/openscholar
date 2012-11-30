@@ -41,7 +41,7 @@
       if (areas.length) {
     	  
     	// Updates the displayed taxonomy term item on hover event
-        $($sel + ' ul li ul li:not(.aor-processed)').hover(function () {
+        $($sel + ' ul li ul li:not(.aor-processed)').hover(function (event) {
           // Removes active class from previous item
           $($sel + ' ul li ul li.active')
             .removeClass('active');
@@ -59,10 +59,11 @@
         });
         
         // Initializes first hover event.
-        $($sel + '.termchild-methods li:not(.aor-processed)')
+        var first_term = $sel + ' ul li:nth-child(2) ul li:not(.aor-processed)';
+        $(first_term)
           .filter(":first")
           .each(function (index) {
-            $(this).hover();
+            $(this).trigger('mouseover');
         });
         
         // Marks all items as processed, so this only runs once per pageload.

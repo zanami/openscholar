@@ -350,3 +350,18 @@ body.node-type-biblio .biblio-export {
 .biblio-separator-bar {
 	clear: both;
 }
+
+.node-unpublished p.unpublished, .comment-unpublished p.unpublished {
+    color: #FFF;
+    font-family: Impact,"Arial Narrow",Helvetica,sans-serif;
+    font-size: 0;
+    font-weight: normal;
+    height: 0;
+    line-height: 0;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    text-align: center;
+    text-transform: uppercase;
+    word-wrap: break-word;
+}

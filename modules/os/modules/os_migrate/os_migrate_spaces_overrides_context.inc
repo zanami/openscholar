@@ -65,7 +65,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
     //boxes in values
     foreach ( $value['blocks'] as $id => $block ) {
 
-      if($id == 'vsite-site_search'){
+      if ($id == 'vsite-site_search'){
         //Update Search Blocks
         $this->_update_search_blocks($value['blocks'],$block);
       }
@@ -161,17 +161,14 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       $block['plugin'] = $BP->_update_block_plugin_key($block['plugin']);
     }
 
-    return array(
-      $id,
-      $block
-    );
+    return array($id, $block);
   }
 
   public static function update_context_block_id($id){
     $id_map = array(
       'vsite_menus-features' => 'os-primary-menu',
       'vsite_menus-scholar_secondary_menu' => 'os-secondary-menu',
-      'boxes-scholar_reader-latest_feed_items' => 'views-reader-block',
+      'boxes-scholar_reader-latest_feed_items' => 'views-reader-block-latest',
       'boxes-scholar_biocv_bio' => 'boxes-bio_teaser',
       'boxes-scholar_announcements_latest' => 'boxes-os_news_latest',
       'boxes-scholar_blog-blog_rss' => 'boxes-blog_rss_feed',
@@ -182,18 +179,18 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'boxes-scholar_publications_recent' => 'boxes-os_publications_recent',
       'boxes-scholar_book_recent_docs' => 'boxes-os_booklets_recent_docs',
       'boxes-scholar_book_current_toc' => 'boxes-os_booktoc',
-      'views-scholar_software_releases-block_3' => 'views-os_software_releases-block_1',
+      'views-scholar_software_releases-block_3' => 'views-os_software_releases-block_1_view',
       'scholar_software_releases-block_3' => 'views-os_software_releases-block_1',
       'scholar_events-mini' => 'views-os_events-block_1',
       'views-scholar_events_upcoming-block_1' => 'views-os_events-block_2',
       'boxes-image_gallery_recent_images' => 'boxes-os_image_gallery_latest',
-      'views-scholar_presentations-block_1' => 'boxes-os_presentations_recent',
+      //'views-scholar_presentations-block_1' => 'boxes-os_presentations_recent_view',
     );
 
     return (isset($id_map[$id])) ? $id_map[$id] : $id;
   }
 
-  function _update_context_delta($delta){
+  static public function _update_context_delta($delta){
     $delta_map = array(
       'features' => 'primary-menu',
       'scholar_secondary_menu' => 'secondary-menu',
@@ -281,6 +278,13 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
         'weight' => (isset($block['weight'])) ? $block['weight'] : -10,
         'info' => 'Mini Calendar',
       ),
+      'views-scholar_presentations-block_1' => array(
+        'module' => 'boxes',
+        'delta' => 'os_presentations_recent',
+        'region' => (isset($block['region'])) ? $this->_update_region($block['region']) : false,
+        'weight' => (isset($block['weight'])) ? $block['weight'] : -10,
+        'info' => 'Recent Presentations',
+      )
     );
 
     $replacements['scholar_events-mini'] = $replacements['views-os_events-block_1'];
@@ -334,110 +338,6 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       $this->_update_context_scholar_kshepsle($object_id, $value, $nid);
     }
   }
-
-
-
-//       if ($object_id == 'os_front:reaction:block') {
-//         //only keep these blocks in the context
-//         $whitelist = array(
-//           'boxes-site_info',
-//           'boxes-site_logo',
-//           'os-primary-menu',
-//           'boxes-shield',
-//           'boxes-shield_default',
-//           'os-secondary-menu'
-//         );
-
-//         //null out the region of these blcoks
-//         $null_region_list = array(
-//           //kshepsle
-//           '1' => array(),
-//           //rbates
-//           '8' => array(
-//             'os-primary-menu'
-//           ),
-//           //agordon.net
-//           '10057' => array(
-//             'os-primary-menu',
-//             'boxes-site_info',
-//             'boxes-site_logo',
-//             'os-secondary-menu',
-//             'boxes-shield_default'
-//           )
-//         );
-
-
-
-        //add these blocks to context
-   //     $add_blocks = array(
-//           '1' => array(
-//             'kshepsle_custom_box' => array(
-//               'module' => 'boxes',
-//               'delta' => 'kshepsle_custom_box',
-//               'weight' => 0,
-//               'region' => 'content_top',
-//               'label' => '',
-//               'info' => 'kshepsle_custom_box'
-//             )
-//           ),
-
-//           '8' => array(
-//             'rbates_custom_box' => array(
-//               'module' => 'boxes',
-//               'delta' => 'rbates_custom_box',
-//               'weight' => 0,
-//               'region' => 'content_top',
-//               'label' => '',
-//               'info' => 'rbates_custom_box'
-//             )
-//           ),
-
-//           '10057' => array(
-//             'agordon_custom_header_box' => array(
-//               'module' => 'boxes',
-//               'delta' => 'agordon_custom_header_box',
-//               'weight' => 0,
-//               'region' => 'header_second',
-//               'label' => '',
-//               'info' => 'agordon_custom_header_box'
-//             ),
-//             'agordon_custom_menu_box' => array(
-//               'module' => 'boxes',
-//               'delta' => 'agordon_custom_menu_box',
-//               'weight' => 0,
-//               'region' => 'menu_bar',
-//               'label' => '',
-//               'info' => 'agordon_custom_menu_box'
-//             )
-//           )
-//         )
-//         ;
-
-        //gordon, bates need menus explicitly removed from the context.  they're appearing by default.
-
-
-//         //filter out unwanted blocks
-//         $value['blocks'] = array_intersect_key($value['blocks'], array_flip($whitelist));
-
-//         //hide regions by annulling their regions.
-//         if (isset($null_region_list[$nid])) {
-//           foreach ( $null_region_list[$nid] as $block ) {
-//             if (isset($value['blocks'][$block])) {
-//               $value['blocks'][$block]['region'] = FALSE;
-//             }
-//             else {
-//               $values['blocks'][$block] = $preset_boxes[$block];
-//             }
-//           }
-//         }
-
-//         //add the custom ones.
-//         if (isset($add_blocks[$nid])) {
-//           $value['blocks'] += $add_blocks[$nid];
-//         }
-//       }
-//     }
-//   }
 
   public function _update_context_scholar_gking($object_id, &$value, $nid) {
     if ($nid == '3633') {

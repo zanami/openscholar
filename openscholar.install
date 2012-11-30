@@ -20,6 +20,7 @@ function openscholar_install() {
   'bunchy',
   'cayley',
   'cleanblue',
+  'collector',
   'collegiate',
   'commodore',
   'cp_theme',

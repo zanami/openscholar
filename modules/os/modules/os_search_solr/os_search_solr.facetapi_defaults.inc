@@ -8,13 +8,16 @@
  * Implements hook_facetapi_default_facet_settings().
  */
 function os_search_solr_facetapi_default_facet_settings() {
+
+  $searcher_name = os_search_solr_get_searcher_name();
+
   $export = array();
 
   $facet = new stdClass();
   $facet->disabled = FALSE; /* Edit this to true to make a default facet disabled initially */
   $facet->api_version = 1;
-  $facet->name = 'apachesolr@solr:block:author';
-  $facet->searcher = 'apachesolr@solr';
+  $facet->name = $searcher_name.':block:author';
+  $facet->searcher = $searcher_name;
   $facet->realm = 'block';
   $facet->facet = 'author';
   $facet->enabled = TRUE;
@@ -50,13 +53,13 @@ function os_search_solr_facetapi_default_facet_settings() {
     ),
     'submit_realm' => 'Save and go back to realm settings',
   );
-  $export['apachesolr@solr:block:author'] = $facet;
+  $export[$searcher_name.':block:author'] = $facet;
 
   $facet = new stdClass();
   $facet->disabled = FALSE; /* Edit this to true to make a default facet disabled initially */
   $facet->api_version = 1;
-  $facet->name = 'apachesolr@solr:block:bundle';
-  $facet->searcher = 'apachesolr@solr';
+  $facet->name = $searcher_name.':block:bundle';
+  $facet->searcher = $searcher_name;
   $facet->realm = 'block';
   $facet->facet = 'bundle';
   $facet->enabled = TRUE;
@@ -84,13 +87,13 @@ function os_search_solr_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
   );
-  $export['apachesolr@solr:block:bundle'] = $facet;
+  $export[$searcher_name.':block:bundle'] = $facet;
 
   $facet = new stdClass();
   $facet->disabled = FALSE; /* Edit this to true to make a default facet disabled initially */
   $facet->api_version = 1;
-  $facet->name = 'apachesolr@solr:block:created';
-  $facet->searcher = 'apachesolr@solr';
+  $facet->name = $searcher_name.':block:created';
+  $facet->searcher = $searcher_name;
   $facet->realm = 'block';
   $facet->facet = 'created';
   $facet->enabled = TRUE;
@@ -115,13 +118,13 @@ function os_search_solr_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
   );
-  $export['apachesolr@solr:block:created'] = $facet;
+  $export[$searcher_name.':block:created'] = $facet;
 
   $facet = new stdClass();
   $facet->disabled = FALSE; /* Edit this to true to make a default facet disabled initially */
   $facet->api_version = 1;
-  $facet->name = 'apachesolr@solr:block:sm_og_group_ref';
-  $facet->searcher = 'apachesolr@solr';
+  $facet->name = $searcher_name.'block:sm_og_group_ref';
+  $facet->searcher = $searcher_name;
   $facet->realm = 'block';
   $facet->facet = 'sm_og_group_ref';
   $facet->enabled = TRUE;
@@ -157,7 +160,7 @@ function os_search_solr_facetapi_default_facet_settings() {
     ),
     'submit_realm' => 'Save and go back to realm settings',
   );
-  $export['apachesolr@solr:block:sm_og_group_ref'] = $facet;
+  $export[$searcher_name.':block:sm_og_group_ref'] = $facet;
 
   return $export;
 }

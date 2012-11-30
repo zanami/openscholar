@@ -302,6 +302,9 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     $dirty = FALSE;
     foreach ($entity->field_upload as $lang => $fields) {
       foreach ($fields as $delta => $upload) {
+        $file_dirty = FALSE;
+        $file = file_load($upload['fid']);
+
         //update display
         if ($row->field_upload_display[$delta] == '0') {
           file_usage_add(file_load($upload['fid']), 'file', 'node', $entity->nid);
@@ -310,8 +313,12 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         }
 
         //update title
-        if ($row->field_upload_description[$delta] && ($file = file_load($upload['fid']))) {
+        if ($file && $row->field_upload_description[$delta]) {
           $file->filename = $row->field_upload_description[$delta];
+          $file_dirty = TRUE;
+        }
+
+        if ($file_dirty) {
           file_save($file);
         }
       }

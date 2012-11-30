@@ -162,9 +162,10 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
    *
    * Given a file path, returns paths to thumbnail and full image
    *
-   * Two (known) cases for full/thumb pair.
+   * Three (known) cases for full/thumb pair.
    * 1. D6 {files} filename is the thumbnail.  Appending '.crop_display.jpg' yields the full image.
    * 2. D6 {files} filename is the full image.  Inserting path to imagecache in the filepath leads to the thumbnail.
+   * 3. D6 {files} filename is full image, imagefield_thumbs holds the thumbnail
    */
   function _get_thumb_and_full($original) {
     $root = variable_get('os_migrate_files') . '/';
@@ -185,7 +186,16 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     }
 
     //vsite_design_landscape_logo, with one less 'file/'
-    $thumb = str_replace($file_directory_path, $file_directory_path . 'imagecache/vsite_design_landscape_logo/', $full);
+    $thumb = str_replace($file_directory_path, $file_directory_path . '/imagecache/vsite_design_landscape_logo/', $full);
+    if (is_readable($thumb) && is_readable($full)) {
+      return array($thumb, $full);
+    }
+
+    //imagefield thumbs
+    $thumb = str_replace($file_directory_path, $file_directory_path . '/imagefield_thumbs/', $full);
+    if (is_readable($thumb) && is_readable($full)) {
+      return array($thumb, $full);
+    }
 
     MigrationBase::displayMessage(t('No file/thumb pair: @thumb @full', array('@thumb'=>$thumb,'@full'=>$full)));
     return FALSE;

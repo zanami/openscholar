@@ -27,6 +27,7 @@ class OsOgVocabMigrate extends DynamicMigration {
     $query->innerJoin('vocabulary', 'v', 'td.vid = v.vid');
     $query->innerJoin('node', 'n', 'tn.nid = n.nid');
     $query->addExpression("GROUP_CONCAT(DISTINCT tn.tid SEPARATOR ',')",'tid');
+    $query->addExpression("GROUP_CONCAT(DISTINCT CONCAT_WS('|',tn.tid,tn.weight_in_tid) SEPARATOR ',')",'tid_weight');
 
     $query
       ->fields('tn',array('nid'))
@@ -63,6 +64,14 @@ class OsOgVocabMigrate extends DynamicMigration {
 
     $this->addOgVocab($row);
     $row->{OG_VOCAB_FIELD} = explode(',', $row->tid);
+
+    $nodeorder_weights = explode(',', $row->tid_weight);
+    $row->nodeorder = array();
+    foreach ($nodeorder_weights as $no_info){
+      list($tid,$weight) = explode("|" ,$no_info ,2 );
+      $row->nodeorder[$tid] = $weight;
+    }
+
     parent::prepareRow($row);
   }
 

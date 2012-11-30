@@ -74,9 +74,9 @@ h3.cv-direct-download {
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;
   border-radius: 20px;
-  float: left;
   margin: 0 0 15px 0;
   color: #fff;
+  width: 110px;
   }
 
 h3.cv-direct-download a,
@@ -95,7 +95,7 @@ h4 {
 h1#page-title,
 .block h2.block-title,
 #pub_type_tabs h2.block-title,
-.taxonomy-term-child h3.taxonomy-heading,
+.page-taxonomy-term .term-listing-heading h2,
 #block-os-secondary-menu li {
   padding: 13px 16px 16px 16px;
   background: #fcfcfc;
@@ -105,6 +105,16 @@ h1#page-title,
   text-indent:-1px;
   margin: 0 -16px 0.5em;
   }
+  
+
+.page-taxonomy-term .term-listing-heading h2 {
+  padding: 0 16px 3px 16px;
+
+  }
+    
+.page-taxonomy-term .gkplus-show-heading > .term-listing-heading h2 {
+    display: block;
+}   
   
 .not-front #content-top h1#page-title {
   margin-left: 0;
@@ -121,13 +131,23 @@ h1#page-title,
   font-weight: normal;
   }
 
-.taxonomy-term-child h3.taxonomy-heading {
-  color: #CC6733;
-  font-size: 1.4em;
-  background: #fff;
-  padding-bottom: .1em;
-  padding-top: 0;
+
+
+.page-taxonomy-term .term-listing-heading h2 a,
+.page-taxonomy-term .term-listing-heading h2 a:hover {
+    background:#FFFFFF;
+    color: #CC6733;
+    font-family: 'helvetica neue';
+    font-size: 0.8em;
+    font-weight: bold;
+    padding-bottom: 0.1em;
+    padding-top: 0;
+    text-decoration:none;
+      margin-left: 1px;
   }
+  
+ 
+
 
 .taxonomy-term-child .taxonomy-term-child h3.taxonomy-heading {
   padding: 0;
@@ -137,12 +157,16 @@ h1#page-title,
   margin-top: .5em;
   font-size: 1.2em;
   }
+  
+.page-taxonomy-term .os-taxonomy-term .node-teaser {
+	padding-left: 2em;
+}
 
 .block h2.block-title {
   font-size: 1.3em;
   }
   
- .node-type-scholar_software_project h2.block-title {
+ #content .node-software-project h1.node-title {
  	font-size: 1.2em;
  	}
 
@@ -375,6 +399,11 @@ body.front .block-boxes-os_taxonomy_fbt div.description  {
   .region-sidebar-second .block-boxes-os_taxonomy_fbt ul li a
    {
   font-weight: bold;
+  }
+  
+   .region-sidebar-second .block-boxes-os_taxonomy_fbt #boxes-box-gking_people_fbt ul li a,
+   .region-sidebar-second .block-boxes-os_taxonomy_fbt #boxes-box-gking_people_fbt ul li .count {
+ color:#FFF;
   }
 
 
@@ -840,10 +869,11 @@ body.page-iqss-gking-research-group h3 {
   display:inline;
   }
 
-.node-presentation.node-teaser div.field-type-file {
-  display:inline;
-  margin-right: .3em;
-  }
+.node-presentation.node-teaser div.field-type-file,
+.node-presentation.node-teaser .date-display-single {
+  display:inline-block;
+}
+
 .node-presentation.node-teaser div.field-type-file img {
   vertical-align:middle;
   }
@@ -869,7 +899,8 @@ background-image: none;
 }
 	
 .ui-tabs .ui-tabs-nav {
-    margin-left: 330px;
+
+     margin-left: 330px;
 }
 
 .ui-tabs .ui-tabs-nav {
@@ -933,6 +964,10 @@ border:none;
 .block-boxes-os_boxes_tabs .ui-tabs { margin-bottom: 16px;}
 
 .block-boxes-os_boxes_tabs h2.block-title {font-size: 21px;background: none;color:#FFF;border-bottom: none;}
+
+.ui-tabs .node-presentation a {
+	color: #336599;
+}
 
 /* FOOTER */
 
@@ -1526,6 +1561,13 @@ body.front .block-boxes-os_taxonomy_fbt ul li ul li .term-head a:hover
   color:#db7002;
   }  
   
+#boxes-box-gking_student_materials_html ul li {
+    list-style: disc;
+  }
+
+#boxes-box-gking_student_materials_html ul li li {
+    list-style: circle;
+  }  
 
 body.front #block-iqss_gking-areas_of_research dt.active span a  {
   color:#e87702;

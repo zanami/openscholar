@@ -198,9 +198,10 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     $contributors = array();
     $query = parent::d6_db_select('biblio_contributor', 'bc')
       ->fields('bc', array('nid', 'vid', 'auth_type', 'auth_category', 'rank'))
+      ->orderBy('bc.rank', 'ASC')
       ->condition('bc.vid', $vid, '=');
     $query->join('biblio_contributor_data', 'bc_data', 'bc.cid = bc_data.cid');
-    $query->fields('bc_data', array('name', 'lastname'));
+    $query->fields('bc_data', array('name', 'lastname', 'firstname', 'initials', 'prefix', 'suffix', 'md5', 'cid'));
     $result = $query->execute();
 
     while ($r = $result->fetchAssoc()) {
@@ -208,7 +209,7 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
       if ($r['auth_type'] == 2) {
         $r['auth_type'] = 14;
       }
-      $r['cid'] = NULL;
+      //$r['cid'] = NULL;
       $contributors[] = $r;
     }
 
@@ -243,9 +244,16 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
     $source_dir = variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files');
 
     $dest = $dest_dir . '/' . $dest_file;
+    $dirname = drupal_dirname($dest);
+    if (!is_dir($dirname)) {
+      $has_dir = @drupal_mkdir($dirname, NULL, TRUE);
+    } else {
+      $has_dir = TRUE;
+    }
+
     $legacy_file = $source_dir . '/' . $source_file;
-    if ($fh = @fopen($legacy_file, 'r')) {
-      if ($saved = file_save_data($fh, $dest)) {
+    if ($has_dir && ($fh = @fopen($legacy_file, 'r'))) {
+      if ($saved = file_save_data($fh, $dest, FILE_EXISTS_RENAME)) {
         $saved->og_group_ref = array($row->language => array(array('target_id' => $row->group_nid)));
         $saved->uid = $row->uid;
         $saved->width = $saved->image_dimensions['width'];

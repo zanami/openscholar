@@ -325,6 +325,51 @@ function vsite_vsite_exists_access($vsites = array()) {
 }
 
 /**
+ * Returns TRUE only if current user may create a vsite.
+ *
+ * @param array $vsites
+ *   Optional. Expects array like output of vsite_get_vsite_by_owner()
+ *
+ * @return bool
+ *   Returns TRUE only if current user may create a vsite. Takes into account
+ *   all group bundles, whether user can create vsites on behalf, and whether
+ *   the user exceeds the sitewide vsite-per-user limit.
+ */
+function _vsite_user_access_create_vsite($vsites = FALSE) {
+  if (!$vsites) {
+    global $user;
+    $vsites = vsite_get_vsite_by_owner($user->uid);
+  }
+
+  $group_bundles = og_get_all_group_bundle();
+  $user_access_create_vsite = FALSE;
+  foreach ($group_bundles['node'] as $type => $label) {
+    if (user_access('create ' . $type . ' content')) {
+      $user_access_create_vsite = TRUE;
+      break;
+    }
+  }
+
+	// Returns FALSE if user does not have permission to create vsites at all.
+  if (!user_access('create vsite content on behalf') && !$user_access_create_vsite) {
+    return FALSE;
+  }
+
+  // Returns if user may create on behalf, if they exceed the limit themselves.
+  $user_owns_vsites = count($vsites);
+  if ($user_owns_vsites) {
+    $vsite_limit = variable_get('os_vsites_per_user', 1);
+    $user_exceeds_limit = (bool) (count($vsites) >= $vsite_limit);
+    if ($user_exceeds_limit) {
+      return user_access('create vsite content on behalf');
+    }
+  }
+
+  // Returns TRUE if user is not the author of any vsite.
+  return TRUE;
+}
+
+/**
  * Implements hook_permission().
  */
 function vsite_permission() {

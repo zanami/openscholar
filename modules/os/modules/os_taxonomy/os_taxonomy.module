@@ -111,7 +111,7 @@ function theme_os_taxonomy_term_item($variables) {
   $title = $item_wrapper . $name . $number;
 
   if ($variables['show_term_descriptions'] && !empty($variables['description'])) {
-    $title .= '<div class="description"> - ' . check_plain($variables['description']) . '</div>';
+    $title .= '<div class="description">' . check_plain($variables['description']) . '</div>';
   }
   // Close div if we there are children.
   $title .= !empty($variables['childs']) ? "</div>" . $variables['childs'] : '';
@@ -419,6 +419,7 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     'indentation_type' => 'px',
     'attributes' => array(),
     'cur_depth' => 0,
+    'nodeorder' => FALSE,
   );
   $taxonomy_term = $variables['taxonomy_term'];
 
@@ -464,7 +465,15 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   $node_count = os_taxonomy_count_attached_nodes($taxonomy_term->tid, $options['bundles']);
   if ($node_count) {
     $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
+
+//    if ($options['nodeorder'] === FALSE) {
+//      $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
+//    }
+//    else {
+//      $nids = array_keys(nodeorder_select_nodes(array($taxonomy_term->tid), 'or', 0, FALSE, 'n.sticky DESC, n.created DESC', 0));
+//    }
     $nodes = node_load_multiple($nids);
+    array_walk($nodes, create_function('&$n', '$n->contextual_annotation_key = "tid-'.$taxonomy_term->tid.'";'));
     $build += node_view_multiple($nodes);
   }
   else if ((int) $options['cur_depth'] === 0 && !$has_children_to_display) {
@@ -484,6 +493,10 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     $options['cur_depth'] = $options['cur_depth'] + 1;
 
     foreach ($children as $child) {
+      if (empty($child->description)) {
+        // @todo add $content_attributes to apply display: none to empty content.
+        $child->description = " ";
+      }
       $output .= theme('os_taxonomy_tagged_nodes', array('taxonomy_term' => $child, 'options' => $options));
     }
   }
@@ -537,12 +550,13 @@ function os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles = arr
     ->distinct()
     ->fields('t');
 
-  if (module_exists('nodeorder')) {
-    $query->orderBy('weight', 'ASC');
-  }
-
   $query->join('node', 'n', 't.nid = n.nid');
-  $query->orderBy('n.sticky','DESC');
+
+  $query->orderBy('n.sticky', 'DESC');
+  if (module_exists('nodeorder')) {
+    $query->orderBy('t.weight', 'DESC');
+  }
+  $query->orderBy('n.created', 'DESC');
 
   if (!empty($node_bundles)) {
     $query->condition('n.type', $node_bundles, 'IN');

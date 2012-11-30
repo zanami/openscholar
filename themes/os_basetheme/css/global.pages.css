@@ -354,7 +354,7 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 }
 
 /* BLOG COMMENT ICON */
-.links li a.os-blog-add-comment {
+.links li a.os-add-comment {
     background: url("../images/scholarbase-sprite.png") 0 -539px no-repeat;
     padding-left: 15px;
 
@@ -663,7 +663,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	border-radius:5px;
 	-moz-border-radius:5px;
 	border-radius:5px;
-	margin:100px auto;
+	 margin: 100px auto 0;
 	border:1px solid #8996A0;
 	background:#F7F7F7;
 }

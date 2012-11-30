@@ -7,10 +7,17 @@
 html,body {
   background: url('../images/body-bg.jpg') repeat-x fixed 0 100% #698da2;
   }
+  
+
+
 
 body {
 font-family: helvetica, arial, serif;
   }
+  
+.logged-in .region-page-top .region-inner {
+    padding-top: 5px;
+}
 
 
 #columns {
@@ -46,21 +53,24 @@ p.copy a.poweredby {
   margin-top: 70px;
   }
 
-.page-websites .view-os-websites td {
-  width: 25%;
-  padding-bottom: 35px;
+.page-websites .view-os-websites table {
+  width: 100%;
   }
 
 .page-websites .view-os-websites td {
+	width: 25%;
+  padding-bottom: 35px;
   height: 100px;
   font-size: 11px;
   line-height: 13px;
   }
 
-.page-websitess .view-os-websites img {
+.page-websites .view-os-websites td img {
   border: 1px solid #8b8b8b;
   float: left;
   margin:0 10px 5px 0;
+  width:80px;
+  height:80px;
   }
 
 .page-websites .view-os-websites .views-field-title a {
@@ -130,9 +140,16 @@ background: none repeat scroll 0 0 #EDEEF1;
 .os-featuredSites {
     float: left;
     height: 19px;
-     margin: 26px 327px 0 0;
+     margin: 19px 327px 0 0;
     width: 162px;
 }
+ @-moz-document url-prefix() { 
+.os-featuredSites {
+     margin: 17px 327px 0 0;
+ }
+}
+
+.os-learnmore {margin-left:5px;}
 
 .os-leftcol ul li a:hover {
 background: #FE8716;
@@ -223,15 +240,6 @@ p.os-leadin {
 	margin-left: 0;
     margin-right: 0;
 }
-/*
-.front #content-column, .front .region-sidebar-first, .front .region-sidebar-second {
-margin-bottom: -2000px;
-padding-bottom: 2000px;
-}
-*/
-
-
-
 
 .page {
   position: relative;
@@ -239,9 +247,12 @@ padding-bottom: 2000px;
   }
 
 body.front  {
-
-  overflow: hidden;
+overflow: hidden;
 background: url('../images/startpage-bg.png') no-repeat 50% 0 transparent;
+  }
+  
+ body.front.logged-in {
+  background: url('../images/startpage-bg.png') no-repeat 50% 35px #698da2;
   }
 
 #reasons {
@@ -513,12 +524,12 @@ margin:27px 327px 0 0; } }
   position:relative;
   list-style: none;
   }
-
+/*
 .view-id-os_websites li.views-row img {
   width: 161px;
   height: 125px;
   }
-
+*/
 .view-id-os_websites li.views-row a {
   display:block;
   color: #fff;
@@ -554,16 +565,17 @@ margin:27px 327px 0 0; } }
   line-height: normal;
   }
 
-.view-id-os_websites li.views-row span.field-content {
+.view-id-os_websites li.views-row span.field-content  {
   padding: 6px 9px 0 9px;
   position:absolute;
-  bottom:5px;
+  bottom:3px;
   left: 0;
   right:0;
   /*height: 33px;*/
 height: 33px;
   background: #000;
   overflow:hidden;
+ opacity:0.7
   }
 
 .view-id-os_websites li.views-row.views-row-3,
@@ -603,9 +615,12 @@ height: 33px;
 #footer {
   float:left;
   width: 100%;
-  margin-bottom:30px;
+  margin-bottom:50px;
   }
   
+.page-user #footer {
+  width: 78%;
+  }  
   
 #block-os-login {margin-top:100px;float: left;}
   
@@ -668,14 +683,14 @@ p.copy a:hover {
 .front #footer #block-os-powered-by {
   float:right;
   position:relative;
-  top: -115px;
+  top: -146px;
   }
  
- .front.logged-in #footer #block-os-powered-by {
-  top: -181px;
+
+   .front.logged-in #footer #block-os-powered-by {
+  top: -144px;
   } 
   
-   
 
 .front #block-os-powered-by span a {
   background: url('../images/powered_by.png') 19px 37px no-repeat #234f6e;
@@ -881,6 +896,14 @@ p.copy a:hover {
   top: 30px;
 }
 
+.page-site-register .os-scholar-header {
+ display:none;
+}
+
+.page-site-register #main-content {
+    padding: 0 0 20px;
+}
+
 
 .os-scholar-header-wrap {
   background: transparent;
@@ -928,7 +951,7 @@ a.os-columns-home {
   position: fixed;
   right:0;
   top: 20%;
-  width: 40px;
+  width: 43px;
   color: #fff;
   background: #49a4ff;
   padding: 31px 19px;
@@ -1114,6 +1137,7 @@ border-right:1px solid #E8E9EB;
   padding: 9px 18px;
   width: 944px;
   font: 13px/1.5em 'helvetica neue', helvetica, arial, sans-serif;
+  overflow: hidden;
 }
 
 #block-views-os-activity-block-1 a,
@@ -1137,6 +1161,10 @@ border-right:1px solid #E8E9EB;
   bottom: 55px;
 }
 
+.page-websites #block-os-login {
+  bottom: 100px;
+}
+
 .front #footer {
   background: #436B85;
 }
@@ -1154,10 +1182,30 @@ border-right:1px solid #E8E9EB;
 .view-id-os_websites {
   margin-top: 45px;
 }
+
+
+.region-content-bottom .view-id-os_websites {
+  margin-top: 0;
+}
+
   /* Websites */
 
 #views-exposed-form-os-websites-page .views-exposed-form .views-exposed-widget .form-submit {
     margin-top: .8em;
 }
 
+/* Added 11/21 to correct site description issue. */
+
+#block-views-os-websites-block .views-field-field-site-description div.field-content {
+  position:absolute;
+  bottom:5px;
+  left: 9px;
+  right:0;
+  line-height: 11px;
+  min-height: 20px;
+  color: #fff;
+  overflow:hidden;
+  font-size: 10px;
+  display: block;
+}
 

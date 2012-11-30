@@ -35,10 +35,10 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
       return FALSE;
     }
 
-    //Update default box delta for fltr-cat
-    if( $row->id == 'vsite_taxonomy_fltr_cat'){
-      $row->id = 'os_taxonomy_fltr_cat';
-      $value->delta = 'os_taxonomy_fltr_cat';
+    //update default box deltas and ids
+    if ($delta = SpacesOverridesContextMigration::_update_context_delta($row->object_id)) {
+      //$row->object_id = $delta;
+      $row->object_id = $value->delta = $delta;
     }
 
     if ($box = $this->_update_box($value, $row->id)) {
@@ -74,7 +74,7 @@ class SpacesOverridesBoxesMigration extends SpacesOverridesTableMigration {
 
      $this->_fix_os_taxonomy_fbt();
 
-    if (parent::is_domain('http://scholar.harvard.edu') && !variable_get('created_custom_scholarharvard boxes',FALSE)) {
+    if (parent::is_domain('http://scholar.harvard.edu') && !variable_get('os_migrate_created_scholarharvard_boxes',FALSE)) {
       //#560
       $gking_html =<<<EOF
    <div class="node-inner">
@@ -156,6 +156,8 @@ EOF;
           'gking_student_materials_html' => array(
             'body' => $gking_html,
             'region' => 'sidebar_second',
+            'title' => 'Student Materials',
+            'description' => 'Student Materials',
           ),
         ),
       );
@@ -166,8 +168,8 @@ EOF;
           $new_box = array(
             'changed' => NULL,
             'delta' => $id,
-            'title' => '',
-            'description' => $id,
+            'title' => isset($box['title']) ? $box['title'] : '',
+            'description' => isset($box['description']) ? $box['description'] : $id,
             'additional_classes' => '',
             'plugin_key' => 'os_boxes_html',
             'options' => array('text' => array('value'=>$box['body'], 'format'=>'filtered_html')),
@@ -210,7 +212,7 @@ EOF;
         $insert->values($box);
       }
       $insert->execute();
-      variable_set('created_custom_scholarharvard boxes',TRUE);
+      variable_set('os_migrate_created_scholarharvard_boxes',TRUE);
     }
 
 
@@ -501,6 +503,7 @@ class BoxPorter {
       'teaser' => 'display_teaser',
       'titles' => 'display_title',
       'title' => 'display_title',
+      'full' => 'display_body',
       );
 
     return (isset($style_map[$style])) ? $style_map[$style] : 'display_teaser';
@@ -584,8 +587,8 @@ class BoxPorter {
       unset ($box->options['nid']);
     }
 
-    if (!isset($box->options['teaser'])) {
-      $box->options['teaser'] = 'full';
+    if (!isset($box->options['teaser']) || !in_array($box->options['teaser'], array('teaser','full'))) {
+      $box->options['teaser'] = 'teaser'; //does options['teaser'] even exist on this box in 6?
     }
 
     if (!isset($box->options['show_title'])) {
@@ -620,7 +623,7 @@ class BoxPorter {
 
       $image_vars = array(
         'path' => $file->uri,
-        //'width',
+        'width' => $image_info['field_modal_image_size_value'],
         //'height',
         'alt' => $box->description,
         'title' => $box->title,
@@ -774,7 +777,6 @@ class BoxPorter {
     return $box;
   }
 
-
   //recent docs list can convert to sv list
   public function _port_box_os_boxes_recent_docs($box, $id, $key_only) {
     $key = 'os_sv_list_box';
@@ -801,7 +803,7 @@ class BoxPorter {
     $box->options['pager'] = $box->options['use_pager'];
     unset($box->options['use_pager']);
 
-    $box->options['sort_by'] = 'sort_newest';
+    $box->options['sort_by'] = 'sort_biblio';
 
     $styles = array('titles' => 'display_title', 'teasers' => 'display_teaser');
     $box->options['display'] = (isset($styles[$box->options['style']])) ? $styles[$box->options['style']] : 'display_title';
@@ -875,6 +877,11 @@ class BoxPorter {
 
     $options['content_type'] = $ct;
     $options['display'] = $this->_sv_list_box_style($options['display']);
+    //some boxes used style instead of display.
+    if (isset($box->options['style']) && !isset($box->options['display'])) {
+      $options['display'] = $this->_sv_list_box_style($box->options['style']);
+    }
+
     $options['sort_by'] = $this->_sv_list_box_sort($options['sort_by']);
     $options['number_of_items'] = min(20, $options['number_of_items']); //new box only goes up to 20.
 
@@ -933,6 +940,8 @@ class BoxPorter {
      $box->options['range'] = isset($box->options['number_of_items'])?$box->options['number_of_items']:false;
      $box->options['depth'] = isset($box->options['tree_max_depth'])?($box->options['tree_max_depth'] - 1):0;
      $box->options['show_childs'] = isset($box->options['show_tree'])?$box->options['show_tree']:false;
+     //Don't show count by default
+     $box->options['show_count'] = isset($box->options['show_count'])?$box->options['show_count']:0;
 
      //New Default
      if(!isset($box->options['behavior']) || $box->options['behavior'] != 'contextual'){
@@ -1107,13 +1116,14 @@ class BoxPorter {
       }
     }
 
-    list ($body, $jc_fixed) = $this->_port_box_os_boxes_node_jcarousel_fix($nid, $body);
+    list($body, $jc_fix) = $this->_port_box_os_boxes_node_jcarousel_fix($nid, $body);
+    list($body, $biblio_fix) = $this->_port_box_os_boxes_node_biblio_fix($nid, $body);
 
     if ($body) {
       $box->plugin_key = 'os_boxes_html';
       $box->options = array('text'=>array(
         'value' => $body,
-        'format' => ($jc_fixed) ? 'full_html' : 'filtered_html',
+        'format' => ($biblio_fix || $jc_fix) ? 'full_html' : 'filtered_html',
       ));
 
       return $box;
@@ -1165,4 +1175,20 @@ class BoxPorter {
     return array($body, $fixed);
   }
 
+  //biblio nodes get extra html that should be hidden by javascript.  remove it here instead.
+  function _port_box_os_boxes_node_biblio_fix($nid, $body) {
+    $fixed = FALSE;
+    $type = db_select('node', 'n')
+      ->condition('nid', $nid)
+      ->fields('n', array('type'))
+      ->execute()
+      ->fetchField();
+
+    if ($type == 'biblio') {
+      //instead of changing html, tell box to use full html.  now the citaiton renders as intended, consistent with the rest of biblio
+      $fixed = TRUE;
+    }
+
+    return array($body, $fixed);
+  }
 }

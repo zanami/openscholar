@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * os_news.strongarm.inc
@@ -15,14 +14,7 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->disabled = FALSE;
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_news';
-  $strongarm->value = '0';
-  $export['comment_news'] = $strongarm;
 
-  $strongarm = new stdClass();
-  /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_anonymous_news';
@@ -31,6 +23,7 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_news';
@@ -39,6 +32,7 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_per_page_news';
@@ -47,6 +41,7 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_form_location_news';
@@ -55,6 +50,16 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
+  $strongarm->disabled = FALSE;
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_news';
+  $strongarm->value = '0';
+  $export['comment_news'] = $strongarm;
+
+  $strongarm = new stdClass();
+  /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_preview_news';
@@ -63,6 +68,7 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_subject_field_news';
@@ -71,6 +77,7 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'menu_options_news';
@@ -82,6 +89,7 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'menu_parent_news';
@@ -90,6 +98,7 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_options_news';
@@ -101,6 +110,7 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_preview_news';
@@ -109,6 +119,7 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'node_submitted_news';
@@ -117,6 +128,7 @@ function os_news_strongarm() {
 
   $strongarm = new stdClass();
   /* Edit this to true to make a default strongarm disabled initially */
+
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'pathauto_node_news_pattern';

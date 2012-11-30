@@ -28,6 +28,7 @@ function os_software_views_default_views() {
 
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Software';
+  $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'spaces_feature';
   $handler->display->display_options['access']['spaces_feature'] = '0';
   $handler->display->display_options['cache']['type'] = 'none';
@@ -43,7 +44,6 @@ function os_software_views_default_views() {
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['label'] = 'Empty text';
-  $handler->display->display_options['empty']['area']['empty'] = FALSE;
   $handler->display->display_options['empty']['area']['content'] = 'There are currently no projects available.';
   $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Field: Content: Title */
@@ -90,6 +90,7 @@ function os_software_views_default_views() {
   /* Display: Page */
 
   $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['path'] = 'software';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Software';
@@ -99,6 +100,7 @@ function os_software_views_default_views() {
 
   $handler = $view->new_display('entityreference', 'Entity Reference', 'entityreference_1');
   $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'some';
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'entityreference_style';
@@ -127,6 +129,7 @@ function os_software_views_default_views() {
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'All Releases';
   $handler->display->display_options['use_more'] = TRUE;
+  $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['use_more_text'] = 'more releases';
   $handler->display->display_options['link_display'] = 'custom_url';
   $handler->display->display_options['access']['type'] = 'perm';
@@ -242,6 +245,7 @@ function os_software_views_default_views() {
   $handler = $view->new_display('entity_view', 'Recent', 'entity_view_1');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Recent Releases';
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['defaults']['use_more'] = FALSE;
   $handler->display->display_options['use_more'] = TRUE;
   $handler->display->display_options['link_url'] = 'software/!1/releases';
@@ -293,6 +297,7 @@ function os_software_views_default_views() {
   $handler = $view->new_display('entity_view', 'Recommended', 'entity_view_2');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Recommended Releases';
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['link_url'] = 'software/!1/releases';
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   /* Contextual filter: Content: Software Project (field_software_project) */
@@ -340,6 +345,7 @@ function os_software_views_default_views() {
   /* Display: All */
 
   $handler = $view->new_display('page', 'All', 'page_1');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['defaults']['use_more'] = FALSE;
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'full';
@@ -441,6 +447,7 @@ function os_software_views_default_views() {
   /* Display: Filesize Field */
 
   $handler = $view->new_display('entity_view', 'Filesize Field', 'entity_view_3');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -497,6 +504,15 @@ function os_software_views_default_views() {
   $handler = $view->new_display('block', 'Widget', 'block_1');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Software Releases';
+  $handler->display->display_options['defaults']['use_ajax'] = FALSE;
+  $handler->display->display_options['use_ajax'] = TRUE;
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+  $handler->display->display_options['defaults']['use_more'] = FALSE;
+  $handler->display->display_options['defaults']['use_more_always'] = FALSE;
+  $handler->display->display_options['defaults']['use_more_always'] = FALSE;
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['defaults']['use_more_text'] = FALSE;
+  $handler->display->display_options['use_more_text'] = 'more releases';
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'mini';
   $handler->display->display_options['pager']['options']['items_per_page'] = '3';
@@ -595,6 +611,14 @@ function os_software_views_default_views() {
   $handler->display->display_options['fields']['filesize']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['filesize']['alter']['text'] = '([filesize])';
   $handler->display->display_options['fields']['filesize']['element_label_colon'] = FALSE;
+  $handler->display->display_options['defaults']['sorts'] = FALSE;
+  /* Sort criterion: Content: Post date */
+
+  $handler->display->display_options['sorts']['created']['id'] = 'created';
+  $handler->display->display_options['sorts']['created']['table'] = 'node';
+  $handler->display->display_options['sorts']['created']['field'] = 'created';
+  $handler->display->display_options['sorts']['created']['relationship'] = 'reverse_field_software_project_node';
+  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Content: Published */
@@ -618,6 +642,23 @@ function os_software_views_default_views() {
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
+  /* Filter criterion: Content: Published */
+
+  $handler->display->display_options['filters']['status_1']['id'] = 'status_1';
+  $handler->display->display_options['filters']['status_1']['table'] = 'node';
+  $handler->display->display_options['filters']['status_1']['field'] = 'status';
+  $handler->display->display_options['filters']['status_1']['relationship'] = 'reverse_field_software_project_node';
+  $handler->display->display_options['filters']['status_1']['value'] = '1';
+  /* Filter criterion: Content: Recommended (field_software_recommended) */
+
+  $handler->display->display_options['filters']['field_software_recommended_value']['id'] = 'field_software_recommended_value';
+  $handler->display->display_options['filters']['field_software_recommended_value']['table'] = 'field_data_field_software_recommended';
+  $handler->display->display_options['filters']['field_software_recommended_value']['field'] = 'field_software_recommended_value';
+  $handler->display->display_options['filters']['field_software_recommended_value']['relationship'] = 'reverse_field_software_project_node';
+  $handler->display->display_options['filters']['field_software_recommended_value']['value'] = array(
+    1 => '1',
+  );
+  $handler->display->display_options['filters']['field_software_recommended_value']['reduce_duplicates'] = TRUE;
   $export['os_software_releases'] = $view;
 
   return $export;

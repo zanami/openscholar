@@ -31,6 +31,22 @@ class BiblioContributorTypeTableMigration extends TableCopyMigration {
   }
 }
 
+class BiblioContributorDataTableMigration extends TableCopyMigration {
+  public function __construct() {
+
+    $key_schema = array(
+      'cid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    );
+
+    $table = 'biblio_contributor_data';
+
+    parent::__construct($table, $key_schema);
+  }
+}
 
 class BiblioContributorTypeDataTableMigration extends TableCopyMigration {
   public function __construct() {
@@ -82,6 +98,13 @@ class BiblioFieldTypeTableMigration extends TableCopyMigration {
     $table = 'biblio_field_type';
 
     parent::__construct($table, $key_schema);
+  }
+
+  public function query() {
+    $query = parent::query();
+    //only migrate new types.  those provided by os_publications shouldn't re-migrate
+    $query->condition('tid', 1000, '>=');
+    return $query;
   }
 
   public function prepareRow(&$row) {

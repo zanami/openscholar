@@ -11,6 +11,12 @@ body {
   margin: 30px auto;
   }
 
+
+.front #content-column .content-inner {
+   padding-top: 20px;
+}
+
+
 .wrap {
   padding: 0 30px
   }
@@ -37,7 +43,7 @@ h2, h1#page-title {
 
 #content h2, h3, h4 {
   margin-bottom: 0;
-  margin-top: 1em;
+
   }
 
 h1 a, h2 a, h3 a, .region-sidebar-second a {
@@ -65,7 +71,7 @@ img {
   }
  
  .region-inner {
-    padding: 0 15px;
+    padding: 0;
 }
   
   
