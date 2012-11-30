@@ -151,13 +151,13 @@ function _os_boxes_boxes_plugins() {
     ),
   );
 
-  $info['os_boxes_field_group'] = array(
-    'title' => 'Field Group',
+  $info['os_boxes_site_info'] = array(
+    'title' => 'Site Info',
     'tags' => array('Misc'),
     'handler' => array(
-      'class' => 'os_boxes_field_group',
-      'file' => 'os_boxes_field_group.inc',
-      'path' => $path.'/os_boxes_field_group',
+      'class' => 'os_boxes_site_info',
+      'file' => 'os_boxes_site_info.inc',
+      'path' => $path.'/os_boxes_site_info',
       'parent' => 'os_boxes_default',
     ),
     'factory' => FALSE,
