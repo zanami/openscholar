@@ -135,6 +135,25 @@ function os_pages_context_custom($name) {
               'region' => 'content_top',
               'weight' => '-10',
             ),
+          )
+        )
+      ),
+      'condition_mode' => 0,
+    );
+    return $context;
+  }
+  elseif (strpos($name, 'os_pages-section-') !== FALSE) {
+    $context = (object)array(
+      'disabled' => FALSE,
+      'api_version' => 3,
+      'name' => $name,
+      'description' => 'Context active on a group of pages.',
+      'tag' => 'OpenScholar',
+      'weight' => 5,
+      'conditions' => array(),
+      'reactions' => array(
+        'block' => array(
+          'blocks' => array(
             'boxes-os_pages_section_nav' => array(
               'module' => 'boxes',
               'delta' => 'os_pages_section_nav',
@@ -164,7 +183,7 @@ function os_pages_node_view($node) {
       context_set('context', $ctx->name, $ctx);
     }
 
-    if (isset($node->book['bid']) && $ctx = context_load('os_books-book-'.$node->book['bid'])) {
+    if (isset($node->book['bid']) && $ctx = context_load('os_pages-section-'.$node->book['bid'])) {
       context_set('context', $ctx->name, $ctx);
     }
 
