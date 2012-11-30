@@ -265,6 +265,7 @@ function os_layout_set_multiple($contexts, $blocks) {
     }
     // if the block doesn't exist in the parent, but is still in a region.
     elseif ($b['region']) {
+      dpm($bid.': weight: new: '.$blocks[$bid]['weight']);
       $child_blocks[$bid] = $b;
     }
   }
@@ -537,13 +538,8 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout) {
         }
       }
       // handle case where children are after all parents
-      $count = count($between);
-      if ($count) {
-        $range = $min_weight + $count + 1;
-        $delta = $range/($count + 1);
-        foreach ($between as $pos => $b_id) {
-          $block_settings[$b_id]['weight'] = $min_weight + ($pos+1)*$delta;
-        }
+      foreach ($between as $pos => $b_id) {
+        $block_settings[$b_id]['weight'] = $min_weight + $pos + 1;
       }
     } // end no bulldoze processing
     // if its ok to bulldoze, we can use the integer values that are already in place
