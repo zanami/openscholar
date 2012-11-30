@@ -1,4 +1,5 @@
 name = "OpenScholar: Subsites"
+package = "OpenScholar"
 core = "7.x"
 dependencies[] = os
 dependencies[] = vsite
