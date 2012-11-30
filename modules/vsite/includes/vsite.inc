@@ -107,7 +107,15 @@ function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset 
   $node->spaces_preset_og = $preset;
   $node->language = LANGUAGE_NONE;
   if (isset($parent)) {
-    $node->parent = array(LANGUAGE_NONE => array(array('value' => $parent)));
+    $node->field_group_parent = array(
+      LANGUAGE_NONE => array(
+        array(
+      	  'target_id' => $parent,
+          'entity' => node_load($parent),
+          'access' => TRUE,
+        )
+      )
+    );
   }
   node_save($node);
 

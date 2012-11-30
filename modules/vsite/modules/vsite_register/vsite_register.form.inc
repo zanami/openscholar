@@ -17,7 +17,7 @@ function vsite_register_form($form, &$state) {
     $parent = $_GET['parent'];
   }
   $form['parent'] = array(
-    '#type' => 'value',
+    '#type' => 'hidden',
     '#value' => $parent,
   );
 
@@ -283,7 +283,7 @@ function vsite_register_form_submit(&$form, &$state) {
   }
 
   //create the vsite
-  if ($vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['bundle'], $values['preset'], $values['parent'])) {
+  if ($vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['bundle'], $values['preset'], $_POST['parent'])) {
     //add user to vsite
     module_load_include('inc', 'vsite', 'includes/user');
     vsite_user_add($site_owner);
