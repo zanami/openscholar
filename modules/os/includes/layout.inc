@@ -516,7 +516,7 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout) {
           if ($count) {
             // handle case where children are before any parent
             if ($min_weight == 'undefined') {
-              $min_weight = $b['weight'] - $count;
+              $min_weight = $b['weight'] - $count - 1;
             }
             // get the range we have to work with
             $range = $b['weight'] - $min_weight;
@@ -539,7 +539,7 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout) {
       // handle case where children are after all parents
       $count = count($between);
       if ($count) {
-        $range = $min_weight + $count;
+        $range = $min_weight + $count + 1;
         $delta = $range/($count + 1);
         foreach ($between as $pos => $b_id) {
           $block_settings[$b_id]['weight'] = $min_weight + ($pos+1)*$delta;
