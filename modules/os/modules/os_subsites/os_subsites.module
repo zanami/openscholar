@@ -1,1 +1,20 @@
 <?php
+
+function os_subsites_preprocess_toolbar(&$vars) {
+  $space = spaces_get_space();
+  if ($space && $space->group->type == 'department') {
+    $vars['toolbar']['toolbar_right']['toolbar_subsite'] = array(
+      '#theme' => 'links__toolbar_subsite',
+      '#links' => array(
+        'add' => array(
+          'title' => t('Add Subsite'),
+          'href' => 'site/register?parent='.$space->group->nid,
+          'description' => t('Add a subsite to the current site.'),
+          'attributes' => array(
+            'data-tooltip' => t('Add a subsite to the current site.'),
+          )
+        )
+      )
+    );
+  }
+}
