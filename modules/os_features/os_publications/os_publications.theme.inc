@@ -28,6 +28,13 @@ function theme_os_publications_tabular(&$vars) {
 
   $citation = _os_publications_plain_citation($node);
 
+  // Strip the 'Available From: <url>' text from the citation.
+  if(isset($node->biblio_url)) {
+  	$searcher = 'Available from: '.$node->biblio_url;
+  	// String replace the url & text.
+  	$citation = str_ireplace($searcher, '', $citation);
+  }
+
   // These fields should not be printed under any circumstances
   // They appear elsewhere with special handling, either in the citation
   // or elsewhere in this function
@@ -62,7 +69,7 @@ function theme_os_publications_tabular(&$vars) {
     switch ($f['name']) {
       case 'biblio_url':
         // no need to check plain. l does it for us
-        $data = '<p>' . l($node->biblio_url_title, $value) . '</p>';
+        $data = '<p>' . l(!empty($node->biblio_url_title) ? $node->biblio_url_title : 'Website', $value) . '</p>';
         $display_title = FALSE;
         break;
 

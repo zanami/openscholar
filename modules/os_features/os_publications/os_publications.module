@@ -362,7 +362,7 @@ function os_publications_node_view_alter(&$build, $type) {
   if ($type == 'node' && $build['#bundle'] == 'biblio') {
     if ($build['#view_mode'] == 'teaser') {
       _os_publications_attach_abstract($build, $build['#node']);
-      if(isset($spaces) && $spaces->controllers->variable->get('os_publications_note_in_teaser', 'space') == TRUE) {
+      if(isset($spaces) && is_object($spaces) && $spaces->controllers->variable->get('os_publications_note_in_teaser', 'space') == TRUE) {
         _os_publications_attach_notes($build, $build['#node']);
       }
       $build['teaser']['#weight'] = 1;
