@@ -17,6 +17,7 @@ body {
 #header-container {
 	height: 171px;
 	border-bottom: 1px solid #B3C4C2;
+	 padding: 0;
 	}
 
 #footer {
@@ -216,7 +217,7 @@ padding-top: 0;
   
 .region-sidebar-first #block-os-primary-menu li,
 .region-sidebar-first #block-os-secondary-menu li {
- padding-left: 23px;
+ padding: 5px 0 5px 23px;
   }  
 
 .region-sidebar-first li, .sidebar h2.block-title {
@@ -262,9 +263,17 @@ ul.nice-menu-right, ul.nice-menu-left, ul.nice-menu-right li, ul.nice-menu-left 
   color:#666;
   font-size: 12px;
   line-height: 13px;
-
+  font-weight: bold;
+  text-transform: none;
+  border:none;
   }
   
 .front #content-column .title {
   display: none;	
+}
+
+.view-os-events ul li {
+    border-bottom: none;
+    list-style-type: none;
+    margin-bottom:1.5em;
 }
