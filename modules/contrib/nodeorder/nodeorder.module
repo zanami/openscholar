@@ -566,9 +566,17 @@ function nodeorder_can_be_ordered($node) {
   // Integrates with og_vocab module; caches on a per-group basis.
   if (module_exists('og_vocab')) {
     $group_cids = array();
-    $group_audience_field_items = field_get_items('node', $node, OG_AUDIENCE_FIELD, $node->language);
-    foreach ($group_audience_field_items as $item) {
-      $group_cids[] = $cid . ':og_group_ref_' . $item['target_id'];
+
+    if(og_is_group_content_type('node', $node->type)){
+	    $group_audience_field_items = field_get_items('node', $node, OG_AUDIENCE_FIELD, $node->language);
+
+	    if($group_audience_field_items){
+	      foreach ($group_audience_field_items as $item) {
+	        $group_cids[] = $cid . ':og_group_ref_' . $item['target_id'];
+	      }
+	    }
+    }elseif (og_is_group('node', $node)){
+      $group_cids[] = $cid . ':og_group_ref_' . $node->nid;
     }
 
     foreach ($group_cids as $group_cid) {
