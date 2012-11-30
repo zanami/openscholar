@@ -202,7 +202,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         $feature = current($map[$bundle]);
       }
     }
-    $path_prefix = isset($feature) ? strval(os_get_feature_path($feature)) : '';
+    $path_prefix = isset($feature) ? strval(os_get_feature_path($feature)) : 'taxonomy';
     if (strlen($path_prefix)) {
       $path_prefix = $path_prefix . "/";
     }
@@ -215,6 +215,10 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     // Skip on this if we don't display empty children term.
     if (!$options['show_empty_terms'] && !$item['tagged_items'] && empty($item['child_number'])) {
       continue;
+    }
+
+    if(strlen($path_prefix) && strpos($item['url']['path'],'taxonomy/') === 0){
+      $item['url']['path'] = str_replace('taxonomy/', $path_prefix, $item['url']['path']);
     }
 
     // Don't process terms that are in not in level 0.
@@ -237,7 +241,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         'number' => $number,
         'name' => $item['term_name'],
         'link_options' => $link_options,
-        'url_path' => $path_prefix.$item['url']['path'],
+        'url_path' => $item['url']['path'],
         'description' => $item['description'],
         'link_to_empty_terms' => $options['link_to_empty_terms'],
         'show_term_descriptions' => $options['show_term_descriptions'],
