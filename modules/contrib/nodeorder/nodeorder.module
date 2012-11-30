@@ -604,12 +604,12 @@ function nodeorder_can_be_ordered($node) {
     && in_array($node->type, $field['bundles']['node'])) {
 
       $items = field_get_items('node', $node, OG_VOCAB_FIELD, 'und');
-			if($items){
+      if($items){
         foreach ($items as $item) {
           $term = taxonomy_term_load($item['target_id']);
           $nodeorder_vocabularies[] = $term->vid;
         }
-			}
+      }
     }
 
     if ($field['type'] != 'taxonomy_term_reference'
