@@ -8,10 +8,13 @@ function os_subsites_preprocess_toolbar(&$vars) {
       '#links' => array(
         'add' => array(
           'title' => t('Add Subsite'),
-          'href' => 'site/register?parent='.$space->group->nid,
+          'href' => 'site/register',
           'description' => t('Add a subsite to the current site.'),
           'attributes' => array(
             'data-tooltip' => t('Add a subsite to the current site.'),
+          ),
+          'query' => array(
+            'parent' => $space->group->nid,
           )
         )
       )

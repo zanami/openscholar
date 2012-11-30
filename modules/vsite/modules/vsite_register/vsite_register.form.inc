@@ -12,6 +12,14 @@ function vsite_register_form($form, &$state) {
   $anonymous = ($user->uid == 0);
   $manager = (user_access('create vsite content on behalf') && user_access('administer users'));
 
+  $parent = null;
+  if (isset($_GET['parent']) && $parent = vsite_get_vsite($_GET['parent'])) {
+    $parent = $_GET['parent'];
+  }
+  $form['parent'] = array(
+    '#type' => 'value',
+    '#value' => $parent,
+  );
 
   $form['domain'] = array(
     '#type' => 'textfield',
@@ -275,7 +283,7 @@ function vsite_register_form_submit(&$form, &$state) {
   }
 
   //create the vsite
-  if ($vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['bundle'], $values['preset'])) {
+  if ($vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['bundle'], $values['preset'], $values['parent'])) {
     //add user to vsite
     module_load_include('inc', 'vsite', 'includes/user');
     vsite_user_add($site_owner);
