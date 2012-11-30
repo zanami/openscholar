@@ -568,6 +568,7 @@ function os_software_views_default_views() {
   $handler->display->display_options['fields']['path']['label'] = '';
   $handler->display->display_options['fields']['path']['exclude'] = TRUE;
   $handler->display->display_options['fields']['path']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['path']['absolute'] = TRUE;
   /* Field: Content: Version */
 
   $handler->display->display_options['fields']['field_software_version']['id'] = 'field_software_version';
@@ -577,6 +578,7 @@ function os_software_views_default_views() {
   $handler->display->display_options['fields']['field_software_version']['label'] = '';
   $handler->display->display_options['fields']['field_software_version']['alter']['make_link'] = TRUE;
   $handler->display->display_options['fields']['field_software_version']['alter']['path'] = '[path]';
+  $handler->display->display_options['fields']['field_software_version']['alter']['absolute'] = TRUE;
   $handler->display->display_options['fields']['field_software_version']['element_label_colon'] = FALSE;
   /* Field: Content: Post date */
 
