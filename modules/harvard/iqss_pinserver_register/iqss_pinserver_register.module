@@ -137,7 +137,7 @@ function iqss_pinserver_register_validate_huid($huid) {
   }
 
   // Verifies HUID does not already exist in database.
-  elseif (iqss_pinserver_register_check_row($huid)) {
+  elseif (iqss_pinserver_register_get_uid_from_huid($huid)) {
     $errors[] = t('The @harvard_id you have entered already exists in the database.', array('@harvard_id' => 'Harvard ID'));
   }
 
@@ -164,13 +164,8 @@ function iqss_pinserver_register_vsite_register_form_page() {
   global $user;
 
   // Handle users logged in already.
-  if ($vsites = vsite_get_vsite_by_owner($user->uid) && vsite_vsite_exists_access($vsites)) {
-    // Can create new vsites; provide form to create a new vsite.
-    return drupal_get_form('vsite_register_form');
-  }
-  else if ($vsites) {
-    // Can't create new sites; redirect user to any existing vsite(s).
-    return iqss_pinserver_register_login_redirect($user->uid, $vsites);
+  if ($user->uid) {
+    return iqss_pinserver_register_redirect($user->uid);
   }
 
   // Sends user to pinserver if not logged-in locally or via the pinserver
@@ -179,26 +174,42 @@ function iqss_pinserver_register_vsite_register_form_page() {
   }
 
   // Redirects pinserver-logged-in user if they don't own a vsite.
-  $uid = iqss_pinserver_register_check_row();
-  $vsite = vsite_get_vsite_by_owner($uid);
-  if (!$vsite) {
+  $uid = iqss_pinserver_register_get_uid_from_huid();
+  return iqss_pinserver_register_redirect($uid);
+}
+
+
+/**
+  * Check if user can create vsites or not, and redirect appropriately.
+  */
+function iqss_pinserver_register_redirect($uid) {
+  $vsites = vsite_get_vsite_by_owner($uid);
+
+  if (vsite_vsite_exists_access($vsites)) {
+    // Can create new vsites; provide form to create a new vsite.
     return drupal_get_form('vsite_register_form');
   }
+  else if (count($vsites)) {
+    // Can't create new sites; redirect user to existing vsite(s).
+    return iqss_pinserver_register_login_redirect($uid, $vsites);
+  }
 
-  // Otherwise, redirects pinserver-logged-in user as appropriate.
-  return iqss_pinserver_register_login_redirect($uid, $vsite);
+  return drupal_goto('node');  // This shouldn't happen.
 }
+
 
 /**
  * Logs in the pinserver user and redirects to any passed destination.
  */
-function iqss_pinserver_register_login_redirect($uid, $vsite) {
+function iqss_pinserver_register_login_redirect($uid, $vsites) {
   global $user;
 
-  // Logs the user in based on the HUID->UID association.
-  $user = user_load(array('uid' => $uid));
-  $user->login = time();
-  db_update('users')->fields(array('login' => $user->login))->condition('uid', $user->uid, '=')->execute();
+  if ($uid) {
+    // Logs the user in based on the HUID->UID association.
+    $user = user_load(array('uid' => $uid));
+    $user->login = time();
+    db_update('users')->fields(array('login' => $user->login))->condition('uid', $user->uid, '=')->execute();
+  }
 
   if (isset($_GET['redirect'])) {
     // Redirects user to requested private file (or other private destination).
@@ -206,7 +217,20 @@ function iqss_pinserver_register_login_redirect($uid, $vsite) {
   }
 
   // Redirects user to existing vsite(s).
-  drupal_goto(_iqss_pinserver_register_get_redirect($vsite));
+  $count = count($vsites);
+
+  drupal_get_messages();  // Clear message queue.
+  drupal_set_message(t('You have already registered your maximum number of !count !websites.', array(
+    '!count' => "<i>$count</i>",
+    '!websites' => t('website' . ($count == 1 ? '' : 's')),
+  )));
+
+  if (count($vsites) == 1) {
+    drupal_goto($vsites[0]->get_absolute_url());
+  }
+  else {
+    drupal_goto('user');
+  }
 }
 
 /**
@@ -238,7 +262,7 @@ function iqss_pinserver_register_add_row($uid, $huid) {
  *
  * @return user id
  */
-function iqss_pinserver_register_check_row($huid = NULL) {
+function iqss_pinserver_register_get_uid_from_huid($huid = NULL) {
   $id = ($huid) ? $huid : $_SESSION['pinserver']['huid'];
 
   if ($id) {
@@ -305,28 +329,4 @@ function _iqss_pinserver_register_huid_field(&$form) {
     ),
     '#field_suffix' => theme('vsite_register_form_errors', array('name' => 'huid')),
   );
-}
-
-/**
- * Provides redirect path and message for certain regstration form access conditions
- *
- * @param array $vsites
- *   Like return value of vsite_get_vsite_by_owner()
- */
-function _iqss_pinserver_register_get_redirect($vsites = array()) {
-  if (is_array($vsites) && count($vsites)) {
-    // Clears message queue.
-    drupal_get_messages();
-    drupal_set_message(t('You have already registered the maximum number of web sites.'));
-    if (count($vsites) == 1) {
-      return $vsites[0]->get_absolute_url();
-    }
-    else {
-      return 'user';
-    }
-  }
-
-  // This should not happen unless $vsites was not passed properly or is empty array
-  error_log(__FUNCTION__ . ' was called with an empty array as the first argument');
-  return NULL;
 }
