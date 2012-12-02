@@ -21,8 +21,8 @@ function os_taxonomy_menu_alter(&$items) {
   foreach (spaces_features('og') as $feature_name => $info) {
     $path = os_get_feature_path($feature_name);
     if ($path) {
-      $items[$path.'/taxonomy/term/%taxonomy_term'] = $items['taxonomy/term/%taxonomy_term'];
-      $items[$path.'/taxonomy/term/%taxonomy_term']['page arguments'][0] = $items[$path.'/taxonomy/term/%taxonomy_term']['title arguments'][0] = count(explode("/", $path)) + $offset;
+      $items[$path.'/term/%taxonomy_term'] = $items['taxonomy/term/%taxonomy_term'];
+      $items[$path.'/term/%taxonomy_term']['page arguments'][0] = $items[$path.'/term/%taxonomy_term']['title arguments'][0] = count(explode("/", $path)) + $offset - 1;
     }
   }
 }
@@ -39,9 +39,15 @@ function os_taxonomy_term_page($taxonomy_term) {
     'taxonomy_term' => $taxonomy_term,
     'options' => $options,
   );
+  $context_name = 'os_taxonomy-term-'.$taxonomy_term->tid;
 
   if(($feature = os_get_active_feature()) && isset($feature->info['features']['node'])){
     $variables['options']['bundles'] = $feature->info['features']['node'];
+    $context_name .= '-'.$feature->name;
+  }
+
+  if ($ctx = context_load($context_name)) {
+    context_set('context', $ctx->name, $ctx);
   }
 
   return theme('os_taxonomy_tagged_nodes', $variables);
@@ -98,7 +104,6 @@ function os_taxonomy_theme() {
 function theme_os_taxonomy_term_item($variables) {
   $number = !$variables['number'] ? '' : ' <span class="count">(' . $variables['number'] . ')</span>';
 
-  // Name of parent term.
   $name = $variables['name'];
   $item_wrapper = !empty($variables['childs']) ? "<div class='term-head'>" : '';
 
@@ -106,7 +111,7 @@ function theme_os_taxonomy_term_item($variables) {
   $title = $item_wrapper . $name . $number;
 
   if ($variables['show_term_descriptions'] && !empty($variables['description'])) {
-    $title .= '<div class="description"> - ' . check_plain($variables['description']) . '</div>';
+    $title .= '<div class="description">' . check_plain($variables['description']) . '</div>';
   }
   // Close div if we there are children.
   $title .= !empty($variables['childs']) ? "</div>" . $variables['childs'] : '';
@@ -138,8 +143,6 @@ function theme_os_taxonomy_term_item($variables) {
  *      - show_childs: Control if to show the childrens with their parent term.
  *        Also, the number of the tagged nodes to the childs term will not be
  *        added to the tagged node number of the father term.
- *      - widget_type: How to render the term list, in a HTML format or in a
- *        select list.
  */
 function theme_os_taxonomy_vocabulary_item_list($variables) {
   $options = $variables['options'] + array(
@@ -220,6 +223,10 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       continue;
     }
 
+    // Don't process terms that are in not in level 0.
+    if ($item['is_child']) {
+      continue;
+    }
     // The attached number to the term name.
     $number = null;
     if ($options['show_count']) {
@@ -291,7 +298,7 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
   );
 
   if (count($menu['map']) > 1 && $menu['map'][1] == 'taxonomy' && $menu['map'][2] == 'term') {
-    $form['terms']['#default_value'] = $menu['map'][3]->tid;
+    $form['terms']['#default_value'] = $menu['map'][3];
   }
   $form['actions'] = array(
     '#type' => 'actions',
@@ -484,6 +491,7 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     'indentation_type' => 'px',
     'attributes' => array(),
     'cur_depth' => 0,
+    'nodeorder' => FALSE,
   );
   $taxonomy_term = $variables['taxonomy_term'];
 
@@ -529,7 +537,15 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   $node_count = os_taxonomy_count_attached_nodes($taxonomy_term->tid, $options['bundles']);
   if ($node_count) {
     $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
+
+//    if ($options['nodeorder'] === FALSE) {
+//      $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
+//    }
+//    else {
+//      $nids = array_keys(nodeorder_select_nodes(array($taxonomy_term->tid), 'or', 0, FALSE, 'n.sticky DESC, n.created DESC', 0));
+//    }
     $nodes = node_load_multiple($nids);
+    array_walk($nodes, create_function('&$n', '$n->contextual_annotation_key = "tid-'.$taxonomy_term->tid.'";'));
     $build += node_view_multiple($nodes);
   }
   else if ((int) $options['cur_depth'] === 0 && !$has_children_to_display) {
@@ -549,6 +565,10 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     $options['cur_depth'] = $options['cur_depth'] + 1;
 
     foreach ($children as $child) {
+      if (empty($child->description)) {
+        // @todo add $content_attributes to apply display: none to empty content.
+        $child->description = " ";
+      }
       $output .= theme('os_taxonomy_tagged_nodes', array('taxonomy_term' => $child, 'options' => $options));
     }
   }
@@ -602,12 +622,15 @@ function os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles = arr
     ->distinct()
     ->fields('t');
 
+  $query->join('node', 'n', 't.nid = n.nid');
+
+  $query->orderBy('n.sticky', 'DESC');
   if (module_exists('nodeorder')) {
-    $query->orderBy('weight', 'ASC');
+    $query->orderBy('t.weight', 'DESC');
   }
+  $query->orderBy('n.created', 'DESC');
 
   if (!empty($node_bundles)) {
-    $query->join('node', 'n', 't.nid = n.nid');
     $query->condition('n.type', $node_bundles, 'IN');
   }
 
@@ -723,4 +746,22 @@ function os_taxonomy_term_view($term, $view_mode = 'full', $description = FALSE,
   drupal_alter(array('taxonomy_term_view', 'entity_view'), $build, $type);
 
   return $build;
+}
+
+function os_taxonomy_context_custom($context_name) {
+  if (strpos($context_name, 'os_taxonomy-term-') !== FALSE) {
+    $ctx = (object)array(
+      'disabled' => FALSE,
+      'api_version' => 3,
+      'name' => $context_name,
+      'description' => 'Context active in a given book.',
+      'tag' => 'OpenScholar',
+      'conditions' => array(),
+      'reactions' => array(),
+      'condition_mode' => 0,
+      'weight' => 5,
+    );
+
+    return $ctx;
+  }
 }

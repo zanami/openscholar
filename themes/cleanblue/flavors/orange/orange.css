@@ -6,7 +6,7 @@
 	background: #C75A26;
 	}
 
-#menu-bar li a {
+#menu-bar ul li a {
 	background: none; color:#FFFFFF;
 	border-bottom:none;
 }

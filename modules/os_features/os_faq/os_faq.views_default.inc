@@ -1,6 +1,7 @@
 <?php
 // $Id$
 
+
 /**
  * @file
  * os_faq.views_default.inc
@@ -21,14 +22,13 @@ function os_faq_views_default_views() {
   $view->core        = 7;
   $view->api_version = '3.0';
   /* Edit this to true to make a default view disabled initially */
-
   $view->disabled = FALSE;
 
   /* Display: Master */
 
-
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Frequently Asked Questions';
+  $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'spaces_feature';
   $handler->display->display_options['access']['spaces_feature'] = 'os_faq';
   $handler->display->display_options['cache']['type'] = 'none';
@@ -41,7 +41,6 @@ function os_faq_views_default_views() {
   $handler->display->display_options['row_plugin'] = 'node';
   /* Field: Content: Title */
 
-
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
@@ -50,20 +49,17 @@ function os_faq_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   /* Sort criterion: Content: Sticky */
 
-
   $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['table'] = 'node';
   $handler->display->display_options['sorts']['sticky']['field'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['order'] = 'DESC';
   /* Sort criterion: Content: Post date */
 
-
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
   /* Filter criterion: Content: Published */
-
 
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
@@ -73,14 +69,12 @@ function os_faq_views_default_views() {
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
   /* Filter criterion: Content: Type */
 
-
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
     'faq' => 'faq',
   );
-
   /* Filter criterion: Spaces: Content in current space */
 
   $handler->display->display_options['filters']['current']['id'] = 'current';
@@ -89,8 +83,8 @@ function os_faq_views_default_views() {
 
   /* Display: Page */
 
-
   $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['path'] = 'faq';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'FAQ';
@@ -98,7 +92,6 @@ function os_faq_views_default_views() {
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'primary-menu';
   $handler->display->display_options['menu']['context'] = 0;
-
   $export['os_faq'] = $view;
 
   return $export;

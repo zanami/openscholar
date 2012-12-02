@@ -73,14 +73,11 @@ EOF
     '#collapsible' => TRUE,
   );
 
-  $form['dev_fieldset']['os_migrate_email_notification'] = array(
-    '#title' => t('Email Notification'),
-    '#description' => t('Creating a user account during migration will send that user an email.
-    										When this is checked, user accounts will be created with the email address
-    										in the legacy database.  Leave this unchecked during development to munge
-    										the email addresses to avoid spamming all the users.'),
+  $form['dev_fieldset']['os_migrate_suppress_email'] = array(
+    '#title' => t('Email Suppression'),
+    '#description' => t('Creating a user account during migration will send that user an email.  Leaving this checked will suppress emails during user migration.  It will also block OpenScholar\'s Mailchimp subscription.'),
     '#type' => 'checkbox',
-    '#default_value' => variable_get('os_migrate_email_notification', FALSE),
+    '#default_value' => variable_get('os_migrate_suppress_email', TRUE),
   );
 
   $og_bundles = og_get_all_group_bundle();

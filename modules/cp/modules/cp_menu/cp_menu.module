@@ -227,14 +227,13 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
 
   if (count($cache)) {
 
-    if (isset($cache['title']) && isset($form['title'])) {
+  	// Set the title from the cache title and set the form title to the cache title if it exists.
+    if (isset($cache['title'])) {
 	  $title = check_plain($cache['title']);
-  	  $form['title']['#default_value'] = $title;
-    }
-
-    // Special case for person since person has no form title field.
-    if(isset($cache['title']) && $form_id == 'person_node_form') {
-      $title = check_plain($cache['title']);
+	  // Check for the form title
+	  if(isset($form['title'])) {
+  	    $form['title']['#default_value'] = $title;
+	  }
     }
 
     $menu = (isset($cache['menu'])) ? $cache['menu'] : 'primary-menu';

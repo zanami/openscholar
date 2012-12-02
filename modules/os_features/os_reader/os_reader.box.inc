@@ -19,7 +19,7 @@ function os_reader_default_box() {
   $box->description = 'Latest Feed Items';
   $box->options = array(
     'feed' => FALSE,
-    'number_of_items' => 5,
+    'number_of_items' => 10,
     'feed_display' => 'title',
   );
   $export['boxes-os_boxes_feedreader'] = $box;

@@ -26,6 +26,14 @@ function openscholar_install_tasks($install_state) {
     'run' => variable_get('os_profile_type', FALSE == 'vsite' || variable_get('os_profile_flavor', FALSE) == 'development') ? INSTALL_TASK_RUN_IF_NOT_COMPLETED : INSTALL_TASK_SKIP
   );
 
+  // Migrating content if needed.
+  $tasks['openscholar_migrate_content'] = array(
+    'display_name' => t('Importing content'),
+    'type' => 'batch',
+    'display' => variable_get('os_dummy_content') && variable_get('os_profile_flavor', FALSE) == 'development',
+    'run' => variable_get('os_dummy_content') && variable_get('os_profile_flavor', FALSE) == 'development' ? INSTALL_TASK_RUN_IF_REACHED : INSTALL_TASK_SKIP,
+  );
+
   return $tasks;
 }
 
@@ -49,6 +57,18 @@ function openscholar_flavor_form($form, &$form_state) {
     '#type' => 'radios',
     '#options' => $options,
     '#default_value' => 'development'
+  );
+
+  $form['dummy_content'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Add dummy content'),
+    '#description' => t('If checked, dummy content will be added to your openscholar site.'),
+    '#states' => array(
+      // Only show this field when the 'toggle_me' checkbox is enabled.
+      'visible' => array(
+        ':input[name="os_profile_flavor"]' => array('value' => 'development'),
+      ),
+    ),
   );
 
   $form['submit'] = array(
@@ -91,6 +111,11 @@ function openscholar_install_type($form, &$form_state) {
 function openscholar_flavor_form_submit($form, &$form_state) {
   //Save the chosen flavor
   variable_set('os_profile_flavor', $form_state['input']['os_profile_flavor']);
+
+  // Define dummy content migration.
+  if ($form_state['input']['dummy_content']) {
+    variable_set('os_dummy_content', TRUE);
+  }
 }
 
 
@@ -124,9 +149,39 @@ function openscholar_vsite_modules_batch(&$install_state){
     if(is_array($info['dependencies'])){
       $modules = array_merge($modules,$info['dependencies']);
     }
+
+    if (variable_get('os_dummy_content', FALSE)) {
+      $modules[] = 'os_migrate_demo';
+    }
   }
 
   return _opnescholar_module_batch($modules);
+}
+
+/**
+ * Migrating content from csv.
+ */
+function openscholar_migrate_content() {
+  $migrations = migrate_migrations();
+  foreach ($migrations as $machine_name => $migration) {
+    $operations[] = array('_openscholar_migrate_content', array($machine_name, t('Importing content.')));
+  }
+
+  $batch = array(
+    'title' => t('Importing content'),
+    'operations' => $operations,
+  );
+
+  return $batch;
+}
+
+/**
+ * Batch callback function - migrating the content from csv files.
+ */
+function _openscholar_migrate_content($class, $type, &$context) {
+  $context['message'] = t('Importing @class', array('@class' => $class));
+  $migration =  Migration::getInstance($class);
+  $migration->processImport();
 }
 
 /**
@@ -238,6 +293,9 @@ function openscholar_install_finished(&$install_state) {
 
   // Cache a fully-built schema.
   drupal_get_schema(NULL, TRUE);
+
+  // Remove the variable we used during the installation.
+  variable_del('os_dummy_content');
 
   // Run cron to populate update status tables (if available) so that users
   // will be warned if they've installed an out of date Drupal version.

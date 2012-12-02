@@ -28,6 +28,13 @@ function theme_os_publications_tabular(&$vars) {
 
   $citation = _os_publications_plain_citation($node);
 
+  // Strip the 'Available From: <url>' text from the citation.
+  if(isset($node->biblio_url)) {
+  	$searcher = 'Available from: '.$node->biblio_url;
+  	// String replace the url & text.
+  	$citation = str_ireplace($searcher, '', $citation);
+  }
+
   // These fields should not be printed under any circumstances
   // They appear elsewhere with special handling, either in the citation
   // or elsewhere in this function
@@ -61,8 +68,12 @@ function theme_os_publications_tabular(&$vars) {
 
     switch ($f['name']) {
       case 'biblio_url':
-        // no need to check plain. l does it for us
-        $data = '<p>' . l($node->biblio_url_title, $value) . '</p>';
+      	if(empty($node->biblio_url)) {
+      	  $data = '<p></p>';
+      	}else {
+          // no need to check plain. l does it for us
+          $data = '<p>' . l(!empty($node->biblio_url_title) ? $node->biblio_url_title : 'Website', $value) . '</p>';
+      	}
         $display_title = FALSE;
         break;
 
@@ -280,13 +291,22 @@ function theme_os_publications_download_links($variables) {
 function theme_os_publications_sort_tabs($vars) {
   $links = $vars['links'];
   $title = '';
+  $sort_boolean = FALSE;
 
   foreach ($links as &$l) {
-    if ($l['active']) {
-      $title = $l['text'];
+    if (isset($l['arrow'])) {
+      if ($l['active']) {
+        $title = $l['text'];
+      }
+      $sort_boolean = TRUE;
+      $l['title'] = $l['text'] . $l['arrow'];
+      $l['href'] = $l['path'];
     }
-    $l['title'] = $l['text'] . $l['arrow'];
-    $l['href'] = $l['path'];
+  }
+
+  // Make sure there was at least one sorting option selected.
+  if($sort_boolean == FALSE) {
+  	return;
   }
 
   // this arrow points down for some reason, despite being named 'asc'

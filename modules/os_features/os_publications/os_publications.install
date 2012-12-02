@@ -7,13 +7,30 @@ function os_publications_schema() {
   return $schema;
 }
 
+// Implements hook_install().
 function os_publications_install() {
-  db_add_field('biblio', 'biblio_url_title', array(
+   db_add_field('biblio', 'biblio_url_title', array(
       'type' => 'varchar',
       'length' => 128,
       'not null' => FALSE,
       'description' => 'A title to go with the Relevant URL',
     ));
+
+  // Insert the biblio_url_title into the biblio_fields table.
+  // Biblio_fields table is not auto increment, grab the last fid and increment it for our insert.
+  $field_id = db_query('SELECT fid FROM {biblio_fields} ORDER BY fid DESC LIMIT 1')->fetchField();
+  if(isset($field_id)) {
+    $field_id = $field_id+1;
+  }
+  db_insert('biblio_fields')
+  ->fields(array(
+    'fid' => $field_id,
+    'name' => 'biblio_url_title',
+    'type' => 'textfield',
+    'size' => 60,
+    'maxsize' => 255,
+  ))
+  ->execute();
 
   if ($field = field_info_instance('node', 'body', 'biblio')) {
     $field['display']['teaser'] = array(
@@ -22,6 +39,52 @@ function os_publications_install() {
     );
     field_update_instance($field);
   }
+
+  if(module_exists('biblio_citeproc')){
+    //Remove Line indentation from citeproc styles
+    foreach (biblio_get_styles() as $name => $desc){
+      $csl = db_query('SELECT csl FROM {biblio_citeproc_styles} WHERE filename = :id', array(':id' => $name))->fetchObject();
+      if (isset($csl->csl)) {
+        $csl_file_contents = $csl->csl;
+        if($csl_file_contents = str_replace('<bibliography hanging-indent="true"', '<bibliography hanging-indent="false"', $csl_file_contents) && ($csl_file_contents != $csl->csl)){
+          biblio_citeproc_install_style($name, $csl_file_contents);
+        }
+      }
+    }
+  }
+}
+
+// Implements hook_schema_alter().
+function os_publications_schema_alter(&$schema) {
+  if (isset($schema['biblio'])) {
+    $schema['biblio']['fields']['biblio_url_title'] = array(
+      'type' => 'varchar',
+      'length' => 128,
+      'not null' => FALSE,
+      'description' => 'A title to go with the Relevant URL',
+    );
+  }
+}
+
+// Implements hook_update_N().
+function os_publications_update_7001() {
+  // Insert the biblio_url_title into the biblio_fields table.
+  // Biblio_fields table is not auto increment, grab the last fid and increment it for our insert.
+  $field_id = db_query('SELECT fid FROM {biblio_fields} ORDER BY fid DESC LIMIT 1')->fetchField();
+  if(isset($field_id)) {
+    $field_id = $field_id+1;
+  }
+  db_insert('biblio_fields')
+  ->fields(array(
+    'fid' => $field_id,
+    'name' => 'biblio_url_title',
+    'type' => 'textfield',
+    'size' => 60,
+    'maxsize' => 255,
+  ))
+  ->execute();
+
+  return t('biblio_url_title successfully inserted into the biblio fields table.');
 }
 
 function os_publications_uninstall() {
@@ -80,3 +143,23 @@ function _os_publications_update_field_data() {
   }
 }
 
+/**
+ * Remove indentation information from the citation styles
+ */
+function os_publications_update_7002(){
+
+  if(module_exists('biblio_citeproc')){
+    //Remove Line indentation from citeproc styles
+    foreach (biblio_get_styles() as $name => $desc){
+      $csl = db_query('SELECT csl FROM {biblio_citeproc_styles} WHERE filename = :id', array(':id' => $name))->fetchObject();
+      if (isset($csl->csl)) {
+        $csl_file_contents = $csl->csl;
+        if(($csl_file_contents = str_replace('<bibliography hanging-indent="true"', '<bibliography hanging-indent="false"', $csl_file_contents)) && ($csl_file_contents != $csl->csl)){
+          biblio_citeproc_install_style($name, $csl_file_contents);
+        }
+      }
+    }
+  }
+
+  return t('Removed inline indents from biblio_citeproc citations.');
+}

@@ -43,6 +43,10 @@ function vsite_register_block_info() {
  * Implements hook_block_view
  */
 function vsite_register_block_view($delta = '') {
+  global $user;
+  if(user_is_logged_in()) {
+  	$vsites = vsite_get_vsite_by_owner($user->uid);
+  }
   $block = array();
   ctools_include('vsite','vsite');
 
@@ -51,9 +55,8 @@ function vsite_register_block_view($delta = '') {
       if (vsite_vsite_exists_access()) {
         $content = l(t('Create your site'), 'site/register', array());
 
-      } elseif ($vsites = vsite_get_vsite_by_owner()) {
-
-        if (count($vsites > 1)) {
+      } elseif (isset($vsites) && user_is_logged_in()) {
+        if (count($vsites) > 1) {
           $content = l(t('Go to your sites'), 'user');
         } else {
           $content = l(t('Go to your site'), $vsites[0]->og->purl);

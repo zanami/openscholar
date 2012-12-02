@@ -1,4 +1,4 @@
-	<!--
+
 		function getWindowHeight() {
 			var windowHeight = 0;
 			if (typeof(window.innerHeight) == 'number') {
@@ -41,7 +41,7 @@
 		window.onresize = function() {
 			setFooter();
 		}
-		//-->
+	
 		
 //Insert the secondary nav to the content region for smartphone
  jQuery(window).resize(function() {

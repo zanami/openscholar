@@ -121,7 +121,7 @@ div.messages {
 	
 .content-left.content-right .region-content-first {margin-right:2%;border-right:1px solid #CCC;width: 48%;}	
 
-.region-content-botom {
+.region-content-bottom {
     clear: both;
 }
 
@@ -354,9 +354,8 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 }
 
 /* BLOG COMMENT ICON */
-.links li a.os-blog-add-comment {
+.links li a.os-add-comment {
     background: url("../images/scholarbase-sprite.png") 0 -539px no-repeat;
-    color: #3A6A8C;
     padding-left: 15px;
 
 }
@@ -399,10 +398,15 @@ ul.class_material_field_class a.class_material_field_class_anchor {
   margin-left:0;
 }
 
+.search-results .search-snippet-info {
+    padding-left: 0;
+}
+
 .views-row {margin-bottom:1.5em;}
 
 
-.block-boxes-os_sv_list_box .item-list ul li {margin-bottom:1em;}
+.block-boxes-os_sv_list_box .item-list ul li,
+.block-boxes block-boxes-os_boxes_manual_list  ul li {margin-bottom:1em;}
 
 /*
  * First sidebar (on left in LTR languages, on right in RTL)
@@ -659,7 +663,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	border-radius:5px;
 	-moz-border-radius:5px;
 	border-radius:5px;
-	margin:100px auto;
+	 margin: 100px auto 0;
 	border:1px solid #8996A0;
 	background:#F7F7F7;
 }

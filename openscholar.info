@@ -53,6 +53,12 @@ dependencies[] = media_oembed
 ; media custom
 dependencies[] = media_embed
 
+; performance
+dependencies[] = entitycache
+
+; web services
+dependencies[] = restws
+
 ; boxes
 dependencies[] = views_slideshow_cycle
 
@@ -61,6 +67,7 @@ dependencies[] = os
 dependencies[] = os_help
 dependencies[] = os_files
 dependencies[] = os_files_private
+dependencies[] = os_books
 dependencies[] = os_boxes
 dependencies[] = os_wysiwyg
 dependencies[] = os_search_db
@@ -68,6 +75,7 @@ dependencies[] = os_shields
 dependencies[] = os_comments
 dependencies[] = os_taxonomy
 dependencies[] = os_ga
+dependencies[] = os_tasks
 
 ; Control Panel
 dependencies[] = cp

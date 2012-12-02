@@ -1,0 +1,391 @@
+<?php
+/**
+ * @file
+ * OS Breadcrumbs module file.
+ */
+
+/**
+ * Function to create an array of links for breadcrumb creation.
+ * @return
+ *  Returns an array of links.
+ */
+function os_breadcrumbs_build_breadcrumbs() {
+  $links = array();
+  $menu_object = menu_get_object();
+  $menu_active_trail = menu_get_active_trail();
+  $menu_items = menu_get_item();
+  $map_check = $menu_items['map'];
+
+  if(empty($menu_object)) {
+	// Check for taxonomy outside of a content_type.
+	if(strpos($menu_items['path'],'taxonomy') === 0) {
+	  // Load taxonomy breadcrumbs.
+	  $links = _os_breadcrumbs_build_taxonomy_breadcrumb($menu_items);
+	// Chek for taxonomy in a content type.
+	}elseif(isset($map_check) && in_array('taxonomy',$map_check)) {
+	  // Load taxonomy breadcrumbs.
+	  $links = _os_breadcrumbs_build_taxonomy_breadcrumb($menu_items);
+	}else {
+	  // Load top level breadcrumbs.
+   	  $links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
+	}
+  }else {
+  	// Load the app type.
+    $app_type = $menu_object->type;
+    switch($app_type) {
+      case 'page':
+      	$links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
+    	break;
+      case 'book':
+      	$links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
+    	break;
+      case 'class_material':
+      	$links = _os_breadcrumbs_build_materials_breadcrumb($menu_active_trail);
+      	break;
+      case 'software_release':
+      	$links = _os_breadcrumbs_build_materials_breadcrumb($menu_active_trail);
+      	break;
+      default:
+    	$links = _os_breadcrumbs_build_app_breadcrumb($menu_active_trail);
+    }
+  }
+
+  return $links;
+}
+
+/**
+ * Function to return an html ready string of breadcrumbs.
+ * @param $links
+ *  Array of l() links.
+ */
+function os_breadcrumbs_setup_breadcrumbs($links) {
+  $space = spaces_get_space();
+
+  $radio_options = array(
+    0 => '&raquo;',
+    1 => '&#92;',
+    2 => '&#47;',
+    3 => '&#124;',
+    4 => '&ndash;',
+  );
+
+  // Get the breadcrumb divider variable.
+  $breadcrumb_divider = variable_get('os_breadcrumbs_breadcrumb_divider',0);
+  // Check for vsites
+  if(isset($space) && is_object($space)) {
+  	$breadcrumb_divider = $space->controllers->variable->get('os_breadcrumbs_breadcrumb_divider', 'space');
+  	if(empty($breadcrumb_divider)) {
+  	  $breadcrumb_divider = 0;
+  	}
+  }
+
+  // Set custom breadcrumbs
+  drupal_set_breadcrumb($links);
+  // Get custom breadcrumbs
+  $breadcrumbs = drupal_get_breadcrumb();
+
+  $breadcrumbs_render = '<div class="breadcrumb">'. implode(' '.$radio_options[$breadcrumb_divider].' ', $breadcrumbs) .'</div>';
+
+  return $breadcrumbs_render;
+}
+
+/**
+ * Function to build the breadcrumbs of the top level app.
+ * @param $menu_active_trail
+ *  Variable based off menu_active_trail().
+ * @return
+ *  Returns an array of links.
+ */
+function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
+  $content_type = array(
+    'person' => 'people',
+    'biblio' => 'publications',
+    'class' => 'classes',
+    'link' => 'links',
+    'software_project' => 'software',
+    'media_gallery' => 'galleries',
+    'event' => 'calendar',
+  );
+  $links = array();
+  $last_item = end($menu_active_trail);
+  foreach($menu_active_trail as $key => $menu) {
+    if($key == (count($menu_active_trail)) - 1) {
+      $links[] = t(ucfirst($menu['title']));
+    }else {
+      $links[] = l(ucfirst($menu['title']), $menu['href']);
+    }
+  }
+  // Node id check.
+  // If there is a node, push the type ahead of the node.
+  // So it reads home > publications > my publications
+  // rather than home > my publications.
+  if(strpos($last_item['href'],'node/') === 0) {
+  	if(isset($last_item['original_map'][1])) {
+  	  $nid = $last_item['original_map'][1];
+  	}else {
+  	  return;
+  	}
+  	$node_load = node_load($nid);
+  	$home_link = array_shift($links);
+  	if(array_key_exists($node_load->type,$content_type)) {
+  	  array_unshift($links, l(ucfirst($content_type[$node_load->type]),$content_type[$node_load->type]));
+  	}else {
+  	  // Replace the _ with a space.
+  	  $link_title = str_replace('_', ' ', $node_load->type);
+  	  array_unshift($links, l(ucwords($link_title),$node_load->type));
+  	}
+  	array_unshift($links, $home_link);
+  }
+
+  // Check for blog archives.
+  $menu_items = menu_get_item();
+  if(isset($menu_items) && $menu_items['path'] == 'blog') {
+    $blog_map = $menu_items['map'];
+    if(isset($blog_map) && count($blog_map) > 1) {
+      // Rebuild the breadcrumbs based on the blog archives.
+      $links = array();
+      $links[] = l(t('Home'),'<front>');
+      foreach($blog_map as $key => $blog_archive) {
+      	$blog_breadcrumb_path = $blog_archive;
+      	if($blog_breadcrumb_path == 'all') {
+      	  $blog_archive_title = 'Archive';
+      	  $blog_breadcrumb_path = $menu_items['path'] . '/' . $blog_breadcrumb_path;
+      	}elseif(is_numeric($blog_breadcrumb_path)) {
+		  $blog_archive_title = date('M Y', strtotime($blog_breadcrumb_path.'01'));
+      	}else {
+      	  $blog_archive_title = $blog_breadcrumb_path;
+      	}
+      	if($key == (count($blog_map)) - 1) {
+          $links[] = t(ucfirst($blog_archive_title));
+        }else {
+          $links[] = l(ucfirst($blog_archive_title), $blog_breadcrumb_path);
+        }
+      }
+    }
+  }
+  return $links;
+}
+
+/**
+ *
+ * Function to build the taxonomy links.
+ * @param $menu_items
+ *  Variable based off menu_get_item().
+ */
+function _os_breadcrumbs_build_taxonomy_breadcrumb($menu_items) {
+  $links = array();
+  // Build the home link.
+  $links[] = l(t('Home'),'<front>');
+  // Check for taxonomy in a content_type.
+  if(strpos($menu_items['path'],'taxonomy') === FALSE) {
+    // Prepend the content_type onto the breadcrumb trail.
+    $links[] = l(ucfirst($menu_items['path']),$menu_items['path']);
+  }
+  // Get the tid.
+  $tid = end($menu_items['original_map']);
+  // Load all the parent term.
+  $term_hierarchy = taxonomy_get_parents_all($tid);
+  // Load the vid.
+  $vid = $term_hierarchy[0]->vid;
+  // Load the vocabulary.
+  $vocabulary = taxonomy_vocabulary_load($vid);
+  // Load the vocabulary name.
+  $vocab_name = $vocabulary->name;
+  // Load the vocabulary path.
+  $vocab_path = $vocabulary->machine_name;
+  // Create the vocab link.
+
+  // UPDATE VOCAB FOR NOW IS NOT A LINK.  IT LINKS TO A DEAD PAGE.
+  // ADD BACK TO A LINK WHEN VIEW IS CREATED FOR VOCABS.
+
+  //$links[] = l(ucfirst($vocab_name),$vocab_path);
+  $links[] = t(ucfirst($vocab_name));
+  $terms_ordered = array_reverse($term_hierarchy);
+  foreach($terms_ordered as $key => $term) {
+  	if($key == (count($terms_ordered)) - 1) {
+  	  $links[] = t(ucfirst($term->name));
+  	}else {
+  	  $term_path = taxonomy_term_uri($term);
+  	  $links[] = l(ucfirst($term->name), $term_path['path']);
+  	}
+  }
+  return $links;
+}
+
+/**
+ * Function to create breadcrumb links for subsections.
+ * @param $menu_active_trail
+ *  Variable based off menu_active_trail().
+ */
+function _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail) {
+  $links = array();
+  foreach($menu_active_trail as $key => $menu) {
+    if($key == (count($menu_active_trail)) - 1) {
+      $links[] = t($menu['title']);
+    }else {
+      $links[] = l(ucfirst($menu['title']), $menu['href']);
+    }
+  }
+  return $links;
+}
+
+/**
+ * Function to build breadcrumbs for the class material/software release content type.
+ * @param $menu_active_trail
+ *  Variable based off menu_active_trail().
+ */
+function _os_breadcrumbs_build_materials_breadcrumb($menu_active_trail) {
+  $content_type = array(
+    'person' => 'people',
+    'biblio' => 'publications',
+    'class' => 'classes',
+    'link' => 'links',
+    'software_project' => 'software',
+    'software_release' => 'software release',
+    'media_gallery' => 'galleries',
+    'class_material' => 'class material',
+  );
+  $node_field = '';
+  $links = array();
+  // Load the last item of the menu item.
+  $last_item = end($menu_active_trail);
+  // The href holds the node/node_id.
+  $node_href = explode('/',$last_item['href']);
+  // Get the node id and load the node from it.
+  $node = node_load(end($node_href));
+  if(isset($node)) {
+    // Build the home link.
+    $links[] = l(t('Home'),'<front>');
+    // Both software release and class material need to retain their parent content type.
+    if($node->type == 'class_material') {
+      $node_field_type = $node->field_class['und'][0]['entity'];
+    }
+    if($node->type == 'software_release') {
+      $node_field_type = $node->field_software_project['und'][0]['entity'];
+    }
+    // Get the parent content type and class.
+    if(isset($node_field_type)) {
+      // Parent type.
+      $parent_type = array_key_exists($node_field_type->type, $content_type) ? $content_type[$node_field_type->type] : $node_field_type->type;
+      $links[] = l(ucfirst($parent_type),$parent_type);
+      // Parent class.
+      $parent_class = $node_field_type->title;
+      $parent_class_node = $node_field_type->nid;
+      $links[] = l(ucfirst($parent_class),'node/'.$parent_class_node);
+    }
+    // Breadcrumb title.
+    $materials_title = array_key_exists($node->type, $content_type) ? $content_type[$node->type] : $node->type;
+
+    // Create the class material breadcrumb now.
+
+    // UPDATE class material/software release FOR NOW IS NOT A LINK.  IT LINKS TO A DEAD PAGE.
+    // ADD BACK TO A LINK WHEN/IF VIEW IS CREATED FOR THIS.
+
+    //$links[] = l(ucwords($materials_title),'node/'.$node->nid);
+    $links[] = t(ucwords($materials_title));
+    $links[] = ucfirst($node->title);
+
+  }
+  return $links;
+}
+
+/**
+ * Helper function for another module to use breadcrumbs.
+ * Accepts a menu_active_trail and returns the rendered breadcrumb HTML.
+ * @param $menu_active_trail
+ *  array returned from the function menu_get_active_trail from drupals menu api
+ * @return
+ *  string of html breadcrumbs.
+ */
+function os_breadcrumbs_get_breadcrumbs($menu_active_trail) {
+  if(!isset($menu_active_trail)) {
+  	$menu_active_trail = menu_get_active_trail();
+  }
+  $links = _os_breadcrumbs_build_subsection_breadcrumb($menu_active_trail);
+  if(isset($links)) {
+    return os_breadcrumbs_setup_breadcrumbs($links);
+  }else {
+  	return;
+  }
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function os_breadcrumbs_preprocess_page(&$variables) {
+  $links = array();
+  // Only alter public facing pages for the breadcrumbs.
+  if(context_isset('context', 'os_public')) {
+    $space = spaces_get_space();
+    if(isset($space)) {
+  	  $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
+    }else {
+  	  $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',0);
+    }
+  	$links = os_breadcrumbs_build_breadcrumbs();
+  	$breadcrumbs = os_breadcrumbs_setup_breadcrumbs($links);
+	if(isset($breadcrumbs)) {
+	  // Check for users wanting to show their breadcrumbs on their frontpage.
+	  if(!drupal_is_front_page() && $breadcrumb_show == 0) {
+	    $variables['breadcrumb'] = $breadcrumbs;
+	  }else {
+	    $variables['breadcrumb'] = '';
+	  }
+	}
+  }
+}
+
+/**
+ * Implements hook_cp_settings().
+ */
+function os_breadcrumbs_cp_settings() {
+  $radio_options = array(
+    0 => '&raquo;',
+    1 => '&#92;',
+    2 => '&#47;',
+    3 => '&#124;',
+    4 => '&ndash;',
+  );
+  $form = array();
+  $space = spaces_get_space();
+  $breadcrumb_show = variable_get('os_breadcrumbs_show_breadcrumbs',0);
+  $breadcrumb_divider = variable_get('os_breadcrumbs_breadcrumb_divider',0);
+
+  if (!empty($space)) {
+    // Get the vsite_users_contact_form_anonymous varible
+    $breadcrumb_show = $space->controllers->variable->get('os_breadcrumbs_show_breadcrumbs', 'space');
+    $breadcrumb_divider = $space->controllers->variable->get('os_breadcrumbs_breadcrumb_divider', 'space');
+  }
+  $form['os_breadcrumbs_show_breadcrumbs'] = array(
+    'group' => array(
+      '#id' => 'breadcrumbs',
+      '#title' => t('Breadcrumbs'),
+      '#weight' => 50,
+    ),
+    'form' => array(
+      '#type' => 'radios',
+   	  '#title' => t('Show breadcrumbs on your site?'),
+      '#options' => array(t('Yes'),t('No')),
+      '#default_value' => isset($breadcrumb_show) ? $breadcrumb_show : 0,
+      '#description' => t('This will allow breadcrumbs to be displayed on your site.'),
+    ),
+  );
+
+  $form['os_breadcrumbs_breadcrumb_divider'] = array(
+    'group' => array(
+      '#id' => 'breadcrumbs',
+      '#title' => t('Breadcrumbs'),
+      '#weight' => 50,
+    ),
+    'form' => array(
+      '#type' => 'radios',
+      '#title' => t('Breadcrumb Divider'),
+      '#id' => 'breadcrumb_dividers',
+      '#options' => $radio_options,
+      '#default_value' => isset($breadcrumb_divider) ? $breadcrumb_divider : 0,
+      '#description' => t('This is the divider that will display between your breadcrumbs, for example Home &raquo; News.'),
+      '#attributes' => array('class' => array('container-inline')),
+    ),
+  );
+  return $form;
+}

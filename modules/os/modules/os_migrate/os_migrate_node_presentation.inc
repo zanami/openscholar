@@ -104,6 +104,8 @@ efault/files'));
         $row->field_presentation_file[$delta] = $files[$delta]->field_upload_replace;
       }
     }
+
+    return parent::prepareRow($row); //false -> skip this row
   }
 
   public function complete(&$entity, $row) {

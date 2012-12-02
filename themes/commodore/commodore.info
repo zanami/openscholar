@@ -27,7 +27,6 @@ os[theme_access] = 'public'
   stylesheets[screen][] = css/commodore.layout.css
   stylesheets[screen][] = css/commodore.responsive.smartphone.css
   
-  ie_stylesheets[screen][lt IE 10][] = css/commodore-ie.css
 
   scripts[] = commodore.js
 

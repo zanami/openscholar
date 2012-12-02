@@ -17,7 +17,14 @@ body {
   box-shadow: 0 5px 2em rgba(0,0,0,0.35);
  padding: 0;
 }
+
+.page-websites #content-column {
+    width: 94%;
+}
   
+.page-websites #page {
+    margin-top: 30px;
+}  
 
 body.no-sidebars #columns .hg-container .column {
   padding-top:1px;
@@ -46,6 +53,10 @@ body.sidebar-right #columns .hg-container{
 body.no-sidebars #content-column {
   padding:30px;
   }
+  
+body.page-websites #content-column {
+    padding: 0 30px 10px;
+}  
 
 body.front #content-column,
 body.page-site-register #content-column {
@@ -157,6 +168,7 @@ h2 {
   margin:3px 9px 0 0;
   width:184px;
   padding: 0;
+  
   }
 
 
@@ -594,10 +606,14 @@ td, td.description {
   font-size: .9em;
   }
 
-.section-websites .view-openscholar-sites td {
+.page-websites .view-os-websites td {
   width: 25%;
   padding-bottom: 35px;
   }
+  
+.page-websites .view-os-websites table {
+    width: 100%;
+}
 
 /* FRONT PAGE vSITE PROFILES */
 
@@ -775,14 +791,28 @@ body.section-websites .views-field-field-vsite-logo-fid {
   
   #block-os-login {
     margin-top: 22px;
+    bottom: 0;
  }
  
  #block-os-powered-by {
- 	margin-right:55px;
+ 	margin-right:90px;
+ 	 bottom: -5px;
  }
   
-#block-os-powered-by {
-    bottom: -5px;
+.logged-in #block-os-powered-by {
+
+    margin-right: 0;
+}  
+
+.page-user #block-os-powered-by {
+    margin-right: 220px;
+    bottom: -30px;
+}
+
+.not-logged-in.page-user #columns h1 {
+    margin: -50px 0 0 -45px;
+    padding: 8px 0 0 10px;
+   height: 30px;
 }
   
  /* STATS STYLING ON THE FRONT PAGE */ 
@@ -812,7 +842,7 @@ border-bottom-left-radius: 3px;
 }
 
 .logged-in .block-os-stats dl {
-    margin: 8px 0 12px;
+    margin: -8px 0 12px;
     
 }
 
@@ -833,4 +863,24 @@ border-bottom-left-radius: 3px;
 
 .block-os-stats dt {
      padding-left: 17px;
+}
+
+/** jcarousel overrides **/
+
+.jcarousel-container a.jcarousel-next, .jcarousel-container a.jcarousel-next:hover {
+    background-image: url("../images/black-arrow-right.png");
+     background-position: 0 0;
+    height: 22px;
+    right: 15px;
+    top: -30px;
+    width: 22px;
+}
+
+.jcarousel-container a.jcarousel-prev, .jcarousel-container a.jcarousel-prev:hover {
+    background-image: url("../images/black-arrow-left.png");
+     background-position: 0 0;
+    height: 22px;
+    left: 915px;
+    top: -30px;
+    width: 22px;
 }

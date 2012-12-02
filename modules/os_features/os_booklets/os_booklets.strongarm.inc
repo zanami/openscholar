@@ -44,7 +44,7 @@ function os_booklets_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_book';
-  $strongarm->value = 2;
+  $strongarm->value = '0';
   $export['comment_book'] = $strongarm;
 
   $strongarm = new stdClass();

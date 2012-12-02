@@ -1,3 +1,16 @@
+/**
+ * Site-specific styles for gking.
+ *
+ * Added to every page in gkplus_init() in gkplus.module.
+ */
+
+/* Themes some gking Software Project node bodies with inline logos */
+.flR {
+  float: right;
+  margin: 0 0 .5em 1.5em;
+}
+
+/* Provides indent on gking "Research Interests" taxonomy term pages. */
 .os-taxonomy-term.depth-1.gkplus-no-indent {
   margin-left: 0px;
 }
@@ -23,10 +36,13 @@
   margin-left: 30px;
 }
 
-.gkplus-hidden-heading > h2 {
+/* Hides headings on certain taxonomy terms */
+.gkplus-hidden-heading > h2,
+.gkplus-hidden-heading > .term-listing-heading h2 {
 	display: none;
 }
 
-.gkplus-show-heading > h2 {
+.gkplus-show-heading > h2,
+.gkplus-show-heading > .term-listing-heading h2 {
 	display: inline;
 }

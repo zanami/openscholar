@@ -104,21 +104,21 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
 
 
       //if the file is too big, swap in its thumbnail and don't crop.
-      if ($file->filesize >= 1048576) {
-        foreach ($current_row->field_person_photo as $delta => $filepath) {
-          $thumbnail = $this->_get_thumbnail($filepath);
-          if ($thumbnail) {
-            $current_row->field_person_photo[$delta] = $thumbnail;
-            parent::saveMessage(t('Image too large to scale.  Replacing @file with @thumbnail',
-              array('@file' => $filepath, '@thumbnail' => $thumbnail)), MigrationBase::MESSAGE_NOTICE
-            );
-          } else {
-            $current_row->field_person_photo[$delta] = NULL;
-            parent::saveMessage(t('Image too large to scale.  No replacement found.  @file', array('@file' => $filepath)), MigrationBase::MESSAGE_WARNING);
-          }
-        }
-        $crop = array_diff_key($crop, array('x', 'y', 'width', 'height'));
-      }
+//       if ($file->filesize >= 1048576) {
+//         foreach ($current_row->field_person_photo as $delta => $filepath) {
+//           $thumbnail = $this->_get_thumbnail($filepath);
+//           if ($thumbnail) {
+//             $current_row->field_person_photo[$delta] = $thumbnail;
+//             parent::saveMessage(t('Image too large to scale.  Replacing @file with @thumbnail',
+//               array('@file' => $filepath, '@thumbnail' => $thumbnail)), MigrationBase::MESSAGE_NOTICE
+//             );
+//           } else {
+//             $current_row->field_person_photo[$delta] = NULL;
+//             parent::saveMessage(t('Image too large to scale.  No replacement found.  @file', array('@file' => $filepath)), MigrationBase::MESSAGE_WARNING);
+//           }
+//         }
+//         $crop = array_diff_key($crop, array('x', 'y', 'width', 'height'));
+//       }
 //      $current_row->{'field_person_photo'} = $file->filepath;
       $current_row->{'field_person_photo:destination_file'} = $file->filepath;
 

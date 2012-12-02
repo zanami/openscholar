@@ -106,10 +106,10 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
        $row->{'field_site_logo:destination_file'} = $file->filepath;
 
        //if we have crop data and the original image still exists, use that instead of the pre-cropped image.
-       $original_file = $file->filepath . '.crop_display.jpg';
-       if (is_readable(variable_get('os_migrate_files', '') . '/' . $original_file) && strlen($row->$field_vsite_logo_data)) {
-         $file->filepath = $original_file;
-       }
+//        $original_file = $file->filepath . '.crop_display.jpg';
+//        if (is_readable(variable_get('os_migrate_files', '') . '/' . $original_file) && strlen($row->$field_vsite_logo_data)) {
+//          $file->filepath = $original_file;
+//        }
 
        if (!is_readable(variable_get('os_migrate_files', '') . '/' . $file->filepath)) {
          Migration::saveMessage(t('Could not read file @file.  Ignoring it.', array('@file' => $file->filepath)), Migration::MESSAGE_NOTICE);
@@ -145,6 +145,16 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
        }
      } else {
        $row->$field_vsite_logo = null;
+     }
+
+     //update featured site flag to sticky
+     if ($flag_id = parent::d6_db_select('flags')->condition('name', 'featured_web_sites')->fields('flags', array('fid'))->execute()->fetchField()) {
+       $flag_query = parent::d6_db_select('flag_content', 'fc')
+         ->condition('fc.fid', $flag_id)
+         ->condition('content_id', $row->nid)
+         ->fields('fc', array('fid'))
+         ->execute();
+       $row->sticky = (bool) $flag_query->rowCount();
      }
 
      $row->field_group_path = $this->_get_field_group_path($row->nid, $row->value);
