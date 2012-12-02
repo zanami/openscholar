@@ -60,6 +60,11 @@ function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = FALSE)
     }
 
     foreach ($info['node'] as $nodetype) {
+      // Hide harvard API importer node from content types list.
+      if ($nodetype == 'harvard_api_importer') {
+        continue;
+      }
+
       if (isset($node_info[$nodetype]['name'])) {
         $bundles[$nodetype] = $node_info[$nodetype]['name'];
       }
