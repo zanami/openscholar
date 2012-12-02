@@ -441,12 +441,12 @@ function _os_process_node_links_comment_add_class(&$vars) {
         $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] .= " $class";
       }
       else {
-        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] = $class;
+        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] = array($class);
       }
     }
     else {
       $vars['content']['links']['comment']['#links']['comment-add']['attributes'] = array(
-        'class' => $class,
+        'class' => array($class),
       );
     }
   }
