@@ -18,6 +18,7 @@ class os_sv_list_box extends os_boxes_default {
       'number_of_items' => 6,
       'sort_by' => 'sort_newest',
       'vocabs' => array(),
+      'terms' => array(),
 
       'biblio_show_all' => TRUE,
       'biblio_whitelist' => array('all'=>'all'),
@@ -34,7 +35,7 @@ class os_sv_list_box extends os_boxes_default {
     $defaults = $this->options_defaults();
     drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting');
 
-    $content_types = os_get_bundles(1);
+    $content_types = array(0 => t('- Select -')) + os_get_bundles(1);
 
     if (isset($content_types['media_gallery'])) {
       $content_types['image'] = t('Images');
@@ -122,15 +123,40 @@ class os_sv_list_box extends os_boxes_default {
       // Make the vocabulary selection optional.
       $vocabs = array(0 => t('- Select -')) + $vocabs;
     }
-    $default_value = !empty($form_state['values']['vocabs']) ? $form_state['values']['vocabs'] : $this->options['vocabs'];
+    $vocabs_default_value = !empty($form_state['values']['vocabs']) ? $form_state['values']['vocabs'] : $this->options['vocabs'];
+    $terms_default_value = !empty($form_state['values']['terms']) ? $form_state['values']['terms'] : $this->options['terms'];
 
     $form['query_details']['vocabs'] = array(
       '#type' => 'select',
       '#title' => t('Vocabulary'),
       '#description' => t('Select a vocabulary to filter content by tagged items.'),
       '#options' => $vocabs,
-      '#default_value' => $default_value,
+      '#default_value' => $vocabs_default_value,
       '#access' => $vocabs,
+      '#ajax' => array(
+        'callback' => 'os_sv_list_terms_details_ajax',
+        'wrapper' => 'terms-details',
+      ),
+    );
+
+    $terms = array();
+    if ($vocabs_default_value) {
+      $tree = taxonomy_get_tree($vocabs_default_value);
+      foreach ($tree as $item) {
+        $term = taxonomy_term_load($item->tid);
+        $terms[$term->tid] = $term->name;
+      }
+    }
+
+    $form['query_details']['terms'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Vocabulary terms'),
+      '#description' => empty($terms) ? t('No terms in the vocaulry') : '',
+      '#options' => $terms,
+      '#access' => $vocabs,
+      '#default_value' => $terms_default_value,
+      '#prefix' => '<div id="terms-details">',
+      '#suffix' => '</div>',
     );
 
     $form['query_details']['more'] = array(
@@ -346,8 +372,15 @@ class os_sv_list_box extends os_boxes_default {
         }
         $query->fields('n', array('nid'));
 
-        if ($tagged_nodes) {
-          $query->condition('n.nid', $tagged_nodes, 'IN');
+        if (!empty($this->options['vocabs'])) {
+          // If a vocabulary was selected and there were no tagged nodes then
+          // we don't need to return any node.
+          if (empty($tagged_nodes)) {
+            $query->condition('n.nid', 0);
+          }
+          else {
+            $query->condition('n.nid', $tagged_nodes, 'IN');
+          }
         }
 
         $biblio_nids = $query->execute()->fetchCol();
@@ -409,8 +442,15 @@ class os_sv_list_box extends os_boxes_default {
         break;
 
       default:
-        if ($tagged_nodes) {
-          $efq->propertyCondition('nid', $tagged_nodes, 'IN');
+        if (!empty($this->options['vocabs'])) {
+          // If a vocabulary was selected and there were no tagged nodes then
+          // we don't need to return any node.
+          if (empty($tagged_nodes)) {
+            $efq->propertyCondition('nid', 0, '=');
+          }
+          else {
+            $efq->propertyCondition('nid', $tagged_nodes, 'IN');
+          }
         }
         $result = $efq->execute();
         $nids = isset($result['node']) ? array_keys($result['node']) : array();
@@ -433,10 +473,22 @@ class os_sv_list_box extends os_boxes_default {
       return;
     }
 
+    // Clean terms with empty value.
+    foreach ($this->options['terms'] as $key => $value) {
+      if ($value == 0) {
+        unset($this->options['terms'][$key]);
+      }
+    }
+
     // Collect all the taxonomy term ID.
-    $tids = array();
-    foreach ($vocabulary as $terms) {
-      $tids[] = $terms->tid;
+    if (!empty($this->options['terms'])) {
+      $tids = $this->options['terms'];
+    }
+    else {
+      $tids = array();
+      foreach ($vocabulary as $terms) {
+        $tids[] = $terms->tid;
+      }
     }
 
     $query = db_select('taxonomy_index', 't');
@@ -534,4 +586,14 @@ class os_sv_list_box extends os_boxes_default {
  */
 function os_sv_list_query_details_ajax($form, &$form_state) {
   return $form['options']['query_details'];
+}
+
+/**
+ * AJAX callback for adding terms to the query.
+ *
+ * Since the controlling logic for populating the form is in the form builder
+ * function, all we do here is select the element and return it to be updated.
+ */
+function os_sv_list_terms_details_ajax($form, &$form_state) {
+  return $form['options']['query_details']['terms'];
 }
