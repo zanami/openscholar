@@ -469,6 +469,13 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   function _d7_vsite_type() {
     $override = variable_get('os_migrate_default_group_bundle', variable_get('os_default_group_bundle', 'keep'));
     if ($override == 'keep') {
+      $d6_vsite = self::_d6_vsite_type();
+      if ($d6_vsite == 'project') {
+        return 'project';
+      } else {
+        return 'personal';
+      }
+    } elseif ($override == 'default') {
       return variable_get('os_default_group_bundle', 'personal');
     } else {
       return $override;
