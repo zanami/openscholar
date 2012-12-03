@@ -81,6 +81,8 @@ img {
   .region-sidebar-first .content ul.menu {margin-left:12px;}
   .region-sidebar-second .content ul.menu {margin-left:0px;}
   
+  
+  .sidebar #block-os-secondary-menu .content ul.menu li  a {text-transform:none;}
 
   
   .sidebar .views-field-title  {padding-bottom: 2px;}
@@ -197,11 +199,11 @@ img {
 }
 
 .sidebar #nice-menu-{border-top:none;}
-.sidebar ul.nice-menu ul {
+.sidebar ul.menu ul {
     top: 0;
 }
 
-.sidebar ul.nice-menu li {
+.sidebar ul.menu li {
 	background: none;
 }
 
@@ -224,12 +226,12 @@ ul.nice-menu-left li.menuparent:hover, ul.nice-menu-left li li.menuparent:hover 
     margin: 0;
   }		
 			
-.region-sidebar-second.sidebar ul.nice-menu ul {
+.region-sidebar-second.sidebar ul.menu ul {
 	margin-top:0;
 
 	}	
 
-.sidebar ul.nice-menu ul ul {
+.sidebar ul.menu ul ul {
 	margin-top:0;
 	border:none;
 	}	

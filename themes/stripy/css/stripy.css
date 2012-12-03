@@ -174,30 +174,34 @@ body.two-sidebars .region-sidebar-first {
 }     
 
 
-.sidebar ul.nice-menu {
+.sidebar ul.menu {
    border-top:none;
 	}
 
-.sidebar ul.nice-menu ul {
+.sidebar ul.menu ul {
 	margin-top:-46px;
 	border-top:none;
 	}
 	
-.sidebar ul.nice-menu li {
+.sidebar ul.menu li {
 	background:none;
 	}	
 	
-.sidebar ul.nice-menu a {
+.sidebar ul.menu a {
 	color: #B54F26;
 	line-height: 1;
 	text-decoration:underline !important;
 	}
 	
-.sidebar ul.nice-menu a:hover {
+.sidebar #block-os-primary-menu ul.menu a {
+	text-decoration:none !important;
+	}	
+	
+.sidebar ul.menu a:hover {
 	color:#8c2e08;
 	} 	
 	
-.sidebar ul.nice-menu ul li {
+.sidebar ul.menu ul li {
     background: #EEEEEE;
 
 }	
@@ -207,12 +211,12 @@ ul.nice-menu-left a, ul.nice-menu-left ul a {
 }	
 	
 	
-.region-sidebar-second.sidebar ul.nice-menu ul {
+.region-sidebar-second.sidebar ul.menu ul {
 	margin-top:0;
 
 	}	
 
-.sidebar ul.nice-menu ul ul {
+.sidebar ul.menu ul ul {
 	margin-top:0;
 	border:none;
 	}

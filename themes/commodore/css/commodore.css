@@ -223,12 +223,19 @@ ul.nice-menu ul {
     top: 3.5em;
 }
 
-.sidebar ul.nice-menu a {
+.sidebar ul.menu a {
     color: #5D7485;
     font-weight:bold;
 }
 
-.sidebar ul.nice-menu a:hover {
+.sidebar #block-os-secondary-menu ul.menu a {
+    font-weight:normal;
+     color: #4E84C4;
+}
+
+
+
+.sidebar ul.menu a:hover {
     color: #4E84C4;
 }
 
