@@ -27,7 +27,10 @@ html, body {
      box-shadow: 0px 3px 3px #999;
      margin: 0 auto 50px;
      padding:10px;
-     width: 948px;
+}
+
+#page {
+    margin-bottom: 0;
 }
 
 .lt-ie9 #columns { border: 1px solid #DDD;}
@@ -79,6 +82,7 @@ h6 {
      font-family: georgia;
      font-size: 1.4em;
      line-height: 32px;
+     font-weight: normal;
 }
 
 h1, h2, h3, h4 {
@@ -91,7 +95,7 @@ h1#page-title {
      margin-bottom: 0.5em;
 }
 
-.front #content-bottom h3, .front #content-left h3, .front #content-right h3 {
+.front .region-content-first h2.block-title, .front .region-content-second h2.block-title, .front .region-content-bottom h2.block-title {
      border-bottom: 1px solid #CCCCCC;
      font-size: 2em;
      margin-bottom: 14px;
@@ -99,13 +103,7 @@ h1#page-title {
      text-align: center;
 }
 
-.front .gpanel.content h2.block-title {
-     border-bottom: 1px solid #CCCCCC;
-     font-size: 1.4em;
-     margin-bottom: 10px;
-     padding-bottom: 8px;
 
-}
 
 h4 {
      font-size: 1.35em;
@@ -317,14 +315,15 @@ div.views-field-field-gallery-image-fid img {
 
 #footer {
      background: #9AA5AE;
-     min-height: 50px;
+     min-height: 83px;
      width:100%;
      position:relative;
      bottom:0;
+     padding: 10px 0;
 }
 
 
-#footer .wrap {
+#footer .region-footer {
      color: #EFEFEF;
      font-size: 0.95em;
      margin: 0 auto;
@@ -332,17 +331,21 @@ div.views-field-field-gallery-image-fid img {
 
 }
 
-#footer .wrap a {
+#footer .region-footer a {
      color: #EFEFEF;
      text-decoration: none;
 }
 
-#footer .wrap a:hover {
+#footer .region-footer a:hover {
      text-decoration: none;
 }
 
-#footer .wrap #powered-link {
+#footer .region-footer #powered-link {
      margin-top: 5px;
+}
+
+.os-powered-link, #block-os-powered-by {
+    bottom: -55px;
 }
 
 #footer .block {
@@ -358,33 +361,55 @@ div.views-field-field-gallery-image-fid img {
 margin:-54px -2px 0;
 }
 
-#footer .box-os_boxes_simple .os-footerleft {
+#footer .block-boxes-os_boxes_html .os-footerleft {
      float: left;
      text-align: left;
      width: 50%;
 }
 
-#footer .box-os_boxes_simple .os-footerright {
+#footer .block-boxes-os_boxes_html .os-footerright {
      float: right;
      text-align: right;
      width: 50%;
+     margin-top: -20px;
 }
 
 #boxes-box-scholar_book_current_toc a:first-of-type, .block-boxes-os_boxes_booktoc a:first-of-type {
      display: none;
 }
 
-.front.og-context-9015 #footer {
+
+.front.og-context-node-9015 #footer {
      background: url('../images/frontFooterBg.gif') repeat-x 0 100px;
+      min-height: 165px;
 }
 
-.front.og-context-9015 #columns {
+.front.og-context-node-9015 #columns {
     margin: 0 auto 10px;
 }
 
 .os-greyrule {width:99%; height:2px; border-top:1px solid #DDD;}
 
-.og-context-9015 .node-type-announcement .submitted {display:none;}
+
+.front.og-context-node-9015 .region-content-bottom .block-boxes-os_boxes_manual_list .node-content .view-mode-teaser h4 span img {float:left;
+    display:inline;
+    clear:none;
+    width:100px;
+    height:64px; }
+
+.front.og-context-node-9015 .region-content-bottom .block-boxes-os_boxes_manual_list .node-content .view-mode-teaser p {display:none;}
+
+.front.og-context-node-9015 .region-content-bottom .block-boxes-os_boxes_manual_list .node-content .view-mode-teaser h4 a {
+    clear: none;
+    display: inline;
+    float: right;
+    width: 175px;
+    font-size:.85em;
+}
+
+.front.og-context-node-9015 .region-content-bottom .block-boxes-os_boxes_manual_list .clearfix .links.inline li a,
+.front.og-context-node-9015 .region-content-bottom .block-boxes-os_boxes_manual_list .node-header,
+.front.og-context-node-9015 .region-content-bottom .block-boxes-os_boxes_manual_list .submitted {display:none;}
 
 .page-announcements.og-context-9015 .node-type-announcement .content img,
 .node-type-announcement.og-context-9015 .content img {margin:0 18px 18px 0;}
@@ -398,8 +423,11 @@ margin:-54px -2px 0;
 /* CUSTOM STYLES END */
 
 
-p.copy a.footer-login {
-     margin-top: 20px;
+#block-os-login {
+    bottom: -60px;
+    float: right;
+    margin-right: 120px;
+    position: relative;
 }
 
 .os-smallfont {
