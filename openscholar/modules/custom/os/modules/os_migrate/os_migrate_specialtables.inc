@@ -38,14 +38,16 @@ class SpecialTablesOSMigration extends OSMigration {
           ->fields('nr', array('vid', 'body'))
           ->condition(db_or()
             ->condition('body', '%<iframe%', 'LIKE')
-            ->condition('body', '%<object%', 'LIKE'));
+            ->condition('body', '%<embed%', 'LIKE')
+            ->condition('body', '%<object%', 'LIKE')
+          );
 
         //select all the embedded content
         $embeds = array();
         foreach($query->execute() as $node) {
           $dom = filter_dom_load($node->body);
 
-          foreach(array('iframe', 'object') as $tag) {
+          foreach(array('iframe', 'object', 'embed') as $tag) {
             $items = $dom->getElementsByTagName($tag);
             for ($i=0,$len=$items->length ; $i<$len ; $i++) {
               $dom_item = $items->item($i);

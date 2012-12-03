@@ -15,8 +15,10 @@ class os_sv_list_box extends os_boxes_default {
       'more_link' => '', // what's a good default?
 
       'pager' => FALSE,
-      'number_of_items' => 5,
+      'number_of_items' => 6,
       'sort_by' => 'sort_newest',
+      'vocabs' => array(),
+      'terms' => array(),
 
       'biblio_show_all' => TRUE,
       'biblio_whitelist' => array('all'=>'all'),
@@ -30,31 +32,28 @@ class os_sv_list_box extends os_boxes_default {
    */
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
+    $defaults = $this->options_defaults();
+    drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting');
 
-    $content_types = array(
-      'all' => t('All')
-    ) + os_get_bundles(1);
+    $content_types = array(0 => t('- Select -')) + os_get_bundles(1);
 
     if (isset($content_types['media_gallery'])) {
       $content_types['image'] = t('Images');
     }
 
-    $form['#submit'] = array(
-      'os_sv_list_form_submit'
-    );
+    $form['#submit'] = array('os_sv_list_form_submit');
+
+    $content_types_value = !empty($form_state['values']['content_type']) ? $form_state['values']['content_type'] : $this->options['content_type'];
 
     $form['content_type'] = array(
       '#type' => 'select',
-      '#title' => 'Content Type',
-      '#default_value' => $this->options['content_type'],
+      '#title' => t('Content Type'),
+      '#default_value' => $content_types_value,
       '#options' => $content_types,
       '#id' => 'os_sv_list_content_type',
       '#ajax' => array(
-        'callback' => 'os_sv_list_more_link_ajax',
-        //'wrapper' => 'more_link_div',
-        'wrapper' => 'edit-more-link',
-        'method' => 'replace',
-        'effect' => 'none',
+        'callback' => 'os_sv_list_query_details_ajax',
+        'wrapper' => 'query-details',
       ),
       '#attached' => array(
         'js' => array(
@@ -66,7 +65,7 @@ class os_sv_list_box extends os_boxes_default {
     $form['biblio_show_all'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show all publication types'),
-      '#default_value' => $this->options['biblio_show_all'],
+      '#default_value' => isset($this->options['biblio_show_all']) ? $this->options['biblio_show_all'] : $defaults['biblio_show_all'],
       '#id' => 'biblio_show_all_check',
       '#prefix' => '<div id="os_sv_list_biblio_show_all">',
       '#suffix' => '</div>',
@@ -75,7 +74,7 @@ class os_sv_list_box extends os_boxes_default {
     $form['biblio_whitelist'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Select publication types to display'),
-      '#default_value' => $this->options['biblio_whitelist'],
+      '#default_value' => isset($this->options['biblio_whitelist']) ? $this->options['biblio_whitelist'] : $defaults['biblio_whitelist'],
       '#options' => $this->_biblio_types(),
       '#prefix' => '<div id="os_sv_list_biblio_whitelist">',
       '#suffix' => '</div>',
@@ -102,32 +101,112 @@ class os_sv_list_box extends os_boxes_default {
       '#title' => 'Sorting',
       '#default_value' => $this->options['sort_by'],
       '#options' => array(
-        'sort_newest' => t('Newest'),
-        'sort_oldest' => t('Oldest'),
-        'sort_alpha' => t('Alphabetical')
+        //content type sensitive sorts
+        'sort_event' => t('Event Date'),
+        'sort_presentation' => t('Recently Presented'),
+        'sort_biblio' => t('Year of Publication'),
+
+        //standard sorts
+        'sort_newest' => t('Newest Post'),
+        'sort_oldest' => t('Oldest Post'),
+        'sort_alpha' => t('Alphabetical'),
       )
     );
 
-    $form['more'] = array(
-      '#title' => 'Show "more" link',
-      '#type' => 'checkbox',
-      '#default_value' => $this->options['more']
+    $form['query_details'] = array(
+      '#prefix' => '<div id="query-details">',
+      '#suffix' => '</div>',
+      '#parents' => array('query_details'),
     );
 
-    $form['more_link'] = array(
-      '#title' => 'URL for the more link',
-      '#type' => 'textfield',
-      '#default_value' => $this->options['more_link'],
-      '#states' => array(
-        'visible' => array('input[name=more]' => array('checked' => TRUE)),
-        'invisible'  => array('input[name=more]' => array('checked' => FALSE))
+    if ($vocabs = os_sv_list_get_content_type_vocabs($content_types_value)) {
+      // Make the vocabulary selection optional.
+      $vocabs = array(0 => t('- Select -')) + $vocabs;
+    }
+    $vocabs_default_value = !empty($form_state['values']['vocabs']) ? $form_state['values']['vocabs'] : $this->options['vocabs'];
+    $terms_default_value = !empty($form_state['values']['terms']) ? $form_state['values']['terms'] : $this->options['terms'];
 
+    $form['query_details']['vocabs'] = array(
+      '#type' => 'select',
+      '#title' => t('Vocabulary'),
+      '#description' => t('Select a vocabulary to filter content by tagged items.'),
+      '#options' => $vocabs,
+      '#default_value' => $vocabs_default_value,
+      '#access' => $vocabs,
+      '#ajax' => array(
+        'callback' => 'os_sv_list_terms_details_ajax',
+        'wrapper' => 'terms-details',
       ),
-      '#prefix' => '<div id="more_link_div">',
+    );
+
+    $terms = array();
+    if ($vocabs_default_value) {
+      $tree = taxonomy_get_tree($vocabs_default_value);
+      foreach ($tree as $item) {
+        $term = taxonomy_term_load($item->tid);
+        $terms[$term->tid] = $term->name;
+      }
+    }
+
+    $form['query_details']['terms'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Vocabulary terms'),
+      '#description' => empty($terms) ? t('No terms in the vocaulry') : '',
+      '#options' => $terms,
+      '#access' => $vocabs,
+      '#default_value' => $terms_default_value,
+      '#prefix' => '<div id="terms-details">',
       '#suffix' => '</div>',
     );
 
-    $form['more_text'] = array(
+    $form['query_details']['more'] = array(
+      '#title' => 'Show "more" link',
+      '#type' => 'checkbox',
+      '#default_value' => $this->options['more'],
+    );
+
+    $content_map = array(
+      'all' => '',
+      'news' => 'news',
+      'biblio' => 'publications',
+      'event' => 'calendar',
+      'page' => 'pages',
+      'data' => 'data',
+      'blog' => 'blog',
+      'book' => 'documents',
+      'feed' => 'reader',
+      'media_gallery' => 'galleries',
+      'link' => 'links',
+      'presentation' => 'presentations',
+      'software_project' => 'software',
+      'software_release' => 'software',
+      'person' => 'people',
+    );
+
+    if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
+      $default_value = $content_map[$content_types_value];
+    }
+    else {
+      $default_value = $this->options['more_link'];
+    }
+
+    if (!empty($form_state['values']['more_link'])) {
+      // Unset the values from the text field, as otherwise FAPI will add
+      // it to the #value of the form-element.
+      // @see http://drupal.org/node/1024962#comment-4021826
+      unset($form_state['input']['more_link']);
+    }
+
+    $form['query_details']['more_link'] = array(
+      '#title' => t('URL for the more link'),
+      '#type' => 'textfield',
+      '#default_value' => $default_value,
+      '#states' => array(
+        'visible' => array('input[name=more]' => array('checked' => TRUE)),
+      ),
+    );
+
+    $form['query_details']['more_text'] = array(
       '#title' => 'Label of the more link (default: "more")',
       '#type' => 'textfield',
       '#default_value' => $this->options['more_text'],
@@ -149,8 +228,6 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['number_of_items']
     );
 
-//    $form = $this->form_content_types($form, $content_types);
-
     return $form;
   }
   /**
@@ -158,124 +235,16 @@ class os_sv_list_box extends os_boxes_default {
    */
   public function render() {
     $block = parent::render();
-    $efq = $this->get_default_query();
     $options = $this->options;
     $page_num = isset($_GET['page']) ? $_GET['page'] : 0;
+    $page = 0;
 
-    //exceptions
-    switch ($options['content_type']) {
-      case 'event':
-        if ($options['sort_by'] == 'sort_newest') {
-          $options['sort_by'] = 'sort_event';
-        }
-        break;
 
-      case 'presentation':
-        if ($options['sort_by'] == 'sort_newest') {
-          $options['sort_by'] = 'sort_presentation';
-        }
-        break;
-
-      case 'book':
-        //limit book depth to 1.  not a field, so use a regular query
-        $query = db_select('menu_links', 'ml')
-          ->condition('module', 'book')
-          ->condition('depth', 1);
-        $query->addField('ml', 'link_path');
-        $book_nids = $query->execute()->fetchCol();
-        $book_nids = preg_replace('/node\//', '', $book_nids);
-        $book_nids = array_values($book_nids);
-
-        if (count($book_nids)) {
-          $efq->propertyCondition('nid', $book_nids, 'IN');
-        }
-        break;
-
-      case 'biblio':
-        $page = 0; //add pager properly later
-        $items = $options['number_of_items'];
-        $query = db_select('node', 'n')
-          ->condition('n.type', 'biblio')
-          ->condition('n.status', 1);
-
-        if (module_exists('vsite') && $space = spaces_get_space()) {
-          $query->join('og_membership', 'og', 'og.etid = n.nid');
-          $query->condition('og.gid', $space->id);
-        }
-
-        $query->join('biblio', 'b', 'n.vid = b.vid');
-
-        if (isset($options['biblio_show_all']) && !$options['biblio_show_all'] && isset($options['biblio_whitelist'])) {
-          $bib_types = array_filter($options['biblio_whitelist']);
-          $query->condition('biblio_type', array_values($bib_types), 'IN');
-        }
-
-        $query->orderBy('biblio_year', 'DESC');
-        $query->range($page_num*$items, $items);
-        $query->fields('n', array('nid'));
-
-        $biblio_nids = $query->execute()->fetchCol();
-        break;
-
-      case 'image':
-        $image_query = new EntityFieldQuery();
-        $image_query->entityCondition('entity_type', 'file');
-        if ($space = spaces_get_space()) {
-          $image_query->entityCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
-        }
-
-        $sorts = array(
-          'sort_newest' => array('timestamp', 'DESC'),
-          'sort_oldest' => array('timestamp', 'ASC'),
-          'sort_alpha' => array('filename', 'ASC'),
-        );
-        $sort = (isset($sorts[$options['sort_by']])) ? $sorts[$options['sort_by']] : $sorts['sort_newest'];
-        $image_query->propertyOrderBy($sort[0], $sort[1]);
-
-        if ($options['pager']) {
-          $image_query->pager($options['number_of_items']);
-          $image_page = $image_query->pager['element'];
-        }
-        break;
-    }
-
-    // content type
-    if ($options['content_type'] != 'all') {
-      $efq->propertyCondition('type', $options['content_type']);
-    }
-
-    // pager for efq
-    if ($options['pager']) {
-      $efq->pager($options['number_of_items']);
-      $page = $efq->pager['element'];
-    }
-
-    // sort
-    $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
-    $this->$sort_func($efq);
-
-    // display
-    switch ($options['content_type']) {
-      case 'biblio':
-        $nids = $biblio_nids;
-        break;
-
-      case 'image':
-        $result = $image_query->execute();
-        $nids = isset($result['file']) ? array_keys($result['file']) : array();
-        $page = (isset($image_page)) ? $image_page : NULL;
-        break;
-
-      default:
-        $result = $efq->execute();
-        $nids = isset($result['node']) ? array_keys($result['node']) : array();
-        break;
-    }
-
+    $nids = $this->get_nids($page_num, $page);
     $more_link = FALSE;
 
     if (count($nids)) {
-      if (count($nids) > $options['number_of_items']) {
+      if (count($nids) >= $options['number_of_items']) {
         $nids = array_slice($nids, 0, $options['number_of_items']);
         $more_link = TRUE;
       }
@@ -321,6 +290,7 @@ class os_sv_list_box extends os_boxes_default {
       $block['title'] = $block['subject'] = '';
       return $block;
     }
+
   }
 
   // get_default_query_query - humble beginnings of the EFQ
@@ -339,6 +309,203 @@ class os_sv_list_box extends os_boxes_default {
     return $efq;
   }
 
+   /**
+   * Queries the DB for all nids in the box
+   *
+   * @param int $page_num
+   *   Specifies a page.  FALSE to get all nids.
+   * @return multitype:
+   */
+  public function get_nids($page_num = FALSE, &$page = NULL) {
+    $efq = $this->get_default_query();
+    $options = $this->options;
+
+    $tagged_nodes = $this->tagged_nodes();
+
+    //exceptions
+    switch ($options['content_type']) {
+      case 'book':
+        //limit book depth to 1.  not a field, so use a regular query
+        $query = db_select('menu_links', 'ml')
+        ->condition('module', 'book')
+        ->condition('depth', 1);
+        $query->addField('ml', 'link_path');
+        $book_nids = $query->execute()->fetchCol();
+        $book_nids = preg_replace('/node\//', '', $book_nids);
+        $book_nids = array_values($book_nids);
+
+        if (count($book_nids)) {
+          $efq->propertyCondition('nid', $book_nids, 'IN');
+        }
+        break;
+
+      case 'biblio':
+        $page = 0; //add pager properly later
+        $items = $options['number_of_items'];
+        $query = db_select('node', 'n')
+          ->condition('n.type', 'biblio')
+          ->condition('n.status', 1);
+
+        if (module_exists('vsite') && $space = spaces_get_space()) {
+          $query->join('og_membership', 'og', 'og.etid = n.nid');
+          $query->condition('og.gid', $space->id);
+          $query->condition('og.entity_type', 'node');
+          $query->condition('og.group_type', 'node');
+        }
+
+        $query->join('biblio', 'b', 'n.vid = b.vid');
+
+        if (isset($options['biblio_show_all']) && !$options['biblio_show_all'] && isset($options['biblio_whitelist'])) {
+          $bib_types = array_filter($options['biblio_whitelist']);
+          $query->condition('biblio_type', array_values($bib_types), 'IN');
+        }
+
+        switch($options['sort_by']) {
+          case 'sort_biblio': $query->orderBy('biblio_year', 'DESC'); $query->orderBy('n.created', 'DESC'); break;
+          case 'sort_newest': $query->orderBy('n.created', 'DESC'); break;
+          case 'sort_oldest': $query->orderBy('n.created', 'ASC'); break;
+          case 'sort_alpha':  $query->orderBy('n.title', 'ASC'); break;
+        }
+
+        if ($page_num) {
+          $query->range($page_num*$items, $items);
+        }
+        $query->fields('n', array('nid'));
+
+        if (!empty($this->options['vocabs'])) {
+          // If a vocabulary was selected and there were no tagged nodes then
+          // we don't need to return any node.
+          if (empty($tagged_nodes)) {
+            $query->condition('n.nid', 0);
+          }
+          else {
+            $query->condition('n.nid', $tagged_nodes, 'IN');
+          }
+        }
+
+        $biblio_nids = $query->execute()->fetchCol();
+        break;
+
+      case 'image':
+        $image_query = new EntityFieldQuery();
+        $image_query->entityCondition('entity_type', 'file');
+        if ($space = spaces_get_space()) {
+          $image_query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
+        }
+
+        $sorts = array(
+          'sort_newest' => array('timestamp', 'DESC'),
+          'sort_oldest' => array('timestamp', 'ASC'),
+          'sort_alpha' => array('filename', 'ASC'),
+        );
+        $sort = (isset($sorts[$options['sort_by']])) ? $sorts[$options['sort_by']] : $sorts['sort_newest'];
+        $image_query->propertyOrderBy($sort[0], $sort[1]);
+
+        if ($options['pager']) {
+          $image_query->pager($options['number_of_items']);
+          $image_page = $image_query->pager['element'];
+        }
+        break;
+    }
+
+    // content type
+    if ($options['content_type'] != 'all') {
+      $efq->propertyCondition('type', $options['content_type']);
+    }
+
+    // pager for efq
+    if ($options['pager'] && $options['content_type'] != 'biblio' && is_int($page)) {
+      $efq->pager($options['number_of_items']);
+      $page = $efq->pager['element'];
+    }
+    elseif ($options['pager'] && $options['content_type'] == 'biblio' && empty($page_num)) {
+      //init the pager since we don't have efq doing that for us.
+      $total = count($biblio_nids);
+      $limit = $options['number_of_items'];
+      pager_default_initialize($total, $limit, $page);
+    }
+
+    // sort
+    $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
+    $this->$sort_func($efq);
+
+    // display
+    switch ($options['content_type']) {
+      case 'biblio':
+        $nids = $biblio_nids;
+        break;
+
+      case 'image':
+        $result = $image_query->execute();
+        $nids = isset($result['file']) ? array_keys($result['file']) : array();
+        $page = (isset($image_page)) ? $image_page : NULL;
+        break;
+
+      default:
+        if (!empty($this->options['vocabs'])) {
+          // If a vocabulary was selected and there were no tagged nodes then
+          // we don't need to return any node.
+          if (empty($tagged_nodes)) {
+            $efq->propertyCondition('nid', 0, '=');
+          }
+          else {
+            $efq->propertyCondition('nid', $tagged_nodes, 'IN');
+          }
+        }
+        $result = $efq->execute();
+        $nids = isset($result['node']) ? array_keys($result['node']) : array();
+        break;
+    }
+
+    return $nids;
+  }
+
+  /**
+   * Return the nodes attached to terms of the selected vocabulary.
+   */
+  public function tagged_nodes() {
+    if (empty($this->options['vocabs'])) {
+      return;
+    }
+
+    // Load the taxonomy terms of the vocabulary.
+    if (!$vocabulary = taxonomy_get_tree($this->options['vocabs'])) {
+      return;
+    }
+
+    // Clean terms with empty value.
+    foreach ($this->options['terms'] as $key => $value) {
+      if ($value == 0) {
+        unset($this->options['terms'][$key]);
+      }
+    }
+
+    // Collect all the taxonomy term ID.
+    if (!empty($this->options['terms'])) {
+      $tids = $this->options['terms'];
+    }
+    else {
+      $tids = array();
+      foreach ($vocabulary as $terms) {
+        $tids[] = $terms->tid;
+      }
+    }
+
+    $query = db_select('taxonomy_index', 't');
+    $query->join('node', 'n', 'n.nid = t.nid');
+    $result = $query
+      ->condition('t.tid', $tids, 'IN')
+      ->condition('n.type', $this->options['content_type'])
+      ->fields('t')
+      ->execute();
+
+    $nids = array();
+    foreach ($result as $row) {
+      $nids[] = $row->nid;
+    }
+
+    return $nids;
+  }
 
   /**
    * sorting functions
@@ -409,5 +576,24 @@ class os_sv_list_box extends os_boxes_default {
 
     return $options;
   }
+}
 
+/**
+ * AJAX callback to add query details (e.g. the vocabulary to use).
+ *
+ * Since the controlling logic for populating the form is in the form builder
+ * function, all we do here is select the element and return it to be updated.
+ */
+function os_sv_list_query_details_ajax($form, &$form_state) {
+  return $form['options']['query_details'];
+}
+
+/**
+ * AJAX callback for adding terms to the query.
+ *
+ * Since the controlling logic for populating the form is in the form builder
+ * function, all we do here is select the element and return it to be updated.
+ */
+function os_sv_list_terms_details_ajax($form, &$form_state) {
+  return $form['options']['query_details']['terms'];
 }

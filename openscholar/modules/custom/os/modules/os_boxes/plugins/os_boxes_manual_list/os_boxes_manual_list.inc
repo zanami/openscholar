@@ -86,7 +86,6 @@ class os_boxes_manual_list extends os_boxes_default {
       ),
       '#process' => array('os_boxes_manual_list_add_new_fields'),
     );
-
     return $form;
   }
 
@@ -108,6 +107,11 @@ class os_boxes_manual_list extends os_boxes_default {
       }
     }
     ksort($links);
+    if(empty($links)) {
+      $block['title'] = '';
+      $block['subject'] = '';
+      return $block;
+    }
     if ($this->options['style'] == 'teasers') {
       $block['content'] = theme('item_list', array('items' => $links, 'attributes' => array('class' => array('featured-links'))));
     }

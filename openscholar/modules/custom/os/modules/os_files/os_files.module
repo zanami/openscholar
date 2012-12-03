@@ -611,7 +611,6 @@ function os_files_file_default_types_alter(&$types) {
     'application/x-ico',
     'application/x-win-bitmap',
     'image/x-win-bitmap',
-    'application/octet-stream'
   ));
 
   $types['video']->mimetypes = array_merge($types['video']->mimetypes, array(
@@ -685,6 +684,22 @@ function os_files_file_default_types_alter(&$types) {
     // *.ods files
     'application/x-vnd.oasis.opendocument.spreadsheet',
     // *.odp files
-    'application/x-vnd.oasis.opendocument.presentation'
+    'application/x-vnd.oasis.opendocument.presentation',
+    'application/octet-stream'
   ));
+}
+
+/**
+ * Implements hook_stream_wrappers_alter().
+ *
+ * Used to extend the public stream wrapper.
+ *
+ * @param array $wrappers
+ */
+function os_files_stream_wrappers_alter(&$wrappers) {
+
+  // Use OS Stream Wrapper.
+  if (isset($wrappers['public'])) {
+    $wrappers['public']['class'] = 'OSPublicStreamWrapper';
+  }
 }

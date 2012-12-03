@@ -17,6 +17,20 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
       'vsite_design_maintheme',
     );
     $query->condition('object_id', $blacklist, 'NOT IN');
+
+    //black list for similar matches instead of exact.
+    $like_blacklist = array(
+      'vsite_comments_comment_type_%',
+      'comment_default_%',
+      'comment_anonymous_%',
+      'comment_form_%',
+      'comment_preview_%',
+      'comment_subject_%',
+      'comment_controls_%',
+    );
+    foreach ($like_blacklist as $not_like) {
+      $query->condition('object_id', $not_like, 'NOT LIKE');
+    }
     return $query;
   }
 
@@ -46,7 +60,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     //flavor variables get new names
     if (preg_match('/_flavor$/', $row->object_id)) {
       //$this->_update_flavors($row);
-      list($object_id, $value) = $this->_update_flavors($object_id, $value);
+      list($object_id, $value) = $this->_update_flavors($object_id, $value, $row->id);
     }
 
     //scholar_publications variables:
@@ -54,11 +68,21 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
       $object_id = $this->_update_variables_scholar_publications($row->object_id);
     }
 
-    //Comments
-    if ($row->object_id == 'facebook_comments_nodetypes') {
-      $fb_preset = "Facebook Comments";
-      $row->object_id = "fb_social_{$fb_preset}_nodetypes";
+    //comment by content type
+    if (strpos($object_id, 'comment_') === 0 ) {
+      list($object_id, $value) = $this->_update_variables_comment_content($row->id, $object_id, $value);
     }
+
+    //Biblio Citation Style
+    if ($object_id == 'biblio_style') {
+      list($object_id, $value) = $this->_update_variable_biblio_style($row->id, $object_id, $value);
+    }
+
+    //FB Comments
+//     if ($row->object_id == 'facebook_comments_nodetypes') {
+//       $fb_preset = "Facebook Comments";
+//       $row->object_id = "fb_social_{$fb_preset}_nodetypes";
+//     }
 
     /*
      * pseudo-hook:  $this->_update_TYPE_ID($object_id, $value);
@@ -79,7 +103,7 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   *
   * Updates flavor variables and names.
   */
-  public function _update_flavors($object_id, $value){
+  public function _update_flavors($object_id, $value, $vsite){
     $replaced = 0;
     $object_id = preg_replace('/vsite_design_scholar/', 'os_appearance', $object_id, 1, $replaced);
 
@@ -88,11 +112,74 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
       $object_id = preg_replace('/vsite_design/', 'os_appearance', $object_id, 1);
     }
 
+    //set the flavor manually for a few special cases
+    if (parent::is_domain('http://scholar.harvard.edu')) {
+      //agordon
+      if ($vsite == 10057 && $object_id == 'os_appearance_eloquent_flavor') {
+        $value = 'eloquent_sand_modfront';
+      }
+      //kshepsle
+      if ($vsite == 1 && $object_id == 'os_appearance_eloquent_flavor') {
+        $value = 'eloquent_green_modfront';
+      }
+      //rbates
+      if ($vsite == 8 && $object_id == 'os_appearance_weft_flavor') {
+        $value = 'w_african_nostrip';
+      }
+    }
+
     $value = preg_replace('/^scholar_/', '', $value);
     return array(
       $object_id,
       $value
     );
+  }
+
+  function _update_variable_biblio_style($sid, $object_id, $value) {
+
+    if(module_exists('biblio_citeproc')){
+      $object_id = "biblio_citeproc_style";
+
+      $citeproc_map = array(
+        "cse" => "cse.csl",
+				"chicago" => "chicago-author-date.csl",// There are three to choose from??? chicago-author-date.csl  chicago-fullnote-bibliography.csl  chicago-note-bibliography.csl
+				"apa" => "apa.csl",
+				"ama" => "ama.csl",
+				"mla" => "mla.csl",
+				"ieee" => "ieee.csl",
+				"vancouver" => "vancouver.csl",
+      );
+      //"classic" Not sure what 'classic' stye should migrate to
+
+      $value = isset($citeproc_map[$value])? $citeproc_map[$value]:"cse.csl";
+
+    }
+
+    return array($object_id, $value);
+  }
+
+  //we're keeping the comment_$type variable, but using vsite_comment_vsite_comment_$type's value.
+  function _update_variables_comment_content($id, $object_id, $value) {
+    $content_type = str_replace('comment_', '', $object_id);
+    $old_var = str_replace('comment_', 'vsite_comments_comment_type_', $object_id);
+    $result = parent::d6_db_select('spaces_overrides', 'so')
+      ->condition('id', $id)
+      ->condition('object_type', 'variable')
+      ->condition('object_id', $old_var)
+      ->fields('so', array('value'))
+      ->execute();
+
+    if ($result->rowCount()) {
+      $value = unserialize($result->fetchColumn());
+      $value = ($value == 'drupal') ? 2 : 0; //unless we're using drupal, comment_sources will take over
+    }
+
+    $bundles = array_flip(AbstractNodeOSMigration::$source_bundle_map);
+    if (isset($bundles[$content_type])) {
+      $object_id = 'comment_' . $bundles[$content_type];
+    }
+
+    return array($object_id, $value);
   }
 
   public function _update_variables_scholar_publications($object_id){
@@ -144,6 +231,13 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     return array('os_dataverse_dvn_alias', $value);
   }
 
+  /**
+   * variable: scholar_biocv_use_pdf_as_cv -> os_biocv_use_pdf_as_cv
+   */
+  public function _update_variable_scholar_biocv_use_pdf_as_cv($object_id, $value){
+    return array('os_biocv_use_pdf_as_cv', $value);
+  }
+
   //vsite_ga_google_analytics_id => os_ga_google_analytics_id
   public function _update_variable_vsite_ga_google_analytics_id($object_id, $value){
     return array(
@@ -160,6 +254,21 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
     );
   }
 
+  //no_year_text to new biblio variable
+  public function _update_variable_biblio_no_year_text($object_id, $value){
+
+    $a_year_text = variable_get('biblio_years_text', array(9999 => t('Submitted'), 9998 => t('In Press')));
+
+    if(strlen($value)){
+      $a_year_text[9999] = $value;
+    }
+
+    return array(
+      'biblio_years_text',
+      $a_year_text
+    );
+  }
+
   // vsite_shields_shield => os_shields_shield
   public function _update_variable_vsite_shields_shield($object_id, $value){
     return array(
@@ -171,6 +280,26 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
   //"scholar_book_toc_location" is now "os_booklets_toc_position".
   public function _update_variable_scholar_book_toc_location($object_id, $value) {
     return array('os_booklets_toc_position', $value);
+  }
+
+  //facebook nodetypes
+  public function _update_variable_facebook_comments_nodetypes($object_id, $values) {
+    return array('fb_social_Facebook Comments_nodetypes', $this->_update_comment_nodetypes($values));
+  }
+
+  //disqus nodetypes
+  public function _update_variable_disqus_nodetypes($object_id, $values) {
+    return array('disqus_nodetypes', $this->_update_comment_nodetypes($values));
+  }
+
+  // the *_nodetypes variables used by comment sources need updating.  instead of key => bool, they're key => key.
+  public function _update_comment_nodetypes($values) {
+    $values = array_filter($values);
+    foreach($values as $key => $value) {
+      $key = AbstractNodeOSMigration::get_source_bundle($key);
+      $values[$key] = $key;
+    }
+    return $values;
   }
 
   // check if a variable is discontinued
@@ -202,6 +331,8 @@ class SpacesOverridesVariableMigration extends SpacesOverridesTableMigration {
 
     return in_array($object_id, $discontinued);
   }
+
+
 }
 
 

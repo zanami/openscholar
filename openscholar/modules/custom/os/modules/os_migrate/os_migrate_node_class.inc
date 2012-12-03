@@ -13,7 +13,8 @@ class ClassNodeOSMigration extends AbstractNodeOSMigration {
     //year
     $this->addFieldMapping('field_offered_year',  'field_class_year_value');
     $this->addFieldMapping('field_offered_year:from',  'field_class_year_value');
-    $this->addUnmigratedDestinations(parent::subfields('field_offered_year', array('timezone', 'rrule', 'to')));
+    $this->addFieldMapping('field_offered_year:timezone',  'field_class_year_timezone');
+    $this->addUnmigratedDestinations(parent::subfields('field_offered_year', array('rrule', 'to')));
 
     //link
     $this->addFieldMapping('field_class_link', 'field_class_link_url');
@@ -28,6 +29,16 @@ class ClassNodeOSMigration extends AbstractNodeOSMigration {
   }
 
   public function prepareRow(&$current_row) {
+
+    if(!isset($current_row->field_class_year_timezone)){
+      $current_row->field_class_year_timezone = variable_get('date_default_timezone', date_default_timezone_get());
+    }
+
+    if(isset($current_row->field_class_year_value)){
+      //Expects UTC will be converted to Local Time Zone in date.migrate.inc
+      $current_row->field_class_year_value = mktime(0,0,0,1,1,substr($current_row->field_class_year_value, 0,4)); // MigrationBase::timestamp($current_row->field_class_year_value);
+    }
+
     return parent::prepareRow($current_row); //false -> skip this row
 
   }

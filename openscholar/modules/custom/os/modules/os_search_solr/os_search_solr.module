@@ -1,17 +1,19 @@
-<?php 
+<?php
+
+include_once ('os_search_solr.features.inc');
 
 /**
  * Implements hook_block_info().
  */
 function os_search_solr_block_info(){
   $blocks = array();
-  
+
   $blocks['site-search'] = array(
       'info' => t('Site Search'),
       'weight' => '10',
       //'cache' => DRUPAL_CACHE_CUSTOM
   );
-  
+
   return $blocks;
 }
 
@@ -55,7 +57,7 @@ function os_search_solr_os_widget(){
 
 /**
  * Alter the query after it's prepared and cached.
- * 
+ *
  * @param object $query
  *   An object implementing DrupalSolrQueryInterface. No need for &.
  */
@@ -66,5 +68,53 @@ function os_search_solr_apachesolr_query_alter($query) {
   }
 }
 
+/**
+ * Function to return the searcher name for facetapi.
+ */
+function os_search_solr_get_searcher_name() {
+  $searcher_name = '';
+  if(module_exists('facetapi')) {
+	// Get the searcher info.
+    $searcher_array = facetapi_get_searcher_info();
+    foreach($searcher_array as $search) {
+      if(array_key_exists('name', $search)) {
+        $searcher_name = $search['name'];
+      }
+    }
+  }
 
+  return $searcher_name;
+}
 
+/**
+ * Implements hook_block_view_alter().
+ * Alter the titles of the Solr blocks.
+ */
+function os_search_solr_block_view_alter(&$data,$block) {
+
+  if (module_exists('facetapi')) {
+    // Gets delta map
+    $map = facetapi_get_delta_map();
+
+    if(isset($map) && is_array($map)) {
+      $searcher_name = os_search_solr_get_searcher_name();
+
+      // Alter the title for Filter by Post Type.
+      $string_bundle = facetapi_build_delta($searcher_name, 'block', 'bundle');
+      $delta_bundle = array_search($string_bundle, $map);
+
+      if($block->module == 'facetapi' && $block->delta == $delta_bundle) {
+      	$data['subject'] = 'Filter by Post Type';
+      }
+
+      // Alter the title for Filter by Site.
+      $string_og = facetapi_build_delta($searcher_name, 'block', 'sm_og_group_ref');
+      $delta_og = array_search($string_og, $map);
+
+      if($block->module == 'facetapi' && $block->delta == $delta_og) {
+      	$data['subject'] = 'Filter By Site';
+      }
+
+    }
+  }
+}

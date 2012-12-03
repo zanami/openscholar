@@ -3,7 +3,7 @@ class SpacesOverridesBoxesMediaMigration extends OSMigration {
   private $migrated_files = array(); //during rollback, stash the files this box has created here.
 
   public function __construct() {
-    parent::__construct();
+    parent::__construct(MigrateGroup::getInstance('spacesoverrides'));
 
     // spaces overrides has no primary key, so use these
     $key_schema = array(
@@ -32,8 +32,6 @@ class SpacesOverridesBoxesMediaMigration extends OSMigration {
 
     // dpm(field_info_bundles('file'));
 
-    // $this->destination = new MigrateDestinationMedia('html',
-    // 'MigrateFileBlob');
     $this->destination = new MigrateDestinationMedia('html', 'MigrateFileFid');
     $this->description = t('oEmbed URL -> media migration class.');
     $this->source = new MigrateSourceSQL($this->query(), $fields, null, array(

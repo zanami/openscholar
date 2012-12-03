@@ -173,10 +173,12 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
    */
   function complete(&$entity, $row) {
     //attach titles to files.
-    foreach ($entity->media_gallery_media[LANGUAGE_NONE] as $delta => $file) {
-      $image = file_load($file['fid']);
-      if ($image->media_title[LANGUAGE_NONE][] = array('value' => $row->media_gallery_media_title[$delta])) {
-        file_save($image);
+    if (isset($entity->media_gallery_media) && isset($entity->media_gallery_media[$entity->language])) {
+      foreach ($entity->media_gallery_media[$entity->language] as $delta => $file) {
+        $image = file_load($file['fid']);
+        if ($image->media_title[$entity->language][] = array('value' => $row->media_gallery_media_title[$delta])) {
+          file_save($image);
+        }
       }
     }
   }

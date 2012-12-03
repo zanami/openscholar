@@ -32,11 +32,16 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
 
     //recycle previous thumbnail
     $action = $this->_get_action($values);
+    MigrationBase::displayMessage(t('Logo for @id processed by @action: @file',
+      array('@id'=>$entity->nid,'@action'=>$action,'@file'=>$values[0])),
+      MigrationBase::MESSAGE_INFORMATIONAL);
 
     if ($action == 'recycle') {
       if ($recycled = $this->_recycle($values, $gid, $entity->uid)) {
         $values[0] = $recycled->fid;
         $values['arguments']['file_class'] = 'MigrateFileFid';
+      } else {
+        Migration::displayMessage(t('Error reusing cropped vsite logo: @file', array('@file'=>$values['thumb_filepath'])));
       }
     } elseif ($action == 'crop') {
       //crop a new image
@@ -52,6 +57,10 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
         //image was cropped.  instead of migrating the whole image, use MigrateFileFid to accept the existing fid.
         $values[0] = $original->fid;
         $values['arguments']['file_class'] = 'MigrateFileFid';
+      } else {
+        //could not copy original.  abandon it.
+        Migration::displayMessage(t('Could not copy image: @img', array('@img'=>$values[0])), MigrationBase::MESSAGE_WARNING);
+        unset($values[0], $values['arguments']);
       }
     } else {
       //just keep the image as is
@@ -135,12 +144,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
    * Figure out if this image will be cropped in d7 or if we can reuse the cropped image from d6.
    */
   function _get_action($values) {
-    $original_file = $values[0];
-
-    //check for recycle
-    $thumbnail_filepath = variable_get('os_migrate_files') . '/' . $original_file;
-    $full_filepath = $thumbnail_filepath . '.crop_display.jpg';
-    if (is_readable($thumbnail_filepath) && is_readable($full_filepath)) {
+    if ($this->_get_thumb_and_full($values[0])) {
       return 'recycle';
     }
 
@@ -154,22 +158,65 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
   }
 
   /**
+   * @function _get_thumb_and_full
+   *
+   * Given a file path, returns paths to thumbnail and full image
+   *
+   * Three (known) cases for full/thumb pair.
+   * 1. D6 {files} filename is the thumbnail.  Appending '.crop_display.jpg' yields the full image.
+   * 2. D6 {files} filename is the full image.  Inserting path to imagecache in the filepath leads to the thumbnail.
+   * 3. D6 {files} filename is full image, imagefield_thumbs holds the thumbnail
+   */
+  function _get_thumb_and_full($original) {
+    $root = variable_get('os_migrate_files') . '/';
+
+    //.crop_display.jpg
+    $thumb = $root . $original;
+    $full = $thumb . '.crop_display.jpg';
+    if (is_readable($thumb) && is_readable($full)) {
+      return array($thumb, $full);
+    }
+
+    //vsite_design_landscape_logo
+    $full = $root . $original;
+    $file_directory_path = OSMigration::d6_variable_get('file_directory_path', 'sites/default/files');
+    $thumb = str_replace($file_directory_path, $file_directory_path . '/files/imagecache/vsite_design_landscape_logo/', $full);
+    if (is_readable($thumb) && is_readable($full)) {
+      return array($thumb, $full);
+    }
+
+    //vsite_design_landscape_logo, with one less 'file/'
+    $thumb = str_replace($file_directory_path, $file_directory_path . '/imagecache/vsite_design_landscape_logo/', $full);
+    if (is_readable($thumb) && is_readable($full)) {
+      return array($thumb, $full);
+    }
+
+    //imagefield thumbs
+    $thumb = str_replace($file_directory_path, $file_directory_path . '/imagefield_thumbs/', $full);
+    if (is_readable($thumb) && is_readable($full)) {
+      return array($thumb, $full);
+    }
+
+    MigrationBase::displayMessage(t('No file/thumb pair: @thumb @full', array('@thumb'=>$thumb,'@full'=>$full)));
+    return FALSE;
+  }
+
+  /**
    * @function _recycle
    *
    * Both original and thumbnail images are present.  Save them both, updated
    * the db, and return the fid
    */
   function _recycle(&$values, $gid, $uid) {
-    $original_file = $values[0];
-    $thumb_filepath = variable_get('os_migrate_files') . '/' . $original_file;
-    $full_filepath = $thumb_filepath . '.crop_display.jpg';
+    list($thumb_filepath, $full_filepath) = $this->_get_thumb_and_full($values[0]);
 
     $full = new stdClass();
     $full->uid = $uid;
     $full->filemime = file_get_mimetype($full_filepath);
     $full->uri = $full_filepath;
 
-    if (($full = file_copy($full, 'public://')) && $gid) {
+    $full = file_copy($full, 'public://');
+    if ($full && $gid) {
       $full_entity = entity_metadata_wrapper('file', $full);
       $full_entity->og_group_ref = array($gid);
       $full_entity->save();
@@ -180,13 +227,15 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $thumb->filemime = file_get_mimetype($thumb_filepath);
     $thumb->uri = $thumb_filepath;
 
-    if (($thumb = file_copy($thumb, 'public://')) && $gid) {
+    $thumb = file_copy($thumb, 'public://');
+    if ($thumb && $gid) {
       $thumb_entity = entity_metadata_wrapper('file', $thumb);
       $thumb_entity->og_group_ref = array($gid);
       $thumb_entity->save();
     }
 
     if (($dim = getimagesize($thumb_filepath)) == FALSE) {
+      $values['thumb_filepath'] = $thumb_filepath;
       return FALSE;
     }
     //set size to use full thumb.
@@ -196,7 +245,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $values['arguments']['cropbox_height'] = $dim[1];
 
     file_usage_add($full, 'imagefield_crop', 'file', $thumb->fid);
-    return $thumb; //not sure about this.
+    return $thumb;
   }
 
   /**
@@ -227,15 +276,15 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $file->filemime = file_get_mimetype($filepath);
     $file->uri = $filepath;
 
-    if ($file = file_copy($file, 'public://') && $gid) {
+    $file = file_copy($file, 'public://');
+    if ($file && $gid) {
       // attach metadata and save
       $entity = entity_metadata_wrapper('file', $file);
       $entity->og_group_ref = array($gid);
       $entity->save();
-      return $file;
     }
 
-    return FALSE;
+    return $file;
   }
 
   //we need cropping values.  if they aren't provided, use the entire image.

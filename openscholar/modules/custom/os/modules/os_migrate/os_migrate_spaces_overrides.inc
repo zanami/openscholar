@@ -104,7 +104,7 @@
     //rbates kshepsle and other theme ->flavor vsites will need some extra attention here.
     $theme = preg_replace('/^scholar_/', '', $theme);
 
-    if ($remove_deprecated && in_array($theme, array('burroughs', 'collector', 'density'))) {
+    if ($remove_deprecated && in_array($theme, array('burroughs', 'density'))) {
       $theme = 'cleanblue';
     }
 

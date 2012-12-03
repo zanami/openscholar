@@ -25,7 +25,7 @@ class CommentsOSMigration extends DynamicMigration {
       ->select('comments', 'c')
       ->fields('c');
     $query->join('node', 'n', 'c.nid = n.nid');
-    $query->condition('n.type', $this->arguments['bundle']);
+    $query->condition('n.type', AbstractNodeOSMigration::get_source_bundle($this->arguments['bundle']));
     $query->fields('n', array('language'));
 
     //The primary key in the D6 database
@@ -65,6 +65,13 @@ class CommentsOSMigration extends DynamicMigration {
   public function prepareRow($current_row){
     if (parent::prepareRow($current_row) === FALSE) {
       return false;
+    }
+
+    //update format id to string
+    if ($current_row->format == 0) {
+      $current_row->format = 'plain_text';
+    } else {
+      $current_row->format = 'filtered_html';
     }
 
     //get the path
