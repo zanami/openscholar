@@ -7,6 +7,7 @@ projects[admin_menu][version] = 3.0-rc1
 
 projects[advanced_help][subdir] = "contrib"
 projects[advanced_help][version] = 1.0
+projects[advanced_help][patch][] = "http://drupal.org/files/advanced_help-removing_help_popup_theme_css-1803488-1.patch"
 
 projects[apachesolr][subdir] = "contrib"
 projects[apachesolr][version] = 1.1
