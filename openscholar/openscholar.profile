@@ -279,7 +279,7 @@ function openscholar_install_finished(&$install_state) {
   // Flush all caches to ensure that any full bootstraps during the installer
   // do not leave stale cached data, and that any content types or other items
   // registered by the install profile are registered correctly.
-  drupal_flush_all_caches();
+  // drupal_flush_all_caches();
 
   // Remember the profile which was used.
   variable_set('install_profile', drupal_get_profile());
@@ -300,7 +300,7 @@ function openscholar_install_finished(&$install_state) {
   // Run cron to populate update status tables (if available) so that users
   // will be warned if they've installed an out of date Drupal version.
   // Will also trigger indexing of profile-supplied content or feeds.
-  drupal_cron_run();
+  // drupal_cron_run();
 
   return $output;
 }
