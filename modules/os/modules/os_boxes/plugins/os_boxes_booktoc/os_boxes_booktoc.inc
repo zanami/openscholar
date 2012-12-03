@@ -89,7 +89,7 @@ class os_boxes_booktoc extends os_boxes_default {
       }
     }
 
-    $block = os_books_build_toc($node, $this->options['toc_type']) + $block;
+    $block = os_books_build_toc($node, isset($this->options['toc_type'])?$this->options['toc_type']:'full') + $block;
 
     return $block;
   }
