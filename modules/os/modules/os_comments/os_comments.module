@@ -225,3 +225,39 @@ function os_comments_cp_settings() {
 
   return $settings;
 }
+
+/**
+ * Implements hook_preprocess_HOOK for node.tpl.php.
+ *
+ * Shows the "Add new comment" link on node teasers with a non-drupal comment
+ * source.
+ *
+function os_comments_preprocess_node(&$vars) {
+  if (!$vars['teaser']) {
+    return;
+  }
+  $group_bundles = og_get_all_group_bundle();
+  if (in_array($vars['node']->type, $group_bundles['node'])) {
+    return;
+  }
+
+  $vsite = vsite_get_vsite();
+  if (!$vsite) {
+    return;
+  }
+
+  if ($vars['node']->comment == COMMENT_NODE_OPEN) {
+    continue;
+  }
+  $variables = $vsite->controllers->variable->values['space'];
+  $os_comment_sources = array('disqus_nodetypes', 'fb_social_Facebook Comments_nodetypes');
+  foreach ($os_comment_sources as $comment_source) {
+    if (!isset($variables[$comment_source])) {
+      continue;
+    }
+    if (in_array($vars['node']->type, $variables[$comment_source])) {
+      $vars['node']->comment = COMMENT_NODE_OPEN;
+      break;
+    }
+  }
+} */
