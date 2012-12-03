@@ -269,22 +269,28 @@ top:3.1em;
 
 /**** MAIN NAV IN SIDEBAR ****/
 
-.sidebar ul.nice-menu li {
+.sidebar ul.menu li {
  list-style-type:none;
  list-style-image:none;
  margin-bottom: 0;
   }
 
 
-.sidebar ul.nice-menu li a,
-.sidebar ul.nice-menu li a:hover,
-.sidebar ul.nice-menu li a.active,
-.sidebar ul.nice-menu li.active-trail a  {
+.sidebar ul.menu li a,
+.sidebar ul.menu li a:hover,
+.sidebar ul.menu li a.active,
+.sidebar ul.menu li.active-trail a  {
   color: #444;
   font-weight:bold;
   font-size: 15px;
 }
 
+.sidebar #block-os-secondary-menu ul.menu li a,
+.sidebar #block-os-secondary-menu ul.menu li a:hover,
+.sidebar #block-os-secondary-menu ul.menu li a.active,
+.sidebar #block-os-secondary-menu ul.menu li.active-trail a  {
+  font-weight:normal;
+}
 
 
 /* SECONDARY NAV WHEN IN HEADER RIGHT  */ 

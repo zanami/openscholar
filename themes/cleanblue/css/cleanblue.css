@@ -176,7 +176,7 @@ body.navbar-off .region-sidebar-first {
   }
 
 .region-sidebar-first #block-os-primary-menu {
-margin: 8px -15px 0 10px;
+margin: 8px -15px 0 3px;
   padding: 0 0 30px 0;
   }
 
@@ -298,17 +298,17 @@ ul.nice-menu ul {
 
 }
 
-.sidebar ul.nice-menu {
+.sidebar ul.menu {
 	width: 130px;
 	}
 
 
-.sidebar ul.nice-menu ul {
+.sidebar ul.menu ul {
 	margin-top:-36px;
 	border:none;
 	}
 	
-.region-sidebar-second.sidebar ul.nice-menu li {
+.region-sidebar-second.sidebar ul.menu li {
 	list-style-image: none;
     padding-bottom: 10px;	
 	}	
@@ -323,12 +323,12 @@ ul.nice-menu-right li.menuparent a:hover {
 }	
 	
 	
-.region-sidebar-second.sidebar ul.nice-menu ul {
+.region-sidebar-second.sidebar ul.menu ul {
 	margin-top:0;
 
 	}	
 
-.sidebar ul.nice-menu ul ul {
+.sidebar ul.menu ul ul {
 	margin-top:0;
 	border:none;
 	}	

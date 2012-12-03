@@ -213,7 +213,8 @@ width: 100%;
 .sidebar #block-os-site_search,
 .sidebar .block-os-search-db
 .sidebar #block-boxes-shield_default,
-.sidebar #block-scholar_events-mini
+.sidebar #block-scholar_events-mini,
+.sidebar .block-os-search-solr
  {
 	border:none;
 }
@@ -359,17 +360,17 @@ ul.nice-menu {
    
 }
 /*
-.sidebar ul.nice-menu ul {
+.sidebar ul.menu ul {
 	margin-top:-36px;
 	border:none;
 	}
 	
-.region-sidebar-second.sidebar ul.nice-menu ul {
+.region-sidebar-second.sidebar ul.menu ul {
 	margin-top:0;
 
 	}	
 
-.sidebar ul.nice-menu ul ul {
+.sidebar ul.menu ul ul {
 	margin-top:0;
 	border:none;
 	}	
@@ -414,6 +415,11 @@ ul.nice-menu {
 .sidebar #block-os-primary-menu .content a:hover
  { background-color: #fff; }
  
+ 
+.sidebar #block-os-primary-menu li.expanded, .sidebar #block-os-primary-menu li.collapsed, .sidebar #block-os-primary-menu li.leaf {
+    margin: 0;
+    padding: 0.2em 0 0;
+}
  
 /** SECONDARY NAV IN SIDEBARS **/
    .sidebar #block-os-secondary-menu .content  ul.menu {
