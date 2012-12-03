@@ -285,27 +285,27 @@ ul.nice-menu-right li.menuparent {
     background: none;
 }
 
-.sidebar ul.nice-menu {
+.sidebar ul.menu {
 	border-top:none;
 	}
 
-.sidebar ul.nice-menu ul {
+.sidebar ul.menu ul {
 	margin-top:-39px;
 	border:none;
 	border-top:none;
 	}
 	
-.region-sidebar-second.sidebar ul.nice-menu ul {
+.region-sidebar-second.sidebar ul.menu ul {
 	margin-top:0;
 
 	}	
 
-.sidebar ul.nice-menu ul ul {
+.sidebar ul.menu ul ul {
 	margin-top:0;
 	border:none;
 	}
 	
-.sidebar ul.nice-menu ul li a {
+.sidebar ul.menu ul li a {
 	color:#000;
 	}	
 	

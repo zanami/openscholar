@@ -186,30 +186,30 @@ body.header-left-main #header-container {
 
 }  
 
-.sidebar ul.nice-menu a {
+.sidebar ul.menu a {
 	color: #8A281B;
     font-size:1.1em;
 	}
 	
-.sidebar ul.nice-menu a:hover {
+.sidebar ul.menu a:hover {
 	text-decoration:underline !important;
 	}	
 
-.sidebar ul.nice-menu ul {
+.sidebar ul.menu ul {
 	margin-top:-38px;
 	border-top:none;
 	}
 	
-.sidebar ul.nice-menu {
+.sidebar ul.menu {
 	border-top:none;
 	}	
 	
-.region-sidebar-second.sidebar ul.nice-menu ul {
+.region-sidebar-second.sidebar ul.menu ul {
 	margin-top:0;
 
 	}	
 
-.sidebar ul.nice-menu ul ul {
+.sidebar ul.menu ul ul {
 	margin-top:0;
 	border:none;
 	}  

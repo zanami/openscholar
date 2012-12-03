@@ -246,38 +246,38 @@ body.one-sidebar .region-sidebar-first {
 
 }  
 
-.sidebar ul.nice-menu {
+.sidebar ul.menu {
 	border-top:none;
 	}
 	
-.sidebar ul.nice-menu li {
+.sidebar ul.menu li {
 	background:none;
 	}	
 	
-.sidebar ul.nice-menu li a {
+.sidebar ul.menu li a {
 	padding-left:0;
 	}	
 	
-.sidebar ul.nice-menu li a:hover {
+.sidebar ul.menu li a:hover {
 	background:transparent;
 	}
 	
-.sidebar ul.nice-menu ul li a:hover {
+.sidebar ul.menu ul li a:hover {
 	background:#F6F6E9;
 	border:none;
 	}	
 
-.sidebar ul.nice-menu ul {
+.sidebar ul.menu ul {
 	margin-top:-39px;
 	border:none;
 	}
 	
-.region-sidebar-second.sidebar ul.nice-menu ul {
+.region-sidebar-second.sidebar ul.menu ul {
 	margin-top:0;
 
 	}	
 
-.sidebar ul.nice-menu ul ul {
+.sidebar ul.menu ul ul {
 	margin-top:0;
 	border:none;
 	}

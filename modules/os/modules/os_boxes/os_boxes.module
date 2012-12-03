@@ -276,7 +276,7 @@ function os_boxes_admin_paths() {
  * By default, boxes
  */
 function os_boxes_block_view_alter(&$array, &$block) {
-  if ($block->module == 'boxes' && strpos($array['content']['#markup'], '<div class="boxes-box-content"></div>') !== FALSE) {
+  if ($block->module == 'boxes' && (strpos($array['content']['#markup'], '<div class="boxes-box-content"></div>') !== FALSE || strpos($array['content']['#markup'], 'box-empty') !== FALSE)) {
     // box returned no content, but boxes wrapped it in some divs anyway. clear them out
     $array['content'] = '';
   }
