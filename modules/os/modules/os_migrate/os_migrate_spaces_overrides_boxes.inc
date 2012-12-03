@@ -696,7 +696,7 @@ class BoxPorter {
       return $key;
     }
 
-    if ($box->options['content'] == 'all') {
+    if (isset($box->options['content']) && $box->options['content'] == 'all') {
       $box->options['content'] = array();
       $box->options['show_all'] = TRUE;
     } else {

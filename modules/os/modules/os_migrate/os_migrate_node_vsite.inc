@@ -97,6 +97,7 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
 
   function prepareRow($row) {
     $vsite = $this->_d6_vsite_type();
+
     $field_vsite_logo = "field_${vsite}_logo";
     $field_vsite_logo_fid = "field_${vsite}_logo_fid";
     $field_vsite_logo_data = "field_${vsite}_logo_data";

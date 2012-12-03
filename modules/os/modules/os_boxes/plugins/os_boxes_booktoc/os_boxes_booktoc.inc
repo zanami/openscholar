@@ -66,7 +66,7 @@ class os_boxes_booktoc extends os_boxes_default {
     }
 
     $book_nid = $this->options['book_nid'];
-    if ($book_nid < 0) {
+    if ($book_nid <= 0) {
       // the toc of the book on the current page
       $node = menu_get_object();
   	  if(isset($node->book['bid']) && book_type_is_allowed($node->type)) {

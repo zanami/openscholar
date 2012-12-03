@@ -85,7 +85,8 @@ EOF
     '#title' => t('Group Bundle'),
     '#type' => 'select',
     '#description' => t('Vsite content types have changed.  This option selects which content type your vsites will migrate into.  By default, vsites will become personal and projects will remain projects.'),
-    '#options' => array('keep' => t('Keep original type')) + $og_bundles['node'],
+    '#options' => array('keep' => t('Keep original type'), 'default' => t('Use site\'s default of @type', array('@type'=>variable_get('os_default_group_bundle', 'personal'))))
+      + $og_bundles['node'],
     '#default_value' => variable_get('os_migrate_default_group_bundle', 'keep'),
   );
 
