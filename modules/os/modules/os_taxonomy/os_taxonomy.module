@@ -257,7 +257,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
           'number' => $number,
           'name' => $item['term_name'],
           'link_options' => $link_options,
-          'url_path' => $path_prefix.$item['url']['path'],
+          'url_path' => $item['url']['path'],
           'description' => $item['description'],
           'link_to_empty_terms' => $options['link_to_empty_terms'],
           'show_term_descriptions' => $options['show_term_descriptions'],
