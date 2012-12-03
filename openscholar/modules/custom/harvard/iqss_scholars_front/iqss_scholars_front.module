@@ -112,15 +112,32 @@ function iqss_scholars_front_strongarm() {
 }
 
 /**
- * Implements hook_os_widget_alter().
- * Set the iqss_scholars_front widgets to hidden so they
- * do not show up in cp/layout.
+ * Implements hook_image_default_styles().
  */
-function iqss_scholars_front_os_widget_alter(&$widget) {
-  $front_widgets_array = array('iqss_scholars_fp_headertext','iqss_scholars_fp_infoblock','iqss_scholars_fp_logoblock','iqss_scholars_fp_learnmore','iqss_scholars_fixed_header','iqss_scholars_learnmore_toggle');
-  foreach($front_widgets_array as $front_widget) {
-    if($widget['delta'] == $front_widget){
-	  $widget += array('hidden' => TRUE);
-    }
-  }
+function iqss_scholars_front_image_default_styles() {
+  $styles = array();
+
+  // Exported image style: iqss_scholars_front_websites_180_x_140.
+  $styles['iqss_scholars_front_websites_180_x_140'] = array(
+    'name' => 'iqss_scholars_front_websites_180_x_140',
+    'effects' => array(
+      1 => array(
+        'label' => 'Scale and crop',
+        'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
+        'effect callback' => 'image_scale_and_crop_effect',
+        'dimensions callback' => 'image_resize_dimensions',
+        'form callback' => 'image_resize_form',
+        'summary theme' => 'image_resize_summary',
+        'module' => 'image',
+        'name' => 'image_scale_and_crop',
+        'data' => array(
+          'width' => '180',
+          'height' => '140',
+        ),
+        'weight' => '1',
+      ),
+    ),
+  );
+
+  return $styles;
 }

@@ -1,6 +1,4 @@
 <?php
-// $Id$
-
 /**
  * @file
  * os_image_gallery.context.inc
@@ -13,12 +11,10 @@ function os_image_gallery_context_default_contexts() {
   $export = array();
 
   $context = new stdClass();
-  /* Edit this to true to make a default context disabled initially */
-
-  $context->disabled = FALSE;
+  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
   $context->name = 'gallery_gallery';
-  $context->description = 'Image gallery or image page';
+  $context->description = 'Media gallery';
   $context->tag = 'OS features';
   $context->conditions = array(
     'menu' => array(
@@ -38,7 +34,6 @@ function os_image_gallery_context_default_contexts() {
       'values' => array(
         'galleries' => 'galleries',
         'galleries/*' => 'galleries/*',
-        'gallery-collections/galleries' => 'gallery-collections/galleries',
       ),
     ),
     'views' => array(
@@ -48,15 +43,31 @@ function os_image_gallery_context_default_contexts() {
       ),
     ),
   );
-  $context->reactions = array();
+  $context->reactions = array(
+    'block' => array(
+      'blocks' => array(
+        'boxes-os_image_gallery_latest' => array(
+          'module' => 'boxes',
+          'delta' => 'os_image_gallery_latest',
+          'region' => 'sidebar_second',
+          'weight' => '-53',
+        ),
+        'boxes-os_addthis' => array(
+          'module' => 'boxes',
+          'delta' => 'os_addthis',
+          'region' => 'sidebar_second',
+          'weight' => '-52',
+        ),
+      ),
+    ),
+  );
   $context->condition_mode = 0;
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('Image gallery or image page');
+  t('Media gallery');
   t('OS features');
   $export['gallery_gallery'] = $context;
 
   return $export;
 }
-

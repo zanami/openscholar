@@ -70,6 +70,9 @@ function os_books_build_tree($node, $flatten = FALSE) {
  * @param object|int $node
  *   Either a nid or a full node object.
  *
+ * @param string $style
+ *   Either 'full', 'partial'
+ *
  * @param bool $separate
  *   True if the function should split the top level and second level into
  *   separate.
@@ -77,7 +80,7 @@ function os_books_build_tree($node, $flatten = FALSE) {
  * @return array|NULL $block
  *   Returns NULL if node cannot be loaded or $node->book is not set.
  */
-function os_books_build_toc($node, $separate = FALSE) {
+function os_books_build_toc($node, $style = 'partial', $separate = FALSE) {
   $block = array();
 
   if (is_numeric($node)) {
@@ -85,7 +88,16 @@ function os_books_build_toc($node, $separate = FALSE) {
   }
 
   if (is_object($node) && isset($node->book)) {
-    $menu_tree = menu_tree_all_data($node->book['menu_name']);
+    $menu_tree = array();
+    switch ($style) {
+      case 'full':
+        $menu_tree = menu_tree_all_data($node->book['menu_name']);
+        break;
+      case 'partial':
+        $menu_tree = menu_tree_all_data($node->book['menu_name'], $node->book);
+        break;
+    }
+
     if ($separate) {
       $top = current($menu_tree);
       $block['subject'] = theme('book_title_link', array('link' => $top['link']));
@@ -138,7 +150,7 @@ function _os_books_build_tree_recursive($tree, $flatten = FALSE) {
 
 function os_books_node_view($node, $view_mode) {
   if ($view_mode == 'full') {
-    if (isset($node->book) && $node->book) {
+    if ($node->type == 'book' && isset($node->book) && $node->book) {
       $content = $node->content;
       // Drupal destroys $node->content during its build process.
       // Without it, we get fatal errors.
@@ -190,14 +202,6 @@ function os_books_node_view($node, $view_mode) {
         unset($node->content['links']['book']['#links']['book_printer']);
       }
     }
-  }
-}
-
-function os_books_preprocess_page(&$page) {
-  $node = menu_get_object('node');
-
-  if ($node && isset($node->nid) && isset($node->book)) {
-    $page['title_suffix']['controls']['section_links']['#links']['layout']['href'] = 'cp/build/layout/os_books-book-'.$node->nid;
   }
 }
 
@@ -278,7 +282,7 @@ function _os_books_get_cache($root, $bid = 0) {
 }
 
 function _os_books_clear_cache($node) {
-  if (isset($node->book)) {
+  if (isset($node->book) && isset($node->book['bid'])) {
     $cache_key = _os_books_get_book_cache_wildcard($node->book['bid']);
     cache_clear_all($cache_key, OS_BOOKS_CACHE, TRUE);
   }

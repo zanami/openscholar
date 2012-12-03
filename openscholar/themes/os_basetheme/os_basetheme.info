@@ -207,7 +207,7 @@ plugins[panels][layouts] = layouts/panels
   settings[enable_font_settings]       = 0
   settings[enable_heading_settings]    = 0
   settings[enable_image_settings]      = 0
-  settings[enable_breadcrumb_settings] = 0
+  settings[enable_breadcrumb_settings] = 1
   settings[enable_search_settings]     = 0
   settings[enable_loginblock_settings] = 0
   settings[enable_markup_overides]     = 0
@@ -294,7 +294,7 @@ plugins[panels][layouts] = layouts/panels
   ; Breadcrumb
   settings[breadcrumb_display]   = 'yes'
   settings[breadcrumb_separator] = ' &#187; '
-  settings[breadcrumb_home]      = 0
+  settings[breadcrumb_home]      = 1
 
 
   ; Login block options

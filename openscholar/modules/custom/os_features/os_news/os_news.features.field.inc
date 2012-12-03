@@ -1,7 +1,6 @@
 <?php
 // $Id$
 
-
 /**
  * @file
  * os_news.features.field.inc
@@ -13,7 +12,7 @@
 function os_news_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-new-body'.
+  // Exported field: 'node-news-body'.
   $fields['node-news-body'] = array(
     'field_config' => array(
       'active' => '1',
@@ -53,7 +52,7 @@ function os_news_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '0',
+          'weight' => '1',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -86,7 +85,7 @@ function os_news_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-new-field_photo'.
+  // Exported field: 'node-news-field_photo'.
   $fields['node-news-field_photo'] = array(
     'field_config' => array(
       'active' => '1',
@@ -122,14 +121,14 @@ function os_news_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'image',
           'settings' => array(
             'image_link' => '',
-            'image_style' => '',
+            'image_style' => 'os_news_full_140_x_180',
           ),
           'type' => 'image',
-          'weight' => '1',
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -206,7 +205,7 @@ function os_news_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-new-field_upload'.
+  // Exported field: 'node-news-field_upload'.
   $fields['node-news-field_upload'] = array(
     'field_config' => array(
       'active' => '1',
@@ -247,7 +246,7 @@ function os_news_field_default_fields() {
           'module' => 'os_files',
           'settings' => array(),
           'type' => 'os_files_image_list',
-          'weight' => '3',
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'above',

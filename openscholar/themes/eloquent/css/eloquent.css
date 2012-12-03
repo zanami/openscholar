@@ -11,6 +11,12 @@ body {
   margin: 30px auto;
   }
 
+
+.front #content-column .content-inner {
+   padding-top: 20px;
+}
+
+
 .wrap {
   padding: 0 30px
   }
@@ -37,7 +43,7 @@ h2, h1#page-title {
 
 #content h2, h3, h4 {
   margin-bottom: 0;
-  margin-top: 1em;
+
   }
 
 h1 a, h2 a, h3 a, .region-sidebar-second a {
@@ -65,15 +71,15 @@ img {
   }
  
  .region-inner {
-    padding: 0 15px;
+    padding: 0;
 }
   
   
-  .sidebar .content ul.menu li {list-style-image:url('../images/mainNavLftIcon.gif');color:#106599;}
-  .sidebar .content ul.menu li  a {padding-left:0px; color: #723319;}
+  .sidebar .content ul.menu li {color:#106599;}
+  .sidebar .content ul.menu li  a {padding-left:0px; color: #723319;text-transform:uppercase;}
   .sidebar .content ul.menu li  a:hover {text-decoration:underline !important;}
   .region-sidebar-first .content ul.menu {margin-left:12px;}
-  .region-sidebar-second .content ul.menu {margin-left:18px;}
+  .region-sidebar-second .content ul.menu {margin-left:0px;}
   
 
   
@@ -237,6 +243,8 @@ ul.nice-menu-left li.menuparent:hover, ul.nice-menu-left li li.menuparent:hover 
   -webkit-box-shadow: 2px 0 2em #262d2c;
   box-shadow: 2px 0 2em #262d2c;
   }
+
+.lt-ie9 #columns { border: 1px solid #DDD;}
 
 #columns .wrap {
   padding: 0 15px;

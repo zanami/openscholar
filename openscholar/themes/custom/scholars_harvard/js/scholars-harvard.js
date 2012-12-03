@@ -39,21 +39,33 @@
 	    direction: 'up'
 	  });
 	  
-	  $('.view-iqss-openscholar-front li a').each(function(){
-	    var captionheight = $(this).children('span.content').height();
+	  // jQuery to animate the description and title of the sites if their description runs over the height.
+	  $('div.view-os-websites li.views-row').each(function(){
+	    var captionheight = $(this).children('div.views-field-field-site-description').children('div.field-content').height();
+	    // Since they are now broken up into separate divs, we'll need to animate the title div as well.
+		var nameheight = $(this).children('div.views-field-title').children('span.field-content').height();
+		
 		$(this).hover(function(){
-		  $(this).children('span.content').animate({
-		    height: captionheight + 'px'
-		  });
+	      if(captionheight > 25) {
+	        $(this).children('div.views-field-field-site-description').children('div.field-content').animate({
+			  height: captionheight + 'px'
+			});
+			$(this).children('div.views-field-title').children('span.field-content').animate({
+			  height: captionheight + nameheight + 'px'
+			});
+	      }
 		},function(){
-		  $(this).children('span.content').animate({
+		  $(this).children('div.views-field-field-site-description').children('div.field-content').animate({
+		    height: '20px'
+		  });
+		  $(this).children('div.views-field-title').children('span.field-content').animate({
 		    height: '33px'
 		  });
-	    });
+		});
 	  });
 
-	  $('.view-iqss-openscholar-front li a span.content').css({
-	    'height': '33px'}
+	  $('div.views-field-field-site-description div.field-content').css({
+	    'height': '20px'}
 	  );
 	}
   };

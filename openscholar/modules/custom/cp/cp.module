@@ -291,8 +291,28 @@ function cp_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
   ctools_include('modal');
   ctools_modal_add_js();
 
+  $vsite = spaces_get_space();
+  if ($vsite) {
+    if (isset($vsite->controllers->variable->values['preset']['spaces_features_available'])) {
+      $spaces_features_available = $vsite->controllers->variable->values['preset']['spaces_features_available'];
+    }
+    else {
+      $spaces_features_available = FALSE;
+    }
+  }
+  else {
+    $spaces_features_available = FALSE;
+  }
+
   foreach (array_keys($form['spaces_features']) as $app_name) {
+    // Skips render array markup.
     if ($app_name[0] == '#') {
+      continue;
+    }
+
+    // Removes apps that are restricted for this site type.
+    if ($spaces_features_available && !in_array($app_name, $spaces_features_available)) {
+      unset($form['spaces_features'][$app_name]);
       continue;
     }
 

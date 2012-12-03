@@ -19,15 +19,17 @@ class SoftwareProjectNodeOSMigration extends AbstractNodeOSMigration {
     //method
     $this->addFieldMapping('field_software_method', 'field_scholar_software_method_value');
 
-    //rbuild shortname
-    $this->addFieldMapping('field_rbuild_short_name', 'field_scholar_software_name_value');
-    $this->addFieldMapping('field_rbuild_short_name:format')->defaultValue('plain_text');
-    $this->addFieldMapping('field_rbuild_short_name:language', 'language');
+    if(module_exists('rbuild')){
+	    //rbuild shortname
+	    $this->addFieldMapping('field_rbuild_short_name', 'field_scholar_software_name_value');
+	    $this->addFieldMapping('field_rbuild_short_name:format')->defaultValue('plain_text');
+	    $this->addFieldMapping('field_rbuild_short_name:language', 'language');
 
-    //repo
-    $this->addFieldMapping('field_software_repo', 'field_scholar_software_repo_value');
-    $this->addFieldMapping('field_software_repo:format')->defaultValue('plain_text');
-    $this->addFieldMapping('field_software_repo:language', 'language');
+	    //rbuild repo
+	    $this->addFieldMapping('field_software_repo', 'field_scholar_software_repo_value');
+	    $this->addFieldMapping('field_software_repo:format')->defaultValue('plain_text');
+	    $this->addFieldMapping('field_software_repo:language', 'language');
+    }
 
 
   }
@@ -66,6 +68,11 @@ class SoftwareProjectNodeOSMigration extends AbstractNodeOSMigration {
      * to get those image nodes and extract everything needed by file fields.)
      */
 
+    // @todo verify correct
+    if ($current_row->field_scholar_software_method_value == 'rbuild') {
+      $current_row->field_scholar_software_method_value = 'Rbuild repository';
+    }
+
     return parent::prepareRow($current_row); //false -> skip this row
 
   }
@@ -102,12 +109,13 @@ class SoftwareReleaseNodeOSMigration extends AbstractNodeOSMigration {
 
     $this->addFieldMapping('field_software_package:destination_file', 'field_software_package:destination_file');
     $this->addFieldMapping('field_software_package:destination_dir', 'field_software_package:destination_dir');
+    $this->addFieldMapping('field_software_package:file_replace')->defaultValue(FILE_EXISTS_REPLACE);
     $this->addFieldMapping('field_software_package:description', 'field_scholar_software_file_data');
     $this->addFieldMapping('field_software_package:display', 'field_scholar_software_file_list');
-    $this->addFieldMapping('field:software_package:og_group_ref', 'group_nid');
+    $this->addFieldMapping('field_software_package:og_group_ref', 'group_nid');
 
 
-    $this->addUnmigratedDestinations(parent::subfields('field_software_package', array('preserve_files', 'file_class', 'file_replace')));
+    $this->addUnmigratedDestinations(parent::subfields('field_software_package', array('preserve_files', 'file_class')));
 
     $this->removeFieldMapping('title');
   }
@@ -164,11 +172,13 @@ class SoftwareReleaseNodeOSMigration extends AbstractNodeOSMigration {
       parent::os_migrate_prepare_files(array($file), $current_row, 'field_software_package');
       if (list($path, $name) = $this->_migrate_filename($file->filepath)) {
         $current_row->{'field_software_package:destination_file'} = $name;
-        $current_row->{'field_software_package:destination_dir'} = $path;
-        $current_row->field_software_package = $name;
+        $current_row->{'field_software_package:destination_dir'} = 'public://' . $path;
+        $current_row->field_software_package = $path . '/' . $name;
       }
     } else {
-      $current_row->field_software_package = array();
+      $current_row->field_software_package = NULL;
+      $current_row->{'field_software_package:destination_file'} = NULL;
+      $current_row->{'field_software_package:destination_dir'} = NULL;
     }
 
     return parent::prepareRow($current_row); //false -> skip this row

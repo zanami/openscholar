@@ -137,7 +137,7 @@ function os_software_process_node(&$vars) {
       $vars['content']['os_software_releases_entity_view_1']['#weight'] = $weight + 1;
     }
   }
-  else if ($vars['view_mode'] === 'teaser') {
+  elseif ($vars['view_mode'] === 'teaser') {
     // Hides EVA fields "Recommended Release" and "Recent Releases" on /software.
     if (isset($vars['content']['os_software_releases_entity_view_1'])) {
       unset($vars['content']['os_software_releases_entity_view_1']);
@@ -158,15 +158,6 @@ function os_software_node_delete($node) {
 
   // Deletes all referencing software release nodes
   _os_software_delete_child_releases($node);
-}
-
-/**
- * Implements hook_cron()
- *
- * Invokes hook to automatically create release content (i.e. Rbuild)
- */
-function os_software_cron() {
-  module_invoke('rbuild', 'os_software_process_remote_release');
 }
 
 /**
@@ -211,12 +202,6 @@ function os_software_os_widget() {
   );
 
   return $items;
-}
-
-function os_software_os_widget_alter(&$widget) {
-  if ($widget['delta'] == 'os_software_releases-block_1') {
-    $widget['info'] = 'Recent Software Releases';
-  }
 }
 
 /**

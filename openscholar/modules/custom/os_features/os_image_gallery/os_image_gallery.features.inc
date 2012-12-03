@@ -18,6 +18,9 @@ function os_image_gallery_ctools_plugin_api() {
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
+  if ($module == "boxes" && $api == "box") {
+    return array("version" => "1");
+  }
 }
 
 /**
@@ -130,9 +133,9 @@ function os_image_gallery_image_default_styles() {
 function os_image_gallery_node_info() {
   $items = array(
     'media_gallery' => array(
-      'name' => t('Image Gallery'),
+      'name' => t('Media Gallery'),
       'base' => 'node_content',
-      'description' => t('A set of images'),
+      'description' => t('A group of images, video, or other media'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',

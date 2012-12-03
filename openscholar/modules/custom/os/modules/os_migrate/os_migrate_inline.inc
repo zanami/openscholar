@@ -239,11 +239,11 @@ class EmbedInlineOSMigration extends OSMigration {
 
   //correct the fields that wouldn't attach in prepare
    public function complete($entity, $row) {
-
-     //$entity->filemime = 'html/embed';
-//     $entity->uri = str_replace('public://', 'embed://', $entity->uri);
-//$entity->uri = $entity->value;
-$entity->uri = 'oembed://' . check_plain($row->field_os_inline_oembed_url);
+     $entity->uri = 'oembed://' . check_plain($row->field_os_inline_oembed_url);
+     $entity->filename = check_plain($row->field_os_inline_oembed_url);
+     if (strlen($entity->filename) >= 255) {
+       $entity->filename = substr($entity->filename, 0, 254);
+     }
      file_save($entity);
    }
 
@@ -299,15 +299,12 @@ class HTMLInlineOSMigration extends OSMigration {
     //iframe
     if ($iframe = $dom->getElementsByTagName('iframe')->item(0)) {
       $row->uri = $iframe->getAttribute('src');
+    } elseif ($embed = $dom->getElementsByTagName('embed')->item(0)) {
+      $row->uri = $embed->getAttribute('src');
     } elseif ($object = $dom->getElementsByTagName('object')->item(0)) {
-      //object
-      if ($embed = $dom->getElementsByTagName('embed')->item(0)) {
-        $row->uri = $embed->getAttribute('src');
-      } else {
-        $row->uri = $object->getAttribute('data'); //flickr
-        TRUE;
-      }
+      $row->uri = $object->getAttribute('data'); //flickr
     }
+
 
     //object exists, but refers to nothing. drop it.
     if (!strlen($row->uri)) {
@@ -315,7 +312,7 @@ class HTMLInlineOSMigration extends OSMigration {
     }
 
     //prep the row
-    $row->uri = preg_replace('/https?:\/\//', 'oembed://', $row->uri);
+    //$row->uri = preg_replace('/https?:\/\//', 'oembed://', $row->uri);
 
     //get additional data from d6
     $query = parent::d6_db_select('node_revisions', 'nr')
@@ -343,7 +340,7 @@ class HTMLInlineOSMigration extends OSMigration {
     //$entity->value = $entity->uri;
 
     //treat iframe as embedded html code
-    if (strpos($row->html, 'iframe')) {
+    if (strpos($row->html, 'iframe') || strpos($row->html, 'embed')) {
       $entity->type = 'html';
       //uri embed://
       $entity->uri = 'embed://' . md5($row->uri);
@@ -358,7 +355,7 @@ class HTMLInlineOSMigration extends OSMigration {
 
   public function complete(&$entity, $row) {
     //change uri for iframes
-    if (strpos($row->html, 'iframe')) {
+    if (strpos($row->html, 'iframe') || strpos($row->html, 'embed')) {
       $entity->uri = 'embed://' . md5($row->uri);
       file_save($entity);
     }

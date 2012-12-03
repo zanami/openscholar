@@ -38,7 +38,22 @@
 	<div class="hg-container">
     <div id="content-column" role="main">
       <div class="content-inner">
+      <?php if ($breadcrumb): print $breadcrumb; endif; ?>
+
       	<?php if ($is_front || $use_content_regions): ?>
+
+          <?php print render($title_prefix); ?>
+          <?php if ($title || (!($use_content_regions || $is_front) && ($primary_local_tasks || $secondary_local_tasks || $action_links = render($action_links)))): ?>
+            <header id="main-content-header">
+
+              <?php if (!$is_front && $title): ?>
+                <h1 id="page-title"<?php print $attributes; ?>>
+                  <?php print $title; ?>
+                </h1>
+              <?php endif; ?>
+
+            </header>
+          <?php endif; ?>
           <?php print render($title_suffix); ?>
 <?php if (
   $page['content_top'] ||
