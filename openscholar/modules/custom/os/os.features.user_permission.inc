@@ -416,8 +416,8 @@ function os_user_default_permissions() {
   );
 
   // Exported permission: edit file.
-  $permissions['edit files'] = array(
-    'name' => 'edit files',
+  $permissions['edit own files'] = array(
+    'name' => 'edit own files',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
