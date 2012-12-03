@@ -36,6 +36,7 @@ function harvard_courses_menu() {
     'description' => 'Re-import harvard courses',
     'page callback' => 'harvard_courses_refresh_coureses',
     'access arguments' => array('import course feeds'),
+    'type' => MENU_LOCAL_TASK,
   );
 
   return $items;
@@ -269,7 +270,9 @@ function harvard_courses_node_insert($node) {
  * Implement hook_preprocess_page().
  */
 function harvard_courses_preprocess_page(&$variables) {
-  $variables['title_suffix']['controls']['add_new']['#text'] = t('Refresh courses');
+  if (isset($variables['title_suffix']['controls']) && $variables['title_suffix']['controls']['add_new']['#path'] == 'courses/refresh-courses') {
+    $variables['title_suffix']['controls']['add_new']['#text'] = t('Refresh courses');
+  }
 }
 
 /**
