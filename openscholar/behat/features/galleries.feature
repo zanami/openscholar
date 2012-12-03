@@ -14,4 +14,4 @@ Feature:
   @api @debug @wip
   Scenario: Test the Galleries tab
     Given I visit "/user"
-    Then I should print page
+     Then I should print page
