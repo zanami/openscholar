@@ -276,31 +276,8 @@ function openscholar_install_finished(&$install_state) {
     $output .= '<p>'. st('<a href="@url">Visit your new site</a> or <a href="@settings" class="overlay-exclude">change Openscholar settings</a>.', array('@url' => url(''), '@settings' => url('admin/config/openscholar', array('query' => array('destination' => ''))))) . '</p>';
   }
 
-  // Flush all caches to ensure that any full bootstraps during the installer
-  // do not leave stale cached data, and that any content types or other items
-  // registered by the install profile are registered correctly.
-  // drupal_flush_all_caches();
-
-  // Remember the profile which was used.
-  variable_set('install_profile', drupal_get_profile());
-
-  // Install profiles are always loaded last
-  db_update('system')
-    ->fields(array('weight' => 1000))
-    ->condition('type', 'module')
-    ->condition('name', drupal_get_profile())
-    ->execute();
-
-  // Cache a fully-built schema.
-  drupal_get_schema(NULL, TRUE);
-
   // Remove the variable we used during the installation.
   variable_del('os_dummy_content');
-
-  // Run cron to populate update status tables (if available) so that users
-  // will be warned if they've installed an out of date Drupal version.
-  // Will also trigger indexing of profile-supplied content or feeds.
-  // drupal_cron_run();
 
   return $output;
 }
