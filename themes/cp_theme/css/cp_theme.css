@@ -65,9 +65,13 @@ input.form-text,
 textarea {
   font-size:13px;
   height: auto;
-  padding: 7px;
+  padding: 6px 7px;
   background: url('../../../themes/os_basetheme/images/form-input-bg.gif') repeat-x scroll left top #FFFFFF;
   border: 1px solid #CDCDCD;
+}
+
+html.js input.form-autocomplete {
+  background-position: 100% 8px;  
 }
 
 #block-os-powered-by {
