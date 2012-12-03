@@ -35,7 +35,7 @@ class os_sv_list_box extends os_boxes_default {
     $defaults = $this->options_defaults();
     drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting');
 
-    $content_types = array(0 => t('- Select -')) + os_get_bundles(1);
+    $content_types = array(-1 => t('- Select -')) + os_get_bundles(1);
 
     if (isset($content_types['media_gallery'])) {
       $content_types['image'] = t('Images');
@@ -121,7 +121,7 @@ class os_sv_list_box extends os_boxes_default {
 
     if ($vocabs = os_sv_list_get_content_type_vocabs($content_types_value)) {
       // Make the vocabulary selection optional.
-      $vocabs = array(0 => t('- Select -')) + $vocabs;
+      $vocabs = array(-1 => t('- Select -')) + $vocabs;
     }
     $vocabs_default_value = !empty($form_state['values']['vocabs']) ? $form_state['values']['vocabs'] : $this->options['vocabs'];
     $terms_default_value = !empty($form_state['values']['terms']) ? $form_state['values']['terms'] : $this->options['terms'];
@@ -151,13 +151,29 @@ class os_sv_list_box extends os_boxes_default {
     $form['query_details']['terms'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Vocabulary terms'),
-      '#description' => empty($terms) ? t('No terms in the vocaulry') : '',
+      '#description' => empty($terms) ? t('No terms in the vocabulary') : '',
       '#options' => $terms,
       '#access' => $vocabs,
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="vocabs"]' => array('value' => -1),
+        ),
+      ),
       '#default_value' => $terms_default_value,
       '#prefix' => '<div id="terms-details">',
       '#suffix' => '</div>',
     );
+
+    $terms_statement = isset($form_state['values']['content_type']) && $form_state['values']['content_type'] == -1;
+    $vocabs_statement = isset($form_state['values']['vocabs']) && $form_state['values']['vocabs'] == -1;
+
+    // Hide the form but keep the prefix and suffix for the AJAX callback.
+    if ($terms_statement || $vocabs_statement) {
+      $form['query_details']['terms'] = array(
+        '#prefix' => '<div id="terms-details">',
+        '#suffix' => '</div>',
+      );
+    }
 
     $form['query_details']['more'] = array(
       '#title' => 'Show "more" link',
@@ -474,9 +490,11 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // Clean terms with empty value.
-    foreach ($this->options['terms'] as $key => $value) {
-      if ($value == 0) {
-        unset($this->options['terms'][$key]);
+    if (!empty($this->options['terms'])) {
+      foreach ($this->options['terms'] as $key => $value) {
+        if ($value == 0) {
+          unset($this->options['terms'][$key]);
+        }
       }
     }
 
