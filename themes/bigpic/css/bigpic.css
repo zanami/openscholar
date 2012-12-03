@@ -179,11 +179,11 @@ a:hover {
 	
 }
 
-.sidebar ul.nice-menu a {
+.sidebar ul.menu a {
     color: #027AC6;
 }
 
-.sidebar ul.nice-menu a:hover {
+.sidebar ul.menu a:hover {
     text-decoration:underline !important;
 }
 

@@ -170,7 +170,9 @@ ul.menu li.collapsed {
 ul.menu li.expanded  {
 }
 
-ul.menu li.leaf      {
+.sidebar ul li.leaf {
+    list-style-image: none;
+    list-style-type: none;
 }
 
 ul.menu li a:link,
@@ -616,16 +618,15 @@ ul.nice-menu-left ul a {
     padding-left: 0;
 }
 
-.sidebar ul.nice-menu ul {
+.sidebar ul.menu ul {
     border-top: none !important;
 }
 
-.sidebar ul.nice-menu ul li,
-#menu-bar ul.nice-menu li ul li ul li ul li {
-    display:none;
+.sidebar ul.menu li ul.menu {
+ margin:0 0 0 10px;
 }
 
-.sidebar ul.nice-menu {
+.sidebar ul.menu {
     width:100%;
    border-top: none !important;
 }
@@ -641,6 +642,8 @@ ul.nice-menu-right, ul.nice-menu-left,
 ul.nice-menu-right li, ul.nice-menu-left li {
     width: 100%;
 }
+
+
 
 /******************************
  HORIZONTAL (down) menus
