@@ -32,13 +32,30 @@ function os_booklets_menu() {
  * Implements hook_menu_alter().
  */
 function os_booklets_menu_alter(&$items) {
+
+  if (isset($items['node/%node/outline'])) {
+    $items['node/%node/outline']['page callback'] = 'drupal_get_form';
+    $items['node/%node/outline']['page arguments'] = array('book_admin_edit', 1);
+    $items['node/%node/outline']['file'] = 'book.admin.inc';
+    $items['node/%node/outline']['file path'] = drupal_get_path('module', 'book');
+  }
+
   if (isset($items['book'])) {
-    //Provided by core books this shows a list of all books in the system, formatted poorly. restrict access to this page
+    // Provided by core book
+    // Shows a list of all books in the system, formatted poorly.
+    // restrict access to this page
     $items['book']['access arguments'] = array('administer book outlines');
   }
 }
 
-
+/**
+ * Implements hook_form_FORM_ID_alter() for book_admin_edit.
+ */
+function os_booklets_form_book_admin_edit_alter(&$form, $form_state) {
+  if ($form['#node']->type == 'book') {
+    $form['save']['#value'] = t('Save Booklet Outline');
+  }
+}
 
 
 /**
