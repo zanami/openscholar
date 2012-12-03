@@ -52,3 +52,9 @@ function os_blog_os_widget() {
   return $items;
 }
 
+//TODO: Remove with os_layout_get is refactored to better handle widget titles
+function os_blog_os_widget_alter(&$widget) {
+  if ($widget['delta'] == 'os_blog-block') {
+    $widget['info'] = 'Blog Archive';
+  }
+}
