@@ -46,7 +46,19 @@ function os_faq_context_default_contexts() {
       ),
     ),
   );
-  $context->reactions = array();
+  $context->reactions = array(
+    'block' => array(
+      'blocks' => array(
+        'boxes-os_faq_sv_list' => array(
+          'module' => 'boxes',
+          'delta' => 'os_faq_sv_list',
+          'region' => 'sidebar_second',
+          'weight' => '-10',
+        ),
+      ),
+    ),
+    'menu' => 'faq',
+  );
   $context->condition_mode = 0;
 
   // Translatables
