@@ -26,6 +26,174 @@ function harvard_courses_feeds_plugins() {
 }
 
 /**
+ * Implements hook_menu().
+ */
+function harvard_courses_menu() {
+  $items = array();
+
+  $items['courses/refresh-courses'] = array(
+    'title' => 'Refresh courses',
+    'description' => 'Re-import harvard courses',
+    'page callback' => 'harvard_courses_refresh_coureses',
+    'access arguments' => array('import course feeds'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_os_widget().
+ */
+function harvard_courses_os_widget() {
+  $widgets = array();
+
+  $widgets['harvard_courses-courses_filter'] = array(
+    'module' => 'havard_courses',
+    'delta' => 'courses_filter',
+    'title' => '',
+    'info' => t('Harvard courses filter'),
+  );
+
+  return $widgets;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function harvard_courses_block_info() {
+  $blocks = array();
+
+  $blocks['courses_filter'] = array(
+    'info' => t('Harvard courses filter'),
+    'weight' => '-10',
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implement hook_block_view().
+ */
+function  harvard_courses_block_view($delta) {
+  $block = array();
+
+  switch ($delta) {
+    case 'courses_filter':
+      $block['content'] = harvard_courses_courses_filter();
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Return links for filter the harvard courses.
+ */
+function harvard_courses_courses_filter() {
+  if (!$space = spaces_get_space()) {
+    return $block;
+  }
+
+  $query = db_select('og_membership', 'ogm');
+  $query->join('node', 'n', 'n.nid = ogm.etid');
+  $results = $query
+    ->fields('n')
+    ->condition('ogm.gid', $space->id)
+    ->condition('n.type', 'harvard_course')
+    ->execute()
+    ->fetchAllKeyed();
+
+  if (empty($results)) {
+    return;
+  }
+
+  $nodes = node_load_multiple(array_keys($results));
+  $semester = array();
+  foreach ($nodes as $node) {
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $text = check_plain($wrapper->field_term->value());
+    $query_params = array(
+      'term' => $text,
+    );
+    $semester[$text] = l($text, 'courses', array('query' => $query_params));
+  }
+
+  return theme('item_list', array('title' => t('Filter by semester'), 'items' => $semester));
+}
+
+
+/**
+ * Callback function for refresh the courses.
+ */
+function harvard_courses_refresh_coureses() {
+  // Get all the API importers courses nodes.
+  $query = new entityFieldQuery();
+  $results = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'harvard_api_importer')
+    ->execute();
+
+  // There are no API importing nodes, go back to the courses page.
+  if (empty($results['node'])) {
+    drupal_set_message(t('API importing nodes was not found.'));
+    drupal_goto('courses');
+  }
+
+  // Build the batch actions.
+  $opreations = array();
+  foreach (array_keys($results['node']) as $nid) {
+    $opreations[] = array(
+      'harvard_courses_refresh_coureses_execute',
+      array($nid),
+    );
+  }
+
+  $batch = array(
+    'operations' => $opreations,
+    'finished' => 'batch_example_finished',
+    'title' => t('Importing nodes'),
+    'init_message' => t('Start importing nodes.'),
+    'progress_message' => t('Processed @current out of @total.'),
+    'error_message' => t('Example Batch has encountered an error.'),
+  );
+
+  batch_set($batch);
+  batch_process('courses');
+}
+
+/**
+ * Batch API callback functions.
+ */
+function harvard_courses_refresh_coureses_execute($nid) {
+  feeds_source('course', $nid)->startImport();
+}
+
+/**
+ * Implements hook_os_add_new_links_alter().
+ */
+function harvard_courses_os_add_new_links_alter(&$links) {
+  $menu = menu_get_item();
+  if ($menu['path'] == 'courses') {
+     $links['refresh-courses'] = array(
+      'title' => t('courses'),
+      'href' => 'courses/refresh-courses',
+    );
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function harvard_courses_permission() {
+  return array(
+    'view harvard courses' => array(
+      'title' => t('Harvard courses'),
+      'description' => t('Grant to the user general access to harvard courses data.'),
+    ),
+  );
+}
+
+/**
  * Returning groups (Department. Project or personal) nid by the import type.
  *
  *  @param $import_type
@@ -72,18 +240,36 @@ function harvard_courses_node_insert($node) {
   $wrapper = entity_metadata_wrapper('node', $node->nid);
 
   // Import by catalog number.
-  $sites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
-  foreach ($sites as $site) {
-    og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+  if ($wrapper->field_cat_number->value()) {
+    $sites = haravard_courses_sites_nid_by_import_type('cat_num', array($wrapper->field_cat_number->value()));
+    if (!empty($sites)) {
+      foreach ($sites as $site) {
+        og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+      }
+    }
   }
 
   // Import by department ID.
-  $sites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_field->value()));
-  foreach ($sites as $site) {
-    og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+  if ($wrapper->field_department_id->value()) {
+    $sites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_department_id->value()));
+    if (!empty($sites)) {
+      foreach ($sites as $site) {
+        og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+      }
+    }
   }
 
   $node->skip_og_membership = TRUE;
+
+  // Change description field format to full html.
+  $node->field_description[LANGUAGE_NONE][0]['format'] = 'full_html';
+}
+
+/**
+ * Implement hook_preprocess_page().
+ */
+function harvard_courses_preprocess_page(&$variables) {
+  $variables['title_suffix']['controls']['add_new']['#text'] = t('Refresh courses');
 }
 
 /**
@@ -107,7 +293,7 @@ function harvard_courses_node_update($node) {
     ),
     'department' => array(
       'field_name' => 'field_department_id',
-      'course' => 'field_field',
+      'course' => 'field_department_id',
     ),
   );
 
@@ -125,8 +311,9 @@ function harvard_courses_node_update($node) {
       }
     }
 
-    // New course(s) was added to the group. IF the course(s) is already imported
-    // then group them, if not then in the next import they will be imported.
+    // New course(s) was added to the group. IF the course(s) is already
+    // imported then group them, if not then in the next import they will be
+    // imported.
     if (!empty($added_items)) {
       $courses = harvard_courses_related_nodes($field['course'], $added_items);
       if (!empty($courses)) {
@@ -163,28 +350,6 @@ function harvard_courses_related_nodes($field, $search = array()) {
   }
 
   return array_keys($result['node']);
-}
-/**
- * Implements hook_feeds_presave().
- */
-function harvard_courses_feeds_presave($source, $entity, $item) {
-  $wrapper = entity_metadata_wrapper('node', $entity);
-  $query = new entityFieldQuery();
-  $result = $query
-    ->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', 'harvard_course')
-    ->fieldCondition('field_cat_number', 'value', $wrapper->field_cat_number->value())
-    ->fieldCondition('field_field', 'value', $wrapper->field_field->value())
-    ->execute();
-
-  // Skip on this item, alredy exists.
-  if (!empty($result['node'])) {
-    $param = array(
-      '@name' => $wrapper->label(),
-    );
-    drupal_set_message(t("The node @name wasn't imported because he already exists.", $param));
-    $entity->feeds_item->skip = TRUE;
-  }
 }
 
 /**
@@ -257,8 +422,10 @@ function harvard_courses_feature_submit($form, $form_state) {
   $catalog_number = _harvard_courses_get_field_value('field_catalog_number', $form_state);
 
   $wrapper = entity_metadata_wrapper('node', $form['#entity']);
-  $wrapper->field_department_id->set($department_id);
-  $wrapper->field_catalog_number->set($catalog_number);
+
+  empty($department_id) ? $wrapper->field_department_id->set(NULL) : $wrapper->field_department_id->set($department_id);
+  empty($catalog_number) ? $wrapper->field_catalog_number->set(NULL) : $wrapper->field_catalog_number->set($catalog_number);
+
   $wrapper->save();
 }
 
@@ -271,7 +438,7 @@ function harvard_courses_field_access($op, $field, $entity_type, $entity, $accou
   }
 
   $spaces_features = variable_get('spaces_features', array());
-  if (!$spaces_features['harvard_courses']) {
+  if (!@$spaces_features['harvard_courses']) {
     return FALSE;
   }
 
