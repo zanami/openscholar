@@ -416,8 +416,8 @@ function os_user_default_permissions() {
   );
 
   // Exported permission: edit file.
-  $permissions['edit file'] = array(
-    'name' => 'edit file',
+  $permissions['edit files'] = array(
+    'name' => 'edit files',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
@@ -498,8 +498,8 @@ function os_user_default_permissions() {
   );
 
   // Exported permission: view file.
-  $permissions['view file'] = array(
-    'name' => 'view file',
+  $permissions['view files'] = array(
+    'name' => 'view files',
     'roles' => array(
       0 => 'anonymous user',
       1 => 'authenticated user',
