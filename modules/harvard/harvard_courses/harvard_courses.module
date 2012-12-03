@@ -453,3 +453,12 @@ function harvard_courses_field_access($op, $field, $entity_type, $entity, $accou
   // Don't show the fields in view mode.
   return $op != 'view' ? TRUE : FALSE;
 }
+
+/**
+ * Implements hook_vsite_og_node_type_info().
+ */
+function harvard_courses_vsite_og_node_type_info() {
+  return array(
+    'harvard_course' => 'group content',
+  );
+}

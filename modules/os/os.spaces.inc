@@ -44,6 +44,7 @@ function os_spaces_presets() {
         'os_publications',
         'os_reader',
         'os_software',
+        'harvard_courses'
       ),
       'site_frontpage' => 'home',
       'theme_default' => 'ballard',
@@ -85,6 +86,7 @@ function os_spaces_presets() {
         'os_publications',
         'os_reader',
         'os_software',
+        'harvard_courses',
       ),
       'site_frontpage' => 'home',
       'theme_default' => 'ballard',
