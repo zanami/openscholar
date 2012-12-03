@@ -91,7 +91,7 @@ function vsite_remove_entity($entity, $entity_type = 'node', $vsite = FALSE){
  * @return
  *   the SPACE object if created or FALSE.
  */
-function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset = FALSE) {
+function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset = FALSE, $parent = NULL) {
   $node = new stdClass();
   $node->type = $bundle;
   node_object_prepare($node);
@@ -106,6 +106,17 @@ function vsite_create_vsite($name, $domain, $uid, $bundle = 'personal', $preset 
   $node->uid = $uid;
   $node->spaces_preset_og = $preset;
   $node->language = LANGUAGE_NONE;
+  if (isset($parent) && $parent_node = node_load($parent)) {
+    $node->field_group_parent = array(
+      LANGUAGE_NONE => array(
+        array(
+      	  'target_id' => $parent,
+          'entity' => $parent_node,
+          'access' => TRUE,
+        )
+      )
+    );
+  }
   node_save($node);
 
   if ($vsite = spaces_load('og', $node->nid)) {
@@ -130,6 +141,10 @@ function vsite_get_vsite_by_owner($uid = NULL) {
   if (!$uid) {
     global $user;
     $uid = $user->uid;
+  }
+
+  if(empty($uid)) {
+  	return array();
   }
 
   $group_bundles = og_get_all_group_bundle();

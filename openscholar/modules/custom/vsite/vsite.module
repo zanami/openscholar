@@ -10,6 +10,8 @@
 include_once ('vsite.features.inc');
 include_once ('includes/vsite.inc');
 
+//module_load_include('inc', 'spaces', 'spaces.overrides');
+
 /**
  * Returns the current vsite (space).
  */
@@ -137,94 +139,6 @@ function vsite_spaces_registry_alter(&$registry) {
 }
 
 /**
- * Add blocks for the current spaces' field groups so context knows about them
- * We do it this way so we don't clog up context with thousands of blocks that are
- * only active in a single space each
- */
-function vsite_context_block_info_alter(&$block_info) {
-  if (module_exists('field_group') && $space = spaces_get_space()) {
-    $node = $space->group;
-
-    $groups = field_group_info_groups('node', $node->type, 'default');
-
-    foreach ($groups as $g => $obj) {
-      $delta = 'fg:node:'.$node->nid.':'.$g;
-      if (!isset($block_info['vsite-'.$delta])) {
-        $block_info['vsite-'.$delta] = (object)array(
-          'bid' => 'vsite-'.$delta,
-          'info' => $obj->label,
-          'module' => 'vsite',
-          'delta' => $delta,
-          'region' => false,
-          'weight' => '0',
-        );
-      }
-    }
-  }
-}
-
-function vsite_block_view($delta) {
-  list($check, $type, $id, $group_name) = explode(':', $delta);
-  if ($check != 'fg' || !module_exists('field_group_overlay')) {
-    return array('content' => array());
-  }
-
-  return array(
-    'content' => field_group_overlay_build_group($type, node_load($id), $group_name),
-  );
-}
-
-function vsite_os_widget() {
-  $arr = array();
-  $widgets = array();
-  vsite_context_block_info_alter($arr);
-  $space = spaces_get_space();
-  $node = $space->group;
-  $groups = null;
-
-  foreach ($arr as $bid => $block) {
-    list(,$entity_type,$id,$group_name) = explode(':', $block->delta);
-    if (!isset($groups)) {
-      $groups = field_group_info_groups($entity_type, $node->type, 'default');
-    }
-    $widgets[$bid] = array(
-      'module' => 'vsite',
-      'delta' => $block->delta,
-      'info' => $groups[$group_name]->label,
-      'cache' => DRUPAL_NO_CACHE,
-    );
-  }
-
-  return $widgets;
-}
-
-function vsite_os_widget_alter(&$widget) {
-  static $groups = null;
-  if ($widget['module'] == 'vsite') {
-    list (,$entity_type, $id, $group_name) = explode(':', $widget['delta']);
-    if (!isset($groups)) {
-      $node = node_load($id);
-      $groups = field_group_info_groups($entity_type, $node->type, 'default');
-    }
-    $widget['info'] = $groups[$group_name]->label;
-    $widget['can_edit'] = true;
-    $widget['path'] = 'field-group/'.$entity_type.'/'.$id.'/'.$group_name;
-  }
-}
-
-function vsite_menu_contextual_links_alter(&$links, $parent) {
-  if (isset($links['widget-remove']) && $parent['original_map'][2] == 'vsite') {
-    list(,$entity_type,$id,$group) = explode(':',$parent['original_map'][3]);
-    $l = array(
-      'href' => 'field-group/'.$entity_type.'/'.$id.'/'.$group,
-      'title' => 'Edit Widget',
-      'localized_options' => array(),
-    );
-    $links = array_merge(array('widget-edit' => $l), $links);
-  }
-}
-
-/**
  * Returns whether current user may create additional vsites.
  *
  * Handles access rules for when site owner is attempting to create a another
@@ -266,7 +180,8 @@ function vsite_vsite_exists_access($vsites = array()) {
   }
 
   // Can user create more vsites?
-  if (!(count($vsites) < variable_get('os_vsites_per_user') || user_access('create vsite content on behalf'))) {
+  if (count($vsites) >= variable_get('os_vsites_per_user') && !user_access('create vsite content on behalf')) {
+    // No, they can't!
     if (current_path() == 'site/register') {
       // Set error message when appropriate.
       // Clear message queue.
@@ -282,6 +197,51 @@ function vsite_vsite_exists_access($vsites = array()) {
     return FALSE;
   }
 
+  return TRUE;
+}
+
+/**
+ * Returns TRUE only if current user may create a vsite.
+ *
+ * @param array $vsites
+ *   Optional. Expects array like output of vsite_get_vsite_by_owner()
+ *
+ * @return bool
+ *   Returns TRUE only if current user may create a vsite. Takes into account
+ *   all group bundles, whether user can create vsites on behalf, and whether
+ *   the user exceeds the sitewide vsite-per-user limit.
+ */
+function _vsite_user_access_create_vsite($vsites = FALSE) {
+  if (!$vsites) {
+    global $user;
+    $vsites = vsite_get_vsite_by_owner($user->uid);
+  }
+
+  $group_bundles = og_get_all_group_bundle();
+  $user_access_create_vsite = FALSE;
+  foreach ($group_bundles['node'] as $type => $label) {
+    if (user_access('create ' . $type . ' content')) {
+      $user_access_create_vsite = TRUE;
+      break;
+    }
+  }
+
+	// Returns FALSE if user does not have permission to create vsites at all.
+  if (!user_access('create vsite content on behalf') && !$user_access_create_vsite) {
+    return FALSE;
+  }
+
+  // Returns if user may create on behalf, if they exceed the limit themselves.
+  $user_owns_vsites = count($vsites);
+  if ($user_owns_vsites) {
+    $vsite_limit = variable_get('os_vsites_per_user', 1);
+    $user_exceeds_limit = (bool) (count($vsites) >= $vsite_limit);
+    if ($user_exceeds_limit) {
+      return user_access('create vsite content on behalf');
+    }
+  }
+
+  // Returns TRUE if user is not the author of any vsite.
   return TRUE;
 }
 
@@ -418,6 +378,149 @@ function vsite_attach_fields_to_group_content($entity_type, $bundle) {
 function vsite_attach_fields_to_group($bundle) {
   og_create_field(OG_GROUP_FIELD, 'node', $bundle);
   og_create_field(OG_ACCESS_FIELD, 'node', $bundle);
+
+  if (!field_info_field('field_site_address')) {
+    // field_site_address.
+    $field = array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_site_address',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    );
+    $field = field_create_field($field);
+  }
+
+  if (!field_info_instance('node', 'field_site_address', $bundle)) {
+    $instance = array(
+      'bundle' => $bundle,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 3,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_site_address',
+      'label' => 'Site Address',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '30',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '32',
+      ),
+    );
+    field_create_instance($instance);
+  }
+
+  if (!field_info_field('field_site_description')) {
+    // field_site_description.
+    $field = array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_site_description',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    );
+    $field = field_create_field($field);
+  }
+
+  if (!field_info_instance('node', 'field_site_description', $bundle)) {
+    $instance = array(
+      'bundle' => $bundle,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 2,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_site_description',
+      'label' => 'Site Description',
+      'required' => FALSE,
+      'settings' => array(
+        'text_processing' => 0,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'module' => 'text',
+        'settings' => array(
+          'size' => 60,
+        ),
+        'type' => 'text_textfield',
+        'weight' => '31',
+      ),
+    );
+    field_create_instance($instance);
+  }
 
   if (!field_info_field('field_group_path')) {
     // field_group_path.
@@ -1201,18 +1304,27 @@ function vsite_mollom_form_info($form_id) {
 }
 
 /**
- * Implements hook_field_attach_form().
- *
- * Hide group-audience fields. We don't use hook_field_access() as
- * OgBehaviorHandler::OgMembershipCrud() is checking for field-access,
- * which will result with not creating the OG-memberships.
+ * Implements hook_preprocess_html().
+ * Set the head_title to the vsite name rather than the site_name, if in a vsite.
  */
-function vsite_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
-  if ($entity_type != 'node' || !og_is_group_content_type($entity_type, $entity->type)) {
-    return;
-  }
+function vsite_preprocess_html(&$vars) {
+  $spaces = spaces_get_space();
+  if(isset($spaces)) {
+  	$vsite_title = isset($spaces->group->title) ? $spaces->group->title : variable_get('site_name');
 
-  foreach (array_keys(og_get_group_audience_fields($entity_type, $entity->type)) as $field_name) {
-    $form[$field_name]['#access'] = FALSE;
+    // Check for the frontpage.
+    if(drupal_is_front_page()) {
+  	  $head_title = array(
+  	    $vsite_title
+  	  );
+    }else {
+  	  $head_title = array(
+  	    strip_tags(drupal_get_title()),
+  	    $vsite_title
+  	  );
+    }
+
+    // Set the new page 'head' title.
+    $vars['head_title'] = implode(' | ', $head_title);
   }
 }
