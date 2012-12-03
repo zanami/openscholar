@@ -107,8 +107,8 @@ body.navbar #header-container p {
 
 #menu-bar ul.nice-menu li a,
 #menu-bar ul.nice-menu li a:visited,
-.region-sidebar-first ul.nice-menu li a,
-.region-sidebar-first ul.nice-menu li a:visited {
+.region-sidebar-first ul.menu li a,
+.region-sidebar-first ul.menu li a:visited {
   font-style: normal;
   display:block;
   color: #5088BA;
@@ -117,7 +117,7 @@ body.navbar #header-container p {
   }
 
 #menu-bar ul.nice-menu li a:hover,
-.region-sidebar-first ul.nice-menu li a:hover,
+.region-sidebar-first ul.menu li a:hover,
 #menu-bar ul.nice-menu li a.active,
 .region-sidebar-first  ul.nice-menu li a.active,
 #menu-bar ul.nice-menu li.active-trail,

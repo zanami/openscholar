@@ -258,15 +258,15 @@ ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
     background: none;
 }  
 
-.sidebar ul.nice-menu li {
+.sidebar ul.menu li {
     background:none;
    }
    
-.sidebar ul.nice-menu ul li {
+.sidebar ul.menu ul li {
     background:#ccc;
    }   
   
-.sidebar ul.nice-menu ul {
+.sidebar ul.menu ul {
     top: -.15em;
 }
 
