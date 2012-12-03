@@ -1,8 +1,19 @@
 <?php
 
+function os_subsite_permission() {
+  $items = array();
+
+  $items['create subsites'] = array(
+    'title' => t('Create Subsites'),
+    'description' => t('Create sites that belong to another site.')
+  );
+
+  return $items;
+}
+
 function os_subsites_preprocess_toolbar(&$vars) {
   $space = spaces_get_space();
-  if ($space && $space->group->type == 'department') {
+  if ($space && $space->group->type == 'department' && spaces_access_admin() && user_access('create subsites')) {
     $vars['toolbar']['toolbar_right']['toolbar_subsite'] = array(
       '#theme' => 'links__toolbar_subsite',
       '#links' => array(
