@@ -224,7 +224,6 @@ function _vsite_register_user_form() {
   $form['password'] = array(
     '#type' => 'password_confirm',
     '#size' => 35,
-    '#description' => t('Password'),
   );
   /*
   $form['notify'] = array(
