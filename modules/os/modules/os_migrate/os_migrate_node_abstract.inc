@@ -21,6 +21,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     'news' => 'announcement',
   );
 
+  private $comment_maintain_node_statistics;
+
   public function __construct($destination_bundle){
     $this->bundle = $destination_bundle;
 
@@ -334,6 +336,17 @@ abstract class AbstractNodeOSMigration extends OSMigration {
   }
 
   /**
+   * @see Migration::preImport()
+   */
+  public function preImport(){
+    parent::preImport();
+
+    //comment_maintain_node_statistics - prevent comment statistics from updating during migration
+    $this->comment_maintain_node_statistics = variable_get('comment_maintain_node_statistics', 'deleteme');
+    variable_set('comment_maintain_node_statistics', FALSE);
+  }
+
+  /**
    * @see Migration::postImport()
    */
   public function postImport(){
@@ -341,6 +354,14 @@ abstract class AbstractNodeOSMigration extends OSMigration {
 
     //check if they exist first?
     $this->_registerCommentsMigration();
+
+    //restore comment_maintain_node_statistics
+    $var = $this->comment_maintain_node_statistics;
+    if ($var == 'deleteme') {
+      variable_del('comment_maintain_node_statistics');
+    } else {
+      variable_set('comment_maintain_node_statistics', $var);
+    }
   }
 
   //helper functions for common file field
