@@ -248,13 +248,18 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       // Check if we need to disable the link to the term base on the child number.
       $link_options = empty($item['class']) ? array() : array('attributes' => array('class' => $item['class']));
       $child_content = !empty($item['childs']) ? os_taxonomy_build_child_item($item['childs'], $item, $options) : '';
+
+      // Presenting a different path when we using a 'Determine for me' option
+      // or 'All posts' option.
+      $taxonomy_path = $options['behavior'] == 'contextual' ? $path_prefix . 'term/' . $tid : $path_prefix . $item['url']['path'];
+
       // Data contain data for term children.
       $data[$tid] = array(
         'data' => theme('os_taxonomy_term_item', array(
           'number' => $number,
           'name' => $item['term_name'],
           'link_options' => $link_options,
-          'url_path' => $path_prefix.$item['url']['path'],
+          'url_path' => $taxonomy_path,
           'description' => $item['description'],
           'link_to_empty_terms' => $options['link_to_empty_terms'],
           'show_term_descriptions' => $options['show_term_descriptions'],
