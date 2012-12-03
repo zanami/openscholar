@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 /**
  * @file
@@ -32,12 +33,11 @@ function os_menu() {
     'file path' => drupal_get_path('module', 'os') . '/',
   );
 
-  $items['admin/config/openscholar'] =
-  $items['admin/config/openscholar/openscholar'] = array(
+  $items['admin/config/openscholar'] = $items['admin/config/openscholar/openscholar'] = array(
     'title' => 'Openscholar Settings',
     'description' => 'Administer OpenScholar specific settings.',
     'position' => 'left',
-    'weight' => - 5,
+    'weight' => -5,
     'page callback' => 'drupal_get_form',
     'page arguments' => array('os_settings_form'),
     'access arguments' => array('administer content'),
@@ -57,7 +57,8 @@ function os_menu() {
   // It should always be accessible, and just not go anywhere.
   $items['os/widget/%/%'] = array(
     'title' => 'Widget',
-    'access callback' => 'os_access_region',  // for contextual links
+    // for contextual links
+    'access callback' => 'os_access_region',
     'access arguments' => array(2, 3),
     'page callback' => 'os_boxes_placeholder',
     'type' => MENU_LOCAL_TASK,
@@ -144,27 +145,27 @@ function os_block_info() {
 function os_block_view($delta = '') {
   $block = array();
   switch ($delta) {
-    case 'powered-by' :
+    case 'powered-by':
       $block['subject'] = NULL;
       $block['content'] = theme('openscholar_powered_by');
       return $block;
 
-    case 'login' :
+    case 'login':
       $block['subject'] = NULL;
       $block['content'] = theme('openscholar_login');
       return $block;
 
-    case 'get-started' :
+    case 'get-started':
       if (user_access('manage group space')) {
         $block['subject'] = NULL;
         $block['content'] = theme('openscholar_get_started');
       }
       return $block;
+
     case 'install_status':
       $block['subject'] = NULL;
       $block['content'] = _os_get_install_status();
       return $block;
-    break;
 
     default:
       // All os menu blocks.
@@ -195,7 +196,8 @@ function os_block_view_alter(&$block, &$data) {
     );
   }
 
-  if (!empty($block['content'])) {  // if the block has no content, nothing should be rendered
+  // if the block has no content, nothing should be rendered
+  if (!empty($block['content'])) {
     // if it isn't an array, its a string. Convert it into a render array.
     if (!is_array($block['content'])) {
       $block['content'] = array('#markup' => $block['content']);
@@ -289,7 +291,7 @@ function os_os_widget() {
   $blocks = array();
   ctools_include('menu', 'os');
 
-  foreach ( os_get_menus() as $menu_name => $title ) {
+  foreach (os_get_menus() as $menu_name => $title) {
     $blocks['os-' . $menu_name] = array(
       'module' => 'os',
       'info' => t($title),
@@ -394,6 +396,9 @@ function os_menu_local_tasks_alter(&$data, $router_item, $root_path) {
  * a shorter (trimmed or summarized) body.
  */
 function os_process_node(&$vars) {
+  // Adds a CSS class to the comment-add link.
+  _os_process_node_links_comment_add_class($vars);
+
   // Only proceeds if we have a "Read more" link.
   if (!isset($vars['content']['links']['node']['#links']['node-readmore'])) {
     return;
@@ -423,6 +428,31 @@ function os_process_node(&$vars) {
 }
 
 /**
+ * Adds a CSS class to the comment-add link.
+ *
+ * @see os_process_node()
+ */
+function _os_process_node_links_comment_add_class(&$vars) {
+  $class = 'os-add-comment';
+  // Adds class 'os-add-comment' for custom icon on comment link.
+  if (isset($vars['content']['links']['comment']['#links']['comment-add'])) {
+    if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes'])) {
+      if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
+        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] .= " $class";
+      }
+      else {
+        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] = array($class);
+      }
+    }
+    else {
+      $vars['content']['links']['comment']['#links']['comment-add']['attributes'] = array(
+        'class' => array($class),
+      );
+    }
+  }
+}
+
+/**
  * Implements hook_preprocess_HOOK() for page.tpl.php.
  */
 function os_preprocess_page(&$vars) {
@@ -430,12 +460,12 @@ function os_preprocess_page(&$vars) {
 
   $links = array();
   $active = context_active_contexts();
-  // Do nothing if we aren't in the cp.
+  // Does nothing if we aren't in the CP.
   if (!isset($active['os_public']) || arg(0) == 'os') {
     return;
   }
 
-  // set the title of the page to match the menu link title
+  // Sets page title to match the menu link title
   ctools_include('menu', 'os');
   $menu_item = os_menu_load_link_path($_GET['q']);
   drupal_set_title($menu_item['title']);
@@ -445,24 +475,26 @@ function os_preprocess_page(&$vars) {
   }
 
   $is_front = isset($active['os_front']);
-  $context = 'os_front';
-  $module = 'os_front';
+  $context  = 'os_front';
+  $module   = 'os_front';
 
-  foreach ( $types as $type => $name ) {
-    $printed = false;
-    foreach ( $active as $a ) {
+  $_node_types = _node_types_build();
+
+  foreach ($types as $type => $name) {
+    $printed = FALSE;
+    foreach ($active as $a) {
       if (isset($a->conditions['node']['values']) && $a->conditions['node']['options']['node_form'] == 0) {
         if (in_array($type, $a->conditions['node']['values'])) {
           $printed = TRUE;
           $context = $a->name;
-          $module = $a->export_module;
+          $module  = $a->export_module;
         }
       }
     }
     if ($printed && spaces_access_admin() && node_access('create', $type)) {
       $links[$type] = array(
         'href' => 'node/add/' . str_replace('_', '-', $type),
-        'title' => ucwords(str_replace('_', ' ', $type)),
+        'title' => $_node_types->names[$type],
       );
     }
   }
@@ -478,7 +510,7 @@ function os_preprocess_page(&$vars) {
   }
   $section_links['layout'] = array(
     'title' => t('Layout'),
-    'href' => 'cp/build/layout/' . $context,
+    'href' => 'cp/build/layout/' . implode('/', array_keys(context_active_contexts())),
     'query' => drupal_get_destination(),
   );
 
@@ -513,6 +545,7 @@ function os_preprocess_page(&$vars) {
           'class' => array('add_new'),
         ),
         'html' => FALSE,
+        'query' => isset($link['query'])?$link['query']:array(),
       ),
     );
   }
@@ -524,27 +557,27 @@ function os_preprocess_page(&$vars) {
     '#access' => spaces_access_admin(),
   );
 
-  // Append flavor css
+  // Appends flavor css
   ctools_include('themes', 'os');
   if ($flavor = current(os_theme_get_flavor())) {
 
     if (isset($flavor['css'])) {
-      foreach ( $flavor['css'] as $css ) {
+      foreach ($flavor['css'] as $css) {
         drupal_add_css($flavor['path'] . '/' . $css, array(
-          'type' => 'file',
-          'preprocess' => FALSE,
-          'weight' => 100,
-          'group' => CSS_THEME,
-        ));
+            'type' => 'file',
+            'preprocess' => FALSE,
+            'weight' => 100,
+            'group' => CSS_THEME,
+          ));
       }
     }
 
     // Conditional css provided by: conditional-stylesheets[if lte IE 7][all][]
     // = orange-ie.css
     if (isset($flavor['conditional-stylesheets'])) {
-      foreach ( $flavor['conditional-stylesheets'] as $cond => $media ) {
-        foreach ( $media as $type => $files ) {
-          foreach ( $files as $file ) {
+      foreach ($flavor['conditional-stylesheets'] as $cond => $media) {
+        foreach ($media as $type => $files) {
+          foreach ($files as $file) {
             $options = array(
               'type' => 'file',
               'preprocess' => FALSE,
@@ -554,7 +587,7 @@ function os_preprocess_page(&$vars) {
             drupal_add_css($flavor['path'] . '/' . $file, $options);
           }
         }
-        // will this be supported?
+        // @todo will this be supported?
         // http://drupal.org/node/522006
       }
     }
@@ -588,6 +621,8 @@ function os_entity_form_after_build($form, $form_state) {
 }
 
 /**
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form.
+ *
  * Cleans up some advanced settings and places them in a fieldset.
  */
 function os_form_node_form_alter(&$form, $form_state) {
@@ -650,7 +685,7 @@ function os_init() {
  * @return
  *  Avalible contexts with thier descriptions.
  */
-function os_os_layout_contexts($privacy = true) {
+function os_os_layout_contexts($privacy = TRUE) {
   $provided_contexts = &drupal_static(__FUNCTION__);
 
   // Static cache of avalible contexts.
@@ -667,9 +702,9 @@ function os_os_layout_contexts($privacy = true) {
   // Contexts provided by features.
   $features = spaces_features('og');
   $site_features = variable_get('spaces_features', array());
-  foreach ( $features as $name => $feature ) {
+  foreach ($features as $name => $feature) {
 
-    if (is_array($privacy) && (!isset($site_features[$name]) || !in_array($site_features[$name], $privacy))){
+    if (is_array($privacy) && (!isset($site_features[$name]) || !in_array($site_features[$name], $privacy))) {
       //This feature does not match privacy requested, skip it
       continue;
     }
@@ -692,8 +727,8 @@ function os_os_layout_contexts($privacy = true) {
  */
 function theme_openscholar_powered_by() {
   return '<span>' . t('<a href="@poweredby">OpenScholar</a>', array(
-      '@poweredby' => 'http://openscholar.harvard.edu'
-  )) . '</span>';
+      '@poweredby' => 'http://openscholar.harvard.edu',
+    )) . '</span>';
 }
 
 /**
@@ -711,10 +746,11 @@ function theme_openscholar_login($variables) {
   }
 
   return l($variables['link_text'], "user", array(
-    'purl' => array('disabled' => TRUE,),
-    'attributes' => $variables['attributes'],
-    'alias' => TRUE,
-  ));
+      'purl' => array('disabled' => TRUE,
+      ),
+      'attributes' => $variables['attributes'],
+      'alias' => TRUE,
+    ));
 }
 
 /**
@@ -730,15 +766,15 @@ function theme_openscholar_get_started() {
   }
 
   $links = theme('item_list', array(
-    'items' => array(
-      l("Enable or disable features for your site", 'cp/build/features'),
-      l("Add/manage content", 'cp/content'),
-      l("Manage who may use your site", 'cp/users'),
-      l("Change the look of your site", 'cp/appearance'),
-      l("Move elements in your page layout", 'cp/build/layout'),
-      l("View documentation", "help/os_help/OpenScholar-Documentation"),
-    ),
-  ));
+      'items' => array(
+        l("Enable or disable features for your site", 'cp/build/features'),
+        l("Add/manage content", 'cp/content'),
+        l("Manage who may use your site", 'cp/users'),
+        l("Change the look of your site", 'cp/appearance'),
+        l("Move elements in your page layout", 'cp/build/layout'),
+        l("View documentation", "help/os_help/OpenScholar-Documentation"),
+      ),
+    ));
 
   // Created in the last 26 hours?
   $welcome_message = (isset($create_time) && (time() - $create_time < 93600)) ? "Welcome to your new website!" : "";
@@ -826,6 +862,7 @@ function os_context_registry_alter(&$registry) {
  *
  * @param string $cond
  *          // if IE lt 6
+ *
  * @return array
  */
 function _os_conditional_css_browsers($cond) {
@@ -891,7 +928,7 @@ function os_url_outbound_alter(&$path, &$options, $original) {
   // only when there is not already a destination
   // only alter login path if the user is logged
   // out, otherwise it is a link to "My account"
-  if (!in_array($path,$loop_back_pages) || !empty($options['query']['destination']) || ($path == 'user' && $user->uid)) {
+  if (!in_array($path, $loop_back_pages) || !empty($options['query']['destination']) || ($path == 'user' && $user->uid)) {
     return;
   }
 
@@ -905,7 +942,7 @@ function os_url_outbound_alter(&$path, &$options, $original) {
   }
 
   // Prevent possibility of infinate loops.
-  if (in_array($dest_path,$loop_back_pages)) {
+  if (in_array($dest_path, $loop_back_pages)) {
     return;
   }
 
@@ -998,10 +1035,10 @@ function os_permission() {
     'edit all regions' => array(
       'title' => t('Edit All Regions'),
       'description' => t('Edit the contents of all regions'),
-    )
+    ),
   );
   foreach ($regions as $r) {
-    $perms['edit region '.$r] = array(
+    $perms['edit region ' . $r] = array(
       'title' => t('Edit Region !region', array('!region' => $r)),
       'description' => t('Edit the contents of the region !region', array('!region' => $r)),
     );
@@ -1022,20 +1059,20 @@ function os_get_region($module, $delta, $contexts = array()) {
   }
 
   $plugin = context_get_plugin('reaction', 'block');
-  $bid = $module.'-'.$delta;
+  $bid = $module . '-' . $delta;
 
   $blocks = &drupal_static(__FUNCTION__, array());
   if (empty($blocks)) {
     foreach ($contexts as $c) {
-      foreach ($plugin->get_blocks(null, $c) as $bid => $block) {
-        if (isset($block->region)){
-          $blocks[$block->module.'-'.$block->delta] = $block->region;
+      foreach ($plugin->get_blocks(NULL, $c) as $bid => $block) {
+        if (isset($block->region)) {
+          $blocks[$block->module . '-' . $block->delta] = $block->region;
         }
       }
     }
   }
 
-  return isset($blocks[$bid])?$blocks[$bid]:false;
+  return isset($blocks[$bid]) ? $blocks[$bid] : FALSE;
 }
 
 /**
@@ -1044,7 +1081,7 @@ function os_get_region($module, $delta, $contexts = array()) {
 function os_access_region($module, $delta) {
   $region = os_get_region($module, $delta);
 
-  return user_access('edit region '.$region) || user_access('edit all regions');
+  return user_access('edit region ' . $region) || user_access('edit all regions');
 }
 
 /**
@@ -1054,7 +1091,7 @@ function os_access_region($module, $delta) {
 function os_js_alter(&$javascript) {
   foreach ($javascript as $url => $js) {
     if (strpos($url, 'colorbox.js')) {
-      $file = drupal_get_path('module', 'os').'/theme/os_colorbox.js';
+      $file = drupal_get_path('module', 'os') . '/theme/os_colorbox.js';
       $javascript[$file] = drupal_js_defaults($file);
     }
   }
@@ -1065,7 +1102,9 @@ function os_js_alter(&$javascript) {
  */
 function _os_get_install_status() {
   $output = '';
-  if (!user_access('administer site configuration')) return $output;
+  if (!user_access('administer site configuration')) {
+    return $output;
+  }
 
   // get the current branch
   try {
@@ -1074,8 +1113,8 @@ function _os_get_install_status() {
       $str = @file('profiles/openscholar/git/HEAD');
     }
     if ($str) {
-      $str = $str[0];
-      $str = explode('/', $str);
+      $str    = $str[0];
+      $str    = explode('/', $str);
       $branch = $str[2];
     }
 
@@ -1091,14 +1130,14 @@ function _os_get_install_status() {
           break;
         }
       }
-      $str = $s;
+      $str     = $s;
       $pattern = '| ([\d]*) |';
       $matches = array();
       preg_match($pattern, $str, $matches);
       $update = trim($matches[0]);
     }
   }
-  catch (Exception $e) {
+  catch(Exception$e) {
     dpm($e);
   }
 
@@ -1106,15 +1145,56 @@ function _os_get_install_status() {
   $install = variable_get('install_time', 0);
 
   $date = 'D d M, g:i a';
-  $output .= '<strong>Drupal Version:</strong> '.VERSION.'<br>';
+  $output .= '<strong>Drupal Version:</strong> ' . VERSION . '<br>';
   if (isset($branch)) {
-    $output .= '<strong>Current Branch:</strong> '.$branch.'<br>';
+    $output .= '<strong>Current Branch:</strong> ' . $branch . '<br>';
   }
   if (isset($update)) {
-    $output .= '<strong>Code Updated On:</strong> '.date($date, $update).'<br>';
+    $output .= '<strong>Code Updated On:</strong> ' . date($date, $update) . '<br>';
   }
-  $output .= '<strong>Site Installed On:</strong> '.date($date, $install).'<br>';
-  $output = '<p>'.$output.'</p>';
+  $output .= '<strong>Site Installed On:</strong> ' . date($date, $install) . '<br>';
+  $output = '<p>' . $output . '</p>';
 
   return $output;
+}
+
+/**
+ * Gets all app information from installed OpenScholar apps.
+ *
+ * An OpenScholar "app" is a features module that invokes hook_os_app_info().
+ *
+ * @param string $app_name
+ *   (Optional) If provided, returns just the app info for a given module that
+ *   implements hook_os_app_info().
+ *
+ * @return array $info
+ *   If no $app_name is provided, returns an array containing all app info,
+ *   keyed by app name. If provided, only that app's info will be returned.
+ *
+ * @see hook_os_app_info()
+ * @see hook_os_app_info_alter()
+ */
+function os_app_info($app_name = NULL) {
+  $info = &drupal_static(__FUNCTION__, array());
+
+  if (empty($info)) {
+    foreach (module_implements('os_app_info') as $module) {
+      if ($apps = module_invoke($module, 'os_app_info')) {
+        foreach ($apps as $key => $app) {
+          // Adds default values.
+          $app += array(
+          	'restricted site types' => array(),
+          );
+
+          // Adds the module information.
+          $info[$key] = array_merge($app, array('module' => $module));
+        }
+      }
+    }
+
+    // Allows other modules to alter the app info.
+    drupal_alter('os_app_info', $info);
+  }
+
+  return empty($app_name) ? $info : $info[$app_name];
 }

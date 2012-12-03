@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * Enable restws module
+ */
+function os_update_7001(&$sandbox) {
+  module_enable(array('restws'));
+}
