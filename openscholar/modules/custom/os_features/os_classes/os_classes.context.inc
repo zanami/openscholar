@@ -51,12 +51,6 @@ function os_classes_context_default_contexts() {
           'region' => 'sidebar_second',
           'weight' => '-10',
         ),
-        'boxes-os_taxonomy_fltr_cat' => array(
-          'module' => 'boxes',
-          'delta' => 'os_taxonomy_fltr_cat',
-          'region' => 'sidebar_second',
-          'weight' => '-8',
-        ),
       ),
     ),
     'menu' => 'classes',

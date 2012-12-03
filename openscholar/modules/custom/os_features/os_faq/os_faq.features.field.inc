@@ -1,17 +1,20 @@
 <?php
+// $Id$
+
+
 /**
  * @file
- * os_links.features.field.inc
+ * os_faq.features.field.inc
  */
 
 /**
  * Implements hook_field_default_fields().
  */
-function os_links_field_default_fields() {
+function os_faq_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-link-body'.
-  $fields['node-link-body'] = array(
+  // Exported field: 'node-faq-body'.
+  $fields['node-faq-body'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -40,7 +43,7 @@ function os_links_field_default_fields() {
       'type' => 'text_with_summary',
     ),
     'field_instance' => array(
-      'bundle' => 'link',
+      'bundle' => 'faq',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
@@ -56,7 +59,7 @@ function os_links_field_default_fields() {
           'label' => 'hidden',
           'module' => 'text',
           'settings' => array(
-            'trim_length' => 300,
+            'trim_length' => 100,
           ),
           'type' => 'text_summary_or_trimmed',
           'weight' => '0',
@@ -64,7 +67,7 @@ function os_links_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'body',
-      'label' => 'Description',
+      'label' => 'Answer',
       'required' => 0,
       'settings' => array(
         'display_summary' => 0,
@@ -84,92 +87,8 @@ function os_links_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-link-field_links_link'.
-  $fields['node-link-field_links_link'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_links_link',
-      'foreign keys' => array(),
-      'indexes' => array(),
-      'locked' => '0',
-      'module' => 'link',
-      'settings' => array(
-        'attributes' => array(
-          'class' => '',
-          'rel' => '',
-          'target' => 'default',
-        ),
-        'display' => array(
-          'url_cutoff' => 80,
-        ),
-        'enable_tokens' => 1,
-        'title' => 'optional',
-        'title_maxlength' => 128,
-        'title_value' => '',
-        'url' => 0,
-      ),
-      'translatable' => '0',
-      'type' => 'link_field',
-    ),
-    'field_instance' => array(
-      'bundle' => 'link',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => 'The web address of the link. Starts with: http://',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'link',
-          'settings' => array(),
-          'type' => 'link_default',
-          'weight' => '1',
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '1',
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_links_link',
-      'label' => 'URL (Web address)',
-      'required' => 1,
-      'settings' => array(
-        'attributes' => array(
-          'class' => '',
-          'configurable_title' => 0,
-          'rel' => '',
-          'target' => '_blank',
-          'title' => '',
-        ),
-        'display' => array(
-          'url_cutoff' => '80',
-        ),
-        'enable_tokens' => 1,
-        'rel_remove' => 'default',
-        'title' => 'none',
-        'title_maxlength' => '128',
-        'title_value' => '',
-        'url' => 0,
-        'user_register_form' => FALSE,
-        'validate_url' => 1,
-      ),
-      'widget' => array(
-        'active' => 0,
-        'module' => 'link',
-        'settings' => array(),
-        'type' => 'link_field',
-        'weight' => '1',
-      ),
-    ),
-  );
-
-  // Exported field: 'node-link-field_upload'.
-  $fields['node-link-field_upload'] = array(
+  // Exported field: 'node-faq-field_upload'.
+  $fields['node-faq-field_upload'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
@@ -200,7 +119,7 @@ function os_links_field_default_fields() {
       'type' => 'file',
     ),
     'field_instance' => array(
-      'bundle' => 'link',
+      'bundle' => 'faq',
       'deleted' => '0',
       'description' => '',
       'display' => array(
@@ -279,10 +198,9 @@ function os_links_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Answer');
   t('Attach Files');
-  t('Description');
-  t('The web address of the link. Starts with: http://');
-  t('URL (Web address)');
 
   return $fields;
 }
+

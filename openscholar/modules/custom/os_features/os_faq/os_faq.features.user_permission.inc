@@ -1,20 +1,21 @@
 <?php
 // $Id$
 
+
 /**
  * @file
- * os_news.features.user_permission.inc
+ * os_faq.features.user_permission.inc
  */
 
 /**
  * Implements hook_user_default_permissions().
  */
-function os_news_user_default_permissions() {
+function os_faq_user_default_permissions() {
   $permissions = array();
 
-  // Exported permission: create news content.
-  $permissions['create news content'] = array(
-    'name' => 'create news content',
+  // Exported permission: create faq content.
+  $permissions['create faq content'] = array(
+    'name' => 'create faq content',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
@@ -24,18 +25,18 @@ function os_news_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: delete any news content.
-  $permissions['delete any news content'] = array(
-    'name' => 'delete any news content',
+  // Exported permission: delete any faq content.
+  $permissions['delete any faq content'] = array(
+    'name' => 'delete any faq content',
     'roles' => array(
       0 => 'administrator',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: delete own news content.
-  $permissions['delete own news content'] = array(
-    'name' => 'delete own news content',
+  // Exported permission: delete own faq content.
+  $permissions['delete own faq content'] = array(
+    'name' => 'delete own faq content',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
@@ -45,18 +46,18 @@ function os_news_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: edit any news content.
-  $permissions['edit any news content'] = array(
-    'name' => 'edit any news content',
+  // Exported permission: edit any faq content.
+  $permissions['edit any faq content'] = array(
+    'name' => 'edit any faq content',
     'roles' => array(
       0 => 'administrator',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: edit own news content.
-  $permissions['edit own news content'] = array(
-    'name' => 'edit own news content',
+  // Exported permission: edit own faq content.
+  $permissions['edit own faq content'] = array(
+    'name' => 'edit own faq content',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',

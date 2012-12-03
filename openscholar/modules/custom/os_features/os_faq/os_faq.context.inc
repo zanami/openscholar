@@ -1,49 +1,59 @@
 <?php
 // $Id$
 
+
 /**
  * @file
- * os_biocv.context.inc
+ * os_faq.context.inc
  */
 
 /**
  * Implements hook_context_default_contexts().
  */
-function os_biocv_context_default_contexts() {
+function os_faq_context_default_contexts() {
   $export = array();
 
   $context = new stdClass();
   /* Edit this to true to make a default context disabled initially */
-
   $context->disabled = FALSE;
   $context->api_version = 3;
-  $context->name = 'biocv_biocv';
-  $context->description = '';
+  $context->name = 'faq_faq';
+  $context->description = 'FAQ Site Section';
   $context->tag = 'OS features';
   $context->conditions = array(
+    'menu' => array(
+      'values' => array(
+        'faq' => 'faq',
+      ),
+    ),
+    'path' => array(
+      'values' => array(
+        'faq' => 'faq',
+        'faq/*' => 'faq/*',
+      ),
+    ),
     'node' => array(
       'values' => array(
-        'bio' => 'bio',
-        'cv' => 'cv',
+        'faq' => 'faq',
       ),
       'options' => array(
         'node_form' => '0',
       ),
     ),
-    'path' => array(
+    'views' => array(
       'values' => array(
-        'biocv' => 'biocv',
-        'biocv/*' => 'biocv/*',
-        'bio' => 'bio',
-        'bio/*' => 'bio/*',
+        'os_faq' => 'os_faq',
       ),
     ),
   );
+  $context->reactions = array();
+  $context->condition_mode = 0;
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('FAQ Site Section');
   t('OS features');
-  $export['biocv_biocv'] = $context;
+  $export['faq_faq'] = $context;
 
   return $export;
 }
