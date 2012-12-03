@@ -1,5 +1,7 @@
 <?php
 
+include_once 'os_subsites.features.inc';
+
 function os_subsite_permission() {
   $items = array();
 
