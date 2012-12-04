@@ -297,8 +297,8 @@ EOF;
       $filepath = $src . $file;
       if ($fh = @fopen($filepath, 'r')) {
         if ($saved = file_save_data($fh, $dest.'/'.$file)) {
-          $shield_info[$saved->filename]['hidden'] = $info['hidden'];
-          $shield_info[$saved->filename]['default'] = $info['default'];
+          $shield_info[$saved->filename]['hidden'] = isset($info['hidden']) ? $info['hidden'] : FALSE;
+          $shield_info[$saved->filename]['default'] = isset($info['default']) ? $info['default']: FALSE;
           $shield_info[$saved->filename]['fid'] = $saved->fid;
           if ($info['default']) {
             variable_set('os_shields_shield', $saved->filename);
@@ -667,6 +667,10 @@ class BoxPorter {
     $format = $this->_update_format($box->options['format']);
 
     unset($box->options['body'], $box->options['format']);
+
+    if ($this->migration->is_domain('http://projects.iq.harvard.edu') && $box->delta == 'og-6235-4802691a') {
+      $format = 'full_html'; //iqss' events this week box
+    }
 
     $box->options = array('text' => array(
       'value' => check_markup($body, $format),
@@ -1120,7 +1124,6 @@ class BoxPorter {
     list($body, $biblio_fix) = $this->_port_box_os_boxes_node_biblio_fix($nid, $body);
 
     if ($body) {
-      $box->plugin_key = 'os_boxes_html';
       $box->options = array('text'=>array(
         'value' => $body,
         'format' => ($biblio_fix || $jc_fix) ? 'full_html' : 'filtered_html',
