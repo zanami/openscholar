@@ -300,7 +300,7 @@ EOF;
           $shield_info[$saved->filename]['hidden'] = isset($info['hidden']) ? $info['hidden'] : FALSE;
           $shield_info[$saved->filename]['default'] = isset($info['default']) ? $info['default']: FALSE;
           $shield_info[$saved->filename]['fid'] = $saved->fid;
-          if ($info['default']) {
+          if (isset($info['default']) && $info['default']) {
             variable_set('os_shields_shield', $saved->filename);
           }
         }
@@ -1055,6 +1055,7 @@ class BoxPorter {
     }
 
     $body = '';
+    $box->plugin_key = 'os_boxes_html';
 
     $nid = $box->options['nid'];
     $teaser = $box->options['teaser'];
