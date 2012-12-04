@@ -70,7 +70,7 @@ padding:1px 20px 20px;
 }
 
 /**** BLOCK STYLES ****/
-#columns .block {background: url('../images/blockTitleBg.png') left top repeat-x; padding-top:7px;}
+#columns .block {background: url('../images/blockTitleBg.png') left top repeat-x;}
 #columns .block .content {background: url('../images/blockBg.png') repeat-x center bottom;}
 #columns .region-content-top .block {padding-top:0;}
 
@@ -366,21 +366,24 @@ border-right:none;
 
 /** BOOKLET NAVIGATION **/
 	
-.sidebar #block-book-navigation.block {
+.sidebar .block-boxes-os_boxes_booktoc {
   background: none; 
 	padding-top:0;
+	margin-top:15px;
 }	
 
-.sidebar #block-book-navigation ul {
+.sidebar .block-boxes-os_boxes_booktoc ul {
 margin-left:0;
   }
 
-.sidebar #block-book-navigation ul li {
+.sidebar .block-boxes-os_boxes_booktoc ul li {
 	background:#acb5bc;
+	margin-bottom: 0;
   }
 
 
-.sidebar #block-book-navigation ul li a {
+
+.sidebar .block-boxes-os_boxes_booktoc ul li a {
 	font-size:14px;
 display: block;
   text-decoration: none;
@@ -390,19 +393,19 @@ font-weight:normal;
 text-transform:uppercase;
   } 
 	
-.sidebar #block-book-navigation ul li a.active {
+.sidebar .block-boxes-os_boxes_booktoc ul li a.active {
 font-style:normal;
  } 
 		
 
-.sidebar #block-book-navigation ul li ul.menu li  {
+.sidebar .block-boxes-os_boxes_booktoc ul li ul.menu li  {
   list-style: none;
   background: url('../images/sideNavBg_off.png') no-repeat;
  text-align: left;
   margin: 0;
 }
 
-.sidebar #block-book-navigation ul li ul.menu li a {
+.sidebar .block-boxes-os_boxes_booktoc ul li ul.menu li a {
 	font-size:14px;
   display: block;
   text-decoration: none;
@@ -413,8 +416,8 @@ text-transform:none;
   
 
 
-.sidebar #block-book-navigation ul li ul.menu li a.active,
-.sidebar #block-book-navigation ul li ul.menu li a.active:hover { 
+.sidebar .block-boxes-os_boxes_booktoc ul li ul.menu li a.active,
+.sidebar .block-boxes-os_boxes_booktoc ul li ul.menu li a.active:hover { 
 	background: url('../images/sideNavBg_on.png') no-repeat;
  color: #FFF;
  font-style: normal;
@@ -422,7 +425,7 @@ text-transform:none;
  }
  
  
-.sidebar #block-book-navigation ul li ul.menu li a:hover { 
+.sidebar .block-boxes-os_boxes_booktoc ul li ul.menu li a:hover { 
 	background: url('../images/sideNavBg_over.png') no-repeat;
  color: #FFF;
  font-style: normal;
