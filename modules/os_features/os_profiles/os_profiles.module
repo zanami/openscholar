@@ -9,6 +9,19 @@
 include_once 'os_profiles.features.inc';
 
 /**
+ * Implements hook_os_app_info().
+ */
+function os_profiles_os_app_info() {
+  $apps = array();
+
+  $apps['os_profiles'] = array(
+    'path' => 'people',
+  );
+
+  return $apps;
+}
+
+/**
  * Implements hook_process_hook() for node.
  *
  * Enter description here...

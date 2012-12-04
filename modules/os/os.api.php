@@ -134,12 +134,14 @@ function hook_os_add_new_links_alter(&$links) {
  * Tells os module to remove apps from "Available Apps" for some site types.
  */
 function hook_os_app_info() {
-  // Removes this app from Department and Project sites' Available Apps page.
-  return array(
-    'my_app' => array(
-      'restricted site types' => array('department', 'project'),
-    ),
+  $apps = array();
+
+  // The array key should be the same as the module machine name.
+  $apps['os_publications'] = array(
+    'path' => 'publications',
   );
+
+  return $apps;
 }
 
 /**

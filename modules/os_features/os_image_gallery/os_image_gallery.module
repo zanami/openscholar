@@ -8,6 +8,19 @@
 include_once ('os_image_gallery.features.inc');
 
 /**
+ * Implements hook_os_app_info().
+ */
+function os_image_gallery_os_app_info() {
+  $apps = array();
+
+  $apps['os_image_gallery'] = array(
+    'path' => 'galleries',
+  );
+
+  return $apps;
+}
+
+/**
  * Implements hook_contextual_links_view_alter
  *
  * OS and media_gallery both add contextuals.  Clean that up.

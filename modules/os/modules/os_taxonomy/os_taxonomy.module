@@ -18,8 +18,8 @@ function os_taxonomy_menu_alter(&$items) {
 
   // Mirrors the taxonomy menu entry for each feature.
   $offset = $items['taxonomy/term/%taxonomy_term']['page arguments'][0];
-  foreach (spaces_features('og') as $feature_name => $info) {
-    $path = os_get_feature_path($feature_name);
+  foreach (spaces_features('og') as $app_name => $info) {
+    $path = os_get_app_path($app_name);
     if ($path) {
       $items[$path.'/term/%taxonomy_term'] = $items['taxonomy/term/%taxonomy_term'];
       $items[$path.'/term/%taxonomy_term']['page arguments'][0] = $items[$path.'/term/%taxonomy_term']['title arguments'][0] = count(explode("/", $path)) + $offset - 1;
@@ -208,7 +208,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         $feature = current($map[$bundle]);
       }
     }
-    $path_prefix = isset($feature) ? strval(os_get_feature_path($feature)) : 'taxonomy';
+    $path_prefix = isset($feature) ? strval(os_get_app_path($feature)) : 'taxonomy';
     if (strlen($path_prefix)) {
       $path_prefix = $path_prefix . "/";
     }

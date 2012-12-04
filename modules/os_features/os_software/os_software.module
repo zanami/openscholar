@@ -9,6 +9,19 @@
 include_once 'os_software.features.inc';
 
 /**
+ * Implements hook_os_app_info().
+ */
+function os_software_os_app_info() {
+  $apps = array();
+
+  $apps['os_software'] = array(
+    'path' => 'software',
+  );
+
+  return $apps;
+}
+
+/**
  * Implements hook_form_FORM_ID_form_alter() for software_project_node_form
  *
  * Hides the packaging method field if only one option exists.

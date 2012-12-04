@@ -9,6 +9,19 @@
 include_once 'os_publications.features.inc';
 
 /**
+ * Implements hook_os_app_info().
+ */
+function os_publications_os_app_info() {
+  $apps = array();
+
+  $apps['os_publications'] = array(
+    'path' => 'publications',
+  );
+
+  return $apps;
+}
+
+/**
  * Defines the overview menu entry
  */
 function os_publications_menu_alter(&$items) {

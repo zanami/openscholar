@@ -10,6 +10,19 @@
 include_once 'os_booklets.features.inc';
 
 /**
+ * Implements hook_os_app_info().
+ */
+function os_booklets_os_app_info() {
+  $apps = array();
+
+  $apps['os_booklets'] = array(
+    'path' => 'documents',
+  );
+
+  return $apps;
+}
+
+/**
  * Implements hook_menu().
  */
 function os_booklets_menu() {

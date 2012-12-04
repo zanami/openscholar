@@ -7,6 +7,19 @@
 include_once 'harvard_courses.features.inc';
 
 /**
+ * Implements hook_os_app_info().
+ */
+function harvard_courses_os_app_info() {
+  $apps = array();
+
+  $apps['harvard_courses'] = array(
+    'path' => 'courses',
+  );
+
+  return $apps;
+}
+
+/**
  * Implements hook_feeds_plugins().
  */
 function harvard_courses_feeds_plugins() {

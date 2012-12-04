@@ -9,6 +9,19 @@
 include_once ('os_news.features.inc');
 
 /**
+ * Implements hook_os_app_info().
+ */
+function os_news_os_app_info() {
+  $apps = array();
+
+  $apps['os_news'] = array(
+    'path' => 'news',
+  );
+
+  return $apps;
+}
+
+/**
  * Implements hook_process_hook() for node.
  *
  * Customizes $submitted for new nodes as just "M D, YYYY"

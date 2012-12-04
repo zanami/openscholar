@@ -1,21 +1,14 @@
 <?php
+// $Id$
 
 /**
  * @file os.inc
- * Provides generic OS management and feature functions. This file is included by default.
- *
- * os_get_bundles
- * Return the avalible bundles based on the privacy.
- *
- * os_get_active_feature
- * Return the current active feature.
- *
- * os_get_feature_path
- * Get the base context path for a feature
+ * Provides generic OS management and feature functions. This file is included
+ * by default.
  */
 
 /**
- * Return the avalible bundles based on the privacy
+ * Returns avalible bundles based on privacy.
  *
  * @param $privacy
  *  Can be array:
@@ -48,8 +41,12 @@ function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = FALSE)
 
   foreach ($features as $name => $feature) {
     $info = $feature->info['features'];
-    if (!isset($info['node'])) continue;
-    if (!$ret_all && (!isset($site_features[$name]) || !in_array($site_features[$name], $privacy))) continue;
+    if (!isset($info['node'])) {
+      continue;
+    }
+    if (!$ret_all && (!isset($site_features[$name]) || !in_array($site_features[$name], $privacy))) {
+      continue;
+    }
 
     // Get bundle name, we call the node_info hook directly since
     // this is called during bootstrap
@@ -78,25 +75,25 @@ function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = FALSE)
 }
 
 /**
- * Return the current active feature based on active contexts
+ * Returns the current active feature based on active contexts.
  *
  * @return object
  * The active feature.
  */
-function os_get_active_feature(){
+function os_get_active_feature() {
   static $active_feature;
 
-  if(!isset($active_feature)){
+  if (!isset($active_feature)) {
     $features = spaces_features('og');
     $contexts = context_active_contexts();
-    if(!empty($contexts) && is_array($contexts)){
+    if (!empty($contexts) && is_array($contexts)) {
       foreach ($features as $feature) {
         $info = $feature->info['features'];
         if (isset($info['context'])) {
           foreach ($info['context'] as $ctx) {
-            if(array_key_exists($ctx, $contexts)){
+            if (array_key_exists($ctx, $contexts)) {
               $active_feature = $feature;
-              break(2);
+              break (2);
             }
           }
         }
@@ -108,28 +105,24 @@ function os_get_active_feature(){
 }
 
 /**
- * Get the base context path for a feature.  This is the path that will match to this features context.
+ * Gets the base context path for a feature.  This is the path that will match
+ * to this features context.
  *
- * @param string Feature
+ * @param string $app_name
+ *   The machine name of the app (a feature module)
  *
- * @return string path
+ * @return string $path
  */
-function os_get_feature_path($feature){
+function os_get_app_path($app_name) {
+  $app_info = os_app_info($app_name);
 
-  $feature = features_get_features($feature);
-  if($feature && isset($feature->info['features']['context'])){
-    foreach ($feature->info['features']['context'] as $context) {
-    	$f_context = context_load($context);
-    	if(isset($f_context->conditions['path']) && isset($f_context->conditions['path']['values'])){
-    	  foreach ($f_context->conditions['path']['values'] as $path) {
-    	  	if(substr($path,-2) == '/*'){
-    	  	  return substr($path, 0, (strlen($path) - 2));
-    	  	}
-    	  }
-    	}
+  if (isset($app_info['path'])) {
+    $path = $app_info['path'];
+    if (strlen($path) > 0) {
+      return $path;
     }
-
   }
 
-  return false;
+  return FALSE;
 }
+

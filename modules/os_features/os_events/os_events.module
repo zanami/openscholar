@@ -4,6 +4,19 @@
 include_once 'os_events.features.inc';
 
 /**
+ * Implements hook_os_app_info().
+ */
+function os_events_os_app_info() {
+  $apps = array();
+
+  $apps['os_events'] = array(
+    'path' => 'calendar',
+  );
+
+  return $apps;
+}
+
+/**
  * hook os_widget
  *
  * Events blocks that can be used on an OpenScholar site

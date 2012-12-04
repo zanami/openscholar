@@ -11,6 +11,19 @@
 include_once 'os_biocv.features.inc';
 
 /**
+ * Implements hook_os_app_info().
+ */
+function os_biocv_os_app_info() {
+  $apps = array();
+
+  $apps['os_biocv'] = array(
+    'path' => 'biocv',
+  );
+
+  return $apps;
+}
+
+/**
  * Implements hook_menu().
  */
 function os_biocv_menu() {
