@@ -32,15 +32,14 @@ class os_boxes_slideshow extends os_boxes_default {
 
     //get the media gallery nodes.
     $galleries = array();
-    if ($view = views_get_view('os_image_gallery_slideshow')) {
-      $view->execute_display('default', array());
+    ctools_include('node', 'os');
+    $efq = new OSNodeFieldQuery();
+    $efq->propertyCondition('type', 'media_gallery');
+    $result = $efq->execute();
 
-      //just get gallery nids and titles
-      $r = $view->result;
-      foreach ($r as $result) {
-        if (!isset($galleries[$result->node_file_usage_nid])) {
-          $galleries[$result->node_file_usage_nid] = $result->node_file_usage_title;
-        }
+    if (count($result['node'])) {
+      foreach(node_load_multiple(array_keys($result['node'])) as $node) {
+        $galleries[$node->nid] = $node->title;
       }
     }
 
