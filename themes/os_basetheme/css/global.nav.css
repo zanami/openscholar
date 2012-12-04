@@ -170,6 +170,7 @@ ul.menu li.collapsed {
 ul.menu li.expanded  {
 }
 
+.sidebar ul li.collapsed,
 .sidebar ul li.leaf {
     list-style-image: none;
     list-style-type: none;
