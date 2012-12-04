@@ -43,6 +43,9 @@
 
 			// attach click handler to blocks
 			blocks.click(toc_click);
+			
+			// update the toc
+			update_toc(active);
 
 			window.onpopstate = history_change;
 		},
@@ -101,5 +104,16 @@
 		if ($('.fb-social-comments-plugin').length) {
 			fbAsyncInit();
 		}
+		
+		update_toc(nid); 	
+	}
+    
+	function update_toc(nid) {
+	  if (Drupal.settings.os_books.settings.toc_type != 'partial') return;
+	  var links = $('a[data-nid="'+active+'"]'),
+	    blocks = links.parents('.block-boxes-os_boxes_booktoc');
+	  blocks.find('li').hide();
+	  links.parents('.block-boxes-os_boxes_booktoc li').show().siblings().show();
+	  links.parent().find('a[data-nid="'+active+'"] + ul > li').show();
 	}
 })(jQuery);
