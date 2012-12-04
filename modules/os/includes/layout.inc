@@ -250,7 +250,7 @@ function os_layout_set_multiple($contexts, $blocks) {
   foreach ($blocks as $bid => $b) {
     // if the block exists in a parent, check for overrides
     if (isset($parent_blocks[$bid])) {
-      dpm($bid.': weight: old: '.$parent_blocks[$bid]['weight'].' new: '.$blocks[$bid]['weight']);
+     // dpm($bid.': weight: old: '.$parent_blocks[$bid]['weight'].' new: '.$blocks[$bid]['weight']);
       $changed = false;
       foreach ($block_fields as $field) {
         // one of the block's fields has been changed.
@@ -265,7 +265,7 @@ function os_layout_set_multiple($contexts, $blocks) {
     }
     // if the block doesn't exist in the parent, but is still in a region.
     elseif ($b['region']) {
-      dpm($bid.': weight: new: '.$blocks[$bid]['weight']);
+     // dpm($bid.': weight: new: '.$blocks[$bid]['weight']);
       $child_blocks[$bid] = $b;
     }
   }
