@@ -40,6 +40,10 @@ h1,h2, h3 {
 	border-top: 1px solid #B3C4C2;
 	}
 
+.node-person.node-teaser .node-header h1 {
+	border-top: none;
+	}
+
 h3 {
 	color:  #B00921;
 	margin-bottom: -4px;
@@ -117,6 +121,10 @@ a img {
   width: 904px;
   height:171px;
   }
+  
+.block-boxes-os_boxes_site_info p a {
+ display:none;
+  }  
 
 .menu {
 	font-family: Helvetica, Arial, sans-serif;
