@@ -382,8 +382,16 @@ margin:-54px -2px 0;
      margin-top: -20px;
 }
 
-#boxes-box-scholar_book_current_toc a:first-of-type, .block-boxes-os_boxes_booktoc a:first-of-type {
-     display: none;
+.og-context-node-9015 .sidebar .book-menu ul.menu li a:first-of-type, 
+.og-context-node-9015 .sidebar #block-book-navigation ul.menu li a:first-of-type, 
+.og-context-node-9015 .sidebar .block-boxes-os_boxes_booktoc ul.menu li a:first-of-type {
+    display: none;
+}
+
+.og-context-node-9015 .sidebar .book-menu ul.menu li ul.menu li a:first-of-type, 
+.og-context-node-9015 .sidebar #block-book-navigation ul.menu li ul.menu li a:first-of-type, 
+.og-context-node-9015 .sidebar .block-boxes-os_boxes_booktoc ul.menu li ul.menu li a:first-of-type {
+    display: block;
 }
 
 
