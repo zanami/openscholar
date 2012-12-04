@@ -285,29 +285,7 @@ ul.nice-menu-right li.menuparent {
     background: none;
 }
 
-.sidebar ul.menu {
-	border-top:none;
-	}
 
-.sidebar ul.menu ul {
-	margin-top:-39px;
-	border:none;
-	border-top:none;
-	}
-	
-.region-sidebar-second.sidebar ul.menu ul {
-	margin-top:0;
-
-	}	
-
-.sidebar ul.menu ul ul {
-	margin-top:0;
-	border:none;
-	}
-	
-.sidebar ul.menu ul li a {
-	color:#000;
-	}	
 	
 ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
     background: none;

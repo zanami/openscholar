@@ -192,28 +192,13 @@ ul.nice-menu-left li.menuparent {
     border:none;
 }
 
-.sidebar ul.menu {
-	border-top:none;
-	}
-
-.sidebar ul.menu ul {
-	margin-top:-39px;
-	border:none;
-	}
-
-.sidebar ul.menu li a {
-	color: #005C9C;
-	}	
 	
 .region-sidebar-second.sidebar ul.menu ul {
 	margin-top:0;
 
 	}	
 
-.sidebar ul.menu ul ul {
-	margin-top:0;
-	border:none;
-	}	
+
   
 ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
     background: none;

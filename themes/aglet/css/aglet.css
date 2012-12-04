@@ -258,17 +258,6 @@ ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
     background: none;
 }  
 
-.sidebar ul.menu li {
-    background:none;
-   }
-   
-.sidebar ul.menu ul li {
-    background:#ccc;
-   }   
-  
-.sidebar ul.menu ul {
-    top: -.15em;
-}
 
 #header-container #block-os-secondary-menu {
   width: 251px;
