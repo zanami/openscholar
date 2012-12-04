@@ -471,9 +471,11 @@ function os_preprocess_page(&$vars) {
   }
 
   // Sets page title to match the menu link title
-  ctools_include('menu', 'os');
-  $menu_item = os_menu_load_link_path($_GET['q']);
-  drupal_set_title($menu_item['title']);
+  if ($view = views_get_current_view()) {
+    ctools_include('menu', 'os');
+    $menu_item = os_menu_load_link_path($_GET['q']);
+    drupal_set_title($menu_item['title']);
+  }
 
   if (overlay_get_mode() == 'child') {
     return;
