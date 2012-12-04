@@ -11,6 +11,7 @@ dependencies[] = filefield_paths
 dependencies[] = media
 dependencies[] = os_files
 dependencies[] = strongarm
+features[box][] = os_pages_section_nav
 features[ctools][] = strongarm:strongarm:1
 features[ctools][] = boxes:box:1
 features[features_api][] = api:1
