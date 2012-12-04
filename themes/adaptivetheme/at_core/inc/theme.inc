@@ -316,7 +316,7 @@ if (!function_exists('dhtml_menu_init')) {
       $element['#localized_options']['html'] = TRUE;
     }
 
-    if (at_get_setting('unset_menu_titles', $theme_name) == 1 && !empty($element['#localized_options']['attributes']['title'])) {
+    if (at_get_setting('unset_menu_titles', $theme_name) == 1 && isset($element['#localized_options']) && !empty($element['#localized_options']['attributes']['title'])) {
       unset($element['#localized_options']['attributes']['title']);
     }
 
@@ -566,7 +566,7 @@ function adaptivetheme_field__image($vars) {
 
   // Check if image settings are enabled
   $image_settings_enabled = at_get_setting('enable_image_settings', $theme_name) === 1 ? TRUE : FALSE;
-  
+
   // Check if captions are enabled for full and/or teaser view modes
   if ($image_settings_enabled == TRUE) {
     $caption_full = at_get_setting('image_caption_full', $theme_name) === 1 ? TRUE : FALSE;

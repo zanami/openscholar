@@ -440,16 +440,16 @@ function _os_process_node_links_comment_add_class(&$vars) {
   // Adds class 'os-add-comment' for custom icon on comment link.
   if (isset($vars['content']['links']['comment']['#links']['comment-add'])) {
     if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes'])) {
-      if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
-        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] .= " $class";
+      if (is_array($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
+        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'][] = $class;
       }
       else {
-        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] = $class;
+        $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'] = array($class);
       }
     }
     else {
       $vars['content']['links']['comment']['#links']['comment-add']['attributes'] = array(
-        'class' => $class,
+        'class' => array($class),
       );
     }
   }

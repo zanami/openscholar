@@ -622,14 +622,11 @@ ul.nice-menu-left ul a {
     border-top: none !important;
 }
 
-.sidebar ul.menu li ul.menu {
+.sidebar #block-os-primary-menu ul.menu li ul.menu,
+.sidebar #block-os-secondary-menu ul.menu li ul.menu {
  margin:0 0 0 10px;
 }
 
-.sidebar ul.menu {
-    width:100%;
-   border-top: none !important;
-}
 
 ul.nice-menu-left li.menuparent,
 ul.nice-menu-right li.menuparent,

@@ -298,17 +298,9 @@ ul.nice-menu ul {
 
 }
 
-.sidebar ul.menu {
-	width: 130px;
-	}
 
-
-.sidebar ul.menu ul {
-	margin-top:-36px;
-	border:none;
-	}
 	
-.region-sidebar-second.sidebar ul.menu li {
+.sidebar ul.menu li {
 	list-style-image: none;
     padding-bottom: 10px;	
 	}	
@@ -323,15 +315,6 @@ ul.nice-menu-right li.menuparent a:hover {
 }	
 	
 	
-.region-sidebar-second.sidebar ul.menu ul {
-	margin-top:0;
-
-	}	
-
-.sidebar ul.menu ul ul {
-	margin-top:0;
-	border:none;
-	}	
 
 
 /* FOOTER  */

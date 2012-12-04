@@ -246,7 +246,7 @@ margin: 8px 0 0 0;
 
   }
 
-.sidebar ul.menu li a {
+.sidebar #block-os-secondary-menu ul.menu li a {
   color: #444;
   
   font-weight:bold;
