@@ -1604,9 +1604,15 @@ table#ordernodes {
   width:90%;
   }
 
+/* Highlights the active term on the "Areas of Research" widget orange */
 body.front .block-boxes-os_taxonomy_fbt .item-list ul.termchild-methods .active a,
 body.front .block-boxes-os_taxonomy_fbt .item-list ul.termchild-applications .active a {
   color: #db7002;
+}
+
+/* Colors child terms displayed on a taxonomy page with child terms shown. */
+body.page-taxonomy .taxonomy-term h2 {
+	color: #db7002;
 }
 
 /* REMOVE BEFORE CHECING IN */
