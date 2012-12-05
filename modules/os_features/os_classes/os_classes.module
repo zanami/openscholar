@@ -16,6 +16,10 @@ function os_classes_os_app_info() {
 
   $apps['os_classes'] = array(
     'path' => 'classes',
+  	'nodetypes' => array(
+  	  'class',
+  		'class_material',
+    ),
   );
 
   return $apps;

@@ -16,6 +16,9 @@ function os_links_os_app_info() {
 
   $apps['os_links'] = array(
     'path' => 'links',
+  	'nodetypes' => array(
+  	  'link',
+    ),
   );
 
   return $apps;

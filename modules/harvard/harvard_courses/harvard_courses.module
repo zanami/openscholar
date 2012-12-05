@@ -14,6 +14,12 @@ function harvard_courses_os_app_info() {
 
   $apps['harvard_courses'] = array(
     'path' => 'courses',
+  	'nodetypes' => array(
+      /* Note: only provides App-related, listable group content,
+       * so, omits "harvard_api_importer".
+       */
+  	  'harvard_course',
+    ),
   );
 
   return $apps;

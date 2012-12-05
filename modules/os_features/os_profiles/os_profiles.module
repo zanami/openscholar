@@ -16,6 +16,9 @@ function os_profiles_os_app_info() {
 
   $apps['os_profiles'] = array(
     'path' => 'people',
+  	'nodetypes' => array(
+  	  'person',
+    ),
   );
 
   return $apps;

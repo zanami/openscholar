@@ -16,6 +16,9 @@ function os_news_os_app_info() {
 
   $apps['os_news'] = array(
     'path' => 'news',
+  	'nodetypes' => array(
+  	  'news',
+    ),
   );
 
   return $apps;

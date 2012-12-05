@@ -18,6 +18,10 @@ function os_biocv_os_app_info() {
 
   $apps['os_biocv'] = array(
     'path' => 'biocv',
+  	'nodetypes' => array(
+  	  'bio',
+  		'cv',
+    ),
   );
 
   return $apps;

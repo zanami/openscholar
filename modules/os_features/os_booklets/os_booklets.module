@@ -17,6 +17,9 @@ function os_booklets_os_app_info() {
 
   $apps['os_booklets'] = array(
     'path' => 'documents',
+  	'nodetypes' => array(
+  	  'book',
+    ),
   );
 
   return $apps;

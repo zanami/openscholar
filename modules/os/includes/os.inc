@@ -8,7 +8,7 @@
  */
 
 /**
- * Returns avalible bundles based on privacy.
+ * Returns avalible bundles, with option to filter by spaces_features status.
  *
  * @param $privacy
  *  Can be array:
@@ -24,49 +24,35 @@
  * @return
  *  Array keyed with the bundle ID and the bundle name as value.
  */
-function os_get_bundles($privacy = array(1), $space_type = 'og', $reset = FALSE) {
-  $ret_all = FALSE;
-  if (is_bool($privacy) && $privacy) {
-    $ret_all = TRUE;
+function os_get_bundles($include_status = array(1), $space_type = 'og', $reset = FALSE) {
+  $return_all = FALSE;
+  if ($include_status === TRUE) {
+    $return_all = TRUE;
   }
-  elseif (!is_array($privacy)) {
-    $privacy = array($privacy);
+  elseif (!is_array($include_status)) {
+    $include_status = array($include_status);
   }
 
   $bundles = array();
+  $app_info = os_app_info();
+  $spaces_features = variable_get('spaces_features', array());
 
-  // Reset static feature list.
-  $features = spaces_features($space_type, $reset);
-  $site_features = variable_get('spaces_features', array());
-
-  foreach ($features as $name => $feature) {
-    $info = $feature->info['features'];
-    if (!isset($info['node'])) {
+  foreach ($app_info as $app_name => $info) {
+    if (!isset($info['nodetypes'])) {
       continue;
     }
-    if (!$ret_all && (!isset($site_features[$name]) || !in_array($site_features[$name], $privacy))) {
+    $module = $info['module'];
+    if (!$return_all && (!isset($spaces_features[$module]) || !in_array($spaces_features[$module], $include_status))) {
       continue;
     }
 
-    // Get bundle name, we call the node_info hook directly since
-    // this is called during bootstrap
-    module_load_include('features.inc', $name);
-    $node_info_hook = $name . '_node_info';
-    if (function_exists($node_info_hook)) {
-      $node_info = $node_info_hook();
-    }
-
-    foreach ($info['node'] as $nodetype) {
-      // Hide harvard API importer node from content types list.
-      if ($nodetype == 'harvard_api_importer') {
-        continue;
-      }
-
-      if (isset($node_info[$nodetype]['name'])) {
-        $bundles[$nodetype] = $node_info[$nodetype]['name'];
+    $_node_types = _node_types_build();
+    foreach ($info['nodetypes'] as $nodetype) {
+      if (isset($_node_types->names[$nodetype])) {
+        $bundles[$nodetype] = $_node_types->names[$nodetype];
       }
       else {
-        $bundles[$nodetype] = $feature->info['name'];
+        $bundles[$nodetype] = $module;
       }
     }
   }

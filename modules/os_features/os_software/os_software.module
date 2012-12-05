@@ -16,6 +16,10 @@ function os_software_os_app_info() {
 
   $apps['os_software'] = array(
     'path' => 'software',
+  	'nodetypes' => array(
+  	  'software_project',
+      'software_release',
+    ),
   );
 
   return $apps;

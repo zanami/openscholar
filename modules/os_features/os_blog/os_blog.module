@@ -16,6 +16,9 @@ function os_blog_os_app_info() {
 
   $apps['os_blog'] = array(
     'path' => 'blog',
+  	'nodetypes' => array(
+  	  'blog',
+    ),
   );
 
   return $apps;

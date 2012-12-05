@@ -16,6 +16,9 @@ function os_publications_os_app_info() {
 
   $apps['os_publications'] = array(
     'path' => 'publications',
+  	'nodetypes' => array(
+  	  'biblio',
+    ),
   );
 
   return $apps;

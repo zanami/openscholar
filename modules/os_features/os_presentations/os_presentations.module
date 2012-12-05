@@ -17,6 +17,9 @@ function os_presentations_os_app_info() {
 
   $apps['os_presentations'] = array(
     'path' => 'presentations',
+  	'nodetypes' => array(
+  	  'presentation',
+    ),
   );
 
   return $apps;

@@ -11,6 +11,9 @@ function os_events_os_app_info() {
 
   $apps['os_events'] = array(
     'path' => 'calendar',
+  	'nodetypes' => array(
+  	  'event',
+    ),
   );
 
   return $apps;
