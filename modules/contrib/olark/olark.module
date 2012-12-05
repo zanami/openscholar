@@ -55,6 +55,21 @@ function olark_check_role_access() {
   return $display_olark_chat;
 }
 
+/**
+ * Suppress display of olark chat box.
+ *
+ * @param $set
+ *   Defaults to TRUE. If called before hook_footer(), the menu will not be
+ *   displayed. If FALSE is passed, the suppression state is returned.
+ */
+function olark_suppress($set = TRUE) {
+  static $suppress = FALSE;
+  // drupal_add_js() must only be invoked once.
+  if (!empty($set) && $suppress === FALSE) {
+    $suppress = TRUE;
+  }
+  return $suppress;
+}
 
 /**
  * Implements hook_footer().
@@ -65,17 +80,20 @@ function olark_page_alter(&$page) {
   // however, there is not a user interface for this variable.
   $role_display_olark_chat = olark_check_role_access();
   // If the display olark chat AND the variable for olark enable is true, then display Olark Chat.
+
   if ($role_display_olark_chat && variable_get('olark_enable', 1)) {
 	if (!variable_get('olark_context', 0)) {
 	  $page['page_bottom']['tns'] = array(
-	    '#markup' => variable_get('olark_code', '')
+	    '#markup' => variable_get('olark_code', ''),
+	    '#access' => !olark_suppress(FALSE),
 	  ) + olark_get_js();
 	}
 	else {
 	  if ($plugin = context_get_plugin('reaction', 'olark_add')) {
 		if ($plugin->execute()) {
           	  $page['page_bottom']['tns'] = array(
-          	    '#markup' => variable_get('olark_code', '')
+          	    '#markup' => variable_get('olark_code', ''),
+          	    '#access' => !olark_suppress(FALSE),
           	  ) + olark_get_js();
 		}
 	  }
