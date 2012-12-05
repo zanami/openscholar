@@ -640,7 +640,14 @@ abstract class OSMigration extends Migration {
           $style[] = 'height: ' . $imagecache_dims['height'];
         }
 
-        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $style, $imagecache_dims);
+        $attrs = array();
+        foreach(array('width', 'height', 'class') as $attr) {
+          if (isset($$attr) && $$attr) {
+            $attrs[$attr] = $$attr;
+          }
+        }
+
+        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $style, $imagecache_dims, $attrs);
         $text = $dom->createTextNode($tag);
         $img->parentNode->replaceChild($text, $img);
         $update = TRUE;
@@ -693,10 +700,13 @@ abstract class OSMigration extends Migration {
       ),
     );
 
+
+
     $sizes = array(
       'imagecache-inline_larger' => 'os_files_large',
       'imagecache-inline_default' => 'os_files_large',
       '' => 'os_files_large',
+      'os-fullbanner' => 'os_files_xxlarge',
     );
 
 
