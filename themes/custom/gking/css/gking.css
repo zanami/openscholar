@@ -1604,6 +1604,10 @@ table#ordernodes {
   width:90%;
   }
 
+body.front .block-boxes-os_taxonomy_fbt .item-list ul.termchild-methods .active a,
+body.front .block-boxes-os_taxonomy_fbt .item-list ul.termchild-applications .active a {
+  color: #db7002;
+}
 
 /* REMOVE BEFORE CHECING IN */
 .front .region-header-second h2.block-title, #messages {display:none;}
