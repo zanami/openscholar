@@ -1,46 +1,70 @@
 <?php
 
+///////////////////////
+// Terms
+
+/**
+ * Migrate "Authors" terms.
+ */
+class OsMigrateAuthorsTaxonomyTerm extends OsMigrate {
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public $entityType = 'taxonomy_term';
+  public $bundle = 'authors';
+
+  public $ogVocab = TRUE;
+}
+
 /**
  * Migrate "Biology" terms.
  */
 class OsMigrateBiologyTaxonomyTerm extends OsMigrate {
 
-   public $csvColumns = array(
-     array('id', 'ID'),
-     array('name', 'Name'),
-   );
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
 
-   public $entityType = 'taxonomy_term';
-   public $bundle = 'biology';
- }
+  public $entityType = 'taxonomy_term';
+  public $bundle = 'biology';
+
+  public $ogVocab = TRUE;
+}
 
 /**
  * Migrate "Math" terms.
  */
- class OsMigrateMathTaxonomyTerm extends OsMigrate {
+class OsMigrateMathTaxonomyTerm extends OsMigrate {
 
-   public $csvColumns = array(
-     array('id', 'ID'),
-     array('name', 'Name'),
-   );
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
 
-   public $entityType = 'taxonomy_term';
-   public $bundle = 'math';
- }
+  public $entityType = 'taxonomy_term';
+  public $bundle = 'math';
+
+  public $ogVocab = TRUE;
+}
 
 /**
  * Migrate "Science" terms.
  */
- class OsMigrateScienceTaxonomyTerm extends OsMigrate {
+class OsMigrateScienceTaxonomyTerm extends OsMigrate {
 
-   public $csvColumns = array(
-     array('id', 'ID'),
-     array('name', 'Name'),
-   );
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
 
-   public $entityType = 'taxonomy_term';
-   public $bundle = 'science';
- }
+  public $entityType = 'taxonomy_term';
+  public $bundle = 'science';
+
+  public $ogVocab = TRUE;
+}
+
+///////////////////////
+// Nodes
 
 /**
  * Migrate "Personal" node.
@@ -438,51 +462,6 @@ class OsMigratePeopleNode extends OsMigrate {
 }
 
 /**
- * Migrate OG-vocabs.
- */
-class OsMigrateOgVocab extends OsMigrate {
-
-  /**
-   * Map the field and properties to the CSV header.
-   */
-  public $csvColumns = array(
-    array('id', 'ID'),
-    array('name', 'Name'),
-    array(OG_AUDIENCE_FIELD, 'Site'),
-  );
-
-  public $entityType = 'og_vocab';
-  public $bundle = 'authors';
-
-  public $dependencies = array(
-    'OsMigratePersonalNode',
-  );
-
-  public function __construct() {
-    parent::__construct();
-    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
-      ->sourceMigration('OsMigratePersonalNode');
-  }
-
-  function prepare($entity, $row) {
-    if (!$vocabulary = taxonomy_vocabulary_machine_name_load("authors_" . $entity->{OG_AUDIENCE_FIELD}['destid1'])) {
-      $vocabulary = new stdClass();
-      $vocabulary->name = "Authors";
-      $vocabulary->machine_name = "authors_" . $entity->{OG_AUDIENCE_FIELD}['destid1'];
-      taxonomy_vocabulary_save($vocabulary);
-
-      // Relate vocabulary to group.
-      og_vocab_relation_save($vocabulary->vid, 'node', $entity->{OG_AUDIENCE_FIELD}['destid1']);
-
-      // Create OG-vocabulary entity.
-      $og_vocab = og_vocab_create_og_vocab($vocabulary->vid, 'node', 'blog');
-      $og_vocab->save();
-    }
-    $entity->vid = $vocabulary->vid;
-  }
-}
-
-/**
  * Migrate Link.
  */
 class OsMigrateLinkNode extends OsMigrate {
@@ -617,5 +596,71 @@ class OsMigrateGalleryNode extends OsMigrate {
       ->defaultValue(FILE_EXISTS_REPLACE);
     $this->addFieldMapping('media_gallery_media:source_dir')
       ->defaultValue(drupal_get_path('module', 'os_migrate_demo') . '/images');
+  }
+}
+
+///////////////////////
+// OG-vocabs
+
+
+/**
+ * Migrate OG-vocabs.
+ *
+ * @todo: Work in progress.
+ */
+class OsMigrateOgVocab extends OsMigrate {
+
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('site', 'Site'),
+    array('vocabulary', 'Vocabulary'),
+    array('required', 'Required'),
+    array('cardinality', 'Cardinality'),
+    array('widget', 'Widget'),
+  );
+
+  public $entityType = 'og_vocab';
+  public $bundle = 'og_vocab';
+
+  public $dependencies = array(
+    'OsMigrateAuthorsTaxonomyTerm',
+    'OsMigrateBiologyTaxonomyTerm',
+    'OsMigrateMathTaxonomyTerm',
+    'OsMigrateScienceTaxonomyTerm',
+  );
+
+  protected $enabled = FALSE;
+
+  public function __construct() {
+    parent::__construct();
+
+    $this->addFieldMapping('vocabulary', 'vocabulary');
+    $this
+      ->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+
+    $this->addFieldMapping('vid');
+    $this->addFieldMapping('settings')->defaultValue(array());
+  }
+
+  public function prepareRow($row) {
+    $name = $row->vocabulary . '_' . $row->{OG_AUDIENCE_FIELD};
+    $vocabulary = taxonomy_vocabulary_machine_name_load($name);
+
+    $row->vid = $vocabulary->vid;
+    $row->entity_type = 'node';
+    $row->bundle = 'class';
+
+    $keys = array(
+      'required',
+      'cardinality',
+      'widget',
+    );
+    foreach ($keys as $key) {
+      $row->settings[$key] = $row->{$key};
+    }
+  }
+
+  public function prepare($entity, $row) {
   }
 }
