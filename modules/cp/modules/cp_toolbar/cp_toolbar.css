@@ -1,6 +1,6 @@
 
 #toolbar {
-  background: #282828;
+  background: #383838;
 }
 
 #toolbar .toolbar-left > ul {
@@ -65,7 +65,7 @@
   top: -25%;
   width: 100%;
   padding: 0 20px;
-  background-color: #282828;
+  background-color: #383838;
   -webkit-transition: top 0.25s;
   -moz-transition: top 0.25s;
   -o-transition: top 0.25s;
@@ -108,13 +108,13 @@
 #toolbar div.toolbar-menu ul li a.active,
 #toolbar div.toolbar-menu ul li.active-trail a,
 #toolbar div.toolbar-menu ul li a:active {
-  background-color: #282828;
+  background-color: #383838;
   background-image: none;
 }
 
 #toolbar div.toolbar-menu ul li a.active:hover,
 #toolbar div.toolbar-menu ul li a.active:focus {
-  background-color: #282828;
+  background-color: #383838;
   background-image: none;
 }
 
@@ -135,7 +135,7 @@
 #toolbar div.toolbar-menu ul li a[data-drawer].active-path:active,
 #toolbar div.toolbar-menu ul li a[data-drawer].active-path,
 #toolbar div.toolbar-menu ul li.active-trail a[drawer] {
-  background-color: #282828;
+  background-color: #383838;
   background-image: url('images/toolbar_drawer_link_arrow.png');
   background-repeat: no-repeat;
   background-position: right center;
@@ -145,7 +145,7 @@
 }
 
 #toolbar .toolbar-drawer .drawer ul {
-  background-color: rgba(102,102,102,.4);
+  background-color: rgba(255,255,255,.16);
   background-position: 6px center;
   background-repeat: no-repeat;
   border: 1px solid #000;
