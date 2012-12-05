@@ -42,6 +42,12 @@
     	  
     	// Updates the displayed taxonomy term item on hover event
         $($sel + ' ul li ul li:not(.aor-processed)').hover(function (event) {
+
+          // Exits without any effect if this item is already active.
+          if ($(this).hasClass('active')) {
+        	return;
+          }
+       
           // Removes active class from previous item
           $($sel + ' ul li ul li.active')
             .removeClass('active');
@@ -56,7 +62,7 @@
             .addClass('active')
             .find('div.description')
             .fadeIn('fast');
-        });
+        }, {});
         
         // Initializes first hover event.
         var first_term = $sel + ' ul li:nth-child(2) ul li:not(.aor-processed)';
