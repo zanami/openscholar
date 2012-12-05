@@ -67,14 +67,16 @@ function olark_page_alter(&$page) {
   // If the display olark chat AND the variable for olark enable is true, then display Olark Chat.
   if ($role_display_olark_chat && variable_get('olark_enable', 1)) {
 	if (!variable_get('olark_context', 0)) {
-	  olark_add_js();
-	  $page['page_bottom']['tns']['#markup'] = variable_get('olark_code', '');
+	  $page['page_bottom']['tns'] = array(
+	    '#markup' => variable_get('olark_code', '')
+	  ) + olark_get_js();
 	}
 	else {
 	  if ($plugin = context_get_plugin('reaction', 'olark_add')) {
 		if ($plugin->execute()) {
-		  olark_add_js();
-		  $page['page_bottom']['tns']['#markup'] = variable_get('olark_code', '');
+          	  $page['page_bottom']['tns'] = array(
+          	    '#markup' => variable_get('olark_code', '')
+          	  ) + olark_get_js();
 		}
 	  }
 	}
@@ -162,13 +164,10 @@ function olark_settings($form, &$form_state) {
 /**
  * Builds and inserts the correct Olark Javascript into the page.
  */
-function olark_add_js() {
-  static $added;
-  if (!isset($added)) {
+function olark_get_js() {
     global $user;
 
     $path = drupal_get_path('module', 'olark');
-    drupal_add_js($path . '/olark.js');
 
     $setting = array('olark' => array());
 
@@ -186,8 +185,17 @@ function olark_add_js() {
 
     $setting['olark']['disable_ios'] = variable_get('olark_ios', '');
     $setting['olark']['enabled'] = variable_get('olark_enable', 1);
-    drupal_add_js($setting, array('type' => 'setting', 'scope' => JS_DEFAULT));
+    $js = array(
+      '#attached' => array(
+        'js' => array(
+          $path . '/olark.js',
+          array(
+            'data' => $setting,
+            'type' => 'setting',
+          )
+        )
+      )
+    );
 
-    $added = TRUE;
-  }
+    return $js;
 }
