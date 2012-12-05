@@ -163,9 +163,12 @@ function openscholar_vsite_modules_batch(&$install_state){
  */
 function openscholar_migrate_content() {
   $migrations = migrate_migrations();
+  $operations = array();
+  $t = get_t();
   foreach ($migrations as $machine_name => $migration) {
     $operations[] = array('_openscholar_migrate_content', array($machine_name, t('Importing content.')));
   }
+  $operations[] = array('_openscholar_os_taxonomy_content', array($t('Creating'), $t(' dummy OG vocabulary.')));
 
   $batch = array(
     'title' => t('Importing content'),
@@ -173,6 +176,43 @@ function openscholar_migrate_content() {
   );
 
   return $batch;
+}
+
+/**
+ * Create a software node and dummy OG vocabulary.
+ */
+function _openscholar_os_taxonomy_content() {
+  $vocabulary_name = 'softwares';
+  if (!$vocabulary = taxonomy_vocabulary_machine_name_load($term)) {
+    // Create a terms vocabulary.
+    $vocabulary = new stdClass();
+    $vocabulary->name = ucfirst($vocabulary_name);
+    $vocabulary->machine_name = $vocabulary_name;
+    taxonomy_vocabulary_save($vocabulary);
+  }
+
+  // Create a term in the vocabulary.
+  $term = new stdClass();
+  $term->name = "Apple";
+  $term->vid = $vocabulary->vid;
+  taxonomy_term_save($term);
+
+  // Relate vocabulary to group.
+  og_vocab_relation_save($vocabulary->vid, 'node', 1);
+  $og_voab = og_vocab_create_og_vocab($vocabulary->vid, 'node', 'software_project');
+  $og_voab->save();
+
+  // Create the software node.
+  $node = new stdClass;
+  $node->title = 'IOS 6';
+  $node->type = 'software_project';
+  $node->language = LANGUAGE_NONE;
+  $node->uid = 1;
+  node_object_prepare($node);
+  $node->{OG_VOCAB_FIELD}[LANGUAGE_NONE][0]['target_id'] = $term->tid;
+  node_save($node);
+
+  og_group('node', 1, array('entity_type' => 'node', 'entity' => $node->nid));
 }
 
 /**
