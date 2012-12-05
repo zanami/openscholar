@@ -618,13 +618,22 @@ class BoxPorter {
       ->execute()
       ->fetchAssoc();
 
+    //get caption
+    $caption = OSMigration::d6_db_select('node_revisions', 'nr')
+      ->condition('nid', $box->options['nid'])
+      ->fields('nr', array('body'))
+      ->execute()
+      ->fetchField();
+
     if ($fid && ($file = file_load($fid))) {
       //migrate_map_modalimagenodeos.  sourceid1 = d6 nid.  destid1 = media id.
 
+      $data = unserialize($image_info['field_modal_image_data']);
       $image_vars = array(
         'path' => $file->uri,
-        'width' => $image_info['field_modal_image_size_value'],
-        //'height',
+        //'width' => $image_info['field_modal_image_size_value'],
+        'height' => $data['crop']['height'],
+        'width' => $data['crop']['width'],
         'alt' => $box->description,
         'title' => $box->title,
         'attributes' => array(),
@@ -633,6 +642,10 @@ class BoxPorter {
       $img_html = theme_image($image_vars);
       if (isset($image_info['field_link_from_image_url'])) {
         $img_html = l($img_html, $image_info['field_link_from_image_url'], array('html' => TRUE));
+      }
+
+      if ($caption) {
+        $img_html .= $caption;
       }
 
       //modal image should have a separate content type migration.  lets use that for moving the image.
