@@ -136,7 +136,8 @@ h2 {
 
 /* SEARCH FORM */
 
-.block-os-search-db {margin-top:25px;}
+.block-os-search-db,
+.block-os-search-solr {margin-top:25px;}
 
 #block-search-0 h3, .block-search h3 {
   display:none;
