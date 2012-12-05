@@ -94,11 +94,13 @@ function cp_toolbar_view() {
     '#attributes' => array('id' => 'toolbar-user'),
   );
 
+  $base_domain = variable_get('purl_base_domain');
+
   $links = array(
     'help' => array(
       'title' => t('Help'),
       // 'href' => 'admin/help',
-      'href' => 'help/os_help/User-Documentation',
+      'href' => !empty($base_domain) ? $base_domain . '/help/os_help/User-Documentation' : 'help/os_help/User-Documentation',
  	  // 'query' => array('popup'=>'1'),
       'html' => TRUE,
       'description' => t('Get help on various topics'),
