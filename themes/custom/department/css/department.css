@@ -463,7 +463,7 @@ text-transform:none;
 
 /* SLIDESHOW */
 
-.view-os-image-gallery-slideshow {border:none;background:none;}
+.view-os-image-gallery-slideshow {border:none;background:none;margin-top: -20px;}
 
 
 .view-os-image-gallery-slideshow .views-slideshow-controls-bottom {padding:3px 0 2px 5px;color:#333;}
@@ -497,9 +497,11 @@ text-transform:none;
 .views-slideshow-pager-field-item:hover {cursor:pointer;}
 .views-slideshow-pager-field-item.active {color:#293352;background:#D9D9D9;}
 
-.views-content-counter {
-    width: 12px;
+views-content-counter {
+    font-size: 11px;
+    padding-top: 2px;
+    width: 11px;
+    height: 13px;
 }
- 
- 
+
 

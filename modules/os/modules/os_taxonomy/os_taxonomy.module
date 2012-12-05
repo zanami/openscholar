@@ -476,6 +476,11 @@ function theme_os_taxonomy_tagged_nodes($variables) {
       '#suffix' => '</p>',
     );
   }
+
+  if (!isset($build['term_heading']['term']['#post_render'])) {
+    $build['term_heading']['term']['#post_render'] = array();
+  }
+  $build['term_heading']['term']['#post_render'][] = '_os_taxonomy_remove_term_heading_link';
   $output .= drupal_render($build);
 
   // Recursively appends child terms to output.
@@ -681,4 +686,23 @@ function os_taxonomy_term_view($term, $view_mode = 'full', $description = FALSE,
   drupal_alter(array('taxonomy_term_view', 'entity_view'), $build, $type);
 
   return $build;
+}
+
+/**
+ * Post-render callback; removes term heading title link.
+ *
+ * @see theme_os_taxonomy_tagged_nodes()
+ */
+function _os_taxonomy_remove_term_heading_link($markup, $element) {
+  $output = '';
+
+  if (!$markup) {
+    return $output;
+  }
+
+  // Removes anchor tag from the term heading title.
+  $link_pattern = "/<h2><a[^>]*>(.*)<\/a>/iU";
+  $output = preg_replace($link_pattern, "<h2>$1", $markup);
+
+  return $output;
 }
