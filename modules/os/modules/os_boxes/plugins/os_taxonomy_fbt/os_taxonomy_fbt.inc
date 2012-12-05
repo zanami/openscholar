@@ -177,7 +177,12 @@ class os_taxonomy_fbt extends os_boxes_default {
 
       if(empty($this->options['vocabulary'])){
         // There are no vocabularies defined in the VSite.
-        return $block;
+        // Until the behat test will use pre-defined vocab this will return
+        // empty block for the title to be presented.
+        return array(
+          'delta' => $this->delta,
+          'title' => $this->title,
+          'content' => ' ',        );
       }
     }
     // For now - display the first vocabulary terms.

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Implements hook_migrate_api().
  */
@@ -9,4 +8,54 @@ function os_migrate_demo_migrate_api() {
     'api' => 2,
   );
   return $api;
+}
+
+/**
+ * Attach and remove blocks from regions on OS.
+ */
+function os_migrate_demo_set_box_in_region($box, $page, $region = 'sidebar_second') {
+  ctools_include('layout', 'os');
+  $page_mapping = array(
+    'News' => 'news_news',
+    'Blog' => 'blog_blog',
+    'Bio' => 'biocv_biocv',
+    'Link' => 'links_links',
+    'Reader' => 'reader_reader',
+    'Calendar' => 'events_events',
+    'Classes' => 'classes_classes',
+    'People' => 'profiles_profiles',
+    'Data' => 'dataverse_dataverse',
+    'Galleries' => 'gallery_gallery',
+    'Software' => 'software_software',
+    'Documents' => 'booklets_booklets',
+    'Publications' => 'publications_publications',
+    'Presentations' => 'presentations_presentations',
+  );
+
+  $boxes_mapping = array(
+    'Filter by term' => 'os_taxonomy_fbt',
+  );
+
+  $box = boxes_box::factory($boxes_mapping[$box], array(
+    'delta' => 'box-' . strtolower(str_replace(" ", "-", $box)),
+    'title' => $box,
+    'description' => $box,
+  ));
+  $box->save();
+
+  $region = $region ? $region : FALSE;
+
+  $contexts = array(
+    $page_mapping[$page],
+    'os_public',
+  );
+
+  $blocks = os_layout_get_multiple($contexts, FALSE, TRUE);
+  $blocks['boxes-' . $box->delta]['region'] = $region;
+  $blocks['boxes-' . $box->delta]['weight'] = 1;
+
+  $vsite = spaces_load('og', 1);
+  $vsite->controllers->context->set($contexts[0] . ":reaction:block", array(
+      'blocks' => $blocks,
+  ));
 }
