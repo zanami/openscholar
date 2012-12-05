@@ -173,13 +173,15 @@ p span {
   background: url('../images/eventsIcon.png') no-repeat;
   margin-left:8px;
   padding-left: 39px;
+  padding-top:14px;
    } 
    
   
   .block-boxes-os_boxes_twitterfeed h2.block-title {
-  background: url('../images/twitterIcon.png') no-repeat;
+  background: url('../images/twitterIcon.png') 0 7px no-repeat;
   margin-left:8px;
   padding-left: 34px;
+  padding-top:14px;
    } 
    
 .block-boxes-os_boxes_twitterfeed ul li {margin-bottom:15px;}
@@ -187,9 +189,10 @@ p span {
 .tweet-authorphoto img {display:none;}
    
   #block-boxes-os-news-latest h2.block-title {
-  background: url('../images/announcementsIcon.png') no-repeat;
+  background: url('../images/announcementsIcon.png') 0 5px no-repeat;
   margin-left:8px;
   padding-left: 39px;
+  padding-top:14px;
    } 
    
  #block-boxes-os-news-latest .clearfix ul.links.inline li a {

@@ -42,7 +42,18 @@ h1, h2, #menu-bar li, #footer {
 p {
   margin: 0 0 1.5em 0;
   }
+  
+.page-links .node-teaser .view-mode-teaser p,
+.page-software .node-teaser .view-mode-teaser p,
+.page-classes .node-teaser .view-mode-teaser p {margin: 0;}
 
+.page-people #content .node-person .field-name-body {
+    margin-top: 0;
+}
+
+.page-people .node.node-link.node-teaser.article.clearfix,
+.page-links .node.node-link.node-teaser.article.clearfix {display:block;}
+ 
 .biblio-note p {
   margin: 0;
   }
