@@ -169,6 +169,12 @@ p span {
   display:none;
   }
   
+  
+  
+  .sidebar .block-boxes-os_taxonomy_fbt ul ul {
+    margin-left: 35px;
+}
+  
   .region-content-bottom .block-boxes-os_boxes_html  h2.block-title {
   background: url('../images/eventsIcon.png') no-repeat;
   margin-left:8px;
@@ -255,20 +261,11 @@ h5 span {
 
 /* HEADER ELEMENTS */
 
-.box-os_boxes_modal_image:nth-child(2) {
-	 margin: 0 -9px;
-	float:right;
+.block-boxes-os_boxes_html:nth-child(1) img {
+	 margin-bottom: 15px;
+	
 }
 
-.box-os_boxes_modal_image:nth-child(3) {
-	 margin: 17px -7px 0;
-	float:right;
-}
-
-.box-os_boxes_modal_image:nth-child(4) {
-	 margin: 13px -7px -20px;
-	float:right;
-}
 
 
 /**** MAIN NAV BAR ****/
@@ -337,11 +334,11 @@ ul.nice-menu-down li ul li ul {
 
 .region-header-third #block-os-secondary-menu {
  clear: none;
-    float: left;
-    margin-left: -85px;
+    float: right;
+    margin-left: -35px;
     margin-top: 3px;
     padding: 0 0 5px 5px;
-    width: 295px;
+    width: 300px;
   }
 
 .region-header-third #block-os-secondary-menu li {

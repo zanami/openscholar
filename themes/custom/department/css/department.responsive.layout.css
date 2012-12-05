@@ -12,10 +12,10 @@
 
 
 #header-container .gpanel .region {float: left; clear: none;}
-.header-left.header-main.header-right .region-header-second .region-inner {margin-left: 195px; margin-right: 240px;}
+.header-left.header-main.header-right .region-header-second .region-inner {margin-left: 195px; margin-right: 420px;}
 .header-left.header-main .region-header-second .region-inner {margin-left: 195px; margin-right: 0;}
-.header-main.header-right .region-header-second .region-inner {margin-right: 240px; margin-left: 0;}
+.header-main.header-right .region-header-second .region-inner {margin-right: 420px; margin-left: 0;}
 .region-header-first {width:195px; margin-left:-100%;}
-.region-header-third {width:240px; margin-left:-240px;text-align: right;}
+.region-header-third {width:420px; margin-left:-420px;text-align: right;}
 .region-header-second {width:100%;}
 }
