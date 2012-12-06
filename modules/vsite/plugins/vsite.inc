@@ -224,7 +224,7 @@ class vsite extends space_og {
         'node',
         'admin',
         'admin/*',
-        'files/*',
+       // 'files/*', Need files menu entry to be loaded in a space so that the purl can be used to serve old file pats. -RB
     );
 
     $excluded = array_merge($excluded, $more);
