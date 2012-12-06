@@ -1043,6 +1043,7 @@ class BoxPorter {
     );
 
     $box->options = array_merge($defaults, $box->options);
+    $box->options['style'] = ($box->options['style'] == '_light') ? 'light' : 'dark'; //in d6 '' => dark and dark was default as well
 
     $box->options['gallery_nid'] = $box->options['gallery'];
     unset($box->options['gallery']);
