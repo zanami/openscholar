@@ -1093,6 +1093,10 @@ class BoxPorter {
       $build = node_view($node, $teaser);
       unset($build['#contextual_links']); //don't hardcode the admin links into the html box...
 
+      if (isset($build['links']) && isset($build['links']['node']) && isset($build['links']['node']['#links']) && isset($build['links']['node']['#links']['node-readmore'])) {
+        unset($build['links']['node']['#links']['node-readmore']); //don't add readmore text.  it wasn't in d6
+      }
+
       //swap html back out for media tags
       $matches = array();
       $media_tag_pattern = '/\[\[.*?\]\]/';
