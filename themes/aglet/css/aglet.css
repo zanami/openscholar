@@ -334,8 +334,3 @@ ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
   background:transparent;
   }
 
-#header-container .search-form input.form-submit,
-#header-container #search-block-form #edit-submit,
-#header-container #search-form #edit-submit{
-  background: transparent;
-  }

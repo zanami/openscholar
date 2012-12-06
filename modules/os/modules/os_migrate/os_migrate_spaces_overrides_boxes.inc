@@ -429,7 +429,7 @@ EOF;
          $box->title = $title;
      	 }
      	 $box->options['vocabulary'] = $vocab;
-     	 $return[$id] = $box;
+     	 $return[$id] = clone $box;
      }
 
      return $return;
@@ -958,7 +958,7 @@ class BoxPorter {
      $box->options['depth'] = isset($box->options['tree_max_depth'])?($box->options['tree_max_depth'] - 1):0;
      $box->options['show_childs'] = isset($box->options['show_tree'])?$box->options['show_tree']:false;
      //Don't show count by default
-     $box->options['show_count'] = isset($box->options['show_count'])?$box->options['show_count']:0;
+     $box->options['show_count'] = isset($box->options['show_count'])?$box->options['show_count']:1;
 
      //New Default
      if(!isset($box->options['behavior']) || $box->options['behavior'] != 'contextual'){
@@ -1043,6 +1043,7 @@ class BoxPorter {
     );
 
     $box->options = array_merge($defaults, $box->options);
+    $box->options['style'] = ($box->options['style'] == '_light') ? 'light' : 'dark'; //in d6 '' => dark and dark was default as well
 
     $box->options['gallery_nid'] = $box->options['gallery'];
     unset($box->options['gallery']);
@@ -1092,6 +1093,10 @@ class BoxPorter {
       }
       $build = node_view($node, $teaser);
       unset($build['#contextual_links']); //don't hardcode the admin links into the html box...
+
+      if (isset($build['links']) && isset($build['links']['node']) && isset($build['links']['node']['#links']) && isset($build['links']['node']['#links']['node-readmore'])) {
+        unset($build['links']['node']['#links']['node-readmore']); //don't add readmore text.  it wasn't in d6
+      }
 
       //swap html back out for media tags
       $matches = array();
