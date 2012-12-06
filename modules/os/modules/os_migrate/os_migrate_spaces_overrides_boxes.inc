@@ -958,7 +958,7 @@ class BoxPorter {
      $box->options['depth'] = isset($box->options['tree_max_depth'])?($box->options['tree_max_depth'] - 1):0;
      $box->options['show_childs'] = isset($box->options['show_tree'])?$box->options['show_tree']:false;
      //Don't show count by default
-     $box->options['show_count'] = isset($box->options['show_count'])?$box->options['show_count']:0;
+     $box->options['show_count'] = isset($box->options['show_count'])?$box->options['show_count']:1;
 
      //New Default
      if(!isset($box->options['behavior']) || $box->options['behavior'] != 'contextual'){
