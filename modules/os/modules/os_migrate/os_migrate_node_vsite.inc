@@ -171,6 +171,20 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
          'provider' => $current_row->provider,
          'id' => $current_row->nid,
      );
+
+     //set private site
+     if (module_exists('vsite_access')) {
+       $privacy = parent::d6_db_select('spaces_overrides', 'so')
+         ->condition('id', $entity->nid)
+         ->condition('object_id', 'vsite_private')
+         ->fields('so', array('value'))
+         ->execute()
+         ->fetchField();
+
+       if ($privacy && (unserialize($privacy)==1)) {
+         $entity->group_access[LANGUAGE_NONE][0]['value'] = 1;
+       }
+     }
    }
 
 
