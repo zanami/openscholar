@@ -701,12 +701,13 @@ abstract class OSMigration extends Migration {
     );
 
 
-
+    //os_files_ large=600px, xlarge=800px, xxlarge=1000px
     $sizes = array(
       'imagecache-inline_larger' => 'os_files_large',
       'imagecache-inline_default' => 'os_files_large',
       '' => 'os_files_large',
       'os-fullbanner' => 'os_files_xxlarge',
+      'os-halfbanner' => 'os_files_xlarge',
     );
 
 
