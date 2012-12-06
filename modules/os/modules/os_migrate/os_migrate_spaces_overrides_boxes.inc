@@ -429,7 +429,7 @@ EOF;
          $box->title = $title;
      	 }
      	 $box->options['vocabulary'] = $vocab;
-     	 $return[$id] = $box;
+     	 $return[$id] = clone $box;
      }
 
      return $return;
