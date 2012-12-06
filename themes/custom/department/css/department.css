@@ -110,7 +110,7 @@ p span {
     }   
     
 
-  
+#content-column .node-person h2,
 #content-column h1#page-title {
 	color:#666;
   	font-size:15px;
@@ -121,10 +121,10 @@ p span {
     border-bottom:2px solid #8996A0;
   }
   
-.node-type-person #content-column h1#page-title {
-    border-bottom: none;
-    width: auto;
-}  
+#content-column .node-person h2 {
+    border-bottom:none;
+    margin-bottom: 0;
+  }
   
   .block h2.block-title {
    	height:43px;
@@ -143,6 +143,8 @@ p span {
   	padding:7px 0 0 5px;
     margin-bottom:0;
   }
+  
+  .page-people .node-person.node-teaser ul.links.inline li a {display:none;}
   
   
  .at-panel.gpanel.content h1.node-title a {font-weight:normal;font-size: 13px;} 
@@ -259,14 +261,14 @@ h5 span {
 
 .region-content-top a {text-decoration:none;}
 
-/* HEADER ELEMENTS */
+/* HEADER ELEMENTS 
 
-.block-boxes-os_boxes_html:nth-child(1) img {
+.region-header-third .block-boxes-os_boxes_html:nth-child(1) {
 	 margin-bottom: 15px;
 	
 }
 
-
+*/
 
 /**** MAIN NAV BAR ****/
 
@@ -497,7 +499,7 @@ text-transform:none;
 .views-slideshow-pager-field-item:hover {cursor:pointer;}
 .views-slideshow-pager-field-item.active {color:#293352;background:#D9D9D9;}
 
-views-content-counter {
+.views-content-counter {
     font-size: 11px;
     padding-top: 2px;
     width: 11px;
