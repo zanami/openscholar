@@ -196,9 +196,6 @@ function theme_os_publications_export_links($variables) {
   if (biblio_access('export')) {
     $show_link = variable_get('biblio_lookup_links', array('google' => TRUE));
     $lookup_links = module_invoke_all('biblio_lookup_link', $node);
-    if ($show_link['google'] && !empty($node)) {
-      $lookup_links['biblio_google_scholar'] = theme('google_scholar_link', array('node' => $node));
-    }
     $nid          = (isset($node->nid)) ? $node->nid : NULL;
     $export_links = module_invoke_all('biblio_export_link', $nid, $filter);
     $links        = array_merge($lookup_links, $export_links);
