@@ -35,7 +35,7 @@ class os_sv_list_box extends os_boxes_default {
 
     $content_types = array(
       'all' => t('All')
-    ) + os_get_bundles(1);
+    ) + os_get_bundles(array(1));
 
     if (isset($content_types['media_gallery'])) {
       $content_types['image'] = t('Images');
@@ -225,11 +225,16 @@ class os_sv_list_box extends os_boxes_default {
 
   // get_default_query_query - humble beginnings of the EFQ
   function get_default_query() {
+    $bundles = os_get_bundles(array(1));
+    if (empty($bundles)) {
+      return FALSE;
+    }
+
     // defaults
     $efq = new EntityFieldQuery();
     $efq->entityCondition('entity_type', 'node');
     $efq->propertyCondition('status', 1);
-    $efq->propertyCondition('type', array_keys(os_get_bundles(1)), 'IN');
+    $efq->propertyCondition('type', array_keys($bundles), 'IN');
 
     // vsite
     if (module_exists('vsite') && $space = spaces_get_space()) {
@@ -247,7 +252,10 @@ class os_sv_list_box extends os_boxes_default {
    * @return multitype:
    */
   public function get_nids($page_num = FALSE, &$page = NULL) {
-    $efq = $this->get_default_query();
+    if (($efq = $this->get_default_query()) == FALSE) {
+      return array();
+    }
+
     $options = $this->options;
 
     //exceptions

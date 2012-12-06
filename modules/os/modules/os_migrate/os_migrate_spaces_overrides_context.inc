@@ -184,6 +184,7 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
       'scholar_events-mini' => 'views-os_events-block_1',
       'views-scholar_events_upcoming-block_1' => 'views-os_events-block_2',
       'boxes-image_gallery_recent_images' => 'boxes-os_image_gallery_latest',
+      'vsite-google_translate' => 'os_ga-google_translate',
       //'views-scholar_presentations-block_1' => 'boxes-os_presentations_recent_view',
     );
 
@@ -284,7 +285,14 @@ class SpacesOverridesContextMigration extends SpacesOverridesTableMigration {
         'region' => (isset($block['region'])) ? $this->_update_region($block['region']) : false,
         'weight' => (isset($block['weight'])) ? $block['weight'] : -10,
         'info' => 'Recent Presentations',
-      )
+      ),
+      'os_ga-google_translate' => array(
+        'module' => 'os_ga',
+        'delta' => 'google_translate',
+        'region' => (isset($block['region'])) ? $this->_update_region($block['region']) : false,
+        'weight' => (isset($block['weight'])) ? $block['weight'] : -10,
+        'info' => 'Google Translate',
+      ),
     );
 
     $replacements['scholar_events-mini'] = $replacements['views-os_events-block_1'];
