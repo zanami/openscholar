@@ -169,12 +169,12 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
   }
   //trim public, vsite name from new path.  those should be automatic.
 
-//   $newpath = str_replace('public://', '', $savedfile->uri);
-//   if (strpos($newpath, $info->vsite) === 0) {
-//     $newpath = str_replace($info->vsite, '', $newpath);
-//   }
-//   $newpath = ltrim($newpath, '/');
-  $newpath = file_create_url($savedfile->uri);
+  $newpath = str_replace('public://', '', $savedfile->uri);
+  if (strpos($newpath, $info->vsite) === 0) {
+    $newpath = str_replace($info->vsite, '', $newpath);
+  }
+  $newpath = ltrim($newpath, '/');
+  //$newpath = file_create_url($savedfile->uri);
 
   //<a href="http://gking.harvard.edu/files/smooth/appendixe.pdf">
   //possible matches:
