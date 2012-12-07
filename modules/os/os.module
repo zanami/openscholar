@@ -1023,6 +1023,13 @@ function os_node_view_alter(&$build) {
   if (!empty($node->nid)) {
     $build['#contextual_links']['node'] = array('node', array($node->nid));
   }
+
+  // fixes broken tags when <!--break--> is used
+  if ($build['#view_mode'] == 'teaser') {
+    foreach (element_children($build['body']) as $c) {
+      $build['body'][$c]['#markup'] = _filter_htmlcorrector($build['body'][$c]['#markup']);
+    }
+  }
 }
 
 /**
