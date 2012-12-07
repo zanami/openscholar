@@ -344,11 +344,11 @@ function biblio_build_query($arg_list) {
     $arg_list['o'] = strtolower(variable_get('biblio_order', 'desc'));
   }
 
-//   if (!isset($_SESSION['biblio_filter']) || !is_array($_SESSION['biblio_filter'])) {
-//     $_SESSION['biblio_filter'] = array();
-//   }
+  if (!isset($_SESSION['biblio_filter']) || !is_array($_SESSION['biblio_filter'])) {
+    $_SESSION['biblio_filter'] = array();
+  }
 
-//   $session = &$_SESSION['biblio_filter'];
+  $session = &$_SESSION['biblio_filter'];
 
   if (!in_array('no_filters', $arg_list)) {
     foreach ($session as $filter) {
@@ -1081,7 +1081,7 @@ function biblio_form_filter() {
 function biblio_form_filter_submit($form, &$form_state) {
   // If the search filter was set, remove it now.
   if (_get_biblio_search_filter()) {
-    //$_SESSION['biblio_filter'] = array();
+    $_SESSION['biblio_filter'] = array();
   }
   $op = $form_state['values']['op'];
   $filters = _get_biblio_filters();
@@ -1096,7 +1096,7 @@ function biblio_form_filter_submit($form, &$form_state) {
           $flat_options = form_options_flatten($filters[$filter]['options']);
           // Only accept valid selections offered on the dropdown, block bad input.
           if (isset($flat_options[$form_state['values'][$filter]])) {
-            //$_SESSION['biblio_filter'][] = array($filter => $form_state['values'][$filter]);
+            $_SESSION['biblio_filter'][] = array($filter => $form_state['values'][$filter]);
             $uri['query']['f'][$filter] = $form_state['values'][$filter];
           }
         }
@@ -1104,10 +1104,10 @@ function biblio_form_filter_submit($form, &$form_state) {
       $form_state['redirect'] =  array($uri['path'], $uri);
       break;
     case t('Undo'):
-      //array_pop($_SESSION['biblio_filter']);
+      array_pop($_SESSION['biblio_filter']);
       break;
     case t('Reset'):
-      //$_SESSION['biblio_filter'] = array();
+      $_SESSION['biblio_filter'] = array();
       break;
   }
 }
