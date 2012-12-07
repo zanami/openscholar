@@ -1014,7 +1014,7 @@ function biblio_menu() {
 
 function biblio_filter_clear() {
   $options = array();
-  $_SESSION['biblio_filter'] = array();
+  unset($_SESSION['biblio_filter']);
   $base = variable_get('biblio_base', 'biblio');
   if (isset($_GET['sort'])) {
     $options['sort'] = $_GET['sort'];
