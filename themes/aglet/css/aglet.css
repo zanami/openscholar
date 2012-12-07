@@ -296,6 +296,11 @@ ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
   text-decoration: none;
   }
 
+.book-menu ul.menu li li, #block-book-navigation ul.menu li li, .block-boxes-os_boxes_booktoc ul.menu li li {
+    border-bottom: 1px solid #CCCCCC;
+
+}
+
 /*Footer */
 
 #footer .wrap {
