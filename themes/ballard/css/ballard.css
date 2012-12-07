@@ -384,7 +384,8 @@ float:right;
     background:none !important;
 }
 
-.sidebar .block.block-boxes-os_boxes_sectionnav ul {
+.sidebar .block.block-boxes-os_boxes_sectionnav ul,
+.sidebar .block.block-boxes-os_boxes_sectionnav ul li ul{
     margin: 0;
 }
 
