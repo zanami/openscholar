@@ -1182,19 +1182,19 @@ function _os_get_node_type_name($type) {
 }
 
 
-/**
- * Do not save session data for anon users
- */
- function os_exit(){
-   global $user;
+// /**
+//  * Do not save session data for anon users
+//  */
+//  function os_exit(){
+//    global $user;
 
-   if (!drupal_save_session()) {
-     // We don't have anything to do if we are not allowed to save the session.
-     return;
-   }
+//    if (!drupal_save_session()) {
+//      // We don't have anything to do if we are not allowed to save the session.
+//      return;
+//    }
 
-   if (empty($user->uid) && !empty($_SESSION)) {
-     // The user is not logged in destroy their session data
-     $_SESSION = array();
-   }
- }
+//    if (empty($user->uid) && !empty($_SESSION)) {
+//      // The user is not logged in destroy their session data
+//      $_SESSION = array();
+//    }
+//  }
