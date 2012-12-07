@@ -520,6 +520,9 @@ function biblio_build_query($arg_list) {
               $k = ucwords(strtolower(str_replace(array('-', '_'), ' ', $v)));
             }
           }
+          else {
+            $value = ucwords(strtolower(str_replace(array('-', '_'), ' ', $value)));
+          }
           $query->condition(db_or()->condition('b.biblio_type', $value)->condition('bt.name', $value));
           break;
         case 'search':
