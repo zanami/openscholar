@@ -142,7 +142,7 @@ function _iqss_scholars_front_fix_files() {
       if (isset($saved) && $saved === FALSE) {
         print 'Could not save file.\n';
       } else {
-        print 'Could not read original.\n';
+        print 'File not found.\n';
       }
     }
     fclose($fh);
@@ -211,7 +211,7 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
       $update->fields(array('body_value' => $newbody));
       $exec = $update->execute();
     } else {
-      print t('could not find @path on @node', array('@path' => $newpath, '@node' => $info->nid)) . "\n";
+      print t('Could not find @path on @node.  Tried: @arr', array('@path' => $newpath, '@node' => $info->nid, '@arr' => implode(', ', $candidates))) . "\n\n";
     }
   }
 }
