@@ -43,7 +43,8 @@ p {
   margin: 0 0 1.5em 0;
   }
   
-.page-links .node-teaser .view-mode-teaser p,
+.page-people .node-person .field-type-text-with-summary p,
+  .page-links .node-teaser .view-mode-teaser p,
 .page-software .node-teaser .view-mode-teaser p,
 .page-classes .node-teaser .view-mode-teaser p {margin: 0;}
 
@@ -177,6 +178,8 @@ h1#page-title,
   font-size: 1.3em;
   }
   
+  
+ #content .node-person h1.node-title,
  #content .node-software-project h1.node-title {
  	font-size: 1.2em;
  	}
