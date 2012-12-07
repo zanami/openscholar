@@ -142,7 +142,7 @@ function _iqss_scholars_front_fix_files() {
       if (isset($saved) && $saved === FALSE) {
         print 'Could not save file.\n';
       } else {
-        print 'Could not read original.\n';
+        print 'File not found.\n';
       }
     }
     fclose($fh);
@@ -174,7 +174,7 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
     $newpath = str_replace($info->vsite, '', $newpath);
   }
   $newpath = ltrim($newpath, '/');
-
+  //$newpath = file_create_url($savedfile->uri);
 
   //<a href="http://gking.harvard.edu/files/smooth/appendixe.pdf">
   //possible matches:
@@ -190,11 +190,12 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
   $filepath = str_replace('sites/scholar.iq.harvard.edu/files/', '', $info->filepath);
   $candidates[] = $filepath;
   $candidates[] = str_replace($info->vsite, '', $filepath);
+  $candidates = array_unique($candidates);
 
   while ($row = $node_body->fetchObject()) {
     $newbody = $row->body_value;
     foreach($candidates as $oldpath) {
-      $newbody = str_replace(ltrim($oldpath, '/'), $newpath, $newbody);
+      $newbody = str_ireplace(ltrim($oldpath, '/'), $newpath, $newbody);
     }
 
     //only update when changes took place
@@ -210,7 +211,7 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
       $update->fields(array('body_value' => $newbody));
       $exec = $update->execute();
     } else {
-      print t('could not find @path on @node', array('@path' => $newpath, '@node' => $info->nid)) . "\n";
+      print t('Could not find @path on @node.  Tried: @arr', array('@path' => $newpath, '@node' => $info->nid, '@arr' => implode(', ', $candidates))) . "\n\n";
     }
   }
 }
