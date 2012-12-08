@@ -194,9 +194,10 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
   $file = array_pop(explode('/', $info->dst));
   $candidates[] = '../' . $file;
 
-  # filename, ../filename
+  # filename, ../filename, files/filename
   $candidates[] = $info->filename;
   $candidates[] = '../'.$info->filename;
+  $candidates[] = 'files/'.$info->filename;
 
   $candidates = array_unique($candidates);
 
