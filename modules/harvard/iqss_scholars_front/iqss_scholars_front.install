@@ -194,18 +194,20 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
   // filepath (minus huge prefix)
   // filepath (minus huge prefix and vsite)
   $candidates = array();
+  
+  //gking has some href="../file.pdf"
+  $file = array_pop(explode('/', $info->dst));
+  $candidates[] = '../' . $file;
+  $candidates[] = '../'.$info->filename;
+  
   $candidates[] = $info->dst;
   $candidates[] = str_replace($info->vsite, '', $info->dst);
   $candidates[] = $info->filepath;
   $filepath = str_replace('sites/scholar.iq.harvard.edu/files/', '', $info->filepath);
   $candidates[] = $filepath;
   $candidates[] = str_replace($info->vsite, '', $filepath);
-  //gking has some href="../file.pdf"
-  $file = array_pop(explode('/', $info->dst));
-  $candidates[] = '../' . $file;
-
+  
   # filename, ../filename, files/filename
-  $candidates[] = '../'.$info->filename;
   $candidates[] = 'files/'.$info->filename;
   $candidates[] = $info->filename;
   
