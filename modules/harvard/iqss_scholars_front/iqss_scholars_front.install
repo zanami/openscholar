@@ -235,6 +235,7 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
 	    foreach($candidates as $oldpath) {
 	    	if (stripos($newbody, ltrim($oldpath, '/')) !== FALSE) {
 		      $newbody = str_ireplace(ltrim($oldpath, '/'), $newpath, $newbody);
+		      $replaced = true;
 	      	break;
 	    	}
 	    }
