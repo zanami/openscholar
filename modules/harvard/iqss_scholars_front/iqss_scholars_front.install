@@ -134,9 +134,17 @@ function _iqss_scholars_front_fix_files() {
     if (is_readable($filepath) && ($saved = file_save_data($fh, 'public://' . $destpath))) {
       //print 'saved: ' . $filepath . "\n";
       file_usage_add($saved, 'file', 'node', $file->nid);
+      
+      //add uid
       $saved->uid = $file->uid;
-      $saved->og_group_ref = array($file->vsite_id);
       file_save($saved);
+      
+      //add group nid
+      $entity = entity_metadata_wrapper('file', $saved);
+      $entity->og_group_ref = array($file->vsite_id);
+      $entity->save();
+      
+      //update nodes with this file's path in them
       _iqss_scholars_front_update_paths_in_node($file, $saved);
     } else {
       $error_fids[] = $file->fid;
