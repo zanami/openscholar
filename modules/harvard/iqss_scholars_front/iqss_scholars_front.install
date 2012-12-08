@@ -132,7 +132,7 @@ function _iqss_scholars_front_fix_files() {
     $fh = fopen($filepath, 'r');
     if (is_readable($filepath) && ($saved = file_save_data($fh, 'public://' . $destpath))) {
       print 'saved: ' . $filepath . "\n";
-      file_usage_add($saved, 'node', 'node', $file->nid);
+      file_usage_add($saved, 'file', 'node', $file->nid);
       $saved->uid = $file->uid;
       file_save($saved);
       _iqss_scholars_front_update_paths_in_node($file, $saved);
