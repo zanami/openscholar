@@ -726,6 +726,8 @@ border-top:1px solid #ccc;
 	
 /* JCAROUSEL OVERRIDE STYLES */
 
+.jcarousel-skin-default {clear:both;}
+
 
 .jcarousel-skin-default .jcarousel-container-horizontal {
     width: 80%;
