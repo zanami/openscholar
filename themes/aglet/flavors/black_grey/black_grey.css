@@ -30,6 +30,7 @@ width: 940px;
 #menu-bar,
 #columns {
   background: #9a9c9f;
+  clear:both;
   }
 
 #menu-bar #block-os-primary-menu {
