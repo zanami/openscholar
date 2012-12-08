@@ -90,7 +90,7 @@ function _iqss_scholars_front_fix_files() {
 
   //paths to files
   $query->join('files', 'f', 'u.fid = f.fid');
-  $query->fields('f', array('filepath'));
+  $query->fields('f', array('filepath','filename'));
 
   //any aliases they may have been given
   $query->join('url_alias', 'ua', 'ua.src = CONCAT(:path,u.fid)', array(':path' => 'filefield_paths/alias/'));
@@ -190,10 +190,15 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
   $filepath = str_replace('sites/scholar.iq.harvard.edu/files/', '', $info->filepath);
   $candidates[] = $filepath;
   $candidates[] = str_replace($info->vsite, '', $filepath);
-  $candidates = array_unique($candidates);
   //gking has some href="../file.pdf"
   $file = array_pop(explode('/', $info->dst));
   $candidates[] = '../' . $file;
+
+  # filename, ../filename
+  $candidates[] = $info->filename;
+  $candidates[] = '../'.$info->filename;
+
+  $candidates = array_unique($candidates);
 
   while ($row = $node_body->fetchObject()) {
     $newbody = $row->body_value;
