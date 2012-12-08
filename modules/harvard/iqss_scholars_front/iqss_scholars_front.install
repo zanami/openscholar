@@ -101,6 +101,7 @@ function _iqss_scholars_front_fix_files() {
   $query->join('purl', 'purl', 'purl.id = oga.group_nid');
   $query->condition('purl.provider', 'spaces_og');
   $query->addField('purl', 'value', 'vsite');
+  $query->addField('oga', 'group_nid', 'vsite_id');
 
   //get uid.  only use current revision
   $query->join('node', 'n', 'n.vid = u.vid');
@@ -131,9 +132,10 @@ function _iqss_scholars_front_fix_files() {
 
     $fh = fopen($filepath, 'r');
     if (is_readable($filepath) && ($saved = file_save_data($fh, 'public://' . $destpath))) {
-      print 'saved: ' . $filepath . "\n";
+      //print 'saved: ' . $filepath . "\n";
       file_usage_add($saved, 'file', 'node', $file->nid);
       $saved->uid = $file->uid;
+      $saved->og_group_ref = array($file->vsite_id);
       file_save($saved);
       _iqss_scholars_front_update_paths_in_node($file, $saved);
     } else {
@@ -195,9 +197,10 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
   $candidates[] = '../' . $file;
 
   # filename, ../filename, files/filename
-  $candidates[] = $info->filename;
   $candidates[] = '../'.$info->filename;
   $candidates[] = 'files/'.$info->filename;
+  $candidates[] = $info->filename;
+  
 
   $candidates = array_unique($candidates);
 
@@ -205,6 +208,7 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
     $newbody = $row->body_value;
     foreach($candidates as $oldpath) {
       $newbody = str_ireplace(ltrim($oldpath, '/'), $newpath, $newbody);
+      break;
     }
 
     //only update when changes took place
