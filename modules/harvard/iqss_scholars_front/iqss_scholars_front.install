@@ -191,6 +191,9 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
   $candidates[] = $filepath;
   $candidates[] = str_replace($info->vsite, '', $filepath);
   $candidates = array_unique($candidates);
+  //gking has some href="../file.pdf"
+  $file = array_pop(explode('/', $info->dst));
+  $candidates[] = '../' . $file;
 
   while ($row = $node_body->fetchObject()) {
     $newbody = $row->body_value;
