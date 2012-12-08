@@ -215,8 +215,10 @@ function _iqss_scholars_front_update_paths_in_node($info, $savedfile) {
   while ($row = $node_body->fetchObject()) {
     $newbody = $row->body_value;
     foreach($candidates as $oldpath) {
-      $newbody = str_ireplace(ltrim($oldpath, '/'), $newpath, $newbody);
-      break;
+    	if (stripos($newbody, ltrim($oldpath, '/')) !== FALSE) {
+	      $newbody = str_ireplace(ltrim($oldpath, '/'), $newpath, $newbody);
+      	break;
+    	}
     }
 
     //only update when changes took place
