@@ -392,6 +392,7 @@ div.views-field-field-gallery-image-fid img {
      text-align: right;
      width: 50%;
      margin-top: -20px;
+     clear: right;
 }
 
 .og-context-node-9015 .sidebar .book-menu ul.menu li a:first-of-type, 
@@ -412,8 +413,17 @@ div.views-field-field-gallery-image-fid img {
       min-height: 200px;
 }
 
+.front.logged-in.og-context-node-9015 #footer {
+     background: url('../images/frontFooterBg.gif') repeat-x 0 108px;
+      min-height: 200px;
+}
+
 .front.og-context-node-9015 #columns {
     margin: 0 auto;
+}
+
+.front.logged-in.og-context-node-9015 #columns {
+    margin: 0 auto 15px;
 }
 
 .os-greyrule {width:99%; height:2px; border-top:1px solid #DDD;}
