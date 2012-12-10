@@ -6,8 +6,8 @@ background-position: 0 0;
 background-position: 0 0;
  	}
   
-    body.cp-toolbar-full {
- 	background-position: 0 0;
+  body.logged-in {
+ 	background: url("../../images/bodyBg.png") repeat-x scroll 0 0 #F7F7F9;
  	}
   
  body.header-none {
