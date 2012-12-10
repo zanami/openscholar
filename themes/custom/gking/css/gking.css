@@ -322,15 +322,17 @@ div.tweets-pulled-listing div.tweet-divider {
 a.biblio-abstract-link.toggle {font-weight:bold;}
 
 a.biblio-abstract-link.toggle {
-    background: url("/profiles/openscholar/themes/os_basetheme/images/scholarbase-sprite.png") no-repeat scroll 0 -400px transparent;
+    background: url("/profiles/openscholar/themes/os_basetheme/images/scholarbase-sprite.png?=1210") no-repeat scroll 0 -400px transparent;
     padding-left: 12px;
     text-decoration: none;
+    color: #336599;
 }
 
 a.biblio-abstract-link.toggle.expanded {
-    background: url("/profiles/openscholar/themes/os_basetheme/images/scholarbase-sprite.png") no-repeat scroll 0 -413px transparent;
+    background: url("/profiles/openscholar/themes/os_basetheme/images/scholarbase-sprite.png?=1210") no-repeat scroll 0 -413px transparent;
     padding-left: 12px;
     text-decoration: none;
+    color: #336599;
 }
 
 
