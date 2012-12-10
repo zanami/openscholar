@@ -144,7 +144,7 @@ function _os_publications_plain_citation($node) {
     $node->biblio_publisher = "Working Paper";
   }
 
-  $citation = theme('biblio_style', array('node' => $node, 'base' => $base, 'style' => $style));
+  $citation = theme('biblio_style', array('node' => $node, 'base' => $base, 'style_name' => $style));
 
   $citation = strip_tags($citation);
 
