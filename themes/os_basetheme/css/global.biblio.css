@@ -175,12 +175,13 @@ a.biblio-abstract-link {
   font-weight: normal;
   margin:0 8px;
  display:inline;
+ font-size:99%;
   }
   
   
 a.biblio-abstract-link.toggle {
 	padding-left:12px;
-	background:url('../images/scholarbase-sprite.png') 0 -404px no-repeat;
+	background:url('../images/scholarbase-sprite.png') 0 -402px no-repeat;
 	text-decoration: none;
 	
 }
