@@ -301,17 +301,19 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       return;
     }
 
-    $dirty = FALSE;
+    $node_dirty = FALSE;
     foreach ($entity->field_upload as $lang => $fields) {
       foreach ($fields as $delta => $upload) {
         $file_dirty = FALSE;
         $file = file_load($upload['fid']);
 
+
         //update display
         if ($row->field_upload_display[$delta] == '0') {
-          file_usage_add(file_load($upload['fid']), 'file', 'node', $entity->nid);
+          //file_usage_add(file_load($upload['fid']), 'file', 'node', $entity->nid);
+          file_usage_delete($file, 'file', 'node', $entity->nid, 0); //delete the reference from this node to file, but don't decrease its count.
           unset($entity->field_upload[$lang][$delta]);
-          $dirty = TRUE;
+          $node_dirty = TRUE;
         }
 
         //update title
@@ -327,7 +329,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     }
 
     //resave the node
-    if ($dirty) {
+    if ($node_dirty) {
       foreach($entity->field_upload as $lang => $fields) {
         $entity->field_upload[$lang] = array_values($entity->field_upload[$lang]); //refresh the deltas
       }
