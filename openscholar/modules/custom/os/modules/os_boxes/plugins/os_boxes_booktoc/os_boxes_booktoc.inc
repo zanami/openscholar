@@ -62,6 +62,12 @@ class os_boxes_booktoc extends os_boxes_default {
    * Implementation of boxes_content::render().
    */
   public function render() {
+    if (!module_exists('os_books')) {
+      return array(
+        'delta' => ''
+      );
+    }
+
     $block = parent::render();
 
     // Checks for the table of contents display position setting configured
@@ -77,6 +83,7 @@ class os_boxes_booktoc extends os_boxes_default {
     }
 
     $book_nid = $this->options['book_nid'];
+    $node = new stdClass;
     if ($book_nid < 0) {
       // the toc of the book on the current page
       $node = menu_get_object();
