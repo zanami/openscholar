@@ -58,18 +58,21 @@ function vsite_domain_enable() {
 
 /**
  * Implements hook_perm().
- * 
+ *
  * Add new permissions for managing domains witin a vsite
  */
-function vsite_domain_perm() {
+function vsite_domain_permission() {
   return array(
-    "change vsite domain",
+    'change vsite domain' => array(
+      'title' => t('Change vsite domain'),
+      'description' => t('Change vsite domain'),
+    ),
   );
 }
 
 /**
  * Implements hook_purl_provider().
- * 
+ *
  * This provides the domain provider for vsite's
  */
 function vsite_domain_purl_provider() {
@@ -131,7 +134,7 @@ function vsite_domain_purl_processor() {
  * Implements cp_settings().
  *
  * @return array
- * 
+ *
  * @todo Form to set domain
  */
 function vsite_domain_cp_settings() {
