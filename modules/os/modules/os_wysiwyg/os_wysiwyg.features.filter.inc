@@ -40,7 +40,7 @@ function os_wysiwyg_filter_default_formats() {
           'style_color' => array(
             'color' => 'color',
             'background' => 0,
-            'background-color' => 0,
+            'background-color' => 'background-color',
             'background-image' => 0,
             'background-repeat' => 0,
             'background-attachment' => 0,
@@ -104,13 +104,13 @@ function os_wysiwyg_filter_default_formats() {
             'border-left-style' => 0,
           ),
           'style_dimension' => array(
-            'height' => 0,
+            'height' => 'height',
             'line-height' => 0,
             'max-height' => 0,
             'max-width' => 0,
             'min-height' => 0,
             'min-width' => 0,
-            'width' => 0,
+            'width' => 'width',
           ),
           'style_positioning' => array(
             'bottom' => 0,
