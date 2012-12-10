@@ -146,7 +146,12 @@ function os_files_clippy($url_file, $options = array()){
 
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   // only display the field if the file is older than 5 minutes
-  $form['replace_upload']['#access'] = (time() - $form['#file']->timestamp) > 5 * 60;
+  if (isset($form['#file'])) {
+    $form['replace_upload']['#access'] = (time() - $form['#file']->timestamp) > 5 * 60;
+  }
+  else {
+    $form['replace_upload']['#access'] = false;
+  }
 }
 
 /**

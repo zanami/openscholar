@@ -109,6 +109,7 @@ dependencies[] = diff
 dependencies[] = twitter_pull
 dependencies[] = nice_menus
 dependencies[] = shorten
+dependencies[] = respondjs
 
 files[] = openscholar.profile
 
