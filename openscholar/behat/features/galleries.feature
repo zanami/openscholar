@@ -7,9 +7,9 @@ Feature:
      When I click "Galleries"
       And I click "Kittens gallery"
      Then I should see the images:
-      | slideshow1.jpg |
-      | slideshow2.jpg |
-      | slideshow3.jpg |
+      | slideshow1 |
+      | slideshow2 |
+      | slideshow3 |
 
   @api @debug @wip
   Scenario: Test the Galleries tab
