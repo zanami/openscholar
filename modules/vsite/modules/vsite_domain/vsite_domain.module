@@ -16,20 +16,33 @@ define('PURL_VSITE_PATH', 'vsite_path');
 /**
  * Implements hook_init().
  *
- * @todo fix infinite redirect;
 function vsite_domain_init() {
+  // Only runs this init function once per page load.
+  static $once;
+  if (isset($once)) {
+    return;
+  }
+  $once = TRUE;
+  
+  // Checks to make sure we are in a vsite space.
   $vsite = vsite_get_vsite();
   if (!$vsite) {
     return;
   }
+  
+  // Checks to make sure the vsite has a custom domain name.
   if (!isset($vsite->controllers->variable->values['space']['vsite_domain_name'])
   || empty($vsite->controllers->variable->values['space']['vsite_domain_name'])) {
     return;
   }
+  
+  // Gets the vsite's pURL to compare to the current Drupal menu path.
   $purl = vsite_get_purl($vsite);
   if (empty($purl)) {
     return;
   }
+  
+  // If the first item in the path is the pURL, redirect away.
   $drupal_path = arg();
   $index = array_shift($drupal_path);
   if (!empty($drupal_path) && ((string) $index === (string) $purl)) {
