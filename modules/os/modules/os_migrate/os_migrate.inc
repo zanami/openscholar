@@ -719,7 +719,7 @@ abstract class OSMigration extends Migration {
         if (isset($sizes[$class])) {
           $tag['view_mode'] = $sizes[$class];
         } else {
-          $tag['view_mode'] = 'os_files_large';
+          $tag['view_mode'] = 'os_files_xlarge';
           parent::saveMessage(t('No image cache size for class: @class, assuming original.', array('@class' => $class)), MigrationBase::MESSAGE_INFORMATIONAL);
         }
 
