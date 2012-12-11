@@ -14,6 +14,28 @@ define('PURL_VSITE_DOMAIN', 'vsite_domain');
 define('PURL_VSITE_PATH', 'vsite_path');
 
 /**
+ * Implements hook_init().
+ */
+function vsite_domain_init() {
+  $vsite = vsite_get_vsite();
+  if (!$vsite) {
+    return;
+  }
+  if (!isset($vsite->controllers->variable->values['space']['vsite_domain_name'])) {
+    return;
+  }
+  $purl = vsite_get_purl($vsite);
+  if (empty($purl)) {
+    return;
+  }
+  $drupal_path = arg();
+  $index = array_shift($drupal_path);
+  if (!empty($drupal_path) && ((string) $index === (string) $purl)) {
+    drupal_goto($drupal_path);
+  }
+}
+
+/**
  * Implements hook_enable().
  */
 function vsite_domain_enable() {
@@ -58,7 +80,7 @@ function vsite_domain_enable() {
 
 /**
  * Implements hook_perm().
- * 
+ *
  * Add new permissions for managing domains witin a vsite
  */
 function vsite_domain_perm() {
@@ -69,7 +91,7 @@ function vsite_domain_perm() {
 
 /**
  * Implements hook_purl_provider().
- * 
+ *
  * This provides the domain provider for vsite's
  */
 function vsite_domain_purl_provider() {
@@ -131,7 +153,7 @@ function vsite_domain_purl_processor() {
  * Implements cp_settings().
  *
  * @return array
- * 
+ *
  * @todo Form to set domain
  */
 function vsite_domain_cp_settings() {
