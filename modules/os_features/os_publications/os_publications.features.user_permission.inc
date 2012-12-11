@@ -181,7 +181,7 @@ function os_publications_user_default_permissions() {
       '4' => 'vsite admin',
       '5' => 'vsite user',
     ),
-    'module' => 'node',
+    'module' => 'biblio',
   );
 
   return $permissions;
