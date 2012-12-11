@@ -62,6 +62,14 @@ h4 {
 p {
 	margin-bottom: 20px;
 	}
+	
+.node-type-event .node-event .field-name-body p {
+    clear: both;
+}
+	
+	
+.node-type-event .node-event .field-name-body p img.image-style-os-files-large {padding:0 15px 15px 0;}
+
 
 li {
 	line-height: 18px;
