@@ -227,7 +227,7 @@ function cp_toolbar_fill_drawer() {
   $content = system_admin_menu_block($item);
   // Bypass the node/add listing if only one content type is available.
 
-  $bundles = os_get_bundles();
+  $bundles = os_get_bundles(array(1,2));
   asort($bundles);
 
   $links = array();
