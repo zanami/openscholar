@@ -296,8 +296,8 @@ ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
   text-decoration: none;
   }
 
-.book-menu ul.menu li li, #block-book-navigation ul.menu li li, .block-boxes-os_boxes_booktoc ul.menu li li {
-    border-bottom: 1px solid #CCCCCC;
+.sidebar .book-menu ul.menu li a, .sidebar #block-book-navigation ul.menu li a, .sidebar .block-boxes-os_boxes_booktoc ul.menu li a {
+    border-bottom: 1px dotted #CCCCCC;
 
 }
 
