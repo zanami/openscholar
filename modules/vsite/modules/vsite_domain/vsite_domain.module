@@ -15,13 +15,15 @@ define('PURL_VSITE_PATH', 'vsite_path');
 
 /**
  * Implements hook_init().
- */
+ *
+ * @todo fix infinite redirect;
 function vsite_domain_init() {
   $vsite = vsite_get_vsite();
   if (!$vsite) {
     return;
   }
-  if (!isset($vsite->controllers->variable->values['space']['vsite_domain_name'])) {
+  if (!isset($vsite->controllers->variable->values['space']['vsite_domain_name'])
+  || empty($vsite->controllers->variable->values['space']['vsite_domain_name'])) {
     return;
   }
   $purl = vsite_get_purl($vsite);
@@ -33,7 +35,7 @@ function vsite_domain_init() {
   if (!empty($drupal_path) && ((string) $index === (string) $purl)) {
     drupal_goto($drupal_path);
   }
-}
+} */
 
 /**
  * Implements hook_enable().
