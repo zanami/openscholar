@@ -28,7 +28,7 @@ function os_wysiwyg_filter_default_formats() {
     p[align<center?justify?left?right],
     br,span,cite,code,blockquote,ul,ol,li,dl,dt,dd,img[!src|width|height],
     sup,sub,
-    table[style|border|align<center?left?right|cellpadding|cellspacing],
+    table[style|border|align<center?left?right|cellpadding|cellspacing|bgcolor],
     tr[align<center?justify?left?right|valign],
     td[colspan|rowspan|align<center?justify?left?right|valign],
     caption,
