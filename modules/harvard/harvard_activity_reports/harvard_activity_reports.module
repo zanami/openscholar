@@ -131,10 +131,10 @@ function harvard_activity_reports_query_user_by_site($site) {
  */
 function harvard_activity_reports_query_vsite_id($uid) {
   // now that we have the UID, grab their VSITE node ID from the Node table
-  //$result = db_query("SELECT nid FROM {node} WHERE uid = :uid AND type='vsite'",array(':uid'=>$uid))->fetchField();
   $group_types = og_get_all_group_bundle();
   $group_types = array_keys($group_types['node']);
 
+  // @todo: Use EFQ.
   $result = db_select('node', 'n')
     ->condition('uid', $uid)
     ->condition('type', $group_types, 'IN')
@@ -167,8 +167,8 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
   // Add a new hash ID.
   return db_insert('iqss_pinserver_register')
     ->fields(array(
-    'uid'=>$uid,
-    'hashID'=>$hash_id,
+      'uid'=>$uid,
+      'hashID'=>$hash_id,
     ))
     ->execute();
 }
@@ -216,41 +216,34 @@ function harvard_activity_reports_query_user() {
 }
 
 /**
+ * Get the biblio information from a node.
  *
- * Function to pull the users information via node load
+ * @param $nid
+ *   The node ID.
  */
-function harvard_activity_reports_load_user_info($nid){
-  // make sure we have a proper nid first
-  if ($nid != FALSE){
-    // query for all the biblio nodes
-    // using a stand alone ID for right now until error checking and site url can be implemented
-    $result = db_query("SELECT n.nid FROM {node} n INNER JOIN {og_ancestry} oa ON n.nid = oa.nid WHERE oa.group_nid = :nid AND n.type = 'biblio'",array(':nid'=>$nid));
-    if ($result->rowCount()>0) {
-      // updated for Drupal 7 - db_fetch_array removed
-      foreach($result as $row) {
-        // assign them to a variable
-        $biblio[] = $row->nid;
-      } // end foreach
-    }else {
-      $biblio = FALSE;
+function harvard_activity_reports_get_biblio_by_node($nid){
+  $return = array();
+  $result = db_query("SELECT n.nid FROM {node} n INNER JOIN {og_ancestry} oa ON n.nid = oa.nid WHERE oa.group_nid = :nid AND n.type = 'biblio'", array(':nid' => $nid));
+  if ($result->rowCount()) {
+    foreach($result as $row) {
+      $return[] = $row->nid;
     }
-  }else {
-    $biblio = FALSE;
   }
 
-  return $biblio;
+  return $return;
 }
 
 /**
+ * Sort XML array by the "biblio year".
  *
- * Function to sort my xml array by the biblio_year
- * Function was "borrowed" from http://www.firsttube.com/read/sorting-a-multi-dimensional-array-with-php/
+ * @see http://www.firsttube.com/read/sorting-a-multi-dimensional-array-with-php/
  */
 function harvard_activity_reports_subval_sort($a,$subkey) {
   foreach($a as $k=>$v) {
     $b[$k] = strtolower($v[$subkey]);
   }
-  arsort($b); // altered to sort high to low, so most recent publications first
+  // Sort high to low, so most recent publications first.
+  arsort($b);
   foreach($b as $key=>$val) {
     $c[] = $a[$key];
   }
@@ -258,16 +251,16 @@ function harvard_activity_reports_subval_sort($a,$subkey) {
 }
 
 /**
+ * Create the XML based on the biblio information.
  *
- * Function to create the XML based on the info passed into it from the load_user_info functon
- * @param unknown_type $nodeLoad
+ * @param unknown_type $biblio_data
  */
-function harvard_activity_reports_create_xml($nodeLoad, $hash_id, $status,$nid) {
+function harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid) {
   $return = '';
   $hash_id = $hash_id;
   $siteNID = $nid;
   // pull in the xml
-  $xml = $nodeLoad;
+  $xml = $biblio_data;
   // grab the status
   $xmlStatus = $status;
   /* create a dom document with encoding utf8 */
@@ -401,7 +394,7 @@ function harvard_activity_reports_page() {
     }// end if
 
     // now load in the user's biblio
-    $xml = harvard_activity_reports_load_user_info($nid);
+    $xml = harvard_activity_reports_get_biblio_by_node($nid);
     // create an instance of the citation class
     // $citationTest = new citation_distribute_service_googlescholar(); - no longer needed, found the same info in the node load
     // create array
