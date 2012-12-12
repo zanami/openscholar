@@ -340,7 +340,7 @@ function harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$ni
 }
 
 /**
- * Implements hook_page().
+ * Page callback; Return XML with the Biblio publications.
  */
 function harvard_activity_reports_page() {
   // check for any year parameter
