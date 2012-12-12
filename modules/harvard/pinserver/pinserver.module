@@ -117,10 +117,6 @@ function pinserver_check_user() {
   // Success! Code beyond this point handles a successful PIN authentication.
 
   // Check access based on Harvard department.
-
-if(($dept = variable_get('pinserver_harvard_department')) && isset($dept) && isset($token_data['department'])) {
-error_log('HERE I AM. ' . $dept . ' ' . $token_data['department']);
-}
   if (($dept = variable_get('pinserver_harvard_department')) &&
       isset($dept) &&
       $dept != 'all' &&
