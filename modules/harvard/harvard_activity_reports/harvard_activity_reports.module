@@ -130,7 +130,7 @@ function harvard_activity_reports_query_vsite_id($uid) {
  *   The hashed user ID.
  */
 function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
-  if (module_exists('iqss_pinserver_register')) {
+  if (!module_exists('iqss_pinserver_register')) {
     return;
   }
 
