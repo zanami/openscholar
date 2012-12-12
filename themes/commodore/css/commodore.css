@@ -479,6 +479,10 @@ div.views-field-field-gallery-image-fid img {
     bottom: -150px;
 }
 
+.front.logged-in.og-context-node-9015 .os-powered-link, .front.logged-in.og-context-node-9015 #block-os-powered-by {
+    bottom: -55px;
+}
+
 .os-smallfont {
      font-size: 0.85em;
 }
