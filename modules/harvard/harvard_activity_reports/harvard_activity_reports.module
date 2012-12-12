@@ -108,17 +108,18 @@ function harvard_activity_reports_query_user_by_site($site_url) {
 function harvard_activity_reports_query_vsite_id($uid) {
   // now that we have the UID, grab their VSITE node ID from the Node table
   $group_types = og_get_all_group_bundle();
-  $group_types = array_keys($group_types['node']);
 
   // @todo: Use EFQ.
-  $result = db_select('node', 'n')
-    ->condition('uid', $uid)
-    ->condition('type', $group_types, 'IN')
-    ->fields('n', array('nid'))
-    ->execute()
-    ->fetchField();
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', array_keys($group_types['node']), 'IN')
+    ->propertyCondition('uid', $uid)
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->range(0, 1)
+    ->execute();
 
-  return !empty($result) ? $result : FALSE;
+  return !empty($result['node']) ? key($result['node']) : FALSE;
 }
 
 /**
