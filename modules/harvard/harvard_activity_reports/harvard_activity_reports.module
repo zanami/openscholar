@@ -9,7 +9,7 @@
  */
 function harvard_activity_reports_help($path, $arg) {
   switch ($path) {
-    case 'admin/help#harvard_activity_reports': // links from the main Drupal help section
+    case 'admin/help#harvard_activity_reports':
       $output = '<p>'. t('Harvard Activity Report (HAR) will display a list of publications for a given faculty member.') .'</p>';
       return $output;
   }
@@ -66,57 +66,33 @@ function harvard_activity_reports_query_user_by_id($hash_id)  {
  * @param $site
  *   The URL that should be parsed and queried from the PURL table.
  */
-function harvard_activity_reports_query_user_by_site($site) {
-  // scholar variable
-  $scheme = "http";
-  $site_url = $site;
+function harvard_activity_reports_query_user_by_site($site_url) {
+  // Make sure the site URL is with http.
+  $site_url = str_replace('https://', 'http://', $site_url);
+  $parse_url = parse_url($site_url);
 
-  // make sure its not empty
-  if ($site_url != "") {
-    // parse the url
-    $parseUrl = parse_url($site_url);
-    // make sure they put the http:// before their site
-    // if not, we'll add it for them
-    if ($parseUrl['scheme'] != $scheme) {
-      // add the scheme to it and reparse
-      $siteTemp = $scheme."://".$site_url;
-      // reparse it
-      $parseUrl = parse_url($siteTemp);
-    }
-    // the host is what we'll be looking for
-    $host = $parseUrl['host'];
-    // make sure it's not empty
-    if ($host != ""){
-      // check to see if it is empty, if not, they must be an og site
-      if ($parseUrl['path']!=""){
-         // grab the path for the url
-         // remove the / before the path
-        $path = substr($parseUrl['path'],1);
-        // make sure they didnt add a slash at the end of their site
-        if (strpos($path, '/') !== FALSE) { // they did, remove it
-          $slashTwo = strpos($path, '/');
-           $path = substr($path,0,$slashTwo);
-        }// end second if check
-         $provider = "spaces_og";
-       }else{
-         // they are a unique user, just use the host
-         $provider = "vsite_domain";
-        $path = $host;
-       } // end if
-       // query the database
-       $urlNodeResult = db_query('SELECT n.uid FROM {node} n, {purl} p WHERE p.value = :path AND p.provider = :provider AND n.nid = p.id', array(':path'=>$path, ':provider'=>$provider))->fetchField();
-       if ($urlNodeResult!=''){
-        $userSiteID = $urlNodeResult;
-      }else{
-         $userSiteID = FALSE;
-       }// end if
-    }else{
-      $userSiteID = FALSE;
-    }// end if
-  }else{
-    $userSiteID = FALSE;
-  }// end if
-  return $userSiteID;
+  if (empty($parse_url['host'])) {
+    return;
+  }
+
+  $host = $parse_url['host'];
+
+  // Check to see if it is empty, if not, they must be an og site
+  if (!empty($parse_url['path'])){
+    // Grab the path for the url.
+    // Remove the slash from the begining and end of the path.
+    $path = substr($parse_url['path'], 1);
+    $path = trim($path, '/');
+    $provider = "spaces_og";
+  }
+  else{
+    // User is unique user, just use the host.
+    $provider = "vsite_domain";
+    $path = $host;
+  }
+
+  // Query the database.
+  return db_query('SELECT n.uid FROM {node} n, {purl} p WHERE p.value = :path AND p.provider = :provider AND n.nid = p.id', array(':path' => $path, ':provider' => $provider))->fetchField();
 }
 
 /**
