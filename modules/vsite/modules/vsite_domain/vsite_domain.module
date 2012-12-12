@@ -46,10 +46,11 @@ function vsite_domain_init() {
   }
 
   // If the first item in the path is the pURL, redirect away.
-  $drupal_path = arg();
-  $index = array_shift($drupal_path);
-  if (!empty($drupal_path) && ((string) $index === (string) $purl)) {
-    $path_without_purl = implode('/', $drupal_path);
+  $request_path = request_path();
+  $request_path_args = explode('/', $request_path);
+  $index = array_shift($request_path_args);
+  if (!empty($request_path_args) && ((string) $index === (string) $purl)) {
+    $path_without_purl = implode('/', $request_path_args);
     drupal_goto($path_without_purl);
   }
 }

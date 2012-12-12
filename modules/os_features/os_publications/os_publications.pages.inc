@@ -14,7 +14,7 @@ function os_publications_overview() {
 
   $ckey = _os_publications_cache_key($args);
   if ($cache = cache_get($ckey, 'cache_biblio_lists')) {
-    //return $cache->data;
+    return $cache->data;
   }
 
   module_load_include('inc', 'biblio', 'includes/biblio.pages');
@@ -62,6 +62,11 @@ function _os_publications_cache_key($args) {
   if (isset($arg_list['o'])) {
     $key[] = 'order';
     $key[] = $arg_list['o'];
+  }
+
+  if (isset($_GET['page'])) {
+    $key[] = 'page';
+    $key[] = $_GET['page'];
   }
 
   if (module_exists('spaces') && $space = spaces_get_space()) {
