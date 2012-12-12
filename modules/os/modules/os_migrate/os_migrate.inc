@@ -706,7 +706,7 @@ abstract class OSMigration extends Migration {
     $sizes = array(
       'imagecache-inline_larger' => 'os_files_large',
       'imagecache-inline_default' => 'os_files_large',
-      '' => 'os_files_large',
+      '' => 'os_files_xlarge', //default when no class is present
       'os-fullbanner' => 'os_files_xxlarge',
       'os-halfbanner' => 'os_files_xlarge',
     );
@@ -720,7 +720,7 @@ abstract class OSMigration extends Migration {
         if (isset($sizes[$class])) {
           $tag['view_mode'] = $sizes[$class];
         } else {
-          $tag['view_mode'] = 'os_files_xlarge';
+          $tag['view_mode'] = $sizes[''];
           parent::saveMessage(t('No image cache size for class: @class, assuming original.', array('@class' => $class)), MigrationBase::MESSAGE_INFORMATIONAL);
         }
 
