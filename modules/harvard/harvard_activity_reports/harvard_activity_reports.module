@@ -16,26 +16,13 @@ function harvard_activity_reports_help($path, $arg) {
 }
 
 /**
- * Implements hook_permission().
- */
-function harvard_activity_reports_permission() {
-  return array(
-    'access harvard_activity_reports content' =>  array(
-      'title' => t('Access harvard activity reports content'),
-      'description' => t('Allow previleged users to access activity reports.'),
-    ),
-  );
-}
-
-
-/**
  * Implements hook_menu().
 */
 function harvard_activity_reports_menu() {
   $items['harvard_activity_reports'] = array(
     'title' => 'Harvard Activity Report',
     'page callback' => 'harvard_activity_reports_page',
-    'access arguments' => array('access harvard_activity_reports content'),
+    'access arguments' => array('access content'),
   );
 
   return $items;
