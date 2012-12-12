@@ -109,7 +109,6 @@ function harvard_activity_reports_query_vsite_id($uid) {
   // now that we have the UID, grab their VSITE node ID from the Node table
   $group_types = og_get_all_group_bundle();
 
-  // @todo: Use EFQ.
   $query = new EntityFieldQuery();
   $result = $query
     ->entityCondition('entity_type', 'node')
