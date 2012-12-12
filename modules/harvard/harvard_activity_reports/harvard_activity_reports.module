@@ -29,9 +29,8 @@ function harvard_activity_reports_menu() {
 }
 
 /**
- *
- * Query the iqss_pinserver_register table for a user id and returns the
- * ID.
+ * Query the {iqss_pinserver_register} table for a user id and returns the
+ * user ID.
  *
  * @param $hash_id
  *   The hashed user ID.
