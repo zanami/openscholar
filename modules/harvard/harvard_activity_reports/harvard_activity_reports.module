@@ -136,7 +136,7 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
 
   // Sanity check to make sure once again that this id does not exist in
   // the table.
-  if ($result = db_query("SELECT count(uid) AS uidCount FROM {iqss_pinserver_register} WHERE uid = :uid", array(':uid'=>$uid))->fetchField()) {
+  if ($result = db_query("SELECT count(uid) AS uidCount FROM {iqss_pinserver_register} WHERE uid = :uid", array(':uid' => $uid))->fetchField()) {
     return;
   }
 
@@ -147,16 +147,6 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
       'hashID'=>$hash_id,
     ))
     ->execute();
-}
-
-/**
- * Return the hash ID that was originally sent over.
- *
- * This will be used to add into the XML with erros.
- * Requested to be added in by Michael Kerry of FAS.
- */
-function harvard_activity_reports_get_url_id() {
-  return !empty($_GET['id']) ? strip_tags($_GET['id']) : NULL;
 }
 
 /**
@@ -486,7 +476,9 @@ function harvard_activity_reports_page() {
   // @todo: Is there really a difference in $nid == NULL and $nid == FALSE?
   elseif ($nid==FALSE){ // huid not found
     $status = "unknown";
-    $hash_id = harvard_activity_reports_get_url_id();
+    // Return the hash ID that was originally sent over.
+    // Requested to be added in by Michael Kerry of FAS.
+    $hash_id = !empty($_GET['id']) ? strip_tags($_GET['id']) : NULL;
     //$biblio_data['biblio_error_message'] = "No data found - please try again with a site url";
     $biblio_data = '';
     $return = harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid);
@@ -494,7 +486,7 @@ function harvard_activity_reports_page() {
   else{
     $nid=NULL;
     $status = "error";
-    $hash_id = harvard_activity_reports_get_url_id();
+    $hash_id = !empty($_GET['id']) ? strip_tags($_GET['id']) : NULL;
     $biblio_data = '';
     $return = harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid);
   }
