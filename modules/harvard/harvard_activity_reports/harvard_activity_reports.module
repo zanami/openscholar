@@ -496,6 +496,6 @@ function harvard_activity_reports_page() {
   }
 
   // Send back the XML.
-  echo $return;
+  print $return;
 }
 
