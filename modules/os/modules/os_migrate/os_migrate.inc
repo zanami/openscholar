@@ -619,11 +619,12 @@ abstract class OSMigration extends Migration {
     for ($i=0, $len=$images->length; $i < $len; $i++) {
       $img = $images->item($i);
       if (isset($img) && strpos($img->getAttribute('src'), $uri)) {
+        $src = $img->getAttribute('src');
         $class = $img->getAttribute('class');
 
         $imagecache_dims = array();
-        if (preg_match('/^imagecache/', $class)) {
-          $imagecache_dims = $this->_get_inline_imagecache_dimensions($img->getAttribute('src'));
+        if (preg_match('/^imagecache/', $class) || strpos($src, 'imagecache')) {
+          $imagecache_dims = $this->_get_inline_imagecache_dimensions($src);
         }
 
         if (($width = $img->getAttribute('width')) && $height = $img->getAttribute('height')) {
