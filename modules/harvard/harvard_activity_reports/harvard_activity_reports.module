@@ -180,76 +180,39 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
  * Requested to be added in by Michael Kerry of FAS.
  */
 function harvard_activity_reports_get_url_id() {
-  return isset($_GET['id']) ? strip_tags($_GET['id']) : NULL;
+  return !empty($_GET['id']) ? strip_tags($_GET['id']) : NULL;
 }
 
 /**
  * Implements harvard_activity_reports_query_user().
  *
  * Custom query to pull the user publicatios from the passed hash ID.
+ *
+ * @return
+ *   The node ID of the vsite if found, or FALSE.
  */
 function harvard_activity_reports_query_user() {
-  // use drupal_get_query_parameters when we switch over to 7
-
-  // get the ID from the "id" parameter of the link
-  if (isset($_GET['id']) || isset($_GET['site_url'])) { // make sure it's set first
-    // step through and see what we have first
-    // do we have both?
-    if (isset($_GET['id']) && isset($_GET['site_url'])) { // yes
-      // assign both to variables
-      $hash_id = strip_tags($_GET['id']);
-      $site_url = strip_tags($_GET['site_url']);
-      // first see if the user exists
-      $uid = harvard_activity_reports_query_user_by_id($hash_id);
-      if ($uid != FALSE) {
-        // user exists, just continue on here no reason to work with the site url
-        $nid =  harvard_activity_reports_query_vsite_id($uid);
-      }else{
-        // user id failed so check their site url now
-        if ($site_url != "") {
-          $uid = harvard_activity_reports_query_user_by_site($site_url);
-          if ($uid != FALSE) {
-            // user exists via site url
-            $nid =  harvard_activity_reports_query_vsite_id($uid);
-            // grab their hashedID and insert them into the pin table
-            // now update the iqss_pinserver_registration table to reflect the new hashed id
-            $new_hash_id = harvard_activity_reports_update_huid_hash($uid, $hash_id);
-          }else{
-            $nid = FALSE;
-          }
-        }else{ // error out
-          $nid = FALSE;
-        }
-      }// end s
-    }elseif (isset($_GET['id'])){ // no check for just the site id
-      $hash_id = strip_tags($_GET['id']);
-      // query the user by ID
-      $uid = harvard_activity_reports_query_user_by_id($hash_id);
-      // now get their vsite
-      if ($uid != FALSE) {
-        $nid =  harvard_activity_reports_query_vsite_id($uid);
-      }else{
-        $nid = FALSE;
-      }// end if
-    }elseif (isset($_GET['site_url'])){ // no check for the site url
-      // assign it to a variable
-      $site_url = strip_tags($_GET['site_url']);
-      // query the user by site_url
-      $uid = harvard_activity_reports_query_user_by_site($site_url);
-      // now get their vsite
-      if ($uid != FALSE) {
-        $nid = harvard_activity_reports_query_vsite_id($uid);
-      }else{
-        $nid = FALSE;
-      }// end if
-    }else{ // neither are here, error out
-      $nid = FALSE;
-    }// end isset id
-  }else{ // no id set, tell them
-    $nid = FALSE;
+  if (empty($_GET['id']) && empty($_GET['site_url'])) {
+    return;
   }
-  // return the content
-  return $nid;
+
+  $hash_id = !empty($_GET['id']) ? strip_tags($_GET['id']) : FALSE;
+  $site_url = !empty($_GET['site_url']) ? strip_tags($_GET['site_url']) : FALSE;
+
+  if ($hash_id && $uid = harvard_activity_reports_query_user_by_id($hash_id)) {
+    // User exists, just continue on here no reason to work with the site
+    // url.
+    return harvard_activity_reports_query_vsite_id($uid);
+  }
+
+  if ($site_url && $uid = harvard_activity_reports_query_user_by_site($site_url)) {
+    if ($hash_id) {
+      // Grab the user's hash ID and insert them into the pin table.
+      harvard_activity_reports_update_huid_hash($uid, $hash_id);
+    }
+
+    return harvard_activity_reports_query_vsite_id($uid);
+  }
 }
 
 /**
