@@ -185,18 +185,22 @@ function harvard_activity_reports_query_user() {
  * Get the biblio information from a node.
  *
  * @param $nid
- *   The node ID.
+ *   The node ID of the VSite.
+ *
+ * @param
+ *   Array with biblio node IDs if found, or FALSE.
  */
 function harvard_activity_reports_get_biblio_by_node($nid){
   $return = array();
-  $result = db_query("SELECT n.nid FROM {node} n INNER JOIN {og_ancestry} oa ON n.nid = oa.nid WHERE oa.group_nid = :nid AND n.type = 'biblio'", array(':nid' => $nid));
-  if ($result->rowCount()) {
-    foreach($result as $row) {
-      $return[] = $row->nid;
-    }
-  }
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'biblio')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $nid)
+    ->execute();
 
-  return $return;
+  return !empty($result['node']) ? array_keys($result['node']) : FALSE;
 }
 
 /**
