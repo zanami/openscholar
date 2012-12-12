@@ -61,10 +61,10 @@ function harvard_activity_reports_query_user_by_id($hash_id)  {
 }
 
 /**
+ * Query users by ID and return a site.
  *
- * Function to query and return back a users UID
- * accepts a site variable and the url is parsed and queried from the purl table
- * @param unknown_type $site
+ * @param $site
+ *   The URL that should be parsed and queried from the PURL table.
  */
 function harvard_activity_reports_query_user_by_site($site) {
   // scholar variable
@@ -121,56 +121,56 @@ function harvard_activity_reports_query_user_by_site($site) {
 
 /**
  *
- * function to query and return a users vsite ID based on their UID
- * vsite id will then be used to node load
- * @param unknown_type $uid
+ * Query and return a user's vsite ID based on their user ID.
+ *
+ * @param $uid
+ *   The user ID.
+ *
+ * @return
+ *   The node ID of the group if found, or FALSE.
  */
 function harvard_activity_reports_query_vsite_id($uid) {
   // now that we have the UID, grab their VSITE node ID from the Node table
-  //$nodeResults = db_query("SELECT nid FROM {node} WHERE uid = :uid AND type='vsite'",array(':uid'=>$uid))->fetchField();
+  //$result = db_query("SELECT nid FROM {node} WHERE uid = :uid AND type='vsite'",array(':uid'=>$uid))->fetchField();
   $group_types = og_get_all_group_bundle();
   $group_types = array_keys($group_types['node']);
 
-  $nodeResults = db_select('node', 'n')
+  $result = db_select('node', 'n')
     ->condition('uid', $uid)
     ->condition('type', $group_types, 'IN')
     ->fields('n', array('nid'))
     ->execute()
     ->fetchField();
 
-  if ($nodeResults!=''){ // make sure theres data
-    // updated for drupal 7 - db_fetch_array removed
-      $nid = $nodeResults;
-  }else{
-    $nid = FALSE;
-  }// end node results
-
-  return $nid;
+  return !empty($result) ? $result : FALSE;
 }
 
 /**
- * Function to update the users HUID if it doesnt already exist
+ * Function to update the users hash ID if it doesnt already exist.
+ *
+ * @param $uid
+ *   The user ID.
+ * @param $hash_id
+ *   The hashed user ID.
  */
-function harvard_activity_reports_update_huid_hash($uid,$hash_id) {
-  // run the check module exists
-  if (module_exists('iqss_pinserver_register')==TRUE) {
-    // sanity check to make sure once again that this id does not exist in the table
-    $uidResults = db_query("SELECT count(uid) AS uidCount FROM {iqss_pinserver_register} WHERE uid = :uid", array(':uid'=>$uid))->fetchField();
-    // updated for drupal 7 - db_fetch_object renoved
-    $uidCount = $uidResults;
-    if (uidCount==0) {
-      // insert the new value
-      // updated for Drupal 7 - new methond of inserting
-      $hashInsert = db_insert('iqss_pinserver_register')
-        ->fields(array(
-        'uid'=>$uid,
-        'hashID'=>$hash_id,
-        ))
-        ->execute();
-    }// end if
-  }// end if
-  // no need to return anything
-  return $return;
+function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
+  if (module_exists('iqss_pinserver_register')) {
+    return;
+  }
+
+  // Sanity check to make sure once again that this id does not exist in
+  // the table.
+  if ($result = db_query("SELECT count(uid) AS uidCount FROM {iqss_pinserver_register} WHERE uid = :uid", array(':uid'=>$uid))->fetchField()) {
+    return;
+  }
+
+  // Add a new hash ID.
+  return db_insert('iqss_pinserver_register')
+    ->fields(array(
+    'uid'=>$uid,
+    'hashID'=>$hash_id,
+    ))
+    ->execute();
 }
 
 /**
@@ -437,7 +437,7 @@ function harvard_activity_reports_page() {
     $status = "ok";
     // grab the users HUID
 
-    // run the check module exists
+
     if (module_exists('iqss_pinserver_register')==TRUE) {
       $hash_idResult = db_query("SELECT i.huid FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = :nid AND i.uid = n.uid",array(':nid'=>$nid))->fetchField();
       // updated for Drupal 7 - removed db_fetch_object
