@@ -14,7 +14,7 @@ function os_publications_overview() {
 
   $ckey = _os_publications_cache_key($args);
   if ($cache = cache_get($ckey, 'cache_biblio_lists')) {
-    //return $cache->data;
+    return $cache->data;
   }
 
   module_load_include('inc', 'biblio', 'includes/biblio.pages');
