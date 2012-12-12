@@ -77,7 +77,7 @@ function harvard_activity_reports_query_user_by_site($site_url) {
 
   $host = $parse_url['host'];
 
-  // Check to see if it is empty, if not, they must be an og site
+  // Check to see if it is empty, if not, they must be a  VSite.
   if (!empty($parse_url['path'])){
     // Grab the path for the url.
     // Remove the slash from the begining and end of the path.
@@ -326,7 +326,7 @@ function harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$ni
           $currentPub->appendChild($domtree->createElement('yearOfPublication',$value['biblio_year']));
           // $currentPub->appendChild($domtree->createElement('biblio_volume',$value['biblio_volume']));
           // $currentPub->appendChild($domtree->createElement('biblio_issue',$value['biblio_issue']));
-        }// end foreach
+        }
         break;
       case "error":
         $xmlRoot->appendChild($domtree->createElement('errorMessage',$xml['biblio_error_message']));
@@ -347,29 +347,25 @@ function harvard_activity_reports_page() {
   if (isset($_GET['year'])) {
     $year = $_GET['year'];
     $get_year = TRUE;
-  }else {
+  }
+  else {
     // assign year to the current year
     $year = date("Y");
     $get_year = FALSE;
   }
-  // load up the user from the query
-  $nid = harvard_activity_reports_query_user();
-  // check to make sure we have the users HUID or site_url
-  if ($nid != FALSE) {
+
+  // Get the user from the query.
+  if ($nid = harvard_activity_reports_query_user()) {
     // xml status is ok
     $status = "ok";
-    // grab the users HUID
-
-
-    if (module_exists('iqss_pinserver_register')==TRUE) {
-      $hash_idResult = db_query("SELECT i.huid FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = :nid AND i.uid = n.uid",array(':nid'=>$nid))->fetchField();
-      // updated for Drupal 7 - removed db_fetch_object
-      $hash_id = $hash_idResult;
-    }else{
+    if (module_exists('iqss_pinserver_register')) {
+      $hash_id = db_query("SELECT i.huid FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = :nid AND i.uid = n.uid",array(':nid'=>$nid))->fetchField();
+    }
+    else{
       $hash_id = NULL;
-    }// end if
+    }
 
-    // now load in the user's biblio
+    // Get the user's biblio.
     $xml = harvard_activity_reports_get_biblio_by_node($nid);
     // create an instance of the citation class
     // $citationTest = new citation_distribute_service_googlescholar(); - no longer needed, found the same info in the node load
@@ -381,6 +377,8 @@ function harvard_activity_reports_page() {
     foreach($xml as $xml_row) {
       // node load in all the data, found the MySQL query to get the same data was intensive and just about as heavy
       // so to save work, we'll back to node load
+      // @todo: Why not use the cached nodes?
+
       $biblio_row = node_load($xml_row['nid'], NULL, TRUE);
       // check to make sure we're greater than or = too the $year variable
       if ($get_year == TRUE) { // they want only a specific year, so just pull that year only
@@ -405,19 +403,24 @@ function harvard_activity_reports_page() {
             $author_count = count($contributers);
             $author_list = '';
             // grab out all the contributers and list them
-            foreach($contributers as $contributeAuthor){
+            foreach($contributers as $contribute_author){
               // as long as there are more than one author
               if ($author_count !=1){
                 if ($author_counter == $author_count) {
                   // append an "and" at the end
-                  $author_list .= "and " . $contributeAuthor['name'];
-                }elseif ($author_count == 0) {
-                  $author_list .= $contributeAuthor['name'];
-                }else{ // append a comma after each other
-                  $author_list .= $contributeAuthor['name'] . ", ";
+                  $author_list .= "and " . $contribute_author['name'];
                 }
-              }else{ // only one author, no need for "ands" or ","
-                $author_list .= $contributeAuthor['name'];
+                elseif ($author_count == 0) {
+                  $author_list .= $contribute_author['name'];
+                }
+                else{
+                  // append a comma after each other
+                  $author_list .= $contribute_author['name'] . ", ";
+                }
+              }
+              else{
+                // only one author, no need for "ands" or ","
+                $author_list .= $contribute_author['name'];
               }
               $author_counter++;
             }
@@ -425,8 +428,9 @@ function harvard_activity_reports_page() {
           $biblio_data[$counter]['biblio_author'] = $author_list;
           // increment the counter
           $counter++;
-        }// end if
-      }else{ // no year selected, just get everything greater than of less than the current year
+        }
+      }
+      else{ // no year selected, just get everything greater than of less than the current year
         if ($biblio_row->biblio_year >= $year) {
           // push the data needed into the array by key name
           $biblio_data[$counter]['biblio_nid'] = $biblio_row->nid;
@@ -448,19 +452,24 @@ function harvard_activity_reports_page() {
             $author_count = count($contributers);
             $author_list = '';
             // grab out all the contributers and list them
-            foreach($contributers as $contributeAuthor){
+            foreach($contributers as $contribute_author){
               // as long as there are more than one author
-              if ($author_count !=1){
+              if ($author_count != 1){
                 if ($author_counter == $author_count) {
                   // append an "and" at the end
-                  $author_list .= "and " . $contributeAuthor['name'];
-                }elseif ($author_count == 0) {
-                  $author_list .= $contributeAuthor['name'];
-                }else{ // append a comma after each other
-                  $author_list .= $contributeAuthor['name'] . ", ";
+                  $author_list .= "and " . $contribute_author['name'];
                 }
-              }else{ // only one author, no need for "ands" or ","
-                $author_list .= $contributeAuthor['name'];
+                elseif ($author_count == 0) {
+                  $author_list .= $contribute_author['name'];
+                }
+                else{
+                  // append a comma after each other
+                  $author_list .= $contribute_author['name'] . ", ";
+                }
+              }
+              else{
+                // only one author, no need for "ands" or ","
+                $author_list .= $contribute_author['name'];
               }
               $author_counter++;
             }
@@ -468,25 +477,29 @@ function harvard_activity_reports_page() {
           $biblio_data[$counter]['biblio_author'] = $author_list;
           // increment the counter
           $counter++;
-        }// end if
-      }// end if
-    }// end foreach
+        }
+      }
+    }
     // call the xml creation function
     $return = harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid);
-  }elseif ($nid==FALSE){ // huid not found
+  }
+  // @todo: Is there really a difference in $nid == NULL and $nid == FALSE?
+  elseif ($nid==FALSE){ // huid not found
     $status = "unknown";
     $hash_id = harvard_activity_reports_get_url_id();
     //$biblio_data['biblio_error_message'] = "No data found - please try again with a site url";
     $biblio_data = '';
     $return = harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid);
-  }else{
+  }
+  else{
     $nid=NULL;
     $status = "error";
     $hash_id = harvard_activity_reports_get_url_id();
     $biblio_data = '';
     $return = harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid);
-  }// end if nid != false
-  // send back the xml
+  }
+
+  // Send back the XML.
   echo $return;
 }
 
