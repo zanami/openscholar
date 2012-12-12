@@ -47,7 +47,7 @@ function harvard_activity_reports_menu() {
  * ID.
  *
  * @param $hash_id
- *   A hashed HUID
+ *   The hashed user ID.
  *
  * @return
  *   The user ID if found, or FALSE.
