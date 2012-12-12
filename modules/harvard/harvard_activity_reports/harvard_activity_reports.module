@@ -174,28 +174,19 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
 }
 
 /**
- * Function to return the HUID that was originally sent over
- * will be used to add into the XML with erros.  Requested to be added
- * in by Michael Kerry of FAS.
+ * Return the hash ID that was originally sent over.
+ *
+ * This will be used to add into the XML with erros.
+ * Requested to be added in by Michael Kerry of FAS.
  */
-function harvard_activity_reports_get_url_id () {
-  if (isset($_GET['id'])) {
-    $urlID = strip_tags($_GET['id']);
-    // make sure it's not null
-    if ($urlID == '') {
-      $urlID = NULL;
-    }// end if
-  }else{
-    $urlID = NULL;
-  }
-
-  return $urlID;
+function harvard_activity_reports_get_url_id() {
+  return isset($_GET['id']) ? strip_tags($_GET['id']) : NULL;
 }
 
 /**
+ * Implements harvard_activity_reports_query_user().
  *
- * Implementation harvard_activity_reports_query_user().
- * Custom query to pull the user publicatios from the passed HUID
+ * Custom query to pull the user publicatios from the passed hash ID.
  */
 function harvard_activity_reports_query_user() {
   // use drupal_get_query_parameters when we switch over to 7
