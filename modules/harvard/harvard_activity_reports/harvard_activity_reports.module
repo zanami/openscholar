@@ -213,8 +213,6 @@ function harvard_activity_reports_subval_sort($a,$subkey) {
  */
 function harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid) {
   $return = '';
-  $hash_id = $hash_id;
-  $siteNID = $nid;
   // pull in the xml
   $xml = $biblio_data;
   // grab the status
@@ -256,15 +254,11 @@ function harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$ni
     $asAttValue = $domtree->createTextNode($xmlStatus);
     $asAtt->appendChild($asAttValue);
 
-    // load in the vsite data
-    // DOESNT YET WORK IN DRUPAL 7
-    //$vsite=vsite_get_vsite($siteNID);
-    // case swith on the status
     switch($xmlStatus) {
       case "ok":
         // sort the XML by year, most recent first
       $xml = harvard_activity_reports_subval_sort($xml, 'biblio_year');
-      // loop through the array data for the publications and create XML elements with them
+          // loop through the array data for the publications and create XML elements with them
           foreach($xml as $value) {
             // create the pub element
             $currentPub = $domtree->createElement("publication");
@@ -329,7 +323,7 @@ function harvard_activity_reports_page() {
     $get_year = TRUE;
   }
   else {
-    // assign year to the current year
+    // Default to the current year.
     $year = date("Y");
     $get_year = FALSE;
   }
@@ -353,30 +347,36 @@ function harvard_activity_reports_page() {
     $biblio_data = array();
     // counter for multidimem array
     $counter = 0;
-    // loop through each node
-    foreach($xml as $xml_row) {
-      // node load in all the data, found the MySQL query to get the same data was intensive and just about as heavy
-      // so to save work, we'll back to node load
-      // @todo: Why not use the cached nodes?
 
-      $biblio_row = node_load($xml_row['nid'], NULL, TRUE);
+    $nids = array();
+    foreach($xml as $xml_row) {
+      $nids[] = $xml_row['nid'];
+    }
+
+    // Pre-load all nodes at-once.
+    $nodes = node_load_multiple($nids);
+
+    // Loop through each node.
+    foreach($xml as $xml_row) {
+      $nid = $xml_row['nid'];
+      $biblio_node = $nodes[$nid];
       // check to make sure we're greater than or = too the $year variable
       if ($get_year == TRUE) { // they want only a specific year, so just pull that year only
-        if ($biblio_row->biblio_year == $year) {
+        if ($biblio_node->biblio_year == $year) {
           // push the data needed into the array by key name
-          $biblio_data[$counter]['biblio_nid'] = $biblio_row->nid;
-          $biblio_data[$counter]['biblio_title'] = $biblio_row->title;
-          $biblio_data[$counter]['biblio_url'] = $biblio_row->biblio_url;
-          $biblio_data[$counter]['biblio_type_name'] = $biblio_row->biblio_type_name;
-          $biblio_data[$counter]['biblio_path'] = $biblio_row->path;
-          $biblio_data[$counter]['biblio_site_name'] = $biblio_row->name;
+          $biblio_data[$counter]['biblio_nid'] = $biblio_node->nid;
+          $biblio_data[$counter]['biblio_title'] = $biblio_node->title;
+          $biblio_data[$counter]['biblio_url'] = $biblio_node->biblio_url;
+          $biblio_data[$counter]['biblio_type_name'] = $biblio_node->biblio_type_name;
+          $biblio_data[$counter]['biblio_path'] = $biblio_node->path;
+          $biblio_data[$counter]['biblio_site_name'] = $biblio_node->name;
           // grab the citation data now
-          $biblio_data[$counter]['biblio_year'] = $biblio_row->biblio_year;
-          $biblio_data[$counter]['biblio_secondary_title'] = $biblio_row->biblio_secondary_title;
-          // $biblio_data[$counter]['biblio_volume'] = $biblio_row->biblio_volume; - not needed (yet)
-          // $biblio_data[$counter]['biblio_issue'] = $biblio_row->biblio_issue; - not needed (yet)
+          $biblio_data[$counter]['biblio_year'] = $biblio_node->biblio_year;
+          $biblio_data[$counter]['biblio_secondary_title'] = $biblio_node->biblio_secondary_title;
+          // $biblio_data[$counter]['biblio_volume'] = $biblio_node->biblio_volume; - not needed (yet)
+          // $biblio_data[$counter]['biblio_issue'] = $biblio_node->biblio_issue; - not needed (yet)
           // push all authors from the citations list into another array
-          $contributers = $biblio_row->biblio_contributors;
+          $contributers = $biblio_node->biblio_contributors;
           // author work
             // get the counts of the number of authors
             $author_counter = 1;
@@ -411,21 +411,21 @@ function harvard_activity_reports_page() {
         }
       }
       else{ // no year selected, just get everything greater than of less than the current year
-        if ($biblio_row->biblio_year >= $year) {
+        if ($biblio_node->biblio_year >= $year) {
           // push the data needed into the array by key name
-          $biblio_data[$counter]['biblio_nid'] = $biblio_row->nid;
-          $biblio_data[$counter]['biblio_title'] = $biblio_row->title;
-          $biblio_data[$counter]['biblio_url'] = $biblio_row->biblio_url;
-          $biblio_data[$counter]['biblio_type_name'] = $biblio_row->biblio_type_name;
-          $biblio_data[$counter]['biblio_path'] = $biblio_row->path;
-          $biblio_data[$counter]['biblio_site_name'] = $biblio_row->name;
+          $biblio_data[$counter]['biblio_nid'] = $biblio_node->nid;
+          $biblio_data[$counter]['biblio_title'] = $biblio_node->title;
+          $biblio_data[$counter]['biblio_url'] = $biblio_node->biblio_url;
+          $biblio_data[$counter]['biblio_type_name'] = $biblio_node->biblio_type_name;
+          $biblio_data[$counter]['biblio_path'] = $biblio_node->path;
+          $biblio_data[$counter]['biblio_site_name'] = $biblio_node->name;
           // grab the citation data now
-          $biblio_data[$counter]['biblio_year'] = $biblio_row->biblio_year;
-          $biblio_data[$counter]['biblio_secondary_title'] = $biblio_row->biblio_secondary_title;
-          // $biblio_data[$counter]['biblio_volume'] = $biblio_row->biblio_volume; - not needed (yet)
-          // $biblio_data[$counter]['biblio_issue'] = $biblio_row->biblio_issue; - not needed (yet)
+          $biblio_data[$counter]['biblio_year'] = $biblio_node->biblio_year;
+          $biblio_data[$counter]['biblio_secondary_title'] = $biblio_node->biblio_secondary_title;
+          // $biblio_data[$counter]['biblio_volume'] = $biblio_node->biblio_volume; - not needed (yet)
+          // $biblio_data[$counter]['biblio_issue'] = $biblio_node->biblio_issue; - not needed (yet)
           // push all authors from the citations list into another array
-          $contributers = $biblio_row->biblio_contributors;
+          $contributers = $biblio_node->biblio_contributors;
           // author work
             // get the counts of the number of authors
             $author_counter = 1;
@@ -463,22 +463,20 @@ function harvard_activity_reports_page() {
     // call the xml creation function
     $return = harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid);
   }
-  // @todo: Is there really a difference in $nid == NULL and $nid == FALSE?
-  elseif ($nid==FALSE){ // huid not found
-    $status = "unknown";
-    // Return the hash ID that was originally sent over.
-    // Requested to be added in by Michael Kerry of FAS.
-    $hash_id = !empty($_GET['id']) ? strip_tags($_GET['id']) : NULL;
-    //$biblio_data['biblio_error_message'] = "No data found - please try again with a site url";
-    $biblio_data = '';
-    $return = harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid);
-  }
-  else{
-    $nid=NULL;
-    $status = "error";
-    $hash_id = !empty($_GET['id']) ? strip_tags($_GET['id']) : NULL;
-    $biblio_data = '';
-    $return = harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid);
+  else {
+    if (!empty($_GET['id'])) {
+      // If an ID was provided, the status is error.
+      $status = 'error';
+      // Return the hash ID that was originally sent over.
+      // Requested to be added in by Michael Kerry of FAS.
+      $hash_id = strip_tags($_GET['id']);
+    }
+    else {
+      $status = 'unknown';
+      $hash_id = NULL;
+    }
+
+    $return = harvard_activity_reports_create_xml(FALSE, $hash_id, $status, $nid);
   }
 
   // Send back the XML.
