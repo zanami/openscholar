@@ -144,6 +144,12 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
  *   The node ID of the vsite if found, or FALSE.
  */
 function harvard_activity_reports_query_user() {
+  // Check if we already have a space context.
+  // @todo: Is this ok?
+  if ($vsite = spaces_get_space()) {
+    return $vsite->group->uid;
+  }
+
   if (empty($_GET['id']) && empty($_GET['site_url'])) {
     return;
   }
@@ -317,16 +323,8 @@ function harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$ni
  * Page callback; Return XML with the Biblio publications.
  */
 function harvard_activity_reports_page() {
-  // check for any year parameter
-  if (isset($_GET['year'])) {
-    $year = $_GET['year'];
-    $get_year = TRUE;
-  }
-  else {
-    // Default to the current year.
-    $year = date("Y");
-    $get_year = FALSE;
-  }
+  // Get the year from the URL, or use the current year as default value.
+  $year = !empty($_GET['year']) ? intval($_GET['year']) : date("Y");
 
   // Get the user from the query.
   if ($nid = harvard_activity_reports_query_user()) {
@@ -358,7 +356,7 @@ function harvard_activity_reports_page() {
     foreach($xml as $xml_row) {
       $nid = $xml_row['nid'];
       $node = $nodes[$nid];
-      if ($get_year) {
+      if (!empty($_GET['year'])) {
         // They want only a specific year, so just pull that year only.
         if ($node->biblio_year == $year) {
           $biblio_data[$counter] = _harvard_activity_reports_build_bibilio_data($node);
