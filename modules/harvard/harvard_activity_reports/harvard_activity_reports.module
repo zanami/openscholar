@@ -339,14 +339,12 @@ function harvard_activity_reports_page() {
       $hash_id = NULL;
     }
 
-    // Get the user's biblio.
-    $xml = harvard_activity_reports_get_biblio_by_node($nid);
-    // create an instance of the citation class
-    // $citationTest = new citation_distribute_service_googlescholar(); - no longer needed, found the same info in the node load
-    // create array
     $biblio_data = array();
     // counter for multidimem array
     $counter = 0;
+
+    // Get the user's biblio.
+    $xml = harvard_activity_reports_get_biblio_by_node($nid);
 
     $nids = array();
     foreach($xml as $xml_row) {
@@ -359,108 +357,26 @@ function harvard_activity_reports_page() {
     // Loop through each node.
     foreach($xml as $xml_row) {
       $nid = $xml_row['nid'];
-      $biblio_node = $nodes[$nid];
-      // check to make sure we're greater than or = too the $year variable
-      if ($get_year == TRUE) { // they want only a specific year, so just pull that year only
-        if ($biblio_node->biblio_year == $year) {
-          // push the data needed into the array by key name
-          $biblio_data[$counter]['biblio_nid'] = $biblio_node->nid;
-          $biblio_data[$counter]['biblio_title'] = $biblio_node->title;
-          $biblio_data[$counter]['biblio_url'] = $biblio_node->biblio_url;
-          $biblio_data[$counter]['biblio_type_name'] = $biblio_node->biblio_type_name;
-          $biblio_data[$counter]['biblio_path'] = $biblio_node->path;
-          $biblio_data[$counter]['biblio_site_name'] = $biblio_node->name;
-          // grab the citation data now
-          $biblio_data[$counter]['biblio_year'] = $biblio_node->biblio_year;
-          $biblio_data[$counter]['biblio_secondary_title'] = $biblio_node->biblio_secondary_title;
-          // $biblio_data[$counter]['biblio_volume'] = $biblio_node->biblio_volume; - not needed (yet)
-          // $biblio_data[$counter]['biblio_issue'] = $biblio_node->biblio_issue; - not needed (yet)
-          // push all authors from the citations list into another array
-          $contributers = $biblio_node->biblio_contributors;
-          // author work
-            // get the counts of the number of authors
-            $author_counter = 1;
-            $author_count = count($contributers);
-            $author_list = '';
-            // grab out all the contributers and list them
-            foreach($contributers as $contribute_author){
-              // as long as there are more than one author
-              if ($author_count !=1){
-                if ($author_counter == $author_count) {
-                  // append an "and" at the end
-                  $author_list .= "and " . $contribute_author['name'];
-                }
-                elseif ($author_count == 0) {
-                  $author_list .= $contribute_author['name'];
-                }
-                else{
-                  // append a comma after each other
-                  $author_list .= $contribute_author['name'] . ", ";
-                }
-              }
-              else{
-                // only one author, no need for "ands" or ","
-                $author_list .= $contribute_author['name'];
-              }
-              $author_counter++;
-            }
-            // push the final author list into the main array
-          $biblio_data[$counter]['biblio_author'] = $author_list;
-          // increment the counter
+      $node = $nodes[$nid];
+      if ($get_year) {
+        // They want only a specific year, so just pull that year only.
+        if ($node->biblio_year == $year) {
+          $biblio_data[$counter] = _harvard_activity_reports_build_bibilio_data($node);
+          // Increment the counter.
           $counter++;
         }
       }
-      else{ // no year selected, just get everything greater than of less than the current year
-        if ($biblio_node->biblio_year >= $year) {
-          // push the data needed into the array by key name
-          $biblio_data[$counter]['biblio_nid'] = $biblio_node->nid;
-          $biblio_data[$counter]['biblio_title'] = $biblio_node->title;
-          $biblio_data[$counter]['biblio_url'] = $biblio_node->biblio_url;
-          $biblio_data[$counter]['biblio_type_name'] = $biblio_node->biblio_type_name;
-          $biblio_data[$counter]['biblio_path'] = $biblio_node->path;
-          $biblio_data[$counter]['biblio_site_name'] = $biblio_node->name;
-          // grab the citation data now
-          $biblio_data[$counter]['biblio_year'] = $biblio_node->biblio_year;
-          $biblio_data[$counter]['biblio_secondary_title'] = $biblio_node->biblio_secondary_title;
-          // $biblio_data[$counter]['biblio_volume'] = $biblio_node->biblio_volume; - not needed (yet)
-          // $biblio_data[$counter]['biblio_issue'] = $biblio_node->biblio_issue; - not needed (yet)
-          // push all authors from the citations list into another array
-          $contributers = $biblio_node->biblio_contributors;
-          // author work
-            // get the counts of the number of authors
-            $author_counter = 1;
-            $author_count = count($contributers);
-            $author_list = '';
-            // grab out all the contributers and list them
-            foreach($contributers as $contribute_author){
-              // as long as there are more than one author
-              if ($author_count != 1){
-                if ($author_counter == $author_count) {
-                  // append an "and" at the end
-                  $author_list .= "and " . $contribute_author['name'];
-                }
-                elseif ($author_count == 0) {
-                  $author_list .= $contribute_author['name'];
-                }
-                else{
-                  // append a comma after each other
-                  $author_list .= $contribute_author['name'] . ", ";
-                }
-              }
-              else{
-                // only one author, no need for "ands" or ","
-                $author_list .= $contribute_author['name'];
-              }
-              $author_counter++;
-            }
-            // push the final author list into the main array
-          $biblio_data[$counter]['biblio_author'] = $author_list;
-          // increment the counter
+      else {
+        // No year selected, just get everything greater than of less than
+        // the current year.
+        if ($node->biblio_year >= $year) {
+          $biblio_data[$counter] = _harvard_activity_reports_build_bibilio_data($node);
+          // Increment the counter.
           $counter++;
         }
       }
     }
-    // call the xml creation function
+    // Call the XML creation function.
     $return = harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid);
   }
   else {
@@ -481,5 +397,62 @@ function harvard_activity_reports_page() {
 
   // Send back the XML.
   print $return;
+}
+
+/**
+ * Helper function; Build the data array for later creating the XML.
+ *
+ * @param $node
+ *   The biblio node object.
+ *
+ * @see harvard_activity_reports_page()
+ * @see harvard_activity_reports_create_xml()
+ */
+function _harvard_activity_reports_build_bibilio_data($node) {
+  $return = array();
+
+  $return['biblio_nid'] = $node->nid;
+  $return['biblio_title'] = $node->title;
+  $return['biblio_url'] = $node->biblio_url;
+  $return['biblio_type_name'] = $node->biblio_type_name;
+  $return['biblio_path'] = $node->path;
+  $return['biblio_site_name'] = $node->name;
+  // grab the citation data now
+  $return['biblio_year'] = $node->biblio_year;
+  $return['biblio_secondary_title'] = $node->biblio_secondary_title;
+  // Push all authors from the citations list into another array.
+
+  $contributers = $node->biblio_contributors;
+  // Author work
+  $author_counter = 1;
+  $author_count = count($contributers);
+  $author_list = '';
+
+  // Grab out all the contributers and list them.
+  foreach($contributers as $contribute_author){
+    // As long as there are more than one author
+    if ($author_count > 1){
+
+      if ($author_counter == $author_count) {
+        // append an "and" at the end
+        $author_list .= "and " . $contribute_author['name'];
+      }
+      elseif ($author_count == 0) {
+        $author_list .= $contribute_author['name'];
+      }
+      else{
+        // append a comma after each other
+        $author_list .= $contribute_author['name'] . ", ";
+      }
+    }
+    else{
+      // only one author, no need for "ands" or ","
+      $author_list .= $contribute_author['name'];
+    }
+    $author_counter++;
+  }
+    // push the final author list into the main array
+  $return['biblio_author'] = $author_list;
+  return $return;
 }
 
