@@ -97,6 +97,36 @@ class OsMigratePersonalNode extends OsMigrate {
 }
 
 /**
+ * Migrate "Project" node.
+ */
+class OsMigrateProjectNode extends OsMigrate {
+  public $entityType = 'node';
+  public $bundle = 'project';
+
+  public $csvColumns = array(
+    array('id', 'Unique ID'),
+    array('title', 'Title'),
+    array('purl', 'URL'),
+  );
+
+  public function __construct() {
+    parent::__construct();
+    $this->addFieldMapping('purl', 'purl');
+    $this->addFieldMapping('field_site_address', 'purl');
+  }
+
+  /**
+   * Creating the PURL address for the personal site.
+   */
+  public function prepare($entity, $row) {
+    $entity->purl = array('value' => $row->purl);
+
+    $value = $entity->field_site_address[LANGUAGE_NONE][0]['value'];
+    $entity->field_site_address[LANGUAGE_NONE][0]['value'] = variable_get('purl_base_domain') . '/' . $value;
+  }
+}
+
+/**
  * Migrate "Biography" node.
  */
 class OsMigrateBioagrphyNode extends OsMigrate {
@@ -426,6 +456,7 @@ class OsMigratePeopleNode extends OsMigrate {
 
   public $dependencies = array(
     'OsMigratePersonalNode',
+    'OsMigrateProjectNode',
   );
 
   public function __construct() {
@@ -439,11 +470,11 @@ class OsMigratePeopleNode extends OsMigrate {
     $this->addFieldMapping('body', 'body');
     $this->addFieldMapping('field_professional_title', 'professional_titles')->separator(';');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
-      ->sourceMigration('OsMigratePersonalNode');
+      ->sourceMigration(array('OsMigratePersonalNode', 'OsMigrateProjectNode'));
   }
 
   public function prepare($entity, $row) {
-    // Insertint the first name - title - into the first name field.
+    // Inserting the first name - title - into the first name field.
     $entity->field_first_name[LANGUAGE_NONE][0]['value'] = $entity->title;
 
     // Handeling websites.
