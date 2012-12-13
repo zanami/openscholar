@@ -17,12 +17,12 @@ Feature:
 
   @api
   Scenario: Test a query with invalid VSite, where the answer should be "error".
-    Given I visit "harvard_activity_reports?site_url=error-site"
+    Given I visit "harvard_activity_reports?id=foo"
     Then I should get:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
-      <person huid="" action_status="error"/>
+      <person huid="foo" action_status="error"/>
       <errorMessage></errorMessage>
     </response>
     """
