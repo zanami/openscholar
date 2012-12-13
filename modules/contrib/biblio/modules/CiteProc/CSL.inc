@@ -1011,7 +1011,8 @@ class csl_number extends csl_format {
 
     switch ($this->form) {
       case 'ordinal':
-        $text = $this->ordinal($data->$var);
+        $stripped_num = $this->strip_letters($data->$var);
+        $text = $this->ordinal($stripped_num);
         break;
       case 'long-ordinal':
         $text = $this->long_ordinal($data->$var);
@@ -1025,6 +1026,11 @@ class csl_number extends csl_format {
         break;
     }
     return $this->format($text);
+  }
+
+  // Some people will enter the ordinal suffix of their edition which then doubles the suffix, strip out the non-numerials.
+  function strip_letters($num) {
+  	return $num = preg_match('/\d/', $num) > 0 ? preg_replace("/[^0-9]/","",$num) : $num;
   }
 
   function ordinal($num) {
