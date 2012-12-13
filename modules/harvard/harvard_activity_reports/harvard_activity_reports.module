@@ -394,7 +394,9 @@ function harvard_activity_reports_page() {
   }
 
   // Send back the XML.
+  drupal_add_http_header('Content-Type', 'application/rss+xml; charset=utf-8');
   print $return;
+  drupal_exit();
 }
 
 /**
