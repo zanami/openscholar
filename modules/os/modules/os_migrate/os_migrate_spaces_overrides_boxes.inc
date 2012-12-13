@@ -432,7 +432,7 @@ EOF;
      	 $return[$id] = clone $box;
      }
 
-     return $return;
+     return array_reverse($return);
    }
 }
 
