@@ -124,9 +124,10 @@ function os_files_private_cp_settings() {
       '#title' => t('Select which users should have access to your private files (when private files are enabled)'),
       '#default_value' => variable_get('os_files_private_restrict_mode', 'selected_users'),
       '#options' => array(
-        'all_users'        => t('All users (including anonymous users)'),
-        'registered_users' => t('Registered users (all members of the site, but not anonymous users)'),
-        'selected_users'   => t('Only users you select from your People menu'),
+        'all_users'         => t('All users (including anonymous users)'),
+        'registered_users'  => t('Registered users (all members of the site, but not anonymous users)'),
+        'harvard_employees' => t('Harvard employees only (requires pinserver)'),
+        'selected_users'    => t('Only users you select from your People menu'),
       ),
       '#description' => t('Private file access must be enabled by the site administrator for this setting to work.'),
     ),
@@ -171,7 +172,7 @@ function os_files_private_file_download($uri) {
     return;
   }
 
-  // Check if private files have special permissions (registered/public).
+  // Check if private files have special permissions (registered/public/employees).
   if ($restrict_mode == 'registered_users') {
     // Private files available for all registered users; bypass OG check and just verify/redirect to pinserver.
     if (!user_is_anonymous() || (function_exists('pinserver_check_status') && pinserver_check_status())) {
@@ -187,6 +188,18 @@ function os_files_private_file_download($uri) {
   else if ($restrict_mode == 'all_users') {
     // Private files can be seen by all users!
     return file_get_content_headers($file);
+  }
+  else if ($restrict_mode == 'harvard_employees') {
+    // Only Harvard employees can view private files.
+    if(function_exists('pinserver_is_harvard_employee') && pinserver_is_harvard_employee()) {
+      return file_get_content_headers($file);
+    }
+    else if (function_exists('pinserver_redirect')) {
+      return pinserver_redirect(array('redirect_uri' => $_SERVER['REQUEST_URI']));
+    }
+    else {
+      return -1;
+    }
   }
 
   // Check OG group permissions; private files for selected users only.

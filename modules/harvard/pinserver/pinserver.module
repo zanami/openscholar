@@ -116,19 +116,13 @@ function pinserver_check_user() {
 
   // Success! Code beyond this point handles a successful PIN authentication.
 
-  // Check access based on Harvard department.
-  if (($dept = variable_get('pinserver_harvard_department')) &&
-      isset($dept) &&
-      $dept != 'all' &&
-      isset($token_data['department']) &&
-      $dept != $token_data['department']) {
-    drupal_access_denied();
-    die();
-  }
-
   // Places encrypted harvard uid into session array.
   $_SESSION['pinserver']['huid'] = $token_data['user_id'];
   $_SESSION['pinserver']['reg_time'] = time();
+
+  if(isset($token_data['department']) && !empty($token_data['department'])) {
+    $_SESSION['pinserver']['harvard_employee'] = $token_data['department'];
+  }
 
   // Invokes hook_pinserver().
   module_invoke_all('pinserver');
