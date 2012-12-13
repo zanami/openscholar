@@ -3,6 +3,7 @@
 use Drupal\DrupalExtension\Context\DrupalContext;
 use Behat\Behat\Context\Step\Given;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Gherkin\Node\PyStringNode;
 use Guzzle\Service\Client;
 
 require 'vendor/autoload.php';
@@ -60,6 +61,16 @@ class FeatureContext extends DrupalContext {
       if ($diff = array_diff($hash[$i], $table_row)) {
         throw new Exception(sprintf('The "%d" row values are wrong.', $i + 1));
       }
+    }
+  }
+
+  /**
+   * @Then /^I should get:$/
+   */
+  public function iShouldGet(PyStringNode $string) {
+    $page = $this->getSession()->getPage();
+    if (strpos($page->getContent(), $string->getRaw()) === FALSE) {
+      throw new Exception("Text not found.");
     }
   }
 

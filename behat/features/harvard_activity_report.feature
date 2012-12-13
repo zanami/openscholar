@@ -5,8 +5,8 @@ Feature:
 
   @api
   Scenario: Test a query with unknown VSite, where the answer should be "unknown".
-    Given I visit "harvard_activity_report"
-    Then I should see
+    Given I visit "harvard_activity_reports"
+    Then I should get:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
@@ -17,8 +17,8 @@ Feature:
 
   @api
   Scenario: Test a query with invalid VSite, where the answer should be "error".
-    Given I visit "harvard_activity_report?site_url=error-site"
-    Then I should see
+    Given I visit "harvard_activity_reports?site_url=error-site"
+    Then I should get:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
@@ -28,9 +28,9 @@ Feature:
     """
 
   @api
-  Scenario: Test a query with invalid VSite, where the answer should be "ok".
-    Given I visit "john/harvard_activity_report"
-    Then I should see
+  Scenario: Test a query withing a VSite for a year with publication, where the answer should be "ok".
+    Given I visit "john/harvard_activity_reports?year=1943"
+    Then I should get:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
@@ -41,5 +41,16 @@ Feature:
           <yearOfPublication>1943</yearOfPublication>
         </publication>
       </person>
+    </response>
+    """
+
+  @api
+  Scenario: Test a query withing a VSite for a year with no publication, where the answer should be "ok".
+    Given I visit "john/harvard_activity_reports"
+    Then I should get:
+    """
+    <?xml version="1.0" encoding="UTF-8"?>
+    <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
+      <person huid="" action_status="ok"/>
     </response>
     """
