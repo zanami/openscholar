@@ -36,7 +36,7 @@ Feature:
     <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
       <person huid="" action_status="ok">
         <publication id="9" pubType="Book" pubSource="OpenScholar">
-          <citation>admin, and Smith, John K. The Little Prince. </citation>
+          <citation>. The Little Prince. </citation>
           <linkToArticle></linkToArticle>
           <yearOfPublication>1943</yearOfPublication>
         </publication>
