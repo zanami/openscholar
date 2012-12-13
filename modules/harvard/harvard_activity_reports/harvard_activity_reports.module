@@ -315,7 +315,7 @@ function harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$ni
  */
 function harvard_activity_reports_page() {
   // Get the year from the URL, or use the current year as default value.
-  $year = !empty($_GET['year']) ? intval($_GET['year']) : date("Y");
+  $year = !empty($_GET['year']) ? $_GET['year'] : date("Y");
 
   // Get the user from the query.
   if ($nid = harvard_activity_reports_query_user()) {
@@ -332,11 +332,11 @@ function harvard_activity_reports_page() {
     $counter = 0;
 
     // Get the user's biblio.
+    // @todo: Get only the ones from the queried years.
     $nids = harvard_activity_reports_get_biblio_by_vsite($nid);
 
     // Pre-load all nodes at-once.
     $nodes = node_load_multiple($nids);
-
 
     // Loop through each node.
     foreach($nodes as $node) {
