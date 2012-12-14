@@ -361,32 +361,42 @@ function os_publications_preprocess_node(&$vars) {
 /**
  * Removes the export links from the full view of the node
  * Adds 'Abstract' link to toggle a sliding box with the full abstract
+ * Adds in the biblio_url to the external link.
  */
 function os_publications_node_view_alter(&$build, $type) {
   $spaces = spaces_get_space();
   if ($type == 'node' && $build['#bundle'] == 'biblio') {
     if ($build['#view_mode'] == 'teaser') {
-      _os_publications_attach_abstract($build, $build['#node']);
+      // Alter the teaser to remove the external URL as the URL title and
+      // replace it with either the biblio_url_title or "website".
+      if(isset($build['teaser']['#markup'])) {
+      	$html = $build['teaser']['#markup'];
+    	$insert = strrpos($html, '</div>');
+    	// Since the biblio_url is wiped out in the CSL file, get the url back from the node.
+        $node = node_load($build['#node']->nid);
+      	if(!empty($node->biblio_url)) {
+          $biblio_url = $node->biblio_url;
+          $biblio_check_url = l($biblio_url,$biblio_url);
+          $biblio_url_title = !empty($node->biblio_url_title) ? $node->biblio_url_title : 'Website';
+          $new_biblio_url = l($biblio_url_title,$biblio_url);
+          if ($insert === FALSE) {
+            $html .= ' ' . $new_biblio_url;
+    	  }
+    	  else {
+            $html = substr_replace($html, ' ' . $new_biblio_url, $insert, 0);
+    	  }
+          $build['teaser']['#markup'] = $html;
+      	}
+      }
+
+      // Add the abstract slider.
+	  _os_publications_attach_abstract($build, $build['#node']);
+	  // Add in notes.
       if(isset($spaces) && is_object($spaces) && $spaces->controllers->variable->get('os_publications_note_in_teaser', 'space') == TRUE) {
         _os_publications_attach_notes($build, $build['#node']);
       }
       $build['teaser']['#weight'] = 1;
       $build['links']['#access'] = FALSE;
-
-      // Alter the teaser to remove the external URL as the URL title and
-      // replace it with either the biblio_url_title or "website".
-      if(isset($build['teaser']['#markup'])) {
-      	$teaser_markup = $build['teaser']['#markup'];
-      	if(isset($build['#node']->biblio_url)) {
-		  $biblio_url = $build['#node']->biblio_url;
-		  $biblio_check_url = l($biblio_url,$biblio_url);
-		  $biblio_url_title = !empty($build['#node']->biblio_url_title) ? $build['#node']->biblio_url_title : 'Website';
-		  $new_biblio_url = l($biblio_url_title,$biblio_url);
-		  $new_teaser_markup = str_replace($biblio_check_url, $new_biblio_url, $teaser_markup);
-		  $build['teaser']['#markup'] = $new_teaser_markup;
-      	}
-      }
-
     }
     else {
       $links = &$build['links'];
