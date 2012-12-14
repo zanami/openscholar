@@ -30,6 +30,15 @@ function os_publications_menu_alter(&$items) {
     'type' => MENU_CALLBACK,
   );
 
+  $items['publications/reset'] = array(
+    'title' => 'Reset OS Publications Defaults',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_publications_reset'),
+    'access arguments' => 'administer nodes',
+    'file' => drupal_get_path('module', 'os_publications'). '/os_publications.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
   $items['features/os_publications'] = array(
     'title' => 'Settings',
     'page callback' => 'drupal_get_form',
@@ -479,6 +488,7 @@ function _os_publications_clear_cache($node) {
     return;
   }
   $frags   = array();
+  $frags[] = 'args:no';
   $frags[] = 'type:' . $node->biblio_type;
   $frags[] = 'year:' . $node->biblio_year;
   //If there are contributors, add them to the cache key
