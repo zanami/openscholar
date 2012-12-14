@@ -160,7 +160,7 @@ function _os_publications_plain_citation($node) {
       $citation = preg_replace($re, ", </span>$coins", $citation);
     }
 
-    $short_url = 'http://' . shorten_url(url('node/' . $node->nid, array('absolute' => TRUE)));
+    $short_url = shorten_url(url('node/' . $node->nid, array('absolute' => TRUE)));
 
     $citation .= ' Copy at ' . l($short_url, $short_url);
   }
