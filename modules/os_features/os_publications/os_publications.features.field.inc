@@ -38,7 +38,7 @@ function os_publications_field_default_fields() {
       'description' => 'You may use these fields to add extra information about your publication that may not be common to publications if this type. For example, key "Publication Global ID" and value "http://hdl.handle.net/1902.1".',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'dyntextfield',
           'settings' => array(),
           'type' => 'dyntextfield_default',
@@ -103,7 +103,7 @@ function os_publications_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'image',
           'settings' => array(
             'image_link' => '',
