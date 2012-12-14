@@ -8,6 +8,9 @@
 include_once ('os.features.inc');
 include_once ('includes/os.inc');
 
+// ugly ass hack
+include_once (drupal_get_path('module', 'spaces').'/spaces.overrides.inc');
+
 /**
  * Implements hook_menu().
  */
