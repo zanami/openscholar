@@ -91,14 +91,25 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
 	    	$biblio_year_sort = $order['biblio_year'];
       }
 
-      // Rebuild the array to our defaults only when the user is NOT searching
-      if (!(isset($_GET['s']) && in_array($_GET['s'], array('author', 'title', 'type')))) {
+      // Rebuild the array to our defaults only when the user is NOT searching.  When the user is searching, use their selections
+      if (isset($_GET['s']) && in_array($_GET['s'], array('author', 'title', 'type'))) {
+        $s = current(array_keys($order));
+        $o = current($order);
+
+        if ($s == 'biblio_sort_year') {
+          $biblio_sort_year = $o;
+        }
+
+        if ($s = 'biblio_sort_title') {
+          $biblio_sort_title = $o;
+        }
+      } else {
         $order = array();
       }
 
       $order['biblio_year'] = isset($biblio_year_sort) ? $biblio_year_sort : 'DESC';
       $order['biblio_date'] = 'DESC';
-      $order['biblio_sort_title'] = 'ASC';
+      $order['biblio_sort_title'] = (isset($biblio_sort_title)) ? $biblio_sort_title : 'ASC';
     }
   }
 }
