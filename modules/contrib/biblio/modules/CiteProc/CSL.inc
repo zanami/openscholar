@@ -1133,6 +1133,10 @@ class csl_text extends csl_format {
           	$text = '';
           }
         }
+        // We don't want to display any urls in the citation.
+        if($macro == 'access') {
+          $text = '';
+        }
         break;
       case 'term':
         $form = (($form = $this->form)) ? $form : '';
