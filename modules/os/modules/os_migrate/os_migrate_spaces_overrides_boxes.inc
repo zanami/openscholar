@@ -432,7 +432,7 @@ EOF;
      	 $return[$id] = clone $box;
      }
 
-     return $return;
+     return array_reverse($return);
    }
 }
 
@@ -1026,7 +1026,18 @@ class BoxPorter {
     }
   }
 
+  //recent images -> sv list
   public function _port_box_os_boxes_gallery($box, $id, $key_only) {
+    $key = 'os_sv_list_box';
+    if ($key_only) {
+      return $key;
+    }
+
+    $box->options['filter'] = 'image';
+    return $this->_port_box_os_boxes_sv_list($box, $id, $key_only);
+  }
+
+  public function _port_box_os_boxes_slideshow($box, $id, $key_only) {
     $key = 'os_boxes_slideshow';
     if ($key_only) {
       return $key;
@@ -1057,9 +1068,9 @@ class BoxPorter {
   }
 
   //slideshows get the same treatment as galleries.  gain options in form.
-  public function _port_box_os_boxes_slideshow($box, $id, $key_only) {
-    return $this->_port_box_os_boxes_gallery($box, $id, $key_only);
-  }
+//   public function _port_box_os_boxes_slideshow($box, $id, $key_only) {
+//     return $this->_port_box_os_boxes_gallery($box, $id, $key_only);
+//   }
 
 
   //convert os_boxes_node to custom html.  102 in db

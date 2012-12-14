@@ -514,6 +514,11 @@ html.js div.ctools-dropdown a.ctools-dropdown-text-link {
     padding: 0 0 0 13px;
     text-decoration: none;
 }
+
+html.js #citation-wrapper div.ctools-dropdown a.ctools-dropdown-text-link {
+    font-size: 11px;
+ 
+}
 	
 .ctools-dropdown.section_links {
 	float:right;

@@ -250,7 +250,12 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       'class' => array('term-' . drupal_html_class($item['term_name'])),
     );
   }
-  return theme('item_list', array('type' => 'ul', 'items' => $data));
+
+  if ($data) {
+    return theme('item_list', array('type' => 'ul', 'items' => $data));
+  } else {
+    return '';
+  }
 }
 
 /**

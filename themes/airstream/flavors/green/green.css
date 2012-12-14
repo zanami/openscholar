@@ -1,11 +1,11 @@
 /* Green version */
 
 
-
+@media only screen and (min-width:1025px) {
 body.navbar-off {
   background-image: url('images/body-bg-green.png');
   }
-
+}
 body.navbar-on #wrapper {
   background-image: url('images/body-bg-horiz-green.png');
   }

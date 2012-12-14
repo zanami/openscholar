@@ -420,15 +420,20 @@ class os_sv_list_box extends os_boxes_default {
   }
 
   function display_image($files) {
-    $html = '';
+    //$html = '';
+    $items = array();
+
     foreach ($files as $image) {
       $variables = array(
         'path' => $image->uri,
-        'attributes' => array(),
+        'attributes' => array('width'=>50,'height'=>50),
       );
-      $html .= theme('image', $variables);
+      //$html .= theme('image', $variables);
+      $img = theme('image', $variables);
+      $items[] = l($img, file_create_url($image->uri), array('html'=>TRUE)); //get a real url, hippie!
     }
-    return $html;
+
+    return theme('item_list', array('items'=>$items, 'attributes'=>array('class'=>array('recent-images-list'))));
   }
 
   function _biblio_types() {
