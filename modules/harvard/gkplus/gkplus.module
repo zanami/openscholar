@@ -256,7 +256,12 @@ function gkplus_node_view_alter(&$build, $type) {
     $vocab = &$build['og_vocabulary'];
     $parents = array();
     foreach ($vocab['#items'] as $t) {
-      $parents += taxonomy_get_parents($t['target_id']);
+      $ancestors = taxonomy_get_parents_all($t['target_id']);
+      // if there are more than 2 terms in the ancestors list, we want the 2nd to last
+      // if there's only, get that one
+      $offset = min(count($ancestors), 2);
+      $targ = $ancestors[count($ancestors)-$offset];
+      $parents[$targ->tid] = $targ;
     }
 
     $values = array();

@@ -24,16 +24,7 @@ function theme_os_publications_tabular(&$vars) {
   }
   */
 
-
-
   $citation = _os_publications_plain_citation($node);
-
-  // Strip the 'Available From: <url>' text from the citation.
-  if(isset($node->biblio_url)) {
-  	$searcher = 'Available from: '.$node->biblio_url;
-  	// String replace the url & text.
-  	$citation = str_ireplace($searcher, '', $citation);
-  }
 
   // These fields should not be printed under any circumstances
   // They appear elsewhere with special handling, either in the citation
