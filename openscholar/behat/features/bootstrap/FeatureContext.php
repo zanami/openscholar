@@ -331,4 +331,11 @@ class FeatureContext extends DrupalContext {
       }
     }
   }
+
+    /**
+   * @Given /^I sleep for "([^"]*)"$/
+   */
+  public function iSleepFor($seconds) {
+   sleep($seconds);
+  }
 }
