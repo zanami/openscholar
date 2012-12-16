@@ -33,6 +33,8 @@ function os_taxonomy_menu_alter(&$items) {
  * @see os_taxonomy_menu_alter()
  */
 function os_taxonomy_term_page($taxonomy_term) {
+  $vocabulary = taxonomy_vocabulary_load($taxonomy_term->vid);
+
   $options = variable_get('os_taxonomy_term_page_options', array());
 
   $variables = array(
@@ -48,6 +50,12 @@ function os_taxonomy_term_page($taxonomy_term) {
 
   if ($ctx = context_load($context_name)) {
     context_set('context', $ctx->name, $ctx);
+  }
+
+  // Temporary hack - when viewing the gallery display the view and not the
+  // tagged nodes theme.
+  if ($vocabulary->machine_name == 'gallery_collections') {
+    return views_embed_view('os_image_gallery', 'page');
   }
 
   return theme('os_taxonomy_tagged_nodes', $variables);
