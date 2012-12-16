@@ -12,7 +12,7 @@ Feature:
       Then I should see "Simple view list"
        And I should see "John F. Kennedy"
 
-  @javascript @current
+  @javascript
   Scenario: verify that vocabulary won't display on another site.
      Given I am logged in as a user with the "administrator" role
       When I visit "john/os/widget/add/os_sv_list_box/cp-layout"

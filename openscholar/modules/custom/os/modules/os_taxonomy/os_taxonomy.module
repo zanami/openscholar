@@ -52,8 +52,8 @@ function os_taxonomy_term_page($taxonomy_term) {
     context_set('context', $ctx->name, $ctx);
   }
 
-  // Temporary hack - when viewing the gallery display the view and not the
-  // tagged nodes theme.
+  // When viewing the gallery display use the view and not the tagged nodes
+  // theme.
   if ($vocabulary->machine_name == 'gallery_collections') {
     return views_embed_view('os_image_gallery', 'page');
   }
