@@ -105,13 +105,14 @@ div.messages {
 
 /*** FRONTPAGE PANELS ***/
 
-.region-content-first, 
-.region-content-second {
+.content-left .at-panel .region.region-content-first, 
+.content-right .at-panel .region.region-content-second {
     width: 100%;
+    float:none;
 }
 	
-.content-left.content-right .region-content-first, 
-.content-left.content-right .region-content-second {
+.content-left.content-right .at-panel .region.region-content-first, 
+.content-left.content-right .at-panel .region.region-content-second {
 	float:left;
 	clear:none;
 	display:inline;
@@ -119,10 +120,12 @@ div.messages {
     margin:15px 0;
 	}
 	
-.content-left.content-right .region-content-first {margin-right:2%;border-right:1px solid #CCC;width: 48%;}	
+.content-left.content-right .at-panel .region.region-content-first {margin-right:2%;border-right:1px solid #CCC;width: 48%;}	
 
-.region-content-bottom {
+.at-panel .region.region-content-top,
+.at-panel .region.region-content-bottom {
     clear: both;
+    float:none;
 }
 
 
