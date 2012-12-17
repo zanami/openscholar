@@ -55,10 +55,3 @@ function vsite_access_user_access($group, $account = NULL){
   // This is a public site, or they have access
   return true;
 }
-
-function vsite_access_field_access($op, $field, $entity_type, $entity, $account) {
-  if ($field['field_name'] == OG_AUDIENCE_FIELD && !user_access('administer group', $account)) {
-    return false;
-  }
-  return true;
-}
