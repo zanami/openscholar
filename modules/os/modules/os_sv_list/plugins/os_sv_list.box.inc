@@ -424,13 +424,17 @@ class os_sv_list_box extends os_boxes_default {
     $items = array();
 
     foreach ($files as $image) {
-      $variables = array(
-        'path' => $image->uri,
-        'attributes' => array('width'=>50,'height'=>50),
-      );
-      //$html .= theme('image', $variables);
-      $img = theme('image', $variables);
-      $items[] = l($img, file_create_url($image->uri), array('html'=>TRUE)); //get a real url, hippie!
+      if($image->type == 'image') {
+      	$variables = array(
+          'style_name' => "os_square_50_50",
+          'path' => $image->uri,
+          'height' => NULL,
+          'width' => NULL,
+        );
+        $img = theme_image_style($variables);
+        //$html .= theme('image', $variables);
+        $items[] = l($img, file_create_url($image->uri), array('html'=>TRUE)); //get a real url, hippie!
+      }
     }
 
     return theme('item_list', array('items'=>$items, 'attributes'=>array('class'=>array('recent-images-list'))));
