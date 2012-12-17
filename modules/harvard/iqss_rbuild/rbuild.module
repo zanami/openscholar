@@ -116,11 +116,6 @@ function rbuild_node_insert($node) {
   // Initializes releases only for Projects whose Method field == "rBuild".
   $field_items = field_get_items('node', $node, 'field_software_method');
   $field_value = $field_items[0]['value'];
-  if ($field_value !== 'Rbuild repository') {
-    return;
-  }
-
-  rbuild_fetch_releases($node);
 }
 
 /**
