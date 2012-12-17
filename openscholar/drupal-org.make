@@ -205,6 +205,7 @@ projects[og_views][version] = 1.0
 projects[og_vocab][subdir] = "contrib"
 projects[og_vocab][version] = 1.x-dev
 projects[og_vocab][patch][] = "http://drupal.org/files/og_vocab_uuid_support-7.patch"
+projects[og_vocab][patch][] = "http://drupal.org/files/1864634-og-bundle-4.patch"
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
