@@ -144,21 +144,17 @@ function iqss_pinserver_register_submit($form, &$form_state) {
     $uid = user_load_by_name($form_state['values']['name'])->uid;
   }
 
-  // Look hard for HUID.
-  if(isset($_SESSION['pinserver']['huid']) && !empty($_SESSION['pinserver']['huid']) && is_numeric($_SESSION['pinserver']['huid'])) {
-    $huid = $_SESSION['pinserver']['huid'];
-  }
-  else if(isset($form_state['values']['huid']) && !empty($form_state['values']['huid']) && is_numeric($form_state['values']['huid'])) {
+  // Look hard for HUID. Prefer form value over session value.
+  if(isset($form_state['values']['huid']) && !empty($form_state['values']['huid']) && is_numeric($form_state['values']['huid'])) {
     $huid = $form_state['values']['huid'];
+  }
+  else if(isset($_SESSION['pinserver']['huid']) && !empty($_SESSION['pinserver']['huid']) && is_numeric($_SESSION['pinserver']['huid'])) {
+    $huid = $_SESSION['pinserver']['huid'];
   }
 
   // Create UID->HUID association in database if UID and HUID are present.
-  if ($uid && $huid) {
-    iqss_pinserver_register_add_row($uid, $huid);
-  }
-  else {
-    error_log('WARNING: The iqss_pinserver_register_submit function was called without UID and/or HUID; database not updated');
-    exit;
+  if (!empty($uid) && !empty($huid) && !iqss_pinserver_register_add_row($uid, $huid)) {
+    error_log('WARNING: The iqss_pinserver_register_submit function could not add the UID->HUID association to the database');
   }
 
   // Removes pinserver session vars.
@@ -198,9 +194,9 @@ function iqss_pinserver_register_validate_elements(&$form_state) {
 function iqss_pinserver_register_validate_huid($huid) {
   $errors = array();
 
-  // Verify field is not empty.
+  // Empty HUID field is okay.
   if (empty($huid)) {
-    $errors[] = t('The @harvard_id cannot be empty.', array('@harvard_id' => 'Harvard ID'));
+    return $errors;
   }
 
   // Verifies HUID is numeric.
