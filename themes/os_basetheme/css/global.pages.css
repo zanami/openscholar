@@ -772,6 +772,8 @@ border:1px solid #CCC;
 	
 /* Recent Images Widget */
 
+.block-boxes-os_sv_list_box .item-list ul.recent-images-list li {list-style-image:none;}
+
 ul.recent-images-list li {
   list-style: none;
   padding: 0;
