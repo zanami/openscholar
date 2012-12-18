@@ -223,7 +223,7 @@ p span {
  }
 
 
-#block-boxes-os-news-latest .modified-in-os_news_process_node {margin-bottom:-10px;}
+#block-boxes-os-news-latest .modified-in-os_news_process_node {margin-bottom:-10px;clear: both;}
 
 
 h5 {

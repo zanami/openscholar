@@ -1188,16 +1188,8 @@ function _os_get_node_type_name($type) {
  function os_exit(){
    global $user;
 
-   if (!drupal_save_session()) {
-     // We don't have anything to do if we are not allowed to save the session.
-     return;
-   }
-
-   if (empty($user->uid)) {
-     // The user is not logged in dont save their session data
-     drupal_save_session(FALSE);
-     if (drupal_session_started()) {
-       session_destroy();
-     }
+   if (empty($user->uid) && !empty($_SESSION)) {
+     // The user is not logged in destroy their session data
+     $_SESSION = array();
    }
  }
