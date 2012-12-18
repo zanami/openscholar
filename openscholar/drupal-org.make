@@ -205,7 +205,6 @@ projects[og_views][version] = 1.0
 projects[og_vocab][subdir] = "contrib"
 projects[og_vocab][version] = 1.x-dev
 projects[og_vocab][patch][] = "http://drupal.org/files/og_vocab_uuid_support-7.patch"
-projects[og_vocab][patch][] = "http://drupal.org/files/1864634-og-bundle-4.patch"
 
 projects[olark][subdir] = "contrib"
 projects[olark][version] = 1.0-beta1
@@ -224,10 +223,9 @@ projects[purl][branch][] = "7.x-1.x"
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
 
-projects[resetws][subdir] = "contrib"
-projects[resetws][version] = "2.0-alpha3"
-projects[resetws][patch][] = "http://drupal.org/files/1806142-restws-property-exception.patch"
-
+projects[restws][subdir] = "contrib"
+projects[restws][version] = "2.0-alpha3"
+projects[restws][patch][] = "http://drupal.org/files/1806142-restws-property-exception.patch"
 
 projects[shorten][subdir] = "contrib"
 projects[shorten][version] = 1.2
