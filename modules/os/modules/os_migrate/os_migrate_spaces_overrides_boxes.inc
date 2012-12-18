@@ -468,6 +468,7 @@ class BoxPorter {
       'os_boxes_modal_siteinfo' => 'os_boxes_siteinfo', //needs pulling from orig vsite
       'vsite_taxonomy_fbt' => 'os_taxonomy_fbt',
       'os_boxes_curr_toc' => 'os_boxes_booktoc', //needs an option added
+      'views-os_blog_block_1' => 'views-os_blog_block',
       //'os_boxes_pub_typ_list' => 'os_boxes_pub_type',
     );
 
