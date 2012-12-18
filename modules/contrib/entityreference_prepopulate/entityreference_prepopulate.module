@@ -31,7 +31,7 @@ function entityreference_prepopulate_field_create_instance($instance) {
 }
 
 /**
- * Implements hook_field_update_update().
+ * Implements hook_field_update_instance().
  */
 function entityreference_prepopulate_field_update_instance($instance, $prior_instance) {
   if (empty($instance['settings']['behaviors']['prepopulate'])) {
@@ -92,10 +92,6 @@ function entityreference_prepopulate_og_field_default_value($entity_type, $entit
  */
 function entityreference_prepopulate_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
   list($id,,$bundle) = entity_extract_ids($entity_type, $entity);
-  if ($id) {
-    // Entity is already saved.
-    return;
-  }
 
   if (!empty($form_state['triggering_element']['#ajax'])) {
     // We are inside AJAX, so values can't be taken from URL at the
@@ -125,12 +121,12 @@ function entityreference_prepopulate_field_attach_form($entity_type, $entity, &$
       }
       $settings = $instance['settings']['behaviors']['prepopulate'];
 
-      if (!empty($settings['skip_perm']) && user_access($settings['skip_perm'])) {
+      if ((!empty($settings['skip_perm']) && user_access($settings['skip_perm'])) || ($id && !$settings['action_on_edit'])) {
         continue;
       }
 
       $field = $value['field'];
-      if (entityreference_prepopulate_get_values($field, $instance)) {
+      if (entityreference_prepopulate_get_values($field, $instance) || ($id && $settings['action_on_edit'])) {
         if ($settings['action'] == 'disable') {
           $form[$field_name][$lang]['#disabled'] = TRUE;
         }

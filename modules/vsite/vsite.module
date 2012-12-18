@@ -359,9 +359,10 @@ function vsite_attach_fields_to_group_content($entity_type, $bundle) {
   $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
     'status' => TRUE,
     'action' => 'hide',
-    'fallback' => 'none',
-    'skip_perm' => 'administer group',
+    'fallback' => 'hide',
+    'skip_perm' => FALSE,
     'og_context' => TRUE,
+    'action_on_edit' => TRUE,
   );
   og_create_field(OG_AUDIENCE_FIELD, $entity_type, $bundle, $og_field);
 }
