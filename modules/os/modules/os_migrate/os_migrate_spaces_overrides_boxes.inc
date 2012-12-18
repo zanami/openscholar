@@ -908,8 +908,14 @@ class BoxPorter {
     }
     $options['biblio_show_all'] = TRUE;
     $options['biblio_whitelist'] = array();
-    $box->options = $options;
 
+
+    //more link.  announcements is non-existent
+    if ($box->options['more_link'] == 'announcemnts') {
+      $box->options['more_link'] = 'news';
+    }
+
+    $box->options = $options;
     return $box;
   }
 
