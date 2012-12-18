@@ -314,10 +314,11 @@ class os_sv_list_box extends os_boxes_default {
       case 'image':
         $image_query = new EntityFieldQuery();
         $image_query->entityCondition('entity_type', 'file');
+        // Add image as a condition, this will remove all media from showing up.
+        $image_query->propertyCondition('type', 'image');
         if ($space = spaces_get_space()) {
           $image_query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
         }
-
         $sorts = array(
           'sort_newest' => array('timestamp', 'DESC'),
           'sort_oldest' => array('timestamp', 'ASC'),
@@ -425,11 +426,13 @@ class os_sv_list_box extends os_boxes_default {
 
     foreach ($files as $image) {
       $variables = array(
+        'style_name' => "os_square_50_50",
         'path' => $image->uri,
-        'attributes' => array('width'=>50,'height'=>50),
+        'height' => NULL,
+        'width' => NULL,
       );
       //$html .= theme('image', $variables);
-      $img = theme('image', $variables);
+      $img = theme_image_style($variables);
       $items[] = l($img, file_create_url($image->uri), array('html'=>TRUE)); //get a real url, hippie!
     }
 
