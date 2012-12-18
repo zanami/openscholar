@@ -768,7 +768,20 @@ border:1px solid #CCC;
 			height:22px;
 			background-position: -1px -3px;
 	       }
-
-
+	       
 	
+/* Recent Images Widget */
+
+ul.recent-images-list li {
+  list-style: none;
+  padding: 0;
+  float: left;
+  clear: none;
+  margin: 0 5px 5px 0; 
+}
 	
+ul.recent-images-list li img {
+  padding: 4px;	
+  background-color: white;	
+  border: 1px solid #ADADAD;
+}
