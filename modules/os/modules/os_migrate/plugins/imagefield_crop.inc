@@ -41,11 +41,11 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
         $values[0] = $recycled->fid;
         $values['arguments']['file_class'] = 'MigrateFileFid';
       } else {
-        Migration::displayMessage(t('Error reusing cropped vsite logo: @file', array('@file'=>$values['thumb_filepath'])));
+        Migration::displayMessage(t('Error reusing cropped image: @file', array('@file'=>$values['thumb_filepath'])));
       }
     } elseif ($action == 'crop') {
       //crop a new image
-      if ($original = $this->_save_original($values[0], $gid, $entity->uid)) { //no og_group_ref yet....
+      if ($original = $this->_save_original($values[0], $gid, $entity->uid, $values)) { //no og_group_ref yet....
         $this->_image_dimensions($values);
         $items = array('fid' => $original->fid); //also has cropbox_x and y widht and height
         $items += array_intersect_key($values['arguments'], array_flip(array('cropbox_x', 'cropbox_y', 'cropbox_width', 'cropbox_height')));
@@ -144,7 +144,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
    * Figure out if this image will be cropped in d7 or if we can reuse the cropped image from d6.
    */
   function _get_action($values) {
-    if ($this->_get_thumb_and_full($values[0])) {
+    if ($this->_get_thumb_and_full($values[0], $values['arguments'])) {
       return 'recycle';
     }
 
@@ -167,7 +167,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
    * 2. D6 {files} filename is the full image.  Inserting path to imagecache in the filepath leads to the thumbnail.
    * 3. D6 {files} filename is full image, imagefield_thumbs holds the thumbnail
    */
-  function _get_thumb_and_full($original) {
+  function _get_thumb_and_full($original, $args) {
     $root = variable_get('os_migrate_files') . '/';
 
     //.crop_display.jpg
@@ -208,14 +208,16 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
    * the db, and return the fid
    */
   function _recycle(&$values, $gid, $uid) {
-    list($thumb_filepath, $full_filepath) = $this->_get_thumb_and_full($values[0]);
+    list($thumb_filepath, $full_filepath) = $this->_get_thumb_and_full($values[0], $values['arguments']);
+    $destination = (isset($values['arguments']['destination_dir'])) ? 'public://' . $values['arguments']['destination_dir'] : 'public://';
+    file_prepare_directory($destination, FILE_CREATE_DIRECTORY);
 
     $full = new stdClass();
     $full->uid = $uid;
     $full->filemime = file_get_mimetype($full_filepath);
     $full->uri = $full_filepath;
 
-    $full = file_copy($full, 'public://');
+    $full = file_copy($full, $destination);
     if ($full && $gid) {
       $full_entity = entity_metadata_wrapper('file', $full);
       $full_entity->og_group_ref = array($gid);
@@ -227,7 +229,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $thumb->filemime = file_get_mimetype($thumb_filepath);
     $thumb->uri = $thumb_filepath;
 
-    $thumb = file_copy($thumb, 'public://');
+    $thumb = file_copy($thumb, $destination);
     if ($thumb && $gid) {
       $thumb_entity = entity_metadata_wrapper('file', $thumb);
       $thumb_entity->og_group_ref = array($gid);
@@ -244,7 +246,9 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $values['arguments']['cropbox_width'] = $dim[0];
     $values['arguments']['cropbox_height'] = $dim[1];
 
-    file_usage_add($full, 'imagefield_crop', 'file', $thumb->fid);
+    if ($thumb && $full) {
+      file_usage_add($full, 'imagefield_crop', 'file', $thumb->fid);
+    }
     return $thumb;
   }
 
@@ -263,9 +267,11 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
    * @return int $fid
    *   file id where $original file is saved
    */
-  function _save_original($original_file, $gid, $uid){
+  function _save_original($original_file, $gid, $uid, $values){
     $full = $original_file . '.crop_display.jpg';
     $filepath = variable_get('os_migrate_files') . '/' . $original_file;
+    $destination = (isset($values['arguments']['destination_dir'])) ? 'public://' . $values['arguments']['destination_dir'] : 'public://';
+
 
     if (!is_readable($filepath)) {
       return FALSE;
@@ -276,7 +282,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     $file->filemime = file_get_mimetype($filepath);
     $file->uri = $filepath;
 
-    $file = file_copy($file, 'public://');
+    $file = file_copy($file, $destination);
     if ($file && $gid) {
       // attach metadata and save
       $entity = entity_metadata_wrapper('file', $file);
