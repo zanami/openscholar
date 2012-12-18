@@ -8,9 +8,6 @@
 include_once ('os.features.inc');
 include_once ('includes/os.inc');
 
-// ugly ass hack
-include_once (drupal_get_path('module', 'spaces').'/spaces.overrides.inc');
-
 /**
  * Implements hook_menu().
  */
@@ -1185,19 +1182,22 @@ function _os_get_node_type_name($type) {
 }
 
 
-// /**
-//  * Do not save session data for anon users
-//  */
-//  function os_exit(){
-//    global $user;
+/**
+ * Do not save session data for anon users
+ */
+ function os_exit(){
+   global $user;
 
-//    if (!drupal_save_session()) {
-//      // We don't have anything to do if we are not allowed to save the session.
-//      return;
-//    }
+   if (!drupal_save_session()) {
+     // We don't have anything to do if we are not allowed to save the session.
+     return;
+   }
 
-//    if (empty($user->uid) && !empty($_SESSION)) {
-//      // The user is not logged in destroy their session data
-//      $_SESSION = array();
-//    }
-//  }
+   if (empty($user->uid)) {
+     // The user is not logged in dont save their session data
+     drupal_save_session(FALSE);
+     if (drupal_session_started()) {
+       session_destroy();
+     }
+   }
+ }

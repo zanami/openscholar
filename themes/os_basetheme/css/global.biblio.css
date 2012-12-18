@@ -181,14 +181,14 @@ a.biblio-abstract-link {
   
 a.biblio-abstract-link.toggle {
 	padding-left:12px;
-	background:url('../images/scholarbase-sprite.png') 0 -402px no-repeat;
+	background:url('../images/scholarbase-sprite.png') 0 -399px no-repeat;
 	text-decoration: none;
 	
 }
 
 a.biblio-abstract-link.toggle.expanded {
 	padding-left:12px;
-	background:url('../images/scholarbase-sprite.png') 0 -415px no-repeat;
+	background:url('../images/scholarbase-sprite.png') 0 -412px no-repeat;
 	text-decoration: none;
 }
 

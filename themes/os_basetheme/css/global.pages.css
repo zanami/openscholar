@@ -769,7 +769,11 @@ border:1px solid #CCC;
 			background-position: -1px -3px;
 	       }
 	       
+	
 /* Recent Images Widget */
+
+.block-boxes-os_sv_list_box .item-list ul.recent-images-list li {list-style-image:none;}
+
 ul.recent-images-list li {
   list-style: none;
   padding: 0;
@@ -777,13 +781,9 @@ ul.recent-images-list li {
   clear: none;
   margin: 0 5px 5px 0; 
 }
-
+	
 ul.recent-images-list li img {
-  padding: 4px;
-  background-color: white;
+  padding: 4px;	
+  background-color: white;	
   border: 1px solid #ADADAD;
 }
-
-
-	
-	
