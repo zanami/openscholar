@@ -144,6 +144,10 @@ function os_files_clippy($url_file, $options = array()){
   return $html;
 }
 
+function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
+  $form['help']['#markup'] = t('You may press Submit immediately after choosing a file. If you wish to view the progress of your file upload, you can press Upload and a progress bar will show you how far along your upload is.');
+}
+
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   // only display the field if the file is older than 5 minutes
 
