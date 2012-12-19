@@ -109,6 +109,34 @@ function harvard_activity_reports_install() {
 }
 
 /**
+ * Update to creates a new column for hashed huids.  Alter the huid column to allow it to be null.
+ * Hash the huids and update each row with their corresponding hashed id.
+ */
+function harvard_activity_reports_update_7001(&$sandbox) {
+
+  if (!module_exists('iqss_pinserver_register')) {
+    return t('IQSS Pinserver Register module not enabled, no updates performed for the HAR Module.');
+  }
+
+  // first check to see if the field exist
+  // gather all the fields in this table
+  if(db_field_exists('iqss_pinserver_register','hashID')==FALSE){
+	db_add_field('iqss_pinserver_register', 'hashID', array('type' => 'varchar','length' => 256,'not null' => FALSE,'default' => NULL));
+  }
+
+  // alter the table
+  if(db_field_exists('iqss_pinserver_register','huid')==TRUE){
+	harvard_activity_reports_alter_null();
+  }
+
+  // run the inserts
+  if(db_field_exists('iqss_pinserver_register','hashID')==TRUE){
+    harvard_activity_reports_hash_uids();
+  }
+  return t('Column created, column altered and all huid\'s have been hashed.');
+}
+
+/**
  * Implements hook_uninstall().
  */
 function harvard_activity_reports_uninstall() {
