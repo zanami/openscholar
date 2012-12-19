@@ -229,3 +229,7 @@ p.copy, p.copy a, p.copy a:visited {
 p.copy a {
   text-decoration: underline;
   }
+  
+  .date-next a {
+font-size: 11px;
+}

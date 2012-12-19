@@ -433,7 +433,7 @@ class os_sv_list_box extends os_boxes_default {
       );
       //$html .= theme('image', $variables);
       $img = theme_image_style($variables);
-      $items[] = l($img, file_create_url($image->uri), array('html'=>TRUE)); //get a real url, hippie!
+      $items[] = l($img, file_create_url($image->uri), array('html'=>TRUE, 'attributes' => array('rel' => 'recent-images', 'class' => 'colorbox'))); //get a real url, hippie!
     }
 
     return theme('item_list', array('items'=>$items, 'attributes'=>array('class'=>array('recent-images-list'))));
