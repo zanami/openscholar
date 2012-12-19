@@ -68,7 +68,10 @@ p {
 }
 	
 	
-.node-type-event .node-event .field-name-body p img.image-style-os-files-large {padding:0 15px 15px 0;}
+.node-type-event .node-event .field-name-body p img.image-style-os-files-large,
+.node-type-event .node-event .field-name-body p img.image-style-os-files-xlarge {padding:0 15px 15px 0;}
+
+
 
 
 li {
