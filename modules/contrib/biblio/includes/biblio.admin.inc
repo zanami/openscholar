@@ -1433,7 +1433,11 @@ function biblio_admin_types_add_form($form, &$form_state) {
 function biblio_admin_types_add_form_submit($form, &$form_state) {
   $values['name'] = $form_state['values']['name'];
   $values['description'] = $form_state['values']['description'];
-  $values['tid'] = variable_get('biblio_max_user_tid', '999') + 1;
+  $query = db_select('biblio_types', 'bt');
+  $expression = $query->addExpression('MAX(tid)', 'max_tid');
+  $result = $query->execute();
+  $record = $result->fetchAssoc();
+  $values['tid'] = $record['max_tid'] + 1;
 
   db_insert('biblio_types')
     ->fields($values)
