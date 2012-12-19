@@ -991,7 +991,12 @@ function biblio_admin_types_edit_form_submit($form, &$form_state) {
         $val['ftdid'] = $new_ftdid;
         $link['ftdid'] = $new_ftdid;
         $link['cust_tdid'] = $new_ftdid;
-        drupal_write_record('biblio_field_type_data', $val);
+        $result = db_select('biblio_field_type_data', 'ftd')
+          ->fields('ftd')
+          ->execute()
+          ->fetchAllAssoc('ftdid');
+        $primary_keys = array_keys($result);
+        drupal_write_record('biblio_field_type_data', $val, $primary_keys);
 
       }
       elseif ($update >= 100 && $link['tid']) { // we are updating an existing entry
