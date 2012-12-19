@@ -135,12 +135,13 @@ ul.grid {
   }
 
 
-.region-content-top {
+.at-panel .region.region-content-top {
   padding: 0 35px;
   background:url('../images/container-front.jpg') no-repeat scroll 0 0 transparent;
   width: 100%;
   height:673px;
   margin-left: -35px;
+  float:left;
   }
 
 .front #content-column {
