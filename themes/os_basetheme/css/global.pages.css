@@ -788,6 +788,8 @@ ul.recent-images-list li img {
   border: 1px solid #ADADAD;
 }
 
+#box-os_image_gallery_latest-page .more-link {clear:both;}
+
 /**
  * "News" node-type styles.
  *
