@@ -328,6 +328,9 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       }
     }
 
+    //update links to attached files.  they should have been updated to include files/$purl
+//    $node_dirty = ($this->_complete_body_links($entity, $row) || $node_dirty);
+
     //resave the node
     if ($node_dirty) {
       foreach($entity->field_upload as $lang => $fields) {
@@ -507,4 +510,82 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       return $override;
     }
   }
+
+  /**
+   * Update links in node bodies.
+   */
+  public static function _complete_body_links(&$node, $row) {
+    //only update nodes with attachments
+    $body = $node->body[$node->language][0]['value'];
+    $original_body = $body;
+    if (!isset($row->field_upload) || empty($row->field_upload) || (strpos($body, 'href=')===FALSE) && (strpos($body, 'src=') === FALSE)) {
+      return FALSE;
+    }
+
+    //get domain
+    $query = parent::d6_db_select('spaces_overrides', 'so')
+      ->condition('id', $row->group_nid)
+      ->condition('object_id', 'vsite_domain_name')
+      ->fields('so', array('value'))
+      ->execute();
+
+    if ($query->rowCount()) {
+      $domain = $query->fetchField();
+      $domain = unserialize($domain);
+    }
+
+    if (!isset($domain) || !$domain) {
+      $domain = variable_get('os_migrate_use_domain', variable_get('purl_base_domain', FALSE));
+      $domain = str_replace('http://', '', $domain);
+    }
+
+    //legacy files dir
+    $legacy_files = parent::d6_variable_get('file_directory_path', 'sites/default/files');
+    $current_files = variable_get('file_directory_path', 'sites/default/files');
+
+    //filepaths to replace
+    $candidates = array(
+      //"http://projects.iq.harvard.edu/sites/projects.iq.harvard.edu/files/huqualhomeimage.jpg"
+      "http://${domain}/${legacy_files}/",
+
+      //"/sites/projects.iq.harvard.edu/files/rcss/files/ssc-table-01.png"
+      "/${legacy_files}/",
+
+      //http://projects.iq.harvard.edu/sainit/files/SAI_Internship_booklet_2009.pdf
+      "http://${domain}/",
+
+      // /govpostgers/files/georgeyin.pdf
+      '/',
+    );
+
+    //loop over files
+    foreach ($row->field_upload as $delta => $filename) {
+      if ($newfile = $node->field_upload[$node->language][$delta]) {
+        $newpath = file_create_url($newfile['uri']);
+        $newpath = str_replace($current_files, 'files', $newpath);
+
+        //try to match cases of path with and without purl, as provided by file table
+        $matches = array();
+        foreach ($candidates as $c) {
+          $matches[] = $c . trim($filename, '/');
+          $matches[] = $c . trim($row->field_upload_filename[$delta], '/');
+        }
+
+        //replace matches in body, wrapped in single/double quotes so we can match whole string.
+        foreach ($matches as $m) {
+          $body = str_replace('"'.$m.'"', '"'.$newpath.'"', $body);
+          $body = str_replace("'".$m."'", "'".$newpath."'", $body);
+        }
+      }
+    }
+
+    //swap body into node return
+    if ($body != $original_body) {
+      $node->body[$node->language][0]['value'] = $body;
+      return TRUE;
+    }
+
+    return FALSE;
+  }
+
 }
