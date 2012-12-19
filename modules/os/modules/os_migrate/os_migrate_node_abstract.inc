@@ -576,14 +576,17 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         foreach ($patterns as $p) {
           $candidates[$filename][] = $p . trim($filename, '/');          //full vsite/files/file.ext
           $candidates[$filename][] = $p . end(explode('/', $filename));  //just file.ext
-
-          foreach (self::_filefield_get_alias($row->nid, $filename) as $alias) {
-            $candidates[$filename][] = $p . trim($alias, '/');          //full vsite/files/file.ext
-            $candidates[$filename][] = $p . end(explode('/', $alias));  //just file.ext
-          }
-
-          $candidates[$filename] = array_unique($candidates[$filename]);
         }
+
+        //add aliases.  aliases only ever follow a domain, so try it for both domain options but no other patterns
+        foreach (self::_filefield_get_alias($row->nid, $filename) as $alias) {
+          $candidates[$filename][] =  "${domain}/" . trim($alias, '/');
+          if ($domain != $purl_base_domain) {
+            $candidates[$filename][] =  "${purl_base_domain}/" . trim($alias, '/');
+          }
+        }
+
+        $candidates[$filename] = array_unique($candidates[$filename]);
 
         //replace matches in body, wrapped in single/double quotes so we can match whole string.
         foreach ($candidates[$filename] as $c) {
