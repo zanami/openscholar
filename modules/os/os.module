@@ -630,6 +630,12 @@ function os_entity_form_after_build($form, $form_state) {
 function os_form_node_form_alter(&$form, $form_state) {
   unset($form['options']['promote']);
   $form['path']['pathauto']['#description'] = t('Uncheck this to create a custom alias below.');
+  if (isset($form['field_upload']['und']['add_more']['#value'])) {
+    $form['field_upload']['und']['add_more']['#value'] = t('Add media');
+  }
+  if (isset($form['og_group_ref']['und'][0]['admin']['add_more']['#value'])) {
+    $form['og_group_ref']['und'][0]['admin']['add_more']['#value'] = t('Add administrator');
+  }
 }
 
 /**

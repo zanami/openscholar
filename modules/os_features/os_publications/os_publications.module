@@ -221,7 +221,8 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   // So I'm keeping them.
   $form['biblio_authors'] = $form['biblio_tabs']['biblio_authors'];
   unset($form['biblio_authors']['#group']);
-  $form['biblio_authors']['add_more']['#value'] = t('Add Author');
+  $form['biblio_authors']['add_more']['#value'] = t('Add author');
+  $form['field_biblio_extra']['und']['add_more']['#value'] = t('Add extra field');
   $form['biblio_authors']['#collapsible'] = FALSE;
   $form['biblio_authors']['#attached']['js'] = array(drupal_get_path('module', 'os_publications') . '/misc/os_publications.js');
   foreach ($form['biblio_authors']['biblio_contributors'] as $k => $f) {
