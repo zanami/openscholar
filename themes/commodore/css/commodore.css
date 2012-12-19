@@ -6,13 +6,13 @@
 
 
 html, body {
-     background: url("../images/bodyBg.gif") 0 7px transparent;
+     background: url("../images/bodyBg.gif") 0 7px repeat-x;
      color: #545454;
      font: 0.93em/22px Arial,Verdana,sans-serif;
 }
 
 body.logged-in {
-     background: url("../images/bodyBg.gif") 0 52px transparent;
+     background: url("../images/bodyBg.gif") 0 52px repeat-x;
 }
 
 
