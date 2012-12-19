@@ -220,6 +220,15 @@ function harvard_activity_reports_subval_sort($a,$subkey) {
 function harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$nid) {
   $return = '';
 
+  // load in the vsite data
+  $vsite = vsite_get_vsite($nid);
+  if(!empty($vsite)) {
+	// Create the source url.
+	$source_url = $vsite->get_absolute_url();
+  }else{
+    $source_url = NULL;
+  }
+
   // Create a dom document with encoding utf8.
   $domtree = new DOMDocument('1.0', 'UTF-8');
   $domtree->formatOutput=true;
@@ -250,6 +259,12 @@ function harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$ni
   // now the test node
   $hash_idAttValue = $domtree->createTextNode($hash_id);
   $hash_idAtt->appendChild($hash_idAttValue);
+  // attribute #1 sourceURL.
+  $url_att = $domtree->createAttribute("sourceUrl");
+  $personElement->appendChild($url_att);
+  // Create the text for the sourceUrl attribute
+  $url_att_value = $domtree->createTextNode($source_url);
+  $url_att->appendChild($url_att_value);
   // attribute #2
   $asAtt = $domtree->createAttribute("action_status");
   $personElement->appendChild($asAtt);
@@ -297,14 +312,8 @@ function harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$ni
         }
       }
       break;
-
     case "error":
-      $xmlRoot->appendChild($domtree->createElement('errorMessage',$xml['biblio_error_message']));
-      break;
-
     case "unknown":
-      $xmlRoot->appendChild($domtree->createElement('errorMessage',$xml['biblio_error_message']));
-      break;
   }
   $return = $domtree->saveXML();
   return $return;
@@ -322,7 +331,7 @@ function harvard_activity_reports_page() {
     // xml status is ok
     $status = "ok";
     if (module_exists('iqss_pinserver_register')) {
-      $hash_id = db_query("SELECT i.huid FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = :nid AND i.uid = n.uid",array(':nid'=>$nid))->fetchField();
+      $hash_id = db_query("SELECT i.hashID FROM {iqss_pinserver_register} i, {node} n WHERE n.nid = :nid AND i.uid = n.uid",array(':nid'=>$nid))->fetchField();
     }
     else{
       $hash_id = NULL;
@@ -349,7 +358,7 @@ function harvard_activity_reports_page() {
         }
       }
       else {
-        // No year selected, just get everything greater than of less than
+        // No year selected, just get everything greater than or equal to
         // the current year.
         if ($node->biblio_year >= $year) {
           // Increment the counter.
@@ -378,7 +387,7 @@ function harvard_activity_reports_page() {
   }
 
   // Send back the XML.
-  drupal_add_http_header('Content-Type', 'application/rss+xml; charset=utf-8');
+  drupal_add_http_header('Content-Type', 'application/xml; charset=utf-8');
   print $return;
   drupal_exit();
 }
