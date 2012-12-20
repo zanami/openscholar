@@ -145,7 +145,6 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
  */
 function harvard_activity_reports_query_user() {
   // Check if we already have a space context.
-  // @todo: Is this ok?
   if ($vsite = spaces_get_space()) {
     return $vsite->group->uid;
   }
@@ -223,8 +222,8 @@ function harvard_activity_reports_create_xml($biblio_data, $hash_id, $status,$ni
   // load in the vsite data
   $vsite = vsite_get_vsite($nid);
   if(!empty($vsite)) {
-	// Create the source url.
-	$source_url = $vsite->get_absolute_url();
+  // Create the source url.
+  $source_url = $vsite->get_absolute_url();
   }else{
     $source_url = NULL;
   }
@@ -408,8 +407,6 @@ function _harvard_activity_reports_build_bibilio_data($node) {
   $return['biblio_title'] = $node->title;
   $return['biblio_url'] = $node->biblio_url;
   $return['biblio_type_name'] = $node->biblio_type_name;
-  // @todo: Is this correct?
-  $return['biblio_path'] = url('node/' . $node->nid, array('absolute' => TRUE));
   $return['biblio_site_name'] = $node->name;
   // grab the citation data now
   $return['biblio_year'] = $node->biblio_year;
