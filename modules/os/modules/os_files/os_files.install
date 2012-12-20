@@ -49,8 +49,9 @@ function os_files_update_7001(&$sandbox) {
 
     // change the file's uri
     $file = file_load($row->fid);
-    file_prepare_directory('public://'.$row->value.'/files/', FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
-    $file = @file_move($file, 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension'], FILE_EXISTS_REPLACE);
+    $target_dir = 'public://'.$row->value.'/files/';
+    file_prepare_directory($target_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+    $file = @file_move($file, $target_dir.$orig_filename.'.'.$pathinfo['extension'], FILE_EXISTS_REPLACE);
     if (!$file) {
       $sandbox['skip']++;
       $sandbox['progress']++;
