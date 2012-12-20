@@ -10,8 +10,7 @@ Feature:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
-      <person huid="" action_status="unknown"/>
-      <errorMessage></errorMessage>
+      <person huid="" sourceUrl="" action_status="unknown"/>
     </response>
     """
 
@@ -20,11 +19,10 @@ Feature:
     Given I visit "harvard_activity_reports?id=foo"
     Then I should get:
     """
-    <?xml version="1.0" encoding="UTF-8"?>
-    <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
-      <person huid="foo" action_status="error"/>
-      <errorMessage></errorMessage>
-    </response>
+  <?xml version="1.0" encoding="UTF-8"?>
+  <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
+    <person huid="foo" sourceUrl="" action_status="error"/>
+  </response>
     """
 
   @api
@@ -34,7 +32,7 @@ Feature:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
-      <person huid="" action_status="ok">
+      <person huid="" sourceUrl="http://local:8888/os/john" action_status="ok">
         <publication id="9" pubType="Book" pubSource="OpenScholar">
           <citation>. The Little Prince. </citation>
           <linkToArticle></linkToArticle>
@@ -51,6 +49,6 @@ Feature:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
-      <person huid="" action_status="ok"/>
+      <person huid="" sourceUrl="http://local:8888/os/john" action_status="ok"/>
     </response>
     """
