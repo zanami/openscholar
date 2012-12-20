@@ -18,15 +18,19 @@ function os_files_update_7001(&$sandbox) {
   $q = db_select('file_managed', 'fm');
   $q->join('og_membership', 'ogm', 'ogm.etid = fm.fid AND entity_type = \'file\'');
   $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
-  try {
-  $r = $q->fields('fm', array('fid', 'filename', 'uri'))
+  $q->fields('fm', array('fid', 'filename', 'uri'))
     ->fields('p', array('value'))
-    ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
-    ->execute();
+    ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
+
+  if (!isset($sandbox['progress'])) {
+    $sandbox['progress'] = 0;
+    $sandbox['limit'] = 10;
+    $sandbox['max'] = $q->countQuery->execute()->fetchField();
   }
-  catch (Exception $e) {
-    return $e->getMessage().'<br>'.$e->query_string;
-  }
+
+  $q->range(0, $sandbox['limit']);
+
+  $r = $q->execute();
 
   foreach ($r as $row) {
     $q = db_select('file_usage', 'fu')
@@ -66,6 +70,8 @@ function os_files_update_7001(&$sandbox) {
         ->execute();
     }
 
-    echo 'file '.$row->fid.' finished<br>';
+    $sandbox['progress']++;
   }
+
+  $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress']/$sandbox['max']);
 }
