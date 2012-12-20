@@ -1186,16 +1186,3 @@ function _os_get_node_type_name($type) {
   $result = $query->execute()->fetchAssoc();
   return $result['name'];
 }
-
-
-/**
- * Do not save session data for anon users
- */
- function os_exit(){
-   global $user;
-
-   if (empty($user->uid) && !empty($_SESSION)) {
-     // The user is not logged in destroy their session data
-     $_SESSION = array();
-   }
- }
