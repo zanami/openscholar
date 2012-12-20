@@ -19,10 +19,10 @@ Feature:
     Given I visit "harvard_activity_reports?id=foo"
     Then I should get:
     """
-  <?xml version="1.0" encoding="UTF-8"?>
-  <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
-    <person huid="foo" sourceUrl="" action_status="error"/>
-  </response>
+    <?xml version="1.0" encoding="UTF-8"?>
+    <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
+      <person huid="foo" sourceUrl="" action_status="error"/>
+    </response>
     """
 
   @api
