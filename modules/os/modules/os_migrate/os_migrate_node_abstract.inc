@@ -599,7 +599,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     //swap body into node return
     if ($body != $original_body) {
       $node->body[$node->language][0]['value'] = $body;
-      parent::saveMessage(t('Updated URLs in node: @nid', array('@nid' => $node->nid)), MigrationBase::MESSAGE_INFORMATIONAL);
+      Migration::displayMessage(t('Updated URLs in node: @nid', array('@nid' => $node->nid)), MigrationBase::MESSAGE_INFORMATIONAL);
       return TRUE;
     }
 
