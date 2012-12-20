@@ -91,7 +91,8 @@ efault/files'));
       $file = explode('/', trim($filepath, '/'));
 
       $file_row->filename = array_pop($file);
-      $file_row->filepath = 'public://' . implode('/', $file);
+      $filepath = parent::_get_destination_path('node', $row->nid);
+      $file_row->filepath = ($filepath) ? $filepath : 'public://' . implode('/', $file);
       $file_row->field_upload_replace = $filepath;// . '/' . $file_row->filename;
       //$file_row->file_destination = $file_destination;
       $files[] = $file_row;

@@ -900,6 +900,86 @@ abstract class OSMigration extends Migration {
       return FALSE; //does this ever happen?  nid==0
     }
   }
+
+  /**
+   * @function _get_destination_path
+   *
+   * Updates the destination path a file will be saved to.  Tries to figure out purl given a d6 entity
+   *
+   * @param string $type
+   *   What type of entity does the id refer to (file, node, etc)
+   * @param int $id
+   *   Id of legacy object.
+   *
+   */
+  public static function _get_destination_path($type, $id) {
+    $cache = drupal_static(__FUNCTION__, array());
+    $key = $type . '::' . $id;
+    if (isset($cache[$key])) {
+      return $cache[$key];
+    }
+
+    //given a type, make a query that joins purl on the group
+    switch ($type) {
+       case 'inline_image':
+        $query = self::d6_db_select('content_field_os_inline_image', 'ct')
+          ->condition('ct.field_os_inline_image_fid', $id);
+        $query->join('node', 'n', 'ct.nid = n.nid');
+        $query->condition('n.nid', $id);
+        $query->join('og_ancestry', 'oga', 'n.nid = oga.nid');
+        $query->join('purl', 'p', 'p.id = oga.group_nid');
+        break;
+
+      case 'inline_file':
+        $query = self::d6_db_select('content_field_os_inline_files', 'ct')
+          ->condition('ct.field_os_inline_files_fid', $id);
+        $query->join('node', 'n', 'ct.nid = n.nid');
+        $query->condition('n.nid', $id);
+        $query->join('og_ancestry', 'oga', 'n.nid = oga.nid');
+        $query->join('purl', 'p', 'p.id = oga.group_nid');
+        break;
+
+      case 'node':
+        $query = self::d6_db_select('node', 'n')
+          ->condition('n.nid', $id);
+        $query->join('og_ancestry', 'oga', 'n.nid = oga.nid');
+        $query->join('purl', 'p', 'p.id = oga.group_nid');
+        break;
+
+      case 'file':
+        $query = self::d6_db_select('upload', 'u')
+          ->condition('u.fid', $id);
+        //lets start with upload.  might have to add an additional tables param if this isn't enoug hfor inline
+
+        $query->join('node', 'n', 'u.nid = n.nid');
+        $query->join('og_ancestry', 'oga', 'n.nid = oga.nid');
+        $query->join('purl', 'p', 'p.id = oga.group_nid');
+        break;
+
+      case 'og':
+        $query = self::d6_db_select('purl', 'p')
+          ->condition('id', $id);
+
+      default:
+        $cache[$key] = FALSE;
+        return FALSE;
+    }
+
+    //now that we have node, getting the purl value is easy.
+    $query->condition('p.provider', 'spaces_og');
+    $query->fields('p', array('value'));
+    $result = $query->execute();
+
+    if ($result->rowCount()) {
+      $purl = $result->fetchField();
+      $return = 'public://' . $purl . '/files';
+    } else {
+      $return = FALSE;
+    }
+
+    $cache[$key] = $return;
+    return $return;
+  }
 }
 
 

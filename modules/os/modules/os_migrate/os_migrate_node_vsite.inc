@@ -108,7 +108,8 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
        list($dest_dir, $dest_file) = parent::_migrate_filename($file->filepath);
        //$row->{'field_site_logo:destination_file'} = $file->filepath;
        $row->{'field_site_logo:destination_file'} = $dest_file;
-       $row->{'field_site_logo:destination_dir'} = $dest_dir;
+       $filepath = parent::_get_destination_path('og', $row->nid); //this is vsite.  nid is the group nid.
+       $row->{'field_site_logo:destination_dir'} = ($filepath) ? $filepath : $dest_dir;
 
        //if we have crop data and the original image still exists, use that instead of the pre-cropped image.
 //        $original_file = $file->filepath . '.crop_display.jpg';

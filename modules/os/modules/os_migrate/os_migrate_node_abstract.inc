@@ -415,7 +415,8 @@ abstract class AbstractNodeOSMigration extends OSMigration {
           }
         }
 
-        $row->filepath = current($row->field_upload_filepath);
+        //$row->filepath = current($row->field_upload_filepath);
+        $row->filepath = ($filepath) ? $filepath : current($row->field_upload_filepath);
         //$row->filename = $row->field_upload_filename; //expects string?
       }
     }

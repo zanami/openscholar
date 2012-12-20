@@ -125,7 +125,8 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
 //      $current_row->{'field_person_photo'} = $file->filepath;
       list ($dir, $filename) = parent::_migrate_filename($file->filepath);
       $current_row->{'field_person_photo:destination_file'} = $filename;
-      $current_row->{'field_person_photo:destination_dir'} = $dir;
+      $filepath = parent::_get_destination_path('node', $current_row->nid);
+      $current_row->{'field_person_photo:destination_dir'} = ($filepath) ? $filepath : $dir;
 
       $current_row->{'field_person_photo:cropbox_x'} = $crop['x'];
       $current_row->{'field_person_photo:cropbox_y'} = $crop['y'];
