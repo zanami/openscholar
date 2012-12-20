@@ -24,8 +24,8 @@ function os_files_update_7001(&$sandbox) {
 
   if (!isset($sandbox['progress'])) {
     $sandbox['progress'] = 0;
-    $sandbox['limit'] = 10;
-    $sandbox['max'] = $q->countQuery->execute()->fetchField();
+    $sandbox['limit'] = 5;
+    $sandbox['max'] = $q->countQuery()->execute()->fetchField();
   }
 
   $q->range(0, $sandbox['limit']);
