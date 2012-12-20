@@ -329,7 +329,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     }
 
     //update links to attached files.  they should have been updated to include files/$purl
-    $node_dirty = ($this->_complete_body_links($entity, $row) || $node_dirty);
+    $node_dirty = (self::_complete_body_links($entity, $row) || $node_dirty);
 
     //resave the node
     if ($node_dirty) {
@@ -566,7 +566,7 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     //loop over files
     $candidates = array();
     foreach ($row->field_upload as $delta => $filename) {
-      if ($newfile = $node->field_upload[$node->language][$delta]) {
+      if (isset($node->field_upload[$node->language][$delta]) && ($newfile = $node->field_upload[$node->language][$delta])) {
         $newpath = file_create_url($newfile['uri']);
         //$newpath = str_replace($current_files, 'files', $newpath); //swap in files dir.  shouldn't be necessary when configured right
         $newpath = str_replace($GLOBALS['base_url'], $domain, $newpath);

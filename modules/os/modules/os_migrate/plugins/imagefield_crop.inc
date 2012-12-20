@@ -194,7 +194,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
     //imagefield thumbs
     //only use this when imagefield_thumbs are is enabled.  useful for profiles.  harmful for vsites.
     $thumb = str_replace($file_directory_path, $file_directory_path . '/imagefield_thumbs/', $full);
-    if ($args['imagefield_thumbs'] && is_readable($thumb) && is_readable($full)) {
+    if (isset($args['imagefield_thumbs']) && $args['imagefield_thumbs'] && is_readable($thumb) && is_readable($full)) {
       return array($thumb, $full);
     }
 
