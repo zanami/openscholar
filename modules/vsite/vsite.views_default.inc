@@ -217,6 +217,10 @@ function vsite_views_default_views() {
   $handler->display->display_options['fields']['field_site_logo']['alter']['path'] = '[field_group_path]';
   $handler->display->display_options['fields']['field_site_logo']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_site_logo']['click_sort_column'] = 'fid';
+  if(module_exists('iqss_scholars_front')) {
+  	$default_img = '<img src="'.drupal_get_path('THEME', 'scholars_harvard').'/images/default_logo-1.jpg" alt="default logo">';
+  	$handler->display->display_options['fields']['field_site_logo']['empty'] = $default_img;
+  }
   $handler->display->display_options['fields']['field_site_logo']['settings'] = array(
     'image_style' => 'iqss_scholars_front_websites_180_x_140',
     'image_link' => '',

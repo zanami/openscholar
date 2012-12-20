@@ -232,7 +232,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   }
 
   // We're coming from biblio's ajax callback. It requires the form structure for authors be unchanged.
-  if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Add Author')) {
+  if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Add author')) {
     $form['biblio_tabs']['biblio_authors'] = $form['biblio_authors'];
     return;
   }

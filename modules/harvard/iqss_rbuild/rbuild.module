@@ -311,7 +311,8 @@ function _rbuild_import_file($url, $filename, $uid, $get_contents = FALSE) {
 
   // Saves file to the root of the files directory.
   $contents      = file_get_contents($filepath);
-  $file          = file_save_data($contents, 'public://' . $filename, FILE_EXISTS_RENAME);
+  $loc           = 'public://gking/files/';
+  $file          = file_save_data($contents, $loc . $filename, FILE_EXISTS_RENAME);
   $file->display = 1;
 
   return $file;
