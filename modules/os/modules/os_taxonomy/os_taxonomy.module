@@ -170,14 +170,6 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     ->condition('term.vid', $options['vocabulary'])
     ->orderBy('weight');
 
-  // Showing specific number of terms from the first hierarchy.
-  if (!empty($options['range'])) {
-    $query->join('taxonomy_term_hierarchy', 'term_hierarchy', 'term_hierarchy.tid = term.tid');
-    $query
-      ->condition('term_hierarchy.parent', 0)
-      ->range($options['offset'], $options['offset'] + $options['range']);
-  }
-
   $result = $query->execute();
 
   $tids = array();
@@ -267,6 +259,16 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       );
     }
   }
+
+  if (!$data) {
+    return;
+  }
+
+  // Make sure we pass the numeric values.
+  $options['offset'] = intval($options['offset']);
+  $options['range'] = intval($options['range']);
+
+  $data = array_slice($data, $options['offset'], $options['offset'] + $options['range'], TRUE);
 
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
     return render(drupal_get_form('os_taxonomy_select_list', $data, $path_prefix));
