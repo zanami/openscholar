@@ -40,11 +40,11 @@ function os_files_update_7001(&$sandbox) {
 
     $pathinfo = pathinfo($row->uri);
     $matches = array();
-    $orig_filename = str_replace('_0', '', $pathinfo['filename']);
+    $orig_filename = str_replace('_0.', '', $pathinfo['filename'].'.');
 
     // change the file's uri
     $file = file_load($row->fid);
-    file_move($file, 'public://files/'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension'], FILE_EXISTS_REPLACE);
+    $file = file_move($file, 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension'], FILE_EXISTS_REPLACE);
 
     // reset the cache to keep memory manageable
     entity_get_controller('file')->resetCache();
@@ -65,5 +65,7 @@ function os_files_update_7001(&$sandbox) {
         ->condition('entity_id', $row->fid)
         ->execute();
     }
+
+    echo 'file '.$row->fid.' finished<br>';
   }
 }
