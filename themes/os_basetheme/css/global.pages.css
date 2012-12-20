@@ -788,6 +788,11 @@ ul.recent-images-list li img {
   border: 1px solid #ADADAD;
 }
 
+ul.recent-images-list li a:hover img {
+     background-color: yellow;
+ 
+}
+
 #box-os_image_gallery_latest-page .more-link {clear:both;}
 
 /**
