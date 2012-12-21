@@ -81,6 +81,8 @@ if (!class_exists('purl_vsite_domain')) {
           return implode('/', $args);
         }
       }
+
+      return $path;
     }
 
     /**
