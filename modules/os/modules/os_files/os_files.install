@@ -22,20 +22,19 @@ function os_files_update_7001(&$sandbox) {
     ->fields('p', array('value'))
     ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
     ->orderBy('fid');
+  $r = $q->execute();
 
   if (!isset($sandbox['progress'])) {
     $sandbox['progress'] = 0;
     $sandbox['limit'] = 5;
     $sandbox['skip'] = 0;
+    $sandbox['data'] = array_values($r->fetchAllAssoc('fid'));
     $sandbox['max'] = $q->countQuery()->execute()->fetchField();
     $sansbox['warnings'] = array();
   }
 
-  $q->range($sandbox['skip'], $sandbox['limit']);
-
-  $r = $q->execute();
-
-  foreach ($r as $row) {
+  for ($i = $sandbox['progress']; $i < min($sandbox['progress'] + $sandbox['limit'], $sandbox['max']); $i++) {
+    $row = $sandbox['data'][$i];
     $q = db_select('file_usage', 'fu')
         ->fields('fu', array('id'))
         ->condition('fid', $row->fid)
