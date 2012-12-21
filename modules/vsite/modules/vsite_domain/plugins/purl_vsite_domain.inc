@@ -61,7 +61,7 @@ if (!class_exists('purl_vsite_domain')) {
       return t('Enter a domain registered for this scholar site, such as "www.example.edu".  Do not include http://');
     }
 
-    private function remove_scholar_purl($path, $options) {
+    private function remove_scholar_purl($path, &$options) {
       if (!($vsite = spaces_get_space()) || !strlen($vsite->group->purl)) {
         return $path;
       }
@@ -78,6 +78,7 @@ if (!class_exists('purl_vsite_domain')) {
         if ($alias != $path && current($args) === (string) $vsite->group->purl) {
           // Removes the value from the front of the query string.
           array_shift($args);
+          $options['alias'] = true;
           return implode('/', $args);
         }
       }
