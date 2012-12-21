@@ -52,6 +52,12 @@ function os_files_update_7001(&$sandbox) {
     $file = file_load($row->fid);
     $target_dir = 'public://'.$row->value.'/files/';
     file_prepare_directory($target_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+    if (!file_exists($file->uri)) {
+      error_log('File not found: '.$file->uri);
+    }
+    else {
+      error_log('File moved from '.$file->uri.' to '.$target_dir);
+    }
     $file = @file_move($file, $target_dir.$orig_filename.'.'.$pathinfo['extension'], FILE_EXISTS_REPLACE);
     if (!$file) {
       $sandbox['skip']++;
