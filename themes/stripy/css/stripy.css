@@ -174,55 +174,17 @@ body.two-sidebars .region-sidebar-first {
 }     
 
 
-.sidebar ul.menu {
-   border-top:none;
-	}
-
-.sidebar ul.menu ul {
-	margin-top:-46px;
-	border-top:none;
-	}
-	
-.sidebar ul.menu li {
-	background:none;
-	}	
-	
-.sidebar ul.menu a {
-	color: #B54F26;
-	line-height: 1;
-	text-decoration:underline !important;
-	}
 	
 .sidebar #block-os-primary-menu ul.menu a {
 	text-decoration:none !important;
 	}	
 	
-.sidebar ul.menu a:hover {
-	color:#8c2e08;
-	} 	
-	
-.sidebar ul.menu ul li {
-    background: #EEEEEE;
-
-}	
 	
 ul.nice-menu-left a, ul.nice-menu-left ul a {
     padding-left: 0;
 }	
 	
 	
-.region-sidebar-second.sidebar ul.menu ul {
-	margin-top:0;
-
-	}	
-
-.sidebar ul.menu ul ul {
-	margin-top:0;
-	border:none;
-	}
-
-
-
 
 /* Nodes */
 

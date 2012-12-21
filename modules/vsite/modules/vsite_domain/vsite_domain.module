@@ -1,4 +1,6 @@
 <?php
+// $Id$
+
 
 /**
  * @file
@@ -17,6 +19,16 @@ define('PURL_VSITE_PATH', 'vsite_path');
  * Implements hook_init().
  *
 function vsite_domain_init() {
+<<<<<<< HEAD
+=======
+  // Only runs this init function once per page load.
+  static $vsite_domain_check;
+  if (isset($vsite_domain_check)) {
+    return;
+  }
+  $vsite_domain_check = TRUE;
+
+>>>>>>> SCHOLAR-3-0
   // Checks to make sure we are in a vsite space.
   $vsite = vsite_get_vsite();
   if (!$vsite) {

@@ -94,6 +94,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['path'] = 'cp/content/comments';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Comments';
+  $handler->display->display_options['menu']['description'] = 'View and manage comments left on your site.';
   $handler->display->display_options['menu']['weight'] = '20';
   $handler->display->display_options['menu']['name'] = 'cp';
   $handler->display->display_options['menu']['context'] = 0;
@@ -578,6 +579,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['path'] = 'cp/content';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Content';
+  $handler->display->display_options['menu']['description'] = 'Create, find and manage the content of your site.';
   $handler->display->display_options['menu']['weight'] = '10';
   $handler->display->display_options['menu']['name'] = 'cp';
   $handler->display->display_options['menu']['context'] = 0;
@@ -592,6 +594,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['path'] = 'cp/content/content';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Posts';
+  $handler->display->display_options['menu']['description'] = 'Find and manage the content of your site.';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'cp';
   $handler->display->display_options['menu']['context'] = 0;
@@ -679,7 +682,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['id']['id'] = 'id';
   $handler->display->display_options['fields']['id']['table'] = 'file_usage';
   $handler->display->display_options['fields']['id']['field'] = 'id';
-  $handler->display->display_options['fields']['id']['label'] = 'Posts with this File';
+  $handler->display->display_options['fields']['id']['label'] = 'User In';
   $handler->display->display_options['fields']['id']['exclude'] = TRUE;
   $handler->display->display_options['fields']['id']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['id']['alter']['make_link'] = TRUE;
@@ -753,6 +756,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['path'] = 'cp/content/files';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Files';
+  $handler->display->display_options['menu']['description'] = 'View files uploaded to your site.';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'cp';
   $handler->display->display_options['menu']['context'] = 0;

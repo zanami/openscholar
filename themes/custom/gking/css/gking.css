@@ -42,7 +42,19 @@ h1, h2, #menu-bar li, #footer {
 p {
   margin: 0 0 1.5em 0;
   }
+  
+.page-people .node-person .field-type-text-with-summary p,
+  .page-links .node-teaser .view-mode-teaser p,
+.page-software .node-teaser .view-mode-teaser p,
+.page-classes .node-teaser .view-mode-teaser p {margin: 0;}
 
+.page-people #content .node-person .field-name-body {
+    margin-top: 0;
+}
+
+.page-people .node.node-link.node-teaser.article.clearfix,
+.page-links .node.node-link.node-teaser.article.clearfix {display:block;}
+ 
 .biblio-note p {
   margin: 0;
   }
@@ -166,6 +178,8 @@ h1#page-title,
   font-size: 1.3em;
   }
   
+  
+ #content .node-person h1.node-title,
  #content .node-software-project h1.node-title {
  	font-size: 1.2em;
  	}
@@ -306,6 +320,30 @@ div.tweets-pulled-listing div.tweet-divider {
     }
 
 a.biblio-abstract-link.toggle {font-weight:bold;}
+
+a.biblio-abstract-link.toggle {
+    background: url("/profiles/openscholar/themes/os_basetheme/images/scholarbase-sprite.png?=1210") no-repeat scroll 0 -400px transparent;
+    padding-left: 12px;
+    text-decoration: none;
+    color: #336599;
+}
+
+a.biblio-abstract-link.toggle.expanded {
+    background: url("/profiles/openscholar/themes/os_basetheme/images/scholarbase-sprite.png?=1210") no-repeat scroll 0 -413px transparent;
+    padding-left: 12px;
+    text-decoration: none;
+    color: #336599;
+}
+
+
+a.biblio-abstract-link {
+    display: inline;
+    font-size: 99%;
+    font-style: normal;
+    font-weight: normal;
+    margin: 0 8px;
+    text-decoration: none;
+}
 
 
 .page-iqss-gking-research-group #content div.node-type-person ul li {
@@ -1143,7 +1181,7 @@ margin-top:5px;
   }
 
 #footer #google_translate_element {
-  margin-top: 15px;
+  margin-top: 5px;
   }
 
 #footer #google_translate_element select.goog-te-combo {
@@ -1593,10 +1631,22 @@ table#ordernodes {
   width:90%;
   }
 
+<<<<<<< HEAD
+=======
+/* Highlights the active term on the "Areas of Research" widget orange */
+>>>>>>> SCHOLAR-3-0
 body.front .block-boxes-os_taxonomy_fbt .item-list ul.termchild-methods .active a,
 body.front .block-boxes-os_taxonomy_fbt .item-list ul.termchild-applications .active a {
   color: #db7002;
 }
+<<<<<<< HEAD
+=======
+
+/* Colors child terms displayed on a taxonomy page with child terms shown. */
+body.page-taxonomy .taxonomy-term h2 {
+	color: #db7002;
+}
+>>>>>>> SCHOLAR-3-0
 
 /* REMOVE BEFORE CHECING IN */
 .front .region-header-second h2.block-title, #messages {display:none;}

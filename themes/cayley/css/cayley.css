@@ -246,41 +246,13 @@ body.one-sidebar .region-sidebar-first {
 
 }  
 
-.sidebar ul.menu {
-	border-top:none;
-	}
-	
-.sidebar ul.menu li {
-	background:none;
-	}	
-	
-.sidebar ul.menu li a {
-	padding-left:0;
-	}	
-	
-.sidebar ul.menu li a:hover {
-	background:transparent;
-	}
-	
-.sidebar ul.menu ul li a:hover {
-	background:#F6F6E9;
-	border:none;
-	}	
 
-.sidebar ul.menu ul {
-	margin-top:-39px;
-	border:none;
-	}
 	
 .region-sidebar-second.sidebar ul.menu ul {
 	margin-top:0;
 
 	}	
 
-.sidebar ul.menu ul ul {
-	margin-top:0;
-	border:none;
-	}
 
 .region-sidebar-first #block-os-primary-menu li a {
   padding-left: 30px;
@@ -299,6 +271,24 @@ body.one-sidebar .region-sidebar-first {
 #footer {
   padding-top: 0;
   }
+  
+ 
+.two-sidebars #footer {
+	background:url('../images/footer_2sdbars.gif') repeat-y;
+} 
+
+.one-sidebar.sidebar-first #footer {
+	background:url('../images/footer_1sdbar_left.gif') repeat-y;
+} 
+
+.one-sidebar.sidebar-second #footer {
+	background:url('../images/footer_1sdbar_right.gif') repeat-y;
+} 
+
+.no-sidebars #footer {
+	background:#F8F7EE;
+} 
+
 
 #footer .wrap {
   padding: 0 30px;

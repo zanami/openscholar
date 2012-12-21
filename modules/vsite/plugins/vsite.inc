@@ -135,7 +135,7 @@ class vsite extends space_og {
       switch ($features[$feature]) {
         //Private
         case 2 :
-          if (! og_is_member($this->group_type, $this->id , 'user', $account)) {
+          if (! og_is_member($this->group_type, $this->id , 'user', $account) && !user_access('administer nodes')) {
             $access = false;
           } //Admin or group member?
           break;
@@ -224,7 +224,7 @@ class vsite extends space_og {
         'node',
         'admin',
         'admin/*',
-        'files/*',
+       // 'files/*', Need files menu entry to be loaded in a space so that the purl can be used to serve old file pats. -RB
     );
 
     $excluded = array_merge($excluded, $more);

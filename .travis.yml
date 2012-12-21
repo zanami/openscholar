@@ -16,9 +16,14 @@ before_script:
   # Remove when we have a make file.
   - cd ~
   - drush dl drupal
+<<<<<<< HEAD
   - mv drupal-7.17 drupal
   - cd drupal
   - mv /home/travis/builds/openscholar/openscholar ./profiles
+=======
+  - cd drupal-7.18
+  - mv /home/travis/builds/openscholar/openscholar ./profiles 
+>>>>>>> SCHOLAR-3-0
   - cd profiles/openscholar
   - bash scripts/setup
   # Re-add, when we have Make file.

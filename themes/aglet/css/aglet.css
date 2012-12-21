@@ -258,17 +258,6 @@ ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
     background: none;
 }  
 
-.sidebar ul.menu li {
-    background:none;
-   }
-   
-.sidebar ul.menu ul li {
-    background:#ccc;
-   }   
-  
-.sidebar ul.menu ul {
-    top: -.15em;
-}
 
 #header-container #block-os-secondary-menu {
   width: 251px;
@@ -306,6 +295,11 @@ ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
   color: #000;
   text-decoration: none;
   }
+
+.sidebar .book-menu ul.menu li a, .sidebar #block-book-navigation ul.menu li a, .sidebar .block-boxes-os_boxes_booktoc ul.menu li a {
+    border-bottom: 1px dotted #CCCCCC;
+
+}
 
 /*Footer */
 
@@ -345,8 +339,3 @@ ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
   background:transparent;
   }
 
-#header-container .search-form input.form-submit,
-#header-container #search-block-form #edit-submit,
-#header-container #search-form #edit-submit{
-  background: transparent;
-  }

@@ -144,10 +144,15 @@ function os_files_clippy($url_file, $options = array()){
   return $html;
 }
 
+function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
+  $form['help']['#markup'] = t('You may press Submit immediately after choosing a file. If you wish to view the progress of your file upload, you can press Upload and a progress bar will show you how far along your upload is.');
+}
+
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   // only display the field if the file is older than 5 minutes
-  if (isset($form['#file'])) {
-    $form['replace_upload']['#access'] = (time() - $form['#file']->timestamp) > 5 * 60;
+
+  if (isset($form['#entity'])) {
+    $form['replace_upload']['#access'] = (time() - $form['#entity']->timestamp) > 5 * 60;
   }
   else {
     $form['replace_upload']['#access'] = false;
@@ -195,8 +200,12 @@ function os_files_download(){
 
 function os_files_entity_info_alter(&$info){
   $info['file']['view modes'] += array(
+    'os_files_xxlarge' => array(
+      'label' => t('Giant Image (1000px)'),
+      'custom settings' => TRUE
+    ),
     'os_files_xlarge' => array(
-      'label' => t('Large Image (800px)'),
+      'label' => t('Huge Image (800px)'),
       'custom settings' => TRUE
     ),
     'os_files_large' => array(
@@ -211,8 +220,12 @@ function os_files_entity_info_alter(&$info){
       'label' => t('Small Image (200px)'),
       'custom settings' => TRUE
     ),
-    'os_files_link' => array(
+    'os_files_link_icon' => array(
       'label' => t('Link with icon'),
+      'custom settings' => TRUE
+    ),
+    'os_files_link' => array(
+      'label' => t('Link with no icon'),
       'custom settings' => TRUE
     )
   );
@@ -229,6 +242,18 @@ function os_files_entity_info_alter(&$info){
 
 function os_files_image_default_styles(){
   $styles = array(
+    'os_files_xxlarge' => array(
+      'effects' => array(
+        array(
+          'name' => 'image_scale',
+          'data' => array(
+            'width' => 1000,
+            'height' => 1000,
+            'upscale' => 0
+          )
+        )
+      )
+    ),
     'os_files_xlarge' => array(
       'effects' => array(
         array(
@@ -284,6 +309,9 @@ function os_files_image_default_styles(){
 
 function os_files_file_default_displays(){
   $keys = array(
+    'image__os_files_xxlarge__file_image' => array(
+      'image_style' => 'os_files_xxlarge'
+    ),
     'image__os_files_xlarge__file_image' => array(
       'image_style' => 'os_files_xlarge'
     ),
@@ -304,7 +332,8 @@ function os_files_file_default_displays(){
   foreach ( file_type_get_enabled_types() + array(
     'default' => array()
   ) as $type => $info ) {
-    $keys["{$type}__os_files_link__os_link"] = array();
+    $keys["{$type}__os_files_link__os_link"] = array('icon' => FALSE);
+    $keys["{$type}__os_files_link_icon__os_link"] = array();
 
     $keys["{$type}__preview__file_field_media_large_icon"] = array();
   }
@@ -333,7 +362,8 @@ function os_files_file_formatter_info(){
   $formatters['os_link'] = array(
     'label' => t('Link To File'),
     'default settings' => array(
-      'download' => TRUE
+      'download' => TRUE,
+      'icon' => TRUE,
     ),
     'view callback' => 'os_files_file_formatter_file_link',
     'settings callback' => 'os_files_file_formatter_file_link_settings'
@@ -357,7 +387,8 @@ function os_files_file_formatter_file_link($file, $display, $langcode){
     return array(
       'icon' => array(
         '#theme' => 'file_icon',
-        '#file' => $file
+        '#file' => $file,
+        '#access' => $display['settings']['icon'],
       ),
       'link' => array(
         '#theme' => 'link',
@@ -433,14 +464,17 @@ function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){
     case 'public' :
       $type = file_get_type($file);
       if ($type == 'image') {
+        $temp['os_files_xxlarge'] = $view_modes['os_files_xxlarge'];
         $temp['os_files_xlarge'] = $view_modes['os_files_xlarge'];
         $temp['os_files_large'] = $view_modes['os_files_large'];
         $temp['os_files_med'] = $view_modes['os_files_med'];
         $temp['os_files_small'] = $view_modes['os_files_small'];
+        $temp['os_files_link_icon'] = $view_modes['os_files_link_icon'];
         $temp['os_files_link'] = $view_modes['os_files_link'];
       }
       else { // until there is support for the audio or video tags, this is the best we can do for that kind of file.
         $temp['os_files_link'] = $view_modes['os_files_link'];
+        $temp['os_files_link_icon'] = $view_modes['os_files_link_icon'];
       }
       $view_modes = $temp;
       break;

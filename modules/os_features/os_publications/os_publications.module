@@ -30,6 +30,15 @@ function os_publications_menu_alter(&$items) {
     'type' => MENU_CALLBACK,
   );
 
+  $items['publications/reset'] = array(
+    'title' => 'Reset OS Publications Defaults',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os_publications_reset'),
+    'access arguments' => 'administer nodes',
+    'file' => drupal_get_path('module', 'os_publications'). '/os_publications.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
   $items['features/os_publications'] = array(
     'title' => 'Settings',
     'page callback' => 'drupal_get_form',
@@ -81,19 +90,35 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
     }
     // Check the sort order for biblio.
     // If we're sorting by year, we want to sort by date as well to replicate d6 sorting.
-    if($space->controllers->variable->get('biblio_sort','space') == 'year') {
+    if ($space->controllers->variable->get('biblio_sort','space') == 'year') {
       // Get their sort order.
       $biblio_year_sort = $space->controllers->variable->get('biblio_order','space');
       $order = &$query->getOrderBy();
+
       // Don't wipe the non-default sort order, this will let users still toggle asc/desc sorting by year.
-      if(array_key_exists('biblio_year', $order) && $order['biblio_year'] != $biblio_year_sort) {
-		$biblio_year_sort = $order['biblio_year'];
+      if (array_key_exists('biblio_year', $order) && $order['biblio_year'] != $biblio_year_sort) {
+	    	$biblio_year_sort = $order['biblio_year'];
       }
-      // Rebuild the array.
-      $order = array();
+
+      // Rebuild the array to our defaults only when the user is NOT searching.  When the user is searching, use their selections
+      if (isset($_GET['s']) && in_array($_GET['s'], array('author', 'title', 'type'))) {
+        $s = current(array_keys($order));
+        $o = current($order);
+
+        if ($s == 'biblio_sort_year') {
+          $biblio_sort_year = $o;
+        }
+
+        if ($s = 'biblio_sort_title') {
+          $biblio_sort_title = $o;
+        }
+      } else {
+        $order = array();
+      }
+
       $order['biblio_year'] = isset($biblio_year_sort) ? $biblio_year_sort : 'DESC';
       $order['biblio_date'] = 'DESC';
-      $order['biblio_sort_title'] = 'ASC';
+      $order['biblio_sort_title'] = (isset($biblio_sort_title)) ? $biblio_sort_title : 'ASC';
     }
   }
 }
@@ -195,7 +220,8 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   // So I'm keeping them.
   $form['biblio_authors'] = $form['biblio_tabs']['biblio_authors'];
   unset($form['biblio_authors']['#group']);
-  $form['biblio_authors']['add_more']['#value'] = t('Add Another Field');
+  $form['biblio_authors']['add_more']['#value'] = t('Add author');
+  $form['field_biblio_extra']['und']['add_more']['#value'] = t('Add extra field');
   $form['biblio_authors']['#collapsible'] = FALSE;
   $form['biblio_authors']['#attached']['js'] = array(drupal_get_path('module', 'os_publications') . '/misc/os_publications.js');
   foreach ($form['biblio_authors']['biblio_contributors'] as $k => $f) {
@@ -205,7 +231,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   }
 
   // We're coming from biblio's ajax callback. It requires the form structure for authors be unchanged.
-  if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Add Another Field')) {
+  if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Add author')) {
     $form['biblio_tabs']['biblio_authors'] = $form['biblio_authors'];
     return;
   }
@@ -355,32 +381,42 @@ function os_publications_preprocess_node(&$vars) {
 /**
  * Removes the export links from the full view of the node
  * Adds 'Abstract' link to toggle a sliding box with the full abstract
+ * Adds in the biblio_url to the external link.
  */
 function os_publications_node_view_alter(&$build, $type) {
   $spaces = spaces_get_space();
   if ($type == 'node' && $build['#bundle'] == 'biblio') {
     if ($build['#view_mode'] == 'teaser') {
-      _os_publications_attach_abstract($build, $build['#node']);
+      // Alter the teaser to remove the external URL as the URL title and
+      // replace it with either the biblio_url_title or "website".
+      if(isset($build['teaser']['#markup'])) {
+      	$html = $build['teaser']['#markup'];
+    	$insert = strrpos($html, '</div>');
+    	// Since the biblio_url is wiped out in the CSL file, get the url back from the node.
+        $node = node_load($build['#node']->nid);
+      	if(!empty($node->biblio_url)) {
+          $biblio_url = $node->biblio_url;
+          $biblio_check_url = l($biblio_url,$biblio_url);
+          $biblio_url_title = !empty($node->biblio_url_title) ? $node->biblio_url_title : 'Website';
+          $new_biblio_url = l($biblio_url_title,$biblio_url);
+          if ($insert === FALSE) {
+            $html .= ' ' . $new_biblio_url;
+    	  }
+    	  else {
+            $html = substr_replace($html, ' ' . $new_biblio_url, $insert, 0);
+    	  }
+          $build['teaser']['#markup'] = $html;
+      	}
+      }
+
+      // Add the abstract slider.
+	  _os_publications_attach_abstract($build, $build['#node']);
+	  // Add in notes.
       if(isset($spaces) && is_object($spaces) && $spaces->controllers->variable->get('os_publications_note_in_teaser', 'space') == TRUE) {
         _os_publications_attach_notes($build, $build['#node']);
       }
       $build['teaser']['#weight'] = 1;
       $build['links']['#access'] = FALSE;
-
-      // Alter the teaser to remove the external URL as the URL title and
-      // replace it with either the biblio_url_title or "website".
-      if(isset($build['teaser']['#markup'])) {
-      	$teaser_markup = $build['teaser']['#markup'];
-      	if(isset($build['#node']->biblio_url)) {
-		  $biblio_url = $build['#node']->biblio_url;
-		  $biblio_check_url = l($biblio_url,$biblio_url);
-		  $biblio_url_title = !empty($build['#node']->biblio_url_title) ? $build['#node']->biblio_url_title : 'Website';
-		  $new_biblio_url = l($biblio_url_title,$biblio_url);
-		  $new_teaser_markup = str_replace($biblio_check_url, $new_biblio_url, $teaser_markup);
-		  $build['teaser']['#markup'] = $new_teaser_markup;
-      	}
-      }
-
     }
     else {
       $links = &$build['links'];
@@ -473,6 +509,7 @@ function _os_publications_clear_cache($node) {
     return;
   }
   $frags   = array();
+  $frags[] = 'args:no';
   $frags[] = 'type:' . $node->biblio_type;
   $frags[] = 'year:' . $node->biblio_year;
   //If there are contributors, add them to the cache key

@@ -5,9 +5,7 @@ body {
   color:#282828;
   }
 
-body.navbar-off {
-  background:url('../images/body-bg.png') repeat-y 50% 0 #fff;
-  }
+
 
 #page {
   margin-top: 38px;

@@ -148,7 +148,7 @@ body.header-left-main #header-container {
 
 #menu-bar
  li {
-    margin-right: 1.5em;
+    margin-right:.4em;
     text-transform: uppercase;
     font-size: 1.1em;
     background: none;
@@ -186,34 +186,6 @@ body.header-left-main #header-container {
 
 }  
 
-.sidebar ul.menu a {
-	color: #8A281B;
-    font-size:1.1em;
-	}
-	
-.sidebar ul.menu a:hover {
-	text-decoration:underline !important;
-	}	
-
-.sidebar ul.menu ul {
-	margin-top:-38px;
-	border-top:none;
-	}
-	
-.sidebar ul.menu {
-	border-top:none;
-	}	
-	
-.region-sidebar-second.sidebar ul.menu ul {
-	margin-top:0;
-
-	}	
-
-.sidebar ul.menu ul ul {
-	margin-top:0;
-	border:none;
-	}  
-	
 ul.nice-menu-right li.menuparent, ul.nice-menu-right li li.menuparent,
 ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent,
 ul.nice-menu-right li.menuparent:hover, ul.nice-menu-right li li.menuparent:hover,

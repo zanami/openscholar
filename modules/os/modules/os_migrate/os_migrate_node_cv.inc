@@ -83,7 +83,8 @@ class CVNodeOSMigration extends AbstractNodeOSMigration {
     if ($file && parent::legacy_file_exists($dir . $file->filepath)) {
       if (list($path, $name) = $this->_migrate_filename($file->filepath)) {
         $current_row->{'field_biocv_pdf_upload:destination_file'}  = $name;
-        $current_row->{'field_biocv_pdf_upload:destination_dir'} = 'public://' . $path;
+        $filepath = parent::_get_destination_path('node', $current_row->nid);
+        $current_row->{'field_biocv_pdf_upload:destination_dir'} = ($filepath) ? $filepath : 'public://' . $path;
         $current_row->{'field_biocv_pdf_upload'} = $path . '/' . $name;
       }
     } elseif ($alt_file && parent::legacy_file_exists($dir . $alt_file->filepath)) {
