@@ -223,6 +223,10 @@ projects[purl][branch][] = "7.x-1.x"
 projects[respondjs][subdir] = "contrib"
 projects[respondjs][version] = 1.1
 
+projects[restws][subdir] = "contrib"
+projects[restws][version] = "2.0-alpha3"
+projects[restws][patch][] = "http://drupal.org/files/1806142-restws-property-exception.patch"
+
 projects[shorten][subdir] = "contrib"
 projects[shorten][version] = 1.2
 
