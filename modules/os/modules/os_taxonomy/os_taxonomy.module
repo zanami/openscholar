@@ -265,10 +265,13 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   }
 
   // Make sure we pass the numeric values.
-  $options['offset'] = intval($options['offset']);
-  $options['range'] = intval($options['range']);
+  if ($options['range']) {
+    $options['offset'] = intval($options['offset']);
+    $options['range'] = intval($options['range']);
 
-  $data = array_slice($data, $options['offset'], $options['offset'] + $options['range'], TRUE);
+    $data = array_slice($data, $options['offset'], $options['offset'] + $options['range'], TRUE);
+  }
+
 
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
     return render(drupal_get_form('os_taxonomy_select_list', $data, $path_prefix));
