@@ -518,6 +518,7 @@ class OsMigrateLinkNode extends OsMigrate {
 
   public $dependencies = array(
     'OsMigratePersonalNode',
+    'OsMigrateProjectNode',
   );
 
   public function __construct() {
@@ -525,7 +526,7 @@ class OsMigrateLinkNode extends OsMigrate {
 
     $this->addFieldMapping('body', 'body');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
-      ->sourceMigration('OsMigratePersonalNode');
+      ->sourceMigration(array('OsMigratePersonalNode', 'OsMigrateProjectNode'));
   }
 
   public function prepare($entity, $row) {
@@ -551,6 +552,7 @@ class OsMigratePresntationsNode extends OsMigrate {
 
   public $dependencies = array(
     'OsMigratePersonalNode',
+    'OsMigrateProjectNode',
   );
 
   public function __construct() {
@@ -560,7 +562,7 @@ class OsMigratePresntationsNode extends OsMigrate {
     $this->addFieldMapping('field_presentation_location', 'location');
     $this->addFieldMapping('field_presentation_date', 'date');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
-      ->sourceMigration('OsMigratePersonalNode');
+      ->sourceMigration(array('OsMigratePersonalNode', 'OsMigrateProjectNode'));
   }
 
   public function prepare($entity, $row) {
