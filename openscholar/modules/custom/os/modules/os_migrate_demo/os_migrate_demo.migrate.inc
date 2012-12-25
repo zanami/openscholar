@@ -714,3 +714,60 @@ class OsMigrateOgVocab extends OsMigrate {
   public function prepare($entity, $row) {
   }
 }
+
+/**
+ * Migrate Season status terms.
+ */
+class OsMigrateUsers extends Migration {
+  /**
+   * Map the field and properties to the CSV header.
+   */
+  public $csvColumns = array(
+    array('id', 'Unique ID'),
+    array('og_user_node', 'Site'),
+    array('name', 'Username'),
+    array('pass', 'Password'),
+    array('mail', 'Email'),
+    array('first_name', 'First name'),
+    array('last_name', 'Last name'),
+  );
+
+  public $entityType = 'user';
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+    $this->description = t('Import users from a CSV file.');
+
+    $this->addFieldMapping('og_user_node', 'og_user_node')
+      ->sourceMigration('OsMigratePersonalNode');
+
+    $this->addFieldMapping('name', 'name');
+    $this->addFieldMapping('pass', 'pass');
+    $this->addFieldMapping('mail', 'mail');
+    $this->addFieldMapping('field_first_name', 'first_name');
+    $this->addFieldMapping('field_last_name', 'last_name');
+    $this->addFieldMapping('roles')
+         ->defaultValue(DRUPAL_AUTHENTICATED_RID);
+    $this->addFieldMapping('status')
+         ->defaultValue(TRUE);
+
+    // Create a map object for tracking the relationships between source rows
+    $key = array(
+      'id' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+    );
+    $destination_handler = new MigrateDestinationUser();
+    $this->map = new MigrateSQLMap($this->machineName, $key, $destination_handler->getKeySchema());
+
+    // Create a MigrateSource object.
+    $this->source = new MigrateSourceCSV(drupal_get_path('module', 'os_migrate_demo') . '/csv/' . $this->entityType . '/user.csv', $this->csvColumns, array('header_rows' => 1));
+    $this->destination = new MigrateDestinationUser();
+  }
+}
