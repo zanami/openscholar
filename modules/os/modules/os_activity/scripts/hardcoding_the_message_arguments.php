@@ -4,6 +4,17 @@
  * @file
  * Drush script for replacing all of the arguments from tokens to hard coded
  * string. This will increase the performance of the activity stream view.
+ *
+ * @arguments:
+ *  - batch: Set the number to process each time. 250 by default.
+ *  - memory_limit: The extended amount of memory for the script.
+ *    500 by default.
+ *  - id: The message ID. Used when you want to start the processing from a
+ *    specific message.
+ *
+ *  @example:
+ *
+ *    drush scr hardcoding_the_message_arguments.php --id=30 --batch=450 --memory_limit=4000
  */
 
 // Collect drush arguments.
