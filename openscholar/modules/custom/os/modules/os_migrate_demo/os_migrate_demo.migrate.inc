@@ -77,6 +77,7 @@ class OsMigratePersonalNode extends OsMigrate {
     array('id', 'Unique ID'),
     array('title', 'Title'),
     array('purl', 'URL'),
+    array('public', 'Public'),
   );
 
   public function __construct() {
@@ -93,6 +94,11 @@ class OsMigratePersonalNode extends OsMigrate {
 
     $value = $entity->field_site_address[LANGUAGE_NONE][0]['value'];
     $entity->field_site_address[LANGUAGE_NONE][0]['value'] = variable_get('purl_base_domain') . '/' . $value;
+
+    // This is a private site.
+    if ($row->public == 'private') {
+      $entity->{OG_ACCESS_FIELD}[LANGUAGE_NONE][0]['value'] = TRUE;
+    }
   }
 }
 
