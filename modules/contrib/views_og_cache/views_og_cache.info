@@ -1,0 +1,7 @@
+name = Views cache per OG group
+core = 7.x
+dependencies[] = views
+dependencies[] = og_context
+package = Views
+files[] = views/views_og_cache_plugin_cache_time.inc
+
