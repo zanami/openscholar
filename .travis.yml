@@ -24,7 +24,6 @@ before_script:
   # Copy Behat configuration file.
   - cd profiles/openscholar/behat
   - cp behat.local.yml.travis behat.local.yml
-  - pwd
   - cp aliases.drushrc.php ~/.drush/
   - composer install
 
@@ -33,9 +32,7 @@ script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - sleep 3 # give xvfb some time to start
-
   - sudo drush @openscholar runserver --server=builtin 80 &
-
   # Run selenium.
   - wget http://selenium.googlecode.com/files/selenium-server-standalone-2.25.0.jar
   - java -jar selenium-server-standalone-2.25.0.jar -p 4444 &
