@@ -24,7 +24,8 @@ before_script:
   # Copy Behat configuration file.
   - cd profiles/openscholar/behat
   - cp behat.local.yml.travis behat.local.yml
-  - cp profiles/openscholar/behat/aliases.drushrc.php ~/.drush/
+  - pwd
+  - cp aliases.drushrc.php ~/.drush/
   - composer install
 
 script:
