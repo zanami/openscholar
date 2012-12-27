@@ -58,12 +58,13 @@ class views_og_cache_plugin_cache_time extends views_plugin_cache_time {
 
       $this->_results_key = 'og:' . $og_context['group_type'] . ':' . $og_context['gid'] . ':' . $this->view->name . ':' . $this->display->id . ':results:' . md5(serialize($key_data));
     }
-    return !empty($this->_results_key) ? $this->_results_key : FALSE;
+    return !empty($this->_results_key) ? $this->_results_key : NULL;
   }
 
   function get_output_key() {
     global $user;
     $og_context = og_context();
+
     if (!isset($this->_output_key) && $og_context) {
       $key_data = array(
         'result' => $this->view->result,
@@ -84,7 +85,7 @@ class views_og_cache_plugin_cache_time extends views_plugin_cache_time {
       $this->_output_key = 'og:' . $og_context['group_type'] . ':' . $og_context['gid'] . ':' . $this->view->name . ':' . $this->display->id . ':output:' . md5(serialize($key_data));
     }
 
-    return !empty($this->_output_key) ? $this->_output_key : FALSE;
+    return !empty($this->_output_key) ? $this->_output_key : NULL;
   }
 }
 
