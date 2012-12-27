@@ -41,21 +41,13 @@ class views_og_cache_plugin_cache_time extends views_plugin_cache_time {
         'base_url' => $GLOBALS['base_url'],
       );
 
-      // Indicate if caching should be done per user.
-      $per_user = FALSE;
-
       if ($this->options['og_access']) {
         // Check if the group is private, and if so, change the cache type
         // to per-user, instead of per-group.
         $wrapper = entity_metadata_wrapper($og_context['group_type'], $og_context['gid']);
-        $per_user = !empty($wrapper->{OG_ACCESS_FIELD}) && $wrapper->{OG_ACCESS_FIELD}->value() == OG_CONTENT_ACCESS_PRIVATE;
-      }
-
-      if ($per_user) {
-        $key_data['user'] = $user->uid;
-      }
-      else {
-        $key_data['og_context'] = $og_context;
+        if (!empty($wrapper->{OG_ACCESS_FIELD}) && $wrapper->{OG_ACCESS_FIELD}->value() == OG_CONTENT_ACCESS_PRIVATE) {
+          $key_data['user'] = $user->uid;
+        }
       }
 
       foreach (array('exposed_info', 'page', 'sort', 'order') as $key) {
@@ -66,8 +58,7 @@ class views_og_cache_plugin_cache_time extends views_plugin_cache_time {
 
       $this->_results_key = 'og:' . $og_context['group_type'] . ':' . $og_context['gid'] . ':' . $this->view->name . ':' . $this->display->id . ':results:' . md5(serialize($key_data));
     }
-
-    return $this->_results_key;
+    return !empty($this->_results_key) ? $this->_results_key : FALSE;
   }
 
   function get_output_key() {
@@ -81,27 +72,19 @@ class views_og_cache_plugin_cache_time extends views_plugin_cache_time {
         'base_url' => $GLOBALS['base_url'],
       );
 
-      // Indicate if caching should be done per user.
-      $per_user = FALSE;
-
       if ($this->options['og_access']) {
         // Check if the group is private, and if so, change the cache type
         // to per-user, instead of per-group.
         $wrapper = entity_metadata_wrapper($og_context['group_type'], $og_context['gid']);
-        $per_user = !empty($wrapper->{OG_ACCESS_FIELD}) && $wrapper->{OG_ACCESS_FIELD}->value() == OG_CONTENT_ACCESS_PRIVATE;
-      }
-
-      if ($per_user) {
-        $key_data['user'] = $user->uid;
-      }
-      else {
-        $key_data['og_context'] = $og_context;
+        if (!empty($wrapper->{OG_ACCESS_FIELD}) && $wrapper->{OG_ACCESS_FIELD}->value() == OG_CONTENT_ACCESS_PRIVATE) {
+          $key_data['user'] = $user->uid;
+        }
       }
 
       $this->_output_key = 'og:' . $og_context['group_type'] . ':' . $og_context['gid'] . ':' . $this->view->name . ':' . $this->display->id . ':output:' . md5(serialize($key_data));
     }
 
-    return $this->_output_key;
+    return !empty($this->_output_key) ? $this->_output_key : FALSE;
   }
 }
 
