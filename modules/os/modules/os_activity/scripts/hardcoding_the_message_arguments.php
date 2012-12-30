@@ -31,6 +31,7 @@ $max = $query
   ->execute();
 
 $i = 0;
+
 while ($max > $i) {
 
   // Collect the messages in batches.
@@ -38,7 +39,7 @@ while ($max > $i) {
   $result = $query
     ->entityCondition('entity_type', 'message')
     ->propertyCondition('mid', $id, '>=')
-    ->propertyOrderBy('mid')
+    ->propertyOrderBy('mid', 'DESC')
     ->range($i, $i + $batch)
     ->execute();
 
@@ -50,7 +51,7 @@ while ($max > $i) {
     // Load the message.
     $message = message_load($mid);
 
-    foreach (array('message:field-node-reference:url','message:field-node-reference:title') as $token) {
+    foreach (array('message:field-node-reference:url', 'message:field-node-reference:title') as $token) {
       // Check that the token is not hard coded.
       if (isset($message->arguments['@{' . $token . '}'])) {
         continue;
@@ -67,9 +68,9 @@ while ($max > $i) {
 
       $param = array(
         '@mid' => $mid,
-        '@toekn' => $token,
+        '@token' => $token,
       );
-      drush_log(dt('Hard coded value were created for the token @toekn in the message @mid', $param), 'success');
+      drush_log(dt($i . '\ ' . $max . ') Processing @token in the message @mid', $param), 'success');
 
       // The script taking to much memory. Stop it and display message.
       if (round(memory_get_usage()/1048576) >= $memory_limit) {
