@@ -73,7 +73,7 @@ while ($max > $i) {
         '@mid' => $mid,
         '@tokens' => implode(' ', $tokens),
       );
-      drush_log(dt($i . '\ ' . $max . ') Processing the @tokens in the message @mid', $param), 'success');
+      drush_log(dt($mid . '\ ' . $max . ') Processing the @tokens in the message @mid', $param), 'success');
 
       // Saving the message and the display message for the user.
       message_save($message);
