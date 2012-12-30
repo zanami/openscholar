@@ -50,34 +50,39 @@ while ($max > $i) {
   foreach (array_keys($result['message']) as $mid) {
     // Load the message.
     $message = message_load($mid);
+    $tokens = array('message:field-node-reference:url', 'message:field-node-reference:title');
+    $save_message = FALSE;
 
-    foreach (array('message:field-node-reference:url', 'message:field-node-reference:title') as $token) {
+    foreach ($tokens as $token) {
       // Check that the token is not hard coded.
       if (isset($message->arguments['@{' . $token . '}'])) {
         continue;
       }
 
+      $save_message = TRUE;
       // Creating a hard coded value for the toekn.
       $token_options = message_get_property_values($message, 'data', 'token options');
       $context = array('message' => $message);
 
       $message->arguments['@{' . $token . '}'] = token_replace('[' . $token . ']', $context, $token_options);
+    }
 
-      // Saving the message and the dispaly message for the user.
-      message_save($message);
-
+    if ($save_message) {
       $param = array(
         '@mid' => $mid,
-        '@token' => $token,
+        '@tokens' => implode(' ', $tokens),
       );
-      drush_log(dt($i . '\ ' . $max . ') Processing @token in the message @mid', $param), 'success');
+      drush_log(dt($i . '\ ' . $max . ') Processing the @tokens in the message @mid', $param), 'success');
+
+      // Saving the message and the display message for the user.
+      message_save($message);
 
       // The script taking to much memory. Stop it and display message.
       if (round(memory_get_usage()/1048576) >= $memory_limit) {
         return drush_set_error('OS_ACTIVITY OUT_OF_MEMORY', dt('Stopped before out of memory. Last message ID was @mid', array('@mid' => $mid)));
       }
-
-      $i++;
     }
+
+    $i++;
   }
 }
