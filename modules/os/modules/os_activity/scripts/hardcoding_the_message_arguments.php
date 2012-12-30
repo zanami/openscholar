@@ -48,6 +48,7 @@ while ($max > $i) {
   }
 
   foreach (array_keys($result['message']) as $mid) {
+    $i++;
     // Load the message.
     $message = message_load($mid);
     $tokens = array('message:field-node-reference:url', 'message:field-node-reference:title');
@@ -82,7 +83,5 @@ while ($max > $i) {
         return drush_set_error('OS_ACTIVITY OUT_OF_MEMORY', dt('Stopped before out of memory. Last message ID was @mid', array('@mid' => $mid)));
       }
     }
-
-    $i++;
   }
 }
