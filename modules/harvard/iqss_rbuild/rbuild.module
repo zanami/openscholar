@@ -251,6 +251,14 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
   else {
     $sid = 3633;
   }
+  // Returns if we cannot load the vsite.
+  if (module_exists('vsite')) {
+    include_once (drupal_get_path('module', 'vsite') . '/includes/vsite.inc');
+    $vsite = vsite_get_vsite($sid);
+    if (!$vsite) {
+      return;
+    }
+  }
 
   // Prepares basic settings of our new Software Release node
   $node           = new stdClass();
@@ -263,12 +271,9 @@ function _rbuild_add_release_node($project_node, $version, $filename, $package, 
   // Adds $node->nid and more properties
   node_save($node);
 
+  // Loads newly created node and adds to vsite.
   $node = node_load($node->nid);
-  if (module_exists('vsite')) {
-    include_once (drupal_get_path('module', 'vsite') . '/includes/vsite.inc');
-    $vsite = vsite_get_vsite($sid);
-    vsite_add_entity($node);
-  }
+  vsite_add_entity($node, 'node', $vsite);
 
   // Prepares field values
   $recommended = ($version == $package['version']) ? 1 : 0;
