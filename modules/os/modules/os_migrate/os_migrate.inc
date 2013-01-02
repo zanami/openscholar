@@ -972,7 +972,7 @@ abstract class OSMigration extends Migration {
 
     if ($result->rowCount()) {
       $purl = $result->fetchField();
-      $return = 'public://' . $purl . '/files';
+      $return = ($purl) ? 'public://' . $purl . '/files' : 'public://files';
     } else {
       $return = FALSE;
     }

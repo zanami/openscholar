@@ -271,8 +271,7 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
   function _save_original($original_file, $gid, $uid, $values){
     $full = $original_file . '.crop_display.jpg';
     $filepath = variable_get('os_migrate_files') . '/' . $original_file;
-    $destination = (isset($values['arguments']['destination_dir'])) ? $values['arguments']['destination_dir'] : 'public://';
-
+    $destination = ($values['arguments']['destination_dir']) ? $values['arguments']['destination_dir'] : 'public://';
 
     if (!is_readable($filepath)) {
       return FALSE;
