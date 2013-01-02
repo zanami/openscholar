@@ -35,13 +35,9 @@ class os_sv_list_box extends os_boxes_default {
     $defaults = $this->options_defaults();
     drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting');
 
-<<<<<<< HEAD
-    $content_types = array(-1 => t('- Select -')) + os_get_bundles(1);
-=======
     $content_types = array(
       'all' => t('All')
     ) + os_get_bundles(array(1));
->>>>>>> SCHOLAR-3-0
 
     if (isset($content_types['media_gallery'])) {
       $content_types['image'] = t('Images');
