@@ -18,7 +18,7 @@ class TermOSMigration extends DynamicMigration {
     $this->machineName = "TermOSMigrationvocabulary_" . $this->arguments['src_vid'];
 
     //Put all instances of this into the group "taxonomy"
-    parent::__construct(MigrateGroup::getInstance('dynamic_taxonomy',array('node')));
+    parent::__construct(MigrateGroup::getInstance('taxonomy',array('node')));
 
     //Get all terms for this vocab ordered by parent
     $query = Database::getConnection('default', variable_get('os_migrate_database', ''))->select('term_data', 'td')->fields('td', array(

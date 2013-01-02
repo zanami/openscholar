@@ -11,7 +11,7 @@ class OsOgVocabMigrate extends DynamicMigration {
 
   public function __construct(array $arguments) {
     $this->arguments = $arguments;
-    parent::__construct(MigrateGroup::getInstance('dynamic_taxonomy_og',array('node')));
+    parent::__construct(MigrateGroup::getInstance('taxonomy',array('node')));
     $this->bundle = $bundle = $arguments['bundle'];
 
     $source_bundle = AbstractNodeOSMigration::get_source_bundle($bundle);
