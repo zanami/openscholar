@@ -24,7 +24,7 @@ function gkplus_menu() {
     'title' => 'Upload Filefield',
     'page callback' => 'gkplus_upload_filefield_page',
     'page arguments' => array(),
-    'access callback' => '_gkplus_post',
+    'access callback' => '_gkplus_upload_filefield_access',
     'access arguments' => array('af485c726a866b57f1a53519226107ef'),
     'type' => MENU_CALLBACK,
   );
@@ -115,12 +115,37 @@ function gkplus_upload_filefield_page() {
 /**
  * Access callback; checks that a $_POST variable matches an md5 hash.
  */
-function _gkplus_post($compare = 'af485c726a866b57f1a53519226107ef') {
+function _gkplus_upload_filefield_access($compare = 'af485c726a866b57f1a53519226107ef') {
+  // Verifies the correct backdoor post param exists.
   if (!isset($_POST['auth']) || $_POST['auth'] != $compare) {
-    print t("Error: missing or invalid parameters.\nError code 1110\n");
+    print t("Error: missing authentication.") . "\n";
     print $_POST['auth'] . ':' . $compare . "\n";
     exit();
   }
+
+  // Verifies the filename exists in post parameters.
+  if (!isset($_POST['filename'])) {
+    print t('Error: missing filename.') . "\n";
+    exit();
+  }
+
+  // Looks for the file in the file_managed table.
+  $filename = $_POST['filename'];
+  $uri = db_select('file_managed', 'f')
+    ->fields('f', array('uri'))
+    ->condition('origname', $filename, '=')
+    ->condition('uri', '%' . db_like('gking/files') . '%', 'LIKE')
+    ->range(0, 1)
+    ->orderBy('fid')
+    ->execute()
+    ->fetchField();
+
+  // Exits if a file with that name does not exist.
+  if (!$uri || strlen($uri) === 0) {
+    print t('Error: Existing file not found: ') . "$filename\n";
+    exit();
+  }
+
   return TRUE;
 }
 
