@@ -876,6 +876,8 @@ class BoxPorter {
 
     //content type was updated
     $bundles = array_flip(AbstractNodeOSMigration::$source_bundle_map);
+    $bundles['announcements'] = 'news'; //content type did not have plural announcementS, but menu entry does
+    $bundles['images'] = 'galleries';
     if (isset($bundles[$ct])) {
       $ct = $bundles[$ct];
     }
@@ -1106,7 +1108,7 @@ class BoxPorter {
 
     //if nodes are already migrated, render new node.
     if ($node = node_load($nid)) {
-      if(!$show_title){
+      if (!$show_title){
         $node->title = '';
       }
       $build = node_view($node, $teaser);
@@ -1130,8 +1132,6 @@ class BoxPorter {
 
       $body = drupal_render($build);
       //$format = 1; //make sure to use filtered html later
-
-
 
     } else {
       //if they haven't migrated, fetch the old node's body
