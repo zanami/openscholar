@@ -40,8 +40,8 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
     //field: media_gallery_media
 
     $this->addFieldMapping('media_gallery_media', 'media_gallery_media');
-    $this->addFieldMapping('media_gallery_media:destination_dir');
-    $this->addFieldMapping('media_gallery_media:destination_file');
+    $this->addFieldMapping('media_gallery_media:destination_dir', 'media_gallery_media:destination_dir');
+    //$this->addFieldMapping('media_gallery_media:destination_file', 'media_gallery_media:filename');
     $this->addFieldMapping('media_gallery_media:source_dir')
       ->defaultValue(variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
 
@@ -141,11 +141,10 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
       foreach($current_row->media_gallery_media as $delta => $filepath) {
         if (list($path, $name) = $this->_migrate_filename($filepath)) {
           $current_row->{'media_gallery_media:filename'}[$delta] = $name;
-          $filepath = parent::_get_destination_path('node', $current_row->nid);
-          $current_row->{'media_gallery_media:destination_dir'}[$delta] = ($filepath) ? $filepath : 'public://' . $path;
           $current_row->{'media_gallery_media'}[$delta] = $path . '/' . $name;
         }
       }
+      $current_row->{'media_gallery_media:destination_dir'} = parent::_get_destination_path('node', $current_row->nid);
     } else {
       parent::saveMessage(t('Gallery has no media to migrate: @nid', array('@nid'=>$current_row->nid)), MigrationBase::MESSAGE_WARNING);
     }

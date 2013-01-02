@@ -177,6 +177,7 @@ function vsite_views_default_views() {
   $handler->display->display_options['fields']['field_site_description']['field'] = 'field_site_description';
   $handler->display->display_options['fields']['field_site_description']['label'] = '';
   $handler->display->display_options['fields']['field_site_description']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_site_description']['type'] = 'text_plain';
   $handler->display->display_options['path'] = 'websites';
 
   /* Display: Block */
@@ -242,6 +243,7 @@ function vsite_views_default_views() {
   $handler->display->display_options['fields']['field_site_description']['field'] = 'field_site_description';
   $handler->display->display_options['fields']['field_site_description']['label'] = '';
   $handler->display->display_options['fields']['field_site_description']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_site_description']['type'] = 'text_plain';
   $handler->display->display_options['defaults']['sorts'] = FALSE;
   /* Sort criterion: Content: Sticky */
   $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';

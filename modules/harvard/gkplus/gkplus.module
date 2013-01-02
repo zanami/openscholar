@@ -24,7 +24,7 @@ function gkplus_menu() {
     'title' => 'Upload Filefield',
     'page callback' => 'gkplus_upload_filefield_page',
     'page arguments' => array(),
-    'access callback' => '_gkplus_post',
+    'access callback' => '_gkplus_upload_filefield_access',
     'access arguments' => array('af485c726a866b57f1a53519226107ef'),
     'type' => MENU_CALLBACK,
   );
@@ -78,41 +78,74 @@ function gkplus_nodeorder_form($js = NULL, $tid = NULL) {
  *  - 1 : unknown or not yet checked
  *  - 2 : valid
  *
- * The position of parameter in 4-digit code is filename, contents, mimetype, auth.
+ * The position of parameter in 3-digit code is filename, contents, auth.
  */
 function gkplus_upload_filefield_page() {
-  if (!isset($_POST['mimetype']) || !isset($_POST['filename']) || !isset($_POST['contents'])) {
-    print t("Error: missing or parameters.\n");
+  print t("Processing upload...") . "\n";
+  if (!isset($_POST['filename']) || !isset($_POST['contents']) || !isset($_POST['auth'])) {
+    print t("Error: missing parameters.") . "\n";
     print t("Error code ") . isset($_POST['filename']) ? '2' : 0 . isset($_POST['contents']) ? '2' : 0 . isset($_POST['auth']) ? '2' : 0 . '0\n';
     exit();
   }
 
-  $mimetype = $_POST['mimetype'];
   $filename = $_POST['filename'];
 
   $loc = 'public://gking/files/';
-  $file = file_save_data($_POST['contents'], $loc . $filename, FILE_EXISTS_REPLACE);
-  if (!$file) {
-    print "Error: could not upload file. Debug info:<br/><br/>";
-    print print_r(var_dump($_POST));
+  $exists_and_writable = file_prepare_directory($loc, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+  if ($exists_and_writable) {
+    $file = file_save_data($_POST['contents'], $loc . $filename, FILE_EXISTS_REPLACE);
+    if (!$file) {
+      print "Error: could not upload file. Debug info:<br/><br/>";
+      print print_r(var_dump($_POST));
+      exit();
+    }
+  }
+  else {
+    print t("Directory does not exist or is not writable.") . "\n";
+    exit();
   }
 
   $file->display = 1;
   $filepath = file_stream_wrapper_get_instance_by_uri('public://')->getDirectoryPath() . '/gking/files/' . $_POST['filename'];
   global $base_url;
-  print "Success: $filename ($mimetype) uploaded.\n\n\tLink: $base_url/$filepath\n\n";
+  print "Success: $filename uploaded.\n\n\tLink: $base_url/$filepath\n\n";
   exit();
 }
 
 /**
  * Access callback; checks that a $_POST variable matches an md5 hash.
  */
-function _gkplus_post($compare = 'af485c726a866b57f1a53519226107ef') {
+function _gkplus_upload_filefield_access($compare = 'af485c726a866b57f1a53519226107ef') {
+  // Verifies the correct backdoor post param exists.
   if (!isset($_POST['auth']) || $_POST['auth'] != $compare) {
-    print t("Error: missing or invalid parameters.\nError code 1110\n");
+    print t("Error: missing authentication.") . "\n";
     print $_POST['auth'] . ':' . $compare . "\n";
     exit();
   }
+
+  // Verifies the filename exists in post parameters.
+  if (!isset($_POST['filename'])) {
+    print t('Error: missing filename.') . "\n";
+    exit();
+  }
+
+  // Looks for the file in the file_managed table.
+  $filename = $_POST['filename'];
+  $uri = db_select('file_managed', 'f')
+    ->fields('f', array('uri'))
+    ->condition('origname', $filename, '=')
+    ->condition('uri', '%' . db_like('gking/files') . '%', 'LIKE')
+    ->range(0, 1)
+    ->orderBy('fid')
+    ->execute()
+    ->fetchField();
+
+  // Exits if a file with that name does not exist.
+  if (!$uri || strlen($uri) === 0) {
+    print t('Error: Existing file not found: ') . "$filename\n";
+    exit();
+  }
+
   return TRUE;
 }
 
