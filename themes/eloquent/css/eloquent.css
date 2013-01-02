@@ -198,14 +198,8 @@ img {
 	background:#44514f;
 }
 
-.sidebar #nice-menu-{border-top:none;}
-.sidebar ul.menu ul {
-    top: 0;
-}
 
-.sidebar ul.menu li {
-	background: none;
-}
+
 
 ul.nice-menu-right li.menuparent, ul.nice-menu-right li li.menuparent {
     background: #F7F3EA;
@@ -226,16 +220,7 @@ ul.nice-menu-left li.menuparent:hover, ul.nice-menu-left li li.menuparent:hover 
     margin: 0;
   }		
 			
-.region-sidebar-second.sidebar ul.menu ul {
-	margin-top:0;
 
-	}	
-
-.sidebar ul.menu ul ul {
-	margin-top:0;
-	border:none;
-	}	
-  
 
 /* MAIN CONTENT AREA */
 

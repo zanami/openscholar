@@ -289,7 +289,7 @@ function harvard_courses_node_insert($node) {
  * Implement hook_preprocess_page().
  */
 function harvard_courses_preprocess_page(&$variables) {
-  if (isset($variables['title_suffix']['controls']) && $variables['title_suffix']['controls']['add_new']['#path'] == 'courses/refresh-courses') {
+  if (isset($variables['title_suffix']['controls']['add_new']['#path']) && $variables['title_suffix']['controls']['add_new']['#path'] == 'courses/refresh-courses') {
     $variables['title_suffix']['controls']['add_new']['#text'] = t('Refresh courses');
   }
 }

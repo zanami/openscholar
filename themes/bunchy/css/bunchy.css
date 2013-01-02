@@ -102,13 +102,14 @@ h1#page-title {
   min-height:117px;
   }
 
-#menu-bar {
-  clear: none;
-  float:right;
-  margin-top: -20px;
-  width: 768px;
+  
+  #menu-bar {
+     clear: none;
+     margin-top: -3px;
+  
+}
 
-  }
+
 
 #scholar-shield {
   margin: 10px 0 0 auto;
@@ -137,6 +138,12 @@ border-left: 1px solid #919191;
   }
 
 /* HTML ITEMS */
+
+#menu-bar ul.nice-menu {
+ display: table;
+  float: none;
+  margin: 0 auto;
+}
 
 #menu-bar li {
   display: inline;
@@ -192,28 +199,13 @@ ul.nice-menu-left li.menuparent {
     border:none;
 }
 
-.sidebar ul.menu {
-	border-top:none;
-	}
-
-.sidebar ul.menu ul {
-	margin-top:-39px;
-	border:none;
-	}
-
-.sidebar ul.menu li a {
-	color: #005C9C;
-	}	
 	
 .region-sidebar-second.sidebar ul.menu ul {
 	margin-top:0;
 
 	}	
 
-.sidebar ul.menu ul ul {
-	margin-top:0;
-	border:none;
-	}	
+
   
 ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
     background: none;
@@ -237,3 +229,7 @@ p.copy, p.copy a, p.copy a:visited {
 p.copy a {
   text-decoration: underline;
   }
+  
+  .date-next a {
+font-size: 11px;
+}

@@ -1,4 +1,6 @@
 <?php
+//Files with hooks need to bo loaded bofore any hook is called
+include_once ('spaces.overrides.inc');
 
 /**
  * Core API ===========================================================

@@ -117,7 +117,7 @@ function cp_menu_type($form, &$form_state) {
   $form['type'] = array(
     '#title' => 'Link Type',
     '#type' => 'radios',
-    '#options' => array('page' => 'Page', 'url' => 'URL'),
+    '#options' => array('page' => 'Page', 'url' => 'Existing URL'),
     '#description' => t('Type of content to link to.'),
     '#required' => TRUE,
   );

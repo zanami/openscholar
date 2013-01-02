@@ -170,6 +170,7 @@ ul.menu li.collapsed {
 ul.menu li.expanded  {
 }
 
+.sidebar ul li.collapsed,
 .sidebar ul li.leaf {
     list-style-image: none;
     list-style-type: none;
@@ -513,6 +514,11 @@ html.js div.ctools-dropdown a.ctools-dropdown-text-link {
     padding: 0 0 0 13px;
     text-decoration: none;
 }
+
+html.js #citation-wrapper div.ctools-dropdown a.ctools-dropdown-text-link {
+    font-size: 11px;
+ 
+}
 	
 .ctools-dropdown.section_links {
 	float:right;
@@ -622,14 +628,11 @@ ul.nice-menu-left ul a {
     border-top: none !important;
 }
 
-.sidebar ul.menu li ul.menu {
+.sidebar #block-os-primary-menu ul.menu li ul.menu,
+.sidebar #block-os-secondary-menu ul.menu li ul.menu {
  margin:0 0 0 10px;
 }
 
-.sidebar ul.menu {
-    width:100%;
-   border-top: none !important;
-}
 
 ul.nice-menu-left li.menuparent,
 ul.nice-menu-right li.menuparent,

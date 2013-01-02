@@ -14,6 +14,10 @@
      width: 960px;
 }
 
+#columns {
+     width: 948px;
+}
+
 #header-container .gpanel .region {float: left; clear: none;}
 .header-left.header-main.header-right .region-header-second .region-inner {margin-left: 180px; margin-right: 260px;}
 .header-left.header-main .region-header-second .region-inner {margin-left: 180px; margin-right: 0;}

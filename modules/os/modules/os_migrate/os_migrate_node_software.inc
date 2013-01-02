@@ -172,7 +172,8 @@ class SoftwareReleaseNodeOSMigration extends AbstractNodeOSMigration {
       parent::os_migrate_prepare_files(array($file), $current_row, 'field_software_package');
       if (list($path, $name) = $this->_migrate_filename($file->filepath)) {
         $current_row->{'field_software_package:destination_file'} = $name;
-        $current_row->{'field_software_package:destination_dir'} = 'public://' . $path;
+        $filepath = parent::_get_destination_path('node', $current_row->nid);
+        $current_row->{'field_software_package:destination_dir'} = ($filepath) ? $filepath : 'public://' . $path;
         $current_row->field_software_package = $path . '/' . $name;
       }
     } else {

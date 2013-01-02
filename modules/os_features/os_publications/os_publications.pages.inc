@@ -6,7 +6,7 @@ function os_publications_overview() {
 
   if (count($args) == 0) {
     // get default types the user has selected
-    $defaults = variable_get('os_publications_default_types', array());
+    $defaults = variable_get('os_publications_filter_publication_types', array());
     if (count($defaults)) {
       $args = array('type', $defaults);
     }
@@ -39,7 +39,9 @@ function _os_publications_cache_key($args) {
 
   $key = array();
   $key[] = 'biblio';
+  $has_arg = false;
   if (isset($arg_list['f'])) {
+    $has_arg = true;
     foreach ($arg_list['f'] as $l => $d) {
       if (is_array($d)) {
         foreach ($d as $v) {
@@ -55,13 +57,25 @@ function _os_publications_cache_key($args) {
   }
 
   if (isset($arg_list['s'])) {
+    $has_arg = true;
     $key[] = 'sort';
     $key[] = $arg_list['s'];
   }
 
   if (isset($arg_list['o'])) {
+    $has_arg = true;
     $key[] = 'order';
     $key[] = $arg_list['o'];
+  }
+
+  if (!$has_arg) {
+    $key[] = 'args';
+    $key[] = 'no';
+  }
+
+  if (isset($_GET['page'])) {
+    $key[] = 'page';
+    $key[] = $_GET['page'];
   }
 
   if (module_exists('spaces') && $space = spaces_get_space()) {
@@ -224,10 +238,10 @@ function os_publications_settings() {
   }
   asort($results);
 
-  $form['right']['scholar_publications_filter_publication_types'] = array(
+  $form['right']['os_publications_filter_publication_types'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Show only publications of type'),
-    '#default_value' => variable_get('scholar_publications_filter_publication_types', array_keys($results)),
+    '#default_value' => variable_get('os_publications_filter_publication_types', array_keys($results)),
     '#options' => $results,
     '#description' => t('The main list of publications on your publications page will list the types slected here.'),
     '#attributes' => array('class' => array('form-checkboxes-scrolling')),
@@ -248,3 +262,34 @@ function os_publications_settings() {
   return system_settings_form($form);
 }
 
+function os_publications_reset(&$form, &$form_state) {
+  $form['help'] = array(
+    '#markup' => t('Select tables to reset:'),
+  );
+
+  $form['biblio_field_type'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Field Settings'),
+    '#description' => t('Will update standard publication types to our defaults. Will not affect publication types you have added.'),
+  );
+
+  $form['biblio_contributor_type'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Contributor Settings'),
+    '#description' => t('Will completely replace all Contributor settings.'),
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Go'),
+    )
+  );
+
+  $form['#submit'][] = 'os_publications_reset_submit';
+}
+
+function os_publications_reset_submit($form, $form_state) {
+  dpm($form_state['values']);
+}

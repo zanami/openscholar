@@ -103,12 +103,15 @@ function os_biocv_node_access($node, $op, $account) {
  * Removes the username from $submitted info on blog type nodes.
  */
 function os_biocv_process_node(&$vars) {
-  if ($vars['type'] !== 'cv') {
-    return;
+  if ($vars['type'] == 'cv') {
+    // Build the submitted variable used by default in node templates
+    $last_updated = format_date($vars['changed'], 'custom', 'F j, Y');
+    $vars['title_suffix'] = '<p class="submitted">' . t('(Last updated: @time)', array('@time' => $last_updated)) . '</p>';
   }
-  // Build the submitted variable used by default in node templates
-  $last_updated = format_date($vars['changed'], 'custom', 'F j, Y');
-  $vars['title_suffix'] = '<p class="submitted">' . t('(Last updated: @time)', array('@time' => $last_updated)) . '</p>';
+  elseif ($vars['type'] == 'bio') {
+    // hides the title
+    $vars['page'] = true;
+  }
 }
 
 /**
@@ -254,14 +257,16 @@ function _os_biocv_bio_page_contents() {
     }
   }
   if ($cv_filepath !== FALSE) {
-    $output .= t("<h3 class='cv-direct-download'>Download CV: ") . l('PDF', $cv_filepath) . "</h3>";
+    $output['cv'] = array(
+     '#markup' => "<h3 class='cv-direct-download'>".t("Download CV: ") . l('PDF', $cv_filepath) . "</h3>",
+    );
   }
 
   // Loads the Bio node
   $node = os_biocv_get_bio_node();
   if ($node) {
     drupal_set_title($node->title);
-    $output .= render(node_view($node, 'full'));
+    $output['node'] = node_view($node, 'full');
   }
   return $output;
 }

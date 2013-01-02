@@ -110,7 +110,15 @@ text-decoration:none;
     padding-left: 7px;
 }
 
+.block-boxes-os_boxes_site_info h1 {
+    margin-bottom: 0;
+}
+
+<<<<<<< HEAD
 .block-boxes-os_boxes_site_info h1 a {font-family: 'Judson', georgia; font-size:1.5em;text-decoration:none;color:#FFF;}
+=======
+.block-boxes-os_boxes_site_info h1 a {font-family: 'Judson', georgia; font-size:1.2em;text-decoration:none;color:#FFF;}
+>>>>>>> SCHOLAR-3-0
 .block-boxes-os_boxes_site_info h2, 
 .block-boxes-os_boxes_site_info p {color:#d6d6d6;}
 
@@ -247,7 +255,7 @@ margin: 8px 0 0 0;
 
   }
 
-.sidebar ul.menu li a {
+.sidebar #block-os-secondary-menu ul.menu li a {
   color: #444;
   
   font-weight:bold;
@@ -257,10 +265,12 @@ margin: 8px 0 0 0;
 
 }
 
+
 /** NICE MENUS **/
 #menu-bar ul.nice-menu ul {
 	top:3.85em;
 	border:none;
+	background: #353535;
 	}
 	
 #menu-bar ul.nice-menu ul ul {
@@ -378,7 +388,8 @@ float:right;
     background:none !important;
 }
 
-.sidebar .block.block-boxes-os_boxes_sectionnav ul {
+.sidebar .block.block-boxes-os_boxes_sectionnav ul,
+.sidebar .block.block-boxes-os_boxes_sectionnav ul li ul{
     margin: 0;
 }
 
@@ -396,46 +407,46 @@ margin: 0;
 border-left: 1px solid #D6D6D6;
 }
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li a:link, 
-.sidebar .block-boxes-os_boxes_sectionnav ul li a:visited { color: #293352; display: block; padding: 7px 0 0 16px; } 
-.sidebar .block-boxes-os_boxes_sectionnav ul li a:hover {background: #EFEFEF;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li a:link, 
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li a:visited { color: #293352; display: block; padding: 7px 0 0 16px; } 
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li a:hover {background: #EFEFEF;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li li a {font-weight:normal;font-size:.98em; color:#293352;height: 32px;margin: 0; background: none; height: 24px; text-decoration: none !important; } 
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li li a {font-weight:normal;font-size:.98em; color:#293352;height: 32px;margin: 0; background: none; height: 24px; text-decoration: none !important; } 
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.collapsed a {background:url('../images/subNavBullet.png') 16px center no-repeat;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.collapsed a:hover {background:url('../images/subNavBullet.png') 16px center no-repeat #EFEFEF;} 
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a {background:url('../images/subNavBullet.png') 16px center no-repeat;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a:hover {background:url('../images/subNavBullet.png') 16px center no-repeat #EFEFEF;} 
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li a {background:none;padding: 7px 0 0 26px; color: #293352;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li a:hover {background:#EFEFEF;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li a {background:none;padding: 7px 0 0 26px; color: #293352;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li a:hover {background:#EFEFEF;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.collapsed a {background:url('../images/subNavBullet.png') 5px center no-repeat;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.collapsed a:hover {background:url('../images/subNavBullet.png') 5px center no-repeat #EFEFEF;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.collapsed a {background:url('../images/subNavBullet.png') 5px center no-repeat;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.collapsed a:hover {background:url('../images/subNavBullet.png') 5px center no-repeat #EFEFEF;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded a,
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded a {background:url('../images/subNavBullet_down.png') 5px center no-repeat;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded a,
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a {background:url('../images/subNavBullet_down.png') 5px center no-repeat;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded a:hover,
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded a:hover {background:url('../images/subNavBullet_down.png') 5px center no-repeat #EFEFEF;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded a:hover,
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a:hover {background:url('../images/subNavBullet_down.png') 5px center no-repeat #EFEFEF;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded a.active,
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded a.active {background:url('../images/subNavBullet_down.png') 5px center no-repeat #D6D6D6;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded a.active,
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a.active {background:url('../images/subNavBullet_down.png') 5px center no-repeat #D6D6D6;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded a {background:url('../images/subNavBullet_down.png') 15px center no-repeat;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded a:hover {background:url('../images/subNavBullet_down.png') 15px center no-repeat #EFEFEF;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded a.active {background:url('../images/subNavBullet_down.png') 15px center no-repeat #D6D6D6;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a {background:url('../images/subNavBullet_down.png') 15px center no-repeat;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a:hover {background:url('../images/subNavBullet_down.png') 15px center no-repeat #EFEFEF;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a.active {background:url('../images/subNavBullet_down.png') 15px center no-repeat #D6D6D6;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded ul li.expanded a {background:url('../images/subNavBullet_down.png') 25px center no-repeat;padding: 7px 0 0 36px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded ul li.expanded a:hover {background:url('../images/subNavBullet_down.png') 25px center no-repeat #EFEFEF;padding: 7px 0 0 36px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded ul li.expanded a.active {background:url('../images/subNavBullet_down.png') 25px center no-repeat #D6D6D6;padding: 7px 0 0 36px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded ul li.collapsed a {background:url('../images/subNavBullet.png') 27px center no-repeat;padding: 7px 0 0 36px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded ul li.collapsed a:hover {background:url('../images/subNavBullet.png') 27px center no-repeat #EFEFEF;padding: 7px 0 0 36px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a {background:url('../images/subNavBullet_down.png') 25px center no-repeat;padding: 7px 0 0 36px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a:hover {background:url('../images/subNavBullet_down.png') 25px center no-repeat #EFEFEF;padding: 7px 0 0 36px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a.active {background:url('../images/subNavBullet_down.png') 25px center no-repeat #D6D6D6;padding: 7px 0 0 36px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a {background:url('../images/subNavBullet.png') 27px center no-repeat;padding: 7px 0 0 36px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a:hover {background:url('../images/subNavBullet.png') 27px center no-repeat #EFEFEF;padding: 7px 0 0 36px;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded ul li.expanded ul li a {background:none !important;padding: 7px 0 0 46px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded ul li.expanded ul li a:hover {background:#EFEFEF !important;padding: 7px 0 0 46px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li.expanded ul li.expanded ul li a.active {background:#D6D6D6 !important;padding: 7px 0 0 46px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li a {background:none !important;padding: 7px 0 0 46px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li a:hover {background:#EFEFEF !important;padding: 7px 0 0 46px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li a.active {background:#D6D6D6 !important;padding: 7px 0 0 46px;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li a.active,
-.sidebar .block-boxes-os_boxes_sectionnav ul li.expanded ul li.expanded ul li a.active {
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li a.active,
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li a.active {
    background:#D6D6D6;
 }
 

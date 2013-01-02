@@ -134,6 +134,49 @@ function vsite_views_default_views() {
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Group Homepage Path */
+  $handler->display->display_options['fields']['field_group_path']['id'] = 'field_group_path';
+  $handler->display->display_options['fields']['field_group_path']['table'] = 'field_data_field_group_path';
+  $handler->display->display_options['fields']['field_group_path']['field'] = 'field_group_path';
+  $handler->display->display_options['fields']['field_group_path']['label'] = '';
+  $handler->display->display_options['fields']['field_group_path']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_group_path']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_group_path']['click_sort_column'] = 'url';
+  /* Field: Content: Site Logo */
+  $handler->display->display_options['fields']['field_site_logo']['id'] = 'field_site_logo';
+  $handler->display->display_options['fields']['field_site_logo']['table'] = 'field_data_field_site_logo';
+  $handler->display->display_options['fields']['field_site_logo']['field'] = 'field_site_logo';
+  $handler->display->display_options['fields']['field_site_logo']['label'] = '';
+  $handler->display->display_options['fields']['field_site_logo']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['field_site_logo']['alter']['path'] = '[field_group_path]';
+  $handler->display->display_options['fields']['field_site_logo']['element_label_colon'] = FALSE;
+  if(module_exists('iqss_scholars_front')) {
+  	$default_img = '<img src="'.drupal_get_path('THEME', 'scholars_harvard').'/images/default_logo.jpg" alt="default logo">';
+  	$handler->display->display_options['fields']['field_site_logo']['empty'] = $default_img;
+  }
+  $handler->display->display_options['fields']['field_site_logo']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_site_logo']['settings'] = array(
+    'image_style' => 'square_thumbnail',
+    'image_link' => '',
+  );
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['title']['alter']['path'] = '[field_group_path]';
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
+  /* Field: Content: Site Description */
+  $handler->display->display_options['fields']['field_site_description']['id'] = 'field_site_description';
+  $handler->display->display_options['fields']['field_site_description']['table'] = 'field_data_field_site_description';
+  $handler->display->display_options['fields']['field_site_description']['field'] = 'field_site_description';
+  $handler->display->display_options['fields']['field_site_description']['label'] = '';
+  $handler->display->display_options['fields']['field_site_description']['element_label_colon'] = FALSE;
   $handler->display->display_options['path'] = 'websites';
 
   /* Display: Block */
@@ -174,6 +217,10 @@ function vsite_views_default_views() {
   $handler->display->display_options['fields']['field_site_logo']['alter']['path'] = '[field_group_path]';
   $handler->display->display_options['fields']['field_site_logo']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_site_logo']['click_sort_column'] = 'fid';
+  if(module_exists('iqss_scholars_front')) {
+  	$default_img = '<img src="'.drupal_get_path('THEME', 'scholars_harvard').'/images/default_logo-1.jpg" alt="default logo">';
+  	$handler->display->display_options['fields']['field_site_logo']['empty'] = $default_img;
+  }
   $handler->display->display_options['fields']['field_site_logo']['settings'] = array(
     'image_style' => 'iqss_scholars_front_websites_180_x_140',
     'image_link' => '',

@@ -58,7 +58,8 @@ class FileInlineOSMigration extends OSMigration {
     $filepath = str_replace($file_directory_path, '', $filepath);
     $file = explode('/', trim($filepath, '/'));
     $row->filename = array_pop($file);
-    $row->destination_dir = 'public://' . implode('/', $file);
+    $dest_dir = OSMigration::_get_destination_path('inline_file', $row->fid);
+    $row->destination_dir = ($dest_dir) ? $dest_dir :  'public://' . implode('/', $file);
     $row->uri = $filepath;
 
 
@@ -149,7 +150,8 @@ class ImageInlineOSMigration extends OSMigration {
     $filepath = str_replace($file_directory_path, '', $filepath);
     $file = explode('/', trim($filepath, '/'));
     $row->filename = array_pop($file);
-    $row->destination_dir = 'public://' . implode('/', $file);
+    $dest_dir = parent::_get_destination_path('inline_image', $row->fid);
+    $row->destination_dir = ($dest_dir) ? $dest_dir : 'public://' . implode('/', $file);
     $row->uri = $filepath;
 
     if (!parent::legacy_file_exists($legacy_uri)) {
