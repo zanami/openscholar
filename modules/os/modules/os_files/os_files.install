@@ -34,9 +34,10 @@ function os_files_update_7001(&$sandbox) {
   $q->range(0, $sandbox['limit']);
 
   $r = $q->execute();
-  error_log('Query executed. Rows fetched: '.count($r->fetchAllAssoc('fid')));
+  $rows = $r->fetchAll(PDO::FETCH_OBJ);
+  error_log('Query executed. Rows fetched: '.count($rows));
 
-  foreach ($r as $row) {
+  foreach ($rows as $row) {
     error_log('Migrating '.$row->fid);
     $q = db_select('file_usage', 'fu')
         ->fields('fu', array('id'))
