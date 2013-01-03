@@ -25,7 +25,7 @@ function os_files_update_7001(&$sandbox) {
 
   if (!isset($sandbox['progress'])) {
     $sandbox['progress'] = 0;
-    $sandbox['limit'] = 5;
+    $sandbox['limit'] = 3;
     $sandbox['last_fid'] = 0;
     $sandbox['max'] = $q->countQuery()->execute()->fetchField();
     $sansbox['warnings'] = array();
