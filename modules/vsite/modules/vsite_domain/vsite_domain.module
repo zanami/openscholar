@@ -16,52 +16,6 @@ define('PURL_VSITE_DOMAIN', 'vsite_domain');
 define('PURL_VSITE_PATH', 'vsite_path');
 
 /**
- * Implements hook_init().
- */
-function vsite_domain_init() {
-  // Does nothing if the http host equals the global purl base domain.
-  global $is_https;
-  $scheme = $is_https ? 'https://' : 'http://';
-  $base_domain = $scheme . $_SERVER['HTTP_HOST'];
-  $purl_base_domain = variable_get('purl_base_domain', '');
-	if ($base_domain === $purl_base_domain) {
-	  return;
-	}
-
-  // Does nothing if using drush.
-  if (drupal_is_cli()) {
-    return;
-  }
-
-  // Checks to make sure we are in a vsite space.
-  $vsite = vsite_get_vsite();
-  if (!$vsite) {
-    return;
-  }
-
-  // Only continues if the vsite has a custom domain name.
-  $vsite_domain_name = variable_get('vsite_domain_name', '');
-  if (!$vsite_domain_name) {
-    return;
-  }
-
-  // Gets the vsite's pURL to compare to the current Drupal menu path.
-  $purl = vsite_get_purl($vsite);
-  if (empty($purl)) {
-    return;
-  }
-
-  // If the first item in the path is the pURL, redirect away.
-  $request_path = request_path();
-  $request_path_args = explode('/', $request_path);
-  $index = array_shift($request_path_args);
-  if (!empty($request_path_args) && ((string) $index === (string) $purl)) {
-    $path_without_purl = implode('/', $request_path_args);
-    drupal_goto($path_without_purl, array(), 301);
-  }
-}
-
-/**
  * Implements hook_enable().
  */
 function vsite_domain_enable() {
