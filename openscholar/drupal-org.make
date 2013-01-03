@@ -19,9 +19,10 @@ projects[apachesolr_og][subdir] = "contrib"
 projects[apachesolr_og][version] = 1.0
 
 ; @todo: Biblio patches need to be applied
-; projects[biblio][patch][] = "http://drupal.org/files/biblio-md5_hash-1722772-1.patch"
 ; projects[biblio][subdir] = "contrib"
 ; projects[biblio][version] = 1.0-rc4
+; projects[biblio][patch][] = "http://drupal.org/files/biblio-md5_hash-1722772-1.patch"
+; projects[biblio][patch][] = "http://drupal.org/files/biblio-allow-disable-no-cache.patch"
 
 ; @todo: Boxes patches need to be applied
 ; projects[boxes][subdir] = "contrib"
