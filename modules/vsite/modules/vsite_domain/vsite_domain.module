@@ -17,18 +17,22 @@ define('PURL_VSITE_PATH', 'vsite_path');
 
 /**
  * Implements hook_init().
- *
+ */
 function vsite_domain_init() {
-<<<<<<< HEAD
-=======
-  // Only runs this init function once per page load.
-  static $vsite_domain_check;
-  if (isset($vsite_domain_check)) {
+  // Does nothing if the http host equals the global purl base domain.
+  global $is_https;
+  $scheme = $is_https ? 'https://' : 'http://';
+  $base_domain = $scheme . $_SERVER['HTTP_HOST'];
+  $purl_base_domain = variable_get('purl_base_domain', '');
+	if ($base_domain === $purl_base_domain) {
+	  return;
+	}
+
+  // Does nothing if using drush.
+  if (drupal_is_cli()) {
     return;
   }
-  $vsite_domain_check = TRUE;
 
->>>>>>> SCHOLAR-3-0
   // Checks to make sure we are in a vsite space.
   $vsite = vsite_get_vsite();
   if (!$vsite) {
@@ -36,9 +40,8 @@ function vsite_domain_init() {
   }
 
   // Only continues if the vsite has a custom domain name.
-  if (!isset($vsite->controllers->variable->values['space']['vsite_domain_name'])
-    || empty($vsite->controllers->variable->values['space']['vsite_domain_name'])
-  ) {
+  $vsite_domain_name = variable_get('vsite_domain_name', '');
+  if (!$vsite_domain_name) {
     return;
   }
 
@@ -54,9 +57,9 @@ function vsite_domain_init() {
   $index = array_shift($request_path_args);
   if (!empty($request_path_args) && ((string) $index === (string) $purl)) {
     $path_without_purl = implode('/', $request_path_args);
-    drupal_goto($path_without_purl);
+    drupal_goto($path_without_purl, array(), 301);
   }
-}*/
+}
 
 /**
  * Implements hook_enable().
