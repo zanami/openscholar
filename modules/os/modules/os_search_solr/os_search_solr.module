@@ -104,7 +104,7 @@ function os_search_solr_block_view_alter(&$data,$block) {
       $delta_bundle = array_search($string_bundle, $map);
 
       if($block->module == 'facetapi' && $block->delta == $delta_bundle) {
-      	$data['subject'] = 'Filter by Post Type';
+      	$data['title'] = 'Filter by Post Type';
       }
 
       // Alter the title for Filter by Site.
@@ -112,7 +112,7 @@ function os_search_solr_block_view_alter(&$data,$block) {
       $delta_og = array_search($string_og, $map);
 
       if($block->module == 'facetapi' && $block->delta == $delta_og) {
-      	$data['subject'] = 'Filter By Site';
+      	$data['title'] = 'Filter By Site';
       }
 
     }
