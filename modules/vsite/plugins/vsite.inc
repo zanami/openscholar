@@ -113,6 +113,27 @@ class vsite extends space_og {
             )
           );
         }
+        // Checks group content for extraneous pURL on custom domain requests.
+        else {
+          $vsite_domain_name = variable_get('vsite_domain_name', '');
+          if ($vsite_domain_name) {
+            $object = menu_get_object();
+            if (isset($object->nid)) {
+              $items = field_get_items('node', $object, OG_AUDIENCE_FIELD);
+              if ($vsite = vsite_get_vsite($items[0]['target_id'])) {
+                if ($purl = vsite_get_purl($vsite)) {
+                  $request_path = request_path();
+                  $request_path_args = explode('/', $request_path);
+                  $index = array_shift($request_path_args);
+                  if (!empty($request_path_args) && ((string) $index === (string) $purl)) {
+                    $path_without_purl = implode('/', $request_path_args);
+                    purl_goto($path_without_purl, array(), 301);
+                  }
+                }
+              }
+            }
+          }
+        }
         break;
     }
     parent::router($op, $object);
