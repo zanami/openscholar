@@ -31,7 +31,7 @@ function os_files_update_7001(&$sandbox) {
     $sansbox['warnings'] = array();
   }
 
-  $q->range($sandbox['limit']);
+  $q->range(0, $sandbox['limit']);
 
   $r = $q->execute();
   error_log('Query executed. Rows fetched: '.count($r->fetchAllAssoc('fid')));
