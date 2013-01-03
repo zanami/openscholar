@@ -36,6 +36,7 @@ function os_files_update_7001(&$sandbox) {
   $r = $q->execute();
 
   foreach ($r as $row) {
+    error_log('Migrating '.$row->fid);
     $q = db_select('file_usage', 'fu')
         ->fields('fu', array('id'))
         ->condition('fid', $row->fid)
