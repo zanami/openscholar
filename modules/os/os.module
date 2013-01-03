@@ -366,10 +366,16 @@ function os_theme() {
  * during custom_theme.
  */
 function os_module_implements_alter(&$implementations, $hook) {
-  if ($hook == 'init') {
+  if ($hook == 'watchdog' && module_exists('dblog') && !db_table_exists('watchdog')) {
+    // The dblog table doesn't exists. Preventing from other module the option
+    // to log.
+    // @see http://drupal.org/node/429188
+    $implementations = array();
+  }
+  elseif ($hook == 'init') {
     unset($implementations['purl']);
   }
-  if ($hook == 'form_alter') {
+  elseif ($hook == 'form_alter') {
     unset($implementations['os']);
     $implementations['os'] = FALSE;
   }
