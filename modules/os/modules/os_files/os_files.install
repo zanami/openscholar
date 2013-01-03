@@ -96,3 +96,16 @@ function os_files_update_7001(&$sandbox) {
     return t('Fixed @num files. Skipped @skip files.', array('@num' => $sandbox['max'] - $sandbox['skip'], '@skip' => $sandbox['skip'])). implode('<br>', $sandbox['warnings']);
   }
 }
+
+/**
+ * Update OG audience field prepopulate settings for the files entity.
+ */
+function os_files_update_7002() {
+  $entity = entity_get_info('file');
+
+  foreach (array_keys($entity['bundles']) as $bundle) {
+    $instance = field_info_instance('file', OG_AUDIENCE_FIELD, $bundle);
+    $instance['settings']['behaviors']['prepopulate']['action_on_edit'] = TRUE;
+    field_update_instance($instance);
+  }
+}
