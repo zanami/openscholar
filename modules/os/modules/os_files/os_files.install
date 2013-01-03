@@ -58,6 +58,8 @@ function os_files_update_7001(&$sandbox) {
     if (!file_exists($file->uri)) {
       if (file_exists($filename)) {
         // file already moved. ignore it
+        // this occurs due to a race condition
+        // the next time the script runs, this file should no longer be returned by the db
         //$file->uri = $filename;
         //file_save($file);
       }
@@ -69,7 +71,6 @@ function os_files_update_7001(&$sandbox) {
     }
 
     $old_file = $file;
-    $filename = $target_dir.$orig_filename.'.'.$pathinfo['extension'];
     $file = @file_move($file, $filename, FILE_EXISTS_REPLACE);
     $sandbox['last_fid'] = $row->fid;
     if (!$file) {
