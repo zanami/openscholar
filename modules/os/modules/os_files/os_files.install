@@ -98,14 +98,19 @@ function os_files_update_7001(&$sandbox) {
 }
 
 /**
- * Update OG audience field prepopulate settings for the files entity.
+ * Hide the OG audience field when editing the node.
  */
 function os_files_update_7002() {
-  $entity = entity_get_info('file');
+  $entities = entity_get_info();
 
-  foreach (array_keys($entity['bundles']) as $bundle) {
-    $instance = field_info_instance('file', OG_AUDIENCE_FIELD, $bundle);
-    $instance['settings']['behaviors']['prepopulate']['action_on_edit'] = TRUE;
-    field_update_instance($instance);
+  foreach ($entities as $entity => $info) {
+    foreach (array_keys($info['bundles']) as $bundle) {
+      $instance = field_info_instance($entity, OG_AUDIENCE_FIELD, $bundle);
+
+      if (!empty($instance)) {
+        $instance['settings']['behaviors']['prepopulate']['action_on_edit'] = TRUE;
+        field_update_instance($instance);
+      }
+    }
   }
 }
