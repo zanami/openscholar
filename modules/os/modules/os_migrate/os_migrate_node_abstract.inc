@@ -416,7 +416,13 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         }
 
         //$row->filepath = current($row->field_upload_filepath);
-        $row->field_upload_filepath = parent::_get_destination_path('node', $row->nid);
+        $filepath = parent::_get_destination_path('node', $row->nid);
+        if($filepath){
+          //Should always be true for nodes in a site
+          $row->field_upload_filepath = $filepath;
+        }elseif (is_array($row->field_upload_filepath) && count($row->field_upload_filepath)){
+          $row->field_upload_filepath = current($row->field_upload_filepath); //can't use array for this.
+        }
 //        $row->field_upload_filepath = ($filepath) ? $filepath : current($row->field_upload_filepath); //can't use array for this.
         //$row->filename = $row->field_upload_filename; //expects string?
       }
