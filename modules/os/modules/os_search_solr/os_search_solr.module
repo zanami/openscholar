@@ -76,10 +76,10 @@ function os_search_solr_get_searcher_name() {
   if(module_exists('facetapi')) {
 	// Get the searcher info.
     $searcher_array = facetapi_get_searcher_info();
-    foreach($searcher_array as $search) {
-      if(array_key_exists('name', $search)) {
-        $searcher_name = $search['name'];
-      }
+    // First element is the default.
+    $search = array_shift($searcher_array);
+    if(array_key_exists('name', $search)) {
+      $searcher_name = $search['name'];
     }
   }
 
@@ -104,6 +104,7 @@ function os_search_solr_block_view_alter(&$data,$block) {
       $delta_bundle = array_search($string_bundle, $map);
 
       if($block->module == 'facetapi' && $block->delta == $delta_bundle) {
+
       	$data['title'] = 'Filter by Post Type';
       }
 
@@ -116,5 +117,21 @@ function os_search_solr_block_view_alter(&$data,$block) {
       }
 
     }
+  }
+}
+
+/**
+ * Implements hook_apachesolr_process_results().
+ * Remove the user and date from the search results.
+ */
+function os_search_solr_apachesolr_process_results(&$arg) {
+  if(count($arg) == 0) {
+    return;
+  }
+
+  // Remove the user and date from the results.
+  for($i = 0, $l = count($arg); $i < $l; $i++) {
+  	$arg[$i]['user'] = '';
+  	$arg[$i]['date'] = '';
   }
 }
