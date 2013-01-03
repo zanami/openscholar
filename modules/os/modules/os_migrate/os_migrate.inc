@@ -959,6 +959,7 @@ abstract class OSMigration extends Migration {
       case 'og':
         $query = self::d6_db_select('purl', 'p')
           ->condition('id', $id);
+        break;
 
       default:
         $cache[$key] = FALSE;
