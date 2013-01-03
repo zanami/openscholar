@@ -35,10 +35,8 @@ function os_files_update_7001(&$sandbox) {
 
   $r = $q->execute();
   $rows = $r->fetchAll(PDO::FETCH_OBJ);
-  error_log('Query executed. Rows fetched: '.count($rows));
 
   foreach ($rows as $row) {
-    error_log('Migrating '.$row->fid);
     $q = db_select('file_usage', 'fu')
         ->fields('fu', array('id'))
         ->condition('fid', $row->fid)
@@ -59,14 +57,15 @@ function os_files_update_7001(&$sandbox) {
     file_prepare_directory($target_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
     if (!file_exists($file->uri)) {
       if (file_exists($filename)) {
-        $file->uri = $filename;
-        file_save($file);
+        // file already moved. ignore it
+        //$file->uri = $filename;
+        //file_save($file);
       }
       else {
         error_log('File not found: '.$file->fid.': '.$file->uri);
         $sandbox['progress']++;
-        continue;
       }
+      continue;
     }
 
     $old_file = $file;
@@ -99,7 +98,7 @@ function os_files_update_7001(&$sandbox) {
         ->execute();
     }
 
-    error_log('File '.$file->fid.' moved from '.$file->uri.' to '.$target_dir);
+    error_log('File '.$file->fid.' moved from '.$old_file->uri.' to '.$target_dir);
     $sandbox['progress']++;
   }
 
