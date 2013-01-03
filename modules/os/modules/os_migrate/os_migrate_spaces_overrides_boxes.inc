@@ -876,8 +876,6 @@ class BoxPorter {
 
     //content type was updated
     $bundles = array_flip(AbstractNodeOSMigration::$source_bundle_map);
-    $bundles['announcements'] = 'news'; //content type did not have plural announcementS, but menu entry does
-    $bundles['images'] = 'galleries';
     if (isset($bundles[$ct])) {
       $ct = $bundles[$ct];
     }
@@ -914,8 +912,9 @@ class BoxPorter {
 
 
     //more link.  announcements is non-existent
-    if ($box->options['more_link'] == 'announcemnts') {
-      $box->options['more_link'] = 'news';
+    $link_update = array('announcements' => 'news', 'images' => 'galleries');
+    if (isset($link_update[$box->options['more_link']])) {
+      $options['more_link'] = $link_update[$box->options['more_link']];
     }
 
     $box->options = $options;
