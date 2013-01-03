@@ -34,6 +34,7 @@ function os_files_update_7001(&$sandbox) {
   $q->range($sandbox['limit']);
 
   $r = $q->execute();
+  error_log('Query executed');
 
   foreach ($r as $row) {
     error_log('Migrating '.$row->fid);
@@ -66,9 +67,6 @@ function os_files_update_7001(&$sandbox) {
         continue;
       }
     }
-    else {
-      error_log('File '.$file->fid.' moved from '.$file->uri.' to '.$target_dir);
-    }
 
     $old_file = $file;
     $filename = $target_dir.$orig_filename.'.'.$pathinfo['extension'];
@@ -100,6 +98,7 @@ function os_files_update_7001(&$sandbox) {
         ->execute();
     }
 
+    error_log('File '.$file->fid.' moved from '.$file->uri.' to '.$target_dir);
     $sandbox['progress']++;
   }
 
