@@ -1,9 +1,7 @@
 <?php
-// $Id$
-
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implement hook_form_FORM_ID_alter().
  *
  * Need to hook into the openscholar settings form
  * to allow admins to set the global Google Analytics ID
@@ -16,25 +14,24 @@ function os_ga_form_os_settings_form_alter(&$form, &$form_state, $form_id) {
     '#maxlength' => 255,
     '#default_value' => variable_get('os_ga_global_id', ''),
     '#description' => t("Entering your ID this will enable the sending of your OpenScholar sitewide page and visitor data to your Google Analytics account. Go to the <a href=\"http://www.google.com/analytics/\">Google Analytics site</a> to set one up. Your ID will be in the format UA-XXXXXXX-XX."),
-    '#element_validate' => array('os_ga_analytics_id_validate'),
+    '#element_validate' => array('os_ga_analytics_id_validate')
   );
 }
 
 /**
  * Implements hook os_ga_cp_settings().
- *
  * @return array
  */
 function os_ga_cp_settings() {
-  $settings = array();
+  $a_settings = array();
 
-  $settings['os_ga_google_analytics_id'] = array(
+  $a_settings['os_ga_google_analytics_id'] = array(
     'form' => array(
       '#type' => 'textfield',
       '#title' => t('Enter your Google Analytics ID'),
       '#size' => 20,
       '#maxlength' => 255,
-      '#default_value' => variable_get('os_ga_google_analytics_id', ''),
+      '#default_value' => variable_get('os_ga_google_analytics_id',''),
       '#description' => t("Entering your ID this will send page and visitor data to your Google Analytics account. Go to the <a href=\"http://www.google.com/analytics/\">Google Analytics site</a> to set one up. Your ID will be in the format UA-XXXXXXX-XX."),
       '#element_validate' => array('os_ga_analytics_id_validate'),
     ),
@@ -45,7 +42,7 @@ function os_ga_cp_settings() {
     ),
   );
 
-  return $settings;
+  return $a_settings;
 }
 
 /**
@@ -69,9 +66,9 @@ function os_ga_init() {
     // Set both to be tracked.
     $script .= 'var _gaq = _gaq || [];';
     $script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['os_id']) . ']);';
-    $script .= '_gaq.push(["_trackPageview"]);';
+     $script .= '_gaq.push(["_trackPageview"]);';
 
-    // Add in our global account as well.
+    // Add in our globak account as well.
     $script .= '_gaq.push(["b._setAccount", ' . drupal_json_encode($ga_vars['global_id']) . ']);';
     $script .= '_gaq.push(["b._trackPageview"]);';
 
@@ -84,9 +81,6 @@ function os_ga_init() {
     $script .= 'var s = document.getElementsByTagName("script")[0];';
     $script .= 's.parentNode.insertBefore(ga, s);';
     $script .= '})();';
-    // Integrates with AddThis. Currently AddThis only supports one property at
-    // a time, so we use vsite-level profile over the global profile.
-    $script .= "var addthis_config = {data_ga_social: true, data_ga_property: '" . drupal_json_encode($ga_vars['os_id']) . "'};";
   }
   elseif (!empty($ga_vars['global_id'])) {
     // Global pageTracker object.
@@ -107,16 +101,15 @@ function os_ga_init() {
     $script .= 'var s = document.getElementsByTagName("script")[0];';
     $script .= 's.parentNode.insertBefore(ga, s);';
     $script .= '})();';
-    // Integrates with AddThis.
-    $script .= "var addthis_config = {data_ga_social: true, data_ga_property: '" . drupal_json_encode($ga_vars['global_id']) . "'};";
+
   }
   elseif (!empty($ga_vars['os_id'])) {
-    // Vsite pageTracker object.
+     // Vsite pageTracker object.
     $script .= 'var _gaq = _gaq || [];';
     $script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['os_id']) . ']);';
-    $script .= '_gaq.push(["_trackPageview"]);';
+     $script .= '_gaq.push(["_trackPageview"]);';
 
-    // Add in our global account as well.
+    // Add in our globak account as well.
     // $script .= '_gaq.push(["b._setAccount", ' . drupal_json_encode($globalAccount) . ']);';
     // $script .= '_gaq.push(["b._trackPageview"]);';
 
@@ -129,17 +122,16 @@ function os_ga_init() {
     $script .= 'var s = document.getElementsByTagName("script")[0];';
     $script .= 's.parentNode.insertBefore(ga, s);';
     $script .= '})();';
-    // Integrates with AddThis.
-    $script .= "var addthis_config = {data_ga_social: true, data_ga_property: '" . drupal_json_encode($ga_vars['os_id']) . "'};";
-  }
-  else {
-    // Default to out global account.
-    $script = '';
-  }
+
+   }
+   else {
+     // Default to out global account.
+     $script = '';
+   }
 
   if (strlen($script)) {
     // Code snippet goes in header by default.
-    drupal_add_js($script, 'inline', variable_get('vsite_ga_scope', 'header'));
+      drupal_add_js($script, 'inline', variable_get('vsite_ga_scope' , 'header'));
   }
 }
 
@@ -160,6 +152,7 @@ function _os_ga_ga_id_vars() {
     if ($global_id = variable_get('os_ga_global_id', '')) {
       if (strlen($global_id)) {
         $ga_vars['global_id'] = $global_id;
+
       }
     }
 
@@ -238,7 +231,7 @@ function os_ga_block_view($delta) {
 }
 
 /**
- * Renders a Google translate HTML and add needed JS.
+ * Render a Google transalte HTML and add needed JS.
  */
 function os_ga_google_translate() {
   global $language;
@@ -253,5 +246,5 @@ function os_ga_google_translate() {
   drupal_add_js('http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit', array('type' => 'external'));
 
   return '<div id="google_translate_element"></div>';
-}
 
+}
