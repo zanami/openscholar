@@ -808,6 +808,8 @@ ul.recent-images-list li a:hover img {
  background: none;
 }
 
+.image-style-os-files-large, .image-style-os-files-xlarge {padding-right:10px;}
+
 /**
  * "News" node-type styles.
  *
