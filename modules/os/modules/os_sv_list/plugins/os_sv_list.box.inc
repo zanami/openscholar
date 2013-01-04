@@ -51,13 +51,14 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['content_type'],
       '#options' => $content_types,
       '#id' => 'os_sv_list_content_type',
+    /*
       '#ajax' => array(
         'callback' => 'os_sv_list_more_link_ajax',
         //'wrapper' => 'more_link_div',
         'wrapper' => 'edit-more-link',
         'method' => 'replace',
         'effect' => 'none',
-      ),
+      ),*/
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'os_sv_list').'/os_sv_list.js',
@@ -65,14 +66,14 @@ class os_sv_list_box extends os_boxes_default {
       ),
     );
 
-    $form['biblio_show_all'] = array(
+    /*$form['biblio_show_all'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show all publication types'),
       '#default_value' => isset($this->options['biblio_show_all']) ? $this->options['biblio_show_all'] : $defaults['biblio_show_all'],
       '#id' => 'biblio_show_all_check',
       '#prefix' => '<div id="os_sv_list_biblio_show_all">',
       '#suffix' => '</div>',
-    );
+    );*/
 
     $form['biblio_whitelist'] = array(
       '#type' => 'checkboxes',
@@ -86,6 +87,14 @@ class os_sv_list_box extends os_boxes_default {
           drupal_get_path('module', 'os_boxes').'/misc/selectAll.js',
         ),
       ),
+      '#states' => array(
+        'visible' => array(
+          '#os_sv_list_content_type' => array('value' => 'biblio'),
+        ),
+        'invisible' => array(
+          '#os_sv_list_content_type' => array('!value' => 'biblio')
+        ,)
+      )
     );
 
     $form['display'] = array(
@@ -128,11 +137,36 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['more_link'],
       '#states' => array(
         'visible' => array('input[name=more]' => array('checked' => TRUE)),
-        'invisible'  => array('input[name=more]' => array('checked' => FALSE))
-
+        'invisible'  => array('input[name=more]' => array('checked' => FALSE)),
       ),
       '#prefix' => '<div id="more_link_div">',
       '#suffix' => '</div>',
+      '#attached' => array(
+        'js' => array(
+          array(
+            'data' => array(
+              'more_link_defaults' => array(
+                'all' => '',
+                'news' => 'news',
+                'biblio' => 'publications',
+                'event' => 'calendar',
+                'page' => 'pages',
+                'data' => 'data',
+                'blog' => 'blog',
+                'book' => 'documents',
+                'feed' => 'reader',
+                'media_gallery' => 'galleries',
+                'link' => 'links',
+                'presentation' => 'presentations',
+                'software_project' => 'software',
+                'software_release' => 'software',
+                'person' => 'people',
+              ),
+            ),
+            'type' => 'setting',
+          )
+        )
+      )
     );
 
     $form['more_text'] = array(
