@@ -107,7 +107,8 @@ text-decoration:none;
 
 .block-boxes-os_boxes_site_info  {
     border-left: 8px solid #565656;
-    padding-left: 7px;
+    margin-left: 10px;
+    padding-left: 2px;
 }
 
 .block-boxes-os_boxes_site_info h1 {
