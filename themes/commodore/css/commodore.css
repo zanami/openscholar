@@ -473,6 +473,22 @@ div.views-field-field-gallery-image-fid img {
 
 .page-announcements.og-context-node-9015 h3 {font-size: 1.35em;}
 
+
+.og-context-node-9015 .region-header-third .block-inner {
+	margin-left: 0;
+    margin-right: 0;
+    }
+    
+ 
+.og-context-node-9015 .field-name-body ul {
+	list-style-type: disc;
+}    
+    
+    
+.og-context-node-9015 .field-name-body ul li {
+	margin-bottom: 0.8em;
+}
+
 /* CUSTOM STYLES END */
 
 
