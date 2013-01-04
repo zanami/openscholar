@@ -1,7 +1,7 @@
 /* D6 retro css for older themes */
+@import url(http://fonts.googleapis.com/css?family=Judson);
 #columns {padding:0 10px;}
 
-@import url(http://fonts.googleapis.com/css?family=Judson);
 
 body {
 background: url('../images/bodyBg.gif') no-repeat fixed center top #EFEFEF;
@@ -112,11 +112,15 @@ text-decoration:none;
 
 .block-boxes-os_boxes_site_info h1 {
     margin-bottom: 0;
+    line-height: 26px;
 }
 
 .block-boxes-os_boxes_site_info h1 a {font-family: 'Judson', georgia; font-size:1.2em;text-decoration:none;color:#FFF;}
 .block-boxes-os_boxes_site_info h2, 
 .block-boxes-os_boxes_site_info p {color:#d6d6d6;}
+
+.block-boxes-os_boxes_site_info h2 {font-size:1.6em;}
+
 
 h1,
 h2,
