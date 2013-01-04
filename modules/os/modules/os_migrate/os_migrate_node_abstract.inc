@@ -302,6 +302,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     }
 
     $node_dirty = FALSE;
+
+    //update links to attached files.  they should have been updated to include files/$purl
+    $node_dirty = (self::_complete_body_links($entity, $row) || $node_dirty);
+
     foreach ($entity->field_upload as $lang => $fields) {
       foreach ($fields as $delta => $upload) {
         $file_dirty = FALSE;
@@ -327,9 +331,6 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         }
       }
     }
-
-    //update links to attached files.  they should have been updated to include files/$purl
-    $node_dirty = (self::_complete_body_links($entity, $row) || $node_dirty);
 
     //resave the node
     if ($node_dirty) {
