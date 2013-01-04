@@ -178,7 +178,7 @@ function os_publications_update_7002(){
  */
 function os_publications_update_7003() {
   if(!module_exists('biblio_citeproc')){
-  	return('CiteProc not installed, update not needed.');
+  	return t('CiteProc not installed, update not needed.');
   }
   $field_map = biblio_get_map('field_map','csl');
   if(isset($field_map['collection-title']) && isset($field_map['container-title'])) {
@@ -188,4 +188,29 @@ function os_publications_update_7003() {
 	  return t('Second biblio_secondary_title field mapping removed.');
 	}
   }
+}
+
+/**
+ * Remove the migrate related residual "Select Type..." publication type from the biblio_types table.
+ */
+function os_publications_update_7004() {
+  if(!db_table_exists('biblio_types')) {
+  	return;
+  }
+
+  $result = db_select('biblio_types', 'b')
+    ->fields('b', array('tid'))
+    ->condition('name', 'Select Type...','=')
+    ->execute()
+    ->fetchField();
+
+  if(empty($result)) {
+  	return;
+  }
+
+  $delete_type = db_delete('biblio_types')
+    ->condition('tid',$result)
+  	->execute();
+
+  return t('Select Type... has been removed from the biblio_types table.');
 }

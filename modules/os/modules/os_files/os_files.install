@@ -25,18 +25,18 @@ function os_files_update_7001(&$sandbox) {
 
   if (!isset($sandbox['progress'])) {
     $sandbox['progress'] = 0;
-    $sandbox['limit'] = 5;
+    $sandbox['limit'] = 3;
     $sandbox['last_fid'] = 0;
     $sandbox['max'] = $q->countQuery()->execute()->fetchField();
     $sansbox['warnings'] = array();
   }
 
-  $q->range($sandbox['limit']);
+  $q->range(0, $sandbox['limit']);
 
   $r = $q->execute();
+  $rows = $r->fetchAll(PDO::FETCH_OBJ);
 
-  foreach ($r as $row) {
-    error_log('Migrating '.$row->fid);
+  foreach ($rows as $row) {
     $q = db_select('file_usage', 'fu')
         ->fields('fu', array('id'))
         ->condition('fid', $row->fid)
@@ -57,21 +57,20 @@ function os_files_update_7001(&$sandbox) {
     file_prepare_directory($target_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
     if (!file_exists($file->uri)) {
       if (file_exists($filename)) {
-        $file->uri = $filename;
-        file_save($file);
+        // file already moved. ignore it
+        // this occurs due to a race condition
+        // the next time the script runs, this file should no longer be returned by the db
+        //$file->uri = $filename;
+        //file_save($file);
       }
       else {
         error_log('File not found: '.$file->fid.': '.$file->uri);
         $sandbox['progress']++;
-        continue;
       }
-    }
-    else {
-      error_log('File '.$file->fid.' moved from '.$file->uri.' to '.$target_dir);
+      continue;
     }
 
     $old_file = $file;
-    $filename = $target_dir.$orig_filename.'.'.$pathinfo['extension'];
     $file = @file_move($file, $filename, FILE_EXISTS_REPLACE);
     $sandbox['last_fid'] = $row->fid;
     if (!$file) {
@@ -100,6 +99,7 @@ function os_files_update_7001(&$sandbox) {
         ->execute();
     }
 
+    error_log('File '.$file->fid.' moved from '.$old_file->uri.' to '.$target_dir);
     $sandbox['progress']++;
   }
 
