@@ -62,6 +62,12 @@ function os_search_solr_os_widget(){
  *   An object implementing DrupalSolrQueryInterface. No need for &.
  */
 function os_search_solr_apachesolr_query_alter($query) {
+
+  if (!variable_get('os_search_solr_query_multisites',FALSE)) {
+    // Limit searches to just this OpenScholar install in shared indexes
+    $query->addFilter('hash', apachesolr_site_hash());
+  }
+
   if(module_exists('vsite') && ($vsite = spaces_get_space())){
     // I only want to see items in this site
     $query->addFilter("sm_og_group_ref", $vsite->group_type.":".$vsite->id);
