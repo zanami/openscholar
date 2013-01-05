@@ -415,7 +415,7 @@ line-height:15px;
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li a:visited { color: #293352; display: block; padding: 5px 0pt 2px 16px; } 
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li a:hover {background: #EFEFEF;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li li a {font-weight:normal;font-size:.98em; color:#293352;margin: 0; background: none;  text-decoration: none !important; } 
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li li a {font-weight:normal;font-size:.98em; color:#293352;margin: 0; background: none;  text-decoration: none !important;min-height:24px; } 
 
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a {background:url('../images/subNavBullet.png') 16px center no-repeat;}
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a:hover {background:url('../images/subNavBullet.png') 16px center no-repeat #EFEFEF;} 
