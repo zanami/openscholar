@@ -1,0 +1,30 @@
+/*Typography */
+a {color: #4384C4;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#branding_footer, #branding_header {
+	background:#000;
+	color:#FFF;
+}
+
+#branding_footer a, #branding_header a {
+	color:#FFF;
+}
