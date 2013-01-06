@@ -750,6 +750,10 @@ function cp_content_views_default_views() {
   $handler->display->display_options['filters']['filename']['expose']['label'] = 'Name';
   $handler->display->display_options['filters']['filename']['expose']['operator'] = 'filename_op';
   $handler->display->display_options['filters']['filename']['expose']['identifier'] = 'filename';
+  /* Filter criterion: File: Schema type */
+  $handler->display->display_options['filters']['schema_type']['id'] = 'schema_type';
+  $handler->display->display_options['filters']['schema_type']['table'] = 'file_managed';
+  $handler->display->display_options['filters']['schema_type']['field'] = 'schema_type';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
