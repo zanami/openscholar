@@ -108,6 +108,6 @@ function os_files_update_7001(&$sandbox) {
 
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress']/$sandbox['max']);
   if ($sandbox['#finished'] >= 1) {
-    return t('Fixed @num files.<br>', array('@num' => $sandbox['max'])). implode('<br>', $sandbox['warnings']);
+    return t('Fixed @num files.<br>', array('@num' => $sandbox['progress'])). implode('<br>', $sandbox['warnings']);
   }
 }
