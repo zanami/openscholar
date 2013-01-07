@@ -1,6 +1,7 @@
 .project
 .buildpath
 .settings
+.idea
 
 # Don't track temporary files or Mac OS system files.
 *~
@@ -14,4 +15,5 @@ behat/vendor
 behat/bin
 behat.local.yml
 composer.phar
+composer.lock
 
