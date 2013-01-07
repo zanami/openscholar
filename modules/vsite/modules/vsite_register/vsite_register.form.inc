@@ -1,9 +1,7 @@
 <?php
 
 /**
- * @function vsite_site_register_form
- *
- * Provides form for site/register
+ * Form for creating new VSites.
  */
 function vsite_register_form($form, &$form_state) {
   global $base_url;
@@ -11,6 +9,7 @@ function vsite_register_form($form, &$form_state) {
   $form = array();
   $manager = user_access('create vsite content on behalf') && user_access('administer users');
 
+  // @todo: What is the parent?
   $parent = NULL;
   if (isset($_GET['parent']) && $parent = vsite_get_vsite($_GET['parent'])) {
     $parent = $_GET['parent'];
@@ -28,21 +27,23 @@ function vsite_register_form($form, &$form_state) {
     '#size' => 35,
     '#description' => t('Minimum of 3 characters, which must be lowercase. Punctuation is not allowed except for hyphens and underscores. <br />Example: a choice of \'jdoe\' would result in the URL: %site.', array('%site' => $base_url . '/jdoe')),
     '#ajax' => array(
-      'callback' => 'vsite_register_ajax_validation',
+      'callback' => 'vsite_register_validate_domain',
       'wrapper' => 'domain-errors',
     ),
-    '#field_suffix' => theme('vsite_register_form_errors', array('name'=>'domain')),
-    '#attached' => array('js' => array(drupal_get_path('module', 'vsite_register') . '/vsite_register.js')),
+    // Use the theme function to add the div with the correct wrapper ID.
+    '#field_suffix' => theme('vsite_register_form_errors', array('name' => 'domain')),
+    // @todo: Re-visit JS.
+    // '#attached' => array('js' => array(drupal_get_path('module', 'vsite_register') . '/vsite_register.js')),
   );
 
   $group_types = og_get_all_group_bundle();
-  $default_bundle = variable_get('os_default_group_bundle', 'personal');
   $bundles = array();
   foreach ($group_types['node'] as $bundle => $label) {
     if (user_access("create {$bundle} content") && (!isset($parent) || in_array($bundle, array('personal', 'project')))) {
       $bundles[$bundle] = $label;
     }
   }
+  $default_bundle = variable_get('os_default_group_bundle', 'personal');
   if(!isset($bundles[$default_bundle])){
     $default_bundle = current($bundles);
   }
@@ -55,7 +56,7 @@ function vsite_register_form($form, &$form_state) {
     '#default_value' => $default_bundle,
   );
 
-  if (count($bundles) <= 1) {
+  if (count($bundles) == 1) {
     $form['bundle']['#type'] = 'value';
     $form['bundle']['#value'] = $default_bundle;
   }
@@ -70,7 +71,7 @@ function vsite_register_form($form, &$form_state) {
 
   $selected_bundle = isset($form_state['values']['bundle']) ? $form_state['values']['bundle'] : $default_bundle;
 
-  //Get enabled presets and load their titles
+  //Get enabled presets and load their titles.
   $enabled_presets = variable_get('os_enabled_spaces_presets', array());
   $presets = spaces_preset_load();
   foreach($enabled_presets as $key => $value) {
@@ -92,7 +93,7 @@ function vsite_register_form($form, &$form_state) {
     '#default_value' => (isset($enabled_presets[$default_preset])) ? $default_preset : current(array_keys($enabled_presets)),
   );
 
-  if (count($enabled_presets) <= 1) {
+  if (count($enabled_presets) == 1) {
     $form['preset']['#type'] = 'value';
     $form['preset']['#value'] = $form['preset']['#default_value'];
   }
@@ -117,9 +118,9 @@ function vsite_register_form($form, &$form_state) {
       '#type' => 'hidden',
       '#default_value' => TRUE,
     );
-
-  } elseif($manager) {
-    //managers can create a new site, give a site to another user, or give a site to a new account.
+  }
+  elseif($manager) {
+    // User can create a new site, give a site to another user, or give a site to a new account.
     $form['vicarious_user'] = array(
       '#type' => 'checkbox',
     	'#title' => t('Create this OS Site on behalf of another user.'),
@@ -142,7 +143,7 @@ function vsite_register_form($form, &$form_state) {
     	'#autocomplete_path' => 'user/autocomplete',
     );
 
-    //flag for JS to set when create new user is clicked
+    // Flag for JS to set when create new user is clicked.
     $form['user_fieldset']['create_new_user'] = array(
       '#type' => 'hidden',
       '#default_value' => FALSE,
@@ -160,8 +161,9 @@ function vsite_register_form($form, &$form_state) {
       '#markup' => '</div>',
     );
 
-  } else {
-    //regular users can only create sites for themselves.
+  }
+  else {
+    // Regular users can only create sites for themselves.
     $form['vicarious_user'] = array(
       '#type' => 'value',
       '#value' => FALSE,
@@ -174,9 +176,11 @@ function vsite_register_form($form, &$form_state) {
     '#weight' => 40,
     '#prefix' => '<div id="form-errors"></div>',
     '#suffix' => '<div id="submit-suffix"></div>',
-    '#attributes' => array('class' => array('use-ajax-submit') ),
+    //'#attributes' => array('class' => array('use-ajax-submit') ),
+    '#submit' => array('vsite_register_form_submit'),
     '#ajax' => array(
-      'callback' => 'vsite_register_form_submit',
+      'callback' => 'vsite_register_form_submit_ajax',
+      'wrapper' => 'submit-suffix'
     ),
   );
 
@@ -184,7 +188,9 @@ function vsite_register_form($form, &$form_state) {
 
 }
 
-//returns user section of vsite_register form
+/**
+ * Form builder; Returns the "user" section of vsite-register form.
+ */
 function _vsite_register_user_form() {
   $form = array();
   $form['name'] = array(
@@ -223,26 +229,43 @@ function _vsite_register_user_form() {
     '#field_suffix' => theme('vsite_register_form_errors', array('name'=>'mail')),
   );
 
-  // password field
+  // Password field.
   $form['password'] = array(
     '#type' => 'password_confirm',
     '#size' => 35,
   );
-  /*
-  $form['notify'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Send email notification of this account.'),
-  );
-  */
+
   return $form;
 }
 
+/**
+ * Validate handler; Validate the "domain" element.
+ */
+function vsite_register_validate_domain($element, &$form_state) {
+  $values = $form_state['values'];
+  if (empty($values['domain'])) {
+    return;
+  }
+
+  $errors = array();
+
+  if (strlen($values['domain']) < 3 || !valid_url($values['domain']) || !_vsite_register_valid_url($values['domain'])) {
+    $errors[] = t('Invalid URL specified.');
+  }
+
+  if (($purl = purl_load(array('value'=>$values['domain'], 'provider'=>'spaces_og'), TRUE)) || menu_get_item($values['domain'])) {
+    $errors[] = t('URL %url is taken.  Please choose another.', array('%url' => $values['domain']));
+  }
+
+  return theme('vsite_register_form_errors', (array(
+    'name' => 'domain',
+    'errors' => $errors,
+  )));
+}
 
 
 /**
- * @function vsite_site_register_form
- *
- * Creates user and vsite when site/register form is submitted
+ * Submit handler; Creates user and vsite when site/register form is submitted
  */
 function vsite_register_form_submit(&$form, &$form_state) {
   ctools_include('user', 'os');
@@ -287,10 +310,7 @@ function vsite_register_form_submit(&$form, &$form_state) {
   vsite_user_add($site_owner);
 
   os_role_grant($site_owner->uid, 'vsite admin', $vsite->id);
-
-  $message = vsite_register_message($form, $values['domain']);
-  $commands[] = ajax_command_replace ('#submit-suffix', $message );
-  $commands[] = ajax_command_remove('#edit-submit');
+  drupal_set_message(vsite_register_get_message($values['domain']));
 
   if (isset($values['vsite_private']) && $values['vsite_private'] && module_exists('vsite_access')) {
     $node = node_load($vsite->group->nid);
@@ -302,6 +322,43 @@ function vsite_register_form_submit(&$form, &$form_state) {
   vsite_register_notify_user($vsite);
 }
 
+/**
+ * The message shown after a successful web site registration.
+ *
+ * @param $domain
+ *   The domain name.
+ */
+function vsite_register_get_message($domain){
+  global $user;
+
+  $message  = '<div id="success-message" class="status">';
+  if (user_access("create openscholar site on behalf of others")) {
+    $message .= '<p>' . t('Success! the new site has been created.') . '</p>';
+  }
+  else {
+    $message .= '<p>' . t('Success! yournew site has been created.') . '</p>';
+  }
+
+  if (!$user->uid) {
+    $message .= '<p>' . t('Check your email account for further details on how to login in to start adding features and content.') . '</p>';
+  }
+
+  $params = array('@url' => l($domain));
+  $message .= '<p>' . t('The URL of the site is @url. <a href="@url">Go there now</a>', $params) . '</p>';
+  $message .= '</div>';
+
+  return $message;
+}
+
+/**
+ * Ajax callback;
+ */
+function vsite_register_form_submit_ajax($form, &$form_state) {
+  // Prevent redirect for Ajax to work.
+  $form_state['redirect'] = FALSE;
+  return t('Your site was created!');
+}
+
 
 /**
  * @function vsite_site_register_form_validate
@@ -309,25 +366,18 @@ function vsite_register_form_submit(&$form, &$form_state) {
  * Validation function for site/register form
  */
 function vsite_register_form_validate(&$form, &$form_state) {
-  //Ajax validation.
-  if ($_GET['q'] == 'system/ajax') {
-    if ($form_state['triggering_element']['#ajax']['callback'] == 'vsite_register_ajax_validation' ||
-        $form_state['triggering_element']['#ajax']['callback'] == 'iqss_pinserver_register_ajax_validation') {
-      //ajax callback will validate just this element and return a message.
-      return;
-    }
-    elseif ($form_state['triggering_element']['#ajax']['callback'] != 'vsite_register_ajax_available_presets'){
-      //form is done.  maybe this should happen after the validate?  or at least duplicate its efforts.
-      return vsite_register_ajax_submit_validation($form, $form_state);
-    }
-  }
-
   //Fall back to standard validation
+  $has_error = FALSE;
   $values = $form_state['values'];
   foreach (vsite_register_validate_elements($values) as $element => $msg) {
     if ($msg) {
       form_set_error($element, $msg);
+      $has_error = TRUE;
     }
+  }
+
+  if ($has_error) {
+    return;
   }
 
   if ($values['create_new_user']) {
@@ -438,6 +488,10 @@ function _vsite_register_validate($element, &$values) {
   switch($element) {
 
     case 'domain':
+      if (empty($values['domain'])) {
+        return;
+      }
+
       if (strlen($values['domain']) < 3 || !valid_url($values['domain']) || !_vsite_register_valid_url($values['domain'])) {
         $msg[] = t('Invalid URL specified.');
       }
