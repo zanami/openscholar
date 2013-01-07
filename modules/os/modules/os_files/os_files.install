@@ -20,12 +20,13 @@ function os_files_update_7001(&$sandbox) {
   $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
   $q->fields('fm', array('fid', 'filename', 'uri'))
     ->fields('p', array('value'))
+    ->where('fm.uri LIKE "public://%"')
     ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
     ->orderBy('fid');
 
   if (!isset($sandbox['progress'])) {
     $sandbox['progress'] = 0;
-    $sandbox['limit'] = 3;
+    $sandbox['limit'] = 5;
     $sandbox['last_fid'] = 0;
     $sandbox['max'] = $q->countQuery()->execute()->fetchField();
     $sandbox['warnings'] = array();
@@ -100,10 +101,10 @@ function os_files_update_7001(&$sandbox) {
         ->execute();
     }
 
-    error_log('File '.$file->fid.' moved from '.$old_file->uri.' to '.$target_dir);
+    //error_log('File '.$file->fid.' moved from '.$old_file->uri.' to '.$target_dir);
     $sandbox['progress']++;
   }
-  error_log(t('Processed @num of @max files.', array('@num' => $sandbox['progress'], '@max' => $sandbox['max'])));
+  //error_log(t('Processed @num of @max files.', array('@num' => $sandbox['progress'], '@max' => $sandbox['max'])));
 
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress']/$sandbox['max']);
   if ($sandbox['#finished'] >= 1) {
