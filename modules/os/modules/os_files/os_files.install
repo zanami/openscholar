@@ -60,8 +60,9 @@ function os_files_update_7001(&$sandbox) {
         // file already moved. ignore it
         // this occurs due to a race condition
         // the next time the script runs, this file should no longer be returned by the db
-        //$file->uri = $filename;
-        //file_save($file);
+        error_log('File '.$file->uri.' already moved to '.$filename);
+        $file->uri = $filename;
+        file_save($file);
       }
       else {
         error_log('File not found: '.$file->fid.': '.$file->uri);
