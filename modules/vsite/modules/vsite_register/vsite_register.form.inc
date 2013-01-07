@@ -9,10 +9,9 @@ function vsite_register_form($form, &$state) {
   global $base_url;
   global $user;
   $form = array();
-  $anonymous = ($user->uid == 0);
-  $manager = (user_access('create vsite content on behalf') && user_access('administer users'));
+  $manager = user_access('create vsite content on behalf') && user_access('administer users');
 
-  $parent = null;
+  $parent = NULL;
   if (isset($_GET['parent']) && $parent = vsite_get_vsite($_GET['parent'])) {
     $parent = $_GET['parent'];
   }
@@ -59,11 +58,12 @@ function vsite_register_form($form, &$state) {
   if (count($bundles) <= 1) {
     $form['bundle']['#type'] = 'value';
     $form['bundle']['#value'] = $default_bundle;
-  }else{
+  }
+  else{
     $form['bundle']['#ajax'] = array(
       'event' => 'change',
       'wrapper' => 'preset-wrapper',
-      'callback' => 'vsite_register_ajax_avalible_presets',
+      'callback' => 'vsite_register_ajax_available_presets',
       'method' => 'replace',
     );
   }
@@ -105,7 +105,7 @@ function vsite_register_form($form, &$state) {
   );
 
 
-  if ($anonymous) {
+  if (!$user->uid) {
     //anonymous users always create new accounts
     $form += _vsite_register_user_form();
     $form['vicarious_user'] = array(
@@ -131,8 +131,7 @@ function vsite_register_form($form, &$state) {
     	'#states' => array('visible' => array(':input[name="vicarious_user"]' => array('checked' => TRUE))),
     );
 
-    //$ajax_link = l(t('create a new user'), 'javascript:void(0)', array('attributes'=>array('id'=>array('new-user-link'))));
-    $ajax_link = '<a href="javascript:void(0)" id="new-user-link">' . t('create a new user') . '</a>'; //figure out l() later
+    $ajax_link = '<a href="javascript:void(0)" id="new-user-link">' . t('create a new user') . '</a>';
 
     $form['user_fieldset']['existing_username'] = array(
       '#type' => 'textfield',
@@ -335,7 +334,8 @@ function vsite_register_form_validate(&$form, &$state) {
         $state['triggering_element']['#ajax']['callback'] == 'iqss_pinserver_register_ajax_validation') {
       //ajax callback will validate just this element and return a message.
       return;
-    } else if ($state['triggering_element']['#ajax']['callback'] != 'vsite_register_ajax_avalible_presets'){
+    }
+    elseif ($state['triggering_element']['#ajax']['callback'] != 'vsite_register_ajax_available_presets'){
       //form is done.  maybe this should happen after the validate?  or at least duplicate its efforts.
       return vsite_register_ajax_submit_validation($form, $state);
     }
@@ -356,29 +356,24 @@ function vsite_register_form_validate(&$form, &$state) {
 }
 
 /**
- * @function vsite_register_ajax_validation
- *
- * Callback function for ajax.  returns errors on ajaxy elements
+ * Callback function for ajax. Returns errors on Ajaxy elements.
  */
 function vsite_register_ajax_validation(&$form, &$state) {
-  drupal_get_messages(); //clear this to avoid having notices clutter the form during ajax validation
-  $elem = $state['triggering_element']['#name'];
+  $element_name = $state['triggering_element']['#name'];
+  if (!$errors = _vsite_register_validate($element_name, $state['values'])) {
+    return;
+  }
+
   return theme('vsite_register_form_errors', (array(
-    'name' => $elem,
-    'errors' => _vsite_register_validate($elem, $state['values']),
+    'name' => $element_name,
+    'errors' => $errors,
   )));
-  //$errors = form_get_errors();//$state['triggering_element']['#name']);
 }
 
 /**
- * Update the avalible presets
- *
- * @param $form
- * @param $form_state
- * @return $form
+ * Update the available presets.
  */
-function vsite_register_ajax_avalible_presets($form, $form_state) {
-
+function vsite_register_ajax_available_presets($form, $form_state) {
   //Hard work is done in the form build function, just return the item
   return $form['preset'];
 }
