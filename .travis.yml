@@ -39,13 +39,12 @@ before_script:
   # Copy Behat configuration file.
   - cd behat
   - cp behat.local.yml.travis behat.local.yml
-
-  # Create Drush alias.
-  - cp aliases.drushrc.php ~/.drush/
   - composer install
+  # Temporary fix until http://drupal.org/node/1868980 is fixed.
+  - cd vendor/drupal/drupal-extension/  
+  - curl http://drupal.org/files/1868980-fix-wsod.patch | git apply
+  - cd ../../..
 
-
-# Dummy script to return "exit 0", until Behat is in place.
 script:
     # Create display.
     - export DISPLAY=:99.0

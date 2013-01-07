@@ -41,4 +41,4 @@ Feature:
     And I visit "john"
     When I click "Publications"
     And I click "The Little Prince"
-    Then I should see "Anon. The Little Prince. United States; 1943."
+    Then I should see "The Little Prince. United States; 1943."
