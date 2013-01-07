@@ -336,7 +336,7 @@ function vsite_register_get_message($domain){
     $message .= '<p>' . t('Success! the new site has been created.') . '</p>';
   }
   else {
-    $message .= '<p>' . t('Success! yournew site has been created.') . '</p>';
+    $message .= '<p>' . t('Success! your new site has been created.') . '</p>';
   }
 
   if (!$user->uid) {
@@ -356,7 +356,6 @@ function vsite_register_get_message($domain){
 function vsite_register_form_submit_ajax($form, &$form_state) {
   // Prevent redirect for Ajax to work.
   $form_state['redirect'] = FALSE;
-  return t('Your site was created!');
 }
 
 
