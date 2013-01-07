@@ -10,4 +10,4 @@ default:
       base_url:  http://127.0.0.1
     Drupal\DrupalExtension\Extension:
       drush:
-        alias: openscholar
+        alias: self

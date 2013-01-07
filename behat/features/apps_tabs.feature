@@ -7,8 +7,8 @@ Feature:
     Given I am logged in as a user with the "authenticated user" role
     And I visit "john"
     When I click "Bio"
-    And I click "John doe biography"
-    Then I should see "Work in gizra inc."
+    Then I should see "John doe biography"
+    And I should see "Work in gizra inc."
 
   @api
   Scenario: Test the News tab
@@ -41,4 +41,4 @@ Feature:
     And I visit "john"
     When I click "Publications"
     And I click "The Little Prince"
-    Then I should see "Anon. The Little Prince. United States; 1943."
+    Then I should see "The Little Prince. United States; 1943."
