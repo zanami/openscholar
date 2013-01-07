@@ -5,7 +5,7 @@
  *
  * Provides form for site/register
  */
-function vsite_register_form($form, &$state) {
+function vsite_register_form($form, &$form_state) {
   global $base_url;
   global $user;
   $form = array();
@@ -68,7 +68,7 @@ function vsite_register_form($form, &$state) {
     );
   }
 
-  $selected_bundle = isset($state['values']['bundle']) ? $state['values']['bundle'] : $default_bundle;
+  $selected_bundle = isset($form_state['values']['bundle']) ? $form_state['values']['bundle'] : $default_bundle;
 
   //Get enabled presets and load their titles
   $enabled_presets = variable_get('os_enabled_spaces_presets', array());
@@ -175,7 +175,9 @@ function vsite_register_form($form, &$state) {
     '#prefix' => '<div id="form-errors"></div>',
     '#suffix' => '<div id="submit-suffix"></div>',
     '#attributes' => array('class' => array('use-ajax-submit') ),
-    '#ajax' => array('callback' => 'vsite_register_form_submit'),
+    '#ajax' => array(
+      'callback' => 'vsite_register_form_submit',
+    ),
   );
 
   return $form;
@@ -242,16 +244,17 @@ function _vsite_register_user_form() {
  *
  * Creates user and vsite when site/register form is submitted
  */
-function vsite_register_form_submit(&$form, &$state) {
+function vsite_register_form_submit(&$form, &$form_state) {
   ctools_include('user', 'os');
   ctools_include('vsite', 'vsite');
-  $values = $state['values'];
+  $values = $form_state['values'];
 
   if ($values['vicarious_user'] && $values['existing_username']) {
     //user account already exists
     $site_owner = user_load_by_name($values['existing_username']);
 
-  } elseif (($values['vicarious_user'] && !$values['existing_username']) || (!$values['vicarious_user'] && $values['name'])) {
+  }
+  elseif (($values['vicarious_user'] && !$values['existing_username']) || (!$values['vicarious_user'] && $values['name'])) {
     // create user for self or on someone's behalf
     $user_options = array(
     	'name' => $values['name'],
@@ -263,62 +266,40 @@ function vsite_register_form_submit(&$form, &$state) {
     );
     $site_owner = os_user_create($user_options);
 
-    // Send out an email to notify the user of the newly created account.
-    // Email only sent if user requested to be notified of new account.
-    // if ($values['notify']) {
-    //  _user_mail_notify('register_no_approval_required', $site_owner);
-    // }
-
-    //log in as new user, if we're not already logged in.
+    // Log in as new user, if we're not already logged in.
     global $user;
     if ($user->uid == 0) {
       $user = $site_owner;
-      user_login_finalize($state);
+      user_login_finalize($form_state);
     }
 
-  } else {
+  }
+  else {
     //creating site for self.  no need to create a new user
     global $user;
     $site_owner = $user;
   }
 
   //create the vsite
-  if ($vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['bundle'], $values['preset'], $_POST['parent'])) {
-    //add user to vsite
-    module_load_include('inc', 'vsite', 'includes/user');
-    vsite_user_add($site_owner);
+  $vsite = vsite_create_vsite($values['domain'], $values['domain'], $site_owner->uid, $values['bundle'], $values['preset'], $_POST['parent']);
+  //add user to vsite
+  module_load_include('inc', 'vsite', 'includes/user');
+  vsite_user_add($site_owner);
 
-    os_role_grant($site_owner->uid, 'vsite admin', $vsite->id);
+  os_role_grant($site_owner->uid, 'vsite admin', $vsite->id);
 
-    $message = vsite_register_message($form, $values['domain']);
-    $commands[] = ajax_command_replace ('#submit-suffix', $message );
-    $commands[] = ajax_command_remove('#edit-submit');
+  $message = vsite_register_message($form, $values['domain']);
+  $commands[] = ajax_command_replace ('#submit-suffix', $message );
+  $commands[] = ajax_command_remove('#edit-submit');
 
-    if (isset($values['vsite_private']) && $values['vsite_private'] && module_exists('vsite_access')) {
-      $node = node_load($vsite->group->nid);
-      $node->group_access[LANGUAGE_NONE][0]['value'] = 1;
-      node_save($node);
-    }
-
-    // Email user to inform them of new created site, email is always sent.
-    vsite_register_notify_user($vsite);
-
-    //it worked, clear the errors
-    drupal_get_messages('error');
-
-
-  } else {
-    $commands[] = _vsite_register_form_error();
+  if (isset($values['vsite_private']) && $values['vsite_private'] && module_exists('vsite_access')) {
+    $node = node_load($vsite->group->nid);
+    $node->group_access[LANGUAGE_NONE][0]['value'] = 1;
+    node_save($node);
   }
 
-  //call any other submit functions here
-  foreach($form['#submit'] as $fnc){
-    if (__FUNCTION__ !== $fnc){
-      call_user_func($fnc, $form, $state);
-    }
-  }
-  print ajax_render($commands);
-  exit;
+  // Email user to inform them of new created site, email is always sent.
+  vsite_register_notify_user($vsite);
 }
 
 
@@ -327,22 +308,22 @@ function vsite_register_form_submit(&$form, &$state) {
  *
  * Validation function for site/register form
  */
-function vsite_register_form_validate(&$form, &$state) {
+function vsite_register_form_validate(&$form, &$form_state) {
   //Ajax validation.
   if ($_GET['q'] == 'system/ajax') {
-    if ($state['triggering_element']['#ajax']['callback'] == 'vsite_register_ajax_validation' ||
-        $state['triggering_element']['#ajax']['callback'] == 'iqss_pinserver_register_ajax_validation') {
+    if ($form_state['triggering_element']['#ajax']['callback'] == 'vsite_register_ajax_validation' ||
+        $form_state['triggering_element']['#ajax']['callback'] == 'iqss_pinserver_register_ajax_validation') {
       //ajax callback will validate just this element and return a message.
       return;
     }
-    elseif ($state['triggering_element']['#ajax']['callback'] != 'vsite_register_ajax_available_presets'){
+    elseif ($form_state['triggering_element']['#ajax']['callback'] != 'vsite_register_ajax_available_presets'){
       //form is done.  maybe this should happen after the validate?  or at least duplicate its efforts.
-      return vsite_register_ajax_submit_validation($form, $state);
+      return vsite_register_ajax_submit_validation($form, $form_state);
     }
   }
 
   //Fall back to standard validation
-  $values = $state['values'];
+  $values = $form_state['values'];
   foreach (vsite_register_validate_elements($values) as $element => $msg) {
     if ($msg) {
       form_set_error($element, $msg);
@@ -358,9 +339,9 @@ function vsite_register_form_validate(&$form, &$state) {
 /**
  * Callback function for ajax. Returns errors on Ajaxy elements.
  */
-function vsite_register_ajax_validation(&$form, &$state) {
-  $element_name = $state['triggering_element']['#name'];
-  if (!$errors = _vsite_register_validate($element_name, $state['values'])) {
+function vsite_register_ajax_validation(&$form, &$form_state) {
+  $element_name = $form_state['triggering_element']['#name'];
+  if (!$errors = _vsite_register_validate($element_name, $form_state['values'])) {
     return;
   }
 
@@ -379,12 +360,10 @@ function vsite_register_ajax_available_presets($form, $form_state) {
 }
 
 /**
- * @function vsite_register_ajax_submit_validation
- *
  * Called when submit button is clicked and ajax is enabled.
  */
-function vsite_register_ajax_submit_validation(&$form, &$state) {
-  $values = $state['values'];
+function vsite_register_ajax_submit_validation(&$form, &$form_state) {
+  $values = $form_state['values'];
   $valid = $commands = array();
 
   foreach (vsite_register_validate_elements($values) as $element => $msg) {
