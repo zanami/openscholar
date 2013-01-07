@@ -180,7 +180,8 @@ function vsite_register_form($form, &$form_state) {
     '#submit' => array('vsite_register_form_submit'),
     '#ajax' => array(
       'callback' => 'vsite_register_form_submit_ajax',
-      'wrapper' => 'submit-suffix'
+      // Submitting the form, will replace the entire form.
+      'wrapper' => 'vsite-register-form'
     ),
   );
 
@@ -310,7 +311,6 @@ function vsite_register_form_submit(&$form, &$form_state) {
   vsite_user_add($site_owner);
 
   os_role_grant($site_owner->uid, 'vsite admin', $vsite->id);
-  drupal_set_message(vsite_register_get_message($values['domain']));
 
   if (isset($values['vsite_private']) && $values['vsite_private'] && module_exists('vsite_access')) {
     $node = node_load($vsite->group->nid);
@@ -323,13 +323,13 @@ function vsite_register_form_submit(&$form, &$form_state) {
 }
 
 /**
- * The message shown after a successful web site registration.
- *
- * @param $domain
- *   The domain name.
+ * Ajax callback;
  */
-function vsite_register_get_message($domain){
+function vsite_register_form_submit_ajax($form, &$form_state) {
   global $user;
+
+  // Prevent redirect for Ajax to work.
+  $form_state['redirect'] = FALSE;
 
   $message  = '<div id="success-message" class="status">';
   if (user_access("create openscholar site on behalf of others")) {
@@ -343,19 +343,11 @@ function vsite_register_get_message($domain){
     $message .= '<p>' . t('Check your email account for further details on how to login in to start adding features and content.') . '</p>';
   }
 
-  $params = array('@url' => l($domain));
-  $message .= '<p>' . t('The URL of the site is @url. <a href="@url">Go there now</a>', $params) . '</p>';
+  $params = array('!url' => url($domain, array('absolute' => TRUE)));
+  $message .= '<p>' . t('The URL of the site is !url. <a href="!url">Go there now</a>', $params) . '</p>';
   $message .= '</div>';
 
   return $message;
-}
-
-/**
- * Ajax callback;
- */
-function vsite_register_form_submit_ajax($form, &$form_state) {
-  // Prevent redirect for Ajax to work.
-  $form_state['redirect'] = FALSE;
 }
 
 
