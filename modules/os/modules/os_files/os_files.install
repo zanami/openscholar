@@ -20,7 +20,7 @@ function os_files_update_7001(&$sandbox) {
   $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
   $q->fields('fm', array('fid', 'filename', 'uri'))
     ->fields('p', array('value'))
-    ->where('fm.uri LIKE "public://%"')
+    ->where('fm.uri LIKE \'public://%\'')
     ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
     ->orderBy('fid');
 
