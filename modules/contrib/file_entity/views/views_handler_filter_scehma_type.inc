@@ -23,8 +23,8 @@ class views_handler_filter_scehma_type extends views_handler_filter {
     parent::options_form($form, $form_state);
     $form['schema_type'] = array(
       '#type' => 'select',
-      '#title' => t('Scehma type'),
-      '#description' => t('Display files by the scehma type.'),
+      '#title' => t('Schema type'),
+      '#description' => t('Display files by the schema type.'),
       '#default_value' => $this->options['schema_type'],
       '#options' => array(
         'private' => t('Private'),
