@@ -61,17 +61,29 @@ if (!class_exists('purl_vsite_domain')) {
       return t('Enter a domain registered for this scholar site, such as "www.example.edu".  Do not include http://');
     }
 
-    private function remove_scholar_purl($path) {
+    private function remove_scholar_purl($path, &$options) {
       if (!($vsite = spaces_get_space()) || !strlen($vsite->group->purl)) {
         return $path;
       }
-      $args = explode('/', $path);
 
-      // Removes the value from the front of the query string
-      if (current($args) === (string) $vsite->group->purl) {
-        array_shift($args);
+      // Removes URL prefix if prefix is part of the path alias
+      if (!empty($path) && $path != '<front>' && !$options['alias']) {
+        $language = isset($options['language']) && isset($options['language']->language) ? $options['language']->language : '';
+
+        //Get the stored alias.
+        $alias = drupal_get_path_alias($path, $language);
+        $args = explode('/', $alias);
+
+        //If an alias exists and is prefixed with the purl value then remove it.
+        if ($alias != $path && current($args) === (string) $vsite->group->purl) {
+          // Removes the value from the front of the query string.
+          array_shift($args);
+          $options['alias'] = true;
+          return implode('/', $args);
+        }
       }
-      return implode('/', $args);
+
+      return $path;
     }
 
     /**
@@ -90,7 +102,7 @@ if (!class_exists('purl_vsite_domain')) {
 
       $options['absolute'] = TRUE;
       if (!_purl_skip($element, $options)) {
-        $path = $this->remove_scholar_purl($path);
+        $path = $this->remove_scholar_purl($path, $options);
         $options['base_url'] = "http://{$element->value}";
       }
       else {

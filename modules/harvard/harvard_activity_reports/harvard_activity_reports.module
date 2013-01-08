@@ -482,7 +482,7 @@ function harvard_activity_reports_page() {
       if(isset($biblioDataRow)) {
       // check to make sure we're greater than or = too the $year variable
       if ($getYear == TRUE) { // they want only a specific year, so just pull that year only
-        if ($biblioDataRow->biblio_year == $year) {
+        if ($biblioDataRow->biblio_year >= $year) {
           // push the data needed into the array by key name
           $biblioDataArray[$counter]['biblio_nid'] = $biblioDataRow->nid;
           $biblioDataArray[$counter]['biblio_title'] = $biblioDataRow->title;

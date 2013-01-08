@@ -62,6 +62,12 @@ function os_search_solr_os_widget(){
  *   An object implementing DrupalSolrQueryInterface. No need for &.
  */
 function os_search_solr_apachesolr_query_alter($query) {
+
+  if (!variable_get('os_search_solr_query_multisites',FALSE)) {
+    // Limit searches to just this OpenScholar install in shared indexes
+    $query->addFilter('hash', apachesolr_site_hash());
+  }
+
   if(module_exists('vsite') && ($vsite = spaces_get_space())){
     // I only want to see items in this site
     $query->addFilter("sm_og_group_ref", $vsite->group_type.":".$vsite->id);
@@ -76,10 +82,10 @@ function os_search_solr_get_searcher_name() {
   if(module_exists('facetapi')) {
 	// Get the searcher info.
     $searcher_array = facetapi_get_searcher_info();
-    foreach($searcher_array as $search) {
-      if(array_key_exists('name', $search)) {
-        $searcher_name = $search['name'];
-      }
+    // First element is the default.
+    $search = array_shift($searcher_array);
+    if(array_key_exists('name', $search)) {
+      $searcher_name = $search['name'];
     }
   }
 
@@ -104,7 +110,8 @@ function os_search_solr_block_view_alter(&$data,$block) {
       $delta_bundle = array_search($string_bundle, $map);
 
       if($block->module == 'facetapi' && $block->delta == $delta_bundle) {
-      	$data['subject'] = 'Filter by Post Type';
+
+      	$data['title'] = 'Filter by Post Type';
       }
 
       // Alter the title for Filter by Site.
@@ -112,7 +119,7 @@ function os_search_solr_block_view_alter(&$data,$block) {
       $delta_og = array_search($string_og, $map);
 
       if($block->module == 'facetapi' && $block->delta == $delta_og) {
-      	$data['subject'] = 'Filter By Site';
+      	$data['title'] = 'Filter By Site';
       }
 
     }
@@ -180,4 +187,20 @@ function os_search_solr_apachesolr_exclude($entity_id, $entity_type, $row, $env_
   }
 
   return FALSE;
+}
+
+/**
+ * Implements hook_apachesolr_process_results().
+ * Remove the user and date from the search results.
+ */
+function os_search_solr_apachesolr_process_results(&$arg) {
+  if(count($arg) == 0) {
+    return;
+  }
+
+  // Remove the user and date from the results.
+  for($i = 0, $l = count($arg); $i < $l; $i++) {
+  	$arg[$i]['user'] = '';
+  	$arg[$i]['date'] = '';
+  }
 }

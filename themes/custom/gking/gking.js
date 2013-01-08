@@ -22,7 +22,7 @@
           container.find('.node')
             .prepend('<a class="more" href="#">CLOSE X</a>');
           container.find('.node .node-content')
-            .prepend('<h3 class="cv-direct-download">Full CV: <a href="http://gking.harvard.edu/vitae/vitae.pdf">PDF</a></h3><div class="clear"></div>');
+            .prepend('<h3 class="cv-direct-download">Full CV: <a href="http://gking.harvard.edu/files/vitae.pdf">PDF</a></h3><div class="clear"></div>');
         }
         
         // Prevent the click from being bound everytime the pager is paged.

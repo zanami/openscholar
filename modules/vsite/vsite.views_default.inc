@@ -8,6 +8,10 @@
  * Implements hook_views_default_views().
  */
 function vsite_views_default_views() {
+  // Use the default logo from the os_boxes_site_logo image.
+  $default_image_path = drupal_get_path('module', 'os_boxes')."/plugins/os_boxes_site_logo/default_logo.jpg";
+  $default_img = !empty($default_image_path) ? '<img src="'.$default_image_path.'" alt="default logo">' : '';
+
   $export = array();
 
   $view = new view();
@@ -151,10 +155,7 @@ function vsite_views_default_views() {
   $handler->display->display_options['fields']['field_site_logo']['alter']['make_link'] = TRUE;
   $handler->display->display_options['fields']['field_site_logo']['alter']['path'] = '[field_group_path]';
   $handler->display->display_options['fields']['field_site_logo']['element_label_colon'] = FALSE;
-  if(module_exists('iqss_scholars_front')) {
-  	$default_img = '<img src="'.drupal_get_path('THEME', 'scholars_harvard').'/images/default_logo.jpg" alt="default logo">';
-  	$handler->display->display_options['fields']['field_site_logo']['empty'] = $default_img;
-  }
+  $handler->display->display_options['fields']['field_site_logo']['empty'] = $default_img;
   $handler->display->display_options['fields']['field_site_logo']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['field_site_logo']['settings'] = array(
     'image_style' => 'square_thumbnail',
@@ -177,12 +178,14 @@ function vsite_views_default_views() {
   $handler->display->display_options['fields']['field_site_description']['field'] = 'field_site_description';
   $handler->display->display_options['fields']['field_site_description']['label'] = '';
   $handler->display->display_options['fields']['field_site_description']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_site_description']['type'] = 'text_plain';
   $handler->display->display_options['path'] = 'websites';
 
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block');
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['defaults']['use_more'] = FALSE;
+  $handler->display->display_options['use_more'] = TRUE;
   $handler->display->display_options['defaults']['cache'] = FALSE;
   $handler->display->display_options['cache']['type'] = 'time';
   $handler->display->display_options['cache']['results_lifespan'] = '600';
@@ -217,10 +220,7 @@ function vsite_views_default_views() {
   $handler->display->display_options['fields']['field_site_logo']['alter']['path'] = '[field_group_path]';
   $handler->display->display_options['fields']['field_site_logo']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_site_logo']['click_sort_column'] = 'fid';
-  if(module_exists('iqss_scholars_front')) {
-  	$default_img = '<img src="'.drupal_get_path('THEME', 'scholars_harvard').'/images/default_logo-1.jpg" alt="default logo">';
-  	$handler->display->display_options['fields']['field_site_logo']['empty'] = $default_img;
-  }
+  $handler->display->display_options['fields']['field_site_logo']['empty'] = $default_img;
   $handler->display->display_options['fields']['field_site_logo']['settings'] = array(
     'image_style' => 'iqss_scholars_front_websites_180_x_140',
     'image_link' => '',
@@ -242,6 +242,7 @@ function vsite_views_default_views() {
   $handler->display->display_options['fields']['field_site_description']['field'] = 'field_site_description';
   $handler->display->display_options['fields']['field_site_description']['label'] = '';
   $handler->display->display_options['fields']['field_site_description']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_site_description']['type'] = 'text_plain';
   $handler->display->display_options['defaults']['sorts'] = FALSE;
   /* Sort criterion: Content: Sticky */
   $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';

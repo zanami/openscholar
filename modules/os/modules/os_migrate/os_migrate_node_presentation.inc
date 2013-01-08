@@ -27,19 +27,15 @@ class PresentationNodeOSMigration extends AbstractNodeOSMigration {
     //file
     $this->addFieldMapping('field_presentation_file', 'field_presentation_file')->defaultValue(NULL);
     $this->addSimpleMappings(parent::subfields('field_presentation_file', array('language','description','display')));
-    $this->addFieldMapping('field_presentation_file:destination_file', 'filename');
-    $this->addFieldMapping('field_presentation_file:source_dir') //->defaultValue(variable_get('os_migrate_files', FALSE));
-      ->defaultValue(variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/d
-efault/files'));
-    $this->addFieldMapping('field_presentation_file:destination_dir', 'filepath');
+   // $this->addFieldMapping('field_presentation_file:destination_file', 'field_presentation_file_filename');
+     $this->addFieldMapping('field_presentation_file:source_dir')
+       ->defaultValue(variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
+
+     $this->addFieldMapping('field_presentation_file:destination_dir', 'field_presentation_file_filepath');
     $this->addFieldMapping('field_presentation_file:og_group_ref', 'group_nid');
 
     //good defaults
     $this->addUnmigratedDestinations(parent::subfields('field_presentation_file', array('file_class','file_replace','preserve_files')));
-
-
-
-
 
 
   }
@@ -70,7 +66,6 @@ efault/files'));
     //$files_query = parent::os_migrate_node_get_files_query($row->vid);
     $files_query = self::d6_db_select('content_field_presentation_file', 'ct')
       ->fields('ct', array('field_presentation_file_fid', 'vid', 'field_presentation_file_data', 'field_presentation_file_list'))
-
       ->condition('ct.vid', $row->vid, '=');
     $files_query->join('files', 'f', 'ct.field_presentation_file_fid = f.fid');
     $files_query->addField('f', 'filepath');
@@ -91,19 +86,21 @@ efault/files'));
       $file = explode('/', trim($filepath, '/'));
 
       $file_row->filename = array_pop($file);
-      $filepath = parent::_get_destination_path('node', $row->nid);
-      $file_row->filepath = ($filepath) ? $filepath : 'public://' . implode('/', $file);
+      $new_filepath = parent::_get_destination_path('node', $row->nid);
+      $file_row->filepath = ($new_filepath) ? $new_filepath : 'public://' . implode('/', $file);
       $file_row->field_upload_replace = $filepath;// . '/' . $file_row->filename;
-      //$file_row->file_destination = $file_destination;
       $files[] = $file_row;
     }
 
     parent::os_migrate_prepare_files($files, $row, 'field_presentation_file', $fields);
     //field upload is set up wrong, but it's too late to fix the general function.
     if (isset($row->field_presentation_file)) {
+      $source_dir = variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files');
       foreach (array_keys($row->field_presentation_file) as $delta) {
         $row->field_presentation_file[$delta] = $files[$delta]->field_upload_replace;
       }
+      $row->field_presentation_file_source_dir = $source_dir;
+      $row->field_presentation_file_filepath = current($row->field_presentation_file_filepath);//no longer takes array so just give it the first file's path.  they're all the same anyway.
     }
 
     return parent::prepareRow($row); //false -> skip this row

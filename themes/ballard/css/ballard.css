@@ -1,7 +1,7 @@
 /* D6 retro css for older themes */
+@import url(http://fonts.googleapis.com/css?family=Judson);
 #columns {padding:0 10px;}
 
-@import url(http://fonts.googleapis.com/css?family=Judson);
 
 body {
 background: url('../images/bodyBg.gif') no-repeat fixed center top #EFEFEF;
@@ -31,8 +31,8 @@ font-family: helvetica,arial,sans-serif;
 
 #footer {
     text-align: center;
-    background:url('../images/footerbg.png');
-    height:35px;
+    background:#2B2B2B;
+    min-height:35px;
     padding: 15px 20px;
 }
 
@@ -107,11 +107,13 @@ text-decoration:none;
 
 .block-boxes-os_boxes_site_info  {
     border-left: 8px solid #565656;
-    padding-left: 7px;
+    margin-left: 10px;
+    padding-left: 2px;
 }
 
 .block-boxes-os_boxes_site_info h1 {
     margin-bottom: 0;
+    line-height: 26px;
 }
 
 <<<<<<< HEAD
@@ -121,6 +123,9 @@ text-decoration:none;
 >>>>>>> SCHOLAR-3-0
 .block-boxes-os_boxes_site_info h2, 
 .block-boxes-os_boxes_site_info p {color:#d6d6d6;}
+
+.block-boxes-os_boxes_site_info h2 {font-size:1.6em;}
+
 
 h1,
 h2,
@@ -393,11 +398,14 @@ float:right;
     margin: 0;
 }
 
-.sidebar .block-boxes-os_boxes_sectionnav ul li {list-style-image:none; list-style: none; margin: 0; padding: 0; } 
+.sidebar .block-boxes-os_boxes_sectionnav ul li {
+	list-style-image:none; list-style: none; margin: 0; padding: 0; 
+	} 
+
 .sidebar .block-boxes-os_boxes_sectionnav ul li a {
 color:#666;
 background: #D6D6D6;
-padding: 7px 0 1px 8px;
+padding: 5px 0pt 2px 8px;
 font-size: 1.1em;
 border-right: 1px solid #d6d6d6;
 border-bottom: 1px solid #d6d6d6;
@@ -405,18 +413,19 @@ font-weight:bold;
 text-decoration: none !important;
 margin: 0;
 border-left: 1px solid #D6D6D6;
+line-height:15px;
 }
 
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li a:link, 
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li a:visited { color: #293352; display: block; padding: 7px 0 0 16px; } 
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li a:visited { color: #293352; display: block; padding: 5px 0pt 2px 16px; } 
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li a:hover {background: #EFEFEF;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li li a {font-weight:normal;font-size:.98em; color:#293352;height: 32px;margin: 0; background: none; height: 24px; text-decoration: none !important; } 
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li li a {font-weight:normal;font-size:.98em; color:#293352;margin: 0; background: none;  text-decoration: none !important;min-height:24px; } 
 
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a {background:url('../images/subNavBullet.png') 16px center no-repeat;}
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a:hover {background:url('../images/subNavBullet.png') 16px center no-repeat #EFEFEF;} 
 
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li a {background:none;padding: 7px 0 0 26px; color: #293352;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li a {background:none; padding: 5px 0pt 2px 26px; color: #293352;}
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li a:hover {background:#EFEFEF;}
 
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.collapsed a {background:url('../images/subNavBullet.png') 5px center no-repeat;}
@@ -435,15 +444,15 @@ border-left: 1px solid #D6D6D6;
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a:hover {background:url('../images/subNavBullet_down.png') 15px center no-repeat #EFEFEF;}
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a.active {background:url('../images/subNavBullet_down.png') 15px center no-repeat #D6D6D6;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a {background:url('../images/subNavBullet_down.png') 25px center no-repeat;padding: 7px 0 0 36px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a:hover {background:url('../images/subNavBullet_down.png') 25px center no-repeat #EFEFEF;padding: 7px 0 0 36px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a.active {background:url('../images/subNavBullet_down.png') 25px center no-repeat #D6D6D6;padding: 7px 0 0 36px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a {background:url('../images/subNavBullet.png') 27px center no-repeat;padding: 7px 0 0 36px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a:hover {background:url('../images/subNavBullet.png') 27px center no-repeat #EFEFEF;padding: 7px 0 0 36px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a {background:url('../images/subNavBullet_down.png') 25px center no-repeat;padding:5px 0pt 2px 36px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a:hover {background:url('../images/subNavBullet_down.png') 25px center no-repeat #EFEFEF;padding:5px 0pt 2px 36px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded a.active {background:url('../images/subNavBullet_down.png') 25px center no-repeat #D6D6D6;padding:5px 0pt 2px 36px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a {background:url('../images/subNavBullet.png') 27px center no-repeat;padding:5px 0pt 2px 36px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.collapsed a:hover {background:url('../images/subNavBullet.png') 27px center no-repeat #EFEFEF;padding:5px 0pt 2px 36px;}
 
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li a {background:none !important;padding: 7px 0 0 46px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li a:hover {background:#EFEFEF !important;padding: 7px 0 0 46px;}
-.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li a.active {background:#D6D6D6 !important;padding: 7px 0 0 46px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li a {background:none !important;padding: 5px 0pt 2px 46px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li a:hover {background:#EFEFEF !important;padding: 5px 0pt 2px 46px;}
+.sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li.expanded ul.menu li a.active {background:#D6D6D6 !important;padding: 5px 0pt 2px 46px;}
 
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li a.active,
 .sidebar .block-boxes-os_boxes_sectionnav ul.menu li.expanded ul.menu li.expanded ul.menu li a.active {

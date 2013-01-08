@@ -611,6 +611,7 @@ ul.nice-menu ul {
 ul.nice-menu ul li {
  border:1px solid #CCC;
  background:#EEE;
+ width:auto;
 }
 
 

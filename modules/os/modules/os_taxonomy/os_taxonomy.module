@@ -334,11 +334,19 @@ function os_taxonomy_select_list_validate($form, &$form_state) {
     form_set_error('terms', t('Please select a term.'));
   }
 
-  if ($data) {
-    return theme('item_list', array('type' => 'ul', 'items' => $data));
-  } else {
-    return '';
+
+  if (!$data) {
+    return;
   }
+
+  // Make sure we pass the numeric values.
+  $options['offset'] = intval($options['offset']);
+  $options['range'] = intval($options['range']);
+  if($options['range']){
+    $data = array_slice($data, $options['offset'], $options['offset'] + $options['range'], TRUE);
+  }
+
+  return theme('item_list', array('type' => 'ul', 'items' => $data));
 }
 
 /**

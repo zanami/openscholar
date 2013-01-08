@@ -912,8 +912,9 @@ class BoxPorter {
 
 
     //more link.  announcements is non-existent
-    if ($box->options['more_link'] == 'announcemnts') {
-      $box->options['more_link'] = 'news';
+    $link_update = array('announcements' => 'news', 'images' => 'galleries');
+    if (isset($link_update[$box->options['more_link']])) {
+      $options['more_link'] = $link_update[$box->options['more_link']];
     }
 
     $box->options = $options;
@@ -1106,7 +1107,7 @@ class BoxPorter {
 
     //if nodes are already migrated, render new node.
     if ($node = node_load($nid)) {
-      if(!$show_title){
+      if (!$show_title){
         $node->title = '';
       }
       $build = node_view($node, $teaser);
@@ -1130,8 +1131,6 @@ class BoxPorter {
 
       $body = drupal_render($build);
       //$format = 1; //make sure to use filtered html later
-
-
 
     } else {
       //if they haven't migrated, fetch the old node's body
