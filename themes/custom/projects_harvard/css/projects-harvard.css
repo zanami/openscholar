@@ -691,6 +691,8 @@ td, td.description {
 
 #block-views-os-websites-block .more-link {
   clear: both;
+  /* override global css float*/
+  float:none;
   }
 
 #block-views-os-websites-block .more-link a:after {
@@ -712,9 +714,9 @@ td, td.description {
   }
 
 #block-views-os-websites-block .more-link a {
-  background: url('../images/black-arrow-right.png') no-repeat 100% 50% #fff;
+  /*background: url('../images/black-arrow-right.png') no-repeat 100% 50% #fff;*/
   padding-right: 11px;
-  color: #000;
+  color: #1B86A9;
   text-transform: capitalize;
   font-weight: bold;
   margin-right: 30px;

@@ -160,6 +160,8 @@ function os_activity_exit() {
   foreach ($cache as $gid => $mid) {
     // Get the OG membership ID.
     $id = array_search($gid, $user_gids['node']);
+    if(!$id) continue;
+
     $wrapper = entity_metadata_wrapper('og_membership', $og_memberships[$id]);
 
     $last_id = $wrapper->field_message->value(array('identifier' => TRUE));

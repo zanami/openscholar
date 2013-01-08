@@ -20,21 +20,24 @@ function os_files_update_7001(&$sandbox) {
   $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
   $q->fields('fm', array('fid', 'filename', 'uri'))
     ->fields('p', array('value'))
-    ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
+    ->where('fm.uri LIKE \'public://%\'')
+    ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
+    ->orderBy('fid');
 
   if (!isset($sandbox['progress'])) {
     $sandbox['progress'] = 0;
     $sandbox['limit'] = 5;
-    $sandbox['skip'] = 0;
+    $sandbox['last_fid'] = 0;
     $sandbox['max'] = $q->countQuery()->execute()->fetchField();
-    $sansbox['warnings'] = array();
+    $sandbox['warnings'] = array();
   }
 
-  $q->range($sandbox['skip'], $sandbox['limit']);
+  $q->range(0, $sandbox['limit']);
 
   $r = $q->execute();
+  $rows = $r->fetchAll(PDO::FETCH_OBJ);
 
-  foreach ($r as $row) {
+  foreach ($rows as $row) {
     $q = db_select('file_usage', 'fu')
         ->fields('fu', array('id'))
         ->condition('fid', $row->fid)
@@ -46,17 +49,38 @@ function os_files_update_7001(&$sandbox) {
 
     $pathinfo = pathinfo($row->uri);
     $matches = array();
-    $orig_filename = str_replace('_0.', '', $pathinfo['filename'].'.');
+    $orig_filename = trim(str_replace('_0.', '', $pathinfo['filename'].'.'), '.');
+    $target_dir = 'public://'.$row->value.'/files/';
+    $filename = $target_dir.$orig_filename.'.'.$pathinfo['extension'];
 
     // change the file's uri
     $file = file_load($row->fid);
-    $target_dir = 'public://'.$row->value.'/files/';
     file_prepare_directory($target_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
-    $file = @file_move($file, $target_dir.$orig_filename.'.'.$pathinfo['extension'], FILE_EXISTS_REPLACE);
+    if (!file_exists($file->uri)) {
+      if (file_exists($filename)) {
+        // file already moved. ignore it
+        // this occurs due to a race condition
+        // the next time the script runs, this file should no longer be returned by the db
+        error_log('File '.$file->fid.': '.$file->uri.' already moved to '.$filename);
+        $file->uri = $filename;
+        file_save($file);
+        // db_delete('file_managed')->condition('fid', $file->fid)->execute();
+        // db_delete('file_usage')->condition('fid', $file->fid)->execute();
+      }
+      else {
+        error_log('File not found: '.$file->fid.': '.$file->uri);
+        $sandbox['progress']++;
+      }
+      continue;
+    }
+
+    $old_file = $file;
+    $file = @file_move($file, $filename, FILE_EXISTS_REPLACE);
+    $sandbox['last_fid'] = $row->fid;
     if (!$file) {
-      $sandbox['skip']++;
+      $sandbox['warnings'][] = t('Could not move file @source (@fid) to @dest.', array('@source' => $row->uri, '@fid' => $row->fid, '@dest' => 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension']));
       $sandbox['progress']++;
-      $sandbox['warnings'][] = t('Could not move file @source to @dest.', array('@source' => $row->uri, '@dest' => 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension']));
+      continue;
     }
 
     // reset the cache to keep memory manageable
@@ -79,11 +103,31 @@ function os_files_update_7001(&$sandbox) {
         ->execute();
     }
 
+    //error_log('File '.$file->fid.' moved from '.$old_file->uri.' to '.$target_dir);
     $sandbox['progress']++;
   }
+  error_log(t('Processed @num of @max files. @percent% complete.', array('@num' => $sandbox['progress'], '@max' => $sandbox['max'], '@percent' => floor($sandbox['progress']/$sandbox['max'])*100)));
 
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress']/$sandbox['max']);
-  if ($sandbox['#finished'] == 1) {
-    return t('Fixed @num files. Skipped @skip files.', array('@num' => $sandbox['max'] - $sandbox['skip'], '@skip' => $sandbox['skip'])). implode('<br>', $sandbox['warnings']);
+  if ($sandbox['#finished'] >= 1) {
+    return t('Fixed @num files.<br>', array('@num' => $sandbox['progress'])). implode('<br>', $sandbox['warnings']);
+  }
+}
+
+/**
+ * Hide the OG audience field when editing the node.
+ */
+function os_files_update_7002() {
+  $entities = entity_get_info();
+
+  foreach ($entities as $entity => $info) {
+    foreach (array_keys($info['bundles']) as $bundle) {
+      $instance = field_info_instance($entity, OG_AUDIENCE_FIELD, $bundle);
+
+      if (!empty($instance)) {
+        $instance['settings']['behaviors']['prepopulate']['action_on_edit'] = TRUE;
+        field_update_instance($instance);
+      }
+    }
   }
 }

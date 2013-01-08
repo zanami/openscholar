@@ -1,7 +1,7 @@
 /* D6 retro css for older themes */
+@import url(http://fonts.googleapis.com/css?family=Judson);
 #columns {padding:0 10px;}
 
-@import url(http://fonts.googleapis.com/css?family=Judson);
 
 body {
 background: url('../images/bodyBg.gif') no-repeat fixed center top #EFEFEF;
@@ -31,8 +31,8 @@ font-family: helvetica,arial,sans-serif;
 
 #footer {
     text-align: center;
-    background:url('../images/footerbg.png');
-    height:35px;
+    background:#2B2B2B;
+    min-height:35px;
     padding: 15px 20px;
 }
 
@@ -107,11 +107,13 @@ text-decoration:none;
 
 .block-boxes-os_boxes_site_info  {
     border-left: 8px solid #565656;
-    padding-left: 7px;
+    margin-left: 10px;
+    padding-left: 2px;
 }
 
 .block-boxes-os_boxes_site_info h1 {
     margin-bottom: 0;
+    line-height: 26px;
 }
 
 <<<<<<< HEAD
@@ -121,6 +123,9 @@ text-decoration:none;
 >>>>>>> SCHOLAR-3-0
 .block-boxes-os_boxes_site_info h2, 
 .block-boxes-os_boxes_site_info p {color:#d6d6d6;}
+
+.block-boxes-os_boxes_site_info h2 {font-size:1.6em;}
+
 
 h1,
 h2,

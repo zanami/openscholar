@@ -210,7 +210,11 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
    */
   function _recycle(&$values, $gid, $uid) {
     list($thumb_filepath, $full_filepath) = $this->_get_thumb_and_full($values[0], $values['arguments']);
-    $destination = (isset($values['arguments']['destination_dir'])) ? 'public://' . $values['arguments']['destination_dir'] : 'public://';
+    $destination = (isset($values['arguments']['destination_dir'])) ? $values['arguments']['destination_dir'] : 'public://';
+    //add a schema if it wasn't provided
+    if (strpos($destination, '://') === FALSE) {
+      $destination = 'public://'.$destination;
+    }
     file_prepare_directory($destination, FILE_CREATE_DIRECTORY);
 
     $full = new stdClass();
@@ -271,8 +275,10 @@ class MigrateImagefieldcropFieldHandler extends MigrateImageFieldHandler {
   function _save_original($original_file, $gid, $uid, $values){
     $full = $original_file . '.crop_display.jpg';
     $filepath = variable_get('os_migrate_files') . '/' . $original_file;
-    $destination = (isset($values['arguments']['destination_dir'])) ? $values['arguments']['destination_dir'] : 'public://';
-
+    $destination = ($values['arguments']['destination_dir']) ? $values['arguments']['destination_dir'] : 'public://';
+    if (strpos($destination, '://') === FALSE) {
+      $destination = 'public://'.$destination;
+    }
 
     if (!is_readable($filepath)) {
       return FALSE;

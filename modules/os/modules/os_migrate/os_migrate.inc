@@ -959,6 +959,7 @@ abstract class OSMigration extends Migration {
       case 'og':
         $query = self::d6_db_select('purl', 'p')
           ->condition('id', $id);
+        break;
 
       default:
         $cache[$key] = FALSE;
@@ -972,7 +973,7 @@ abstract class OSMigration extends Migration {
 
     if ($result->rowCount()) {
       $purl = $result->fetchField();
-      $return = 'public://' . $purl . '/files';
+      $return = ($purl) ? 'public://' . $purl . '/files' : 'public://';
     } else {
       $return = FALSE;
     }

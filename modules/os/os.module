@@ -319,12 +319,19 @@ function os_os_widget_alter(&$widget) {
       'tags' => array('Other'),
       'class' => array('menu'),
     );
+
+    switch ($widget['delta']){
+    	case 'powered-by':
+    	case 'login':
+    	  $widget['hidden'] = true;
+    }
   }
   elseif ($widget['module'] == 'node') {
     $widget += array(
       'tags' => array('Content'),
     );
   }
+
 }
 
 /**

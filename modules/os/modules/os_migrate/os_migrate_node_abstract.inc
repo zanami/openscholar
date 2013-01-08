@@ -302,6 +302,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     }
 
     $node_dirty = FALSE;
+
+    //update links to attached files.  they should have been updated to include files/$purl
+    $node_dirty = (self::_complete_body_links($entity, $row) || $node_dirty);
+
     foreach ($entity->field_upload as $lang => $fields) {
       foreach ($fields as $delta => $upload) {
         $file_dirty = FALSE;
@@ -327,9 +331,6 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         }
       }
     }
-
-    //update links to attached files.  they should have been updated to include files/$purl
-    $node_dirty = (self::_complete_body_links($entity, $row) || $node_dirty);
 
     //resave the node
     if ($node_dirty) {
@@ -416,7 +417,14 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         }
 
         //$row->filepath = current($row->field_upload_filepath);
-        $row->filepath = ($filepath) ? $filepath : current($row->field_upload_filepath);
+        $filepath = parent::_get_destination_path('node', $row->nid);
+        if($filepath){
+          //Should always be true for nodes in a site
+          $row->field_upload_filepath = $filepath;
+        }elseif (is_array($row->field_upload_filepath) && count($row->field_upload_filepath)){
+          $row->field_upload_filepath = current($row->field_upload_filepath); //can't use array for this.
+        }
+//        $row->field_upload_filepath = ($filepath) ? $filepath : current($row->field_upload_filepath); //can't use array for this.
         //$row->filename = $row->field_upload_filename; //expects string?
       }
     }
@@ -430,10 +438,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
         'description',
         'display'
       )));
-      $this->addFieldMapping('field_upload:destination_file', 'filename');
+     // $this->addFieldMapping('field_upload:destination_file', 'field_upload_filename'); //can't use this in an array of files
       $this->addFieldMapping('field_upload:source_dir') //->defaultValue(variable_get('os_migrate_files', FALSE));
         ->defaultValue(variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
-      $this->addFieldMapping('field_upload:destination_dir', 'filepath');
+      $this->addFieldMapping('field_upload:destination_dir', 'field_upload_filepath');
       $this->addFieldMapping('field_upload:og_group_ref', 'group_nid');
 
       //good defaults

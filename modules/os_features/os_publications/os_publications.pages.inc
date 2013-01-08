@@ -232,7 +232,7 @@ function os_publications_settings() {
     //'#description' => t('You turn the sorting links at the top of the /biblio page here.'),
   );
 
-  $result = db_query('SELECT t.* FROM {biblio_types} as t WHERE tid > -2 AND visible = 1');
+  $result = db_query('SELECT t.* FROM {biblio_types} as t WHERE tid > -1 AND visible = 1');
   foreach ($result as $option) {
     $results[$option->tid] = $option->name;
   }

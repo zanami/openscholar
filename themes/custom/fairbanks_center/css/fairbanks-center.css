@@ -43,6 +43,15 @@ h1,h2, h3 {
 .node-person.node-teaser .node-header h1 {
 	border-top: none;
 	}
+	
+.page-node.node-type-person header h1 {
+    display: block;
+}	
+
+
+.page-node.node-type-person header h1#page-title {
+	display:none;
+}
 
 h3 {
 	color:  #B00921;

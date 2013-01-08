@@ -105,7 +105,7 @@ class SoftwareReleaseNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('field_software_package', 'field_software_package')->defaultValue(NULL);
     $this->addFieldMapping('field_software_package:language', 'language');
     $this->addFieldMapping('field_software_package:source_dir')->defaultValue(
-      variable_get('os_migrate_files') . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
+      variable_get('os_migrate_files'));// . '/' . parent::d6_variable_get('file_directory_path', 'sites/default/files'));
 
     $this->addFieldMapping('field_software_package:destination_file', 'field_software_package:destination_file');
     $this->addFieldMapping('field_software_package:destination_dir', 'field_software_package:destination_dir');
@@ -174,7 +174,8 @@ class SoftwareReleaseNodeOSMigration extends AbstractNodeOSMigration {
         $current_row->{'field_software_package:destination_file'} = $name;
         $filepath = parent::_get_destination_path('node', $current_row->nid);
         $current_row->{'field_software_package:destination_dir'} = ($filepath) ? $filepath : 'public://' . $path;
-        $current_row->field_software_package = $path . '/' . $name;
+        //$current_row->field_software_package = str_replace('public://', '', $current_row->{'field_software_package:destination_dir'} ) . '/' . $name;
+        $current_row->field_software_package = $file->filepath;
       }
     } else {
       $current_row->field_software_package = NULL;
