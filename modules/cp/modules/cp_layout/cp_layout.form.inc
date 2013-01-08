@@ -39,6 +39,9 @@ function cp_layout_full_form($form, $form_state){
 
   $blocks = os_layout_get_multiple($ctxs, true, true);
 
+  $check_lock = !(user_access('edit locked regions') || user_access('manage locked regions'));
+  $locked = variable_get('os_locked_regions');
+
   $form['context'] = array(
     '#type' => 'value',
     '#value' => $ctxs
@@ -100,7 +103,7 @@ function cp_layout_full_form($form, $form_state){
         'class' => array(
           'cp-region',
           drupal_html_class('cp-region-' . $r),
-          !(user_access('edit region '.$r) || user_access('edit all regions'))?'locked-down':'unlocked',
+          ($check_lock && isset($locked[$r]) && $locked[$r])?'locked-down':'unlocked',
         )
       ),
       'widgets' => array(
