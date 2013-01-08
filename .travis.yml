@@ -47,6 +47,10 @@ before_script:
   - cd behat
   - cp behat.local.yml.travis behat.local.yml
   - composer install
+  # Temporary fix until http://drupal.org/node/1868980 is fixed.
+  - cd vendor/drupal/drupal-extension/  
+  - curl http://drupal.org/files/1868980-fix-wsod.patch | git apply
+  - cd ../../..
 
 script:
     # Create display.
