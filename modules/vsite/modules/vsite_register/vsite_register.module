@@ -91,7 +91,7 @@ function vsite_register_theme() {
 
 function theme_vsite_register_form_errors($vars) {
   $list = '';
-  if (!empty($vars['error'])) {
+  if (!empty($vars['errors'])) {
     $list = theme('item_list', array(
       'items' => $vars['errors'], 'type'=>'ul',
       'attributes'=>array(
