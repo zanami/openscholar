@@ -30,28 +30,6 @@ function os_files_private_file_list() {
 /**
  * Implements hook_form_FORM_ID_alter().
  *
- * Set the URI schema to private when adding a new file via file/add.
- *
- * @see file_entity_add_upload()
- */
-function os_files_private_form_file_entity_add_upload_alter(&$form, $form_state) {
-  $item = menu_get_item();
-  if (!($item['path'] == 'file/add' || $item['path'] == 'file/ajax') || !spaces_get_space()) {
-    return;
-  }
-
-  if (!variable_get('file_private_path')) {
-    // Private file system was not defined.
-    return;
-  }
-
-  $form['upload']['#upload_location'] = 'private://';
-  $form['#submit'][] = 'os_files_private_form_file_entity_add_upload_submit';
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- *
  * Set the default group to the current user in file/%fid/edit.
  */
 function os_files_private_form_file_entity_edit_alter(&$form, &$form_state) {

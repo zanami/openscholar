@@ -66,7 +66,7 @@ function vsite_access_node_access_records_alter(&$grants, $node) {
     // This is node-update operation.
     return;
   }
-  if (!variable_get('file_private_path', FALSE)) {
+  if (!($private_folder = variable_get('file_private_path', FALSE))) {
     // Private path is not configured, so no need to preform our logic.
     return;
   }
@@ -108,6 +108,14 @@ function vsite_access_node_access_records_alter(&$grants, $node) {
     $files = empty($files['fid']) ? $files : array($files);
     foreach ($files as $file) {
       $file = file_load($file['fid']);
+
+      // Create the upload folder if it's not exists.
+      $folder = $private_folder . '/' . str_replace(array('public://', '/' . $file->filename), '', $file->uri);
+      if (!is_dir($folder)) {
+        // Change the private folder path to private:// for the uri format.
+        $uri = str_replace($private_folder, 'private://', $folder);
+        drupal_mkdir($uri, NULL, TRUE);
+      }
 
       // Move the file to private.
       $destination = str_replace('public://', 'private://', $file->uri);
