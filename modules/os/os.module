@@ -1056,20 +1056,16 @@ function os_node_view_alter(&$build) {
  * Defines permissions for all the regions of the default theme
  */
 function os_permission() {
-  $regions = array_keys(system_region_list(variable_get('theme_default')));
-
   $perms = array(
-    'edit all regions' => array(
-      'title' => t('Edit All Regions'),
-      'description' => t('Edit the contents of all regions'),
+    'manage locked regions' => array(
+      'title' => t('Manage Locked Regions'),
+      'description' => t('Set which regions are locked')
+    ),
+    'edit locked regions' => array(
+      'title' => t('Edit Locked Regions'),
+      'description' => t('Allows users to edit locked regions')
     ),
   );
-  foreach ($regions as $r) {
-    $perms['edit region ' . $r] = array(
-      'title' => t('Edit Region !region', array('!region' => $r)),
-      'description' => t('Edit the contents of the region !region', array('!region' => $r)),
-    );
-  }
 
   return $perms;
 }
@@ -1086,14 +1082,23 @@ function os_get_region($module, $delta, $contexts = array()) {
   }
 
   $plugin = context_get_plugin('reaction', 'block');
-  $bid = $module . '-' . $delta;
+  $bid = $module.'-'.$delta;
 
   $blocks = &drupal_static(__FUNCTION__, array());
   if (empty($blocks)) {
+
+    if (empty($contexts)) {
+      $contexts = context_active_contexts();
+    }
+    ctools_include('layout', 'os');
+    uksort($contexts, '_os_context_sort_by_hierarchy');
+
+    $plugin = context_get_plugin('reaction', 'block');
+
     foreach ($contexts as $c) {
-      foreach ($plugin->get_blocks(NULL, $c) as $bid => $block) {
-        if (isset($block->region)) {
-          $blocks[$block->module . '-' . $block->delta] = $block->region;
+      foreach ($plugin->get_blocks(null, $c) as $block) {
+        if (isset($block->region) && $block->region) {
+          $blocks[$block->module.'-'.$block->delta] = $block->region;
         }
       }
     }
@@ -1108,7 +1113,18 @@ function os_get_region($module, $delta, $contexts = array()) {
 function os_access_region($module, $delta) {
   $region = os_get_region($module, $delta);
 
-  return user_access('edit region ' . $region) || user_access('edit all regions');
+  $locked = variable_get('os_locked_regions', array());
+  $spaces = spaces_access_admin();
+
+  // the region is locked
+  if (isset($locked[$region]) && $locked[$region]) {
+    // check the permission
+    return $spaces && (user_access('edit locked regions') || user_access('manage locked regions'));
+  }
+  else {
+    // the region is not locked, so just return whatever spaces says
+    return $spaces;
+  }
 }
 
 /**
