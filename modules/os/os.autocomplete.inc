@@ -18,6 +18,7 @@ function os_node_autocomplete($str) {
     $query = new OSNodeFieldQuery();
     $result = $query
       ->propertyCondition('title', '%' . $str . '%', 'LIKE')
+      ->range(0, 10)
       ->execute();
 
     if (!empty($result['node'])) {
