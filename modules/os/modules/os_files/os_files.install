@@ -104,7 +104,7 @@ function os_files_update_7001(&$sandbox) {
     //error_log('File '.$file->fid.' moved from '.$old_file->uri.' to '.$target_dir);
     $sandbox['progress']++;
   }
-  //error_log(t('Processed @num of @max files.', array('@num' => $sandbox['progress'], '@max' => $sandbox['max'])));
+  error_log(t('Processed @num of @max files. @percent% complete.', array('@num' => $sandbox['progress'], '@max' => $sandbox['max'], '@percent' => floor($sandbox['progress']/$sandbox['max'])*100)));
 
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress']/$sandbox['max']);
   if ($sandbox['#finished'] >= 1) {
