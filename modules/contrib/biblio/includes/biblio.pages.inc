@@ -344,11 +344,11 @@ function biblio_build_query($arg_list) {
     $arg_list['o'] = strtolower(variable_get('biblio_order', 'desc'));
   }
 
-  if (!isset($_SESSION['biblio_filter']) || !is_array($_SESSION['biblio_filter'])) {
+  if ($user->uid && (!isset($_SESSION['biblio_filter']) || !is_array($_SESSION['biblio_filter']))) {
     $_SESSION['biblio_filter'] = array();
   }
 
-  $session = &$_SESSION['biblio_filter'];
+  $session = !empty($_SESSION['biblio_filter']) ? $_SESSION['biblio_filter'] : array();
 
   if (!in_array('no_filters', $arg_list)) {
     foreach ($session as $filter) {
@@ -566,7 +566,7 @@ function _biblio_filter_info_line($args = array()) {
   $filtercontent = '';
   $search_content = '';
   $base =  variable_get('biblio_base', 'biblio');
-  $session = &$_SESSION['biblio_filter'];
+  $session = !empty($_SESSION['biblio_filter']) ? $_SESSION['biblio_filter'] : array();
   // if there are any filters in place, print them at the top of the list
   $uri = drupal_parse_url(request_uri());
   $uri['path'] = variable_get('biblio_base', 'biblio');
@@ -990,7 +990,7 @@ function _get_biblio_filters() {
  * @return unknown_type
  */
 function biblio_form_filter() {
-  $session = $_SESSION['biblio_filter'];
+  $session = !empty($_SESSION['biblio_filter']) ? $_SESSION['biblio_filter'] : array();
   $session = is_array($session) ? $session : array();
   $filters = _get_biblio_filters();
 

@@ -104,6 +104,23 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^cache is enabled for anonymous users$/
+   */
+  public function cacheIsEnabledForAnonymousUsers() {
+    $this->getDriver()->drush('vset cache 1');
+  }
+
+  /**
+   * @Then /^response header "([^"]*)" should be "([^"]*)"$/
+   */
+  public function responseHeaderShouldBe($key, $result) {
+    $headers = $this->getSession()->getResponseHeaders();
+    if (empty($headers[$key]) || $headers[$key][0] !== $result) {
+      throw new Exception(sprintf('The "%s" key in the response header is "%s" instead of the expected "%s".', $key, $headers[$key][0], $result));
+    }
+  }
+
+  /**
    * @Given /^I print page$/
    */
   public function iPrintPage() {
