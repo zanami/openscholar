@@ -116,11 +116,6 @@ function rbuild_node_insert($node) {
   // Initializes releases only for Projects whose Method field == "rBuild".
   $field_items = field_get_items('node', $node, 'field_software_method');
   $field_value = $field_items[0]['value'];
-  if ($field_value !== 'Rbuild repository') {
-    return;
-  }
-
-  rbuild_fetch_releases($node);
 }
 
 /**
@@ -316,7 +311,8 @@ function _rbuild_import_file($url, $filename, $uid, $get_contents = FALSE) {
 
   // Saves file to the root of the files directory.
   $contents      = file_get_contents($filepath);
-  $file          = file_save_data($contents, 'public://' . $filename, FILE_EXISTS_RENAME);
+  $loc           = 'public://gking/files/';
+  $file          = file_save_data($contents, $loc . $filename, FILE_EXISTS_RENAME);
   $file->display = 1;
 
   return $file;

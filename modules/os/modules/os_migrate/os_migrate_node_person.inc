@@ -46,7 +46,10 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
     $this->addSimpleMappings(parent::subfields('field_person_photo', array('destination_file', 'cropbox_x', 'cropbox_y', 'cropbox_height' ,'cropbox_width', 'alt', 'title')));
     $this->addFieldMapping('field_person_photo:source_dir', 'field_person_photo:source_dir')
       ->defaultValue(variable_get('os_migrate_files', NULL));
-    $this->addUnmigratedDestinations(parent::subfields('field_person_photo', array('file_class', 'language', 'destination_dir', 'file_replace', 'preserve_files')));
+    $this->addUnmigratedDestinations(parent::subfields('field_person_photo', array('file_class', 'language', 'file_replace', 'preserve_files')));
+    $this->addFieldMapping('field_person_photo:destination_dir', 'field_person_photo:destination_dir');
+    $this->addFieldMapping('field_person_photo:imagefield_thumbs')->defaultValue(TRUE);
+
 
     //node abstract cleanup
     $this->removeFieldMapping('title');
@@ -120,7 +123,10 @@ class PersonNodeOSMigration extends AbstractNodeOSMigration {
 //         $crop = array_diff_key($crop, array('x', 'y', 'width', 'height'));
 //       }
 //      $current_row->{'field_person_photo'} = $file->filepath;
-      $current_row->{'field_person_photo:destination_file'} = $file->filepath;
+      list ($dir, $filename) = parent::_migrate_filename($file->filepath);
+      $current_row->{'field_person_photo:destination_file'} = $filename;
+      $filepath = parent::_get_destination_path('node', $current_row->nid);
+      $current_row->{'field_person_photo:destination_dir'} = ($filepath) ? $filepath : $dir;
 
       $current_row->{'field_person_photo:cropbox_x'} = $crop['x'];
       $current_row->{'field_person_photo:cropbox_y'} = $crop['y'];

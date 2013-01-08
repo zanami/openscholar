@@ -65,18 +65,6 @@ function pinserver_config() {
     '#description' => t('Enter the absolute path to the AuthZProxy passphrase file, if your are expecting AuthZProxy tokens.'),
   );
 
-  $form['pinserver']['pinserver_harvard_department'] = array(
-    '#title' => t('Restrict access to one Harvard department'),
-    '#type' => 'select',
-    '#required' => TRUE,
-    '#options' => array('all' => '<all>',
-                        'UIS' => 'UIS',
-                        'OGC' => 'OGC',
-                  ),
-    '#default_value' => variable_get('pinserver_harvard_department', ''),
-    '#description' => t('Use this option to restrict OpenScholar to members of a specific Harvard department.'),
-  );
-
   $form['pinserver']['pinserver_auth_str'] = array(
     '#type' => 'radios',
     '#title' => t('PIN Authentication Server Setup'),

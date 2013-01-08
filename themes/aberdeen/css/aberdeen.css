@@ -276,10 +276,10 @@ top:3.1em;
   }
 
 
-.sidebar ul.menu li a,
-.sidebar ul.menu li a:hover,
-.sidebar ul.menu li a.active,
-.sidebar ul.menu li.active-trail a  {
+.sidebar #block-os-primary-menu ul.menu li a,
+.sidebar #block-os-primary-menu ul.menu li a:hover,
+.sidebar #block-os-primary-menu ul.menu li a.active,
+.sidebar #block-os-primary-menu ul.menu li.active-trail a  {
   color: #444;
   font-weight:bold;
   font-size: 15px;

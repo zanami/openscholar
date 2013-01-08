@@ -10,6 +10,46 @@ require 'vendor/autoload.php';
 class FeatureContext extends DrupalContext {
 
   /**
+   * Initializes context.
+   *
+   * Every scenario gets its own context object.
+   *
+   * @param array $parameters.
+   *   Context parameters (set them up through behat.yml or behat.local.yml).
+   */
+  public function __construct(array $parameters) {
+    if (!empty($parameters['drupal_users'])) {
+      $this->drupal_users = $parameters['drupal_users'];
+    }
+
+    if (!empty($parameters['sample_nodes'])) {
+      $this->sample_nodes = $parameters['sample_nodes'];
+    }
+  }
+
+  /**
+   * Authenticates a user with password from configuration.
+   *
+   * @Given /^I am logged in as "([^"]*)"$/
+   */
+  public function iAmLoggedInAs($username) {
+    try {
+      $password = $this->drupal_users[$username];
+    }
+    catch (\Exception $e) {
+      throw new \Exception("Password not found for '$username'.");
+    }
+
+    // Log in.
+    $element = $this->getSession()->getPage();
+    $this->getSession()->visit($this->locatePath('/user'));
+    $element->fillField('Username', $username);
+    $element->fillField('Password', $password);
+    $submit = $element->findButton('Log in');
+    $submit->click();
+  }
+
+  /**
    * @Given /^I am on a "([^"]*)" page titled "([^"]*)"(?:, in the tab "([^"]*)"|)$/
    */
   public function iAmOnAPageTitled($page_type, $title, $subpage = NULL) {
@@ -71,4 +111,24 @@ class FeatureContext extends DrupalContext {
     $body = $page->find('css', 'body');
     print_r($body->getHtml());
   }
+
+  /**
+   * @Then /^I should see tineMCE in "([^"]*)"$/
+   */
+  public function iShouldSeeTinemceIn($field) {
+    $page = $this->getSession()->getPage();
+    $iframe = $page->find('xpath', "//label[contains(., '{$field}')]//..//iframe[@id='edit-body-und-0-value_ifr']");
+
+    if (!$iframe) {
+      throw new Exception("tinyMCE wysiwyg does not appear.");
+    }
+  }
+
+  /**
+   * @Given /^I sleep for "([^"]*)"$/
+   */
+  public function iSleepFor($sec) {
+    sleep($sec);
+  }
+
 }

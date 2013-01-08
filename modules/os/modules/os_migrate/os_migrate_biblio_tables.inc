@@ -46,6 +46,25 @@ class BiblioContributorDataTableMigration extends TableCopyMigration {
 
     parent::__construct($table, $key_schema);
   }
+
+  public function query() {
+    //$query = parent::query();
+    $query = parent::d6_db_select($this->table, $this->alias)
+      ->fields('b', array('cid','aka','drupal_uid','name','lastname','firstname','prefix','suffix','initials','affiliation','md5'));
+
+    //invalidate the query to prevent migration if required modules are not present.
+    if (isset($this->required_modules) && count($this->required_modules)) {
+      $modules = array_map('module_exists', $this->required_modules);
+      if (in_array(FALSE, $modules)) {
+        //use node because we know it will exist.
+        $query = parent::d6_db_select('node', 'n')
+        ->condition('nid', 0)
+        ->fields('n', array('nid'));
+      }
+    }
+
+    return $query;
+  }
 }
 
 class BiblioContributorTypeDataTableMigration extends TableCopyMigration {

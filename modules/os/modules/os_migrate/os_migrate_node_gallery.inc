@@ -141,7 +141,8 @@ class GalleryNodeOSMigration extends AbstractNodeOSMigration {
       foreach($current_row->media_gallery_media as $delta => $filepath) {
         if (list($path, $name) = $this->_migrate_filename($filepath)) {
           $current_row->{'media_gallery_media:filename'}[$delta] = $name;
-          $current_row->{'media_gallery_media:destination_dir'}[$delta] = 'public://' . $path;
+          $filepath = parent::_get_destination_path('node', $current_row->nid);
+          $current_row->{'media_gallery_media:destination_dir'}[$delta] = ($filepath) ? $filepath : 'public://' . $path;
           $current_row->{'media_gallery_media'}[$delta] = $path . '/' . $name;
         }
       }

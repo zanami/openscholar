@@ -30,6 +30,11 @@ function overlay_commands_get() {
 }
 
 function overlay_commands_clear() {
+  global $user;
+
+  if (!$user->uid) {
+    return;
+  }
   $_SESSION['overlay_commands'] = array();
 }
 

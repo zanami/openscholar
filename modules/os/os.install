@@ -1,8 +1,20 @@
 <?php
+/**
+ * @file
+ *
+ * Main OpenScholar module update functions.
+ */
 
 /**
  * Enable restws module
  */
 function os_update_7001(&$sandbox) {
   module_enable(array('restws'));
+}
+
+/**
+ * Enable the watchdog module.
+ */
+function os_update_7002() {
+  module_enable(array('dblog'));
 }

@@ -170,14 +170,6 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     ->condition('term.vid', $options['vocabulary'])
     ->orderBy('weight');
 
-  // Showing specific number of terms from the first hierarchy.
-  if (!empty($options['range'])) {
-    $query->join('taxonomy_term_hierarchy', 'term_hierarchy', 'term_hierarchy.tid = term.tid');
-    $query
-      ->condition('term_hierarchy.parent', 0)
-      ->range($options['offset'], $options['offset'] + $options['range']);
-  }
-
   $result = $query->execute();
 
   $tids = array();
@@ -268,6 +260,19 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     }
   }
 
+  if (!$data) {
+    return;
+  }
+
+  // Make sure we pass the numeric values.
+  if ($options['range']) {
+    $options['offset'] = intval($options['offset']);
+    $options['range'] = intval($options['range']);
+
+    $data = array_slice($data, $options['offset'], $options['offset'] + $options['range'], TRUE);
+  }
+
+
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
     return render(drupal_get_form('os_taxonomy_select_list', $data, $path_prefix));
   }
@@ -327,6 +332,12 @@ function os_taxonomy_select_list_submit($form, &$form_state) {
 function os_taxonomy_select_list_validate($form, &$form_state) {
   if ($form_state['values']['terms'] == '--none--') {
     form_set_error('terms', t('Please select a term.'));
+  }
+
+  if ($data) {
+    return theme('item_list', array('type' => 'ul', 'items' => $data));
+  } else {
+    return '';
   }
 }
 
@@ -539,14 +550,9 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   // Attaches list of nodes in this term, or empty message if term is root term.
   $node_count = os_taxonomy_count_attached_nodes($taxonomy_term->tid, $options['bundles']);
   if ($node_count) {
+
     $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
 
-//    if ($options['nodeorder'] === FALSE) {
-//      $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
-//    }
-//    else {
-//      $nids = array_keys(nodeorder_select_nodes(array($taxonomy_term->tid), 'or', 0, FALSE, 'n.sticky DESC, n.created DESC', 0));
-//    }
     $nodes = node_load_multiple($nids);
     array_walk($nodes, create_function('&$n', '$n->contextual_annotation_key = "tid-'.$taxonomy_term->tid.'";'));
     $build += node_view_multiple($nodes);
@@ -558,6 +564,11 @@ function theme_os_taxonomy_tagged_nodes($variables) {
       '#suffix' => '</p>',
     );
   }
+
+  if (!isset($build['term_heading']['term']['#post_render'])) {
+    $build['term_heading']['term']['#post_render'] = array();
+  }
+  $build['term_heading']['term']['#post_render'][] = '_os_taxonomy_remove_term_heading_link';
   $output .= drupal_render($build);
 
   // Recursively appends child terms to output.
@@ -629,7 +640,7 @@ function os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles = arr
 
   $query->orderBy('n.sticky', 'DESC');
   if (module_exists('nodeorder')) {
-    $query->orderBy('t.weight', 'DESC');
+    $query->orderBy('t.weight', 'ASC');
   }
   $query->orderBy('n.created', 'DESC');
 
@@ -681,6 +692,26 @@ function os_taxonomy_count_attached_nodes($tid, $node_bundles = array()) {
  */
 function os_taxonomy_list_attached_nodes($tid, $node_bundles = array(), $range = NULL, $offset = NULL) {
   $query = os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles);
+
+  $query->orderBy('n.sticky', 'DESC');
+  if (module_exists('nodeorder')) {
+    $query->orderBy('t.weight', 'ASC');
+  }
+
+  if(isset($node_bundles) && count($node_bundles) == 1){
+    switch(current($node_bundles)){
+    	case 'biblio':
+    	  $query->leftJoin('biblio', 'b', 'b.vid = n.vid');
+    	  $query->orderBy('b.biblio_year', 'DESC');
+    	  break;
+    	case 'person':
+    	  $query->leftJoin('field_data_field_last_name', 'p', 'p.revision_id = n.vid AND p.bundle = \'person\' AND p.entity_type = \'node\' AND p.language = \'und\' AND p.delta = 0');
+    	  $query->orderBy('p.field_last_name_value', 'ASC');
+    	  break;
+    }
+  }
+
+  $query->orderBy('n.created', 'DESC');
 
   if ($range) {
     $query->range($range + $offset, $range);
@@ -767,4 +798,23 @@ function os_taxonomy_context_custom($context_name) {
 
     return $ctx;
   }
+}
+
+/**
+ * Post-render callback; removes term heading title link.
+ *
+ * @see theme_os_taxonomy_tagged_nodes()
+ */
+function _os_taxonomy_remove_term_heading_link($markup, $element) {
+  $output = '';
+
+  if (!$markup) {
+    return $output;
+  }
+
+  // Removes anchor tag from the term heading title.
+  $link_pattern = "/<h2><a[^>]*>(.*)<\/a>/iU";
+  $output = preg_replace($link_pattern, "<h2>$1", $markup);
+
+  return $output;
 }

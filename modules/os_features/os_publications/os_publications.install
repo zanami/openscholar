@@ -51,6 +51,15 @@ function os_publications_install() {
         }
       }
     }
+
+    // Remove second biblio_secondary_title field mapping.
+    $field_map = biblio_get_map('field_map','csl');
+    if(isset($field_map['collection-title']) && isset($field_map['container-title'])) {
+      if($field_map['collection-title'] == 'biblio_secondary_title' && $field_map['container-title'] == 'biblio_secondary_title') {
+	    $field_map['collection-title'] = '';
+	    biblio_set_map('field_map', 'csl', $field_map);
+	  }
+    }
   }
 }
 
@@ -162,4 +171,21 @@ function os_publications_update_7002(){
   }
 
   return t('Removed inline indents from biblio_citeproc citations.');
+}
+
+/**
+ * Remove the second mapping of biblio_secondary_title which causes duplicate title entries in certain citations.
+ */
+function os_publications_update_7003() {
+  if(!module_exists('biblio_citeproc')){
+  	return('CiteProc not installed, update not needed.');
+  }
+  $field_map = biblio_get_map('field_map','csl');
+  if(isset($field_map['collection-title']) && isset($field_map['container-title'])) {
+    if($field_map['collection-title'] == 'biblio_secondary_title' && $field_map['container-title'] == 'biblio_secondary_title') {
+	  $field_map['collection-title'] = '';
+	  biblio_set_map('field_map', 'csl', $field_map);
+	  return t('Second biblio_secondary_title field mapping removed.');
+	}
+  }
 }

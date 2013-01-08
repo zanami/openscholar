@@ -301,17 +301,19 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       return;
     }
 
-    $dirty = FALSE;
+    $node_dirty = FALSE;
     foreach ($entity->field_upload as $lang => $fields) {
       foreach ($fields as $delta => $upload) {
         $file_dirty = FALSE;
         $file = file_load($upload['fid']);
 
+
         //update display
         if ($row->field_upload_display[$delta] == '0') {
-          file_usage_add(file_load($upload['fid']), 'file', 'node', $entity->nid);
+          //file_usage_add(file_load($upload['fid']), 'file', 'node', $entity->nid);
+          file_usage_delete($file, 'file', 'node', $entity->nid, 0); //delete the reference from this node to file, but don't decrease its count.
           unset($entity->field_upload[$lang][$delta]);
-          $dirty = TRUE;
+          $node_dirty = TRUE;
         }
 
         //update title
@@ -326,8 +328,11 @@ abstract class AbstractNodeOSMigration extends OSMigration {
       }
     }
 
+    //update links to attached files.  they should have been updated to include files/$purl
+    $node_dirty = (self::_complete_body_links($entity, $row) || $node_dirty);
+
     //resave the node
-    if ($dirty) {
+    if ($node_dirty) {
       foreach($entity->field_upload as $lang => $fields) {
         $entity->field_upload[$lang] = array_values($entity->field_upload[$lang]); //refresh the deltas
       }
@@ -409,6 +414,10 @@ abstract class AbstractNodeOSMigration extends OSMigration {
             $row->field_upload_filename[$delta] = $row->field_upload_description[$delta];
           }
         }
+
+        //$row->filepath = current($row->field_upload_filepath);
+        $row->filepath = ($filepath) ? $filepath : current($row->field_upload_filepath);
+        //$row->filename = $row->field_upload_filename; //expects string?
       }
     }
   }
@@ -501,5 +510,136 @@ abstract class AbstractNodeOSMigration extends OSMigration {
     } else {
       return $override;
     }
+  }
+
+  /**
+   * Update links in node bodies.
+   */
+  public static function _complete_body_links(&$node, $row) {
+    //only update nodes with attachments
+    $body = $node->body[$node->language][0]['value'];
+    $original_body = $body;
+    if (!isset($row->field_upload) || empty($node->field_upload[$node->language]) || (strpos($body, 'href=')===FALSE) && (strpos($body, 'src=') === FALSE)) {
+      return FALSE;
+    }
+
+    //get domain
+    $query = parent::d6_db_select('spaces_overrides', 'so')
+      ->condition('id', $row->group_nid)
+      ->condition('object_id', 'vsite_domain_name')
+      ->condition('value', 'N;', '!=')
+      ->condition('value', 's:0:"";', '!=')
+      ->fields('so', array('value'))
+      ->execute();
+
+    if ($query->rowCount()) {
+      $domain = $query->fetchField();
+      $domain = 'http://' . unserialize($domain);
+    }
+
+    $purl_base_domain = variable_get('os_migrate_use_domain', variable_get('purl_base_domain', FALSE));
+    if (!isset($domain) || !$domain) {
+      $domain = $purl_base_domain;
+    }
+
+    //legacy files dir
+    $legacy_files = parent::d6_variable_get('file_directory_path', 'sites/default/files');
+    $current_files = variable_get('file_directory_path', 'sites/default/files');
+
+    //filepaths to replace.  both filename and files/purl/filename will be appended to each of these.
+    $patterns = array(
+      "${domain}/${legacy_files}/",    // http://projects.iq.harvard.edu/sites/projects.iq.harvard.edu/files/huqualhomeimage.jpg
+      "/${legacy_files}/",             // /sites/projects.iq.harvard.edu/files/rcss/files/ssc-table-01.png
+      "${domain}/",                    // http://projects.iq.harvard.edu/sainit/files/SAI_Internship_booklet_2009.pdf
+      '/',                             // /govpostgers/files/georgeyin.pdf
+    );
+
+    //also check original domain if applicable
+    if ($domain != $purl_base_domain) {
+      $patterns[] = "${purl_base_domain}/";
+      $patterns[] = "${purl_base_domain}/${legacy_files}/";
+    }
+
+    /* not supported.  found some paths that are inherently broken.  leaving them that way.
+      /sites/projects.iq.harvard.edu/files/thedatanew_guides/files/thedatanew_guides/files/thedatanew_guides/files/simple_study.xml
+    */
+
+    //loop over files
+    $candidates = array();
+    foreach ($row->field_upload as $delta => $filename) {
+      if (isset($node->field_upload[$node->language][$delta]) && ($newfile = $node->field_upload[$node->language][$delta])) {
+        $newpath = file_create_url($newfile['uri']);
+        //$newpath = str_replace($current_files, 'files', $newpath); //swap in files dir.  shouldn't be necessary when configured right
+        $newpath = str_replace($GLOBALS['base_url'], $domain, $newpath);
+
+        //try to match cases of path with and without purl, as provided by file table
+        $candidates[$filename] = array();
+        foreach ($patterns as $p) {
+          $candidates[$filename][] = $p . trim($filename, '/');          //full vsite/files/file.ext
+          $candidates[$filename][] = $p . end(explode('/', $filename));  //just file.ext
+        }
+
+        //add aliases.  aliases only ever follow a domain, so try it for both domain options but no other patterns
+        foreach (self::_filefield_get_alias($row->nid, $filename) as $alias) {
+          $candidates[$filename][] =  "${domain}/" . trim($alias, '/');
+          if ($domain != $purl_base_domain) {
+            $candidates[$filename][] =  "${purl_base_domain}/" . trim($alias, '/');
+          }
+        }
+
+        $candidates[$filename] = array_unique($candidates[$filename]);
+
+        //replace matches in body, wrapped in single/double quotes so we can match whole string.
+        foreach ($candidates[$filename] as $c) {
+          $body = str_replace('"'.$c.'"', '"'.$newpath.'"', $body);
+          $body = str_replace("'".$c."'", "'".$newpath."'", $body);
+        }
+      }
+    }
+
+    //swap body into node return
+    if ($body != $original_body) {
+      $node->body[$node->language][0]['value'] = $body;
+      Migration::displayMessage(t('Updated URLs in node: @nid', array('@nid' => $node->nid)), MigrationBase::MESSAGE_INFORMATIONAL);
+      return TRUE;
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * @function _filefield_get_alias
+   *
+   * Given an uploaded file's nid and filepath, get its fid and use that to return its filefield_paths from url_alias
+   * Caches results since it's in the middle of a loop and will be called a dozen or so times per nid/filepath
+   *
+   * @param int $nid
+   *   node id
+   * @param str $filepath
+   *   path to file, as per legacy db's files table
+   */
+  static function _filefield_get_alias($nid, $filepath) {
+    $filepath = trim($filepath, '/');
+
+    //cache results.  other patterns will use alias
+    $nid_path_aliases = &drupal_static(__FUNCTION__, array());
+    $nid_path = $nid . '::' . $filepath;
+    if (isset($nid_path_aliases[$nid_path])) {
+      return $nid_path_aliases[$nid_path];
+    }
+
+    $query = parent::d6_db_select('upload', 'u')
+      ->condition('nid', $nid);
+    $query->join('files', 'f', 'u.fid = f.fid');
+    $query->condition('f.filepath', '%'.$filepath, 'LIKE');
+    $query->join('url_alias', 'ua', 'ua.src = CONCAT(:path,f.fid)', array(':path'=>'filefield_paths/alias/'));
+    $query->fields('ua', array('dst'));
+
+    $result = $query->execute();
+    $return = ($result->rowCount()) ? $result->fetchCol() : array();
+    $return = array_diff($return, array($filepath)); //don't include original filepath as a result
+
+    $nid_path_aliases[$nid_path] = $return;
+    return $return;
   }
 }

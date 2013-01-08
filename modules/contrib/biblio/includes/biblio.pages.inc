@@ -520,6 +520,9 @@ function biblio_build_query($arg_list) {
               $k = ucwords(strtolower(str_replace(array('-', '_'), ' ', $v)));
             }
           }
+          else {
+            $value = ucwords(strtolower(str_replace(array('-', '_'), ' ', $value)));
+          }
           $query->condition(db_or()->condition('b.biblio_type', $value)->condition('bt.name', $value));
           break;
         case 'search':
@@ -621,7 +624,10 @@ function _biblio_filter_info_line($args = array()) {
             $k = ucwords(strtolower(str_replace(array('-', '_'), ' ', $v)));
           }
         }
-        if (($pub_type = db_query('SELECT t.* FROM {biblio_types} as t WHERE t.tid=:tid OR t.name=:name', array(':tid' => $value, ':name' => $value))->fetchObject())) {
+        else {
+          $value = array($value);
+        }
+        if (($pub_type = db_query('SELECT t.* FROM {biblio_types} as t WHERE t.tid IN (:tid) OR t.name IN (:name)', array(':tid' => $value, ':name' => $value))->fetchObject())) {
           $value = drupal_ucfirst(_biblio_localize_type($pub_type->tid, $pub_type->name));
           $type = t("Type");
         }

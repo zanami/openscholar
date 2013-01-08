@@ -35,7 +35,9 @@ class os_sv_list_box extends os_boxes_default {
     $defaults = $this->options_defaults();
     drupal_add_js(array('os_sv_list_box' => array('new_box' => $this->new)), 'setting');
 
-    $content_types = array(-1 => t('- Select -')) + os_get_bundles(1);
+    $content_types = array(
+      'all' => t('All')
+    ) + os_get_bundles(array(1));
 
     if (isset($content_types['media_gallery'])) {
       $content_types['image'] = t('Images');
@@ -311,11 +313,16 @@ class os_sv_list_box extends os_boxes_default {
 
   // get_default_query_query - humble beginnings of the EFQ
   function get_default_query() {
+    $bundles = os_get_bundles(array(1));
+    if (empty($bundles)) {
+      return FALSE;
+    }
+
     // defaults
     $efq = new EntityFieldQuery();
     $efq->entityCondition('entity_type', 'node');
     $efq->propertyCondition('status', 1);
-    $efq->propertyCondition('type', array_keys(os_get_bundles(1)), 'IN');
+    $efq->propertyCondition('type', array_keys($bundles), 'IN');
 
     // vsite
     if (module_exists('vsite') && $space = spaces_get_space()) {
@@ -333,7 +340,10 @@ class os_sv_list_box extends os_boxes_default {
    * @return multitype:
    */
   public function get_nids($page_num = FALSE, &$page = NULL) {
-    $efq = $this->get_default_query();
+    if (($efq = $this->get_default_query()) == FALSE) {
+      return array();
+    }
+
     $options = $this->options;
 
     $tagged_nodes = $this->tagged_nodes();
@@ -405,10 +415,11 @@ class os_sv_list_box extends os_boxes_default {
       case 'image':
         $image_query = new EntityFieldQuery();
         $image_query->entityCondition('entity_type', 'file');
+        // Add image as a condition, this will remove all media from showing up.
+        $image_query->propertyCondition('type', 'image');
         if ($space = spaces_get_space()) {
           $image_query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
         }
-
         $sorts = array(
           'sort_newest' => array('timestamp', 'DESC'),
           'sort_oldest' => array('timestamp', 'ASC'),
@@ -570,15 +581,22 @@ class os_sv_list_box extends os_boxes_default {
   }
 
   function display_image($files) {
-    $html = '';
+    //$html = '';
+    $items = array();
+
     foreach ($files as $image) {
       $variables = array(
+        'style_name' => "os_square_50_50",
         'path' => $image->uri,
-        'attributes' => array(),
+        'height' => NULL,
+        'width' => NULL,
       );
-      $html .= theme('image', $variables);
+      //$html .= theme('image', $variables);
+      $img = theme_image_style($variables);
+      $items[] = l($img, file_create_url($image->uri), array('html'=>TRUE, 'attributes' => array('rel' => 'recent-images', 'class' => 'colorbox'))); //get a real url, hippie!
     }
-    return $html;
+
+    return theme('item_list', array('items'=>$items, 'attributes'=>array('class'=>array('recent-images-list'))));
   }
 
   function _biblio_types() {

@@ -63,7 +63,7 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#type' => 'select',
       '#description' => t('Which vocabularies would you like to use to filter posts.'),
       '#title' => t('Vocabularies'),
-      '#options' => self::get_all_volcabularies(),
+      '#options' => self::get_all_vocabularies(),
       '#required' => TRUE,
     );
 
@@ -173,7 +173,7 @@ class os_taxonomy_fbt extends os_boxes_default {
   public function render() {
     $block = parent::render();
     if (empty($this->options['vocabulary'])) {
-      $this->options['vocabulary'] = current(array_keys(self::get_all_volcabularies()));
+      $this->options['vocabulary'] = current(array_keys(self::get_all_vocabularies()));
 
       if(empty($this->options['vocabulary'])){
         // There are no vocabularies defined in the VSite.
@@ -213,7 +213,7 @@ class os_taxonomy_fbt extends os_boxes_default {
   /**
    * Get all the volcabularies id using the taxonomy terms.
    */
-  private function get_all_volcabularies() {
+  private function get_all_vocabularies() {
 
     ctools_include('taxonomy', 'os');
     $taxonomy_vocabularies = os_get_vocabularies();
