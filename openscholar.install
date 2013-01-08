@@ -79,4 +79,7 @@ function openscholar_install() {
   );
   $full_html_format = (object) $full_html_format;
   filter_format_save($full_html_format);*/
+
+  // Disable preventing anonymous cache in biblio.
+  variable_set('biblio_prevent_anon_cache', FALSE);
 }
