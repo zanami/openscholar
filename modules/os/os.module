@@ -332,6 +332,27 @@ function os_os_widget_alter(&$widget) {
     );
   }
 
+  $features = variable_get('spaces_features');
+
+  //Lets make sure that this widget should be shown, is the module enabled
+  $hidden = (!empty($widget['hidden']) || (!empty($widget['module']) && !module_exists($widget['module'])));
+
+  //Is the feature public
+  if(!$hidden || !empty($widget['module']) && module_exists('spaces')){
+    $spaces_features = spaces_features('og');
+    if($widget['module'] == 'views'){
+      list($module,) = explode("-", $widget['delta'], 2);
+    }else{
+      $module = $widget['module'];
+    }
+
+    if(isset($spaces_features[$module]) && empty($features[$module])){
+      //This is provided by a disabled og feature
+      $hidden = true;
+    }
+  }
+
+  $widget['hidden'] = $hidden;
 }
 
 /**
