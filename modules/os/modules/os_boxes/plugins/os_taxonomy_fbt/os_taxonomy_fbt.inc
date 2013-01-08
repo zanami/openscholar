@@ -28,6 +28,7 @@ class os_taxonomy_fbt extends os_boxes_default {
     $options['add_childs'] = FALSE;
     $options['depth'] = 0;
     $options['behavior'] = 'contextual';
+    $options['as_nav'] = false;
 
     return $options;
   }
@@ -48,7 +49,15 @@ class os_taxonomy_fbt extends os_boxes_default {
       $setting_value = !empty($this->options[$setting]) ? $this->options[$setting] : NULL;
       $form[$setting]['#default_value'] = $setting_value;
     }
-    $form += parent::options_form($form_state);
+
+    $form['advanced']['as_nav'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => $this->options['as_nav'],
+      '#title' => t('Display As Navigation'),
+      '#description' => t('Check this to make this vocabulary display like a menu.'),
+      '#return_value' => TRUE,
+    );
+
     return $form;
   }
 
@@ -195,6 +204,11 @@ class os_taxonomy_fbt extends os_boxes_default {
     if (is_array($this->options['vocabulary'])) {
       $t = array_filter($this->options['vocabulary']);
       $this->options['vocabulary'] = current($t);
+    }
+
+    $attr = array();
+    if ($this->options['as_nav']) {
+      $this->options['additional_classes'] = 'navigation';
     }
 
     $block['content'] = theme('os_taxonomy_vocabulary_item_list', array(
