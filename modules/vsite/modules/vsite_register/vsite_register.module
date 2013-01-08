@@ -1,12 +1,11 @@
 <?php
 /**
- * @file vsite_register.module
- *
- * Provides form so users can create vsites
+ * @file
+ * Provides form so users can create vsites.
  */
 
 /**
- * Implements hook_menu
+ * Implements hook_menu().
  */
 function vsite_register_menu() {
   $items['site/register'] = array(
@@ -23,7 +22,6 @@ function vsite_register_menu() {
     'page arguments' => array('vsite_register_admin_form'),
     'file' => 'vsite_register.admin.inc',
     'access arguments' => array('access administration pages'),
-    //'type' => MENU_LOCAL_TASK,
   );
 
   return $items;
@@ -31,7 +29,7 @@ function vsite_register_menu() {
 
 
 /**
- * Implements hook_block_info
+ * Implements hook_block_info().
  */
 function vsite_register_block_info() {
   return array(
@@ -40,7 +38,7 @@ function vsite_register_block_info() {
 }
 
 /**
- * Implements hook_block_view
+ * Implements hook_block_view().
  */
 function vsite_register_block_view($delta = '') {
   global $user;
@@ -77,9 +75,9 @@ function vsite_register_block_view($delta = '') {
 
 
 /**
- * Implements hook_theme
+ * Implements hook_theme().
  *
- * Provides theming for form errors
+ * Provides theming for form errors.
  */
 function vsite_register_theme() {
   $theme = array();
@@ -95,9 +93,9 @@ function theme_vsite_register_form_errors($vars) {
   $list = '';
   if (!empty($vars['error'])) {
     $list = theme('item_list', array(
-        'items' => $vars['errors'], 'type'=>'ul',
-        'attributes'=>array(
-          'class'=>array('error'))
+      'items' => $vars['errors'], 'type'=>'ul',
+      'attributes'=>array(
+        'class'=>array('error'))
       )
     );
   }
@@ -105,19 +103,14 @@ function theme_vsite_register_form_errors($vars) {
   return '<div id="' . $vars['name'] . '-errors">' . $list . '</div>';
 }
 
-function _vsite_register_form_error(){
-  return ajax_command_html('#submit-suffix', 'The web site cannot be created. Please fix the errors and try again.');
-}
-
 /**
- * Implements hook_fork_BASE_FORM_ID_alter()
+ * Implements hook_form_FORM_ID_alter().
+ *
  * Alter the vsite_register_form to remove the notify element
  * if the user is not logged in.
  */
 function vsite_register_form_vsite_register_form_alter(&$form, &$form_state) {
-  if(!user_is_logged_in()) {
-  	if(isset($form['notify'])) {
-  		$form['notify']['#access'] = FALSE;
-  	}
+  if(!user_is_logged_in() && isset($form['notify'])) {
+    $form['notify']['#access'] = FALSE;
   }
 }
