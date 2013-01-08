@@ -87,7 +87,7 @@ function template_preprocess_cp_layout_widget(&$variables) {
 
   $classes_array[] = "cp-layout-item";
 
-  if (isset($widget['hidden']) && $widget->hidden) {
+  if (isset($widget['hidden']) && $widget['hidden']) {
     $classes_array[] = 'disabled';
   }
 
