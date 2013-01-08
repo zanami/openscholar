@@ -625,6 +625,7 @@ class OsMigrateGalleryNode extends OsMigrate {
     array('title', 'Title'),
     array('body', 'Body'),
     array('images', 'Images'),
+    array('destination', 'Destination'),
     array(OG_AUDIENCE_FIELD, 'Site'),
   );
 

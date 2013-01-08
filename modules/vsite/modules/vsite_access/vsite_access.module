@@ -110,11 +110,9 @@ function vsite_access_node_access_records_alter(&$grants, $node) {
       $file = file_load($file['fid']);
 
       // Create the upload folder if it's not exists.
-      $folder = $private_folder . '/' . str_replace(array('public://', '/' . $file->filename), '', $file->uri);
-      if (!is_dir($folder)) {
+      if (!is_dir($private_folder)) {
         // Change the private folder path to private:// for the uri format.
-        $uri = str_replace($private_folder, 'private://', $folder);
-        drupal_mkdir($uri, NULL, TRUE);
+        drupal_mkdir('private://', NULL, TRUE);
       }
 
       // Move the file to private.
