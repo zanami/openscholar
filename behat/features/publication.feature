@@ -1,7 +1,7 @@
 Feature:
   Testing the publication tab and application.
 
-  @api
+  @api @me
   Scenario: Test the Publication tab allows caching of anonymous user
     Given cache is enabled for anonymous users
      When I visit "john/publications"
