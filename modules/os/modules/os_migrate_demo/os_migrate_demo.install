@@ -28,30 +28,4 @@ function os_migrate_demo_install() {
     $preset->value['variable']['spaces_features'][$feature] = 1;
   }
   spaces_preset_save($preset);
-
-  // Comment out for now.
-  // // Temporary create the vocabs.
-  // $sites = array(
-    // 1 => 'bio',
-    // 2 => 'class',
-  // );
-//
-  // foreach ($sites as $nid => $bundle) {
-    // $name = 'authors' . '_' . $nid;
-    // if (!$vocabulary = taxonomy_vocabulary_machine_name_load($name)) {
-      // // Create a vocaulary for the bundle in the VSite.
-      // $vocabulary = (object) array(
-        // 'machine_name' => $name,
-        // 'name' => 'authors',
-        // 'description' => '',
-        // 'help' => '',
-      // );
-      // taxonomy_vocabulary_save($vocabulary);
-//
-      // $og_vocab = og_vocab_create_og_vocab($vocabulary->vid, 'node', $bundle);
-      // $og_vocab->save();
-    // }
-//
-    // og_vocab_relation_save($vocabulary->vid, 'node', $nid);
-  // }
 }
