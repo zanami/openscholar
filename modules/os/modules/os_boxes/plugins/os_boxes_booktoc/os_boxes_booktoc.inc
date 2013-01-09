@@ -13,6 +13,7 @@ class os_boxes_booktoc extends os_boxes_default {
 
     $options['book_nid'] = 0;
     $options['toc_type'] = 'partial';
+    $options['as_nav'] = false;
     return $options;
   }
 
@@ -53,6 +54,14 @@ class os_boxes_booktoc extends os_boxes_default {
         'partial' => 'Path to current post and its children',
       ),
       '#default_value' => $this->options['toc_type'],
+    );
+
+    $form['advanced']['as_nav'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => $this->options['as_nav'],
+      '#title' => t('Display As Navigation'),
+      '#description' => t('Check this to make this vocabulary display like a menu.'),
+      '#return_value' => TRUE,
     );
 
     return $form;
@@ -98,6 +107,10 @@ class os_boxes_booktoc extends os_boxes_default {
     ), 'setting');
 
     $block = os_books_build_toc($node, 'full') + $block;
+
+    if ($this->options['as_nav']) {
+      $this->options['additional_classes'] = 'navigation';
+    }
 
     return $block;
   }

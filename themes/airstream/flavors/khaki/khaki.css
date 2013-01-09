@@ -1,12 +1,13 @@
 /* Khaki version */
 
-
+@media only screen and (min-width:1025px) {
 body.navbar-off {
-  background-image: url(images/body-bg-khaki.png);
+  background-image: url('images/body-bg-khaki.png');
   }
+}
 
 body.navbar-on #wrapper {
-  background-image: url(images/body-bg-horiz-khaki.png);
+  background-image: url('images/body-bg-horiz-khaki.png');
   }
 
 .biblio-title a, .biblio-title-chicago a,

@@ -46,11 +46,6 @@ function os_activity_views_default_views() {
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['content'] = 'No activity yet.';
   $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
-  /* Relationship: Entity Reference: Referenced Entity */
-  $handler->display->display_options['relationships']['field_group_target_id']['id'] = 'field_group_target_id';
-  $handler->display->display_options['relationships']['field_group_target_id']['table'] = 'field_data_field_group';
-  $handler->display->display_options['relationships']['field_group_target_id']['field'] = 'field_group_target_id';
-  $handler->display->display_options['relationships']['field_group_target_id']['label'] = 'Group';
   /* Field: Message: Timestamp */
   $handler->display->display_options['fields']['timestamp']['id'] = 'timestamp';
   $handler->display->display_options['fields']['timestamp']['table'] = 'message';

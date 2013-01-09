@@ -357,7 +357,7 @@ function og_vocab_field_widget_form(&$form, &$form_state, $field, $instance, $la
   }
   $cache[$entity_type . ':' . $id] = TRUE;
 
-  if (!$vids = og_vocab_get_accessible_vocabs($entity_type, $entity)) {
+  if (!$vids = og_vocab_get_accessible_vocabs($entity_type, $bundle)) {
     return;
   }
 

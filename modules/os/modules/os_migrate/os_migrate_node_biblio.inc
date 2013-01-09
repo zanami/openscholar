@@ -91,7 +91,8 @@ class BiblioNodeOSMigration extends AbstractNodeOSMigration {
 
 		  if (list($path, $name) = $this->_migrate_filename($cover->filepath)) {
 		    $current_row->{'field_biblio_image:destination_file'}  = $name;
-		    $current_row->{'field_biblio_image:destination_dir'} = 'public://' . $path;
+		    $filepath = parent::_get_destination_path('node', $current_row->nid);
+		    $current_row->{'field_biblio_image:destination_dir'} = ($filepath) ? $filepath : 'public://' . $path;
 		    $current_row->{'field_biblio_image'} = $path . '/' . $name;
 		  }
 		}

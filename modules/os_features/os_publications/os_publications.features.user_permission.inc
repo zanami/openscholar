@@ -170,6 +170,20 @@ function os_publications_user_default_permissions() {
     'module' => 'node',
   );
 
+  // Exported permission: view full text
+  $permissions['view full text'] = array(
+    'name' => 'view full text',
+    'roles' => array(
+      '0' => 'administrator',
+      '1' => 'anonymous user',
+      '2' => 'authenticated user',
+      '3' => 'manager',
+      '4' => 'vsite admin',
+      '5' => 'vsite user',
+    ),
+    'module' => 'biblio',
+  );
+
   return $permissions;
 }
 

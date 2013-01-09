@@ -991,7 +991,12 @@ function biblio_admin_types_edit_form_submit($form, &$form_state) {
         $val['ftdid'] = $new_ftdid;
         $link['ftdid'] = $new_ftdid;
         $link['cust_tdid'] = $new_ftdid;
-        drupal_write_record('biblio_field_type_data', $val);
+        $result = db_select('biblio_field_type_data', 'ftd')
+          ->fields('ftd')
+          ->execute()
+          ->fetchAllAssoc('ftdid');
+        $primary_keys = array_keys($result);
+        drupal_write_record('biblio_field_type_data', $val, $primary_keys);
 
       }
       elseif ($update >= 100 && $link['tid']) { // we are updating an existing entry
@@ -1428,7 +1433,11 @@ function biblio_admin_types_add_form($form, &$form_state) {
 function biblio_admin_types_add_form_submit($form, &$form_state) {
   $values['name'] = $form_state['values']['name'];
   $values['description'] = $form_state['values']['description'];
-  $values['tid'] = variable_get('biblio_max_user_tid', '999') + 1;
+  $query = db_select('biblio_types', 'bt');
+  $expression = $query->addExpression('MAX(tid)', 'max_tid');
+  $result = $query->execute();
+  $record = $result->fetchAssoc();
+  $values['tid'] = $record['max_tid'] + 1;
 
   db_insert('biblio_types')
     ->fields($values)

@@ -2,7 +2,7 @@
 /**
  * @file
  * Allows faculty members to import a list of their publications.
-*/
+ */
 
 /**
  * Implements hook_help().
@@ -17,7 +17,7 @@ function harvard_activity_reports_help($path, $arg) {
 
 /**
  * Implements hook_menu().
-*/
+ */
 function harvard_activity_reports_menu() {
   $items['harvard_activity_reports'] = array(
     'title' => 'Harvard Activity Report',
@@ -445,4 +445,3 @@ function _harvard_activity_reports_build_bibilio_data($node) {
   $return['biblio_author'] = $author_list;
   return $return;
 }
-

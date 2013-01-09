@@ -136,7 +136,8 @@ h2 {
 
 /* SEARCH FORM */
 
-.block-os-search-db {margin-top:25px;}
+.block-os-search-db,
+.block-os-search-solr {margin-top:25px;}
 
 #block-search-0 h3, .block-search h3 {
   display:none;
@@ -631,6 +632,11 @@ td, td.description {
   position:relative;
   }
 
+#footer {
+  height:30px;
+  padding:5px 0;
+  }
+
 #block-views-os-websites-block h2 {
   background: url('../images/featured.png') 0 0 no-repeat transparent;
   text-indent: -999em;
@@ -647,6 +653,7 @@ td, td.description {
   background:#fff;
   position:relative;
  margin: -14px 0 0 0;
+ height:240px;
   }
 
 #block-views-os-websites-block .views-row {
@@ -684,6 +691,8 @@ td, td.description {
 
 #block-views-os-websites-block .more-link {
   clear: both;
+  /* override global css float*/
+  float:none;
   }
 
 #block-views-os-websites-block .more-link a:after {
@@ -705,9 +714,9 @@ td, td.description {
   }
 
 #block-views-os-websites-block .more-link a {
-  background: url('../images/black-arrow-right.png') no-repeat 100% 50% #fff;
+  /*background: url('../images/black-arrow-right.png') no-repeat 100% 50% #fff;*/
   padding-right: 11px;
-  color: #000;
+  color: #1B86A9;
   text-transform: capitalize;
   font-weight: bold;
   margin-right: 30px;
@@ -790,7 +799,7 @@ body.section-websites .views-field-field-vsite-logo-fid {
   }
   
   #block-os-login {
-    margin-top: 22px;
+    margin-top: 38px;
     bottom: 0;
  }
  
@@ -837,13 +846,29 @@ border-bottom-left-radius: 3px;
 
 .block-os-stats dl {
      float: left;
-     margin: -50px 0 12px;
+     margin: -48px 0 12px;
      width: 100%;
 }
 
+@-moz-document url-prefix() { 
+  .block-os-stats dl {
+     margin: -57px 0 12px;
+ }
+}
+
+
+
 .logged-in .block-os-stats dl {
-    margin: -8px 0 12px;
+    margin: 10px 0 12px;
     
+}
+
+
+@-moz-document url-prefix() { 
+ .logged-in .block-os-stats dl {
+    margin: 0 0 12px;
+    
+}
 }
 
 .block-os-stats dt, .block-os-stats dd {

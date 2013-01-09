@@ -100,7 +100,8 @@ class ModalImageNodeOSMigration extends OSMigration {
 
     if (list($path, $name) = $this->_migrate_filename($current_row->filepath)) {
       $current_row->filename = $name;
-      $current_row->destination_dir = 'public://' . $path;
+      $filepath = parent::_get_destination_path('og', $og);
+      $current_row->destination_dir = ($filepath) ? $filepath : 'public://' . $path;
       $current_row->filepath = $path . '/' . $name;
     }
   }

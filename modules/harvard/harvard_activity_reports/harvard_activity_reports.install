@@ -42,7 +42,7 @@ function harvard_activity_reports_schema_alter(&$schema) {
     'unique keys' => array(
       'huid' =>array('huid'),
     ),
-    'primary key' => array( 'uid'),
+    'primary key' => array('uid'),
   );
 }
 
@@ -77,13 +77,6 @@ function harvard_activity_reports_hash_uids(){
 }
 
 /**
- * Alter the table and set the column to accept nulls
- */
-function harvard_activity_reports_alter_null() {
-  db_change_field('iqss_pinserver_register','huid','huid', array('type' => 'varchar','length' => 255, 'not null' => FALSE,'default' => NULL));
-}
-
-/**
  * Implements hook_install().
  */
 function harvard_activity_reports_install() {
@@ -113,7 +106,6 @@ function harvard_activity_reports_install() {
  * Hash the huids and update each row with their corresponding hashed id.
  */
 function harvard_activity_reports_update_7001(&$sandbox) {
-
   if (!module_exists('iqss_pinserver_register')) {
     return t('IQSS Pinserver Register module not enabled, no updates performed for the HAR Module.');
   }
@@ -121,7 +113,7 @@ function harvard_activity_reports_update_7001(&$sandbox) {
   // first check to see if the field exist
   // gather all the fields in this table
   if(db_field_exists('iqss_pinserver_register','hashID')==FALSE){
-	db_add_field('iqss_pinserver_register', 'hashID', array('type' => 'varchar','length' => 256,'not null' => FALSE,'default' => NULL));
+    db_add_field('iqss_pinserver_register', 'hashID', array('type' => 'varchar','length' => 256,'not null' => FALSE,'default' => NULL));
   }
 
   // alter the table
@@ -148,4 +140,11 @@ function harvard_activity_reports_uninstall() {
   if (db_field_exists('iqss_pinserver_register','hashID')==TRUE){
     db_drop_field('iqss_pinserver_register', 'hashID');
   }
+}
+
+/**
+ * Alter the table and set the column to accept nulls
+ */
+function harvard_activity_reports_alter_null() {
+  db_change_field('iqss_pinserver_register','huid','huid', array('type' => 'varchar','length' => 255, 'not null' => FALSE,'default' => NULL));
 }

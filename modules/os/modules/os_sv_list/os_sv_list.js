@@ -7,11 +7,14 @@
   Drupal.behaviors.os_sv_list = {
     attach: function(context) {
       //when content type changes, update sorting options list.
+      var old_type = $('#os_sv_list_content_type').val();
     	$('#os_sv_list_content_type').change(function() { 
-    	  sortby = $('#edit-sort-by');
-    	  whitelist = ['sort_newest', 'sort_oldest', 'sort_alpha'];
-    	  content_type = $('#os_sv_list_content_type').attr('value'); 
-    	  selected_sort = 'sort_' + content_type; 
+    	  var sortby = $('#edit-sort-by'),
+    	      whitelist = ['sort_newest', 'sort_oldest', 'sort_alpha'],
+    	      content_type = $('#os_sv_list_content_type').val(), 
+    	      selected_sort = 'sort_' + content_type,
+    	      more_link = $('#edit-more-link'),
+    	      defaults = Drupal.settings.more_link_defaults;
     	  
     	  sortby.children('option').each(function() { //why you no function?
     	  	this_sort = $(this).attr('value');
@@ -31,6 +34,14 @@
     	  		}
     	  	}
     	  });
+    	  
+    	  // swap out the more link url
+    	  if (more_link.val()) {
+    	    defaults[old_type] = more_link.val();
+    	  }
+    	  more_link.val(defaults[content_type]);
+    	  old_type = content_type;
+    	  
     	});
 
       // Get the default value of the content_type.
@@ -41,7 +52,7 @@
       $('#os_sv_list_content_type', context).change(function() {
         content_type = $(this).val();
       });
-
+      /*
       // Check for a click event on the show all publication types.
       $('#biblio_show_all_check', context).click(function() {
         if($('#biblio_show_all_check').not(':checked') && content_type == 'biblio') {
@@ -66,7 +77,7 @@
    	  }else {
    		$('#os_sv_list_biblio_show_all').hide();
    		$('#os_sv_list_biblio_whitelist').hide();
-   	  }
+   	  }*/
 	}
   };
 }(jQuery));

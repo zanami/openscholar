@@ -16,10 +16,10 @@ os[cp_layout_css] = cp-layout-map.css
 
 ;----------// Stylesheets
 
-stylesheets[screen][] = css/scholar-department.responsive.layout.css
-stylesheets[screen][] = css/scholar-department.css
+stylesheets[screen][] = css/department.responsive.layout.css
+stylesheets[screen][] = css/department.css
 
-ie_stylesheets[screen][lt IE 10][] = css/scholar-department-ie.css
+ie_stylesheets[screen][lt IE 10][] = css/department-ie.css
 
   
 

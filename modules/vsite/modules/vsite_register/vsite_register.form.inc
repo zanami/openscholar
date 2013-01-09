@@ -155,6 +155,8 @@ function vsite_register_form($form, &$state) {
 
     $form['user_fieldset'] += _vsite_register_user_form();
 
+    $form['user_fieldset']['huid'] = array();
+
     $form['user_fieldset']['new_user_close_div'] = array(
       '#markup' => '</div>',
     );

@@ -104,4 +104,9 @@ function os_migrate_module_implements_alter(&$implementations, $hook) {
       unset($implementations['og']);
     }
   }
+
+  //filefield_paths_filefield_paths_process_file
+  if ($hook == 'filefield_paths_process_file' && isset($implementations['filefield_paths'])) {
+    unset($implementations['filefield_paths']);
+  }
 }
