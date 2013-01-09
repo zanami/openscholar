@@ -24,6 +24,7 @@ dependencies[] = toolbar
 dependencies[] = overlay
 dependencies[] = file
 dependencies[] = rdf
+dependencies[] = dblog
 
 ; Contrib - core
 dependencies[] = ctools
@@ -109,6 +110,7 @@ dependencies[] = diff
 dependencies[] = twitter_pull
 dependencies[] = nice_menus
 dependencies[] = shorten
+dependencies[] = respondjs
 
 files[] = openscholar.profile
 

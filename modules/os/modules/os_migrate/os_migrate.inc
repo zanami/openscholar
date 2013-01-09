@@ -619,11 +619,12 @@ abstract class OSMigration extends Migration {
     for ($i=0, $len=$images->length; $i < $len; $i++) {
       $img = $images->item($i);
       if (isset($img) && strpos($img->getAttribute('src'), $uri)) {
+        $src = $img->getAttribute('src');
         $class = $img->getAttribute('class');
 
         $imagecache_dims = array();
-        if (preg_match('/^imagecache/', $class)) {
-          $imagecache_dims = $this->_get_inline_imagecache_dimensions($img->getAttribute('src'));
+        if (preg_match('/^imagecache/', $class) || strpos($src, 'imagecache')) {
+          $imagecache_dims = $this->_get_inline_imagecache_dimensions($src);
         }
 
         if (($width = $img->getAttribute('width')) && $height = $img->getAttribute('height')) {
@@ -640,7 +641,14 @@ abstract class OSMigration extends Migration {
           $style[] = 'height: ' . $imagecache_dims['height'];
         }
 
-        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $style, $imagecache_dims);
+        $attrs = array();
+        foreach(array('width', 'height', 'class') as $attr) {
+          if (isset($$attr) && $$attr) {
+            $attrs[$attr] = $$attr;
+          }
+        }
+
+        $tag = $this->_os_migrate_inline_tag('image', $entity->fid, $img, $style, $imagecache_dims, $attrs);
         $text = $dom->createTextNode($tag);
         $img->parentNode->replaceChild($text, $img);
         $update = TRUE;
@@ -693,10 +701,14 @@ abstract class OSMigration extends Migration {
       ),
     );
 
+
+    //os_files_ large=600px, xlarge=800px, xxlarge=1000px
     $sizes = array(
       'imagecache-inline_larger' => 'os_files_large',
       'imagecache-inline_default' => 'os_files_large',
-      '' => 'os_files_large',
+      '' => 'os_files_xlarge', //default when no class is present
+      'os-fullbanner' => 'os_files_xxlarge',
+      'os-halfbanner' => 'os_files_xlarge',
     );
 
 
@@ -708,7 +720,7 @@ abstract class OSMigration extends Migration {
         if (isset($sizes[$class])) {
           $tag['view_mode'] = $sizes[$class];
         } else {
-          $tag['view_mode'] = 'os_files_large';
+          $tag['view_mode'] = $sizes[''];
           parent::saveMessage(t('No image cache size for class: @class, assuming original.', array('@class' => $class)), MigrationBase::MESSAGE_INFORMATIONAL);
         }
 
@@ -887,6 +899,87 @@ abstract class OSMigration extends Migration {
     } else {
       return FALSE; //does this ever happen?  nid==0
     }
+  }
+
+  /**
+   * @function _get_destination_path
+   *
+   * Updates the destination path a file will be saved to.  Tries to figure out purl given a d6 entity
+   *
+   * @param string $type
+   *   What type of entity does the id refer to (file, node, etc)
+   * @param int $id
+   *   Id of legacy object.
+   *
+   */
+  public static function _get_destination_path($type, $id) {
+    $cache = drupal_static(__FUNCTION__, array());
+    $key = $type . '::' . $id;
+    if (isset($cache[$key])) {
+      return $cache[$key];
+    }
+
+    //given a type, make a query that joins purl on the group
+    switch ($type) {
+       case 'inline_image':
+        $query = self::d6_db_select('content_field_os_inline_image', 'ct')
+          ->condition('ct.field_os_inline_image_fid', $id);
+        $query->join('node', 'n', 'ct.nid = n.nid');
+        $query->condition('n.nid', $id);
+        $query->join('og_ancestry', 'oga', 'n.nid = oga.nid');
+        $query->join('purl', 'p', 'p.id = oga.group_nid');
+        break;
+
+      case 'inline_file':
+        $query = self::d6_db_select('content_field_os_inline_files', 'ct')
+          ->condition('ct.field_os_inline_files_fid', $id);
+        $query->join('node', 'n', 'ct.nid = n.nid');
+        $query->condition('n.nid', $id);
+        $query->join('og_ancestry', 'oga', 'n.nid = oga.nid');
+        $query->join('purl', 'p', 'p.id = oga.group_nid');
+        break;
+
+      case 'node':
+        $query = self::d6_db_select('node', 'n')
+          ->condition('n.nid', $id);
+        $query->join('og_ancestry', 'oga', 'n.nid = oga.nid');
+        $query->join('purl', 'p', 'p.id = oga.group_nid');
+        break;
+
+      case 'file':
+        $query = self::d6_db_select('upload', 'u')
+          ->condition('u.fid', $id);
+        //lets start with upload.  might have to add an additional tables param if this isn't enoug hfor inline
+
+        $query->join('node', 'n', 'u.nid = n.nid');
+        $query->join('og_ancestry', 'oga', 'n.nid = oga.nid');
+        $query->join('purl', 'p', 'p.id = oga.group_nid');
+        break;
+
+      case 'og':
+        $query = self::d6_db_select('purl', 'p')
+          ->condition('id', $id);
+        break;
+
+      default:
+        $cache[$key] = FALSE;
+        return FALSE;
+    }
+
+    //now that we have node, getting the purl value is easy.
+    $query->condition('p.provider', 'spaces_og');
+    $query->fields('p', array('value'));
+    $result = $query->execute();
+
+    if ($result->rowCount()) {
+      $purl = $result->fetchField();
+      $return = ($purl) ? 'public://' . $purl . '/files' : 'public://';
+    } else {
+      $return = FALSE;
+    }
+
+    $cache[$key] = $return;
+    return $return;
   }
 }
 

@@ -20,11 +20,4 @@ files[] = message.test
 files[] = includes/views/message.views.inc
 files[] = includes/views/handlers/message_handler_field_message_render.inc
 files[] = includes/views/handlers/message_handler_filter_message_type.inc
-
-
-; Information added by drupal.org packaging script on 2012-08-10
-version = "7.x-1.5"
-core = "7.x"
-project = "message"
-datestamp = "1344628929"
-
+files[] = includes/views/handlers/message_handler_filter_message_type_category.inc

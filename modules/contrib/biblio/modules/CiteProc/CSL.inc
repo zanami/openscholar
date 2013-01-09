@@ -841,6 +841,9 @@ class csl_names extends csl_format {
             $data->{$var}['variable'] = $var;
           }
           $text .= $element->render($authors, $mode);
+          // String replace the weird spacing with " ,"
+          $text = str_replace(" ,", ",", $text);
+          $text = rtrim($text);
         }
       }
       if (!empty($text)) $variable_parts[] = $text;
@@ -1012,7 +1015,8 @@ class csl_number extends csl_format {
 
     switch ($this->form) {
       case 'ordinal':
-        $text = $this->ordinal($data->$var);
+        $stripped_num = $this->strip_letters($data->$var);
+        $text = $this->ordinal($stripped_num);
         break;
       case 'long-ordinal':
         $text = $this->long_ordinal($data->$var);
@@ -1026,6 +1030,11 @@ class csl_number extends csl_format {
         break;
     }
     return $this->format($text);
+  }
+
+  // Some people will enter the ordinal suffix of their edition which then doubles the suffix, strip out the non-numerials.
+  function strip_letters($num) {
+  	return $num = preg_match('/\d/', $num) > 0 ? preg_replace("/[^0-9]/","",$num) : $num;
   }
 
   function ordinal($num) {
@@ -1119,6 +1128,16 @@ class csl_text extends csl_format {
       case 'macro':
         $macro = $this->var;
         $text = $this->citeproc->render_macro($macro, $data, $mode); //trigger the macro process
+        // If the user left the "author" field blank, don't print 'Anon.' or anything.
+        if($macro == 'author' || $macro == 'anon') {
+          if($text == 'Anon.') {
+          	$text = '';
+          }
+        }
+        // We don't want to display any urls in the citation.
+        if($macro == 'access') {
+          $text = '';
+        }
         break;
       case 'term':
         $form = (($form = $this->form)) ? $form : '';

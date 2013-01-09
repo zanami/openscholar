@@ -418,9 +418,14 @@ abstract class RestWSBaseFormat implements RestWSFormatInterface {
 function restws_property_access_filter($wrapper) {
   $filtered = array();
   foreach ($wrapper as $name => $property) {
-    if ($property->access('view')) {
-      $filtered[$name] = $property;
+    try {
+      if ($property->access('view')) {
+        $filtered[$name] = $property;
+      }
     }
+    // Some properties like entity_metadata_book_get_properties() throw
+    // exceptions, so we catch them here and ignore the property (deny access).
+    catch (EntityMetadataWrapperException $e) {}
   }
   return $filtered;
 }

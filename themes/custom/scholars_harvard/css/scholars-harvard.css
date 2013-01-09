@@ -98,6 +98,8 @@ p.copy a.poweredby {
 
 /* Specific Content Classes */
 
+.front .more-link {display:none;}
+
 .os-topheadings {
 	color:#FFF;
 	font-size:13px;

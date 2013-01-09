@@ -31,9 +31,10 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
     $this->addFieldMapping('field_site_logo:cropbox_width', 'field_site_logo:cropbox_width');//->defaultValue(200);
     $this->addFieldMapping('field_site_logo:cropbox_height', 'field_site_logo:cropbox_height');//->defaultValue(150);
 
-    $this->addUnmigratedDestinations(parent::subfields('field_site_logo', array('file_class', 'destination_dir', 'file_replace', 'preserve_files')), t('DNM'));
+    $this->addUnmigratedDestinations(parent::subfields('field_site_logo', array('file_class', 'file_replace', 'preserve_files')), t('DNM'));
     $this->addFieldMapping('field_site_logo:source_dir')->defaultValue(variable_get('os_migrate_files', ''));
     $this->addFieldMapping('field_site_logo:destination_file', 'field_site_logo:destination_file');
+    $this->addFieldMapping('field_site_logo:destination_dir', 'field_site_logo:destination_dir');
 
     //field_group_path
     $this->addSimpleMappings(array('field_group_path', 'field_group_path:attributes'));
@@ -104,7 +105,11 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
 
      if (isset($row->$field_vsite_logo_fid)) {
        $file = parent::get_file_by_fid($row->$field_vsite_logo_fid);
-       $row->{'field_site_logo:destination_file'} = $file->filepath;
+       list($dest_dir, $dest_file) = parent::_migrate_filename($file->filepath);
+       //$row->{'field_site_logo:destination_file'} = $file->filepath;
+       $row->{'field_site_logo:destination_file'} = $dest_file;
+       $filepath = parent::_get_destination_path('og', $row->nid); //this is vsite.  nid is the group nid.
+       $row->{'field_site_logo:destination_dir'} = ($filepath) ? $filepath : $dest_dir;
 
        //if we have crop data and the original image still exists, use that instead of the pre-cropped image.
 //        $original_file = $file->filepath . '.crop_display.jpg';
@@ -171,6 +176,20 @@ class VsiteNodeOSMigration extends AbstractNodeOSMigration {
          'provider' => $current_row->provider,
          'id' => $current_row->nid,
      );
+
+     //set private site
+     if (module_exists('vsite_access')) {
+       $privacy = parent::d6_db_select('spaces_overrides', 'so')
+         ->condition('id', $entity->nid)
+         ->condition('object_id', 'vsite_private')
+         ->fields('so', array('value'))
+         ->execute()
+         ->fetchField();
+
+       if ($privacy && (unserialize($privacy)==1)) {
+         $entity->group_access[LANGUAGE_NONE][0]['value'] = 1;
+       }
+     }
    }
 
 

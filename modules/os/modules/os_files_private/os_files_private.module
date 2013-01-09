@@ -138,7 +138,7 @@ function os_files_private_cp_settings() {
     ),
     'submit' => array('os_files_private_cp_settings_submit'),
   );
-        
+
   return $settings;
 }
 
@@ -155,7 +155,7 @@ function os_files_private_cp_settings_submit(&$form, &$form_state) {
  * Serve public files from a vsite directory.
  */
 function os_files_private_file_download($uri) {
-//  global $user;
+  //  global $user;
   $file = array();
   $restrict_mode = variable_get('os_files_private_restrict_mode');
   $query = new EntityFieldQuery;

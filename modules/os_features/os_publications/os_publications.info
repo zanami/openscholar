@@ -53,6 +53,7 @@ features[user_permission][] = delete any biblio content
 features[user_permission][] = delete own biblio content
 features[user_permission][] = edit any biblio content
 features[user_permission][] = edit own biblio content
+features[user_permission][] = view full text
 features[variable][] = biblio_author_links
 features[variable][] = biblio_base
 features[variable][] = biblio_base_title

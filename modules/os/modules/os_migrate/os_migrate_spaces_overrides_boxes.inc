@@ -297,10 +297,10 @@ EOF;
       $filepath = $src . $file;
       if ($fh = @fopen($filepath, 'r')) {
         if ($saved = file_save_data($fh, $dest.'/'.$file)) {
-          $shield_info[$saved->filename]['hidden'] = $info['hidden'];
-          $shield_info[$saved->filename]['default'] = $info['default'];
+          $shield_info[$saved->filename]['hidden'] = isset($info['hidden']) ? $info['hidden'] : FALSE;
+          $shield_info[$saved->filename]['default'] = isset($info['default']) ? $info['default']: FALSE;
           $shield_info[$saved->filename]['fid'] = $saved->fid;
-          if ($info['default']) {
+          if (isset($info['default']) && $info['default']) {
             variable_set('os_shields_shield', $saved->filename);
           }
         }
@@ -429,10 +429,10 @@ EOF;
          $box->title = $title;
      	 }
      	 $box->options['vocabulary'] = $vocab;
-     	 $return[$id] = $box;
+     	 $return[$id] = clone $box;
      }
 
-     return $return;
+     return array_reverse($return);
    }
 }
 
@@ -468,6 +468,7 @@ class BoxPorter {
       'os_boxes_modal_siteinfo' => 'os_boxes_siteinfo', //needs pulling from orig vsite
       'vsite_taxonomy_fbt' => 'os_taxonomy_fbt',
       'os_boxes_curr_toc' => 'os_boxes_booktoc', //needs an option added
+      'views-os_blog_block_1' => 'views-os_blog_block',
       //'os_boxes_pub_typ_list' => 'os_boxes_pub_type',
     );
 
@@ -618,13 +619,22 @@ class BoxPorter {
       ->execute()
       ->fetchAssoc();
 
+    //get caption
+    $caption = OSMigration::d6_db_select('node_revisions', 'nr')
+      ->condition('nid', $box->options['nid'])
+      ->fields('nr', array('body'))
+      ->execute()
+      ->fetchField();
+
     if ($fid && ($file = file_load($fid))) {
       //migrate_map_modalimagenodeos.  sourceid1 = d6 nid.  destid1 = media id.
 
+      $data = unserialize($image_info['field_modal_image_data']);
       $image_vars = array(
         'path' => $file->uri,
-        'width' => $image_info['field_modal_image_size_value'],
-        //'height',
+        //'width' => $image_info['field_modal_image_size_value'],
+        'height' => $data['crop']['height'],
+        'width' => $data['crop']['width'],
         'alt' => $box->description,
         'title' => $box->title,
         'attributes' => array(),
@@ -633,6 +643,10 @@ class BoxPorter {
       $img_html = theme_image($image_vars);
       if (isset($image_info['field_link_from_image_url'])) {
         $img_html = l($img_html, $image_info['field_link_from_image_url'], array('html' => TRUE));
+      }
+
+      if ($caption) {
+        $img_html .= $caption;
       }
 
       //modal image should have a separate content type migration.  lets use that for moving the image.
@@ -667,6 +681,10 @@ class BoxPorter {
     $format = $this->_update_format($box->options['format']);
 
     unset($box->options['body'], $box->options['format']);
+
+    if ($this->migration->is_domain('http://projects.iq.harvard.edu') && $box->delta == 'og-6235-4802691a') {
+      $format = 'full_html'; //iqss' events this week box
+    }
 
     $box->options = array('text' => array(
       'value' => check_markup($body, $format),
@@ -891,8 +909,15 @@ class BoxPorter {
     }
     $options['biblio_show_all'] = TRUE;
     $options['biblio_whitelist'] = array();
-    $box->options = $options;
 
+
+    //more link.  announcements is non-existent
+    $link_update = array('announcements' => 'news', 'images' => 'galleries');
+    if (isset($link_update[$box->options['more_link']])) {
+      $options['more_link'] = $link_update[$box->options['more_link']];
+    }
+
+    $box->options = $options;
     return $box;
   }
 
@@ -941,7 +966,7 @@ class BoxPorter {
      $box->options['depth'] = isset($box->options['tree_max_depth'])?($box->options['tree_max_depth'] - 1):0;
      $box->options['show_childs'] = isset($box->options['show_tree'])?$box->options['show_tree']:false;
      //Don't show count by default
-     $box->options['show_count'] = isset($box->options['show_count'])?$box->options['show_count']:0;
+     $box->options['show_count'] = isset($box->options['show_count'])?$box->options['show_count']:1;
 
      //New Default
      if(!isset($box->options['behavior']) || $box->options['behavior'] != 'contextual'){
@@ -1009,7 +1034,18 @@ class BoxPorter {
     }
   }
 
+  //recent images -> sv list
   public function _port_box_os_boxes_gallery($box, $id, $key_only) {
+    $key = 'os_sv_list_box';
+    if ($key_only) {
+      return $key;
+    }
+
+    $box->options['filter'] = 'image';
+    return $this->_port_box_os_boxes_sv_list($box, $id, $key_only);
+  }
+
+  public function _port_box_os_boxes_slideshow($box, $id, $key_only) {
     $key = 'os_boxes_slideshow';
     if ($key_only) {
       return $key;
@@ -1026,6 +1062,7 @@ class BoxPorter {
     );
 
     $box->options = array_merge($defaults, $box->options);
+    $box->options['style'] = ($box->options['style'] == '_light') ? 'light' : 'dark'; //in d6 '' => dark and dark was default as well
 
     $box->options['gallery_nid'] = $box->options['gallery'];
     unset($box->options['gallery']);
@@ -1039,9 +1076,9 @@ class BoxPorter {
   }
 
   //slideshows get the same treatment as galleries.  gain options in form.
-  public function _port_box_os_boxes_slideshow($box, $id, $key_only) {
-    return $this->_port_box_os_boxes_gallery($box, $id, $key_only);
-  }
+//   public function _port_box_os_boxes_slideshow($box, $id, $key_only) {
+//     return $this->_port_box_os_boxes_gallery($box, $id, $key_only);
+//   }
 
 
   //convert os_boxes_node to custom html.  102 in db
@@ -1051,6 +1088,7 @@ class BoxPorter {
     }
 
     $body = '';
+    $box->plugin_key = 'os_boxes_html';
 
     $nid = $box->options['nid'];
     $teaser = $box->options['teaser'];
@@ -1069,11 +1107,15 @@ class BoxPorter {
 
     //if nodes are already migrated, render new node.
     if ($node = node_load($nid)) {
-      if(!$show_title){
+      if (!$show_title){
         $node->title = '';
       }
       $build = node_view($node, $teaser);
       unset($build['#contextual_links']); //don't hardcode the admin links into the html box...
+
+      if (isset($build['links']) && isset($build['links']['node']) && isset($build['links']['node']['#links']) && isset($build['links']['node']['#links']['node-readmore'])) {
+        unset($build['links']['node']['#links']['node-readmore']); //don't add readmore text.  it wasn't in d6
+      }
 
       //swap html back out for media tags
       $matches = array();
@@ -1089,8 +1131,6 @@ class BoxPorter {
 
       $body = drupal_render($build);
       //$format = 1; //make sure to use filtered html later
-
-
 
     } else {
       //if they haven't migrated, fetch the old node's body
@@ -1120,7 +1160,6 @@ class BoxPorter {
     list($body, $biblio_fix) = $this->_port_box_os_boxes_node_biblio_fix($nid, $body);
 
     if ($body) {
-      $box->plugin_key = 'os_boxes_html';
       $box->options = array('text'=>array(
         'value' => $body,
         'format' => ($biblio_fix || $jc_fix) ? 'full_html' : 'filtered_html',

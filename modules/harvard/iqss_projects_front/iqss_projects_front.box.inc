@@ -202,8 +202,8 @@ function iqss_projects_front_navblock_content() {
 	);
   }
 
-  $txt = 'Need a Site for a Project?';
-  $url = 'http://projects.iq.harvard.edu';
+  $txt = 'Need a Personal Site?';
+  $url = 'http://scholar.harvard.edu/';
   $mode = variable_get('openscholar_installation_mode', 'scholar');
 
   if ($mode == 'project'){

@@ -86,7 +86,6 @@ features[user_permission][] = create boxes
 features[user_permission][] = create url aliases
 features[user_permission][] = delete boxes
 features[user_permission][] = delete revisions
-features[user_permission][] = edit all regions
 features[user_permission][] = edit file
 features[user_permission][] = import media
 features[user_permission][] = manage features

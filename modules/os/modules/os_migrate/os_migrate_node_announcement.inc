@@ -62,8 +62,9 @@ class AnnouncementNodeOSMigration extends AbstractNodeOSMigration {
       //$row->{'field_photo:destination_file'} = $photo['filepath'];
 
       if (list($path, $name) = $this->_migrate_filename($photo['filepath'])) {
+        $filepath = parent::_get_destination_path('node', $row->nid);
         $row->{'field_photo:filename'} = $name;
-        $row->{'field_photo:destination_dir'} = 'public://' . $path;
+        $row->{'field_photo:destination_dir'} = ($filepath) ? $filepath : 'public://' . $path;
         $row->field_photo = $path . '/' . $name;
       }
     }

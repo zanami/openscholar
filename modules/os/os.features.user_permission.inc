@@ -406,15 +406,6 @@ function os_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: edit all regions.
-  $permissions['edit all regions'] = array(
-    'name' => 'edit all regions',
-    'roles' => array(
-      0 => 'authenticated user',
-    ),
-    'module' => 'os',
-  );
-
   // Exported permission: edit file.
   $permissions['edit file'] = array(
     'name' => 'edit file',

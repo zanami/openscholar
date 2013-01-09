@@ -51,6 +51,9 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
           '#markup' => $l['link_title'],
           '#description' => l($url, $url)
         ),
+        'delete_link' => array(
+          '#markup' => ctools_modal_text_button('Delete Link', 'cp/build/' . $l['mlid'] . '/delete/nojs/', '')
+        ),
         'edit_link' => array(
           '#markup' => ctools_modal_text_button('Edit Link', 'cp/build/' . $l['mlid'] . '/edit/nojs/', '')
         ),
@@ -155,6 +158,7 @@ function theme_cp_menu_table($variables){
   $headers = array(
       t('Title'),
       t('Edit'),
+      t('Delete'),
       t('Menu'),
       t('Weight')
   );
@@ -175,7 +179,7 @@ function theme_cp_menu_table($variables){
       'data' => array(
         array(
           'data' => $menus[$d] . drupal_render($table_data[$d]['menu-name']).' '.ctools_modal_text_button('<sub>'.(in_array($d,$revert)?'Reset':'Remove').'</sub>', 'cp/build/menu/nojs/remove/'.$d, 'Remove'),
-          'colspan' => 2,
+          'colspan' => 3,
         ),
         array(
           //'data' => ctools_modal_text_button('Add New Link', 'cp/menu/nojs/new/'.$d, 'Add New Link'),
@@ -201,6 +205,7 @@ function theme_cp_menu_table($variables){
             'size' => $l['#depth'] - 1
           )) . drupal_render($l['title']),
           drupal_render($l['edit_link']),
+          drupal_render($l['delete_link']),
           drupal_render($l['menu']),
           drupal_render($l['weight']) . drupal_render($l['plid']) . drupal_render($l['mlid'])
         ),
@@ -213,7 +218,7 @@ function theme_cp_menu_table($variables){
       'data' => array(
         array(
           'data' => 'This menu has no links.',
-          'colspan' => 4
+          'colspan' => count($headers),
           )
       ),
       'class' => array(

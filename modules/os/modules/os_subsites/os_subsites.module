@@ -2,7 +2,7 @@
 
 include_once 'os_subsites.features.inc';
 
-function os_subsite_permission() {
+function os_subsites_permission() {
   $items = array();
 
   $items['create subsites'] = array(
