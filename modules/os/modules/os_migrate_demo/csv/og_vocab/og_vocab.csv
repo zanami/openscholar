@@ -1,4 +1,5 @@
-ID,Gid,Vid,Required,Cardinality,Widget
-ogVocab1,1,1,1,-1,options
-ogVocab2,1,1,0,1,entityreference_autocomplete
-ogVocab3,1,1,0,3,entityreference_autocomplete_tags
+ID,Site,Vocabulary,Required,Cardinality,Widget
+ogVocab1,personal1,authors,1,-1,options
+ogVocab2,personal1,biology,0,1,entityreference_autocomplete
+ogVocab3,personal1,math,0,2,entityreference_autocomplete_tags
+ogVocab4,personal1,science,0,-1,entityreference_autocomplete_tags

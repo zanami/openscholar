@@ -108,7 +108,7 @@ function os_biocv_process_node(&$vars) {
     $last_updated = format_date($vars['changed'], 'custom', 'F j, Y');
     $vars['title_suffix'] = '<p class="submitted">' . t('(Last updated: @time)', array('@time' => $last_updated)) . '</p>';
   }
-  elseif ($vars['type'] == 'bio') {
+  elseif ($vars['type'] == 'bio' && empty($vars['show_title'])) {
     // hides the title
     $vars['page'] = true;
   }

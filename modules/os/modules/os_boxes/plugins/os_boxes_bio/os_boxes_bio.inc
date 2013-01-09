@@ -75,9 +75,7 @@ class os_boxes_bio extends os_boxes_default {
     // Prepares node with selected view_mode and show_title options.
     $view_mode = ($this->options['teaser'] == 'teaser') ? 'teaser' : 'full';
     $node = node_load($nid);
-    if (isset($this->options['show_title']) && (int)$this->options['show_title'] === 0) {
-      $node->title = '';
-    }
+    $node->show_title = $this->options['show_title'];
 
     $content = render(node_view($node, $view_mode));
     return $content;
