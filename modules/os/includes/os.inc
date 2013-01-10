@@ -57,6 +57,9 @@ function os_get_bundles($include_status = array(1), $space_type = 'og', $reset =
     }
   }
 
+  // Sort the bundles in alphabetical order.
+  sort($bundles);
+
   return $bundles;
 }
 
