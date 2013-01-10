@@ -20,7 +20,7 @@ os[theme_access] = 'private'
 
   
   stylesheets[screen][] = css/hwpi_classic.css
- ; stylesheets[screen][] = css/hwpi_classic.layout.css
+  stylesheets[screen][] = css/hwpi_classic.layout.css
 
 
 
