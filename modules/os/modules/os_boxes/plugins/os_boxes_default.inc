@@ -69,7 +69,11 @@ abstract class os_boxes_default extends boxes_box {
    *   The block object.
    */
   public function cache_set($cid, $block) {
-    $cid = md5(serialize($cid));
+    if (!$og_context = og_context()) {
+      return;
+    }
+
+    $cid = $og_context['gid'] . '_' . md5(serialize($cid));
     cache_set($cid, $block);
   }
 
@@ -85,7 +89,11 @@ abstract class os_boxes_default extends boxes_box {
    *   The block object or FALSE.
    */
   public function cache_get($cid) {
-    $cid = md5(serialize($cid));
+    if (!$og_context = og_context()) {
+      return;
+    }
+
+    $cid = $og_context['gid'] . '_' . md5(serialize($cid));
     $cache = cache_get($cid);
     return !empty($cache->data) ? $cache->data : FALSE;
 

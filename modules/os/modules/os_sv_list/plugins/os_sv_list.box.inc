@@ -303,11 +303,10 @@ class os_sv_list_box extends os_boxes_default {
       $page_num,
     );
 
-    if ($block = cache_get($cid)) {
+    if ($block = $this->cache_get($cid)) {
       // Return cached block.
       return $block;
     }
-
 
     $block = parent::render();
     if (!empty($block['cache'])) {
@@ -365,7 +364,7 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // Set cache.
-    $this::cache_set($cid, $block);
+    $this->cache_set($cid, $block);
     return $block;
 
   }
