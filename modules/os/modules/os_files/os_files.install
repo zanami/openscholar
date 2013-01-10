@@ -12,6 +12,9 @@ function os_files_install() {
   _os_files_clean_up_fields();
 }
 
+/**
+ * Corrects files that are not in the correct directory
+ */
 function os_files_update_7001(&$sandbox) {
 
   // use queries to reduce memory footprint
@@ -26,12 +29,13 @@ function os_files_update_7001(&$sandbox) {
 
   if (!isset($sandbox['progress'])) {
     $sandbox['progress'] = 0;
+    $sandbox['skip'] = 0;
     $sandbox['limit'] = 5;
     $sandbox['max'] = $q->countQuery()->execute()->fetchField();
     $sandbox['warnings'] = array();
   }
 
-  $q->range(0, $sandbox['limit']);
+  $q->range($sandbox['skip'], $sandbox['limit']);
 
   $r = $q->execute();
   $rows = $r->fetchAll(PDO::FETCH_OBJ);
@@ -63,10 +67,18 @@ function os_files_update_7001(&$sandbox) {
           $file->origname = $rf->origname;
 
           $file->uri = $filename;
-          file_save($file);
-          db_delete('file_managed')->condition('fid', $rf->fid)->execute();
+          try {
+            file_save($file);
+            db_delete('file_managed')->condition('fid', $rf->fid)->execute();
+          }
+          catch (PDOException $e) {
+            error_log($e);
+            error_log($e->getTraceAsString());
+            error_log(print_r($file,1));
+          }
         }
         else {
+          $sandbox['skip']++;
           $sandbox['warnings'][] = t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename));
           error_log(t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename)));
           $sandbox['progress']++;
