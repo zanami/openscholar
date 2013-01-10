@@ -102,7 +102,14 @@ function os_files_update_7001(&$sandbox) {
 
     // if the file doesn't already exist
     if ($file->uri != $filename) {
-      $file = @file_move($file, $filename, FILE_EXISTS_REPLACE);
+      try {
+        $file = @file_move($file, $filename, FILE_EXISTS_REPLACE);
+      }
+      catch (PDOException $e) {
+        error_log($e);
+        error_log($e->getTraceAsString());
+        error_log(print_r($file,1));
+      }
       if (!$file) {
         $sandbox['warnings'][] = t('Could not move file @source (@fid) to @dest.', array('@source' => $row->uri, '@fid' => $row->fid, '@dest' => 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension']));
         $sandbox['progress']++;
