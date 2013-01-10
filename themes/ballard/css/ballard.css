@@ -131,6 +131,8 @@ h2 a {color:#666;text-decoration:none;font-weight:normal;margin-bottom:.2em;}
 
 h1#page-title {font-size:1.72em;margin-bottom:.7em;}
 
+.view-os-faq h1.node-title a {color: #293352;text-decoration: underline;}
+
 h3.block-title {color:#666;font-size:1.2em;}
 h3.block-title a {color:#293352;}
 
