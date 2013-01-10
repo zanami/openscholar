@@ -6,6 +6,8 @@ class os_sv_list_box extends os_boxes_default {
    */
   public function options_defaults() {
     $options = parent::options_defaults();
+    $biblio_types = $this->_biblio_types();
+    $biblio_whitelist = array_combine(array_keys($biblio_types), array_keys($biblio_types));
 
     $options += array(
       'content_type' => 'all',
@@ -20,8 +22,7 @@ class os_sv_list_box extends os_boxes_default {
       'vocabs' => array(),
       'terms' => array(),
 
-      'biblio_show_all' => TRUE,
-      'biblio_whitelist' => array('all'=>'all'),
+      'biblio_whitelist' => $biblio_whitelist,
     );
 
     return $options;
@@ -422,7 +423,8 @@ class os_sv_list_box extends os_boxes_default {
 
         $query->join('biblio', 'b', 'n.vid = b.vid');
 
-        if (isset($options['biblio_show_all']) && !$options['biblio_show_all'] && isset($options['biblio_whitelist'])) {
+        //check biblio show all...
+        if (isset($options['biblio_whitelist']) && (count(array_filter($options['biblio_whitelist'])))) {
           $bib_types = array_filter($options['biblio_whitelist']);
           $query->condition('biblio_type', array_values($bib_types), 'IN');
         }
