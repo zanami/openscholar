@@ -29,7 +29,7 @@ function os_files_update_7001(&$sandbox) {
 
   if (!isset($sandbox['progress'])) {
     $sandbox['progress'] = 0;
-    $sandbox['skip'] = 0;
+    $sandbox['skip'] = array();
     $sandbox['limit'] = 5;
     $sandbox['max'] = $q->countQuery()->execute()->fetchField();
     $sandbox['warnings'] = array();
@@ -38,7 +38,8 @@ function os_files_update_7001(&$sandbox) {
   // if a file with the same name exists in the target directory, but does not have the same filesize or mimetype,
   // we can't handle it automatically. It will need to be fixed manually.
   // So we skip it for the time being
-  $q->range($sandbox['skip'], $sandbox['limit']);
+  $q->range(0, $sandbox['limit']);
+  $q->condition('fm.fid', $sandbox['skip'], 'NOT IN');
 
   $r = $q->execute();
   // the Traversable behavior stopped working, so fetchAll as an array
@@ -86,7 +87,7 @@ function os_files_update_7001(&$sandbox) {
         else {
           // no match. A different file with the same name exists. This needs to be handled manually.
           // In the mean time, skip it and continue processing
-          $sandbox['skip']++;
+          $sandbox['skip'][] = $row->fid;
           $sandbox['warnings'][] = t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename));
           error_log(t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename)));
           $sandbox['progress']++;
@@ -95,6 +96,7 @@ function os_files_update_7001(&$sandbox) {
       }
       else {
         error_log('File not found: '.$file->fid.': '.$file->uri);
+        $sandbox['skip'][] = $row->fid;
         $sandbox['progress']++;
         continue;
       }
@@ -107,7 +109,6 @@ function os_files_update_7001(&$sandbox) {
       }
       catch (PDOException $e) {
         error_log($e);
-        error_log($e->getTraceAsString());
         error_log(print_r($file,1));
       }
       if (!$file) {
@@ -153,7 +154,7 @@ function os_files_update_7001(&$sandbox) {
     $sandbox['progress']++;
   }
 
-  error_log(t('Processed @num of @max files. @percent% complete.', array('@num' => $sandbox['progress'], '@max' => $sandbox['max'], '@percent' => floor((($sandbox['progress']/$sandbox['max'])*100)))));
+  error_log(t('Processed @num of @max files. @percent% complete. Last processed: @last', array('@num' => $sandbox['progress'], '@max' => $sandbox['max'], '@last' => $row->fid, '@percent' => floor((($sandbox['progress']/$sandbox['max'])*100)))));
 
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress']/$sandbox['max']);
   if ($sandbox['#finished'] >= 1) {
