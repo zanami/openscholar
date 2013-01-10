@@ -18,33 +18,46 @@ function os_files_install() {
 function os_files_update_7001(&$sandbox) {
 
   // use queries to reduce memory footprint
-  $q = db_select('file_managed', 'fm');
-  $q->join('og_membership', 'ogm', 'ogm.etid = fm.fid AND entity_type = \'file\'');
-  $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
-  $q->fields('fm', array('fid', 'filename', 'uri'))
-    ->fields('p', array('value'))
-    ->where('fm.uri LIKE \'public://%\'')
-    ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
-    ->orderBy('fid');
+    $q = db_select('file_managed', 'fm');
+    $q->join('og_membership', 'ogm', 'ogm.etid = fm.fid AND entity_type = \'file\'');
+    $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
 
   if (!isset($sandbox['progress'])) {
+    $q->fields('fm', array('fid'))
+      ->where('fm.uri LIKE \'public://%\'')
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
+      ->orderBy('fid');
+    $r = $q->execute();
+
+    $fids = $r->fetchAll(PDO::FETCH_OBJ);
+    foreach ($fids as $fid) {
+      $sandbox['dataset'][] = $fid->fid;
+    }
+
     $sandbox['progress'] = 0;
     $sandbox['skip'] = array();
-    $sandbox['limit'] = 5;
-    $sandbox['max'] = $q->countQuery()->execute()->fetchField();
+    $sandbox['limit'] = 10;
+    $sandbox['max'] = count($sandbox['dataset']);
     $sandbox['warnings'] = array();
   }
 
   // if a file with the same name exists in the target directory, but does not have the same filesize or mimetype,
   // we can't handle it automatically. It will need to be fixed manually.
   // So we skip it for the time being
-  $q->range(0, $sandbox['limit']);
-  if (count($sandbox['skip'])) {
-    $q->condition('fm.fid', $sandbox['skip'], 'NOT IN');
-  }
+  //$q->range(0, $sandbox['limit']);
+  //if (count($sandbox['skip'])) {
+  //  $q->condition('fm.fid', $sandbox['skip'], 'NOT IN');
+  //}
 
-  $r = $q->execute();
+  //$r = $q->execute();
   // the Traversable behavior stopped working, so fetchAll as an array
+  //$rows = $r->fetchAll(PDO::FETCH_OBJ);
+
+  $fids = array_slice($sandbox['dataset'], $sandbox['progress'], $sandbox['limit']);
+  $r = $q->fields('fm', array('fid', 'uri'))
+         ->fields('p', array('value'))
+         ->condition('fid', $fids)
+         ->execute();
   $rows = $r->fetchAll(PDO::FETCH_OBJ);
 
   foreach ($rows as $row) {
@@ -82,7 +95,6 @@ function os_files_update_7001(&$sandbox) {
           }
           catch (PDOException $e) {
             error_log($e);
-            error_log($e->getTraceAsString());
             error_log(print_r($file,1));
           }
         }
@@ -114,7 +126,7 @@ function os_files_update_7001(&$sandbox) {
         error_log(print_r($file,1));
       }
       if (!$file) {
-        $sandbox['warnings'][] = t('Could not move file @source (@fid) to @dest.', array('@source' => $row->uri, '@fid' => $row->fid, '@dest' => 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension']));
+        error_log($sandbox['warnings'][] = t('Could not move file @source (@fid) to @dest.', array('@source' => $row->uri, '@fid' => $row->fid, '@dest' => 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension'])));
         $sandbox['progress']++;
         continue;
       }
