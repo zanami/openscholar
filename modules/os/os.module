@@ -1271,7 +1271,6 @@ function os_app_info($app_name = NULL) {
   return empty($app_name) ? $info : $info[$app_name];
 }
 
-
 /**
  * Implements hook_form_BASE_FORM_ID_alter() for user_login form.
  */
@@ -1299,4 +1298,22 @@ function os_user_login_validate($form, &$form_state) {
       form_set_value($form['name'], $name, $form_state);
     }
   }
+}
+
+function os_library() {
+  $l = array();
+
+  $l['os.ajax-fix'] = array(
+    'title' => 'Ajax Termination Fix',
+    'version' => '1.0',
+    'js' => array(
+      drupal_get_path('module', 'os').'/theme/os_ajaxterminate.js' => array('group' => JS_LIBRARY),
+    ),
+  );
+
+  return $l;
+}
+
+function os_library_alter(&$l) {
+  $l['drupal.ajax']['dependencies'][] = array('os', 'os.ajax-fix');
 }
