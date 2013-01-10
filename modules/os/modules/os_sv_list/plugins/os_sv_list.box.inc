@@ -308,11 +308,8 @@ class os_sv_list_box extends os_boxes_default {
       return $block;
     }
 
-    $block = parent::render();
-    if (!empty($block['cache'])) {
-      return $block;
-    }
 
+    $block = parent::render();
     $nids = $this->get_nids($page_num, $page);
     $more_link = FALSE;
 
