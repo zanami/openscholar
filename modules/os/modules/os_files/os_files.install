@@ -39,7 +39,9 @@ function os_files_update_7001(&$sandbox) {
   // we can't handle it automatically. It will need to be fixed manually.
   // So we skip it for the time being
   $q->range(0, $sandbox['limit']);
-  $q->condition('fm.fid', $sandbox['skip'], 'NOT IN');
+  if (count($sandbox['skip'])) {
+    $q->condition('fm.fid', $sandbox['skip'], 'NOT IN');
+  }
 
   $r = $q->execute();
   // the Traversable behavior stopped working, so fetchAll as an array
