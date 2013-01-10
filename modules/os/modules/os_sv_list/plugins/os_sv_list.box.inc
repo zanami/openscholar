@@ -291,25 +291,15 @@ class os_sv_list_box extends os_boxes_default {
     return $form;
   }
   /**
-   * Implements boxes_content::render().
+   * // * Implementation of boxes_content::render().
    */
   public function render() {
+    $block = parent::render();
     $options = $this->options;
     $page_num = isset($_GET['page']) ? $_GET['page'] : 0;
     $page = 0;
 
-    $cid = array(
-      $options,
-      $page_num,
-    );
 
-    if ($block = $this->cache_get($cid)) {
-      // Return cached block.
-      return $block;
-    }
-
-
-    $block = parent::render();
     $nids = $this->get_nids($page_num, $page);
     $more_link = FALSE;
 
@@ -355,14 +345,11 @@ class os_sv_list_box extends os_boxes_default {
 
     if ($block['content']) {
       $block['content'] = '<div id="box-' . $this->delta . '-page" data-page="'.$page_num.'" data-delta="'.$this->delta.'">' . $block['content'] . '</div>' . $pager;
-    }
-    else {
+      return $block;
+    } else {
       $block['title'] = $block['subject'] = '';
+      return $block;
     }
-
-    // Set cache.
-    $this->cache_set($cid, $block);
-    return $block;
 
   }
 
