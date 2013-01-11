@@ -64,7 +64,7 @@ function os_files_update_7001(&$sandbox) {
   $fids = array_slice($sandbox['dataset'], $sandbox['progress'], $sandbox['limit']);
   $union1->fields('fm', array('fid', 'filename', 'uri'))
           ->fields('p', array('id', 'value'))
-          ->condition('fid', $fids);
+          ->condition('fm.fid', $fids);
   $r = $q->fields('fm', array('fid', 'filename', 'uri'))
          ->fields('p', array('id', 'value'))
          ->condition('fm.fid', $fids)
