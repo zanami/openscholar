@@ -97,6 +97,7 @@ function os_files_update_7001(&$sandbox) {
       $to_save = true;
     }
     file_prepare_directory($target_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+    $file_move_type = FILE_EXISTS_REPLACE;
     if (!file_exists($file->uri)) {
       if (file_exists($filename)) {
         // file already exists at target destination
@@ -110,18 +111,24 @@ function os_files_update_7001(&$sandbox) {
 
         // if we find a match, update the in-use file with data from the match
         if ($rf = $qf->fetch(PDO::FETCH_OBJ)) {
-          $file->filename = $rf->filename;
-          $file->timestamp = $rf->timestamp;
-          $file->origname = $rf->origname;
-
-          $file->uri = $filename;
-          try {
-            file_save($file);
-            db_delete('file_managed')->condition('fid', $rf->fid)->execute();
+          if ($file->filename == $rf->filename) {
+            // this is probably a duplicate that is not safe to just delete
+            $file_move_type = FILE_EXISTS_RENAME;
           }
-          catch (PDOException $e) {
-            error_log($e);
-            error_log(print_r($file,1));
+          else {
+            $file->filename = $rf->filename;
+            $file->timestamp = $rf->timestamp;
+            $file->origname = $rf->origname;
+
+            $file->uri = $filename;
+            try {
+              file_save($file);
+              db_delete('file_managed')->condition('fid', $rf->fid)->execute();
+            }
+            catch (PDOException $e) {
+              error_log($e);
+              error_log(print_r($file,1));
+            }
           }
         }
         else {
@@ -152,7 +159,7 @@ function os_files_update_7001(&$sandbox) {
     // if the file doesn't already exist
     if ($file->uri != $filename) {
       try {
-        $file = @file_move($file, $filename, FILE_EXISTS_REPLACE);
+        $file = @file_move($file, $filename, $file_move_type);
       }
       catch (PDOException $e) {
         error_log($e);
@@ -171,6 +178,7 @@ function os_files_update_7001(&$sandbox) {
     // look for nodes that have the old file path in the body
     $q = db_select('file_usage', 'fu')
         ->fields('fu', array('id'))
+        ->fields('fdb', array('revision_id'))
         ->condition('fid', $row->fid)
         ->condition('type', 'node');
         $q->join('field_data_body', 'fdb', 'fdb.entity_id = fu.id');
@@ -193,7 +201,8 @@ function os_files_update_7001(&$sandbox) {
 
       db_update('field_data_body')
         ->fields(array('body_value' => $node->body_value))
-        ->condition('entity_id', $row->fid)
+        ->condition('entity_id', $node->id)
+        ->condition('revision_id', $node->revision_id)
         ->execute();
     }
 
