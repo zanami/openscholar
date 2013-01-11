@@ -22,11 +22,19 @@ function os_files_update_7001(&$sandbox) {
     $q->join('og_membership', 'ogm', 'ogm.etid = fm.fid AND entity_type = \'file\'');
     $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
 
+    $union1 = db_select('file_managed', 'fm');
+    $union1->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'node\'');
+    $union1->join('purl', 'p', 'p.id = fu.id AND provider = \'spaces_og\'');
+
   if (!isset($sandbox['progress'])) {
     $q->fields('fm', array('fid'))
       ->where('fm.uri LIKE \'public://%\'')
       ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
       ->orderBy('fid');
+    $union1->fields('fm', array('fid'))
+      ->where('fm.uri LIKE \'public://%\'')
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
+    $q->union($union1);
     $r = $q->execute();
 
     $fids = $r->fetchAll(PDO::FETCH_OBJ);
@@ -54,9 +62,13 @@ function os_files_update_7001(&$sandbox) {
   //$rows = $r->fetchAll(PDO::FETCH_OBJ);
 
   $fids = array_slice($sandbox['dataset'], $sandbox['progress'], $sandbox['limit']);
+  $union1->fields('fm', array('fid', 'filename', 'uri'))
+          ->fields('p', array('id', 'value'))
+          ->condition('fid', $fids);
   $r = $q->fields('fm', array('fid', 'filename', 'uri'))
-         ->fields('p', array('value'))
+         ->fields('p', array('id', 'value'))
          ->condition('fid', $fids)
+         ->union($union1)
          ->execute();
   $rows = $r->fetchAll(PDO::FETCH_OBJ);
 
@@ -79,6 +91,11 @@ function os_files_update_7001(&$sandbox) {
 
     // change the file's uri
     $file = file_load($row->fid);
+    $to_save = false;
+    if (empty($file->og_group_ref)) {
+      $file->og_group_ref[LANGUAGE_NONE][0]['target_id'] = $row->id;
+      $to_save = true;
+    }
     file_prepare_directory($target_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
     if (!file_exists($file->uri)) {
       if (file_exists($filename)) {
@@ -114,6 +131,10 @@ function os_files_update_7001(&$sandbox) {
           $sandbox['warnings'][] = t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename));
           error_log(t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename)));
           $sandbox['progress']++;
+
+          if ($to_save) {
+            file_save($file);
+          }
           continue;
         }
       }
@@ -123,6 +144,9 @@ function os_files_update_7001(&$sandbox) {
         $sandbox['progress']++;
         continue;
       }
+    }
+    if ($to_save) {
+      file_save($file);
     }
 
     // if the file doesn't already exist
