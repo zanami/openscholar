@@ -18,19 +18,18 @@ function os_files_install() {
 function os_files_update_7001(&$sandbox) {
 
   // use queries to reduce memory footprint
-    $q = db_select('file_managed', 'fm');
-    $q->join('og_membership', 'ogm', 'ogm.etid = fm.fid AND entity_type = \'file\'');
-    $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
+  $q = db_select('file_managed', 'fm');
+  $q->join('og_membership', 'ogm', 'ogm.etid = fm.fid AND entity_type = \'file\'');
+  $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
 
-    $union1 = db_select('file_managed', 'fm');
-    $union1->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'node\'');
-    $union1->join('purl', 'p', 'p.id = fu.id AND provider = \'spaces_og\'');
+  $union1 = db_select('file_managed', 'fm');
+  $union1->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'node\'');
+  $union1->join('purl', 'p', 'p.id = fu.id AND provider = \'spaces_og\'');
 
   if (!isset($sandbox['progress'])) {
     $q->fields('fm', array('fid'))
       ->where('fm.uri LIKE \'public://%\'')
-      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
-      ->orderBy('fid');
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
     $union1->fields('fm', array('fid'))
       ->where('fm.uri LIKE \'public://%\'')
       ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
@@ -41,6 +40,7 @@ function os_files_update_7001(&$sandbox) {
     foreach ($fids as $fid) {
       $sandbox['dataset'][] = $fid->fid;
     }
+    sort($sandbox['dataset']);
 
     $sandbox['progress'] = 0;
     $sandbox['skip'] = array();
