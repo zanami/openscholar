@@ -54,7 +54,7 @@ function os_files_update_7001(&$sandbox) {
   //$rows = $r->fetchAll(PDO::FETCH_OBJ);
 
   $fids = array_slice($sandbox['dataset'], $sandbox['progress'], $sandbox['limit']);
-  $r = $q->fields('fm', array('fid', 'uri'))
+  $r = $q->fields('fm', array('fid', 'filename', 'uri'))
          ->fields('p', array('value'))
          ->condition('fid', $fids)
          ->execute();
