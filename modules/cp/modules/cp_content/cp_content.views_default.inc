@@ -25,6 +25,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['title'] = 'Comments';
   $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['perm'] = 'administer comments';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
@@ -615,10 +616,8 @@ function cp_content_views_default_views() {
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Files';
   $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'role';
-  $handler->display->display_options['access']['role'] = array(
-    5 => '5',
-  );
+  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['perm'] = 'administer files';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['distinct'] = TRUE;
@@ -716,7 +715,6 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['fid_2']['alter']['text'] = 'Delete';
   $handler->display->display_options['fields']['fid_2']['alter']['make_link'] = TRUE;
   $handler->display->display_options['fields']['fid_2']['alter']['path'] = 'file/[fid]/delete';
-  $handler->display->display_options['fields']['fid_2']['alter']['query'] = array('destination' => 'cp/content/files');
   /* Sort criterion: File: Upload date */
   $handler->display->display_options['sorts']['timestamp']['id'] = 'timestamp';
   $handler->display->display_options['sorts']['timestamp']['table'] = 'file_managed';
