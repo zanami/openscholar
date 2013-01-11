@@ -125,7 +125,7 @@ function os_files_private_os_add_new_links_alter(&$links) {
   }
 
   $links['add_new_file'] = array(
-    'title' => t('Add file'),
+    'title' => t('file'),
     'href' => 'file/add',
     'html' => TRUE,
   );
