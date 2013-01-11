@@ -13,7 +13,7 @@ function cp_content_menu() {
     'page callback' => 'cp_content_add_page',
     'title' => 'Add New Content',
     'type' => MENU_NORMAL_ITEM,
-    'access callback' => 'spaces_access_admin',
+    'access callback' => '_node_add_access',
     'file' => 'cp_content.pages.inc',
   );
 
