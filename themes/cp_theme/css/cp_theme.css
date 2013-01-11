@@ -74,6 +74,10 @@ html.js input.form-autocomplete {
   background-position: 100% 8px;  
 }
 
+html.js input.throbbing {
+  background-position: 100% -13px !important;
+}
+
 #block-os-powered-by {
 	float:right;
 	text-align:left;
