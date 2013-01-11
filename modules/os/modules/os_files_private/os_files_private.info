@@ -1,5 +1,0 @@
-name = OpenScholar: Files Private
-description = OpenScholar file handling for private files.
-core = 7.x
-package = OpenScholar
-
