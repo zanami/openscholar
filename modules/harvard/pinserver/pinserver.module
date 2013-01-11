@@ -131,6 +131,7 @@ function pinserver_check_user() {
   $query_params = array();
   if (isset($_GET['redirect'])) {
     $query_params['redirect'] = $_GET['redirect'];
+    drupal_goto(ltrim($query_params['redirect'], '/'));
   }
 
   // Redirects user to landing page set in pinserver configuration page
