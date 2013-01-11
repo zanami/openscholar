@@ -28,7 +28,8 @@ padding-left: 12px;
 
 .content-left.content-right .at-panel .region.region-content-first .region-inner, 
 .content-left.content-right .at-panel .region.region-content-second .region-inner, 
-.content-left.content-right .at-panel .region.region-content-bottom .region-inner  {
+.content-left.content-right .at-panel .region.region-content-bottom .region-inner,
+.sidebar .region-inner  {
     padding-top: 0;
 }
 

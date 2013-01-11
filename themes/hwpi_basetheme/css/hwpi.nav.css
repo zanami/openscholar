@@ -19,13 +19,6 @@
     color:#FFF;
 }
 
- /*
-ul.nice-menu-down .menuparent a:after {
-    content: " " url(../images/menu_down_arrowOff.gif) " ";
-    margin-left: 5px;
-}
-*/
-
 #menu-bar ul.nice-menu .menuparent {
     padding-right: 5px;
 }
@@ -106,3 +99,67 @@ ul.nice-menu ul {
 #branding_footer a, #branding_header a {
 	color:#FFF;
 }
+
+/*Section Nav */
+
+#boxes-box-os_pages_section_nav {
+	border: 1px solid #BFBFBF;
+	border-bottom:none;
+}
+
+.section-nav li.expanded, 
+.section-nav li.collapsed, 
+.section-nav li.leaf {
+    padding: 0;
+}
+
+.section-nav ul.menu {
+margin-bottom: 0;
+}
+
+.section-nav ul.menu li {
+list-style: none;
+background-color: #FFF;
+text-align: left;
+}
+
+.section-nav ul.menu li a {
+display: block;
+text-decoration: none;
+padding: .6em;
+border-bottom:1px solid #ccc;
+}
+
+
+.section-nav a:link, .section-nav a:visited { color: #4384C4; }
+.section-nav a.active { color: #000; }
+
+
+/* Section Nav - Section Heading */
+.section-nav ul.menu li.first.last.expanded.active-trail {
+	background-color: #1E2540;
+
+}
+
+.section-nav ul.menu li.first.last.expanded.active-trail a.active-trail {
+	color:#FFF;
+	background-color: #1E2540;
+}
+
+/* Section Nav - hildren */
+
+
+
+.section-nav ul.menu ul.menu li.first.expanded.active-trail li.first.last.expanded.active-trail a.active-trail {
+    background-color: #4384C4;
+    color: #FFFFFF;
+}
+
+
+
+
+
+
+
+
+
