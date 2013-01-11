@@ -505,6 +505,9 @@ function os_publications_node_delete($node) {
  * @param unknown_type $node
  */
 function _os_publications_clear_cache($node) {
+  //Disable till this is profiled
+  return false;
+
   //Sanity check the passed node
   if($node->type != 'biblio'){
     return;
