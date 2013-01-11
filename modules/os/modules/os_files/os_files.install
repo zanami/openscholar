@@ -18,29 +18,50 @@ function os_files_install() {
 function os_files_update_7001(&$sandbox) {
 
   // use queries to reduce memory footprint
-  $q = db_select('file_managed', 'fm');
-  $q->join('og_membership', 'ogm', 'ogm.etid = fm.fid AND entity_type = \'file\'');
-  $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
-  $q->fields('fm', array('fid', 'filename', 'uri'))
-    ->fields('p', array('value'))
-    ->where('fm.uri LIKE \'public://%\'')
-    ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
-    ->orderBy('fid');
+    $q = db_select('file_managed', 'fm');
+    $q->join('og_membership', 'ogm', 'ogm.etid = fm.fid AND entity_type = \'file\'');
+    $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
 
   if (!isset($sandbox['progress'])) {
+    $q->fields('fm', array('fid'))
+      ->where('fm.uri LIKE \'public://%\'')
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
+      ->orderBy('fid');
+    $r = $q->execute();
+
+    $fids = $r->fetchAll(PDO::FETCH_OBJ);
+    foreach ($fids as $fid) {
+      $sandbox['dataset'][] = $fid->fid;
+    }
+
     $sandbox['progress'] = 0;
-    $sandbox['skip'] = 0;
-    $sandbox['limit'] = 5;
-    $sandbox['max'] = $q->countQuery()->execute()->fetchField();
+    $sandbox['skip'] = array();
+    $sandbox['limit'] = 10;
+    $sandbox['max'] = count($sandbox['dataset']);
     $sandbox['warnings'] = array();
   }
 
-  $q->range($sandbox['skip'], $sandbox['limit']);
+  // if a file with the same name exists in the target directory, but does not have the same filesize or mimetype,
+  // we can't handle it automatically. It will need to be fixed manually.
+  // So we skip it for the time being
+  //$q->range(0, $sandbox['limit']);
+  //if (count($sandbox['skip'])) {
+  //  $q->condition('fm.fid', $sandbox['skip'], 'NOT IN');
+  //}
 
-  $r = $q->execute();
+  //$r = $q->execute();
+  // the Traversable behavior stopped working, so fetchAll as an array
+  //$rows = $r->fetchAll(PDO::FETCH_OBJ);
+
+  $fids = array_slice($sandbox['dataset'], $sandbox['progress'], $sandbox['limit']);
+  $r = $q->fields('fm', array('fid', 'uri'))
+         ->fields('p', array('value'))
+         ->condition('fid', $fids)
+         ->execute();
   $rows = $r->fetchAll(PDO::FETCH_OBJ);
 
   foreach ($rows as $row) {
+    // put together the filename
     $pathinfo = pathinfo($row->uri);
     $matches = array();
     $orig_filename = trim(str_replace('_0.', '', $pathinfo['filename'].'.'), '.');
@@ -61,6 +82,7 @@ function os_files_update_7001(&$sandbox) {
           ->condition('filesize', $file->filesize)
           ->execute();
 
+        // if we find a match, update the in-use file with data from the match
         if ($rf = $qf->fetch(PDO::FETCH_OBJ)) {
           $file->filename = $rf->filename;
           $file->timestamp = $rf->timestamp;
@@ -73,12 +95,13 @@ function os_files_update_7001(&$sandbox) {
           }
           catch (PDOException $e) {
             error_log($e);
-            error_log($e->getTraceAsString());
             error_log(print_r($file,1));
           }
         }
         else {
-          $sandbox['skip']++;
+          // no match. A different file with the same name exists. This needs to be handled manually.
+          // In the mean time, skip it and continue processing
+          $sandbox['skip'][] = $row->fid;
           $sandbox['warnings'][] = t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename));
           error_log(t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename)));
           $sandbox['progress']++;
@@ -87,6 +110,7 @@ function os_files_update_7001(&$sandbox) {
       }
       else {
         error_log('File not found: '.$file->fid.': '.$file->uri);
+        $sandbox['skip'][] = $row->fid;
         $sandbox['progress']++;
         continue;
       }
@@ -94,9 +118,15 @@ function os_files_update_7001(&$sandbox) {
 
     // if the file doesn't already exist
     if ($file->uri != $filename) {
-      $file = @file_move($file, $filename, FILE_EXISTS_REPLACE);
+      try {
+        $file = @file_move($file, $filename, FILE_EXISTS_REPLACE);
+      }
+      catch (PDOException $e) {
+        error_log($e);
+        error_log(print_r($file,1));
+      }
       if (!$file) {
-        $sandbox['warnings'][] = t('Could not move file @source (@fid) to @dest.', array('@source' => $row->uri, '@fid' => $row->fid, '@dest' => 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension']));
+        error_log($sandbox['warnings'][] = t('Could not move file @source (@fid) to @dest.', array('@source' => $row->uri, '@fid' => $row->fid, '@dest' => 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension'])));
         $sandbox['progress']++;
         continue;
       }
@@ -105,6 +135,7 @@ function os_files_update_7001(&$sandbox) {
     // reset the cache to keep memory manageable
     entity_get_controller('file')->resetCache();
 
+    // look for nodes that have the old file path in the body
     $q = db_select('file_usage', 'fu')
         ->fields('fu', array('id'))
         ->condition('fid', $row->fid)
@@ -117,6 +148,8 @@ function os_files_update_7001(&$sandbox) {
     foreach ($nodes as $node) {
       // get all these links
       // they should be replaced by media tags
+      // but media tags aren't that good yet
+      // so just replace the path and add an attribute so we can find them easily later
       if (strlen($node->body_value)) {
         preg_match_all('|<a [^>]*href=\"([^\"]*'.$orig_filename.'[^\"]*)\"[^>]*>(.*)<\/a>|U', $node->body_value, $matches, PREG_SET_ORDER);
         foreach ($matches as $m) {
@@ -134,7 +167,8 @@ function os_files_update_7001(&$sandbox) {
     //error_log('File '.$file->fid.' moved from '.$old_file->uri.' to '.$target_dir);
     $sandbox['progress']++;
   }
-  error_log(t('Processed @num of @max files. @percent% complete.', array('@num' => $sandbox['progress'], '@max' => $sandbox['max'], '@percent' => floor($sandbox['progress']/$sandbox['max'])*100)));
+
+  error_log(t('Processed @num of @max files. @percent% complete. Last processed: @last', array('@num' => $sandbox['progress'], '@max' => $sandbox['max'], '@last' => $row->fid, '@percent' => floor((($sandbox['progress']/$sandbox['max'])*100)))));
 
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress']/$sandbox['max']);
   if ($sandbox['#finished'] >= 1) {

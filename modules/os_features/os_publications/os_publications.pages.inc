@@ -7,8 +7,8 @@ function os_publications_overview() {
   if (count($args) == 0) {
     // get default types the user has selected
     $defaults = variable_get('os_publications_filter_publication_types', array());
-    if (count($defaults)) {
-      $args = array('type', $defaults);
+    if (count(array_filter($defaults))) {
+      $args = array('type', array_filter($defaults));
     }
   }
 
