@@ -52,7 +52,12 @@ ul.nice-menu ul {
 }
 
 ul.menu ul ul {
-    background: #FFFFFF;
+    background: #F0F0EE;
+}
+
+ul.nice-menu ul {
+    border-top: none;
+   
 }
 
 #menu-bar ul.nice-menu .menuparent ul li {
