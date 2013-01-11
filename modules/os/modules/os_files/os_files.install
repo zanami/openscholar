@@ -65,7 +65,15 @@ function os_files_update_7001(&$sandbox) {
     $pathinfo = pathinfo($row->uri);
     $matches = array();
 
-    $orig_filename = trim(str_replace('_0|||', '', $pathinfo['filename'].'|||'), '|');
+    // if the filename is an actual filename, and not a sentence, then it should match the
+    // filename in the uri parameter
+    $filename_info = pathinfo('filename');
+    if (isset($filename_info['extension'])) {
+      $orig_filename = $filename_info['filename'];
+    }
+    else {
+      $orig_filename = trim(str_replace('_0|||', '', $pathinfo['filename'].'|||'), '|');
+    }
     $target_dir = 'public://'.$row->value.'/files/';
     $filename = $target_dir.$orig_filename.'.'.$pathinfo['extension'];
 
