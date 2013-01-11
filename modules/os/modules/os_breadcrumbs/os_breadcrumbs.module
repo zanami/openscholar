@@ -128,7 +128,6 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
   	if($node->type == 'class_material' || $node->type == 'software_release') {
   	  $links = _os_breadcrumbs_build_materials_breadcrumb($node, $content_type);
   	}else {
-
   	  $home_link = array_shift($links);
   	  $node_url = array_key_exists($node->type, $content_type_url) ? $content_type_url[$node->type] : $node->type;
   	  if(array_key_exists($node->type,$content_type)) {
@@ -392,7 +391,7 @@ function _os_breadcrumbs_content_type_url() {
     'class' => 'classes',
     'person' => 'people',
     'event' => 'calendar',
- 	'bilbio' => 'publications',
+ 	'biblio' => 'publications',
  	'link' => 'links',
     'software_project' => 'software',
     'feed' => 'reader',
