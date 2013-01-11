@@ -71,8 +71,9 @@ class os_boxes_manual_list extends os_boxes_default {
       '#type' => 'select',
       '#title' => t('Display Style'),
       '#options' => array(
-          'teasers' => t('List of teasers'),
-          'titles' => t('List of titles')
+        'full' => t('List of full posts'),
+        'teasers' => t('List of teasers'),
+        'titles' => t('List of titles')
       ),
       '#required' => TRUE,
       '#default_value' => $this->options['style']
@@ -98,6 +99,10 @@ class os_boxes_manual_list extends os_boxes_default {
         $node = node_load($n['nid']);
         $links[$n['weight']] = render(node_view($node, 'teaser'));
       }
+      elseif ($this->options['style'] == 'full') {
+        $node = node_load($n['nid']);
+        $links[$n['weight']] = render(node_view($node, 'full'));
+      }
       else {
         $l = array(
           'href' => 'node/'.$n['nid'],
@@ -112,7 +117,7 @@ class os_boxes_manual_list extends os_boxes_default {
       $block['subject'] = '';
       return $block;
     }
-    if ($this->options['style'] == 'teasers') {
+    if ($this->options['style'] == 'teasers' || $this->options['style'] == 'full') {
       $block['content'] = theme('item_list', array('items' => $links, 'attributes' => array('class' => array('featured-links'))));
     }
     else {
@@ -146,7 +151,7 @@ function os_boxes_manual_list_table($element) {
   return $element;
 }
 
-function os_boxes_manual_list_add_new_fields(&$element, &$form_state, &$form) {
+function os_boxes_manual_list_add_new_fields($element, &$form_state, &$form) {
   for ($i=$element['#default_value']; $i < $element['#value']; $i++) {
     $form['options']['nodes'][$i] = array(
       '#attributes' => array('id' => $i),
