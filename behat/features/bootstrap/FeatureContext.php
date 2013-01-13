@@ -367,4 +367,52 @@ class FeatureContext extends DrupalContext {
   public function iSleepFor($sec) {
     sleep($sec);
   }
+
+  /**
+   * @When /^I ask for "([^"]*)" i look for <json>:$/
+   */
+  public function iAskForILookForJson($address, TableNode $table) {
+    // Loading the json output.
+    $this->getSession()->visit($this->locatePath($address));
+
+    // Get the json output and decode it.
+    $json_output = $this->getSession()->getPage()->getContent();
+    $json = json_decode($json_output);
+
+    // Hasing table, and define variables for later.
+    $hash = $table->getRows();
+    $errors = array();
+
+    // Run over the tale and start matching between the values of the JSON and
+    // the user input.
+    foreach ($hash as $i => $table_row) {
+      if (isset($json->{$table_row[0]})) {
+        if ($json->{$table_row[0]} != $table_row[1]) {
+          $error['values'][$table_row[0]] = ' Not equal to ' . $table_row[1];
+        }
+      }
+      else {
+        $error['not_found'][$table_row[0]] = " Dosen't exists.";
+      }
+    }
+
+    // Build the error string if needed.
+    if (!empty($error)) {
+      $string = array();
+
+      if (!empty($error['values'])) {
+        foreach ($error['values'] as $variable => $message) {
+          $string[] = '  ' . $variable . $message;
+        }
+      }
+
+      if (!empty($error['not_found'])) {
+        foreach ($error['not_found'] as $variable => $message) {
+          $string[] = '  ' . $variable . $message;
+        }
+      }
+
+      throw new Exception("Some errors were found:\n" . implode("\n", $string));
+    }
+  }
 }

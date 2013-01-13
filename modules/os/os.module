@@ -970,7 +970,8 @@ function os_url_outbound_alter(&$path, &$options, $original) {
   // Check if the user asked for any RESTWS services.
   foreach (array_keys(restws_get_format_info()) as $format) {
     if (strpos($_GET['q'], $format) !== FALSE) {
-      $menu = menu_get_item();
+      // The user asked for a restws service(json/xml/rdf etc. etc.) - change
+      // the $path to the $_GET['q'] variable.
       $path = $_GET['q'];
       return;
     }
