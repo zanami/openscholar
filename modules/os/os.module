@@ -967,7 +967,15 @@ function os_system_info_alter(&$info, $file, $type) {
 function os_url_outbound_alter(&$path, &$options, $original) {
   global $user;
 
-  // Pages to add a destination return to their links.
+  // Check if the user asked for any RESTWS services.
+  foreach (array_keys(restws_get_format_info()) as $format) {
+    if (strpos($_GET['q'], $format) !== FALSE) {
+      $menu = menu_get_item();
+      $path = $_GET['q'];
+      return;
+    }
+  }
+
   $loop_back_pages = array(
     'user',
     'user/logout',
