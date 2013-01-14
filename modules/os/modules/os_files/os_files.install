@@ -138,28 +138,17 @@ function os_files_update_7001(&$sandbox) {
           }
         }
         else {
-          // no match. A different file with the same name exists. This needs to be handled manually.
-          // In the mean time, skip it and continue processing
-          $sandbox['skip'][] = $row->fid;
-          $sandbox['warnings'][] = t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename));
-          error_log(t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename)));
-          $sandbox['progress']++;
-
-          if ($to_save) {
-            file_save($file);
-          }
-          continue;
+          // same name, different file. Rename it
+          $file_move_type = FILE_EXISTS_RENAME;
         }
       }
       else {
+        // Original file not found. We have nothing to move
         error_log('File not found: '.$file->fid.': '.$file->uri);
         $sandbox['skip'][] = $row->fid;
         $sandbox['progress']++;
         continue;
       }
-    }
-    if ($to_save) {
-      file_save($file);
     }
 
     // if the file doesn't already exist
@@ -177,6 +166,9 @@ function os_files_update_7001(&$sandbox) {
         $sandbox['progress']++;
         continue;
       }
+    }
+    elseif ($to_save) {
+      file_save($file);
     }
 
     // reset the cache to keep memory manageable
