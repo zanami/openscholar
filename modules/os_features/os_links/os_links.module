@@ -35,9 +35,13 @@ function os_links_process_node(&$vars) {
   }
 
   // Changes the title URL destination from node alias to link field URL.
-  $field_name       = 'field_links_link';
-  $items            = field_get_items('node', $vars['node'], $field_name);
-  $vars['node_url'] = $items[0]['url'];
+  $field_name = 'field_links_link';
+  $items = field_get_items('node', $vars['node'], $field_name);
+  // Build the URL, including any url queries & fragments.
+  $vars['node_url'] = url($items[0]['url'], array('query' => isset($items[0]['query']) ? $items[0]['query'] : NULL,
+    'fragment' => isset($items[0]['fragment']) ? $items[0]['fragment'] : NULL
+    )
+  );
 }
 
 /**

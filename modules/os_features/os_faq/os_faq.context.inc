@@ -26,18 +26,18 @@ function os_faq_context_default_contexts() {
         'faq' => 'faq',
       ),
     ),
-    'path' => array(
-      'values' => array(
-        'faq' => 'faq',
-        'faq/*' => 'faq/*',
-      ),
-    ),
     'node' => array(
       'values' => array(
         'faq' => 'faq',
       ),
       'options' => array(
         'node_form' => '0',
+      ),
+    ),
+    'path' => array(
+      'values' => array(
+        'faq' => 'faq',
+        'faq/*' => 'faq/*',
       ),
     ),
     'views' => array(

@@ -65,6 +65,10 @@ font-family: helvetica,arial,sans-serif;
     bottom: -24px;
 }
 
+#block-os-powered-by span a, .os-powered-link a.os-poweredby {
+    background: url("/profiles/openscholar/themes/os_basetheme/images/poweredby.png") no-repeat scroll 0 -25px transparent;
+}
+
  #block-os-login {
     bottom: 5px;
 }
