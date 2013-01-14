@@ -1,4 +1,14 @@
+#main-content {
+    margin-left: 0;
+}
+
+#footer {
+    margin-bottom: -28px;
+}
+
+
 /*Typography */
+
 body {
     font-family: Arial;
     font-style: normal;
@@ -8,6 +18,27 @@ body {
 }
 
 a {color: #4384C4;}
+
+#footer #block-os-login a {
+    background: url('../images/readmore_arrow.gif') no-repeat right center;
+  	box-shadow: none;
+    color: #4384C4;
+    float: left;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 18px;
+    padding: 1px 11px 0 18px;
+    text-decoration: none;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
+    border-left:1px solid #ccc;
+}
+
+.more-link {
+    background: url('../images/readmore_arrow.gif') no-repeat right center;
+    padding-right: 11px;
+    font-style: normal;
+}
 
 
 .breadcrumb,

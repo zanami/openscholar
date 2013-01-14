@@ -71,7 +71,7 @@ ul.nice-menu ul {
 
 
 
-
+/* Action Nav Header 3rd*/
 .region-header-third #block-os-action-menu {
 	float:right;
 }
@@ -99,6 +99,26 @@ ul.nice-menu ul {
 #branding_footer a, #branding_header a {
 	color:#FFF;
 }
+
+/* Footer Quicklinks Nav */
+#footer ul.menu,
+#footer ul
+ {
+	margin-left:0;
+}
+
+
+#footer ul.menu li.menuparent {
+	float:left;
+	display:inline;
+	clear: none;
+	margin-right:95px;
+    font-size:12px;
+    text-transform: uppercase;
+}
+
+
+
 
 /*Section Nav */
 
@@ -146,7 +166,7 @@ border-bottom:1px solid #ccc;
 	background-color: #1E2540;
 }
 
-/* Section Nav - hildren */
+/* Section Nav - Children */
 
 
 
