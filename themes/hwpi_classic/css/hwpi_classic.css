@@ -47,8 +47,8 @@ h2.block-title {
      font-size: 16px;
 }
 
-.not-front #content-column .content-inner {
-	border-right:1px solid #ccc
+.not-front .two-sidebars #content-column .content-inner {
+	border-right:1px solid #ccc;
 }
 
 
