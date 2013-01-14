@@ -79,7 +79,7 @@ function os_files_update_7001(&$sandbox) {
 
     // if the filename is an actual filename, and not a sentence, then it should match the
     // filename in the uri parameter
-    $filename_info = pathinfo('filename');
+    $filename_info = pathinfo($row->filename);
     if (isset($filename_info['extension'])) {
       $orig_filename = $filename_info['filename'];
     }
