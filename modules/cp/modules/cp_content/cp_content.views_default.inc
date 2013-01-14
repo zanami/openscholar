@@ -715,6 +715,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['fid_2']['alter']['text'] = 'Delete';
   $handler->display->display_options['fields']['fid_2']['alter']['make_link'] = TRUE;
   $handler->display->display_options['fields']['fid_2']['alter']['path'] = 'file/[fid]/delete';
+  $handler->display->display_options['fields']['fid_2']['alter']['query'] = array('destination' => 'cp/content/files');
   /* Sort criterion: File: Upload date */
   $handler->display->display_options['sorts']['timestamp']['id'] = 'timestamp';
   $handler->display->display_options['sorts']['timestamp']['table'] = 'file_managed';
