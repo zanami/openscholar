@@ -4,5 +4,5 @@ Feature:
   @api
   Scenario: Verify for the json output for a specific node.
     Given I visit "node/1.json"
-     Then I verify the json format <json>:
+     Then I should see the following <json>:
           | title | John |

@@ -367,11 +367,10 @@ class FeatureContext extends DrupalContext {
   public function iSleepFor($sec) {
     sleep($sec);
   }
-
   /**
-   * @Then /^I verify the json format <json>:$/
+   * @Then /^I should see the following <json>:$/
    */
-  public function iVerifyTheJsonFormatJson(TableNode $table) {
+  public function iShouldSeeTheFollowingJson(TableNode $table) {
     // Get the json output and decode it.
     $json_output = $this->getSession()->getPage()->getContent();
     $json = json_decode($json_output);
