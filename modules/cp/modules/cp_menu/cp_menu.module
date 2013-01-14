@@ -226,13 +226,15 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
     $form['os_menu']['link']['description']['#default_value'] =
     (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
     
-    //new window and tooltips are only available when cp_menu_show_extra_link_options is enabled
-    if (variable_get('cp_menu_link_options_new_window', FALSE)) {
-      $form['os_menu']['link']['new_window'] = array(
+    $form['os_menu']['link']['new_window'] = array(
         '#type' => 'checkbox',
         '#title' => t('Open Link in New Window'),
         '#default_value' => 0,
-      );
+    );
+        
+    //new window and tooltips are only available when cp_menu_show_extra_link_options is enabled
+    if (!variable_get('cp_menu_link_options_new_window', FALSE)) {
+      $form['os_menu']['link']['new_window']['#type'] = 'hidden';
     } 
     
     if (!variable_get('cp_menu_link_options_tooltip', FALSE)) { 
