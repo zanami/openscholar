@@ -369,15 +369,13 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
-   * @When /^I ask for "([^"]*)" i look for <json>:$/
+   * @Then /^I verify the json format <json>:$/
    */
-  public function iAskForILookForJson($address, TableNode $table) {
-    // Loading the json output.
-    $this->getSession()->visit($this->locatePath($address));
-
+  public function iVerifyTheJsonFormatJson(TableNode $table) {
     // Get the json output and decode it.
     $json_output = $this->getSession()->getPage()->getContent();
     $json = json_decode($json_output);
+
 
     // Hasing table, and define variables for later.
     $hash = $table->getRows();
