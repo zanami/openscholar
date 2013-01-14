@@ -264,6 +264,26 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
   );*/
 }
 
+function os_pages_form_cp_layout_full_form_alter(&$form, &$form_state) {
+  $continue = false;
+  foreach ($form['context']['#value'] as $c) {
+    if (strpos($c, 'os_pages-page-') !== FALSE) {
+      $continue = true;
+    }
+  }
+  if (!$continue) return;
+
+  if (isset($form['layout']['#attributes'])) {
+    $layout_attr = &$form['layout']['#attributes'];
+    if (!in_array('content-regions', $layout_attr['class'])) {
+      $layout_attr['class'][] = 'content-regions';
+    }
+  }
+  else {
+    $form['layout']['#attributes']['class'][] = 'content-regions';
+  }
+}
+
 /**
  * Form after_build callback for node_form.
  *
