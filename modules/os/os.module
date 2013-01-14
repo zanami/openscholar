@@ -968,12 +968,14 @@ function os_url_outbound_alter(&$path, &$options, $original) {
   global $user;
 
   // Check if the user asked for any RESTWS services.
-  foreach (array_keys(restws_get_format_info()) as $format) {
-    if (strpos($_GET['q'], $format) !== FALSE) {
-      // The user asked for a restws service(json/xml/rdf etc. etc.) - change
-      // the $path to the $_GET['q'] variable.
-      $path = $_GET['q'];
-      return;
+  if (module_exists('restws')) {
+    foreach (array_keys(restws_get_format_info()) as $format) {
+      if (strpos($_GET['q'], $format) !== FALSE) {
+        // The user asked for a restws service(json/xml/rdf etc. etc.) - change
+        // the $path to the $_GET['q'] variable.
+        $path = $_GET['q'];
+        return;
+      }
     }
   }
 
