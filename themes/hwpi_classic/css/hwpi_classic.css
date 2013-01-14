@@ -1,29 +1,4 @@
-.region-sidebar-second {
-    padding-left: 15px;
-}
-
-#header {background:#E0E0DD;}
-
-#menu-bar {background:#F0F0EE;}
-
-.not-front #content-column p {
-     font-family: 'Georgia,serif';
-     font-size: 16px;
-}
-
-.not-front #content-column .content-inner {
-	border-right:1px solid #ccc
-}
-
-
-.sidebar .block,
-.front #content-column .block
- {border-top:3px solid #4384C4;}
- 
- .sidebar .block,
-.front #content-column .block.section-nav
- {border-top:none;}
- 
+/* Typography  */
 
 h1#page-title,
 h1.node-title {
@@ -47,12 +22,52 @@ h2.block-title {
 	font-weight:bold;
 }
 
+.more-link {
+    padding-right: 11px;
+    font-style: normal;
+    text-decoration:underline;
+     font-family: 'Georgia,serif';
+}
+
+
+/* Region - Div Styles */
+
+#header {background:#E0E0DD;}
+
+#menu-bar {background:#F0F0EE;}
+
+#footer ul.menu a {
+	text-transform:none;
+	font-family: 'Georgia,serif';
+	font-size:16px;
+}
+
+.not-front #content-column p {
+     font-family: 'Georgia,serif';
+     font-size: 16px;
+}
+
+.not-front #content-column .content-inner {
+	border-right:1px solid #ccc
+}
+
+
+.sidebar .block,
+.front #content-column .block
+ {border-top:3px solid #4384C4;}
+ 
+.sidebar .block.section-nav,
+#content-column .block.section-nav
+ {border-top:none;}
+ 
+ 
+
 #footer {
 	border-top:3px solid #D9D9D7;
 	background:#F0F0EE;
 }
 
-
+/* OS Widget Styles */
 
 .calendar-calendar .mini tbody {border:1px solid #ccc;}
 
