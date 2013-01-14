@@ -45,7 +45,7 @@ function os_pages_update_7002(&$sandbox) {
 
   foreach ($q as $r) {
     $r->value = unserialize($r->value);
-    $r->value['blocks'] = array_merge($ctx->value['blocks'], $default->reactions['block']['blocks']);
+    $r->value['blocks'] = array_merge($r->value['blocks'], $default->reactions['block']['blocks']);
     drupal_write_record('spaces_overrides', $ctx, array('type', 'id', 'object_type', 'object_id'));
   }
 }
