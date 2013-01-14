@@ -175,6 +175,24 @@ function harvard_activity_reports_update_huid_hash($uid, $hash_id) {
         'hashID' => $hash_id
       ))->execute();
     }
+    if($uid_count > 0) {
+      // Query again and check for a hashed id.
+      $hash_check = db_query("SELECT uid, hashID FROM {iqss_pinserver_register} WHERE uid = :uid", array(
+        ':uid' => $uid
+      ))->fetchObject();
+      // Check to see if the hashID is empty.
+      if(!empty($hash_check->hashID)) {
+      	return;
+      }
+      // Update the users row with their hashed id.
+      $hash_update = db_update('iqss_pinserver_register')
+        ->fields(array(
+          'hashID' => $hash_id,
+        )
+      )
+      ->condition('uid', $uid, '=')
+      ->execute();
+    }
   }
   // no need to return anything
   return;
