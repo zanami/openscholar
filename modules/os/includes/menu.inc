@@ -21,7 +21,7 @@
  * os_menu_load_link_path
  *  Load return a menu link given a drupal path (ex node/123).
  *
- * os_menu_link_delete
+ * os_menu_link_delete_link
  *  Delete and existing menu link.
  *
  * os_menu_tree
@@ -243,7 +243,7 @@ function os_menu_link_save(&$item) {
  * @param $mlid
  *  A valid menu link mlid
  */
-function os_menu_link_delete($menu, $mlid) {
+function os_menu_link_delete_link($menu, $mlid) {
 
   if (module_exists('vsite_menu')) {
     // Delete a menu item using the vsite controllers.
