@@ -56,7 +56,7 @@ display:none;
 
 .calendar-calendar td {
     text-align: center;
-    height:35px;
+    height:30px;
 }
 
 .calendar-calendar th.days {
@@ -65,7 +65,11 @@ display:none;
 
 .calendar-calendar tr td.today, .calendar-calendar tr.odd td.today, .calendar-calendar tr.even td.today {
     background-color: #FFF !important;
-    border:1px solid #ccc;
+    
+}
+
+.calendar-calendar td.has-events {
+ border:1px solid #ccc;
 }
 
 table td.mini a {
