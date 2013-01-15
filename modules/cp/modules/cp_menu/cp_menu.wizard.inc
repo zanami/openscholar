@@ -218,16 +218,10 @@ function cp_menu_title($form, &$form_state) {
       );
       break;
   }
-
-  $form['advanced'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Advanced Options'),
-    '#collapsed' => TRUE,
-    '#collapsible' => TRUE
-  );
   
+  //advanced options present depending on site configuration
   if (variable_get('cp_menu_link_options_new_window', FALSE)) {
-    $form['advanced']['new_window'] = array(
+    $advanced['new_window'] = array(
       '#type' => 'checkbox',
       '#title' => t('New Window'),
       '#description' => t('Open link in new tab or window'),
@@ -236,11 +230,20 @@ function cp_menu_title($form, &$form_state) {
   };
   
   if (variable_get('cp_menu_link_options_tooltip', FALSE)) {
-    $form['advanced']['tooltip'] = array(
+    $advanced['tooltip'] = array(
       '#type' => 'textfield',
       '#title' => t('Tooltip'),
       '#description' => t('Text displayed when mouse hovers over link'),
     );
+  }
+  
+  if (isset($advanced)) {
+    $form['advanced'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Advanced Options'),
+      '#collapsed' => TRUE,
+      '#collapsible' => TRUE
+    ) + $advanced;
   }
 
   return $form;
