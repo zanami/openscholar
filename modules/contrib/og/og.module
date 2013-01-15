@@ -1415,7 +1415,7 @@ function og_query_og_membership_alter(QueryAlterableInterface $query) {
     if (!is_array($values)) {
       continue;
     }
-    if (strpos($values['field'], 'field_data_') !== 0) {
+    if (!is_string($values['field']) || strpos($values['field'], 'field_data_') !== 0) {
       continue;
     }
 
