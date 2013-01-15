@@ -34,7 +34,8 @@ before_script:
   - drush vset purl_base_domain http://127.0.0.1
   - drush cc all --yes
   # Download Migrate 2.5, so OG won't fail
-  - drush dl migrate -y --destination=./modules/contrib
+  - pwd
+  - drush dl migrate -y --destination=~/drupal/profiles/openscholar/modules/contrib
   - drush en os_migrate_demo -y
   - drush mi --all --user=1
 
