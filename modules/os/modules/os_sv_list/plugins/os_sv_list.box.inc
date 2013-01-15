@@ -54,29 +54,12 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $content_types_value,
       '#options' => $content_types,
       '#id' => 'os_sv_list_content_type',
-    /*
-      '#ajax' => array(
-        'callback' => 'os_sv_list_more_link_ajax',
-        //'wrapper' => 'more_link_div',
-        'wrapper' => 'edit-more-link',
-        'method' => 'replace',
-        'effect' => 'none',
-      ),*/
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'os_sv_list').'/os_sv_list.js',
         ),
       ),
     );
-
-    /*$form['biblio_show_all'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Show all publication types'),
-      '#default_value' => isset($this->options['biblio_show_all']) ? $this->options['biblio_show_all'] : $defaults['biblio_show_all'],
-      '#id' => 'biblio_show_all_check',
-      '#prefix' => '<div id="os_sv_list_biblio_show_all">',
-      '#suffix' => '</div>',
-    );*/
 
     $form['biblio_whitelist'] = array(
       '#type' => 'checkboxes',
@@ -107,7 +90,7 @@ class os_sv_list_box extends os_boxes_default {
       '#options' => array(
         'display_title' => t('Title'),
         'display_teaser' => t('Teaser'),
-        'display_body' => t('Entire Post')
+        'display_body' => t('Entire Post'),
       )
     );
 
@@ -120,6 +103,7 @@ class os_sv_list_box extends os_boxes_default {
         'sort_event' => t('Event Date'),
         'sort_presentation' => t('Recently Presented'),
         'sort_biblio' => t('Year of Publication'),
+        'sort_news' => t('News Date'),
 
         //standard sorts
         'sort_newest' => t('Newest Post'),
@@ -512,7 +496,7 @@ class os_sv_list_box extends os_boxes_default {
         break;
 
       default:
-        if (!empty($this->options['vocabs'])) {
+        if (!empty($this->options['vocabs']) && ($this->options['vocabs'] != -1)) {
           // If a vocabulary was selected and there were no tagged nodes then
           // we don't need to return any node.
           if (empty($tagged_nodes)) {
@@ -597,6 +581,11 @@ class os_sv_list_box extends os_boxes_default {
     $efq->fieldCondition('field_date', 'value', date('Y-m-d'), '>=');
   }
 
+  function sort_news(&$efq) {
+    $efq->fieldOrderBy('field_news_date', 'value', 'DESC');
+    $efq->fieldCondition('field_news_date', 'value', date('Y-m-d'), '>=');
+  }
+  
   function sort_presentation(&$efq) {
     $efq->fieldOrderBy('field_presentation_date', 'value', 'DESC');
     $this->sort_newest($efq);
