@@ -26,3 +26,10 @@ features[rules_config][] = "rules_og_new_content_message"
 name = "OG example"
 package = "Features"
 php = "5.2.4"
+
+; Information added by drupal.org packaging script on 2013-01-14
+version = "7.x-2.0-rc2"
+core = "7.x"
+project = "og"
+datestamp = "1358190466"
+
