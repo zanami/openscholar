@@ -65,9 +65,10 @@ class OgMembershipViewsController extends EntityDefaultViewsController {
  */
 function og_views_data_alter(&$data) {
   $group_content_entities = og_get_all_group_content_entity();
+  $group_entities = og_get_all_group_entity();
 
   foreach (entity_get_info() as $entity_type => $info) {
-    if (empty($group_content_entities[$entity_type])) {
+    if (empty($group_content_entities[$entity_type]) && empty($group_entities[$entity_type])) {
       continue;
     }
 
@@ -83,6 +84,21 @@ function og_views_data_alter(&$data) {
         'label' => t('OG membership from @entity', array('@entity' => $entity_type)),
         'base' => 'og_membership',
         'base field' => 'etid',
+        'relationship field' => $info['entity keys']['id'],
+      ),
+    );
+
+    // The OG membership group.
+    $data[$info['base table']]['og_membership_rel_group'] = array(
+      'group' => t('OG membership'),
+      'title' => t('OG membership from @entity group', array('@entity' => ucfirst($info['label']))),
+      'help' => t('The OG membership associated with the @entity group', array('@entity' => ucfirst($info['label']))),
+      'relationship' => array(
+        'entity' => $entity_type,
+        'handler' => 'views_handler_relationship',
+        'label' => t('OG membership from @entity group', array('@entity' => $entity_type)),
+        'base' => 'og_membership',
+        'base field' => 'gid',
         'relationship field' => $info['entity keys']['id'],
       ),
     );

@@ -169,7 +169,8 @@ class EntityReference_SelectionHandler_Generic implements EntityReference_Select
     if (!empty($results[$entity_type])) {
       $entities = entity_load($entity_type, array_keys($results[$entity_type]));
       foreach ($entities as $entity_id => $entity) {
-        $options[$entity_id] = check_plain($this->getLabel($entity));
+        list(,, $bundle) = entity_extract_ids($entity_type, $entity);
+        $options[$bundle][$entity_id] = check_plain($this->getLabel($entity));
       }
     }
 
@@ -308,6 +309,42 @@ class EntityReference_SelectionHandler_Generic implements EntityReference_Select
   public function getLabel($entity) {
     return entity_label($this->field['settings']['target_type'], $entity);
   }
+
+  /**
+   * Ensure a base table exists for the query.
+   *
+   * If we have a field-only query, we want to assure we have a base-table
+   * so we can later alter the query in entityFieldQueryAlter().
+   *
+   * @param $query
+   *   The Select query.
+   *
+   * @return
+   *   The alias of the base-table.
+   */
+  public function ensureBaseTable(SelectQueryInterface $query) {
+    $tables = $query->getTables();
+
+    // Check the current base table.
+    foreach ($tables as $table) {
+      if (empty($table['join'])) {
+        $alias = $table['alias'];
+        break;
+      }
+    }
+
+    if (strpos($alias, 'field_data_') !== 0) {
+      // The existing base-table is the correct one.
+      return $alias;
+    }
+
+    // Join the known base-table.
+    $target_type = $this->field['settings']['target_type'];
+    $entity_info = entity_get_info($target_type);
+    $id = $entity_info['entity keys']['id'];
+    // Return the alias of the table.
+    return $query->innerJoin($target_type, NULL, "$target_type.$id = $alias.entity_id");
+  }
 }
 
 /**
@@ -323,8 +360,8 @@ class EntityReference_SelectionHandler_Generic_node extends EntityReference_Sele
     // modules in use on the site. As long as one access control module is there,
     // it is supposed to handle this check.
     if (!user_access('bypass node access') && !count(module_implements('node_grants'))) {
-      $tables = $query->getTables();
-      $query->condition(key($tables) . '.status', NODE_PUBLISHED);
+      $base_table = $this->ensureBaseTable($query);
+      $query->condition("$base_table.status", NODE_PUBLISHED);
     }
   }
 }
@@ -398,8 +435,8 @@ class EntityReference_SelectionHandler_Generic_comment extends EntityReference_S
     // requires us to also know about the concept of 'published' and
     // 'unpublished'.
     if (!user_access('administer comments')) {
-      $tables = $query->getTables();
-      $query->condition(key($tables) . '.status', COMMENT_PUBLISHED);
+      $base_table = $this->ensureBaseTable($query);
+      $query->condition("$base_table.status", COMMENT_PUBLISHED);
     }
 
     // The Comment module doesn't implement any proper comment access,
@@ -471,8 +508,7 @@ class EntityReference_SelectionHandler_Generic_taxonomy_term extends EntityRefer
     // The Taxonomy module doesn't implement any proper taxonomy term access,
     // and as a consequence doesn't make sure that taxonomy terms cannot be viewed
     // when the user doesn't have access to the vocabulary.
-    $tables = $query->getTables();
-    $base_table = key($tables);
+    $base_table = $this->ensureBaseTable($query);
     $vocabulary_alias = $query->innerJoin('taxonomy_vocabulary', 'n', '%alias.vid = ' . $base_table . '.vid');
     $query->addMetadata('base_table', $vocabulary_alias);
     // Pass the query to the taxonomy access control.
@@ -494,42 +530,24 @@ class EntityReference_SelectionHandler_Generic_taxonomy_term extends EntityRefer
    * Implements EntityReferenceHandler::getReferencableEntities().
    */
   public function getReferencableEntities($match = NULL, $match_operator = 'CONTAINS', $limit = 0) {
+    if ($match || $limit) {
+      return parent::getReferencableEntities($match , $match_operator, $limit);
+    }
+
     $options = array();
     $entity_type = $this->field['settings']['target_type'];
 
-    if ($this->instance['widget']['type'] == 'options_select' && !$match &&!$limit) {
-      // We imitate core by calling taxonomy_get_tree().
-      $entity_info = entity_get_info('taxonomy_term');
-      $bundles = !empty($this->field['settings']['handler_settings']['target_bundles']) ? $this->field['settings']['handler_settings']['target_bundles'] : array_keys($entity_info['bundles']);
+    // We imitate core by calling taxonomy_get_tree().
+    $entity_info = entity_get_info('taxonomy_term');
+    $bundles = !empty($this->field['settings']['handler_settings']['target_bundles']) ? $this->field['settings']['handler_settings']['target_bundles'] : array_keys($entity_info['bundles']);
 
-      foreach ($bundles as $bundle) {
-        if ($vocabulary = taxonomy_vocabulary_machine_name_load($bundle)) {
-          if ($terms = taxonomy_get_tree($vocabulary->vid, 0)) {
-            foreach ($terms as $term) {
-              $options[$vocabulary->name][$term->tid] = str_repeat('-', $term->depth) . $term->name;
-            }
+    foreach ($bundles as $bundle) {
+      if ($vocabulary = taxonomy_vocabulary_machine_name_load($bundle)) {
+        if ($terms = taxonomy_get_tree($vocabulary->vid, 0)) {
+          foreach ($terms as $term) {
+            $options[$vocabulary->machine_name][$term->tid] = str_repeat('-', $term->depth) . check_plain($term->name);
           }
         }
-      }
-
-      if (count($bundles) == 1) {
-        $key = key($options);
-        $options = $options[$key];
-      }
-      return $options;
-    }
-
-    $query = $this->buildEntityFieldQuery($match, $match_operator);
-    if ($limit > 0) {
-      $query->range(0, $limit);
-    }
-
-    $results = $query->execute();
-
-    if (!empty($results[$entity_type])) {
-      $entities = entity_load($entity_type, array_keys($results[$entity_type]));
-      foreach ($entities as $entity_id => $entity) {
-        $options[$entity_id] = check_plain($this->getLabel($entity));
       }
     }
 
