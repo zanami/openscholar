@@ -281,6 +281,26 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
 }
 
 /**
+ * Alters the node delete confirm form to redirect to the parent page
+ */
+function os_pages_form_node_delete_confirm_alter(&$form, &$form_state) {
+  // plid is empty when it's the top level of the outline
+  // we only want to redirect when it isn't empty
+  if ($form['#node']->type == 'page' && $form['#node']->book['plid']) {
+    $form['#submit'][] = 'os_pages_node_delete_redirect';
+  }
+}
+
+/**
+ * Redirect to the parent page when the page node is deleted.
+ * We have to do it in a submit handler because node_delete_confirm_submit hard codes it the redirect to <front>
+ */
+function os_pages_node_delete_redirect($form, &$form_state) {
+  $link = menu_link_load($form['#node']->book['plid']);
+  $form_state['redirect'] = $link['link_path'];
+}
+
+/**
  * Form after_build callback for node_form.
  *
  * @see os_pages_form_node_form_alter()
@@ -403,8 +423,7 @@ function os_pages_preprocess_page(&$page) {
     );
     $section_links['page-delete'] = array(
       'title' => t('Delete'),
-      'href' => 'node/'.$node->nid.'/delete',
-      'query' => array('destination' => '<front>'),
+      'href' => 'node/'.$node->nid.'/delete'
     );
 
     $links = $section_links;
