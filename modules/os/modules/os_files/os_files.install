@@ -26,6 +26,19 @@ function os_files_update_7001(&$sandbox) {
   $union1->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'node\'');
   $union1->join('purl', 'p', 'p.id = fu.id AND provider = \'spaces_og\'');
 
+  $union2 = db_select('file_managed', 'fm');
+  $union2->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'node\'');
+  $union2->join('og_membership', 'ogm', 'ogm.etid = fu.id AND entity_type = \'node\'');
+  $union2->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
+
+
+  $union3 = db_select('file_managed', 'fm');
+  $union3->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'file\'');
+  $union3->join('file_usage', 'fu2', 'fu2.fid = fu.fid AND fu2.type = \'node\'');
+  $union3->join('og_membership', 'ogm', 'ogm.etid = fu2.id AND entity_type = \'node\'');
+  $union3->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
+
+
   if (!isset($sandbox['progress'])) {
     $q->fields('fm', array('fid'))
       ->where('fm.uri LIKE \'public://%\'')
@@ -33,7 +46,15 @@ function os_files_update_7001(&$sandbox) {
     $union1->fields('fm', array('fid'))
       ->where('fm.uri LIKE \'public://%\'')
       ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
-    $q->union($union1);
+    $union2->fields('fm', array('fid'))
+      ->where('fm.uri LIKE \'public://%\'')
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
+    $union3->fields('fm', array('fid'))
+      ->where('fm.uri LIKE \'public://%\'')
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
+    $q->union($union1)
+      ->union($union2)
+      ->union($union3);
     $r = $q->execute();
 
     $fids = $r->fetchAll(PDO::FETCH_OBJ);
@@ -65,10 +86,18 @@ function os_files_update_7001(&$sandbox) {
   $union1->fields('fm', array('fid', 'filename', 'uri'))
           ->fields('p', array('id', 'value'))
           ->condition('fm.fid', $fids);
+  $union2->fields('fm', array('fid', 'filename', 'uri'))
+          ->fields('p', array('id', 'value'))
+          ->condition('fm.fid', $fids);
+  $union3->fields('fm', array('fid', 'filename', 'uri'))
+          ->fields('p', array('id', 'value'))
+          ->condition('fm.fid', $fids);
   $r = $q->fields('fm', array('fid', 'filename', 'uri'))
          ->fields('p', array('id', 'value'))
          ->condition('fm.fid', $fids)
          ->union($union1)
+         ->union($union2)
+         ->union($union3)
          ->execute();
   $rows = $r->fetchAll(PDO::FETCH_OBJ);
 
