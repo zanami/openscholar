@@ -105,7 +105,6 @@ function os_files_update_7001(&$sandbox) {
       continue;
     }
 
-    }
     if (file_exists($filename)) {
       // file already exists at target destination
       // this means there's a duplicate row in the files table for this file
@@ -150,6 +149,7 @@ function os_files_update_7001(&$sandbox) {
         // no match. A different file with the same name exists.
         // Just rename it
         $file_move_type = FILE_EXISTS_RENAME;
+      }
     }
     if ($to_save) {
       file_save($file);
