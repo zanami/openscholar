@@ -19,8 +19,9 @@ body {
     font-family: Arial;
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
-    line-height: 24px;
+    font-size: 13px;
+    line-height: 23px;
+    color:#1e1e1e;
 }
 
 a {color: #4384C4;}
@@ -40,10 +41,13 @@ a {color: #4384C4;}
     border-left:1px solid #ccc;
 }
 
+#content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
 .more-link {
     background: url('../images/readmore_arrow.gif') no-repeat right center;
     padding-right: 11px;
     font-style: normal;
+    font-size: 14px;
+    float: none;
 }
 
 
@@ -74,6 +78,27 @@ a {color: #4384C4;}
     height: 29px;
  }
 
+.page-search input.form-text {
+ width: auto;
+background: #F2F2EF;
+}
+
+ol.search-results li.search-result {
+	border-bottom:1px solid #ccc;
+}
+
+ol.search-results li.search-result:last-child {
+	border-bottom:none;
+}
+
+.page-search #content-column h2 {
+	margin-bottom:15px;
+	
+}
+
+.page-search .search-info {
+	display:none;
+}
 
 .region-header-third .block-os-search-solr,
 .region-header-third .block-os-search-db {

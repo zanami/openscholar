@@ -27,7 +27,7 @@
 .region-header-third {width:360px; margin-left:-360px;text-align: right;}
 .region-header-second {width:100%;}
 
-#header-container, #columns, #block-os-primary-menu {
+#header-container, #columns, #block-os-primary-menu, #footer .gpanel {
      margin: 0 auto;
      width:980px;
 }
