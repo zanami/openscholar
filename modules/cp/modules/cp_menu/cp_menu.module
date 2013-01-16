@@ -145,7 +145,7 @@ function cp_menu_node_update($node) {
       $link['menu_name'] = $node->os_menu['parent'];
       $link['options']['attributes'] = array('title' => $node->os_menu['description']);
       if ($node->os_menu['new_window']) {
-        $link['options']['attributes']['taret'] = '_blank';
+        $link['options']['attributes']['target'] = '_blank';
       }
       os_menu_link_save($link);
     } else {
@@ -300,7 +300,7 @@ function cp_menu_node_submit($node, $form, &$state) {
     }
 
     foreach(array('link_title','description','parent','new_window') as $delta) {
-      if ($state['values']['os_menu'][$delta] != $form['os_menu']['link'][$delta]['#default_value']) {
+      if (isset($state['values']['os_menu'][$delta]) && ($state['values']['os_menu'][$delta] != $form['os_menu']['link'][$delta]['#default_value'])) {
         $node->os_menu['dirty'] = TRUE;
         return;
       }
@@ -506,8 +506,10 @@ function cp_menu_edit_link_form_submit($form, $form_state) {
 
   if ($form_state['values']['op'] == t('Save')) {
     $link['link_title'] = $form_state['values']['title'];
-    $link['options']['attributes']['title'] = $form_state['values']['tooltip'];
-    if ($form_state['values']['new_window']) {
+    if (isset($form_state['values']['tooltip'])) {
+      $link['options']['attributes']['title'] = $form_state['values']['tooltip'];
+    }
+    if (isset($form_state['values']['new_window']) && $form_state['values']['new_window']) {
       $link['options']['attributes']['target'] = '_blank';
     }
     else {
