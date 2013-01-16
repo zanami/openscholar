@@ -99,6 +99,13 @@ function os_files_update_7001(&$sandbox) {
     file_prepare_directory($target_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
     $file_move_type = FILE_EXISTS_REPLACE;
 
+    if (!file_exists($file->uri)) {
+      $sandbox['warnings'][] = t('File @file (@fid) not found.', array('@file' => $file->uri, '@fid' => $fid->fid));
+      $sandbox['progress']++;
+      continue;
+    }
+
+    }
     if (file_exists($filename)) {
       // file already exists at target destination
       // this means there's a duplicate row in the files table for this file
