@@ -1,6 +1,4 @@
 <?php
-// $Id$
-
 /**
  * @file
  * os_news.features.inc
@@ -100,4 +98,3 @@ function os_news_node_info() {
   );
   return $items;
 }
-
