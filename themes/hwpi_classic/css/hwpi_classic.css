@@ -1,7 +1,8 @@
 /* Typography  */
 
 h1#page-title,
-h1.node-title {
+h1.node-title, 
+.page-search h3.title a {
      font-family: 'Georgia,serif';
      font-weight:normal;
      font-size:16px;
@@ -13,6 +14,7 @@ h1#page-title {
     margin-bottom: 0.5em;
 }
 
+
 h2.block-title {
 	padding:10px 0;
 	text-transform:uppercase;
@@ -22,11 +24,14 @@ h2.block-title {
 	font-weight:bold;
 }
 
+#content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
 .more-link {
-    padding-right: 11px;
-    font-style: normal;
     text-decoration:underline;
      font-family: 'Georgia,serif';
+}
+
+ .page-search h1#page-title {
+    margin-top:10px;
 }
 
 
@@ -42,6 +47,7 @@ h2.block-title {
 	font-size:16px;
 }
 
+.page-search #content-column p
 .not-front #content-column p {
      font-family: 'Georgia,serif';
      font-size: 16px;
@@ -83,6 +89,12 @@ h2.block-title {
     height:13px;
        background: url('../images/cal_rightarrow.gif') 0 1px no-repeat;
 }
+
+.logged-in .view .date-nav-wrapper .date-next a  {
+    margin-top: -22px;
+}
+
+
 
 .date-nav h3  {
 	font-family: 'Georgia,serif';
