@@ -219,29 +219,26 @@ function cp_menu_title($form, &$form_state) {
       break;
   }
 
+
+  // Should we support other attributes here as well?
+  // Still undecided if new window should exist
   $form['advanced'] = array(
     '#type' => 'fieldset',
     '#title' => t('Advanced Options'),
     '#collapsed' => TRUE,
-    '#collapsible' => TRUE
-  );
-  
-  if (variable_get('cp_menu_link_options_new_window', FALSE)) {
-    $form['advanced']['new_window'] = array(
+    '#collapsible' => TRUE,
+    'new_window' => array(
       '#type' => 'checkbox',
       '#title' => t('New Window'),
       '#description' => t('Open link in new tab or window'),
       '#default' => FALSE,
-    );
-  };
-  
-  if (variable_get('cp_menu_link_options_tooltip', FALSE)) {
-    $form['advanced']['tooltip'] = array(
+    ),
+    'tooltip' => array(
       '#type' => 'textfield',
       '#title' => t('Tooltip'),
       '#description' => t('Text displayed when mouse hovers over link'),
-    );
-  }
+    ),
+  );
 
   return $form;
 }

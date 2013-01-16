@@ -108,7 +108,8 @@ function os_files_update_7001(&$sandbox) {
           ->condition('filemime', $file->filemime)
           ->condition('filesize', $file->filesize);
         $qf->join('file_usage', 'fu', 'fm.fid = fu.fid');
-        $qf->fields('fu', array('id', 'type'))->execute();
+        $qf = $qf->fields('fu', array('id', 'type'))
+                 ->execute();
 
         // if we find a match, update the in-use file with data from the match
         if ($rf = $qf->fetch(PDO::FETCH_OBJ)) {

@@ -67,16 +67,6 @@ function cp_menu_menu() {
     'file' => 'cp_menu.form.inc',
   );
 
-
-  $items['admin/config/openscholar/cp_menu'] = array(
-    'title' => 'Control Panel Menu',
-    'file' => 'cp_menu.admin.inc',
-    'type' => MENU_LOCAL_TASK,
-    'access arguments' => array('administer site configuration'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('cp_menu_admin'),
-  );
-  
   return $items;
 }
 
@@ -220,28 +210,18 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
     $form['os_menu']['link']['#parents'] = $parents + array('os_menu');
     $form['os_menu']['#attached'] = array('js' => array(drupal_get_path('module', 'cp_menu') . '/cp_menu.js'));
 
+    $form['os_menu']['link']['new_window'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Open Link in New Window'),
+      '#default_value' => 0,
+    );
+
+
     //update the defaults to include $links
     $form['os_menu']['enabled']['#default_value'] = isset($link) && $link !== FALSE;
     $form['os_menu']['link']['link_title']['#default_value'] = (isset($link['link_title'])) ? $link['link_title'] : '';
     $form['os_menu']['link']['description']['#default_value'] =
-    (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
-    
-    $form['os_menu']['link']['new_window'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Open Link in New Window'),
-        '#default_value' => 0,
-    );
-        
-    //new window and tooltips are only available when cp_menu_show_extra_link_options is enabled
-    if (!variable_get('cp_menu_link_options_new_window', FALSE)) {
-      $form['os_menu']['link']['new_window']['#type'] = 'hidden';
-    } 
-    
-    if (!variable_get('cp_menu_link_options_tooltip', FALSE)) { 
-      $form['os_menu']['link']['description']['#type'] = 'hidden';
-    }
-
-
+      (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
     $form['os_menu']['link']['new_window']['#default_value'] = (isset($link['options']['attributes']['target']) && $link['options']['attributes']['target'] == '_blank');
 
     $url = l('Page Layout', 'cp/build/layout', array());
