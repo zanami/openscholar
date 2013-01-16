@@ -456,19 +456,23 @@ function cp_menu_edit_link_form($form, $form_state, $link) {
     '#default_value' => $link['link_title'],
   );
 
-  $form['new_window'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('New Window'),
-    '#description' => t('Open link in new tab or window'),
-    '#default_value' => isset($link['options']['attributes']['target']),
-  );
+  if (variable_get('cp_menu_link_options_new_window', FALSE)) {
+    $form['new_window'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('New Window'),
+      '#description' => t('Open link in new tab or window'),
+      '#default_value' => isset($link['options']['attributes']['target']),
+    );
+  }
 
-  $form['tooltip'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Tooltip'),
-    '#description' => t('Text displayed when mouse hovers over link'),
-    '#default_value' => $link['options']['attributes']['title'],
-  );
+  if (variable_get('cp_menu_link_options_tooltip', FALSE)) {
+    $form['tooltip'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Tooltip'),
+      '#description' => t('Text displayed when mouse hovers over link'),
+      '#default_value' => $link['options']['attributes']['title'],
+    );
+  }
 
   $form['actions'] = array(
     '#type' => 'actions',
