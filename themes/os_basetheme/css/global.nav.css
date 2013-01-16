@@ -427,11 +427,14 @@ div.contextual-links-wrapper ul.contextual-links {
   border-radius: 0; /* LTR */
 }
 
-ul.contextual-links li {
+ul.contextual-links li,
+.sidebar ul.contextual-links li
+ {
  line-height: 12px !important;
  list-style: none !important;
  clear:both;
- 
+ background-color: none;
+border-top: none;
 }
 
 ul.contextual-links li a {
@@ -611,6 +614,7 @@ ul.nice-menu ul {
 ul.nice-menu ul li {
  border:1px solid #CCC;
  background:#EEE;
+ min-width:12em;
  width:auto;
 }
 
@@ -699,3 +703,52 @@ ul.nice-menu-down li li.menuparent {
 ul.nice-menu-down li li.menuparent:hover {
   background: none !important; /* LTR */
 }
+
+/******************************
+ Lists when Naviation is selected
+******************************/
+
+.navigation ul,
+.navigation ul.menu
+ {
+  border-left: solid 1px #ccc;
+  border-right: solid 1px #ccc;
+  border-bottom: solid 1px #ccc;
+
+}
+
+.sidebar .navigation ul.menu ul.menu,
+.sidebar .navigation ul ul {
+  border: none;
+  margin-left: 0;
+}
+
+.navigation ul li,
+.navigation ul.menu li {
+  list-style: none;
+  background-color: #EEE;
+  border-top: solid 1px #ccc;
+  text-align: left;
+  margin: 0;
+  margin-bottom: 0;
+}
+
+.navigation ul.menu li a,
+.navigation ul li a {
+  display: block;
+  text-decoration: none;
+  padding: .5em;
+  color:inherit;
+}
+
+.navigation ul.menu li ul.menu li a,
+.navigation ul li ul li a {
+  padding-left: 18px;
+}
+
+.navigation a:link, .navigation a:visited { color: inherit; }
+.navigation a:hover, .navigation a:active { color: inherit; } 
+.navigation a:hover { background-color: #fff; }
+
+
+
