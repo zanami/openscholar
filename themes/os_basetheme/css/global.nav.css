@@ -486,11 +486,11 @@ color: #FFF !important;
 .contextual-controls-wrapper .add_new {
 	float:left;
 	display:inline;
-	 background: url("../images/scholarbase-sprite.png") no-repeat scroll 3px -380px #A1D4A1 !important;
+	 background: url("../images/scholarbase-sprite.png") no-repeat scroll 3px -379px #A1D4A1 !important;
     border-radius: 5px 5px 5px 5px;
     float: left;
      margin: 0 22px 0 0;
-    padding: 3px 8px 1px 22px !important;
+    padding: 0 8px 0 22px !important;
     text-decoration:none !important;
 	}
 
