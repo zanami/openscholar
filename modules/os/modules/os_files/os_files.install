@@ -42,16 +42,16 @@ function os_files_update_7001(&$sandbox) {
   if (!isset($sandbox['progress'])) {
     $q->fields('fm', array('fid'))
       ->where('fm.uri LIKE \'public://%\'')
-      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
     $union1->fields('fm', array('fid'))
       ->where('fm.uri LIKE \'public://%\'')
-      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
     $union2->fields('fm', array('fid'))
       ->where('fm.uri LIKE \'public://%\'')
-      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
     $union3->fields('fm', array('fid'))
       ->where('fm.uri LIKE \'public://%\'')
-      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
     $q->union($union1)
       ->union($union2)
       ->union($union3);
