@@ -13,13 +13,20 @@ function cp_layout_full_form($form, $form_state){
   $contexts = os_layout_get_contexts(array(1, 2));
   $ctxs = $ctxs ? $ctxs : array('os_front', 'os_public');
 
-  $form['context_selection'] = array(
-    '#type' => 'select',
-    '#title' => t('Site Section'),
-    '#options' => $contexts,
-    '#default_value' => reset($ctxs),
-    '#multiple' => false
-  );
+  $current = current(array_diff($ctxs, array('os_public')));
+  if (isset($contexts[$current])) {
+    $form['context_selection'] = array(
+      '#type' => 'select',
+      '#title' => t('Site Section'),
+      '#options' => $contexts,
+      '#default_value' => $current,
+      '#multiple' => false
+    );
+  }
+
+  if (!in_array('os_public', $ctxs)) {
+    $ctxs[] = 'os_public';
+  }
 
   // take custom themes into account
   ctools_include('themes', 'os');

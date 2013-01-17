@@ -307,7 +307,7 @@ function pinserver_check_token() {
   // AuthZProxy token
   else if (isset($_GET['_azp_token'])) {
     $azp = TRUE;
-    $command = variable_get('pinserver_gpg_bin') . ' --no-tty --batch --passphrase-file "' . variable_get('pinserver_azp_passphrase') . '" --homedir "' . variable_get('pinserver_gpg_dir') . '" --decrypt';
+    $command = variable_get('pinserver_gpg_bin') . ' --no-mdc-warning --no-tty --batch --passphrase-file "' . variable_get('pinserver_azp_passphrase') . '" --homedir "' . variable_get('pinserver_gpg_dir') . '" --decrypt';
   }
   else {
     drupal_goto("pinserver/error/token/unrecognized-url");
@@ -422,8 +422,9 @@ function pinserver_check_token() {
   // The PHP abs() function converts integers to absolute values (unsigned).
   // Subtract timestamp value sent by PIN server from the current time (on web server)
   // 120 equals 2 minutes; could change this to 60 but no more than 180
-  if (abs($values['time'] - time()) > 120) {
-    $values['errors'][] = 'time-elapsed';
+  $elapsed = abs($values['time'] - time());
+  if ($elapsed > 120) {
+    $values['errors'][] = "time-elapsed-$elapsed";
   }
 
   return $values;
@@ -459,7 +460,6 @@ function pinserver_check_system_settings() {
   if (count($missing_settings)) {
     $error .= 'Pinserver is missing required system settings: ' . implode(' ', $missing_settings) . '. ';
   }
-
   if (!is_dir(variable_get('pinserver_gpg_dir'))) {
     $error .= 'The system path for gpg_dir directory is invalid or does not exist. ';
   }
