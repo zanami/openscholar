@@ -121,7 +121,6 @@ function os_wysiwyg_media_token_to_markup_alter(&$element, $tag_info, $settings)
       $container_settings[$attr] = $val;
     }
   }
-  dpm($container_settings);
 
   if (isset($container_settings['style'])) {
     $s = &$container_settings['style'];
