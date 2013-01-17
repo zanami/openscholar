@@ -96,7 +96,11 @@ class os_boxes_manual_list extends os_boxes_default {
       if ($this->options['style'] == 'teasers') {
         // Theme the nodes as a teaser
         $node = node_load($n['nid']);
-        $links[$n['weight']] = render(node_view($node, 'teaser'));
+
+        //Node may not load if it has since been deleted
+        if($node){
+          $links[$n['weight']] = render(node_view($node, 'teaser'));
+        }
       }
       else {
         $l = array(
