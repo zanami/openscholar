@@ -167,6 +167,17 @@ class OgVocab extends Entity {
       $sub_element['#autocomplete_path'] .= "/$path[7]";
     }
   }
+
+  /**
+   * Overrides Entity::save().
+   */
+  public function save() {
+    parent::save();
+
+    // Add the OG-vocabulary field in the group-content, in case it
+    // doesn't already exist.
+    og_create_field(OG_VOCAB_FIELD, $this->entity_type, $this->bundle);
+  }
 }
 
 /**
