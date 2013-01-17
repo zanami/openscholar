@@ -583,7 +583,6 @@ class os_sv_list_box extends os_boxes_default {
 
   function sort_news(&$efq) {
     $efq->fieldOrderBy('field_news_date', 'value', 'DESC');
-    $efq->fieldCondition('field_news_date', 'value', date('Y-m-d'), '>=');
   }
   
   function sort_presentation(&$efq) {

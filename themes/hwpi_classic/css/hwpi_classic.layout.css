@@ -14,10 +14,27 @@
     border:none;
 }
 
+.not-front .content-left.content-right .at-panel .region.region-content-first, 
+.not-front .content-left.content-right .at-panel .region.region-content-second {
+    width: 47%;
+    border-top: 3px solid #4384C4;
+    margin-right:15px;
+}
+
+.not-front .content-left.content-right .at-panel .region.region-content-second {
+    margin-right:0;
+}
+
 .content-left.content-right .at-panel .region.region-content-second {
 padding-left: 12px;
 border-left:1px solid #ccc;
 border-right:1px solid #ccc;
+}
+
+.not-front .content-left.content-right .at-panel .region.region-content-second {
+padding-left: 0;
+border-left:none;
+border-right:none;
 }
 
 .content-left.content-right .at-panel .region.region-content-bottom {

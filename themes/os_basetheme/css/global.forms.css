@@ -506,7 +506,8 @@ form table .item-list ul {
 
 
 /* TINYMCE - WYSIWYG */
-#tinymce {background:#FFF;}
+
+body#tinymce, #tinymce {background:#FFF;font-size:100%;}
 
 
 .tabledrag-toggle-weight-wrapper {

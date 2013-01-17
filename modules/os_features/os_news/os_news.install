@@ -1,0 +1,30 @@
+<?php 
+
+/**
+ * Populate the os_news's new date field with node's created date.  
+ */
+function os_news_update_7001(&$sandbox) {
+  $instances = field_info_instances('node', 'news');
+  if (!isset($instances['field_news_date'])) {
+    throw new DrupalUpdateException(t('os_news needs to be reverted before this update can be applied'));
+  }
+  
+  $format = $instances['field_news_date']['widget']['settings']['input_format'];
+
+  $query = db_select('node', 'n')
+    ->condition('type', 'news')
+    ->fields('n', array('nid', 'created', 'language', 'vid'));
+  $query->leftJoin('field_data_field_news_date', 'f', 'n.nid = f.entity_id');
+  $query->isNull('f.field_news_date_value');
+  $result = $query->execute();
+ 
+  $count = $result->rowCount();
+  while ($row = $result->fetchObject()) {
+    $node = node_load($row->nid);
+    $entity = entity_metadata_wrapper('node', $node);
+    $entity->field_news_date = $row->created; //date($format, $row->created);
+    $entity->save();
+  }
+
+  return t('Update %count news nodes', array('%count'=>$count));
+}
