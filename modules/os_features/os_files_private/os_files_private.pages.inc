@@ -18,7 +18,7 @@ function os_files_private_settings() {
       . t('Private files are only accessible to your ' . l(t('site members'), '/cp/users')) . '.'
       . '</p>'
       . '<p>'
-      . l(t('Add and manage private files'), 'file-list')
+      . l(t('Add and manage private files'), OS_FILES_PRIVATE_PATH)
       . '</p>',
   );
   if (module_exists('pinserver')) {
