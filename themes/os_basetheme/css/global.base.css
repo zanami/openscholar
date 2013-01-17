@@ -607,3 +607,7 @@ td img {
      max-width: none !important;
 }
 
+/* Hides empty header container from displaying on CP forms. */
+.overlay #header-container {
+  display: none;
+}
