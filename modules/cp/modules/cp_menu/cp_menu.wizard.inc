@@ -481,11 +481,11 @@ function cp_menu_wizard_finish(&$form_state) {
   $options = array();
 
   if (isset($values['new_window']) && $values['new_window']) {
-    $new_menu['options']['attributes']['target'] = '_blank';
+    $options['attributes']['target'] = '_blank';
   }
 
   if (isset($values['tooltip']) && $values['tooltip']) {
-    $options['description'] = $values['tooltip'];
+    $options['attributes']['title'] = $values['tooltip'];
   }
 
   // Saves to vsite or whole site
