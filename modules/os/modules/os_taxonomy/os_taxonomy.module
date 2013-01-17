@@ -367,14 +367,19 @@ function os_taxonomy_build_term_items($terms, $options) {
       'url' => entity_uri('taxonomy_term', $term),
       'class' => $options['tid_active_class'] == $tid ? 'active' : '',
       'is_child' => taxonomy_get_parents($tid) ? TRUE : FALSE,
-      'tagged_items' => os_taxonomy_count_term_tagged_items(array($term), $options['bundles']),
     );
+
+    if ($options['show_count']) {
+      $items[$tid]['tagged_items'] = os_taxonomy_count_term_tagged_items(array($term), $options['bundles']);
+    }
 
     // Add the number of tagged nodes to the children when needed.
     if ($options['show_childs']) {
       $childrens = os_taxonomy_get_term_childrens($term->tid, $term->vid, $options);
       if ($options['add_childs']) {
-        $items[$tid]['child_number'] = os_taxonomy_count_term_tagged_items($childrens, $options['bundles']);
+        if ($options['show_count']) {
+          $items[$tid]['child_number'] = os_taxonomy_count_term_tagged_items($childrens, $options['bundles']);
+        }
       }
       $items[$tid]['childs'] = os_taxonomy_build_term_items($childrens, $options);
     }
