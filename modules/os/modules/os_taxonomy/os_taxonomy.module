@@ -377,9 +377,7 @@ function os_taxonomy_build_term_items($terms, $options) {
     if ($options['show_childs']) {
       $childrens = os_taxonomy_get_term_childrens($term->tid, $term->vid, $options);
       if ($options['add_childs']) {
-        if ($options['show_count']) {
-          $items[$tid]['child_number'] = os_taxonomy_count_term_tagged_items($childrens, $options['bundles']);
-        }
+        $items[$tid]['child_number'] = os_taxonomy_count_term_tagged_items($childrens, $options['bundles']);
       }
       $items[$tid]['childs'] = os_taxonomy_build_term_items($childrens, $options);
     }
