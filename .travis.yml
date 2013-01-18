@@ -23,8 +23,8 @@ before_script:
   - phpenv rehash
   # Prepare Drupal environment.
   - cd ~
-  - drush dl drupal
-  - mv drupal-7.18 drupal
+  - drush dl drupal-7.19
+  - mv drupal-7.19 drupal
   - cd drupal
   - mv /home/travis/builds/openscholar/openscholar ./profiles
   - cd profiles/openscholar

@@ -121,6 +121,18 @@ function os_wysiwyg_media_token_to_markup_alter(&$element, $tag_info, $settings)
       $container_settings[$attr] = $val;
     }
   }
+
+  if (isset($container_settings['style'])) {
+    $s = &$container_settings['style'];
+    if (strpos($s, 'display: block;') !== FALSE &&
+        strpos($s, 'margin-left: auto;') !== FALSE &&
+        strpos($s, 'margin-right: auto;') !== FALSE) {
+      // this was supposed to be centered, and could be an image
+      // add text-align center so the image inside will be centered after all
+      $s .= ' text-align: center;';
+    }
+  }
+
   $element += array(
     '#prefix' => '<span '.drupal_attributes($container_settings).'>',
     '#suffix' => '</span>',
