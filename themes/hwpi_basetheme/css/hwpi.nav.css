@@ -5,7 +5,7 @@
 }
 
 #menu-bar ul.nice-menu a {
-	font-family: 'Georgia,serif';
+	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 	font-size: 20px;
 	color: #303030;
 	padding: 8px;
@@ -180,5 +180,39 @@ ul.nice-menu ul {
 .section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
 	padding-left: 45px;
 }
+
+
+/* Local tasks */
+#tasks {
+  margin-bottom: 18px;
+  margin-top: 40px;
+}
+
+ul.primary li a {
+	background-color: #f3f3f1;
+	border-color: #e4e4e4;
+	margin-right: 0;
+	padding: 4px 10px 0.2em;
+}
+ul.primary li.active a {
+  border-color: #cacaca #cacaca #fff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

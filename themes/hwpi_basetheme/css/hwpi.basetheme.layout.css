@@ -1,9 +1,47 @@
 
+.container {width:100%}
+
+#columns {
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+#columns .region-inner {
+  padding-top: 0;
+  margin-bottom: 15px;
+}
+
+#main-content {
+  margin-left: 0;
+}
+
+#footer {
+  padding: 70px 0 50px;
+}
+
+#header-container {
+  padding: 0 0 10px;
+}
+
+#header-panels .block-inner {
+  margin: 0;
+}
+
+#content-panels {
+  margin-bottom: 15px;
+}
+
+#content-panels .region-content-bottom .region-inner {
+  margin-bottom: 0;
+}
+
+
+
+
+
 /* bigscreen three_col_grail */
 @media only screen and (min-width:1025px) {
 
-  .container {width:100%}
-  
   #content-column,
   .content-column,
   div.sidebar {
@@ -19,23 +57,6 @@
     margin-left: auto;
     margin-right: auto;
     width:980px;
-  }
-
-  #columns {
-    margin-top:40px;
-  }
-  
-  #columns .region-inner {
-    padding-top: 0;
-    margin-bottom: 15px;
-  }
-
-  #main-content {
-    margin-left: 0;
-  }
-
-  #footer {
-    padding: 70px 0 50px;
   }
 
   .two-sidebars .content-inner {
@@ -88,18 +109,10 @@
   }
   
   /* Header Panels */
-  #header-container {
-    padding: 0 0 10px;
-  }
-
   #header-container .gpanel .region {
     float: left;
     clear: none;
     position: relative;
-  }
-  
-  #header-panels .block-inner {
-    margin: 0;
   }
 
   /* All three header panels active */
@@ -139,15 +152,6 @@
   
 
   /* Content Panels */
-  #content-panels {
-    margin-bottom: 15px;
-  }
-  
-  #content-panels .region-content-top {}
-  #content-panels .region-content-bottom .region-inner {
-    margin-bottom: 0;
-  }
-  
   .content-left.content-right #content-panels .region-content-first,
   .content-left.content-right #content-panels .region-content-second {
     border: 0 none;
@@ -228,8 +232,6 @@
   .three-inset-right .inset-wrapper {float:right}
   .two-brick .panel-row {float:none}
   */
-  
-
 
 }
 

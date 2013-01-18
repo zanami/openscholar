@@ -7,7 +7,7 @@
 
 #boxes-box-site_info,
 #boxes-box-site_info a {  
-  font-family: Georgia, serif;
+  font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 }
 
 #boxes-box-site_info p,
@@ -94,12 +94,19 @@ input[type="search"] {
 
 /* Calendar Overrides */
 .view-os-events ul li {
-  border-bottom: none;
+  border: none;
+}
+
+.view-os-events .views-field-colorbox {
+  font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+}
+
+#block-views-os-events-block-2 .view-content li {
+  margin-bottom: 15px;
 }
 
 .calendar-calendar td {
   text-align: center;
-  height: 29px;
   color: #1e1e1e;
 }
 
@@ -159,6 +166,10 @@ table .mini-day-on a {
   overflow: hidden;
 }
 
+#block-views-os-events-block-1 .view .date-nav-wrapper .date-next {
+  right: 1px;
+}
+
 .view .date-nav-wrapper .date-prev a,
 .view .date-nav-wrapper .date-next a {
 	width: 15px;
@@ -177,7 +188,7 @@ table .mini-day-on a {
 }
 
 .date-nav h3  {
-	font-family: 'Georgia', serif;
+	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
   font-weight:normal;
   font-size:16px;
 }
@@ -281,15 +292,14 @@ table .mini-day-on a {
 }
 
 .slideshow.classic .text-and-controls .title {
-	font-family: 'Georgia,serif';
-    font-size: 34px;
-    line-height: 40px;
-    text-shadow: 0 1px 1px #333;
+	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+  font-size: 34px;
+  line-height: 40px;
+  text-shadow: 0 1px 1px #333;
 }
 
 .slideshow.classic .text-and-controls .controls {
 	margin:30px 0 20px;
-    
 }
 
 .slideshow.classic .text-and-controls a.prev,
