@@ -65,16 +65,6 @@ function os_publications_menu_alter(&$items) {
     'file' => drupal_get_path('module', 'os_publications') . '/os_publications.pages.inc',
   );
 
-  $items['features/%ctools_js/os_publications'] = array(
-    'title' => 'Settings',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('os_publications_settings'),
-    'access callback' => module_exists('vsite') ? 'spaces_access_admin' : 'user_access',
-    'access arguments' => module_exists('vsite') ? array() : array('administer site configuration'),
-    'type' => MENU_CALLBACK,
-    'file' => drupal_get_path('module', 'os_publications') . '/os_publications.pages.inc',
-  );
-
   // for the toolbar
   $items['node/add/biblio']['title'] = 'Publication';
 }
