@@ -97,6 +97,11 @@ class vsite extends space_og {
             }
           }
         }
+        else {
+          if ($object->nid && arg(0) == 'node' && arg(1) == $object->nid && !arg(2)) {
+            drupal_goto(drupal_get_path_alias(request_path()));
+          }
+        }
         break;
 
       case 'init':
