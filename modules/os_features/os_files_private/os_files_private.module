@@ -5,6 +5,8 @@
  * OpenScholar files private module file.
  */
 
+include_once('os_files_private.features.inc');
+
 define(OS_FILES_PRIVATE_PATH, "cp/content/files-private");
 
 /**
@@ -37,6 +39,23 @@ function os_files_private_menu() {
   );
 
   return $items;
+}
+
+function os_files_private_menu_alter(&$items) {
+  if (isset($items[OS_FILES_PRIVATE_PATH])) {
+    $items[OS_FILES_PRIVATE_PATH]['access callback'] = _os_files_private_views_access();
+  }
+}
+
+function _os_files_private_views_access() {
+  if (!$vsite = vsite_get_vsite()) {
+    return FALSE;
+  }
+  $apps = variable_get('spaces_features');
+  if (!isset($apps['os_files_private']) || (int) $apps['os_files_private'] !== 1) {
+    return FALSE;
+  }
+  return TRUE;
 }
 
 /**
@@ -107,34 +126,18 @@ function os_files_private_form_file_entity_add_upload_submit($form, &$form_state
 /**
  * Implements hook_page_build().
  */
-/*-- Currently using views exported header instead of this.
 function os_files_private_page_build(&$page) {
   $item = menu_get_item();
-
-  if (!os_files_private_file_list()) {
-    return;
-  }
-
-  if (!in_array($item['path'], array(OS_FILES_PRIVATE_PATH, 'file/%', 'file/%/edit'))) {
-    return;
-  }
-  if (!$page['content']) {
-    $page['content'] = array();
-  }
-  $page['content']['os_files_private'] = array(
-    '#theme' => 'links',
-    '#links' => array(
-      'add_new' => array(
-        'title' => t('Add private file'),
-        'href' => 'file/add',
-        'html' => TRUE,
-      ),
-    ),
-    '#attributes' => array('class' => 'cp-controls-wrapper'),
-    '#weight' => -1,
-  );
+  $page = $page;
 }
-// */
+
+/**
+ * Implements hook_page_alter().
+ */
+function os_files_private_page_alter(&$page) {
+  $item = menu_get_item();
+  $page = $page;
+}
 
 /**
  * Implements hook_og_permission().
