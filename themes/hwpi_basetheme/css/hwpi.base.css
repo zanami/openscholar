@@ -4,7 +4,7 @@ body {
   font-family: arial, helvetica, sans-serif;
   font-size: 13px;
   line-height: 23px;
-  color: #1e1e1e;
+  min-height: inherit;
 }
 
 a {color: #4384C4;}
@@ -84,5 +84,15 @@ ol.search-results li.search-result:last-child {
 
 
 
+/* block-os-powered-by */
+.logged-in .os-powered-link,
+.logged-in #block-os-powered-by {
+  bottom: auto;
+}
+.os-powered-link,
+#block-os-powered-by {
+  bottom: -auto;
+  float: right;
+}
 
 
