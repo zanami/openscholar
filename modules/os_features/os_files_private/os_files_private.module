@@ -41,35 +41,6 @@ function os_files_private_menu() {
   return $items;
 }
 
-function os_files_private_menu_alter(&$items) {
-  if (isset($items[OS_FILES_PRIVATE_PATH])) {
-    $items[OS_FILES_PRIVATE_PATH]['access callback'] = _os_files_private_views_access();
-  }
-}
-
-function _os_files_private_views_access() {
-  if (!$vsite = vsite_get_vsite()) {
-    return FALSE;
-  }
-  $apps = variable_get('spaces_features');
-  if (!isset($apps['os_files_private']) || (int) $apps['os_files_private'] !== 1) {
-    return FALSE;
-  }
-  return TRUE;
-}
-
-/**
- * Access callback; Determine if the user can manage the files entity for
- * a VSite.
- */
-function os_files_private_file_list() {
-  if (!$space = spaces_get_space()) {
-    return;
-  }
-
-  return og_user_access('node', $space->id, 'administer files');
-}
-
 /**
  * Implements hook_form_FORM_ID_alter().
  *
@@ -121,34 +92,6 @@ function os_files_private_form_file_entity_add_upload_submit($form, &$form_state
   else {
     $form_state['redirect'] = 'admin/content/file';
   }
-}
-
-/**
- * Implements hook_page_build().
- */
-function os_files_private_page_build(&$page) {
-  $item = menu_get_item();
-  $page = $page;
-}
-
-/**
- * Implements hook_page_alter().
- */
-function os_files_private_page_alter(&$page) {
-  $item = menu_get_item();
-  $page = $page;
-}
-
-/**
- * Implements hook_og_permission().
- */
-function os_files_private_og_permission() {
-  return array(
-    'administer site files' => array(
-      'title' => t('Manage site files'),
-      'description' => t('Manage the files for the site.'),
-    ),
-  );
 }
 
 /**
