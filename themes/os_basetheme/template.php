@@ -12,7 +12,6 @@
  * add classes to the body of a page
  */
 function os_basetheme_preprocess_html(&$vars) {
-
   if (isset($vars['page']['menu_bar'])) {
     $vars['classes_array'][] = 'navbar-on';
   }
@@ -37,7 +36,6 @@ function os_basetheme_preprocess_page(&$vars) {
     'content-right' => $vars['page']['content_second'],
     'content-bottom' => $vars['page']['content_bottom'],
   );
-
   foreach (array('header',  'content') as $var) {
     $visible = array_filter($$var, "__os_basetheme_is_empty");
     if (count($visible)) {

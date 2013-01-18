@@ -1,17 +1,17 @@
-/* Typography  */
 
+/* Typography  */
 h1#page-title,
 h1.node-title, 
 .page-search h3.title a {
-     font-family: 'Georgia,serif';
-     font-weight:normal;
-     font-size:16px;
+	font-family: 'Georgia', serif;
+	font-weight:normal;
+	font-size:16px;
 }
 
 h1#page-title {
-    font-size:38px;
-    margin-top:30px;
-    margin-bottom: 0.5em;
+	font-size:38px;
+	margin-top:30px;
+	margin-bottom: 0.5em;
 }
 
 
@@ -26,110 +26,53 @@ h2.block-title {
 
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
 .more-link {
-    text-decoration:underline;
-     font-family: 'Georgia,serif';
+  text-decoration:underline;
+  font-family: 'Georgia', serif;
 }
 
- .page-search h1#page-title {
-    margin-top:10px;
+.page-search h1#page-title {
+  margin-top:10px;
 }
 
+#header {
+	background: #e6e6e3;
+}
 
-/* Region - Div Styles */
-
-#header {background:#E0E0DD;}
-
-#menu-bar {background:#F0F0EE;}
+#menu-bar {
+	background: #f3f3f1;
+}
 
 #footer ul.menu a {
 	text-transform:none;
-	font-family: 'Georgia,serif';
+	font-family: 'Georgia', serif;
 	font-size:16px;
 }
 
 .page-search #content-column p
 .not-front #content-column p {
-     font-family: 'Georgia,serif';
-     font-size: 16px;
+  font-family: 'Georgia', serif;
+  font-size: 16px;
 }
 
 .not-front.two-sidebars #content-column .content-inner {
-	border-right:1px solid #ccc;
+	border-right:1px solid #e7e7e7;
 }
 
-
 .sidebar .block,
-.front #content-column .block
- {border-top:3px solid #4384C4;}
+.front #content-column .block {
+	border-top: 3px solid #4384C4;
+}
  
 .sidebar .block.section-nav,
-#content-column .block.section-nav
- {border-top:none;}
- 
- 
+#content-column .block.section-nav {
+	border-top: none;
+}
 
 #footer {
 	border-top:3px solid #D9D9D7;
 	background:#F0F0EE;
 }
 
-/* OS Widget Styles */
-
-.calendar-calendar .mini tbody {border:1px solid #ccc;}
-
-.view .date-nav-wrapper .date-prev a {
-	background: url('../images/cal_leftarrow.gif') no-repeat;
-	width:15px;
-    height:13px;
-}
-
-
-.view .date-nav-wrapper .date-next a  {
-    width:15px;
-    height:13px;
-       background: url('../images/cal_rightarrow.gif') 0 1px no-repeat;
-}
-
-.logged-in .view .date-nav-wrapper .date-next a  {
-    margin-top: -22px;
-}
-
-
-
-.date-nav h3  {
-	font-family: 'Georgia,serif';
-     font-weight:normal;
-     font-size:16px;
-     }
-
-
-.ui-tabs .ui-tabs-nav li a {
-text-transform:uppercase;
-	font-size:11px;
-	font-weight:normal;
-	letter-spacing:0.1em;
-    font-weight:bold;
-}
-
-/* Spotlight Widget */
-
-#content-column .block.block-boxes-os_boxes_manual_list {
-     background:#F0F0EE;
-	 border:1px solid #ccc;
-	 padding:0 15px;
-}
-
-
-#content-column .block.block-boxes-os_boxes_manual_list h2.block-title {
-    padding: 0 0 10px;
-    border-bottom:1px solid #D9D9D7;
-    margin-bottom: 20px;
-}
-
-
-#content-column .block.block-boxes-os_boxes_manual_list ul {
-    list-style: none;
-}
 
 
 

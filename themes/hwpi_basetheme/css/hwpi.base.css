@@ -1,53 +1,36 @@
-#main-content {
-    margin-left: 0;
-}
 
-#footer {
-    margin-bottom: -28px;
-}
-
-
-.sidebar .block-inner {
-	margin-left: 0;
-    margin-right: 0;
-}
-
-
-/*Typography */
-
+/* Typography */
 body {
-    font-family: Arial;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 23px;
-    color:#1e1e1e;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 23px;
+  color: #1e1e1e;
 }
 
 a {color: #4384C4;}
 
 #footer #block-os-login a {
-    background: url('../images/readmore_arrow.gif') no-repeat right center;
-  	box-shadow: none;
-    color: #4384C4;
-    float: left;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: bold;
-    line-height: 18px;
-    padding: 1px 11px 0 18px;
-    text-decoration: none;
-    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
-    border-left:1px solid #ccc;
+  background: url('../images/readmore_arrow.gif') no-repeat right center;
+  box-shadow: none;
+  color: #4384C4;
+  float: left;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: bold;
+  line-height: 18px;
+  padding: 1px 11px 0 18px;
+  text-decoration: none;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
+  border-left:1px solid #ccc;
 }
 
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
 .more-link {
-    background: url('../images/readmore_arrow.gif') no-repeat right center;
-    padding-right: 11px;
-    font-style: normal;
-    font-size: 14px;
-    float: none;
+  background: url('../images/readmore_arrow.gif') no-repeat right center;
+  padding-right: 11px;
+  font-style: normal;
+  font-size: 14px;
+  float: none;
 }
 
 
@@ -60,40 +43,29 @@ a {color: #4384C4;}
 	letter-spacing:0.1em;
 }
 
-.not-front #columns {margin-top:40px;}
 
 /* Block Styles */
-#content-column .block .block-inner {
-    margin-left: 0;
-    margin-right: 0;
-}
-
 #content-column .block ul {
-    list-style: disc;
+  list-style: disc;
 }
 
 
-/* Search Bar */
-#search-block-form .container-inline .form-item .form-text {
-    height: 29px;
- }
-
+/* Search Results */
 .page-search input.form-text {
- width: auto;
-background: #F2F2EF;
+  width: auto;
+  background: #F2F2EF;
 }
 
 ol.search-results li.search-result {
-	border-bottom:1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 }
 
 ol.search-results li.search-result:last-child {
-	border-bottom:none;
+	border-bottom: none;
 }
 
 .page-search #content-column h2 {
 	margin-bottom:15px;
-	
 }
 
 .page-search .search-info {
@@ -102,22 +74,15 @@ ol.search-results li.search-result:last-child {
 
 .region-header-third .block-os-search-solr,
 .region-header-third .block-os-search-db {
-     float: right;
-     height: 35px;
-     width: 300px;
-}
-
-input[type="search"] {
-   -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  border-radius: 0;
-   margin-top:-7px;
-   
 }
 
 
-#search-block-form input.form-submit, #search-block-form #edit-submit, #search-form #edit-submit {
-     background: url("../images/hwpi_basesprite.png") no-repeat 0 -59px;
-     width:42px;
-     height:32px;
+/* Controls wrapper */
+.contextual-controls-wrapper {
+  top: -45px; /* Shift into whitespace */
 }
+
+
+
+
+
