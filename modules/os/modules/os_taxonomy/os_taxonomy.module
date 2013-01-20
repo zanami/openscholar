@@ -158,7 +158,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     'show_term_descriptions' => TRUE,
     'link_to_empty_terms' => TRUE,
   );
-  $vocabulary = hierarchical_taxonomy_get_tree($variables['vid'], 0, NULL, TRUE);
+  $vocabulary = hierarchical_taxonomy_get_tree($variables['vid'], 0, $options['depth'], TRUE);
 
   // No result - quit.
   if (empty($vocabulary)) {
@@ -189,17 +189,20 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   $data = $options['bundles'] = array();
    // process all root term.
   foreach ($vocabulary as $tid => $item) {
-    // Skip on this if we don't display empty children term.
-
-    if (strlen($path_prefix) && strpos($item['url']['path'],'taxonomy/') === 0) {
-      $item->path = str_replace('taxonomy/', $path_prefix, $item['url']['path']);
-    }
-
     // The attached number to the term name.
     $number = null;
     if ($options['show_count']) {
       $number = count($item->below);
       $number += $options['add_childs'] && isset($item->below) ? $item->below : 0;
+    }
+
+    // Skip on this if we don't display empty children term.
+    if (!$options['show_empty_terms'] && $number == 0) {
+      continue;
+    }
+
+    if (strlen($path_prefix) && strpos($item['url']['path'],'taxonomy/') === 0) {
+      $item->path = str_replace('taxonomy/', $path_prefix, $item['url']['path']);
     }
 
     if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
@@ -214,8 +217,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         'data' => theme('os_taxonomy_term_item', array(
           'number' => $number,
           'name' => $item->name,
-          // @TODO: Deal with link options.
-          'link_options' => array(),
+          'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $tid ? 'active' : '',)),
           'url_path' => entity_uri('taxonomy_term', $item),
           'description' => $item->description,
           'link_to_empty_terms' => $options['link_to_empty_terms'],
@@ -372,22 +374,20 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
       $number += $tagged_items = os_taxonomy_count_term_tagged_items(array($item), $options['bundles']);
     }
 
-    // @TODO: Deal with the empty terms.
-    if (!$options['show_empty_terms'] && $number == 0) {
-      // continue;
-    }
-
     $child_content = '';
     if (!empty($item->below)) {
       $child_content = os_taxonomy_build_child_item($item->below, $item, $options);
+    }
+
+    if (!$options['show_empty_terms'] && $number == 0) {
+      continue;
     }
 
     $content[] = array(
       'data' => theme('os_taxonomy_term_item', array(
         'number' => $number,
         'name' => $item->name,
-        // @TODO: Deal with link options.
-        'link_options' => empty($item->class) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $term->tid ? 'active' : '',)),
+        'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $term->tid ? 'active' : '',)),
         'url_path' => entity_uri('taxonomy_term', $item),
         'description' => $item->description,
         'link_to_empty_terms' => $options['link_to_empty_terms'],
