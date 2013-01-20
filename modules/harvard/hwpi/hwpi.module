@@ -1,0 +1,61 @@
+<?php
+
+function hwpi_preprocess_page(&$vars) {
+  $vars['page']['branding_header'] += _hwpi_branding_header();
+  $vars['page']['branding_footer'] += _hwpi_branding_footer();
+}
+
+function _hwpi_branding_header() {
+  $header = array();
+  $header['left_container'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => array(
+        'branding',
+        'left',
+      )
+    ),
+    'img' => array(
+      '#theme' => 'image',
+      '#path' => 'http://portfolio.guneva.net/projects/3d/walker_tank/image/walker_tank_07.jpg',
+      '#width' => 43,
+      '#height' => 274,
+    )
+  );
+  $header['right_container'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => array(
+        'branding',
+        'right',
+      )
+    ),
+    'sitecrumbs' => array(
+      '#type' => 'markup',
+      '#markup' => '<a href="test1">subsite 1</a> | <a href="test2">subsite 2</a> | <a href="http://www.harvard.edu">Harvard.edu</a>'
+    ),
+  );
+
+  return array('hwpi' => $header);
+}
+
+function _hwpi_branding_footer() {
+  $footer = array();
+  $footer['hwpi_container'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => array(
+        'copyright',
+      )
+    ),
+    'copyright' => array(
+      '#markup' => t('Copyright © 2013 The President and Fellows of Harvard College | @privacy | @access', array(
+        '@privacy' => l('Privacy', 'http://www.harvard.edu/privacy.html'),
+        '@access' => l('Accessibility', 'http://www.harvard.edu/accessibility.html')
+      ))
+    )
+  );
+
+  return array('hwpi' => $footer);
+}
+

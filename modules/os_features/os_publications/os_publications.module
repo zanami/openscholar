@@ -402,6 +402,16 @@ function os_publications_preprocess_node(&$vars) {
 function os_publications_node_view_alter(&$build, $type) {
   $spaces = spaces_get_space();
   if ($type == 'node' && $build['#bundle'] == 'biblio') {
+    if($build['#view_mode'] == 'full') {
+      // Remove the publication image as it's called in theme_os_publications_tabular instead.
+      if(isset($build['field_biblio_image'])) {
+      	$build['field_biblio_image']['#access'] = FALSE;
+      }
+      // Remove the Google Scholar link that appears at the bottom of full view publications.
+      if(isset($build['links']['biblio_google_scholar'])) {
+        unset($build['links']['biblio_google_scholar']);
+      }
+    }
     if ($build['#view_mode'] == 'teaser') {
       // Alter the teaser to remove the external URL as the URL title and
       // replace it with either the biblio_url_title or "website".

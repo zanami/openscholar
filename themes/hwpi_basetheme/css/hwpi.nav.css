@@ -5,10 +5,10 @@
 }
 
 #menu-bar ul.nice-menu a {
-    font-family: 'Georgia,serif';
-    font-size: 20px;
-    color:#161616;
-    padding: 8px;
+	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+	font-size: 20px;
+	color: #303030;
+	padding: 8px;
 }
 
 
@@ -102,78 +102,111 @@ ul.nice-menu ul {
 
 /* Footer Quicklinks Nav */
 #footer ul.menu,
-#footer ul
- {
+#footer ul {
 	margin-left:0;
 }
-
 
 #footer ul.menu li.menuparent {
 	float:left;
 	display:inline;
 	clear: none;
 	margin-right:95px;
-    font-size:12px;
-    text-transform: uppercase;
+  font-size:12px;
+  text-transform: uppercase;
 }
 
 
-
-
-/*Section Nav */
-
+/* Section Nav */
 #boxes-box-os_pages_section_nav {
-	border: 1px solid #BFBFBF;
-	border-bottom:none;
+	border: 1px solid #ebe3df;
+	border-bottom: none;
 }
 
 .section-nav li.expanded, 
 .section-nav li.collapsed, 
 .section-nav li.leaf {
-    padding: 0;
+  padding: 0;
 }
 
 .section-nav ul.menu {
-margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .section-nav ul.menu li {
-list-style: none;
-background-color: #FFF;
-text-align: left;
+	list-style: none;
+	background-color: #fff;
+	text-align: left;
 }
 
 .section-nav ul.menu li a {
-display: block;
-text-decoration: none;
-padding: .6em;
-border-bottom:1px solid #ccc;
+	display: block;
+	text-decoration: none;
+	padding: 8px 15px;
+	border-bottom: 1px solid #ebe3df;
 }
 
 
-.section-nav a:link, .section-nav a:visited { color: #4384C4; }
-.section-nav a.active { color: #000; }
-
+.section-nav a:link,
+.section-nav a:visited {
+	color: #4384C4;
+}
+.section-nav a.active {
+	color: #1e1e1e;
+}
 
 /* Section Nav - Section Heading */
-.section-nav ul.menu li.first.last.expanded.active-trail {
-	background-color: #1E2540;
-
+.section-nav .menu-depth-1 > a {
+	background-color: #293352;
+	color: #fff;
+	text-transform: uppercase;
 }
 
-.section-nav ul.menu li.first.last.expanded.active-trail a.active-trail {
-	color:#FFF;
-	background-color: #1E2540;
+.section-nav .expanded.menu-depth-2 > a {
+	background-color: #3a72ab;
+	color: #fff;
 }
 
-/* Section Nav - Children */
-
-
-
-.section-nav ul.menu ul.menu li.first.expanded.active-trail li.first.last.expanded.active-trail a.active-trail {
-    background-color: #4384C4;
-    color: #FFFFFF;
+.section-nav .expanded.menu-depth-2 .menu-depth-3 > a,
+.section-nav .expanded.menu-depth-2 .menu-depth-4 > a,
+.section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
+	background-color: #f3f3f1;
+	padding-left: 25px;
 }
+
+.section-nav .expanded.menu-depth-2 .menu-depth-4 > a {
+	padding-left: 35px;
+}
+
+.section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
+	padding-left: 45px;
+}
+
+
+/* Local tasks */
+#tasks {
+  margin-bottom: 18px;
+  margin-top: 40px;
+}
+
+ul.primary li a {
+	background-color: #f3f3f1;
+	border-color: #e4e4e4;
+	margin-right: 0;
+	padding: 4px 10px 0.2em;
+}
+ul.primary li.active a {
+  border-color: #cacaca #cacaca #fff;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

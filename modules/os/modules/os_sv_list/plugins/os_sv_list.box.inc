@@ -546,12 +546,15 @@ class os_sv_list_box extends os_boxes_default {
         $tids[] = $terms->tid;
       }
     }
+    
+    $bundles = os_get_bundles(array(1));
+    $content_types = ($this->options['content_type'] == 'all') ? array_keys($bundles) : $this->options['content_type'];
 
     $query = db_select('taxonomy_index', 't');
     $query->join('node', 'n', 'n.nid = t.nid');
     $result = $query
       ->condition('t.tid', $tids, 'IN')
-      ->condition('n.type', $this->options['content_type'])
+      ->condition('n.type', $content_types)
       ->fields('t')
       ->execute();
 
@@ -583,7 +586,6 @@ class os_sv_list_box extends os_boxes_default {
 
   function sort_news(&$efq) {
     $efq->fieldOrderBy('field_news_date', 'value', 'DESC');
-    $efq->fieldCondition('field_news_date', 'value', date('Y-m-d'), '>=');
   }
   
   function sort_presentation(&$efq) {

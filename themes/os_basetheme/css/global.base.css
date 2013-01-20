@@ -607,3 +607,13 @@ td img {
      max-width: none !important;
 }
 
+/* Hides empty header container from displaying on CP forms. */
+.overlay #header-container {
+  display: none;
+}
+
+/** Floats and spaces the publication image properly **/
+.publication-cover-container {
+  float:left;
+  margin: 0 1.5em .5em 0;
+}

@@ -5,6 +5,10 @@
  * OpenScholar files private module file.
  */
 
+include_once('os_files_private.features.inc');
+
+define(OS_FILES_PRIVATE_PATH, "cp/content/files-private");
+
 /**
  * Implements hook_os_app_info().
  */
@@ -12,7 +16,7 @@ function os_files_private_os_app_info() {
   $apps = array();
 
   $apps['os_files_private'] = array(
-    'path' => 'file-list',
+    'path' => OS_FILES_PRIVATE_PATH,
   );
 
   return $apps;
@@ -35,28 +39,6 @@ function os_files_private_menu() {
   );
 
   return $items;
-}
-
-/**
- * Implements hook_menu_alter().
- */
-function os_files_private_menu_alter(&$callbacks) {
-  $callbacks['file-list'] = $callbacks['admin/content/file'];
-  $callbacks['file-list']['access callback'] = 'os_files_private_file_list';
-  $callbacks['file-list']['page callback'] = 'views_embed_view';
-  $callbacks['file-list']['page arguments'] = array('cp_files', 'default');
-}
-
-/**
- * Access callback; Determine if the user can manage the files entity for
- * a VSite.
- */
-function os_files_private_file_list() {
-  if (!$space = spaces_get_space()) {
-    return;
-  }
-
-  return og_user_access('node', $space->id, 'administer files');
 }
 
 /**
@@ -91,7 +73,7 @@ function os_files_private_form_file_entity_edit_alter(&$form, &$form_state) {
 }
 
 /**
- * Submit handler; Redirect to "file-list" after file upload.
+ * Submit handler; Redirect to Private Files listing after file upload.
  *
  * @see file_entity_add_upload_submit()
  */
@@ -100,7 +82,7 @@ function os_files_private_form_file_entity_add_upload_submit($form, &$form_state
 
   // Redirect to the file edit page after submission.
   if (file_entity_access('edit', $file)) {
-    $destination = array('destination' => 'file-list');
+    $destination = array('destination' => OS_FILES_PRIVATE_PATH);
     if (isset($_GET['destination'])) {
       $destination = drupal_get_destination();
       unset($_GET['destination']);
@@ -110,37 +92,6 @@ function os_files_private_form_file_entity_add_upload_submit($form, &$form_state
   else {
     $form_state['redirect'] = 'admin/content/file';
   }
-}
-
-/**
- * Implements hook_os_add_new_links_alter().
- *
- * Adds a page contextual link for importing biblio nodes.
- */
-function os_files_private_os_add_new_links_alter(&$links) {
-  $item = menu_get_item();
-
-  if (!in_array($item['path'], array('file-list', 'file/%', 'file/%/edit'))) {
-    return;
-  }
-
-  $links['add_new_file'] = array(
-    'title' => t('file'),
-    'href' => 'file/add',
-    'html' => TRUE,
-  );
-}
-
-/**
- * Implements hook_og_permission().
- */
-function os_files_private_og_permission() {
-  return array(
-    'administer site files' => array(
-      'title' => t('Manage site files'),
-      'description' => t('Manage the files for the site.'),
-    ),
-  );
 }
 
 /**

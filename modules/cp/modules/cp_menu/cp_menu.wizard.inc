@@ -480,12 +480,12 @@ function cp_menu_wizard_finish(&$form_state) {
   $menu_name = isset($values['menu']) ? $values['menu'] : 'primary-menu';
   $options = array();
 
-  if ($values['new_window']) {
-    $new_menu['options']['attributes']['target'] = '_blank';
+  if (isset($values['new_window']) && $values['new_window']) {
+    $options['attributes']['target'] = '_blank';
   }
 
-  if ($values['tooltip']) {
-    $options['description'] = $values['tooltip'];
+  if (isset($values['tooltip']) && $values['tooltip']) {
+    $options['attributes']['title'] = $values['tooltip'];
   }
 
   // Saves to vsite or whole site
