@@ -158,7 +158,16 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     'show_term_descriptions' => TRUE,
     'link_to_empty_terms' => TRUE,
   );
-  $vocabulary = hierarchical_taxonomy_get_tree($variables['vid'], 0, $options['depth'], TRUE);
+
+  // Due to changes in the code, there are sites that their depth widget
+  // settings is smaller then one(i.e the first level value will be 0 and not 1)
+  // therefore we need to increase the depth value by one.
+  $depth = $options['depth'] + 1;
+
+  // The taxonomy_get_tree() function return the tree which is not ordered in a
+  // tree format. The function hierarchical_taxonomy_get_tree() order the
+  // vocabulary in the tree format. This will ease on the performance side.
+  $vocabulary = hierarchical_taxonomy_get_tree($variables['vid'], 0, $depth, TRUE);
 
   // No result - quit.
   if (empty($vocabulary)) {
@@ -190,7 +199,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
    // process all root term.
   foreach ($vocabulary as $tid => $item) {
     // The attached number to the term name.
-    $number = null;
+    $number = NULL;
     if ($options['show_count']) {
       $number = count($item->below);
       $number += $options['add_childs'] && !empty($item->below) ? count($item->below) : 0;
@@ -201,7 +210,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       continue;
     }
 
-    if (strlen($path_prefix) && strpos($item['url']['path'],'taxonomy/') === 0) {
+    if (!empty($path_prefix) && strpos($item['url']['path'],'taxonomy/') === 0) {
       $item->path = str_replace('taxonomy/', $path_prefix, $item['url']['path']);
     }
 
