@@ -193,7 +193,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     $number = null;
     if ($options['show_count']) {
       $number = count($item->below);
-      $number += $options['add_childs'] && isset($item->below) ? $item->below : 0;
+      $number += $options['add_childs'] && !empty($item->below) ? count($item->below) : 0;
     }
 
     // Skip on this if we don't display empty children term.
