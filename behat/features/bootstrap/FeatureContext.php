@@ -290,8 +290,7 @@ class FeatureContext extends DrupalContext {
    * @When /^I assign the node "([^"]*)" to the term "([^"]*)"$/
    */
   public function iAssignTheNodeToTheTerm($node, $term) {
-    $code = "os_migrate_demo_assign_node_to_term('$node', '$term');";
-    $this->getDriver()->drush("php-eval \"{$code}\"");
+    $this->invoke_code('os_migrate_demo_assign_node_to_term', array("'$node'","'$term'"));
   }
 
   /**
@@ -366,5 +365,13 @@ class FeatureContext extends DrupalContext {
    */
   public function iSleepFor($sec) {
     sleep($sec);
+  }
+
+  /**
+   * Invoking a php code with drush.
+   */
+  private function invoke_code($function, $arguments) {
+    $code = "$function(" . implode(',', $arguments) . ");";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
   }
 }

@@ -162,7 +162,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   // Due to changes in the code, there are sites that their depth widget
   // settings is smaller then one(i.e the first level value will be 0 and not 1)
   // therefore we need to increase the depth value by one.
-  $depth = $options['depth'] + 1;
+  $depth = ($options['depth'] + 1) == 0 ? NULL : $options['depth'] + 1;
 
   // The taxonomy_get_tree() function return the tree which is not ordered in a
   // tree format. The function hierarchical_taxonomy_get_tree() order the
@@ -201,8 +201,8 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     // The attached number to the term name.
     $number = NULL;
     if ($options['show_count']) {
-      $number = count($item->below);
-      $number += $options['add_childs'] && !empty($item->below) ? count($item->below) : 0;
+      $number = os_taxonomy_count_term_tagged_items(array($item), $options['bundles']);
+      $number += $options['add_childs'] && !empty($item->below) ? os_taxonomy_count_term_tagged_items($item->below, $options['bundles']) : 0;
     }
 
     // Skip on this if we don't display empty children term.
@@ -210,8 +210,10 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       continue;
     }
 
-    if (!empty($path_prefix) && strpos($item['url']['path'],'taxonomy/') === 0) {
-      $item->path = str_replace('taxonomy/', $path_prefix, $item['url']['path']);
+    $url = entity_uri('taxonomy_term', $item);
+
+    if (!empty($path_prefix) && strpos($url['path'],'taxonomy/') === 0) {
+      $item->path = str_replace('taxonomy/', $path_prefix, $url['path']);
     }
 
     if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
@@ -227,7 +229,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
           'number' => $number,
           'name' => $item->name,
           'link_options' => empty($options['tid_active_class']) ? array() : array('attributes' => array('class' => $options['tid_active_class'] == $tid ? 'active' : '',)),
-          'url_path' => entity_uri('taxonomy_term', $item),
+          'url_path' => $url,
           'description' => $item->description,
           'link_to_empty_terms' => $options['link_to_empty_terms'],
           'show_term_descriptions' => $options['show_term_descriptions'],
@@ -379,7 +381,7 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
   foreach ($items as $item) {
     $number = NULL;
     if ($options['show_count']) {
-      $number = $options['add_childs'] && isset($item->below) ? count($item->below) : 0;
+      $number = $options['add_childs'] && isset($item->below) ? os_taxonomy_count_term_tagged_items(array($item->below), $options['bundles']) : 0;
       $number += $tagged_items = os_taxonomy_count_term_tagged_items(array($item), $options['bundles']);
     }
 
