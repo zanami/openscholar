@@ -28,13 +28,16 @@ abstract class OsMigrate extends Migration {
       $class_name = 'MigrateDestinationNode';
     }
     elseif ($this->entityType == 'taxonomy_term') {
-      $this->addFieldMapping('name', 'name');
       $class_name = 'MigrateDestinationTerm';
 
       $csv_columns = array(
         array('id', 'ID'),
         array('name', 'Name'),
+        array('description', 'Description'),
       );
+      $this->addFieldMapping('name', 'name');
+      $this->addFieldMapping('description', 'description');
+
 
       if ($this->ogVocab) {
         $this
