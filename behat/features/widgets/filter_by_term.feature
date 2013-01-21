@@ -44,5 +44,5 @@ Feature:
            | Vocabularies         | authors | select list |
            | Show empty terms     | check   | checkbox    |
            | Show child terms     | check   | checkbox    |
-      And I visit "john/publications"
-      And I should see "Stephen William Hawking"
+      When I visit "john/publications"
+      Then I should see "Stephen William Hawking"
