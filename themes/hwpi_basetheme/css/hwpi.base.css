@@ -313,6 +313,7 @@ ol.search-results li.search-result:last-child {
 }
 
 
+
 /* Class nodes */
 .node-class .field-name-field-semester,
 .node-class .field-name-field-offered-year,
@@ -355,7 +356,76 @@ ol.search-results li.search-result:last-child {
 
 
 /* News nodes */
-.view-os-news .node {
+.node-news .field-name-field-news-date {
+  color: #7e7e7e;
+  overflow: hidden;
+}
+
+.node-news .field-name-field-news-date .field-label {
+  float: left;
+}
+
+
+
+
+/* node person */
+.node-person h1.node-title {
+  margin-bottom: 0;
+  font-size: 38px;
+}
+
+.node-person .field-name-field-professional-title {
+  padding-top: 10px;
+}
+
+.node-person .pic-bio {
+  border-top: 1px solid #e7e7e7;
+  padding-top: 35px;
+  margin-top: 20px;
+  margin-bottom: 60px;
+}
+
+.node-person .field-name-field-person-photo {
+  float: left;
+  margin-top: 5px;
+}
+
+#content .node-person .field-name-body {
+  margin: 0;
+}
+
+#content .node-person.with-person-photo .field-name-body {
+  margin-left: 210px;
+}
+
+.node-person .block {
+  float: left;
+  width: 50%;
+}
+
+#content-column .node-person .contact-details .block-inner {
+  margin-right: 30px;
+}
+
+#content-column .node-person website-details .block-inner {
+  margin-left: 30px;
+}
+
+#content .node-person .field-name-field-phone,
+#content .node-person .field-name-field-email {
+  float: none;
+  margin-right: 0;
+  overflow: hidden;
+  display: block;
+}
+
+.node-person .field-name-field-professional-title .field-item {
+  display: inline;
+  padding-right: 10px;
+}
+
+.node-person .field-name-field-email {
+  text-transform: capitalize; 
 }
 
 

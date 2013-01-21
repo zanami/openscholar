@@ -98,6 +98,7 @@ h2.block-title {
 
 .sidebar .block,
 .front #content-column .block,
+.node-person .block-inner,
 .comment-wrapper {
 	border-top: 3px solid #4384C4;
 }
