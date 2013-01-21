@@ -1,8 +1,8 @@
 <?php
 
 function hwpi_preprocess_page(&$vars) {
-  $vars['page']['branding_header'] += _hwpi_branding_header();
-  $vars['page']['branding_footer'] += _hwpi_branding_footer();
+  //$vars['page']['branding_header'] += _hwpi_branding_header();
+  //$vars['page']['branding_footer'] += _hwpi_branding_footer();
 }
 
 function _hwpi_branding_header() {
@@ -49,7 +49,7 @@ function _hwpi_branding_footer() {
       )
     ),
     'copyright' => array(
-      '#markup' => t('Copyright © 2013 The President and Fellows of Harvard College | @privacy | @access', array(
+      '#markup' => t('Copyright ï¿½ 2013 The President and Fellows of Harvard College | @privacy | @access', array(
         '@privacy' => l('Privacy', 'http://www.harvard.edu/privacy.html'),
         '@access' => l('Accessibility', 'http://www.harvard.edu/accessibility.html')
       ))
