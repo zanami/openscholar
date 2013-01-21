@@ -86,7 +86,7 @@ input[type="search"] {
 #search-block-form input.form-submit,
 #search-block-form #edit-submit,
 #search-form #edit-submit {
-  margin: 0 -100% 0 -41px !important;
+  margin: 0 -100% 0 -43px !important;
 }
 
 
@@ -373,19 +373,29 @@ table .mini-day-on a {
 
 
 
+/* RSS widgets */
+.block-boxes-os_boxes_rss .boxes-box-content,
+.block-boxes-os_boxes_rss .boxes-box-content {
+  padding: 15px 0;
+}
+.block-boxes-os_boxes_rss img,
+.block-boxes-os_boxes_rss img {
+  margin: 0 0 -2px;
+}
 
 
 
+/* Latest News */
+.block-boxes-os_sv_list_box li {
+  list-style: none;
+}
 
 
 
-
-
-
-
-
-
-
+/* Bio */
+.block-boxes-os_boxes_bio .boxes-box-content {
+  padding: 15px 0;
+}
 
 
 
