@@ -28,3 +28,21 @@ Feature:
       Then I should see "Stephen William Hawking"
        And I should see "John F. Kennedy"
        And I should see "This class answer the main question of the semester: who was JFK?."
+
+  @api
+  Scenario: Verify the widget can show/hide the child terms.
+     Given I am logged in as a user with the "administrator" role
+       And I set the term "Stephen William Hawking" under the term "Antoine de Saint-Exupéry"
+       And I assign the node "John F. Kennedy" to the term "Stephen William Hawking"
+       And the widget "Filter by term" is set in the "Publications" page with the following <settings>:
+           | Vocabularies         | authors | select list |
+           | Show empty terms     | check   | checkbox    |
+           | Show child terms     | uncheck | checkbox    |
+       And I visit "john/publications"
+       And I should not see "Stephen William Hawking"
+       And the widget "Filter by term" is set in the "Publications" page with the following <settings>:
+           | Vocabularies         | authors | select list |
+           | Show empty terms     | check   | checkbox    |
+           | Show child terms     | check   | checkbox    |
+      And I visit "john/publications"
+      And I should see "Stephen William Hawking"

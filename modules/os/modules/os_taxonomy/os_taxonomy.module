@@ -222,7 +222,9 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     }
     else {
       // Check if we need to disable the link to the term base on the child number.
-      $child_content = !empty($item->below) ? os_taxonomy_build_child_item($item->below, $item, $options) : '';
+      if ($options['show_childs']) {
+        $child_content = !empty($item->below) ? os_taxonomy_build_child_item($item->below, $item, $options) : '';
+      }
       // Data contain data for term children.
       $data[$tid] = array(
         'data' => theme('os_taxonomy_term_item', array(

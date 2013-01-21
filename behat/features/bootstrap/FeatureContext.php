@@ -369,9 +369,28 @@ class FeatureContext extends DrupalContext {
 
   /**
    * Invoking a php code with drush.
+   *
+   *  @param $function
+   *    The function name to invoke.
+   *  @param $arguments
+   *    Array contain the arguments for function.
+   *  @param $debug
+   *    Set as TRUE/FALSE to diplay the output the function print on the screen.
    */
-  private function invoke_code($function, $arguments) {
+  private function invoke_code($function, $arguments, $debug = FALSE) {
     $code = "$function(" . implode(',', $arguments) . ");";
-    $this->getDriver()->drush("php-eval \"{$code}\"");
+    $output = $this->getDriver()->drush("php-eval \"{$code}\"");
+
+    if ($debug) {
+      print_r($output);
+    }
+  }
+
+  /**
+   * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
+   */
+  public function iSetTheTermUnderTheTerm($child, $parent) {
+    $function = "os_migrate_demo_set_term_under_term";
+    $this->invoke_code($function, array("'$child'", "'$parent'"));
   }
 }
