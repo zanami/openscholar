@@ -80,9 +80,12 @@ Feature:
            | Show empty terms       | check     | checkbox    |
            | Show term descriptions | check     | checkbox    |
       When I visit "john/publications"
-      Then I should see "Antoine de Saint-Exupéry"
-       And I should see "Wrote The little prince"
-       And I should see "Douglas Noël Adams"
-       And I should see "Wrote The Hitchhiker's Guide to the Galaxy"
-       And I should see "Stephen William Hawking"
-       And I should see "Wrote A Brief History of Time"
+      Then I should get:
+        """
+        Antoine de Saint-Exupéry
+        Wrote The little prince
+        Stephen William Hawking
+        Wrote A Brief History of Time
+        Douglas Noël Adams
+        Wrote The Hitchhiker's Guide to the Galaxy
+        """

@@ -144,8 +144,16 @@ class FeatureContext extends DrupalContext {
   /**
    * @Then /^I should get:$/
    */
-  public function iShouldGet(PyStringNode $string) {
-    throw new PendingException();
+  public function iShouldGet($string) {
+    $page = $this->getSession()->getPage();
+
+    $metasteps = array();
+
+    foreach ($string->getLines() as $line) {
+      $metasteps[] = new Step\When('I should see "' . $line . '"');
+    }
+
+    return $metasteps;
   }
 
   /**

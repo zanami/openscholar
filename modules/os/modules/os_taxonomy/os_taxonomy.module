@@ -164,8 +164,8 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   // therefore we need to increase the depth value by one.
   $depth = ($options['depth'] + 1) == 0 ? NULL : $options['depth'] + 1;
 
-  // The taxonomy_get_tree() function return the tree which is not ordered in a
-  // tree format. The function hierarchical_taxonomy_get_tree() order the
+  // The taxonomy_get_tree() function returns the tree which is not ordered in a
+  // tree format. The function hierarchical_taxonomy_get_tree() orders the
   // vocabulary in the tree format. This will ease on the performance side.
   $vocabulary = hierarchical_taxonomy_get_tree($variables['vid'], 0, $depth, TRUE);
 
