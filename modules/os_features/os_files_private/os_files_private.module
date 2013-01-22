@@ -7,7 +7,7 @@
 
 include_once('os_files_private.features.inc');
 
-define(OS_FILES_PRIVATE_PATH, "cp/content/files-private");
+define('OS_FILES_PRIVATE_PATH', "cp/content/files-private");
 
 /**
  * Implements hook_os_app_info().
