@@ -5,6 +5,8 @@
  * OpenScholar files private module file.
  */
 
+include_once('os_files_private.features.inc');
+
 define(OS_FILES_PRIVATE_PATH, "cp/content/files-private");
 
 /**
@@ -36,39 +38,7 @@ function os_files_private_menu() {
     'file' => 'os_files_private.pages.inc',
   );
 
-  $items[OS_FILES_PRIVATE_PATH] = array(
-    'title' => 'Private Files',
-    'description' => 'Manage private files used on your site.',
-    'page callback' => 'views_embed_view',
-    'page arguments' => array('cp_files', 'default'),
-    'access callback' => 'os_files_private_file_list',
-    // @todo make work like local task tabs.
-    //'type' => MENU_DEFAULT_LOCAL_TASK,
-  );
-
   return $items;
-}
-
-/**
- *
- */
-function os_files_private_menu_alter(&$items) {
-  if (isset($items['cp/content/files'])) {
-    // @todo make work like local task tabs.
-    //$items['cp/content/files']['type'] = MENU_LOCAL_TASK;
-  }
-}
-
-/**
- * Access callback; Determine if the user can manage the files entity for
- * a VSite.
- */
-function os_files_private_file_list() {
-  if (!$space = spaces_get_space()) {
-    return;
-  }
-
-  return og_user_access('node', $space->id, 'administer files');
 }
 
 /**
@@ -122,52 +92,6 @@ function os_files_private_form_file_entity_add_upload_submit($form, &$form_state
   else {
     $form_state['redirect'] = 'admin/content/file';
   }
-}
-
-/**
- * Implements hook_page_build().
- */
-function os_files_private_page_build(&$page) {
-  $item = menu_get_item();
-
-  if (!os_files_private_file_list()) {
-    return;
-  }
-
-  if (!in_array($item['path'], array(OS_FILES_PRIVATE_PATH, 'file/%', 'file/%/edit'))) {
-    return;
-  }
-
-  if (!$page['content']) {
-    $page['content'] = array();
-  }
-  $page['content']['os_files_private'] = array();
-  // @todo make work like local task tabs.
-  //$page['content']['os_files_private']['menu_local_tabs'] = menu_local_tabs();
-  $page['content']['os_files_private']['menu_local_actions'] = array(
-    '#theme' => 'links',
-    '#links' => array(
-      'add_new' => array(
-        'title' => t('Add private file'),
-        'href' => 'file/add',
-        'html' => TRUE,
-      ),
-    ),
-    '#attributes' => array('class' => 'cp-controls-wrapper'),
-    '#weight' => -1,
-  );
-}
-
-/**
- * Implements hook_og_permission().
- */
-function os_files_private_og_permission() {
-  return array(
-    'administer site files' => array(
-      'title' => t('Manage site files'),
-      'description' => t('Manage the files for the site.'),
-    ),
-  );
 }
 
 /**

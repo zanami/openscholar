@@ -102,6 +102,7 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
     if ($space->type == 'og') {
       $query->innerJoin('og_membership', 'ogm', 'n.nid = ogm.etid');
       $query->condition('ogm.entity_type', 'node');
+      $query->condition('ogm.group_type', 'node');
       $query->condition('ogm.gid', $space->id);
     }
     // Check the sort order for biblio.
@@ -402,8 +403,12 @@ function os_publications_preprocess_node(&$vars) {
 function os_publications_node_view_alter(&$build, $type) {
   $spaces = spaces_get_space();
   if ($type == 'node' && $build['#bundle'] == 'biblio') {
-    // Remove the Google Scholar link that appears at the bottom of full view publications.
     if($build['#view_mode'] == 'full') {
+      // Remove the publication image as it's called in theme_os_publications_tabular instead.
+      if(isset($build['field_biblio_image'])) {
+      	$build['field_biblio_image']['#access'] = FALSE;
+      }
+      // Remove the Google Scholar link that appears at the bottom of full view publications.
       if(isset($build['links']['biblio_google_scholar'])) {
         unset($build['links']['biblio_google_scholar']);
       }

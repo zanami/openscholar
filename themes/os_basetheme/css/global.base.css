@@ -611,3 +611,9 @@ td img {
 .overlay #header-container {
   display: none;
 }
+
+/** Floats and spaces the publication image properly **/
+.publication-cover-container {
+  float:left;
+  margin: 0 1.5em .5em 0;
+}
