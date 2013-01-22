@@ -130,8 +130,8 @@ function os_boxes_site_info_submit($form, &$form_state) {
       node_save($node);
     }
     catch (Exception $e) {
-      dpm($node);
-      dpm($e);
+      drupal_set_message(t('Error saving site information. Contact your site administrator.'), 'error');
+      error_log($e);
     }
   }
   else {
