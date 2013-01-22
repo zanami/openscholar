@@ -279,7 +279,7 @@ function os_classes_strongarm() {
   $strongarm->disabled = FALSE;
   $strongarm->api_version = 1;
   $strongarm->name = 'pathauto_node_class_material_pattern';
-  $strongarm->value = 'classes/[node:field_class/materials/[node:title]';
+  $strongarm->value = 'classes/[node:field_class]/materials/[node:title]';
   $export['pathauto_node_class_material_pattern'] = $strongarm;
 
   return $export;
