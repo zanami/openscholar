@@ -4,7 +4,7 @@
  * Clean out widgets that don't need to be in contexts
  */
 function cp_layout_update_7001(&$sandbox) {
-  if (!isset($sandbox['data'])) {
+  if (!isset($sandbox['progress'])) {
     $q = db_query('SELECT id, object_id, value FROM spaces_overrides WHERE object_type = \'context\'');
 
     $public_default = array();
@@ -27,7 +27,7 @@ function cp_layout_update_7001(&$sandbox) {
     $sandbox['public_default'] = $public_default;
     $sandbox['public'] = array();
     $sandbox['data'] = $data;
-    $sandbox['limit'] = 50;
+    $sandbox['limit'] = 30;
     $sandbox['progress'] = 0;
 
     if (!count($data)) {
@@ -50,6 +50,7 @@ function cp_layout_update_7001(&$sandbox) {
       'title',
       'weight'
   );
+  set_time_limit(0);
 
   foreach ($set as $r) {
     if ($r['vsite'] != $current_site) {
@@ -98,14 +99,20 @@ function cp_layout_update_7001(&$sandbox) {
         }
       }
     }
+    // totally unrelated, but it's junk data
+    unset($save['boxes-shield_default']);
 
-    $u = db_update('spaces_overrides')
-      ->fields(array('value' => serialize(array('blocks' => $save))))
-      ->condition('id', $r['vsite'])
-      ->condition('object_id', $r['context'].'%', 'LIKE');
-    error_log("$u");
-    error_log(print_r($u->arguments(),1));
-    $u->execute();
+    try {
+      $u = db_update('spaces_overrides')
+        ->fields(array('value' => serialize(array('blocks' => $save))))
+        ->condition('id', $r['vsite'])
+        ->condition('object_type', 'context')
+        ->condition('object_id', $r['context'].'%', 'LIKE');
+      $u->execute();
+    }
+    catch (Exception $e) {
+      error_log($e);
+    }
 
     $sandbox['progress']++;
   }
