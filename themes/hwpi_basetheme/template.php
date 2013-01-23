@@ -86,6 +86,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
     if (isset($build['field_person_photo']) || isset($build['body'])) {
       $build['pic_bio']['#prefix'] = '<div class="pic-bio clearfix">';
       $build['pic_bio']['#suffix'] = '</div>';
+      $build['pic_bio']['#weight'] = -9;
     }
 
     if (isset($build['field_person_photo'])) {
@@ -107,6 +108,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
     // Contact Details
     $build['contact_details']['#prefix'] = '<div class="block contact-details"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
     $build['contact_details']['#suffix'] = '</div></div>';
+    $build['contact_details']['#weight'] = -8;
 
     // Contact Details > address
     if (isset($build['field_address'])) {
@@ -138,6 +140,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
     // Websites
     $build['website_details']['#prefix'] = '<div class="block website-details"><div class="block-inner"><h2 class="block-title">Websites</h2>';
     $build['website_details']['#suffix'] = '</div></div>';
+    $build['website_details']['#weight'] = -7;
     $build['field_website']['#label_display'] = 'hidden';
     $build['website_details']['field_website'] = $build['field_website'];
     unset($build['field_website']);

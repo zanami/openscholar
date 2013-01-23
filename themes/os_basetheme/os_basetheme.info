@@ -22,7 +22,6 @@
   regions[sidebar_first]     = Sidebar first
   regions[sidebar_second]    = Sidebar second
   regions[content]           = Main Content
-  regions[footer]            = Footer
   regions[menu_bar]          = Menu Bar
   regions[messages]          = Messages
   regions[help]              = Help
@@ -50,6 +49,12 @@ regions[content_first]  = Content left
 regions[content_second] = Content right
 regions[content_bottom] = Content bottom
 
+; Footer regions
+regions[footer_top]    = Footer top
+regions[footer_first]  = Footer left
+regions[footer] = Footer center
+regions[footer_third]  = Footer right
+regions[footer_bottom] = Footer bottom
 
 ;----------// Custom Page Layout Plugins
 
