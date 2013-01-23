@@ -127,7 +127,7 @@ function cp_layout_full_form($form, $form_state){
       )
     );
   }
-
+dpm($blocks);
   $use_content_regions = false;
   foreach ( $blocks as $bid => $b ) {
     if ($b['region'] == - 1 || $b['region'] === FALSE) {
