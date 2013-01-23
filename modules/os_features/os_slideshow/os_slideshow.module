@@ -9,17 +9,17 @@ include_once 'os_slideshow.features.inc';
 /**
  * Implements hook_menu()
  */
-function os_slideshow_menu() {
-  $items['os/slideshow/%'] = array(
-    'title' => 'Add Slide',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('slideshow_image_node_form'),
-    'access callback' => 'boxes_access_admin',
-    'type' => MENU_LOCAL_TASK,
-    //'context' => MENU_CONTEXT_INLINE,
-  );
-  return $items;
-}
+// function os_slideshow_menu() {
+//   $items['os/slideshow/%'] = array(
+//     'title' => 'Add Slide',
+//     'page callback' => 'drupal_get_form',
+//     'page arguments' => array('slideshow_image_node_form'),
+//     'access callback' => 'boxes_access_admin',
+//     'type' => MENU_LOCAL_TASK,
+//     //'context' => MENU_CONTEXT_INLINE,
+//   );
+//   return $items;
+// }
 
 /**
  * Implements hook_boxes_plugins().
@@ -49,23 +49,48 @@ function os_slideshow_boxes_plugins(){
  * 
  *  Adds 'add new slide' link to slideshow's contextual menu.
  **/
-function os_slideshow_block_view_alter(&$block, &$data) {
-  if (isset($block['boxes_plugin']) && ($block['boxes_plugin'] == 'os_slideshow_box')) {
-    $block['content']['#contextual_links']['node'] = array(
-      0 => 'os/slideshow',
-      1 => array($block['delta']),  
-    );
-  }
-  $block;
-}
+// function os_slideshow_block_view_alter(&$block, &$data) {
+//   if (isset($block['boxes_plugin']) && ($block['boxes_plugin'] == 'os_slideshow_box')) {
+//     $block['content']['#contextual_links']['node'] = array(
+//       0 => 'os/slideshow',
+//       1 => array($block['delta']),  
+//     );
+//   }
+//   $block;
+// }
 
 /**
  * Implements hook_form_FORMID_alter
+ *
+ * Attaches widget delta to form so it'll be available during node save
+ */
+function os_slideshow_form_slideshow_image_node_form_alter(&$form, &$state, $form_id) {
+  $widget = (isset($_GET['widget'])) ? $_GET['widget'] : FALSE;
+  if ($widget) {
+    $form['widget'] = array('#type' => 'hidden', '#value' => $widget);
+  } 
+}
 
-//  */
-// function os_slideshow_form_slideshow_image_node_form_alter(&$form, &$state, $form_id) {
-//   $form['widget'] = array('#type' => 'hidden', '#value' => '');
-// }
+/**
+ * Implements hook_node_insert
+ * 
+ * When a slideshow_image is created, add its nid to the widget it was created for
+ */
+function os_slideshow_node_insert($node) {
+  if (($node->type == 'slideshow_image') && isset($node->widget)) {
+    if (module_exists('spaces') && $space = spaces_get_space()) { 
+      if ($box = $space->controllers->boxes->get($node->widget)) {
+        $box->options['nodes'][] = (int)$node->nid;
+        $space->controllers->boxes->set($box->delta, $box);
+      }
+    } else {   
+      if ($box = boxes_box_load($node->widget)) {
+        $box->options['nodes'][] = (int)$node->nid;
+        $box->save();
+      }
+    }
+  }
+}
 
 // function os_slideshow_add_slide($widget) {
 //   $form = drupal_get_form('slideshow_image_node_form');
