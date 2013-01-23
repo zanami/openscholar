@@ -25,7 +25,7 @@ function cp_layout_update_7001(&$sandbox) {
 
   // if the public context has been overridden, clean it up
   $q = db_select('spaces_overrides', 'so')
-       ->fields(array('object_id', 'value'))
+       ->fields('so', array('object_id', 'value'))
        ->condition('id', $id)
        ->condition('object_id', 'os_public%', 'LIKE')
        ->condition('object_type', 'context')
