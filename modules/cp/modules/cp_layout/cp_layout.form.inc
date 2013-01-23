@@ -62,11 +62,13 @@ function cp_layout_full_form($form, $form_state){
     'sidebar_first',
     'content',
     'sidebar_second',
-    'footer',
     'content_top',
     'content_first',
     'content_second',
-    'content_bottom'
+    'content_bottom',
+    'footer_first',
+    'footer',
+    'footer_third',
   );
 
   $weights = _cp_layout_get_weight_map($regions);
@@ -119,7 +121,7 @@ function cp_layout_full_form($form, $form_state){
       )
     );
   }
-
+dpm($blocks);
   $use_content_regions = false;
   foreach ( $blocks as $bid => $b ) {
     if ($b['region'] == - 1 || $b['region'] === FALSE) {
