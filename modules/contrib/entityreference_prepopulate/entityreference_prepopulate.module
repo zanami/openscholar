@@ -96,7 +96,9 @@ function entityreference_prepopulate_field_attach_form($entity_type, $entity, &$
   if (!empty($form_state['triggering_element']['#ajax'])) {
     // We are inside AJAX, so values can't be taken from URL at the
     // moment.
-    return;
+    if(!module_exists('og_context') || !og_context()){
+      return;
+    }
   }
 
   // Check if there is a field that needs to be prepopulated attached to the
