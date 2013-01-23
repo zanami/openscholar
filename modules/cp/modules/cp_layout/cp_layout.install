@@ -19,7 +19,7 @@ function cp_layout_update_7001(&$sandbox) {
     }
   }
 
-  $q = db_query('SELECT DISTINCT(id) FROM spaces_overrides WHERE object_type = \'context\' ORDER BY id+0 ASC LIMIT 1 OFFSET :offset', array(':offset' => $sandbox['progress']));
+  $q = db_query('SELECT DISTINCT(id) FROM spaces_overrides WHERE object_type = \'context\' ORDER BY id+0 ASC LIMIT 1 OFFSET '.$sandbox['progress']);
   $id = $q->fetchField();
   ctools_include('layout', 'os');
 
