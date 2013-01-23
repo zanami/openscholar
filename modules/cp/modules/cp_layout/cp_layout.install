@@ -4,13 +4,13 @@
  * Clean out widgets that don't need to be in contexts
  */
 function cp_layout_update_7001(&$sandbox) {
+  ini_set('memory_limit', '1024M');
   if (!isset($sandbox['progress'])) {
     $q = db_query('SELECT id, object_id, value FROM spaces_overrides WHERE object_type = \'context\'');
 
     $public_default = array();
 
     $data = array();
-    ini_set('memory_limit', '1024M');
     foreach ($q as $r) {
       $ctx = explode(':', $r->object_id);
       $data[] = array('vsite' => $r->id, 'context' => $ctx[0]) + unserialize($r->value);
