@@ -11,7 +11,7 @@ function _is_hwpi_theme() {
   $themes = list_themes();
   if (isset($themes[$GLOBALS['theme']])) {
     $t = $themes[$GLOBALS['theme']];
-    if (isset($t->base_themes) && in_array('hwpi_basetheme', $t->base_themes)) {
+    if (isset($t->base_themes) && isset($t->base_themes['hwpi_basetheme'])) {
       return true;
     }
   }
