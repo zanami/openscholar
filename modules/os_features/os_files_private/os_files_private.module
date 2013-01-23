@@ -100,7 +100,9 @@ function os_files_private_form_file_entity_add_upload_submit($form, &$form_state
  * Serve public files from a vsite directory.
  */
 function os_files_private_file_download($uri) {
-  //  global $user;
+  if (arg(0) !== 'system') {
+    return;
+  }
   $file = array();
   $restrict_mode = variable_get('os_files_private_restrict_mode', 'site_members');
   $query = new EntityFieldQuery;
