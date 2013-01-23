@@ -184,6 +184,14 @@ class os_slideshow_box extends os_boxes_default {
         $handler->set_option('use_pager', FALSE);
       }
       
+
+      //use an appropriately scaled image style.
+      $image_style = $this->_get_image_style($this->options['size']);
+      $style = current(array_keys($image_style));
+      $fields = $handler->get_option('fields');
+      $fields['field_image']['settings']['image_style'] = $style;
+      $handler->set_option('fields', $fields);
+      
       //filter slides  - nid is an ORed group of nids.  all it needs is a filter array per nid.
       $filters = $handler->get_option('filters');
       $nid_filter = $filters['nid'];
@@ -194,13 +202,64 @@ class os_slideshow_box extends os_boxes_default {
       }
       $handler->set_option('filters', $filters);
       
-      
       $output = $view->preview();     
+      $output = $this->_resize_images($output, $image_style);
+      
+      
+      
       $block['content'] .= $output; 
     }
     return $block;
   }
+  
+
+  //returns [name => [width, height]] of style for this box's size
+  private function _get_image_style() {
+    $image_styles = image_styles();
+    $slideshows = preg_grep('/^slideshow_/', array_keys($image_styles));
+    $size = (int) $this->options['size'];
+    
+    $sizes = array();
+    foreach ($slideshows as $name) {
+      $style = current($image_styles[$name]['effects']);
+      $sizes[$style['data']['width']] = array($name => $style['data']);
+    }
+    
+    ksort($sizes);
+    foreach ($sizes as $width => $data) {
+      if ($width >= (int)$this->options['size']) {
+        break;
+      }
+    }
+    
+    return $data;    
+  }
+  
+  //resize images provided by the view to the size specified by the user
+  private function _resize_images($html, $style) {
+    $dim = current($style);
+    $preset = current(array_keys($style));
+    $ratio = $dim['height']/$dim['width'];
+    $width = $this->options['size'];
+    $height = $width * $ratio;
+    
+    // swap out the dimenions of the preset with the dimenions the user wants
+    $patt_w = '/(<img [^>]* width=")([^"]*)("[^>]*>)/';
+    $patt_h = '/(<img [^>]* height=")([^"]*)("[^>]*>)/';
+    $patt_url = '/<img [^>]*src="([^"]*)"[^>]*>/';
+    
+    $html = preg_replace($patt_w, '${1}'.($width).'px'.'${3}', $html);
+    $html = preg_replace($patt_h, '${1}'.($height).'px'.'${3}', $html);
+//     $matches = array();
+//     preg_match_all($patt_url, $html, $matches, PREG_SET_ORDER);
+//     foreach ($matches as $m) {
+       //$html = str_replace($m[1], image_style_url($preset, $m[1]), $html);  
+//     }
+    
+    return $html;
+  }
 }
+
 
 function os_boxes_manual_list_table($element) {
   // render the form as a table
