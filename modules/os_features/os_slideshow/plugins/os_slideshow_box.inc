@@ -92,19 +92,25 @@ class os_slideshow_box extends os_boxes_default {
       '#tree' => TRUE,
       '#pre_render' => array('os_slideshow_draggable_table'),
     );
+    
+    //load slideshow_image nodes
+    $nodes = node_load_multiple(array_keys($this->options['nodes']));
 
-    foreach ($this->options['nodes'] as $weight => $nid) {
+    foreach ($this->options['nodes'] as $nid => $data) {
+      $uri = $nodes[$nid]->field_image[$nodes[$nid]->language][0]['uri'];
+      $img = theme('image_style', array('style_name' => 'os_square_50_50','path' => $uri, 'width'=>50, 'height'=>50));
+      $title = $nodes[$nid]->title;
       $form['nodes'][$nid] = array(
         'nid' => array(
           '#type' => 'hidden',
           '#default_value' => $nid,
         ),
-        'remove' => array(
-          '#markup' => '<span>' . $nid . '</span> <a href="#" class="remove" title="Remove Slide">Remove</a>',
+        'text' => array(
+          '#markup' => $img . ' <span>' . $title . '</span> <a href="#" class="remove" title="Remove Slide">Remove</a>',
         ),
         'weight' => array(
           '#type' => 'textfield',
-          '#default_value' => $weight,
+          '#default_value' => $data['weight'],
           '#size' => 3,
           '#attributes' => array('class' => array('field-weight')),
         )   
@@ -185,6 +191,7 @@ class os_slideshow_box extends os_boxes_default {
       //stash the box delta for hook_pre_render (is there a better way to do this part?)
       $view->set_arguments(array('delta' => $this->delta));
       
+      //render output
       $output = $view->preview();     
       $output = $this->_resize_images($output, $image_style);
       
@@ -251,7 +258,7 @@ function os_slideshow_draggable_table($element) {
   foreach (element_children($element) as $c) {
     $rows[] = array(
       'data' => array(
-        drupal_render($element[$c]['nid']) . drupal_render($element[$c]['remove']),
+        drupal_render($element[$c]['nid']) . drupal_render($element[$c]['text']),
         drupal_render($element[$c]['weight']),
       ),
       'class' => ((string)$c!='blank') ? array('draggable') : array(),
