@@ -74,7 +74,7 @@ class os_slideshow_box extends os_boxes_default {
       $form['display']['effect']['#default_value'] = $this->options['effect'];
     }
     
-    return $form;
+  //  return $form;
     
     
 
@@ -82,68 +82,44 @@ class os_slideshow_box extends os_boxes_default {
       drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_manual_list/os_boxes_manual_list.js'
     );
 
-    //adding to list happens inline
+
     
-//     include_once (drupal_get_path('module', 'vsite') . '/includes/nodeautocomplete.inc');
-//     $form['add'] = array(
-//       '#type' => 'fieldset',
-//       '#title' => t('Add New Post'),
-// //      'node_to_add' => array(
-// //        '#type' => 'textfield',
-// //        '#description' => t('Start entering the title of a post and matching posts will appear.'),
-// //        '#autocomplete_path' => 'ctools/autocomplete/node',
-// //      	'#field_suffix' => '<input type="button" class="add_new" value="Add" />'
-// //      ),
-//       'node_to_add' => vsite_node_autocomplete_element() + array('#field_suffix' => '<input type="button" class="add_new" value="Add" />'),
-//     );
+    
 
     // build a normal form
     $form['nodes'] = array(
       '#type' => 'markup',
       '#tree' => TRUE,
-      '#pre_render' => array('os_boxes_manual_list_table'),
+      '#pre_render' => array('os_slideshow_draggable_table'),
     );
 
-    $nodes = &$form['nodes'];
-    usort($this->options['nodes'], 'element_sort');
-
-    $this->options['nodes']['blank'] = array('nid' => 0, 'title' => '__blank__', 'weight' => 2000000); // blank element for copying purposes
-    foreach ($this->options['nodes'] as $k => $v) {
-      $n = array(
-        '#weight' => $v['weight'],
+    foreach ($this->options['nodes'] as $weight => $nid) {
+      $form['nodes'][$nid] = array(
         'nid' => array(
           '#type' => 'hidden',
-          '#default_value' => $v['nid'],
+          '#default_value' => $nid,
         ),
-        'text' => array(
-          '#type' => 'markup',
-          '#markup' => '<span>'.$v['title'].'</span> <a href="#" class="remove" title="Remove Post">Remove</a>',
-        ),
-        'title' => array(
-          '#type' => 'hidden',
-          '#default_value' => $v['title'],
+        'remove' => array(
+          '#markup' => '<span>' . $nid . '</span> <a href="#" class="remove" title="Remove Slide">Remove</a>',
         ),
         'weight' => array(
           '#type' => 'textfield',
-          '#default_value' => $v['weight'],
+          '#default_value' => $weight,
           '#size' => 3,
-          '#attributes' => array(
-            'class' => (string)$k!='blank'?array('field-weight'):array(),
-          )
-        ),
+          '#attributes' => array('class' => array('field-weight')),
+        )   
       );
-      $nodes[$k] = $n;
     }
 
-
-    $form['count'] = array(
-      '#type' => 'hidden',
-      '#default_value' => count($this->options['nodes'])-1,
-      '#attributes' => array(
-        'id' => 'edit-count',
-      ),
-      '#process' => array('os_boxes_manual_list_add_new_fields'),
-    );
+    //not doing new ones in here...
+//     $form['count'] = array(
+//       '#type' => 'hidden',
+//       '#default_value' => count($this->options['nodes'])-1,
+//       '#attributes' => array(
+//         'id' => 'edit-count',
+//       ),
+//       '#process' => array('os_boxes_manual_list_add_new_fields'),
+//     );
     return $form;
   }
 
@@ -193,14 +169,18 @@ class os_slideshow_box extends os_boxes_default {
       $handler->set_option('fields', $fields);
       
       //filter slides  - nid is an ORed group of nids.  all it needs is a filter array per nid.
-      $filters = $handler->get_option('filters');
-      $nid_filter = $filters['nid'];
-      unset($filters['nid']);
-      for($c = 0; $c < count($this->options['nodes']); $c++) {
-        $nid_filter['value']['value'] = $this->options['nodes'][$c];
-        $filters['nid_' . $c] = $nid_filter;
+      if ($this->options['nodes']) {
+        $filters = $handler->get_option('filters');
+        $nid_filter = $filters['nid'];
+        unset($filters['nid']);
+        $c = 0;
+        foreach (array_keys($this->options['nodes']) as $nid) {
+ //       for($c = 0; $c < count($this->options['nodes']); $c++) {
+          $nid_filter['value']['value'] = $nid;
+          $filters['nid_' . $c++] = $nid_filter;
+        }
+        $handler->set_option('filters', $filters);
       }
-      $handler->set_option('filters', $filters);
       
       $output = $view->preview();     
       $output = $this->_resize_images($output, $image_style);
@@ -261,17 +241,17 @@ class os_slideshow_box extends os_boxes_default {
 }
 
 
-function os_boxes_manual_list_table($element) {
+function os_slideshow_draggable_table($element) {
   // render the form as a table
   $rows = array();
   uasort($element, 'element_sort');
   foreach (element_children($element) as $c) {
     $rows[] = array(
       'data' => array(
-        drupal_render($element[$c]['nid']).drupal_render($element[$c]['text']).drupal_render($element[$c]['title']),
+        drupal_render($element[$c]['nid']) . drupal_render($element[$c]['remove']),
         drupal_render($element[$c]['weight']),
       ),
-      'class' => (string)$c!='blank'?array('draggable'):array(),
+      'class' => ((string)$c!='blank') ? array('draggable') : array(),
     );
   }
   $element['#headers'] = array();
@@ -285,34 +265,34 @@ function os_boxes_manual_list_table($element) {
   return $element;
 }
 
-function os_boxes_manual_list_add_new_fields($element, &$form_state, &$form) {
-  for ($i=$element['#default_value']; $i < $element['#value']; $i++) {
-    $form['options']['nodes'][$i] = array(
-      '#attributes' => array('id' => $i),
-      '#parents' => array('nodes', $i),
-      '#array_parents' => array('options', 'nodes', $i),
-      '#tree' => TRUE,
-    );
-    $form['options']['nodes'][$i] += $form['options']['nodes']['blank'];
-    foreach ($form['options']['nodes'][$i] as $key => &$child) {
-      if (strpos($key, '#') !== 0) {
-        unset($child['#parents']);
-        unset($child['#name']);
-        unset($child['#value']);
-      }
-    }
-    form_builder($form['form_id']['#value'], $form['options']['nodes'][$i], $form_state);
-  }
-  unset($form_state['values']['nodes']['blank']);
+// function os_boxes_manual_list_add_new_fields($element, &$form_state, &$form) {
+//   for ($i=$element['#default_value']; $i < $element['#value']; $i++) {
+//     $form['options']['nodes'][$i] = array(
+//       '#attributes' => array('id' => $i),
+//       '#parents' => array('nodes', $i),
+//       '#array_parents' => array('options', 'nodes', $i),
+//       '#tree' => TRUE,
+//     );
+//     $form['options']['nodes'][$i] += $form['options']['nodes']['blank'];
+//     foreach ($form['options']['nodes'][$i] as $key => &$child) {
+//       if (strpos($key, '#') !== 0) {
+//         unset($child['#parents']);
+//         unset($child['#name']);
+//         unset($child['#value']);
+//       }
+//     }
+//     form_builder($form['form_id']['#value'], $form['options']['nodes'][$i], $form_state);
+//   }
+//   unset($form_state['values']['nodes']['blank']);
 
-  // remove nids that aren't in the post
-  if (is_array($form_state['values'])) {
-    foreach ($form_state['values']['nodes'] as $k => $v) {
-      if (!isset($form_state['input']['nodes'][$k]) || !isset($form_state['input']['nodes'][$k]['nid'])) {
-        unset($form_state['values']['nodes'][$k]);
-      }
-    }
-  }
+//   // remove nids that aren't in the post
+//   if (is_array($form_state['values'])) {
+//     foreach ($form_state['values']['nodes'] as $k => $v) {
+//       if (!isset($form_state['input']['nodes'][$k]) || !isset($form_state['input']['nodes'][$k]['nid'])) {
+//         unset($form_state['values']['nodes'][$k]);
+//       }
+//     }
+//   }
 
-  return $element;
-}
+//   return $element;
+// }
