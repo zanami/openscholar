@@ -62,16 +62,6 @@ class os_slideshow_box extends os_boxes_default {
         '#options' => array('none' => t('No'), 'bottom' => t('Yes')),
         '#default_value' => $this->options[$option],
       );
-    
-    $form['display']['show_image_titles'] = array(
-      '#type' => 'select',
-      '#title' => t('Show image titles'),
-      //omitting top/bottom options, but leaving this here so we can add it back in when we're ready for new features.
-      //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
-      '#options' => array('none' => t('No'), 'top' => t('Yes')),
-      '#default_value' => $this->options['show_image_titles'],
-        );
-    
    
     //get jquery effects from view (include file hsould arleady be loaded)
     $slideshow_form_full = $state = array();
@@ -159,46 +149,54 @@ class os_slideshow_box extends os_boxes_default {
 
   public function render() {
     $block = parent::render();
-    
-    if (empty($this->options['nodes'])) {
-      $block['content'] = t('You haven\'t added any slides yet.');
-    } 
-    return $block;
-    
-    
-    
-    
-    
-    $links = array();
-    foreach ($this->options['nodes'] as $n) {
-      if ($this->options['style'] == 'teasers') {
-        // Theme the nodes as a teaser
-        $node = node_load($n['nid']);
-        $links[$n['weight']] = render(node_view($node, 'teaser'));
-      }
-      elseif ($this->options['style'] == 'full') {
-        $node = node_load($n['nid']);
-        $links[$n['weight']] = render(node_view($node, 'full'));
-      }
-      else {
-        $l = array(
-          'href' => 'node/'.$n['nid'],
-          'title' => $n['title'],
-        );
-        $links[$n['weight']] = $l;
-      }
+
+    //show Add Slide link to admins
+    if (spaces_access_admin()) {
+      $block['content'] = l('Add Slide', 'node/add/slideshow-image', array(
+        'attributes' => array('class' => array('add_new')),
+        'query' => array('widget' => $this->delta),
+      ));
     }
-    ksort($links);
-    if(empty($links)) {
-      $block['title'] = '';
-      $block['subject'] = '';
-      return $block;
-    }
-    if ($this->options['style'] == 'teasers' || $this->options['style'] == 'full') {
-      $block['content'] = theme('item_list', array('items' => $links, 'attributes' => array('class' => array('featured-links'))));
-    }
-    else {
-      $block['content'] = theme('links', array('links' => $links, 'attributes' => array('class' => array('featured-links'))));
+    
+    drupal_add_css(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_slideshow/theme/os-slideshow-' . $this->options['style'] . '.css');
+    drupal_add_css(drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_slideshow/os_boxes_slideshow.css');
+    
+    if ($view = views_get_view('os_slideshow')) {
+      $view->init_display();
+      $handler = $view->display_handler;
+      $style_options = $handler->get_option('style_options');
+      
+      //add slideshow widgets
+      foreach(array('pager', 'controls', 'slide_counter') as $option) {
+        foreach($style_options['widgets'] as $position => $info) {
+          $style_options['widgets'][$position]['views_slideshow_' . $option]['enable'] = ($position == $this->options[$option]);
+        }
+      }
+      
+      //effects
+      $style_options['views_slideshow_cycle']['effect'] = $this->options['effect'];
+      $handler->set_option('style_options', $style_options);
+      
+      //number of items
+      if ((int)$this->options['items_per_page'] > 0) {
+        $view->set_items_per_page((int) $this->options['items_per_page']);
+      } else {
+        $handler->set_option('use_pager', FALSE);
+      }
+      
+      //filter slides  - nid is an ORed group of nids.  all it needs is a filter array per nid.
+      $filters = $handler->get_option('filters');
+      $nid_filter = $filters['nid'];
+      unset($filters['nid']);
+      for($c = 0; $c < count($this->options['nodes']); $c++) {
+        $nid_filter['value']['value'] = $this->options['nodes'][$c];
+        $filters['nid_' . $c] = $nid_filter;
+      }
+      $handler->set_option('filters', $filters);
+      
+      
+      $output = $view->preview();     
+      $block['content'] .= $output; 
     }
     return $block;
   }
