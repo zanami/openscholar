@@ -10,3 +10,13 @@
 .follow-me-links li {
 	display: inline-block;
 }
+
+.follow-me-links-vertical li {
+	display: block;
+	padding: 3px;
+}
+
+.service-name-span {
+	vertical-align: middle;
+	padding-left: 5px;
+}
