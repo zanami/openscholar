@@ -60,3 +60,40 @@ function os_slideshow_node_insert($node) {
     }
   }
 }
+
+
+/**
+ * Implements hook_views_pre_render
+ * 
+ * This view gets a custom sort that can't be configured programmatically.  Do it manually here instead.
+ * @param unknown_type $view
+ */
+function os_slideshow_views_pre_render(&$view) {
+  if (($view->name == 'os_slideshow') && $delta = $view->args['delta']) {
+    
+    //get the box
+    if (module_exists('spaces') && $space = spaces_get_space()) {
+      $box = $space->controllers->boxes->get($delta);
+    } else {
+      $box = boxes_box_load($delta);
+    }
+    
+    if (!$box) {
+      return;
+    }
+    
+    //sort the nodes
+    $nodes = $box->options['nodes'];
+    uasort($nodes, 'element_sort');
+    $ordered_nodes = array_flip(array_keys($nodes));  // nid -> position
+    
+    $new_result = array();
+    foreach($view->result as $node) {
+      $pos = $ordered_nodes[$node->nid];
+      $new_result[$pos] = $node;
+    }
+    ksort($new_result);
+    
+    $view->result = $new_result;
+  }
+}

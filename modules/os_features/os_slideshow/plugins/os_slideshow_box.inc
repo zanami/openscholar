@@ -182,6 +182,9 @@ class os_slideshow_box extends os_boxes_default {
         $handler->set_option('filters', $filters);
       }
       
+      //stash the box delta for hook_pre_render (is there a better way to do this part?)
+      $view->set_arguments(array('delta' => $this->delta));
+      
       $output = $view->preview();     
       $output = $this->_resize_images($output, $image_style);
       
