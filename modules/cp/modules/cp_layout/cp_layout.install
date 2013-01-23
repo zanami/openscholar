@@ -10,7 +10,7 @@ function cp_layout_update_7001(&$sandbox) {
     $public_default = array();
 
     $data = array();
-
+    ini_set('memory_limit', '1024M');
     foreach ($q as $r) {
       $ctx = explode(':', $r->object_id);
       $data[] = array('vsite' => $r->id, 'context' => $ctx[0]) + unserialize($r->value);
