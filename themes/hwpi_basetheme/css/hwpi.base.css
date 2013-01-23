@@ -262,13 +262,23 @@ ol.search-results li.search-result:last-child {
 
 /* Views Node Lists */
 .view-os-links .node,
-.view-os-events .node
-.view-os-news .node {
+.view-os-events .node,
+.view-os-news .node,
+.view-os-classes .node,
+.view-os-presentations .node {
   margin: 0 0 20px;
   padding: 20px 0 40px;
   border-bottom: 1px solid #ebebeb;
 }
 
+/* Special handling for presentation view list */
+.view-os-presentations .node {
+  margin: 0 0 10px;
+  padding: 0 0 20px;
+}
+.page-presentations h1#page-title {
+  margin-bottom: 28px;
+}
 
 
 /* Event nodes */
@@ -319,9 +329,9 @@ ol.search-results li.search-result:last-child {
 .node-class .field-name-field-offered-year,
 .node-class .field-name-field-class-link,
 .node-class-material .field-name-field-class {
-  background: #F3F3F1;
-  margin-bottom: 1px;
-  padding: 2px;
+  background: #fff;
+  padding-bottom: 1px;
+  padding: 2px 0;
 }
 
 .node-class section .field-label,
@@ -329,9 +339,17 @@ ol.search-results li.search-result:last-child {
   float: left;
 }
 
+.node-class.node-teaser .field-label-inline .field-items {
+  float: none;
+}
+
+.node-class.node-teaser .field-name-body {
+  padding-top: 15px;
+}
+
 .node-class section .field-items,
 .node-class-material section .field-items {
-  margin-left: 100px;
+  margin-left: 80px;
   display: block;
 }
 
@@ -343,6 +361,7 @@ ol.search-results li.search-result:last-child {
   margin-top: 20px;
 }
 
+.node-class.node-teaser .links a,
 .node-class .view-os-classes a {
   background: url(../images/readmore_arrow.gif) no-repeat right center;
   padding-right: 15px;
@@ -426,6 +445,33 @@ ol.search-results li.search-result:last-child {
 
 .node-person .field-name-field-email {
   text-transform: capitalize; 
+}
+
+
+
+/* Node Presentations */
+.node-presentation.node-teaser .date-display-single {
+  color: #7e7e7e;
+}
+
+.node-presentation .field-name-field-presentation-date,
+.node-presentation .field-name-field-presentation-location {
+  background: #fff;
+  padding-bottom: 1px;
+  padding: 2px 0;
+}
+
+.node-presentation .field-label {
+  float: left;
+}
+
+.node-presentation section .field-items {
+  margin-left: 140px;
+  display: block;
+}
+
+.node-presentation .field-name-body {
+  margin-bottom: 15px;
 }
 
 
