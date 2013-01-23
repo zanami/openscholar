@@ -1,0 +1,4 @@
+name = Chosen Ajax
+description = Uses the Chosen jQuery plugin to improve autocomplete fields.
+core = 7.x
+dependencies[] = chosen (>= 2.x)

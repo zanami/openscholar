@@ -1,0 +1,3 @@
+- Change chosen 7.x-2.x dependency in the info file to 2.x
+- http://drupal.org/node/1896596
+- http://drupal.org/files/chosen_dependencies.patch
