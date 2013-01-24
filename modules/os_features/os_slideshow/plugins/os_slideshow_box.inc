@@ -10,7 +10,6 @@ class os_slideshow_box extends os_boxes_default {
       'controls' => 'none',
       'slide_counter' => 'none',
       'show_image_titles' => 'none',
-      'items_per_page' => 10,
       'effect' => 'fade',
       'style' => 'dark',
       'size' => 600,
@@ -79,7 +78,7 @@ class os_slideshow_box extends os_boxes_default {
     
 
     $form['#attached']['js'] = array(
-      drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_manual_list/os_boxes_manual_list.js'
+      drupal_get_path('module', 'os_slideshow').'/plugins/os_slideshow_box.js',
     );
 
     // build a normal form
@@ -157,14 +156,6 @@ class os_slideshow_box extends os_boxes_default {
       //effects
       $style_options['views_slideshow_cycle']['effect'] = $this->options['effect'];
       $handler->set_option('style_options', $style_options);
-      
-      //number of items
-      if ((int)$this->options['items_per_page'] > 0) {
-        $view->set_items_per_page((int) $this->options['items_per_page']);
-      } else {
-        $handler->set_option('use_pager', FALSE);
-      }
-      
 
       //use an appropriately scaled image style.
       $image_style = $this->_get_image_style($this->options['size']);
@@ -192,7 +183,8 @@ class os_slideshow_box extends os_boxes_default {
       
       //render output
       $output = $view->preview();     
-      $output = $this->_resize_images($output, $image_style);
+      $output = $this->_resize_images($output, $image_style);    //use user provided image size
+      $output = $this->_remove_dead_links($output);              //all images are linked, even if no link was provided.
       //if we're resizing images in this way, mabye links to the empty string target could be removed the same way.
       
       
@@ -247,6 +239,12 @@ class os_slideshow_box extends os_boxes_default {
     
     return $html;
   }
+  
+  private function _remove_dead_links($html) {
+    $html;
+    //$link = '<a href="' . current_path() . '%20">';
+    return $html; 
+  }
 }
 
 
@@ -264,13 +262,13 @@ function os_slideshow_draggable_table($element) {
     );
   }
   $element['#headers'] = array();
-  $element['#attributes'] = array('id' => 'manual-nodes-list');
+  $element['#attributes'] = array('id' => 'slideshow-slides-list');
   $element['#rows'] = $rows;
   $element['#sticky'] = false;
   $element['#empty'] = true;
   //$element['#value'] = theme('table', array(), $rows, );
   $element['#theme'] = 'table';
-  drupal_add_tabledrag('manual-nodes-list', 'order', 'sibling', 'field-weight');
+  drupal_add_tabledrag('slideshow-slides-list', 'order', 'sibling', 'field-weight');
   return $element;
 }
 
