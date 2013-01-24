@@ -58,6 +58,7 @@ features[field][] = node-project-field_department_id
 features[node][] = harvard_api_importer
 features[node][] = harvard_course
 features[variable][] = field_bundle_settings_node__harvard_course
+features[variable][] = pathauto_node_harvard_course_pattern
 features[views_view][] = harvard_courses
 spaces[types][] = og
 spaces[types][] = site
