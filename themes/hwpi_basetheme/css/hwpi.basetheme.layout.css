@@ -233,6 +233,9 @@
     border: 0 none;
   }
 
+  #content-panels .region-content-top {
+    width: 100% !important; /* force the width no matter what */
+  }
 
   /*
   .inset-wrapper {float:left;width:75%}
