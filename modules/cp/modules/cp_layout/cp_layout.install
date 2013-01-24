@@ -6,42 +6,53 @@
 function cp_layout_update_7001(&$sandbox) {
   ini_set('memory_limit', '1024M');
   if (!isset($sandbox['progress'])) {
-    $q = db_query('SELECT id, object_id, value FROM spaces_overrides WHERE object_type = \'context\'');
+    $q = db_query('SELECT COUNT(DISTINCT(id)) FROM spaces_overrides WHERE object_type = \'context\'');
+    $public = context_load('os_public');
 
-    $public_default = array();
-
-    $data = array();
-    foreach ($q as $r) {
-      $ctx = explode(':', $r->object_id);
-      $data[] = array('vsite' => $r->id, 'context' => $ctx[0]) + unserialize($r->value);
-
-      if (empty($public_default)) {
-        $vsite = vsite_get_vsite($r->id);
-        error_log($r->id);
-        $public_default = $vsite->controllers->context->get('os_public:reaction:block', 'original');
-      }
-    }
-
-    usort($data, '_cp_layout_arrange_contexts');
-
-    $sandbox['public_default'] = $public_default;
-    $sandbox['public'] = array();
-    $sandbox['data'] = $data;
+    $sandbox['max'] = $q->fetchField();
+    $sandbox['default'] = $public->reactions['block']['blocks'];
     $sandbox['limit'] = 30;
     $sandbox['progress'] = 0;
 
-    if (!count($data)) {
+    if (!$sandbox['max']) {
       return t('No context overrides to process.');
     }
   }
 
-  $set = array_slice($sandbox['data'], $sandbox['progress'], $sandbox['limit']);
-  $current_site = $set[0]['vsite'];
-  if ($set[0]['context'] == 'os_public') {
-    $sandbox['public']['blocks'] = $set[0]['blocks'];
-  }
-
+  $q = db_query('SELECT DISTINCT(id) FROM spaces_overrides WHERE object_type = \'context\' ORDER BY id+0 ASC LIMIT 1 OFFSET '.$sandbox['progress']);
+  $id = $q->fetchField();
   ctools_include('layout', 'os');
+
+  // if the public context has been overridden, clean it up
+  $q = db_select('spaces_overrides', 'so')
+       ->fields('so', array('object_id', 'value'))
+       ->condition('id', $id)
+       ->condition('object_id', 'os_public%', 'LIKE')
+       ->condition('object_type', 'context')
+       ->execute();
+  $public = $sandbox['public'];
+  if ($r = $q->fetchAssoc()) {
+    $r['value'] = unserialize($r['value']);
+    $public = $r['value']['blocks'];
+
+    $save = array();
+    foreach ($public as $bid => $b) {
+      if ($b['region']) {
+        $save[$bid] = $b;
+      }
+    }
+
+    // totally unrelated, but it's junk data
+    unset($save['boxes-shield_default']);
+
+    $public = $save;
+    db_update('spaces_overrides')
+      ->fields(array('value' => serialize(array('blocks' => $save))))
+      ->condition('id', $id)
+      ->condition('object_type', 'context')
+      ->condition('object_id', $r['object_id'])
+      ->execute();
+  }
 
   // Fields to check for changes
   $block_fields = array(
@@ -52,72 +63,60 @@ function cp_layout_update_7001(&$sandbox) {
   );
   set_time_limit(0);
 
-  foreach ($set as $r) {
-    if ($r['vsite'] != $current_site) {
-      if ($r['context'] == 'os_public') {
-        $sandbox['public']['blocks'] = $r['blocks'];
-      }
-      else {
-        $sandbox['public'] = $sandbox['public_default'];
-      }
-      $current_site = $r['vsite'];
-    }
+  $q = db_select('spaces_overrides', 'so')
+       ->fields('so', array('object_id', 'value'))
+       ->condition('object_type', 'context')
+       ->condition('id', $id)
+       ->condition('object_id', 'os_public%', 'NOT LIKE')
+       ->execute();
 
+  foreach ($q as $r) {
     $save = array();
-    if ($r['context'] != 'os_public') {
-      _os_layout_adjust_relative_weight($r['blocks'], $sandbox['public']['blocks']);
+    $r['value'] = unserialize($r['value']);
+    _os_layout_adjust_relative_weight($r['blocks'], $public);
 
-      foreach ($r['blocks'] as $bid => $b) {
-        // if the block exists in a parent, check for overrides
-        if (isset($sandbox['public']['blocks'][$bid])) {
-          $changed = false;
-          foreach ($block_fields as $field) {
-            // one of the block's fields has been changed.
-            if (!isset($b[$field])) {
-              $b[$field] = $sandbox['public']['blocks'][$bid][$field];
-            }
-            elseif ($sandbox['public']['blocks'][$bid][$field] != $b[$field]) {
-              $changed = true;
-            }
+    foreach ($r['value']['blocks'] as $bid => $b) {
+      // if the block exists in a parent, check for overrides
+      if (isset($public[$bid])) {
+        $changed = false;
+        foreach ($block_fields as $field) {
+          // one of the block's fields has been changed.
+          if (!isset($b[$field])) {
+            $b[$field] = $public[$bid][$field];
           }
-          // if something changed, it needs to be saved in the child context
-          if ($changed) {
-            $save[$bid] = $b;
+          elseif ($public[$bid][$field] != $b[$field]) {
+            $changed = true;
           }
         }
-        // if the block doesn't exist in the parent, but is still in a region.
-        elseif ($b['region']) {
+        // if something changed, it needs to be saved in the child context
+        if ($changed) {
           $save[$bid] = $b;
         }
       }
-    }
-    else {
-      _os_layout_adjust_relative_weight($r['blocks'], array());
-      foreach ($r['blocks'] as $bid => $b) {
-        if ($b['region']) {
-          $save[$bid] = $b;
-        }
+      // if the block doesn't exist in the parent, but is still in a region.
+      elseif ($b['region']) {
+        $save[$bid] = $b;
       }
     }
+
     // totally unrelated, but it's junk data
     unset($save['boxes-shield_default']);
 
     try {
       $u = db_update('spaces_overrides')
         ->fields(array('value' => serialize(array('blocks' => $save))))
-        ->condition('id', $r['vsite'])
+        ->condition('id', $id)
         ->condition('object_type', 'context')
-        ->condition('object_id', $r['context'].'%', 'LIKE');
+        ->condition('object_id', $r->object_id);
       $u->execute();
     }
     catch (Exception $e) {
       error_log($e);
     }
-
-    $sandbox['progress']++;
   }
+  $sandbox['progress']++;
 
-  $sandbox['#finished'] = $sandbox['progress']/count($sandbox['data']);
+  $sandbox['#finished'] = $sandbox['progress']/$sandbox['max'];
   if ($sandbox['#finished'] >= 1) {
     return t('Cleaned up @count contexts.', array('@count' => $sandbox['progress']));
   }
