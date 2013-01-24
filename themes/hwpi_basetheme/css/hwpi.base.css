@@ -516,10 +516,52 @@ h2.comment-title.comment-form {
 
 
 /* General classes for nodes and comments etc */
+
+/* Dat time */
 .author-datetime {
   margin-bottom: 15px;
   color: #7e7e7e;
 }
+
+/* Files tables, for attached files to nodes such as PDF's */
+table.os-files-other-list {
+  width: 100%;
+  border: 0 none;
+}
+.os-files-other-list tr,
+.os-files-other-list td {
+  background: #F3F3F1;
+  border: 0;
+}
+.os-files-other-list tr {
+  margin-bottom: 1px;
+}
+.os-files-other-list td.mime {
+  vertical-align: middle;
+  width: 16px;
+  padding-top: 6px;
+}
+.os-files-other-list td.size {
+  width: 80px;
+  font-size: 12px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
