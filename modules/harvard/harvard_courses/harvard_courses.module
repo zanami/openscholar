@@ -26,6 +26,19 @@ function harvard_courses_os_app_info() {
 }
 
 /**
+ * Implements hook_preprocess_node().
+ *
+ * Hiding the 'Submitted by'.
+ */
+function harvard_courses_preprocess_node(&$variables) {
+  if ($variables['type'] != 'harvard_course') {
+    return;
+  }
+
+  $variables['display_submitted'] = FALSE;
+}
+
+/**
  * Implements hook_feeds_plugins().
  */
 function harvard_courses_feeds_plugins() {
