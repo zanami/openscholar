@@ -82,10 +82,6 @@ class os_slideshow_box extends os_boxes_default {
       drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_manual_list/os_boxes_manual_list.js'
     );
 
-
-    
-    
-
     // build a normal form
     $form['nodes'] = array(
       '#type' => 'markup',
@@ -94,6 +90,7 @@ class os_slideshow_box extends os_boxes_default {
     );
     
     //load slideshow_image nodes
+    uasort($this->options['nodes'], 'element_sort');
     $nodes = node_load_multiple(array_keys($this->options['nodes']));
 
     foreach ($this->options['nodes'] as $nid => $data) {
@@ -108,6 +105,7 @@ class os_slideshow_box extends os_boxes_default {
         'text' => array(
           '#markup' => $img . ' <span>' . $title . '</span> <a href="#" class="remove" title="Remove Slide">Remove</a>',
         ),
+        '#weight' => $data['weight'],
         'weight' => array(
           '#type' => 'textfield',
           '#default_value' => $data['weight'],
@@ -137,7 +135,7 @@ class os_slideshow_box extends os_boxes_default {
     if (spaces_access_admin()) {
       $block['content'] = l('Add Slide', 'node/add/slideshow-image', array(
         'attributes' => array('class' => array('add_new')),
-        'query' => array('widget' => $this->delta),
+        'query' => array('widget' => $this->delta, 'destination' => current_path()),
       ));
     }
     

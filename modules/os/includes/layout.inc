@@ -56,7 +56,7 @@ function os_layout_get_contexts($privacy = array(1, 2)) {
     }
   }
 
-  drupal_alter('os_layout_contexts_alter', $os_contexts);
+  drupal_alter('os_layout_contexts', $os_contexts);
 
   return $os_contexts;
 }
@@ -210,8 +210,8 @@ function os_layout_set($context_name, $blocks) {
   if (module_exists('vsite_layout')) {
     // Writes the context to the overrides table.
     vsite_layout_context_set($context_name, $blocks);
-    $vsite = vsite_get_vsite();
     if ($clean_up) {
+      $vsite = vsite_get_vsite();
       $vsite->controllers->variable->set('os_layout_needs_cleanup', false);
     }
   }
