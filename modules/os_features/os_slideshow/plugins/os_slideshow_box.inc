@@ -25,6 +25,7 @@ class os_slideshow_box extends os_boxes_default {
       '#title' => t('Display Options'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
+      '#weight' => 10,
     );
     
     $form['display']['style'] = array(
@@ -72,62 +73,64 @@ class os_slideshow_box extends os_boxes_default {
       $form['display']['effect'] = $slideshow_form_full['views_slideshow_cycle']['effect'];
       $form['display']['effect']['#default_value'] = $this->options['effect'];
     }
-    
-  //  return $form;
-    
-    
 
     $form['#attached']['js'] = array(
       drupal_get_path('module', 'os_slideshow').'/plugins/os_slideshow_box.js',
     );
-
-    // build a normal form
-    $form['nodes'] = array(
-      '#type' => 'markup',
-      '#tree' => TRUE,
-      '#pre_render' => array('os_slideshow_draggable_table'),
-    );
     
-    //load slideshow_image nodes
-    uasort($this->options['nodes'], 'element_sort');
-    $nodes = node_load_multiple(array_keys($this->options['nodes']));
-
-    foreach ($this->options['nodes'] as $nid => $data) {
-      $uri = $nodes[$nid]->field_image[$nodes[$nid]->language][0]['uri'];
-      $img = theme('image_style', array('style_name' => 'os_square_50_50','path' => $uri, 'width'=>50, 'height'=>50));
-      $title = $nodes[$nid]->title;
-      $form['nodes'][$nid] = array(
-        'nid' => array(
-          '#type' => 'hidden',
-          '#default_value' => $nid,
-        ),
-        'text' => array(
-          '#markup' => $img . ' <span>' . $title . '</span> <a href="#" class="remove" title="Remove Slide">Remove</a>',
-        ),
-        '#weight' => $data['weight'],
-        'weight' => array(
-          '#type' => 'textfield',
-          '#default_value' => $data['weight'],
-          '#size' => 3,
-          '#attributes' => array('class' => array('field-weight')),
-        )   
+    if (empty($this->options['nodes'])) {
+      $form['nodes'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div class="messages warning">You haven\'t added any slides yet.  Put this widget in your layout and visit that page to add slides.</div>',
+        '#weight' => 5,  
       );
+    } else {
+      // build a normal form
+      $form['nodes'] = array(
+        '#type' => 'markup',
+        '#tree' => TRUE,
+        '#pre_render' => array('os_slideshow_draggable_table'),      
+        '#weight' => 5,
+      );
+      
+      $form['nodes']['#process'][] = 'os_slideshow_process_form_nodes';
+      $form['nodes_list'] = array(
+        '#type' => 'hidden',
+        '#value' => array_keys($this->options['nodes']),    
+      );
+      
+      //load slideshow_image nodes
+      uasort($this->options['nodes'], 'element_sort');
+      $nodes = node_load_multiple(array_keys($this->options['nodes']));
+  
+      foreach ($this->options['nodes'] as $nid => $data) {
+        $uri = $nodes[$nid]->field_image[$nodes[$nid]->language][0]['uri'];
+        $img = theme('image_style', array('style_name' => 'os_square_50_50','path' => $uri, 'width'=>50, 'height'=>50));
+        $title = $nodes[$nid]->title;
+        $form['nodes'][$nid] = array(
+          'nid' => array(
+            '#type' => 'hidden',
+            '#default_value' => $nid,
+          ),
+          'text' => array(
+            '#markup' => $img . ' <span>' . $title . '</span> <a href="#" class="remove" title="Remove Slide">Remove</a>',
+          ),
+          '#weight' => $data['weight'],
+          'weight' => array(
+            '#type' => 'textfield',
+            '#default_value' => $data['weight'],
+            '#size' => 3,
+            '#attributes' => array('class' => array('field-weight')),
+          )   
+        );
+      }
     }
-
-    //not doing new ones in here...
-//     $form['count'] = array(
-//       '#type' => 'hidden',
-//       '#default_value' => count($this->options['nodes'])-1,
-//       '#attributes' => array(
-//         'id' => 'edit-count',
-//       ),
-//       '#process' => array('os_boxes_manual_list_add_new_fields'),
-//     );
+    
     return $form;
   }
 
   public function render() {
-    dpm($this->options['nodes']);
+  //  dpm($this->options['nodes']);
     $block = parent::render();
 
     //show Add Slide link to admins
@@ -272,34 +275,4 @@ function os_slideshow_draggable_table($element) {
   return $element;
 }
 
-// function os_boxes_manual_list_add_new_fields($element, &$form_state, &$form) {
-//   for ($i=$element['#default_value']; $i < $element['#value']; $i++) {
-//     $form['options']['nodes'][$i] = array(
-//       '#attributes' => array('id' => $i),
-//       '#parents' => array('nodes', $i),
-//       '#array_parents' => array('options', 'nodes', $i),
-//       '#tree' => TRUE,
-//     );
-//     $form['options']['nodes'][$i] += $form['options']['nodes']['blank'];
-//     foreach ($form['options']['nodes'][$i] as $key => &$child) {
-//       if (strpos($key, '#') !== 0) {
-//         unset($child['#parents']);
-//         unset($child['#name']);
-//         unset($child['#value']);
-//       }
-//     }
-//     form_builder($form['form_id']['#value'], $form['options']['nodes'][$i], $form_state);
-//   }
-//   unset($form_state['values']['nodes']['blank']);
 
-//   // remove nids that aren't in the post
-//   if (is_array($form_state['values'])) {
-//     foreach ($form_state['values']['nodes'] as $k => $v) {
-//       if (!isset($form_state['input']['nodes'][$k]) || !isset($form_state['input']['nodes'][$k]['nid'])) {
-//         unset($form_state['values']['nodes'][$k]);
-//       }
-//     }
-//   }
-
-//   return $element;
-// }
