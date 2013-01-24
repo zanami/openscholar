@@ -96,7 +96,10 @@ function os_slideshow_views_pre_render(&$view) {
     
     //sort the nodes
     $nodes = $box->options['nodes'];
-    uasort($nodes, 'element_sort');
+    foreach ($nodes as $nid => $node) {
+      $nodes[$nid]['#weight'] = $node['weight'];
+    }
+    uasort($nodes, 'element_sort'); //expects #weight not weight.
     $ordered_nodes = array_flip(array_keys($nodes));  // nid -> position
     
     $new_result = array();
