@@ -13,7 +13,13 @@ function cp_layout_full_form($form, $form_state){
   $contexts = os_layout_get_contexts(array(1, 2));
   $ctxs = $ctxs ? $ctxs : array('os_front', 'os_public');
 
-  $current = current(array_diff($ctxs, array('os_public')));
+  $current = '';
+  if ($ctxs == array('os_public')) {
+    $current = 'os_public';
+  }
+  else {
+    $current = current(array_diff($ctxs, array('os_public')));
+  }
   if (isset($contexts[$current])) {
     $form['context_selection'] = array(
       '#type' => 'select',
@@ -121,7 +127,7 @@ function cp_layout_full_form($form, $form_state){
       )
     );
   }
-dpm($blocks);
+
   $use_content_regions = false;
   foreach ( $blocks as $bid => $b ) {
     if ($b['region'] == - 1 || $b['region'] === FALSE) {

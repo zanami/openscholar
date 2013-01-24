@@ -47,6 +47,10 @@
   padding-bottom: 5px;
 }
 
+#columns #block-os-search-db-site-search.no-title #search-block-form {
+  padding-top: 15px;
+}
+
 #search-block-form input.form-submit,
 #search-block-form #edit-submit,
 #search-form #edit-submit {
@@ -219,10 +223,10 @@ table .mini-day-on a {
 
 /* Tabs Overrides */
 .block-boxes-os_boxes_tabs .ui-widget {
-  margin-top:25px;
+  margin-top: 25px;
 }
 
-.block-boxes-os_boxes_tabs  .ui-widget-content {
+.block-boxes-os_boxes_tabs .ui-widget-content {
   color: #1e1e1e;
 }
 
@@ -245,6 +249,7 @@ table .mini-day-on a {
   border-right: 0;
   border-bottom: 1px solid #cacaca !important;
   background: #f3f3f1;
+  white-space: normal; /* Let labels wrap */
 }
 
 .ui-tabs ul.ui-tabs-nav li.last {
@@ -262,7 +267,7 @@ table .mini-day-on a {
   font-size: 12px;
   font-weight: bold;
   letter-spacing: 0.1em;
-  padding: 10px 15px;
+  padding: 25px 15px;
   text-transform: uppercase;
   outline: 0;
 }
@@ -275,7 +280,7 @@ table .mini-day-on a {
 .ui-tabs .ui-tabs-nav li,
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
   margin: 0;
-  padding: 15px 15px 15px 0;
+  padding: 0;
 }
 
 .ui-corner-bottom {
@@ -283,8 +288,35 @@ table .mini-day-on a {
   border-bottom-right-radius: 0;
 }
 
-.ui-state-active, .ui-widget-content .ui-state-active,
-.ui-widget-header .ui-state-active {
+.ui-tabs .ui-state-active,
+.ui-tabs .ui-widget-content .ui-state-active,
+.ui-tabs .ui-widget-header .ui-state-active {
+  border-color: #cacaca;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+}
+
+.ui-tabs .ui-state-default a,
+.ui-tabs .ui-state-default a:link,
+.ui-tabs .ui-state-default a:visited,
+.ui-tabs .ui-state-hover,
+.ui-tabs .ui-widget-content .ui-state-hover,
+.ui-tabs .ui-widget-header .ui-state-hover,
+.ui-tabs .ui-state-focus,
+.ui-tabs .ui-widget-content .ui-state-focus,
+.ui-tabs .ui-widget-header .ui-state-focus,
+.ui-tabs .ui-state-active,
+.ui-tabs .ui-widget-content .ui-state-active,
+.ui-tabs .ui-widget-header .ui-state-active,
+.ui-tabs .ui-state-hover a,
+.ui-tabs .ui-state-hover a:hover,
+.ui-tabs .ui-state-active a,
+.ui-tabs .ui-state-active a:link,
+.ui-tabs .ui-state-active a:visited {
+  color: #1e1e1e;
   border-color: #cacaca;
 }
 
@@ -296,7 +328,7 @@ table .mini-day-on a {
 
 
 
-/* Slideshow Classic Frontpage */
+/* OLD Slideshow Classic Frontpage */
 .slideshow {
 	position:relative;
 	color:#FFF;
@@ -388,6 +420,95 @@ table .mini-day-on a {
 
 
 
+/* NEW Slideshow */
+.block-boxes-os_slideshow_box .block-title {
+  display: none;
+}
+
+.block-boxes-os_slideshow_box {
+  position: relative;
+}
+
+.block-boxes-os_slideshow_box .views-row {
+  margin-bottom: 0;
+}
+
+.block-boxes-os_slideshow_box .add_new {
+  left: 0;
+  position: absolute;
+  top: -23px;
+}
+
+.block-boxes-os_slideshow_box .field-content  {
+  display: block;
+}
+
+.block-boxes-os_slideshow_box .views_slideshow_slide img {
+  margin: 0;
+  padding-top: 0;
+}
+
+.block-boxes-os_slideshow_box .views-field-field-headline,
+.block-boxes-os_slideshow_box .views-field-body,
+#views_slideshow_controls_text_os_slideshow-default {
+  position: absolute;
+  background: url(../images/slideshow_tileBgtransparency.png) repeat 0 0 transparent;
+  left: 45px;
+  width: 390px;
+  overflow: hidden;
+  padding: 32px 25px 0;
+  color: #fff;
+}
+
+.block-boxes-os_slideshow_box .views-field-field-headline {
+	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+  font-size: 34px;
+  line-height: 40px;
+  height: 40px;
+  text-shadow: 0 1px 1px #333;
+  display: block;
+  top: 55px;
+}
+
+.block-boxes-os_slideshow_box .views-field-body {
+  padding: 10px 25px 0;
+  top: 127px;
+  font-size: 16px;
+  line-height: 24px;
+  height: 72px
+}
+
+#views_slideshow_controls_text_os_slideshow-default {
+  padding: 20px 25px 32px;
+  top: 209px;
+  z-index: 100;
+}
+
+.views-slideshow-controls-text a {
+  height: 28px;
+  width: 28px;
+  margin-right: 0;
+  background: url(../images/slide-controls.png) no-repeat 0 0 transparent; /* old sprite has incorrect arrow positions, use this one for now */
+  display: block;
+}
+
+.views-slideshow-controls-text-previous a {}
+
+.views-slideshow-controls-text-pause a {
+  background-position: -28px 0;
+  background-color: #000;
+}
+
+.views-slideshow-controls-text-next a {
+  background-position: -56px 0;
+}
+
+#views_slideshow_slide_counter_os_slideshow-default {
+  display: none; /* Hide this for now */
+}
+
+
+
 /* AddThis */
 .block-boxes-os_boxes_addthis .boxes-box-content {
   padding: 15px 0;
@@ -416,7 +537,7 @@ table .mini-day-on a {
 
 /* Bio */
 .block-boxes-os_boxes_bio .boxes-box-content {
-  padding: 15px 0;
+  padding: 10px 0 15px;
 }
 
 
