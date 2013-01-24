@@ -90,7 +90,7 @@ function iqss_scholars_front_os_widget_alter(&$widget) {
     if(!isset($fp_boxes)) $fp_boxes =  iqss_scholars_front_default_box();
 
 		if(isset($fp_boxes[$widget['delta']])){
-		  //$widget['hidden'] = true;
+		  $widget['hidden'] = true;
 		}
   }
 }
