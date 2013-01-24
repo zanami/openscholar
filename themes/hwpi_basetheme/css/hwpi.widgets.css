@@ -223,10 +223,10 @@ table .mini-day-on a {
 
 /* Tabs Overrides */
 .block-boxes-os_boxes_tabs .ui-widget {
-  margin-top:25px;
+  margin-top: 25px;
 }
 
-.block-boxes-os_boxes_tabs  .ui-widget-content {
+.block-boxes-os_boxes_tabs .ui-widget-content {
   color: #1e1e1e;
 }
 
@@ -266,7 +266,7 @@ table .mini-day-on a {
   font-size: 12px;
   font-weight: bold;
   letter-spacing: 0.1em;
-  padding: 10px 15px;
+  padding: 25px 15px;
   text-transform: uppercase;
   outline: 0;
 }
@@ -279,7 +279,7 @@ table .mini-day-on a {
 .ui-tabs .ui-tabs-nav li,
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
   margin: 0;
-  padding: 15px 15px 15px 0;
+  padding: 0;
 }
 
 .ui-corner-bottom {
@@ -287,8 +287,35 @@ table .mini-day-on a {
   border-bottom-right-radius: 0;
 }
 
-.ui-state-active, .ui-widget-content .ui-state-active,
-.ui-widget-header .ui-state-active {
+.ui-tabs .ui-state-active,
+.ui-tabs .ui-widget-content .ui-state-active,
+.ui-tabs .ui-widget-header .ui-state-active {
+  border-color: #cacaca;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+}
+
+.ui-tabs .ui-state-default a,
+.ui-tabs .ui-state-default a:link,
+.ui-tabs .ui-state-default a:visited,
+.ui-tabs .ui-state-hover,
+.ui-tabs .ui-widget-content .ui-state-hover,
+.ui-tabs .ui-widget-header .ui-state-hover,
+.ui-tabs .ui-state-focus,
+.ui-tabs .ui-widget-content .ui-state-focus,
+.ui-tabs .ui-widget-header .ui-state-focus,
+.ui-tabs .ui-state-active,
+.ui-tabs .ui-widget-content .ui-state-active,
+.ui-tabs .ui-widget-header .ui-state-active,
+.ui-tabs .ui-state-hover a,
+.ui-tabs .ui-state-hover a:hover,
+.ui-tabs .ui-state-active a,
+.ui-tabs .ui-state-active a:link,
+.ui-tabs .ui-state-active a:visited {
+  color: #1e1e1e;
   border-color: #cacaca;
 }
 
