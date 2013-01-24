@@ -249,6 +249,7 @@ table .mini-day-on a {
   border-right: 0;
   border-bottom: 1px solid #cacaca !important;
   background: #f3f3f1;
+  white-space: normal; /* Let labels wrap */
 }
 
 .ui-tabs ul.ui-tabs-nav li.last {
