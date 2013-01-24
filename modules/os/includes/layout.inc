@@ -182,16 +182,49 @@ function os_layout_set($context_name, $blocks) {
   _os_layout_sanitize_blocks($blocks);
 
   $context = context_load($context_name);
+  $clean_up = false;
+
+  if ($context_name == 'os_public' && variable_get('os_layout_needs_cleanup', true)) {
+    $ctxs = os_layout_get_contexts(TRUE);
+    foreach ($ctxs as $ctx => $name) {
+      if ($ctx == 'os_public') continue;
+      $child_blocks = os_layout_get($ctx);
+
+      _os_layout_adjust_relative_weight($child_blocks, $blocks);
+      $child_blocks = _os_layout_filter_blocks($child_blocks, $blocks);
+
+      $def = context_load($ctx);
+      $def_blocks = $def->reactions['block']['blocks'];
+      if ($child_blocks !== $def_blocks || $def_blocks !== $child_blocks) {
+        // there is an override
+        os_layout_set($ctx, $child_blocks);
+      }
+      else {
+        // reset to defaults, if we can
+        if (!os_layout_revert($ctx)) {
+          os_layout_set($ctx, $child_blocks);
+        }
+      }
+    }
+    $clean_up = true;
+  }
 
   if (module_exists('vsite_layout')) {
     // Writes the context to the overrides table.
     vsite_layout_context_set($context_name, $blocks);
+    if ($clean_up) {
+      $vsite = vsite_get_vsite();
+      $vsite->controllers->variable->set('os_layout_needs_cleanup', false);
+    }
   }
   else {
     $context = context_load($context_name);
     $context->reactions['block']['blocks'] = $blocks;
     // write the context to the database.
     context_save($context);
+    if ($clean_up) {
+      variable_set('os_layout_needs_cleanup', false);
+    }
   }
 }
 
@@ -232,40 +265,9 @@ function os_layout_set_multiple($contexts, $blocks) {
 
   $removed_blocks = array();
 
-  // Fields to check for changes
-  $block_fields = array(
-      'region',
-      'status',
-      'title',
-      'weight'
-  );
-
   // try to make blocks the same as in parent contexts
   _os_layout_adjust_relative_weight($blocks, $parent_blocks);
-
-  $child_blocks = array();
-  foreach ($blocks as $bid => $b) {
-    // if the block exists in a parent, check for overrides
-    if (isset($parent_blocks[$bid])) {
-     // dpm($bid.': weight: old: '.$parent_blocks[$bid]['weight'].' new: '.$blocks[$bid]['weight']);
-      $changed = false;
-      foreach ($block_fields as $field) {
-        // one of the block's fields has been changed.
-        if ($parent_blocks[$bid][$field] != $blocks[$bid][$field]) {
-          $changed = true;
-        }
-      }
-      // if something changed, it needs to be saved in the child context
-      if ($changed) {
-        $child_blocks[$bid] = $b;
-      }
-    }
-    // if the block doesn't exist in the parent, but is still in a region.
-    elseif ($b['region']) {
-     // dpm($bid.': weight: new: '.$blocks[$bid]['weight']);
-      $child_blocks[$bid] = $b;
-    }
-  }
+  $child_blocks = _os_layout_filter_blocks($blocks, $parent_blocks);
 
   // we never edit parent contexts.
   // To edit them, load the layout form with your target context as the child.
@@ -578,6 +580,42 @@ function _os_layout_sanitize_blocks(&$blocks) {
       $blocks[$bid] = array_intersect_key($block, $block_schema['block']['fields']);
     }
   }
+}
+
+function _os_layout_filter_blocks($blocks, $parent_blocks) {
+  // Fields to check for changes
+  $block_fields = array(
+    'region',
+    'status',
+    'title',
+    'weight'
+  );
+
+  $child_blocks = array();
+  foreach ($blocks as $bid => $b) {
+    // if the block exists in a parent, check for overrides
+    if (isset($parent_blocks[$bid])) {
+      // dpm($bid.': weight: old: '.$parent_blocks[$bid]['weight'].' new: '.$blocks[$bid]['weight']);
+      $changed = false;
+      foreach ($block_fields as $field) {
+        // one of the block's fields has been changed.
+        if ($parent_blocks[$bid][$field] != $blocks[$bid][$field]) {
+          $changed = true;
+        }
+      }
+      // if something changed, it needs to be saved in the child context
+      if ($changed) {
+        $child_blocks[$bid] = $b;
+      }
+    }
+    // if the block doesn't exist in the parent, but is still in a region.
+    elseif ($b['region']) {
+      // dpm($bid.': weight: new: '.$blocks[$bid]['weight']);
+      $child_blocks[$bid] = $b;
+    }
+  }
+
+  return $child_blocks;
 }
 
 /**
