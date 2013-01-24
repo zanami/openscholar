@@ -49,6 +49,7 @@
     clear: none;
   }
 
+  #branding-container,
   #header-container,
   #columns,
   #block-os-primary-menu,
@@ -59,7 +60,27 @@
     margin-right: auto;
     width:980px;
   }
+  
+  /* Branding */
+  #branding_header #branding-container {
+    height: 38px;
+  }
+  .branding-left {
+    float: left;
+    width: 235px;
+    margin: 10px 0 0 -30px;
+  }
+  .branding-right {
+    float: right;
+    line-height: 38px;
+    margin: 0;
+  }
+  #branding_footer #branding-container {
+    height: 45px;
+    line-height: 45px;
+  }
 
+  /* Sidebars */
   .two-sidebars .content-inner {
     margin-left: 235px;
     margin-right: 235px;
