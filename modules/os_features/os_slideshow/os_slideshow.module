@@ -46,17 +46,29 @@ function os_slideshow_form_slideshow_image_node_form_alter(&$form, &$state, $for
  * When a slideshow_image is created, add its nid to the widget it was created for
  */
 function os_slideshow_node_insert($node) {
+  function _heaviest($val, $next) {
+    if ($next['weight'] > $val) {
+      return $next['weight'];
+    } 
+    return $val; 
+  }
+  
   if (($node->type == 'slideshow_image') && isset($node->widget)) {
     if (module_exists('spaces') && $space = spaces_get_space()) { 
-      if ($box = $space->controllers->boxes->get($node->widget)) {
-        $box->options['nodes'][] = (int)$node->nid;
-        $space->controllers->boxes->set($box->delta, $box);
-      }
+      $box = $space->controllers->boxes->get($node->widget);
     } else {   
-      if ($box = boxes_box_load($node->widget)) {
-        $box->options['nodes'][] = (int)$node->nid;
-        $box->save();
-      }
+      $box = boxes_box_load($node->widget);
+    }
+    
+    $box->options['nodes'][(int)$node->nid] = array(
+      'nid' => (int)$node->nid,
+      'weight' => 1 + array_reduce($box->options['nodes'], '_heaviest', 0),
+    );
+    
+    if ($space) {
+      $space->controllers->boxes->set($box->delta, $box);
+    } else {   
+      $box->save();
     }
   }
 }

@@ -130,6 +130,7 @@ class os_slideshow_box extends os_boxes_default {
   }
 
   public function render() {
+    dpm($this->options['nodes']);
     $block = parent::render();
 
     //show Add Slide link to admins
@@ -194,7 +195,7 @@ class os_slideshow_box extends os_boxes_default {
       //render output
       $output = $view->preview();     
       $output = $this->_resize_images($output, $image_style);
-      
+      //if we're resizing images in this way, mabye links to the empty string target could be removed the same way.
       
       
       $block['content'] .= $output; 
