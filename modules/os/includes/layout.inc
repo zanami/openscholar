@@ -210,8 +210,8 @@ function os_layout_set($context_name, $blocks) {
   if (module_exists('vsite_layout')) {
     // Writes the context to the overrides table.
     vsite_layout_context_set($context_name, $blocks);
-    $vsite = vsite_get_vsite();
     if ($clean_up) {
+      $vsite = vsite_get_vsite();
       $vsite->controllers->variable->set('os_layout_needs_cleanup', false);
     }
   }
