@@ -29,6 +29,13 @@ function os_slideshow_boxes_plugins(){
 }
 
 /**
+ * Implements hook_vsite_og_node_type_info().
+ */
+function os_slideshow_vsite_og_node_type_info() {
+  return array('slideshow_image' => 'group content');
+}
+
+/**
  * Implements hook_form_FORMID_alter
  *
  * Attaches widget delta to form so it'll be available during node save
@@ -38,6 +45,12 @@ function os_slideshow_form_slideshow_image_node_form_alter(&$form, &$state, $for
   if ($widget) {
     $form['widget'] = array('#type' => 'hidden', '#value' => $widget);
   } 
+  
+//   foreach ($form as &$item) {
+//     if (is_array($item) && isset($item['#group']) && ($item['#group'] == 'additional_settings')) {
+//       $item['#type'] = 'hidden';
+//     }
+//   }
 }
 
 /**
@@ -46,6 +59,7 @@ function os_slideshow_form_slideshow_image_node_form_alter(&$form, &$state, $for
  * When a slideshow_image is created, add its nid to the widget it was created for
  */
 function os_slideshow_node_insert($node) {
+  //callback function to get highest weight from list of nodes 
   function _heaviest($val, $next) {
     if ($next['weight'] > $val) {
       return $next['weight'];
@@ -112,3 +126,26 @@ function os_slideshow_views_pre_render(&$view) {
     $view->result = $new_result;
   }
 }
+
+/**
+ * @function os_slideshow_process_form_nodes
+ * 
+ * Form #process function.  After form is saved, remove the nids that were deleted.
+ */
+function os_slideshow_process_form_nodes($element, &$state, &$form) {
+  //bail out while the form is being built.
+  if (empty($state['input'])) {
+    return $element;
+  }
+  
+  //only keep nodes that have been returned from the form
+  $nodes_left = (isset($state['input']['nodes'])) ? array_keys($state['input']['nodes']) : array();
+  foreach($form['options']['nodes_list']['#value'] as $nid) {
+    if (!in_array($nid, $nodes_left)) {
+      unset($element[$nid]);
+    }  
+  }
+  
+  return $element;
+}
+

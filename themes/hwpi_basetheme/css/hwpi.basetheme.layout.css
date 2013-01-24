@@ -233,7 +233,80 @@
     border: 0 none;
   }
 
+  #content-panels .region-content-top {
+    width: 100% !important; /* force the width no matter what */
+  }
+  
+  
+  
+  /* Footer panels */
+  .region-footer {
+    width: 500px;
+  }
+  
+  /* debug
+  .region-footer-first {
+    background: #eee;
+  }
+  .region-footer {
+    background: #ccc;
+  }
+  .region-footer-third {
+    background: #ddd;
+  }*/
 
+  .footer-left.footer .region-footer-first {
+    width: 380px;
+  }
+  .footer-left.footer .region-footer {}
+  
+  /* never happens, footer is always active */
+  .footer-left.footer-right .region-footer-first {}
+  .footer-left.footer-right .region-footer-third {}
+  
+  
+  .footer.footer-right .region-footer {}
+  .footer.footer-right .region-footer-third {
+    width: 480px;
+  }
+
+  .footer-left.footer.footer-right .region-footer-first {
+    width: 320px;
+  }
+  .footer-left.footer.footer-right .region-footer {}
+  .footer-left.footer.footer-right .region-footer-third {
+    width: 160px;
+  }
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   /*
   .inset-wrapper {float:left;width:75%}
   .five-5x20 .row-1 {width:40%}

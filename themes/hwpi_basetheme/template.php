@@ -1,6 +1,6 @@
 <?php
 
-// Rebuild the theme data.
+// Rebuild the theme data. Turn this off when in production.
 system_rebuild_theme_data();
 drupal_theme_rebuild();
 
@@ -146,8 +146,6 @@ function hwpi_basetheme_node_view_alter(&$build) {
     $build['website_details']['field_website'] = $build['field_website'];
     unset($build['field_website']);
   }
-
-  //dsm($build);
 }
 
 

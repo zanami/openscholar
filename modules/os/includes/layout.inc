@@ -128,6 +128,8 @@ function os_layout_get($context_name, $load_meta = FALSE, $unused_blocks = FALSE
     }
   }
 
+  drupal_alter('os_layout_get', $context_name, $block_settings);
+
   return $block_settings;
 }
 
@@ -574,17 +576,17 @@ function _os_layout_sanitize_blocks(&$blocks) {
 function _os_layout_filter_blocks($blocks, $parent_blocks) {
   // Fields to check for changes
   $block_fields = array(
-      'region',
-      'status',
-      'title',
-      'weight'
+    'region',
+    'status',
+    'title',
+    'weight'
   );
 
   $child_blocks = array();
   foreach ($blocks as $bid => $b) {
     // if the block exists in a parent, check for overrides
     if (isset($parent_blocks[$bid])) {
-     // dpm($bid.': weight: old: '.$parent_blocks[$bid]['weight'].' new: '.$blocks[$bid]['weight']);
+      // dpm($bid.': weight: old: '.$parent_blocks[$bid]['weight'].' new: '.$blocks[$bid]['weight']);
       $changed = false;
       foreach ($block_fields as $field) {
         // one of the block's fields has been changed.
@@ -599,7 +601,7 @@ function _os_layout_filter_blocks($blocks, $parent_blocks) {
     }
     // if the block doesn't exist in the parent, but is still in a region.
     elseif ($b['region']) {
-     // dpm($bid.': weight: new: '.$blocks[$bid]['weight']);
+      // dpm($bid.': weight: new: '.$blocks[$bid]['weight']);
       $child_blocks[$bid] = $b;
     }
   }

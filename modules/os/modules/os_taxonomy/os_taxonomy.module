@@ -646,12 +646,6 @@ function os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles = arr
 
   $query->join('node', 'n', 't.nid = n.nid');
 
-  $query->orderBy('n.sticky', 'DESC');
-  if (module_exists('nodeorder')) {
-    $query->orderBy('t.weight', 'ASC');
-  }
-  $query->orderBy('n.created', 'DESC');
-
   if (!empty($node_bundles)) {
     $query->condition('n.type', $node_bundles, 'IN');
   }
