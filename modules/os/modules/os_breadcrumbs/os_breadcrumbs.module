@@ -84,7 +84,7 @@ function os_breadcrumbs_setup_breadcrumbs($links) {
     // Get custom breadcrumbs
     $breadcrumbs = drupal_get_breadcrumb();
 
-    $breadcrumbs_render = '<div class="breadcrumb">'. implode(' '.$radio_options[$breadcrumb_divider].' ', $breadcrumbs) .'</div>';
+    $breadcrumbs_render = '<div class="breadcrumb">'. implode(' <span>'.$radio_options[$breadcrumb_divider].'</span> ', $breadcrumbs) .'</div>';
   }else {
   	return;
   }
