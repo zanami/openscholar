@@ -111,15 +111,23 @@ class os_slideshow_box extends os_boxes_default {
         }
         
         $uri = $nodes[$nid]->field_image[$nodes[$nid]->language][0]['uri'];
-        $img = theme('image_style', array('style_name' => 'os_square_50_50','path' => $uri, 'width'=>50, 'height'=>50));
-        $title = $nodes[$nid]->title;
+        $img = theme('image_style', array('style_name' => 'os_square_50_50','path' => $uri, 'width'=>50, 'height'=>50, 'attributes' => array('style' => 'float: left; margin-right: 1em;')));
+        $title = '<strong>' . $nodes[$nid]->title . '</strong>';
+        
+        //edit link loads node edit with dest of this page.  this page's dest needs to be preserved.  nested destinations.
+        $dest = (isset($_GET['destination'])) ? current_path() . '?destination=' . $_GET['destination'] : current_path();
+        $edit_link = l('Edit Slide', "node/${nid}/edit", array('query' => array('destination' => $dest)));
+        $remove_link =  '<a href="#" class="remove" title="Remove Slide">Remove</a>';
+        $links = "<div>${title}<br />${edit_link} | ${remove_link}</div>";
+        
         $form['nodes'][$nid] = array(
           'nid' => array(
             '#type' => 'hidden',
             '#default_value' => $nid,
           ),
           'text' => array(
-            '#markup' => $img . ' <span>' . $title . '</span> <a href="#" class="remove" title="Remove Slide">Remove</a>',
+            //'#markup' => $img . ' <span>' . $title . '</span><br /> ' . $edit_link .  ' | <a href="#" class="remove" title="Remove Slide">Remove</a>',
+            '#markup' => $img . $links,
           ),
           '#weight' => $data['weight'],
           'weight' => array(

@@ -14,7 +14,7 @@ function os_slideshow_boxes_plugins(){
   $path = drupal_get_path('module', 'os_slideshow') . '/plugins';
 
   $info['os_slideshow_box'] = array(
-    'title' => 'New Slideshow',
+    'title' => 'Slideshow',
     'description' => 'Slideshow',
     'tags' => array('Media'),
     'handler' => array(
@@ -36,6 +36,17 @@ function os_slideshow_vsite_og_node_type_info() {
 }
 
 /**
+ * Implements hook_ctools_plugin_pre_alter
+ * 
+ * Prevent gallery slideshows from being created.  They're being phased out for this new slideshow.
+ */
+function os_slideshow_ctools_plugin_pre_alter(&$plugin, &$info) {
+  if ($plugin['name'] == 'os_boxes_slideshow') {
+    $plugin['title'] = NULL;
+  }
+}
+
+/**
  * Implements hook_form_FORMID_alter
  *
  * Attaches widget delta to form so it'll be available during node save
@@ -47,11 +58,12 @@ function os_slideshow_form_slideshow_image_node_form_alter(&$form, &$state, $for
     $form['widget'] = array('#type' => 'hidden', '#value' => $widget);
   } 
   
-//   foreach ($form as &$item) {
-//     if (is_array($item) && isset($item['#group']) && ($item['#group'] == 'additional_settings')) {
-//       $item['#type'] = 'hidden';
-//     }
-//   }
+  //hide additional settings except publishing options.
+  foreach ($form as $name => &$item) {
+    if (is_array($item) && isset($item['#group']) && ($item['#group'] == 'additional_settings') && ($name != 'options')) {
+      $item['#type'] = 'hidden';
+    }
+  }
 }
 
 /**
@@ -89,6 +101,14 @@ function os_slideshow_node_insert($node) {
 }
 
 
+// function os_slideshow_views_default_views_alter(&$views) {
+  
+//   if ($view = &$views['cp_content']) {
+//     $handler = $view->display_handler;
+//     //$filters = $handler->get_option('filters');
+  
+//   }
+// }
 /**
  * Implements hook_views_pre_render
  * 
@@ -96,6 +116,7 @@ function os_slideshow_node_insert($node) {
  * @param unknown_type $view
  */
 function os_slideshow_views_pre_render(&$view) {
+  
   if (($view->name == 'os_slideshow') && $delta = $view->args['delta']) {
     
     //get the box
@@ -149,4 +170,3 @@ function os_slideshow_process_form_nodes($element, &$state, &$form) {
   
   return $element;
 }
-
