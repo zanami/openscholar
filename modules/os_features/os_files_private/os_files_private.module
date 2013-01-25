@@ -108,7 +108,7 @@ function os_files_private_file_download($uri) {
   if (arg(0) !== 'system') {
     return;
   }
-  
+
   $file = array();
   $restrict_mode = variable_get('os_files_private_restrict_mode', 'site_members');
   $query = new EntityFieldQuery;
@@ -170,4 +170,31 @@ function os_files_private_file_download($uri) {
   }
   // Default: restrict access.
   return -1;
+}
+
+/**
+ * Implements hook_form_FORM_ID_form_alter() for spaces_features_form.
+ *
+ * Hides the Private Files app from the Build > Apps page, except OGC.
+ */
+function os_files_private_form_spaces_features_form_alter(&$form, &$form_state, $form_id) {
+  // TEMPORARY; FOR 2012-01-30 RELEASE ONLY
+  // @todo deprecate in favor of per-site pinserver configurations.
+  // dpm($form);
+  // Does nothing if this is OGC (allows OGC users to access this app).
+  // DEVELOPER: any domain name or purl containing "ogc" will show the app.
+  $vsite_domain_name = variable_get('vsite_domain_name', '');
+  if ($vsite_domain_name) {
+    if (strpos($vsite_domain_name, 'ogc') !== FALSE) {
+      return;
+    }
+  }
+  if (strpos(vsite_get_purl(), 'ogc') !== FALSE) {
+    return;
+  }
+
+  // Otherwise, unsets the `os_private_files` app from the Apps listing.
+  if (isset($form['spaces_features']['os_files_private'])) {
+    unset($form['spaces_features']['os_files_private']);
+  }
 }
