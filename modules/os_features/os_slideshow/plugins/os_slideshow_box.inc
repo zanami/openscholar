@@ -101,7 +101,7 @@ class os_slideshow_box extends os_boxes_default {
         '#value' => $nids,    
       );
       
-      //load slideshow_image nodes
+      //load slideshow_slide nodes
       uasort($this->options['nodes'], 'element_sort');
       $nodes = node_load_multiple($nids);
   
@@ -149,7 +149,7 @@ class os_slideshow_box extends os_boxes_default {
 
     //show Add Slide link to admins
     if (spaces_access_admin()) {
-      $block['content'] = l('Add Slide', 'node/add/slideshow-image', array(
+      $block['content'] = l('Add Slide', 'node/add/slideshow-slide', array(
         'attributes' => array('class' => array('add_new')),
         'query' => array('widget' => $this->delta, 'destination' => current_path()),
       ));
@@ -271,6 +271,7 @@ class os_slideshow_box extends os_boxes_default {
       $nids = db_select('node', 'n')
         ->fields('n', array('nid'))
         ->condition('n.nid', $nids, 'IN')
+        ->condition('n.type', 'slideshow_slide')
         ->execute()
         ->fetchCol();
     }

@@ -12,7 +12,7 @@ function os_slideshow_views_default_views() {
 
   $view = new view();
   $view->name = 'os_slideshow';
-  $view->description = 'Rotating slideshow of slideshow_image nodes';
+  $view->description = 'Rotating slideshow of slideshow_slide nodes';
   $view->tag = 'default';
   $view->base_table = 'node';
   $view->human_name = 'OS Slideshow';
@@ -137,7 +137,7 @@ function os_slideshow_views_default_views() {
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
-    'slideshow_image' => 'slideshow_image',
+    'slideshow_slide' => 'slideshow_slide',
   );
   $handler->display->display_options['filters']['type']['group'] = 1;
   /* Filter criterion: Content: Nid */

@@ -26,7 +26,7 @@ function os_slideshow_views_api() {
  */
 function os_slideshow_node_info() {
   $items = array(
-    'slideshow_image' => array(
+    'slideshow_slide' => array(
       'name' => t('Slideshow Image'),
       'base' => 'node_content',
       'description' => t('An image in a slideshow widget.'),

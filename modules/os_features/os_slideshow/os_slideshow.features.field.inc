@@ -10,8 +10,8 @@
 function os_slideshow_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-slideshow_image-field_description'.
-  $fields['node-slideshow_image-field_description'] = array(
+  // Exported field: 'node-slideshow_slide-field_description'.
+  $fields['node-slideshow_slide-field_description'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -40,7 +40,7 @@ function os_slideshow_field_default_fields() {
       'type' => 'text',
     ),
     'field_instance' => array(
-      'bundle' => 'slideshow_image',
+      'bundle' => 'slideshow_slide',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
@@ -79,8 +79,8 @@ function os_slideshow_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-slideshow_image-field_headline'.
-  $fields['node-slideshow_image-field_headline'] = array(
+  // Exported field: 'node-slideshow_slide-field_headline'.
+  $fields['node-slideshow_slide-field_headline'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -109,7 +109,7 @@ function os_slideshow_field_default_fields() {
       'type' => 'text',
     ),
     'field_instance' => array(
-      'bundle' => 'slideshow_image',
+      'bundle' => 'slideshow_slide',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => 'Headline text will be displayed on top of the image during the slideshow.',
@@ -148,8 +148,8 @@ function os_slideshow_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-slideshow_image-field_image'.
-  $fields['node-slideshow_image-field_image'] = array(
+  // Exported field: 'node-slideshow_slide-field_image'.
+  $fields['node-slideshow_slide-field_image'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -179,7 +179,7 @@ function os_slideshow_field_default_fields() {
       'type' => 'imagefield_crop',
     ),
     'field_instance' => array(
-      'bundle' => 'slideshow_image',
+      'bundle' => 'slideshow_slide',
       'deleted' => '0',
       'description' => '',
       'display' => array(
@@ -237,8 +237,8 @@ function os_slideshow_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-slideshow_image-field_link'.
-  $fields['node-slideshow_image-field_link'] = array(
+  // Exported field: 'node-slideshow_slide-field_link'.
+  $fields['node-slideshow_slide-field_link'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -268,7 +268,7 @@ function os_slideshow_field_default_fields() {
       'type' => 'link_field',
     ),
     'field_instance' => array(
-      'bundle' => 'slideshow_image',
+      'bundle' => 'slideshow_slide',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
