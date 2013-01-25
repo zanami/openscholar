@@ -479,14 +479,14 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout) {
     // the parent keys that exist in the child
     $only_parent_keys = array_intersect($new_keys, $parent_keys);
     // the order in the parent of keys that only exist in child
-    $active_parents = array_intersect($only_parent_keys, $parent_keys);
+    $active_parents = array_intersect($parent_keys, $only_parent_keys);
 
     $bulldoze = true;
     if (empty($only_parent_keys)) {
       // none of the parent blocks are in the child
       // bulldoze is fine
     }
-    elseif ($only_parent_keys == $active_parents) {
+    elseif ($only_parent_keys === $active_parents) {
       // parent blocks are in the same order.
       // update their weights to match the parents
       // then put the new blocks in between them
