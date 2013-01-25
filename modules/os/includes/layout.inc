@@ -121,9 +121,10 @@ function os_layout_get($context_name, $load_meta = FALSE, $unused_blocks = FALSE
       'weight' => 0,
   );
   foreach ($block_settings as $k => &$b) {
-    if(os_layout_block_exists($b)){
+    if (os_layout_block_exists($b) && $k == $b['module'].'-'.$b['delta']) {
       $b += $required;
-    }else{
+    }
+    else {
       unset($block_settings[$k]);
     }
   }
