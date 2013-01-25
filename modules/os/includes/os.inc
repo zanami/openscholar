@@ -61,7 +61,7 @@ function os_get_bundles($include_status = array(1), $space_type = 'og', $reset =
   asort($bundles);
 
   //Allow other modules to alter the os bundle list
-  drupal_alter('os_get_bundles', $bundles)
+  drupal_alter('os_get_bundles', $bundles);
 
   return $bundles;
 }
