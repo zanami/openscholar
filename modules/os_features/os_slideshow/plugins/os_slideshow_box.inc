@@ -6,12 +6,10 @@ class os_slideshow_box extends os_boxes_default {
     $options = parent::options_defaults();
     
     return $options + array(
-      'pager' => 'none',
-      'controls' => 'none',
-      'slide_counter' => 'none',
-      'show_image_titles' => 'none',
+      'pager' => 'bottom',
+      'controls' => 'bottom',
+      'slide_counter' => 'bottom',
       'effect' => 'fade',
-      'style' => 'dark',
       'size' => 600,
       'nodes' => array(),
     );
@@ -27,17 +25,7 @@ class os_slideshow_box extends os_boxes_default {
       '#collapsed' => TRUE,
       '#weight' => 10,
     );
-    
-    $form['display']['style'] = array(
-      '#title' => t('Player Styles'),
-      '#type' => 'select',
-      '#options' => array('dark' => t('Dark'), 'light' => t('Light')),
-      '#default_value' => $this->options['style'],
-      //'#pre_render' => array('os_slideshow_box_style_thumbs'),
-      '#attributes' => array('class' => array('thumbnails')),
-      '#description' => t('Choose between a black or light grey player style.'),
-    );
-    
+     
     $form['display']['size'] = array(
       '#type' => 'textfield',
       '#title' => t('Size'),
@@ -55,7 +43,7 @@ class os_slideshow_box extends os_boxes_default {
     $display_options = array('pager' => t('Show Pager'), 'controls' => t('Show Controls'), 'slide_counter' => t('Slide Counter'));
     foreach ($display_options as $option => $title)
       $form['display'][$option] = array(
-        '#type' => 'select',
+        '#type' => 'hidden',
         '#title' => $title,
         //omitting top/bottom options, but leaving this here so we can add it back in when we're ready for new features.
         //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
