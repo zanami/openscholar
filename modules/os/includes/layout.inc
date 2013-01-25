@@ -121,9 +121,10 @@ function os_layout_get($context_name, $load_meta = FALSE, $unused_blocks = FALSE
       'weight' => 0,
   );
   foreach ($block_settings as $k => &$b) {
-    if(os_layout_block_exists($b)){
+    if (os_layout_block_exists($b) && $k == $b['module'].'-'.$b['delta']) {
       $b += $required;
-    }else{
+    }
+    else {
       unset($block_settings[$k]);
     }
   }
@@ -185,26 +186,17 @@ function os_layout_set($context_name, $blocks) {
   $clean_up = false;
 
   if ($context_name == 'os_public' && variable_get('os_layout_needs_cleanup', true)) {
+    // we want to compare to the old version, which is what should be in the children contexts
+    $old_blocks = os_layout_get($context_name);
     $ctxs = os_layout_get_contexts(TRUE);
     foreach ($ctxs as $ctx => $name) {
       if ($ctx == 'os_public') continue;
       $child_blocks = os_layout_get($ctx);
 
-      _os_layout_adjust_relative_weight($child_blocks, $blocks);
-      $child_blocks = _os_layout_filter_blocks($child_blocks, $blocks);
+      _os_layout_adjust_relative_weight($child_blocks, $old_blocks);
+      $child_blocks = _os_layout_filter_blocks($child_blocks, $old_blocks);
 
-      $def = context_load($ctx);
-      $def_blocks = $def->reactions['block']['blocks'];
-      if ($child_blocks !== $def_blocks || $def_blocks !== $child_blocks) {
-        // there is an override
-        os_layout_set($ctx, $child_blocks);
-      }
-      else {
-        // reset to defaults, if we can
-        if (!os_layout_revert($ctx)) {
-          os_layout_set($ctx, $child_blocks);
-        }
-      }
+      os_layout_set($ctx, $child_blocks);
     }
     $clean_up = true;
   }
