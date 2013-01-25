@@ -367,4 +367,12 @@ class FeatureContext extends DrupalContext {
   public function iSleepFor($sec) {
     sleep($sec);
   }
+
+  /**
+   * @When /^I set the variable "([^"]*)" to "([^"]*)"$/
+   */
+  public function iSetTheVariableTo($variable, $value) {
+    $code = "os_migrate_demo_variable_set({$variable}, '{$value}');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
 }

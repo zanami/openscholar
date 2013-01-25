@@ -183,3 +183,12 @@ function os_migrate_demo_assign_node_to_term($title, $name, $type = 'class') {
   $wrapper->save();
 }
 
+/**
+ * Set a value for variable.
+ */
+function os_migrate_demo_variable_set($name, $value) {
+  $vsite = spaces_preset_load('os_scholar', 'og');
+  $vsite->value['variable'][$name] = $value;
+  spaces_preset_save($vsite);
+}
+
