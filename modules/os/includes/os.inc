@@ -60,6 +60,9 @@ function os_get_bundles($include_status = array(1), $space_type = 'og', $reset =
   // Sort the bundles in alphabetical order.
   asort($bundles);
 
+  //Allow other modules to alter the os bundle list
+  drupal_alter('os_get_bundles', $bundles)
+
   return $bundles;
 }
 
