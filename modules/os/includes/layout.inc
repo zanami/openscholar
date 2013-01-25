@@ -185,7 +185,7 @@ function os_layout_set($context_name, $blocks) {
   $context = context_load($context_name);
   $clean_up = false;
 
-  if ($context_name == 'os_public' && variable_get('os_layout_needs_cleanup', true)) {
+  if ($context_name == 'os_public' && !variable_get('os_layout_has_cleaned_up', false)) {
     // we want to compare to the old version, which is what should be in the children contexts
     $old_blocks = os_layout_get($context_name);
     $ctxs = os_layout_get_contexts(TRUE);
@@ -206,7 +206,7 @@ function os_layout_set($context_name, $blocks) {
     vsite_layout_context_set($context_name, $blocks);
     if ($clean_up) {
       $vsite = vsite_get_vsite();
-      $vsite->controllers->variable->set('os_layout_needs_cleanup', false);
+      $vsite->controllers->variable->set('os_layout_has_cleaned_up', true);
     }
   }
   else {
@@ -215,7 +215,7 @@ function os_layout_set($context_name, $blocks) {
     // write the context to the database.
     context_save($context);
     if ($clean_up) {
-      variable_set('os_layout_needs_cleanup', false);
+      variable_set('os_layout_has_cleaned_up', true);
     }
   }
 }
