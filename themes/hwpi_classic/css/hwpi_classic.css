@@ -104,14 +104,9 @@ h2.block-title {
 }
  
 .sidebar .block.section-nav,
-#content-column .block.section-nav,
-.sidebar .block-os-search-db.no-title {
+#content-column .block.section-nav {
 	border-top: none;
 }
-
-
-
-
 
 
 
@@ -124,6 +119,4 @@ h2.block-title {
 	text-transform: none;
 	font-size: 16px;
 }
-
-
 

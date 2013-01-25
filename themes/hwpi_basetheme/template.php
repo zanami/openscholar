@@ -1,8 +1,8 @@
 <?php
 
 // Rebuild the theme data. Turn this off when in production.
-system_rebuild_theme_data();
-drupal_theme_rebuild();
+//system_rebuild_theme_data();
+//drupal_theme_rebuild();
 
 
 /**
@@ -48,7 +48,7 @@ function hwpi_basetheme_preprocess_node(&$vars) {
 
   // Event persons, change title markup to h1
   if ($vars['type'] == 'person') {
-    if (isset($vars['field_person_photo'])) {
+    if (isset($vars['field_person_photo']) && !empty($vars['field_person_photo'])) {
       $vars['classes_array'][] = 'with-person-photo';
     }
   }
@@ -76,6 +76,8 @@ function hwpi_basetheme_node_view_alter(&$build) {
 
   // Persons, heavily modify the output to match the HC designs
   if ($build['#node']->type == 'person') {
+    
+    dsm($build);
 
     // Professional titles
     if (isset($build['field_professional_title'])) {
@@ -100,6 +102,15 @@ function hwpi_basetheme_node_view_alter(&$build) {
       $build['body']['#label_display'] = 'hidden';
       $build['pic_bio']['body'] = $build['body'];
       unset($build['body']);
+    }
+
+    // We dont want the other fields on teasers
+    if ($build['#view_mode'] == 'teaser') {
+      unset($build['field_address']);
+      unset($build['field_email']);
+      unset($build['field_phone']);
+      unset($build['field_website']);
+      return;
     }
 
     // Note that Contact and Website details will print wrappers and titles regardless of any field content.

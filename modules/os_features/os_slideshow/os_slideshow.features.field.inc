@@ -10,16 +10,14 @@
 function os_slideshow_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-slideshow_image-body'.
-  $fields['node-slideshow_image-body'] = array(
+  // Exported field: 'node-slideshow_image-field_description'.
+  $fields['node-slideshow_image-field_description'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
-      'entity_types' => array(
-        0 => 'node',
-      ),
-      'field_name' => 'body',
+      'entity_types' => array(),
+      'field_name' => 'field_description',
       'foreign keys' => array(
         'format' => array(
           'columns' => array(
@@ -35,9 +33,11 @@ function os_slideshow_field_default_fields() {
       ),
       'locked' => '0',
       'module' => 'text',
-      'settings' => array(),
+      'settings' => array(
+        'max_length' => '128',
+      ),
       'translatable' => '0',
-      'type' => 'text_with_summary',
+      'type' => 'text',
     ),
     'field_instance' => array(
       'bundle' => 'slideshow_image',
@@ -46,38 +46,34 @@ function os_slideshow_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'hidden',
+          'label' => 'above',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '2',
+          'weight' => 6,
         ),
         'teaser' => array(
-          'label' => 'hidden',
-          'module' => 'text',
-          'settings' => array(
-            'trim_length' => 600,
-          ),
-          'type' => 'text_summary_or_trimmed',
-          'weight' => 1,
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'body',
-      'label' => 'Body',
-      'required' => FALSE,
+      'field_name' => 'field_description',
+      'label' => 'Description',
+      'required' => 0,
       'settings' => array(
-        'display_summary' => TRUE,
-        'text_processing' => 1,
+        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
+        'active' => 1,
         'module' => 'text',
         'settings' => array(
-          'rows' => 20,
-          'summary_rows' => 5,
+          'size' => '60',
         ),
-        'type' => 'text_textarea_with_summary',
+        'type' => 'text_textfield',
         'weight' => '4',
       ),
     ),
@@ -107,7 +103,7 @@ function os_slideshow_field_default_fields() {
       'locked' => '0',
       'module' => 'text',
       'settings' => array(
-        'max_length' => '255',
+        'max_length' => '128',
       ),
       'translatable' => '0',
       'type' => 'text',
@@ -174,13 +170,13 @@ function os_slideshow_field_default_fields() {
         ),
       ),
       'locked' => '0',
-      'module' => 'image',
+      'module' => 'imagefield_crop',
       'settings' => array(
         'default_image' => 0,
         'uri_scheme' => 'public',
       ),
       'translatable' => '0',
-      'type' => 'image',
+      'type' => 'imagefield_crop',
     ),
     'field_instance' => array(
       'bundle' => 'slideshow_image',
@@ -195,7 +191,7 @@ function os_slideshow_field_default_fields() {
             'image_style' => '',
           ),
           'type' => 'image',
-          'weight' => '4',
+          'weight' => 7,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -207,30 +203,12 @@ function os_slideshow_field_default_fields() {
       'entity_type' => 'node',
       'field_name' => 'field_image',
       'label' => 'Image',
-      'required' => 1,
+      'required' => 0,
       'settings' => array(
         'alt_field' => 0,
         'default_image' => 0,
         'file_directory' => '',
         'file_extensions' => 'png gif jpg jpeg',
-        'filefield_paths' => array(
-          'active_updating' => 0,
-          'file_name' => array(
-            'options' => array(
-              'pathauto' => 0,
-              'transliterate' => 0,
-            ),
-            'value' => '[file:ffp-name-only-original].[file:ffp-extension-original]',
-          ),
-          'file_path' => array(
-            'options' => array(
-              'pathauto' => 0,
-              'transliterate' => 0,
-            ),
-            'value' => '',
-          ),
-          'retroactive_update' => 0,
-        ),
         'max_filesize' => '',
         'max_resolution' => '',
         'min_resolution' => '',
@@ -239,29 +217,21 @@ function os_slideshow_field_default_fields() {
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'media',
+        'module' => 'imagefield_crop',
         'settings' => array(
-          'allowed_schemes' => array(
-            'embed' => 0,
-            'oembed' => 0,
-            'public' => 'public',
-          ),
-          'allowed_types' => array(
-            'audio' => 0,
-            'default' => 0,
-            'html' => 0,
-            'image' => 'image',
-            'video' => 0,
-          ),
-          'browser_plugins' => array(
-            'media_default--media_browser_1' => 'media_default--media_browser_1',
-            'media_default--media_browser_my_files' => 0,
-            'media_internet' => 'media_internet',
-            'upload' => 'upload',
-          ),
+          'collapsible' => '2',
+          'croparea' => '500x500',
+          'custom_ratio' => '',
+          'enforce_minimum' => 1,
+          'enforce_ratio' => 1,
+          'gif_processing' => 'convert',
+          'preview_image_style' => 'thumbnail',
           'progress_indicator' => 'throbber',
+          'resolution' => '978x312',
+          'select_maximum_area' => 1,
+          'validate_resolution' => 0,
         ),
-        'type' => 'media_generic',
+        'type' => 'imagefield_crop_widget',
         'weight' => '1',
       ),
     ),
@@ -353,7 +323,7 @@ function os_slideshow_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('Body');
+  t('Description');
   t('Headline');
   t('Headline text will be displayed on top of the image during the slideshow.');
   t('Image');

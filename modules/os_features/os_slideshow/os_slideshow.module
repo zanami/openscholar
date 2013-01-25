@@ -41,7 +41,8 @@ function os_slideshow_vsite_og_node_type_info() {
  * Attaches widget delta to form so it'll be available during node save
  */
 function os_slideshow_form_slideshow_image_node_form_alter(&$form, &$state, $form_id) {
-  $widget = (isset($_GET['widget'])) ? $_GET['widget'] : FALSE;
+  $widget = (isset($_GET['widget'])) ? $_GET['widget'] : @$state['input']['widget'];
+  
   if ($widget) {
     $form['widget'] = array('#type' => 'hidden', '#value' => $widget);
   } 

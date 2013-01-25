@@ -58,6 +58,10 @@ table caption {
 	letter-spacing:0.1em;
 }
 
+.breadcrumb span {
+  color: #1e1e1e;
+}
+
 
 /* Block Styles */
 #content-column .block ul {

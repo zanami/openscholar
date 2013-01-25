@@ -93,17 +93,23 @@ class os_slideshow_box extends os_boxes_default {
         '#weight' => 5,
       );
       
+      $nids = $this->_get_nids(); //filter out dead nids
+      
       $form['nodes']['#process'][] = 'os_slideshow_process_form_nodes';
       $form['nodes_list'] = array(
         '#type' => 'hidden',
-        '#value' => array_keys($this->options['nodes']),    
+        '#value' => $nids,    
       );
       
       //load slideshow_image nodes
       uasort($this->options['nodes'], 'element_sort');
-      $nodes = node_load_multiple(array_keys($this->options['nodes']));
+      $nodes = node_load_multiple($nids);
   
       foreach ($this->options['nodes'] as $nid => $data) {
+        if (!in_array($nid, $nids)) {
+          continue;
+        }
+        
         $uri = $nodes[$nid]->field_image[$nodes[$nid]->language][0]['uri'];
         $img = theme('image_style', array('style_name' => 'os_square_50_50','path' => $uri, 'width'=>50, 'height'=>50));
         $title = $nodes[$nid]->title;
@@ -247,6 +253,21 @@ class os_slideshow_box extends os_boxes_default {
     $html;
     //$link = '<a href="' . current_path() . '%20">';
     return $html; 
+  }
+  
+  //filters out dead nids
+  private function _get_nids() {
+    $nids = array_keys($this->options['nodes']);
+    
+    if ($nids) {
+      $nids = db_select('node', 'n')
+        ->fields('n', array('nid'))
+        ->condition('n.nid', $nids, 'IN')
+        ->execute()
+        ->fetchCol();
+    }
+    
+    return $nids;
   }
 }
 
