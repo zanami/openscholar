@@ -516,11 +516,32 @@ table .mini-day-on a {
 
 
 
+/* Follow me */
+.block-boxes-os_boxes_follow .item-list ul {
+  margin-top: 5px;
+}
+
+.block-boxes-os_boxes_follow .item-list ul li {
+  height: 32px;
+  line-height: 32px;
+}
+
+.block-boxes-os_boxes_follow ul.follow-me-links-vertical li {
+  margin-bottom: 4px;
+}
+
+.block-boxes-os_boxes_follow ul.follow-me-links li {
+  margin-right: 4px;
+}
+
+
+
 /* RSS widgets */
 .block-boxes-os_boxes_rss .boxes-box-content,
 .block-boxes-os_boxes_rss .boxes-box-content {
   padding: 15px 0;
 }
+
 .block-boxes-os_boxes_rss img,
 .block-boxes-os_boxes_rss img {
   margin: 0 0 -2px;
