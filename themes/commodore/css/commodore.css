@@ -210,7 +210,7 @@ input[type="search"] {
 }
 
 #menu-bar ul.nice-menu ul li a {
-     padding: 10px 0px 5px 3px
+    padding: 10px 0 5px 18px;
   
 }
 
@@ -225,7 +225,9 @@ input[type="search"] {
 /* NICE MEUNS */
 ul.nice-menu ul {
     top: 3.5em;
+    background: #DADADA;
 }
+
 
 .sidebar #block-os-primary-menu ul.menu a {
     color: #5D7485;
