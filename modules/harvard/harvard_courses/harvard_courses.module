@@ -14,11 +14,11 @@ function harvard_courses_os_app_info() {
 
   $apps['harvard_courses'] = array(
     'path' => 'courses',
-  	'nodetypes' => array(
+    'nodetypes' => array(
       /* Note: only provides App-related, listable group content,
        * so, omits "harvard_api_importer".
        */
-  	  'harvard_course',
+      'harvard_course',
     ),
   );
 
@@ -326,10 +326,6 @@ function harvard_courses_node_update($node) {
       'field_name' => 'field_catalog_number',
       'course' => 'field_cat_number',
     ),
-    'department' => array(
-      'field_name' => 'field_department_id',
-      'course' => 'field_department_id',
-    ),
   );
 
   foreach ($fields as $field) {
@@ -359,6 +355,67 @@ function harvard_courses_node_update($node) {
       $node->skip_og_membership = TRUE;
     }
   }
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function harvard_courses_entity_update($entity, $type) {
+  if ($type != 'field_collection_item' || (isset($entity->field_name) && $entity->field_name != 'field_department_school')) {
+    return;
+  }
+
+  // Wrapping up the original entity the new edited entity.
+  $original = entity_metadata_wrapper($type, $entity->original);
+  $wrapper = entity_metadata_wrapper($type, $entity);
+
+  $fields = array(
+    'field_department_id',
+    'field_school_name',
+  );
+
+  foreach ($fields as $field) {
+    if ($wrapper->{$field}->value() != $original->{$field}->value()) {
+      // Un-groping removed courses.
+      $courses = harvard_courses_related_nodes($field, array($original->{$field}->value()));
+      if (!empty($removed_courses)) {
+        foreach ($courses as $course_id) {
+          og_ungroup('node', harvard_courses_get_field_collection_item_node($entity->item_id), 'node', $course_id);
+        }
+      }
+
+      // Groping added courses.
+      $courses = harvard_courses_related_nodes($field, array($wrapper->{$field}->value()));
+      if (!empty($courses)) {
+        foreach ($courses as $course) {
+          og_group('node', harvard_courses_get_field_collection_item_node($entity->item_id), array('entity_type' => 'node', 'entity' => $course));
+        }
+      }
+      $entity->skip_og_membership = TRUE;
+    }
+  }
+}
+
+/**
+ * Return the nid that the field collection item belong two.
+ *
+ *  @param $item_id
+ *    The field collection item id.
+ */
+function harvard_courses_get_field_collection_item_node($item_id) {
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->fieldCondition('field_department_school', 'value', $item_id)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  $nid = reset(array_keys($result['node']));
+
+  return $nid;
 }
 
 /**
@@ -429,16 +486,23 @@ function harvard_courses_form_cp_app_settings_form_after_build($form, &$form_sta
  *    The field name.
  *  @param $form_state
  *    The form state value.
+ *  @param $field_collection
+ *    Notify the function when dealing with a field collection format.
  *
  *  @return
  *    Array containing the value of the field.
  */
-function _harvard_courses_get_field_value($field_name, $form_state) {
+function _harvard_courses_get_field_value($field_name, $form_state, $field_collection = FALSE) {
   $return = '';
 
   foreach ($form_state['values'][$field_name][LANGUAGE_NONE] as $key => $value) {
     if (is_int($key)) {
-      $item_value = $form_state['values'][$field_name][LANGUAGE_NONE][$key]['value'];
+      if ($field_collection) {
+        $item_value = $form_state['values'][$field_name][LANGUAGE_NONE][$key]['entity'];
+      }
+      else {
+        $item_value = $form_state['values'][$field_name][LANGUAGE_NONE][$key]['value'];
+      }
 
       if (!empty($item_value)) {
         $return[] = $item_value;
@@ -453,12 +517,19 @@ function _harvard_courses_get_field_value($field_name, $form_state) {
  * Submit handler - Save the value of department ID, and catalog number.
  */
 function harvard_courses_feature_submit($form, $form_state) {
-  $department_id = _harvard_courses_get_field_value('field_department_id', $form_state);
+  $field_department_school = _harvard_courses_get_field_value('field_department_school', $form_state, TRUE);
   $catalog_number = _harvard_courses_get_field_value('field_catalog_number', $form_state);
 
   $wrapper = entity_metadata_wrapper('node', $form['#entity']);
 
-  empty($department_id) ? $wrapper->field_department_id->set(NULL) : $wrapper->field_department_id->set($department_id);
+  // Go over the field collections and save them.
+  foreach ($field_department_school as $field_collection) {
+    // Set a host entity for the new field collection item.
+    if (!$field_collection->item_id) {
+      $field_collection->setHostEntity('node', $wrapper->value());
+    }
+    $field_collection->save();
+  }
   empty($catalog_number) ? $wrapper->field_catalog_number->set(NULL) : $wrapper->field_catalog_number->set($catalog_number);
 
   $wrapper->save();
@@ -468,7 +539,7 @@ function harvard_courses_feature_submit($form, $form_state) {
  * Implements hook_field_access().
  */
 function harvard_courses_field_access($op, $field, $entity_type, $entity, $account) {
-  if (!in_array($field['field_name'], array('field_department_school', 'field_department_id', 'field_catalog_number'))) {
+  if (!in_array($field['field_name'], array('field_department_school', 'field_catalog_number'))) {
     return;
   }
 
