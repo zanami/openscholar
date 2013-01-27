@@ -73,14 +73,14 @@ function harvard_courses_field_default_fields() {
     ),
   );
 
-  // Exported field: 'field_collection_item-field_department_school-field_school_name'.
-  $fields['field_collection_item-field_department_school-field_school_name'] = array(
+  // Exported field: 'field_collection_item-field_department_school-field_faculty'.
+  $fields['field_collection_item-field_department_school-field_faculty'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_school_name',
+      'field_name' => 'field_faculty',
       'foreign keys' => array(
         'format' => array(
           'columns' => array(
@@ -96,11 +96,9 @@ function harvard_courses_field_default_fields() {
       ),
       'locked' => '0',
       'module' => 'text',
-      'settings' => array(
-        'max_length' => '255',
-      ),
+      'settings' => array(),
       'translatable' => '0',
-      'type' => 'text',
+      'type' => 'text_long',
     ),
     'field_instance' => array(
       'bundle' => 'field_department_school',
@@ -117,7 +115,7 @@ function harvard_courses_field_default_fields() {
         ),
       ),
       'entity_type' => 'field_collection_item',
-      'field_name' => 'field_school_name',
+      'field_name' => 'field_faculty',
       'label' => 'School name',
       'required' => 0,
       'settings' => array(
@@ -128,10 +126,10 @@ function harvard_courses_field_default_fields() {
         'active' => 1,
         'module' => 'text',
         'settings' => array(
-          'size' => '60',
+          'rows' => '1',
         ),
-        'type' => 'text_textfield',
-        'weight' => '3',
+        'type' => 'text_textarea',
+        'weight' => '4',
       ),
     ),
   );

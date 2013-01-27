@@ -371,7 +371,7 @@ function harvard_courses_entity_update($entity, $type) {
 
   $fields = array(
     'field_department_id',
-    'field_school_name',
+    'field_faculty',
   );
 
   foreach ($fields as $field) {
@@ -401,6 +401,9 @@ function harvard_courses_entity_update($entity, $type) {
  *
  *  @param $item_id
  *    The field collection item id.
+ *
+ *  @return
+ *    Node ID.
  */
 function harvard_courses_get_field_collection_item_node($item_id) {
   $query = new entityFieldQuery();
@@ -530,6 +533,7 @@ function harvard_courses_feature_submit($form, $form_state) {
     }
     $field_collection->save();
   }
+
   empty($catalog_number) ? $wrapper->field_catalog_number->set(NULL) : $wrapper->field_catalog_number->set($catalog_number);
 
   $wrapper->save();
