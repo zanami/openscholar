@@ -1,8 +1,8 @@
 <?php
 
 // Rebuild the theme data. Turn this off when in production.
-//system_rebuild_theme_data();
-//drupal_theme_rebuild();
+system_rebuild_theme_data();
+drupal_theme_rebuild();
 
 
 /**
@@ -319,3 +319,47 @@ function hwpi_basetheme_links($vars) {
 
   return $output;
 }
+
+/**
+ * Returns HTML for status and/or error messages, grouped by type.
+ *
+ * Adaptivetheme adds a div wrapper with CSS id.
+ *
+ * An invisible heading identifies the messages for assistive technology.
+ * Sighted users see a colored box. See http://www.w3.org/TR/WCAG-TECHS/H69.html
+ * for info.
+ *
+ * @param $vars
+ *   An associative array containing:
+ *   - display: (optional) Set to 'status' or 'error' to display only messages
+ *     of that type.
+ */
+function hwpi_basetheme_status_messages($vars) {
+  $display = $vars['display'];
+  $output = '';
+
+  $status_heading = array(
+    'status' => t('Status update'),
+    'error' => t('Error'),
+    'warning' => t('Warning'),
+  );
+  foreach (drupal_get_messages($display) as $type => $messages) {
+    $output .= '<div class="messages ' . $type . '"><div class="message-inner"><div class="message-wrapper">';
+    if (!empty($status_heading[$type])) {
+      $output .= '<h2>' . $status_heading[$type] . "</h2>";
+    }
+    if (count($messages) > 1) {
+      $output .= " <ul>";
+      foreach ($messages as $message) {
+        $output .= '  <li>' . $message . "</li>";
+      }
+      $output .= " </ul>";
+    }
+    else {
+      $output .= $messages[0];
+    }
+    $output .= "</div></div></div>";
+  }
+  return $output;
+}
+
