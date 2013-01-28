@@ -73,7 +73,7 @@ function os_publications_menu_alter(&$items) {
  * only inside a VSite context, to prevent from loading too many nodes.
  */
 function os_publications_export_access() {
-  if (!user_access('show export links') || !spaces_get_space()) {
+  if (!user_access('show export links') || (module_exists('vsite') && !spaces_get_space())) {
     return;
   }
 
