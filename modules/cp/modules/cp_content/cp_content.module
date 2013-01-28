@@ -13,9 +13,29 @@ function cp_content_menu() {
     'page callback' => 'cp_content_add_page',
     'title' => 'Add New Content',
     'type' => MENU_NORMAL_ITEM,
-    'access callback' => 'cp_content_add_page',
+    'access callback' => 'cp_content_add_page_access',
     'file' => 'cp_content.pages.inc',
   );
 
   return $items;
+}
+
+/**
+ * Same as _node_add_access but just for os bundles
+ * @return boolean
+ */
+function cp_content_add_page_access() {
+  $bundles = os_get_bundles();
+  foreach ($bundles as $type => $name) {
+    if (node_hook($type, 'form') && node_access('create', $type)) {
+      return TRUE;
+    }
+  }
+  if (user_access('administer content types')) {
+    // There are no content types defined that the user has permission to create,
+    // but the user does have the permission to administer the content types, so
+    // grant them access to the page anyway.
+    return TRUE;
+  }
+  return FALSE;
 }

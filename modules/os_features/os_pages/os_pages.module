@@ -120,11 +120,27 @@ function os_pages_block_view_alter(&$render, $block) {
 function os_pages_menu_contextual_links_alter(&$links, $router_item, $root_path) {
   if ($root_path == 'os/widget/%/%' && $router_item['map'][3] == 'main_content') {
     $node = menu_get_object();
-    if(!is_object($node)) {
+    if(!is_object($node) || !node_access('update', $node)) {
       return;
     }
     $links['os_pages-edit'] = menu_get_item('os/pages/'.$node->nid.'/body');
     $links = array_reverse($links, true);
+  }
+}
+
+/**
+ * Implements hook os_layout_get_alter()
+ */
+function os_pages_os_layout_get_alter($context_name, &$blocks){
+  static $content_block = array();
+  //Only allow the maim-content block on os_pages contexts
+  @list($ctx_prefix, $level,) = explode('-', $context_name, 3);
+  if (($ctx_prefix != 'os_pages' || $level != 'page') && isset($blocks['os_pages-main_content'])) {
+    $content_block = $blocks['os_pages-main_content'];
+    unset($blocks['os_pages-main_content']);
+  }
+  elseif ($ctx_prefix == 'os_pages' && $level == 'page' && !isset($blocks['os_pages-main_content'])) {
+    $blocks['os_pages-main_content'] = $content_block;
   }
 }
 
@@ -278,6 +294,26 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
     ),
     '#disabled' => isset($form['#node']->nid)?true:false,
   );*/
+}
+
+function os_pages_form_cp_layout_full_form_alter(&$form, &$form_state) {
+  $continue = false;
+  foreach ($form['context']['#value'] as $c) {
+    if (strpos($c, 'os_pages-page-') !== FALSE) {
+      $continue = true;
+    }
+  }
+  if (!$continue) return;
+
+  if (isset($form['layout']['#attributes'])) {
+    $layout_attr = &$form['layout']['#attributes'];
+    if (!in_array('content-regions', $layout_attr['class'])) {
+      $layout_attr['class'][] = 'content-regions';
+    }
+  }
+  else {
+    $form['layout']['#attributes']['class'][] = 'content-regions';
+  }
 }
 
 /**

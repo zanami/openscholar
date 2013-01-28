@@ -1,0 +1,172 @@
+<?php
+/**
+ * @file
+ * Code for the OS Slideshow feature.
+ */
+
+include_once 'os_slideshow.features.inc';
+
+/**
+ * Implements hook_boxes_plugins().
+ */
+function os_slideshow_boxes_plugins(){
+  $info = array();
+  $path = drupal_get_path('module', 'os_slideshow') . '/plugins';
+
+  $info['os_slideshow_box'] = array(
+    'title' => 'Slideshow',
+    'description' => 'Slideshow',
+    'tags' => array('Media'),
+    'handler' => array(
+      'class' => 'os_slideshow_box',
+      'file' => 'os_slideshow_box.inc',
+      'path' => $path,
+      'parent' => 'os_boxes_default'
+    )
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_vsite_og_node_type_info().
+ */
+function os_slideshow_vsite_og_node_type_info() {
+  return array('slideshow_slide' => 'group content');
+}
+
+/**
+ * Implements hook_ctools_plugin_pre_alter
+ * 
+ * Prevent gallery slideshows from being created.  They're being phased out for this new slideshow.
+ */
+function os_slideshow_ctools_plugin_pre_alter(&$plugin, &$info) {
+  if ($plugin['name'] == 'os_boxes_slideshow') {
+    $plugin['title'] = NULL;
+  }
+}
+
+/**
+ * Implements hook_form_FORMID_alter
+ *
+ * Attaches widget delta to form so it'll be available during node save
+ */
+function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $form_id) {
+  $widget = (isset($_GET['widget'])) ? $_GET['widget'] : @$state['input']['widget'];
+  
+  if ($widget) {
+    $form['widget'] = array('#type' => 'hidden', '#value' => $widget);
+  } 
+  
+  //hide additional settings except publishing options.
+  foreach ($form as $name => &$item) {
+    if (is_array($item) && isset($item['#group']) && ($item['#group'] == 'additional_settings') && ($name != 'options')) {
+      $item['#type'] = 'hidden';
+    }
+  }
+}
+
+/**
+ * Implements hook_node_insert
+ * 
+ * When a slideshow_slide is created, add its nid to the widget it was created for
+ */
+function os_slideshow_node_insert($node) {
+  //callback function to get highest weight from list of nodes 
+  function _heaviest($val, $next) {
+    if ($next['weight'] > $val) {
+      return $next['weight'];
+    } 
+    return $val; 
+  }
+  
+  if (($node->type == 'slideshow_slide') && isset($node->widget)) {
+    if (module_exists('spaces') && $space = spaces_get_space()) { 
+      $box = $space->controllers->boxes->get($node->widget);
+    } else {   
+      $box = boxes_box_load($node->widget);
+    }
+    
+    $box->options['nodes'][(int)$node->nid] = array(
+      'nid' => (int)$node->nid,
+      'weight' => 1 + array_reduce($box->options['nodes'], '_heaviest', 0),
+    );
+    
+    if ($space) {
+      $space->controllers->boxes->set($box->delta, $box);
+    } else {   
+      $box->save();
+    }
+  }
+}
+
+
+// function os_slideshow_views_default_views_alter(&$views) {
+  
+//   if ($view = &$views['cp_content']) {
+//     $handler = $view->display_handler;
+//     //$filters = $handler->get_option('filters');
+  
+//   }
+// }
+/**
+ * Implements hook_views_pre_render
+ * 
+ * This view gets a custom sort that can't be configured programmatically.  Do it manually here instead.
+ * @param unknown_type $view
+ */
+function os_slideshow_views_pre_render(&$view) {
+  
+  if (($view->name == 'os_slideshow') && $delta = $view->args['delta']) {
+    
+    //get the box
+    if (module_exists('spaces') && $space = spaces_get_space()) {
+      $box = $space->controllers->boxes->get($delta);
+    } else {
+      $box = boxes_box_load($delta);
+    }
+    
+    if (!$box) {
+      return;
+    }
+    
+    //sort the nodes
+    $nodes = $box->options['nodes'];
+    foreach ($nodes as $nid => $node) {
+      $nodes[$nid]['#weight'] = $node['weight'];
+    }
+    uasort($nodes, 'element_sort'); //expects #weight not weight.
+    $ordered_nodes = array_flip(array_keys($nodes));  // nid -> position
+    
+    $new_result = array();
+    foreach($view->result as $node) {
+      $pos = $ordered_nodes[$node->nid];
+      $new_result[$pos] = $node;
+    }
+    ksort($new_result);
+    
+    $view->result = $new_result;
+  }
+}
+
+/**
+ * @function os_slideshow_process_form_nodes
+ * 
+ * Form #process function.  After form is saved, remove the nids that were deleted.
+ */
+function os_slideshow_process_form_nodes($element, &$state, &$form) {
+  //bail out while the form is being built.
+  if (empty($state['input'])) {
+    return $element;
+  }
+  
+  //only keep nodes that have been returned from the form
+  $nodes_left = (isset($state['input']['nodes'])) ? array_keys($state['input']['nodes']) : array();
+  foreach($form['options']['nodes_list']['#value'] as $nid) {
+    if (!in_array($nid, $nodes_left)) {
+      unset($element[$nid]);
+    }  
+  }
+  
+  return $element;
+}

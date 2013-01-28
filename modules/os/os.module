@@ -189,12 +189,8 @@ function os_block_view_alter(&$block, &$data) {
   ctools_include('menu', 'os');
 
   if (array_key_exists($data->delta, os_get_menus()) && count($block['content'])) {
-  	// Remove nice menus from the sidebar menus only.
-  	if(strpos($data->region, 'sidebar') !== FALSE) {
-	  $theme = '';
-  	}else {
-  	  $theme = 'os_nice_menus';
-  	}
+  	// Remove nice menus from the sidebar and footer regions.
+  	$theme = (in_array($data->region, array('footer', 'footer-first', 'footer-second', 'sidebar_first', 'sidebar_second'))) ? '' : 'os_nice_menus';
     $block['content'] += array(
       '#theme' => $theme,
       '#menu_name' => $data->delta,
@@ -476,7 +472,7 @@ function _os_process_node_links_comment_add_class(&$vars) {
   // Adds class 'os-add-comment' for custom icon on comment link.
   if (isset($vars['content']['links']['comment']['#links']['comment-add'])) {
     if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes'])) {
-      if (is_array($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
+      if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
         $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'][] = $class;
       }
       else {
@@ -955,6 +951,10 @@ function os_system_info_alter(&$info, $file, $type) {
       'sidebar_first' => 'SideBar Left',
       'sidebar_second' => 'SideBar Right',
       'footer' => 'Footer',
+      'footer_top' => 'Footer Top',
+      'footer_first' => 'Footer Left',
+      'footer_third' => 'Footer Right',
+      'footer_bottom' => 'Footer Bottom'
     );
   }
 }

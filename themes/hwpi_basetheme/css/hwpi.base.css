@@ -13,6 +13,17 @@ p:empty {
 	display: none;
 }
 
+table, th, td, tr {
+  border-color: #CACACA;
+}
+table {
+  margin-bottom: 15px;
+}
+table caption {
+  text-align: left;
+}
+
+
 #footer #block-os-login a {
   background: url('../images/readmore_arrow.gif') no-repeat right center;
   box-shadow: none;
@@ -45,6 +56,10 @@ p:empty {
 	font-size:12px;
 	font-weight:bold;	
 	letter-spacing:0.1em;
+}
+
+.breadcrumb span {
+  color: #1e1e1e;
 }
 
 
@@ -246,6 +261,304 @@ ol.search-results li.search-result:last-child {
 .view-os-events ul li .node .field-name-field-date {
   margin-bottom: 18px;
 }
+
+
+
+/* Views Node Lists */
+.view-os-links .node,
+.view-os-events .node,
+.view-os-news .node,
+.view-os-classes .node,
+.view-os-presentations .node {
+  margin: 0 0 20px;
+  padding: 20px 0 40px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+/* Special handling for presentation view list */
+.view-os-presentations .node {
+  margin: 0 0 10px;
+  padding: 0 0 20px;
+}
+.page-presentations h1#page-title {
+  margin-bottom: 28px;
+}
+
+
+/* Event nodes */
+#event-start {
+  width: 55px;
+  height: 67px;
+  background: url(../images/event-shield.png) no-repeat 0 0 transparent;
+  float: left;
+  margin-top: 3px;
+}
+
+#event-start span {
+  display: block;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1;
+}
+
+.event-start-month {
+  color: #7e7e7e;
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 16px 0 0;
+}
+
+.event-start-day {
+  color: #000;
+  font-size: 18px;
+}
+
+#event-content {
+  margin-left: 70px;
+}
+
+.node-event .field-name-field-date {
+  color: #7e7e7e;
+  margin-bottom: 7px;
+}
+
+.node-event .field-name-field-date .field-label {
+  float: left;
+}
+
+
+
+/* Class nodes */
+.node-class .field-name-field-semester,
+.node-class .field-name-field-offered-year,
+.node-class .field-name-field-class-link,
+.node-class-material .field-name-field-class {
+  background: #fff;
+  padding-bottom: 1px;
+  padding: 2px 0;
+}
+
+.node-class section .field-label,
+.node-class-material section .field-label {
+  float: left;
+}
+
+.node-class.node-teaser .field-label-inline .field-items {
+  float: none;
+}
+
+.node-class.node-teaser .field-name-body {
+  padding-top: 15px;
+}
+
+.node-class section .field-items,
+.node-class-material section .field-items {
+  margin-left: 80px;
+  display: block;
+}
+
+.node-class ul.class_material_field_class {
+  margin-top: 15px;
+}
+
+.node-class .view-os-classes {
+  margin-top: 20px;
+}
+
+.node-class.node-teaser .links a,
+.node-class .view-os-classes a {
+  background: url(../images/readmore_arrow.gif) no-repeat right center;
+  padding-right: 15px;
+  border-bottom: 1px solid #4384C4;
+}
+
+.node-class .view-os-classes .views-row {
+  margin-bottom: 1px;
+}
+
+
+
+/* News nodes */
+.node-news .field-name-field-news-date {
+  color: #7e7e7e;
+  overflow: hidden;
+}
+
+.node-news .field-name-field-news-date .field-label {
+  float: left;
+}
+
+
+
+
+/* node person */
+.node-person h1.node-title {
+  margin-bottom: 0;
+  font-size: 38px;
+}
+
+.node-person .field-name-field-professional-title {
+  padding-top: 10px;
+}
+
+.node-person .pic-bio {
+  border-top: 1px solid #e7e7e7;
+  padding-top: 35px;
+  margin-top: 20px;
+  margin-bottom: 60px;
+}
+
+.node-person .field-name-field-person-photo {
+  float: left;
+  margin-top: 5px;
+}
+
+#content .node-person .field-name-body {
+  margin: 0;
+}
+
+#content .node-person.with-person-photo .field-name-body {
+  margin-left: 210px;
+}
+
+.node-person .block {
+  float: left;
+  width: 50%;
+}
+
+#content-column .node-person .contact-details .block-inner {
+  margin-right: 30px;
+}
+
+#content-column .node-person website-details .block-inner {
+  margin-left: 30px;
+}
+
+#content .node-person .field-name-field-phone,
+#content .node-person .field-name-field-email {
+  float: none;
+  margin-right: 0;
+  overflow: hidden;
+  display: block;
+}
+
+.node-person .field-name-field-professional-title .field-item {
+  display: inline;
+  padding-right: 10px;
+}
+
+.node-person .field-name-field-email {
+  text-transform: capitalize; 
+}
+
+
+
+/* Node Presentations */
+.node-presentation.node-teaser .date-display-single {
+  color: #7e7e7e;
+}
+
+.node-presentation .field-name-field-presentation-date,
+.node-presentation .field-name-field-presentation-location {
+  background: #fff;
+  padding-bottom: 1px;
+  padding: 2px 0;
+}
+
+.node-presentation .field-label {
+  float: left;
+}
+
+.node-presentation section .field-items {
+  margin-left: 140px;
+  display: block;
+}
+
+.node-presentation .field-name-body {
+  margin-bottom: 15px;
+}
+
+
+
+
+/* Comments */
+#comments {
+  margin-top: 30px;
+}
+
+.comment {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+h2.comment-title {
+  margin-bottom: 15px;
+}
+
+.comment-header {
+  overflow: hidden;
+}
+
+h3.comment-title {
+  float: left;
+}
+
+.comment .new {
+  color: #a90000;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1.4em;
+  opacity: 0.75;
+  padding: 0 6px;
+}
+
+h2.comment-title.comment-form {
+  margin-top: 15px;
+}
+
+
+
+/* General classes for nodes and comments etc */
+
+/* Dat time */
+.author-datetime {
+  margin-bottom: 15px;
+  color: #7e7e7e;
+}
+
+/* Files tables, for attached files to nodes such as PDF's */
+table.os-files-other-list {
+  width: 100%;
+  border: 0 none;
+}
+.os-files-other-list tr,
+.os-files-other-list td {
+  background: #F3F3F1;
+  border: 0;
+}
+.os-files-other-list tr {
+  margin-bottom: 1px;
+}
+.os-files-other-list td.mime {
+  vertical-align: middle;
+  width: 16px;
+  padding-top: 6px;
+}
+.os-files-other-list td.size {
+  width: 80px;
+  font-size: 12px;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

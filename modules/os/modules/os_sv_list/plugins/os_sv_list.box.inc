@@ -425,7 +425,7 @@ class os_sv_list_box extends os_boxes_default {
         }
         $query->fields('n', array('nid'));
 
-        if (!empty($this->options['vocabs'])) {
+        if (!empty($this->options['vocabs']) && ($this->options['vocabs'] != '-1')) {
           // If a vocabulary was selected and there were no tagged nodes then
           // we don't need to return any node.
           if (empty($tagged_nodes)) {

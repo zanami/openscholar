@@ -149,8 +149,19 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
 }
 
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
-  // only display the field if the file is older than 5 minutes
+  $form['filename']['#title'] = t('Name');
+  $form['filename']['#description'] = t('An unofficial name only seen by your site\'s managers.');
 
+  $form['media_title_description'] = array(
+    '#type' => 'markup',
+    '#weight' => $form['media_title']['#weight'] + 0.1,
+    '#markup' => t('The title of the file, if it has one. Users can see this title. Ex. The Etymology and History of Jabberwocky Language.'),
+    '#attributes' => array(
+      'class' => array('description'),
+    )
+  );
+
+  // only display the field if the file is older than 5 minutes
   if (isset($form['#entity'])) {
     $form['replace_upload']['#access'] = (time() - $form['#entity']->timestamp) > 5 * 60;
   }

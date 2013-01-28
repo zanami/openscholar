@@ -113,6 +113,7 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
     if ($space->type == 'og') {
       $query->innerJoin('og_membership', 'ogm', 'n.nid = ogm.etid');
       $query->condition('ogm.entity_type', 'node');
+      $query->condition('ogm.group_type', 'node');
       $query->condition('ogm.gid', $space->id);
     }
     // Check the sort order for biblio.
