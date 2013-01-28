@@ -6,6 +6,8 @@ class os_sv_list_box extends os_boxes_default {
    */
   public function options_defaults() {
     $options = parent::options_defaults();
+    $biblio_types = $this->_biblio_types();
+    $biblio_whitelist = array_combine(array_keys($biblio_types), array_keys($biblio_types));
 
     $options += array(
       'content_type' => 'all',
@@ -20,8 +22,7 @@ class os_sv_list_box extends os_boxes_default {
       'vocabs' => array(),
       'terms' => array(),
 
-      'biblio_show_all' => TRUE,
-      'biblio_whitelist' => array('all'=>'all'),
+      'biblio_whitelist' => $biblio_whitelist,
     );
 
     return $options;
@@ -53,29 +54,12 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $content_types_value,
       '#options' => $content_types,
       '#id' => 'os_sv_list_content_type',
-    /*
-      '#ajax' => array(
-        'callback' => 'os_sv_list_more_link_ajax',
-        //'wrapper' => 'more_link_div',
-        'wrapper' => 'edit-more-link',
-        'method' => 'replace',
-        'effect' => 'none',
-      ),*/
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'os_sv_list').'/os_sv_list.js',
         ),
       ),
     );
-
-    /*$form['biblio_show_all'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Show all publication types'),
-      '#default_value' => isset($this->options['biblio_show_all']) ? $this->options['biblio_show_all'] : $defaults['biblio_show_all'],
-      '#id' => 'biblio_show_all_check',
-      '#prefix' => '<div id="os_sv_list_biblio_show_all">',
-      '#suffix' => '</div>',
-    );*/
 
     $form['biblio_whitelist'] = array(
       '#type' => 'checkboxes',
@@ -106,7 +90,7 @@ class os_sv_list_box extends os_boxes_default {
       '#options' => array(
         'display_title' => t('Title'),
         'display_teaser' => t('Teaser'),
-        'display_body' => t('Entire Post')
+        'display_body' => t('Entire Post'),
       )
     );
 
@@ -119,6 +103,7 @@ class os_sv_list_box extends os_boxes_default {
         'sort_event' => t('Event Date'),
         'sort_presentation' => t('Recently Presented'),
         'sort_biblio' => t('Year of Publication'),
+        'sort_news' => t('News Date'),
 
         //standard sorts
         'sort_newest' => t('Newest Post'),
@@ -422,7 +407,8 @@ class os_sv_list_box extends os_boxes_default {
 
         $query->join('biblio', 'b', 'n.vid = b.vid');
 
-        if (isset($options['biblio_show_all']) && !$options['biblio_show_all'] && isset($options['biblio_whitelist'])) {
+        //check biblio show all...
+        if (isset($options['biblio_whitelist']) && (count(array_filter($options['biblio_whitelist'])))) {
           $bib_types = array_filter($options['biblio_whitelist']);
           $query->condition('biblio_type', array_values($bib_types), 'IN');
         }
@@ -439,7 +425,7 @@ class os_sv_list_box extends os_boxes_default {
         }
         $query->fields('n', array('nid'));
 
-        if (!empty($this->options['vocabs'])) {
+        if (!empty($this->options['vocabs']) && ($this->options['vocabs'] != '-1')) {
           // If a vocabulary was selected and there were no tagged nodes then
           // we don't need to return any node.
           if (empty($tagged_nodes)) {
@@ -510,7 +496,7 @@ class os_sv_list_box extends os_boxes_default {
         break;
 
       default:
-        if (!empty($this->options['vocabs'])) {
+        if (!empty($this->options['vocabs']) && ($this->options['vocabs'] != -1)) {
           // If a vocabulary was selected and there were no tagged nodes then
           // we don't need to return any node.
           if (empty($tagged_nodes)) {
@@ -560,12 +546,15 @@ class os_sv_list_box extends os_boxes_default {
         $tids[] = $terms->tid;
       }
     }
+    
+    $bundles = os_get_bundles(array(1));
+    $content_types = ($this->options['content_type'] == 'all') ? array_keys($bundles) : $this->options['content_type'];
 
     $query = db_select('taxonomy_index', 't');
     $query->join('node', 'n', 'n.nid = t.nid');
     $result = $query
       ->condition('t.tid', $tids, 'IN')
-      ->condition('n.type', $this->options['content_type'])
+      ->condition('n.type', $content_types)
       ->fields('t')
       ->execute();
 
@@ -595,6 +584,10 @@ class os_sv_list_box extends os_boxes_default {
     $efq->fieldCondition('field_date', 'value', date('Y-m-d'), '>=');
   }
 
+  function sort_news(&$efq) {
+    $efq->fieldOrderBy('field_news_date', 'value', 'DESC');
+  }
+  
   function sort_presentation(&$efq) {
     $efq->fieldOrderBy('field_presentation_date', 'value', 'DESC');
     $this->sort_newest($efq);

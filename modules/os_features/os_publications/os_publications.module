@@ -102,6 +102,7 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
     if ($space->type == 'og') {
       $query->innerJoin('og_membership', 'ogm', 'n.nid = ogm.etid');
       $query->condition('ogm.entity_type', 'node');
+      $query->condition('ogm.group_type', 'node');
       $query->condition('ogm.gid', $space->id);
     }
     // Check the sort order for biblio.
@@ -402,6 +403,16 @@ function os_publications_preprocess_node(&$vars) {
 function os_publications_node_view_alter(&$build, $type) {
   $spaces = spaces_get_space();
   if ($type == 'node' && $build['#bundle'] == 'biblio') {
+    if($build['#view_mode'] == 'full') {
+      // Remove the publication image as it's called in theme_os_publications_tabular instead.
+      if(isset($build['field_biblio_image'])) {
+      	$build['field_biblio_image']['#access'] = FALSE;
+      }
+      // Remove the Google Scholar link that appears at the bottom of full view publications.
+      if(isset($build['links']['biblio_google_scholar'])) {
+        unset($build['links']['biblio_google_scholar']);
+      }
+    }
     if ($build['#view_mode'] == 'teaser') {
       // Alter the teaser to remove the external URL as the URL title and
       // replace it with either the biblio_url_title or "website".
@@ -520,33 +531,22 @@ function os_publications_node_delete($node) {
  * @param unknown_type $node
  */
 function _os_publications_clear_cache($node) {
+
+  //Disabled until this is profiled
+  return;
+
   //Sanity check the passed node
   if($node->type != 'biblio'){
     return;
   }
-  $frags   = array();
-  $frags[] = 'args:no';
-  $frags[] = 'type:' . $node->biblio_type;
-  $frags[] = 'year:' . $node->biblio_year;
-  //If there are contributors, add them to the cache key
-  if(isset($node->biblio_contributors) && is_array($node->biblio_contributors)){
-    foreach ($node->biblio_contributors as $c) {
-      $frags[] = 'author:' . $c['cid'];
-    }
-  }
 
-  $sel = db_select('cache_biblio_lists', 'bl')->fields('bl', array('cid'));
+  $cid = "biblio:";
+
   if (module_exists('spaces') && $space = spaces_get_space()) {
-    $sel->condition('cid', '%space:' . $space->id . '%', 'LIKE');
+    $cid = $cid.'space:'.$space->id;
   }
-  $rows = $sel->execute();
 
-  foreach ($rows as $r) {
-    $check = str_replace($frags, '|', $r->cid);
-    if (strpos($check, '|') !== FALSE) {
-      cache_clear_all($r->cid, 'cache_biblio_lists');
-    }
-  }
+  cache_clear_all($cid, 'cache_biblio_lists',TRUE);
 }
 
 /**

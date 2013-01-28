@@ -65,6 +65,10 @@ font-family: helvetica,arial,sans-serif;
     bottom: -24px;
 }
 
+#block-os-powered-by span a, .os-powered-link a.os-poweredby {
+    background: url("/profiles/openscholar/themes/os_basetheme/images/poweredby.png") no-repeat scroll 0 -25px transparent;
+}
+
  #block-os-login {
     bottom: 5px;
 }
@@ -116,11 +120,7 @@ text-decoration:none;
     line-height: 26px;
 }
 
-<<<<<<< HEAD
-.block-boxes-os_boxes_site_info h1 a {font-family: 'Judson', georgia; font-size:1.5em;text-decoration:none;color:#FFF;}
-=======
 .block-boxes-os_boxes_site_info h1 a {font-family: 'Judson', georgia; font-size:1.2em;text-decoration:none;color:#FFF;}
->>>>>>> SCHOLAR-3-0
 .block-boxes-os_boxes_site_info h2, 
 .block-boxes-os_boxes_site_info p {color:#d6d6d6;}
 
@@ -134,6 +134,8 @@ h1 a,
 h2 a {color:#666;text-decoration:none;font-weight:normal;margin-bottom:.2em;}
 
 h1#page-title {font-size:1.72em;margin-bottom:.7em;}
+
+.view-os-faq h1.node-title a {color: #293352;text-decoration: underline;}
 
 h3.block-title {color:#666;font-size:1.2em;}
 h3.block-title a {color:#293352;}

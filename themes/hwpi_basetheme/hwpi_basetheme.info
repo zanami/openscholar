@@ -11,9 +11,9 @@
 
 ;----------// Stylesheets
 
-  
-  stylesheets[screen][] = css/hwpi_basetheme.css
-  stylesheets[screen][] = css/hwpi_basetheme.layout.css
+  stylesheets[screen][] = css/hwpi.globals.css
+
+
 
 ;----------// Theme Settings
 

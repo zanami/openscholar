@@ -189,12 +189,8 @@ function os_block_view_alter(&$block, &$data) {
   ctools_include('menu', 'os');
 
   if (array_key_exists($data->delta, os_get_menus()) && count($block['content'])) {
-  	// Remove nice menus from the sidebar menus only.
-  	if(strpos($data->region, 'sidebar') !== FALSE) {
-	  $theme = '';
-  	}else {
-  	  $theme = 'os_nice_menus';
-  	}
+  	// Remove nice menus from the sidebar and footer regions.
+  	$theme = (in_array($data->region, array('footer', 'footer-first', 'footer-second', 'sidebar_first', 'sidebar_second'))) ? '' : 'os_nice_menus';
     $block['content'] += array(
       '#theme' => $theme,
       '#menu_name' => $data->delta,
@@ -476,7 +472,7 @@ function _os_process_node_links_comment_add_class(&$vars) {
   // Adds class 'os-add-comment' for custom icon on comment link.
   if (isset($vars['content']['links']['comment']['#links']['comment-add'])) {
     if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes'])) {
-      if (is_array($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
+      if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
         $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'][] = $class;
       }
       else {
@@ -533,7 +529,7 @@ function os_preprocess_page(&$vars) {
         }
       }
     }
-    if ($printed && spaces_access_admin() && node_access('create', $type)) {
+    if ($printed && node_access('create', $type)) {
       $links[$type] = array(
         'href' => 'node/add/' . str_replace('_', '-', $type),
         'title' => $_node_types->names[$type],
@@ -573,7 +569,7 @@ function os_preprocess_page(&$vars) {
       '#links' => $links,
       '#title' => t('Add New'),
       '#class' => 'add_new',
-      '#access' => spaces_access_admin(),
+      '#access' => count($links),
     );
   }
   elseif (count($links) == 1) {
@@ -710,6 +706,7 @@ function os_ctools_plugin_type() {
       'load themes' => TRUE,
       'info file' => TRUE,
       'extension' => 'flav',
+      'cache' => TRUE,
     ),
   );
 }
@@ -954,6 +951,10 @@ function os_system_info_alter(&$info, $file, $type) {
       'sidebar_first' => 'SideBar Left',
       'sidebar_second' => 'SideBar Right',
       'footer' => 'Footer',
+      'footer_top' => 'Footer Top',
+      'footer_first' => 'Footer Left',
+      'footer_third' => 'Footer Right',
+      'footer_bottom' => 'Footer Bottom'
     );
   }
 }
@@ -1268,4 +1269,51 @@ function os_app_info($app_name = NULL) {
   }
 
   return empty($app_name) ? $info : $info[$app_name];
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for user_login form.
+ */
+function os_form_user_login_alter(&$form, $form_state) {
+  if (variable_get('os_login_with_email', true)) {
+    // Replace 'username' with 'Username or e-mail'.
+    $form['name']['#title'] = t('Username or e-mail');
+    // Replace the description of the user/email login field.
+    $form['name']['#description'] = t('You may login with either your assigned username or your e-mail address.');
+    // Add a new validation.
+    // Validation function vsite_user_login_validate must run first.
+    array_unshift($form['#validate'],'os_user_login_validate');
+  }
+}
+
+/**
+ * Implements hook_validate().
+ * Custom validation for user_login form to allow users to login with their email address.
+ */
+function os_user_login_validate($form, &$form_state) {
+  if (isset($form_state['values']['name']) && $form_state['values']['name']) {
+    // Load their username from their email address.
+    if ($name = db_query("SELECT name FROM {users} WHERE LOWER(mail) = LOWER(:email)", array(':email' => $form_state['values']['name']))->fetchField()) {
+      // Set the form['name'] to the users username for proper drupal user login form validation.
+      form_set_value($form['name'], $name, $form_state);
+    }
+  }
+}
+
+function os_library() {
+  $l = array();
+
+  $l['os.ajax-fix'] = array(
+    'title' => 'Ajax Termination Fix',
+    'version' => '1.0',
+    'js' => array(
+      drupal_get_path('module', 'os').'/theme/os_ajaxterminate.js' => array('group' => JS_LIBRARY),
+    ),
+  );
+
+  return $l;
+}
+
+function os_library_alter(&$l) {
+  $l['drupal.ajax']['dependencies'][] = array('os', 'os.ajax-fix');
 }

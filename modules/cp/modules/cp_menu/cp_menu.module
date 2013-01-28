@@ -67,6 +67,15 @@ function cp_menu_menu() {
     'file' => 'cp_menu.form.inc',
   );
 
+
+  $items['admin/config/openscholar/cp_menu'] = array(
+    'title' => 'Control Panel Menu',
+    'file' => 'cp_menu.admin.inc',
+    'access arguments' => array('administer site configuration'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cp_menu_admin'),
+  );
+  
   return $items;
 }
 
@@ -125,7 +134,7 @@ function cp_menu_node_update($node) {
   if (!$node->os_menu['enabled'] || $node->os_menu['delete']) {
     //delete unwanted menu
     if ($link = os_menu_load_link_path('node/' . $node->nid)) {
-      os_menu_link_delete($link['menu_name'], $link['mlid']);
+      os_menu_link_delete_link($link['menu_name'], $link['mlid']);
     }
   }
 
@@ -136,7 +145,7 @@ function cp_menu_node_update($node) {
       $link['menu_name'] = $node->os_menu['parent'];
       $link['options']['attributes'] = array('title' => $node->os_menu['description']);
       if ($node->os_menu['new_window']) {
-        $link['options']['attributes']['taret'] = '_blank';
+        $link['options']['attributes']['target'] = '_blank';
       }
       os_menu_link_save($link);
     } else {
@@ -150,7 +159,7 @@ function cp_menu_node_update($node) {
 function cp_menu_node_delete($node) {
   ctools_include('menu', 'os');
   if ($link = os_menu_load_link_path('node/' . $node->nid)) {
-    os_menu_link_delete($link['menu_name'], $link['mlid']);
+    os_menu_link_delete_link($link['menu_name'], $link['mlid']);
   }
 }
 
@@ -210,18 +219,28 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
     $form['os_menu']['link']['#parents'] = $parents + array('os_menu');
     $form['os_menu']['#attached'] = array('js' => array(drupal_get_path('module', 'cp_menu') . '/cp_menu.js'));
 
-    $form['os_menu']['link']['new_window'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Open Link in New Window'),
-      '#default_value' => 0,
-    );
-
-
     //update the defaults to include $links
     $form['os_menu']['enabled']['#default_value'] = isset($link) && $link !== FALSE;
     $form['os_menu']['link']['link_title']['#default_value'] = (isset($link['link_title'])) ? $link['link_title'] : '';
     $form['os_menu']['link']['description']['#default_value'] =
-      (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
+    (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
+    
+    $form['os_menu']['link']['new_window'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Open Link in New Window'),
+        '#default_value' => 0,
+    );
+        
+    //new window and tooltips are only available when cp_menu_show_extra_link_options is enabled
+    if (!variable_get('cp_menu_link_options_new_window', FALSE)) {
+      $form['os_menu']['link']['new_window']['#type'] = 'hidden';
+    } 
+    
+    if (!variable_get('cp_menu_link_options_tooltip', FALSE)) { 
+      $form['os_menu']['link']['description']['#type'] = 'hidden';
+    }
+
+
     $form['os_menu']['link']['new_window']['#default_value'] = (isset($link['options']['attributes']['target']) && $link['options']['attributes']['target'] == '_blank');
 
     $url = l('Page Layout', 'cp/build/layout', array());
@@ -281,7 +300,7 @@ function cp_menu_node_submit($node, $form, &$state) {
     }
 
     foreach(array('link_title','description','parent','new_window') as $delta) {
-      if ($state['values']['os_menu'][$delta] != $form['os_menu']['link'][$delta]['#default_value']) {
+      if (isset($state['values']['os_menu'][$delta]) && ($state['values']['os_menu'][$delta] != $form['os_menu']['link'][$delta]['#default_value'])) {
         $node->os_menu['dirty'] = TRUE;
         return;
       }
@@ -421,7 +440,7 @@ function cp_menu_delete_link_form_submit($form, $form_state) {
   $link = $form['#link'];
 
   if ($form_state['values']['op'] == t('Delete')) {
-    os_menu_link_delete($link['menu_name'], $link['mlid']);
+    os_menu_link_delete_link($link['menu_name'], $link['mlid']);
   }
 }
 
@@ -437,19 +456,23 @@ function cp_menu_edit_link_form($form, $form_state, $link) {
     '#default_value' => $link['link_title'],
   );
 
-  $form['new_window'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('New Window'),
-    '#description' => t('Open link in new tab or window'),
-    '#default_value' => isset($link['options']['attributes']['target']),
-  );
+  if (variable_get('cp_menu_link_options_new_window', FALSE)) {
+    $form['new_window'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('New Window'),
+      '#description' => t('Open link in new tab or window'),
+      '#default_value' => isset($link['options']['attributes']['target']),
+    );
+  }
 
-  $form['tooltip'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Tooltip'),
-    '#description' => t('Text displayed when mouse hovers over link'),
-    '#default_value' => $link['options']['attributes']['title'],
-  );
+  if (variable_get('cp_menu_link_options_tooltip', FALSE)) {
+    $form['tooltip'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Tooltip'),
+      '#description' => t('Text displayed when mouse hovers over link'),
+      '#default_value' => $link['options']['attributes']['title'],
+    );
+  }
 
   $form['actions'] = array(
     '#type' => 'actions',
@@ -483,8 +506,10 @@ function cp_menu_edit_link_form_submit($form, $form_state) {
 
   if ($form_state['values']['op'] == t('Save')) {
     $link['link_title'] = $form_state['values']['title'];
-    $link['options']['attributes']['title'] = $form_state['values']['tooltip'];
-    if ($form_state['values']['new_window']) {
+    if (isset($form_state['values']['tooltip'])) {
+      $link['options']['attributes']['title'] = $form_state['values']['tooltip'];
+    }
+    if (isset($form_state['values']['new_window']) && $form_state['values']['new_window']) {
       $link['options']['attributes']['target'] = '_blank';
     }
     else {

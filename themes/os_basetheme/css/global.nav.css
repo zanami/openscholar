@@ -427,11 +427,14 @@ div.contextual-links-wrapper ul.contextual-links {
   border-radius: 0; /* LTR */
 }
 
-ul.contextual-links li {
+ul.contextual-links li,
+.sidebar ul.contextual-links li
+ {
  line-height: 12px !important;
  list-style: none !important;
  clear:both;
- 
+ background-color: none;
+border-top: none;
 }
 
 ul.contextual-links li a {
@@ -483,11 +486,11 @@ color: #FFF !important;
 .contextual-controls-wrapper .add_new {
 	float:left;
 	display:inline;
-	 background: url("../images/scholarbase-sprite.png") no-repeat scroll 3px -380px #A1D4A1 !important;
+	 background: url("../images/scholarbase-sprite.png") no-repeat scroll 3px -379px #A1D4A1 !important;
     border-radius: 5px 5px 5px 5px;
     float: left;
      margin: 0 22px 0 0;
-    padding: 3px 8px 1px 22px !important;
+    padding: 0 8px 0 22px !important;
     text-decoration:none !important;
 	}
 
@@ -611,6 +614,7 @@ ul.nice-menu ul {
 ul.nice-menu ul li {
  border:1px solid #CCC;
  background:#EEE;
+ min-width:12em;
  width:auto;
 }
 
@@ -699,3 +703,52 @@ ul.nice-menu-down li li.menuparent {
 ul.nice-menu-down li li.menuparent:hover {
   background: none !important; /* LTR */
 }
+
+/******************************
+ Lists when Naviation is selected
+******************************/
+
+.navigation ul,
+.navigation ul.menu
+ {
+  border-left: solid 1px #ccc;
+  border-right: solid 1px #ccc;
+  border-bottom: solid 1px #ccc;
+
+}
+
+.sidebar .navigation ul.menu ul.menu,
+.sidebar .navigation ul ul {
+  border: none;
+  margin-left: 0;
+}
+
+.navigation ul li,
+.navigation ul.menu li {
+  list-style: none;
+  background-color: #EEE;
+  border-top: solid 1px #ccc;
+  text-align: left;
+  margin: 0;
+  margin-bottom: 0;
+}
+
+.navigation ul.menu li a,
+.navigation ul li a {
+  display: block;
+  text-decoration: none;
+  padding: .5em;
+  color:inherit;
+}
+
+.navigation ul.menu li ul.menu li a,
+.navigation ul li ul li a {
+  padding-left: 18px;
+}
+
+.navigation a:link, .navigation a:visited { color: inherit; }
+.navigation a:hover, .navigation a:active { color: inherit; } 
+.navigation a:hover { background-color: #fff; }
+
+
+

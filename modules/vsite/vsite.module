@@ -119,6 +119,8 @@ function vsite_spaces_plugins() {
   $plugins = array();
   $plugins['vsite'] = array(
     'handler' => array(
+      'path' => drupal_get_path('module', 'vsite') . '/plugins',
+      'file' => 'vsite.inc',
       'class' => 'vsite',
       'parent' => 'space_og',
     ),
@@ -895,6 +897,16 @@ function vsite_form_user_profile_form_alter(&$form, &$form_state, &$form_id) {
   // Remove the form element that the 'contact' module hooks in.
   if (isset($form['contact'])) {
     $form['contact']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_node_view() for user_profile_form.
+ */
+function vsite_node_view($node, $view_mode) {
+  //If we are viewing a group node got to the groups homepage
+  if ($view_mode == 'full' && node_is_page($node) && og_is_group('node', $node)) {
+    drupal_goto("<front>");
   }
 }
 

@@ -29,8 +29,7 @@ function os_boxes_menu() {
     //'title arguments' => array(3),
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(3),
-    'access callback' => 'boxes_access',
-    'access arguments' => array('create', 3),
+    'access callback' => 'boxes_access_edit',
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
   );
@@ -42,7 +41,6 @@ function os_boxes_menu() {
     'page callback' => 'os_boxes_edit_widget',
     'page arguments' => array(3),
     'access callback' => 'boxes_access_edit',
-    'access arguments' => array(3),
     'type' => MENU_LOCAL_TASK,
     'file' => 'os_boxes.admin.inc',
     'context' => MENU_CONTEXT_INLINE,
@@ -55,8 +53,7 @@ function os_boxes_menu() {
     //'title arguments' => array(3, true),
     'page callback' => 'os_boxes_delete_widget',
     'page arguments' => array(3),
-    'access callback' => 'boxes_access',
-    'access arguments' => array('delete', 3),
+    'access callback' => 'boxes_access_edit',
     'type' => MENU_CALLBACK,
     'file' => 'os_boxes.admin.inc',
     'weight' => 2,
@@ -186,14 +183,14 @@ function os_boxes_os_widget_alter(&$widget) {
     }
 
     // all boxes should be editable. If they aren't, why are they a box
-    $widget['can_edit'] = boxes_access_edit($box);
+    $widget['can_edit'] = boxes_access_edit();
     $widget['path'] = 'os/widget/boxes/' . $widget['delta'];
 
-    // deletion is easier now.
-    // just refer to the permission.
     // Generally speaking, if they can create a widget, they can delete it.
     // If they can't create it, they can't delete it either
-    $widget['can_delete'] = boxes_access('delete', $box);
+    if (!isset($plugin['factory']) || $plugin['factory']) {
+      $widget['can_delete'] = true;
+    }
   }
 }
 
@@ -209,7 +206,7 @@ function os_boxes_get_factories() {
     // factory catchs our boxes
     $dummy = new stdClass();
     $dummy->plugin_key = $p;
-    if (boxes_access('create', $dummy) && isset($info['title']) && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
+    if (isset($info['title']) && (!isset($info['factory']) || $info['factory'] !== FALSE)) {
       $tag = 'Misc';
       if (!empty($info['tags'])) {
         $tag = current($info['tags']);
@@ -327,4 +324,3 @@ function os_boxes_permission() {
 
   return $perms;
 }
-

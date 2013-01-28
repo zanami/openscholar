@@ -367,7 +367,7 @@ html.js #user-login-form li.openid-link,
 
 #search-block-form .container-inline .form-item {
   width: 100%;
-  }
+}
 
 #search-block-form .spelling-suggestions{
   padding-top: 1em
@@ -506,7 +506,8 @@ form table .item-list ul {
 
 
 /* TINYMCE - WYSIWYG */
-#tinymce {background:#FFF;}
+
+body#tinymce, #tinymce {background:#FFF;font-size:100%;}
 
 
 .tabledrag-toggle-weight-wrapper {

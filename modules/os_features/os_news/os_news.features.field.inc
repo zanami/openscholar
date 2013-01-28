@@ -1,6 +1,4 @@
 <?php
-// $Id$
-
 /**
  * @file
  * os_news.features.field.inc
@@ -52,7 +50,7 @@ function os_news_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '1',
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -80,7 +78,94 @@ function os_news_field_default_fields() {
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
-        'weight' => '31',
+        'weight' => '5',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-news-field_news_date'.
+  $fields['node-news-field_news_date'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_news_date',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'date',
+      'settings' => array(
+        'cache_count' => '4',
+        'cache_enabled' => 0,
+        'granularity' => array(
+          'day' => 'day',
+          'hour' => 0,
+          'minute' => 0,
+          'month' => 'month',
+          'second' => 0,
+          'year' => 'year',
+        ),
+        'repeat' => '0',
+        'timezone_db' => '',
+        'todate' => '',
+        'tz_handling' => 'none',
+      ),
+      'translatable' => '0',
+      'type' => 'datestamp',
+    ),
+    'field_instance' => array(
+      'bundle' => 'news',
+      'deleted' => '0',
+      'description' => 'News content will be sorted according to the date you provide.  ',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'date',
+          'settings' => array(
+            'format_type' => 'long',
+            'fromto' => 'both',
+            'multiple_from' => '',
+            'multiple_number' => '',
+            'multiple_to' => '',
+            'show_repeat_rule' => 'show',
+          ),
+          'type' => 'date_default',
+          'weight' => '1',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_news_date',
+      'label' => 'Date',
+      'required' => 1,
+      'settings' => array(
+        'default_value' => 'now',
+        'default_value2' => 'same',
+        'default_value_code' => '',
+        'default_value_code2' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'date',
+        'settings' => array(
+          'display_all_day' => 0,
+          'increment' => '15',
+          'input_format' => 'M j Y - g:i:sa',
+          'input_format_custom' => '',
+          'label_position' => 'above',
+          'repeat_collapsed' => 0,
+          'text_parts' => array(),
+          'year_range' => '-3:+3',
+        ),
+        'type' => 'date_popup',
+        'weight' => '4',
       ),
     ),
   );
@@ -200,7 +285,7 @@ function os_news_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'media_generic',
-        'weight' => '32',
+        'weight' => '6',
       ),
     ),
   );
@@ -246,7 +331,7 @@ function os_news_field_default_fields() {
           'module' => 'os_files',
           'settings' => array(),
           'type' => 'os_files_image_list',
-          'weight' => '2',
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -309,7 +394,7 @@ function os_news_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'media_generic',
-        'weight' => '33',
+        'weight' => '7',
       ),
     ),
   );
@@ -318,8 +403,9 @@ function os_news_field_default_fields() {
   // Included for use with string extractors like potx.
   t('Attach Files');
   t('Body');
+  t('Date');
+  t('News content will be sorted according to the date you provide.  ');
   t('Photo');
 
   return $fields;
 }
-

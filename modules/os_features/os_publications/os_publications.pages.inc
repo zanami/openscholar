@@ -7,15 +7,19 @@ function os_publications_overview() {
   if (count($args) == 0) {
     // get default types the user has selected
     $defaults = variable_get('os_publications_filter_publication_types', array());
-    if (count($defaults)) {
-      $args = array('type', $defaults);
+
+    //Filter out bad data
+    unset($defaults[-1]);
+
+    if (count(array_filter($defaults))) {
+      $args = array('type', array_filter($defaults));
     }
   }
 
-  $ckey = _os_publications_cache_key($args);
-  if ($cache = cache_get($ckey, 'cache_biblio_lists')) {
-    //return $cache->data;
-  }
+//   $ckey = _os_publications_cache_key($args);
+//   if ($cache = cache_get($ckey, 'cache_biblio_lists')) {
+//     return $cache->data;
+//   }
 
   module_load_include('inc', 'biblio', 'includes/biblio.pages');
   $output = call_user_func_array('biblio_page', $args);
@@ -23,8 +27,14 @@ function os_publications_overview() {
   // remove the filter status message
   unset($output['biblio_page']['header']['filter_status']);
 
+  // remove the sorting option
+  unset($output['biblio_page']['header']['sort_links']);
+
+  // remove the alphabetic filtering
+  unset($output['biblio_page']['header']['alpha_line']);
+
   // handle caching
-  cache_set($ckey, $output, 'cache_biblio_lists');
+  //cache_set($ckey, $output, 'cache_biblio_lists');
 
   return $output;
 }
@@ -39,6 +49,12 @@ function _os_publications_cache_key($args) {
 
   $key = array();
   $key[] = 'biblio';
+
+  if (module_exists('spaces') && $space = spaces_get_space()) {
+    $key[] = 'space';
+    $key[] = $space->id;
+  }
+
   $has_arg = false;
   if (isset($arg_list['f'])) {
     $has_arg = true;
@@ -76,11 +92,6 @@ function _os_publications_cache_key($args) {
   if (isset($_GET['page'])) {
     $key[] = 'page';
     $key[] = $_GET['page'];
-  }
-
-  if (module_exists('spaces') && $space = spaces_get_space()) {
-    $key[] = 'space';
-    $key[] = $space->id;
   }
 
   return implode(':', $key);

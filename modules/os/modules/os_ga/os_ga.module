@@ -67,6 +67,7 @@ function os_ga_init() {
   // Check to see if both global and site specific GA accounts are set.
   if ((!empty($ga_vars['global_id'])) && (!empty($ga_vars['os_id']))) {
     // Set both to be tracked.
+    $script .= 'var _gaq = _gaq || [];';
     $script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['os_id']) . ']);';
     $script .= '_gaq.push(["_trackPageview"]);';
 

@@ -221,6 +221,9 @@ function media_gallery_view($node, $view_mode) {
     // element is listed in hook_field_extra_fields(), so whether or not it
     // will *actually* be displayed in the current view mode depends on the
     // site's configuration for the corresponding pseudo-field.
+    $media_gallery_media_info = field_info_instance('node', 'media_gallery_media', 'media_gallery');
+    $settings = $media_gallery_media_info['widget']['settings'];
+    
     $node->content['add_media_link'] = array(
       '#type' => 'media',
       '#title' => '',
@@ -228,7 +231,7 @@ function media_gallery_view($node, $view_mode) {
       '#id' => '',
       '#media_options' => array(
         'global' => array(
-          'types' => array('image'),
+          'types' => $settings['allowed_types'],
         )
       )
     );

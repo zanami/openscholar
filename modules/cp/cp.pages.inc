@@ -78,6 +78,8 @@ function cp_app_settings_form($form, $form_state, $app_name) {
   // Stores the current feature in the form data
   $form['#feature'] = $app_name;
 
+  $form['#submit'][] = 'cp_app_settings_form_submit';
+
   return $form;
 }
 
@@ -94,4 +96,12 @@ function _cp_app_settings_remove_no_form($element, $form_state) {
   }
 
   return $element;
+}
+
+function cp_app_settings_form_submit($form, &$form_state) {
+  if (overlay_get_mode() == 'child') {
+    overlay_close_dialog();
+    $form_state['no_redirect'] = TRUE;
+    $form_state['redirect'] = FALSE;
+  }
 }

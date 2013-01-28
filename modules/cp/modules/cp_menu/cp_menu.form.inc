@@ -260,7 +260,7 @@ function cp_menu_submit_form($form, &$form_state){
           $link[$param] = $l[$param];
           //If the link is moving to a different menu, remove from the old menu
           if ($param == 'menu_name') {
-            os_menu_link_delete($l['menu-old'], $l['mlid']);
+            os_menu_link_delete_link($l['menu-old'], $l['mlid']);
           }
         }
       }

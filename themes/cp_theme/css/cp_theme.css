@@ -74,6 +74,10 @@ html.js input.form-autocomplete {
   background-position: 100% 8px;  
 }
 
+html.js input.throbbing {
+  background-position: 100% -13px !important;
+}
+
 #block-os-powered-by {
 	float:right;
 	text-align:left;
@@ -221,7 +225,7 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 #overlay-tabs {
  	margin: -30px 0 0;
  	right: 50px;
- }	
+}
  
 
 /** CP TABLE STYLES **/

@@ -506,6 +506,18 @@ body.front .block-boxes-os_taxonomy_fbt div.description  {
   padding-left: 0;
   }
 */
+
+.page-node #content-column .content-inner {
+  padding: 0 16px 26px 16px;
+  border:1px solid #ddd;
+  background: #fff;
+  margin-right: 270px;
+}
+
+.page-node #content-column .content-inner #main-content-header {
+  margin-right: 0;
+}
+
 #main-content,
 #content-top,
 .sidebar .block {
@@ -1631,22 +1643,16 @@ table#ordernodes {
   width:90%;
   }
 
-<<<<<<< HEAD
-=======
 /* Highlights the active term on the "Areas of Research" widget orange */
->>>>>>> SCHOLAR-3-0
 body.front .block-boxes-os_taxonomy_fbt .item-list ul.termchild-methods .active a,
 body.front .block-boxes-os_taxonomy_fbt .item-list ul.termchild-applications .active a {
   color: #db7002;
 }
-<<<<<<< HEAD
-=======
 
 /* Colors child terms displayed on a taxonomy page with child terms shown. */
 body.page-taxonomy .taxonomy-term h2 {
 	color: #db7002;
 }
->>>>>>> SCHOLAR-3-0
 
 /* REMOVE BEFORE CHECING IN */
 .front .region-header-second h2.block-title, #messages {display:none;}

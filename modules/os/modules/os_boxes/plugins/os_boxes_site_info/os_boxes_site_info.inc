@@ -123,7 +123,16 @@ function os_boxes_site_info_submit($form, &$form_state) {
       'value' => $form_state['values']['address1'].'<br>'.$form_state['values']['address2'],
       'format' => NULL,
     );
-    node_save($node);
+    if ($node->field_site_logo[LANGUAGE_NONE][0] == null) {
+      $node->field_site_logo = null;
+    }
+    try {
+      node_save($node);
+    }
+    catch (Exception $e) {
+      drupal_set_message(t('Error saving site information. Contact your site administrator.'), 'error');
+      error_log($e);
+    }
   }
   else {
     boxes_box_form_submit($form, $form_state);

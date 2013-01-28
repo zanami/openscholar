@@ -12,34 +12,202 @@ function os_files_install() {
   _os_files_clean_up_fields();
 }
 
+/**
+ * Corrects files that are not in the correct directory
+ */
 function os_files_update_7001(&$sandbox) {
 
   // use queries to reduce memory footprint
   $q = db_select('file_managed', 'fm');
   $q->join('og_membership', 'ogm', 'ogm.etid = fm.fid AND entity_type = \'file\'');
   $q->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
-  $q->fields('fm', array('fid', 'filename', 'uri'))
-    ->fields('p', array('value'))
-    ->where('fm.uri LIKE \'public://%\'')
-    ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')')
-    ->orderBy('fid');
+
+  $union1 = db_select('file_managed', 'fm');
+  $union1->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'node\'');
+  $union1->join('purl', 'p', 'p.id = fu.id AND provider = \'spaces_og\'');
+
+  $union2 = db_select('file_managed', 'fm');
+  $union2->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'node\'');
+  $union2->join('og_membership', 'ogm', 'ogm.etid = fu.id AND entity_type = \'node\'');
+  $union2->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
+
+
+  $union3 = db_select('file_managed', 'fm');
+  $union3->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'file\'');
+  $union3->join('file_usage', 'fu2', 'fu2.fid = fu.fid AND fu2.type = \'node\'');
+  $union3->join('og_membership', 'ogm', 'ogm.etid = fu2.id AND entity_type = \'node\'');
+  $union3->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
+
 
   if (!isset($sandbox['progress'])) {
+    $q->fields('fm', array('fid'))
+      ->where('fm.uri LIKE \'public://%\'')
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
+    $union1->fields('fm', array('fid'))
+      ->where('fm.uri LIKE \'public://%\'')
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
+    $union2->fields('fm', array('fid'))
+      ->where('fm.uri LIKE \'public://%\'')
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
+    $union3->fields('fm', array('fid'))
+      ->where('fm.uri LIKE \'public://%\'')
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
+    $q->union($union1)
+      ->union($union2)
+      ->union($union3);
+    $r = $q->execute();
+
+    $fids = $r->fetchAll(PDO::FETCH_OBJ);
+    foreach ($fids as $fid) {
+      $sandbox['dataset'][] = $fid->fid;
+    }
+    sort($sandbox['dataset']);
+
     $sandbox['progress'] = 0;
-    $sandbox['limit'] = 5;
-    $sandbox['last_fid'] = 0;
-    $sandbox['max'] = $q->countQuery()->execute()->fetchField();
+    $sandbox['skip'] = array();
+    $sandbox['limit'] = 10;
+    $sandbox['max'] = count($sandbox['dataset']);
     $sandbox['warnings'] = array();
   }
 
-  $q->range(0, $sandbox['limit']);
+  // if a file with the same name exists in the target directory, but does not have the same filesize or mimetype,
+  // we can't handle it automatically. It will need to be fixed manually.
+  // So we skip it for the time being
+  //$q->range(0, $sandbox['limit']);
+  //if (count($sandbox['skip'])) {
+  //  $q->condition('fm.fid', $sandbox['skip'], 'NOT IN');
+  //}
 
-  $r = $q->execute();
+  //$r = $q->execute();
+  // the Traversable behavior stopped working, so fetchAll as an array
+  //$rows = $r->fetchAll(PDO::FETCH_OBJ);
+
+  $fids = array_slice($sandbox['dataset'], $sandbox['progress'], $sandbox['limit']);
+  $union1->fields('fm', array('fid', 'filename', 'uri'))
+          ->fields('p', array('id', 'value'))
+          ->condition('fm.fid', $fids);
+  $union2->fields('fm', array('fid', 'filename', 'uri'))
+          ->fields('p', array('id', 'value'))
+          ->condition('fm.fid', $fids);
+  $union3->fields('fm', array('fid', 'filename', 'uri'))
+          ->fields('p', array('id', 'value'))
+          ->condition('fm.fid', $fids);
+  $r = $q->fields('fm', array('fid', 'filename', 'uri'))
+         ->fields('p', array('id', 'value'))
+         ->condition('fm.fid', $fids)
+         ->union($union1)
+         ->union($union2)
+         ->union($union3)
+         ->execute();
   $rows = $r->fetchAll(PDO::FETCH_OBJ);
 
   foreach ($rows as $row) {
+    // put together the filename
+    $pathinfo = pathinfo($row->uri);
+    $matches = array();
+
+    // if the filename is an actual filename, and not a sentence, then it should match the
+    // filename in the uri parameter
+    $filename_info = pathinfo($row->filename);
+    if (isset($filename_info['extension'])) {
+      $orig_filename = $filename_info['filename'];
+    }
+    else {
+      $orig_filename = trim(str_replace('_0|||', '', $pathinfo['filename'].'|||'), '|');
+    }
+    $target_dir = 'public://'.$row->value.'/files/';
+    $filename = $target_dir.$orig_filename.'.'.$pathinfo['extension'];
+
+    // change the file's uri
+    $file = file_load($row->fid);
+    $to_save = false;
+    if (empty($file->og_group_ref)) {
+      $file->og_group_ref[LANGUAGE_NONE][0]['target_id'] = $row->id;
+      $to_save = true;
+    }
+    file_prepare_directory($target_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+    $file_move_type = FILE_EXISTS_REPLACE;
+
+    if (!file_exists($file->uri)) {
+      $sandbox['warnings'][] = t('File @file (@fid) not found.', array('@file' => $file->uri, '@fid' => $fid->fid));
+      $sandbox['progress']++;
+      continue;
+    }
+
+    if (file_exists($filename)) {
+      // file already exists at target destination
+      // this means there's a duplicate row in the files table for this file
+      $qf = db_select('file_managed', 'fm')
+        ->fields('fm')
+        ->condition('uri', $filename)
+        ->condition('filemime', $file->filemime)
+        ->condition('filesize', $file->filesize)
+        ->condition('fm.fid', $file->fid, '!=');
+      $qf->join('file_usage', 'fu', 'fm.fid = fu.fid');
+      $qf = $qf->fields('fu', array('id', 'type'))
+               ->execute();
+
+      // if we find a match, update the in-use file with data from the match
+      if ($rf = $qf->fetch(PDO::FETCH_OBJ)) {
+        $q2 = db_select('file_usage', 'fu')
+          ->fields('fu')
+          ->condition('fid', $row->fid)
+          ->execute();
+        $r2 = $q2->fetch(PDO::FETCH_OBJ);
+        if ($r2->id != $qf->id || $r2->type != $qf->type) {
+          // this is probably a duplicate that is not safe to just delete
+          $file_move_type = FILE_EXISTS_RENAME;
+        }
+        else {
+          $file->filename = $rf->filename;
+          $file->timestamp = $rf->timestamp;
+          $file->origname = $rf->origname;
+
+          $file->uri = $filename;
+          try {
+            file_save($file);
+            db_delete('file_managed')->condition('fid', $rf->fid)->execute();
+          }
+          catch (PDOException $e) {
+            error_log($e);
+            error_log(print_r($file,1));
+          }
+        }
+      }
+      else {
+        // no match. A different file with the same name exists.
+        // Just rename it
+        $file_move_type = FILE_EXISTS_RENAME;
+      }
+    }
+    if ($to_save) {
+      file_save($file);
+    }
+
+    // if the file doesn't already exist
+    if ($file->uri != $filename) {
+      try {
+        $file = @file_move($file, $filename, $file_move_type);
+      }
+      catch (PDOException $e) {
+        error_log($e);
+        error_log(print_r($file,1));
+      }
+      if (!$file) {
+        $sandbox['warnings'][] = t('Could not move file @source (@fid) to @dest.', array('@source' => $row->uri, '@fid' => $row->fid, '@dest' => 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension']));
+        error_log(t('Could not move file @source (@fid) to @dest.', array('@source' => $row->uri, '@fid' => $row->fid, '@dest' => 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension'])));
+        $sandbox['progress']++;
+        continue;
+      }
+    }
+
+    // reset the cache to keep memory manageable
+    entity_get_controller('file')->resetCache();
+
+    // look for nodes that have the old file path in the body
     $q = db_select('file_usage', 'fu')
         ->fields('fu', array('id'))
+        ->fields('fdb', array('revision_id'))
         ->condition('fid', $row->fid)
         ->condition('type', 'node');
         $q->join('field_data_body', 'fdb', 'fdb.entity_id = fu.id');
@@ -47,48 +215,11 @@ function os_files_update_7001(&$sandbox) {
         $q->where('fdb.body_value != \'\'');
     $nodes = $q->execute();
 
-    $pathinfo = pathinfo($row->uri);
-    $matches = array();
-    $orig_filename = trim(str_replace('_0.', '', $pathinfo['filename'].'.'), '.');
-    $target_dir = 'public://'.$row->value.'/files/';
-    $filename = $target_dir.$orig_filename.'.'.$pathinfo['extension'];
-
-    // change the file's uri
-    $file = file_load($row->fid);
-    file_prepare_directory($target_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
-    if (!file_exists($file->uri)) {
-      if (file_exists($filename)) {
-        // file already moved. ignore it
-        // this occurs due to a race condition
-        // the next time the script runs, this file should no longer be returned by the db
-        error_log('File '.$file->fid.': '.$file->uri.' already moved to '.$filename);
-        $file->uri = $filename;
-        file_save($file);
-        // db_delete('file_managed')->condition('fid', $file->fid)->execute();
-        // db_delete('file_usage')->condition('fid', $file->fid)->execute();
-      }
-      else {
-        error_log('File not found: '.$file->fid.': '.$file->uri);
-        $sandbox['progress']++;
-      }
-      continue;
-    }
-
-    $old_file = $file;
-    $file = @file_move($file, $filename, FILE_EXISTS_REPLACE);
-    $sandbox['last_fid'] = $row->fid;
-    if (!$file) {
-      $sandbox['warnings'][] = t('Could not move file @source (@fid) to @dest.', array('@source' => $row->uri, '@fid' => $row->fid, '@dest' => 'public://'.$row->value.'/files/'.$orig_filename.'.'.$pathinfo['extension']));
-      $sandbox['progress']++;
-      continue;
-    }
-
-    // reset the cache to keep memory manageable
-    entity_get_controller('file')->resetCache();
-
     foreach ($nodes as $node) {
       // get all these links
       // they should be replaced by media tags
+      // but media tags aren't that good yet
+      // so just replace the path and add an attribute so we can find them easily later
       if (strlen($node->body_value)) {
         preg_match_all('|<a [^>]*href=\"([^\"]*'.$orig_filename.'[^\"]*)\"[^>]*>(.*)<\/a>|U', $node->body_value, $matches, PREG_SET_ORDER);
         foreach ($matches as $m) {
@@ -99,14 +230,16 @@ function os_files_update_7001(&$sandbox) {
 
       db_update('field_data_body')
         ->fields(array('body_value' => $node->body_value))
-        ->condition('entity_id', $row->fid)
+        ->condition('entity_id', $node->id)
+        ->condition('revision_id', $node->revision_id)
         ->execute();
     }
 
     //error_log('File '.$file->fid.' moved from '.$old_file->uri.' to '.$target_dir);
     $sandbox['progress']++;
   }
-  error_log(t('Processed @num of @max files. @percent% complete.', array('@num' => $sandbox['progress'], '@max' => $sandbox['max'], '@percent' => floor($sandbox['progress']/$sandbox['max'])*100)));
+
+  error_log(t('Processed @num of @max files. @percent% complete. Last processed: @last', array('@num' => $sandbox['progress'], '@max' => $sandbox['max'], '@last' => $row->fid, '@percent' => floor((($sandbox['progress']/$sandbox['max'])*100)))));
 
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress']/$sandbox['max']);
   if ($sandbox['#finished'] >= 1) {

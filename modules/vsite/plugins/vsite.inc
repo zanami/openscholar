@@ -97,6 +97,11 @@ class vsite extends space_og {
             }
           }
         }
+        else {
+          if ($object->nid && arg(0) == 'node' && arg(1) == $object->nid && !arg(2)) {
+            drupal_goto(drupal_get_path_alias(request_path()));
+          }
+        }
         break;
 
       case 'init':
@@ -113,23 +118,22 @@ class vsite extends space_og {
             )
           );
         }
-        // Checks group content for extraneous pURL on custom domain requests.
-        else {
-          $vsite_domain_name = variable_get('vsite_domain_name', '');
-          if ($vsite_domain_name) {
-            $object = menu_get_object();
-            if (isset($object->nid)) {
-              $items = field_get_items('node', $object, OG_AUDIENCE_FIELD);
-              if ($vsite = vsite_get_vsite($items[0]['target_id'])) {
-                if ($purl = vsite_get_purl($vsite)) {
-                  $request_path = request_path();
-                  $request_path_args = explode('/', $request_path);
-                  $index = array_shift($request_path_args);
-                  if (!empty($request_path_args) && ((string) $index === (string) $purl)) {
-                    $path_without_purl = implode('/', $request_path_args);
-                    purl_goto($path_without_purl, array(), 301);
-                  }
-                }
+        // Checks group content for extraneous purl on custom domain requests.
+        else if ($object = menu_get_object()) {
+          if (isset($object->nid) && !og_is_group_type('node', $object->type)) {
+            $items = field_get_items('node', $object, OG_AUDIENCE_FIELD);
+            // First, redirects if this node does not belong to this vsite.
+            if ($items[0]['target_id'] && ((int) $items[0]['target_id'] !== (int) $this->id) && !empty($this->purl_provider)) {
+              purl_goto(drupal_lookup_path('alias', "node/$object->nid"), array('purl' => $this->purl_provider), 301);
+            }
+            // Now, redirects to path without purl, if we are on a vsite with
+            // a custom domain and original path contains the purl.
+            else if ($items[0]['target_id'] && $this->purl_provider == 'vsite_domain') {
+              $request_path_args = explode('/', request_path());
+              $index = array_shift($request_path_args);
+              if (!empty($request_path_args) && ((string) $index === (string) $this->group->purl)) {
+                $path_without_purl = implode('/', $request_path_args);
+                purl_goto($path_without_purl, array(), 301);
               }
             }
           }

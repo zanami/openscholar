@@ -25,6 +25,8 @@ body,
 #header-container .gpanel {
   background: #4a4a4a 50% 100%;
 width: 940px;
+padding-top: 10px;
+padding-bottom: 18px;
   }
 
 #menu-bar,
@@ -53,10 +55,6 @@ body.no-sidebars #columns .hg-container {
 #footer .region-footer {
   background:#d0d7d8;
   height: 100px;
-  }
-
-#header-container .gpanel {
-  padding-top: 10px;
   }
 
 #menu-bar,

@@ -156,7 +156,7 @@ function iqss_projects_front_infoblock_content() {
   }else{
   	//Create a site
   	$items[] = array(
-	  '#title' => ((count($vsites) > 1)?"Create a web site.":'Get your web site!'),
+	  '#title' => ((count($vsites) >= 1) ? 'Create a site' : 'Get your website!'),
 	  '#href' => 'site/register',
   	  '#type' => 'link',
 	);
@@ -196,7 +196,7 @@ function iqss_projects_front_navblock_content() {
   }else{
   	//Create a site
   	$items[] = array(
-	  '#title' => ((count($vsites) > 1)?"Create a web site.":'Get your web site!'),
+	  '#title' => ((count($vsites) >= 1) ? 'Create a site' : 'Get your website!'),
 	  '#href' => 'site/register',
   	  '#type' => 'link',
 	);
