@@ -1,5 +1,11 @@
 
-.container {width:100%}
+#page {
+  margin-bottom: 0;
+}
+
+.container {
+  width: 100%;
+}
 
 #columns {
   margin-top: 40px;
@@ -55,7 +61,7 @@
   #block-os-primary-menu,
   #footer .gpanel,
   .region-footer,
-  #messages .messages {
+  .message-inner {
     margin-left: auto;
     margin-right: auto;
     width:980px;
