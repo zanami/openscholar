@@ -176,11 +176,6 @@ function cp_menu_contextual_links_view_alter(&$element, $items) {
 
 	        if (in_array($menu, $menus)) {
 	          $fragment = 'cp/menu/nojs/new/';
-	          if ($space = spaces_get_space()) {
-	            $fragment = $space->group->purl . '/' . $fragment;
-	          }
-	          //ctools_include('modal');
-	          //ctools_modal_add_js();
 	          $element['#links']['menu-add'] = array('title' => t('Add menu item'), 'href' => $fragment . $menu, 'attributes' => array('class' => array('ctools-use-modal')));
 	        }
 	      }
