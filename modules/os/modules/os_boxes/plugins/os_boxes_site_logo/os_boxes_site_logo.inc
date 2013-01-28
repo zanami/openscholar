@@ -56,6 +56,9 @@ class os_boxes_site_logo extends os_boxes_default {
           '_os_boxes_site_logo_process',
         ),
         '#default_value' => $fid,
+        '#upload_validators' => array(
+          'file_validate_extensions' => array('gif png jpg jpeg'),
+        ),
         '#dimensions' => array(
           'x' => !empty($x)?$x:0,
           'y' => !empty($y)?$y:0,

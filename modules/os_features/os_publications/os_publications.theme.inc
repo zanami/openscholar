@@ -194,6 +194,11 @@ function _os_publications_plain_citation($node) {
 }
 
 function theme_os_publications_export_links($variables) {
+  if (module_exists('vsite') && !spaces_get_space()) {
+    // Don't show export link when not in a VSite, to prevent from loading too
+    // many nodes.
+    return;
+  }
 
   global $pager_total_items;
   $node   = $variables['node'];

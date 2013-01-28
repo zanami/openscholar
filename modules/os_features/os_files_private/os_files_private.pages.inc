@@ -30,7 +30,6 @@ function os_files_private_settings() {
       '#type' => 'checkbox',
       '#title' => t('Extend access to Harvard Community'),
       '#default_value' => variable_get('os_files_private_pinserver', 0),
-      '#options' => $options,
       '#description' => t('By default, private files are only accessible to your site members. By extending access to Harvard Community, anyone with a valid Harvard XID can log in using the Harvard Pinserver to access your private files.'),
       '#weight' => 1,
     );
