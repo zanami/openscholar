@@ -26,20 +26,16 @@ before_script:
   - drush dl drupal-7.19
   - mv drupal-7.19 drupal
   - cd drupal
-  - mkdir -m 777 sites/default/files/private
-  - mv /home/travis/builds/openscholar/openscholar ./profiles
+  - mv /home/travis/build/openscholar/openscholar ./profiles
   - cd profiles/openscholar
   - bash scripts/setup
-  # Install a multi-tanent, developemnt site.
-  - pwd
-  # Download Migrate 2.5, so OG won't fail  
-  - drush dl migrate -y --destination=~/drupal/profiles/openscholar/modules/contrib
-  - drush vset migrate_disable_autoregistration 1  
+  # Install a multi-tanent, development site.
   - drush si openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite --yes
   - drush vset purl_base_domain http://127.0.0.1
+  - mkdir -p sites/default/files/private
+  - chmod 777 -R sites/default/files
   - drush vset file_private_path sites/default/files/private
-  - drush cc all --yes
-
+  # Import dummy content
   - drush en os_migrate_demo -y
   - drush mi --all --user=1
 
@@ -47,10 +43,6 @@ before_script:
   - cd behat
   - cp behat.local.yml.travis behat.local.yml
   - composer install
-  # Temporary fix until http://drupal.org/node/1868980 is fixed.
-  - cd vendor/drupal/drupal-extension/  
-  - curl http://drupal.org/files/1868980-fix-wsod.patch | git apply
-  - cd ../../..
 
 script:
     # Create display.
