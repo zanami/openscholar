@@ -143,7 +143,6 @@ class os_slideshow_box extends os_boxes_default {
       ));
     }
     
-    drupal_add_css(drupal_get_path('module', 'os_boxes') . '/plugins/os_boxes_slideshow/theme/os-slideshow-' . $this->options['style'] . '.css');
     drupal_add_css(drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_slideshow/os_boxes_slideshow.css');
     
     if ($view = views_get_view('os_slideshow')) {
