@@ -232,6 +232,7 @@ function theme_os_image_gallery_file_field_inline($variables) {
   $clear = drupal_get_path('module', 'os_image_gallery') . '/trans.gif';
   
   $attributes = array('style' => "background: url('$img') no-repeat center; background-size: auto 100%;");
-  return theme('image', array('path'=>$clear, 'attributes' => $attributes));
+  $indicator = '<span class="video-indicator"> </span>';
+  return theme('image', array('path'=>$clear, 'attributes' => $attributes)) . $indicator;
 }
 
