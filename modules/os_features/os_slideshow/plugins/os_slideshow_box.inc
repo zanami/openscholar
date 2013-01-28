@@ -6,12 +6,10 @@ class os_slideshow_box extends os_boxes_default {
     $options = parent::options_defaults();
     
     return $options + array(
-      'pager' => 'none',
-      'controls' => 'none',
-      'slide_counter' => 'none',
-      'show_image_titles' => 'none',
+      'pager' => 'bottom',
+      'controls' => 'bottom',
+      'slide_counter' => 'bottom',
       'effect' => 'fade',
-      'style' => 'dark',
       'size' => 600,
       'nodes' => array(),
     );
@@ -27,17 +25,7 @@ class os_slideshow_box extends os_boxes_default {
       '#collapsed' => TRUE,
       '#weight' => 10,
     );
-    
-    $form['display']['style'] = array(
-      '#title' => t('Player Styles'),
-      '#type' => 'select',
-      '#options' => array('dark' => t('Dark'), 'light' => t('Light')),
-      '#default_value' => $this->options['style'],
-      //'#pre_render' => array('os_slideshow_box_style_thumbs'),
-      '#attributes' => array('class' => array('thumbnails')),
-      '#description' => t('Choose between a black or light grey player style.'),
-    );
-    
+     
     $form['display']['size'] = array(
       '#type' => 'textfield',
       '#title' => t('Size'),
@@ -55,7 +43,7 @@ class os_slideshow_box extends os_boxes_default {
     $display_options = array('pager' => t('Show Pager'), 'controls' => t('Show Controls'), 'slide_counter' => t('Slide Counter'));
     foreach ($display_options as $option => $title)
       $form['display'][$option] = array(
-        '#type' => 'select',
+        '#type' => 'hidden',
         '#title' => $title,
         //omitting top/bottom options, but leaving this here so we can add it back in when we're ready for new features.
         //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
@@ -93,27 +81,41 @@ class os_slideshow_box extends os_boxes_default {
         '#weight' => 5,
       );
       
+      $nids = $this->_get_nids(); //filter out dead nids
+      
       $form['nodes']['#process'][] = 'os_slideshow_process_form_nodes';
       $form['nodes_list'] = array(
         '#type' => 'hidden',
-        '#value' => array_keys($this->options['nodes']),    
+        '#value' => $nids,    
       );
       
-      //load slideshow_image nodes
+      //load slideshow_slide nodes
       uasort($this->options['nodes'], 'element_sort');
-      $nodes = node_load_multiple(array_keys($this->options['nodes']));
+      $nodes = node_load_multiple($nids);
   
       foreach ($this->options['nodes'] as $nid => $data) {
+        if (!in_array($nid, $nids)) {
+          continue;
+        }
+        
         $uri = $nodes[$nid]->field_image[$nodes[$nid]->language][0]['uri'];
-        $img = theme('image_style', array('style_name' => 'os_square_50_50','path' => $uri, 'width'=>50, 'height'=>50));
-        $title = $nodes[$nid]->title;
+        $img = theme('image_style', array('style_name' => 'os_square_50_50','path' => $uri, 'width'=>50, 'height'=>50, 'attributes' => array('style' => 'float: left; margin-right: 1em;')));
+        $title = '<strong>' . $nodes[$nid]->title . '</strong>';
+        
+        //edit link loads node edit with dest of this page.  this page's dest needs to be preserved.  nested destinations.
+        $dest = (isset($_GET['destination'])) ? current_path() . '?destination=' . $_GET['destination'] : current_path();
+        $edit_link = l('Edit Slide', "node/${nid}/edit", array('query' => array('destination' => $dest)));
+        $remove_link =  '<a href="#" class="remove" title="Remove Slide">Remove</a>';
+        $links = "<div>${title}<br />${edit_link} | ${remove_link}</div>";
+        
         $form['nodes'][$nid] = array(
           'nid' => array(
             '#type' => 'hidden',
             '#default_value' => $nid,
           ),
           'text' => array(
-            '#markup' => $img . ' <span>' . $title . '</span> <a href="#" class="remove" title="Remove Slide">Remove</a>',
+            //'#markup' => $img . ' <span>' . $title . '</span><br /> ' . $edit_link .  ' | <a href="#" class="remove" title="Remove Slide">Remove</a>',
+            '#markup' => $img . $links,
           ),
           '#weight' => $data['weight'],
           'weight' => array(
@@ -135,7 +137,7 @@ class os_slideshow_box extends os_boxes_default {
 
     //show Add Slide link to admins
     if (spaces_access_admin()) {
-      $block['content'] = l('Add Slide', 'node/add/slideshow-image', array(
+      $block['content'] = l('Add Slide', 'node/add/slideshow-slide', array(
         'attributes' => array('class' => array('add_new')),
         'query' => array('widget' => $this->delta, 'destination' => current_path()),
       ));
@@ -247,6 +249,22 @@ class os_slideshow_box extends os_boxes_default {
     $html;
     //$link = '<a href="' . current_path() . '%20">';
     return $html; 
+  }
+  
+  //filters out dead nids
+  private function _get_nids() {
+    $nids = array_keys($this->options['nodes']);
+    
+    if ($nids) {
+      $nids = db_select('node', 'n')
+        ->fields('n', array('nid'))
+        ->condition('n.nid', $nids, 'IN')
+        ->condition('n.type', 'slideshow_slide')
+        ->execute()
+        ->fetchCol();
+    }
+    
+    return $nids;
   }
 }
 

@@ -121,9 +121,10 @@ function os_layout_get($context_name, $load_meta = FALSE, $unused_blocks = FALSE
       'weight' => 0,
   );
   foreach ($block_settings as $k => &$b) {
-    if(os_layout_block_exists($b)){
+    if (os_layout_block_exists($b) && $k == $b['module'].'-'.$b['delta']) {
       $b += $required;
-    }else{
+    }
+    else {
       unset($block_settings[$k]);
     }
   }
@@ -184,7 +185,7 @@ function os_layout_set($context_name, $blocks) {
   $context = context_load($context_name);
   $clean_up = false;
 
-  if ($context_name == 'os_public' && variable_get('os_layout_needs_cleanup', true)) {
+  if ($context_name == 'os_public' && !variable_get('os_layout_has_cleaned_up', false)) {
     // we want to compare to the old version, which is what should be in the children contexts
     $old_blocks = os_layout_get($context_name);
     $ctxs = os_layout_get_contexts(TRUE);
@@ -205,7 +206,7 @@ function os_layout_set($context_name, $blocks) {
     vsite_layout_context_set($context_name, $blocks);
     if ($clean_up) {
       $vsite = vsite_get_vsite();
-      $vsite->controllers->variable->set('os_layout_needs_cleanup', false);
+      $vsite->controllers->variable->set('os_layout_has_cleaned_up', true);
     }
   }
   else {
@@ -214,7 +215,7 @@ function os_layout_set($context_name, $blocks) {
     // write the context to the database.
     context_save($context);
     if ($clean_up) {
-      variable_set('os_layout_needs_cleanup', false);
+      variable_set('os_layout_has_cleaned_up', true);
     }
   }
 }
@@ -478,14 +479,14 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout) {
     // the parent keys that exist in the child
     $only_parent_keys = array_intersect($new_keys, $parent_keys);
     // the order in the parent of keys that only exist in child
-    $active_parents = array_intersect($only_parent_keys, $parent_keys);
+    $active_parents = array_intersect($parent_keys, $only_parent_keys);
 
     $bulldoze = true;
     if (empty($only_parent_keys)) {
       // none of the parent blocks are in the child
       // bulldoze is fine
     }
-    elseif ($only_parent_keys == $active_parents) {
+    elseif ($only_parent_keys === $active_parents) {
       // parent blocks are in the same order.
       // update their weights to match the parents
       // then put the new blocks in between them
