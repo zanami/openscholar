@@ -188,9 +188,22 @@ function os_layout_set($context_name, $blocks) {
   if ($context_name == 'os_public' && !variable_get('os_layout_has_cleaned_up', false)) {
     // we want to compare to the old version, which is what should be in the children contexts
     $old_blocks = os_layout_get($context_name);
-    $ctxs = os_layout_get_contexts(TRUE);
-    foreach ($ctxs as $ctx => $name) {
-      if ($ctx == 'os_public') continue;
+    $q = null;
+    if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+      $q = db_select('spaces_overrides', 'so')
+           ->condition('id', $vsite->group->nid)
+           ->condition('object_type', 'context');
+      $q   ->addExpression('DISTINCT SUBSTRING(object_id, 1, LOCATE(\':\', object_id)-1)', 'name');
+      $q = $q->execute();
+    }
+    else {
+      $q = db_select('context', 'c')
+           ->fields('c', array('name'))
+           ->execute();
+    }
+    foreach ($q as $r) {
+      $ctx = $r->name;
+      if ($ctx == $context_name) continue;
       $child_blocks = os_layout_get($ctx);
 
       _os_layout_adjust_relative_weight($child_blocks, $old_blocks);
