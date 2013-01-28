@@ -71,15 +71,7 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
  * 
  * When a slideshow_slide is created, add its nid to the widget it was created for
  */
-function os_slideshow_node_insert($node) {
-  //callback function to get highest weight from list of nodes 
-  function _heaviest($val, $next) {
-    if ($next['weight'] > $val) {
-      return $next['weight'];
-    } 
-    return $val; 
-  }
-  
+function os_slideshow_node_insert($node) {  
   if (($node->type == 'slideshow_slide') && isset($node->widget)) {
     if (module_exists('spaces') && $space = spaces_get_space()) { 
       $box = $space->controllers->boxes->get($node->widget);
@@ -87,9 +79,10 @@ function os_slideshow_node_insert($node) {
       $box = boxes_box_load($node->widget);
     }
     
+    //array reduce's anon function gets the highest weight of all the slides, so the newly inserted one can come last.
     $box->options['nodes'][(int)$node->nid] = array(
       'nid' => (int)$node->nid,
-      'weight' => 1 + array_reduce($box->options['nodes'], '_heaviest', 0),
+      'weight' => 1 + array_reduce($box->options['nodes'], function($val, $next) {return ($next['weight']>$val) ? $next['weight'] : $val;}, 0),
     );
     
     if ($space) {
@@ -100,15 +93,6 @@ function os_slideshow_node_insert($node) {
   }
 }
 
-
-// function os_slideshow_views_default_views_alter(&$views) {
-  
-//   if ($view = &$views['cp_content']) {
-//     $handler = $view->display_handler;
-//     //$filters = $handler->get_option('filters');
-  
-//   }
-// }
 /**
  * Implements hook_views_pre_render
  * 
