@@ -186,7 +186,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   $terms = taxonomy_term_load_multiple($tids);
   // Arrange term in an array with information about inner tree.
   $items = os_taxonomy_build_term_items($terms, $options);
-  $path_prefix = '';
+  if(!isset($options['path_prefix'])) $options['path_prefix'] = '';
 
   // If there is more than 0 bundles using this vocabulary.
   if (count($options['bundles'])) {
@@ -200,9 +200,9 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         $feature = current($map[$bundle]);
       }
     }
-    $path_prefix = isset($feature) ? strval(os_get_app_path($feature)) : 'taxonomy';
-    if (strlen($path_prefix)) {
-      $path_prefix = $path_prefix . "/";
+    $options['path_prefix'] = isset($feature) ? strval(os_get_app_path($feature)) : 'taxonomy';
+    if (strlen($options['path_prefix'])) {
+      $options['path_prefix'] = $options['path_prefix'] . "/";
     }
   }
 
@@ -215,8 +215,8 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       continue;
     }
 
-    if(strlen($path_prefix) && strpos($item['url']['path'],'taxonomy/') === 0){
-      $item['url']['path'] = str_replace('taxonomy/', $path_prefix, $item['url']['path']);
+    if(strlen($options['path_prefix']) && strpos($item['url']['path'],'taxonomy/') === 0){
+      $item['url']['path'] = str_replace('taxonomy/', $options['path_prefix'], $item['url']['path']);
     }
 
     // Don't process terms that are in not in level 0.
@@ -274,7 +274,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
 
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
-    return render(drupal_get_form('os_taxonomy_select_list', $data, $path_prefix));
+    return render(drupal_get_form('os_taxonomy_select_list', $data, $options['path_prefix']));
   }
   else {
     return theme('item_list', array('type' => 'ul', 'items' => $data));
@@ -436,6 +436,10 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
     $child_content = '';
     if (!empty($item['childs'])) {
       $child_content = os_taxonomy_build_child_item($item['childs'], $item, $options);
+    }
+
+    if(strlen($options['path_prefix']) && strpos($item['url']['path'],'taxonomy/') === 0){
+      $item['url']['path'] = str_replace('taxonomy/', $options['path_prefix'], $item['url']['path']);
     }
 
     $number = NULL;
