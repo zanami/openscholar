@@ -56,7 +56,7 @@ function harvard_courses_field_default_fields() {
       'entity_type' => 'field_collection_item',
       'field_name' => 'field_department_id',
       'label' => 'Department ID',
-      'required' => 0,
+      'required' => 1,
       'settings' => array(
         'text_processing' => '0',
         'user_register_form' => FALSE,
@@ -117,7 +117,7 @@ function harvard_courses_field_default_fields() {
       'entity_type' => 'field_collection_item',
       'field_name' => 'field_faculty',
       'label' => 'School name',
-      'required' => 0,
+      'required' => 1,
       'settings' => array(
         'text_processing' => '0',
         'user_register_form' => FALSE,

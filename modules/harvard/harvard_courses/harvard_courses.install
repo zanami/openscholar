@@ -14,11 +14,11 @@ function harvard_courses_install() {
   // Create import nodes.
   $node = new stdClass();
   $node->type = 'harvard_api_importer';
-  $node->title = 'Department importer';
+  $node->title = 'Department & school importer';
   $node->language = LANGUAGE_NONE;
   $wrapper = entity_metadata_wrapper('node', $node);
   $wrapper->field_base_url->set('http://services.isites.harvard.edu/course_catalog/api/v1/search');
-  $wrapper->field_import_type->set('department');
+  $wrapper->field_import_type->set('department_school');
   $wrapper->author->set(1);
   $wrapper->save();
 
@@ -52,4 +52,40 @@ function harvard_courses_install() {
     ->fields(array('weight' => $weight +1))
     ->condition('name', 'harvard_courses')
     ->execute();
+}
+
+/**
+ * Delete old course importer node and create a new one.
+ */
+function harvard_courses_update_7000() {
+  // Create new importer.
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->fieldCondition('field_import_type', 'value', 'department_school')
+    ->execute();
+
+  if (empty($result['node'])) {
+    $node = new stdClass();
+    $node->type = 'harvard_api_importer';
+    $node->title = 'Department & school importer';
+    $node->language = LANGUAGE_NONE;
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $wrapper->field_base_url->set('http://services.isites.harvard.edu/course_catalog/api/v1/search');
+    $wrapper->field_import_type->set('department_school');
+    $wrapper->author->set(1);
+    $wrapper->save();
+  }
+
+  // Delete old importer.
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->fieldCondition('field_import_type', 'value', 'department_id')
+    ->execute();
+
+  if (!empty($result['node'])) {
+    node_delete_multiple(array_keys($result['node']));
+    drupal_set_message(t('@number importers were delete', array('@number' => count(array_keys($result['node'])))));
+  }
 }

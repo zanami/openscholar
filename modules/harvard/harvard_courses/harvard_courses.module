@@ -232,7 +232,7 @@ function harvard_courses_permission() {
  *  @param $import_type
  *    What is the method of the import:
  *      - cat_num: Catalog number
- *      - department: Department ID
+ *      - department_school: Department ID and school name.
  *
  *  @param $search_value
  *    Array of values to look for in the field of the import method.
@@ -242,20 +242,50 @@ function harvard_courses_permission() {
  *    List of nids.
  */
 function haravard_courses_sites_nid_by_import_type($import_type, $search_value = array()) {
-  $field = $import_type == 'cat_num' ? 'field_catalog_number' : 'field_department_id';
   $query = new entityFieldQuery();
-  $query
-    ->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', array('department', 'project', 'personal'), 'IN');
+
+  if ($import_type == 'department_school') {
+    // Search for field collection item with/without the argument values.
+
+    $query
+      ->entityCondition('entity_type', 'field_collection_item');
 
     if ($search_value) {
-      $query->fieldCondition($field, 'value', $search_value, 'IN');
-    }
-    else {
-      $query->fieldCondition($field, 'value', '', '<>');
+      foreach ($search_value as $field => $value) {
+        $query->fieldCondition($field, 'value', $value);
+      }
     }
 
-  $result = $query->execute();
+    $result = $query->execute();
+    if (empty($result['field_collection_item'])) {
+      return;
+    }
+
+    $field_collection_items = array_keys($result['field_collection_item']);
+
+    // Search for nodes related to the field collection items.
+    $query = new entityFieldQuery();
+    $result = $query
+      ->entityCondition('entity_type', 'node')
+      ->propertyCondition('type', array('department', 'project', 'personal'), 'IN')
+      ->fieldCondition('field_department_school', 'value', $field_collection_items, 'IN')
+      ->execute();
+  }
+  else {
+    $query
+      ->entityCondition('entity_type', 'node')
+      ->propertyCondition('type', array('department', 'project', 'personal'), 'IN');
+
+      if ($search_value) {
+        $query->fieldCondition('field_catalog_number', 'value', $search_value, 'IN');
+      }
+      else {
+        $query->fieldCondition('field_catalog_number', 'value', '', '<>');
+      }
+
+    $result = $query->execute();
+  }
+
   if (empty($result['node'])) {
     return;
   }
@@ -283,6 +313,7 @@ function harvard_courses_node_insert($node) {
   }
 
   // Import by department ID.
+  // @TODO: Move it to entity_insert().
   if ($wrapper->field_department_id->value()) {
     $sites = haravard_courses_sites_nid_by_import_type('department_id', array($wrapper->field_department_id->value()));
     if (!empty($sites)) {
