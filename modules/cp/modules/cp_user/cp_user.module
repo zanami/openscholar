@@ -213,6 +213,13 @@ function cp_user_user_register_submit($form, &$form_state) {
   $space = spaces_get_space();
   if(!empty($form_state['user']->uid)) {
     og_group('node', $space->id, array('entity' => $form_state['user']->uid));
+
+    $og_roles = og_roles('node', false, $space->id);
+    $vsite_user_role = array_search('vsite user', $og_roles);
+
+    // Grant them the vsite user role
+    og_role_grant('node', $space->id, $form_state['user']->uid, $vsite_user_role);
+
     // drupal_set_message to inform the user has been added to the group.
     drupal_set_message(t('!user has been added to the website: !website',array('!user'=>$form_state['user']->name, '!website'=>$space->group->title)));
     // Redirect the user after they add/create someone.
