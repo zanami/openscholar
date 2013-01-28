@@ -7,6 +7,8 @@ body {
 	color: #1e1e1e;
 }
 
+
+
 /* Header */
 #header {
 	background: #e6e6e3;
@@ -18,9 +20,23 @@ body {
 }
 
 
+
 /* Menu bar */
 #menu-bar {
 	background: #f3f3f1;
+}
+
+
+
+/* Messages */
+#messages {
+	background: #fff;
+	margin: 0;
+	padding: 0;
+}
+div.messages {
+  border: 0 none;
+	margin: 10px auto;
 }
 
 
@@ -37,7 +53,6 @@ body {
 	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 }
 
-
 h1#page-title,
 h1.node-title, 
 .page-search .title a {
@@ -48,7 +63,8 @@ h1.node-title,
 
 h1#page-title {
 	font-size: 38px;
-	margin-top: 30px;
+	line-height: 1; /* Font size is larger than the default line-height, so will overlap if the title wraps */
+	margin-top: 15px;
 }
 
 h2.block-title {
@@ -81,7 +97,9 @@ h2.block-title {
 }
 
 .sidebar .block,
-.front #content-column .block {
+.front #content-column .block,
+.node-person .block-inner,
+.comment-wrapper {
 	border-top: 3px solid #4384C4;
 }
  
@@ -101,6 +119,4 @@ h2.block-title {
 	text-transform: none;
 	font-size: 16px;
 }
-
-
 

@@ -222,7 +222,7 @@ function _rbuild_add_release_node_wrapper($project_node, $version, $filename, $p
     return FALSE;
   }
 
-  _rbuild_add_release_node($project_node, $version, $filename, $package, $url, $created, &$context);
+  _rbuild_add_release_node($project_node, $version, $filename, $package, $url, $created, $context);
   return TRUE;
 }
 

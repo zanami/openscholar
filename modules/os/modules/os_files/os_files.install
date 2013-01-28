@@ -26,14 +26,35 @@ function os_files_update_7001(&$sandbox) {
   $union1->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'node\'');
   $union1->join('purl', 'p', 'p.id = fu.id AND provider = \'spaces_og\'');
 
+  $union2 = db_select('file_managed', 'fm');
+  $union2->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'node\'');
+  $union2->join('og_membership', 'ogm', 'ogm.etid = fu.id AND entity_type = \'node\'');
+  $union2->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
+
+
+  $union3 = db_select('file_managed', 'fm');
+  $union3->join('file_usage', 'fu', 'fu.fid = fm.fid AND fu.type = \'file\'');
+  $union3->join('file_usage', 'fu2', 'fu2.fid = fu.fid AND fu2.type = \'node\'');
+  $union3->join('og_membership', 'ogm', 'ogm.etid = fu2.id AND entity_type = \'node\'');
+  $union3->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
+
+
   if (!isset($sandbox['progress'])) {
     $q->fields('fm', array('fid'))
       ->where('fm.uri LIKE \'public://%\'')
-      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
     $union1->fields('fm', array('fid'))
       ->where('fm.uri LIKE \'public://%\'')
-      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'%\')');
-    $q->union($union1);
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
+    $union2->fields('fm', array('fid'))
+      ->where('fm.uri LIKE \'public://%\'')
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
+    $union3->fields('fm', array('fid'))
+      ->where('fm.uri LIKE \'public://%\'')
+      ->where('fm.uri NOT LIKE CONCAT(\'%\', p.value, \'/%\')');
+    $q->union($union1)
+      ->union($union2)
+      ->union($union3);
     $r = $q->execute();
 
     $fids = $r->fetchAll(PDO::FETCH_OBJ);
@@ -65,10 +86,18 @@ function os_files_update_7001(&$sandbox) {
   $union1->fields('fm', array('fid', 'filename', 'uri'))
           ->fields('p', array('id', 'value'))
           ->condition('fm.fid', $fids);
+  $union2->fields('fm', array('fid', 'filename', 'uri'))
+          ->fields('p', array('id', 'value'))
+          ->condition('fm.fid', $fids);
+  $union3->fields('fm', array('fid', 'filename', 'uri'))
+          ->fields('p', array('id', 'value'))
+          ->condition('fm.fid', $fids);
   $r = $q->fields('fm', array('fid', 'filename', 'uri'))
          ->fields('p', array('id', 'value'))
          ->condition('fm.fid', $fids)
          ->union($union1)
+         ->union($union2)
+         ->union($union3)
          ->execute();
   $rows = $r->fetchAll(PDO::FETCH_OBJ);
 
@@ -79,7 +108,7 @@ function os_files_update_7001(&$sandbox) {
 
     // if the filename is an actual filename, and not a sentence, then it should match the
     // filename in the uri parameter
-    $filename_info = pathinfo('filename');
+    $filename_info = pathinfo($row->filename);
     if (isset($filename_info['extension'])) {
       $orig_filename = $filename_info['filename'];
     }
@@ -98,64 +127,57 @@ function os_files_update_7001(&$sandbox) {
     }
     file_prepare_directory($target_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
     $file_move_type = FILE_EXISTS_REPLACE;
+
     if (!file_exists($file->uri)) {
-      if (file_exists($filename)) {
-        // file already exists at target destination
-        // this means there's a duplicate row in the files table for this file
-        $qf = db_select('file_managed', 'fm')
-          ->fields('fm')
-          ->condition('uri', $filename)
-          ->condition('filemime', $file->filemime)
-          ->condition('filesize', $file->filesize);
-        $qf->join('file_usage', 'fu', 'fm.fid = fu.fid');
-        $qf->fields('fu', array('id', 'type'))->execute();
+      $sandbox['warnings'][] = t('File @file (@fid) not found.', array('@file' => $file->uri, '@fid' => $fid->fid));
+      $sandbox['progress']++;
+      continue;
+    }
 
-        // if we find a match, update the in-use file with data from the match
-        if ($rf = $qf->fetch(PDO::FETCH_OBJ)) {
-          $q2 = db_select('file_usage', 'fu')
-            ->fields('fu')
-            ->condition('fid', $row->fid)
-            ->execute();
-          $r2 = $q2->fetch(PDO::FETCH_OBJ);
-          if ($r2->id != $qf->id || $r2->type != $qf->type) {
-            // this is probably a duplicate that is not safe to just delete
-            $file_move_type = FILE_EXISTS_RENAME;
-          }
-          else {
-            $file->filename = $rf->filename;
-            $file->timestamp = $rf->timestamp;
-            $file->origname = $rf->origname;
+    if (file_exists($filename)) {
+      // file already exists at target destination
+      // this means there's a duplicate row in the files table for this file
+      $qf = db_select('file_managed', 'fm')
+        ->fields('fm')
+        ->condition('uri', $filename)
+        ->condition('filemime', $file->filemime)
+        ->condition('filesize', $file->filesize)
+        ->condition('fm.fid', $file->fid, '!=');
+      $qf->join('file_usage', 'fu', 'fm.fid = fu.fid');
+      $qf = $qf->fields('fu', array('id', 'type'))
+               ->execute();
 
-            $file->uri = $filename;
-            try {
-              file_save($file);
-              db_delete('file_managed')->condition('fid', $rf->fid)->execute();
-            }
-            catch (PDOException $e) {
-              error_log($e);
-              error_log(print_r($file,1));
-            }
-          }
+      // if we find a match, update the in-use file with data from the match
+      if ($rf = $qf->fetch(PDO::FETCH_OBJ)) {
+        $q2 = db_select('file_usage', 'fu')
+          ->fields('fu')
+          ->condition('fid', $row->fid)
+          ->execute();
+        $r2 = $q2->fetch(PDO::FETCH_OBJ);
+        if ($r2->id != $qf->id || $r2->type != $qf->type) {
+          // this is probably a duplicate that is not safe to just delete
+          $file_move_type = FILE_EXISTS_RENAME;
         }
         else {
-          // no match. A different file with the same name exists. This needs to be handled manually.
-          // In the mean time, skip it and continue processing
-          $sandbox['skip'][] = $row->fid;
-          $sandbox['warnings'][] = t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename));
-          error_log(t('Unable to move file @filename to @dest. A different file with that name already exists at the destination.', array('@filename' => $file->uri, '@dest' => $filename)));
-          $sandbox['progress']++;
+          $file->filename = $rf->filename;
+          $file->timestamp = $rf->timestamp;
+          $file->origname = $rf->origname;
 
-          if ($to_save) {
+          $file->uri = $filename;
+          try {
             file_save($file);
+            db_delete('file_managed')->condition('fid', $rf->fid)->execute();
           }
-          continue;
+          catch (PDOException $e) {
+            error_log($e);
+            error_log(print_r($file,1));
+          }
         }
       }
       else {
-        error_log('File not found: '.$file->fid.': '.$file->uri);
-        $sandbox['skip'][] = $row->fid;
-        $sandbox['progress']++;
-        continue;
+        // no match. A different file with the same name exists.
+        // Just rename it
+        $file_move_type = FILE_EXISTS_RENAME;
       }
     }
     if ($to_save) {

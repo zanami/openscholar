@@ -398,7 +398,16 @@ class FeatureContext extends DrupalContext {
    * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
    */
   public function iSetTheTermUnderTheTerm($child, $parent) {
-    $function = "os_migrate_demo_set_term_under_term";
+    $function = 'os_migrate_demo_set_term_under_term';
     $this->invoke_code($function, array("'$child'", "'$parent'"));
+  }
+
+  /**
+   * @When /^I set the variable "([^"]*)" to "([^"]*)"$/
+   */
+  public function iSetTheVariableTo($variable, $value) {
+    $code = "os_migrate_demo_variable_set({$variable}, '{$value}');";
+    $function = 'os_migrate_demo_variable_set';
+    $this->invoke_code($function, array($variable, $value));
   }
 }

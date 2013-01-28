@@ -13,7 +13,13 @@ function cp_layout_full_form($form, $form_state){
   $contexts = os_layout_get_contexts(array(1, 2));
   $ctxs = $ctxs ? $ctxs : array('os_front', 'os_public');
 
-  $current = current(array_diff($ctxs, array('os_public')));
+  $current = '';
+  if ($ctxs == array('os_public')) {
+    $current = 'os_public';
+  }
+  else {
+    $current = current(array_diff($ctxs, array('os_public')));
+  }
   if (isset($contexts[$current])) {
     $form['context_selection'] = array(
       '#type' => 'select',
@@ -62,11 +68,13 @@ function cp_layout_full_form($form, $form_state){
     'sidebar_first',
     'content',
     'sidebar_second',
-    'footer',
     'content_top',
     'content_first',
     'content_second',
-    'content_bottom'
+    'content_bottom',
+    'footer_first',
+    'footer',
+    'footer_third',
   );
 
   $weights = _cp_layout_get_weight_map($regions);

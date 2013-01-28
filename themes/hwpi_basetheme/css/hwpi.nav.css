@@ -91,13 +91,20 @@ ul.nice-menu ul {
     color: #4384C4;
 }
 
-#branding_footer, #branding_header {
-	background:#000;
+#branding_footer,
+#branding_header {
+	background: #1e1e1e;
+	color: #FFF;
+	font-weight: bold;
+}
+
+#branding_footer a,
+#branding_header a {
 	color:#FFF;
 }
 
-#branding_footer a, #branding_header a {
-	color:#FFF;
+#branding_footer a {
+	color: #bac5c6;
 }
 
 /* Footer Quicklinks Nav */

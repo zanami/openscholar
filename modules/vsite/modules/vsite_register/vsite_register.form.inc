@@ -71,7 +71,7 @@ function vsite_register_form($form, &$state) {
   $selected_bundle = isset($state['values']['bundle']) ? $state['values']['bundle'] : $default_bundle;
 
   //Get enabled presets and load their titles
-  $enabled_presets = variable_get('os_enabled_spaces_presets', array());
+  $enabled_presets = array_filter(variable_get('os_enabled_spaces_presets', array()));
   $presets = spaces_preset_load();
   foreach($enabled_presets as $key => $value) {
     $enabled_presets[$key] = $presets[$key]->title;

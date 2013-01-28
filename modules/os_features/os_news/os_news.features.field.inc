@@ -50,7 +50,7 @@ function os_news_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '1',
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -100,16 +100,16 @@ function os_news_field_default_fields() {
         'cache_enabled' => 0,
         'granularity' => array(
           'day' => 'day',
-          'hour' => 'hour',
-          'minute' => 'minute',
+          'hour' => 0,
+          'minute' => 0,
           'month' => 'month',
           'second' => 0,
           'year' => 'year',
         ),
         'repeat' => '0',
-        'timezone_db' => 'UTC',
+        'timezone_db' => '',
         'todate' => '',
-        'tz_handling' => 'site',
+        'tz_handling' => 'none',
       ),
       'translatable' => '0',
       'type' => 'datestamp',
@@ -117,10 +117,10 @@ function os_news_field_default_fields() {
     'field_instance' => array(
       'bundle' => 'news',
       'deleted' => '0',
-      'description' => '',
+      'description' => 'News content will be sorted according to the date you provide.  ',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'date',
           'settings' => array(
             'format_type' => 'long',
@@ -131,7 +131,7 @@ function os_news_field_default_fields() {
             'show_repeat_rule' => 'show',
           ),
           'type' => 'date_default',
-          'weight' => 6,
+          'weight' => '1',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -331,7 +331,7 @@ function os_news_field_default_fields() {
           'module' => 'os_files',
           'settings' => array(),
           'type' => 'os_files_image_list',
-          'weight' => '2',
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -404,6 +404,7 @@ function os_news_field_default_fields() {
   t('Attach Files');
   t('Body');
   t('Date');
+  t('News content will be sorted according to the date you provide.  ');
   t('Photo');
 
   return $fields;

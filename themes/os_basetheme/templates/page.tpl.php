@@ -2,15 +2,17 @@
 <!--FLEXIBLE ADMIN HEADER FOR USE BY SELECT GROUPS USING OS-->
 <?php if ($branding_header = render($page['branding_header'])): ?>
 	<div id="branding_header">
-		<?php print $branding_header; ?>
+		<div id="branding-container" class="clearfix">
+		  <?php print $branding_header; ?>
+		</div>
 	</div>
 <?php endif; ?>
 
 <div id="page" class="container <?php print $classes; ?>">
 	<div id="page-wrapper">
-		
+
 		<?php print $messages; ?>
-		
+
 		<?php if (
 			$page['header_top'] ||
 			$page['header_first'] ||
@@ -125,14 +127,27 @@
 
 			</div>
 		</div>
-	
-		<?php if ($footer = render($page['footer'])): ?>
-		  <!--footer region beg-->
-			<footer id="footer" class="clearfix" role="contentinfo">
-			  <?php print $footer; ?>
-			</footer>
-			<!--footer region end-->
-		<?php endif; ?>
+
+		<!-- Three column 3x33 Gpanel -->
+		<?php if (
+			$page['footer_top'] ||
+			$page['footer_first'] ||
+			$page['footer'] ||
+			$page['footer_third'] ||
+			$page['footer_bottom']
+			): ?>
+	  <!--footer region beg-->
+		<footer id="footer" class="clearfix" role="contentinfo">
+			<div class="at-panel gpanel panel-display footer clearfix">
+				<?php print render($page['footer_top']); ?>
+				<?php print render($page['footer_first']); ?>
+				<?php print render($page['footer']); ?>
+				<?php print render($page['footer_third']); ?>
+				<?php print render($page['footer_bottom']); ?>
+			</div>
+		</footer>
+		<!--footer region end-->
+  <?php endif; ?>
 
   </div>
 </div><!--page area ends-->
@@ -142,6 +157,8 @@
 <?php if ($branding_footer = render($page['branding_footer'])): ?>
   <!--FLEXIBLE ADMIN FOOTER FOR USE BY SELECT GROUPS USING OS-->
   <div id="branding_footer">
-	  <?php print $branding_footer; ?>
+		<div id="branding-container">
+	    <?php print $branding_footer; ?>
+		</div>
   </div>
 <?php endif; ?>
