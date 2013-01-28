@@ -43,7 +43,7 @@ function os_slideshow_field_default_fields() {
       'bundle' => 'slideshow_slide',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => '',
+      'description' => 'Additional text to be displayed below the headline.',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -271,7 +271,7 @@ function os_slideshow_field_default_fields() {
       'bundle' => 'slideshow_slide',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => '',
+      'description' => 'You may provide a link for each slide in your slideshow.',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -323,11 +323,13 @@ function os_slideshow_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Additional text to be displayed below the headline.');
   t('Description');
   t('Headline');
   t('Headline text will be displayed on top of the image during the slideshow.');
   t('Image');
   t('Link');
+  t('You may provide a link for each slide in your slideshow.');
 
   return $fields;
 }
