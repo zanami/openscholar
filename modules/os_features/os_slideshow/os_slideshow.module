@@ -110,15 +110,17 @@ function os_slideshow_node_insert($node) {
  * Creates title since title was removed from form.
  */
 function os_slideshow_node_presave($node) {
-  $lang = $node->language;
-  $node->title = isset($node->field_headline[$lang][0]) ? $node->field_headline[$lang][0]['value'] : FALSE;
-  if (!$node->title) {
-    $node->title = db_select('file_managed', 'fm')
-      ->condition('fid', $node->field_image[$lang][0]['fid'])
-      ->fields('fm', array('filename'))
-      ->range(0,1)
-      ->execute()
-      ->fetchColumn();
+  if ($node->type == 'slideshow_slide') {
+    $lang = $node->language;
+    $node->title = isset($node->field_headline[$lang][0]) ? $node->field_headline[$lang][0]['value'] : FALSE;
+    if (!$node->title) {
+      $node->title = db_select('file_managed', 'fm')
+        ->condition('fid', $node->field_image[$lang][0]['fid'])
+        ->fields('fm', array('filename'))
+        ->range(0,1)
+        ->execute()
+        ->fetchColumn();
+    }
   }
 }
 
