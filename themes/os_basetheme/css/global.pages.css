@@ -397,10 +397,10 @@ ul.class_material_field_class a.class_material_field_class_anchor {
 
 .video-indicator {
 	background: url("../images/movie_file_icon.png") no-repeat;
- 	bottom: 55px;
+ 	bottom: 5px;
     display: block;
     height: 13%;
-    left: 55px;
+    left: 5px;
     height: 48px;
     width: 48px;
 	position: absolute;
