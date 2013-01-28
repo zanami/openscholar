@@ -391,50 +391,50 @@ ol.search-results li.search-result:last-child {
 
 
 /* node person */
-.node-person h1.node-title {
+.node-type-person .node-person h1.node-title {
   margin-bottom: 0;
   font-size: 38px;
 }
 
-.node-person .field-name-field-professional-title {
+.node-type-person .node-person .field-name-field-professional-title {
   padding-top: 10px;
 }
 
-.node-person .pic-bio {
+.node-type-person .node-person .pic-bio {
   border-top: 1px solid #e7e7e7;
   padding-top: 35px;
   margin-top: 20px;
   margin-bottom: 60px;
 }
 
-.node-person .field-name-field-person-photo {
+.node-type-person .node-person .field-name-field-person-photo {
   float: left;
   margin-top: 5px;
 }
 
-#content .node-person .field-name-body {
+.node-type-person #content .node-person .field-name-body {
   margin: 0;
 }
 
-#content .node-person.with-person-photo .field-name-body {
+.node-type-person #content .node-person.with-person-photo .field-name-body {
   margin-left: 210px;
 }
 
-.node-person .block {
+.node-type-person .node-person .block {
   float: left;
   width: 50%;
 }
 
-#content-column .node-person .contact-details .block-inner {
+.node-type-person #content-column .node-person .contact-details .block-inner {
   margin-right: 30px;
 }
 
-#content-column .node-person website-details .block-inner {
+.node-type-person #content-column .node-person website-details .block-inner {
   margin-left: 30px;
 }
 
-#content .node-person .field-name-field-phone,
-#content .node-person .field-name-field-email {
+.node-type-person #content .node-person .field-name-field-phone,
+.node-type-person #content .node-person .field-name-field-email {
   float: none;
   margin-right: 0;
   overflow: hidden;
@@ -446,8 +446,16 @@ ol.search-results li.search-result:last-child {
   padding-right: 10px;
 }
 
-.node-person .field-name-field-email {
+.node-type-person .node-person .field-name-field-email {
   text-transform: capitalize; 
+}
+
+.node-teaser.node-person header h1 {
+  margin-bottom: 0;
+}
+
+.node-teaser.node-person {
+  line-height: 19px;
 }
 
 

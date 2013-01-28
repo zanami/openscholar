@@ -76,20 +76,37 @@ function hwpi_basetheme_node_view_alter(&$build) {
 
   // Persons, heavily modify the output to match the HC designs
   if ($build['#node']->type == 'person') {
-    
+
     dsm($build);
+
+    // Pic + Bio
+    if (isset($build['field_person_photo'])) {
+      $build['pic_bio']['#prefix'] = '<div class="pic-bio clearfix">';
+      $build['pic_bio']['#suffix'] = '</div>';
+      $build['pic_bio']['#weight'] = -9;
+    }
+
+    // We dont want the other fields on teasers
+    if ($build['#view_mode'] == 'teaser') {
+      unset($build['body']);
+
+      foreach (array('field_professional_title', 'field_address', 'field_email', 'field_phone', 'field_website') as $w => $f) {
+        $build['pic_bio'][$f] = $build[$f];
+        $build['pic_bio'][$f]['#weight'] = $w;
+        unset($build[$f]);
+      }
+
+      $email_plain = $build['pic_bio']['field_email'][0]['#markup'];
+      if ($email_plain) {
+        $build['pic_bio']['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">email</a>';
+      }
+      return;
+    }
 
     // Professional titles
     if (isset($build['field_professional_title'])) {
       $build['field_professional_title']['#label_display'] = 'hidden';
       $build['field_professional_title']['#weight'] = -10;
-    }
-
-    // Pic + Bio
-    if (isset($build['field_person_photo']) || isset($build['body'])) {
-      $build['pic_bio']['#prefix'] = '<div class="pic-bio clearfix">';
-      $build['pic_bio']['#suffix'] = '</div>';
-      $build['pic_bio']['#weight'] = -9;
     }
 
     if (isset($build['field_person_photo'])) {
@@ -104,19 +121,10 @@ function hwpi_basetheme_node_view_alter(&$build) {
       unset($build['body']);
     }
 
-    // We dont want the other fields on teasers
-    if ($build['#view_mode'] == 'teaser') {
-      unset($build['field_address']);
-      unset($build['field_email']);
-      unset($build['field_phone']);
-      unset($build['field_website']);
-      return;
-    }
-
     // Note that Contact and Website details will print wrappers and titles regardless of any field content.
     // This is kind of deliberate to avoid having to handle the complexity of dealing with the layout or
     // setting messages etc.
-    
+
     // Contact Details
     $build['contact_details']['#prefix'] = '<div class="block contact-details"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
     $build['contact_details']['#suffix'] = '</div></div>';
@@ -129,7 +137,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
       unset($build['field_address']);
     }
     // Contact Details > email
-    if (isset($build['field_email'])) {  
+    if (isset($build['field_email'])) {
       $build['field_email']['#label_display'] = 'hidden';
       $email_plain = $build['field_email'][0]['#markup'];
       if ($email_plain) {
