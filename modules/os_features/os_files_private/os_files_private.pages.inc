@@ -38,7 +38,7 @@ function os_files_private_settings() {
   // Allows administrators only to edit pinserver app name in spaces_overrides.
   // @todo deprecate per-site app names, replace with per-site config.
   global $user;
-  if ((isset($user->roles) && in_array('administrator', array_values($user->roles))) || $user->uid == 1) {
+  if (user_access('administer pinserver')) {
     $form['pinserver_app_name'] = array(
       '#type' => 'textfield',
       '#title' => t('Harvard PIN server application name'),
