@@ -132,7 +132,6 @@ class os_slideshow_box extends os_boxes_default {
   }
 
   public function render() {
-  //  dpm($this->options['nodes']);
     $block = parent::render();
 
     //show Add Slide link to admins
@@ -142,9 +141,7 @@ class os_slideshow_box extends os_boxes_default {
         'query' => array('widget' => $this->delta, 'destination' => current_path()),
       ));
     }
-    
-    drupal_add_css(drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_slideshow/os_boxes_slideshow.css');
-    
+        
     if ($view = views_get_view('os_slideshow')) {
       $view->init_display();
       $handler = $view->display_handler;
