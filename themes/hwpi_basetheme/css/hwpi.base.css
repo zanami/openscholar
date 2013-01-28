@@ -7,7 +7,10 @@ body {
   min-height: inherit;
 }
 
-a {color: #4384C4;}
+a,
+a:visited {
+  color: #4384C4;
+}
 
 p:empty {
 	display: none;
@@ -265,11 +268,7 @@ ol.search-results li.search-result:last-child {
 
 
 /* Views Node Lists */
-.view-os-links .node,
-.view-os-events .node,
-.view-os-news .node,
-.view-os-classes .node,
-.view-os-presentations .node {
+.view .node-teaser {
   margin: 0 0 20px;
   padding: 20px 0 40px;
   border-bottom: 1px solid #ebebeb;
@@ -521,11 +520,22 @@ h2.comment-title.comment-form {
 
 /* General classes for nodes and comments etc */
 
-/* Dat time */
+/* Date time */
 .author-datetime {
   margin-bottom: 15px;
   color: #7e7e7e;
 }
+
+/* Links */
+.links li a.os-add-comment {
+  background: none;
+  padding-left: 0;
+}
+
+.links li a {
+  border-bottom: 1px solid #4384C4;
+}
+
 
 /* Files tables, for attached files to nodes such as PDF's */
 table.os-files-other-list {
@@ -551,21 +561,68 @@ table.os-files-other-list {
 }
 
 
+/* HWPI Custom message handling */
+div.messages {
+  border: 0 none;
+	margin: 0;
+  padding: 15px 0;
+}
+
+.messages h2 {
+  font-size: 1.1em;
+  margin: 0;
+  padding: 0;
+}
+
+.message-wrapper {
+  padding: 0 0 0 40px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+
+div.status,
+div.error,
+div.warning {
+  background-image: none;
+}
+
+div.status .message-wrapper {
+  background-image: url("../../../../../misc/message-24-ok.png");
+}
+div.error .message-wrapper {
+  background-image: url("../../../../../misc/message-24-error.png");
+}
+div.warning .message-wrapper {
+  background-image: url("../../../../../misc/message-24-warning.png");
+}
 
 
 
+/* Pagers */
+ul.pager li {
+  padding: 0;
+  margin: 0;
+}
+
+ul.pager li a {
+  padding: 4px;
+}
 
 
+ul.pager li.pager-item {
+  display: inline-block;
+  padding: 4px 8px;
+}
 
+ul.pager li.pager-first,
+ul.pager li.pager-previous {
+  float: left;
+}
 
-
-
-
-
-
-
-
-
+ul.pager li.pager-last,
+ul.pager li.pager-next {
+  float: right;
+}
 
 
 

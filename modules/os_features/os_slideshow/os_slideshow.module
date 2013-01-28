@@ -32,7 +32,7 @@ function os_slideshow_boxes_plugins(){
  * Implements hook_vsite_og_node_type_info().
  */
 function os_slideshow_vsite_og_node_type_info() {
-  return array('slideshow_image' => 'group content');
+  return array('slideshow_slide' => 'group content');
 }
 
 /**
@@ -51,7 +51,7 @@ function os_slideshow_ctools_plugin_pre_alter(&$plugin, &$info) {
  *
  * Attaches widget delta to form so it'll be available during node save
  */
-function os_slideshow_form_slideshow_image_node_form_alter(&$form, &$state, $form_id) {
+function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $form_id) {
   $widget = (isset($_GET['widget'])) ? $_GET['widget'] : @$state['input']['widget'];
   
   if ($widget) {
@@ -69,27 +69,20 @@ function os_slideshow_form_slideshow_image_node_form_alter(&$form, &$state, $for
 /**
  * Implements hook_node_insert
  * 
- * When a slideshow_image is created, add its nid to the widget it was created for
+ * When a slideshow_slide is created, add its nid to the widget it was created for
  */
-function os_slideshow_node_insert($node) {
-  //callback function to get highest weight from list of nodes 
-  function _heaviest($val, $next) {
-    if ($next['weight'] > $val) {
-      return $next['weight'];
-    } 
-    return $val; 
-  }
-  
-  if (($node->type == 'slideshow_image') && isset($node->widget)) {
+function os_slideshow_node_insert($node) {  
+  if (($node->type == 'slideshow_slide') && isset($node->widget)) {
     if (module_exists('spaces') && $space = spaces_get_space()) { 
       $box = $space->controllers->boxes->get($node->widget);
     } else {   
       $box = boxes_box_load($node->widget);
     }
     
+    //array reduce's anon function gets the highest weight of all the slides, so the newly inserted one can come last.
     $box->options['nodes'][(int)$node->nid] = array(
       'nid' => (int)$node->nid,
-      'weight' => 1 + array_reduce($box->options['nodes'], '_heaviest', 0),
+      'weight' => 1 + array_reduce($box->options['nodes'], function($val, $next) {return ($next['weight']>$val) ? $next['weight'] : $val;}, 0),
     );
     
     if ($space) {
@@ -100,15 +93,6 @@ function os_slideshow_node_insert($node) {
   }
 }
 
-
-// function os_slideshow_views_default_views_alter(&$views) {
-  
-//   if ($view = &$views['cp_content']) {
-//     $handler = $view->display_handler;
-//     //$filters = $handler->get_option('filters');
-  
-//   }
-// }
 /**
  * Implements hook_views_pre_render
  * 

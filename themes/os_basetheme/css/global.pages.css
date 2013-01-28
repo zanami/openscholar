@@ -575,6 +575,13 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
   display: block;
 }
 
+.region-content-top .contextual-links-region:first-child .contextual-links-wrapper{
+  right: 35px;
+}
+
+.node-type-page .region-content-top .contextual-links-region:first-child .contextual-links-wrapper {
+  right: 150px;
+}
 
 /** OVERLAY MODAL OVERRIDES **/
 	

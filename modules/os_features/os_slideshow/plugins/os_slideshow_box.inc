@@ -6,12 +6,10 @@ class os_slideshow_box extends os_boxes_default {
     $options = parent::options_defaults();
     
     return $options + array(
-      'pager' => 'none',
-      'controls' => 'none',
-      'slide_counter' => 'none',
-      'show_image_titles' => 'none',
+      'pager' => 'bottom',
+      'controls' => 'bottom',
+      'slide_counter' => 'bottom',
       'effect' => 'fade',
-      'style' => 'dark',
       'size' => 600,
       'nodes' => array(),
     );
@@ -27,17 +25,7 @@ class os_slideshow_box extends os_boxes_default {
       '#collapsed' => TRUE,
       '#weight' => 10,
     );
-    
-    $form['display']['style'] = array(
-      '#title' => t('Player Styles'),
-      '#type' => 'select',
-      '#options' => array('dark' => t('Dark'), 'light' => t('Light')),
-      '#default_value' => $this->options['style'],
-      //'#pre_render' => array('os_slideshow_box_style_thumbs'),
-      '#attributes' => array('class' => array('thumbnails')),
-      '#description' => t('Choose between a black or light grey player style.'),
-    );
-    
+     
     $form['display']['size'] = array(
       '#type' => 'textfield',
       '#title' => t('Size'),
@@ -55,7 +43,7 @@ class os_slideshow_box extends os_boxes_default {
     $display_options = array('pager' => t('Show Pager'), 'controls' => t('Show Controls'), 'slide_counter' => t('Slide Counter'));
     foreach ($display_options as $option => $title)
       $form['display'][$option] = array(
-        '#type' => 'select',
+        '#type' => 'hidden',
         '#title' => $title,
         //omitting top/bottom options, but leaving this here so we can add it back in when we're ready for new features.
         //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
@@ -101,7 +89,7 @@ class os_slideshow_box extends os_boxes_default {
         '#value' => $nids,    
       );
       
-      //load slideshow_image nodes
+      //load slideshow_slide nodes
       uasort($this->options['nodes'], 'element_sort');
       $nodes = node_load_multiple($nids);
   
@@ -149,7 +137,7 @@ class os_slideshow_box extends os_boxes_default {
 
     //show Add Slide link to admins
     if (spaces_access_admin()) {
-      $block['content'] = l('Add Slide', 'node/add/slideshow-image', array(
+      $block['content'] = l('Add Slide', 'node/add/slideshow-slide', array(
         'attributes' => array('class' => array('add_new')),
         'query' => array('widget' => $this->delta, 'destination' => current_path()),
       ));
@@ -271,6 +259,7 @@ class os_slideshow_box extends os_boxes_default {
       $nids = db_select('node', 'n')
         ->fields('n', array('nid'))
         ->condition('n.nid', $nids, 'IN')
+        ->condition('n.type', 'slideshow_slide')
         ->execute()
         ->fetchCol();
     }
