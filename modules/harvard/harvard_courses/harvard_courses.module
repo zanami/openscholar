@@ -26,19 +26,6 @@ function harvard_courses_os_app_info() {
 }
 
 /**
- * Implements hook_preprocess_node().
- *
- * Hiding the 'Submitted by'.
- */
-function harvard_courses_preprocess_node(&$variables) {
-  if ($variables['type'] != 'harvard_course') {
-    return;
-  }
-
-  $variables['display_submitted'] = FALSE;
-}
-
-/**
  * Implements hook_feeds_plugins().
  */
 function harvard_courses_feeds_plugins() {
@@ -311,33 +298,23 @@ function harvard_courses_node_insert($node) {
       }
     }
   }
+  // Import by department ID and school name.
+  if ($wrapper->field_department_id->value() && $wrapper->field_faculty->value()) {
+    $sites = haravard_courses_sites_nid_by_import_type('department_school', array(
+      'field_department_id' => $wrapper->field_department_id->value(),
+      'field_faculty' => $wrapper->field_faculty->value(),
+    ));
+
+    if (!empty($sites)) {
+      foreach ($sites as $site) {
+        og_group('node', $site, array('entity_type' => 'node', 'entity' => $node->nid));
+      }
+    }
+  }
   $node->skip_og_membership = TRUE;
 
   // Change description field format to full html.
   $node->field_description[LANGUAGE_NONE][0]['format'] = 'full_html';
-}
-
-/**
- * Implements hook_entity_insert().
- */
-function harvard_courses_entity_insert($entity, $type) {
-  if ($type != 'field_collection_item' || (isset($entity->field_name) && $entity->field_name != 'field_department_school')) {
-    return;
-  }
-
-  // Import by department ID and school name.
-  $wrapper = entity_metadata_wrapper('field_collection_item', $entity);
-  $sites = haravard_courses_sites_nid_by_import_type('department_school', array(
-    'field_department_id' => $wrapper->field_department_id->value(),
-    'field_faculty' => $wrapper->field_faculty->value(),
-  ));
-
-  if (!empty($sites)) {
-    foreach ($sites as $site) {
-      og_group('node', harvard_courses_get_field_collection_item_node($entity->item_id), 'node', $site);
-    }
-  }
-  $entity->skip_og_membership = TRUE;
 }
 
 /**
