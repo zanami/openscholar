@@ -77,8 +77,6 @@ function hwpi_basetheme_node_view_alter(&$build) {
   // Persons, heavily modify the output to match the HC designs
   if ($build['#node']->type == 'person') {
 
-    dsm($build);
-
     // Pic + Bio
     if (isset($build['field_person_photo'])) {
       $build['pic_bio']['#prefix'] = '<div class="pic-bio clearfix">';
