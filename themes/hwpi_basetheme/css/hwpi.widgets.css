@@ -542,7 +542,7 @@ table .mini-day-on a {
   padding-top: 0;
 }
 
-.views-slideshow-controls-bottom {position:absolute;top:220px;left:85px;z-index:1000;}
+.views-slideshow-controls-bottom {position:absolute;top:220px;left:85px;z-index:5;}
 
 .views-field-field-description {
   	background: url("../images/slideshow_tileBgtransparency.png") repeat scroll 0 0 transparent;
