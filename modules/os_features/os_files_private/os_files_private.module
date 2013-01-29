@@ -151,7 +151,8 @@ function os_files_private_file_download($uri) {
   }
 
   $use_pinserver = variable_get('os_files_private_pinserver', 0);
-  // Restricts to users authenticated through Harvard Pinserver.
+
+  // Optional: restricts to users authenticated through Harvard Pinserver.
   if ($use_pinserver) {
     if (function_exists('pinserver_check_status')) {
       // Serves file if user is already authenticated, or just got authenticated.
@@ -164,25 +165,24 @@ function os_files_private_file_download($uri) {
       }
     }
   }
-  // Restrictes to site members only.
-  if (!$use_pinserver) {
-    $wrapper = entity_metadata_wrapper('file', $file);
-    // Set $gid[0] to something so og_is_member() below can't complain.
-    $gid = array(NULL);
 
-    // Restricts access if no OG audience is set.
-    if (!isset($wrapper->{OG_AUDIENCE_FIELD}) || !($gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE)))) {
-      return -1;
-    }
+  // Default: restricts to site members only.
+  $wrapper = entity_metadata_wrapper('file', $file);
+  // Set $gid[0] to something so og_is_member() below can't complain.
+  $gid = array(NULL);
 
-    if (og_is_member('node', $gid[0])) {
-      return file_get_content_headers($file);
-    }
-    else {
-      // Sends user to user/login if user is anonymous.
-      if (user_is_anonymous()) {
-        return drupal_goto('user/login', array('query' => drupal_get_destination()));
-      }
+  // Restricts access if no OG audience is set.
+  if (!isset($wrapper->{OG_AUDIENCE_FIELD}) || !($gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE)))) {
+    return -1;
+  }
+
+  if (og_is_member('node', $gid[0])) {
+    return file_get_content_headers($file);
+  }
+  else {
+    // Sends user to user/login if user is anonymous.
+    if (user_is_anonymous()) {
+      return drupal_goto('user/login', array('query' => drupal_get_destination()));
     }
   }
   // Default: restrict access.
