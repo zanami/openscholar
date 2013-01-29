@@ -185,7 +185,6 @@ function hwpi_basetheme_node_view_alter(&$build) {
         $v = taxonomy_vocabulary_load($t->vid);
 
         if (!isset($build[$v->machine_name])) {
-        dpm($block_zebra.' '.($block_zebra % 2).' '.(($block_zebra % 2)?'even':'odd'));
           $m = $v->machine_name;
           $build[$m] = array(
             '#type' => 'container',
