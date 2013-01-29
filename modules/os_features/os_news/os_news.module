@@ -41,12 +41,8 @@ function os_news_process_node(&$vars) {
   // Helps poor theme developers find these changes to $variables
   $vars['classes'] .= ' modified-in-os_news_process_node';
 
-  // Build the submitted variable used by default in node templates
-  if (isset($vars['field_news_date'][$vars['language']])) {
-    $pubdate = format_date($vars['field_news_date'][$vars['language']][0]['value'], 'custom', 'F j, Y');
-    // Publication date, formatted with time element
-    $vars['submitted'] = '<time datetime="' . $vars['datetime'] . '" pubdate="pubdate">' . $pubdate . '</time>';
-  }
+  // Hide submitted by.
+  $vars['submitted'] = '';
 
   // Includes custom CSS
   $vars['title_prefix']['#attached'] = array(

@@ -404,7 +404,6 @@ function os_news_field_default_fields() {
   t('Attach Files');
   t('Body');
   t('Date');
-  t('News content will be sorted according to the date you provide.  ');
   t('Photo');
 
   return $fields;
