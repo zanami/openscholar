@@ -57,6 +57,49 @@ abstract class os_boxes_default extends boxes_box {
     $block['content'] = '';
     return $block;
   }
+
+  /**
+   * Set the block in cache.
+   *
+   * @param $cid
+   *   Array with options to be serialized to retrieve the cache ID.
+   * @param $block
+   *   The block object.
+   */
+  public function cache_set($cid, $block) {
+    cache_set($this->prepareCid($cid), $block);
+  }
+
+  /**
+   * Get the block in cache.
+   *
+   * @param $cid
+   *   Array with options to be serialized to retrieve the cache ID.
+   *
+   * @return
+   *   The block object or FALSE.
+   */
+  public function cache_get($cid) {
+    $cache = cache_get($this->prepareCid($cid));
+    return !empty($cache->data) ? $cache->data : FALSE;
+  }
+
+  /**
+   * Return the cache ID string, by prefix it with group ID, if present.
+   *
+   * @param $cid
+   *   Array with options to be serialized to retrieve the cache ID.
+   *
+   */
+  private function prepareCid($cid) {
+    $new_cid = 'os_boxes:';
+    if (module_exists('og_context') && $og_context = og_context()) {
+      $new_cid .= $og_context['gid'] . ':';
+    }
+
+    $new_cid .= md5(serialize($cid));
+    return $new_cid;
+  }
 }
 
 function _os_boxes_default_advanced_handler($element, $form_state) {
