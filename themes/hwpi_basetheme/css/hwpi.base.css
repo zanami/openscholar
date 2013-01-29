@@ -394,12 +394,12 @@ ol.search-results li.search-result:last-child {
 
 /* node person */
 .node-type-person .node-person h1.node-title {
-  margin-bottom: 0;
   font-size: 38px;
 }
 
 .node-type-person .node-person .field-name-field-professional-title {
   padding-top: 10px;
+  margin-top: -20px;
 }
 
 .node-type-person .node-person .pic-bio {
@@ -443,11 +443,11 @@ ol.search-results li.search-result:last-child {
   padding-right: 10px;
 }
 
-#content .node-person .node-content > .block:nth-child(2n) .block-inner {
+#content .node-person .node-content > .block.even .block-inner {
   margin-left: 30px;
 }
 
-#content .node-person .node-content > .block:nth-child(2n-1) .block-inner { 
+#content .node-person .node-content > .block.odd .block-inner { 
   margin-right: 30px;
 }
 

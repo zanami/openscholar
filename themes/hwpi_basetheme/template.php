@@ -137,8 +137,10 @@ function hwpi_basetheme_node_view_alter(&$build) {
     // This is kind of deliberate to avoid having to handle the complexity of dealing with the layout or
     // setting messages etc.
 
+    $block_zebra = 0;
+
     // Contact Details
-    $build['contact_details']['#prefix'] = '<div class="block contact-details"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
+    $build['contact_details']['#prefix'] = '<div class="block contact-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
     $build['contact_details']['#suffix'] = '</div></div>';
     $build['contact_details']['#weight'] = -8;
 
@@ -170,7 +172,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
     }
 
     // Websites
-    $build['website_details']['#prefix'] = '<div class="block website-details"><div class="block-inner"><h2 class="block-title">Websites</h2>';
+    $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
     $build['website_details']['#suffix'] = '</div></div>';
     $build['website_details']['#weight'] = -7;
     $build['field_website']['#label_display'] = 'hidden';
@@ -186,10 +188,12 @@ function hwpi_basetheme_node_view_alter(&$build) {
           $m = $v->machine_name;
           $build[$m] = array(
             '#type' => 'container',
+            '#weight' => $block_zebra,
             '#attributes' => array(
               'class' => array(
                 'block',
-                $m
+                $m,
+                (($block_zebra++ % 2)?'even':'odd')
               )
             ),
             'inner' => array(
