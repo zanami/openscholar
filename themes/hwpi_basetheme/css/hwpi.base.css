@@ -427,14 +427,6 @@ ol.search-results li.search-result:last-child {
   margin-bottom: 30px;
 }
 
-.node-type-person #content-column .node-person .contact-details .block-inner {
-  margin-right: 30px;
-}
-
-.node-type-person #content-column .node-person .website-details .block-inner {
-  margin-left: 30px;
-}
-
 .node-type-person #content .node-person .field-name-field-phone,
 .node-type-person #content .node-person .field-name-field-email {
   float: none;
@@ -448,11 +440,11 @@ ol.search-results li.search-result:last-child {
   padding-right: 10px;
 }
 
-.node-person .node-content *:nth-child(2n) .block-inner {
+#content .node-person .node-content > .block:nth-child(2n) .block-inner {
   margin-left: 30px;
 }
 
-.node-person .node-content *:nth-child(2n+1) .block-inner { 
+#content .node-person .node-content > .block:nth-child(2n-1) .block-inner { 
   margin-right: 30px;
 }
 
