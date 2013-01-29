@@ -435,7 +435,8 @@ ol.search-results li.search-result:last-child {
   display: block;
 }
 
-.node-person .field-name-field-professional-title .field-item {
+.node-person .field-name-field-professional-title .field-item,
+.node-person.node-teaser .field-name-field-website .field-item {
   display: inline;
   padding-right: 10px;
 }
