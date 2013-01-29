@@ -67,7 +67,7 @@ abstract class os_boxes_default extends boxes_box {
    *   The block object.
    */
   public function cache_set($cid, $block) {
-    cache_set($this->prepareCid($cid), $block);
+    cache_set($this->prepareCid($cid), $block, 'cache_os_boxes');
   }
 
   /**
@@ -80,7 +80,7 @@ abstract class os_boxes_default extends boxes_box {
    *   The block object or FALSE.
    */
   public function cache_get($cid) {
-    $cache = cache_get($this->prepareCid($cid));
+    $cache = cache_get($this->prepareCid($cid),'cache_os_boxes');
     return !empty($cache->data) ? $cache->data : FALSE;
   }
 
