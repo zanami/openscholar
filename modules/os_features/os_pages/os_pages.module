@@ -144,6 +144,13 @@ function os_pages_os_layout_get_alter($context_name, &$blocks){
 
   if($ctx_prefix != 'os_pages'){
     unset($blocks['boxes-os_pages_section_nav']);
+  }elseif ($level == 'section' && !isset($blocks['boxes-os_pages_section_nav'])){
+    module_load_include('box.inc', 'os_pages');
+    $default_boxes = os_pages_default_box();
+
+    $block = os_boxes_os_widget($default_boxes['os_pages_section_nav']);
+    $block['region'] = false;
+    $blocks['boxes-os_pages_section_nav'] = $block;
   }
 }
 
