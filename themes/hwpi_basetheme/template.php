@@ -208,7 +208,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
           '#prefix' => '<div>',
           '#suffix' => '</div>',
           '#theme' => 'link',
-          '#path' => entity_uri('taxonomy', $t),
+          '#path' => drupal_get_path_alias('taxonomy/term/'.$t->tid),
           '#text' => $t->name,
           '#options' => array('attributes' => array(), 'html' => false),
         );
