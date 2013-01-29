@@ -542,7 +542,7 @@ table .mini-day-on a {
   padding-top: 0;
 }
 
-.views-slideshow-controls-bottom {position:absolute;top:220px;left:85px;z-index:5;}
+.views-slideshow-controls-bottom {position:absolute;top:220px;left:85px;z-index:5;line-height:0;}
 
 .views-field-field-description {
   	background: url("../images/slideshow_tileBgtransparency.png") repeat scroll 0 0 transparent;
@@ -598,12 +598,16 @@ table .mini-day-on a {
   background: url("../images/hwpi_basesprite.png") no-repeat 0 -30px;
    width:28px;
   height:28px;
+  margin-left: 6px;
 }
 
 
-.views-slideshow-controls-text-pause {background: url("../images/hwpi_basesprite.png") no-repeat 0 -30px;
+.views-slideshow-controls-text-pause {
+	display:none;
+	/*background: url("../images/hwpi_basesprite.png") no-repeat 0 -30px;
    width:28px;
-  height:28px;}
+  height:28px;*/
+  }
 
 #views_slideshow_slide_counter_os_slideshow-default {
   display: none; /* Hide this for now */
