@@ -378,6 +378,7 @@ function os_boxes_comment_delete($comment) {
  */
 function os_boxes_invalidate_cache($node) {
   if (!module_exists('vsite')) {
+    // Clear all OS boxes cache.
     return cache_clear_all('os_boxes:', 'cache', TRUE);
   }
 
