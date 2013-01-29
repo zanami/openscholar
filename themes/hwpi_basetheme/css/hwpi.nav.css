@@ -72,7 +72,7 @@ ul.nice-menu ul {
 
 
 /* Action Nav Header 3rd*/
-.region-header-third #block-os-action-menu {
+.region-header-third ul.menu {
 	float:right;
 }
 
