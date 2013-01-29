@@ -176,6 +176,46 @@ function hwpi_basetheme_node_view_alter(&$build) {
     $build['field_website']['#label_display'] = 'hidden';
     $build['website_details']['field_website'] = $build['field_website'];
     unset($build['field_website']);
+
+    if (isset($build['og_vocabulary'])) {
+      foreach ($build['og_vocabulary']['#items'] as $tid) {
+        $t = taxonomy_term_load($tid['target_id']);
+        $v = taxonomy_vocabulary_load($t->vid);
+
+        if (!isset($build[$v->machine_name])) {
+          $m = $v->machine_name;
+          $build[$m] = array(
+            '#type' => 'container',
+            '#attributes' => array(
+              'class' => array(
+                'block',
+                $m
+              )
+            ),
+            'inner' => array(
+              '#type' => 'container',
+              '#attributes' => array(
+                'class' => array('block-inner'),
+              ),
+              'title' => array(
+                '#markup' => '<h2 class="block-title">'.$v->name.'</h2>',
+              )
+            ),
+          );
+        }
+
+        $build[$v->machine_name]['inner'][$t->tid] = array(
+          '#prefix' => '<div>',
+          '#suffix' => '</div>',
+          '#theme' => 'link',
+          '#path' => entity_uri('taxonomy', $t),
+          '#text' => $t->name,
+          '#options' => array('attributes' => array(), 'html' => false),
+        );
+      }
+
+      unset($build['og_vocabulary']);
+    }
   }
 }
 
