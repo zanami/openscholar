@@ -91,15 +91,27 @@ function hwpi_basetheme_node_view_alter(&$build) {
       unset($build['body']);
 
       foreach (array('field_professional_title', 'field_address', 'field_email', 'field_phone', 'field_website') as $w => $f) {
-        $build['pic_bio'][$f] = $build[$f];
-        $build['pic_bio'][$f]['#weight'] = $w;
-        unset($build[$f]);
+        if (isset($build[$f])) {
+          $build['pic_bio'][$f] = $build[$f];
+          $build['pic_bio'][$f]['#weight'] = $w;
+          unset($build[$f]);
+        }
       }
 
-      $email_plain = $build['pic_bio']['field_email'][0]['#markup'];
-      if ($email_plain) {
-        $build['pic_bio']['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">email</a>';
+      if (isset($build['pic_bio']['field_email'])) {
+        $email_plain = $build['pic_bio']['field_email'][0]['#markup'];
+        if ($email_plain) {
+          $build['pic_bio']['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">email</a>';
+        }
       }
+
+      if (isset($build['pic_bio']['field_phone'])) {
+        $phone_plain = $build['pic_bio']['field_phone'][0]['#markup'];
+        if ($phone_plain) {
+          $build['pic_bio']['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
+        }
+      }
+
       return;
     }
 
