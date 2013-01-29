@@ -325,7 +325,9 @@ ol.search-results li.search-result:last-child {
   float: left;
 }
 
-
+#event-content .node-header h1.node-title {
+	margin-bottom: 0;
+}
 
 /* Class nodes */
 .node-class .field-name-field-semester,
