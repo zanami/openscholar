@@ -324,3 +324,73 @@ function os_boxes_permission() {
 
   return $perms;
 }
+
+/**
+ * Implements hook_node_insert().
+ */
+function os_boxes_node_insert($node) {
+  os_boxes_invalidate_cache($node);
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function os_boxes_node_update($node) {
+  os_boxes_invalidate_cache($node);
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function os_boxes_node_delete($node) {
+  os_boxes_invalidate_cache($node);
+}
+
+/**
+ * Implements hook_comment_insert().
+ */
+function os_boxes_comment_insert($comment) {
+  $node = node_load($comment->nid);
+  os_boxes_invalidate_cache($node);
+}
+
+/**
+ * Implements hook_comment_update().
+ */
+function os_boxes_comment_update($comment) {
+  $node = node_load($comment->nid);
+  os_boxes_invalidate_cache($node);
+}
+
+/**
+ * Implements hook_comment_delete().
+ */
+function os_boxes_comment_delete($comment) {
+  $node = node_load($comment->nid);
+  os_boxes_invalidate_cache($node);
+}
+
+/**
+ * Invalidate OS boxes cache based on a group node.
+ *
+ * @param $node
+ *   The node that is a group.
+ */
+function os_boxes_invalidate_cache($node) {
+  if (!module_exists('vsite')) {
+    return cache_clear_all('os_boxes:', 'cache', TRUE);
+  }
+
+  if (og_is_group('node', $node)) {
+    cache_clear_all('os_boxes:' . $node->nid . ':', 'cache', TRUE);
+    return;
+  }
+  if (!og_is_group_content_type('node', $node->type) || !$gids = og_get_entity_groups('node', $node)) {
+    return;
+  }
+  foreach ($gids as $group_type => $values) {
+    foreach ($values as $gid) {
+      cache_clear_all('os_boxes:' . $gid . ':', 'cache', TRUE);
+    }
+  }
+}
