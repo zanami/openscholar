@@ -73,63 +73,84 @@ function harvard_courses_field_default_fields() {
     ),
   );
 
-  // Exported field: 'field_collection_item-field_department_school-field_faculty'.
-  $fields['field_collection_item-field_department_school-field_faculty'] = array(
+  // Exported field: 'field_collection_item-field_department_school-field_school_name'.
+  $fields['field_collection_item-field_department_school-field_school_name'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_faculty',
+      'field_name' => 'field_school_name',
       'foreign keys' => array(
-        'format' => array(
+        'node' => array(
           'columns' => array(
-            'format' => 'format',
+            'target_id' => 'nid',
           ),
-          'table' => 'filter_format',
+          'table' => 'node',
         ),
       ),
       'indexes' => array(
-        'format' => array(
-          0 => 'format',
+        'target_id' => array(
+          0 => 'target_id',
         ),
       ),
       'locked' => '0',
-      'module' => 'text',
-      'settings' => array(),
+      'module' => 'entityreference',
+      'settings' => array(
+        'handler' => 'base',
+        'handler_settings' => array(
+          'behaviors' => array(
+            'views-select-list' => array(
+              'status' => 0,
+            ),
+          ),
+          'sort' => array(
+            'type' => 'none',
+          ),
+          'target_bundles' => array(
+            'schools_names' => 'schools_names',
+          ),
+        ),
+        'target_type' => 'taxonomy_term',
+      ),
       'translatable' => '0',
-      'type' => 'text_long',
+      'type' => 'entityreference',
     ),
     'field_instance' => array(
       'bundle' => 'field_department_school',
       'default_value' => NULL,
+      'default_value_function' => '',
       'deleted' => '0',
       'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => 1,
+          'module' => 'entityreference',
+          'settings' => array(
+            'link' => FALSE,
+          ),
+          'type' => 'entityreference_label',
+          'weight' => 2,
         ),
       ),
       'entity_type' => 'field_collection_item',
-      'field_name' => 'field_faculty',
+      'field_name' => 'field_school_name',
       'label' => 'School name',
       'required' => 1,
       'settings' => array(
-        'text_processing' => '0',
+        'behaviors' => array(
+          'prepopulate' => array(
+            'status' => 0,
+          ),
+        ),
         'user_register_form' => FALSE,
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'rows' => '1',
-        ),
-        'type' => 'text_textarea',
-        'weight' => '4',
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_select',
+        'weight' => '5',
       ),
     ),
   );

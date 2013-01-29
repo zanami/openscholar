@@ -239,7 +239,13 @@ function haravard_courses_sites_nid_by_import_type($import_type, $search_value =
 
     if ($search_value) {
       foreach ($search_value as $field => $value) {
-        $query->fieldCondition($field, 'value', $value);
+        $colum = 'value';
+        if ($field == 'field_faculty') {
+          $field = 'field_school_name';
+          $colum = 'target_id';
+          $value = reset(entity_load('taxonomy_term', NULL, array('name' => $value)))->tid;
+        }
+        $query->fieldCondition($field, $colum, $value);
       }
     }
 
@@ -390,21 +396,31 @@ function harvard_courses_entity_update($entity, $type) {
 
   $fields = array(
     'field_department_id',
-    'field_faculty',
+    'field_school_name',
   );
 
   foreach ($fields as $field) {
     if ($wrapper->{$field}->value() != $original->{$field}->value()) {
       // Un-groping removed courses.
-      $courses = harvard_courses_related_nodes($field, array($original->{$field}->value()));
-      if (!empty($removed_courses)) {
+      if ($field == 'field_school_name') {
+        $courses = harvard_courses_related_nodes('field_faculty', array($original->{$field}->label()));
+      }
+      else {
+        $courses = harvard_courses_related_nodes($field, array($original->{$field}->value()));
+      }
+      if (!empty($courses)) {
         foreach ($courses as $course_id) {
           og_ungroup('node', harvard_courses_get_field_collection_item_node($entity->item_id), 'node', $course_id);
         }
       }
 
       // Groping added courses.
-      $courses = harvard_courses_related_nodes($field, array($wrapper->{$field}->value()));
+      if ($field == 'field_school_name') {
+        $courses = harvard_courses_related_nodes('field_faculty', array($wrapper->{$field}->label()));
+      }
+      else {
+        $courses = harvard_courses_related_nodes($field, array($wrapper->{$field}->value()));
+      }
       if (!empty($courses)) {
         foreach ($courses as $course) {
           og_group('node', harvard_courses_get_field_collection_item_node($entity->item_id), array('entity_type' => 'node', 'entity' => $course));
@@ -477,6 +493,12 @@ function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
 
   field_attach_form('node', $space->og, $attached_data, $form_state);
 
+  // $wrapper = entity_metadata_wrapper('node', $space->og);
+  // for ($i = 0; $i <= $wrapper->field_department_school->count(); $i++) {
+    // $wrapper->field_department_school->get($i)->set(NULL);
+    // $wrapper->save();
+  // }
+
   // Adding to the original form the fields.
   $form['field_department_school'] = $attached_data['field_department_school'];
   $form['field_catalog_number'] = $attached_data['field_catalog_number'];
@@ -485,6 +507,18 @@ function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
   // Remove comments and adding a custom submit handler.
   $form['#after_build'][] = 'harvard_courses_form_cp_app_settings_form_after_build';
   $form['#submit'][] = 'harvard_courses_feature_submit';
+  $form['#validate'][] = 'harvard_courses_feature_validate';
+}
+
+/**
+ * Validate function.
+ */
+function harvard_courses_feature_validate($form, $form_state) {
+  foreach ($form_state['input']['field_department_school'][LANGUAGE_NONE] as $key => $value) {
+    if ($form_state['input']['field_department_school'][LANGUAGE_NONE][$key]['field_school_name'][LANGUAGE_NONE] == '_none') {
+      form_set_error("field_school_name", t('Please select school name'));
+    }
+  }
 }
 
 /**
@@ -543,15 +577,17 @@ function harvard_courses_feature_submit($form, $form_state) {
   $catalog_number = _harvard_courses_get_field_value('field_catalog_number', $form_state);
 
   $wrapper = entity_metadata_wrapper('node', $form['#entity']);
+  $field_collection_delete = array();
+
+
 
   // Go over the field collections and save them.
   foreach ($field_department_school as $field_collection) {
-    // TODO: Delete the field collection and her reference when the fields are
-    // empty.
     // Set a host entity for the new field collection item.
     if (!$field_collection->item_id) {
       $field_collection->setHostEntity('node', $wrapper->value());
     }
+
     $field_collection->save();
   }
 
