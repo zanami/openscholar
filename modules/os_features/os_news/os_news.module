@@ -41,9 +41,6 @@ function os_news_process_node(&$vars) {
   // Helps poor theme developers find these changes to $variables
   $vars['classes'] .= ' modified-in-os_news_process_node';
 
-  // Hide submitted by.
-  $vars['submitted'] = '';
-
   // Includes custom CSS
   $vars['title_prefix']['#attached'] = array(
     'css' => array(

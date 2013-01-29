@@ -62,6 +62,13 @@ function os_news_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'date_format_semi_long';
+  $strongarm->value =  'F j, Y - H:i';
+  $export['date_format_semi_long'] = $strongarm;
+  
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'menu_options_news';
   $strongarm->value = array(
     0 => 'primary-menu',
@@ -97,7 +104,7 @@ function os_news_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'node_submitted_news';
-  $strongarm->value = 1;
+  $strongarm->value = 0;
   $export['node_submitted_news'] = $strongarm;
 
   $strongarm = new stdClass();
