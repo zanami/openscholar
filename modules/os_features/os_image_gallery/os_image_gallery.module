@@ -181,7 +181,7 @@ function os_image_gallery_theme_registry_alter(&$registry){
 function os_image_gallery_preprocess_media_item_thumbnail(&$vars) {
   if ($vars['element']['#bundle'] == 'video') {
     $vars['element']['file']['#display'] = 'thumbnail';
-    $vars['element']['file']['#cache']['keys'][] = 'os_image_gallery_thumbnail';
+    $vars['element']['file']['#cache']['keys'][] = 'os_image_gallery_thumbnail_' . $vars['element']['#file']->fid;
   }
 }
 
