@@ -731,12 +731,14 @@ ul.nice-menu-down li li.menuparent:hover {
   text-align: left;
   margin: 0;
   margin-bottom: 0;
+  list-style-image: none !important;
+
 }
 
 .navigation ul.menu li a,
 .navigation ul li a {
   display: block;
-  text-decoration: none;
+  text-decoration: none !important;
   padding: .5em;
   color:inherit;
 }
