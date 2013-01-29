@@ -389,6 +389,23 @@ ul.class_material_field_class a.class_material_field_class_anchor {
     padding-left: 17px;
    }
 
+.media-gallery-collection a.media-gallery-thumb, .media-gallery-media a.media-gallery-thumb, .media-gallery-thumb img {
+    display: block;
+    overflow: hidden;
+    position: relative;
+}
+
+.video-indicator {
+	background: url("../images/movie_file_icon.png") no-repeat;
+ 	bottom: 5px;
+    display: block;
+    height: 13%;
+    left: 5px;
+    height: 48px;
+    width: 48px;
+	position: absolute;
+}
+	
 
 .feed_item {margin-bottom:8px;}
 .feed_item span {font-style:italic;margin-right:4px;}

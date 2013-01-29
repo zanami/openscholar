@@ -117,7 +117,7 @@ function os_news_field_default_fields() {
     'field_instance' => array(
       'bundle' => 'news',
       'deleted' => '0',
-      'description' => 'News content will be sorted according to the date you provide.  ',
+      'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'hidden',

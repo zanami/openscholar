@@ -16,7 +16,7 @@
   margin: 0;
   position: relative;
   font-weight: normal;
-  top: 28px;
+  top: 50px;
 }
 
 #boxes-box-site_info p {
@@ -36,9 +36,12 @@
   font-size: 24px;
   font-style: italic;
   position: absolute;
-  top: 0;
+  top: 60px;
 }
 
+.logged-in #boxes-box-site_info h2 {
+    top: 20px;
+}
 
 
 
@@ -85,6 +88,7 @@ input[type="search"] {
   -moz-border-left-colors: #d4d4d2;
   -moz-border-right-colors: transparent;
   -moz-border-top-colors: #d4d4d2;
+  width:300px;
 }
 
 #search-block-form input.form-submit,
@@ -209,7 +213,6 @@ table .mini-day-on a {
 
 
 #content-column .block.block-boxes-os_boxes_manual_list h2.block-title {
-  padding: 0 0 10px;
   border-bottom: 1px solid #D9D9D7;
   margin-bottom: 20px;
 }
@@ -318,6 +321,7 @@ table .mini-day-on a {
 .ui-tabs .ui-state-active a:visited {
   color: #1e1e1e;
   border-color: #cacaca;
+  font-family: Arial,Helvetica,sans-serif;
 }
 
 .sidebar .ui-tabs .ui-tabs-panel .block,
@@ -420,7 +424,7 @@ table .mini-day-on a {
 
 
 
-/* NEW Slideshow */
+/* NEW Slideshow 
 .block-boxes-os_slideshow_box .block-title {
   display: none;
 }
@@ -480,7 +484,7 @@ table .mini-day-on a {
 
 #views_slideshow_controls_text_os_slideshow-default {
   padding: 20px 25px 32px;
-  top: 209px;
+  top: 100px;
   z-index: 100;
 }
 
@@ -488,11 +492,16 @@ table .mini-day-on a {
   height: 28px;
   width: 28px;
   margin-right: 0;
-  background: url(../images/slide-controls.png) no-repeat 0 0 transparent; /* old sprite has incorrect arrow positions, use this one for now */
+  background: url(../images/slide-controls.png) no-repeat 0 0 transparent;  old sprite has incorrect arrow positions, use this one for now 
   display: block;
 }
 
-.views-slideshow-controls-text-previous a {}
+.views-slideshow-controls-text-previous a { 
+  overflow: hidden;
+  text-indent: -99999999px;
+  font-size: 0;
+  display:inline-block;
+  }
 
 .views-slideshow-controls-text-pause a {
   background-position: -28px 0;
@@ -504,9 +513,101 @@ table .mini-day-on a {
 }
 
 #views_slideshow_slide_counter_os_slideshow-default {
-  display: none; /* Hide this for now */
+  display: none; Hide this for now 
+}
+*/
+
+/* NEW Slideshow Dan */
+.block-boxes-os_slideshow_box .block-title {
+  display: none;
 }
 
+.block-boxes-os_slideshow_box {
+  position: relative;
+}
+
+
+.block-boxes-os_slideshow_box .add_new {
+  left: 0;
+  position: absolute;
+  top: -23px;
+}
+
+.block-boxes-os_slideshow_box .field-content  {
+  display: block;
+}
+
+.block-boxes-os_slideshow_box .views_slideshow_slide img {
+  margin: 0;
+  padding-top: 0;
+}
+
+.views-slideshow-controls-bottom {position:absolute;top:220px;left:85px;z-index:1000;}
+
+.views-field-field-description {
+  	background: url("../images/slideshow_tileBgtransparency.png") repeat scroll 0 0 transparent;
+    color: #FFFFFF;
+    left: 45px;
+    height: 150px;
+    overflow: hidden;
+    padding: 32px 25px 0;
+    position: absolute;
+    top: 80px;
+    width: 390px;
+}
+
+.text-and-controls {color:#FFF;position:absolute;top:20px;left:40px;}
+
+.block-boxes-os_slideshow_box .headline {
+	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+  font-size: 34px;
+  line-height: 38px;
+  text-shadow: 0 1px 1px #333;
+  display: block;
+  top: 55px;
+}
+
+.block-boxes-os_slideshow_box .description {
+  top: 127px;
+  font-size: 16px;
+  line-height: 24px;
+  height: 72px
+}
+
+
+
+.views-slideshow-controls-text a {
+  overflow: hidden;
+  text-indent: -99999999px;
+  font-size: 0;
+  display:inline-block;
+}
+
+.views-slideshow-controls-text-previous a { 
+  background: url("../images/hwpi_basesprite.png") no-repeat 0 0;
+   width:28px;
+  height:28px;
+  }
+
+.views-slideshow-controls-text-pause a {
+  background-position: -28px 0;
+  background-color: #000;
+}
+
+.views-slideshow-controls-text-next a {
+  background: url("../images/hwpi_basesprite.png") no-repeat 0 -30px;
+   width:28px;
+  height:28px;
+}
+
+
+.views-slideshow-controls-text-pause {background: url("../images/hwpi_basesprite.png") no-repeat 0 -30px;
+   width:28px;
+  height:28px;}
+
+#views_slideshow_slide_counter_os_slideshow-default {
+  display: none; /* Hide this for now */
+}
 
 
 /* AddThis */

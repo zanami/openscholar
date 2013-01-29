@@ -37,7 +37,7 @@ class os_boxes_slideshow extends os_boxes_default {
     $efq->propertyCondition('type', 'media_gallery');
     $result = $efq->execute();
 
-    if (count($result['node'])) {
+    if (isset($result['node']) && count($result['node'])) {
       foreach(node_load_multiple(array_keys($result['node'])) as $node) {
         $galleries[$node->nid] = $node->title;
       }

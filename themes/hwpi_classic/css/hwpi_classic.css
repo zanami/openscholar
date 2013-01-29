@@ -95,12 +95,13 @@ h2.block-title {
 .comment-wrapper {
 	border-top: 3px solid #4384C4;
 }
- 
+
+.block-boxes block-boxes-os_sv_list_box
+.block-boxes-os_boxes_manual_list, 
 .sidebar .block.section-nav,
 #content-column .block.section-nav {
 	border-top: none;
 }
-
 
 
 /* Footer */

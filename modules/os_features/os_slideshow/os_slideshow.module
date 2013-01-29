@@ -14,8 +14,8 @@ function os_slideshow_boxes_plugins(){
   $path = drupal_get_path('module', 'os_slideshow') . '/plugins';
 
   $info['os_slideshow_box'] = array(
-    'title' => 'Slideshow',
-    'description' => 'Slideshow',
+    'title' => 'HC Slideshow',
+    'description' => 'HC Slideshow',
     'tags' => array('Media'),
     'handler' => array(
       'class' => 'os_slideshow_box',
@@ -40,11 +40,11 @@ function os_slideshow_vsite_og_node_type_info() {
  * 
  * Prevent gallery slideshows from being created.  They're being phased out for this new slideshow.
  */
-function os_slideshow_ctools_plugin_pre_alter(&$plugin, &$info) {
-  if ($plugin['name'] == 'os_boxes_slideshow') {
-    $plugin['title'] = NULL;
-  }
-}
+// function os_slideshow_ctools_plugin_pre_alter(&$plugin, &$info) {
+//   if ($plugin['name'] == 'os_boxes_slideshow') {
+//     $plugin['title'] = NULL;
+//   }
+// }
 
 /**
  * Implements hook_form_FORMID_alter
@@ -110,15 +110,17 @@ function os_slideshow_node_insert($node) {
  * Creates title since title was removed from form.
  */
 function os_slideshow_node_presave($node) {
-  $lang = $node->language;
-  $node->title = isset($node->field_headline[$lang][0]) ? $node->field_headline[$lang][0]['value'] : FALSE;
-  if (!$node->title) {
-    $node->title = db_select('file_managed', 'fm')
-      ->condition('fid', $node->field_image[$lang][0]['fid'])
-      ->fields('fm', array('filename'))
-      ->range(0,1)
-      ->execute()
-      ->fetchColumn();
+  if ($node->type == 'slideshow_slide') {
+    $lang = $node->language;
+    $node->title = isset($node->field_headline[$lang][0]) ? $node->field_headline[$lang][0]['value'] : FALSE;
+    if (!$node->title) {
+      $node->title = db_select('file_managed', 'fm')
+        ->condition('fid', $node->field_image[$lang][0]['fid'])
+        ->fields('fm', array('filename'))
+        ->range(0,1)
+        ->execute()
+        ->fetchColumn();
+    }
   }
 }
 

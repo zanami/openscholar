@@ -55,6 +55,13 @@
 
 						<?php if ($is_front || $use_content_regions): ?>
 							<?php print render($title_prefix); ?>
+							<?php if (!$is_front && $title): ?>
+								<header id="main-content-header">
+      									<h1 id="page-title"<?php print $attributes; ?>>
+      									        <?php print $title; ?>
+      									</h1>
+      								</header>
+							<?php endif; ?>
 							<?php print render($title_suffix); ?>
 
 							<?php if (
