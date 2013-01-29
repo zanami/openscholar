@@ -31,12 +31,12 @@ function harvard_courses_os_app_info() {
 function harvard_courses_feeds_plugins() {
   $path = drupal_get_path('module', 'harvard_courses');
   $info = array();
-  $info['HarwardFetcher'] = array(
-    'name'        => t('Harward API fetcher'),
+  $info['HarvardFetcher'] = array(
+    'name'        => t('Harvard API fetcher'),
     'description' => t('Create url for fetching info from Harward API.'),
     'handler' => array(
       'parent' => 'FeedsFetcher',
-      'class'  => 'HarwardFetcher',
+      'class'  => 'HarvardFetcher',
       'file'   => 'harvard_courses_token_fetcher.inc',
       'path'   => $path,
     ),
@@ -546,6 +546,8 @@ function harvard_courses_feature_submit($form, $form_state) {
 
   // Go over the field collections and save them.
   foreach ($field_department_school as $field_collection) {
+    // TODO: Delete the field collection and her reference when the fields are
+    // empty.
     // Set a host entity for the new field collection item.
     if (!$field_collection->item_id) {
       $field_collection->setHostEntity('node', $wrapper->value());

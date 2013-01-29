@@ -7,7 +7,7 @@
 /**
  * Base class for the token fetcher.
  */
-class HarwardFetcher extends FeedsFetcher {
+class HarvardFetcher extends FeedsFetcher {
   var $baseUrl = '';
   var $data = '';
   var $url_param = '';
@@ -116,13 +116,39 @@ class HarwardFetcher extends FeedsFetcher {
    * Building the URL for the XML file.
    */
   private function buildUrl($values, $rows, $start) {
-    if (is_array($this->url_param)) {
-      $param = implode('&', $this->url_param);
+    if ($this->config['debug_mode']) {
+      if ($start != 0) {
+        return;
+      }
+      return url('', array('absolute' => TRUE)) . drupal_get_path('module', 'harvard_courses') . '/dummy_courses.xml';
     }
     else {
-      $param = $this->url_param . '"' . implode('" OR "', $values);
-    }
+      if (is_array($this->url_param)) {
+        $param = implode('&', $this->url_param);
+      }
+      else {
+        $param = $this->url_param . '"' . implode('" OR "', $values);
+      }
 
-    return $this->baseUrl . urlencode('?' . $param . '&rows=' . $rows . '&start=' . $start);
+      return $this->baseUrl . urlencode('?' . $param . '&rows=' . $rows . '&start=' . $start);
+    }
+  }
+
+  public function configDefaults() {
+    return array('debug_mode' => '');
+  }
+
+  /**
+   * Override parent::configForm().
+   */
+  public function configForm(&$form_state) {
+    $form = array();
+    $form['debug_mode'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Debug mode'),
+      '#description' => t('When this is checked, the importer will import courses from a dummy file.'),
+      '#default_value' => $this->config['debug_mode'],
+    );
+    return $form;
   }
 }

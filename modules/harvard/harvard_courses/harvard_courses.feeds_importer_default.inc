@@ -18,7 +18,7 @@ function harvard_courses_feeds_importer_default() {
     'name' => 'Course',
     'description' => 'Import courses',
     'fetcher' => array(
-      'plugin_key' => 'HarwardFetcher',
+      'plugin_key' => 'HarvardFetcher',
       'config' => array(),
     ),
     'parser' => array(
