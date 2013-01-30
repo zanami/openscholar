@@ -432,6 +432,41 @@ function harvard_courses_entity_update($entity, $type) {
 }
 
 /**
+ * Implements hook_entity_delete().
+ */
+function harvard_courses_entity_delete($entity, $type) {
+  if ($type != 'field_collection_item' || (isset($entity->field_name) && $entity->field_name != 'field_department_school')) {
+    return;
+  }
+  $wrapper = entity_metadata_wrapper($type, $entity);
+  $site = harvard_courses_get_field_collection_item_node($entity->item_id);
+
+  // There are no sites relate to the to the courses from the field collection.
+  if (empty($site)) {
+    return;
+  }
+
+  // Building the parameters for the API function that will return us the
+  // courses according to the field collection data.
+  $fields = array(
+    'field_faculty',
+    'field_department_id',
+  );
+  $searach_values = array(
+    'field_faculty' => $wrapper->field_school_name->label(),
+    'field_department_id' => $wrapper->field_department_id->value(),
+  );
+
+  // Un-grouping removed courses from the group.
+  $courses = harvard_courses_related_nodes($fields, $search_values);
+  if (!empty($courses)) {
+    foreach ($courses as $course_id) {
+      og_ungroup('node', $site, 'node', $course_id);
+    }
+  }
+}
+
+/**
  * Return the nid that the field collection item belong two.
  *
  *  @param $item_id
@@ -460,9 +495,13 @@ function harvard_courses_get_field_collection_item_node($item_id) {
  * Return courses nids which holds the search values in the field.
  *
  *  @param $field
- *    The name of the field.
+ *    The name of the field. Can be array of fields.
  *  @param $search
- *    Array of the values to look for in the field.
+ *    Array of the values to look for in the field. In case the fields is array
+ *    then use the format of:
+ *      array(
+ *        'field' => 'value',
+ *      );
  *
  *  @return
  *    list of nids.
@@ -471,8 +510,21 @@ function harvard_courses_related_nodes($field, $search = array()) {
   $query = new entityFieldQuery();
   $query
     ->entityCondition('entity_type', 'node')
-    ->propertyCondition('type', 'harvard_course')
-    ->fieldCondition($field, 'value', $search, 'IN');
+    ->propertyCondition('type', 'harvard_course');
+
+  if (!is_array($field)) {
+    $query->fieldCondition($field, 'value', $search, 'IN');
+  }
+  else {
+    foreach ($field as $field_name) {
+      if (isset($search[$field_name])) {
+        $query->fieldCondition($field_name, 'value', $search[$field_name]);
+      }
+      else {
+        $query->fieldCondition($field_name, 'value', '', '<>');
+      }
+    }
+  }
 
   $result = $query->execute();
   if (empty($result['node'])) {
@@ -492,6 +544,7 @@ function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
   $attached_data = array();
 
   field_attach_form('node', $space->og, $attached_data, $form_state);
+
 
   // Adding to the original form the fields.
   $form['field_department_school'] = $attached_data['field_department_school'];

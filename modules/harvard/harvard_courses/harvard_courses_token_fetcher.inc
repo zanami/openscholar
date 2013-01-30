@@ -50,8 +50,8 @@ class HarvardFetcher extends FeedsFetcher {
             continue;
           }
 
-          if ($import_wrapper->{$field}->get($i)->field_faculty->value()) {
-            $schools[] = $import_wrapper->{$field}->get($i)->field_faculty->value();
+          if ($import_wrapper->{$field}->get($i)->field_school_name->label()) {
+            $schools[] = $import_wrapper->{$field}->get($i)->field_school_name->label();
           }
           if ($import_wrapper->{$field}->get($i)->field_department_id->value()) {
             $departments[] = $import_wrapper->{$field}->get($i)->field_department_id->value();
@@ -129,7 +129,6 @@ class HarvardFetcher extends FeedsFetcher {
       else {
         $param = $this->url_param . '"' . implode('" OR "', $values);
       }
-
       return $this->baseUrl . urlencode('?' . $param . '&rows=' . $rows . '&start=' . $start);
     }
   }
