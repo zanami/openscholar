@@ -59,7 +59,7 @@ function os_news_field_default_fields() {
             'trim_length' => '600',
           ),
           'type' => 'text_trimmed',
-          'weight' => '1',
+          'weight' => '2',
         ),
       ),
       'entity_type' => 'node',
@@ -123,7 +123,7 @@ function os_news_field_default_fields() {
           'label' => 'hidden',
           'module' => 'date',
           'settings' => array(
-            'format_type' => 'long',
+            'format_type' => 'semi_long',
             'fromto' => 'both',
             'multiple_from' => '',
             'multiple_number' => '',
@@ -134,10 +134,18 @@ function os_news_field_default_fields() {
           'weight' => '1',
         ),
         'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
+          'label' => 'hidden',
+          'module' => 'date',
+          'settings' => array(
+            'format_type' => 'semi_long',
+            'fromto' => 'both',
+            'multiple_from' => '',
+            'multiple_number' => '',
+            'multiple_to' => '',
+            'show_repeat_rule' => 'show',
+          ),
+          'type' => 'date_default',
+          'weight' => '1',
         ),
       ),
       'entity_type' => 'node',
@@ -337,7 +345,7 @@ function os_news_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '2',
+          'weight' => '4',
         ),
       ),
       'entity_type' => 'node',
@@ -404,7 +412,6 @@ function os_news_field_default_fields() {
   t('Attach Files');
   t('Body');
   t('Date');
-  t('News content will be sorted according to the date you provide.  ');
   t('Photo');
 
   return $fields;

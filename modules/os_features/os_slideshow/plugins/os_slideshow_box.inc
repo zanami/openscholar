@@ -12,11 +12,16 @@ class os_slideshow_box extends os_boxes_default {
       'effect' => 'fade',
       'size' => 600,
       'nodes' => array(),
+        
+      //not configurable.  
+      'min_width' => 400,
+      'max_width' => 980,
     );
   }
 
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
+    $defaults = $this->options_defaults();
     
     $form['display'] = array(
       '#type' => 'fieldset',
@@ -31,8 +36,8 @@ class os_slideshow_box extends os_boxes_default {
       '#title' => t('Size'),
       '#default_value' => $this->options['size'],
       '#field_suffix' => 'px',
-      '#description' => t('Enter the width of the slideshow in pixels. It should be between 400 and 960 pixels.'),
-      //'#element_validate' => array('os_boxes_slideshow_accepted_range'),
+      '#description' => t('Enter the width of the slideshow in pixels. It should be between %min and %max pixels.', array('%min'=>$defaults['min_width'], '%max'=>$defaults['max_width'])),
+      '#element_validate' => array('os_slideshow_accepted_range'),
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_slideshow/os_slideshow_form.js'
@@ -289,4 +294,14 @@ function os_slideshow_draggable_table($element) {
   return $element;
 }
 
+/**
+ * Ensures the value given is within acceptable ranges
+ */
+function os_slideshow_accepted_range($element, &$form_state) {
+  $defaults = $form_state['box']->options_defaults();
+  if ($element['#value'] < $defaults['min_width'] || $element['#value'] > $defaults['max_width']) {
+    form_error($element, t('Slideshow width out of bounds: Width should be between %min and %max pixels.', array('%min'=>$defaults['min_width'], '%max'=>$defaults['max_width'])));
+  }
+  $element['#value'] = (int)$element['#value'];
+}
 

@@ -179,8 +179,10 @@ function os_image_gallery_theme_registry_alter(&$registry){
  * Also change the cache key so thumbnail and lightbox view don't get html from same cache
  */
 function os_image_gallery_preprocess_media_item_thumbnail(&$vars) {
-  $vars['element']['file']['#display'] = 'thumbnail';
-  $vars['element']['file']['#cache']['keys'][] = 'os_image_gallery_thumbnail';
+  if ($vars['element']['#bundle'] == 'video') {
+    $vars['element']['file']['#display'] = 'thumbnail';
+    $vars['element']['file']['#cache']['keys'][] = 'os_image_gallery_thumbnail_' . $vars['element']['#file']->fid;
+  }
 }
 
 /**

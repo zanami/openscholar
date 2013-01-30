@@ -490,9 +490,10 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout) {
 
     $parent_keys = array_keys($old_regions[$r]);
     // the parent keys that exist in the child
-    $only_parent_keys = array_intersect($new_keys, $parent_keys);
+    // call array values because array_intersect preserves keys
+    $only_parent_keys = array_values(array_intersect($new_keys, $parent_keys));
     // the order in the parent of keys that only exist in child
-    $active_parents = array_intersect($parent_keys, $only_parent_keys);
+    $active_parents = array_values(array_intersect($parent_keys, $only_parent_keys));
 
     $bulldoze = true;
     if (empty($only_parent_keys)) {
@@ -520,7 +521,7 @@ function _os_layout_adjust_relative_weight(&$block_settings, $previous_layout) {
           $count = count($between);
           if ($count) {
             // handle case where children are before any parent
-            if ($min_weight == 'undefined') {
+            if ($min_weight === 'undefined') {
               $min_weight = $b['weight'] - $count - 1;
             }
             // get the range we have to work with

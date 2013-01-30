@@ -77,7 +77,7 @@ img {
   
   
   .sidebar .content ul.menu li {color:#106599;}
-  .sidebar .content ul.menu li  a {padding-left:0px; color: #723319;text-transform:uppercase;}
+  .sidebar .content ul.menu li  a {color: #723319;text-transform:uppercase;}
   .sidebar .content ul.menu li  a:hover {text-decoration:underline !important;}
   .region-sidebar-first .content ul.menu {margin-left:12px;}
   .region-sidebar-second .content ul.menu {margin-left:0px;}
@@ -85,7 +85,7 @@ img {
    .sidebar .content #boxes-box-os_booktoc ul.menu li a,
    .sidebar .content .book-menu ul.menu li a,
    .sidebar .content #block-book-navigation ul.menu li a,
-   .sidebar .content .block-boxes-os_boxes_booktoc ul.menu li a {padding-left:1.5em;text-transform:none;}
+   .sidebar .content .block-boxes-os_boxes_booktoc ul.menu li a {text-transform:none;}
    
    .sidebar #block-os-secondary-menu .content ul.menu li  a {text-transform:none;}
 

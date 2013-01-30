@@ -40,6 +40,10 @@ body {
 	 position: relative;
 }
 
+.page-node #content-column .content-inner /* Adds a little padding to page node when main-content div is not present */ {
+	 padding: 10px;
+}
+
 
 #main-content /* Wraps the main-content-header, the content region and feed-icons. */ {
 	 padding-top: 20px;
