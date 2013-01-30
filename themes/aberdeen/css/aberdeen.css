@@ -163,12 +163,12 @@ border-radius:5px;
 
 .os-powered-link, #block-os-powered-by {
     bottom: -28px;
-    left: 800px;
+  
 }
 
 #block-os-login {
     bottom: -1px;
-    left: 800px;
+
 }
 
 .feed_item {margin-bottom:8px;}

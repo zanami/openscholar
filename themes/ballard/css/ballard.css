@@ -59,12 +59,12 @@ font-family: helvetica,arial,sans-serif;
 
 .os-powered-link, #block-os-powered-by {
     bottom: -22px;
-    left: 800px;
+  
 }
 
 .logged-in .os-powered-link, .logged-in  #block-os-powered-by {
     bottom: -24px;
-    left: 800px;
+    
 }
 
 #block-os-powered-by span a, .os-powered-link a.os-poweredby {
