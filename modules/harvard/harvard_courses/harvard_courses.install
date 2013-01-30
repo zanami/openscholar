@@ -70,6 +70,7 @@ function harvard_courses_install() {
     'Harvard Summer School',
   );
 
+  // Creating the vocabulary.
   $vocabulary = taxonomy_vocabulary_machine_name_load('schools_names');
   if (!$vocabulary) {
     // Create a terms vocabulary.
