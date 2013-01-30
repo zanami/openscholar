@@ -24,15 +24,14 @@ function _hwpi_branding_header() {
     '#type' => 'container',
     '#attributes' => array(
       'class' => array(
-        'branding',
-        'left',
+        'branding-left',
       )
     ),
     'img' => array(
       '#theme' => 'image',
-      '#path' => 'http://www.harvard.edu/sites/all/themes/hedu2011hc/a/titles/logo.gif',
-      '#width' => 43,
-      '#height' => 274,
+      '#path' => drupal_get_path('theme', 'hwpi_basetheme') . '/images/harvard-logo.png',
+      '#width' => 259,
+      '#height' => 35,
     )
   );
   $sites = _hwpi_get_ancestry();
@@ -44,8 +43,7 @@ function _hwpi_branding_header() {
     '#type' => 'container',
     '#attributes' => array(
       'class' => array(
-        'branding',
-        'right',
+        'branding-right',
       )
     ),
     'sitecrumbs' => array(
@@ -69,7 +67,7 @@ function _hwpi_get_ancestry() {
     }
   }
 
-  $sites['http://www.harvard.edu'] = 'Harvard.edu';
+  $sites['http://www.harvard.edu'] = 'HARVARD.EDU';
   return $sites;
 }
 
@@ -83,7 +81,7 @@ function _hwpi_branding_footer() {
       )
     ),
     'copyright' => array(
-      '#markup' => t('Copyright � 2013 The President and Fellows of Harvard College | !privacy | !access', array(
+      '#markup' => t('<span class="harvard-copyright">Copyright &copy; 2013 The President and Fellows of Harvard College</span> | !privacy | !access', array(
         '!privacy' => l('Privacy', 'http://www.harvard.edu/privacy.html'),
         '!access' => l('Accessibility', 'http://www.harvard.edu/accessibility.html')
       ))

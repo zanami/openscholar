@@ -28,18 +28,6 @@ body {
 
 
 
-/* Messages */
-#messages {
-	background: #fff;
-	margin: 0;
-	padding: 0;
-}
-div.messages {
-  border: 0 none;
-	margin: 10px auto;
-}
-
-
 
 /* Titles & Type */
 #page-title,
@@ -49,6 +37,7 @@ div.messages {
 .more-link,
 .page-search #content-column p,
 .not-front #content-column p,
+.links a,
 #footer ul.menu a {
 	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 }
@@ -57,14 +46,18 @@ h1#page-title,
 h1.node-title, 
 .page-search .title a {
 	font-weight: normal;
-	font-size: 16px;
+	font-size: 18px;
 	margin-bottom: 18px;
 }
 
 h1#page-title {
 	font-size: 38px;
 	line-height: 1; /* Font size is larger than the default line-height, so will overlap if the title wraps */
-	margin-top: 15px;
+	margin: 15px 0 30px;
+}
+
+.page-node h1#page-title {
+	margin-bottom: 15px;
 }
 
 h2.block-title {
@@ -102,17 +95,13 @@ h2.block-title {
 .comment-wrapper {
 	border-top: 3px solid #4384C4;
 }
- 
+
+.block-boxes block-boxes-os_sv_list_box
+.block-boxes-os_boxes_manual_list, 
 .sidebar .block.section-nav,
-#content-column .block.section-nav,
-.sidebar .block-os-search-db.no-title {
+#content-column .block.section-nav {
 	border-top: none;
 }
-
-
-
-
-
 
 
 /* Footer */
@@ -124,6 +113,4 @@ h2.block-title {
 	text-transform: none;
 	font-size: 16px;
 }
-
-
 
