@@ -6,7 +6,8 @@
 function os_news_update_7001(&$sandbox) {
   $instances = field_info_instances('node', 'news');
   if (!isset($instances['field_news_date'])) {
-    throw new DrupalUpdateException(t('os_news needs to be reverted before this update can be applied'));
+    //throw new DrupalUpdateException(t('os_news needs to be reverted before this update can be applied'));
+    features_revert(array('os_news' => array('field')));
   }
     
   $format = $instances['field_news_date']['widget']['settings']['input_format'];

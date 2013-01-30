@@ -82,7 +82,11 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
   $form['#submit'][] = 'vsite_vocab_form_taxonomy_form_vocabulary_submit';
 
   if (empty($form_state['vocabulary']->vid)) {
-    $form['machine_name']['#element_validate'][] = 'vsite_vocab_form_taxonomy_form_vocabulary_validate';
+    // Because we hide the machine name text field, og_vocab validate function
+    // will fail due to the fact that there is no machine name. Reversing the
+    // order of the validation functions will take care of that and enable us to
+    // create OG vocabularies with the same human readable name in other groups.
+    array_unshift($form['machine_name']['#element_validate'], 'vsite_vocab_form_taxonomy_form_vocabulary_validate');
   }
 
   // Init variables.

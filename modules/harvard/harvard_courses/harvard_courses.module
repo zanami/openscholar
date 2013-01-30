@@ -541,45 +541,23 @@ function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
   if ($form['#feature'] != 'harvard_courses' || !$space = spaces_get_space()) {
     return;
   }
-  $attached_data = array();
 
-  field_attach_form('node', $space->og, $attached_data, $form_state);
+  $node = $space->og;
+
+  $elements = array();
+
+  field_attach_form('node', $node, $elements, $form_state);
 
 
   // Adding to the original form the fields.
-  $form['field_department_school'] = $attached_data['field_department_school'];
-  $form['field_catalog_number'] = $attached_data['field_catalog_number'];
-  $form['#entity'] = $attached_data['#entity'];
-
-  // Remove the reference for non-existed field collection.
-  // @TODO: When accessing to the form after deleting a field collection there
-  // is a need to refresh the page to prevent a notice that come from the
-  // loading of the deleted field collection entity.
-  $node = node_load($space->og->nid);
-  $wrapper = entity_metadata_wrapper('node', $space->og);
-  foreach ($wrapper->field_department_school->value() as $key => $field_collection) {
-    if (empty($field_collection)) {
-      unset($node->field_department_school[LANGUAGE_NONE][$key]);
-    }
-  }
-  $wrapper->save();
+  $form['field_department_school'] = $elements['field_department_school'];
+  $form['field_catalog_number'] = $elements['field_catalog_number'];
+  $form['#entity'] = $elements['#entity'];
 
   // Remove comments and adding a custom submit handler.
   $form['#after_build'][] = 'harvard_courses_form_cp_app_settings_form_after_build';
-  $form['#submit'][] = 'harvard_courses_feature_submit';
-  $form['#validate'][] = 'harvard_courses_feature_validate';
-}
 
-/**
- * Validate function.
- */
-function harvard_courses_feature_validate($form, $form_state) {
-  foreach ($form_state['input']['field_department_school'][LANGUAGE_NONE] as $key => $value) {
-    $form_element = $form_state['input']['field_department_school'][LANGUAGE_NONE][$key];
-    if ($form_element['field_school_name'][LANGUAGE_NONE] == '_none' && !empty($form_element['field_department_id'][LANGUAGE_NONE][0]['value'])) {
-      form_set_error("field_school_name", t('Please select school name'));
-    }
-  }
+  $form['#submit'][] = 'harvard_courses_feature_submit';
 }
 
 /**
@@ -610,7 +588,7 @@ function harvard_courses_form_cp_app_settings_form_after_build($form, &$form_sta
  *    Array containing the value of the field.
  */
 function _harvard_courses_get_field_value($field_name, $form_state, $field_collection = FALSE) {
-  $return = '';
+  $return = NULL;
 
   foreach ($form_state['values'][$field_name][LANGUAGE_NONE] as $key => $value) {
     if (is_int($key)) {
@@ -631,43 +609,52 @@ function _harvard_courses_get_field_value($field_name, $form_state, $field_colle
 }
 
 /**
- * Submit handler - Save the value of department ID, and catalog number.
+ * Submit handler; Save the value of department ID, and catalog number.
  */
 function harvard_courses_feature_submit($form, $form_state) {
-  $field_department_school = _harvard_courses_get_field_value('field_department_school', $form_state, TRUE);
+  $department_school = _harvard_courses_get_field_value('field_department_school', $form_state, TRUE);
   $catalog_number = _harvard_courses_get_field_value('field_catalog_number', $form_state);
 
   $wrapper = entity_metadata_wrapper('node', $form['#entity']);
-  $existed_field_collection = array();
-  $form_field_collections = array();
+  // Hold the existing field collection IDs so later on we can remove deleted
+  // ones.
+  $existing_ids = $wrapper->field_department_school->value(array('identifier' => TRUE));
 
-  // Get all the existed field collection reference.
-  foreach (array_keys($wrapper->field_department_school->value()) as $key) {
-    $existed_field_collection[] = $wrapper->field_department_school->get($key)->getIdentifier();
-  }
+  // Array with the IDs that are going to be saved.
+  $ids = array();
+  $field_collections = array();
 
   // Go over the field collections and save them.
-  foreach ($field_department_school as $field_collection) {
+  foreach ($department_school as $field_collection) {
     // Set a host entity for the new field collection item.
-    if (!$field_collection->item_id) {
-      $field_collection->setHostEntity('node', $wrapper->value());
+    if (!empty($field_collection->is_new) && (empty($field_collection->field_department_id[LANGUAGE_NONE]) || empty($field_collection->field_school_name[LANGUAGE_NONE]))) {
+      // Field collection was removed.
+      continue;
     }
 
-    if (!empty($field_collection->item_id)) {
-      $form_field_collections[] = $field_collection->item_id;
+    if (empty($field_collection->item_id)) {
+      $field_collection->setHostEntity('node', $wrapper->value());
     }
     $field_collection->save();
+    $ids[] = $field_collection->item_id;
+    $field_collections[] = $field_collection;
   }
 
   // Comparing the field collections from the form with the field collection
   // from the node will give us the removed field collection - we need to delete
   // them.
-  $removed_fields = array_diff($existed_field_collection, $form_field_collections);
-  foreach ($removed_fields as $removed_field) {
-    $field_collection = field_collection_item_load($removed_field)->delete();
+  if ($deleted_ids = array_diff($existing_ids, $ids)) {
+    entity_delete_multiple('field_collection_item', $deleted_ids);
   }
 
-  empty($catalog_number) ? $wrapper->field_catalog_number->set(NULL) : $wrapper->field_catalog_number->set($catalog_number);
+  $wrapper->field_catalog_number->set($catalog_number);
+  // Re-build field_department_school to reference to new collections. We can't
+  // use the wrapper, as it doesn't support set() properly.
+  $node = $wrapper->value();
+  $node->field_department_school[LANGUAGE_NONE] = array();
+  foreach ($field_collections as $field_collection) {
+    $node->field_department_school[LANGUAGE_NONE][] = array('value' => $field_collection->item_id, 'revision_id' => $field_collection->revision_id);
+  }
 
   $wrapper->save();
 }
@@ -681,17 +668,12 @@ function harvard_courses_field_access($op, $field, $entity_type, $entity, $accou
   }
 
   $spaces_features = variable_get('spaces_features', array());
-  if (!@$spaces_features['harvard_courses']) {
-    return FALSE;
-  }
-
-  // The fields cannot be shown when attaching them to the node.
-  if (menu_get_object()) {
+  if (empty($spaces_features['harvard_courses'])) {
     return FALSE;
   }
 
   // Don't show the fields in view mode.
-  return $op != 'view' ? TRUE : FALSE;
+  return $op != 'view';
 }
 
 /**

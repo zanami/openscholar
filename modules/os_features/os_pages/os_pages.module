@@ -129,6 +129,22 @@ function os_pages_menu_contextual_links_alter(&$links, $router_item, $root_path)
 }
 
 /**
+ * Implements hook os_layout_get_alter()
+ */
+function os_pages_os_layout_get_alter($context_name, &$blocks){
+  static $content_block = array();
+  //Only allow the maim-content block on os_pages contexts
+  @list($ctx_prefix, $level,) = explode('-', $context_name, 3);
+  if (($ctx_prefix != 'os_pages' || $level != 'page') && isset($blocks['os_pages-main_content'])) {
+    $content_block = $blocks['os_pages-main_content'];
+    unset($blocks['os_pages-main_content']);
+  }
+  elseif ($ctx_prefix == 'os_pages' && $level == 'page' && !isset($blocks['os_pages-main_content'])) {
+    $blocks['os_pages-main_content'] = $content_block;
+  }
+}
+
+/**
  * Implements hook_preprocess_block().
  */
 function os_pages_preprocess_block(&$vars) {

@@ -1,8 +1,8 @@
 <?php
 
-// Rebuild the theme data.
-//system_rebuild_theme_data();
-//drupal_theme_rebuild();
+// Rebuild the theme data. Turn this off when in production.
+system_rebuild_theme_data();
+drupal_theme_rebuild();
 
 
 /**
@@ -14,6 +14,7 @@ function hwpi_basetheme_preprocess_html(&$vars) {
     'matchMedia.js', // matchMedia polyfill for older browsers
     'eq.js',         // Equalheights script
     'eq-os.js',      // Call Equalheights for specific elements
+    'scripts.js',    // General stuff, currently removes ui-helper-clearfix class from ui tabs
   );
   foreach ($scripts as $script) {
     // See load.inc in AT Core, load_subtheme_script() is a wrapper for drupal_add_js()
@@ -47,7 +48,7 @@ function hwpi_basetheme_preprocess_node(&$vars) {
 
   // Event persons, change title markup to h1
   if ($vars['type'] == 'person') {
-    if (isset($vars['field_person_photo'])) {
+    if (isset($vars['field_person_photo']) && !empty($vars['field_person_photo'])) {
       $vars['classes_array'][] = 'with-person-photo';
     }
   }
@@ -75,6 +76,8 @@ function hwpi_basetheme_node_view_alter(&$build) {
 
   // Persons, heavily modify the output to match the HC designs
   if ($build['#node']->type == 'person') {
+    
+    dsm($build);
 
     // Professional titles
     if (isset($build['field_professional_title'])) {
@@ -99,6 +102,15 @@ function hwpi_basetheme_node_view_alter(&$build) {
       $build['body']['#label_display'] = 'hidden';
       $build['pic_bio']['body'] = $build['body'];
       unset($build['body']);
+    }
+
+    // We dont want the other fields on teasers
+    if ($build['#view_mode'] == 'teaser') {
+      unset($build['field_address']);
+      unset($build['field_email']);
+      unset($build['field_phone']);
+      unset($build['field_website']);
+      return;
     }
 
     // Note that Contact and Website details will print wrappers and titles regardless of any field content.
@@ -145,8 +157,6 @@ function hwpi_basetheme_node_view_alter(&$build) {
     $build['website_details']['field_website'] = $build['field_website'];
     unset($build['field_website']);
   }
-
-  //dsm($build);
 }
 
 
@@ -195,3 +205,161 @@ function hwpi_basetheme_menu_link(array $vars) {
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);
   return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>";
 }
+
+
+/**
+ * Returns HTML for a set of links.
+ *
+ * @param $vars
+ *   An associative array containing:
+ *   - links: An associative array of links to be themed. The key for each link
+ *     is used as its CSS class. Each link should be itself an array, with the
+ *     following elements:
+ *     - title: The link text.
+ *     - href: The link URL. If omitted, the 'title' is shown as a plain text
+ *       item in the links list.
+ *     - html: (optional) Whether or not 'title' is HTML. If set, the title
+ *       will not be passed through check_plain().
+ *     - attributes: (optional) Attributes for the anchor, or for the <span> tag
+ *       used in its place if no 'href' is supplied. If element 'class' is
+ *       included, it must be an array of one or more class names.
+ *     If the 'href' element is supplied, the entire link array is passed to l()
+ *     as its $options parameter.
+ *   - attributes: A keyed array of attributes for the UL containing the
+ *     list of links.
+ *   - heading: (optional) A heading to precede the links. May be an associative
+ *     array or a string. If it's an array, it can have the following elements:
+ *     - text: The heading text.
+ *     - level: The heading level (e.g. 'h2', 'h3').
+ *     - class: (optional) An array of the CSS classes for the heading.
+ *     When using a string it will be used as the text of the heading and the
+ *     level will default to 'h2'. Headings should be used on navigation menus
+ *     and any list of links that consistently appears on multiple pages. To
+ *     make the heading invisible use the 'element-invisible' CSS class. Do not
+ *     use 'display:none', which removes it from screen-readers and assistive
+ *     technology. Headings allow screen-reader and keyboard only users to
+ *     navigate to or skip the links. See
+ *     http://juicystudio.com/article/screen-readers-display-none.php and
+ *     http://www.w3.org/TR/WCAG-TECHS/H42.html for more information.
+ */
+function hwpi_basetheme_links($vars) {
+  $links = $vars['links'];
+  $attributes = $vars['attributes'];
+  $heading = $vars['heading'];
+  global $language_url;
+  $output = '';
+
+  if (count($links) > 0) {
+    $output = '';
+
+    if (!empty($heading)) {
+      if (is_string($heading)) {
+        $heading = array(
+          'text' => $heading,
+          'level' => 'h2',
+        );
+      }
+      $output .= '<' . $heading['level'];
+      if (!empty($heading['class'])) {
+        $output .= drupal_attributes(array('class' => $heading['class']));
+      }
+      $output .= '>' . check_plain($heading['text']) . '</' . $heading['level'] . '>';
+    }
+
+    // Count links to use later for setting classes on the ul wrapper and on
+    // each link
+    $num_links = count($links);
+    $i = 1;
+
+    // Add a class telling us how many links there are, we need to check if
+    // $attributes['class'] is an array because toolbar is converting this to
+    // a string, if we don't check we get a fatal error. This class is added
+    // to aid in potential cross browser issues with the full width ui.tabs
+    if (isset($attributes['class']) && is_array($attributes['class'])) {
+      $attributes['class'][] = 'num-links-' . $num_links;
+    }
+    $output .= '<ul' . drupal_attributes($attributes) . '>';
+
+    foreach ($links as $key => $link) {
+      // Add classes to make theming the ui.tabs much easier/possible
+      $class = array();
+      $class[] = 'link-count-' . $key;
+      if ($i == 1) {
+        $class[] = 'first';
+      }
+      if ($i == $num_links) {
+        $class[] = 'last';
+      }
+      if (!empty($class)) {
+        $output .= '<li' . drupal_attributes(array('class' => $class)) . '>';
+      }
+      else {
+        $output .= '<li>';
+      }
+      if (isset($link['href'])) {
+        $output .= l($link['title'], $link['href'], $link);
+      }
+      elseif (!empty($link['title'])) {
+        if (empty($link['html'])) {
+          $link['title'] = check_plain($link['title']);
+        }
+        $span_attributes = '';
+        if (isset($link['attributes'])) {
+          $span_attributes = drupal_attributes($link['attributes']);
+        }
+        $output .= '<span' . $span_attributes . '>' . $link['title'] . '</span>';
+      }
+
+      $i++;
+      $output .= "</li>";
+    }
+
+    $output .= '</ul>';
+  }
+
+  return $output;
+}
+
+/**
+ * Returns HTML for status and/or error messages, grouped by type.
+ *
+ * Adaptivetheme adds a div wrapper with CSS id.
+ *
+ * An invisible heading identifies the messages for assistive technology.
+ * Sighted users see a colored box. See http://www.w3.org/TR/WCAG-TECHS/H69.html
+ * for info.
+ *
+ * @param $vars
+ *   An associative array containing:
+ *   - display: (optional) Set to 'status' or 'error' to display only messages
+ *     of that type.
+ */
+function hwpi_basetheme_status_messages($vars) {
+  $display = $vars['display'];
+  $output = '';
+
+  $status_heading = array(
+    'status' => t('Status update'),
+    'error' => t('Error'),
+    'warning' => t('Warning'),
+  );
+  foreach (drupal_get_messages($display) as $type => $messages) {
+    $output .= '<div class="messages ' . $type . '"><div class="message-inner"><div class="message-wrapper">';
+    if (!empty($status_heading[$type])) {
+      $output .= '<h2>' . $status_heading[$type] . "</h2>";
+    }
+    if (count($messages) > 1) {
+      $output .= " <ul>";
+      foreach ($messages as $message) {
+        $output .= '  <li>' . $message . "</li>";
+      }
+      $output .= " </ul>";
+    }
+    else {
+      $output .= $messages[0];
+    }
+    $output .= "</div></div></div>";
+  }
+  return $output;
+}
+

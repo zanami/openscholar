@@ -57,7 +57,7 @@ function entityreference_prepopulate_field_default_value($entity_type, $entity, 
   if (module_exists('og') && og_is_group_audience_field($instance['field_name'])) {
     return entityreference_prepopulate_og_field_default_value($entity_type, $entity, $field, $instance, $langcode);
   }
-  if ($items = entityreference_prepopulate_get_values($field, $instance)) {
+  if ($items = entityreference_prepopulate_get_values($field, $instance, $langcode)) {
     // TODO: Check field cardinality.
     return $items;
   }
@@ -68,9 +68,9 @@ function entityreference_prepopulate_field_default_value($entity_type, $entity, 
  */
 function entityreference_prepopulate_og_field_default_value($entity_type, $entity, $field, $instance, $langcode) {
   if (empty($instance['field_mode'])) {
-    return;
+    return array();
   }
-  if ($items = entityreference_prepopulate_get_values($field, $instance)) {
+  if ($items = entityreference_prepopulate_get_values($field, $instance, $langcode)) {
     // Filter out the items that don't match the field-mode.
     $gids = array();
     foreach ($items as $item) {
@@ -92,12 +92,6 @@ function entityreference_prepopulate_og_field_default_value($entity_type, $entit
  */
 function entityreference_prepopulate_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
   list($id,,$bundle) = entity_extract_ids($entity_type, $entity);
-
-  if (!empty($form_state['triggering_element']['#ajax'])) {
-    // We are inside AJAX, so values can't be taken from URL at the
-    // moment.
-    return;
-  }
 
   // Check if there is a field that needs to be prepopulated attached to the
   // given entity.
@@ -121,12 +115,16 @@ function entityreference_prepopulate_field_attach_form($entity_type, $entity, &$
       }
       $settings = $instance['settings']['behaviors']['prepopulate'];
 
-      if ((!empty($settings['skip_perm']) && user_access($settings['skip_perm'])) || ($id && !$settings['action_on_edit'])) {
+      if ((!empty($settings['skip_perm']) && user_access($settings['skip_perm'])) || ($id && empty($settings['action_on_edit']))) {
+        // User has access to skip the action, or the entity is already
+        // saved, but "Apply action on edit", is disabled.
         continue;
       }
 
       $field = $value['field'];
-      if (entityreference_prepopulate_get_values($field, $instance) || ($id && $settings['action_on_edit'])) {
+      if (entityreference_prepopulate_get_values($field, $instance, $langcode) || ($id && !empty($settings['action_on_edit']))) {
+        // New entity with prepopualte values, or an existing entity,
+        // we might need to disable/ hide the group-audience field.
         if ($settings['action'] == 'disable') {
           $form[$field_name][$lang]['#disabled'] = TRUE;
         }
@@ -137,7 +135,7 @@ function entityreference_prepopulate_field_attach_form($entity_type, $entity, &$
         }
       }
       elseif (in_array($settings['fallback'], array('form_error', 'redirect'))) {
-        $message = t('Field @label must be populated via URL', array('@label' => $instance['label']));
+        $message = t('Field @label must be populated via URL.', array('@label' => $instance['label']));
         if ($settings['fallback'] == 'form_error') {
           form_error($form, $message);
         }
@@ -193,18 +191,20 @@ function entityreference_prepopulate_field_access($op, $field, $entity_type, $en
  *   The field info array.
  * @param $instance
  *   The instance info array.
+ * @param $langcode
+ *   The language code of the field.
  * @param $flat_array.
  *   TRUE if the group IDs should be sent as a simple array. FALSE, if we
  *   need to build array suited for field API's $items value.
  */
-function entityreference_prepopulate_get_values($field, $instance, $flat_array = FALSE) {
+function entityreference_prepopulate_get_values($field, $instance, $langcode = 'und', $flat_array = FALSE) {
   $settings = $instance['settings']['behaviors']['prepopulate'];
 
   if (!empty($settings['og_context']) && module_exists('og_context')) {
     return entityreference_prepopulate_get_values_from_og_context($field, $instance, $flat_array);
   }
 
-  return entityreference_prepopulate_get_values_from_url($field, $instance, $flat_array);
+  return entityreference_prepopulate_get_values_from_url($field, $instance, $langcode, $flat_array);
 }
 
 function entityreference_prepopulate_get_values_from_og_context($field, $instance, $flat_array = FALSE) {
@@ -231,6 +231,8 @@ function entityreference_prepopulate_get_values_from_og_context($field, $instanc
  *   The field info array.
  * @param $instance
  *   The instance info array.
+ * @param $langcode
+ *   The language code of the field.
  * @param $flat_array.
  *   TRUE if the group IDs should be sent as a simple array. FALSE, if we
  *   need to build array suited for field API's $items value.
@@ -238,7 +240,7 @@ function entityreference_prepopulate_get_values_from_og_context($field, $instanc
  * @see
  *   entityreference_prepopulate_get_values()
  */
-function entityreference_prepopulate_get_values_from_url($field, $instance, $flat_array = FALSE) {
+function entityreference_prepopulate_get_values_from_url($field, $instance, $langcode, $flat_array = FALSE) {
   $cache = &drupal_static(__FUNCTION__, array());
   $field_name = $field['field_name'];
   $identifier = $instance['entity_type'] . ':' . $instance['bundle'] . ':' . $field_name . ':' . $flat_array;
@@ -247,15 +249,27 @@ function entityreference_prepopulate_get_values_from_url($field, $instance, $fla
   }
   $cache[$identifier] = FALSE;
 
-  if (empty($_GET[$field_name]) || !is_string($_GET[$field_name])) {
-    return;
-  }
+  // When in an AJAX request, get the field values from the form cache.
+  if (!empty($_POST['form_build_id']) && empty($_GET[$field_name])) {
+    $form_state = array();
+    $form = form_get_cache($_POST['form_build_id'], $form_state);
 
-  if (empty($instance['settings']['behaviors']['prepopulate']['status'])) {
-    return;
+    // Extract the target IDs from the form structure, that might be complex.
+    if (!$ids = entityreference_prepopulate_extract_default_values($form[$field_name][$langcode])) {
+      return;
+    }
   }
+  else {
+    if (empty($_GET[$field_name]) || !is_string($_GET[$field_name])) {
+      return;
+    }
 
-  $ids = explode(',', $_GET[$field_name]);
+    if (empty($instance['settings']['behaviors']['prepopulate']['status'])) {
+      return;
+    }
+
+    $ids = explode(',', $_GET[$field_name]);
+  }
 
   // Check if the IDs are valid, and get filter out the ones that are not valid.
   $handler = entityreference_get_selection_handler($field, $instance);
@@ -350,4 +364,33 @@ function entityreference_prepopulate_create_node_links($entity_type, $entity_id,
   );
 
   return $element;
+}
+
+/**
+ * Recursive helper function to extract the target IDs from a renderable array.
+ *
+ * @param $element
+ *   A renderable array.
+ * @param $target_ids
+ *   Array of the target IDs, that returns all the target_ids
+ *   that are present in the "#default_value" form API property.
+ */
+function entityreference_prepopulate_extract_default_values($element, $target_ids = array()) {
+  // Check if we reached the element that is the actual reference to the target
+  // ID.
+  if (isset($element['#default_value']) && !empty($element['#field_name']) && og_is_group_audience_field($element['#field_name'])) {
+    if (empty($element['#default_value'])) {
+      // No default value here, return early.
+      return $target_ids;
+    }
+    return array_merge($target_ids, is_array($element['#default_value']) ? $element['#default_value'] : array($element['#default_value']));
+  }
+
+  foreach (array_keys($element) as $key) {
+    if (element_child($key)) {
+      $target_ids = entityreference_prepopulate_extract_default_values($element[$key], $target_ids);
+    }
+  }
+
+  return $target_ids;
 }

@@ -12,7 +12,7 @@ function os_slideshow_views_default_views() {
 
   $view = new view();
   $view->name = 'os_slideshow';
-  $view->description = 'Rotating slideshow of slideshow_image nodes';
+  $view->description = 'Rotating slideshow of slideshow_slide nodes';
   $view->tag = 'default';
   $view->base_table = 'node';
   $view->human_name = 'OS Slideshow';
@@ -27,7 +27,9 @@ function os_slideshow_views_default_views() {
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '100';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['style_plugin'] = 'slideshow';
   $handler->display->display_options['style_options']['slideshow_type'] = 'views_slideshow_cycle';
   $handler->display->display_options['style_options']['slideshow_skin'] = 'default';
@@ -64,33 +66,12 @@ function os_slideshow_views_default_views() {
   $handler->display->display_options['style_options']['views_slideshow_cycle']['cleartype'] = 0;
   $handler->display->display_options['style_options']['views_slideshow_cycle']['cleartypenobg'] = 0;
   $handler->display->display_options['row_plugin'] = 'fields';
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'node';
-  $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
-  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['title']['spaces'] = array(
-    'type' => 'spaces_og',
-    'frontpage' => 0,
-  );
-  /* Field: Content: Body */
-  $handler->display->display_options['fields']['body']['id'] = 'body';
-  $handler->display->display_options['fields']['body']['table'] = 'field_data_body';
-  $handler->display->display_options['fields']['body']['field'] = 'body';
-  $handler->display->display_options['fields']['body']['label'] = '';
-  $handler->display->display_options['fields']['body']['element_type'] = 'span';
-  $handler->display->display_options['fields']['body']['element_class'] = 'description';
-  $handler->display->display_options['fields']['body']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['body']['hide_empty'] = TRUE;
   /* Field: Content: Headline */
   $handler->display->display_options['fields']['field_headline']['id'] = 'field_headline';
   $handler->display->display_options['fields']['field_headline']['table'] = 'field_data_field_headline';
   $handler->display->display_options['fields']['field_headline']['field'] = 'field_headline';
   $handler->display->display_options['fields']['field_headline']['label'] = '';
+  $handler->display->display_options['fields']['field_headline']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_headline']['element_type'] = 'span';
   $handler->display->display_options['fields']['field_headline']['element_class'] = 'title';
   $handler->display->display_options['fields']['field_headline']['element_label_colon'] = FALSE;
@@ -102,6 +83,7 @@ function os_slideshow_views_default_views() {
   $handler->display->display_options['fields']['field_link']['label'] = '';
   $handler->display->display_options['fields']['field_link']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_link']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_link']['empty'] = '#';
   $handler->display->display_options['fields']['field_link']['click_sort_column'] = 'url';
   /* Field: Content: Image */
   $handler->display->display_options['fields']['field_image']['id'] = 'field_image';
@@ -128,6 +110,17 @@ function os_slideshow_views_default_views() {
   $handler->display->display_options['fields']['counter']['alter']['absolute'] = TRUE;
   $handler->display->display_options['fields']['counter']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['counter']['counter_start'] = '1';
+  /* Field: Content: Description */
+  $handler->display->display_options['fields']['field_description']['id'] = 'field_description';
+  $handler->display->display_options['fields']['field_description']['table'] = 'field_data_field_description';
+  $handler->display->display_options['fields']['field_description']['field'] = 'field_description';
+  $handler->display->display_options['fields']['field_description']['label'] = '';
+  $handler->display->display_options['fields']['field_description']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['field_description']['alter']['text'] = '<span class="headline">[field_headline]</span>
+<span class="description">[field_description]</span>';
+  $handler->display->display_options['fields']['field_description']['element_class'] = 'text-and-controls';
+  $handler->display->display_options['fields']['field_description']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_description']['hide_alter_empty'] = FALSE;
   $handler->display->display_options['filter_groups']['groups'] = array(
     1 => 'AND',
     2 => 'OR',
@@ -144,7 +137,7 @@ function os_slideshow_views_default_views() {
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
-    'slideshow_image' => 'slideshow_image',
+    'slideshow_slide' => 'slideshow_slide',
   );
   $handler->display->display_options['filters']['type']['group'] = 1;
   /* Filter criterion: Content: Nid */
@@ -153,6 +146,10 @@ function os_slideshow_views_default_views() {
   $handler->display->display_options['filters']['nid']['field'] = 'nid';
   $handler->display->display_options['filters']['nid']['value']['value'] = '0';
   $handler->display->display_options['filters']['nid']['group'] = 2;
+  /* Filter criterion: Spaces: Content in current space */
+  $handler->display->display_options['filters']['current']['id'] = 'current';
+  $handler->display->display_options['filters']['current']['table'] = 'spaces';
+  $handler->display->display_options['filters']['current']['field'] = 'current';
   $export['os_slideshow'] = $view;
 
   return $export;

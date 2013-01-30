@@ -1,5 +1,11 @@
 
-.container {width:100%}
+#page {
+  margin-bottom: 0;
+}
+
+.container {
+  width: 100%;
+}
 
 #columns {
   margin-top: 40px;
@@ -49,17 +55,38 @@
     clear: none;
   }
 
+  #branding-container,
   #header-container,
   #columns,
   #block-os-primary-menu,
   #footer .gpanel,
   .region-footer,
-  #messages .messages {
+  .message-inner {
     margin-left: auto;
     margin-right: auto;
     width:980px;
   }
+  
+  /* Branding */
+  #branding_header #branding-container {
+    height: 38px;
+  }
+  .branding-left {
+    float: left;
+    width: 235px;
+    margin: 10px 0 0 -30px;
+  }
+  .branding-right {
+    float: right;
+    line-height: 38px;
+    margin: 0;
+  }
+  #branding_footer #branding-container {
+    height: 45px;
+    line-height: 45px;
+  }
 
+  /* Sidebars */
   .two-sidebars .content-inner {
     margin-left: 235px;
     margin-right: 235px;
@@ -212,7 +239,80 @@
     border: 0 none;
   }
 
+  #content-panels .region-content-top {
+    width: 100% !important; /* force the width no matter what */
+  }
+  
+  
+  
+  /* Footer panels */
+  .region-footer {
+    width: 500px;
+  }
+  
+  /* debug
+  .region-footer-first {
+    background: #eee;
+  }
+  .region-footer {
+    background: #ccc;
+  }
+  .region-footer-third {
+    background: #ddd;
+  }*/
 
+  .footer-left.footer .region-footer-first {
+    width: 380px;
+  }
+  .footer-left.footer .region-footer {}
+  
+  /* never happens, footer is always active */
+  .footer-left.footer-right .region-footer-first {}
+  .footer-left.footer-right .region-footer-third {}
+  
+  
+  .footer.footer-right .region-footer {}
+  .footer.footer-right .region-footer-third {
+    width: 480px;
+  }
+
+  .footer-left.footer.footer-right .region-footer-first {
+    width: 320px;
+  }
+  .footer-left.footer.footer-right .region-footer {}
+  .footer-left.footer.footer-right .region-footer-third {
+    width: 160px;
+  }
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   /*
   .inset-wrapper {float:left;width:75%}
   .five-5x20 .row-1 {width:40%}
