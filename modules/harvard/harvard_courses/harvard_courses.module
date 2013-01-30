@@ -493,16 +493,23 @@ function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
 
   field_attach_form('node', $space->og, $attached_data, $form_state);
 
-  // $wrapper = entity_metadata_wrapper('node', $space->og);
-  // for ($i = 0; $i <= $wrapper->field_department_school->count(); $i++) {
-    // $wrapper->field_department_school->get($i)->set(NULL);
-    // $wrapper->save();
-  // }
-
   // Adding to the original form the fields.
   $form['field_department_school'] = $attached_data['field_department_school'];
   $form['field_catalog_number'] = $attached_data['field_catalog_number'];
   $form['#entity'] = $attached_data['#entity'];
+
+  // Remove the reference for non-existed field collection.
+  // @TODO: When accessing to the form after deleting a field collection there
+  // is a need to refresh the page to prevent a notice that come from the
+  // loading of the deleted field collection entity.
+  $node = node_load($space->og->nid);
+  $wrapper = entity_metadata_wrapper('node', $space->og);
+  foreach ($wrapper->field_department_school->value() as $key => $field_collection) {
+    if (empty($field_collection)) {
+      unset($node->field_department_school[LANGUAGE_NONE][$key]);
+    }
+  }
+  $wrapper->save();
 
   // Remove comments and adding a custom submit handler.
   $form['#after_build'][] = 'harvard_courses_form_cp_app_settings_form_after_build';
@@ -515,7 +522,8 @@ function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
  */
 function harvard_courses_feature_validate($form, $form_state) {
   foreach ($form_state['input']['field_department_school'][LANGUAGE_NONE] as $key => $value) {
-    if ($form_state['input']['field_department_school'][LANGUAGE_NONE][$key]['field_school_name'][LANGUAGE_NONE] == '_none') {
+    $form_element = $form_state['input']['field_department_school'][LANGUAGE_NONE][$key];
+    if ($form_element['field_school_name'][LANGUAGE_NONE] == '_none' && !empty($form_element['field_department_id'][LANGUAGE_NONE][0]['value'])) {
       form_set_error("field_school_name", t('Please select school name'));
     }
   }
@@ -577,9 +585,13 @@ function harvard_courses_feature_submit($form, $form_state) {
   $catalog_number = _harvard_courses_get_field_value('field_catalog_number', $form_state);
 
   $wrapper = entity_metadata_wrapper('node', $form['#entity']);
-  $field_collection_delete = array();
+  $existed_field_collection = array();
+  $form_field_collections = array();
 
-
+  // Get all the existed field collection reference.
+  foreach (array_keys($wrapper->field_department_school->value()) as $key) {
+    $existed_field_collection[] = $wrapper->field_department_school->get($key)->getIdentifier();
+  }
 
   // Go over the field collections and save them.
   foreach ($field_department_school as $field_collection) {
@@ -588,7 +600,18 @@ function harvard_courses_feature_submit($form, $form_state) {
       $field_collection->setHostEntity('node', $wrapper->value());
     }
 
+    if (!empty($field_collection->item_id)) {
+      $form_field_collections[] = $field_collection->item_id;
+    }
     $field_collection->save();
+  }
+
+  // Comparing the field collections from the form with the field collection
+  // from the node will give us the removed field collection - we need to delete
+  // them.
+  $removed_fields = array_diff($existed_field_collection, $form_field_collections);
+  foreach ($removed_fields as $removed_field) {
+    $field_collection = field_collection_item_load($removed_field)->delete();
   }
 
   empty($catalog_number) ? $wrapper->field_catalog_number->set(NULL) : $wrapper->field_catalog_number->set($catalog_number);
