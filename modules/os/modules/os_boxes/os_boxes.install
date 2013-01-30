@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Os-boxes module.
+ */
+
+/**
+ * Implements hook_schema()
+ */
+function os_boxes_schema() {
+  // Cache bins for OS-boxes module.
+  $cache_schema = drupal_get_schema_unprocessed('system', 'cache');
+  $schema["cache_os_boxes"] = $cache_schema;
+  $schema["cache_os_boxes"]['description'] = "Cache table used to store OS-boxes.";
+
+  return $schema;
+}
+
+/**
+ * Create cache bins for OS-boxes module.
+ */
+function os_boxes_update_7000() {
+  $cache_schema = drupal_get_schema_unprocessed('system', 'cache');
+
+  $schema = $cache_schema;
+  $schema['description'] = "Cache table used to store OS-boxes.";;
+
+  db_create_table('cache_os_boxes', $schema);
+}
+
