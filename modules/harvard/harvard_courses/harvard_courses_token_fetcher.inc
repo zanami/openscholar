@@ -75,7 +75,7 @@ class HarvardFetcher extends FeedsFetcher {
     else {
       $this->url_param = array(
         'fq_dept_area_category=dept_area_category:"' . implode('" OR "', $departments) . '"',
-        'fq_school_name=school_name:"' . implode('" OR "', $schools) . '"',
+        'school_nm=school_nm:"' . implode('" OR "', $schools) . '"',
       );
       $url = $this->buildUrl(array(), $rows, $start);
     }

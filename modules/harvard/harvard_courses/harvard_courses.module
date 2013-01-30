@@ -452,7 +452,7 @@ function harvard_courses_entity_delete($entity, $type) {
     'field_faculty',
     'field_department_id',
   );
-  $searach_values = array(
+  $search_values = array(
     'field_faculty' => $wrapper->field_school_name->label(),
     'field_department_id' => $wrapper->field_department_id->value(),
   );
