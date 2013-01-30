@@ -82,11 +82,11 @@ function harvard_courses_field_default_fields() {
       'entity_types' => array(),
       'field_name' => 'field_school_name',
       'foreign keys' => array(
-        'node' => array(
+        'taxonomy_term_data' => array(
           'columns' => array(
-            'target_id' => 'nid',
+            'target_id' => 'tid',
           ),
-          'table' => 'node',
+          'table' => 'taxonomy_term_data',
         ),
       ),
       'indexes' => array(
@@ -1171,7 +1171,7 @@ function harvard_courses_field_default_fields() {
       'label' => 'description',
       'required' => 0,
       'settings' => array(
-        'text_processing' => '0',
+        'text_processing' => '1',
         'user_register_form' => FALSE,
       ),
       'widget' => array(

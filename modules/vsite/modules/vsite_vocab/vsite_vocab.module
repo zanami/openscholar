@@ -289,9 +289,6 @@ function vsite_vocab_form_taxonomy_form_vocabulary_submit(&$form, &$form_state) 
  * @see theme_og_vocab_taxonomy_overview_vocabularies().
  */
 function vsite_vocab_preprocess_taxonomy_overview_vocabularies(&$variables) {
-  if (!spaces_get_space()) {
-    return;
-  }
   foreach (array_keys($variables['form']) as $element_key) {
     // Each row in the table have an integer key, therefor processing only
     // integer keys.

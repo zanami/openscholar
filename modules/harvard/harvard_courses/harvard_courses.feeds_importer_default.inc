@@ -20,7 +20,7 @@ function harvard_courses_feeds_importer_default() {
     'fetcher' => array(
       'plugin_key' => 'HarvardFetcher',
       'config' => array(
-        'debug_mode' => 1,
+        'debug_mode' => 0,
       ),
     ),
     'parser' => array(

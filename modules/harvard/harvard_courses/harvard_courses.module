@@ -193,7 +193,7 @@ function harvard_courses_refresh_coureses_execute($nid) {
  */
 function harvard_courses_os_add_new_links_alter(&$links) {
   $menu = menu_get_item();
-  if ($menu['path'] == 'courses') {
+  if ($menu['path'] == 'courses' and user_access('import course feeds')) {
      $links['refresh-courses'] = array(
       'title' => t('courses'),
       'href' => 'courses/refresh-courses',
