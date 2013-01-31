@@ -37,9 +37,9 @@ function hwpi_basetheme_preprocess_node(&$vars) {
   // Event nodes, inject variables for date month and day shield
   if($vars['node']->type == 'event') {
     $vars['event_start'] = array();
-    if(isset($vars['field_date'][0]['value']) && !empty($vars['field_date'][0]['value'])) {
-      date_default_timezone_set($vars['field_date'][0]['timezone']);
-      $event_start_date = strtotime($vars['field_date'][0]['value']);
+    if(isset($entity->field_date[0]['value']) && !empty($entity->field_date[0]['value'])) {
+      date_default_timezone_set($entity->field_date[0]['timezone']);
+      $event_start_date = strtotime($entity->field_date[0]['value']);
       $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
       $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
       $vars['classes_array'][] = 'event-start';
@@ -427,3 +427,18 @@ function hwpi_basetheme_status_messages($vars) {
   return $output;
 }
 
+function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
+    // only display the start time for this particular instance of a repeat event
+  if (isset($entity->view) && isset($entity->view->row_index) && isset($entity->view->result[$entity->view->row_index])) {
+    $result = $entity->view->result[$entity->view->row_index];
+    $field = 'field_data_field_date_field_date_value';
+    $delta = -1;
+    foreach ($entity->field_date[LANGUAGE_NONE] as $d => $r) {
+    	if ($r['value'] == $result->$field) {
+    	  $delta = $d;
+    	  break;
+    	}
+    } 
+    $entity->date_id = 'node.'.$entity->nid.'.field_date.'.$delta;
+  }
+}
