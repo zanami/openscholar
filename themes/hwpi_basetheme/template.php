@@ -1,8 +1,8 @@
 <?php
 
 // Rebuild the theme data. Turn this off when in production.
-system_rebuild_theme_data();
-drupal_theme_rebuild();
+//system_rebuild_theme_data();
+//drupal_theme_rebuild();
 
 
 /**
