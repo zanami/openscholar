@@ -67,6 +67,11 @@ body {
 	 padding-top: 15px;
 }
 
+#footer .at-panel .region {
+    display: inline;
+    float: none;
+}
+
 .region-footer .region-inner /* By default this sets up 20px gutters i.e. margin: 0 10px. */ {
 	 padding-top: 0;
 }
