@@ -37,9 +37,9 @@ function hwpi_basetheme_preprocess_node(&$vars) {
   // Event nodes, inject variables for date month and day shield
   if($vars['node']->type == 'event') {
     $vars['event_start'] = array();
-    if(isset($vars['field_date'][0]['value']) && !empty($vars['field_date'][0]['value'])) {
-      date_default_timezone_set($vars['field_date'][0]['timezone']);
-      $event_start_date = strtotime($vars['field_date'][0]['value']);
+    if(isset($entity->field_date[0]['value']) && !empty($entity->field_date[0]['value'])) {
+      date_default_timezone_set($entity->field_date[0]['timezone']);
+      $event_start_date = strtotime($entity->field_date[0]['value']);
       $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
       $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
       $vars['classes_array'][] = 'event-start';
@@ -147,7 +147,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
       $build['contact_details']['#prefix'] = '<div class="block contact-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
       $build['contact_details']['#suffix'] = '</div></div>';
       $build['contact_details']['#weight'] = -8;
-  
+
       // Contact Details > address
       if (isset($build['field_address'])) {
         $build['field_address']['#label_display'] = 'hidden';
@@ -176,7 +176,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
         $build['contact_details']['field_phone']['#weight'] = 50;
         unset($build['field_phone']);
       }
-  
+
       // Websites
       if (isset($build['field_website'])) {
         $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
@@ -187,7 +187,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
         unset($build['field_website']);
       }
     }
-    
+
     if (isset($build['og_vocabulary'])) {
       foreach ($build['og_vocabulary']['#items'] as $tid) {
         $t = taxonomy_term_load($tid['target_id']);
@@ -434,4 +434,20 @@ function hwpi_basetheme_status_messages($vars) {
     $output .= "</div></div></div>";
   }
   return $output;
+}
+
+function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
+  // only display the start time for this particular instance of a repeat event
+  if (isset($entity->view) && isset($entity->view->row_index) && isset($entity->view->result[$entity->view->row_index])) {
+    $result = $entity->view->result[$entity->view->row_index];
+    $field = 'field_data_field_date_field_date_value';
+    $delta = -1;
+    foreach ($entity->field_date[LANGUAGE_NONE] as $d => $r) {
+      if ($r['value'] == $result->$field) {
+        $delta = $d;
+        break;
+      }
+    }
+    $entity->date_id = 'node.'.$entity->nid.'.field_date.'.$delta;
+  }
 }
