@@ -193,25 +193,47 @@ function os_files_update_7001(&$sandbox) {
             if (!is_array($f) || !isset($f[LANGUAGE_NONE])) continue;
 
             foreach ($f[LANGUAGE_NONE] as $item) {
-              if (isset($item['fid']) && $item['fid'] == $file->fid) {
-                $real = $file;
-                $fake = $dup;
+              if (isset($item['fid'])) {
+                if ($item['fid'] == $file->fid) {
+                  $real = $file;
+                  $fake = $dup;
+                }
+                elseif ($item['fid'] == $rf->fid) {
+                  $real = $dup;
+                  $fake = $file;
+                }
               }
-              elseif (isset($item['fid']) && $item['fid'] == $rf->fid) {
-                $real = $dup;
-                $fake = $file;
+              elseif (isset($item['format'])) {
+                $fids = array();
+                $matches = array();
+                $pattern = '|"fid":"([\d]+)"|';
+                if (preg_match_all($pattern, $item['value'], $matches, PREG_SET_ORDER)) {
+                  foreach ($matches as $m) {
+                    $fids[$m[1]] = $m[1];
+                  }
+                  if (isset($fids[$file->fid])) {
+                    $real = $file;
+                    $fake = $dup;
+                  }
+                  elseif (isset($fids[$dup->fid])) {
+                    $real = $dup;
+                    $fake = $file;
+                  }
+                }
               }
             }
           }
-          $file->timestamp = min($file->timestamp, $rf->timestamp);
-          if ($file->timestamp == $rf->timestamp) {
-            $file->filename = $rf->filename;
-            $file->origname = $rf->origname;
-          }
           
-          file_delete($fake, TRUE);
-          entity_get_controller('file')->resetCache();
-          $file = $real;
+          if (!is_null($fake)) {
+            file_delete($fake, TRUE);
+            entity_get_controller('file')->resetCache();
+            $file = $real;
+          }
+          else {
+            $sandbox['warnings'][] = t('Unable to find either @fid1 or @fid2 in @e_type @eid', array('@fid1' => $file->fid, '@fid2' => $dup->fid, '@e_type' => $rf->type, '@eid' => $rf->id));
+            error_log(t('Unable to find either @fid1 or @fid2 in @e_type @eid', array('@fid1' => $file->fid, '@fid2' => $dup->fid, '@e_type' => $rf->type, '@eid' => $rf->id)));
+            continue;
+          }
         }
       }
       else {
