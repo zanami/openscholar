@@ -297,7 +297,7 @@ function _os_software_delete_child_releases($node) {
  *   A Software Project node ID
  */
 function _os_software_get_software_release_nids($nid) {
-  include_once drupal_get_path('module', 'os') . '/includes/node.inc';
+  ctools_include('node', 'os');
   $query = new OSNodeFieldQuery('software_release');
   $query->fieldCondition('field_software_project', 'target_id', $nid);
   $result = $query->execute();
