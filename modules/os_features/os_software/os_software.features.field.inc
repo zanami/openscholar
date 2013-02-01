@@ -405,7 +405,7 @@ function os_software_field_default_fields() {
               'pathauto' => 0,
               'transliterate' => 0,
             ),
-            'value' => '',
+            'value' => '[vsite:site-purl]/files',
           ),
           'retroactive_update' => 0,
         ),
@@ -419,6 +419,7 @@ function os_software_field_default_fields() {
           'allowed_schemes' => array(
             'embed' => 0,
             'oembed' => 0,
+            'private' => 0,
             'public' => 'public',
           ),
           'allowed_types' => array(
@@ -429,9 +430,8 @@ function os_software_field_default_fields() {
             'video' => 0,
           ),
           'browser_plugins' => array(
-            'library' => 0,
             'media_default--media_browser_1' => 'media_default--media_browser_1',
-            'media_embed' => 0,
+            'media_default--media_browser_my_files' => 0,
             'media_internet' => 'media_internet',
             'upload' => 'upload',
           ),
@@ -685,4 +685,3 @@ function os_software_field_default_fields() {
 
   return $fields;
 }
-
