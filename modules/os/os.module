@@ -683,8 +683,14 @@ function os_settings_form($form_state) {
   if (!overlay_get_mode() == 'child') {
     $form['#redirect'] = '';
   }
-
-  $form['os_use_dropdowns'] = array(
+  $form['os'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('General'),
+    '#weight' => 1,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE
+  );
+  $form['os']['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use Dropdowns'),
     '#default_value' => variable_get('os_use_dropdowns', 1),
