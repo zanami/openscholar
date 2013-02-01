@@ -24,9 +24,15 @@ The general process is as follows:
 
 ## Module
 
+Enable os_migrate
+
 ## Service
 
+Suspend service to your drupal 6 installation.  If downtime is acceptable maintenance mode will suffice.  We disabled user logins so no content could be created, but old content was still viewable.
+
 ## Copy
+
+Copy your database and files.  This is unecessary if you're installing side by side with d6.  We used the migration as an opportunity to move servers.  When copying files, use symlinks to keep the directory structure intact.  If you're using rsync to do the copying, use "--exclude js/* --exclude css/*" to ignore cached javascript and css.
 
 ## Configuration
 
@@ -153,4 +159,5 @@ If you need to test vsites with custom domains, those domains can be found in 'p
 
 ## Server conf
 
+Update your DNS settings to use your drupal 7 installation.  How to manage DNS is out of the scope of this document.
 
