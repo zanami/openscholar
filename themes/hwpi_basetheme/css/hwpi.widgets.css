@@ -1,7 +1,6 @@
 
 /* Site Info */
 #boxes-box-site_info {
-  margin-top: 25px;
   min-height: 120px;
 }
 
@@ -13,7 +12,6 @@
 #boxes-box-site_info p,
 #boxes-box-site_info h1,
 #boxes-box-site_info h2 {
-  margin: 0;
   position: relative;
   font-weight: normal;
   top: 50px;
@@ -35,8 +33,7 @@
 #boxes-box-site_info h2 {
   font-size: 24px;
   font-style: italic;
-  position: absolute;
-  top: 60px;
+
 }
 
 .logged-in #boxes-box-site_info h2 {
@@ -542,7 +539,7 @@ table .mini-day-on a {
   padding-top: 0;
 }
 
-.views-slideshow-controls-bottom {position:absolute;top:220px;left:85px;z-index:5;line-height:0;}
+.views-slideshow-controls-bottom {position:absolute;top:225px;left:75px;z-index:5;line-height:0;}
 
 .views-field-field-description {
   	background: url("../images/slideshow_tileBgtransparency.png") repeat scroll 0 0 transparent;
@@ -556,7 +553,7 @@ table .mini-day-on a {
     width: 390px;
 }
 
-.text-and-controls {color:#FFF;position:absolute;top:20px;left:40px;}
+.text-and-controls {color:#FFF;position:absolute;top:15px;left:30px;}
 
 .block-boxes-os_slideshow_box .headline {
 	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
