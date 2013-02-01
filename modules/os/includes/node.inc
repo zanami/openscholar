@@ -44,10 +44,10 @@ class OSNodeFieldQuery extends EntityFieldQuery {
 
 /**
  * Example usage of class OSNodeFieldQuery.
- */
+ *
 function _os_example_get_announement_nodes() {
-  // Includes this file -- for use in other modules.
-  //include_once drupal_get_path('module', 'os') . '/includes/node.inc';
+  // Includes this file.
+  ctools_include('node', 'os');
 
   // Creates a new EntityFieldQuery for nodes of the given type, accounting for
   // current space if the vsite module is enabled.
@@ -67,4 +67,4 @@ function _os_example_get_announement_nodes() {
     $nodes = node_load_multiple(array_keys($result['node']));
     return $nodes;
   }
-}
+} */
