@@ -345,16 +345,8 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // defaults
-    $efq = new EntityFieldQuery();
-    $efq->entityCondition('entity_type', 'node');
-    $efq->propertyCondition('status', 1);
-    $efq->propertyCondition('type', array_keys($bundles), 'IN');
-
-    // vsite
-    if (module_exists('vsite') && $space = spaces_get_space()) {
-      $efq->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
-    }
-
+    ctools_include('node', 'os');
+    $efq = new OSNodeFieldQuery(array_keys($bundles));
     return $efq;
   }
 
@@ -379,8 +371,8 @@ class os_sv_list_box extends os_boxes_default {
       case 'book':
         //limit book depth to 1.  not a field, so use a regular query
         $query = db_select('menu_links', 'ml')
-        ->condition('module', 'book')
-        ->condition('depth', 1);
+          ->condition('module', 'book')
+          ->condition('depth', 1);
         $query->addField('ml', 'link_path');
         $book_nids = $query->execute()->fetchCol();
         $book_nids = preg_replace('/node\//', '', $book_nids);
