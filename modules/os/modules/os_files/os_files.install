@@ -221,6 +221,18 @@ function os_files_update_7001(&$sandbox) {
                     $fake = $file;
                   }
                 }
+                // this is a file link entered manually into the wysiwyg
+                // delete the one with the higher fid, and we'll rewrite the node body from there
+                else {
+                  if ($file->fid > $dup->fid) {
+                    $real = $dup;
+                    $fake = $file;
+                  }
+                  else {
+                    $real = $file;
+                    $fake = $dup;
+                  }
+                }
               }
             }
           }
