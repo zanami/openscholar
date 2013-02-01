@@ -114,7 +114,7 @@ function cp_menu() {
     'file path' => drupal_get_path('module', 'taxonomy'),
   );
 
-  // Provides a customize form for each OS App.
+  // Provides a customize form for each OS App and a version that will load in a modal
   $apps = spaces_features('site');
   foreach ($apps as $name => $app) {
     $items['cp/build/features/' . $name] = array(
@@ -122,6 +122,15 @@ function cp_menu() {
       'title arguments' => array(3),
       'page callback' => 'drupal_get_form',
       'page arguments' => array('cp_app_settings_form', 3),
+      'access callback' => 'spaces_access_admin',
+      'file' => 'cp.pages.inc',
+    );
+    
+    $items['features/%/' . $name] = array(
+      'title callback' => '_cp_app_settings_page_title',
+      'title arguments' => array(2),
+      'page callback' => 'cp_app_settings_form_modal',
+      'page arguments' => array(1,2),
       'access callback' => 'spaces_access_admin',
       'file' => 'cp.pages.inc',
     );
