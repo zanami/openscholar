@@ -1,10 +1,12 @@
 /**
- * Allows users to add posts to their manual lists without an additional 
- * page load on top of the ajax call
+ * Attach event to remove button in slideshow box form.
  */
 Drupal.behaviors.os_slideshow_box = {
 	attach : function (ctx) {
+	  
 		var $ = jQuery;
+		
+		/* Events for remove links */
     var $form = $('#boxes-add-form, #boxes-box-form');
 
 		// set up remove links.
@@ -17,5 +19,23 @@ Drupal.behaviors.os_slideshow_box = {
 		}
 		
 		setup_remove($form);
-	}
+		
+		
+		/* Slider */
+    var input = $('#edit-size', ctx);
+    if (input.length == 0) {
+      return;
+    }
+    input[0].type = "range";
+    if (input.attr('type') == 'range') {
+      // this browser supports the new form input types
+      // set the rest of them
+      input.attr(Drupal.settings.os_slideshow_box);
+      // and display the actual pixel width as the user changes it
+      input.change(function (e) {
+        input.parent().find('.field-suffix').html(input.val()+"px");
+      });
+      input.change();
+    }
+  }
 };

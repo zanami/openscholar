@@ -38,12 +38,8 @@ class os_slideshow_box extends os_boxes_default {
       '#field_suffix' => 'px',
       '#description' => t('Enter the width of the slideshow in pixels. It should be between %min and %max pixels.', array('%min'=>$defaults['min_width'], '%max'=>$defaults['max_width'])),
       '#element_validate' => array('os_slideshow_accepted_range'),
-      '#attached' => array(
-        'js' => array(
-          drupal_get_path('module', 'os_boxes').'/plugins/os_boxes_slideshow/os_slideshow_form.js'
-        )
-      ),
     );
+    drupal_add_js(array('os_slideshow_box' => array('min'=>$defaults['min_width'], 'max'=>$defaults['max_width'])), 'setting');
     
     $display_options = array('pager' => t('Show Pager'), 'controls' => t('Show Controls'), 'slide_counter' => t('Slide Counter'));
     foreach ($display_options as $option => $title)
