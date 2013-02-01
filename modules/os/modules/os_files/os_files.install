@@ -37,6 +37,12 @@ function os_files_update_7001(&$sandbox) {
   $union3->join('file_usage', 'fu2', 'fu2.fid = fu.fid AND fu2.type = \'node\'');
   $union3->join('og_membership', 'ogm', 'ogm.etid = fu2.id AND entity_type = \'node\'');
   $union3->join('purl', 'p', 'p.id = ogm.gid AND provider = \'spaces_og\'');
+  
+  // limit testing to a single vsite
+  //$q->condition('ogm.gid', 3633);
+  //$union1->condition('ogm.gid', 3633);
+  //$union2->condition('ogm.gid', 3633);
+  //$union3->condition('ogm.gid', 3633);
 
 
   if (!isset($sandbox['progress'])) {
@@ -58,6 +64,7 @@ function os_files_update_7001(&$sandbox) {
     $r = $q->execute();
 
     $fids = $r->fetchAll(PDO::FETCH_OBJ);
+    $sandbox['dataset'] = array();
     foreach ($fids as $fid) {
       $sandbox['dataset'][] = $fid->fid;
     }
@@ -129,7 +136,7 @@ function os_files_update_7001(&$sandbox) {
     $file_move_type = FILE_EXISTS_REPLACE;
 
     if (!file_exists($file->uri)) {
-      $sandbox['warnings'][] = t('File @file (@fid) not found.', array('@file' => $file->uri, '@fid' => $fid->fid));
+      $sandbox['warnings'][] = t('File @file (@fid) not found.', array('@file' => $file->uri, '@fid' => $file->fid));
       $sandbox['progress']++;
       continue;
     }
@@ -143,7 +150,7 @@ function os_files_update_7001(&$sandbox) {
         ->condition('filemime', $file->filemime)
         ->condition('filesize', $file->filesize)
         ->condition('fm.fid', $file->fid, '!=');
-      $qf->join('file_usage', 'fu', 'fm.fid = fu.fid');
+      $qf->leftJoin('file_usage', 'fu', 'fm.fid = fu.fid');
       $qf = $qf->fields('fu', array('id', 'type'))
                ->execute();
 
@@ -154,24 +161,57 @@ function os_files_update_7001(&$sandbox) {
           ->condition('fid', $row->fid)
           ->execute();
         $r2 = $q2->fetch(PDO::FETCH_OBJ);
-        if ($r2->id != $qf->id || $r2->type != $qf->type) {
+        // duplicate file has no file_usage entry. we should delete it
+        // file we want to move is already there, so we don't need to move it again
+        if (is_null($rf->id)) {
+          $file->uri = $filename;
+          $to_save = true;
+          db_delete('file_managed')->condition('fid', $rf->fid)->execute();
+          file_unmanaged_delete($file->uri);
+        }
+        elseif ($r2 === FALSE) {
+          // this file has no file usage entry
+          // and the file in the right place does. just get rid of this file
+          db_delete('file_managed')->condition('fid', $file->fid)->execute();
+          file_unmanaged_delete($file->uri);
+          continue;  // no file_usage, so we have no way of knowing of any nodes that need the filename replaced
+        }
+        elseif (($r2->id != $rf->id || $r2->type != $rf->type)) {
           // this is probably a duplicate that is not safe to just delete
           $file_move_type = FILE_EXISTS_RENAME;
         }
         else {
-          $file->filename = $rf->filename;
-          $file->timestamp = $rf->timestamp;
-          $file->origname = $rf->origname;
+          // these 2 files have the same file_usage entry
+          // one of them is valid, the other is not
+          $real = null;
+          $fake = null;
+          $dup = file_load($rf->fid);
+          $entity = entity_load($rf->type, array($rf->id));
+          
+          // find the which file is real and which is fake, to be remove from the db
+          foreach ($entity[$rf->id] as $k => $f) {
+            if (!is_array($f) || !isset($f[LANGUAGE_NONE])) continue;
 
-          $file->uri = $filename;
-          try {
-            file_save($file);
-            db_delete('file_managed')->condition('fid', $rf->fid)->execute();
+            foreach ($f[LANGUAGE_NONE] as $item) {
+              if (isset($item['fid']) && $item['fid'] == $file->fid) {
+                $real = $file;
+                $fake = $dup;
+              }
+              elseif (isset($item['fid']) && $item['fid'] == $rf->fid) {
+                $real = $dup;
+                $fake = $file;
+              }
+            }
           }
-          catch (PDOException $e) {
-            error_log($e);
-            error_log(print_r($file,1));
+          $file->timestamp = min($file->timestamp, $rf->timestamp);
+          if ($file->timestamp == $rf->timestamp) {
+            $file->filename = $rf->filename;
+            $file->origname = $rf->origname;
           }
+          
+          file_delete($fake, TRUE);
+          entity_get_controller('file')->resetCache();
+          $file = $real;
         }
       }
       else {
