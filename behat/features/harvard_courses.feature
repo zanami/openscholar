@@ -5,7 +5,6 @@ Feature:
   Scenario: Importing courses and test their grouping to the correct sites.
     Given I am logged in as "admin"
      When I visit "courses/build-courses-environment"
-      And I should see "The environment defined successfully"
       And I visit "john/cp/build/features/harvard_courses"
       And I fill in "Department ID" with "Architecture"
       And I select "Harvard Graduate School of Design" from "School name"
