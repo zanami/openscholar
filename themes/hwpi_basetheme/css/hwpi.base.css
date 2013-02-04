@@ -12,6 +12,10 @@ a:visited {
   color: #4384C4;
 }
 
+#columns .block ul {
+    list-style: disc;
+}
+
 p:empty {
 	display: none;
 }
