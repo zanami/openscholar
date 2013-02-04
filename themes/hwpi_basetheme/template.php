@@ -82,11 +82,20 @@ function hwpi_basetheme_node_view_alter(&$build) {
       $build['pic_bio']['#prefix'] = '<div class="pic-bio clearfix">';
       $build['pic_bio']['#suffix'] = '</div>';
       $build['pic_bio']['#weight'] = -9;
+
+      if (isset($build['body'])) {
+        $build['body']['#label_display'] = 'hidden';
+        $build['pic_bio']['body'] = $build['body'];
+        unset($build['body']);
+      }
+    }
+    else {
+      $build['body']['#weight'] = -9;
     }
 
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
-      unset($build['body']);
+      unset($build['body'], $build['pic_bio']['body']);
 
       foreach (array('field_professional_title', 'field_address', 'field_email', 'field_phone', 'field_website') as $w => $f) {
         if (isset($build[$f])) {
@@ -125,12 +134,6 @@ function hwpi_basetheme_node_view_alter(&$build) {
       $build['field_person_photo']['#label_display'] = 'hidden';
       $build['pic_bio']['field_person_photo'] = $build['field_person_photo'];
       unset($build['field_person_photo']);
-    }
-
-    if (isset($build['body'])) {
-      $build['body']['#label_display'] = 'hidden';
-      $build['pic_bio']['body'] = $build['body'];
-      unset($build['body']);
     }
 
     // Note that Contact and Website details will print wrappers and titles regardless of any field content.
