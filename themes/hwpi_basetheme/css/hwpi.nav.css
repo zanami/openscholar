@@ -122,6 +122,22 @@ ul.nice-menu ul {
   text-transform: uppercase;
 }
 
+/* Temporary - Footer Quicklinks Nav CSS - REMOVE WHEN THE REAL MENU FUNCTIONALITY IS READY*/
+
+#footer ul.os-menu,
+#footer ul {
+	margin-left:0;
+}
+
+#footer ul.os-menu li.os-menuparent {
+	float:left;
+	display:inline;
+	clear: none;
+	margin-right:95px;
+  font-size:12px;
+  text-transform: uppercase;
+}
+
 
 /* Section Nav */
 #boxes-box-os_pages_section_nav {
