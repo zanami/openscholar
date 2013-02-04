@@ -280,7 +280,6 @@ function _openscholar_install_profile_modules_finished($success, $results, $oper
   }
 
   $group_types = og_get_all_group_bundle();
-  drush_print_r($group_types);
   foreach (array_keys($group_types['node']) as $bundle) {
     $rids = og_roles('node', $bundle);
     // Get the role ID of the group-member.
