@@ -297,8 +297,10 @@ function os_files_update_7001(&$sandbox) {
         ->condition('fid', $row->fid)
         ->condition('type', 'node');
         $q->join('field_data_body', 'fdb', 'fdb.entity_id = fu.id');
-        $q->fields('fdb', array('bundle', 'body_value'));
-        $q->where('fdb.body_value != \'\'');
+        $q->leftJoin('bilio', 'b', 'b.nid = fu.nid AND b.vid = fdb.revision_id');
+        $q->fields('fdb', array('bundle', 'body_value'))
+          ->fields('b', array('biblio_notes', 'biblio_abst_e', 'biblio_full_text'))
+          ->where('fdb.body_value != \'\' OR b.biblio_notes IS NOT NULL OR b.biblio_abst_e IS NOT NULL OR b.biblio_full_text != 0');
     $nodes = $q->execute();
 
     foreach ($nodes as $node) {
@@ -312,13 +314,53 @@ function os_files_update_7001(&$sandbox) {
           // add the fid so we can find this easily later
           $node->body_value = str_replace($m[1].'"', file_create_url($file->uri).'" data-fid="'.$file->fid.'"', $node->body_value);
         }
+  
+        db_update('field_data_body')
+          ->fields(array('body_value' => $node->body_value))
+          ->condition('entity_id', $node->id)
+          ->condition('revision_id', $node->revision_id)
+          ->execute();
       }
-
-      db_update('field_data_body')
-        ->fields(array('body_value' => $node->body_value))
-        ->condition('entity_id', $node->id)
-        ->condition('revision_id', $node->revision_id)
-        ->execute();
+      
+      $biblio_save = false;
+      if (isset($node->biblio_notes) && strlen($node->biblio_notes)) {
+        preg_match_all('|<a [^>]*href=\"([^\"]*'.$orig_filename.'[^\"]*)\"[^>]*>(.*)<\/a>|U', $node->biblio_notes, $matches, PREG_SET_ORDER);
+        foreach ($matches as $m) {
+          // add the fid so we can find this easily later
+          $node->biblio_notes = str_replace($m[1].'"', file_create_url($file->uri).'" data-fid="'.$file->fid.'"', $node->biblio_notes);
+          $biblio_save = true;
+        }
+      }
+      
+      if (isset($node->biblio_abst_e) && strlen($node->biblio_abst_e)) {
+        preg_match_all('|<a [^>]*href=\"([^\"]*'.$orig_filename.'[^\"]*)\"[^>]*>(.*)<\/a>|U', $node->biblio_abst_e, $matches, PREG_SET_ORDER);
+        foreach ($matches as $m) {
+          // add the fid so we can find this easily later
+          $node->biblio_abst_e = str_replace($m[1].'"', file_create_url($file->uri).'" data-fid="'.$file->fid.'"', $node->biblio_abst_e);
+          $biblio_save = true;
+        }
+      }
+      
+      if (isset($node->biblio_full_text) && strlen($node->biblio_full_text)) {
+        preg_match_all('|<a [^>]*href=\"([^\"]*'.$orig_filename.'[^\"]*)\"[^>]*>(.*)<\/a>|U', $node->biblio_full_text, $matches, PREG_SET_ORDER);
+        foreach ($matches as $m) {
+          // add the fid so we can find this easily later
+          $node->biblio_full_text = str_replace($m[1].'"', file_create_url($file->uri).'" data-fid="'.$file->fid.'"', $node->biblio_full_text);
+          $biblio_save = true;
+        }
+      }
+      
+      if ($biblio_save) {
+        db_update('biblio')
+          ->fields(array(
+            'biblio_notes' => $node->biblio_notes,
+            'biblio_abst_e' => $node->biblio_abst_e,
+            'biblio_full_text' => $node->biblio_full_text,
+          ))
+          ->condition('nid', $node->id)
+          ->condition('vid', $node->revision_id)
+          ->execute();
+      }
     }
 
     //error_log('File '.$file->fid.' moved from '.$old_file->uri.' to '.$target_dir);
