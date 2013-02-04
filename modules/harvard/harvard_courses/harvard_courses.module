@@ -58,7 +58,45 @@ function harvard_courses_menu() {
     'type' => MENU_LOCAL_TASK,
   );
 
+  $items['courses/build-courses-environment'] = array(
+    'title' => 'Set harvard courses',
+    'description' => 'Define the harvard courses: enable module, define debug mode and clear the cache',
+    'page callback' => 'harvard_courses_define_harvard_courses',
+    'access arguments' => array('administer site configuration'),
+  );
+
   return $items;
+}
+
+/**
+ * Menu callback define the Harvard courses area.
+ */
+function harvard_courses_define_harvard_courses() {
+  // Enable Harvard courses module.
+  module_enable(array('harvard_courses'));
+
+  // Set the debug mode to ON in the fetcher settings.
+  $result = db_select('feeds_importer', 'feed')
+    ->fields('feed')
+    ->condition('id', 'course')
+    ->execute()
+    ->fetchAssoc();
+
+  $config = unserialize($result['config']);
+  $config['fetcher']['config']['debug_mode'] = 1;
+  $config = serialize($config);
+
+  db_update('feeds_importer')
+    ->fields(array(
+      'config' => $config,
+    ))
+  ->condition('id', 'course')
+  ->execute();
+
+  // Clear the cache so the fetcher will take place.
+  cache_clear_all();
+
+  return t('The environment defined successfully');
 }
 
 /**
@@ -410,7 +448,7 @@ function harvard_courses_entity_update($entity, $type) {
       }
       if (!empty($courses)) {
         foreach ($courses as $course_id) {
-          og_ungroup('node', harvard_courses_get_field_collection_item_node($entity->item_id), 'node', $course_id);
+          og_ungroup('node', $entity->hostEntity(), 'node', $course_id);
         }
       }
 
@@ -423,10 +461,39 @@ function harvard_courses_entity_update($entity, $type) {
       }
       if (!empty($courses)) {
         foreach ($courses as $course) {
-          og_group('node', harvard_courses_get_field_collection_item_node($entity->item_id), array('entity_type' => 'node', 'entity' => $course));
+          og_group('node', $entity->hostEntity(), array('entity_type' => 'node', 'entity' => $course));
         }
       }
       $entity->skip_og_membership = TRUE;
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function harvard_courses_entity_insert($entity, $type) {
+  if ($type != 'field_collection_item' || (isset($entity->field_name) && $entity->field_name != 'field_department_school')) {
+    return;
+  }
+  $wrapper = entity_metadata_wrapper($type, $entity);
+
+  // Building the parameters for the API function that will return us the
+  // courses according to the field collection data.
+  $fields = array(
+    'field_faculty',
+    'field_department_id',
+  );
+  $search_values = array(
+    'field_faculty' => $wrapper->field_school_name->label(),
+    'field_department_id' => $wrapper->field_department_id->value(),
+  );
+
+  // Un-grouping removed courses from the group.
+  $courses = harvard_courses_related_nodes($fields, $search_values);
+  if (!empty($courses)) {
+    foreach ($courses as $course) {
+      og_group('node', $entity->hostEntity(), array('entity_type' => 'node', 'entity' => $course));
     }
   }
 }
@@ -439,7 +506,7 @@ function harvard_courses_entity_delete($entity, $type) {
     return;
   }
   $wrapper = entity_metadata_wrapper($type, $entity);
-  $site = harvard_courses_get_field_collection_item_node($entity->item_id);
+  $site = $entity->hostEntity();
 
   // There are no sites relate to the to the courses from the field collection.
   if (empty($site)) {
@@ -464,31 +531,6 @@ function harvard_courses_entity_delete($entity, $type) {
       og_ungroup('node', $site, 'node', $course_id);
     }
   }
-}
-
-/**
- * Return the nid that the field collection item belong two.
- *
- *  @param $item_id
- *    The field collection item id.
- *
- *  @return
- *    Node ID.
- */
-function harvard_courses_get_field_collection_item_node($item_id) {
-  $query = new entityFieldQuery();
-  $result = $query
-    ->entityCondition('entity_type', 'node')
-    ->fieldCondition('field_department_school', 'value', $item_id)
-    ->execute();
-
-  if (empty($result['node'])) {
-    return;
-  }
-
-  $nid = reset(array_keys($result['node']));
-
-  return $nid;
 }
 
 /**
