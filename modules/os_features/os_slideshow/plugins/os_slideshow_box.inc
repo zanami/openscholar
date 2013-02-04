@@ -173,7 +173,6 @@ class os_slideshow_box extends os_boxes_default {
         unset($filters['nid']);
         $c = 0;
         foreach (array_keys($this->options['nodes']) as $nid) {
- //       for($c = 0; $c < count($this->options['nodes']); $c++) {
           $nid_filter['value']['value'] = $nid;
           $filters['nid_' . $c++] = $nid_filter;
         }
@@ -182,6 +181,8 @@ class os_slideshow_box extends os_boxes_default {
       
       //stash the box delta for hook_pre_render (is there a better way to do this part?)
       $view->set_arguments(array('delta' => $this->delta));
+      
+      $this->_theme_css_alter();
       
       //render output
       $output = $view->preview();     
@@ -262,6 +263,20 @@ class os_slideshow_box extends os_boxes_default {
     }
     
     return $nids;
+  }
+  
+  /**
+   * @function _theme_css_alter()
+   * 
+   * Some themes provide css for the slideshow.  If so, use it.
+   */
+  private function _theme_css_alter() {
+    ctools_include('themes', 'os');
+    $theme = os_get_themes(os_theme_get());
+    $style = (isset($theme['info']['os']['os_slideshow'])) ? $theme['info']['os']['os_slideshow'] : ''; 
+    if ($style) {
+      drupal_add_css($style);      
+    }
   }
 }
 
