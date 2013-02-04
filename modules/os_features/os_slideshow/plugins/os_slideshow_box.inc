@@ -273,7 +273,7 @@ class os_slideshow_box extends os_boxes_default {
   private function _theme_css_alter() {
     ctools_include('themes', 'os');
     $theme = os_get_themes(os_theme_get());
-    $style = (isset($theme['info']['os']['os_slideshow'])) ? $theme['info']['os']['os_slideshow'] : ''; 
+    $style = (isset($theme->info['os']['os_slideshow'])) ? $theme->info['os']['os_slideshow'] : ''; 
     if ($style) {
       drupal_add_css($style);      
     }
