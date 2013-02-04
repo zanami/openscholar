@@ -414,7 +414,7 @@ function os_software_field_default_fields() {
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'media',
+        'module' => 'file',
         'settings' => array(
           'allowed_schemes' => array(
             'embed' => 0,
@@ -437,7 +437,7 @@ function os_software_field_default_fields() {
           ),
           'progress_indicator' => 'throbber',
         ),
-        'type' => 'media_generic',
+        'type' => 'file_generic',
         'weight' => '2',
       ),
     ),

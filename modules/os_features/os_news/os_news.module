@@ -41,14 +41,6 @@ function os_news_process_node(&$vars) {
   // Helps poor theme developers find these changes to $variables
   $vars['classes'] .= ' modified-in-os_news_process_node';
 
-  // Includes custom CSS
-  $vars['title_prefix']['#attached'] = array(
-    'css' => array(
-      'type' => 'file',
-      'data' => drupal_get_path('module', 'os_news') . '/os_news.css',
-    ),
-  );
-
   if ($vars['teaser']) {
     // Moves the profile photo thumbnail before teaser title (full name)
     if (isset($vars['content']['field_photo'])) {
@@ -67,6 +59,15 @@ function os_news_process_node(&$vars) {
   if(isset($vars['content']['og_vocabulary'])) {
     $vars['content']['og_vocabulary']['#weight'] = 0;
   }
+  
+  // Includes custom CSS
+  $vars['title_prefix']['#attached'] = array(
+    'css' => array(
+      'type' => 'file',
+      'data' => drupal_get_path('module', 'os_news') . '/os_news.css',
+    ),
+  );
+  
 
 }
 
