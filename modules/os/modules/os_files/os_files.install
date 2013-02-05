@@ -163,14 +163,14 @@ function os_files_update_7001(&$sandbox) {
       // duplicate file has no file_usage entry. we should delete it
       // file we want to move is already there, so we don't need to move it again
       if (is_null($rf->id)) {
-        $file->uri = $filename = $rf->uri;
-        if ($file->timestamp > $qf->timestamp) {
-          $file->timestamp = $qf->timestamp;
-          $file->filename = $qf->filename;
+        if ($file->timestamp > $rf->timestamp) {
+          $file->timestamp = $rf->timestamp;
+          $file->filename = $rf->filename;
         }
         $to_save = true;
         db_delete('file_managed')->condition('fid', $rf->fid)->execute();
         file_unmanaged_delete($file->uri);
+        $file->uri = $filename = $rf->uri;
       }
       elseif ($r2 === FALSE) {
         // this file has no file usage entry
