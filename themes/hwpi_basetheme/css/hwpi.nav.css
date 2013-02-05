@@ -41,7 +41,7 @@
 }
  
 ul.nice-menu ul {
-    top: 3.4em;
+    top: 3.3em;
 }
 
 ul.menu ul ul {
@@ -60,12 +60,13 @@ ul.nice-menu ul {
 #menu-bar ul.nice-menu .menuparent ul li a {
     background: none;
     padding-right: 0;
+    font-size:16px;
 }
 
 #menu-bar ul.nice-menu .menuparent ul li a:hover,
 #menu-bar ul.nice-menu .menuparent ul li a.active {
     background: none;
-     color:#000;
+     color:#666;
     padding-right: 0;
 }
 

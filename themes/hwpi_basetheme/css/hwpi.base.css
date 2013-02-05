@@ -131,6 +131,17 @@ ol.search-results li.search-result:last-child {
   right: 54px;
 }
 
+.view .date-nav-wrapper .date-prev {
+    right: 590px;
+}
+
+.view .date-nav-wrapper .date-prev a {
+    overflow: hidden;
+ 	text-indent: -99999999px;
+ 	font-size: 0;
+ 	display:inline-block;
+}
+
 .view .date-nav-wrapper .date-next {
   right: 20px;
 }
@@ -467,6 +478,7 @@ ol.search-results li.search-result:last-child {
 
 .node-teaser.node-person {
   line-height: 19px;
+  padding: 15px 0 30px;
 }
 
 
