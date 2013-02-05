@@ -82,8 +82,8 @@ function _hwpi_branding_footer() {
     ),
     'copyright' => array(
       '#markup' => t('<span class="harvard-copyright">Copyright &copy; 2013 The President and Fellows of Harvard College</span> | !privacy | !access', array(
-        '!privacy' => l('Privacy', 'http://www.harvard.edu/privacy.html'),
-        '!access' => l('Accessibility', 'http://www.harvard.edu/accessibility.html')
+        '!privacy' => l('Privacy', 'http://www.harvard.edu/privacy-statement'),
+        '!access' => l('Accessibility', 'http://accessibility.harvard.edu/')
       ))
     )
   );

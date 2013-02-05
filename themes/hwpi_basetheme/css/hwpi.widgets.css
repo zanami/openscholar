@@ -138,7 +138,7 @@ table.mini td.week {
 
 table td.mini,
 table td.mini a {
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .calendar-calendar th.days {
@@ -152,8 +152,9 @@ table td.mini a {
   padding: 0;
 }
 
-table .mini-day-on a {
+table td.mini .mini-day-on a {
   text-decoration: none;
+  font-weight: bold;
 }
 
 .calendar-calendar .mini tbody {
@@ -553,7 +554,7 @@ table .mini-day-on a {
     width: 390px;
 }
 
-.text-and-controls {color:#FFF;position:absolute;top:15px;left:30px;}
+.text-and-controls {color:#FFF;position:absolute;top:15px;left:25px;padding-right: 10px;}
 
 .block-boxes-os_slideshow_box .headline {
 	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
