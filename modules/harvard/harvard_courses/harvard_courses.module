@@ -599,6 +599,7 @@ function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
   // Remove comments and adding a custom submit handler.
   $form['#after_build'][] = 'harvard_courses_form_cp_app_settings_form_after_build';
 
+  $form['#validate'][] = 'harvard_courses_feature_validate';
   $form['#submit'][] = 'harvard_courses_feature_submit';
 }
 
@@ -648,6 +649,19 @@ function _harvard_courses_get_field_value($field_name, $form_state, $field_colle
   }
 
   return $return;
+}
+
+/**
+ * Form validate; Verify the user select a school name.
+ */
+function harvard_courses_feature_validate($form, $form_state) {
+  foreach ($form_state['values']['field_department_school'][LANGUAGE_NONE] as $key => $value) {
+    if (is_int($key)) {
+      if (empty($form_state['values']['field_department_school'][LANGUAGE_NONE][$key]['field_school_name'][LANGUAGE_NONE][0]['target_id'])) {
+        form_set_error('field_department_school][und][' . $key . '][field_school_name][und', t('Please select school name.'));
+      }
+    }
+  }
 }
 
 /**
