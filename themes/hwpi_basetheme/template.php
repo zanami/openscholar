@@ -448,14 +448,13 @@ function hwpi_basetheme_preprocess(&$vars, $hook) {
       'views_slideshow_pager_fields_fields' => array('title' => 0),
       'views_slideshow_pager_fields_hover' => 0,
     );
-    
+
     $vars['rendered_pager'] = theme('views_slideshow_pager_widget_render', array(
-      'vss_id' => $vars['vss_id'], 
-      'view' => $vars['view'], 
-      'settings' => $settings, 
-      'location' => $vars['location'], 
+      'vss_id' => $vars['vss_id'],
+      'view' => $vars['view'],
+      'settings' => $settings,
+      'location' => $vars['location'],
       'rows' => $vars['rows']
     ));
   }
 }
- 
