@@ -10,7 +10,6 @@ class os_slideshow_box extends os_boxes_default {
       'controls' => 'bottom',
       'slide_counter' => 'bottom',
       'effect' => 'fade',
-      'size' => 600,
       'nodes' => array(),
         
       //not configurable.  
@@ -30,16 +29,6 @@ class os_slideshow_box extends os_boxes_default {
       '#collapsed' => TRUE,
       '#weight' => 10,
     );
-     
-    $form['display']['size'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Size'),
-      '#default_value' => $this->options['size'],
-      '#field_suffix' => 'px',
-      '#description' => t('Enter the width of the slideshow in pixels. It should be between %min and %max pixels.', array('%min'=>$defaults['min_width'], '%max'=>$defaults['max_width'])),
-      '#element_validate' => array('os_slideshow_accepted_range'),
-    );
-    drupal_add_js(array('os_slideshow_box' => array('min'=>$defaults['min_width'], 'max'=>$defaults['max_width'])), 'setting');
     
     $display_options = array('pager' => t('Show Pager'), 'controls' => t('Show Controls'), 'slide_counter' => t('Slide Counter'));
     foreach ($display_options as $option => $title)
@@ -160,7 +149,7 @@ class os_slideshow_box extends os_boxes_default {
       $handler->set_option('style_options', $style_options);
 
       //use an appropriately scaled image style.
-      $image_style = $this->_get_image_style($this->options['size']);
+      $image_style = $this->_get_image_style();
       $style = current(array_keys($image_style));
       $fields = $handler->get_option('fields');
       $fields['field_image']['settings']['image_style'] = $style;
@@ -187,7 +176,6 @@ class os_slideshow_box extends os_boxes_default {
       //render output
       $output = $view->preview();     
       $output = $this->_resize_images($output, $image_style);    //use user provided image size
-      $output = $this->_remove_dead_links($output);              //all images are linked, even if no link was provided.
       //if we're resizing images in this way, mabye links to the empty string target could be removed the same way.
       
       
@@ -199,9 +187,34 @@ class os_slideshow_box extends os_boxes_default {
 
   //returns [name => [width, height]] of style for this box's size
   private function _get_image_style() {
+    //get this blocks region.
+    $contexts = context_get();
+    foreach ($contexts['context'] as $context) {
+      if (@$blocks = ($context->reactions['block']['blocks'])) {
+        if (isset($blocks['boxes-'.$this->delta])) {
+          $region = $blocks['boxes-'.$this->delta]['region'];
+          break;
+        }
+      }
+    }
+    
+    //check max size of this block's region
+//     ctools_include('themes', 'os');
+//     $theme = os_get_themes(os_theme_get());
+//     $settings = $theme->info['settings'];
+//     switch ($region){ 
+//       case 'sidebar_first':
+//         break;
+//       case 'sidebar_second':
+//         break;
+//       default:
+//         break;
+//     }
+    $size = (in_array($region, array('sidebar_first','sidebar_second'))) ? 300 : 1000;
+    
     $image_styles = image_styles();
     $slideshows = preg_grep('/^slideshow_/', array_keys($image_styles));
-    $size = (int) $this->options['size'];
+    //$size = (int) $this->options['size'];
     
     $sizes = array();
     foreach ($slideshows as $name) {
@@ -223,30 +236,15 @@ class os_slideshow_box extends os_boxes_default {
   private function _resize_images($html, $style) {
     $dim = current($style);
     $preset = current(array_keys($style));
-    $ratio = $dim['height']/$dim['width'];
-    $width = $this->options['size'];
-    $height = $width * $ratio;
+    $dims = current($style);
     
-    // swap out the dimenions of the preset with the dimenions the user wants
-    $patt_w = '/(<img [^>]* width=")([^"]*)("[^>]*>)/';
-    $patt_h = '/(<img [^>]* height=")([^"]*)("[^>]*>)/';
-    $patt_url = '/<img [^>]*src="([^"]*)"[^>]*>/';
+    $str_width  = 'width="' . $dims['width'] . '"';
+    $str_height = 'height="' . $dims['height'] . '"';
     
-    $html = preg_replace($patt_w, '${1}'.($width).'px'.'${3}', $html);
-    $html = preg_replace($patt_h, '${1}'.($height).'px'.'${3}', $html);
-//     $matches = array();
-//     preg_match_all($patt_url, $html, $matches, PREG_SET_ORDER);
-//     foreach ($matches as $m) {
-       //$html = str_replace($m[1], image_style_url($preset, $m[1]), $html);  
-//     }
+    $html = str_replace($str_width, 'width="100%"', $html);
+    $html = str_replace($str_height, '', $html);
     
     return $html;
-  }
-  
-  private function _remove_dead_links($html) {
-    $html;
-    //$link = '<a href="' . current_path() . '%20">';
-    return $html; 
   }
   
   //filters out dead nids
