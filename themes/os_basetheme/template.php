@@ -59,6 +59,8 @@ function os_basetheme_preprocess_page(&$vars) {
   if (!isset($vars['use_content_regions'])) {
     $vars['use_content_regions'] = false;
   }
+  
+  $vars['login_link'] = theme('openscholar_login');
 }
 
 /**
