@@ -11,6 +11,8 @@ class os_slideshow_box extends os_boxes_default {
       'slide_counter' => 'bottom',
       'effect' => 'fade',
       'nodes' => array(),
+      'timeout' => 5000,
+      'speed' => 700,
         
       //not configurable.  
       'min_width' => 400,
@@ -51,11 +53,22 @@ class os_slideshow_box extends os_boxes_default {
       $form['display']['effect'] = $slideshow_form_full['views_slideshow_cycle']['effect'];
       $form['display']['effect']['#default_value'] = $this->options['effect'];
     }
-
-    $form['#attached']['js'] = array(
-      drupal_get_path('module', 'os_slideshow').'/plugins/os_slideshow_box.js',
-    );
     
+    $form['display']['timeout'] = array(
+      '#type' => 'select',
+      '#description' => t('Each slide will be displayed for this length of time.'),
+      '#title' => t('Duration'),
+      '#default_value' => $this->options['timeout'],
+      '#options' => $this->_transition_speed_opts(1, 10, .5),
+    );
+    $form['display']['speed'] = array(
+      '#type' => 'select',
+      '#description' => t('Transitions between slides will take this long.'),
+      '#title' => t('Transition Speed'),
+      '#default_value' => $this->options['speed'],
+      '#options' => $this->_transition_speed_opts(0, 1, .1),
+    );
+
     if (empty($this->options['nodes'])) {
       $form['nodes'] = array(
         '#type' => 'markup',
@@ -123,6 +136,7 @@ class os_slideshow_box extends os_boxes_default {
 
   public function render() {
     $block = parent::render();
+    $options = $this->options + $this->options_defaults();
 
     //show Add Slide link to admins
     if (spaces_access_admin()) {
@@ -140,12 +154,14 @@ class os_slideshow_box extends os_boxes_default {
       //add slideshow widgets
       foreach(array('pager', 'controls', 'slide_counter') as $option) {
         foreach($style_options['widgets'] as $position => $info) {
-          $style_options['widgets'][$position]['views_slideshow_' . $option]['enable'] = ($position == $this->options[$option]);
+          $style_options['widgets'][$position]['views_slideshow_' . $option]['enable'] = ($position == $options[$option]);
         }
       }
       
       //effects
-      $style_options['views_slideshow_cycle']['effect'] = $this->options['effect'];
+      foreach (array('effect', 'timeout', 'speed') as $cycle_opt) {
+        $style_options['views_slideshow_cycle'][$cycle_opt] = $options[$cycle_opt];
+      }
       $handler->set_option('style_options', $style_options);
 
       //use an appropriately scaled image style.
@@ -156,12 +172,12 @@ class os_slideshow_box extends os_boxes_default {
       $handler->set_option('fields', $fields);
       
       //filter slides  - nid is an ORed group of nids.  all it needs is a filter array per nid.
-      if ($this->options['nodes']) {
+      if ($options['nodes']) {
         $filters = $handler->get_option('filters');
         $nid_filter = $filters['nid'];
         unset($filters['nid']);
         $c = 0;
-        foreach (array_keys($this->options['nodes']) as $nid) {
+        foreach (array_keys($options['nodes']) as $nid) {
           $nid_filter['value']['value'] = $nid;
           $filters['nid_' . $c++] = $nid_filter;
         }
@@ -189,6 +205,7 @@ class os_slideshow_box extends os_boxes_default {
   private function _get_image_style() {
     //get this blocks region.
     $contexts = context_get();
+    $region = 'content_top';
     foreach ($contexts['context'] as $context) {
       if (@$blocks = ($context->reactions['block']['blocks'])) {
         if (isset($blocks['boxes-'.$this->delta])) {
@@ -224,12 +241,30 @@ class os_slideshow_box extends os_boxes_default {
     
     ksort($sizes);
     foreach ($sizes as $width => $data) {
-      if ($width >= (int)$this->options['size']) {
+      if ($width >= $size) {
         break;
       }
     }
     
     return $data;    
+  }
+  
+  /**
+   * @function _transition_speed_opts()
+   * 
+   * Helper function for making for time selects.  All args are seconds.
+   * 
+   * @returns array( $milliseconds => $seconds . 's') 
+   */
+  private function _transition_speed_opts($min, $max, $increment) {
+    $precision = explode('.', $increment);
+    $decimals = (count($precision)>1) ? strlen($precision[1]) : 0;
+    
+    $return = array();
+    for ($i = $min; $i <= $max; $i += $increment) {
+      $return[$i*1000] = number_format($i, $decimals) . ' sec';
+    }
+    return $return;
   }
   
   //resize images provided by the view to the size specified by the user
