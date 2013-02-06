@@ -348,7 +348,8 @@ function _os_breadcrumbs_shorten_title($title) {
   if(empty($title)) {
   	return;
   }
-  $shorten_length = 25;
+  // Set to 125 for now, @todo: discuss best practices for long titles.
+  $shorten_length = 125;
   if (strlen($title) > $shorten_length) {
     $title = wordwrap($title, $shorten_length);
     $shortened_title = substr($title, 0, strpos($title, "\n"));
