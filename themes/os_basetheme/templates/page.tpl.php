@@ -155,7 +155,12 @@
 		</footer>
 		<!--footer region end-->
   <?php endif; ?>
-
+  <div id="os-chrome">
+  	<div><a href="http://openscholar.harvard.edu" class="CMY_Link CMY_Valid">OpenScholar</a></div>
+  <?php if (isset($login_link)) {
+    print render($login_link); 
+  } ?>
+  </div>
   </div>
 </div><!--page area ends-->
 
