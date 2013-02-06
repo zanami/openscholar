@@ -430,9 +430,10 @@ function hwpi_basetheme_status_messages($vars) {
   return $output;
 }
 
+
 /**
  * Implements hook_theme_registry_alter
- * 
+ *
  * Changes the theme template for os_slideshow's controls.
  */
 function hwpi_basetheme_theme_registry_alter(&$reg) {
@@ -441,29 +442,29 @@ function hwpi_basetheme_theme_registry_alter(&$reg) {
 
 /**
  * Implements hook_preprocess_HOOK
- * 
+ *
  * Renders a slideshow pager and adds it as a var for our slideshow-controls template.
  */
 function hwpi_basetheme_preprocess_views_slideshow_controls_text(&$vars) {
   $settings = array(
-    'enable' => TRUE,
-    'weight' => 1,
-    'hide_on_single_slide' => 0,
-    'type' => 'views_slideshow_pager_fields',
-    'views_slideshow_pager_numbered_hover' => 0,
-    'views_slideshow_pager_numbered_click_to_page' => 0,
-    'views_slideshow_pager_thumbnails_hover' => 0,
-    'views_slideshow_pager_thumbnails_click_to_page' => 0,
-    'views_slideshow_pager_fields_fields' => array('title' => 0),
-    'views_slideshow_pager_fields_hover' => 0,
+      'enable' => TRUE,
+      'weight' => 1,
+      'hide_on_single_slide' => 0,
+      'type' => 'views_slideshow_pager_fields',
+      'views_slideshow_pager_numbered_hover' => 0,
+      'views_slideshow_pager_numbered_click_to_page' => 0,
+      'views_slideshow_pager_thumbnails_hover' => 0,
+      'views_slideshow_pager_thumbnails_click_to_page' => 0,
+      'views_slideshow_pager_fields_fields' => array('title' => 0),
+      'views_slideshow_pager_fields_hover' => 0,
   );
-  
+
   $vars['rendered_pager'] = theme('views_slideshow_pager_widget_render', array(
-    'vss_id' => $vars['vss_id'], 
-    'view' => $vars['view'], 
-    'settings' => $settings, 
-    'location' => $vars['location'], 
-    'rows' => $vars['rows']
+      'vss_id' => $vars['vss_id'],
+      'view' => $vars['view'],
+      'settings' => $settings,
+      'location' => $vars['location'],
+      'rows' => $vars['rows']
   ));
 }
- 
+

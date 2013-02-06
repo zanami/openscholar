@@ -2,14 +2,20 @@
 /* Typography */
 body {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 23px;
   min-height: inherit;
 }
 
+.not-front #content-column {font-size: 16px;}
+
 a,
 a:visited {
   color: #4384C4;
+}
+
+#columns .block ul {
+    list-style: disc;
 }
 
 p:empty {

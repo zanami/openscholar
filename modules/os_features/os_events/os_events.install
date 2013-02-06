@@ -14,3 +14,56 @@ function os_events_install() {
   variable_set('calendar_add_colorbox', 1);
 }
 
+function my_module_update_1001(&$sandbox) {
+  // Check if our field is already created.
+  if (field_info_field('sample_text_field')) {
+    db_query('ALTER TABLE field_data_sample_text_field CHANGE sample_text_field_value sample_text_field_value LONGTEXT');
+    db_query('ALTER TABLE field_revision_sample_text_field CHANGE sample_text_field_value sample_text_field_value LONGTEXT');
+    db_query("UPDATE field_config SET type = 'text_long' WHERE field_name = 'sample_text_field' ");
+	  $field = array(
+	    'field_name' => 'sample_text_field',
+	    'type' => 'text_long',
+	    'cardinality' => 1,
+	    'settings' => array(
+	      'max_length' => 0,
+	    ),
+	  );
+    field_update_field($field);
+  }
+}
+
+/**
+ * Update the field data for events if it was not created correctly
+ */
+function os_events_update_7001() {
+
+  //Does the field already exist
+  if (field_info_field('node-event-body')) {
+    return;
+  }
+
+  $field_name = 'spelersfiche_va_antwoord';
+
+  // Get the current settings
+  $result = db_query('SELECT data FROM {field_config} WHERE field_name = :name', array(':name' => $field_name))->fetchField();
+
+  // Change the settings
+  $data = unserialize($result);
+  $data['settings']['max_length'] = '511';
+
+  // Write settings back to the database.
+  db_update('field_config')
+  ->fields(array('data' => serialize($data)))
+  ->condition('field_name', $field_name)
+  ->execute();
+
+  // Update the value column in both the _data and _revision tables for the field
+  $new_field = array('type' => 'varchar', 'length' => 511);
+  $col_name = $field_name . '_value';
+
+  db_change_field("field_data_$field_name", $col_name, $col_name, $new_field);
+  db_change_field("field_revision_$field_name", $col_name, $col_name, $new_field);
+
+  // Flush the caches
+  drupal_flush_all_caches();
+}

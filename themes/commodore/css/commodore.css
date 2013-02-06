@@ -57,6 +57,11 @@ body.logged-in {
      padding: 0;
 }
 
+
+.page-node #content-column .content-inner {
+    padding: 0;
+}
+
 .boxes-box ul.links li {
     margin-bottom: 17px;
 }
