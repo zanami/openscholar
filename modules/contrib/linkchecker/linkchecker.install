@@ -6,14 +6,23 @@
  */
 
 /**
+ * Implements hook_install().
+ */
+function linkchecker_install() {
+  $linkchecker_default_impersonate_user = user_load(1);
+  variable_set('linkchecker_impersonate_user', $linkchecker_default_impersonate_user->name);
+}
+
+/**
  * Implements hook_uninstall().
  */
 function linkchecker_uninstall() {
   variable_del('linkchecker_action_status_code_301');
   variable_del('linkchecker_action_status_code_404');
+  variable_get('linkchecker_check_connections_max');
+  variable_del('linkchecker_check_library');
   variable_del('linkchecker_check_links_interval');
   variable_del('linkchecker_check_links_types');
-  variable_del('linkchecker_check_links_max');
   variable_del('linkchecker_check_useragent');
   variable_del('linkchecker_cleanup_links_last');
   variable_del('linkchecker_disable_link_check_for_urls');
@@ -26,6 +35,7 @@ function linkchecker_uninstall() {
   variable_del('linkchecker_extract_from_video');
   variable_del('linkchecker_filter_blacklist');
   variable_del('linkchecker_ignore_response_codes');
+  variable_del('linkchecker_impersonate_user');
   variable_del('linkchecker_scan_blocks');
   variable_del('linkchecker_scan_comments');
   variable_del('linkchecker_scan_nodetypes');
@@ -173,36 +183,6 @@ function linkchecker_schema() {
 }
 
 /**
- * Implements hook_requirements().
- */
-function linkchecker_requirements($phase) {
-  $requirements = array();
-  $t = get_t();
-
-  switch ($phase) {
-    case 'runtime':
-      // Module cannot work without external HTTP requests.
-      if (variable_get('drupal_http_request_fails', TRUE) && !system_check_http_request()) {
-        $requirements['http requests'] = array(
-          'title' => $t('HTTP request status'),
-          'value' => $t('Fails'),
-          'severity' => REQUIREMENT_ERROR,
-          'description' => $t('Your system or network configuration does not allow Drupal to access web pages, resulting in reduced functionality. This could be due to your webserver configuration or PHP settings, and should be resolved in order to download information about available updates, fetch aggregator feeds, sign in via OpenID, or use other network-dependent services.'),
-        );
-      }
-
-/*      $requirements['linkchecker_curl'] = array(
-        'title' => $t('cURL'),
-        'value' => $has_curl ? $t('Enabled') : $t('Not found'),
-        'severity' => $has_curl ? REQUIREMENT_OK : REQUIREMENT_WARNING,
-        'description' => $t('You should install cURL for checking links with link checker module. If cURL is installed, simultaneuos link checks are used to speeds up the link checking process dramatically.'),
-      ); */
-      break;
-  }
-  return $requirements;
-}
-
-/**
  * If the core modules are disabled the integration need to be disabled.
  */
 function linkchecker_modules_disabled($modules) {
@@ -292,8 +272,8 @@ function linkchecker_update_7002(&$sandbox) {
 }
 
 /**
-* #1321378: Improve performance of queries.
-*/
+ * #1321378: Improve performance of queries.
+ */
 function linkchecker_update_7003() {
   db_drop_index('linkchecker_block_custom', 'lid');
   db_drop_index('linkchecker_comment', 'lid');
@@ -307,8 +287,8 @@ function linkchecker_update_7003() {
 }
 
 /**
-* Add status code 206 to the default list of ignored response codes.
-*/
+ * Add status code 206 to the default list of ignored response codes.
+ */
 function linkchecker_update_7004() {
   $ignore_response_codes = preg_split('/(\r\n?|\n)/', variable_get('linkchecker_ignore_response_codes', "200\n206\n302\n304\n401\n403"));
   if (!in_array('206', $ignore_response_codes)) {
@@ -323,8 +303,8 @@ function linkchecker_update_7004() {
 }
 
 /**
-* Upgrade from linkchecker_fqdn_only to linkchecker_check_links_types variable.
-*/
+ * Upgrade from linkchecker_fqdn_only to linkchecker_check_links_types variable.
+ */
 function linkchecker_update_7005() {
 
   $linkchecker_fqdn_only = variable_get('linkchecker_fqdn_only', 1);
@@ -410,8 +390,8 @@ function linkchecker_update_7007() {
 }
 
 /**
-* #965720: Add indexes to improve performance of views queries.
-*/
+ * #965720: Add indexes to improve performance of views queries.
+ */
 function linkchecker_update_7008() {
   db_drop_index('linkchecker_link', 'method');
   db_drop_index('linkchecker_link', 'code');
@@ -429,8 +409,55 @@ function linkchecker_update_7008() {
 }
 
 /**
-* PHP 5.3 backport for array_replace().
-*/
+ * Set user 1 as default user to impersonate content updates.
+ */
+function linkchecker_update_7009() {
+  // Do not overwrite D6 settings.
+  $linkchecker_impersonate_user = variable_get('linkchecker_impersonate_user', '');
+  if (empty($linkchecker_impersonate_user)) {
+    $linkchecker_default_impersonate_user = user_load(1);
+    variable_set('linkchecker_impersonate_user', $linkchecker_default_impersonate_user->name);
+  }
+
+  return t('Set user 1 as default user to impersonate content updates.');
+}
+
+/**
+ * Remove obsolete linkchecker_check_links_max variable.
+ */
+function linkchecker_update_7010() {
+  variable_del('linkchecker_check_links_max');
+
+  return t('Removed obsolete linkchecker_check_links_max variable.');
+}
+
+/**
+ * Upgrade outdated HTTP user agents.
+ */
+function linkchecker_update_7011() {
+
+  $linkchecker_check_useragent = variable_get('linkchecker_check_useragent', 'Drupal (+http://drupal.org/)');
+
+  $useragent_upgrade = array(
+    'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1;)' => 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+    'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0;)' => 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)',
+    'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0',
+    'Mozilla/5.0 (Windows; U; Windows NT 6.0; de; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5' => 'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0',
+  );
+
+  if (isset($useragent_upgrade[$linkchecker_check_useragent])) {
+    variable_set('linkchecker_check_useragent', $useragent_upgrade[$linkchecker_check_useragent]);
+    return t('Upgraded outdated HTTP user agent from "@user_agent_old" to "@user_agent_new".', array('@user_agent_old' => $linkchecker_check_useragent, '@user_agent_new' => $useragent_upgrade[$linkchecker_check_useragent]));
+  }
+  else {
+    return t('User agent already up to date.');
+  }
+}
+
+
+/**
+ * PHP 5.3 backport for array_replace().
+ */
 if (!function_exists('array_replace')) {
   function array_replace() {
     $array = array();
