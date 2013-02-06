@@ -429,32 +429,3 @@ function hwpi_basetheme_status_messages($vars) {
   }
   return $output;
 }
-
-function hwpi_basetheme_theme_registry_alter(&$reg) {
-  $reg['views_slideshow_controls_text']['template'] = drupal_get_path('theme', 'hwpi_basetheme') . '/views-view--os_slideshow-slideshow-controls-text';
-}
-
-function hwpi_basetheme_preprocess(&$vars, $hook) {
-  if ($hook === 'views_slideshow_controls_text') {
-    $settings = array(
-      'enable' => TRUE,
-      'weight' => 1,
-      'hide_on_single_slide' => 0,
-      'type' => 'views_slideshow_pager_fields',
-      'views_slideshow_pager_numbered_hover' => 0,
-      'views_slideshow_pager_numbered_click_to_page' => 0,
-      'views_slideshow_pager_thumbnails_hover' => 0,
-      'views_slideshow_pager_thumbnails_click_to_page' => 0,
-      'views_slideshow_pager_fields_fields' => array('title' => 0),
-      'views_slideshow_pager_fields_hover' => 0,
-    );
-
-    $vars['rendered_pager'] = theme('views_slideshow_pager_widget_render', array(
-      'vss_id' => $vars['vss_id'],
-      'view' => $vars['view'],
-      'settings' => $settings,
-      'location' => $vars['location'],
-      'rows' => $vars['rows']
-    ));
-  }
-}
