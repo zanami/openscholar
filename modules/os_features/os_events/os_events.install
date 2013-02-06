@@ -14,24 +14,6 @@ function os_events_install() {
   variable_set('calendar_add_colorbox', 1);
 }
 
-function my_module_update_1001(&$sandbox) {
-  // Check if our field is already created.
-  if (field_info_field('sample_text_field')) {
-    db_query('ALTER TABLE field_data_sample_text_field CHANGE sample_text_field_value sample_text_field_value LONGTEXT');
-    db_query('ALTER TABLE field_revision_sample_text_field CHANGE sample_text_field_value sample_text_field_value LONGTEXT');
-    db_query("UPDATE field_config SET type = 'text_long' WHERE field_name = 'sample_text_field' ");
-	  $field = array(
-	    'field_name' => 'sample_text_field',
-	    'type' => 'text_long',
-	    'cardinality' => 1,
-	    'settings' => array(
-	      'max_length' => 0,
-	    ),
-	  );
-    field_update_field($field);
-  }
-}
-
 /**
  * Update the field data for events if it was not created correctly
  */
