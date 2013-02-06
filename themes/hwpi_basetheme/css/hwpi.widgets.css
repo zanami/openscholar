@@ -540,7 +540,7 @@ table td.mini .mini-day-on a {
   padding-top: 0;
 }
 
-.views-slideshow-controls-bottom {position:absolute;top:225px;left:70px;z-index:5;line-height:0;}
+.views-slideshow-controls-bottom {position:absolute;top:225px;left:70px;z-index:25;line-height:0;}
 
 .views-field-field-description {
   	background: url("../images/slideshow_tileBgtransparency.png") repeat scroll 0 0 transparent;
