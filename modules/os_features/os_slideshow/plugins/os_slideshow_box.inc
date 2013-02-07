@@ -41,18 +41,15 @@ class os_slideshow_box extends os_boxes_default {
         //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
         '#options' => array('none' => t('No'), 'bottom' => t('Yes')),
         '#default_value' => $this->options[$option],
-      );
-   
-    //get jquery effects from view (include file hsould arleady be loaded)
-    $slideshow_form_full = $state = array();
-    if (module_exists('views_slideshow_cycle')) {
-      if (!function_exists('views_slideshow_cycle_views_slideshow_slideshow_type_form')) {
-        require_once drupal_get_path('module', 'views_slideshow_cycle') . '/views_slideshow_cycle.views_slideshow.inc';
-      }
-      @views_slideshow_cycle_views_slideshow_slideshow_type_form($slideshow_form_full, $state, $view);
-      $form['display']['effect'] = $slideshow_form_full['views_slideshow_cycle']['effect'];
-      $form['display']['effect']['#default_value'] = $this->options['effect'];
-    }
+    );
+    
+    $form['display']['effect'] = array(
+        '#type' => 'select',
+        '#description' => t('How to transition between slides.'),
+        '#title' => t('Transition Effect'),
+        '#default_value' => $this->options['effect'],
+        '#options' => array('fade' => t('Fade'), 'slide-horizontal'=>t('Horizontal Slide'), 'slide-vertical'=>t('Vertical Slide')),
+    );
     
     $form['display']['timeout'] = array(
       '#type' => 'select',
@@ -61,6 +58,7 @@ class os_slideshow_box extends os_boxes_default {
       '#default_value' => $this->options['timeout'],
       '#options' => $this->_transition_speed_opts(1, 10, .5),
     );
+
     $form['display']['speed'] = array(
       '#type' => 'select',
       '#description' => t('Transitions between slides will take this long.'),
@@ -148,7 +146,13 @@ class os_slideshow_box extends os_boxes_default {
       ));
     }
     
-    $vars = array('nodes' => $options['nodes'], 'box_delta' => $this->delta);
+    $vars = array(
+      'nodes' => $options['nodes'], 
+      'box_delta' => $this->delta,
+      'timeout' => $options['timeout'],
+      'speed' => $options['speed'],
+      'effect' => $options['effect'],
+    );
     $block['content'] .= theme('os_slideshow_slideshow', $vars);
     return $block;    
     

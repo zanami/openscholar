@@ -245,6 +245,9 @@ function os_slideshow_theme($existing, $type, $theme, $path) {
         'nodes' => array(),
         'slides' => NULL,
         'controls' => NULL,
+        'timeout' => 4000,
+        'speed' => 700,
+        'effect' => 'fade',
       ),
       
     ),
@@ -294,11 +297,16 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
   //load javascript, pass it our settings
   drupal_add_library('flexslider', 'flexslider');
   drupal_add_js(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_flexslider.js');
+  list($animation, $direction) = _os_slideshow_get_animation_direction($vars['effect']);
   $settings = array('os_slideshow' => array(  //http://www.woothemes.com/flexslider/
     $vars['box_delta'] => array(
       'controlsContainer' => '#flex-controls', //moves controls to this container
       //'controlNav' => FALSE,    //pager
       //'directionNav' => FALSE,  //control buttons
+      'slideshowSpeed' => $vars['timeout'],
+      'animationSpeed' => $vars['speed'],
+      'animation' => $animation,
+      'direction' => $direction,
     )
   ));
   //slideshowSpeed, animationSpeed, randomize, animation (fade or slide (horizontal or vertical))
@@ -323,3 +331,9 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
   $control_vars = array();
   $vars['controls'] = theme('os_slideshow_controls', $control_vars);
 }
+
+function _os_slideshow_get_animation_direction($effect) {
+  $effects = explode('-', $effect);
+  return (count($effects)>1) ? $effects : array($effect, NULL);
+}  
+
