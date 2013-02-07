@@ -131,6 +131,17 @@ ol.search-results li.search-result:last-child {
   right: 54px;
 }
 
+.view .date-nav-wrapper .date-prev {
+    right: 590px;
+}
+
+.view .date-nav-wrapper .date-prev a {
+    overflow: hidden;
+ 	text-indent: -99999999px;
+ 	font-size: 0;
+ 	display:inline-block;
+}
+
 .view .date-nav-wrapper .date-next {
   right: 20px;
 }
@@ -240,8 +251,8 @@ ol.search-results li.search-result:last-child {
 
 .calendar-calendar .week-view .full div.single-day div.weekview,
 .calendar-calendar .day-view .full div.single-day div.dayview {
-  background-color: #a90000;
-  border-color: #a90000;
+  background-color: #F3F3F1;
+  border-color: #CCC;
   border-radius: 0;
   line-height: 1.4em;
   color: #fff;
@@ -250,7 +261,7 @@ ol.search-results li.search-result:last-child {
 .calendar-calendar .week-view .full div.single-day div.weekview a,
 .calendar-calendar .day-view .full div.single-day div.dayview a {
   text-decoration: underline;
-  color: #fff;
+  font-family:arial;
 }
 
 .calendar-calendar div.date-nav h3 {
@@ -467,6 +478,7 @@ ol.search-results li.search-result:last-child {
 
 .node-teaser.node-person {
   line-height: 19px;
+  padding: 15px 0 30px;
 }
 
 

@@ -14,56 +14,65 @@ function os_events_install() {
   variable_set('calendar_add_colorbox', 1);
 }
 
-function my_module_update_1001(&$sandbox) {
-  // Check if our field is already created.
-  if (field_info_field('sample_text_field')) {
-    db_query('ALTER TABLE field_data_sample_text_field CHANGE sample_text_field_value sample_text_field_value LONGTEXT');
-    db_query('ALTER TABLE field_revision_sample_text_field CHANGE sample_text_field_value sample_text_field_value LONGTEXT');
-    db_query("UPDATE field_config SET type = 'text_long' WHERE field_name = 'sample_text_field' ");
-	  $field = array(
-	    'field_name' => 'sample_text_field',
-	    'type' => 'text_long',
-	    'cardinality' => 1,
-	    'settings' => array(
-	      'max_length' => 0,
-	    ),
-	  );
-    field_update_field($field);
-  }
-}
-
 /**
  * Update the field data for events if it was not created correctly
  */
 function os_events_update_7001() {
 
-  //Does the field already exist
-  if (field_info_field('node-event-body')) {
+  //Does the field already exist? if not do nothing.
+  if (!($db_field = field_info_field('field_date'))) {
     return;
   }
 
-  $field_name = 'spelersfiche_va_antwoord';
+  module_load_include('inc', 'features', 'features.export');
+  if ($def_fields = features_get_default('field', 'os_events')) {
 
-  // Get the current settings
-  $result = db_query('SELECT data FROM {field_config} WHERE field_name = :name', array(':name' => $field_name))->fetchField();
+    //Get the default field in the features export
+    $def_field = $def_fields['node-event-field_date'];
+    $def_field_config = $def_field['field_config'];
 
-  // Change the settings
-  $data = unserialize($result);
-  $data['settings']['max_length'] = '511';
+    //Are there any differences between the configs?
+    if ($def_field_config + $db_field != $db_field) {
 
-  // Write settings back to the database.
-  db_update('field_config')
-  ->fields(array('data' => serialize($data)))
-  ->condition('field_name', $field_name)
-  ->execute();
+      //Get the db columns for the exported field
+      module_load_install($def_field_config['module']);
+      $def_schema = (array) module_invoke($def_field_config['module'], 'field_schema', $def_field_config);
 
-  // Update the value column in both the _data and _revision tables for the field
-  $new_field = array('type' => 'varchar', 'length' => 511);
-  $col_name = $field_name . '_value';
+      $new_columns = array_diff_key($def_schema['columns'], $db_field['columns']);
+      if(count($new_columns)){
 
-  db_change_field("field_data_$field_name", $col_name, $col_name, $new_field);
-  db_change_field("field_revision_$field_name", $col_name, $col_name, $new_field);
+        //Lets add the new columns needed for this field
+        foreach ($new_columns as $column_name => $attributes) {
+          $real_name = _field_sql_storage_columnname($def_field_config['field_name'], $column_name);
+          if(!db_field_exists("field_data_{$def_field_config['field_name']}", $real_name)){
+            db_add_field("field_data_{$def_field_config['field_name']}", $real_name, $attributes);
+          }
+          if(!db_field_exists("field_revision_{$def_field_config['field_name']}", $real_name)){
+            db_add_field("field_revision_{$def_field_config['field_name']}", $real_name, $attributes);
+          }
+        }
+      }
 
-  // Flush the caches
-  drupal_flush_all_caches();
+      //Update the settings
+      $db_field['settings'] = $def_field_config['settings'];
+
+      // Write settings back to the database.
+      db_update('field_config')
+        ->fields(array('data' => serialize($db_field)))
+        ->condition('field_name', $def_field_config['field_name'])
+        ->execute();
+
+      // Clear caches
+      field_cache_clear(TRUE);
+
+      try{
+        //Apply any other non-field updates
+        field_update_field($def_field_config);
+      }catch (FieldUpdateForbiddenException $e){
+        return array('success' => FALSE, 'query' => 'field_date has failed to update it\'s configuration.');
+      }
+    }
+  }
+
+  return "field_date has been updated to it's exported configuration.";
 }

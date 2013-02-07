@@ -75,6 +75,7 @@ function cp_layout_full_form($form, $form_state){
     'footer_first',
     'footer',
     'footer_third',
+    'footer_bottom',
   );
 
   $weights = _cp_layout_get_weight_map($regions);

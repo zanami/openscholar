@@ -1325,3 +1325,18 @@ function os_library() {
 function os_library_alter(&$l) {
   $l['drupal.ajax']['dependencies'][] = array('os', 'os.ajax-fix');
 }
+
+/**
+ * Customize what resources will be avalible for RestWS to use
+ **/
+function os_restws_resource_info_alter(&$info){
+
+//   //Remove entity types except those listed
+//   $enabled_entities = variable_get('os_restws_entities',array('node'));
+//   foreach (entity_get_info() as $entity_type => $info) {
+//     if(isset($info[$entity_type]) && !in_array($entity_type, $enabled_entities)){
+//       unset($info[$entity_type]);
+//     }
+//   }
+
+}
