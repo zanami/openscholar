@@ -11,7 +11,9 @@ Drupal.behaviors.os_upload_form = {
     });
     $file_select.before($input);
     $file_select.change(function (e) {
-      $('.form-actions #edit-submit', ctx).click();
+      if (!('result' in e) || e.result) {
+        $('.form-actions #edit-submit', ctx).click();
+      }
     });
   }
 }
