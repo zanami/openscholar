@@ -558,15 +558,16 @@ table td.mini .mini-day-on a {
 }
 
 .views-field-field-description {
-  background: url("../images/slideshow_tileBgtransparency.png") repeat scroll 0 0 transparent;
-  color: #FFFFFF;
-  left: 45px;
-  height: 160px;
-  overflow: hidden;
-  padding: 32px 25px 0;
-  position: absolute;
-  top: 80px;
-  width: 390px;
+    background: url("../images/slideshow_tileBgtransparency.png") repeat scroll 0 0 transparent;
+    color: #FFFFFF;
+    left: 45px;
+    height: 150px;
+    overflow: hidden;
+    padding: 32px 25px 0;
+    position: absolute;
+    top: 80px;
+    width: 390px;
+}
 
 .text-and-controls {color:#FFF;position:absolute;top:15px;left:25px;padding-right: 10px;}
 
@@ -680,12 +681,6 @@ table td.mini .mini-day-on a {
 
 
 
-/* Blogs */
-#block-views-os-blog-block li {
-  list-style: none;
-}
-
-
 /* Reset all margin padding top in content panels for boxes, so all boxes align top vertically, maybe... */
 #content-panels .block-content,
 #content-panels .boxes-box-content,
@@ -693,10 +688,8 @@ table td.mini .mini-day-on a {
   margin-top: 0;
   padding-top: 0;
 }
+
 #content-panels .block-inner {
-  margin-top: 0;
-}
-#content-panels .no-title .block-inner {
   margin-top: 15px;
 }
 

@@ -226,12 +226,10 @@ table td.mini {
 #boxes-box-os_pages_section_nav,
 .section-nav ul.menu li a {
 	border-color: #959595;
-	font-weight: bold;
-	text-transform: none;
 }
 
 .section-nav .menu-depth-1 > a {
-  background-color: #1e1e1e !important;
+  background-color: #1e1e1e;
 }
 
 .section-nav .expanded.menu-depth-2 > a {
@@ -240,12 +238,6 @@ table td.mini {
 
 
 
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> dbb5766... #1597 secondary menu colors
 /* Footer */
 #footer {
   background: url(../images/footer-top-gradient.png) repeat-x 0 0 #ebebeb;
