@@ -68,6 +68,8 @@ class os_slideshow_box extends os_boxes_default {
       '#default_value' => $this->options['speed'],
       '#options' => $this->_transition_speed_opts(0, 1, .1),
     );
+    
+    $form['#attached']['js'] = array(drupal_get_path('module', 'os_slideshow').'/plugins/os_slideshow_box.js',);
 
     if (empty($this->options['nodes'])) {
       $form['nodes'] = array(
