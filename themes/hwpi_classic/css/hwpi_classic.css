@@ -31,6 +31,8 @@ body {
 .node-title, 
 .page-search .title a,
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
+.not-front #content-column ul li,
+.not-front #content-column ol li,
 .more-link,
 .page-search #content-column p,
 .not-front #content-column p,
