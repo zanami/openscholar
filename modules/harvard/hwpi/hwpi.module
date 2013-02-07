@@ -28,11 +28,15 @@ function _hwpi_branding_header() {
       )
     ),
     'img' => array(
-      '#theme' => 'image',
-      '#path' => drupal_get_path('theme', 'hwpi_basetheme') . '/images/harvard-logo.png',
-      '#width' => 259,
-      '#height' => 35,
-    )
+      '#theme' => 'link',
+      '#path' => 'http://www.harvard.edu',
+      '#text' => theme('image', array('path' => drupal_get_path('theme', 'hwpi_basetheme') . '/images/harvard-logo.png', 'width' => 259, 'height' => 35)),
+      '#options' => array(
+        'external' => TRUE,
+        'html' => TRUE,
+        'attributes' => array(),
+      )
+    ),
   );
   $sites = _hwpi_get_ancestry();
   $links = array();
