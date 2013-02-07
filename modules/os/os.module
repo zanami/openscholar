@@ -365,7 +365,9 @@ function os_theme() {
       'variables' => array(
         'link_text' => 'Admin Login',
         'attributes' => array(
-          'class' => 'footer-login',
+          'class' => array(
+          	'footer-login'
+          ),
         ),
       ),
     ),
