@@ -71,6 +71,7 @@ function _hwpi_get_ancestry() {
     }
   }
 
+  $sites['http://www.fas.harvard.edu/home/'] = 'FACULTY OF ARTS AND SCIENCES';
   $sites['http://www.harvard.edu'] = 'HARVARD.EDU';
   return $sites;
 }
