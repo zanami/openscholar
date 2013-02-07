@@ -46,8 +46,8 @@
 
 
 
-/* bigscreen three_col_grail */
-@media only screen and (min-width:1025px) {
+/* bigscreen three_col_grail - TEMPORARILY COMMENTING OUT BREAKPOINT (PER HWPIs REQUEST)
+@media only screen and (min-width:1025px) { */
 
   #content-column,
   .content-column,
@@ -352,9 +352,9 @@
   .three-inset-right .region,
   .three-inset-right .inset-wrapper {float:right}
   .two-brick .panel-row {float:none}
-  */
+  
 
-}
+}*/
 
 
 

@@ -41,7 +41,7 @@
 }
  
 ul.nice-menu ul {
-    top: 3.4em;
+    top: 3.3em;
 }
 
 ul.menu ul ul {
@@ -60,12 +60,13 @@ ul.nice-menu ul {
 #menu-bar ul.nice-menu .menuparent ul li a {
     background: none;
     padding-right: 0;
+    font-size:16px;
 }
 
 #menu-bar ul.nice-menu .menuparent ul li a:hover,
 #menu-bar ul.nice-menu .menuparent ul li a.active {
     background: none;
-     color:#000;
+     color:#666;
     padding-right: 0;
 }
 
@@ -173,17 +174,32 @@ ul.nice-menu ul {
 .section-nav a:visited {
 	color: #4384C4;
 }
+
+.section-nav a:hover {
+	background-color: #bfc2c4 !important;
+}
+
 .section-nav a.active {
 	color: #1e1e1e;
 }
 
 /* Section Nav - Section Heading */
 .section-nav .menu-depth-1 > a {
-	background-color: #293352;
+	background: none !important;
+	background-color: #293352 !important;
 	color: #fff;
 	text-transform: uppercase;
 }
 
+.section-nav .collapsed > a {
+	background: url('../../os_basetheme/images/arrow-right.png') no-repeat left center;
+	
+}
+
+.section-nav .expanded > a {
+	background: url('../../os_basetheme/images/arrow-down.png') no-repeat left center;
+	
+}
 .section-nav .expanded.menu-depth-2 > a {
 	background-color: #3a72ab;
 	color: #fff;
@@ -203,6 +219,7 @@ ul.nice-menu ul {
 .section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
 	padding-left: 45px;
 }
+
 
 
 /* Local tasks */
