@@ -7,7 +7,5 @@
     <?php print implode("\n", $slides); ?>
   </ul>
   
-  <div class="controls">
-    <?php print $controls; ?>
-  </div>
+  <?php print $controls; ?>
 </div>
