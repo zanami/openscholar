@@ -145,7 +145,9 @@ function os_files_clippy($url_file, $options = array()){
 }
 
 function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
-  $form['help']['#markup'] = t('You may press Submit immediately after choosing a file. If you wish to view the progress of your file upload, you can press Upload and a progress bar will show you how far along your upload is.');
+  $path = drupal_get_path('module', 'os_files');
+  $form['#attached']['css'][] = $path.'/theme/os_files_upload_form.css';
+  $form['#attached']['js'][] = $path.'/theme/os_files_upload_form.js';
 }
 
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
