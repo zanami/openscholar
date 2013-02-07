@@ -9,6 +9,7 @@ dependencies[] = features
 dependencies[] = filefield_paths
 dependencies[] = imagefield_crop
 dependencies[] = link
+dependencies[] = libraries
 dependencies[] = media
 dependencies[] = strongarm
 dependencies[] = views

@@ -147,59 +147,63 @@ class os_slideshow_box extends os_boxes_default {
         'query' => array('widget' => $this->delta, 'destination' => current_path()),
       ));
     }
-        
-    if ($view = views_get_view('os_slideshow')) {
-      $view->init_display();
-      $handler = $view->display_handler;
-      $style_options = $handler->get_option('style_options');
+    
+    $vars = array('nodes' => $options['nodes'], 'box_delta' => $this->delta);
+    $block['content'] .= theme('os_slideshow_slideshow', $vars);
+    return $block;    
+    
+//     if ($view = views_get_view('os_slideshow')) {
+//       $view->init_display();
+//       $handler = $view->display_handler;
+//       $style_options = $handler->get_option('style_options');
       
-      //add slideshow widgets
-      foreach(array('pager', 'controls', 'slide_counter') as $option) {
-        foreach($style_options['widgets'] as $position => $info) {
-          $style_options['widgets'][$position]['views_slideshow_' . $option]['enable'] = ($position == $options[$option]);
-        }
-      }
+//       //add slideshow widgets
+//       foreach(array('pager', 'controls', 'slide_counter') as $option) {
+//         foreach($style_options['widgets'] as $position => $info) {
+//           $style_options['widgets'][$position]['views_slideshow_' . $option]['enable'] = ($position == $options[$option]);
+//         }
+//       }
       
-      //effects
-      foreach (array('effect', 'timeout', 'speed') as $cycle_opt) {
-        $style_options['views_slideshow_cycle'][$cycle_opt] = $options[$cycle_opt];
-      }
-      $handler->set_option('style_options', $style_options);
+//       //effects
+//       foreach (array('effect', 'timeout', 'speed') as $cycle_opt) {
+//         $style_options['views_slideshow_cycle'][$cycle_opt] = $options[$cycle_opt];
+//       }
+//       $handler->set_option('style_options', $style_options);
 
-      //use an appropriately scaled image style.
-      $image_style = $this->_get_image_style();
-      $style = current(array_keys($image_style));
-      $fields = $handler->get_option('fields');
-      $fields['field_image']['settings']['image_style'] = $style;
-      $handler->set_option('fields', $fields);
+//       //use an appropriately scaled image style.
+//       $image_style = $this->_get_image_style();
+//       $style = current(array_keys($image_style));
+//       $fields = $handler->get_option('fields');
+//       $fields['field_image']['settings']['image_style'] = $style;
+//       $handler->set_option('fields', $fields);
       
-      //filter slides  - nid is an ORed group of nids.  all it needs is a filter array per nid.
-      if ($options['nodes']) {
-        $filters = $handler->get_option('filters');
-        $nid_filter = $filters['nid'];
-        unset($filters['nid']);
-        $c = 0;
-        foreach (array_keys($options['nodes']) as $nid) {
-          $nid_filter['value']['value'] = $nid;
-          $filters['nid_' . $c++] = $nid_filter;
-        }
-        $handler->set_option('filters', $filters);
-      }
+//       //filter slides  - nid is an ORed group of nids.  all it needs is a filter array per nid.
+//       if ($options['nodes']) {
+//         $filters = $handler->get_option('filters');
+//         $nid_filter = $filters['nid'];
+//         unset($filters['nid']);
+//         $c = 0;
+//         foreach (array_keys($options['nodes']) as $nid) {
+//           $nid_filter['value']['value'] = $nid;
+//           $filters['nid_' . $c++] = $nid_filter;
+//         }
+//         $handler->set_option('filters', $filters);
+//       }
       
-      //stash the box delta for hook_pre_render (is there a better way to do this part?)
-      $view->set_arguments(array('delta' => $this->delta));
+//       //stash the box delta for hook_pre_render (is there a better way to do this part?)
+//       $view->set_arguments(array('delta' => $this->delta));
       
-      $this->_theme_css_alter();
+//       $this->_theme_css_alter();
       
-      //render output
-      $output = $view->preview();     
-      $output = $this->_resize_images($output, $image_style);    //use user provided image size
-      //if we're resizing images in this way, mabye links to the empty string target could be removed the same way.
+//       //render output
+//       $output = $view->preview();     
+//       $output = $this->_resize_images($output, $image_style);    //use user provided image size
+//       //if we're resizing images in this way, mabye links to the empty string target could be removed the same way.
       
       
-      $block['content'] .= $output; 
-    }
-    return $block;
+//       $block['content'] .= $output; 
+//     }
+//     return $block;
   }
   
 

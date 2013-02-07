@@ -36,15 +36,19 @@ function os_slideshow_vsite_og_node_type_info() {
 }
 
 /**
- * Implements hook_ctools_plugin_pre_alter
- * 
- * Prevent gallery slideshows from being created.  They're being phased out for this new slideshow.
+ * Implements hook_library().
+ * @author minorOffense <mwinstone@coldfrontlabs.ca>
  */
-// function os_slideshow_ctools_plugin_pre_alter(&$plugin, &$info) {
-//   if ($plugin['name'] == 'os_boxes_slideshow') {
-//     $plugin['title'] = NULL;
-//   }
-// }
+function os_slideshow_library() {
+  $libraries['flexslider'] = array(
+    'title' => 'FlexSlider',
+    'website' => 'http://flex.madebymufffin.com/',
+    'version' => '1.8',
+    'js' => array(libraries_get_path('flexslider') . '/jquery.flexslider-min.js' => array(),),
+    'css' => array(libraries_get_path('flexslider') . '/flexslider.css' => array('type' => 'file','media' => 'screen')),
+  );
+  return $libraries;
+}
 
 /**
  * Implements hook_form_FORMID_alter
@@ -130,39 +134,39 @@ function os_slideshow_node_presave($node) {
  * This view gets a custom sort that can't be configured programmatically.  Do it manually here instead.
  * @param unknown_type $view
  */
-function os_slideshow_views_pre_render(&$view) {
+// function os_slideshow_views_pre_render(&$view) {
   
-  if (($view->name == 'os_slideshow') && $delta = $view->args['delta']) {
+//   if (($view->name == 'os_slideshow') && $delta = $view->args['delta']) {
     
-    //get the box
-    if (module_exists('spaces') && $space = spaces_get_space()) {
-      $box = $space->controllers->boxes->get($delta);
-    } else {
-      $box = boxes_box_load($delta);
-    }
+//     //get the box
+//     if (module_exists('spaces') && $space = spaces_get_space()) {
+//       $box = $space->controllers->boxes->get($delta);
+//     } else {
+//       $box = boxes_box_load($delta);
+//     }
     
-    if (!$box) {
-      return;
-    }
+//     if (!$box) {
+//       return;
+//     }
     
-    //sort the nodes
-    $nodes = $box->options['nodes'];
-    foreach ($nodes as $nid => $node) {
-      $nodes[$nid]['#weight'] = $node['weight'];
-    }
-    uasort($nodes, 'element_sort'); //expects #weight not weight.
-    $ordered_nodes = array_flip(array_keys($nodes));  // nid -> position
+//     //sort the nodes
+//     $nodes = $box->options['nodes'];
+//     foreach ($nodes as $nid => $node) {
+//       $nodes[$nid]['#weight'] = $node['weight'];
+//     }
+//     uasort($nodes, 'element_sort'); //expects #weight not weight.
+//     $ordered_nodes = array_flip(array_keys($nodes));  // nid -> position
     
-    $new_result = array();
-    foreach($view->result as $node) {
-      $pos = $ordered_nodes[$node->nid];
-      $new_result[$pos] = $node;
-    }
-    ksort($new_result);
+//     $new_result = array();
+//     foreach($view->result as $node) {
+//       $pos = $ordered_nodes[$node->nid];
+//       $new_result[$pos] = $node;
+//     }
+//     ksort($new_result);
     
-    $view->result = $new_result;
-  }
-}
+//     $view->result = $new_result;
+//   }
+// }
 
 /**
  * @function os_slideshow_process_form_nodes
@@ -228,4 +232,94 @@ function os_slideshow_image_default_styles() {
   );
   
   return $styles;
+}
+
+/**
+ * Implements hook_theme
+ */
+function os_slideshow_theme($existing, $type, $theme, $path) {
+  return array(
+    'os_slideshow_slideshow' => array(
+      'template' => 'os_slideshow_slideshow',
+      'variables' => array(
+        'nodes' => array(),
+        'slides' => NULL,
+        'controls' => NULL,
+      ),
+      
+    ),
+    'os_slideshow_slide' => array(
+      'template' => 'os_slideshow_slide',
+      'variables' => array(
+        'node' => NULL,
+        'headline' => NULL,
+        'description' => NULL,
+        'image' => NULL,
+        'style_name' => 'slideshow_980',
+        'box_delta' => NULL,
+      )    
+    ),
+    'os_slideshow_controls' => array(
+      'template' => 'os_slideshow_controls',
+      'variables' => array(),
+    ),    
+  );
+}
+
+/**
+ * Implements hook_preprocess_hook
+ */
+function os_slideshow_preprocess_os_slideshow_slide(&$vars) {
+  $node = &$vars['node'];
+  $lang = $node->language;
+  $vars['headline'] = ($node->field_headline) ? $node->field_headline[$lang][0]['value'] : '';
+  $vars['description'] = ($node->field_description) ? $node->field_description[$lang][0]['value'] : '';
+  
+  $img = ($node->field_image) ? $node->field_image[$lang][0]['uri'] : '';  
+  $img_vars = array('path' => $img, 'style_name' => $vars['style_name']);
+  $img = theme('image_style', $img_vars);
+  
+  $url = ($node->field_link) ? $node->field_link[$lang][0]['url'] : '';
+  if ($url) {
+    $img = l($img, $url, array('html'=>TRUE));
+  }
+  
+  $vars['image'] = $img;
+}
+
+/**
+ * Implements hook_preprocess_hook
+ */
+function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
+  //load javascript, pass it our settings
+  drupal_add_library('flexslider', 'flexslider');
+  drupal_add_js(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_flexslider.js');
+  $settings = array('os_slideshow' => array(  //http://www.woothemes.com/flexslider/
+    $vars['box_delta'] => array(
+      //'controlsContainer' => '.controls',
+      'controlNav' => FALSE,    //pager
+      'directionNav' => FALSE,  //control buttons
+    )
+  ));
+  //slideshowSpeed, animationSpeed, randomize, animation (fade or slide (horizontal or vertical))
+  drupal_add_js($settings, 'setting');
+  
+  //prepare images.
+  $nodes = $vars['nodes'];
+  foreach ($nodes as $nid => $node) {
+    $nodes[$nid]['#weight'] = $node['weight'];
+  }
+  uasort($nodes, 'element_sort');
+  
+  //get slides - image with description
+  $nodes = node_load_multiple(array_keys($nodes));
+  $vars['slides'] = array();
+  foreach ($nodes as $nid => $node) {
+    $slide_vars['node'] = $node;
+    $vars['slides'][] = theme('os_slideshow_slide', $slide_vars);
+  }
+  
+  //get controls
+  $control_vars = array();
+  $vars['controls'] = theme('os_slideshow_controls', $control_vars);
 }
