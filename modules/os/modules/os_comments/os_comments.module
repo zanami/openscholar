@@ -263,7 +263,7 @@ function os_comments_preprocess_node(&$vars) {
   // Removes the Drupal comment thread fragment from "Add new comment" link
   // on node teasers. We do this when the comment source is NOT Drupal,
   // in order to prevent the "Comments closed" error message from displaying.
-  if ($vars['teaser'] && $vars['node']->os_comments) {
+  if ($vars['teaser'] && isset($vars['node']->os_comments)) {
     $vars['content']['links']['comment']['#links']['comment-add']['href'] = 'node/' . $vars['node']->nid;
     // @todo add anchor link to go to comment threads for non-drupal comments.
     if ($vars['node']->os_comments == 'disqus') {
