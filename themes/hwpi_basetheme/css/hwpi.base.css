@@ -63,7 +63,7 @@ table caption {
 	color:#4384C4;
 	text-transform:uppercase;
 	font-size:12px;
-	font-weight:bold;	
+	font-weight:bold;
 	letter-spacing:0.1em;
 }
 
@@ -443,7 +443,8 @@ ol.search-results li.search-result:last-child {
   display: inline-block;
   width: 50%;
   vertical-align: top;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
+  padding-top: 15px;
 }
 
 .node-type-person #content .node-person .field-name-field-phone,
@@ -464,12 +465,12 @@ ol.search-results li.search-result:last-child {
   margin-left: 30px;
 }
 
-#content .node-person .node-content > .block.odd .block-inner { 
+#content .node-person .node-content > .block.odd .block-inner {
   margin-right: 30px;
 }
 
 .node-type-person .node-person .field-name-field-email {
-  text-transform: capitalize; 
+  text-transform: capitalize;
 }
 
 .node-teaser.node-person header h1 {

@@ -7,6 +7,16 @@ body {
   color: #1e1e1e;
 }
 
+.not-front #content-column {
+  font-size: 15px;
+}
+
+/* Elements */
+a,
+a:visited {
+  color: #3A72AB;
+}
+
 
 /* Header */
 #header {
@@ -15,7 +25,7 @@ body {
 }
 #boxes-box-site_info,
 #boxes-box-site_info a {
-  color: #303030;
+  color: #fff;
 }
 
 
@@ -123,6 +133,7 @@ h2.block-title {
 .sidebar .block {
   margin-bottom: 20px;
 }
+
 .sidebar .block h2.block-title {
   background: none repeat scroll 0 0 #2D2D2D;
   color: #FFFFFF;
@@ -133,9 +144,11 @@ h2.block-title {
   text-transform: capitalize;
   font-weight: normal;
 }
+
 .block-content {
   margin-top: 20px;
 }
+
 .block.no-title .block-content {
   margin-top: 0;
 }
@@ -145,37 +158,77 @@ h2.block-title {
 #block-views-os-events-block-1 .view .date-nav-wrapper {
   margin-top: 0;
 }
+
 #block-views-os-events-block-1 .view .date-nav-wrapper {
-  border-left: 1px solid #cacaca;
-  border-right: 1px solid #cacaca;
   width: auto;
   margin-bottom: 0;
   padding: 7px 0 0;
 }
+
 .block.no-title .view .date-nav-wrapper {
   border-top: 1px solid #cacaca;
 }
+
+.ui-tabs .block.no-title .view .date-nav-wrapper {
+  border-top: 0;
+}
+
 .block .view .date-nav-wrapper .date-nav {
   margin-bottom: 7px;
 }
 
 .calendar-calendar .mini tbody {
-  border-color: #cacaca;
   border-top-color: #f3f3f1;
 }
+
 .calendar-calendar th.days {
   background-color: #fff;
-  border-top-color: #CACACA;
 }
-.calendar-calendar th.days.sun {
-  border-left-color: #cacaca;
-}
-.calendar-calendar th.days.sat {
-  border-right-color: #cacaca;
-}
+
 table td.mini {
   font-weight: normal;
 }
+
+#block-views-os-events-block-1 .view .date-nav-wrapper,
+.calendar-calendar .mini tbody,
+.calendar-calendar th.days,
+.calendar-calendar td.empty,
+.calendar-calendar td {
+  border-color: #cacaca;
+}
+
+
+/* Tabs (widget) */
+.ui-tabs .ui-tabs-nav li a {
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a {
+  background: #a41b2f;
+  border: 4px solid #fff;
+  border-bottom-width: 1px;
+  color: #fff;
+}
+
+
+/* Section nav */
+#boxes-box-os_pages_section_nav,
+.section-nav ul.menu li a {
+	border-color: #959595;
+}
+
+.section-nav .menu-depth-1 > a {
+  background-color: #1e1e1e;
+}
+
+.section-nav .expanded.menu-depth-2 > a {
+  background-color: #545454;
+}
+
+
+
+
 
 
 /* Footer */
@@ -187,27 +240,6 @@ table td.mini {
   text-transform: none;
   font-size: 16px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
