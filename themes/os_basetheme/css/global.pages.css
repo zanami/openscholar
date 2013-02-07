@@ -72,13 +72,14 @@ body {
     float: none;
 }
 
-.region-footer .region-inner /* By default this sets up 20px gutters i.e. margin: 0 10px. */ {
+.region-footer .region-inner, /* By default this sets up 20px gutters i.e. margin: 0 10px. */ 
+.region-page-top .region-inner /* Remove ugly space between branding region and toolbar */{
 	 padding-top: 0;
 }
 
 
 
-.region-inner .region-inner /* Strip nested region-inner margins by default. */ {
+.region-inner .region-inner /* Strip nested region-inner margins by default. */{
   margin: 0;
 }
 

@@ -630,6 +630,7 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
   switch ($display['type']) {
     case 'os_files_image_list' :
       $images = array();
+      $videos = array();
       $other = array();
       foreach ( $items as $i ) {
         if ($i['type'] == 'image') {
@@ -655,6 +656,21 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
               )
             )
           );
+        }
+        elseif (file_uri_scheme($i['uri']) == 'oembed') {
+          $url = urldecode(file_uri_target($i['uri']));
+          $videos[] = array(
+            '#type' => 'oembed_bare',
+            '#url' => $url,
+            '#options' => array(
+              'maxwidth' => 250,
+            )
+          );
+        }
+        elseif (file_uri_scheme($i['uri']) == 'embed') { 
+          $file = (object)$i;
+          $file->override['width'] = 250;
+          $videos[] = file_view($file, 'default');
         }
         else {
           $extension = strtolower(substr(strrchr($i['filename'], '.'), 1));
@@ -699,6 +715,23 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
       if (module_exists('jcarousel')) {
         $elements['images']['#pre_render'][] = 'os_files_jcarousel_add';
       }
+      
+      $elements['videos'] = array(
+        '#type' => 'container',
+        '#attributes' => array(
+          'class' => array('os-files-videos-list'),
+        )
+      );
+      foreach ($videos as $v) {
+        $elements['videos'][] = array(
+          '#type' => 'container',
+          '#attributes' => array(
+            'class' => array('os-files-video-single'),
+          ),
+          'video' => $v,
+        );
+      }
+      
       $elements['other'] = array(
         '#theme' => 'table',
         '#rows' => $other,

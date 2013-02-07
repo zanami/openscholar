@@ -39,7 +39,8 @@
   min-height: 12em;
 }
 
-.cp-region-menu-bar {
+.cp-region-menu-bar,
+.cp-region-footer-bottom {
   width: 100%;
   margin: 0.65em 0;
 }
