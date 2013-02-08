@@ -96,3 +96,8 @@ function _hwpi_branding_footer() {
   return $footer;
 }
 
+function hwpi_block_view_alter(&$render, $block) {
+  if ($block->delta == 'site-search' && _is_hwpi_theme()) {
+    unset($render['content']['search_block_form']['#title_display']);
+  }
+}
