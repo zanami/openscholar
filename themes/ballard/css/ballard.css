@@ -170,10 +170,6 @@ margin: 8px 0 0 0px;
      list-style-image:none;
 }
 
-.sidebar .block-boxes-os_taxonomy_fbt ul li ul {
-     margin-left: 0;
-    
-}
 
 #columns .block ul li a {
   text-decoration: underline;
@@ -309,25 +305,26 @@ margin: 8px 0 0 0;
    margin: -10px 0 40px;
 }
 
-.region-header-third #block-os-secondary-menu ul {
+.region-header-third .menu ul {
 float:right;
  }
  
-.region-header-third #block-os-secondary-menu li {
+.region-header-third .menu li {
  list-style-image: none;
     
  }
  
-.region-header-third #block-os-secondary-menu li a {
+.region-header-third .menu li a {
   text-decoration: underline;
   color: #F3F3F1;
   font-size:.9em;
   border-right:1px solid #F3F3F1;
-  
+  padding: 0 8px;
  } 
 
-.region-header-third #block-os-secondary-menu li.last a {
+.region-header-third .menu li.last a {
   border-right:none;
+  padding: 0 0 0 8px;
  }
 
 /* SECONDARY NAV WHEN IN A SIDEBAR  */ 
