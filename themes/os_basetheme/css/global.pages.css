@@ -67,11 +67,6 @@ body {
 	 padding-top: 15px;
 }
 
-#footer .at-panel .region {
-    display: inline;
-    float: none;
-}
-
 .region-footer .region-inner, /* By default this sets up 20px gutters i.e. margin: 0 10px. */ 
 .region-page-top .region-inner /* Remove ugly space between branding region and toolbar */{
 	 padding-top: 0;
@@ -141,11 +136,56 @@ div.messages {
 }
 
 
+  /* Footer panels */
+
+  .region-footer {
+    width: 100%;
+  }
+  
+  .footer-left.footer .region-footer-first {
+    width: 25%;
+  }
+  
+  .footer-left.footer .region-footer {
+  	width: 75%;
+  }
+  
+  .footer-left.footer-right .region-footer-first, 
+  .footer-left.footer-right .region-footer-third {
+  	width: 50%;
+  }
+  
+ 
+  .footer.footer-right .region-footer {
+  	width: 75%;
+  }
+  .footer.footer-right .region-footer-third {
+    width: 25%;
+  }
+
+  .footer-left.footer.footer-right .region-footer-first {
+    width: 25%;
+  }
+  .footer-left.footer.footer-right .region-footer {
+  	width: 50%;
+  }
+  .footer-left.footer.footer-right .region-footer-third {
+    width: 25%;
+  }
+
 /*
  * Branding
  */
+
+#powerby-login {
+	float:right;
+	clear:both;
+	margin-right:10px;
+	min-width:165px;
+}
+
 .os-powered-link,
-#block-os-powered-by {
+#os-powered-by {
     float: right;
     bottom:-48px;
     position:relative;
@@ -162,8 +202,7 @@ logged-in.page-cp #block-os-powered-by {
    
 }
 
-#block-os-powered-by span a,
-.os-powered-link a.os-poweredby {
+#powered-by a {
     background: url("../images/poweredby.png") no-repeat scroll 0 0 transparent;
     border: medium none !important;
     display: block;
@@ -172,7 +211,9 @@ logged-in.page-cp #block-os-powered-by {
     text-decoration: none !important;
     text-indent: -999em;
     width: 85px;
-    margin-top:-25px;
+    margin-right:8px;
+    float:right;
+    display:inline;
   }
 
 
@@ -863,3 +904,7 @@ ul.recent-images-list li a:hover img {
   float: right;
   margin-left: 1em;
 }
+
+/** REMOVE AFTER MATT REMOVES THE OLD LOGO AND LOGIN
+ */
+#block-os-login, #block-os-powered-by {display:none;}
