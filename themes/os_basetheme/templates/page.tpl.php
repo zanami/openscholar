@@ -134,7 +134,8 @@
 
 			</div>
 		</div>
-
+		<!--footer region beg-->
+		<footer id="footer" class="clearfix" role="contentinfo">
 		<!-- Three column 3x33 Gpanel -->
 		<?php if (
 			$page['footer_top'] ||
@@ -143,8 +144,7 @@
 			$page['footer_third'] ||
 			$page['footer_bottom']
 			): ?>
-	  <!--footer region beg-->
-		<footer id="footer" class="clearfix" role="contentinfo">
+	  
 			<div class="at-panel gpanel panel-display footer clearfix">
 				<?php print render($page['footer_top']); ?>
 				<?php print render($page['footer_first']); ?>
@@ -152,15 +152,16 @@
 				<?php print render($page['footer_third']); ?>
 				<?php print render($page['footer_bottom']); ?>
 			</div>
-		</footer>
+		
 		<!--footer region end-->
   <?php endif; ?>
-  <div id="os-chrome">
-  	<div><a href="http://openscholar.harvard.edu" class="CMY_Link CMY_Valid">OpenScholar</a></div>
-  <?php if (isset($login_link)) {
+  <div id="powerby-login">
+  	<?php if (isset($login_link)) {
     print render($login_link); 
   } ?>
-  </div>
+  	<div id="powered-by"><a href="http://openscholar.harvard.edu">OpenScholar</a></div>
+    </div>
+  </footer>
   </div>
 </div><!--page area ends-->
 
