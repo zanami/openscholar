@@ -195,6 +195,48 @@ h2.block-title {
   background-color: #fff;
 }
 
+
+/* Calander */
+#block-views-os-events-block-1 .view .date-nav-wrapper {
+  margin-top: 0;
+}
+
+#block-views-os-events-block-1 .view .date-nav-wrapper {
+  width: auto;
+  margin-bottom: 0;
+  padding: 7px 0 0;
+}
+
+.block.no-title .view .date-nav-wrapper {
+  border-top: 1px solid #cacaca;
+}
+
+#content-panels .block.no-title .view .date-nav-wrapper,
+.ui-tabs .block.no-title .view .date-nav-wrapper {
+  border-top: 0;
+}
+
+.block .view .date-nav-wrapper .date-nav {
+  margin-bottom: 7px;
+}
+
+.calendar-calendar .mini tbody {
+  border-top-color: #f3f3f1;
+}
+
+.calendar-calendar th.days {
+  background-color: #fff;
+  border-top-color: #CACACA;
+}
+
+.calendar-calendar th.days.sun {
+  border-left-color: #cacaca;
+}
+
+.calendar-calendar th.days.sat {
+  border-right-color: #cacaca;
+}
+
 table td.mini {
   font-weight: normal;
 }
