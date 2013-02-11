@@ -37,6 +37,7 @@ function os_slideshow_vsite_og_node_type_info() {
 
 /**
  * Implements hook_library().
+ * 
  * @author minorOffense <mwinstone@coldfrontlabs.ca>
  */
 function os_slideshow_library() {
@@ -111,6 +112,7 @@ function os_slideshow_node_insert($node) {
 
 /**
  * Implements hook_node_presave
+ * 
  * Creates title since title was removed from form.
  */
 function os_slideshow_node_presave($node) {
@@ -127,46 +129,6 @@ function os_slideshow_node_presave($node) {
     }
   }
 }
-
-/**
- * Implements hook_views_pre_render
- * 
- * This view gets a custom sort that can't be configured programmatically.  Do it manually here instead.
- * @param unknown_type $view
- */
-// function os_slideshow_views_pre_render(&$view) {
-  
-//   if (($view->name == 'os_slideshow') && $delta = $view->args['delta']) {
-    
-//     //get the box
-//     if (module_exists('spaces') && $space = spaces_get_space()) {
-//       $box = $space->controllers->boxes->get($delta);
-//     } else {
-//       $box = boxes_box_load($delta);
-//     }
-    
-//     if (!$box) {
-//       return;
-//     }
-    
-//     //sort the nodes
-//     $nodes = $box->options['nodes'];
-//     foreach ($nodes as $nid => $node) {
-//       $nodes[$nid]['#weight'] = $node['weight'];
-//     }
-//     uasort($nodes, 'element_sort'); //expects #weight not weight.
-//     $ordered_nodes = array_flip(array_keys($nodes));  // nid -> position
-    
-//     $new_result = array();
-//     foreach($view->result as $node) {
-//       $pos = $ordered_nodes[$node->nid];
-//       $new_result[$pos] = $node;
-//     }
-//     ksort($new_result);
-    
-//     $view->result = $new_result;
-//   }
-// }
 
 /**
  * @function os_slideshow_process_form_nodes
@@ -264,7 +226,7 @@ function os_slideshow_theme($existing, $type, $theme, $path) {
     ),
     'os_slideshow_controls' => array(
       'template' => 'os_slideshow_controls',
-      'variables' => array(),
+      'variables' => array('node_count' => 0),
     ),    
   );
 }
@@ -328,10 +290,15 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
   }
   
   //get controls
-  $control_vars = array();
+  $control_vars = array('node_count' => count($nodes));
   $vars['controls'] = theme('os_slideshow_controls', $control_vars);
 }
 
+/**
+ * @function _os_slideshow_get_animation_direction
+ * 
+ * Flexslider has a transition effect with a direction argument.  This splits them or sets the arg to null
+ */
 function _os_slideshow_get_animation_direction($effect) {
   $effects = explode('-', $effect);
   return (count($effects)>1) ? $effects : array($effect, NULL);

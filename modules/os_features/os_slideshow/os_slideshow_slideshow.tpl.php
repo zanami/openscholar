@@ -1,5 +1,7 @@
 <?php 
-
+/*
+ * Flexslider slides and controls
+ */
 ?>
 
 <div class="flexslider">

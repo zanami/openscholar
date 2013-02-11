@@ -155,109 +155,8 @@ class os_slideshow_box extends os_boxes_default {
     );
     $block['content'] .= theme('os_slideshow_slideshow', $vars);
     return $block;    
-    
-//     if ($view = views_get_view('os_slideshow')) {
-//       $view->init_display();
-//       $handler = $view->display_handler;
-//       $style_options = $handler->get_option('style_options');
-      
-//       //add slideshow widgets
-//       foreach(array('pager', 'controls', 'slide_counter') as $option) {
-//         foreach($style_options['widgets'] as $position => $info) {
-//           $style_options['widgets'][$position]['views_slideshow_' . $option]['enable'] = ($position == $options[$option]);
-//         }
-//       }
-      
-//       //effects
-//       foreach (array('effect', 'timeout', 'speed') as $cycle_opt) {
-//         $style_options['views_slideshow_cycle'][$cycle_opt] = $options[$cycle_opt];
-//       }
-//       $handler->set_option('style_options', $style_options);
-
-//       //use an appropriately scaled image style.
-//       $image_style = $this->_get_image_style();
-//       $style = current(array_keys($image_style));
-//       $fields = $handler->get_option('fields');
-//       $fields['field_image']['settings']['image_style'] = $style;
-//       $handler->set_option('fields', $fields);
-      
-//       //filter slides  - nid is an ORed group of nids.  all it needs is a filter array per nid.
-//       if ($options['nodes']) {
-//         $filters = $handler->get_option('filters');
-//         $nid_filter = $filters['nid'];
-//         unset($filters['nid']);
-//         $c = 0;
-//         foreach (array_keys($options['nodes']) as $nid) {
-//           $nid_filter['value']['value'] = $nid;
-//           $filters['nid_' . $c++] = $nid_filter;
-//         }
-//         $handler->set_option('filters', $filters);
-//       }
-      
-//       //stash the box delta for hook_pre_render (is there a better way to do this part?)
-//       $view->set_arguments(array('delta' => $this->delta));
-      
-//       $this->_theme_css_alter();
-      
-//       //render output
-//       $output = $view->preview();     
-//       $output = $this->_resize_images($output, $image_style);    //use user provided image size
-//       //if we're resizing images in this way, mabye links to the empty string target could be removed the same way.
-      
-      
-//       $block['content'] .= $output; 
-//     }
-//     return $block;
   }
   
-
-  //returns [name => [width, height]] of style for this box's size
-  private function _get_image_style() {
-    //get this blocks region.
-    $contexts = context_get();
-    $region = 'content_top';
-    foreach ($contexts['context'] as $context) {
-      if (@$blocks = ($context->reactions['block']['blocks'])) {
-        if (isset($blocks['boxes-'.$this->delta])) {
-          $region = $blocks['boxes-'.$this->delta]['region'];
-          break;
-        }
-      }
-    }
-    
-    //check max size of this block's region
-//     ctools_include('themes', 'os');
-//     $theme = os_get_themes(os_theme_get());
-//     $settings = $theme->info['settings'];
-//     switch ($region){ 
-//       case 'sidebar_first':
-//         break;
-//       case 'sidebar_second':
-//         break;
-//       default:
-//         break;
-//     }
-    $size = (in_array($region, array('sidebar_first','sidebar_second'))) ? 300 : 1000;
-    
-    $image_styles = image_styles();
-    $slideshows = preg_grep('/^slideshow_/', array_keys($image_styles));
-    //$size = (int) $this->options['size'];
-    
-    $sizes = array();
-    foreach ($slideshows as $name) {
-      $style = current($image_styles[$name]['effects']);
-      $sizes[$style['data']['width']] = array($name => $style['data']);
-    }
-    
-    ksort($sizes);
-    foreach ($sizes as $width => $data) {
-      if ($width >= $size) {
-        break;
-      }
-    }
-    
-    return $data;    
-  }
   
   /**
    * @function _transition_speed_opts()
@@ -277,21 +176,6 @@ class os_slideshow_box extends os_boxes_default {
     return $return;
   }
   
-  //resize images provided by the view to the size specified by the user
-  private function _resize_images($html, $style) {
-    $dim = current($style);
-    $preset = current(array_keys($style));
-    $dims = current($style);
-    
-    $str_width  = 'width="' . $dims['width'] . '"';
-    $str_height = 'height="' . $dims['height'] . '"';
-    
-    $html = str_replace($str_width, 'width="100%"', $html);
-    $html = str_replace($str_height, '', $html);
-    
-    return $html;
-  }
-  
   //filters out dead nids
   private function _get_nids() {
     $nids = array_keys($this->options['nodes']);
@@ -306,20 +190,6 @@ class os_slideshow_box extends os_boxes_default {
     }
     
     return $nids;
-  }
-  
-  /**
-   * @function _theme_css_alter()
-   * 
-   * Some themes provide css for the slideshow.  If so, use it.
-   */
-  private function _theme_css_alter() {
-    ctools_include('themes', 'os');
-    $theme = os_get_themes(os_theme_get());
-    $style = (isset($theme->info['os']['os_slideshow'])) ? $theme->info['os']['os_slideshow'] : ''; 
-    if ($style) {
-      drupal_add_css($style);      
-    }
   }
 }
 
