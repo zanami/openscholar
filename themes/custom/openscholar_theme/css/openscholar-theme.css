@@ -143,6 +143,11 @@ ul.grid {
   float:left;
 }
 
+.not-front .at-panel .region.region-content-top {
+  height:auto;
+
+}
+
 .front .at-panel .region.region-content-top {  
   background:url('../images/container-front.jpg') no-repeat scroll 0 0 transparent;
 }

@@ -77,6 +77,20 @@ function os_biocv_form_cv_node_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
+ * Implements hook_form_FORM_ID_form_alter() for bio_node_form
+ */
+function os_biocv_form_bio_node_form_alter(&$form, &$form_state, $form_id) {
+  $form['actions']['submit']['#submit'][] = '_os_biocv_node_form_submit';
+}
+
+/**
+ * Form submit callback; redirects to "biocv".
+ */
+function _os_biocv_node_form_submit($form, &$form_state) {
+  $form_state['redirect'] = 'biocv';
+}
+
+/**
  * Implements hook_node_access().
  *
  * Denies users from creating more than 1 Bio or CV node.
@@ -203,7 +217,7 @@ function _os_biocv_get_first_node($type = 'bio') {
   // vsite module is enabled. Otherwise it leaves out that condition and will
   // tell us whether any published bio nodes exist on this installation at all.
   // In case there are multiple bio nodes, defaults to order by nid ASC.
-  include_once drupal_get_path('module', 'os') . '/includes/node.inc';
+  ctools_include('node', 'os');
 
   $query = new OSNodeFieldQuery($type);
   $query->propertyOrderBy('nid');

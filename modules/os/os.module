@@ -189,12 +189,8 @@ function os_block_view_alter(&$block, &$data) {
   ctools_include('menu', 'os');
 
   if (array_key_exists($data->delta, os_get_menus()) && count($block['content'])) {
-  	// Remove nice menus from the sidebar menus only.
-  	if(strpos($data->region, 'sidebar') !== FALSE) {
-	  $theme = '';
-  	}else {
-  	  $theme = 'os_nice_menus';
-  	}
+  	// Remove nice menus from the sidebar and footer regions.
+  	$theme = (in_array($data->region, array('footer', 'footer-first', 'footer-second', 'sidebar_first', 'sidebar_second'))) ? '' : 'os_nice_menus';
     $block['content'] += array(
       '#theme' => $theme,
       '#menu_name' => $data->delta,
@@ -369,7 +365,9 @@ function os_theme() {
       'variables' => array(
         'link_text' => 'Admin Login',
         'attributes' => array(
-          'class' => 'footer-login',
+          'class' => array(
+          	'footer-login'
+          ),
         ),
       ),
     ),
@@ -476,7 +474,7 @@ function _os_process_node_links_comment_add_class(&$vars) {
   // Adds class 'os-add-comment' for custom icon on comment link.
   if (isset($vars['content']['links']['comment']['#links']['comment-add'])) {
     if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes'])) {
-      if (is_array($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
+      if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
         $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'][] = $class;
       }
       else {
@@ -687,8 +685,14 @@ function os_settings_form($form_state) {
   if (!overlay_get_mode() == 'child') {
     $form['#redirect'] = '';
   }
-
-  $form['os_use_dropdowns'] = array(
+  $form['os'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('General'),
+    '#weight' => 1,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE
+  );
+  $form['os']['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use Dropdowns'),
     '#default_value' => variable_get('os_use_dropdowns', 1),
@@ -955,6 +959,10 @@ function os_system_info_alter(&$info, $file, $type) {
       'sidebar_first' => 'SideBar Left',
       'sidebar_second' => 'SideBar Right',
       'footer' => 'Footer',
+      'footer_top' => 'Footer Top',
+      'footer_first' => 'Footer Left',
+      'footer_third' => 'Footer Right',
+      'footer_bottom' => 'Footer Bottom'
     );
   }
 }
@@ -1316,4 +1324,19 @@ function os_library() {
 
 function os_library_alter(&$l) {
   $l['drupal.ajax']['dependencies'][] = array('os', 'os.ajax-fix');
+}
+
+/**
+ * Customize what resources will be avalible for RestWS to use
+ **/
+function os_restws_resource_info_alter(&$info){
+
+//   //Remove entity types except those listed
+//   $enabled_entities = variable_get('os_restws_entities',array('node'));
+//   foreach (entity_get_info() as $entity_type => $info) {
+//     if(isset($info[$entity_type]) && !in_array($entity_type, $enabled_entities)){
+//       unset($info[$entity_type]);
+//     }
+//   }
+
 }

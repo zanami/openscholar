@@ -189,7 +189,7 @@ function os_boxes_remove_widget($module, $delta, $target = FALSE) {
 
   // Removes the box from the contexts.
   ctools_include('layout', 'os');
-  $blocks = os_layout_get_multiple($contexts);
+  $blocks = os_layout_get_multiple($contexts, false, true);
 
   $bid = $module . '-' . $delta;
 

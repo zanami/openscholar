@@ -214,3 +214,33 @@ function os_publications_update_7004() {
 
   return t('Select Type... has been removed from the biblio_types table.');
 }
+
+/**
+ * Add more biblio years, separate existing one so there's room for more.
+ **/
+function os_publications_update_7005() {
+  $default_bibyears = array(9998 => 'In Press', 9999 => 'Submitted');
+  $scholar_bibyears = array(9999 => 'Submitted', 9998 => 'In Press', 10000 => 'Forthcoming');
+  $new_bibyears = array(10000=>'Forthcoming', 10010=>'Submitted', 10020=>'In Preparation', 10030=>'In Press', 10040=>'Working Paper');
+  $current_bibyears = variable_get('biblio_years_text', $default_bibyears);
+  
+  ksort($current_bibyears);
+  ksort($scholar_bibyears);
+  ksort($default_bibyears);
+  
+  //Only run this update for sites with the default configuration or our configuration
+  if (($current_bibyears != $default_bibyears) && ($current_bibyears != $scholar_bibyears)) {
+    return t('Biblio years/text settings have been modified.  Did not run update.');
+  }
+
+  $text_to_year = array_flip($new_bibyears);
+  foreach($current_bibyears as $year => $text) {
+    db_update('biblio')
+      ->condition('biblio_year', $year)
+      ->fields(array('biblio_year' => $text_to_year[$text]))
+      ->execute();
+  }
+  
+  variable_set('biblio_years_text', $new_bibyears);
+  return t('Updated biblio years.');
+}

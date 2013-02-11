@@ -12,6 +12,11 @@ require 'vendor/autoload.php';
 class FeatureContext extends DrupalContext {
 
   /**
+   * Variable for storing the random string we used in the text.
+   */
+  private $randomText;
+
+  /**
    * Variable to pass into the last xPath expression.
    */
   private $xpath = '';
@@ -395,10 +400,51 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * Generate random text.
+   */
+  private function randomizeMe($length = 10) {
+    return $this->randomText = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, $length);
+  }
+
+  /**
+   * @Given /^I fill "([^"]*)" with random text$/
+   */
+  public function iFillWithRandomText($elementId) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//input[@id='{$elementId}']");
+
+    if (!$element) {
+      throw new Exception(sprintf("Could not find the element with the id %s", $elementId));
+    }
+
+    $element->setValue($this->randomizeMe());
+  }
+
+  /**
+   * @Given /^I visit the site "([^"]*)"$/
+   */
+  public function iVisitTheSite($site) {
+    if ($site == "random") {
+      $this->visit("/" . $this->randomText);
+    }
+    else {
+      $this->visit("/" . $site);
+    }
+  }
+
+  /**
    * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
    */
   public function iSetTheTermUnderTheTerm($child, $parent) {
     $function = "os_migrate_demo_set_term_under_term";
     $this->invoke_code($function, array("'$child'", "'$parent'"));
+  }
+
+  /**
+   * @When /^I set the variable "([^"]*)" to "([^"]*)"$/
+   */
+  public function iSetTheVariableTo($variable, $value) {
+    $code = "os_migrate_demo_variable_set({$variable}, '{$value}');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
   }
 }

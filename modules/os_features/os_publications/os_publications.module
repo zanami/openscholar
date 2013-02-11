@@ -40,8 +40,7 @@ function os_publications_menu_alter(&$items) {
   $items['publications/export'] = array(
     'title' => '',
     'page callback' => 'os_publications_export',
-    'access callback' => 'user_access',
-    'access arguments' => array('show export links'),
+    'access callback' => 'os_publications_export_access',
     'file' => drupal_get_path('module', 'os_publications') . '/os_publications.pages.inc',
     'type' => MENU_CALLBACK,
   );
@@ -67,6 +66,18 @@ function os_publications_menu_alter(&$items) {
 
   // for the toolbar
   $items['node/add/biblio']['title'] = 'Publication';
+}
+
+/**
+ * Menu access; Make sure publications export can be seen by privileged users
+ * only inside a VSite context, to prevent from loading too many nodes.
+ */
+function os_publications_export_access() {
+  if (!user_access('show export links') || (module_exists('vsite') && !spaces_get_space())) {
+    return;
+  }
+
+  return TRUE;
 }
 
 /**
@@ -102,6 +113,7 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
     if ($space->type == 'og') {
       $query->innerJoin('og_membership', 'ogm', 'n.nid = ogm.etid');
       $query->condition('ogm.entity_type', 'node');
+      $query->condition('ogm.group_type', 'node');
       $query->condition('ogm.gid', $space->id);
     }
     // Check the sort order for biblio.
@@ -301,7 +313,8 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   ctools_include('ajax');
   ctools_include('modal');
   $form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private')) . ctools_modal_text_button('Change Note Settings', 'features/nojs/os_publications', 'Change Note Settings');
-
+  //$form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private')) . l('Change Note Settings', 'cp/build/features/os_publications');
+  
   // hide the rest of the vtabs behind a collapsible fieldset
   $form['publication_extras'] = array(
     '#type' => 'fieldset',

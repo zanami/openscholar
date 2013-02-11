@@ -61,6 +61,22 @@ function iqss_projects_front_context_default_contexts_alter(&$contexts){
 }// end function
 
 /**
+ * Implements hook_os_widget_alter().
+ */
+function iqss_projects_front_os_widget_alter(&$widget) {
+  //Keep the default box instances that this module provides from getting used sitewide
+  if($widget['module'] == 'boxes' && function_exists('iqss_projects_front_default_box')){
+    static $fp_boxes;
+    //Front Page Boxes
+    if(!isset($fp_boxes)) $fp_boxes =  iqss_projects_front_default_box();
+
+    if(isset($fp_boxes[$widget['delta']])){
+      $widget['hidden'] = true;
+    }
+  }
+}
+
+/**
  * Implement hook_strongarm
  * Strongarm hook for configuration variables
  * for the os_stats block

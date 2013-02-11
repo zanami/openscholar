@@ -10,7 +10,10 @@
 body,
 #header-container, 
 #footer,
-#page {
+#page,
+#tinymce,
+body#tinymce
+ {
   background: #000000;
   color:#ccffcc;
   font-family: Verdana, Arial, Helvetica, sans-serif;

@@ -57,9 +57,9 @@ function os_news_image_default_styles() {
     ),
   );
 
-  // Exported image style: os_square_50_50.
-  $styles['os_square_50_50'] = array(
-    'name' => 'os_square_50_50',
+  // Exported image style: os_square_100_100.
+  $styles['os_square_100_100'] = array(
+    'name' => 'os_square_100_100',
     'effects' => array(
       1 => array(
         'label' => 'Scale and crop',
@@ -71,8 +71,8 @@ function os_news_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '50',
-          'height' => '50',
+          'width' => '100',
+          'height' => '100',
         ),
         'weight' => '1',
       ),

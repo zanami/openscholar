@@ -10,6 +10,151 @@
 function harvard_courses_field_default_fields() {
   $fields = array();
 
+  // Exported field: 'field_collection_item-field_department_school-field_department_id'.
+  $fields['field_collection_item-field_department_school-field_department_id'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_department_id',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'field_department_school',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'field_collection_item',
+      'field_name' => 'field_department_id',
+      'label' => 'Department ID',
+      'required' => 1,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '2',
+      ),
+    ),
+  );
+
+  // Exported field: 'field_collection_item-field_department_school-field_school_name'.
+  $fields['field_collection_item-field_department_school-field_school_name'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_school_name',
+      'foreign keys' => array(
+        'taxonomy_term_data' => array(
+          'columns' => array(
+            'target_id' => 'tid',
+          ),
+          'table' => 'taxonomy_term_data',
+        ),
+      ),
+      'indexes' => array(
+        'target_id' => array(
+          0 => 'target_id',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'entityreference',
+      'settings' => array(
+        'handler' => 'base',
+        'handler_settings' => array(
+          'behaviors' => array(
+            'views-select-list' => array(
+              'status' => 0,
+            ),
+          ),
+          'sort' => array(
+            'type' => 'none',
+          ),
+          'target_bundles' => array(
+            'schools_names' => 'schools_names',
+          ),
+        ),
+        'target_type' => 'taxonomy_term',
+      ),
+      'translatable' => '0',
+      'type' => 'entityreference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'field_department_school',
+      'default_value' => NULL,
+      'default_value_function' => '',
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'entityreference',
+          'settings' => array(
+            'link' => FALSE,
+          ),
+          'type' => 'entityreference_label',
+          'weight' => 2,
+        ),
+      ),
+      'entity_type' => 'field_collection_item',
+      'field_name' => 'field_school_name',
+      'label' => 'School name',
+      'required' => 1,
+      'settings' => array(
+        'behaviors' => array(
+          'prepopulate' => array(
+            'status' => 0,
+          ),
+        ),
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_select',
+        'weight' => '5',
+      ),
+    ),
+  );
+
   // Exported field: 'node-department-field_catalog_number'.
   $fields['node-department-field_catalog_number'] = array(
     'field_config' => array(
@@ -82,50 +227,43 @@ function harvard_courses_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-department-field_department_id'.
-  $fields['node-department-field_department_id'] = array(
+  // Exported field: 'node-department-field_department_school'.
+  $fields['node-department-field_department_school'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_department_id',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
+      'field_name' => 'field_department_school',
+      'foreign keys' => array(),
+      'indexes' => array(),
       'locked' => '0',
-      'module' => 'text',
+      'module' => 'field_collection',
       'settings' => array(
-        'max_length' => '255',
+        'hide_blank_items' => 1,
+        'path' => '',
       ),
       'translatable' => '0',
-      'type' => 'text',
+      'type' => 'field_collection',
     ),
     'field_instance' => array(
       'bundle' => 'department',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Department ID for the course, i.e: COMPSCI.',
+      'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'text',
+          'module' => 'field_collection',
           'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
+            'add' => 'Add',
+            'delete' => 'Delete',
+            'description' => TRUE,
+            'edit' => 'Edit',
+            'view_mode' => 'full',
           ),
-          'type' => 'text_default',
-          'weight' => 8,
+          'type' => 'field_collection_view',
+          'weight' => 10,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -135,21 +273,18 @@ function harvard_courses_field_default_fields() {
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'field_department_id',
-      'label' => 'Department ID',
+      'field_name' => 'field_department_school',
+      'label' => 'Department & school',
       'required' => 0,
       'settings' => array(
-        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'size' => '60',
-        ),
-        'type' => 'text_textfield',
-        'weight' => '36',
+        'active' => 0,
+        'module' => 'field_collection',
+        'settings' => array(),
+        'type' => 'field_collection_embed',
+        'weight' => '40',
       ),
     ),
   );
@@ -919,7 +1054,7 @@ function harvard_courses_field_default_fields() {
   $fields['node-harvard_course-field_department_id'] = array(
     'field_config' => array(
       'active' => '1',
-      'cardinality' => '-1',
+      'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_department_id',
@@ -1009,7 +1144,6 @@ function harvard_courses_field_default_fields() {
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
-      'type' => 'text_long',
     ),
     'field_instance' => array(
       'bundle' => 'harvard_course',
@@ -1036,7 +1170,7 @@ function harvard_courses_field_default_fields() {
       'label' => 'description',
       'required' => 0,
       'settings' => array(
-        'text_processing' => '0',
+        'text_processing' => '1',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
@@ -1779,55 +1913,48 @@ function harvard_courses_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '7',
+        'weight' => '4',
       ),
     ),
   );
 
-  // Exported field: 'node-personal-field_department_id'.
-  $fields['node-personal-field_department_id'] = array(
+  // Exported field: 'node-personal-field_department_school'.
+  $fields['node-personal-field_department_school'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_department_id',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
+      'field_name' => 'field_department_school',
+      'foreign keys' => array(),
+      'indexes' => array(),
       'locked' => '0',
-      'module' => 'text',
+      'module' => 'field_collection',
       'settings' => array(
-        'max_length' => '255',
+        'hide_blank_items' => 1,
+        'path' => '',
       ),
       'translatable' => '0',
-      'type' => 'text',
+      'type' => 'field_collection',
     ),
     'field_instance' => array(
       'bundle' => 'personal',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Department ID for the course, i.e: COMPSCI.',
+      'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'text',
+          'module' => 'field_collection',
           'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
+            'add' => 'Add',
+            'delete' => 'Delete',
+            'description' => TRUE,
+            'edit' => 'Edit',
+            'view_mode' => 'full',
           ),
-          'type' => 'text_default',
-          'weight' => 6,
+          'type' => 'field_collection_view',
+          'weight' => 9,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1837,21 +1964,18 @@ function harvard_courses_field_default_fields() {
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'field_department_id',
-      'label' => 'Department ID',
+      'field_name' => 'field_department_school',
+      'label' => 'Department & school',
       'required' => 0,
       'settings' => array(
-        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'size' => '60',
-        ),
-        'type' => 'text_textfield',
-        'weight' => '6',
+        'active' => 0,
+        'module' => 'field_collection',
+        'settings' => array(),
+        'type' => 'field_collection_embed',
+        'weight' => '3',
       ),
     ),
   );
@@ -1928,50 +2052,43 @@ function harvard_courses_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-project-field_department_id'.
-  $fields['node-project-field_department_id'] = array(
+  // Exported field: 'node-project-field_department_school'.
+  $fields['node-project-field_department_school'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_department_id',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
+      'field_name' => 'field_department_school',
+      'foreign keys' => array(),
+      'indexes' => array(),
       'locked' => '0',
-      'module' => 'text',
+      'module' => 'field_collection',
       'settings' => array(
-        'max_length' => '255',
+        'hide_blank_items' => 1,
+        'path' => '',
       ),
       'translatable' => '0',
-      'type' => 'text',
+      'type' => 'field_collection',
     ),
     'field_instance' => array(
       'bundle' => 'project',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Department ID for the course, i.e: COMPSCI.',
+      'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'text',
+          'module' => 'field_collection',
           'settings' => array(
-            'diff_custom' => 0,
-            'diff_custom_settings' => array(),
+            'add' => 'Add',
+            'delete' => 'Delete',
+            'description' => TRUE,
+            'edit' => 'Edit',
+            'view_mode' => 'full',
           ),
-          'type' => 'text_default',
-          'weight' => 7,
+          'type' => 'field_collection_view',
+          'weight' => 9,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1981,21 +2098,18 @@ function harvard_courses_field_default_fields() {
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'field_department_id',
-      'label' => 'Department ID',
+      'field_name' => 'field_department_school',
+      'label' => 'Department & school',
       'required' => 0,
       'settings' => array(
-        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'size' => '60',
-        ),
-        'type' => 'text_textfield',
-        'weight' => '35',
+        'active' => 0,
+        'module' => 'field_collection',
+        'settings' => array(),
+        'type' => 'field_collection_embed',
+        'weight' => '38',
       ),
     ),
   );
@@ -2009,12 +2123,12 @@ function harvard_courses_field_default_fields() {
   t('Course URL');
   t('Credits');
   t('Cross registration');
+  t('Department & school');
   t('Department ID');
-  t('Department ID for the course, i.e: COMPSCI.');
   t('Exam group');
   t('Faculty description');
-  t('Groups audience');
   t('Import type');
+  t('School name');
   t('Section number');
   t('bracketed');
   t('building');

@@ -7,6 +7,7 @@ body {
 	color: #1e1e1e;
 }
 
+
 /* Header */
 #header {
 	background: #e6e6e3;
@@ -30,25 +31,46 @@ body {
 .node-title, 
 .page-search .title a,
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
+.not-front #content-column ul li,
+.not-front #content-column ol li,
 .more-link,
 .page-search #content-column p,
 .not-front #content-column p,
-#footer ul.menu a {
+.links a,
+#footer ul.menu a,
+.boxes-box-content h2,
+.section-nav a {
 	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 }
 
 
+.section-nav a {
+	font-size: 16px;
+}
+
 h1#page-title,
 h1.node-title, 
-.page-search .title a {
+.page-search .title a,
+.boxes-box-content h2 {
 	font-weight: normal;
-	font-size: 16px;
+	font-size: 18px;
 	margin-bottom: 18px;
+}
+
+
+.boxes-box-content h2 {
+    font-size: 24px;
+    line-height: 28px;
 }
 
 h1#page-title {
 	font-size: 38px;
-	margin-top: 30px;
+	line-height: 1; /* Font size is larger than the default line-height, so will overlap if the title wraps */
+	margin: 15px 0 30px;
+}
+
+.page-node h1#page-title {
+	margin-bottom: 15px;
 }
 
 h2.block-title {
@@ -81,15 +103,18 @@ h2.block-title {
 }
 
 .sidebar .block,
-.front #content-column .block {
+.front #content-column .block,
+.node-person .block-inner,
+.comment-wrapper {
 	border-top: 3px solid #4384C4;
 }
- 
+
+.block-boxes block-boxes-os_sv_list_box,
+.block-boxes-os_boxes_manual_list, 
 .sidebar .block.section-nav,
 #content-column .block.section-nav {
 	border-top: none;
 }
-
 
 
 /* Footer */
@@ -101,6 +126,4 @@ h2.block-title {
 	text-transform: none;
 	font-size: 16px;
 }
-
-
 

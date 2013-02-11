@@ -189,9 +189,9 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         $feature = current($map[$bundle]);
       }
     }
-    $path_prefix = isset($feature) ? strval(os_get_app_path($feature)) : 'taxonomy';
-    if (strlen($path_prefix)) {
-      $path_prefix = $path_prefix . "/";
+    $options['path_prefix'] = isset($feature) ? strval(os_get_app_path($feature)) : 'taxonomy';
+    if (strlen($options['path_prefix'])) {
+      $options['path_prefix'] = $options['path_prefix'] . "/";
     }
   }
 
@@ -256,7 +256,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
 
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
-    return render(drupal_get_form('os_taxonomy_select_list', $data, $path_prefix));
+    return render(drupal_get_form('os_taxonomy_select_list', $data, $options['path_prefix']));
   }
   else {
     return theme('item_list', array('type' => 'ul', 'items' => $data));
@@ -597,12 +597,6 @@ function os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles = arr
     ->fields('t');
 
   $query->join('node', 'n', 't.nid = n.nid');
-
-  $query->orderBy('n.sticky', 'DESC');
-  if (module_exists('nodeorder')) {
-    $query->orderBy('t.weight', 'ASC');
-  }
-  $query->orderBy('n.created', 'DESC');
 
   if (!empty($node_bundles)) {
     $query->condition('n.type', $node_bundles, 'IN');

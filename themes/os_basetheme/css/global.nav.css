@@ -731,12 +731,14 @@ ul.nice-menu-down li li.menuparent:hover {
   text-align: left;
   margin: 0;
   margin-bottom: 0;
+  list-style-image: none !important;
+
 }
 
 .navigation ul.menu li a,
 .navigation ul li a {
   display: block;
-  text-decoration: none;
+  text-decoration: none !important;
   padding: .5em;
   color:inherit;
 }
@@ -749,6 +751,87 @@ ul.nice-menu-down li li.menuparent:hover {
 .navigation a:link, .navigation a:visited { color: inherit; }
 .navigation a:hover, .navigation a:active { color: inherit; } 
 .navigation a:hover { background-color: #fff; }
+
+/* Section Nav */
+#boxes-box-os_pages_section_nav {
+	border: 1px solid #ebe3df;
+	border-bottom: none;
+}
+
+.section-nav li.expanded, 
+.section-nav li.collapsed, 
+.section-nav li.leaf {
+  padding: 0;
+}
+
+.section-nav ul.menu {
+  margin-bottom: 0;
+}
+
+.section-nav ul.menu li {
+	list-style: none;
+	background-color: #fff;
+	text-align: left;
+}
+
+.section-nav ul.menu li a {
+	display: block;
+	text-decoration: none !important;
+	padding: 8px 15px;
+	border-bottom: 1px solid #ebe3df;
+}
+
+
+.section-nav a:link,
+.section-nav a:visited {
+	color: inherit;
+	
+}
+
+.section-nav a:hover {
+	background-color: #bfc2c4 !important;
+}
+
+.section-nav a.active {
+	color: #333;
+}
+
+/* Section Nav - Section Heading */
+.section-nav .menu-depth-1 > a {
+	background: none !important;
+	background-color: #293352 !important;
+	color: #fff;
+	text-transform: uppercase;
+}
+
+.section-nav .collapsed > a {
+	background: url('images/arrow-right.png') no-repeat left center;
+	
+}
+
+.section-nav .expanded > a {
+	background: url('images/arrow-down.png') no-repeat left center;
+	
+}
+.section-nav .expanded.menu-depth-2 > a {
+	background-color: #3a72ab;
+	color: #fff;
+}
+
+.section-nav .expanded.menu-depth-2 .menu-depth-3 > a,
+.section-nav .expanded.menu-depth-2 .menu-depth-4 > a,
+.section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
+	background-color: #f3f3f1;
+	padding-left: 25px;
+}
+
+.section-nav .expanded.menu-depth-2 .menu-depth-4 > a {
+	padding-left: 35px;
+}
+
+.section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
+	padding-left: 45px;
+}
 
 
 

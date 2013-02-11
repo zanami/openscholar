@@ -84,6 +84,29 @@ function cp_app_settings_form($form, $form_state, $app_name) {
 }
 
 /**
+ * @function cp_app_settings_form_modal
+ * 
+ * Delivers cp_app_settings_form for use in a modal frame
+ */
+function cp_app_settings_form_modal($ajax, $feature) {
+  $form_id = 'cp_app_settings_form';
+  
+  if ($ajax && $ajax != 'nojs') {
+    ctools_include('modal');
+    ctools_add_js('ajax-responder');
+    $form_state = array('ajax' => TRUE, 'no_render'=>FALSE, 'no_redirect'=>TRUE);
+    $form_state['build_info']['args'] = array($feature);
+    $output = ctools_modal_form_wrapper($form_id, $form_state);
+
+    print ajax_render($output);
+    exit;
+  } else {
+    //not loading in a popup, so just use the cp form
+    drupal_goto('cp/build/features/' . $feature);
+  }
+}
+
+/**
  * @todo Function description
  */
 function _cp_app_settings_remove_no_form($element, $form_state) {
@@ -99,9 +122,16 @@ function _cp_app_settings_remove_no_form($element, $form_state) {
 }
 
 function cp_app_settings_form_submit($form, &$form_state) {
-  if (overlay_get_mode() == 'child') {
+  $mode = overlay_get_mode();
+  if ($mode== 'child') {
     overlay_close_dialog();
     $form_state['no_redirect'] = TRUE;
     $form_state['redirect'] = FALSE;
-  }
+  } elseif (($mode == 'parent') && $form_state['ajax']) {
+    $var = ($form_state['values']['os_publications_note_in_teaser']) ? 'public' : 'private';
+    $cmd[] = ctools_modal_command_dismiss();
+    $cmd[] = ajax_command_replace('#edit-7 div.description>strong>em', "<em class='placeholder'>$var</em>");
+    print ajax_render($cmd);
+    exit;
+  } 
 }

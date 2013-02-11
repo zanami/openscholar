@@ -10,3 +10,19 @@
 .follow-me-links li {
 	display: inline-block;
 }
+
+.follow-me-links-vertical li {
+	display: block;
+	padding: 3px;
+}
+
+.service-name-span {
+	vertical-align: middle;
+	padding-left: 5px;
+}
+
+.form-item-link-to-add .add_new {
+	padding: 6px 11px;
+	border: 1px outset gray;
+	background-color: lightgray;
+}
