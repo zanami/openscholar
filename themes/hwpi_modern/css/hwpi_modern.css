@@ -54,11 +54,11 @@ a:visited {
 .not-front #content-column p,
 .links a,
 #footer ul.menu a,
-.boxes-box-content h2 {
-  font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+.boxes-box-content h2,
+.view-os-events .views-field-colorbox {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-h1#page-title,
 h1.node-title,
 .page-search .title a,
 .boxes-box-content h2 {
@@ -67,21 +67,18 @@ h1.node-title,
   margin-bottom: 18px;
 }
 
-
 .boxes-box-content h2 {
   font-size: 24px;
   line-height: 28px;
 }
 
 h1#page-title {
-  font-size: 38px;
+  font-size: 40px;
   line-height: 1; /* Font size is larger than the default line-height, so will overlap if the title wraps */
-  margin: 15px 0 30px;
+  margin: 15px 0 40px;
 }
 
-.page-node h1#page-title {
-  margin-bottom: 15px;
-}
+.page-node h1#page-title {}
 
 h2.block-title {
   padding:10px 0;
@@ -93,7 +90,7 @@ h2.block-title {
 }
 
 .page-search h1#page-title {
-  margin-top:10px;
+  margin-top: 10px;
 }
 
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
@@ -107,7 +104,9 @@ h2.block-title {
 
 
 /* Search */
-#search-block-form input.form-submit, #search-block-form #edit-submit, #search-form #edit-submit {
+#search-block-form input.form-submit,
+#search-block-form #edit-submit,
+#search-form #edit-submit {
   background-position:  0 -340px;
 }
 
@@ -151,6 +150,10 @@ h2.block-title {
 
 .block.no-title .block-content {
   margin-top: 0;
+}
+
+#content-panels .block {
+  margin-bottom: 15px;
 }
 
 
@@ -219,7 +222,7 @@ table td.mini {
 }
 
 .section-nav .menu-depth-1 > a {
-  background-color: #1e1e1e;
+  background-color: #1e1e1e !important;
 }
 
 .section-nav .expanded.menu-depth-2 > a {
