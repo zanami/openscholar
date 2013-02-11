@@ -588,6 +588,7 @@ function og_vocab_field_formatter_view($entity_type, $entity, $field, $instance,
 function og_vocab_relation_save($vid, $group_type, $gid) {
   if ($og_vocab = og_vocab_relation_get($vid)) {
     if ($og_vocab->group_type != $group_type || $og_vocab->gid != $gid) {
+      print_r(func_get_args());
       throw new OgVocabException('Vocabulary ID is already associated with another group.');
     }
     return;
