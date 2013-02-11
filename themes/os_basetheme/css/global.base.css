@@ -262,6 +262,12 @@ margin: 0 0 1.5em 17px;
     list-style: none;
 }
 
+.block.block-boxes-os_boxes_html ul,
+.block .field-name-body ul {
+     list-style: disc;
+  
+}
+
 ul ul,
 ul ol,
 ol ol,
