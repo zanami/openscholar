@@ -499,14 +499,17 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
  * @see gkplus_preprocess_os_taxonomy_tagged_nodes()
  */
 function theme_os_taxonomy_tagged_nodes($variables) {
-  $output = '';
-
   global $language;
+
+  $output = '';
   $direction = $language->direction ? 'margin-right: ' : 'margin-left: ';
 
+  $tagged_item_per_page = 10;
+  $page = 1;
+
   $options = $variables['options'] + array(
-    'range' => 0,
-    'offset' => 0,
+    'range' => $tagged_item_per_page,
+    'offset' => ($page - 1) * $tagged_item_per_page,
     'tree' => FALSE,
     'max_depth' => NULL,
     'indentation' => 10,
@@ -720,7 +723,7 @@ function os_taxonomy_list_attached_nodes($tid, $node_bundles = array(), $range =
   $query->orderBy('n.created', 'DESC');
 
   if ($range) {
-    $query->range($range + $offset, $range);
+    $query->range($offset, $range);
   }
 
   $result = $query->execute();

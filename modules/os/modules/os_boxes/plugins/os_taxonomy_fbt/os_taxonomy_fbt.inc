@@ -28,7 +28,8 @@ class os_taxonomy_fbt extends os_boxes_default {
     $options['add_childs'] = FALSE;
     $options['depth'] = 0;
     $options['behavior'] = 'contextual';
-    $options['as_nav'] = false;
+    $options['as_nav'] = FALSE;
+    $options['tagged_item_per_page'] = 10;
 
     return $options;
   }
@@ -171,6 +172,12 @@ class os_taxonomy_fbt extends os_boxes_default {
       '#dependency' => array(
         'edit-show-count' => array(1),
       ),
+    );
+
+    $form['tagged_item_per_page'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Tagged item per page'),
+      '#description' => t('Number of tagged items to display per page in the term page.'),
     );
 
     return $form;
