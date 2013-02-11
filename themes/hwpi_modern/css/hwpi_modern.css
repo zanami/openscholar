@@ -44,6 +44,13 @@ a:visited {
   color: #303030;
 }
 
+/* Secondary menu */
+#block-os-secondary-menu a {
+  color: #bac5c6;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
 /* Titles & Type */
 #page-title,
 .node-title,
@@ -219,6 +226,8 @@ table td.mini {
 #boxes-box-os_pages_section_nav,
 .section-nav ul.menu li a {
 	border-color: #959595;
+	font-weight: bold;
+	text-transform: none;
 }
 
 .section-nav .menu-depth-1 > a {
@@ -232,8 +241,11 @@ table td.mini {
 
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> dbb5766... #1597 secondary menu colors
 /* Footer */
 #footer {
   background: url(../images/footer-top-gradient.png) repeat-x 0 0 #ebebeb;
