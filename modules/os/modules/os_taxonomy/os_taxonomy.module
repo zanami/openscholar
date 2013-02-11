@@ -504,7 +504,7 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   $output = '';
   $direction = $language->direction ? 'margin-right: ' : 'margin-left: ';
 
-  $tagged_item_per_page = 10;
+  $tagged_item_per_page = 15;
   $page = !isset($_GET['page']) ? 0 : $_GET['page'];
 
   $options = $variables['options'] + array(
