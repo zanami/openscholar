@@ -9,18 +9,27 @@
 // Behavior to load FlexSlider
 Drupal.behaviors.os_slideshow = {
   attach: function(context, settings) {
+    function slider_closure(selector) {
+      return function() {
+        return $(selector);
+      }
+    }
+    
     $(window).load(function() {
       for (delta in Drupal.settings.os_slideshow) {
         //start slideshow
-        var div = 'div#boxes-box-' + delta;
+        var div = 'div#' + delta;
         var slider = $(div + ' .flexslider');
-        slider.flexslider(Drupal.settings.os_slideshow[delta])
+        //var slider = slider_closure(div);
+        //slider = f();
+        slider.flexslider(Drupal.settings.os_slideshow[delta]);
 
         //bind controls 
-        slider.find('#flex-next').click(function() {slider.flexslider('next');});
-        slider.find('#flex-prev').click(function() {slider.flexslider('prev');});
+        slider.find('#flex-next').click(function() { $(this).closest('.flexslider').flexslider('next') });
+        slider.find('#flex-prev').click(function() { $(this).closest('.flexslider').flexslider('prev'); });
         slider.find('#flex-pause').click(function() {
-          if (slider.hasClass('pause')) {
+          var slider = $(this).closest('.flexslider');
+          if (slider.closest('.flexslider').hasClass('pause')) {
             slider.removeClass('pause').flexslider('play');
           } else {
             slider.addClass('pause').flexslider('pause');
@@ -30,15 +39,18 @@ Drupal.behaviors.os_slideshow = {
         //closure for jump to page functions
         function pager_closure(page) {
           return function() {
-            slider.flexslider(page);
+            $(this).closest('.flexslider').flexslider(page);
           }
         }
-
+        
         //bind pager functions
         for (var i=0; i<slider.find('img').length; i++) {
           var fn = pager_closure(i);
           slider.find('#flex-page-'+i).click(fn);
+            
         }
+      
+
       }
     });
   }

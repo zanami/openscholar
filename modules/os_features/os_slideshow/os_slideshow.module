@@ -295,8 +295,8 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
   drupal_add_library('os_slideshow', 'flexslider');
   drupal_add_js(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_flexslider.js');
   list($animation, $direction) = _os_slideshow_get_animation_direction($vars['effect']);
-  $settings = array('os_slideshow' => array(  //http://www.woothemes.com/flexslider/
-    $vars['box_delta'] => array(
+  $settings = array('os_slideshow' =>   //http://www.woothemes.com/flexslider/
+    array('boxes-box-'.$vars['box_delta'] => array(
       //'controlsContainer' => '#flex-controls', //moves controls to this container
       'controlNav' => FALSE,    //pager
       'directionNav' => FALSE,  //control buttons
