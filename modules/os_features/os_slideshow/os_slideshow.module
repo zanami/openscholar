@@ -58,6 +58,11 @@ function os_slideshow_library() {
  */
 function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $form_id) {
   $widget = (isset($_GET['widget'])) ? $_GET['widget'] : @$state['input']['widget'];
+  if (module_exists('spaces') && $space = spaces_get_space()) {
+    $box = $space->controllers->boxes->get($widget);
+  } else {
+    $box = boxes_box_load($widget);
+  }
   
   //$form['field_image']['und'][0]['#upload_validators']['imagefield_crop_upload_validate'][1]['widget']['settings']['resolution'] = '900x100';
   if ($widget) {
@@ -75,32 +80,29 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
     }
   }
   
-  //update the ratio settings when the widget element is built
-  $form['field_image'][$form['language']['#value']][0]['#process'][] = 'os_slideshow_imagefield_crop_widget_process';
-  
   //hide title.  it will be automatically generated later.
   $form['title']['#type'] = 'hidden';
   $form['title']['#required'] = FALSE;
 }
 
 /**
- * @function os_slideshow_imagefield_crop_widget_process
+ * Implements hook_imagefield_crop_instance_alter
  * 
- * #process function for imagefield_crop widget form.  Changes its settings so we can use any aspect ratio.
+ * See: http://drupal.org/node/1915510#comment-7058848
+ * 
+ * Changes the imagefield_crop widget to use our custom ratio.
  */
-function os_slideshow_imagefield_crop_widget_process($element, &$form_state, $form) {
-  foreach ($element['#attached']['js'] as $delta => $attached) {
-    if (is_array($attached) && $attached['type']=='setting') {
-      foreach ($attached['data'] as $module => $setting) {
-        if ($module == 'imagefield_crop') {
-          $field_setting = &$element['#attached']['js'][$delta]['data'][$module]['edit-field-image-und-0'];
-          $field_setting['box']['ratio'] = 2; //todo set the ratio
-          //update the minimum to fit this ar
-        }
-      }
-    }
+function os_slideshow_imagefield_crop_instance_alter(&$instance, $context) {
+  if ($context['form']['#id'] == 'slideshow-slide-node-form') {  
+    $box = boxes_box_load($context['form']['widget']['#value']);
+    $ratio = $box->options['aspect_ratio'];
+    $ratios = _os_slideshow_image_aspect_ratios();
+    $ratio = (isset($ratios[$ratio])) ? $ratios[$ratio] : current($ratios);
+    $w = 800;
+    $h = intval(round($w/$ratio, 0));
+    
+    $instance['widget']['settings']['resolution'] = "${w}x${h}";
   }
-  return $element;
 }
 
 /**
@@ -197,28 +199,6 @@ function os_slideshow_module_implements_alter(&$implementations, $hook) {
 function os_slideshow_image_default_styles() {
   $slideshow_max = variable_get('os_slideshow_max_style_width', 1000);
   $styles = array();
-
-  // Exported image style: slideshow_480
-//   $styles['slideshow_980'] = array(
-//     'name' => 'slideshow_980',
-//     'effects' => array(
-//       5 => array(
-//         'label' => 'Scale and crop',
-//         'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
-//         'effect callback' => 'image_scale_and_crop_effect',
-//         'dimensions callback' => 'image_resize_dimensions',
-//         'form callback' => 'image_resize_form',
-//         'summary theme' => 'image_resize_summary',
-//         'module' => 'image',
-//         'name' => 'image_scale_and_crop',
-//         'data' => array(
-//           'width' => '980',
-//           'height' => '360',
-//         ),
-//         'weight' => '1',
-//       ),
-//     ),
-//   );
   
   $default_effects = array(
     'label' => 'Scale and crop',
@@ -311,7 +291,6 @@ function os_slideshow_preprocess_os_slideshow_slide(&$vars) {
  * Implements hook_preprocess_hook
  */
 function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
-  dpm($vars);
   //load javascript, pass it our settings
   drupal_add_library('os_slideshow', 'flexslider');
   drupal_add_js(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_flexslider.js');

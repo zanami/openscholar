@@ -6,19 +6,12 @@ class os_slideshow_box extends os_boxes_default {
     $options = parent::options_defaults();
     
     return $options + array(
-//       'pager' => 'bottom',
-//       'controls' => 'bottom',
-//       'slide_counter' => 'bottom',
       'effect' => 'fade',
       'nodes' => array(),
       'timeout' => 5000,
       'speed' => 700,
       'random' => FALSE,
       'aspect_ratio' => FALSE,
-        
-//       //not configurable.  
-//       'min_width' => 400,
-//       'max_width' => 980,
     );
   }
 
@@ -27,14 +20,17 @@ class os_slideshow_box extends os_boxes_default {
     $defaults = $this->options_defaults();
     
     //collect aspect ratio only during box creation.
-    if ($this->new) {
-      $form['aspect_ratio'] = array(
-        '#type' => 'radios',
-        '#title' => t('Aspect Ratio'),
-        '#required' => TRUE,
-        '#options' => array('3:1' => '3:1', '16:9' => '16:9'), //get these from some other function somehow
-      );
-    }
+    $ratios = array_keys(_os_slideshow_image_aspect_ratios());
+    $ratio_options = array_combine($ratios, $ratios);
+    $form['aspect_ratio'] = array(
+      '#type' => ($this->new) ? 'radios' : 'hidden',
+      '#title' => t('Aspect Ratio'),
+      '#description' => t('Slideshow images will be cropped to this proportion.  This option is permanent and can only be set when the slideshow is first created.'),
+      '#required' => TRUE,
+      '#options' => $ratio_options, //get these from some other function somehow
+      '#default_value' => ($this->options['aspect_ratio']) ? $this->options['aspect_ratio'] : $defaults['aspect_ratio'],
+    );
+
     
     $form['display'] = array(
       '#type' => 'fieldset',
@@ -43,17 +39,6 @@ class os_slideshow_box extends os_boxes_default {
       '#collapsed' => TRUE,
       '#weight' => 10,
     );
-    
-//     $display_options = array('pager' => t('Show Pager'), 'controls' => t('Show Controls'), 'slide_counter' => t('Slide Counter'));
-//     foreach ($display_options as $option => $title)
-//       $form['display'][$option] = array(
-//         '#type' => 'hidden',
-//         '#title' => $title,
-//         //omitting top/bottom options, but leaving this here so we can add it back in when we're ready for new features.
-//         //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
-//         '#options' => array('none' => t('No'), 'bottom' => t('Yes')),
-//         '#default_value' => $this->options[$option],
-//     );
     
     $form['display']['effect'] = array(
         '#type' => 'select',
@@ -119,7 +104,7 @@ class os_slideshow_box extends os_boxes_default {
         
         //edit link loads node edit with dest of this page.  this page's dest needs to be preserved.  nested destinations.
         $dest = (isset($_GET['destination'])) ? current_path() . '?destination=' . $_GET['destination'] : current_path();
-        $edit_link = l('Edit Slide', "node/${nid}/edit", array('query' => array('destination' => $dest)));
+        $edit_link = l('Edit Slide', "node/${nid}/edit", array('query' => array('destination' => $dest, 'widget' => $this->delta)));
         $remove_link =  '<a href="#" class="remove" title="Remove Slide">Remove</a>';
         $links = "<div>${title}<br />${edit_link} | ${remove_link}</div>";
         
