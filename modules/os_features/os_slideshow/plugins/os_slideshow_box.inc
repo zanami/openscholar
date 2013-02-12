@@ -64,6 +64,12 @@ class os_slideshow_box extends os_boxes_default {
       '#options' => $this->_transition_speed_opts(0, 1, .1),
     );
     
+    $form['display']['random'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Random Order'),
+        '#default_value' => $this->options['random'],
+    );
+    
     $form['#attached']['js'] = array(drupal_get_path('module', 'os_slideshow').'/plugins/os_slideshow_box.js',);
 
     if (empty($this->options['nodes'])) {
@@ -144,7 +150,7 @@ class os_slideshow_box extends os_boxes_default {
       ));
     }
     
-    $vars = array_intersect_key($options, array_flip(array('nodes', 'timeout', 'speed', 'effect', 'aspect_ratio')));
+    $vars = array_intersect_key($options, array_flip(array('nodes', 'timeout', 'speed', 'effect', 'aspect_ratio', 'random')));
     $vars['box_delta'] = $this->delta; 
     $block['content'] .= theme('os_slideshow_slideshow', $vars);
     return $block;    

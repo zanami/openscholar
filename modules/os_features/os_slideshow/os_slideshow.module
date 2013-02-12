@@ -245,6 +245,7 @@ function os_slideshow_theme($existing, $type, $theme, $path) {
         'speed' => 700,
         'effect' => 'fade',
         'aspect_ratio' => NULL,
+        'random' => FALSE,
       ),
       
     ),
@@ -304,6 +305,7 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
       'animationSpeed' => $vars['speed'],
       'animation' => $animation,
       'direction' => $direction,
+      'randomize' => $vars['random'],
     )
   ));
   //slideshowSpeed, animationSpeed, randomize, animation (fade or slide (horizontal or vertical))
