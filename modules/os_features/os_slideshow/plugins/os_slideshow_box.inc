@@ -99,7 +99,7 @@ class os_slideshow_box extends os_boxes_default {
         }
         
         $uri = $nodes[$nid]->field_image[$nodes[$nid]->language][0]['uri'];
-        $img = theme('image_style', array('style_name' => 'os_square_50_50','path' => $uri, 'width'=>50, 'height'=>50, 'attributes' => array('style' => 'float: left; margin-right: 1em;')));
+        $img = theme('image_style', array('style_name' => 'thumbnail', 'path' => $uri, 'attributes' => array('style' => 'float: left; margin-right: 1em;')));
         $title = '<strong>' . $nodes[$nid]->title . '</strong>';
         
         //edit link loads node edit with dest of this page.  this page's dest needs to be preserved.  nested destinations.
