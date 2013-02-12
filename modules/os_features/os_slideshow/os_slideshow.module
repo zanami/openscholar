@@ -58,11 +58,12 @@ function os_slideshow_library() {
  */
 function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $form_id) {
   $widget = (isset($_GET['widget'])) ? $_GET['widget'] : @$state['input']['widget'];
+  
   //$form['field_image']['und'][0]['#upload_validators']['imagefield_crop_upload_validate'][1]['widget']['settings']['resolution'] = '900x100';
   if ($widget) {
     $form['widget'] = array('#type' => 'hidden', '#value' => $widget);
   } 
-  
+    
   //remove sticky.  pull published out of vertical tab
   $form['options']['sticky']['#type'] = 'hidden';
   unset($form['options']['#group']);
@@ -74,9 +75,32 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
     }
   }
   
+  //update the ratio settings when the widget element is built
+  $form['field_image'][$form['language']['#value']][0]['#process'][] = 'os_slideshow_imagefield_crop_widget_process';
+  
   //hide title.  it will be automatically generated later.
   $form['title']['#type'] = 'hidden';
   $form['title']['#required'] = FALSE;
+}
+
+/**
+ * @function os_slideshow_imagefield_crop_widget_process
+ * 
+ * #process function for imagefield_crop widget form.  Changes its settings so we can use any aspect ratio.
+ */
+function os_slideshow_imagefield_crop_widget_process($element, &$form_state, $form) {
+  foreach ($element['#attached']['js'] as $delta => $attached) {
+    if (is_array($attached) && $attached['type']=='setting') {
+      foreach ($attached['data'] as $module => $setting) {
+        if ($module == 'imagefield_crop') {
+          $field_setting = &$element['#attached']['js'][$delta]['data'][$module]['edit-field-image-und-0'];
+          $field_setting['box']['ratio'] = 2; //todo set the ratio
+          //update the minimum to fit this ar
+        }
+      }
+    }
+  }
+  return $element;
 }
 
 /**
@@ -167,32 +191,62 @@ function os_slideshow_module_implements_alter(&$implementations, $hook) {
 
 /**
  * Implements hook_image_default_styles().
+ * 
+ * Provides styles for each of our cropping ratios.
  */
 function os_slideshow_image_default_styles() {
+  $slideshow_max = variable_get('os_slideshow_max_style_width', 1000);
   $styles = array();
 
   // Exported image style: slideshow_480
-  $styles['slideshow_980'] = array(
-    'name' => 'slideshow_980',
-    'effects' => array(
-      5 => array(
-        'label' => 'Scale and crop',
-        'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
-        'effect callback' => 'image_scale_and_crop_effect',
-        'dimensions callback' => 'image_resize_dimensions',
-        'form callback' => 'image_resize_form',
-        'summary theme' => 'image_resize_summary',
-        'module' => 'image',
-        'name' => 'image_scale_and_crop',
-        'data' => array(
-          'width' => '980',
-          'height' => '360',
-        ),
-        'weight' => '1',
-      ),
-    ),
+//   $styles['slideshow_980'] = array(
+//     'name' => 'slideshow_980',
+//     'effects' => array(
+//       5 => array(
+//         'label' => 'Scale and crop',
+//         'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
+//         'effect callback' => 'image_scale_and_crop_effect',
+//         'dimensions callback' => 'image_resize_dimensions',
+//         'form callback' => 'image_resize_form',
+//         'summary theme' => 'image_resize_summary',
+//         'module' => 'image',
+//         'name' => 'image_scale_and_crop',
+//         'data' => array(
+//           'width' => '980',
+//           'height' => '360',
+//         ),
+//         'weight' => '1',
+//       ),
+//     ),
+//   );
+  
+  $default_effects = array(
+    'label' => 'Scale and crop',
+    'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
+    'effect callback' => 'image_scale_and_crop_effect',
+    'dimensions callback' => 'image_resize_dimensions',
+    'form callback' => 'image_resize_form',
+    'summary theme' => 'image_resize_summary',
+    'module' => 'image',
+    'name' => 'image_scale_and_crop',
+    'data' => array(),
+    'weight' => '1',
   );
   
+  foreach (_os_slideshow_image_aspect_ratios() as $label => $ratio) {
+    for ($w = $slideshow_max; $w>0; $w -= 200) {
+      $name = 'os_slideshow_' . $label . '_' . $w;
+      $effects = $default_effects;
+      $effects['data']['width'] = $w;
+      $effects['data']['height'] = intval(round($w/$ratio, 0));
+      
+      $styles[$name] = array(
+        'name' => $name,
+        'effects' => array($effects),
+      );
+    }
+  }
+    
   return $styles;
 }
 
@@ -210,6 +264,7 @@ function os_slideshow_theme($existing, $type, $theme, $path) {
         'timeout' => 4000,
         'speed' => 700,
         'effect' => 'fade',
+        'aspect_ratio' => NULL,
       ),
       
     ),
@@ -256,6 +311,7 @@ function os_slideshow_preprocess_os_slideshow_slide(&$vars) {
  * Implements hook_preprocess_hook
  */
 function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
+  dpm($vars);
   //load javascript, pass it our settings
   drupal_add_library('os_slideshow', 'flexslider');
   drupal_add_js(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_flexslider.js');
@@ -284,6 +340,7 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
   //get slides - image with description
   $nodes = node_load_multiple(array_keys($nodes));
   $vars['slides'] = array();
+  $slide_vars = array('style_name' => _os_slideshow_get_style_name($vars['aspect_ratio'], $vars['box_delta']));
   foreach ($nodes as $nid => $node) {
     $slide_vars['node'] = $node;
     $vars['slides'][] = theme('os_slideshow_slide', $slide_vars);
@@ -303,4 +360,59 @@ function _os_slideshow_get_animation_direction($effect) {
   $effects = explode('-', $effect);
   return (count($effects)>1) ? $effects : array($effect, NULL);
 }  
+
+/**
+ * @function _os_slideshow_get_style_name()
+ * 
+ * Gets a style for the aspect ratio and region currently being used.
+ */
+function _os_slideshow_get_style_name($aspect_ratio, $delta) {
+  $ratios = _os_slideshow_image_aspect_ratios();
+  if (!isset($ratios[$aspect_ratio])) {
+    $aspect_ratio = current(array_keys($ratios)); //default to a ratio we've defined here.
+  }
+  
+  //get the region this block is in
+  $contexts = context_get();
+  $region = 'content_top';
+  foreach ($contexts['context'] as $context) {
+    if (@$blocks = ($context->reactions['block']['blocks'])) {
+      if (isset($blocks['boxes-'.$delta])) {
+        $region = $blocks['boxes-'.$delta]['region'];
+        break;
+      }
+    }
+  }
+  
+  //get valid image styles for this aspect ratio
+  $sizes = array();
+  foreach (os_slideshow_image_default_styles() as $style) {
+    if (strpos($style['name'], 'os_slideshow_'.$aspect_ratio) == 0) {
+      $sizes[$style['effects'][0]['data']['width']] = $style['name'];
+    }
+  }
+  
+  //select the smallest style that's bigger than the current region.
+  ksort($sizes);
+  $size = (in_array($region, array('sidebar_first','sidebar_second'))) ? 300 : 1000; //this should be smarter
+  foreach ($sizes as $width => $name) {
+    if ($width >= $size) {
+      break;
+    }
+  }
+  
+  return $name;
+}
+
+/**
+ * @function _os_slideshow_image_aspect_ratios
+ *
+ * Defines the aspect ratios supported by this module.
+ */
+function _os_slideshow_image_aspect_ratios() {
+  return array(
+      '3:1' => 3/1,
+      '16:9' => 16/9,
+  );
+}
 

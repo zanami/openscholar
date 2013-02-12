@@ -6,23 +6,35 @@ class os_slideshow_box extends os_boxes_default {
     $options = parent::options_defaults();
     
     return $options + array(
-      'pager' => 'bottom',
-      'controls' => 'bottom',
-      'slide_counter' => 'bottom',
+//       'pager' => 'bottom',
+//       'controls' => 'bottom',
+//       'slide_counter' => 'bottom',
       'effect' => 'fade',
       'nodes' => array(),
       'timeout' => 5000,
       'speed' => 700,
+      'random' => FALSE,
+      'aspect_ratio' => FALSE,
         
-      //not configurable.  
-      'min_width' => 400,
-      'max_width' => 980,
+//       //not configurable.  
+//       'min_width' => 400,
+//       'max_width' => 980,
     );
   }
 
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
     $defaults = $this->options_defaults();
+    
+    //collect aspect ratio only during box creation.
+    if ($this->new) {
+      $form['aspect_ratio'] = array(
+        '#type' => 'radios',
+        '#title' => t('Aspect Ratio'),
+        '#required' => TRUE,
+        '#options' => array('3:1' => '3:1', '16:9' => '16:9'), //get these from some other function somehow
+      );
+    }
     
     $form['display'] = array(
       '#type' => 'fieldset',
@@ -32,16 +44,16 @@ class os_slideshow_box extends os_boxes_default {
       '#weight' => 10,
     );
     
-    $display_options = array('pager' => t('Show Pager'), 'controls' => t('Show Controls'), 'slide_counter' => t('Slide Counter'));
-    foreach ($display_options as $option => $title)
-      $form['display'][$option] = array(
-        '#type' => 'hidden',
-        '#title' => $title,
-        //omitting top/bottom options, but leaving this here so we can add it back in when we're ready for new features.
-        //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
-        '#options' => array('none' => t('No'), 'bottom' => t('Yes')),
-        '#default_value' => $this->options[$option],
-    );
+//     $display_options = array('pager' => t('Show Pager'), 'controls' => t('Show Controls'), 'slide_counter' => t('Slide Counter'));
+//     foreach ($display_options as $option => $title)
+//       $form['display'][$option] = array(
+//         '#type' => 'hidden',
+//         '#title' => $title,
+//         //omitting top/bottom options, but leaving this here so we can add it back in when we're ready for new features.
+//         //'#options' => array('none' => t('No Display'), 'top' => t('Top'), 'bottom' => t('Bottom')),
+//         '#options' => array('none' => t('No'), 'bottom' => t('Yes')),
+//         '#default_value' => $this->options[$option],
+//     );
     
     $form['display']['effect'] = array(
         '#type' => 'select',
@@ -137,6 +149,7 @@ class os_slideshow_box extends os_boxes_default {
   public function render() {
     $block = parent::render();
     $options = $this->options + $this->options_defaults();
+    $block['title'] = $block['subject'] = check_plain($this->title);
 
     //show Add Slide link to admins
     if (spaces_access_admin()) {
@@ -146,13 +159,8 @@ class os_slideshow_box extends os_boxes_default {
       ));
     }
     
-    $vars = array(
-      'nodes' => $options['nodes'], 
-      'box_delta' => $this->delta,
-      'timeout' => $options['timeout'],
-      'speed' => $options['speed'],
-      'effect' => $options['effect'],
-    );
+    $vars = array_intersect_key($options, array_flip(array('nodes', 'timeout', 'speed', 'effect', 'aspect_ratio')));
+    $vars['box_delta'] = $this->delta; 
     $block['content'] .= theme('os_slideshow_slideshow', $vars);
     return $block;    
   }
@@ -221,11 +229,11 @@ function os_slideshow_draggable_table($element) {
 /**
  * Ensures the value given is within acceptable ranges
  */
-function os_slideshow_accepted_range($element, &$form_state) {
-  $defaults = $form_state['box']->options_defaults();
-  if ($element['#value'] < $defaults['min_width'] || $element['#value'] > $defaults['max_width']) {
-    form_error($element, t('Slideshow width out of bounds: Width should be between %min and %max pixels.', array('%min'=>$defaults['min_width'], '%max'=>$defaults['max_width'])));
-  }
-  $element['#value'] = (int)$element['#value'];
-}
+// function os_slideshow_accepted_range($element, &$form_state) {
+//   $defaults = $form_state['box']->options_defaults();
+//   if ($element['#value'] < $defaults['min_width'] || $element['#value'] > $defaults['max_width']) {
+//     form_error($element, t('Slideshow width out of bounds: Width should be between %min and %max pixels.', array('%min'=>$defaults['min_width'], '%max'=>$defaults['max_width'])));
+//   }
+//   $element['#value'] = (int)$element['#value'];
+// }
 
