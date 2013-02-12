@@ -614,6 +614,8 @@ class os_sv_list_box extends os_boxes_default {
       $variables = array(
         'style_name' => "os_square_100_100",
         'path' => $image->uri,
+        'width' => 50,
+        'height' => 50,
       );
       //$html .= theme('image', $variables);
       $img = theme_image_style($variables);
