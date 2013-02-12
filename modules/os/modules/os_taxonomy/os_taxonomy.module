@@ -111,7 +111,7 @@ function theme_os_taxonomy_term_item($variables) {
   $title = $item_wrapper . $name . $number;
 
   if ($variables['show_term_descriptions'] && !empty($variables['description'])) {
-    $title .= '<div class="description">' . check_plain($variables['description']) . '</div>';
+    $title .= '<div class="description">' . filter_xss($variables['description']) . '</div>';
   }
   // Close div if we there are children.
   $title .= !empty($variables['childs']) ? "</div>" . $variables['childs'] : '';

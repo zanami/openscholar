@@ -1,5 +1,7 @@
 <?php 
-
+/**
+ * Slides and their captions
+ */
 
 ?>
 
@@ -11,11 +13,3 @@
   </p>
 </li>
 
-<?php 
-/*
-  <div class="text">
-    <span class="headline"><?php print $headline; ?></span>
-    <span class="description"><?php print $description; ?></span>
-  </div>
-</div>
-*/

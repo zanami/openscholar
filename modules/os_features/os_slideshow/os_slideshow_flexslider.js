@@ -1,7 +1,7 @@
 /**
  * @file os_slideshow_flexslider.js
  * 
- * Initializes flexslider javascript
+ * Initializes flexslider javascript, attaches back, pause, next, pager functions
  */
 
 (function ($) {
@@ -27,14 +27,18 @@ Drupal.behaviors.os_slideshow = {
           }
         });
 
-        //make pager
-        var text = '';
-        for (var i=0; i<slider.find('img').length; i++) {
-          text += '<span class="flex-pager-item '+i+'">o</span>';
+        //closure for jump to page functions
+        function pager_closure(page) {
+          return function() {
+            slider.flexslider(page);
+          }
         }
-        slider.find('#flex-pager').append(text);
-        
-        //bind pager
+
+        //bind pager functions
+        for (var i=0; i<slider.find('img').length; i++) {
+          var fn = pager_closure(i);
+          slider.find('#flex-page-'+i).click(fn);
+        }
       }
     });
   }
