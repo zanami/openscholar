@@ -105,7 +105,7 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
   $default_bundles = array();
   foreach ($bundles as $bundle => $bundle_label) {
     $vid = !empty($form['vid']['#value']) ? $form['vid']['#value'] : 0;
-    $og_vocab = og_vocab_load_og_vocab($vid, 'node', $bundle, TRUE);
+    $og_vocab = og_vocab_load_og_vocab($vid, 'node', $bundle, NULL, TRUE);
     $options[$bundle] = check_plain($bundle_label);
     if (empty($og_vocab->is_new)) {
       $default_bundles[$bundle] = TRUE;
