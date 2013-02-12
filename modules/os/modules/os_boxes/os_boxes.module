@@ -128,6 +128,13 @@ function os_boxes_get_boxes_plugins($name = NULL) {
 }
 
 /**
+ * Prevents Box from showing up in Factory list
+ */
+function os_boxes_boxes_plugins_alter(&$plugins) {
+  $plugins['simple']['factory'] = false;
+}
+
+/**
  * Impements hook_os_widget().
  */
 function os_boxes_os_widget($box = NULL) {
