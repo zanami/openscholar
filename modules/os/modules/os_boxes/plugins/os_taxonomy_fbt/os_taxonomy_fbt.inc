@@ -28,7 +28,7 @@ class os_taxonomy_fbt extends os_boxes_default {
     $options['add_childs'] = FALSE;
     $options['depth'] = 0;
     $options['behavior'] = 'contextual';
-    $options['as_nav'] = false;
+    $options['as_nav'] = FALSE;
 
     return $options;
   }
