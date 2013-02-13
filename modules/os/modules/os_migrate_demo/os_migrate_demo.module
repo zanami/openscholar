@@ -20,10 +20,7 @@ function os_migrate_demo_define_harvard_courses() {
   // Enable Harvard courses module.
   module_enable(array('harvard_courses'));
 
-  cache_clear_all();
-
-  return t('The environment defined successfully');
-
+  return t('Harvard courses enabled successfully.');
 }
 
 /**

@@ -414,11 +414,4 @@ class FeatureContext extends DrupalContext {
     $code = "os_migrate_demo_variable_set({$variable}, '{$value}');";
     $this->getDriver()->drush("php-eval \"{$code}\"");
   }
-
-  /**
-   * @When /^I define harvard courses environment$/
-   */
-  public function iDefineHarvardCoursesEnvironment() {
-    $this->visit("courses/build-courses-environment");
-  }
 }
