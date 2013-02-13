@@ -358,17 +358,21 @@ function _os_slideshow_get_style_name($aspect_ratio, $delta) {
     $aspect_ratio = current(array_keys($ratios)); //default to a ratio we've defined here.
   }
   
-  //get the region this block is in
+  //figure out what region the slideshow is in and what other regions are active so we can determine how wide the slideshow can be
   $contexts = context_get();
-  $region = 'content_top';
+  $block_regions = array();
+  
   foreach ($contexts['context'] as $context) {
-    if (@$blocks = ($context->reactions['block']['blocks'])) {
-      if (isset($blocks['boxes-'.$delta])) {
-        $region = $blocks['boxes-'.$delta]['region'];
-        break;
+    if (is_array($context->reactions['block']['blocks'])) {
+      foreach($context->reactions['block']['blocks'] as $name => $block) {
+        if (empty($block_regions[$name])) {
+          $block_regions[$name] = $block['region'];
+        }
       }
     }
   }
+
+  $region = (isset($block_regions['boxes-'.$delta])) ? $block_regions['boxes-'.$delta] : 'content_top'; 
   
   //get valid image styles for this aspect ratio
   $sizes = array();
@@ -380,14 +384,60 @@ function _os_slideshow_get_style_name($aspect_ratio, $delta) {
   
   //select the smallest style that's bigger than the current region.
   ksort($sizes);
-  $size = (in_array($region, array('sidebar_first','sidebar_second'))) ? 300 : 1000; //this should be smarter
-  foreach ($sizes as $width => $name) {
-    if ($width >= $size) {
-      break;
+  $size = _os_slideshow_region_size($region, $block_regions);
+  if (($name = @$region[$size]) == FALSE) {
+    //get the next biggest style
+    foreach ($sizes as $width => $name) {
+      if ($width >= $size) {
+        break;
+      }
     }
   }
   
   return $name;
+}
+
+/**
+ * @function _os_slideshow_region_size
+ *   
+ * Returns the max width of a region given the list of regions that are in use. 
+ */
+function _os_slideshow_region_size($region, $all_regions) {
+  $all_regions = array_unique($all_regions);
+  $full_width = 980;
+  
+  $rows = array(
+    'content' => array(
+      'main' => 'content_top',                                //this region
+      'sides' =>  array('sidebar_first', 'sidebar_second'),   //its sidebars
+      'solo_side_width' => 300,                               //widest sidebar when one sidebar is shown
+      'pair_side_width' => 250,                               //widest sidebar when both are shown
+    ),
+    'headers' => array(
+      'main' => 'header_second',    
+      'sides' => array('header_first', 'header_third'),
+      'solo_side_width' => 300,  
+      'pair_side_width' => 250,
+    ),
+    'footers' => array(
+      'main' => 'footer',
+      'sides' => array('footer_first', 'footer_third'),
+      'solo_side_width' => .25 * $full_width,
+      'pair_side_width' => .25 * $full_width,
+    )
+  );
+  
+  foreach($rows as $row) {
+    $sides_count = count(array_intersect($all_regions, $row['sides']));
+    if ($region == $row['main']) {
+      $widths = array($full_width, $full_width - $row['solo_side_width'], $full_width - 2*$row['pair_side_width']);
+      return $widths[$sides_count];
+    } elseif (in_array($region, $row['sides'])) {
+      return ($sides_count > 1) ? $row['pair_side_width'] : $row['solo_side_width'];
+    }
+  }
+  
+  return $full_width; //just assume full and let the browser resize.  
 }
 
 /**
@@ -401,4 +451,5 @@ function _os_slideshow_image_aspect_ratios() {
       '16:9' => 16/9,
   );
 }
+
 
