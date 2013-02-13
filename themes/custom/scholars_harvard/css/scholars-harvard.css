@@ -29,6 +29,9 @@ font-family: helvetica, arial, serif;
   position: relative;
   }
 
+.not-logged-in.page-user .container {
+    width: 540px;
+}
 
 
 #content-column h1#page-title {
@@ -47,6 +50,10 @@ font-family: helvetica, arial, serif;
 p.copy a.poweredby {
   background-position: 0 -54px;
   }
+  
+.not-logged-in.page-user #powered-by a {
+    background: url("/profiles/openscholar/themes/os_basetheme/images/poweredby.png") no-repeat scroll 0 -25px transparent;
+}  
 
 .section-node-edit #columns,
 .section-websites #columns {
@@ -682,24 +689,25 @@ p.copy a:hover {
   border-color: #fff;
   }
   
-.front #footer #block-os-powered-by {
-  float:right;
+.front #footer #powered-by {
   position:relative;
-  top: -146px;
+  top: -133px;
+  margin-right:-10px;
   }
  
 
-   .front.logged-in #footer #block-os-powered-by {
+ .front.logged-in #footer #powered-by {
   top: -144px;
   } 
   
 
-.front #block-os-powered-by span a {
+.front #powered-by a {
   background: url('../images/powered_by.png') 19px 37px no-repeat #234f6e;
   display:block;
   width: 119px;
   height:115px;
   text-indent: -9999px;
+  margin:0;
   }
   
 
