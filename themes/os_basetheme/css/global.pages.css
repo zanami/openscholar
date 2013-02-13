@@ -759,6 +759,11 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	border-top-right-radius:5px;
 }
 
+.not-logged-in.page-user #footer {
+	width:540px;
+	margin: 0 auto;
+}
+
 
 /**	 QUICK TABS**/
 	

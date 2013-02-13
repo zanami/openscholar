@@ -57,22 +57,9 @@ font-family: helvetica,arial,sans-serif;
 	
 }
 
-.os-powered-link, #block-os-powered-by {
-    bottom: -22px;
-  
-}
 
-.logged-in .os-powered-link, .logged-in  #block-os-powered-by {
-    bottom: -24px;
-    
-}
-
-#block-os-powered-by span a, .os-powered-link a.os-poweredby {
+#powered-by a {
     background: url("/profiles/openscholar/themes/os_basetheme/images/poweredby.png") no-repeat scroll 0 -25px transparent;
-}
-
- #block-os-login {
-    bottom: 5px;
 }
 
 
