@@ -1,7 +1,7 @@
 Feature:
   Testing the harvard courses import mechanism.
 
-  @javascript
+  @javascript @wip
   Scenario: Importing courses and test their grouping to the correct sites.
     Given I am logged in as "admin"
 
