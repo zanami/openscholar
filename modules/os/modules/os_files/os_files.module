@@ -437,6 +437,9 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
  * File Settings.
  */
 function os_files_media_browser_params_alter(&$media_params){
+  if (!empty($media_params['types'])) {
+    $media_params['types'][] = 'default';
+  }
 
   // Are we in multi-tenant? get the file path.
   if (spaces_get_space()) {
