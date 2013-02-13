@@ -1,10 +1,10 @@
 Feature:
   Testing the harvard courses import mechanism.
 
-  @api @wip
+  @javascript @current
   Scenario: Importing courses and test their grouping to the correct sites.
     Given I am logged in as "admin"
-     When I visit "courses/build-courses-environment"
+     When I define harvard courses environment
       And I visit "john/cp/build/features/harvard_courses"
       And I fill in "Department ID" with "Architecture"
       And I select "Harvard Graduate School of Design" from "School name"
