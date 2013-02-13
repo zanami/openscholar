@@ -29,19 +29,22 @@ class os_slideshow_box extends os_boxes_default {
     foreach ($layouts as $name => $layout) {
       if ($this->new || $ratio == current(array_keys($layout['ratio']))) {
         $file = drupal_get_path('module', 'os_slideshow') . '/images/' . $name . '.png';
-        $ratio_options[$name] = (file_exists($file)) ?theme('image', array('path'=>$file)) : $name;
+        $ratio_options[$name] = (file_exists($file)) ? theme('image', array('path'=>$file)) . $layout['name'] : $layout['name'];
       }
     }
     
     $form['layout'] = array(
       '#type' => 'radios',
       '#title' => t('Slideshow Layout'),
-      '#description' => t('Slideshow images will be cropped to this proportion.  This option is permanent and can only be set when the slideshow is first created.'),
+      '#description' => t('Slideshow images and cpations will be layed out in this manner.'),
       '#required' => TRUE,
       '#options' => $ratio_options, //get these from some other function somehow
       '#default_value' => ($this->options['layout']) ? $this->options['layout'] : $defaults['layout'],
       '#attached' => array('css' => array(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_layout_form.css')),
     );
+    if ($this->new) {
+      $form['layout']['#description'] .= ' ' . t('Note that the layout can be changed at a later date, but the aspect ratio (Standard/Widescreen) is permanent once selected.');
+    }
         
     $form['display'] = array(
       '#type' => 'fieldset',
