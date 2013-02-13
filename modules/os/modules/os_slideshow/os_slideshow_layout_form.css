@@ -1,30 +1,30 @@
 /*
- * @file os_slideshow_aspect_ratio_form.css
+ * @file os_slideshow_layout_form.css
  *
- * Styles the slideshow's aspect ratio form.  Radio buttons are replaced
+ * Styles the slideshow's layhot form.  Radio buttons are replaced
  * by their labels, which are images of the option being selected.  A box
  * shadow highlights the selected box (same shadow as cp/appearance)
  */
 
-#form-item-aspect-ratio {
+#form-item-layout {
   clear: both;
 }
 
-#edit-aspect-ratio>.form-item-aspect-ratio {
+#edit-layout>.form-item-layout {
   display: inline-block;
 }
 
-#edit-aspect-ratio>.form-item-aspect-ratio>input {
+#edit-layout>.form-item-layout>input {
 	visibility: hidden;
 }
 
-#edit-aspect-ratio>.form-item-aspect-ratio>input+label {
+#edit-layout>.form-item-layout>input+label {
   display: block;
   margin-right: 30px;
   background-color: #c8c8c8;
   box-shadow: 0 0 7px #111;
 }
-#edit-aspect-ratio>.form-item-aspect-ratio>input:checked+label {
+#edit-layout>.form-item-layout>input:checked+label {
   display: block;
   box-shadow: 0 0 30px #4a7d06;
   -moz-box-shadow: 0 0 30px #4a7d06;
