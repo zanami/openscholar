@@ -39,6 +39,7 @@ class views_og_cache_plugin_cache_time extends views_plugin_cache_time {
         'build_info' => $build_info,
         'language' => $GLOBALS['language']->language,
         'base_url' => $GLOBALS['base_url'],
+        'og_roles' => og_get_user_roles($og_context['group_type'], $og_context['gid']),
       );
 
       if ($this->options['og_access']) {
@@ -64,13 +65,13 @@ class views_og_cache_plugin_cache_time extends views_plugin_cache_time {
   function get_output_key() {
     global $user;
     $og_context = og_context();
-
     if (!isset($this->_output_key) && $og_context) {
       $key_data = array(
         'result' => $this->view->result,
         'theme' => $GLOBALS['theme'],
         'language' => $GLOBALS['language']->language,
         'base_url' => $GLOBALS['base_url'],
+        'og_roles' => og_get_user_roles($og_context['group_type'], $og_context['gid']),
       );
 
       if ($this->options['og_access']) {
