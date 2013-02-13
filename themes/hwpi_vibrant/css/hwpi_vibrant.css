@@ -1,0 +1,454 @@
+
+
+/* Main wrappers */
+html,
+body {
+  background: #fff;
+  color: #1e1e1e;
+}
+
+
+/* Body backgrounds, switch background based on body classes */
+/* debug */
+.messages {display: none}
+
+
+/*
+  - Leave this until after we know about the slideshow issue:
+    https://github.com/openscholar/openscholar/issues/1646
+
+  - Set to full width for vibrant, we need to set the gradient
+*/
+#columns {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0;
+  width: auto;
+  background-image: url(../images/standard-body-gradient.png);
+  background-repeat: repeat-x;
+  background-position: 0 0;
+}
+
+body.front #columns {
+  background-position: 0 -252px;
+}
+
+
+/* Conditional backgrounds for the slideshow */
+
+body.no-sidebars .content-top-slideshow-enabled .region-content-top {
+  position: relative;
+}
+
+body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-top .block {
+  margin-bottom: 0;
+}
+
+body.no-sidebars .content-top-slideshow-enabled .region-content-top:after {
+  background: #252525;
+  bottom: auto;
+  content: "";
+  display: block;
+  height: 100%;
+  left: -1000px;
+  position: absolute;
+  right: auto;
+  top: 0;
+  width: 3000px;
+  z-index: 1;
+}
+
+body.no-sidebars .content-top-slideshow-enabled #columns .hg-container {
+  padding-top: 0;
+}
+
+body.no-sidebars .content-top-slideshow-enabled #columns .contextual-controls-wrapper {
+  right: -45px;
+  top: 0;
+}
+
+body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-top .block-inner {
+  margin-top: 0;
+  overflow: hidden;
+}
+
+body.no-sidebars .content-top-slideshow-enabled #menu-bar {
+  border-bottom: 0;
+}
+
+.view-os-image-gallery-slideshow {
+  background: #252525;
+  border: 0;
+}
+
+.block-boxes-os_boxes_slideshow {
+  border-top: 0 !important;
+}
+
+.block-boxes-os_boxes_slideshow .block-inner,
+.block-boxes-os_boxes_slideshow .views-row {
+  margin: 0;
+  padding: 0;
+}
+
+.block-boxes-os_boxes_slideshow .views_slideshow_slide img {
+  line-height: 0;
+  padding: 0;
+}
+
+
+
+/* Use this inner container to set the page width instead */
+.hg-container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 40px;
+  width: 980px;
+}
+
+.not-front #content-column {
+  font-size: 15px;
+}
+
+
+/* Elements */
+a,
+a:visited {
+  color: #3A72AB;
+}
+
+
+/* Header */
+#header {
+  background: #e8e8e8;
+  color: #303030;
+  min-height: 180px;
+}
+#boxes-box-site_info,
+#boxes-box-site_info a {
+  color: #303030;
+}
+
+
+/* Menu bar */
+#menu-bar {
+  background: #e8e8e8;
+  padding: 0 0 30px;
+  min-height: 39px;
+  border-bottom: 1px solid #fff; /* test */
+}
+
+#menu-bar nav {
+  background: #fff;
+  border-radius: 3px;
+  -webkit-box-shadow: 0px 1px 1px 1px #dededc;
+  box-shadow: 0px 1px 1px 1px #dededc;
+}
+
+/* IE8 and below do not support box shadow, give them a border */
+.lt-ie9 #menu-bar nav {
+  border: 1px solid #dededc;
+  border-bottom-width: 2px;
+}
+
+#menu-bar nav > ul.menu {
+  padding: 5px 8px 5px 22px;
+}
+
+#menu-bar ul a,
+#menu-bar ul.nice-menu a,
+#menu-bar ul.nice-menu .menuparent a {
+  color: #303030;
+  font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+  font-weight: normal;
+  padding-top: 4px;
+  padding-bottom: 6px;
+  padding-right: 8px;
+  background: transparent;
+  background-image: none;
+}
+
+#menu-bar ul > li > a.active,
+#menu-bar ul > li > a:hover,
+#menu-bar ul.nice-menu .menuparent a:hover,
+#menu-bar ul.nice-menu .menuparent a.active {
+  background: url(../images/main-menu-link-gradient.png) repeat-x 0 0 #202020;
+  color: #fff;
+  border-radius: 3px;
+  padding-right: 8px;
+}
+
+#menu-bar ul.nice-menu .menuparent a span,
+#menu-bar ul.nice-menu .menuparent a:hover span,
+#menu-bar ul.nice-menu .menuparent a.active span {
+  background: url("../images/menu-arrow.png") no-repeat scroll right center transparent;
+  padding-right: 20px;
+}
+
+#menu-bar ul.nice-menu .menuparent ul a span {
+  background: none !important;
+}
+
+
+/* Secondary menu */
+#block-os-secondary-menu a {
+  color: #3e79b5;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Titles & Type */
+#page-title,
+.node-title,
+.page-search .title a,
+#content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
+.more-link,
+.page-search #content-column p,
+.not-front #content-column p,
+.links a,
+#footer ul.menu a,
+.boxes-box-content h2,
+.view-os-events .views-field-colorbox {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1.node-title,
+.page-search .title a,
+.boxes-box-content h2 {
+  font-weight: normal;
+  font-size: 18px;
+  margin-bottom: 18px;
+}
+
+.boxes-box-content h2 {
+  font-size: 24px;
+  line-height: 28px;
+}
+
+h1#page-title {
+  font-size: 40px;
+  line-height: 1; /* Font size is larger than the default line-height, so will overlap if the title wraps */
+  margin: 15px 0 40px;
+}
+
+.page-node h1#page-title {}
+
+h2.block-title {
+  padding:10px 0;
+  text-transform:uppercase;
+  font-size:12px;
+  font-weight:normal;
+  letter-spacing:0.1em;
+  font-weight:bold;
+}
+
+.page-search h1#page-title {
+  margin-top: 10px;
+}
+
+#content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
+.more-link {
+  text-decoration:underline;
+}
+
+.page-search #content-column p,
+.not-front #content-column p {
+}
+
+
+/* Search */
+#search-block-form input.form-submit,
+#search-block-form #edit-submit,
+#search-form #edit-submit {
+  background-position:  0 -340px;
+}
+
+/* Border control */
+.not-front.two-sidebars #content-column .content-inner {
+  border-right: 1px solid #e7e7e7;
+}
+
+.front #content-column .block,
+.node-person .block-inner,
+.comment-wrapper {
+  border-top: 6px solid #e1e1e1;
+}
+
+.block-boxes block-boxes-os_sv_list_box,
+.block-boxes-os_boxes_manual_list,
+.sidebar .block.section-nav,
+#content-column .block.section-nav {
+  border-top: none;
+}
+
+/* Blocks */
+.sidebar .block {
+  margin-bottom: 20px;
+}
+
+.sidebar .block h2.block-title {
+  background: none repeat scroll 0 0 #2D2D2D;
+  color: #FFFFFF;
+  font-size: 14px;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 19px;
+  text-transform: capitalize;
+  font-weight: normal;
+}
+
+.block-content {
+  margin-top: 20px;
+}
+
+.block.no-title .block-content {
+  margin-top: 0;
+}
+
+#content-panels .block {
+  margin-bottom: 15px;
+}
+
+
+/* Calander */
+#block-views-os-events-block-1 .view .date-nav-wrapper {
+  margin-top: 0;
+}
+
+#block-views-os-events-block-1 .view .date-nav-wrapper {
+  width: auto;
+  margin-bottom: 0;
+  padding: 7px 0 0;
+}
+
+.block.no-title .view .date-nav-wrapper {
+  border-top: 1px solid #cacaca;
+}
+
+.ui-tabs .block.no-title .view .date-nav-wrapper {
+  border-top: 0;
+}
+
+.block .view .date-nav-wrapper .date-nav {
+  margin-bottom: 7px;
+}
+
+.calendar-calendar .mini tbody {
+  border-top-color: #f3f3f1;
+}
+
+.calendar-calendar th.days {
+  background-color: #fff;
+}
+
+
+/* Calander */
+#block-views-os-events-block-1 .view .date-nav-wrapper {
+  margin-top: 0;
+}
+
+#block-views-os-events-block-1 .view .date-nav-wrapper {
+  width: auto;
+  margin-bottom: 0;
+  padding: 7px 0 0;
+}
+
+.block.no-title .view .date-nav-wrapper {
+  border-top: 1px solid #cacaca;
+}
+
+#content-panels .block.no-title .view .date-nav-wrapper,
+.ui-tabs .block.no-title .view .date-nav-wrapper {
+  border-top: 0;
+}
+
+.block .view .date-nav-wrapper .date-nav {
+  margin-bottom: 7px;
+}
+
+.calendar-calendar .mini tbody {
+  border-top-color: #f3f3f1;
+}
+
+.calendar-calendar th.days {
+  background-color: #fff;
+  border-top-color: #CACACA;
+}
+
+.calendar-calendar th.days.sun {
+  border-left-color: #cacaca;
+}
+
+.calendar-calendar th.days.sat {
+  border-right-color: #cacaca;
+}
+
+table td.mini {
+  font-weight: normal;
+}
+
+#block-views-os-events-block-1 .view .date-nav-wrapper,
+.calendar-calendar .mini tbody,
+.calendar-calendar th.days,
+.calendar-calendar td.empty,
+.calendar-calendar td {
+  border-color: #cacaca;
+}
+
+
+/* Tabs (widget) */
+.ui-tabs .ui-tabs-nav li a {
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a {
+  background: #a41b2f;
+  border: 4px solid #fff;
+  border-bottom-width: 1px;
+  color: #fff;
+}
+
+
+/* Section nav */
+#boxes-box-os_pages_section_nav,
+.section-nav ul.menu li a {
+	border-color: #959595;
+}
+
+.section-nav .menu-depth-1 > a {
+  background-color: #1e1e1e;
+}
+
+.section-nav .expanded.menu-depth-2 > a {
+  background-color: #545454;
+}
+
+
+
+
+
+
+
+
+/* Footer */
+#footer {
+  background: url(../images/footer-top-gradient.png) repeat-x 0 0 #ebebeb;
+}
+
+#footer ul.menu a {
+  text-transform: none;
+  font-size: 16px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
