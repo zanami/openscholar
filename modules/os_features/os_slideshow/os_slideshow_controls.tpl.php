@@ -5,6 +5,8 @@
 ?>
 
 <div id="flex-controls">
+  <?php if ($node_count > 1): ?>
+
   <span id="flex-prev">prev</span>
   <span id="flex-pause">pause</span> 
   <div id="flex-pager">
@@ -13,4 +15,6 @@
     <?php endfor; ?>
   </div>
   <span id="flex-next">next</span>
+
+  <?php endif; ?>  
 </div>

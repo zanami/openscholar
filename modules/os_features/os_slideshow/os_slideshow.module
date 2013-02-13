@@ -312,6 +312,7 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
   ));
   //slideshowSpeed, animationSpeed, randomize, animation (fade or slide (horizontal or vertical))
   drupal_add_js($settings, 'setting');
+  _os_slideshow_add_css();
   
   //prepare images.
   $nodes = $vars['nodes'];
@@ -470,3 +471,17 @@ function _os_slideshow_image_aspect_ratios() {
 }
 
 
+
+/**
+ * @function _os_slideshow_add_css()
+ * 
+ * Adds this module's css or slideshow css from one of our themes
+ */
+function _os_slideshow_add_css() {
+  $theme = os_get_themes(os_theme_get());
+  if ($file = @$theme->info['os']['os_slideshow']) {
+    drupal_add_css(drupal_get_path('theme', $theme->name)) . $file;
+  } else {
+    drupal_add_css(drupal_get_path('module', 'os_slideshow')) . '/os_slideshow.css';
+  }  
+}
