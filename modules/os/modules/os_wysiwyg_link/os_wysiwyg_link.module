@@ -1,0 +1,30 @@
+<?php
+
+function os_wysiwyg_link_wysiwyg_include_directory($type) {
+  switch ($type) {
+    case 'plugin':
+      return 'wysiwyg_plugins';
+  }
+}
+
+function os_wysiwyg_link_get_media_browser_plugins() {
+  return array();
+}
+
+function os_wysiwyg_link_get_media_browser_types() {
+  return array();
+}
+
+function os_wysiwyg_link_menu() {
+  $items = array();
+  
+  $items['os/wysiwyg/link/insert'] = array(
+    'title' => 'Insert Link',
+    'access callback' => 'spaces_access_admin',
+    'page callback' => 'os_wysiwyg_link_insert',
+    'file' => 'os_wysiwyg_link.insert.inc',
+    'type' => MENU_CALLBACK,
+  );
+  
+  return $items;
+}

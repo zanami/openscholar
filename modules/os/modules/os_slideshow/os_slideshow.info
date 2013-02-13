@@ -36,3 +36,5 @@ features[variable][] = menu_parent_slideshow_slide
 features[variable][] = node_options_slideshow_slide
 features[variable][] = node_preview_slideshow_slide
 features[variable][] = node_submitted_slideshow_slide
+stylesheets[all][] = os_slideshow.css
+stylesheets[all][] = os_slideshow_aspect_ratio_form.css

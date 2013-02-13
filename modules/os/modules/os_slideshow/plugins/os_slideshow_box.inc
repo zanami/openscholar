@@ -22,6 +22,12 @@ class os_slideshow_box extends os_boxes_default {
     //collect aspect ratio only during box creation.
     $ratios = array_keys(_os_slideshow_image_aspect_ratios());
     $ratio_options = array_combine($ratios, $ratios);
+    $ratio_options = array();
+    foreach ($ratios as $ratio) {
+      $file = drupal_get_path('module', 'os_slideshow') . '/images/' . $ratio . '.png';
+      $ratio_options[$ratio] = (file_exists($file)) ?theme('image', array('path'=>$file)) : $ratio;
+    }
+    
     $form['aspect_ratio'] = array(
       '#type' => ($this->new) ? 'radios' : 'hidden',
       '#title' => t('Aspect Ratio'),
@@ -30,6 +36,10 @@ class os_slideshow_box extends os_boxes_default {
       '#options' => $ratio_options, //get these from some other function somehow
       '#default_value' => ($this->options['aspect_ratio']) ? $this->options['aspect_ratio'] : $defaults['aspect_ratio'],
     );
+    
+    if ($this->new) {
+      $form['aspect_ratio']['#attached']['css'][] = drupal_get_path('module', 'os_slideshow') . '/os_slideshow_aspect_ratio_form.css';
+    }
 
     
     $form['display'] = array(
