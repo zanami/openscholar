@@ -106,7 +106,7 @@ class os_slideshow_box extends os_boxes_default {
         
         $uri = $nodes[$nid]->field_image[$nodes[$nid]->language][0]['uri'];
         $img = theme('image_style', array('style_name' => 'thumbnail', 'path' => $uri, 'attributes' => array('style' => 'float: left; margin-right: 1em;')));
-        $title = '<strong>' . $nodes[$nid]->title . '</strong>';
+        $title = ($nodes[$nid]->status) ? '<strong>' . $nodes[$nid]->title . '</strong>' : '<em>' . $nodes[$nid]->title . ' (unpublished)</em>';
         
         //edit link loads node edit with dest of this page.  this page's dest needs to be preserved.  nested destinations.
         $dest = (isset($_GET['destination'])) ? current_path() . '?destination=' . $_GET['destination'] : current_path();
@@ -120,7 +120,6 @@ class os_slideshow_box extends os_boxes_default {
             '#default_value' => $nid,
           ),
           'text' => array(
-            //'#markup' => $img . ' <span>' . $title . '</span><br /> ' . $edit_link .  ' | <a href="#" class="remove" title="Remove Slide">Remove</a>',
             '#markup' => $img . $links,
           ),
           '#weight' => $data['weight'],

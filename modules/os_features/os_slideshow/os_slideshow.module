@@ -71,6 +71,7 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
     
   //remove sticky.  pull published out of vertical tab
   $form['options']['sticky']['#type'] = 'hidden';
+  unset($form['options']['#type']); //only one item, so no need for the fieldset
   unset($form['options']['#group']);
   
   //hide additional settings except publishing options.
@@ -323,8 +324,12 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
   $vars['slides'] = array();
   $slide_vars = array('style_name' => _os_slideshow_get_style_name($vars['aspect_ratio'], $vars['box_delta']));
   foreach ($nodes as $nid => $node) {
-    $slide_vars['node'] = $node;
-    $vars['slides'][] = theme('os_slideshow_slide', $slide_vars);
+    if ($node->status) {
+      $slide_vars['node'] = $node;
+      $vars['slides'][] = theme('os_slideshow_slide', $slide_vars);
+    } else {
+      unset($nodes[$nid]); //controls should only know about published images so remove the unpublished ones
+    }
   }
   
   //get controls
