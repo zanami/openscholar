@@ -84,6 +84,7 @@ class os_boxes_site_info extends os_boxes_default {
     $block = parent::render();
 
     if (module_exists('vsite') && $vsite = spaces_get_space()) {
+      $annon_contact = $vsite->controllers->variable->get('vsite_users_contact_form_anonymous', 'space');
       $group = $vsite->group;
       $addr = field_get_items('node', $group, 'field_site_address');
       $addr = explode('<br>', $addr[0]['value']);
@@ -94,6 +95,8 @@ class os_boxes_site_info extends os_boxes_default {
         'address1' => (isset($addr[0])) ? $addr[0] : '',
         'address2' => (isset($addr[1])) ? $addr[1] : '',
       ));
+    }else {
+      $annon_contact = variable_get('vsite_users_contact_form_anonymous', true);
     }
 
     $output = '';
@@ -101,7 +104,7 @@ class os_boxes_site_info extends os_boxes_default {
     $output = '<h1>'.l($this->options['site_title'], '<front>').'</h1>
     <h2>'.filter_xss($this->options['descrip']).'</h2>
     <p>'.filter_xss($this->options['address1']).'<br>'.filter_xss($this->options['address2']).'
-    '.(user_is_logged_in() || !variable_get('vsite_users_contact_form_anonymous', true)?l('(email)', 'contact_owner'):'').'</p>';
+    '.(user_is_logged_in() || isset($annon_contact)?l('(email)', 'contact_owner'):'').'</p>';
 
     $block['content'] = $output;
     return $block;
