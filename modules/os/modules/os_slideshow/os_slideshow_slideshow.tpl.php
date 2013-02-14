@@ -4,7 +4,7 @@
  */
 ?>
 
-<div class="flexslider">
+<div class="flexslider <?php echo $layout; ?>">
   <ul class="slides">
     <?php print implode("\n", $slides); ?>
   </ul>

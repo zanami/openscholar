@@ -11,7 +11,7 @@ class os_slideshow_box extends os_boxes_default {
       'timeout' => 5000,
       'speed' => 700,
       'random' => FALSE,
-      'aspect_ratio' => FALSE,
+      'layout' => FALSE,
     );
   }
 
@@ -19,29 +19,33 @@ class os_slideshow_box extends os_boxes_default {
     $form = parent::options_form($form_state);
     $defaults = $this->options_defaults();
     
-    //collect aspect ratio only during box creation.
-    $ratios = array_keys(_os_slideshow_image_aspect_ratios());
-    $ratio_options = array_combine($ratios, $ratios);
-    $ratio_options = array();
-    foreach ($ratios as $ratio) {
-      $file = drupal_get_path('module', 'os_slideshow') . '/images/' . $ratio . '.png';
-      $ratio_options[$ratio] = (file_exists($file)) ?theme('image', array('path'=>$file)) : $ratio;
+    
+    $layouts = _os_slideshow_layouts();
+    if (!$this->new) {
+      //layouts can be changed, but the ratio is locked, limiting available layouts
+      $ratio = current(array_keys($layouts[ $this->options['layout'] ]['ratio']));  
     }
     
-    $form['aspect_ratio'] = array(
-      '#type' => ($this->new) ? 'radios' : 'hidden',
-      '#title' => t('Aspect Ratio'),
-      '#description' => t('Slideshow images will be cropped to this proportion.  This option is permanent and can only be set when the slideshow is first created.'),
+    foreach ($layouts as $name => $layout) {
+      if ($this->new || $ratio == current(array_keys($layout['ratio']))) {
+        $file = drupal_get_path('module', 'os_slideshow') . '/images/' . $name . '.png';
+        $ratio_options[$name] = (file_exists($file)) ? theme('image', array('path'=>$file)) . $layout['name'] : $layout['name'];
+      }
+    }
+    
+    $form['layout'] = array(
+      '#type' => 'radios',
+      '#title' => t('Slideshow Layout'),
+      '#description' => t('Slideshow images and cpations will be layed out in this manner.'),
       '#required' => TRUE,
       '#options' => $ratio_options, //get these from some other function somehow
-      '#default_value' => ($this->options['aspect_ratio']) ? $this->options['aspect_ratio'] : $defaults['aspect_ratio'],
+      '#default_value' => ($this->options['layout']) ? $this->options['layout'] : $defaults['layout'],
+      '#attached' => array('css' => array(drupal_get_path('module', 'os_slideshow') . '/os_slideshow_layout_form.css')),
     );
-    
     if ($this->new) {
-      $form['aspect_ratio']['#attached']['css'][] = drupal_get_path('module', 'os_slideshow') . '/os_slideshow_aspect_ratio_form.css';
+      $form['layout']['#description'] .= ' ' . t('Note that the layout can be changed at a later date, but the aspect ratio (Standard/Widescreen) is permanent once selected.');
     }
-
-    
+        
     $form['display'] = array(
       '#type' => 'fieldset',
       '#title' => t('Display Options'),
@@ -159,7 +163,7 @@ class os_slideshow_box extends os_boxes_default {
       ));
     }
     
-    $vars = array_intersect_key($options, array_flip(array('nodes', 'timeout', 'speed', 'effect', 'aspect_ratio', 'random')));
+    $vars = array_intersect_key($options, array_flip(array('nodes', 'timeout', 'speed', 'effect', 'layout', 'random')));
     $vars['box_delta'] = $this->delta; 
     $block['content'] .= theme('os_slideshow_slideshow', $vars);
     return $block;    
