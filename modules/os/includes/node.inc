@@ -11,7 +11,7 @@
  * Prepares an EntityFieldQuery with any necessary vsite-sensitive conditions.
  */
 class OSNodeFieldQuery extends EntityFieldQuery {
-  public function __construct($node_types = NULL) {
+  public function __construct($node_types = NULL, $filter_vsite = TRUE) {
 
     // Limits only to published nodes.
     $this
@@ -29,7 +29,7 @@ class OSNodeFieldQuery extends EntityFieldQuery {
     }
 
     // Only continues to filter by current space if we can load the vsite.
-    if (!module_exists('vsite')) {
+    if (!module_exists('vsite') || !$filter_vsite) {
       return;
     }
     $space = spaces_get_space();

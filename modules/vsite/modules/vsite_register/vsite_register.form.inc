@@ -40,7 +40,7 @@ function vsite_register_form($form, &$state) {
   $default_bundle = variable_get('os_default_group_bundle', 'personal');
   $bundles = array();
   foreach ($group_types['node'] as $bundle => $label) {
-    if (user_access("create {$bundle} content") && (!isset($parent) || in_array($bundle, array('personal', 'project')))) {
+    if (user_access("create {$bundle} content") && (!isset($parent) || in_array($bundle, variable_get('subsite_bundles',array('personal', 'project'))))) {
       $bundles[$bundle] = $label;
     }
   }
