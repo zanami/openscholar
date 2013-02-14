@@ -20,7 +20,7 @@ Drupal.wysiwyg.plugins.os_link = {
     Drupal.media.popups.mediaBrowser(function (insert) {
       self.insertLink();
     }, settings['global'], {}, {
-      src: Drupal.settings.osWysiwygLink.browserUrl,
+      src: Drupal.settings.osWysiwygLink.browserUrl+'?d=1', // because media is dumb about its query args
       onLoad: self.popupOnLoad
     });
   },
