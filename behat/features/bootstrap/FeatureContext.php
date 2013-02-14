@@ -3,6 +3,7 @@
 use Drupal\DrupalExtension\Context\DrupalContext;
 use Behat\Behat\Context\Step\Given;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Gherkin\Node\PyStringNode;
 use Guzzle\Service\Client;
 use Behat\Behat\Context\Step;
 use Behat\Behat\Context\Step\When;
@@ -131,6 +132,16 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Then /^I should get:$/
+   */
+  public function iShouldGet(PyStringNode $string) {
+    $page = $this->getSession()->getPage();
+    if (strpos($page->getContent(), $string->getRaw()) === FALSE) {
+      throw new Exception("Text not found.");
+    }
+  }
+
+  /**
    * @When /^I clear the cache$/
    */
   public function iClearTheCache() {
@@ -144,13 +155,6 @@ class FeatureContext extends DrupalContext {
   public function iShouldPrintPage() {
     $element = $this->getSession()->getPage();
     print_r($element->getContent());
-  }
-
-  /**
-   * @Then /^I should get:$/
-   */
-  public function iShouldGet(PyStringNode $string) {
-    throw new PendingException();
   }
 
   /**
