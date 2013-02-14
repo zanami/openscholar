@@ -39,12 +39,7 @@ function os_wysiwyg_link_include_browser_js() {
     'browserUrl' => url('os/wysiwyg/link/insert'),
   );
 
-  $js = array(
-    array(
-     'data' => array('osWysiwygLink' => $settings),
-     'type' => 'setting',
-    ),
-  );
+  $js = array('osWysiwygLink' => $settings);
   drupal_add_library('media', 'media_browser');
-  drupal_add_js($js);
+  drupal_add_js($js, 'setting');
 }
