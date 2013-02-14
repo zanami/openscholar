@@ -491,6 +491,7 @@ function _os_slideshow_layouts() {
  * Adds this module's css or slideshow css from one of our themes
  */
 function _os_slideshow_add_css() {
+  ctools_include('themes', 'os');
   $theme = os_get_themes(os_theme_get());
   if ($file = @$theme->info['os']['os_slideshow']) {
     drupal_add_css(drupal_get_path('theme', $theme->name)) . $file;
