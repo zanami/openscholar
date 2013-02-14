@@ -20,12 +20,6 @@ function hwpi_basetheme_preprocess_html(&$vars) {
     // See load.inc in AT Core, load_subtheme_script() is a wrapper for drupal_add_js()
     load_subtheme_script('js/' . $script, 'hwpi_basetheme', 'header', $weight = NULL);
   }
-
-  // debug message
-  //$message = 'Blog entry Blog Post Elements Cheat Sheet has been updated.';
-  //drupal_set_message($message, 'status');
-  //drupal_set_message($message, 'warning');
-  //drupal_set_message($message, 'error');
 }
 
 
@@ -35,8 +29,9 @@ function hwpi_basetheme_preprocess_html(&$vars) {
 function hwpi_basetheme_preprocess_node(&$vars) {
 
   // Event nodes, inject variables for date month and day shield
-  if($vars['node']->type == 'event') {
+  if ($vars['node']->type == 'event') {
     $vars['event_start'] = array();
+
     if(isset($entity->field_date[0]['value']) && !empty($entity->field_date[0]['value'])) {
       date_default_timezone_set($entity->field_date[0]['timezone']);
       $event_start_date = strtotime($entity->field_date[0]['value']);
@@ -54,6 +49,27 @@ function hwpi_basetheme_preprocess_node(&$vars) {
   }
 }
 
+/**
+ * Implements hook_preprocess_field
+ *
+ * Cleans up teaser display to remove redundant date info.
+ */
+function hwpi_basetheme_preprocess_field(&$variables, $hook) {
+  if ($variables['field_view_mode'] == 'teaser' && $variables['element']['#bundle'] == 'event' && $variables['element']['#field_name'] == 'field_date') {
+    date_default_timezone_set($variables['element']['#items'][0]['timezone']);
+
+    $start_date = strtotime($variables['element']['#items'][0]['value']);
+    $end_date =   (isset($variables['element']['#items'][0]['value'])) ? strtotime($variables['element']['#items'][0]['value2']) : FALSE;
+
+    //for one day events, strip the date.  it's displayed elsewhere.
+    if (!$end_date || (date('Y-m-d', $start_date) == date('Y-m-d', $end_date))) {
+      $start = check_plain(date('g:ia', $start_date));
+      $end = check_plain(date('g:ia', $end_date));
+
+      $variables['items'][0]['#markup'] = ($start == $end) ? $start : $start . ' - ' . $end;
+    }
+  }
+}
 
 /**
  * Process variables for comment.tpl.php
