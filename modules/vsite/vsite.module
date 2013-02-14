@@ -57,6 +57,40 @@ function vsite_form_node_form_alter(&$form, &$form_state, $form_id){
 }
 
 /**
+ * Implements hook_form_BASE_FORM_ID_alter() for OS Settings form.
+ *
+ * Adds vsite related settings
+ */
+function vsite_form_os_settings_form_alter(&$form, &$form_state, $form_id){
+
+  $subsite_bundles = variable_get('subsite_bundles',array('personal','project'));
+  $subsite_parents = variable_get('subsite_parents',array('department'));
+
+  $subsite_ref_field = field_info_field('field_group_parent');
+  if(!$subsite_ref_field){
+    //If the field has not been added set the default to none
+    $subsite_bundles = $subsite_parents = array();
+  }
+
+  $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
+  $form['subsite_parents'] = array(
+    '#type' => 'checkboxes',
+    '#options' => drupal_map_assoc($group_types),
+    '#title' => t('Parent Sites'),
+    '#default_value' => $subsite_parents,
+  );
+
+  $form['subsite_bundles'] = array(
+    '#type' => 'checkboxes',
+    '#options' => drupal_map_assoc($group_types),
+    '#title' => t('Subsite Bundles'),
+    '#default_value' => $subsite_bundles,
+  );
+
+  $form['#submit'][] = 'vsite_os_settings_subsites_form_submit';
+}
+
+/**
  * Returns the default value for the homepage path.
  *
  * @return array
@@ -1021,6 +1055,26 @@ function vsite_node_view($node, $view_mode){
 }
 
 /**
+ * Implements hook_node_insert()
+ */
+function vsite_node_insert($node){
+  if(in_array($node->type, variable_get('subsite_bundles',array('personal','project')))){
+    ctools_include('subsite','vsite');
+    vsite_get_subsites(FALSE,TRUE);
+  }
+}
+
+/**
+ * Implements hook_node_update()
+ */
+function vsite_node_update($node){
+  if(in_array($node->type, variable_get('subsite_bundles',array('personal','project')))){
+    ctools_include('subsite','vsite');
+    vsite_get_subsites(FALSE,TRUE);
+  }
+}
+
+/**
  * Submit callback for user_profile_form.
  *
  * Checks the passed reset value, if it is present we will redirect.
@@ -1498,3 +1552,17 @@ function vsite_preprocess_toolbar(&$vars){
   }
 }
 
+/**
+ * Submit callback for subsite configuration
+ * @param unknown_type $form
+ * @param unknown_type $form_state
+ */
+function vsite_os_settings_subsites_form_submit($form, &$form_state){
+
+	variable_set('subsite_bundles',array_filter($form_state['values']['subsite_bundles']));
+  variable_set('subsite_parents',array_filter($form_state['values']['subsite_parents']));
+
+  foreach (array_filter($form_state['values']['subsite_bundles']) as $subsite_type){
+    vsite_attach_fields_to_subsite($subsite_type);
+  }
+}
