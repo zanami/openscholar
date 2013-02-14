@@ -63,11 +63,16 @@ function hwpi_basetheme_preprocess_field(&$variables, $hook) {
 
     //for one day events, strip the date.  it's displayed elsewhere.
     if (!$end_date || (date('Y-m-d', $start_date) == date('Y-m-d', $end_date))) {
-      $start = check_plain(date('g:ia', $start_date));
-      $end = check_plain(date('g:ia', $end_date));
-
-      $variables['items'][0]['#markup'] = ($start == $end) ? $start : $start . ' - ' . $end;
+      $fmt = 'g:ia';
+    } else {
+      $fmt = 'M d, g:ia';
     }
+
+    $start = check_plain(date($fmt, $start_date));
+    $end = check_plain(date($fmt, $end_date));
+
+    $variables['label_hidden'] = TRUE;
+    $variables['items'][0]['#markup'] = ($start == $end) ? $start : $start . ' - ' . $end;
   }
 }
 
@@ -75,7 +80,6 @@ function hwpi_basetheme_preprocess_field(&$variables, $hook) {
  * Process variables for comment.tpl.php
  */
 function hwpi_basetheme_process_node(&$vars) {
-
   // Event persons, change title markup to h1
   if ($vars['type'] == 'person') {
     if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
