@@ -58,17 +58,12 @@ function hwpi_basetheme_preprocess_field(&$variables, $hook) {
     date_default_timezone_set($variables['element']['#items'][0]['timezone']);
     
     $start_date = strtotime($variables['element']['#items'][0]['value']);
-    $end_date =   (isset($variables['element']['#items'][0]['value'])) ? strtotime($variables['element']['#items'][0]['value2']) : FALSE;
-    
+    $end_date =   (isset($variables['element']['#items'][0]['value'])) ? strtotime($variables['element']['#items'][0]['value2']) : $start_date;
+  
     //for one day events, strip the date.  it's displayed elsewhere.
-    if (!$end_date || (date('Y-m-d', $start_date) == date('Y-m-d', $end_date))) {
-      $fmt = 'g:ia';
-    } else {
-      $fmt = 'M d, g:ia';
-    }
-
-    $start = check_plain(date($fmt, $start_date));
-    $end = check_plain(date($fmt, $end_date));
+    $fmt = (format_date($start_date, 'os_date') == format_date($end_date, 'os_date')) ? 'os_time' : 'os_date_abbreviated';
+    $start = format_date($start_date, $fmt);
+    $end = format_date($end_date, $fmt);
       
     $variables['label_hidden'] = TRUE;
     $variables['items'][0]['#markup'] = ($start == $end) ? $start : $start . ' - ' . $end; 
