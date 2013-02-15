@@ -433,6 +433,11 @@ ol.search-results li.search-result:last-child {
   margin-bottom: 60px;
 }
 
+article.node-teaser.node-person .node-header,
+article.node-teaser.node-person .node-content {
+	margin-left: 6em;
+}
+
 .node-type-person .node-person .field-name-field-person-photo {
   float: left;
   margin-top: 5px;
