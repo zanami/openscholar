@@ -9,27 +9,48 @@
       var old_type = $('#os_sv_list_content_type').val();
       $('#os_sv_list_content_type').change(function() {
         var sortby = $('#edit-sort-by');
-        var whitelist = [ 'sort_newest', 'sort_oldest', 'sort_alpha' ];
+        var sort_whitelist = [ 'sort_newest', 'sort_oldest', 'sort_alpha' ];
+
+        var display_style = $('#edit-display');
+        var display_whitelist = [ 'display_title', 'display_teaser', 'display_body' ];
+
         var content_type = $('#os_sv_list_content_type').val();
         var selected_sort = 'sort_' + content_type;
         var more_link = $('#edit-more-link');
         var defaults = Drupal.settings.more_link_defaults;
 
-        sortby.children('option').each(function() { // why you no
+        //apply content_type appropriate sorts when ct changes
+        sortby.children('option').each(function() { 
           this_sort = $(this).attr('value');
-          if ($.inArray(this_sort,whitelist) == -1) {
+          if ($.inArray(this_sort, sort_whitelist) == -1) {
             // show/hide appropriate options
             remove = (this_sort != selected_sort);
             $(this).attr('hidden', remove).attr('disabled',remove);
 
             // deselect invalidated option
             if (remove && ($(this).parent().attr('value') == this_sort)) {
-              $(this).parent().attr('value', whitelist[0]);
+              $(this).parent().attr('value', sort_whitelist[0]);
             }
 
             // for new boxes, select special case as default
             if (!remove && Drupal.settings.os_sv_list_box.new_box) {
               $(this).parent().attr('value', this_sort);
+            }
+          }
+        });
+        
+        //apply content_type appropriate sorts when ct changes
+        display_style.children('option').each(function() { 
+          this_display = $(this).attr('value');
+          if ($.inArray(this_display, display_whitelist) == -1) {
+            
+            // show/hide appropriate options
+            remove = ($.inArray(content_type, Drupal.settings.os_sv_list.has_display[this_display]) == -1);
+            $(this).attr('hidden', remove).attr('disabled',remove);
+
+            // deselect invalidated option
+            if (remove) {
+              $(this).parent().attr('value', display_whitelist[0]);
             }
           }
         });
