@@ -134,13 +134,13 @@ function vsite_custom_theme(){
  *
  * Alter the space presets to add vsite specific information.
  */
-function vsite_spaces_presets_alter(&$presets){
+function vsite_spaces_presets_alter(&$presets) {
   ctools_include('path', 'vsite');
 
   // Alter the preset to include the pathauto settings for nodes prefixed with
   // the purl path
   $pathauto_settings = _vsite_get_pathauto_settings();
-  foreach ( $presets as $name => & $preset ) {
+  foreach ($presets as $name => &$preset) {
     if (substr($name, 0, 3) == "os_") {
       $preset->value['variable'] = array_merge($pathauto_settings, $preset->value['variable']);
     }
@@ -1014,9 +1014,17 @@ function vsite_mail_alter(&$message){
 /**
  * Implements hook_node_presave().
  */
-function vsite_node_presave($node){
+function vsite_node_presave($node) {
   include_once (drupal_get_path('module', 'vsite') . '/includes/path.inc');
   _vsite_alter_node_path_settings($node);
+}
+
+/**
+ * Implements hook_taxonomy_term_presave().
+ */
+function vsite_taxonomy_term_presave($term) {
+  include_once (drupal_get_path('module', 'vsite') . '/includes/path.inc');
+  _vsite_alter_term_path_settings($term);
 }
 
 /**
