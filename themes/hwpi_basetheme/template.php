@@ -75,9 +75,14 @@ function hwpi_basetheme_node_view_alter(&$build) {
 
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
-      $build['pic_bio']['body']['#weight'] = 5;
+      $body = &$build['pic_bio']['body'][0];
+      $trim = 160;
+      if (strlen($body['#markup']) > $trim) {
+        $body['#markup'] = text_summary($body['#markup'], $build['pic_bio']['body']['#items'][0]['format'], $trim);
+      }
       
-      //move title, website
+      //move title, website. body
+      $build['pic_bio']['body']['#weight'] = 5;
       foreach (array(0=>'field_professional_title', 10=>'field_website') as $weight => $field) {
         if (isset($build[$field])) {
           $build['pic_bio'][$field] = $build[$field];
@@ -104,7 +109,10 @@ function hwpi_basetheme_node_view_alter(&$build) {
       
       //newlines after website
       foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
-        $build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
+        $item = $build['pic_bio']['field_website']['#items'][$delta];
+        //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
+        $link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
+        $build['pic_bio']['field_website'][$delta]['#markup'] = $item['title'] . ': ' . $link . '<br>';
       }
       
       unset($build['links']['node']);
