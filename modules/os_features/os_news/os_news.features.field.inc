@@ -52,6 +52,12 @@ function os_news_field_default_fields() {
           'type' => 'text_default',
           'weight' => '2',
         ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '5',
+        ),
         'teaser' => array(
           'label' => 'hidden',
           'module' => 'text',
@@ -132,6 +138,20 @@ function os_news_field_default_fields() {
           ),
           'type' => 'date_default',
           'weight' => '1',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'hidden',
+          'module' => 'date',
+          'settings' => array(
+            'format_type' => 'semi_long',
+            'fromto' => 'both',
+            'multiple_from' => '',
+            'multiple_number' => '',
+            'multiple_to' => '',
+            'show_repeat_rule' => 'show',
+          ),
+          'type' => 'date_default',
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -222,6 +242,16 @@ function os_news_field_default_fields() {
           ),
           'type' => 'image',
           'weight' => '0',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'hidden',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => '',
+          ),
+          'type' => 'image',
+          'weight' => '1',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -340,6 +370,12 @@ function os_news_field_default_fields() {
           'settings' => array(),
           'type' => 'os_files_image_list',
           'weight' => '3',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '4',
         ),
         'teaser' => array(
           'label' => 'above',
