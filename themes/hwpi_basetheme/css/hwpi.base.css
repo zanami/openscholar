@@ -482,7 +482,19 @@ ol.search-results li.search-result:last-child {
   padding: 15px 0 30px;
 }
 
+/* Node FAQ */
+.node-teaser.node-faq {
+  line-height: 19px;
+  padding: 5px 0 30px;
+}
 
+.page-faq h1.node-title {
+	margin-bottom: 14px;
+}
+
+.page-faq .node-faq .field-name-body p {
+    margin: 0 0 0.5em;
+}
 
 /* Node Presentations */
 .node-presentation.node-teaser .date-display-single {
