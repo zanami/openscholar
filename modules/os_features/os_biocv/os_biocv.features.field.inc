@@ -124,7 +124,7 @@ function os_biocv_field_default_fields() {
           'module' => 'os_files',
           'settings' => array(),
           'type' => 'os_files_image_list',
-          'weight' => '3',
+          'weight' => 0,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -232,7 +232,7 @@ function os_biocv_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 0,
+          'weight' => 1,
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -241,7 +241,7 @@ function os_biocv_field_default_fields() {
             'trim_length' => 600,
           ),
           'type' => 'text_summary_or_trimmed',
-          'weight' => 0,
+          'weight' => 1,
         ),
       ),
       'entity_type' => 'node',
@@ -260,7 +260,7 @@ function os_biocv_field_default_fields() {
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
-        'weight' => '0',
+        'weight' => '2',
       ),
     ),
   );
@@ -369,7 +369,7 @@ function os_biocv_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'media_generic',
-        'weight' => '31',
+        'weight' => '1',
       ),
     ),
   );

@@ -1,6 +1,8 @@
 <?php
 
 function os_wysiwyg_link_insert() {
+  module_invoke_all('suppress');
+  
   module_load_include('inc', 'file_entity', 'file_entity.pages');
   $tabs = array(
     'file' => array(
