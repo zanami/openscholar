@@ -71,7 +71,6 @@ ul.nice-menu ul {
 }
 
 
-
 /* Action Nav Header 3rd*/
 .region-header-third ul.menu {
 	float:right;
@@ -83,6 +82,7 @@ ul.nice-menu ul {
 
 .region-header-third ul.nice-menu li {
     margin-left: 20px;
+    float:right;
 }
 
 .region-header-third ul.nice-menu a {
@@ -112,6 +112,7 @@ ul.nice-menu ul {
 #footer ul.menu,
 #footer ul {
 	margin-left:0;
+	list-style: none;
 }
 
 #footer ul.menu li.menuparent {
