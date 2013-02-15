@@ -46,7 +46,7 @@ function os_slideshow_library() {
     'website' => 'http://flex.madebymufffin.com/',
     'version' => '1.8',
     'js' => array(libraries_get_path('flexslider') . '/jquery.flexslider-min.js' => array(),),
-    'css' => array(libraries_get_path('flexslider') . '/flexslider.css' => array('type' => 'file','media' => 'screen')),
+    //'css' => array(libraries_get_path('flexslider') . '/flexslider.css' => array('type' => 'file','media' => 'screen')),
   );
   return $libraries;
 }
