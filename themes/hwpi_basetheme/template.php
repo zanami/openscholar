@@ -78,7 +78,7 @@ function hwpi_basetheme_process_node(&$vars) {
   if ($vars['type'] == 'person') {
     if (!$vars['teaser']) {
       $vars['title_prefix']['#suffix'] = '<h1 class="node-title">' . $vars['title'] . '</h1>';
-    }
+    } 
   }
 }
 
@@ -109,30 +109,38 @@ function hwpi_basetheme_node_view_alter(&$build) {
 
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
-      unset($build['body'], $build['pic_bio']['body']);
-
-      foreach (array('field_professional_title', 'field_address', 'field_email', 'field_phone', 'field_website') as $w => $f) {
-        if (isset($build[$f])) {
-          $build['pic_bio'][$f] = $build[$f];
-          $build['pic_bio'][$f]['#weight'] = $w;
-          unset($build[$f]);
+      $build['pic_bio']['body']['#weight'] = 5;
+      
+      //move title, website
+      foreach (array(0=>'field_professional_title', 10=>'field_website') as $weight => $field) {
+        if (isset($build[$field])) {
+          $build['pic_bio'][$field] = $build[$field];
+          $build['pic_bio'][$field]['#weight'] = $weight;
+          unset($build[$field]);
         }
       }
 
-      if (isset($build['pic_bio']['field_email'])) {
-        $email_plain = $build['pic_bio']['field_email'][0]['#markup'];
-        if ($email_plain) {
-          $build['pic_bio']['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">email</a>';
+      //hide the rest
+      foreach (array('field_address', 'field_email', 'field_phone') as $field) {
+        if (isset($build[$field])) {
+          unset($build[$field]);
         }
       }
-
-      if (isset($build['pic_bio']['field_phone'])) {
-        $phone_plain = $build['pic_bio']['field_phone'][0]['#markup'];
-        if ($phone_plain) {
-          $build['pic_bio']['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
-        }
+      
+      //join titles      
+      $title_field = &$build['pic_bio']['field_professional_title'];
+      $keys = array_filter(array_keys($title_field), 'is_numeric');
+      foreach ($keys as $key) {
+        $titles[] = $title_field[$key]['#markup'];
+        unset($title_field[$key]);
       }
-
+      $title_field[0] = array('#markup' => implode(', ', $titles));
+      
+      //newlines after website
+      foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
+        $build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
+      }
+      
       unset($build['links']['node']);
 
       return;
