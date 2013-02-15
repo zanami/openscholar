@@ -95,6 +95,12 @@ h2.block-title {
 	font-family:arial !important;
 }
 
+.not-front h2.block-title {
+padding: 10px 0;
+}
+
+
+
 .page-search h1#page-title {
   margin-top:10px;
 }
@@ -108,7 +114,9 @@ h2.block-title {
 .not-front #content-column p {
 }
 
-
+.links li a {
+    font-size: 13px;
+}
 
 /* Border control */
 .not-front.two-sidebars #content-column .content-inner {
@@ -125,8 +133,12 @@ h2.block-title {
 .block-boxes block-boxes-os_sv_list_box,
 .block-boxes-os_boxes_manual_list, 
 .sidebar .block.section-nav,
-#content-column .block.section-nav {
+#content-column .block.section-nav  {
 	border-top: none;
+}
+
+.front #content-column .block.block-boxes-os_boxes_manual_list {
+    border-top: 1px solid #CCCCCC;
 }
 
 
