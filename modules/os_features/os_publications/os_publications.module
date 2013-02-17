@@ -339,14 +339,24 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
  * @param unknown_type $entry
  */
 function os_publications_biblio_entry_alter(&$entry, $node) {
+
   unset($entry['export_links']);
+  $entry['entry']['#markup'] = _os_publications_biblio_entry_alter($entry['entry']['#markup'], $node);
+  _os_publications_attach_abstract($entry, $node);
 
-  $html = $entry['entry']['#markup'];
+  $entry['#attached']['css'][] = drupal_get_path('module', 'os_publications').'/misc/os_publications.css';
+}
 
+/**
+ * Helper function for altering the bibilio entry theme.
+ */
+function _os_publications_biblio_entry_alter($markup, $node) {
+  $html = $markup;
   $insert = strrpos($html, '</div>');
-  // Since the biblio_url is wiped out in the CSL file, get the url back from the
-  // node.
-  if(!empty($node->biblio_url)) {
+
+  // Since the biblio_url is wiped out in the CSL file, get the url back from
+  // the node.
+  if (!empty($node->biblio_url)) {
     $biblio_url = $node->biblio_url;
     $biblio_check_url = l($biblio_url,$biblio_url);
     $biblio_url_title = !empty($node->biblio_url_title) ? $node->biblio_url_title : 'Website';
@@ -359,9 +369,7 @@ function os_publications_biblio_entry_alter(&$entry, $node) {
     }
   }
 
-  _os_publications_attach_abstract($entry, $node);
-
-  $entry['#attached']['css'][] = drupal_get_path('module', 'os_publications').'/misc/os_publications.css';
+  return $html;
 }
 
 /**
@@ -445,24 +453,9 @@ function os_publications_node_view_alter(&$build, $type) {
     if ($build['#view_mode'] == 'teaser') {
       // Alter the teaser to remove the external URL as the URL title and
       // replace it with either the biblio_url_title or "website".
-      if(isset($build['teaser']['#markup'])) {
-      	$html = $build['teaser']['#markup'];
-    	$insert = strrpos($html, '</div>');
-    	// Since the biblio_url is wiped out in the CSL file, get the url back from the node.
+      if (isset($build['teaser']['#markup'])) {
         $node = node_load($build['#node']->nid);
-      	if(!empty($node->biblio_url)) {
-          $biblio_url = $node->biblio_url;
-          $biblio_check_url = l($biblio_url,$biblio_url);
-          $biblio_url_title = !empty($node->biblio_url_title) ? $node->biblio_url_title : 'Website';
-          $new_biblio_url = l($biblio_url_title,$biblio_url);
-          if ($insert === FALSE) {
-            $html .= ' ' . $new_biblio_url;
-    	  }
-    	  else {
-            $html = substr_replace($html, ' ' . $new_biblio_url, $insert, 0);
-    	  }
-          $build['teaser']['#markup'] = $html;
-      	}
+        $build['teaser']['#markup'] = _os_publications_biblio_entry_alter($entry, $node);
       }
 
       // Add the abstract slider.
