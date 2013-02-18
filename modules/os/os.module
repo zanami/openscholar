@@ -735,6 +735,37 @@ function os_ctools_plugin_type() {
 }
 
 /**
+ * Implements hook_date_formats
+ * 
+ * Provides formats for time, date, and abbreviated date types
+ */
+function os_date_formats() {
+  return array(
+    array(
+      'type' => 'os_time',
+      'format' => 'g:ia',    
+    ),
+    array(
+      'type' => 'os_date_abbreviated',
+      'format' => 'M d, g:ia',
+    ),
+    array(
+      'type' => 'os_date',
+      'format' => 'Y-m-d',
+    ),
+  );
+}
+
+/**
+ * Implements hook_date_format_types
+ * 
+ * Provides three new types of date formats.
+ */
+function os_date_format_types() {
+  return array('os_time' => t('Time'), 'os_date' => t('Date'), 'os_date_abbreviated' => t('Abbreviated'));
+}
+
+/**
  * Implements hook_init().
  */
 function os_init() {

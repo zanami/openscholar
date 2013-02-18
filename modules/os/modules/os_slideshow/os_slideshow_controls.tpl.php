@@ -4,17 +4,17 @@
  */
 ?>
 
-<div id="flex-controls">
+<ul id="flex-controls">
   <?php if ($node_count > 1): ?>
 
-  <span id="flex-prev">prev</span>
-  <span id="flex-pause">pause</span> 
-  <div id="flex-pager">
+  <li id="flex-prev"><a class="prev" href="#"><span class="arrow-left">prev</span></a></li>
+  <li id="flex-pause"><a class="pause" href="#">pause</a></li> 
+  <ul id="flex-pager">
     <?php for ($i = 0; $i<$node_count; $i++): ?>
-      <span id="flex-page-<?php echo $i;?>" class="flex-page-link"><?php echo $i;?> </span>
+      <li id="flex-page-<?php echo $i;?>" class="flex-page-link"><a class="slide" href="#"><?php echo $i;?> </a></li>
     <?php endfor; ?>
-  </div>
-  <span id="flex-next">next</span>
+  </ul>
+  <li id="flex-next"><a class="next" href="#"><span class="arrow-right">next</span></a></li>
 
   <?php endif; ?>  
-</div>
+</ul>

@@ -83,6 +83,7 @@ features[variable][] = node_submitted_vsite
 features[variable][] = og_context_negotiation_group_context
 features[variable][] = os_enabled_spaces_presets
 features[variable][] = os_vsites_per_user
+features[views_view][] = os_subsites
 features[views_view][] = os_websites
 files[] = plugins/vsite.inc
 files[] = tests/vsite_access.test
