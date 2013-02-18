@@ -418,4 +418,52 @@ class FeatureContext extends DrupalContext {
     $code = "os_migrate_demo_variable_set({$variable}, '{$value}');";
     $this->getDriver()->drush("php-eval \"{$code}\"");
   }
+
+  /**
+   * @Given /^I set courses to import$/
+   */
+  public function iSetCoursesToImport() {
+    $metasteps = array();
+    $this->getDriver()->drush("php-eval \"drupal_flush_all_caches();\"");
+    $this->getDriver()->drush("cc all");
+    $metasteps[] = new Step\When('I visit "admin"');
+    $metasteps[] = new Step\When('I visit "admin/structure/feeds/course/settings/HarvardFetcher"');
+    $metasteps[] = new Step\When('I check the box "Debug mode"');
+    $metasteps[] = new Step\When('I press "Save"');
+    $metasteps[] = new Step\When('I visit "john/cp/build/features/harvard_courses"');
+    $metasteps[] = new Step\When('I fill in "Department ID" with "Architecture"');
+    $metasteps[] = new Step\When('I select "Harvard Graduate School of Design" from "School name"');
+    $metasteps[] = new Step\When('I press "Save configuration"');
+
+    return $metasteps;
+  }
+
+  /**
+   * @When /^I enable harvard courses$/
+   */
+  public function iEnableHarvardCourses() {
+    $code = "os_migrate_demo_define_harvard_courses();";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I refresh courses$/
+   */
+  public function iRefreshCourses() {
+    $code = "os_migrate_demo_import_courses();";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I remove harvard courses$/
+   */
+  public function iRemoveHarvardCourses() {
+    $metasteps = array();
+    $metasteps[] = new Step\When('I visit "john/cp/build/features/harvard_courses"');
+    $metasteps[] = new Step\When('I press "Remove"');
+    $metasteps[] = new Step\When('I sleep for "2"');
+    $metasteps[] = new Step\When('I press "Save configuration"');
+
+    return $metasteps;
+  }
 }
