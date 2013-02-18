@@ -148,7 +148,6 @@ class FeatureContext extends DrupalContext {
     $this->getDriver()->drush('cc all');
   }
 
-
   /**
    * @Then /^I should print page$/
    */
@@ -281,7 +280,6 @@ class FeatureContext extends DrupalContext {
     }
 
     $metasteps[] = new Step\When('I press "Save"');
-    $metasteps[] = new Step\When('I clear the cache');
 
     return $metasteps;
   }
@@ -292,7 +290,6 @@ class FeatureContext extends DrupalContext {
   public function theWidgetIsSetInThePage($page, $widget) {
     $code = "os_migrate_demo_set_box_in_region({$this->nid}, '$page', '$widget');";
     $this->box[] = $this->getDriver()->drush("php-eval \"{$code}\"");
-    $this->getDriver()->drush("cc all");
   }
 
   /**
@@ -465,5 +462,14 @@ class FeatureContext extends DrupalContext {
     $metasteps[] = new Step\When('I press "Save configuration"');
 
     return $metasteps;
+  }
+
+  /**
+   * @Given /^I invalidate cache$/
+   */
+  public function iInvalidateCache() {
+
+    $code = "views_og_cache_invalidate_cache(node_load($this->nid));";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
   }
 }
