@@ -387,9 +387,9 @@ function os_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: edit file.
-  $permissions['edit file'] = array(
-    'name' => 'edit file',
+  // Exported permission: edit any files.
+  $permissions['edit any files'] = array(
+    'name' => 'edit any files',
     'roles' => array(
       0 => 'administrator',
       1 => 'manager',
@@ -469,9 +469,9 @@ function os_user_default_permissions() {
     'module' => 'search',
   );
 
-  // Exported permission: view file.
-  $permissions['view file'] = array(
-    'name' => 'view file',
+  // Exported permission: view files.
+  $permissions['view files'] = array(
+    'name' => 'view files',
     'roles' => array(
       0 => 'anonymous user',
       1 => 'authenticated user',
