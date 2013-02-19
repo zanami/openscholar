@@ -1,3 +1,0 @@
-- Get redirect loop when there is no $options['purl'] on purl_goto
-  http://drupal.org/node/1887448
-  http://drupal.org/files/redirect-when-no-purl.patch
