@@ -108,6 +108,7 @@ function os_publications_form_user_profile_form_alter(&$form, &$form_state) {
  * Joins to the og_membership table, which is where these relationships are stored
  */
 function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
+  $menu = menu_get_item();
   if (module_exists('spaces') && $space = spaces_get_space()) {
     // this has to be separate because of scoping.
     if ($space->type == 'og') {
@@ -115,6 +116,16 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
       $query->condition('ogm.entity_type', 'node');
       $query->condition('ogm.group_type', 'node');
       $query->condition('ogm.gid', $space->id);
+    }
+    // Check for publication_type view.
+    if(isset($menu) && isset($menu['path']) && $menu['path'] == 'publications' && isset($menu['map'][1]) && $menu['map'][1] == 'type') {
+      // Reset the order
+      $order = &$query->getOrderBy();
+      $order = array();
+      // Sort by year, then by node post date.
+      $order['biblio_year'] = 'DESC';
+      $order['n.created'] = 'DESC';
+      return;
     }
     // Check the sort order for biblio.
     // If we're sorting by year, we want to sort by date as well to replicate d6 sorting.
