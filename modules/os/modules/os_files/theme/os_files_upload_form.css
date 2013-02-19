@@ -19,6 +19,6 @@
 	text-align: right;
 }
 
-#file-entity-add-upload .form-actions input {
+#file-entity-add-upload #edit-upload-ajax-wrapper ~ .form-actions input {
 	display: none;
 }
