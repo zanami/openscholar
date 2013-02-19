@@ -660,14 +660,14 @@ ul.pager li.pager-item {
   padding: 4px 8px;
 }
 
-ul.pager li.pager-first,
+
 ul.pager li.pager-previous {
-  float: left;
+  margin-right: 20px;
 }
 
-ul.pager li.pager-last,
+
 ul.pager li.pager-next {
-  float: right;
+  margin-left: 20px;
 }
 
 
