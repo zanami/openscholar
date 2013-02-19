@@ -40,12 +40,22 @@ function os_update_7004() {
 
 /**
  * @function _os_date_formats()
- * 
+ *
  * Enable the formats defined in os's date hooks
  */
 function _os_date_formats() {
   foreach (os_date_formats() as $fmt) {
     $name = 'date_format_' . $fmt['type'];
     variable_set($name, $fmt['format']);
+  }
+}
+
+/**
+ * Allow access to node/%.json to all of the users.
+ */
+function os_update_7005() {
+  // Allow accessing resource node to all users.
+  foreach (array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID) as $rid) {
+    user_role_grant_permissions($rid, array('access resource node'));
   }
 }

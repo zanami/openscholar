@@ -1021,7 +1021,21 @@ function os_system_info_alter(&$info, $file, $type) {
 function os_url_outbound_alter(&$path, &$options, $original) {
   global $user;
 
-  // Pages to add a destination return to their links.
+  // Check if the user asked for any RESTWS services.
+  if (module_exists('restws')) {
+    foreach (array_keys(restws_get_format_info()) as $format) {
+      if (strpos($_GET['q'], $format) !== FALSE) {
+        // When accessing to any address the spaces module use purl_goto(). The
+        // purl_goto() use url() for knowing the path of the URL we accessing.
+        // url() will return eventually the path.
+        // This section alter the $path to the $_GET['q'] which is node/%.json
+        // which will convert by the url() to foo/bar.
+        $path = $_GET['q'];
+        return;
+      }
+    }
+  }
+
   $loop_back_pages = array(
     'user',
     'user/logout',
