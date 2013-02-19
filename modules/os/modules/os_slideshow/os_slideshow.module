@@ -368,7 +368,7 @@ function _os_slideshow_get_style_name($layout, $delta) {
   foreach ($contexts['context'] as $context) {
     if (is_array($context->reactions['block']['blocks'])) {
       foreach($context->reactions['block']['blocks'] as $name => $block) {
-        if (empty($block_regions[$name])) {
+        if (!isset($block_regions[$name])) {
           $block_regions[$name] = $block['region'];
         }
       }
