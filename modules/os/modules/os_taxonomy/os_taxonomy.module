@@ -274,11 +274,25 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
 
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
-    return render(drupal_get_form('os_taxonomy_select_list', $data, $options['path_prefix']));
+    return render(drupal_get_form('os_taxonomy_select_list_' . $vocabulary->vid, $data, $options['path_prefix']));
   }
   else {
     return theme('item_list', array('type' => 'ul', 'items' => $data));
   }
+}
+
+/**
+ * Implements hook_forms().
+ */
+function os_taxonomy_forms($form_id, $args) {
+  $forms = array();
+
+  if (strpos($form_id, 'os_taxonomy_select_list_') === 0) {
+    $forms[$form_id] = array(
+      'callback' => 'os_taxonomy_select_list',
+    );
+  }
+  return $forms;
 }
 
 /**
@@ -296,8 +310,11 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
   $menu = menu_get_item();
   $form_state['path'] = $path;
 
+  $wrapper = entity_metadata_wrapper('taxonomy_term', reset(array_keys($terms_list)));
+  $form['#vocabulary'] = $wrapper->vocabulary->value();
+
   $form['#attached']['css'][] = drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.css';
-  $form['terms'] = array(
+  $form['terms_' . $form['#vocabulary']->vid] = array(
     '#type' => 'select',
     '#options' => array('--none--' => t('Select a term')) + $terms_list,
     '#attributes' => array(
@@ -323,19 +340,18 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
  * Submit handler - redirect the user to the taxonomy page.
  */
 function os_taxonomy_select_list_submit($form, &$form_state) {
-  $form_state['redirect'] = $form_state['path'] . 'taxonomy/term/' . $form_state['values']['terms'];
+  $form_state['redirect'] = $form_state['path'] . 'taxonomy/term/' . $form_state['values']['terms_' . $form['#vocabulary']->vid];
 }
 
 /**
  * Submit handler - verify that the user select a term.
  */
 function os_taxonomy_select_list_validate($form, &$form_state) {
-  if ($form_state['values']['terms'] == '--none--') {
-    form_set_error('terms', t('Please select a term.'));
+  if ($form_state['values']['terms_' . $form['#vocabulary']->vid] == '--none--') {
+    form_set_error('terms_' . $form['#vocabulary']->vid, t('Please select a term.'));
   }
 
-
-  if (!$data) {
+  if (empty($data)) {
     return;
   }
 
