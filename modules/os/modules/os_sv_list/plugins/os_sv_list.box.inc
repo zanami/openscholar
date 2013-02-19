@@ -62,6 +62,10 @@ class os_sv_list_box extends os_boxes_default {
           drupal_get_path('module', 'os_sv_list').'/os_sv_list.js',
         ),
       ),
+      '#ajax' => array(
+        'callback' => 'os_sv_list_vocabs_content_type',
+        'wrapper' => 'query-details',
+      ),
     );
 
     $form['biblio_whitelist'] = array(
@@ -97,7 +101,7 @@ class os_sv_list_box extends os_boxes_default {
         'display_body' => t('Entire Post'),
       ),
     );
-    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array('display_sidebar_teaser' => array('news', 'event', 'person'))))); 
+    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array('display_sidebar_teaser' => array('news', 'event', 'person')))));
 
     $form['sort_by'] = array(
       '#type' => 'select',
@@ -637,7 +641,7 @@ class os_sv_list_box extends os_boxes_default {
     $efq->fieldOrderBy('field_presentation_date', 'value', 'DESC');
     $this->sort_newest($efq);
   }
-  
+
   /**
    * Display functions
    */
@@ -646,7 +650,7 @@ class os_sv_list_box extends os_boxes_default {
     return drupal_render($items);
   }
   function display_sidebar_teaser($nodes) {
-    $items = node_view_multiple($nodes, 'sidebar_teaser');    
+    $items = node_view_multiple($nodes, 'sidebar_teaser');
     return drupal_render($items);
   }
   function display_teaser($nodes) {
@@ -716,4 +720,11 @@ function os_sv_list_query_details_ajax($form, &$form_state) {
  */
 function os_sv_list_terms_details_ajax($form, &$form_state) {
   return $form['options']['query_details']['terms'];
+}
+
+/**
+ * AJAX callback for reload the vocabulary for the selected content type.
+ */
+function os_sv_list_vocabs_content_type($form, $form_state) {
+  return $form['options']['query_details'];
 }
