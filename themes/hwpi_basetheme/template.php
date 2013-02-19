@@ -75,11 +75,6 @@ function hwpi_basetheme_node_view_alter(&$build) {
 
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
-      $body = &$build['pic_bio']['body'][0];
-      $trim = 160;
-      if (strlen($body['#markup']) > $trim) {
-        $body['#markup'] = text_summary($body['#markup'], $build['pic_bio']['body']['#items'][0]['format'], $trim);
-      }
       
       //move title, website. body
       $build['pic_bio']['body']['#weight'] = 5;
