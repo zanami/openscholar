@@ -120,11 +120,37 @@ function os_pages_block_view_alter(&$render, $block) {
 function os_pages_menu_contextual_links_alter(&$links, $router_item, $root_path) {
   if ($root_path == 'os/widget/%/%' && $router_item['map'][3] == 'main_content') {
     $node = menu_get_object();
-    if(!is_object($node)) {
+    if(!is_object($node) || !node_access('update', $node)) {
       return;
     }
     $links['os_pages-edit'] = menu_get_item('os/pages/'.$node->nid.'/body');
     $links = array_reverse($links, true);
+  }
+}
+
+/**
+ * Implements hook os_layout_get_alter()
+ */
+function os_pages_os_layout_get_alter($context_name, &$blocks){
+  //Only allow the main-content block on os_pages contexts
+  @list($ctx_prefix, $level,) = explode('-', $context_name, 3);
+  if (($ctx_prefix != 'os_pages' || $level != 'page') && isset($blocks['os_pages-main_content'])) {
+    unset($blocks['os_pages-main_content']);
+  }
+  elseif (!isset($blocks['os_pages-main_content'])) {
+    $default_widgets = os_pages_os_widget();
+    $blocks['os_pages-main_content'] = $default_widgets['os_pages-main_content'];
+  }
+
+  if($ctx_prefix != 'os_pages'){
+    unset($blocks['boxes-os_pages_section_nav']);
+  }elseif ($level == 'section' && !isset($blocks['boxes-os_pages_section_nav'])){
+    module_load_include('box.inc', 'os_pages');
+    $default_boxes = os_pages_default_box();
+
+    $block = os_boxes_os_widget($default_boxes['os_pages_section_nav']);
+    $block['region'] = false;
+    $blocks['boxes-os_pages_section_nav'] = $block;
   }
 }
 
@@ -280,6 +306,46 @@ function os_pages_form_node_form_alter(&$form, $form_state) {
   );*/
 }
 
+function os_pages_form_cp_layout_full_form_alter(&$form, &$form_state) {
+  $continue = false;
+  foreach ($form['context']['#value'] as $c) {
+    if (strpos($c, 'os_pages-page-') !== FALSE) {
+      $continue = true;
+    }
+  }
+  if (!$continue) return;
+
+  if (isset($form['layout']['#attributes'])) {
+    $layout_attr = &$form['layout']['#attributes'];
+    if (!in_array('content-regions', $layout_attr['class'])) {
+      $layout_attr['class'][] = 'content-regions';
+    }
+  }
+  else {
+    $form['layout']['#attributes']['class'][] = 'content-regions';
+  }
+}
+
+/**
+ * Alters the node delete confirm form to redirect to the parent page
+ */
+function os_pages_form_node_delete_confirm_alter(&$form, &$form_state) {
+  // plid is empty when it's the top level of the outline
+  // we only want to redirect when it isn't empty
+  if ($form['#node']->type == 'page' && $form['#node']->book['plid']) {
+    $form['#submit'][] = 'os_pages_node_delete_redirect';
+  }
+}
+
+/**
+ * Redirect to the parent page when the page node is deleted.
+ * We have to do it in a submit handler because node_delete_confirm_submit hard codes it the redirect to <front>
+ */
+function os_pages_node_delete_redirect($form, &$form_state) {
+  $link = menu_link_load($form['#node']->book['plid']);
+  $form_state['redirect'] = $link['link_path'];
+}
+
 /**
  * Form after_build callback for node_form.
  *
@@ -403,8 +469,7 @@ function os_pages_preprocess_page(&$page) {
     );
     $section_links['page-delete'] = array(
       'title' => t('Delete'),
-      'href' => 'node/'.$node->nid.'/delete',
-      'query' => array('destination' => '<front>'),
+      'href' => 'node/'.$node->nid.'/delete'
     );
 
     $links = $section_links;

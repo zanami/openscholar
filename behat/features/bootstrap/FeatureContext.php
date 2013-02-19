@@ -3,6 +3,7 @@
 use Drupal\DrupalExtension\Context\DrupalContext;
 use Behat\Behat\Context\Step\Given;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Gherkin\Node\PyStringNode;
 use Guzzle\Service\Client;
 use Behat\Behat\Context\Step;
 use Behat\Behat\Context\Step\When;
@@ -10,6 +11,11 @@ use Behat\Behat\Context\Step\When;
 require 'vendor/autoload.php';
 
 class FeatureContext extends DrupalContext {
+
+  /**
+   * Variable for storing the random string we used in the text.
+   */
+  private $randomText;
 
   /**
    * Variable to pass into the last xPath expression.
@@ -126,12 +132,21 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Then /^I should get:$/
+   */
+  public function iShouldGet(PyStringNode $string) {
+    $page = $this->getSession()->getPage();
+    if (strpos($page->getContent(), $string->getRaw()) === FALSE) {
+      throw new Exception("Text not found.");
+    }
+  }
+
+  /**
    * @When /^I clear the cache$/
    */
   public function iClearTheCache() {
     $this->getDriver()->drush('cc all');
   }
-
 
   /**
    * @Then /^I should print page$/
@@ -139,13 +154,6 @@ class FeatureContext extends DrupalContext {
   public function iShouldPrintPage() {
     $element = $this->getSession()->getPage();
     print_r($element->getContent());
-  }
-
-  /**
-   * @Then /^I should get:$/
-   */
-  public function iShouldGet(PyStringNode $string) {
-    throw new PendingException();
   }
 
   /**
@@ -272,7 +280,6 @@ class FeatureContext extends DrupalContext {
     }
 
     $metasteps[] = new Step\When('I press "Save"');
-    $metasteps[] = new Step\When('I clear the cache');
 
     return $metasteps;
   }
@@ -283,7 +290,6 @@ class FeatureContext extends DrupalContext {
   public function theWidgetIsSetInThePage($page, $widget) {
     $code = "os_migrate_demo_set_box_in_region({$this->nid}, '$page', '$widget');";
     $this->box[] = $this->getDriver()->drush("php-eval \"{$code}\"");
-    $this->getDriver()->drush("cc all");
   }
 
   /**
@@ -367,6 +373,7 @@ class FeatureContext extends DrupalContext {
   public function iSleepFor($sec) {
     sleep($sec);
   }
+
   /**
    * @Then /^I should see the following <json>:$/
    */
@@ -411,5 +418,104 @@ class FeatureContext extends DrupalContext {
 
       throw new Exception("Some errors were found:\n" . implode("\n", $string));
     }
+  }
+
+  /**
+   * Generate random text.
+   */
+  private function randomizeMe($length = 10) {
+    return $this->randomText = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, $length);
+  }
+
+  /**
+   * @Given /^I fill "([^"]*)" with random text$/
+   */
+  public function iFillWithRandomText($elementId) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//input[@id='{$elementId}']");
+
+    if (!$element) {
+      throw new Exception(sprintf("Could not find the element with the id %s", $elementId));
+    }
+
+    $element->setValue($this->randomizeMe());
+  }
+
+
+  /**
+   * @Given /^I visit the site "([^"]*)"$/
+   */
+  public function iVisitTheSite($site) {
+    if ($site == "random") {
+      $this->visit("/" . $this->randomText);
+    }
+    else {
+      $this->visit("/" . $site);
+    }
+  }
+
+  /**
+   * @When /^I set the variable "([^"]*)" to "([^"]*)"$/
+   */
+  public function iSetTheVariableTo($variable, $value) {
+    $code = "os_migrate_demo_variable_set({$variable}, '{$value}');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I set courses to import$/
+   */
+  public function iSetCoursesToImport() {
+    $metasteps = array();
+    $this->getDriver()->drush("php-eval \"drupal_flush_all_caches();\"");
+    $this->getDriver()->drush("cc all");
+    $metasteps[] = new Step\When('I visit "admin"');
+    $metasteps[] = new Step\When('I visit "admin/structure/feeds/course/settings/HarvardFetcher"');
+    $metasteps[] = new Step\When('I check the box "Debug mode"');
+    $metasteps[] = new Step\When('I press "Save"');
+    $metasteps[] = new Step\When('I visit "john/cp/build/features/harvard_courses"');
+    $metasteps[] = new Step\When('I fill in "Department ID" with "Architecture"');
+    $metasteps[] = new Step\When('I select "Harvard Graduate School of Design" from "School name"');
+    $metasteps[] = new Step\When('I press "Save configuration"');
+
+    return $metasteps;
+  }
+
+  /**
+   * @When /^I enable harvard courses$/
+   */
+  public function iEnableHarvardCourses() {
+    $code = "os_migrate_demo_define_harvard_courses();";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I refresh courses$/
+   */
+  public function iRefreshCourses() {
+    $code = "os_migrate_demo_import_courses();";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I remove harvard courses$/
+   */
+  public function iRemoveHarvardCourses() {
+    $metasteps = array();
+    $metasteps[] = new Step\When('I visit "john/cp/build/features/harvard_courses"');
+    $metasteps[] = new Step\When('I press "Remove"');
+    $metasteps[] = new Step\When('I sleep for "2"');
+    $metasteps[] = new Step\When('I press "Save configuration"');
+
+    return $metasteps;
+  }
+
+  /**
+   * @Given /^I invalidate cache$/
+   */
+  public function iInvalidateCache() {
+
+    $code = "views_og_cache_invalidate_cache(node_load($this->nid));";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
   }
 }

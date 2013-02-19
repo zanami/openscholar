@@ -106,6 +106,20 @@ function theme_os_publications_tabular(&$vars) {
   $output .= filter_xss($node->biblio_coins, array('span'));
   $output .= '<h3>Citation:</h3><div id="citation-wrapper">' . $citation . '' . theme('biblio_export_links', array('node' => $node)) . '</div>';
 
+  // Move publication image up under the citation.
+  $book_images = field_get_items('node',$node,'field_biblio_image', $node->language);
+  if (!empty($book_images)) {
+    $book_image = reset($book_images);
+    $theme_image = theme('image_style', array(
+      'style_name' => 'book_cover',
+      'path' => $book_image['uri'],
+      'title' => $book_image['title'],
+    ));
+    $book_output = '<div class="publication-cover-container">' . $theme_image . '</div>';
+    // Add the image to the output under the citation.
+    $output .= $book_output;
+  }
+
   foreach ($rows as $row) {
     if (isset($row[0]['data']) && $row[0]['data']) {
       $output .= "<h3>" . $row[0]['data'] . ":</h3>";
@@ -180,6 +194,11 @@ function _os_publications_plain_citation($node) {
 }
 
 function theme_os_publications_export_links($variables) {
+  if (module_exists('vsite') && !spaces_get_space()) {
+    // Don't show export link when not in a VSite, to prevent from loading too
+    // many nodes.
+    return;
+  }
 
   global $pager_total_items;
   $node   = $variables['node'];

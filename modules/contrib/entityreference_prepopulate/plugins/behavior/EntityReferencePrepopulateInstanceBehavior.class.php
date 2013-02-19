@@ -20,8 +20,8 @@ class EntityReferencePrepopulateInstanceBehavior extends EntityReference_Behavio
     );
     $form['action_on_edit'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Also apply on edit'),
-      '#description' => t('Apply action when editing the entity.'),
+      '#title' => t('Apply action on edit'),
+      '#description' => t('Apply action when editing an existing entity.'),
       '#states' => array(
         'invisible' => array(
           ':input[name="instance[settings][behaviors][prepopulate][action]"]' => array('value' => 'none'),
@@ -72,6 +72,7 @@ class EntityReferencePrepopulateInstanceBehavior extends EntityReference_Behavio
       '#description' => $description,
       '#disabled' => $disabled,
     );
+
     return $form;
   }
 }

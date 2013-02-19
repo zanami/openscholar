@@ -82,7 +82,11 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
   $form['#submit'][] = 'vsite_vocab_form_taxonomy_form_vocabulary_submit';
 
   if (empty($form_state['vocabulary']->vid)) {
-    $form['machine_name']['#element_validate'][] = 'vsite_vocab_form_taxonomy_form_vocabulary_validate';
+    // Because we hide the machine name text field, og_vocab validate function
+    // will fail due to the fact that there is no machine name. Reversing the
+    // order of the validation functions will take care of that and enable us to
+    // create OG vocabularies with the same human readable name in other groups.
+    array_unshift($form['machine_name']['#element_validate'], 'vsite_vocab_form_taxonomy_form_vocabulary_validate');
   }
 
   // Init variables.
@@ -101,7 +105,7 @@ function vsite_vocab_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
   $default_bundles = array();
   foreach ($bundles as $bundle => $bundle_label) {
     $vid = !empty($form['vid']['#value']) ? $form['vid']['#value'] : 0;
-    $og_vocab = og_vocab_load_og_vocab($vid, 'node', $bundle, TRUE);
+    $og_vocab = og_vocab_load_og_vocab($vid, 'node', $bundle, NULL, TRUE);
     $options[$bundle] = check_plain($bundle_label);
     if (empty($og_vocab->is_new)) {
       $default_bundles[$bundle] = TRUE;
@@ -218,12 +222,12 @@ function vsite_vocab_field_attach_view_alter(&$output, $context) {
 
   if (count($output[OG_VOCAB_FIELD]['#items']) > 3) {
     // Show links collapsed.
-    $output[OG_VOCAB_FIELD][0]['#markup'] = '<a href="#" class="toggle" >' . t('in terms') . '</a><div class="slider">'. $original .'</div>';
+    $output[OG_VOCAB_FIELD][0]['#markup'] = '<a href="#" class="toggle" >' . t('See also:') . '</a><div class="slider">'. $original .'</div>';
 
     $output['#attached']['js'][] = drupal_get_path('module', 'os').'/theme/os_toggle.js';
   }
   else {
-    $output[OG_VOCAB_FIELD][0]['#markup'] = t('In !terms', array('!terms' => $original));
+    $output[OG_VOCAB_FIELD][0]['#markup'] = t('See also: !terms', array('!terms' => $original));
   }
 }
 

@@ -25,6 +25,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['title'] = 'Comments';
   $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['perm'] = 'administer comments';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
@@ -615,10 +616,8 @@ function cp_content_views_default_views() {
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Files';
   $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'role';
-  $handler->display->display_options['access']['role'] = array(
-    5 => '5',
-  );
+  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['perm'] = 'administer files';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['distinct'] = TRUE;
@@ -751,17 +750,23 @@ function cp_content_views_default_views() {
   $handler->display->display_options['filters']['filename']['expose']['label'] = 'Name';
   $handler->display->display_options['filters']['filename']['expose']['operator'] = 'filename_op';
   $handler->display->display_options['filters']['filename']['expose']['identifier'] = 'filename';
+  /* Filter criterion: File: Schema type */
+  $handler->display->display_options['filters']['schema_type']['id'] = 'schema_type';
+  $handler->display->display_options['filters']['schema_type']['table'] = 'file_managed';
+  $handler->display->display_options['filters']['schema_type']['field'] = 'schema_type';
+  $handler->display->display_options['filters']['schema_type']['schema_type'] = 'public';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['path'] = 'cp/content/files';
-  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Files';
   $handler->display->display_options['menu']['description'] = 'View files uploaded to your site.';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'cp';
   $handler->display->display_options['menu']['context'] = 0;
+  $handler->display->display_options['tab_options']['weight'] = '0';
   $export['cp_files'] = $view;
 
   return $export;

@@ -1,29 +1,63 @@
 <?php
 // $Id$
 
+/**
+ * @file
+ * Code for OpenScholar: Google Analytics module.
+ */
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() for os_settings_form.
  *
- * Need to hook into the openscholar settings form
- * to allow admins to set the global Google Analytics ID
+ * Allows admins to set the global Google Analytics ID and sitewide options.
  */
 function os_ga_form_os_settings_form_alter(&$form, &$form_state, $form_id) {
-  $form['os_ga_global_id'] = array(
+  $form['os_ga'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Google Analytics'),
+    '#weight' => 0,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE
+  );
+  $form['os_ga']['os_ga_global_id'] = array(
     '#type' => 'textfield',
-    '#title' => t('Enter your Google Analytics ID'),
+    '#title' => t('Global Google Analytics ID'),
+  	'#weight' => 0,
     '#size' => 20,
     '#maxlength' => 255,
     '#default_value' => variable_get('os_ga_global_id', ''),
-    '#description' => t("Entering your ID this will enable the sending of your OpenScholar sitewide page and visitor data to your Google Analytics account. Go to the <a href=\"http://www.google.com/analytics/\">Google Analytics site</a> to set one up. Your ID will be in the format UA-XXXXXXX-XX."),
+    '#description' => t("Enables sitewide tracking for a single <a href=\"http://www.google.com/analytics/\">Google Analytics</a> account.<br/>Expected format: <strong>UA-XXXXXXX-XX</strong>"),
     '#element_validate' => array('os_ga_analytics_id_validate'),
+  );
+  $form['os_ga']['os_ga_global_link_tracking'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Link tracking'),
+    '#weight' => 1,
+    '#default_value' => variable_get('os_ga_global_link_tracking', 0),
+    '#description' => t("Turns on Google Analytics tracking for outgoing links, mailto links, and file download links for all sites."),
+  );
+  $form['os_ga']['os_ga_global_addthis'] = array(
+    '#type' => 'checkbox',
+    '#weight' => 2,
+    '#title' => t('AddThis social tracking'),
+    '#default_value' => variable_get('os_ga_global_addthis', 0),
+    '#description' => t("Turns on AddThis social tracking integration with Google Analytics for all sites. Currently only available for one Google Analytics account per pageload."),
+  );
+  $form['os_ga']['os_ga_default_account'] = array(
+    '#type' => 'radios',
+    '#title' => t('Default account'),
+    '#weight' => 3,
+    '#default_value' => variable_get('os_ga_default_account', 'vsite'),
+    '#options' => array(
+      'vsite' => t('Individual site account'),
+      'global' => t('Global account'),
+    ),
+    '#description' => t("Some additional Google Analytics settings may only available to one Google Analytics account per pageload. In cases where one account must be chosen for an enabled setting, only the default account will get the additional setting."),
   );
 }
 
 /**
- * Implements hook os_ga_cp_settings().
- *
- * @return array
+ * Implements hook_cp_settings().
  */
 function os_ga_cp_settings() {
   $settings = array();
@@ -52,138 +86,48 @@ function os_ga_cp_settings() {
  * Impelements hook_init().
  */
 function os_ga_init() {
-  $ga_vars = _os_ga_ga_id_vars();
-
-  // If no ga ids are saved, then return.
-  if (!count($ga_vars)) {
+  // Does nothing if there are no accounts available.
+  $accounts = _os_ga_get_accounts();
+  if (empty($accounts)) {
     return;
   }
 
-  global $user;
+  // Generates script and inserts into page header.
+  $script = _os_ga_build_script($accounts);
+  drupal_add_js($script, 'inline', variable_get('vsite_ga_scope', 'header'));
 
-  // Build tracker code for footer.
-  $script = '';
-
-  // Check to see if both global and site specific GA accounts are set.
-  if ((!empty($ga_vars['global_id'])) && (!empty($ga_vars['os_id']))) {
-    // Set both to be tracked.
-    $script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['os_id']) . ']);';
-    $script .= '_gaq.push(["_trackPageview"]);';
-
-    // Add in our global account as well.
-    $script .= '_gaq.push(["b._setAccount", ' . drupal_json_encode($ga_vars['global_id']) . ']);';
-    $script .= '_gaq.push(["b._trackPageview"]);';
-
-    // finish up the script.
-    $script .= '(function() {';
-    $script .= 'var ga = document.createElement("script");';
-    $script .= 'ga.type = "text/javascript";';
-    $script .= 'ga.async = true;';
-    $script .= 'ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";';
-    $script .= 'var s = document.getElementsByTagName("script")[0];';
-    $script .= 's.parentNode.insertBefore(ga, s);';
-    $script .= '})();';
-    // Integrates with AddThis. Currently AddThis only supports one property at
-    // a time, so we use vsite-level profile over the global profile.
-    $script .= "var addthis_config = {data_ga_social: true, data_ga_property: '" . drupal_json_encode($ga_vars['os_id']) . "'};";
-  }
-  elseif (!empty($ga_vars['global_id'])) {
-    // Global pageTracker object.
-    $script = 'var _gaq = _gaq || [];';
-    $script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['global_id']) . ']);';
-
-    // Pass segmentation data to pageTrackerGlobal account.
-    if (!empty($segmentation)) {
-      $script .= $segmentation;
-    }
-
-    $script .= '_gaq.push(["_trackPageview"]);';
-    $script .= '(function() {';
-    $script .= 'var ga = document.createElement("script");';
-    $script .= 'ga.type = "text/javascript";';
-    $script .= 'ga.async = true;';
-    $script .= 'ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";';
-    $script .= 'var s = document.getElementsByTagName("script")[0];';
-    $script .= 's.parentNode.insertBefore(ga, s);';
-    $script .= '})();';
-    // Integrates with AddThis.
-    $script .= "var addthis_config = {data_ga_social: true, data_ga_property: '" . drupal_json_encode($ga_vars['global_id']) . "'};";
-  }
-  elseif (!empty($ga_vars['os_id'])) {
-    // Vsite pageTracker object.
-    $script .= 'var _gaq = _gaq || [];';
-    $script .= '_gaq.push(["_setAccount", ' . drupal_json_encode($ga_vars['os_id']) . ']);';
-    $script .= '_gaq.push(["_trackPageview"]);';
-
-    // Add in our global account as well.
-    // $script .= '_gaq.push(["b._setAccount", ' . drupal_json_encode($globalAccount) . ']);';
-    // $script .= '_gaq.push(["b._trackPageview"]);';
-
-    // Finish up the script.
-    $script .= '(function() {';
-    $script .= 'var ga = document.createElement("script");';
-    $script .= 'ga.type = "text/javascript";';
-    $script .= 'ga.async = true;';
-    $script .= 'ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";';
-    $script .= 'var s = document.getElementsByTagName("script")[0];';
-    $script .= 's.parentNode.insertBefore(ga, s);';
-    $script .= '})();';
-    // Integrates with AddThis.
-    $script .= "var addthis_config = {data_ga_social: true, data_ga_property: '" . drupal_json_encode($ga_vars['os_id']) . "'};";
-  }
-  else {
-    // Default to out global account.
-    $script = '';
-  }
-
-  if (strlen($script)) {
-    // Code snippet goes in header by default.
-    drupal_add_js($script, 'inline', variable_get('vsite_ga_scope', 'header'));
+  // Additionally adds link tracking if enabled globally.
+  if (variable_get('os_ga_global_link_tracking', 0)) {
+    drupal_add_js('os_ga.js', 'file');
   }
 }
 
 /**
- * Check for global and site-specific Google Analytics ID variables.
+ * Returns Google Analytics account variables.
  */
-function _os_ga_ga_id_vars() {
-  $ga_vars = array();
-  // Global id.
-  // Load in the spaces info.
-  // Global id.
+function _os_ga_get_accounts() {
+  $accounts = array();
 
-  $spaces = spaces_get_space();
+  $global_account = variable_get('os_ga_global_id', '');
+  $default_account = variable_get('os_ga_default_account', 'vsite');
 
-  if ($spaces) {
-    //if (strlen($spaces->controllers->variable->get('vsite_ga_google_analytics_id', 'original'))) {
-    // Check for the global GA account set from the admin bar.
-    if ($global_id = variable_get('os_ga_global_id', '')) {
-      if (strlen($global_id)) {
-        $ga_vars['global_id'] = $global_id;
-      }
-    }
-
-    // Check for the site specific GA account set from the users settings.
-    if ($local_id = variable_get('os_ga_google_analytics_id', '')) {
-      if (strlen($local_id)) {
-        $ga_vars['os_id'] = $local_id;
-      }
-    }
-  }
-  else {
-    //if($global_id = variable_get('vsite_ga_google_analytics_id', '')) {
-    // No personal GA account nor spaces set, grab the global GA account.
-    if ($global_id = variable_get('os_ga_global_id', '')) {
-      if (strlen($global_id)) {
-        $ga_vars['global_id'] = $global_id;
-      }
-    }
+  // Gets the global GA account, if available.
+  if (strlen($global_account)) {
+    $accounts[$global_account] = array();
+    $accounts[$global_account]['default'] = (bool) ($default_account == 'global');
   }
 
-  return $ga_vars;
+  // Gets the vsite GA account, if available.
+  if (module_exists('vsite') && $vsite = vsite_get_vsite() && $vsite_account = variable_get('os_ga_google_analytics_id', '')) {
+    $accounts[$vsite_account] = array();
+    $accounts[$vsite_account]['default'] = (bool) ($default_account == 'vsite');
+  }
+
+  return $accounts;
 }
 
 /**
- * Validates a user-entered GA string.
+ * Element validate callback; checks a string matches format "UA-XXXXX-XX".
  */
 function os_ga_analytics_id_validate($element, $form_state) {
   $pattern = '/^UA-[0-9]+-[0-9]{1,2}$/';
@@ -254,3 +198,46 @@ function os_ga_google_translate() {
   return '<div id="google_translate_element"></div>';
 }
 
+/**
+ * Builds Google Analytics tracking javascript code to insert onto pages.
+ *
+ * @param array $accounts
+ *   An array containing account info for each GA account.
+ *
+ * @return string $output
+ *   The complete script to insert onto the page.
+ */
+function _os_ga_build_script($accounts = array()) {
+  // Returns empty string if no accounts.
+  if (empty($accounts)) {
+    return '';
+  }
+
+  // Starts the script.
+  $output = 'var _gaq = _gaq || [];';
+  // Adds each GA account to the script.
+  foreach ($accounts as $account => $info) {
+    $output .= '_gaq.push(["_setAccount", ' . drupal_json_encode($account) . ']);_gaq.push(["_trackPageview"]);';
+    if ($info['default'] === TRUE) {
+      $default_account = $account;
+    }
+  }
+  // If the one account is not default, treat it as default.
+  if (!$default_account && sizeof($accounts) == 1) {
+    $default_account = array_shift($accounts);
+  }
+
+  // @todo add GA segmentation options.
+
+  // Finishes up the script.
+  $output .= '(function() {var ga = document.createElement("script");ga.type = "text/javascript";ga.async = true;ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(ga, s);})();';
+
+  // Integrates with AddThis.
+  // Currently AddThis only supports one property per pageload,
+  // so we default to use vsite account over the global profile.
+  if (variable_get('os_ga_global_addthis', 0) && $default_account) {
+    $output .= "var addthis_config = {data_ga_social: true, data_ga_property: " . drupal_json_encode($default_account) . "};";
+  }
+
+  return $output;
+}

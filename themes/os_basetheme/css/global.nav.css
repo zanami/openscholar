@@ -427,11 +427,14 @@ div.contextual-links-wrapper ul.contextual-links {
   border-radius: 0; /* LTR */
 }
 
-ul.contextual-links li {
+ul.contextual-links li,
+.sidebar ul.contextual-links li
+ {
  line-height: 12px !important;
  list-style: none !important;
  clear:both;
- 
+ background-color: none;
+border-top: none;
 }
 
 ul.contextual-links li a {
@@ -483,11 +486,11 @@ color: #FFF !important;
 .contextual-controls-wrapper .add_new {
 	float:left;
 	display:inline;
-	 background: url("../images/scholarbase-sprite.png") no-repeat scroll 3px -380px #A1D4A1 !important;
+	 background: url("../images/scholarbase-sprite.png") no-repeat scroll 3px -379px #A1D4A1 !important;
     border-radius: 5px 5px 5px 5px;
     float: left;
      margin: 0 22px 0 0;
-    padding: 3px 8px 1px 22px !important;
+    padding: 0 8px 0 22px !important;
     text-decoration:none !important;
 	}
 
@@ -611,6 +614,7 @@ ul.nice-menu ul {
 ul.nice-menu ul li {
  border:1px solid #CCC;
  background:#EEE;
+ min-width:12em;
  width:auto;
 }
 
@@ -699,3 +703,135 @@ ul.nice-menu-down li li.menuparent {
 ul.nice-menu-down li li.menuparent:hover {
   background: none !important; /* LTR */
 }
+
+/******************************
+ Lists when Naviation is selected
+******************************/
+
+.navigation ul,
+.navigation ul.menu
+ {
+  border-left: solid 1px #ccc;
+  border-right: solid 1px #ccc;
+  border-bottom: solid 1px #ccc;
+
+}
+
+.sidebar .navigation ul.menu ul.menu,
+.sidebar .navigation ul ul {
+  border: none;
+  margin-left: 0;
+}
+
+.navigation ul li,
+.navigation ul.menu li {
+  list-style: none;
+  background-color: #EEE;
+  border-top: solid 1px #ccc;
+  text-align: left;
+  margin: 0;
+  margin-bottom: 0;
+  list-style-image: none !important;
+
+}
+
+.navigation ul.menu li a,
+.navigation ul li a {
+  display: block;
+  text-decoration: none !important;
+  padding: .5em;
+  color:inherit;
+}
+
+.navigation ul.menu li ul.menu li a,
+.navigation ul li ul li a {
+  padding-left: 18px;
+}
+
+.navigation a:link, .navigation a:visited { color: inherit; }
+.navigation a:hover, .navigation a:active { color: inherit; } 
+.navigation a:hover { background-color: #fff; }
+
+/* Section Nav */
+#boxes-box-os_pages_section_nav {
+	border: 1px solid #ebe3df;
+	border-bottom: none;
+}
+
+.section-nav li.expanded, 
+.section-nav li.collapsed, 
+.section-nav li.leaf {
+  padding: 0;
+}
+
+.section-nav ul.menu {
+  margin-bottom: 0;
+}
+
+.section-nav ul.menu li {
+	list-style: none;
+	background-color: #fff;
+	text-align: left;
+}
+
+.section-nav ul.menu li a {
+	display: block;
+	text-decoration: none !important;
+	padding: 8px 15px;
+	border-bottom: 1px solid #ebe3df;
+}
+
+
+.section-nav a:link,
+.section-nav a:visited {
+	color: inherit;
+	
+}
+
+.section-nav a:hover {
+	background-color: #bfc2c4 !important;
+}
+
+.section-nav a.active {
+	color: #333;
+}
+
+/* Section Nav - Section Heading */
+.section-nav .menu-depth-1 > a {
+	background: none !important;
+	background-color: #293352 !important;
+	color: #fff;
+	text-transform: uppercase;
+}
+
+.section-nav .collapsed > a {
+	background: url('images/arrow-right.png') no-repeat left center;
+	
+}
+
+.section-nav .expanded > a {
+	background: url('images/arrow-down.png') no-repeat left center;
+	
+}
+.section-nav .expanded.menu-depth-2 > a {
+	background-color: #3a72ab;
+	color: #fff;
+}
+
+.section-nav .expanded.menu-depth-2 .menu-depth-3 > a,
+.section-nav .expanded.menu-depth-2 .menu-depth-4 > a,
+.section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
+	background-color: #f3f3f1;
+	padding-left: 25px;
+}
+
+.section-nav .expanded.menu-depth-2 .menu-depth-4 > a {
+	padding-left: 35px;
+}
+
+.section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
+	padding-left: 45px;
+}
+
+
+

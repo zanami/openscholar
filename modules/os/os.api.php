@@ -150,8 +150,8 @@ function hook_os_app_info() {
  * Makes changes to os_app_info.
  */
 function hook_os_app_info_alter(&$info) {
-  // Ensures my_app displays as an "Available App" on Project sites.
-  if (isset($info['my_app']['restricted site types']['project'])) {
-    unset($info['my_app']['restricted site types']['project']);
+  // Removes "blogpost" from appearing in the nodetypes array from my_app.
+  if (isset($info['my_app']['nodetypes']['blogpost'])) {
+    unset($info['my_app']['nodetypes']['blogpost']);
   }
 }

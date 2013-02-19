@@ -111,7 +111,7 @@ function theme_os_taxonomy_term_item($variables) {
   $title = $item_wrapper . $name . $number;
 
   if ($variables['show_term_descriptions'] && !empty($variables['description'])) {
-    $title .= '<div class="description">' . check_plain($variables['description']) . '</div>';
+    $title .= '<div class="description">' . filter_xss($variables['description']) . '</div>';
   }
   // Close div if we there are children.
   $title .= !empty($variables['childs']) ? "</div>" . $variables['childs'] : '';
@@ -186,7 +186,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
   $terms = taxonomy_term_load_multiple($tids);
   // Arrange term in an array with information about inner tree.
   $items = os_taxonomy_build_term_items($terms, $options);
-  $path_prefix = '';
+  if(!isset($options['path_prefix'])) $options['path_prefix'] = '';
 
   // If there is more than 0 bundles using this vocabulary.
   if (count($options['bundles'])) {
@@ -200,9 +200,9 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         $feature = current($map[$bundle]);
       }
     }
-    $path_prefix = isset($feature) ? strval(os_get_app_path($feature)) : 'taxonomy';
-    if (strlen($path_prefix)) {
-      $path_prefix = $path_prefix . "/";
+    $options['path_prefix'] = isset($feature) ? strval(os_get_app_path($feature)) : 'taxonomy';
+    if (strlen($options['path_prefix'])) {
+      $options['path_prefix'] = $options['path_prefix'] . "/";
     }
   }
 
@@ -215,8 +215,8 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       continue;
     }
 
-    if(strlen($path_prefix) && strpos($item['url']['path'],'taxonomy/') === 0){
-      $item['url']['path'] = str_replace('taxonomy/', $path_prefix, $item['url']['path']);
+    if(strlen($options['path_prefix']) && strpos($item['url']['path'],'taxonomy/') === 0){
+      $item['url']['path'] = str_replace('taxonomy/', $options['path_prefix'], $item['url']['path']);
     }
 
     // Don't process terms that are in not in level 0.
@@ -274,7 +274,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
 
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
-    return render(drupal_get_form('os_taxonomy_select_list', $data, $path_prefix));
+    return render(drupal_get_form('os_taxonomy_select_list', $data, $options['path_prefix']));
   }
   else {
     return theme('item_list', array('type' => 'ul', 'items' => $data));
@@ -438,6 +438,10 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
       $child_content = os_taxonomy_build_child_item($item['childs'], $item, $options);
     }
 
+    if(strlen($options['path_prefix']) && strpos($item['url']['path'],'taxonomy/') === 0){
+      $item['url']['path'] = str_replace('taxonomy/', $options['path_prefix'], $item['url']['path']);
+    }
+
     $number = NULL;
 
     if ($options['show_count']) {
@@ -495,14 +499,17 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
  * @see gkplus_preprocess_os_taxonomy_tagged_nodes()
  */
 function theme_os_taxonomy_tagged_nodes($variables) {
-  $output = '';
-
   global $language;
+
+  $output = '';
   $direction = $language->direction ? 'margin-right: ' : 'margin-left: ';
 
+  $tagged_item_per_page = variable_get('os_taxonomy_ites_per_page', 15);
+  $page = !isset($_GET['page']) ? 0 : $_GET['page'];
+
   $options = $variables['options'] + array(
-    'range' => 0,
-    'offset' => 0,
+    'range' => $tagged_item_per_page,
+    'offset' => $page * $tagged_item_per_page,
     'tree' => FALSE,
     'max_depth' => NULL,
     'indentation' => 10,
@@ -558,6 +565,8 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   // Attaches list of nodes in this term, or empty message if term is root term.
   $node_count = os_taxonomy_count_attached_nodes($taxonomy_term->tid, $options['bundles']);
   if ($node_count) {
+    pager_default_initialize($node_count, $tagged_item_per_page);
+    $pager = theme('pager', array('quantity' => $node_count));
 
     $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
 
@@ -566,6 +575,7 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     $build += node_view_multiple($nodes);
   }
   else if ((int) $options['cur_depth'] === 0 && !$has_children_to_display) {
+    $pager = '';
     $build['no_content'] = array(
       '#prefix' => '<p>',
       '#markup' => t('There is currently no content classified with this term.'),
@@ -596,7 +606,7 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   }
 
   // Closes the wrapper div around this term.
-  $output .= '</div>';
+  $output .= '</div>' . $pager;
 
   return $output;
 }
@@ -645,12 +655,6 @@ function os_taxonomy_count_attached_nodes_query_object($tid, $node_bundles = arr
     ->fields('t');
 
   $query->join('node', 'n', 't.nid = n.nid');
-
-  $query->orderBy('n.sticky', 'DESC');
-  if (module_exists('nodeorder')) {
-    $query->orderBy('t.weight', 'ASC');
-  }
-  $query->orderBy('n.created', 'DESC');
 
   if (!empty($node_bundles)) {
     $query->condition('n.type', $node_bundles, 'IN');
@@ -722,7 +726,7 @@ function os_taxonomy_list_attached_nodes($tid, $node_bundles = array(), $range =
   $query->orderBy('n.created', 'DESC');
 
   if ($range) {
-    $query->range($range + $offset, $range);
+    $query->range($offset, $range);
   }
 
   $result = $query->execute();

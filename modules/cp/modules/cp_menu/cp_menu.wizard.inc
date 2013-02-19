@@ -115,10 +115,10 @@ function cp_menu_type($form, &$form_state) {
   $form_state['title'] = t('Link Type');
 
   $form['type'] = array(
-    '#title' => 'Link Type',
+    '#title' => 'Item Type',
     '#type' => 'radios',
-    '#options' => array('page' => 'Page', 'url' => 'Existing URL'),
-    '#description' => t('Type of content to link to.'),
+    '#options' => array('page' => 'Link to a Page', 'url' => 'Link to a Existing URL', 'heading' => 'Menu Heading'),
+    '#description' => t('Select heading or type of content to link to.'),
     '#required' => TRUE,
   );
 
@@ -139,7 +139,7 @@ function cp_menu_title($form, &$form_state) {
   $form['title'] = array(
     '#title' => t('Title'),
     '#type' => 'textfield',
-    '#description' => t('Name your link.'),
+    '#description' => t('Name your link or heading.'),
     '#required' => TRUE,
   );
 
@@ -219,26 +219,32 @@ function cp_menu_title($form, &$form_state) {
       break;
   }
 
-
-  // Should we support other attributes here as well?
-  // Still undecided if new window should exist
-  $form['advanced'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Advanced Options'),
-    '#collapsed' => TRUE,
-    '#collapsible' => TRUE,
-    'new_window' => array(
+  //advanced options present depending on site configuration
+  if (variable_get('cp_menu_link_options_new_window', FALSE)) {
+    $advanced['new_window'] = array(
       '#type' => 'checkbox',
       '#title' => t('New Window'),
       '#description' => t('Open link in new tab or window'),
       '#default' => FALSE,
-    ),
-    'tooltip' => array(
+    );
+  };
+
+  if (variable_get('cp_menu_link_options_tooltip', FALSE)) {
+    $advanced['tooltip'] = array(
       '#type' => 'textfield',
       '#title' => t('Tooltip'),
       '#description' => t('Text displayed when mouse hovers over link'),
-    ),
-  );
+    );
+  }
+
+  if (isset($advanced)) {
+    $form['advanced'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Advanced Options'),
+      '#collapsed' => TRUE,
+      '#collapsible' => TRUE
+    ) + $advanced;
+  }
 
   return $form;
 }
@@ -451,6 +457,8 @@ function cp_menu_wizard_finish(&$form_state) {
     }
   }
 
+  $options = array();
+
   // Builds the link from the collected data
   switch ($values['type']) {
     case 'url':
@@ -464,6 +472,10 @@ function cp_menu_wizard_finish(&$form_state) {
       $url = 'node/'.$nid;
       break;
 
+    case 'heading':
+      $url = false;
+      $options['attributes']['class'][] = "menu-heading";
+
     case 'list':
       break;
 
@@ -472,20 +484,24 @@ function cp_menu_wizard_finish(&$form_state) {
   }
 
   $menu_name = isset($values['menu']) ? $values['menu'] : 'primary-menu';
-  $options = array();
 
-  if ($values['new_window']) {
-    $new_menu['options']['attributes']['target'] = '_blank';
+  if (isset($values['new_window']) && $values['new_window']) {
+    $options['attributes']['target'] = '_blank';
   }
 
-  if ($values['tooltip']) {
-    $options['description'] = $values['tooltip'];
+  if (isset($values['tooltip']) && $values['tooltip']) {
+    $options['attributes']['title'] = $values['tooltip'];
   }
 
   // Saves to vsite or whole site
   ctools_include('menu', 'os');
 
   $item = array('link_path' => $url, 'menu_name' => $menu_name, 'link_title' => $values['title'], 'options' => $options);
+  if($values['type'] == 'heading'){
+    //If we don't have a path set, tell drupal that this link is external
+    //so that it does not try and run access functions
+    $item['external'] = true;
+  }
   $mlid = os_menu_link_save($item);
   cp_menu_cache_clear($form_state['object_id']);
 

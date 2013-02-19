@@ -40,8 +40,7 @@ function os_publications_menu_alter(&$items) {
   $items['publications/export'] = array(
     'title' => '',
     'page callback' => 'os_publications_export',
-    'access callback' => 'user_access',
-    'access arguments' => array('show export links'),
+    'access callback' => 'os_publications_export_access',
     'file' => drupal_get_path('module', 'os_publications') . '/os_publications.pages.inc',
     'type' => MENU_CALLBACK,
   );
@@ -67,6 +66,18 @@ function os_publications_menu_alter(&$items) {
 
   // for the toolbar
   $items['node/add/biblio']['title'] = 'Publication';
+}
+
+/**
+ * Menu access; Make sure publications export can be seen by privileged users
+ * only inside a VSite context, to prevent from loading too many nodes.
+ */
+function os_publications_export_access() {
+  if (!user_access('show export links') || (module_exists('vsite') && !spaces_get_space())) {
+    return;
+  }
+
+  return TRUE;
 }
 
 /**
@@ -102,6 +113,7 @@ function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
     if ($space->type == 'og') {
       $query->innerJoin('og_membership', 'ogm', 'n.nid = ogm.etid');
       $query->condition('ogm.entity_type', 'node');
+      $query->condition('ogm.group_type', 'node');
       $query->condition('ogm.gid', $space->id);
     }
     // Check the sort order for biblio.
@@ -301,6 +313,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   ctools_include('ajax');
   ctools_include('modal');
   $form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private')) . ctools_modal_text_button('Change Note Settings', 'features/nojs/os_publications', 'Change Note Settings');
+  //$form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private')) . l('Change Note Settings', 'cp/build/features/os_publications');
 
   // hide the rest of the vtabs behind a collapsible fieldset
   $form['publication_extras'] = array(
@@ -402,6 +415,16 @@ function os_publications_preprocess_node(&$vars) {
 function os_publications_node_view_alter(&$build, $type) {
   $spaces = spaces_get_space();
   if ($type == 'node' && $build['#bundle'] == 'biblio') {
+    if($build['#view_mode'] == 'full') {
+      // Remove the publication image as it's called in theme_os_publications_tabular instead.
+      if(isset($build['field_biblio_image'])) {
+      	$build['field_biblio_image']['#access'] = FALSE;
+      }
+      // Remove the Google Scholar link that appears at the bottom of full view publications.
+      if(isset($build['links']['biblio_google_scholar'])) {
+        unset($build['links']['biblio_google_scholar']);
+      }
+    }
     if ($build['#view_mode'] == 'teaser') {
       // Alter the teaser to remove the external URL as the URL title and
       // replace it with either the biblio_url_title or "website".
@@ -520,6 +543,10 @@ function os_publications_node_delete($node) {
  * @param unknown_type $node
  */
 function _os_publications_clear_cache($node) {
+
+  //Disabled until this is profiled
+  return;
+
   //Sanity check the passed node
   if($node->type != 'biblio'){
     return;
@@ -557,5 +584,43 @@ function _os_publications_handle_import($node) {
 function theme_os_publications_biblio_year_row(&$vars) {
   foreach ($vars['rows'] as $delta => $row) {
     $vars['rows'][$delta]->link = _biblio_text_year($row->link);
+  }
+}
+
+/**
+ * Implements hook_preprocess_page().
+ * Update the page title for users filtering by year/type/co-author.
+ */
+function os_publications_preprocess_page(&$variables) {
+  $menu = menu_get_item();
+  // Check for /publications page only.
+  if(!isset($menu) || strpos($menu['path'], 'publications') === FALSE) {
+    return;
+  }
+  // Make sure both filters are there.
+  if(!isset($menu['map'][1]) || !isset($menu['map'][2])) {
+    return;
+  }
+  // Get the current page title.
+  $current_page_title = drupal_get_title();
+  // Get the 'type' filter.
+  $type_filter = $menu['map'][1];
+  // Switch on the filter, we want type/year/author only.
+  switch($type_filter) {
+    case "type":
+      $new_page_title = $current_page_title . t(" by Type: ") . ucwords(str_replace('-', ' ', $menu['map'][2]));
+      // Set the new page title.
+      drupal_set_title($new_page_title);
+      break;
+    case "year":
+      $new_page_title = $current_page_title . t(" by Year: ") . ucwords($menu['map'][2]);
+      // Set the new page title.
+      drupal_set_title($new_page_title);
+      break;
+    case "author":
+      $new_page_title = $current_page_title . t(" by Co-Author: ") . ucwords($menu['map'][2]);
+      // Set the new page title.
+      drupal_set_title($new_page_title);
+      break;
   }
 }

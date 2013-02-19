@@ -348,7 +348,7 @@ function gkplus_node_view_alter(&$build, $type) {
       $values[] = l($term->name, $url['path']);
     }
 
-    $vocab[0] = array('#markup' => 'In: '.implode(', ', $values));
+    $vocab[0] = array('#markup' => 'See also: '.implode(', ', $values));
   }
 }
 

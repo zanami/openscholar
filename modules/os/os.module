@@ -95,6 +95,18 @@ function os_menu_alter(&$items) {
 }
 
 /**
+ * Implements hook_entity_info_alter().
+ * 
+ * Adds a view mode to nodes for use in sidebar widgets
+ */
+function os_entity_info_alter(&$info) {
+  $info['node']['view modes']['sidebar_teaser'] = array(
+    'label' => 'Sidebar Teaser',
+    'custom settings' => TRUE,
+  );
+}
+
+/**
  * Implements hook_block_info().
  */
 function os_block_info() {
@@ -189,12 +201,8 @@ function os_block_view_alter(&$block, &$data) {
   ctools_include('menu', 'os');
 
   if (array_key_exists($data->delta, os_get_menus()) && count($block['content'])) {
-  	// Remove nice menus from the sidebar menus only.
-  	if(strpos($data->region, 'sidebar') !== FALSE) {
-	  $theme = '';
-  	}else {
-  	  $theme = 'os_nice_menus';
-  	}
+  	// Remove nice menus from the sidebar and footer regions.
+  	$theme = (in_array($data->region, array('footer', 'footer-first', 'footer-second', 'sidebar_first', 'sidebar_second'))) ? '' : 'os_nice_menus';
     $block['content'] += array(
       '#theme' => $theme,
       '#menu_name' => $data->delta,
@@ -369,7 +377,9 @@ function os_theme() {
       'variables' => array(
         'link_text' => 'Admin Login',
         'attributes' => array(
-          'class' => 'footer-login',
+          'class' => array(
+          	'footer-login'
+          ),
         ),
       ),
     ),
@@ -437,6 +447,9 @@ function os_menu_local_tasks_alter(&$data, $router_item, $root_path) {
 function os_process_node(&$vars) {
   // Adds a CSS class to the comment-add link.
   _os_process_node_links_comment_add_class($vars);
+  
+  // adds theme hook suggestion to load this template if it exists
+  $vars['theme_hook_suggestions'][] = 'node__'.$vars['type'].'__'.$vars['view_mode'];
 
   // Only proceeds if we have a "Read more" link.
   if (!isset($vars['content']['links']['node']['#links']['node-readmore'])) {
@@ -476,7 +489,7 @@ function _os_process_node_links_comment_add_class(&$vars) {
   // Adds class 'os-add-comment' for custom icon on comment link.
   if (isset($vars['content']['links']['comment']['#links']['comment-add'])) {
     if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes'])) {
-      if (is_array($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
+      if (isset($vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'])) {
         $vars['content']['links']['comment']['#links']['comment-add']['attributes']['class'][] = $class;
       }
       else {
@@ -533,7 +546,7 @@ function os_preprocess_page(&$vars) {
         }
       }
     }
-    if ($printed && spaces_access_admin() && node_access('create', $type)) {
+    if ($printed && node_access('create', $type)) {
       $links[$type] = array(
         'href' => 'node/add/' . str_replace('_', '-', $type),
         'title' => $_node_types->names[$type],
@@ -573,7 +586,7 @@ function os_preprocess_page(&$vars) {
       '#links' => $links,
       '#title' => t('Add New'),
       '#class' => 'add_new',
-      '#access' => spaces_access_admin(),
+      '#access' => count($links),
     );
   }
   elseif (count($links) == 1) {
@@ -687,8 +700,14 @@ function os_settings_form($form_state) {
   if (!overlay_get_mode() == 'child') {
     $form['#redirect'] = '';
   }
-
-  $form['os_use_dropdowns'] = array(
+  $form['os'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('General'),
+    '#weight' => 1,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE
+  );
+  $form['os']['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use Dropdowns'),
     '#default_value' => variable_get('os_use_dropdowns', 1),
@@ -713,6 +732,37 @@ function os_ctools_plugin_type() {
       'cache' => TRUE,
     ),
   );
+}
+
+/**
+ * Implements hook_date_formats
+ * 
+ * Provides formats for time, date, and abbreviated date types
+ */
+function os_date_formats() {
+  return array(
+    array(
+      'type' => 'os_time',
+      'format' => 'g:ia',    
+    ),
+    array(
+      'type' => 'os_date_abbreviated',
+      'format' => 'M d, g:ia',
+    ),
+    array(
+      'type' => 'os_date',
+      'format' => 'Y-m-d',
+    ),
+  );
+}
+
+/**
+ * Implements hook_date_format_types
+ * 
+ * Provides three new types of date formats.
+ */
+function os_date_format_types() {
+  return array('os_time' => t('Time'), 'os_date' => t('Date'), 'os_date_abbreviated' => t('Abbreviated'));
 }
 
 /**
@@ -955,6 +1005,10 @@ function os_system_info_alter(&$info, $file, $type) {
       'sidebar_first' => 'SideBar Left',
       'sidebar_second' => 'SideBar Right',
       'footer' => 'Footer',
+      'footer_top' => 'Footer Top',
+      'footer_first' => 'Footer Left',
+      'footer_third' => 'Footer Right',
+      'footer_bottom' => 'Footer Bottom'
     );
   }
 }
@@ -1330,4 +1384,19 @@ function os_library() {
 
 function os_library_alter(&$l) {
   $l['drupal.ajax']['dependencies'][] = array('os', 'os.ajax-fix');
+}
+
+/**
+ * Customize what resources will be avalible for RestWS to use
+ **/
+function os_restws_resource_info_alter(&$info){
+
+//   //Remove entity types except those listed
+//   $enabled_entities = variable_get('os_restws_entities',array('node'));
+//   foreach (entity_get_info() as $entity_type => $info) {
+//     if(isset($info[$entity_type]) && !in_array($entity_type, $enabled_entities)){
+//       unset($info[$entity_type]);
+//     }
+//   }
+
 }

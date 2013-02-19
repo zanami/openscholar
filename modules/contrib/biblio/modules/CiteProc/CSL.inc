@@ -1138,6 +1138,10 @@ class csl_text extends csl_format {
         if($macro == 'access') {
           $text = '';
         }
+        // If no page(s) are added, do not display the p suffix.
+        if($macro == 'pages' && isset($data->biblio_pages) && $data->biblio_pages == '') {
+          $text = '';
+        }
         break;
       case 'term':
         $form = (($form = $this->form)) ? $form : '';

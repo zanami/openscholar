@@ -170,8 +170,6 @@ function ctools_field_label($field_name) {
  *
  * @param $field_name
  *   Either a field instance object or the name of the field.
- *   If the 'field' key is populated it will be used as the field
- *   settings.
  * @param $op
  *   Possible operations include:
  *   - form
