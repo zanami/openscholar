@@ -7,15 +7,19 @@ function os_publications_overview() {
   if (count($args) == 0) {
     // get default types the user has selected
     $defaults = variable_get('os_publications_filter_publication_types', array());
+
+    //Filter out bad data
+    unset($defaults[-1]);
+
     if (count(array_filter($defaults))) {
       $args = array('type', array_filter($defaults));
     }
   }
 
-  $ckey = _os_publications_cache_key($args);
-  if ($cache = cache_get($ckey, 'cache_biblio_lists')) {
-    return $cache->data;
-  }
+//   $ckey = _os_publications_cache_key($args);
+//   if ($cache = cache_get($ckey, 'cache_biblio_lists')) {
+//     return $cache->data;
+//   }
 
   module_load_include('inc', 'biblio', 'includes/biblio.pages');
   $output = call_user_func_array('biblio_page', $args);
@@ -30,7 +34,7 @@ function os_publications_overview() {
   unset($output['biblio_page']['header']['alpha_line']);
 
   // handle caching
-  cache_set($ckey, $output, 'cache_biblio_lists');
+  //cache_set($ckey, $output, 'cache_biblio_lists');
 
   return $output;
 }

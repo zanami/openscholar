@@ -11,8 +11,8 @@
 
 ;----------// Stylesheets
 
-  
   stylesheets[screen][] = css/hwpi.globals.css
+
 
 
 ;----------// Theme Settings

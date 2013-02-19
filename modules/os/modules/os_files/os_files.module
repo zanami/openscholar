@@ -145,12 +145,25 @@ function os_files_clippy($url_file, $options = array()){
 }
 
 function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
-  $form['help']['#markup'] = t('You may press Submit immediately after choosing a file. If you wish to view the progress of your file upload, you can press Upload and a progress bar will show you how far along your upload is.');
+  $path = drupal_get_path('module', 'os_files');
+  $form['#attached']['css'][] = $path.'/theme/os_files_upload_form.css';
+  $form['#attached']['js'][] = $path.'/theme/os_files_upload_form.js';
 }
 
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
-  // only display the field if the file is older than 5 minutes
+  $form['filename']['#title'] = t('Name');
+  $form['filename']['#description'] = t('An unofficial name only seen by your site\'s managers.');
 
+  $form['media_title_description'] = array(
+    '#type' => 'markup',
+    '#weight' => $form['media_title']['#weight'] + 0.1,
+    '#markup' => t('The title of the file, if it has one. Users can see this title. Ex. The Etymology and History of Jabberwocky Language.'),
+    '#attributes' => array(
+      'class' => array('description'),
+    )
+  );
+
+  // only display the field if the file is older than 5 minutes
   if (isset($form['#entity'])) {
     $form['replace_upload']['#access'] = (time() - $form['#entity']->timestamp) > 5 * 60;
   }
@@ -424,6 +437,9 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
  * File Settings.
  */
 function os_files_media_browser_params_alter(&$media_params){
+  if (!empty($media_params['types'])) {
+    $media_params['types'][] = 'default';
+  }
 
   // Are we in multi-tenant? get the file path.
   if (spaces_get_space()) {
@@ -617,6 +633,7 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
   switch ($display['type']) {
     case 'os_files_image_list' :
       $images = array();
+      $videos = array();
       $other = array();
       foreach ( $items as $i ) {
         if ($i['type'] == 'image') {
@@ -642,6 +659,21 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
               )
             )
           );
+        }
+        elseif (file_uri_scheme($i['uri']) == 'oembed') {
+          $url = urldecode(file_uri_target($i['uri']));
+          $videos[] = array(
+            '#type' => 'oembed_bare',
+            '#url' => $url,
+            '#options' => array(
+              'maxwidth' => 350,
+            )
+          );
+        }
+        elseif (file_uri_scheme($i['uri']) == 'embed') { 
+          $file = (object)$i;
+          $file->override['width'] = 300;
+          $videos[] = file_view($file, 'default');
         }
         else {
           $extension = strtolower(substr(strrchr($i['filename'], '.'), 1));
@@ -686,6 +718,23 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
       if (module_exists('jcarousel')) {
         $elements['images']['#pre_render'][] = 'os_files_jcarousel_add';
       }
+      
+      $elements['videos'] = array(
+        '#type' => 'container',
+        '#attributes' => array(
+          'class' => array('os-files-videos-list'),
+        )
+      );
+      foreach ($videos as $v) {
+        $elements['videos'][] = array(
+          '#type' => 'container',
+          '#attributes' => array(
+            'class' => array('os-files-video-single'),
+          ),
+          'video' => $v,
+        );
+      }
+      
       $elements['other'] = array(
         '#theme' => 'table',
         '#rows' => $other,

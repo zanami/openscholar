@@ -1,87 +1,129 @@
-.region-sidebar-second {
-    padding-left: 15px;
-}
 
-#header {background:#E0E0DD;}
 
-#menu-bar {background:#F0F0EE;}
-
-.not-front #content-column p {
-     font-family: 'Georgia,serif';
-     font-size: 16px;
-}
-
-.not-front #content-column .content-inner {
-	border-right:1px solid #ccc
+/* Main wrappers */
+html,
+body {
+	background: #fff;
+	color: #1e1e1e;
 }
 
 
-.sidebar .block,
-.front #content-column .block
- {border-top:3px solid #4384C4;}
- 
- .sidebar .block,
-.front #content-column .block.section-nav
- {border-top:none;}
- 
+/* Header */
+#header {
+	background: #e6e6e3;
+	color: #303030;
+}
+#boxes-box-site_info,
+#boxes-box-site_info a {  
+  color: #303030;
+}
+
+
+/* Menu bar */
+#menu-bar {
+	background: #f3f3f1;
+}
+
+
+
+/* Titles & Type */
+#page-title,
+.node-title, 
+.page-search .title a,
+#content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
+.not-front #content-column ul li,
+.not-front #content-column ol li,
+.more-link,
+.page-search #content-column p,
+.not-front #content-column p,
+.links a,
+#footer ul.menu a,
+.boxes-box-content h2,
+.section-nav a {
+	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+}
+
+
+.section-nav a {
+	font-size: 16px;
+}
 
 h1#page-title,
-h1.node-title {
-     font-family: 'Georgia,serif';
-     font-weight:normal;
-     font-size:16px;
+h1.node-title, 
+.page-search .title a,
+.boxes-box-content h2 {
+	font-weight: normal;
+	font-size: 18px;
+	margin-bottom: 18px;
+}
+
+
+.boxes-box-content h2 {
+    font-size: 24px;
+    line-height: 28px;
 }
 
 h1#page-title {
-    font-size:38px;
-    margin-top:30px;
-    margin-bottom: 0.5em;
+	font-size: 38px;
+	line-height: 1; /* Font size is larger than the default line-height, so will overlap if the title wraps */
+	margin: 15px 0 30px;
+}
+
+.page-node h1#page-title {
+	margin-bottom: 15px;
 }
 
 h2.block-title {
 	padding:10px 0;
 	text-transform:uppercase;
-	font-size:11px;
+	font-size:12px;
 	font-weight:normal;
 	letter-spacing:0.1em;
 	font-weight:bold;
 }
 
+.page-search h1#page-title {
+  margin-top:10px;
+}
+
+#content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
+.more-link {
+  text-decoration:underline;
+}
+
+.page-search #content-column p,
+.not-front #content-column p {
+}
+
+
+
+/* Border control */
+.not-front.two-sidebars #content-column .content-inner {
+	border-right: 1px solid #e7e7e7;
+}
+
+.sidebar .block,
+.front #content-column .block,
+.node-person .block-inner,
+.comment-wrapper {
+	border-top: 3px solid #4384C4;
+}
+
+.block-boxes block-boxes-os_sv_list_box,
+.block-boxes-os_boxes_manual_list, 
+.sidebar .block.section-nav,
+#content-column .block.section-nav {
+	border-top: none;
+}
+
+
+/* Footer */
 #footer {
-	border-top:3px solid #D9D9D7;
-	background:#F0F0EE;
+	background: url(../images/footer-top-gradiant.png) repeat-x 0 0 #f3f3f1;
 }
 
-
-
-.calendar-calendar .mini tbody {border:1px solid #ccc;}
-
-.view .date-nav-wrapper .date-prev a {
-	background: url('../images/cal_leftarrow.gif') no-repeat;
-	width:15px;
-    height:13px;
+#footer ul.menu a {
+	text-transform: none;
+	font-size: 16px;
 }
 
-
-
-
-.view .date-nav-wrapper .date-next a  {
-    width:15px;
-    height:13px;
-       background: url('../images/cal_rightarrow.gif') no-repeat;
-}
-
-.date-nav h3  {
-	font-family: 'Georgia,serif';
-     font-weight:normal;
-     font-size:16px;
-     }
-
-
-.ui-tabs .ui-tabs-nav li a {
-text-transform:uppercase;
-	font-size:11px;
-	font-weight:normal;
-	letter-spacing:0.1em;
-    font-weight:bold;
-}

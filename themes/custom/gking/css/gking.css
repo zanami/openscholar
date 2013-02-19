@@ -506,6 +506,18 @@ body.front .block-boxes-os_taxonomy_fbt div.description  {
   padding-left: 0;
   }
 */
+
+.page-node #content-column .content-inner {
+  padding: 0 16px 26px 16px;
+  border:1px solid #ddd;
+  background: #fff;
+  margin-right: 270px;
+}
+
+.page-node #content-column .content-inner #main-content-header {
+  margin-right: 0;
+}
+
 #main-content,
 #content-top,
 .sidebar .block {
@@ -1056,6 +1068,11 @@ border:none;
   margin-left: 0;
   margin-right: 14px;
   }
+  
+  
+#powerby-login {
+   margin: -27px 10px;
+ }
 
 #footer .wrap #vsite-widgets-search-form {
   width: 302px;

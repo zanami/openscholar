@@ -1,4 +1,3 @@
-
 #toolbar {
   background: #383838;
 }
@@ -273,3 +272,39 @@
 #toolbar #toolbar-user li {
   margin: 0;
 }
+
+/**
+ * Theme "Add new" style links like for Publications, etc. 
+ *
+ * @see global.nav.css
+ */
+.cp-controls-wrapper {
+    margin: 15px 0 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+    z-index: 500;
+}
+
+.cp-controls-wrapper a {
+  color:#293352;
+    font-family:helvetica;
+    font-style:normal;
+}
+
+.cp-controls-wrapper a:hover {
+  color:#293352;
+    text-decoration:none;
+}
+
+.cp-controls-wrapper .add_new {
+  float:left;
+  display:inline;
+   background: url("../images/scholarbase-sprite.png") no-repeat scroll 3px -379px #A1D4A1 !important;
+    border-radius: 5px 5px 5px 5px;
+    float: left;
+     margin: 0 22px 0 0;
+    padding: 0 8px 0 22px !important;
+    text-decoration:none !important;
+  }

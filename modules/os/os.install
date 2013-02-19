@@ -5,6 +5,11 @@
  * Main OpenScholar module update functions.
  */
 
+
+function os_install() {
+  _os_date_formats();
+}
+
 /**
  * Enable restws module
  */
@@ -27,9 +32,28 @@ function os_update_7003() {
 }
 
 /**
- * Allow access to node/%.json to all of the users.
+ * Adds 3 new date formats
  */
 function os_update_7004() {
+  _os_date_formats();
+}
+
+/**
+ * @function _os_date_formats()
+ *
+ * Enable the formats defined in os's date hooks
+ */
+function _os_date_formats() {
+  foreach (os_date_formats() as $fmt) {
+    $name = 'date_format_' . $fmt['type'];
+    variable_set($name, $fmt['format']);
+  }
+}
+
+/**
+ * Allow access to node/%.json to all of the users.
+ */
+function os_update_7005() {
   // Allow accessing resource node to all users.
   foreach (array('anonymous user', 'authenticated user') as $role_name) {
     $role = user_role_load_by_name($role_name);

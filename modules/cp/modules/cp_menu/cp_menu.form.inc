@@ -42,14 +42,14 @@ function cp_menu_build_form($form, $form_state, $menu = ''){
     $links = _cp_menu_flatten_tree(os_menu_tree_data($m));
     foreach ($links as $link) {
       $l = $link['link'];
-      $url = url($l['link_path'], array(
+      $url = !empty($l['link_path'])?url($l['link_path'], array(
         'absolute' => true
-      ));
+      )):false;
       $form['menus'][$m][$l['mlid']] = array(
         'title' => array(
           '#type' => 'item',
           '#markup' => $l['link_title'],
-          '#description' => l($url, $url)
+          '#description' => $url?l($url, $url):"",
         ),
         'delete_link' => array(
           '#markup' => ctools_modal_text_button('Delete Link', 'cp/build/' . $l['mlid'] . '/delete/nojs/', '')
@@ -183,7 +183,7 @@ function theme_cp_menu_table($variables){
         ),
         array(
           //'data' => ctools_modal_text_button('Add New Link', 'cp/menu/nojs/new/'.$d, 'Add New Link'),
-          'data' => l('Add New Link','cp/menu/nojs/new/'.$d,array('attributes' => array('title' => 'Add a new menu item.'))),
+          'data' => l('Add New Item','cp/menu/nojs/new/'.$d,array('attributes' => array('title' => 'Add a new menu item.'))),
         ),
         array(
           'data' => '',
@@ -260,7 +260,7 @@ function cp_menu_submit_form($form, &$form_state){
           $link[$param] = $l[$param];
           //If the link is moving to a different menu, remove from the old menu
           if ($param == 'menu_name') {
-            os_menu_link_delete($l['menu-old'], $l['mlid']);
+            os_menu_link_delete_link($l['menu-old'], $l['mlid']);
           }
         }
       }

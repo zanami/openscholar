@@ -143,7 +143,7 @@ function os_reader_field_default_fields() {
       'entity_type' => 'node',
       'field_name' => 'field_url',
       'label' => 'URL',
-      'required' => 0,
+      'required' => 1,
       'settings' => array(
         'attributes' => array(
           'class' => '',

@@ -136,6 +136,17 @@ function cp_toolbar_view() {
         'data-drawer' => 'content-drawer',
       )
     );
+  }else{
+    //They have access to add content but not list
+    $l = menu_get_item('cp/content/add');
+    if ($l['access']) {
+      $links['content'] = $l + array(
+        '#paths' => array(),
+        'attributes' => array(
+          'data-drawer' => 'content-drawer',
+        )
+      );
+    }
   }
   $l = menu_get_item('cp/build');
   if ($l['access']) {

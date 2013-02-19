@@ -137,12 +137,20 @@ ul.grid {
 
 .at-panel .region.region-content-top {
   padding: 0 35px;
-  background:url('../images/container-front.jpg') no-repeat scroll 0 0 transparent;
   width: 100%;
   height:673px;
   margin-left: -35px;
   float:left;
-  }
+}
+
+.not-front .at-panel .region.region-content-top {
+  height:auto;
+
+}
+
+.front .at-panel .region.region-content-top {  
+  background:url('../images/container-front.jpg') no-repeat scroll 0 0 transparent;
+}
 
 .front #content-column {
   padding: 0;

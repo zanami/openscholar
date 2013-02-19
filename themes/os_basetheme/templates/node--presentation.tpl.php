@@ -36,6 +36,7 @@ if (!$page) {
     		  <?php print $title; ?></a><?php if (isset($location_value) && !empty($location_value)): ?>, <?php endif; ?>
     	</strong>
     </span>
+  <?php print render($title_suffix); ?>
     <?php if (isset($location_value) && !empty($location_value)): ?>
       at
       <span class="location">
@@ -60,6 +61,7 @@ if (!$page) {
       <?php endif; ?>
     </header>
   <?php endif; ?>
+  <?php print render($title_suffix); ?>
 
   <?php if(!empty($user_picture) || $display_submitted): ?>
     <footer<?php print $footer_attributes; ?>>
@@ -77,8 +79,6 @@ if (!$page) {
   <?php endif; ?>
 
   <?php print render($content['comments']); ?>
-
-  <?php print render($title_suffix); ?>
 
   <?php endif; ?>
   </div> <!-- /div.node-inner -->
