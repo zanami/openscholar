@@ -18,6 +18,8 @@ a:visited {
     list-style: disc;
 }
 
+#columns .block.block-boxes-os_taxonomy_fbt ul {list-style: none;}
+
 p:empty {
 	display: none;
 }
