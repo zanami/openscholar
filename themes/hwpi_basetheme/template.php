@@ -28,46 +28,12 @@ function hwpi_basetheme_preprocess_html(&$vars) {
  */
 function hwpi_basetheme_preprocess_node(&$vars) {
 
-  // Event nodes, inject variables for date month and day shield
-  if ($vars['node']->type == 'event') {
-    $vars['event_start'] = array();
-    if (isset($vars['field_date'][0]['value']) && !empty($vars['field_date'][0]['value'])) {
-      date_default_timezone_set($vars['field_date'][0]['timezone']);
-      $event_start_date = strtotime($vars['field_date'][0]['value']);
-      $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
-      $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
-      $vars['classes_array'][] = 'event-start'; 
-    }
-  }
-
   // Event persons, change title markup to h1
   if ($vars['type'] == 'person') {
     if (isset($vars['field_person_photo']) && !empty($vars['field_person_photo'])) {
       $vars['classes_array'][] = 'with-person-photo';
     }
   }
-}
-
-/**
- * Implements hook_preprocess_field
- *
- * Cleans up teaser display to remove redundant date info.
- */
-function hwpi_basetheme_preprocess_field(&$variables, $hook) {
-  if ($variables['field_view_mode'] == 'teaser' && $variables['element']['#bundle'] == 'event' && $variables['element']['#field_name'] == 'field_date') {
-    date_default_timezone_set($variables['element']['#items'][0]['timezone']);
-    
-    $start_date = strtotime($variables['element']['#items'][0]['value']);
-    $end_date =   (isset($variables['element']['#items'][0]['value'])) ? strtotime($variables['element']['#items'][0]['value2']) : $start_date;
-  
-    //for one day events, strip the date.  it's displayed elsewhere.
-    $fmt = (format_date($start_date, 'os_date') == format_date($end_date, 'os_date')) ? 'os_time' : 'os_date_abbreviated';
-    $start = format_date($start_date, $fmt);
-    $end = format_date($end_date, $fmt);
-      
-    $variables['label_hidden'] = TRUE;
-    $variables['items'][0]['#markup'] = ($start == $end) ? $start : $start . ' - ' . $end; 
-  } 
 }
 
 /**
