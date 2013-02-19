@@ -7,8 +7,9 @@
 
 <li>
   <?php print $image; ?>
-  <div class="flex-caption">
+  <p class="caption">
     <h2><?php print $headline; ?></h2>
-    <p><?php print $description; ?></p>
+    <?php print $description; ?>
+  </p>
 </li>
 

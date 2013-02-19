@@ -54,13 +54,13 @@ class os_slideshow_box extends os_boxes_default {
       '#weight' => 10,
     );
     
-    $form['display']['effect'] = array(
-        '#type' => 'select',
-        '#description' => t('How to transition between slides.'),
-        '#title' => t('Transition Effect'),
-        '#default_value' => $this->options['effect'],
-        '#options' => array('fade' => t('Fade'), 'slide-horizontal'=>t('Horizontal Slide'), 'slide-vertical'=>t('Vertical Slide')),
-    );
+//     $form['display']['effect'] = array(
+//         '#type' => 'select',
+//         '#description' => t('How to transition between slides.'),
+//         '#title' => t('Transition Effect'),
+//         '#default_value' => $this->options['effect'],
+//         '#options' => array('fade' => t('Fade'), 'slide-horizontal'=>t('Horizontal Slide'), 'slide-vertical'=>t('Vertical Slide')),
+//     );
     
     $form['display']['timeout'] = array(
       '#type' => 'select',
