@@ -7,9 +7,9 @@
 
 <li>
   <?php print $image; ?>
-  <p class="caption">
+  <div class="caption">
     <h2><?php print $headline; ?></h2>
-    <?php print $description; ?>
-  </p>
+    <p><?php print $description; ?></p>
+  </div>
 </li>
 
