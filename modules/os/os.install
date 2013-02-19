@@ -53,7 +53,7 @@ function _os_date_formats() {
 /**
  * Allow access to node/%.json to all of the users.
  */
-function os_update_7004() {
+function os_update_7005() {
   // Allow accessing resource node to all users.
   foreach (array('anonymous user', 'authenticated user') as $role_name) {
     $role = user_role_load_by_name($role_name);
