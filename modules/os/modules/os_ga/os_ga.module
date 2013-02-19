@@ -118,7 +118,7 @@ function _os_ga_get_accounts() {
   }
 
   // Gets the vsite GA account, if available.
-  if ($vsite = vsite_get_vsite() && $vsite_account = variable_get('os_ga_google_analytics_id', '')) {
+  if (module_exists('vsite') && $vsite = vsite_get_vsite() && $vsite_account = variable_get('os_ga_google_analytics_id', '')) {
     $accounts[$vsite_account] = array();
     $accounts[$vsite_account]['default'] = (bool) ($default_account == 'vsite');
   }

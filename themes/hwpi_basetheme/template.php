@@ -20,12 +20,6 @@ function hwpi_basetheme_preprocess_html(&$vars) {
     // See load.inc in AT Core, load_subtheme_script() is a wrapper for drupal_add_js()
     load_subtheme_script('js/' . $script, 'hwpi_basetheme', 'header', $weight = NULL);
   }
-
-  // debug message
-  //$message = 'Blog entry Blog Post Elements Cheat Sheet has been updated.';
-  //drupal_set_message($message, 'status');
-  //drupal_set_message($message, 'warning');
-  //drupal_set_message($message, 'error');
 }
 
 
@@ -35,14 +29,14 @@ function hwpi_basetheme_preprocess_html(&$vars) {
 function hwpi_basetheme_preprocess_node(&$vars) {
 
   // Event nodes, inject variables for date month and day shield
-  if($vars['node']->type == 'event') {
+  if ($vars['node']->type == 'event') {
     $vars['event_start'] = array();
-    if(isset($vars['field_date'][0]['value']) && !empty($vars['field_date'][0]['value'])) {
+    if (isset($vars['field_date'][0]['value']) && !empty($vars['field_date'][0]['value'])) {
       date_default_timezone_set($vars['field_date'][0]['timezone']);
       $event_start_date = strtotime($vars['field_date'][0]['value']);
       $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
       $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
-      $vars['classes_array'][] = 'event-start';
+      $vars['classes_array'][] = 'event-start'; 
     }
   }
 
@@ -54,17 +48,37 @@ function hwpi_basetheme_preprocess_node(&$vars) {
   }
 }
 
+/**
+ * Implements hook_preprocess_field
+ *
+ * Cleans up teaser display to remove redundant date info.
+ */
+function hwpi_basetheme_preprocess_field(&$variables, $hook) {
+  if ($variables['field_view_mode'] == 'teaser' && $variables['element']['#bundle'] == 'event' && $variables['element']['#field_name'] == 'field_date') {
+    date_default_timezone_set($variables['element']['#items'][0]['timezone']);
+    
+    $start_date = strtotime($variables['element']['#items'][0]['value']);
+    $end_date =   (isset($variables['element']['#items'][0]['value'])) ? strtotime($variables['element']['#items'][0]['value2']) : $start_date;
+  
+    //for one day events, strip the date.  it's displayed elsewhere.
+    $fmt = (format_date($start_date, 'os_date') == format_date($end_date, 'os_date')) ? 'os_time' : 'os_date_abbreviated';
+    $start = format_date($start_date, $fmt);
+    $end = format_date($end_date, $fmt);
+      
+    $variables['label_hidden'] = TRUE;
+    $variables['items'][0]['#markup'] = ($start == $end) ? $start : $start . ' - ' . $end; 
+  } 
+}
 
 /**
  * Process variables for comment.tpl.php
  */
 function hwpi_basetheme_process_node(&$vars) {
-
   // Event persons, change title markup to h1
   if ($vars['type'] == 'person') {
     if (!$vars['teaser']) {
       $vars['title_prefix']['#suffix'] = '<h1 class="node-title">' . $vars['title'] . '</h1>';
-    }
+    } 
   }
 }
 
@@ -95,30 +109,46 @@ function hwpi_basetheme_node_view_alter(&$build) {
 
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
-      unset($build['body'], $build['pic_bio']['body']);
-
-      foreach (array('field_professional_title', 'field_address', 'field_email', 'field_phone', 'field_website') as $w => $f) {
-        if (isset($build[$f])) {
-          $build['pic_bio'][$f] = $build[$f];
-          $build['pic_bio'][$f]['#weight'] = $w;
-          unset($build[$f]);
+      $body = &$build['pic_bio']['body'][0];
+      $trim = 160;
+      if (strlen($body['#markup']) > $trim) {
+        $body['#markup'] = text_summary($body['#markup'], $build['pic_bio']['body']['#items'][0]['format'], $trim);
+      }
+      
+      //move title, website. body
+      $build['pic_bio']['body']['#weight'] = 5;
+      foreach (array(0=>'field_professional_title', 10=>'field_website') as $weight => $field) {
+        if (isset($build[$field])) {
+          $build['pic_bio'][$field] = $build[$field];
+          $build['pic_bio'][$field]['#weight'] = $weight;
+          unset($build[$field]);
         }
       }
 
-      if (isset($build['pic_bio']['field_email'])) {
-        $email_plain = $build['pic_bio']['field_email'][0]['#markup'];
-        if ($email_plain) {
-          $build['pic_bio']['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">email</a>';
+      //hide the rest
+      foreach (array('field_address', 'field_email', 'field_phone') as $field) {
+        if (isset($build[$field])) {
+          unset($build[$field]);
         }
       }
-
-      if (isset($build['pic_bio']['field_phone'])) {
-        $phone_plain = $build['pic_bio']['field_phone'][0]['#markup'];
-        if ($phone_plain) {
-          $build['pic_bio']['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
-        }
+      
+      //join titles      
+      $title_field = &$build['pic_bio']['field_professional_title'];
+      $keys = array_filter(array_keys($title_field), 'is_numeric');
+      foreach ($keys as $key) {
+        $titles[] = $title_field[$key]['#markup'];
+        unset($title_field[$key]);
       }
-
+      $title_field[0] = array('#markup' => implode(', ', $titles));
+      
+      //newlines after website
+      foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
+        $item = $build['pic_bio']['field_website']['#items'][$delta];
+        //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
+        $link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
+        $build['pic_bio']['field_website'][$delta]['#markup'] = $item['title'] . ': ' . $link . '<br>';
+      }
+      
       unset($build['links']['node']);
 
       return;
@@ -429,4 +459,3 @@ function hwpi_basetheme_status_messages($vars) {
   }
   return $output;
 }
-

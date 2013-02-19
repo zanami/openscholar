@@ -138,41 +138,26 @@ div.messages {
 
   /* Footer panels */
 
-  .region-footer {
-    width: 100%;
-  }
-  
-  .footer-left.footer .region-footer-first {
-    width: 25%;
-  }
-  
-  .footer-left.footer .region-footer {
-  	width: 75%;
-  }
-  
-  .footer-left.footer-right .region-footer-first, 
-  .footer-left.footer-right .region-footer-third {
-  	width: 50%;
-  }
-  
+ .footer .region-footer {
+    	width: 100%;
+  	}
  
-  .footer.footer-right .region-footer {
-  	width: 75%;
-  }
-  .footer.footer-right .region-footer-third {
-    width: 25%;
-  }
+  .footer.footer-right .region-footer,
+  .footer-left.footer .region-footer {
+    	width: 75%;
+  	}
+  
+  .footer-left.footer.footer-right .region-footer {width: 50%;}
 
-  .footer-left.footer.footer-right .region-footer-first {
-    width: 25%;
-  }
-  .footer-left.footer.footer-right .region-footer {
-  	width: 50%;
-  }
-  .footer-left.footer.footer-right .region-footer-third {
-    width: 25%;
-  }
+  .footer-left.footer.footer-right .region-footer-first,
+  .footer-left.footer.footer-right .region-footer-third,
+  .footer.footer-right .region-footer-third,
+  .footer-left.footer-right .region-footer-first,
+  .footer-left.footer-right .region-footer-third {
+	width: 25%;
+	}
 
+  .footer-left.footer-right .at-panel .region.region-footer-third {float: right;}
 /*
  * Branding
  */
@@ -759,6 +744,11 @@ div.ctools-modal-content .modal-content .modal-throbber-wrapper img {
 	border-top-right-radius:5px;
 }
 
+.not-logged-in.page-user #footer {
+	width:540px;
+	margin: 0 auto;
+}
+
 
 /**	 QUICK TABS**/
 	
@@ -905,6 +895,4 @@ ul.recent-images-list li a:hover img {
   margin-left: 1em;
 }
 
-/** REMOVE AFTER MATT REMOVES THE OLD LOGO AND LOGIN
- */
-#block-os-login, #block-os-powered-by {display:none;}
+

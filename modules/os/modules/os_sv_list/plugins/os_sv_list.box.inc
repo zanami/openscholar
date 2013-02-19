@@ -22,6 +22,9 @@ class os_sv_list_box extends os_boxes_default {
       'vocabs' => array(),
       'terms' => array(),
 
+      //Do not include subsites by default
+      'query_scope' => array('current'),
+
       'biblio_whitelist' => $biblio_whitelist,
     );
 
@@ -89,10 +92,12 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['display'],
       '#options' => array(
         'display_title' => t('Title'),
+        'display_sidebar_teaser' => t('Sidebar Teaser'),
         'display_teaser' => t('Teaser'),
         'display_body' => t('Entire Post'),
-      )
+      ),
     );
+    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array('display_sidebar_teaser' => array('news', 'event', 'person'))))); 
 
     $form['sort_by'] = array(
       '#type' => 'select',
@@ -265,6 +270,20 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['pager']
     );
 
+    if(module_exists('vsite')){
+
+      ctools_include('subsite','vsite');
+
+	    $form['query_scope'] = array(
+	      '#title' => 'Include results from',
+	      '#type' => 'checkboxes',
+	      '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
+	      '#default_value' => $this->options['query_scope'],
+	      '#access' => vsite_has_subsites(),
+	      '#required' => TRUE,
+	    );
+    }
+
     $form['number_of_items'] = array(
       '#title' => 'Number of items to display',
       '#type' => 'select',
@@ -339,14 +358,18 @@ class os_sv_list_box extends os_boxes_default {
 
   // get_default_query_query - humble beginnings of the EFQ
   function get_default_query() {
-    $bundles = os_get_bundles(array(1));
-    if (empty($bundles)) {
-      return FALSE;
+
+    //Only filter to public bundles if we are not including subsites
+    if(!in_array('subsites', array_filter($this->options['query_scope']))){
+	    $bundles = os_get_bundles(array(1));
+	    if (empty($bundles)) {
+	      return FALSE;
+	    }
     }
 
     // defaults
     ctools_include('node', 'os');
-    $efq = new OSNodeFieldQuery(array_keys($bundles));
+    $efq = new OSNodeFieldQuery(array_keys($bundles),FALSE);
     return $efq;
   }
 
@@ -365,6 +388,36 @@ class os_sv_list_box extends os_boxes_default {
     $options = $this->options;
 
     $tagged_nodes = $this->tagged_nodes();
+
+    $gids = array();
+
+    if(module_exists('vsite')){
+      if(!isset($options['query_scope'])){
+        $options['query_scope'] = array('current');
+      }
+
+	    foreach (array_filter($options['query_scope']) as $scope){
+	      switch ($scope){
+	      	case 'current':
+	      	  $vsite = spaces_get_space();
+	      	  if (is_object($vsite) && is_numeric($vsite->id)) {
+	      	    $gids[$vsite->id] = $vsite->id;
+	      	  }
+	      	  break;
+	      	case 'subsites':
+	      	  ctools_include('subsite','vsite');
+	      	  $gids = array_merge($gids,vsite_get_subsites());
+	      	  break;
+	      }
+	    }
+
+	    if(count($gids) == 1){
+	      $efq->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', current($gids));
+	    }elseif (count($gids)){
+	      $efq->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $gids, 'IN');
+	    }
+    }
+
 
     //exceptions
     switch ($options['content_type']) {
@@ -538,7 +591,7 @@ class os_sv_list_box extends os_boxes_default {
         $tids[] = $terms->tid;
       }
     }
-    
+
     $bundles = os_get_bundles(array(1));
     $content_types = ($this->options['content_type'] == 'all') ? array_keys($bundles) : $this->options['content_type'];
 
@@ -579,16 +632,21 @@ class os_sv_list_box extends os_boxes_default {
   function sort_news(&$efq) {
     $efq->fieldOrderBy('field_news_date', 'value', 'DESC');
   }
-  
+
   function sort_presentation(&$efq) {
     $efq->fieldOrderBy('field_presentation_date', 'value', 'DESC');
     $this->sort_newest($efq);
   }
+  
   /**
-   * display functions
+   * Display functions
    */
   function display_body($nodes) {
     $items = node_view_multiple($nodes, 'full');
+    return drupal_render($items);
+  }
+  function display_sidebar_teaser($nodes) {
+    $items = node_view_multiple($nodes, 'sidebar_teaser');    
     return drupal_render($items);
   }
   function display_teaser($nodes) {
@@ -612,10 +670,10 @@ class os_sv_list_box extends os_boxes_default {
 
     foreach ($files as $image) {
       $variables = array(
-        'style_name' => "os_square_50_50",
+        'style_name' => "os_square_100_100",
         'path' => $image->uri,
-        'height' => NULL,
-        'width' => NULL,
+        'width' => 50,
+        'height' => 50,
       );
       //$html .= theme('image', $variables);
       $img = theme_image_style($variables);

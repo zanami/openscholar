@@ -58,45 +58,7 @@ function harvard_courses_menu() {
     'type' => MENU_LOCAL_TASK,
   );
 
-  $items['courses/build-courses-environment'] = array(
-    'title' => 'Set harvard courses',
-    'description' => 'Define the harvard courses: enable module, define debug mode and clear the cache',
-    'page callback' => 'harvard_courses_define_harvard_courses',
-    'access arguments' => array('administer site configuration'),
-  );
-
   return $items;
-}
-
-/**
- * Menu callback define the Harvard courses area.
- */
-function harvard_courses_define_harvard_courses() {
-  // Enable Harvard courses module.
-  module_enable(array('harvard_courses'));
-
-  // Set the debug mode to ON in the fetcher settings.
-  $result = db_select('feeds_importer', 'feed')
-    ->fields('feed')
-    ->condition('id', 'course')
-    ->execute()
-    ->fetchAssoc();
-
-  $config = unserialize($result['config']);
-  $config['fetcher']['config']['debug_mode'] = 1;
-  $config = serialize($config);
-
-  db_update('feeds_importer')
-    ->fields(array(
-      'config' => $config,
-    ))
-  ->condition('id', 'course')
-  ->execute();
-
-  // Clear the cache so the fetcher will take place.
-  cache_clear_all();
-
-  return t('The environment defined successfully');
 }
 
 /**
@@ -599,6 +561,7 @@ function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
   // Remove comments and adding a custom submit handler.
   $form['#after_build'][] = 'harvard_courses_form_cp_app_settings_form_after_build';
 
+  $form['#validate'][] = 'harvard_courses_feature_validate';
   $form['#submit'][] = 'harvard_courses_feature_submit';
 }
 
@@ -648,6 +611,22 @@ function _harvard_courses_get_field_value($field_name, $form_state, $field_colle
   }
 
   return $return;
+}
+
+/**
+ * Form validate; The option '- Select a value -' have the value '__none' and
+ * FAPI consider it as validate value. The validate handler will verify the did
+ * select a school name.
+ */
+function harvard_courses_feature_validate($form, $form_state) {
+  foreach ($form_state['values']['field_department_school'][LANGUAGE_NONE] as $key => $value) {
+    if (is_int($key)) {
+      $field_school = $form_state['values']['field_department_school'][LANGUAGE_NONE][$key];
+      if (empty($field_school['field_school_name'][LANGUAGE_NONE][0]['target_id']) && !empty($field_school['field_department_id'][LANGUAGE_NONE][0]['value'])) {
+        form_set_error('field_department_school][und][' . $key . '][field_school_name][und', t('Please select school name.'));
+      }
+    }
+  }
 }
 
 /**

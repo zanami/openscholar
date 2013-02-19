@@ -134,9 +134,9 @@ body.sidebar-second #page {
   background-position: 708px 0;
   }
   
-p.copy a.poweredby {
-  background-position: 0 -26px;
-  }
+#powered-by a {
+    background: url("/profiles/openscholar/themes/os_basetheme/images/poweredby.png") no-repeat scroll 0 -25px transparent;
+}
 
 /* SIDEBAR ELEMENTS */
 

@@ -437,6 +437,9 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
  * File Settings.
  */
 function os_files_media_browser_params_alter(&$media_params){
+  if (!empty($media_params['types'])) {
+    $media_params['types'][] = 'default';
+  }
 
   // Are we in multi-tenant? get the file path.
   if (spaces_get_space()) {
@@ -663,13 +666,13 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
             '#type' => 'oembed_bare',
             '#url' => $url,
             '#options' => array(
-              'maxwidth' => 250,
+              'maxwidth' => 350,
             )
           );
         }
         elseif (file_uri_scheme($i['uri']) == 'embed') { 
           $file = (object)$i;
-          $file->override['width'] = 250;
+          $file->override['width'] = 300;
           $videos[] = file_view($file, 'default');
         }
         else {

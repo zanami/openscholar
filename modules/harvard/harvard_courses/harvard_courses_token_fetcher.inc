@@ -120,7 +120,7 @@ class HarvardFetcher extends FeedsFetcher {
       if ($start != 0) {
         return;
       }
-      return url('', array('absolute' => TRUE)) . drupal_get_path('module', 'harvard_courses') . '/dummy_courses.xml';
+      return variable_get('purl_base_domain') . '/' . drupal_get_path('module', 'harvard_courses') . '/dummy_courses.xml';
     }
     else {
       if (is_array($this->url_param)) {

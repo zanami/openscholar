@@ -23,7 +23,7 @@ Feature:
       And I press "Delete"
       And I visit "john/people"
       And I should see "Foo Bar"
-      And I clear the cache
+      And I invalidate cache
       And I visit "john/people"
      Then I should not see "Foo Bar"
 

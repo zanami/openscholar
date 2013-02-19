@@ -3,6 +3,7 @@
 use Drupal\DrupalExtension\Context\DrupalContext;
 use Behat\Behat\Context\Step\Given;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Gherkin\Node\PyStringNode;
 use Guzzle\Service\Client;
 use Behat\Behat\Context\Step;
 use Behat\Behat\Context\Step\When;
@@ -131,12 +132,21 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Then /^I should get:$/
+   */
+  public function iShouldGet(PyStringNode $string) {
+    $page = $this->getSession()->getPage();
+    if (strpos($page->getContent(), $string->getRaw()) === FALSE) {
+      throw new Exception("Text not found.");
+    }
+  }
+
+  /**
    * @When /^I clear the cache$/
    */
   public function iClearTheCache() {
     $this->getDriver()->drush('cc all');
   }
-
 
   /**
    * @Then /^I should print page$/
@@ -144,21 +154,6 @@ class FeatureContext extends DrupalContext {
   public function iShouldPrintPage() {
     $element = $this->getSession()->getPage();
     print_r($element->getContent());
-  }
-
-  /**
-   * @Then /^I should get:$/
-   */
-  public function iShouldGet($string) {
-    $page = $this->getSession()->getPage();
-
-    $metasteps = array();
-
-    foreach ($string->getLines() as $line) {
-      $metasteps[] = new Step\When('I should see "' . $line . '"');
-    }
-
-    return $metasteps;
   }
 
   /**
@@ -285,7 +280,6 @@ class FeatureContext extends DrupalContext {
     }
 
     $metasteps[] = new Step\When('I press "Save"');
-    $metasteps[] = new Step\When('I clear the cache');
 
     return $metasteps;
   }
@@ -296,7 +290,6 @@ class FeatureContext extends DrupalContext {
   public function theWidgetIsSetInThePage($page, $widget) {
     $code = "os_migrate_demo_set_box_in_region({$this->nid}, '$page', '$widget');";
     $this->box[] = $this->getDriver()->drush("php-eval \"{$code}\"");
-    $this->getDriver()->drush("cc all");
   }
 
   /**
@@ -446,5 +439,62 @@ class FeatureContext extends DrupalContext {
   public function iSetTheVariableTo($variable, $value) {
     $function = 'os_migrate_demo_variable_set';
     $this->invoke_code($function, array($variable, $value));
+  }
+
+  /**
+   * @Given /^I set courses to import$/
+   */
+  public function iSetCoursesToImport() {
+    $metasteps = array();
+    $this->getDriver()->drush("php-eval \"drupal_flush_all_caches();\"");
+    $this->getDriver()->drush("cc all");
+    $metasteps[] = new Step\When('I visit "admin"');
+    $metasteps[] = new Step\When('I visit "admin/structure/feeds/course/settings/HarvardFetcher"');
+    $metasteps[] = new Step\When('I check the box "Debug mode"');
+    $metasteps[] = new Step\When('I press "Save"');
+    $metasteps[] = new Step\When('I visit "john/cp/build/features/harvard_courses"');
+    $metasteps[] = new Step\When('I fill in "Department ID" with "Architecture"');
+    $metasteps[] = new Step\When('I select "Harvard Graduate School of Design" from "School name"');
+    $metasteps[] = new Step\When('I press "Save configuration"');
+
+    return $metasteps;
+  }
+
+  /**
+   * @When /^I enable harvard courses$/
+   */
+  public function iEnableHarvardCourses() {
+    $code = "os_migrate_demo_define_harvard_courses();";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I refresh courses$/
+   */
+  public function iRefreshCourses() {
+    $code = "os_migrate_demo_import_courses();";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I remove harvard courses$/
+   */
+  public function iRemoveHarvardCourses() {
+    $metasteps = array();
+    $metasteps[] = new Step\When('I visit "john/cp/build/features/harvard_courses"');
+    $metasteps[] = new Step\When('I press "Remove"');
+    $metasteps[] = new Step\When('I sleep for "2"');
+    $metasteps[] = new Step\When('I press "Save configuration"');
+
+    return $metasteps;
+  }
+
+  /**
+   * @Given /^I invalidate cache$/
+   */
+  public function iInvalidateCache() {
+
+    $code = "views_og_cache_invalidate_cache(node_load($this->nid));";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
   }
 }

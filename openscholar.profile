@@ -8,7 +8,7 @@ function openscholar_install_tasks($install_state) {
 
   // OS flavors (production, development, etc)
   $tasks['openscholar_flavor_form'] = array(
-    'display_name' => t('Choose a enviroment'),
+    'display_name' => t('Choose environment'),
     'type' => 'form'
   );
 
@@ -153,6 +153,7 @@ function openscholar_vsite_modules_batch(&$install_state){
     if (variable_get('os_dummy_content', FALSE)) {
       $modules[] = 'os_migrate_demo';
     }
+    $modules[] = 'harvard_activity_reports';
   }
 
   return _opnescholar_module_batch($modules);

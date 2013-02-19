@@ -314,7 +314,7 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
   ctools_include('modal');
   $form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private')) . ctools_modal_text_button('Change Note Settings', 'features/nojs/os_publications', 'Change Note Settings');
   //$form['biblio_tabs'][7]['biblio_notes']['#description'] = t('Add an annotation for this work. Your notes are currently set to <strong>:privacy</strong>. ', array(':privacy' => variable_get('os_publications_note_in_teaser', FALSE) ? 'public' : 'private')) . l('Change Note Settings', 'cp/build/features/os_publications');
-  
+
   // hide the rest of the vtabs behind a collapsible fieldset
   $form['publication_extras'] = array(
     '#type' => 'fieldset',
@@ -584,5 +584,43 @@ function _os_publications_handle_import($node) {
 function theme_os_publications_biblio_year_row(&$vars) {
   foreach ($vars['rows'] as $delta => $row) {
     $vars['rows'][$delta]->link = _biblio_text_year($row->link);
+  }
+}
+
+/**
+ * Implements hook_preprocess_page().
+ * Update the page title for users filtering by year/type/co-author.
+ */
+function os_publications_preprocess_page(&$variables) {
+  $menu = menu_get_item();
+  // Check for /publications page only.
+  if(!isset($menu) || strpos($menu['path'], 'publications') === FALSE) {
+    return;
+  }
+  // Make sure both filters are there.
+  if(!isset($menu['map'][1]) || !isset($menu['map'][2])) {
+    return;
+  }
+  // Get the current page title.
+  $current_page_title = drupal_get_title();
+  // Get the 'type' filter.
+  $type_filter = $menu['map'][1];
+  // Switch on the filter, we want type/year/author only.
+  switch($type_filter) {
+    case "type":
+      $new_page_title = $current_page_title . t(" by Type: ") . ucwords(str_replace('-', ' ', $menu['map'][2]));
+      // Set the new page title.
+      drupal_set_title($new_page_title);
+      break;
+    case "year":
+      $new_page_title = $current_page_title . t(" by Year: ") . ucwords($menu['map'][2]);
+      // Set the new page title.
+      drupal_set_title($new_page_title);
+      break;
+    case "author":
+      $new_page_title = $current_page_title . t(" by Co-Author: ") . ucwords($menu['map'][2]);
+      // Set the new page title.
+      drupal_set_title($new_page_title);
+      break;
   }
 }

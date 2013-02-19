@@ -846,14 +846,8 @@ border-bottom-left-radius: 3px;
 
 .block-os-stats dl {
      float: left;
-     margin: -48px 0 12px;
+     margin: 10px 0 12px;
      width: 100%;
-}
-
-@-moz-document url-prefix() { 
-  .block-os-stats dl {
-     margin: -57px 0 12px;
- }
 }
 
 

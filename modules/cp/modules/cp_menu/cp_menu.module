@@ -75,7 +75,7 @@ function cp_menu_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cp_menu_admin'),
   );
-  
+
   return $items;
 }
 
@@ -219,19 +219,19 @@ function cp_menu_form_node_form_alter(&$form, &$form_state, $form_id) {
     $form['os_menu']['link']['link_title']['#default_value'] = (isset($link['link_title'])) ? $link['link_title'] : '';
     $form['os_menu']['link']['description']['#default_value'] =
     (isset($link['options']['attributes']['title'])) ? $link['options']['attributes']['title'] : '';
-    
+
     $form['os_menu']['link']['new_window'] = array(
         '#type' => 'checkbox',
         '#title' => t('Open Link in New Window'),
         '#default_value' => 0,
     );
-        
+
     //new window and tooltips are only available when cp_menu_show_extra_link_options is enabled
     if (!variable_get('cp_menu_link_options_new_window', FALSE)) {
       $form['os_menu']['link']['new_window']['#type'] = 'hidden';
-    } 
-    
-    if (!variable_get('cp_menu_link_options_tooltip', FALSE)) { 
+    }
+
+    if (!variable_get('cp_menu_link_options_tooltip', FALSE)) {
       $form['os_menu']['link']['description']['#type'] = 'hidden';
     }
 
@@ -447,7 +447,7 @@ function cp_menu_edit_link_form($form, $form_state, $link) {
   $form['title'] = array(
     '#title' => t('Title'),
     '#type' => 'textfield',
-    '#description' => t('Name your link.'),
+    '#description' => t('Text for your link or heading.'),
     '#default_value' => $link['link_title'],
   );
 
