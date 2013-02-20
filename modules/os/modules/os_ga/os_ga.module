@@ -17,7 +17,7 @@ function os_ga_form_os_settings_form_alter(&$form, &$form_state, $form_id) {
     '#title' => t('Google Analytics'),
     '#weight' => 0,
     '#collapsible' => TRUE,
-    '#collapsed' => FALSE
+    '#collapsed' => TRUE,
   );
   $form['os_ga']['os_ga_global_id'] = array(
     '#type' => 'textfield',
@@ -36,23 +36,39 @@ function os_ga_form_os_settings_form_alter(&$form, &$form_state, $form_id) {
     '#default_value' => variable_get('os_ga_global_link_tracking', 0),
     '#description' => t("Turns on Google Analytics tracking for outgoing links, mailto links, and file download links for all sites."),
   );
-  $form['os_ga']['os_ga_global_addthis'] = array(
+  $form['os_ga']['os_ga_404'] = array(
     '#type' => 'checkbox',
     '#weight' => 2,
+    '#title' => t('404 Not Found path rewriting'),
+    '#default_value' => variable_get('os_ga_404', 0),
+    '#description' => t("Reports 404 not found paths to Google Analytics accounts with a prepended '/error-404' for easy identification."),
+  );
+  $form['os_ga']['os_ga_navigation'] = array(
+    '#type' => 'checkbox',
+    '#weight' => 3,
+    '#title' => t('Navigation click tracking'),
+    '#default_value' => variable_get('os_ga_navigation', 0),
+    '#description' => t("Turns on tagged click tracking for main menus for Google Analytics accounts for all sites. "),
+  );
+  $form['os_ga']['os_ga_addthis'] = array(
+    '#type' => 'checkbox',
+    '#weight' => 4,
     '#title' => t('AddThis social tracking'),
-    '#default_value' => variable_get('os_ga_global_addthis', 0),
+    '#default_value' => variable_get('os_ga_addthis', 0),
     '#description' => t("Turns on AddThis social tracking integration with Google Analytics for all sites. Currently only available for one Google Analytics account per pageload."),
   );
-  $form['os_ga']['os_ga_default_account'] = array(
+  $form['os_ga']['os_ga_addthis_default'] = array(
     '#type' => 'radios',
-    '#title' => t('Default account'),
-    '#weight' => 3,
-    '#default_value' => variable_get('os_ga_default_account', 'vsite'),
+    '#title' => t('AddThis default account'),
+    '#weight' => 5,
+    '#default_value' => variable_get('os_ga_addthis_default', 'vsite'),
     '#options' => array(
       'vsite' => t('Individual site account'),
       'global' => t('Global account'),
     ),
-    '#description' => t("Some additional Google Analytics settings may only available to one Google Analytics account per pageload. In cases where one account must be chosen for an enabled setting, only the default account will get the additional setting."),
+    '#description' => t("AddThis social tracking is only available to one Google Analytics account per pageload. In cases where one account must be chosen for AddThis social tracking, the default account will be chosen."),
+    '#dependency' => array('edit-os-ga-addthis' => array('1')),
+    '#attributes' => array('class' => array('form-item-child')),
   );
 }
 
@@ -109,18 +125,18 @@ function _os_ga_get_accounts() {
   $accounts = array();
 
   $global_account = variable_get('os_ga_global_id', '');
-  $default_account = variable_get('os_ga_default_account', 'vsite');
+  $addthis_default = variable_get('os_ga_addthis_default', 'vsite');
 
   // Gets the global GA account, if available.
   if (strlen($global_account)) {
     $accounts[$global_account] = array();
-    $accounts[$global_account]['default'] = (bool) ($default_account == 'global');
+    $accounts[$global_account]['addthis_default'] = (bool) ($addthis_default == 'global');
   }
 
   // Gets the vsite GA account, if available.
   if (module_exists('vsite') && $vsite = vsite_get_vsite() && $vsite_account = variable_get('os_ga_google_analytics_id', '')) {
     $accounts[$vsite_account] = array();
-    $accounts[$vsite_account]['default'] = (bool) ($default_account == 'vsite');
+    $accounts[$vsite_account]['addthis_default'] = (bool) ($addthis_default == 'vsite');
   }
 
   return $accounts;
@@ -218,25 +234,27 @@ function _os_ga_build_script($accounts = array()) {
   // Adds each GA account to the script.
   foreach ($accounts as $account => $info) {
     $output .= '_gaq.push(["_setAccount", ' . drupal_json_encode($account) . ']);_gaq.push(["_trackPageview"]);';
-    if ($info['default'] === TRUE) {
-      $default_account = $account;
+    if ($info['addthis_default'] === TRUE) {
+      $addthis_account = $account;
     }
   }
-  // If the one account is not default, treat it as default.
-  if (!$default_account && sizeof($accounts) == 1) {
-    $default_account = array_shift($accounts);
+  // Sets the AddThis account to the only account, if it wasn't default already.
+  if (!$addthis_account && sizeof($accounts) == 1) {
+    $addthis_account = array_shift($accounts);
   }
-
-  // @todo add GA segmentation options.
 
   // Finishes up the script.
   $output .= '(function() {var ga = document.createElement("script");ga.type = "text/javascript";ga.async = true;ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(ga, s);})();';
 
   // Integrates with AddThis.
-  // Currently AddThis only supports one property per pageload,
-  // so we default to use vsite account over the global profile.
-  if (variable_get('os_ga_global_addthis', 0) && $default_account) {
-    $output .= "var addthis_config = {data_ga_social: true, data_ga_property: " . drupal_json_encode($default_account) . "};";
+  // Currently AddThis only supports one property per pageload.
+  // $addthis_account will be the account (string) of:
+  //  - the only enabled account (if only global or only vsite account exists)
+  //    OR
+  //  - the account specified default (if both global and vsite accounts exist)
+  // Otherwise, $addthis_account will be NULL and this js won't be added.
+  if (variable_get('os_ga_addthis', 0) && $addthis_account) {
+    $output .= "var addthis_config = {data_ga_social: true, data_ga_property: " . drupal_json_encode($addthis_account) . "};";
   }
 
   return $output;
