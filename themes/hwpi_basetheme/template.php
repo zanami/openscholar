@@ -44,7 +44,7 @@ function hwpi_basetheme_process_node(&$vars) {
   if ($vars['type'] == 'person') {
     if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
       $vars['title_prefix']['#suffix'] = '<h1 class="node-title">' . $vars['title'] . '</h1>';
-    } 
+    }
   }
 }
 
@@ -75,7 +75,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
 
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
-      
+
       //move title, website. body
       $build['pic_bio']['body']['#weight'] = 5;
       foreach (array(0=>'field_professional_title', 10=>'field_website') as $weight => $field) {
@@ -92,24 +92,28 @@ function hwpi_basetheme_node_view_alter(&$build) {
           unset($build[$field]);
         }
       }
-      
-      //join titles      
+
+      //join titles
       $title_field = &$build['pic_bio']['field_professional_title'];
-      $keys = array_filter(array_keys($title_field), 'is_numeric');
-      foreach ($keys as $key) {
-        $titles[] = $title_field[$key]['#markup'];
-        unset($title_field[$key]);
+      if ($title_field) {
+        $keys = array_filter(array_keys($title_field), 'is_numeric');
+        foreach ($keys as $key) {
+          $titles[] = $title_field[$key]['#markup'];
+          unset($title_field[$key]);
+        }
+        $title_field[0] = array('#markup' => implode(', ', $titles));
       }
-      $title_field[0] = array('#markup' => implode(', ', $titles));
-      
+
       //newlines after website
-      foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
-        $item = $build['pic_bio']['field_website']['#items'][$delta];
-        //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
-        $link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
-        $build['pic_bio']['field_website'][$delta]['#markup'] = $item['title'] . ': ' . $link . '<br>';
+      if (isset($build['pic_bio']['field_website'])) {
+        foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
+          $item = $build['pic_bio']['field_website']['#items'][$delta];
+          //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
+          $link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
+          $build['pic_bio']['field_website'][$delta]['#markup'] = $item['title'] . ': ' . $link . '<br>';
+        }
       }
-      
+
       unset($build['links']['node']);
 
       return;
