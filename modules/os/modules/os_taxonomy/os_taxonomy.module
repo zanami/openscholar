@@ -275,7 +275,8 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
     // Calling to a generic form ID.
-    return render(drupal_get_form('os_taxonomy_select_list_' . $vocabulary->vid, $data, $options['path_prefix']));
+    $form = drupal_get_form('os_taxonomy_select_list_' . $vocabulary->vid, $data, $options['path_prefix']);
+    return render($form);
   }
   else {
     return theme('item_list', array('type' => 'ul', 'items' => $data));
@@ -345,6 +346,8 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
 
 /**
  * Submit handler - redirect the user to the taxonomy page.
+ *
+ *  @see os_taxonomy_forms().
  */
 function os_taxonomy_select_list_submit($form, &$form_state) {
   $form_state['redirect'] = $form_state['path'] . 'taxonomy/term/' . $form_state['values']['terms_' . $form['#vocabulary']->vid];
