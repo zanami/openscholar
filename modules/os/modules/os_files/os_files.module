@@ -64,6 +64,9 @@ function os_files_menu_alter(&$callbacks){
       );
     }
   }
+  
+  $callbacks['file/%file/edit/ajax'] = $callbacks['file/%file/edit'];
+  $callbacks['file/%file/edit/ajax']['delivery callback'] = 'ajax_deliver';
 }
 
 function os_files_theme_registry_alter(&$reg){
@@ -73,6 +76,17 @@ function os_files_theme_registry_alter(&$reg){
 
 function theme_os_files_oembed($vars){
   return render($vars['content']);
+}
+
+/**
+ * Implements hook_library_alter().
+ */
+function os_files_library_alter(&$libs, $module) {
+  if ($module == 'media') {
+    $path = drupal_get_path('module', 'os_files');
+    $libs['media_browser_page']['js'][$path.'/theme/os_files.browser.js'] = array('group' => JS_DEFAULT);
+    $libs['media_browser_page']['css'][$path.'/theme/os_files.browser.css'] = array('group' => CSS_DEFAULT);
+  } 
 }
 
 /**
@@ -487,6 +501,10 @@ function os_files_media_browser_plugins_alter(&$output){
   unset($output['media_default--media_browser_my_files']);
   $output['upload']['#title'] = t('My Computer');
   $output['media_default--media_browser_1']['#title'] = t('My Library');
+  
+  // add an area to the views form to put the file edit form
+  $html = &$output['media_default--media_browser_1']['#markup'];
+  $html .= '<div id="file-edit-section"><div id="file-edit-no-selection">Select a file to edit it.</div></div>';
 }
 
 function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){

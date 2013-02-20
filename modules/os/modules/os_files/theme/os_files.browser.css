@@ -1,0 +1,33 @@
+/**
+ * Adjustments to the media browser
+ */
+
+/** Inline block is much cleaner looking than float */
+#media-browser-library-list li {
+	display: inline-block;
+	float: none;
+	vertical-align: top;
+}
+
+.ui-tabs .media-browser-tab.ui-tabs-panel {
+	position: relative;
+}
+
+.view-media-default {
+	margin-right: 290px;
+	border-right: 1px solid lightgray;
+}
+
+#file-edit-section {
+	position: absolute;
+	width: 270px;
+	top: 22px;
+	bottom: 22px;
+	right: 18px;
+	overflow: auto;
+}
+
+#file-edit-no-selection {
+	text-align: center;
+	padding: 30px 10px;
+}
