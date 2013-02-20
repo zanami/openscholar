@@ -4,6 +4,7 @@
  */
 ?>
 
-
+<!--
 <ul id="rslides-controls">
 </ul>
+-->

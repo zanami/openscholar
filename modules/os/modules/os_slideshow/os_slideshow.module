@@ -54,7 +54,7 @@ function os_slideshow_library() {
     'website' => 'https://github.com/viljamis/ResponsiveSlides.js',
     'version' => '1.53',
     'js' => array(libraries_get_path('responsiveslides') . '/responsiveslides.js' => array(),), //not original verison.  patched by HappyCog!
-    'css' => array(libraries_get_path('responsiveslides') . '/responsiveslides.css' => array('type' => 'file','media' => 'screen')),
+    //'css' => array(libraries_get_path('responsiveslides') . '/responsiveslides.css' => array('type' => 'file','media' => 'screen')),
   );
   return $libraries;
 }
