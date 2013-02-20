@@ -274,6 +274,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
 
   if (!empty($options['widget_type']) && $options['widget_type'] == 'select') {
+    // Calling to a generic form ID.
     return render(drupal_get_form('os_taxonomy_select_list_' . $vocabulary->vid, $data, $options['path_prefix']));
   }
   else {
@@ -283,6 +284,10 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
 
 /**
  * Implements hook_forms().
+ *
+ * When having more then one filter by terms widget with a select list formatter
+ * there is a collision between the forms ID. Returning a callback for the
+ * generic form ID that the theme function asked for.
  */
 function os_taxonomy_forms($form_id, $args) {
   $forms = array();
@@ -296,7 +301,7 @@ function os_taxonomy_forms($form_id, $args) {
 }
 
 /**
- * Disaply a custom form with a term lists.
+ * Display a custom form with a term lists.
  *
  *  @param $term_list
  *    Array contain the term list from the vocabulary.
@@ -314,6 +319,8 @@ function os_taxonomy_select_list($form, $form_state, $terms_list, $path) {
   $form['#vocabulary'] = $wrapper->vocabulary->value();
 
   $form['#attached']['css'][] = drupal_get_path('module', 'os_taxonomy') . '/os_taxonomy.css';
+  // Giving a unique name for the form element will allow us coloring it when
+  // there is a problem in the submission of the form.
   $form['terms_' . $form['#vocabulary']->vid] = array(
     '#type' => 'select',
     '#options' => array('--none--' => t('Select a term')) + $terms_list,
