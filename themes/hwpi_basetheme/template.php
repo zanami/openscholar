@@ -104,6 +104,17 @@ function hwpi_basetheme_node_view_alter(&$build) {
         }
       }
 
+      //join titles
+      $title_field = &$build['pic_bio']['field_professional_title'];
+      if ($title_field) {
+        $keys = array_filter(array_keys($title_field), 'is_numeric');
+        foreach ($keys as $key) {
+          $titles[] = $title_field[$key]['#markup'];
+          unset($title_field[$key]);
+        }
+        $title_field[0] = array('#markup' => implode(', ', $titles));
+      }
+
       //newlines after website
       if (isset($build['pic_bio']['field_website'])) {
         foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
@@ -172,15 +183,14 @@ function hwpi_basetheme_node_view_alter(&$build) {
         unset($build['field_phone']);
       }
 
-      // Websites
-      if (isset($build['field_website'])) {
-        $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
-        $build['website_details']['#suffix'] = '</div></div>';
-        $build['website_details']['#weight'] = -7;
-        $build['field_website']['#label_display'] = 'hidden';
-        $build['website_details']['field_website'] = $build['field_website'];
-        unset($build['field_website']);
-      }
+    // Websites
+    if (isset($build['field_website'])) {
+      $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
+      $build['website_details']['#suffix'] = '</div></div>';
+      $build['website_details']['#weight'] = -7;
+      $build['field_website']['#label_display'] = 'hidden';
+      $build['website_details']['field_website'] = $build['field_website'];
+      unset($build['field_website']);
     }
 
     if (isset($build['og_vocabulary'])) {
