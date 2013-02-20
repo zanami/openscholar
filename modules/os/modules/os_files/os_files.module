@@ -212,7 +212,7 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
     $form['preview']['#access'] = false;
     $form['user']['#access'] = false;
     
-    $form['actions']['submit']['#attributes']['class'][] = 'ajax-submit';
+    $form['actions']['submit']['#attributes']['class'][] = 'use-ajax-submit';
   }
 }
 
