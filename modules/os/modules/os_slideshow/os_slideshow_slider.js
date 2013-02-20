@@ -1,37 +1,18 @@
 /**
- * @file os_slideshow_flexslider.js
+ * @file os_slideshow_slider.js
  * 
- * Initializes flexslider javascript, attaches back, pause, next, pager functions
+ * Initializes responsive slides with each slideshow box's settings.
  */
 
 (function ($) {
 
-// Behavior to load FlexSlider
+// Behavior to load responsiveslides
 Drupal.behaviors.os_slideshow = {
   attach: function(context, settings) {
-//    function slider_closure(selector) {
-//      return function() {
-//        return $(selector);
-//      }
-//    }
-    
-    //event to mark active page in pager
-//    function markpage(e) {
-//      var slider = e.data().flexslider 
-//      var page = slider.currentSlide      
-//      $(slider).find('.flex-page-link').removeClass('active')
-//      $(slider).find('#flex-page-'+page).addClass('active')
-//    }
-    
-    $(window).load(function() {
-      for (delta in Drupal.settings.os_slideshow) {
-        //start slideshow
-        var div = 'div#' + delta;
-        var slider = $(div + ' .rslides');        
-        //Drupal.settings.os_slideshow[delta]['after'] = markpage;
-        slider.responsiveSlides(Drupal.settings.os_slideshow[delta]);
-      }
-    });
+    for (delta in Drupal.settings.os_slideshow) {      
+      var slider = $('div#' + delta + ' .rslides');              
+      slider.responsiveSlides(Drupal.settings.os_slideshow[delta]);
+    }
   }
 }
 
