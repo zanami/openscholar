@@ -89,3 +89,78 @@ function os_basetheme_preprocess_overlay(&$vars) {
   // we never want these. They look awful
  $vars['tabs'] = false;
 }
+
+/**
+ * Returns HTML for a menu link and submenu.
+ *
+ * Adaptivetheme overrides this to insert extra classes including a depth
+ * class and a menu id class. It can also wrap menu items in span elements.
+ *
+ * @param $vars
+ *   An associative array containing:
+ *   - element: Structured array data for a menu link.
+ */
+function os_basetheme_menu_link(array $vars) {
+  $element = $vars['element'];
+  $sub_menu = '';
+
+  if ($element['#below']) {
+    $sub_menu = drupal_render($element['#below']);
+  }
+
+  if (!empty($element['#original_link'])) {
+    if (!empty($element['#original_link']['depth'])) {
+      $element['#attributes']['class'][] = 'menu-depth-' . $element['#original_link']['depth'];
+    }
+    if (!empty($element['#original_link']['mlid'])) {
+      $element['#attributes']['class'][] = 'menu-item-' . $element['#original_link']['mlid'];
+    }
+  }
+
+  if (isset($element['#localized_options']) && !empty($element['#localized_options']['attributes']['title'])) {
+    unset($element['#localized_options']['attributes']['title']);
+  }
+
+  $output = l($element['#title'], $element['#href'], $element['#localized_options']);
+  return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>";
+}
+
+/**
+ * Preprocess variables for comment.tpl.php
+ */
+function os_basetheme_preprocess_node(&$vars) {
+
+  // Event nodes, inject variables for date month and day shield
+  if ($vars['node']->type == 'event') {
+    $vars['event_start'] = array();
+    if (isset($vars['field_date'][0]['value']) && !empty($vars['field_date'][0]['value'])) {
+      date_default_timezone_set($vars['field_date'][0]['timezone']);
+      $event_start_date = strtotime($vars['field_date'][0]['value']);
+      $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
+      $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
+      $vars['classes_array'][] = 'event-start';
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_field
+ *
+ * Cleans up teaser display to remove redundant date info.
+ */
+function os_basetheme_preprocess_field(&$variables, $hook) {
+  if (in_array($variables['field_view_mode'], array('teaser', 'sidebar_teaser')) && $variables['element']['#bundle'] == 'event' && $variables['element']['#field_name'] == 'field_date') {
+    date_default_timezone_set($variables['element']['#items'][0]['timezone']);
+
+    $start_date = strtotime($variables['element']['#items'][0]['value']);
+    $end_date = (isset($variables['element']['#items'][0]['value'])) ? strtotime($variables['element']['#items'][0]['value2']) : $start_date;
+
+    //for one day events, strip the date.  it's displayed elsewhere.
+    $fmt = (format_date($start_date, 'os_date') == format_date($end_date, 'os_date')) ? 'os_time' : 'os_date_abbreviated';
+    $start = format_date($start_date, $fmt);
+    $end = format_date($end_date, $fmt);
+
+    $variables['label_hidden'] = TRUE;
+    $variables['items'][0]['#markup'] = ($start == $end) ? $start : $start . ' - ' . $end;
+  }
+}
