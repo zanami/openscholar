@@ -17,7 +17,7 @@
             settings = {
               url: s.basePath+'file/'+fid+'/edit/nojs',
               event: 'click',
-              wrapper: 'file-edit-no-selection',
+              wrapper: 'file-edit-section > *',
               progress: {type: 'throbber'}
             },
             ajax = new Drupal.ajax(base, this, settings);
