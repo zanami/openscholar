@@ -44,3 +44,38 @@ function hwpi_vibrant_preprocess_page(&$vars) {
     }
   }
 }
+
+
+/**
+ * Preprocess variables for block.tpl.php
+ */
+function hwpi_vibrant_preprocess_block(&$vars) {
+  if (isset($vars['block']->subject)) {
+    if (!empty($vars['block']->subject)) {
+      $vars['classes_array'][] = 'with-title';
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
