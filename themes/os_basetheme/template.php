@@ -151,7 +151,7 @@ function os_basetheme_preprocess_node(&$vars) {
  * Cleans up teaser display to remove redundant date info.
  */
 function os_basetheme_preprocess_field(&$variables, $hook) {
-  if ($variables['field_view_mode'] == 'teaser' && $variables['element']['#bundle'] == 'event' && $variables['element']['#field_name'] == 'field_date') {
+  if (in_array($variables['field_view_mode'], array('teaser', 'sidebar_teaser')) && $variables['element']['#bundle'] == 'event' && $variables['element']['#field_name'] == 'field_date') {
     date_default_timezone_set($variables['element']['#items'][0]['timezone']);
 
     $start_date = strtotime($variables['element']['#items'][0]['value']);
