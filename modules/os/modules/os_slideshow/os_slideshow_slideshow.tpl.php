@@ -4,7 +4,7 @@
  */
 ?>
 
-<div id="<?php echo $layout; ?>">
+<div id="<?php echo 'layout_' . $layout; ?>">
   <ul class="rslides">
     <?php print implode("\n", $slides); ?>
   </ul>
