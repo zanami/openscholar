@@ -203,6 +203,17 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   else {
     $form['replace_upload']['#access'] = false;
   }
+  
+  $form['media_description'][LANGUAGE_NONE][0]['#type'] = 'textarea';
+  
+  // modify the form when we're getting it through ajax
+  // this means we'll be getting it through the media browser
+  if (strpos($_GET['q'], 'ajax') !== FALSE) {
+    $form['preview']['#access'] = false;
+    $form['user']['#access'] = false;
+    
+    $form['actions']['submit']['#attributes']['class'][] = 'ajax-submit';
+  }
 }
 
 /**
