@@ -73,13 +73,13 @@ class vsite extends space_og {
   /**
    * Implements space->router().
    */
-  public function router($op, $object = NULL) {
+  public function router($op, $node = NULL) {
     global $user;
     switch ($op) {
       case 'node':
         // If we are viewing the group node
-        if (og_is_group_type('node', $object->type)) {
-          if (isset($object->nid) && (!(isset($this->active) && $this->active) || ($this->active && $this->id != $object->nid)) && $space = spaces_load('og', $object->nid)) {
+        if (og_is_group_type('node', $node->type)) {
+          if (isset($node->nid) && (!(isset($this->active) && $this->active) || ($this->active && $this->id != $node->nid)) && $space = spaces_load('og', $node->nid)) {
             // Sets up the correct purl provider
             $space->verify_purl();
             $current_url = url($_GET['q'], array(
@@ -98,7 +98,7 @@ class vsite extends space_og {
           }
         }
         else {
-          if ($this->active && $object->nid && arg(0) == 'node' && arg(1) == $object->nid && !arg(2)) {
+          if ($this->active && $node->nid && arg(0) == 'node' && arg(1) == $node->nid && !arg(2)) {
             drupal_goto(drupal_get_path_alias(request_path()));
           }
         }
@@ -123,7 +123,7 @@ class vsite extends space_og {
           $path = _purl_cache_q();
           $path_parts = explode('/', $path);
           $index = array_shift($path_parts);
-          if ((string) $index === (string) $this->group->purl) {
+          if ($index == $this->group->purl) {
             // Redirects to the path with the purl prefix removed.
             if (!empty($path_parts)) {
               $path_without_purl = implode('/', $path_parts);
@@ -141,13 +141,18 @@ class vsite extends space_og {
           }
         }
         // Redirects to a node alias.
-        if ($object = menu_get_object()) {
-          if (isset($object->nid) && !og_is_group_type('node', $object->type)) {
-            // First, redirects if this node does not belong to this vsite.
-            $items = field_get_items('node', $object, OG_AUDIENCE_FIELD);
-            $target_id = isset($items[0]['target_id']) ? $items[0]['target_id'] : NULL;
-            if (!$this->active && $target_id || ($target_id && $target_id != $this->id)) {
-              spaces_load('og', $target_id)->activate();
+        if ($node = menu_get_object()) {
+          if (isset($node->nid) && !og_is_group_type('node', $node->type)) {
+            // First, redirects if this node does not belong to this vsite,
+            // or if the request URL did not specify a vsite
+            $wrapper = entity_metadata_wrapper('node', $node);
+            $sids = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE));
+            $sid = isset($sids[0]) ? $sids[0] : NULL;
+            // Handles both types of requests:
+            // "node/123" and "wrongsite/node/123"
+            if ((!$this->active && $sid) || ($sid && $sid != $this->id)) {
+              // Redirects to the correctly aliased node in its own vsite.
+              spaces_load('og', $sid)->activate();
             }
             if (!$this->active) {
               break;
@@ -163,12 +168,12 @@ class vsite extends space_og {
             $request_has_alias = (bool) ($path != $aliased_path);
             $path_parts = explode('/', _purl_cache_q());
             if ($request_has_alias && sizeof($path_parts) < 4) {
-              // This handles both types of requests:
-              // "mysite/node/123" AND "node/123"
-              if ((sizeof($path_parts) == 3 && $path_parts[1] == 'node' && $path_parts[2] == $object->nid)
-               || (sizeof($path_parts) == 2 && $path_parts[0] == 'node' && $path_parts[1] == $object->nid)) {
+              // Handles both types of requests:
+              // "mysite/node/123" AND "node/123" (on sites with custom domains)
+              if ((sizeof($path_parts) == 3 && $path_parts[1] == 'node' && $path_parts[2] == $node->nid)
+               || (sizeof($path_parts) == 2 && $path_parts[0] == 'node' && $path_parts[1] == $node->nid)) {
                 // Redirects to the aliased node path.
-                $path = $this->get_absolute_url("node/$object->nid");
+                $path = $this->get_absolute_url("node/$node->nid");
                 drupal_goto($path);
               }
             }
@@ -176,7 +181,7 @@ class vsite extends space_og {
         }
         break;
     }
-    parent::router($op, $object);
+    parent::router($op, $node);
   }
 
   /**

@@ -223,6 +223,17 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^a node of type "([^"]*)" with the title "([^"]*)" exists in site "([^"]*)"$/
+   */
+  public function assertNodeTypeTitleVsite($type, $title, $site = 'john') {
+    return array(
+      new Step\When('I visit "' . $site . '/node/add/' . $type . '"'),
+      new Step\When('I fill in "Title" with "'. $title . '"'),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
    * @Given /^I create a new publication$/
    */
   public function iCreateANewPublication() {
