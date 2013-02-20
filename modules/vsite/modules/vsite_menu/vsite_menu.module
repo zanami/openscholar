@@ -136,7 +136,7 @@ function vsite_menu_menu_link_save(&$item){
 
   // This is the easiest way to handle the unique internal path '<front>',
   // since a path marked as external does not need to match a router path.
-  $item['external'] = (url_is_external($item['link_path']) || $item['link_path'] == '<front>') ? 1 : 0;
+  $item['external'] = !isset($item['external'])? ((url_is_external($item['link_path']) || $item['link_path'] == '<front>') ? 1 : 0) : $item['external'];
   // Load os defaults.
   $item += array(
       'menu_name' => $default_menu,
@@ -493,7 +493,6 @@ function vsite_menu_spaces_registry(){
  * Helper function to get a unique MLID per vsite
  */
 function _vsite_menu_get_mlid(){
-  $vsite = spaces_get_space();
 
   $mlid = variable_get('vsite_menu_mlid_increment',VSITE_MENU_CUSTOM_MLID);
 

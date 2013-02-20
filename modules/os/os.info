@@ -104,6 +104,7 @@ features[user_role][] = vsite admin
 features[user_role][] = vsite user
 features[variable][] = configurable_timezones
 features[variable][] = pathauto_node_pattern
+features[variable][] = pathauto_update_action
 features[variable][] = site_404
 features[variable][] = spaces_features
 features[variable][] = transliteration_file_lowercase

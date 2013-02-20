@@ -2,7 +2,7 @@
 
 function os_wysiwyg_link_wysiwyg_include_directory($type) {
   switch ($type) {
-    case 'plugin':
+    case 'plugins':
       return 'wysiwyg_plugins';
   }
 }

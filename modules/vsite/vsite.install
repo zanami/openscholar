@@ -175,3 +175,56 @@ function vsite_update_7003() {
     og_role_grant_permissions($rid, $permissions);
   }
 }
+
+/**
+ * Fixes taxonomy terms that were previously saved without purls in the alias.
+ */
+function vsite_update_7004() {
+  $sids = array();
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', array('personal', 'project', 'department'), 'IN');
+  $result = $query->execute();
+  if (isset($result['node'])) {
+    $sids = array_keys($result['node']);
+  }
+
+  foreach ($sids as $sid) {
+    $purl = vsite_get_purl(vsite_get_vsite($sid));
+    $vids = _vsite_update_7004_vids_by_sid($sid);
+    if (empty($vids)) {
+      continue;
+    }
+    $terms = _vsite_update_7004_tids_by_vid($vids);
+    foreach ($tids as $tid) {
+      $term = taxonomy_term_load($tid);
+      pathauto_taxonomy_term_update_alias($term, 'update', array('alias children' => TRUE));
+    }
+  }
+}
+
+/**
+ * Returns the vocabulary IDs belonging to a vsite.
+ */
+function _vsite_update_7004_vids_by_sid($sid) {
+  return db_select('og_vocab_relation', 'ogr')
+    ->fields('ogr', array('vid'))
+    ->condition('group_type','node')
+    ->condition('gid', $sid)
+    ->execute()
+    ->fetchAllKeyed();
+}
+
+/**
+ * Returns the terms that belong in a list of vocabularies.
+ */
+function _vsite_update_7004_tids_by_vid($vids) {
+  if (is_int($vids)) {
+    $vids = array($vids);
+  }
+  return db_select('taxonomy_term_data', 'ttd')
+    ->fields('ttd', array('tid'))
+    ->condition('vid', $vids, 'IN')
+    ->execute()
+    ->fetchAllKeyed();
+}

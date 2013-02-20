@@ -12,7 +12,7 @@ Drupal.behaviors.os_upload_form = {
     $file_select.before($input);
     $file_select.change(function (e) {
       if (!('result' in e) || e.result) {
-        $('.form-actions #edit-submit', ctx).click();
+        $('#file-entity-add-upload .form-actions #edit-next', ctx).click();
       }
     });
   }

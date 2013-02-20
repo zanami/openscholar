@@ -412,7 +412,6 @@ function _os_publications_attach_abstract(&$entry, $node) {
   if (strlen($node->biblio_abst_e)) {
     $entry['#attached']['js'][] = drupal_get_path('module', 'os') . '/theme/os_toggle.js';
     $html   = &$entry['entry']['#markup'];
-    $insert = strrpos($html, '</div>');
     $extra  = l('Abstract', 'node/' . $node->nid, array('attributes' => array('class' => array('biblio-abstract-link', 'toggle'))));
     $entry['abstract_slider'] = array(
       '#type' => 'container',
@@ -424,9 +423,10 @@ function _os_publications_attach_abstract(&$entry, $node) {
         ),
       ),
       'abstract' => array(
-        '#markup' => check_markup($node->biblio_abst_e, filter_default_format()),
+        '#markup' => filter_xss($node->biblio_abst_e),
       ),
     );
+    $insert = strrpos($html, '</div>');
     if ($insert === FALSE) {
       $html .= $extra;
     }

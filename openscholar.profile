@@ -153,6 +153,7 @@ function openscholar_vsite_modules_batch(&$install_state){
     if (variable_get('os_dummy_content', FALSE)) {
       $modules[] = 'os_migrate_demo';
     }
+    $modules[] = 'harvard_activity_reports';
   }
 
   return _opnescholar_module_batch($modules);
