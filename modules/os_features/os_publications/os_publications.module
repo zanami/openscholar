@@ -341,14 +341,30 @@ function os_publications_form_biblio_node_form_alter(&$form, $form_state) {
 function os_publications_biblio_entry_alter(&$entry, $node) {
 
   unset($entry['export_links']);
+  if (!empty($node->field_biblio_image[LANGUAGE_NONE][0])) {
+    $content = field_attach_view('node', $node, 'teaser');
+    $image = render($content['field_biblio_image']);
+  }
+  else {
+    $image = '';
+  }
   $entry['entry']['#markup'] = _os_publications_biblio_entry_alter($entry['entry']['#markup'], $node);
   _os_publications_attach_abstract($entry, $node);
+  $entry['entry']['#markup'] = $image . $entry['entry']['#markup'];
 
   $entry['#attached']['css'][] = drupal_get_path('module', 'os_publications').'/misc/os_publications.css';
 }
 
 /**
  * Helper function for altering the bibilio entry theme.
+ *
+ *  @param $markup
+ *    The HTML output of the node to display.
+ *  @param $node
+ *    The node object.
+ *
+ *  @return
+ *    The HTML output to display.
  */
 function _os_publications_biblio_entry_alter($markup, $node) {
   $html = $markup;
