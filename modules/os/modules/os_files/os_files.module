@@ -159,7 +159,7 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
       '#description' => t('The label used for the link users will click to see/download this file.  Ex. The Etymology and History of Jabberwocky Language.'),
     );
 
-    $form['media_title']['#access'] = false;
+    $form['media_title']['#access'] = FALSE;
     $form['media_title']['und'][0]['value']['#value_callback'] = 'os_files_media_title_value';
 
     $form['#submit'][] = 'os_files_file_entity_add_upload_submit';
@@ -176,7 +176,7 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   $form['filename']['#title'] = t('Display Name');
   $form['filename']['#description'] = t('The label used for the link users will click to see/download this file.  Ex. The Etymology and History of Jabberwocky Language.');
 
-  $form['media_title']['#access'] = false;
+  $form['media_title']['#access'] = FALSE;
   $form['media_title']['und'][0]['value']['#value_callback'] = 'os_files_media_title_value';
 
   // only display the field if the file is older than 5 minutes
@@ -184,7 +184,7 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
     $form['replace_upload']['#access'] = (time() - $form['#entity']->timestamp) > 5 * 60;
   }
   else {
-    $form['replace_upload']['#access'] = false;
+    $form['replace_upload']['#access'] = FALSE;
   }
 }
 
