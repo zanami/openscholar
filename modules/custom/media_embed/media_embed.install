@@ -1,7 +1,7 @@
 <?php
 
 function media_embed_install() {
-  // add the fields for file type
+  // Add the fields for file type.
   try {
     field_create_field(array(
       'field_name' => 'field_html_code',
@@ -54,6 +54,6 @@ function media_embed_uninstall() {
 function media_embed_update_7001(&$sandbox) {
   ctools_include('export');
   $type = ctools_export_load_object('file_type', 'names', array('html'));
-  
+
   ctools_export_crud_delete('file_type', $type['html']);
 }
