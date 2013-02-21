@@ -2,9 +2,6 @@ Feature:
   In order to have content at a single URL as a visitor i want to be redirected
   to a canonical URL.
 
-#  Background:
- #   Given a node of type "news" with the title "I opened a new personal" exists in site "john"
-
   @api @current
   Scenario: Non-aliased node paths redirect on sites without domains.
     Given I expect for a behavior according the next <statements>:

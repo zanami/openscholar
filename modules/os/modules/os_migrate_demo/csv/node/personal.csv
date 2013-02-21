@@ -1,3 +1,4 @@
-ID,Title,URL,Public
-personal1,John,john,public
-personal2,Obama,obama,private
+ID,Title,URL,Public,Domain
+personal1,John,john,public,
+personal2,Obama,obama,private,
+personal3,Abraham,Lincoln,public,lincoln.local
