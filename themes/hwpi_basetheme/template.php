@@ -143,45 +143,51 @@ function hwpi_basetheme_node_view_alter(&$build) {
     $block_zebra = 0;
 
     // Contact Details
-    $build['contact_details']['#prefix'] = '<div class="block contact-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
-    $build['contact_details']['#suffix'] = '</div></div>';
-    $build['contact_details']['#weight'] = -8;
-
-    // Contact Details > address
-    if (isset($build['field_address'])) {
-      $build['field_address']['#label_display'] = 'hidden';
-      $build['contact_details']['field_address'] = $build['field_address'];
-      unset($build['field_address']);
-    }
-    // Contact Details > email
-    if (isset($build['field_email'])) {
-      $build['field_email']['#label_display'] = 'hidden';
-      $email_plain = $build['field_email'][0]['#markup'];
-      if ($email_plain) {
-        $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">email</a>';
+    if ($build['#view_mode'] != 'sidebar_teaser') {
+      $build['contact_details']['#prefix'] = '<div class="block contact-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
+      $build['contact_details']['#suffix'] = '</div></div>';
+      $build['contact_details']['#weight'] = -8;
+  
+      // Contact Details > address
+      if (isset($build['field_address'])) {
+        $build['field_address']['#label_display'] = 'hidden';
+        $build['contact_details']['field_address'] = $build['field_address'];
+        unset($build['field_address']);
       }
-      $build['contact_details']['field_email'] = $build['field_email'];
-      unset($build['field_email']);
-    }
-    // Contact Details > phone
-    if (isset($build['field_phone'])) {
-      $build['field_phone']['#label_display'] = 'hidden';
-      $phone_plain = $build['field_phone'][0]['#markup'];
-      if ($phone_plain) {
-        $build['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
+      // Contact Details > email
+      if (isset($build['field_email'])) {
+        $build['field_email']['#label_display'] = 'inline';
+        $email_plain = $build['field_email'][0]['#markup'];
+        if ($email_plain) {
+          $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">' . $email_plain . '</a>';
+        }
+        $build['contact_details']['field_email'] = $build['field_email'];
+        $build['contact_details']['field_email']['#weight'] = -50;
+        unset($build['field_email']);
       }
-      $build['contact_details']['field_phone'] = $build['field_phone'];
-      unset($build['field_phone']);
+      // Contact Details > phone
+      if (isset($build['field_phone'])) {
+        $build['field_phone']['#label_display'] = 'hidden';
+        $phone_plain = $build['field_phone'][0]['#markup'];
+        if ($phone_plain) {
+          $build['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
+        }
+        $build['contact_details']['field_phone'] = $build['field_phone'];
+        $build['contact_details']['field_phone']['#weight'] = 50;
+        unset($build['field_phone']);
+      }
+  
+      // Websites
+      if (isset($build['field_website'])) {
+        $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
+        $build['website_details']['#suffix'] = '</div></div>';
+        $build['website_details']['#weight'] = -7;
+        $build['field_website']['#label_display'] = 'hidden';
+        $build['website_details']['field_website'] = $build['field_website'];
+        unset($build['field_website']);
+      }
     }
-
-    // Websites
-    $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
-    $build['website_details']['#suffix'] = '</div></div>';
-    $build['website_details']['#weight'] = -7;
-    $build['field_website']['#label_display'] = 'hidden';
-    $build['website_details']['field_website'] = $build['field_website'];
-    unset($build['field_website']);
-
+    
     if (isset($build['og_vocabulary'])) {
       foreach ($build['og_vocabulary']['#items'] as $tid) {
         $t = taxonomy_term_load($tid['target_id']);
