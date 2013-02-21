@@ -72,6 +72,17 @@ function hwpi_basetheme_node_view_alter(&$build) {
     else {
       $build['body']['#weight'] = -9;
     }
+    
+    //join titles
+    $title_field = &$build['field_professional_title'];
+    if ($title_field) {
+      $keys = array_filter(array_keys($title_field), 'is_numeric');
+      foreach ($keys as $key) {
+        $titles[] = $title_field[$key]['#markup'];
+        unset($title_field[$key]);
+      }
+      $title_field[0] = array('#markup' => implode(', ', $titles));
+    }
 
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
@@ -91,17 +102,6 @@ function hwpi_basetheme_node_view_alter(&$build) {
         if (isset($build[$field])) {
           unset($build[$field]);
         }
-      }
-      
-      //join titles      
-      $title_field = &$build['pic_bio']['field_professional_title'];
-      if ($title_field) {
-        $keys = array_filter(array_keys($title_field), 'is_numeric');
-        foreach ($keys as $key) {
-          $titles[] = $title_field[$key]['#markup'];
-          unset($title_field[$key]);
-        }
-        $title_field[0] = array('#markup' => implode(', ', $titles));
       }
       
       //newlines after website
