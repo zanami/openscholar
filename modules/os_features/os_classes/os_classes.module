@@ -151,3 +151,33 @@ function os_classes_process_node(&$vars) {
     unset($vars['content']['os_classes_entity_view_1']);
   }
 }
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function os_classes_views_query_alter(&$view, &$query) {
+  if ($view->name != 'os_classes' || $view->current_display != 'page') {
+    return;
+  }
+
+  $item = menu_get_item();
+  if (count($item['original_map']) == 1) {
+    // We are just looking at classes.
+    return;
+  }
+
+  // Get the term alias, if exists.
+  $path = $item['original_map'];
+  unset($path['0']);
+
+  if (!$path = drupal_get_normal_path(implode('/', $path))) {
+    return;
+  }
+
+  if (strpos($path, 'taxonomy/term/') !== 0) {
+    return;
+  }
+
+  $tid = str_replace('taxonomy/term/', '', $path);
+  $term = taxonomy_term_load($tid);
+}

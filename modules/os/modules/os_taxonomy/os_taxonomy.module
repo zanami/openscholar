@@ -216,7 +216,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     }
 
     if(strlen($options['path_prefix']) && strpos($item['url']['path'],'taxonomy/') === 0){
-      $item['url']['path'] = str_replace('taxonomy/', $options['path_prefix'], $item['url']['path']);
+      $item['url']['path'] = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
     }
 
     // Don't process terms that are in not in level 0.
@@ -432,7 +432,8 @@ function os_taxonomy_get_term_childrens($tid, $vid, $options) {
     $vocabulary = taxonomy_get_tree($options['vocabulary']);
     foreach ($vocabulary as $term) {
       $tree[$term->tid] = $term->depth;
-    }  }
+    }
+  }
 
   $childrens = taxonomy_get_children($tid, $vid);
 
