@@ -1,8 +1,6 @@
 <?php
 
-function os_wysiwyg_link_insert() {
-  module_invoke_all('suppress');
-  
+function os_wysiwyg_link_insert() {  
   module_load_include('inc', 'file_entity', 'file_entity.pages');
   $tabs = array(
     'file' => array(
@@ -71,6 +69,9 @@ function os_wysiwyg_link_insert() {
   );
   $path = drupal_get_path('module', 'os_wysiwyg_link');
   $output['#attached'] = array(
+    'library' => array(
+      array('media', 'media_browser_page'),
+    ),
     'css' => array($path.'/theme/os_wysiwyg_link_form.css'),
     'js' => array($path.'/js/os_wysiwyg_link_form.js'),
   );
