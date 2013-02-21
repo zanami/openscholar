@@ -6,6 +6,9 @@
  * Code for OpenScholar: Google Analytics module.
  */
 
+// Defines which file extensions should be tracked, if enabled.
+define('OS_GA_TRACK_FILE_EXTENSIONS', '7z|aac|arc|arj|asf|asx|avi|bin|csv|doc|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls|xml|z|zip');
+
 /**
  * Implements hook_form_FORM_ID_alter() for os_settings_form.
  *
@@ -29,11 +32,11 @@ function os_ga_form_os_settings_form_alter(&$form, &$form_state, $form_id) {
     '#description' => t("Enables sitewide tracking for a single <a href=\"http://www.google.com/analytics/\">Google Analytics</a> account.<br/>Expected format: <strong>UA-XXXXXXX-XX</strong>"),
     '#element_validate' => array('os_ga_analytics_id_validate'),
   );
-  $form['os_ga']['os_ga_global_link_tracking'] = array(
+  $form['os_ga']['os_ga_link_tracking'] = array(
     '#type' => 'checkbox',
     '#title' => t('Link tracking'),
     '#weight' => 1,
-    '#default_value' => variable_get('os_ga_global_link_tracking', 0),
+    '#default_value' => variable_get('os_ga_link_tracking', 0),
     '#description' => t("Turns on Google Analytics tracking for outgoing links, mailto links, and file download links for all sites."),
   );
   $form['os_ga']['os_ga_404'] = array(
@@ -43,16 +46,23 @@ function os_ga_form_os_settings_form_alter(&$form, &$form_state, $form_id) {
     '#default_value' => variable_get('os_ga_404', 0),
     '#description' => t("Reports 404 not found paths to Google Analytics accounts with a prepended '/error-404' for easy identification."),
   );
-  $form['os_ga']['os_ga_navigation'] = array(
+  $form['os_ga']['os_ga_search'] = array(
     '#type' => 'checkbox',
     '#weight' => 3,
+    '#title' => t('Site search tracking'),
+    '#default_value' => variable_get('os_ga_search', 0),
+    '#description' => t("Sends URL search keys to Google Analytics they way it expects them."),
+  );
+  $form['os_ga']['os_ga_navigation'] = array(
+    '#type' => 'checkbox',
+    '#weight' => 4,
     '#title' => t('Navigation click tracking'),
     '#default_value' => variable_get('os_ga_navigation', 0),
     '#description' => t("Turns on tagged click tracking for main menus for Google Analytics accounts for all sites. "),
   );
   $form['os_ga']['os_ga_addthis'] = array(
     '#type' => 'checkbox',
-    '#weight' => 4,
+    '#weight' => 5,
     '#title' => t('AddThis social tracking'),
     '#default_value' => variable_get('os_ga_addthis', 0),
     '#description' => t("Turns on AddThis social tracking integration with Google Analytics for all sites. Currently only available for one Google Analytics account per pageload."),
@@ -60,7 +70,7 @@ function os_ga_form_os_settings_form_alter(&$form, &$form_state, $form_id) {
   $form['os_ga']['os_ga_addthis_default'] = array(
     '#type' => 'radios',
     '#title' => t('AddThis default account'),
-    '#weight' => 5,
+    '#weight' => 6,
     '#default_value' => variable_get('os_ga_addthis_default', 'vsite'),
     '#options' => array(
       'vsite' => t('Individual site account'),
@@ -99,22 +109,40 @@ function os_ga_cp_settings() {
 }
 
 /**
- * Impelements hook_init().
+ * Impelements hook_page_alter().
  */
-function os_ga_init() {
+function os_ga_page_alter() {
   // Does nothing if there are no accounts available.
   $accounts = _os_ga_get_accounts();
   if (empty($accounts)) {
     return;
   }
 
-  // Generates script and inserts into page header.
+  // Generates tracking script and inserts into page header.
+  // Optionally includes 404 error handling, search and AddThis integration.
   $script = _os_ga_build_script($accounts);
-  drupal_add_js($script, 'inline', variable_get('vsite_ga_scope', 'header'));
+  drupal_add_js($script, 'inline');
 
-  // Additionally adds link tracking if enabled globally.
-  if (variable_get('os_ga_global_link_tracking', 0)) {
-    drupal_add_js('os_ga.js', 'file');
+  // Prepares click tracking settings as Drupal js settings.
+  $settings = array();
+  if ($track_outbound = variable_get('os_ga_link_tracking', 0)) {
+    $settings['trackOutbound'] = $track_outbound;
+  }
+  if ($track_mailto = variable_get('os_ga_link_tracking', 0)) {
+    $settings['trackMailto'] = $track_mailto;
+  }
+  if ($track_download = variable_get('os_ga_link_tracking', 0)) {
+    $settings['trackDownload'] = $track_download;
+    $settings['trackDownloadExtensions'] = OS_GA_TRACK_FILE_EXTENSIONS;
+  }
+  if ($track_navigation = variable_get('os_ga_naviaation', 0)) {
+    $settings['trackNavigation'] = $track_navigation;
+  }
+
+  // Only adds click tracking jQuery file if some setting is on.
+  if (!empty($settings)) {
+    drupal_add_js(array('os_ga' => $settings), 'setting');
+    drupal_add_js(drupal_get_path('module', 'os_ga') . '/os_ga.js');
   }
 }
 
@@ -233,7 +261,24 @@ function _os_ga_build_script($accounts = array()) {
   $output = 'var _gaq = _gaq || [];';
   // Adds each GA account to the script.
   foreach ($accounts as $account => $info) {
-    $output .= '_gaq.push(["_setAccount", ' . drupal_json_encode($account) . ']);_gaq.push(["_trackPageview"]);';
+    $output .= '_gaq.push(["_setAccount", ' . drupal_json_encode($account) . ']);';
+    // Adds 404 page tracking if enabled and this is a 404 page.
+    if (variable_get('os_ga_404', 0) && (drupal_get_http_header("Status") == '404 Not Found')) {
+      $url_custom = '\'/error-404/\'+document.location.pathname';
+    }
+    // Otherwise adds search tracking if this is a search page.
+    elseif (variable_get('os_ga_search', 0) && module_exists('search') && arg(0) == 'search' && $keys = _os_ga_search_get_keys()) {
+      $url_custom = '(window.googleanalytics_search_results) ? ' . drupal_json_encode(url('search/' . arg(1), array('query' => array('search' => $keys)))) . ' : ' . drupal_json_encode(url('search/' . arg(1), array('query' => array('search' => 'no-results:' . $keys, 'cat' => 'no-results'))));
+    }
+    // Adds any custom rewritten URL from above.
+    if (!empty($url_custom)) {
+      $output .= '_gaq.push([\'_trackPageview\',' . $url_custom . ']);';
+    }
+    // Otherwise uses GA default page tracking settings.
+    else {
+      $output .= '_gaq.push(["_trackPageview"]);';
+    }
+    // Checks if this is the default AddThis account.
     if ($info['addthis_default'] === TRUE) {
       $addthis_account = $account;
     }
@@ -258,4 +303,21 @@ function _os_ga_build_script($accounts = array()) {
   }
 
   return $output;
+}
+
+/**
+ * Helper function for grabbing search keys. Function is missing in D7.
+ *
+ * http://api.drupal.org/api/function/search_get_keys/6
+ */
+function _os_ga_search_get_keys() {
+  static $return;
+  if (!isset($return)) {
+    // Extract keys as remainder of path
+    // Note: support old GET format of searches for existing links.
+    $path = explode('/', $_GET['q'], 3);
+    $keys = empty($_REQUEST['keys']) ? '' : $_REQUEST['keys'];
+    $return = count($path) == 3 ? $path[2] : $keys;
+  }
+  return $return;
 }
