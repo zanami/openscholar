@@ -96,7 +96,7 @@ function os_menu_alter(&$items) {
 
 /**
  * Implements hook_entity_info_alter().
- * 
+ *
  * Adds a view mode to nodes for use in sidebar widgets
  */
 function os_entity_info_alter(&$info) {
@@ -445,7 +445,7 @@ function os_menu_local_tasks_alter(&$data, $router_item, $root_path) {
 function os_process_node(&$vars) {
   // Adds a CSS class to the comment-add link.
   _os_process_node_links_comment_add_class($vars);
-  
+
   // adds theme hook suggestion to load this template if it exists
   $vars['theme_hook_suggestions'][] = 'node__'.$vars['type'].'__'.$vars['view_mode'];
 
@@ -643,6 +643,22 @@ function os_preprocess_page(&$vars) {
         // @todo will this be supported?
         // http://drupal.org/node/522006
       }
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_menu_link
+ * @param array $variables
+ */
+function os_preprocess_menu_link(&$variables) {
+  //Remove "menu-path-" and 'active' class from menu items without links.
+  if($variables['element']['#href'] === false && isset($variables['element']['#attributes']['class']) && ($path = array_search('menu-path-',$variables['element']['#attributes']['class']))){
+    unset($variables['element']['#attributes']['class'][$path]);
+
+    //Remove active class.
+    if(isset($variables['element']['#localized_options']['attributes']['class'])){
+      $variables['element']['#localized_options']['attributes']['class'] = array_diff($variables['element']['#localized_options']['attributes']['class'], array('active'));
     }
   }
 }
