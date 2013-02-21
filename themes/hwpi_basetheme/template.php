@@ -150,12 +150,13 @@ function hwpi_basetheme_node_view_alter(&$build) {
     }
     // Contact Details > email
     if (isset($build['field_email'])) {
-      $build['field_email']['#label_display'] = 'hidden';
+      $build['field_email']['#label_display'] = 'inline';
       $email_plain = $build['field_email'][0]['#markup'];
       if ($email_plain) {
-        $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">email</a>';
+        $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">' . $email_plain . '</a>';
       }
       $build['contact_details']['field_email'] = $build['field_email'];
+      $build['contact_details']['field_email']['#weight'] = -50;
       unset($build['field_email']);
     }
     // Contact Details > phone
@@ -166,6 +167,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
         $build['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
       }
       $build['contact_details']['field_phone'] = $build['field_phone'];
+      $build['contact_details']['field_phone']['#weight'] = 50;
       unset($build['field_phone']);
     }
 
