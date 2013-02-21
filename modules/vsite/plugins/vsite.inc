@@ -158,6 +158,11 @@ class vsite extends space_og {
               break;
             }
 
+            // Preventing a redirect loop when a node don't have an alias.
+            if (!drupal_lookup_path('alias', $_GET['q'])) {
+              break;
+            }
+
             // Then, looks to redirect to node aliases if they exist.
             // This avoids a false redirect loop detection in purl_goto() when:
             //  - the path we are going to has an alias
