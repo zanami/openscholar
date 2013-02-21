@@ -163,3 +163,44 @@ padding: 10px 0;
     font-weight: normal;
 
 }
+
+
+/** SLIDESHOW **/
+a.rslides_nav.next {
+    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #4384C4;
+}
+
+a.rslides_nav.prev {
+    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #4384C4;
+}
+
+#layout_16_9_below a.rslides_nav.next {
+    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #284F76;
+}
+
+#layout_16_9_below a.rslides_nav.prev {
+    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #284F76;
+}
+
+
+#layout_16_9_below .rslides_tabs {
+  background: #4384C4;
+}
+
+#layout_16_9_below .hero-copy {
+  background: #4384C4;
+
+}
+
+#layout_16_9_side .hero-copy h2,
+#layout_3_1_overlay .hero-copy h2,
+#layout_16_9_below .hero-copy h2,
+#layout_16_9_overlay .hero-copy h2 {
+  font-family: Georgia,arial;
+  font-size:28px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+  font-weight:normal;
+
+}
+
+	
