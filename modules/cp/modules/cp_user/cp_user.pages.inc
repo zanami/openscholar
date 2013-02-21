@@ -95,7 +95,7 @@ function cp_user_user_management_page($vsite_id) {
 	  $load['Member']['remove_link'],
     );
   }
-  $add_new_link = l('+ Add a new user','cp/users/add');
+  $add_new_link = l('+ Add a user to your site','cp/users/add');
 
   $output = '<div class="cp-manage-users-wrapper"><div class="cp-add-new-user"><ul><li>'.$add_new_link.'</li></ul></div><div class="cp-manager-user-content">';
   $output .= theme('table',array('header'=>$header,'rows'=>$rows));
