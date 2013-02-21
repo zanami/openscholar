@@ -4,10 +4,12 @@
  */
 ?>
 
-<div id="<?php echo $layout; ?>" class="flexslider">
-  <ul class="slides">
+<div id="<?php echo 'layout_' . $layout; ?>">
+	<div class="hero">
+  <ul class="rslides">
     <?php print implode("\n", $slides); ?>
   </ul>
   
   <?php print $controls; ?>
+</div>
 </div>

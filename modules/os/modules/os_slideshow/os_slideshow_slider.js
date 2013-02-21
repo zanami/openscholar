@@ -1,0 +1,20 @@
+/**
+ * @file os_slideshow_slider.js
+ * 
+ * Initializes responsive slides with each slideshow box's settings.
+ */
+
+(function ($) {
+
+// Behavior to load responsiveslides
+Drupal.behaviors.os_slideshow = {
+  attach: function(context, settings) {
+    for (delta in Drupal.settings.os_slideshow) {      
+      var slider = $('div#' + delta + ' .rslides');              
+      slider.responsiveSlides(Drupal.settings.os_slideshow[delta]);
+    }
+  }
+}
+
+
+}(jQuery));
