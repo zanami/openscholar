@@ -14,7 +14,7 @@
 }
 
 .view-media-default {
-	margin-right: 270px;
+	margin-right: 230px;
 	border-right: 1px solid lightgray;
 }
 
@@ -25,6 +25,15 @@
 	bottom: 22px;
 	right: 18px;
 	overflow: auto;
+	-webkit-transition: right 0.25s linear;
+}
+
+#file-edit-section:empty {
+	right: -205px;
+}
+
+#file-edit-section .form-actions a {
+	display: none;
 }
 
 #file-edit-no-selection {
@@ -36,4 +45,13 @@
 #file-edit-section input.form-file,
 #file-edit-section textarea {
 	max-width: 95%;
+}
+
+.views-exposed-form .views-exposed-widget {
+	float: none;
+	display: inline-block;
+}
+
+.views-exposed-form .views-widget-filter-filename {
+	width: 100%;
 }
