@@ -59,7 +59,7 @@ function os_basetheme_preprocess_page(&$vars) {
   if (!isset($vars['use_content_regions'])) {
     $vars['use_content_regions'] = false;
   }
-  
+
   $vars['login_link'] = theme('openscholar_login');
 }
 
@@ -165,4 +165,14 @@ function os_basetheme_preprocess_field(&$variables, $hook) {
     $variables['label_hidden'] = TRUE;
     $variables['items'][0]['#markup'] = ($start == $end) ? $start : $start . ' - ' . $end;
   }
+}
+
+/**
+ * Returns HTML for a link
+ *
+ * Only change from core is that this makes href optional for the <a> tag
+ */
+function os_basetheme_link(array $variables) {
+  $href = ($variables['path'] === false)?'':'href="' . check_plain(url($variables['path'], $variables['options'])) . '" ';
+  return '<a ' . $href . drupal_attributes($variables['options']['attributes']) . '>' . ($variables['options']['html'] ? $variables['text'] : check_plain($variables['text'])) . '</a>';
 }
