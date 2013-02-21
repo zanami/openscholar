@@ -18,7 +18,9 @@ a:visited {
     list-style: disc;
 }
 
-#columns .block.block-boxes-os_taxonomy_fbt ul {list-style: none;}
+#columns .block.block-boxes-os_taxonomy_fbt ul,
+#columns .block .item-list ul
+ {list-style: none;}
 
 p:empty {
 	display: none;
@@ -129,12 +131,15 @@ ol.search-results li.search-result:last-child {
 
 
 /* Calendar Pages */
-.view .date-nav-wrapper .date-prev {
-  right: 54px;
-}
+
 
 .view .date-nav-wrapper .date-prev {
     right: 590px;
+}
+
+
+.two-sidebars #main-content .view .date-nav-wrapper .date-prev {
+    right: 430px;
 }
 
 .view .date-nav-wrapper .date-prev a {

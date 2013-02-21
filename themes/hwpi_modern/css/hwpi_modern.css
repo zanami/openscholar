@@ -27,8 +27,6 @@ a:visited {
 }
 
 
-
-
 /* Header */
 #header {
   background: #303030;
@@ -127,13 +125,19 @@ ul.menu ul ul {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-h1.node-title,
+
 .page-search .title a,
 .boxes-box-content h2 {
   font-weight: normal;
   font-size: 18px;
   margin-bottom: 18px;
 }
+
+.page-search .title a {
+ font-size: 15px;
+ font-weight: bold;
+}
+
 
 .boxes-box-content h2 {
   font-size: 24px;
@@ -143,7 +147,7 @@ h1.node-title,
 h1#page-title {
   font-size: 40px;
   line-height: 1; /* Font size is larger than the default line-height, so will overlap if the title wraps */
-  margin: 15px 0 40px;
+   margin: 0 0 20px;
 }
 
 .page-node h1#page-title {}
@@ -184,6 +188,10 @@ h2.block-title {
   border-right: 1px solid #e7e7e7;
 }
 
+.two-sidebars #content-panels, .one-sidebar.sidebar-second #content-panels {
+    border-right: none;
+}
+
 .front #content-column .block,
 .node-person .block-inner,
 .comment-wrapper {
@@ -194,7 +202,8 @@ h2.block-title {
 .block-boxes-os_boxes_manual_list,
 .sidebar .block.section-nav,
 #content-column .block.section-nav,
-.front #content-column .block.block-boxes-os_slideshow_box {
+.front #content-column .block.block-boxes-os_slideshow_box,
+.node-type-person #content-column .node-person h2.block-title {
   border-top: none;
 }
 
@@ -203,6 +212,7 @@ h2.block-title {
   margin-bottom: 20px;
 }
 
+.node-type-person #content-column .node-person h2.block-title,
 .sidebar .block h2.block-title {
   background: none repeat scroll 0 0 #2D2D2D;
   color: #FFFFFF;
@@ -385,10 +395,42 @@ table td.mini {
 }
 
 
+.page-news .view .node-teaser {
+   padding: 10px 0 30px;
+}
 
 
+/** SLIDESHOW **/
+	
+#content-panels .block-boxes-os_slideshow_box .block-inner {
+    margin-top: 0;
+}
+	
+a.rslides_nav.next {
+    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #000;
+}
+
+a.rslides_nav.prev {
+    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #000;
+}
+
+.rslides_tabs li {
+    background: none;
+  
+}
+
+#layout_3_1_overlay .rslides_tabs li {
+    background: none;
+}
+
+.hero-copy h2 {
+    margin-bottom: 0;
+}
 
 
+.hero-copy h2 a {
+    font-weight: bold;
+}
 
 
 

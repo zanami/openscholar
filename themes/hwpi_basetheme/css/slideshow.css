@@ -20,7 +20,8 @@
     padding: 12px 30px;
 }
 
-.hero-copy a {
+.hero-copy a,
+.hero-copy a:visited {
     color: #FFFFFF;
 }
 
@@ -34,7 +35,7 @@
 }
 
 .hero-copy h2 a {
-    font: 32px/40px georgia,serif;
+    font: 32px/40px;
     margin-bottom: 12px;
 }
 
@@ -105,7 +106,8 @@
 .rslides_tabs li:first-child a {
     margin-left: 0;
 }
-.rslides_tabs a {
+.rslides_tabs a,
+.rslides_tabs a:visited {
     -moz-box-sizing: border-box;
     color: #4F524C;
     display: inline-block;
