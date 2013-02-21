@@ -107,10 +107,14 @@ body.no-sidebars .content-top-slideshow-enabled #menu-bar {
 .not-front .content-inner {
   padding: 0 30px 20px;
   border: 1px solid #dededc;
-  border-radius: 3px;
-  box-sizing: border-box;
   background: #fff;
   box-shadow: 0 1px 2px 0 #DEDEDC;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+
 }
 
 .region-inner {
@@ -122,11 +126,19 @@ body.no-sidebars .content-top-slideshow-enabled #menu-bar {
 a,
 a:visited {
   color: #3A72AB;
-  transition: all 0.25s linear 0s;
+  -webkit-transition: all 0.25s linear;
+  -moz-transition: all 0.25s linear;
+  -ms-transition: all 0.25s linear;
+  -o-transition: all 0.25s linear;
+  transition: all 0.25s linear;
 }
 
 div.contextual-links-wrapper a,
 .contextual-controls-wrapper div.ctools-dropdown.section_links a.ctools-dropdown-text-link {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
   transition: none;
 }
 
@@ -157,6 +169,7 @@ div.contextual-links-wrapper a,
 
 #menu-bar nav {
   background: #fff;
+  -webkit-border-radius: 2px;
   border-radius: 2px;
   -webkit-box-shadow: 0px 1px 1px 1px #dededc;
   box-shadow: 0px 1px 1px 1px #dededc;
@@ -164,7 +177,11 @@ div.contextual-links-wrapper a,
 
 #menu-bar a,
 #menu-bar a:visited {
-  transition: color 0.25s linear 0s;
+  -webkit-transition: color 0.25s linear;
+  -moz-transition: color 0.25s linear;
+  -ms-transition: color 0.25s linear;
+  -o-transition: color 0.25s linear;
+  transition: color 0.25s linear;
 }
 
 /* IE8 and below do not support box shadow, give them a border */
@@ -183,9 +200,7 @@ div.contextual-links-wrapper a,
   color: #303030;
   font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
   font-weight: normal;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  padding-right: 15px;
+  padding: 12px 15px;
   background: transparent;
   background-image: none;
 }
@@ -203,22 +218,34 @@ div.contextual-links-wrapper a,
   padding-right: 15px;
 }
 
+#menu-bar ul > li > a:hover,
+#menu-bar ul > li > a.active,
+#menu-bar ul.nice-menu a:hover,
+#menu-bar ul.nice-menu li.menuparent:hover a,
+#menu-bar ul.nice-menu .menuparent a.active {
+  background: #282828; /* Old browsers */
+  background: -moz-linear-gradient(top,  #313131 0%, #282828 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#313131), color-stop(100%,#282828)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #313131 0%,#282828 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #313131 0%,#282828 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #313131 0%,#282828 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #313131 0%,#282828 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313131', endColorstr='#282828',GradientType=0 ); /* IE6-9 */
+}
+
 #menu-bar ul.nice-menu a:hover,
 #menu-bar ul > li > a:hover,
 #menu-bar ul.nice-menu li.menuparent:hover a {
-  background: #282828;
-  background: linear-gradient(to bottom, #313131 0%, #282828 100%) repeat scroll 0 0 transparent;
   color: #fff;
+  -webkit-border-radius: 3px 3px 0 0;
   border-radius: 3px 3px 0 0;
 }
 
 #menu-bar ul > li > a.active,
 #menu-bar ul.nice-menu .menuparent a.active {
-  background: #282828;
-  background: linear-gradient(to bottom, #313131 0%, #282828 100%) repeat scroll 0 0 transparent;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding: 8px 15px;
   margin-top: 4px;
+  -webkit-border-radius: 3px;
   border-radius: 3px;
 }
 
@@ -228,9 +255,9 @@ div.contextual-links-wrapper a,
 }
 
 #menu-bar ul.nice-menu li.menuparent:hover a.active  {
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding: 12px 15px;
   margin-top: 0;
+  -webkit-border-radius: 3px 3px 0 0;
   border-radius: 3px 3px 0 0;
 }
 
@@ -247,17 +274,19 @@ div.contextual-links-wrapper a,
 
 #menu-bar ul.nice-menu .menuparent ul li a {
   background: #282828 !important;
-  border-radius: 0 !important;
   color: #65ACFF !important;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
+  -webkit-border-radius: 0 !important;
+  border-radius: 0 !important;
 }
 
 #menu-bar ul.nice-menu .menuparent ul li a:hover,
 #menu-bar ul.nice-menu .menuparent ul li a.active {
   background: #282828 !important;
-  border-radius: 0 !important;
   color: #fff !important;
+  -webkit-border-radius:  0 !important;
+  border-radius: 0 !important;
 }
 
 ul.nice-menu-down li ul li ul {
@@ -355,10 +384,13 @@ ul.primary {
 .front #content-panels .block,
 .sidebar .block {
   border: 1px solid #dededc;
-  border-radius: 3px;
-  box-sizing: border-box;
   background: #fff;
   box-shadow: 0 1px 2px 0 #DEDEDC;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .sidebar .block {
@@ -572,10 +604,13 @@ table td.mini {
 .section-nav .menu-depth-1 > ul {
   border: 1px solid #dededc;
   border-top: 0;
-  border-radius: 0 0 3px 3px;
-  box-sizing: border-box;
   background: #fff;
   box-shadow: 0 1px 2px 0 #DEDEDC;
+  -webkit-border-radius: 0 0 3px 3px;
+  border-radius: 0 0 3px 3px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .section-nav .menu-depth-1 > a {
@@ -622,10 +657,17 @@ ul.links li {
 }
 
 ul.links li.link-count-node-readmore {
-  background: #F8F8F8;
-  background: linear-gradient(to bottom, #F8F8F8 0%, #F3F3F3 100%) repeat scroll 0 0 transparent;
   border: 1px solid #DEDEDC !important;
-  border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background: #f8f8f8; /* Old browsers */
+  background: -moz-linear-gradient(top,  #f8f8f8 0%, #f3f3f3 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8f8f8), color-stop(100%,#f3f3f3)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #f8f8f8 0%,#f3f3f3 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #f8f8f8 0%,#f3f3f3 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #f8f8f8 0%,#f3f3f3 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #f8f8f8 0%,#f3f3f3 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', endColorstr='#f3f3f3',GradientType=0 ); /* IE6-9 */
 }
 
 ul.links li.link-count-node-readmore a {
@@ -642,11 +684,17 @@ ul.links li.link-count-node-readmore a {
 
 /* Footer */
 #footer {
-  background: #2B2B2B;
-  background: linear-gradient(to bottom, #2B2B2B 0%, #1B1B1B 100%) repeat scroll 0 0 transparent;
   color: #fff;
   padding: 60px 0 12px;
   position: relative;
+  background: #2b2b2b; /* Old browsers */
+  background: -moz-linear-gradient(top,  #2b2b2b 0%, #1b1b1b 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#2b2b2b), color-stop(100%,#1b1b1b)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #2b2b2b 0%,#1b1b1b 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #2b2b2b 0%,#1b1b1b 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #2b2b2b 0%,#1b1b1b 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #2b2b2b 0%,#1b1b1b 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2b2b2b', endColorstr='#1b1b1b',GradientType=0 ); /* IE6-9 */
 }
 
 #footer ul.menu a {
