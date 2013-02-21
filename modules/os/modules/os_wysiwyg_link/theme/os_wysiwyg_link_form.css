@@ -1,14 +1,23 @@
 
 div.form-item-link-text {
-	margin: 0 0 -100px 280px ;
+	margin: 0 0 -100px 160px ;
 	position: relative;
 	z-index: 2;
 }
 
+div.vertical-tabs {
+	background-position-x: -120px;
+}
+
 div.vertical-tabs .vertical-tabs-panes {
 	margin-top: 75px;
+	margin-left: 145px;
 }
 
 .vertical-tabs-pane input[type=submit] {
 	display: none;
+}
+
+div.vertical-tabs .vertical-tabs-list {
+	width: 120px;
 }
