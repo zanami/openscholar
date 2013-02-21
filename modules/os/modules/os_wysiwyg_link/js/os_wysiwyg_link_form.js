@@ -31,6 +31,18 @@ Drupal.behaviors.osLinkEmail = {
   }
 }
 
+Drupal.behaviors.osLinkFile = {
+  attach: function (ctx) {
+    $('#-os-link-get-view').submit(function (e) {
+      var selected = Drupal.media.browser.selectedMedia;
+      if (selected.length) {
+        var fid = selected[0].fid;
+        Drupal.settings.osWysiwygLinkResult = '[[{"fid":"'+fid+'","type":"url","view_mode":"default","attributes":{}}]]';
+      }
+    });
+  }
+}
+
 Drupal.behaviors.osLinkUpload = {
   attach: function (ctx) {
     $('#file-entity-add-upload').submit(function (e) {

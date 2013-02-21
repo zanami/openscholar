@@ -131,8 +131,19 @@ function _os_link_get_view() {
       if ($title = $view->get_title()) {
         $build['#title'] = $title;
       }
+      
+      $output = array(
+      	'library' => $build,
+        'actions' => array(
+          '#type' => 'actions',
+          'insert' => array(
+            '#type' => 'submit',
+            '#value' => t('Insert'),
+          )
+        )
+      );
 
-      return array('library' => $build);
+      return $output;
     }
   }
   
