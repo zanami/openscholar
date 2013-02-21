@@ -179,5 +179,5 @@ function os_classes_views_query_alter(&$view, &$query) {
   }
 
   $tid = str_replace('taxonomy/term/', '', $path);
-  $term = taxonomy_term_load($tid);
+  $query->add_where(0, "field_data_og_vocabulary.target_id= $tid");
 }
