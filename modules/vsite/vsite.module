@@ -797,13 +797,6 @@ function _vsite_purl_init(){
  */
 function vsite_menu_alter(&$items){
   $items['user/%user/edit/groups']['access callback'] = FALSE;
-
-  // Overrides of autocomplete callbacks.
-  if (module_exists('views') && isset($items['user/autocomplete'])) {
-    $items['user/autocomplete']['page callback'] = 'vsite_user_autocomplete';
-    $items['user/autocomplete']['module'] = 'vsite';
-    $items['user/autocomplete']['file'] = 'vsite.module';
-  }
 }
 
 /**
@@ -1212,6 +1205,16 @@ function vsite_menu(){
     'file path' => drupal_get_path('module', 'vsite') . '/includes'
   );
 
+  // User autocomplete callback that allows for searching of name/email/login.
+  $items['vsite/autocomplete/user'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Vsite Autocomplete User',
+    'page callback' => 'vsite_user_autocomplete',
+    'access arguments' => array(
+      'access content'
+    ),
+  );
+
   return $items;
 }
 
@@ -1583,13 +1586,8 @@ function vsite_os_settings_subsites_form_submit($form, &$form_state){
 }
 
 /**
- * Used the funtion spaces_user_autocomplete as the skeleton for this function.
- * On top of what the spaces function does, this function now allows searching of email, first/last names.
- * Override of user/autocomplete. This accomplishes two things:
- * - Pushes the result set through db_rewrite_sql() which allows access
- *   conditions to be placed on the query.
- * - Uses a View, which allows implementing space types to filter the result
- *   set when a space is active.
+ * Autocomplete function to allow users to now search for users based on name, email or login.
+ * Used the function spaces_user_autocomplete as the skeleton for this function.
  */
 function vsite_user_autocomplete($string = '') {
   $space = spaces_get_space();
@@ -1598,7 +1596,7 @@ function vsite_user_autocomplete($string = '') {
     $query = db_select('users', 'u');
     // Left Join the field_data_field_first_name table.
     $query->leftJoin('field_data_field_first_name', 'fn', '(u.uid = fn.entity_id AND fn.entity_type = :param1)',array(':param1' => 'user'));
-    // Left Join ghte field_data_field_last_name table.
+    // Left Join the field_data_field_last_name table.
     $query->leftJoin('field_data_field_last_name', 'ln', '(u.uid = ln.entity_id AND ln.entity_type = :param2)',array(':param2' => 'user'));
     $query->condition(
       db_or()
@@ -1609,17 +1607,9 @@ function vsite_user_autocomplete($string = '') {
     );
     $query->fields('u', array('name'));
     // CONCAT the display, if there is no last name entered, show the username/email only, if there is a last name, show first/last/email.
-    $query->addExpression("IF(ln.field_last_name_value IS NULL, CONCAT(u.name, '( ', u.mail , ' )'), CONCAT(fn.field_first_name_value, ' ', ln.field_last_name_value, '( ', u.mail , ' )'))", 'myname');
+    $query->addExpression("IF(ln.field_last_name_value IS NULL, CONCAT(u.name, ' (', u.mail , ') '), CONCAT(fn.field_first_name_value, ' ', ln.field_last_name_value, ' (', u.mail , ') '))", 'myname');
     $query->range(0, 10);
     $query->addTag('user_autocomplete');
-
-    // Add spaces specific tag. Every Spaces Controller should implement
-    // hook_query_spaces_user_autocomplet_[TYPE]_alter.
-    // @see spaces_og_query_spaces_user_autocomplete_og_alter()
-    if (isset($spaces->type)) {
-      $query->addTag('user_autocomplete_spaces');
-      $query->addTag('user_autocomplete_spaces_' . $spaces->type);
-    }
 
     $result = $query->execute();
     foreach ($result as $user) {

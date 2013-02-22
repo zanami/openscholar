@@ -118,6 +118,8 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
   // Added the link onto the form as just text and set the weight higher to bump it down the add user form.
   $form['og_user']['name']['#title'] = t('User');
   $form['og_user']['name']['#description'] = t('Type in a persons name, login, or e-mail address to search for their account.');
+  // Add the new user autocomplete function.
+  $form['og_user']['name']['#autocomplete_path'] = 'vsite/autocomplete/user';
   $form['og_user']['link_text'] = array(
     '#type' => 'item',
     '#markup' => t('If you can\'t find their account, click "!create_new" to create a new account.',
