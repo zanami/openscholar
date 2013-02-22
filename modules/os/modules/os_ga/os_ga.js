@@ -35,9 +35,9 @@ $(document).ready(function() {
       }
       
       // Is this link in a main menu?
-      if (os_ga.trackNavigation && (this.closest('#primary-menu').length || this.closest('#secondary-menu').length)) {
+      if (os_ga.trackNavigation && (this.closest('#block-os-primary-menu').length || this.closest('#block-os-secondary-menu').length)) {
     	// Navigation menu item clicked.
-    	var navType = this.closest('#primary-menu').length ? "Primary Nav" : "Secondary Nav";
+    	var navType = this.closest('#block-os-primary-menu').length ? "Primary Nav" : "Secondary Nav";
     	_gaq.push(["_trackEvent", navType, "Click", this.href]);
       }
     });
