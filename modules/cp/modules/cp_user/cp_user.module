@@ -116,7 +116,7 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
   // Create and add a link for the user to click on to create a new user.
   $ajax_link = '<a href="javascript:void(0)" id="new-user-link">' . t('Add a new user') . '</a>';
   // Added the link onto the form as just text and set the weight higher to bump it down the add user form.
-  $form['og_user']['name']['#description'] = t('Type in a persons username to search for their account.');
+  $form['og_user']['name']['#description'] = t('Type in a persons name, login, or e-mail address to search for their account.');
   $form['og_user']['link_text'] = array(
     '#type' => 'item',
     '#markup' => t('If you can\'t find their account, click "!create_new" to create a new account.',
