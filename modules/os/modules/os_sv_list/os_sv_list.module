@@ -93,6 +93,10 @@ function os_sv_list_get_content_type_vocabs($bundle) {
       }
     }
   }
+  if (empty($vocabs)) {
+    return array();
+  }
+
 
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'og_vocab')
