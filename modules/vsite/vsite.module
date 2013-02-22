@@ -1621,6 +1621,23 @@ function vsite_user_autocomplete($string = '') {
     if(array_key_exists($admin, $matches)) {
       unset($matches[$admin]);
     }
+
+    // Remove current group members.
+    if(isset($space)) {
+      $query = db_select("og_membership", "ogm");
+      $query->join('users', 'u', 'u.uid = ogm.etid');
+      $query->condition("ogm.gid", $space->group-nid, "=");
+      $query->condition("entity_type","user","=");
+      $query->fields("u", array("name"));
+      $result = $query->execute()->fetchAll();
+      if($result) {
+        foreach($result as $username) {
+          $group[$username->name] = $username->name;
+        }
+        // Remove the memebers.
+        $matches = array_diff_key($matches, $group);
+      }
+    }
   }
   drupal_json_output($matches);
 }
