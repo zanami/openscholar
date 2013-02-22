@@ -149,7 +149,7 @@ padding: 10px 0;
 
 #footer ul.menu a {
 	text-transform: none;
-	font-size: 16px;
+	font-size: 14px;
 }
 
 #footer ul.menu li.menuparent {
@@ -162,6 +162,19 @@ padding: 10px 0;
 
     font-weight: normal;
 
+}
+
+
+#footer ul.menu li a {
+    font-family:arial;
+    text-transform: uppercase;
+}
+
+#footer ul.menu li ul li a {
+    font-family:arial;
+    text-transform: none;
+    font-family:georgia;
+    font-size:16px;
 }
 
 
