@@ -441,6 +441,28 @@ ul.class_material_field_class a.class_material_field_class_anchor {
     width: 48px;
 	position: absolute;
 }
+
+/* VIDEO ATTCHD TO A NODE */
+
+.oembed {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border-color: #888;
+    border-radius: 0 0 0 0;
+    border-style: solid;
+    border-width: 1px;
+    color: #555555;
+    text-align:center;
+
+}
+
+.oembed .oembed-title {
+    color:#005C9C;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    text-align: left;
+    text-shadow: none;
+}
 	
 
 .feed_item {margin-bottom:8px;}
