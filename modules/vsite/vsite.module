@@ -1625,7 +1625,7 @@ function vsite_user_autocomplete($string = '') {
     if(isset($space)) {
       $query = db_select("og_membership", "ogm");
       $query->join('users', 'u', 'u.uid = ogm.etid');
-      $query->condition("ogm.gid", $space->group-nid, "=");
+      $query->condition("ogm.gid", $space->group->nid, "=");
       $query->condition("entity_type","user","=");
       $query->fields("u", array("name"));
       $result = $query->execute()->fetchAll();
