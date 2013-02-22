@@ -67,7 +67,7 @@
     margin-right: auto;
     width:980px;
   }
-  
+
   /* Branding */
   #branding_header #branding-container {
     height: 38px;
@@ -173,7 +173,7 @@
     margin-left:-360px;
     text-align: right;
   }
-  
+
 
   .region-header-third .region-inner {
     padding-top:15px;
@@ -244,22 +244,22 @@
   #content-panels .region-content-top {
     width: 100% !important; /* force the width no matter what */
   }
-  
-  
-  
+
+
+
   /* Footer panels */
- 
- /* REMOVE WHEN A REASONABLE FOOTER SOLUTION IS IN PLACE */                                                                                                                                                                                                                                     
+
+ /* REMOVE WHEN A REASONABLE FOOTER SOLUTION IS IN PLACE */
  #footer .at-panel .region {
     display: inline;
     float: left;
 }
- 
+
 
   .region-footer {
     width: 500px;
   }
-  
+
   /* debug
   .region-footer-first {
     background: #eee;
@@ -275,12 +275,12 @@
     width: 380px;
   }
   .footer-left.footer .region-footer {}
-  
+
   /* never happens, footer is always active */
   .footer-left.footer-right .region-footer-first {}
   .footer-left.footer-right .region-footer-third {}
-  
-  
+
+
   .footer.footer-right .region-footer {}
   .footer.footer-right .region-footer-third {
     width: 480px;
@@ -293,32 +293,32 @@
   .footer-left.footer.footer-right .region-footer-third {
     width: 160px;
   }
-  
 
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*
   .inset-wrapper {float:left;width:75%}
   .five-5x20 .row-1 {width:40%}

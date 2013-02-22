@@ -24,7 +24,9 @@ body {
 	background: #f3f3f1;
 }
 
-
+#content-panels .block-boxes-os_slideshow_box .block-inner {
+    margin-top: 0;
+}
 
 /* Titles & Type */
 #page-title,
@@ -39,7 +41,11 @@ body {
 .links a,
 #footer ul.menu a,
 .boxes-box-content h2,
-.section-nav a {
+.section-nav a,
+#content-column h2,
+#content-column h3,
+#content-column h4
+ {
 	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 }
 
@@ -55,6 +61,13 @@ h1.node-title,
 	font-weight: normal;
 	font-size: 18px;
 	margin-bottom: 18px;
+}
+
+
+#content-column h2,
+#content-column h3,
+#content-column h4 {
+	margin-bottom: 16px;
 }
 
 
@@ -74,13 +87,19 @@ h1#page-title {
 }
 
 h2.block-title {
-	padding:10px 0;
 	text-transform:uppercase;
 	font-size:12px;
 	font-weight:normal;
 	letter-spacing:0.1em;
 	font-weight:bold;
+	font-family:arial !important;
 }
+
+.not-front h2.block-title {
+padding: 10px 0;
+}
+
+
 
 .page-search h1#page-title {
   margin-top:10px;
@@ -95,7 +114,9 @@ h2.block-title {
 .not-front #content-column p {
 }
 
-
+.links li a {
+    font-size: 13px;
+}
 
 /* Border control */
 .not-front.two-sidebars #content-column .content-inner {
@@ -112,8 +133,12 @@ h2.block-title {
 .block-boxes block-boxes-os_sv_list_box,
 .block-boxes-os_boxes_manual_list, 
 .sidebar .block.section-nav,
-#content-column .block.section-nav {
+#content-column .block.section-nav  {
 	border-top: none;
+}
+
+.front #content-column .block.block-boxes-os_boxes_manual_list {
+    border-top: 1px solid #CCCCCC;
 }
 
 
@@ -127,3 +152,55 @@ h2.block-title {
 	font-size: 16px;
 }
 
+#footer ul.menu li.menuparent {
+
+    font-weight: bold;
+
+}
+
+#footer ul.menu li.menuparent ul li {
+
+    font-weight: normal;
+
+}
+
+
+/** SLIDESHOW **/
+a.rslides_nav.next {
+    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #4384C4;
+}
+
+a.rslides_nav.prev {
+    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #4384C4;
+}
+
+#layout_16_9_below a.rslides_nav.next {
+    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll -20px 2px #284F76;
+}
+
+#layout_16_9_below a.rslides_nav.prev {
+    background: url(../../hwpi_basetheme/images/ss_arrow.png) repeat scroll 2px 2px #284F76;
+}
+
+
+#layout_16_9_below .rslides_tabs {
+  background: #4384C4;
+}
+
+#layout_16_9_below .hero-copy {
+  background: #4384C4;
+
+}
+
+#layout_16_9_side .hero-copy h2,
+#layout_3_1_overlay .hero-copy h2,
+#layout_16_9_below .hero-copy h2,
+#layout_16_9_overlay .hero-copy h2 {
+  font-family: Georgia,arial;
+  font-size:28px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+  font-weight:normal;
+
+}
+
+	

@@ -18,6 +18,10 @@ a:visited {
     list-style: disc;
 }
 
+#columns .block.block-boxes-os_taxonomy_fbt ul,
+#columns .block .item-list ul
+ {list-style: none;}
+
 p:empty {
 	display: none;
 }
@@ -63,7 +67,7 @@ table caption {
 	color:#4384C4;
 	text-transform:uppercase;
 	font-size:12px;
-	font-weight:bold;	
+	font-weight:bold;
 	letter-spacing:0.1em;
 }
 
@@ -127,12 +131,15 @@ ol.search-results li.search-result:last-child {
 
 
 /* Calendar Pages */
-.view .date-nav-wrapper .date-prev {
-  right: 54px;
-}
+
 
 .view .date-nav-wrapper .date-prev {
     right: 590px;
+}
+
+
+.two-sidebars #main-content .view .date-nav-wrapper .date-prev {
+    right: 430px;
 }
 
 .view .date-nav-wrapper .date-prev a {
@@ -255,7 +262,7 @@ ol.search-results li.search-result:last-child {
   border-color: #CCC;
   border-radius: 0;
   line-height: 1.4em;
-  color: #fff;
+  color: #1E1E1E;
 }
 
 .calendar-calendar .week-view .full div.single-day div.weekview a,
@@ -415,8 +422,8 @@ ol.search-results li.search-result:last-child {
 }
 
 .node-type-person .node-person .field-name-field-professional-title {
-  padding-top: 10px;
-  margin-top: -20px;
+  padding: 10px 0 20px;
+  margin-top: -17px;
 }
 
 .node-type-person .node-person .pic-bio {
@@ -448,7 +455,8 @@ article.node-teaser.node-person .node-content {
   display: inline-block;
   width: 50%;
   vertical-align: top;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
+  padding-top: 15px;
 }
 
 .node-type-person #content .node-person .field-name-field-phone,
@@ -469,12 +477,12 @@ article.node-teaser.node-person .node-content {
   margin-left: 30px;
 }
 
-#content .node-person .node-content > .block.odd .block-inner { 
+#content .node-person .node-content > .block.odd .block-inner {
   margin-right: 30px;
 }
 
 .node-type-person .node-person .field-name-field-email {
-  text-transform: capitalize; 
+  text-transform: capitalize;
 }
 
 .node-teaser.node-person header h1 {
@@ -482,11 +490,22 @@ article.node-teaser.node-person .node-content {
 }
 
 .node-teaser.node-person {
-  line-height: 19px;
   padding: 15px 0 30px;
 }
 
+/* Node FAQ */
+.node-teaser.node-faq {
+  line-height: 19px;
+  padding: 5px 0 30px;
+}
 
+.page-faq h1.node-title {
+	margin-bottom: 14px;
+}
+
+.page-faq .node-faq .field-name-body p {
+    margin: 0 0 0.5em;
+}
 
 /* Node Presentations */
 .node-presentation.node-teaser .date-display-single {
@@ -650,14 +669,14 @@ ul.pager li.pager-item {
   padding: 4px 8px;
 }
 
-ul.pager li.pager-first,
+
 ul.pager li.pager-previous {
-  float: left;
+  margin-right: 20px;
 }
 
-ul.pager li.pager-last,
+
 ul.pager li.pager-next {
-  float: right;
+  margin-left: 20px;
 }
 
 
