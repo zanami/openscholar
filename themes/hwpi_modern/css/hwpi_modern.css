@@ -395,6 +395,19 @@ table td.mini {
 }
 
 
+#footer ul.menu li a {
+    font-family:arial;
+    text-transform: uppercase;
+    font-size:13px;
+}
+
+#footer ul.menu li ul li a {
+    font-family:arial;
+    text-transform: none;
+    font-size: 14px;
+}
+
+
 .page-news .view .node-teaser {
    padding: 10px 0 30px;
 }
