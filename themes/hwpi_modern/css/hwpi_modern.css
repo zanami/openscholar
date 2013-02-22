@@ -203,7 +203,7 @@ h2.block-title {
 .sidebar .block.section-nav,
 #content-column .block.section-nav,
 .front #content-column .block.block-boxes-os_slideshow_box,
-.node-type-person #content-column .node-person h2.block-title {
+.page-node.node-type-person .node-person .block-inner {
   border-top: none;
 }
 
@@ -223,6 +223,7 @@ h2.block-title {
   text-transform: capitalize;
   font-weight: normal;
 }
+
 
 .block-content {
   margin-top: 20px;
@@ -432,8 +433,10 @@ a.rslides_nav.prev {
     font-weight: bold;
 }
 
+/** PEOPLE DETAIL PAGE **/
 
-
-
+.node-type-person .node-person .field-name-field-professional-title {
+    margin-top: 0;
+}
 
 
