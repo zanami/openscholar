@@ -37,7 +37,9 @@ Drupal.behaviors.osLinkFile = {
       var selected = Drupal.media.browser.selectedMedia;
       if (selected.length) {
         var fid = selected[0].fid;
-        Drupal.settings.osWysiwygLinkResult = '[[{"fid":"'+fid+'","type":"url","view_mode":"default","attributes":{}}]]';
+        console.log(selected[0]);
+        Drupal.settings.osWysiwygLinkResult = selected[0].url;
+        Drupal.settings.osWysiwygLinkAttributes = {"data-fid": fid};
       }
     });
   }
