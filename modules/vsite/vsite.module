@@ -1210,9 +1210,8 @@ function vsite_menu(){
     'type' => MENU_CALLBACK,
     'title' => 'Vsite Autocomplete User',
     'page callback' => 'vsite_user_autocomplete',
-    'access arguments' => array(
-      'access content'
-    ),
+    'access callback' => 'user_access',
+    'access arguments' => array('access user profiles'),
   );
 
   return $items;
