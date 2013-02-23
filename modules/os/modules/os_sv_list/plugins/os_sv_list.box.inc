@@ -189,23 +189,9 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['more'],
     );
 
-    $content_map = array(
-      'all' => '',
-      'news' => 'news',
-      'biblio' => 'publications',
-      'event' => 'calendar',
-      'page' => 'pages',
-      'data' => 'data',
-      'blog' => 'blog',
-      'book' => 'documents',
-      'feed' => 'reader',
-      'media_gallery' => 'galleries',
-      'link' => 'links',
-      'presentation' => 'presentations',
-      'software_project' => 'software',
-      'software_release' => 'software',
-      'person' => 'people',
-    );
+    ctools_include('os', 'os');
+    $content_map = os_get_app_path();
+    $content_map = array_diff_key($content_map, array_flip(array('bio', 'cv', 'class_material')));
 
     if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
       $default_value = $content_map[$content_types_value];
@@ -235,23 +221,7 @@ class os_sv_list_box extends os_boxes_default {
         'js' => array(
           array(
             'data' => array(
-              'more_link_defaults' => array(
-                'all' => '',
-                'news' => 'news',
-                'biblio' => 'publications',
-                'event' => 'calendar',
-                'page' => 'pages',
-                'data' => 'data',
-                'blog' => 'blog',
-                'book' => 'documents',
-                'feed' => 'reader',
-                'media_gallery' => 'galleries',
-                'link' => 'links',
-                'presentation' => 'presentations',
-                'software_project' => 'software',
-                'software_release' => 'software',
-                'person' => 'people',
-              ),
+              'more_link_defaults' => $content_map,
             ),
             'type' => 'setting',
           )
