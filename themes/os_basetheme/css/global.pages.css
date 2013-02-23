@@ -897,7 +897,8 @@ ul.recent-images-list li a:hover img {
  background: none;
 }
 
-.image-style-os-files-large, .image-style-os-files-xlarge {padding-right:10px;}
+.image-style-os-files-large, .image-style-os-files-xlarge,
+.field-name-body img {padding-right:10px;}
 
 /**
  * "News" node-type styles.
@@ -917,4 +918,26 @@ ul.recent-images-list li a:hover img {
   margin-left: 1em;
 }
 
+
+/** LIST OF POST PERSON - TEASER - WHEN IN SIDEBAR **/
+
+.block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .field-name-field-person-photo,
+.block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .pic-bio
+ {float:left;display:inline;clear:none;padding-right:10px;}
+ 
+ .block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .node-header
+ {float:left;display:inline;clear:none;}
+ 
+  .block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .node-header h1
+ {margin-top:0;}
+ 
+ .block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .node-content
+ { float: right;}
+
+
+.block-boxes-os_sv_list_box .node-person .field-name-field-professional-title .field-item {
+    display: inline;
+    float: left;
+    padding-right: 0;
+}
 
