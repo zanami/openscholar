@@ -718,6 +718,10 @@ function cp_content_views_default_views() {
   $handler->display->display_options['relationships']['file_to_node']['id'] = 'file_to_node';
   $handler->display->display_options['relationships']['file_to_node']['table'] = 'file_usage';
   $handler->display->display_options['relationships']['file_to_node']['field'] = 'file_to_node';
+  /* Relationship: File: User who uploaded */
+  $handler->display->display_options['relationships']['uid']['id'] = 'uid';
+  $handler->display->display_options['relationships']['uid']['table'] = 'file_managed';
+  $handler->display->display_options['relationships']['uid']['field'] = 'uid';
   /* Field: File: File ID */
   $handler->display->display_options['fields']['fid']['id'] = 'fid';
   $handler->display->display_options['fields']['fid']['table'] = 'file_managed';
@@ -834,51 +838,22 @@ function cp_content_views_default_views() {
   $handler->display->display_options['filters']['schema_type']['table'] = 'file_managed';
   $handler->display->display_options['filters']['schema_type']['field'] = 'schema_type';
   $handler->display->display_options['filters']['schema_type']['group'] = 1;
-  /* Filter criterion: File: Name */
-  $handler->display->display_options['filters']['filename']['id'] = 'filename';
-  $handler->display->display_options['filters']['filename']['table'] = 'file_managed';
-  $handler->display->display_options['filters']['filename']['field'] = 'filename';
-  $handler->display->display_options['filters']['filename']['operator'] = 'contains';
-  $handler->display->display_options['filters']['filename']['group'] = 2;
-  $handler->display->display_options['filters']['filename']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['filename']['expose']['operator_id'] = 'filename_op';
-  $handler->display->display_options['filters']['filename']['expose']['label'] = 'Name';
-  $handler->display->display_options['filters']['filename']['expose']['operator'] = 'filename_op';
-  $handler->display->display_options['filters']['filename']['expose']['identifier'] = 'filename';
-  $handler->display->display_options['filters']['filename']['expose']['remember_roles'] = array(
+  /* Filter criterion: File: File name or title */
+  $handler->display->display_options['filters']['file_name_title']['id'] = 'file_name_title';
+  $handler->display->display_options['filters']['file_name_title']['table'] = 'file_managed';
+  $handler->display->display_options['filters']['file_name_title']['field'] = 'file_name_title';
+  $handler->display->display_options['filters']['file_name_title']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['file_name_title']['expose']['operator_id'] = '';
+  $handler->display->display_options['filters']['file_name_title']['expose']['label'] = 'File name or field';
+  $handler->display->display_options['filters']['file_name_title']['expose']['operator'] = 'file_name_title_op';
+  $handler->display->display_options['filters']['file_name_title']['expose']['identifier'] = 'file_name_title';
+  $handler->display->display_options['filters']['file_name_title']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,
-    11 => 0,
-    16 => 0,
-    21 => 0,
-    26 => 0,
-  );
-  $handler->display->display_options['filters']['filename']['group_info']['label'] = 'Name';
-  $handler->display->display_options['filters']['filename']['group_info']['identifier'] = 'filename';
-  $handler->display->display_options['filters']['filename']['group_info']['remember'] = FALSE;
-  $handler->display->display_options['filters']['filename']['group_info']['group_items'] = array(
-    1 => array(),
-    2 => array(),
-    3 => array(),
-  );
-  /* Filter criterion: File: Original Name */
-  $handler->display->display_options['filters']['origname']['id'] = 'origname';
-  $handler->display->display_options['filters']['origname']['table'] = 'file_managed';
-  $handler->display->display_options['filters']['origname']['field'] = 'origname';
-  $handler->display->display_options['filters']['origname']['operator'] = 'contains';
-  $handler->display->display_options['filters']['origname']['group'] = 2;
-  $handler->display->display_options['filters']['origname']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['origname']['expose']['operator_id'] = 'origname_op';
-  $handler->display->display_options['filters']['origname']['expose']['label'] = 'Original Name';
-  $handler->display->display_options['filters']['origname']['expose']['operator'] = 'origname_op';
-  $handler->display->display_options['filters']['origname']['expose']['identifier'] = 'origname';
-  $handler->display->display_options['filters']['origname']['expose']['remember_roles'] = array(
-    2 => '2',
-    1 => 0,
-    11 => 0,
-    16 => 0,
-    21 => 0,
-    26 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
   );
 
   /* Display: Page */
