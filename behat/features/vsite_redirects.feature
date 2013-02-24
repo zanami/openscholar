@@ -2,14 +2,14 @@ Feature:
   In order to have content at a single URL as a visitor i want to be redirected
   to a canonical URL.
 
-  @api @current
+  @api
   Scenario: Non-aliased node paths redirect on sites without domains.
     Given I expect for a behavior according the next <statements>:
       | john          | 200  | john                       |
       | node/1        | 302  | john                       |
-      | node/10       | 302  | john/book/all-about-nodes  |
-      | john/node/10  | 302  | john/book/all-about-nodes  |
-      | als/node/10   | 302  | john/book/all-about-nodes  |
+      | node/25       | 302  | john/book/all-about-nodes  |
+      | john/node/25  | 302  | john/book/all-about-nodes  |
+      | als/node/25   | 302  | john/book/all-about-nodes  |
 
   @api
   Scenario Outline: Non-aliased node paths redirect on sites with domains.
