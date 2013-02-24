@@ -183,6 +183,10 @@ h2.block-title {
   background-position:  0 -340px;
 }
 
+#search-block-form .form-item label {
+	color:#9A9A9A;
+}
+
 /* Border control */
 .not-front.two-sidebars #content-column .content-inner {
   border-right: 1px solid #e7e7e7;

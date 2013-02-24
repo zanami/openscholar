@@ -93,6 +93,7 @@ input[type="search"] {
   -moz-border-left-colors: #D4D4D2;
   -moz-border-right-colors: #D4D4D2;
   -moz-border-top-colors: #D4D4D2;
+  width: 305px;
 }
 
 #search-block-form input.form-submit,
@@ -103,6 +104,8 @@ input[type="search"] {
 
 #search-block-form .form-item label {
 	display: inline;
+	font-weight:normal;
+	color:#6A6A6A;
 }
 
 /* Calendar Overrides */
