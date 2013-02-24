@@ -152,6 +152,7 @@ div.messages {
   .footer-left.footer.footer-right .region-footer-first,
   .footer-left.footer.footer-right .region-footer-third,
   .footer.footer-right .region-footer-third,
+  .footer-left.footer .region-footer-first,
   .footer-left.footer-right .region-footer-first,
   .footer-left.footer-right .region-footer-third {
 	width: 25%;
