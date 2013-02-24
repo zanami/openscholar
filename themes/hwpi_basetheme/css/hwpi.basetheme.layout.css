@@ -62,7 +62,8 @@
   #block-os-primary-menu,
   #footer .gpanel,
   .region-footer,
-  .message-inner {
+  .message-inner,
+  #powerby-login {
     margin-left: auto;
     margin-right: auto;
     width:980px;
@@ -249,72 +250,21 @@
 
   /* Footer panels */
 
- /* REMOVE WHEN A REASONABLE FOOTER SOLUTION IS IN PLACE */
- #footer .at-panel .region {
-    display: inline;
-    float: left;
-}
+  .footer.footer-right .region-footer,
+  .footer-left.footer .region-footer {
+    	width: 52%;
+  	}
+  
+  .footer.footer-right .region-footer-third,
+  .footer-left.footer .region-footer-first {width: 48%;}
 
-
-  .region-footer {
-    width: 500px;
-  }
-
-  /* debug
-  .region-footer-first {
-    background: #eee;
-  }
-  .region-footer {
-    background: #ccc;
-  }
-  .region-footer-third {
-    background: #ddd;
-  }*/
-
-  .footer-left.footer .region-footer-first {
-    width: 380px;
-  }
-  .footer-left.footer .region-footer {}
-
-  /* never happens, footer is always active */
-  .footer-left.footer-right .region-footer-first {}
-  .footer-left.footer-right .region-footer-third {}
-
-
-  .footer.footer-right .region-footer {}
-  .footer.footer-right .region-footer-third {
-    width: 480px;
-  }
-
-  .footer-left.footer.footer-right .region-footer-first {
-    width: 320px;
-  }
-  .footer-left.footer.footer-right .region-footer {}
-  .footer-left.footer.footer-right .region-footer-third {
-    width: 160px;
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  .footer-left.footer.footer-right .region-footer-first,
+  .footer-left.footer.footer-right .region-footer-third,
+  .footer-left.footer.footer-right .region-footer,
+  .footer-left.footer-right .region-footer-first,
+  .footer-left.footer-right .region-footer-third {
+	width: 33%;
+	}
 
 
 
