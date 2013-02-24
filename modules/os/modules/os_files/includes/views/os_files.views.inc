@@ -20,5 +20,14 @@ function os_files_views_data() {
     ),
   );
 
+  // Content type
+  $data['file_managed']['file_name_title'] = array(
+    'title' => t('File name or field'),
+    'help' => t('Filter files by the file name of display.'),
+    'filter' => array(
+      'handler' => 'os_files_filter_title_file_name',
+    ),
+  );
+
   return $data;
 }

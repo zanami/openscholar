@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ * Filtering a file with by the real file name or file title.
+ */
+
+/**
+ * Filter by file name or title.
+ */
+class os_files_filter_title_file_name extends views_handler_filter {
+  function value_form(&$form, &$form_state) {
+    $values = array();
+    $form['value'] = array(
+      '#type' => 'textfield',
+      '#title' => t('File name or file title'),
+      '#description' => t('Filter files by the title or the file name of display.'),
+    );
+
+    if (!empty($form_state['exposed']) && !isset($form_state['input'][$this->options['expose']['identifier']])) {
+      $form_state['input'][$this->options['expose']['identifier']] = $default_value;
+    }
+  }
+
+  function query($group_by) {
+    $db = db_or();
+    foreach (array('filename', 'uri') as $field) {
+      $db->condition($field, "%" . $this->view->exposed_raw_input['file_name_title'] . "%", 'LIKE');
+    }
+
+    $this->query->add_where($group_by, $db);
+  }
+}
