@@ -11,7 +11,7 @@ Feature:
       | john/node/25  | 302  | john/book/all-about-nodes  |
       | als/node/25   | 302  | john/book/all-about-nodes  |
 
-  @api
+  @api @wip
   Scenario Outline: Non-aliased node paths redirect on sites with domains.
     Given I am on a site with a custom domain "custom.com"
      When I visit <request-url>
@@ -24,7 +24,7 @@ Feature:
       | "john/node/123"     | 301  | "news/my-news" |
       | "john/news/my-news" | 200  | "news/my-news" |
 
-  @api
+  @api @wip
   Scenario Outline: Non-aliased system paths redirect on sites with domains.
     Given I am on a site with a custom domain "custom.com"
      When I visit <request-url>
