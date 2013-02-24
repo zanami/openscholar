@@ -16,10 +16,6 @@ class os_files_filter_title_file_name extends views_handler_filter {
       '#title' => t('File name or file title'),
       '#description' => t('Filter files by the title or the file name of display.'),
     );
-
-    if (!empty($form_state['exposed']) && !isset($form_state['input'][$this->options['expose']['identifier']])) {
-      $form_state['input'][$this->options['expose']['identifier']] = $default_value;
-    }
   }
 
   function query($group_by) {
