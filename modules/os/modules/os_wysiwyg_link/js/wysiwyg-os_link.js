@@ -115,26 +115,7 @@ Drupal.wysiwyg.plugins.os_link = {
   /**
    * Converts links to files into media tags
    */
-  detach: function (content, settings, instanceId) {
-    var matches = content.match(/<a[^>]+href="[^"]+"[^>]+data-fid="([\d]*)">[^<]*<\/a>/gi);
-    if (matches) {
-      var cont = document.createElement('div'),
-          link = null, obj;
-      for (var i=0, l=matches.length; i<l; i++) {
-        cont.innerHTML = matches[i];
-        link = cont.firstChild;
-        obj = {
-          spacer: null,
-          type: 'url',
-          fid: link.getAttribute('data-fid'),
-          view_mode: 'default',
-          attributes: {}
-        };
-        content = content.replace(matches[i], matches[i].replace(link.href, '[['+JSON.stringify(obj)+']]'));
-      }
-    }
-    
-    
+  detach: function (content, settings, instanceId) {        
     return content;
   }
 };
