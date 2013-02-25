@@ -136,6 +136,9 @@ class FeatureContext extends DrupalContext {
    */
   public function iShouldGet(PyStringNode $string) {
     $page = $this->getSession()->getPage();
+    print_r($page->getContent());
+    print("\n");
+    print_r($string->getRaw());
     if (strpos($page->getContent(), $string->getRaw()) === FALSE) {
       throw new Exception("Text not found.");
     }
