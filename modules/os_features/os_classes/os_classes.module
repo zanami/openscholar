@@ -179,5 +179,9 @@ function os_classes_views_query_alter(&$view, &$query) {
   }
 
   $tid = str_replace('taxonomy/term/', '', $path);
-  $query->add_where(0, "field_data_og_vocabulary.target_id= $tid");
+
+  // Add the OG vocabulary field's table if not already added.
+  $alias = $query->add_table('field_data_og_vocabulary');
+
+  $query->add_where(1, "$alias.og_vocabulary_target_id", $tid, '=');
 }
