@@ -30,4 +30,8 @@ class os_files_filter_title_file_name extends views_handler_filter {
 
     $this->query->add_where($group_by, $db);
   }
+
+  function admin_summary() {
+    return t('Contains');
+  }
 }
