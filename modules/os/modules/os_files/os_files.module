@@ -163,24 +163,15 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   $form['#attached']['css'][] = $path.'/theme/os_files_upload_form.css';
   $form['#attached']['js'][] = $path.'/theme/os_files_upload_form.js';
   
-  if (isset($form_state['step']) && $form_state['step'] == 3) {
-    $file = file_load($form_state['storage']['upload']);
-    $form['filename'] = array(
-      '#title' => 'Name',
-      '#type' => 'textfield',
-      '#weight' => -1,
-      '#default_value' => $file->filename,
-      '#description' => t('The name of the file your visitors will see.'),
-    );
+  $form['#step'] = 3;
     
-    $form['#submit'][] = 'os_files_file_entity_add_upload_submit';
-  }
+  array_unshift($form['#submit'], 'os_files_file_entity_add_upload_submit');
 }
 
-function os_files_file_entity_add_upload_submit($form, &$form_state) {
-  $file = file_load($form_state['storage']['upload']);
-  $file->filename = $form_state['values']['filename'];
-  file_save($file);
+function os_files_file_entity_add_upload_submit(&$form, &$form_state) {
+  $form_state['triggering_element']['#id'] = 'edit-submit';
+  $file = file_load($form_state['values']['upload']);
+  $form_state['values']['type'] = $file->type;
 }
 
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
