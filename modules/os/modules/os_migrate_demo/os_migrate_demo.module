@@ -297,3 +297,20 @@ function os_migrate_demo_variable_set($name, $value) {
   spaces_preset_save($vsite);
 }
 
+/**
+ * Return the nid by the title the node title.
+ */
+function os_migrate_demo_get_node_nid($title) {
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->PropertyCondition('title', $title)
+    ->range(0, 1)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  print reset(array_keys($result['node']));
+}
