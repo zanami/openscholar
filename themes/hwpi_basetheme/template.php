@@ -44,7 +44,7 @@ function hwpi_basetheme_process_node(&$vars) {
   if ($vars['type'] == 'person') {
     if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
       $vars['title_prefix']['#suffix'] = '<h1 class="node-title">' . $vars['title'] . '</h1>';
-    }
+    } 
   }
 }
 
@@ -72,7 +72,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
     else {
       $build['body']['#weight'] = -9;
     }
-
+    
     //join titles
     $title_field = &$build['field_professional_title'];
     if ($title_field) {
@@ -81,12 +81,13 @@ function hwpi_basetheme_node_view_alter(&$build) {
         $titles[] = $title_field[$key]['#markup'];
         unset($title_field[$key]);
       }
-      $title_field[0] = array('#markup' => implode(', ', $titles));
+      $glue = ($build['#view_mode'] == 'sidebar_teaser') ? ', ' : "<br />\n";
+      $title_field[0] = array('#markup' => implode($glue, $titles));
     }
 
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
-
+      
       //move title, website. body
       $build['pic_bio']['body']['#weight'] = 5;
       foreach (array(0=>'field_professional_title', 10=>'field_website') as $weight => $field) {
@@ -103,28 +104,17 @@ function hwpi_basetheme_node_view_alter(&$build) {
           unset($build[$field]);
         }
       }
-
-      //join titles
-      $title_field = &$build['pic_bio']['field_professional_title'];
-      if ($title_field) {
-        $keys = array_filter(array_keys($title_field), 'is_numeric');
-        foreach ($keys as $key) {
-          $titles[] = $title_field[$key]['#markup'];
-          unset($title_field[$key]);
-        }
-        $title_field[0] = array('#markup' => implode(', ', $titles));
-      }
-
+      
       //newlines after website
       if (isset($build['pic_bio']['field_website'])) {
         foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
           $item = $build['pic_bio']['field_website']['#items'][$delta];
           //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
-          $link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
-          $build['pic_bio']['field_website'][$delta]['#markup'] = $item['title'] . ': ' . $link . '<br>';
+          //$link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
+          $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], array('attributes'=>$item['attributes'])) . '<Br />';
         }
       }
-
+            
       unset($build['links']['node']);
 
       return;
@@ -153,7 +143,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
       $build['contact_details']['#prefix'] = '<div class="block contact-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
       $build['contact_details']['#suffix'] = '</div></div>';
       $build['contact_details']['#weight'] = -8;
-
+  
       // Contact Details > address
       if (isset($build['field_address'])) {
         $build['field_address']['#label_display'] = 'hidden';
@@ -163,9 +153,10 @@ function hwpi_basetheme_node_view_alter(&$build) {
       // Contact Details > email
       if (isset($build['field_email'])) {
         $build['field_email']['#label_display'] = 'inline';
-        $email_plain = $build['field_email'][0]['#markup'];
+        $email_plain = mb_strtolower($build['field_email'][0]['#markup']);
         if ($email_plain) {
-          $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">' . $email_plain . '</a>';
+          
+          $build['field_email'][0]['#markup'] = l($email_plain, 'mailto:'.$email_plain, array('absolute'=>TRUE));
         }
         $build['contact_details']['field_email'] = $build['field_email'];
         $build['contact_details']['field_email']['#weight'] = -50;
@@ -182,17 +173,18 @@ function hwpi_basetheme_node_view_alter(&$build) {
         $build['contact_details']['field_phone']['#weight'] = 50;
         unset($build['field_phone']);
       }
-
-    // Websites
-    if (isset($build['field_website'])) {
-      $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
-      $build['website_details']['#suffix'] = '</div></div>';
-      $build['website_details']['#weight'] = -7;
-      $build['field_website']['#label_display'] = 'hidden';
-      $build['website_details']['field_website'] = $build['field_website'];
-      unset($build['field_website']);
+  
+      // Websites
+      if (isset($build['field_website'])) {
+        $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
+        $build['website_details']['#suffix'] = '</div></div>';
+        $build['website_details']['#weight'] = -7;
+        $build['field_website']['#label_display'] = 'hidden';
+        $build['website_details']['field_website'] = $build['field_website'];
+        unset($build['field_website']);
+      }
     }
-
+    
     if (isset($build['og_vocabulary'])) {
       foreach ($build['og_vocabulary']['#items'] as $tid) {
         $t = taxonomy_term_load($tid['target_id']);
@@ -439,23 +431,4 @@ function hwpi_basetheme_status_messages($vars) {
     $output .= "</div></div></div>";
   }
   return $output;
-}
-
-function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
-  // only display the start time for this particular instance of a repeat event
-  if (!isset($entity->view)) {
-    $entity->view = views_get_current_view();
-  }
-  if (isset($entity->view) && isset($entity->view->row_index) && isset($entity->view->result[$entity->view->row_index])) {
-    $result = $entity->view->result[$entity->view->row_index];
-    $field = 'field_data_field_date_field_date_value';
-    $delta = -1;
-    foreach ($entity->field_date[LANGUAGE_NONE] as $d => $r) {
-      if ($r['value'] == $result->$field) {
-        $delta = $d;
-        break;
-      }
-    }
-    $entity->date_id = 'node.'.$entity->nid.'.field_date.'.$delta;
-  }
 }
