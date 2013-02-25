@@ -92,13 +92,6 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
   //hide title.  it will be automatically generated later.
   $form['title']['#type'] = 'hidden';
   $form['title']['#required'] = FALSE;
-  
-  //remove preview, diff buttons
-  foreach (array('preview', 'preview_changes') as $action) {
-    if (isset($form['actions'][$action])) {
-      unset($form['actions'][$action]);
-    }
-  }
 }
 
 /**
@@ -109,12 +102,18 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
  * Changes the imagefield_crop widget to use our custom ratio.
  */
 function os_slideshow_imagefield_crop_instance_alter(&$instance, $context) {
-  if ($context['form']['#id'] == 'slideshow-slide-node-form') {
-    $box = boxes_box_load($context['form']['widget']['#value']);
+  if (isset($context['form']) && $context['form']['#id'] == 'slideshow-slide-node-form') {
+    $widget = $context['form']['widget']['#value'];
+  } elseif (isset($context['entity'])) {
+    $widget = $context['entity']->widget;
+  }
+  
+  if ($box = boxes_box_load($widget)) {
     $layout = $box->options['layout'];
     $layouts = _os_slideshow_layouts();
     $ratio = current($layouts[$layout]['ratio']);
-    $w = 800;
+    $content_sizes = _os_slideshow_region_size(NULL, 'content');
+    $w = (is_array($content_sizes) && count($content_sizes)) ? current($content_sizes) : 1000;
     $h = intval(round($w/$ratio, 0));
 
     $instance['widget']['settings']['resolution'] = "${w}x${h}";
