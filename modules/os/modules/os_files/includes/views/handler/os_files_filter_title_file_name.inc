@@ -19,6 +19,10 @@ class os_files_filter_title_file_name extends views_handler_filter {
   }
 
   function query($group_by) {
+    if (empty($this->view->exposed_raw_input['file_name_title'])) {
+      return;
+    }
+
     $db = db_or();
     foreach (array('filename', 'uri') as $field) {
       $db->condition($field, "%" . $this->view->exposed_raw_input['file_name_title'] . "%", 'LIKE');

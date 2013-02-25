@@ -718,10 +718,6 @@ function cp_content_views_default_views() {
   $handler->display->display_options['relationships']['file_to_node']['id'] = 'file_to_node';
   $handler->display->display_options['relationships']['file_to_node']['table'] = 'file_usage';
   $handler->display->display_options['relationships']['file_to_node']['field'] = 'file_to_node';
-  /* Relationship: File: User who uploaded */
-  $handler->display->display_options['relationships']['uid']['id'] = 'uid';
-  $handler->display->display_options['relationships']['uid']['table'] = 'file_managed';
-  $handler->display->display_options['relationships']['uid']['field'] = 'uid';
   /* Field: File: File ID */
   $handler->display->display_options['fields']['fid']['id'] = 'fid';
   $handler->display->display_options['fields']['fid']['table'] = 'file_managed';
@@ -832,6 +828,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['filters']['current']['id'] = 'current';
   $handler->display->display_options['filters']['current']['table'] = 'spaces';
   $handler->display->display_options['filters']['current']['field'] = 'current';
+  $handler->display->display_options['filters']['current']['relationship'] = 'file_to_node';
   $handler->display->display_options['filters']['current']['group'] = 1;
   /* Filter criterion: Broken/missing handler */
   $handler->display->display_options['filters']['schema_type']['id'] = 'schema_type';
