@@ -149,7 +149,7 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   $form['#attached']['css'][] = $path.'/theme/os_files_upload_form.css';
   $form['#attached']['js'][] = $path.'/theme/os_files_upload_form.js';
 
-  if ($form_state['step'] == 3) {
+  if (!empty($form_state['step']) && $form_state['step'] == 3) {
     $file = file_load($form_state['storage']['upload']);
     $form['filename'] = array(
       '#title' => 'Display Name',
