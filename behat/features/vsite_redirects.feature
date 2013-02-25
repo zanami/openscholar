@@ -5,11 +5,10 @@ Feature:
   @api
   Scenario: Non-aliased node paths redirect on sites without domains.
     Given I expect for a behavior according the next <statements>:
-      | john          | 200  | john                       |
-      | node/1        | 302  | john                       |
-      | node/25       | 302  | john/book/all-about-nodes  |
-      | john/node/25  | 302  | john/book/all-about-nodes  |
-      | als/node/25   | 302  | john/book/all-about-nodes  |
+      | john                      | 200  | john                       |
+      | node/1                    | 302  | john                       |
+      | book/all-about-nodes      | 302  | john/book/all-about-nodes  |
+      | als/book/all-about-nodes  | 302  | john/book/all-about-nodes  |
 
   @api @wip
   Scenario Outline: Non-aliased node paths redirect on sites with domains.
