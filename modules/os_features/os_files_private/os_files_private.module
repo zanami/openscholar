@@ -163,17 +163,6 @@ function os_files_private_file_download($uri) {
       }
     }
   }
-  // Restrictes to site members only.
-  if (!$use_pinserver) {
-    $wrapper = entity_metadata_wrapper('file', $file);
-    // Set $gid[0] to something so og_is_member() below can't complain.
-    $gid = array(NULL);
-
-    // Restricts access if no OG audience is set.
-    if (!isset($wrapper->{OG_AUDIENCE_FIELD}) || !($gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE)))) {
-      return -1;
-    }
-  }
 
   // Getting this far means the app is on, user is not site member,
   // and user could not log in through pinserver (maybe pinserver is disabled).
