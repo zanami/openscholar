@@ -28,7 +28,6 @@ Feature:
   @api
   Scenario: Test a query withing a VSite for a year with publication, where the answer should be "ok".
     Given I visit "john/harvard_activity_reports?year=1943"
-    And I should print page
     Then I should get:
     """
     <?xml version="1.0" encoding="UTF-8"?>
