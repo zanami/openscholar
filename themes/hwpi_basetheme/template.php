@@ -81,7 +81,8 @@ function hwpi_basetheme_node_view_alter(&$build) {
         $titles[] = $title_field[$key]['#markup'];
         unset($title_field[$key]);
       }
-      $title_field[0] = array('#markup' => implode(', ', $titles));
+      $glue = ($build['#view_mode'] == 'sidebar_teaser') ? ', ' : "<br />\n";
+      $title_field[0] = array('#markup' => implode($glue, $titles));
     }
 
     // We dont want the other fields on teasers
@@ -109,8 +110,8 @@ function hwpi_basetheme_node_view_alter(&$build) {
         foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
           $item = $build['pic_bio']['field_website']['#items'][$delta];
           //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
-          $link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
-          $build['pic_bio']['field_website'][$delta]['#markup'] = $item['title'] . ': ' . $link . '<br>';
+          //$link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
+          $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], array('attributes'=>$item['attributes'])) . '<Br />';
         }
       }
             
@@ -152,9 +153,10 @@ function hwpi_basetheme_node_view_alter(&$build) {
       // Contact Details > email
       if (isset($build['field_email'])) {
         $build['field_email']['#label_display'] = 'inline';
-        $email_plain = $build['field_email'][0]['#markup'];
+        $email_plain = mb_strtolower($build['field_email'][0]['#markup']);
         if ($email_plain) {
-          $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">' . $email_plain . '</a>';
+          
+          $build['field_email'][0]['#markup'] = l($email_plain, 'mailto:'.$email_plain, array('absolute'=>TRUE));
         }
         $build['contact_details']['field_email'] = $build['field_email'];
         $build['contact_details']['field_email']['#weight'] = -50;
