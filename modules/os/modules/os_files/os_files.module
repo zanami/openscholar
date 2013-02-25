@@ -448,6 +448,12 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
     ));
     $file['link']['#options']['html'] = true;
   }
+  
+  $file = &$element['content']['file'];
+  if ($file['#theme'] == 'image_style') {
+    $file['#theme'] = 'image';
+    $file['#path'] = image_style_url($file['#style_name'], $file['#path']);
+  }
 }
 
 /**
