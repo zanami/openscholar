@@ -332,13 +332,12 @@ class os_sv_list_box extends os_boxes_default {
 
   // get_default_query_query - humble beginnings of the EFQ
   function get_default_query() {
-
     //Only filter to public bundles if we are not including subsites
-    if(!in_array('subsites', array_filter($this->options['query_scope']))){
-	    $bundles = os_get_bundles(array(1));
-	    if (empty($bundles)) {
-	      return FALSE;
-	    }
+    if (!isset($this->options['query_scope']) || !in_array('subsites', array_filter($this->options['query_scope']))){
+      $bundles = os_get_bundles(array(1));
+      if (empty($bundles)) {
+        return FALSE;
+      }
     }
 
     // defaults
