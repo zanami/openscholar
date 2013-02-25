@@ -152,6 +152,7 @@ div.messages {
   .footer-left.footer.footer-right .region-footer-first,
   .footer-left.footer.footer-right .region-footer-third,
   .footer.footer-right .region-footer-third,
+  .footer-left.footer .region-footer-first,
   .footer-left.footer-right .region-footer-first,
   .footer-left.footer-right .region-footer-third {
 	width: 25%;
@@ -440,6 +441,28 @@ ul.class_material_field_class a.class_material_field_class_anchor {
     height: 48px;
     width: 48px;
 	position: absolute;
+}
+
+/* VIDEO ATTCHD TO A NODE */
+
+.oembed {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border-color: #ccc;
+    border-radius: 0 0 0 0;
+    border-style: solid;
+    border-width: 1px;
+    color: #555555;
+    text-align:center;
+
+}
+
+.oembed .oembed-title {
+    color:#005C9C;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    text-align: left;
+    text-shadow: none;
 }
 	
 
@@ -875,7 +898,8 @@ ul.recent-images-list li a:hover img {
  background: none;
 }
 
-.image-style-os-files-large, .image-style-os-files-xlarge {padding-right:10px;}
+.image-style-os-files-large, .image-style-os-files-xlarge, .image-style-os-files-xxlarge, .image-style-os-files-small, .image-style-os-files-medium
+{padding-right:10px;}
 
 /**
  * "News" node-type styles.
@@ -896,3 +920,25 @@ ul.recent-images-list li a:hover img {
 }
 
 
+/** LIST OF POST PERSON - TEASER - WHEN IN SIDEBAR 
+
+.block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .field-name-field-person-photo,
+.block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .pic-bio
+ {float:left;display:inline;clear:none;padding-right:10px;}
+ 
+ .block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .node-header
+ {float:left;display:inline;clear:none;}
+ 
+  .block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .node-header h1
+ {margin-top:0;}
+ 
+ .block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .node-content
+ { float: right;}
+
+
+.block-boxes-os_sv_list_box .node-person .field-name-field-professional-title .field-item {
+    display: inline;
+    float: left;
+    padding-right: 0;
+}
+**/

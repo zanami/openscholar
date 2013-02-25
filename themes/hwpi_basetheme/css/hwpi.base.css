@@ -36,12 +36,16 @@ table caption {
   text-align: left;
 }
 
+#powered-by a {
+    margin-right: 15px;
 
-#footer #block-os-login a {
+}
+
+#footer .footer-login {
   background: url('../images/readmore_arrow.gif') no-repeat right center;
   box-shadow: none;
   color: #4384C4;
-  float: left;
+  float: right;
   font-size: 12px;
   font-style: normal;
   font-weight: bold;
@@ -51,6 +55,56 @@ table caption {
   text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
   border-left:1px solid #ccc;
 }
+
+#powerby-login {
+    float:none;
+    margin-top: 20px;
+}
+
+  .footer-left.footer.footer-right #powerby-login,
+  .footer-left.footer.footer-right #powerby-login,
+  .footer-left.footer.footer-right #powerby-login,
+  .footer-left.footer-right #powerby-login,
+  .footer-left.footer-right #powerby-login {
+   width: 750px;
+}
+
+  .logged-in .footer-left.footer.footer-right #powerby-login,
+  .logged-in .footer-left.footer.footer-right #powerby-login,
+  .logged-in .footer-left.footer.footer-right #powerby-login,
+  .logged-in .footer-left.footer-right #powerby-login,
+  .logged-in .footer-left.footer-right #powerby-login {
+   width: 550px;
+}
+
+
+.footer-left.footer #powerby-login {
+    	width: 380px;
+  	}
+  
+.logged-in .footer-left.footer #powerby-login {
+    	width: 180px;
+  	}
+
+.footer.footer-right #powerby-login {
+    	width: 465px;
+  	}
+
+.logged-in .footer.footer-right #powerby-login {
+    	width: 255px;
+  	}
+
+
+/*
+  .footer.footer-right .region-footer,
+  .footer-left.footer .region-footer {
+    	width: 52%;
+  	}
+  
+  .footer.footer-right .region-footer-third,
+  .footer-left.footer .region-footer-first {width: 48%;}
+*/
+  
 
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
 .more-link {

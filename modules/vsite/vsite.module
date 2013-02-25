@@ -1205,6 +1205,15 @@ function vsite_menu(){
     'file path' => drupal_get_path('module', 'vsite') . '/includes'
   );
 
+  // User autocomplete callback that allows for searching of name/email/login.
+  $items['vsite/autocomplete/user'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Vsite Autocomplete User',
+    'page callback' => 'vsite_user_autocomplete',
+    'access callback' => 'user_access',
+    'access arguments' => array('access user profiles'),
+  );
+
   return $items;
 }
 
@@ -1573,4 +1582,61 @@ function vsite_os_settings_subsites_form_submit($form, &$form_state){
   foreach (array_filter($form_state['values']['subsite_bundles']) as $subsite_type){
     vsite_attach_fields_to_subsite($subsite_type);
   }
+}
+
+/**
+ * Autocomplete function to allow users to now search for users based on name, email or login.
+ * Used the function spaces_user_autocomplete as the skeleton for this function.
+ */
+function vsite_user_autocomplete($string = '') {
+  $space = spaces_get_space();
+  $matches = array();
+  if ($string) {
+    $query = db_select('users', 'u');
+    // Left Join the field_data_field_first_name table.
+    $query->leftJoin('field_data_field_first_name', 'fn', '(u.uid = fn.entity_id AND fn.entity_type = :param1)',array(':param1' => 'user'));
+    // Left Join the field_data_field_last_name table.
+    $query->leftJoin('field_data_field_last_name', 'ln', '(u.uid = ln.entity_id AND ln.entity_type = :param2)',array(':param2' => 'user'));
+    $query->condition(
+      db_or()
+        ->condition('u.name', db_like($string) . '%', 'LIKE')
+        ->condition('u.mail', db_like($string) . '%', 'LIKE')
+        ->condition('fn.field_first_name_value', db_like($string) . '%', 'LIKE')
+        ->condition('ln.field_last_name_value', db_like($string) . '%', 'LIKE')
+    );
+    $query->fields('u', array('name'));
+    // CONCAT the display, if there is no last name entered, show the username/email only, if there is a last name, show first/last/email.
+    $query->addExpression("IF(ln.field_last_name_value IS NULL, CONCAT(u.name, ' (', u.mail , ') '), CONCAT(fn.field_first_name_value, ' ', ln.field_last_name_value, ' (',u.name,', ', u.mail , ') '))", 'myname');
+    $query->range(0, 10);
+    $query->addTag('user_autocomplete');
+
+    $result = $query->execute();
+    foreach ($result as $user) {
+      $matches[$user->name] = check_plain($user->myname);
+    }
+
+    // Remove the admin from the list.
+    $admin = db_query("SELECT name FROM {users} WHERE uid = :uid", array(':uid' => '1'))->fetchField();
+    if(array_key_exists($admin, $matches)) {
+      unset($matches[$admin]);
+    }
+
+    // Remove current group members.
+    if(isset($space)) {
+      $query = db_select("og_membership", "ogm");
+      $query->join('users', 'u', 'u.uid = ogm.etid');
+      $query->condition("ogm.gid", $space->group->nid, "=");
+      $query->condition("entity_type","user","=");
+      $query->fields("u", array("name"));
+      $result = $query->execute()->fetchAll();
+      if($result) {
+        foreach($result as $username) {
+          $group[$username->name] = $username->name;
+        }
+        // Remove the memebers.
+        $matches = array_diff_key($matches, $group);
+      }
+    }
+  }
+  drupal_json_output($matches);
 }

@@ -183,6 +183,10 @@ h2.block-title {
   background-position:  0 -340px;
 }
 
+#search-block-form .form-item label {
+	color:#9A9A9A;
+}
+
 /* Border control */
 .not-front.two-sidebars #content-column .content-inner {
   border-right: 1px solid #e7e7e7;
@@ -203,7 +207,7 @@ h2.block-title {
 .sidebar .block.section-nav,
 #content-column .block.section-nav,
 .front #content-column .block.block-boxes-os_slideshow_box,
-.node-type-person #content-column .node-person h2.block-title {
+.page-node.node-type-person .node-person .block-inner {
   border-top: none;
 }
 
@@ -223,6 +227,7 @@ h2.block-title {
   text-transform: capitalize;
   font-weight: normal;
 }
+
 
 .block-content {
   margin-top: 20px;
@@ -395,6 +400,19 @@ table td.mini {
 }
 
 
+#footer ul.menu li a {
+    font-family:arial;
+    text-transform: uppercase;
+    font-size:13px;
+}
+
+#footer ul.menu li ul li a {
+    font-family:arial;
+    text-transform: none;
+    font-size: 14px;
+}
+
+
 .page-news .view .node-teaser {
    padding: 10px 0 30px;
 }
@@ -432,8 +450,10 @@ a.rslides_nav.prev {
     font-weight: bold;
 }
 
+/** PEOPLE DETAIL PAGE **/
 
-
-
+.node-type-person .node-person .field-name-field-professional-title {
+    margin-top: 0;
+}
 
 

@@ -78,6 +78,7 @@ class OsMigratePersonalNode extends OsMigrate {
     array('title', 'Title'),
     array('purl', 'URL'),
     array('public', 'Public'),
+    array('domain', 'Domain'),
   );
 
   public function __construct() {
