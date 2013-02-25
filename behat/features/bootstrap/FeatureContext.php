@@ -301,6 +301,15 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^I assign the node "([^"]*)" with the type "([^"]*)" to the term "([^"]*)"$/
+   */
+  public function iAssignTheNodeWithTheTypeToTheTerm($node, $type, $term) {
+    $code = "os_migrate_demo_assign_node_to_term('$node', '$term', '$type');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+
+  /**
    * Hide the boxes we added during the scenario.
    *
    * @AfterScenario
@@ -460,6 +469,18 @@ class FeatureContext extends DrupalContext {
   public function iSetTheVariableTo($variable, $value) {
     $code = "os_migrate_demo_variable_set({$variable}, '{$value}');";
     $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Then /^I should see a pager$/
+   */
+  public function iShouldSeeAPager() {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//div[@class='item-list']");
+
+    if (!$element) {
+      throw new Exception("The pager wasn't found.");
+    }
   }
 
   /**
