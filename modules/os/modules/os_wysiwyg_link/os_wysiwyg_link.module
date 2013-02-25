@@ -28,3 +28,12 @@ function os_wysiwyg_link_menu() {
   
   return $items;
 }
+
+function os_wysiwyg_link_media_token_to_markup_alter(&$element, $tag, $settings) {
+  if ($tag['type'] == 'url') {
+    $element = array(
+      '#type' => 'markup',
+      '#markup' => file_create_url($tag['file']->uri),
+    );
+  }
+}

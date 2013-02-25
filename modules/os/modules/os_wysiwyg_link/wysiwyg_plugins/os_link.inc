@@ -36,7 +36,8 @@ function os_wysiwyg_link_include_browser_js() {
   $included = TRUE;
   
   $settings = array(
-    'browserUrl' => url('os/wysiwyg/link/insert'),
+    'browserUrl' => url('os/wysiwyg/link/insert', array(
+        'query' => array('render' => 'media-popup'))),
   );
 
   $js = array('osWysiwygLink' => $settings);

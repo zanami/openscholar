@@ -833,5 +833,31 @@ ul.nice-menu-down li li.menuparent:hover {
 	padding-left: 45px;
 }
 
+/** MENU WHEN IN FOOTER **/
 
+#footer ul.menu, #footer ul {
+    margin-left: 0;
+}
+
+ul li.leaf {
+    list-style-image: none;
+    list-style-type: none;
+}
+
+#footer ul.menu li.expanded {
+    clear: none;
+    display: inline;
+    float: left;
+    font-size: 12px;
+    margin-right: 95px;
+    text-transform: uppercase;
+}
+
+#footer ul li a {
+    font-weight:bold;
+}
+
+#footer ul li li a {
+    font-weight:normal;
+}
 

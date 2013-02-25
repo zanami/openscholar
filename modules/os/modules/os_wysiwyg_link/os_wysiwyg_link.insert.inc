@@ -1,7 +1,7 @@
 <?php
 
 function os_wysiwyg_link_insert() {
-  module_invoke_all('suppress');
+  module_invoke_all('suppress', TRUE);
   
   module_load_include('inc', 'file_entity', 'file_entity.pages');
   $tabs = array(
@@ -71,6 +71,9 @@ function os_wysiwyg_link_insert() {
   );
   $path = drupal_get_path('module', 'os_wysiwyg_link');
   $output['#attached'] = array(
+    'library' => array(
+      array('media', 'media_browser_page'),
+    ),
     'css' => array($path.'/theme/os_wysiwyg_link_form.css'),
     'js' => array($path.'/js/os_wysiwyg_link_form.js'),
   );
@@ -130,8 +133,19 @@ function _os_link_get_view() {
       if ($title = $view->get_title()) {
         $build['#title'] = $title;
       }
+      
+      $output = array(
+      	'library' => $build,
+        'actions' => array(
+          '#type' => 'actions',
+          'insert' => array(
+            '#type' => 'submit',
+            '#value' => t('Insert'),
+          )
+        )
+      );
 
-      return array('library' => $build);
+      return $output;
     }
   }
   

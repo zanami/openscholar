@@ -97,16 +97,18 @@ function os_get_active_feature() {
 }
 
 /**
+ * @function os_get_app_path
+ *
  * Gets the base context path for a feature.  This is the path that will match
  * to this features context.
  *
- * @param string $app_name
- *   The machine name of the app (a feature module)
+ * @param string $app_name (optional)
+ *   The machine name of the app (a feature module).  If left blank, all app paths will be returned.
  *
  * @return string $path
  */
-function os_get_app_path($app_name) {
-  $app_info = os_app_info($app_name);
+function os_get_app_path($app_name = NULL) {
+  $app_info = ($app_name) ? os_app_info($app_name) : os_app_info();
 
   if (isset($app_info['path'])) {
     $path = $app_info['path'];
@@ -115,6 +117,14 @@ function os_get_app_path($app_name) {
     }
   }
 
-  return FALSE;
+  //return multiple type => path
+  $apps = array();
+  foreach ($app_info as $app) {
+    if (isset($app['nodetypes']) && $app['nodetypes'] && isset($app['path']) && $app['path']) {
+      $apps += array_fill_keys($app['nodetypes'], $app['path']);
+    }
+  }
+
+  return ($apps) ? $apps : FALSE;
 }
 

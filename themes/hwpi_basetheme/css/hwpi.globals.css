@@ -1,4 +1,5 @@
 @import "hwpi.base.css"; 
 @import "hwpi.nav.css"; 
-@import "hwpi.widgets.css"; 
+@import "hwpi.widgets.css";
+@import "slideshow.css"; 
 @import "hwpi.basetheme.layout.css"; 

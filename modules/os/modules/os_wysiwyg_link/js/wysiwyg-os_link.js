@@ -2,6 +2,7 @@
  * 
  */
 Drupal.wysiwyg.plugins.os_link = {
+  url: '',
   
   /**
    * Determines if element belongs to this plugin or not
@@ -20,20 +21,51 @@ Drupal.wysiwyg.plugins.os_link = {
     Drupal.media.popups.mediaBrowser(function (insert) {
       self.insertLink();
     }, settings['global'], {}, {
-      src: Drupal.settings.osWysiwygLink.browserUrl+'?d=1', // because media is dumb about its query args
-      onLoad: self.popupOnLoad
+      src: Drupal.settings.osWysiwygLink.browserUrl, // because media is dumb about its query args
+      onLoad: function (e) { self.popupOnLoad(e, editorId); }
     });
   },
   
-  insertLink: function (body, target, type) {
+  insertLink: function (editorId, body, target, attributes) {
+    var html = '<a href="'+target+'">'+body+'</a>';
     
+    if (attributes) {
+      var $html = jQuery(html);
+      $html.attr(attributes);
+      html = typeof $html[0].outerHTML != 'undefined' 
+              ? $html[0].outerHTML 
+              : $html.wrap('<div>').parent().html();
+    }
+    
+    Drupal.wysiwyg.instances[editorId].insert(html);
   },
   
-  popupOnLoad: function (e) {
+  popupOnLoad: function (e, editorId) {
     // bind handlers to the insert button
     // each 'form' should have a little script to generate an anchor tag or do something else with the data
     // this scripts should put the generated tag somewhere consistent
     // this function will bind a handler to take the tag and have it inserted into the wysiwyg
+    var $ = jQuery, 
+      self = this,
+      iframe = e.currentTarget,
+      doc = $(iframe.contentDocument),
+      window = iframe.contentWindow;
+    
+    $('.insert-buttons input[value="Insert"]', doc).click(function (e) {
+      $('.vertical-tabs form:visible .form-actions input[value="Insert"]', doc).click();
+      
+      var attrs = typeof window.Drupal.settings.osWysiwygLinkAttributes != 'undefined' 
+            ? window.Drupal.settings.osWysiwygLinkAttributes 
+            : false;
+      self.insertLink(editorId, $('.form-item-link-text input', doc).val(), window.Drupal.settings.osWysiwygLinkResult, attrs);
+      $(iframe).dialog('destroy');
+      $(iframe).remove();
+    });
+    
+    $('.insert-buttons input[value="Cancel"]', doc).click(function (e) {
+      $(iframe).dialog('destroy');
+      $(iframe).remove();
+    });
   },
   
   /**
@@ -84,6 +116,25 @@ Drupal.wysiwyg.plugins.os_link = {
    * Converts links to files into media tags
    */
   detach: function (content, settings, instanceId) {
+    var matches = content.match(/<a[^>]+href="[^"]+"[^>]+data-fid="([\d]*)">[^<]*<\/a>/gi);
+    if (matches) {
+      var cont = document.createElement('div'),
+          link = null, obj;
+      for (var i=0, l=matches.length; i<l; i++) {
+        cont.innerHTML = matches[i];
+        link = cont.firstChild;
+        obj = {
+          spacer: null,
+          type: 'url',
+          fid: link.getAttribute('data-fid'),
+          view_mode: 'default',
+          attributes: {}
+        };
+        content = content.replace(matches[i], matches[i].replace(link.href, '[['+JSON.stringify(obj)+']]'));
+      }
+    }
+    
+    
     return content;
   }
 };

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Slides and their captions
  */
