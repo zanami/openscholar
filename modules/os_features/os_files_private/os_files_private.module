@@ -173,6 +173,7 @@ function os_files_private_file_download($uri) {
     if (!isset($wrapper->{OG_AUDIENCE_FIELD}) || !($gid = $wrapper->{OG_AUDIENCE_FIELD}->value(array('identifier' => TRUE)))) {
       return -1;
     }
+  }
 
   // Getting this far means the app is on, user is not site member,
   // and user could not log in through pinserver (maybe pinserver is disabled).
