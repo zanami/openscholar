@@ -92,6 +92,13 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
   //hide title.  it will be automatically generated later.
   $form['title']['#type'] = 'hidden';
   $form['title']['#required'] = FALSE;
+  
+  //remove preview, diff buttons
+  foreach (array('preview', 'preview_changes') as $action) {
+    if (isset($form['actions'][$action])) {
+      unset($form['actions'][$action]);
+    }
+  }
 }
 
 /**
