@@ -24,6 +24,8 @@ function os_basetheme_preprocess_html(&$vars) {
  * Adds classes to the page element
  */
 function os_basetheme_preprocess_page(&$vars) {
+  $item = menu_get_item();
+
   //Adds OpenScholar header region awareness to body classes
   $header = array(
     'header-left' => $vars['page']['header_second'],
@@ -60,7 +62,15 @@ function os_basetheme_preprocess_page(&$vars) {
     $vars['use_content_regions'] = false;
   }
 
-  $vars['login_link'] = theme('openscholar_login');
+  // Do not show the login button on the following pages, redundant.
+  $login_pages = array(
+  'user',
+  'private_site',
+  'user/password'
+  );
+  if(isset($item) && !in_array($item['path'], $login_pages)) {
+    $vars['login_link'] = theme('openscholar_login');
+  }
 }
 
 /**

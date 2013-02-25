@@ -168,18 +168,6 @@ function os_context_default_contexts(){
                 'region' => 'header_third',
                 'weight' => '-10',
               ),
-              'os-powered-by' => array(
-                  'module' => 'os',
-                  'delta' => 'powered-by',
-                  'region' => 'footer',
-                  'weight' => '10',
-              ),
-              'os-login' => array(
-                  'module' => 'os',
-                  'delta' => 'login',
-                  'region' => 'footer',
-                  'weight' => '-10',
-              ),
           )
       )
   );
