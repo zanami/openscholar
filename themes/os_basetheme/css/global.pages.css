@@ -920,7 +920,7 @@ ul.recent-images-list li a:hover img {
 }
 
 
-/** LIST OF POST PERSON - TEASER - WHEN IN SIDEBAR **/
+/** LIST OF POST PERSON - TEASER - WHEN IN SIDEBAR 
 
 .block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .field-name-field-person-photo,
 .block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .pic-bio
@@ -941,4 +941,4 @@ ul.recent-images-list li a:hover img {
     float: left;
     padding-right: 0;
 }
-
+**/
