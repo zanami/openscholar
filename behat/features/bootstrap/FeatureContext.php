@@ -258,7 +258,7 @@ class FeatureContext extends DrupalContext {
 
     $metasteps = array();
     // @TODO: Don't use the hard coded address - remove john from the address.
-    $metasteps[] = new Step\When('I visit "john/os/widget/boxes/' . $delta . '/edit"');
+    $this->visit('john/os/widget/boxes/' . $delta . '/edit');
 
     // @TODO: Use XPath to fill the form instead of giving the type of the in
     // the scenario input.
