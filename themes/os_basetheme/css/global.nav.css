@@ -799,7 +799,7 @@ ul.nice-menu-down li li.menuparent:hover {
 /* Section Nav - Section Heading */
 .section-nav .menu-depth-1 > a {
 	background: none !important;
-	background-color: #293352 !important;
+	background-color: #444 !important;
 	color: #fff;
 	text-transform: uppercase;
 }
@@ -814,7 +814,7 @@ ul.nice-menu-down li li.menuparent:hover {
 	
 }
 .section-nav .expanded.menu-depth-2 > a {
-	background-color: #3a72ab;
+	background-color: #777;
 	color: #fff;
 }
 
@@ -833,5 +833,31 @@ ul.nice-menu-down li li.menuparent:hover {
 	padding-left: 45px;
 }
 
+/** MENU WHEN IN FOOTER **/
 
+#footer ul.menu, #footer ul {
+    margin-left: 0;
+}
+
+ul li.leaf {
+    list-style-image: none;
+    list-style-type: none;
+}
+
+#footer ul.menu li.expanded {
+    clear: none;
+    display: inline;
+    float: left;
+    font-size: 12px;
+    margin-right: 95px;
+    text-transform: uppercase;
+}
+
+#footer ul li a {
+    font-weight:bold;
+}
+
+#footer ul li li a {
+    font-weight:normal;
+}
 

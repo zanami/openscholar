@@ -321,12 +321,28 @@ ul.nice-menu li {
 	background:none;
 }
 
-ul.nice-menu-down ul {
-    left: 4px;
+
+
+#menu-bar ul.nice-menu ul {
+    background: #8996A0;
+    border: medium none;
+    top: 3.2em;
 }
+
 
 ul.nice-menu-down li ul li ul {
     top: -3px;
+}
+
+#menu-bar ul.nice-menu ul li {
+    background: #8996A0;
+    margin-top: 0;
+}
+
+#menu-bar ul.nice-menu ul li a:hover,
+#menu-bar ul.nice-menu ul li a {
+    background: #8996A0;
+    color:#FFF;
 }
 
 /* SECONDARY NAV LINKS */

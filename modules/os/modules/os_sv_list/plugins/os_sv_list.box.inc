@@ -62,6 +62,10 @@ class os_sv_list_box extends os_boxes_default {
           drupal_get_path('module', 'os_sv_list').'/os_sv_list.js',
         ),
       ),
+      '#ajax' => array(
+        'callback' => 'os_sv_list_vocabs_content_type',
+        'wrapper' => 'query-details',
+      ),
     );
 
     $form['biblio_whitelist'] = array(
@@ -97,7 +101,7 @@ class os_sv_list_box extends os_boxes_default {
         'display_body' => t('Entire Post'),
       ),
     );
-    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array('display_sidebar_teaser' => array('news', 'event', 'person'))))); 
+    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array('display_sidebar_teaser' => array('news', 'event', 'person')))));
 
     $form['sort_by'] = array(
       '#type' => 'select',
@@ -185,23 +189,9 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['more'],
     );
 
-    $content_map = array(
-      'all' => '',
-      'news' => 'news',
-      'biblio' => 'publications',
-      'event' => 'calendar',
-      'page' => 'pages',
-      'data' => 'data',
-      'blog' => 'blog',
-      'book' => 'documents',
-      'feed' => 'reader',
-      'media_gallery' => 'galleries',
-      'link' => 'links',
-      'presentation' => 'presentations',
-      'software_project' => 'software',
-      'software_release' => 'software',
-      'person' => 'people',
-    );
+    ctools_include('os', 'os');
+    $content_map = os_get_app_path();
+    $content_map = array_diff_key($content_map, array_flip(array('bio', 'cv', 'class_material')));
 
     if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
       $default_value = $content_map[$content_types_value];
@@ -231,23 +221,7 @@ class os_sv_list_box extends os_boxes_default {
         'js' => array(
           array(
             'data' => array(
-              'more_link_defaults' => array(
-                'all' => '',
-                'news' => 'news',
-                'biblio' => 'publications',
-                'event' => 'calendar',
-                'page' => 'pages',
-                'data' => 'data',
-                'blog' => 'blog',
-                'book' => 'documents',
-                'feed' => 'reader',
-                'media_gallery' => 'galleries',
-                'link' => 'links',
-                'presentation' => 'presentations',
-                'software_project' => 'software',
-                'software_release' => 'software',
-                'person' => 'people',
-              ),
+              'more_link_defaults' => $content_map,
             ),
             'type' => 'setting',
           )
@@ -637,7 +611,7 @@ class os_sv_list_box extends os_boxes_default {
     $efq->fieldOrderBy('field_presentation_date', 'value', 'DESC');
     $this->sort_newest($efq);
   }
-  
+
   /**
    * Display functions
    */
@@ -646,7 +620,7 @@ class os_sv_list_box extends os_boxes_default {
     return drupal_render($items);
   }
   function display_sidebar_teaser($nodes) {
-    $items = node_view_multiple($nodes, 'sidebar_teaser');    
+    $items = node_view_multiple($nodes, 'sidebar_teaser');
     return drupal_render($items);
   }
   function display_teaser($nodes) {
@@ -716,4 +690,11 @@ function os_sv_list_query_details_ajax($form, &$form_state) {
  */
 function os_sv_list_terms_details_ajax($form, &$form_state) {
   return $form['options']['query_details']['terms'];
+}
+
+/**
+ * AJAX callback for reload the vocabulary for the selected content type.
+ */
+function os_sv_list_vocabs_content_type($form, $form_state) {
+  return $form['options']['query_details'];
 }

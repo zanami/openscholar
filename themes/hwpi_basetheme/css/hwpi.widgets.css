@@ -2,27 +2,36 @@
 /* Site Info */
 #boxes-box-site_info {
   min-height: 120px;
+  position: relative;
 }
 
 #boxes-box-site_info,
-#boxes-box-site_info a {  
+#boxes-box-site_info a {
   font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 }
 
 #boxes-box-site_info p,
 #boxes-box-site_info h1,
 #boxes-box-site_info h2 {
-  position: relative;
+  position: absolute;
   font-weight: normal;
-  top: 50px;
+  margin: 0;
+}
+
+#boxes-box-site_info h1 {
+  top: 42px
+}
+
+#boxes-box-site_info h2 {
+  top: 20px
 }
 
 #boxes-box-site_info p {
   line-height: 1.4;
-  top: 32px;
+  top: 90px;
 }
 
-#boxes-box-site_info p a {  
+#boxes-box-site_info p a {
   display: none;
 }
 
@@ -33,11 +42,6 @@
 #boxes-box-site_info h2 {
   font-size: 24px;
   font-style: italic;
-
-}
-
-.logged-in #boxes-box-site_info h2 {
-    top: 20px;
 }
 
 
@@ -59,12 +63,12 @@
   width: 44px;
 }
 
-/*  
+/*
 input[type="search"] {
 -moz-border-radius: 0;
   -webkit-border-radius: 0;
   border-radius: 0;
-  margin-top:-7px; 
+  margin-top:-7px;
 }
 */
 
@@ -76,16 +80,20 @@ input[type="search"] {
 }
 
 #search-block-form .container-inline .form-item .form-text {
-  border-color: #d4d4d2;
+  border-color: #D4D4D2;
   border-image: none;
-  border-style: solid none solid solid;
-  border-width: 1px 0 1px 1px;
-  height: 29px;
-  -moz-border-bottom-colors: #d4d4d2;
-  -moz-border-left-colors: #d4d4d2;
-  -moz-border-right-colors: transparent;
-  -moz-border-top-colors: #d4d4d2;
-  width:300px;
+  border-style: solid;
+  border-width: 1px;
+  height: 33px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  -moz-border-bottom-colors: #D4D4D2;
+  -moz-border-left-colors: #D4D4D2;
+  -moz-border-right-colors: #D4D4D2;
+  -moz-border-top-colors: #D4D4D2;
+  width: 305px;
 }
 
 #search-block-form input.form-submit,
@@ -96,9 +104,9 @@ input[type="search"] {
 
 #search-block-form .form-item label {
 	display: inline;
+	font-weight:normal;
+	color:#6A6A6A;
 }
-
-
 
 /* Calendar Overrides */
 .view-os-events ul li {
@@ -181,7 +189,7 @@ table td.mini .mini-day-on a {
 
 .view .date-nav-wrapper .date-prev a,
 .view .date-nav-wrapper .date-next a {
-	width: 15px;
+  width: 15px;
   height: 13px;
   display: inline-block;
   font-size: 0;
@@ -189,7 +197,7 @@ table td.mini .mini-day-on a {
 }
 
 .view .date-nav-wrapper .date-prev a {
-	background: url('../images/cal_leftarrow.gif') no-repeat;
+  background: url('../images/cal_leftarrow.gif') no-repeat;
 }
 
 .view .date-nav-wrapper .date-next a  {
@@ -197,7 +205,7 @@ table td.mini .mini-day-on a {
 }
 
 .date-nav h3  {
-	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+  font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
   font-weight:normal;
   font-size:16px;
 }
@@ -251,7 +259,7 @@ table td.mini .mini-day-on a {
   display: table-cell;
   float: none;
   border-right: 0;
-  border-bottom: 1px solid #cacaca !important;
+  border-bottom: 0;
   background: #f3f3f1;
   white-space: normal; /* Let labels wrap */
 }
@@ -261,7 +269,6 @@ table td.mini .mini-day-on a {
 }
 
 .ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
-  border-bottom-color: #fff !important;
   background: #fff;
 }
 
@@ -274,6 +281,11 @@ table td.mini .mini-day-on a {
   padding: 25px 15px;
   text-transform: uppercase;
   outline: 0;
+  border-bottom: 1px solid #cacaca;
+}
+
+.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a {
+  border-bottom-color: #fff !important;
 }
 
 .ui-tabs .ui-corner-top {
@@ -335,35 +347,35 @@ table td.mini .mini-day-on a {
 
 /* OLD Slideshow Classic Frontpage */
 .slideshow {
-	position:relative;
-	color:#FFF;
-	clear:both;
+  position:relative;
+  color:#FFF;
+  clear:both;
 }
 
 .slideshow.classic .text-and-controls {
-	background: url('../images/slideshow_tileBgtransparency.png') repeat-y;
+  background: url('../images/slideshow_tileBgtransparency.png') repeat-y;
   width:400px;
-	min-height:100px;
-	position:absolute;
-	top:40px;
-	left:40px;
-	padding:25px 0 0 25px;
+  min-height:100px;
+  position:absolute;
+  top:40px;
+  left:40px;
+  padding:25px 0 0 25px;
 }
 
 .slideshow.classic .text-and-controls .title {
-	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+  font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
   font-size: 34px;
   line-height: 40px;
   text-shadow: 0 1px 1px #333;
 }
 
 .slideshow.classic .text-and-controls .controls {
-	margin:30px 0 20px;
+  margin:30px 0 20px;
 }
 
 .slideshow.classic .text-and-controls a.prev,
 .slideshow.classic .text-and-controls a.next {
-	overflow: hidden;
+  overflow: hidden;
   text-indent: -99999999px;
   background: url("../images/hwpi_basesprite.png") no-repeat 0 0;
   width:28px;
@@ -374,11 +386,11 @@ table td.mini .mini-day-on a {
 }
 
 .slideshow.classic .text-and-controls a.next {
-  background: url("../images/hwpi_basesprite.png") no-repeat 0 -30px;	
+  background: url("../images/hwpi_basesprite.png") no-repeat 0 -30px;
  }
- 
+
 .slideshow.classic .text-and-controls .pager a {
-	overflow: hidden;
+  overflow: hidden;
   text-indent: -99999999px;
   background: url("../images/hwpi_basesprite.png") no-repeat 0 -93px;
   width:20px;
@@ -396,7 +408,7 @@ table td.mini .mini-day-on a {
 
 /* Slideshow Classic Subsite */
 .slideshow.classic.subsite .text-and-controls {
-	background: none repeat scroll 0 0 #4384C4;
+  background: none repeat scroll 0 0 #4384C4;
   min-height: 100px;
   padding: 25px 0 5px 25px;
   position: relative;
@@ -406,13 +418,13 @@ table td.mini .mini-day-on a {
   clear:both;
 }
 
-.slideshow.classic.subsite .text-and-controls a.prev, 
+.slideshow.classic.subsite .text-and-controls a.prev,
 .slideshow.classic.subsite .text-and-controls a.next {
   background: url("../images/hwpi_basesprite.png") no-repeat scroll 0 -150px transparent;
 }
 
 .slideshow.classic.subsite .text-and-controls a.next {
-  background: url("../images/hwpi_basesprite.png") no-repeat 0 -179px;	
+  background: url("../images/hwpi_basesprite.png") no-repeat 0 -179px;
  }
 
 .slideshow.classic.subsite .text-and-controls .pager a {
@@ -425,7 +437,7 @@ table td.mini .mini-day-on a {
 
 
 
-/* NEW Slideshow 
+/* NEW Slideshow
 .block-boxes-os_slideshow_box .block-title {
   display: none;
 }
@@ -466,7 +478,7 @@ table td.mini .mini-day-on a {
 }
 
 .block-boxes-os_slideshow_box .views-field-field-headline {
-	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+  font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
   font-size: 34px;
   line-height: 40px;
   height: 40px;
@@ -493,11 +505,11 @@ table td.mini .mini-day-on a {
   height: 28px;
   width: 28px;
   margin-right: 0;
-  background: url(../images/slide-controls.png) no-repeat 0 0 transparent;  old sprite has incorrect arrow positions, use this one for now 
+  background: url(../images/slide-controls.png) no-repeat 0 0 transparent;  old sprite has incorrect arrow positions, use this one for now
   display: block;
 }
 
-.views-slideshow-controls-text-previous a { 
+.views-slideshow-controls-text-previous a {
   overflow: hidden;
   text-indent: -99999999px;
   font-size: 0;
@@ -514,7 +526,7 @@ table td.mini .mini-day-on a {
 }
 
 #views_slideshow_slide_counter_os_slideshow-default {
-  display: none; Hide this for now 
+  display: none; Hide this for now
 }
 */
 
@@ -543,10 +555,20 @@ table td.mini .mini-day-on a {
   padding-top: 0;
 }
 
+<<<<<<< HEAD
 .views-slideshow-controls-bottom {position:absolute;top:225px;left:75px;z-index:25;line-height:0;}
+=======
+.views-slideshow-controls-bottom {
+  position:absolute;
+  top:220px;
+  left:70px;
+  z-index:25;
+  line-height:0;
+}
+>>>>>>> SCHOLAR-3.2
 
 .views-field-field-description {
-  	background: url("../images/slideshow_tileBgtransparency.png") repeat scroll 0 0 transparent;
+    background: url("../images/slideshow_tileBgtransparency.png") repeat scroll 0 0 transparent;
     color: #FFFFFF;
     left: 45px;
     height: 150px;
@@ -560,7 +582,7 @@ table td.mini .mini-day-on a {
 .text-and-controls {color:#FFF;position:absolute;top:15px;left:25px;padding-right: 10px;}
 
 .block-boxes-os_slideshow_box .headline {
-	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+  font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
   font-size: 34px;
   line-height: 38px;
   text-shadow: 0 1px 1px #333;
@@ -584,7 +606,7 @@ table td.mini .mini-day-on a {
   display:inline-block;
 }
 
-.views-slideshow-controls-text-previous a { 
+.views-slideshow-controls-text-previous a {
   background: url("../images/hwpi_basesprite.png") no-repeat 0 0;
    width:28px;
   height:28px;
@@ -604,8 +626,8 @@ table td.mini .mini-day-on a {
 
 
 .views-slideshow-controls-text-pause {
-	display:none;
-	/*background: url("../images/hwpi_basesprite.png") no-repeat 0 -30px;
+  display:none;
+  /*background: url("../images/hwpi_basesprite.png") no-repeat 0 -30px;
    width:28px;
   height:28px;*/
   }
@@ -669,7 +691,17 @@ table td.mini .mini-day-on a {
 
 
 
+/* Reset all margin padding top in content panels for boxes, so all boxes align top vertically, maybe... */
+#content-panels .block-content,
+#content-panels .boxes-box-content,
+#content-panels #block-os-search-db-site-search.no-title #search-block-form {
+  margin-top: 0;
+  padding-top: 0;
+}
 
+#content-panels .block-inner {
+  margin-top: 15px;
+}
 
 
 

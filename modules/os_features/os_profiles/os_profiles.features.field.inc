@@ -1,7 +1,4 @@
 <?php
-// $Id$
-
-
 /**
  * @file
  * os_profiles.features.field.inc
@@ -55,11 +52,17 @@ function os_profiles_field_default_fields() {
           'type' => 'text_default',
           'weight' => '6',
         ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '12',
+        ),
         'teaser' => array(
           'label' => 'hidden',
           'module' => 'text',
           'settings' => array(
-            'trim_length' => 600,
+            'trim_length' => 160,
           ),
           'type' => 'text_summary_or_trimmed',
           'weight' => '6',
@@ -126,6 +129,12 @@ function os_profiles_field_default_fields() {
           'settings' => array(),
           'type' => 'text_default',
           'weight' => '2',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '8',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -197,6 +206,12 @@ function os_profiles_field_default_fields() {
           'type' => 'text_default',
           'weight' => '4',
         ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '7',
+        ),
         'teaser' => array(
           'label' => 'hidden',
           'module' => 'text',
@@ -261,6 +276,12 @@ function os_profiles_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '9',
+        ),
+        'sidebar_teaser' => array(
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
@@ -334,6 +355,12 @@ function os_profiles_field_default_fields() {
           'type' => 'hidden',
           'weight' => '10',
         ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '10',
+        ),
         'teaser' => array(
           'label' => 'above',
           'settings' => array(),
@@ -401,6 +428,12 @@ function os_profiles_field_default_fields() {
           'settings' => array(),
           'type' => 'hidden',
           'weight' => '12',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '11',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -470,6 +503,16 @@ function os_profiles_field_default_fields() {
           'settings' => array(
             'image_link' => '',
             'image_style' => 'profile_full',
+          ),
+          'type' => 'image',
+          'weight' => '0',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'hidden',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => 'content',
+            'image_style' => 'profile_thumbnail',
           ),
           'type' => 'image',
           'weight' => '0',
@@ -564,6 +607,12 @@ function os_profiles_field_default_fields() {
           'type' => 'text_default',
           'weight' => '3',
         ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '6',
+        ),
         'teaser' => array(
           'label' => 'hidden',
           'module' => 'text',
@@ -628,6 +677,13 @@ function os_profiles_field_default_fields() {
       'description' => 'e.g. Assistant Professor at Harvard University Faculty of Arts and Sciences',
       'display' => array(
         'default' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '1',
+        ),
+        'sidebar_teaser' => array(
           'label' => 'hidden',
           'module' => 'text',
           'settings' => array(),
@@ -704,6 +760,12 @@ function os_profiles_field_default_fields() {
           'settings' => array(),
           'type' => 'file_default',
           'weight' => 15,
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -814,6 +876,12 @@ function os_profiles_field_default_fields() {
           'type' => 'link_default',
           'weight' => '5',
         ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '3',
+        ),
         'teaser' => array(
           'label' => 'hidden',
           'module' => 'link',
@@ -873,4 +941,3 @@ function os_profiles_field_default_fields() {
 
   return $fields;
 }
-

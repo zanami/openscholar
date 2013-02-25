@@ -262,6 +262,12 @@ margin: 0 0 1.5em 17px;
     list-style: none;
 }
 
+.block.block-boxes-os_boxes_html ul,
+.block .field-name-body ul {
+     list-style: disc;
+  
+}
+
 ul ul,
 ul ol,
 ol ol,
@@ -347,7 +353,7 @@ ul ul ul ul {
 	margin-left:0;
 }
 
-.sidebar .block-boxes-os_taxonomy_fbt ul ul {margin-left:10px;}
+.sidebar .block-boxes-os_taxonomy_fbt ul ul {margin: 0 10px;}
 
 .boxes-box ul.featured-links {
  

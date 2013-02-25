@@ -1659,10 +1659,12 @@ body.page-taxonomy .taxonomy-term h2 {
 	color: #db7002;
 }
 
-/* REMOVE BEFORE CHECING IN */
-.front .region-header-second h2.block-title, #messages {display:none;}
+/* Hides unwanted title from displaying on front page header. */
+.front .region-header-second h2.block-title {
+  display:none;
+}
 
-
-
-
-
+/* Adds spacing before "Read more" links on Software page view. */
+.page-software #content .view-content .links.inline {
+  margin-top: 1em;
+}

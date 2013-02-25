@@ -28,18 +28,6 @@ function hwpi_basetheme_preprocess_html(&$vars) {
  */
 function hwpi_basetheme_preprocess_node(&$vars) {
 
-  // Event nodes, inject variables for date month and day shield
-  if ($vars['node']->type == 'event') {
-    $vars['event_start'] = array();
-    if (isset($vars['field_date'][0]['value']) && !empty($vars['field_date'][0]['value'])) {
-      date_default_timezone_set($vars['field_date'][0]['timezone']);
-      $event_start_date = strtotime($vars['field_date'][0]['value']);
-      $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
-      $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
-      $vars['classes_array'][] = 'event-start'; 
-    }
-  }
-
   // Event persons, change title markup to h1
   if ($vars['type'] == 'person') {
     if (isset($vars['field_person_photo']) && !empty($vars['field_person_photo'])) {
@@ -49,34 +37,12 @@ function hwpi_basetheme_preprocess_node(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_field
- *
- * Cleans up teaser display to remove redundant date info.
- */
-function hwpi_basetheme_preprocess_field(&$variables, $hook) {
-  if ($variables['field_view_mode'] == 'teaser' && $variables['element']['#bundle'] == 'event' && $variables['element']['#field_name'] == 'field_date') {
-    date_default_timezone_set($variables['element']['#items'][0]['timezone']);
-    
-    $start_date = strtotime($variables['element']['#items'][0]['value']);
-    $end_date =   (isset($variables['element']['#items'][0]['value'])) ? strtotime($variables['element']['#items'][0]['value2']) : $start_date;
-  
-    //for one day events, strip the date.  it's displayed elsewhere.
-    $fmt = (format_date($start_date, 'os_date') == format_date($end_date, 'os_date')) ? 'os_time' : 'os_date_abbreviated';
-    $start = format_date($start_date, $fmt);
-    $end = format_date($end_date, $fmt);
-      
-    $variables['label_hidden'] = TRUE;
-    $variables['items'][0]['#markup'] = ($start == $end) ? $start : $start . ' - ' . $end; 
-  } 
-}
-
-/**
  * Process variables for comment.tpl.php
  */
 function hwpi_basetheme_process_node(&$vars) {
   // Event persons, change title markup to h1
   if ($vars['type'] == 'person') {
-    if (!$vars['teaser']) {
+    if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
       $vars['title_prefix']['#suffix'] = '<h1 class="node-title">' . $vars['title'] . '</h1>';
     } 
   }
@@ -106,14 +72,20 @@ function hwpi_basetheme_node_view_alter(&$build) {
     else {
       $build['body']['#weight'] = -9;
     }
+    
+    //join titles
+    $title_field = &$build['field_professional_title'];
+    if ($title_field) {
+      $keys = array_filter(array_keys($title_field), 'is_numeric');
+      foreach ($keys as $key) {
+        $titles[] = $title_field[$key]['#markup'];
+        unset($title_field[$key]);
+      }
+      $title_field[0] = array('#markup' => implode(', ', $titles));
+    }
 
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
-      $body = &$build['pic_bio']['body'][0];
-      $trim = 160;
-      if (strlen($body['#markup']) > $trim) {
-        $body['#markup'] = text_summary($body['#markup'], $build['pic_bio']['body']['#items'][0]['format'], $trim);
-      }
       
       //move title, website. body
       $build['pic_bio']['body']['#weight'] = 5;
@@ -132,23 +104,16 @@ function hwpi_basetheme_node_view_alter(&$build) {
         }
       }
       
-      //join titles      
-      $title_field = &$build['pic_bio']['field_professional_title'];
-      $keys = array_filter(array_keys($title_field), 'is_numeric');
-      foreach ($keys as $key) {
-        $titles[] = $title_field[$key]['#markup'];
-        unset($title_field[$key]);
-      }
-      $title_field[0] = array('#markup' => implode(', ', $titles));
-      
       //newlines after website
-      foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
-        $item = $build['pic_bio']['field_website']['#items'][$delta];
-        //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
-        $link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
-        $build['pic_bio']['field_website'][$delta]['#markup'] = $item['title'] . ': ' . $link . '<br>';
+      if (isset($build['pic_bio']['field_website'])) {
+        foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
+          $item = $build['pic_bio']['field_website']['#items'][$delta];
+          //$build['pic_bio']['field_website'][$delta]['#markup'] .= '<br>';
+          $link = l(str_replace('http://', '', $item['url']), $item['url'], array('attributes'=>$item['attributes']));
+          $build['pic_bio']['field_website'][$delta]['#markup'] = $item['title'] . ': ' . $link . '<br>';
+        }
       }
-      
+            
       unset($build['links']['node']);
 
       return;
@@ -173,45 +138,51 @@ function hwpi_basetheme_node_view_alter(&$build) {
     $block_zebra = 0;
 
     // Contact Details
-    $build['contact_details']['#prefix'] = '<div class="block contact-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
-    $build['contact_details']['#suffix'] = '</div></div>';
-    $build['contact_details']['#weight'] = -8;
-
-    // Contact Details > address
-    if (isset($build['field_address'])) {
-      $build['field_address']['#label_display'] = 'hidden';
-      $build['contact_details']['field_address'] = $build['field_address'];
-      unset($build['field_address']);
-    }
-    // Contact Details > email
-    if (isset($build['field_email'])) {
-      $build['field_email']['#label_display'] = 'hidden';
-      $email_plain = $build['field_email'][0]['#markup'];
-      if ($email_plain) {
-        $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">email</a>';
+    if ($build['#view_mode'] != 'sidebar_teaser') {
+      $build['contact_details']['#prefix'] = '<div class="block contact-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
+      $build['contact_details']['#suffix'] = '</div></div>';
+      $build['contact_details']['#weight'] = -8;
+  
+      // Contact Details > address
+      if (isset($build['field_address'])) {
+        $build['field_address']['#label_display'] = 'hidden';
+        $build['contact_details']['field_address'] = $build['field_address'];
+        unset($build['field_address']);
       }
-      $build['contact_details']['field_email'] = $build['field_email'];
-      unset($build['field_email']);
-    }
-    // Contact Details > phone
-    if (isset($build['field_phone'])) {
-      $build['field_phone']['#label_display'] = 'hidden';
-      $phone_plain = $build['field_phone'][0]['#markup'];
-      if ($phone_plain) {
-        $build['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
+      // Contact Details > email
+      if (isset($build['field_email'])) {
+        $build['field_email']['#label_display'] = 'inline';
+        $email_plain = $build['field_email'][0]['#markup'];
+        if ($email_plain) {
+          $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">' . $email_plain . '</a>';
+        }
+        $build['contact_details']['field_email'] = $build['field_email'];
+        $build['contact_details']['field_email']['#weight'] = -50;
+        unset($build['field_email']);
       }
-      $build['contact_details']['field_phone'] = $build['field_phone'];
-      unset($build['field_phone']);
+      // Contact Details > phone
+      if (isset($build['field_phone'])) {
+        $build['field_phone']['#label_display'] = 'hidden';
+        $phone_plain = $build['field_phone'][0]['#markup'];
+        if ($phone_plain) {
+          $build['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
+        }
+        $build['contact_details']['field_phone'] = $build['field_phone'];
+        $build['contact_details']['field_phone']['#weight'] = 50;
+        unset($build['field_phone']);
+      }
+  
+      // Websites
+      if (isset($build['field_website'])) {
+        $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
+        $build['website_details']['#suffix'] = '</div></div>';
+        $build['website_details']['#weight'] = -7;
+        $build['field_website']['#label_display'] = 'hidden';
+        $build['website_details']['field_website'] = $build['field_website'];
+        unset($build['field_website']);
+      }
     }
-
-    // Websites
-    $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
-    $build['website_details']['#suffix'] = '</div></div>';
-    $build['website_details']['#weight'] = -7;
-    $build['field_website']['#label_display'] = 'hidden';
-    $build['website_details']['field_website'] = $build['field_website'];
-    unset($build['field_website']);
-
+    
     if (isset($build['og_vocabulary'])) {
       foreach ($build['og_vocabulary']['#items'] as $tid) {
         $t = taxonomy_term_load($tid['target_id']);

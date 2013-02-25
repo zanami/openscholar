@@ -258,7 +258,7 @@ class FeatureContext extends DrupalContext {
 
     $metasteps = array();
     // @TODO: Don't use the hard coded address - remove john from the address.
-    $metasteps[] = new Step\When('I visit "john/os/widget/boxes/' . $delta . '/edit"');
+    $this->visit('john/os/widget/boxes/' . $delta . '/edit');
 
     // @TODO: Use XPath to fill the form instead of giving the type of the in
     // the scenario input.
@@ -298,6 +298,15 @@ class FeatureContext extends DrupalContext {
   public function iAssignTheNodeToTheTerm($node, $term) {
     $this->invoke_code('os_migrate_demo_assign_node_to_term', array("'$node'","'$term'"));
   }
+
+  /**
+   * @Given /^I assign the node "([^"]*)" with the type "([^"]*)" to the term "([^"]*)"$/
+   */
+  public function iAssignTheNodeWithTheTypeToTheTerm($node, $type, $term) {
+    $code = "os_migrate_demo_assign_node_to_term('$node', '$term', '$type');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
 
   /**
    * Hide the boxes we added during the scenario.
@@ -393,6 +402,52 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Then /^I should see the following <json>:$/
+   */
+  public function iShouldSeeTheFollowingJson(TableNode $table) {
+    // Get the json output and decode it.
+    $json_output = $this->getSession()->getPage()->getContent();
+    $json = json_decode($json_output);
+
+
+    // Hasing table, and define variables for later.
+    $hash = $table->getRows();
+    $errors = array();
+
+    // Run over the tale and start matching between the values of the JSON and
+    // the user input.
+    foreach ($hash as $i => $table_row) {
+      if (isset($json->{$table_row[0]})) {
+        if ($json->{$table_row[0]} != $table_row[1]) {
+          $error['values'][$table_row[0]] = ' Not equal to ' . $table_row[1];
+        }
+      }
+      else {
+        $error['not_found'][$table_row[0]] = " Dosen't exists.";
+      }
+    }
+
+    // Build the error string if needed.
+    if (!empty($error)) {
+      $string = array();
+
+      if (!empty($error['values'])) {
+        foreach ($error['values'] as $variable => $message) {
+          $string[] = '  ' . $variable . $message;
+        }
+      }
+
+      if (!empty($error['not_found'])) {
+        foreach ($error['not_found'] as $variable => $message) {
+          $string[] = '  ' . $variable . $message;
+        }
+      }
+
+      throw new Exception("Some errors were found:\n" . implode("\n", $string));
+    }
+  }
+
+  /**
    * Generate random text.
    */
   private function randomizeMe($length = 10) {
@@ -439,6 +494,18 @@ class FeatureContext extends DrupalContext {
   public function iSetTheVariableTo($variable, $value) {
     $function = 'os_migrate_demo_variable_set';
     $this->invoke_code($function, array($variable, $value));
+  }
+
+  /**
+   * @Then /^I should see a pager$/
+   */
+  public function iShouldSeeAPager() {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//div[@class='item-list']");
+
+    if (!$element) {
+      throw new Exception("The pager wasn't found.");
+    }
   }
 
   /**

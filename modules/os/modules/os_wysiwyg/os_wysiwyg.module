@@ -105,38 +105,40 @@ function os_wysiwyg_node_delete($node) {
  *
  */
 function os_wysiwyg_media_token_to_markup_alter(&$element, $tag_info, $settings) {
-  unset($element['content']['#prefix'], $element['content']['#suffix']);
-
-  $element['content']['file']['#attributes'] = array();
-  if (isset($settings['width'])) {
-    $element['content']['file']['#attributes']['width'] = $settings['width'];
-  }
-  if (isset($settings['height'])) {
-    $element['content']['file']['#attributes']['height'] = $settings['height'];
-  }
-
-  $container_settings = array();
-  foreach ($settings['attributes'] as $attr => $val) {
-    if ($attr != 'class' && $attr != 'height' && $attr != 'width') {
-      $container_settings[$attr] = $val;
+  if (empty($settings['wysiwyg'])) {
+    unset($element['content']['#prefix'], $element['content']['#suffix']);
+  
+    $element['content']['file']['#attributes'] = array();
+    if (isset($settings['width'])) {
+      $element['content']['file']['#attributes']['width'] = $settings['width'];
     }
-  }
-
-  if (isset($container_settings['style'])) {
-    $s = &$container_settings['style'];
-    if (strpos($s, 'display: block;') !== FALSE &&
-        strpos($s, 'margin-left: auto;') !== FALSE &&
-        strpos($s, 'margin-right: auto;') !== FALSE) {
-      // this was supposed to be centered, and could be an image
-      // add text-align center so the image inside will be centered after all
-      $s .= ' text-align: center;';
+    if (isset($settings['height'])) {
+      $element['content']['file']['#attributes']['height'] = $settings['height'];
     }
+  
+    $container_settings = array();
+    foreach ($settings['attributes'] as $attr => $val) {
+      if ($attr != 'class' && $attr != 'height' && $attr != 'width') {
+        $container_settings[$attr] = $val;
+      }
+    }
+  
+    if (isset($container_settings['style'])) {
+      $s = &$container_settings['style'];
+      if (strpos($s, 'display: block;') !== FALSE &&
+          strpos($s, 'margin-left: auto;') !== FALSE &&
+          strpos($s, 'margin-right: auto;') !== FALSE) {
+        // this was supposed to be centered, and could be an image
+        // add text-align center so the image inside will be centered after all
+        $s .= ' text-align: center;';
+      }
+    }
+  
+    $element += array(
+      '#prefix' => '<span '.drupal_attributes($container_settings).'>',
+      '#suffix' => '</span>',
+    );
   }
-
-  $element += array(
-    '#prefix' => '<span '.drupal_attributes($container_settings).'>',
-    '#suffix' => '</span>',
-  );
 }
 
 function os_wysiwyg_wysiwyg_editor_settings_alter(&$settings, $context){
