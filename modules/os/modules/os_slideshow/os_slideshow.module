@@ -49,6 +49,13 @@ function os_slideshow_library() {
     //'css' => array(libraries_get_path('flexslider') . '/flexslider.css' => array('type' => 'file','media' => 'screen')),
   );
 
+  $libraries['responsiveslides'] = array(
+    'title' => 'ResponsiveSlides.js',
+    'website' => 'https://github.com/viljamis/ResponsiveSlides.js',
+    'version' => '1.53',
+    'js' => array(libraries_get_path('responsiveslides') . '/responsiveslides.js' => array(),), //not original verison.  patched by HappyCog!
+    //'css' => array(libraries_get_path('responsiveslides') . '/responsiveslides.css' => array('type' => 'file','media' => 'screen')),
+  );
   return $libraries;
 }
 
@@ -215,7 +222,8 @@ function os_slideshow_image_default_styles() {
   );
 
   //make a preset for each aspect ratio using each of the widths available
-  $widths = _os_slideshow_region_size(NULL, NULL, 'content');
+
+  $widths = _os_slideshow_region_size(NULL, 'content');
   foreach (_os_slideshow_image_aspect_ratios() as $label => $ratio) {
     foreach ($widths as $w) {
       $name = 'os_slideshow_' . $label . '_' . $w;
@@ -301,14 +309,11 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
   list($animation, $direction) = _os_slideshow_get_animation_direction($vars['effect']);
   $settings = array('os_slideshow' =>   //http://www.woothemes.com/flexslider/
     array('boxes-box-'.$vars['box_delta'] => array(
-      //'controlsContainer' => '#flex-controls', //moves controls to this container
-      'controlNav' => FALSE,    //pager
-      'directionNav' => FALSE,  //control buttons
-      'slideshowSpeed' => $vars['timeout'],
-      'animationSpeed' => $vars['speed'],
-      'animation' => $animation,
-      'direction' => $direction,
-      'randomize' => $vars['random'],
+      'pager' => TRUE,    //pager
+      'nav' => TRUE,  //control buttons
+      'timeoutSpeed' => $vars['timeout'],
+      'speed' => $vars['speed'],
+      'random' => $vars['random'],
     )
   ));
   //slideshowSpeed, animationSpeed, randomize, animation (fade or slide (horizontal or vertical))
@@ -363,20 +368,20 @@ function _os_slideshow_get_style_name($layout, $delta) {
   $aspect_ratio = current(array_keys($layouts[$layout]['ratio']));
 
   //figure out what region the slideshow is in and what other regions are active so we can determine how wide the slideshow can be
-  $contexts = context_get();
-  $block_regions = array();
-
-  foreach ($contexts['context'] as $context) {
-    if (is_array($context->reactions['block']['blocks'])) {
-      foreach($context->reactions['block']['blocks'] as $name => $block) {
-        if (!isset($block_regions[$name])) {
-          $block_regions[$name] = $block['region'];
-        }
-      }
-    }
+  $context_blocks = &drupal_static('context_reaction_block_list');
+  $region = 'content_top';
+  if(!$context_blocks){
+    //Populate $context_blocks
+    $plugin = context_get_plugin('reaction', 'block');
+    $plugin->block_list($region);
   }
 
-  $region = (isset($block_regions['boxes-'.$delta])) ? $block_regions['boxes-'.$delta] : 'content_top';
+  foreach ($context_blocks as $reg => $blocks){
+    if(isset($blocks['boxes-'.$delta])){
+      $region = $reg;
+      break;
+    }
+  }
 
   //get valid image styles for this aspect ratio
   $sizes = array();
@@ -388,7 +393,7 @@ function _os_slideshow_get_style_name($layout, $delta) {
 
   //select the smallest style that's bigger than the current region.
   ksort($sizes);
-  $size = _os_slideshow_region_size($region, $block_regions);
+  $size = _os_slideshow_region_size($region);
   foreach ($sizes as $width => $name) {
     if ($width >= $size) {
       break;
@@ -405,7 +410,7 @@ function _os_slideshow_get_style_name($layout, $delta) {
  *
  * If $get_row_widths is provided, calculate and return the widths for that row of regions.
  */
-function _os_slideshow_region_size($region, $all_regions, $get_row_widths = '') {
+function _os_slideshow_region_size($region, $get_row_widths = '') {
   $full_width = 980;
 
   $rows = array(
@@ -431,10 +436,19 @@ function _os_slideshow_region_size($region, $all_regions, $get_row_widths = '') 
 
   //default behavior
   if (!$get_row_widths) {
-    $all_regions = array_unique($all_regions);
 
+    $plugin = context_get_plugin('reaction', 'block');
     foreach($rows as $row) {
-      $sides_count = count(array_intersect($all_regions, $row['sides']));
+      if($region != $row['main'] && !in_array($region, $row['sides'])) continue;
+
+      //Count the number of active regions
+      $sides_count = 0;
+      foreach ($row['sides'] as $side){
+        if(count($plugin->block_list($side))){
+          $sides_count++;
+        }
+      }
+
       if ($region == $row['main']) {
         $widths = array($full_width, $full_width - $row['solo_side_width'], $full_width - 2*$row['pair_side_width']);
         return $widths[$sides_count];

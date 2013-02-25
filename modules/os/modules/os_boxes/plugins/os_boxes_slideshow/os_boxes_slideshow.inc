@@ -200,7 +200,7 @@ class os_boxes_slideshow extends os_boxes_default {
       $prefix = 'slideshow_';
       $data = array();
       foreach ($styles as $name => $presets) {
-        if (strpos($name, $prefix) !== false) {
+        if (strpos($name, $prefix) === 0) {
           $dim = current($presets['effects']);
           $dim = $dim['data'];
           $data[$dim['width']] = $dim;
