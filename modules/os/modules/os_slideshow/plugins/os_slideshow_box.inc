@@ -11,7 +11,7 @@ class os_slideshow_box extends os_boxes_default {
       'timeout' => 5000,
       'speed' => 700,
       'random' => FALSE,
-      'layout' => FALSE,
+      'layout' => '3_1_overlay',
     );
   }
 
@@ -52,14 +52,6 @@ class os_slideshow_box extends os_boxes_default {
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#weight' => 10,
-    );
-
-    $form['display']['effect'] = array(
-        '#type' => 'select',
-        '#description' => t('How to transition between slides.'),
-        '#title' => t('Transition Effect'),
-        '#default_value' => $this->options['effect'],
-        '#options' => array('fade' => t('Fade'), 'slide-horizontal'=>t('Horizontal Slide'), 'slide-vertical'=>t('Vertical Slide')),
     );
 
     $form['display']['timeout'] = array(
