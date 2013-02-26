@@ -112,12 +112,6 @@ function os_entity_info_alter(&$info) {
 function os_block_info() {
   ctools_include('menu', 'os');
 
-  $blocks['powered-by'] = array(
-    'info' => t('Powered by Openscholar'),
-    'weight' => '10',
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
-
   $blocks['login'] = array(
     'info' => t('Login Button'),
     'weight' => '10',
@@ -157,10 +151,6 @@ function os_block_info() {
 function os_block_view($delta = '') {
   $block = array();
   switch ($delta) {
-    case 'powered-by':
-      $block['subject'] = NULL;
-      $block['content'] = theme('openscholar_powered_by');
-      return $block;
 
     case 'login':
       $block['subject'] = NULL;
@@ -329,7 +319,6 @@ function os_os_widget_alter(&$widget) {
     );
 
     switch ($widget['delta']){
-    	case 'powered-by':
     	case 'login':
     	  $widget['hidden'] = true;
     }
