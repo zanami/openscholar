@@ -30,16 +30,9 @@ Feature:
     Given I visit "john/harvard_activity_reports?year=1943"
     Then I should get:
     """
-    <?xml version="1.0" encoding="UTF-8"?>
-    <response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespacesSchemaLocation="far_response.xsd">
-      <person huid="" sourceUrl="http://localhost/OpenScholarMain/john" action_status="ok">
-        <publication id="8" pubType="Book" pubSource="OpenScholar">
           <citation>. The Little Prince. </citation>
           <linkToArticle></linkToArticle>
           <yearOfPublication>1943</yearOfPublication>
-        </publication>
-      </person>
-    </response>
     """
 
   @api
