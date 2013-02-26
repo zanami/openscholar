@@ -25,7 +25,7 @@ Feature:
     </response>
     """
 
-  @api
+  @api @wip
   Scenario: Test a query withing a VSite for a year with publication, where the answer should be "ok".
     Given I visit "john/harvard_activity_reports?year=1943"
     Then I should get:

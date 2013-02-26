@@ -385,7 +385,33 @@ class OsMigrateEventsNode extends OsMigrate {
   }
 }
 
-// TODO: Fix migration of the blog.
+/**
+ * Migrate FAQs.
+ */
+class OsMigrateFAQNode extends OsMigrate {
+  public $entityType = 'node';
+  public $bundle = 'faq';
+
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('title', 'Title'),
+    array('body', 'Body'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+  );
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+
+    $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+  }
+}
+
 /**
  * Migrate Blog.
  */
