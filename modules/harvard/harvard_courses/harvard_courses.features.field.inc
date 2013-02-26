@@ -577,73 +577,6 @@ function harvard_courses_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-harvard_course-field_bracketed'.
-  $fields['node-harvard_course-field_bracketed'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_bracketed',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'text',
-      'settings' => array(),
-      'translatable' => '0',
-      'type' => 'text_long',
-    ),
-    'field_instance' => array(
-      'bundle' => 'harvard_course',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'hidden',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => '8',
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_bracketed',
-      'label' => 'bracketed',
-      'required' => 0,
-      'settings' => array(
-        'text_processing' => '0',
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'rows' => '5',
-        ),
-        'type' => 'text_textarea',
-        'weight' => '4',
-      ),
-    ),
-  );
-
   // Exported field: 'node-harvard_course-field_building'.
   $fields['node-harvard_course-field_building'] = array(
     'field_config' => array(
@@ -1144,6 +1077,7 @@ function harvard_courses_field_default_fields() {
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
+      'type' => 'text_long',
     ),
     'field_instance' => array(
       'bundle' => 'harvard_course',
@@ -1156,7 +1090,7 @@ function harvard_courses_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '13',
+          'weight' => 21,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1167,10 +1101,10 @@ function harvard_courses_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_description',
-      'label' => 'description',
+      'label' => 'Description',
       'required' => 0,
       'settings' => array(
-        'text_processing' => '1',
+        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
@@ -1779,73 +1713,6 @@ function harvard_courses_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-harvard_course-field_title'.
-  $fields['node-harvard_course-field_title'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_title',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'text',
-      'settings' => array(),
-      'translatable' => '0',
-      'type' => 'text_long',
-    ),
-    'field_instance' => array(
-      'bundle' => 'harvard_course',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'hidden',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => '0',
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_title',
-      'label' => 'title',
-      'required' => 0,
-      'settings' => array(
-        'text_processing' => '0',
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'rows' => '5',
-        ),
-        'type' => 'text_textarea',
-        'weight' => '6',
-      ),
-    ),
-  );
-
   // Exported field: 'node-personal-field_catalog_number'.
   $fields['node-personal-field_catalog_number'] = array(
     'field_config' => array(
@@ -2125,6 +1992,7 @@ function harvard_courses_field_default_fields() {
   t('Cross registration');
   t('Department & school');
   t('Department ID');
+  t('Description');
   t('Exam group');
   t('Faculty description');
   t('Import type');
@@ -2132,7 +2000,6 @@ function harvard_courses_field_default_fields() {
   t('Section number');
   t('bracketed');
   t('building');
-  t('description');
   t('faculty');
   t('meetings');
   t('notes');
