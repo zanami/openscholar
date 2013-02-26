@@ -547,6 +547,30 @@ article.node-teaser.node-person .node-content {
   padding: 15px 0 30px;
 }
 
+/**
+LIST OF POSTS - PERSON TEASER IN SIDEBAR
+ */
+
+.sidebar .block-boxes-os_sv_list_box .node-person .field-name-field-person-photo {
+    padding-right: 10px;
+    width: 100%;
+}
+
+
+.sidebar .block-boxes-os_sv_list_box .node-person .pic-bio {
+    clear: none;
+    display: inline;
+    float: left;
+    padding-right: 10px;
+    width: 25%;
+}
+
+.sidebar .block-boxes-os_sv_list_box .node-person .node-content {
+    width: 70%;
+}
+
+
+
 /* Node FAQ */
 .node-teaser.node-faq {
   line-height: 19px;
