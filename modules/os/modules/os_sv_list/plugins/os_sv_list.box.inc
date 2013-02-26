@@ -86,6 +86,20 @@ class os_sv_list_box extends os_boxes_default {
       )
     );
 
+    if(module_exists('vsite')){
+
+      ctools_include('subsite','vsite');
+
+      $form['query_scope'] = array(
+        '#title' => 'Include results from',
+        '#type' => 'checkboxes',
+        '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
+        '#default_value' => $this->options['query_scope'],
+        '#access' => vsite_has_subsites(),
+        '#required' => TRUE,
+      );
+    }
+
     $form['display'] = array(
       '#type' => 'select',
       '#title' => 'Display style',
@@ -96,8 +110,15 @@ class os_sv_list_box extends os_boxes_default {
         'display_teaser' => t('Teaser'),
         'display_body' => t('Entire Post'),
       ),
+      // This #states rule limits use to when the $form['query_scope']
+      // 'subsites' checkbox is not checked."
+      '#states' => array(
+        'visible' => array(// action to take.
+          ':input[name="query_scope[subsites]"]' => array('checked' => FALSE),
+        ),
+      ),
     );
-    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array('display_sidebar_teaser' => array('news', 'event', 'person'))))); 
+    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array('display_sidebar_teaser' => array('news', 'event', 'person')))));
 
     $form['sort_by'] = array(
       '#type' => 'select',
@@ -270,20 +291,6 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['pager']
     );
 
-    if(module_exists('vsite')){
-
-      ctools_include('subsite','vsite');
-
-	    $form['query_scope'] = array(
-	      '#title' => 'Include results from',
-	      '#type' => 'checkboxes',
-	      '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
-	      '#default_value' => $this->options['query_scope'],
-	      '#access' => vsite_has_subsites(),
-	      '#required' => TRUE,
-	    );
-    }
-
     $form['number_of_items'] = array(
       '#title' => 'Number of items to display',
       '#type' => 'select',
@@ -313,11 +320,12 @@ class os_sv_list_box extends os_boxes_default {
       }
 
       $display_func = (method_exists($this, $options['display'])) ? $options['display'] : 'display_title';
-      $nodes = node_load_multiple($nids);
 
       if ($options['content_type'] == 'image') {
         $display_func = 'display_image';
         $nodes = file_load_multiple($nids);
+      }else{
+        $nodes = node_load_multiple($nids);
       }
 
       $block['content'] = $this->$display_func($nodes);
@@ -637,7 +645,7 @@ class os_sv_list_box extends os_boxes_default {
     $efq->fieldOrderBy('field_presentation_date', 'value', 'DESC');
     $this->sort_newest($efq);
   }
-  
+
   /**
    * Display functions
    */
@@ -645,17 +653,32 @@ class os_sv_list_box extends os_boxes_default {
     $items = node_view_multiple($nodes, 'full');
     return drupal_render($items);
   }
+
   function display_sidebar_teaser($nodes) {
-    $items = node_view_multiple($nodes, 'sidebar_teaser');    
+    $items = node_view_multiple($nodes, 'sidebar_teaser');
     return drupal_render($items);
   }
+
   function display_teaser($nodes) {
     $items = node_view_multiple($nodes, 'teaser');
     return drupal_render($items);
   }
+
   function display_title($nodes) {
+
+    $cross_site_links = FALSE;
+    if(module_exists('vsite') && isset($this->options['query_scope']) && in_array('subsites', array_filter($this->options['query_scope']))){
+      ctools_include('subsite','vsite');
+      $cross_site_links = TRUE;
+    }
+
     foreach ( $nodes as $nid => $node ) {
-      $items[] = l($node->title, 'node/' . $nid);
+      $options = array();
+      if($cross_site_links){
+        vsite_subsite_node_url_options($node, $options);
+      }
+
+      $items[] = l($node->title, 'node/' . $nid, $options);
     }
 
     return theme('item_list', array(

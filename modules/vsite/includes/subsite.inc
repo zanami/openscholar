@@ -81,3 +81,33 @@ function vsite_has_subsites($vsite = false){
   //If this site has subsites return True.
   return count(vsite_get_subsites($vsite))? TRUE:FALSE;
 }
+
+/**
+ * Returns the url options that should be used for a cross-site link to a node
+ *
+ * ie. A link to a subsite
+ *
+ * @param $vsite
+ * Active Site (Vsite Object)
+ *
+ *
+ * @return boolean
+ *
+ */
+function vsite_subsite_node_url_options($node, &$options){
+  $vsite = spaces_get_space();
+
+  if(!$vsite || !isset($node->{OG_AUDIENCE_FIELD})){
+    //no group information
+    return;
+  }
+
+  //Check and see if this node is part of a subsite "not this site"
+  $groups = field_get_items('node', $node, OG_AUDIENCE_FIELD);
+  if(isset($groups[0]) && $vsite->id != $groups[0]['target_id']){
+    //Absolute will force the use of "viste_domain_name"
+    $options['absolute'] = TRUE;
+    //This will rewrite the URL based on this nodes group
+    $options['purl'] = array('id' => $groups[0], 'provider' => 'spaces_og');
+  }
+}
