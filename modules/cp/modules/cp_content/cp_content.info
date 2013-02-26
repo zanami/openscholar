@@ -13,5 +13,4 @@ features[features_api][] = api:1
 features[views_view][] = cp_comments
 features[views_view][] = cp_content
 features[views_view][] = cp_files
-
 files[] = views/handlers/cp_content_handler_field_referencing_nodes.inc
