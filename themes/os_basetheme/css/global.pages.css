@@ -896,4 +896,30 @@ ul.recent-images-list li a:hover img {
   margin-left: 1em;
 }
 
+/**
+LIST OF POSTS - PERSON TEASER IN SIDEBAR
+ */
+.sidebar .block-boxes-os_sv_list_box .node-person .field-name-field-person-photo,
+.sidebar .block-boxes-os_sv_list_box .node-person .node-content {
+	float:left;
+	display:inline;
+	clear:none;
+}
+
+.sidebar .block-boxes-os_sv_list_box .node-person .field-name-field-person-photo {
+ 	width:30%;
+	padding-right:10px;
+}
+
+.sidebar .block-boxes-os_sv_list_box .node-person .node-content {
+	width:60%;
+}
+
+
+
+
+
+
+
+
 

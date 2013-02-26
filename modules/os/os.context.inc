@@ -38,12 +38,6 @@ function os_context_default_contexts(){
   $context->reactions = array(
       'block' => array(
           'blocks' => array(
-              'os-powered-by' => array(
-                  'module' => 'os',
-                  'delta' => 'powered-by',
-                  'region' => 'footer',
-                  'weight' => '10',
-              ),
           )
       )
   );

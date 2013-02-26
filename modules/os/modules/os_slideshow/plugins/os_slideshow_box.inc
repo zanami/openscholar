@@ -36,7 +36,7 @@ class os_slideshow_box extends os_boxes_default {
     $form['layout'] = array(
       '#type' => 'radios',
       '#title' => t('Slideshow Layout'),
-      '#description' => t('Slideshow images and cpations will be layed out in this manner.'),
+      '#description' => t('Slideshow images and captions will be laid out in this manner.'),
       '#required' => TRUE,
       '#options' => $ratio_options, //get these from some other function somehow
       '#default_value' => ($this->options['layout']) ? $this->options['layout'] : $defaults['layout'],
