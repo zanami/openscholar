@@ -719,6 +719,7 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['fid']['table'] = 'file_managed';
   $handler->display->display_options['fields']['fid']['field'] = 'fid';
   $handler->display->display_options['fields']['fid']['label'] = '';
+  $handler->display->display_options['fields']['fid']['exclude'] = TRUE;
   $handler->display->display_options['fields']['fid']['element_label_colon'] = FALSE;
   /* Field: File: Name */
   $handler->display->display_options['fields']['filename']['id'] = 'filename';
