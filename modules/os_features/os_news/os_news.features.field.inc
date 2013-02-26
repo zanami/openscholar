@@ -247,8 +247,8 @@ function os_news_field_default_fields() {
           'label' => 'hidden',
           'module' => 'image',
           'settings' => array(
-            'image_link' => '',
-            'image_style' => '',
+            'image_link' => 'content',
+            'image_style' => 'os_square_50_50',
           ),
           'type' => 'image',
           'weight' => '0',
