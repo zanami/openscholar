@@ -271,7 +271,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         $item['url']['path'] = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
       }
       else {
-        // Use the raw name.
+        // Use the non-aliased name.
         $item['url']['path'] = $options['path_prefix'] . $item['url']['path'];
       }
 
