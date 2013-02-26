@@ -72,17 +72,18 @@ function vsite_form_os_settings_form_alter(&$form, &$form_state, $form_id){
   }
 
   $group_types = array_keys(array_intersect(module_invoke_all('vsite_og_node_type_info'), array('group')));
-  $form['subsite_parents'] = array(
+
+  $form['os_general']['subsite_parents'] = array(
     '#type' => 'checkboxes',
     '#options' => drupal_map_assoc($group_types),
-    '#title' => t('Parent Sites'),
+    '#title' => t('Parent sites'),
     '#default_value' => $subsite_parents,
   );
 
-  $form['subsite_bundles'] = array(
+  $form['os_general']['subsite_bundles'] = array(
     '#type' => 'checkboxes',
     '#options' => drupal_map_assoc($group_types),
-    '#title' => t('Subsite Bundles'),
+    '#title' => t('Subsite bundles'),
     '#default_value' => $subsite_bundles,
   );
 
