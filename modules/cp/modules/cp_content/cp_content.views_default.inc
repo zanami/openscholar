@@ -714,10 +714,6 @@ function cp_content_views_default_views() {
       'empty_column' => 0,
     ),
   );
-  /* Relationship: File Usage: Content */
-  $handler->display->display_options['relationships']['file_to_node']['id'] = 'file_to_node';
-  $handler->display->display_options['relationships']['file_to_node']['table'] = 'file_usage';
-  $handler->display->display_options['relationships']['file_to_node']['field'] = 'file_to_node';
   /* Field: File: File ID */
   $handler->display->display_options['fields']['fid']['id'] = 'fid';
   $handler->display->display_options['fields']['fid']['table'] = 'file_managed';
@@ -765,25 +761,12 @@ function cp_content_views_default_views() {
   $handler->display->display_options['fields']['timestamp']['field'] = 'timestamp';
   $handler->display->display_options['fields']['timestamp']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['timestamp']['date_format'] = 'long';
-  /* Field: File Usage: Entity ID */
-  $handler->display->display_options['fields']['id']['id'] = 'id';
-  $handler->display->display_options['fields']['id']['table'] = 'file_usage';
-  $handler->display->display_options['fields']['id']['field'] = 'id';
-  $handler->display->display_options['fields']['id']['label'] = 'User In';
-  $handler->display->display_options['fields']['id']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['id']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['id']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['id']['alter']['path'] = 'node/[id]';
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'node';
-  $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['relationship'] = 'file_to_node';
-  $handler->display->display_options['fields']['title']['label'] = 'Used in';
-  $handler->display->display_options['fields']['title']['spaces'] = array(
-    'type' => 'spaces_og',
-    'frontpage' => 0,
-  );
+  /* Field: File: Referencing content */
+  $handler->display->display_options['fields']['referencing_nodes']['id'] = 'referencing_nodes';
+  $handler->display->display_options['fields']['referencing_nodes']['table'] = 'file_managed';
+  $handler->display->display_options['fields']['referencing_nodes']['field'] = 'referencing_nodes';
+  $handler->display->display_options['fields']['referencing_nodes']['label'] = 'Used in';
+  $handler->display->display_options['fields']['referencing_nodes']['element_label_colon'] = FALSE;
   /* Field: File: File ID */
   $handler->display->display_options['fields']['fid_1']['id'] = 'fid_1';
   $handler->display->display_options['fields']['fid_1']['table'] = 'file_managed';
