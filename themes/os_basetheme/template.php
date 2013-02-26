@@ -18,6 +18,7 @@ function os_basetheme_preprocess_html(&$vars) {
   else {
     $vars['classes_array'][] = 'navbar-off';
   }
+  
 }
 
 /**
@@ -59,8 +60,15 @@ function os_basetheme_preprocess_page(&$vars) {
   if (!isset($vars['use_content_regions'])) {
     $vars['use_content_regions'] = false;
   }
-
+  
   $vars['login_link'] = theme('openscholar_login');
+  
+
+
+  //hide useless tabs - drupal uses $vars['tabs'], but adaptive loads primary and secondary menu local tasks.  
+  $vars['primary_local_tasks'] = $vars['tabs']['#primary'];
+  $vars['secondary_local_tasks'] = $vars['tabs']['#secondary'];
+
 }
 
 /**
