@@ -264,7 +264,17 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     }
 
     if(strlen($options['path_prefix']) && strpos($item['url']['path'],'taxonomy/') === 0){
-      $item['url']['path'] = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
+      $path_alias = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
+      // Check that the path alias doesn't exist yet (e.g. a node with the exact
+      // same title).
+      if ($path_alias == drupal_get_path_alias($path_alias)) {
+        $item['url']['path'] = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
+      }
+      else {
+        // Use the raw name.
+        $item['url']['path'] = $options['path_prefix'] . $item['url']['path'];
+      }
+
     }
 
     // Don't process terms that are in not in level 0.
