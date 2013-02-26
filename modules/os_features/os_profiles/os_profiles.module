@@ -87,14 +87,6 @@ function os_profiles_process_node(&$vars) {
       $vars['content']['field_phone'][0]['#markup'] = '<em>p:</em> ' . $phone_plain;
     }
   }
-<<<<<<< HEAD
-
-  if ($vars['view_mode'] == 'sidebar_teaser') {
-    //unset($vars['title_prefix']['#suffix']);
-    //hide($vars['content']['links']['node']);
-  }
-=======
->>>>>>> SCHOLAR-3.x
 }
 
 /**
