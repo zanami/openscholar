@@ -428,9 +428,8 @@ function hwpi_basetheme_status_messages($vars) {
 
 function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
   // only display the start time for this particular instance of a repeat event
-  if (!isset($entity->view)) {
-    $entity->view = views_get_current_view();
-  }
+  $entity->view = views_get_current_view();
+
   if (isset($entity->view) && isset($entity->view->row_index) && isset($entity->view->result[$entity->view->row_index])) {
     $result = $entity->view->result[$entity->view->row_index];
     $field = 'field_data_field_date_field_date_value';
@@ -442,5 +441,8 @@ function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
       }
     }
     $entity->date_id = 'node.'.$entity->nid.'.field_date.'.$delta;
+  }
+  else {
+    $entity->active_date = $vars['items'][0];
   }
 }
