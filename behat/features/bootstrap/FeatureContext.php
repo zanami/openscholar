@@ -136,8 +136,28 @@ class FeatureContext extends DrupalContext {
    */
   public function iShouldGet(PyStringNode $string) {
     $page = $this->getSession()->getPage();
-    if (strpos($page->getContent(), $string->getRaw()) === FALSE) {
-      throw new Exception("Text not found.");
+    $comapre_string = $string->getRaw();
+    $page_string = $page->getContent();
+
+    if (strpos($comapre_string, '{{*}}')) {
+      // Attributes that may changed in different environments.
+      foreach (array('sourceUrl', 'id') as $attribute) {
+        $page_string = preg_replace('/ '. $attribute . '=".+?"/', '', $page_string);
+        $comapre_string = preg_replace('/ '. $attribute . '=".+?"/', '', $comapre_string);
+      }
+
+      if ($page_string != $comapre_string) {
+        $output = "The strings are not matching.\n";
+        $output .= "Page: {$page_string}\n";
+        $output .= "Search: {$comapre_string}\n";
+        throw new Exception($output);
+      }
+    }
+    else {
+      // Normal compare.
+      if (strpos($page_string, $comapre_string) === FALSE) {
+        throw new Exception("Text not found.");
+      }
     }
   }
 
