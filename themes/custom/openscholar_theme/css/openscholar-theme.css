@@ -17,7 +17,7 @@ body.front {
   }
 
 .front #page {
-  background:url('../images/wrapper-front.png') repeat-x 0 -117px transparent;
+  background:url('../images/wrapper-front.png') repeat-x 0 -98px transparent;
   }
 
 #page-wrapper {
@@ -182,10 +182,10 @@ ul.grid {
 
 #header-container h1 {
   width:285px;
-  height: 31px;
+  height: 50px;
   text-indent: -999em;
   background: url('../images/logo.png') no-repeat 0 0 transparent;
-  margin: 15px 0 0 5px;
+  margin: 0 0 0 5px;
   }
 
 #header-container h1 a, #header-container h1 a:visited {
@@ -344,6 +344,12 @@ p.copy a.poweredby {
 	color:#FFF;
 	font-size:14px;
 }
+.front .region.region-content-first .block, 
+.front .region.region-content-second .block,
+.front .region.region-content-bottom .block {
+	margin-bottom:20px;
+}
+
 
 .region-content-bottom .block-boxes-os_boxes_twitterfeed .tweet-authorphoto img {
 	display:none;
