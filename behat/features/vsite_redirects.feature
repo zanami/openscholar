@@ -12,7 +12,7 @@ Feature:
       | als/book/all-about-nodes                | 302   | john/book/all-about-nodes                 |
       | john/classes/all-about-abraham-lincoln  | 302   | lincoln/classes/all-about-abraham-lincoln |
 
-  @api
+  @api @wip
   Scenario: Non-aliased node paths redirect on sites with domains.
     Given I expect for a behavior according the next <statements>:
     # |   Prefix  | Title                   | Path? | Code  | Expected URL                        |
