@@ -145,9 +145,13 @@ function os_basetheme_preprocess_node(&$vars) {
   // Event nodes, inject variables for date month and day shield
   if ($vars['node']->type == 'event') {
     $vars['event_start'] = array();
-    if (isset($vars['field_date'][0]['value']) && !empty($vars['field_date'][0]['value'])) {
-      date_default_timezone_set($vars['field_date'][0]['timezone']);
-      $event_start_date = strtotime($vars['field_date'][0]['value']);
+    $delta = 0;
+    if (isset($vars['node']->date_id)) {
+      list(,,, $delta,) = explode('.', $vars['node']->date_id . '.');
+    }
+    if (isset($vars['field_date'][$delta]['value']) && !empty($vars['field_date'][$delta]['value'])) {
+      date_default_timezone_set($vars['field_date'][$delta]['timezone']);
+      $event_start_date = strtotime($vars['field_date'][$delta]['value']);
       $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
       $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
       $vars['classes_array'][] = 'event-start';
