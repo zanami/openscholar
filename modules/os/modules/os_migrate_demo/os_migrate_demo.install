@@ -14,6 +14,7 @@ function os_migrate_demo_install() {
     'os_classes',
     'os_dataverse',
     'os_events',
+    'os_faq',
     'os_image_gallery',
     'os_links',
     'os_news',
