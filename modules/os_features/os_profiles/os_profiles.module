@@ -68,10 +68,6 @@ function os_profiles_process_node(&$vars) {
     ),
   );
 
-  if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
-    $vars['title_prefix']['#suffix'] = '<h2>' . $vars['title'] . '</h2>';
-  }
-
   // Customizes field markup with prefixes and suffixes
   if (isset($vars['content']['field_email'])) {
     $email_plain = $vars['content']['field_email'][0]['#markup'];
