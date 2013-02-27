@@ -376,6 +376,10 @@ ol.search-results li.search-result:last-child {
 	float: none;
 }
 
+.node-event .field-name-field-date .field-item div {
+	margin-bottom: 15px;
+}
+
 #event-content .node-header h1.node-title {
 	margin-bottom: 0;
 }
