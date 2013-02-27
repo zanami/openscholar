@@ -19,6 +19,9 @@ function os_profiles_os_app_info() {
   	'nodetypes' => array(
   	  'person',
     ),
+    'views tabs' => array(
+      'os_profiles' => array('page'),
+    ),
   );
 
   return $apps;

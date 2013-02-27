@@ -20,6 +20,9 @@ function os_classes_os_app_info() {
   	  'class',
   		'class_material',
     ),
+    'views tabs' => array(
+      'os_classes' => array('page'),
+    ),
   );
 
   return $apps;

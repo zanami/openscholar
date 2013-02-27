@@ -112,11 +112,6 @@ function os_entity_info_alter(&$info) {
 function os_block_info() {
   ctools_include('menu', 'os');
 
-  $blocks['login'] = array(
-    'info' => t('Login Button'),
-    'weight' => '10',
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
   $blocks['get-started'] = array(
     'info' => t('Get Started - A block to help site admins setup thier site.'),
     'weight' => '-10',
@@ -151,11 +146,6 @@ function os_block_info() {
 function os_block_view($delta = '') {
   $block = array();
   switch ($delta) {
-
-    case 'login':
-      $block['subject'] = NULL;
-      $block['content'] = theme('openscholar_login');
-      return $block;
 
     case 'get-started':
       if (user_access('manage group space')) {
@@ -317,11 +307,6 @@ function os_os_widget_alter(&$widget) {
       'tags' => array('Other'),
       'class' => array('menu'),
     );
-
-    switch ($widget['delta']){
-    	case 'login':
-    	  $widget['hidden'] = true;
-    }
   }
   elseif ($widget['module'] == 'node') {
     $widget += array(

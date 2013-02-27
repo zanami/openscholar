@@ -19,6 +19,9 @@ function os_blog_os_app_info() {
   	'nodetypes' => array(
   	  'blog',
     ),
+    'views tabs' => array(
+      'os_blog' => array('page'),
+    ),
   );
 
   return $apps;

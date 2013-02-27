@@ -59,40 +59,9 @@ table caption {
 #powerby-login {
     float:none;
     margin-top: 20px;
+   width:100%;
 }
 
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer-right #powerby-login,
-  .footer-left.footer-right #powerby-login {
-   width: 750px;
-}
-
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer-right #powerby-login,
-  .logged-in .footer-left.footer-right #powerby-login {
-   width: 550px;
-}
-
-
-.footer-left.footer #powerby-login {
-    	width: 380px;
-  	}
-  
-.logged-in .footer-left.footer #powerby-login {
-    	width: 180px;
-  	}
-
-.footer.footer-right #powerby-login {
-    	width: 465px;
-  	}
-
-.logged-in .footer.footer-right #powerby-login {
-    	width: 255px;
-  	}
 
 
 /*
@@ -539,9 +508,7 @@ article.node-teaser.node-person .node-content {
   margin-right: 30px;
 }
 
-.node-type-person .node-person .field-name-field-email {
-  text-transform: capitalize;
-}
+
 
 .node-teaser.node-person header h1 {
   margin-bottom: 0;
@@ -567,6 +534,12 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
     float: left;
     padding-right: 10px;
     width: 25%;
+    
+    
+    border-top: none;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-top: 0;
 }
 
 .sidebar .block-boxes-os_sv_list_box .node-person .node-content {
