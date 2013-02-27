@@ -1121,7 +1121,7 @@ function harvard_courses_field_default_fields() {
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
-      'type' => 'text_long',
+      'type' => 'text',
     ),
     'field_instance' => array(
       'bundle' => 'harvard_course',
