@@ -322,7 +322,7 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
     array('boxes-box-'.$vars['box_delta'] => array(
       'pager' => TRUE,    //pager
       'nav' => TRUE,  //control buttons
-      'timeoutSpeed' => $vars['timeout'],
+      'timeout' => $vars['timeout'],
       'speed' => $vars['speed'],
       'random' => $vars['random'],
     )
