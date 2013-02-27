@@ -59,40 +59,9 @@ table caption {
 #powerby-login {
     float:none;
     margin-top: 20px;
+   width:100%;
 }
 
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer-right #powerby-login,
-  .footer-left.footer-right #powerby-login {
-   width: 750px;
-}
-
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer-right #powerby-login,
-  .logged-in .footer-left.footer-right #powerby-login {
-   width: 550px;
-}
-
-
-.footer-left.footer #powerby-login {
-    	width: 380px;
-  	}
-  
-.logged-in .footer-left.footer #powerby-login {
-    	width: 180px;
-  	}
-
-.footer.footer-right #powerby-login {
-    	width: 465px;
-  	}
-
-.logged-in .footer.footer-right #powerby-login {
-    	width: 255px;
-  	}
 
 
 /*
