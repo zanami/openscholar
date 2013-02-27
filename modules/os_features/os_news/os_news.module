@@ -19,6 +19,9 @@ function os_news_os_app_info() {
   	'nodetypes' => array(
   	  'news',
     ),
+    'views tabs' => array(
+      'os_news' => array('page'),
+    ),
   );
 
   return $apps;
