@@ -526,31 +526,21 @@ article.node-teaser.node-person .node-content {
 LIST OF POSTS - PERSON TEASER IN SIDEBAR
  */
 
-.sidebar .block-boxes-os_sv_list_box .node-person .field-name-field-person-photo {
-    padding-right: 10px;
-    width: 100%;
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio {
+
+     margin-right: 0;
 }
 
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content,
+.sidebar .block-boxes-os_sv_list_box .node.node-person .node-content {
 
-.sidebar .block-boxes-os_sv_list_box .node-person .pic-bio {
-    clear: none;
-    display: inline;
-    float: left;
-    padding-right: 10px;
-    width: 25%;
-    
-    
-    border-top: none;
-    margin-bottom: 0;
-    margin-top: 0;
-    padding-top: 0;
+	 margin-left: 95px;
+	
 }
 
-.sidebar .block-boxes-os_sv_list_box .node-person .node-content {
-    width: 70%;
+.sidebar .block-boxes-os_sv_list_box .node.node-person.node-teaser.article.with-person-photo .node-header {
+	margin-left: 95px;
 }
-
-
 
 /* Node FAQ */
 .node-teaser.node-faq {
