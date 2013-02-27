@@ -390,7 +390,7 @@ ol.search-results li.search-result:last-child {
   font-size: 18px;
 }
 
-#event-content {
+.event-start #event-content {
   margin-left: 70px;
 }
 
@@ -401,6 +401,10 @@ ol.search-results li.search-result:last-child {
 
 .node-event .field-name-field-date .field-label {
   float: left;
+}
+
+.node-event .field-name-field-date.field-label-above .field-label {
+	float: none;
 }
 
 #event-content .node-header h1.node-title {
