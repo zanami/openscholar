@@ -27,6 +27,54 @@ function os_taxonomy_menu_alter(&$items) {
   }
 }
 
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function os_taxonomy_views_query_alter(&$view, &$query) {
+  $view_names = array();
+  foreach (os_app_info() as $info) {
+    if (empty($info['views tabs'])) {
+      continue;
+    }
+    $view_names = array_merge($view_names, $info['views tabs']);
+  }
+
+  if (empty($view_names[$view->name])) {
+    return;
+  }
+
+  // Check if we have specified a specific display
+  if ($view_names[$view->name] !== TRUE && !in_array($view->current_display, $view_names[$view->name])) {
+    return;
+  }
+
+
+  $item = menu_get_item();
+  if (count($item['original_map']) == 1) {
+    // We are just looking at classes.
+    return;
+  }
+
+  // Get the term alias, if exists.
+  $path = $item['original_map'];
+  unset($path['0']);
+
+  if (!$path = drupal_get_normal_path(implode('/', $path))) {
+    return;
+  }
+
+  if (strpos($path, 'taxonomy/term/') !== 0) {
+    return;
+  }
+
+  $group_key = key($query->where);
+  $alias = $query->add_table('field_data_og_vocabulary');
+
+  $tid = str_replace('taxonomy/term/', '', $path);
+  $query->add_where($group_key, "$alias.og_vocabulary_target_id", $tid, '=');
+}
+
 /**
  * Page callback; overrides system vocabulary term page.
  *
@@ -216,7 +264,17 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
     }
 
     if(strlen($options['path_prefix']) && strpos($item['url']['path'],'taxonomy/') === 0){
-      $item['url']['path'] = str_replace('taxonomy/', $options['path_prefix'], $item['url']['path']);
+      $path_alias = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
+      // Check that the path alias doesn't exist yet (e.g. a node with the exact
+      // same title).
+      if ($path_alias == drupal_get_path_alias($path_alias)) {
+        $item['url']['path'] = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
+      }
+      else {
+        // Use the non-aliased name.
+        $item['url']['path'] = $options['path_prefix'] . $item['url']['path'];
+      }
+
     }
 
     // Don't process terms that are in not in level 0.
@@ -432,7 +490,8 @@ function os_taxonomy_get_term_childrens($tid, $vid, $options) {
     $vocabulary = taxonomy_get_tree($options['vocabulary']);
     foreach ($vocabulary as $term) {
       $tree[$term->tid] = $term->depth;
-    }  }
+    }
+  }
 
   $childrens = taxonomy_get_children($tid, $vid);
 
@@ -525,14 +584,17 @@ function os_taxonomy_build_child_item($items, $parent, $options) {
  * @see gkplus_preprocess_os_taxonomy_tagged_nodes()
  */
 function theme_os_taxonomy_tagged_nodes($variables) {
-  $output = '';
-
   global $language;
+
+  $output = '';
   $direction = $language->direction ? 'margin-right: ' : 'margin-left: ';
 
+  $tagged_item_per_page = variable_get('os_taxonomy_ites_per_page', 15);
+  $page = !isset($_GET['page']) ? 0 : $_GET['page'];
+
   $options = $variables['options'] + array(
-    'range' => 0,
-    'offset' => 0,
+    'range' => $tagged_item_per_page,
+    'offset' => $page * $tagged_item_per_page,
     'tree' => FALSE,
     'max_depth' => NULL,
     'indentation' => 10,
@@ -588,6 +650,8 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   // Attaches list of nodes in this term, or empty message if term is root term.
   $node_count = os_taxonomy_count_attached_nodes($taxonomy_term->tid, $options['bundles']);
   if ($node_count) {
+    pager_default_initialize($node_count, $tagged_item_per_page);
+    $pager = theme('pager', array('quantity' => $node_count));
 
     $nids = os_taxonomy_list_attached_nodes($taxonomy_term->tid, $options['bundles'], $options['range'], $options['offset']);
 
@@ -596,6 +660,7 @@ function theme_os_taxonomy_tagged_nodes($variables) {
     $build += node_view_multiple($nodes);
   }
   else if ((int) $options['cur_depth'] === 0 && !$has_children_to_display) {
+    $pager = '';
     $build['no_content'] = array(
       '#prefix' => '<p>',
       '#markup' => t('There is currently no content classified with this term.'),
@@ -626,7 +691,7 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   }
 
   // Closes the wrapper div around this term.
-  $output .= '</div>';
+  $output .= '</div>' . $pager;
 
   return $output;
 }
@@ -746,7 +811,7 @@ function os_taxonomy_list_attached_nodes($tid, $node_bundles = array(), $range =
   $query->orderBy('n.created', 'DESC');
 
   if ($range) {
-    $query->range($range + $offset, $range);
+    $query->range($offset, $range);
   }
 
   $result = $query->execute();

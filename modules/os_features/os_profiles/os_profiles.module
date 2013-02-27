@@ -19,6 +19,9 @@ function os_profiles_os_app_info() {
   	'nodetypes' => array(
   	  'person',
     ),
+    'views tabs' => array(
+      'os_profiles' => array('page'),
+    ),
   );
 
   return $apps;
@@ -67,10 +70,6 @@ function os_profiles_process_node(&$vars) {
       'data' => drupal_get_path('module', 'os_profiles') . '/os_profiles.css',
     ),
   );
-
-  if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
-    $vars['title_prefix']['#suffix'] = '<h2>' . $vars['title'] . '</h2>';
-  }
 
   // Customizes field markup with prefixes and suffixes
   if (isset($vars['content']['field_email'])) {
