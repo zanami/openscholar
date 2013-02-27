@@ -92,6 +92,13 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
   //hide title.  it will be automatically generated later.
   $form['title']['#type'] = 'hidden';
   $form['title']['#required'] = FALSE;
+  
+  //remove preview, diff buttons
+  foreach (array('preview', 'preview_changes') as $action) {
+    if (isset($form['actions'][$action])) {
+      unset($form['actions'][$action]);
+    }
+  }
 }
 
 /**
@@ -437,18 +444,30 @@ function _os_slideshow_region_size($region, $get_row_widths = '') {
       'pair_side_width' => .25 * $full_width,
     )
   );
+  
+  //page content has extra regions
+  $rows['content_bottom'] = $rows['content'];
+  $rows['content_bottom']['main'] = 'content_bottom';
 
+  $rows['content_second'] = $rows['content'];
+  $rows['content_second']['main'] = 'content_second';
+  
+  $rows['content_first'] = $rows['content'];
+  $rows['content_first']['main'] = 'content_first';
+  
   //default behavior
   if (!$get_row_widths) {
 
     $plugin = context_get_plugin('reaction', 'block');
     foreach($rows as $row) {
-      if($region != $row['main'] && !in_array($region, $row['sides'])) continue;
+      if ($region != $row['main'] && !in_array($region, $row['sides'])) { 
+        continue;
+      }
 
       //Count the number of active regions
       $sides_count = 0;
       foreach ($row['sides'] as $side){
-        if(count($plugin->block_list($side))){
+        if (count($plugin->block_list($side))) {
           $sides_count++;
         }
       }
