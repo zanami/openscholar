@@ -226,11 +226,13 @@ class OsMigrateClassesNode extends OsMigrate {
     array('link', 'Link'),
     array('semester', 'Semester'),
     array(OG_AUDIENCE_FIELD, 'Site'),
+    array(OG_VOCAB_FIELD, 'Terms'),
   );
 
   public $dependencies = array(
     'OsMigratePersonalNode',
     'OsMigrateProjectNode',
+    'OsMigrateScienceTaxonomyTerm',
   );
 
   public function __construct() {
@@ -238,8 +240,13 @@ class OsMigrateClassesNode extends OsMigrate {
 
     $this->addFieldMapping('body', 'body');
     $this->addFieldMapping('field_semester', 'semester');
+
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration(array('OsMigrateProjectNode', 'OsMigratePersonalNode'));
+
+    $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)
+      ->sourceMigration(array('OsMigrateScienceTaxonomyTerm'))
+      ->separator('|');
   }
 
   /**
