@@ -615,4 +615,12 @@ class FeatureContext extends DrupalContext {
 
     return $curlInfo['http_code'];
   }
+
+  /**
+   * @Then /^I should see the random string$/
+   */
+  public function iShouldSeeTheRandomString() {
+    $metasteps = array(new Step\When('I should see "' . $this->randomText . '"'));
+    return $metasteps;
+  }
 }
