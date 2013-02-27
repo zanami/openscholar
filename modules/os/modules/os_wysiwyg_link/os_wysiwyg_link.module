@@ -29,11 +29,29 @@ function os_wysiwyg_link_menu() {
   return $items;
 }
 
-function os_wysiwyg_link_media_token_to_markup_alter(&$element, $tag, $settings) {
-  if ($tag['type'] == 'url') {
-    $element = array(
-      '#type' => 'markup',
-      '#markup' => file_create_url($tag['file']->uri),
-    );
+function os_wysiwyg_link_filter_info() { 
+  $filters['owl_filter'] = array(
+    'title' => t('Convert File links to correct path'),
+    'description' => t('This filter will convert the paths of links to files to ensure they\'re always correct.'),
+    'process callback' => 'os_wysiwyg_link_filter',
+    'weight' => 1,
+  );
+
+  return $filters;
+}
+
+function os_wysiwyg_link_filter($text) {
+  $matches = _os_wysiwyg_link_find_links($text);
+  foreach ($matches as $m) {
+    $file = file_load($m[2]);
+    $link = str_replace($m[1], file_create_url($file->uri), $m[0]);
+    $text = str_replace($m[0], $link, $text);
   }
+  return $text;
+}
+
+function _os_wysiwyg_link_find_links($str) {
+  $matches = array();
+  preg_match_all('|<a[^>]+href="([^"]+)"[^>]+data-fid="([\d]*)">[^<]*<\/a>|', $str, $matches, PREG_SET_ORDER);
+  return $matches;
 }

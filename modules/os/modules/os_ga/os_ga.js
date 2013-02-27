@@ -16,7 +16,8 @@ $(document).ready(function() {
 
       // Is the clicked URL internal?
       if (isInternal.test(this.href)) {
-        // Is download tracking activated and the file extension configured for download tracking?
+        // Is download tracking activated and the file extension configured for
+		// download tracking?
         if (os_ga.trackDownload && isDownload.test(this.href)) {
           // Download link clicked.
           var extension = isDownload.exec(this.href);
@@ -33,12 +34,17 @@ $(document).ready(function() {
 	      _gaq.push(["_trackEvent", "Outbound links", "Click", this.href]);
         }
       }
-      
       // Is this link in a main menu?
-      if (os_ga.trackNavigation && (this.closest('#block-os-primary-menu').length || this.closest('#block-os-secondary-menu').length)) {
-    	// Navigation menu item clicked.
-    	var navType = this.closest('#block-os-primary-menu').length ? "Primary Nav" : "Secondary Nav";
-    	_gaq.push(["_trackEvent", navType, "Click", this.href]);
+      if (os_ga.trackNavigation) {
+    	if ($(this).closest('#block-os-secondary-menu').length) {
+    	  var navType = "Secondary Nav";
+        }
+        if ($(this).closest('#block-os-primary-menu').length) {
+          var navType = "Primary Nav";
+        }
+        if (navType) {
+          _gaq.push(["_trackEvent", navType, "Click", this.href]);
+        }
       }
     });
   });

@@ -27,6 +27,54 @@ function os_taxonomy_menu_alter(&$items) {
   }
 }
 
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function os_taxonomy_views_query_alter(&$view, &$query) {
+  $view_names = array();
+  foreach (os_app_info() as $info) {
+    if (empty($info['views tabs'])) {
+      continue;
+    }
+    $view_names = array_merge($view_names, $info['views tabs']);
+  }
+
+  if (empty($view_names[$view->name])) {
+    return;
+  }
+
+  // Check if we have specified a specific display
+  if ($view_names[$view->name] !== TRUE && !in_array($view->current_display, $view_names[$view->name])) {
+    return;
+  }
+
+
+  $item = menu_get_item();
+  if (count($item['original_map']) == 1) {
+    // We are just looking at classes.
+    return;
+  }
+
+  // Get the term alias, if exists.
+  $path = $item['original_map'];
+  unset($path['0']);
+
+  if (!$path = drupal_get_normal_path(implode('/', $path))) {
+    return;
+  }
+
+  if (strpos($path, 'taxonomy/term/') !== 0) {
+    return;
+  }
+
+  $group_key = key($query->where);
+  $alias = $query->add_table('field_data_og_vocabulary');
+
+  $tid = str_replace('taxonomy/term/', '', $path);
+  $query->add_where($group_key, "$alias.og_vocabulary_target_id", $tid, '=');
+}
+
 /**
  * Page callback; overrides system vocabulary term page.
  *
@@ -210,7 +258,19 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       continue;
     }
 
-    $url = entity_uri('taxonomy_term', $item);
+    if(strlen($options['path_prefix']) && strpos($item['url']['path'],'taxonomy/') === 0){
+      $path_alias = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
+      // Check that the path alias doesn't exist yet (e.g. a node with the exact
+      // same title).
+      if ($path_alias == drupal_get_path_alias($path_alias)) {
+        $item['url']['path'] = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
+      }
+      else {
+        // Use the non-aliased name.
+        $item['url']['path'] = $options['path_prefix'] . $item['url']['path'];
+      }
+
+    }
 
     if (!empty($path_prefix) && strpos($url['path'],'taxonomy/') === 0) {
       $item->path = str_replace('taxonomy/', $path_prefix, $url['path']);

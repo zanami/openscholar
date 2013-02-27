@@ -118,4 +118,15 @@ abstract class OsMigrate extends Migration {
     $gid = $entity->og_group_ref['destid1'];
     og_vocab_relation_save($vocabulary->vid, 'node', $gid);
   }
+
+  /**
+   * When migrating a site, check if he have a domain and insert the domain.
+   */
+  public function complete($entity, $row) {
+    if (!in_array($this->bundle, array('personal', 'project')) || empty($row->domain)) {
+      return;
+    }
+
+    os_migrate_demo_spaces_overrides('og', $entity->nid, $row->domain);
+  }
 }

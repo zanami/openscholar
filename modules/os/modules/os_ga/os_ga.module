@@ -135,7 +135,7 @@ function os_ga_page_alter() {
     $settings['trackDownload'] = $track_download;
     $settings['trackDownloadExtensions'] = OS_GA_TRACK_FILE_EXTENSIONS;
   }
-  if ($track_navigation = variable_get('os_ga_naviaation', 0)) {
+  if ($track_navigation = variable_get('os_ga_navigation', 0)) {
     $settings['trackNavigation'] = $track_navigation;
   }
 
