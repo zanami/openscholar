@@ -104,11 +104,11 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
 function os_slideshow_imagefield_crop_instance_alter(&$instance, $context) {
   if (isset($context['form']) && $context['form']['#id'] == 'slideshow-slide-node-form') {
     $widget = $context['form']['widget']['#value'];
-  } elseif (isset($context['entity'])) {
+  } elseif (isset($context['entity']) && isset($context['entity']->widget)) {
     $widget = $context['entity']->widget;
   }
   
-  if ($box = boxes_box_load($widget)) {
+  if (isset($widget) && $box = boxes_box_load($widget)) {
     $layout = $box->options['layout'];
     $layouts = _os_slideshow_layouts();
     $ratio = current($layouts[$layout]['ratio']);
