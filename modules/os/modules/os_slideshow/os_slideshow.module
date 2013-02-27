@@ -310,10 +310,10 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
   $settings = array('os_slideshow' =>   //http://www.woothemes.com/flexslider/
     array('boxes-box-'.$vars['box_delta'] => array(
       'pager' => TRUE,    //pager
-      'nav' => TRUE,  //control buttons
-      'timeoutSpeed' => $vars['timeout'],
-      'speed' => $vars['speed'],
-      'random' => $vars['random'],
+      'controlNav' => TRUE,  //control buttons
+      'slideshowSpeed' => $vars['timeout'],
+      'animationSpeed' => $vars['speed'],
+      'randomize' => $vars['random'],
     )
   ));
   //slideshowSpeed, animationSpeed, randomize, animation (fade or slide (horizontal or vertical))
