@@ -1034,7 +1034,7 @@ function harvard_courses_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_department_id',
-      'label' => 'Department ID',
+      'label' => 'Department',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
@@ -1235,7 +1235,7 @@ function harvard_courses_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_faculty',
-      'label' => 'faculty',
+      'label' => 'School name',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
@@ -1302,7 +1302,7 @@ function harvard_courses_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_faculty_description',
-      'label' => 'Faculty description',
+      'label' => 'Faculty',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
@@ -1369,7 +1369,7 @@ function harvard_courses_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_meetings',
-      'label' => 'meetings',
+      'label' => 'Meeting time',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
@@ -1695,7 +1695,7 @@ function harvard_courses_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_term',
-      'label' => 'term',
+      'label' => 'Term',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
@@ -1990,22 +1990,22 @@ function harvard_courses_field_default_fields() {
   t('Course URL');
   t('Credits');
   t('Cross registration');
+  t('Department');
   t('Department & school');
   t('Department ID');
   t('Description');
   t('Exam group');
-  t('Faculty description');
+  t('Faculty');
   t('Import type');
+  t('Meeting time');
   t('School name');
   t('Section number');
+  t('Term');
   t('bracketed');
   t('building');
-  t('faculty');
-  t('meetings');
   t('notes');
   t('number');
   t('prerequisites');
-  t('term');
   t('title');
 
   return $fields;
