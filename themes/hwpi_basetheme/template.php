@@ -428,6 +428,10 @@ function hwpi_basetheme_status_messages($vars) {
 }
 
 function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
+  if ($entity->type != 'event') {
+    return;
+  } 
+  
   // only display the start time for this particular instance of a repeat event
   $entity->view = views_get_current_view();
 
