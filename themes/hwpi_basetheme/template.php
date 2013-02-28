@@ -447,7 +447,7 @@ function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
     }
     $entity->date_id = 'node.'.$entity->nid.'.field_date.'.$delta;
   }
-  else {
+  else {    
     $entity->active_date = $vars['items'][0];
   }
 }
