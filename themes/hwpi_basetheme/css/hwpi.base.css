@@ -27,6 +27,11 @@ p:empty {
 	display: none;
 }
 
+.sidebar h1.node-title {
+    margin-bottom: 0;
+}
+
+
 table, th, td, tr {
   border-color: #CACACA;
 }
