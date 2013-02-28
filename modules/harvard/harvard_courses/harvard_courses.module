@@ -324,7 +324,7 @@ function harvard_courses_node_insert($node) {
   $node->skip_og_membership = TRUE;
 
   // Change description field format to full html.
-  $node->field_description[LANGUAGE_NONE][0]['format'] = 'full_html';
+  $node->field_course_description[LANGUAGE_NONE][0]['format'] = 'full_html';
 }
 
 /**
@@ -736,7 +736,7 @@ function harvard_courses_field_access($op, $field, $entity_type, $entity, $accou
       'field_course_url',
       'term_description',
       'field_exam_group',
-      'field_description',
+      'field_course_description',
       'field_department_id',
       'field_prerequisites',
       'field_section_number',
