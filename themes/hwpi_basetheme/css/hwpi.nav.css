@@ -198,6 +198,7 @@ ul.nice-menu ul {
 	
 }
 
+
 .section-nav .expanded > a {
 	background: url('../../os_basetheme/images/arrow-down.png') no-repeat left center;
 	
@@ -218,6 +219,10 @@ ul.nice-menu ul {
 .section-nav .expanded.menu-depth-2 .menu-depth-3 > a {
 	padding-left: 25px;
 	background: url('../../os_basetheme/images/arrow-down.png') no-repeat 10px center;
+}
+
+.section-nav .expanded.menu-depth-2 .leaf > a {
+  background: none;
 }
 
 .section-nav .expanded.menu-depth-2 .menu-depth-4 > a {
