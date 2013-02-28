@@ -269,12 +269,10 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       // same title).
       $path_collision = FALSE;
 
-      if (module_exists('vsite') && $base_doamin = variable_get('purl_base_domain')) {
+      if (module_exists('vsite') && $purl = vsite_get_purl()) {
         // On sites without a custom domain (e.g. http://local/os/john) the
         // node's alias might be prefixed with the VSite name.
-        $url = url($item['url']['path'], array('absolute' => TRUE));
-        $url = str_replace($base_doamin, '', $url);
-        $path_collision = $path_alias == drupal_get_normal_path($path_alias);
+        $path_collision = strpos(drupal_get_normal_path($purl . '/' . $path_alias), 'node/') === 0;
       }
       elseif ($path_alias == drupal_get_normal_path($path_alias)) {
         $path_collision = TRUE;
