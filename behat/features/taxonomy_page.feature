@@ -1,7 +1,7 @@
 Feature:
   As a user visiting different content-type tabs
   I should be able to filter by terms
-  And see nodes of the content-type that are also attached to the term.
+  And see nodes of the content-type that are also attached to the selected term.
 
   @api
   Scenario: Verfity that "classes" tab shows all nodes.
