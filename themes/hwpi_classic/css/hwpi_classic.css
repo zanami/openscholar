@@ -64,6 +64,13 @@ h1.node-title,
 }
 
 
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article h1.node-title {
+
+	margin-bottom: 0;
+}
+
+
+
 #content-column h2,
 #content-column h3,
 #content-column h4 {
@@ -99,7 +106,7 @@ h2.block-title {
 padding: 10px 0;
 }
 
-
+#content-column h2.field-label {font-family: arial;}
 
 .page-search h1#page-title {
   margin-top:10px;
@@ -149,7 +156,7 @@ padding: 10px 0;
 
 #footer ul.menu a {
 	text-transform: none;
-	font-size: 14px;
+	font-size: 12px;
 }
 
 #footer ul.menu li.menuparent {

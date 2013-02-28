@@ -355,6 +355,11 @@ table td.mini {
     color: #1E1E1E;
 }
 
+
+#event-start {
+    background: url("../images/event-shield.png") no-repeat scroll 0 0 transparent;
+}
+
 /* Tabs (widget) */
 .ui-tabs .ui-tabs-nav li a {
   text-transform: capitalize;

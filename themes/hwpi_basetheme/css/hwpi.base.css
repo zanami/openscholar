@@ -19,7 +19,8 @@ a:visited {
 }
 
 #columns .block.block-boxes-os_taxonomy_fbt ul,
-#columns .block .item-list ul
+#columns .block .item-list ul,
+#columns .block.block-boxes-os_boxes_twitterfeed ul
  {list-style: none;}
 
 p:empty {
@@ -59,40 +60,9 @@ table caption {
 #powerby-login {
     float:none;
     margin-top: 20px;
+   width:100%;
 }
 
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer-right #powerby-login,
-  .footer-left.footer-right #powerby-login {
-   width: 750px;
-}
-
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer-right #powerby-login,
-  .logged-in .footer-left.footer-right #powerby-login {
-   width: 550px;
-}
-
-
-.footer-left.footer #powerby-login {
-    	width: 380px;
-  	}
-  
-.logged-in .footer-left.footer #powerby-login {
-    	width: 180px;
-  	}
-
-.footer.footer-right #powerby-login {
-    	width: 465px;
-  	}
-
-.logged-in .footer.footer-right #powerby-login {
-    	width: 255px;
-  	}
 
 
 /*
@@ -390,7 +360,7 @@ ol.search-results li.search-result:last-child {
   font-size: 18px;
 }
 
-#event-content {
+.event-start #event-content {
   margin-left: 70px;
 }
 
@@ -401,6 +371,14 @@ ol.search-results li.search-result:last-child {
 
 .node-event .field-name-field-date .field-label {
   float: left;
+}
+
+.node-event .field-name-field-date.field-label-above .field-label {
+	float: none;
+}
+
+.node-event .field-name-field-date .field-item div {
+	margin-bottom: 15px;
 }
 
 #event-content .node-header h1.node-title {
@@ -535,9 +513,7 @@ article.node-teaser.node-person .node-content {
   margin-right: 30px;
 }
 
-.node-type-person .node-person .field-name-field-email {
-  text-transform: capitalize;
-}
+
 
 .node-teaser.node-person header h1 {
   margin-bottom: 0;
@@ -551,25 +527,21 @@ article.node-teaser.node-person .node-content {
 LIST OF POSTS - PERSON TEASER IN SIDEBAR
  */
 
-.sidebar .block-boxes-os_sv_list_box .node-person .field-name-field-person-photo {
-    padding-right: 10px;
-    width: 100%;
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio {
+
+     margin-right: 0;
 }
 
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content,
+.sidebar .block-boxes-os_sv_list_box .node.node-person .node-content {
 
-.sidebar .block-boxes-os_sv_list_box .node-person .pic-bio {
-    clear: none;
-    display: inline;
-    float: left;
-    padding-right: 10px;
-    width: 25%;
+	 margin-left: 95px;
+	
 }
 
-.sidebar .block-boxes-os_sv_list_box .node-person .node-content {
-    width: 70%;
+.sidebar .block-boxes-os_sv_list_box .node.node-person.node-teaser.article.with-person-photo .node-header {
+	margin-left: 95px;
 }
-
-
 
 /* Node FAQ */
 .node-teaser.node-faq {

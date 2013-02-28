@@ -572,7 +572,13 @@ function harvard_courses_field_default_fields() {
           'label' => 'hidden',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '18',
+          'weight' => '20',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
         ),
         'sidebar_teaser' => array(
           'label' => 'above',
@@ -646,7 +652,7 @@ function harvard_courses_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '5',
+          'weight' => '11',
         ),
         'sidebar_teaser' => array(
           'label' => 'above',
@@ -2149,6 +2155,7 @@ function harvard_courses_field_default_fields() {
   t('Course URL');
   t('Credits');
   t('Cross registration');
+  t('Department');
   t('Department & school');
   t('Department ID');
   t('Description');
