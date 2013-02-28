@@ -29,7 +29,7 @@ function harvard_courses_views_default_views() {
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '3';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '15';
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['pager']['options']['quantity'] = '5';
@@ -76,7 +76,7 @@ function harvard_courses_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'harvard_course' => 'harvard_course',
   );
-  /* Filter criterion: Content: term (field_term) */
+  /* Filter criterion: Content: Term (field_term) */
   $handler->display->display_options['filters']['field_term_value']['id'] = 'field_term_value';
   $handler->display->display_options['filters']['field_term_value']['table'] = 'field_data_field_term';
   $handler->display->display_options['filters']['field_term_value']['field'] = 'field_term_value';
