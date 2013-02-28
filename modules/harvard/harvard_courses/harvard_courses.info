@@ -40,6 +40,7 @@ features[field][] = node-harvard_course-body
 features[field][] = node-harvard_course-field_building
 features[field][] = node-harvard_course-field_calendar_period
 features[field][] = node-harvard_course-field_cat_number
+features[field][] = node-harvard_course-field_course_description
 features[field][] = node-harvard_course-field_course_url
 features[field][] = node-harvard_course-field_credits
 features[field][] = node-harvard_course-field_cross_registration
