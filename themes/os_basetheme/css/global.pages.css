@@ -914,19 +914,19 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
 
 
 
-.sidebar .block-boxes-os_sv_list_box .node.node-news.node-promoted .node-content,
+.sidebar .block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content,
 .sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
 	display:block;
 	margin-left: 85px;
 }
 
 
-.sidebar .block-boxes-os_sv_list_box .node.node-news.node-promoted .node-content {
+.sidebar .block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content {
 	 margin-left: 65px;
 	}
 
-
-.sidebar .block-boxes-os_sv_list_box .node.node-news.node-teaser .node-content {
+.sidebar .block-boxes-os_sv_list_box .node.node-news.node-promoted.article .node-header ~ .node-content {
 	 margin-left: 0;
-	
-	} 
+}
+
+
