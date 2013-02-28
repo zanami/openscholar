@@ -143,7 +143,7 @@ function os_events_field_default_fields() {
           'label' => 'hidden',
           'module' => 'date',
           'settings' => array(
-            'format_type' => 'long',
+            'format_type' => 'os_date_abbreviated',
             'fromto' => 'both',
             'multiple_from' => '',
             'multiple_number' => '',
@@ -157,7 +157,7 @@ function os_events_field_default_fields() {
           'label' => 'above',
           'module' => 'date',
           'settings' => array(
-            'format_type' => 'long',
+            'format_type' => 'os_date_abbreviated',
             'fromto' => 'both',
             'multiple_from' => '',
             'multiple_number' => '',

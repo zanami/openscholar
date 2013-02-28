@@ -150,7 +150,7 @@ function os_basetheme_preprocess_node(&$vars) {
       list(,,, $delta,) = explode('.', $vars['node']->date_id . '.');
     }
     if (isset($vars['field_date'][$delta]['value']) && !empty($vars['field_date'][$delta]['value'])) {
-      date_default_timezone_set($vars['field_date'][$delta]['timezone']);
+ //     date_default_timezone_set($vars['field_date'][$delta]['timezone']);
       $event_start_date = strtotime($vars['field_date'][$delta]['value']);
       $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
       $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
@@ -159,27 +159,6 @@ function os_basetheme_preprocess_node(&$vars) {
   }
 }
 
-/**
- * Implements hook_preprocess_field
- *
- * Cleans up teaser display to remove redundant date info.
- */
-function os_basetheme_preprocess_field(&$variables, $hook) {
-  if (in_array($variables['field_view_mode'], array('teaser', 'sidebar_teaser')) && $variables['element']['#bundle'] == 'event' && $variables['element']['#field_name'] == 'field_date') {
-    date_default_timezone_set($variables['element']['#items'][0]['timezone']);
-
-    $start_date = strtotime($variables['element']['#items'][0]['value']);
-    $end_date = (isset($variables['element']['#items'][0]['value'])) ? strtotime($variables['element']['#items'][0]['value2']) : $start_date;
-
-    //for one day events, strip the date.  it's displayed elsewhere.
-    $fmt = (format_date($start_date, 'os_date') == format_date($end_date, 'os_date')) ? 'os_time' : 'os_date_abbreviated';
-    $start = format_date($start_date, $fmt);
-    $end = format_date($end_date, $fmt);
-
-    $variables['label_hidden'] = TRUE;
-    $variables['items'][0]['#markup'] = ($start == $end) ? $start : $start . ' - ' . $end;
-  }
-}
 
 /**
  * Returns HTML for a link
