@@ -93,9 +93,8 @@ class os_boxes_bio extends os_boxes_default {
     if (!isset($spaces_features["os_biocv"])) {
       return '';
     }
-    //
-    $vsite = vsite_get_vsite();
-    if(!$vsite || !$vsite->access_admin()) {
+    // Shows nothing if a vsite can be loaded but this user isn't admin.
+    if (function_exists('vsite_get_vsite') && $vsite = vsite_get_vsite() && !$vsite->access_admin()) {
       return '';
     }
     // Otherwise, displays vsite admin empty text, prompting bio configuration.
