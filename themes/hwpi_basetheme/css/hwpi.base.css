@@ -475,7 +475,9 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
 	margin-left: 6em;
 }
 
-.node-type-person .node-person .field-name-field-person-photo {
+.node-type-person .node-person .field-name-field-person-photo,
+.node-person.node-teaser .field-name-field-person-photo,
+.node-person.node-sidebar-teaser .field-name-field-person-photo {
   float: left;
   margin-top: 5px;
 }
