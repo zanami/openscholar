@@ -64,6 +64,13 @@ h1.node-title,
 }
 
 
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article h1.node-title {
+
+	margin-bottom: 0;
+}
+
+
+
 #content-column h2,
 #content-column h3,
 #content-column h4 {
