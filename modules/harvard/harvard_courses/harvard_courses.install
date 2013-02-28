@@ -89,3 +89,10 @@ function harvard_courses_install() {
     taxonomy_term_save($term);
   }
 }
+
+/**
+ * Disable comments for existing harvard courses nodes.
+ */
+function harvard_courses_update_7000() {
+  db_query("UPDATE node SET comment = 1 WHERE type = 'harvard_course'");
+}

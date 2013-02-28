@@ -45,6 +45,7 @@ features[field][] = node-harvard_course-field_course_url
 features[field][] = node-harvard_course-field_credits
 features[field][] = node-harvard_course-field_cross_registration
 features[field][] = node-harvard_course-field_department_id
+features[field][] = node-harvard_course-field_description
 features[field][] = node-harvard_course-field_exam_group
 features[field][] = node-harvard_course-field_faculty
 features[field][] = node-harvard_course-field_faculty_description
