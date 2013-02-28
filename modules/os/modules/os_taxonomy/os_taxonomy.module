@@ -267,7 +267,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
       $path_alias = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
       // Check that the path alias doesn't exist yet (e.g. a node with the exact
       // same title).
-      if ($path_alias == drupal_get_path_alias($path_alias)) {
+      if ($path_alias == drupal_get_normal_path($path_alias)) {
         $item['url']['path'] = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
       }
       else {
