@@ -19,7 +19,8 @@ a:visited {
 }
 
 #columns .block.block-boxes-os_taxonomy_fbt ul,
-#columns .block .item-list ul
+#columns .block .item-list ul,
+#columns .block.block-boxes-os_boxes_twitterfeed ul
  {list-style: none;}
 
 p:empty {

@@ -190,6 +190,10 @@ a.rslides_nav.prev {
 }
 	
 /** 16.9 OVERLAY **/
+	
+#layout_16_9_overlay {
+	margin-bottom:-40px;
+}
 
 #layout_16_9_overlay .hero {
     min-height: 430px;
