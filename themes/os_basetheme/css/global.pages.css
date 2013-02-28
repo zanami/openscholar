@@ -926,8 +926,8 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
 	 margin-left: 65px;
 	}
 
-.sidebar .block-boxes-os_sv_list_box .node.node-news.node-teaser .node-header,
+
 .sidebar .block-boxes-os_sv_list_box .node.node-news.node-teaser .node-content {
 	 margin-left: 0;
-	 clear:both;
+	
 	} 
