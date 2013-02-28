@@ -454,7 +454,7 @@ ol.search-results li.search-result:last-child {
 
 
 /* node person */
-.node-type-person .node-person h1.node-title {
+ .node-type-person #content-column .node-person h1.node-title {
   font-size: 38px;
 }
 
@@ -463,7 +463,7 @@ ol.search-results li.search-result:last-child {
   margin-top: -17px;
 }
 
-.node-type-person .node-person .pic-bio {
+ .node-type-person #content-column .node-person .pic-bio {
   border-top: 1px solid #e7e7e7;
   padding-top: 35px;
   margin-top: 20px;
