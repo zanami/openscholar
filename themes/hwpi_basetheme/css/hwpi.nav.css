@@ -221,7 +221,10 @@ ul.nice-menu ul {
 	background: url('../../os_basetheme/images/arrow-down.png') no-repeat 10px center;
 }
 
-.section-nav .expanded.menu-depth-2 .leaf > a {
+.section-nav .expanded.menu-depth-2 .leaf.menu-depth-3 > a,
+.section-nav .expanded.menu-depth-2 .leaf.menu-depth-4 > a,
+.section-nav .expanded.menu-depth-2 .leaf.menu-depth-5 > a,
+.section-nav .expanded.menu-depth-2 .leaf.menu-depth-6 > a {
   background: none;
 }
 
