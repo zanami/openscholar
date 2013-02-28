@@ -278,8 +278,6 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         $path_collision = TRUE;
       }
 
-
-
       if (!$path_collision) {
         $item['url']['path'] = $options['path_prefix'] . drupal_get_path_alias($item['url']['path']);
       }
