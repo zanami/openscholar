@@ -125,6 +125,11 @@ function hwpi_basetheme_node_view_alter(&$build) {
       $build['pic_bio']['field_person_photo'] = $build['field_person_photo'];
       unset($build['field_person_photo']);
     }
+    
+    $children = element_children($build['pic_bio']);
+    if (empty($children)) {
+      $build['pic_bio']['#access'] = false;
+    }
 
     // Note that Contact and Website details will print wrappers and titles regardless of any field content.
     // This is kind of deliberate to avoid having to handle the complexity of dealing with the layout or
