@@ -322,8 +322,8 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
     array('boxes-box-'.$vars['box_delta'] => array(
       'pager' => TRUE,    //pager
       'nav' => TRUE,  //control buttons
-      'timeout' => intval($vars['timeout']), //time to show each slide
-      'speed' => ($vars['speed'] < $vars['timeout'] - 100) ? $vars['speed'] : $vars['timeout'] - 100, //responsiveslides needs 100ms between timeout and transition time 
+      'timeout' => intval($vars['timeout'] + $vars['speed']), //flex starts the timer after transition.  responsive starts it during.  adding them will let responsive look like flex did
+      'speed' => $vars['speed'],  
       'random' => $vars['random'],
     )
   ));
