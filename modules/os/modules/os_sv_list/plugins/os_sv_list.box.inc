@@ -400,7 +400,7 @@ class os_sv_list_box extends os_boxes_default {
     $gids = array();
 
     if(module_exists('vsite')){
-      if(!isset($options['query_scope'])){
+      if(!isset($options['query_scope']) || !count(array_filter($this->options['query_scope']))){
         $options['query_scope'] = array('current');
       }
 
