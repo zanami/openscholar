@@ -15,7 +15,7 @@ function os_events_os_app_info() {
   	  'event',
     ),
     'views tabs' => array(
-      'os_events' => array('page'),
+      'os_events' => array('page_1'),
     ),
   );
 
