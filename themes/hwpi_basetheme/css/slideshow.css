@@ -1,5 +1,6 @@
 
-.page .block.block-boxes-os_slideshow_box ul {
+.page .block.block-boxes-os_slideshow_box ul,
+#columns .block.block-boxes-os_slideshow_box ul {
     list-style: none;
 }
 
