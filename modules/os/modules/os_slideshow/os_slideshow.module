@@ -430,18 +430,21 @@ function _os_slideshow_region_size($region, $get_row_widths = '') {
       'sides' =>  array('sidebar_first', 'sidebar_second'),   //its sidebars
       'solo_side_width' => 300,                               //widest sidebar when one sidebar is shown
       'pair_side_width' => 250,                               //widest sidebar when both are shown
+      'min_side' => 160,                                      //thinnest possible sidebar
     ),
     'headers' => array(
       'main' => 'header_second',
       'sides' => array('header_first', 'header_third'),
       'solo_side_width' => 300,
       'pair_side_width' => 250,
+      'min_side' => 160,
     ),
     'footers' => array(
       'main' => 'footer',
       'sides' => array('footer_first', 'footer_third'),
       'solo_side_width' => .25 * $full_width,
       'pair_side_width' => .25 * $full_width,
+      'min_side' => .25 * $full_width,
     )
   );
   
@@ -473,7 +476,7 @@ function _os_slideshow_region_size($region, $get_row_widths = '') {
       }
 
       if ($region == $row['main']) {
-        $widths = array($full_width, $full_width - $row['solo_side_width'], $full_width - 2*$row['pair_side_width']);
+        $widths = array($full_width, $full_width - $row['min_side'], $full_width - 2*$row['min_side']);
         return $widths[$sides_count];
       } elseif (in_array($region, $row['sides'])) {
         return ($sides_count > 1) ? $row['pair_side_width'] : $row['solo_side_width'];
@@ -488,8 +491,8 @@ function _os_slideshow_region_size($region, $get_row_widths = '') {
     $row = $rows[$get_row_widths];
     return array(
       $full_width,
-      $full_width - $row['solo_side_width'],
-      $full_width - 2*$row['pair_side_width'],
+      $full_width - $row['min_side'],
+      $full_width - 2*$row['min_side'],
       $row['solo_side_width']
     );
   }

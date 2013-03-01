@@ -1,5 +1,6 @@
 
-#content-column .block.block-boxes-os_slideshow_box ul {
+.page .block.block-boxes-os_slideshow_box ul,
+#columns .block.block-boxes-os_slideshow_box ul {
     list-style: none;
 }
 
@@ -208,6 +209,7 @@ a.rslides_nav.prev {
     padding-bottom: 48px;
     position: absolute;
     z-index: 2;
+    width: 100%;
 }	
 	
 #layout_16_9_overlay .rslides_tabs {
