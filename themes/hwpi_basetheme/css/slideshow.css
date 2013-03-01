@@ -210,6 +210,8 @@ a.rslides_nav.prev {
     position: absolute;
     z-index: 2;
     width: 100%;
+    padding:0;
+    min-height:170px;
 }	
 	
 #layout_16_9_overlay .rslides_tabs {
@@ -222,13 +224,16 @@ a.rslides_nav.prev {
 #layout_16_9_overlay .hero-copy p {
     font: 16px/24px arial,sans-serif;
     margin-bottom: 24px;
-    padding: 0;
+    padding: 0 25px;
 }
 
 #layout_16_9_overlay .hero-copy h2 {
     font: bold 22px arial,sans-serif;
     margin-bottom: 0;
+    padding:5px 25px 0;
 }
+
+
 	
  /** 16.9 SIDE **/ 
 
