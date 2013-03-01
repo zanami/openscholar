@@ -73,6 +73,12 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
 
   $tid = str_replace('taxonomy/term/', '', $path);
   $query->add_where($group_key, "$alias.og_vocabulary_target_id", $tid, '=');
+
+  $view_title = $view->get_title();
+  $term = taxonomy_term_load($tid);
+  if($view_title && $term){
+    $view->set_title($view_title." <span class='sub_title'>in ".t(taxonomy_term_title($term))."</span>");
+  }
 }
 
 /**
