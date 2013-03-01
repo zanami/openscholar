@@ -905,27 +905,31 @@ ul.recent-images-list li a:hover img {
 LIST OF POSTS - PERSON TEASER IN SIDEBAR
  */
 
-.sidebar .block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser,
-.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio,
-.sidebar .block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
+.block-boxes-os_sv_list_box h1.node-title {
+    margin-bottom: 0;
+}
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser,
+.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio,
+.block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
  	float:left;
      margin-right: 10px;
 }
 
 
 
-.sidebar .block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content,
-.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content,
+.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
 	display:block;
 	margin-left: 85px;
 }
 
 
-.sidebar .block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content {
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content {
 	 margin-left: 65px;
 	}
 
-.sidebar .block-boxes-os_sv_list_box .node.node-news.node-promoted.article .node-header ~ .node-content {
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .node-header ~ .node-content {
 	 margin-left: 0;
 }
 

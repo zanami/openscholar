@@ -21,7 +21,6 @@
 #edit-layout>.form-item-layout>input+label {
   display: block;
   margin-right: 30px;
-  background-color: #c8c8c8;
   box-shadow: 0 0 7px #111;
 }
 #edit-layout>.form-item-layout>input:checked+label {
