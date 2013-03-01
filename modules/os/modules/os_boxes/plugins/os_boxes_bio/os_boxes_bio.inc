@@ -97,6 +97,9 @@ class os_boxes_bio extends os_boxes_default {
         return '';
       }
     }
+    elseif (!node_access('create','bio')) {
+      return '';
+    }
     // Otherwise, displays vsite admin empty text, prompting bio configuration.
     $wrapper = array(
       '#type' => 'container',
