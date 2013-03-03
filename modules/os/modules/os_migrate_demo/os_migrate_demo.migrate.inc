@@ -227,6 +227,7 @@ class OsMigrateClassesNode extends OsMigrate {
     array('semester', 'Semester'),
     array(OG_AUDIENCE_FIELD, 'Site'),
     array(OG_VOCAB_FIELD, 'Terms'),
+    array('path', 'Path')
   );
 
   public $dependencies = array(
@@ -247,6 +248,8 @@ class OsMigrateClassesNode extends OsMigrate {
     $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)
       ->sourceMigration(array('OsMigrateScienceTaxonomyTerm'))
       ->separator('|');
+
+    $this->addFieldMapping('path', 'path');
   }
 
   /**
