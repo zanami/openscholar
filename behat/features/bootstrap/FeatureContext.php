@@ -566,7 +566,6 @@ class FeatureContext extends DrupalContext {
    * @Given /^I invalidate cache$/
    */
   public function iInvalidateCache() {
-
     $code = "views_og_cache_invalidate_cache(node_load($this->nid));";
     $this->getDriver()->drush("php-eval \"{$code}\"");
   }
@@ -622,5 +621,42 @@ class FeatureContext extends DrupalContext {
   public function iShouldSeeTheRandomString() {
     $metasteps = array(new Step\When('I should see "' . $this->randomText . '"'));
     return $metasteps;
+  }
+
+  /**
+   * @Given /^I set the term "([^"]*)" under the term "([^"]*)"$/
+   */
+  public function iSetTheTermUnderTheTerm($child, $parent) {
+    $code = "os_migrate_demo_set_term_under_term('$child', '$parent');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+  /**
+   * @Then /^I check the "([^"]*)" term link to the original page$/
+   */
+  public function iCheckTheTermLinkToTheOriginalPage($term) {
+    $code = "os_migrate_demo_get_term_id('$term');";
+    $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
+
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//a[contains(@href, 'classes/taxonomy/term/{$tid}')]");
+
+    if (empty($element)) {
+      throw new exception("The term {$term} did not link to his original path(taxonomy/term/{$tid})");
+    }
+  }
+
+  /**
+   * @Given /^I check the "([^"]*)" term not link to the original page$/
+   */
+  public function iCheckTheTermNotLinkToTheOriginalPage($term) {
+    $code = "os_migrate_demo_get_term_id('$term');";
+    $tid = $this->getDriver()->drush("php-eval \"{$code}\"");
+
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//a[contains(@href, 'classes/taxonomy/term/{$tid}')]");
+
+    if (!empty($element)) {
+      throw new exception("The term {$term} linked us to his original path(taxonomy/term/{$tid})");
+    }
   }
 }
