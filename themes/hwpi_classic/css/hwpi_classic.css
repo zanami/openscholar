@@ -49,10 +49,25 @@ body {
 	font-family: Georgia, Baskerville, Palatino, 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
 }
 
-
+/*SECTION NAV OVERRIDES*/
 .section-nav a {
 	font-size: 16px;
 }
+
+.section-nav .menu-depth-1 > a {
+    background: none repeat scroll 0 0 #293352 !important;
+}
+
+.section-nav .expanded.menu-depth-2 > a {
+	background-color: #3a72ab;
+	color: #fff;
+}
+
+.section-nav .expanded.menu-depth-2 > a:hover {
+	background-color: #293352 !important;
+}
+
+
 
 h1#page-title,
 h1.node-title, 

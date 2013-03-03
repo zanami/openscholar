@@ -392,6 +392,32 @@ table td.mini {
   background-color: #545454;
 }
 
+.section-nav .expanded.menu-depth-2 > a:hover {
+  background-color: #A23338 !important;
+}
+
+
+.section-nav .expanded.menu-depth-2 .menu-depth-3 > a, 
+.section-nav .expanded.menu-depth-2 .menu-depth-4 > a, 
+.section-nav .expanded.menu-depth-2 .menu-depth-5 > a,
+.section-nav .expanded.menu-depth-2 .menu-depth-6 > a,
+.section-nav .leaf.menu-depth-3 > a,
+.section-nav .leaf.menu-depth-4 > a,
+.section-nav .leaf.menu-depth-5 > a,
+.section-nav .leaf.menu-depth-6 > a {
+background-color: #f3f3f1 !important;
+}
+
+.section-nav .expanded.menu-depth-2 .menu-depth-3 > a:hover, 
+.section-nav .expanded.menu-depth-2 .menu-depth-4 > a:hover, 
+.section-nav .expanded.menu-depth-2 .menu-depth-5 > a:hover,
+.section-nav .expanded.menu-depth-2 .menu-depth-6 > a:hover,
+.section-nav .leaf.menu-depth-3 > a:hover,
+.section-nav .leaf.menu-depth-4 > a:hover,
+.section-nav .leaf.menu-depth-5 > a:hover,
+.section-nav .leaf.menu-depth-6 > a:hover {
+background-color: #e3e3e1 !important;
+}
 
 
 /* Footer */
