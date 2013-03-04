@@ -539,7 +539,7 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // pager for efq
-    if ($options['pager'] && $options['content_type'] != 'biblio' && is_int($page)) {
+    if ($options['pager'] && $options['content_type'] != 'biblio' && $options['content_type'] != 'event' && is_int($page)) {
       $efq->pager($options['number_of_items']);
       $page = $efq->pager['element'];
     }
@@ -584,6 +584,13 @@ class os_sv_list_box extends os_boxes_default {
     
     if ($options['content_type'] == 'event') {
       $nids = $this->interpolate_dates($nids);
+      
+      if ($options['pager']) {
+        $total = count($nids);
+        $limit = $options['number_of_items'];
+        pager_default_initialize($total, $limit, $page);
+        $nids = array_slice($nids, $page_num*$limit, $limit);
+      }
     }
 
     return $nids;
