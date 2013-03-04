@@ -70,16 +70,11 @@ table caption {
 
 
 
-/*
-  .footer.footer-right .region-footer,
-  .footer-left.footer .region-footer {
-    	width: 52%;
-  	}
-  
-  .footer.footer-right .region-footer-third,
-  .footer-left.footer .region-footer-first {width: 48%;}
-*/
-  
+.sub_title {
+    display: block;
+    font-size: 0.5em;
+    padding-top:5px;
+}
 
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
 .more-link {

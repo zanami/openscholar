@@ -327,6 +327,10 @@ ul.nice-menu-right li.menuparent a:hover {
   position:relative;
   bottom: -42px;
   }
+  
+  #powerby-login {
+  margin-top: 40px;
+}
 
 /* NODES */
 
