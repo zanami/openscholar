@@ -15,16 +15,18 @@ class os_events_calendar_plugin_style extends calendar_plugin_style {
    * Helper function to find the date argument handler for this view.
    */
   function date_argument_handler() {
-    dpm('ok!');
     $i = 0;
     foreach ($this->view->argument as $name => $handler) {
       if (date_views_handler_is_date($handler, 'argument')) {
-        $this->date_info->date_arg_pos = $i;
+        // Change the handler argument to be date.
+        $handler->argument = '2013-03';
+        $handler->date_range = $handler->date_handler->arg_range($handler->argument);
+        $handler->min_date = $handler->date_range[0];
+        $handler->max_date = $handler->date_range[1];
         return $handler;
       }
       $i++;
     }
     return FALSE;
   }
-
 }
