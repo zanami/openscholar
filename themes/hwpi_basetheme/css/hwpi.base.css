@@ -19,12 +19,18 @@ a:visited {
 }
 
 #columns .block.block-boxes-os_taxonomy_fbt ul,
-#columns .block .item-list ul
+#columns .block .item-list ul,
+#columns .block.block-boxes-os_boxes_twitterfeed ul
  {list-style: none;}
 
 p:empty {
 	display: none;
 }
+
+.sidebar h1.node-title {
+    margin-bottom: 0;
+}
+
 
 table, th, td, tr {
   border-color: #CACACA;
@@ -59,40 +65,9 @@ table caption {
 #powerby-login {
     float:none;
     margin-top: 20px;
+   width:100%;
 }
 
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer.footer-right #powerby-login,
-  .footer-left.footer-right #powerby-login,
-  .footer-left.footer-right #powerby-login {
-   width: 750px;
-}
-
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer.footer-right #powerby-login,
-  .logged-in .footer-left.footer-right #powerby-login,
-  .logged-in .footer-left.footer-right #powerby-login {
-   width: 550px;
-}
-
-
-.footer-left.footer #powerby-login {
-    	width: 380px;
-  	}
-  
-.logged-in .footer-left.footer #powerby-login {
-    	width: 180px;
-  	}
-
-.footer.footer-right #powerby-login {
-    	width: 465px;
-  	}
-
-.logged-in .footer.footer-right #powerby-login {
-    	width: 255px;
-  	}
 
 
 /*
@@ -390,7 +365,7 @@ ol.search-results li.search-result:last-child {
   font-size: 18px;
 }
 
-#event-content {
+.event-start #event-content {
   margin-left: 70px;
 }
 
@@ -401,6 +376,14 @@ ol.search-results li.search-result:last-child {
 
 .node-event .field-name-field-date .field-label {
   float: left;
+}
+
+.node-event .field-name-field-date.field-label-above .field-label {
+	float: none;
+}
+
+.node-event .field-name-field-date .field-item div {
+	margin-bottom: 15px;
 }
 
 #event-content .node-header h1.node-title {
@@ -471,7 +454,7 @@ ol.search-results li.search-result:last-child {
 
 
 /* node person */
-.node-type-person .node-person h1.node-title {
+ .node-type-person #content-column .node-person h1.node-title {
   font-size: 38px;
 }
 
@@ -480,19 +463,21 @@ ol.search-results li.search-result:last-child {
   margin-top: -17px;
 }
 
-.node-type-person .node-person .pic-bio {
+ .node-type-person #content-column .node-person .pic-bio {
   border-top: 1px solid #e7e7e7;
   padding-top: 35px;
   margin-top: 20px;
   margin-bottom: 60px;
 }
 
-article.node-teaser.node-person .node-header,
-article.node-teaser.node-person .node-content {
+article.node-teaser.node-person .field-name-field-person-photo ~ .node-header,
+article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
 	margin-left: 6em;
 }
 
-.node-type-person .node-person .field-name-field-person-photo {
+.node-type-person .node-person .field-name-field-person-photo,
+.node-person.node-teaser .field-name-field-person-photo,
+.node-person.node-sidebar-teaser .field-name-field-person-photo {
   float: left;
   margin-top: 5px;
 }
@@ -535,9 +520,7 @@ article.node-teaser.node-person .node-content {
   margin-right: 30px;
 }
 
-.node-type-person .node-person .field-name-field-email {
-  text-transform: capitalize;
-}
+
 
 .node-teaser.node-person header h1 {
   margin-bottom: 0;
@@ -545,6 +528,23 @@ article.node-teaser.node-person .node-content {
 
 .node-teaser.node-person {
   padding: 15px 0 30px;
+}
+
+/**
+LIST OF POSTS - PERSON TEASER IN SIDEBAR
+ */
+
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio {
+
+     margin-right: 0;
+}
+
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
+	 margin-left: 95px;
+}
+
+.sidebar .block-boxes-os_sv_list_box .node.node-person.node-teaser.article.with-person-photo .node-header {
+	margin-left: 95px;
 }
 
 /* Node FAQ */

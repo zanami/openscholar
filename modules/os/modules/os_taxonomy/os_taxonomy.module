@@ -73,6 +73,12 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
 
   $tid = str_replace('taxonomy/term/', '', $path);
   $query->add_where($group_key, "$alias.og_vocabulary_target_id", $tid, '=');
+
+  $view_title = $view->get_title();
+  $term = taxonomy_term_load($tid);
+  if($view_title && $term){
+    $view->set_title($view_title." <span class='sub_title'>in ".t(taxonomy_term_title($term))."</span>");
+  }
 }
 
 /**
@@ -81,7 +87,7 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
  * @see os_taxonomy_menu_alter()
  */
 function os_taxonomy_term_page($taxonomy_term) {
-  $options = variable_get('os_taxonomy_term_page_options', array());
+  $options = variable_get('os_taxonomy_term_page_options', array('max_depth' => 0));
 
   $variables = array(
     'taxonomy_term' => $taxonomy_term,
@@ -624,7 +630,7 @@ function theme_os_taxonomy_tagged_nodes($variables) {
   $output = '';
   $direction = $language->direction ? 'margin-right: ' : 'margin-left: ';
 
-  $tagged_item_per_page = variable_get('os_taxonomy_ites_per_page', 15);
+  $tagged_item_per_page = variable_get('os_taxonomy_items_per_page', 15);
   $page = !isset($_GET['page']) ? 0 : $_GET['page'];
 
   $options = $variables['options'] + array(
