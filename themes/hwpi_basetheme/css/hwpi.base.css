@@ -581,7 +581,18 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
   margin-bottom: 15px;
 }
 
+/* NODE CLASSES */
 
+.node-type-class #content-column h2.field-label,
+.page-classes #content-column h2.field-label,
+.page-classes h1.node-title,
+.page-classes h2.field-label {
+    margin-bottom: 0;
+}
+
+.page-classes .node-class.node-teaser .field-name-body {
+    padding-top: 0;
+}
 
 
 /* Comments */
