@@ -298,12 +298,12 @@ class os_sv_list_box extends os_boxes_default {
     $page = 0;
 
 
-    $nids = $this->get_nids($page_num, $page);
+    $data = $this->get_nids($page_num, $page);
     $more_link = FALSE;
 
-    if (count($nids)) {
-      if (count($nids) >= $options['number_of_items']) {
-        $nids = array_slice($nids, 0, $options['number_of_items']);
+    if (count($data)) {
+      if (count($data) >= $options['number_of_items']) {
+        $data = array_slice($data, 0, $options['number_of_items']);
         $more_link = TRUE;
       }
 
@@ -311,9 +311,25 @@ class os_sv_list_box extends os_boxes_default {
 
       if ($options['content_type'] == 'image') {
         $display_func = 'display_image';
-        $nodes = file_load_multiple($nids);
+        $nodes = file_load_multiple($data);
       }else{
-        $nodes = node_load_multiple($nids);
+        $nids = array();
+        $extra = array();
+        foreach ($data as $n) {
+          $n = explode('|', $n);
+          $nids[] = $n[0];
+          if (isset($n[1])) {
+            $extra[] = explode('=', $n[1]);
+          }
+          else {
+            $extra[] = array();
+          }
+        }
+        foreach ($nids as $delta => $n) {
+          $node = clone node_load($n);
+          $node->{$extra[$delta][0]} = $extra[$delta][1];
+          $nodes[] = $node;
+        }
       }
 
       $block['content'] = $this->$display_func($nodes);
@@ -500,6 +516,8 @@ class os_sv_list_box extends os_boxes_default {
           $image_page = $image_query->pager['element'];
         }
         break;
+      case 'event':
+        break;
     }
 
     // content type
@@ -549,6 +567,10 @@ class os_sv_list_box extends os_boxes_default {
         $result = $efq->execute();
         $nids = isset($result['node']) ? array_keys($result['node']) : array();
         break;
+    }
+    
+    if ($options['content_type'] == 'event') {
+      $nids = $this->interpolate_dates($nids);
     }
 
     return $nids;
@@ -636,19 +658,25 @@ class os_sv_list_box extends os_boxes_default {
   /**
    * Display functions
    */
+  function display_view_mode($nodes, $viewmode = 'full') {
+    $output = array();
+    foreach ($nodes as $n) {
+      $output[] = node_view($n, $viewmode);
+    }
+    
+    return drupal_render($output);
+  }
+  
   function display_body($nodes) {
-    $items = node_view_multiple($nodes, 'full');
-    return drupal_render($items);
+    return $this->display_view_mode($nodes, 'full');
   }
 
   function display_sidebar_teaser($nodes) {
-    $items = node_view_multiple($nodes, 'sidebar_teaser');
-    return drupal_render($items);
+    return $this->display_view_mode($nodes, 'sidebar_teaser');
   }
 
   function display_teaser($nodes) {
-    $items = node_view_multiple($nodes, 'teaser');
-    return drupal_render($items);
+    return $this->display_view_mode($nodes, 'teaser');
   }
 
   function display_title($nodes) {
@@ -705,6 +733,32 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     return $options;
+  }
+  
+  function interpolate_dates($nids) {
+    $dates = array();
+    foreach ($nids as $n) {
+      $node = node_load($n);
+      $node_dates = field_get_items('node', $node, 'field_date');
+      if (count($node_dates) > 1) {
+        foreach ($node_dates as $delta => $nd) {
+          if (strtotime($nd['value']) > time()) {
+            $dates[] = array(
+              'node' => $n,
+              'delta' => $delta,
+              'date' => $nd['value'],
+            );
+          }
+        }
+      }
+    }
+    
+    ksort($dates);
+    
+    $return = array_map(function ($n) {
+      return $n['node'].'|date_id=date.'.$n['node'].'.field_date.'.$n['delta'];
+    }, $dates);
+    return array_values($return);
   }
 }
 
