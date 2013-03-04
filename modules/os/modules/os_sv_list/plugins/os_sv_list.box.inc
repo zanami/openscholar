@@ -700,13 +700,13 @@ class os_sv_list_box extends os_boxes_default {
       $cross_site_links = TRUE;
     }
 
-    foreach ( $nodes as $nid => $node ) {
+    foreach ( $nodes as $node ) {
       $options = array();
       if($cross_site_links){
         vsite_subsite_node_url_options($node, $options);
       }
 
-      $items[] = l($node->title, 'node/' . $nid, $options);
+      $items[] = l($node->title, 'node/' . $node->nid, $options);
     }
 
     return theme('item_list', array(
