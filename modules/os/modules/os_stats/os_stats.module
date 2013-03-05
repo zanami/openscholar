@@ -6,7 +6,7 @@
 function os_stats_menu() {
   $items = array();
 
-  $items['stats.json'] = array(
+  $items['api/v1/stats'] = array(
     'title' => 'Stats',
     'page callback' => 'os_stats_json',
     'page arguments' => array(),
@@ -115,7 +115,8 @@ function os_stats_content() {
  * Page callback; outputs JSON object containing all statistics.
  */
 function os_stats_json() {
-  $output = new stdClass();
+  $output = array();
+  $output['item'] = array();
 
   //check cache
   if ($cache = cache_get('os_stats_json')) {
@@ -143,9 +144,10 @@ function os_stats_json() {
           $result = $info['callback']($result);
         }
 
-        $output->{$info['title']} = $result;
+        $output['item'][] = array('value' => $result, 'text' => $info['title']);
       }
     }
+
     cache_set('os_stats_json', $output, 'cache', time() + variable_get('os_stats_cache_expiration', 24 * 3600));
   }
 
