@@ -51,7 +51,10 @@ Drupal.behaviors.osLinkFile = {
 };
 
 Drupal.behaviors.osLinkUpload = {
-  attach: function (ctx) {
+  attach: function (ctx, settings) {
+    $('#file-entity-add-upload input[value="Next"]').addClass('use-ajax-submit');
+    Drupal.behaviors.AJAX.attach(ctx, settings);
+    
     $('#file-entity-add-upload').submit(function (e) {
       // send the file upload to the server through AJAX. 
       // Change the button to say 'Uploading'.
