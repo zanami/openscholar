@@ -24,6 +24,9 @@ class os_events_calendar_plugin_style extends calendar_plugin_style {
         $handler->date_range = $handler->date_handler->arg_range($handler->argument);
         $handler->min_date = $handler->date_range[0];
         $handler->max_date = $handler->date_range[1];
+
+        // Set calendar type from query string.
+        $this->options['calendar_type'] = !empty($_GET['calendar_type']) ? $_GET['calendar_type'] : 'month';
         return $handler;
       }
       $i++;
