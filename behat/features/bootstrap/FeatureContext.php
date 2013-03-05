@@ -623,4 +623,15 @@ class FeatureContext extends DrupalContext {
     $metasteps = array(new Step\When('I should see "' . $this->randomText . '"'));
     return $metasteps;
   }
+
+  /**
+   * @Given /^I should not see "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldNotSeeUnder($text, $id) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//input[@id='{$id}']//*[contains(.,'{$text}')]");
+    if ($element) {
+      throw new Exception("The text {$text} found under #{$id}");
+    }
+  }
 }

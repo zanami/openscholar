@@ -154,11 +154,14 @@ div.messages {
   .footer.footer-right .region-footer-third,
   .footer-left.footer .region-footer-first,
   .footer-left.footer-right .region-footer-first,
-  .footer-left.footer-right .region-footer-third {
+  .footer-left.footer-right .region-footer-third,
+  .footer-left .region-footer-first,
+  .footer-right .region-footer-third {
 	width: 25%;
 	}
 
-  .footer-left.footer-right .at-panel .region.region-footer-third {float: right;}
+  .footer-left.footer-right .at-panel .region.region-footer-third,
+  .footer-right .at-panel .region.region-footer-third {float: right;}
 /*
  * Branding
  */
@@ -909,6 +912,8 @@ ul.recent-images-list li a:hover img {
  * The original CSS file intermittently failed to load:
  * @see /profiles/openscholar/modules/os_features/os_news/os_news.css
  */
+
+
 .node-news.node-teaser .field-name-field-photo {
   float: left;
   margin: 0 1.5em .5em 0;
@@ -919,26 +924,36 @@ ul.recent-images-list li a:hover img {
   margin-left: 1em;
 }
 
+/**
+LIST OF POSTS - PERSON TEASER IN SIDEBAR
+ */
 
-/** LIST OF POST PERSON - TEASER - WHEN IN SIDEBAR 
-
-.block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .field-name-field-person-photo,
-.block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .pic-bio
- {float:left;display:inline;clear:none;padding-right:10px;}
- 
- .block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .node-header
- {float:left;display:inline;clear:none;}
- 
-  .block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .node-header h1
- {margin-top:0;}
- 
- .block-boxes-os_sv_list_box .modified-in-os_profiles_process_node .node-content
- { float: right;}
-
-
-.block-boxes-os_sv_list_box .node-person .field-name-field-professional-title .field-item {
-    display: inline;
-    float: left;
-    padding-right: 0;
+.block-boxes-os_sv_list_box h1.node-title {
+    margin-bottom: 0;
 }
-**/
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted .field-type-image.view-mode-sidebar_teaser,
+.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio,
+.block-boxes-os_sv_list_box .node.node-person .field-name-field-person-photo {
+ 	float:left;
+     margin-right: 10px;
+}
+
+
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content,
+.block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
+	display:block;
+	margin-left: 85px;
+}
+
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .field-type-image ~ .node-content {
+	 margin-left: 65px;
+	}
+
+.block-boxes-os_sv_list_box .node.node-news.node-promoted.article .node-header ~ .node-content {
+	 margin-left: 0;
+}
+
+

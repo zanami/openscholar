@@ -18,13 +18,15 @@ function os_basetheme_preprocess_html(&$vars) {
   else {
     $vars['classes_array'][] = 'navbar-off';
   }
-  
+
 }
 
 /**
  * Adds classes to the page element
  */
 function os_basetheme_preprocess_page(&$vars) {
+  $item = menu_get_item();
+
   //Adds OpenScholar header region awareness to body classes
   $header = array(
     'header-left' => $vars['page']['header_second'],
@@ -60,15 +62,20 @@ function os_basetheme_preprocess_page(&$vars) {
   if (!isset($vars['use_content_regions'])) {
     $vars['use_content_regions'] = false;
   }
-  
-  $vars['login_link'] = theme('openscholar_login');
-  
 
+  // Do not show the login button on the following pages, redundant.
+  $login_pages = array(
+  'user',
+  'private_site',
+  'user/password'
+  );
+  if(isset($item) && !in_array($item['path'], $login_pages)) {
+    $vars['login_link'] = theme('openscholar_login');
+  }
 
-  //hide useless tabs - drupal uses $vars['tabs'], but adaptive loads primary and secondary menu local tasks.  
+  //hide useless tabs - drupal uses $vars['tabs'], but adaptive loads primary and secondary menu local tasks.
   $vars['primary_local_tasks'] = $vars['tabs']['#primary'];
   $vars['secondary_local_tasks'] = $vars['tabs']['#secondary'];
-
 }
 
 /**
@@ -141,37 +148,19 @@ function os_basetheme_menu_link(array $vars) {
 function os_basetheme_preprocess_node(&$vars) {
 
   // Event nodes, inject variables for date month and day shield
-  if ($vars['node']->type == 'event') {
+  if ($vars['node']->type == 'event' && !$vars['page']) {
     $vars['event_start'] = array();
-    if (isset($vars['field_date'][0]['value']) && !empty($vars['field_date'][0]['value'])) {
-      date_default_timezone_set($vars['field_date'][0]['timezone']);
-      $event_start_date = strtotime($vars['field_date'][0]['value']);
+    $delta = 0;
+    if (isset($vars['node']->date_id)) {
+      list(,,, $delta,) = explode('.', $vars['node']->date_id . '.');
+    }
+    if (isset($vars['field_date'][$delta]['value']) && !empty($vars['field_date'][$delta]['value'])) {
+ //     date_default_timezone_set($vars['field_date'][$delta]['timezone']);
+      $event_start_date = strtotime($vars['field_date'][$delta]['value']);
       $vars['event_start']['month'] = check_plain(date('M', $event_start_date));
       $vars['event_start']['day'] = check_plain(date('d', $event_start_date));
       $vars['classes_array'][] = 'event-start';
     }
-  }
-}
-
-/**
- * Implements hook_preprocess_field
- *
- * Cleans up teaser display to remove redundant date info.
- */
-function os_basetheme_preprocess_field(&$variables, $hook) {
-  if (in_array($variables['field_view_mode'], array('teaser', 'sidebar_teaser')) && $variables['element']['#bundle'] == 'event' && $variables['element']['#field_name'] == 'field_date') {
-    date_default_timezone_set($variables['element']['#items'][0]['timezone']);
-
-    $start_date = strtotime($variables['element']['#items'][0]['value']);
-    $end_date = (isset($variables['element']['#items'][0]['value'])) ? strtotime($variables['element']['#items'][0]['value2']) : $start_date;
-
-    //for one day events, strip the date.  it's displayed elsewhere.
-    $fmt = (format_date($start_date, 'os_date') == format_date($end_date, 'os_date')) ? 'os_time' : 'os_date_abbreviated';
-    $start = format_date($start_date, $fmt);
-    $end = format_date($end_date, $fmt);
-
-    $variables['label_hidden'] = TRUE;
-    $variables['items'][0]['#markup'] = ($start == $end) ? $start : $start . ' - ' . $end;
   }
 }
 

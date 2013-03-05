@@ -59,7 +59,7 @@
 #search-block-form #edit-submit,
 #search-form #edit-submit {
   background: url("../images/hwpi_basesprite.png") no-repeat scroll 2px -59px transparent;
-  height: 32px;
+  height: 33px;
   width: 44px;
 }
 
@@ -99,7 +99,8 @@ input[type="search"] {
 #search-block-form input.form-submit,
 #search-block-form #edit-submit,
 #search-form #edit-submit {
-  margin: 0 -100% 0 -43px !important;
+  margin: -1px 0 0 -44px !important;
+  vertical-align: top;
 }
 
 #search-block-form .form-item label {
