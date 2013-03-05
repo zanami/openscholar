@@ -6,7 +6,7 @@
 Drupal.behaviors.osLinkExternal = {
   attach: function (ctx) {
     $('#-os-link-external-form').submit(function (e) {
-      Drupal.settings.osWysiwygLinkResult = $('#edit-external').val();
+      Drupal.settings.osWysiwygLinkResult = $('#edit-external', this).val();
       e.preventDefault();
     });
   }
@@ -16,20 +16,20 @@ Drupal.behaviors.osLinkInternal = {
   attach: function (ctx) {
     $('#-os-link-internal-form').submit(function (e) {
       // need to do something here to make sure we get a path and not a node title
-      Drupal.settings.osWysiwygLinkResult = $('#edit-internal').val(); 
+      Drupal.settings.osWysiwygLinkResult = $('#edit-internal', this).val(); 
       e.preventDefault();
     });
   }
-}
+};
 
 Drupal.behaviors.osLinkEmail = {
   attach: function (ctx) {
     $('#-os-link-email-form').submit(function (e) {
-      Drupal.settings.osWysiwygLinkResult = 'mailto:'+$('#edit-email').val();
+      Drupal.settings.osWysiwygLinkResult = 'mailto:'+$('#edit-email', this).val();
       e.preventDefault();
     });
   }
-}
+};
 
 Drupal.behaviors.osLinkFile = {
   attach: function (ctx) {
@@ -43,7 +43,7 @@ Drupal.behaviors.osLinkFile = {
       }
     });
   }
-}
+};
 
 Drupal.behaviors.osLinkUpload = {
   attach: function (ctx) {

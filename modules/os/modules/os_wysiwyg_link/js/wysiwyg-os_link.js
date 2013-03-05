@@ -18,6 +18,22 @@ Drupal.wysiwyg.plugins.os_link = {
   
   invoke: function (selection, settings, editorId) {
     var self = this;
+    if (this.isNode(selection.node)) {
+      var link = jQuery(selection.node);
+      if (link[0].nodeName != 'A') {
+        link = link.find('a');
+      }
+      if (link.length == 0) {
+        link = jQuery(selection.node).parents('a');
+      }
+      var info = this.parseAnchor(link[0]);
+      settings['global'].active = info.type;
+      settings['global'].url = info.url;
+    }
+    else {
+      delete settings['global'].active;
+      delete settings['global'].url;
+    }
     Drupal.media.popups.mediaBrowser(function (insert) {
       self.insertLink();
     }, settings['global'], {}, {
@@ -97,7 +113,7 @@ Drupal.wysiwyg.plugins.os_link = {
     }
     else {
       var home = Drupal.settings.basePath + (typeof Drupal.settings.pathPrefix != 'undefined'?Drupal.settings.pathPrefix:''),
-          dummy = a.createElement('a');
+          dummy = document.createElement('a');
       dummy.href = home;
       if (dummy.hostname == a.hostname && a.pathname.indexOf(dummy.pathname) != -1) {
         // internal link
