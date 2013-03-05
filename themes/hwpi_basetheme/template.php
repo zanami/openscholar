@@ -79,18 +79,6 @@ function hwpi_basetheme_node_view_alter(&$build) {
       $title_field[0] = array('#markup' => implode($glue, $titles));
     }
 
-    //join titles
-    $title_field = &$build['field_professional_title'];
-    if ($title_field) {
-      $keys = array_filter(array_keys($title_field), 'is_numeric');
-      foreach ($keys as $key) {
-        $titles[] = $title_field[$key]['#markup'];
-        unset($title_field[$key]);
-      }
-      $glue = ($build['#view_mode'] == 'sidebar_teaser') ? ', ' : "<br />\n";
-      $title_field[0] = array('#markup' => implode($glue, $titles));
-    }
-
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
 
