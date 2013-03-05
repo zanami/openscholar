@@ -98,6 +98,10 @@ function hwpi_basetheme_node_view_alter(&$build) {
           unset($build[$field]);
         }
       }
+      if (isset($build['field_email'])) {
+        $email_plain = $build['field_email'][0]['#markup'];
+        $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">' . $email_plain . '</a>';
+      }
 
       //newlines after website
       if (isset($build['pic_bio']['field_website'])) {
