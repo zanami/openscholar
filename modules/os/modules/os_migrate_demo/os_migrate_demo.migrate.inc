@@ -661,6 +661,7 @@ class OsMigrateGalleryNode extends OsMigrate {
     array('images', 'Images'),
     array('destination', 'Destination'),
     array(OG_AUDIENCE_FIELD, 'Site'),
+    array(OG_VOCAB_FIELD, 'Terms'),
   );
 
   public $dependencies = array(
@@ -682,6 +683,10 @@ class OsMigrateGalleryNode extends OsMigrate {
     $this->addFieldMapping('media_gallery_media:source_dir')
       ->defaultValue(drupal_get_path('module', 'os_migrate_demo') . '/images');
     $this->addFieldMapping('media_gallery_media:destination_dir', 'destination');
+
+    $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)
+      ->sourceMigration(array('OsMigrateScienceTaxonomyTerm'))
+      ->separator('|');
   }
 }
 

@@ -18,6 +18,9 @@ function os_image_gallery_os_app_info() {
   	'nodetypes' => array(
   	  'media_gallery',
     ),
+    'views tabs' => array(
+      'os_image_gallery' => array('page'),
+    ),
   );
 
   return $apps;
