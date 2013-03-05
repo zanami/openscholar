@@ -175,6 +175,14 @@ function _os_link_email_form($form, $form_state, $params) {
     '#default_value' => isset($params['url'])?$params['url']:'',
   );
   
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'insert' => array(
+      '#type' => 'submit',
+      '#value' => 'Insert',
+    ),
+  );
+  
   return $form;
 }
 
