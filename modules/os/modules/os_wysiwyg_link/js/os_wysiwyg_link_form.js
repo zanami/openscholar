@@ -33,6 +33,11 @@ Drupal.behaviors.osLinkEmail = {
 
 Drupal.behaviors.osLinkFile = {
   attach: function (ctx) {
+    var params = Drupal.settings.media.browser.params;
+    if ('fid' in params) {
+      $('div.media-item[data-fid="'+params.fid+'"]').click();
+    }
+    
     $('#-os-link-get-view').submit(function (e) {
       var selected = Drupal.media.browser.selectedMedia;
       if (selected.length) {
