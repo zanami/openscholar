@@ -52,6 +52,12 @@ function os_events_field_default_fields() {
           'type' => 'text_default',
           'weight' => '0',
         ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '4',
+        ),
         'teaser' => array(
           'label' => 'hidden',
           'module' => 'text',
@@ -133,11 +139,25 @@ function os_events_field_default_fields() {
           'type' => 'date_default',
           'weight' => '1',
         ),
-        'teaser' => array(
-          'label' => 'above',
+        'sidebar_teaser' => array(
+          'label' => 'hidden',
           'module' => 'date',
           'settings' => array(
-            'format_type' => 'long',
+            'format_type' => 'os_date_abbreviated',
+            'fromto' => 'both',
+            'multiple_from' => '',
+            'multiple_number' => '',
+            'multiple_to' => '',
+            'show_repeat_rule' => 'show',
+          ),
+          'type' => 'date_default',
+          'weight' => '0',
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'module' => 'date',
+          'settings' => array(
+            'format_type' => 'os_date_abbreviated',
             'fromto' => 'both',
             'multiple_from' => '',
             'multiple_number' => '',
@@ -220,6 +240,12 @@ function os_events_field_default_fields() {
           'settings' => array(),
           'type' => 'os_files_image_list',
           'weight' => '2',
+        ),
+        'sidebar_teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',

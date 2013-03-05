@@ -20,13 +20,19 @@
 
 #edit-layout>.form-item-layout>input+label {
   display: block;
-  margin-right: 30px;
-  background-color: #c8c8c8;
+  margin: 30px;
   box-shadow: 0 0 7px #111;
+  text-align: center;
 }
 #edit-layout>.form-item-layout>input:checked+label {
   display: block;
   box-shadow: 0 0 30px #4a7d06;
   -moz-box-shadow: 0 0 30px #4a7d06;
   -webkit-box-shadow: 0 0 30px #4a7d06;
+  text-align: center;
+}
+
+#edit-layout>.form-item-layout>input+label img {
+  display: block;
+
 }

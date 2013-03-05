@@ -76,7 +76,7 @@ p.copy {
 
 #footer {
   padding-top: 0;
-  height: 104px;
+  min-height: 104px;
   position: relative;
   background:#BBC6C8;
    }
@@ -309,6 +309,11 @@ ul.nice-menu-left li.menuparent, ul.nice-menu-left li li.menuparent {
   background:#c7d0d2;
   height:33px;
   }
+  
+  #powerby-login {
+    margin-top: 70px;
+
+}
 
 /* Nodes */
 

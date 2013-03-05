@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
  * Flexslider slides and controls
  */
@@ -8,6 +8,6 @@
   <ul class="slides">
     <?php print implode("\n", $slides); ?>
   </ul>
-  
+
   <?php print $controls; ?>
 </div>

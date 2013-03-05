@@ -136,8 +136,28 @@ class FeatureContext extends DrupalContext {
    */
   public function iShouldGet(PyStringNode $string) {
     $page = $this->getSession()->getPage();
-    if (strpos($page->getContent(), $string->getRaw()) === FALSE) {
-      throw new Exception("Text not found.");
+    $comapre_string = $string->getRaw();
+    $page_string = $page->getContent();
+
+    if (strpos($comapre_string, '{{*}}')) {
+      // Attributes that may changed in different environments.
+      foreach (array('sourceUrl', 'id') as $attribute) {
+        $page_string = preg_replace('/ '. $attribute . '=".+?"/', '', $page_string);
+        $comapre_string = preg_replace('/ '. $attribute . '=".+?"/', '', $comapre_string);
+      }
+
+      if ($page_string != $comapre_string) {
+        $output = "The strings are not matching.\n";
+        $output .= "Page: {$page_string}\n";
+        $output .= "Search: {$comapre_string}\n";
+        throw new Exception($output);
+      }
+    }
+    else {
+      // Normal compare.
+      if (strpos($page_string, $comapre_string) === FALSE) {
+        throw new Exception("Text not found.");
+      }
     }
   }
 
@@ -223,6 +243,17 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Given /^a node of type "([^"]*)" with the title "([^"]*)" exists in site "([^"]*)"$/
+   */
+  public function assertNodeTypeTitleVsite($type, $title, $site = 'john') {
+    return array(
+      new Step\When('I visit "' . $site . '/node/add/' . $type . '"'),
+      new Step\When('I fill in "Title" with "'. $title . '"'),
+      new Step\When('I press "edit-submit"'),
+    );
+  }
+
+  /**
    * @Given /^I create a new publication$/
    */
   public function iCreateANewPublication() {
@@ -258,7 +289,7 @@ class FeatureContext extends DrupalContext {
 
     $metasteps = array();
     // @TODO: Don't use the hard coded address - remove john from the address.
-    $metasteps[] = new Step\When('I visit "john/os/widget/boxes/' . $delta . '/edit"');
+    $this->visit('john/os/widget/boxes/' . $delta . '/edit');
 
     // @TODO: Use XPath to fill the form instead of giving the type of the in
     // the scenario input.
@@ -299,6 +330,15 @@ class FeatureContext extends DrupalContext {
     $code = "os_migrate_demo_assign_node_to_term('$node', '$term');";
     $this->getDriver()->drush("php-eval \"{$code}\"");
   }
+
+  /**
+   * @Given /^I assign the node "([^"]*)" with the type "([^"]*)" to the term "([^"]*)"$/
+   */
+  public function iAssignTheNodeWithTheTypeToTheTerm($node, $type, $term) {
+    $code = "os_migrate_demo_assign_node_to_term('$node', '$term', '$type');";
+    $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
 
   /**
    * Hide the boxes we added during the scenario.
@@ -463,6 +503,18 @@ class FeatureContext extends DrupalContext {
   }
 
   /**
+   * @Then /^I should see a pager$/
+   */
+  public function iShouldSeeAPager() {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//div[@class='item-list']");
+
+    if (!$element) {
+      throw new Exception("The pager wasn't found.");
+    }
+  }
+
+  /**
    * @Given /^I set courses to import$/
    */
   public function iSetCoursesToImport() {
@@ -517,5 +569,69 @@ class FeatureContext extends DrupalContext {
 
     $code = "views_og_cache_invalidate_cache(node_load($this->nid));";
     $this->getDriver()->drush("php-eval \"{$code}\"");
+  }
+
+  /**
+   * @Given /^I expect for a behavior according the next <statements>:$/
+   */
+  public function iExpectForABehaviorAccordingTheNextStatements(TableNode $table) {
+    $rows = $table->getRows();
+    $baseUrl = $this->locatePath('');
+
+    foreach ($rows as $row) {
+      $this->visit($row[0]);
+      $url = $this->getSession()->getCurrentUrl();
+
+      if ($url != $baseUrl . $row[2]) {
+        throw new Exception("When visiting {$row[0]} we did not redirected to {$row[2]} but to {$url}.");
+      }
+
+      $response_code = $this->responseCode($baseUrl . $row[0]);
+      if ($response_code != $row[1]) {
+        throw new Exception("When visiting {$row[0]} we did not get a {$row[1]} reponse code but the {$response_code} reponse code.");
+      }
+    }
+  }
+
+  /**
+   * Get the response code for a URL.
+   *
+   *  @param $address
+   *    The URL address.
+   *
+   *  @return
+   *    The response code for the URL address.
+   */
+  function responseCode($address) {
+    $ch = curl_init($address);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 1); // Return header.
+    curl_setopt($ch, CURLOPT_NOBODY, 1); // Will not return the body.
+
+    $linkHeaders = curl_exec($ch);
+    $curlInfo = curl_getinfo($ch);
+    curl_close($ch);
+
+    return $curlInfo['http_code'];
+  }
+
+  /**
+   * @Then /^I should see the random string$/
+   */
+  public function iShouldSeeTheRandomString() {
+    $metasteps = array(new Step\When('I should see "' . $this->randomText . '"'));
+    return $metasteps;
+  }
+
+  /**
+   * @Given /^I should not see "([^"]*)" under "([^"]*)"$/
+   */
+  public function iShouldNotSeeUnder($text, $id) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('xpath', "//input[@id='{$id}']//*[contains(.,'{$text}')]");
+    if ($element) {
+      throw new Exception("The text {$text} found under #{$id}");
+    }
   }
 }

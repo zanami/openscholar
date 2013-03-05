@@ -19,6 +19,9 @@ function os_profiles_os_app_info() {
   	'nodetypes' => array(
   	  'person',
     ),
+    'views tabs' => array(
+      'os_profiles' => array('page'),
+    ),
   );
 
   return $apps;
@@ -42,6 +45,24 @@ function os_profiles_process_node(&$vars) {
     $vars['title_prefix'] = $vars['content']['field_person_photo'];
     unset($vars['content']['field_person_photo']);
   }
+
+  //sidebar teaser
+  if ($vars['view_mode'] == 'sidebar_teaser') {
+
+    if (isset($vars['content']['pic_bio'])) {
+      $vars['title_prefix'] = $vars['content']['pic_bio'];
+      unset($vars['content']['pic_bio']);
+    }
+
+    //move the title inside
+    $vars['content']['node_title'] = array(
+      '#weight' => -50,
+      '#markup' => '<h1 ' . $vars['title_attributes'] . '><a href="' . $vars['node_url'] . '">' . $vars['title'] . '</a></h1>'
+    );
+    $vars['title'] = NULL;
+
+  }
+
   // Includes custom CSS
   $vars['title_prefix']['#attached'] = array(
     'css' => array(
@@ -50,7 +71,7 @@ function os_profiles_process_node(&$vars) {
     ),
   );
 
-  if (!$vars['teaser']) {
+  if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
     $vars['title_prefix']['#suffix'] = '<h2>' . $vars['title'] . '</h2>';
   }
 

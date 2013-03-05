@@ -50,13 +50,13 @@ function os_news_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '1',
+          'weight' => '2',
         ),
         'sidebar_teaser' => array(
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '5',
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -65,7 +65,7 @@ function os_news_field_default_fields() {
             'trim_length' => '600',
           ),
           'type' => 'text_trimmed',
-          'weight' => '1',
+          'weight' => '2',
         ),
       ),
       'entity_type' => 'node',
@@ -143,7 +143,7 @@ function os_news_field_default_fields() {
           'label' => 'hidden',
           'module' => 'date',
           'settings' => array(
-            'format_type' => 'semi_long',
+            'format_type' => 'long',
             'fromto' => 'both',
             'multiple_from' => '',
             'multiple_number' => '',
@@ -151,7 +151,7 @@ function os_news_field_default_fields() {
             'show_repeat_rule' => 'show',
           ),
           'type' => 'date_default',
-          'weight' => '0',
+          'weight' => '1',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -251,7 +251,7 @@ function os_news_field_default_fields() {
             'image_style' => '',
           ),
           'type' => 'image',
-          'weight' => '1',
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -259,6 +259,16 @@ function os_news_field_default_fields() {
           'settings' => array(
             'image_link' => 'content',
             'image_style' => 'os_square_50_50',
+          ),
+          'type' => 'image',
+          'weight' => '0',
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => 'content',
+            'image_style' => 'os_news_full_140_x_180',
           ),
           'type' => 'image',
           'weight' => '0',
@@ -375,7 +385,7 @@ function os_news_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '4',
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',

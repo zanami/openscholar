@@ -116,7 +116,7 @@ function harvard_courses_feeds_importer_default() {
           ),
           2 => array(
             'source' => 'xpathparser:1',
-            'target' => 'field_description',
+            'target' => 'field_course_description',
             'unique' => FALSE,
           ),
           3 => array(

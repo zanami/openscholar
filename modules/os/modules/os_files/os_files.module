@@ -192,7 +192,20 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
     $form['replace_upload']['#access'] = (time() - $form['#entity']->timestamp) > 5 * 60;
   }
   else {
-    $form['replace_upload']['#access'] = false;
+    $form['replace_upload']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Set the default value for media_title
+ * @param $element
+ * @param $input
+ * @param $form_state
+ * @return
+ */
+function os_files_media_title_value($element, $input = FALSE, $form_state = array()) {
+  if ($input === FALSE) {
+    return isset($form_state['values']['filename']) ? $form_state['values']['filename'] : '';
   }
   
   $form['media_description'][LANGUAGE_NONE][0]['#type'] = 'textarea';
@@ -592,12 +605,23 @@ function os_files_file_download($uri){
  * work with spaces.
  */
 function os_files_views_default_views_alter(&$views){
-  if (module_exists('vsite') && isset($views['media_default'])) {
-    $view = $views['media_default'];
-
-    //Link in Files related via file_usage
-    $view->add_item('default', 'filter', 'spaces', 'current');
+  if (!module_exists('vsite') || !isset($views['media_default'])) {
+    return;
   }
+  $view = $views['media_default'];
+
+  // Link in Files related via file_usage.
+  $view->add_item('default', 'filter', 'spaces', 'current');
+
+  $handler = &$view->display['default']->handler;
+
+  /* Relationship: File Usage: Content */
+  $handler->display->display_options['relationships']['file_to_node']['id'] = 'file_to_node';
+  $handler->display->display_options['relationships']['file_to_node']['table'] = 'file_usage';
+  $handler->display->display_options['relationships']['file_to_node']['field'] = 'file_to_node';
+
+  /* Filter criterion: Spaces: Content in current space */
+  $handler->display->display_options['filters']['current']['relationship'] = 'file_to_node';
 }
 
 /**
@@ -714,7 +738,7 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
             )
           );
         }
-        elseif (file_uri_scheme($i['uri']) == 'embed') { 
+        elseif (file_uri_scheme($i['uri']) == 'embed') {
           $file = (object)$i;
           $file->override['width'] = 300;
           $videos[] = file_view($file, 'default');
@@ -762,7 +786,7 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
       if (module_exists('jcarousel')) {
         $elements['images']['#pre_render'][] = 'os_files_jcarousel_add';
       }
-      
+
       $elements['videos'] = array(
         '#type' => 'container',
         '#attributes' => array(
@@ -778,7 +802,7 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
           'video' => $v,
         );
       }
-      
+
       $elements['other'] = array(
         '#theme' => 'table',
         '#rows' => $other,

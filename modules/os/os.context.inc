@@ -38,12 +38,6 @@ function os_context_default_contexts(){
   $context->reactions = array(
       'block' => array(
           'blocks' => array(
-              'os-powered-by' => array(
-                  'module' => 'os',
-                  'delta' => 'powered-by',
-                  'region' => 'footer',
-                  'weight' => '10',
-              ),
           )
       )
   );
@@ -167,18 +161,6 @@ function os_context_default_contexts(){
                 'delta' => 'shield',
                 'region' => 'header_third',
                 'weight' => '-10',
-              ),
-              'os-powered-by' => array(
-                  'module' => 'os',
-                  'delta' => 'powered-by',
-                  'region' => 'footer',
-                  'weight' => '10',
-              ),
-              'os-login' => array(
-                  'module' => 'os',
-                  'delta' => 'login',
-                  'region' => 'footer',
-                  'weight' => '-10',
               ),
           )
       )

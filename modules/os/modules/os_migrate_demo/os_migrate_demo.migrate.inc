@@ -78,6 +78,7 @@ class OsMigratePersonalNode extends OsMigrate {
     array('title', 'Title'),
     array('purl', 'URL'),
     array('public', 'Public'),
+    array('domain', 'Domain'),
   );
 
   public function __construct() {
@@ -160,6 +161,37 @@ class OsMigrateBioagrphyNode extends OsMigrate {
   }
 }
 
+/**
+ * Migrate "Software" node.
+ */
+class OsMigrateSoftwareNode extends OsMigrate {
+  public $entityType = 'node';
+  public $bundle = 'software_project';
+
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('title', 'Title'),
+    array('body', 'Body'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+    array(OG_VOCAB_FIELD, 'Terms'),
+  );
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+    'OsMigrateProjectNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+
+    $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration(array('OsMigratePersonalNode', 'OsMigrateProjectNode'));
+    $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)
+      ->sourceMigration(array('OsMigrateScienceTaxonomyTerm'))
+      ->separator('|');
+  }
+}
 
 /**
  * Migrating books.
@@ -225,11 +257,13 @@ class OsMigrateClassesNode extends OsMigrate {
     array('link', 'Link'),
     array('semester', 'Semester'),
     array(OG_AUDIENCE_FIELD, 'Site'),
+    array(OG_VOCAB_FIELD, 'Terms'),
   );
 
   public $dependencies = array(
     'OsMigratePersonalNode',
     'OsMigrateProjectNode',
+    'OsMigrateScienceTaxonomyTerm',
   );
 
   public function __construct() {
@@ -237,8 +271,13 @@ class OsMigrateClassesNode extends OsMigrate {
 
     $this->addFieldMapping('body', 'body');
     $this->addFieldMapping('field_semester', 'semester');
+
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration(array('OsMigrateProjectNode', 'OsMigratePersonalNode'));
+
+    $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)
+      ->sourceMigration(array('OsMigrateScienceTaxonomyTerm'))
+      ->separator('|');
   }
 
   /**
@@ -324,6 +363,7 @@ class OsMigrateNewsNode extends OsMigrate {
     array('title', 'Title'),
     array('body', 'Body'),
     array(OG_AUDIENCE_FIELD, 'Site'),
+    array(OG_VOCAB_FIELD, 'Terms'),
   );
 
   public $dependencies = array(
@@ -337,6 +377,10 @@ class OsMigrateNewsNode extends OsMigrate {
     $this->addFieldMapping('body', 'body');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration(array('OsMigratePersonalNode', 'OsMigrateProjectNode'));
+
+    $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)
+      ->sourceMigration(array('OsMigrateScienceTaxonomyTerm'))
+      ->separator('|');
   }
 }
 
@@ -384,7 +428,33 @@ class OsMigrateEventsNode extends OsMigrate {
   }
 }
 
-// TODO: Fix migration of the blog.
+/**
+ * Migrate FAQs.
+ */
+class OsMigrateFAQNode extends OsMigrate {
+  public $entityType = 'node';
+  public $bundle = 'faq';
+
+  public $csvColumns = array(
+    array('id', 'ID'),
+    array('title', 'Title'),
+    array('body', 'Body'),
+    array(OG_AUDIENCE_FIELD, 'Site'),
+  );
+
+  public $dependencies = array(
+    'OsMigratePersonalNode',
+  );
+
+  public function __construct() {
+    parent::__construct();
+
+    $this->addFieldMapping('body', 'body');
+    $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
+      ->sourceMigration('OsMigratePersonalNode');
+  }
+}
+
 /**
  * Migrate Blog.
  */

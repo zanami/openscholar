@@ -90,6 +90,20 @@ class os_sv_list_box extends os_boxes_default {
       )
     );
 
+    if(module_exists('vsite')){
+
+      ctools_include('subsite','vsite');
+
+      $form['query_scope'] = array(
+        '#title' => 'Include results from',
+        '#type' => 'checkboxes',
+        '#options' => array('current' => "Current Site", 'subsites' => 'Subsites'),
+        '#default_value' => $this->options['query_scope'],
+        '#access' => vsite_has_subsites(),
+        '#required' => TRUE,
+      );
+    }
+
     $form['display'] = array(
       '#type' => 'select',
       '#title' => 'Display style',
@@ -99,6 +113,13 @@ class os_sv_list_box extends os_boxes_default {
         'display_sidebar_teaser' => t('Sidebar Teaser'),
         'display_teaser' => t('Teaser'),
         'display_body' => t('Entire Post'),
+      ),
+      // This #states rule limits use to when the $form['query_scope']
+      // 'subsites' checkbox is not checked."
+      '#states' => array(
+        'visible' => array(// action to take.
+          ':input[name="query_scope[subsites]"]' => array('checked' => FALSE),
+        ),
       ),
     );
     $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array('display_sidebar_teaser' => array('news', 'event', 'person')))));
@@ -189,23 +210,9 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['more'],
     );
 
-    $content_map = array(
-      'all' => '',
-      'news' => 'news',
-      'biblio' => 'publications',
-      'event' => 'calendar',
-      'page' => 'pages',
-      'data' => 'data',
-      'blog' => 'blog',
-      'book' => 'documents',
-      'feed' => 'reader',
-      'media_gallery' => 'galleries',
-      'link' => 'links',
-      'presentation' => 'presentations',
-      'software_project' => 'software',
-      'software_release' => 'software',
-      'person' => 'people',
-    );
+    ctools_include('os', 'os');
+    $content_map = os_get_app_path();
+    $content_map = array_diff_key($content_map, array_flip(array('bio', 'cv', 'class_material')));
 
     if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
       $default_value = $content_map[$content_types_value];
@@ -235,23 +242,7 @@ class os_sv_list_box extends os_boxes_default {
         'js' => array(
           array(
             'data' => array(
-              'more_link_defaults' => array(
-                'all' => '',
-                'news' => 'news',
-                'biblio' => 'publications',
-                'event' => 'calendar',
-                'page' => 'pages',
-                'data' => 'data',
-                'blog' => 'blog',
-                'book' => 'documents',
-                'feed' => 'reader',
-                'media_gallery' => 'galleries',
-                'link' => 'links',
-                'presentation' => 'presentations',
-                'software_project' => 'software',
-                'software_release' => 'software',
-                'person' => 'people',
-              ),
+              'more_link_defaults' => $content_map,
             ),
             'type' => 'setting',
           )
@@ -317,11 +308,12 @@ class os_sv_list_box extends os_boxes_default {
       }
 
       $display_func = (method_exists($this, $options['display'])) ? $options['display'] : 'display_title';
-      $nodes = node_load_multiple($nids);
 
       if ($options['content_type'] == 'image') {
         $display_func = 'display_image';
         $nodes = file_load_multiple($nids);
+      }else{
+        $nodes = node_load_multiple($nids);
       }
 
       $block['content'] = $this->$display_func($nodes);
@@ -362,13 +354,12 @@ class os_sv_list_box extends os_boxes_default {
 
   // get_default_query_query - humble beginnings of the EFQ
   function get_default_query() {
-
     //Only filter to public bundles if we are not including subsites
-    if(!in_array('subsites', array_filter($this->options['query_scope']))){
-	    $bundles = os_get_bundles(array(1));
-	    if (empty($bundles)) {
-	      return FALSE;
-	    }
+    if (!isset($this->options['query_scope']) || !in_array('subsites', array_filter($this->options['query_scope']))){
+      $bundles = os_get_bundles(array(1));
+      if (empty($bundles)) {
+        return FALSE;
+      }
     }
 
     // defaults
@@ -396,7 +387,7 @@ class os_sv_list_box extends os_boxes_default {
     $gids = array();
 
     if(module_exists('vsite')){
-      if(!isset($options['query_scope'])){
+      if(!isset($options['query_scope']) || !count(array_filter($this->options['query_scope']))){
         $options['query_scope'] = array('current');
       }
 
@@ -649,17 +640,32 @@ class os_sv_list_box extends os_boxes_default {
     $items = node_view_multiple($nodes, 'full');
     return drupal_render($items);
   }
+
   function display_sidebar_teaser($nodes) {
     $items = node_view_multiple($nodes, 'sidebar_teaser');
     return drupal_render($items);
   }
+
   function display_teaser($nodes) {
     $items = node_view_multiple($nodes, 'teaser');
     return drupal_render($items);
   }
+
   function display_title($nodes) {
+
+    $cross_site_links = FALSE;
+    if(module_exists('vsite') && isset($this->options['query_scope']) && in_array('subsites', array_filter($this->options['query_scope']))){
+      ctools_include('subsite','vsite');
+      $cross_site_links = TRUE;
+    }
+
     foreach ( $nodes as $nid => $node ) {
-      $items[] = l($node->title, 'node/' . $nid);
+      $options = array();
+      if($cross_site_links){
+        vsite_subsite_node_url_options($node, $options);
+      }
+
+      $items[] = l($node->title, 'node/' . $nid, $options);
     }
 
     return theme('item_list', array(

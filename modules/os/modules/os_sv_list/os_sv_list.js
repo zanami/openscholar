@@ -16,7 +16,7 @@
 
         var content_type = $('#os_sv_list_content_type').val();
         var selected_sort = 'sort_' + content_type;
-        var more_link = $('#edit-more-link');
+        var more_link = $('#more_link_div input[name="more_link"]');
         var defaults = Drupal.settings.more_link_defaults;
 
         //apply content_type appropriate sorts when ct changes
@@ -55,7 +55,7 @@
           }
         });
 
-        // swap out the more link url
+        // swap out the more link url.  preserve previous setting so it doesn't get trashed if the user goes back to original type.
         if (more_link.val()) {
           defaults[old_type] = more_link.val();
         }

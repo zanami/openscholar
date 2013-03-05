@@ -88,22 +88,23 @@ dependencies[] = cp_content
 dependencies[] = cp_toolbar
 
 ; Features
+dependencies[] = os_biocv
+dependencies[] = os_blog
+dependencies[] = os_booklets
+dependencies[] = os_classes
+dependencies[] = os_dataverse
+dependencies[] = os_events
+dependencies[] = os_faq
+dependencies[] = os_image_gallery
 dependencies[] = os_links
 dependencies[] = os_news
-dependencies[] = os_image_gallery
-dependencies[] = os_publications
 dependencies[] = os_pages
-dependencies[] = os_events
-dependencies[] = os_reader
-dependencies[] = os_blog
-dependencies[] = os_classes
 dependencies[] = os_presentations
-dependencies[] = os_software
-dependencies[] = os_dataverse
-dependencies[] = os_booklets
 dependencies[] = os_profiles
+dependencies[] = os_publications
+dependencies[] = os_reader
+dependencies[] = os_software
 dependencies[] = os_taxonomy
-dependencies[] = os_biocv
 
 ; other
 dependencies[] = diff
