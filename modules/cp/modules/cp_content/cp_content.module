@@ -3,6 +3,7 @@
  * @file
  * Code for the cp_content feature.
  */
+include_once 'cp_content.features.inc';
 
 /**
  * Implements hook_menu().
