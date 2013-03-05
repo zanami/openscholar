@@ -152,7 +152,7 @@ function os_stats_json() {
   }
 
   // Outputs just the JSON data, then skips normal page rendering.
-  drupal_json_output($output);
+  echo json_encode($output);
   return NULL;
 }
 
