@@ -175,7 +175,7 @@ function _os_publications_filter_by_term(QueryAlterableInterface $query) {
   $item = menu_get_item();
   // Check if we need to filter by term.
   if (count($item['original_map']) == 1) {
-    // We are just looking at classes.
+    // We are just looking at the origianl tab.
     return;
   }
 
