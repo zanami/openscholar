@@ -45,7 +45,7 @@ function hwpi_basetheme_process_node(&$vars) {
     if (!$vars['teaser'] && $vars['view_mode'] != 'sidebar_teaser') {
       $vars['title_prefix']['#suffix'] = '<h1 class="node-title">' . $vars['title'] . '</h1>';
       $vars['title'] = NULL;
-    } 
+    }
   }
 }
 
@@ -66,7 +66,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
       $build['pic_bio']['body'] = $build['body'];
       unset($build['body']);
     }
-    
+
     //join titles
     $title_field = &$build['field_professional_title'];
     if ($title_field) {
@@ -81,7 +81,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
 
     // We dont want the other fields on teasers
     if ($build['#view_mode'] == 'teaser') {
-      
+
       //move title, website. body
       $build['pic_bio']['body']['#weight'] = 5;
       foreach (array(0=>'field_professional_title', 10=>'field_website') as $weight => $field) {
@@ -93,12 +93,16 @@ function hwpi_basetheme_node_view_alter(&$build) {
       }
 
       //hide the rest
-      foreach (array('field_address', 'field_email', 'field_phone') as $field) {
+      foreach (array('field_address') as $field) {
         if (isset($build[$field])) {
           unset($build[$field]);
         }
       }
-      
+      if (isset($build['field_email'])) {
+        $email_plain = $build['field_email'][0]['#markup'];
+        $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">' . $email_plain . '</a>';
+      }
+
       //newlines after website
       if (isset($build['pic_bio']['field_website'])) {
         foreach (array_filter(array_keys($build['pic_bio']['field_website']), 'is_numeric') as $delta) {
@@ -108,7 +112,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
           $build['pic_bio']['field_website'][$delta]['#markup'] = l($item['title'], $item['url'], array('attributes'=>$item['attributes'])) . '<Br />';
         }
       }
-            
+
       unset($build['links']['node']);
 
       return;
@@ -125,7 +129,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
       $build['pic_bio']['field_person_photo'] = $build['field_person_photo'];
       unset($build['field_person_photo']);
     }
-    
+
     $children = element_children($build['pic_bio']);
     if (empty($children)) {
       $build['pic_bio']['#access'] = false;
@@ -142,7 +146,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
       $build['contact_details']['#prefix'] = '<div class="block contact-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Contact Information</h2>';
       $build['contact_details']['#suffix'] = '</div></div>';
       $build['contact_details']['#weight'] = -8;
-  
+
       // Contact Details > address
       if (isset($build['field_address'])) {
         $build['field_address']['#label_display'] = 'hidden';
@@ -154,7 +158,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
         $build['field_email']['#label_display'] = 'inline';
         $email_plain = mb_strtolower($build['field_email'][0]['#markup']);
         if ($email_plain) {
-          
+
           $build['field_email'][0]['#markup'] = l($email_plain, 'mailto:'.$email_plain, array('absolute'=>TRUE));
         }
         $build['contact_details']['field_email'] = $build['field_email'];
@@ -172,7 +176,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
         $build['contact_details']['field_phone']['#weight'] = 50;
         unset($build['field_phone']);
       }
-  
+
       // Websites
       if (isset($build['field_website'])) {
         $build['website_details']['#prefix'] = '<div class="block website-details '.(($block_zebra++ % 2)?'even':'odd').'"><div class="block-inner"><h2 class="block-title">Websites</h2>';
@@ -183,7 +187,7 @@ function hwpi_basetheme_node_view_alter(&$build) {
         unset($build['field_website']);
       }
     }
-    
+
     if (isset($build['og_vocabulary'])) {
       foreach ($build['og_vocabulary']['#items'] as $tid) {
         $t = taxonomy_term_load($tid['target_id']);
@@ -435,8 +439,8 @@ function hwpi_basetheme_status_messages($vars) {
 function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
   if ($entity->type != 'event') {
     return;
-  } 
-  
+  }
+
   // only display the start time for this particular instance of a repeat event
   $entity->view = views_get_current_view();
 
@@ -452,7 +456,7 @@ function hwpi_basetheme_date_formatter_pre_view_alter(&$entity, $vars) {
     }
     $entity->date_id = 'node.'.$entity->nid.'.field_date.'.$delta;
   }
-  else {    
+  else {
     $entity->active_date = $vars['items'][0];
   }
 }
