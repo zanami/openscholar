@@ -1,12 +1,15 @@
 <?php
 
+/** Defines the default API version to use when URL doesn't specify */
+define('OS_STATS_API_VERSION_DEFAULT', 1);
+
 /**
  * Implements hook_menu().
  */
 function os_stats_menu() {
   $items = array();
 
-  $items['api/v1/stats'] = array(
+  $items['stats'] = array(
     'title' => 'Stats',
     'page callback' => 'os_stats_json',
     'page arguments' => array(),
@@ -67,7 +70,6 @@ function os_stats_block_view($delta = '') {
 
 /**
  * Block content callback; returns <dl> definition list HTML element.
- *
  */
 function os_stats_content() {
   $items = array();
@@ -112,28 +114,80 @@ function os_stats_content() {
 }
 
 /**
- * Page callback; outputs JSON object containing all statistics.
+ * Page callback; outputs JSON object containing requested statistics.
+ *
+ * @param string $version
+ *  - A version string like "v1" (default)
+ * @param string $type
+ *  - What type of stats to query. One of: "all", "users", "posts", "files"
+ * @param string $format
+ *  - What format to return the data. One of: "default", "geckoboard"
+ *
+ * @return NULL
+ * - Content printed directly to screen without rendering page.
  */
 function os_stats_json() {
-  $output = array();
-  $output['item'] = array();
+  // Sets defaults for possible query parameters.
+  $version_default = OS_STATS_API_VERSION_DEFAULT;
+  $type_default    = 'websites';
+  $format_default  = 'default';
 
-  //check cache
-  if ($cache = cache_get('os_stats_json')) {
+  // Fetches query parameters and sets defaults.
+  $version = isset($_GET['version']) ? $_GET['version'] : $version_default;
+  // Only supports version 1.
+  if ($version != 1) {
+    drupal_not_found();
+  }
+  $type = isset($_GET['type']) ? $_GET['type'] : $type_default;
+  $format = isset($_GET['format']) ? $_GET['format'] : $format_default;
+  $cid = 'os_stats_' . $version . '_' . $type . '_' . $format . '_json';
+
+  // Checks cache
+  if (FALSE && $cache = cache_get($cid)) {
     if ($cache->expire < time()) {
       // Clears expired data, but uses it for this run.
-      cache_clear_all('os_stats_json', 'cache');
+      cache_clear_all($cid, 'cache');
     }
     $output = $cache->data;
   }
   else {
-    $queries = _os_stats_queries();
+    $output = _os_stats_v1_json($type, $format);
+    cache_set($cid, $output, 'cache', time() + variable_get('os_stats_cache_expiration', 24 * 3600));
+  }
+
+  // Outputs just the JSON data, then skips normal page rendering.
+  drupal_json_output($output);
+  //echo json_encode($output);
+  return NULL;
+}
+
+/**
+ * Prepares array to be output as JSON.
+ */
+function _os_stats_v1_json($type, $format) {
+
+  // Throws error if $type or $format is an unexpected value.
+  $output = _os_stats_v1_json_init($type, $format);
+
+  $queries = _os_stats_queries();
+
+  if ($output['success']) {
+  // Enables the appropriate queries.
+    switch ($type) {
+      case 'websites':
+        $enabled = array('websites');
+        break;
+    }
+
     foreach ($queries as $query => $info) {
+      if (!in_array($query, $enabled)) {
+        continue;
+      }
       // Runs query, handling arguments if present.
       if ((!empty($info['query_args'])) && (!empty($info['query_args_type']))) {
-        $type = $info['query_args_type'];
+        $args_type = $info['query_args_type'];
         $queryArray = $info['query_args'];
-        $result = db_query($info['query'], array($type => $queryArray))->fetchField();
+        $result = db_query($info['query'], array($args_type => $queryArray))->fetchField();
       }
       else {
         $result = db_query($info['query'])->fetchField();
@@ -144,16 +198,62 @@ function os_stats_json() {
           $result = $info['callback']($result);
         }
 
-        $output['item'][] = array('value' => $result, 'text' => $info['title']);
+        $output[$query] = array('value' => $result, 'text' => $info['title']);
       }
     }
-
-    cache_set('os_stats_json', $output, 'cache', time() + variable_get('os_stats_cache_expiration', 24 * 3600));
   }
 
-  // Outputs just the JSON data, then skips normal page rendering.
-  echo json_encode($output);
-  return NULL;
+  // Adds current URL request as the "href" value in our JSON object.
+  global $base_url;
+  $path = $base_url . '/stats';
+  $output['href'] = url($path, array('query' => array('version' => '1','type' => $type, 'format' => $format)));
+
+  // Adds current OpenScholar version to JSON object, like "7.x-1.0".
+  $path = drupal_get_path('profile', 'openscholar') . '/openscholar.info';
+  $info = drupal_parse_info_file($path);
+  $output['os_version'] = $info['version'];
+
+  if ($format == 'geckoboard') {
+    $items = array();
+    switch ($type) {
+      case 'websites':
+        $output['websites']['text'] = '';
+        $items['item'][] = array('value' => $output['websites']['value'], 'text' => $output['websites']['text']);
+        break;
+    }
+    $output = $items;
+  }
+
+  return $output;
+}
+
+/**
+ * Returns TRUE if both $type and $format are expected values.
+ *
+ * @param string $type
+ * @param string $format
+ */
+function _os_stats_v1_json_init($type, $format) {
+  $errors = array();
+  $types = array('websites');
+  $formats = array('default', 'geckoboard');
+
+  if (!in_array($type, $types)) {
+    $errors[] = "Unknown type parameter: $type";
+  }
+  if (!in_array($format, $formats)) {
+    $errors[] = "Unknown format parameter: $format";
+  }
+  if (!empty($errors)) {
+    $output = array();
+    $output['success'] = FALSE;
+    $output['errors'] = $errors;
+  }
+  else {
+    $output = array();
+    $output['success'] = TRUE;
+  }
+  return $output;
 }
 
 /**
