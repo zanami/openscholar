@@ -224,6 +224,10 @@ a.more {
  background: url(../images/arrow-white.png) 100% 50% no-repeat transparent;
   }
 
+.breadcrumb {margin-top:14px;}
+.breadcrumb a,
+.breadcrumb a:hover
+ {font-size:11px;color:#005C9C;text-decoration:none;}
 
 .front .region-header-second .block-boxes-os_boxes_html a.more {
  font-weight: bold;
