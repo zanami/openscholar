@@ -61,6 +61,9 @@ function os_wysiwyg_link_insert() {
       $output['tabs']['#default_tab'] = 'edit-'.$k;
       $output['tabs']['tabs__active_tab']['#value'] = 'edit-'.$k;
     }
+    if (isset($output['tabs'][$k]['#entity'])) {
+      // return results to ajax script
+    }
   }
   
   $output['actions'] = array(
