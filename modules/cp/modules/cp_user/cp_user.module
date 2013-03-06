@@ -22,7 +22,7 @@ function cp_user_menu(){
   );
 
   $items['cp/users/add'] = array(
-    'title' => 'Add User to Site',
+    'title' => 'Add a User to Your Website',
     'page arguments' => array('add'),
     'access callback' => 'cp_user_admin_access',
     'file' => 'cp_user.pages.inc',
