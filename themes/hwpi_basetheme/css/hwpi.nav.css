@@ -105,6 +105,10 @@ ul.nice-menu ul {
 	color:#BAC5C6;
 }
 
+#branding_header a:hover {
+	color:#8996A0;
+}
+
 #branding_footer a {
 	color: #bac5c6;
 }

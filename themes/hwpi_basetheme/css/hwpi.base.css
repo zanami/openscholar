@@ -70,16 +70,11 @@ table caption {
 
 
 
-/*
-  .footer.footer-right .region-footer,
-  .footer-left.footer .region-footer {
-    	width: 52%;
-  	}
-  
-  .footer.footer-right .region-footer-third,
-  .footer-left.footer .region-footer-first {width: 48%;}
-*/
-  
+.sub_title {
+    display: block;
+    font-size: 0.5em;
+    padding-top:5px;
+}
 
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
 .more-link {
@@ -486,8 +481,12 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
   margin: 0;
 }
 
+.node-type-person #main-content #content .node-person.with-person-photo .field-name-body {
+  margin-left: 0;
+}
+
 .node-type-person #content .node-person.with-person-photo .field-name-body {
-  margin-left: 210px;
+    margin-left: 210px;
 }
 
 .node-type-person .node-person .block {
@@ -586,7 +585,18 @@ LIST OF POSTS - PERSON TEASER IN SIDEBAR
   margin-bottom: 15px;
 }
 
+/* NODE CLASSES */
 
+.node-type-class #content-column h2.field-label,
+.page-classes #content-column h2.field-label,
+.page-classes h1.node-title,
+.page-classes h2.field-label {
+    margin-bottom: 0;
+}
+
+.page-classes .node-class.node-teaser .field-name-body {
+    padding-top: 0;
+}
 
 
 /* Comments */
@@ -734,5 +744,9 @@ ul.pager li.pager-next {
 }
 
 
-
+/* Custom Person node style for /people page */
+.node-person.node-teaser .field-name-field-email {
+  clear: both;
+  float: left;
+}
 

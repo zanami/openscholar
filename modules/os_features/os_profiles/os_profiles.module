@@ -75,6 +75,11 @@ function os_profiles_process_node(&$vars) {
     $vars['title_prefix']['#suffix'] = '<h2>' . $vars['title'] . '</h2>';
   }
 
+  // Exits if this was processed in hwpi_basetheme template.php
+  if (isset($vars['content']['pic_bio'])) {
+    return;
+  }
+
   // Customizes field markup with prefixes and suffixes
   if (isset($vars['content']['field_email'])) {
     $email_plain = $vars['content']['field_email'][0]['#markup'];
