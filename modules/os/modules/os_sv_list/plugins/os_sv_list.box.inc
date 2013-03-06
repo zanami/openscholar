@@ -584,13 +584,6 @@ class os_sv_list_box extends os_boxes_default {
     
     if ($options['content_type'] == 'event') {
       $nids = $this->interpolate_dates($nids);
-      
-      if ($options['pager']) {
-        $total = count($nids);
-        $limit = $options['number_of_items'];
-        pager_default_initialize($total, $limit, $page);
-        $nids = array_slice($nids, $page_num*$limit, $limit);
-      }
     }
 
     return $nids;
@@ -757,28 +750,28 @@ class os_sv_list_box extends os_boxes_default {
   
   function interpolate_dates($nids) {
     $dates = array();
-    foreach ($nids as $n) {
-      $node = node_load($n);
-      $node_dates = field_get_items('node', $node, 'field_date');
-      if (count($node_dates) > 1) {
-        foreach ($node_dates as $delta => $nd) {
-          if (strtotime($nd['value']) > time()) {
-            $dates[] = array(
-              'node' => $n,
-              'delta' => $delta,
-              'date' => $nd['value'],
-            );
-          }
-        }
-      }
+    
+    $q = db_select('field_data_field_date', 'fd')
+         ->fields('fd', array('entity_id', 'delta'))
+         ->where('field_date_value > NOW()')
+         ->condition('entity_id', $nids)
+         ->orderBy('field_date_value');
+    
+    if ($this->options['pager']) {
+      $q = $q->extend('PagerDefault');
+      $q->limit($this->options['number_of_items']);
+    }
+    else {
+      $q->range(0, $this->options['number_of_items']);
     }
     
-    ksort($dates);
+    $q = $q->execute();
     
-    $return = array_map(function ($n) {
-      return $n['node'].'|date_id=date.'.$n['node'].'.field_date.'.$n['delta'];
-    }, $dates);
-    return array_values($return);
+    foreach ($q as $r) {
+      $return[] = $r->entity_id.'|date_id=date.'.$r->entity_id.'.field_date.'.$r->delta;      
+    }
+    
+    return $return;
   }
 }
 
