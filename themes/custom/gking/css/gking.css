@@ -518,6 +518,7 @@ body.front .block-boxes-os_taxonomy_fbt div.description  {
   margin-right: 270px;
 }
 
+.not-front.no-sidebars #content-column .content-inner,
 .page-node #content-column .content-inner #main-content-header {
   margin-right: 0;
 }
@@ -1022,6 +1023,39 @@ border:none;
 .ui-tabs .node-presentation a {
 	color: #336599;
 }
+
+/* LOWER LEVEL TABS */
+.not-front .ui-tabs .ui-tabs-nav {
+    margin-top: -110px;
+    float: right;
+    margin-left:0;
+    display: inline;
+} 
+
+
+.ui-tabs .ui-tabs-nav li {
+
+float: none;
+
+}
+
+.not-front .ui-tabs .ui-tabs-nav li a:link, 
+.not-front .ui-tabs .ui-tabs-nav li a:visited, 
+.not-front #tablist li a:visited {
+    color: #555;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+
+.not-front .ui-tabs .ui-tabs-nav li.ui-state-active a {
+    color: #CC6733;
+}
+
+.not-front .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+    background: none;
+}
+
 
 /* FOOTER */
 
