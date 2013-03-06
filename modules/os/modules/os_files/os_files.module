@@ -437,7 +437,7 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
 function os_files_media_browser_params_alter(&$media_params){
 
   // Are we in multi-tenant? get the file path.
-  if (spaces_get_space()) {
+  if (module_exists('vsite') && spaces_get_space()) {
     $filepath = OS_FILE_FILEPATH_MULTITENANT;
   }
   else {
@@ -452,6 +452,28 @@ function os_files_media_browser_params_alter(&$media_params){
     else {
       // Set the default file path.
       $media_params['file_directory'] = $filepath;
+    }
+  }
+}
+
+/**
+ * Alter all saved files reguardless of where they are saved from
+ *
+ * @param Entity $file
+ */
+function os_files_field_widget_form_alter(&$elements, &$form_state, $context){
+
+  //This is a widget that handles files, lets assure that the file makes it to the correct location.
+  if (in_array($context['field']['type'],array('imagefield_crop','image','file')) && isset($context['instance']['settings']['file_directory'])) {
+
+    // We are in a vsite and the filepath is not already set to the correct location.
+    if(module_exists('vsite') && spaces_get_space() && strpos(trim($context['instance']['settings']['file_directory'], '/'), OS_FILE_FILEPATH_MULTITENANT) !== 0){
+      //Modify the instance to prefix it with the proper tokenized file directory
+      $context['instance']['settings']['file_directory'] = OS_FILE_FILEPATH_MULTITENANT.'/'.trim($context['instance']['settings']['file_directory'], '/');
+      $upload_location = file_field_widget_uri($context['field'], $context['instance']);
+      foreach (element_children($elements) as $delta) {
+        $elements[$delta]['#upload_location'] = $upload_location;
+      }
     }
   }
 }
