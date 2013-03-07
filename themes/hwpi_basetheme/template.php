@@ -93,10 +93,15 @@ function hwpi_basetheme_node_view_alter(&$build) {
       }
 
       //hide the rest
-      foreach (array('field_address', 'field_email', 'field_phone') as $field) {
+      foreach (array('field_address') as $field) {
         if (isset($build[$field])) {
           unset($build[$field]);
         }
+      }
+
+      if (isset($build['field_email'])) {
+        $email_plain = $build['field_email'][0]['#markup'];
+        $build['field_email'][0]['#markup'] = '<a href="mailto:' . $email_plain . '">' . $email_plain . '</a>';
       }
 
       //newlines after website

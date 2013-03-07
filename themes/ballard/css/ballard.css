@@ -69,6 +69,9 @@ font-family: helvetica,arial,sans-serif;
 a, a:visited {color:#293352;text-decoration:none;}
 a:hover {text-decoration:underline;}
 
+.sub_title {
+    margin-top: -5px;
+}
 
 #header-container a {color:#FFF;}
 

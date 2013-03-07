@@ -62,6 +62,7 @@ function _hwpi_branding_header() {
 function _hwpi_get_ancestry() {
   $sites = array();
   if ($vsite = spaces_get_space()) {
+    $this_site = $vsite;
     $group = $vsite->group;
     while (isset($group->field_group_parent) && $group->field_group_parent) {
       $d = field_get_items('node', $group, 'field_group_parent');
@@ -69,9 +70,17 @@ function _hwpi_get_ancestry() {
       $group = $vsite->group;
       $sites[$vsite->get_absolute_url()] = $group->title;
     }
+    
+    switch ($this_site->group->nid) {
+      case 646:
+      case 2376:
+      case 2516:
+      case 7081:
+        $sites['http://www.fas.harvard.edu/home/'] = 'FACULTY OF ARTS AND SCIENCES';
+        break;
+    }
   }
 
-  $sites['http://www.fas.harvard.edu/home/'] = 'FACULTY OF ARTS AND SCIENCES';
   $sites['http://www.harvard.edu'] = 'HARVARD.EDU';
   return $sites;
 }

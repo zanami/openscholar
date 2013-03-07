@@ -1,8 +1,8 @@
 
 /* Site Info */
 #boxes-box-site_info {
-  min-height: 120px;
-  position: relative;
+  min-height: 80px;
+  padding-top:38px;
 }
 
 #boxes-box-site_info,
@@ -13,22 +13,14 @@
 #boxes-box-site_info p,
 #boxes-box-site_info h1,
 #boxes-box-site_info h2 {
-  position: absolute;
   font-weight: normal;
   margin: 0;
 }
 
-#boxes-box-site_info h1 {
-  top: 42px
-}
-
-#boxes-box-site_info h2 {
-  top: 20px
-}
 
 #boxes-box-site_info p {
   line-height: 1.4;
-  top: 90px;
+
 }
 
 #boxes-box-site_info p a {
@@ -37,11 +29,16 @@
 
 #boxes-box-site_info h1 {
   font-size: 30px;
+
 }
 
 #boxes-box-site_info h2 {
   font-size: 24px;
   font-style: italic;
+}
+
+#boxes-box-site_info h1 + h2 {
+margin-bottom:10px;
 }
 
 

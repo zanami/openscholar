@@ -67,6 +67,12 @@ h4 {
 	margin-top: 32px;
 	margin-bottom: -4px;
 	}
+	
+.sub_title {
+    font-size: 0.8em;
+    margin-top: -5px;
+}	
+	
 
 p {
 	margin-bottom: 20px;
