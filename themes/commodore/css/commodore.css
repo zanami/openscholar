@@ -367,7 +367,7 @@ div.views-field-field-gallery-image-fid img {
 
 /* CUSTOM ARTS & HUMANI STYLES*/
 
-.not-front.page-node.og-context-node-9015 h1#page-title {display:none;}
+.not-front.node-type-page.og-context-node-9015 h1#page-title {display:none;}
 
 .not-front.node-type-page.og-context-node-9015 #main-content {
     overflow:visible;
