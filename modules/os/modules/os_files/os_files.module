@@ -46,6 +46,20 @@ function os_files_menu(){
 }
 
 /**
+ * Returns the path a file should be saved in
+ */
+function os_files_get_save_path() {
+  $filepath = OS_FILE_FILEPATH_SINGLETENANT;
+  
+  // Are we in multi-tenant? get the file path.
+  if (module_exists('vsite') && spaces_get_space()) {
+    $filepath = OS_FILE_FILEPATH_MULTITENANT;
+  }
+  
+  return $filepath;
+}
+
+/**
  * Implements hook_menu_alter().
  */
 function os_files_menu_alter(&$callbacks){
