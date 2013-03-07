@@ -72,6 +72,8 @@ Drupal.wysiwyg.plugins.os_link = {
       $('.form-item-link-text input', doc).val(selected);
     }
     
+    this.selectLink(selection.node);
+    
     $('.insert-buttons input[value="Insert"]', doc).click(function (e) {
       $('.vertical-tabs form:visible .form-actions input[value="Insert"]', doc).click();
       
@@ -79,7 +81,7 @@ Drupal.wysiwyg.plugins.os_link = {
             ? window.Drupal.settings.osWysiwygLinkAttributes 
             : false,
           text = $('.form-item-link-text input', doc).val() == '[Selected content. Click here to change it.]'
-            ? selection.content
+            ? (selection.content ? selection.content : window.Drupal.settings.osWysiwygLinkResult)
             : $('.form-item-link-text input', doc).val(); 
       self.insertLink(editorId, text, window.Drupal.settings.osWysiwygLinkResult, attrs);
       $(iframe).dialog('destroy');
@@ -127,6 +129,28 @@ Drupal.wysiwyg.plugins.os_link = {
       
     }
     return ret;
+  },
+  
+  selectLink: function (node) {
+    if (this.isNode(node)) {
+      var target = jQuery(node).closest('a'),
+          doc = node.ownerDocument;
+      
+      if (typeof doc.getSelection == 'function') {
+        var selection = doc.getSelection(),
+           range = selection.getRangeAt(0);
+        range.selectNode(target[0]);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      else {
+        // IE
+        doc.selection.empty();
+        var range = doc.body.createTextRange();
+        range.moveToElementText(target[0]);
+        range.select();
+      }
+    }
   },
   
   /**
