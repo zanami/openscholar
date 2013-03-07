@@ -371,6 +371,7 @@ function _os_breadcrumbs_content_types() {
     'software_release' => 'software release',
     'media_gallery' => 'galleries',
     'class_material' => 'class material',
+    'harvard_course' => 'courses',
   );
   return $content_types;
 }
@@ -387,6 +388,7 @@ function _os_breadcrumbs_content_type_url() {
  	'link' => 'links',
     'software_project' => 'software',
     'feed' => 'reader',
+    'harvard_course' => 'courses',
    );
 
   return $content_type_url;
