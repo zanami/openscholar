@@ -42,7 +42,7 @@ Drupal.behaviors.osLinkFile = {
       var selected = Drupal.media.browser.selectedMedia;
       if (selected.length) {
         var fid = selected[0].fid;
-        console.log(selected[0]);
+        
         Drupal.settings.osWysiwygLinkResult = selected[0].url;
         Drupal.settings.osWysiwygLinkAttributes = {"data-fid": fid};
       }
@@ -52,16 +52,17 @@ Drupal.behaviors.osLinkFile = {
 
 Drupal.behaviors.osLinkUpload = {
   attach: function (ctx, settings) {
+    
+    Drupal.ajax.prototype.commands.switchTab = function (ajax, response, settings) {
+      jQuery('#'+response.tab).data('verticalTab').tabShow();
+    };
+    
+    Drupal.ajax.prototype.commands.clickOn = function (ajax, response, settings) {
+      jQuery(response.target).click();
+    }
+    
     $('#file-entity-add-upload input[value="Next"]').addClass('use-ajax-submit');
     Drupal.behaviors.AJAX.attach(ctx, settings);
-    
-    $('#file-entity-add-upload').submit(function (e) {
-      // send the file upload to the server through AJAX. 
-      // Change the button to say 'Uploading'.
-      // Switch to the Library tab when finished
-      // Insert the new file into the library and select it. 
-      e.preventDefault();
-    });
   }
 }
 

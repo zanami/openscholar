@@ -65,11 +65,22 @@ function os_wysiwyg_link_insert() {
     }
     if (isset($output['tabs'][$k]['form']['#entity'])) {
       $entity = $output['tabs'][$k]['form']['#entity'];
+      $commands = array();
       if (isset($entity->fid)) {
-        $entity->absolute_url = file_create_url($entity->uri);
+        media_browser_build_media_item($entity);
+        drupal_add_js(array('media' => array('files' => array($entity))), 'setting');
+        
+        $commands[] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$entity->fid.'" class="">'.$entity->preview.'</li>');
+        $commands[] = array(
+          'command' => 'switchTab',
+          'tab' => 'edit-file'
+        );
+        $commands[] = array(
+          'command' => 'clickOn',
+          'target' => '#media-item-'.$entity->fid.' img',
+        );
       }
       // return results to ajax script
-      $commands[] = ajax_command_settings(array('uploaded_file' => $output['tabs'][$k]['form']['#entity']), true);
       $output = array(
         '#type' => 'ajax',
         '#commands' => $commands,
