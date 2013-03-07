@@ -456,7 +456,6 @@ class os_sv_list_box extends os_boxes_default {
           $query = db_select('field_data_field_date', 'fd')
           ->fields('fd', array('entity_id', 'delta'))
           ->where('field_date_value > NOW()')
-          ->condition('entity_id', $nids)
           ->orderBy('field_date_value');
           $entity_field = "fd.entity_id";
           break;
