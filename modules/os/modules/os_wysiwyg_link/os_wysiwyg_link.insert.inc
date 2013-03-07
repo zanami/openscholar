@@ -18,13 +18,13 @@ function os_wysiwyg_link_insert() {
       ),
     ),
     'external' => array(
-      'title' => 'Website',
+      'title' => 'Webpage',
     	'form' => '_os_link_external_form',
     ),
-    'page' => array(
-      'title' => 'Page',
-      'form' => '_os_link_internal_form',
-    ),
+//    'page' => array(
+//      'title' => 'Page',
+//      'form' => '_os_link_internal_form',
+//    ),
     'email' => array(
       'title' => 'E-mail',
       'form' => '_os_link_email_form',
