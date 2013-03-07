@@ -333,14 +333,17 @@ class os_sv_list_box extends os_boxes_default {
           if (isset($n[1])) {
             $extra[] = explode('=', $n[1]);
           }
-          else {
-            $extra[] = array();
-          }
         }
-        foreach ($nids as $delta => $n) {
-          $node = clone node_load($n);
-          $node->{$extra[$delta][0]} = $extra[$delta][1];
-          $nodes[] = $node;
+        if(count($extra)){
+	        foreach ($nids as $delta => $n) {
+	          $node = clone node_load($n);
+	          if(isset($extra[$delta])){
+	            $node->{$extra[$delta][0]} = $extra[$delta][1];
+	          }
+	          $nodes[] = $node;
+	        }
+        }else{
+          $nodes = node_load_multiple($nids);
         }
       }
 
@@ -405,16 +408,73 @@ class os_sv_list_box extends os_boxes_default {
    * @return multitype:
    */
   public function get_nids($page_num = FALSE, &$page = NULL) {
-    if (($efq = $this->get_default_query()) == FALSE) {
-      return array();
-    }
 
     $options = $this->options;
+    $entity_field = "n.nid";
 
-    $tagged_nodes = $this->tagged_nodes();
+    //Build the Query, EFQ or otherwise.
+    switch ($options['content_type']) {
+      case 'biblio':
+        $query = db_select('node', 'n')
+          ->condition('n.type', 'biblio')
+          ->condition('n.status', 1);
+        $query->join('biblio', 'b', 'n.vid = b.vid');
 
+        //check biblio show all...
+        if (isset($options['biblio_whitelist']) && (count(array_filter($options['biblio_whitelist'])))) {
+          $bib_types = array_filter($options['biblio_whitelist']);
+          $query->condition('biblio_type', array_values($bib_types), 'IN');
+        }
+
+        switch($options['sort_by']) {
+          case 'sort_biblio': $query->orderBy('biblio_year', 'DESC'); $query->orderBy('n.created', 'DESC'); break;
+          case 'sort_newest': $query->orderBy('n.created', 'DESC'); break;
+          case 'sort_oldest': $query->orderBy('n.created', 'ASC'); break;
+          case 'sort_alpha':  $query->orderBy('n.title', 'ASC'); break;
+        }
+
+        $query->fields('n', array('nid'));
+        break;
+
+      case 'image':
+        $query = new EntityFieldQuery();
+        $query->entityCondition('entity_type', 'file');
+        // Add image as a condition, this will remove all media from showing up.
+        $query->propertyCondition('type', 'image');
+        $sorts = array(
+          'sort_newest' => array('timestamp', 'DESC'),
+          'sort_oldest' => array('timestamp', 'ASC'),
+          'sort_alpha' => array('filename', 'ASC'),
+        );
+        $sort = (isset($sorts[$options['sort_by']])) ? $sorts[$options['sort_by']] : $sorts['sort_newest'];
+        $query->propertyOrderBy($sort[0], $sort[1]);
+
+        break;
+      case 'event':
+        //Only query the date field if they are sorting by it
+        if($options['sort_by'] == 'sort_event'){
+          $query = db_select('field_data_field_date', 'fd')
+          ->fields('fd', array('entity_id', 'delta'))
+          ->where('field_date_value > NOW()')
+          ->condition('entity_id', $nids)
+          ->orderBy('field_date_value');
+          $entity_field = "fd.entity_id";
+          break;
+        }
+      default:
+        if (($query = $this->get_default_query()) == FALSE) {
+          return array();
+        }
+
+        // content type
+        if ($options['content_type'] != 'all') {
+          $query->propertyCondition('type', $options['content_type']);
+        }
+        break;
+    }
+
+    //Filter based on site or subsite
     $gids = array();
-
     if(module_exists('vsite')){
       if(!isset($options['query_scope']) || !count(array_filter($this->options['query_scope']))){
         $options['query_scope'] = array('current');
@@ -435,155 +495,95 @@ class os_sv_list_box extends os_boxes_default {
 	      }
 	    }
 
-	    if(count($gids) == 1){
-	      $efq->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', current($gids));
-	    }elseif (count($gids)){
-	      $efq->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $gids, 'IN');
+	    $operator = (count($gids) == 1)? "=" : "IN";
+	    $gids = (count($gids) == 1)? current($gids) : $gids;
+
+	    if($query instanceof EntityFieldQuery){
+	      $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $gids, $operator);
+	    }else{
+	      $query->join('og_membership', 'og', "og.etid = {$entity_field}");
+	      $query->condition('og.gid', $gids, $operator);
+	      $query->condition('og.entity_type', 'node');
+	      $query->condition('og.group_type', 'node');
 	    }
     }
 
-
-    //exceptions
+    //Filter Exceptions.
     switch ($options['content_type']) {
       case 'book':
         //limit book depth to 1.  not a field, so use a regular query
-        $query = db_select('menu_links', 'ml')
+        $book_query = db_select('menu_links', 'ml')
           ->condition('module', 'book')
           ->condition('depth', 1);
-        $query->addField('ml', 'link_path');
-        $book_nids = $query->execute()->fetchCol();
+        $book_query->addField('ml', 'link_path');
+        $book_nids = $book_query->execute()->fetchCol();
         $book_nids = preg_replace('/node\//', '', $book_nids);
         $book_nids = array_values($book_nids);
 
         if (count($book_nids)) {
-          $efq->propertyCondition('nid', $book_nids, 'IN');
+          $query->propertyCondition('nid', $book_nids, 'IN');
         }
-        break;
-
-      case 'biblio':
-        $page = 0; //add pager properly later
-        $items = $options['number_of_items'];
-        $query = db_select('node', 'n')
-          ->condition('n.type', 'biblio')
-          ->condition('n.status', 1);
-
-        if (module_exists('vsite') && $space = spaces_get_space()) {
-          $query->join('og_membership', 'og', 'og.etid = n.nid');
-          $query->condition('og.gid', $space->id);
-          $query->condition('og.entity_type', 'node');
-          $query->condition('og.group_type', 'node');
-        }
-
-        $query->join('biblio', 'b', 'n.vid = b.vid');
-
-        //check biblio show all...
-        if (isset($options['biblio_whitelist']) && (count(array_filter($options['biblio_whitelist'])))) {
-          $bib_types = array_filter($options['biblio_whitelist']);
-          $query->condition('biblio_type', array_values($bib_types), 'IN');
-        }
-
-        switch($options['sort_by']) {
-          case 'sort_biblio': $query->orderBy('biblio_year', 'DESC'); $query->orderBy('n.created', 'DESC'); break;
-          case 'sort_newest': $query->orderBy('n.created', 'DESC'); break;
-          case 'sort_oldest': $query->orderBy('n.created', 'ASC'); break;
-          case 'sort_alpha':  $query->orderBy('n.title', 'ASC'); break;
-        }
-
-        if ($page_num) {
-          $query->range($page_num*$items, $items);
-        }
-        $query->fields('n', array('nid'));
-
-        if (!empty($this->options['vocabs']) && ($this->options['vocabs'] != '-1')) {
-          // If a vocabulary was selected and there were no tagged nodes then
-          // we don't need to return any node.
-          if (empty($tagged_nodes)) {
-            $query->condition('n.nid', 0);
-          }
-          else {
-            $query->condition('n.nid', $tagged_nodes, 'IN');
-          }
-        }
-
-        $biblio_nids = $query->execute()->fetchCol();
-        break;
-
-      case 'image':
-        $image_query = new EntityFieldQuery();
-        $image_query->entityCondition('entity_type', 'file');
-        // Add image as a condition, this will remove all media from showing up.
-        $image_query->propertyCondition('type', 'image');
-        if ($space = spaces_get_space()) {
-          $image_query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id);
-        }
-        $sorts = array(
-          'sort_newest' => array('timestamp', 'DESC'),
-          'sort_oldest' => array('timestamp', 'ASC'),
-          'sort_alpha' => array('filename', 'ASC'),
-        );
-        $sort = (isset($sorts[$options['sort_by']])) ? $sorts[$options['sort_by']] : $sorts['sort_newest'];
-        $image_query->propertyOrderBy($sort[0], $sort[1]);
-
-        if ($options['pager']) {
-          $image_query->pager($options['number_of_items']);
-          $image_page = $image_query->pager['element'];
-        }
-        break;
-      case 'event':
         break;
     }
 
-    // content type
-    if ($options['content_type'] != 'all') {
-      $efq->propertyCondition('type', $options['content_type']);
+    //Init Pager.
+    if ($options['pager'] && is_int($page)) {
+      if($query instanceof EntityFieldQuery){
+        $query->pager($options['number_of_items']);
+        $page = $query->pager['element'];
+      }else{
+        $query = $query->extend('PagerDefault');
+        $query->limit($options['number_of_items']);
+      }
+    }else if (is_int($page)){
+      $query->range(0, $this->options['number_of_items']);
     }
 
-    // pager for efq
-    if ($options['pager'] && $options['content_type'] != 'biblio' && $options['content_type'] != 'event' && is_int($page)) {
-      $efq->pager($options['number_of_items']);
-      $page = $efq->pager['element'];
-    }
-    elseif ($options['pager'] && $options['content_type'] == 'biblio' && empty($page_num)) {
-      //init the pager since we don't have efq doing that for us.
-      $total = count($biblio_nids);
-      $limit = $options['number_of_items'];
-      pager_default_initialize($total, $limit, $page);
+    // Sort the results.
+    if($query instanceof EntityFieldQuery){
+      $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
+      $this->$sort_func($query);
     }
 
-    // sort
-    $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
-    $this->$sort_func($efq);
+    //For all Queries but image, filter out based on vocab.
+    if ($options['content_type'] != 'image' && !empty($this->options['vocabs']) && ($this->options['vocabs'] != -1)) {
+      $tagged_nodes = $this->tagged_nodes();
 
-    // display
+      // If a vocabulary was selected and there were no tagged nodes then
+      // we don't need to return any node.
+      $operator = (empty($tagged_nodes))? "=" : "IN";
+	    $tagged_nodes = (empty($tagged_nodes))? 0 : $tagged_nodes;
+
+	    if($query instanceof EntityFieldQuery){
+        $query->propertyCondition('nid', $tagged_nodes, $operator);
+      }else{
+        $query->condition($entity_field, $tagged_nodes, $operator);
+      }
+    }
+
+    // Execute the Query.
     switch ($options['content_type']) {
       case 'biblio':
-        $nids = $biblio_nids;
+        $nids = $query->execute()->fetchCol();
         break;
 
+      case 'event':
+        $query = $query->execute();
+
+        foreach ($query as $r) {
+          $nids[] = $r->entity_id.'|date_id=date.'.$r->entity_id.'.field_date.'.$r->delta;
+        }
+        break;
       case 'image':
-        $result = $image_query->execute();
+        $result = $query->execute();
         $nids = isset($result['file']) ? array_keys($result['file']) : array();
-        $page = (isset($image_page)) ? $image_page : NULL;
         break;
 
       default:
-        if (!empty($this->options['vocabs']) && ($this->options['vocabs'] != -1)) {
-          // If a vocabulary was selected and there were no tagged nodes then
-          // we don't need to return any node.
-          if (empty($tagged_nodes)) {
-            $efq->propertyCondition('nid', 0, '=');
-          }
-          else {
-            $efq->propertyCondition('nid', $tagged_nodes, 'IN');
-          }
-        }
-        $result = $efq->execute();
+
+        $result = $query->execute();
         $nids = isset($result['node']) ? array_keys($result['node']) : array();
         break;
-    }
-    
-    if ($options['content_type'] == 'event') {
-      $nids = $this->interpolate_dates($nids);
     }
 
     return $nids;
@@ -654,11 +654,6 @@ class os_sv_list_box extends os_boxes_default {
     $efq->propertyOrderBy('title', 'ASC');
   }
 
-  function sort_event(&$efq) {
-    $efq->fieldOrderBy('field_date', 'value', 'ASC');
-    $efq->fieldCondition('field_date', 'value', date('Y-m-d'), '>=');
-  }
-
   function sort_news(&$efq) {
     $efq->fieldOrderBy('field_news_date', 'value', 'DESC');
   }
@@ -676,10 +671,10 @@ class os_sv_list_box extends os_boxes_default {
     foreach ($nodes as $n) {
       $output[] = node_view($n, $viewmode);
     }
-    
+
     return drupal_render($output);
   }
-  
+
   function display_body($nodes) {
     return $this->display_view_mode($nodes, 'full');
   }
@@ -746,32 +741,6 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     return $options;
-  }
-  
-  function interpolate_dates($nids) {
-    $dates = array();
-    
-    $q = db_select('field_data_field_date', 'fd')
-         ->fields('fd', array('entity_id', 'delta'))
-         ->where('field_date_value > NOW()')
-         ->condition('entity_id', $nids)
-         ->orderBy('field_date_value');
-    
-    if ($this->options['pager']) {
-      $q = $q->extend('PagerDefault');
-      $q->limit($this->options['number_of_items']);
-    }
-    else {
-      $q->range(0, $this->options['number_of_items']);
-    }
-    
-    $q = $q->execute();
-    
-    foreach ($q as $r) {
-      $return[] = $r->entity_id.'|date_id=date.'.$r->entity_id.'.field_date.'.$r->delta;      
-    }
-    
-    return $return;
   }
 }
 
