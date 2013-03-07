@@ -68,11 +68,13 @@ Drupal.wysiwyg.plugins.os_link = {
       window = iframe.contentWindow,
       selected = '[Selected content. Click here to change it.]';
     
+    if (this.selectLink(selection.node)) {
+      selection.content = selection.node.innerHTML;
+    }
+    
     if (selection.content != '') {
       $('.form-item-link-text input', doc).val(selected);
     }
-    
-    this.selectLink(selection.node);
     
     $('.insert-buttons input[value="Insert"]', doc).click(function (e) {
       $('.vertical-tabs form:visible .form-actions input[value="Insert"]', doc).click();
@@ -150,7 +152,9 @@ Drupal.wysiwyg.plugins.os_link = {
         range.moveToElementText(target[0]);
         range.select();
       }
+      return true;
     }
+    return false;
   },
   
   /**
