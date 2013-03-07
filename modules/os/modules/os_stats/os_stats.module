@@ -11,7 +11,7 @@ function os_stats_menu() {
 
   $items['stats'] = array(
     'title' => 'Stats',
-    'page callback' => 'os_stats_json',
+    'page callback' => 'os_stats_page',
     'page arguments' => array(),
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
@@ -114,33 +114,34 @@ function os_stats_content() {
 }
 
 /**
- * Page callback; outputs JSON object containing requested statistics.
+ * Page callback; outputs object containing requested statistics.
  *
  * @param string $version
- *  - A version string like "v1" (default)
+ *  - A version string like "1" (default)
  * @param string $type
  *  - What type of stats to query. One of: "all", "users", "posts", "files"
  * @param string $format
- *  - What format to return the data. One of: "default", "geckoboard"
+ *  - What format to return the data. One of: "json", "geckoboard"
  *
  * @return NULL
  * - Content printed directly to screen without rendering page.
  */
-function os_stats_json() {
+function os_stats_page() {
   // Sets defaults for possible query parameters.
   $version_default = OS_STATS_API_VERSION_DEFAULT;
   $type_default    = 'websites';
-  $format_default  = 'default';
+  $format_default  = 'json'; // Also allowed: geckoboard. One day: xml?
 
   // Fetches query parameters and sets defaults.
   $version = isset($_GET['version']) ? $_GET['version'] : $version_default;
   // Only supports version 1.
   if ($version != 1) {
     drupal_not_found();
+    return NULL;
   }
   $type = isset($_GET['type']) ? $_GET['type'] : $type_default;
   $format = isset($_GET['format']) ? $_GET['format'] : $format_default;
-  $cid = 'os_stats_' . $version . '_' . $type . '_' . $format . '_json';
+  $cid = 'os_stats_' . $version . '_' . $type . '_' . $format;
 
   // Checks cache
   if (FALSE && $cache = cache_get($cid)) {
@@ -151,13 +152,25 @@ function os_stats_json() {
     $output = $cache->data;
   }
   else {
-    $output = _os_stats_v1_json($type, $format);
+    if (in_array($format, array('json', 'geckoboard'))) {
+      $output = _os_stats_v1_json($type, $format);
+    }
+    else {
+      $output = "os_stats_page(): Unknown format requested: $format";
+    }
     cache_set($cid, $output, 'cache', time() + variable_get('os_stats_cache_expiration', 24 * 3600));
   }
 
   // Outputs just the JSON data, then skips normal page rendering.
-  drupal_json_output($output);
-  //echo json_encode($output);
+  if (in_array($format, array('json', 'geckoboard'))) {
+    drupal_json_output($output);
+    //echo json_encode($output);
+  }
+  else {
+    // Should not get here unless an unknown format was requested.
+    echo $output;
+  }
+
   return NULL;
 }
 
@@ -236,7 +249,7 @@ function _os_stats_v1_json($type, $format) {
 function _os_stats_v1_json_init($type, $format) {
   $errors = array();
   $types = array('websites');
-  $formats = array('default', 'geckoboard');
+  $formats = array('json', 'geckoboard');
 
   if (!in_array($type, $types)) {
     $errors[] = "Unknown type parameter: $type";
