@@ -99,10 +99,6 @@ function os_events_preprocess_calendar_datebox(&$vars) {
   }
 
   $item = menu_get_item();
-  if (count($item['original_map']) == 1) {
-    // We are just looking at a calendar.
-    return;
-  }
 
   // Get the term alias, if exists.
   $path = $item['original_map'];
