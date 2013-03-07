@@ -1034,8 +1034,16 @@ border:none;
 }
 
 /* LOWER LEVEL TABS */
+
+.not-front .ui-tabs .ui-tabs-panel {
+padding: 0;
+ 
+}
+
+
+
+
 .not-front .ui-tabs .ui-tabs-nav {
-    margin-top: -110px;
     float: right;
     margin-left:0;
     display: inline;
