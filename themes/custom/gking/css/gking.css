@@ -110,13 +110,18 @@ h1#page-title,
 .page-taxonomy-term .term-listing-heading h2,
 #block-os-secondary-menu li {
   padding: 13px 16px 16px 16px;
-  background: #fcfcfc;
+ /* background: #fcfcfc;*/
   border-bottom:1px solid #e5e5e5;
   font: bold 21px/24px arial, helvetica, sans-serif;
   letter-spacing:-0.05em;
   text-indent:-1px;
   margin: 0 -16px 0.5em;
   }
+  
+ .not-front h1#page-title {
+  padding: 13px 16px 16px 24px;
+  margin: 0 -24px 0.5em;
+  } 
   
 
 .page-taxonomy-term .term-listing-heading h2 {
@@ -224,7 +229,7 @@ a.more {
  background: url(../images/arrow-white.png) 100% 50% no-repeat transparent;
   }
 
-.breadcrumb {margin-top:14px;}
+.breadcrumb {margin-top:14px;padding-bottom: 0;font-size:11px;color:#005C9C;}
 .breadcrumb a,
 .breadcrumb a:hover
  {font-size:11px;color:#005C9C;text-decoration:none;}
@@ -511,7 +516,7 @@ body.front .block-boxes-os_taxonomy_fbt div.description  {
   }
 */
 
-.page-node #content-column .content-inner {
+.not-front #content-column .content-inner {
   padding: 0 16px 26px 16px;
   border:1px solid #ddd;
   background: #fff;
@@ -523,7 +528,7 @@ body.front .block-boxes-os_taxonomy_fbt div.description  {
   margin-right: 0;
 }
 
-#main-content,
+.front #main-content,
 #content-top,
 .sidebar .block {
   padding: 0 16px 26px 16px;
@@ -535,6 +540,10 @@ body.front .block-boxes-os_taxonomy_fbt div.description  {
   	margin-left: 0;
     margin-right: 8px;
     }
+    
+.not-front #main-content {
+    padding-top: 0;
+}    
     
 .block-inner { 
   	margin-left: 0;
@@ -1110,6 +1119,8 @@ float: none;
   
 #powerby-login {
    margin: -27px 10px;
+   position: relative;
+   z-index: 5;
  }
 
 #footer .wrap #vsite-widgets-search-form {
