@@ -74,7 +74,7 @@ Drupal.media.browser.views.setup = function(view) {
   Drupal.media.browser.selectMedia([]);
 
   // Catch the click on a media item
-  $('.view-content .media-item', view).bind('click', function () {
+  $('.view-content .media-item', view).live('click', function () {
     var fid = $(this).closest('.media-item[data-fid]').data('fid'),
       selectedFiles = new Array();
 
