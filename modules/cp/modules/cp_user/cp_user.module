@@ -124,17 +124,6 @@ function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
     // Add the new user autocomplete function.
     $form['og_user']['name']['#autocomplete_path'] = 'vsite/autocomplete/user';
   }
-
-  // Only modify this form in the users cp.
-  if (isset($item) && strpos($item['path'], 'cp') === 0) {
-    // Add in a checkbox to promote the new user to admin.
-    $form['og_user']['promote_admin'] = array(
-      '#title' => t('Make administrator of my website.'),
-      '#description' => t('This will grant the user administrative rights to your website.  This role can be added/revoked at anytime.'),
-      '#type' => 'checkbox',
-      '#default_value' => 0,
-    );
-  }
   $form['og_user']['link_text'] = array(
     '#type' => 'item',
     '#markup' => '<div id="cp-user-create-new">' . t('If you can\'t find their account, click "!create_new" to create a new account.',
@@ -169,11 +158,7 @@ function cp_user_og_ui_add_users_submit(&$form, &$form_state){
 
   if($state){
     $og_roles = og_roles('node', false, $form_state['values']['gid']);
-    if(isset($form_state['values']['promote_admin']) && $form_state['values']['promote_admin'] == 1 ) {
-      $vsite_user_role = array_search('vsite admin', $og_roles);
-    }else {
-      $vsite_user_role = array_search('vsite user', $og_roles);
-    }
+    $vsite_user_role = array_search('vsite user', $og_roles);
 
     // Grant them the vsite user role
     og_role_grant('node', $form_state['values']['gid'], $account->uid, $vsite_user_role);
@@ -225,14 +210,6 @@ function cp_user_form_user_register_form_alter(&$form, &$form_state, $form_id) {
       // Add a new validation function to update the password.
       $form['#validate'][] = 'cp_user_no_password_validate';
     }
-    // Add in a checkbox to promote the new user to admin.
-    $form['promote_admin'] = array(
-      '#title' => t('Make administrator of my website.'),
-      '#description' => t('This will grant the user administrative rights to your website.  This role can be added/revoked at anytime.'),
-      '#type' => 'checkbox',
-      '#weight' => '3',
-      '#default_value' => 0,
-    );
     // Add a secondary submit function that also submits the user add
     // function.
     $form['#submit'][] = 'cp_user_user_register_submit';
@@ -266,11 +243,7 @@ function cp_user_user_register_submit($form, &$form_state) {
     og_group('node', $space->id, array('entity' => $form_state['user']->uid));
 
     $og_roles = og_roles('node', false, $space->id);
-    if(isset($form_state['values']['promote_admin']) && $form_state['values']['promote_admin'] == 1 ) {
-      $vsite_user_role = array_search('vsite admin', $og_roles);
-    }else {
-      $vsite_user_role = array_search('vsite user', $og_roles);
-    }
+    $vsite_user_role = array_search('vsite user', $og_roles);
 
     // Grant them the vsite user role
     og_role_grant('node', $space->id, $form_state['user']->uid, $vsite_user_role);
