@@ -13,7 +13,9 @@ function os_wysiwyg_link_insert() {
     'upload' => array(
       'title' => 'Upload',
       'form' => 'file_entity_add_upload',
-      'params' => array(),
+      'params' => array(
+        'file_directory' => os_files_get_save_path(),
+      ),
     ),
     'external' => array(
       'title' => 'Website',
@@ -61,8 +63,19 @@ function os_wysiwyg_link_insert() {
       $output['tabs']['#default_tab'] = 'edit-'.$k;
       $output['tabs']['tabs__active_tab']['#value'] = 'edit-'.$k;
     }
-    if (isset($output['tabs'][$k]['#entity'])) {
+    if (isset($output['tabs'][$k]['form']['#entity'])) {
+      $entity = $output['tabs'][$k]['form']['#entity'];
+      if (isset($entity->fid)) {
+        $entity->absolute_url = file_create_url($entity->uri);
+      }
       // return results to ajax script
+      $commands[] = ajax_command_settings(array('uploaded_file' => $output['tabs'][$k]['form']['#entity']), true);
+      $output = array(
+        '#type' => 'ajax',
+        '#commands' => $commands,
+      );
+      ajax_deliver($output);
+      exit;
     }
   }
   
