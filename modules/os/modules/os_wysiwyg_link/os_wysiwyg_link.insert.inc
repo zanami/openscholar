@@ -70,7 +70,7 @@ function os_wysiwyg_link_insert() {
         media_browser_build_media_item($entity);
         drupal_add_js(array('media' => array('files' => array($entity))), 'setting');
         
-        $commands[] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$entity->fid.'" class="">'.$entity->preview.'</li>');
+        $commands[] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$entity->fid.'" class="media-item-new">'.$entity->preview.'</li>');
         $commands[] = array(
           'command' => 'switchTab',
           'tab' => 'edit-file'
