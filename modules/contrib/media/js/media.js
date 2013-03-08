@@ -23,6 +23,7 @@ Drupal.behaviors.mediaElement = {
       //options = Drupal.settings.media.fields[this.id];
       var fidField = $('.fid', this);
       var previewField = $('.preview', this);
+      var launcherButton = $('a.launcher', this);
       var editButton = $('.edit', this);
       var removeButton = $('.remove', this);
 
@@ -68,6 +69,7 @@ Drupal.behaviors.mediaElement = {
           if (editButton.length) {
             editButton.hide();
           }
+          launcherButton.html('Add');
           removeButton.hide();
         }
         else {
@@ -80,6 +82,7 @@ Drupal.behaviors.mediaElement = {
             Drupal.attachBehaviors(editButton.parent(), Drupal.settings);
             editButton.show();
           }
+          launcherButton.html('Replace');
           removeButton.show();
         }
       });

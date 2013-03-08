@@ -78,7 +78,7 @@ function os_wysiwyg_link_insert() {
         );
         $commands[] = array(
           'command' => 'clickOn',
-          'target' => '#media-item-'.$entity->fid.' img',
+          'target' => '#media-item-'.$entity->fid.' div.media-item',
         );
       }
       // return results to ajax script

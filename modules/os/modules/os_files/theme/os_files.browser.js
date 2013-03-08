@@ -5,10 +5,7 @@
 (function ($, undefined) {
   Drupal.behaviors.osFilesMediaBrowser = {
     attach: function (ctx, s) {
-      // do nothing on ajax that have no browser
-      if ($(ctx).find('#media-browser-library-list').length == 0) return;
-      
-      var $items = $('#media-browser-library-list li .media-item', ctx),
+      var $items = $('.media-item:not(.os-files-processed)', ctx),
           forms = {};
       
       $items.each(function () {
@@ -22,6 +19,7 @@
               progress: {type: 'throbber'}
             },
             ajax = new Drupal.ajax(base, this, settings);
+       $(this).addClass('os-files-processed');
       });
     }
   };
