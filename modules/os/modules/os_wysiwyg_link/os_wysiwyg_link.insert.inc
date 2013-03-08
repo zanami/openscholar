@@ -15,6 +15,7 @@ function os_wysiwyg_link_insert() {
       'form' => 'file_entity_add_upload',
       'params' => array(
         'file_directory' => os_files_get_save_path(),
+        'no_redirect' => TRUE
       ),
     ),
     'external' => array(
