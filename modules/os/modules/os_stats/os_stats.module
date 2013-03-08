@@ -155,7 +155,7 @@ function os_stats_page($style = 'default') {
   $cid = 'os_stats_' . $version . '_' . $type . '_' . $format . '_' . $style;
 
   // Checks cache
-  if (FALSE && $cache = cache_get($cid)) {
+  if ($cache = cache_get($cid)) {
     if ($cache->expire < time()) {
       // Clears expired data, but uses it for this run.
       cache_clear_all($cid, 'cache');
