@@ -23,8 +23,7 @@ body.logged-in {
 }
 
 
-
-#columns {
+h1#columns {
      background: none repeat scroll 0% 0% #FFFFFF;
      border-top: 1px solid #EEEEEE;
      -moz-box-shadow: 0px 3px 3px #999;
@@ -367,7 +366,9 @@ div.views-field-field-gallery-image-fid img {
 
 /* CUSTOM ARTS & HUMANI STYLES*/
 
-.not-front.node-type-page.og-context-node-9015 h1#page-title {display:none;}
+.not-front.node-type-page.og-context-node-9015 h1#page-title,
+.not-front.node-type-page.og-context-node-10403 h1#page-title
+{display:none;}
 
 .not-front.node-type-page.og-context-node-9015 #main-content {
     overflow:visible;
