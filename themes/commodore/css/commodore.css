@@ -23,7 +23,7 @@ body.logged-in {
 }
 
 
-h1#columns {
+#columns {
      background: none repeat scroll 0% 0% #FFFFFF;
      border-top: 1px solid #EEEEEE;
      -moz-box-shadow: 0px 3px 3px #999;
