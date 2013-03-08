@@ -88,3 +88,27 @@ function os_events_process_node(&$variables) {
     }
   }
 }
+
+/**
+ * Implements hook_preprocess_calendar_datebox().
+ */
+function os_events_preprocess_calendar_datebox(&$vars) {
+  // Deal only with links.
+  if (!$vars['link']) {
+    return;
+  }
+
+  $item = menu_get_item();
+
+  // Get the term alias, if exists.
+  $path = $item['original_map'];
+  unset($path['0']);
+
+  // Get the term path, the clean page path and the build the query string.
+  $path = implode('/', $path);
+  $clean_current_path = str_replace($path, '', $_GET['q']);
+  $query = array('query' => array('day' => $vars['date']));
+
+  // Change the link.
+  $vars['link'] = l($vars['day'], $clean_current_path . $path, $query);
+}
