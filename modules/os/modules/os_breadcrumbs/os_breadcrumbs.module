@@ -86,7 +86,6 @@ function os_breadcrumbs_setup_breadcrumbs($links) {
  */
 function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
   $content_type = _os_breadcrumbs_content_types();
-  $content_type_url = _os_breadcrumbs_content_type_url();
   $links = array();
   $last_item = end($menu_active_trail);
   foreach($menu_active_trail as $key => $menu) {
@@ -114,7 +113,7 @@ function _os_breadcrumbs_build_app_breadcrumb($menu_active_trail) {
   	  $links = _os_breadcrumbs_build_materials_breadcrumb($node, $content_type);
   	}else {
   	  $home_link = array_shift($links);
-  	  $node_url = array_key_exists($node->type, $content_type_url) ? $content_type_url[$node->type] : $node->type;
+  	  $node_url = _os_breadcrumbs_get_content_type_url($node->type) != FALSE ? _os_breadcrumbs_get_content_type_url($node->type) : $node->type;
   	  if(array_key_exists($node->type,$content_type)) {
   	  	$short_title = _os_breadcrumbs_shorten_title($content_type[$node->type]);
   	    array_unshift($links, l(strtoupper($short_title),$node_url));
@@ -286,7 +285,6 @@ function _os_breadcrumbs_build_materials_breadcrumb($node) {
 function _os_breadcrumbs_node_breadcrumbs($node) {
   $links = array();
   $content_type = _os_breadcrumbs_content_types();
-  $content_type_url = _os_breadcrumbs_content_type_url();
   if(isset($node)) {
   	$links[] = l(t('HOME'),'<front>');
   	// Check for a book.
@@ -323,7 +321,7 @@ function _os_breadcrumbs_node_breadcrumbs($node) {
         // Get the node type.
         $node_type = array_key_exists($node->type, $content_type) ? $content_type[$node->type] : $node->type;
         // Get the parent content type link.
-        $node_url = array_key_exists($node->type, $content_type_url) ? $content_type_url[$node->type] : $node->type;
+        $node_url = _os_breadcrumbs_get_content_type_url($node->type) != FALSE ? _os_breadcrumbs_get_content_type_url($node->type) : $node->type;
         // Parent breadcrumbs.
         $short_parent_title = _os_breadcrumbs_shorten_title($node_type);
         $links[] = l(strtoupper($short_parent_title),$node_url);
@@ -376,22 +374,18 @@ function _os_breadcrumbs_content_types() {
   return $content_types;
 }
 
-function _os_breadcrumbs_content_type_url() {
-  $content_type_url = array(
-    'media_gallery' => 'galleries',
-    'bio' => 'biocv',
-    'cv' => 'biocv',
-    'class' => 'classes',
-    'person' => 'people',
-    'event' => 'calendar',
- 	'biblio' => 'publications',
- 	'link' => 'links',
-    'software_project' => 'software',
-    'feed' => 'reader',
-    'harvard_course' => 'courses',
-   );
+function _os_breadcrumbs_get_content_type_url($node_type) {
+  if(!isset($node_type)) {
+  	return FALSE;
+  }
+  $apps = os_app_info();
+  foreach ($apps as $app => $info) {
+    if (isset($info['nodetypes']) && is_array($info['nodetypes']) && in_array($node_type, $info['nodetypes'])) {
+      return $info['path'];
+    }
+  }
 
-  return $content_type_url;
+  return FALSE;
 }
 
 /**
