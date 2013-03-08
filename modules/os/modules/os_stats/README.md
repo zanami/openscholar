@@ -20,10 +20,21 @@ Default value: `"websites"`<br/>
 
 ##### `format`
 
+Defaults value: `"json"`<br/>
+Accepted values: `"json"`
+
+##### `style`
+
 Defaults value: `"default"`<br/>
-Accepted values: `"default"` or `"geckoboard"`
+Accepted values: `"default"`, `"geckoboard"`
 
 `"geckoboard"` returns a properly formatted Type 1 (Number) geckoboard widget.
+
+### /geckoboard
+
+An alias for:
+
+ * /stats?version=1&format=json&type=websites&style=geckoboard
 
 #### Notes
 
