@@ -1,6 +1,8 @@
 name = OpenScholar
-description = Install OpenScholar
+description = A full-featured site-creation package designed for the academic community. A single OpenScholar installation can host thousands of personal or project sites.
 core = 7.15
+version = 7.x-3.x-dev
+
 files[] = openscholar.profile
 files[] = openscholar.install
 files[] = tests/openscholar.test
