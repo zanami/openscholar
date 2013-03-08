@@ -533,6 +533,8 @@ class os_sv_list_box extends os_boxes_default {
       }else{
         $query = $query->extend('PagerDefault');
         $query->limit($options['number_of_items']);
+        $page = PagerDefault::$maxElement++;
+        $query->element($page);
       }
     }else if (is_int($page)){
       $query->range(0, $this->options['number_of_items']);
