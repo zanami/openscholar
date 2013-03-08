@@ -42,7 +42,7 @@ function os_files_private_menu() {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() for file_entity_add_upload.
  *
  * Set the URI schema to private when adding a new file via file/add.
  *
@@ -75,7 +75,7 @@ function os_files_private_form_file_entity_add_upload_alter(&$form, $form_state)
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() for file_entity_edit.
  *
  * Set the default group to the current user in file/%fid/edit.
  * @todo Use the correct field function to set the default
