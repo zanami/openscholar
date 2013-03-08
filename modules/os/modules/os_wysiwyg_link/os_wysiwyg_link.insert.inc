@@ -184,6 +184,17 @@ function _os_link_get_view($form, $form_state, $params) {
             '#type' => 'submit',
             '#value' => t('Insert'),
           )
+        ),
+        'edit' => array(
+          '#type' => 'container',
+          '#id' => 'file-edit-section',
+          'no_selection' => array(
+            '#type' => 'container',
+            '#id' => 'file-edit-no-selection',
+            'text' => array(
+              '#markup' => t('Select a file to edit it.'),
+            )
+          )
         )
       );
 
