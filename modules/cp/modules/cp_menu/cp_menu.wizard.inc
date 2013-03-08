@@ -99,6 +99,14 @@ function cp_menu_page($js = NULL, $step = NULL, $menu = NULL) {
   $form = ctools_wizard_multistep_form($form_info, $step, $form_state);
   $output = drupal_render($form);
   if ($js) {
+    if ($errors = form_get_errors()) {
+      $error_msg = theme('html_tag', array('element' => array(
+        '#tag' => 'div', 
+        '#attributes' => array('class'=> array('messages error')), 
+        '#value' => implode('<br>', $errors), 
+      )));
+      $output = $error_msg . '<br>' . $output;
+    }
     ctools_include('ajax');
     ctools_include('modal');
     ctools_modal_render(t('Add menu item'), $output);
@@ -117,7 +125,7 @@ function cp_menu_type($form, &$form_state) {
   $form['type'] = array(
     '#title' => 'Item Type',
     '#type' => 'radios',
-    '#options' => array('page' => 'Link to a Page', 'url' => 'Link to a Existing URL', 'heading' => 'Menu Heading'),
+    '#options' => array('page' => t('Post'), 'url' => t('URL'), 'heading' => t('Menu Heading')),
     '#description' => t('Select heading or type of content to link to.'),
     '#required' => TRUE,
   );
@@ -146,13 +154,14 @@ function cp_menu_title($form, &$form_state) {
   // Adds type dependent fields
   switch ($form_state['object']['type']) {
     case 'url':
+      $form['new_node_type'] = array('#type' => 'hidden', '#value' => 0);
       $form['url'] = array(
         '#type' => 'textfield',
         '#title' => t('URL'),
         '#required' => TRUE,
-        '#description' => t('The address of the link. Starts with: http://'),
+        '#description' => t('The address of the link.'),
       );
-
+      
       $form['#validate'][] = 'cp_menu_url_validate';
       break;
 
@@ -187,35 +196,33 @@ function cp_menu_title($form, &$form_state) {
         $cv_check = _os_biocv_cv_exists();
         // Remove bio || cv if they're already created.
         if($bio_check && array_key_exists('bio', $content_types)) {
-      	  unset($content_types['bio']);
+          unset($content_types['bio']);
         }
         if($cv_check && array_key_exists('cv', $content_types)) {
-      	  unset($content_types['cv']);
+          unset($content_types['cv']);
         }
       }
       // Remove the "link" content type from the bundles array.
-	  if(array_key_exists('link', $content_types)) {
-	  	unset($content_types['link']);
-	  }
-	  // Sort content types alphabetically.
-	  asort($content_types);
-	  // String replace for os_get_bundles, underscores should be hyphens.
-	  foreach($content_types as $key => $value) {
-	  	$url_str = str_replace('_', '-', $key);
-	  	$content_types_list[$url_str] = $value;
-	  }
-
+      if(array_key_exists('link', $content_types)) {
+        unset($content_types['link']);
+      }
+      // Sort content types alphabetically.
+      asort($content_types);
+      // String replace for os_get_bundles, underscores should be hyphens.
+      foreach($content_types as $key => $value) {
+        $url_str = str_replace('_', '-', $key);
+        $content_types_list[$url_str] = $value;
+      }
+      
       $form['new_node_type'] = array(
-        '#type' => 'select',
-        '#title' => t('Create new'),
-        '#description' => t('Create a new page.'),
-        '#options' => $content_types_list,
-        '#states' => array(
-          'visible' => array(
-            ':input[name="new_or_select"]' => array('value' => 'new'),
-          ),
-        ),
+          '#type' => 'select',
+          '#title' => t('Create new'),
+          '#description' => t('Create a new page.'),
+          '#options' => $content_types_list,
+          '#states' => array('visible' => array(':input[name="new_or_select"]' => array('value' => 'new'),),),
       );
+      
+
       break;
   }
 
@@ -258,25 +265,68 @@ function cp_menu_url_validate(&$form, &$state) {
   }
 
   $url = check_url($state['values']['url']);
-  $menu = menu_get_item($url);
+  //$menu = menu_get_item($url);
 
-  if (url_is_external($url)) {
-    $header = @get_headers($url);
-
-    if (!$header) {
-      form_set_error('url', t('Could not connect to url: %url', array('%url' => '$url')));
-    }
-    else {
-      $http = explode(' ', $header[0]);
-      $http_code = $http[1];
-
-      if ($http_code >= 400) {
-        form_set_error('url', t('URL Returned Error: %error', array('%error' => $header[0])));
-      }
-    }
+  //fragment - use or create
+  //absolute 
+  // external - check
+  // internal - use or create
+  $domains = array(variable_get('purl_base_domain'));
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+    $domains[] = 'http://' . variable_get('vsite_domain_name');
   }
-  elseif (!$menu) {
-    form_set_error('url', t('Path does not exist'));
+  
+  
+  //absolute url
+  if (url_is_external($url)) {
+    $path = explode('/', $url);
+    $domain = implode('/', array_slice($path, 0, 3));
+    $fragment = implode('/', array_slice($path, 3));
+    
+    //external url
+    if (!in_array($domain, $domains)) {
+      $header = @get_headers($url);
+  
+      if (!$header) {
+        form_set_error('url', t('Could not connect to url: %url', array('%url' => $url)));
+      }
+      else {
+        $http = explode(' ', $header[0]);
+        $http_code = $http[1];
+  
+        if ($http_code >= 400) {
+          form_set_error('url', t('URL Returned Error: %error', array('%error' => $header[0])));
+        }
+      }
+      return;
+    } else {
+      //absolute path to internal url.
+      $path = $fragment;
+    }
+      
+    if (!drupal_lookup_path('source', $path)) {
+      //this path does not exist.  offer to create it by presenting list of available content types.
+      $fake_state = array('object'=> array('type' => 'page'));
+      $cp_menu_title = cp_menu_title(array(), $fake_state);
+      $form['new_node_type'] = array_merge($form['new_node_type'], $cp_menu_title['new_node_type']);
+      $form['new_node_type']['#theme'] = 'select';
+      $form['new_node_type']['#weight'] = $form['url']['#weight'] + 1;
+      $form['new_node_type']['#value'] = $state['input']['new_node_type'];
+      $form['new_node_type']['#prefix'] = '<div>If you would like to create content at the URL you have entered, please choose a page type and click finish.</div>';
+      array_unshift($form['new_node_type']['#options'], '-- Select Type --');
+
+      
+      if ($state['input']['new_node_type']) {
+        $values = cp_menu_cache_get($state['object_id']) + $state['input'];
+        $values['new_node_type'] = $state['input']['new_node_type'];
+        $values['new_node_url'] = $path;
+        cp_menu_cache_set($state['object_id'], $values);
+        
+        return;  //Node type will be handled by submit function, cp_menu_wizard_finish. 
+      } else {
+        form_set_error('url', t('Path does not exist.  Please correct your URL or select a content type to create at %url', array('%url' => $url)));
+      }      
+    }    
   }
 }
 
@@ -440,7 +490,7 @@ function cp_menu_wizard_finish(&$form_state) {
   $values = cp_menu_cache_get($form_state['object_id']) + $form_state['values'];
 
   // Provides node add form
-  if ($values['type'] == 'page' && $values['new_or_select'] == 'new') {
+  if (($values['type'] == 'page' && $values['new_or_select'] == 'new') || ($values['type'] == 'url' && isset($values['new_node_url']))) {
     cp_menu_cache_set($form_state['object_id'], $values);
     if ($form_state['ajax'] || $values['js']) {
       ctools_include('modal');
