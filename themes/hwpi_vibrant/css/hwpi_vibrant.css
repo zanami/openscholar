@@ -796,3 +796,20 @@ ul.links li.link-count-node-readmore a {
     padding: 0;
     font-size: 13px;
 }
+
+/* SLIDESHOW */
+#layout_16_9_side .hero {
+  background: #ac253a;
+background: -moz-linear-gradient(top, #ac253a 0%, #880f1c 100%);
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ac253a), color-stop(100%, #880f1c));
+background: -webkit-linear-gradient(top, #ac253a 0%, #880f1c 100%);
+background: -o-linear-gradient(top, #ac253a 0%, #880f1c 100%);
+background: -ms-linear-gradient(top, #ac253a 0%, #880f1c 100%);
+background: linear-gradient(to bottom, #ac253a 0%, #880f1c 100%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ac253a', endColorstr='#880f1c',GradientType=0 );
+}
+
+a.rslides_nav.prev,
+a.rslides_nav.next {
+	background-color:#4F0912;
+}
