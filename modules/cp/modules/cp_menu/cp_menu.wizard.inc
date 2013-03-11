@@ -265,17 +265,14 @@ function cp_menu_url_validate(&$form, &$state) {
   }
 
   $url = check_url($state['values']['url']);
-  //$menu = menu_get_item($url);
 
-  //fragment - use or create
-  //absolute 
-  // external - check
-  // internal - use or create
   $domains = array(variable_get('purl_base_domain'));
   if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
-    $domains[] = 'http://' . variable_get('vsite_domain_name');
-  }
-  
+    $vsite_domain = variable_get('vsite_domain_name', FALSE);
+    if ($vsite_domain) {
+      $domains[] = 'http://' . $vsite_domain;
+    }
+  }  
   
   //absolute url
   if (url_is_external($url)) {
@@ -303,8 +300,36 @@ function cp_menu_url_validate(&$form, &$state) {
       //absolute path to internal url.
       $path = $fragment;
     }
+  } else {
+    //relative url
+    $path = $url;
+  }    
+    
+
+  //prepend site purl if missing.
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+    $purl = $vsite->group->purl;
+  
+    if (strpos($path, $purl.'/') !== 0) {
+      $path = $purl . '/' . $path;
+    }
+  }
+    
+  //check if internal path exists or needs to be created.
+  $normal_path = drupal_get_normal_path($path);
+  if (!drupal_valid_path($normal_path)) {    
+    
+    if ($state['input']['new_node_type']) {
+      //path does not exist but user has opted to create a new node there.
+      $values = cp_menu_cache_get($state['object_id']) + $state['input'];
+      $values['new_node_type'] = $state['input']['new_node_type'];
+      $values['new_node_url'] = $path;
+      cp_menu_cache_set($state['object_id'], $values);
       
-    if (!drupal_lookup_path('source', $path)) {
+      return;  //Node type will be handled by submit function, cp_menu_wizard_finish. 
+    } else {
+      form_set_error('url', t('Path does not exist.  Please correct your URL or select a content type to create at %url', array('%url' => $url)));
+
       //this path does not exist.  offer to create it by presenting list of available content types.
       $fake_state = array('object'=> array('type' => 'page'));
       $cp_menu_title = cp_menu_title(array(), $fake_state);
@@ -312,21 +337,10 @@ function cp_menu_url_validate(&$form, &$state) {
       $form['new_node_type']['#theme'] = 'select';
       $form['new_node_type']['#weight'] = $form['url']['#weight'] + 1;
       $form['new_node_type']['#value'] = $state['input']['new_node_type'];
-      $form['new_node_type']['#prefix'] = '<div>If you would like to create content at the URL you have entered, please choose a page type and click finish.</div>';
+      $form['new_node_type']['#prefix'] = '<div class="messages warning"><p>If you would like to create content at the URL you have entered, please choose a page type and click finish.</p>';
+      $form['new_node_type']['#suffix'] = '</div>';
       array_unshift($form['new_node_type']['#options'], '-- Select Type --');
-
-      
-      if ($state['input']['new_node_type']) {
-        $values = cp_menu_cache_get($state['object_id']) + $state['input'];
-        $values['new_node_type'] = $state['input']['new_node_type'];
-        $values['new_node_url'] = $path;
-        cp_menu_cache_set($state['object_id'], $values);
-        
-        return;  //Node type will be handled by submit function, cp_menu_wizard_finish. 
-      } else {
-        form_set_error('url', t('Path does not exist.  Please correct your URL or select a content type to create at %url', array('%url' => $url)));
-      }      
-    }    
+    }          
   }
 }
 
