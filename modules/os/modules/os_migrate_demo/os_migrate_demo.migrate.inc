@@ -209,11 +209,13 @@ class OsMigratePublicationNode extends OsMigrate {
     array('biblio_type_name', 'Biblio type name'),
     array('biblio_type', 'Biblio type'),
     array(OG_AUDIENCE_FIELD, 'Site'),
+    array(OG_VOCAB_FIELD, 'Terms'),
   );
 
   public $dependencies = array(
     'OsMigratePersonalNode',
     'OsMigrateProjectNode',
+    'OsMigrateScienceTaxonomyTerm',
   );
 
   public function __construct() {
@@ -226,6 +228,9 @@ class OsMigratePublicationNode extends OsMigrate {
     $this->addFieldMapping('biblio_type', 'biblio_type');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration(array('OsMigratePersonalNode', 'OsMigrateProjectNode'));
+    $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)
+      ->sourceMigration(array('OsMigrateScienceTaxonomyTerm'))
+      ->separator('|');
   }
 
   /**
@@ -235,7 +240,7 @@ class OsMigratePublicationNode extends OsMigrate {
    */
   public function prepare($entity, $row) {
     foreach ($row as $row_key => $row_vallue) {
-      if (in_array($row_key, array('id', 'title', 'og_group_ref', 'uid'))) {
+      if (in_array($row_key, array('id', 'title', 'og_group_ref', 'uid', OG_VOCAB_FIELD))) {
         continue;
       }
       $entity->$row_key = $row_vallue;
