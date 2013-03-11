@@ -528,7 +528,7 @@ class os_sv_list_box extends os_boxes_default {
     }
 
     // Sort the results.
-    if($query instanceof EntityFieldQuery){
+    if ($query instanceof EntityFieldQuery && $options['content_type'] != 'image') {
       $sort_func = (method_exists($this, $options['sort_by'])) ? $options['sort_by'] : 'sort_newest';
       $this->$sort_func($query);
     }
