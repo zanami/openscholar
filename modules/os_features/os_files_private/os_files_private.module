@@ -49,9 +49,9 @@ function os_files_private_menu() {
  * @see file_entity_add_upload()
  */
 function os_files_private_form_file_entity_add_upload_alter(&$form, $form_state) {
-
+  // Alerts user if private file path has not been set.
   if (!variable_get('file_private_path')) {
-    // Private file system was not defined.
+    drupal_set_message('Unable to add private files at this time. Please contact the site administrator.', 'warning');
     return;
   }
 
@@ -60,9 +60,9 @@ function os_files_private_form_file_entity_add_upload_alter(&$form, $form_state)
     return;
   }
 
-  $private_upload_location = "private://".vsite_get_purl();
+  $private_upload_location = "private://" . vsite_get_purl();
 
-  if($item['path'] == 'file/ajax'){
+  if ($item['path'] == 'file/ajax'){
     // File Ajax is used in multiple locations not all of them are used in private file uploads
     // Check the previous form state and make sure the file location was set to private
     if(!isset($form_state['complete form']) || $form_state['complete form']['upload']['#upload_location'] != $private_upload_location){
