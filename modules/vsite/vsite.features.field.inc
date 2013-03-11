@@ -97,143 +97,6 @@ function vsite_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-personal-field_site_address'.
-  $fields['node-personal-field_site_address'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_site_address',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'text',
-      'settings' => array(
-        'max_length' => '255',
-      ),
-      'translatable' => '0',
-      'type' => 'text',
-    ),
-    'field_instance' => array(
-      'bundle' => 'personal',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => 3,
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_site_address',
-      'label' => 'Site Address',
-      'required' => 0,
-      'settings' => array(
-        'text_processing' => '0',
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'size' => '30',
-        ),
-        'type' => 'text_textfield',
-        'weight' => '32',
-      ),
-    ),
-  );
-
-  // Exported field: 'node-personal-field_site_description'.
-  $fields['node-personal-field_site_description'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_site_description',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'text',
-      'settings' => array(
-        'max_length' => '255',
-      ),
-      'translatable' => '0',
-      'type' => 'text',
-    ),
-    'field_instance' => array(
-      'bundle' => 'personal',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => 2,
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_site_description',
-      'label' => 'Site Description',
-      'required' => FALSE,
-      'settings' => array(
-        'text_processing' => 0,
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'module' => 'text',
-        'settings' => array(
-          'size' => 60,
-        ),
-        'type' => 'text_textfield',
-        'weight' => '31',
-      ),
-    ),
-  );
-
   // Exported field: 'node-personal-field_site_logo'.
   $fields['node-personal-field_site_logo'] = array(
     'field_config' => array(
@@ -442,7 +305,7 @@ function vsite_field_default_fields() {
       'bundle' => 'organization',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'This link will appear at the top of every page of your site if an HWPI theme is enabled.',
+      'description' => 'This link will appear at the top of every page of your site on certain themes.',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -488,13 +351,6 @@ function vsite_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
 
-  t('Determine if this is an OG group.');
-  t('Group');
-  t('Group Homepage Path');
-  t('Group visibility');
-  t('Organization');
-  t('Site Address');
-  t('Site Description');
   t('Site Logo');
   t('Site URL');
   t('This link will appear at the top of every page of your site on certain themes.');

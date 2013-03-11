@@ -29,6 +29,17 @@ function os_wysiwyg_link_menu() {
   return $items;
 }
 
+function os_wysiwyg_link_form_file_entity_add_upload_alter(&$form, &$form_state) {
+  $args = $form_state['build_info']['args'][0];
+  if (isset($args['no_redirect']) && $args['no_redirect']) {
+    $form['#submit'][] = 'os_wysiwyg_link_add_upload_submit';
+  }
+}
+
+function os_wysiwyg_link_add_upload_submit($form, &$form_state) {
+  $form_state['no_redirect'] = true;
+}
+
 function os_wysiwyg_link_filter_info() { 
   $filters['owl_filter'] = array(
     'title' => t('Convert File links to correct path'),

@@ -15,6 +15,7 @@ function os_wysiwyg_link_insert() {
       'form' => 'file_entity_add_upload',
       'params' => array(
         'file_directory' => os_files_get_save_path(),
+        'no_redirect' => TRUE
       ),
     ),
     'external' => array(
@@ -63,21 +64,21 @@ function os_wysiwyg_link_insert() {
       $output['tabs']['#default_tab'] = 'edit-'.$k;
       $output['tabs']['tabs__active_tab']['#value'] = 'edit-'.$k;
     }
-    if (isset($output['tabs'][$k]['form']['#entity'])) {
-      $entity = $output['tabs'][$k]['form']['#entity'];
+    if (isset($output['tabs'][$k]['form']['upload']['#file']) && $output['tabs'][$k]['form']['upload']['#file']) {
+      $entity = $output['tabs'][$k]['form']['upload']['#file'];
       $commands = array();
       if (isset($entity->fid)) {
         media_browser_build_media_item($entity);
         drupal_add_js(array('media' => array('files' => array($entity))), 'setting');
         
-        $commands[] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$entity->fid.'" class="">'.$entity->preview.'</li>');
+        $commands[] = ajax_command_prepend('#media-browser-library-list', '<li id="media-item-'.$entity->fid.'" class="media-item-new">'.$entity->preview.'</li>');
         $commands[] = array(
           'command' => 'switchTab',
           'tab' => 'edit-file'
         );
         $commands[] = array(
           'command' => 'clickOn',
-          'target' => '#media-item-'.$entity->fid.' img',
+          'target' => '#media-item-'.$entity->fid.' div.media-item',
         );
       }
       // return results to ajax script
@@ -182,6 +183,17 @@ function _os_link_get_view($form, $form_state, $params) {
           'insert' => array(
             '#type' => 'submit',
             '#value' => t('Insert'),
+          )
+        ),
+        'edit' => array(
+          '#type' => 'container',
+          '#id' => 'file-edit-section',
+          'no_selection' => array(
+            '#type' => 'container',
+            '#id' => 'file-edit-no-selection',
+            'text' => array(
+              '#markup' => t('Select a file to edit it.'),
+            )
           )
         )
       );

@@ -202,6 +202,14 @@ ul.menu li.last  {
 }
 
 /* Breadcrumbs as an ordered list */
+.breadcrumb {
+ margin: 15px 0 0 15px;
+}
+
+.node-type-page .breadcrumb {
+ margin: 15px 0 12px;
+}
+
 #breadcrumb {
   padding-bottom: 1em;
 }
