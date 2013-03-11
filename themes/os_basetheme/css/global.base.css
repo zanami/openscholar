@@ -540,6 +540,8 @@ table video {
 .lt-ie9 video {
   max-width: 100%;
   border:none;
+  width:auto;
+  height:auto;
 }
 
 /* Override max-width 100% for map displays, as much as possible anyway... */
