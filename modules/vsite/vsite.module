@@ -697,7 +697,7 @@ function vsite_attach_fields_to_group($bundle){
   // Ensures that "field_organization" field instance is created.
   if (!field_info_instance('node', 'field_organization', $bundle)) {
     $instance = array(
-      'bundle' => 'department',
+      'bundle' => $bundle,
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
