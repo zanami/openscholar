@@ -62,8 +62,9 @@ function _hwpi_branding_header() {
 function _hwpi_get_ancestry() {
   $sites = array();
   if ($vsite = spaces_get_space()) {
-    if (isset($vsite->group->field_organization['und'][0]['tid'])) {
-      $tid = $vsite->group->field_organization['und'][0]['tid'];
+    $items = field_get_items('node', $vsite->group, 'field_organization');
+    if (is_array($items) && !empty($items)) {
+      $tid = $items[0]['tid'];
       $items = field_get_items('taxonomy_term', taxonomy_term_load($tid), 'field_site_url');
       if (isset($items[0])) {
         $site_url = $items[0];
