@@ -92,6 +92,13 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
   //hide title.  it will be automatically generated later.
   $form['title']['#type'] = 'hidden';
   $form['title']['#required'] = FALSE;
+  
+  //remove preview, diff buttons
+  foreach (array('preview', 'preview_changes') as $action) {
+    if (isset($form['actions'][$action])) {
+      unset($form['actions'][$action]);
+    }
+  }
 }
 
 /**
@@ -102,12 +109,18 @@ function os_slideshow_form_slideshow_slide_node_form_alter(&$form, &$state, $for
  * Changes the imagefield_crop widget to use our custom ratio.
  */
 function os_slideshow_imagefield_crop_instance_alter(&$instance, $context) {
-  if ($context['form']['#id'] == 'slideshow-slide-node-form') {
-    $box = boxes_box_load($context['form']['widget']['#value']);
+  if (isset($context['form']) && $context['form']['#id'] == 'slideshow-slide-node-form') {
+    $widget = $context['form']['widget']['#value'];
+  } elseif (isset($context['entity']) && isset($context['entity']->widget)) {
+    $widget = $context['entity']->widget;
+  }
+  
+  if (isset($widget) && $box = boxes_box_load($widget)) {
     $layout = $box->options['layout'];
     $layouts = _os_slideshow_layouts();
     $ratio = current($layouts[$layout]['ratio']);
-    $w = 800;
+    $content_sizes = _os_slideshow_region_size(NULL, 'content');
+    $w = (is_array($content_sizes) && count($content_sizes)) ? current($content_sizes) : 1000;
     $h = intval(round($w/$ratio, 0));
 
     $instance['widget']['settings']['resolution'] = "${w}x${h}";
@@ -311,8 +324,8 @@ function os_slideshow_preprocess_os_slideshow_slideshow(&$vars) {
     array('boxes-box-'.$vars['box_delta'] => array(
       'pager' => TRUE,    //pager
       'nav' => TRUE,  //control buttons
-      'timeoutSpeed' => $vars['timeout'],
-      'speed' => $vars['speed'],
+      'timeout' => intval($vars['timeout'] + $vars['speed']), //flex starts the timer after transition.  responsive starts it during.  adding them will let responsive look like flex did
+      'speed' => $vars['speed'],  
       'random' => $vars['random'],
     )
   ));
@@ -419,38 +432,53 @@ function _os_slideshow_region_size($region, $get_row_widths = '') {
       'sides' =>  array('sidebar_first', 'sidebar_second'),   //its sidebars
       'solo_side_width' => 300,                               //widest sidebar when one sidebar is shown
       'pair_side_width' => 250,                               //widest sidebar when both are shown
+      'min_side' => 160,                                      //thinnest possible sidebar
     ),
     'headers' => array(
       'main' => 'header_second',
       'sides' => array('header_first', 'header_third'),
       'solo_side_width' => 300,
       'pair_side_width' => 250,
+      'min_side' => 160,
     ),
     'footers' => array(
       'main' => 'footer',
       'sides' => array('footer_first', 'footer_third'),
       'solo_side_width' => .25 * $full_width,
       'pair_side_width' => .25 * $full_width,
+      'min_side' => .25 * $full_width,
     )
   );
+  
+  //page content has extra regions
+  $rows['content_bottom'] = $rows['content'];
+  $rows['content_bottom']['main'] = 'content_bottom';
 
+  $rows['content_second'] = $rows['content'];
+  $rows['content_second']['main'] = 'content_second';
+  
+  $rows['content_first'] = $rows['content'];
+  $rows['content_first']['main'] = 'content_first';
+  
   //default behavior
   if (!$get_row_widths) {
 
     $plugin = context_get_plugin('reaction', 'block');
     foreach($rows as $row) {
-      if($region != $row['main'] && !in_array($region, $row['sides'])) continue;
+      if ($region != $row['main'] && !in_array($region, $row['sides'])) { 
+        continue;
+      }
 
       //Count the number of active regions
       $sides_count = 0;
       foreach ($row['sides'] as $side){
-        if(count($plugin->block_list($side))){
+        if (count($plugin->block_list($side))) {
           $sides_count++;
         }
       }
 
       if ($region == $row['main']) {
-        $widths = array($full_width, $full_width - $row['solo_side_width'], $full_width - 2*$row['pair_side_width']);
+        $widths = array($full_width, $full_width - $row['min_side'], $full_width - 2*$row['min_side']);
         return $widths[$sides_count];
       } elseif (in_array($region, $row['sides'])) {
         return ($sides_count > 1) ? $row['pair_side_width'] : $row['solo_side_width'];
@@ -465,8 +493,8 @@ function _os_slideshow_region_size($region, $get_row_widths = '') {
     $row = $rows[$get_row_widths];
     return array(
       $full_width,
-      $full_width - $row['solo_side_width'],
-      $full_width - 2*$row['pair_side_width'],
+      $full_width - $row['min_side'],
+      $full_width - 2*$row['min_side'],
       $row['solo_side_width']
     );
   }

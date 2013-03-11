@@ -60,6 +60,65 @@ Drupal.media.browser.views.select = function(view) {
 }
 
 /**
+ * Fired when user clicks on a media item. Handles the selection of that item
+ */
+Drupal.media.browser.views.click = function () {
+  var fid = $(this).closest('.media-item[data-fid]').data('fid'),
+    view = $(this).parents('.view'),
+    selectedFiles = new Array();
+
+  // Remove all currently selected files
+  $('.view-content .media-item', view).removeClass('selected');
+
+  // Mark it as selected
+  $(this).addClass('selected');
+
+  // Multiselect!
+  if (Drupal.settings.media.browser.params.multiselect) {
+    // Loop through the already selected files
+    for (index in Drupal.media.browser.selectedMedia) {
+      var currentFid = Drupal.media.browser.selectedMedia[index].fid;
+
+      // If the current file exists in the list of already selected
+      // files, we deselect instead of selecting
+      if (currentFid == fid) {
+        $(this).removeClass('selected');
+        // If we change the fid, the later matching won't
+        // add it back again because it can't find it.
+        fid = NaN;
+
+        // The previously selected file wasn't clicked, so we retain it
+        // as an active file
+      }
+      else {
+        // Add to list of already selected files
+        selectedFiles.push(Drupal.media.browser.selectedMedia[index]);
+
+        // Mark it as selected
+        $('.view-content *[data-fid=' + currentFid + '].media-item', view).addClass('selected');
+      }
+    }
+  }
+
+  // Because the files are added using drupal_add_js() and due to the fact
+  // that drupal_get_js() runs a drupal_array_merge_deep() which re-numbers
+  // numeric key values, we have to search in Drupal.settings.media.files
+  // for the matching file ID rather than referencing it directly.
+  for (index in Drupal.settings.media.files) {
+    if (Drupal.settings.media.files[index].fid == fid) {
+      selectedFiles.push(Drupal.settings.media.files[index]);
+
+      // If multiple tabs contains the same file, it will be present in the
+      // files-array multiple times, so we break out early so we don't have
+      // it in the selectedFiles array multiple times.
+      // This would interfer with multi-selection, so...
+      break;
+    }
+  }
+  Drupal.media.browser.selectMedia(selectedFiles);
+},
+
+/**
  * Setup function. Called once for every Media Browser view.
  *
  * Sets up event-handlers for selecting items in the view.
@@ -74,60 +133,7 @@ Drupal.media.browser.views.setup = function(view) {
   Drupal.media.browser.selectMedia([]);
 
   // Catch the click on a media item
-  $('.view-content .media-item', view).bind('click', function () {
-    var fid = $(this).closest('.media-item[data-fid]').data('fid'),
-      selectedFiles = new Array();
-
-    // Remove all currently selected files
-    $('.view-content .media-item', view).removeClass('selected');
-
-    // Mark it as selected
-    $(this).addClass('selected');
-
-    // Multiselect!
-    if (Drupal.settings.media.browser.params.multiselect) {
-      // Loop through the already selected files
-      for (index in Drupal.media.browser.selectedMedia) {
-        var currentFid = Drupal.media.browser.selectedMedia[index].fid;
-
-        // If the current file exists in the list of already selected
-        // files, we deselect instead of selecting
-        if (currentFid == fid) {
-          $(this).removeClass('selected');
-          // If we change the fid, the later matching won't
-          // add it back again because it can't find it.
-          fid = NaN;
-
-          // The previously selected file wasn't clicked, so we retain it
-          // as an active file
-        }
-        else {
-          // Add to list of already selected files
-          selectedFiles.push(Drupal.media.browser.selectedMedia[index]);
-
-          // Mark it as selected
-          $('.view-content *[data-fid=' + currentFid + '].media-item', view).addClass('selected');
-        }
-      }
-    }
-
-    // Because the files are added using drupal_add_js() and due to the fact
-    // that drupal_get_js() runs a drupal_array_merge_deep() which re-numbers
-    // numeric key values, we have to search in Drupal.settings.media.files
-    // for the matching file ID rather than referencing it directly.
-    for (index in Drupal.settings.media.files) {
-      if (Drupal.settings.media.files[index].fid == fid) {
-        selectedFiles.push(Drupal.settings.media.files[index]);
-
-        // If multiple tabs contains the same file, it will be present in the
-        // files-array multiple times, so we break out early so we don't have
-        // it in the selectedFiles array multiple times.
-        // This would interfer with multi-selection, so...
-        break;
-      }
-    }
-    Drupal.media.browser.selectMedia(selectedFiles);
-  });
+  $('.view-content .media-item', view).bind('click', Drupal.media.browser.views.click);
 
   // Add the processed class, so we dont accidentally process the same element twice..
   $(view).addClass('media-browser-views-processed');

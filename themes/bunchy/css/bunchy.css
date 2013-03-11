@@ -233,3 +233,7 @@ p.copy a {
   .date-next a {
 font-size: 11px;
 }
+
+#powered-by a {
+    background-position: 0 -25px;
+}

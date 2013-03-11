@@ -302,5 +302,5 @@ function os_publications_reset(&$form, &$form_state) {
 }
 
 function os_publications_reset_submit($form, $form_state) {
-  dpm($form_state['values']);
+  //dpm($form_state['values']);
 }

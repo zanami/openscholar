@@ -262,7 +262,10 @@
   .footer-left.footer.footer-right .region-footer-third,
   .footer-left.footer.footer-right .region-footer,
   .footer-left.footer-right .region-footer-first,
-  .footer-left.footer-right .region-footer-third {
+  .footer-left.footer-right .region-footer-third,
+  .footer-left .region-footer-first,
+  .footer-right .region-footer-third
+   {
 	width: 33%;
 	}
 

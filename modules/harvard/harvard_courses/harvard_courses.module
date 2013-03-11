@@ -68,7 +68,7 @@ function harvard_courses_os_widget() {
   $widgets = array();
 
   $widgets['harvard_courses-courses_filter'] = array(
-    'module' => 'havard_courses',
+    'module' => 'harvard_courses',
     'delta' => 'courses_filter',
     'title' => '',
     'info' => t('Harvard courses filter'),

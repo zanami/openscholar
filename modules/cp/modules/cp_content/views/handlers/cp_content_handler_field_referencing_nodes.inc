@@ -16,6 +16,11 @@ class cp_content_handler_field_referencing_nodes extends views_handler_field {
       $fids[] = $value->fid;
     }
 
+    // There is no files - return early.
+    if (empty($fids)) {
+      return;
+    }
+
     $result = db_select('file_usage', 'f')
       ->fields('f', array('type', 'fid', 'id', 'count'))
       ->condition('fid', $fids, 'IN')
