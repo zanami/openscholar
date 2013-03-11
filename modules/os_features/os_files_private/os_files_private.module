@@ -49,14 +49,15 @@ function os_files_private_menu() {
  * @see file_entity_add_upload()
  */
 function os_files_private_form_file_entity_add_upload_alter(&$form, $form_state) {
-  // Alerts user if private file path has not been set.
-  if (!variable_get('file_private_path')) {
-    drupal_set_message(t('Unable to add private files at this time. Please contact the site administrator.'), 'warning');
-    return;
-  }
 
   $item = menu_get_item();
   if (!($item['path'] == 'file/add' || $item['path'] == 'file/ajax') || !spaces_get_space()) {
+    return;
+  }
+
+  // Alerts user if private file path has not been set.
+  if (!variable_get('file_private_path')) {
+    drupal_set_message(t('Unable to add private files at this time. Please contact the site administrator.'), 'warning');
     return;
   }
 
