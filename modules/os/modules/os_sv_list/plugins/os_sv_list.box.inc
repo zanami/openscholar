@@ -555,18 +555,20 @@ class os_sv_list_box extends os_boxes_default {
         $nids = $query->execute()->fetchCol();
         break;
 
-      case 'event':
-        $query = $query->execute();
-
-        foreach ($query as $r) {
-          $nids[] = $r->entity_id.'|date_id=date.'.$r->entity_id.'.field_date.'.$r->delta;
-        }
-        break;
       case 'image':
         $result = $query->execute();
         $nids = isset($result['file']) ? array_keys($result['file']) : array();
         break;
+      case 'event':
+        //Only get the date value if they are sorting by it
+        if($options['sort_by'] == 'sort_event'){
+          $query = $query->execute();
 
+          foreach ($query as $r) {
+            $nids[] = $r->entity_id.'|date_id=date.'.$r->entity_id.'.field_date.'.$r->delta;
+          }
+          break;
+        }
       default:
 
         $result = $query->execute();
