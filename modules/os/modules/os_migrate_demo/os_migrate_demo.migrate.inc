@@ -397,11 +397,13 @@ class OsMigrateEventsNode extends OsMigrate {
     array('body', 'Body'),
     array('field_date', 'Timestamp'),
     array(OG_AUDIENCE_FIELD, 'Site'),
+    array(OG_VOCAB_FIELD, 'Terms'),
   );
 
   public $dependencies = array(
     'OsMigratePersonalNode',
     'OsMigrateProjectNode',
+    'OsMigrateScienceTaxonomyTerm',
   );
 
   public function __construct() {
@@ -411,6 +413,9 @@ class OsMigrateEventsNode extends OsMigrate {
     $this->addFieldMapping('field_date', 'field_date');
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration(array('OsMigratePersonalNode', 'OsMigrateProjectNode'));
+    $this->addFieldMapping(OG_VOCAB_FIELD, OG_VOCAB_FIELD)
+      ->sourceMigration(array('OsMigrateScienceTaxonomyTerm'))
+      ->separator('|');
   }
 
   public function prepare($entity, $row) {
