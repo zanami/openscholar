@@ -21,6 +21,14 @@
             ajax = new Drupal.ajax(base, this, settings);
        $(this).addClass('os-files-processed');
       });
+      
+      Drupal.ajax.prototype.beforeSubmit = function (values, element, options) {
+        console.log(this);
+        if (this.wrapper == '#undefined') {
+          var form = $(this.selector).parents('form');
+          this.wrapper = '#'+form[0].id;
+        }
+      };
     }
   };
 })(jQuery, undefined);
