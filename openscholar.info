@@ -106,6 +106,7 @@ dependencies[] = os_profiles
 dependencies[] = os_publications
 dependencies[] = os_reader
 dependencies[] = os_software
+dependencies[] = os_stats
 dependencies[] = os_taxonomy
 
 ; other
