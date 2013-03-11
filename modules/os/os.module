@@ -984,12 +984,18 @@ function os_system_info_alter(&$info, $file, $type) {
   if ($type != 'theme') {
     return;
   }
-
+static $run_once = false;
   // If the base theme for this theme is 'os_basetheme' or if the is a 'vsite'
   // theme add the default regions.
   if ((isset($info['base theme']) && $info['base theme'] == 'os_basetheme') || (isset($info['os']['theme_type']) && $info['os']['theme_type'] == 'vsite')) {
-    $info['settings']['favicon_path'] = drupal_get_path('theme', 'os_basetheme').'/favicon.ico';
-    $info['settings']['default_favicon'] = 0;
+    if (!$run_once) {
+      dpm($file);
+      $run_once = true;
+    }
+    if (!file_exists(dirname($file->filename) . '/favicon.ico')) {
+      $info['settings']['favicon_path'] = drupal_get_path('theme', 'os_basetheme').'/favicon.ico';
+      $info['settings']['default_favicon'] = 0;
+    }
     
     $info['regions'] += array(
       'branding_header' => 'Branding Header',
