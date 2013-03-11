@@ -191,15 +191,16 @@ function os_files_file_entity_add_upload_submit(&$form, &$form_state) {
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   $form['filename']['#title'] = t('Title');
   $form['filename']['#description'] = t('Name of file as seen by your site\'s visitors');
-
-  $form['media_title_description'] = array(
-    '#type' => 'markup',
-    '#weight' => $form['media_title']['#weight'] + 0.1,
-    '#markup' => t('Title of File in a Gallery.'),
-    '#attributes' => array(
-      'class' => array('description'),
-    )
-  );
+  
+  $form['media_title'][LANGUAGE_NONE][0]['value']['#title'] = t('Gallery Title');
+  
+  $form['media_title'][LANGUAGE_NONE][0]['value']['#description'] = t('Title of File in a Gallery.');
+  
+  if ($form['type']['#value'] != 'image' && $form['type']['#value'] != 'video') {
+    $form['preview']['#access'] = false;
+  }
+  
+  $form['user']['#access'] = false;
 
   // only display the field if the file is older than 5 minutes
   if (isset($form['#entity'])) {
