@@ -208,6 +208,16 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   else {
     $form['replace_upload']['#access'] = FALSE;
   }
+  
+  if (strpos($_GET['q'],'/edit/ajax') !== FALSE) {
+    $form['actions']['submit']['#attributes'] = array(
+      'class' => array('use-ajax-submit'),
+    );
+    
+    $form['actions']['delete']['#attributes'] = array(
+      'class' => array('use-ajax-submit'),
+    );
+  }
 }
 
 /**
