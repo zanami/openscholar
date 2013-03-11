@@ -14,9 +14,9 @@ function os_wysiwyg_user_default_permissions() {
   $permissions['use text format filtered_html'] = array(
     'name' => 'use text format filtered_html',
     'roles' => array(
-      0 => 'anonymous user',
-      1 => 'authenticated user',
-      2 => 'administrator',
+      0 => 'administrator',
+      1 => 'anonymous user',
+      2 => 'authenticated user',
       3 => 'manager',
       4 => 'vsite admin',
       5 => 'vsite user',
