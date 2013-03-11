@@ -98,7 +98,7 @@ function os_files_private_form_file_entity_add_upload_submit($form, &$form_state
   $file = file_load($form_state['values']['upload']);
 
   // Redirect to the file edit page after submission.
-  if (file_entity_access('edit', $file)) {
+  if (file_entity_access('update', $file)) {
     $destination = array('destination' => OS_FILES_PRIVATE_PATH);
     if (isset($_GET['destination'])) {
       $destination = drupal_get_destination();
