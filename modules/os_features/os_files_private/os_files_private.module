@@ -51,7 +51,7 @@ function os_files_private_menu() {
 function os_files_private_form_file_entity_add_upload_alter(&$form, $form_state) {
   // Alerts user if private file path has not been set.
   if (!variable_get('file_private_path')) {
-    drupal_set_message('Unable to add private files at this time. Please contact the site administrator.', 'warning');
+    drupal_set_message(t('Unable to add private files at this time. Please contact the site administrator.'), 'warning');
     return;
   }
 
