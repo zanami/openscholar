@@ -196,6 +196,9 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   
   $form['media_title'][LANGUAGE_NONE][0]['value']['#description'] = t('Title of File in a Gallery.');
   
+  $form['media_description'][LANGUAGE_NONE][0]['#title'] = t('Gallery Description');
+  $form['media_description'][LANGUAGE_NONE][0]['#description'] = t('Used when file is in a gallery.');
+  
   if ($form['type']['#value'] != 'image' && $form['type']['#value'] != 'video') {
     $form['preview']['#access'] = false;
   }
