@@ -488,6 +488,7 @@ function cp_menu_wizard_cancel(&$form_state) {
  */
 function cp_menu_wizard_finish(&$form_state) {
   $values = cp_menu_cache_get($form_state['object_id']) + $form_state['values'];
+  form_clear_error();
 
   // Provides node add form
   if (($values['type'] == 'page' && $values['new_or_select'] == 'new') || ($values['type'] == 'url' && isset($values['new_node_url']))) {
