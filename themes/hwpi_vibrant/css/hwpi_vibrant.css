@@ -37,7 +37,7 @@ body.no-sidebars .content-top-slideshow-enabled #content-panels .region-content-
   margin-bottom: 0;
 }
 
-body.no-sidebars .content-top-slideshow-enabled .region-content-top:after {
+.front body.no-sidebars .content-top-slideshow-enabled .region-content-top:after {
   background: #252525;
   bottom: auto;
   content: "";
@@ -51,7 +51,7 @@ body.no-sidebars .content-top-slideshow-enabled .region-content-top:after {
   z-index: 1;
 }
 
-body.no-sidebars .content-top-slideshow-enabled #columns .hg-container {
+body.front.no-sidebars .content-top-slideshow-enabled #columns .hg-container {
   padding-top: 0;
 }
 
@@ -342,8 +342,39 @@ h1#page-title {
   padding: 15px 0 30px;
 }
 
+#content-column .field-name-body h2, #content-column .field-name-body h3, #content-column .field-name-body h4 {
+    margin-bottom: 16px;
+}
+
+#content-column .field-name-body h2 {
+    font-size: 1.7em;
+}
+
+#content-column .field-name-body h3 {
+    font-size: 1.4em;
+}
+
+
+#content-column .field-name-body h4 {
+    font-size: 1.2em;
+}
+
+
 .node-type-person #content-column .node-person h1.node-title {
     font-weight: bold;
+}
+
+
+.node-person .node-content .block .block-title {
+font: bold 16px/24px arial, sans-serif;
+margin-bottom: 24px;
+background: #f7f7f7;
+padding: 6px 15px;
+-webkit-box-shadow: 0px 1px 0px 1px #dededc;
+box-shadow: 0px 1px 0px 1px #dededc;
+border-top: 1px solid #dededc;
+-webkit-border-radius: 2px;
+border-radius: 2px;
 }
 
 .page-search h1#page-title {
@@ -375,7 +406,6 @@ ul.primary {
 }
 
 .front #content-column .block,
-.node-person .block-inner,
 .comment-wrapper {
   border-top: 6px solid #e1e1e1;
 }
@@ -460,6 +490,39 @@ ul.primary {
   padding: 0;
 }
 
+
+
+.front #content-panels .block.block-boxes-os_boxes_manual_list {
+	background-color:#252525;
+	color:#FFF;
+	padding: 0;
+	}
+	
+.front #content-panels .block.block-boxes-os_boxes_manual_list a {
+	color:#57ACFF;
+	}	
+	
+	
+	
+.front #content-panels .block.block-boxes-os_boxes_manual_list .block-title {
+border-bottom: none;
+ margin-bottom: 0;
+ color:#FFFFFF !important;
+background: #ac253a;
+background: -moz-linear-gradient(top, #ac253a 0%, #880f1c 100%);
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ac253a), color-stop(100%, #880f1c));
+background: -webkit-linear-gradient(top, #ac253a 0%, #880f1c 100%);
+background: -o-linear-gradient(top, #ac253a 0%, #880f1c 100%);
+background: -ms-linear-gradient(top, #ac253a 0%, #880f1c 100%);
+background: linear-gradient(to bottom, #ac253a 0%, #880f1c 100%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ac253a', endColorstr='#880f1c',GradientType=0 );
+padding: 3px 15px;
+}
+
+.front #content-panels .block.block-boxes-os_boxes_manual_list .block-content, 
+.sidebar .block.block-boxes-os_boxes_manual_list .block-content {
+    border-top: none;
+}
 
 /* Calander */
 #block-views-os-events-block-1 .view .date-nav-wrapper {
@@ -551,6 +614,18 @@ table td.mini {
     font-family:arial;
     font-weight:bold;
     font-size:15px;
+}
+
+.two-sidebars #main-content .view .date-nav-wrapper .date-prev {
+    right: 350px;
+}
+
+.one-sidebar #main-content .view .date-nav-wrapper .date-prev {
+    right: 515px;
+}
+
+.no-sidebars #main-content .view .date-nav-wrapper .date-prev {
+    right: 840px;
 }
 
 .view .date-nav-wrapper .date-next a {
