@@ -396,7 +396,6 @@ class os_sv_list_box extends os_boxes_default {
     $options = $this->options;
 
     $tagged_nodes = $this->tagged_nodes();
-
     $gids = array();
 
     if(module_exists('vsite')){
