@@ -602,7 +602,6 @@ function os_files_media_widget_process($element, $form_state, $form) {
  * Alters text of Add Another button for media generic widgets
  */
 function os_files_preprocess_field_multiple_value_form(&$vars) {
-  dpm($vars);
   if ($vars['element']['#field_name'] == 'field_upload') {
     $vars['element']['add_more']['#value'] = t('Add Another');
   }
@@ -617,6 +616,7 @@ function os_files_media_browser_plugins_alter(&$output){
   $output['media_default--media_browser_1']['#title'] = t('My Library');
   
   // add an area to the views form to put the file edit form
+  dpm($output);
   $html = &$output['media_default--media_browser_1']['#markup'];
   $html .= '<div id="file-edit-section"><div id="file-edit-no-selection">Select a file to edit it.</div></div>';
 }
