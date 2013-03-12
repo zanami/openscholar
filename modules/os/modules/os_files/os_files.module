@@ -194,15 +194,21 @@ function os_files_file_entity_add_upload_submit(&$form, &$form_state) {
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
   $form['filename']['#title'] = t('Title');
   $form['filename']['#description'] = t('Name of file as seen by your site\'s visitors');
-
-  $form['media_title_description'] = array(
-    '#type' => 'markup',
-    '#weight' => $form['media_title']['#weight'] + 0.1,
-    '#markup' => t('Title of File in a Gallery.'),
-    '#attributes' => array(
-      'class' => array('description'),
-    )
-  );
+  
+  $form['media_title'][LANGUAGE_NONE][0]['value']['#title'] = t('Gallery Title');
+  
+  $form['media_title'][LANGUAGE_NONE][0]['value']['#description'] = t('Title of File in a Gallery.');
+  
+  $form['media_description'][LANGUAGE_NONE][0]['#title'] = t('Gallery Description');
+  $form['media_description'][LANGUAGE_NONE][0]['#description'] = t('Used when file is in a gallery.');
+  
+  if ($form['type']['#value'] != 'image' && $form['type']['#value'] != 'video') {
+    $form['preview']['#access'] = false;
+  }
+  
+  $form['media_description'][LANGUAGE_NONE][0]['#type'] = 'textarea';
+  
+  $form['user']['#access'] = false;
 
   // only display the field if the file is older than 5 minutes
   if (isset($form['#entity'])) {
@@ -212,7 +218,18 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
     $form['replace_upload']['#access'] = FALSE;
   }
   
-  if (strpos($_GET['q'],'/edit/ajax') !== FALSE) {
+  // modify the form when we're getting it through ajax
+  // this means we'll be getting it through the media browser
+  if (strpos($_GET['q'], 'ajax') !== FALSE) {
+    $form['preview']['#access'] = false;
+    
+    $form['replace_upload']['#access'] = false;
+    
+    $form['media_title']['#access'] = false;
+    $form['media_title'][LANGUAGE_NONE][0]['value']['#value_callback'] = 'os_files_media_title_value';
+    
+    $form['media_description']['#access'] = false;
+    
     $form['actions']['submit']['#attributes'] = array(
       'class' => array('use-ajax-submit'),
     );
@@ -248,22 +265,6 @@ function os_files_edit_delete_ajax_submit($form, &$form_state) {
 function os_files_media_title_value($element, $input = FALSE, $form_state = array()) {
   if ($input === FALSE) {
     return isset($form_state['values']['filename']) ? $form_state['values']['filename'] : '';
-  }
-  
-  $form['media_description'][LANGUAGE_NONE][0]['#type'] = 'textarea';
-  
-  // modify the form when we're getting it through ajax
-  // this means we'll be getting it through the media browser
-  if (strpos($_GET['q'], 'ajax') !== FALSE) {
-    $form['preview']['#access'] = false;
-    $form['user']['#access'] = false;
-    
-    $form['replace_upload']['#access'] = false;
-    
-    unset($form['media_title']);
-    unset($form['media_title_description']);
-    
-    $form['actions']['submit']['#attributes']['class'][] = 'use-ajax-submit';
   }
 }
 
