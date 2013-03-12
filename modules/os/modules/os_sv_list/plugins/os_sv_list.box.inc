@@ -512,6 +512,14 @@ class os_sv_list_box extends os_boxes_default {
           $image_page = $image_query->pager['element'];
         }
         break;
+
+        //person lists sorting alphabetically should use last name, not first.
+        case 'person':
+          if ($this->options['sort_by'] == 'sort_alpha') {
+            $efq->fieldOrderBy('field_last_name', 'value', 'ASC');
+          }
+        break;
+        
     }
 
     // content type
