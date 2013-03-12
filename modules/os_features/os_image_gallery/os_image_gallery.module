@@ -101,7 +101,7 @@ function os_image_gallery_node_view($node, $view_mode) {
   );
 
   // Gets the fids of images on this page
-  if (isset($node->media_gallery_file) && count($node->media_gallery_file)) {
+  if (isset($node->media_gallery_file[$node->language]) && count($node->media_gallery_file[$node->language])) {
     $keep_fids = array();  
     foreach ($node->media_gallery_file as $lang) {
       foreach ($lang as $media) {
@@ -123,26 +123,25 @@ function os_image_gallery_node_view($node, $view_mode) {
  * Implements hook_form_alter().
  */
 function os_image_gallery_form_alter(&$form, &$form_state, $form_id) {
-  if (strpos($form_id, 'media_edit_') === 0) {
-    // media_edit_1
-    $form_id;
-    $form['fieldset'] = array(
-      '#title' => t('Media Settings'),
-      '#type' => 'fieldset',
-      '#collapsed' => TRUE,
-      '#collapsible' => TRUE,
-    );
-
-    foreach (array('media_description', ) as $elem) {
-      if (isset($form[$elem])) {
-        $form['fieldset'][$elem] = $form[$elem];
-        unset($form[$elem]);
-      }
-    }
-
-    //make an image instead of a link
-    $form['preview']['#theme'] = 'media_admin_thumbnail';
+  if (@is_array($form_state['build_info']['args'][0]) && @$form_state['build_info']['args'][0]['id'] == 'media_gallery') {
+    $form['upload']['#upload_validators']['os_image_gallery_upload_filesize'] = array();
   }
+}
+
+/**
+ * @function os_image_gallery_upload_filesize
+ *
+ * #upload_validator ensures max filesize used in media gallery uploads
+ */
+function os_image_gallery_upload_filesize($file) {
+  $errors = array();
+  $info = field_info_instance('node', 'media_gallery_file', 'media_gallery');
+  
+  if (parse_size($info['settings']['max_filesize']) < $file->filesize) {
+    $errors[] = t('The file size limit for media gallery files is !max', array('!max' => $info['settings']['max_filesize']));  
+  }
+  
+  return $errors;
 }
 
 /**
