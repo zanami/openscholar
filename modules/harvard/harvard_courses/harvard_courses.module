@@ -114,20 +114,18 @@ function harvard_courses_courses_filter() {
     return NULL;
   }
 
-  $query = db_select('og_membership', 'ogm');
-  $query->join('node', 'n', 'n.nid = ogm.etid');
-  $results = $query
-    ->fields('n')
-    ->condition('ogm.gid', $space->id)
-    ->condition('n.type', 'harvard_course')
-    ->execute()
-    ->fetchAllKeyed();
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'harvard_course')
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id)
+    ->execute();
 
-  if (empty($results)) {
+  if (empty($result['node'])) {
     return;
   }
 
-  $nodes = node_load_multiple(array_keys($results));
+  $nodes = node_load_multiple(array_keys($result['node']));
   $semester = array();
   foreach ($nodes as $node) {
     $wrapper = entity_metadata_wrapper('node', $node);
