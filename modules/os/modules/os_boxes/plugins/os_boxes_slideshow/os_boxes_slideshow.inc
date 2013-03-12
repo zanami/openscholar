@@ -33,7 +33,7 @@ class os_boxes_slideshow extends os_boxes_default {
       return array(
         '#type' => 'markup',
         '#prefix' => '<div class="warning messages">',
-        '#markup' => t('You must enable the !link to create a slideshow.', array('!link' => l('Media Gallery app', '/cp/build/features'))),
+        '#markup' => t('You must enable the !link to create a slideshow.', array('!link' => l('Media Gallery app', 'cp/build/features'))),
         '#suffix' => '</div>',
       );
     }
