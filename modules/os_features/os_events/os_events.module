@@ -112,3 +112,37 @@ function os_events_preprocess_calendar_datebox(&$vars) {
   // Change the link.
   $vars['link'] = l($vars['day'], $clean_current_path . $path, $query);
 }
+
+/**
+ * Implements hook_preprocess_date_views_pager().
+ */
+function os_events_preprocess_date_views_pager(&$variables) {
+  if ($variables['plugin']->options['date_id'] != 'month') {
+    return;
+  }
+
+  // Define some variables.
+  $plugin = $variables['plugin'];
+  $view = $plugin->view;
+  $date_info = $view->date_info;
+  $next_url = &$variables['next_url'];
+  $prev_url = &$variables['prev_url'];
+
+  // Get information about dates.
+  $min_date = $date_info->min_date;
+  $max_date = $date_info->max_date;
+
+  $prev_date = clone($min_date);
+  $next_date = clone($min_date);
+  date_modify($prev_date, '-1 ' . 'month');
+  date_modify($next_date, '+1 ' . 'month');
+
+  $next_arg = date_format($next_date, 'Y-m');
+  $prev_arg = date_format($prev_date, 'Y-m');
+
+  // Change the link URL and arguments.
+  $variables['next_options']['query'] = array('date' => $next_arg, 'type' => 'month');
+  $variables['prev_options']['query'] = array('date' => $prev_arg, 'type' => 'month');
+  $next_url = $_GET['q'];
+  $prev_url = $_GET['q'];
+}
