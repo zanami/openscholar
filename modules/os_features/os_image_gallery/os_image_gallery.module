@@ -137,7 +137,8 @@ function os_image_gallery_upload_filesize($file) {
   $errors = array();
   $info = field_info_instance('node', 'media_gallery_file', 'media_gallery');
   
-  if (parse_size($info['settings']['max_filesize']) < $file->filesize) {
+  $max = parse_size($info['settings']['max_filesize']);
+  if (is_numeric($max) && 0 < $max && $max < $file->filesize) {
     $errors[] = t('The file size limit for media gallery files is !max', array('!max' => $info['settings']['max_filesize']));  
   }
   
