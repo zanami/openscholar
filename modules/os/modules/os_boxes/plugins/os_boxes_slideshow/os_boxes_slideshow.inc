@@ -28,6 +28,16 @@ class os_boxes_slideshow extends os_boxes_default {
    * Implementation of boxes_content::options_form().
    */
   public function options_form(&$form_state) {
+    $private = os_get_bundles(array(0));
+    if (isset($private['media_gallery'])) {
+      return array(
+        '#type' => 'markup',
+        '#prefix' => '<div class="warning messages">',
+        '#markup' => t('You must enable the !link to create a slideshow.', array('!link' => l('Media Gallery app', '/cp/build/features'))),
+        '#suffix' => '</div>',
+      );
+    }
+    
     $form = parent::options_form($form_state);
 
     //get the media gallery nodes.
