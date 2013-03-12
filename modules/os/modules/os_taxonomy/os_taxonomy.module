@@ -71,12 +71,18 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
   $alias = $query->add_table('field_data_og_vocabulary');
 
   $tid = str_replace('taxonomy/term/', '', $path);
-  $query->add_where($group_key, "$alias.og_vocabulary_target_id", $tid, '=');
+  if (!$term = taxonomy_term_load($tid)) {
+    return;
+  }
 
-  $view_title = $view->get_title();
-  $term = taxonomy_term_load($tid);
-  
-  if ($view_title && $term){
+  $tids = array($tid);
+  if ($children = taxonomy_get_children($tid)) {
+    $tids = array_merge($tids, array_keys($children));
+  }
+
+  $query->add_where($group_key, "$alias.og_vocabulary_target_id", $tids, 'IN');
+
+  if ($view_title = $view->get_title()) {
     $params = array(
       '@title' => $view_title,
       '@term' => entity_label('taxonomy_term', $term),
