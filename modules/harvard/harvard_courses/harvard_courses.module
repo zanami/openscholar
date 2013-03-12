@@ -111,21 +111,21 @@ function  harvard_courses_block_view($delta) {
  */
 function harvard_courses_courses_filter() {
   if (!$space = spaces_get_space()) {
-    return NULL;
+    return;
   }
 
   $query = new entityFieldQuery();
-  $results = $query
+  $result = $query
     ->entityCondition('entity_type', 'node')
     ->propertyCondition('type', 'harvard_course')
     ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id)
     ->execute();
 
-  if (empty($results)) {
+  if (empty($result['node'])) {
     return;
   }
 
-  $nodes = node_load_multiple(array_keys($results['node']));
+  $nodes = node_load_multiple(array_keys($result['node']));
   $semester = array();
   foreach ($nodes as $node) {
     $wrapper = entity_metadata_wrapper('node', $node);
