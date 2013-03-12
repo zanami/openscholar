@@ -5,7 +5,7 @@ class MediaInternetEmbedHandler extends MediaInternetBaseHandler {
   public function validate() {
     $valid = (bool) media_embed_check_src($this->embedCode);
     if (!$valid) {
-      throw new MediaInternetValidationException(t('Invalid src attribute or @url is from an untrusted doman.', array('@url' => $this->embedCode)));
+      throw new MediaInternetValidationException(t('Invalid src attribute or @url is from an untrusted domain.', array('@url' => $this->embedCode)));
     }
   }
 
