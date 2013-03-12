@@ -69,7 +69,6 @@ Drupal.behaviors.mediaElement = {
           if (editButton.length) {
             editButton.hide();
           }
-          launcherButton.html('Add');
           removeButton.hide();
         }
         else {
@@ -82,7 +81,6 @@ Drupal.behaviors.mediaElement = {
             Drupal.attachBehaviors(editButton.parent(), Drupal.settings);
             editButton.show();
           }
-          launcherButton.html('Replace');
           removeButton.show();
         }
       });

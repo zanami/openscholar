@@ -583,6 +583,29 @@ function os_files_field_widget_form_alter(&$elements, &$form_state, $context){
       }
     }
   }
+
+  if ($context['instance']['widget']['type'] == 'media_generic') {
+    $elements['#process'][] = 'media_element_process';
+    $elements['#process'][] = 'os_files_media_widget_process';
+  }
+}
+
+/**
+ * Alters the text of the media generic widget
+ */
+function os_files_media_widget_process($element, $form_state, $form) {
+  $element['select']['#title'] = t('Choose File');
+  return $element;
+}
+
+/**
+ * Alters text of Add Another button for media generic widgets
+ */
+function os_files_preprocess_field_multiple_value_form(&$vars) {
+  dpm($vars);
+  if ($vars['element']['#field_name'] == 'field_upload') {
+    $vars['element']['add_more']['#value'] = t('Add Another');
+  }
 }
 
 /**
