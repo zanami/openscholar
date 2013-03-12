@@ -12,7 +12,7 @@
         var base = this.id,
             fid = this.getAttribute('data-fid'),
             settings = {
-              url: s.basePath+'file/'+fid+'/edit/nojs',
+              url: s.basePath+('pathPrefix' in s?s.pathPrefix:'')+'file/'+fid+'/edit/nojs',
               event: 'click',
               wrapper: 'file-edit-section',
               method: 'html',
@@ -21,6 +21,13 @@
             ajax = new Drupal.ajax(base, this, settings);
        $(this).addClass('os-files-processed');
       });
+      
+      Drupal.ajax.prototype.beforeSubmit = function (values, element, options) {
+        if (this.wrapper == '#undefined') {
+          var form = $(this.selector).parents('form');
+          this.wrapper = '#'+form[0].id;
+        }
+      };
     }
   };
 })(jQuery, undefined);

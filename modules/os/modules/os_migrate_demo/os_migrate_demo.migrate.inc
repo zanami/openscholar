@@ -433,7 +433,7 @@ class OsMigrateEventsNode extends OsMigrate {
 
     // Adding the end date of the event.
     if (isset($date[1])) {
-      $entity->field_date[LANGUAGE_NONE][0]['value1'] = $date[1];
+      $entity->field_date[LANGUAGE_NONE][0]['value2'] = $date[1];
     }
   }
 }

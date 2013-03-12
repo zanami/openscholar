@@ -832,6 +832,11 @@ function imagefield_crop_upload_validate($file, $field, $instance) {
         $errors[] = t('The image is too small; the minimum dimensions are %dimensions pixels.', array('%dimensions' => $widget_settings['resolution']));
       }
   }
+  
+  if ($instance['settings']['max_filesize'] && parse_size($instance['settings']['max_filesize']) < $file->filesize) {
+    $errors[] = t('This image is too large.  The maximum size is !max', array('!max' => $instance['settings']['max_filesize']));
+  }
+  
   return $errors;
 }
 

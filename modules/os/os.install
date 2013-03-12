@@ -59,3 +59,10 @@ function os_update_7005() {
     user_role_grant_permissions($rid, array('access resource node'));
   }
 }
+
+function os_update_7006() {
+  if (module_enable(array('os_wysiwyg_link'))) {
+    return t('OS Wysiwyg Link module installed.');
+  }
+  
+}

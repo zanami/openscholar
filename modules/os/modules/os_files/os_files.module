@@ -81,6 +81,9 @@ function os_files_menu_alter(&$callbacks){
   
   $callbacks['file/%file/edit/ajax'] = $callbacks['file/%file/edit'];
   $callbacks['file/%file/edit/ajax']['delivery callback'] = 'ajax_deliver';
+  
+  $callbacks['file/%file/delete/ajax'] = $callbacks['file/%file/delete'];
+  $callbacks['file/%file/delete/ajax']['delivery callback'] = 'ajax_deliver';
 }
 
 function os_files_theme_registry_alter(&$reg){
@@ -227,8 +230,29 @@ function os_files_form_file_entity_edit_alter(&$form, &$form_state){
     
     $form['media_description']['#access'] = false;
     
-    $form['actions']['submit']['#attributes']['class'][] = 'use-ajax-submit';
+    $form['actions']['submit']['#attributes'] = array(
+      'class' => array('use-ajax-submit'),
+    );
+    
+    $form['actions']['delete']['#attributes'] = array(
+      'class' => array('use-ajax-submit'),
+    );
+    $form['actions']['delete']['#submit'] = array(
+      'os_files_edit_delete_ajax_submit'
+    );
   }
+}
+
+/**
+ * Form submission handler for the 'Delete' button for file_entity_edit().
+ */
+function os_files_edit_delete_ajax_submit($form, &$form_state) {
+  $fid = $form_state['values']['fid'];
+  $form_state['redirect'] = 'file/' . $fid . '/delete/ajax';
+  $form_state['no_redirect'] = false;
+
+  // Clear the page and block caches.
+  cache_clear_all();
 }
 
 /**
