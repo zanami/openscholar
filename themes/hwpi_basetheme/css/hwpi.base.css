@@ -482,7 +482,12 @@ article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
 }
 
 .node-type-person #main-content #content .node-person.with-person-photo .field-name-body {
-  margin-left: 200px;
+  margin-left: 0;
+}
+
+.node-type-person #main-content #content .node-person.with-person-photo .field-name-body ul li {
+  left: 15px;
+    position: relative;
 }
 
 .node-type-person #content .node-person.with-person-photo .field-name-body {
