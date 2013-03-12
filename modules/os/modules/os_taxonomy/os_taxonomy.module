@@ -75,8 +75,13 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
 
   $view_title = $view->get_title();
   $term = taxonomy_term_load($tid);
-  if($view_title && $term){
-    $view->set_title($view_title." <span class='sub_title'>in ".t(taxonomy_term_title($term))."</span>");
+  
+  if ($view_title && $term){
+    $params = array(
+      '@title' => $view_title,
+      '@term' => entity_label('taxonomy_term', $term),
+    );
+    $view->set_title(t('@title <span class="sub_title"> in @term </span>', $params));
   }
 }
 
