@@ -225,9 +225,8 @@ h2.block-title {
   background: none repeat scroll 0 0 #2D2D2D;
   color: #FFFFFF;
   font-size: 14px;
-  height: 32px;
-  line-height: 32px;
-  padding: 0 19px;
+  line-height: 16px;
+  padding: 7px 19px;
   text-transform: capitalize;
   font-weight: normal;
 }
