@@ -177,11 +177,15 @@ h2.block-title {
 
 
 /* Search */
+#search-block-form .container-inline .form-item .form-text {height: 32px;}
+
 #search-block-form input.form-submit,
 #search-block-form #edit-submit,
 #search-form #edit-submit {
-  background-position:  0 -340px;
+   background-position: 2px -340px;
 }
+
+
 
 #search-block-form .form-item label {
 	color:#9A9A9A;
