@@ -677,14 +677,14 @@ function os_image_gallery_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-media_gallery-media_gallery_media'
-  $fields['node-media_gallery-media_gallery_media'] = array(
+  // Exported field: 'node-media_gallery-media_gallery_file'
+  $fields['node-media_gallery-media_gallery_file'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'media_gallery_media',
+      'field_name' => 'media_gallery_file',
       'foreign keys' => array(
         'fid' => array(
           'columns' => array(
@@ -750,7 +750,7 @@ function os_image_gallery_field_default_fields() {
         ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'media_gallery_media',
+      'field_name' => 'media_gallery_file',
       'label' => 'Gallery media',
       'required' => FALSE,
       'settings' => array(

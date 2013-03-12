@@ -752,13 +752,13 @@ class OsMigrateGalleryNode extends OsMigrate {
     $this->addFieldMapping(OG_AUDIENCE_FIELD, OG_AUDIENCE_FIELD)
       ->sourceMigration(array('OsMigratePersonalNode', 'OsMigrateProjectNode'));
 
-    $this->addFieldMapping('media_gallery_media', 'images')
+    $this->addFieldMapping('media_gallery_file', 'images')
       ->separator(';');
-    $this->addFieldMapping('media_gallery_media:file_replace')
+    $this->addFieldMapping('media_gallery_file:file_replace')
       ->defaultValue(FILE_EXISTS_REPLACE);
-    $this->addFieldMapping('media_gallery_media:source_dir')
+    $this->addFieldMapping('media_gallery_file:source_dir')
       ->defaultValue(drupal_get_path('module', 'os_migrate_demo') . '/images');
-    $this->addFieldMapping('media_gallery_media:destination_dir', 'destination');
+    $this->addFieldMapping('media_gallery_file:destination_dir', 'destination');
   }
 }
 
