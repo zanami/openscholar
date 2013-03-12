@@ -1,0 +1,158 @@
+Common subdirectories: /tmp/media_gallery/css and ./css
+Common subdirectories: /tmp/media_gallery/images and ./images
+Common subdirectories: /tmp/media_gallery/js and ./js
+diff /tmp/media_gallery/media_gallery.install ./media_gallery.install
+68c68
+<   $vocabulary = media_gallery_create_taxonomy_vocab();
+---
+>   //$vocabulary = media_gallery_create_taxonomy_vocab();
+71c71
+<   _media_gallery_ensure_field_tags();
+---
+>   //_media_gallery_ensure_field_tags();
+79,81c79,81
+<   foreach (_media_gallery_controlled_instances('taxonomy_term') as $instance) {
+<     _media_gallery_ensure_instance($instance);
+<   }
+---
+> //   foreach (_media_gallery_controlled_instances('taxonomy_term') as $instance) {
+> //     _media_gallery_ensure_instance($instance);
+> //   }
+85c85
+<   media_gallery_create_taxonomy_term($vocabulary);
+---
+>   //media_gallery_create_taxonomy_term($vocabulary);
+120c120
+<   $required_fields['field_tags'] = array('type' => 'taxonomy_term_reference');
+---
+>   //$required_fields['field_tags'] = array('type' => 'taxonomy_term_reference');
+278,289c278,289
+<     'media_gallery_collection' => array(
+<       'field_name' => 'media_gallery_collection',
+<       'type' => 'taxonomy_term_reference',
+<       'settings' => array(
+<         'allowed_values' => array(
+<           array(
+<             'vocabulary' => 'gallery_collections',
+<             'parent' => 0,
+<           ),
+<         ),
+<       ),
+<     ),
+---
+> //     'media_gallery_collection' => array(
+> //       'field_name' => 'media_gallery_collection',
+> //       'type' => 'taxonomy_term_reference',
+> //       'settings' => array(
+> //         'allowed_values' => array(
+> //           array(
+> //             'vocabulary' => 'gallery_collections',
+> //             'parent' => 0,
+> //           ),
+> //         ),
+> //       ),
+> //     ),
+659,677c659,677
+<     'media_gallery_collection' => array(
+<       'field_name' => 'media_gallery_collection',
+<       'label' => $t('Gallery collection'),
+<       'default_value' => array(
+<         array(
+<           'tid' => variable_get('media_gallery_default_collection_tid'),
+<         ),
+<       ),
+<       'display' => array(
+<         'default' => array(
+<           'type' => 'hidden',
+<           'label' => 'hidden',
+<         ),
+<         'teaser' => array(
+<           'type' => 'hidden',
+<           'label' => 'hidden',
+<         ),
+<       ),
+<     ),
+---
+> //     'media_gallery_collection' => array(
+> //       'field_name' => 'media_gallery_collection',
+> //       'label' => $t('Gallery collection'),
+> //       'default_value' => array(
+> //         array(
+> //           'tid' => variable_get('media_gallery_default_collection_tid'),
+> //         ),
+> //       ),
+> //       'display' => array(
+> //         'default' => array(
+> //           'type' => 'hidden',
+> //           'label' => 'hidden',
+> //         ),
+> //         'teaser' => array(
+> //           'type' => 'hidden',
+> //           'label' => 'hidden',
+> //         ),
+> //       ),
+> //     ),
+708,724c708,725
+<   foreach ($instances as $key => $instance) {
+<     // Since we are re-using fields which are defined for the node, we need to
+<     // remove any additional view modes which don't belong to avoid E_NOTICE errors.
+<     $instance['display'] = array_intersect_key($instance['display'], array_flip(array('default', 'full')));
+<     $instance['entity_type'] = 'taxonomy_term';
+<     $instance['bundle'] = 'gallery_collections';
+<     $taxonomy_instances['taxo_term_' . $key] = $instance;
+<   }
+< 
+<   switch ($group) {
+<     case 'node':
+<       return $node_instances;
+<     case 'taxonomy_term':
+<       return $taxonomy_instances;
+<     default:
+<       return $node_instances + $taxonomy_instances;
+<   }
+---
+> //   foreach ($instances as $key => $instance) {
+> //     // Since we are re-using fields which are defined for the node, we need to
+> //     // remove any additional view modes which don't belong to avoid E_NOTICE errors.
+> //     $instance['display'] = array_intersect_key($instance['display'], array_flip(array('default', 'full')));
+> //     $instance['entity_type'] = 'taxonomy_term';
+> //     $instance['bundle'] = 'gallery_collections';
+> //     $taxonomy_instances['taxo_term_' . $key] = $instance;
+> //   }
+> 
+> //   switch ($group) {
+> //     case 'node':
+> //       return $node_instances;
+> //     case 'taxonomy_term':
+> //       return $taxonomy_instances;
+> //     default:
+> //       return $node_instances + $taxonomy_instances;
+> //   }
+>   return $node_instances;
+783,792c784,793
+<     'field_tags' => array(
+<       'field_name' => 'field_tags',
+<       'label' => $t('Tags'),
+<       'widget' => array(
+<         'type' => 'taxonomy_autocomplete',
+<       ),
+<       'display' => array(
+<         'default' => array('type' => 'hidden'),
+<       ),
+<     ),
+---
+> //     'field_tags' => array(
+> //       'field_name' => 'field_tags',
+> //       'label' => $t('Tags'),
+> //       'widget' => array(
+> //         'type' => 'taxonomy_autocomplete',
+> //       ),
+> //       'display' => array(
+> //         'default' => array('type' => 'hidden'),
+> //       ),
+> //     ),
+diff /tmp/media_gallery/media_gallery.module ./media_gallery.module
+30c30
+<     'media_gallery_collection_thumbnail' => t('Gallery collection thumbnail'),
+---
+>     //'media_gallery_collection_thumbnail' => t('Gallery collection thumbnail'),
