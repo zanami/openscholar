@@ -757,7 +757,7 @@ function os_image_gallery_field_default_fields() {
         'description_field' => 0,
         'file_directory' => '',
         'file_extensions' => 'txt',
-        'max_filesize' => '',
+        'max_filesize' => '6 MB',
         'user_register_form' => FALSE,
       ),
       'widget' => array(

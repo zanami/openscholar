@@ -1,0 +1,8 @@
+<?php 
+
+/*
+ * media_gallery renamed one of its fields.  This moves our data to match.
+ */
+function os_image_gallery_update_7000() {
+  
+}

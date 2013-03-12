@@ -101,10 +101,12 @@ function os_image_gallery_node_view($node, $view_mode) {
   );
 
   // Gets the fids of images on this page
-  if (isset($node->media_gallery_media[$node->language]) && count($node->media_gallery_media[$node->language])) {
+  if (isset($node->media_gallery_media) && count($node->media_gallery_media)) {
     $keep_fids = array();  
-    foreach ($node->media_gallery_media[$node->langauge] as $media) {
-      $keep_fids[] = $media['fid'];
+    foreach ($node->media_gallery_media as $lang) {
+      foreach ($lang as $media) {
+        $keep_fids[] = $media['fid'];
+      }
     }
     
 

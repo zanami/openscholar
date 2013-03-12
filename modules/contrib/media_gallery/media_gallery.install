@@ -1303,3 +1303,33 @@ function media_gallery_update_7010() {
   }
   field_bundle_settings('file', $bundle, $bundle_settings);
 }
+
+/**
+ * Renames field media_gallery_media => media_gallery_file
+ */
+
+function media_gallery_update_7011() {
+  //http://zgadzaj.com/how-to-change-the-machine-name-of-a-content-field-in-drupal-7
+  $old = 'media_gallery_media';
+  $new = 'media_gallery_file';
+  
+  db_update('field_config')
+    ->fields(array('field_name' => $new))
+    ->condition('field_name', $old)
+    ->execute();
+    
+  db_update('field_config_instance')
+    ->fields(array('field_name' => $new))
+    ->condition('field_name', $old)
+    ->execute();
+  
+  db_rename_table("field_data_${old}", "field_data_${new}");
+  //drop keys.  media_gallery_media_fid
+  foreach (array('fid', 'display', 'description') as $field) {
+    $schema = drupal_get_schema("field_data_${new}");
+    $spec = $schema["${old}_${field}"];
+    db_change_field("field_data_${new}", "${old}_${field}", "${new}_${field}", $spec);
+}
+  
+  //cc all
+}
