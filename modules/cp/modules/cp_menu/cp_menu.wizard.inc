@@ -305,16 +305,6 @@ function cp_menu_url_validate(&$form, &$state) {
     $path = $url;
   }    
     
-
-  //prepend site purl if missing.
-  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
-    $purl = $vsite->group->purl;
-  
-    if (strpos($path, $purl.'/') !== 0) {
-      $path = $purl . '/' . $path;
-    }
-  }
-    
   //check if internal path exists or needs to be created.
   $normal_path = drupal_get_normal_path($path);
   if (!drupal_valid_path($normal_path)) {    
