@@ -71,29 +71,13 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
   $alias = $query->add_table('field_data_og_vocabulary');
 
   $tid = str_replace('taxonomy/term/', '', $path);
-  if (!$term = taxonomy_term_load($tid)) {
-    return;
-  }
-
-  // The term IDs to query by.
-  $tids = array($tid);
-  if ($children = taxonomy_get_children($tid)) {
-    // Add the children term IDs to the query.
-    $tids = array_merge($tids, array_keys($children));
-    // Make sure the query is distinct so the same node, tagged to multiple
-    // terms will not appear twice.
-    $query->set_distinct(TRUE);
-  }
-  $query->add_where($group_key, "$alias.og_vocabulary_target_id", $tids, 'IN');
-
-
+  $query->add_where($group_key, "$alias.og_vocabulary_target_id", $tid, '=');
 
   if ($view_title = $view->get_title()) {
     $params = array(
-      '@title' => $view_title,
       '@term' => entity_label('taxonomy_term', $term),
     );
-    $view->set_title(t('@title <span class="sub_title"> in @term </span>', $params));
+    $view->set_title(t('@term', $params));
   }
 }
 
