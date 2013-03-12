@@ -192,10 +192,22 @@ function _os_publications_filter_by_term(QueryAlterableInterface $query) {
   }
 
   $tid = str_replace('taxonomy/term/', '', $path);
+  if (!$term = taxonomy_term_load($tid)) {
+    return;
+  }
+
+  $tids = array($tid);
+  if ($children = taxonomy_get_children($tid)) {
+    // Add the children term IDs to the query.
+    $tids = array_merge($tids, array_keys($children));
+    // Make sure the query is distinct so the same node, tagged to multiple
+    // terms will not appear twice.
+    $query->distinct();
+  }
 
   // Join the taxonomy index table.
   $query->innerJoin('taxonomy_index', 'ti', 'ti.nid = n.nid');
-  $query->condition('ti.tid', $tid);
+  $query->condition('ti.tid', $tids, 'IN');
 }
 
 /**
