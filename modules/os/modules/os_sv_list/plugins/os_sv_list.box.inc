@@ -436,7 +436,10 @@ class os_sv_list_box extends os_boxes_default {
         $sort = (isset($sorts[$options['sort_by']])) ? $sorts[$options['sort_by']] : $sorts['sort_newest'];
         $query->propertyOrderBy($sort[0], $sort[1]);
 
-        break;
+      break;
+        
+      
+        
       case 'event':
         //Only query the date field if they are sorting by it
         if($options['sort_by'] == 'sort_event'){
@@ -525,6 +528,17 @@ class os_sv_list_box extends os_boxes_default {
       }
     }else if (is_int($page)){
       $query->range(0, $this->options['number_of_items']);
+    }
+    
+    
+    //sorting exceptions
+    switch ($options['content_type']) {
+      case 'person':
+        //person lists sorting alphabetically should use last name, not first.
+        if ($this->options['sort_by'] == 'sort_alpha') {
+          $query->fieldOrderBy('field_last_name', 'value', 'ASC');
+        }
+      break;
     }
 
     // Sort the results.
