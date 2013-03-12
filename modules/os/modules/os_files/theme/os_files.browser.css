@@ -41,6 +41,10 @@
 	padding: 30px 10px;
 }
 
+#file-edit-section .actions input[type=submit] {
+	display: inline-block;
+}
+
 #file-edit-section input.form-text,
 #file-edit-section input.form-file,
 #file-edit-section textarea {
