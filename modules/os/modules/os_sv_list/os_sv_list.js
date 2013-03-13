@@ -7,7 +7,6 @@
     attach : function(context) {
       $('#os_sv_list_content_type').once('once', function() {
       // when content type changes, update sorting options list.
-      var old_type = $('#os_sv_list_content_type').val();
       $('#os_sv_list_content_type').change(function() {
         var sortby = $('#edit-sort-by');
         var sort_whitelist = [ 'sort_newest', 'sort_oldest', 'sort_alpha' ];
@@ -19,7 +18,7 @@
         var selected_sort = 'sort_' + content_type;
         var more_link = $('#more_link_div input[name="more_link"]');
         var defaults = Drupal.settings.more_link_defaults;
-
+        
         //apply content_type appropriate sorts when ct changes
         sortby.children('option').each(function() { 
           this_sort = $(this).attr('value');
@@ -56,15 +55,8 @@
           }
         });
 
-        // swap out the more link url.  preserve previous setting so it doesn't get trashed if the user goes back to original type.
-        if (more_link.val()) {
-          defaults[old_type] = more_link.val();
-        }
+        // swap out the more link url.  
         more_link.val(defaults[content_type]);
-        old_type = content_type;
-
-        
-
       });
 
       // perform the change callback once now.

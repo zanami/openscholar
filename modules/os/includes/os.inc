@@ -104,6 +104,7 @@ function os_get_active_feature() {
  *
  * @param string $app_name (optional)
  *   The machine name of the app (a feature module).  If left blank, all app paths will be returned.
+ *   Providing $app_name will return that app's path, or FALSE if none.
  *
  * @return string $path
  */
@@ -111,10 +112,7 @@ function os_get_app_path($app_name = NULL) {
   $app_info = ($app_name) ? os_app_info($app_name) : os_app_info();
 
   if (isset($app_info['path'])) {
-    $path = $app_info['path'];
-    if (strlen($path) > 0) {
-      return $path;
-    }
+    return (isset($app_info['path']) && strlen($app_info['path'])) ? $app_info['path'] : FALSE;
   }
 
   //return multiple type => path
