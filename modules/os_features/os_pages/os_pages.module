@@ -10,6 +10,7 @@ function os_pages_os_app_info() {
   $apps = array();
 
   $apps['os_pages'] = array(
+    'path' => '',
   	'nodetypes' => array(
   	  'page',
     ),
