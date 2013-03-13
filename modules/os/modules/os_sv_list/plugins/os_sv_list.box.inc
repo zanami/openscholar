@@ -725,7 +725,14 @@ class os_sv_list_box extends os_boxes_default {
         $links[] = l($node->title, $field_link[0]['url']);
       }
     }
-    return implode('<br>', $links);
+
+    return theme('item_list', array(
+      'items' => $links,
+      'type' => 'ul',
+      'attributes' => array(
+        'class' => 'link-list',
+      ),
+    ));
   }
 
   function display_image($files) {
