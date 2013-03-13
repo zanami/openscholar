@@ -137,7 +137,7 @@ function os_events_preprocess_date_views_pager(&$variables) {
   $max_date = $date_info->max_date;
 
   $prev_date = clone($min_date);
-  $next_date = clone($min_date);
+  $next_date = clone($max_date);
   date_modify($prev_date, '-1 ' . $variables['plugin']->options['date_id']);
   date_modify($next_date, '+1 ' . $variables['plugin']->options['date_id']);
 
