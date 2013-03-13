@@ -458,6 +458,29 @@ body.front .block-boxes-os_taxonomy_fbt div.description  {
   }
 
 
+.book-menu ul.menu li li, 
+#block-book-navigation ul.menu li li, 
+.block-boxes-os_boxes_booktoc ul.menu li li {
+   list-style-type:disc;
+   margin-left:15px;
+}
+
+.book-menu ul.menu li li li, 
+#block-book-navigation ul.menu li li li, 
+.block-boxes-os_boxes_booktoc ul.menu li li li {
+   list-style-type:circle;
+   margin-left:15px;
+}
+
+.book-menu ul.menu ul a, 
+#block-book-navigation ul.menu ul a, 
+.block-boxes-os_boxes_booktoc ul.menu ul a,
+.book-menu ul.menu ul ul a, 
+#block-book-navigation ul.menu ul ul a, 
+.block-boxes-os_boxes_booktoc ul.menu ul ul a {
+    padding: 0;
+}
+
 /* Secondary Menu */
 
 
