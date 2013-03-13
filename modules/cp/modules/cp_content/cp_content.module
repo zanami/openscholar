@@ -1,10 +1,5 @@
 <?php
 /**
- * @file
- * Code for the cp_content feature.
- */
-
-/**
  * Implements hook_menu().
  */
 function cp_content_menu() {

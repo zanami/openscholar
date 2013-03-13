@@ -141,12 +141,10 @@ h4 {
      height: auto;
 }
 
-/*
-.item-list ul.pager li.pager-current {
-     background: none repeat scroll 0 0 #293352;
-     color: #FFFFFF;
-     padding: 3px 5px;
-}*/
+.sub_title {
+    font-size: 0.7em;
+    margin-top: 5px;
+}
 
 .submitted {
      color: #666666;

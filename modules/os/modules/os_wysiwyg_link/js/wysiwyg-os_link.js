@@ -18,6 +18,22 @@ Drupal.wysiwyg.plugins.os_link = {
   
   invoke: function (selection, settings, editorId) {
     var self = this;
+    if (this.isNode(selection.node)) {
+      var link = jQuery(selection.node);
+      if (link[0].nodeName != 'A') {
+        link = link.find('a');
+      }
+      if (link.length == 0) {
+        link = jQuery(selection.node).parents('a');
+      }
+      var info = this.parseAnchor(link[0]);
+      settings['global'].active = info.type;
+      settings['global'].url = info.url;
+    }
+    else {
+      delete settings['global'].active;
+      delete settings['global'].url;
+    }
     Drupal.media.popups.mediaBrowser(function (insert) {
       self.insertLink();
     }, settings['global'], {}, {
@@ -52,6 +68,10 @@ Drupal.wysiwyg.plugins.os_link = {
       window = iframe.contentWindow,
       selected = '[Selected content. Click here to change it.]';
     
+    if (this.selectLink(selection.node)) {
+      selection.content = selection.node.innerHTML;
+    }
+    
     if (selection.content != '') {
       $('.form-item-link-text input', doc).val(selected);
     }
@@ -63,7 +83,7 @@ Drupal.wysiwyg.plugins.os_link = {
             ? window.Drupal.settings.osWysiwygLinkAttributes 
             : false,
           text = $('.form-item-link-text input', doc).val() == '[Selected content. Click here to change it.]'
-            ? selection.content
+            ? (selection.content ? selection.content : window.Drupal.settings.osWysiwygLinkResult)
             : $('.form-item-link-text input', doc).val(); 
       self.insertLink(editorId, text, window.Drupal.settings.osWysiwygLinkResult, attrs);
       $(iframe).dialog('destroy');
@@ -97,7 +117,7 @@ Drupal.wysiwyg.plugins.os_link = {
     }
     else {
       var home = Drupal.settings.basePath + (typeof Drupal.settings.pathPrefix != 'undefined'?Drupal.settings.pathPrefix:''),
-          dummy = a.createElement('a');
+          dummy = document.createElement('a');
       dummy.href = home;
       if (dummy.hostname == a.hostname && a.pathname.indexOf(dummy.pathname) != -1) {
         // internal link
@@ -111,6 +131,30 @@ Drupal.wysiwyg.plugins.os_link = {
       
     }
     return ret;
+  },
+  
+  selectLink: function (node) {
+    if (this.isNode(node)) {
+      var target = jQuery(node).closest('a'),
+          doc = node.ownerDocument;
+      
+      if (typeof doc.getSelection == 'function') {
+        var selection = doc.getSelection(),
+           range = selection.getRangeAt(0);
+        range.selectNode(target[0]);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      else {
+        // IE
+        doc.selection.empty();
+        var range = doc.body.createTextRange();
+        range.moveToElementText(target[0]);
+        range.select();
+      }
+      return true;
+    }
+    return false;
   },
   
   /**

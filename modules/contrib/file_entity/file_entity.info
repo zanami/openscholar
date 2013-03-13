@@ -14,6 +14,7 @@ files[] = views/views_handler_field_file_link_edit.inc
 files[] = views/views_handler_field_file_link_delete.inc
 files[] = views/views_handler_field_file_link_download.inc
 files[] = views/views_plugin_row_file_view.inc
+files[] = views/views_handler_filter_scehma_type.inc
 files[] = tests/file_entity.test
 configure = admin/structure/file-types
 

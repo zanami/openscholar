@@ -34,7 +34,7 @@ function os_menu() {
   );
 
   $items['admin/config/openscholar'] = $items['admin/config/openscholar/openscholar'] = array(
-    'title' => 'Openscholar Settings',
+    'title' => 'OpenScholar Settings',
     'description' => 'Administer OpenScholar specific settings.',
     'position' => 'left',
     'weight' => -5,
@@ -112,17 +112,6 @@ function os_entity_info_alter(&$info) {
 function os_block_info() {
   ctools_include('menu', 'os');
 
-  $blocks['powered-by'] = array(
-    'info' => t('Powered by Openscholar'),
-    'weight' => '10',
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
-
-  $blocks['login'] = array(
-    'info' => t('Login Button'),
-    'weight' => '10',
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
   $blocks['get-started'] = array(
     'info' => t('Get Started - A block to help site admins setup thier site.'),
     'weight' => '-10',
@@ -157,15 +146,6 @@ function os_block_info() {
 function os_block_view($delta = '') {
   $block = array();
   switch ($delta) {
-    case 'powered-by':
-      $block['subject'] = NULL;
-      $block['content'] = theme('openscholar_powered_by');
-      return $block;
-
-    case 'login':
-      $block['subject'] = NULL;
-      $block['content'] = theme('openscholar_login');
-      return $block;
 
     case 'get-started':
       if (user_access('manage group space')) {
@@ -202,7 +182,7 @@ function os_block_view_alter(&$block, &$data) {
 
   if (array_key_exists($data->delta, os_get_menus()) && count($block['content'])) {
   	// Remove nice menus from the sidebar and footer regions.
-  	$theme = (in_array($data->region, array('footer', 'footer-first', 'footer-second', 'sidebar_first', 'sidebar_second'))) ? '' : 'os_nice_menus';
+  	$theme = (in_array($data->region, array('footer', 'footer_first', 'footer_third', 'sidebar_first', 'sidebar_second'))) ? '' : 'os_nice_menus';
     $block['content'] += array(
       '#theme' => $theme,
       '#menu_name' => $data->delta,
@@ -327,12 +307,6 @@ function os_os_widget_alter(&$widget) {
       'tags' => array('Other'),
       'class' => array('menu'),
     );
-
-    switch ($widget['delta']){
-    	case 'powered-by':
-    	case 'login':
-    	  $widget['hidden'] = true;
-    }
   }
   elseif ($widget['module'] == 'node') {
     $widget += array(
@@ -508,16 +482,16 @@ function _os_process_node_links_comment_add_class(&$vars) {
  * Implements hook_preprocess_HOOK() for page.tpl.php.
  */
 function os_preprocess_page(&$vars) {
-  
+
   //hide useless tabs
   if (is_array($vars['tabs']['#primary'])) {
     foreach ($vars['tabs']['#primary'] as $delta => $tab) {
-      if (!in_array($tab['#link']['path'], array('node/%/view', 'node/%/devel' ))) {
+      if (in_array($tab['#link']['path'], array('node/%/edit', 'node/%/outline','node/%/log' ))) {
         unset($vars['tabs']['#primary'][$delta]);
       }
     }
   }
-  
+
   $types = os_get_bundles();
 
   $links = array();
@@ -725,16 +699,17 @@ function os_settings_form($form_state) {
   if (!overlay_get_mode() == 'child') {
     $form['#redirect'] = '';
   }
-  $form['os'] = array(
+
+  $form['os_general'] = array(
     '#type' => 'fieldset',
     '#title' => t('General'),
-    '#weight' => 1,
+    '#weight' => 0,
     '#collapsible' => TRUE,
-    '#collapsed' => FALSE
+    '#collapsed' => FALSE,
   );
-  $form['os']['os_use_dropdowns'] = array(
+  $form['os_general']['os_use_dropdowns'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Use Dropdowns'),
+    '#title' => t('Use dropdowns'),
     '#default_value' => variable_get('os_use_dropdowns', 1),
     '#description' => t('Enable dropdowns globally across your site. Unchecking will disable all custom menus from having dropdowns at all.'),
   );
@@ -1013,7 +988,11 @@ function os_system_info_alter(&$info, $file, $type) {
   // If the base theme for this theme is 'os_basetheme' or if the is a 'vsite'
   // theme add the default regions.
   if ((isset($info['base theme']) && $info['base theme'] == 'os_basetheme') || (isset($info['os']['theme_type']) && $info['os']['theme_type'] == 'vsite')) {
-
+    if (!file_exists(dirname($file->filename) . '/favicon.ico')) {
+      $info['settings']['favicon_path'] = drupal_get_path('theme', 'os_basetheme').'/favicon.ico';
+      $info['settings']['default_favicon'] = 0;
+    }
+    
     $info['regions'] += array(
       'branding_header' => 'Branding Header',
       'branding_footer' => 'Branding Footer',
