@@ -189,13 +189,15 @@ class os_sv_list_box extends os_boxes_default {
       '#default_value' => $this->options['more'],
     );
 
+    //populate list of content types => paths
     ctools_include('os', 'os');
     $content_map = os_get_app_path();
     $content_map = array_diff_key($content_map, array_flip(array('bio', 'cv', 'class_material')));
     if (isset($content_types['image'])) {
       $content_map['image'] = $content_map['media_gallery'];
     }
-    $content_map['all'] = '';
+    $content_map += array_fill_keys(array_keys(array_diff_key($content_types, $content_map)),''); //use blank path for unknown paths.
+    //$content_map['all'] = '';
 
     if (!empty($content_map[$content_types_value]) && (empty($this->options['more_link']) || in_array($this->options['more_link'], $content_map))) {
       $default_value = $content_map[$content_types_value];
