@@ -437,9 +437,7 @@ class os_sv_list_box extends os_boxes_default {
         $query->propertyOrderBy($sort[0], $sort[1]);
 
       break;
-        
-      
-        
+
       case 'event':
         //Only query the date field if they are sorting by it
         if($options['sort_by'] == 'sort_event'){
@@ -529,8 +527,8 @@ class os_sv_list_box extends os_boxes_default {
     }else if (is_int($page)){
       $query->range(0, $this->options['number_of_items']);
     }
-    
-    
+
+
     //sorting exceptions
     switch ($options['content_type']) {
       case 'person':

@@ -27,3 +27,11 @@
 }
 
 
+.not-front #content-panels .region-content-bottom {
+    width:100%;
+    float: none;
+  }
+  
+.not-front .content-left.content-right #content-panels .region {
+    width: 50%;
+  }
