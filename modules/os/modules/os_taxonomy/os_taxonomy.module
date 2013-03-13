@@ -57,10 +57,18 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
   }
 
   // Get the term alias, if exists.
-  $path = array_slice($item['original_map'], $path_elements);
+  $path_parts = array_slice($item['original_map'], $path_elements);
 
-  if (!$path = drupal_get_normal_path(implode('/', $path))) {
+  if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
     return;
+  }
+
+  //Check the path prefixed with the purl if we are in a vsite
+  if(module_exists('vsite') && vsite_get_vsite() && $path == implode('/', $path_parts) && strpos($path, 'taxonomy/term/') !== 0){
+    array_unshift($path_parts, vsite_get_purl());
+    if (!$path = drupal_get_normal_path(implode('/', $path_parts))) {
+      return;
+    }
   }
 
   if (strpos($path, 'taxonomy/term/') !== 0) {
@@ -355,7 +363,21 @@ function os_taxonomy_get_prefix_path(&$options) {
  */
 function os_taxonomy_term_alias(&$item_path, $options) {
   if (!empty($options['path_prefix']) && strlen($options['path_prefix']) && strpos($item_path,'taxonomy/') === 0) {
-    $path_alias = $options['path_prefix'] . drupal_get_path_alias($item_path);
+
+    //If in a vsite remove the purl from the path alias
+    if (module_exists('vsite') && $purl = vsite_get_purl()) {
+      $path_args = explode('/', drupal_get_path_alias($item_path));
+
+      // Remove the value from the front of the query string
+      if (current($path_args) === $purl) {
+        array_shift($path_args);
+      }
+
+      $path_alias = $options['path_prefix'] . implode('/', $path_args);
+    }else{
+      $path_alias = $options['path_prefix'] . drupal_get_path_alias($item_path);
+    }
+
     // Check that the path alias doesn't exist yet (e.g. a node with the exact
     // same title).
     $path_collision = FALSE;
@@ -370,7 +392,7 @@ function os_taxonomy_term_alias(&$item_path, $options) {
     }
 
     if (!$path_collision) {
-      $item_path = $options['path_prefix'] . drupal_get_path_alias($item_path);
+      $item_path = $path_alias;
     }
     else {
       // Use the non-aliased name.
