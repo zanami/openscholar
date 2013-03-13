@@ -129,7 +129,7 @@ function os_events_preprocess_date_views_pager(&$variables) {
   $date_info = $view->date_info;
   $next_url = &$variables['next_url'];
   $prev_url = &$variables['prev_url'];
-  $granularity = !empty($date_info->granularity) ? $date_info->granularity : 'month';
+  $granularity = !empty($date_info->calendar_type) ? $date_info->calendar_type : 'month';
   $format = array('year' => 'Y', 'month' => 'Y-m', 'day' => 'Y-m-d');
 
   // Get information about dates.
@@ -138,9 +138,8 @@ function os_events_preprocess_date_views_pager(&$variables) {
 
   $prev_date = clone($min_date);
   $next_date = clone($max_date);
-  date_modify($prev_date, '-1 ' . $variables['plugin']->options['date_id']);
-  date_modify($next_date, '+1 ' . $variables['plugin']->options['date_id']);
-
+  date_modify($prev_date, '-1 ' . $granularity);
+  date_modify($next_date, '+1 ' . $granularity);
   switch ($granularity) {
     case 'week':
       $next_week = date_week(date_format($next_date, 'Y-m-d'));
@@ -154,8 +153,8 @@ function os_events_preprocess_date_views_pager(&$variables) {
   }
 
   // Change the link URL and arguments.
-  $variables['next_options']['query'] = array('date' => $next_arg, 'type' => $variables['plugin']->options['date_id']);
-  $variables['prev_options']['query'] = array('date' => $prev_arg, 'type' => $variables['plugin']->options['date_id']);
+  $variables['next_options']['query'] = array('date' => $next_arg, 'type' => $granularity);
+  $variables['prev_options']['query'] = array('date' => $prev_arg, 'type' => $granularity);
   $next_url = $_GET['q'];
   $prev_url = $_GET['q'];
 }
