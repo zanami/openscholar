@@ -1310,6 +1310,10 @@ function media_gallery_update_7010() {
  */
 
 function media_gallery_update_7011() {
+  if (db_table_exists('field_data_media_gallery_file')) {
+    return t('Media gallery already using new field.  Not performing upgrade.');
+  }
+  
   //see: http://zgadzaj.com/how-to-change-the-machine-name-of-a-content-field-in-drupal-7
   $old = 'media_gallery_media';
   $new = 'media_gallery_file';
@@ -1337,7 +1341,7 @@ function media_gallery_update_7011() {
       'default' => NULL,
     ),
   );
-  
+    
   try {
     db_update('field_config')
       ->fields(array('field_name' => $new))
