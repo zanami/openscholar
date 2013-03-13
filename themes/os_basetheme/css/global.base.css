@@ -534,6 +534,16 @@ table video {
   max-width: none;
 }
 
+.lt-ie9 img,
+.lt-ie9 object,
+.lt-ie9 embed,
+.lt-ie9 video {
+  max-width: 100%;
+  border:none;
+  width:auto;
+  height:auto;
+}
+
 /* Override max-width 100% for map displays, as much as possible anyway... */
 #map img,
 .gmap img,
