@@ -74,8 +74,9 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
   $query->add_where($group_key, "$alias.og_vocabulary_target_id", $tid, '=');
 
   if ($view_title = $view->get_title()) {
+    $term = taxonomy_term_load($tid);
     $params = array(
-      '@term' => entity_label('taxonomy_term', $term),
+      '@term' => taxonomy_term_title($term),
     );
     $view->set_title(t('@term', $params));
   }
