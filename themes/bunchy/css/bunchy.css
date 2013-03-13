@@ -230,7 +230,10 @@ p.copy a {
   text-decoration: underline;
   }
   
-  .date-next a {
+
+
+.view .date-nav-wrapper .date-prev a, .view .date-nav-wrapper .date-next a {
+
 font-size: 11px;
 }
 
