@@ -43,7 +43,7 @@ Drupal.wysiwyg.plugins.os_link = {
   },
   
   insertLink: function (editorId, body, target, attributes) {
-    var html = '<a href="'+target+'">'+body+'</a>';
+    var html = '<a href="'+target+'">'+(body?body:target)+'</a>';
     
     if (attributes) {
       var $html = jQuery(html);
