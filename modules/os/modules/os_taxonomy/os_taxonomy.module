@@ -49,16 +49,15 @@ function os_taxonomy_views_query_alter(&$view, &$query) {
     return;
   }
 
-
   $item = menu_get_item();
-  if (count($item['original_map']) == 1) {
-    // We are just looking at classes.
+  $path_elements = count(explode("/", $view->get_path()));
+  if (count($item['original_map']) <= $path_elements) {
+    // We are just looking at view path.
     return;
   }
 
   // Get the term alias, if exists.
-  $path = $item['original_map'];
-  unset($path['0']);
+  $path = array_slice($item['original_map'], $path_elements);
 
   if (!$path = drupal_get_normal_path(implode('/', $path))) {
     return;
@@ -254,7 +253,7 @@ function theme_os_taxonomy_vocabulary_item_list($variables) {
         $feature = current($map[$bundle]);
       }
     }
-    $options['path_prefix'] = isset($feature) ? strval(os_get_app_path($feature)) : 'taxonomy';
+    $options['path_prefix'] = isset($feature) ? variable_get("os_taxonomy_app_path_{$feature}", strval(os_get_app_path($feature))) : 'taxonomy';
     if (strlen($options['path_prefix'])) {
       $options['path_prefix'] = $options['path_prefix'] . "/";
     }
