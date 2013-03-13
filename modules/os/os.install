@@ -63,6 +63,9 @@ function os_update_7005() {
   }
 }
 
+/**
+ * Enable the OS WYSIWYG Link Module
+ */
 function os_update_7006() {
   if (module_enable(array('os_wysiwyg_link'))) {
     return t('OS Wysiwyg Link module installed.');
