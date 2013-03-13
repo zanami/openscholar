@@ -113,6 +113,7 @@ class os_sv_list_box extends os_boxes_default {
         'display_sidebar_teaser' => t('Sidebar Teaser'),
         'display_teaser' => t('Teaser'),
         'display_body' => t('Entire Post'),
+        'display_links' => t('Link'),
       ),
       // This #states rule limits use to when the $form['query_scope']
       // 'subsites' checkbox is not checked."
@@ -122,7 +123,11 @@ class os_sv_list_box extends os_boxes_default {
         ),
       ),
     );
-    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array('display_sidebar_teaser' => array('news', 'event', 'person')))));
+    //defines which display types are content type specific
+    $form['display']['#attached']['js'][] = array('type'=>'setting', 'data'=>array('os_sv_list' => array('has_display' => array(
+      'display_sidebar_teaser' => array('news', 'event', 'person'),
+      'display_links' => array('link'),
+    ))));
 
     $form['sort_by'] = array(
       '#type' => 'select',
@@ -715,6 +720,24 @@ class os_sv_list_box extends os_boxes_default {
     return theme('item_list', array(
       'items' => $items,
       'type' => 'ul'
+    ));
+  }
+
+  function display_links($nodes) {
+    $links = array();
+    foreach ($nodes as $node) {
+      $field_link = field_get_items('node', $node, 'field_links_link');
+      if(count($field_link) && strlen($field_link[0]['url'])){
+        $links[] = l($node->title, $field_link[0]['url']);
+      }
+    }
+
+    return theme('item_list', array(
+      'items' => $links,
+      'type' => 'ul',
+      'attributes' => array(
+        'class' => 'link-list',
+      ),
     ));
   }
 
