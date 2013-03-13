@@ -716,11 +716,14 @@ class os_sv_list_box extends os_boxes_default {
       'type' => 'ul'
     ));
   }
-  
+
   function display_links($nodes) {
     $links = array();
     foreach ($nodes as $node) {
-      $links[] = l($node->title, $node->field_links_link[$node->language][0]['url']);
+      $field_link = field_get_items('node', $node, 'field_links_link');
+      if(count($field_link) && strlen($field_link[0]['url'])){
+        $links[] = l($node->title, $field_link[0]['url']);
+      }
     }
     return implode('<br>', $links);
   }
