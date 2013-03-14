@@ -202,6 +202,14 @@ ul.menu li.last  {
 }
 
 /* Breadcrumbs as an ordered list */
+.breadcrumb {
+ margin: 15px 0 0 15px;
+}
+
+.node-type-page .breadcrumb {
+ margin: 15px 0 12px;
+}
+
 #breadcrumb {
   padding-bottom: 1em;
 }
@@ -799,7 +807,7 @@ ul.nice-menu-down li li.menuparent:hover {
 /* Section Nav - Section Heading */
 .section-nav .menu-depth-1 > a {
 	background: none !important;
-	background-color: #293352 !important;
+	background-color: #444 !important;
 	color: #fff;
 	text-transform: uppercase;
 }
@@ -809,29 +817,163 @@ ul.nice-menu-down li li.menuparent:hover {
 	
 }
 
+/* Section Nav */
+#boxes-box-os_pages_section_nav {
+	border: 1px solid #ebe3df;
+	border-bottom: none;
+}
+
+.section-nav li.expanded, 
+.section-nav li.collapsed, 
+.section-nav li.leaf {
+  padding: 0;
+}
+
+.section-nav ul.menu {
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
+.section-nav ul.menu li {
+	list-style: none;
+	background-color: #fff;
+	text-align: left;
+}
+
+.section-nav ul.menu li a {
+	display: block;
+	text-decoration: none;
+	padding: 8px 15px;
+	border-bottom: 1px solid #ebe3df;
+}
+
+
+.section-nav a:link,
+.section-nav a:visited {
+	/*color: #4384C4;*/
+	text-decoration:none !important;
+}
+
+.section-nav a:hover {
+	background-color: #e3e3e1 !important;
+	
+}
+
+.section-nav a.active {
+	color: #1e1e1e;
+}
+
+/* Section Nav - Section Heading */
+.section-nav .menu-depth-1 > a {
+	background: none !important;
+	background-color: #777 !important;
+	color: #fff;
+	text-transform: uppercase;
+	color:#FFF !important;
+}
+
+.section-nav .collapsed > a {
+	background: url('../images/arrow-right.png') no-repeat left center;
+	
+}
+
+
 .section-nav .expanded > a {
-	background: url('images/arrow-down.png') no-repeat left center;
+	background: url('../images/arrow-down.png') no-repeat left center;
 	
 }
 .section-nav .expanded.menu-depth-2 > a {
-	background-color: #3a72ab;
+	background-color: #999;
 	color: #fff;
+}
+
+.section-nav .expanded.menu-depth-2 > a:hover {
+	background-color: #777 !important;
 }
 
 .section-nav .expanded.menu-depth-2 .menu-depth-3 > a,
 .section-nav .expanded.menu-depth-2 .menu-depth-4 > a,
-.section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
+.section-nav .expanded.menu-depth-2 .menu-depth-5 > a,
+.section-nav .expanded.menu-depth-2 .menu-depth-6 > a {
 	background-color: #f3f3f1;
 	padding-left: 25px;
 }
 
+.section-nav .expanded.menu-depth-2 .menu-depth-3 > a {
+	padding-left: 25px;
+	background: url('../images/arrow-down.png') no-repeat 10px center;
+}
+
+.section-nav .expanded.menu-depth-2 .leaf.menu-depth-3 > a,
+.section-nav .expanded.menu-depth-2 .leaf.menu-depth-4 > a,
+.section-nav .expanded.menu-depth-2 .leaf.menu-depth-5 > a,
+.section-nav .expanded.menu-depth-2 .leaf.menu-depth-6 > a {
+  background: none;
+}
+
 .section-nav .expanded.menu-depth-2 .menu-depth-4 > a {
 	padding-left: 35px;
+	background: url('../images/arrow-down.png') no-repeat 20px center;
 }
 
 .section-nav .expanded.menu-depth-2 .menu-depth-5 > a {
 	padding-left: 45px;
+	background: url('../images/arrow-down.png') no-repeat 30px center;
+}
+
+.section-nav .expanded.menu-depth-2 .menu-depth-6 > a {
+	padding-left: 55px;
+	
 }
 
 
+.section-nav .expanded.menu-depth-2 .collapsed.menu-depth-3 > a {
+	padding-left: 25px;
+	background: url('../images/arrow-right.png') no-repeat 10px center;
+}
+
+.section-nav .expanded.menu-depth-2 .collapsed.menu-depth-4 > a {
+	padding-left: 35px;
+	background: url('../images/arrow-right.png') no-repeat 20px center;
+}
+
+.section-nav .expanded.menu-depth-2 .collapsed.menu-depth-5 > a {
+	padding-left: 45px;
+	background: url('../images/arrow-right.png') no-repeat 30px center;
+}
+
+.section-nav .expanded.menu-depth-2 .collapsed.menu-depth-6 > a {
+	padding-left: 55px;
+
+}
+
+
+/** MENU WHEN IN FOOTER **/
+
+#footer ul.menu, #footer ul {
+    margin-left: 0;
+}
+
+ul li.leaf {
+    list-style-image: none;
+    list-style-type: none;
+}
+
+#footer ul.menu li.expanded {
+    clear: none;
+    display: inline;
+    float: left;
+    font-size: 12px;
+    margin-right: 20px;
+    word-wrap: break-word;
+}
+
+#footer ul li a {
+    font-weight:bold;
+}
+
+#footer ul li li a {
+    font-weight:normal;
+    word-wrap: break-word;
+}
 

@@ -19,6 +19,9 @@ function os_faq_os_app_info() {
   	'nodetypes' => array(
   	  'faq',
     ),
+    'views tabs' => array(
+      'os_faq' => array('page'),
+    ),
   );
 
   return $apps;

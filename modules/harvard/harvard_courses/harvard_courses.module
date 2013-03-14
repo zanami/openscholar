@@ -68,7 +68,7 @@ function harvard_courses_os_widget() {
   $widgets = array();
 
   $widgets['harvard_courses-courses_filter'] = array(
-    'module' => 'havard_courses',
+    'module' => 'harvard_courses',
     'delta' => 'courses_filter',
     'title' => '',
     'info' => t('Harvard courses filter'),
@@ -111,23 +111,21 @@ function  harvard_courses_block_view($delta) {
  */
 function harvard_courses_courses_filter() {
   if (!$space = spaces_get_space()) {
-    return $block;
-  }
-
-  $query = db_select('og_membership', 'ogm');
-  $query->join('node', 'n', 'n.nid = ogm.etid');
-  $results = $query
-    ->fields('n')
-    ->condition('ogm.gid', $space->id)
-    ->condition('n.type', 'harvard_course')
-    ->execute()
-    ->fetchAllKeyed();
-
-  if (empty($results)) {
     return;
   }
 
-  $nodes = node_load_multiple(array_keys($results));
+  $query = new entityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'harvard_course')
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $space->id)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  $nodes = node_load_multiple(array_keys($result['node']));
   $semester = array();
   foreach ($nodes as $node) {
     $wrapper = entity_metadata_wrapper('node', $node);
@@ -209,6 +207,10 @@ function harvard_courses_permission() {
     'view harvard courses' => array(
       'title' => t('Harvard courses'),
       'description' => t('Grant to the user general access to harvard courses data.'),
+    ),
+    'edit harvard courses app settings' => array(
+      'title' => t('Edit Harvard courses app settings'),
+      'description' => t('Allow users to edit the Harvard courses settings'),
     ),
   );
 }
@@ -320,7 +322,7 @@ function harvard_courses_node_insert($node) {
   $node->skip_og_membership = TRUE;
 
   // Change description field format to full html.
-  $node->field_description[LANGUAGE_NONE][0]['format'] = 'full_html';
+  $node->field_course_description[LANGUAGE_NONE][0]['format'] = 'full_html';
 }
 
 /**
@@ -566,6 +568,40 @@ function harvard_courses_form_cp_app_settings_form_alter(&$form, &$form_state) {
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function harvard_courses_form_spaces_features_form_alter(&$form, &$form_state) {
+  if (!$space = spaces_get_space()) {
+    return;
+  }
+
+  foreach (array_keys($form['spaces_features']) as $app_name) {
+    // Skips render array markup.
+    if ($app_name[0] == '#') {
+      continue;
+    }
+
+    // The user don't have access to edit the settings of the Harvard courses
+    // app settings.
+    if ($app_name == 'harvard_courses' && !user_access('edit harvard courses app settings')) {
+      unset($form['spaces_features'][$app_name]);
+      return;
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Hiding the catalog number and the department school fields when editing the
+ * site settings.
+ */
+function harvard_courses_form_personal_node_form_alter(&$form, $form_state) {
+  $form['field_catalog_number']['#access'] = FALSE;
+  $form['field_department_school']['#access'] = FALSE;
+}
+
+/**
  * After build function for removing the comment settings area.
  */
 function harvard_courses_form_cp_app_settings_form_after_build($form, &$form_state) {
@@ -684,6 +720,34 @@ function harvard_courses_feature_submit($form, $form_state) {
  * Implements hook_field_access().
  */
 function harvard_courses_field_access($op, $field, $entity_type, $entity, $account) {
+  // Hiding the mapped fields.
+  if ($entity_type == 'node' && is_object($entity) && $entity->type == 'harvard_course' && $op != 'view') {
+    $fields = array(
+      'field_term',
+      'field_notes',
+      'field_number',
+      'field_credits',
+      'field_faculty',
+      'field_meetings',
+      'field_building',
+      'field_cat_number',
+      'field_course_url',
+      'term_description',
+      'field_exam_group',
+      'field_course_description',
+      'field_department_id',
+      'field_prerequisites',
+      'field_section_number',
+      'field_calendar_period',
+      'field_cross_registration',
+      'field_faculty_description',
+    );
+
+    if (in_array($field['field_name'], $fields)) {
+      return FALSE;
+    }
+  }
+
   if (!in_array($field['field_name'], array('field_department_school', 'field_catalog_number'))) {
     return;
   }

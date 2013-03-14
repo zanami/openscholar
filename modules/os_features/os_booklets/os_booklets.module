@@ -20,6 +20,9 @@ function os_booklets_os_app_info() {
   	'nodetypes' => array(
   	  'book',
     ),
+    'views tabs' => array(
+      'os_booklets' => array('page'),
+    ),
   );
 
   return $apps;

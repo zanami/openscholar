@@ -20,6 +20,9 @@ function os_software_os_app_info() {
   	  'software_project',
       'software_release',
     ),
+    'views tabs' => array(
+      'os_software_projects' => array('page'),
+    ),
   );
 
   return $apps;

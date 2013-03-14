@@ -1,0 +1,23 @@
+diff --git a/imagefield_crop.module b/imagefield_crop.module
+index a675e94..225091f 100644
+--- a/imagefield_crop.module
++++ b/imagefield_crop.module
+@@ -824,6 +824,11 @@ function imagefield_crop_upload_validate($file, $field, $instance) {
+         $errors[] = t('The image is too small; the minimum dimensions are %dimensions pixels.', array('%dimensions' => $widget_settings['resolution']));
+       }
+   }
++
++  if ($instance['settings']['max_filesize'] && parse_size($instance['settings']['max_filesize']) < $file->filesize) {
++    $errors[] = t('This image is too large.  The maximum size is !max', array('!max' => $instance['settings']['max_filesize']));
++  }
++
+   return $errors;
+ }
+ 
+@@ -862,4 +867,4 @@ function imagefield_crop_views_api() {
+     'api' => views_api_version(),
+     'path' => drupal_get_path('module', 'imagefield_crop') . '/includes',
+   );
+-}
+\ No newline at end of file
++}

@@ -254,6 +254,8 @@ table.spaces td.option, table.spaces td.storage {
     padding:15px;
     border: 1px solid #CCC;
  }
+ 
+ .cp-add-new-user ul {list-style-type:none;}
 
 /* CP/BUILD MENU */ 
 .page-cp-build-menu table thead {

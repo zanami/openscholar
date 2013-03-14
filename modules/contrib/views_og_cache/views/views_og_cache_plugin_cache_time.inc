@@ -31,6 +31,7 @@ class views_og_cache_plugin_cache_time extends views_plugin_cache_time {
         // If the default query back-end is used generate SQL query strings from
         // the query objects.
         if ($build_info[$index] instanceof SelectQueryInterface) {
+          $build_info[$index."_arguments"] = $build_info[$index]->getArguments();
           $build_info[$index] = (string) $build_info[$index];
         }
       }

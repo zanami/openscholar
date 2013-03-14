@@ -140,7 +140,7 @@ function vsite_register_form($form, &$state) {
       '#description' => t('Enter the name of the user who will manage this new site or !create_new.',
         array('!create_new' => $ajax_link)
       ),
-    	'#autocomplete_path' => 'user/autocomplete',
+    	'#autocomplete_path' => 'vsite/autocomplete/user',
     );
 
     //flag for JS to set when create new user is clicked

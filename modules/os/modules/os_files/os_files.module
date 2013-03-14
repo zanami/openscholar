@@ -46,6 +46,20 @@ function os_files_menu(){
 }
 
 /**
+ * Returns the path a file should be saved in
+ */
+function os_files_get_save_path() {
+  $filepath = OS_FILE_FILEPATH_SINGLETENANT;
+  
+  // Are we in multi-tenant? get the file path.
+  if (module_exists('vsite') && spaces_get_space()) {
+    $filepath = OS_FILE_FILEPATH_MULTITENANT;
+  }
+  
+  return $filepath;
+}
+
+/**
  * Implements hook_menu_alter().
  */
 function os_files_menu_alter(&$callbacks){
@@ -64,6 +78,12 @@ function os_files_menu_alter(&$callbacks){
       );
     }
   }
+  
+  $callbacks['file/%file/edit/ajax'] = $callbacks['file/%file/edit'];
+  $callbacks['file/%file/edit/ajax']['delivery callback'] = 'ajax_deliver';
+  
+  $callbacks['file/%file/delete/ajax'] = $callbacks['file/%file/delete'];
+  $callbacks['file/%file/delete/ajax']['delivery callback'] = 'ajax_deliver';
 }
 
 function os_files_theme_registry_alter(&$reg){
@@ -73,6 +93,17 @@ function os_files_theme_registry_alter(&$reg){
 
 function theme_os_files_oembed($vars){
   return render($vars['content']);
+}
+
+/**
+ * Implements hook_library_alter().
+ */
+function os_files_library_alter(&$libs, $module) {
+  if ($module == 'media') {
+    $path = drupal_get_path('module', 'os_files');
+    $libs['media_browser_page']['js'][$path.'/theme/os_files.browser.js'] = array('group' => JS_DEFAULT);
+    $libs['media_browser_page']['css'][$path.'/theme/os_files.browser.css'] = array('group' => CSS_DEFAULT);
+  } 
 }
 
 /**
@@ -148,27 +179,109 @@ function os_files_form_file_entity_add_upload_alter(&$form, &$form_state) {
   $path = drupal_get_path('module', 'os_files');
   $form['#attached']['css'][] = $path.'/theme/os_files_upload_form.css';
   $form['#attached']['js'][] = $path.'/theme/os_files_upload_form.js';
+  
+  $form['#step'] = 3;
+    
+  array_unshift($form['#submit'], 'os_files_file_entity_add_upload_submit');
+}
+
+function os_files_file_entity_add_upload_submit(&$form, &$form_state) {
+  $form_state['triggering_element']['#id'] = 'edit-submit';
+  $file = file_load($form_state['values']['upload']);
+  $form_state['values']['type'] = $file->type;
 }
 
 function os_files_form_file_entity_edit_alter(&$form, &$form_state){
-  $form['filename']['#title'] = t('Name');
-  $form['filename']['#description'] = t('An unofficial name only seen by your site\'s managers.');
-
-  $form['media_title_description'] = array(
-    '#type' => 'markup',
-    '#weight' => $form['media_title']['#weight'] + 0.1,
-    '#markup' => t('The title of the file, if it has one. Users can see this title. Ex. The Etymology and History of Jabberwocky Language.'),
-    '#attributes' => array(
-      'class' => array('description'),
-    )
-  );
+  $form['filename']['#title'] = t('Title');
+  $form['filename']['#description'] = t('Name of file as seen by your site\'s visitors');
+  
+  $form['media_title'][LANGUAGE_NONE][0]['value']['#title'] = t('Gallery Title');
+  
+  $form['media_title'][LANGUAGE_NONE][0]['value']['#description'] = t('Title of File in a Gallery.');
+  
+  $form['media_description'][LANGUAGE_NONE][0]['#title'] = t('Gallery Description');
+  $form['media_description'][LANGUAGE_NONE][0]['#description'] = t('Used when file is in a gallery.');
+  
+  if ($form['type']['#value'] != 'image' && $form['type']['#value'] != 'video') {
+    $form['preview']['#access'] = false;
+  }
+  
+  $form['media_description'][LANGUAGE_NONE][0]['#type'] = 'textarea';
+  
+  $form['user']['#access'] = false;
 
   // only display the field if the file is older than 5 minutes
   if (isset($form['#entity'])) {
     $form['replace_upload']['#access'] = (time() - $form['#entity']->timestamp) > 5 * 60;
   }
   else {
+    $form['replace_upload']['#access'] = FALSE;
+  }
+  
+  // modify the form when we're getting it through ajax
+  // this means we'll be getting it through the media browser
+  if (strpos($_GET['q'], 'ajax') !== FALSE) {
+    $form['preview']['#access'] = false;
+    
     $form['replace_upload']['#access'] = false;
+    
+    $form['media_title']['#access'] = false;
+    $form['media_title'][LANGUAGE_NONE][0]['value']['#value_callback'] = 'os_files_media_title_value';
+    
+    $form['media_description']['#access'] = false;
+    
+    $form['actions']['submit']['#attributes'] = array(
+      'class' => array('use-ajax-submit'),
+    );
+    
+    $form['actions']['delete']['#attributes'] = array(
+      'class' => array('use-ajax-submit'),
+    );
+    $form['actions']['delete']['#submit'] = array(
+      'os_files_edit_delete_ajax_submit'
+    );
+  }
+}
+
+/**
+ * Form submission handler for the 'Delete' button for file_entity_edit().
+ */
+function os_files_edit_delete_ajax_submit($form, &$form_state) {
+  $fid = $form_state['values']['fid'];
+  $form_state['redirect'] = array('file/' . $fid . '/delete/ajax');
+  $form_state['no_redirect'] = false;
+
+  // Clear the page and block caches.
+  cache_clear_all();
+}
+
+function os_files_form_file_entity_delete_form_alter(&$form, &$form_state) {
+  if (strpos($_GET['q'], 'ajax') !== FALSE) {
+    $form['actions']['submit']['#attributes'] = array(
+      'class' => array('use-ajax-submit'),
+    );
+    
+    $form['#submit'][] = 'os_files_form_file_delete_submit';
+  }
+}
+
+function os_files_form_file_delete_submit(&$form, &$form_state) {
+  $form_state['no_redirect'] = true;
+  $form['#type'] = 'ajax';
+  ctools_include('ajax');
+  $form['#commands'][] = ctools_ajax_command_reload();
+}
+
+/**
+ * Set the default value for media_title
+ * @param $element
+ * @param $input
+ * @param $form_state
+ * @return
+ */
+function os_files_media_title_value($element, $input = FALSE, $form_state = array()) {
+  if ($input === FALSE) {
+    return isset($form_state['values']['filename']) ? $form_state['values']['filename'] : '';
   }
 }
 
@@ -431,18 +544,26 @@ function os_files_media_token_to_markup_alter(&$element, $tag_info, $settings){
     ));
     $file['link']['#options']['html'] = true;
   }
+  
+  $file = &$element['content']['file'];
+  if (isset($file['#theme']) && $file['#theme'] == 'image_style') {
+    $file['#theme'] = 'image';
+    $file['#path'] = image_style_url($file['#style_name'], $file['#path']);
+  }
 }
 
 /**
  * File Settings.
  */
 function os_files_media_browser_params_alter(&$media_params){
+  $media_params['types'][] = array_intersect($media_params['types'], array('image', 'audio', 'video', 'html'));
+  
   if (!empty($media_params['types'])) {
     $media_params['types'][] = 'default';
   }
 
   // Are we in multi-tenant? get the file path.
-  if (spaces_get_space()) {
+  if (module_exists('vsite') && spaces_get_space()) {
     $filepath = OS_FILE_FILEPATH_MULTITENANT;
   }
   else {
@@ -462,12 +583,61 @@ function os_files_media_browser_params_alter(&$media_params){
 }
 
 /**
+ * Alter all saved files reguardless of where they are saved from
+ *
+ * @param Entity $file
+ */
+function os_files_field_widget_form_alter(&$elements, &$form_state, $context){
+
+  //This is a widget that handles files, lets assure that the file makes it to the correct location.
+  if (in_array($context['field']['type'],array('imagefield_crop','image','file')) && isset($context['instance']['settings']['file_directory'])) {
+
+    // We are in a vsite and the filepath is not already set to the correct location.
+    if(module_exists('vsite') && spaces_get_space() && strpos(trim($context['instance']['settings']['file_directory'], '/'), OS_FILE_FILEPATH_MULTITENANT) !== 0){
+      //Modify the instance to prefix it with the proper tokenized file directory
+      $context['instance']['settings']['file_directory'] = OS_FILE_FILEPATH_MULTITENANT.'/'.trim($context['instance']['settings']['file_directory'], '/');
+      $upload_location = file_field_widget_uri($context['field'], $context['instance']);
+      foreach (element_children($elements) as $delta) {
+        $elements[$delta]['#upload_location'] = $upload_location;
+      }
+    }
+  }
+
+  if ($context['instance']['widget']['type'] == 'media_generic') {
+    $elements['#process'][] = 'media_element_process';
+    $elements['#process'][] = 'os_files_media_widget_process';
+  }
+}
+
+/**
+ * Alters the text of the media generic widget
+ */
+function os_files_media_widget_process($element, $form_state, $form) {
+  $element['select']['#title'] = t('Choose File');
+  return $element;
+}
+
+/**
+ * Alters text of Add Another button for media generic widgets
+ */
+function os_files_preprocess_field_multiple_value_form(&$vars) {
+  if ($vars['element']['#field_name'] == 'field_upload') {
+    $vars['element']['add_more']['#value'] = t('Add Another');
+  }
+}
+
+/**
  * Alters the titles of the Media Browser tabs to more friendly terms
  */
 function os_files_media_browser_plugins_alter(&$output){
   unset($output['media_default--media_browser_my_files']);
   $output['upload']['#title'] = t('My Computer');
   $output['media_default--media_browser_1']['#title'] = t('My Library');
+  
+  // add an area to the views form to put the file edit form
+  $html = &$output['media_default--media_browser_1']['#markup'];
+  $html = str_replace(array('Submit', 'File name'), array('Insert', 'Search'), $html);
+  $html .= '<div id="file-edit-section"><div id="file-edit-no-selection">Select a file to edit it.</div></div>';
 }
 
 function os_files_media_wysiwyg_allowed_view_modes_alter(&$view_modes, $file){
@@ -548,12 +718,13 @@ function os_files_file_download($uri){
  * work with spaces.
  */
 function os_files_views_default_views_alter(&$views){
-  if (module_exists('vsite') && isset($views['media_default'])) {
-    $view = $views['media_default'];
-
-    //Link in Files related via file_usage
-    $view->add_item('default', 'filter', 'spaces', 'current');
+  if (!module_exists('vsite') || !isset($views['media_default'])) {
+    return;
   }
+  $view = $views['media_default'];
+
+  // Link in Files related via file_usage.
+  $view->add_item('default', 'filter', 'spaces', 'current');
 }
 
 /**
@@ -670,7 +841,7 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
             )
           );
         }
-        elseif (file_uri_scheme($i['uri']) == 'embed') { 
+        elseif (file_uri_scheme($i['uri']) == 'embed') {
           $file = (object)$i;
           $file->override['width'] = 300;
           $videos[] = file_view($file, 'default');
@@ -718,7 +889,7 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
       if (module_exists('jcarousel')) {
         $elements['images']['#pre_render'][] = 'os_files_jcarousel_add';
       }
-      
+
       $elements['videos'] = array(
         '#type' => 'container',
         '#attributes' => array(
@@ -734,7 +905,7 @@ function os_files_field_formatter_view($entity_type, $entity, $field, $instance,
           'video' => $v,
         );
       }
-      
+
       $elements['other'] = array(
         '#theme' => 'table',
         '#rows' => $other,

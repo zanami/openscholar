@@ -8,7 +8,7 @@ function openscholar_install_tasks($install_state) {
 
   // OS flavors (production, development, etc)
   $tasks['openscholar_flavor_form'] = array(
-    'display_name' => t('Choose a enviroment'),
+    'display_name' => t('Choose environment'),
     'type' => 'form'
   );
 
@@ -156,7 +156,7 @@ function openscholar_vsite_modules_batch(&$install_state){
     $modules[] = 'harvard_activity_reports';
   }
 
-  return _opnescholar_module_batch($modules);
+  return _openscholar_module_batch($modules);
 }
 
 /**
@@ -197,7 +197,7 @@ function _openscholar_migrate_content($class, $type, &$context) {
  * @see
  *   http://api.drupal.org/api/drupal/includes%21install.core.inc/function/install_profile_modules/7
  */
-function _opnescholar_module_batch($modules) {
+function _openscholar_module_batch($modules) {
   $t = get_t();
 
   $files = system_rebuild_module_data();

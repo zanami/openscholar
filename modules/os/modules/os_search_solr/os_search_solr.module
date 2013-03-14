@@ -105,21 +105,60 @@ function os_search_solr_block_view_alter(&$data,$block) {
     if(isset($map) && is_array($map)) {
       $searcher_name = os_search_solr_get_searcher_name();
 
-      // Alter the title for Filter by Post Type.
+      // Filter by Post Type.
       $string_bundle = facetapi_build_delta($searcher_name, 'block', 'bundle');
       $delta_bundle = array_search($string_bundle, $map);
 
       if($block->module == 'facetapi' && $block->delta == $delta_bundle) {
+      	// Alter the title.
+      	$data['title'] = 'Filter By Post Type';
 
-      	$data['title'] = 'Filter by Post Type';
+      	// Hide the Filter by Post Type block if there is only one filter.
+        if(isset($data['content']['bundle']) && isset($data['content']['bundle']['#items'])) {
+          $type_array = $data['content']['bundle']['#items'];
+          if(is_array($type_array) && count($type_array) <= 1) {
+          	$data['content'] = NULL;
+          }
+        }
       }
 
-      // Alter the title for Filter by Site.
+      // Filter by Site.
       $string_og = facetapi_build_delta($searcher_name, 'block', 'sm_og_group_ref');
       $delta_og = array_search($string_og, $map);
 
       if($block->module == 'facetapi' && $block->delta == $delta_og) {
+      	// Alter the title.
       	$data['title'] = 'Filter By Site';
+
+        // Hide the Filter By Site facet inside of vsites.
+        if(module_exists('vsite') && vsite_get_vsite()) {
+          $data['content'] = NULL;
+        }
+
+      	// Hide the Filter by Site block if there is only one filter.
+        if(isset($data['content']['sm_og_group_ref']) && isset($data['content']['sm_og_group_ref']['#items'])) {
+          $site_array = $data['content']['sm_og_group_ref']['#items'];
+          if(is_array($site_array) && count($site_array) <= 1) {
+          	$data['content'] = NULL;
+          }
+        }
+      }
+
+      // Filter by Post Date.
+      $string_date = facetapi_build_delta($searcher_name, 'block', 'created');
+      $delta_date = array_search($string_date, $map);
+
+      if($block->module == 'facetapi' && $block->delta == $delta_date) {
+      	// Alter the title.
+      	$data['title'] = 'Filter By Post Date';
+
+        // Hide the Filter by Post Date block if there is only one filter.
+        if(isset($data['content']['ds_created']) && isset($data['content']['ds_created']['#items'])) {
+          $created_array = $data['content']['ds_created']['#items'];
+          if(is_array($created_array) && count($created_array) <= 1) {
+          	$data['content'] = NULL;
+          }
+        }
       }
 
     }

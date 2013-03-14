@@ -95,18 +95,18 @@ function iqss_projects_front_strongarm() {
   	$strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   	$strongarm->api_version = 1;
   	$strongarm->name = 'os_stats_enabled';
-  	$strongarm->value = serialize(array(
-  		'Publications'=>(bool)0,
-  		'Vsites'=>(bool)1,
-  		'Nodes'=>(bool)1,
-  		'Files'=>(bool)1,
-  		'Filesize'=>(bool)0,
-  		'Users'=>(bool)0,
-  	));
+  	$strongarm->value = array(
+  		'filesize' => 0,
+  		'users' => 0,
+  		'websites' => 1,
+  		'posts' => 1,
+  		'publications' => 0,
+  		'files' => 1,
+  	);
   	$export['os_stats_enabled'] = $strongarm;
 
   	return $export;
-}// end function
+}
 
 /**
  * Implements hook_preprocess_page().

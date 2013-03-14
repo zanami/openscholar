@@ -350,7 +350,7 @@ class context_reaction_block extends context_reaction {
   function block_list($region) {
     module_load_include('module', 'block', 'block');
 
-    $context_blocks = &drupal_static('context_reaction_block_list');;
+    $context_blocks = &drupal_static('context_reaction_block_list');
     $contexts = context_active_contexts();
     if (!isset($context_blocks)) {
       $info = $this->get_blocks();

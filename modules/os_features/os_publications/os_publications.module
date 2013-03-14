@@ -98,9 +98,7 @@ function os_publications_form_user_profile_form_alter(&$form, &$form_state) {
   if (isset($form['biblio_fieldset'])) {
     $form['biblio_fieldset']['#access'] = FALSE;
   }
-  // end if
 }
-// end function
 
 /**
  * Alters biblio queries to take spaces into account
@@ -108,47 +106,96 @@ function os_publications_form_user_profile_form_alter(&$form, &$form_state) {
  * Joins to the og_membership table, which is where these relationships are stored
  */
 function os_publications_query_biblio_alter(QueryAlterableInterface $query) {
-  if (module_exists('spaces') && $space = spaces_get_space()) {
-    // this has to be separate because of scoping.
-    if ($space->type == 'og') {
-      $query->innerJoin('og_membership', 'ogm', 'n.nid = ogm.etid');
-      $query->condition('ogm.entity_type', 'node');
-      $query->condition('ogm.group_type', 'node');
-      $query->condition('ogm.gid', $space->id);
-    }
-    // Check the sort order for biblio.
-    // If we're sorting by year, we want to sort by date as well to replicate d6 sorting.
-    if ($space->controllers->variable->get('biblio_sort','space') == 'year') {
-      // Get their sort order.
-      $biblio_year_sort = $space->controllers->variable->get('biblio_order','space');
-      $order = &$query->getOrderBy();
-
-      // Don't wipe the non-default sort order, this will let users still toggle asc/desc sorting by year.
-      if (array_key_exists('biblio_year', $order) && $order['biblio_year'] != $biblio_year_sort) {
-	    	$biblio_year_sort = $order['biblio_year'];
-      }
-
-      // Rebuild the array to our defaults only when the user is NOT searching.  When the user is searching, use their selections
-      if (isset($_GET['s']) && in_array($_GET['s'], array('author', 'title', 'type'))) {
-        $s = current(array_keys($order));
-        $o = current($order);
-
-        if ($s == 'biblio_sort_year') {
-          $biblio_sort_year = $o;
-        }
-
-        if ($s = 'biblio_sort_title') {
-          $biblio_sort_title = $o;
-        }
-      } else {
-        $order = array();
-      }
-
-      $order['biblio_year'] = isset($biblio_year_sort) ? $biblio_year_sort : 'DESC';
-      $order['biblio_date'] = 'DESC';
-      $order['biblio_sort_title'] = (isset($biblio_sort_title)) ? $biblio_sort_title : 'ASC';
-    }
+  if (!module_exists('vsite') || !$space = spaces_get_space()) {
+    return;
   }
+
+  _os_publications_filter_by_term($query);
+
+  // this has to be separate because of scoping.
+  if ($space->type == 'og') {
+    $query->innerJoin('og_membership', 'ogm', 'n.nid = ogm.etid');
+    $query->condition('ogm.entity_type', 'node');
+    $query->condition('ogm.group_type', 'node');
+    $query->condition('ogm.gid', $space->id);
+  }
+
+  // Check for publication_type view.
+  $item = menu_get_item();
+  if(isset($item['path']) && $item['path'] == 'publications' && isset($item['map'][1]) && $item['map'][1] == 'type') {
+    // Reset the order.
+    $order = &$query->getOrderBy();
+    $order = array();
+    // Sort by year, then by node post date.
+    $order['biblio_year'] = 'DESC';
+    $order['n.created'] = 'DESC';
+    return;
+  }
+
+  // Check the sort order for biblio.
+  // If we're sorting by year, we want to sort by date as well to replicate D6
+  // sorting.
+  if ($space->controllers->variable->get('biblio_sort','space') == 'year') {
+    // Get their sort order.
+    $biblio_year_sort = $space->controllers->variable->get('biblio_order','space');
+    $order = &$query->getOrderBy();
+
+    // Don't wipe the non-default sort order, this will let users still toggle asc/desc sorting by year.
+    if (array_key_exists('biblio_year', $order) && $order['biblio_year'] != $biblio_year_sort) {
+      $biblio_year_sort = $order['biblio_year'];
+    }
+
+    // Rebuild the array to our defaults only when the user is NOT searching.  When the user is searching, use their selections
+    if (isset($_GET['s']) && in_array($_GET['s'], array('author', 'title', 'type'))) {
+      $s = current(array_keys($order));
+      $o = current($order);
+
+      if ($s == 'biblio_sort_year') {
+        $biblio_sort_year = $o;
+      }
+
+      if ($s = 'biblio_sort_title') {
+        $biblio_sort_title = $o;
+      }
+    }
+    else {
+      $order = array();
+    }
+
+    $order['biblio_year'] = isset($biblio_year_sort) ? $biblio_year_sort : 'DESC';
+    $order['biblio_date'] = 'DESC';
+    $order['biblio_sort_title'] = (isset($biblio_sort_title)) ? $biblio_sort_title : 'ASC';
+  }
+}
+
+/**
+ * Helper function; Allow filtering publications by taxonomy term.
+ */
+function _os_publications_filter_by_term(QueryAlterableInterface $query) {
+  $item = menu_get_item();
+  // Check if we need to filter by term.
+  if (count($item['original_map']) == 1) {
+    // We are just looking at the origianl tab.
+    return;
+  }
+
+  // Get the term alias, if exists.
+  $path = $item['original_map'];
+  unset($path['0']);
+
+  if (!$path = drupal_get_normal_path(implode('/', $path))) {
+    return;
+  }
+
+  if (strpos($path, 'taxonomy/term/') !== 0) {
+    return;
+  }
+
+  $tid = str_replace('taxonomy/term/', '', $path);
+
+  // Join the taxonomy index table.
+  $query->innerJoin('taxonomy_index', 'ti', 'ti.nid = n.nid');
+  $query->condition('ti.tid', $tid);
 }
 
 /**

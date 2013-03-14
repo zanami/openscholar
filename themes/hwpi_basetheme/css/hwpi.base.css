@@ -18,9 +18,19 @@ a:visited {
     list-style: disc;
 }
 
+#columns .block.block-boxes-os_taxonomy_fbt ul,
+#columns .block .item-list ul,
+#columns .block.block-boxes-os_boxes_twitterfeed ul
+ {list-style: none;}
+
 p:empty {
 	display: none;
 }
+
+.sidebar h1.node-title {
+    margin-bottom: 0;
+}
+
 
 table, th, td, tr {
   border-color: #CACACA;
@@ -32,12 +42,16 @@ table caption {
   text-align: left;
 }
 
+#powered-by a {
+    margin-right: 15px;
 
-#footer #block-os-login a {
+}
+
+#footer .footer-login {
   background: url('../images/readmore_arrow.gif') no-repeat right center;
   box-shadow: none;
   color: #4384C4;
-  float: left;
+  float: right;
   font-size: 12px;
   font-style: normal;
   font-weight: bold;
@@ -46,6 +60,20 @@ table caption {
   text-decoration: none;
   text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
   border-left:1px solid #ccc;
+}
+
+#powerby-login {
+    float:none;
+    margin-top: 20px;
+   width:100%;
+}
+
+
+
+.sub_title {
+    display: block;
+    font-size: 0.5em;
+    padding-top:5px;
 }
 
 #content-column .block.block-boxes-os_boxes_manual_list .links.inline a,
@@ -57,14 +85,20 @@ table caption {
   float: none;
 }
 
-
+.node-type-page .breadcrumb, 
 .breadcrumb,
 .breadcrumb a {
 	color:#4384C4;
 	text-transform:uppercase;
 	font-size:12px;
-	font-weight:bold;	
+	font-weight:bold;
 	letter-spacing:0.1em;
+	margin:0;
+	padding-bottom:0;
+}
+
+.node-type-page .breadcrumb {
+	padding-bottom:.5em;
 }
 
 .breadcrumb span {
@@ -127,12 +161,15 @@ ol.search-results li.search-result:last-child {
 
 
 /* Calendar Pages */
-.view .date-nav-wrapper .date-prev {
-  right: 54px;
-}
+
 
 .view .date-nav-wrapper .date-prev {
     right: 590px;
+}
+
+
+.two-sidebars #main-content .view .date-nav-wrapper .date-prev {
+    right: 430px;
 }
 
 .view .date-nav-wrapper .date-prev a {
@@ -255,7 +292,7 @@ ol.search-results li.search-result:last-child {
   border-color: #CCC;
   border-radius: 0;
   line-height: 1.4em;
-  color: #fff;
+  color: #1E1E1E;
 }
 
 .calendar-calendar .week-view .full div.single-day div.weekview a,
@@ -329,7 +366,7 @@ ol.search-results li.search-result:last-child {
   font-size: 18px;
 }
 
-#event-content {
+.event-start #event-content {
   margin-left: 70px;
 }
 
@@ -340,6 +377,14 @@ ol.search-results li.search-result:last-child {
 
 .node-event .field-name-field-date .field-label {
   float: left;
+}
+
+.node-event .field-name-field-date.field-label-above .field-label {
+	float: none;
+}
+
+.node-event .field-name-field-date .field-item div {
+	margin-bottom: 15px;
 }
 
 #event-content .node-header h1.node-title {
@@ -410,28 +455,30 @@ ol.search-results li.search-result:last-child {
 
 
 /* node person */
-.node-type-person .node-person h1.node-title {
+ .node-type-person #content-column .node-person h1.node-title {
   font-size: 38px;
 }
 
 .node-type-person .node-person .field-name-field-professional-title {
-  padding-top: 10px;
-  margin-top: -20px;
+  padding: 10px 0 20px;
+  margin-top: -17px;
 }
 
-.node-type-person .node-person .pic-bio {
+ .node-type-person #content-column .node-person .pic-bio {
   border-top: 1px solid #e7e7e7;
   padding-top: 35px;
   margin-top: 20px;
   margin-bottom: 60px;
 }
 
-article.node-teaser.node-person .node-header,
-article.node-teaser.node-person .node-content {
+article.node-teaser.node-person .field-name-field-person-photo ~ .node-header,
+article.node-teaser.node-person .field-name-field-person-photo ~ .node-content {
 	margin-left: 6em;
 }
 
-.node-type-person .node-person .field-name-field-person-photo {
+.node-type-person .node-person .field-name-field-person-photo,
+.node-person.node-teaser .field-name-field-person-photo,
+.node-person.node-sidebar-teaser .field-name-field-person-photo {
   float: left;
   margin-top: 5px;
 }
@@ -440,15 +487,25 @@ article.node-teaser.node-person .node-content {
   margin: 0;
 }
 
+.node-type-person #main-content #content .node-person.with-person-photo .field-name-body {
+  margin-left: 0;
+}
+
+.node-type-person #main-content #content .node-person.with-person-photo .field-name-body ul li {
+  left: 15px;
+    position: relative;
+}
+
 .node-type-person #content .node-person.with-person-photo .field-name-body {
-  margin-left: 210px;
+    margin-left: 210px;
 }
 
 .node-type-person .node-person .block {
   display: inline-block;
   width: 50%;
   vertical-align: top;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
+  padding-top: 15px;
 }
 
 .node-type-person #content .node-person .field-name-field-phone,
@@ -469,24 +526,50 @@ article.node-teaser.node-person .node-content {
   margin-left: 30px;
 }
 
-#content .node-person .node-content > .block.odd .block-inner { 
+#content .node-person .node-content > .block.odd .block-inner {
   margin-right: 30px;
 }
 
-.node-type-person .node-person .field-name-field-email {
-  text-transform: capitalize; 
-}
+
 
 .node-teaser.node-person header h1 {
   margin-bottom: 0;
 }
 
 .node-teaser.node-person {
-  line-height: 19px;
   padding: 15px 0 30px;
 }
 
+/**
+LIST OF POSTS - PERSON TEASER IN SIDEBAR
+ */
 
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .pic-bio {
+
+     margin-right: 0;
+}
+
+.sidebar .block-boxes-os_sv_list_box .node.node-person.article.with-person-photo .node-content {
+	 margin-left: 95px;
+}
+
+.sidebar .block-boxes-os_sv_list_box .node.node-person.node-teaser.article.with-person-photo .node-header {
+	margin-left: 95px;
+}
+
+/* Node FAQ */
+.node-teaser.node-faq {
+  line-height: 19px;
+  padding: 5px 0 30px;
+}
+
+.page-faq h1.node-title {
+	margin-bottom: 14px;
+}
+
+.page-faq .node-faq .field-name-body p {
+    margin: 0 0 0.5em;
+}
 
 /* Node Presentations */
 .node-presentation.node-teaser .date-display-single {
@@ -513,7 +596,18 @@ article.node-teaser.node-person .node-content {
   margin-bottom: 15px;
 }
 
+/* NODE CLASSES */
 
+.node-type-class #content-column h2.field-label,
+.page-classes #content-column h2.field-label,
+.page-classes h1.node-title,
+.page-classes h2.field-label {
+    margin-bottom: 0;
+}
+
+.page-classes .node-class.node-teaser .field-name-body {
+    padding-top: 0;
+}
 
 
 /* Comments */
@@ -650,16 +744,20 @@ ul.pager li.pager-item {
   padding: 4px 8px;
 }
 
-ul.pager li.pager-first,
+
 ul.pager li.pager-previous {
+  margin-right: 20px;
+}
+
+
+ul.pager li.pager-next {
+  margin-left: 20px;
+}
+
+
+/* Custom Person node style for /people page */
+.node-person.node-teaser .field-name-field-email {
+  clear: both;
   float: left;
 }
-
-ul.pager li.pager-last,
-ul.pager li.pager-next {
-  float: right;
-}
-
-
-
 

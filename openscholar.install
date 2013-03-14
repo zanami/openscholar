@@ -82,5 +82,10 @@ function openscholar_install() {
 
   // Disable preventing anonymous cache in biblio.
   variable_set('biblio_prevent_anon_cache', FALSE);
+
+  // Allow accessing resource node to all users.
+  foreach (array(DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID) as $rid) {
+    user_role_grant_permissions($rid, array('access resource node'));
+  }
 }
 

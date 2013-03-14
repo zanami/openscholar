@@ -2,6 +2,7 @@
  * 
  */
 Drupal.wysiwyg.plugins.os_link = {
+  url: '',
   
   /**
    * Determines if element belongs to this plugin or not
@@ -17,23 +18,82 @@ Drupal.wysiwyg.plugins.os_link = {
   
   invoke: function (selection, settings, editorId) {
     var self = this;
+    if (this.isNode(selection.node)) {
+      var link = jQuery(selection.node);
+      if (link[0].nodeName != 'A') {
+        link = link.find('a');
+      }
+      if (link.length == 0) {
+        link = jQuery(selection.node).parents('a');
+      }
+      var info = this.parseAnchor(link[0]);
+      settings['global'].active = info.type;
+      settings['global'].url = info.url;
+    }
+    else {
+      delete settings['global'].active;
+      delete settings['global'].url;
+    }
     Drupal.media.popups.mediaBrowser(function (insert) {
       self.insertLink();
     }, settings['global'], {}, {
-      src: Drupal.settings.osWysiwygLink.browserUrl+'?d=1', // because media is dumb about its query args
-      onLoad: self.popupOnLoad
+      src: Drupal.settings.osWysiwygLink.browserUrl, // because media is dumb about its query args
+      onLoad: function (e) { self.popupOnLoad(e, selection, editorId); }
     });
   },
   
-  insertLink: function (body, target, type) {
+  insertLink: function (editorId, body, target, attributes) {
+    var html = '<a href="'+target+'">'+(body?body:target)+'</a>';
     
+    if (attributes) {
+      var $html = jQuery(html);
+      $html.attr(attributes);
+      html = typeof $html[0].outerHTML != 'undefined' 
+              ? $html[0].outerHTML 
+              : $html.wrap('<div>').parent().html();
+    }
+    
+    Drupal.wysiwyg.instances[editorId].insert(html);
   },
   
-  popupOnLoad: function (e) {
+  popupOnLoad: function (e, selection, editorId) {
     // bind handlers to the insert button
     // each 'form' should have a little script to generate an anchor tag or do something else with the data
     // this scripts should put the generated tag somewhere consistent
     // this function will bind a handler to take the tag and have it inserted into the wysiwyg
+    var $ = jQuery, 
+      self = this,
+      iframe = e.currentTarget,
+      doc = $(iframe.contentDocument),
+      window = iframe.contentWindow,
+      selected = '[Selected content. Click here to change it.]';
+    
+    if (this.selectLink(selection.node)) {
+      selection.content = selection.node.innerHTML;
+    }
+    
+    if (selection.content != '') {
+      $('.form-item-link-text input', doc).val(selected);
+    }
+    
+    $('.insert-buttons input[value="Insert"]', doc).click(function (e) {
+      $('.vertical-tabs form:visible .form-actions input[value="Insert"]', doc).click();
+      
+      var attrs = typeof window.Drupal.settings.osWysiwygLinkAttributes != 'undefined' 
+            ? window.Drupal.settings.osWysiwygLinkAttributes 
+            : false,
+          text = $('.form-item-link-text input', doc).val() == '[Selected content. Click here to change it.]'
+            ? (selection.content ? selection.content : window.Drupal.settings.osWysiwygLinkResult)
+            : $('.form-item-link-text input', doc).val(); 
+      self.insertLink(editorId, text, window.Drupal.settings.osWysiwygLinkResult, attrs);
+      $(iframe).dialog('destroy');
+      $(iframe).remove();
+    });
+    
+    $('.insert-buttons input[value="Cancel"]', doc).click(function (e) {
+      $(iframe).dialog('destroy');
+      $(iframe).remove();
+    });
   },
   
   /**
@@ -57,7 +117,7 @@ Drupal.wysiwyg.plugins.os_link = {
     }
     else {
       var home = Drupal.settings.basePath + (typeof Drupal.settings.pathPrefix != 'undefined'?Drupal.settings.pathPrefix:''),
-          dummy = a.createElement('a');
+          dummy = document.createElement('a');
       dummy.href = home;
       if (dummy.hostname == a.hostname && a.pathname.indexOf(dummy.pathname) != -1) {
         // internal link
@@ -73,6 +133,30 @@ Drupal.wysiwyg.plugins.os_link = {
     return ret;
   },
   
+  selectLink: function (node) {
+    if (this.isNode(node)) {
+      var target = jQuery(node).closest('a'),
+          doc = node.ownerDocument;
+      
+      if (typeof doc.getSelection == 'function') {
+        var selection = doc.getSelection(),
+           range = selection.getRangeAt(0);
+        range.selectNode(target[0]);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      else {
+        // IE
+        doc.selection.empty();
+        var range = doc.body.createTextRange();
+        range.moveToElementText(target[0]);
+        range.select();
+      }
+      return true;
+    }
+    return false;
+  },
+  
   /**
    * Converts link media tags into anchor tags
    */
@@ -83,7 +167,7 @@ Drupal.wysiwyg.plugins.os_link = {
   /**
    * Converts links to files into media tags
    */
-  detach: function (content, settings, instanceId) {
+  detach: function (content, settings, instanceId) {        
     return content;
   }
 };

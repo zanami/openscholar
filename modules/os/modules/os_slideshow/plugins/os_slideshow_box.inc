@@ -4,39 +4,39 @@ class os_slideshow_box extends os_boxes_default {
 
   public function options_defaults() {
     $options = parent::options_defaults();
-    
+
     return $options + array(
       'effect' => 'fade',
       'nodes' => array(),
       'timeout' => 5000,
       'speed' => 700,
       'random' => FALSE,
-      'layout' => FALSE,
+      'layout' => '3_1_overlay',
     );
   }
 
   public function options_form(&$form_state) {
     $form = parent::options_form($form_state);
     $defaults = $this->options_defaults();
-    
-    
+
+
     $layouts = _os_slideshow_layouts();
     if (!$this->new) {
       //layouts can be changed, but the ratio is locked, limiting available layouts
-      $ratio = current(array_keys($layouts[ $this->options['layout'] ]['ratio']));  
+      $ratio = current(array_keys($layouts[ $this->options['layout'] ]['ratio']));
     }
-    
+
     foreach ($layouts as $name => $layout) {
       if ($this->new || $ratio == current(array_keys($layout['ratio']))) {
         $file = drupal_get_path('module', 'os_slideshow') . '/images/' . $name . '.png';
         $ratio_options[$name] = (file_exists($file)) ? theme('image', array('path'=>$file)) . $layout['name'] : $layout['name'];
       }
     }
-    
+
     $form['layout'] = array(
       '#type' => 'radios',
       '#title' => t('Slideshow Layout'),
-      '#description' => t('Slideshow images and cpations will be layed out in this manner.'),
+      '#description' => t('Slideshow images and captions will be laid out in this manner.'),
       '#required' => TRUE,
       '#options' => $ratio_options, //get these from some other function somehow
       '#default_value' => ($this->options['layout']) ? $this->options['layout'] : $defaults['layout'],
@@ -45,7 +45,7 @@ class os_slideshow_box extends os_boxes_default {
     if ($this->new) {
       $form['layout']['#description'] .= ' ' . t('Note that the layout can be changed at a later date, but the aspect ratio (Standard/Widescreen) is permanent once selected.');
     }
-        
+
     $form['display'] = array(
       '#type' => 'fieldset',
       '#title' => t('Display Options'),
@@ -53,15 +53,7 @@ class os_slideshow_box extends os_boxes_default {
       '#collapsed' => TRUE,
       '#weight' => 10,
     );
-    
-    $form['display']['effect'] = array(
-        '#type' => 'select',
-        '#description' => t('How to transition between slides.'),
-        '#title' => t('Transition Effect'),
-        '#default_value' => $this->options['effect'],
-        '#options' => array('fade' => t('Fade'), 'slide-horizontal'=>t('Horizontal Slide'), 'slide-vertical'=>t('Vertical Slide')),
-    );
-    
+
     $form['display']['timeout'] = array(
       '#type' => 'select',
       '#description' => t('Each slide will be displayed for this length of time.'),
@@ -77,57 +69,57 @@ class os_slideshow_box extends os_boxes_default {
       '#default_value' => $this->options['speed'],
       '#options' => $this->_transition_speed_opts(0, 1, .1),
     );
-    
+
     $form['display']['random'] = array(
         '#type' => 'checkbox',
         '#title' => t('Random Order'),
         '#default_value' => $this->options['random'],
     );
-    
+
     $form['#attached']['js'] = array(drupal_get_path('module', 'os_slideshow').'/plugins/os_slideshow_box.js',);
 
     if (empty($this->options['nodes'])) {
       $form['nodes'] = array(
         '#type' => 'markup',
         '#markup' => '<div class="messages warning">You haven\'t added any slides yet.  Put this widget in your layout and visit that page to add slides.</div>',
-        '#weight' => 5,  
+        '#weight' => 5,
       );
     } else {
       // build a normal form
       $form['nodes'] = array(
         '#type' => 'markup',
         '#tree' => TRUE,
-        '#pre_render' => array('os_slideshow_draggable_table'),      
+        '#pre_render' => array('os_slideshow_draggable_table'),
         '#weight' => 5,
       );
-      
+
       $nids = $this->_get_nids(); //filter out dead nids
-      
+
       $form['nodes']['#process'][] = 'os_slideshow_process_form_nodes';
       $form['nodes_list'] = array(
         '#type' => 'hidden',
-        '#value' => $nids,    
+        '#value' => $nids,
       );
-      
+
       //load slideshow_slide nodes
       uasort($this->options['nodes'], 'element_sort');
       $nodes = node_load_multiple($nids);
-  
+
       foreach ($this->options['nodes'] as $nid => $data) {
         if (!in_array($nid, $nids)) {
           continue;
         }
-        
+
         $uri = $nodes[$nid]->field_image[$nodes[$nid]->language][0]['uri'];
         $img = theme('image_style', array('style_name' => 'thumbnail', 'path' => $uri, 'attributes' => array('style' => 'float: left; margin-right: 1em;')));
         $title = ($nodes[$nid]->status) ? '<strong>' . $nodes[$nid]->title . '</strong>' : '<em>' . $nodes[$nid]->title . ' (unpublished)</em>';
-        
+
         //edit link loads node edit with dest of this page.  this page's dest needs to be preserved.  nested destinations.
         $dest = (isset($_GET['destination'])) ? current_path() . '?destination=' . $_GET['destination'] : current_path();
         $edit_link = l('Edit Slide', "node/${nid}/edit", array('query' => array('destination' => $dest, 'widget' => $this->delta)));
         $remove_link =  '<a href="#" class="remove" title="Remove Slide">Remove</a>';
         $links = "<div>${title}<br />${edit_link} | ${remove_link}</div>";
-        
+
         $form['nodes'][$nid] = array(
           'nid' => array(
             '#type' => 'hidden',
@@ -142,11 +134,11 @@ class os_slideshow_box extends os_boxes_default {
             '#default_value' => $data['weight'],
             '#size' => 3,
             '#attributes' => array('class' => array('field-weight')),
-          )   
+          )
         );
       }
     }
-    
+
     return $form;
   }
 
@@ -162,36 +154,36 @@ class os_slideshow_box extends os_boxes_default {
         'query' => array('widget' => $this->delta, 'destination' => current_path()),
       ));
     }
-    
+
     $vars = array_intersect_key($options, array_flip(array('nodes', 'timeout', 'speed', 'effect', 'layout', 'random')));
-    $vars['box_delta'] = $this->delta; 
+    $vars['box_delta'] = $this->delta;
     $block['content'] .= theme('os_slideshow_slideshow', $vars);
-    return $block;    
+    return $block;
   }
-  
-  
+
+
   /**
    * @function _transition_speed_opts()
-   * 
+   *
    * Helper function for making for time selects.  All args are seconds.
-   * 
-   * @returns array( $milliseconds => $seconds . 's') 
+   *
+   * @returns array( $milliseconds => $seconds . 's')
    */
   private function _transition_speed_opts($min, $max, $increment) {
     $precision = explode('.', $increment);
     $decimals = (count($precision)>1) ? strlen($precision[1]) : 0;
-    
+
     $return = array();
     for ($i = $min; $i <= $max; $i += $increment) {
       $return[$i*1000] = number_format($i, $decimals) . ' sec';
     }
     return $return;
   }
-  
+
   //filters out dead nids
   private function _get_nids() {
     $nids = array_keys($this->options['nodes']);
-    
+
     if ($nids) {
       $nids = db_select('node', 'n')
         ->fields('n', array('nid'))
@@ -200,7 +192,7 @@ class os_slideshow_box extends os_boxes_default {
         ->execute()
         ->fetchCol();
     }
-    
+
     return $nids;
   }
 }

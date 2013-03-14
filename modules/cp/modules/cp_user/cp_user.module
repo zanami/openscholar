@@ -22,7 +22,7 @@ function cp_user_menu(){
   );
 
   $items['cp/users/add'] = array(
-    'title' => 'Add User to Site',
+    'title' => 'Add a User to Your Website',
     'page arguments' => array('add'),
     'access callback' => 'cp_user_admin_access',
     'file' => 'cp_user.pages.inc',
@@ -110,17 +110,24 @@ function cp_user_admin($op = 'members') {
  * Change the title and set default values for adding user to group.
  */
 function cp_user_form_og_ui_add_users_alter(&$form, $form_state) {
-  $node = node_load($form['gid']['#value']);
-  $form['og_user']['#title'] = t('Add an existing user to %label', array('%label' => $node->title));
+  $item = menu_get_item();
+
+  $form['og_user']['#title'] = t('Add an existing user to this website');
 
   // Create and add a link for the user to click on to create a new user.
-  $ajax_link = '<a href="javascript:void(0)" id="new-user-link">' . t('Add a new user') . '</a>';
+  $ajax_link = '<a href="javascript:void(0)" id="new-user-link">' . t('Create a new user') . '</a>';
   // Added the link onto the form as just text and set the weight higher to bump it down the add user form.
-  $form['og_user']['name']['#description'] = t('Type in a persons username to search for their account.');
+  $form['og_user']['name']['#title'] = t('User');
+  // The new autocomplete is for vsites, only switch the autocomplete if vsite is enabled.
+  if(module_exists('vsite')) {
+    $form['og_user']['name']['#description'] = t('Type in a persons name, login, or e-mail address to search for their account.');
+    // Add the new user autocomplete function.
+    $form['og_user']['name']['#autocomplete_path'] = 'vsite/autocomplete/user';
+  }
   $form['og_user']['link_text'] = array(
     '#type' => 'item',
-    '#markup' => t('If you can\'t find their account, click "!create_new" to create a new account.',
-        array('!create_new' => $ajax_link)),
+    '#markup' => '<div id="cp-user-create-new">' . t('If you can\'t find their account, click "!create_new" to create a new account.',
+        array('!create_new' => $ajax_link)) . '</div>',
     '#weight' => 2,
   );
   // Attach the custom js file to control the toggle of the two forms.
@@ -193,7 +200,16 @@ function cp_user_form_user_register_form_alter(&$form, &$form_state, $form_id) {
       '#type' => 'hidden',
       '#attributes' => array('id'=>'switch'),
     );
-
+    // Remove the password field, we don't want users setting passwords for other users.
+    if(isset($form['account']) && isset($form['account']['pass'])) {
+      unset($form['account']['pass']);
+      // Remove the notify option as we will force notify all new users.
+      if(isset($form['account']['notify'])) {
+      	unset($form['account']['notify']);
+      }
+      // Add a new validation function to update the password.
+      $form['#validate'][] = 'cp_user_no_password_validate';
+    }
     // Add a secondary submit function that also submits the user add
     // function.
     $form['#submit'][] = 'cp_user_user_register_submit';
@@ -204,6 +220,18 @@ function cp_user_form_user_register_form_alter(&$form, &$form_state, $form_id) {
     // be adding to their site as well as creating the user, in one step.
     $form['actions']['submit']['#value'] = t('Create and Add User');
   }
+}
+
+/**
+ * Custom form validation for the user_register_form.
+ * Uses the user_password function in the user module to auto-create a password.
+ * Also forces the notify users variable to be set.
+ */
+function cp_user_no_password_validate($form, &$form_state) {
+  // Now we need to set a password so the user_register_submit handler does not bomb out.
+  $form_state['values']['pass'] = user_password();
+  // Also need to notify the user of their new account.
+  $form_state['values']['notify'] = TRUE;
 }
 
 /**
